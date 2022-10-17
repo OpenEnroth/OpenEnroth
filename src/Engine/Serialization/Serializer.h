@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cassert>
+#include <string>
+#include <vector>
 
 #include "Utility/Embedded.h"
 #include "Utility/Streams/FileOutputStream.h"
@@ -79,7 +81,7 @@ class Serializer {
 
 class FileSerializer : private Embedded<FileOutputStream>, public Serializer {
     using StreamBase = Embedded<FileOutputStream>;
-public:
+ public:
     FileSerializer(const std::string &path):
         StreamBase(path),
         Serializer(&StreamBase::get())

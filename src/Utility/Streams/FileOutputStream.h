@@ -6,18 +6,18 @@
 #include "OutputStream.h"
 
 class FileOutputStream : public OutputStream {
-public:
+ public:
     FileOutputStream(const std::string &path);
     virtual ~FileOutputStream();
     virtual void Write(const void *data, size_t size) override;
     virtual void Flush() override;
     virtual void Close() override;
 
-private:
+ private:
     void CloseInternal(bool canThrow);
     [[noreturn]] void ThrowFromErrno();
 
-private:
+ private:
     std::string path_;
     FILE *file_ = nullptr;
 };

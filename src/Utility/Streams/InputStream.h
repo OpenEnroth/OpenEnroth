@@ -11,7 +11,7 @@
  * - Has an extremely simple and intuitive interface consisting of exactly two methods.
  */
 class InputStream {
-public:
+ public:
     virtual ~InputStream() {}
 
     /**

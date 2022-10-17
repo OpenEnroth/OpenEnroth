@@ -11,7 +11,7 @@
  * - Has an extremely simple and intuitive interface consisting of exactly three methods.
  */
 class OutputStream {
-public:
+ public:
     virtual ~OutputStream() {}
 
     /**

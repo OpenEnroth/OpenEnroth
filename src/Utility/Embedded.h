@@ -9,7 +9,7 @@
  */
 template<class T>
 class Embedded {
-public:
+ public:
     template<class... Args>
     Embedded(Args &&...args): data_(std::forward<Args>(args)...) {}
 
@@ -21,6 +21,6 @@ public:
         return data_;
     }
 
-private:
+ private:
     T data_;
 };

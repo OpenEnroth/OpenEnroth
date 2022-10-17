@@ -5,13 +5,13 @@
 #include "OutputStream.h"
 
 class StringOutputStream: public OutputStream {
-public:
+ public:
     StringOutputStream(std::string *target);
     virtual ~StringOutputStream();
     virtual void Write(const void *data, size_t size) override;
     virtual void Flush() override;
     virtual void Close() override;
 
-private:
+ private:
     std::string *target_ = nullptr;
 };

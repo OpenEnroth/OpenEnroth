@@ -1,9 +1,12 @@
 #pragma once
 
 #include <cassert>
+#include <memory>
 #include <stdexcept>
+#include <string>
 #include <type_traits>
 #include <utility>
+#include <vector>
 
 #include "Utility/Blob.h"
 #include "Utility/Embedded.h"
@@ -107,7 +110,7 @@ class Deserializer {
 
 class BlobDeserializer: private Embedded<MemoryInputStream>, public Deserializer {
     using StreamBase = Embedded<MemoryInputStream>;
-public:
+ public:
     BlobDeserializer() : Deserializer(&StreamBase::get()) {}
 
     BlobDeserializer(const Blob &blob) : BlobDeserializer() {
@@ -127,6 +130,6 @@ public:
         Reset(*blob_);
     }
 
-private:
+ private:
     std::unique_ptr<Blob> blob_;
 };
