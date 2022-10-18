@@ -293,22 +293,6 @@ bool MonsterList::FromFileTxt(const char *Args) {
     FrameTableTxtLine v24;  // [sp+1F8h] [bp-110h]@4
     FrameTableTxtLine v25;  // [sp+274h] [bp-94h]@4
     int v26;                // [sp+2F0h] [bp-18h]@16
-    char v27;               // [sp+2F4h] [bp-14h]@14
-    char v28;               // [sp+2F5h] [bp-13h]@14
-    char v29;               // [sp+2F6h] [bp-12h]@14
-    char v30;               // [sp+2F7h] [bp-11h]@14
-    char v31;               // [sp+2F8h] [bp-10h]@14
-    char v32;               // [sp+2F9h] [bp-Fh]@14
-    char v33;               // [sp+2FAh] [bp-Eh]@14
-    char v34;               // [sp+2FBh] [bp-Dh]@14
-    char v35;               // [sp+2FCh] [bp-Ch]@14
-    char v36;               // [sp+2FDh] [bp-Bh]@14
-    char v37;               // [sp+2FEh] [bp-Ah]@14
-    char v38;               // [sp+2FFh] [bp-9h]@14
-    char v39;               // [sp+300h] [bp-8h]@14
-    char v40;               // [sp+301h] [bp-7h]@14
-    char v41;               // [sp+302h] [bp-6h]@14
-    char v42;               // [sp+303h] [bp-5h]@14
     FILE *File;             // [sp+304h] [bp-4h]@1
     unsigned int Argsa;     // [sp+310h] [bp+8h]@3
     int Argsb;              // [sp+310h] [bp+8h]@16
@@ -339,24 +323,20 @@ bool MonsterList::FromFileTxt(const char *Args) {
             MonsterDesc &monster = this->pMonsters.emplace_back();
 
             monster.pMonsterName = v25.pProperties[0];
-            v35 = 0;
-            v36 = 1;
-            v37 = 7;
-            v38 = 2;
-            v39 = 3;
-            v40 = 4;
-            v41 = 5;
-            v42 = 6;
-            v27 = 1;
-            v28 = 2;
-            v29 = 3;
-            v30 = 4;
-            v31 = 4;
-            v32 = 5;
-            v33 = 6;
-            v34 = 7;
+
+            constexpr std::array<std::pair<ActorAnimation, int>, 8> mapping = {{
+                {ANIM_Standing, 1},
+                {ANIM_Walking, 2},
+                {ANIM_Bored, 3},
+                {ANIM_AtkMelee, 4},
+                {ANIM_AtkRanged, 4},
+                {ANIM_GotHit, 5},
+                {ANIM_Dying, 6},
+                {ANIM_Dead, 7},
+            }};
+
             do {
-                monster.pSpriteNames[(uint8_t)*(&v35 + v8)] = v25.pProperties[(uint8_t)*(&v27 + v8)];
+                monster.pSpriteNames[mapping[v8].first] = v25.pProperties[mapping[v8].second];
                 ++v8;
             } while (v8 < 8);
             v9 = atoi(v25.pProperties[8]);

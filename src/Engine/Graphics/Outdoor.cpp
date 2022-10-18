@@ -1549,10 +1549,10 @@ void OutdoorLocation::PrepareActorsDrawList() {
 
         Cur_Action_Time = pActors[i].uCurrentActionTime;
         if (pParty->bTurnBasedModeOn) {
-            if (pActors[i].uCurrentActionAnimation == 1)
+            if (pActors[i].uCurrentActionAnimation == ANIM_Walking)
                 Cur_Action_Time = 32 * i + pMiscTimer->uTotalGameTimeElapsed;
         } else {
-            if (pActors[i].uCurrentActionAnimation == 1)
+            if (pActors[i].uCurrentActionAnimation == ANIM_Walking)
                 Cur_Action_Time = 32 * i + pEventTimer->uTotalGameTimeElapsed;
         }
 

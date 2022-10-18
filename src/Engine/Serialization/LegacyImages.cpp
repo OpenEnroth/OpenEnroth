@@ -1049,10 +1049,10 @@ void Deserialize(const MonsterDesc_MM6 &src, MonsterDesc *dst) {
     dst->uMovementSpeed = src.uMovementSpeed;
     dst->uToHitRadius = src.uToHitRadius;
     dst->sTintColor = colorTable.White.C32();
-    memcpy(dst->pSoundSampleIDs, src.pSoundSampleIDs, sizeof(src.pSoundSampleIDs));
+    memcpy(dst->pSoundSampleIDs.data(), src.pSoundSampleIDs, sizeof(src.pSoundSampleIDs));
     dst->pMonsterName = src.pMonsterName;
-    for(size_t i = 0; i < 10; i++)
-        dst->pSpriteNames[i] = src.pSpriteNames[i];
+    for(ActorAnimation i : dst->pSpriteNames.indices())
+        dst->pSpriteNames[i] = src.pSpriteNames[std::to_underlying(i)];
 }
 
 void Serialize(const MonsterDesc &src, MonsterDesc_MM7 *dst) {
@@ -1061,10 +1061,12 @@ void Serialize(const MonsterDesc &src, MonsterDesc_MM7 *dst) {
     dst->uMovementSpeed = src.uMovementSpeed;
     dst->uToHitRadius = src.uToHitRadius;
     dst->sTintColor = src.sTintColor;
-    memcpy(dst->pSoundSampleIDs, src.pSoundSampleIDs, sizeof(src.pSoundSampleIDs));
+    memcpy(dst->pSoundSampleIDs, src.pSoundSampleIDs.data(), sizeof(src.pSoundSampleIDs));
     Serialize(src.pMonsterName, &dst->pMonsterName);
-    for (size_t i = 0; i < 10; i++)
-        Serialize(src.pSpriteNames[i], &dst->pSpriteNames[i]);
+    for (ActorAnimation i : src.pSpriteNames.indices())
+        Serialize(src.pSpriteNames[i], &dst->pSpriteNames[std::to_underlying(i)]);
+    dst->pSpriteNames[8][0] = '\0';
+    dst->pSpriteNames[9][0] = '\0';
 }
 
 void Deserialize(const MonsterDesc_MM7 &src, MonsterDesc *dst) {
@@ -1073,10 +1075,10 @@ void Deserialize(const MonsterDesc_MM7 &src, MonsterDesc *dst) {
     dst->uMovementSpeed = src.uMovementSpeed;
     dst->uToHitRadius = src.uToHitRadius;
     dst->sTintColor = src.sTintColor;
-    memcpy(dst->pSoundSampleIDs, src.pSoundSampleIDs, sizeof(src.pSoundSampleIDs));
+    memcpy(dst->pSoundSampleIDs.data(), src.pSoundSampleIDs, sizeof(src.pSoundSampleIDs));
     dst->pMonsterName = src.pMonsterName;
-    for (size_t i = 0; i < 10; i++)
-        dst->pSpriteNames[i] = src.pSpriteNames[i];
+    for (ActorAnimation i : dst->pSpriteNames.indices())
+        dst->pSpriteNames[i] = src.pSpriteNames[std::to_underlying(i)];
 }
 
 void Serialize(const Actor &src, Actor_MM7 *dst) {
@@ -1161,14 +1163,14 @@ void Serialize(const Actor &src, Actor_MM7 *dst) {
     dst->vGuardingPosition = src.vGuardingPosition;
     dst->uTetherDistance = src.uTetherDistance;
     dst->uAIState = src.uAIState;
-    dst->uCurrentActionAnimation = src.uCurrentActionAnimation;
+    dst->uCurrentActionAnimation = std::to_underlying(src.uCurrentActionAnimation);
     dst->uCarriedItemID = src.uCarriedItemID;
     dst->field_B6 = src.field_B6;
     dst->field_B7 = src.field_B7;
     dst->uCurrentActionTime = src.uCurrentActionTime;
 
-    for (unsigned int i = 0; i < 8; ++i)
-        dst->pSpriteIDs[i] = src.pSpriteIDs[i];
+    for (ActorAnimation i : src.pSpriteIDs.indices())
+        dst->pSpriteIDs[std::to_underlying(i)] = src.pSpriteIDs[i];
 
     for (unsigned int i = 0; i < 4; ++i)
         dst->pSoundSampleIDs[i] = src.pSoundSampleIDs[i];
@@ -1280,8 +1282,8 @@ void Deserialize(const Actor_MM7 &src, Actor *dst) {
     dst->field_B7 = src.field_B7;
     dst->uCurrentActionTime = src.uCurrentActionTime;
 
-    for (unsigned int i = 0; i < 8; ++i)
-        dst->pSpriteIDs[i] = src.pSpriteIDs[i];
+    for (ActorAnimation i : dst->pSpriteIDs.indices())
+        dst->pSpriteIDs[i] = src.pSpriteIDs[std::to_underlying(i)];
 
     for (unsigned int i = 0; i < 4; ++i)
         dst->pSoundSampleIDs[i] = src.pSoundSampleIDs[i];

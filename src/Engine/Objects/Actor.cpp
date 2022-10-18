@@ -2451,7 +2451,7 @@ void Actor::PrepareSprites(char load_sounds_if_bit1_set) {
     // v12 = pSpriteIDs;
     // Source = (char *)v3->pSpriteNames;
     // do
-    for (uint i = 0; i < 8; ++i) {
+    for (ActorAnimation i : pSpriteIDs.indices()) {
         // strcpy(pSpriteName, v3->pSpriteNames[i]);
         pSpriteIDs[i] = pSpriteFrameTable->FastFindSprite(v3->pSpriteNames[i]);
         pSpriteFrameTable->InitializeSprite(pSpriteIDs[i]);

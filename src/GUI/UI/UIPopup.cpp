@@ -627,9 +627,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
             pMonsterInfoUI_Doll.uCurrentActionLength =
                 8 *
                 pSpriteFrameTable
-                    ->pSpriteSFrames[pActors[uActorID].pSpriteIDs
-                                         [(int16_t)pMonsterInfoUI_Doll
-                                              .uCurrentActionAnimation]]
+                    ->pSpriteSFrames[pActors[uActorID].pSpriteIDs[pMonsterInfoUI_Doll.uCurrentActionAnimation]]
                     .uAnimLength;
         }
     }

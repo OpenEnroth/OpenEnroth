@@ -10,6 +10,7 @@ set(OBJECTS_SOURCES Actor.cpp
                     SpriteObject.cpp)
 
 set(OBJECTS_HEADERS Actor.h
+                    ActorEnums.h
                     Chest.h
                     Items.h
                     Monsters.h
