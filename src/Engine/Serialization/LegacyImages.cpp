@@ -42,7 +42,7 @@ void Deserialize(const BLVFace_MM7 &src, BLVFace *dst) {
     dst->field_5F = src.field_5F;
 }
 
-void Serialize(const Timer &src, Timer_Image_MM7 *dst) {
+void Serialize(const Timer &src, Timer_MM7 *dst) {
     memset(dst, 0, sizeof(*dst));
 
     dst->bReady = src.bReady;
@@ -57,7 +57,7 @@ void Serialize(const Timer &src, Timer_Image_MM7 *dst) {
     dst->uTotalGameTimeElapsed = src.uTotalGameTimeElapsed;
 }
 
-void Deserialize(const Timer_Image_MM7 &src, Timer *dst) {
+void Deserialize(const Timer_MM7 &src, Timer *dst) {
     dst->bReady = src.bReady;
     dst->bPaused = src.bPaused;
     dst->bTackGameTime = src.bTackGameTime;
@@ -70,7 +70,7 @@ void Deserialize(const Timer_Image_MM7 &src, Timer *dst) {
     dst->uTotalGameTimeElapsed = src.uTotalGameTimeElapsed;
 }
 
-void Serialize(const NPCData &src, NPCData_Image_MM7 *dst) {
+void Serialize(const NPCData &src, NPCData_MM7 *dst) {
     memset(dst, 0, sizeof(*dst));
 
     if (src.pName) {
@@ -99,7 +99,7 @@ void Serialize(const NPCData &src, NPCData_Image_MM7 *dst) {
     dst->news_topic = src.news_topic;
 }
 
-void Deserialize(const NPCData_Image_MM7 &src, NPCData *dst) {
+void Deserialize(const NPCData_MM7 &src, NPCData *dst) {
     if (src.pName) {
         dst->pName = "Dummy";
     } else {
@@ -126,7 +126,7 @@ void Deserialize(const NPCData_Image_MM7 &src, NPCData *dst) {
     dst->news_topic = src.news_topic;
 }
 
-void Serialize(const OtherOverlayList &src, OtherOverlayList_Image_MM7 *dst) {
+void Serialize(const OtherOverlayList &src, OtherOverlayList_MM7 *dst) {
     memset(dst, 0, sizeof(*dst));
 
     dst->bRedraw = src.bRedraw;
@@ -148,7 +148,7 @@ void Serialize(const OtherOverlayList &src, OtherOverlayList_Image_MM7 *dst) {
     }
 }
 
-void Deserialize(const OtherOverlayList_Image_MM7 &src, OtherOverlayList *dst) {
+void Deserialize(const OtherOverlayList_MM7 &src, OtherOverlayList *dst) {
     dst->bRedraw = src.bRedraw;
     dst->field_3E8 = src.field_3E8;
 
@@ -168,7 +168,7 @@ void Deserialize(const OtherOverlayList_Image_MM7 &src, OtherOverlayList *dst) {
     }
 }
 
-void Serialize(const SpellBuff &src, SpellBuff_Image_MM7 *dst) {
+void Serialize(const SpellBuff &src, SpellBuff_MM7 *dst) {
     memset(dst, 0, sizeof(*dst));
 
     dst->uExpireTime = src.expire_time.value;
@@ -179,7 +179,7 @@ void Serialize(const SpellBuff &src, SpellBuff_Image_MM7 *dst) {
     dst->uFlags = src.uFlags;
 }
 
-void Deserialize(const SpellBuff_Image_MM7 &src, SpellBuff *dst) {
+void Deserialize(const SpellBuff_MM7 &src, SpellBuff *dst) {
     dst->expire_time.value = src.uExpireTime;
     dst->uPower = src.uPower;
     dst->uSkill = src.uSkill;
@@ -188,7 +188,7 @@ void Deserialize(const SpellBuff_Image_MM7 &src, SpellBuff *dst) {
     dst->uFlags = src.uFlags;
 }
 
-void Serialize(const ItemGen &src, ItemGen_Image_MM7 *dst) {
+void Serialize(const ItemGen &src, ItemGen_MM7 *dst) {
     memset(dst, 0, sizeof(*dst));
 
     dst->uItemID = src.uItemID;
@@ -204,7 +204,7 @@ void Serialize(const ItemGen &src, ItemGen_Image_MM7 *dst) {
     dst->uExpireTime = src.uExpireTime.value;
 }
 
-void Deserialize(const ItemGen_Image_MM7 &src, ItemGen *dst) {
+void Deserialize(const ItemGen_MM7 &src, ItemGen *dst) {
     dst->uItemID = src.uItemID;
     dst->uEnchantmentType = src.uEnchantmentType;
     dst->m_enchantmentStrength = src.m_enchantmentStrength;
@@ -218,7 +218,7 @@ void Deserialize(const ItemGen_Image_MM7 &src, ItemGen *dst) {
     dst->uExpireTime.value = src.uExpireTime;
 }
 
-void Serialize(const Party &src, Party_Image_MM7 *dst) {
+void Serialize(const Party &src, Party_MM7 *dst) {
     memset(dst, 0, sizeof(*dst));
 
     dst->field_0 = src.field_0_set25_unused;
@@ -382,7 +382,7 @@ void Serialize(const Party &src, Party_Image_MM7 *dst) {
     dst->flt_TorchlightColorB = src.flt_TorchlightColorB;
 }
 
-void Deserialize(const Party_Image_MM7 &src, Party *dst) {
+void Deserialize(const Party_MM7 &src, Party *dst) {
     dst->field_0_set25_unused = src.field_0;
     dst->uPartyHeight = src.uPartyHeight;
     dst->uDefaultPartyHeight = src.uDefaultPartyHeight;
@@ -555,7 +555,7 @@ void Deserialize(const Party_Image_MM7 &src, Party *dst) {
     dst->flt_TorchlightColorB = src.flt_TorchlightColorB;
 }
 
-void Serialize(const Player &src, Player_Image_MM7 *dst) {
+void Serialize(const Player &src, Player_MM7 *dst) {
     memset(dst, 0, sizeof(*dst));
 
     for (unsigned int i = 0; i < 20; ++i)
@@ -720,7 +720,7 @@ void Serialize(const Player &src, Player_Image_MM7 *dst) {
     dst->field_1B3B = src.field_1B3B_set0_unused;
 }
 
-void Deserialize(const Player_Image_MM7 &src, Player* dst) {
+void Deserialize(const Player_MM7 &src, Player* dst) {
     for (unsigned int i = 0; i < 20; ++i)
         dst->conditions.Set(static_cast<Condition>(i), GameTime(src.pConditions[i]));
 

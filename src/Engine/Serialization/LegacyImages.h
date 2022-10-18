@@ -113,8 +113,8 @@ struct TextureFrame_MM7 {
 static_assert(sizeof(TextureFrame_MM7) == 20);
 
 
-struct NPCData_Image_MM7 {
-    NPCData_Image_MM7() { memzero(this); }
+struct NPCData_MM7 {
+    NPCData_MM7() { memzero(this); }
 
     /* 00 */ int32_t pName;  // char *pName;
     /* 04 */ unsigned int uPortraitID;
@@ -138,14 +138,14 @@ struct NPCData_Image_MM7 {
     /* 48 */ int news_topic;
     /* 4C */
 };
-static_assert(sizeof(NPCData_Image_MM7) == 0x4C);
+static_assert(sizeof(NPCData_MM7) == 0x4C);
 
-void Serialize(const NPCData &src, NPCData_Image_MM7 *dst);
-void Deserialize(const NPCData_Image_MM7 &src, NPCData *dst);
+void Serialize(const NPCData &src, NPCData_MM7 *dst);
+void Deserialize(const NPCData_MM7 &src, NPCData *dst);
 
 
-struct ItemGen_Image_MM7 {
-    ItemGen_Image_MM7() { memzero(this); }
+struct ItemGen_MM7 {
+    ItemGen_MM7() { memzero(this); }
 
     /* 00 */ int uItemID;
     /* 04 */ int uEnchantmentType;
@@ -177,14 +177,14 @@ struct ItemGen_Image_MM7 {
     /* 1B */ char field_1B;
     /* 1C */ uint64_t uExpireTime;
 };
-static_assert(sizeof(ItemGen_Image_MM7) == 0x24);
+static_assert(sizeof(ItemGen_MM7) == 0x24);
 
-void Serialize(const ItemGen &src, ItemGen_Image_MM7 *dst);
-void Deserialize(const ItemGen_Image_MM7 &src, ItemGen *dst);
+void Serialize(const ItemGen &src, ItemGen_MM7 *dst);
+void Deserialize(const ItemGen_MM7 &src, ItemGen *dst);
 
 
-struct SpellBuff_Image_MM7 {
-    SpellBuff_Image_MM7() { memzero(this); }
+struct SpellBuff_MM7 {
+    SpellBuff_MM7() { memzero(this); }
 
     /* 00 */ int64_t uExpireTime;
     /* 08 */ uint16_t uPower;
@@ -194,27 +194,27 @@ struct SpellBuff_Image_MM7 {
     /* 0F */ uint8_t uFlags;
     /* 10 */
 };
-static_assert(sizeof(SpellBuff_Image_MM7) == 0x10);
+static_assert(sizeof(SpellBuff_MM7) == 0x10);
 
-void Serialize(const SpellBuff &src, SpellBuff_Image_MM7 *dst);
-void Deserialize(const SpellBuff_Image_MM7 &src, SpellBuff *dst);
+void Serialize(const SpellBuff &src, SpellBuff_MM7 *dst);
+void Deserialize(const SpellBuff_MM7 &src, SpellBuff *dst);
 
 
-struct PlayerSpellbookChapter_Image_MM7 {
-    PlayerSpellbookChapter_Image_MM7() { memzero(this); }
+struct PlayerSpellbookChapter_MM7 {
+    PlayerSpellbookChapter_MM7() { memzero(this); }
 
     /* 00 */ char bIsSpellAvailable[11];
     /* 0B */
 };
-static_assert(sizeof(PlayerSpellbookChapter_Image_MM7) == 0xB);
+static_assert(sizeof(PlayerSpellbookChapter_MM7) == 0xB);
 
 
-struct PlayerSpells_Image_MM7 {
-    PlayerSpells_Image_MM7() { memzero(this); }
+struct PlayerSpells_MM7 {
+    PlayerSpells_MM7() { memzero(this); }
 
     union {
         struct {
-            /* 00 */ PlayerSpellbookChapter_Image_MM7 pChapters[9];
+            /* 00 */ PlayerSpellbookChapter_MM7 pChapters[9];
             /* 63 */ char _pad1;
             /* 64 */
         };
@@ -225,11 +225,11 @@ struct PlayerSpells_Image_MM7 {
         };
     };
 };
-static_assert(sizeof(PlayerSpells_Image_MM7) == 0x64);
+static_assert(sizeof(PlayerSpells_MM7) == 0x64);
 
 
-union PlayerEquipment_Image_MM7 {
-    PlayerEquipment_Image_MM7() { memzero(this); }
+union PlayerEquipment_MM7 {
+    PlayerEquipment_MM7() { memzero(this); }
 
     union {
         struct {
@@ -249,11 +249,11 @@ union PlayerEquipment_Image_MM7 {
         unsigned int pIndices[16];
     };
 };
-static_assert(sizeof(PlayerEquipment_Image_MM7) == 0x40);
+static_assert(sizeof(PlayerEquipment_MM7) == 0x40);
 
 
-struct LloydBeacon_Image_MM7 {
-    LloydBeacon_Image_MM7() { memzero(this); }
+struct LloydBeacon_MM7 {
+    LloydBeacon_MM7() { memzero(this); }
 
     /* 00 */ uint64_t uBeaconTime;
     /* 08 */ int32_t PartyPos_X;
@@ -265,11 +265,11 @@ struct LloydBeacon_Image_MM7 {
     /* 1A */ uint16_t SaveFileID;
     /* 1C */
 };
-static_assert(sizeof(LloydBeacon_Image_MM7) == 0x1C);
+static_assert(sizeof(LloydBeacon_MM7) == 0x1C);
 
 
-struct Player_Image_MM7 {
-    Player_Image_MM7() { memzero(this); }
+struct Player_MM7 {
+    Player_MM7() { memzero(this); }
 
     /* 0000 */ int64_t pConditions[20];
     /* 00A0 */ uint64_t uExperience;
@@ -349,7 +349,7 @@ struct Player_Image_MM7 {
         uint16_t pActiveSkills[37];
     };
     /* 0152 */ unsigned char _achieved_awards_bits[64];
-    /* 0192 */ PlayerSpells_Image_MM7 spellbook;
+    /* 0192 */ PlayerSpells_MM7 spellbook;
     /* 01F6 */ char _1F6_pad[2];
     /* 01F8 */ int pure_luck_used;
     /* 01FC */ int pure_speed_used;
@@ -360,11 +360,11 @@ struct Player_Image_MM7 {
     /* 0210 */ int pure_might_used;
     /* 0214 */ union {
         struct {
-            ItemGen_Image_MM7 pInventoryItemList[126];
-            ItemGen_Image_MM7 pEquippedItems[12];
+            ItemGen_MM7 pInventoryItemList[126];
+            ItemGen_MM7 pEquippedItems[12];
         };
         struct {
-            ItemGen_Image_MM7 pOwnItems[138];
+            ItemGen_MM7 pOwnItems[138];
         };
     };
     /* 157C */ int pInventoryMatrix[126];
@@ -390,7 +390,7 @@ struct Player_Image_MM7 {
     /* 179A */ int16_t sResBodyBonus;
     /* 179C */ int16_t sResLightBonus;
     /* 179E */ int16_t sResDarkBonus;
-    /* 17A0 */ SpellBuff_Image_MM7 pPlayerBuffs[24];
+    /* 17A0 */ SpellBuff_MM7 pPlayerBuffs[24];
     /* 1920 */ unsigned int uVoiceID;
     /* 1924 */ int uPrevVoiceID;
     /* 1928 */ int uPrevFace;
@@ -403,7 +403,7 @@ struct Player_Image_MM7 {
     /* 193C */ int sHealth;
     /* 1940 */ int sMana;
     /* 1944 */ unsigned int uBirthYear;
-    /* 1948 */ PlayerEquipment_Image_MM7 pEquipment;
+    /* 1948 */ PlayerEquipment_MM7 pEquipment;
     /* 1988 */ int field_1988[49];
     /* 1A4C */ char field_1A4C;
     /* 1A4D */ char field_1A4D;
@@ -428,21 +428,21 @@ struct Player_Image_MM7 {
     /* 1AA2 */ int16_t field_1AA2;
     /* 1AA4 */ int _expression21_animtime;
     /* 1AA8 */ int _expression21_frameset;
-    /* 1AAC */ LloydBeacon_Image_MM7 pInstalledBeacons[5];
+    /* 1AAC */ LloydBeacon_MM7 pInstalledBeacons[5];
     /* 1B38 */ char uNumDivineInterventionCastsThisDay;
     /* 1B39 */ char uNumArmageddonCasts;
     /* 1B3A */ char uNumFireSpikeCasts;
     /* 1B3B */ char field_1B3B;
     /* 1B3C */
 };
-static_assert(sizeof(Player_Image_MM7) == 0x1B3C);
+static_assert(sizeof(Player_MM7) == 0x1B3C);
 
-void Serialize(const Player &src, Player_Image_MM7 *dst);
-void Deserialize(const Player_Image_MM7 &src, Player *dst);
+void Serialize(const Player &src, Player_MM7 *dst);
+void Deserialize(const Player_MM7 &src, Player *dst);
 
 
-struct PartyTimeStruct_Image_MM7 {
-    PartyTimeStruct_Image_MM7()  { memzero(this); }
+struct PartyTimeStruct_MM7 {
+    PartyTimeStruct_MM7()  { memzero(this); }
 
     /* 000 */ int64_t bountyHunting_next_generation_time[10];
     /* 050 */ int64_t Shops_next_generation_time[85];  // field_50
@@ -452,11 +452,11 @@ struct PartyTimeStruct_Image_MM7 {
     /* 5D8 */ uint64_t _s_times[20];  // 5d8 440h+8*51     //(0xACD44Ch in Silvo's binary)
     /* 678 */
 };
-static_assert(sizeof(PartyTimeStruct_Image_MM7) == 0x678);
+static_assert(sizeof(PartyTimeStruct_MM7) == 0x678);
 
 
-struct Party_Image_MM7 {
-    Party_Image_MM7() { memzero(this); }
+struct Party_MM7 {
+    Party_MM7() { memzero(this); }
 
     /* 00000 */ int field_0;
     /* 00004 */ unsigned int uPartyHeight;
@@ -471,7 +471,7 @@ struct Party_Image_MM7 {
     /* 00028 */ int field_28;
     /* 0002C */ uint64_t uTimePlayed;
     /* 00034 */ int64_t uLastRegenerationTime;
-    /* 0003C */ PartyTimeStruct_Image_MM7 PartyTimes;
+    /* 0003C */ PartyTimeStruct_MM7 PartyTimes;
     /* 006B4 */ Vec3i vPosition;
     /* 006C0 */ int sRotationZ;
     /* 006C4 */ int sRotationY;
@@ -531,14 +531,14 @@ struct Party_Image_MM7 {
     /* 00880 */ int field_880;
     /* 00884 */ int uFlags2;
     /* 00888 */ unsigned int alignment;
-    /* 0088C */ SpellBuff_Image_MM7 pPartyBuffs[20];
-    /* 00954 */ Player_Image_MM7 pPlayers[4];
-    /* 07644 */ NPCData_Image_MM7 pHirelings[2];
-    /* 07754 */ ItemGen_Image_MM7 pPickedItem;
+    /* 0088C */ SpellBuff_MM7 pPartyBuffs[20];
+    /* 00954 */ Player_MM7 pPlayers[4];
+    /* 07644 */ NPCData_MM7 pHirelings[2];
+    /* 07754 */ ItemGen_MM7 pPickedItem;
     /* 07778 */ unsigned int uFlags;
-    /* 0777C */ ItemGen_Image_MM7 StandartItemsInShops[53][12];
-    /* 0D0EC */ ItemGen_Image_MM7 SpecialItemsInShops[53][12];
-    /* 12A5C */ ItemGen_Image_MM7 SpellBooksInGuilds[32][12];
+    /* 0777C */ ItemGen_MM7 StandartItemsInShops[53][12];
+    /* 0D0EC */ ItemGen_MM7 SpecialItemsInShops[53][12];
+    /* 12A5C */ ItemGen_MM7 SpellBooksInGuilds[32][12];
     /* 1605C */ char field_1605C[24];
     /* 16074 */ char pHireling1Name[100];
     /* 160D8 */ char pHireling2Name[100];
@@ -552,13 +552,13 @@ struct Party_Image_MM7 {
     /* 16234 */ float flt_TorchlightColorB;
     /* 16238 */
 };
-static_assert(sizeof(Party_Image_MM7) == 0x16238);
+static_assert(sizeof(Party_MM7) == 0x16238);
 
-void Serialize(const Party &src, Party_Image_MM7 *dst);
-void Deserialize(const Party_Image_MM7 &src, Party *dst);
+void Serialize(const Party &src, Party_MM7 *dst);
+void Deserialize(const Party_MM7 &src, Party *dst);
 
-struct Timer_Image_MM7 {
-    Timer_Image_MM7() { memzero(this); }
+struct Timer_MM7 {
+    Timer_MM7() { memzero(this); }
 
     /* 00 */ uint32_t bReady;
     /* 04 */ uint32_t bPaused;
@@ -572,14 +572,14 @@ struct Timer_Image_MM7 {
     /* 24 */ uint32_t uTotalGameTimeElapsed;
     /* 28 */
 };
-static_assert(sizeof(Timer_Image_MM7) == 0x28);
+static_assert(sizeof(Timer_MM7) == 0x28);
 
-void Serialize(const Timer &src, Timer_Image_MM7 *dst);
-void Deserialize(const Timer_Image_MM7 &src, Timer *dst);
+void Serialize(const Timer &src, Timer_MM7 *dst);
+void Deserialize(const Timer_MM7 &src, Timer *dst);
 
 
-struct OtherOverlay_Image_MM7 {
-    OtherOverlay_Image_MM7() { memzero(this); }
+struct OtherOverlay_MM7 {
+    OtherOverlay_MM7() { memzero(this); }
 
     /* 00 */ int16_t field_0;
     /* 02 */ int16_t field_2;
@@ -592,21 +592,21 @@ struct OtherOverlay_Image_MM7 {
     /* 10 */ int field_10;
     /* 14 */
 };
-static_assert(sizeof(OtherOverlay_Image_MM7) == 0x14);
+static_assert(sizeof(OtherOverlay_MM7) == 0x14);
 
 
-struct OtherOverlayList_Image_MM7 {
-    OtherOverlayList_Image_MM7()  { memzero(this); }
+struct OtherOverlayList_MM7 {
+    OtherOverlayList_MM7()  { memzero(this); }
 
-    /* 000 */ OtherOverlay_Image_MM7 pOverlays[50];
+    /* 000 */ OtherOverlay_MM7 pOverlays[50];
     /* 3E8 */ int field_3E8;
     /* 3EC */ int bRedraw;
     /* 3F0 */
 };
-static_assert(sizeof(OtherOverlayList_Image_MM7) == 0x3F0);
+static_assert(sizeof(OtherOverlayList_MM7) == 0x3F0);
 
-void Serialize(const OtherOverlayList &src, OtherOverlayList_Image_MM7 *dst);
-void Deserialize(const OtherOverlayList_Image_MM7 &src, OtherOverlayList *dst);
+void Serialize(const OtherOverlayList &src, OtherOverlayList_MM7 *dst);
+void Deserialize(const OtherOverlayList_MM7 &src, OtherOverlayList *dst);
 
 
 struct IconFrame_MM7 {

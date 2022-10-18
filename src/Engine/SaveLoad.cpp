@@ -101,7 +101,7 @@ void LoadGame(unsigned int uSlot) {
 
     {
         Blob partyBlob = pNew_LOD->LoadRaw("party.bin");
-        Party_Image_MM7 *serialization = (Party_Image_MM7*)partyBlob.data();
+        Party_MM7 *serialization = (Party_MM7*)partyBlob.data();
         if (serialization == nullptr) {
             logger->Warning(localization->FormatString(
                 LSTR_FMT_SAVEGAME_CORRUPTED, 101).c_str());
@@ -128,7 +128,7 @@ void LoadGame(unsigned int uSlot) {
 
     {
         Blob timerBlob = pNew_LOD->LoadRaw("clock.bin");
-        Timer_Image_MM7 *serialization = (Timer_Image_MM7*)timerBlob.data();
+        Timer_MM7 *serialization = (Timer_MM7*)timerBlob.data();
         if (serialization == nullptr) {
             logger->Warning(localization->FormatString(
                 LSTR_FMT_SAVEGAME_CORRUPTED, 102).c_str());
@@ -139,7 +139,7 @@ void LoadGame(unsigned int uSlot) {
 
     {
         Blob blob = pNew_LOD->LoadRaw("overlay.bin");
-        OtherOverlayList_Image_MM7 *serialization = (OtherOverlayList_Image_MM7*)blob.data();
+        OtherOverlayList_MM7 *serialization = (OtherOverlayList_MM7*)blob.data();
         if (serialization == nullptr) {
             logger->Warning(localization->FormatString(
                 LSTR_FMT_SAVEGAME_CORRUPTED, 103).c_str());
@@ -150,7 +150,7 @@ void LoadGame(unsigned int uSlot) {
 
     {
         Blob blob = pNew_LOD->LoadRaw("npcdata.bin");
-        NPCData_Image_MM7 *serialization = (NPCData_Image_MM7*)blob.data();
+        NPCData_MM7 *serialization = (NPCData_MM7*)blob.data();
         if (serialization == nullptr) {
             logger->Warning(localization->FormatString(
                 LSTR_FMT_SAVEGAME_CORRUPTED, 104).c_str());
@@ -320,7 +320,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     }
 
     {
-        Party_Image_MM7 serialization;
+        Party_MM7 serialization;
         Serialize(*pParty, &serialization);
 
         if (pNew_LOD->Write("party.bin", &serialization, sizeof(serialization), 0)) {
@@ -331,7 +331,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     }
 
     {
-        Timer_Image_MM7 serialization;
+        Timer_MM7 serialization;
         Serialize(*pEventTimer, &serialization);
 
         if (pNew_LOD->Write("clock.bin", &serialization, sizeof(serialization), 0)) {
@@ -342,7 +342,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     }
 
     {
-        OtherOverlayList_Image_MM7 serialization;
+        OtherOverlayList_MM7 serialization;
         Serialize(*pOtherOverlayList, &serialization);
 
         if (pNew_LOD->Write("overlay.bin", &serialization, sizeof(serialization), 0)) {
@@ -353,7 +353,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     }
 
     {
-        NPCData_Image_MM7 serialization[501];
+        NPCData_MM7 serialization[501];
         for (unsigned int i = 0; i < 501; ++i) {
             Serialize(pNPCStats->pNewNPCData[i], &serialization[i]);
         }
