@@ -1,7 +1,8 @@
 #pragma once
 
-#include <array>
 #include <cstdint>
+#include <array>
+#include <string>
 
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/NPC.h"
