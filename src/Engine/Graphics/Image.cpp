@@ -94,7 +94,7 @@ void TextureFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, con
         (TextureFrame_MM7 *)((unsigned char *)data_mm7.data() + 4);
     auto frames = new TextureFrame[this->sNumTextures];
     for (unsigned int i = 0; i < this->sNumTextures; ++i) {
-        frames[i].name = frame_data->pTextureName;
+        frames[i].name = frame_data->pTextureName.data();
         std::transform(frames[i].name.begin(), frames[i].name.end(),
                        frames[i].name.begin(), ::tolower);
 

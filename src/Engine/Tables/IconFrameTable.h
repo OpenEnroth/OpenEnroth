@@ -30,7 +30,7 @@ class Icon {
     Texture *GetTexture();
 
     ///* 000 */ char pAnimationName[12];
-    /* 00C */ char pTextureName[12]{};
+    /* 00C */ char pTextureName[12]{}; // TODO: std::string
     ///* 018 */ int16_t uAnimTime;
     ///* 01A */ int16_t uAnimLength;
     /* 01C */ int16_t uFlags = 0;
@@ -38,7 +38,7 @@ class Icon {
     int id = 0;
 
  protected:
-     char anim_name[64]{};
+     char anim_name[64]{}; // TODO: std::string
     // char texture_name[64];
     // unsigned int anim_time;
     unsigned int anim_length = 0;

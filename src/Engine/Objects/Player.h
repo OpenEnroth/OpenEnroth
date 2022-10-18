@@ -381,7 +381,7 @@ struct Player {
 
     PlayerConditions conditions;
     uint64_t uExperience;
-    char pName[16];
+    char pName[16]; // TODO: std::string
     PLAYER_SEX uSex;
     PLAYER_CLASS_TYPE classType;
     uint8_t uCurrentFace;

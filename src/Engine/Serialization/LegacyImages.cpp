@@ -15,9 +15,16 @@
 #include "Utility/Color.h"
 
 template<size_t N>
-static void Serialize(const std::string &src, char (*dst)[N]) {
-    memset(dst, 0, N);
-    memcpy(dst, src.data(), std::min(src.size(), N - 1));
+static void Serialize(const std::string &src, std::array<char, N> *dst) {
+    memset(dst->data(), 0, N);
+    memcpy(dst->data(), src.data(), std::min(src.size(), N - 1));
+}
+
+template<size_t N>
+static void Deserialize(const std::array<char, N> &src, std::string *dst) {
+    const char *end = static_cast<const char *>(memchr(src.data(), 0, N));
+    size_t size = end == nullptr ? N : end - src.data();
+    *dst = std::string(src.data(), size);
 }
 
 void Deserialize(const BLVFace_MM7 &src, BLVFace *dst) {
@@ -363,8 +370,8 @@ void Serialize(const Party &src, Party_MM7 *dst) {
     for (unsigned int i = 0; i < 24; ++i)
         dst->field_1605C[i] = src.field_1605C_set0_unused[i];
 
-    strcpy(dst->pHireling1Name, src.pHireling1Name);
-    strcpy(dst->pHireling2Name, src.pHireling2Name);
+    strcpy(dst->pHireling1Name.data(), src.pHireling1Name);
+    strcpy(dst->pHireling2Name.data(), src.pHireling2Name);
 
     dst->armageddon_timer = src.armageddon_timer;
     dst->armageddonDamage = src.armageddonDamage;
@@ -534,8 +541,8 @@ void Deserialize(const Party_MM7 &src, Party *dst) {
     for (unsigned int i = 0; i < 24; ++i)
         dst->field_1605C_set0_unused[i] = src.field_1605C[i];
 
-    strcpy(dst->pHireling1Name, src.pHireling1Name);
-    strcpy(dst->pHireling2Name, src.pHireling2Name);
+    strcpy(dst->pHireling1Name, src.pHireling1Name.data());
+    strcpy(dst->pHireling2Name, src.pHireling2Name.data());
 
     dst->armageddon_timer = src.armageddon_timer;
     dst->armageddonDamage = src.armageddonDamage;
@@ -563,7 +570,7 @@ void Serialize(const Player &src, Player_MM7 *dst) {
 
     dst->uExperience = src.uExperience;
 
-    strcpy(dst->pName, src.pName);
+    strcpy(dst->pName.data(), src.pName);
 
     dst->uSex = src.uSex;
     dst->classType = src.classType;
@@ -726,7 +733,7 @@ void Deserialize(const Player_MM7 &src, Player* dst) {
 
     dst->uExperience = src.uExperience;
 
-    strcpy(dst->pName, src.pName);
+    strcpy(dst->pName, src.pName.data());
 
     switch (src.uSex) {
     case 0:
@@ -1005,19 +1012,19 @@ void Deserialize(const Player_MM7 &src, Player* dst) {
 }
 
 void Serialize(const Icon &src, IconFrame_MM7 *dst) {
-    strcpy(dst->pAnimationName, src.GetAnimationName());
+    strcpy(dst->pAnimationName.data(), src.GetAnimationName());
     dst->uAnimLength = src.GetAnimLength();
 
-    strcpy(dst->pTextureName, src.pTextureName);
+    strcpy(dst->pTextureName.data(), src.pTextureName);
     dst->uAnimTime = src.GetAnimTime();
     dst->uFlags = src.uFlags;
 }
 
 void Deserialize(const IconFrame_MM7 &src, Icon *dst) {
-    dst->SetAnimationName(src.pAnimationName);
+    dst->SetAnimationName(src.pAnimationName.data());
     dst->SetAnimLength(8 * src.uAnimLength);
 
-    strcpy(dst->pTextureName, src.pTextureName);
+    strcpy(dst->pTextureName, src.pTextureName.data());
     dst->SetAnimTime(src.uAnimTime);
     dst->uFlags = src.uFlags;
 }
@@ -1049,10 +1056,10 @@ void Deserialize(const MonsterDesc_MM6 &src, MonsterDesc *dst) {
     dst->uMovementSpeed = src.uMovementSpeed;
     dst->uToHitRadius = src.uToHitRadius;
     dst->sTintColor = colorTable.White.C32();
-    memcpy(dst->pSoundSampleIDs.data(), src.pSoundSampleIDs, sizeof(src.pSoundSampleIDs));
-    dst->pMonsterName = src.pMonsterName;
+    dst->pSoundSampleIDs = src.pSoundSampleIDs;
+    Deserialize(src.pMonsterName, &dst->pMonsterName);
     for(ActorAnimation i : dst->pSpriteNames.indices())
-        dst->pSpriteNames[i] = src.pSpriteNames[std::to_underlying(i)];
+        Deserialize(src.pSpriteNames[std::to_underlying(i)], &dst->pSpriteNames[i]);
 }
 
 void Serialize(const MonsterDesc &src, MonsterDesc_MM7 *dst) {
@@ -1061,7 +1068,7 @@ void Serialize(const MonsterDesc &src, MonsterDesc_MM7 *dst) {
     dst->uMovementSpeed = src.uMovementSpeed;
     dst->uToHitRadius = src.uToHitRadius;
     dst->sTintColor = src.sTintColor;
-    memcpy(dst->pSoundSampleIDs, src.pSoundSampleIDs.data(), sizeof(src.pSoundSampleIDs));
+    dst->pSoundSampleIDs = src.pSoundSampleIDs;
     Serialize(src.pMonsterName, &dst->pMonsterName);
     for (ActorAnimation i : src.pSpriteNames.indices())
         Serialize(src.pSpriteNames[i], &dst->pSpriteNames[std::to_underlying(i)]);
@@ -1075,10 +1082,10 @@ void Deserialize(const MonsterDesc_MM7 &src, MonsterDesc *dst) {
     dst->uMovementSpeed = src.uMovementSpeed;
     dst->uToHitRadius = src.uToHitRadius;
     dst->sTintColor = src.sTintColor;
-    memcpy(dst->pSoundSampleIDs.data(), src.pSoundSampleIDs, sizeof(src.pSoundSampleIDs));
-    dst->pMonsterName = src.pMonsterName;
+    dst->pSoundSampleIDs = src.pSoundSampleIDs;
+    Deserialize(src.pMonsterName, &dst->pMonsterName);
     for (ActorAnimation i : dst->pSpriteNames.indices())
-        dst->pSpriteNames[i] = src.pSpriteNames[std::to_underlying(i)];
+        Deserialize(src.pSpriteNames[std::to_underlying(i)], &dst->pSpriteNames[i]);
 }
 
 void Serialize(const Actor &src, Actor_MM7 *dst) {
@@ -1196,7 +1203,7 @@ void Serialize(const Actor &src, Actor_MM7 *dst) {
 }
 
 void Deserialize(const Actor_MM7 &src, Actor *dst) {
-    dst->pActorName = src.pActorName;
+    Deserialize(src.pActorName, &dst->pActorName);
     dst->sNPC_ID = src.sNPC_ID;
     dst->field_22 = src.field_22;
     dst->uAttributes = src.uAttributes;

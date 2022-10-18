@@ -338,11 +338,11 @@ void SpriteFrameTable::ToFile() {
 
 bool SpriteFrame::Deserialize(const struct SpriteFrame_MM7 *data) {
     if (data) {
-        this->icon_name = data->pIconName;
+        this->icon_name = data->pIconName.data();
         std::transform(this->icon_name.begin(), this->icon_name.end(),
                        this->icon_name.begin(), ::tolower);
 
-        this->texture_name = data->pTextureName;
+        this->texture_name = data->pTextureName.data();
         std::transform(this->texture_name.begin(), this->texture_name.end(),
                        this->texture_name.begin(), ::tolower);
 

@@ -37,9 +37,9 @@ struct ODMFace;
 struct SpriteFrame_MM6 {
     SpriteFrame_MM6() { memzero(this); }
 
-    char pIconName[12];
-    char pTextureName[12];    // c
-    int16_t pHwSpriteIDs[8];  // 18h
+    std::array<char, 12> pIconName;
+    std::array<char, 12> pTextureName;    // c
+    std::array<int16_t, 8> pHwSpriteIDs;  // 18h
     int32_t scale;            // 28h
     int32_t uFlags;               // 2c
     int16_t uGlowRadius;      // 30
@@ -92,7 +92,7 @@ void Deserialize(const BLVFace_MM7 &src, BLVFace *dst);
 struct TileDesc_MM7 {
     TileDesc_MM7() { memzero(this); }
 
-    char pTileName[16];
+    std::array<char, 16> pTileName;
     uint16_t uTileID;
     uint16_t uBitmapID;
     uint16_t tileset;
@@ -105,7 +105,7 @@ static_assert(sizeof(TileDesc_MM7) == 26);
 struct TextureFrame_MM7 {
     TextureFrame_MM7() { memzero(this); }
 
-    char pTextureName[12];
+    std::array<char, 12> pTextureName;
     int16_t uTextureID;
     int16_t uAnimTime;
     int16_t uAnimLength;
@@ -203,7 +203,7 @@ void Deserialize(const SpellBuff_MM7 &src, SpellBuff *dst);
 struct PlayerSpellbookChapter_MM7 {
     PlayerSpellbookChapter_MM7() { memzero(this); }
 
-    /* 00 */ char bIsSpellAvailable[11];
+    /* 00 */ std::array<char, 11> bIsSpellAvailable;
     /* 0B */
 };
 static_assert(sizeof(PlayerSpellbookChapter_MM7) == 0xB);
@@ -214,12 +214,12 @@ struct PlayerSpells_MM7 {
 
     union {
         struct {
-            /* 00 */ PlayerSpellbookChapter_MM7 pChapters[9];
+            /* 00 */ std::array<PlayerSpellbookChapter_MM7, 9> pChapters;
             /* 63 */ char _pad1;
             /* 64 */
         };
         struct {
-            /* 00 */ char bHaveSpell[99];
+            /* 00 */ std::array<char, 99> bHaveSpell;
             /* 63 */ char _pad2;
             /* 64 */
         };
@@ -243,10 +243,10 @@ union PlayerEquipment_MM7 {
             /* 1C */ uint32_t uGlove;
             /* 20 */ uint32_t uBoot;
             /* 24 */ uint32_t uAmulet;
-            /* 28 */ uint32_t uRings[6];
+            /* 28 */ std::array<uint32_t, 6> uRings;
             /* 40 */
         };
-        uint32_t pIndices[16];
+        std::array<uint32_t, 16> pIndices;
     };
 };
 static_assert(sizeof(PlayerEquipment_MM7) == 0x40);
@@ -271,9 +271,9 @@ static_assert(sizeof(LloydBeacon_MM7) == 0x1C);
 struct Player_MM7 {
     Player_MM7() { memzero(this); }
 
-    /* 0000 */ int64_t pConditions[20];
+    /* 0000 */ std::array<int64_t, 20> pConditions;
     /* 00A0 */ uint64_t uExperience;
-    /* 00A8 */ char pName[16];
+    /* 00A8 */ std::array<char, 16> pName;
     /* 00B8 */ uint8_t uSex;
     /* 00B9 */ uint8_t classType;
     /* 00BA */ uint8_t uCurrentFace;
@@ -346,11 +346,11 @@ struct Player_MM7 {
             uint16_t skillAlchemy;
             uint16_t skillLearning;
         };
-        uint16_t pActiveSkills[37];
+        std::array<uint16_t, 37> pActiveSkills;
     };
-    /* 0152 */ uint8_t _achieved_awards_bits[64];
+    /* 0152 */ std::array<uint8_t, 64> _achieved_awards_bits;
     /* 0192 */ PlayerSpells_MM7 spellbook;
-    /* 01F6 */ char _1F6_pad[2];
+    /* 01F6 */ std::array<char, 2> _1F6_pad;
     /* 01F8 */ int32_t pure_luck_used;
     /* 01FC */ int32_t pure_speed_used;
     /* 0200 */ int32_t pure_intellect_used;
@@ -360,14 +360,14 @@ struct Player_MM7 {
     /* 0210 */ int32_t pure_might_used;
     /* 0214 */ union {
         struct {
-            ItemGen_MM7 pInventoryItemList[126];
-            ItemGen_MM7 pEquippedItems[12];
+            std::array<ItemGen_MM7, 126> pInventoryItemList;
+            std::array<ItemGen_MM7, 12> pEquippedItems;
         };
         struct {
-            ItemGen_MM7 pOwnItems[138];
+            std::array<ItemGen_MM7, 138> pOwnItems;
         };
     };
-    /* 157C */ int32_t pInventoryMatrix[126];
+    /* 157C */ std::array<int32_t, 126> pInventoryMatrix;
     /* 1774 */ int16_t sResFireBase;
     /* 1776 */ int16_t sResAirBase;
     /* 1778 */ int16_t sResWaterBase;
@@ -390,7 +390,7 @@ struct Player_MM7 {
     /* 179A */ int16_t sResBodyBonus;
     /* 179C */ int16_t sResLightBonus;
     /* 179E */ int16_t sResDarkBonus;
-    /* 17A0 */ SpellBuff_MM7 pPlayerBuffs[24];
+    /* 17A0 */ std::array<SpellBuff_MM7, 24> pPlayerBuffs;
     /* 1920 */ uint32_t uVoiceID;
     /* 1924 */ int32_t uPrevVoiceID;
     /* 1928 */ int32_t uPrevFace;
@@ -404,12 +404,12 @@ struct Player_MM7 {
     /* 1940 */ int32_t sMana;
     /* 1944 */ uint32_t uBirthYear;
     /* 1948 */ PlayerEquipment_MM7 pEquipment;
-    /* 1988 */ int32_t field_1988[49];
+    /* 1988 */ std::array<int32_t, 49> field_1988;
     /* 1A4C */ char field_1A4C;
     /* 1A4D */ char field_1A4D;
     /* 1A4E */ char lastOpenedSpellbookPage;
     /* 1A4F */ uint8_t uQuickSpell;
-    /* 1A50 */ char playerEventBits[64];
+    /* 1A50 */ std::array<char, 64> playerEventBits;
     /* 1A90 */ char _some_attack_bonus;
     /* 1A91 */ char field_1A91;
     /* 1A92 */ char _melee_dmg_bonus;
@@ -428,7 +428,7 @@ struct Player_MM7 {
     /* 1AA2 */ int16_t field_1AA2;
     /* 1AA4 */ int32_t _expression21_animtime;
     /* 1AA8 */ int32_t _expression21_frameset;
-    /* 1AAC */ LloydBeacon_MM7 pInstalledBeacons[5];
+    /* 1AAC */ std::array<LloydBeacon_MM7, 5> pInstalledBeacons;
     /* 1B38 */ char uNumDivineInterventionCastsThisDay;
     /* 1B39 */ char uNumArmageddonCasts;
     /* 1B3A */ char uNumFireSpikeCasts;
@@ -444,12 +444,12 @@ void Deserialize(const Player_MM7 &src, Player *dst);
 struct PartyTimeStruct_MM7 {
     PartyTimeStruct_MM7()  { memzero(this); }
 
-    /* 000 */ int64_t bountyHunting_next_generation_time[10];
-    /* 050 */ int64_t Shops_next_generation_time[85];  // field_50
-    /* 2F8 */ int64_t _shop_ban_times[53];
-    /* 4A0 */ uint64_t CounterEventValues[10];               // (0xACD314h in Silvo's binary)
-    /* 4F0 */ int64_t HistoryEventTimes[29];  // (0xACD364h in Silvo's binary)
-    /* 5D8 */ uint64_t _s_times[20];  // 5d8 440h+8*51     //(0xACD44Ch in Silvo's binary)
+    /* 000 */ std::array<int64_t, 10> bountyHunting_next_generation_time;
+    /* 050 */ std::array<int64_t, 85> Shops_next_generation_time;  // field_50
+    /* 2F8 */ std::array<int64_t, 53> _shop_ban_times;
+    /* 4A0 */ std::array<uint64_t, 10> CounterEventValues;               // (0xACD314h in Silvo's binary)
+    /* 4F0 */ std::array<int64_t, 29> HistoryEventTimes;  // (0xACD364h in Silvo's binary)
+    /* 5D8 */ std::array<uint64_t, 20> _s_times;  // 5d8 440h+8*51     //(0xACD44Ch in Silvo's binary)
     /* 678 */
 };
 static_assert(sizeof(PartyTimeStruct_MM7) == 0x678);
@@ -510,42 +510,42 @@ struct Party_MM7 {
     /* 00744 */ int32_t uNumPrisonTerms;
     /* 00748 */ uint32_t uNumBountiesCollected;
     /* 0074C */ int field_74C;
-    /* 00750 */ int16_t monster_id_for_hunting[5];
-    /* 0075A */ int16_t monster_for_hunting_killed[5];
+    /* 00750 */ std::array<int16_t, 5> monster_id_for_hunting;
+    /* 0075A */ std::array<int16_t, 5> monster_for_hunting_killed;
     /* 00764 */ uint8_t days_played_without_rest;
-    /* 00765 */ uint8_t _quest_bits[64];
-    /* 007A5 */ uint8_t pArcomageWins[16];
+    /* 00765 */ std::array<uint8_t, 64> _quest_bits;
+    /* 007A5 */ std::array<uint8_t, 16> pArcomageWins;
     /* 007B5 */ char field_7B5_in_arena_quest;
     /* 007B6 */ char uNumArenaPageWins;
     /* 007B7 */ char uNumArenaSquireWins;
     /* 007B8 */ char uNumArenaKnightWins;
     /* 007B9 */ char uNumArenaLordWins;
-    /* 007BA */ char pIsArtifactFound[29];  // 7ba
-    /* 007D7 */ char field_7d7[39];
-    /* 007FE */ uint8_t _autonote_bits[26];
-    /* 00818 */ char field_818[60];
-    /* 00854 */ char field_854[32];
+    /* 007BA */ std::array<char, 29> pIsArtifactFound;  // 7ba
+    /* 007D7 */ std::array<char, 39> field_7d7;
+    /* 007FE */ std::array<uint8_t, 26> _autonote_bits;
+    /* 00818 */ std::array<char, 60> field_818;
+    /* 00854 */ std::array<char, 32> field_854;
     /* 00874 */ int32_t uNumArcomageWins;
     /* 00878 */ int32_t uNumArcomageLoses;
     /* 0087C */ uint32_t bTurnBasedModeOn;
     /* 00880 */ int32_t field_880;
     /* 00884 */ int32_t uFlags2;
     /* 00888 */ uint32_t alignment;
-    /* 0088C */ SpellBuff_MM7 pPartyBuffs[20];
-    /* 00954 */ Player_MM7 pPlayers[4];
-    /* 07644 */ NPCData_MM7 pHirelings[2];
+    /* 0088C */ std::array<SpellBuff_MM7, 20> pPartyBuffs;
+    /* 00954 */ std::array<Player_MM7, 4> pPlayers;
+    /* 07644 */ std::array<NPCData_MM7, 2> pHirelings;
     /* 07754 */ ItemGen_MM7 pPickedItem;
     /* 07778 */ uint32_t uFlags;
-    /* 0777C */ ItemGen_MM7 StandartItemsInShops[53][12];
-    /* 0D0EC */ ItemGen_MM7 SpecialItemsInShops[53][12];
-    /* 12A5C */ ItemGen_MM7 SpellBooksInGuilds[32][12];
-    /* 1605C */ char field_1605C[24];
-    /* 16074 */ char pHireling1Name[100];
-    /* 160D8 */ char pHireling2Name[100];
+    /* 0777C */ std::array<std::array<ItemGen_MM7, 12>, 53> StandartItemsInShops;
+    /* 0D0EC */ std::array<std::array<ItemGen_MM7, 12>, 53> SpecialItemsInShops;
+    /* 12A5C */ std::array<std::array<ItemGen_MM7, 12>, 32> SpellBooksInGuilds;
+    /* 1605C */ std::array<char, 24> field_1605C;
+    /* 16074 */ std::array<char, 100> pHireling1Name;
+    /* 160D8 */ std::array<char, 100> pHireling2Name;
     /* 1613C */ int32_t armageddon_timer;
     /* 16140 */ int32_t armageddonDamage;
-    /* 16144 */ int32_t pTurnBasedPlayerRecoveryTimes[4];
-    /* 16154 */ int32_t InTheShopFlags[53];
+    /* 16144 */ std::array<int32_t, 4> pTurnBasedPlayerRecoveryTimes;
+    /* 16154 */ std::array<int32_t, 53> InTheShopFlags;
     /* 16228 */ int32_t uFine;
     /* 1622C */ float flt_TorchlightColorR;
     /* 16230 */ float flt_TorchlightColorG;
@@ -598,7 +598,7 @@ static_assert(sizeof(OtherOverlay_MM7) == 0x14);
 struct OtherOverlayList_MM7 {
     OtherOverlayList_MM7()  { memzero(this); }
 
-    /* 000 */ OtherOverlay_MM7 pOverlays[50];
+    /* 000 */ std::array<OtherOverlay_MM7, 50> pOverlays;
     /* 3E8 */ int32_t field_3E8;
     /* 3EC */ int32_t bRedraw;
     /* 3F0 */
@@ -612,8 +612,8 @@ void Deserialize(const OtherOverlayList_MM7 &src, OtherOverlayList *dst);
 struct IconFrame_MM7 {
     IconFrame_MM7() { memzero(this); }
 
-    /* 000 */ char pAnimationName[12];
-    /* 00C */ char pTextureName[12];
+    /* 000 */ std::array<char, 12> pAnimationName;
+    /* 00C */ std::array<char, 12> pTextureName;
     /* 018 */ int16_t uAnimTime;
     /* 01A */ int16_t uAnimLength;
     /* 01C */ int16_t uFlags;  // 0x01 - more icons in this animation
@@ -714,9 +714,9 @@ struct MonsterDesc_MM6 {
     uint16_t uMonsterRadius;
     uint16_t uMovementSpeed;
     int16_t uToHitRadius;
-    uint16_t pSoundSampleIDs[4];
-    char pMonsterName[32];
-    char pSpriteNames[10][10];
+    std::array<uint16_t, 4> pSoundSampleIDs;
+    std::array<char, 32> pMonsterName;
+    std::array<std::array<char, 10>, 10> pSpriteNames;
 };
 static_assert(sizeof(MonsterDesc_MM6) == 148);
 
@@ -731,9 +731,9 @@ struct MonsterDesc_MM7 {
     uint16_t uMovementSpeed;
     int16_t uToHitRadius;
     uint32_t sTintColor;
-    uint16_t pSoundSampleIDs[4];
-    char pMonsterName[32];
-    char pSpriteNames[10][10];
+    std::array<uint16_t, 4> pSoundSampleIDs;
+    std::array<char, 32> pMonsterName;
+    std::array<std::array<char, 10>, 10> pSpriteNames;
 };
 static_assert(sizeof(MonsterDesc_MM7) == 152);
 
@@ -744,12 +744,12 @@ void Deserialize(const MonsterDesc_MM7 &src, MonsterDesc *dst);
 struct Actor_MM7 {
     Actor_MM7() { memzero(this); }
 
-    char pActorName[32];
+    std::array<char, 32> pActorName;
     int16_t sNPC_ID;
     int16_t field_22;
     uint32_t uAttributes;
     int16_t sCurrentHP;
-    char field_2A[2];
+    std::array<char, 2> field_2A;
     MonsterInfo_MM7 pMonsterInfo;
     int16_t word_000084_range_attack;
     int16_t word_000086_some_monster_id;  // base monster class monsterlist id
@@ -771,17 +771,17 @@ struct Actor_MM7 {
     char field_B6;
     char field_B7;
     uint32_t uCurrentActionTime;
-    uint16_t pSpriteIDs[8];
-    uint16_t pSoundSampleIDs[4];  // 1 die     3 bored
-    SpellBuff pActorBuffs[22];
-    ItemGen ActorHasItems[4];
+    std::array<uint16_t, 8> pSpriteIDs;
+    std::array<uint16_t, 4> pSoundSampleIDs;  // 1 die     3 bored
+    std::array<SpellBuff, 22> pActorBuffs;
+    std::array<ItemGen, 4> ActorHasItems;
     uint32_t uGroup;
     uint32_t uAlly;
-    ActorJob pScheduledJobs[8];
+    std::array<ActorJob, 8> pScheduledJobs;
     uint32_t uSummonerID;
     uint32_t uLastCharacterIDToHit;
     int32_t dword_000334_unique_name;
-    char field_338[12];
+    std::array<char, 12> field_338;
 };
 static_assert(sizeof(Actor_MM7) == 0x344);
 
@@ -882,9 +882,9 @@ struct FontData_MM7 {
     uint16_t uFontHeight;  // 5-6
     uint8_t field_7;
     uint32_t palletes_count;
-    uint32_t pFontPalettes[5];
-    GUICharMetric pMetrics[256];
-    uint32_t font_pixels_offset[256];
+    std::array<uint32_t, 5> pFontPalettes;
+    std::array<GUICharMetric, 256> pMetrics;
+    std::array<uint32_t, 256> font_pixels_offset;
     uint8_t pFontData[0];  // array of font pixels
 };
 static_assert(sizeof(FontData_MM7) == 0x1020);

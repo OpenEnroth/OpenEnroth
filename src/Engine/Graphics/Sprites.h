@@ -41,7 +41,7 @@ class Sprite {
 
 class SpriteFrame {
  public:
-    bool Deserialize(const struct SpriteFrame_MM7 *);
+    bool Deserialize(const struct SpriteFrame_MM7 *); // TODO: move to LegacyImages
 
     std::string icon_name;
     std::string texture_name;
