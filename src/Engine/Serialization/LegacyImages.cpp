@@ -6,6 +6,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"
+#include "Engine/Graphics/Sprites.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Party.h"
@@ -25,6 +26,29 @@ static void Deserialize(const std::array<char, N> &src, std::string *dst) {
     const char *end = static_cast<const char *>(memchr(src.data(), 0, N));
     size_t size = end == nullptr ? N : end - src.data();
     *dst = std::string(src.data(), size);
+}
+
+void Deserialize(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
+    dst->icon_name = src.pIconName.data();
+    std::transform(dst->icon_name.begin(), dst->icon_name.end(),
+                   dst->icon_name.begin(), ::tolower);
+
+    dst->texture_name = src.pTextureName.data();
+    std::transform(dst->texture_name.begin(), dst->texture_name.end(),
+                   dst->texture_name.begin(), ::tolower);
+
+    for (unsigned int i = 0; i < 8; ++i) {
+        dst->hw_sprites[i] = nullptr;
+    }
+
+    dst->scale = src.scale / 65536.0;
+    dst->uFlags = src.uFlags;
+
+    dst->uGlowRadius = src.uGlowRadius;
+    dst->uPaletteID = src.uPaletteID;
+    dst->uPaletteIndex = src.uPaletteIndex;
+    dst->uAnimTime = src.uAnimTime;
+    dst->uAnimLength = src.uAnimLength;
 }
 
 void Deserialize(const BLVFace_MM7 &src, BLVFace *dst) {

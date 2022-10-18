@@ -31,6 +31,7 @@ struct Timer;
 struct Party;
 struct MonsterDesc;
 struct ODMFace;
+class SpriteFrame;
 
 #pragma pack(push, 1)
 
@@ -57,6 +58,8 @@ struct SpriteFrame_MM7 : public SpriteFrame_MM6 {
     int16_t _pad;
 };
 static_assert(sizeof(SpriteFrame_MM7) == 60);
+
+void Deserialize(const SpriteFrame_MM7 &src, SpriteFrame *dst);
 
 
 struct BLVFace_MM7 {

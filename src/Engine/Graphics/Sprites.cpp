@@ -336,34 +336,6 @@ void SpriteFrameTable::ToFile() {
     fclose(file);
 }
 
-bool SpriteFrame::Deserialize(const struct SpriteFrame_MM7 *data) {
-    if (data) {
-        this->icon_name = data->pIconName.data();
-        std::transform(this->icon_name.begin(), this->icon_name.end(),
-                       this->icon_name.begin(), ::tolower);
-
-        this->texture_name = data->pTextureName.data();
-        std::transform(this->texture_name.begin(), this->texture_name.end(),
-                       this->texture_name.begin(), ::tolower);
-
-        for (unsigned int i = 0; i < 8; ++i) {
-            this->hw_sprites[i] = nullptr;
-        }
-
-        this->scale = data->scale / 65536.0;
-        this->uFlags = data->uFlags;
-
-        this->uGlowRadius = data->uGlowRadius;
-        this->uPaletteID = data->uPaletteID;
-        this->uPaletteIndex = data->uPaletteIndex;
-        this->uAnimTime = data->uAnimTime;
-        this->uAnimLength = data->uAnimLength;
-
-        return true;
-    }
-    return false;
-}
-
 //----- (0044D9D7) --------------------------------------------------------
 void SpriteFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
     uint num_mm6_frames = 0;
@@ -392,12 +364,7 @@ void SpriteFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, cons
 
     this->pSpriteSFrames = new SpriteFrame[this->uNumSpriteFrames];
     for (unsigned int i = 0; i < this->uNumSpriteFrames; ++i) {
-        auto res = this->pSpriteSFrames[i].Deserialize(
-            (SpriteFrame_MM7 *)((char *)data_mm7.data() + 8) + i);
-
-        if (!res) {
-            logger->Warning("MM7 Sprite %u deserialization failed", i);
-        }
+        Deserialize(*((SpriteFrame_MM7 *)((char *)data_mm7.data() + 8) + i), &this->pSpriteSFrames[i]);
     }
 
     this->uNumEFrames = num_mm7_eframes /*+ num_mm6_eframes + num_mm8_eframes*/;
