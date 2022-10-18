@@ -96,7 +96,7 @@ class Deserializer {
         for (size_t i = 0; i < size; i++) {
             if constexpr (isLegacyMode) {
                 ReadRaw(&tmp);
-                tmp.Deserialize(&dst->emplace_back());
+                Deserialize(tmp, &dst->emplace_back());
             } else {
                 ReadRaw(&dst->emplace_back());
             }

@@ -106,7 +106,7 @@ void LoadGame(unsigned int uSlot) {
             logger->Warning(localization->FormatString(
                 LSTR_FMT_SAVEGAME_CORRUPTED, 101).c_str());
         } else {
-            serialization->Deserialize(pParty);
+            Deserialize(*serialization, pParty);
 
             pParty->bTurnBasedModeOn = false;  // We always start in realtime after loading a game.
 
@@ -133,7 +133,7 @@ void LoadGame(unsigned int uSlot) {
             logger->Warning(localization->FormatString(
                 LSTR_FMT_SAVEGAME_CORRUPTED, 102).c_str());
         } else {
-            serialization->Deserialize(pEventTimer);
+            Deserialize(*serialization, pEventTimer);
         }
     }
 
@@ -144,7 +144,7 @@ void LoadGame(unsigned int uSlot) {
             logger->Warning(localization->FormatString(
                 LSTR_FMT_SAVEGAME_CORRUPTED, 103).c_str());
         } else {
-            serialization->Deserialize(pOtherOverlayList);
+            Deserialize(*serialization, pOtherOverlayList);
         }
     }
 
@@ -156,7 +156,7 @@ void LoadGame(unsigned int uSlot) {
                 LSTR_FMT_SAVEGAME_CORRUPTED, 104).c_str());
         } else {
             for (unsigned int i = 0; i < 501; ++i) {
-                serialization[i].Deserialize(pNPCStats->pNewNPCData + i);
+                Deserialize(serialization[i], pNPCStats->pNewNPCData + i);
             }
             pNPCStats->OnLoadSetNPC_Names();
         }
@@ -321,7 +321,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
     {
         Party_Image_MM7 serialization;
-        serialization.Serialize(pParty);
+        Serialize(*pParty, &serialization);
 
         if (pNew_LOD->Write("party.bin", &serialization, sizeof(serialization), 0)) {
             auto error_message = localization->FormatString(
@@ -332,7 +332,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
     {
         Timer_Image_MM7 serialization;
-        serialization.Serialize(pEventTimer);
+        Serialize(*pEventTimer, &serialization);
 
         if (pNew_LOD->Write("clock.bin", &serialization, sizeof(serialization), 0)) {
             auto error_message = localization->FormatString(
@@ -343,7 +343,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
     {
         OtherOverlayList_Image_MM7 serialization;
-        serialization.Serialize(pOtherOverlayList);
+        Serialize(*pOtherOverlayList, &serialization);
 
         if (pNew_LOD->Write("overlay.bin", &serialization, sizeof(serialization), 0)) {
             auto error_message = localization->FormatString(
@@ -355,7 +355,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     {
         NPCData_Image_MM7 serialization[501];
         for (unsigned int i = 0; i < 501; ++i) {
-            serialization[i].Serialize(pNPCStats->pNewNPCData + i);
+            Serialize(pNPCStats->pNewNPCData[i], &serialization[i]);
         }
 
         if (pNew_LOD->Write("npcdata.bin", serialization, sizeof(serialization), 0)) {
@@ -442,7 +442,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             Actor_MM7* tmp_actor = (Actor_MM7*)malloc(sizeof(Actor_MM7));
 
             for (int i = 0; i < uNumActors; ++i) {
-                tmp_actor->Serialize(&pActors[i]);
+                Serialize(pActors[i], tmp_actor);
                 memcpy(data_write_pos + i * sizeof(Actor_MM7), tmp_actor, sizeof(Actor_MM7));
             }
             free(tmp_actor);
@@ -460,7 +460,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             // data_write_pos += 16000;
             BLVDoor_MM7* tmp_door = (BLVDoor_MM7*)malloc(sizeof(BLVDoor_MM7));
             for (int i = 0; i < pIndoor->pDoors.size(); ++i) {
-                tmp_door->Serialize(&pIndoor->pDoors[i]);
+                Serialize(pIndoor->pDoors[i], tmp_door);
                 memcpy(data_write_pos + i * sizeof(BLVDoor_MM7), tmp_door, sizeof(BLVDoor_MM7));
             }
             free(tmp_door);
@@ -506,7 +506,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             Actor_MM7* tmp_actor = (Actor_MM7*)malloc(sizeof(Actor_MM7));
 
             for (int i = 0; i < uNumActors; ++i) {
-                tmp_actor->Serialize(&pActors[i]);
+                Serialize(pActors[i], tmp_actor);
                 memcpy(data_write_pos + i * sizeof(Actor_MM7), tmp_actor, sizeof(Actor_MM7));
             }
             free(tmp_actor);

@@ -66,7 +66,7 @@ class Serializer {
         if constexpr (isLegacyMode) {
             LegacyT tmp;
             for (const T &element : src) {
-                tmp.Serialize(&element);
+                Serialize(element, &tmp);
                 WriteRaw(&tmp);
             }
         } else {
