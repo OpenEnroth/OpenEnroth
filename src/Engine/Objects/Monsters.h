@@ -1,8 +1,9 @@
 #pragma once
 
 #include <cstdint>
-#include <vector>
+#include <array>
 #include <string>
+#include <vector>
 
 #include "Utility/Blob.h"
 
@@ -210,7 +211,7 @@ struct MonsterDesc {
     uint32_t sTintColor;
     uint16_t pSoundSampleIDs[4];
     std::string pMonsterName;
-    char pSpriteNames[10][10];
+    std::array<std::string, 10> pSpriteNames;
 };
 #pragma pack(pop)
 

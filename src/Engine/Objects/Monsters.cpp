@@ -356,7 +356,7 @@ bool MonsterList::FromFileTxt(const char *Args) {
             v33 = 6;
             v34 = 7;
             do {
-                strcpy(monster.pSpriteNames[(uint8_t)*(&v35 + v8)], v25.pProperties[(uint8_t)*(&v27 + v8)]);
+                monster.pSpriteNames[(uint8_t)*(&v35 + v8)] = v25.pProperties[(uint8_t)*(&v27 + v8)];
                 ++v8;
             } while (v8 < 8);
             v9 = atoi(v25.pProperties[8]);

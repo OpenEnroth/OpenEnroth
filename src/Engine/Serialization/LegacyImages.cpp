@@ -1051,7 +1051,8 @@ void Deserialize(const MonsterDesc_MM6 &src, MonsterDesc *dst) {
     dst->sTintColor = colorTable.White.C32();
     memcpy(dst->pSoundSampleIDs, src.pSoundSampleIDs, sizeof(src.pSoundSampleIDs));
     dst->pMonsterName = src.pMonsterName;
-    memcpy(dst->pSpriteNames, src.pSpriteNames, sizeof(src.pSpriteNames));
+    for(size_t i = 0; i < 10; i++)
+        dst->pSpriteNames[i] = src.pSpriteNames[i];
 }
 
 void Serialize(const MonsterDesc &src, MonsterDesc_MM7 *dst) {
@@ -1062,7 +1063,8 @@ void Serialize(const MonsterDesc &src, MonsterDesc_MM7 *dst) {
     dst->sTintColor = src.sTintColor;
     memcpy(dst->pSoundSampleIDs, src.pSoundSampleIDs, sizeof(src.pSoundSampleIDs));
     Serialize(src.pMonsterName, &dst->pMonsterName);
-    memcpy(dst->pSpriteNames, src.pSpriteNames, sizeof(src.pSpriteNames));
+    for (size_t i = 0; i < 10; i++)
+        Serialize(src.pSpriteNames[i], &dst->pSpriteNames[i]);
 }
 
 void Deserialize(const MonsterDesc_MM7 &src, MonsterDesc *dst) {
@@ -1073,7 +1075,8 @@ void Deserialize(const MonsterDesc_MM7 &src, MonsterDesc *dst) {
     dst->sTintColor = src.sTintColor;
     memcpy(dst->pSoundSampleIDs, src.pSoundSampleIDs, sizeof(src.pSoundSampleIDs));
     dst->pMonsterName = src.pMonsterName;
-    memcpy(dst->pSpriteNames, src.pSpriteNames, sizeof(src.pSpriteNames));
+    for (size_t i = 0; i < 10; i++)
+        dst->pSpriteNames[i] = src.pSpriteNames[i];
 }
 
 void Serialize(const Actor &src, Actor_MM7 *dst) {

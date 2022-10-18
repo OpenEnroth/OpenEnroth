@@ -69,8 +69,8 @@ struct SpriteFrameTable {
     void ReleaseSFrames();
     void ResetLoadedFlags();
     void InitializeSprite(signed int uSpriteID);
-    int FastFindSprite(const char *pSpriteName);
-    int BinarySearch(const char *pSpriteName);
+    int FastFindSprite(std::string_view pSpriteName);
+    int BinarySearch(std::string_view pSpriteName);
     SpriteFrame *GetFrame(unsigned int uSpriteID, unsigned int uTime);
     SpriteFrame *GetFrameBy_x(unsigned int uSpriteID, signed int a3);
 

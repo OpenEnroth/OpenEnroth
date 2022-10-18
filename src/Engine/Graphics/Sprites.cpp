@@ -230,7 +230,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
 }
 
 //----- (0044D813) --------------------------------------------------------
-int SpriteFrameTable::FastFindSprite(const char *pSpriteName) {
+int SpriteFrameTable::FastFindSprite(std::string_view pSpriteName) {
     signed int result;  // eax@2
 
     int searchResult = BinarySearch(pSpriteName);
@@ -242,9 +242,9 @@ int SpriteFrameTable::FastFindSprite(const char *pSpriteName) {
 }
 
 //----- (0044D83A) --------------------------------------------------------
-int SpriteFrameTable::BinarySearch(const char *pSpriteName) {
+int SpriteFrameTable::BinarySearch(std::string_view pSpriteName) {
     SpriteFrame **result = std::lower_bound(this->pSpritePFrames, this->pSpritePFrames + uNumEFrames, pSpriteName,
-        [](SpriteFrame *l, const char *r) {
+        [](SpriteFrame *l, std::string_view r) {
             return iless(l->icon_name, r);
         }
     );
