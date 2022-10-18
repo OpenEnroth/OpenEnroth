@@ -69,18 +69,15 @@ NPCData *GetNPCData(signed int npcid) {
         char buf[1024]{};
 
         for (i = 0; i < 2; ++i) {
-            if (pParty->pHirelings[i].pName) buf[v4++] = i;
+            if (!pParty->pHirelings[i].pName.empty())
+                buf[v4++] = i;
         }
 
         if (pNPCStats->uNumNewNPCs > 0) {
             for (i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
                 if (pNPCStats->pNewNPCData[i].Hired()) {
-                    if (!pParty->pHirelings[0].pName ||
-                        strcmp((char *)pNPCStats->pNewNPCData[i].pName,
-                               (char *)pParty->pHirelings[0].pName)) {
-                        if (!pParty->pHirelings[1].pName ||
-                            strcmp((char *)pNPCStats->pNewNPCData[i].pName,
-                                   (char *)pParty->pHirelings[1].pName))
+                    if (pNPCStats->pNewNPCData[i].pName != pParty->pHirelings[0].pName) {
+                        if (pNPCStats->pNewNPCData[i].pName != pParty->pHirelings[1].pName)
                             buf[v4++] = i + 2;
                     }
                 }
@@ -129,16 +126,12 @@ struct NPCData *GetNewNPCData(signed int npcid, int *npc_indx) {
         char buf[1024]{};
 
         for (int i = 0; i < 2; ++i) {
-            if (pParty->pHirelings[i].pName) buf[v6++] = i;
+            if (!pParty->pHirelings[i].pName.empty()) buf[v6++] = i;
         }
         for (int i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
             if (pNPCStats->pNewNPCData[i].Hired() &&
-                (!pParty->pHirelings[0].pName ||
-                 strcmp(pNPCStats->pNewNPCData[i].pName,
-                        pParty->pHirelings[0].pName)) &&
-                (!pParty->pHirelings[1].pName ||
-                 strcmp(pNPCStats->pNewNPCData[i].pName,
-                        pParty->pHirelings[1].pName))) {
+                pNPCStats->pNewNPCData[i].pName != pParty->pHirelings[0].pName &&
+                pNPCStats->pNewNPCData[i].pName != pParty->pHirelings[1].pName) {
                 buf[v6++] = i + 2;
             }
         }
@@ -271,9 +264,9 @@ void NPCStats::OnLoadSetNPC_Names() {
     for (unsigned int i = 1; i < uNumNewNPCs; ++i)
         pNewNPCData[i].pName = pNPCUnicNames[i - 1];
 
-    if (pParty->pHirelings[0].pName)
+    if (!pParty->pHirelings[0].pName.empty())
         pParty->pHirelings[0].pName = pParty->pHireling1Name;
-    if (pParty->pHirelings[1].pName)
+    if (!pParty->pHirelings[1].pName.empty())
         pParty->pHirelings[1].pName = pParty->pHireling2Name;
 }
 
@@ -1254,19 +1247,17 @@ int GetGreetType(signed int SpeakingNPC_ID) {
 
     char buf[1024]{};
     do {
-        if (v6->pName) buf[v4++] = v5;
+        if (!v6->pName.empty()) buf[v4++] = v5;
         ++v6;
         ++v5;
     } while ((int64_t)v6 < (int64_t)&pParty->pPickedItem);
     if ((signed int)pNPCStats->uNumNewNPCs > 0) {
         v7 = &buf[v4];
-        v8 = pNPCStats->pNewNPCData;
+        v8 = pNPCStats->pNewNPCData.data();
         do {
             if (v8->Hired() &&
-                (!pParty->pHirelings[0].pName ||
-                 strcmp(v8->pName, pParty->pHirelings[0].pName))) {
-                if (!pParty->pHirelings[1].pName ||
-                    strcmp(v8->pName, pParty->pHirelings[1].pName))
+                v8->pName != pParty->pHirelings[0].pName) {
+                if (v8->pName != pParty->pHirelings[1].pName)
                     *v7++ = v1 + 2;
             }
             ++v1;

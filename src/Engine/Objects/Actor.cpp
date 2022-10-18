@@ -3517,14 +3517,14 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
             if (projectileSprite)
                 GameUI_SetStatusBar(
                     LSTR_FMT_S_SHOOTS_S_FOR_U,
-                    player->pName,
+                    player->pName.c_str(),
                     pMonster->pActorName.c_str(),
                     uDamageAmount
                 );
             else
                 GameUI_SetStatusBar(
                     LSTR_FMT_S_HITS_S_FOR_U,
-                    player->pName,
+                    player->pName.c_str(),
                     pMonster->pActorName.c_str(),
                     uDamageAmount
                 );
@@ -3549,7 +3549,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         if (engine->config->settings.ShowHits.Get()) {
             GameUI_SetStatusBar(
                 LSTR_FMT_S_INFLICTS_U_KILLING_S,
-                player->pName,
+                player->pName.c_str(),
                 uDamageAmount,
                 pMonster->pActorName.c_str()
             );
@@ -3569,7 +3569,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         if (engine->config->settings.ShowHits.Get()) {
             GameUI_SetStatusBar(
                 LSTR_FMT_S_STUNS_S,
-                player->pName,
+                player->pName.c_str(),
                 pMonster
             );
         }
@@ -3583,7 +3583,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         if (engine->config->settings.ShowHits.Get()) {
             GameUI_SetStatusBar(
                 LSTR_FMT_S_PARALYZES_S,
-                player->pName,
+                player->pName.c_str(),
                 pMonster
             );
         }

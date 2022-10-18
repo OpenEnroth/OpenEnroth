@@ -695,7 +695,7 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
         }
         while ( (signed int)v3 < (signed int)&pParty->pPickedItem );*/
         for (int i = 0; i < 2; ++i) {
-            if (pParty->pHirelings[i].pName) buf[v1++] = i;
+            if (!pParty->pHirelings[i].pName.empty()) buf[v1++] = i;
         }
         lpsz = 0;
         if ((signed int)pNPCStats->uNumNewNPCs > 0) {
@@ -713,12 +713,8 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
             while ( (signed int)lpsz < (signed int)pNPCStats->uNumNewNPCs );*/
             for (uint i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
                 if (pNPCStats->pNewNPCData[i].Hired()) {
-                    if (!pParty->pHirelings[0].pName ||
-                        strcmp((char *)pNPCStats->pNewNPCData[i].pName,
-                               (char *)pParty->pHirelings[0].pName)) {
-                        if (!pParty->pHirelings[1].pName ||
-                            strcmp((char *)pNPCStats->pNewNPCData[i].pName,
-                                   (char *)pParty->pHirelings[1].pName))
+                    if (pNPCStats->pNewNPCData[i].pName != pParty->pHirelings[0].pName) {
+                        if (pNPCStats->pNewNPCData[i].pName != pParty->pHirelings[1].pName)
                             buf[v1++] = i + 2;
                     }
                 }
@@ -1994,17 +1990,13 @@ void GameUI_DrawHiredNPCs() {
     if (bNoNPCHiring != 1) {
         pNPC_limit_ID = 0;
         v22 = 0;
-        if (pParty->pHirelings[0].pName) buf[v22++] = 0;
-        if (pParty->pHirelings[1].pName) buf[v22++] = 1;
+        if (!pParty->pHirelings[0].pName.empty()) buf[v22++] = 0;
+        if (!pParty->pHirelings[1].pName.empty()) buf[v22++] = 1;
 
         for (uint i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
             if (pNPCStats->pNewNPCData[i].uFlags & 128) {
-                if (!pParty->pHirelings[0].pName ||
-                    strcmp(pNPCStats->pNewNPCData[i].pName,
-                           pParty->pHirelings[0].pName)) {
-                    if (!pParty->pHirelings[1].pName ||
-                        strcmp(pNPCStats->pNewNPCData[i].pName,
-                               pParty->pHirelings[1].pName))
+                if (pNPCStats->pNewNPCData[i].pName != pParty->pHirelings[0].pName) {
+                    if (pNPCStats->pNewNPCData[i].pName != pParty->pHirelings[1].pName)
                         buf[v22++] = i + 2;
                 }
             }

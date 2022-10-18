@@ -156,7 +156,7 @@ void LoadGame(unsigned int uSlot) {
                 LSTR_FMT_SAVEGAME_CORRUPTED, 104).c_str());
         } else {
             for (unsigned int i = 0; i < 501; ++i) {
-                Deserialize(serialization[i], pNPCStats->pNewNPCData + i);
+                Deserialize(serialization[i], &pNPCStats->pNewNPCData[i]);
             }
             pNPCStats->OnLoadSetNPC_Names();
         }

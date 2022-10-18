@@ -61,11 +61,8 @@ void Party::CountHirelings() {  // non hired followers
 
     for (unsigned int i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
         NPCData *npc = &pNPCStats->pNewNPCData[i];
-        if (npc->Hired() &&
-            (!pHirelings[0].pName || strcmp(npc->pName, pHirelings[0].pName))) {
-            if (!pHirelings[1].pName || strcmp(npc->pName, pHirelings[1].pName))
-                ++cNonHireFollowers;
-        }
+        if (npc->Hired() && npc->pName != pHirelings[0].pName && npc->pName != pHirelings[1].pName)
+            ++cNonHireFollowers;
     }
 }
 
@@ -438,7 +435,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
     this->hirelingScrollPosition = 0;
     memset(&pHirelings, 0, sizeof(pHirelings));
 
-    strcpy(this->pPlayers[0].pName, localization->GetString(LSTR_PC_NAME_ZOLTAN));
+    this->pPlayers[0].pName = localization->GetString(LSTR_PC_NAME_ZOLTAN);
     this->pPlayers[0].uPrevFace = 17;
     this->pPlayers[0].uCurrentFace = 17;
     this->pPlayers[0].uPrevVoiceID = 17;
@@ -455,7 +452,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[0].pActiveSkills[PLAYER_SKILL_BOW] = 1;
     this->pPlayers[0].pActiveSkills[PLAYER_SKILL_SWORD] = 1;
 
-    strcpy(this->pPlayers[1].pName, localization->GetString(LSTR_PC_NAME_RODERIC));
+    this->pPlayers[1].pName = localization->GetString(LSTR_PC_NAME_RODERIC);
     this->pPlayers[1].uPrevFace = 3;
     this->pPlayers[1].uCurrentFace = 3;
     this->pPlayers[1].uPrevVoiceID = 3;
@@ -472,7 +469,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[1].pActiveSkills[PLAYER_SKILL_DAGGER] = 1;
     this->pPlayers[1].pActiveSkills[PLAYER_SKILL_TRAP_DISARM] = 1;
 
-    strcpy(this->pPlayers[2].pName, localization->GetString(LSTR_PC_NAME_SERENA));
+    this->pPlayers[2].pName = localization->GetString(LSTR_PC_NAME_SERENA);
     this->pPlayers[2].uPrevFace = 14;
     this->pPlayers[2].uCurrentFace = 14;
     this->pPlayers[2].uPrevVoiceID = 14;
@@ -489,7 +486,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[2].pActiveSkills[PLAYER_SKILL_BODY] = 1;
     this->pPlayers[2].pActiveSkills[PLAYER_SKILL_MACE] = 1;
 
-    strcpy(this->pPlayers[3].pName, localization->GetString(LSTR_PC_NAME_ALEXIS));
+    this->pPlayers[3].pName = localization->GetString(LSTR_PC_NAME_ALEXIS);
     this->pPlayers[3].uPrevFace = 10;
     this->pPlayers[3].uCurrentFace = 10;
     this->pPlayers[3].uEndurance = 13;
@@ -652,7 +649,7 @@ void Party::Reset() {
 
     pPlayers[0].uSex = pPlayers[0].GetSexByVoice();
     pPlayers[0].RandomizeName();
-    strcpy(pPlayers[0].pName, localization->GetString(LSTR_PC_NAME_ZOLTAN));
+    pPlayers[0].pName = localization->GetString(LSTR_PC_NAME_ZOLTAN);
 
     pPlayers[1].Reset(PLAYER_CLASS_THIEF);
     pPlayers[1].uCurrentFace = 3;
@@ -661,7 +658,7 @@ void Party::Reset() {
     pPlayers[1].SetInitialStats();
     pPlayers[1].uSex = pPlayers[1].GetSexByVoice();
     pPlayers[1].RandomizeName();
-    strcpy(pPlayers[1].pName, localization->GetString(LSTR_PC_NAME_RODERIC));
+    pPlayers[1].pName = localization->GetString(LSTR_PC_NAME_RODERIC);
 
     pPlayers[2].Reset(PLAYER_CLASS_CLERIC);
     pPlayers[2].uCurrentFace = 14;
@@ -670,7 +667,7 @@ void Party::Reset() {
     pPlayers[2].SetInitialStats();
     pPlayers[2].uSex = pPlayers[3].GetSexByVoice();
     pPlayers[2].RandomizeName();
-    strcpy(pPlayers[2].pName, localization->GetString(LSTR_PC_NAME_SERENA));
+    pPlayers[2].pName = localization->GetString(LSTR_PC_NAME_SERENA);
 
     pPlayers[3].Reset(PLAYER_CLASS_SORCERER);
     pPlayers[3].uCurrentFace = 10;
@@ -679,7 +676,7 @@ void Party::Reset() {
     pPlayers[3].SetInitialStats();
     pPlayers[3].uSex = pPlayers[3].GetSexByVoice();
     pPlayers[3].RandomizeName();
-    strcpy(pPlayers[3].pName, localization->GetString(LSTR_PC_NAME_ALEXIS));
+    pPlayers[3].pName = localization->GetString(LSTR_PC_NAME_ALEXIS);
 
     for (uint i = 0; i < 4; ++i) {
         pPlayers[i].uTimeToRecovery = 0;
@@ -703,7 +700,7 @@ void Party::Reset() {
 
     PartyTimes._shop_ban_times.fill(GameTime(0));
 
-    memcpy(pNPCStats->pNewNPCData, pNPCStats->pNPCData, sizeof(pNPCStats->pNPCData));
+    pNPCStats->pNewNPCData = pNPCStats->pNPCData;
     memcpy(pNPCStats->pGroups_copy, pNPCStats->pGroups, 0x66u);
     pNPCStats->pNewNPCData[3].uFlags |= 128;  //|= 0x80u; Lady Margaret
     _494035_timed_effects__water_walking_damage__etc();
@@ -897,8 +894,7 @@ void Party::UpdatePlayersAndHirelingsEmotions() {
             hireling->dialogue_2_evt_id = 0;
             hireling->dialogue_3_evt_id = 0;
 
-            Assert(sizeof(NPCData) == 0x4C);
-            memset(hireling, 0, sizeof(*hireling));
+            *hireling = NPCData();
 
             pParty->hirelingScrollPosition = 0;
             pParty->CountHirelings();
@@ -1105,17 +1101,15 @@ void Party::PartyFindsGold(
         unsigned char buf[1024] {};
         hirelingCount = 0;
         for (int i = 0; i < 2; i++) {
-            if (this->pHirelings[i].pName) {
+            if (!this->pHirelings[i].pName.empty()) {
                 hirelingCount++;
                 buf[hirelingCount] = i;
             }
         }
         for (uint i = 0; i < pNPCStats->uNumNewNPCs; i++) {
             if (pNPCStats->pNewNPCData[i].uFlags & 0x80 &&
-                (!this->pHirelings[0].pName ||
-                 strcmp(pNPCStats->pNewNPCData[i].pName, this->pHirelings[0].pName)) &&
-                (!this->pHirelings[1].pName ||
-                 strcmp(pNPCStats->pNewNPCData[i].pName, this->pHirelings[1].pName))) {
+                (pNPCStats->pNewNPCData[i].pName != this->pHirelings[0].pName) &&
+                (pNPCStats->pNewNPCData[i].pName != this->pHirelings[1].pName)) {
                 hirelingCount++;
                 buf[hirelingCount] = i + 2;
             }

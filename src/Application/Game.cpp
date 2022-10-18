@@ -371,16 +371,13 @@ void Game_StartHirelingDialogue(unsigned int hireling_id) {
     uint hireling_slot = 0;
     char buf[1024] {};
     for (uint i = 0; i < 2; ++i) {
-        if (pParty->pHirelings[i].pName) buf[hireling_slot++] = i;
+        if (!pParty->pHirelings[i].pName.empty())
+            buf[hireling_slot++] = i;
     }
 
     for (uint i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
         NPCData *npc = &pNPCStats->pNewNPCData[i];
-        if (npc->Hired() &&
-            (!pParty->pHirelings[0].pName ||
-             strcmp(npc->pName, pParty->pHirelings[0].pName)) &&
-            (!pParty->pHirelings[1].pName ||
-             strcmp(npc->pName, pParty->pHirelings[1].pName))) {
+        if (npc->Hired() && npc->pName != pParty->pHirelings[0].pName && npc->pName != pParty->pHirelings[1].pName) {
             buf[hireling_slot++] = i + 2;
         }
     }
@@ -978,8 +975,8 @@ void Game::EventLoop() {
                                             // NPCPanel
                     if (uMessageParam) {
                         new OnButtonClick2(626, 179, 0, 0, pBtn_NPCRight);
-                        v37 = (pParty->pHirelings[0].pName != 0) +
-                              (pParty->pHirelings[1].pName != 0) +
+                        v37 = (!pParty->pHirelings[0].pName.empty()) +
+                              (!pParty->pHirelings[1].pName.empty()) +
                               (uint8_t)pParty->cNonHireFollowers - 2;
                         // v37 is max scroll position
                         if (pParty->hirelingScrollPosition < v37) {
@@ -2865,8 +2862,8 @@ void Game::GameLoop() {
             }
             if (uGameState == GAME_STATE_PARTY_DIED) {
                 pAudioPlayer->PauseSounds(-1);
-                memset(&pParty->pHirelings[0], 0, 0x4Cu);
-                memset(&pParty->pHirelings[1], 0, 0x4Cu);
+                pParty->pHirelings[0] = NPCData();
+                pParty->pHirelings[1] = NPCData();
                 for (int i = 0; i < (signed int)pNPCStats->uNumNewNPCs; ++i) {
                     if (pNPCStats->pNewNPCData[i].field_24)
                         pNPCStats->pNewNPCData[i].uFlags &= 0xFFFFFF7Fu;

@@ -1440,7 +1440,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                 static std::string hint_reference;
                 hint_reference = localization->FormatString(
                     LSTR_FMT_S_IS_IN_NO_CODITION_TO_S,
-                    pPlayers[uActiveCharacter]->pName,
+                    pPlayers[uActiveCharacter]->pName.c_str(),
                     localization->GetString(LSTR_IDENTIFY_ITEMS)
                 );
 
@@ -1675,7 +1675,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                             break;
                         case UIMSG_PlayerCreation_SelectAttribute:  // Character
                                                                     // info
-                            pStr = pParty->pPlayers[pButton->msg_param].pName;
+                            pStr = pParty->pPlayers[pButton->msg_param].pName.c_str();
                             popup_window
                                 .sHint = localization->GetClassDescription(
                                 pParty->pPlayers[pButton->msg_param].classType);
@@ -1864,7 +1864,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         static std::string hint_reference;
         hint_reference = localization->FormatString(
             LSTR_FMT_S_IS_IN_NO_CODITION_TO_S,
-            pPlayers[uActiveCharacter]->pName,
+            pPlayers[uActiveCharacter]->pName.c_str(),
             localization->GetString(LSTR_IDENTIFY_ITEMS)
         );
 

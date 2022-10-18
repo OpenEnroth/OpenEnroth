@@ -176,7 +176,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y,
                     CreateButton(
                         480, 130 + text_line_height, 140, text_line_height, 1, 0,
                         UIMSG_SelectNPCDialogueOption, DIALOGUE_HIRE_FIRE, GameKey::None,
-                        localization->FormatString(LSTR_HIRE_RELEASE, speakingNPC->pName)
+                        localization->FormatString(LSTR_HIRE_RELEASE, speakingNPC->pName.c_str())
                     );
                 } else {
                     CreateButton(480, 130 + text_line_height, 140, text_line_height, 1, 0,
@@ -354,7 +354,7 @@ void GUIWindow_Dialogue::Update() {
         } else if (pButton->msg_param == DIALOGUE_HIRE_FIRE) {
             if (pNPC->Hired()) {
                 pButton->sLabel = StringPrintf(
-                    localization->GetString(LSTR_HIRE_RELEASE), pNPC->pName
+                    localization->GetString(LSTR_HIRE_RELEASE), pNPC->pName.c_str()
                 );
             } else {
                 pButton->sLabel = localization->GetString(LSTR_HIRE);
@@ -406,7 +406,7 @@ void GUIWindow_Dialogue::Update() {
         } else if (pButton->msg_param == DIALOGUE_13_hiring_related) {
             if (pNPC->Hired()) {
                 pButton->sLabel = localization->FormatString(
-                    LSTR_HIRE_RELEASE, pNPC->pName);
+                    LSTR_HIRE_RELEASE, pNPC->pName.c_str());
             } else {
                 pButton->sLabel = localization->GetString(LSTR_JOIN);
             }
@@ -598,7 +598,6 @@ void BuildHireableNpcDialogue() {
 
 void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
     int npc_event_id;  // ecx@10
-    char *v13;         // [sp-8h] [bp-18h]@60
 
     NPCData *speakingNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
     uDialogueType = option;
@@ -611,22 +610,21 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
                 for (uint i = 0; i < (unsigned int)pNPCStats->uNumNewNPCs;
                      ++i) {
                     if (pNPCStats->pNewNPCData[i].uFlags & 0x80 &&
-                        !strcmp(speakingNPC->pName,
-                                pNPCStats->pNewNPCData[i].pName))
+                        speakingNPC->pName == pNPCStats->pNewNPCData[i].pName)
                         pNPCStats->pNewNPCData[i].uFlags &= 0x7Fu;
                 }
             }
-            if (pParty->pHirelings[0].pName && iequals(pParty->pHirelings[0].pName, speakingNPC->pName))
-                memset(&pParty->pHirelings[0], 0, sizeof(NPCData));
-            else if (pParty->pHirelings[1].pName && iequals(pParty->pHirelings[1].pName, speakingNPC->pName))
-                memset(&pParty->pHirelings[1], 0, sizeof(NPCData));
+            if (iequals(pParty->pHirelings[0].pName, speakingNPC->pName))
+                pParty->pHirelings[0] = NPCData();
+            else if (iequals(pParty->pHirelings[1].pName, speakingNPC->pName))
+                pParty->pHirelings[1] = NPCData();
             pParty->hirelingScrollPosition = 0;
             pParty->CountHirelings();
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             dword_7241C8 = 0;
             return;
         }
-        if (pParty->pHirelings[0].pName && pParty->pHirelings[1].pName) {
+        if (!pParty->pHirelings[0].pName.empty() && !pParty->pHirelings[1].pName.empty()) {
             GameUI_SetStatusBar(LSTR_HIRE_NO_ROOM);
         } else {
             if (speakingNPC->profession != Burglar) {
@@ -644,14 +642,13 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
                 pParty->TakeGold(pNPCStats->pProfessions[speakingNPC->profession].uHirePrice);
             }
             speakingNPC->uFlags |= 0x80u;
-            if (pParty->pHirelings[0].pName) {
-                memcpy(&pParty->pHirelings[1], speakingNPC, sizeof(pParty->pHirelings[1]));
-                v13 = pParty->pHireling2Name;
+            if (!pParty->pHirelings[0].pName.empty()) {
+                pParty->pHirelings[1] = *speakingNPC;
+                pParty->pHireling2Name = speakingNPC->pName;
             } else {
-                memcpy(&pParty->pHirelings[0], speakingNPC, sizeof(pParty->pHirelings[0]));
-                v13 = pParty->pHireling1Name;
+                pParty->pHirelings[0] = *speakingNPC;
+                pParty->pHireling1Name = speakingNPC->pName;
             }
-            strcpy(v13, speakingNPC->pName);
             pParty->hirelingScrollPosition = 0;
             pParty->CountHirelings();
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -679,14 +676,13 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
         } else {
             for (uint i = 0; i < (signed int)pNPCStats->uNumNewNPCs; ++i) {
                 if (pNPCStats->pNewNPCData[i].uFlags & 0x80 &&
-                    !strcmp(speakingNPC->pName,
-                            pNPCStats->pNewNPCData[i].pName))
+                    speakingNPC->pName == pNPCStats->pNewNPCData[i].pName)
                     pNPCStats->pNewNPCData[i].uFlags &= 0x7Fu;
             }
-            if (pParty->pHirelings[0].pName && iequals(pParty->pHirelings[0].pName, speakingNPC->pName))
-                memset(&pParty->pHirelings[0], 0, sizeof(NPCData));
-            else if (pParty->pHirelings[1].pName && iequals(pParty->pHirelings[1].pName, speakingNPC->pName))
-                memset(&pParty->pHirelings[1], 0, sizeof(NPCData));
+            if (iequals(pParty->pHirelings[0].pName, speakingNPC->pName))
+                pParty->pHirelings[0] = NPCData();
+            else if (iequals(pParty->pHirelings[1].pName, speakingNPC->pName))
+                pParty->pHirelings[1] = NPCData();
             pParty->hirelingScrollPosition = 0;
             pParty->CountHirelings();
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);

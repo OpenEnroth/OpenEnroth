@@ -674,7 +674,7 @@ bool HouseUI_CheckIfPlayerCanInteract() {
 
         std::string str = localization->FormatString(
             LSTR_FMT_S_IS_IN_NO_CODITION_TO_S,
-            pPlayers[uActiveCharacter]->pName,
+            pPlayers[uActiveCharacter]->pName.c_str(),
             localization->GetString(LSTR_DO_ANYTHING));
         window.DrawTitleText(
             pFontArrus, 0,
@@ -2524,7 +2524,7 @@ void TrainingDialog(const char *s) {
 
                         GameUI_SetStatusBar(
                             LSTR_FMT_S_NOW_LEVEL_D,
-                            pPlayers[uActiveCharacter]->pName,
+                            pPlayers[uActiveCharacter]->pName.c_str(),
                             pPlayers[uActiveCharacter]->uLevel,
                             pPlayers[uActiveCharacter]->uLevel / 10 + 5
                         );

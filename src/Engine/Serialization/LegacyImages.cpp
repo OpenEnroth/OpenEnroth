@@ -104,12 +104,8 @@ void Deserialize(const Timer_MM7 &src, Timer *dst) {
 void Serialize(const NPCData &src, NPCData_MM7 *dst) {
     memset(dst, 0, sizeof(*dst));
 
-    if (src.pName) {
-        dst->pName = 1;
-    } else {
-        dst->pName = 0;
-    }
-    // this->pName = npc->pName;
+    // dst->pName = src.pName;
+    dst->pName = !src.pName.empty();
     dst->uPortraitID = src.uPortraitID;
     dst->uFlags = src.uFlags;
     dst->fame = src.fame;
@@ -131,12 +127,8 @@ void Serialize(const NPCData &src, NPCData_MM7 *dst) {
 }
 
 void Deserialize(const NPCData_MM7 &src, NPCData *dst) {
-    if (src.pName) {
-        dst->pName = "Dummy";
-    } else {
-        dst->pName = nullptr;
-    }
-    // npc->pName = src.pName;
+    // dst->pName = src.pName;
+    dst->pName = src.pName ? "Dummy" : "";
     dst->uPortraitID = src.uPortraitID;
     dst->uFlags = src.uFlags;
     dst->fame = src.fame;
@@ -394,8 +386,8 @@ void Serialize(const Party &src, Party_MM7 *dst) {
     for (unsigned int i = 0; i < 24; ++i)
         dst->field_1605C[i] = src.field_1605C_set0_unused[i];
 
-    strcpy(dst->pHireling1Name.data(), src.pHireling1Name);
-    strcpy(dst->pHireling2Name.data(), src.pHireling2Name);
+    Serialize(src.pHireling1Name, &dst->pHireling1Name);
+    Serialize(src.pHireling2Name, &dst->pHireling2Name);
 
     dst->armageddon_timer = src.armageddon_timer;
     dst->armageddonDamage = src.armageddonDamage;
@@ -565,8 +557,8 @@ void Deserialize(const Party_MM7 &src, Party *dst) {
     for (unsigned int i = 0; i < 24; ++i)
         dst->field_1605C_set0_unused[i] = src.field_1605C[i];
 
-    strcpy(dst->pHireling1Name, src.pHireling1Name.data());
-    strcpy(dst->pHireling2Name, src.pHireling2Name.data());
+    Deserialize(src.pHireling1Name, &dst->pHireling1Name);
+    Deserialize(src.pHireling2Name, &dst->pHireling2Name);
 
     dst->armageddon_timer = src.armageddon_timer;
     dst->armageddonDamage = src.armageddonDamage;
@@ -594,7 +586,7 @@ void Serialize(const Player &src, Player_MM7 *dst) {
 
     dst->uExperience = src.uExperience;
 
-    strcpy(dst->pName.data(), src.pName);
+    Serialize(src.pName, &dst->pName);
 
     dst->uSex = src.uSex;
     dst->classType = src.classType;
@@ -757,7 +749,7 @@ void Deserialize(const Player_MM7 &src, Player* dst) {
 
     dst->uExperience = src.uExperience;
 
-    strcpy(dst->pName, src.pName.data());
+    Deserialize(src.pName, &dst->pName);
 
     switch (src.uSex) {
     case 0:

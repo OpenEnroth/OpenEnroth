@@ -104,7 +104,7 @@ void GameOver_Loop(int v15) {
             1,
             localization->FormatString(
                 LSTR_FMT_S_THE_LEVEL_D_S,
-                pParty->pPlayers[i].pName,
+                pParty->pPlayers[i].pName.c_str(),
                 pParty->pPlayers[i].GetBaseLevel(),
                 localization->GetClassName(pParty->pPlayers[i].classType)),
             3);

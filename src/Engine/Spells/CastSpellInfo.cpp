@@ -3485,7 +3485,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 int hired_npc = 0;
                 memset(&achieved_awards, 0, 4000);
                 for (uint npc_id = 0; npc_id < 2; npc_id++) {
-                    if (pParty->pHirelings[npc_id].pName != nullptr)
+                    if (!pParty->pHirelings[npc_id].pName.empty())
                         achieved_awards[hired_npc++] = (AwardType)(npc_id + 1);
                 }
 

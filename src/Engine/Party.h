@@ -361,8 +361,8 @@ struct Party {
     std::array<std::array<ItemGen, 12>, 53> SpecialItemsInShops;  // D0EC
     std::array<std::array<ItemGen, 12>, 32> SpellBooksInGuilds;
     std::array<char, 24> field_1605C_set0_unused;
-    char pHireling1Name[100]; // TODO: std::string
-    char pHireling2Name[100]; // TODO: std::string
+    std::string pHireling1Name;
+    std::string pHireling2Name;
     int armageddon_timer;
     int armageddonDamage;
     std::array<int, 4> pTurnBasedPlayerRecoveryTimes;

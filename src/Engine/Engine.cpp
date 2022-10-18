@@ -866,7 +866,7 @@ bool Engine::MM7_Initialize() {
 
     pParty = new Party();
 
-    memset(&pParty->pHirelings, 0, sizeof(pParty->pHirelings));
+    pParty->pHirelings.fill(NPCData());
     pParty->uDefaultEyelevel = pParty->sEyelevel = engine->config->gameplay.PartyEyeLevel.Get();
     pParty->uDefaultPartyHeight = pParty->uPartyHeight = engine->config->gameplay.PartyHeight.Get();
     pParty->uWalkSpeed = engine->config->gameplay.PartyWalkSpeed.Get();
@@ -1016,7 +1016,7 @@ void Engine::SecondaryInitialization() {
     }
 
     pNPCStats = new NPCStats;
-    memset(pNPCStats->pNPCData, 0, sizeof(pNPCStats->pNPCData));
+    pNPCStats->pNPCData.fill(NPCData());
     pNPCStats->Initialize();
 
     Initialize_GlobalEVT();

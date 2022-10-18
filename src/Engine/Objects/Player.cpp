@@ -786,7 +786,7 @@ int Player::HasSkill(unsigned int uSkillType) {
     } else {
         GameUI_SetStatusBar(
             LSTR_FMT_S_DOES_NOT_HAVE_SKILL,
-            this->pName
+            this->pName.c_str()
         );
         return 0;
     }
@@ -1687,7 +1687,7 @@ int Player::StealFromActor(
         Actor::AggroSurroundingPeasants(uActorID, 1);
         GameUI_SetStatusBar(
             LSTR_FMT_S_WAS_CAUGHT_STEALING,
-            this->pName
+            this->pName.c_str()
         );
         return STEAL_BUSTED;
     } else {
@@ -1698,7 +1698,7 @@ int Player::StealFromActor(
                 // no gold to steal - fail
                 GameUI_SetStatusBar(
                     LSTR_FMT_S_FAILED_TO_STEAL,
-                    this->pName
+                    this->pName.c_str()
                 );
                 return STEAL_NOTHING;
             }
@@ -1721,12 +1721,12 @@ int Player::StealFromActor(
                 pParty->PartyFindsGold(enchBonusSum, 2);
                 GameUI_SetStatusBar(
                     LSTR_FMT_S_STOLE_D_GOLD,
-                    this->pName, enchBonusSum
+                    this->pName.c_str(), enchBonusSum
                 );
             } else {
                 GameUI_SetStatusBar(
                     LSTR_FMT_S_FAILED_TO_STEAL,
-                    this->pName
+                    this->pName.c_str()
                 );
             }
 
@@ -1759,7 +1759,7 @@ int Player::StealFromActor(
                 if (carriedItemId != ITEM_NULL) {
                     GameUI_SetStatusBar(
                         LSTR_FMT_S_STOLE_D_ITEM,
-                        this->pName,
+                        this->pName.c_str(),
                         pItemsTable->pItems[carriedItemId].pUnidentifiedName
                     );
                     pParty->SetHoldingItem(&tempItem);
@@ -1770,7 +1770,7 @@ int Player::StealFromActor(
 
         GameUI_SetStatusBar(
             LSTR_FMT_S_FAILED_TO_STEAL,
-            this->pName
+            this->pName.c_str()
         );
         return STEAL_NOTHING;
     }
@@ -2582,9 +2582,7 @@ void Player::SetRecoveryTime(signed int rec) {
 //----- (0048E9B7) --------------------------------------------------------
 void Player::RandomizeName() {
     if (!uExpressionTimePassed)
-        strcpy(
-            pName,
-            pNPCStats->pNPCNames[rand() % pNPCStats->uNumNPCNames[uSex]][uSex]);
+        pName = pNPCStats->pNPCNames[rand() % pNPCStats->uNumNPCNames[uSex]][uSex];
 }
 
 //----- (0048E9F4) --------------------------------------------------------
@@ -6689,10 +6687,10 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
                 }
             }
             if (pParty->pHirelings[0].profession == (NPCProf)pValue) {
-                memset(&pParty->pHirelings[0], 0, sizeof(NPCData));
+                pParty->pHirelings[0] = NPCData();
             }
             if (pParty->pHirelings[1].profession == (NPCProf)pValue) {
-                memset(&pParty->pHirelings[1], 0, sizeof(NPCData));
+                pParty->pHirelings[1] = NPCData();
             }
             pParty->hirelingScrollPosition = 0;
             pParty->CountHirelings();
@@ -6942,7 +6940,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
         // GM unarmed 1% chance to evade attacks per skill point
         if (playerPtr->GetActualSkillMastery(PLAYER_SKILL_UNARMED) >= 4 &&
             rand() % 100 < playerPtr->GetActualSkillLevel(PLAYER_SKILL_UNARMED)) {
-            GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->pName);
+            GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->pName.c_str());
             playerPtr->PlaySound(SPEECH_AvoidDamage, 0);
             return;
         }
@@ -7141,7 +7139,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                 logger->Info("Arrpow");
                 if (playerPtr->GetActualSkillMastery(PLAYER_SKILL_UNARMED) >= 4 &&
                     rand() % 100 < playerPtr->GetActualSkillLevel(PLAYER_SKILL_UNARMED)) {
-                    GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->pName);
+                    GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->pName.c_str());
                     playerPtr->PlaySound(SPEECH_AvoidDamage, 0);
                     return;
                 }
