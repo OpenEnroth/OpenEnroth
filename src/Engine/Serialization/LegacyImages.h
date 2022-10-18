@@ -40,7 +40,7 @@ struct SpriteFrame_MM6 {
     char pTextureName[12];    // c
     int16_t pHwSpriteIDs[8];  // 18h
     int32_t scale;            // 28h
-    int uFlags;               // 2c
+    int32_t uFlags;               // 2c
     int16_t uGlowRadius;      // 30
     int16_t uPaletteID;       // 32
     int16_t uPaletteIndex;
@@ -63,10 +63,10 @@ struct BLVFace_MM7 {
 
     Planef pFacePlane;
     Planei pFacePlane_old;
-    int zCalc1;
-    int zCalc2;
-    int zCalc3;
-    unsigned int uAttributes;
+    int32_t zCalc1;
+    int32_t zCalc2;
+    int32_t zCalc3;
+    uint32_t uAttributes;
     int32_t pVertexIDs;
     int32_t pXInterceptDisplacements;
     int32_t pYInterceptDisplacements;
@@ -117,25 +117,24 @@ struct NPCData_MM7 {
     NPCData_MM7() { memzero(this); }
 
     /* 00 */ int32_t pName;  // char *pName;
-    /* 04 */ unsigned int uPortraitID;
-    /* 08 */ unsigned int
-        uFlags;  // & 0x80    no greeting on dialogue start; looks like hired
-    /* 0C */ int fame;
-    /* 10 */ int rep;
-    /* 14 */ unsigned int Location2D;
-    /* 18 */ unsigned int uProfession;
-    /* 1C */ int greet;
-    /* 20 */ int joins;
-    /* 24 */ int field_24;
-    /* 28 */ unsigned int evt_A;
-    /* 2C */ unsigned int evt_B;
-    /* 30 */ unsigned int evt_C;
-    /* 34 */ unsigned int evt_D;
-    /* 38 */ unsigned int evt_E;
-    /* 3C */ unsigned int evt_F;
-    /* 40 */ unsigned int uSex;
-    /* 44 */ int bHasUsedTheAbility;
-    /* 48 */ int news_topic;
+    /* 04 */ uint32_t uPortraitID;
+    /* 08 */ uint32_t uFlags;  // & 0x80    no greeting on dialogue start; looks like hired
+    /* 0C */ int32_t fame;
+    /* 10 */ int32_t rep;
+    /* 14 */ uint32_t Location2D;
+    /* 18 */ uint32_t uProfession;
+    /* 1C */ int32_t greet;
+    /* 20 */ int32_t joins;
+    /* 24 */ int32_t field_24;
+    /* 28 */ uint32_t evt_A;
+    /* 2C */ uint32_t evt_B;
+    /* 30 */ uint32_t evt_C;
+    /* 34 */ uint32_t evt_D;
+    /* 38 */ uint32_t evt_E;
+    /* 3C */ uint32_t evt_F;
+    /* 40 */ uint32_t uSex;
+    /* 44 */ int32_t bHasUsedTheAbility;
+    /* 48 */ int32_t news_topic;
     /* 4C */
 };
 static_assert(sizeof(NPCData_MM7) == 0x4C);
@@ -147,10 +146,10 @@ void Deserialize(const NPCData_MM7 &src, NPCData *dst);
 struct ItemGen_MM7 {
     ItemGen_MM7() { memzero(this); }
 
-    /* 00 */ int uItemID;
-    /* 04 */ int uEnchantmentType;
-    /* 08 */ int m_enchantmentStrength;
-    /* 0C */ int special_enchantment;
+    /* 00 */ int32_t uItemID;
+    /* 04 */ int32_t uEnchantmentType;
+    /* 08 */ int32_t m_enchantmentStrength;
+    /* 0C */ int32_t special_enchantment;
     // 25  +5 levels
     // 16  Drain Hit Points from target.
     // 35  Increases chance of disarming.
@@ -169,8 +168,8 @@ struct ItemGen_MM7 {
     // 68  Adds 6-8 points of Cold damage and +5 Armor Class.
     // 71  Prevents drowning damage.
     // 72  Prevents falling damage.
-    /* 10 */ int uNumCharges;
-    /* 14 */ unsigned int uAttributes;
+    /* 10 */ int32_t uNumCharges;
+    /* 14 */ uint32_t uAttributes;
     /* 18 */ uint8_t uBodyAnchor;
     /* 19 */ char uMaxCharges;
     /* 1A */ char uHolderPlayer;
@@ -233,20 +232,20 @@ union PlayerEquipment_MM7 {
 
     union {
         struct {
-            /* 00 */ unsigned int uOffHand;
-            /* 04 */ unsigned int uMainHand;
-            /* 08 */ unsigned int uBow;
-            /* 0C */ unsigned int uArmor;
-            /* 10 */ unsigned int uHelm;
-            /* 14 */ unsigned int uBelt;
-            /* 18 */ unsigned int uCloak;
-            /* 1C */ unsigned int uGlove;
-            /* 20 */ unsigned int uBoot;
-            /* 24 */ unsigned int uAmulet;
-            /* 28 */ unsigned int uRings[6];
+            /* 00 */ uint32_t uOffHand;
+            /* 04 */ uint32_t uMainHand;
+            /* 08 */ uint32_t uBow;
+            /* 0C */ uint32_t uArmor;
+            /* 10 */ uint32_t uHelm;
+            /* 14 */ uint32_t uBelt;
+            /* 18 */ uint32_t uCloak;
+            /* 1C */ uint32_t uGlove;
+            /* 20 */ uint32_t uBoot;
+            /* 24 */ uint32_t uAmulet;
+            /* 28 */ uint32_t uRings[6];
             /* 40 */
         };
-        unsigned int pIndices[16];
+        uint32_t pIndices[16];
     };
 };
 static_assert(sizeof(PlayerEquipment_MM7) == 0x40);
@@ -274,8 +273,8 @@ struct Player_MM7 {
     /* 0000 */ int64_t pConditions[20];
     /* 00A0 */ uint64_t uExperience;
     /* 00A8 */ char pName[16];
-    /* 00B8 */ unsigned char uSex;
-    /* 00B9 */ unsigned char classType;
+    /* 00B8 */ uint8_t uSex;
+    /* 00B9 */ uint8_t classType;
     /* 00BA */ uint8_t uCurrentFace;
     /* 00BB */ char field_BB;
     /* 00BC */ uint16_t uMight;
@@ -296,16 +295,16 @@ struct Player_MM7 {
     /* 00DA */ uint16_t uLevel;
     /* 00DC */ int16_t sLevelModifier;
     /* 00DE */ int16_t sAgeModifier;
-    /* 00E0 */ int field_E0;
-    /* 00E4 */ int field_E4;
-    /* 00E8 */ int field_E8;
-    /* 00EC */ int field_EC;
-    /* 00F0 */ int field_F0;
-    /* 00F4 */ int field_F4;
-    /* 00F8 */ int field_F8;
-    /* 00FC */ int field_FC;
-    /* 0100 */ int field_100;
-    /* 0104 */ int field_104;
+    /* 00E0 */ int32_t field_E0;
+    /* 00E4 */ int32_t field_E4;
+    /* 00E8 */ int32_t field_E8;
+    /* 00EC */ int32_t field_EC;
+    /* 00F0 */ int32_t field_F0;
+    /* 00F4 */ int32_t field_F4;
+    /* 00F8 */ int32_t field_F8;
+    /* 00FC */ int32_t field_FC;
+    /* 0100 */ int32_t field_100;
+    /* 0104 */ int32_t field_104;
     /* 0108 */ union {
         struct {
             uint16_t skillStaff;
@@ -348,16 +347,16 @@ struct Player_MM7 {
         };
         uint16_t pActiveSkills[37];
     };
-    /* 0152 */ unsigned char _achieved_awards_bits[64];
+    /* 0152 */ uint8_t _achieved_awards_bits[64];
     /* 0192 */ PlayerSpells_MM7 spellbook;
     /* 01F6 */ char _1F6_pad[2];
-    /* 01F8 */ int pure_luck_used;
-    /* 01FC */ int pure_speed_used;
-    /* 0200 */ int pure_intellect_used;
-    /* 0204 */ int pure_endurance_used;
-    /* 0208 */ int pure_willpower_used;
-    /* 020C */ int pure_accuracy_used;
-    /* 0210 */ int pure_might_used;
+    /* 01F8 */ int32_t pure_luck_used;
+    /* 01FC */ int32_t pure_speed_used;
+    /* 0200 */ int32_t pure_intellect_used;
+    /* 0204 */ int32_t pure_endurance_used;
+    /* 0208 */ int32_t pure_willpower_used;
+    /* 020C */ int32_t pure_accuracy_used;
+    /* 0210 */ int32_t pure_might_used;
     /* 0214 */ union {
         struct {
             ItemGen_MM7 pInventoryItemList[126];
@@ -367,7 +366,7 @@ struct Player_MM7 {
             ItemGen_MM7 pOwnItems[138];
         };
     };
-    /* 157C */ int pInventoryMatrix[126];
+    /* 157C */ int32_t pInventoryMatrix[126];
     /* 1774 */ int16_t sResFireBase;
     /* 1776 */ int16_t sResAirBase;
     /* 1778 */ int16_t sResWaterBase;
@@ -391,20 +390,20 @@ struct Player_MM7 {
     /* 179C */ int16_t sResLightBonus;
     /* 179E */ int16_t sResDarkBonus;
     /* 17A0 */ SpellBuff_MM7 pPlayerBuffs[24];
-    /* 1920 */ unsigned int uVoiceID;
-    /* 1924 */ int uPrevVoiceID;
-    /* 1928 */ int uPrevFace;
-    /* 192C */ int field_192C;
-    /* 1930 */ int field_1930;
+    /* 1920 */ uint32_t uVoiceID;
+    /* 1924 */ int32_t uPrevVoiceID;
+    /* 1928 */ int32_t uPrevFace;
+    /* 192C */ int32_t field_192C;
+    /* 1930 */ int32_t field_1930;
     /* 1934 */ uint16_t uTimeToRecovery;
     /* 1936 */ char field_1936;
     /* 1937 */ char field_1937;
-    /* 1938 */ unsigned int uSkillPoints;
-    /* 193C */ int sHealth;
-    /* 1940 */ int sMana;
-    /* 1944 */ unsigned int uBirthYear;
+    /* 1938 */ uint32_t uSkillPoints;
+    /* 193C */ int32_t sHealth;
+    /* 1940 */ int32_t sMana;
+    /* 1944 */ uint32_t uBirthYear;
     /* 1948 */ PlayerEquipment_MM7 pEquipment;
-    /* 1988 */ int field_1988[49];
+    /* 1988 */ int32_t field_1988[49];
     /* 1A4C */ char field_1A4C;
     /* 1A4D */ char field_1A4D;
     /* 1A4E */ char lastOpenedSpellbookPage;
@@ -426,8 +425,8 @@ struct Player_MM7 {
     /* 1A9E */ uint16_t uExpressionTimePassed;
     /* 1AA0 */ uint16_t uExpressionTimeLength;
     /* 1AA2 */ int16_t field_1AA2;
-    /* 1AA4 */ int _expression21_animtime;
-    /* 1AA8 */ int _expression21_frameset;
+    /* 1AA4 */ int32_t _expression21_animtime;
+    /* 1AA8 */ int32_t _expression21_frameset;
     /* 1AAC */ LloydBeacon_MM7 pInstalledBeacons[5];
     /* 1B38 */ char uNumDivineInterventionCastsThisDay;
     /* 1B39 */ char uNumArmageddonCasts;
@@ -458,61 +457,61 @@ static_assert(sizeof(PartyTimeStruct_MM7) == 0x678);
 struct Party_MM7 {
     Party_MM7() { memzero(this); }
 
-    /* 00000 */ int field_0;
-    /* 00004 */ unsigned int uPartyHeight;
-    /* 00008 */ unsigned int uDefaultPartyHeight;
-    /* 0000C */ int sEyelevel;
-    /* 00010 */ unsigned int uDefaultEyelevel;
-    /* 00014 */ int radius;
-    /* 00018 */ int y_rotation_granularity;
-    /* 0001C */ unsigned int uWalkSpeed;
-    /* 00020 */ int y_rotation_speed;  // deg/s
-    /* 00024 */ int jump_strength;
-    /* 00028 */ int field_28;
+    /* 00000 */ int32_t field_0;
+    /* 00004 */ uint32_t uPartyHeight;
+    /* 00008 */ uint32_t uDefaultPartyHeight;
+    /* 0000C */ int32_t sEyelevel;
+    /* 00010 */ uint32_t uDefaultEyelevel;
+    /* 00014 */ int32_t radius;
+    /* 00018 */ int32_t y_rotation_granularity;
+    /* 0001C */ uint32_t uWalkSpeed;
+    /* 00020 */ int32_t y_rotation_speed;  // deg/s
+    /* 00024 */ int32_t jump_strength;
+    /* 00028 */ int32_t field_28;
     /* 0002C */ uint64_t uTimePlayed;
     /* 00034 */ int64_t uLastRegenerationTime;
     /* 0003C */ PartyTimeStruct_MM7 PartyTimes;
     /* 006B4 */ Vec3i vPosition;
-    /* 006C0 */ int sRotationZ;
-    /* 006C4 */ int sRotationY;
+    /* 006C0 */ int32_t sRotationZ;
+    /* 006C4 */ int32_t sRotationY;
     /* 006C8 */ Vec3i vPrevPosition;
-    /* 006D4 */ int sPrevRotationZ;
-    /* 006D8 */ int sPrevRotationY;
-    /* 006DC */ int sPrevEyelevel;
-    /* 006E0 */ int field_6E0;
-    /* 006E4 */ int field_6E4;
-    /* 006E8 */ int uFallSpeed;
-    /* 006EC */ int field_6EC;
-    /* 006F0 */ int field_6F0;
-    /* 006F4 */ int floor_face_pid;  // face we are standing at
-    /* 006F8 */ int walk_sound_timer;
-    /* 006FC */ int _6FC_water_lava_timer;
-    /* 00700 */ int uFallStartZ;
-    /* 00704 */ unsigned int bFlying;
+    /* 006D4 */ int32_t sPrevRotationZ;
+    /* 006D8 */ int32_t sPrevRotationY;
+    /* 006DC */ int32_t sPrevEyelevel;
+    /* 006E0 */ int32_t field_6E0;
+    /* 006E4 */ int32_t field_6E4;
+    /* 006E8 */ int32_t uFallSpeed;
+    /* 006EC */ int32_t field_6EC;
+    /* 006F0 */ int32_t field_6F0;
+    /* 006F4 */ int32_t floor_face_pid;  // face we are standing at
+    /* 006F8 */ int32_t walk_sound_timer;
+    /* 006FC */ int32_t _6FC_water_lava_timer;
+    /* 00700 */ int32_t uFallStartZ;
+    /* 00704 */ uint32_t bFlying;
     /* 00708 */ char field_708;
     /* 00709 */ uint8_t hirelingScrollPosition;
     /* 0070A */ char field_70A;
     /* 0070B */ char field_70B;
-    /* 0070C */ unsigned int uCurrentYear;
-    /* 00710 */ unsigned int uCurrentMonth;
-    /* 00714 */ unsigned int uCurrentMonthWeek;
-    /* 00718 */ unsigned int uCurrentDayOfMonth;
-    /* 0071C */ unsigned int uCurrentHour;
-    /* 00720 */ unsigned int uCurrentMinute;
-    /* 00724 */ unsigned int uCurrentTimeSecond;
-    /* 00728 */ unsigned int uNumFoodRations;
-    /* 0072C */ int field_72C;
-    /* 00730 */ int field_730;
-    /* 00734 */ unsigned int uNumGold;
-    /* 00738 */ unsigned int uNumGoldInBank;
-    /* 0073C */ unsigned int uNumDeaths;
-    /* 00740 */ int field_740;
-    /* 00744 */ int uNumPrisonTerms;
-    /* 00748 */ unsigned int uNumBountiesCollected;
+    /* 0070C */ uint32_t uCurrentYear;
+    /* 00710 */ uint32_t uCurrentMonth;
+    /* 00714 */ uint32_t uCurrentMonthWeek;
+    /* 00718 */ uint32_t uCurrentDayOfMonth;
+    /* 0071C */ uint32_t uCurrentHour;
+    /* 00720 */ uint32_t uCurrentMinute;
+    /* 00724 */ uint32_t uCurrentTimeSecond;
+    /* 00728 */ uint32_t uNumFoodRations;
+    /* 0072C */ int32_t field_72C;
+    /* 00730 */ int32_t field_730;
+    /* 00734 */ uint32_t uNumGold;
+    /* 00738 */ uint32_t uNumGoldInBank;
+    /* 0073C */ uint32_t uNumDeaths;
+    /* 00740 */ int32_t field_740;
+    /* 00744 */ int32_t uNumPrisonTerms;
+    /* 00748 */ uint32_t uNumBountiesCollected;
     /* 0074C */ int field_74C;
     /* 00750 */ int16_t monster_id_for_hunting[5];
     /* 0075A */ int16_t monster_for_hunting_killed[5];
-    /* 00764 */ unsigned char days_played_without_rest;
+    /* 00764 */ uint8_t days_played_without_rest;
     /* 00765 */ uint8_t _quest_bits[64];
     /* 007A5 */ uint8_t pArcomageWins[16];
     /* 007B5 */ char field_7B5_in_arena_quest;
@@ -522,31 +521,31 @@ struct Party_MM7 {
     /* 007B9 */ char uNumArenaLordWins;
     /* 007BA */ char pIsArtifactFound[29];  // 7ba
     /* 007D7 */ char field_7d7[39];
-    /* 007FE */ unsigned char _autonote_bits[26];
+    /* 007FE */ uint8_t _autonote_bits[26];
     /* 00818 */ char field_818[60];
     /* 00854 */ char field_854[32];
-    /* 00874 */ int uNumArcomageWins;
-    /* 00878 */ int uNumArcomageLoses;
-    /* 0087C */ unsigned int bTurnBasedModeOn;
-    /* 00880 */ int field_880;
-    /* 00884 */ int uFlags2;
-    /* 00888 */ unsigned int alignment;
+    /* 00874 */ int32_t uNumArcomageWins;
+    /* 00878 */ int32_t uNumArcomageLoses;
+    /* 0087C */ uint32_t bTurnBasedModeOn;
+    /* 00880 */ int32_t field_880;
+    /* 00884 */ int32_t uFlags2;
+    /* 00888 */ uint32_t alignment;
     /* 0088C */ SpellBuff_MM7 pPartyBuffs[20];
     /* 00954 */ Player_MM7 pPlayers[4];
     /* 07644 */ NPCData_MM7 pHirelings[2];
     /* 07754 */ ItemGen_MM7 pPickedItem;
-    /* 07778 */ unsigned int uFlags;
+    /* 07778 */ uint32_t uFlags;
     /* 0777C */ ItemGen_MM7 StandartItemsInShops[53][12];
     /* 0D0EC */ ItemGen_MM7 SpecialItemsInShops[53][12];
     /* 12A5C */ ItemGen_MM7 SpellBooksInGuilds[32][12];
     /* 1605C */ char field_1605C[24];
     /* 16074 */ char pHireling1Name[100];
     /* 160D8 */ char pHireling2Name[100];
-    /* 1613C */ int armageddon_timer;
-    /* 16140 */ int armageddonDamage;
-    /* 16144 */ int pTurnBasedPlayerRecoveryTimes[4];
-    /* 16154 */ int InTheShopFlags[53];
-    /* 16228 */ int uFine;
+    /* 1613C */ int32_t armageddon_timer;
+    /* 16140 */ int32_t armageddonDamage;
+    /* 16144 */ int32_t pTurnBasedPlayerRecoveryTimes[4];
+    /* 16154 */ int32_t InTheShopFlags[53];
+    /* 16228 */ int32_t uFine;
     /* 1622C */ float flt_TorchlightColorR;
     /* 16230 */ float flt_TorchlightColorG;
     /* 16234 */ float flt_TorchlightColorB;
@@ -589,7 +588,7 @@ struct OtherOverlay_MM7 {
     /* 0A */ int16_t screen_space_y;
     /* 0C */ int16_t field_C;
     /* 0E */ int16_t field_E;
-    /* 10 */ int field_10;
+    /* 10 */ int32_t field_10;
     /* 14 */
 };
 static_assert(sizeof(OtherOverlay_MM7) == 0x14);
@@ -599,8 +598,8 @@ struct OtherOverlayList_MM7 {
     OtherOverlayList_MM7()  { memzero(this); }
 
     /* 000 */ OtherOverlay_MM7 pOverlays[50];
-    /* 3E8 */ int field_3E8;
-    /* 3EC */ int bRedraw;
+    /* 3E8 */ int32_t field_3E8;
+    /* 3EC */ int32_t bRedraw;
     /* 3F0 */
 };
 static_assert(sizeof(OtherOverlayList_MM7) == 0x3F0);
@@ -697,12 +696,12 @@ struct MonsterInfo_MM7 {
     uint16_t uSpellSkillAndMastery2;
     int16_t field_3C_some_special_attack;
     int16_t field_3E;
-    unsigned int uHP;
-    unsigned int uAC;
-    unsigned int uExp;
-    unsigned int uBaseSpeed;
-    signed int uRecoveryTime;
-    unsigned int uAttackPreference;
+    uint32_t uHP;
+    uint32_t uAC;
+    uint32_t uExp;
+    uint32_t uBaseSpeed;
+    int32_t uRecoveryTime;
+    uint32_t uAttackPreference;
 };
 static_assert(sizeof(MonsterInfo_MM7) == 0x58);
 
@@ -747,10 +746,10 @@ struct Actor_MM7 {
     char pActorName[32];
     int16_t sNPC_ID;
     int16_t field_22;
-    unsigned int uAttributes;
+    uint32_t uAttributes;
     int16_t sCurrentHP;
     char field_2A[2];
-    struct MonsterInfo_MM7 pMonsterInfo;
+    MonsterInfo_MM7 pMonsterInfo;
     int16_t word_000084_range_attack;
     int16_t word_000086_some_monster_id;  // base monster class monsterlist id
     uint16_t uActorRadius;
@@ -770,17 +769,17 @@ struct Actor_MM7 {
     uint16_t uCarriedItemID;
     char field_B6;
     char field_B7;
-    unsigned int uCurrentActionTime;
+    uint32_t uCurrentActionTime;
     uint16_t pSpriteIDs[8];
     uint16_t pSoundSampleIDs[4];  // 1 die     3 bored
-    struct SpellBuff pActorBuffs[22];
-    struct ItemGen ActorHasItems[4];
-    unsigned int uGroup;
-    unsigned int uAlly;
-    struct ActorJob pScheduledJobs[8];
-    unsigned int uSummonerID;
-    unsigned int uLastCharacterIDToHit;
-    int dword_000334_unique_name;
+    SpellBuff pActorBuffs[22];
+    ItemGen ActorHasItems[4];
+    uint32_t uGroup;
+    uint32_t uAlly;
+    ActorJob pScheduledJobs[8];
+    uint32_t uSummonerID;
+    uint32_t uLastCharacterIDToHit;
+    int32_t dword_000334_unique_name;
     char field_338[12];
 };
 static_assert(sizeof(Actor_MM7) == 0x344);
@@ -897,10 +896,10 @@ struct ODMFace_MM7 {
     ODMFace_MM7() { memzero(this); }
 
     Planei pFacePlane;
-    int zCalc1;
-    int zCalc2;
-    int zCalc3;
-    unsigned int uAttributes;
+    int32_t zCalc1;
+    int32_t zCalc2;
+    int32_t zCalc3;
+    uint32_t uAttributes;
     std::array<uint16_t, 20> pVertexIDs;
     std::array<int16_t, 20> pTextureUIDs;
     std::array<int16_t, 20> pTextureVIDs;
