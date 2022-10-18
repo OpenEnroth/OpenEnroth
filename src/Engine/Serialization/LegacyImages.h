@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Engine/Graphics/ParticleEngine.h"
-#include "Engine/Objects/Actor.h"
 #include "Engine/Spells/Spells.h"
+#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Actor.h"
 #include "Engine/VectorTypes.h"
 
 #include "GUI/GUIFont.h"
@@ -18,6 +18,7 @@
  */
 
 struct BLVDoor;
+struct BLVFace;
 struct BLVSector;
 struct NPCData;
 struct ItemGen;
