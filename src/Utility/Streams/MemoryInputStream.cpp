@@ -1,5 +1,6 @@
 #include "MemoryInputStream.h"
 
+#include <cstring>
 #include <algorithm>
 
 MemoryInputStream::MemoryInputStream() {
