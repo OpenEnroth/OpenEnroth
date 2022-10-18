@@ -2770,9 +2770,9 @@ void Actor::UpdateActorAI() {
         if (!pActor->sCurrentHP && pActor->uAIState != Dying) Actor::Die(i);
 
         // Kill buffs if expired
-        for (auto &&pair : pActor->pActorBuffs.map_view())
-            if (pair.first != ACTOR_BUFF_MASS_DISTORTION)
-                pair.second.IsBuffExpiredToTime(pParty->GetPlayingTime());
+        for (ACTOR_BUFF_INDEX i : pActor->pActorBuffs.indices())
+            if (i != ACTOR_BUFF_MASS_DISTORTION)
+                pActor->pActorBuffs[i].IsBuffExpiredToTime(pParty->GetPlayingTime());
 
         // If shrink expired: reset height
         if (pActor->pActorBuffs[ACTOR_BUFF_SHRINK].Expired()) {
@@ -2852,9 +2852,9 @@ void Actor::UpdateActorAI() {
 
         if (!pActor->sCurrentHP) Actor::Die(actor_id);
 
-        for (auto &&pair : pActor->pActorBuffs.map_view())
-            if (pair.first != ACTOR_BUFF_MASS_DISTORTION)
-                pair.second.IsBuffExpiredToTime(pParty->GetPlayingTime());
+        for (ACTOR_BUFF_INDEX i : pActor->pActorBuffs.indices())
+            if (i != ACTOR_BUFF_MASS_DISTORTION)
+                pActor->pActorBuffs[i].IsBuffExpiredToTime(pParty->GetPlayingTime());
 
         if (pActor->pActorBuffs[ACTOR_BUFF_SHRINK].Expired()) {
             pActor->uActorHeight =

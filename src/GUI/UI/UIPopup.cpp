@@ -750,9 +750,9 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     } else {
         pText = "";
         pTextHeight = pFontSmallnum->GetHeight() + 193;
-        for (auto &&pair : pActors[uActorID].pActorBuffs.map_view()) {
-            if (pair.second.Active()) {
-                switch (pair.first) {
+        for (ACTOR_BUFF_INDEX i : pActors[uActorID].pActorBuffs.indices()) {
+            if (pActors[uActorID].pActorBuffs[i].Active()) {
+                switch (i) {
                     case ACTOR_BUFF_CHARM:
                         pTextColorID = 60;
                         pText = localization->GetString(LSTR_CHARMED);
