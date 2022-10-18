@@ -7,8 +7,6 @@
 
 #include "GUI/GUIFont.h"
 
-#include "Utility/Memory.h"
-
 /*
  * Party, timers, NPCs and other stuff is binary dumped into resources/savegame
  * files, which limits ability to alter these structures without breaking
@@ -36,8 +34,6 @@ class SpriteFrame;
 #pragma pack(push, 1)
 
 struct SpriteFrame_MM6 {
-    SpriteFrame_MM6() { memzero(this); }
-
     std::array<char, 12> pIconName;
     std::array<char, 12> pTextureName;    // c
     std::array<int16_t, 8> pHwSpriteIDs;  // 18h
@@ -52,8 +48,6 @@ static_assert(sizeof(SpriteFrame_MM6) == 56);
 
 
 struct SpriteFrame_MM7 : public SpriteFrame_MM6 {
-    SpriteFrame_MM7() { memzero(this); }
-
     int16_t uAnimLength;
     int16_t _pad;
 };
@@ -63,8 +57,6 @@ void Deserialize(const SpriteFrame_MM7 &src, SpriteFrame *dst);
 
 
 struct BLVFace_MM7 {
-    BLVFace_MM7() { memzero(this); }
-
     Planef pFacePlane;
     Planei pFacePlane_old;
     int32_t zCalc1;
@@ -93,8 +85,6 @@ void Deserialize(const BLVFace_MM7 &src, BLVFace *dst);
 
 
 struct TileDesc_MM7 {
-    TileDesc_MM7() { memzero(this); }
-
     std::array<char, 16> pTileName;
     uint16_t uTileID;
     uint16_t uBitmapID;
@@ -106,8 +96,6 @@ static_assert(sizeof(TileDesc_MM7) == 26);
 
 
 struct TextureFrame_MM7 {
-    TextureFrame_MM7() { memzero(this); }
-
     std::array<char, 12> pTextureName;
     int16_t uTextureID;
     int16_t uAnimTime;
@@ -118,8 +106,6 @@ static_assert(sizeof(TextureFrame_MM7) == 20);
 
 
 struct NPCData_MM7 {
-    NPCData_MM7() { memzero(this); }
-
     /* 00 */ int32_t pName;  // char *pName;
     /* 04 */ uint32_t uPortraitID;
     /* 08 */ uint32_t uFlags;  // & 0x80    no greeting on dialogue start; looks like hired
@@ -148,8 +134,6 @@ void Deserialize(const NPCData_MM7 &src, NPCData *dst);
 
 
 struct ItemGen_MM7 {
-    ItemGen_MM7() { memzero(this); }
-
     /* 00 */ int32_t uItemID;
     /* 04 */ int32_t uEnchantmentType;
     /* 08 */ int32_t m_enchantmentStrength;
@@ -187,8 +171,6 @@ void Deserialize(const ItemGen_MM7 &src, ItemGen *dst);
 
 
 struct SpellBuff_MM7 {
-    SpellBuff_MM7() { memzero(this); }
-
     /* 00 */ int64_t uExpireTime;
     /* 08 */ uint16_t uPower;
     /* 0A */ uint16_t uSkill;
@@ -204,8 +186,6 @@ void Deserialize(const SpellBuff_MM7 &src, SpellBuff *dst);
 
 
 struct PlayerSpellbookChapter_MM7 {
-    PlayerSpellbookChapter_MM7() { memzero(this); }
-
     /* 00 */ std::array<char, 11> bIsSpellAvailable;
     /* 0B */
 };
@@ -213,8 +193,6 @@ static_assert(sizeof(PlayerSpellbookChapter_MM7) == 0xB);
 
 
 struct PlayerSpells_MM7 {
-    PlayerSpells_MM7() { memzero(this); }
-
     union {
         struct {
             /* 00 */ std::array<PlayerSpellbookChapter_MM7, 9> pChapters;
@@ -232,8 +210,6 @@ static_assert(sizeof(PlayerSpells_MM7) == 0x64);
 
 
 union PlayerEquipment_MM7 {
-    PlayerEquipment_MM7() { memzero(this); }
-
     union {
         struct {
             /* 00 */ uint32_t uOffHand;
@@ -256,8 +232,6 @@ static_assert(sizeof(PlayerEquipment_MM7) == 0x40);
 
 
 struct LloydBeacon_MM7 {
-    LloydBeacon_MM7() { memzero(this); }
-
     /* 00 */ uint64_t uBeaconTime;
     /* 08 */ int32_t PartyPos_X;
     /* 0C */ int32_t PartyPos_Y;
@@ -272,8 +246,6 @@ static_assert(sizeof(LloydBeacon_MM7) == 0x1C);
 
 
 struct Player_MM7 {
-    Player_MM7() { memzero(this); }
-
     /* 0000 */ std::array<int64_t, 20> pConditions;
     /* 00A0 */ uint64_t uExperience;
     /* 00A8 */ std::array<char, 16> pName;
@@ -445,8 +417,6 @@ void Deserialize(const Player_MM7 &src, Player *dst);
 
 
 struct PartyTimeStruct_MM7 {
-    PartyTimeStruct_MM7()  { memzero(this); }
-
     /* 000 */ std::array<int64_t, 10> bountyHunting_next_generation_time;
     /* 050 */ std::array<int64_t, 85> Shops_next_generation_time;  // field_50
     /* 2F8 */ std::array<int64_t, 53> _shop_ban_times;
@@ -459,8 +429,6 @@ static_assert(sizeof(PartyTimeStruct_MM7) == 0x678);
 
 
 struct Party_MM7 {
-    Party_MM7() { memzero(this); }
-
     /* 00000 */ int32_t field_0;
     /* 00004 */ uint32_t uPartyHeight;
     /* 00008 */ uint32_t uDefaultPartyHeight;
@@ -561,8 +529,6 @@ void Serialize(const Party &src, Party_MM7 *dst);
 void Deserialize(const Party_MM7 &src, Party *dst);
 
 struct Timer_MM7 {
-    Timer_MM7() { memzero(this); }
-
     /* 00 */ uint32_t bReady;
     /* 04 */ uint32_t bPaused;
     /* 08 */ int32_t bTackGameTime;
@@ -582,8 +548,6 @@ void Deserialize(const Timer_MM7 &src, Timer *dst);
 
 
 struct OtherOverlay_MM7 {
-    OtherOverlay_MM7() { memzero(this); }
-
     /* 00 */ int16_t field_0;
     /* 02 */ int16_t field_2;
     /* 04 */ int16_t sprite_frame_time;
@@ -599,8 +563,6 @@ static_assert(sizeof(OtherOverlay_MM7) == 0x14);
 
 
 struct OtherOverlayList_MM7 {
-    OtherOverlayList_MM7()  { memzero(this); }
-
     /* 000 */ std::array<OtherOverlay_MM7, 50> pOverlays;
     /* 3E8 */ int32_t field_3E8;
     /* 3EC */ int32_t bRedraw;
@@ -613,8 +575,6 @@ void Deserialize(const OtherOverlayList_MM7 &src, OtherOverlayList *dst);
 
 
 struct IconFrame_MM7 {
-    IconFrame_MM7() { memzero(this); }
-
     /* 000 */ std::array<char, 12> pAnimationName;
     /* 00C */ std::array<char, 12> pTextureName;
     /* 018 */ int16_t uAnimTime;
@@ -629,8 +589,6 @@ void Deserialize(const IconFrame_MM7 &src, Icon *dst);
 
 
 struct UIAnimation_MM7 {
-    UIAnimation_MM7() { memzero(this); }
-
     /* 000 */ uint16_t uIconID;
     /* 002 */ int16_t field_2;
     /* 004 */ int16_t uAnimTime;
@@ -646,8 +604,6 @@ void Deserialize(const UIAnimation_MM7 &src, UIAnimation *dst);
 
 
 struct MonsterInfo_MM7 {
-    MonsterInfo_MM7() { memzero(this); }
-
     int32_t pName;
     int32_t pPictureName;
     uint8_t uLevel;
@@ -711,8 +667,6 @@ static_assert(sizeof(MonsterInfo_MM7) == 0x58);
 
 
 struct MonsterDesc_MM6 {
-    MonsterDesc_MM6() { memzero(this); }
-
     uint16_t uMonsterHeight;
     uint16_t uMonsterRadius;
     uint16_t uMovementSpeed;
@@ -727,8 +681,6 @@ void Deserialize(const MonsterDesc_MM6 &src, MonsterDesc *dst);
 
 
 struct MonsterDesc_MM7 {
-    MonsterDesc_MM7() { memzero(this); }
-
     uint16_t uMonsterHeight;
     uint16_t uMonsterRadius;
     uint16_t uMovementSpeed;
@@ -745,8 +697,6 @@ void Deserialize(const MonsterDesc_MM7 &src, MonsterDesc *dst);
 
 
 struct Actor_MM7 {
-    Actor_MM7() { memzero(this); }
-
     std::array<char, 32> pActorName;
     int16_t sNPC_ID;
     int16_t field_22;
@@ -793,8 +743,6 @@ void Deserialize(const Actor_MM7 &src, Actor *dst);
 
 
 struct BLVDoor_MM7 {
-    BLVDoor_MM7() { memzero(this); }
-
     uint32_t uAttributes;
     uint32_t uDoorID;
     uint32_t uTimeSinceTriggered;
@@ -824,8 +772,6 @@ void Deserialize(const BLVDoor_MM7 &src, BLVDoor *dst);
 
 
 struct BLVSector_MM7 {
-    BLVSector_MM7() { memzero(this); }
-
     int32_t field_0;
     uint16_t uNumFloors;
     int16_t field_6;
@@ -875,8 +821,6 @@ void Deserialize(const BLVSector_MM7 &src, BLVSector *dst);
 
 
 struct FontData_MM7 {
-    FontData_MM7() { memzero(this); }
-
     uint8_t cFirstChar;  // 0
     uint8_t cLastChar;   // 1
     uint8_t field_2;
@@ -897,8 +841,6 @@ void Deserialize(const FontData_MM7 &src, size_t size, FontData *dst);
 
 
 struct ODMFace_MM7 {
-    ODMFace_MM7() { memzero(this); }
-
     Planei pFacePlane;
     int32_t zCalc1;
     int32_t zCalc2;

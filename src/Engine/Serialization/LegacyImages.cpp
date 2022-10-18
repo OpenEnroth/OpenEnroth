@@ -14,6 +14,7 @@
 #include "Engine/Time.h"
 
 #include "Utility/Color.h"
+#include "Utility/Memory.h"
 
 template<size_t N>
 static void Serialize(const std::string &src, std::array<char, N> *dst) {
@@ -74,7 +75,7 @@ void Deserialize(const BLVFace_MM7 &src, BLVFace *dst) {
 }
 
 void Serialize(const Timer &src, Timer_MM7 *dst) {
-    memset(dst, 0, sizeof(*dst));
+    memzero(dst);
 
     dst->bReady = src.bReady;
     dst->bPaused = src.bPaused;
@@ -102,7 +103,7 @@ void Deserialize(const Timer_MM7 &src, Timer *dst) {
 }
 
 void Serialize(const NPCData &src, NPCData_MM7 *dst) {
-    memset(dst, 0, sizeof(*dst));
+    memzero(dst);
 
     // dst->pName = src.pName;
     dst->pName = !src.pName.empty();
@@ -150,7 +151,7 @@ void Deserialize(const NPCData_MM7 &src, NPCData *dst) {
 }
 
 void Serialize(const OtherOverlayList &src, OtherOverlayList_MM7 *dst) {
-    memset(dst, 0, sizeof(*dst));
+    memzero(dst);
 
     dst->bRedraw = src.bRedraw;
     dst->field_3E8 = src.field_3E8;
@@ -192,7 +193,7 @@ void Deserialize(const OtherOverlayList_MM7 &src, OtherOverlayList *dst) {
 }
 
 void Serialize(const SpellBuff &src, SpellBuff_MM7 *dst) {
-    memset(dst, 0, sizeof(*dst));
+    memzero(dst);
 
     dst->uExpireTime = src.expire_time.value;
     dst->uPower = src.uPower;
@@ -212,7 +213,7 @@ void Deserialize(const SpellBuff_MM7 &src, SpellBuff *dst) {
 }
 
 void Serialize(const ItemGen &src, ItemGen_MM7 *dst) {
-    memset(dst, 0, sizeof(*dst));
+    memzero(dst);
 
     dst->uItemID = src.uItemID;
     dst->uEnchantmentType = src.uEnchantmentType;
@@ -242,7 +243,7 @@ void Deserialize(const ItemGen_MM7 &src, ItemGen *dst) {
 }
 
 void Serialize(const Party &src, Party_MM7 *dst) {
-    memset(dst, 0, sizeof(*dst));
+    memzero(dst);
 
     dst->field_0 = src.field_0_set25_unused;
     dst->uPartyHeight = src.uPartyHeight;
@@ -579,7 +580,7 @@ void Deserialize(const Party_MM7 &src, Party *dst) {
 }
 
 void Serialize(const Player &src, Player_MM7 *dst) {
-    memset(dst, 0, sizeof(*dst));
+    memzero(dst);
 
     for (unsigned int i = 0; i < 20; ++i)
         dst->pConditions[i] = src.conditions.Get(static_cast<Condition>(i)).value;
@@ -1028,6 +1029,8 @@ void Deserialize(const Player_MM7 &src, Player* dst) {
 }
 
 void Serialize(const Icon &src, IconFrame_MM7 *dst) {
+    memzero(dst);
+
     strcpy(dst->pAnimationName.data(), src.GetAnimationName());
     dst->uAnimLength = src.GetAnimLength();
 
@@ -1046,6 +1049,8 @@ void Deserialize(const IconFrame_MM7 &src, Icon *dst) {
 }
 
 void Serialize(const UIAnimation &src, UIAnimation_MM7 *dst) {
+    memzero(dst);
+
     /* 000 */ dst->uIconID = src.icon->id;
     /* 002 */ dst->field_2 = src.field_2;
     /* 004 */ dst->uAnimTime = src.uAnimTime;
@@ -1079,6 +1084,8 @@ void Deserialize(const MonsterDesc_MM6 &src, MonsterDesc *dst) {
 }
 
 void Serialize(const MonsterDesc &src, MonsterDesc_MM7 *dst) {
+    memzero(dst);
+
     dst->uMonsterHeight = src.uMonsterHeight;
     dst->uMonsterRadius = src.uMonsterRadius;
     dst->uMovementSpeed = src.uMovementSpeed;
@@ -1105,6 +1112,8 @@ void Deserialize(const MonsterDesc_MM7 &src, MonsterDesc *dst) {
 }
 
 void Serialize(const Actor &src, Actor_MM7 *dst) {
+    memzero(dst);
+
     Serialize(src.pActorName, &dst->pActorName);
 
     dst->sNPC_ID = src.sNPC_ID;
@@ -1332,6 +1341,8 @@ void Deserialize(const Actor_MM7 &src, Actor *dst) {
 }
 
 void Serialize(const BLVDoor &src, BLVDoor_MM7 *dst) {
+    memzero(dst);
+
     dst->uAttributes = std::to_underlying(src.uAttributes);
     dst->uDoorID = src.uDoorID;
     dst->uTimeSinceTriggered = src.uTimeSinceTriggered;
@@ -1364,6 +1375,8 @@ void Deserialize(const BLVDoor_MM7 &src, BLVDoor *dst) {
 }
 
 void Serialize(const BLVSector &src, BLVSector_MM7 *dst) {
+    memzero(dst);
+
     dst->field_0 = src.field_0;
     dst->uNumFloors = src.uNumFloors;
     dst->field_6 = src.field_6;
@@ -1432,6 +1445,8 @@ void Deserialize(const BLVSector_MM7 &src, BLVSector *dst) {
 }
 
 void Serialize(const FontData &src, FontData_MM7 *dst) {
+    memzero(dst);
+
     dst->cFirstChar = src.cFirstChar;
     dst->cLastChar = src.cLastChar;
     dst->field_2 = src.field_2;
