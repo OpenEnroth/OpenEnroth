@@ -308,7 +308,7 @@ class Actor {
     Vec3s vGuardingPosition;
     uint16_t uTetherDistance = 256;
     AIState uAIState = Standing;
-    uint16_t uCurrentActionAnimation = ANIM_Standing; // TODO: use enum ActorAnimation
+    ActorAnimation uCurrentActionAnimation = ANIM_Standing;
     uint16_t uCarriedItemID = 0;  // carried items are special items the
                                   // ncp carries (ie lute from bard)
     char field_B6 = 0;

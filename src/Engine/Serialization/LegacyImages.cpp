@@ -1271,7 +1271,7 @@ void Deserialize(const Actor_MM7 &src, Actor *dst) {
     dst->vGuardingPosition = src.vGuardingPosition;
     dst->uTetherDistance = src.uTetherDistance;
     dst->uAIState = (AIState)src.uAIState;
-    dst->uCurrentActionAnimation = src.uCurrentActionAnimation;
+    dst->uCurrentActionAnimation = ActorAnimation(src.uCurrentActionAnimation);
     dst->uCarriedItemID = src.uCarriedItemID;
     dst->field_B6 = src.field_B6;
     dst->field_B7 = src.field_B7;
