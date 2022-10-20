@@ -9,6 +9,9 @@ uniform mat4 view;
 uniform mat4 projection;
 
 void main() {
-    gl_Position = projection * view * vec4(vaPos, 1.0);
+    vec4 adjpos = view * vec4(vaPos, 1.0);
+    adjpos.x += 0.5;
+    adjpos.y += 0.5;
+    gl_Position = projection * adjpos;
     colour = vaCol;
 } 

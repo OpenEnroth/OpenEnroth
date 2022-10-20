@@ -565,8 +565,9 @@ std::array<uint8_t, 5> IsPlayerWearingWatersuit;
 std::array<char, 54> party_has_equipment;
 std::array<char, 17> byte_5111F6_OwnedArtifacts;
 
-unsigned int uNumBlueFacesInBLVMinimap;  // could remove
+unsigned int uNumBlueFacesInBLVMinimap;
 std::array<uint16_t, 50> pBlueFacesInBLVMinimapIDs;
+
 std::array<class Image *, 14> party_buff_icons;
 unsigned int uIconIdx_FlySpell;
 unsigned int uIconIdx_WaterWalk;

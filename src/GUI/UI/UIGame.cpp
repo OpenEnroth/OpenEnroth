@@ -1737,6 +1737,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
             xpix = xpixoffset16 >> 16;
             // v28 = &render->pTargetSurface[uX + uY * lPitch];
 
+            // TODO: could stretch texture rather than rescale
             if (/*pMapLod0 && */ bRedrawOdmMinimap) {
                 assert(uWidth == 137 && uHeight == 117);
 
@@ -1765,13 +1766,14 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
         render->BeginLines2D();
     } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         render->FillRectFast(uX, uY, uZ - uX, uHeight, 0xF);
+        uNumBlueFacesInBLVMinimap = 0;
         render->BeginLines2D();
         for (uint i = 0; i < (uint)pIndoor->pMapOutlines.size(); ++i) {
             BLVMapOutline *pOutline = &pIndoor->pMapOutlines[i];
 
             if (pIndoor->pFaces[pOutline->uFace1ID].Visible() &&
                 pIndoor->pFaces[pOutline->uFace2ID].Visible()) {
-                if (pIndoor->pFaces[pOutline->uFace1ID].uAttributes & FACE_SeenByParty ||
+                if (pOutline->uFlags & 1 || pIndoor->pFaces[pOutline->uFace1ID].uAttributes & FACE_SeenByParty ||
                     pIndoor->pFaces[pOutline->uFace2ID].uAttributes & FACE_SeenByParty) {
                     pOutline->uFlags = pOutline->uFlags | 1;
                     pIndoor->_visible_outlines[i >> 3] |= 1 << (7 - i % 8);
@@ -1788,19 +1790,34 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
 
                     if (bWizardEyeActive && uWizardEyeSkillLevel >= 3 &&
                         (pIndoor->pFaces[pOutline->uFace1ID].Clickable() ||
-                         pIndoor->pFaces[pOutline->uFace2ID].Clickable()) &&
+                            pIndoor->pFaces[pOutline->uFace2ID].Clickable()) &&
                         (pIndoor->pFaceExtras[pIndoor->pFaces[pOutline->uFace1ID].uFaceExtraID].uEventID ||
-                         pIndoor->pFaceExtras[pIndoor->pFaces[pOutline->uFace2ID].uFaceExtraID].uEventID)) {
-                        render->RasterLine2D(linex, liney, linez, linew, ui_game_minimap_outline_color);
-                    } else {
-                        LineGreyDim = abs(pOutline->sZ - pParty->vPosition.z) / 8;
-                        if (LineGreyDim > 100) LineGreyDim = 100;
-                        render->RasterLine2D(linex, liney, linez, linew, viewparams->pPalette[-LineGreyDim + 200]);
+                            pIndoor->pFaceExtras[pIndoor->pFaces[pOutline->uFace2ID].uFaceExtraID].uEventID)) {
+                        if (uNumBlueFacesInBLVMinimap < 49) {
+                            pBlueFacesInBLVMinimapIDs[uNumBlueFacesInBLVMinimap++] = i;
+                            continue;
+                        }
                     }
+
+                    LineGreyDim = abs(pOutline->sZ - pParty->vPosition.z) / 8;
+                    if (LineGreyDim > 100) LineGreyDim = 100;
+                    render->RasterLine2D(linex, liney, linez, linew, viewparams->pPalette[-LineGreyDim + 200]);
                 }
             }
         }
+
+        for (uint i = 0; i < uNumBlueFacesInBLVMinimap; ++i) {
+            BLVMapOutline *pOutline = &pIndoor->pMapOutlines[pBlueFacesInBLVMinimapIDs[i]];
+            int pX = uCenterX + ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex1ID].x)) << 16) - uZoom * pParty->vPosition.x) >> 16);
+            int pY = uCenterY - ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex1ID].y)) << 16) - uZoom * pParty->vPosition.y) >> 16);
+            int pZ = uCenterX + ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex2ID].x)) << 16) - uZoom * pParty->vPosition.x) >> 16);
+            int pW = uCenterY - ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex2ID].y)) << 16) - uZoom * pParty->vPosition.y) >> 16);
+            render->RasterLine2D(pX, pY, pZ, pW, ui_game_minimap_outline_color);
+        }
     }
+
+    // opengl needs slightly modified lines to show up properly
+    int lineadj = engine->config->graphics.Renderer.Get() == "OpenGL";
 
     // draw objects on the minimap
     if (bWizardEyeActive) {
@@ -1831,26 +1848,26 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                                              ui_game_minimap_projectile_color);
                     } else if (uZoom > 512) {
                         render->RasterLine2D(pPoint_X - 2, pPoint_Y,
-                                             pPoint_X - 2, pPoint_Y + 1,
+                                             pPoint_X - 2, pPoint_Y + 1 + lineadj,
                                              ui_game_minimap_treasure_color);
                         render->RasterLine2D(pPoint_X - 1, pPoint_Y - 1,
-                                             pPoint_X - 1, pPoint_Y + 1,
+                                             pPoint_X - 1, pPoint_Y + 1 + lineadj,
                                              ui_game_minimap_treasure_color);
                         render->RasterLine2D(pPoint_X, pPoint_Y - 2, pPoint_X,
-                                             pPoint_Y + 1,
+                                             pPoint_Y + 1 + lineadj,
                                              ui_game_minimap_treasure_color);
                         render->RasterLine2D(pPoint_X + 1, pPoint_Y - 1,
-                                             pPoint_X + 1, pPoint_Y + 1,
+                                             pPoint_X + 1, pPoint_Y + 1 + lineadj,
                                              ui_game_minimap_treasure_color);
                         render->RasterLine2D(pPoint_X + 2, pPoint_Y,
-                                             pPoint_X + 2, pPoint_Y + 1,
+                                             pPoint_X + 2, pPoint_Y + 1 + lineadj,
                                              ui_game_minimap_treasure_color);
                     } else {
                         render->RasterLine2D(pPoint_X - 1, pPoint_Y - 1,
-                                             pPoint_X - 1, pPoint_Y,
+                                             pPoint_X - 1, pPoint_Y + lineadj,
                                              ui_game_minimap_treasure_color);
                         render->RasterLine2D(pPoint_X, pPoint_Y - 1, pPoint_X,
-                                             pPoint_Y,
+                                             pPoint_Y + lineadj,
                                              ui_game_minimap_treasure_color);
                     }
                 }
@@ -1880,24 +1897,24 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                         pColor = ui_game_minimap_actor_corpse_color;
                     if (uZoom > 1024) {
                         render->RasterLine2D(pPoint_X - 2, pPoint_Y - 1,
-                                             pPoint_X - 2, pPoint_Y + 1,
+                                             pPoint_X - 2, pPoint_Y + 1 + lineadj,
                                              pColor);
                         render->RasterLine2D(pPoint_X - 1, pPoint_Y - 2,
-                                             pPoint_X - 1, pPoint_Y + 2,
+                                             pPoint_X - 1, pPoint_Y + 2 + lineadj,
                                              pColor);
                         render->RasterLine2D(pPoint_X, pPoint_Y - 2, pPoint_X,
-                                             pPoint_Y + 2, pColor);
+                                             pPoint_Y + 2 + lineadj, pColor);
                         render->RasterLine2D(pPoint_X + 1, pPoint_Y - 2,
-                                             pPoint_X + 1, pPoint_Y + 2,
+                                             pPoint_X + 1, pPoint_Y + 2 + lineadj,
                                              pColor);
                         render->RasterLine2D(pPoint_X + 2, pPoint_Y - 1,
-                                             pPoint_X + 2, pPoint_Y + 1,
+                                             pPoint_X + 2, pPoint_Y + 1 + lineadj,
                                              pColor);
                     } else {
                         render->RasterLine2D(pPoint_X - 1, pPoint_Y - 1,
-                                             pPoint_X - 1, pPoint_Y, pColor);
+                                             pPoint_X - 1, pPoint_Y + lineadj, pColor);
                         render->RasterLine2D(pPoint_X, pPoint_Y - 1, pPoint_X,
-                                             pPoint_Y, pColor);
+                                             pPoint_Y + lineadj, pColor);
                     }
                 }
             }
@@ -1906,12 +1923,11 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
             if (pLevelDecorations[i].uFlags & 8) {
                 pPoint_X =
                     uCenterX + (fixpoint_mul((pLevelDecorations[i].vPosition.x -
-                                              pParty->vPosition.x),
-                                             uZoom));
+                                              pParty->vPosition.x), uZoom));
                 pPoint_Y =
                     uCenterY - (fixpoint_mul((pLevelDecorations[i].vPosition.y -
-                                              pParty->vPosition.y),
-                                             uZoom));
+                                              pParty->vPosition.y), uZoom));
+
                 // if ( pPoint_X >= render->raster_clip_x && pPoint_X <=
                 // render->raster_clip_z
                 //  && pPoint_Y >= render->raster_clip_y && pPoint_Y <=

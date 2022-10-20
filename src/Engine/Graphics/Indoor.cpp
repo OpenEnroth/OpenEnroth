@@ -226,7 +226,7 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
                                   unsigned int uNumFrustums,
                                   RenderVertexSoft *pPortalBounding) {
     // This has been moved to seperate funciotns in render(s) see DrawIndoorFaces
-
+    __debugbreak();
 
     // faceid, portalfrustum normal, 4, portalbounding
 
