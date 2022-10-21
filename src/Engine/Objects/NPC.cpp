@@ -86,7 +86,7 @@ NPCData *GetNPCData(signed int npcid) {
 
         v9 = buf[v3];
         if (v9 >= 2)
-            result = &pNPCStats->pNPCData[499 + v9];
+            result = &pNPCStats->pNewNPCData[v9 - 2];
         else
             result = &pParty->pHirelings[v9];
     }

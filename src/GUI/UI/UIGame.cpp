@@ -2006,8 +2006,7 @@ void GameUI_DrawHiredNPCs() {
              i < v22 && pNPC_limit_ID < 2; i++) {
             if ((uint8_t)buf[i] >= 2) {
                 sprintf(pContainer, "NPC%03d",
-                        pNPCStats->pNPCData[(uint8_t)buf[i] + 499]
-                            .uPortraitID);
+                        pNPCStats->pNewNPCData[buf[i] - 2].uPortraitID);
                 render->DrawTextureAlphaNew(
                     pHiredNPCsIconsOffsetsX[pNPC_limit_ID] / 640.0f,
                     pHiredNPCsIconsOffsetsY[pNPC_limit_ID] / 480.0f,
