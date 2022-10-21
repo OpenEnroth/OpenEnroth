@@ -16,6 +16,8 @@ Build/Visual Studio 2017/Debug
 # CLion
 .idea
 cmake-build-debug
+cmake-build-release
+cmake-build-relwithdebinfo
 
 # CMake
 ## Default output folder used by Visual Studio
