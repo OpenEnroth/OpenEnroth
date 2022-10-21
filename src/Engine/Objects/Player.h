@@ -14,7 +14,7 @@
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/PlayerEnums.h"
 #include "Engine/Spells/Spells.h"
-#include "Utility/Workaround.h"
+#include "Utility/Workaround/ToUnderlying.h"
 
 
 struct LloydBeacon {

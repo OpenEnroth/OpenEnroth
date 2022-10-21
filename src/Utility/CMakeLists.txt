@@ -17,7 +17,7 @@ set(UTILITY_HEADERS Blob.h
                     IndexedArray.h
                     Memory.h
                     String.h
-                    Workaround.h
+                    Workaround/ToUnderlying.h
                     Streams/InputStream.h
                     Streams/OutputStream.h
                     Streams/MemoryInputStream.h
