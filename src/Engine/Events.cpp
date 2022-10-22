@@ -877,13 +877,13 @@ LABEL_47:
                     ++curr_seq_num;
                     break;
                 case EVENT_ToggleActorFlag:
-                    Actor::ToggleFlag(EVT_DWORD(_evt->v5), EVT_DWORD(_evt->v9),
+                    Actor::ToggleFlag(EVT_DWORD(_evt->v5), ActorAttribute(EVT_DWORD(_evt->v9)),
                                       _evt->v13);
                     ++curr_seq_num;
                     break;
                 case EVENT_ToggleActorGroupFlag:
                     ToggleActorGroupFlag(EVT_DWORD(_evt->v5),
-                                         EVT_DWORD(_evt->v9), _evt->v13);
+                                         ActorAttribute(EVT_DWORD(_evt->v9)), _evt->v13);
                     ++curr_seq_num;
                     break;
                 case EVENT_SetSnow:

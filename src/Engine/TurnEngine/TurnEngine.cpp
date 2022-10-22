@@ -278,7 +278,7 @@ void stru262_TurnBased::AITurnBasedAction() {
                 pMonsterList->pMonsters[pActors[i].pMonsterInfo.uID - 1]
                     .uMonsterHeight;
 
-        if (!(curr_actor->uAttributes & 0x80) &&
+        if (!(curr_actor->uAttributes & ACTOR_STAND_IN_QUEUE) &&
             !curr_actor->pActorBuffs[ACTOR_BUFF_STONED].Expired() &&
             !curr_actor->pActorBuffs[ACTOR_BUFF_PARALYZED].Expired()) {
             curr_actor->uCurrentActionTime += pMiscTimer->uTimeElapsed;
