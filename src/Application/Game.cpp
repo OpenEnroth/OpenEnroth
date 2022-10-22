@@ -784,8 +784,7 @@ void Game::EventLoop() {
                                         }
                                         if (ptr_50C9A4_ItemToEnchant &&
                                             ptr_50C9A4_ItemToEnchant->uItemID) {
-                                            ptr_50C9A4_ItemToEnchant
-                                                ->uAttributes &= 0xFFFFFF0F;
+                                            ptr_50C9A4_ItemToEnchant->uAttributes &= ~ITEM_ENCHANT_ANIMATION_MASK;
                                             _50C9A8_item_enchantment_timer = 0;
                                             ptr_50C9A4_ItemToEnchant = nullptr;
                                         }

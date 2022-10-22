@@ -859,7 +859,7 @@ void ItemsTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
     if (pItemsTable->pItems[out_item->uItemID].uItemID_Rep_St)
         out_item->uAttributes = 0;
     else
-        out_item->uAttributes = 1;
+        out_item->uAttributes = ITEM_IDENTIFIED;
 
     if (out_item->GetItemEquipType() != EQUIP_POTION) {
         out_item->special_enchantment = ITEM_ENCHANTMENT_NULL;

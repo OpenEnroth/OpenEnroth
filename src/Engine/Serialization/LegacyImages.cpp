@@ -220,7 +220,7 @@ void Serialize(const ItemGen &src, ItemGen_MM7 *dst) {
     dst->m_enchantmentStrength = src.m_enchantmentStrength;
     dst->special_enchantment = src.special_enchantment;
     dst->uNumCharges = src.uNumCharges;
-    dst->uAttributes = src.uAttributes;
+    dst->uAttributes = std::to_underlying(src.uAttributes);
     dst->uBodyAnchor = src.uBodyAnchor;
     dst->uMaxCharges = src.uMaxCharges;
     dst->uHolderPlayer = src.uHolderPlayer;
@@ -234,7 +234,7 @@ void Deserialize(const ItemGen_MM7 &src, ItemGen *dst) {
     dst->m_enchantmentStrength = src.m_enchantmentStrength;
     dst->special_enchantment = (ITEM_ENCHANTMENT)src.special_enchantment;
     dst->uNumCharges = src.uNumCharges;
-    dst->uAttributes = src.uAttributes;
+    dst->uAttributes = ITEM_FLAGS(src.uAttributes);
     dst->uBodyAnchor = src.uBodyAnchor;
     dst->uMaxCharges = src.uMaxCharges;
     dst->uHolderPlayer = src.uHolderPlayer;

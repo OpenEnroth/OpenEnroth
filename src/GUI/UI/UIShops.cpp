@@ -971,7 +971,7 @@ void UIShop_Buy_Identify_Repair() {
                         dword_F8B1E4 = 1;
                         pParty->TakeGold(uPriceItemService);
                         item->uAttributes =
-                            (item->uAttributes & 0xFFFFFFFD) | 1;
+                            (item->uAttributes & ~ITEM_BROKEN) | ITEM_IDENTIFIED;
                         pPlayers[uActiveCharacter]->PlaySound(SPEECH_ShopRepair, 0);
                         GameUI_SetStatusBar(LSTR_GOOD_AS_NEW);
                         return;

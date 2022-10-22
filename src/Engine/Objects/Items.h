@@ -21,30 +21,30 @@ struct ItemGen {  // 0x24
     void GetItemBonusArtifact(Player* owner, CHARACTER_ATTRIBUTE_TYPE attrToGet, int* bonusSum);
     void GetItemBonusSpecialEnchantment(Player* owner, CHARACTER_ATTRIBUTE_TYPE attrToGet, int* additiveBonus, int* halfSkillBonus);
 
-    inline void ResetEnchantAnimation() { uAttributes &= 0xFFFFFF0F; }
+    inline void ResetEnchantAnimation() { uAttributes &= ~ITEM_ENCHANT_ANIMATION_MASK; }
     inline bool ItemEnchanted() const {
-        return (uAttributes & ITEM_ENCHANT_ANIMATION) != 0;
+        return uAttributes & ITEM_ENCHANT_ANIMATION_MASK;
     }
     inline bool AuraEffectRed() const {
-        return (uAttributes & ITEM_ENCHANT_ANIMATION) == ITEM_AURA_EFFECT_RED;
+        return (uAttributes & ITEM_ENCHANT_ANIMATION_MASK) == ITEM_AURA_EFFECT_RED;
     }
     inline bool AuraEffectBlue() const {
-        return (uAttributes & ITEM_ENCHANT_ANIMATION) == ITEM_AURA_EFFECT_BLUE;
+        return (uAttributes & ITEM_ENCHANT_ANIMATION_MASK) == ITEM_AURA_EFFECT_BLUE;
     }
     inline bool AuraEffectGreen() const {
-        return (uAttributes & ITEM_ENCHANT_ANIMATION) == ITEM_AURA_EFFECT_GREEN;
+        return (uAttributes & ITEM_ENCHANT_ANIMATION_MASK) == ITEM_AURA_EFFECT_GREEN;
     }
     inline bool AuraEffectPurple() const {
-        return (uAttributes & ITEM_ENCHANT_ANIMATION) == ITEM_AURA_EFFECT_PURPLE;
+        return (uAttributes & ITEM_ENCHANT_ANIMATION_MASK) == ITEM_AURA_EFFECT_PURPLE;
     }
 
     bool IsRegularEnchanmentForAttribute(CHARACTER_ATTRIBUTE_TYPE attrToGet);
 
-    inline bool IsBroken() const { return (uAttributes & ITEM_BROKEN) != 0; }
+    inline bool IsBroken() const { return uAttributes & ITEM_BROKEN; }
     inline void SetBroken() { uAttributes |= ITEM_BROKEN; }
-    inline bool IsIdentified() const { return (uAttributes & ITEM_IDENTIFIED) != 0; }
+    inline bool IsIdentified() const { return uAttributes & ITEM_IDENTIFIED; }
     inline void SetIdentified() { uAttributes |= ITEM_IDENTIFIED; }
-    inline bool IsStolen() const { return (uAttributes & ITEM_STOLEN) != 0; }
+    inline bool IsStolen() const { return uAttributes & ITEM_STOLEN; }
     inline void SetStolen() { uAttributes |= ITEM_STOLEN; }
 
     bool GenerateArtifact();
@@ -86,7 +86,7 @@ struct ItemGen {  // 0x24
                               // +5 Armor Class. 71  Prevents drowning damage.
                               // 72  Prevents falling damage.
     int32_t uNumCharges = 0;           // 10
-    uint32_t uAttributes = 0;          // 14
+    ITEM_FLAGS uAttributes = 0;          // 14
     uint8_t uBodyAnchor = 0;           // 18
     uint8_t uMaxCharges = 0;           // 19
     uint8_t uHolderPlayer = 0;         // 1A

@@ -5175,7 +5175,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
         case VAR_PlayerItemInHands:
             item.Reset();
             item.uItemID = var_value;
-            item.uAttributes = 1;
+            item.uAttributes = ITEM_IDENTIFIED;
             pParty->SetHoldingItem(&item);
             if (var_value >= ITEM_ARTIFACT_PUCK &&
                 var_value <= ITEM_RELIC_MEKORIGS_HAMMER)
@@ -5762,7 +5762,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             return;
         case VAR_PlayerItemInHands:
             item.Reset();
-            item.uAttributes = 1;
+            item.uAttributes = ITEM_IDENTIFIED;
             item.uItemID = val;
             if (val >= ITEM_ARTIFACT_PUCK && val <= ITEM_RELIC_MEKORIGS_HAMMER) {
                 pParty->pIsArtifactFound[val - 500] = 1;

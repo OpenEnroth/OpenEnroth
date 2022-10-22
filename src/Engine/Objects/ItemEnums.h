@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Utility/Flags.h"
+
 enum DAMAGE_TYPE : unsigned int {
     DMGT_FIRE = 0,
     DMGT_ELECTR = 1,
@@ -15,7 +17,7 @@ enum DAMAGE_TYPE : unsigned int {
 };
 
 /*  338 */
-enum ITEM_FLAGS : unsigned int {
+enum class ITEM_FLAG : uint32_t {
     ITEM_IDENTIFIED = 0x1,
     ITEM_BROKEN = 0x2,
     ITEM_TEMP_BONUS = 0x8,
@@ -23,10 +25,13 @@ enum ITEM_FLAGS : unsigned int {
     ITEM_AURA_EFFECT_BLUE = 0x20,
     ITEM_AURA_EFFECT_GREEN = 0x40,
     ITEM_AURA_EFFECT_PURPLE = 0x80,
-    ITEM_ENCHANT_ANIMATION = 0xF0,
+    ITEM_ENCHANT_ANIMATION_MASK = 0xF0,
     ITEM_STOLEN = 0x100,
     ITEM_HARDENED = 0x200,
 };
+using enum ITEM_FLAG;
+MM_DECLARE_FLAGS(ITEM_FLAGS, ITEM_FLAG)
+MM_DECLARE_OPERATORS_FOR_FLAGS(ITEM_FLAGS)
 
 enum ITEM_ENCHANTMENT : unsigned int {
     ITEM_ENCHANTMENT_NULL = 0,
