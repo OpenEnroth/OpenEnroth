@@ -142,7 +142,7 @@ bool Chest::Open(int uChestID) {
             pSpellObject.Create(0, 0, 0, 0);
             pAudioPlayer->PlaySound(SOUND_fireBall, 0, 0, -1, 0, 0);
             pSpellObject.ExplosionTraps();
-            chest->uFlags &= 0xFEu;
+            chest->uFlags &= ~CHEST_TRAPPED;
             if (uActiveCharacter && !_A750D8_player_speech_timer &&
                 !OpenedTelekinesis) {
                 _A750D8_player_speech_timer = 256;
@@ -152,7 +152,7 @@ bool Chest::Open(int uChestID) {
             OpenedTelekinesis = false;
             return false;
         }
-        chest->uFlags &= 0xFEu;
+        chest->uFlags &= ~CHEST_TRAPPED;
         flag_shout = true;
     }
     pAudioPlayer->PauseSounds(-1);
@@ -424,9 +424,9 @@ void Chest::PlaceItems(int uChestID) {  // only sued for setup
     vChests[uChestID].SetInitialized(true);
 }
 
-void Chest::ToggleFlag(int uChestID, uint16_t uFlag, unsigned int bToggle) {
+void Chest::ToggleFlag(int uChestID, CHEST_FLAG uFlag, bool bValue) {
     if (uChestID >= 0 && uChestID <= 19) {
-        if (bToggle)
+        if (bValue)
             vChests[uChestID].uFlags |= uFlag;
         else
             vChests[uChestID].uFlags &= ~uFlag;

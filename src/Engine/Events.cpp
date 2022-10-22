@@ -872,7 +872,7 @@ LABEL_47:
                     ++curr_seq_num;
                     break;
                 case EVENT_ToggleChestFlag:
-                    Chest::ToggleFlag(EVT_DWORD(_evt->v5), EVT_DWORD(_evt->v9),
+                    Chest::ToggleFlag(EVT_DWORD(_evt->v5), CHEST_FLAG(EVT_DWORD(_evt->v9)),
                                       _evt->v13);
                     ++curr_seq_num;
                     break;
