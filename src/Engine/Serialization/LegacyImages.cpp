@@ -1194,7 +1194,7 @@ void Serialize(const Actor &src, Actor_MM7 *dst) {
     dst->vInitialPosition = src.vInitialPosition;
     dst->vGuardingPosition = src.vGuardingPosition;
     dst->uTetherDistance = src.uTetherDistance;
-    dst->uAIState = src.uAIState;
+    dst->uAIState = std::to_underlying(src.uAIState);
     dst->uCurrentActionAnimation = std::to_underlying(src.uCurrentActionAnimation);
     dst->uCarriedItemID = src.uCarriedItemID;
     dst->field_B6 = src.field_B6;

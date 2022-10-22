@@ -51,7 +51,7 @@ enum class ObjectType {
 using enum ObjectType;
 
 /*  264 */
-enum AIState : uint16_t {
+enum class AIState : uint16_t {
     Standing = 0x0,
     Tethered = 0x1,
     AttackingMelee = 0x2,
@@ -73,6 +73,7 @@ enum AIState : uint16_t {
     AttackingRanged4 = 18,
     Disabled = 19,
 };
+using enum AIState;
 
 /*  265 */
 enum class ActorAnimation {

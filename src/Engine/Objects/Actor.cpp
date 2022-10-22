@@ -4329,8 +4329,8 @@ void ToggleActorGroupFlag(unsigned int uGroupID, unsigned int uFlag,
                 if (pActors[i].uGroup == uGroupID) {
                     if (uFlag == 0x10000) {
                         if (pActors[i].uAIState != Dead) {
-                            if (pActors[i].uAIState != 4 &&
-                                pActors[i].uAIState != 11)
+                            if (pActors[i].uAIState != Dying &&
+                                pActors[i].uAIState != Removed)
                                 pActors[i].uAIState = Standing;
                         }
                     }

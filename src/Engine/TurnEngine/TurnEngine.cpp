@@ -473,7 +473,7 @@ void stru262_TurnBased::NextTurn() {
 
 //----- (004063A1) --------------------------------------------------------
 bool stru262_TurnBased::StepTurnQueue() {
-    int v9;  // dx@12
+    AIState v9;  // dx@12
     int j;
 
     SortTurnQueue();
@@ -548,7 +548,7 @@ void stru262_TurnBased::_406457(int a2) {
 //----- (0040652A) --------------------------------------------------------
 void stru262_TurnBased::SetAIRecoveryTimes() {
     int i;
-    int monster_ai_state;
+    AIState monster_ai_state;
     Actor *monster;  // eax@5
 
     for (i = 0; i < uActorQueueSize; ++i) {

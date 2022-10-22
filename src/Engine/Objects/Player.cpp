@@ -7026,7 +7026,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
 
         // pain reflection back on attacker
         if (playerPtr->pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active()) {
-            int actorState = actorPtr->uAIState;
+            AIState actorState = actorPtr->uAIState;
             if (actorState != Dying && actorState != Dead) {
                 int reflectedDamage = actorPtr->CalcMagicalDamageToActor((DAMAGE_TYPE)damageType, dmgToReceive);
                 actorPtr->sCurrentHP -= reflectedDamage;
@@ -7204,7 +7204,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
 
             int reflectedDmg = playerPtr->ReceiveDamage(dmgToReceive, (DAMAGE_TYPE)damageType);
             if (playerPtr->pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active()) {
-                uint16_t actorState = actorPtr->uAIState;
+                AIState actorState = actorPtr->uAIState;
                 if (actorState != Dying && actorState != Dead) {
                     recvdMagicDmg = actorPtr->CalcMagicalDamageToActor((DAMAGE_TYPE)damageType, reflectedDmg);
                     actorPtr->sCurrentHP -= recvdMagicDmg;
