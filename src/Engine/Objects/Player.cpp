@@ -1910,7 +1910,7 @@ int Player::ReceiveSpecialAttackEffect(
             itemtobreak = &this->pInventoryItemList
                                [itemstobreaklist[rand() % itemstobreakcounter]];
             statcheckbonus =
-                3 * (pItemsTable->pItems[itemtobreak->uItemID].uMaterial +
+                3 * (std::to_underlying(pItemsTable->pItems[itemtobreak->uItemID].uMaterial) +
                      itemtobreak->GetDamageMod());
             break;
 
@@ -1934,7 +1934,7 @@ int Player::ReceiveSpecialAttackEffect(
             itemtobreak = &this->pInventoryItemList
                                [itemstobreaklist[rand() % itemstobreakcounter]];
             statcheckbonus =
-                3 * (pItemsTable->pItems[itemtobreak->uItemID].uMaterial +
+                3 * (std::to_underlying(pItemsTable->pItems[itemtobreak->uItemID].uMaterial) +
                      itemtobreak->GetDamageMod());
             break;
 
@@ -1960,7 +1960,7 @@ int Player::ReceiveSpecialAttackEffect(
             itemtobreak = &this->pInventoryItemList
                                [itemstobreaklist[rand() % itemstobreakcounter]];
             statcheckbonus =
-                3 * (pItemsTable->pItems[itemtobreak->uItemID].uMaterial +
+                3 * (std::to_underlying(pItemsTable->pItems[itemtobreak->uItemID].uMaterial) +
                      itemtobreak->GetDamageMod());
             break;
 

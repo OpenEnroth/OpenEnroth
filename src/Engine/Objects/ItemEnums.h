@@ -105,12 +105,13 @@ enum ITEM_ENCHANTMENT : unsigned int {
     ITEM_ENCHANTMENT_OF_FEATHER_FALLING = 72, // Prevents damage from falling
 };
 
-enum ITEM_MATERIAL {
+enum class ITEM_MATERIAL : uint8_t {
     MATERIAL_COMMON = 0,
     MATERIAL_ARTIFACT = 1,
     MATERIAL_RELIC = 2,
     MATERIAL_SPECIAL = 3
 };
+using enum ITEM_MATERIAL;
 
 /*  330 */
 enum ITEM_TYPE {

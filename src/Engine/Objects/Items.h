@@ -115,7 +115,7 @@ struct ItemDesc {  // 30h
     uint8_t uDamageDice;  // 1e 22
     uint8_t uDamageRoll;  // 1f 23
     uint8_t uDamageMod;   // 20 24
-    uint8_t uMaterial;    // 21 25
+    ITEM_MATERIAL uMaterial;    // 21 25
     char _additional_value;       // 22 26
     char _bonus_type;             // 23  27
     char _bonus_strength;         // 24 28
