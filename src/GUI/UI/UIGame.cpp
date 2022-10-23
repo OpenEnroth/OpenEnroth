@@ -676,53 +676,18 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
 }
 
 void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
-    int v1;                  // edi@2
     NPCData *pNPC;           // eax@16
     const char *pText;       // eax@18
     GUIWindow popup_window;  // [sp+Ch] [bp-60h]@23
     int a2;                  // [sp+60h] [bp-Ch]@16
-    const char *lpsz;        // [sp+68h] [bp-4h]@6
+    const char *lpsz = 0;        // [sp+68h] [bp-4h]@6
 
-    std::array<char, 4096> buf {};
     if (bNoNPCHiring != 1) {
-        v1 = 0;
-        /*do
-        {
-        if ( v3->pName )
-        tmp_str[v1++] = v2;
-        ++v3;
-        ++v2;
-        }
-        while ( (signed int)v3 < (signed int)&pParty->pPickedItem );*/
-        for (int i = 0; i < 2; ++i) {
-            if (!pParty->pHirelings[i].pName.empty()) buf[v1++] = i;
-        }
-        lpsz = 0;
-        if ((signed int)pNPCStats->uNumNewNPCs > 0) {
-            /*v4 = pNPCStats->pNewNPCData;
-            do
-            {
-            if ( v4->uFlags & 0x80
-            && (!pParty->pHirelings[0].pName || strcmp(v4->pName,
-            pParty->pHirelings[0].pName))
-            && (!pParty->pHirelings[1].pName || strcmp(v4->pName,
-            pParty->pHirelings[1].pName)) ) tmp_str[v1++] = (char)lpsz + 2;
-            ++lpsz;
-            ++v4;
-            }
-            while ( (signed int)lpsz < (signed int)pNPCStats->uNumNewNPCs );*/
-            for (uint i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
-                if (pNPCStats->pNewNPCData[i].Hired()) {
-                    if (pNPCStats->pNewNPCData[i].pName != pParty->pHirelings[0].pName) {
-                        if (pNPCStats->pNewNPCData[i].pName != pParty->pHirelings[1].pName)
-                            buf[v1++] = i + 2;
-                    }
-                }
-            }
-        }
-        if ((int64_t)((char *)_this + pParty->hirelingScrollPosition) < v1) {
-            sDialogue_SpeakingActorNPC_ID =
-                -1 - pParty->hirelingScrollPosition - (int64_t)_this;
+        FlatHirelings buf;
+        buf.Prepare();
+
+        if ((int64_t)((char *)_this + pParty->hirelingScrollPosition) < buf.Size()) {
+            sDialogue_SpeakingActorNPC_ID = -1 - pParty->hirelingScrollPosition - (int64_t)_this;
             pNPC = GetNewNPCData(sDialogue_SpeakingActorNPC_ID, &a2);
             if (pNPC) {
                 if (a2 == 57)
@@ -1986,53 +1951,32 @@ void GameUI_DrawHiredNPCs() {
     int v22;                        // [sp+34h] [bp-8h]@2
     uint8_t pNPC_limit_ID;  // [sp+3Bh] [bp-1h]@2
 
-    std::array<char, 4096> buf {};
     if (bNoNPCHiring != 1) {
+        FlatHirelings buf;
+        buf.Prepare();
+
         pNPC_limit_ID = 0;
-        v22 = 0;
-        if (!pParty->pHirelings[0].pName.empty()) buf[v22++] = 0;
-        if (!pParty->pHirelings[1].pName.empty()) buf[v22++] = 1;
 
-        for (uint i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
-            if (pNPCStats->pNewNPCData[i].Hired()) {
-                if (pNPCStats->pNewNPCData[i].pName != pParty->pHirelings[0].pName) {
-                    if (pNPCStats->pNewNPCData[i].pName != pParty->pHirelings[1].pName)
-                        buf[v22++] = i + 2;
-                }
-            }
-        }
-
-        for (int i = pParty->hirelingScrollPosition;
-             i < v22 && pNPC_limit_ID < 2; i++) {
-            if ((uint8_t)buf[i] >= 2) {
-                sprintf(pContainer, "NPC%03d",
-                        pNPCStats->pNewNPCData[buf[i] - 2].uPortraitID);
-                render->DrawTextureAlphaNew(
+        for (int i = pParty->hirelingScrollPosition; i < buf.Size() && pNPC_limit_ID < 2; i++) {
+            sprintf(pContainer, "NPC%03d", buf.Get(i)->uPortraitID);
+            render->DrawTextureAlphaNew(
                     pHiredNPCsIconsOffsetsX[pNPC_limit_ID] / 640.0f,
                     pHiredNPCsIconsOffsetsY[pNPC_limit_ID] / 480.0f,
                     assets->GetImage_ColorKey(pContainer, render->teal_mask_16));
-            } else {
-                sprintf(
-                    pContainer, "NPC%03d",
-                    pParty->pHirelings[(uint8_t)buf[i]].uPortraitID);
-                render->DrawTextureAlphaNew(
-                    pHiredNPCsIconsOffsetsX[pNPC_limit_ID] / 640.0f,
-                    pHiredNPCsIconsOffsetsY[pNPC_limit_ID] / 480.0f,
-                    assets->GetImage_ColorKey(pContainer, render->teal_mask_16));
-                if (pParty->pHirelings[(uint8_t)buf[i]].dialogue_1_evt_id == 1) {
-                    uFrameID = pParty->pHirelings[(uint8_t)buf[i]].dialogue_2_evt_id;
-                    v13 = 0;
-                    if (pIconsFrameTable->uNumIcons) {
-                        for (v13 = 0; v13 < pIconsFrameTable->uNumIcons; ++v13) {
-                            if (iequals("spell96", pIconsFrameTable->pIcons[v13].GetAnimationName()))
-                                break;
-                        }
+
+            if (!buf.IsFollower(i) && buf.Get(i)->dialogue_1_evt_id == 1) {
+                uFrameID = buf.Get(i)->dialogue_2_evt_id;
+                v13 = 0;
+                if (pIconsFrameTable->uNumIcons) {
+                    for (v13 = 0; v13 < pIconsFrameTable->uNumIcons; ++v13) {
+                        if (iequals("spell96", pIconsFrameTable->pIcons[v13].GetAnimationName()))
+                            break;
                     }
-                    render->DrawTextureAlphaNew(
-                        pHiredNPCsIconsOffsetsX[pNPC_limit_ID] / 640.0f,
-                        pHiredNPCsIconsOffsetsY[pNPC_limit_ID] / 480.0f,
-                        pIconsFrameTable->GetFrame(v13, uFrameID)->GetTexture());
                 }
+                render->DrawTextureAlphaNew(
+                    pHiredNPCsIconsOffsetsX[pNPC_limit_ID] / 640.0f,
+                    pHiredNPCsIconsOffsetsY[pNPC_limit_ID] / 480.0f,
+                    pIconsFrameTable->GetFrame(v13, uFrameID)->GetTexture());
             }
             ++pNPC_limit_ID;
         }

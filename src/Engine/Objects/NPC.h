@@ -147,3 +147,40 @@ struct NPCData *GetNPCData(signed int npcid);
 struct NPCData *GetNewNPCData(signed int npcid, int *npc_indx);
 int GetGreetType(signed int SpeakingNPC_ID);
 int NPCDialogueEventProcessor(int npc_event_id, int entry_line = 0);
+
+class FlatHirelings {
+ public:
+    /**
+     * Populates this structure.
+     */
+    void Prepare();
+
+    /**
+     * @return                          Total number of hirelings in this structure.
+     */
+    size_t Size() const {
+        return count;
+    }
+
+    /**
+     * @param index                     Hireling index.
+     * @return                          Whether a hireling is actually a follower (doesn't count towards the total
+     *                                  hireling count, e.g. Margaret the guide on Emerald island).
+     */
+    bool IsFollower(size_t index) const;
+
+    /**
+     * @param index                     Hireling index.
+     * @return                          Associated `NPCData`.
+     */
+    NPCData *Get(size_t index) const;
+
+private:
+    /** Hireling / follower NPC ids.
+     * If 0 or 1, then it's an index into `pParty->pHirelings`.
+     * If 2 or more, then you have to subtract 2 to get an index into `pNPCStats->pNewNPCData`. */
+    std::array<int8_t, 1024> ids = {{}};
+
+    /** Number of valid ids in the array above. */
+    size_t count = 0;
+};

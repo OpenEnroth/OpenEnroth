@@ -1098,28 +1098,11 @@ void Party::PartyFindsGold(
         status = localization->FormatString(
             LSTR_FMT_YOU_FOUND_D_GOLD, amount);
     } else {
-        unsigned char buf[1024] {};
-        hirelingCount = 0;
-        for (int i = 0; i < 2; i++) {
-            if (!this->pHirelings[i].pName.empty()) {
-                hirelingCount++;
-                buf[hirelingCount] = i;
-            }
-        }
-        for (uint i = 0; i < pNPCStats->uNumNewNPCs; i++) {
-            if (pNPCStats->pNewNPCData[i].Hired() &&
-                (pNPCStats->pNewNPCData[i].pName != this->pHirelings[0].pName) &&
-                (pNPCStats->pNewNPCData[i].pName != this->pHirelings[1].pName)) {
-                hirelingCount++;
-                buf[hirelingCount] = i + 2;
-            }
-        }
-        for (int i = 0; i < hirelingCount; i++) {
-            uchar thisBufId = buf[i];
-            if (thisBufId < 2)
-                v12 = &this->pHirelings[thisBufId];
-            else
-                v12 = &pNPCStats->pNewNPCData[thisBufId - 2];
+        FlatHirelings buf;
+        buf.Prepare();
+
+        for (int i = 0; i < buf.Size(); i++) {
+            v12 = buf.Get(i);
             v13 = v12->profession;
             if (v13)
                 hirelingSalaries += pNPCStats->pProfessions[v13].uHirePrice;

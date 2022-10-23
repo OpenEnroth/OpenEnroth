@@ -45,9 +45,6 @@ NPCData *GetNPCData(signed int npcid) {
     unsigned int v1;  // esi@1
     NPCData *result;  // eax@5
     int v3;           // esi@9
-    int v4;           // ecx@9
-    char v9;          // al@22
-    int i;
 
     v1 = npcid;
     if (npcid >= 0) {
@@ -65,30 +62,11 @@ NPCData *GetNPCData(signed int npcid) {
         result = 0;
     } else {
         v3 = abs(sDialogue_SpeakingActorNPC_ID) - 1;
-        v4 = 0;
-        char buf[1024]{};
 
-        for (i = 0; i < 2; ++i) {
-            if (!pParty->pHirelings[i].pName.empty())
-                buf[v4++] = i;
-        }
+        FlatHirelings buf;
+        buf.Prepare();
 
-        if (pNPCStats->uNumNewNPCs > 0) {
-            for (i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
-                if (pNPCStats->pNewNPCData[i].Hired()) {
-                    if (pNPCStats->pNewNPCData[i].pName != pParty->pHirelings[0].pName) {
-                        if (pNPCStats->pNewNPCData[i].pName != pParty->pHirelings[1].pName)
-                            buf[v4++] = i + 2;
-                    }
-                }
-            }
-        }
-
-        v9 = buf[v3];
-        if (v9 >= 2)
-            result = &pNPCStats->pNewNPCData[v9 - 2];
-        else
-            result = &pParty->pHirelings[v9];
+        result = buf.Get(v3);
     }
     return result;
 }
@@ -98,8 +76,6 @@ struct NPCData *GetNewNPCData(signed int npcid, int *npc_indx) {
     int *v3;          // edi@1
     NPCData *result;  // eax@5
     int v5;           // esi@9
-    int v6;           // ecx@9
-    char v11;         // al@23
 
     v3 = npc_indx;
     if (npcid >= 0) {
@@ -122,28 +98,11 @@ struct NPCData *GetNewNPCData(signed int npcid, int *npc_indx) {
         result = nullptr;
     } else {
         v5 = abs(sDialogue_SpeakingActorNPC_ID) - 1;
-        v6 = 0;
-        char buf[1024]{};
 
-        for (int i = 0; i < 2; ++i) {
-            if (!pParty->pHirelings[i].pName.empty()) buf[v6++] = i;
-        }
-        for (int i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
-            if (pNPCStats->pNewNPCData[i].Hired() &&
-                pNPCStats->pNewNPCData[i].pName != pParty->pHirelings[0].pName &&
-                pNPCStats->pNewNPCData[i].pName != pParty->pHirelings[1].pName) {
-                buf[v6++] = i + 2;
-            }
-        }
-        v11 = buf[v5];
+        FlatHirelings buf;
+        buf.Prepare();
 
-        if (v11 >= 2u) {
-            *v3 = v11 - 2;
-            result = &pNPCStats->pNewNPCData[v11 - 2];
-        } else {
-            *v3 = v11;
-            result = &pParty->pHirelings[v11];
-        }
+        result = buf.Get(v5);
     }
     return result;
 }
@@ -1224,15 +1183,6 @@ int NPCDialogueEventProcessor(int npc_event_id, int entry_line) {
 }
 //----- (00445C8B) --------------------------------------------------------
 int GetGreetType(signed int SpeakingNPC_ID) {
-    int v1;       // ebx@1
-    int v3;       // edi@6
-    int v4;       // ecx@6
-    int v5;       // edx@6
-    NPCData *v6;  // eax@6
-    char *v7;     // ebp@11
-    NPCData *v8;  // esi@11
-
-    v1 = 0;
     if (SpeakingNPC_ID >= 0) {
         if (SpeakingNPC_ID < 5000) return 1;  // QuestNPC_greet
         return 2;                             // HiredNPC_greet
@@ -1240,31 +1190,12 @@ int GetGreetType(signed int SpeakingNPC_ID) {
 
     if (SpeakingNPC_ID >= 5000) return 2;
 
-    v3 = abs((int)sDialogue_SpeakingActorNPC_ID) - 1;
-    v4 = 0;
-    v5 = 0;
-    v6 = pParty->pHirelings.data();
+    int v3 = abs((int)sDialogue_SpeakingActorNPC_ID) - 1;
 
-    char buf[1024]{};
-    do {
-        if (!v6->pName.empty()) buf[v4++] = v5;
-        ++v6;
-        ++v5;
-    } while ((int64_t)v6 < (int64_t)&pParty->pPickedItem);
-    if ((signed int)pNPCStats->uNumNewNPCs > 0) {
-        v7 = &buf[v4];
-        v8 = pNPCStats->pNewNPCData.data();
-        do {
-            if (v8->Hired() &&
-                v8->pName != pParty->pHirelings[0].pName) {
-                if (v8->pName != pParty->pHirelings[1].pName)
-                    *v7++ = v1 + 2;
-            }
-            ++v1;
-            ++v8;
-        } while (v1 < (signed int)pNPCStats->uNumNewNPCs);
-    }
-    return ((uint8_t)buf[v3] < 2) + 1;
+    FlatHirelings buf;
+    buf.Prepare();
+
+    return buf.IsFollower(v3) ? 1 : 2;
 }
 
 //----- (00445308) --------------------------------------------------------
@@ -1436,4 +1367,41 @@ int UseNPCSkill(NPCProf profession) {
             assert(false && "Invalid enum value");
     }
     return 0;
+}
+
+void FlatHirelings::Prepare() {
+    count = 0;
+
+    for (size_t i = 0; i < 2; ++i)
+        if (!pParty->pHirelings[i].pName.empty())
+            ids[count++] = i;
+
+    for (size_t i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
+        NPCData *npc = &pNPCStats->pNewNPCData[i];
+        if (npc->Hired()) {
+            Assert(!npc->pName.empty()); // Important for the checks below.
+
+            if (npc->pName != pParty->pHirelings[0].pName && npc->pName != pParty->pHirelings[1].pName) {
+                Assert(i + 2 < 256); // Won't fit into uint8_t otherwise.
+                ids[count++] = i + 2;
+            }
+        }
+    }
+}
+
+bool FlatHirelings::IsFollower(size_t index) const {
+    Assert(index < count);
+
+    return ids[index] >= 2;
+}
+
+NPCData *FlatHirelings::Get(size_t index) const {
+    Assert(index < count);
+
+    uint8_t id = ids[index];
+
+    if (id < 2)
+        return &pParty->pHirelings[id];
+    else
+        return &pNPCStats->pNewNPCData[id - 2];
 }

@@ -368,21 +368,10 @@ void Game_StartHirelingDialogue(unsigned int hireling_id) {
 
     pMessageQueue_50CBD0->Flush();
 
-    uint hireling_slot = 0;
-    char buf[1024] {};
-    for (uint i = 0; i < 2; ++i) {
-        if (!pParty->pHirelings[i].pName.empty())
-            buf[hireling_slot++] = i;
-    }
+    FlatHirelings buf;
+    buf.Prepare();
 
-    for (uint i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
-        NPCData *npc = &pNPCStats->pNewNPCData[i];
-        if (npc->Hired() && npc->pName != pParty->pHirelings[0].pName && npc->pName != pParty->pHirelings[1].pName) {
-            buf[hireling_slot++] = i + 2;
-        }
-    }
-
-    if ((signed int)hireling_id + (signed int)pParty->hirelingScrollPosition < hireling_slot) {
+    if ((signed int)hireling_id + (signed int)pParty->hirelingScrollPosition < buf.Size()) {
         Actor actor;
         actor.sNPC_ID += -1 - pParty->hirelingScrollPosition - hireling_id;
         GameUI_InitializeDialogue(&actor, true);
