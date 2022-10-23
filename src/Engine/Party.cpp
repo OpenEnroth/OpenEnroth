@@ -197,7 +197,7 @@ void Party::Zero() {
     }
 
     // hirelings
-    memset(&pHirelings, 0, sizeof(pHirelings));
+    pHirelings.fill(NPCData());
 }
 
 // inlined

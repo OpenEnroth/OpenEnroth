@@ -384,7 +384,6 @@ void Game_StartHirelingDialogue(unsigned int hireling_id) {
 
     if ((signed int)hireling_id + (signed int)pParty->hirelingScrollPosition < hireling_slot) {
         Actor actor;
-        memset(&actor, 0, sizeof(actor));
         actor.sNPC_ID += -1 - pParty->hirelingScrollPosition - hireling_id;
         GameUI_InitializeDialogue(&actor, true);
     }
@@ -534,7 +533,7 @@ void Game::EventLoop() {
     }
     if (bDialogueUI_InitializeActor_NPC_ID) {
         // Actor::Actor(&actor);
-        memset(&actor, 0, 0x344u);
+        actor = Actor();
         dword_5B65D0_dialogue_actor_npc_id = bDialogueUI_InitializeActor_NPC_ID;
         actor.sNPC_ID = bDialogueUI_InitializeActor_NPC_ID;
         GameUI_InitializeDialogue(&actor, false);
