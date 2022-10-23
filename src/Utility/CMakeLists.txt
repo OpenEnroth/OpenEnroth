@@ -4,7 +4,6 @@ set(UTILITY_SOURCES Blob.cpp
                     Color.cpp
                     DataPath.cpp
                     String.cpp
-                    Workaround/LibcxxDebug.cpp
                     Streams/MemoryInputStream.cpp
                     Streams/StringOutputStream.cpp
                     Streams/FileOutputStream.cpp)

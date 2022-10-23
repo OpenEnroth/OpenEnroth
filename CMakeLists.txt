@@ -19,10 +19,6 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   add_compile_definitions(_USE_MATH_DEFINES) # Pull in M_PI and other <cmath> defines
   set(CMAKE_CXX_FLAGS "/MP ${CMAKE_CXX_FLAGS}")
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
-  add_compile_options($<$<CONFIG:Debug>:-fsanitize=address>) # enable address sanitizer in debug builds
-  add_link_options($<$<CONFIG:Debug>:-fsanitize=address>)
-  add_compile_definitions($<$<CONFIG:Debug>:_LIBCPP_DEBUG=0>) # and enable assertions
 endif()
 
 include(CppLint)
