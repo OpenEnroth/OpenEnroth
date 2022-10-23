@@ -175,7 +175,7 @@ class FlatHirelings {
      */
     NPCData *Get(size_t index) const;
 
-private:
+ private:
     /** Hireling / follower NPC ids.
      * If 0 or 1, then it's an index into `pParty->pHirelings`.
      * If 2 or more, then you have to subtract 2 to get an index into `pNPCStats->pNewNPCData`. */
