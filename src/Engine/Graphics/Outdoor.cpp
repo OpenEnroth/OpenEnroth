@@ -986,8 +986,8 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
     if (object_count_in_level_changed_since_save || should_respawn) {
         if (object_count_in_level_changed_since_save) {
-            memset(Dst.data(), 0, 968);
-            memset(Src.data(), 0, 968);
+            Dst.fill(0);
+            Src.fill(0);
         }
         if (should_respawn) {
             stream.ReadRaw(&Dst);

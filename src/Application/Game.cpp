@@ -2857,7 +2857,7 @@ void Game::GameLoop() {
                 HEXRAYS_LOWORD(pParty->uFlags) &= ~0x204;
                 pParty->SetGold(0);
                 pOtherOverlayList->Reset();
-                memset(pParty->pPartyBuffs.data(), 0, 0x140u);
+                pParty->pPartyBuffs.fill(SpellBuff());
 
                 if (pParty->bTurnBasedModeOn) {
                     pTurnEngine->End(true);

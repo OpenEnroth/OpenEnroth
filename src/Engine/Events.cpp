@@ -82,7 +82,7 @@ void Initialize_GlobalEVT() {
     uGlobalEVT_Size =
         LoadEventsToBuffer("global.evt", pGlobalEVT.data(), 46080);
     if (!uGlobalEVT_Size) return;
-    memset(pGlobalEVT_Index.data(), 0x80, sizeof(pGlobalEVT_Index));  // 52800
+    pGlobalEVT_Index.fill({(int)0x80808080, (int)0x80808080, 0x80808080}); // Fill with invalid data.
     events_count = uGlobalEVT_NumEvents;
     current_hdr = (raw_event_header *)pGlobalEVT.data();
     offset_in = 0;
@@ -115,7 +115,7 @@ void LoadLevel_InitializeLevelEvt() {
     if (!uLevelEVT_Size) return;
 
     MapsLongTimersList.fill(MapsLongTimer());
-    memset(pLevelEVT_Index.data(), 80, sizeof(EventIndex) * 4400);
+    pLevelEVT_Index.fill({(int)0x80808080, (int)0x80808080, 0x80808080}); // Fill with invalid data.
 
     uLevelEVT_NumEvents = 0;
     MapsLongTimers_count = 0;
@@ -332,13 +332,11 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
     if (activeLevelDecoration) {
         uSomeEVT_NumEvents = uGlobalEVT_NumEvents;
         pSomeEVT = pGlobalEVT.data();
-        memcpy(pSomeEVT_Events.data(), pGlobalEVT_Index.data(),
-               sizeof(EventIndex) * 4400);  // 4400 evts
+        pSomeEVT_Events = pGlobalEVT_Index;
     } else {
         uSomeEVT_NumEvents = uLevelEVT_NumEvents;
         pSomeEVT = pLevelEVT.data();
-        memcpy(pSomeEVT_Events.data(), pLevelEVT_Index.data(),
-               sizeof(EventIndex) * 4400);
+        pSomeEVT_Events = pLevelEVT_Index;
     }
 
     for (v4 = 0; v4 < uSomeEVT_NumEvents; ++v4) {
