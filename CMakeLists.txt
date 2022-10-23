@@ -5,6 +5,7 @@ add_compile_definitions(PACKAGE_BUGREPORT="https://github.com/gp-alex/world-of-m
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules)
 include(Git)
 include(Detection)
+include(AppleLibcxxAssertions)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -19,6 +20,8 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   add_compile_definitions(_USE_MATH_DEFINES) # Pull in M_PI and other <cmath> defines
   set(CMAKE_CXX_FLAGS "/MP ${CMAKE_CXX_FLAGS}")
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
+elseif(APPLE)
+  enable_libcxx_assertions(FALSE)
 endif()
 
 include(CppLint)
@@ -31,6 +34,7 @@ add_subdirectory(src)
 
 add_executable(World_of_Might_and_Magic MACOSX_BUNDLE WIN32 ./src/Engine/Engine.cpp)
 target_check_style(World_of_Might_and_Magic)
+target_fix_libcxx_assertions(World_of_Might_and_Magic)
 
 target_link_libraries(World_of_Might_and_Magic game arcomage engine gui io media platform objects spells tables graphics turnengine serialization glad nuklear libluajit glm)
 
