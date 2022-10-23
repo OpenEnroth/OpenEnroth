@@ -1107,7 +1107,7 @@ void Party::PartyFindsGold(
             }
         }
         for (uint i = 0; i < pNPCStats->uNumNewNPCs; i++) {
-            if (pNPCStats->pNewNPCData[i].uFlags & 0x80 &&
+            if (pNPCStats->pNewNPCData[i].Hired() &&
                 (pNPCStats->pNewNPCData[i].pName != this->pHirelings[0].pName) &&
                 (pNPCStats->pNewNPCData[i].pName != this->pHirelings[1].pName)) {
                 hirelingCount++;

@@ -609,7 +609,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
             if ((signed int)pNPCStats->uNumNewNPCs > 0) {
                 for (uint i = 0; i < (unsigned int)pNPCStats->uNumNewNPCs;
                      ++i) {
-                    if (pNPCStats->pNewNPCData[i].uFlags & 0x80 &&
+                    if (pNPCStats->pNewNPCData[i].Hired() &&
                         speakingNPC->pName == pNPCStats->pNewNPCData[i].pName)
                         pNPCStats->pNewNPCData[i].uFlags &= 0x7Fu;
                 }
@@ -675,7 +675,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
             dialogue_show_profession_details = false;
         } else {
             for (uint i = 0; i < (signed int)pNPCStats->uNumNewNPCs; ++i) {
-                if (pNPCStats->pNewNPCData[i].uFlags & 0x80 &&
+                if (pNPCStats->pNewNPCData[i].Hired() &&
                     speakingNPC->pName == pNPCStats->pNewNPCData[i].pName)
                     pNPCStats->pNewNPCData[i].uFlags &= 0x7Fu;
             }

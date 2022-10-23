@@ -1994,7 +1994,7 @@ void GameUI_DrawHiredNPCs() {
         if (!pParty->pHirelings[1].pName.empty()) buf[v22++] = 1;
 
         for (uint i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
-            if (pNPCStats->pNewNPCData[i].uFlags & 128) {
+            if (pNPCStats->pNewNPCData[i].Hired()) {
                 if (pNPCStats->pNewNPCData[i].pName != pParty->pHirelings[0].pName) {
                     if (pNPCStats->pNewNPCData[i].pName != pParty->pHirelings[1].pName)
                         buf[v22++] = i + 2;
