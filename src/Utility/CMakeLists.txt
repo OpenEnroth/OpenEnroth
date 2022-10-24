@@ -16,6 +16,7 @@ set(UTILITY_HEADERS Blob.h
                     FreeDeleter.h
                     IndexedArray.h
                     Memory.h
+                    NZIArray.h
                     String.h
                     Workaround/ToUnderlying.h
                     Streams/InputStream.h

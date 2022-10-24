@@ -10,7 +10,7 @@
 
 #include "GUI/GUIDialogues.h"
 
-#include "NZIArray.h"
+#include "Utility/NZIArray.h"
 
 #include "VectorTypes.h"
 

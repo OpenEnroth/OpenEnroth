@@ -3,10 +3,11 @@
 #include <map>
 #include <string>
 
-#include "Engine/NZIArray.h"
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/PlayerEnums.h"
 #include "Engine/Time.h"
+
+#include "Utility/NZIArray.h"
 
 struct Player;
 
