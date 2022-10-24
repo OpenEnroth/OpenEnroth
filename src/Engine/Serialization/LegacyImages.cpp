@@ -1,9 +1,12 @@
-#include <algorithm>
+#include "LegacyImages.h"
 
-#include "Engine/Serialization/LegacyImages.h"
+#include <algorithm>
+#include <string>
+
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"
+#include "Engine/Graphics/Sprites.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Party.h"
@@ -11,1467 +14,1508 @@
 #include "Engine/Time.h"
 
 #include "Utility/Color.h"
+#include "Utility/Memory.h"
 
-void BLVFace_MM7::Deserialize(BLVFace *face) {
-    face->pFacePlane = this->pFacePlane;
-    face->pFacePlane_old = this->pFacePlane_old;
-    face->zCalc.Init(face->pFacePlane_old);
-    face->uAttributes = FaceAttributes(this->uAttributes);
-    face->pVertexIDs = nullptr;
-    face->pXInterceptDisplacements = nullptr;
-    face->pYInterceptDisplacements = nullptr;
-    face->pZInterceptDisplacements = nullptr;
-    face->pVertexUIDs = nullptr;
-    face->pVertexVIDs = nullptr;
-    face->uFaceExtraID = this->uFaceExtraID;
-    face->resource = nullptr;
-    face->uSectorID = this->uSectorID;
-    face->uBackSectorID = this->uBackSectorID;
-    face->pBounding = this->pBounding;
-    face->uPolygonType = PolygonType(this->uPolygonType);
-    face->uNumVertices = this->uNumVertices;
-    face->field_5E = this->field_5E;
-    face->field_5F = this->field_5F;
+template<size_t N>
+static void Serialize(const std::string &src, std::array<char, N> *dst) {
+    memset(dst->data(), 0, N);
+    memcpy(dst->data(), src.data(), std::min(src.size(), N - 1));
 }
 
-void Timer_Image_MM7::Serialize(const Timer *timer) {
-    memset(this, 0, sizeof(*this));
-
-    this->bReady = timer->bReady;
-    this->bPaused = timer->bPaused;
-    this->bTackGameTime = timer->bTackGameTime;
-    this->uStartTime = timer->uStartTime;
-    this->uStopTime = timer->uStopTime;
-    this->uGameTimeStart = timer->uGameTimeStart;
-    this->field_18 = timer->field_18;
-    this->uTimeElapsed = timer->uTimeElapsed;
-    this->dt_fixpoint = timer->dt_fixpoint;
-    this->uTotalGameTimeElapsed = timer->uTotalGameTimeElapsed;
+template<size_t N>
+static void Deserialize(const std::array<char, N> &src, std::string *dst) {
+    const char *end = static_cast<const char *>(memchr(src.data(), 0, N));
+    size_t size = end == nullptr ? N : end - src.data();
+    *dst = std::string(src.data(), size);
 }
 
-void Timer_Image_MM7::Deserialize(Timer *timer) {
-    timer->bReady = this->bReady;
-    timer->bPaused = this->bPaused;
-    timer->bTackGameTime = this->bTackGameTime;
-    timer->uStartTime = this->uStartTime;
-    timer->uStopTime = this->uStopTime;
-    timer->uGameTimeStart = this->uGameTimeStart;
-    timer->field_18 = this->field_18;
-    timer->uTimeElapsed = this->uTimeElapsed;
-    timer->dt_fixpoint = this->dt_fixpoint;
-    timer->uTotalGameTimeElapsed = this->uTotalGameTimeElapsed;
-}
+void Deserialize(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
+    dst->icon_name = src.pIconName.data();
+    std::transform(dst->icon_name.begin(), dst->icon_name.end(),
+                   dst->icon_name.begin(), ::tolower);
 
-void NPCData_Image_MM7::Serialize(const NPCData *npc) {
-    memset(this, 0, sizeof(*this));
+    dst->texture_name = src.pTextureName.data();
+    std::transform(dst->texture_name.begin(), dst->texture_name.end(),
+                   dst->texture_name.begin(), ::tolower);
 
-    if (npc->pName) {
-        this->pName = 1;
-    } else {
-        this->pName = 0;
+    for (unsigned int i = 0; i < 8; ++i) {
+        dst->hw_sprites[i] = nullptr;
     }
-    // this->pName = npc->pName;
-    this->uPortraitID = npc->uPortraitID;
-    this->uFlags = npc->uFlags;
-    this->fame = npc->fame;
-    this->rep = npc->rep;
-    this->Location2D = npc->Location2D;
-    this->uProfession = npc->profession;
-    this->greet = npc->greet;
-    this->joins = npc->is_joinable;
-    this->field_24 = npc->field_24;
-    this->evt_A = npc->dialogue_1_evt_id;
-    this->evt_B = npc->dialogue_2_evt_id;
-    this->evt_C = npc->dialogue_3_evt_id;
-    this->evt_D = npc->dialogue_4_evt_id;
-    this->evt_E = npc->dialogue_5_evt_id;
-    this->evt_F = npc->dialogue_6_evt_id;
-    this->uSex = npc->uSex;
-    this->bHasUsedTheAbility = npc->bHasUsedTheAbility;
-    this->news_topic = npc->news_topic;
+
+    dst->scale = src.scale / 65536.0;
+    dst->uFlags = src.uFlags;
+
+    dst->uGlowRadius = src.uGlowRadius;
+    dst->uPaletteID = src.uPaletteID;
+    dst->uPaletteIndex = src.uPaletteIndex;
+    dst->uAnimTime = src.uAnimTime;
+    dst->uAnimLength = src.uAnimLength;
 }
 
-void NPCData_Image_MM7::Deserialize(NPCData *npc) {
-    if (this->pName) {
-        npc->pName = "Dummy";
-    } else {
-        npc->pName = nullptr;
-    }
-    // npc->pName = this->pName;
-    npc->uPortraitID = this->uPortraitID;
-    npc->uFlags = this->uFlags;
-    npc->fame = this->fame;
-    npc->rep = this->rep;
-    npc->Location2D = this->Location2D;
-    npc->profession = (NPCProf)this->uProfession;
-    npc->greet = this->greet;
-    npc->is_joinable = this->joins;
-    npc->field_24 = this->field_24;
-    npc->dialogue_1_evt_id = this->evt_A;
-    npc->dialogue_2_evt_id = this->evt_B;
-    npc->dialogue_3_evt_id = this->evt_C;
-    npc->dialogue_4_evt_id = this->evt_D;
-    npc->dialogue_5_evt_id = this->evt_E;
-    npc->dialogue_6_evt_id = this->evt_F;
-    npc->uSex = this->uSex;
-    npc->bHasUsedTheAbility = this->bHasUsedTheAbility;
-    npc->news_topic = this->news_topic;
+void Deserialize(const BLVFace_MM7 &src, BLVFace *dst) {
+    dst->pFacePlane = src.pFacePlane;
+    dst->pFacePlane_old = src.pFacePlane_old;
+    dst->zCalc.Init(dst->pFacePlane_old);
+    dst->uAttributes = FaceAttributes(src.uAttributes);
+    dst->pVertexIDs = nullptr;
+    dst->pXInterceptDisplacements = nullptr;
+    dst->pYInterceptDisplacements = nullptr;
+    dst->pZInterceptDisplacements = nullptr;
+    dst->pVertexUIDs = nullptr;
+    dst->pVertexVIDs = nullptr;
+    dst->uFaceExtraID = src.uFaceExtraID;
+    dst->resource = nullptr;
+    dst->uSectorID = src.uSectorID;
+    dst->uBackSectorID = src.uBackSectorID;
+    dst->pBounding = src.pBounding;
+    dst->uPolygonType = PolygonType(src.uPolygonType);
+    dst->uNumVertices = src.uNumVertices;
+    dst->field_5E = src.field_5E;
+    dst->field_5F = src.field_5F;
 }
 
-void OtherOverlayList_Image_MM7::Serialize(const OtherOverlayList *list) {
-    memset(this, 0, sizeof(*this));
+void Serialize(const Timer &src, Timer_MM7 *dst) {
+    memzero(dst);
 
-    this->bRedraw = list->bRedraw;
-    this->field_3E8 = list->field_3E8;
+    dst->bReady = src.bReady;
+    dst->bPaused = src.bPaused;
+    dst->bTackGameTime = src.bTackGameTime;
+    dst->uStartTime = src.uStartTime;
+    dst->uStopTime = src.uStopTime;
+    dst->uGameTimeStart = src.uGameTimeStart;
+    dst->field_18 = src.field_18;
+    dst->uTimeElapsed = src.uTimeElapsed;
+    dst->dt_fixpoint = src.dt_fixpoint;
+    dst->uTotalGameTimeElapsed = src.uTotalGameTimeElapsed;
+}
+
+void Deserialize(const Timer_MM7 &src, Timer *dst) {
+    dst->bReady = src.bReady;
+    dst->bPaused = src.bPaused;
+    dst->bTackGameTime = src.bTackGameTime;
+    dst->uStartTime = src.uStartTime;
+    dst->uStopTime = src.uStopTime;
+    dst->uGameTimeStart = src.uGameTimeStart;
+    dst->field_18 = src.field_18;
+    dst->uTimeElapsed = src.uTimeElapsed;
+    dst->dt_fixpoint = src.dt_fixpoint;
+    dst->uTotalGameTimeElapsed = src.uTotalGameTimeElapsed;
+}
+
+void Serialize(const NPCData &src, NPCData_MM7 *dst) {
+    memzero(dst);
+
+    // dst->pName = src.pName;
+    dst->pName = !src.pName.empty();
+    dst->uPortraitID = src.uPortraitID;
+    dst->uFlags = src.uFlags;
+    dst->fame = src.fame;
+    dst->rep = src.rep;
+    dst->Location2D = src.Location2D;
+    dst->uProfession = src.profession;
+    dst->greet = src.greet;
+    dst->joins = src.is_joinable;
+    dst->field_24 = src.field_24;
+    dst->evt_A = src.dialogue_1_evt_id;
+    dst->evt_B = src.dialogue_2_evt_id;
+    dst->evt_C = src.dialogue_3_evt_id;
+    dst->evt_D = src.dialogue_4_evt_id;
+    dst->evt_E = src.dialogue_5_evt_id;
+    dst->evt_F = src.dialogue_6_evt_id;
+    dst->uSex = src.uSex;
+    dst->bHasUsedTheAbility = src.bHasUsedTheAbility;
+    dst->news_topic = src.news_topic;
+}
+
+void Deserialize(const NPCData_MM7 &src, NPCData *dst) {
+    // dst->pName = src.pName;
+    dst->pName = src.pName ? "Dummy" : "";
+    dst->uPortraitID = src.uPortraitID;
+    dst->uFlags = src.uFlags;
+    dst->fame = src.fame;
+    dst->rep = src.rep;
+    dst->Location2D = src.Location2D;
+    dst->profession = (NPCProf)src.uProfession;
+    dst->greet = src.greet;
+    dst->is_joinable = src.joins;
+    dst->field_24 = src.field_24;
+    dst->dialogue_1_evt_id = src.evt_A;
+    dst->dialogue_2_evt_id = src.evt_B;
+    dst->dialogue_3_evt_id = src.evt_C;
+    dst->dialogue_4_evt_id = src.evt_D;
+    dst->dialogue_5_evt_id = src.evt_E;
+    dst->dialogue_6_evt_id = src.evt_F;
+    dst->uSex = src.uSex;
+    dst->bHasUsedTheAbility = src.bHasUsedTheAbility;
+    dst->news_topic = src.news_topic;
+}
+
+void Serialize(const OtherOverlayList &src, OtherOverlayList_MM7 *dst) {
+    memzero(dst);
+
+    dst->bRedraw = src.bRedraw;
+    dst->field_3E8 = src.field_3E8;
 
     for (unsigned int i = 0; i < 50; ++i) {
-        memset(&this->pOverlays[i], 0, sizeof(this->pOverlays[i]));
+        memset(&dst->pOverlays[i], 0, sizeof(dst->pOverlays[i]));
 
-        this->pOverlays[i].field_0 = list->pOverlays[i].field_0;
-        this->pOverlays[i].field_2 = list->pOverlays[i].field_2;
-        this->pOverlays[i].sprite_frame_time =
-            list->pOverlays[i].sprite_frame_time;
-        this->pOverlays[i].field_6 = list->pOverlays[i].field_6;
-        this->pOverlays[i].screen_space_x = list->pOverlays[i].screen_space_x;
-        this->pOverlays[i].screen_space_y = list->pOverlays[i].screen_space_y;
-        this->pOverlays[i].field_C = list->pOverlays[i].field_C;
-        this->pOverlays[i].field_E = list->pOverlays[i].field_E;
-        this->pOverlays[i].field_10 = list->pOverlays[i].field_10;
+        dst->pOverlays[i].field_0 = src.pOverlays[i].field_0;
+        dst->pOverlays[i].field_2 = src.pOverlays[i].field_2;
+        dst->pOverlays[i].sprite_frame_time =
+            src.pOverlays[i].sprite_frame_time;
+        dst->pOverlays[i].field_6 = src.pOverlays[i].field_6;
+        dst->pOverlays[i].screen_space_x = src.pOverlays[i].screen_space_x;
+        dst->pOverlays[i].screen_space_y = src.pOverlays[i].screen_space_y;
+        dst->pOverlays[i].field_C = src.pOverlays[i].field_C;
+        dst->pOverlays[i].field_E = src.pOverlays[i].field_E;
+        dst->pOverlays[i].field_10 = src.pOverlays[i].field_10;
     }
 }
 
-void OtherOverlayList_Image_MM7::Deserialize(OtherOverlayList *list) {
-    list->bRedraw = this->bRedraw;
-    list->field_3E8 = this->field_3E8;
+void Deserialize(const OtherOverlayList_MM7 &src, OtherOverlayList *dst) {
+    dst->bRedraw = src.bRedraw;
+    dst->field_3E8 = src.field_3E8;
 
     for (unsigned int i = 0; i < 50; ++i) {
-        memset(&list->pOverlays[i], 0, sizeof(list->pOverlays[i]));
+        memset(&dst->pOverlays[i], 0, sizeof(dst->pOverlays[i]));
 
-        list->pOverlays[i].field_0 = this->pOverlays[i].field_0;
-        list->pOverlays[i].field_2 = this->pOverlays[i].field_2;
-        list->pOverlays[i].sprite_frame_time =
-            this->pOverlays[i].sprite_frame_time;
-        list->pOverlays[i].field_6 = this->pOverlays[i].field_6;
-        list->pOverlays[i].screen_space_x = this->pOverlays[i].screen_space_x;
-        list->pOverlays[i].screen_space_y = this->pOverlays[i].screen_space_y;
-        list->pOverlays[i].field_C = this->pOverlays[i].field_C;
-        list->pOverlays[i].field_E = this->pOverlays[i].field_E;
-        list->pOverlays[i].field_10 = this->pOverlays[i].field_10;
+        dst->pOverlays[i].field_0 = src.pOverlays[i].field_0;
+        dst->pOverlays[i].field_2 = src.pOverlays[i].field_2;
+        dst->pOverlays[i].sprite_frame_time =
+            src.pOverlays[i].sprite_frame_time;
+        dst->pOverlays[i].field_6 = src.pOverlays[i].field_6;
+        dst->pOverlays[i].screen_space_x = src.pOverlays[i].screen_space_x;
+        dst->pOverlays[i].screen_space_y = src.pOverlays[i].screen_space_y;
+        dst->pOverlays[i].field_C = src.pOverlays[i].field_C;
+        dst->pOverlays[i].field_E = src.pOverlays[i].field_E;
+        dst->pOverlays[i].field_10 = src.pOverlays[i].field_10;
     }
 }
 
-void SpellBuff_Image_MM7::Serialize(const SpellBuff *buff) {
-    memset(this, 0, sizeof(*this));
+void Serialize(const SpellBuff &src, SpellBuff_MM7 *dst) {
+    memzero(dst);
 
-    this->uExpireTime = buff->expire_time.value;
-    this->uPower = buff->uPower;
-    this->uSkill = buff->uSkill;
-    this->uOverlayID = buff->uOverlayID;
-    this->uCaster = buff->uCaster;
-    this->uFlags = buff->uFlags;
+    dst->uExpireTime = src.expire_time.value;
+    dst->uPower = src.uPower;
+    dst->uSkill = src.uSkill;
+    dst->uOverlayID = src.uOverlayID;
+    dst->uCaster = src.uCaster;
+    dst->uFlags = src.uFlags;
 }
 
-void SpellBuff_Image_MM7::Deserialize(SpellBuff *buff) {
-    buff->expire_time.value = this->uExpireTime;
-    buff->uPower = this->uPower;
-    buff->uSkill = this->uSkill;
-    buff->uOverlayID = this->uOverlayID;
-    buff->uCaster = this->uCaster;
-    buff->uFlags = this->uFlags;
+void Deserialize(const SpellBuff_MM7 &src, SpellBuff *dst) {
+    dst->expire_time.value = src.uExpireTime;
+    dst->uPower = src.uPower;
+    dst->uSkill = src.uSkill;
+    dst->uOverlayID = src.uOverlayID;
+    dst->uCaster = src.uCaster;
+    dst->uFlags = src.uFlags;
 }
 
-void ItemGen_Image_MM7::Serialize(const ItemGen *item) {
-    memset(this, 0, sizeof(*this));
+void Serialize(const ItemGen &src, ItemGen_MM7 *dst) {
+    memzero(dst);
 
-    this->uItemID = item->uItemID;
-    this->uEnchantmentType = item->uEnchantmentType;
-    this->m_enchantmentStrength = item->m_enchantmentStrength;
-    this->special_enchantment = item->special_enchantment;
-    this->uNumCharges = item->uNumCharges;
-    this->uAttributes = item->uAttributes;
-    this->uBodyAnchor = item->uBodyAnchor;
-    this->uMaxCharges = item->uMaxCharges;
-    this->uHolderPlayer = item->uHolderPlayer;
-    this->field_1B = item->field_1B;
-    this->uExpireTime = item->uExpireTime.value;
+    dst->uItemID = src.uItemID;
+    dst->uEnchantmentType = src.uEnchantmentType;
+    dst->m_enchantmentStrength = src.m_enchantmentStrength;
+    dst->special_enchantment = src.special_enchantment;
+    dst->uNumCharges = src.uNumCharges;
+    dst->uAttributes = src.uAttributes;
+    dst->uBodyAnchor = src.uBodyAnchor;
+    dst->uMaxCharges = src.uMaxCharges;
+    dst->uHolderPlayer = src.uHolderPlayer;
+    dst->field_1B = src.field_1B;
+    dst->uExpireTime = src.uExpireTime.value;
 }
 
-void ItemGen_Image_MM7::Deserialize(ItemGen *item) {
-    item->uItemID = this->uItemID;
-    item->uEnchantmentType = this->uEnchantmentType;
-    item->m_enchantmentStrength = this->m_enchantmentStrength;
-    item->special_enchantment = (ITEM_ENCHANTMENT)this->special_enchantment;
-    item->uNumCharges = this->uNumCharges;
-    item->uAttributes = this->uAttributes;
-    item->uBodyAnchor = this->uBodyAnchor;
-    item->uMaxCharges = this->uMaxCharges;
-    item->uHolderPlayer = this->uHolderPlayer;
-    item->field_1B = this->field_1B;
-    item->uExpireTime.value = this->uExpireTime;
+void Deserialize(const ItemGen_MM7 &src, ItemGen *dst) {
+    dst->uItemID = src.uItemID;
+    dst->uEnchantmentType = src.uEnchantmentType;
+    dst->m_enchantmentStrength = src.m_enchantmentStrength;
+    dst->special_enchantment = (ITEM_ENCHANTMENT)src.special_enchantment;
+    dst->uNumCharges = src.uNumCharges;
+    dst->uAttributes = src.uAttributes;
+    dst->uBodyAnchor = src.uBodyAnchor;
+    dst->uMaxCharges = src.uMaxCharges;
+    dst->uHolderPlayer = src.uHolderPlayer;
+    dst->field_1B = src.field_1B;
+    dst->uExpireTime.value = src.uExpireTime;
 }
 
-void Party_Image_MM7::Serialize(const Party *party) {
-    memset(this, 0, sizeof(*this));
+void Serialize(const Party &src, Party_MM7 *dst) {
+    memzero(dst);
 
-    this->field_0 = party->field_0_set25_unused;
-    this->uPartyHeight = party->uPartyHeight;
-    this->uDefaultPartyHeight = party->uDefaultPartyHeight;
-    this->sEyelevel = party->sEyelevel;
-    this->uDefaultEyelevel = party->uDefaultEyelevel;
-    this->radius = party->radius;
-    this->y_rotation_granularity = party->y_rotation_granularity;
-    this->uWalkSpeed = party->uWalkSpeed;
-    this->y_rotation_speed = party->y_rotation_speed;
-    this->jump_strength = party->jump_strength;
-    this->field_28 = party->field_28_set0_unused;
-    this->uTimePlayed = party->playing_time.value;
-    this->uLastRegenerationTime = party->last_regenerated.value;
+    dst->field_0 = src.field_0_set25_unused;
+    dst->uPartyHeight = src.uPartyHeight;
+    dst->uDefaultPartyHeight = src.uDefaultPartyHeight;
+    dst->sEyelevel = src.sEyelevel;
+    dst->uDefaultEyelevel = src.uDefaultEyelevel;
+    dst->radius = src.radius;
+    dst->y_rotation_granularity = src.y_rotation_granularity;
+    dst->uWalkSpeed = src.uWalkSpeed;
+    dst->y_rotation_speed = src.y_rotation_speed;
+    dst->jump_strength = src.jump_strength;
+    dst->field_28 = src.field_28_set0_unused;
+    dst->uTimePlayed = src.playing_time.value;
+    dst->uLastRegenerationTime = src.last_regenerated.value;
 
     for (unsigned int i = 0; i < 10; ++i)
-        this->PartyTimes.bountyHunting_next_generation_time[i] =
-            party->PartyTimes.bountyHunting_next_generation_time[i].value;
+        dst->PartyTimes.bountyHunting_next_generation_time[i] =
+            src.PartyTimes.bountyHunting_next_generation_time[i].value;
     for (unsigned int i = 0; i < 85; ++i)
-        this->PartyTimes.Shops_next_generation_time[i] =
-            party->PartyTimes.Shops_next_generation_time[i].value;
+        dst->PartyTimes.Shops_next_generation_time[i] =
+            src.PartyTimes.Shops_next_generation_time[i].value;
     for (unsigned int i = 0; i < 53; ++i)
-        this->PartyTimes._shop_ban_times[i] =
-            party->PartyTimes._shop_ban_times[i].value;
+        dst->PartyTimes._shop_ban_times[i] =
+            src.PartyTimes._shop_ban_times[i].value;
     for (unsigned int i = 0; i < 10; ++i)
-        this->PartyTimes.CounterEventValues[i] =
-            party->PartyTimes.CounterEventValues[i].value;
+        dst->PartyTimes.CounterEventValues[i] =
+            src.PartyTimes.CounterEventValues[i].value;
     for (unsigned int i = 0; i < 29; ++i)
-        this->PartyTimes.HistoryEventTimes[i] =
-            party->PartyTimes.HistoryEventTimes[i].value;
+        dst->PartyTimes.HistoryEventTimes[i] =
+            src.PartyTimes.HistoryEventTimes[i].value;
     for (unsigned int i = 0; i < 20; ++i)
-        this->PartyTimes._s_times[i] = party->PartyTimes._s_times[i].value;
+        dst->PartyTimes._s_times[i] = src.PartyTimes._s_times[i].value;
 
-    this->vPosition.x = party->vPosition.x;
-    this->vPosition.y = party->vPosition.y;
-    this->vPosition.z = party->vPosition.z;
-    this->sRotationZ = party->sRotationZ;
-    this->sRotationY = party->sRotationY;
-    this->vPrevPosition.x = party->vPrevPosition.x;
-    this->vPrevPosition.y = party->vPrevPosition.y;
-    this->vPrevPosition.z = party->vPrevPosition.z;
-    this->sPrevRotationZ = party->sPrevRotationZ;
-    this->sPrevRotationY = party->sPrevRotationY;
-    this->sPrevEyelevel = party->sPrevEyelevel;
-    this->field_6E0 = party->field_6E0_set0_unused;
-    this->field_6E4 = party->field_6E4_set0_unused;
-    this->uFallSpeed = party->uFallSpeed;
-    this->field_6EC = party->field_6EC_set0_unused;
-    this->field_6F0 = party->sPartyPrevZ;
-    this->floor_face_pid = party->floor_face_pid;
-    this->walk_sound_timer = party->walk_sound_timer;
-    this->_6FC_water_lava_timer = party->_6FC_water_lava_timer;
-    this->uFallStartZ = party->uFallStartZ;
-    this->bFlying = party->bFlying;
-    this->field_708 = party->field_708_set15_unused;
-    this->hirelingScrollPosition = party->hirelingScrollPosition;
-    this->field_70A = party->cNonHireFollowers;
-    this->field_70B = party->field_70B_set0_unused;
-    this->uCurrentYear = party->uCurrentYear;
-    this->uCurrentMonth = party->uCurrentMonth;
-    this->uCurrentMonthWeek = party->uCurrentMonthWeek;
-    this->uCurrentDayOfMonth = party->uCurrentDayOfMonth;
-    this->uCurrentHour = party->uCurrentHour;
-    this->uCurrentMinute = party->uCurrentMinute;
-    this->uCurrentTimeSecond = party->uCurrentTimeSecond;
-    this->uNumFoodRations = party->GetFood();
-    this->field_72C = party->field_72C_set0_unused;
-    this->field_730 = party->field_730_set0_unused;
-    this->uNumGold = party->GetGold();
-    this->uNumGoldInBank = party->uNumGoldInBank;
-    this->uNumDeaths = party->uNumDeaths;
-    this->field_740 = party->field_740_set0_unused;
-    this->uNumPrisonTerms = party->uNumPrisonTerms;
-    this->uNumBountiesCollected = party->uNumBountiesCollected;
-    this->field_74C = party->field_74C_set0_unused;
+    dst->vPosition.x = src.vPosition.x;
+    dst->vPosition.y = src.vPosition.y;
+    dst->vPosition.z = src.vPosition.z;
+    dst->sRotationZ = src.sRotationZ;
+    dst->sRotationY = src.sRotationY;
+    dst->vPrevPosition.x = src.vPrevPosition.x;
+    dst->vPrevPosition.y = src.vPrevPosition.y;
+    dst->vPrevPosition.z = src.vPrevPosition.z;
+    dst->sPrevRotationZ = src.sPrevRotationZ;
+    dst->sPrevRotationY = src.sPrevRotationY;
+    dst->sPrevEyelevel = src.sPrevEyelevel;
+    dst->field_6E0 = src.field_6E0_set0_unused;
+    dst->field_6E4 = src.field_6E4_set0_unused;
+    dst->uFallSpeed = src.uFallSpeed;
+    dst->field_6EC = src.field_6EC_set0_unused;
+    dst->field_6F0 = src.sPartyPrevZ;
+    dst->floor_face_pid = src.floor_face_pid;
+    dst->walk_sound_timer = src.walk_sound_timer;
+    dst->_6FC_water_lava_timer = src._6FC_water_lava_timer;
+    dst->uFallStartZ = src.uFallStartZ;
+    dst->bFlying = src.bFlying;
+    dst->field_708 = src.field_708_set15_unused;
+    dst->hirelingScrollPosition = src.hirelingScrollPosition;
+    dst->field_70A = src.cNonHireFollowers;
+    dst->field_70B = src.field_70B_set0_unused;
+    dst->uCurrentYear = src.uCurrentYear;
+    dst->uCurrentMonth = src.uCurrentMonth;
+    dst->uCurrentMonthWeek = src.uCurrentMonthWeek;
+    dst->uCurrentDayOfMonth = src.uCurrentDayOfMonth;
+    dst->uCurrentHour = src.uCurrentHour;
+    dst->uCurrentMinute = src.uCurrentMinute;
+    dst->uCurrentTimeSecond = src.uCurrentTimeSecond;
+    dst->uNumFoodRations = src.GetFood();
+    dst->field_72C = src.field_72C_set0_unused;
+    dst->field_730 = src.field_730_set0_unused;
+    dst->uNumGold = src.GetGold();
+    dst->uNumGoldInBank = src.uNumGoldInBank;
+    dst->uNumDeaths = src.uNumDeaths;
+    dst->field_740 = src.field_740_set0_unused;
+    dst->uNumPrisonTerms = src.uNumPrisonTerms;
+    dst->uNumBountiesCollected = src.uNumBountiesCollected;
+    dst->field_74C = src.field_74C_set0_unused;
 
     for (unsigned int i = 0; i < 5; ++i)
-        this->monster_id_for_hunting[i] = party->monster_id_for_hunting[i];
+        dst->monster_id_for_hunting[i] = src.monster_id_for_hunting[i];
     for (unsigned int i = 0; i < 5; ++i)
-        this->monster_for_hunting_killed[i] =
-            party->monster_for_hunting_killed[i];
+        dst->monster_for_hunting_killed[i] =
+            src.monster_for_hunting_killed[i];
 
-    this->days_played_without_rest = party->days_played_without_rest;
+    dst->days_played_without_rest = src.days_played_without_rest;
 
     for (unsigned int i = 0; i < 64; ++i)
-        this->_quest_bits[i] = party->_quest_bits[i];
+        dst->_quest_bits[i] = src._quest_bits[i];
     for (unsigned int i = 0; i < 16; ++i)
-        this->pArcomageWins[i] = party->pArcomageWins[i];
+        dst->pArcomageWins[i] = src.pArcomageWins[i];
 
-    this->field_7B5_in_arena_quest = party->field_7B5_in_arena_quest;
-    this->uNumArenaPageWins = party->uNumArenaPageWins;
-    this->uNumArenaSquireWins = party->uNumArenaSquireWins;
-    this->uNumArenaKnightWins = party->uNumArenaKnightWins;
-    this->uNumArenaLordWins = party->uNumArenaLordWins;
+    dst->field_7B5_in_arena_quest = src.field_7B5_in_arena_quest;
+    dst->uNumArenaPageWins = src.uNumArenaPageWins;
+    dst->uNumArenaSquireWins = src.uNumArenaSquireWins;
+    dst->uNumArenaKnightWins = src.uNumArenaKnightWins;
+    dst->uNumArenaLordWins = src.uNumArenaLordWins;
 
     for (unsigned int i = 0; i < 29; ++i)
-        this->pIsArtifactFound[i] = party->pIsArtifactFound[i];
+        dst->pIsArtifactFound[i] = src.pIsArtifactFound[i];
     for (unsigned int i = 0; i < 39; ++i)
-        this->field_7d7[i] = party->field_7d7_set0_unused[i];
+        dst->field_7d7[i] = src.field_7d7_set0_unused[i];
     for (unsigned int i = 0; i < 26; ++i)
-        this->_autonote_bits[i] = party->_autonote_bits[i];
+        dst->_autonote_bits[i] = src._autonote_bits[i];
     for (unsigned int i = 0; i < 60; ++i)
-        this->field_818[i] = party->field_818_set0_unused[i];
+        dst->field_818[i] = src.field_818_set0_unused[i];
     for (unsigned int i = 0; i < 32; ++i)
-        this->field_854[i] = party->random_order_num_unused[i];
+        dst->field_854[i] = src.random_order_num_unused[i];
 
-    this->uNumArcomageWins = party->uNumArcomageWins;
-    this->uNumArcomageLoses = party->uNumArcomageLoses;
-    this->bTurnBasedModeOn = party->bTurnBasedModeOn;
-    this->field_880 = party->field_880_set0_unused;
-    this->uFlags2 = party->uFlags2;
+    dst->uNumArcomageWins = src.uNumArcomageWins;
+    dst->uNumArcomageLoses = src.uNumArcomageLoses;
+    dst->bTurnBasedModeOn = src.bTurnBasedModeOn;
+    dst->field_880 = src.field_880_set0_unused;
+    dst->uFlags2 = src.uFlags2;
 
     uint align = 0;
-    if (party->alignment == PartyAlignment::PartyAlignment_Evil) align = 2;
-    if (party->alignment == PartyAlignment::PartyAlignment_Neutral) align = 1;
-    this->alignment = align;
+    if (src.alignment == PartyAlignment::PartyAlignment_Evil) align = 2;
+    if (src.alignment == PartyAlignment::PartyAlignment_Neutral) align = 1;
+    dst->alignment = align;
 
     for (unsigned int i = 0; i < 20; ++i)
-        this->pPartyBuffs[i].Serialize(&party->pPartyBuffs[i]);
+        Serialize(src.pPartyBuffs[i], &dst->pPartyBuffs[i]);
     for (unsigned int i = 0; i < 4; ++i)
-        this->pPlayers[i].Serialize(&party->pPlayers[i]);
+        Serialize(src.pPlayers[i], &dst->pPlayers[i]);
     for (unsigned int i = 0; i < 2; ++i)
-        this->pHirelings[i].Serialize(&party->pHirelings[i]);
+        Serialize(src.pHirelings[i], &dst->pHirelings[i]);
 
-    this->pPickedItem.Serialize(&party->pPickedItem);
+    Serialize(src.pPickedItem, &dst->pPickedItem);
 
-    this->uFlags = party->uFlags;
-
-    for (unsigned int i = 0; i < 53; ++i)
-        for (unsigned int j = 0; j < 12; ++j)
-            this->StandartItemsInShops[i][j].Serialize(
-                &party->StandartItemsInShops[i][j]);
+    dst->uFlags = src.uFlags;
 
     for (unsigned int i = 0; i < 53; ++i)
         for (unsigned int j = 0; j < 12; ++j)
-            this->SpecialItemsInShops[i][j].Serialize(
-                &party->SpecialItemsInShops[i][j]);
+            Serialize(src.StandartItemsInShops[i][j], &dst->StandartItemsInShops[i][j]);
+
+    for (unsigned int i = 0; i < 53; ++i)
+        for (unsigned int j = 0; j < 12; ++j)
+            Serialize(src.SpecialItemsInShops[i][j], &dst->SpecialItemsInShops[i][j]);
 
     for (unsigned int i = 0; i < 32; ++i)
         for (unsigned int j = 0; j < 12; ++j)
-            this->SpellBooksInGuilds[i][j].Serialize(
-                &party->SpellBooksInGuilds[i][j]);
+            Serialize(src.SpellBooksInGuilds[i][j], &dst->SpellBooksInGuilds[i][j]);
 
     for (unsigned int i = 0; i < 24; ++i)
-        this->field_1605C[i] = party->field_1605C_set0_unused[i];
+        dst->field_1605C[i] = src.field_1605C_set0_unused[i];
 
-    strcpy(this->pHireling1Name, party->pHireling1Name);
-    strcpy(this->pHireling2Name, party->pHireling2Name);
+    Serialize(src.pHireling1Name, &dst->pHireling1Name);
+    Serialize(src.pHireling2Name, &dst->pHireling2Name);
 
-    this->armageddon_timer = party->armageddon_timer;
-    this->armageddonDamage = party->armageddonDamage;
+    dst->armageddon_timer = src.armageddon_timer;
+    dst->armageddonDamage = src.armageddonDamage;
 
     for (unsigned int i = 0; i < 4; ++i)
-        this->pTurnBasedPlayerRecoveryTimes[i] =
-            party->pTurnBasedPlayerRecoveryTimes[i];
+        dst->pTurnBasedPlayerRecoveryTimes[i] =
+            src.pTurnBasedPlayerRecoveryTimes[i];
 
     for (unsigned int i = 0; i < 53; ++i)
-        this->InTheShopFlags[i] = party->InTheShopFlags[i];
+        dst->InTheShopFlags[i] = src.InTheShopFlags[i];
 
-    this->uFine = party->uFine;
-    this->flt_TorchlightColorR = party->flt_TorchlightColorR;
-    this->flt_TorchlightColorG = party->flt_TorchlightColorG;
-    this->flt_TorchlightColorB = party->flt_TorchlightColorB;
+    dst->uFine = src.uFine;
+    dst->flt_TorchlightColorR = src.flt_TorchlightColorR;
+    dst->flt_TorchlightColorG = src.flt_TorchlightColorG;
+    dst->flt_TorchlightColorB = src.flt_TorchlightColorB;
 }
 
-void Party_Image_MM7::Deserialize(Party *party) {
-    party->field_0_set25_unused = this->field_0;
-    party->uPartyHeight = this->uPartyHeight;
-    party->uDefaultPartyHeight = this->uDefaultPartyHeight;
-    party->sEyelevel = this->sEyelevel;
-    party->uDefaultEyelevel = this->uDefaultEyelevel;
-    party->radius = this->radius;
-    party->y_rotation_granularity = this->y_rotation_granularity;
-    party->uWalkSpeed = this->uWalkSpeed;
-    party->y_rotation_speed = this->y_rotation_speed;
-    party->jump_strength = this->jump_strength;
-    party->field_28_set0_unused = this->field_28;
-    party->playing_time.value = this->uTimePlayed;
-    party->last_regenerated.value = this->uLastRegenerationTime;
+void Deserialize(const Party_MM7 &src, Party *dst) {
+    dst->field_0_set25_unused = src.field_0;
+    dst->uPartyHeight = src.uPartyHeight;
+    dst->uDefaultPartyHeight = src.uDefaultPartyHeight;
+    dst->sEyelevel = src.sEyelevel;
+    dst->uDefaultEyelevel = src.uDefaultEyelevel;
+    dst->radius = src.radius;
+    dst->y_rotation_granularity = src.y_rotation_granularity;
+    dst->uWalkSpeed = src.uWalkSpeed;
+    dst->y_rotation_speed = src.y_rotation_speed;
+    dst->jump_strength = src.jump_strength;
+    dst->field_28_set0_unused = src.field_28;
+    dst->playing_time.value = src.uTimePlayed;
+    dst->last_regenerated.value = src.uLastRegenerationTime;
 
     for (unsigned int i = 0; i < 10; ++i)
-        party->PartyTimes.bountyHunting_next_generation_time[i] =
-        GameTime(this->PartyTimes.bountyHunting_next_generation_time[i]);
+        dst->PartyTimes.bountyHunting_next_generation_time[i] =
+        GameTime(src.PartyTimes.bountyHunting_next_generation_time[i]);
     for (unsigned int i = 0; i < 85; ++i)
-        party->PartyTimes.Shops_next_generation_time[i] =
-        GameTime(this->PartyTimes.Shops_next_generation_time[i]);
+        dst->PartyTimes.Shops_next_generation_time[i] =
+        GameTime(src.PartyTimes.Shops_next_generation_time[i]);
     for (unsigned int i = 0; i < 53; ++i)
-        party->PartyTimes._shop_ban_times[i] =
-        GameTime(this->PartyTimes._shop_ban_times[i]);
+        dst->PartyTimes._shop_ban_times[i] =
+        GameTime(src.PartyTimes._shop_ban_times[i]);
     for (unsigned int i = 0; i < 10; ++i)
-        party->PartyTimes.CounterEventValues[i] =
-        GameTime(this->PartyTimes.CounterEventValues[i]);
+        dst->PartyTimes.CounterEventValues[i] =
+        GameTime(src.PartyTimes.CounterEventValues[i]);
     for (unsigned int i = 0; i < 29; ++i)
-        party->PartyTimes.HistoryEventTimes[i] =
-        GameTime(this->PartyTimes.HistoryEventTimes[i]);
+        dst->PartyTimes.HistoryEventTimes[i] =
+        GameTime(src.PartyTimes.HistoryEventTimes[i]);
     for (unsigned int i = 0; i < 20; ++i)
-        party->PartyTimes._s_times[i] = GameTime(this->PartyTimes._s_times[i]);
+        dst->PartyTimes._s_times[i] = GameTime(src.PartyTimes._s_times[i]);
 
-    party->vPosition.x = this->vPosition.x;
-    party->vPosition.y = this->vPosition.y;
-    party->vPosition.z = this->vPosition.z;
-    party->sRotationZ = this->sRotationZ;
-    party->sRotationY = this->sRotationY;
-    party->vPrevPosition.x = this->vPrevPosition.x;
-    party->vPrevPosition.y = this->vPrevPosition.y;
-    party->vPrevPosition.z = this->vPrevPosition.z;
-    party->sPrevRotationZ = this->sPrevRotationZ;
-    party->sPrevRotationY = this->sPrevRotationY;
-    party->sPrevEyelevel = this->sPrevEyelevel;
-    party->field_6E0_set0_unused = this->field_6E0;
-    party->field_6E4_set0_unused = this->field_6E4;
-    party->uFallSpeed = this->uFallSpeed;
-    party->field_6EC_set0_unused = this->field_6EC;
-    party->sPartyPrevZ = this->field_6F0;
-    party->floor_face_pid = this->floor_face_pid;
-    party->walk_sound_timer = this->walk_sound_timer;
-    party->_6FC_water_lava_timer = this->_6FC_water_lava_timer;
-    party->uFallStartZ = this->uFallStartZ;
-    party->bFlying = this->bFlying;
-    party->field_708_set15_unused = this->field_708;
-    party->hirelingScrollPosition = this->hirelingScrollPosition;
-    party->cNonHireFollowers = this->field_70A;
-    party->field_70B_set0_unused = this->field_70B;
-    party->uCurrentYear = this->uCurrentYear;
-    party->uCurrentMonth = this->uCurrentMonth;
-    party->uCurrentMonthWeek = this->uCurrentMonthWeek;
-    party->uCurrentDayOfMonth = this->uCurrentDayOfMonth;
-    party->uCurrentHour = this->uCurrentHour;
-    party->uCurrentMinute = this->uCurrentMinute;
-    party->uCurrentTimeSecond = this->uCurrentTimeSecond;
-    party->uNumFoodRations = this->uNumFoodRations;
-    party->field_72C_set0_unused = this->field_72C;
-    party->field_730_set0_unused = this->field_730;
-    party->uNumGold = this->uNumGold;
-    party->uNumGoldInBank = this->uNumGoldInBank;
-    party->uNumDeaths = this->uNumDeaths;
-    party->field_740_set0_unused = this->field_740;
-    party->uNumPrisonTerms = this->uNumPrisonTerms;
-    party->uNumBountiesCollected = this->uNumBountiesCollected;
-    party->field_74C_set0_unused = this->field_74C;
+    dst->vPosition.x = src.vPosition.x;
+    dst->vPosition.y = src.vPosition.y;
+    dst->vPosition.z = src.vPosition.z;
+    dst->sRotationZ = src.sRotationZ;
+    dst->sRotationY = src.sRotationY;
+    dst->vPrevPosition.x = src.vPrevPosition.x;
+    dst->vPrevPosition.y = src.vPrevPosition.y;
+    dst->vPrevPosition.z = src.vPrevPosition.z;
+    dst->sPrevRotationZ = src.sPrevRotationZ;
+    dst->sPrevRotationY = src.sPrevRotationY;
+    dst->sPrevEyelevel = src.sPrevEyelevel;
+    dst->field_6E0_set0_unused = src.field_6E0;
+    dst->field_6E4_set0_unused = src.field_6E4;
+    dst->uFallSpeed = src.uFallSpeed;
+    dst->field_6EC_set0_unused = src.field_6EC;
+    dst->sPartyPrevZ = src.field_6F0;
+    dst->floor_face_pid = src.floor_face_pid;
+    dst->walk_sound_timer = src.walk_sound_timer;
+    dst->_6FC_water_lava_timer = src._6FC_water_lava_timer;
+    dst->uFallStartZ = src.uFallStartZ;
+    dst->bFlying = src.bFlying;
+    dst->field_708_set15_unused = src.field_708;
+    dst->hirelingScrollPosition = src.hirelingScrollPosition;
+    dst->cNonHireFollowers = src.field_70A;
+    dst->field_70B_set0_unused = src.field_70B;
+    dst->uCurrentYear = src.uCurrentYear;
+    dst->uCurrentMonth = src.uCurrentMonth;
+    dst->uCurrentMonthWeek = src.uCurrentMonthWeek;
+    dst->uCurrentDayOfMonth = src.uCurrentDayOfMonth;
+    dst->uCurrentHour = src.uCurrentHour;
+    dst->uCurrentMinute = src.uCurrentMinute;
+    dst->uCurrentTimeSecond = src.uCurrentTimeSecond;
+    dst->uNumFoodRations = src.uNumFoodRations;
+    dst->field_72C_set0_unused = src.field_72C;
+    dst->field_730_set0_unused = src.field_730;
+    dst->uNumGold = src.uNumGold;
+    dst->uNumGoldInBank = src.uNumGoldInBank;
+    dst->uNumDeaths = src.uNumDeaths;
+    dst->field_740_set0_unused = src.field_740;
+    dst->uNumPrisonTerms = src.uNumPrisonTerms;
+    dst->uNumBountiesCollected = src.uNumBountiesCollected;
+    dst->field_74C_set0_unused = src.field_74C;
 
     for (unsigned int i = 0; i < 5; ++i)
-        party->monster_id_for_hunting[i] = this->monster_id_for_hunting[i];
+        dst->monster_id_for_hunting[i] = src.monster_id_for_hunting[i];
     for (unsigned int i = 0; i < 5; ++i)
-        party->monster_for_hunting_killed[i] =
-            this->monster_for_hunting_killed[i];
+        dst->monster_for_hunting_killed[i] =
+            src.monster_for_hunting_killed[i];
 
-    party->days_played_without_rest = this->days_played_without_rest;
+    dst->days_played_without_rest = src.days_played_without_rest;
 
     for (unsigned int i = 0; i < 64; ++i)
-        party->_quest_bits[i] = this->_quest_bits[i];
+        dst->_quest_bits[i] = src._quest_bits[i];
     for (unsigned int i = 0; i < 16; ++i)
-        party->pArcomageWins[i] = this->pArcomageWins[i];
+        dst->pArcomageWins[i] = src.pArcomageWins[i];
 
-    party->field_7B5_in_arena_quest = this->field_7B5_in_arena_quest;
-    party->uNumArenaPageWins = this->uNumArenaPageWins;
-    party->uNumArenaSquireWins = this->uNumArenaSquireWins;
-    party->uNumArenaKnightWins = this->uNumArenaKnightWins;
-    party->uNumArenaLordWins = this->uNumArenaLordWins;
+    dst->field_7B5_in_arena_quest = src.field_7B5_in_arena_quest;
+    dst->uNumArenaPageWins = src.uNumArenaPageWins;
+    dst->uNumArenaSquireWins = src.uNumArenaSquireWins;
+    dst->uNumArenaKnightWins = src.uNumArenaKnightWins;
+    dst->uNumArenaLordWins = src.uNumArenaLordWins;
 
     for (unsigned int i = 0; i < 29; ++i)
-        party->pIsArtifactFound[i] = this->pIsArtifactFound[i];
+        dst->pIsArtifactFound[i] = src.pIsArtifactFound[i];
     for (unsigned int i = 0; i < 39; ++i)
-        party->field_7d7_set0_unused[i] = this->field_7d7[i];
+        dst->field_7d7_set0_unused[i] = src.field_7d7[i];
     for (unsigned int i = 0; i < 26; ++i)
-        party->_autonote_bits[i] = this->_autonote_bits[i];
+        dst->_autonote_bits[i] = src._autonote_bits[i];
     for (unsigned int i = 0; i < 60; ++i)
-        party->field_818_set0_unused[i] = this->field_818[i];
+        dst->field_818_set0_unused[i] = src.field_818[i];
     for (unsigned int i = 0; i < 32; ++i)
-        party->random_order_num_unused[i] = this->field_854[i];
+        dst->random_order_num_unused[i] = src.field_854[i];
 
-    party->uNumArcomageWins = this->uNumArcomageWins;
-    party->uNumArcomageLoses = this->uNumArcomageLoses;
-    party->bTurnBasedModeOn = this->bTurnBasedModeOn;
-    party->field_880_set0_unused = this->field_880;
-    party->uFlags2 = this->uFlags2;
+    dst->uNumArcomageWins = src.uNumArcomageWins;
+    dst->uNumArcomageLoses = src.uNumArcomageLoses;
+    dst->bTurnBasedModeOn = src.bTurnBasedModeOn;
+    dst->field_880_set0_unused = src.field_880;
+    dst->uFlags2 = src.uFlags2;
 
-    switch (this->alignment) {
+    switch (src.alignment) {
         case 0:
-            party->alignment = PartyAlignment::PartyAlignment_Good;
+            dst->alignment = PartyAlignment::PartyAlignment_Good;
             break;
         case 1:
-            party->alignment = PartyAlignment::PartyAlignment_Neutral;
+            dst->alignment = PartyAlignment::PartyAlignment_Neutral;
             break;
         case 2:
-            party->alignment = PartyAlignment::PartyAlignment_Evil;
+            dst->alignment = PartyAlignment::PartyAlignment_Evil;
             break;
         default:
             Assert(false);
     }
 
     for (unsigned int i = 0; i < 20; ++i)
-        this->pPartyBuffs[i].Deserialize(&party->pPartyBuffs[i]);
+        Deserialize(src.pPartyBuffs[i], &dst->pPartyBuffs[i]);
     for (unsigned int i = 0; i < 4; ++i)
-        this->pPlayers[i].Deserialize(&party->pPlayers[i]);
+        Deserialize(src.pPlayers[i], &dst->pPlayers[i]);
     for (unsigned int i = 0; i < 2; ++i)
-        this->pHirelings[i].Deserialize(&party->pHirelings[i]);
+        Deserialize(src.pHirelings[i], &dst->pHirelings[i]);
 
-    this->pPickedItem.Deserialize(&party->pPickedItem);
+    Deserialize(src.pPickedItem, &dst->pPickedItem);
 
-    party->uFlags = this->uFlags;
-
-    for (unsigned int i = 0; i < 53; ++i)
-        for (unsigned int j = 0; j < 12; ++j)
-            this->StandartItemsInShops[i][j].Deserialize(
-                &party->StandartItemsInShops[i][j]);
+    dst->uFlags = src.uFlags;
 
     for (unsigned int i = 0; i < 53; ++i)
         for (unsigned int j = 0; j < 12; ++j)
-            this->SpecialItemsInShops[i][j].Deserialize(
-                &party->SpecialItemsInShops[i][j]);
+            Deserialize(src.StandartItemsInShops[i][j], &dst->StandartItemsInShops[i][j]);
+
+    for (unsigned int i = 0; i < 53; ++i)
+        for (unsigned int j = 0; j < 12; ++j)
+            Deserialize(src.SpecialItemsInShops[i][j], &dst->SpecialItemsInShops[i][j]);
 
     for (unsigned int i = 0; i < 32; ++i)
         for (unsigned int j = 0; j < 12; ++j)
-            this->SpellBooksInGuilds[i][j].Deserialize(
-                &party->SpellBooksInGuilds[i][j]);
+            Deserialize(src.SpellBooksInGuilds[i][j], &dst->SpellBooksInGuilds[i][j]);
 
     for (unsigned int i = 0; i < 24; ++i)
-        party->field_1605C_set0_unused[i] = this->field_1605C[i];
+        dst->field_1605C_set0_unused[i] = src.field_1605C[i];
 
-    strcpy(party->pHireling1Name, this->pHireling1Name);
-    strcpy(party->pHireling2Name, this->pHireling2Name);
+    Deserialize(src.pHireling1Name, &dst->pHireling1Name);
+    Deserialize(src.pHireling2Name, &dst->pHireling2Name);
 
-    party->armageddon_timer = this->armageddon_timer;
-    party->armageddonDamage = this->armageddonDamage;
+    dst->armageddon_timer = src.armageddon_timer;
+    dst->armageddonDamage = src.armageddonDamage;
 
     for (unsigned int i = 0; i < 4; ++i)
-        party->pTurnBasedPlayerRecoveryTimes[i] =
-            this->pTurnBasedPlayerRecoveryTimes[i];
+        dst->pTurnBasedPlayerRecoveryTimes[i] =
+            src.pTurnBasedPlayerRecoveryTimes[i];
 
     for (unsigned int i = 0; i < 53; ++i)
-        party->InTheShopFlags[i] = this->InTheShopFlags[i];
+        dst->InTheShopFlags[i] = src.InTheShopFlags[i];
 
-    party->uFine = this->uFine;
+    dst->uFine = src.uFine;
 
     // is this correct / ever used??
-    party->flt_TorchlightColorR = this->flt_TorchlightColorR;
-    party->flt_TorchlightColorG = this->flt_TorchlightColorG;
-    party->flt_TorchlightColorB = this->flt_TorchlightColorB;
+    dst->flt_TorchlightColorR = src.flt_TorchlightColorR;
+    dst->flt_TorchlightColorG = src.flt_TorchlightColorG;
+    dst->flt_TorchlightColorB = src.flt_TorchlightColorB;
 }
 
-void Player_Image_MM7::Serialize(const Player *player) {
-    memset(this, 0, sizeof(*this));
+void Serialize(const Player &src, Player_MM7 *dst) {
+    memzero(dst);
 
     for (unsigned int i = 0; i < 20; ++i)
-        this->pConditions[i] = player->conditions.Get(static_cast<Condition>(i)).value;
+        dst->pConditions[i] = src.conditions.Get(static_cast<Condition>(i)).value;
 
-    this->uExperience = player->uExperience;
+    dst->uExperience = src.uExperience;
 
-    strcpy(this->pName, player->pName);
+    Serialize(src.pName, &dst->pName);
 
-    this->uSex = player->uSex;
-    this->classType = player->classType;
-    this->uCurrentFace = player->uCurrentFace;
-    this->field_BB = player->field_BB;
-    this->uMight = player->uMight;
-    this->uMightBonus = player->uMightBonus;
-    this->uIntelligence = player->uIntelligence;
-    this->uIntelligenceBonus = player->uIntelligenceBonus;
-    this->uWillpower = player->uWillpower;
-    this->uWillpowerBonus = player->uWillpowerBonus;
-    this->uEndurance = player->uEndurance;
-    this->uEnduranceBonus = player->uEnduranceBonus;
-    this->uSpeed = player->uSpeed;
-    this->uSpeedBonus = player->uSpeedBonus;
-    this->uAccuracy = player->uAccuracy;
-    this->uAccuracyBonus = player->uAccuracyBonus;
-    this->uLuck = player->uLuck;
-    this->uLuckBonus = player->uLuckBonus;
-    this->sACModifier = player->sACModifier;
-    this->uLevel = player->uLevel;
-    this->sLevelModifier = player->sLevelModifier;
-    this->sAgeModifier = player->sAgeModifier;
-    this->field_E0 = player->field_E0;
-    this->field_E4 = player->field_E4;
-    this->field_E8 = player->field_E8;
-    this->field_EC = player->field_EC;
-    this->field_F0 = player->field_F0;
-    this->field_F4 = player->field_F4;
-    this->field_F8 = player->field_F8;
-    this->field_FC = player->field_FC;
-    this->field_100 = player->field_100;
-    this->field_104 = player->field_104;
+    dst->uSex = src.uSex;
+    dst->classType = src.classType;
+    dst->uCurrentFace = src.uCurrentFace;
+    dst->field_BB = src.field_BB;
+    dst->uMight = src.uMight;
+    dst->uMightBonus = src.uMightBonus;
+    dst->uIntelligence = src.uIntelligence;
+    dst->uIntelligenceBonus = src.uIntelligenceBonus;
+    dst->uWillpower = src.uWillpower;
+    dst->uWillpowerBonus = src.uWillpowerBonus;
+    dst->uEndurance = src.uEndurance;
+    dst->uEnduranceBonus = src.uEnduranceBonus;
+    dst->uSpeed = src.uSpeed;
+    dst->uSpeedBonus = src.uSpeedBonus;
+    dst->uAccuracy = src.uAccuracy;
+    dst->uAccuracyBonus = src.uAccuracyBonus;
+    dst->uLuck = src.uLuck;
+    dst->uLuckBonus = src.uLuckBonus;
+    dst->sACModifier = src.sACModifier;
+    dst->uLevel = src.uLevel;
+    dst->sLevelModifier = src.sLevelModifier;
+    dst->sAgeModifier = src.sAgeModifier;
+    dst->field_E0 = src.field_E0;
+    dst->field_E4 = src.field_E4;
+    dst->field_E8 = src.field_E8;
+    dst->field_EC = src.field_EC;
+    dst->field_F0 = src.field_F0;
+    dst->field_F4 = src.field_F4;
+    dst->field_F8 = src.field_F8;
+    dst->field_FC = src.field_FC;
+    dst->field_100 = src.field_100;
+    dst->field_104 = src.field_104;
 
     for (unsigned int i = 0; i < 37; ++i)
-        this->pActiveSkills[i] = player->pActiveSkills[i];
+        dst->pActiveSkills[i] = src.pActiveSkills[i];
 
     for (unsigned int i = 0; i < 64; ++i)
-        this->_achieved_awards_bits[i] = player->_achieved_awards_bits[i];
+        dst->_achieved_awards_bits[i] = src._achieved_awards_bits[i];
 
     for (unsigned int i = 0; i < 99; ++i)
-        this->spellbook.bHaveSpell[i] = player->spellbook.bHaveSpell[i];
+        dst->spellbook.bHaveSpell[i] = src.spellbook.bHaveSpell[i];
 
-    this->pure_luck_used = player->pure_luck_used;
-    this->pure_speed_used = player->pure_speed_used;
-    this->pure_intellect_used = player->pure_intellect_used;
-    this->pure_endurance_used = player->pure_endurance_used;
-    this->pure_willpower_used = player->pure_willpower_used;
-    this->pure_accuracy_used = player->pure_accuracy_used;
-    this->pure_might_used = player->pure_might_used;
+    dst->pure_luck_used = src.pure_luck_used;
+    dst->pure_speed_used = src.pure_speed_used;
+    dst->pure_intellect_used = src.pure_intellect_used;
+    dst->pure_endurance_used = src.pure_endurance_used;
+    dst->pure_willpower_used = src.pure_willpower_used;
+    dst->pure_accuracy_used = src.pure_accuracy_used;
+    dst->pure_might_used = src.pure_might_used;
 
     for (unsigned int i = 0; i < 138; ++i)
-        this->pOwnItems[i].Serialize(&player->pOwnItems[i]);
+        Serialize(src.pOwnItems[i], &dst->pOwnItems[i]);
 
     for (unsigned int i = 0; i < 126; ++i)
-        this->pInventoryMatrix[i] = player->pInventoryMatrix[i];
+        dst->pInventoryMatrix[i] = src.pInventoryMatrix[i];
 
-    this->sResFireBase = player->sResFireBase;
-    this->sResAirBase = player->sResAirBase;
-    this->sResWaterBase = player->sResWaterBase;
-    this->sResEarthBase = player->sResEarthBase;
-    this->sResPhysicalBase = player->sResPhysicalBase;
-    this->sResMagicBase = player->sResMagicBase;
-    this->sResSpiritBase = player->sResSpiritBase;
-    this->sResMindBase = player->sResMindBase;
-    this->sResBodyBase = player->sResBodyBase;
-    this->sResLightBase = player->sResLightBase;
-    this->sResDarkBase = player->sResDarkBase;
-    this->sResFireBonus = player->sResFireBonus;
-    this->sResAirBonus = player->sResAirBonus;
-    this->sResWaterBonus = player->sResWaterBonus;
-    this->sResEarthBonus = player->sResEarthBonus;
-    this->sResPhysicalBonus = player->sResPhysicalBonus;
-    this->sResMagicBonus = player->sResMagicBonus;
-    this->sResSpiritBonus = player->sResSpiritBonus;
-    this->sResMindBonus = player->sResMindBonus;
-    this->sResBodyBonus = player->sResBodyBonus;
-    this->sResLightBonus = player->sResLightBonus;
-    this->sResDarkBonus = player->sResDarkBonus;
+    dst->sResFireBase = src.sResFireBase;
+    dst->sResAirBase = src.sResAirBase;
+    dst->sResWaterBase = src.sResWaterBase;
+    dst->sResEarthBase = src.sResEarthBase;
+    dst->sResPhysicalBase = src.sResPhysicalBase;
+    dst->sResMagicBase = src.sResMagicBase;
+    dst->sResSpiritBase = src.sResSpiritBase;
+    dst->sResMindBase = src.sResMindBase;
+    dst->sResBodyBase = src.sResBodyBase;
+    dst->sResLightBase = src.sResLightBase;
+    dst->sResDarkBase = src.sResDarkBase;
+    dst->sResFireBonus = src.sResFireBonus;
+    dst->sResAirBonus = src.sResAirBonus;
+    dst->sResWaterBonus = src.sResWaterBonus;
+    dst->sResEarthBonus = src.sResEarthBonus;
+    dst->sResPhysicalBonus = src.sResPhysicalBonus;
+    dst->sResMagicBonus = src.sResMagicBonus;
+    dst->sResSpiritBonus = src.sResSpiritBonus;
+    dst->sResMindBonus = src.sResMindBonus;
+    dst->sResBodyBonus = src.sResBodyBonus;
+    dst->sResLightBonus = src.sResLightBonus;
+    dst->sResDarkBonus = src.sResDarkBonus;
 
     for (unsigned int i = 0; i < 24; ++i)
-        this->pPlayerBuffs[i].Serialize(&player->pPlayerBuffs[i]);
+        Serialize(src.pPlayerBuffs[i], &dst->pPlayerBuffs[i]);
 
-    this->uVoiceID = player->uVoiceID;
-    this->uPrevVoiceID = player->uPrevVoiceID;
-    this->uPrevFace = player->uPrevFace;
-    this->field_192C = player->field_192C;
-    this->field_1930 = player->field_1930;
-    this->uTimeToRecovery = player->uTimeToRecovery;
-    this->field_1936 = player->field_1936;
-    this->field_1937 = player->field_1937;
-    this->uSkillPoints = player->uSkillPoints;
-    this->sHealth = player->sHealth;
-    this->sMana = player->sMana;
-    this->uBirthYear = player->uBirthYear;
+    dst->uVoiceID = src.uVoiceID;
+    dst->uPrevVoiceID = src.uPrevVoiceID;
+    dst->uPrevFace = src.uPrevFace;
+    dst->field_192C = src.field_192C;
+    dst->field_1930 = src.field_1930;
+    dst->uTimeToRecovery = src.uTimeToRecovery;
+    dst->field_1936 = src.field_1936;
+    dst->field_1937 = src.field_1937;
+    dst->uSkillPoints = src.uSkillPoints;
+    dst->sHealth = src.sHealth;
+    dst->sMana = src.sMana;
+    dst->uBirthYear = src.uBirthYear;
 
     for (unsigned int i = 0; i < 16; ++i)
-        this->pEquipment.pIndices[i] = player->pEquipment.pIndices[i];
+        dst->pEquipment.pIndices[i] = src.pEquipment.pIndices[i];
 
     for (unsigned int i = 0; i < 49; ++i)
-        this->field_1988[i] = player->field_1988[i];
+        dst->field_1988[i] = src.field_1988[i];
 
-    this->field_1A4C = player->field_1A4C;
-    this->field_1A4D = player->field_1A4D;
-    this->lastOpenedSpellbookPage = player->lastOpenedSpellbookPage;
-    this->uQuickSpell = player->uQuickSpell;
+    dst->field_1A4C = src.field_1A4C;
+    dst->field_1A4D = src.field_1A4D;
+    dst->lastOpenedSpellbookPage = src.lastOpenedSpellbookPage;
+    dst->uQuickSpell = src.uQuickSpell;
 
     for (unsigned int i = 0; i < 49; ++i)
-        this->playerEventBits[i] = player->playerEventBits[i];
+        dst->playerEventBits[i] = src.playerEventBits[i];
 
-    this->_some_attack_bonus = player->_some_attack_bonus;
-    this->field_1A91 = player->field_1A91;
-    this->_melee_dmg_bonus = player->_melee_dmg_bonus;
-    this->field_1A93 = player->field_1A93;
-    this->_ranged_atk_bonus = player->_ranged_atk_bonus;
-    this->field_1A95 = player->field_1A95;
-    this->_ranged_dmg_bonus = player->_ranged_dmg_bonus;
-    this->field_1A97 = player->field_1A97_set0_unused;
-    this->uFullHealthBonus = player->uFullHealthBonus;
-    this->_health_related = player->_health_related;
-    this->uFullManaBonus = player->uFullManaBonus;
-    this->_mana_related = player->_mana_related;
-    this->expression = player->expression;
-    this->uExpressionTimePassed = player->uExpressionTimePassed;
-    this->uExpressionTimeLength = player->uExpressionTimeLength;
-    this->field_1AA2 = player->uExpressionImageIndex;
-    this->_expression21_animtime = player->_expression21_animtime;
-    this->_expression21_frameset = player->_expression21_frameset;
+    dst->_some_attack_bonus = src._some_attack_bonus;
+    dst->field_1A91 = src.field_1A91;
+    dst->_melee_dmg_bonus = src._melee_dmg_bonus;
+    dst->field_1A93 = src.field_1A93;
+    dst->_ranged_atk_bonus = src._ranged_atk_bonus;
+    dst->field_1A95 = src.field_1A95;
+    dst->_ranged_dmg_bonus = src._ranged_dmg_bonus;
+    dst->field_1A97 = src.field_1A97_set0_unused;
+    dst->uFullHealthBonus = src.uFullHealthBonus;
+    dst->_health_related = src._health_related;
+    dst->uFullManaBonus = src.uFullManaBonus;
+    dst->_mana_related = src._mana_related;
+    dst->expression = src.expression;
+    dst->uExpressionTimePassed = src.uExpressionTimePassed;
+    dst->uExpressionTimeLength = src.uExpressionTimeLength;
+    dst->field_1AA2 = src.uExpressionImageIndex;
+    dst->_expression21_animtime = src._expression21_animtime;
+    dst->_expression21_frameset = src._expression21_frameset;
 
     for (unsigned int i = 0; i < 5; ++i) {
-        if (i >= player->vBeacons.size()) {
+        if (i >= src.vBeacons.size()) {
             continue;
         }
-        this->pInstalledBeacons[i].uBeaconTime =
-            player->vBeacons[i].uBeaconTime.value;
-        this->pInstalledBeacons[i].PartyPos_X =
-            player->vBeacons[i].PartyPos_X;
-        this->pInstalledBeacons[i].PartyPos_Y =
-            player->vBeacons[i].PartyPos_Y;
-        this->pInstalledBeacons[i].PartyPos_Z =
-            player->vBeacons[i].PartyPos_Z;
-        this->pInstalledBeacons[i].PartyRot_X =
-            player->vBeacons[i].PartyRot_X;
-        this->pInstalledBeacons[i].PartyRot_Y =
-            player->vBeacons[i].PartyRot_Y;
-        this->pInstalledBeacons[i].SaveFileID =
-            player->vBeacons[i].SaveFileID;
+        dst->pInstalledBeacons[i].uBeaconTime =
+            src.vBeacons[i].uBeaconTime.value;
+        dst->pInstalledBeacons[i].PartyPos_X =
+            src.vBeacons[i].PartyPos_X;
+        dst->pInstalledBeacons[i].PartyPos_Y =
+            src.vBeacons[i].PartyPos_Y;
+        dst->pInstalledBeacons[i].PartyPos_Z =
+            src.vBeacons[i].PartyPos_Z;
+        dst->pInstalledBeacons[i].PartyRot_X =
+            src.vBeacons[i].PartyRot_X;
+        dst->pInstalledBeacons[i].PartyRot_Y =
+            src.vBeacons[i].PartyRot_Y;
+        dst->pInstalledBeacons[i].SaveFileID =
+            src.vBeacons[i].SaveFileID;
     }
 
-    this->uNumDivineInterventionCastsThisDay =
-        player->uNumDivineInterventionCastsThisDay;
-    this->uNumArmageddonCasts = player->uNumArmageddonCasts;
-    this->uNumFireSpikeCasts = player->uNumFireSpikeCasts;
-    this->field_1B3B = player->field_1B3B_set0_unused;
+    dst->uNumDivineInterventionCastsThisDay =
+        src.uNumDivineInterventionCastsThisDay;
+    dst->uNumArmageddonCasts = src.uNumArmageddonCasts;
+    dst->uNumFireSpikeCasts = src.uNumFireSpikeCasts;
+    dst->field_1B3B = src.field_1B3B_set0_unused;
 }
 
-void Player_Image_MM7::Deserialize(Player* player) {
+void Deserialize(const Player_MM7 &src, Player* dst) {
     for (unsigned int i = 0; i < 20; ++i)
-        player->conditions.Set(static_cast<Condition>(i), GameTime(this->pConditions[i]));
+        dst->conditions.Set(static_cast<Condition>(i), GameTime(src.pConditions[i]));
 
-    player->uExperience = this->uExperience;
+    dst->uExperience = src.uExperience;
 
-    strcpy(player->pName, this->pName);
+    Deserialize(src.pName, &dst->pName);
 
-    switch (this->uSex) {
+    switch (src.uSex) {
     case 0:
-        player->uSex = SEX_MALE;
+        dst->uSex = SEX_MALE;
         break;
     case 1:
-        player->uSex = SEX_FEMALE;
+        dst->uSex = SEX_FEMALE;
         break;
     default:
         Assert(false);
     }
 
-    switch (this->classType) {
+    switch (src.classType) {
     case 0:
-        player->classType = PLAYER_CLASS_KNIGHT;
+        dst->classType = PLAYER_CLASS_KNIGHT;
         break;
     case 1:
-        player->classType = PLAYER_CLASS_CHEVALIER;
+        dst->classType = PLAYER_CLASS_CHEVALIER;
         break;
     case 2:
-        player->classType = PLAYER_CLASS_CHAMPION;
+        dst->classType = PLAYER_CLASS_CHAMPION;
         break;
     case 3:
-        player->classType = PLAYER_CLASS_BLACK_KNIGHT;
+        dst->classType = PLAYER_CLASS_BLACK_KNIGHT;
         break;
     case 4:
-        player->classType = PLAYER_CLASS_THIEF;
+        dst->classType = PLAYER_CLASS_THIEF;
         break;
     case 5:
-        player->classType = PLAYER_CLASS_ROGUE;
+        dst->classType = PLAYER_CLASS_ROGUE;
         break;
     case 6:
-        player->classType = PLAYER_CLASS_SPY;
+        dst->classType = PLAYER_CLASS_SPY;
         break;
     case 7:
-        player->classType = PLAYER_CLASS_ASSASSIN;
+        dst->classType = PLAYER_CLASS_ASSASSIN;
         break;
     case 8:
-        player->classType = PLAYER_CLASS_MONK;
+        dst->classType = PLAYER_CLASS_MONK;
         break;
     case 9:
-        player->classType = PLAYER_CLASS_INITIATE;
+        dst->classType = PLAYER_CLASS_INITIATE;
         break;
     case 10:
-        player->classType = PLAYER_CLASS_MASTER;
+        dst->classType = PLAYER_CLASS_MASTER;
         break;
     case 11:
-        player->classType = PLAYER_CLASS_NINJA;
+        dst->classType = PLAYER_CLASS_NINJA;
         break;
     case 12:
-        player->classType = PLAYER_CLASS_PALADIN;
+        dst->classType = PLAYER_CLASS_PALADIN;
         break;
     case 13:
-        player->classType = PLAYER_CLASS_CRUSADER;
+        dst->classType = PLAYER_CLASS_CRUSADER;
         break;
     case 14:
-        player->classType = PLAYER_CLASS_HERO;
+        dst->classType = PLAYER_CLASS_HERO;
         break;
     case 15:
-        player->classType = PLAYER_CLASS_VILLIAN;
+        dst->classType = PLAYER_CLASS_VILLIAN;
         break;
     case 16:
-        player->classType = PLAYER_CLASS_ARCHER;
+        dst->classType = PLAYER_CLASS_ARCHER;
         break;
     case 17:
-        player->classType = PLAYER_CLASS_WARRIOR_MAGE;
+        dst->classType = PLAYER_CLASS_WARRIOR_MAGE;
         break;
     case 18:
-        player->classType = PLAYER_CLASS_MASTER_ARCHER;
+        dst->classType = PLAYER_CLASS_MASTER_ARCHER;
         break;
     case 19:
-        player->classType = PLAYER_CLASS_SNIPER;
+        dst->classType = PLAYER_CLASS_SNIPER;
         break;
     case 20:
-        player->classType = PLAYER_CLASS_RANGER;
+        dst->classType = PLAYER_CLASS_RANGER;
         break;
     case 21:
-        player->classType = PLAYER_CLASS_HUNTER;
+        dst->classType = PLAYER_CLASS_HUNTER;
         break;
     case 22:
-        player->classType = PLAYER_CLASS_RANGER_LORD;
+        dst->classType = PLAYER_CLASS_RANGER_LORD;
         break;
     case 23:
-        player->classType = PLAYER_CLASS_BOUNTY_HUNTER;
+        dst->classType = PLAYER_CLASS_BOUNTY_HUNTER;
         break;
     case 24:
-        player->classType = PLAYER_CLASS_CLERIC;
+        dst->classType = PLAYER_CLASS_CLERIC;
         break;
     case 25:
-        player->classType = PLAYER_CLASS_PRIEST;
+        dst->classType = PLAYER_CLASS_PRIEST;
         break;
     case 26:
-        player->classType = PLAYER_CLASS_PRIEST_OF_SUN;
+        dst->classType = PLAYER_CLASS_PRIEST_OF_SUN;
         break;
     case 27:
-        player->classType = PLAYER_CLASS_PRIEST_OF_MOON;
+        dst->classType = PLAYER_CLASS_PRIEST_OF_MOON;
         break;
     case 28:
-        player->classType = PLAYER_CLASS_DRUID;
+        dst->classType = PLAYER_CLASS_DRUID;
         break;
     case 29:
-        player->classType = PLAYER_CLASS_GREAT_DRUID;
+        dst->classType = PLAYER_CLASS_GREAT_DRUID;
         break;
     case 30:
-        player->classType = PLAYER_CLASS_ARCH_DRUID;
+        dst->classType = PLAYER_CLASS_ARCH_DRUID;
         break;
     case 31:
-        player->classType = PLAYER_CLASS_WARLOCK;
+        dst->classType = PLAYER_CLASS_WARLOCK;
         break;
     case 32:
-        player->classType = PLAYER_CLASS_SORCERER;
+        dst->classType = PLAYER_CLASS_SORCERER;
         break;
     case 33:
-        player->classType = PLAYER_CLASS_WIZARD;
+        dst->classType = PLAYER_CLASS_WIZARD;
         break;
     case 34:
-        player->classType = PLAYER_CLASS_ARCHMAGE;
+        dst->classType = PLAYER_CLASS_ARCHMAGE;
         break;
     case 35:
-        player->classType = PLAYER_CLASS_LICH;
+        dst->classType = PLAYER_CLASS_LICH;
         break;
     default:
         Assert(false);
     }
 
-    player->uCurrentFace = this->uCurrentFace;
-    player->field_BB = this->field_BB;
-    player->uMight = this->uMight;
-    player->uMightBonus = this->uMightBonus;
-    player->uIntelligence = this->uIntelligence;
-    player->uIntelligenceBonus = this->uIntelligenceBonus;
-    player->uWillpower = this->uWillpower;
-    player->uWillpowerBonus = this->uWillpowerBonus;
-    player->uEndurance = this->uEndurance;
-    player->uEnduranceBonus = this->uEnduranceBonus;
-    player->uSpeed = this->uSpeed;
-    player->uSpeedBonus = this->uSpeedBonus;
-    player->uAccuracy = this->uAccuracy;
-    player->uAccuracyBonus = this->uAccuracyBonus;
-    player->uLuck = this->uLuck;
-    player->uLuckBonus = this->uLuckBonus;
-    player->sACModifier = this->sACModifier;
-    player->uLevel = this->uLevel;
-    player->sLevelModifier = this->sLevelModifier;
-    player->sAgeModifier = this->sAgeModifier;
-    player->field_E0 = this->field_E0;
-    player->field_E4 = this->field_E4;
-    player->field_E8 = this->field_E8;
-    player->field_EC = this->field_EC;
-    player->field_F0 = this->field_F0;
-    player->field_F4 = this->field_F4;
-    player->field_F8 = this->field_F8;
-    player->field_FC = this->field_FC;
-    player->field_100 = this->field_100;
-    player->field_104 = this->field_104;
+    dst->uCurrentFace = src.uCurrentFace;
+    dst->field_BB = src.field_BB;
+    dst->uMight = src.uMight;
+    dst->uMightBonus = src.uMightBonus;
+    dst->uIntelligence = src.uIntelligence;
+    dst->uIntelligenceBonus = src.uIntelligenceBonus;
+    dst->uWillpower = src.uWillpower;
+    dst->uWillpowerBonus = src.uWillpowerBonus;
+    dst->uEndurance = src.uEndurance;
+    dst->uEnduranceBonus = src.uEnduranceBonus;
+    dst->uSpeed = src.uSpeed;
+    dst->uSpeedBonus = src.uSpeedBonus;
+    dst->uAccuracy = src.uAccuracy;
+    dst->uAccuracyBonus = src.uAccuracyBonus;
+    dst->uLuck = src.uLuck;
+    dst->uLuckBonus = src.uLuckBonus;
+    dst->sACModifier = src.sACModifier;
+    dst->uLevel = src.uLevel;
+    dst->sLevelModifier = src.sLevelModifier;
+    dst->sAgeModifier = src.sAgeModifier;
+    dst->field_E0 = src.field_E0;
+    dst->field_E4 = src.field_E4;
+    dst->field_E8 = src.field_E8;
+    dst->field_EC = src.field_EC;
+    dst->field_F0 = src.field_F0;
+    dst->field_F4 = src.field_F4;
+    dst->field_F8 = src.field_F8;
+    dst->field_FC = src.field_FC;
+    dst->field_100 = src.field_100;
+    dst->field_104 = src.field_104;
 
     for (unsigned int i = 0; i < 37; ++i)
-        player->pActiveSkills[i] = this->pActiveSkills[i];
+        dst->pActiveSkills[i] = src.pActiveSkills[i];
 
     for (unsigned int i = 0; i < 64; ++i)
-        player->_achieved_awards_bits[i] = this->_achieved_awards_bits[i];
+        dst->_achieved_awards_bits[i] = src._achieved_awards_bits[i];
 
     for (unsigned int i = 0; i < 99; ++i)
-        player->spellbook.bHaveSpell[i] = this->spellbook.bHaveSpell[i];
+        dst->spellbook.bHaveSpell[i] = src.spellbook.bHaveSpell[i];
 
-    player->pure_luck_used = this->pure_luck_used;
-    player->pure_speed_used = this->pure_speed_used;
-    player->pure_intellect_used = this->pure_intellect_used;
-    player->pure_endurance_used = this->pure_endurance_used;
-    player->pure_willpower_used = this->pure_willpower_used;
-    player->pure_accuracy_used = this->pure_accuracy_used;
-    player->pure_might_used = this->pure_might_used;
+    dst->pure_luck_used = src.pure_luck_used;
+    dst->pure_speed_used = src.pure_speed_used;
+    dst->pure_intellect_used = src.pure_intellect_used;
+    dst->pure_endurance_used = src.pure_endurance_used;
+    dst->pure_willpower_used = src.pure_willpower_used;
+    dst->pure_accuracy_used = src.pure_accuracy_used;
+    dst->pure_might_used = src.pure_might_used;
 
     for (unsigned int i = 0; i < 138; ++i)
-        this->pOwnItems[i].Deserialize(&player->pOwnItems[i]);
+        Deserialize(src.pOwnItems[i], &dst->pOwnItems[i]);
 
     for (unsigned int i = 0; i < 126; ++i)
-        player->pInventoryMatrix[i] = this->pInventoryMatrix[i];
+        dst->pInventoryMatrix[i] = src.pInventoryMatrix[i];
 
-    player->sResFireBase = this->sResFireBase;
-    player->sResAirBase = this->sResAirBase;
-    player->sResWaterBase = this->sResWaterBase;
-    player->sResEarthBase = this->sResEarthBase;
-    player->sResPhysicalBase = this->sResPhysicalBase;
-    player->sResMagicBase = this->sResMagicBase;
-    player->sResSpiritBase = this->sResSpiritBase;
-    player->sResMindBase = this->sResMindBase;
-    player->sResBodyBase = this->sResBodyBase;
-    player->sResLightBase = this->sResLightBase;
-    player->sResDarkBase = this->sResDarkBase;
-    player->sResFireBonus = this->sResFireBonus;
-    player->sResAirBonus = this->sResAirBonus;
-    player->sResWaterBonus = this->sResWaterBonus;
-    player->sResEarthBonus = this->sResEarthBonus;
-    player->sResPhysicalBonus = this->sResPhysicalBonus;
-    player->sResMagicBonus = this->sResMagicBonus;
-    player->sResSpiritBonus = this->sResSpiritBonus;
-    player->sResMindBonus = this->sResMindBonus;
-    player->sResBodyBonus = this->sResBodyBonus;
-    player->sResLightBonus = this->sResLightBonus;
-    player->sResDarkBonus = this->sResDarkBonus;
+    dst->sResFireBase = src.sResFireBase;
+    dst->sResAirBase = src.sResAirBase;
+    dst->sResWaterBase = src.sResWaterBase;
+    dst->sResEarthBase = src.sResEarthBase;
+    dst->sResPhysicalBase = src.sResPhysicalBase;
+    dst->sResMagicBase = src.sResMagicBase;
+    dst->sResSpiritBase = src.sResSpiritBase;
+    dst->sResMindBase = src.sResMindBase;
+    dst->sResBodyBase = src.sResBodyBase;
+    dst->sResLightBase = src.sResLightBase;
+    dst->sResDarkBase = src.sResDarkBase;
+    dst->sResFireBonus = src.sResFireBonus;
+    dst->sResAirBonus = src.sResAirBonus;
+    dst->sResWaterBonus = src.sResWaterBonus;
+    dst->sResEarthBonus = src.sResEarthBonus;
+    dst->sResPhysicalBonus = src.sResPhysicalBonus;
+    dst->sResMagicBonus = src.sResMagicBonus;
+    dst->sResSpiritBonus = src.sResSpiritBonus;
+    dst->sResMindBonus = src.sResMindBonus;
+    dst->sResBodyBonus = src.sResBodyBonus;
+    dst->sResLightBonus = src.sResLightBonus;
+    dst->sResDarkBonus = src.sResDarkBonus;
 
     for (unsigned int i = 0; i < 24; ++i)
-        this->pPlayerBuffs[i].Deserialize(&player->pPlayerBuffs[i]);
+        Deserialize(src.pPlayerBuffs[i], &dst->pPlayerBuffs[i]);
 
-    player->uVoiceID = this->uVoiceID;
-    player->uPrevVoiceID = this->uPrevVoiceID;
-    player->uPrevFace = this->uPrevFace;
-    player->field_192C = this->field_192C;
-    player->field_1930 = this->field_1930;
-    player->uTimeToRecovery = this->uTimeToRecovery;
-    player->field_1936 = this->field_1936;
-    player->field_1937 = this->field_1937;
-    player->uSkillPoints = this->uSkillPoints;
-    player->sHealth = this->sHealth;
-    player->sMana = this->sMana;
-    player->uBirthYear = this->uBirthYear;
+    dst->uVoiceID = src.uVoiceID;
+    dst->uPrevVoiceID = src.uPrevVoiceID;
+    dst->uPrevFace = src.uPrevFace;
+    dst->field_192C = src.field_192C;
+    dst->field_1930 = src.field_1930;
+    dst->uTimeToRecovery = src.uTimeToRecovery;
+    dst->field_1936 = src.field_1936;
+    dst->field_1937 = src.field_1937;
+    dst->uSkillPoints = src.uSkillPoints;
+    dst->sHealth = src.sHealth;
+    dst->sMana = src.sMana;
+    dst->uBirthYear = src.uBirthYear;
 
     for (unsigned int i = 0; i < 16; ++i)
-        player->pEquipment.pIndices[i] = this->pEquipment.pIndices[i];
+        dst->pEquipment.pIndices[i] = src.pEquipment.pIndices[i];
 
     for (unsigned int i = 0; i < 49; ++i)
-        player->field_1988[i] = this->field_1988[i];
+        dst->field_1988[i] = src.field_1988[i];
 
-    player->field_1A4C = this->field_1A4C;
-    player->field_1A4D = this->field_1A4D;
-    player->lastOpenedSpellbookPage = this->lastOpenedSpellbookPage;
-    player->uQuickSpell = this->uQuickSpell;
+    dst->field_1A4C = src.field_1A4C;
+    dst->field_1A4D = src.field_1A4D;
+    dst->lastOpenedSpellbookPage = src.lastOpenedSpellbookPage;
+    dst->uQuickSpell = src.uQuickSpell;
 
     for (unsigned int i = 0; i < 49; ++i)
-        player->playerEventBits[i] = this->playerEventBits[i];
+        dst->playerEventBits[i] = src.playerEventBits[i];
 
-    player->_some_attack_bonus = this->_some_attack_bonus;
-    player->field_1A91 = this->field_1A91;
-    player->_melee_dmg_bonus = this->_melee_dmg_bonus;
-    player->field_1A93 = this->field_1A93;
-    player->_ranged_atk_bonus = this->_ranged_atk_bonus;
-    player->field_1A95 = this->field_1A95;
-    player->_ranged_dmg_bonus = this->_ranged_dmg_bonus;
-    player->field_1A97_set0_unused = this->field_1A97;
-    player->uFullHealthBonus = this->uFullHealthBonus;
-    player->_health_related = this->_health_related;
-    player->uFullManaBonus = this->uFullManaBonus;
-    player->_mana_related = this->_mana_related;
-    player->expression = (CHARACTER_EXPRESSION_ID)this->expression;
-    player->uExpressionTimePassed = this->uExpressionTimePassed;
-    player->uExpressionTimeLength = this->uExpressionTimeLength;
-    player->uExpressionImageIndex = this->field_1AA2;
-    player->_expression21_animtime = this->_expression21_animtime;
-    player->_expression21_frameset = this->_expression21_frameset;
+    dst->_some_attack_bonus = src._some_attack_bonus;
+    dst->field_1A91 = src.field_1A91;
+    dst->_melee_dmg_bonus = src._melee_dmg_bonus;
+    dst->field_1A93 = src.field_1A93;
+    dst->_ranged_atk_bonus = src._ranged_atk_bonus;
+    dst->field_1A95 = src.field_1A95;
+    dst->_ranged_dmg_bonus = src._ranged_dmg_bonus;
+    dst->field_1A97_set0_unused = src.field_1A97;
+    dst->uFullHealthBonus = src.uFullHealthBonus;
+    dst->_health_related = src._health_related;
+    dst->uFullManaBonus = src.uFullManaBonus;
+    dst->_mana_related = src._mana_related;
+    dst->expression = (CHARACTER_EXPRESSION_ID)src.expression;
+    dst->uExpressionTimePassed = src.uExpressionTimePassed;
+    dst->uExpressionTimeLength = src.uExpressionTimeLength;
+    dst->uExpressionImageIndex = src.field_1AA2;
+    dst->_expression21_animtime = src._expression21_animtime;
+    dst->_expression21_frameset = src._expression21_frameset;
 
-    for (int z = 0; z < player->vBeacons.size(); z++) {
-        player->vBeacons[z].image->Release();
+    for (int z = 0; z < dst->vBeacons.size(); z++) {
+        dst->vBeacons[z].image->Release();
     }
-    player->vBeacons.clear();
+    dst->vBeacons.clear();
 
     for (unsigned int i = 0; i < 5; ++i) {
-        if (this->pInstalledBeacons[i].uBeaconTime != 0) {
+        if (src.pInstalledBeacons[i].uBeaconTime != 0) {
             LloydBeacon beacon;
-            beacon.uBeaconTime = GameTime(this->pInstalledBeacons[i].uBeaconTime);
-            beacon.PartyPos_X = this->pInstalledBeacons[i].PartyPos_X;
-            beacon.PartyPos_Y = this->pInstalledBeacons[i].PartyPos_Y;
-            beacon.PartyPos_Z = this->pInstalledBeacons[i].PartyPos_Z;
-            beacon.PartyRot_X = this->pInstalledBeacons[i].PartyRot_X;
-            beacon.PartyRot_Y = this->pInstalledBeacons[i].PartyRot_Y;
-            beacon.SaveFileID = this->pInstalledBeacons[i].SaveFileID;
-            player->vBeacons.push_back(beacon);
+            beacon.uBeaconTime = GameTime(src.pInstalledBeacons[i].uBeaconTime);
+            beacon.PartyPos_X = src.pInstalledBeacons[i].PartyPos_X;
+            beacon.PartyPos_Y = src.pInstalledBeacons[i].PartyPos_Y;
+            beacon.PartyPos_Z = src.pInstalledBeacons[i].PartyPos_Z;
+            beacon.PartyRot_X = src.pInstalledBeacons[i].PartyRot_X;
+            beacon.PartyRot_Y = src.pInstalledBeacons[i].PartyRot_Y;
+            beacon.SaveFileID = src.pInstalledBeacons[i].SaveFileID;
+            dst->vBeacons.push_back(beacon);
         }
     }
 
-    player->uNumDivineInterventionCastsThisDay =
-        this->uNumDivineInterventionCastsThisDay;
-    player->uNumArmageddonCasts = this->uNumArmageddonCasts;
-    player->uNumFireSpikeCasts = this->uNumFireSpikeCasts;
-    player->field_1B3B_set0_unused = this->field_1B3B;
+    dst->uNumDivineInterventionCastsThisDay =
+        src.uNumDivineInterventionCastsThisDay;
+    dst->uNumArmageddonCasts = src.uNumArmageddonCasts;
+    dst->uNumFireSpikeCasts = src.uNumFireSpikeCasts;
+    dst->field_1B3B_set0_unused = src.field_1B3B;
 }
 
-void IconFrame_MM7::Serialize(const Icon *icon) {
-    strcpy(pAnimationName, icon->GetAnimationName());
-    uAnimLength = icon->GetAnimLength();
+void Serialize(const Icon &src, IconFrame_MM7 *dst) {
+    memzero(dst);
 
-    strcpy(pTextureName, icon->pTextureName);
-    uAnimTime = icon->GetAnimTime();
-    uFlags = icon->uFlags;
+    strcpy(dst->pAnimationName.data(), src.GetAnimationName());
+    dst->uAnimLength = src.GetAnimLength();
+
+    strcpy(dst->pTextureName.data(), src.pTextureName);
+    dst->uAnimTime = src.GetAnimTime();
+    dst->uFlags = src.uFlags;
 }
 
-void IconFrame_MM7::Deserialize(Icon *icon) {
-    icon->SetAnimationName(this->pAnimationName);
-    icon->SetAnimLength(8 * this->uAnimLength);
+void Deserialize(const IconFrame_MM7 &src, Icon *dst) {
+    dst->SetAnimationName(src.pAnimationName.data());
+    dst->SetAnimLength(8 * src.uAnimLength);
 
-    strcpy(icon->pTextureName, pTextureName);
-    icon->SetAnimTime(uAnimTime);
-    icon->uFlags = uFlags;
+    strcpy(dst->pTextureName, src.pTextureName.data());
+    dst->SetAnimTime(src.uAnimTime);
+    dst->uFlags = src.uFlags;
 }
 
-void UIAnimation_MM7::Serialize(const UIAnimation *anim) {
-    /* 000 */ uIconID = anim->icon->id;
-    /* 002 */ field_2 = anim->field_2;
-    /* 004 */ uAnimTime = anim->uAnimTime;
-    /* 006 */ uAnimLength = anim->uAnimLength;
-    /* 008 */ x = anim->x;
-    /* 00A */ y = anim->y;
-    /* 00C */ field_C = anim->field_C;
+void Serialize(const UIAnimation &src, UIAnimation_MM7 *dst) {
+    memzero(dst);
+
+    /* 000 */ dst->uIconID = src.icon->id;
+    /* 002 */ dst->field_2 = src.field_2;
+    /* 004 */ dst->uAnimTime = src.uAnimTime;
+    /* 006 */ dst->uAnimLength = src.uAnimLength;
+    /* 008 */ dst->x = src.x;
+    /* 00A */ dst->y = src.y;
+    /* 00C */ dst->field_C = src.field_C;
 }
 
-void UIAnimation_MM7::Deserialize(UIAnimation *anim) {
-    anim->icon = pIconsFrameTable->GetIcon(uIconID);
-    ///* 000 */ anim->uIconID = uIconID;
-    /* 002 */ anim->field_2 = field_2;
-    /* 004 */ anim->uAnimTime = uAnimTime;
-    /* 006 */ anim->uAnimLength = uAnimLength;
-    /* 008 */ anim->x = x;
-    /* 00A */ anim->y = y;
-    /* 00C */ anim->field_C = field_C;
+void Deserialize(const UIAnimation_MM7 &src, UIAnimation *dst) {
+    dst->icon = pIconsFrameTable->GetIcon(src.uIconID);
+    ///* 000 */ anim->uIconID = src.uIconID;
+    /* 002 */ dst->field_2 = src.field_2;
+    /* 004 */ dst->uAnimTime = src.uAnimTime;
+    /* 006 */ dst->uAnimLength = src.uAnimLength;
+    /* 008 */ dst->x = src.x;
+    /* 00A */ dst->y = src.y;
+    /* 00C */ dst->field_C = src.field_C;
 }
 
-void MonsterDesc_MM6::Deserialize(MonsterDesc *desc) {
-    desc->uMonsterHeight = this->uMonsterHeight;
-    desc->uMonsterRadius = this->uMonsterRadius;
-    desc->uMovementSpeed = this->uMovementSpeed;
-    desc->uToHitRadius = this->uToHitRadius;
-    desc->sTintColor = colorTable.White.C32();
-    memcpy(desc->pSoundSampleIDs, this->pSoundSampleIDs, sizeof(this->pSoundSampleIDs));
-    memcpy(desc->pMonsterName, this->pMonsterName, sizeof(this->pMonsterName));
-    memcpy(desc->pSpriteNames, this->pSpriteNames, sizeof(this->pSpriteNames));
+void Deserialize(const MonsterDesc_MM6 &src, MonsterDesc *dst) {
+    dst->uMonsterHeight = src.uMonsterHeight;
+    dst->uMonsterRadius = src.uMonsterRadius;
+    dst->uMovementSpeed = src.uMovementSpeed;
+    dst->uToHitRadius = src.uToHitRadius;
+    dst->sTintColor = colorTable.White.C32();
+    dst->pSoundSampleIDs = src.pSoundSampleIDs;
+    Deserialize(src.pMonsterName, &dst->pMonsterName);
+    for(ActorAnimation i : dst->pSpriteNames.indices())
+        Deserialize(src.pSpriteNames[std::to_underlying(i)], &dst->pSpriteNames[i]);
 }
 
-void MonsterDesc_MM7::Serialize(const MonsterDesc *desc) {
-    this->uMonsterHeight = desc->uMonsterHeight;
-    this->uMonsterRadius = desc->uMonsterRadius;
-    this->uMovementSpeed = desc->uMovementSpeed;
-    this->uToHitRadius = desc->uToHitRadius;
-    this->sTintColor = desc->sTintColor;
-    memcpy(this->pSoundSampleIDs, desc->pSoundSampleIDs, sizeof(desc->pSoundSampleIDs));
-    memcpy(this->pMonsterName, desc->pMonsterName, sizeof(desc->pMonsterName));
-    memcpy(this->pSpriteNames, desc->pSpriteNames, sizeof(desc->pSpriteNames));
+void Serialize(const MonsterDesc &src, MonsterDesc_MM7 *dst) {
+    memzero(dst);
+
+    dst->uMonsterHeight = src.uMonsterHeight;
+    dst->uMonsterRadius = src.uMonsterRadius;
+    dst->uMovementSpeed = src.uMovementSpeed;
+    dst->uToHitRadius = src.uToHitRadius;
+    dst->sTintColor = src.sTintColor;
+    dst->pSoundSampleIDs = src.pSoundSampleIDs;
+    Serialize(src.pMonsterName, &dst->pMonsterName);
+    for (ActorAnimation i : src.pSpriteNames.indices())
+        Serialize(src.pSpriteNames[i], &dst->pSpriteNames[std::to_underlying(i)]);
+    dst->pSpriteNames[8][0] = '\0';
+    dst->pSpriteNames[9][0] = '\0';
 }
 
-void MonsterDesc_MM7::Deserialize(MonsterDesc *desc) {
-    desc->uMonsterHeight = this->uMonsterHeight;
-    desc->uMonsterRadius = this->uMonsterRadius;
-    desc->uMovementSpeed = this->uMovementSpeed;
-    desc->uToHitRadius = this->uToHitRadius;
-    desc->sTintColor = this->sTintColor;
-    memcpy(desc->pSoundSampleIDs, this->pSoundSampleIDs, sizeof(this->pSoundSampleIDs));
-    memcpy(desc->pMonsterName, this->pMonsterName, sizeof(this->pMonsterName));
-    memcpy(desc->pSpriteNames, this->pSpriteNames, sizeof(this->pSpriteNames));
+void Deserialize(const MonsterDesc_MM7 &src, MonsterDesc *dst) {
+    dst->uMonsterHeight = src.uMonsterHeight;
+    dst->uMonsterRadius = src.uMonsterRadius;
+    dst->uMovementSpeed = src.uMovementSpeed;
+    dst->uToHitRadius = src.uToHitRadius;
+    dst->sTintColor = src.sTintColor;
+    dst->pSoundSampleIDs = src.pSoundSampleIDs;
+    Deserialize(src.pMonsterName, &dst->pMonsterName);
+    for (ActorAnimation i : dst->pSpriteNames.indices())
+        Deserialize(src.pSpriteNames[std::to_underlying(i)], &dst->pSpriteNames[i]);
 }
 
-void Actor_MM7::Serialize(const Actor *actor) {
-    memset(this->pActorName, 0, sizeof(this->pActorName));
-    memcpy(this->pActorName, actor->pActorName.data(), std::min(actor->pActorName.size(), sizeof(this->pActorName) - 1));
+void Serialize(const Actor &src, Actor_MM7 *dst) {
+    memzero(dst);
 
-    this->sNPC_ID = actor->sNPC_ID;
-    this->field_22 = actor->field_22;
-    this->uAttributes = actor->uAttributes;
-    this->sCurrentHP = actor->sCurrentHP;
+    Serialize(src.pActorName, &dst->pActorName);
+
+    dst->sNPC_ID = src.sNPC_ID;
+    dst->field_22 = src.field_22;
+    dst->uAttributes = src.uAttributes;
+    dst->sCurrentHP = src.sCurrentHP;
 
     for (unsigned int i = 0; i < 2; ++i)
-        this->field_2A[i] = actor->field_2A[i];
+        dst->field_2A[i] = src.field_2A[i];
 
-    this->pMonsterInfo.uLevel = actor->pMonsterInfo.uLevel;
-    this->pMonsterInfo.uTreasureDropChance = actor->pMonsterInfo.uTreasureDropChance;
-    this->pMonsterInfo.uTreasureDiceRolls = actor->pMonsterInfo.uTreasureDiceRolls;
-    this->pMonsterInfo.uTreasureDiceSides = actor->pMonsterInfo.uTreasureDiceSides;
-    this->pMonsterInfo.uTreasureLevel = actor->pMonsterInfo.uTreasureLevel;
-    this->pMonsterInfo.uTreasureType = actor->pMonsterInfo.uTreasureType;
-    this->pMonsterInfo.uFlying = actor->pMonsterInfo.uFlying;
-    this->pMonsterInfo.uMovementType = actor->pMonsterInfo.uMovementType;
-    this->pMonsterInfo.uAIType = actor->pMonsterInfo.uAIType;
-    this->pMonsterInfo.uHostilityType = (uint8_t)actor->pMonsterInfo.uHostilityType;
-    this->pMonsterInfo.field_12 = actor->pMonsterInfo.field_12;
-    this->pMonsterInfo.uSpecialAttackType = actor->pMonsterInfo.uSpecialAttackType;
-    this->pMonsterInfo.uSpecialAttackLevel = actor->pMonsterInfo.uSpecialAttackLevel;
-    this->pMonsterInfo.uAttack1Type = actor->pMonsterInfo.uAttack1Type;
-    this->pMonsterInfo.uAttack1DamageDiceRolls = actor->pMonsterInfo.uAttack1DamageDiceRolls;
-    this->pMonsterInfo.uAttack1DamageDiceSides = actor->pMonsterInfo.uAttack1DamageDiceSides;
-    this->pMonsterInfo.uAttack1DamageBonus = actor->pMonsterInfo.uAttack1DamageBonus;
-    this->pMonsterInfo.uMissleAttack1Type = actor->pMonsterInfo.uMissleAttack1Type;
-    this->pMonsterInfo.uAttack2Chance = actor->pMonsterInfo.uAttack2Chance;
-    this->pMonsterInfo.uAttack2Type = actor->pMonsterInfo.uAttack2Type;
-    this->pMonsterInfo.uAttack2DamageDiceRolls = actor->pMonsterInfo.uAttack2DamageDiceRolls;
-    this->pMonsterInfo.uAttack2DamageDiceSides = actor->pMonsterInfo.uAttack2DamageDiceSides;
-    this->pMonsterInfo.uAttack2DamageBonus = actor->pMonsterInfo.uAttack2DamageBonus;
-    this->pMonsterInfo.uMissleAttack2Type = actor->pMonsterInfo.uMissleAttack2Type;
-    this->pMonsterInfo.uSpell1UseChance = actor->pMonsterInfo.uSpell1UseChance;
-    this->pMonsterInfo.uSpell1ID = actor->pMonsterInfo.uSpell1ID;
-    this->pMonsterInfo.uSpell2UseChance = actor->pMonsterInfo.uSpell2UseChance;
-    this->pMonsterInfo.uSpell2ID = actor->pMonsterInfo.uSpell2ID;
-    this->pMonsterInfo.uResFire = actor->pMonsterInfo.uResFire;
-    this->pMonsterInfo.uResAir = actor->pMonsterInfo.uResAir;
-    this->pMonsterInfo.uResWater = actor->pMonsterInfo.uResWater;
-    this->pMonsterInfo.uResEarth = actor->pMonsterInfo.uResEarth;
-    this->pMonsterInfo.uResMind = actor->pMonsterInfo.uResMind;
-    this->pMonsterInfo.uResSpirit = actor->pMonsterInfo.uResSpirit;
-    this->pMonsterInfo.uResBody = actor->pMonsterInfo.uResBody;
-    this->pMonsterInfo.uResLight = actor->pMonsterInfo.uResLight;
-    this->pMonsterInfo.uResDark = actor->pMonsterInfo.uResDark;
-    this->pMonsterInfo.uResPhysical = actor->pMonsterInfo.uResPhysical;
-    this->pMonsterInfo.uSpecialAbilityType = actor->pMonsterInfo.uSpecialAbilityType;
-    this->pMonsterInfo.uSpecialAbilityDamageDiceRolls = actor->pMonsterInfo.uSpecialAbilityDamageDiceRolls;
-    this->pMonsterInfo.uSpecialAbilityDamageDiceSides = actor->pMonsterInfo.uSpecialAbilityDamageDiceSides;
-    this->pMonsterInfo.uSpecialAbilityDamageDiceBonus = actor->pMonsterInfo.uSpecialAbilityDamageDiceBonus;
-    this->pMonsterInfo.uNumCharactersAttackedPerSpecialAbility = actor->pMonsterInfo.uNumCharactersAttackedPerSpecialAbility;
-    this->pMonsterInfo.field_33 = actor->pMonsterInfo.field_33;
-    this->pMonsterInfo.uID = actor->pMonsterInfo.uID;
-    this->pMonsterInfo.bQuestMonster = actor->pMonsterInfo.bQuestMonster;
-    this->pMonsterInfo.uSpellSkillAndMastery1 = actor->pMonsterInfo.uSpellSkillAndMastery1;
-    this->pMonsterInfo.uSpellSkillAndMastery2 = actor->pMonsterInfo.uSpellSkillAndMastery2;
-    this->pMonsterInfo.field_3C_some_special_attack = actor->pMonsterInfo.field_3C_some_special_attack;
-    this->pMonsterInfo.field_3E = actor->pMonsterInfo.field_3E;
-    this->pMonsterInfo.uHP = actor->pMonsterInfo.uHP;
-    this->pMonsterInfo.uAC = actor->pMonsterInfo.uAC;
-    this->pMonsterInfo.uExp = actor->pMonsterInfo.uExp;
-    this->pMonsterInfo.uBaseSpeed = actor->pMonsterInfo.uBaseSpeed;
-    this->pMonsterInfo.uRecoveryTime = actor->pMonsterInfo.uRecoveryTime;
-    this->pMonsterInfo.uAttackPreference = actor->pMonsterInfo.uAttackPreference;
-    this->word_000084_range_attack = actor->word_000084_range_attack;
-    this->word_000086_some_monster_id = actor->word_000086_some_monster_id;  // base monster class monsterlist id
-    this->uActorRadius = actor->uActorRadius;
-    this->uActorHeight = actor->uActorHeight;
-    this->uMovementSpeed = actor->uMovementSpeed;
-    this->vPosition = actor->vPosition;
-    this->vVelocity = actor->vVelocity;
-    this->uYawAngle = actor->uYawAngle;
-    this->uPitchAngle = actor->uPitchAngle;
-    this->uSectorID = actor->uSectorID;
-    this->uCurrentActionLength = actor->uCurrentActionLength;
-    this->vInitialPosition = actor->vInitialPosition;
-    this->vGuardingPosition = actor->vGuardingPosition;
-    this->uTetherDistance = actor->uTetherDistance;
-    this->uAIState = actor->uAIState;
-    this->uCurrentActionAnimation = actor->uCurrentActionAnimation;
-    this->uCarriedItemID = actor->uCarriedItemID;
-    this->field_B6 = actor->field_B6;
-    this->field_B7 = actor->field_B7;
-    this->uCurrentActionTime = actor->uCurrentActionTime;
+    dst->pMonsterInfo.uLevel = src.pMonsterInfo.uLevel;
+    dst->pMonsterInfo.uTreasureDropChance = src.pMonsterInfo.uTreasureDropChance;
+    dst->pMonsterInfo.uTreasureDiceRolls = src.pMonsterInfo.uTreasureDiceRolls;
+    dst->pMonsterInfo.uTreasureDiceSides = src.pMonsterInfo.uTreasureDiceSides;
+    dst->pMonsterInfo.uTreasureLevel = src.pMonsterInfo.uTreasureLevel;
+    dst->pMonsterInfo.uTreasureType = src.pMonsterInfo.uTreasureType;
+    dst->pMonsterInfo.uFlying = src.pMonsterInfo.uFlying;
+    dst->pMonsterInfo.uMovementType = src.pMonsterInfo.uMovementType;
+    dst->pMonsterInfo.uAIType = src.pMonsterInfo.uAIType;
+    dst->pMonsterInfo.uHostilityType = (uint8_t)src.pMonsterInfo.uHostilityType;
+    dst->pMonsterInfo.field_12 = src.pMonsterInfo.field_12;
+    dst->pMonsterInfo.uSpecialAttackType = src.pMonsterInfo.uSpecialAttackType;
+    dst->pMonsterInfo.uSpecialAttackLevel = src.pMonsterInfo.uSpecialAttackLevel;
+    dst->pMonsterInfo.uAttack1Type = src.pMonsterInfo.uAttack1Type;
+    dst->pMonsterInfo.uAttack1DamageDiceRolls = src.pMonsterInfo.uAttack1DamageDiceRolls;
+    dst->pMonsterInfo.uAttack1DamageDiceSides = src.pMonsterInfo.uAttack1DamageDiceSides;
+    dst->pMonsterInfo.uAttack1DamageBonus = src.pMonsterInfo.uAttack1DamageBonus;
+    dst->pMonsterInfo.uMissleAttack1Type = src.pMonsterInfo.uMissleAttack1Type;
+    dst->pMonsterInfo.uAttack2Chance = src.pMonsterInfo.uAttack2Chance;
+    dst->pMonsterInfo.uAttack2Type = src.pMonsterInfo.uAttack2Type;
+    dst->pMonsterInfo.uAttack2DamageDiceRolls = src.pMonsterInfo.uAttack2DamageDiceRolls;
+    dst->pMonsterInfo.uAttack2DamageDiceSides = src.pMonsterInfo.uAttack2DamageDiceSides;
+    dst->pMonsterInfo.uAttack2DamageBonus = src.pMonsterInfo.uAttack2DamageBonus;
+    dst->pMonsterInfo.uMissleAttack2Type = src.pMonsterInfo.uMissleAttack2Type;
+    dst->pMonsterInfo.uSpell1UseChance = src.pMonsterInfo.uSpell1UseChance;
+    dst->pMonsterInfo.uSpell1ID = src.pMonsterInfo.uSpell1ID;
+    dst->pMonsterInfo.uSpell2UseChance = src.pMonsterInfo.uSpell2UseChance;
+    dst->pMonsterInfo.uSpell2ID = src.pMonsterInfo.uSpell2ID;
+    dst->pMonsterInfo.uResFire = src.pMonsterInfo.uResFire;
+    dst->pMonsterInfo.uResAir = src.pMonsterInfo.uResAir;
+    dst->pMonsterInfo.uResWater = src.pMonsterInfo.uResWater;
+    dst->pMonsterInfo.uResEarth = src.pMonsterInfo.uResEarth;
+    dst->pMonsterInfo.uResMind = src.pMonsterInfo.uResMind;
+    dst->pMonsterInfo.uResSpirit = src.pMonsterInfo.uResSpirit;
+    dst->pMonsterInfo.uResBody = src.pMonsterInfo.uResBody;
+    dst->pMonsterInfo.uResLight = src.pMonsterInfo.uResLight;
+    dst->pMonsterInfo.uResDark = src.pMonsterInfo.uResDark;
+    dst->pMonsterInfo.uResPhysical = src.pMonsterInfo.uResPhysical;
+    dst->pMonsterInfo.uSpecialAbilityType = src.pMonsterInfo.uSpecialAbilityType;
+    dst->pMonsterInfo.uSpecialAbilityDamageDiceRolls = src.pMonsterInfo.uSpecialAbilityDamageDiceRolls;
+    dst->pMonsterInfo.uSpecialAbilityDamageDiceSides = src.pMonsterInfo.uSpecialAbilityDamageDiceSides;
+    dst->pMonsterInfo.uSpecialAbilityDamageDiceBonus = src.pMonsterInfo.uSpecialAbilityDamageDiceBonus;
+    dst->pMonsterInfo.uNumCharactersAttackedPerSpecialAbility = src.pMonsterInfo.uNumCharactersAttackedPerSpecialAbility;
+    dst->pMonsterInfo.field_33 = src.pMonsterInfo.field_33;
+    dst->pMonsterInfo.uID = src.pMonsterInfo.uID;
+    dst->pMonsterInfo.bQuestMonster = src.pMonsterInfo.bQuestMonster;
+    dst->pMonsterInfo.uSpellSkillAndMastery1 = src.pMonsterInfo.uSpellSkillAndMastery1;
+    dst->pMonsterInfo.uSpellSkillAndMastery2 = src.pMonsterInfo.uSpellSkillAndMastery2;
+    dst->pMonsterInfo.field_3C_some_special_attack = src.pMonsterInfo.field_3C_some_special_attack;
+    dst->pMonsterInfo.field_3E = src.pMonsterInfo.field_3E;
+    dst->pMonsterInfo.uHP = src.pMonsterInfo.uHP;
+    dst->pMonsterInfo.uAC = src.pMonsterInfo.uAC;
+    dst->pMonsterInfo.uExp = src.pMonsterInfo.uExp;
+    dst->pMonsterInfo.uBaseSpeed = src.pMonsterInfo.uBaseSpeed;
+    dst->pMonsterInfo.uRecoveryTime = src.pMonsterInfo.uRecoveryTime;
+    dst->pMonsterInfo.uAttackPreference = src.pMonsterInfo.uAttackPreference;
+    dst->word_000084_range_attack = src.word_000084_range_attack;
+    dst->word_000086_some_monster_id = src.word_000086_some_monster_id;  // base monster class monsterlist id
+    dst->uActorRadius = src.uActorRadius;
+    dst->uActorHeight = src.uActorHeight;
+    dst->uMovementSpeed = src.uMovementSpeed;
+    dst->vPosition = src.vPosition;
+    dst->vVelocity = src.vVelocity;
+    dst->uYawAngle = src.uYawAngle;
+    dst->uPitchAngle = src.uPitchAngle;
+    dst->uSectorID = src.uSectorID;
+    dst->uCurrentActionLength = src.uCurrentActionLength;
+    dst->vInitialPosition = src.vInitialPosition;
+    dst->vGuardingPosition = src.vGuardingPosition;
+    dst->uTetherDistance = src.uTetherDistance;
+    dst->uAIState = src.uAIState;
+    dst->uCurrentActionAnimation = std::to_underlying(src.uCurrentActionAnimation);
+    dst->uCarriedItemID = src.uCarriedItemID;
+    dst->field_B6 = src.field_B6;
+    dst->field_B7 = src.field_B7;
+    dst->uCurrentActionTime = src.uCurrentActionTime;
 
-    for (unsigned int i = 0; i < 8; ++i)
-        this->pSpriteIDs[i] = actor->pSpriteIDs[i];
+    for (ActorAnimation i : src.pSpriteIDs.indices())
+        dst->pSpriteIDs[std::to_underlying(i)] = src.pSpriteIDs[i];
 
     for (unsigned int i = 0; i < 4; ++i)
-        this->pSoundSampleIDs[i] = actor->pSoundSampleIDs[i];
+        dst->pSoundSampleIDs[i] = src.pSoundSampleIDs[i];
 
     for (unsigned int i = 0; i < 22; ++i)
-        this->pActorBuffs[i] = actor->pActorBuffs[ACTOR_BUFF_INDEX(i)];
+        dst->pActorBuffs[i] = src.pActorBuffs[ACTOR_BUFF_INDEX(i)];
 
     for (unsigned int i = 0; i < 4; ++i)
-        this->ActorHasItems[i] = actor->ActorHasItems[i];
+        dst->ActorHasItems[i] = src.ActorHasItems[i];
 
-    this->uGroup = actor->uGroup;
-    this->uAlly = actor->uAlly;
+    dst->uGroup = src.uGroup;
+    dst->uAlly = src.uAlly;
 
     for (unsigned int i = 0; i < 8; ++i)
-        this->pScheduledJobs[i] = actor->pScheduledJobs[i];
+        dst->pScheduledJobs[i] = src.pScheduledJobs[i];
 
-    this->uSummonerID = actor->uSummonerID;
-    this->uLastCharacterIDToHit = actor->uLastCharacterIDToHit;
-    this->dword_000334_unique_name = actor->dword_000334_unique_name;
+    dst->uSummonerID = src.uSummonerID;
+    dst->uLastCharacterIDToHit = src.uLastCharacterIDToHit;
+    dst->dword_000334_unique_name = src.dword_000334_unique_name;
 
     for (unsigned int i = 0; i < 12; ++i)
-        this->field_338[i] = actor->field_338[i];
+        dst->field_338[i] = src.field_338[i];
 }
 
-void Actor_MM7::Deserialize(Actor *actor) {
-    actor->pActorName = this->pActorName;
-    actor->sNPC_ID = this->sNPC_ID;
-    actor->field_22 = this->field_22;
-    actor->uAttributes = this->uAttributes;
-    actor->sCurrentHP = this->sCurrentHP;
+void Deserialize(const Actor_MM7 &src, Actor *dst) {
+    Deserialize(src.pActorName, &dst->pActorName);
+    dst->sNPC_ID = src.sNPC_ID;
+    dst->field_22 = src.field_22;
+    dst->uAttributes = src.uAttributes;
+    dst->sCurrentHP = src.sCurrentHP;
 
     for (unsigned int i = 0; i < 2; ++i)
-        actor->field_2A[i] = this->field_2A[i];
+        dst->field_2A[i] = src.field_2A[i];
 
-    actor->pMonsterInfo.uLevel = this->pMonsterInfo.uLevel;
-    actor->pMonsterInfo.uTreasureDropChance = this->pMonsterInfo.uTreasureDropChance;
-    actor->pMonsterInfo.uTreasureDiceRolls = this->pMonsterInfo.uTreasureDiceRolls;
-    actor->pMonsterInfo.uTreasureDiceSides = this->pMonsterInfo.uTreasureDiceSides;
-    actor->pMonsterInfo.uTreasureLevel = this->pMonsterInfo.uTreasureLevel;
-    actor->pMonsterInfo.uTreasureType = this->pMonsterInfo.uTreasureType;
-    actor->pMonsterInfo.uFlying = this->pMonsterInfo.uFlying;
-    actor->pMonsterInfo.uMovementType = this->pMonsterInfo.uMovementType;
-    actor->pMonsterInfo.uAIType = this->pMonsterInfo.uAIType;
-    actor->pMonsterInfo.uHostilityType = (MonsterInfo::HostilityRadius)this->pMonsterInfo.uHostilityType;
-    actor->pMonsterInfo.field_12 = this->pMonsterInfo.field_12;
-    actor->pMonsterInfo.uSpecialAttackType = (SPECIAL_ATTACK_TYPE)this->pMonsterInfo.uSpecialAttackType;
-    actor->pMonsterInfo.uSpecialAttackLevel = this->pMonsterInfo.uSpecialAttackLevel;
-    actor->pMonsterInfo.uAttack1Type = this->pMonsterInfo.uAttack1Type;
-    actor->pMonsterInfo.uAttack1DamageDiceRolls = this->pMonsterInfo.uAttack1DamageDiceRolls;
-    actor->pMonsterInfo.uAttack1DamageDiceSides = this->pMonsterInfo.uAttack1DamageDiceSides;
-    actor->pMonsterInfo.uAttack1DamageBonus = this->pMonsterInfo.uAttack1DamageBonus;
-    actor->pMonsterInfo.uMissleAttack1Type = this->pMonsterInfo.uMissleAttack1Type;
-    actor->pMonsterInfo.uAttack2Chance = this->pMonsterInfo.uAttack2Chance;
-    actor->pMonsterInfo.uAttack2Type = this->pMonsterInfo.uAttack2Type;
-    actor->pMonsterInfo.uAttack2DamageDiceRolls = this->pMonsterInfo.uAttack2DamageDiceRolls;
-    actor->pMonsterInfo.uAttack2DamageDiceSides = this->pMonsterInfo.uAttack2DamageDiceSides;
-    actor->pMonsterInfo.uAttack2DamageBonus = this->pMonsterInfo.uAttack2DamageBonus;
-    actor->pMonsterInfo.uMissleAttack2Type = this->pMonsterInfo.uMissleAttack2Type;
-    actor->pMonsterInfo.uSpell1UseChance = this->pMonsterInfo.uSpell1UseChance;
-    actor->pMonsterInfo.uSpell1ID = this->pMonsterInfo.uSpell1ID;
-    actor->pMonsterInfo.uSpell2UseChance = this->pMonsterInfo.uSpell2UseChance;
-    actor->pMonsterInfo.uSpell2ID = this->pMonsterInfo.uSpell2ID;
-    actor->pMonsterInfo.uResFire = this->pMonsterInfo.uResFire;
-    actor->pMonsterInfo.uResAir = this->pMonsterInfo.uResAir;
-    actor->pMonsterInfo.uResWater = this->pMonsterInfo.uResWater;
-    actor->pMonsterInfo.uResEarth = this->pMonsterInfo.uResEarth;
-    actor->pMonsterInfo.uResMind = this->pMonsterInfo.uResMind;
-    actor->pMonsterInfo.uResSpirit = this->pMonsterInfo.uResSpirit;
-    actor->pMonsterInfo.uResBody = this->pMonsterInfo.uResBody;
-    actor->pMonsterInfo.uResLight = this->pMonsterInfo.uResLight;
-    actor->pMonsterInfo.uResDark = this->pMonsterInfo.uResDark;
-    actor->pMonsterInfo.uResPhysical = this->pMonsterInfo.uResPhysical;
-    actor->pMonsterInfo.uSpecialAbilityType = this->pMonsterInfo.uSpecialAbilityType;
-    actor->pMonsterInfo.uSpecialAbilityDamageDiceRolls = this->pMonsterInfo.uSpecialAbilityDamageDiceRolls;
-    actor->pMonsterInfo.uSpecialAbilityDamageDiceSides = this->pMonsterInfo.uSpecialAbilityDamageDiceSides;
-    actor->pMonsterInfo.uSpecialAbilityDamageDiceBonus = this->pMonsterInfo.uSpecialAbilityDamageDiceBonus;
-    actor->pMonsterInfo.uNumCharactersAttackedPerSpecialAbility = this->pMonsterInfo.uNumCharactersAttackedPerSpecialAbility;
-    actor->pMonsterInfo.field_33 = this->pMonsterInfo.field_33;
-    actor->pMonsterInfo.uID = this->pMonsterInfo.uID;
-    actor->pMonsterInfo.bQuestMonster = this->pMonsterInfo.bQuestMonster;
-    actor->pMonsterInfo.uSpellSkillAndMastery1 = this->pMonsterInfo.uSpellSkillAndMastery1;
-    actor->pMonsterInfo.uSpellSkillAndMastery2 = this->pMonsterInfo.uSpellSkillAndMastery2;
-    actor->pMonsterInfo.field_3C_some_special_attack = this->pMonsterInfo.field_3C_some_special_attack;
-    actor->pMonsterInfo.field_3E = this->pMonsterInfo.field_3E;
-    actor->pMonsterInfo.uHP = this->pMonsterInfo.uHP;
-    actor->pMonsterInfo.uAC = this->pMonsterInfo.uAC;
-    actor->pMonsterInfo.uExp = this->pMonsterInfo.uExp;
-    actor->pMonsterInfo.uBaseSpeed = this->pMonsterInfo.uBaseSpeed;
-    actor->pMonsterInfo.uRecoveryTime = this->pMonsterInfo.uRecoveryTime;
-    actor->pMonsterInfo.uAttackPreference = this->pMonsterInfo.uAttackPreference;
-    actor->word_000084_range_attack = this->word_000084_range_attack;
-    actor->word_000086_some_monster_id = this->word_000086_some_monster_id;  // base monster class monsterlist id
-    actor->uActorRadius = this->uActorRadius;
-    actor->uActorHeight = this->uActorHeight;
-    actor->uMovementSpeed = this->uMovementSpeed;
-    actor->vPosition = this->vPosition;
-    actor->vVelocity = this->vVelocity;
-    actor->uYawAngle = this->uYawAngle;
-    actor->uPitchAngle = this->uPitchAngle;
-    actor->uSectorID = this->uSectorID;
-    actor->uCurrentActionLength = this->uCurrentActionLength;
-    actor->vInitialPosition = this->vInitialPosition;
-    actor->vGuardingPosition = this->vGuardingPosition;
-    actor->uTetherDistance = this->uTetherDistance;
-    actor->uAIState = (AIState)this->uAIState;
-    actor->uCurrentActionAnimation = this->uCurrentActionAnimation;
-    actor->uCarriedItemID = this->uCarriedItemID;
-    actor->field_B6 = this->field_B6;
-    actor->field_B7 = this->field_B7;
-    actor->uCurrentActionTime = this->uCurrentActionTime;
+    dst->pMonsterInfo.uLevel = src.pMonsterInfo.uLevel;
+    dst->pMonsterInfo.uTreasureDropChance = src.pMonsterInfo.uTreasureDropChance;
+    dst->pMonsterInfo.uTreasureDiceRolls = src.pMonsterInfo.uTreasureDiceRolls;
+    dst->pMonsterInfo.uTreasureDiceSides = src.pMonsterInfo.uTreasureDiceSides;
+    dst->pMonsterInfo.uTreasureLevel = src.pMonsterInfo.uTreasureLevel;
+    dst->pMonsterInfo.uTreasureType = src.pMonsterInfo.uTreasureType;
+    dst->pMonsterInfo.uFlying = src.pMonsterInfo.uFlying;
+    dst->pMonsterInfo.uMovementType = src.pMonsterInfo.uMovementType;
+    dst->pMonsterInfo.uAIType = src.pMonsterInfo.uAIType;
+    dst->pMonsterInfo.uHostilityType = (MonsterInfo::HostilityRadius)src.pMonsterInfo.uHostilityType;
+    dst->pMonsterInfo.field_12 = src.pMonsterInfo.field_12;
+    dst->pMonsterInfo.uSpecialAttackType = (SPECIAL_ATTACK_TYPE)src.pMonsterInfo.uSpecialAttackType;
+    dst->pMonsterInfo.uSpecialAttackLevel = src.pMonsterInfo.uSpecialAttackLevel;
+    dst->pMonsterInfo.uAttack1Type = src.pMonsterInfo.uAttack1Type;
+    dst->pMonsterInfo.uAttack1DamageDiceRolls = src.pMonsterInfo.uAttack1DamageDiceRolls;
+    dst->pMonsterInfo.uAttack1DamageDiceSides = src.pMonsterInfo.uAttack1DamageDiceSides;
+    dst->pMonsterInfo.uAttack1DamageBonus = src.pMonsterInfo.uAttack1DamageBonus;
+    dst->pMonsterInfo.uMissleAttack1Type = src.pMonsterInfo.uMissleAttack1Type;
+    dst->pMonsterInfo.uAttack2Chance = src.pMonsterInfo.uAttack2Chance;
+    dst->pMonsterInfo.uAttack2Type = src.pMonsterInfo.uAttack2Type;
+    dst->pMonsterInfo.uAttack2DamageDiceRolls = src.pMonsterInfo.uAttack2DamageDiceRolls;
+    dst->pMonsterInfo.uAttack2DamageDiceSides = src.pMonsterInfo.uAttack2DamageDiceSides;
+    dst->pMonsterInfo.uAttack2DamageBonus = src.pMonsterInfo.uAttack2DamageBonus;
+    dst->pMonsterInfo.uMissleAttack2Type = src.pMonsterInfo.uMissleAttack2Type;
+    dst->pMonsterInfo.uSpell1UseChance = src.pMonsterInfo.uSpell1UseChance;
+    dst->pMonsterInfo.uSpell1ID = src.pMonsterInfo.uSpell1ID;
+    dst->pMonsterInfo.uSpell2UseChance = src.pMonsterInfo.uSpell2UseChance;
+    dst->pMonsterInfo.uSpell2ID = src.pMonsterInfo.uSpell2ID;
+    dst->pMonsterInfo.uResFire = src.pMonsterInfo.uResFire;
+    dst->pMonsterInfo.uResAir = src.pMonsterInfo.uResAir;
+    dst->pMonsterInfo.uResWater = src.pMonsterInfo.uResWater;
+    dst->pMonsterInfo.uResEarth = src.pMonsterInfo.uResEarth;
+    dst->pMonsterInfo.uResMind = src.pMonsterInfo.uResMind;
+    dst->pMonsterInfo.uResSpirit = src.pMonsterInfo.uResSpirit;
+    dst->pMonsterInfo.uResBody = src.pMonsterInfo.uResBody;
+    dst->pMonsterInfo.uResLight = src.pMonsterInfo.uResLight;
+    dst->pMonsterInfo.uResDark = src.pMonsterInfo.uResDark;
+    dst->pMonsterInfo.uResPhysical = src.pMonsterInfo.uResPhysical;
+    dst->pMonsterInfo.uSpecialAbilityType = src.pMonsterInfo.uSpecialAbilityType;
+    dst->pMonsterInfo.uSpecialAbilityDamageDiceRolls = src.pMonsterInfo.uSpecialAbilityDamageDiceRolls;
+    dst->pMonsterInfo.uSpecialAbilityDamageDiceSides = src.pMonsterInfo.uSpecialAbilityDamageDiceSides;
+    dst->pMonsterInfo.uSpecialAbilityDamageDiceBonus = src.pMonsterInfo.uSpecialAbilityDamageDiceBonus;
+    dst->pMonsterInfo.uNumCharactersAttackedPerSpecialAbility = src.pMonsterInfo.uNumCharactersAttackedPerSpecialAbility;
+    dst->pMonsterInfo.field_33 = src.pMonsterInfo.field_33;
+    dst->pMonsterInfo.uID = src.pMonsterInfo.uID;
+    dst->pMonsterInfo.bQuestMonster = src.pMonsterInfo.bQuestMonster;
+    dst->pMonsterInfo.uSpellSkillAndMastery1 = src.pMonsterInfo.uSpellSkillAndMastery1;
+    dst->pMonsterInfo.uSpellSkillAndMastery2 = src.pMonsterInfo.uSpellSkillAndMastery2;
+    dst->pMonsterInfo.field_3C_some_special_attack = src.pMonsterInfo.field_3C_some_special_attack;
+    dst->pMonsterInfo.field_3E = src.pMonsterInfo.field_3E;
+    dst->pMonsterInfo.uHP = src.pMonsterInfo.uHP;
+    dst->pMonsterInfo.uAC = src.pMonsterInfo.uAC;
+    dst->pMonsterInfo.uExp = src.pMonsterInfo.uExp;
+    dst->pMonsterInfo.uBaseSpeed = src.pMonsterInfo.uBaseSpeed;
+    dst->pMonsterInfo.uRecoveryTime = src.pMonsterInfo.uRecoveryTime;
+    dst->pMonsterInfo.uAttackPreference = src.pMonsterInfo.uAttackPreference;
+    dst->word_000084_range_attack = src.word_000084_range_attack;
+    dst->word_000086_some_monster_id = src.word_000086_some_monster_id;  // base monster class monsterlist id
+    dst->uActorRadius = src.uActorRadius;
+    dst->uActorHeight = src.uActorHeight;
+    dst->uMovementSpeed = src.uMovementSpeed;
+    dst->vPosition = src.vPosition;
+    dst->vVelocity = src.vVelocity;
+    dst->uYawAngle = src.uYawAngle;
+    dst->uPitchAngle = src.uPitchAngle;
+    dst->uSectorID = src.uSectorID;
+    dst->uCurrentActionLength = src.uCurrentActionLength;
+    dst->vInitialPosition = src.vInitialPosition;
+    dst->vGuardingPosition = src.vGuardingPosition;
+    dst->uTetherDistance = src.uTetherDistance;
+    dst->uAIState = (AIState)src.uAIState;
+    dst->uCurrentActionAnimation = ActorAnimation(src.uCurrentActionAnimation);
+    dst->uCarriedItemID = src.uCarriedItemID;
+    dst->field_B6 = src.field_B6;
+    dst->field_B7 = src.field_B7;
+    dst->uCurrentActionTime = src.uCurrentActionTime;
 
-    for (unsigned int i = 0; i < 8; ++i)
-        actor->pSpriteIDs[i] = this->pSpriteIDs[i];
+    for (ActorAnimation i : dst->pSpriteIDs.indices())
+        dst->pSpriteIDs[i] = src.pSpriteIDs[std::to_underlying(i)];
 
     for (unsigned int i = 0; i < 4; ++i)
-        actor->pSoundSampleIDs[i] = this->pSoundSampleIDs[i];
+        dst->pSoundSampleIDs[i] = src.pSoundSampleIDs[i];
 
     for (unsigned int i = 0; i < 22; ++i)
-        actor->pActorBuffs[ACTOR_BUFF_INDEX(i)] = this->pActorBuffs[i];
+        dst->pActorBuffs[ACTOR_BUFF_INDEX(i)] = src.pActorBuffs[i];
 
     for (unsigned int i = 0; i < 4; ++i)
-        actor->ActorHasItems[i] = this->ActorHasItems[i];
+        dst->ActorHasItems[i] = src.ActorHasItems[i];
 
-    actor->uGroup = this->uGroup;
-    actor->uAlly = this->uAlly;
+    dst->uGroup = src.uGroup;
+    dst->uAlly = src.uAlly;
 
     for (unsigned int i = 0; i < 8; ++i)
-        actor->pScheduledJobs[i] = this->pScheduledJobs[i];
+        dst->pScheduledJobs[i] = src.pScheduledJobs[i];
 
-    actor->uSummonerID = this->uSummonerID;
-    actor->uLastCharacterIDToHit = this->uLastCharacterIDToHit;
-    actor->dword_000334_unique_name = this->dword_000334_unique_name;
+    dst->uSummonerID = src.uSummonerID;
+    dst->uLastCharacterIDToHit = src.uLastCharacterIDToHit;
+    dst->dword_000334_unique_name = src.dword_000334_unique_name;
 
     for (unsigned int i = 0; i < 12; ++i)
-        actor->field_338[i] = this->field_338[i];
+        dst->field_338[i] = src.field_338[i];
 }
 
-void BLVDoor_MM7::Serialize(const BLVDoor *door) {
-    this->uAttributes = std::to_underlying(door->uAttributes);
-    this->uDoorID = door->uDoorID;
-    this->uTimeSinceTriggered = door->uTimeSinceTriggered;
-    this->vDirection = door->vDirection;
-    this->uMoveLength = door->uMoveLength;
-    this->uOpenSpeed = door->uOpenSpeed;
-    this->uCloseSpeed = door->uCloseSpeed;
-    this->uNumVertices = door->uNumVertices;
-    this->uNumFaces = door->uNumFaces;
-    this->uNumSectors = door->uNumSectors;
-    this->uNumOffsets = door->uNumOffsets;
-    this->uState = door->uState;
-    this->field_4E = door->field_4E;
+void Serialize(const BLVDoor &src, BLVDoor_MM7 *dst) {
+    memzero(dst);
+
+    dst->uAttributes = std::to_underlying(src.uAttributes);
+    dst->uDoorID = src.uDoorID;
+    dst->uTimeSinceTriggered = src.uTimeSinceTriggered;
+    dst->vDirection = src.vDirection;
+    dst->uMoveLength = src.uMoveLength;
+    dst->uOpenSpeed = src.uOpenSpeed;
+    dst->uCloseSpeed = src.uCloseSpeed;
+    dst->uNumVertices = src.uNumVertices;
+    dst->uNumFaces = src.uNumFaces;
+    dst->uNumSectors = src.uNumSectors;
+    dst->uNumOffsets = src.uNumOffsets;
+    dst->uState = src.uState;
+    dst->field_4E = src.field_4E;
 }
 
-void BLVDoor_MM7::Deserialize(BLVDoor *door) {
-    door->uAttributes = DoorAttributes(this->uAttributes);
-    door->uDoorID = this->uDoorID;
-    door->uTimeSinceTriggered = this->uTimeSinceTriggered;
-    door->vDirection = this->vDirection;
-    door->uMoveLength = this->uMoveLength;
-    door->uOpenSpeed = this->uOpenSpeed;
-    door->uCloseSpeed = this->uCloseSpeed;
-    door->uNumVertices = this->uNumVertices;
-    door->uNumFaces = this->uNumFaces;
-    door->uNumSectors = this->uNumSectors;
-    door->uNumOffsets = this->uNumOffsets;
-    door->uState = (BLVDoor::State)this->uState;
-    door->field_4E = this->field_4E;
+void Deserialize(const BLVDoor_MM7 &src, BLVDoor *dst) {
+    dst->uAttributes = DoorAttributes(src.uAttributes);
+    dst->uDoorID = src.uDoorID;
+    dst->uTimeSinceTriggered = src.uTimeSinceTriggered;
+    dst->vDirection = src.vDirection;
+    dst->uMoveLength = src.uMoveLength;
+    dst->uOpenSpeed = src.uOpenSpeed;
+    dst->uCloseSpeed = src.uCloseSpeed;
+    dst->uNumVertices = src.uNumVertices;
+    dst->uNumFaces = src.uNumFaces;
+    dst->uNumSectors = src.uNumSectors;
+    dst->uNumOffsets = src.uNumOffsets;
+    dst->uState = (BLVDoor::State)src.uState;
+    dst->field_4E = src.field_4E;
 }
 
-void BLVSector_MM7::Serialize(const BLVSector *sector) {
-    this->field_0 = sector->field_0;
-    this->uNumFloors = sector->uNumFloors;
-    this->field_6 = sector->field_6;
-    this->uNumWalls = sector->uNumWalls;
-    this->field_E = sector->field_E;
-    this->uNumCeilings = sector->uNumCeilings;
-    this->field_16 = sector->field_16;
-    this->uNumFluids = sector->uNumFluids;
-    this->field_1E = sector->field_1E;
-    this->uNumPortals = sector->uNumPortals;
-    this->field_26 = sector->field_26;
-    this->uNumFaces = sector->uNumFaces;
-    this->uNumNonBSPFaces = sector->uNumNonBSPFaces;
-    this->uNumCylinderFaces = sector->uNumCylinderFaces;
-    this->field_36 = sector->field_36;
-    this->pCylinderFaces = sector->pCylinderFaces;
-    this->uNumCogs = sector->uNumCogs;
-    this->field_3E = sector->field_3E;
-    this->uNumDecorations = sector->uNumDecorations;
-    this->field_46 = sector->field_46;
-    this->uNumMarkers = sector->uNumMarkers;
-    this->field_4E = sector->field_4E;
-    this->uNumLights = sector->uNumLights;
-    this->field_56 = sector->field_56;
-    this->uWaterLevel = sector->uWaterLevel;
-    this->uMistLevel = sector->uMistLevel;
-    this->uLightDistanceMultiplier = sector->uLightDistanceMultiplier;
-    this->uMinAmbientLightLevel = sector->uMinAmbientLightLevel;
-    this->uFirstBSPNode = sector->uFirstBSPNode;
-    this->exit_tag = sector->exit_tag;
-    this->pBounding = sector->pBounding;
+void Serialize(const BLVSector &src, BLVSector_MM7 *dst) {
+    memzero(dst);
+
+    dst->field_0 = src.field_0;
+    dst->uNumFloors = src.uNumFloors;
+    dst->field_6 = src.field_6;
+    dst->uNumWalls = src.uNumWalls;
+    dst->field_E = src.field_E;
+    dst->uNumCeilings = src.uNumCeilings;
+    dst->field_16 = src.field_16;
+    dst->uNumFluids = src.uNumFluids;
+    dst->field_1E = src.field_1E;
+    dst->uNumPortals = src.uNumPortals;
+    dst->field_26 = src.field_26;
+    dst->uNumFaces = src.uNumFaces;
+    dst->uNumNonBSPFaces = src.uNumNonBSPFaces;
+    dst->uNumCylinderFaces = src.uNumCylinderFaces;
+    dst->field_36 = src.field_36;
+    dst->pCylinderFaces = src.pCylinderFaces;
+    dst->uNumCogs = src.uNumCogs;
+    dst->field_3E = src.field_3E;
+    dst->uNumDecorations = src.uNumDecorations;
+    dst->field_46 = src.field_46;
+    dst->uNumMarkers = src.uNumMarkers;
+    dst->field_4E = src.field_4E;
+    dst->uNumLights = src.uNumLights;
+    dst->field_56 = src.field_56;
+    dst->uWaterLevel = src.uWaterLevel;
+    dst->uMistLevel = src.uMistLevel;
+    dst->uLightDistanceMultiplier = src.uLightDistanceMultiplier;
+    dst->uMinAmbientLightLevel = src.uMinAmbientLightLevel;
+    dst->uFirstBSPNode = src.uFirstBSPNode;
+    dst->exit_tag = src.exit_tag;
+    dst->pBounding = src.pBounding;
 }
 
-void BLVSector_MM7::Deserialize(BLVSector *sector) {
-    sector->field_0 = this->field_0;
-    sector->uNumFloors = this->uNumFloors;
-    sector->field_6 = this->field_6;
-    sector->uNumWalls = this->uNumWalls;
-    sector->field_E = this->field_E;
-    sector->uNumCeilings = this->uNumCeilings;
-    sector->field_16 = this->field_16;
-    sector->uNumFluids = this->uNumFluids;
-    sector->field_1E = this->field_1E;
-    sector->uNumPortals = this->uNumPortals;
-    sector->field_26 = this->field_26;
-    sector->uNumFaces = this->uNumFaces;
-    sector->uNumNonBSPFaces = this->uNumNonBSPFaces;
-    sector->uNumCylinderFaces = this->uNumCylinderFaces;
-    sector->field_36 = this->field_36;
-    sector->pCylinderFaces = this->pCylinderFaces;
-    sector->uNumCogs = this->uNumCogs;
-    sector->field_3E = this->field_3E;
-    sector->uNumDecorations = this->uNumDecorations;
-    sector->field_46 = this->field_46;
-    sector->uNumMarkers = this->uNumMarkers;
-    sector->field_4E = this->field_4E;
-    sector->uNumLights = this->uNumLights;
-    sector->field_56 = this->field_56;
-    sector->uWaterLevel = this->uWaterLevel;
-    sector->uMistLevel = this->uMistLevel;
-    sector->uLightDistanceMultiplier = this->uLightDistanceMultiplier;
-    sector->uMinAmbientLightLevel = this->uMinAmbientLightLevel;
-    sector->uFirstBSPNode = this->uFirstBSPNode;
-    sector->exit_tag = this->exit_tag;
-    sector->pBounding = this->pBounding;
+void Deserialize(const BLVSector_MM7 &src, BLVSector *dst) {
+    dst->field_0 = src.field_0;
+    dst->uNumFloors = src.uNumFloors;
+    dst->field_6 = src.field_6;
+    dst->uNumWalls = src.uNumWalls;
+    dst->field_E = src.field_E;
+    dst->uNumCeilings = src.uNumCeilings;
+    dst->field_16 = src.field_16;
+    dst->uNumFluids = src.uNumFluids;
+    dst->field_1E = src.field_1E;
+    dst->uNumPortals = src.uNumPortals;
+    dst->field_26 = src.field_26;
+    dst->uNumFaces = src.uNumFaces;
+    dst->uNumNonBSPFaces = src.uNumNonBSPFaces;
+    dst->uNumCylinderFaces = src.uNumCylinderFaces;
+    dst->field_36 = src.field_36;
+    dst->pCylinderFaces = src.pCylinderFaces;
+    dst->uNumCogs = src.uNumCogs;
+    dst->field_3E = src.field_3E;
+    dst->uNumDecorations = src.uNumDecorations;
+    dst->field_46 = src.field_46;
+    dst->uNumMarkers = src.uNumMarkers;
+    dst->field_4E = src.field_4E;
+    dst->uNumLights = src.uNumLights;
+    dst->field_56 = src.field_56;
+    dst->uWaterLevel = src.uWaterLevel;
+    dst->uMistLevel = src.uMistLevel;
+    dst->uLightDistanceMultiplier = src.uLightDistanceMultiplier;
+    dst->uMinAmbientLightLevel = src.uMinAmbientLightLevel;
+    dst->uFirstBSPNode = src.uFirstBSPNode;
+    dst->exit_tag = src.exit_tag;
+    dst->pBounding = src.pBounding;
 }
 
-void FontData_MM7::Serialize(const FontData *font) {
-    this->cFirstChar = font->cFirstChar;
-    this->cLastChar = font->cLastChar;
-    this->field_2 = font->field_2;
-    this->field_3 = font->field_3;
-    this->field_4 = font->field_4;
-    this->uFontHeight = font->uFontHeight;
-    this->field_7 = font->field_7;
-    this->palletes_count = font->palletes_count;
+void Serialize(const FontData &src, FontData_MM7 *dst) {
+    memzero(dst);
+
+    dst->cFirstChar = src.cFirstChar;
+    dst->cLastChar = src.cLastChar;
+    dst->field_2 = src.field_2;
+    dst->field_3 = src.field_3;
+    dst->field_4 = src.field_4;
+    dst->uFontHeight = src.uFontHeight;
+    dst->field_7 = src.field_7;
+    dst->palletes_count = src.palletes_count;
 
     for (unsigned int i = 0; i < 256; ++i)
-        this->pMetrics[i] = font->pMetrics[i];
+        dst->pMetrics[i] = src.pMetrics[i];
 
     for (unsigned int i = 0; i < 256; ++i)
-        this->font_pixels_offset[i] = font->font_pixels_offset[i];
+        dst->font_pixels_offset[i] = src.font_pixels_offset[i];
 
-    std::copy(font->pFontData.begin(), font->pFontData.end(), this->pFontData);
+    std::copy(src.pFontData.begin(), src.pFontData.end(), dst->pFontData);
 }
 
-void FontData_MM7::Deserialize(FontData *font, size_t size) {
-    font->cFirstChar = this->cFirstChar;
-    font->cLastChar = this->cLastChar;
-    font->field_2 = this->field_2;
-    font->field_3 = this->field_3;
-    font->field_4 = this->field_4;
-    font->uFontHeight = this->uFontHeight;
-    font->field_7 = this->field_7;
-    font->palletes_count = this->palletes_count;
+void Deserialize(const FontData_MM7 &src, size_t size, FontData *dst) {
+    dst->cFirstChar = src.cFirstChar;
+    dst->cLastChar = src.cLastChar;
+    dst->field_2 = src.field_2;
+    dst->field_3 = src.field_3;
+    dst->field_4 = src.field_4;
+    dst->uFontHeight = src.uFontHeight;
+    dst->field_7 = src.field_7;
+    dst->palletes_count = src.palletes_count;
 
     for (unsigned int i = 0; i < 256; ++i)
-        font->pMetrics[i] = this->pMetrics[i];
+        dst->pMetrics[i] = src.pMetrics[i];
 
     for (unsigned int i = 0; i < 256; ++i)
-        font->font_pixels_offset[i] = this->font_pixels_offset[i];
+        dst->font_pixels_offset[i] = src.font_pixels_offset[i];
 
-    font->pFontData.assign(this->pFontData, &this->pFontData[size - 4128]);
+    dst->pFontData.assign(src.pFontData, &src.pFontData[size - 4128]);
 }
 
-void ODMFace_MM7::Deserialize(ODMFace *face) {
-    face->pFacePlaneOLD = this->pFacePlane;
-    face->pFacePlane.vNormal.x = face->pFacePlaneOLD.vNormal.x / 65536.0;
-    face->pFacePlane.vNormal.y = face->pFacePlaneOLD.vNormal.y / 65536.0;
-    face->pFacePlane.vNormal.z = face->pFacePlaneOLD.vNormal.z / 65536.0;
-    face->pFacePlane.dist = face->pFacePlaneOLD.dist / 65536.0;
+void Deserialize(const ODMFace_MM7 &src, ODMFace *dst) {
+    dst->pFacePlaneOLD = src.pFacePlane;
+    dst->pFacePlane.vNormal.x = dst->pFacePlaneOLD.vNormal.x / 65536.0;
+    dst->pFacePlane.vNormal.y = dst->pFacePlaneOLD.vNormal.y / 65536.0;
+    dst->pFacePlane.vNormal.z = dst->pFacePlaneOLD.vNormal.z / 65536.0;
+    dst->pFacePlane.dist = dst->pFacePlaneOLD.dist / 65536.0;
 
-    face->zCalc.Init(face->pFacePlaneOLD);
-    face->uAttributes = FaceAttributes(this->uAttributes);
-    face->pVertexIDs = this->pVertexIDs;
-    face->pTextureUIDs = this->pTextureUIDs;
-    face->pTextureVIDs = this->pTextureVIDs;
-    face->pXInterceptDisplacements = this->pXInterceptDisplacements;
-    face->pYInterceptDisplacements = this->pYInterceptDisplacements;
-    face->pZInterceptDisplacements = this->pZInterceptDisplacements;
-    face->resource = nullptr;
-    face->sTextureDeltaU = this->sTextureDeltaU;
-    face->sTextureDeltaV = this->sTextureDeltaV;
-    face->pBoundingBox = this->pBoundingBox;
-    face->sCogNumber = this->sCogNumber;
-    face->sCogTriggeredID = this->sCogTriggeredID;
-    face->sCogTriggerType = this->sCogTriggerType;
-    face->field_128 = this->field_128;
-    face->field_129 = this->field_129;
-    face->uGradientVertex1 = this->uGradientVertex1;
-    face->uGradientVertex2 = this->uGradientVertex2;
-    face->uGradientVertex3 = this->uGradientVertex3;
-    face->uGradientVertex4 = this->uGradientVertex4;
-    face->uNumVertices = this->uNumVertices;
-    face->uPolygonType = PolygonType(this->uPolygonType);
-    face->uShadeType = this->uShadeType;
-    face->bVisible = this->bVisible;
-    face->field_132 = this->field_132;
-    face->field_133 = this->field_133;
+    dst->zCalc.Init(dst->pFacePlaneOLD);
+    dst->uAttributes = FaceAttributes(src.uAttributes);
+    dst->pVertexIDs = src.pVertexIDs;
+    dst->pTextureUIDs = src.pTextureUIDs;
+    dst->pTextureVIDs = src.pTextureVIDs;
+    dst->pXInterceptDisplacements = src.pXInterceptDisplacements;
+    dst->pYInterceptDisplacements = src.pYInterceptDisplacements;
+    dst->pZInterceptDisplacements = src.pZInterceptDisplacements;
+    dst->resource = nullptr;
+    dst->sTextureDeltaU = src.sTextureDeltaU;
+    dst->sTextureDeltaV = src.sTextureDeltaV;
+    dst->pBoundingBox = src.pBoundingBox;
+    dst->sCogNumber = src.sCogNumber;
+    dst->sCogTriggeredID = src.sCogTriggeredID;
+    dst->sCogTriggerType = src.sCogTriggerType;
+    dst->field_128 = src.field_128;
+    dst->field_129 = src.field_129;
+    dst->uGradientVertex1 = src.uGradientVertex1;
+    dst->uGradientVertex2 = src.uGradientVertex2;
+    dst->uGradientVertex3 = src.uGradientVertex3;
+    dst->uGradientVertex4 = src.uGradientVertex4;
+    dst->uNumVertices = src.uNumVertices;
+    dst->uPolygonType = PolygonType(src.uPolygonType);
+    dst->uShadeType = src.uShadeType;
+    dst->bVisible = src.bVisible;
+    dst->field_132 = src.field_132;
+    dst->field_133 = src.field_133;
 }

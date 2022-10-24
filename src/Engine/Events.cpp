@@ -422,7 +422,7 @@ LABEL_47:
                 case EVENT_SpeakNPC:
                     if (canShowMessages) {
                         // Actor::Actor(&Dst);
-                        memset(&Dst, 0, 0x344u);
+                        Dst = Actor();
                         dword_5B65D0_dialogue_actor_npc_id =
                             _evt->v5 +
                             ((_evt->v6 +

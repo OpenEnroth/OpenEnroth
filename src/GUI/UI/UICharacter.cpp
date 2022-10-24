@@ -802,7 +802,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Player *player) {
     auto str = StringPrintf(
         "%s \f%05d%s\f00000\r177%s: \f%05d%d\f00000",  // ^Pv[]
                      localization->GetString(LSTR_SKILLS_FOR),
-                     ui_character_header_text_color, player->pName,
+                     ui_character_header_text_color, player->pName.c_str(),
                      localization->GetString(LSTR_SKILL_POINTS),
                      player->uSkillPoints ? ui_character_bonus_text_color
                                           : ui_character_default_text_color,

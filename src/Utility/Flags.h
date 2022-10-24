@@ -42,11 +42,11 @@ class Flags {
         value_(static_cast<underlying_type>(value))
     {}
 
-    explicit constexpr Flags(underlying_type value) :
+    constexpr explicit Flags(underlying_type value) :
         value_(value)
     {}
 
-    explicit operator underlying_type() const {
+    constexpr explicit operator underlying_type() const {
         return value_;
     }
 
@@ -133,11 +133,11 @@ class Flags {
 };
 
 
-#define DECLARE_FLAGS(FLAGS, ENUM)                                              \
+#define MM_DECLARE_FLAGS(FLAGS, ENUM)                                           \
     using FLAGS = Flags<ENUM>;
 
 
-#define DECLARE_OPERATORS_FOR_FLAGS(FLAGS)                                      \
+#define MM_DECLARE_OPERATORS_FOR_FLAGS(FLAGS)                                   \
     constexpr inline FLAGS operator|(FLAGS::enumeration_type l, FLAGS::enumeration_type r) { \
         return FLAGS(l) | r;                                                    \
     }                                                                           \

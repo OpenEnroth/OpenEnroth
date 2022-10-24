@@ -7,7 +7,7 @@
 #include "Engine/Objects/PlayerEnums.h"
 #include "Engine/Conditions.h"
 
-#include "Utility/Workaround.h"
+#include "Utility/Workaround/ToUnderlying.h"
 
 
 #define LSTR_AC                               0   // "AC"

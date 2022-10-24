@@ -4,7 +4,7 @@
 
 #include "Engine/Party.h"
 
-#include "Utility/Workaround.h"
+#include "Utility/Workaround/ToUnderlying.h"
 
 std::array<ConditionProcessor, 18> conditionArray = {{
     // hint: condname, protfrommagic, gmprot, enchantment, ...

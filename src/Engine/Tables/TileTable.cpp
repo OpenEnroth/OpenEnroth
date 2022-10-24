@@ -90,7 +90,7 @@ void TileTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob 
     auto tiles = new TileDesc[sNumTiles];
     auto tile_data = (TileDesc_MM7 *)((unsigned char *)data_mm7.data() + 4);
     for (unsigned int i = 0; i < num_mm7_tiles; ++i) {
-        tiles[i].name = tile_data->pTileName;
+        tiles[i].name = tile_data->pTileName.data();
         std::transform(tiles[i].name.begin(), tiles[i].name.end(),
                        tiles[i].name.begin(), ::tolower);
         if (tiles[i].name.find("wtrdr") == 0) {

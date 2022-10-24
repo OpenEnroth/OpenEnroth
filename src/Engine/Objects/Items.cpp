@@ -616,15 +616,15 @@ std::string ItemGen::GetIdentifiedName() {
 
     if (uItemID == ITEM_LICH_JAR_FULL) {  // Lich Jar
         if (uHolderPlayer > 0 && uHolderPlayer <= 4) {
-            auto player_name = pPlayers[uHolderPlayer]->pName;
-            if (player_name[strlen(player_name) - 1] == 's')
+            const std::string &player_name = pPlayers[uHolderPlayer]->pName;
+            if (player_name.back() == 's')
                 return localization->FormatString(
                     LSTR_FMT_JAR,
-                    pPlayers[uHolderPlayer]->pName);
+                    player_name.c_str());
             else
                 return localization->FormatString(
                     LSTR_FMT_JAR_2,
-                    pPlayers[uHolderPlayer]->pName);
+                    player_name.c_str());
         }
     }
 

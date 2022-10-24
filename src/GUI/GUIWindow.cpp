@@ -1426,14 +1426,11 @@ unsigned int GetSkillColor(unsigned int uPlayerClass,
 
 void ClickNPCTopic(DIALOGUE_TYPE topic) {
     int pEventNumber;  // ecx@8
-    Player *v4;        // esi@20
     char *v12;         // eax@53
     char *v13;         // eax@56
     char *v14;         // eax@57
     char *v15;         // eax@58
     int pPrice;        // ecx@70
-    char *v22;         // [sp-Ch] [bp-18h]@73
-    const char *v24;         // [sp-8h] [bp-14h]@73
 
     uDialogueType = (DIALOGUE_TYPE)(topic + 1);
     NPCData *pCurrentNPCInfo =
@@ -1547,11 +1544,9 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
                 if (topic == DIALOGUE_82_join_guild && guild_membership_approved) {
                     // join guild
                     pParty->TakeGold(gold_transaction_amount);
-                    v4 = pParty->pPlayers.data();
-                    do {
-                        v4->SetVariable(VAR_Award, dword_F8B1AC_award_bit_number);
-                        ++v4;
-                    } while ((int64_t)v4 < (int64_t)pParty->pHirelings.data());
+                    for (Player &player : pParty->pPlayers)
+                        player.SetVariable(VAR_Award, dword_F8B1AC_award_bit_number);
+
                     switch (_dword_F8B1D8_last_npc_topic_menu) {
                     case DIALOGUE_SCRIPTED_LINE_1:
                         pEventNumber = pCurrentNPCInfo->dialogue_1_evt_id;
@@ -1599,7 +1594,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
         return;
     }
 
-    if (pParty->pHirelings[0].pName && pParty->pHirelings[1].pName) {
+    if (!pParty->pHirelings[0].pName.empty() && !pParty->pHirelings[1].pName.empty()) {
         GameUI_SetStatusBar(LSTR_HIRE_NO_ROOM);
         BackToHouseMenu();
         return;
@@ -1632,16 +1627,13 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
     pCurrentNPCInfo->uFlags |= 128;
     pParty->hirelingScrollPosition = 0;
     pParty->CountHirelings();
-    if (pParty->pHirelings[0].pName) {
-        memcpy(&pParty->pHirelings[1], pCurrentNPCInfo, sizeof(pParty->pHirelings[1]));
-        v24 = pCurrentNPCInfo->pName;
-        v22 = pParty->pHireling2Name;
+    if (!pParty->pHirelings[0].pName.empty()) {
+        pParty->pHirelings[1] = *pCurrentNPCInfo;
+        pParty->pHireling2Name = pCurrentNPCInfo->pName;
     } else {
-        memcpy(&pParty->pHirelings[0], pCurrentNPCInfo, sizeof(pParty->pHirelings[0]));
-        v24 = pCurrentNPCInfo->pName;
-        v22 = pParty->pHireling1Name;
+        pParty->pHirelings[0] = *pCurrentNPCInfo;
+        pParty->pHireling1Name = pCurrentNPCInfo->pName;
     }
-    strcpy(v22, v24);
     pParty->hirelingScrollPosition = 0;
     pParty->CountHirelings();
     PrepareHouse(static_cast<HOUSE_ID>(window_SpeakInHouse->wData.val));
@@ -2622,16 +2614,16 @@ void UI_Create() {
 }
 
 
-std::string NameAndTitle(const char* name, const char* title) {
+std::string NameAndTitle(const std::string &name, const std::string &title) {
     return localization->FormatString(
         LSTR_FMT_S_THE_S,
-        name,
-        title
+        name.c_str(),
+        title.c_str()
     );
 }
 
 
-std::string NameAndTitle(const char* name, PLAYER_CLASS_TYPE class_type) {
+std::string NameAndTitle(const std::string &name, PLAYER_CLASS_TYPE class_type) {
     return NameAndTitle(
         name,
         localization->GetClassName(class_type)
@@ -2639,7 +2631,7 @@ std::string NameAndTitle(const char* name, PLAYER_CLASS_TYPE class_type) {
 }
 
 
-std::string NameAndTitle(const char* name, NPCProf profession) {
+std::string NameAndTitle(const std::string &name, NPCProf profession) {
     return NameAndTitle(
         name,
         localization->GetNpcProfessionName(profession)
@@ -2648,7 +2640,7 @@ std::string NameAndTitle(const char* name, NPCProf profession) {
 
 
 std::string NameAndTitle(NPCData* npc) {
-    if (npc->pName) {
+    if (!npc->pName.empty()) {
         if (npc->profession) {
             Assert(npc->profession < 59);
             return NameAndTitle(npc->pName, npc->profession);
@@ -2657,7 +2649,7 @@ std::string NameAndTitle(NPCData* npc) {
         return npc->pName;
     }
 
-    return std::string("");
+    return std::string();
 }
 
 
@@ -2672,7 +2664,7 @@ std::string GetDisplayName(Actor* actor) {
 static std::string SeekKnowledgeElswhereString(Player *player) {
     return localization->FormatString(
         LSTR_FMT_SEEK_KNOWLEDGE_ELSEWHERE,
-        player->pName,
+        player->pName.c_str(),
         localization->GetClassName(player->classType)
     )
     + "\n \n"

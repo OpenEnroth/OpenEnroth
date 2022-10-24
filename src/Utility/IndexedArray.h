@@ -5,63 +5,60 @@
 #include <type_traits>
 #include <utility>
 
-#include "Workaround.h"
+#include "Utility/Workaround/ToUnderlying.h"
 
 
 namespace detail {
 
-class IndexedArrayMapSentinel {};
+class IndexedArrayKeysSentinel {};
 
-template<class Array>
-class IndexedArrayMapIterator {
+template<auto Size>
+class IndexedArrayKeysIterator {
  public:
-    using key_type = typename Array::key_type;
-    constexpr static bool is_const = std::is_const_v<Array>;
-    using base_reference = std::conditional_t<is_const, typename Array::const_reference, typename Array::reference>;
-    using reference = std::pair<key_type, base_reference>;
+    using value_type = decltype(Size);
+    using reference = value_type;
 
     // Note that this is a very basic implementation that doesn't even satisfy
     // the iterator concept. The goal here is to just make the range-based for loop work.
 
-    constexpr IndexedArrayMapIterator() {}
-    constexpr IndexedArrayMapIterator(Array *array, key_type pos): array_(array), pos_(pos) {}
+    constexpr IndexedArrayKeysIterator() {}
+    constexpr IndexedArrayKeysIterator(value_type pos): pos_(pos) {}
 
-    constexpr friend bool operator==(IndexedArrayMapIterator l, IndexedArrayMapSentinel r) {
-        return l.pos_ == static_cast<key_type>(l.array_->size());
+    constexpr friend bool operator==(IndexedArrayKeysIterator l, IndexedArrayKeysSentinel r) {
+        return l.pos_ == Size;
     }
 
     constexpr reference operator*() const {
-        return {pos_, (*array_)[pos_]};
+        return pos_;
     }
 
-    constexpr IndexedArrayMapIterator &operator++() {
-        pos_ = static_cast<key_type>(std::to_underlying(pos_) + 1);
+    constexpr IndexedArrayKeysIterator &operator++() {
+        pos_ = static_cast<value_type>(std::to_underlying(pos_) + 1);
         return *this;
     }
 
-    constexpr IndexedArrayMapIterator operator++(int) {
-        IndexedArrayMapIterator tmp = *this;
+    constexpr IndexedArrayKeysIterator operator++(int) {
+        IndexedArrayKeysIterator tmp = *this;
         ++*this;
         return tmp;
     }
 
  private:
-    Array *array_ = nullptr;
-    key_type pos_ = key_type();
+    value_type pos_ = value_type();
 };
 
-template<class Array>
-struct IndexedArrayMapRange {
-    IndexedArrayMapIterator<Array> begin;
+template<auto Size>
+struct IndexedArrayKeysRange {
+    IndexedArrayKeysIterator<Size> begin;
 };
 
-template<class Array>
-constexpr IndexedArrayMapIterator<Array> begin(const IndexedArrayMapRange<Array> &range) {
+template<auto Size>
+constexpr IndexedArrayKeysIterator<Size> begin(const IndexedArrayKeysRange<Size> &range) {
     return range.begin;
 }
 
-template<class Array>
-constexpr IndexedArrayMapSentinel end(const IndexedArrayMapRange<Array> &) {
+template<auto Size>
+constexpr IndexedArrayKeysSentinel end(const IndexedArrayKeysRange<Size> &) {
     return {};
 }
 
@@ -103,10 +100,9 @@ constexpr IndexedArrayMapSentinel end(const IndexedArrayMapRange<Array> &) {
  * for (auto &value : userMessageMap)
  *     value.clear();
  *
- * // ...or pretend it's a map. Note the `auto &&` here, due to the nature of the proxy iterators involved, using
- * // `auto &` won't work.
- * for (auto &&pair : defaultMessageMap.map_view())
- *     userMessageMap[pair.first] = pair.second;
+ * // ...or get a view of its indices and use it as you would use a traditional array.
+ * for (TriBool i : defaultMessageMap.indices())
+ *     userMessageMap[i] = defaultMessageMap[i];
  * @endcode
  *
  * @tparam T                            Array element type.
@@ -178,21 +174,17 @@ class IndexedArray: public std::array<T, static_cast<size_t>(Size)> {
     // default operator= is OK
 
     /**
-     * Use this function is you want to iterate over this indexed array as if it was a map, e.g.:
+     * Use this function is you want to iterate over this indexed array's like it's a normal array, e.g.:
      * @code
-     * for (auto &&pair: array.map_view()) {
-     *     // key (enum value) is now in pair.first, value in pair.second.
+     * for (SomeEnum i : array.keys()) {
+     *     // use i and array[i]
      * }
      * @endcode
      *
-     * @return                          Map-like view over the elements of this indexed array.
+     * @return                          View over the valid indices for the elements of this indexed array.
      */
-    constexpr detail::IndexedArrayMapRange<IndexedArray> map_view() {
-        return {{this, key_type()}};
-    }
-
-    constexpr detail::IndexedArrayMapRange<const IndexedArray> map_view() const {
-        return {{this, key_type()}};
+    constexpr detail::IndexedArrayKeysRange<Size> indices() const {
+        return {};
     }
 
     using base_type::begin;

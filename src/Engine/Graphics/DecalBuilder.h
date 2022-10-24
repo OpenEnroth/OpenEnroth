@@ -13,8 +13,8 @@ enum class DecalFlag : int {
     DecalFlagsFade = 0x1
 };
 using enum DecalFlag;
-DECLARE_FLAGS(DecalFlags, DecalFlag)
-DECLARE_OPERATORS_FOR_FLAGS(DecalFlags)
+MM_DECLARE_FLAGS(DecalFlags, DecalFlag)
+MM_DECLARE_OPERATORS_FOR_FLAGS(DecalFlags)
 
 enum class LocationFlag {
     LocationNone = 0x0,
@@ -23,8 +23,8 @@ enum class LocationFlag {
     LocationTerrain = 0x4
 };
 using enum LocationFlag;
-DECLARE_FLAGS(LocationFlags, LocationFlag)
-DECLARE_OPERATORS_FOR_FLAGS(LocationFlags)
+MM_DECLARE_FLAGS(LocationFlags, LocationFlag)
+MM_DECLARE_OPERATORS_FOR_FLAGS(LocationFlags)
 
 // bloodsplats are created at enemy death as locations of where blood decal needs to be applied
 struct Bloodsplat {

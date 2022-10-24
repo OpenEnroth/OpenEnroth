@@ -422,7 +422,7 @@ void GUIWindow_PartyCreation::Update() {
                 }
                 if (strlen(keyboardInputHandler->GetTextInput().c_str()) > 0 &&
                     v126 != strlen(keyboardInputHandler->GetTextInput().c_str()))
-                    strcpy(pParty->pPlayers[i].pName, keyboardInputHandler->GetTextInput().c_str());
+                    pParty->pPlayers[i].pName = keyboardInputHandler->GetTextInput();
                 pGUIWindow_CurrentMenu->DrawTextInRect(
                     pFontCreate, pIntervalX, 124, 0,
                     pParty->pPlayers[i].pName, 130, 0);

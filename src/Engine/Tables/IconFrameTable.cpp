@@ -1,6 +1,7 @@
 #include "Engine/Tables/IconFrameTable.h"
 
 #include "Engine/Engine.h"
+#include "Engine/Graphics/IRender.h"
 #include "Engine/Serialization/LegacyImages.h"
 
 #include "Platform/Api.h"
@@ -106,7 +107,7 @@ void IconFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, const 
 
     this->pIcons = new Icon[uNumIcons];
     for (unsigned int i = 0; i < uNumIcons; ++i) {
-        pIcons[i].Deserialize(&this->pIcons[i]);
+        Deserialize(pIcons[i], &this->pIcons[i]);
 
         this->pIcons[i].id = i;
     }

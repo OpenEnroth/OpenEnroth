@@ -19,26 +19,26 @@ extern std::array<NPCTopic, 789> pNPCTopics;
 struct NPCData {  // 4Ch
     inline bool Hired() { return (uFlags & 0x80) != 0; }
 
-    const char *pName;               // 0
-    unsigned int uPortraitID;  // 4
-    unsigned int uFlags;  // 8    // & 0x80    no greeting on dialogue start;
+    std::string pName;               // 0
+    unsigned int uPortraitID = 0;  // 4
+    unsigned int uFlags = 0;  // 8    // & 0x80    no greeting on dialogue start;
                           // looks like hired
-    int fame;                  // c
-    int rep;                   // 10
-    unsigned int Location2D;   // 14  house_id
-    NPCProf profession;  // 18
-    int greet;                 // 1c
-    int is_joinable;           // 20
-    int field_24;
-    unsigned int dialogue_1_evt_id;  // dialogue options that are defined by script
-    unsigned int dialogue_2_evt_id;  // = 0  == unused
-    unsigned int dialogue_3_evt_id;  // can also be idx in pNPCTopics
-    unsigned int dialogue_4_evt_id;  // and absolutely crazy stuff when it's in party hierlings (npc2)
-    unsigned int dialogue_5_evt_id;
-    unsigned int dialogue_6_evt_id;
-    unsigned int uSex;       // 40
-    int bHasUsedTheAbility;  // 44
-    int news_topic;          // 48
+    int fame = 0;                  // c
+    int rep = 0;                   // 10
+    unsigned int Location2D = 0;   // 14  house_id
+    NPCProf profession = NPCProf(0);  // 18 // TODO: separate enum value for 0.
+    int greet = 0;                 // 1c
+    int is_joinable = 0;           // 20
+    int field_24 = 0;
+    unsigned int dialogue_1_evt_id = 0;  // dialogue options that are defined by script
+    unsigned int dialogue_2_evt_id = 0;  // = 0  == unused
+    unsigned int dialogue_3_evt_id = 0;  // can also be idx in pNPCTopics
+    unsigned int dialogue_4_evt_id = 0;  // and absolutely crazy stuff when it's in party hierlings (npc2)
+    unsigned int dialogue_5_evt_id = 0;
+    unsigned int dialogue_6_evt_id = 0;
+    unsigned int uSex = 0;       // 40
+    int bHasUsedTheAbility = 0;  // 44
+    int news_topic = 0;          // 48
 };
 #pragma pack(pop)
 
@@ -98,15 +98,14 @@ struct NPCStats {
     char *sub_495366_MispronounceName(uint8_t firstLetter,
                                       uint8_t genderId);
 
-    NPCData pNPCData[501]{};     // 0 - 94BCh count from 1
-    NPCData pNewNPCData[501]{};  // 94BCh- 12978h count from 1
+    std::array<NPCData, 501> pNPCData;     // 0 - 94BCh count from 1
+    std::array<NPCData, 501> pNewNPCData;  // 94BCh- 12978h count from 1
     char *pNPCNames[540][2];
     NPCProfession pProfessions[59]{};  // count from 1
-    NPCData pAdditionalNPC[100]{};
+    std::array<NPCData, 100> pAdditionalNPC;
     char *pCatchPhrases[52];   // 15CA4h
     char *pNPCUnicNames[500];  // from first batch
-    NPCProfessionChance
-        pProfessionChance[77];  // 16544h profession chance in each area
+    NPCProfessionChance pProfessionChance[77];  // 16544h profession chance in each area
     int field_17884 = 0;
     int field_17888 = 0;
     NPCGreeting pNPCGreetings[206];
@@ -148,3 +147,40 @@ struct NPCData *GetNPCData(signed int npcid);
 struct NPCData *GetNewNPCData(signed int npcid, int *npc_indx);
 int GetGreetType(signed int SpeakingNPC_ID);
 int NPCDialogueEventProcessor(int npc_event_id, int entry_line = 0);
+
+class FlatHirelings {
+ public:
+    /**
+     * Populates this structure.
+     */
+    void Prepare();
+
+    /**
+     * @return                          Total number of hirelings in this structure.
+     */
+    size_t Size() const {
+        return count;
+    }
+
+    /**
+     * @param index                     Hireling index.
+     * @return                          Whether a hireling is actually a follower (doesn't count towards the total
+     *                                  hireling count, e.g. Margaret the guide on Emerald island).
+     */
+    bool IsFollower(size_t index) const;
+
+    /**
+     * @param index                     Hireling index.
+     * @return                          Associated `NPCData`.
+     */
+    NPCData *Get(size_t index) const;
+
+ private:
+    /** Hireling / follower NPC ids.
+     * If 0 or 1, then it's an index into `pParty->pHirelings`.
+     * If 2 or more, then you have to subtract 2 to get an index into `pNPCStats->pNewNPCData`. */
+    std::array<int8_t, 1024> ids = {{}};
+
+    /** Number of valid ids in the array above. */
+    size_t count = 0;
+};

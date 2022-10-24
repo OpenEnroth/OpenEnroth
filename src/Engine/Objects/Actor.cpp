@@ -2451,7 +2451,7 @@ void Actor::PrepareSprites(char load_sounds_if_bit1_set) {
     // v12 = pSpriteIDs;
     // Source = (char *)v3->pSpriteNames;
     // do
-    for (uint i = 0; i < 8; ++i) {
+    for (ActorAnimation i : pSpriteIDs.indices()) {
         // strcpy(pSpriteName, v3->pSpriteNames[i]);
         pSpriteIDs[i] = pSpriteFrameTable->FastFindSprite(v3->pSpriteNames[i]);
         pSpriteFrameTable->InitializeSprite(pSpriteIDs[i]);
@@ -2770,9 +2770,9 @@ void Actor::UpdateActorAI() {
         if (!pActor->sCurrentHP && pActor->uAIState != Dying) Actor::Die(i);
 
         // Kill buffs if expired
-        for (auto &&pair : pActor->pActorBuffs.map_view())
-            if (pair.first != ACTOR_BUFF_MASS_DISTORTION)
-                pair.second.IsBuffExpiredToTime(pParty->GetPlayingTime());
+        for (ACTOR_BUFF_INDEX i : pActor->pActorBuffs.indices())
+            if (i != ACTOR_BUFF_MASS_DISTORTION)
+                pActor->pActorBuffs[i].IsBuffExpiredToTime(pParty->GetPlayingTime());
 
         // If shrink expired: reset height
         if (pActor->pActorBuffs[ACTOR_BUFF_SHRINK].Expired()) {
@@ -2852,9 +2852,9 @@ void Actor::UpdateActorAI() {
 
         if (!pActor->sCurrentHP) Actor::Die(actor_id);
 
-        for (auto &&pair : pActor->pActorBuffs.map_view())
-            if (pair.first != ACTOR_BUFF_MASS_DISTORTION)
-                pair.second.IsBuffExpiredToTime(pParty->GetPlayingTime());
+        for (ACTOR_BUFF_INDEX i : pActor->pActorBuffs.indices())
+            if (i != ACTOR_BUFF_MASS_DISTORTION)
+                pActor->pActorBuffs[i].IsBuffExpiredToTime(pParty->GetPlayingTime());
 
         if (pActor->pActorBuffs[ACTOR_BUFF_SHRINK].Expired()) {
             pActor->uActorHeight =
@@ -3517,14 +3517,14 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
             if (projectileSprite)
                 GameUI_SetStatusBar(
                     LSTR_FMT_S_SHOOTS_S_FOR_U,
-                    player->pName,
+                    player->pName.c_str(),
                     pMonster->pActorName.c_str(),
                     uDamageAmount
                 );
             else
                 GameUI_SetStatusBar(
                     LSTR_FMT_S_HITS_S_FOR_U,
-                    player->pName,
+                    player->pName.c_str(),
                     pMonster->pActorName.c_str(),
                     uDamageAmount
                 );
@@ -3549,7 +3549,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         if (engine->config->settings.ShowHits.Get()) {
             GameUI_SetStatusBar(
                 LSTR_FMT_S_INFLICTS_U_KILLING_S,
-                player->pName,
+                player->pName.c_str(),
                 uDamageAmount,
                 pMonster->pActorName.c_str()
             );
@@ -3569,7 +3569,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         if (engine->config->settings.ShowHits.Get()) {
             GameUI_SetStatusBar(
                 LSTR_FMT_S_STUNS_S,
-                player->pName,
+                player->pName.c_str(),
                 pMonster
             );
         }
@@ -3583,7 +3583,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         if (engine->config->settings.ShowHits.Get()) {
             GameUI_SetStatusBar(
                 LSTR_FMT_S_PARALYZES_S,
-                player->pName,
+                player->pName.c_str(),
                 pMonster
             );
         }

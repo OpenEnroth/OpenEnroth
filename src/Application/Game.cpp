@@ -368,26 +368,11 @@ void Game_StartHirelingDialogue(unsigned int hireling_id) {
 
     pMessageQueue_50CBD0->Flush();
 
-    uint hireling_slot = 0;
-    char buf[1024] {};
-    for (uint i = 0; i < 2; ++i) {
-        if (pParty->pHirelings[i].pName) buf[hireling_slot++] = i;
-    }
+    FlatHirelings buf;
+    buf.Prepare();
 
-    for (uint i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
-        NPCData *npc = &pNPCStats->pNewNPCData[i];
-        if (npc->Hired() &&
-            (!pParty->pHirelings[0].pName ||
-             strcmp(npc->pName, pParty->pHirelings[0].pName)) &&
-            (!pParty->pHirelings[1].pName ||
-             strcmp(npc->pName, pParty->pHirelings[1].pName))) {
-            buf[hireling_slot++] = i + 2;
-        }
-    }
-
-    if ((signed int)hireling_id + (signed int)pParty->hirelingScrollPosition < hireling_slot) {
+    if ((signed int)hireling_id + (signed int)pParty->hirelingScrollPosition < buf.Size()) {
         Actor actor;
-        memset(&actor, 0, sizeof(actor));
         actor.sNPC_ID += -1 - pParty->hirelingScrollPosition - hireling_id;
         GameUI_InitializeDialogue(&actor, true);
     }
@@ -505,8 +490,6 @@ void Game::EventLoop() {
                //    unsigned int v128; // [sp-1Ch] [bp-618h]@711
     // GUIButton *pButton2;  // [sp-4h] [bp-600h]@59
                     //    KeyToggleType pKeyToggleType; // [sp+0h] [bp-5FCh]@287
-    Player *pPlayer7;             // [sp+14h] [bp-5E8h]@373
-    Player *pPlayer8;             // [sp+14h] [bp-5E8h]@377
     Player *pPlayer9;             // [sp+14h] [bp-5E8h]@455
     // int thisg;                    // [sp+14h] [bp-5E8h]@467
     // int thish;                    // [sp+14h] [bp-5E8h]@528
@@ -537,7 +520,7 @@ void Game::EventLoop() {
     }
     if (bDialogueUI_InitializeActor_NPC_ID) {
         // Actor::Actor(&actor);
-        memset(&actor, 0, 0x344u);
+        actor = Actor();
         dword_5B65D0_dialogue_actor_npc_id = bDialogueUI_InitializeActor_NPC_ID;
         actor.sNPC_ID = bDialogueUI_InitializeActor_NPC_ID;
         GameUI_InitializeDialogue(&actor, false);
@@ -978,8 +961,8 @@ void Game::EventLoop() {
                                             // NPCPanel
                     if (uMessageParam) {
                         new OnButtonClick2(626, 179, 0, 0, pBtn_NPCRight);
-                        v37 = (pParty->pHirelings[0].pName != 0) +
-                              (pParty->pHirelings[1].pName != 0) +
+                        v37 = (!pParty->pHirelings[0].pName.empty()) +
+                              (!pParty->pHirelings[1].pName.empty()) +
                               (uint8_t)pParty->cNonHireFollowers - 2;
                         // v37 is max scroll position
                         if (pParty->hirelingScrollPosition < v37) {
@@ -1105,21 +1088,14 @@ void Game::EventLoop() {
                         if (pParty->GetFood() > 0) {
                             pParty->RestAndHeal();
                             if (pParty->GetFood() < GetTravelTime()) {
-                                pPlayer7 = pParty->pPlayers.data();
-                                do {
-                                    pPlayer7->SetCondition(Condition_Weak, 0);
-                                    ++pPlayer7;
-                                } while ((int64_t)pPlayer7 < (int64_t)pParty->pHirelings.data());
+                                for(Player &player : pParty->pPlayers)
+                                    player.SetCondition(Condition_Weak, 0);
                                 ++pParty->days_played_without_rest;
                             }
                             pParty->TakeFood(GetTravelTime());
                         } else {
-                            pPlayer8 = pParty->pPlayers.data();
-                            do {
-                                pPlayer8->SetCondition(Condition_Weak, 0);
-                                ++pPlayer8;
-                            } while ((int64_t)pPlayer8 <
-                                     (int64_t)pParty->pHirelings.data());
+                            for (Player &player : pParty->pPlayers)
+                                player.SetCondition(Condition_Weak, 0);
                             ++pParty->days_played_without_rest;
                         }
                         pPaletteManager->ResetNonLocked();
@@ -2865,8 +2841,8 @@ void Game::GameLoop() {
             }
             if (uGameState == GAME_STATE_PARTY_DIED) {
                 pAudioPlayer->PauseSounds(-1);
-                memset(&pParty->pHirelings[0], 0, 0x4Cu);
-                memset(&pParty->pHirelings[1], 0, 0x4Cu);
+                pParty->pHirelings[0] = NPCData();
+                pParty->pHirelings[1] = NPCData();
                 for (int i = 0; i < (signed int)pNPCStats->uNumNewNPCs; ++i) {
                     if (pNPCStats->pNewNPCData[i].field_24)
                         pNPCStats->pNewNPCData[i].uFlags &= 0xFFFFFF7Fu;

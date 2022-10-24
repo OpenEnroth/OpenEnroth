@@ -7,7 +7,7 @@
 #include "Engine/VectorTypes.h"
 #include "Utility/Flags.h"
 
-class MemoryInput;
+class Deserializer;
 
 enum class FaceAttribute : uint32_t {
     FACE_IsPortal          = 0x00000001,
@@ -48,8 +48,8 @@ enum class FaceAttribute : uint32_t {
                                           // TODO: MMExt: HasData, are we talking about BLVFaceExtra?
 };
 using enum FaceAttribute;
-DECLARE_FLAGS(FaceAttributes, FaceAttribute)
-DECLARE_OPERATORS_FOR_FLAGS(FaceAttributes)
+MM_DECLARE_FLAGS(FaceAttributes, FaceAttribute)
+MM_DECLARE_OPERATORS_FOR_FLAGS(FaceAttributes)
 
 // door attr
 enum class DoorAttribute : uint32_t {
@@ -58,8 +58,8 @@ enum class DoorAttribute : uint32_t {
     DOOR_NOSOUND           = 0x00000004,
 };
 using enum DoorAttribute;
-DECLARE_FLAGS(DoorAttributes, DoorAttribute)
-DECLARE_OPERATORS_FOR_FLAGS(DoorAttributes)
+MM_DECLARE_FLAGS(DoorAttributes, DoorAttribute)
+MM_DECLARE_OPERATORS_FOR_FLAGS(DoorAttributes)
 
 /*  291 */
 enum class PolygonType : uint8_t {
@@ -220,5 +220,5 @@ class BSPModel {
 
 class BSPModelList : public std::vector<BSPModel> {
  public:
-    void Load(MemoryInput *stream);
+    void Load(Deserializer *stream);
 };

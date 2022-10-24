@@ -14,7 +14,7 @@
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/PlayerEnums.h"
 #include "Engine/Spells/Spells.h"
-#include "Utility/Workaround.h"
+#include "Utility/Workaround/ToUnderlying.h"
 
 
 struct LloydBeacon {
@@ -381,7 +381,7 @@ struct Player {
 
     PlayerConditions conditions;
     uint64_t uExperience;
-    char pName[16];
+    std::string pName;
     PLAYER_SEX uSex;
     PLAYER_CLASS_TYPE classType;
     uint8_t uCurrentFace;

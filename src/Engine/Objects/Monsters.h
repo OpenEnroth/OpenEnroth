@@ -1,9 +1,14 @@
 #pragma once
 
 #include <cstdint>
+#include <array>
+#include <string>
 #include <vector>
 
 #include "Utility/Blob.h"
+#include "Utility/IndexedArray.h"
+
+#include "ActorEnums.h"
 
 /*  334 */
 enum MONSTER_TYPE {
@@ -207,9 +212,9 @@ struct MonsterDesc {
     uint16_t uMovementSpeed;
     int16_t uToHitRadius;
     uint32_t sTintColor;
-    uint16_t pSoundSampleIDs[4];
-    char pMonsterName[32];
-    char pSpriteNames[10][10];
+    std::array<uint16_t, 4> pSoundSampleIDs; // TODO: actually this one should also be an IndexedArray
+    std::string pMonsterName;
+    IndexedArray<std::string, ANIM_Count> pSpriteNames;
 };
 #pragma pack(pop)
 

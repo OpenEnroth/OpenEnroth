@@ -627,9 +627,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
             pMonsterInfoUI_Doll.uCurrentActionLength =
                 8 *
                 pSpriteFrameTable
-                    ->pSpriteSFrames[pActors[uActorID].pSpriteIDs
-                                         [(int16_t)pMonsterInfoUI_Doll
-                                              .uCurrentActionAnimation]]
+                    ->pSpriteSFrames[pActors[uActorID].pSpriteIDs[pMonsterInfoUI_Doll.uCurrentActionAnimation]]
                     .uAnimLength;
         }
     }
@@ -750,9 +748,9 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     } else {
         pText = "";
         pTextHeight = pFontSmallnum->GetHeight() + 193;
-        for (auto &&pair : pActors[uActorID].pActorBuffs.map_view()) {
-            if (pair.second.Active()) {
-                switch (pair.first) {
+        for (ACTOR_BUFF_INDEX i : pActors[uActorID].pActorBuffs.indices()) {
+            if (pActors[uActorID].pActorBuffs[i].Active()) {
+                switch (i) {
                     case ACTOR_BUFF_CHARM:
                         pTextColorID = 60;
                         pText = localization->GetString(LSTR_CHARMED);
@@ -1442,7 +1440,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                 static std::string hint_reference;
                 hint_reference = localization->FormatString(
                     LSTR_FMT_S_IS_IN_NO_CODITION_TO_S,
-                    pPlayers[uActiveCharacter]->pName,
+                    pPlayers[uActiveCharacter]->pName.c_str(),
                     localization->GetString(LSTR_IDENTIFY_ITEMS)
                 );
 
@@ -1677,7 +1675,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                             break;
                         case UIMSG_PlayerCreation_SelectAttribute:  // Character
                                                                     // info
-                            pStr = pParty->pPlayers[pButton->msg_param].pName;
+                            pStr = pParty->pPlayers[pButton->msg_param].pName.c_str();
                             popup_window
                                 .sHint = localization->GetClassDescription(
                                 pParty->pPlayers[pButton->msg_param].classType);
@@ -1866,7 +1864,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         static std::string hint_reference;
         hint_reference = localization->FormatString(
             LSTR_FMT_S_IS_IN_NO_CODITION_TO_S,
-            pPlayers[uActiveCharacter]->pName,
+            pPlayers[uActiveCharacter]->pName.c_str(),
             localization->GetString(LSTR_IDENTIFY_ITEMS)
         );
 

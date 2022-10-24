@@ -29,7 +29,7 @@
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/Serialization/LegacyImages.h"
-#include "Engine/Serialization/MemoryInput.h"
+#include "Engine/Serialization/Deserializer.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/stru123.h"
 #include "Engine/Time.h"
@@ -495,7 +495,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     if (!Alloc())
         return false;
 
-    MemoryInput stream(pGames_LOD->LoadCompressed(blv_filename));
+    BlobDeserializer stream(pGames_LOD->LoadCompressed(blv_filename));
 
     bLoaded = true;
 
@@ -703,7 +703,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
         *(int *)pDest = 1;
 
         stream.Reset(pGames_LOD->LoadCompressed(dlv_filename));
-        stream.Skip(sizeof(DDM_DLV_Header));
+        stream.SkipBytes(sizeof(DDM_DLV_Header));
     } else {
         *(int*)pDest = 0;
     }
