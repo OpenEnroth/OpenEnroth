@@ -10,9 +10,16 @@
 
 namespace detail {
 
+using std::to_underlying;
+
+template<class T>
+T to_underlying(T value) requires std::is_integral_v<T> {
+    return value;
+}
+
 class IndexedArrayKeysSentinel {};
 
-template<auto Size>
+template<auto Size, auto Zero>
 class IndexedArrayKeysIterator {
  public:
     using value_type = decltype(Size);
@@ -33,7 +40,7 @@ class IndexedArrayKeysIterator {
     }
 
     constexpr IndexedArrayKeysIterator &operator++() {
-        pos_ = static_cast<value_type>(std::to_underlying(pos_) + 1);
+        pos_ = static_cast<value_type>(detail::to_underlying(pos_) + 1);
         return *this;
     }
 
@@ -44,21 +51,21 @@ class IndexedArrayKeysIterator {
     }
 
  private:
-    value_type pos_ = value_type();
+    value_type pos_ = Zero;
 };
 
-template<auto Size>
+template<auto Size, auto Zero>
 struct IndexedArrayKeysRange {
-    IndexedArrayKeysIterator<Size> begin;
+    IndexedArrayKeysIterator<Size, Zero> begin;
 };
 
-template<auto Size>
-constexpr IndexedArrayKeysIterator<Size> begin(const IndexedArrayKeysRange<Size> &range) {
+template<auto Size, auto Zero>
+constexpr IndexedArrayKeysIterator<Size, Zero> begin(const IndexedArrayKeysRange<Size, Zero> &range) {
     return range.begin;
 }
 
-template<auto Size>
-constexpr IndexedArrayKeysSentinel end(const IndexedArrayKeysRange<Size> &) {
+template<auto Size, auto Zero>
+constexpr IndexedArrayKeysSentinel end(const IndexedArrayKeysRange<Size, Zero> &) {
     return {};
 }
 
@@ -66,8 +73,8 @@ constexpr IndexedArrayKeysSentinel end(const IndexedArrayKeysRange<Size> &) {
 
 
 /**
- * An `std::array`-like class that basically does the same thing but is indexed with an enum (type of the enum is
- * inferred from the `Size` parameter), and supports an `std::map`-like initialization, so that the user doesn't have
+ * An `std::array`-like class that basically does the same thing but can be indexed with an enum (type is inferred
+ * from the `Size` parameter), and supports an `std::map`-like initialization, so that the user doesn't have
  * to manually double check that the order of the values in the initializer matches the order of the values of the
  * enum that's used for indexing.
  *
@@ -106,12 +113,19 @@ constexpr IndexedArrayKeysSentinel end(const IndexedArrayKeysRange<Size> &) {
  * @endcode
  *
  * @tparam T                            Array element type.
- * @tparam Size                         Array size. Value must be of enum type.
+ * @tparam Size                         Array size. Value must be of enum type or integral type.
+ * @tparam Zero                         Index of the first element. Basically, valid indices are in range [`Zero`, `Size`).
+ *                                      If this parameter is provided, then the size of the indexed array might not
+ *                                      equal `Size`.
  */
-template<class T, auto Size>
-class IndexedArray: public std::array<T, static_cast<size_t>(Size)> {
-    static_assert(std::is_enum_v<decltype(Size)>, "Size must be an enum");
-    using base_type = std::array<T, static_cast<size_t>(Size)>;
+template<class T,
+         auto Size,
+         auto Zero = static_cast<decltype(Size)>(0),
+         size_t StorageSize = static_cast<size_t>(Size) - static_cast<size_t>(Zero)>
+class IndexedArray: public std::array<T, StorageSize> {
+    static_assert(std::is_enum_v<decltype(Size)> || std::is_integral_v<decltype(Size)>, "Size must be an enum or an integral type");
+    static_assert(std::is_same_v<decltype(Size), decltype(Zero)>, "Size and Zero must be of the same type");
+    using base_type = std::array<T, StorageSize>;
 
  public:
     using key_type = decltype(Size);
@@ -183,7 +197,7 @@ class IndexedArray: public std::array<T, static_cast<size_t>(Size)> {
      *
      * @return                          View over the valid indices for the elements of this indexed array.
      */
-    constexpr detail::IndexedArrayKeysRange<Size> indices() const {
+    constexpr detail::IndexedArrayKeysRange<Size, Zero> indices() const {
         return {};
     }
 
@@ -207,19 +221,19 @@ class IndexedArray: public std::array<T, static_cast<size_t>(Size)> {
     using base_type::swap;
 
     constexpr reference at(key_type n) {
-        return base_type::at(std::to_underlying(n));
+        return base_type::at(detail::to_underlying(n) - detail::to_underlying(Zero));
     }
 
     constexpr const_reference at(key_type n) const {
-        return base_type::at(std::to_underlying(n));
+        return base_type::at(detail::to_underlying(n) - detail::to_underlying(Zero));
     }
 
     constexpr reference operator[](key_type n) noexcept {
-        return base_type::operator[](std::to_underlying(n));
+        return base_type::operator[](detail::to_underlying(n) - detail::to_underlying(Zero));
     }
 
     constexpr const_reference operator[](key_type n) const noexcept {
-        return base_type::operator[](std::to_underlying(n));
+        return base_type::operator[](detail::to_underlying(n) - detail::to_underlying(Zero));
     }
 
  private:
