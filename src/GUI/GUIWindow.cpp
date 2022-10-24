@@ -1426,7 +1426,6 @@ unsigned int GetSkillColor(unsigned int uPlayerClass,
 
 void ClickNPCTopic(DIALOGUE_TYPE topic) {
     int pEventNumber;  // ecx@8
-    Player *v4;        // esi@20
     char *v12;         // eax@53
     char *v13;         // eax@56
     char *v14;         // eax@57
@@ -1545,11 +1544,9 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
                 if (topic == DIALOGUE_82_join_guild && guild_membership_approved) {
                     // join guild
                     pParty->TakeGold(gold_transaction_amount);
-                    v4 = pParty->pPlayers.data();
-                    do {
-                        v4->SetVariable(VAR_Award, dword_F8B1AC_award_bit_number);
-                        ++v4;
-                    } while ((int64_t)v4 < (int64_t)pParty->pHirelings.data());
+                    for (Player &player : pParty->pPlayers)
+                        player.SetVariable(VAR_Award, dword_F8B1AC_award_bit_number);
+
                     switch (_dword_F8B1D8_last_npc_topic_menu) {
                     case DIALOGUE_SCRIPTED_LINE_1:
                         pEventNumber = pCurrentNPCInfo->dialogue_1_evt_id;

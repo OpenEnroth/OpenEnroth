@@ -433,7 +433,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
     pHireling1Name[0] = 0;
     pHireling2Name[0] = 0;
     this->hirelingScrollPosition = 0;
-    memset(&pHirelings, 0, sizeof(pHirelings));
+    pHirelings.fill(NPCData());
 
     this->pPlayers[0].pName = localization->GetString(LSTR_PC_NAME_ZOLTAN);
     this->pPlayers[0].uPrevFace = 17;

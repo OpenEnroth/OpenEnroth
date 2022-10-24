@@ -490,8 +490,6 @@ void Game::EventLoop() {
                //    unsigned int v128; // [sp-1Ch] [bp-618h]@711
     // GUIButton *pButton2;  // [sp-4h] [bp-600h]@59
                     //    KeyToggleType pKeyToggleType; // [sp+0h] [bp-5FCh]@287
-    Player *pPlayer7;             // [sp+14h] [bp-5E8h]@373
-    Player *pPlayer8;             // [sp+14h] [bp-5E8h]@377
     Player *pPlayer9;             // [sp+14h] [bp-5E8h]@455
     // int thisg;                    // [sp+14h] [bp-5E8h]@467
     // int thish;                    // [sp+14h] [bp-5E8h]@528
@@ -1090,21 +1088,14 @@ void Game::EventLoop() {
                         if (pParty->GetFood() > 0) {
                             pParty->RestAndHeal();
                             if (pParty->GetFood() < GetTravelTime()) {
-                                pPlayer7 = pParty->pPlayers.data();
-                                do {
-                                    pPlayer7->SetCondition(Condition_Weak, 0);
-                                    ++pPlayer7;
-                                } while ((int64_t)pPlayer7 < (int64_t)pParty->pHirelings.data());
+                                for(Player &player : pParty->pPlayers)
+                                    player.SetCondition(Condition_Weak, 0);
                                 ++pParty->days_played_without_rest;
                             }
                             pParty->TakeFood(GetTravelTime());
                         } else {
-                            pPlayer8 = pParty->pPlayers.data();
-                            do {
-                                pPlayer8->SetCondition(Condition_Weak, 0);
-                                ++pPlayer8;
-                            } while ((int64_t)pPlayer8 <
-                                     (int64_t)pParty->pHirelings.data());
+                            for (Player &player : pParty->pPlayers)
+                                player.SetCondition(Condition_Weak, 0);
                             ++pParty->days_played_without_rest;
                         }
                         pPaletteManager->ResetNonLocked();
