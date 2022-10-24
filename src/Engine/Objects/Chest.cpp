@@ -261,7 +261,7 @@ bool Chest::CanPlaceItemAt(int test_cell_position, int item_id, int uChestID) {
     int chest_cell_heght = pChestHeightsByType[vChests[uChestID].uChestBitmapID];
     int chest_cell_width = pChestWidthsByType[vChests[uChestID].uChestBitmapID];
 
-    auto img = assets->GetImage_ColorKey(pItemsTable->pItems[item_id].pIconName, render->teal_mask_16);
+    auto img = assets->GetImage_ColorKey(pItemTable->pItems[item_id].pIconName, render->teal_mask_16);
     unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
 
@@ -355,7 +355,7 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
 
 void Chest::PlaceItemAt(unsigned int put_cell_pos, unsigned int item_at_cell, int uChestID) {  // only used for setup?
     int uItemID = vChests[uChestID].igChestItems[item_at_cell].uItemID;
-    pItemsTable->SetSpecialBonus(&vChests[uChestID].igChestItems[item_at_cell]);
+    pItemTable->SetSpecialBonus(&vChests[uChestID].igChestItems[item_at_cell]);
     if (uItemID >= 135 && uItemID <= 159 &&
         !vChests[uChestID].igChestItems[item_at_cell].uNumCharges) {
         int v6 = rand() % 21 + 10;
@@ -363,7 +363,7 @@ void Chest::PlaceItemAt(unsigned int put_cell_pos, unsigned int item_at_cell, in
         vChests[uChestID].igChestItems[item_at_cell].uMaxCharges = v6;
     }
 
-    auto img = assets->GetImage_Alpha(pItemsTable->pItems[uItemID].pIconName);
+    auto img = assets->GetImage_Alpha(pItemTable->pItems[uItemID].pIconName);
 
     int v9 = img->GetWidth();
     if (v9 < 14) v9 = 14;
@@ -588,7 +588,7 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
                 grabcount++;
                 GameUI_SetStatusBar(
                     LSTR_FMT_YOU_FOUND_ITEM,
-                    pItemsTable->pItems[chestitem.uItemID].pUnidentifiedName
+                    pItemTable->pItems[chestitem.uItemID].pUnidentifiedName
                 );
             } else {  // no room so set as holding item
                 pParty->SetHoldingItem(&chestitem);
@@ -662,7 +662,7 @@ void GenerateItemsInChest() {
                             currItem->SetIdentified();
                             currItem->special_enchantment = (ITEM_ENCHANTMENT)goldAmount;
                         } else {
-                            pItemsTable->GenerateItem(resultTreasureLevel, 0, currItem);
+                            pItemTable->GenerateItem(resultTreasureLevel, 0, currItem);
                         }
 
                         for (int m = 0; m < 140; m++) {

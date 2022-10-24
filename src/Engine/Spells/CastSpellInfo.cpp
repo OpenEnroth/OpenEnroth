@@ -741,7 +741,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 ItemGen *item = &pParty->pPlayers[pCastSpell->uPlayerID_2].pInventoryItemList[pCastSpell->spell_target_pid];
                 item->UpdateTempBonus(pParty->GetPlayingTime());
                 if (item->uItemID == ITEM_BLASTER || item->uItemID == ITEM_LASER_RIFLE ||
-                    item->IsBroken() || pItemsTable->IsMaterialNonCommon(item) || item->special_enchantment != ITEM_ENCHANTMENT_NULL || item->uEnchantmentType != 0 ||
+                    item->IsBroken() || pItemTable->IsMaterialNonCommon(item) || item->special_enchantment != ITEM_ENCHANTMENT_NULL || item->uEnchantmentType != 0 ||
                     item->GetItemEquipType() != EQUIP_SINGLE_HANDED && item->GetItemEquipType() != EQUIP_TWO_HANDED && item->GetItemEquipType() != EQUIP_BOW) {
                     _50C9D0_AfterEnchClickEventId = 113;
                     _50C9D4_AfterEnchClickEventSecondParam = 0;
@@ -1673,7 +1673,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 int rnd = rand() % 100;
                 pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID_2];
                 ItemGen *spell_item_to_enchant = &pPlayer->pInventoryItemList[pCastSpell->spell_target_pid];
-                ItemDesc *_v725 = &pItemsTable->pItems[spell_item_to_enchant->uItemID];
+                ItemDesc *_v725 = &pItemTable->pItems[spell_item_to_enchant->uItemID];
                 char this_equip_type = _v725->uEquipType;
 
                 // refs
@@ -1709,11 +1709,11 @@ void CastSpellInfoHelpers::CastSpell() {
                                 int ench_array[100] = { 0 };
 
                                 // finds how many possible enchaments and adds up to item apply values
-                                // if (pItemsTable->pEnchantments_count > 0) {
+                                // if (pItemTable->pEnchantments_count > 0) {
                                     for (int norm_ench_loop = 0; norm_ench_loop < 24; ++norm_ench_loop) {
-                                        char* this_bon_state = pItemsTable->pEnchantments[norm_ench_loop].pBonusStat;
+                                        char* this_bon_state = pItemTable->pEnchantments[norm_ench_loop].pBonusStat;
                                         if (this_bon_state != NULL && (this_bon_state[0] != '\0')) {
-                                            int this_to_apply = pItemsTable->pEnchantments[norm_ench_loop].to_item[this_equip_type - 3];
+                                            int this_to_apply = pItemTable->pEnchantments[norm_ench_loop].to_item[this_equip_type - 3];
                                             to_item_apply_sum += this_to_apply;
                                             if (this_to_apply) {
                                                 ench_array[ench_found] = norm_ench_loop;
@@ -1731,7 +1731,7 @@ void CastSpellInfoHelpers::CastSpell() {
 
                                 // step through until we hit that ench
                                 for (step = 0; step < ench_found; step++) {
-                                    current_item_apply_sum += pItemsTable->pEnchantments[ench_array[step]].to_item[this_equip_type - 3];
+                                    current_item_apply_sum += pItemTable->pEnchantments[ench_array[step]].to_item[this_equip_type - 3];
                                     if (current_item_apply_sum >= target_item_apply_rand) break;
                                 }
 
@@ -1755,13 +1755,13 @@ void CastSpellInfoHelpers::CastSpell() {
                                 int ench_array[100] = { 0 };
 
                                 // finds how many possible enchaments and adds up to item apply values
-                                if (pItemsTable->pSpecialEnchantments_count > 0) {
-                                    for (int spec_ench_loop = 0; spec_ench_loop < pItemsTable->pSpecialEnchantments_count; ++spec_ench_loop) {
-                                        char *this_bon_state = pItemsTable->pSpecialEnchantments[spec_ench_loop].pBonusStatement;
+                                if (pItemTable->pSpecialEnchantments_count > 0) {
+                                    for (int spec_ench_loop = 0; spec_ench_loop < pItemTable->pSpecialEnchantments_count; ++spec_ench_loop) {
+                                        char *this_bon_state = pItemTable->pSpecialEnchantments[spec_ench_loop].pBonusStatement;
                                         if (this_bon_state != NULL && (this_bon_state[0] != '\0')) {
-                                            if (pItemsTable->pSpecialEnchantments[spec_ench_loop].iTreasureLevel == 3) continue;
-                                            if (skill_level == 3 && (pItemsTable->pSpecialEnchantments[spec_ench_loop].iTreasureLevel != 0)) continue;
-                                            int this_to_apply = pItemsTable->pSpecialEnchantments[spec_ench_loop].to_item_apply[this_equip_type];
+                                            if (pItemTable->pSpecialEnchantments[spec_ench_loop].iTreasureLevel == 3) continue;
+                                            if (skill_level == 3 && (pItemTable->pSpecialEnchantments[spec_ench_loop].iTreasureLevel != 0)) continue;
+                                            int this_to_apply = pItemTable->pSpecialEnchantments[spec_ench_loop].to_item_apply[this_equip_type];
                                             to_item_apply_sum += this_to_apply;
                                             if (this_to_apply) {
                                                 ench_array[ench_found] = spec_ench_loop;
@@ -1779,7 +1779,7 @@ void CastSpellInfoHelpers::CastSpell() {
 
                                 // step through until we hit that ench
                                 for (step = 0; step < ench_found; step++) {
-                                    current_item_apply_sum += pItemsTable->pSpecialEnchantments[ench_array[step]].to_item_apply[this_equip_type];
+                                    current_item_apply_sum += pItemTable->pSpecialEnchantments[ench_array[step]].to_item_apply[this_equip_type];
                                     if (current_item_apply_sum >= target_item_apply_rand) break;
                                 }
 
@@ -2376,7 +2376,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         pActors[monster_id].SetRandomGoldIfTheresNoItem();
                     int gold_num = 0;
                     if (pActors[monster_id].ActorHasItems[3].uItemID != 0) {
-                        if (pItemsTable->pItems[pActors[monster_id].ActorHasItems[3].uItemID].uEquipType == EQUIP_GOLD)
+                        if (pItemTable->pItems[pActors[monster_id].ActorHasItems[3].uItemID].uEquipType == EQUIP_GOLD)
                             gold_num = pActors[monster_id].ActorHasItems[3].special_enchantment;
                     }
                     ItemGen item;
@@ -2387,7 +2387,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         for (uint i = 0; i < 4; ++i) {
                             if (pActors[monster_id].ActorHasItems[i].uItemID >
                                     0 &&
-                                pItemsTable
+                                    pItemTable
                                         ->pItems[pActors[monster_id]
                                                      .ActorHasItems[i]
                                                      .uItemID]
@@ -2676,7 +2676,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 int obj_id = PID_ID(spell_targeted_at);
                 if (PID_TYPE(spell_targeted_at) == OBJECT_Item) {
-                    if (pItemsTable
+                    if (pItemTable
                             ->pItems[pSpriteObjects[obj_id]
                                          .containing_item.uItemID]
                             .uEquipType == EQUIP_GOLD) {
@@ -2688,8 +2688,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     } else {
                         GameUI_SetStatusBar(
                             LSTR_FMT_YOU_FOUND_ITEM,
-                            pItemsTable->pItems[pSpriteObjects[obj_id]
-                                .containing_item.uItemID].pUnidentifiedName
+                            pItemTable->pItems[pSpriteObjects[obj_id].containing_item.uItemID].pUnidentifiedName
                         );
                         if (!pParty->AddItemToParty(
                                 &pSpriteObjects[obj_id].containing_item))

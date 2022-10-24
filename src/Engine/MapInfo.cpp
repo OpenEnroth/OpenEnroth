@@ -277,14 +277,14 @@ int MapInfo::SpawnRandomTreasure(SpawnPointMM7 *a2) {
             a1a.containing_item.uItemID = ITEM_GOLD_LARGE;
             v34 = rand() % 3001 + 2000;
         }
-        a1a.uType = (SPRITE_OBJECT_TYPE)pItemsTable->pItems[a1a.containing_item.uItemID].uSpriteID;
+        a1a.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[a1a.containing_item.uItemID].uSpriteID;
         a1a.containing_item.SetIdentified();
         a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
         a1a.containing_item.special_enchantment = (ITEM_ENCHANTMENT)v34;
     } else {
         result = a1a.containing_item.GenerateArtifact();
         if (!result) return result;
-        a1a.uType = (SPRITE_OBJECT_TYPE)pItemsTable->pItems[a1a.containing_item.uItemID].uSpriteID;
+        a1a.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[a1a.containing_item.uItemID].uSpriteID;
         a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
         a1a.containing_item.Reset();  // ?? this needs checking
     }

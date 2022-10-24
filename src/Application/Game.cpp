@@ -2356,7 +2356,7 @@ void Game::EventLoop() {
                     pItemID = rand() % 500;
                     for (uint i = 0; i < 500; ++i) {
                         if (pItemID + i > 499) pItemID = 0;
-                        if (pItemsTable->pItems[pItemID + i].uItemID_Rep_St > 6) {
+                        if (pItemTable->pItems[pItemID + i].uItemID_Rep_St > 6) {
                             pPlayers[uActiveCharacter]->AddItem(-1, pItemID + i);
                             break;
                         }
@@ -2369,7 +2369,7 @@ void Game::EventLoop() {
                     pItemID = rand() % 500;
                     for (uint i = 0; i < 500; ++i) {
                         if (pItemID + i > 499) pItemID = 0;
-                        // if (pItemsTable->pItems[pItemID + i].uItemID_Rep_St ==
+                        // if (pItemTable->pItems[pItemID + i].uItemID_Rep_St ==
                          //   (item_id - 40015 + 1)) {
                             pPlayers[uActiveCharacter]->AddItem(-1, pItemID + i);
                             break;

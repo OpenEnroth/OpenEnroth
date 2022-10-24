@@ -753,7 +753,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     for (uint i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].containing_item.uItemID && !(pSpriteObjects[i].uAttributes & SPRITE_MISSILE)) {
-            pSpriteObjects[i].uType = (SPRITE_OBJECT_TYPE)pItemsTable->pItems[pSpriteObjects[i].containing_item.uItemID].uSpriteID;
+            pSpriteObjects[i].uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[pSpriteObjects[i].containing_item.uItemID].uSpriteID;
             pSpriteObjects[i].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[i].uType);
         }
     }
@@ -1540,10 +1540,10 @@ void PrepareToLoadBLV(bool bLoading) {
         if (pSpriteObjects[i].uObjectDescID) {
             if (pSpriteObjects[i].containing_item.uItemID) {
                 if (pSpriteObjects[i].containing_item.uItemID != 220 &&
-                    pItemsTable->pItems[pSpriteObjects[i].containing_item.uItemID].uEquipType == EQUIP_POTION &&
+                    pItemTable->pItems[pSpriteObjects[i].containing_item.uItemID].uEquipType == EQUIP_POTION &&
                     !pSpriteObjects[i].containing_item.uEnchantmentType)
                     pSpriteObjects[i].containing_item.uEnchantmentType = rand() % 15 + 5;
-                pItemsTable->SetSpecialBonus(&pSpriteObjects[i].containing_item);
+                pItemTable->SetSpecialBonus(&pSpriteObjects[i].containing_item);
             }
         }
     }
@@ -2979,8 +2979,8 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
 //----- (00450521) --------------------------------------------------------
 int DropTreasureAt(int trs_level, int trs_type, int x, int y, int z, uint16_t facing) {
     SpriteObject a1;
-    pItemsTable->GenerateItem(trs_level, trs_type, &a1.containing_item);
-    a1.uType = (SPRITE_OBJECT_TYPE)pItemsTable->pItems[a1.containing_item.uItemID].uSpriteID;
+    pItemTable->GenerateItem(trs_level, trs_type, &a1.containing_item);
+    a1.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[a1.containing_item.uItemID].uSpriteID;
     a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.uType);
     a1.vPosition.x = x;
     a1.vPosition.y = y;

@@ -12,7 +12,7 @@ struct BonusRange {
 
 /*  176 */
 #pragma pack(push, 1)
-struct ItemsTable {
+struct ItemTable {
     void Initialize();
     void LoadPotions();
     void LoadPotionNotes();
@@ -53,4 +53,4 @@ struct ItemsTable {
 };
 #pragma pack(pop)
 
-extern struct ItemsTable* pItemsTable;
+extern struct ItemTable* pItemTable;

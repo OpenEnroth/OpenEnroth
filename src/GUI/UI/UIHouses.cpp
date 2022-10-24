@@ -3474,7 +3474,7 @@ void GenerateSpecialShopItems() {
                     item_class = 44;  // potion
                 }
             }
-            pItemsTable->GenerateItem(
+            pItemTable->GenerateItem(
                 treasure_lvl, item_class,
                 &pParty->SpecialItemsInShops[shop_index][item_count]);
             pParty->SpecialItemsInShops[shop_index][item_count]
@@ -3523,7 +3523,7 @@ void GenerateStandartShopItems() {
                     item_class = 45;  // reagent
                 }
             }
-            pItemsTable->GenerateItem(
+            pItemTable->GenerateItem(
                 treasure_lvl, item_class,
                 &pParty->StandartItemsInShops[shop_index][item_count]);
             pParty->StandartItemsInShops[shop_index][item_count]

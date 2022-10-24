@@ -1403,10 +1403,10 @@ void OutdoorLocation::ArrangeSpriteObjects() {
                 }
                 if (pSpriteObjects[i].containing_item.uItemID) {
                     if (pSpriteObjects[i].containing_item.uItemID != 220 &&
-                        pItemsTable->pItems[pSpriteObjects[i].containing_item.uItemID].uEquipType == EQUIP_POTION &&
+                        pItemTable->pItems[pSpriteObjects[i].containing_item.uItemID].uEquipType == EQUIP_POTION &&
                         !pSpriteObjects[i].containing_item.uEnchantmentType)
                         pSpriteObjects[i].containing_item.uEnchantmentType = rand() % 15 + 5;
-                    pItemsTable->SetSpecialBonus(&pSpriteObjects[i].containing_item);
+                    pItemTable->SetSpecialBonus(&pSpriteObjects[i].containing_item);
                 }
             }
         }

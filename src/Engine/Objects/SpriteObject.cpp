@@ -924,9 +924,9 @@ bool SpriteObject::Drop_Item_At(SPRITE_OBJECT_TYPE sprite, int x,
     pSpellObject.spell_caster_pid = 0;
     pSpellObject.spell_target_pid = 0;
     if (!(pSpellObject.uAttributes & SPRITE_IGNORE_RANGE)) {
-        if (pItemsTable->uAllItemsCount) {
-            for (uint i = 1; i < pItemsTable->uAllItemsCount; ++i) {
-                if (pItemsTable->pItems[i].uSpriteID == sprite)
+        if (pItemTable->uAllItemsCount) {
+            for (uint i = 1; i < pItemTable->uAllItemsCount; ++i) {
+                if (pItemTable->pItems[i].uSpriteID == sprite)
                     pSpellObject.containing_item.uItemID = i;
             }
         }

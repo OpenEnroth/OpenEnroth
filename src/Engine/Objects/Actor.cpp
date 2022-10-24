@@ -196,9 +196,9 @@ void Actor::SetRandomGoldIfTheresNoItem() {
     }
     if (rand() % 100 < this->pMonsterInfo.uTreasureDropChance) {
         if (this->pMonsterInfo.uTreasureLevel)
-            pItemsTable->GenerateItem(this->pMonsterInfo.uTreasureLevel,
-                                      this->pMonsterInfo.uTreasureType,
-                                      &this->ActorHasItems[2]);
+            pItemTable->GenerateItem(this->pMonsterInfo.uTreasureLevel,
+                                     this->pMonsterInfo.uTreasureType,
+                                     &this->ActorHasItems[2]);
     }
     this->uAttributes |= ACTOR_HAS_ITEM;
 }
@@ -1963,7 +1963,7 @@ void Actor::Die(unsigned int uActorID) {
 
     if (rand() % 100 < 20 && drop.uItemID != 0) {
         SpriteObject::Drop_Item_At(
-            (SPRITE_OBJECT_TYPE)pItemsTable->pItems[drop.uItemID].uSpriteID,
+            (SPRITE_OBJECT_TYPE)pItemTable->pItems[drop.uItemID].uSpriteID,
             actor->vPosition.x, actor->vPosition.y, actor->vPosition.z + 16,
             rand() % 200 + 200, 1, 1, 0, &drop);
     }
@@ -4001,17 +4001,17 @@ void Actor::LootActor() {
 
         StatusBarItemFound(
             v14,
-            pItemsTable->pItems[Dst.uItemID].pUnidentifiedName
+            pItemTable->pItems[Dst.uItemID].pUnidentifiedName
         );
 
         if (Dst.GetItemEquipType() == 12) {
             Dst.uNumCharges = rand() % 6 + Dst.GetDamageMod() + 1;
             Dst.uMaxCharges = Dst.uNumCharges;
         }
-        if (pItemsTable->pItems[Dst.uItemID].uEquipType == 14 &&
+        if (pItemTable->pItems[Dst.uItemID].uEquipType == 14 &&
             Dst.uItemID != 220)
             Dst.uEnchantmentType = 2 * rand() % 4 + 2;
-        pItemsTable->SetSpecialBonus(&Dst);
+        pItemTable->SetSpecialBonus(&Dst);
         if (!pParty->AddItemToParty(&Dst)) pParty->SetHoldingItem(&Dst);
         this->uCarriedItemID = 0;
         if (this->ActorHasItems[0].uItemID) {
@@ -4038,7 +4038,7 @@ void Actor::LootActor() {
 
             StatusBarItemFound(
                 v14,
-                pItemsTable->pItems[Dst.uItemID].pUnidentifiedName
+                pItemTable->pItems[Dst.uItemID].pUnidentifiedName
             );
 
             if (!pParty->AddItemToParty(&Dst)) pParty->SetHoldingItem(&Dst);
@@ -4047,12 +4047,12 @@ void Actor::LootActor() {
     } else {
         if (rand() % 100 < this->pMonsterInfo.uTreasureDropChance &&
             (v7 = this->pMonsterInfo.uTreasureLevel) != 0) {
-            pItemsTable->GenerateItem(v7, this->pMonsterInfo.uTreasureType,
-                                      &Dst);
+            pItemTable->GenerateItem(v7, this->pMonsterInfo.uTreasureType,
+                                     &Dst);
 
             StatusBarItemFound(
                 v14,
-                pItemsTable->pItems[Dst.uItemID].pUnidentifiedName
+                pItemTable->pItems[Dst.uItemID].pUnidentifiedName
             );
 
             if (!pParty->AddItemToParty(&Dst)) pParty->SetHoldingItem(&Dst);

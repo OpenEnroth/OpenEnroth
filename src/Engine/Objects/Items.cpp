@@ -33,7 +33,7 @@ std::array<std::array<char, 14>, 7> byte_4E8168 = {{  // byte_4E8178 -treasure l
 
 ItemGen* ptr_50C9A4_ItemToEnchant;
 
-struct ItemsTable* pItemsTable;  // 005D29E0
+struct ItemTable* pItemTable;  // 005D29E0
 
 extern std::vector<char*> Tokenize(char* input, const char separator);
 
@@ -154,7 +154,7 @@ void ItemGen::UpdateTempBonus(GameTime time) {
 }
 
 //----- (0045814E) --------------------------------------------------------
-void ItemsTable::Release() {
+void ItemTable::Release() {
     pMonstersTXT_Raw.clear();
     pMonsterPlacementTXT_Raw.clear();
     pSpcItemsTXT_Raw.clear();
@@ -170,7 +170,7 @@ void ItemsTable::Release() {
 }
 
 //----- (00456D84) --------------------------------------------------------
-void ItemsTable::Initialize() {
+void ItemTable::Initialize() {
     std::map<std::string, ITEM_EQUIP_TYPE, ILess> equipStatMap;
     equipStatMap["weapon"] = EQUIP_SINGLE_HANDED;
     equipStatMap["weapon2"] = EQUIP_TWO_HANDED;
@@ -458,7 +458,7 @@ void ItemsTable::Initialize() {
 }
 
 //----- (00456D17) --------------------------------------------------------
-void ItemsTable::SetSpecialBonus(ItemGen* pItem) {
+void ItemTable::SetSpecialBonus(ItemGen* pItem) {
     if (pItems[pItem->uItemID].uMaterial == MATERIAL_SPECIAL) {
         pItem->uEnchantmentType = pItems[pItem->uItemID]._bonus_type;
         pItem->special_enchantment =
@@ -468,19 +468,19 @@ void ItemsTable::SetSpecialBonus(ItemGen* pItem) {
 }
 
 //----- (00456D43) --------------------------------------------------------
-bool ItemsTable::IsMaterialSpecial(ItemGen* pItem) {
+bool ItemTable::IsMaterialSpecial(ItemGen* pItem) {
     return this->pItems[pItem->uItemID].uMaterial == MATERIAL_SPECIAL;
 }
 
 //----- (00456D5E) --------------------------------------------------------
-bool ItemsTable::IsMaterialNonCommon(ItemGen* pItem) {
+bool ItemTable::IsMaterialNonCommon(ItemGen* pItem) {
     return pItems[pItem->uItemID].uMaterial == MATERIAL_SPECIAL ||
            pItems[pItem->uItemID].uMaterial == MATERIAL_RELIC ||
            pItems[pItem->uItemID].uMaterial == MATERIAL_ARTIFACT;
 }
 
 //----- (00453B3C) --------------------------------------------------------
-void ItemsTable::LoadPotions() {
+void ItemTable::LoadPotions() {
     //    char Text[90];
     char* test_string;
     unsigned int uRow;
@@ -527,7 +527,7 @@ void ItemsTable::LoadPotions() {
 }
 
 //----- (00453CE5) --------------------------------------------------------
-void ItemsTable::LoadPotionNotes() {
+void ItemTable::LoadPotionNotes() {
     //  char Text[90];
     char* test_string;
     unsigned int uRow;
@@ -578,15 +578,15 @@ unsigned int ItemGen::GetValue() {
     unsigned int uBaseValue;  // edi@1
     unsigned int mod, bonus;
 
-    uBaseValue = pItemsTable->pItems[this->uItemID].uValue;
+    uBaseValue = pItemTable->pItems[this->uItemID].uValue;
     if (this->uAttributes & ITEM_TEMP_BONUS ||
-        pItemsTable->IsMaterialNonCommon(this))
+        pItemTable->IsMaterialNonCommon(this))
         return uBaseValue;
     if (uEnchantmentType) return uBaseValue + 100 * m_enchantmentStrength;
 
     if (special_enchantment) {
-        mod = (pItemsTable->pSpecialEnchantments[special_enchantment-1].iTreasureLevel & 4);
-        bonus = pItemsTable->pSpecialEnchantments[special_enchantment-1].iValue;
+        mod = (pItemTable->pSpecialEnchantments[special_enchantment - 1].iTreasureLevel & 4);
+        bonus = pItemTable->pSpecialEnchantments[special_enchantment - 1].iValue;
         if (!mod)
             return uBaseValue + bonus;
         else
@@ -600,7 +600,7 @@ std::string ItemGen::GetDisplayName() {
     if (IsIdentified()) {
         return GetIdentifiedName();
     } else {
-        return pItemsTable->pItems[uItemID].pUnidentifiedName;
+        return pItemTable->pItems[uItemID].pUnidentifiedName;
     }
 }
 
@@ -611,7 +611,7 @@ std::string ItemGen::GetIdentifiedName() {
     equip_type = GetItemEquipType();
     if ((equip_type == EQUIP_REAGENT) || (equip_type == EQUIP_POTION) ||
         (equip_type == EQUIP_GOLD)) {
-        return pItemsTable->pItems[uItemID].pName;
+        return pItemTable->pItems[uItemID].pName;
     }
 
     if (uItemID == ITEM_LICH_JAR_FULL) {  // Lich Jar
@@ -628,12 +628,12 @@ std::string ItemGen::GetIdentifiedName() {
         }
     }
 
-    if (!pItemsTable->IsMaterialNonCommon(this)) {
+    if (!pItemTable->IsMaterialNonCommon(this)) {
         if (uEnchantmentType) {
-            return std::string(pItemsTable->pItems[uItemID].pName) + " " +
-                   pItemsTable->pEnchantments[uEnchantmentType - 1].pOfName;
+            return std::string(pItemTable->pItems[uItemID].pName) + " " +
+                   pItemTable->pEnchantments[uEnchantmentType - 1].pOfName;
         } else if (!special_enchantment) {
-            return pItemsTable->pItems[uItemID].pName;
+            return pItemTable->pItems[uItemID].pName;
         } else {
             if (special_enchantment == ITEM_ENCHANTMENT_VAMPIRIC
                 || special_enchantment == ITEM_ENCHANTMENT_DEMON_SLAYING
@@ -652,22 +652,22 @@ std::string ItemGen::GetIdentifiedName() {
             ) {            // enchantment and name positions inverted!
                 return StringPrintf(
                     "%s %s",
-                    pItemsTable->pSpecialEnchantments[special_enchantment - 1].pNameAdd,
-                    pItemsTable->pItems[uItemID].pName
+                    pItemTable->pSpecialEnchantments[special_enchantment - 1].pNameAdd,
+                    pItemTable->pItems[uItemID].pName
                 );
             } else {
-                return std::string(pItemsTable->pItems[uItemID].pName) + " " +
-                       pItemsTable->pSpecialEnchantments[special_enchantment - 1].pNameAdd;
+                return std::string(pItemTable->pItems[uItemID].pName) + " " +
+                       pItemTable->pSpecialEnchantments[special_enchantment - 1].pNameAdd;
             }
         }
     }
 
-    return pItemsTable->pItems[uItemID].pName;
+    return pItemTable->pItems[uItemID].pName;
 }
 
 //----- (00456620) --------------------------------------------------------
-void ItemsTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
-                              ItemGen* out_item) {
+void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
+                             ItemGen* out_item) {
     int treasureLevelMinus1;      // ebx@3
     int current_chance;           // ebx@43
     int tmp_chance;               // ecx@47
@@ -856,7 +856,7 @@ void ItemsTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
     if (out_item->uItemID == ITEM_SPELLBOOK_LIGHT_DIVINE_INTERVENTION &&
         !(uint16_t)_449B57_test_bit(pParty->_quest_bits, 239))
         out_item->uItemID = ITEM_SPELLBOOK_LIGHT_SUN_BURST;
-    if (pItemsTable->pItems[out_item->uItemID].uItemID_Rep_St)
+    if (pItemTable->pItems[out_item->uItemID].uItemID_Rep_St)
         out_item->uAttributes = 0;
     else
         out_item->uAttributes = ITEM_IDENTIFIED;
@@ -980,7 +980,7 @@ bool ItemGen::GenerateArtifact() {
     Reset();
     if (uNumArtifactsNotFound) {
         uItemID = artifacts_list[rand() % uNumArtifactsNotFound];
-        pItemsTable->SetSpecialBonus(this);
+        pItemTable->SetSpecialBonus(this);
         return true;
     } else {
         return false;
@@ -1420,11 +1420,11 @@ ITEM_EQUIP_TYPE ItemGen::GetItemEquipType() {
     if (this->uItemID == 0)
         return EQUIP_NONE;
     else
-        return pItemsTable->pItems[this->uItemID].uEquipType;
+        return pItemTable->pItems[this->uItemID].uEquipType;
 }
 
 unsigned char ItemGen::GetPlayerSkillType() {
-    unsigned char skl = pItemsTable->pItems[this->uItemID].uSkillType;
+    unsigned char skl = pItemTable->pItems[this->uItemID].uSkillType;
     if (skl == PLAYER_SKILL_CLUB) {
         // club skill not used but some items load it
         skl = PLAYER_SKILL_MACE;
@@ -1433,19 +1433,19 @@ unsigned char ItemGen::GetPlayerSkillType() {
 }
 
 char* ItemGen::GetIconName() {
-    return pItemsTable->pItems[this->uItemID].pIconName;
+    return pItemTable->pItems[this->uItemID].pIconName;
 }
 
 uint8_t ItemGen::GetDamageDice() {
-    return pItemsTable->pItems[this->uItemID].uDamageDice;
+    return pItemTable->pItems[this->uItemID].uDamageDice;
 }
 
 uint8_t ItemGen::GetDamageRoll() {
-    return pItemsTable->pItems[this->uItemID].uDamageRoll;
+    return pItemTable->pItems[this->uItemID].uDamageRoll;
 }
 
 uint8_t ItemGen::GetDamageMod() {
-    return pItemsTable->pItems[this->uItemID].uDamageMod;
+    return pItemTable->pItems[this->uItemID].uDamageMod;
 }
 
 //----- (0043C91D) --------------------------------------------------------
@@ -1455,7 +1455,7 @@ int GetItemTextureFilename(char* pOut, signed int item_id, int index,
     ITEM_EQUIP_TYPE pEquipType;
 
     result = 0;  // BUG   fn is void
-    pEquipType = pItemsTable->pItems[item_id].uEquipType;
+    pEquipType = pItemTable->pItems[item_id].uEquipType;
     if (item_id > 500) {
         switch (item_id) {
             case ITEM_RELIC_HARECS_LEATHER:

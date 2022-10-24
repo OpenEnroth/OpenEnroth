@@ -12,7 +12,10 @@ set(OBJECTS_SOURCES Actor.cpp
 set(OBJECTS_HEADERS Actor.h
                     ActorEnums.h
                     Chest.h
+                    ItemEnchantment.h
+                    ItemEnums.h
                     Items.h
+                    ItemTable.h
                     Monsters.h
                     NPC.h
                     ObjectList.h

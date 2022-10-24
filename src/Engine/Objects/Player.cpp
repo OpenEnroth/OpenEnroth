@@ -730,7 +730,7 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
 
 //----- (00492528) --------------------------------------------------------
 bool Player::CanFitItem(unsigned int uSlot, unsigned int uItemID) {
-    auto img = assets->GetImage_ColorKey(pItemsTable->pItems[uItemID].pIconName,
+    auto img = assets->GetImage_ColorKey(pItemTable->pItems[uItemID].pIconName,
                                          render->teal_mask_16);
     unsigned int slotWidth = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slotHeight = GetSizeInInventorySlots(img->GetHeight());
@@ -801,7 +801,7 @@ void Player::WearItem(unsigned int uItemID) {
     if (item_indx != -1) {
         pInventoryItemList[item_indx].uItemID = uItemID;
         item_body_anch =
-            pEquipTypeToBodyAnchor[pItemsTable->pItems[uItemID].uEquipType];
+            pEquipTypeToBodyAnchor[pItemTable->pItems[uItemID].uEquipType];
         pEquipment.pIndices[item_body_anch] = item_indx + 1;
         pInventoryItemList[item_indx].uBodyAnchor = item_body_anch + 1;
     }
@@ -835,7 +835,7 @@ int Player::AddItem(int index, unsigned int uItemID) {
 
 //----- (00492826) --------------------------------------------------------
 int Player::AddItem2(int index, ItemGen* Src) {  // are both required - check
-    pItemsTable->SetSpecialBonus(Src);
+    pItemTable->SetSpecialBonus(Src);
 
     if (index == -1) {  // no loaction specified
         for (int xcoord = 0; xcoord < INVETORYSLOTSWIDTH; xcoord++) {
@@ -878,7 +878,7 @@ void Player::PutItemArInventoryIndex(
     int uItemID, int itemListPos,
     int index) {  // originally accepted ItemGen* but needed only its uItemID
 
-    auto img = assets->GetImage_ColorKey(pItemsTable->pItems[uItemID].pIconName,
+    auto img = assets->GetImage_ColorKey(pItemTable->pItems[uItemID].pIconName,
                                          render->teal_mask_16);
     unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
@@ -952,7 +952,7 @@ bool Player::CanIdentify(ItemGen* pItem) {
 
     // check item level against skill
     bool result = (multiplier * skill) >=
-                  pItemsTable->pItems[pItem->uItemID].uItemID_Rep_St;
+                  pItemTable->pItems[pItem->uItemID].uItemID_Rep_St;
 
     return result;
 }
@@ -975,7 +975,7 @@ bool Player::CanRepair(ItemGen* pItem) {
 
     // check item level against skill
     bool result = (multiplier * skill) >=
-                  pItemsTable->pItems[pItem->uItemID].uItemID_Rep_St;
+                  pItemTable->pItems[pItem->uItemID].uItemID_Rep_St;
 
     return result;
 }
@@ -1221,7 +1221,7 @@ int Player::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
             ItemGen* mainHandItemGen = this->GetMainHandItem();
             int itemId = mainHandItemGen->uItemID;
             bool addOneDice = false;
-            if (pItemsTable->pItems[itemId].uSkillType == PLAYER_SKILL_SPEAR &&
+            if (pItemTable->pItems[itemId].uSkillType == PLAYER_SKILL_SPEAR &&
                 !this->pEquipment
                      .uOffHand)  // using spear in two hands adds a dice roll
                 addOneDice = true;
@@ -1266,11 +1266,11 @@ int Player::CalculateMeleeDmgToEnemyWithWeapon(ItemGen* weapon,
                                                unsigned int uTargetActorID,
                                                bool addOneDice) {
     int itemId = weapon->uItemID;
-    int diceCount = pItemsTable->pItems[itemId].uDamageDice;
+    int diceCount = pItemTable->pItems[itemId].uDamageDice;
 
     if (addOneDice) diceCount++;
 
-    int diceSides = pItemsTable->pItems[itemId].uDamageRoll;
+    int diceSides = pItemTable->pItems[itemId].uDamageRoll;
     int diceResult = 0;
 
     for (int i = 0; i < diceCount; i++) {  // roll dice
@@ -1278,7 +1278,7 @@ int Player::CalculateMeleeDmgToEnemyWithWeapon(ItemGen* weapon,
     }
 
     int totalDmg =
-        pItemsTable->pItems[itemId].uDamageMod + diceResult;  // add modifer
+            pItemTable->pItems[itemId].uDamageMod + diceResult;  // add modifer
 
     if (uTargetActorID > 0) {  // if an actor has been provided
         int enchType =
@@ -1305,7 +1305,7 @@ int Player::CalculateMeleeDmgToEnemyWithWeapon(ItemGen* weapon,
     }
 
     if (GetActualSkillMastery(PLAYER_SKILL_DAGGER) >= 3 &&
-        pItemsTable->pItems[itemId].uSkillType == 2 &&
+        pItemTable->pItems[itemId].uSkillType == 2 &&
         rand() % 100 < 10)  // master dagger
         totalDmg *= 3;      // triple damage backstab
 
@@ -1375,16 +1375,16 @@ int Player::CalculateRangedDamageTo(int uMonsterInfoID) {
         (ItemGen*)&this->pInventoryItemList[this->pEquipment.uBow - 1];
     int itemenchant = bow->special_enchantment;
 
-    signed int dmgperroll = pItemsTable->pItems[bow->uItemID].uDamageRoll;
+    signed int dmgperroll = pItemTable->pItems[bow->uItemID].uDamageRoll;
     int damagefromroll = 0;
     int damage = 0;
 
-    for (int i = 0; i < pItemsTable->pItems[bow->uItemID].uDamageDice;
+    for (int i = 0; i < pItemTable->pItems[bow->uItemID].uDamageDice;
          i++) {  // roll damage dice
         damagefromroll += ((rand() % dmgperroll) + 1);
     }
 
-    damage = pItemsTable->pItems[bow->uItemID].uDamageMod +
+    damage = pItemTable->pItems[bow->uItemID].uDamageMod +
              damagefromroll;  // total damage
 
     if (uMonsterInfoID) {  // check against bow enchantments
@@ -1743,10 +1743,10 @@ int Player::StealFromActor(
                 if (carriedItemId != ITEM_NULL) {  // load item into tempitem
                     actroPtr->uCarriedItemID = 0;
                     tempItem.uItemID = carriedItemId;
-                    if (pItemsTable->pItems[carriedItemId].uEquipType == EQUIP_WAND) {
-                        tempItem.uNumCharges = rand() % 6 + pItemsTable->pItems[carriedItemId].uDamageMod + 1;
+                    if (pItemTable->pItems[carriedItemId].uEquipType == EQUIP_WAND) {
+                        tempItem.uNumCharges = rand() % 6 + pItemTable->pItems[carriedItemId].uDamageMod + 1;
                         tempItem.uMaxCharges = tempItem.uNumCharges;
-                    } else if (pItemsTable->pItems[carriedItemId].uEquipType == EQUIP_POTION && carriedItemId != ITEM_POTION_BOTTLE) {
+                    } else if (pItemTable->pItems[carriedItemId].uEquipType == EQUIP_POTION && carriedItemId != ITEM_POTION_BOTTLE) {
                         tempItem.uEnchantmentType = 2 * rand() % 4 + 2;
                     }
                 } else {
@@ -1760,7 +1760,7 @@ int Player::StealFromActor(
                     GameUI_SetStatusBar(
                         LSTR_FMT_S_STOLE_D_ITEM,
                         this->pName.c_str(),
-                        pItemsTable->pItems[carriedItemId].pUnidentifiedName
+                        pItemTable->pItems[carriedItemId].pUnidentifiedName
                     );
                     pParty->SetHoldingItem(&tempItem);
                     return STEAL_SUCCESS;
@@ -1910,7 +1910,7 @@ int Player::ReceiveSpecialAttackEffect(
             itemtobreak = &this->pInventoryItemList
                                [itemstobreaklist[rand() % itemstobreakcounter]];
             statcheckbonus =
-                3 * (std::to_underlying(pItemsTable->pItems[itemtobreak->uItemID].uMaterial) +
+                3 * (std::to_underlying(pItemTable->pItems[itemtobreak->uItemID].uMaterial) +
                      itemtobreak->GetDamageMod());
             break;
 
@@ -1934,7 +1934,7 @@ int Player::ReceiveSpecialAttackEffect(
             itemtobreak = &this->pInventoryItemList
                                [itemstobreaklist[rand() % itemstobreakcounter]];
             statcheckbonus =
-                3 * (std::to_underlying(pItemsTable->pItems[itemtobreak->uItemID].uMaterial) +
+                3 * (std::to_underlying(pItemTable->pItems[itemtobreak->uItemID].uMaterial) +
                      itemtobreak->GetDamageMod());
             break;
 
@@ -1960,7 +1960,7 @@ int Player::ReceiveSpecialAttackEffect(
             itemtobreak = &this->pInventoryItemList
                                [itemstobreaklist[rand() % itemstobreakcounter]];
             statcheckbonus =
-                3 * (std::to_underlying(pItemsTable->pItems[itemtobreak->uItemID].uMaterial) +
+                3 * (std::to_underlying(pItemTable->pItems[itemtobreak->uItemID].uMaterial) +
                      itemtobreak->GetDamageMod());
             break;
 
@@ -2881,8 +2881,8 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
                                   currEquippedItem->GetDamageMod();
                         }
                     }
-                    if (pItemsTable->IsMaterialNonCommon(currEquippedItem) &&
-                        !pItemsTable->IsMaterialSpecial(currEquippedItem)) {
+                    if (pItemTable->IsMaterialNonCommon(currEquippedItem) &&
+                        !pItemTable->IsMaterialSpecial(currEquippedItem)) {
                         currEquippedItem->GetItemBonusArtifact(this, attr,
                                                                &v62);
                     } else if (currEquippedItem->uEnchantmentType != 0) {
@@ -7344,7 +7344,7 @@ void Player::OnInventoryLeftClick() {
                     memcpy(&pParty->pPickedItem, &this->pInventoryItemList[invItemIndex - 1], sizeof(pParty->pPickedItem));
                     this->RemoveItemAtInventoryIndex(invMatrixIndex);
                     pickedItemId = pParty->pPickedItem.uItemID;
-                    mouse->SetCursorImage(pItemsTable->pItems[pickedItemId].pIconName);
+                    mouse->SetCursorImage(pItemTable->pItems[pickedItemId].pIconName);
                     return;
                 }
             } else {  // hold item
@@ -8010,7 +8010,7 @@ int Player::SelectPhrasesTransaction(
             break;
         case BuildingType_MagicShop:
             if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS) return 5;
-            if (pItemsTable->pItems[idemId].uSkillType != PLAYER_SKILL_MISC)
+            if (pItemTable->pItems[idemId].uSkillType != PLAYER_SKILL_MISC)
                 return 4;
             break;
         case BuildingType_AlchemistShop:

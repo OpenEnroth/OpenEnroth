@@ -448,7 +448,7 @@ void Engine::Deinitialize() {
     if (mouse)
         mouse->Deactivate();
 
-    pItemsTable->Release();
+    pItemTable->Release();
     pNPCStats->Release();
 
     pNew_LOD->FreeSubIndexAndIO();
@@ -964,8 +964,8 @@ bool Engine::MM7_Initialize() {
 void Engine::SecondaryInitialization() {
     mouse->Initialize(window);
 
-    pItemsTable = new ItemsTable;
-    pItemsTable->Initialize();
+    pItemTable = new ItemTable;
+    pItemTable->Initialize();
 
     // pBitmaps_LOD->can_load_hardware_sprites = 1;
     // pBitmaps_LOD->SetupPalettes(render->uTargetRBits, render->uTargetGBits,
