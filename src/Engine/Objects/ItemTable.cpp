@@ -168,7 +168,7 @@ void ItemTable::Initialize() {
     pSpecialEnchantments_count = 72;
     memset(&pSpecialEnchantmentsSumm, 0, 96);
     for (int i = 0; i < 12; ++i) {
-        for (unsigned int j = 0; j < pSpecialEnchantments_count; ++j)
+        for (ITEM_ENCHANTMENT j : pSpecialEnchantments.indices())
             pSpecialEnchantmentsSumm[i] += pSpecialEnchantments[j].to_item_apply[i];
     }
 
