@@ -1515,22 +1515,19 @@ void _494035_timed_effects__water_walking_damage__etc() {
         pParty->_6FC_water_lava_timer < pParty->GetPlayingTime().value) {
         pParty->_6FC_water_lava_timer = pParty->GetPlayingTime().value + 128;
         viewparams->bRedrawGameUI = true;
-        for (uint pl = 1; pl <= 4; ++pl) {
-            if (pPlayers[pl]->WearsItem(ITEM_RELIC_HARECS_LEATHER,
-                EQUIP_ARMOUR) ||
-                pPlayers[pl]->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
-                pPlayers[pl]->pPlayerBuffs[PLAYER_BUFF_WATER_WALK].expire_time) {
-                pPlayers[pl]->PlayEmotion(CHARACTER_EXPRESSION_37, 0);
+        for (Player &player : pParty->pPlayers) {
+            if (player.WearsItem(ITEM_RELIC_HARECS_LEATHER, EQUIP_ARMOUR) ||
+                player.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
+                player.pPlayerBuffs[PLAYER_BUFF_WATER_WALK].expire_time) {
+                player.PlayEmotion(CHARACTER_EXPRESSION_37, 0);
             } else {
-                if (!pPlayers[pl]->HasUnderwaterSuitEquipped()) {
-                    pPlayers[pl]->ReceiveDamage(
-                        (int64_t)pPlayers[pl]->GetMaxHealth() * 0.1,
-                        DMGT_FIRE);
+                if (!player.HasUnderwaterSuitEquipped()) {
+                    player.ReceiveDamage((int64_t)player.GetMaxHealth() * 0.1, DMGT_FIRE);
                     if (pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE) {
                         GameUI_SetStatusBarShortNotification(localization->GetString(LSTR_YOURE_DROWNING));
                     }
                 } else {
-                    pPlayers[pl]->PlayEmotion(CHARACTER_EXPRESSION_37, 0);
+                    player.PlayEmotion(CHARACTER_EXPRESSION_37, 0);
                 }
             }
         }
