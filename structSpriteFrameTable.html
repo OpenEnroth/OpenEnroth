@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;833ccb6</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;b4b48b4</span>
    </div>
   </td>
  </tr>
@@ -93,10 +93,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aded46e2a620bcb342fcee5de5fcde662"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d390b4fbe5985c715439289d806b3c4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpriteFrameTable.html#a1d390b4fbe5985c715439289d806b3c4">InitializeSprite</a> (signed int uSpriteID)</td></tr>
 <tr class="separator:a1d390b4fbe5985c715439289d806b3c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa747f09694e5f633ee156ef8de5d07f5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpriteFrameTable.html#aa747f09694e5f633ee156ef8de5d07f5">FastFindSprite</a> (const char *pSpriteName)</td></tr>
-<tr class="separator:aa747f09694e5f633ee156ef8de5d07f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5097f4a92066463ac557b4b1928a2181"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpriteFrameTable.html#a5097f4a92066463ac557b4b1928a2181">BinarySearch</a> (const char *pSpriteName)</td></tr>
-<tr class="separator:a5097f4a92066463ac557b4b1928a2181"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a1955712c36554e2104ab1ea000dea6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpriteFrameTable.html#a0a1955712c36554e2104ab1ea000dea6">FastFindSprite</a> (std::string_view pSpriteName)</td></tr>
+<tr class="separator:a0a1955712c36554e2104ab1ea000dea6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4eedc07f56dc5d1d5f9432a07220cdd3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpriteFrameTable.html#a4eedc07f56dc5d1d5f9432a07220cdd3">BinarySearch</a> (std::string_view pSpriteName)</td></tr>
+<tr class="separator:a4eedc07f56dc5d1d5f9432a07220cdd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4bca0b7ce7055f69630c6bd3217047d7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSpriteFrame.html">SpriteFrame</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpriteFrameTable.html#a4bca0b7ce7055f69630c6bd3217047d7">GetFrame</a> (unsigned int uSpriteID, unsigned int uTime)</td></tr>
 <tr class="separator:a4bca0b7ce7055f69630c6bd3217047d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d99b09a2d8e49dfa89eae43f6ddfe0a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSpriteFrame.html">SpriteFrame</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpriteFrameTable.html#a3d99b09a2d8e49dfa89eae43f6ddfe0a">GetFrameBy_x</a> (unsigned int uSpriteID, signed int a3)</td></tr>
@@ -144,8 +144,8 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a5097f4a92066463ac557b4b1928a2181" name="a5097f4a92066463ac557b4b1928a2181"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5097f4a92066463ac557b4b1928a2181">&#9670;&#160;</a></span>BinarySearch()</h2>
+<a id="a4eedc07f56dc5d1d5f9432a07220cdd3" name="a4eedc07f56dc5d1d5f9432a07220cdd3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4eedc07f56dc5d1d5f9432a07220cdd3">&#9670;&#160;</a></span>BinarySearch()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -153,7 +153,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">int SpriteFrameTable::BinarySearch </td>
           <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
+          <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>pSpriteName</em></td><td>)</td>
           <td></td>
         </tr>
@@ -162,8 +162,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aa747f09694e5f633ee156ef8de5d07f5" name="aa747f09694e5f633ee156ef8de5d07f5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa747f09694e5f633ee156ef8de5d07f5">&#9670;&#160;</a></span>FastFindSprite()</h2>
+<a id="a0a1955712c36554e2104ab1ea000dea6" name="a0a1955712c36554e2104ab1ea000dea6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a1955712c36554e2104ab1ea000dea6">&#9670;&#160;</a></span>FastFindSprite()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -171,7 +171,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">int SpriteFrameTable::FastFindSprite </td>
           <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
+          <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>pSpriteName</em></td><td>)</td>
           <td></td>
         </tr>

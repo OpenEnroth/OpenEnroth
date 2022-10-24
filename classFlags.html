@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;833ccb6</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;b4b48b4</span>
    </div>
   </td>
  </tr>
@@ -104,8 +104,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:afff6075589cbf04d6d17ac98acc3c098"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adfb7a3536a29a9583372ab5eb17ae238"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFlags.html#adfb7a3536a29a9583372ab5eb17ae238">Flags</a> (<a class="el" href="classFlags.html#a61795b8383eadabecb8bd837898f74fb">underlying_type</a> value)</td></tr>
 <tr class="separator:adfb7a3536a29a9583372ab5eb17ae238"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ade8c844fd696840160d1b715c90e279f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFlags.html#ade8c844fd696840160d1b715c90e279f">operator underlying_type</a> () const</td></tr>
-<tr class="separator:ade8c844fd696840160d1b715c90e279f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d05f8dd18dc01ba59a51d80bea6a918"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFlags.html#a6d05f8dd18dc01ba59a51d80bea6a918">operator underlying_type</a> () const</td></tr>
+<tr class="separator:a6d05f8dd18dc01ba59a51d80bea6a918"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a05ad423f067ee37cf0ed21070e2973b7"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="classFlags.html">Flags</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFlags.html#a05ad423f067ee37cf0ed21070e2973b7">operator&amp;=</a> (<a class="el" href="classFlags.html">Flags</a> mask)</td></tr>
 <tr class="separator:a05ad423f067ee37cf0ed21070e2973b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaaa9580de7098d7e67338f57923d1a04"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="classFlags.html">Flags</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFlags.html#aaaa9580de7098d7e67338f57923d1a04">operator&amp;=</a> (<a class="el" href="classFlags.html#a9d5d5877e991d0c2a331568dac527f54">enumeration_type</a> mask)</td></tr>
@@ -158,9 +158,9 @@ Friends</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;class Enum&gt;<br />
 class Flags&lt; Enum &gt;</div><p ><code><a class="el" href="classFlags.html">Flags</a></code> is basically an analog of <code>QFlags</code> from Qt, a type-safe wrapper for flags defined in enumerations.</p>
-<p >Example usage: class MonsterType { public: enum class Ability { FlyingAbility = 0x1, RunningAbility = 0x2, ShootingAbility = 0x4 }; using enum Ability; <a class="el" href="Flags_8h.html#a1862186831d31272395fbfc96006c612">DECLARE_FLAGS(Abilities, Ability)</a></p>
+<p >Example usage: class MonsterType { public: enum class Ability { FlyingAbility = 0x1, RunningAbility = 0x2, ShootingAbility = 0x4 }; using enum Ability; DECLARE_FLAGS(Abilities, Ability)</p>
 <p >// ... };</p>
-<p ><a class="el" href="Flags_8h.html#a0004a56517a657ae1fa27b9e12a0861c">DECLARE_OPERATORS_FOR_FLAGS(MonsterType::Abilities)</a> </p>
+<p >DECLARE_OPERATORS_FOR_FLAGS(MonsterType::Abilities) </p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a9d5d5877e991d0c2a331568dac527f54" name="a9d5d5877e991d0c2a331568dac527f54"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9d5d5877e991d0c2a331568dac527f54">&#9670;&#160;</a></span>enumeration_type</h2>
@@ -364,8 +364,8 @@ template&lt;class Enum &gt; </div>
 
 </div>
 </div>
-<a id="ade8c844fd696840160d1b715c90e279f" name="ade8c844fd696840160d1b715c90e279f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ade8c844fd696840160d1b715c90e279f">&#9670;&#160;</a></span>operator underlying_type()</h2>
+<a id="a6d05f8dd18dc01ba59a51d80bea6a918" name="a6d05f8dd18dc01ba59a51d80bea6a918"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d05f8dd18dc01ba59a51d80bea6a918">&#9670;&#160;</a></span>operator underlying_type()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -376,7 +376,7 @@ template&lt;class Enum &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classFlags.html">Flags</a>&lt; Enum &gt;::operator <a class="el" href="classFlags.html#a61795b8383eadabecb8bd837898f74fb">underlying_type</a> </td>
+          <td class="memname">constexpr <a class="el" href="classFlags.html">Flags</a>&lt; Enum &gt;::operator <a class="el" href="classFlags.html#a61795b8383eadabecb8bd837898f74fb">underlying_type</a> </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -384,7 +384,7 @@ template&lt;class Enum &gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">explicit</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">explicit</span><span class="mlabel">constexpr</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">

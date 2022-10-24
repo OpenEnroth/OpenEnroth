@@ -3,7 +3,7 @@ var searchData=
   ['mapinfo_0',['MapInfo',['../structMapInfo.html',1,'']]],
   ['mapslongtimer_1',['MapsLongTimer',['../structMapsLongTimer.html',1,'']]],
   ['mapstats_2',['MapStats',['../structMapStats.html',1,'']]],
-  ['memoryinput_3',['MemoryInput',['../classMemoryInput.html',1,'']]],
+  ['memoryinputstream_3',['MemoryInputStream',['../classMemoryInputStream.html',1,'']]],
   ['menu_4',['Menu',['../classApplication_1_1Menu.html',1,'Application']]],
   ['mobilelight_5',['MobileLight',['../structMobileLight.html',1,'']]],
   ['monsterdesc_6',['MonsterDesc',['../structMonsterDesc.html',1,'']]],

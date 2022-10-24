@@ -5,7 +5,7 @@ var searchData=
   ['nk_5fvertex_2',['nk_vertex',['../structRenderOpenGL_1_1nk__vertex.html',1,'RenderOpenGL']]],
   ['node_3',['Node',['../structVideoList_1_1Node.html',1,'VideoList']]],
   ['npcdata_4',['NPCData',['../structNPCData.html',1,'']]],
-  ['npcdata_5fimage_5fmm7_5',['NPCData_Image_MM7',['../structNPCData__Image__MM7.html',1,'']]],
+  ['npcdata_5fmm7_5',['NPCData_MM7',['../structNPCData__MM7.html',1,'']]],
   ['npcgreeting_6',['NPCGreeting',['../structNPCGreeting.html',1,'']]],
   ['npcprofession_7',['NPCProfession',['../structNPCProfession.html',1,'']]],
   ['npcprofessionchance_8',['NPCProfessionChance',['../structNPCProfessionChance.html',1,'']]],

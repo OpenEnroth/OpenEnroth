@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;833ccb6</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;b4b48b4</span>
    </div>
   </td>
  </tr>
@@ -70,7 +70,6 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="structMonsterDesc__MM6-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">MonsterDesc_MM6 Struct Reference</div></div>
@@ -79,13 +78,6 @@ $(function() {
 
 <p><code>#include &lt;LegacyImages.h&gt;</code></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
-Public Member Functions</h2></td></tr>
-<tr class="memitem:af80425dea084d01cd9c9d914909bbbdc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structMonsterDesc__MM6.html#af80425dea084d01cd9c9d914909bbbdc">MonsterDesc_MM6</a> ()</td></tr>
-<tr class="separator:af80425dea084d01cd9c9d914909bbbdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a608b86fe6afd436250b47112e525a1b1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structMonsterDesc__MM6.html#a608b86fe6afd436250b47112e525a1b1">Deserialize</a> (<a class="el" href="structMonsterDesc.html">MonsterDesc</a> *)</td></tr>
-<tr class="separator:a608b86fe6afd436250b47112e525a1b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a2246d571b09ac1878179fe8555db3da6"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structMonsterDesc__MM6.html#a2246d571b09ac1878179fe8555db3da6">uMonsterHeight</a></td></tr>
@@ -96,95 +88,50 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a648ed79b2d8485a59ad74f32744ade5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afdd7eb8280e9d2b1c7a27b28a4596309"><td class="memItemLeft" align="right" valign="top">int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structMonsterDesc__MM6.html#afdd7eb8280e9d2b1c7a27b28a4596309">uToHitRadius</a></td></tr>
 <tr class="separator:afdd7eb8280e9d2b1c7a27b28a4596309"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac713fd96ce7a27079c8d54e5aa2b65da"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structMonsterDesc__MM6.html#ac713fd96ce7a27079c8d54e5aa2b65da">pSoundSampleIDs</a> [4]</td></tr>
-<tr class="separator:ac713fd96ce7a27079c8d54e5aa2b65da"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7721d427679889a753479a6790004a2e"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structMonsterDesc__MM6.html#a7721d427679889a753479a6790004a2e">pMonsterName</a> [32]</td></tr>
-<tr class="separator:a7721d427679889a753479a6790004a2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac4b08d339adb2b377f01b578b43a214b"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structMonsterDesc__MM6.html#ac4b08d339adb2b377f01b578b43a214b">pSpriteNames</a> [10][10]</td></tr>
-<tr class="separator:ac4b08d339adb2b377f01b578b43a214b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4beb06957d6d73ca69e68839cc862cfd"><td class="memItemLeft" align="right" valign="top">std::array&lt; uint16_t, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structMonsterDesc__MM6.html#a4beb06957d6d73ca69e68839cc862cfd">pSoundSampleIDs</a></td></tr>
+<tr class="separator:a4beb06957d6d73ca69e68839cc862cfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abdf04ece45196800d226ea8128dd9af5"><td class="memItemLeft" align="right" valign="top">std::array&lt; char, 32 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structMonsterDesc__MM6.html#abdf04ece45196800d226ea8128dd9af5">pMonsterName</a></td></tr>
+<tr class="separator:abdf04ece45196800d226ea8128dd9af5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae613daa6626c778659366dc21c057363"><td class="memItemLeft" align="right" valign="top">std::array&lt; std::array&lt; char, 10 &gt;, 10 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structMonsterDesc__MM6.html#ae613daa6626c778659366dc21c057363">pSpriteNames</a></td></tr>
+<tr class="separator:ae613daa6626c778659366dc21c057363"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="af80425dea084d01cd9c9d914909bbbdc" name="af80425dea084d01cd9c9d914909bbbdc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af80425dea084d01cd9c9d914909bbbdc">&#9670;&#160;</a></span>MonsterDesc_MM6()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">MonsterDesc_MM6::MonsterDesc_MM6 </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a id="a608b86fe6afd436250b47112e525a1b1" name="a608b86fe6afd436250b47112e525a1b1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a608b86fe6afd436250b47112e525a1b1">&#9670;&#160;</a></span>Deserialize()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void MonsterDesc_MM6::Deserialize </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structMonsterDesc.html">MonsterDesc</a> *&#160;</td>
-          <td class="paramname"><em>desc</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a7721d427679889a753479a6790004a2e" name="a7721d427679889a753479a6790004a2e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7721d427679889a753479a6790004a2e">&#9670;&#160;</a></span>pMonsterName</h2>
+<a id="abdf04ece45196800d226ea8128dd9af5" name="abdf04ece45196800d226ea8128dd9af5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abdf04ece45196800d226ea8128dd9af5">&#9670;&#160;</a></span>pMonsterName</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char MonsterDesc_MM6::pMonsterName[32]</td>
+          <td class="memname">std::array&lt;char, 32&gt; MonsterDesc_MM6::pMonsterName</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="ac713fd96ce7a27079c8d54e5aa2b65da" name="ac713fd96ce7a27079c8d54e5aa2b65da"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac713fd96ce7a27079c8d54e5aa2b65da">&#9670;&#160;</a></span>pSoundSampleIDs</h2>
+<a id="a4beb06957d6d73ca69e68839cc862cfd" name="a4beb06957d6d73ca69e68839cc862cfd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4beb06957d6d73ca69e68839cc862cfd">&#9670;&#160;</a></span>pSoundSampleIDs</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint16_t MonsterDesc_MM6::pSoundSampleIDs[4]</td>
+          <td class="memname">std::array&lt;uint16_t, 4&gt; MonsterDesc_MM6::pSoundSampleIDs</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="ac4b08d339adb2b377f01b578b43a214b" name="ac4b08d339adb2b377f01b578b43a214b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac4b08d339adb2b377f01b578b43a214b">&#9670;&#160;</a></span>pSpriteNames</h2>
+<a id="ae613daa6626c778659366dc21c057363" name="ae613daa6626c778659366dc21c057363"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae613daa6626c778659366dc21c057363">&#9670;&#160;</a></span>pSpriteNames</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char MonsterDesc_MM6::pSpriteNames[10][10]</td>
+          <td class="memname">std::array&lt;std::array&lt;char, 10&gt;, 10&gt; MonsterDesc_MM6::pSpriteNames</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -247,9 +194,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<hr/>The documentation for this struct was generated from the following files:<ul>
+<hr/>The documentation for this struct was generated from the following file:<ul>
 <li>src/Engine/Serialization/<a class="el" href="LegacyImages_8h.html">LegacyImages.h</a></li>
-<li>src/Engine/Serialization/<a class="el" href="LegacyImages_8cpp.html">LegacyImages.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

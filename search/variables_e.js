@@ -13,7 +13,7 @@ var searchData=
   ['new_5fposition_5flo_10',['new_position_lo',['../structCollisionState.html#a947a3af16fc7571d9e2dc8b8d9b91852',1,'CollisionState']]],
   ['newgamefood_11',['NewGameFood',['../classApplication_1_1GameConfig_1_1Gameplay.html#a5c3f7e11ed3855095f3043b9898ba2a5',1,'Application::GameConfig::Gameplay']]],
   ['newgamegold_12',['NewGameGold',['../classApplication_1_1GameConfig_1_1Gameplay.html#a6fd6fe9aefef94960175dd7bc254532b',1,'Application::GameConfig::Gameplay']]],
-  ['news_5ftopic_13',['news_topic',['../structNPCData.html#a2dd4a2f313713aa3b760fbf49f070c82',1,'NPCData::news_topic()'],['../structNPCData__Image__MM7.html#a45e5034c7c37f7328aa7da92a0b86982',1,'NPCData_Image_MM7::news_topic()']]],
+  ['news_5ftopic_13',['news_topic',['../structNPCData.html#a2dd4a2f313713aa3b760fbf49f070c82',1,'NPCData::news_topic()'],['../structNPCData__MM7.html#afcea7b776710badabb55e7fa17669e29',1,'NPCData_MM7::news_topic()']]],
   ['nextstarttime_14',['NextStartTime',['../structMapsLongTimer.html#ab2d7ce8d91514d18c211d7a9c3fe986a',1,'MapsLongTimer']]],
   ['nk_15',['nk',['../structimg.html#aae598e4ace3a8b32848c38746abbd6ab',1,'img']]],
   ['nk_5fdev_16',['nk_dev',['../classRenderOpenGL.html#ac0d67f9a76dcb500082933942bd7dd25',1,'RenderOpenGL']]],

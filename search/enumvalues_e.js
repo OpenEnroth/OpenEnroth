@@ -1,11 +1,11 @@
 var searchData=
 [
   ['o_0',['O',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863af186217753c37b9b9f958d906208506e',1,'Io']]],
-  ['object_5factor_1',['OBJECT_Actor',['../Actor_8h.html#a842c5e2e69277690b064bf363c017980af39b344af8f7ed4cc960f637981e067d',1,'Actor.h']]],
-  ['object_5fany_2',['OBJECT_Any',['../Actor_8h.html#a842c5e2e69277690b064bf363c017980aaeca3555a4e2789f527a87a11ac44d86',1,'Actor.h']]],
-  ['object_5fblvdoor_3',['OBJECT_BLVDoor',['../Actor_8h.html#a842c5e2e69277690b064bf363c017980a85527d69c1b483687841f7ed0228c55d',1,'Actor.h']]],
-  ['object_5fbmodel_4',['OBJECT_BModel',['../Actor_8h.html#a842c5e2e69277690b064bf363c017980aa8987dbdcb97d8d9dd630ad4d041224e',1,'Actor.h']]],
-  ['object_5fdecoration_5',['OBJECT_Decoration',['../Actor_8h.html#a842c5e2e69277690b064bf363c017980ad08d53cb9bc43039d988bb0f660b775a',1,'Actor.h']]],
+  ['object_5factor_1',['OBJECT_Actor',['../ActorEnums_8h.html#a842c5e2e69277690b064bf363c017980af39b344af8f7ed4cc960f637981e067d',1,'ActorEnums.h']]],
+  ['object_5fany_2',['OBJECT_Any',['../ActorEnums_8h.html#a842c5e2e69277690b064bf363c017980aaeca3555a4e2789f527a87a11ac44d86',1,'ActorEnums.h']]],
+  ['object_5fblvdoor_3',['OBJECT_BLVDoor',['../ActorEnums_8h.html#a842c5e2e69277690b064bf363c017980a85527d69c1b483687841f7ed0228c55d',1,'ActorEnums.h']]],
+  ['object_5fbmodel_4',['OBJECT_BModel',['../ActorEnums_8h.html#a842c5e2e69277690b064bf363c017980aa8987dbdcb97d8d9dd630ad4d041224e',1,'ActorEnums.h']]],
+  ['object_5fdecoration_5',['OBJECT_Decoration',['../ActorEnums_8h.html#a842c5e2e69277690b064bf363c017980ad08d53cb9bc43039d988bb0f660b775a',1,'ActorEnums.h']]],
   ['object_5fdesc_5fbounce_6',['OBJECT_DESC_BOUNCE',['../ObjectList_8h.html#a3453b9c5c6fab738c48dd85943f8ff63afcec17788d7e346f14ae579785c29f46',1,'ObjectList.h']]],
   ['object_5fdesc_5finteractable_7',['OBJECT_DESC_INTERACTABLE',['../ObjectList_8h.html#a3453b9c5c6fab738c48dd85943f8ff63a8f9e0375e349803f4e64f4c0f80f02a3',1,'ObjectList.h']]],
   ['object_5fdesc_5fno_5fcollision_8',['OBJECT_DESC_NO_COLLISION',['../ObjectList_8h.html#a3453b9c5c6fab738c48dd85943f8ff63a8d3b9cb7cb17a5af4dafb20dd7ba05d9',1,'ObjectList.h']]],
@@ -17,8 +17,8 @@ var searchData=
   ['object_5fdesc_5ftrial_5fline_14',['OBJECT_DESC_TRIAL_LINE',['../ObjectList_8h.html#a3453b9c5c6fab738c48dd85943f8ff63acce293ad189f49a7d01d299a2061c570',1,'ObjectList.h']]],
   ['object_5fdesc_5ftrial_5fparticle_15',['OBJECT_DESC_TRIAL_PARTICLE',['../ObjectList_8h.html#a3453b9c5c6fab738c48dd85943f8ff63ad436d5c5316e641ce92dfede9de72bbb',1,'ObjectList.h']]],
   ['object_5fdesc_5funpickable_16',['OBJECT_DESC_UNPICKABLE',['../ObjectList_8h.html#a3453b9c5c6fab738c48dd85943f8ff63a071b7873d5ebb2d4515d3a8b971e96b5',1,'ObjectList.h']]],
-  ['object_5fitem_17',['OBJECT_Item',['../Actor_8h.html#a842c5e2e69277690b064bf363c017980a3af58f70a502929f924f163b29fabe80',1,'Actor.h']]],
-  ['object_5fplayer_18',['OBJECT_Player',['../Actor_8h.html#a842c5e2e69277690b064bf363c017980ae2b1e182a57c6ab27af33c89adc002f4',1,'Actor.h']]],
+  ['object_5fitem_17',['OBJECT_Item',['../ActorEnums_8h.html#a842c5e2e69277690b064bf363c017980a3af58f70a502929f924f163b29fabe80',1,'ActorEnums.h']]],
+  ['object_5fplayer_18',['OBJECT_Player',['../ActorEnums_8h.html#a842c5e2e69277690b064bf363c017980ae2b1e182a57c6ab27af33c89adc002f4',1,'ActorEnums.h']]],
   ['on_5fcast_5f0x0004_19',['ON_CAST_0x0004',['../CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022fa99b2baf001f69ce40fdfcd57fd53dd4a',1,'CastSpellInfo.h']]],
   ['on_5fcast_5fcastinginprogress_20',['ON_CAST_CastingInProgress',['../CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022fa034bd3f73980fbe3e1d98c9a6b9fc9ef',1,'CastSpellInfo.h']]],
   ['on_5fcast_5fcastviascroll_21',['ON_CAST_CastViaScroll',['../CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022faa23a967ab05e51bb5202900c27f79d43',1,'CastSpellInfo.h']]],
@@ -36,5 +36,5 @@ var searchData=
   ['open_33',['Open',['../structBLVDoor.html#a938bde09f5649e4d1982d7e51a31b832ab93af758077ddf72d379461bd33dab98',1,'BLVDoor']]],
   ['opengl_34',['OpenGL',['../IRenderFactory_8h.html#ae9c668e3a273ce92b9f4e134d0cbd6cea760716b590ee7c0adc25f434f577d8be',1,'IRenderFactory.h']]],
   ['opening_35',['Opening',['../structBLVDoor.html#a938bde09f5649e4d1982d7e51a31b832a73064c29c09158bd9e6503c2af97b268',1,'BLVDoor']]],
-  ['overwrite_36',['Overwrite',['../classMemoryInput.html#ac439f8738782599dcadebbcb5773c91ea9877d7ea8685dfea1b48b74ab8d2a3a9',1,'MemoryInput']]]
+  ['overwrite_36',['Overwrite',['../classDeserializer.html#a43d54839cc1f0c162d5636455b354530a9bbda914cc9b1acd40209a3cab5d56b4',1,'Deserializer']]]
 ];

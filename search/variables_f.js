@@ -27,5 +27,5 @@ var searchData=
   ['outdoor_5fgrid_5fband_5f3_24',['outdoor_grid_band_3',['../structODMRenderParams.html#a62d74700830343a16367bc26f59975a5',1,'ODMRenderParams']]],
   ['outdoor_5fno_5fmist_25',['outdoor_no_mist',['../structODMRenderParams.html#a2815fb81b547a4eaf8606cc99d28add8',1,'ODMRenderParams']]],
   ['outdoor_5fno_5fwavy_5fwater_26',['outdoor_no_wavy_water',['../structODMRenderParams.html#a6827cf3b9a8b9bd0c1fad130b639280e',1,'ODMRenderParams']]],
-  ['ownedmemory_5f_27',['ownedMemory_',['../classMemoryInput.html#a2bf37d8912bc15d7931e741db445e3ad',1,'MemoryInput']]]
+  ['outputstream_5f_27',['outputStream_',['../classSerializer.html#a49268472e8fa4751356d0f2d11103da4',1,'Serializer']]]
 ];

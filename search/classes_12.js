@@ -12,7 +12,7 @@ var searchData=
   ['tiledesc_5fmm7_9',['TileDesc_MM7',['../structTileDesc__MM7.html',1,'']]],
   ['tiletable_10',['TileTable',['../structTileTable.html',1,'']]],
   ['timer_11',['Timer',['../structTimer.html',1,'']]],
-  ['timer_5fimage_5fmm7_12',['Timer_Image_MM7',['../structTimer__Image__MM7.html',1,'']]],
+  ['timer_5fmm7_12',['Timer_MM7',['../structTimer__MM7.html',1,'']]],
   ['townportaldata_13',['TownPortalData',['../structTownPortalData.html',1,'']]],
   ['trackbuffer_14',['TrackBuffer',['../structOpenALSoundProvider_1_1TrackBuffer.html',1,'OpenALSoundProvider']]],
   ['trailparticle_15',['TrailParticle',['../structTrailParticle.html',1,'']]],
