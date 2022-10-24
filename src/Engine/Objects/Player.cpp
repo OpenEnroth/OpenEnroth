@@ -1281,7 +1281,7 @@ int Player::CalculateMeleeDmgToEnemyWithWeapon(ItemGen* weapon,
             pItemTable->pItems[itemId].uDamageMod + diceResult;  // add modifer
 
     if (uTargetActorID > 0) {  // if an actor has been provided
-        int enchType =
+        ITEM_ENCHANTMENT enchType =
             weapon->special_enchantment;  // check against enchantments
 
         if (MonsterStats::BelongsToSupertype(uTargetActorID,
@@ -1373,7 +1373,7 @@ int Player::CalculateRangedDamageTo(int uMonsterInfoID) {
 
     ItemGen* bow =
         (ItemGen*)&this->pInventoryItemList[this->pEquipment.uBow - 1];
-    int itemenchant = bow->special_enchantment;
+    ITEM_ENCHANTMENT itemenchant = bow->special_enchantment;
 
     signed int dmgperroll = pItemTable->pItems[bow->uItemID].uDamageRoll;
     int damagefromroll = 0;

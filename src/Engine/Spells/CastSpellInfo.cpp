@@ -1756,7 +1756,7 @@ void CastSpellInfoHelpers::CastSpell() {
 
                                 // finds how many possible enchaments and adds up to item apply values
                                 if (pItemTable->pSpecialEnchantments_count > 0) {
-                                    for (int spec_ench_loop = 0; spec_ench_loop < pItemTable->pSpecialEnchantments_count; ++spec_ench_loop) {
+                                    for (ITEM_ENCHANTMENT spec_ench_loop : pItemTable->pSpecialEnchantments.indices()) {
                                         char *this_bon_state = pItemTable->pSpecialEnchantments[spec_ench_loop].pBonusStatement;
                                         if (this_bon_state != NULL && (this_bon_state[0] != '\0')) {
                                             if (pItemTable->pSpecialEnchantments[spec_ench_loop].iTreasureLevel == 3) continue;
@@ -1779,7 +1779,7 @@ void CastSpellInfoHelpers::CastSpell() {
 
                                 // step through until we hit that ench
                                 for (step = 0; step < ench_found; step++) {
-                                    current_item_apply_sum += pItemTable->pSpecialEnchantments[ench_array[step]].to_item_apply[this_equip_type];
+                                    current_item_apply_sum += pItemTable->pSpecialEnchantments[(ITEM_ENCHANTMENT)ench_array[step]].to_item_apply[this_equip_type];
                                     if (current_item_apply_sum >= target_item_apply_rand) break;
                                 }
 

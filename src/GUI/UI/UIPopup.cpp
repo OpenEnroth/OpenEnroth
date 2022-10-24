@@ -420,7 +420,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         } else if (inspect_item->special_enchantment) {
             sprintf(
                 out_text + 200, "%s: %s", localization->GetString(LSTR_SPECIAL_2),
-                pItemTable->pSpecialEnchantments[inspect_item->special_enchantment - 1].pBonusStatement);
+                pItemTable->pSpecialEnchantments[inspect_item->special_enchantment].pBonusStatement);
         } else if (inspect_item->GetItemEquipType() == EQUIP_WAND) {
             sprintf(
                 out_text + 200, localization->GetString(LSTR_FMT_S_U_OUT_OF_U), localization->GetString(LSTR_CHARGES),

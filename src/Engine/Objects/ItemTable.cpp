@@ -142,7 +142,7 @@ void ItemTable::Initialize() {
     strtok(NULL, "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
-    for (int i = 0; i < 72; ++i) {
+    for (ITEM_ENCHANTMENT i : pSpecialEnchantments.indices()) {
         test_string = strtok(NULL, "\r") + 1;
         auto tokens = Tokenize(test_string, '\t');
         Assert(tokens.size() >= 17, "Invalid number of tokens");
@@ -226,9 +226,9 @@ void ItemTable::Initialize() {
                 }
             }
             if (!pItems[item_counter]._bonus_type) {
-                for (int ii = 0; ii < 72; ++ii) {
+                for (ITEM_ENCHANTMENT ii : pSpecialEnchantments.indices()) {
                     if (iequals(tokens[12], pSpecialEnchantments[ii].pNameAdd)) {
-                        pItems[item_counter]._additional_value = ii + 1;
+                        pItems[item_counter]._additional_value = ii;
                     }
                 }
             }
@@ -698,7 +698,7 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
     int spc_sum = 0;
     int spc;
     memset(&val_list, 0, 3200);
-    for (unsigned int i = 0; i < pSpecialEnchantments_count; ++i) {
+    for (ITEM_ENCHANTMENT i : pSpecialEnchantments.indices()) {
         int tr_lv = (pSpecialEnchantments[i].iTreasureLevel) & 3;
 
         // tr_lv  0 = treasure level 3/4
@@ -712,8 +712,7 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
             (treasure_level - 1 == 4) &&
             (tr_lv == 3 || tr_lv == 2 || tr_lv == 1) ||
             (treasure_level - 1 == 5) && (tr_lv == 3)) {
-            spc = pSpecialEnchantments[i]
-                    .to_item_apply[out_item->GetItemEquipType()];
+            spc = pSpecialEnchantments[i].to_item_apply[out_item->GetItemEquipType()];
             spc_sum += spc;
             if (spc) {
                 val_list[j++] = i;
@@ -730,7 +729,7 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
         // TODO(pskelton): investigate this
         // quick fix on limit
         if (j > 799) break;
-        out_item->special_enchantment = (ITEM_ENCHANTMENT)val_list[j];
-        v45 += pSpecialEnchantments[val_list[j]].to_item_apply[out_item->GetItemEquipType()];
+        out_item->special_enchantment = (ITEM_ENCHANTMENT)(val_list[j]);
+        v45 += pSpecialEnchantments[(ITEM_ENCHANTMENT)val_list[j]].to_item_apply[out_item->GetItemEquipType()];
     }
 }

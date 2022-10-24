@@ -29,7 +29,7 @@ struct ItemTable {
     int uAllItemsCount;
     IndexedArray<ItemDesc, 801, 1> pItems;                   // 4-9604h
     ItemEnchantment pEnchantments[24];                // 9604h
-    ItemSpecialEnchantment pSpecialEnchantments[72];  // 97E4h -9FC4h
+    IndexedArray<ItemSpecialEnchantment, ITEM_ENCHANTMENT_COUNT, ITEM_ENCHANTMENT_FIRST_VALID> pSpecialEnchantments;  // 97E4h -9FC4h
     char field_9FC4[5000];
     char field_B348[5000];
     char field_C6D0[5000];
