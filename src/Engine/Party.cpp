@@ -636,8 +636,8 @@ void Party::Reset() {
     bTurnBasedModeOn = false;
 
     uActiveCharacter = 1;
-    ::pPlayers.ZerothIndex() = &pPlayers[0];
-    for (uint i = 0; i < 4; ++i) ::pPlayers[i + 1] = &pPlayers[i];
+    for (uint i = 0; i < 4; ++i)
+        ::pPlayers[i + 1] = &pPlayers[i];
 
     pPlayers[0].Reset(PLAYER_CLASS_KNIGHT);
     pPlayers[0].uCurrentFace = 17;

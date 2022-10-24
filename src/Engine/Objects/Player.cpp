@@ -41,7 +41,7 @@ using EngineIoc = Engine_::IocContainer;
 static DecalBuilder *decal_builder = EngineIoc::ResolveDecalBuilder();
 static SpellFxRenderer *spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
 
-NZIArray<struct Player*, 5> pPlayers;
+NZIArray<struct Player*, 4> pPlayers;
 
 PlayerSpeech PlayerSpeechID;
 

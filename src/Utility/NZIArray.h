@@ -6,18 +6,14 @@
 template <class T, size_t Size>
 class NZIArray {
  public:
-    T& ZerothIndex() {
-        return array_[0];
-    }
-
     T& operator[](size_t index) {
-        assert(index != 0 && "not allowed to access zeroth element");
-        return array_[index];
+        assert(index != 0 && "indexing starts at 1");
+        return array_[index - 1];
     }
 
     const T& operator[](size_t index) const {
-        assert(index != 0 && "not allowed to access zeroth element");
-        return array_[index];
+        assert(index != 0 && "indexing starts at 1");
+        return array_[index - 1];
     }
 
  private:

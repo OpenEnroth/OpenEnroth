@@ -552,6 +552,6 @@ int PlayerCreation_GetUnspentAttributePointCount();
 int CycleCharacter(bool backwards);
 unsigned int SkillToMastery(unsigned int skill_value);
 
-extern NZIArray<struct Player*, 5> pPlayers;
+extern NZIArray<struct Player*, 4> pPlayers;
 
 extern enum PlayerSpeech PlayerSpeechID;
