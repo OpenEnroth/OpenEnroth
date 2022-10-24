@@ -4,6 +4,7 @@
 
 #include "Engine/Objects/ItemEnchantment.h"
 #include "Engine/Objects/Items.h"
+#include "Utility/IndexedArray.h"
 
 #pragma pack(push, 1)
 struct BonusRange {
@@ -26,7 +27,7 @@ struct ItemTable {
     void Release();
 
     int uAllItemsCount;
-    NZIArray<ItemDesc, 800> pItems;                   // 4-9604h
+    IndexedArray<ItemDesc, 801, 1> pItems;                   // 4-9604h
     ItemEnchantment pEnchantments[24];                // 9604h
     ItemSpecialEnchantment pSpecialEnchantments[72];  // 97E4h -9FC4h
     char field_9FC4[5000];
