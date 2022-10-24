@@ -1,8 +1,10 @@
 #pragma once
 
-#include <string>
-#include <algorithm>
 #include <cstring>
+#include <algorithm>
+#include <string>
+#include <vector>
+
 #ifndef _WINDOWS
 #include "Platform/Posix/Posix.h"
 #endif
@@ -10,6 +12,7 @@
 std::string StringPrintf(const char *fmt, ...);
 std::string StringFromInt(int value);
 std::string MakeLower(const std::string &text);
+std::vector<char*> Tokenize(char* input, const char separator);
 
 //----- (00452C30) --------------------------------------------------------
 inline char *RemoveQuotes(char *str) {

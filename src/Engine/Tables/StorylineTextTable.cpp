@@ -8,8 +8,6 @@
 std::string pHistoryTXT_Raw;
 struct StorylineText *pStorylineText;
 
-extern std::vector<char *> Tokenize(char *input, const char separator);
-
 //----- (00453E6D) --------------------------------------------------------
 void StorylineText::Initialize() {
     char *test_string;
