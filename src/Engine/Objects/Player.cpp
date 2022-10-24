@@ -1632,10 +1632,9 @@ int Player::StealFromShop(
         unsigned int stealmaster =
             this->GetActualSkillMastery(PLAYER_SKILL_STEALING);
         unsigned int itemvalue = itemToSteal->GetValue();
-        int equiptype = itemToSteal->GetItemEquipType();
+        ITEM_EQUIP_TYPE equiptype = itemToSteal->GetItemEquipType();
 
-        if (equiptype == EQUIP_SINGLE_HANDED || equiptype == EQUIP_TWO_HANDED ||
-            equiptype == EQUIP_BOW)
+        if (isWeapon(equiptype))
             itemvalue *= 3;
 
         int currMaxItemValue = StealingRandomBonuses[rand() % 5] +
@@ -2765,8 +2764,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
                 }
                 if (getOnlyMainHandDmg ||
                     !this->HasItemEquipped(EQUIP_SINGLE_HANDED) ||
-                    (GetEquippedItemEquipType(EQUIP_SINGLE_HANDED) < 0 ||
-                     GetEquippedItemEquipType(EQUIP_SINGLE_HANDED) > 2)) {
+                    !isWeapon(GetEquippedItemEquipType(EQUIP_SINGLE_HANDED))) {
                     return v5;
                 } else {
                     ItemGen* offHandItem = GetOffHandItem();
@@ -2791,8 +2789,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
             }
             if (getOnlyMainHandDmg ||
                 !this->HasItemEquipped(EQUIP_SINGLE_HANDED) ||
-                (this->GetEquippedItemEquipType(EQUIP_SINGLE_HANDED) < 0) ||
-                this->GetEquippedItemEquipType(EQUIP_SINGLE_HANDED) > 2) {
+                !isWeapon(this->GetEquippedItemEquipType(EQUIP_SINGLE_HANDED))) {
                 return v5;
             } else {
                 v56 = GetOffHandItem()->GetDamageMod();

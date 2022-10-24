@@ -1942,8 +1942,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                     item->uItemID <= ITEM_LASER_RIFLE ||
                 item->uItemID >= ITEM_ARTIFACT_PUCK || item->IsBroken() ||
                 item->special_enchantment || item->uEnchantmentType ||
-                item->GetItemEquipType() >=
-                    EQUIP_ARMOUR) {  // only melee weapons and bows
+                !isWeapon(item->GetItemEquipType())) {
                 mouse->RemoveHoldingItem();
                 no_rightlick_in_inventory = true;
                 return;

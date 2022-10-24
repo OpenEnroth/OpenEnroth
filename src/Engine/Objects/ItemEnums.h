@@ -297,3 +297,21 @@ enum ITEM_EQUIP_TYPE : uint8_t {
     EQUIP_GEM = 19,
     EQUIP_NONE = 20
 };
+
+/**
+ * @param type                          Type to check.
+ * @return                              Whether the provided type represents a `passive` equipment, e.g. shields,
+ *                                      armor, rings, etc.
+ */
+inline bool isPassiveEquipment(ITEM_EQUIP_TYPE type) {
+    return type >= EQUIP_ARMOUR && type <= EQUIP_AMULET;
+}
+
+/**
+ * @param type                          Type to check.
+ * @return                              Whether the provided type represents a weapon. Note that wands are not
+ *                                      considered weapons.
+ */
+inline bool isWeapon(ITEM_EQUIP_TYPE type) {
+    return type >= EQUIP_SINGLE_HANDED && type <= EQUIP_BOW;
+}
