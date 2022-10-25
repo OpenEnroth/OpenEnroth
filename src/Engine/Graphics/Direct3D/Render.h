@@ -98,10 +98,7 @@ class Render : public RenderBase {
                                    unsigned int uColor, int a8) override;
 
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() override;
-    virtual void DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
-                                      RenderBillboard *billboard) override;
     virtual void BillboardSphereSpellFX(struct SpellFX_Billboard *a1, int diffuse) override;
-    virtual void DrawBillboardList_BLV() override;
 
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
                                 float dstX, float dstY, float a7, float a8,

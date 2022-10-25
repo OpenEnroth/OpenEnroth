@@ -276,11 +276,8 @@ class IRender {
                                                   int angle) = 0;
 
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() = 0;
-    virtual void DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
-                                      RenderBillboard *billboard) = 0;
     virtual void BillboardSphereSpellFX(struct SpellFX_Billboard *a1, int diffuse) = 0;
     virtual void TransformBillboardsAndSetPalettesODM() = 0;
-    virtual void DrawBillboardList_BLV() = 0;
 
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
                                 float dstX, float dstY, float a7, float a8,

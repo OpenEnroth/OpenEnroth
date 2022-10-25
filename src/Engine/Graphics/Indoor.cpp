@@ -197,7 +197,7 @@ void IndoorLocation::Draw() {
     PrepareDrawLists_BLV();
     if (pBLVRenderParams->uPartySectorID)
         DrawIndoorFaces(true);
-    render->DrawBillboardList_BLV();
+    render->TransformBillboardsAndSetPalettesODM();
 
     pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
     engine->DrawParticles();
