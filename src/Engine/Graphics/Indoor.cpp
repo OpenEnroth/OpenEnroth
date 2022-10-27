@@ -1405,9 +1405,9 @@ void PrepareToLoadBLV(bool bLoading) {
     unsigned int map_id;            // eax@8
     MapInfo *map_info;              // edi@9
     int v4;                         // eax@11
-    char v28;                       // zf@81
+    bool v28;                       // zf@81
     int v35;                        // [sp+3F8h] [bp-1Ch]@1
-    int v38;                        // [sp+404h] [bp-10h]@1
+    bool v38;                        // [sp+404h] [bp-10h]@1
     int pDest;                      // [sp+40Ch] [bp-8h]@1
 
     respawn_interval = 0;
@@ -1549,7 +1549,7 @@ void PrepareToLoadBLV(bool bLoading) {
     }
 
     // INDOOR initialize actors
-    v38 = 0;
+    v38 = false;
 
     for (uint i = 0; i < pActors.size(); ++i) {
         if (pActors[i].uAttributes & ACTOR_UNKNOW7) {
@@ -1558,9 +1558,9 @@ void PrepareToLoadBLV(bool bLoading) {
                 pActors[i].uAttributes |= ACTOR_UNKNOW11;
                 continue;
             }
-            v28 = v38 == 0;
+            v28 = !v38;
         } else {
-            v28 = v38 == 1;
+            v28 = v38;
         }
 
         if (!v28) {
@@ -2876,7 +2876,7 @@ int CalcDistPointToLine(int x1, int y1, int x2, int y2, int x3, int y3) {
 }
 
 //----- (00450DA3) --------------------------------------------------------
-int GetAlertStatus() {
+bool GetAlertStatus() {
     int result;
 
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor)

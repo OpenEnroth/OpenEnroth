@@ -3182,13 +3182,11 @@ int IsActorAlive(unsigned int uType, unsigned int uParam,
 //----- (00408B54) --------------------------------------------------------
 unsigned int Actor::SearchActorByID(unsigned int *pTotalActors,
                                     unsigned int a2) {
-    // int v4; // eax@1
     unsigned int result;  // ebx@1
 
-    // v4 = GetAlertStatus();
     *pTotalActors = 0;
     result = 0;
-    if ((pActors[a2].uAttributes & ACTOR_UNKNOW7) == ActorAttributes(GetAlertStatus())) {
+    if (!!(pActors[a2].uAttributes & ACTOR_UNKNOW7) == GetAlertStatus()) {
         *pTotalActors = 1;
         if (pActors[a2].IsNotAlive() == 1) result = 1;
     }
@@ -3199,11 +3197,11 @@ unsigned int Actor::SearchActorByGroup(unsigned int *pTotalActors,
                                        unsigned int uGroup) {
     unsigned int result;  // [sp+10h] [bp-4h]@1
 
-    int v8 = GetAlertStatus();
+    bool v8 = GetAlertStatus();
     *pTotalActors = 0;
     result = 0;
     for (uint i = 0; i < pActors.size(); i++) {
-        if ((pActors[i].uAttributes & ACTOR_UNKNOW7) == ActorAttributes(v8) &&
+        if (!!(pActors[i].uAttributes & ACTOR_UNKNOW7) == v8 &&
             pActors[i].uGroup == uGroup) {
             ++*pTotalActors;
             if (pActors[i].IsNotAlive() == 1) ++result;
@@ -3214,14 +3212,13 @@ unsigned int Actor::SearchActorByGroup(unsigned int *pTotalActors,
 //----- (00408A7E) --------------------------------------------------------
 unsigned int Actor::SearchActorByMonsterID(unsigned int *pTotalActors,
                                            int uMonsterID) {
-    int v8;               // [sp+Ch] [bp-8h]@1
     unsigned int result;  // [sp+10h] [bp-4h]@1
 
-    v8 = GetAlertStatus();
+    bool v8 = GetAlertStatus();
     *pTotalActors = 0;
     result = 0;
     for (uint i = 0; i < pActors.size(); i++) {
-        if ((pActors[i].uAttributes & ACTOR_UNKNOW7) == ActorAttributes(v8) &&
+        if (!!(pActors[i].uAttributes & ACTOR_UNKNOW7) == v8 &&
             pActors[i].pMonsterInfo.field_33 == uMonsterID) {
             ++*pTotalActors;
             if (pActors[i].IsNotAlive() == 1) ++result;
@@ -3231,14 +3228,13 @@ unsigned int Actor::SearchActorByMonsterID(unsigned int *pTotalActors,
 }
 //----- (00408A27) --------------------------------------------------------
 unsigned int Actor::SearchAliveActors(unsigned int *pTotalActors) {
-    int v2;               // eax@1
     unsigned int result;  // ebp@1
 
-    v2 = GetAlertStatus();
+    bool v2 = GetAlertStatus();
     result = 0;
     *pTotalActors = 0;
     for (uint i = 0; i < pActors.size(); i++) {
-        if ((pActors[i].uAttributes & ACTOR_UNKNOW7) == ActorAttributes(v2)) {
+        if (!!(pActors[i].uAttributes & ACTOR_UNKNOW7) == v2) {
             ++*pTotalActors;
             if (pActors[i].IsNotAlive() == 1) ++result;
         }

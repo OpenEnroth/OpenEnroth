@@ -1416,13 +1416,13 @@ void OutdoorLocation::ArrangeSpriteObjects() {
 
 //----- (0047F2D3) --------------------------------------------------------
 bool OutdoorLocation::InitalizeActors(int a1) {
-    int alert_status;  // [sp+348h] [bp-8h]@1
+    bool alert_status;  // [sp+348h] [bp-8h]@1
                        //  int v9; // [sp+34Ch] [bp-4h]@1
 
-    alert_status = 0;
+    alert_status = false;
     for (int i = 0; i < pActors.size(); ++i) {
         if (!(pActors[i].uAttributes & ACTOR_UNKNOW7)) {
-            if (alert_status != 1) {
+            if (!alert_status) {
                 pActors[i].uCurrentActionTime = 0;
                 pActors[i].uCurrentActionLength = 0;
                 if (pActors[i].uAttributes & ACTOR_UNKNOW11)
@@ -1446,7 +1446,7 @@ bool OutdoorLocation::InitalizeActors(int a1) {
         } else if (a1 == 0) {
             pActors[i].uAIState = AIState::Disabled;
             pActors[i].uAttributes |= ACTOR_UNKNOW11;
-        } else if (alert_status != 0) {
+        } else if (alert_status) {
             pActors[i].uCurrentActionTime = 0;
             pActors[i].uCurrentActionLength = 0;
             if (pActors[i].uAttributes & ACTOR_UNKNOW11)
@@ -3262,7 +3262,7 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
     pWeather->bRenderSnow = false;
     render->ClearZBuffer();
     // thisa = (ODMRenderParams *)1;
-    GetAlertStatus();
+    GetAlertStatus(); // Result unused.
     if (_A750D8_player_speech_timer) _A750D8_player_speech_timer = 0;
     int map_id = pMapStats->GetMapInfo(pCurrentMapName);
     unsigned int respawn_interval = 0;
