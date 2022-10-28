@@ -27,13 +27,17 @@ jobs:
 
     - name: Configure
       run: |
-        cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DCMAKE_PREFIX_PATH="/usr/local/opt/ffmpeg@4"
+        cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On -DCMAKE_PREFIX_PATH="/usr/local/opt/ffmpeg@4"
 
     - name: Build
       working-directory: build
       run: |
-        alias nproc="sysctl -n hw.logicalcpu"
-        make -j$(nproc)
+        make -j$(sysctl -n hw.logicalcpu)
+
+    - name: Tests
+      working-directory: build
+      run: |
+        make test
 
     - name: Prepare artifact
       run: |

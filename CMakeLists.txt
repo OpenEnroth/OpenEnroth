@@ -38,12 +38,10 @@ target_fix_libcxx_assertions(World_of_Might_and_Magic)
 
 target_link_libraries(World_of_Might_and_Magic game arcomage engine gui io media platform objects spells tables graphics turnengine serialization glad nuklear libluajit glm)
 
+add_subdirectory(test)
+
 set_property(
   DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT World_of_Might_and_Magic
 )
 
 PREBUILT_DEPENDENCIES_RESOLVE(World_of_Might_and_Magic)
-
-add_executable(World_of_Might_and_Magic_Test ${UTILITY_TESTS})
-target_fix_libcxx_assertions(World_of_Might_and_Magic_Test)
-target_link_libraries(World_of_Might_and_Magic_Test utility_test gtest_main)

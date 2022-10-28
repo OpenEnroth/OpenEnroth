@@ -47,12 +47,17 @@ jobs:
           export CFLAGS="-m32" CXXFLAGS="-m32" 
         fi
         export CC=gcc-12 && export CXX=g++-12
-        cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }}
+        cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On
 
     - name: Build
       working-directory: build
       run: |
         make -j$(nproc)
+
+    - name: Tests
+      working-directory: build
+      run: |
+        make test
 
     - name: Prepare artifact
       run: |

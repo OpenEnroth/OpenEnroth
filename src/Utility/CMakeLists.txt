@@ -28,7 +28,3 @@ set(UTILITY_HEADERS Blob.h
 
 add_library(utility STATIC ${UTILITY_SOURCES} ${UTILITY_HEADERS})
 target_check_style(utility)
-
-add_library(utility_test OBJECT ${UTILITY_TESTS} ${UTILITY_HEADERS})
-target_link_libraries(utility_test utility)
-target_check_style(utility_test)
