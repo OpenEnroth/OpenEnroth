@@ -23,7 +23,7 @@ class IndexedArrayKeysIterator {
     constexpr IndexedArrayKeysIterator(value_type pos): pos_(pos) {}
 
     constexpr friend bool operator==(IndexedArrayKeysIterator l, IndexedArrayKeysSentinel r) {
-        return l.pos_ == static_cast<value_type>(static_cast<ssize_t>(LastIndex) + 1);
+        return l.pos_ == static_cast<value_type>(static_cast<ptrdiff_t>(LastIndex) + 1);
     }
 
     constexpr reference operator*() const {
@@ -31,7 +31,7 @@ class IndexedArrayKeysIterator {
     }
 
     constexpr IndexedArrayKeysIterator &operator++() {
-        pos_ = static_cast<value_type>(static_cast<ssize_t>(pos_) + 1);
+        pos_ = static_cast<value_type>(static_cast<ptrdiff_t>(pos_) + 1);
         return *this;
     }
 
@@ -127,10 +127,10 @@ template<
     auto SizeOrFirstIndex,
     auto LastIndex = detail::InvalidLastIndex,
     bool IsZeroBased = std::is_same_v<decltype(LastIndex), detail::LastIndex>,
-    ssize_t Size =
+    ptrdiff_t Size =
         IsZeroBased ?
-        static_cast<ssize_t>(SizeOrFirstIndex) :
-        static_cast<ssize_t>(LastIndex) - static_cast<ssize_t>(SizeOrFirstIndex) + 1>
+        static_cast<ptrdiff_t>(SizeOrFirstIndex) :
+        static_cast<ptrdiff_t>(LastIndex) - static_cast<ptrdiff_t>(SizeOrFirstIndex) + 1>
 class IndexedArray: public std::array<T, Size> {
     using base_type = std::array<T, Size>;
     using index_type = decltype(SizeOrFirstIndex);
@@ -142,7 +142,7 @@ class IndexedArray: public std::array<T, Size> {
     static constexpr auto ActualFirstIndex =
         IsZeroBased ? static_cast<index_type>(0) : SizeOrFirstIndex;
     static constexpr auto ActualLastIndex =
-        IsZeroBased ? static_cast<index_type>(static_cast<ssize_t>(SizeOrFirstIndex) - 1) : static_cast<index_type>(static_cast<ssize_t>(LastIndex));
+        IsZeroBased ? static_cast<index_type>(static_cast<ptrdiff_t>(SizeOrFirstIndex) - 1) : static_cast<index_type>(static_cast<ptrdiff_t>(LastIndex));
 
  public:
     using key_type = index_type;
@@ -238,19 +238,19 @@ class IndexedArray: public std::array<T, Size> {
     using base_type::swap;
 
     constexpr reference at(key_type n) {
-        return base_type::at(static_cast<ssize_t>(n) - static_cast<ssize_t>(ActualFirstIndex));
+        return base_type::at(static_cast<ptrdiff_t>(n) - static_cast<ptrdiff_t>(ActualFirstIndex));
     }
 
     constexpr const_reference at(key_type n) const {
-        return base_type::at(static_cast<ssize_t>(n) - static_cast<ssize_t>(ActualFirstIndex));
+        return base_type::at(static_cast<ptrdiff_t>(n) - static_cast<ptrdiff_t>(ActualFirstIndex));
     }
 
     constexpr reference operator[](key_type n) noexcept {
-        return base_type::operator[](static_cast<ssize_t>(n) - static_cast<ssize_t>(ActualFirstIndex));
+        return base_type::operator[](static_cast<ptrdiff_t>(n) - static_cast<ptrdiff_t>(ActualFirstIndex));
     }
 
     constexpr const_reference operator[](key_type n) const noexcept {
-        return base_type::operator[](static_cast<ssize_t>(n) - static_cast<ssize_t>(ActualFirstIndex));
+        return base_type::operator[](static_cast<ptrdiff_t>(n) - static_cast<ptrdiff_t>(ActualFirstIndex));
     }
 
  private:
