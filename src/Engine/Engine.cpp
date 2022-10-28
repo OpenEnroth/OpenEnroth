@@ -1288,7 +1288,7 @@ void Engine::_461103_load_level_sub() {
     uLevel_StartingPointType = MapStartPoint_Party;
     pSprites_LOD->_461397();
     pPaletteManager->LockTestAll();
-    if (pParty->pPickedItem.uItemID != 0)
+    if (pParty->pPickedItem.uItemID != ITEM_NULL)
         mouse->SetCursorBitmapFromItemID(pParty->pPickedItem.uItemID);
 }
 

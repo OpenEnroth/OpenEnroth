@@ -803,9 +803,9 @@ bool ItemGen::MerchandiseTest(int _2da_idx) {
     bool test;
 
     if ((p2DEvents[_2da_idx - 1].uType != BuildingType_AlchemistShop ||
-         (signed int)this->uItemID < 740 || (signed int)this->uItemID > 771) &&
+         (signed int)this->uItemID < ITEM_RECIPE_REJUVENATION || (signed int)this->uItemID > ITEM_RECIPE_BODY_RESISTANCE) &&
             ((signed int)this->uItemID >= 600 ||
-             (signed int)this->uItemID >= 529 &&
+             (signed int)this->uItemID >= ITEM_ARTIFACT_HERMES_SANDALS &&
                  (signed int)this->uItemID <= 599) ||
         this->IsStolen())
         return false;
@@ -829,7 +829,7 @@ bool ItemGen::MerchandiseTest(int _2da_idx) {
                    this->GetItemEquipType() == EQUIP_POTION ||
                    (this->GetItemEquipType() > EQUIP_POTION &&
                     !(this->GetItemEquipType() != EQUIP_MESSAGE_SCROLL ||
-                      (signed int)this->uItemID < 740) &&
+                      (signed int)this->uItemID < ITEM_RECIPE_REJUVENATION) &&
                     this->uItemID != 771);
             break;
         }

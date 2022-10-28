@@ -1539,7 +1539,7 @@ void PrepareToLoadBLV(bool bLoading) {
     for (uint i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].uObjectDescID) {
             if (pSpriteObjects[i].containing_item.uItemID) {
-                if (pSpriteObjects[i].containing_item.uItemID != 220 &&
+                if (pSpriteObjects[i].containing_item.uItemID != ITEM_POTION_BOTTLE &&
                     pItemTable->pItems[pSpriteObjects[i].containing_item.uItemID].uEquipType == EQUIP_POTION &&
                     !pSpriteObjects[i].containing_item.uEnchantmentType)
                     pSpriteObjects[i].containing_item.uEnchantmentType = rand() % 15 + 5;

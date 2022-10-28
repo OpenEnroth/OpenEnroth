@@ -1402,7 +1402,7 @@ void OutdoorLocation::ArrangeSpriteObjects() {
                             pSpriteObjects[i].vPosition.y, &bOnWater, 0);
                 }
                 if (pSpriteObjects[i].containing_item.uItemID) {
-                    if (pSpriteObjects[i].containing_item.uItemID != 220 &&
+                    if (pSpriteObjects[i].containing_item.uItemID != ITEM_POTION_BOTTLE &&
                         pItemTable->pItems[pSpriteObjects[i].containing_item.uItemID].uEquipType == EQUIP_POTION &&
                         !pSpriteObjects[i].containing_item.uEnchantmentType)
                         pSpriteObjects[i].containing_item.uEnchantmentType = rand() % 15 + 5;

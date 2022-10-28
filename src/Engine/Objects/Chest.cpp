@@ -356,7 +356,7 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
 void Chest::PlaceItemAt(unsigned int put_cell_pos, unsigned int item_at_cell, int uChestID) {  // only used for setup?
     int uItemID = vChests[uChestID].igChestItems[item_at_cell].uItemID;
     pItemTable->SetSpecialBonus(&vChests[uChestID].igChestItems[item_at_cell]);
-    if (uItemID >= 135 && uItemID <= 159 &&
+    if (uItemID >= ITEM_WAND_FIRE && uItemID <= ITEM_WAND_INCENERATION &&
         !vChests[uChestID].igChestItems[item_at_cell].uNumCharges) {
         int v6 = rand() % 21 + 10;
         vChests[uChestID].igChestItems[item_at_cell].uNumCharges = v6;
