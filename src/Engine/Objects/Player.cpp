@@ -35,6 +35,7 @@
 #include "GUI/UI/UIStatusBar.h"
 
 #include "Utility/Memory.h"
+#include "Utility/IndexedArray.h"
 
 using EngineIoc = Engine_::IocContainer;
 
@@ -131,28 +132,28 @@ unsigned char pSkillAvailabilityPerClass[9][37] = {  // byte[] @ MM7.exe::004ED8
                                                             // be here
 };
 
-unsigned char pEquipTypeToBodyAnchor[21] = {  // 4E8398
-    1,   // EQUIP_SINGLE_HANDED
-    1,   // EQUIP_TWO_HANDED
-    2,   // EQUIP_BOW
-    3,   // EQUIP_ARMOUR
-    0,   // EQUIP_SHIELD
-    4,   // EQUIP_HELMET
-    5,   // EQUIP_BELT
-    6,   // EQUIP_CLOAK
-    7,   // EQUIP_GAUNTLETS
-    8,   // EQUIP_BOOTS
-    10,  // EQUIP_RING
-    9,   // EQUIP_AMULET
-    1,   // EQUIP_WAND
-    0,   // EQUIP_REAGENT
-    0,   // EQUIP_POTION
-    0,   // EQUIP_SPELL_SCROLL
-    0,   // EQUIP_BOOK
-    0,   // EQUIP_MESSAGE_SCROLL
-    0,   // EQUIP_GOLD
-    0,   // EQUIP_GEM
-    0    // EQUIP_NONE
+IndexedArray<char, EQUIP_TYPE_COUNT> pEquipTypeToBodyAnchor = {  // 4E8398
+    {EQUIP_SINGLE_HANDED, 1},
+    {EQUIP_TWO_HANDED, 1},
+    {EQUIP_BOW, 2},
+    {EQUIP_ARMOUR, 3},
+    {EQUIP_SHIELD, 0},
+    {EQUIP_HELMET, 4},
+    {EQUIP_BELT, 5},
+    {EQUIP_CLOAK, 6},
+    {EQUIP_GAUNTLETS, 7},
+    {EQUIP_BOOTS, 8},
+    {EQUIP_RING, 10},
+    {EQUIP_AMULET, 9},
+    {EQUIP_WAND, 1},
+    {EQUIP_REAGENT, 0},
+    {EQUIP_POTION, 0},
+    {EQUIP_SPELL_SCROLL, 0},
+    {EQUIP_BOOK, 0},
+    {EQUIP_MESSAGE_SCROLL, 0},
+    {EQUIP_GOLD, 0},
+    {EQUIP_GEM, 0},
+    {EQUIP_NONE, 0}
 };
 
 unsigned char pBaseHealthByClass[12] = {40, 35, 35, 30, 30, 30,
