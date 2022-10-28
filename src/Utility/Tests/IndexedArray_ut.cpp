@@ -54,3 +54,15 @@ GTEST(IndexedArray, MapInit) {
     EXPECT_EQ(a[C], 2);
     EXPECT_EQ(a[D], 1);
 }
+
+TEST(IndexedArray, Indices) {
+    enum class Index { A = 100, B, C, D };
+    using enum Index;
+
+    IndexedArray<int, B, D> a;
+    std::vector<Index> indices = {B, C, D};
+    size_t pos = 0;
+    for(Index i : a.indices())
+        EXPECT_EQ(i, indices[pos++]);
+    EXPECT_EQ(pos, 3);
+}
