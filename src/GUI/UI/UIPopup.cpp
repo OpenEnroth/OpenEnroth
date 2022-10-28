@@ -1780,7 +1780,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
     static int amulety = 91;
 
     int slot = 32;
-    int pos = -1;
+    ITEM_SLOT pos = ITEM_SLOT_INVALID;
 
     mouse->GetClickPos(&pX, &pY);
     inventoryYCoord = (pY - 17) / 32;
@@ -1813,14 +1813,14 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 mousey >= amulety && mousey <= (amulety + 2 * slot)) {
                 // amulet
                 // pitem = pPlayers[uActiveCharacter]->GetAmuletItem(); //9
-                pos = 9;
+                pos = ITEM_SLOT_AMULET;
             }
 
             if (mousex >= glovex && mousex <= (glovex + slot) &&
                 mousey >= glovey && mousey <= (glovey + 2 * slot)) {
                 // glove
                 // pitem = pPlayers[uActiveCharacter]->GetGloveItem(); //7
-                pos = 7;
+                pos = ITEM_SLOT_GAUTNLETS;
             }
 
             for (int i = 0; i < 6; ++i) {
@@ -1829,11 +1829,11 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                     // ring
                     // pitem = pPlayers[uActiveCharacter]->GetNthRingItem(i);
                     // //10+i
-                    pos = 10 + i;
+                    pos = RingSlot(i);
                 }
             }
 
-            if (pos != -1)
+            if (pos != ITEM_SLOT_INVALID)
                 item = pPlayers[uActiveCharacter]->GetNthEquippedIndexItem(pos);
 
             if (!item) return;

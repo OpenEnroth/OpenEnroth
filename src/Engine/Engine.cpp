@@ -1516,7 +1516,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
         pParty->_6FC_water_lava_timer = pParty->GetPlayingTime().value + 128;
         viewparams->bRedrawGameUI = true;
         for (Player &player : pParty->pPlayers) {
-            if (player.WearsItem(ITEM_RELIC_HARECS_LEATHER, EQUIP_ARMOUR) ||
+            if (player.WearsItem(ITEM_RELIC_HARECS_LEATHER, ITEM_SLOT_ARMOUR) ||
                 player.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
                 player.pPlayerBuffs[PLAYER_BUFF_WATER_WALK].expire_time) {
                 player.PlayEmotion(CHARACTER_EXPRESSION_37, 0);
@@ -1832,8 +1832,8 @@ void RegeneratePartyHealthMana() {
             bool decrease_HP = false;
             bool recovery_SP = false;
 
-            for (int idx = 0; idx < 16; idx++) {
-                if (pParty->pPlayers[playerID].HasItemEquipped((ITEM_EQUIP_TYPE)idx)) {
+            for (ITEM_SLOT idx : AllItemSlots()) {
+                if (pParty->pPlayers[playerID].HasItemEquipped(idx)) {
                     uint _idx = pParty->pPlayers[playerID].pEquipment.pIndices[idx];
                     ItemGen equppedItem = pParty->pPlayers[playerID].pInventoryItemList[_idx - 1];
                     if (equppedItem.uItemID > 134) {

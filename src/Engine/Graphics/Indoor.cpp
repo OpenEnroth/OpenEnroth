@@ -2389,7 +2389,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         } else {
             for (uint i = 0; i < 4; ++i) {  // receive falling damage
                 if (pParty->pPlayers[i].HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) ||
-                    pParty->pPlayers[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, EQUIP_BOOTS))
+                    pParty->pPlayers[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS))
                     continue;
 
                 pParty->pPlayers[i].ReceiveDamage(
@@ -2560,7 +2560,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             if (pParty->uFallSpeed < -500) {
                 for (uint pl = 1; pl <= 4; pl++) {
                     if (!pPlayers[pl]->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
-                        !pPlayers[pl]->WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, EQUIP_BOOTS))  // was 8
+                        !pPlayers[pl]->WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS))  // was 8
                         pPlayers[pl]->PlayEmotion(CHARACTER_EXPRESSION_SCARED, 0);
                 }
             }

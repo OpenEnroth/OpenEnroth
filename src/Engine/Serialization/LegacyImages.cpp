@@ -221,7 +221,7 @@ void Serialize(const ItemGen &src, ItemGen_MM7 *dst) {
     dst->special_enchantment = src.special_enchantment;
     dst->uNumCharges = src.uNumCharges;
     dst->uAttributes = std::to_underlying(src.uAttributes);
-    dst->uBodyAnchor = src.uBodyAnchor;
+    dst->uBodyAnchor = std::to_underlying(src.uBodyAnchor);
     dst->uMaxCharges = src.uMaxCharges;
     dst->uHolderPlayer = src.uHolderPlayer;
     dst->field_1B = src.field_1B;
@@ -235,7 +235,7 @@ void Deserialize(const ItemGen_MM7 &src, ItemGen *dst) {
     dst->special_enchantment = (ITEM_ENCHANTMENT)src.special_enchantment;
     dst->uNumCharges = src.uNumCharges;
     dst->uAttributes = ITEM_FLAGS(src.uAttributes);
-    dst->uBodyAnchor = src.uBodyAnchor;
+    dst->uBodyAnchor = ITEM_SLOT(src.uBodyAnchor);
     dst->uMaxCharges = src.uMaxCharges;
     dst->uHolderPlayer = src.uHolderPlayer;
     dst->field_1B = src.field_1B;
@@ -684,8 +684,8 @@ void Serialize(const Player &src, Player_MM7 *dst) {
     dst->sMana = src.sMana;
     dst->uBirthYear = src.uBirthYear;
 
-    for (unsigned int i = 0; i < 16; ++i)
-        dst->pEquipment.pIndices[i] = src.pEquipment.pIndices[i];
+    for (ITEM_SLOT i : AllItemSlots())
+        dst->pEquipment.pIndices[std::to_underlying(i) - std::to_underlying(ITEM_SLOT_FIRST_VALID)] = src.pEquipment.pIndices[i];
 
     for (unsigned int i = 0; i < 49; ++i)
         dst->field_1988[i] = src.field_1988[i];
@@ -969,8 +969,8 @@ void Deserialize(const Player_MM7 &src, Player* dst) {
     dst->sMana = src.sMana;
     dst->uBirthYear = src.uBirthYear;
 
-    for (unsigned int i = 0; i < 16; ++i)
-        dst->pEquipment.pIndices[i] = src.pEquipment.pIndices[i];
+    for (ITEM_SLOT i : AllItemSlots())
+        dst->pEquipment.pIndices[i] = src.pEquipment.pIndices[std::to_underlying(i) - std::to_underlying(ITEM_SLOT_FIRST_VALID)];
 
     for (unsigned int i = 0; i < 49; ++i)
         dst->field_1988[i] = src.field_1988[i];

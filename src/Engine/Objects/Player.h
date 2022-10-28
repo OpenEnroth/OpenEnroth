@@ -105,8 +105,10 @@ union PlayerEquipment {
             // unsigned int field_38;
             // unsigned int field_3C;
         };
-        std::array<unsigned int, 16> pIndices;
+        IndexedArray<unsigned int, ITEM_SLOT_FIRST_VALID, ITEM_SLOT_LAST_VALID> pIndices;
     };
+
+    PlayerEquipment() : pIndices() {}
 };
 #pragma pack(pop)
 
@@ -190,12 +192,12 @@ struct Player {
     bool CanTrainToNextLevel();
     unsigned int GetExperienceDisplayColor();
     int CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int amount);
-    ITEM_EQUIP_TYPE GetEquippedItemEquipType(ITEM_EQUIP_TYPE uEquipSlot);
-    PLAYER_SKILL_TYPE GetEquippedItemSkillType(ITEM_EQUIP_TYPE uEquipSlot);
+    ITEM_EQUIP_TYPE GetEquippedItemEquipType(ITEM_SLOT uEquipSlot);
+    PLAYER_SKILL_TYPE GetEquippedItemSkillType(ITEM_SLOT uEquipSlot);
     bool IsUnarmed();
-    bool HasItemEquipped(ITEM_EQUIP_TYPE uEquipIndex) const;
+    bool HasItemEquipped(ITEM_SLOT uEquipIndex) const;
     bool HasEnchantedItemEquipped(int uEnchantment);
-    bool WearsItem(int item_id, ITEM_EQUIP_TYPE equip_type) const;
+    bool WearsItem(int item_id, ITEM_SLOT equip_type) const;
     int StealFromShop(ItemGen* itemToSteal, int extraStealDifficulty,
                       int reputation, int extraStealFine, int* fineIfFailed);
     int StealFromActor(unsigned int uActorID, int _steal_perm, int reputation);
@@ -369,8 +371,8 @@ struct Player {
     ItemGen* GetBootItem();
     ItemGen* GetAmuletItem();
     ItemGen* GetNthRingItem(int ringNum);
-    const ItemGen* GetNthEquippedIndexItem(int index) const;
-    ItemGen *GetNthEquippedIndexItem(int index);
+    const ItemGen* GetNthEquippedIndexItem(ITEM_SLOT index) const;
+    ItemGen *GetNthEquippedIndexItem(ITEM_SLOT index);
     ItemGen* GetItem(unsigned int PlayerEquipment::*itemPos);
     int GetPlayerIndex();
 

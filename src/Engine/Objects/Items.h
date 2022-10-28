@@ -86,7 +86,7 @@ struct ItemGen {  // 0x24
                               // 72  Prevents falling damage.
     int32_t uNumCharges = 0;           // 10
     ITEM_FLAGS uAttributes = 0;          // 14
-    uint8_t uBodyAnchor = 0;           // 18
+    ITEM_SLOT uBodyAnchor = ITEM_SLOT_INVALID; // 18
     uint8_t uMaxCharges = 0;           // 19
     uint8_t uHolderPlayer = 0;         // 1A
     char field_1B = 0;                 // 1B
@@ -239,16 +239,13 @@ struct SummonedItem {
 
 class EquipemntPair {
  public:
-    ITEM_TYPE m_ItemId;
-    ITEM_EQUIP_TYPE m_EquipSlot;
-    EquipemntPair(ITEM_TYPE type, ITEM_EQUIP_TYPE slot) {
+    ITEM_TYPE m_ItemId = ITEM_NULL;
+    ITEM_SLOT m_EquipSlot = ITEM_SLOT_INVALID;
+    EquipemntPair(ITEM_TYPE type, ITEM_SLOT slot) {
         m_ItemId = type;
         m_EquipSlot = slot;
     }
-    EquipemntPair() {
-        m_ItemId = (ITEM_TYPE)0;
-        m_EquipSlot = (ITEM_EQUIP_TYPE)0;
-    }
+    EquipemntPair() {}
 };
 
 int GetItemTextureFilename(char *pOut, signed int item_id, int index,

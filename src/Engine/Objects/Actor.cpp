@@ -3328,7 +3328,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     if (!projectileSprite) {
         int main_hand_idx = player->pEquipment.uMainHand;
         IsAdditionalDamagePossible = true;
-        if (player->HasItemEquipped(EQUIP_TWO_HANDED)) {
+        if (player->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
             PLAYER_SKILL_TYPE main_hand_skill =
                 player->GetMainHandItem()->GetPlayerSkillType();
             uint main_hand_mastery =
@@ -3480,10 +3480,10 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
             uDamageAmount +=
                 pMonster->CalcMagicalDamageToActor(attackElement, a4);
         } else {
-            for (int i = 0; i < 2; i++) {
-                if (player->HasItemEquipped((ITEM_EQUIP_TYPE)i)) {
+            for (ITEM_SLOT i : {ITEM_SLOT_OFF_HAND, ITEM_SLOT_MAIN_HAND}) {
+                if (player->HasItemEquipped(i)) {
                     ItemGen *item;
-                    if (i == 0)
+                    if (i == ITEM_SLOT_OFF_HAND)
                         item = player->GetOffHandItem();
                     else
                         item = player->GetMainHandItem();

@@ -245,7 +245,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_skill = skill_level;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                if (pPlayer->WearsItem(ITEM_ARTIFACT_ULLYSES, EQUIP_BOW))
+                if (pPlayer->WearsItem(ITEM_ARTIFACT_ULLYSES, ITEM_SLOT_BOW))
                     pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(0xBD6u);
                 pSpellSprite.vPosition.x = pParty->vPosition.x;
                 pSpellSprite.vPosition.y = pParty->vPosition.y;

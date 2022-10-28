@@ -1,6 +1,10 @@
 #pragma once
 
+#include "Engine/ErrorHandling.h"
+
 #include "Utility/Flags.h"
+#include "Utility/Range.h"
+#include "Utility/Workaround/ToUnderlying.h"
 
 enum class DAMAGE_TYPE : unsigned int {
     DMGT_FIRE = 0,
@@ -321,4 +325,47 @@ inline bool isPassiveEquipment(ITEM_EQUIP_TYPE type) {
  */
 inline bool isWeapon(ITEM_EQUIP_TYPE type) {
     return type >= EQUIP_SINGLE_HANDED && type <= EQUIP_BOW;
+}
+
+/**
+ * Slot on the paperdoll that the item can be equipped into.
+ */
+enum class ITEM_SLOT : uint8_t {
+    ITEM_SLOT_INVALID = 0,
+
+    ITEM_SLOT_OFF_HAND = 1,
+    ITEM_SLOT_MAIN_HAND = 2,
+    ITEM_SLOT_BOW = 3,
+    ITEM_SLOT_ARMOUR = 4,
+    ITEM_SLOT_HELMET = 5,
+    ITEM_SLOT_BELT = 6,
+    ITEM_SLOT_CLOAK = 7,
+    ITEM_SLOT_GAUTNLETS = 8,
+    ITEM_SLOT_BOOTS = 9,
+    ITEM_SLOT_AMULET = 10,
+    ITEM_SLOT_RING1 = 11,
+    ITEM_SLOT_RING2 = 12,
+    ITEM_SLOT_RING3 = 13,
+    ITEM_SLOT_RING4 = 14,
+    ITEM_SLOT_RING5 = 15,
+    ITEM_SLOT_RING6 = 16,
+
+    ITEM_SLOT_ANY = 17,
+
+    ITEM_SLOT_FIRST_VALID = ITEM_SLOT_OFF_HAND,
+    ITEM_SLOT_LAST_VALID = ITEM_SLOT_RING6,
+};
+using enum ITEM_SLOT;
+
+inline Range<ITEM_SLOT> RingSlots() {
+    return make_range(ITEM_SLOT_RING1, ITEM_SLOT_RING6);
+}
+
+inline ITEM_SLOT RingSlot(int index) {
+    Assert(index >= 0 && index <= 5);
+    return static_cast<ITEM_SLOT>(std::to_underlying(ITEM_SLOT_RING1) + index);
+}
+
+inline Range<ITEM_SLOT> AllItemSlots() {
+    return make_range(ITEM_SLOT_FIRST_VALID, ITEM_SLOT_LAST_VALID);
 }

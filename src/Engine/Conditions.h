@@ -40,11 +40,11 @@ class ConditionProcessor {
     ConditionProcessor() {}
     ConditionProcessor(bool isblocked, bool needsGm, ITEM_ENCHANTMENT enchantment,
                        ITEM_TYPE itemtype1 = ITEM_NULL,
-                       ITEM_EQUIP_TYPE itemslot1 = EQUIP_SINGLE_HANDED,
+                       ITEM_SLOT itemslot1 = ITEM_SLOT_INVALID,
                        ITEM_TYPE itemtype2 = ITEM_NULL,
-                       ITEM_EQUIP_TYPE itemslot2 = EQUIP_SINGLE_HANDED,
+                       ITEM_SLOT itemslot2 = ITEM_SLOT_INVALID,
                        ITEM_TYPE itemtype3 = ITEM_NULL,
-                       ITEM_EQUIP_TYPE itemslot3 = EQUIP_SINGLE_HANDED) {
+                       ITEM_SLOT itemslot3 = ITEM_SLOT_INVALID) {
         m_IsBlockedByProtFromMagic = isblocked;
         m_DoesNeedGmProtFromMagic = needsGm;
         m_WorkingEnchantment = enchantment;
