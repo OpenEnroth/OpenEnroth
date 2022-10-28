@@ -41,7 +41,7 @@ using EngineIoc = Engine_::IocContainer;
 static DecalBuilder *decal_builder = EngineIoc::ResolveDecalBuilder();
 static SpellFxRenderer *spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
 
-NZIArray<struct Player*, 5> pPlayers;
+IndexedArray<Player *, 1, 4> pPlayers;
 
 PlayerSpeech PlayerSpeechID;
 
@@ -1281,7 +1281,7 @@ int Player::CalculateMeleeDmgToEnemyWithWeapon(ItemGen* weapon,
             pItemTable->pItems[itemId].uDamageMod + diceResult;  // add modifer
 
     if (uTargetActorID > 0) {  // if an actor has been provided
-        int enchType =
+        ITEM_ENCHANTMENT enchType =
             weapon->special_enchantment;  // check against enchantments
 
         if (MonsterStats::BelongsToSupertype(uTargetActorID,
@@ -1373,7 +1373,7 @@ int Player::CalculateRangedDamageTo(int uMonsterInfoID) {
 
     ItemGen* bow =
         (ItemGen*)&this->pInventoryItemList[this->pEquipment.uBow - 1];
-    int itemenchant = bow->special_enchantment;
+    ITEM_ENCHANTMENT itemenchant = bow->special_enchantment;
 
     signed int dmgperroll = pItemTable->pItems[bow->uItemID].uDamageRoll;
     int damagefromroll = 0;
@@ -1632,10 +1632,9 @@ int Player::StealFromShop(
         unsigned int stealmaster =
             this->GetActualSkillMastery(PLAYER_SKILL_STEALING);
         unsigned int itemvalue = itemToSteal->GetValue();
-        int equiptype = itemToSteal->GetItemEquipType();
+        ITEM_EQUIP_TYPE equiptype = itemToSteal->GetItemEquipType();
 
-        if (equiptype == EQUIP_SINGLE_HANDED || equiptype == EQUIP_TWO_HANDED ||
-            equiptype == EQUIP_BOW)
+        if (isWeapon(equiptype))
             itemvalue *= 3;
 
         int currMaxItemValue = StealingRandomBonuses[rand() % 5] +
@@ -2765,8 +2764,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
                 }
                 if (getOnlyMainHandDmg ||
                     !this->HasItemEquipped(EQUIP_SINGLE_HANDED) ||
-                    (GetEquippedItemEquipType(EQUIP_SINGLE_HANDED) < 0 ||
-                     GetEquippedItemEquipType(EQUIP_SINGLE_HANDED) > 2)) {
+                    !isWeapon(GetEquippedItemEquipType(EQUIP_SINGLE_HANDED))) {
                     return v5;
                 } else {
                     ItemGen* offHandItem = GetOffHandItem();
@@ -2791,8 +2789,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
             }
             if (getOnlyMainHandDmg ||
                 !this->HasItemEquipped(EQUIP_SINGLE_HANDED) ||
-                (this->GetEquippedItemEquipType(EQUIP_SINGLE_HANDED) < 0) ||
-                this->GetEquippedItemEquipType(EQUIP_SINGLE_HANDED) > 2) {
+                !isWeapon(this->GetEquippedItemEquipType(EQUIP_SINGLE_HANDED))) {
                 return v5;
             } else {
                 v56 = GetOffHandItem()->GetDamageMod();

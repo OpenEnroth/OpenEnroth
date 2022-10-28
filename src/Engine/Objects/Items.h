@@ -3,7 +3,6 @@
 #include <map>
 #include <string>
 
-#include "Engine/NZIArray.h"
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/PlayerEnums.h"
 #include "Engine/Time.h"
@@ -116,7 +115,7 @@ struct ItemDesc {  // 30h
     uint8_t uDamageRoll;  // 1f 23
     uint8_t uDamageMod;   // 20 24
     ITEM_MATERIAL uMaterial;    // 21 25
-    char _additional_value;       // 22 26
+    char _additional_value;       // 22 26 // TODO(captainurist): actually ITEM_ENCHANTMENT
     char _bonus_type;             // 23  27
     char _bonus_strength;         // 24 28
     char field_25;                // 25  29

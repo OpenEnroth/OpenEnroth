@@ -174,26 +174,24 @@ void Party::Zero() {
     TorchLightLastIntensity = 0.0f;
 
     // players
-    for (int y = 0; y < 4; y++) {
-        auto player = &pPlayers[y];
+    for (Player &player : pPlayers) {
+        player.Zero();
+        player.sResFireBase = 0;
+        player.sResAirBase = 0;
+        player.sResWaterBase = 0;
+        player.sResEarthBase = 0;
+        player.sResPhysicalBase = 0;
+        player.sResMagicBase = 0;
+        player.sResSpiritBase = 0;
+        player.sResMindBase = 0;
+        player.sResBodyBase = 0;
+        player.sResLightBase = 0;
+        player.sResDarkBase = 0;
 
-        player->Zero();
-        player->sResFireBase = 0;
-        player->sResAirBase = 0;
-        player->sResWaterBase = 0;
-        player->sResEarthBase = 0;
-        player->sResPhysicalBase = 0;
-        player->sResMagicBase = 0;
-        player->sResSpiritBase = 0;
-        player->sResMindBase = 0;
-        player->sResBodyBase = 0;
-        player->sResLightBase = 0;
-        player->sResDarkBase = 0;
-
-        for (int z = 0; z < player->vBeacons.size(); z++) {
-            player->vBeacons[z].image->Release();
+        for (int z = 0; z < player.vBeacons.size(); z++) {
+            player.vBeacons[z].image->Release();
         }
-        player->vBeacons.clear();
+        player.vBeacons.clear();
     }
 
     // hirelings
@@ -638,8 +636,8 @@ void Party::Reset() {
     bTurnBasedModeOn = false;
 
     uActiveCharacter = 1;
-    ::pPlayers.ZerothIndex() = &pPlayers[0];
-    for (uint i = 0; i < 4; ++i) ::pPlayers[i + 1] = &pPlayers[i];
+    for (uint i = 0; i < 4; ++i)
+        ::pPlayers[i + 1] = &pPlayers[i];
 
     pPlayers[0].Reset(PLAYER_CLASS_KNIGHT);
     pPlayers[0].uCurrentFace = 17;

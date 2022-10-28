@@ -36,6 +36,7 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(ITEM_FLAGS)
 enum ITEM_ENCHANTMENT : unsigned int {
     ITEM_ENCHANTMENT_NULL = 0,
 
+    ITEM_ENCHANTMENT_FIRST_VALID = 1,
     ITEM_ENCHANTMENT_OF_PROTECTION = 1,    // Adds +10 to all Resistances
     ITEM_ENCHANTMENT_OF_GODS = 2,          // Adds +10 to all Seven Statistics
     ITEM_ENCHANTMENT_OF_CARNAGE = 3,       // Projectile explodes like fireball
@@ -108,6 +109,7 @@ enum ITEM_ENCHANTMENT : unsigned int {
     ITEM_ENCHANTMENT_OF_OCEAN = 70,        // +10 Water Resistance and +2 Alchemy skill
     ITEM_ENCHANTMENT_OF_WATER_WALKING = 71, // Prevents damage from drowning
     ITEM_ENCHANTMENT_OF_FEATHER_FALLING = 72, // Prevents damage from falling
+    ITEM_ENCHANTMENT_LAST_VALID = 72
 };
 
 enum class ITEM_MATERIAL : uint8_t {
@@ -297,3 +299,21 @@ enum ITEM_EQUIP_TYPE : uint8_t {
     EQUIP_GEM = 19,
     EQUIP_NONE = 20
 };
+
+/**
+ * @param type                          Type to check.
+ * @return                              Whether the provided type represents a `passive` equipment, e.g. shields,
+ *                                      armor, rings, etc.
+ */
+inline bool isPassiveEquipment(ITEM_EQUIP_TYPE type) {
+    return type >= EQUIP_ARMOUR && type <= EQUIP_AMULET;
+}
+
+/**
+ * @param type                          Type to check.
+ * @return                              Whether the provided type represents a weapon. Note that wands are not
+ *                                      considered weapons.
+ */
+inline bool isWeapon(ITEM_EQUIP_TYPE type) {
+    return type >= EQUIP_SINGLE_HANDED && type <= EQUIP_BOW;
+}

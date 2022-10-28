@@ -10,8 +10,6 @@
 
 #include "GUI/GUIDialogues.h"
 
-#include "NZIArray.h"
-
 #include "VectorTypes.h"
 
 class GUIButton;

@@ -38,7 +38,6 @@ set(ENGINE_HEADERS AssetsManager.h
                    MapsLongTimer.h
                    MM7.h
                    mm7_data.h
-                   NZIArray.h
                    OurMath.h
                    Party.h
                    Point.h
