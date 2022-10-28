@@ -4008,8 +4008,7 @@ void Actor::LootActor() {
             Dst.uNumCharges = rand() % 6 + Dst.GetDamageMod() + 1;
             Dst.uMaxCharges = Dst.uNumCharges;
         }
-        if (pItemTable->pItems[Dst.uItemID].uEquipType == 14 &&
-            Dst.uItemID != 220)
+        if (pItemTable->pItems[Dst.uItemID].uEquipType == EQUIP_POTION && Dst.uItemID != ITEM_POTION_BOTTLE)
             Dst.uEnchantmentType = 2 * rand() % 4 + 2;
         pItemTable->SetSpecialBonus(&Dst);
         if (!pParty->AddItemToParty(&Dst)) pParty->SetHoldingItem(&Dst);

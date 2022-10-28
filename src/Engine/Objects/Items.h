@@ -63,9 +63,9 @@ struct ItemGen {  // 0x24
     bool MerchandiseTest(int _2da_idx);
 
     int32_t uItemID = ITEM_NULL;        // 0
-    int32_t uEnchantmentType = 0;       // 4
+    int32_t uEnchantmentType = ITEM_ENCHANTMENT_NULL;       // 4 // For potion it's potion strength.
     int32_t m_enchantmentStrength = 0;  // 8
-    ITEM_ENCHANTMENT special_enchantment = ITEM_ENCHANTMENT_NULL;  // 0c
+    ITEM_ENCHANTMENT special_enchantment = ITEM_ENCHANTMENT_NULL;  // 0c // For gold it's amount
                               // 25  +5 levels
                               // 16  Drain Hit Points from target.
                               // 35  Increases chance of disarming.
@@ -115,8 +115,8 @@ struct ItemDesc {  // 30h
     uint8_t uDamageRoll;  // 1f 23
     uint8_t uDamageMod;   // 20 24
     ITEM_MATERIAL uMaterial;    // 21 25
-    char _additional_value;       // 22 26 // TODO(captainurist): actually ITEM_ENCHANTMENT
-    char _bonus_type;             // 23  27
+    char _additional_value;       // 22 26 // TODO(captainurist): actually ITEM_ENCHANTMENT?
+    char _bonus_type;             // 23  27 // TODO(captainurist): actually ITEM_ENCHANTMENT??
     char _bonus_strength;         // 24 28
     char field_25;                // 25  29
     char field_26;                // 26   2A
