@@ -30,7 +30,7 @@ TEST(IndexedArray, NonZeroIndex) {
     EXPECT_EQ(a[BB], 0);
     EXPECT_EQ(a[XX], 0);
 
-    for(int &val: a) {
+    for(int &val : a) {
         val = -1;
         break;
     }
