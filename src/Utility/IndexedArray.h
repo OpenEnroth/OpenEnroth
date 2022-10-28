@@ -6,60 +6,9 @@
 #include <type_traits>
 #include <utility>
 
+#include "Range.h"
 
 namespace detail {
-
-class IndexedArrayKeysSentinel {};
-
-template<auto FirstIndex, auto LastIndex>
-class IndexedArrayKeysIterator {
- public:
-    using value_type = decltype(FirstIndex);
-    using reference = value_type;
-
-    // Note that this is a very basic implementation that doesn't even satisfy
-    // the iterator concept. The goal here is to just make the range-based for loop work.
-
-    constexpr IndexedArrayKeysIterator() {}
-    constexpr IndexedArrayKeysIterator(value_type pos): pos_(pos) {}
-
-    constexpr friend bool operator==(IndexedArrayKeysIterator l, IndexedArrayKeysSentinel r) {
-        return l.pos_ == static_cast<value_type>(static_cast<ptrdiff_t>(LastIndex) + 1);
-    }
-
-    constexpr reference operator*() const {
-        return pos_;
-    }
-
-    constexpr IndexedArrayKeysIterator &operator++() {
-        pos_ = static_cast<value_type>(static_cast<ptrdiff_t>(pos_) + 1);
-        return *this;
-    }
-
-    constexpr IndexedArrayKeysIterator operator++(int) {
-        IndexedArrayKeysIterator tmp = *this;
-        ++*this;
-        return tmp;
-    }
-
- private:
-    value_type pos_ = FirstIndex;
-};
-
-template<auto FirstIndex, auto LastIndex>
-struct IndexedArrayKeysRange {
-    IndexedArrayKeysIterator<FirstIndex, LastIndex> begin;
-};
-
-template<auto FirstIndex, auto LastIndex>
-constexpr IndexedArrayKeysIterator<FirstIndex, LastIndex> begin(const IndexedArrayKeysRange<FirstIndex, LastIndex> &range) {
-    return range.begin;
-}
-
-template<auto FirstIndex, auto LastIndex>
-constexpr IndexedArrayKeysSentinel end(const IndexedArrayKeysRange<FirstIndex, LastIndex> &) {
-    return {};
-}
 
 enum class LastIndex {
     InvalidLastIndex
@@ -215,8 +164,8 @@ class IndexedArray: public std::array<T, Size> {
      *
      * @return                          View over the valid indices for the elements of this indexed array.
      */
-    constexpr detail::IndexedArrayKeysRange<ActualFirstIndex, ActualLastIndex> indices() const {
-        return {};
+    constexpr Range<key_type> indices() const {
+        return make_range(ActualFirstIndex, ActualLastIndex);
     }
 
     using base_type::begin;

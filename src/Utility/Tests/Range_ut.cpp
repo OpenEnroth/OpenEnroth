@@ -6,11 +6,7 @@
 #include "src/Utility/Range.h"
 
 TEST(Range, Iteration) {
-    enum class Index {
-        AA,
-        BB,
-        CC
-    };
+    enum class Index { AA, BB, CC };
     using enum Index;
 
     int counter = 0;
