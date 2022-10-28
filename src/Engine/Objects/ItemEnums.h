@@ -109,7 +109,7 @@ enum ITEM_ENCHANTMENT : unsigned int {
     ITEM_ENCHANTMENT_OF_OCEAN = 70,        // +10 Water Resistance and +2 Alchemy skill
     ITEM_ENCHANTMENT_OF_WATER_WALKING = 71, // Prevents damage from drowning
     ITEM_ENCHANTMENT_OF_FEATHER_FALLING = 72, // Prevents damage from falling
-    ITEM_ENCHANTMENT_COUNT
+    ITEM_ENCHANTMENT_LAST_VALID = 72
 };
 
 enum class ITEM_MATERIAL : uint8_t {

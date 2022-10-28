@@ -5,24 +5,15 @@
 #include <type_traits>
 #include <utility>
 
-#include "Utility/Workaround/ToUnderlying.h"
-
 
 namespace detail {
 
-using std::to_underlying;
-
-template<class T>
-T to_underlying(T value) requires std::is_integral_v<T> {
-    return value;
-}
-
 class IndexedArrayKeysSentinel {};
 
-template<auto Size, auto Zero>
+template<auto FirstIndex, auto LastIndex>
 class IndexedArrayKeysIterator {
  public:
-    using value_type = decltype(Size);
+    using value_type = decltype(FirstIndex);
     using reference = value_type;
 
     // Note that this is a very basic implementation that doesn't even satisfy
@@ -32,7 +23,7 @@ class IndexedArrayKeysIterator {
     constexpr IndexedArrayKeysIterator(value_type pos): pos_(pos) {}
 
     constexpr friend bool operator==(IndexedArrayKeysIterator l, IndexedArrayKeysSentinel r) {
-        return l.pos_ == Size;
+        return l.pos_ == static_cast<value_type>(static_cast<ssize_t>(LastIndex) + 1);
     }
 
     constexpr reference operator*() const {
@@ -40,7 +31,7 @@ class IndexedArrayKeysIterator {
     }
 
     constexpr IndexedArrayKeysIterator &operator++() {
-        pos_ = static_cast<value_type>(detail::to_underlying(pos_) + 1);
+        pos_ = static_cast<value_type>(static_cast<ssize_t>(pos_) + 1);
         return *this;
     }
 
@@ -51,48 +42,61 @@ class IndexedArrayKeysIterator {
     }
 
  private:
-    value_type pos_ = Zero;
+    value_type pos_ = FirstIndex;
 };
 
-template<auto Size, auto Zero>
+template<auto FirstIndex, auto LastIndex>
 struct IndexedArrayKeysRange {
-    IndexedArrayKeysIterator<Size, Zero> begin;
+    IndexedArrayKeysIterator<FirstIndex, LastIndex> begin;
 };
 
-template<auto Size, auto Zero>
-constexpr IndexedArrayKeysIterator<Size, Zero> begin(const IndexedArrayKeysRange<Size, Zero> &range) {
+template<auto FirstIndex, auto LastIndex>
+constexpr IndexedArrayKeysIterator<FirstIndex, LastIndex> begin(const IndexedArrayKeysRange<FirstIndex, LastIndex> &range) {
     return range.begin;
 }
 
-template<auto Size, auto Zero>
-constexpr IndexedArrayKeysSentinel end(const IndexedArrayKeysRange<Size, Zero> &) {
+template<auto FirstIndex, auto LastIndex>
+constexpr IndexedArrayKeysSentinel end(const IndexedArrayKeysRange<FirstIndex, LastIndex> &) {
     return {};
 }
+
+enum class LastIndex {
+    InvalidLastIndex
+};
+using enum LastIndex;
 
 } // namespace detail
 
 
 /**
- * An `std::array`-like class that basically does the same thing but can be indexed with an enum (type is inferred
- * from the `Size` parameter), and supports an `std::map`-like initialization, so that the user doesn't have
- * to manually double check that the order of the values in the initializer matches the order of the values of the
- * enum that's used for indexing.
+ * An `std::array`-like class that supports some additional features:
+ * - Can be indexed with an enum (type is inferred from the `Size` parameter).
+ * - Supports an `std::map`-like initialization, so that the user doesn't have to manually double check that the order
+ *   of the values in the initializer matches the order of the values of the enum that's used for indexing.
+ * - Supports non-zero-based indexing (e.g. can be used to construct a Pascal-like array).
+ *
+ * The template itself is overloaded and can be used in several different ways:
+ * - `IndexedArray<int, 10>` works the same as `std::array<int, 10>`.
+ * - `IndexedArray<int, 1, 10>` creates a Pascal-like array with a first index of 1, and last index of 10
+ *   (so the size is still 10 as in the previous example).
+ * - `IndexedArray<int, SomeEnum_Count>` creates an indexed array that's indexed with an enum. The main use case for
+ *   this is using an `enum class` for indexing to make it fully type-safe.
+ * - `IndexedArray<int, FirstWeaponItem, LastWeaponItem>` creates a non-zero-based enum-indexed array.
  *
  * Some code examples:
  * @code
  * enum class TriBool {
  *    True,
  *    False,
- *    DontKnow,
- *    TriBool_Size
+ *    DontKnow
  * };
  * using enum TriBool;
  *
  * // IndexedArray supports the same initialization syntax as `std::array`.
- * IndexedArray<std::string, TriBool_Size> userMessageMap = {{}};
+ * IndexedArray<std::string, True, DontKnow> userMessageMap = {{}};
  *
  * // And it can also be constructed like an `std::map`.
- * IndexedArray<std::string, TriBool_Size> defaultMessageMap = {
+ * IndexedArray<std::string, True, DontKnow> defaultMessageMap = {
  *     {True, "true"},
  *     {False, "false"},
  *     {DontKnow, "unknown"}
@@ -113,22 +117,35 @@ constexpr IndexedArrayKeysSentinel end(const IndexedArrayKeysRange<Size, Zero> &
  * @endcode
  *
  * @tparam T                            Array element type.
- * @tparam Size                         Array size. Value must be of enum type or integral type.
- * @tparam Zero                         Index of the first element. Basically, valid indices are in range [`Zero`, `Size`).
- *                                      If this parameter is provided, then the size of the indexed array might not
- *                                      equal `Size`.
+ * @tparam SizeOrFirstIndex             Either array size or index of the 1st element. Value must be of enum or
+ *                                      integral type.
+ * @tparam LastIndex                    Index of the last element. If this parameter is provided, then the size of the
+ *                                      indexed array is `LastIndex - SizeOrFirstIndex + 1`.
  */
-template<class T,
-         auto Size,
-         auto Zero = static_cast<decltype(Size)>(0),
-         size_t StorageSize = static_cast<size_t>(Size) - static_cast<size_t>(Zero)>
-class IndexedArray: public std::array<T, StorageSize> {
-    static_assert(std::is_enum_v<decltype(Size)> || std::is_integral_v<decltype(Size)>, "Size must be an enum or an integral type");
-    static_assert(std::is_same_v<decltype(Size), decltype(Zero)>, "Size and Zero must be of the same type");
-    using base_type = std::array<T, StorageSize>;
+template<
+    class T,
+    auto SizeOrFirstIndex,
+    auto LastIndex = detail::InvalidLastIndex,
+    bool IsZeroBased = std::is_same_v<decltype(LastIndex), detail::LastIndex>,
+    ssize_t Size =
+        IsZeroBased ?
+        static_cast<ssize_t>(SizeOrFirstIndex) :
+        static_cast<ssize_t>(LastIndex) - static_cast<ssize_t>(SizeOrFirstIndex) + 1>
+class IndexedArray: public std::array<T, Size> {
+    using base_type = std::array<T, Size>;
+    using index_type = decltype(SizeOrFirstIndex);
+
+    static_assert(Size >= 0, "IndexedArray size must be non-negative");
+    static_assert(std::is_enum_v<index_type> || std::is_integral_v<index_type>, "SizeOrFirstIndex must be an enum or an integral type");
+    static_assert(IsZeroBased || std::is_same_v<index_type, decltype(LastIndex)>, "SizeOrFirstIndex and LastIndex must be of the same type");
+
+    static constexpr auto ActualFirstIndex =
+        IsZeroBased ? static_cast<index_type>(0) : SizeOrFirstIndex;
+    static constexpr auto ActualLastIndex =
+        IsZeroBased ? static_cast<index_type>(static_cast<ssize_t>(SizeOrFirstIndex) - 1) : static_cast<index_type>(static_cast<ssize_t>(LastIndex));
 
  public:
-    using key_type = decltype(Size);
+    using key_type = index_type;
     using typename base_type::value_type;
     using typename base_type::reference;
     using typename base_type::const_reference;
@@ -197,7 +214,7 @@ class IndexedArray: public std::array<T, StorageSize> {
      *
      * @return                          View over the valid indices for the elements of this indexed array.
      */
-    constexpr detail::IndexedArrayKeysRange<Size, Zero> indices() const {
+    constexpr detail::IndexedArrayKeysRange<ActualFirstIndex, ActualLastIndex> indices() const {
         return {};
     }
 
@@ -221,19 +238,19 @@ class IndexedArray: public std::array<T, StorageSize> {
     using base_type::swap;
 
     constexpr reference at(key_type n) {
-        return base_type::at(detail::to_underlying(n) - detail::to_underlying(Zero));
+        return base_type::at(static_cast<ssize_t>(n) - static_cast<ssize_t>(ActualFirstIndex));
     }
 
     constexpr const_reference at(key_type n) const {
-        return base_type::at(detail::to_underlying(n) - detail::to_underlying(Zero));
+        return base_type::at(static_cast<ssize_t>(n) - static_cast<ssize_t>(ActualFirstIndex));
     }
 
     constexpr reference operator[](key_type n) noexcept {
-        return base_type::operator[](detail::to_underlying(n) - detail::to_underlying(Zero));
+        return base_type::operator[](static_cast<ssize_t>(n) - static_cast<ssize_t>(ActualFirstIndex));
     }
 
     constexpr const_reference operator[](key_type n) const noexcept {
-        return base_type::operator[](detail::to_underlying(n) - detail::to_underlying(Zero));
+        return base_type::operator[](static_cast<ssize_t>(n) - static_cast<ssize_t>(ActualFirstIndex));
     }
 
  private:

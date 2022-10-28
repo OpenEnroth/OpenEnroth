@@ -554,6 +554,6 @@ int PlayerCreation_GetUnspentAttributePointCount();
 int CycleCharacter(bool backwards);
 unsigned int SkillToMastery(unsigned int skill_value);
 
-extern IndexedArray<Player *, 5, 1> pPlayers;
+extern IndexedArray<Player *, 1, 4> pPlayers;
 
 extern enum PlayerSpeech PlayerSpeechID;

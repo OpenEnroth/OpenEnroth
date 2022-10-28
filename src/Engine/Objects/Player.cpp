@@ -41,7 +41,7 @@ using EngineIoc = Engine_::IocContainer;
 static DecalBuilder *decal_builder = EngineIoc::ResolveDecalBuilder();
 static SpellFxRenderer *spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
 
-IndexedArray<Player *, 5, 1> pPlayers;
+IndexedArray<Player *, 1, 4> pPlayers;
 
 PlayerSpeech PlayerSpeechID;
 
