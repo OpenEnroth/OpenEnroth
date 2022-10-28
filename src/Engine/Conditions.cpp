@@ -85,7 +85,7 @@ bool ConditionProcessor::IsPlayerAffected(Player* inPlayer, Condition condToChec
             return false;
         }
     }
-    if (thisProc->m_WorkingEnchantment != 0) {
+    if (thisProc->m_WorkingEnchantment != ITEM_ENCHANTMENT_NULL) {
         if (inPlayer->HasEnchantedItemEquipped(thisProc->m_WorkingEnchantment))
             return false;
     }

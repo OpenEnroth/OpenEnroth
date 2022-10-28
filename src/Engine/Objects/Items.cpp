@@ -156,7 +156,7 @@ unsigned int ItemGen::GetValue() {
         return uBaseValue;
     if (uEnchantmentType) return uBaseValue + 100 * m_enchantmentStrength;
 
-    if (special_enchantment) {
+    if (special_enchantment != ITEM_ENCHANTMENT_NULL) {
         mod = (pItemTable->pSpecialEnchantments[special_enchantment].iTreasureLevel & 4);
         bonus = pItemTable->pSpecialEnchantments[special_enchantment].iValue;
         if (!mod)
@@ -204,7 +204,7 @@ std::string ItemGen::GetIdentifiedName() {
         if (uEnchantmentType) {
             return std::string(pItemTable->pItems[uItemID].pName) + " " +
                    pItemTable->pEnchantments[uEnchantmentType - 1].pOfName;
-        } else if (!special_enchantment) {
+        } else if (special_enchantment == ITEM_ENCHANTMENT_NULL) {
             return pItemTable->pItems[uItemID].pName;
         } else {
             if (special_enchantment == ITEM_ENCHANTMENT_VAMPIRIC

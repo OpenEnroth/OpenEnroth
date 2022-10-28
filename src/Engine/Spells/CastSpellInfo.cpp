@@ -1685,7 +1685,7 @@ void CastSpellInfoHelpers::CastSpell() {
 
                 if ((skill_level == 3 || skill_level == 4) &&
                     spell_item_to_enchant->uItemID <= 134 &&
-                    spell_item_to_enchant->special_enchantment == 0 &&
+                    spell_item_to_enchant->special_enchantment == ITEM_ENCHANTMENT_NULL &&
                     spell_item_to_enchant->uEnchantmentType == 0 &&
                     spell_item_to_enchant->m_enchantmentStrength == 0 &&
                     !spell_item_to_enchant->IsBroken()) {

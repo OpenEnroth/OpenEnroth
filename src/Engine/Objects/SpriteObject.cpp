@@ -1088,7 +1088,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
         case SPRITE_ARROW_PROJECTILE:
         case SPRITE_PROJECTILE_550: {
             if (pSpriteObjects[uLayingItemID].containing_item.uItemID != 405 &&
-                pSpriteObjects[uLayingItemID].containing_item.special_enchantment != 3) {
+                pSpriteObjects[uLayingItemID].containing_item.special_enchantment != ITEM_ENCHANTMENT_OF_CARNAGE) {
                 pSpriteObjects[uLayingItemID].vVelocity.z = 0;
                 pSpriteObjects[uLayingItemID].vVelocity.y = 0;
                 pSpriteObjects[uLayingItemID].vVelocity.x = 0;
