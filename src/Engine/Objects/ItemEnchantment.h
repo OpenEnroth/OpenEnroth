@@ -2,6 +2,8 @@
 
 #include "Engine/Objects/Items.h"
 
+#include "Utility/IndexedArray.h"
+
 struct Player;
 
 typedef struct CEnchantment {
@@ -44,7 +46,7 @@ struct ItemSpecialEnchantment {  // 1Ch
 
     char* pBonusStatement;   // 0
     char* pNameAdd;          // 4
-    char to_item_apply[12];  // 8
+    IndexedArray<char, EQUIP_FIRST_SPECIAL_ENCHANTABLE, EQUIP_LAST_SPECIAL_ENCHANTABLE> to_item_apply;  // 8
     int iValue;              // 14
     int iTreasureLevel;      // 18
 };

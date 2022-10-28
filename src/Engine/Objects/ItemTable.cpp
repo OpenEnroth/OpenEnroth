@@ -149,7 +149,7 @@ void ItemTable::Initialize() {
         pSpecialEnchantments[i].pBonusStatement = RemoveQuotes(tokens[0]);
         pSpecialEnchantments[i].pNameAdd = RemoveQuotes(tokens[1]);
         for (int j = 0; j < 12; j++) {
-            pSpecialEnchantments[i].to_item_apply[j] = atoi(tokens[j + 2]);
+            pSpecialEnchantments[i].to_item_apply[ITEM_EQUIP_TYPE(j)] = atoi(tokens[j + 2]);
         }
         int res;
         res = atoi(tokens[14]);
@@ -166,10 +166,12 @@ void ItemTable::Initialize() {
     }
 
     pSpecialEnchantments_count = 72;
+
+    // TODO(captainurist): can be dropped?
     memset(&pSpecialEnchantmentsSumm, 0, 96);
     for (int i = 0; i < 12; ++i) {
         for (ITEM_ENCHANTMENT j : pSpecialEnchantments.indices())
-            pSpecialEnchantmentsSumm[i] += pSpecialEnchantments[j].to_item_apply[i];
+            pSpecialEnchantmentsSumm[ITEM_EQUIP_TYPE(i)] += pSpecialEnchantments[j].to_item_apply[ITEM_EQUIP_TYPE(i)];
     }
 
     InitializeBuildingResidents();

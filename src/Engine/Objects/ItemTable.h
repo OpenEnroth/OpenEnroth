@@ -47,7 +47,8 @@ struct ItemTable {
     unsigned int uBonusChanceWpSpecial[6];      // 116cc -116e4
     unsigned int pEnchantmentsSumm[9];          // 116E4h -11708h
     BonusRange bonus_ranges[6];                 // 45C2h*4 =11708h
-    unsigned int pSpecialEnchantmentsSumm[24];  // 11738h
+    //IndexedArray<int, EQUIP_LAST_SPECIAL_ENCHANTABLE>
+    unsigned int pSpecialEnchantmentsSumm[24];  // 11738h // TODO(captainurist): Can be dropped?
     unsigned int pSpecialEnchantments_count;    // 11798h
     char field_1179C;
     char field_1179D;
