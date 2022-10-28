@@ -6,13 +6,14 @@
 
 struct Player;
 
-typedef struct CEnchantment {
+struct CEnchantment {
+    CEnchantment() {}
     CEnchantment(int bonus, uint16_t Player::* skillPtr = nullptr)
         : statPtr(skillPtr), statBonus(bonus) {}
 
-    uint16_t Player::* statPtr;
-    int statBonus;
-} CEnchantment;
+    uint16_t Player::* statPtr = nullptr;
+    int statBonus = 0;
+};
 
 /*  177 */
 #pragma pack(push, 1)
