@@ -3329,7 +3329,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         int main_hand_idx = player->pEquipment.uMainHand;
         IsAdditionalDamagePossible = true;
         if (player->HasItemEquipped(EQUIP_TWO_HANDED)) {
-            uint main_hand_skill =
+            PLAYER_SKILL_TYPE main_hand_skill =
                 player->GetMainHandItem()->GetPlayerSkillType();
             uint main_hand_mastery =
                 SkillToMastery(player->pActiveSkills[main_hand_skill]);

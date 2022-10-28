@@ -683,8 +683,8 @@ ITEM_EQUIP_TYPE ItemGen::GetItemEquipType() {
         return pItemTable->pItems[this->uItemID].uEquipType;
 }
 
-unsigned char ItemGen::GetPlayerSkillType() {
-    unsigned char skl = pItemTable->pItems[this->uItemID].uSkillType;
+PLAYER_SKILL_TYPE ItemGen::GetPlayerSkillType() {
+    PLAYER_SKILL_TYPE skl = pItemTable->pItems[this->uItemID].uSkillType;
     if (skl == PLAYER_SKILL_CLUB) {
         // club skill not used but some items load it
         skl = PLAYER_SKILL_MACE;

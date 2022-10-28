@@ -55,7 +55,7 @@ struct ItemGen {  // 0x24
     int _439DF3_get_additional_damage(DAMAGE_TYPE *a2, bool *vampiyr);
 
     ITEM_EQUIP_TYPE GetItemEquipType();
-    unsigned char GetPlayerSkillType();
+    PLAYER_SKILL_TYPE GetPlayerSkillType();
     char *GetIconName();
     uint8_t GetDamageDice();
     uint8_t GetDamageRoll();
@@ -110,7 +110,7 @@ struct ItemDesc {  // 30h
     int16_t uEquipX;       // 18  1c
     int16_t uEquipY;       // 1a  1e
     ITEM_EQUIP_TYPE uEquipType;   // 1c 20
-    uint8_t uSkillType;   // 1d 21
+    PLAYER_SKILL_TYPE uSkillType;   // 1d 21
     uint8_t uDamageDice;  // 1e 22
     uint8_t uDamageRoll;  // 1f 23
     uint8_t uDamageMod;   // 20 24
