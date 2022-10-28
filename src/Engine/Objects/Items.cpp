@@ -174,9 +174,7 @@ std::string ItemGen::GetDisplayName() {
 
 //----- (004564B3) --------------------------------------------------------
 std::string ItemGen::GetIdentifiedName() {
-    uint8_t equip_type;
-
-    equip_type = GetItemEquipType();
+    ITEM_EQUIP_TYPE equip_type = GetItemEquipType();
     if ((equip_type == EQUIP_REAGENT) || (equip_type == EQUIP_POTION) ||
         (equip_type == EQUIP_GOLD)) {
         return pItemTable->pItems[uItemID].pName;

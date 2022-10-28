@@ -171,7 +171,7 @@ void ItemTable::Initialize() {
     memset(&pSpecialEnchantmentsSumm, 0, 96);
     for (int i = 0; i < 12; ++i) {
         for (ITEM_ENCHANTMENT j : pSpecialEnchantments.indices())
-            pSpecialEnchantmentsSumm[ITEM_EQUIP_TYPE(i)] += pSpecialEnchantments[j].to_item_apply[ITEM_EQUIP_TYPE(i)];
+            pSpecialEnchantmentsSumm[i] += pSpecialEnchantments[j].to_item_apply[ITEM_EQUIP_TYPE(i)];
     }
 
     InitializeBuildingResidents();

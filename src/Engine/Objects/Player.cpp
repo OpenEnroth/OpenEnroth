@@ -966,9 +966,9 @@ bool Player::CanRepair(ItemGen* pItem) {
         GetMultiplierForSkillLevel(PLAYER_SKILL_REPAIR, 1, 2, 3, 5);
     ITEM_EQUIP_TYPE equipType = pItem->GetItemEquipType();
 
-    if (CheckHiredNPCSpeciality(Smith) && equipType <= 2 ||
-        CheckHiredNPCSpeciality(Armorer) && equipType >= 3 && equipType <= 9 ||
-        CheckHiredNPCSpeciality(Alchemist) && equipType >= 9)
+    if (CheckHiredNPCSpeciality(Smith) && equipType <= EQUIP_BOW ||
+        CheckHiredNPCSpeciality(Armorer) && equipType >= EQUIP_ARMOUR && equipType <= EQUIP_BOOTS ||
+        CheckHiredNPCSpeciality(Alchemist) && equipType >= EQUIP_BOOTS)
         return true;  // check against hired help
 
     if (skillmaster == 4)  // gm repair
