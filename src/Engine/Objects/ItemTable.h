@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "Engine/Objects/ItemEnchantment.h"
 #include "Engine/Objects/Items.h"
 

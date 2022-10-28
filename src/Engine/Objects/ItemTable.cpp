@@ -1,5 +1,9 @@
 #include "ItemTable.h"
 
+#include <map>
+#include <vector>
+#include <string>
+
 #include "Engine/Tables/StorylineTextTable.h"
 #include "Engine/Tables/FactionTable.h"
 #include "Engine/Spells/Spells.h"
