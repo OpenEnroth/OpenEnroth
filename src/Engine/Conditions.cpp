@@ -6,29 +6,29 @@
 
 #include "Utility/Workaround/ToUnderlying.h"
 
-std::array<ConditionProcessor, 18> conditionArray = {{
+IndexedArray<ConditionProcessor, Condition_Cursed, Condition_Zombie> conditionArray = {
     // hint: condname, protfrommagic, gmprot, enchantment, ...
-    ConditionProcessor(Condition_Cursed, false, false, 0),
-    ConditionProcessor(Condition_Weak, true, false, 0),
-    ConditionProcessor(Condition_Sleep, false, false, ITEM_ENCHANTMENT_OF_ALARMS, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR),
-    ConditionProcessor(Condition_Fear, false, false, 0),
-    ConditionProcessor(Condition_Drunk, false, false, 0),
-    ConditionProcessor(Condition_Insane, false, false, ITEM_ENCHANTMENT_OF_SANITY, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK),
-    ConditionProcessor(Condition_Poison_Weak, true, false, ITEM_ENCHANTMENT_OF_ANTIDOTES, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK),
-    ConditionProcessor(Condition_Disease_Weak, true, false, ITEM_ENCHANTMENT_OF_IMMUNITY, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK),
-    ConditionProcessor(Condition_Poison_Medium, true, false, ITEM_ENCHANTMENT_OF_ANTIDOTES, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK),
-    ConditionProcessor(Condition_Disease_Medium, true, false, ITEM_ENCHANTMENT_OF_IMMUNITY, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK),
-    ConditionProcessor(Condition_Poison_Severe, true, false, ITEM_ENCHANTMENT_OF_ANTIDOTES, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK),
-    ConditionProcessor(Condition_Disease_Severe, true, false, ITEM_ENCHANTMENT_OF_IMMUNITY, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK),
-    ConditionProcessor(Condition_Paralyzed, false, false, ITEM_ENCHANTMENT_OF_FREEDOM, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK,
-                       ITEM_ARTIFACT_GHOULSBANE, EQIUP_ANY),
-    ConditionProcessor(Condition_Unconscious, false, false, 0),
-    ConditionProcessor(Condition_Dead, true, true, 0),
-    ConditionProcessor(Condition_Petrified, true, false, ITEM_ENCHANTMENT_OF_MEDUSA, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK,
-                       ITEM_RELIC_KELEBRIM, EQIUP_ANY),
-    ConditionProcessor(Condition_Eradicated, true, true, 0),
-    ConditionProcessor(Condition_Zombie, false, false, 0)
-}};
+    {Condition_Cursed, {false, false, 0}},
+    {Condition_Weak, {true, false, 0}},
+    {Condition_Sleep, {false, false, ITEM_ENCHANTMENT_OF_ALARMS, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR}},
+    {Condition_Fear, {false, false, 0}},
+    {Condition_Drunk, {false, false, 0}},
+    {Condition_Insane, {false, false, ITEM_ENCHANTMENT_OF_SANITY, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK}},
+    {Condition_Poison_Weak, {true, false, ITEM_ENCHANTMENT_OF_ANTIDOTES, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK}},
+    {Condition_Disease_Weak, {true, false, ITEM_ENCHANTMENT_OF_IMMUNITY, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK}},
+    {Condition_Poison_Medium, {true, false, ITEM_ENCHANTMENT_OF_ANTIDOTES, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK}},
+    {Condition_Disease_Medium, {true, false, ITEM_ENCHANTMENT_OF_IMMUNITY, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK}},
+    {Condition_Poison_Severe, {true, false, ITEM_ENCHANTMENT_OF_ANTIDOTES, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK}},
+    {Condition_Disease_Severe, {true, false, ITEM_ENCHANTMENT_OF_IMMUNITY, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK}},
+    {Condition_Paralyzed, {false, false, ITEM_ENCHANTMENT_OF_FREEDOM, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK,
+                       ITEM_ARTIFACT_GHOULSBANE, EQIUP_ANY}},
+    {Condition_Unconscious, {false, false, 0}},
+    {Condition_Dead, {true, true, 0}},
+    {Condition_Petrified, {true, false, ITEM_ENCHANTMENT_OF_MEDUSA, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK,
+                       ITEM_RELIC_KELEBRIM, EQIUP_ANY}},
+    {Condition_Eradicated, {true, true, 0}},
+    {Condition_Zombie, {false, false, 0}}
+};
 
 std::array<Condition, 18> conditionImportancyTableDefault = {{
     Condition_Eradicated,
@@ -74,7 +74,7 @@ std::array<Condition, 18> conditionImportancyTableGrayface = {{
 
 bool ConditionProcessor::IsPlayerAffected(Player* inPlayer, Condition condToCheck, int blockable) {
     if (!blockable) return true;
-    ConditionProcessor* thisProc = &conditionArray[std::to_underlying(condToCheck)];
+    ConditionProcessor* thisProc = &conditionArray[condToCheck];
     if (thisProc->m_IsBlockedByProtFromMagic &&
         pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].expire_time) {
         if (!(thisProc->m_DoesNeedGmProtFromMagic &&
