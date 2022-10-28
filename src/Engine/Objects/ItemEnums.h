@@ -2,7 +2,7 @@
 
 #include "Utility/Flags.h"
 
-enum DAMAGE_TYPE : unsigned int {
+enum class DAMAGE_TYPE : unsigned int {
     DMGT_FIRE = 0,
     DMGT_ELECTR = 1,
     DMGT_COLD = 2,
@@ -15,6 +15,7 @@ enum DAMAGE_TYPE : unsigned int {
     DMGT_LIGHT = 9,
     DMGT_DARK = 10
 };
+using enum DAMAGE_TYPE;
 
 /*  338 */
 enum class ITEM_FLAG : uint32_t {

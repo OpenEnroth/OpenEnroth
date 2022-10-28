@@ -4263,46 +4263,44 @@ int Actor::CalcMagicalDamageToActor(DAMAGE_TYPE dmgType,
 //----- (00427662) --------------------------------------------------------
 bool Actor::DoesDmgTypeDoDamage(DAMAGE_TYPE uType) {
     signed int resist;  // esi@2
-    bool result;        // eax@13
 
     switch (uType) {
-        case 0:
+        case DMGT_FIRE:
             resist = this->pMonsterInfo.uResFire;
             break;
-        case 1:
+        case DMGT_ELECTR:
             resist = this->pMonsterInfo.uResAir;
             break;
-        case 2:
+        case DMGT_COLD:
             resist = this->pMonsterInfo.uResWater;
             break;
-        case 3:
+        case DMGT_EARTH:
             resist = this->pMonsterInfo.uResEarth;
             break;
-        case 4:
+        case DMGT_PHISYCAL:
             resist = this->pMonsterInfo.uResPhysical;
             break;
-        case 6:
+        case DMGT_SPIRIT:
             resist = this->pMonsterInfo.uResSpirit;
             break;
-        case 7:
+        case DMGT_MIND:
             resist = this->pMonsterInfo.uResMind;
-        case 8:
+        case DMGT_BODY:
             resist = this->pMonsterInfo.uResBody;
             break;
-        case 9:
+        case DMGT_LIGHT:
             resist = this->pMonsterInfo.uResLight;
             break;
-        case 10:
+        case DMGT_DARK:
             resist = this->pMonsterInfo.uResDark;
             break;
         default:
-            return 1;
+            return true;
     }
     if (resist < 200)
-        result = rand() % ((this->pMonsterInfo.uLevel >> 2) + resist + 30) < 30;
+        return rand() % ((this->pMonsterInfo.uLevel >> 2) + resist + 30) < 30;
     else
-        result = 0;
-    return result;
+        return false;
 }
 
 //----- (00448A98) --------------------------------------------------------

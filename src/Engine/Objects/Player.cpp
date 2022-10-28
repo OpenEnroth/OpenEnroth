@@ -1490,10 +1490,11 @@ unsigned int Player::GetExperienceDisplayColor() {
 
 //----- (0048D4B3) --------------------------------------------------------
 int Player::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
+    // TODO(captainurist): these are some weird casts to CHARACTER_ATTRIBUTE_TYPE
     if (classType == PLAYER_CLASS_LICH &&
-        (dmg_type == CHARACTER_ATTRIBUTE_RESIST_MIND ||
-         dmg_type == CHARACTER_ATTRIBUTE_RESIST_BODY ||
-         dmg_type == CHARACTER_ATTRIBUTE_RESIST_SPIRIT))  // TODO(_): determine if spirit
+        ((CHARACTER_ATTRIBUTE_TYPE)dmg_type == CHARACTER_ATTRIBUTE_RESIST_MIND ||
+         (CHARACTER_ATTRIBUTE_TYPE)dmg_type == CHARACTER_ATTRIBUTE_RESIST_BODY ||
+         (CHARACTER_ATTRIBUTE_TYPE)dmg_type == CHARACTER_ATTRIBUTE_RESIST_SPIRIT))  // TODO(_): determine if spirit
                                                           // resistance should be handled
                                                           // by body res. modifier
         return 0;  // liches are not affected by self magics
