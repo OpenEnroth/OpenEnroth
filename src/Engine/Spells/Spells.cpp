@@ -404,7 +404,6 @@ void SpellStats::Initialize() {
         if (((i % 11) - 1) == 0) strtok(NULL, "\r");
         test_string = strtok(NULL, "\r") + 1;
 
-        extern std::vector<char *> Tokenize(char *input, const char separator);
         auto tokens = Tokenize(test_string, '\t');
 
         pInfos[i].pName = RemoveQuotes(tokens[2]);

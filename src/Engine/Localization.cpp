@@ -7,7 +7,6 @@
 
 #define MM7_LOC_STRINGS 677
 #define MAX_LOC_STRINGS MM7_LOC_STRINGS + 3
-extern std::vector<char *> Tokenize(char *input, const char separator);
 
 Localization *localization = nullptr;
 

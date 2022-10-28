@@ -1002,8 +1002,8 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         // main hand's item
         item = itemMainHand;
         if (item) {
-            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][1][0] - pItemsTable->pItems[item->uItemID].uEquipX;
-            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][1][1] - pItemsTable->pItems[item->uItemID].uEquipY;
+            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][1][0] - pItemTable->pItems[item->uItemID].uEquipX;
+            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][1][1] - pItemTable->pItems[item->uItemID].uEquipY;
 
             Texture *texture = nullptr;
             if (item->uItemID == ITEM_BLASTER)
@@ -1015,8 +1015,8 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         // bow
         item = player->GetBowItem();
         if (item) {
-            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][2][0] - pItemsTable->pItems[item->uItemID].uEquipX;
-            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][2][1] - pItemsTable->pItems[item->uItemID].uEquipY;
+            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][2][0] - pItemTable->pItems[item->uItemID].uEquipX;
+            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][2][1] - pItemTable->pItems[item->uItemID].uEquipY;
 
             CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uBow, nullptr, !bRingsShownInCharScreen);
         }
@@ -1278,8 +1278,8 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         // main hand's item
         item = itemMainHand;
         if (item) {
-            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][1][0] - pItemsTable->pItems[item->uItemID].uEquipX;
-            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][1][1] - pItemsTable->pItems[item->uItemID].uEquipY;
+            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][1][0] - pItemTable->pItems[item->uItemID].uEquipX;
+            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][1][1] - pItemTable->pItems[item->uItemID].uEquipY;
 
             Texture *texture = nullptr;
             if (item->uItemID == ITEM_BLASTER)
@@ -1291,8 +1291,8 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         // offhand's item
         item = itemOffHand;
         if (item) {
-            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][0][0] - pItemsTable->pItems[item->uItemID].uEquipX;
-            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][0][1] - pItemsTable->pItems[item->uItemID].uEquipY;
+            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][0][0] - pItemTable->pItems[item->uItemID].uEquipX;
+            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][0][1] - pItemTable->pItems[item->uItemID].uEquipY;
 
             /*
              * MM6 artifacts.

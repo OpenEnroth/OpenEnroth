@@ -233,7 +233,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     // added so window is correct size with broken items
     iteminfo_window.uFrameHeight = inspect_item_image->GetHeight() + itemYspacing + 54;
 
-    if (!pItemsTable->pItems[inspect_item->uItemID].uItemID_Rep_St)
+    if (!pItemTable->pItems[inspect_item->uItemID].uItemID_Rep_St)
         inspect_item->SetIdentified();
 
     int GoldAmount = 0;
@@ -324,7 +324,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             (itemYspacing + (float)iteminfo_window.uFrameY + 30) / 480.0f, inspect_item_image);
         iteminfo_window.DrawTitleText(
             pFontArrus, 0, 0xCu, colorTable.PaleCanary.C16(),
-            pItemsTable->pItems[inspect_item->uItemID].pUnidentifiedName, 3);
+            pItemTable->pItems[inspect_item->uItemID].pUnidentifiedName, 3);
         iteminfo_window.DrawTitleText(
             pFontArrus, 0x64u,
             ((int)iteminfo_window.uFrameHeight >> 1) -
@@ -342,7 +342,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
 
     std::string str = localization->FormatString(
         LSTR_FMT_TYPE_S,
-        pItemsTable->pItems[inspect_item->uItemID].pUnidentifiedName);
+        pItemTable->pItems[inspect_item->uItemID].pUnidentifiedName);
 
     strcpy(out_text, str.c_str());
     out_text[100] = 0;
@@ -415,14 +415,12 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         } else if (inspect_item->uEnchantmentType) {
             sprintf(
                 out_text + 200, "%s: %s +%d", localization->GetString(LSTR_SPECIAL_2),
-                pItemsTable->pEnchantments[inspect_item->uEnchantmentType - 1].pBonusStat,
+                pItemTable->pEnchantments[inspect_item->uEnchantmentType - 1].pBonusStat,
                 inspect_item->m_enchantmentStrength);
         } else if (inspect_item->special_enchantment) {
             sprintf(
                 out_text + 200, "%s: %s", localization->GetString(LSTR_SPECIAL_2),
-                pItemsTable
-                ->pSpecialEnchantments[inspect_item->special_enchantment - 1]
-                .pBonusStatement);
+                pItemTable->pSpecialEnchantments[inspect_item->special_enchantment - 1].pBonusStatement);
         } else if (inspect_item->GetItemEquipType() == EQUIP_WAND) {
             sprintf(
                 out_text + 200, localization->GetString(LSTR_FMT_S_U_OUT_OF_U), localization->GetString(LSTR_CHARGES),
@@ -444,10 +442,10 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
                    3;
         v84 += 100;
     }
-    v28 = pItemsTable->pItems[inspect_item->uItemID].pDescription;
+    v28 = pItemTable->pItems[inspect_item->uItemID].pDescription;
     if (*v28)
         Str_int += pFontSmallnum->CalcTextHeight(
-            pItemsTable->pItems[inspect_item->uItemID].pDescription,
+            pItemTable->pItems[inspect_item->uItemID].pDescription,
             iteminfo_window.uFrameWidth, 100);
     iteminfo_window.uFrameHeight = inspect_item_image->GetHeight() + itemYspacing + 54;
     if ((signed int)Str_int > (signed int)iteminfo_window.uFrameHeight)
@@ -504,7 +502,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         }
         Str += 100;
     }
-    v28 = pItemsTable->pItems[inspect_item->uItemID].pDescription;
+    v28 = pItemTable->pItems[inspect_item->uItemID].pDescription;
     if (*v28)
         iteminfo_window.DrawText(pFontSmallnum, 100, v34, 0, v28, 0, 0, 0);
     iteminfo_window.uFrameX += 12;
@@ -2042,7 +2040,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             item->uItemID == ITEM_POTION_CATALYST)
             potionID = 5;
         else
-            potionID = pItemsTable->potion_data[potion2_id][potion1_id];
+            potionID = pItemTable->potion_data[potion2_id][potion1_id];
 
         damage_level = 0;
         if (alchemy_skill_points) {
@@ -2146,7 +2144,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                         2;
                     pPlayers[uActiveCharacter]->SetVariable(
                         VAR_AutoNotes,
-                        pItemsTable->potion_note[potion1_id][potion2_id]);
+                        pItemTable->potion_note[potion1_id][potion2_id]);
                 }
                 int bottle =
                     pPlayers[uActiveCharacter]->AddItem(-1, ITEM_POTION_BOTTLE);
@@ -2154,7 +2152,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                     pPlayers[uActiveCharacter]
                         ->pOwnItems[bottle - 1]
                         .uAttributes = ITEM_IDENTIFIED;
-                if (!(pItemsTable->pItems[item->uItemID].uItemID_Rep_St))
+                if (!(pItemTable->pItems[item->uItemID].uItemID_Rep_St))
                     item->uAttributes |= ITEM_IDENTIFIED;
                 if (!dword_4E455C) {
                     mouse->RemoveHoldingItem();

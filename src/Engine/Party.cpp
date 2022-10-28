@@ -521,7 +521,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
 
         if (bDebugGiveItems) {
             Dst.Reset();
-            pItemsTable->GenerateItem(2, 40, &Dst);  // ring
+            pItemTable->GenerateItem(2, 40, &Dst);  // ring
             pCharacter->AddItem2(-1, &Dst);
             for (uSkillIdx = 0; uSkillIdx < 36; uSkillIdx++) {
                 if (pCharacter->pActiveSkills[uSkillIdx]) {
@@ -1158,7 +1158,7 @@ void Party::PickedItem_PlaceInInventory_or_Drop() {
         // no chars have room so drop
         if (CharIndex == 4) {
             SpriteObject object;
-            object.uType = (SPRITE_OBJECT_TYPE)pItemsTable->pItems[pParty->pPickedItem.uItemID].uSpriteID;
+            object.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[pParty->pPickedItem.uItemID].uSpriteID;
             object.spell_caster_pid = PID(OBJECT_Player, 0);
             object.uObjectDescID = pObjectList->ObjectIDByItemID(object.uType);
             object.vPosition.y = pParty->vPosition.y;
@@ -1193,9 +1193,9 @@ bool Party::AddItemToParty(ItemGen *pItem) {
     // int v21; // [sp+24h] [bp-4h]@10
 
     v2 = pItem->uItemID;
-    if (!pItemsTable->pItems[v2].uItemID_Rep_St) pItem->SetIdentified();
+    if (!pItemTable->pItems[v2].uItemID_Rep_St) pItem->SetIdentified();
 
-    v5 = pItemsTable->pItems[v2].pIconName;
+    v5 = pItemTable->pItems[v2].pIconName;
     if (v5) {
         auto texture = assets->GetImage_ColorKey(v5, render->teal_mask_16);
         v8 = 0;

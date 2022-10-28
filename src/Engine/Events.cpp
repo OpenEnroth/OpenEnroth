@@ -1086,7 +1086,7 @@ LABEL_47:
                         _evt->v7 +
                         ((_evt->v8 + ((_evt->v9 + ((uint)_evt->v10 << 8)) << 8))
                          << 8);
-                    pItemsTable->GenerateItem(_evt->v5, _evt->v6, &item);
+                    pItemTable->GenerateItem(_evt->v5, _evt->v6, &item);
                     if (v102) item.uItemID = v102;
                     pParty->SetHoldingItem(&item);
                     ++curr_seq_num;

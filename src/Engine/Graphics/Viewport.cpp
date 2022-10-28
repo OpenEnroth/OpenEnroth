@@ -219,7 +219,7 @@ void ViewingParams::_443365() {
 }
 
 void ItemInteraction(unsigned int item_id) {
-    if (pItemsTable->pItems[pSpriteObjects[item_id].containing_item.uItemID]
+    if (pItemTable->pItems[pSpriteObjects[item_id].containing_item.uItemID]
             .uEquipType == EQUIP_GOLD) {
         pParty->PartyFindsGold(
             pSpriteObjects[item_id].containing_item.special_enchantment, 0);
@@ -229,7 +229,7 @@ void ItemInteraction(unsigned int item_id) {
 
         GameUI_SetStatusBar(
             LSTR_FMT_YOU_FOUND_ITEM,
-            pItemsTable->pItems[pSpriteObjects[item_id].containing_item.uItemID].pUnidentifiedName
+            pItemTable->pItems[pSpriteObjects[item_id].containing_item.uItemID].pUnidentifiedName
         );
 
         // TODO: WTF? 184 / 185 qbits are associated with Tatalia's Mercenery Guild Harmondale raids. Are these about castle's tapestries ?
@@ -287,7 +287,7 @@ void Engine::DropHeldItem() {
     if (!pParty->pPickedItem.uItemID) return;
 
     SpriteObject a1;
-    a1.uType = (SPRITE_OBJECT_TYPE)pItemsTable->pItems[pParty->pPickedItem.uItemID].uSpriteID;
+    a1.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[pParty->pPickedItem.uItemID].uSpriteID;
     a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.uType);
     a1.vPosition.y = pParty->vPosition.y;
     a1.spell_caster_pid = PID(OBJECT_Player, 0);
