@@ -890,7 +890,7 @@ void SpriteObject::_46BEF1_apply_spells_aoe() {
                         GameTime(pParty->GetPlayingTime() +
                             GameTime::FromSeconds(this->spell_level)),
                         this->spell_skill, 4, 0, 0);
-                    pActors[i].uAttributes |= 0x80000;
+                    pActors[i].uAttributes |= ACTOR_AGGRESSOR;
                 }
             }
         }

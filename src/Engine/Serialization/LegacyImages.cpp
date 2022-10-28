@@ -220,7 +220,7 @@ void Serialize(const ItemGen &src, ItemGen_MM7 *dst) {
     dst->m_enchantmentStrength = src.m_enchantmentStrength;
     dst->special_enchantment = src.special_enchantment;
     dst->uNumCharges = src.uNumCharges;
-    dst->uAttributes = src.uAttributes;
+    dst->uAttributes = std::to_underlying(src.uAttributes);
     dst->uBodyAnchor = src.uBodyAnchor;
     dst->uMaxCharges = src.uMaxCharges;
     dst->uHolderPlayer = src.uHolderPlayer;
@@ -234,7 +234,7 @@ void Deserialize(const ItemGen_MM7 &src, ItemGen *dst) {
     dst->m_enchantmentStrength = src.m_enchantmentStrength;
     dst->special_enchantment = (ITEM_ENCHANTMENT)src.special_enchantment;
     dst->uNumCharges = src.uNumCharges;
-    dst->uAttributes = src.uAttributes;
+    dst->uAttributes = ITEM_FLAGS(src.uAttributes);
     dst->uBodyAnchor = src.uBodyAnchor;
     dst->uMaxCharges = src.uMaxCharges;
     dst->uHolderPlayer = src.uHolderPlayer;
@@ -1118,7 +1118,7 @@ void Serialize(const Actor &src, Actor_MM7 *dst) {
 
     dst->sNPC_ID = src.sNPC_ID;
     dst->field_22 = src.field_22;
-    dst->uAttributes = src.uAttributes;
+    dst->uAttributes = std::to_underlying(src.uAttributes);
     dst->sCurrentHP = src.sCurrentHP;
 
     for (unsigned int i = 0; i < 2; ++i)
@@ -1194,7 +1194,7 @@ void Serialize(const Actor &src, Actor_MM7 *dst) {
     dst->vInitialPosition = src.vInitialPosition;
     dst->vGuardingPosition = src.vGuardingPosition;
     dst->uTetherDistance = src.uTetherDistance;
-    dst->uAIState = src.uAIState;
+    dst->uAIState = std::to_underlying(src.uAIState);
     dst->uCurrentActionAnimation = std::to_underlying(src.uCurrentActionAnimation);
     dst->uCarriedItemID = src.uCarriedItemID;
     dst->field_B6 = src.field_B6;
@@ -1231,7 +1231,7 @@ void Deserialize(const Actor_MM7 &src, Actor *dst) {
     Deserialize(src.pActorName, &dst->pActorName);
     dst->sNPC_ID = src.sNPC_ID;
     dst->field_22 = src.field_22;
-    dst->uAttributes = src.uAttributes;
+    dst->uAttributes = ActorAttributes(src.uAttributes);
     dst->sCurrentHP = src.sCurrentHP;
 
     for (unsigned int i = 0; i < 2; ++i)

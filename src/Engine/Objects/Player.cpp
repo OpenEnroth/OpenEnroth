@@ -1910,7 +1910,7 @@ int Player::ReceiveSpecialAttackEffect(
             itemtobreak = &this->pInventoryItemList
                                [itemstobreaklist[rand() % itemstobreakcounter]];
             statcheckbonus =
-                3 * (pItemsTable->pItems[itemtobreak->uItemID].uMaterial +
+                3 * (std::to_underlying(pItemsTable->pItems[itemtobreak->uItemID].uMaterial) +
                      itemtobreak->GetDamageMod());
             break;
 
@@ -1934,7 +1934,7 @@ int Player::ReceiveSpecialAttackEffect(
             itemtobreak = &this->pInventoryItemList
                                [itemstobreaklist[rand() % itemstobreakcounter]];
             statcheckbonus =
-                3 * (pItemsTable->pItems[itemtobreak->uItemID].uMaterial +
+                3 * (std::to_underlying(pItemsTable->pItems[itemtobreak->uItemID].uMaterial) +
                      itemtobreak->GetDamageMod());
             break;
 
@@ -1960,7 +1960,7 @@ int Player::ReceiveSpecialAttackEffect(
             itemtobreak = &this->pInventoryItemList
                                [itemstobreaklist[rand() % itemstobreakcounter]];
             statcheckbonus =
-                3 * (pItemsTable->pItems[itemtobreak->uItemID].uMaterial +
+                3 * (std::to_underlying(pItemsTable->pItems[itemtobreak->uItemID].uMaterial) +
                      itemtobreak->GetDamageMod());
             break;
 
@@ -5175,7 +5175,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
         case VAR_PlayerItemInHands:
             item.Reset();
             item.uItemID = var_value;
-            item.uAttributes = 1;
+            item.uAttributes = ITEM_IDENTIFIED;
             pParty->SetHoldingItem(&item);
             if (var_value >= ITEM_ARTIFACT_PUCK &&
                 var_value <= ITEM_RELIC_MEKORIGS_HAMMER)
@@ -5762,7 +5762,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             return;
         case VAR_PlayerItemInHands:
             item.Reset();
-            item.uAttributes = 1;
+            item.uAttributes = ITEM_IDENTIFIED;
             item.uItemID = val;
             if (val >= ITEM_ARTIFACT_PUCK && val <= ITEM_RELIC_MEKORIGS_HAMMER) {
                 pParty->pIsArtifactFound[val - 500] = 1;
@@ -7026,7 +7026,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
 
         // pain reflection back on attacker
         if (playerPtr->pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active()) {
-            int actorState = actorPtr->uAIState;
+            AIState actorState = actorPtr->uAIState;
             if (actorState != Dying && actorState != Dead) {
                 int reflectedDamage = actorPtr->CalcMagicalDamageToActor((DAMAGE_TYPE)damageType, dmgToReceive);
                 actorPtr->sCurrentHP -= reflectedDamage;
@@ -7204,7 +7204,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
 
             int reflectedDmg = playerPtr->ReceiveDamage(dmgToReceive, (DAMAGE_TYPE)damageType);
             if (playerPtr->pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active()) {
-                uint16_t actorState = actorPtr->uAIState;
+                AIState actorState = actorPtr->uAIState;
                 if (actorState != Dying && actorState != Dead) {
                     recvdMagicDmg = actorPtr->CalcMagicalDamageToActor((DAMAGE_TYPE)damageType, reflectedDmg);
                     actorPtr->sCurrentHP -= recvdMagicDmg;

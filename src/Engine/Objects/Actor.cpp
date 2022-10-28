@@ -117,12 +117,12 @@ void Actor::DrawHealthBar(Actor *actor, GUIWindow *window) {
 }
 
 //----- (00448A40) --------------------------------------------------------
-void Actor::ToggleFlag(signed int uActorID, unsigned int uFlag, int bToggle) {
+void Actor::ToggleFlag(signed int uActorID, ActorAttribute uFlag, bool bValue) {
     if (uActorID >= 0 && uActorID <= (signed int)(pActors.size() - 1)) {
-        if (bToggle) {
+        if (bValue) {
             pActors[uActorID].uAttributes |= uFlag;
         } else {
-            if (uFlag == 0x10000) {
+            if (uFlag == ACTOR_UNKNOW11) {
                 if (pActors[uActorID].uAIState == Disabled)
                     pActors[uActorID].uAIState = Standing;
             }
@@ -1823,9 +1823,8 @@ void Actor::AI_Stun(unsigned int uActorID, signed int edx0,
     if (pActors[uActorID].uAIState == Fleeing)
         pActors[uActorID].uAttributes |= ACTOR_FLEEING;
     if (pActors[uActorID].pMonsterInfo.uHostilityType != 4) {
-        pActors[uActorID].uAttributes &= 0xFFFFFFFB;  // ~0x4
-        pActors[uActorID].pMonsterInfo.uHostilityType =
-            MonsterInfo::Hostility_Long;
+        pActors[uActorID].uAttributes &= ~ACTOR_UNKNOWN_4;
+        pActors[uActorID].pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Long;
     }
     if (pActors[uActorID].pActorBuffs[ACTOR_BUFF_CHARM].Active())
         pActors[uActorID].pActorBuffs[ACTOR_BUFF_CHARM].Reset();
@@ -3183,13 +3182,11 @@ int IsActorAlive(unsigned int uType, unsigned int uParam,
 //----- (00408B54) --------------------------------------------------------
 unsigned int Actor::SearchActorByID(unsigned int *pTotalActors,
                                     unsigned int a2) {
-    // int v4; // eax@1
     unsigned int result;  // ebx@1
 
-    // v4 = GetAlertStatus();
     *pTotalActors = 0;
     result = 0;
-    if ((pActors[a2].uAttributes & ACTOR_UNKNOW7) == GetAlertStatus()) {
+    if (!!(pActors[a2].uAttributes & ACTOR_UNKNOW7) == GetAlertStatus()) {
         *pTotalActors = 1;
         if (pActors[a2].IsNotAlive() == 1) result = 1;
     }
@@ -3200,11 +3197,11 @@ unsigned int Actor::SearchActorByGroup(unsigned int *pTotalActors,
                                        unsigned int uGroup) {
     unsigned int result;  // [sp+10h] [bp-4h]@1
 
-    int v8 = GetAlertStatus();
+    bool v8 = GetAlertStatus();
     *pTotalActors = 0;
     result = 0;
     for (uint i = 0; i < pActors.size(); i++) {
-        if ((pActors[i].uAttributes & ACTOR_UNKNOW7) == v8 &&
+        if (!!(pActors[i].uAttributes & ACTOR_UNKNOW7) == v8 &&
             pActors[i].uGroup == uGroup) {
             ++*pTotalActors;
             if (pActors[i].IsNotAlive() == 1) ++result;
@@ -3215,14 +3212,13 @@ unsigned int Actor::SearchActorByGroup(unsigned int *pTotalActors,
 //----- (00408A7E) --------------------------------------------------------
 unsigned int Actor::SearchActorByMonsterID(unsigned int *pTotalActors,
                                            int uMonsterID) {
-    int v8;               // [sp+Ch] [bp-8h]@1
     unsigned int result;  // [sp+10h] [bp-4h]@1
 
-    v8 = GetAlertStatus();
+    bool v8 = GetAlertStatus();
     *pTotalActors = 0;
     result = 0;
     for (uint i = 0; i < pActors.size(); i++) {
-        if ((pActors[i].uAttributes & ACTOR_UNKNOW7) == v8 &&
+        if (!!(pActors[i].uAttributes & ACTOR_UNKNOW7) == v8 &&
             pActors[i].pMonsterInfo.field_33 == uMonsterID) {
             ++*pTotalActors;
             if (pActors[i].IsNotAlive() == 1) ++result;
@@ -3232,14 +3228,13 @@ unsigned int Actor::SearchActorByMonsterID(unsigned int *pTotalActors,
 }
 //----- (00408A27) --------------------------------------------------------
 unsigned int Actor::SearchAliveActors(unsigned int *pTotalActors) {
-    int v2;               // eax@1
     unsigned int result;  // ebp@1
 
-    v2 = GetAlertStatus();
+    bool v2 = GetAlertStatus();
     result = 0;
     *pTotalActors = 0;
     for (uint i = 0; i < pActors.size(); i++) {
-        if ((pActors[i].uAttributes & ACTOR_UNKNOW7) == v2) {
+        if (!!(pActors[i].uAttributes & ACTOR_UNKNOW7) == v2) {
             ++*pTotalActors;
             if (pActors[i].IsNotAlive() == 1) ++result;
         }
@@ -3327,7 +3322,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     pMonster = &pActors[uActorID_Monster];
     if (pMonster->IsNotAlive()) return;
 
-    pMonster->uAttributes |= 0xC000;
+    pMonster->uAttributes |= ACTOR_NEARBY | ACTOR_ACTIVE;
     if (pMonster->uAIState == Fleeing) pMonster->uAttributes |= ACTOR_FLEEING;
     bool hit_will_stun = false, hit_will_paralyze = false;
     if (!projectileSprite) {
@@ -4311,14 +4306,14 @@ bool Actor::DoesDmgTypeDoDamage(DAMAGE_TYPE uType) {
 }
 
 //----- (00448A98) --------------------------------------------------------
-void ToggleActorGroupFlag(unsigned int uGroupID, unsigned int uFlag,
-                          unsigned int bToggle) {
+void ToggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag,
+                          bool bValue) {
     if (uGroupID) {
-        if (bToggle) {
+        if (bValue) {
             for (uint i = 0; i < (unsigned int)pActors.size(); ++i) {
                 if (pActors[i].uGroup == uGroupID) {
                     pActors[i].uAttributes |= uFlag;
-                    if (uFlag == 0x10000) {
+                    if (uFlag == ACTOR_UNKNOW11) {
                         pActors[i].uAIState = Disabled;
                         pActors[i].UpdateAnimation();
                     }
@@ -4327,14 +4322,14 @@ void ToggleActorGroupFlag(unsigned int uGroupID, unsigned int uFlag,
         } else {
             for (uint i = 0; i < (unsigned int)pActors.size(); ++i) {
                 if (pActors[i].uGroup == uGroupID) {
-                    if (uFlag == 0x10000) {
+                    if (uFlag == ACTOR_UNKNOW11) {
                         if (pActors[i].uAIState != Dead) {
-                            if (pActors[i].uAIState != 4 &&
-                                pActors[i].uAIState != 11)
+                            if (pActors[i].uAIState != Dying &&
+                                pActors[i].uAIState != Removed)
                                 pActors[i].uAIState = Standing;
                         }
                     }
-                    HEXRAYS_LODWORD(pActors[i].uAttributes) &= ~uFlag;
+                    pActors[i].uAttributes &= ~uFlag;
                 }
             }
         }

@@ -90,7 +90,7 @@ struct DDM_DLV_Header {
     int uNumRespawns = 0;
     int uLastRepawnDay = 0;
     int uReputation = 0;
-    int field_C_alert = 0;
+    int field_C_alert = 0; // Actually bool
     unsigned int uNumFacesInBModels = 0;
     unsigned int uNumDecorations = 0;
     unsigned int uNumBModels = 0;
@@ -672,7 +672,7 @@ void Door_switch_animation(unsigned int uDoorID, int a2);  // idb: sub_449A49
 int CalcDistPointToLine(int a1, int a2, int a3, int a4, int a5, int a6);
 void PrepareDrawLists_BLV();
 void PrepareToLoadBLV(bool bLoading);
-int GetAlertStatus();
+bool GetAlertStatus();
 int SpawnEncounterMonsters(struct MapInfo *a1, int a2);
 int DropTreasureAt(int trs_level, signed int trs_type, int x, int y, int z, uint16_t facing);
 

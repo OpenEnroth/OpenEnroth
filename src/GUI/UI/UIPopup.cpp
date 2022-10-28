@@ -263,7 +263,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         if (inspect_item->IsBroken()) {
             if (pPlayers[uActiveCharacter]->CanRepair(inspect_item) == 1)
                 inspect_item->uAttributes =
-                    inspect_item->uAttributes & 0xFFFFFFFD | 1;
+                    inspect_item->uAttributes & ~ITEM_BROKEN | ITEM_IDENTIFIED;
             v83 = SPEECH_RepairFail;
             if (!inspect_item->IsBroken())
                 v83 = SPEECH_RepairSuccess;
@@ -1969,7 +1969,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             }
 
             item->uExpireTime = GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(v31));
-            item->uAttributes = alchemy_skill_level | 0x18;
+            item->uAttributes |= ITEM_TEMP_BONUS | ITEM_AURA_EFFECT_RED;
 
             _50C9A8_item_enchantment_timer = 256;
             mouse->RemoveHoldingItem();
@@ -2155,7 +2155,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                         ->pOwnItems[bottle - 1]
                         .uAttributes = ITEM_IDENTIFIED;
                 if (!(pItemsTable->pItems[item->uItemID].uItemID_Rep_St))
-                    item->uAttributes |= 1;
+                    item->uAttributes |= ITEM_IDENTIFIED;
                 if (!dword_4E455C) {
                     mouse->RemoveHoldingItem();
                     no_rightlick_in_inventory = 1;

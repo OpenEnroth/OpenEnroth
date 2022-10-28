@@ -1113,11 +1113,7 @@ int NPCDialogueEventProcessor(int npc_event_id, int entry_line) {
     int evt_seq_num = entry_line;
     pSomeOtherEVT = pGlobalEVT.data();
     uSomeOtherEVT_NumEvents = uGlobalEVT_NumEvents;
-    memcpy(
-        pSomeOtherEVT_Events.data(),
-        pGlobalEVT_Index.data(),
-        sizeof(EventIndex) * pGlobalEVT_Index.size()
-    );
+    pSomeOtherEVT_Events = pGlobalEVT_Index;
 
     if (uSomeOtherEVT_NumEvents <= 0) {
         return 2;

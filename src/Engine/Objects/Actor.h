@@ -77,24 +77,24 @@ class Actor {
     bool IsNotAlive();
     bool IsPeasant();
 
-    inline void ResetAnimation() { uAttributes &= 0xFFDFFFFF; }
+    inline void ResetAnimation() { uAttributes &= ~ACTOR_ANIMATION; }
     inline void ResetQueue() { uAttributes &= ~ACTOR_STAND_IN_QUEUE; }
-    inline void ResetActive() { uAttributes &= 0xFFFFBFFF; }
+    inline void ResetActive() { uAttributes &= ~ACTOR_ACTIVE; }
     inline void ResetFullAiState() { uAttributes &= ~ACTOR_FULL_AI_STATE; }
-    inline void ResetHasItem() { uAttributes &= 0xFF7FFFFF; }
-    inline void ResetHostile() { uAttributes &= 0xFEFFFFFF; }
-    inline void ResetAggressor() { uAttributes &= 0xFFF7FFFF; }
+    inline void ResetHasItem() { uAttributes &= ~ACTOR_HAS_ITEM; }
+    inline void ResetHostile() { uAttributes &= ~ACTOR_HOSTILE; }
+    inline void ResetAggressor() { uAttributes &= ~ACTOR_AGGRESSOR; }
     inline bool ActorEnemy() const {
-        return (uAttributes & ACTOR_AGGRESSOR) != 0;
+        return uAttributes & ACTOR_AGGRESSOR;
     }
     inline bool ActorFriend() const {
-        return (uAttributes & ACTOR_AGGRESSOR) == 0;
+        return !(uAttributes & ACTOR_AGGRESSOR);
     }
     inline bool ActorHasItem() const {
-        return (uAttributes & ACTOR_HAS_ITEM) != 0;
+        return uAttributes & ACTOR_HAS_ITEM;
     }
     inline bool ActorNearby() const {
-        return (uAttributes & ACTOR_NEARBY) != 0;
+        return uAttributes & ACTOR_NEARBY;
     }
 
     static void _SelectTarget(unsigned int uActorID, int *a2,
@@ -153,8 +153,7 @@ class Actor {
     static void StealFrom(unsigned int uActorID);
     static void GiveItem(signed int uActorID, unsigned int uItemID,
                          unsigned int bGive);
-    static void ToggleFlag(signed int uActorID, unsigned int uFlag,
-                           int bToggle);
+    static void ToggleFlag(signed int uActorID, ActorAttribute uFlag, bool bToggle);
     static void ApplyFineForKillingPeasant(unsigned int uActorID);
     static void DrawHealthBar(Actor *actor, GUIWindow *window);
     int _43B3E0_CalcDamage(ABILITY_INDEX dmgSource);
@@ -188,7 +187,7 @@ class Actor {
     std::string pActorName;
     int16_t sNPC_ID = 0;
     int16_t field_22 = 0;
-    unsigned int uAttributes = 0;
+    ActorAttributes uAttributes = 0;
     int16_t sCurrentHP = 0;
     char field_2A[2] = {};
     MonsterInfo pMonsterInfo;
@@ -235,8 +234,8 @@ bool CheckActors_proximity();
 int IsActorAlive(unsigned int uType, unsigned int uParam,
                  unsigned int uNumAlive);  // idb
 void sub_448518_npc_set_item(int npc, unsigned int item, int a3);
-void ToggleActorGroupFlag(unsigned int uGroupID, unsigned int uFlag,
-                          unsigned int bToggle);
+void ToggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag,
+                          bool bValue);
 bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID);
 bool SpawnActor(unsigned int uMonsterID);
 void Spawn_Light_Elemental(int spell_power, int caster_skill_level,

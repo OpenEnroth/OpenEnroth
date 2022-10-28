@@ -6,12 +6,16 @@
 #include "Engine/Objects/Items.h"
 
 #include "Utility/Blob.h"
+#include "Utility/Flags.h"
 
-enum CHEST_FLAGS {
+enum class CHEST_FLAG : uint16_t {
     CHEST_TRAPPED = 0x1,
     CHEST_ITEMS_PLACED = 0x2,
     CHEST_OPENED = 0x4,
 };
+using enum CHEST_FLAG;
+MM_DECLARE_FLAGS(CHEST_FLAGS, CHEST_FLAG)
+MM_DECLARE_OPERATORS_FOR_FLAGS(CHEST_FLAGS)
 
 struct ChestDesc {
     explicit ChestDesc(struct ChestDesc_mm7 *pChest);
@@ -36,7 +40,7 @@ class ChestList {
 #pragma pack(push, 1)
 struct Chest {  // 0x14cc
     inline bool Initialized() const {
-        return (uFlags & CHEST_ITEMS_PLACED) != 0;
+        return uFlags & CHEST_ITEMS_PLACED;
     }
     inline void SetInitialized(bool b) {
         if (b)
@@ -44,7 +48,7 @@ struct Chest {  // 0x14cc
         else
             uFlags &= ~CHEST_ITEMS_PLACED;
     }
-    inline bool Trapped() const { return (uFlags & CHEST_TRAPPED) != 0; }
+    inline bool Trapped() const { return uFlags & CHEST_TRAPPED; }
 
     static bool CanPlaceItemAt(int a1, int a2, int uChestID);
     static int CountChestItems(int uChestID);
@@ -52,13 +56,13 @@ struct Chest {  // 0x14cc
     static void PlaceItemAt(unsigned int put_cell_pos, unsigned int uItemIdx, int uChestID);
     static void PlaceItems(int uChestID);
     static bool Open(int uChestID);
-    static void ToggleFlag(int uChestID, uint16_t uFlag, unsigned int bToggle);
+    static void ToggleFlag(int uChestID, CHEST_FLAG uFlag, bool bValue);
     static bool ChestUI_WritePointedObjectStatusString();
     static void OnChestLeftClick();
     static void GrabItem(bool all = false);
 
     uint16_t uChestBitmapID;        // 0
-    uint16_t uFlags;                // 2
+    CHEST_FLAGS uFlags;                // 2
     struct ItemGen igChestItems[140];       // 4
     int16_t pInventoryIndices[140];  // 0x13b4 why is this a short?
 };

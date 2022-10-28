@@ -784,8 +784,7 @@ void Game::EventLoop() {
                                         }
                                         if (ptr_50C9A4_ItemToEnchant &&
                                             ptr_50C9A4_ItemToEnchant->uItemID) {
-                                            ptr_50C9A4_ItemToEnchant
-                                                ->uAttributes &= 0xFFFFFF0F;
+                                            ptr_50C9A4_ItemToEnchant->uAttributes &= ~ITEM_ENCHANT_ANIMATION_MASK;
                                             _50C9A8_item_enchantment_timer = 0;
                                             ptr_50C9A4_ItemToEnchant = nullptr;
                                         }
@@ -2858,7 +2857,7 @@ void Game::GameLoop() {
                 HEXRAYS_LOWORD(pParty->uFlags) &= ~0x204;
                 pParty->SetGold(0);
                 pOtherOverlayList->Reset();
-                memset(pParty->pPartyBuffs.data(), 0, 0x140u);
+                pParty->pPartyBuffs.fill(SpellBuff());
 
                 if (pParty->bTurnBasedModeOn) {
                     pTurnEngine->End(true);
