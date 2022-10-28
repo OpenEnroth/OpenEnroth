@@ -1969,9 +1969,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             }
 
             item->uExpireTime = GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(v31));
-
-            // TODO(captainurist): what are we even doing here with this cast?
-            item->uAttributes = ITEM_FLAGS(alchemy_skill_level) | ITEM_TEMP_BONUS | ITEM_AURA_EFFECT_RED;
+            item->uAttributes |= ITEM_TEMP_BONUS | ITEM_AURA_EFFECT_RED;
 
             _50C9A8_item_enchantment_timer = 256;
             mouse->RemoveHoldingItem();
