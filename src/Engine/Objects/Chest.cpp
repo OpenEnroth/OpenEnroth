@@ -405,7 +405,7 @@ void Chest::PlaceItems(int uChestID) {  // only sued for setup
 
     for (int items_counter = 0; items_counter < uChestArea; ++items_counter) {
         ITEM_TYPE chest_item_id = vChests[uChestID].igChestItems[items_counter].uItemID;
-        assert(chest_item_id != ITEM_NULL && "Checking that generated items are valid");
+        assert(chest_item_id >= ITEM_NULL && "Checking that generated items are valid");
         if (chest_item_id != ITEM_NULL) {
             int test_position = 0;
             while (!Chest::CanPlaceItemAt((uint8_t)chest_cells_map[test_position], chest_item_id, uChestID)) {
