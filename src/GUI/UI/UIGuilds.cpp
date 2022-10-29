@@ -165,9 +165,9 @@ void SpellBookGenerator() {  // for GuildDialogs
             }
         }
 
-        if (pItemNum == ITEM_SPELLBOOK_LIGHT_DIVINE_INTERVENTION) {
+        if (pItemNum == ITEM_SPELLBOOK_DIVINE_INTERVENTION) {
             if (!_449B57_test_bit(pParty->_quest_bits, QBIT_DIVINE_INTERVENTION_RETRIEVED))
-                pItemNum = ITEM_SPELLBOOK_LIGHT_SUN_BURST;
+                pItemNum = ITEM_SPELLBOOK_SUNRAY;
         }
 
         ItemGen *item_spellbook = &pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i];

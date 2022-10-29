@@ -25,9 +25,10 @@ struct ItemTable {
     bool IsMaterialSpecial(ItemGen* pItem);
     bool IsMaterialNonCommon(ItemGen* pItem);
     void Release();
+    void PrintItemTypesEnum();
 
     int uAllItemsCount;
-    IndexedArray<ItemDesc, 1, 800> pItems;                   // 4-9604h
+    IndexedArray<ItemDesc, 1, 799> pItems;                   // 4-9604h
     ItemEnchantment pEnchantments[24];                // 9604h
     IndexedArray<ItemSpecialEnchantment, ITEM_ENCHANTMENT_FIRST_VALID, ITEM_ENCHANTMENT_LAST_VALID> pSpecialEnchantments;  // 97E4h -9FC4h
     char field_9FC4[5000];

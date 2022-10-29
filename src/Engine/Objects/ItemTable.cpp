@@ -3,6 +3,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <unordered_map>
 
 #include "Engine/Tables/StorylineTextTable.h"
 #include "Engine/Tables/FactionTable.h"
@@ -591,7 +592,7 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
                 ++j;
             }
         } else {
-            out_item->uItemID = ITEM_LONGSWORD_1;
+            out_item->uItemID = ITEM_CRUDE_LONGSWORD;
         }
     } else {
         // artifact
@@ -627,9 +628,9 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
                 out_item->uEnchantmentType * treasure_level;
     }
 
-    if (out_item->uItemID == ITEM_SPELLBOOK_LIGHT_DIVINE_INTERVENTION &&
+    if (out_item->uItemID == ITEM_SPELLBOOK_DIVINE_INTERVENTION &&
         !(uint16_t)_449B57_test_bit(pParty->_quest_bits, 239))
-        out_item->uItemID = ITEM_SPELLBOOK_LIGHT_SUN_BURST;
+        out_item->uItemID = ITEM_SPELLBOOK_SUNRAY;
     if (pItemTable->pItems[out_item->uItemID].uItemID_Rep_St)
         out_item->uAttributes = 0;
     else
@@ -735,4 +736,121 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
         out_item->special_enchantment = (ITEM_ENCHANTMENT)(val_list[j]);
         v45 += pSpecialEnchantments[(ITEM_ENCHANTMENT)val_list[j]].to_item_apply[out_item->GetItemEquipType()];
     }
+}
+
+void ItemTable::PrintItemTypesEnum() {
+    std::unordered_map<std::string, int> countByName;
+    std::unordered_map<std::string, int> indexByName;
+    std::vector<std::pair<std::string, std::string>> items;
+
+    items.emplace_back("NULL", "");
+
+    for(size_t i : pItems.indices()) {
+        const ItemDesc &desc = pItems[i];
+        std::string icon = desc.pIconName;
+        std::string name = desc.pName;
+        std::string description = desc.pDescription;
+
+        if (icon.empty() || icon == "null") {
+            items.emplace_back("", "Unused.");
+            continue;
+        }
+
+        if (name == "Empty Message Scroll") {
+            items.emplace_back("", "Empty scroll placeholder, unused.");
+            continue;
+        }
+
+        if (name == "Newname Key") {
+            items.emplace_back("", "Key placeholder, unused.");
+            continue;
+        }
+
+        if (name.contains("Placeholder") || name.contains("Sealed Letter")) {
+            items.emplace_back("", name + ", unused.");
+            continue;
+        }
+
+        std::string enumName;
+        for (char c : name) {
+            if (isalnum(c)) {
+                enumName += static_cast<char>(toupper(c));
+            } else if (isspace(c) || c == '/' || c == '-') {
+                if (!enumName.ends_with('_'))
+                    enumName += '_';
+            }
+        }
+
+        if (desc.uEquipType == EQUIP_REAGENT) {
+            enumName = "REAGENT_" + enumName;
+        } else if (desc.uEquipType == EQUIP_POTION) {
+            if (name != "Potion Bottle")
+                enumName = "POTION_" + enumName;
+            if (name.ends_with("_POTION"))
+                name = name.substr(0, name.size() - 7);
+        } else if (desc.uEquipType == EQUIP_SPELL_SCROLL) {
+            enumName = "SCROLL_" + enumName;
+        } else if (desc.uEquipType == EQUIP_BOOK) {
+            enumName = "SPELLBOOK_" + enumName;
+        } else if (desc.uEquipType == EQUIP_MESSAGE_SCROLL) {
+            enumName = "MESSAGE_" + enumName;
+        } else if (desc.uEquipType == EQUIP_GOLD) {
+            if (description == "A small pile of gold coins.") {
+                enumName = "GOLD_SMALL";
+            } else if (description == "A pile of gold coins.") {
+                enumName = "GOLD_MEDIUM";
+            } else if (description == "A large pile of gold coins.") {
+                enumName = "GOLD_LARGE";
+            } else {
+                Assert(false);
+            }
+        } else if (desc.uEquipType == EQUIP_GEM) {
+            enumName = "GEM_" + enumName;
+        }
+
+        if (desc.uMaterial == MATERIAL_ARTIFACT) {
+            enumName = "ARTIFACT_" + enumName;
+        } else if (desc.uMaterial == MATERIAL_RELIC) {
+            enumName = "RELIC_" + enumName;
+        } else if (desc.uMaterial == MATERIAL_SPECIAL) {
+            enumName = "RARE_" + enumName;
+        } else if (description.starts_with("Quest")) {
+            enumName = "QUEST_" + enumName;
+        }
+
+        if (name == "Lich Jar") {
+            if (description.contains("Empty")) {
+                enumName += "_EMPTY";
+            } else {
+                enumName += "_FULL";
+            }
+        }
+
+        if (name == "The Perfect Bow")
+            if (!description.contains("off-balance"))
+                enumName += "_FIXED";
+
+        if (indexByName.contains(enumName)) {
+            int count = ++countByName[enumName];
+            if (count == 2)
+                items[indexByName[enumName]].first = enumName + "_1";
+
+            enumName = enumName + "_" + std::to_string(count);
+        } else {
+            indexByName[enumName] = i;
+            countByName[enumName] = 1;
+        }
+
+        items.emplace_back(enumName, "");
+    }
+
+    printf("enum ITEM_TYPE {\n");
+    for (size_t i = 0; i < items.size(); i++) {
+        if (!items[i].first.empty()) {
+            printf("    ITEM_%s = %d,\n", items[i].first.c_str(), static_cast<int>(i));
+        } else {
+            printf("    ITEM_%d = %d, // %s\n", static_cast<int>(i), static_cast<int>(i), items[i].second.c_str());
+        }
+    }
+    printf("};\n");
 }

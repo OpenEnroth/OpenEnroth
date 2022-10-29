@@ -308,7 +308,7 @@ bool Player::NothingOrJustBlastersEquipped() {
             item_id = pOwnItems[item_idx - 1].uItemID;
 
             if (item_id != ITEM_BLASTER &&
-                item_id != ITEM_LASER_RIFLE)  // soemthing other than blaster&
+                item_id != ITEM_BLASTER_RIFLE)  // soemthing other than blaster&
                                               // blaster rifle
                 return false;
         }
@@ -589,11 +589,11 @@ bool Player::CanEquip_RaceAndAlignmentCheck(unsigned int uItemID) {
             return IsRaceHuman();
             break;
 
-        case ITEM_ELVEN_CHAINMAIL:
+        case ITEM_ARTIFACT_ELVEN_CHAINMAIL:
             return IsRaceElf();
             break;
 
-        case ITEM_FORGE_GAUNTLETS:
+        case ITEM_ARTIFACT_FORGE_GAUNTLETS:
             return IsRaceDwarf();
             break;
 
@@ -605,7 +605,7 @@ bool Player::CanEquip_RaceAndAlignmentCheck(unsigned int uItemID) {
             return IsFemale();
             break;
 
-        case ITEM_WETSUIT:
+        case ITEM_QUEST_WETSUIT:
             return NothingOrJustBlastersEquipped();
             break;
 
@@ -1318,7 +1318,7 @@ int Player::GetRangedAttack() {
 
     if (mainHandItem != nullptr &&
         (mainHandItem->uItemID < ITEM_BLASTER ||
-         mainHandItem->uItemID > ITEM_LASER_RIFLE)) {  // no blasters
+         mainHandItem->uItemID > ITEM_BLASTER_RIFLE)) {  // no blasters
         weapbonus = GetItemsBonus(CHARACTER_ATTRIBUTE_RANGED_ATTACK) +
                     GetParameterBonus(GetActualAccuracy());
         skillbonus =
@@ -1417,12 +1417,12 @@ std::string Player::GetMeleeDamageString() {
 
     ItemGen* mainHandItem = GetMainHandItem();
 
-    if (mainHandItem != nullptr && (mainHandItem->uItemID >= ITEM_WAND_FIRE) &&
-        (mainHandItem->uItemID <= ITEM_WAND_INCENERATION)) {
+    if (mainHandItem != nullptr && (mainHandItem->uItemID >= ITEM_WAND_OF_FIRE) &&
+        (mainHandItem->uItemID <= ITEM_MYSTIC_WAND_OF_INCINERATION)) {
         return std::string(localization->GetString(LSTR_WAND));
     } else if (mainHandItem != nullptr &&
                (mainHandItem->uItemID == ITEM_BLASTER ||
-                mainHandItem->uItemID == ITEM_LASER_RIFLE)) {
+                mainHandItem->uItemID == ITEM_BLASTER_RIFLE)) {
         min_damage = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MIN, true);  // blasters
         max_damage = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MAX, true);
     } else {
@@ -1449,7 +1449,7 @@ std::string Player::GetRangedDamageString() {
         return std::string(localization->GetString(LSTR_WAND));
     } else if (mainHandItem != nullptr &&
                (mainHandItem->uItemID == ITEM_BLASTER ||
-                mainHandItem->uItemID == ITEM_LASER_RIFLE)) {
+                mainHandItem->uItemID == ITEM_BLASTER_RIFLE)) {
         min_damage = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MIN, true);  // blasters
         max_damage = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MAX, true);
     } else {
@@ -2205,7 +2205,7 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) {
     } else if (HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
         weapon = GetMainHandItem();
         if (weapon->GetItemEquipType() == EQUIP_WAND) {
-            weapon_recovery = pSpellDatas[wand_spell_ids[weapon->uItemID - ITEM_WAND_FIRE]].uExpertLevelRecovery;
+            weapon_recovery = pSpellDatas[wand_spell_ids[weapon->uItemID - ITEM_WAND_OF_FIRE]].uExpertLevelRecovery;
         } else {
             weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
         }
@@ -2606,7 +2606,7 @@ int Player::GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment) {
                 if (GetNthEquippedIndexItem(i)->special_enchantment ==
                         ITEM_ENCHANTMENT_OF_RECOVERY ||
                     (GetNthEquippedIndexItem(i)->uItemID ==
-                     ITEM_ELVEN_CHAINMAIL))
+                     ITEM_ARTIFACT_ELVEN_CHAINMAIL))
                     return 50;
             }
             if (enchantment == ITEM_ENCHANTMENT_OF_FORCE) {
@@ -4583,13 +4583,13 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
         } else if (pParty->pPickedItem.uItemID == ITEM_RED_APPLE) {
             pParty->GiveFood(1);
             pAudioPlayer->PlaySound(SOUND_eat, 0, 0, -1, 0, 0);
-        } else if (pParty->pPickedItem.uItemID == ITEM_LUTE) {
+        } else if (pParty->pPickedItem.uItemID == ITEM_QUEST_LUTE) {
             pAudioPlayer->PlaySound(SOUND_luteguitar, 0, 0, -1, 0, 0);
             return;
-        } else if (pParty->pPickedItem.uItemID == ITEM_FAERIE_PIPES) {
+        } else if (pParty->pPickedItem.uItemID == ITEM_QUEST_FAERIE_PIPES) {
             pAudioPlayer->PlaySound(SOUND_panflute, 0, 0, -1, 0, 0);
             return;
-        } else if (pParty->pPickedItem.uItemID == ITEM_GRYPHONHEARTS_TRUMPET) {
+        } else if (pParty->pPickedItem.uItemID == ITEM_QUEST_GRYPHONHEARTS_TRUMPET) {
             pAudioPlayer->PlaySound(SOUND_trumpet, 0, 0, -1, 0, 0);
             return;
         } else if (pParty->pPickedItem.uItemID == ITEM_HORSESHOE) {
@@ -5078,8 +5078,8 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             this->classType = (PLAYER_CLASS_TYPE)var_value;
             if ((PLAYER_CLASS_TYPE)var_value == PLAYER_CLASS_LICH) {
                 for (int i = 0; i < 138; i++) {
-                    if (this->pOwnItems[i].uItemID == ITEM_LICH_JAR_EMPTY) {
-                        this->pOwnItems[i].uItemID = ITEM_LICH_JAR_FULL;
+                    if (this->pOwnItems[i].uItemID == ITEM_QUEST_LICH_JAR_EMPTY) {
+                        this->pOwnItems[i].uItemID = ITEM_QUEST_LICH_JAR_FULL;
                         this->pOwnItems[i].uHolderPlayer = GetPlayerIndex() + 1;
                     }
                 }
@@ -5748,7 +5748,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             item.uItemID = val;
             if (val >= ITEM_ARTIFACT_PUCK && val <= ITEM_RELIC_MEKORIGS_HAMMER) {
                 pParty->pIsArtifactFound[val - 500] = 1;
-            } else if (val >= ITEM_WAND_FIRE && val <= ITEM_WAND_INCENERATION) {
+            } else if (val >= ITEM_WAND_OF_FIRE && val <= ITEM_MYSTIC_WAND_OF_INCINERATION) {
                 item.uNumCharges = rand() % 6 + item.GetDamageMod() + 1;
                 item.uMaxCharges = item.uNumCharges;
             }
@@ -7649,7 +7649,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
                 else
                     wand_item_id = item->uItemID;  // *((int *)v5 + 124);
             } else if (item->uItemID == ITEM_BLASTER ||
-                item->uItemID == ITEM_LASER_RIFLE) {
+                       item->uItemID == ITEM_BLASTER_RIFLE) {
                 laser_weapon_item_id = item->uItemID;  // *((int *)v5 + 124);
             }
         }
@@ -7700,7 +7700,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
         _42777D_CastSpell_UseWand_ShootArrow(
             wand_spell_ids[player->pInventoryItemList[main_hand_idx - 1]
                                .uItemID -
-                           ITEM_WAND_FIRE],
+                           ITEM_WAND_OF_FIRE],
             uActiveCharacter - 1, 8, 0, uActiveCharacter + 8);
 
         if (!--player->pInventoryItemList[main_hand_idx - 1].uNumCharges)
@@ -7997,8 +7997,8 @@ int Player::SelectPhrasesTransaction(
             break;
         case BuildingType_AlchemistShop:
             if ((idemId >= ITEM_ARTIFACT_HERMES_SANDALS &&
-                 idemId < ITEM_RECIPE_REJUVENATION) ||
-                idemId > ITEM_RECIPE_BODY_RESISTANCE)
+                 idemId < ITEM_MESSAGE_REJUVENATION_RECIPE) ||
+                idemId > ITEM_MESSAGE_BODY_RESISTANCE_RECIPE)
                 return 5;
             if (!(equipType == EQUIP_REAGENT || equipType == EQUIP_POTION ||
                   equipType == EQUIP_MESSAGE_SCROLL))

@@ -525,63 +525,63 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
                 if (pCharacter->pActiveSkills[uSkillIdx]) {
                     switch (uSkillIdx) {
                         case PLAYER_SKILL_STAFF:
-                            pCharacter->WearItem(ITEM_STAFF_1);
+                            pCharacter->WearItem(ITEM_STAFF);
                             break;
                         case PLAYER_SKILL_SWORD:
-                            pCharacter->WearItem(ITEM_LONGSWORD_1);
+                            pCharacter->WearItem(ITEM_CRUDE_LONGSWORD);
                             break;
                         case PLAYER_SKILL_DAGGER:
-                            pCharacter->WearItem(ITEM_DAGGER_1);
+                            pCharacter->WearItem(ITEM_DAGGER);
                             break;
                         case PLAYER_SKILL_AXE:
-                            pCharacter->WearItem(ITEM_AXE_1);
+                            pCharacter->WearItem(ITEM_CRUDE_AXE);
                             break;
                         case PLAYER_SKILL_SPEAR:
-                            pCharacter->WearItem(ITEM_SPEAR_1);
+                            pCharacter->WearItem(ITEM_CRUDE_SPEAR);
                             break;
                         case PLAYER_SKILL_BOW:
-                            pCharacter->WearItem(ITEM_CROSSBOW_1);
+                            pCharacter->WearItem(ITEM_CROSSBOW);
                             break;
                         case PLAYER_SKILL_MACE:
-                            pCharacter->WearItem(ITEM_MACE_1);
+                            pCharacter->WearItem(ITEM_MACE);
                             break;
                         case PLAYER_SKILL_SHIELD:
-                            pCharacter->WearItem(ITEM_BUCKLER_1);
+                            pCharacter->WearItem(ITEM_WOODEN_BUCKLER);
                             break;
                         case PLAYER_SKILL_LEATHER:
-                            pCharacter->WearItem(ITEM_LEATHER_1);
+                            pCharacter->WearItem(ITEM_LEATHER_ARMOR);
                             break;
                         case PLAYER_SKILL_CHAIN:
-                            pCharacter->WearItem(ITEM_CHAINMAIL_1);
+                            pCharacter->WearItem(ITEM_CHAIN_MAIL);
                             break;
                         case PLAYER_SKILL_PLATE:
-                            pCharacter->WearItem(ITEM_PLATE_1);
+                            pCharacter->WearItem(ITEM_PLATE_ARMOR);
                             break;
                         case PLAYER_SKILL_FIRE:
-                            pCharacter->AddItem(-1, ITEM_SPELLBOOK_FIRE_STRIKE);
+                            pCharacter->AddItem(-1, ITEM_SPELLBOOK_FIRE_BOLT);
                             break;
                         case PLAYER_SKILL_AIR:
                             pCharacter->AddItem(
-                                -1, ITEM_SPELLBOOK_AIR_FEATHER_FALL);
+                                -1, ITEM_SPELLBOOK_FEATHER_FALL);
                             break;
                         case PLAYER_SKILL_WATER:
                             pCharacter->AddItem(
-                                -1, ITEM_SPELLBOOK_WATER_POISON_SPRAY);
+                                -1, ITEM_SPELLBOOK_POISON_SPRAY);
                             break;
                         case PLAYER_SKILL_EARTH:
-                            pCharacter->AddItem(-1, ITEM_SPELLBOOK_EARTH_SLOW);
+                            pCharacter->AddItem(-1, ITEM_SPELLBOOK_SLOW);
                             break;
                         case PLAYER_SKILL_SPIRIT:
                             pCharacter->AddItem(-1,
-                                                ITEM_SPELLBOOK_SPIRIT_BLESS);
+                                                ITEM_SPELLBOOK_BLESS);
                             break;
                         case PLAYER_SKILL_MIND:
                             pCharacter->AddItem(-1,
-                                                ITEM_SPELLBOOK_MIND_MIND_BLAST);
+                                                ITEM_SPELLBOOK_MIND_BLAST);
                             break;
                         case PLAYER_SKILL_BODY:
                             pCharacter->AddItem(-1,
-                                                ITEM_SPELLBOOK_BODY_FIRST_AID);
+                                                ITEM_SPELLBOOK_HEAL);
                             break;
                         case PLAYER_SKILL_ITEM_ID:
                         case PLAYER_SKILL_REPAIR:
@@ -595,10 +595,10 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
                             pCharacter->AddItem(-1, v16);
                             break;
                         case PLAYER_SKILL_DODGE:
-                            pCharacter->AddItem(-1, ITEM_BOOTS_1);
+                            pCharacter->AddItem(-1, ITEM_LEATHER_BOOTS);
                             break;
                         case PLAYER_SKILL_UNARMED:
-                            pCharacter->AddItem(-1, ITEM_GAUNTLETS_1);
+                            pCharacter->AddItem(-1, ITEM_GAUNTLETS);
                             break;
                         default:
                             break;
@@ -931,7 +931,7 @@ void Party::RestAndHeal() {
         if (pPlayer->classType == PLAYER_CLASS_LICH) {
             have_vessels_soul = false;
             for (uint i = 0; i < 126; i++) {
-                if (pPlayer->pInventoryItemList[i].uItemID == ITEM_LICH_JAR_FULL && pPlayer->pInventoryItemList[i].uHolderPlayer == pPlayerID + 1)
+                if (pPlayer->pInventoryItemList[i].uItemID == ITEM_QUEST_LICH_JAR_FULL && pPlayer->pInventoryItemList[i].uHolderPlayer == pPlayerID + 1)
                     have_vessels_soul = true;
             }
             if (!have_vessels_soul) {

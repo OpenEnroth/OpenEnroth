@@ -1933,31 +1933,31 @@ void Actor::Die(unsigned int uActorID) {
         case MONSTER_HARPY_1:
         case MONSTER_HARPY_2:
         case MONSTER_HARPY_3:
-            drop.uItemID = ITEM_HARPY_FEATHER;
+            drop.uItemID = ITEM_REAGENT_HARPY_FEATHER;
             break;
 
         case MONSTER_OOZE_1:
         case MONSTER_OOZE_2:
         case MONSTER_OOZE_3:
-            drop.uItemID = ITEM_OOZE_ENDOPLASM_VIAL;
+            drop.uItemID = ITEM_REAGENT_VIAL_OF_OOZE_ENDOPLASM;
             break;
 
         case MONSTER_TROLL_1:
         case MONSTER_TROLL_2:
         case MONSTER_TROLL_3:
-            drop.uItemID = ITEM_TROLL_BLOOD;
+            drop.uItemID = ITEM_REAGENT_VIAL_OF_TROLL_BLOOD;
             break;
 
         case MONSTER_DEVIL_1:
         case MONSTER_DEVIL_2:
         case MONSTER_DEVIL_3:
-            drop.uItemID = ITEM_DEVIL_ICHOR;
+            drop.uItemID = ITEM_REAGENT_VIAL_OF_DEVIL_ICHOR;
             break;
 
         case MONSTER_DRAGON_1:
         case MONSTER_DRAGON_2:
         case MONSTER_DRAGON_3:
-            drop.uItemID = ITEM_DRAGON_EYE;
+            drop.uItemID = ITEM_REAGENT_DRAGONS_EYE;
             break;
     }
 

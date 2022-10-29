@@ -180,7 +180,7 @@ std::string ItemGen::GetIdentifiedName() {
         return pItemTable->pItems[uItemID].pName;
     }
 
-    if (uItemID == ITEM_LICH_JAR_FULL) {  // Lich Jar
+    if (uItemID == ITEM_QUEST_LICH_JAR_FULL) {  // Lich Jar
         if (uHolderPlayer > 0 && uHolderPlayer <= 4) {
             const std::string &player_name = pPlayers[uHolderPlayer]->pName;
             if (player_name.back() == 's')
@@ -519,8 +519,8 @@ void ItemGen::PopulateArtifactBonusMap() {
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_HANDS_OF_THE_MASTER, CHARACTER_ATTRIBUTE_SKILL_DODGE, 10);
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_HANDS_OF_THE_MASTER, CHARACTER_ATTRIBUTE_SKILL_UNARMED, 10);
 
-    AddToMap(artifactBonusMap, ITEM_ARTIFACT_LEAGUE_BOOTS, CHARACTER_ATTRIBUTE_SPEED, 40);
-    AddToMap(artifactBonusMap, ITEM_ARTIFACT_LEAGUE_BOOTS, CHARACTER_ATTRIBUTE_SKILL_WATER, 0, &Player::skillWater);
+    AddToMap(artifactBonusMap, ITEM_ARTIFACT_SEVEN_LEAGUE_BOOTS, CHARACTER_ATTRIBUTE_SPEED, 40);
+    AddToMap(artifactBonusMap, ITEM_ARTIFACT_SEVEN_LEAGUE_BOOTS, CHARACTER_ATTRIBUTE_SKILL_WATER, 0, &Player::skillWater);
 
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_RULERS_RING, CHARACTER_ATTRIBUTE_SKILL_MIND, 0, &Player::skillMind);
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_RULERS_RING, CHARACTER_ATTRIBUTE_SKILL_DARK, 0, &Player::skillDark);
@@ -533,15 +533,15 @@ void ItemGen::PopulateArtifactBonusMap() {
     AddToMap(artifactBonusMap, ITEM_RELIC_ETHRICS_STAFF, CHARACTER_ATTRIBUTE_SKILL_DARK, 0, &Player::skillDark);
     AddToMap(artifactBonusMap, ITEM_RELIC_ETHRICS_STAFF, CHARACTER_ATTRIBUTE_SKILL_MEDITATION, 15);
 
-    AddToMap(artifactBonusMap, ITEM_RELIC_HARECS_LEATHER, CHARACTER_ATTRIBUTE_SKILL_TRAP_DISARM, 5);
-    AddToMap(artifactBonusMap, ITEM_RELIC_HARECS_LEATHER, CHARACTER_ATTRIBUTE_SKILL_STEALING, 5);
-    AddToMap(artifactBonusMap, ITEM_RELIC_HARECS_LEATHER, CHARACTER_ATTRIBUTE_LUCK, 50);
-    AddToMap(artifactBonusMap, ITEM_RELIC_HARECS_LEATHER, CHARACTER_ATTRIBUTE_RESIST_FIRE, -10);
-    AddToMap(artifactBonusMap, ITEM_RELIC_HARECS_LEATHER, CHARACTER_ATTRIBUTE_RESIST_WATER, -10);
-    AddToMap(artifactBonusMap, ITEM_RELIC_HARECS_LEATHER, CHARACTER_ATTRIBUTE_RESIST_AIR, -10);
-    AddToMap(artifactBonusMap, ITEM_RELIC_HARECS_LEATHER, CHARACTER_ATTRIBUTE_RESIST_EARTH, -10);
-    AddToMap(artifactBonusMap, ITEM_RELIC_HARECS_LEATHER, CHARACTER_ATTRIBUTE_RESIST_MIND, -10);
-    AddToMap(artifactBonusMap, ITEM_RELIC_HARECS_LEATHER, CHARACTER_ATTRIBUTE_RESIST_BODY, -10);
+    AddToMap(artifactBonusMap, ITEM_RELIC_HARECKS_LEATHER, CHARACTER_ATTRIBUTE_SKILL_TRAP_DISARM, 5);
+    AddToMap(artifactBonusMap, ITEM_RELIC_HARECKS_LEATHER, CHARACTER_ATTRIBUTE_SKILL_STEALING, 5);
+    AddToMap(artifactBonusMap, ITEM_RELIC_HARECKS_LEATHER, CHARACTER_ATTRIBUTE_LUCK, 50);
+    AddToMap(artifactBonusMap, ITEM_RELIC_HARECKS_LEATHER, CHARACTER_ATTRIBUTE_RESIST_FIRE, -10);
+    AddToMap(artifactBonusMap, ITEM_RELIC_HARECKS_LEATHER, CHARACTER_ATTRIBUTE_RESIST_WATER, -10);
+    AddToMap(artifactBonusMap, ITEM_RELIC_HARECKS_LEATHER, CHARACTER_ATTRIBUTE_RESIST_AIR, -10);
+    AddToMap(artifactBonusMap, ITEM_RELIC_HARECKS_LEATHER, CHARACTER_ATTRIBUTE_RESIST_EARTH, -10);
+    AddToMap(artifactBonusMap, ITEM_RELIC_HARECKS_LEATHER, CHARACTER_ATTRIBUTE_RESIST_MIND, -10);
+    AddToMap(artifactBonusMap, ITEM_RELIC_HARECKS_LEATHER, CHARACTER_ATTRIBUTE_RESIST_BODY, -10);
 
     AddToMap(artifactBonusMap, ITEM_RELIC_OLD_NICK, CHARACTER_ATTRIBUTE_SKILL_TRAP_DISARM, 5);
 
@@ -604,12 +604,12 @@ void ItemGen::PopulateArtifactBonusMap() {
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_MINDS_EYE, CHARACTER_ATTRIBUTE_WILLPOWER, 15);
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_MINDS_EYE, CHARACTER_ATTRIBUTE_INTELLIGENCE, 15);
 
-    AddToMap(artifactBonusMap, ITEM_ELVEN_CHAINMAIL, CHARACTER_ATTRIBUTE_SPEED, 15);
-    AddToMap(artifactBonusMap, ITEM_ELVEN_CHAINMAIL, CHARACTER_ATTRIBUTE_ACCURACY, 15);
+    AddToMap(artifactBonusMap, ITEM_ARTIFACT_ELVEN_CHAINMAIL, CHARACTER_ATTRIBUTE_SPEED, 15);
+    AddToMap(artifactBonusMap, ITEM_ARTIFACT_ELVEN_CHAINMAIL, CHARACTER_ATTRIBUTE_ACCURACY, 15);
 
-    AddToMap(artifactBonusMap, ITEM_FORGE_GAUNTLETS, CHARACTER_ATTRIBUTE_STRENGTH, 15);
-    AddToMap(artifactBonusMap, ITEM_FORGE_GAUNTLETS, CHARACTER_ATTRIBUTE_ENDURANCE, 15);
-    AddToMap(artifactBonusMap, ITEM_FORGE_GAUNTLETS, CHARACTER_ATTRIBUTE_RESIST_FIRE, 30);
+    AddToMap(artifactBonusMap, ITEM_ARTIFACT_FORGE_GAUNTLETS, CHARACTER_ATTRIBUTE_STRENGTH, 15);
+    AddToMap(artifactBonusMap, ITEM_ARTIFACT_FORGE_GAUNTLETS, CHARACTER_ATTRIBUTE_ENDURANCE, 15);
+    AddToMap(artifactBonusMap, ITEM_ARTIFACT_FORGE_GAUNTLETS, CHARACTER_ATTRIBUTE_RESIST_FIRE, 30);
 
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_HEROS_BELT, CHARACTER_ATTRIBUTE_STRENGTH, 15);
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_HEROS_BELT, CHARACTER_ATTRIBUTE_SKILL_ARMSMASTER, 5);
@@ -718,7 +718,7 @@ int GetItemTextureFilename(char* pOut, signed int item_id, int index,
     pEquipType = pItemTable->pItems[item_id].uEquipType;
     if (item_id > 500) {
         switch (item_id) {
-            case ITEM_RELIC_HARECS_LEATHER:
+            case ITEM_RELIC_HARECKS_LEATHER:
                 if (byte_5111F6_OwnedArtifacts[2] != 0) item_id = 234;
                 break;
             case ITEM_ARTIFACT_YORUBA:
@@ -727,10 +727,10 @@ int GetItemTextureFilename(char* pOut, signed int item_id, int index,
             case ITEM_ARTIFACT_GOVERNORS_ARMOR:
                 if (byte_5111F6_OwnedArtifacts[0] != 0) item_id = 235;
                 break;
-            case ITEM_ELVEN_CHAINMAIL:
+            case ITEM_ARTIFACT_ELVEN_CHAINMAIL:
                 if (byte_5111F6_OwnedArtifacts[16] != 0) item_id = 73;
                 break;
-            case ITEM_ARTIFACT_LEAGUE_BOOTS:
+            case ITEM_ARTIFACT_SEVEN_LEAGUE_BOOTS:
                 if (byte_5111F6_OwnedArtifacts[3] != 0) item_id = 312;
                 break;
             case ITEM_RELIC_TALEDONS_HELM:
@@ -801,8 +801,8 @@ bool ItemGen::MerchandiseTest(int _2da_idx) {
     bool test;
 
     if ((p2DEvents[_2da_idx - 1].uType != BuildingType_AlchemistShop ||
-         (signed int)this->uItemID < ITEM_RECIPE_REJUVENATION || (signed int)this->uItemID > ITEM_RECIPE_BODY_RESISTANCE) &&
-            ((signed int)this->uItemID >= 600 ||
+         (signed int)this->uItemID < ITEM_MESSAGE_REJUVENATION_RECIPE || (signed int)this->uItemID > ITEM_MESSAGE_BODY_RESISTANCE_RECIPE) &&
+        ((signed int)this->uItemID >= 600 ||
              (signed int)this->uItemID >= ITEM_ARTIFACT_HERMES_SANDALS &&
                  (signed int)this->uItemID <= 599) ||
         this->IsStolen())
@@ -828,7 +828,7 @@ bool ItemGen::MerchandiseTest(int _2da_idx) {
                    this->GetItemEquipType() == EQUIP_POTION ||
                    (this->GetItemEquipType() > EQUIP_POTION &&
                     !(this->GetItemEquipType() != EQUIP_MESSAGE_SCROLL ||
-                      (signed int)this->uItemID < ITEM_RECIPE_REJUVENATION) &&
+                      (signed int)this->uItemID < ITEM_MESSAGE_REJUVENATION_RECIPE) &&
                     this->uItemID != 771);
             break;
         }

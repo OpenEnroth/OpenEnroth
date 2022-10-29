@@ -1066,10 +1066,10 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                 case ITEM_ARTIFACT_YORUBA:
                     index = 14;
                     break;
-                case ITEM_RELIC_HARECS_LEATHER:
+                case ITEM_RELIC_HARECKS_LEATHER:
                     index = 13;
                     break;
-                case ITEM_ELVEN_CHAINMAIL:
+                case ITEM_ARTIFACT_ELVEN_CHAINMAIL:
                     index = 16;
                     break;
                 default:
@@ -1095,7 +1095,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                     index = 5;
                     texture = (Texture *)paperdoll_flying_feet[player->uCurrentFace];
                     break;
-                case ITEM_ARTIFACT_LEAGUE_BOOTS:
+                case ITEM_ARTIFACT_SEVEN_LEAGUE_BOOTS:
                     index = 6;
                     texture = (Texture *)paperdoll_boots_texture[pBodyComplection][5];
                     break;
@@ -1162,10 +1162,10 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                 case ITEM_ARTIFACT_YORUBA:
                     index = 14;
                     break;
-                case ITEM_RELIC_HARECS_LEATHER:
+                case ITEM_RELIC_HARECKS_LEATHER:
                     index = 13;
                     break;
-                case ITEM_ELVEN_CHAINMAIL:
+                case ITEM_ARTIFACT_ELVEN_CHAINMAIL:
                     index = 16;
                     break;
                 default:
@@ -1266,7 +1266,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                 item_Y = pPaperdoll_BodyY + paperdoll_Helm[pBodyComplection][index][1];
 
                 Texture *texture = nullptr;
-                if (IsDwarf != 1 || item->uItemID != ITEM_92)
+                if (IsDwarf != 1 || item->uItemID != ITEM_PHYNAXIAN_HELM)
                     texture = (Texture *)paperdoll_helm_texture[player->GetSexByVoice()][index];
                 else
                     texture = (Texture *)paperdoll_dbrds[11];
@@ -1565,9 +1565,9 @@ void CharacterUI_LoadPaperdollTextures() {
             byte_5111F6_OwnedArtifacts[0] = 1;
         if (player->HasItem(ITEM_ARTIFACT_YORUBA, 1))
             byte_5111F6_OwnedArtifacts[1] = 1;
-        if (player->HasItem(ITEM_RELIC_HARECS_LEATHER, 1))
+        if (player->HasItem(ITEM_RELIC_HARECKS_LEATHER, 1))
             byte_5111F6_OwnedArtifacts[2] = 1;
-        if (player->HasItem(ITEM_ARTIFACT_LEAGUE_BOOTS, 1))
+        if (player->HasItem(ITEM_ARTIFACT_SEVEN_LEAGUE_BOOTS, 1))
             byte_5111F6_OwnedArtifacts[3] = 1;
         if (player->HasItem(ITEM_RELIC_TALEDONS_HELM, 1))
             byte_5111F6_OwnedArtifacts[4] = 1;
@@ -1593,7 +1593,7 @@ void CharacterUI_LoadPaperdollTextures() {
             byte_5111F6_OwnedArtifacts[14] = 1;
         if (player->HasItem(ITEM_RARE_VAMPIRES_CAPE, 1))
             byte_5111F6_OwnedArtifacts[15] = 1;
-        if (player->HasItem(ITEM_ELVEN_CHAINMAIL, 1))
+        if (player->HasItem(ITEM_ARTIFACT_ELVEN_CHAINMAIL, 1))
             byte_5111F6_OwnedArtifacts[16] = 1;
     }
 
@@ -2308,7 +2308,7 @@ void OnPaperdollLeftClick() {
             return;
         }
 
-        if (pParty->pPickedItem.uItemID == ITEM_WETSUIT) {  // wetsuit check is done above
+        if (pParty->pPickedItem.uItemID == ITEM_QUEST_WETSUIT) {  // wetsuit check is done above
             pPlayers[uActiveCharacter]->EquipBody(EQUIP_ARMOUR);
             WetsuitOn(uActiveCharacter);
             return;
@@ -2340,7 +2340,7 @@ void OnPaperdollLeftClick() {
                     pEquipType);  // equips item
 
                 if (pParty->pPickedItem.uItemID ==
-                    ITEM_WETSUIT)  // just taken wetsuit off
+                    ITEM_QUEST_WETSUIT)  // just taken wetsuit off
                     WetsuitOff(uActiveCharacter);
 
                 return;
@@ -2812,7 +2812,7 @@ void OnPaperdollLeftClick() {
             pEquipType = pPlayers[uActiveCharacter]
                              ->pInventoryItemList[v34 - 1]
                              .GetItemEquipType();
-            if (pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1].uItemID == ITEM_WETSUIT) {
+            if (pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1].uItemID == ITEM_QUEST_WETSUIT) {
                 if (engine->IsUnderwater()) {
                     pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                     return;

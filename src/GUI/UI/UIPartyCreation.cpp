@@ -928,77 +928,77 @@ bool PartyCreationUI_LoopInternal() {
 
             switch (j) {
             case PLAYER_SKILL_STAFF:
-                pParty->pPlayers[i].AddItem(-1, ITEM_STAFF_1);
+                pParty->pPlayers[i].AddItem(-1, ITEM_STAFF);
                 break;
             case PLAYER_SKILL_SWORD:
-                pParty->pPlayers[i].AddItem(-1, ITEM_LONGSWORD_1);
+                pParty->pPlayers[i].AddItem(-1, ITEM_CRUDE_LONGSWORD);
                 break;
             case PLAYER_SKILL_DAGGER:
-                pParty->pPlayers[i].AddItem(-1, ITEM_DAGGER_1);
+                pParty->pPlayers[i].AddItem(-1, ITEM_DAGGER);
                 break;
             case PLAYER_SKILL_AXE:
-                pParty->pPlayers[i].AddItem(-1, ITEM_AXE_1);
+                pParty->pPlayers[i].AddItem(-1, ITEM_CRUDE_AXE);
                 break;
             case PLAYER_SKILL_SPEAR:
-                pParty->pPlayers[i].AddItem(-1, ITEM_SPEAR_1);
+                pParty->pPlayers[i].AddItem(-1, ITEM_CRUDE_SPEAR);
                 break;
             case PLAYER_SKILL_BOW:
-                pParty->pPlayers[i].AddItem(-1, ITEM_CROSSBOW_1);
+                pParty->pPlayers[i].AddItem(-1, ITEM_CROSSBOW);
                 break;
             case PLAYER_SKILL_MACE:
-                pParty->pPlayers[i].AddItem(-1, ITEM_MACE_1);
+                pParty->pPlayers[i].AddItem(-1, ITEM_MACE);
                 break;
             case PLAYER_SKILL_BLASTER:
                 Error("No blasters at startup :p");
             case PLAYER_SKILL_SHIELD:
-                pParty->pPlayers[i].AddItem(-1, ITEM_BUCKLER_1);
+                pParty->pPlayers[i].AddItem(-1, ITEM_WOODEN_BUCKLER);
                 break;
             case PLAYER_SKILL_LEATHER:
-                pParty->pPlayers[i].AddItem(-1, ITEM_LEATHER_1);
+                pParty->pPlayers[i].AddItem(-1, ITEM_LEATHER_ARMOR);
                 break;
             case PLAYER_SKILL_CHAIN:
-                pParty->pPlayers[i].AddItem(-1, ITEM_CHAINMAIL_1);
+                pParty->pPlayers[i].AddItem(-1, ITEM_CHAIN_MAIL);
                 break;
             case PLAYER_SKILL_PLATE:
-                pParty->pPlayers[i].AddItem(-1, ITEM_PLATE_1);
+                pParty->pPlayers[i].AddItem(-1, ITEM_PLATE_ARMOR);
                 break;
             case PLAYER_SKILL_FIRE:
-                pParty->pPlayers[i].AddItem(-1, ITEM_SPELLBOOK_FIRE_STRIKE);
+                pParty->pPlayers[i].AddItem(-1, ITEM_SPELLBOOK_FIRE_BOLT);
                 pParty->pPlayers[i]
                     .spellbook.pFireSpellbook.bIsSpellAvailable[0] = true;
                 break;
             case PLAYER_SKILL_AIR:
                 pParty->pPlayers[i].AddItem(
-                    -1, ITEM_SPELLBOOK_AIR_FEATHER_FALL);
+                    -1, ITEM_SPELLBOOK_FEATHER_FALL);
                 pParty->pPlayers[i]
                     .spellbook.pAirSpellbook.bIsSpellAvailable[0] = true;
                 break;
             case PLAYER_SKILL_WATER:
                 pParty->pPlayers[i].AddItem(
-                    -1, ITEM_SPELLBOOK_WATER_POISON_SPRAY);
+                    -1, ITEM_SPELLBOOK_POISON_SPRAY);
                 pParty->pPlayers[i]
                     .spellbook.pWaterSpellbook.bIsSpellAvailable[0] = true;
                 break;
             case PLAYER_SKILL_EARTH:
-                pParty->pPlayers[i].AddItem(-1, ITEM_SPELLBOOK_EARTH_SLOW);
+                pParty->pPlayers[i].AddItem(-1, ITEM_SPELLBOOK_SLOW);
                 pParty->pPlayers[i]
                     .spellbook.pEarthSpellbook.bIsSpellAvailable[0] = true;
                 break;
             case PLAYER_SKILL_SPIRIT:
                 pParty->pPlayers[i].AddItem(-1,
-                    ITEM_SPELLBOOK_SPIRIT_BLESS);
+                                            ITEM_SPELLBOOK_BLESS);
                 pParty->pPlayers[i]
                     .spellbook.pSpiritSpellbook.bIsSpellAvailable[0] = true;
                 break;
             case PLAYER_SKILL_MIND:
                 pParty->pPlayers[i].AddItem(-1,
-                    ITEM_SPELLBOOK_MIND_MIND_BLAST);
+                                            ITEM_SPELLBOOK_MIND_BLAST);
                 pParty->pPlayers[i]
                     .spellbook.pMindSpellbook.bIsSpellAvailable[0] = true;
                 break;
             case PLAYER_SKILL_BODY:
                 pParty->pPlayers[i].AddItem(-1,
-                    ITEM_SPELLBOOK_BODY_FIRST_AID);
+                                            ITEM_SPELLBOOK_HEAL);
                 pParty->pPlayers[i]
                     .spellbook.pBodySpellbook.bIsSpellAvailable[0] = true;
                 break;
@@ -1017,10 +1017,10 @@ bool PartyCreationUI_LoopInternal() {
                 pParty->pPlayers[i].AddItem(-1, 5 * (rand() % 3 + 40));
                 break;
             case PLAYER_SKILL_DODGE:
-                pParty->pPlayers[i].AddItem(-1, ITEM_BOOTS_1);
+                pParty->pPlayers[i].AddItem(-1, ITEM_LEATHER_BOOTS);
                 break;
             case PLAYER_SKILL_UNARMED:
-                pParty->pPlayers[i].AddItem(-1, ITEM_GAUNTLETS_1);
+                pParty->pPlayers[i].AddItem(-1, ITEM_GAUNTLETS);
                 break;
             default:
                 break;

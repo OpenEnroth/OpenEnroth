@@ -1939,7 +1939,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         if (item->uItemID < ITEM_POTION_BOTTLE ||
             item->uItemID > ITEM_POTION_REJUVENATION) {  // all potions
             if (item->uItemID >= ITEM_BLASTER &&
-                    item->uItemID <= ITEM_LASER_RIFLE ||
+                item->uItemID <= ITEM_BLASTER_RIFLE ||
                 item->uItemID >= ITEM_ARTIFACT_PUCK || item->IsBroken() ||
                 item->special_enchantment || item->uEnchantmentType ||
                 !isWeapon(item->GetItemEquipType())) {
@@ -1986,32 +1986,32 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         switch (pParty->pPickedItem.uItemID) {
             case ITEM_REAGENT_WIDOWSWEEP_BERRIES:
             case ITEM_REAGENT_CRUSHED_ROSE_PETALS:
-            case ITEM_TROLL_BLOOD:
-            case ITEM_TROLL_RUBY:
-            case ITEM_DRAGON_EYE:
+            case ITEM_REAGENT_VIAL_OF_TROLL_BLOOD:
+            case ITEM_REAGENT_RUBY:
+            case ITEM_REAGENT_DRAGONS_EYE:
                 item->uItemID = ITEM_POTION_CURE_WOUNDS;
                 break;
 
-            case ITEM_PHIMA_ROOT:
-            case ITEM_METEORITE_FRAGMENT:
-            case ITEM_HARPY_FEATHER:
-            case ITEM_MOONSTONE:
-            case ITEM_ELVISH_TOADSTOOL:
+            case ITEM_REAGENT_PHIRNA_ROOT:
+            case ITEM_REAGENT_METEORITE_FRAGMENT:
+            case ITEM_REAGENT_HARPY_FEATHER:
+            case ITEM_REAGENT_MOONSTONE:
+            case ITEM_REAGENT_ELVISH_TOADSTOOL:
                 item->uItemID = ITEM_POTION_MAGIC_POTION;
                 break;
 
-            case ITEM_POPPYSNAPS:
-            case ITEM_FAE_DUST:
-            case ITEM_SULFUR:
-            case ITEM_GARNET:
-            case ITEM_DEVIL_ICHOR:
+            case ITEM_REAGENT_POPPYSNAPS:
+            case ITEM_REAGENT_FAE_DUST:
+            case ITEM_REAGENT_SULFUR:
+            case ITEM_REAGENT_GARNET:
+            case ITEM_REAGENT_VIAL_OF_DEVIL_ICHOR:
                 item->uItemID = ITEM_POTION_CURE_WEAKNESS;
                 break;
 
-            case ITEM_MUSHROOM:
-            case ITEM_OBSIDIAN:
-            case ITEM_OOZE_ENDOPLASM_VIAL:
-            case ITEM_MERCURY:
+            case ITEM_REAGENT_MUSHROOM:
+            case ITEM_REAGENT_OBSIDIAN:
+            case ITEM_REAGENT_VIAL_OF_OOZE_ENDOPLASM:
+            case ITEM_REAGENT_MERCURY:
             case ITEM_REAGENT_PHILOSOPHERS_STONE:
                 item->uItemID = ITEM_POTION_CATALYST;
                 break;
@@ -2050,7 +2050,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                     alchemy_skill_level == 1)  // 228 >= potionID <= 239
                     damage_level = 2;
                 if (potionID >= ITEM_POTION_MIGHT_BOOST &&
-                    potionID <= ITEM_POTION_BODY_RESISTANE &&
+                    potionID <= ITEM_POTION_BODY_RESISTANCE &&
                     alchemy_skill_level <= 2)  // 240 >= potionID <= 261
                     damage_level = 3;
                 if (potionID >= ITEM_POTION_STONE_TO_FLESH &&
@@ -2065,7 +2065,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 potionID <= ITEM_POTION_CURE_INSANITY)  // 228 <= v16 <= 239
                 damage_level = 2;
             if (potionID >= ITEM_POTION_MIGHT_BOOST &&
-                potionID <= ITEM_POTION_BODY_RESISTANE)  // 240 <= v16 <= 261
+                potionID <= ITEM_POTION_BODY_RESISTANCE)  // 240 <= v16 <= 261
                 damage_level = 3;
             if (potionID >= ITEM_POTION_STONE_TO_FLESH)  // 262 <= v16
                 damage_level = 4;

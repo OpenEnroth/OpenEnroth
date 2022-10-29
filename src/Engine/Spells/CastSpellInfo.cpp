@@ -740,7 +740,7 @@ void CastSpellInfoHelpers::CastSpell() {
 
                 ItemGen *item = &pParty->pPlayers[pCastSpell->uPlayerID_2].pInventoryItemList[pCastSpell->spell_target_pid];
                 item->UpdateTempBonus(pParty->GetPlayingTime());
-                if (item->uItemID == ITEM_BLASTER || item->uItemID == ITEM_LASER_RIFLE ||
+                if (item->uItemID == ITEM_BLASTER || item->uItemID == ITEM_BLASTER_RIFLE ||
                     item->IsBroken() || pItemTable->IsMaterialNonCommon(item) || item->special_enchantment != ITEM_ENCHANTMENT_NULL || item->uEnchantmentType != 0 ||
                     !isWeapon(item->GetItemEquipType())) {
                     _50C9D0_AfterEnchClickEventId = 113;

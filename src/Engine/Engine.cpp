@@ -1516,7 +1516,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
         pParty->_6FC_water_lava_timer = pParty->GetPlayingTime().value + 128;
         viewparams->bRedrawGameUI = true;
         for (Player &player : pParty->pPlayers) {
-            if (player.WearsItem(ITEM_RELIC_HARECS_LEATHER, ITEM_SLOT_ARMOUR) ||
+            if (player.WearsItem(ITEM_RELIC_HARECKS_LEATHER, ITEM_SLOT_ARMOUR) ||
                 player.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
                 player.pPlayerBuffs[PLAYER_BUFF_WATER_WALK].expire_time) {
                 player.PlayEmotion(CHARACTER_EXPRESSION_37, 0);
@@ -1942,7 +1942,7 @@ void RegeneratePartyHealthMana() {
             if (pParty->pPlayers[playerID].classType == PLAYER_CLASS_LICH) {
                 bool lich_has_jar = false;
                 for (int idx = 0; idx < 126; ++idx) {
-                    if (pParty->pPlayers[playerID].pInventoryItemList[idx].uItemID == ITEM_LICH_JAR_FULL)
+                    if (pParty->pPlayers[playerID].pInventoryItemList[idx].uItemID == ITEM_QUEST_LICH_JAR_FULL)
                         lich_has_jar = true;
                 }
 
