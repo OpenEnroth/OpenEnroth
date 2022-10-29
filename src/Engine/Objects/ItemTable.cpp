@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <utility>
 
 #include "Engine/Tables/StorylineTextTable.h"
 #include "Engine/Tables/FactionTable.h"
