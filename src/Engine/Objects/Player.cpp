@@ -528,7 +528,7 @@ void Player::ItemsPotionDmgBreak(int enchant_count) {
     memset(item_index_tabl, 0, sizeof(item_index_tabl));  // set to zero
 
     for (int i = 0; i < 138; ++i)  // scan through and log in table
-        if (IsBreakable(pOwnItems[i].uItemID))
+        if (IsRegular(pOwnItems[i].uItemID))
             item_index_tabl[avalible_items++] = i;
 
     if (avalible_items) {  // is there anything to break
@@ -1891,7 +1891,7 @@ int Player::ReceiveSpecialAttackEffect(
                     itemtocheck = &this->pEquippedItems[i - 126];
                 }
 
-                if (IsBreakable(itemtocheck->uItemID) &&
+                if (IsRegular(itemtocheck->uItemID) &&
                     !itemtocheck->IsBroken())
                     itemstobreaklist[itemstobreakcounter++] = i;
             }
@@ -1961,7 +1961,7 @@ int Player::ReceiveSpecialAttackEffect(
                 if (ItemPosInList > 0) {
                     itemtocheck = &this->pInventoryItemList[ItemPosInList - 1];
 
-                    if (IsBreakable(itemtocheck->uItemID)) {
+                    if (IsRegular(itemtocheck->uItemID)) {
                         itemstobreaklist[itemstobreakcounter++] = i;
                     }
                 }

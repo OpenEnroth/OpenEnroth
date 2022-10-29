@@ -941,8 +941,8 @@ enum class ITEM_TYPE : int32_t {
     ITEM_FIRST_VALID = ITEM_CRUDE_LONGSWORD,
     ITEM_LAST_VALID = ITEM_799,
 
-    ITEM_FIRST_ENCHANTABLE = ITEM_CRUDE_LONGSWORD,
-    ITEM_LAST_ENCHANTABLE = ITEM_SUN_AMULET,
+    ITEM_FIRST_REGULAR = ITEM_CRUDE_LONGSWORD,
+    ITEM_LAST_REGULAR = ITEM_SUN_AMULET,
 
     ITEM_FIRST_MESSAGE_SCROLL = ITEM_MESSAGE_MESSAGE_FROM_ERATHIA, // TODO(captainurist): We're missing ITEM_MESSAGE_ORDERS_FROM_SNERGLE
     ITEM_LAST_MESSAGE_SCROLL = ITEM_MESSAGE_BODY_RESISTANCE_RECIPE,
@@ -968,17 +968,15 @@ enum class ITEM_TYPE : int32_t {
 using enum ITEM_TYPE;
 
 /**
+ * Checks if item is a regular item - a weapon or equipment that's not a quest item or an artifact.
+ *
+ * Regular items can be enchanted, unlike other types of items.
+ *
  * @param type                          Item type to check.
- * @return                              Whether the provided item can be enchanted with an `Enchant Item` water magic
- *                                      spell.
+ * @return                              Whether the provided item is a regular item.
  */
-inline bool IsEnchantable(ITEM_TYPE type) {
-    return type >= ITEM_FIRST_ENCHANTABLE && type <= ITEM_LAST_ENCHANTABLE;
-}
-
-// TODO(captainurist): Actually IsBreakableByPotionExplosion?
-inline bool IsBreakable(ITEM_TYPE type) {
-    return IsEnchantable(type);
+inline bool IsRegular(ITEM_TYPE type) {
+    return type >= ITEM_FIRST_REGULAR && type <= ITEM_LAST_REGULAR;
 }
 
 inline bool IsRecipe(ITEM_TYPE type) {

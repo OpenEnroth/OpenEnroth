@@ -1684,7 +1684,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 if ((skill_level == 1 || skill_level == 2)) __debugbreak(); // SPELL_WATER_ENCHANT_ITEM is a master level spell
 
                 if ((skill_level == 3 || skill_level == 4) &&
-                    IsEnchantable(spell_item_to_enchant->uItemID) &&
+                    IsRegular(spell_item_to_enchant->uItemID) &&
                     spell_item_to_enchant->special_enchantment == ITEM_ENCHANTMENT_NULL &&
                     spell_item_to_enchant->uEnchantmentType == 0 &&
                     spell_item_to_enchant->m_enchantmentStrength == 0 &&
