@@ -785,8 +785,8 @@ void ItemTable::PrintItemTypesEnum() {
         } else if (desc.uEquipType == EQUIP_POTION) {
             if (name != "Potion Bottle")
                 enumName = "POTION_" + enumName;
-            if (name.ends_with("_POTION"))
-                name = name.substr(0, name.size() - 7);
+            if (enumName.ends_with("_POTION"))
+                enumName = enumName.substr(0, enumName.size() - 7);
         } else if (desc.uEquipType == EQUIP_SPELL_SCROLL) {
             enumName = "SCROLL_" + enumName;
         } else if (desc.uEquipType == EQUIP_BOOK) {
