@@ -742,6 +742,11 @@ void ItemTable::PrintItemTypesEnum() {
     std::unordered_map<std::string, int> indexByName;
     std::vector<std::pair<std::string, std::string>> items;
 
+    // TODO(captainurist): use std::string::contains once we have full C++23 support.
+    auto contains = [](const std::string &haystack, const std::string &needle) {
+        return haystack.find(needle) != std::string::npos;
+    };
+
     items.emplace_back("NULL", "");
 
     for(ITEM_TYPE i : pItems.indices()) {
@@ -765,7 +770,7 @@ void ItemTable::PrintItemTypesEnum() {
             continue;
         }
 
-        if (name.contains("Placeholder") || name.contains("Sealed Letter")) {
+        if (contains(name, "Placeholder") || contains(name, "Sealed Letter")) {
             items.emplace_back("", name + ", unused.");
             continue;
         }
@@ -819,7 +824,7 @@ void ItemTable::PrintItemTypesEnum() {
         }
 
         if (name == "Lich Jar") {
-            if (description.contains("Empty")) {
+            if (contains(description, "Empty")) {
                 enumName += "_EMPTY";
             } else {
                 enumName += "_FULL";
@@ -827,7 +832,7 @@ void ItemTable::PrintItemTypesEnum() {
         }
 
         if (name == "The Perfect Bow")
-            if (!description.contains("off-balance"))
+            if (!contains(description, "off-balance"))
                 enumName += "_FIXED";
 
         if (indexByName.contains(enumName)) {
