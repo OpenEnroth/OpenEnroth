@@ -788,7 +788,7 @@ void ItemTable::PrintItemTypesEnum() {
         if (desc.uEquipType == EQUIP_REAGENT) {
             enumName = "REAGENT_" + enumName;
         } else if (desc.uEquipType == EQUIP_POTION) {
-            if (name != "Potion Bottle")
+            if (!enumName.starts_with("POTION_"))
                 enumName = "POTION_" + enumName;
             if (enumName.ends_with("_POTION"))
                 enumName = enumName.substr(0, enumName.size() - 7);
