@@ -183,15 +183,11 @@ void ItemTable::Initialize() {
     strtok(pItemsTXT_Raw.data(), "\r");
     strtok(NULL, "\r");
     uAllItemsCount = 0;
-    while (true) {
-        test_string = strtok(NULL, "\r");
-        if (!test_string)
-            break;
-        ++test_string;
-
+    for (size_t line = 0; line < 799; line++) {
+        test_string = strtok(NULL, "\r") + 1;
         auto tokens = Tokenize(test_string, '\t');
 
-        ITEM_TYPE item_counter = ITEM_TYPE(atoi(tokens[0]) + std::to_underlying(ITEM_FIRST_VALID));
+        ITEM_TYPE item_counter = ITEM_TYPE(atoi(tokens[0]));
         //uAllItemsCount = item_counter;
         pItems[item_counter].pIconName = RemoveQuotes(tokens[1]);
         pItems[item_counter].pName = RemoveQuotes(tokens[2]);
@@ -261,14 +257,11 @@ void ItemTable::Initialize() {
     strtok(NULL, "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
-    while(true) {
-        test_string = strtok(NULL, "\r");
-        if (!test_string)
-            break;
-        test_string++;
-
+    for(size_t line = 0; line < 618; line++) {
+        test_string = strtok(NULL, "\r") + 1;
         auto tokens = Tokenize(test_string, '\t');
         Assert(tokens.size() > 7, "Invalid number of tokens");
+
         ITEM_TYPE item_counter = ITEM_TYPE(atoi(tokens[0]));
         pItems[item_counter].uChanceByTreasureLvl1 = atoi(tokens[2]);
         pItems[item_counter].uChanceByTreasureLvl2 = atoi(tokens[3]);
