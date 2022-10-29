@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #include "Engine/ErrorHandling.h"
 
 #include "Utility/Flags.h"
