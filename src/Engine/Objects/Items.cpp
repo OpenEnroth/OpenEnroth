@@ -239,7 +239,7 @@ bool ItemGen::GenerateArtifact() {
     artifacts_list.fill(ITEM_NULL);
     uNumArtifactsNotFound = 0;
 
-    for (ITEM_TYPE i : pParty->pIsArtifactFound.indices())
+    for (ITEM_TYPE i : Artifacts())
         if (!pParty->pIsArtifactFound[i])
             artifacts_list[uNumArtifactsNotFound++] = i;
 
@@ -709,14 +709,10 @@ uint8_t ItemGen::GetDamageMod() {
 }
 
 //----- (0043C91D) --------------------------------------------------------
-int GetItemTextureFilename(char* pOut, ITEM_TYPE item_id, int index,
-                           int shoulder) {
-    int result;  // eax@2
+void GetItemTextureFilename(char* pOut, ITEM_TYPE item_id, int index, int shoulder) {
     ITEM_EQUIP_TYPE pEquipType;
 
     // TODO(captainurist): what are we even doing here?
-    result = 0;  // BUG   fn is void
-    pEquipType = pItemTable->pItems[item_id].uEquipType;
     if(item_id > ITEM_ARTIFACT_PUCK) {
         switch (item_id) {
             case ITEM_RELIC_HARECKS_LEATHER:
@@ -788,31 +784,30 @@ int GetItemTextureFilename(char* pOut, ITEM_TYPE item_id, int index,
                     item_id = ITEM_SCROLL_HEROISM;
                 break;
             default:
-                return 0;
+                return;
         }
     }
 
+    pEquipType = pItemTable->pItems[item_id].uEquipType;
     switch (pEquipType) {
         case EQUIP_ARMOUR:
             if (!shoulder)
-                return sprintf(pOut, "item%3.3dv%d", item_id, index);
+                sprintf(pOut, "item%3.3dv%d", item_id, index);
             else if (shoulder == 1)
-                return sprintf(pOut, "item%3.3dv%da1", item_id, index);
+                sprintf(pOut, "item%3.3dv%da1", item_id, index);
             else if (shoulder == 2)
-                return sprintf(pOut, "item%3.3dv%da2", item_id, index);
+                sprintf(pOut, "item%3.3dv%da2", item_id, index);
             break;
         case EQUIP_CLOAK:
             if (!shoulder)
-                return sprintf(pOut, "item%3.3dv%d", item_id, index);
+                sprintf(pOut, "item%3.3dv%d", item_id, index);
             else
-                return sprintf(pOut, "item%3.3dv%da1", item_id, index);
+                sprintf(pOut, "item%3.3dv%da1", item_id, index);
+            break;
         default:
-            return sprintf(pOut, "item%3.3dv%d", item_id, index);
+            sprintf(pOut, "item%3.3dv%d", item_id, index);
+            break;
     }
-
-    // TODO(captainurist): also makes no sense.
-    result = std::to_underlying(item_id) - std::to_underlying(ITEM_ARTIFACT_GOVERNORS_ARMOR);
-    return result;
 }
 
 //----- (004BDAAF) --------------------------------------------------------
