@@ -132,14 +132,14 @@ void Actor::ToggleFlag(signed int uActorID, ActorAttribute uFlag, bool bValue) {
 }
 
 //----- (00448518) --------------------------------------------------------
-void sub_448518_npc_set_item(int npc, unsigned int item, int a3) {
+void sub_448518_npc_set_item(int npc, ITEM_TYPE item, int a3) {
     for (uint i = 0; i < pActors.size(); i++) {
         if (pActors[i].sNPC_ID == npc) Actor::GiveItem(i, item, a3);
     }
 }
 
 //----- (004485A7) --------------------------------------------------------
-void Actor::GiveItem(signed int uActorID, unsigned int uItemID,
+void Actor::GiveItem(signed int uActorID, ITEM_TYPE uItemID,
                      unsigned int bGive) {
     if ((uActorID >= 0) &&
         (signed int)uActorID <= (signed int)(pActors.size() - 1)) {
@@ -183,7 +183,7 @@ void Actor::SetRandomGoldIfTheresNoItem() {
     int v2;  // edi@1
 
     v2 = 0;
-    if (!this->ActorHasItems[3].uItemID) {
+    if (this->ActorHasItems[3].uItemID == ITEM_NULL) {
         if (this->pMonsterInfo.uTreasureDiceRolls) {
             for (int i = 0; i < this->pMonsterInfo.uTreasureDiceRolls; i++)
                 v2 += rand() % this->pMonsterInfo.uTreasureDiceSides + 1;
@@ -1961,7 +1961,7 @@ void Actor::Die(unsigned int uActorID) {
             break;
     }
 
-    if (rand() % 100 < 20 && drop.uItemID != 0) {
+    if (rand() % 100 < 20 && drop.uItemID != ITEM_NULL) {
         SpriteObject::Drop_Item_At(
             (SPRITE_OBJECT_TYPE)pItemTable->pItems[drop.uItemID].uSpriteID,
             actor->vPosition.x, actor->vPosition.y, actor->vPosition.z + 16,
@@ -3437,7 +3437,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 if (pMonster->pActorBuffs[ACTOR_BUFF_SHIELD].Active())
                     uDamageAmount /= 2;
                 IsAdditionalDamagePossible = true;
-                if (projectileSprite->containing_item.uItemID != 0 &&
+                if (projectileSprite->containing_item.uItemID != ITEM_NULL &&
                     projectileSprite->containing_item.special_enchantment == ITEM_ENCHANTMENT_OF_CARNAGE) {
                     attackElement = DMGT_FIRE;
                 } else if (!player->PlayerHitOrMiss(pMonster, v61, a4)) {
@@ -3985,7 +3985,7 @@ void Actor::LootActor() {
             viewparams->bRedrawGameUI = 1;
         }
     } else {
-        if (this->ActorHasItems[3].uItemID != 0 &&
+        if (this->ActorHasItems[3].uItemID != ITEM_NULL &&
             this->ActorHasItems[3].GetItemEquipType() == EQUIP_GOLD) {
             v14 = this->ActorHasItems[3].special_enchantment;
             this->ActorHasItems[3].Reset();
@@ -3995,7 +3995,7 @@ void Actor::LootActor() {
             }
         }
     }
-    if (this->uCarriedItemID) {
+    if (this->uCarriedItemID != ITEM_NULL) {
         Dst.Reset();
         Dst.uItemID = this->uCarriedItemID;
 
@@ -4012,15 +4012,15 @@ void Actor::LootActor() {
             Dst.uEnchantmentType = 2 * rand() % 4 + 2;
         pItemTable->SetSpecialBonus(&Dst);
         if (!pParty->AddItemToParty(&Dst)) pParty->SetHoldingItem(&Dst);
-        this->uCarriedItemID = 0;
-        if (this->ActorHasItems[0].uItemID) {
+        this->uCarriedItemID = ITEM_NULL;
+        if (this->ActorHasItems[0].uItemID != ITEM_NULL) {
             if (!pParty->AddItemToParty(&this->ActorHasItems[0])) {
                 pParty->PickedItem_PlaceInInventory_or_Drop();
                 pParty->SetHoldingItem(&this->ActorHasItems[0]);
             }
             this->ActorHasItems[0].Reset();
         }
-        if (this->ActorHasItems[1].uItemID) {
+        if (this->ActorHasItems[1].uItemID != ITEM_NULL) {
             if (!pParty->AddItemToParty(&this->ActorHasItems[1])) {
                 pParty->PickedItem_PlaceInInventory_or_Drop();
                 pParty->SetHoldingItem(&this->ActorHasItems[1]);
@@ -4031,7 +4031,7 @@ void Actor::LootActor() {
         return;
     }
     if (this->ActorHasItem()) {
-        if (this->ActorHasItems[3].uItemID) {
+        if (this->ActorHasItems[3].uItemID != ITEM_NULL) {
             Dst = this->ActorHasItems[3];
             this->ActorHasItems[3].Reset();
 
@@ -4058,7 +4058,7 @@ void Actor::LootActor() {
             itemFound = true;
         }
     }
-    if (this->ActorHasItems[0].uItemID) {
+    if (this->ActorHasItems[0].uItemID != ITEM_NULL) {
         if (!pParty->AddItemToParty(&this->ActorHasItems[0])) {
             pParty->PickedItem_PlaceInInventory_or_Drop();
             pParty->SetHoldingItem(&this->ActorHasItems[0]);
@@ -4066,7 +4066,7 @@ void Actor::LootActor() {
         }
         this->ActorHasItems[0].Reset();
     }
-    if (this->ActorHasItems[1].uItemID) {
+    if (this->ActorHasItems[1].uItemID != ITEM_NULL) {
         if (!pParty->AddItemToParty(&this->ActorHasItems[1])) {
             pParty->PickedItem_PlaceInInventory_or_Drop();
             pParty->SetHoldingItem(&this->ActorHasItems[1]);

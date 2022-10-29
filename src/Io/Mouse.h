@@ -3,6 +3,7 @@
 #include <string>
 
 #include "Engine/Point.h"
+#include "Engine/Objects/ItemEnums.h"
 
 #include "Io/GameKey.h"
 #include "Io/IMouseController.h"
@@ -26,7 +27,7 @@ namespace Io {
 
         void GetClickPos(unsigned int* pX, unsigned int* pY);
         void RemoveHoldingItem();
-        void SetCursorBitmapFromItemID(unsigned int uItemID);
+        void SetCursorBitmapFromItemID(ITEM_TYPE uItemID);
         void SetCurrentCursorBitmap();
         void SetCursorImage(const std::string &name);
         void _469AE4();

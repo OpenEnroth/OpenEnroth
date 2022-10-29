@@ -1836,7 +1836,7 @@ void RegeneratePartyHealthMana() {
                 if (pParty->pPlayers[playerID].HasItemEquipped(idx)) {
                     uint _idx = pParty->pPlayers[playerID].pEquipment.pIndices[idx];
                     ItemGen equppedItem = pParty->pPlayers[playerID].pInventoryItemList[_idx - 1];
-                    if (equppedItem.uItemID > 134) {
+                    if (!IsEnchantable(equppedItem.uItemID)) {
                         if (equppedItem.uItemID == ITEM_RELIC_ETHRICS_STAFF)
                             decrease_HP = true;
                         if (equppedItem.uItemID == ITEM_ARTIFACT_HERMES_SANDALS) {

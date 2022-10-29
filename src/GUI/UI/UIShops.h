@@ -8,7 +8,7 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building, bool spec
 
 
 void UIShop_Buy_Identify_Repair();
-void sub_4B1523_showSpellbookInfo(int spellItemId);
+void sub_4B1523_showSpellbookInfo(ITEM_TYPE spellItemId);
 void ShowPopupShopSkills();
 void ShowPopupShopItem();
 void GetHouseGoodbyeSpeech();

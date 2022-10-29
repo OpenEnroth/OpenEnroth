@@ -27,6 +27,8 @@
 #include "Platform/Api.h"
 #include "Platform/OSWindow.h"
 
+#include "Utility/Random.h"
+
 
 using Io::TextInputType;
 
@@ -1014,7 +1016,7 @@ bool PartyCreationUI_LoopInternal() {
             case PLAYER_SKILL_TRAP_DISARM:
             case PLAYER_SKILL_LEARNING:
                 pParty->pPlayers[i].AddItem(-1, ITEM_POTION_BOTTLE);
-                pParty->pPlayers[i].AddItem(-1, 5 * (rand() % 3 + 40));
+                pParty->pPlayers[i].AddItem(-1, Sample(Level1Reagents()));
                 break;
             case PLAYER_SKILL_DODGE:
                 pParty->pPlayers[i].AddItem(-1, ITEM_LEATHER_BOOTS);
@@ -1027,7 +1029,7 @@ bool PartyCreationUI_LoopInternal() {
             }
 
             for (uint k = 0; k < 138; k++) {
-                if (pParty->pPlayers[i].pOwnItems[k].uItemID)
+                if (pParty->pPlayers[i].pOwnItems[k].uItemID != ITEM_NULL)
                     pParty->pPlayers[i].pOwnItems[k].SetIdentified();
             }
         }

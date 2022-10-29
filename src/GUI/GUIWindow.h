@@ -747,7 +747,7 @@ void DrawBuff_remaining_time_string(int uY, GUIWindow *window,
 void GameUI_DrawItemInfo(struct ItemGen* inspect_item);   // idb
 void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *window);
 void SetUserInterface(PartyAlignment alignment, bool bReplace);
-void CreateMsgScrollWindow(signed int mscroll_id);
+void CreateMsgScrollWindow(ITEM_TYPE mscroll_id);
 void free_book_subwindow();
 void CreateScrollWindow();
 void OnPaperdollLeftClick();

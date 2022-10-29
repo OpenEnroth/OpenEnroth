@@ -1020,19 +1020,18 @@ void CreateScrollWindow() {
     a1.uFrameZ = a1.uFrameWidth + a1.uFrameX - 1;
     a1.uFrameW = a1.uFrameHeight + a1.uFrameY - 1;
 
-    char *v1 = pItemTable->pItems[pGUIWindow_ScrollWindow->wData.val + 700].pName;
+    char *v1 = pItemTable->pItems[MessageScroll(pGUIWindow_ScrollWindow->wData.val)].pName;
 
     a1.DrawTitleText(pFontCreate, 0, 0, 0, StringPrintf(format_4E2D80, colorTable.PaleCanary.C16(), v1), 3);
     a1.DrawText(pFontSmallnum, 1, pFontCreate->GetHeight() - 3, 0, pScrolls[pGUIWindow_ScrollWindow->wData.val], 0, 0, 0);
 }
 
 //----- (00467F48) --------------------------------------------------------
-void CreateMsgScrollWindow(signed int mscroll_id) {
-    if (!pGUIWindow_ScrollWindow && mscroll_id >= 700) {
-        if (mscroll_id <= 782) {
-            pGUIWindow_ScrollWindow =
-                new GUIWindow_Scroll(0, 0, window->GetWidth(), window->GetHeight(), mscroll_id - 700, "");
-        }
+void CreateMsgScrollWindow(ITEM_TYPE mscroll_id) {
+    if (!pGUIWindow_ScrollWindow && IsMessageScroll(mscroll_id)) {
+        // TODO(captainurist): get rid of to_underlying here.
+        pGUIWindow_ScrollWindow =
+            new GUIWindow_Scroll(0, 0, window->GetWidth(), window->GetHeight(), std::to_underlying(mscroll_id) - 700, "");
     }
 }
 
@@ -1674,17 +1673,16 @@ void _4B3FE5_training_dialogue(int eventId) {
  */
 void OracleDialogue() {
     ItemGen *item = nullptr;
-    int item_id = -1;
+    ITEM_TYPE item_id = ITEM_NULL;
 
     // display "You never had it" if nothing missing will be found
     current_npc_text = (char *)pNPCTopics[667].pText;
 
-    int i = 0;
-    for (i = 0; i < 54; i+=2) {
-        // only items with special subquest in range 212-237 and also 241 are recoverable
-        int quest_id = _4F0882_evt_VAR_PlayerItemInHands_vals[i];
+    // only items with special subquest in range 212-237 and also 241 are recoverable
+    for (auto pair : _4F0882_evt_VAR_PlayerItemInHands_vals) {
+        int quest_id = pair.first;
         if (_449B57_test_bit(pParty->_quest_bits, quest_id)) {
-            int search_item_id = _4F0882_evt_VAR_PlayerItemInHands_vals[i + 1];
+            ITEM_TYPE search_item_id = pair.second;
             if (!pParty->HasItem(search_item_id) && pParty->pPickedItem.uItemID != search_item_id) {
                 item_id = search_item_id;
                 break;
@@ -1693,8 +1691,8 @@ void OracleDialogue() {
     }
 
     // missing item found
-    if (item_id >= 0) {
-        pParty->pPlayers[0].AddVariable(VAR_PlayerItemInHands, item_id);
+    if (item_id != ITEM_NULL) {
+        pParty->pPlayers[0].AddVariable(VAR_PlayerItemInHands, std::to_underlying(item_id));
         // display "Here's %s that you lost. Be careful"
         current_npc_text = StringPrintf(pNPCTopics[666].pText,
             StringPrintf("\f%05d%s\f00000", colorTable.Jonquil.C16(), pItemTable->pItems[item_id].pUnidentifiedName).c_str());

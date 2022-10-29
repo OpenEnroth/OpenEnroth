@@ -73,6 +73,7 @@
 #include "Platform/OSWindow.h"
 #include "Platform/OSWindowFactory.h"
 
+#include "Utility/Random.h"
 
 void ShowMM7IntroVideo_and_LoadingScreen();
 void IntegrityTest();
@@ -259,7 +260,7 @@ bool Game::Loop() {
                 break;
             }
 
-            pParty->pPickedItem.uItemID = 0;
+            pParty->pPickedItem.uItemID = ITEM_NULL;
 
             pCurrentMapName = pStartingMapName;
             bFlashQuestBook = true;
@@ -510,7 +511,6 @@ void Game::EventLoop() {
     // char Str2[128];               // [sp+238h] [bp-3C4h]@527
     Actor actor;                  // [sp+2B8h] [bp-344h]@4
     int currHour;
-    int pItemID;
 
 
     dword_50CDC8 = 0;
@@ -783,7 +783,7 @@ void Game::EventLoop() {
                                                 0;
                                         }
                                         if (ptr_50C9A4_ItemToEnchant &&
-                                            ptr_50C9A4_ItemToEnchant->uItemID) {
+                                            ptr_50C9A4_ItemToEnchant->uItemID != ITEM_NULL) {
                                             ptr_50C9A4_ItemToEnchant->uAttributes &= ~ITEM_ENCHANT_ANIMATION_MASK;
                                             _50C9A8_item_enchantment_timer = 0;
                                             ptr_50C9A4_ItemToEnchant = nullptr;
@@ -2350,33 +2350,37 @@ void Game::EventLoop() {
                     }
 
                     break;
-                case UIMSG_DebugSpecialItem:
+                case UIMSG_DebugSpecialItem: {
                     if (uActiveCharacter == 0)
                         continue;
-                    pItemID = rand() % 500;
-                    for (uint i = 0; i < 500; ++i) {
-                        if (pItemID + i > 499) pItemID = 0;
-                        if (pItemTable->pItems[pItemID + i].uItemID_Rep_St > 6) {
-                            pPlayers[uActiveCharacter]->AddItem(-1, pItemID + i);
+
+                    for(size_t attempt = 0; attempt < 500; attempt++) {
+                        ITEM_TYPE pItemID = Sample(RandomSpawnableItems());
+                        if (pItemTable->pItems[pItemID].uItemID_Rep_St > 6) {
+                            pPlayers[uActiveCharacter]->AddItem(-1, pItemID);
                             break;
                         }
                     }
+
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
-                case UIMSG_DebugGenItem:
+                }
+                case UIMSG_DebugGenItem: {
                     if (uActiveCharacter == 0)
                         continue;
-                    pItemID = rand() % 500;
-                    for (uint i = 0; i < 500; ++i) {
-                        if (pItemID + i > 499) pItemID = 0;
-                        // if (pItemTable->pItems[pItemID + i].uItemID_Rep_St ==
-                         //   (item_id - 40015 + 1)) {
-                            pPlayers[uActiveCharacter]->AddItem(-1, pItemID + i);
-                            break;
+
+                    for (size_t attempt = 0; attempt < 500; attempt++) {
+                        ITEM_TYPE pItemID = Sample(RandomSpawnableItems());
+                        // if (pItemTable->pItems[pItemID].uItemID_Rep_St ==
+                        //   (item_id - 40015 + 1)) {
+                        pPlayers[uActiveCharacter]->AddItem(-1, pItemID);
+                        break;
                         //}
                     }
+
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
+                }
                 case UIMSG_DebugKillChar:
                     if (uActiveCharacter == 0)
                         continue;

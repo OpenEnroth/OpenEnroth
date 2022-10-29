@@ -206,7 +206,8 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     int g_mask = 0x7E0;
     int b_mask = 0x1F;
 
-    if (!inspect_item->uItemID) return;
+    if (inspect_item->uItemID == ITEM_NULL)
+        return;
 
     auto inspect_item_image = assets->GetImage_ColorKey(inspect_item->GetIconName(), render->teal_mask_16);
 
@@ -1415,7 +1416,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
             return;
         }
     }
-    if (pParty->pPickedItem.uItemID) {  // нажатие на портрет перса правой кнопкой
+    if (pParty->pPickedItem.uItemID != ITEM_NULL) {  // нажатие на портрет перса правой кнопкой
                                         // мыши с раствором
         for (uint i = 0; i < 4; ++i) {
             if ((signed int)pX > RightClickPortraitXmin[i] &&
@@ -1749,7 +1750,7 @@ int no_rightlick_in_inventory = false;  // 0050CDCC
 void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
     int potion1_id;             // edx@25
     unsigned int potion2_id;    // edi@25
-    signed int potionID;        // edx@27
+    ITEM_TYPE potionID;        // edx@27
     // unsigned int pOut_y;        // edx@57
     double v31;                 // st7@112
     Vec3i v39;              // [sp-18h] [bp-A8h]@83
@@ -1953,15 +1954,22 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 item->special_enchantment = ITEM_ENCHANTMENT_DRAGON_SLAYING;
                 v31 = (double)(1800 * pParty->pPickedItem.uEnchantmentType);
             } else {
-                static ITEM_ENCHANTMENT _4E2904_enchantment_by_potion_lut[] = {
-                    (ITEM_ENCHANTMENT)164,      (ITEM_ENCHANTMENT)93,
-                    (ITEM_ENCHANTMENT)22,       (ITEM_ENCHANTMENT)164,
-                    (ITEM_ENCHANTMENT)93,       (ITEM_ENCHANTMENT)22,
-                    ITEM_ENCHANTMENT_OF_FLAME,  ITEM_ENCHANTMENT_OF_FROST,
-                    ITEM_ENCHANTMENT_OF_POISON, ITEM_ENCHANTMENT_OF_SPARKS,
-                    (ITEM_ENCHANTMENT)59};
-                item->special_enchantment = _4E2904_enchantment_by_potion_lut
-                    [pParty->pPickedItem.uItemID - 240];
+                // TODO(captainurist): lookup table makes no sense for the most part,
+                // why do we have (ITEM_ENCHANTMENT)93 two times here?
+                static constinit IndexedArray<ITEM_ENCHANTMENT, ITEM_FIRST_ENCHANTING_POTION, ITEM_LAST_ENCHANTING_POTION> _4E2904_enchantment_by_potion_lut = {
+                    {ITEM_POTION_MIGHT_BOOST, (ITEM_ENCHANTMENT)164},
+                    {ITEM_POTION_INTELLECT_BOOST, (ITEM_ENCHANTMENT)93},
+                    {ITEM_POTION_PERSONALITY_BOOST, (ITEM_ENCHANTMENT)22},
+                    {ITEM_POTION_ENDURANCE_BOOST, (ITEM_ENCHANTMENT)164},
+                    {ITEM_POTION_SPEED_BOOST, (ITEM_ENCHANTMENT)93},
+                    {ITEM_POTION_ACCURACY_BOOST, (ITEM_ENCHANTMENT)22},
+                    {ITEM_POTION_FLAMING_POTION, ITEM_ENCHANTMENT_OF_FLAME},
+                    {ITEM_POTION_FREEZING_POTION, ITEM_ENCHANTMENT_OF_FROST},
+                    {ITEM_POTION_NOXIOUS_POTION, ITEM_ENCHANTMENT_OF_POISON},
+                    {ITEM_POTION_SHOCKING_POTION, ITEM_ENCHANTMENT_OF_SPARKS},
+                    {ITEM_POTION_SWIFT_POTION, (ITEM_ENCHANTMENT)59}
+                };
+                item->special_enchantment = _4E2904_enchantment_by_potion_lut[pParty->pPickedItem.uItemID];
                 v31 = (double)(1800 * pParty->pPickedItem.uEnchantmentType);
             }
 
@@ -2028,18 +2036,16 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
     }
 
     // potions mixing(смешивание двух зелий)
-    if (pParty->pPickedItem.uItemID >= ITEM_POTION_CATALYST &&
-        pParty->pPickedItem.uItemID <= ITEM_POTION_REJUVENATION &&
-        item->uItemID >= ITEM_POTION_CATALYST &&
-        item->uItemID <= ITEM_POTION_REJUVENATION) {
-        potion1_id = item->uItemID - ITEM_POTION_CURE_WOUNDS;
-        potion2_id = pParty->pPickedItem.uItemID - ITEM_POTION_CURE_WOUNDS;
+    if (IsPotion(pParty->pPickedItem.uItemID) && IsPotion(item->uItemID)) {
+        // TODO(captainurist): get rid of casts in a nice way.
+        potion1_id = std::to_underlying(item->uItemID) - std::to_underlying(ITEM_POTION_CURE_WOUNDS);
+        potion2_id = std::to_underlying(pParty->pPickedItem.uItemID) - std::to_underlying(ITEM_POTION_CURE_WOUNDS);
 
         if (pParty->pPickedItem.uItemID == ITEM_POTION_CATALYST ||
             item->uItemID == ITEM_POTION_CATALYST)
-            potionID = 5;
+            potionID = ITEM_DUELIST_BLADE; // TODO(captainurist): eeeh? // was 5
         else
-            potionID = pItemTable->potion_data[potion2_id][potion1_id];
+            potionID = ITEM_TYPE(pItemTable->potion_data[potion2_id][potion1_id]);
 
         damage_level = 0;
         if (alchemy_skill_points) {
@@ -2082,7 +2088,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         //   break;
         //}
         //}
-        if (!potionID) {
+        if (potionID == ITEM_NULL) {
             GameUI_DrawItemInfo(item);
             return;
         }

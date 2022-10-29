@@ -298,7 +298,7 @@ void Player::SalesProcess(unsigned int inventory_idnx, int item_index, int _2dev
 //----- (0043EEF3) --------------------------------------------------------
 bool Player::NothingOrJustBlastersEquipped() {
     signed int item_idx;
-    signed int item_id;
+    ITEM_TYPE item_id;
 
     // scan through all equipped items
     for (ITEM_SLOT i : AllItemSlots()) {
@@ -527,10 +527,9 @@ void Player::ItemsPotionDmgBreak(int enchant_count) {
     int16_t item_index_tabl[138];                         // table holding items
     memset(item_index_tabl, 0, sizeof(item_index_tabl));  // set to zero
 
-    for (int i = 0; i < 138; ++i) {  // scan through and log in table
-        if ((pOwnItems[i].uItemID > 0) && (pOwnItems[i].uItemID <= 134))
+    for (int i = 0; i < 138; ++i)  // scan through and log in table
+        if (IsBreakable(pOwnItems[i].uItemID))
             item_index_tabl[avalible_items++] = i;
-    }
 
     if (avalible_items) {  // is there anything to break
         if (enchant_count) {
@@ -568,7 +567,7 @@ bool Player::CanSteal() {
 }
 
 //----- (00492C4E) --------------------------------------------------------
-bool Player::CanEquip_RaceAndAlignmentCheck(unsigned int uItemID) {
+bool Player::CanEquip_RaceAndAlignmentCheck(ITEM_TYPE uItemID) {
     switch (uItemID) {
         case ITEM_RELIC_ETHRICS_STAFF:
         case ITEM_RELIC_OLD_NICK:
@@ -730,7 +729,7 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
 }
 
 //----- (00492528) --------------------------------------------------------
-bool Player::CanFitItem(unsigned int uSlot, unsigned int uItemID) {
+bool Player::CanFitItem(unsigned int uSlot, ITEM_TYPE uItemID) {
     auto img = assets->GetImage_ColorKey(pItemTable->pItems[uItemID].pIconName,
                                          render->teal_mask_16);
     unsigned int slotWidth = GetSizeInInventorySlots(img->GetWidth());
@@ -764,7 +763,7 @@ int Player::FindFreeInventoryListSlot() {
 }
 
 //----- (00492600) --------------------------------------------------------
-int Player::CreateItemInInventory(unsigned int uSlot, unsigned int uItemID) {
+int Player::CreateItemInInventory(unsigned int uSlot, ITEM_TYPE uItemID) {
     signed int freeSlot = FindFreeInventoryListSlot();
 
     if (freeSlot == -1) {  // no room
@@ -794,7 +793,7 @@ int Player::HasSkill(unsigned int uSkillType) {
 }
 
 //----- (00492745) --------------------------------------------------------
-void Player::WearItem(unsigned int uItemID) {
+void Player::WearItem(ITEM_TYPE uItemID) {
     int item_indx = FindFreeInventoryListSlot();
 
     if (item_indx != -1) {
@@ -806,8 +805,8 @@ void Player::WearItem(unsigned int uItemID) {
 }
 
 //----- (004927A8) --------------------------------------------------------
-int Player::AddItem(int index, unsigned int uItemID) {
-    if (!uItemID) return 0;
+int Player::AddItem(int index, ITEM_TYPE uItemID) {
+    if (uItemID == ITEM_NULL) return 0;
     if (index == -1) {  // no location specified - search for space
         for (int xcoord = 0; xcoord < INVETORYSLOTSWIDTH; xcoord++) {
             for (int ycoord = 0; ycoord < INVETORYSLOTSHEIGHT; ycoord++) {
@@ -873,7 +872,7 @@ int Player::CreateItemInInventory2(unsigned int index,
 
 //----- (0049298B) --------------------------------------------------------
 void Player::PutItemArInventoryIndex(
-    int uItemID, int itemListPos,
+    ITEM_TYPE uItemID, int itemListPos,
     int index) {  // originally accepted ItemGen* but needed only its uItemID
 
     auto img = assets->GetImage_ColorKey(pItemTable->pItems[uItemID].pIconName,
@@ -1216,7 +1215,7 @@ int Player::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
     } else {
         if (HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
             ItemGen* mainHandItemGen = this->GetMainHandItem();
-            int itemId = mainHandItemGen->uItemID;
+            ITEM_TYPE itemId = mainHandItemGen->uItemID;
             bool addOneDice = false;
             if (pItemTable->pItems[itemId].uSkillType == PLAYER_SKILL_SPEAR &&
                 !this->pEquipment
@@ -1261,7 +1260,7 @@ int Player::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
 int Player::CalculateMeleeDmgToEnemyWithWeapon(ItemGen* weapon,
                                                unsigned int uTargetActorID,
                                                bool addOneDice) {
-    int itemId = weapon->uItemID;
+    ITEM_TYPE itemId = weapon->uItemID;
     int diceCount = pItemTable->pItems[itemId].uDamageDice;
 
     if (addOneDice) diceCount++;
@@ -1444,8 +1443,7 @@ std::string Player::GetRangedDamageString() {
 
     ItemGen* mainHandItem = GetMainHandItem();
 
-    if (mainHandItem != nullptr && (mainHandItem->uItemID >= 135) &&
-        (mainHandItem->uItemID <= 159)) {
+    if (mainHandItem != nullptr && IsWand(mainHandItem->uItemID)) {
         return std::string(localization->GetString(LSTR_WAND));
     } else if (mainHandItem != nullptr &&
                (mainHandItem->uItemID == ITEM_BLASTER ||
@@ -1597,12 +1595,12 @@ bool Player::HasEnchantedItemEquipped(int uEnchantment) {
 }
 
 //----- (0048D709) --------------------------------------------------------
-bool Player::WearsItem(int item_id, ITEM_SLOT equip_type) const {
+bool Player::WearsItem(ITEM_TYPE item_id, ITEM_SLOT equip_type) const {
     // check aginst specific item and slot
     return (HasItemEquipped(equip_type) && GetNthEquippedIndexItem(equip_type)->uItemID == item_id);
 }
 
-bool Player::WearsItemAnywhere(int item_id) const {
+bool Player::WearsItemAnywhere(ITEM_TYPE item_id) const {
     for (ITEM_SLOT i : AllItemSlots())
         if (WearsItem(item_id, i))
             return true;
@@ -1729,12 +1727,12 @@ int Player::StealFromActor(
             tempItem.Reset();
 
             int randslot = rand() % 4;
-            unsigned int carriedItemId = actroPtr->uCarriedItemID;
+            ITEM_TYPE carriedItemId = actroPtr->uCarriedItemID;
 
             // check if we have an item to steal
-            if (carriedItemId != ITEM_NULL || actroPtr->ActorHasItems[randslot].uItemID != 0 && actroPtr->ActorHasItems[randslot].GetItemEquipType() != EQUIP_GOLD) {
+            if (carriedItemId != ITEM_NULL || actroPtr->ActorHasItems[randslot].uItemID != ITEM_NULL && actroPtr->ActorHasItems[randslot].GetItemEquipType() != EQUIP_GOLD) {
                 if (carriedItemId != ITEM_NULL) {  // load item into tempitem
-                    actroPtr->uCarriedItemID = 0;
+                    actroPtr->uCarriedItemID = ITEM_NULL;
                     tempItem.uItemID = carriedItemId;
                     if (pItemTable->pItems[carriedItemId].uEquipType == EQUIP_WAND) {
                         tempItem.uNumCharges = rand() % 6 + pItemTable->pItems[carriedItemId].uDamageMod + 1;
@@ -1893,7 +1891,7 @@ int Player::ReceiveSpecialAttackEffect(
                     itemtocheck = &this->pEquippedItems[i - 126];
                 }
 
-                if (itemtocheck->uItemID > 0 && itemtocheck->uItemID <= 134 &&
+                if (IsBreakable(itemtocheck->uItemID) &&
                     !itemtocheck->IsBroken())
                     itemstobreaklist[itemstobreakcounter++] = i;
             }
@@ -1963,8 +1961,7 @@ int Player::ReceiveSpecialAttackEffect(
                 if (ItemPosInList > 0) {
                     itemtocheck = &this->pInventoryItemList[ItemPosInList - 1];
 
-                    if (itemtocheck->uItemID > 0 &&
-                        itemtocheck->uItemID <= 134) {
+                    if (IsBreakable(itemtocheck->uItemID)) {
                         itemstobreaklist[itemstobreakcounter++] = i;
                     }
                 }
@@ -2124,9 +2121,9 @@ int Player::ReceiveSpecialAttackEffect(
             case SPECIAL_ATTACK_STEAL: {
                 PlaySound(SPEECH_ItemBroken, 0);
                 void *actoritems = &pActor->ActorHasItems[0];
-                if (pActor->ActorHasItems[0].uItemID) {
+                if (pActor->ActorHasItems[0].uItemID != ITEM_NULL) {
                     actoritems = &pActor->ActorHasItems[1];
-                    if (pActor->ActorHasItems[1].uItemID) {
+                    if (pActor->ActorHasItems[1].uItemID != ITEM_NULL) {
                         spell_fx_renderer->SetPlayerBuffAnim(0x99u, whichplayer);
                         return 1;
                     }
@@ -2205,7 +2202,7 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) {
     } else if (HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
         weapon = GetMainHandItem();
         if (weapon->GetItemEquipType() == EQUIP_WAND) {
-            weapon_recovery = pSpellDatas[wand_spell_ids[weapon->uItemID - ITEM_WAND_OF_FIRE]].uExpertLevelRecovery;
+            weapon_recovery = pSpellDatas[wand_spell_ids[weapon->uItemID]].uExpertLevelRecovery;
         } else {
             weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
         }
@@ -3827,7 +3824,6 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
     uint16_t v17;  // edi@73
     unsigned int v18;      // eax@73
                            //    const char *v22; // eax@84
-    int scroll_id;         // esi@96
     int v25;               // eax@109
     int v26;               // eax@113
     int new_mana_val;      // edi@114
@@ -3891,17 +3887,17 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
 
     if (pParty->pPickedItem.GetItemEquipType() == EQUIP_POTION) {
         switch (pParty->pPickedItem.uItemID) {
-            case 221:  // Catalyst
+            case ITEM_POTION_CATALYST:
                 playerAffected->SetCondition(Condition_Poison_Weak, 1);
                 break;
 
-            case 222:  // Cure Wounds
+            case ITEM_POTION_CURE_WOUNDS:
                 v25 = pParty->pPickedItem.uEnchantmentType + 10;
                 playerAffected->Heal(v25);
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
-            case 223:  // Magic Potion
+            case ITEM_POTION_MAGIC_POTION:
                 v26 = pParty->pPickedItem.uEnchantmentType + 10;
                 new_mana_val = playerAffected->sMana;
                 new_mana_val += v26;
@@ -3911,31 +3907,31 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 playerAffected->sMana = new_mana_val;
                 break;
 
-            case 224:  // Cure Weakness
+            case ITEM_POTION_CURE_WEAKNESS:
                 playerAffected->conditions.Reset(Condition_Weak);
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
-            case 225:  // Cure Disease
+            case ITEM_POTION_CURE_DISEASE:
                 playerAffected->conditions.Reset(Condition_Disease_Severe);
                 playerAffected->conditions.Reset(Condition_Disease_Medium);
                 playerAffected->conditions.Reset(Condition_Disease_Weak);
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
-            case 226:  // Cure Poison
+            case ITEM_POTION_CURE_POISON:
                 playerAffected->conditions.Reset(Condition_Poison_Severe);
                 playerAffected->conditions.Reset(Condition_Poison_Medium);
                 playerAffected->conditions.Reset(Condition_Poison_Weak);
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
-            case 227:  // Awaken
+            case ITEM_POTION_AWAKEN:
                 playerAffected->conditions.Reset(Condition_Sleep);
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
-            case 228:  // Haste
+            case ITEM_POTION_HASTE:
                 if (!playerAffected->conditions.Has(Condition_Weak)) {
                     auto duration =
                         GameTime(0, TIME_SECONDS_PER_QUANT *
@@ -3946,7 +3942,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 }
                 break;
 
-            case 229:  // Heroism
+            case ITEM_POTION_HEROISM:
             {
                 auto duration =
                     GameTime(0, TIME_SECONDS_PER_QUANT *
@@ -3957,7 +3953,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 break;
             }
 
-            case 230:  // Bless
+            case ITEM_POTION_BLESS:
             {
                 auto duration =
                     GameTime(0, TIME_SECONDS_PER_QUANT *
@@ -3968,7 +3964,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 break;
             }
 
-            case 231:  // Preservation
+            case ITEM_POTION_PRESERVATION:
             {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 auto duration =
@@ -3980,7 +3976,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 break;
             }
 
-            case 232:  // Shield
+            case ITEM_POTION_SHIELD:
             {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 auto duration =
@@ -3992,7 +3988,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 break;
             }
 
-            case 234:  // Stoneskin
+            case ITEM_POTION_STONESKIN:
             {
                 auto duration =
                     GameTime(0, TIME_SECONDS_PER_QUANT *
@@ -4003,7 +3999,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 break;
             }
 
-            case 235:  // Water Breathing
+            case ITEM_POTION_WATER_BREATHING:
             {
                 auto duration =
                     GameTime(0, TIME_SECONDS_PER_QUANT *
@@ -4013,20 +4009,22 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 break;
             }
 
-            case 237:  // Remove Fear
+            case ITEM_POTION_REMOVE_FEAR:
                 playerAffected->conditions.Reset(Condition_Fear);
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
-            case 238:  // Remove Curse
+
+            case ITEM_POTION_REMOVE_CURSE:
                 playerAffected->conditions.Reset(Condition_Cursed);
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
-            case 239:  // Cure Insanity
+
+            case ITEM_POTION_CURE_INSANITY:
                 playerAffected->conditions.Reset(Condition_Insane);
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
-            case 240:  // Might Boost
+            case ITEM_POTION_MIGHT_BOOST:
             {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 auto duration =
@@ -4038,7 +4036,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 break;
             }
 
-            case 241:  // Intellect Boost
+            case ITEM_POTION_INTELLECT_BOOST:
             {
                 auto duration =
                     GameTime(0, TIME_SECONDS_PER_QUANT *
@@ -4050,7 +4048,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 break;
             }
 
-            case 242:  // Personality Boost
+            case ITEM_POTION_PERSONALITY_BOOST:
             {
                 auto duration =
                     GameTime(0, TIME_SECONDS_PER_QUANT *
@@ -4062,7 +4060,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 break;
             }
 
-            case 243:  // Endurance Boost
+            case ITEM_POTION_ENDURANCE_BOOST:
             {
                 auto duration =
                     GameTime(0, TIME_SECONDS_PER_QUANT *
@@ -4074,7 +4072,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 break;
             }
 
-            case 244:  // Speed Boost
+            case ITEM_POTION_SPEED_BOOST:
             {
                 auto duration =
                     GameTime(0, TIME_SECONDS_PER_QUANT *
@@ -4086,7 +4084,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 break;
             }
 
-            case 245:  // Accuracy Boost
+            case ITEM_POTION_ACCURACY_BOOST:
             {
                 auto duration =
                     GameTime(0, TIME_SECONDS_PER_QUANT *
@@ -4098,12 +4096,12 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 break;
             }
 
-            case 251:  // Cure Paralysis
+            case ITEM_POTION_CURE_PARALYSIS:
                 playerAffected->conditions.Reset(Condition_Paralyzed);
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
-            case 252:  // Divine Restoration
+            case ITEM_POTION_DIVINE_RESTORATION:
                 v30 = playerAffected->conditions.Get(Condition_Dead).value;
                 v32 = playerAffected->conditions.Get(Condition_Petrified).value;
                 v34 = playerAffected->conditions.Get(Condition_Eradicated).value;
@@ -4114,12 +4112,13 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
-            case 253:  // Divine Cure
+            case ITEM_POTION_DIVINE_CURE:
                 v25 = 5 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->Heal(v25);
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
-            case 254:  // Divine Power
+
+            case ITEM_POTION_DIVINE_POWER:
                 v26 = 5 * pParty->pPickedItem.uEnchantmentType;
                 new_mana_val = playerAffected->sMana;
                 new_mana_val += v26;
@@ -4127,7 +4126,8 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     new_mana_val = playerAffected->GetMaxMana();
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
-            case 255:  // Luck Boost
+
+            case ITEM_POTION_LUCK_BOOST:
             {
                 auto duration =
                     GameTime(0, TIME_SECONDS_PER_QUANT *
@@ -4139,7 +4139,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 break;
             }
 
-            case 256:  // Fire Resistance
+            case ITEM_POTION_FIRE_RESISTANCE:
             {
                 auto duration =
                     GameTime(0, TIME_SECONDS_PER_QUANT *
@@ -4151,7 +4151,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 break;
             }
 
-            case 257:  // Air Resistance
+            case ITEM_POTION_AIR_RESISTANCE:
             {
                 auto duration =
                     GameTime(0, TIME_SECONDS_PER_QUANT *
@@ -4163,7 +4163,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 break;
             }
 
-            case 258:  // Water Resistance
+            case ITEM_POTION_WATER_RESISTANCE:
             {
                 auto duration =
                     GameTime(0, TIME_SECONDS_PER_QUANT *
@@ -4175,7 +4175,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 break;
             }
 
-            case 259:  // Earth Resistance
+            case ITEM_POTION_EARTH_RESISTANCE:
             {
                 auto duration =
                     GameTime(0, TIME_SECONDS_PER_QUANT *
@@ -4187,7 +4187,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 break;
             }
 
-            case 260:  // Mind Resistance
+            case ITEM_POTION_MIND_RESISTANCE:
             {
                 auto duration =
                     GameTime(0, TIME_SECONDS_PER_QUANT *
@@ -4199,7 +4199,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 break;
             }
 
-            case 261:  // Body Resistance
+            case ITEM_POTION_BODY_RESISTANCE:
             {
                 auto duration =
                     GameTime(0, TIME_SECONDS_PER_QUANT *
@@ -4211,61 +4211,68 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 break;
             }
 
-            case 262:  // Stone to Flesh
+            case ITEM_POTION_STONE_TO_FLESH:
                 playerAffected->conditions.Reset(Condition_Petrified);
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
-            case 264:  // Pure Luck
+            case ITEM_POTION_PURE_LUCK:
                 if (!playerAffected->pure_luck_used) {
                     playerAffected->uLuck += 50;
                     playerAffected->pure_luck_used = 1;
                 }
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
-            case 265:  // Pure Speed
+
+            case ITEM_POTION_PURE_SPEED:
                 if (!playerAffected->pure_speed_used) {
                     playerAffected->uSpeed += 50;
                     playerAffected->pure_speed_used = 1;
                 }
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
-            case 266:  // Pure Intellect
+
+            case ITEM_POTION_PURE_INTELLECT:
                 if (!playerAffected->pure_intellect_used) {
                     playerAffected->uIntelligence += 50;
                     playerAffected->pure_intellect_used = 1;
                 }
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
-            case 267:  // Pure Endurance
+
+            case ITEM_POTION_PURE_ENDURANCE:
                 if (!playerAffected->pure_endurance_used) {
                     playerAffected->uEndurance += 50;
                     playerAffected->pure_endurance_used = 1;
                 }
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
-            case 268:  // Pure Personality
+
+            case ITEM_POTION_PURE_PERSONALITY:
                 if (!playerAffected->pure_willpower_used) {
                     playerAffected->uWillpower += 50;
                     playerAffected->pure_willpower_used = 1;
                 }
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
-            case 269:  // Pure Accuracy
+
+            case ITEM_POTION_PURE_ACCURACY:
                 if (!playerAffected->pure_accuracy_used) {
                     playerAffected->uAccuracy += 50;
                     playerAffected->pure_accuracy_used = 1;
                 }
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
-            case 270:  // Pure Might
+
+            case ITEM_POTION_PURE_MIGHT:
                 if (!playerAffected->pure_might_used) {
                     playerAffected->uMight += 50;
                     playerAffected->pure_might_used = 1;
                 }
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
-            case 271:  // Rejuvenation
+
+            case ITEM_POTION_REJUVENATION:
                 playerAffected->sAgeModifier = 0;
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
@@ -4321,7 +4328,8 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             return;
         }
 
-        scroll_id = pParty->pPickedItem.uItemID - 299;
+        // TODO(captainurist): deal away with casts.
+        SPELL_TYPE scroll_id = (SPELL_TYPE)(std::to_underlying(pParty->pPickedItem.uItemID) - 299);
         if (scroll_id == 30 || scroll_id == 4 || scroll_id == 91 ||
             scroll_id == 28) {  // Enchant Item scroll, Vampiric Weapon scroll
                                 // ,Recharge Item ,Fire Aura
@@ -4329,7 +4337,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             pGUIWindow_CurrentMenu->Release();
             current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
             viewparams->bRedrawGameUI = 1;
-            _42777D_CastSpell_UseWand_ShootArrow((SPELL_TYPE)scroll_id, player_num - 1, 0x85u, ON_CAST_CastViaScroll, 0);
+            _42777D_CastSpell_UseWand_ShootArrow(scroll_id, player_num - 1, 0x85u, ON_CAST_CastViaScroll, 0);
         } else {
             mouse->RemoveHoldingItem();
             pMessageQueue_50C9E8->AddGUIMessage(UIMSG_SpellScrollUse, scroll_id, player_num - 1);
@@ -4342,8 +4350,9 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
     }
 
     if (pParty->pPickedItem.GetItemEquipType() == EQUIP_BOOK) {
-        v15 = pParty->pPickedItem.uItemID - 400;
-        v72 = playerAffected->spellbook.bHaveSpell[pParty->pPickedItem.uItemID - 400];
+        // TODO(captainurist): another terrible mess, get rid of these casts.
+        v15 = std::to_underlying(pParty->pPickedItem.uItemID) - 400;
+        v72 = playerAffected->spellbook.bHaveSpell[std::to_underlying(pParty->pPickedItem.uItemID) - 400];
         if (v72) {
             GameUI_SetStatusBar(
                 LSTR_FMT_YOU_ALREADY_KNOW_S_SPELL,
@@ -4393,7 +4402,8 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             playerAffected->PlaySound(SPEECH_CantLearnSpell, 0);
             return;
         }
-        playerAffected->spellbook.bHaveSpell[pParty->pPickedItem.uItemID - 400] = 1;
+        // TODO(captainurist): and here too
+        playerAffected->spellbook.bHaveSpell[std::to_underlying(pParty->pPickedItem.uItemID) - 400] = 1;
         playerAffected->PlaySound(SPEECH_LearnSpell, 0);
         v73 = 0;
 
@@ -4680,11 +4690,11 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_PlayerItemInHands:
             // for (int i = 0; i < 138; i++)
             for (int i = 0; i < 126; i++) {
-                if (pInventoryItemList[i].uItemID == pValue) {
+                if (pInventoryItemList[i].uItemID == ITEM_TYPE(pValue)) {
                     return true;
                 }
             }
-            return pParty->pPickedItem.uItemID == pValue;
+            return pParty->pPickedItem.uItemID == ITEM_TYPE(pValue);
 
         case VAR_Hour:
             return pParty->GetPlayingTime().GetHoursOfDay() == pValue;
@@ -4951,17 +4961,17 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
             v4 = 0;
             for (int playerNum = 0; playerNum < 4; playerNum++) {
                 for (int invPos = 0; invPos < 138; invPos++) {
-                    int itemId = pParty->pPlayers[playerNum]
+                    ITEM_TYPE itemId = pParty->pPlayers[playerNum]
                                      .pInventoryItemList[invPos]
                                      .uItemID;
                     switch (itemId) {
-                        case 0x1D6u:
+                        case ITEM_SPELLBOOK_REGENERATION:
                             ++v4;
                             break;
-                        case 0x1D7u:
+                        case ITEM_SPELLBOOK_CURE_POISON:
                             v4 += 3;
                             break;
-                        case 0x1DDu:
+                        case ITEM_SPELLBOOK_LIGHT_BOLT:
                             v4 += 5;
                             break;
                     }
@@ -5025,7 +5035,7 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_ItemEquipped:
             for (ITEM_SLOT i : AllItemSlots()) {
                 if (HasItemEquipped(i) &&
-                    GetNthEquippedIndexItem(i)->uItemID == pValue) {
+                    GetNthEquippedIndexItem(i)->uItemID == ITEM_TYPE(pValue)) {
                     return true;
                 }
             }
@@ -5156,12 +5166,11 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             return;
         case VAR_PlayerItemInHands:
             item.Reset();
-            item.uItemID = var_value;
+            item.uItemID = ITEM_TYPE(var_value);
             item.uAttributes = ITEM_IDENTIFIED;
             pParty->SetHoldingItem(&item);
-            if (var_value >= ITEM_ARTIFACT_PUCK &&
-                var_value <= ITEM_RELIC_MEKORIGS_HAMMER)
-                pParty->pIsArtifactFound[var_value - 500] = 1;
+            if (IsArtifact(ITEM_TYPE(var_value)))
+                pParty->pIsArtifactFound[ITEM_TYPE(var_value)] = 1;
             return;
         case VAR_FixedGold:
             pParty->SetGold(var_value);
@@ -5745,10 +5754,10 @@ void Player::AddVariable(VariableType var_type, signed int val) {
         case VAR_PlayerItemInHands:
             item.Reset();
             item.uAttributes = ITEM_IDENTIFIED;
-            item.uItemID = val;
-            if (val >= ITEM_ARTIFACT_PUCK && val <= ITEM_RELIC_MEKORIGS_HAMMER) {
-                pParty->pIsArtifactFound[val - 500] = 1;
-            } else if (val >= ITEM_WAND_OF_FIRE && val <= ITEM_MYSTIC_WAND_OF_INCINERATION) {
+            item.uItemID = ITEM_TYPE(val);
+            if (IsArtifact(ITEM_TYPE(val))) {
+                pParty->pIsArtifactFound[ITEM_TYPE(val)] = 1;
+            } else if (IsWand(ITEM_TYPE(val))) {
                 item.uNumCharges = rand() % 6 + item.GetDamageMod() + 1;
                 item.uMaxCharges = item.uNumCharges;
             }
@@ -6241,7 +6250,7 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
                 if (id_ > 0) {
                     if (this->pInventoryItemList[this->pEquipment.pIndices[i] -
                                                  1]
-                            .uItemID == pValue) {
+                            .uItemID == ITEM_TYPE(pValue)) {
                         this->pEquipment.pIndices[i] = 0;
                     }
                 }
@@ -6249,13 +6258,13 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
             for (int i = 0; i < 126; i++) {
                 int id_ = this->pInventoryMatrix[i];
                 if (id_ > 0) {
-                    if (this->pInventoryItemList[id_ - 1].uItemID == pValue) {
+                    if (this->pInventoryItemList[id_ - 1].uItemID == ITEM_TYPE(pValue)) {
                         RemoveItemAtInventoryIndex(i);
                         return;
                     }
                 }
             }
-            if (pParty->pPickedItem.uItemID == pValue) {
+            if (pParty->pPickedItem.uItemID == ITEM_TYPE(pValue)) {
                 mouse->RemoveHoldingItem();
                 return;
             }
@@ -6800,18 +6809,18 @@ bool Player::HasUnderwaterSuitEquipped() {
     // calls with the parameter 0 have been
     // changed to calls to this for every
     // player
-    if (GetArmorItem() == nullptr || GetArmorItem()->uItemID != 604) {
+    if (GetArmorItem() == nullptr || GetArmorItem()->uItemID != ITEM_QUEST_WETSUIT) {
         return false;
     }
     return true;
 }
 
 //----- (0043EE15) --------------------------------------------------------
-bool Player::HasItem(unsigned int uItemID, bool checkHeldItem) {
+bool Player::HasItem(ITEM_TYPE uItemID, bool checkHeldItem) {
     if (!checkHeldItem || pParty->pPickedItem.uItemID != uItemID) {
         for (uint i = 0; i < 126; ++i) {
             if (this->pInventoryMatrix[i] > 0) {
-                if ((unsigned int)this
+                if (this
                         ->pInventoryItemList[this->pInventoryMatrix[i] - 1]
                         .uItemID == uItemID)
                     return true;
@@ -6819,7 +6828,7 @@ bool Player::HasItem(unsigned int uItemID, bool checkHeldItem) {
         }
         for (ITEM_SLOT i : AllItemSlots()) {
             if (this->pEquipment.pIndices[i]) {
-                if ((unsigned int)this
+                if (this
                         ->pInventoryItemList[this->pEquipment.pIndices[i] - 1]
                         .uItemID == uItemID)
                     return true;
@@ -7264,7 +7273,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
 }
 
 void Player::OnInventoryLeftClick() {
-    unsigned int pickedItemId;  // esi@12
+    ITEM_TYPE pickedItemId;  // esi@12
     unsigned int invItemIndex;  // eax@12
     unsigned int itemPos;       // eax@18
     ItemGen tmpItem;            // [sp+Ch] [bp-3Ch]@1
@@ -7319,7 +7328,7 @@ void Player::OnInventoryLeftClick() {
             pickedItemId = pParty->pPickedItem.uItemID;
             invItemIndex = this->GetItemListAtInventoryIndex(invMatrixIndex);
 
-            if (!pickedItemId) {  // no hold item
+            if (pickedItemId == ITEM_NULL) {  // no hold item
                 if (!invItemIndex) {
                     return;
                 } else {
@@ -7630,10 +7639,10 @@ void Player::_42ECB5_PlayerAttacksActor() {
         bow_idx = 0;
 
     // v32 = 0;
-    int wand_item_id = 0;
+    ITEM_TYPE wand_item_id = ITEM_NULL;
     // v33 = 0;
 
-    int laser_weapon_item_id = 0;
+    ITEM_TYPE laser_weapon_item_id = ITEM_NULL;
 
     int main_hand_idx = player->pEquipment.uMainHand;
     if (main_hand_idx) {
@@ -7688,19 +7697,17 @@ void Player::_42ECB5_PlayerAttacksActor() {
 
     bool shooting_bow = false, shotting_laser = false, shooting_wand = false,
          melee_attack = false;
-    if (laser_weapon_item_id) {
+    if (laser_weapon_item_id != ITEM_NULL) {
         shotting_laser = true;
         _42777D_CastSpell_UseWand_ShootArrow(SPELL_LASER_PROJECTILE,
                                              uActiveCharacter - 1, 0, 0,
                                              uActiveCharacter + 8);
-    } else if (wand_item_id) {
+    } else if (wand_item_id != ITEM_NULL) {
         shooting_wand = true;
 
         int main_hand_idx = player->pEquipment.uMainHand;
         _42777D_CastSpell_UseWand_ShootArrow(
-            wand_spell_ids[player->pInventoryItemList[main_hand_idx - 1]
-                               .uItemID -
-                           ITEM_WAND_OF_FIRE],
+            wand_spell_ids[player->pInventoryItemList[main_hand_idx - 1].uItemID],
             uActiveCharacter - 1, 8, 0, uActiveCharacter + 8);
 
         if (!--player->pInventoryItemList[main_hand_idx - 1].uNumCharges)
@@ -7969,7 +7976,7 @@ int Player::SelectPhrasesTransaction(
     ItemGen* pItem, BuildingType building_type, int BuildID_2Events,
     int ShopMenuType) {  // TODO(_): probably move this somewhere else, not really
                          // Player:: stuff
-    unsigned int idemId;   // edx@1
+    ITEM_TYPE idemId;   // edx@1
     ITEM_EQUIP_TYPE equipType;  // esi@1
     float multiplier;      // ST04_4@26
     int price;             // edi@26

@@ -170,7 +170,7 @@ struct Party {
     void CreateDefaultParty(bool bDebugGiveItems = false);
     void Reset();
     void ResetPosMiscAndSpellBuffs();
-    bool HasItem(unsigned int uItemID);
+    bool HasItem(ITEM_TYPE uItemID);
     void SetHoldingItem(ItemGen *pItem);
     int GetFirstCanAct();  // added to fix some nzi access problems
     int GetNextActiveCharacter();
@@ -267,7 +267,7 @@ struct Party {
      * @param item_id                   Item type to check, e.g. `ITEM_ARTIFACT_LADYS_ESCORT`.
      * @return                          Whether the provided item is worn by at least one member of the party.
      */
-    bool WearsItemAnywhere(int item_id) const {
+    bool WearsItemAnywhere(ITEM_TYPE item_id) const {
         return
             pPlayers[0].WearsItemAnywhere(item_id) ||
             pPlayers[1].WearsItemAnywhere(item_id) ||
@@ -342,7 +342,7 @@ struct Party {
     char uNumArenaSquireWins;
     char uNumArenaKnightWins;
     char uNumArenaLordWins;
-    std::array<char, 29> pIsArtifactFound;  // 7ba
+    IndexedArray<bool, ITEM_FIRST_ARTIFACT, ITEM_LAST_ARTIFACT> pIsArtifactFound;  // 7ba
     std::array<char, 39> field_7d7_set0_unused;
     unsigned char _autonote_bits[26];
     std::array<char, 60> field_818_set0_unused;

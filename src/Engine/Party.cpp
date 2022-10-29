@@ -26,6 +26,8 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Utility/Random.h"
+
 using EngineIoc = Engine_::IocContainer;
 using Io::Mouse;
 
@@ -294,7 +296,7 @@ int Party::GetNextActiveCharacter() {
 }
 
 //----- (00493244) --------------------------------------------------------
-bool Party::HasItem(unsigned int uItemID) {
+bool Party::HasItem(ITEM_TYPE uItemID) {
     for (int player = 0; player < 4; player++) {
         for (int itemPos = 0; itemPos < 138; itemPos++) {
             if (pParty->pPlayers[player].pOwnItems[itemPos].uItemID == uItemID)
@@ -424,7 +426,6 @@ unsigned int Party::GetPartyFame() {
 void Party::CreateDefaultParty(bool bDebugGiveItems) {
     Player *pCharacter;      // esi@3
     int uSkillIdx;           // eax@11
-    unsigned int v16;        // [sp-4h] [bp-44h]@26
     signed int uNumPlayers;  // [sp+18h] [bp-28h]@1
     ItemGen Dst;             // [sp+1Ch] [bp-24h]@10
 
@@ -591,8 +592,8 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
                         case PLAYER_SKILL_TRAP_DISARM:
                         case PLAYER_SKILL_LEARNING:
                             pCharacter->AddItem(-1, ITEM_POTION_BOTTLE);
-                            v16 = 5 * (rand() % 3 + 40);  // simple reagent
-                            pCharacter->AddItem(-1, v16);
+                            // Add simple reagent.
+                            pCharacter->AddItem(-1, Sample(Level1Reagents()));
                             break;
                         case PLAYER_SKILL_DODGE:
                             pCharacter->AddItem(-1, ITEM_LEATHER_BOOTS);
@@ -606,7 +607,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
                 }
             }
             for (int i = 0; i < 138; i++) {
-                if (pCharacter->pInventoryItemList[i].uItemID != 0)
+                if (pCharacter->pInventoryItemList[i].uItemID != ITEM_NULL)
                     pCharacter->pInventoryItemList[i].SetIdentified();
             }
         }
@@ -704,7 +705,7 @@ void Party::Reset() {
     _494035_timed_effects__water_walking_damage__etc();
     pEventTimer->Pause();
 
-    this->pPickedItem.uItemID = 0;
+    this->pPickedItem.uItemID = ITEM_NULL;
 }
 
 //----- (0043AD34) --------------------------------------------------------
@@ -1129,9 +1130,8 @@ void Party::PartyFindsGold(
 
 void Party::PickedItem_PlaceInInventory_or_Drop() {
     // no picked item
-    if (!pParty->pPickedItem.uItemID) {
+    if (pParty->pPickedItem.uItemID == ITEM_NULL)
         return;
-    }
 
     auto texture = assets->GetImage_ColorKey(pParty->pPickedItem.GetIconName(), render->teal_mask_16);
 
@@ -1182,7 +1182,6 @@ void Party::PickedItem_PlaceInInventory_or_Drop() {
 
 //----- (0048C6F6) --------------------------------------------------------
 bool Party::AddItemToParty(ItemGen *pItem) {
-    unsigned int v2;  // eax@1
     char *v5;         // eax@8
     // Texture_MM7 *v7; // ebx@10
     signed int v8;  // esi@10
@@ -1190,7 +1189,7 @@ bool Party::AddItemToParty(ItemGen *pItem) {
     int v10;        // eax@11
     // int v21; // [sp+24h] [bp-4h]@10
 
-    v2 = pItem->uItemID;
+    ITEM_TYPE v2 = pItem->uItemID;
     if (!pItemTable->pItems[v2].uItemID_Rep_St) pItem->SetIdentified();
 
     v5 = pItemTable->pItems[v2].pIconName;

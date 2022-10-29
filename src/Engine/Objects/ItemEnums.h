@@ -134,7 +134,7 @@ using enum ITEM_MATERIAL;
  *
  * @see ItemTable::PrintItemTypesEnum
  */
-enum ITEM_TYPE {
+enum class ITEM_TYPE : int32_t {
     ITEM_NULL = 0,
     ITEM_CRUDE_LONGSWORD = 1,
     ITEM_ELVEN_SABER = 2,
@@ -834,7 +834,7 @@ enum ITEM_TYPE {
     ITEM_CRATE_OF_GLASS_BOTTLES = 696,
     ITEM_CRATE_OF_ENROTHIAN_WINE = 697,
     ITEM_MESSAGE_ORDERS_FROM_SNERGLE = 698,
-    ITEM_MESSAGE_NAME_OF_MESSAGE = 699,
+    ITEM_699 = 699, // Empty scroll placeholder, unused.
     ITEM_MESSAGE_MESSAGE_FROM_ERATHIA = 700,
     ITEM_MESSAGE_CIPHER = 701,
     ITEM_MESSAGE_SCROLL_OF_WAVES = 702,
@@ -935,7 +935,107 @@ enum ITEM_TYPE {
     ITEM_797 = 797, // Unused.
     ITEM_798 = 798, // Unused.
     ITEM_799 = 799, // Unused.
+
+    ITEM_FIRST_VALID = ITEM_CRUDE_LONGSWORD,
+    ITEM_LAST_VALID = ITEM_799,
+
+    ITEM_FIRST_ENCHANTABLE = ITEM_CRUDE_LONGSWORD,
+    ITEM_LAST_ENCHANTABLE = ITEM_SUN_AMULET,
+
+    ITEM_FIRST_MESSAGE_SCROLL = ITEM_MESSAGE_MESSAGE_FROM_ERATHIA, // TODO(captainurist): We're missing ITEM_MESSAGE_ORDERS_FROM_SNERGLE
+    ITEM_LAST_MESSAGE_SCROLL = ITEM_MESSAGE_BODY_RESISTANCE_RECIPE,
+
+    ITEM_FIRST_ARTIFACT = ITEM_ARTIFACT_PUCK,
+    ITEM_LAST_ARTIFACT = ITEM_RELIC_MEKORIGS_HAMMER, // TODO(captainurist): And what's with 6 more artifacts? Like ITEM_ARTIFACT_HERMES_SANDALS?
+
+    ITEM_FIRST_RECIPE = ITEM_MESSAGE_REJUVENATION_RECIPE,
+    ITEM_LAST_RECIPE = ITEM_MESSAGE_BODY_RESISTANCE_RECIPE,
+
+    ITEM_FIRST_ENCHANTING_POTION = ITEM_POTION_MIGHT_BOOST,
+    ITEM_LAST_ENCHANTING_POTION = ITEM_POTION_SWIFT_POTION,
+
+    ITEM_FIRST_WAND = ITEM_WAND_OF_FIRE,
+    ITEM_LAST_WAND = ITEM_MYSTIC_WAND_OF_INCINERATION,
+
+    ITEM_FIRST_POTION = ITEM_POTION_CATALYST,
+    ITEM_LAST_POTION = ITEM_POTION_REJUVENATION,
+
+    ITEM_FIRST_RANDOM_SPAWNABLE = ITEM_CRUDE_LONGSWORD,
+    ITEM_LAST_RANDOM_SPAWNABLE = ITEM_499,
 };
+using enum ITEM_TYPE;
+
+/**
+ * @param type                          Item type to check.
+ * @return                              Whether the provided item can be enchanted with an `Enchant Item` water magic
+ *                                      spell.
+ */
+inline bool IsEnchantable(ITEM_TYPE type) {
+    return type >= ITEM_FIRST_ENCHANTABLE && type <= ITEM_LAST_ENCHANTABLE;
+}
+
+// TODO(captainurist): Actually IsBreakableByPotionExplosion?
+inline bool IsBreakable(ITEM_TYPE type) {
+    return IsEnchantable(type);
+}
+
+inline bool IsRecipe(ITEM_TYPE type) {
+    return type >= ITEM_FIRST_RECIPE && type <= ITEM_LAST_RECIPE;
+}
+
+inline bool IsWand(ITEM_TYPE type) {
+    return type >= ITEM_FIRST_WAND && type <= ITEM_LAST_WAND;
+}
+
+inline bool IsPotion(ITEM_TYPE type) {
+    return type >= ITEM_FIRST_POTION && type <= ITEM_LAST_POTION;
+}
+
+inline bool IsMessageScroll(ITEM_TYPE type) {
+    return type >= ITEM_FIRST_MESSAGE_SCROLL && type <= ITEM_LAST_MESSAGE_SCROLL;
+}
+
+inline bool IsArtifact(ITEM_TYPE type) {
+    return type >= ITEM_FIRST_ARTIFACT && type <= ITEM_LAST_ARTIFACT;
+}
+
+/**
+ * @param number                        Number of the message scroll.
+ * @return                              Item type corresponding to the message scroll number provided.
+ */
+inline ITEM_TYPE MessageScroll(size_t number) {
+    ITEM_TYPE result = ITEM_TYPE(std::to_underlying(ITEM_FIRST_MESSAGE_SCROLL) + number);
+    Assert(result >= ITEM_FIRST_MESSAGE_SCROLL && result <= ITEM_LAST_MESSAGE_SCROLL);
+    return result;
+}
+
+inline Range<ITEM_TYPE> MessageScrolls() {
+    return make_range(ITEM_FIRST_MESSAGE_SCROLL, ITEM_LAST_MESSAGE_SCROLL);
+}
+
+/**
+ * @return                              Range of all random spawnable items. Note that not all of the entries might
+ *                                      actually be valid.
+ */
+inline Range<ITEM_TYPE> RandomSpawnableItems() {
+    return make_range(ITEM_FIRST_RANDOM_SPAWNABLE, ITEM_LAST_RANDOM_SPAWNABLE);
+}
+
+inline Range<ITEM_TYPE> Artifacts() {
+    return make_range(ITEM_FIRST_ARTIFACT, ITEM_LAST_ARTIFACT);
+}
+
+/**
+ * @return                              List of lowest level (power=1) alchemical reagents.
+ */
+inline std::initializer_list<ITEM_TYPE> Level1Reagents() {
+    static constinit std::initializer_list<ITEM_TYPE> result = {
+        ITEM_REAGENT_WIDOWSWEEP_BERRIES,
+        ITEM_REAGENT_PHIRNA_ROOT,
+        ITEM_REAGENT_POPPYSNAPS
+    };
+    return result;
+}
 
 // TODO(captainurist): this is actually ITEM_TYPE / ITEM_CLASS
 /*  331 */

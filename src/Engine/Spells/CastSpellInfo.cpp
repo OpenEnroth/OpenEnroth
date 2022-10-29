@@ -1681,10 +1681,10 @@ void CastSpellInfoHelpers::CastSpell() {
                 // http://www.pottsland.com/mm6/enchant.shtml
                 // also see STDITEMS.tx and SPCITEMS.txt in Events.lod
 
-                if ((skill_level == 1 || skill_level == 2)) __debugbreak();
+                if ((skill_level == 1 || skill_level == 2)) __debugbreak(); // SPELL_WATER_ENCHANT_ITEM is a master level spell
 
                 if ((skill_level == 3 || skill_level == 4) &&
-                    spell_item_to_enchant->uItemID <= 134 &&
+                    IsEnchantable(spell_item_to_enchant->uItemID) &&
                     spell_item_to_enchant->special_enchantment == ITEM_ENCHANTMENT_NULL &&
                     spell_item_to_enchant->uEnchantmentType == 0 &&
                     spell_item_to_enchant->m_enchantmentStrength == 0 &&
@@ -2375,18 +2375,17 @@ void CastSpellInfoHelpers::CastSpell() {
                     if (!pActors[monster_id].ActorHasItem())
                         pActors[monster_id].SetRandomGoldIfTheresNoItem();
                     int gold_num = 0;
-                    if (pActors[monster_id].ActorHasItems[3].uItemID != 0) {
+                    if (pActors[monster_id].ActorHasItems[3].uItemID != ITEM_NULL) {
                         if (pItemTable->pItems[pActors[monster_id].ActorHasItems[3].uItemID].uEquipType == EQUIP_GOLD)
                             gold_num = pActors[monster_id].ActorHasItems[3].special_enchantment;
                     }
                     ItemGen item;
                     item.Reset();
-                    if (pActors[monster_id].uCarriedItemID) {
+                    if (pActors[monster_id].uCarriedItemID != ITEM_NULL) {
                         item.uItemID = pActors[monster_id].uCarriedItemID;
                     } else {
                         for (uint i = 0; i < 4; ++i) {
-                            if (pActors[monster_id].ActorHasItems[i].uItemID >
-                                    0 &&
+                            if (pActors[monster_id].ActorHasItems[i].uItemID != ITEM_NULL &&
                                     pItemTable
                                         ->pItems[pActors[monster_id]
                                                      .ActorHasItems[i]
@@ -2400,7 +2399,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         }
                     }
                     if (gold_num > 0) {
-                        if (item.uItemID)
+                        if (item.uItemID != ITEM_NULL)
                             GameUI_SetStatusBar(StringPrintf(
                                 "(%s), and %d gold",
                                 item.GetDisplayName().c_str(), gold_num));
@@ -2408,7 +2407,7 @@ void CastSpellInfoHelpers::CastSpell() {
                             GameUI_SetStatusBar(StringPrintf(
                                 "%d gold", gold_num));
                     } else {
-                        if (item.uItemID) {
+                        if (item.uItemID != ITEM_NULL) {
                             GameUI_SetStatusBar(StringPrintf(
                                 "(%s)", item.GetDisplayName().c_str()));
                         } else {
@@ -2704,8 +2703,8 @@ void CastSpellInfoHelpers::CastSpell() {
                     if (pLevelDecorations[obj_id].uEventID)
                         EventProcessor(pLevelDecorations[obj_id].uEventID,
                                        spell_targeted_at, 1);
-                    if (pLevelDecorations[pSpriteObjects[obj_id]
-                                              .containing_item.uItemID]
+                    if (pLevelDecorations[std::to_underlying(pSpriteObjects[obj_id]
+                                              .containing_item.uItemID)] // TODO(captainurist): investigate, that's a very weird std::to_underlying call.
                             .IsInteractive()) {
                         activeLevelDecoration = &pLevelDecorations[obj_id];
                         EventProcessor(

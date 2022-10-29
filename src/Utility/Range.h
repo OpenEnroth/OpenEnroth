@@ -7,25 +7,23 @@ namespace detail {
 template<class T>
 class RangeIterator {
  public:
+    using difference_type = ptrdiff_t;
     using value_type = T;
-    using reference = value_type;
+    using pointer = T *;
+    using reference = T;
+    using iterator_category = std::random_access_iterator_tag; // Not technically correct though.
 
-    // Note that this is a very basic implementation that doesn't even satisfy
-    // the iterator concept. The goal here is to just make the range-based for loop work.
+    constexpr RangeIterator() = default;
+    constexpr explicit RangeIterator(value_type pos): pos_(pos) {}
 
-    constexpr RangeIterator() {}
-    constexpr RangeIterator(value_type pos): pos_(pos) {}
-
-    constexpr friend bool operator==(RangeIterator l, RangeIterator r) {
-        return l.pos_ == r.pos_;
-    }
+    constexpr friend auto operator<=>(RangeIterator l, RangeIterator r) = default;
 
     constexpr reference operator*() const {
         return pos_;
     }
 
     constexpr RangeIterator &operator++() {
-        pos_ = static_cast<value_type>(static_cast<ptrdiff_t>(pos_) + 1);
+        pos_ = static_cast<value_type>(static_cast<difference_type>(pos_) + 1);
         return *this;
     }
 
@@ -33,6 +31,41 @@ class RangeIterator {
         RangeIterator tmp = *this;
         ++*this;
         return tmp;
+    }
+
+    constexpr RangeIterator &operator--() {
+        pos_ = static_cast<value_type>(static_cast<difference_type>(pos_) - 1);
+        return *this;
+    }
+
+    constexpr RangeIterator operator--(int) {
+        RangeIterator tmp = *this;
+        --*this;
+        return tmp;
+    }
+
+    constexpr RangeIterator &operator+=(difference_type r) {
+        return *this = *this + r;
+    }
+
+    constexpr RangeIterator &operator-=(difference_type r) {
+        return *this = *this - r;
+    }
+
+    constexpr friend difference_type operator-(RangeIterator l, RangeIterator r) {
+        return static_cast<difference_type>(l.pos_) - static_cast<difference_type>(r.pos_);
+    }
+
+    constexpr friend RangeIterator operator-(RangeIterator l, difference_type r) {
+        return RangeIterator(static_cast<value_type>(static_cast<difference_type>(l.pos_) - r));
+    }
+
+    constexpr friend RangeIterator operator+(RangeIterator l, difference_type r) {
+        return RangeIterator(static_cast<value_type>(static_cast<difference_type>(l.pos_) + r));
+    }
+
+    constexpr friend RangeIterator operator+(difference_type l, RangeIterator r) {
+        return r + l;
     }
 
  private:
@@ -45,15 +78,20 @@ class RangeIterator {
 template<class T>
 class Range {
  public:
+    using iterator = detail::RangeIterator<T>;
+    using value_type = typename iterator::value_type;
+    using difference_type = typename iterator::difference_type;
+    using reference = typename iterator::reference;
+
     Range() {}
     Range(T begin, T end) : begin_(begin), end_(end) {}
 
-    friend detail::RangeIterator<T> begin(const Range &range) {
-        return { range.begin_ };
+    iterator begin() const {
+        return iterator(begin_);
     }
 
-    friend detail::RangeIterator<T> end(const Range &range) {
-        return { range.end_ };
+    iterator end() const {
+        return iterator(end_);
     }
 
  private:

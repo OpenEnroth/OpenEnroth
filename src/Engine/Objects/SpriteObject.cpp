@@ -924,11 +924,9 @@ bool SpriteObject::Drop_Item_At(SPRITE_OBJECT_TYPE sprite, int x,
     pSpellObject.spell_caster_pid = 0;
     pSpellObject.spell_target_pid = 0;
     if (!(pSpellObject.uAttributes & SPRITE_IGNORE_RANGE)) {
-        if (pItemTable->uAllItemsCount) {
-            for (uint i = 1; i < pItemTable->uAllItemsCount; ++i) {
-                if (pItemTable->pItems[i].uSpriteID == sprite)
-                    pSpellObject.containing_item.uItemID = i;
-            }
+        for (ITEM_TYPE i : pItemTable->pItems.indices()) {
+            if (pItemTable->pItems[i].uSpriteID == sprite)
+                pSpellObject.containing_item.uItemID = i;
         }
     }
     if (a7) {
@@ -1087,7 +1085,8 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
 
         case SPRITE_ARROW_PROJECTILE:
         case SPRITE_PROJECTILE_550: {
-            if (pSpriteObjects[uLayingItemID].containing_item.uItemID != 405 &&
+            // TODO(captainurist): what is ITEM_SPELLBOOK_FIREBALL doing here? Is it an MM6 artifact?
+            if (pSpriteObjects[uLayingItemID].containing_item.uItemID != ITEM_SPELLBOOK_FIREBALL &&
                 pSpriteObjects[uLayingItemID].containing_item.special_enchantment != ITEM_ENCHANTMENT_OF_CARNAGE) {
                 pSpriteObjects[uLayingItemID].vVelocity.z = 0;
                 pSpriteObjects[uLayingItemID].vVelocity.y = 0;

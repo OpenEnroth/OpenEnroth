@@ -257,7 +257,7 @@ bool Chest::ChestUI_WritePointedObjectStatusString() {
     return 0;
 }
 
-bool Chest::CanPlaceItemAt(int test_cell_position, int item_id, int uChestID) {
+bool Chest::CanPlaceItemAt(int test_cell_position, ITEM_TYPE item_id, int uChestID) {
     int chest_cell_heght = pChestHeightsByType[vChests[uChestID].uChestBitmapID];
     int chest_cell_width = pChestWidthsByType[vChests[uChestID].uChestBitmapID];
 
@@ -289,7 +289,7 @@ int Chest::CountChestItems(int uChestID) {
     if (max_items <= 0) {
         item_count = -1;
     } else {
-        while (vChests[uChestID].igChestItems[item_count].uItemID) {
+        while (vChests[uChestID].igChestItems[item_count].uItemID != ITEM_NULL) {
             ++item_count;
             if (item_count >= max_items) {
                 item_count = -1;
@@ -354,10 +354,9 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
 }
 
 void Chest::PlaceItemAt(unsigned int put_cell_pos, unsigned int item_at_cell, int uChestID) {  // only used for setup?
-    int uItemID = vChests[uChestID].igChestItems[item_at_cell].uItemID;
+    ITEM_TYPE uItemID = vChests[uChestID].igChestItems[item_at_cell].uItemID;
     pItemTable->SetSpecialBonus(&vChests[uChestID].igChestItems[item_at_cell]);
-    if (uItemID >= ITEM_WAND_OF_FIRE && uItemID <= ITEM_MYSTIC_WAND_OF_INCINERATION &&
-        !vChests[uChestID].igChestItems[item_at_cell].uNumCharges) {
+    if (IsWand(uItemID) && !vChests[uChestID].igChestItems[item_at_cell].uNumCharges) {
         int v6 = rand() % 21 + 10;
         vChests[uChestID].igChestItems[item_at_cell].uNumCharges = v6;
         vChests[uChestID].igChestItems[item_at_cell].uMaxCharges = v6;
@@ -405,9 +404,9 @@ void Chest::PlaceItems(int uChestID) {  // only sued for setup
     }
 
     for (int items_counter = 0; items_counter < uChestArea; ++items_counter) {
-        int chest_item_id = vChests[uChestID].igChestItems[items_counter].uItemID;
-        assert(chest_item_id >= 0 && "Checking that generated items are valid");
-        if (chest_item_id) {
+        ITEM_TYPE chest_item_id = vChests[uChestID].igChestItems[items_counter].uItemID;
+        assert(chest_item_id != ITEM_NULL && "Checking that generated items are valid");
+        if (chest_item_id != ITEM_NULL) {
             int test_position = 0;
             while (!Chest::CanPlaceItemAt((uint8_t)chest_cells_map[test_position], chest_item_id, uChestID)) {
                 ++test_position;
@@ -531,7 +530,7 @@ void Chest::OnChestLeftClick() {
 
     if (inventoryYCoord >= 0 && inventoryYCoord < chestheight &&
         inventoryXCoord >= 0 && inventoryXCoord < chestwidth) {
-        if (pParty->pPickedItem.uItemID) {  // item held
+        if (pParty->pPickedItem.uItemID != ITEM_NULL) {  // item held
             if (Chest::PutItemInChest(invMatrixIndex, &pParty->pPickedItem, pGUIWindow_CurrentMenu->wData.val)) {
                 mouse->RemoveHoldingItem();
             }
@@ -559,7 +558,7 @@ void Chest::OnChestLeftClick() {
 }
 
 void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using spacebar
-    if (pParty->pPickedItem.uItemID || !uActiveCharacter) {
+    if (pParty->pPickedItem.uItemID != ITEM_NULL || !uActiveCharacter) {
         return;
     }
 
@@ -618,11 +617,11 @@ void GenerateItemsInChest() {
     for (int i = 1; i < 20; ++i) {
         for (int j = 0; j < 140; ++j) {
             ItemGen *currItem = &vChests[i].igChestItems[j];
-            if (currItem->uItemID < 0) {
+            if (currItem->uItemID < ITEM_NULL) { // TODO(captainurist): WTF????
                 int additionaItemCount = rand() % 5;  // additional items in chect
                 additionaItemCount++;  // + 1 because it's the item at pChests[i].igChestItems[j] and the additional ones
-                int treasureLevelBot = byte_4E8168[abs(currItem->uItemID) - 1][2 * currMapInfo->Treasure_prob];
-                int treasureLevelTop = byte_4E8168[abs(currItem->uItemID) - 1][2 * currMapInfo->Treasure_prob + 1];
+                int treasureLevelBot = byte_4E8168[abs(std::to_underlying(currItem->uItemID)) - 1][2 * currMapInfo->Treasure_prob];
+                int treasureLevelTop = byte_4E8168[abs(std::to_underlying(currItem->uItemID)) - 1][2 * currMapInfo->Treasure_prob + 1];
                 int treasureLevelRange = treasureLevelTop - treasureLevelBot + 1;
                 int resultTreasureLevel = treasureLevelBot + rand() % treasureLevelRange;  // treasure level
                 if (resultTreasureLevel < 7) {

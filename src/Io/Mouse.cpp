@@ -36,7 +36,7 @@ void Mouse::RemoveHoldingItem() {
     }
 }
 
-void Mouse::SetCursorBitmapFromItemID(unsigned int uItemID) {
+void Mouse::SetCursorBitmapFromItemID(ITEM_TYPE uItemID) {
     SetCursorImage(pItemTable->pItems[uItemID].pIconName);
 }
 
@@ -153,7 +153,7 @@ void Mouse::DrawCursor() {
     this->GetClickPos(&pos.x, &pos.y);
 
     // for party held item
-    if (pParty->pPickedItem.uItemID) {
+    if (pParty->pPickedItem.uItemID != ITEM_NULL) {
         DrawPickedItem();
     } else {
         ClearPickedItem();
@@ -236,7 +236,9 @@ void Mouse::DrawCursorToTarget() {  //??? DrawCursorWithItem
 }
 
 void Mouse::DrawPickedItem() {
-    if (!pParty->pPickedItem.uItemID) return;
+    if (pParty->pPickedItem.uItemID == ITEM_NULL)
+        return;
+
     Image *pTexture = assets->GetImage_Alpha(pParty->pPickedItem.GetIconName());
     if (!pTexture) return;
 

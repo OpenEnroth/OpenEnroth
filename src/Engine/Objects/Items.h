@@ -62,7 +62,7 @@ struct ItemGen {  // 0x24
     uint8_t GetDamageMod();
     bool MerchandiseTest(int _2da_idx);
 
-    int32_t uItemID = ITEM_NULL;        // 0
+    ITEM_TYPE uItemID = ITEM_NULL;        // 0
     int32_t uEnchantmentType = ITEM_ENCHANTMENT_NULL;       // 4 // For potion it's potion strength.
     int32_t m_enchantmentStrength = 0;  // 8
     ITEM_ENCHANTMENT special_enchantment = ITEM_ENCHANTMENT_NULL;  // 0c // For gold it's amount
@@ -248,7 +248,7 @@ class EquipemntPair {
     EquipemntPair() {}
 };
 
-int GetItemTextureFilename(char *pOut, signed int item_id, int index,
+int GetItemTextureFilename(char *pOut, ITEM_TYPE item_id, int index,
                            int shoulder);
 
 extern ItemGen* ptr_50C9A4_ItemToEnchant;

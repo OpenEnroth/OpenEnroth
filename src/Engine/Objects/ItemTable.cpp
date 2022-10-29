@@ -16,6 +16,7 @@
 #include "GUI/UI/UIHouses.h"
 
 #include "Utility/String.h"
+#include "Utility/Random.h"
 
 //----- (0045814E) --------------------------------------------------------
 void ItemTable::Release() {
@@ -81,7 +82,6 @@ void ItemTable::Initialize() {
     materialMap["special"] = MATERIAL_SPECIAL;
 
     char* test_string;
-    int item_counter;
 
     pMapStats = new MapStats;
     pMapStats->Initialize();
@@ -182,14 +182,16 @@ void ItemTable::Initialize() {
     strtok(pItemsTXT_Raw.data(), "\r");
     strtok(NULL, "\r");
     uAllItemsCount = 0;
-    item_counter = 0;
-    while (item_counter < 800) {
-        test_string = strtok(NULL, "\r") + 1;
+    while (true) {
+        test_string = strtok(NULL, "\r");
+        if (!test_string)
+            break;
+        ++test_string;
 
         auto tokens = Tokenize(test_string, '\t');
 
-        item_counter = atoi(tokens[0]);
-        uAllItemsCount = item_counter;
+        ITEM_TYPE item_counter = ITEM_TYPE(atoi(tokens[0]) + std::to_underlying(ITEM_FIRST_VALID));
+        //uAllItemsCount = item_counter;
         pItems[item_counter].pIconName = RemoveQuotes(tokens[1]);
         pItems[item_counter].pName = RemoveQuotes(tokens[2]);
         pItems[item_counter].uValue = atoi(tokens[3]);
@@ -251,20 +253,22 @@ void ItemTable::Initialize() {
         pItems[item_counter].uEquipX = atoi(tokens[14]);
         pItems[item_counter].uEquipY = atoi(tokens[15]);
         pItems[item_counter].pDescription = RemoveQuotes(tokens[16]);
-        item_counter++;
     }
 
-    uAllItemsCount = item_counter;
     pRndItemsTXT_Raw = pEvents_LOD->LoadCompressedTexture("rnditems.txt").string_view();
     strtok(pRndItemsTXT_Raw.data(), "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
-    for (item_counter = 0; item_counter < 619; item_counter++) {
-        test_string = strtok(NULL, "\r") + 1;
+    while(true) {
+        test_string = strtok(NULL, "\r");
+        if (!test_string)
+            break;
+        test_string++;
+
         auto tokens = Tokenize(test_string, '\t');
         Assert(tokens.size() > 7, "Invalid number of tokens");
-        item_counter = atoi(tokens[0]);
+        ITEM_TYPE item_counter = ITEM_TYPE(atoi(tokens[0]));
         pItems[item_counter].uChanceByTreasureLvl1 = atoi(tokens[2]);
         pItems[item_counter].uChanceByTreasureLvl2 = atoi(tokens[3]);
         pItems[item_counter].uChanceByTreasureLvl3 = atoi(tokens[4]);
@@ -275,10 +279,9 @@ void ItemTable::Initialize() {
 
     // ChanceByTreasureLvl Summ - to calculate chance
     memset(&uChanceByTreasureLvlSumm, 0, 24);
-    for (int i = 0; i < 6; ++i) {
-        for (int j = 1; j < item_counter; ++j)
+    for (int i = 0; i < 6; ++i)
+        for (ITEM_TYPE j : pItems.indices())
             uChanceByTreasureLvlSumm[i] += pItems[j].uChanceByTreasureLvl[i];
-    }
 
     strtok(NULL, "\r");
     strtok(NULL, "\r");
@@ -445,7 +448,7 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
     int treasureLevelMinus1;      // ebx@3
     int current_chance;           // ebx@43
     int tmp_chance;               // ecx@47
-    int artifact_random_id;       // ebx@57
+    ITEM_TYPE artifact_random_id;       // ebx@57
     int v18;                      // edx@62
     unsigned int special_chance;  // edx@86
     unsigned int v26;             // edx@89
@@ -456,7 +459,8 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
     int v45;            // eax@120
     int v46;            // edx@120
     int j;              // eax@121
-    int val_list[800];  // [sp+Ch] [bp-C88h]@33
+    std::array<ITEM_TYPE, 800> val_list;  // [sp+Ch] [bp-C88h]@33
+    std::array<ITEM_ENCHANTMENT, 800> val_list2;
     int total_chance;   // [sp+C8Ch] [bp-8h]@33
     int artifact_found = 0;       // [sp+CA0h] [bp+Ch]@55
     int v57;            // [sp+CA0h] [bp+Ch]@62
@@ -556,13 +560,13 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
                 requested_equip = (ITEM_EQUIP_TYPE)(uTreasureType - 1);
                 break;
         }
-        memset(val_list, 0, sizeof(val_list));
+        val_list.fill(ITEM_NULL);
         total_chance = 0;
         j = 0;
         // a2a = 1;
         if (requested_skill ==
             PLAYER_SKILL_INVALID) {  // no skill for this item needed
-            for (uint i = 1; i < 500; ++i) {
+            for (ITEM_TYPE i : RandomSpawnableItems()) {
                 if (pItems[i].uEquipType == requested_equip) {
                     val_list[j] = i;
                     ++j;
@@ -571,7 +575,7 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
                 }
             }
         } else {  // have needed skill
-            for (uint i = 1; i < 500; ++i) {
+            for (ITEM_TYPE i : RandomSpawnableItems()) {
                 if (pItems[i].uSkillType == requested_skill) {
                     val_list[j] = i;
                     ++j;
@@ -597,14 +601,14 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
     } else {
         // artifact
         if (treasureLevelMinus1 == 5) {
-            for (int i = 0; i < 29; ++i)
+            for (ITEM_TYPE i : Artifacts())
                 artifact_found += pParty->pIsArtifactFound[i];
-            artifact_random_id = rand() % 29;
+            artifact_random_id = Sample(Artifacts());
             if ((rand() % 100 < 5) && !pParty->pIsArtifactFound[artifact_random_id] &&
                 (engine->config->gameplay.ArtifactLimit.Get() == 0 || artifact_found < engine->config->gameplay.ArtifactLimit.Get())) {
                 pParty->pIsArtifactFound[artifact_random_id] = 1;
                 out_item->uAttributes = 0;
-                out_item->uItemID = ITEM_ARTIFACT_PUCK + artifact_random_id;
+                out_item->uItemID = artifact_random_id;
                 SetSpecialBonus(out_item);
                 return;
             }
@@ -613,7 +617,8 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
         v57 = 0;
         v18 = rand() % this->uChanceByTreasureLvlSumm[treasure_level - 1] + 1;
         while (v57 < v18) {
-            ++out_item->uItemID;
+            // TODO(captainurist): what's going on here? Get rid of casts.
+            out_item->uItemID = ITEM_TYPE(std::to_underlying(out_item->uItemID) + 1);
             v57 += pItems[out_item->uItemID]
                     .uChanceByTreasureLvl[treasureLevelMinus1];
         }
@@ -701,7 +706,7 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
     j = 0;
     int spc_sum = 0;
     int spc;
-    memset(&val_list, 0, 3200);
+    val_list2.fill(ITEM_ENCHANTMENT_NULL);
     for (ITEM_ENCHANTMENT i : pSpecialEnchantments.indices()) {
         int tr_lv = (pSpecialEnchantments[i].iTreasureLevel) & 3;
 
@@ -719,7 +724,7 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
             spc = pSpecialEnchantments[i].to_item_apply[out_item->GetItemEquipType()];
             spc_sum += spc;
             if (spc) {
-                val_list[j++] = i;
+                val_list2[j++] = i;
             }
         }
     }
@@ -733,8 +738,8 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
         // TODO(pskelton): investigate this
         // quick fix on limit
         if (j > 799) break;
-        out_item->special_enchantment = (ITEM_ENCHANTMENT)(val_list[j]);
-        v45 += pSpecialEnchantments[(ITEM_ENCHANTMENT)val_list[j]].to_item_apply[out_item->GetItemEquipType()];
+        out_item->special_enchantment = val_list2[j];
+        v45 += pSpecialEnchantments[val_list2[j]].to_item_apply[out_item->GetItemEquipType()];
     }
 }
 
@@ -745,7 +750,7 @@ void ItemTable::PrintItemTypesEnum() {
 
     items.emplace_back("NULL", "");
 
-    for(size_t i : pItems.indices()) {
+    for(ITEM_TYPE i : pItems.indices()) {
         const ItemDesc &desc = pItems[i];
         std::string icon = desc.pIconName;
         std::string name = desc.pName;
@@ -756,7 +761,7 @@ void ItemTable::PrintItemTypesEnum() {
             continue;
         }
 
-        if (name == "Empty Message Scroll") {
+        if (name == "Empty Message Scroll" || name == "Name of Message") {
             items.emplace_back("", "Empty scroll placeholder, unused.");
             continue;
         }
@@ -837,7 +842,7 @@ void ItemTable::PrintItemTypesEnum() {
 
             enumName = enumName + "_" + std::to_string(count);
         } else {
-            indexByName[enumName] = i;
+            indexByName[enumName] = items.size();
             countByName[enumName] = 1;
         }
 
