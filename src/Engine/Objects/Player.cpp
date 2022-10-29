@@ -2622,14 +2622,10 @@ int Player::GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment) {
 //----- (0048EAAE) --------------------------------------------------------
 int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg /*= false*/) {
     int v5;                     // edi@1
-    int v9;                     // eax@49
     int v14;                    // ecx@58
     int v15;                    // eax@58
-    int v17;                    // eax@62
-    int v22;                    // eax@76
     int v25;                    // ecx@80
     int v26;                    // edi@80
-    int v32;                    // eax@98
     int v56;                    // eax@365
     signed int v58;             // [sp-4h] [bp-20h]@10
     int v61;                    // [sp+10h] [bp-Ch]@1
@@ -2743,8 +2739,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
                 return 3;
             } else {
                 if (this->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-                    v22 = this->GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND);
-                    if (v22 >= 0 && v22 <= 2) {
+                    if (isWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
                         ItemGen* mainHandItem = GetMainHandItem();
                         v26 = mainHandItem->GetDamageRoll();
                         if (GetOffHandItem() != nullptr ||
@@ -2776,8 +2771,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
                 return 0;
             }
             if (this->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-                v17 = this->GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND);
-                if (v17 >= 0 && v17 <= 2) {
+                if (isWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
                     v5 = GetMainHandItem()->GetDamageMod();
                 }
             }
@@ -2796,8 +2790,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
                 return 1;
             }
             if (this->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-                v9 = this->GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND);
-                if (v9 >= 0 && v9 <= 2) {
+                if (isWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
                     ItemGen* mainHandItem = GetMainHandItem();
                     v5 = mainHandItem->GetDamageDice() +
                          mainHandItem->GetDamageMod();
@@ -2810,8 +2803,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
 
             if (getOnlyMainHandDmg ||
                 !this->HasItemEquipped(ITEM_SLOT_OFF_HAND) ||
-                (this->GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND) < 0) ||
-                this->GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND) > 2) {
+                !isWeapon(GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
                 return v5;
             } else {
                 ItemGen* offHandItem = GetOffHandItem();
@@ -2866,8 +2858,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
                 if (HasItemEquipped(i)) {
                     currEquippedItem = GetNthEquippedIndexItem(i);
                     if (attr == CHARACTER_ATTRIBUTE_AC_BONUS) {
-                        v32 = currEquippedItem->GetItemEquipType();
-                        if (v32 >= 3 && v32 <= 11) {
+                        if (isPassiveEquipment(currEquippedItem->GetItemEquipType())) {
                             v5 += currEquippedItem->GetDamageDice() +
                                   currEquippedItem->GetDamageMod();
                         }
@@ -7979,7 +7970,7 @@ int Player::SelectPhrasesTransaction(
     int ShopMenuType) {  // TODO(_): probably move this somewhere else, not really
                          // Player:: stuff
     unsigned int idemId;   // edx@1
-    signed int equipType;  // esi@1
+    ITEM_EQUIP_TYPE equipType;  // esi@1
     float multiplier;      // ST04_4@26
     int price;             // edi@26
     int merchantLevel;     // [sp+10h] [bp-8h]@1

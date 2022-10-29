@@ -818,6 +818,7 @@ bool ItemGen::MerchandiseTest(int _2da_idx) {
             break;
         }
         case BuildingType_MagicShop: {
+            // TODO(captainurist): items with EQUIP_ANY equip type don't exist (in mm7, at least)
             test = this->GetPlayerSkillType() == PLAYER_SKILL_MISC ||
                    this->GetItemEquipType() == EQIUP_ANY;
             break;

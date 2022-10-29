@@ -112,16 +112,16 @@ void ItemTable::Initialize() {
         auto tokens = Tokenize(test_string, '\t');
         pEnchantments[i].pBonusStat = RemoveQuotes(tokens[0]);
         pEnchantments[i].pOfName = RemoveQuotes(tokens[1]);
-        for (int j = 0; j < 9; j++) {
-            pEnchantments[i].to_item[j] = atoi(tokens[j + 2]);
-        }
+
+        int k = 2;
+        for (ITEM_EQUIP_TYPE j : pEnchantments[i].to_item.indices())
+            pEnchantments[i].to_item[j] = atoi(tokens[k++]);
     }
 
-    memset(&pEnchantmentsSumm, 0, 36);
-    for (int i = 0; i < 9; ++i) {
-        for (int j = 0; j < 24; ++j)
+    pEnchantmentsSumm.fill(0);
+    for (int j = 0; j < 24; ++j)
+        for (ITEM_EQUIP_TYPE i : pEnchantments[j].to_item.indices())
             pEnchantmentsSumm[i] += pEnchantments[j].to_item[i];
-    }
 
     // Bonus range for Standard by Level
     strtok(NULL, "\r");
@@ -148,9 +148,11 @@ void ItemTable::Initialize() {
         Assert(tokens.size() >= 17, "Invalid number of tokens");
         pSpecialEnchantments[i].pBonusStatement = RemoveQuotes(tokens[0]);
         pSpecialEnchantments[i].pNameAdd = RemoveQuotes(tokens[1]);
-        for (int j = 0; j < 12; j++) {
-            pSpecialEnchantments[i].to_item_apply[ITEM_EQUIP_TYPE(j)] = atoi(tokens[j + 2]);
-        }
+
+        int k = 2;
+        for (ITEM_EQUIP_TYPE j : pSpecialEnchantments[i].to_item_apply.indices())
+            pSpecialEnchantments[i].to_item_apply[j] = atoi(tokens[k++]);
+
         int res;
         res = atoi(tokens[14]);
         int mask = 0;
@@ -168,11 +170,10 @@ void ItemTable::Initialize() {
     pSpecialEnchantments_count = 72;
 
     // TODO(captainurist): can be dropped?
-    memset(&pSpecialEnchantmentsSumm, 0, 96);
-    for (int i = 0; i < 12; ++i) {
-        for (ITEM_ENCHANTMENT j : pSpecialEnchantments.indices())
-            pSpecialEnchantmentsSumm[i] += pSpecialEnchantments[j].to_item_apply[ITEM_EQUIP_TYPE(i)];
-    }
+    pSpecialEnchantmentsSumm.fill(0);
+    for (ITEM_ENCHANTMENT j : pSpecialEnchantments.indices())
+        for (ITEM_EQUIP_TYPE i : pSpecialEnchantments[j].to_item_apply.indices())
+            pSpecialEnchantmentsSumm[i] += pSpecialEnchantments[j].to_item_apply[i];
 
     InitializeBuildingResidents();
 
@@ -550,6 +551,7 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
                 break;
             default:
                 __debugbreak();  // check this condition
+                // TODO(captainurist): explore
                 requested_equip = (ITEM_EQUIP_TYPE)(uTreasureType - 1);
                 break;
         }
@@ -660,13 +662,12 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
             special_chance = rand() % 100;
             if (special_chance < uBonusChanceStandart[treasureLevelMinus1]) {
                 v26 = rand() %
-                      pEnchantmentsSumm[out_item->GetItemEquipType() - 3] +
-                      1;
+                      pEnchantmentsSumm[out_item->GetItemEquipType()] + 1;
                 v27 = 0;
                 while (v27 < v26) {
                     ++out_item->uEnchantmentType;
                     v27 += pEnchantments[out_item->uEnchantmentType]
-                            .to_item[out_item->GetItemEquipType() - 3];
+                            .to_item[out_item->GetItemEquipType()];
                 }
 
                 v33 = rand() % (bonus_ranges[treasureLevelMinus1].maxR -

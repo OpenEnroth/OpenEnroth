@@ -4004,7 +4004,7 @@ void Actor::LootActor() {
             pItemTable->pItems[Dst.uItemID].pUnidentifiedName
         );
 
-        if (Dst.GetItemEquipType() == 12) {
+        if (Dst.GetItemEquipType() == EQUIP_WAND) {
             Dst.uNumCharges = rand() % 6 + Dst.GetDamageMod() + 1;
             Dst.uMaxCharges = Dst.uNumCharges;
         }

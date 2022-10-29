@@ -2308,9 +2308,8 @@ void OnPaperdollLeftClick() {
             return;
         }
 
-        if (pParty->pPickedItem.uItemID ==
-            ITEM_WETSUIT) {  // wetsuit check is done above
-            pPlayers[uActiveCharacter]->EquipBody((ITEM_EQUIP_TYPE)3);
+        if (pParty->pPickedItem.uItemID == ITEM_WETSUIT) {  // wetsuit check is done above
+            pPlayers[uActiveCharacter]->EquipBody(EQUIP_ARMOUR);
             WetsuitOn(uActiveCharacter);
             return;
         }
@@ -2493,7 +2492,7 @@ void OnPaperdollLeftClick() {
                            &_this, 0x24u);
                     pPlayers[uActiveCharacter]->pEquipment.uOffHand =
                         shieldequip + 1;
-                    if (twohandedequip == EQUIP_SINGLE_HANDED) return;
+                    if (twohandedequip == 0) return;
                 } else {
                     freeslot =
                         pPlayers[uActiveCharacter]->FindFreeInventoryListSlot();
@@ -2759,7 +2758,7 @@ void OnPaperdollLeftClick() {
             pSpellInfo->uFlags &= ~ON_CAST_Enchantment;
             pSpellInfo->uPlayerID_2 = uActiveCharacter - 1;
             pSpellInfo->spell_target_pid = pPlayers[uActiveCharacter]->pEquipment.pIndices[pos];
-            pSpellInfo->field_6 = pEquipType;
+            pSpellInfo->field_6 = std::to_underlying(pitem->GetItemEquipType());
 
             ptr_50C9A4_ItemToEnchant = pitem;
             _50C9A0_IsEnchantingInProgress = 0;
@@ -2834,7 +2833,7 @@ void OnPaperdollLeftClick() {
                 pSpellInfo->uFlags &= ~ON_CAST_Enchantment;
                 pSpellInfo->uPlayerID_2 = uActiveCharacter - 1;
                 pSpellInfo->spell_target_pid = v34 - 1;
-                pSpellInfo->field_6 = pEquipType;
+                pSpellInfo->field_6 = std::to_underlying(pEquipType);
 
                 ptr_50C9A4_ItemToEnchant =
                     &pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1];

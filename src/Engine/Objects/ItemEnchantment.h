@@ -33,7 +33,7 @@ struct ItemEnchantment {  // Bonus|Sta|Of
                             unsigned char to_ring;
                             unsigned char to_amul;
                             }; */
-    unsigned char to_item[12];
+    IndexedArray<unsigned char, EQUIP_FIRST_NORMAL_ENCHANTABLE, EQUIP_LAST_NORMAL_ENCHANTABLE> to_item;
     // };
 };
 #pragma pack(pop)

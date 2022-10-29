@@ -279,8 +279,9 @@ enum ITEM_TYPE {
     ITEM_RECIPE_BODY_RESISTANCE = 771,
 };
 
+// TODO(captainurist): this is actually ITEM_TYPE / ITEM_CLASS
 /*  331 */
-enum ITEM_EQUIP_TYPE : uint8_t {
+enum class ITEM_EQUIP_TYPE : uint8_t {
     EQUIP_SINGLE_HANDED = 0,
     EQUIP_TWO_HANDED = 1,
     EQUIP_BOW = 2,
@@ -307,8 +308,13 @@ enum ITEM_EQUIP_TYPE : uint8_t {
 
     EQUIP_FIRST_SPECIAL_ENCHANTABLE = EQUIP_SINGLE_HANDED,
     EQUIP_LAST_SPECIAL_ENCHANTABLE = EQUIP_AMULET,
-};
 
+    EQUIP_FIRST_NORMAL_ENCHANTABLE = EQUIP_ARMOUR,
+    EQUIP_LAST_NORMAL_ENCHANTABLE = EQUIP_AMULET,
+};
+using enum ITEM_EQUIP_TYPE;
+
+// TODO(captainurist): IsPassiveEquipment
 /**
  * @param type                          Type to check.
  * @return                              Whether the provided type represents a `passive` equipment, e.g. shields,
@@ -318,6 +324,7 @@ inline bool isPassiveEquipment(ITEM_EQUIP_TYPE type) {
     return type >= EQUIP_ARMOUR && type <= EQUIP_AMULET;
 }
 
+// TODO(captainurist): IsWeapon
 /**
  * @param type                          Type to check.
  * @return                              Whether the provided type represents a weapon. Note that wands are not
