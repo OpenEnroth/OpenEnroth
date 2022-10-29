@@ -1942,7 +1942,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 item->uItemID <= ITEM_BLASTER_RIFLE ||
                 item->uItemID >= ITEM_ARTIFACT_PUCK || item->IsBroken() ||
                 item->special_enchantment || item->uEnchantmentType ||
-                !isWeapon(item->GetItemEquipType())) {
+                !IsWeapon(item->GetItemEquipType())) {
                 mouse->RemoveHoldingItem();
                 no_rightlick_in_inventory = true;
                 return;

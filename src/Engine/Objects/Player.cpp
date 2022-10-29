@@ -1628,7 +1628,7 @@ int Player::StealFromShop(
         unsigned int itemvalue = itemToSteal->GetValue();
         ITEM_EQUIP_TYPE equiptype = itemToSteal->GetItemEquipType();
 
-        if (isWeapon(equiptype))
+        if (IsWeapon(equiptype))
             itemvalue *= 3;
 
         int currMaxItemValue = StealingRandomBonuses[rand() % 5] +
@@ -2739,7 +2739,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
                 return 3;
             } else {
                 if (this->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-                    if (isWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
+                    if (IsWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
                         ItemGen* mainHandItem = GetMainHandItem();
                         v26 = mainHandItem->GetDamageRoll();
                         if (GetOffHandItem() != nullptr ||
@@ -2753,7 +2753,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
                 }
                 if (getOnlyMainHandDmg ||
                     !this->HasItemEquipped(ITEM_SLOT_OFF_HAND) ||
-                    !isWeapon(GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
+                    !IsWeapon(GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
                     return v5;
                 } else {
                     ItemGen* offHandItem = GetOffHandItem();
@@ -2771,13 +2771,13 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
                 return 0;
             }
             if (this->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-                if (isWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
+                if (IsWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
                     v5 = GetMainHandItem()->GetDamageMod();
                 }
             }
             if (getOnlyMainHandDmg ||
                 !this->HasItemEquipped(ITEM_SLOT_OFF_HAND) ||
-                !isWeapon(this->GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
+                !IsWeapon(this->GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
                 return v5;
             } else {
                 v56 = GetOffHandItem()->GetDamageMod();
@@ -2790,7 +2790,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
                 return 1;
             }
             if (this->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-                if (isWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
+                if (IsWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
                     ItemGen* mainHandItem = GetMainHandItem();
                     v5 = mainHandItem->GetDamageDice() +
                          mainHandItem->GetDamageMod();
@@ -2803,7 +2803,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
 
             if (getOnlyMainHandDmg ||
                 !this->HasItemEquipped(ITEM_SLOT_OFF_HAND) ||
-                !isWeapon(GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
+                !IsWeapon(GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
                 return v5;
             } else {
                 ItemGen* offHandItem = GetOffHandItem();
@@ -2858,7 +2858,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
                 if (HasItemEquipped(i)) {
                     currEquippedItem = GetNthEquippedIndexItem(i);
                     if (attr == CHARACTER_ATTRIBUTE_AC_BONUS) {
-                        if (isPassiveEquipment(currEquippedItem->GetItemEquipType())) {
+                        if (IsPassiveEquipment(currEquippedItem->GetItemEquipType())) {
                             v5 += currEquippedItem->GetDamageDice() +
                                   currEquippedItem->GetDamageMod();
                         }
