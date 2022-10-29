@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;b4b48b4</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;bce35ff</span>
    </div>
   </td>
  </tr>
@@ -69,22 +69,25 @@ $(function() {
 
 </div><!-- top -->
 <div class="header">
-  <div class="headertitle"><div class="title">IndexedArray&lt; T, Size &gt; Member List</div></div>
+  <div class="headertitle"><div class="title">IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt; Member List</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p>This is the complete list of members for <a class="el" href="classIndexedArray.html">IndexedArray&lt; T, Size &gt;</a>, including all inherited members.</p>
+<p>This is the complete list of members for <a class="el" href="classIndexedArray.html">IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt;</a>, including all inherited members.</p>
 <table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="classIndexedArray.html#a88882960e4bbbe55a8ab37137f429b1a">at</a>(key_type n)</td><td class="entry"><a class="el" href="classIndexedArray.html">IndexedArray&lt; T, Size &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classIndexedArray.html#aa3c02cc67a620c63f28a52e85106f66f">at</a>(key_type n) const</td><td class="entry"><a class="el" href="classIndexedArray.html">IndexedArray&lt; T, Size &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classIndexedArray.html#a634a30d24a952764b65584fb06d42c36">base_type</a> typedef</td><td class="entry"><a class="el" href="classIndexedArray.html">IndexedArray&lt; T, Size &gt;</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classIndexedArray.html#ae08f9b9f17c8c10560278c4e41883851">IndexedArray</a>()</td><td class="entry"><a class="el" href="classIndexedArray.html">IndexedArray&lt; T, Size &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classIndexedArray.html#ab10ed6228348334e88d3eae2ddd36512">IndexedArray</a>(std::initializer_list&lt; std::pair&lt; key_type, value_type &gt; &gt; init)</td><td class="entry"><a class="el" href="classIndexedArray.html">IndexedArray&lt; T, Size &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classIndexedArray.html#ab90f0a41402adfe084c4c505f7c1d48b">indices</a>() const</td><td class="entry"><a class="el" href="classIndexedArray.html">IndexedArray&lt; T, Size &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classIndexedArray.html#ab6f879c25cbeccf2ba2a83e6fce8f8d4">is_unique</a>(std::initializer_list&lt; std::pair&lt; key_type, value_type &gt; &gt; init)</td><td class="entry"><a class="el" href="classIndexedArray.html">IndexedArray&lt; T, Size &gt;</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classIndexedArray.html#aaae35b683e14785c5ab4b62ec85fa016">key_type</a> typedef</td><td class="entry"><a class="el" href="classIndexedArray.html">IndexedArray&lt; T, Size &gt;</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classIndexedArray.html#a902370af912f42c083687142f22e8777">operator[]</a>(key_type n) noexcept</td><td class="entry"><a class="el" href="classIndexedArray.html">IndexedArray&lt; T, Size &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classIndexedArray.html#a6699b4aa7f1bbbd38d9c805f5aacda03">operator[]</a>(key_type n) const noexcept</td><td class="entry"><a class="el" href="classIndexedArray.html">IndexedArray&lt; T, Size &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classIndexedArray.html#ad483d4958eb140b4b3ecb5b15301b83d">ActualFirstIndex</a></td><td class="entry"><a class="el" href="classIndexedArray.html">IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt;</a></td><td class="entry"><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classIndexedArray.html#aa030946750e8681c365d3eaf0d311791">ActualLastIndex</a></td><td class="entry"><a class="el" href="classIndexedArray.html">IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt;</a></td><td class="entry"><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classIndexedArray.html#a5ecc1b27321416943cb56add73ddf300">at</a>(key_type n)</td><td class="entry"><a class="el" href="classIndexedArray.html">IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classIndexedArray.html#afef3fecd0fe041f7c62407f804585dbc">at</a>(key_type n) const</td><td class="entry"><a class="el" href="classIndexedArray.html">IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classIndexedArray.html#a63ee9c4a641e976c11754e3a8b44cd8e">base_type</a> typedef</td><td class="entry"><a class="el" href="classIndexedArray.html">IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt;</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classIndexedArray.html#a43b19570c7cc05e0cffd8d34bf725cdc">index_type</a> typedef</td><td class="entry"><a class="el" href="classIndexedArray.html">IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt;</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classIndexedArray.html#a526f72f9208d80e349ad2563c0b39a7b">IndexedArray</a>()</td><td class="entry"><a class="el" href="classIndexedArray.html">IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classIndexedArray.html#adfd586182289b06806f5b15a23d86e64">IndexedArray</a>(std::initializer_list&lt; std::pair&lt; key_type, value_type &gt; &gt; init)</td><td class="entry"><a class="el" href="classIndexedArray.html">IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classIndexedArray.html#ac44c993b3fba8b0f1b3ab2034245aa68">indices</a>() const</td><td class="entry"><a class="el" href="classIndexedArray.html">IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classIndexedArray.html#a2b8da5e6cbea3b4cdcc864a59dce4ac3">is_unique</a>(std::initializer_list&lt; std::pair&lt; key_type, value_type &gt; &gt; init)</td><td class="entry"><a class="el" href="classIndexedArray.html">IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt;</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classIndexedArray.html#af5c5b34472590d5a46b82139f41857e1">key_type</a> typedef</td><td class="entry"><a class="el" href="classIndexedArray.html">IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt;</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classIndexedArray.html#afceab05ddc1942c69e9663a6a1dcdad5">operator[]</a>(key_type n) noexcept</td><td class="entry"><a class="el" href="classIndexedArray.html">IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classIndexedArray.html#a11b0069eebb4a5b762b640674c8ae6ad">operator[]</a>(key_type n) const noexcept</td><td class="entry"><a class="el" href="classIndexedArray.html">IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
 </table></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

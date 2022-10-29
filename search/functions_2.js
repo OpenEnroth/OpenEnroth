@@ -9,7 +9,7 @@ var searchData=
   ['basicbookinitialization_6',['BasicBookInitialization',['../classGUIWindow__Book.html#ab1adfe3c80158dbd7a31930707d7cf95',1,'GUIWindow_Book']]],
   ['batchtridraw_7',['BatchTriDraw',['../classRender.html#a886d78b0484ebacec24514155a5b6941',1,'Render']]],
   ['batchtrisort_8',['BatchTriSort',['../Render_8cpp.html#a19f50b3622412a295c71d8ad17309723',1,'BatchTriSort():&#160;Render.cpp'],['../Render_8h.html#a19f50b3622412a295c71d8ad17309723',1,'BatchTriSort():&#160;Render.cpp']]],
-  ['begin_9',['begin',['../namespacedetail.html#a7f0a49820332c5b769c67e1a1eac60ba',1,'detail']]],
+  ['begin_9',['begin',['../namespacedetail.html#a9c61abbbdc3cacafbae09741fb94b85b',1,'detail']]],
   ['begindecals_10',['BeginDecals',['../classRenderOpenGL.html#a31db5fd8df0c374e38daa1ca92976545',1,'RenderOpenGL::BeginDecals()'],['../classIRender.html#a63dbf0239b229598573bc843fb15d0d1',1,'IRender::BeginDecals()'],['../classRender.html#a3afec10b4134fbf723c6443cc2a751c2',1,'Render::BeginDecals()']]],
   ['beginlightmaps_11',['BeginLightmaps',['../classRenderOpenGL.html#a974b07f39c656c4c14b306423ad92b24',1,'RenderOpenGL::BeginLightmaps()'],['../classIRender.html#a5c595d7bcc11babf0ccbac408e90fe74',1,'IRender::BeginLightmaps()'],['../classRender.html#af8a398291ecaf4031e87dcd265191e7e',1,'Render::BeginLightmaps()']]],
   ['beginlightmaps2_12',['BeginLightmaps2',['../classIRender.html#a821033e238bac86594f25edea0812a99',1,'IRender::BeginLightmaps2()'],['../classRenderOpenGL.html#af6e2fe64d46440c12aa7b70b79c5ebd9',1,'RenderOpenGL::BeginLightmaps2()'],['../classRender.html#a5a45c18c73f1ace6e18fefa06cffa5ab',1,'Render::BeginLightmaps2()']]],

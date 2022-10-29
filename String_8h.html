@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;b4b48b4</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;bce35ff</span>
    </div>
   </td>
  </tr>
@@ -79,9 +79,10 @@ $(function() {
   <div class="headertitle"><div class="title">String.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;string&gt;</code><br />
+<div class="textblock"><code>#include &lt;cstring&gt;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
-<code>#include &lt;cstring&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 <code>#include &quot;<a class="el" href="Posix_8h.html">Platform/Posix/Posix.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
@@ -97,6 +98,8 @@ Functions</h2></td></tr>
 <tr class="separator:a1d17f1e8332c63a13079f1a5358950cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86d2770160c54fbedbb6dba2f38c3dc9"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8h.html#a86d2770160c54fbedbb6dba2f38c3dc9">MakeLower</a> (const std::string &amp;text)</td></tr>
 <tr class="separator:a86d2770160c54fbedbb6dba2f38c3dc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b2a84063df1b9c7e128a26f945fbff6"><td class="memItemLeft" align="right" valign="top">std::vector&lt; char * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8h.html#a5b2a84063df1b9c7e128a26f945fbff6">Tokenize</a> (char *input, const char separator)</td></tr>
+<tr class="separator:a5b2a84063df1b9c7e128a26f945fbff6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae00a5e5ae9f4d2d0e937e078affbfaa"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8h.html#aae00a5e5ae9f4d2d0e937e078affbfaa">RemoveQuotes</a> (char *str)</td></tr>
 <tr class="separator:aae00a5e5ae9f4d2d0e937e078affbfaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aabc90cd8273d0852f8ca70a7f2f587aa"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8h.html#aabc90cd8273d0852f8ca70a7f2f587aa">TrimRemoveQuotes</a> (std::string str)</td></tr>
@@ -258,6 +261,34 @@ Functions</h2></td></tr>
           <td></td>
           <td class="paramtype">&#160;</td>
           <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5b2a84063df1b9c7e128a26f945fbff6" name="a5b2a84063df1b9c7e128a26f945fbff6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b2a84063df1b9c7e128a26f945fbff6">&#9670;&#160;</a></span>Tokenize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; char * &gt; Tokenize </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>input</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char&#160;</td>
+          <td class="paramname"><em>separator</em>&#160;</td>
         </tr>
         <tr>
           <td></td>

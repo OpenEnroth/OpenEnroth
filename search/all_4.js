@@ -28,7 +28,7 @@ var searchData=
   ['ddrawdisplaymodesenumerator_25',['DDrawDisplayModesEnumerator',['../RenderD3D_8cpp.html#a275b580330af18d3e501d4794646fd48',1,'RenderD3D.cpp']]],
   ['dds_26',['dds',['../classTextureD3D.html#ab5b1327cbccf9b2e75aad48013e0cc2e',1,'TextureD3D']]],
   ['deactivate_27',['Deactivate',['../classIo_1_1Mouse.html#a898bae847fde35c6a133a267b6a2f618',1,'Io::Mouse']]],
-  ['dead_28',['Dead',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395feda2f872369e520d046b46b7cd0b49b1882',1,'ActorEnums.h']]],
+  ['dead_28',['Dead',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395feda183b62c7f067711f9c5a54913c054617',1,'ActorEnums.h']]],
   ['debug_29',['Debug',['../classApplication_1_1GameConfig_1_1Debug.html',1,'Application::GameConfig::Debug'],['../classApplication_1_1GameConfig_1_1Debug.html#a61ab7ab5e48e3b9e7284cbbaceeea35a',1,'Application::GameConfig::Debug::Debug()']]],
   ['debug_30',['debug',['../classApplication_1_1GameConfig.html#ab011379333966d73750c4f0458472bd3',1,'Application::GameConfig']]],
   ['debug_5fcombat_5frecovery_5fmul_31',['debug_combat_recovery_mul',['../mm7__data_8cpp.html#a54f20604a75e5234f2b4a7f4b60e607a',1,'debug_combat_recovery_mul():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a54f20604a75e5234f2b4a7f4b60e607a',1,'debug_combat_recovery_mul():&#160;mm7_data.cpp']]],
@@ -244,7 +244,7 @@ var searchData=
   ['directdraw_241',['DirectDraw',['../IRenderFactory_8h.html#ae9c668e3a273ce92b9f4e134d0cbd6ceaa3ad3cded8219daa47be18264fa03086',1,'IRenderFactory.h']]],
   ['direction_242',['direction',['../structstru367.html#afa8dbbd6fda1b5a53e87e27bfbcd760a',1,'stru367::direction()'],['../structCollisionState.html#a723d0fadbaaf2b10c825811ab9b89e79',1,'CollisionState::direction()']]],
   ['directory_243',['Directory',['../structLOD_1_1Directory.html#a951912ba26a4ee4588296d3b070b95d1',1,'LOD::Directory::Directory()'],['../structLOD_1_1Directory.html',1,'LOD::Directory']]],
-  ['disabled_244',['Disabled',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395fedaf31108c24daa76e574c8259d9fe46c09',1,'ActorEnums.h']]],
+  ['disabled_244',['Disabled',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395fedab9f5c797ebbf55adccdd8539a65a0241',1,'ActorEnums.h']]],
   ['discardcard_245',['DiscardCard',['../Arcomage_8cpp.html#a1391e8406f047a8fa32055a275960a7f',1,'Arcomage.cpp']]],
   ['discardconditioniflastslongerthan_246',['DiscardConditionIfLastsLongerThan',['../structPlayer.html#a2915a7da735470515238b710e64212f0',1,'Player']]],
   ['discarded_247',['discarded',['../structAcromageCardOnTable.html#ac30b6f79aded0c818d797a530de61ee9',1,'AcromageCardOnTable']]],
@@ -463,6 +463,6 @@ var searchData=
   ['dword_5ff8b1b0_5fmasterybeingtaught_460',['dword_F8B1B0_MasteryBeingTaught',['../mm7__data_8cpp.html#aae72435bf802091aebdb1f3db51c7cd7',1,'dword_F8B1B0_MasteryBeingTaught():&#160;mm7_data.cpp'],['../mm7__data_8h.html#aae72435bf802091aebdb1f3db51c7cd7',1,'dword_F8B1B0_MasteryBeingTaught():&#160;mm7_data.cpp']]],
   ['dword_5ff8b1e0_461',['dword_F8B1E0',['../mm7__data_8cpp.html#a2a0ec7dfa3b11eb90709d5a9ab58bc36',1,'dword_F8B1E0():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a2a0ec7dfa3b11eb90709d5a9ab58bc36',1,'dword_F8B1E0():&#160;mm7_data.cpp']]],
   ['dword_5ff8b1e4_462',['dword_F8B1E4',['../mm7__data_8cpp.html#a0cd7b4c220aff109f812f103665c7c06',1,'dword_F8B1E4():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a0cd7b4c220aff109f812f103665c7c06',1,'dword_F8B1E4():&#160;mm7_data.cpp']]],
-  ['dying_463',['Dying',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395feda96cc2a0090ada376561406d48d1f2089',1,'ActorEnums.h']]],
+  ['dying_463',['Dying',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395feda2ef54119c1f0d131a1a60e7776fa78f0',1,'ActorEnums.h']]],
   ['dynamicbrightness_464',['DynamicBrightness',['../classApplication_1_1GameConfig_1_1Graphics.html#af6fa1ce64f9b575546b88fd4ea3c973e',1,'Application::GameConfig::Graphics']]]
 ];

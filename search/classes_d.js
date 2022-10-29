@@ -11,7 +11,5 @@ var searchData=
   ['npcprofessionchance_8',['NPCProfessionChance',['../structNPCProfessionChance.html',1,'']]],
   ['npcstats_9',['NPCStats',['../structNPCStats.html',1,'']]],
   ['npctopic_10',['NPCTopic',['../structNPCTopic.html',1,'']]],
-  ['nuklear_11',['Nuklear',['../classNuklear.html',1,'']]],
-  ['nziarray_12',['NZIArray',['../classNZIArray.html',1,'']]],
-  ['nziarray_3c_20itemdesc_2c_20800_20_3e_13',['NZIArray&lt; ItemDesc, 800 &gt;',['../classNZIArray.html',1,'']]]
+  ['nuklear_11',['Nuklear',['../classNuklear.html',1,'']]]
 ];

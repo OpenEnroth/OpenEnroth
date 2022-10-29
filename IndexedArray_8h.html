@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;b4b48b4</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;bce35ff</span>
    </div>
   </td>
  </tr>
@@ -76,25 +76,26 @@ $(function() {
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">IndexedArray.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;cassert&gt;</code><br />
+<code>#include &lt;cstddef&gt;</code><br />
 <code>#include &lt;array&gt;</code><br />
 <code>#include &lt;type_traits&gt;</code><br />
 <code>#include &lt;utility&gt;</code><br />
-<code>#include &quot;<a class="el" href="ToUnderlying_8h.html">Utility/Workaround/ToUnderlying.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1IndexedArrayKeysSentinel.html">detail::IndexedArrayKeysSentinel</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1IndexedArrayKeysIterator.html">detail::IndexedArrayKeysIterator&lt; Size &gt;</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1IndexedArrayKeysIterator.html">detail::IndexedArrayKeysIterator&lt; FirstIndex, LastIndex &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdetail_1_1IndexedArrayKeysRange.html">detail::IndexedArrayKeysRange&lt; Size &gt;</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdetail_1_1IndexedArrayKeysRange.html">detail::IndexedArrayKeysRange&lt; FirstIndex, LastIndex &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html">IndexedArray&lt; T, Size &gt;</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html">IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -102,14 +103,20 @@ Namespaces</h2></td></tr>
 <tr class="memitem:namespacedetail"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedetail.html">detail</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:ad7e74ca17ca07607d4d237aa8149040a"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedetail.html#ad7e74ca17ca07607d4d237aa8149040a">detail::LastIndex</a> { <a class="el" href="namespacedetail.html#ad7e74ca17ca07607d4d237aa8149040aa5ffa99e0f80cf8de04cb4afdea560207">detail::InvalidLastIndex</a>
+ }</td></tr>
+<tr class="separator:ad7e74ca17ca07607d4d237aa8149040a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a7f0a49820332c5b769c67e1a1eac60ba"><td class="memTemplParams" colspan="2">template&lt;auto Size&gt; </td></tr>
-<tr class="memitem:a7f0a49820332c5b769c67e1a1eac60ba"><td class="memTemplItemLeft" align="right" valign="top">constexpr IndexedArrayKeysIterator&lt; Size &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacedetail.html#a7f0a49820332c5b769c67e1a1eac60ba">detail::begin</a> (const IndexedArrayKeysRange&lt; Size &gt; &amp;range)</td></tr>
-<tr class="separator:a7f0a49820332c5b769c67e1a1eac60ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a34a1eef62388a5a0d64cbc22e8a779dc"><td class="memTemplParams" colspan="2">template&lt;auto Size&gt; </td></tr>
-<tr class="memitem:a34a1eef62388a5a0d64cbc22e8a779dc"><td class="memTemplItemLeft" align="right" valign="top">constexpr IndexedArrayKeysSentinel&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacedetail.html#a34a1eef62388a5a0d64cbc22e8a779dc">detail::end</a> (const IndexedArrayKeysRange&lt; Size &gt; &amp;)</td></tr>
-<tr class="separator:a34a1eef62388a5a0d64cbc22e8a779dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c61abbbdc3cacafbae09741fb94b85b"><td class="memTemplParams" colspan="2">template&lt;auto FirstIndex, auto LastIndex&gt; </td></tr>
+<tr class="memitem:a9c61abbbdc3cacafbae09741fb94b85b"><td class="memTemplItemLeft" align="right" valign="top">constexpr IndexedArrayKeysIterator&lt; FirstIndex, LastIndex &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacedetail.html#a9c61abbbdc3cacafbae09741fb94b85b">detail::begin</a> (const IndexedArrayKeysRange&lt; FirstIndex, LastIndex &gt; &amp;range)</td></tr>
+<tr class="separator:a9c61abbbdc3cacafbae09741fb94b85b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2b8a1e662ee8f89d120f7564a0f4d86"><td class="memTemplParams" colspan="2">template&lt;auto FirstIndex, auto LastIndex&gt; </td></tr>
+<tr class="memitem:ad2b8a1e662ee8f89d120f7564a0f4d86"><td class="memTemplItemLeft" align="right" valign="top">constexpr IndexedArrayKeysSentinel&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacedetail.html#ad2b8a1e662ee8f89d120f7564a0f4d86">detail::end</a> (const IndexedArrayKeysRange&lt; FirstIndex, LastIndex &gt; &amp;)</td></tr>
+<tr class="separator:ad2b8a1e662ee8f89d120f7564a0f4d86"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

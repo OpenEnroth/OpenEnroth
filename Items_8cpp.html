@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;b4b48b4</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;bce35ff</span>
    </div>
   </td>
  </tr>
@@ -85,23 +85,16 @@ $(function() {
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Localization_8h.html">Engine/Localization.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="LOD_8h.html">Engine/LOD.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="MapInfo_8h.html">Engine/MapInfo.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ItemEnchantment_8h.html">Engine/Objects/ItemEnchantment.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ItemTable_8h.html">Engine/Objects/ItemTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Monsters_8h.html">Engine/Objects/Monsters.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="PlayerEnums_8h.html">Engine/Objects/PlayerEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="OurMath_8h.html">Engine/OurMath.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Party_8h.html">Engine/Party.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="FactionTable_8h.html">Engine/Tables/FactionTable.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="StorylineTextTable_8h.html">Engine/Tables/StorylineTextTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIButton_8h.html">GUI/GUIButton.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="UIHouses_8h.html">GUI/UI/UIHouses.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a5b2a84063df1b9c7e128a26f945fbff6"><td class="memItemLeft" align="right" valign="top">std::vector&lt; char * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Items_8cpp.html#a5b2a84063df1b9c7e128a26f945fbff6">Tokenize</a> (char *input, const char separator)</td></tr>
-<tr class="separator:a5b2a84063df1b9c7e128a26f945fbff6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af40d6b8845d75fb6cbbfaf628b530e30"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Items_8cpp.html#af40d6b8845d75fb6cbbfaf628b530e30">AddToMap</a> (std::map&lt; int, std::map&lt; <a class="el" href="PlayerEnums_8h.html#af7a3ec7aad73ec22b61f03b17390d80a">CHARACTER_ATTRIBUTE_TYPE</a>, <a class="el" href="structCEnchantment.html">CEnchantment</a> * &gt; * &gt; &amp;maptoadd, int enchId, <a class="el" href="PlayerEnums_8h.html#af7a3ec7aad73ec22b61f03b17390d80a">CHARACTER_ATTRIBUTE_TYPE</a> attrId, int bonusValue=0, uint16_t Player::*skillPtr=nullptr)</td></tr>
 <tr class="separator:af40d6b8845d75fb6cbbfaf628b530e30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a799f25e1f6a9dd027983b2eaec0a4160"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Items_8cpp.html#a799f25e1f6a9dd027983b2eaec0a4160">GetItemTextureFilename</a> (char *pOut, signed int item_id, int index, int shoulder)</td></tr>
@@ -113,8 +106,8 @@ Variables</h2></td></tr>
 <tr class="separator:a884866cb1aba240306882d01856cab27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d5a37b95e74c5a294efbfc9a1e7e082"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structItemGen.html">ItemGen</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Items_8cpp.html#a8d5a37b95e74c5a294efbfc9a1e7e082">ptr_50C9A4_ItemToEnchant</a></td></tr>
 <tr class="separator:a8d5a37b95e74c5a294efbfc9a1e7e082"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abf52bfff3807296d2b51dd2af081c59f"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structItemsTable.html">ItemsTable</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Items_8cpp.html#abf52bfff3807296d2b51dd2af081c59f">pItemsTable</a></td></tr>
-<tr class="separator:abf52bfff3807296d2b51dd2af081c59f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d337a583e1a7315356c57d49bc34bf1"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structItemTable.html">ItemTable</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Items_8cpp.html#a9d337a583e1a7315356c57d49bc34bf1">pItemTable</a></td></tr>
+<tr class="separator:a9d337a583e1a7315356c57d49bc34bf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af5cd7aa4c901842aef87c3ae57f40b66"><td class="memItemLeft" align="right" valign="top">static std::map&lt; int, std::map&lt; <a class="el" href="PlayerEnums_8h.html#af7a3ec7aad73ec22b61f03b17390d80a">CHARACTER_ATTRIBUTE_TYPE</a>, <a class="el" href="structCEnchantment.html">CEnchantment</a> * &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Items_8cpp.html#af5cd7aa4c901842aef87c3ae57f40b66">regularBonusMap</a></td></tr>
 <tr class="separator:af5cd7aa4c901842aef87c3ae57f40b66"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a42e522adf6a98f2779058fe10ad2cbcb"><td class="memItemLeft" align="right" valign="top">static std::map&lt; int, std::map&lt; <a class="el" href="PlayerEnums_8h.html#af7a3ec7aad73ec22b61f03b17390d80a">CHARACTER_ATTRIBUTE_TYPE</a>, <a class="el" href="structCEnchantment.html">CEnchantment</a> * &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Items_8cpp.html#a42e522adf6a98f2779058fe10ad2cbcb">specialBonusMap</a></td></tr>
@@ -217,34 +210,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a5b2a84063df1b9c7e128a26f945fbff6" name="a5b2a84063df1b9c7e128a26f945fbff6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5b2a84063df1b9c7e128a26f945fbff6">&#9670;&#160;</a></span>Tokenize()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::vector&lt; char * &gt; Tokenize </td>
-          <td>(</td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>input</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char&#160;</td>
-          <td class="paramname"><em>separator</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Variable Documentation</h2>
 <a id="a14ead2af17b3826c8d750aa990531051" name="a14ead2af17b3826c8d750aa990531051"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a14ead2af17b3826c8d750aa990531051">&#9670;&#160;</a></span>artifactBonusMap</h2>
@@ -291,14 +256,14 @@ Variables</h2></td></tr>
 </div><!-- fragment -->
 </div>
 </div>
-<a id="abf52bfff3807296d2b51dd2af081c59f" name="abf52bfff3807296d2b51dd2af081c59f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abf52bfff3807296d2b51dd2af081c59f">&#9670;&#160;</a></span>pItemsTable</h2>
+<a id="a9d337a583e1a7315356c57d49bc34bf1" name="a9d337a583e1a7315356c57d49bc34bf1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d337a583e1a7315356c57d49bc34bf1">&#9670;&#160;</a></span>pItemTable</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">struct <a class="el" href="structItemsTable.html">ItemsTable</a>* pItemsTable</td>
+          <td class="memname">struct <a class="el" href="structItemTable.html">ItemTable</a>* pItemTable</td>
         </tr>
       </table>
 </div><div class="memdoc">
