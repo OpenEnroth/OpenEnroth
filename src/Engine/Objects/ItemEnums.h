@@ -1031,7 +1031,7 @@ inline Range<ITEM_TYPE> Artifacts() {
  * @return                              List of lowest level (power=1) alchemical reagents.
  */
 inline std::initializer_list<ITEM_TYPE> Level1Reagents() {
-    static constinit std::initializer_list<ITEM_TYPE> result = {
+    static constexpr std::initializer_list<ITEM_TYPE> result = {
         ITEM_REAGENT_WIDOWSWEEP_BERRIES,
         ITEM_REAGENT_PHIRNA_ROOT,
         ITEM_REAGENT_POPPYSNAPS
