@@ -43,3 +43,7 @@ set_property(
 )
 
 PREBUILT_DEPENDENCIES_RESOLVE(World_of_Might_and_Magic)
+
+add_executable(World_of_Might_and_Magic_Test ${UTILITY_TESTS})
+target_fix_libcxx_assertions(World_of_Might_and_Magic_Test)
+target_link_libraries(World_of_Might_and_Magic_Test utility_test gtest_main)
