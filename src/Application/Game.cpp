@@ -2354,8 +2354,6 @@ void Game::EventLoop() {
                     if (uActiveCharacter == 0)
                         continue;
 
-                    pPlayers[uActiveCharacter]->AddItem(-1, ITEM_BLASTER);
-
                     for(size_t attempt = 0; attempt < 500; attempt++) {
                         ITEM_TYPE pItemID = Sample(SpawnableItems());
                         if (pItemTable->pItems[pItemID].uItemID_Rep_St > 6) {
