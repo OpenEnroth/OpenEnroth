@@ -1054,7 +1054,6 @@ enum class ITEM_EQUIP_TYPE : uint8_t {
     EQUIP_POTION = 14,
     EQUIP_SPELL_SCROLL = 15,
     EQUIP_BOOK = 16,
-    EQIUP_ANY = 16, // Appears to be unused.
     EQUIP_MESSAGE_SCROLL = 17,
     EQUIP_GOLD = 18,
     EQUIP_GEM = 19,
