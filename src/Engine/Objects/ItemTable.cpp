@@ -171,12 +171,6 @@ void ItemTable::Initialize() {
 
     pSpecialEnchantments_count = 72;
 
-    // TODO(captainurist): can be dropped?
-    pSpecialEnchantmentsSumm.fill(0);
-    for (ITEM_ENCHANTMENT j : pSpecialEnchantments.indices())
-        for (ITEM_EQUIP_TYPE i : pSpecialEnchantments[j].to_item_apply.indices())
-            pSpecialEnchantmentsSumm[i] += pSpecialEnchantments[j].to_item_apply[i];
-
     InitializeBuildingResidents();
 
     pItemsTXT_Raw = pEvents_LOD->LoadCompressedTexture("items.txt").string_view();
