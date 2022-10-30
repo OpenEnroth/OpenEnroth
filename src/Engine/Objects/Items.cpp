@@ -838,12 +838,7 @@ bool ItemGen::MerchandiseTest(int _2da_idx) {
         case BuildingType_AlchemistShop: {
             test = this->GetItemEquipType() == EQUIP_REAGENT ||
                    this->GetItemEquipType() == EQUIP_POTION ||
-                   (this->GetItemEquipType() > EQUIP_POTION &&
-                    (this->GetItemEquipType() == EQUIP_MESSAGE_SCROLL &&
-                      this->uItemID >= ITEM_RECIPE_REJUVENATION) &&
-                    this->uItemID != ITEM_RECIPE_BODY_RESISTANCE);
-            // TODO(captainurist): probably should be EQUIP_REAGENT || EQUIP_POTION || (EQUIP_MESSAGE_SCROLL && IsRecipe)?
-            // The last check for != ITEM_MESSAGE_BODY_RESISTANCE_RECIPE makes no sense.
+                   (this->GetItemEquipType() == EQUIP_MESSAGE_SCROLL && IsRecipe(this->uItemID));
             break;
         }
         default: {
