@@ -27,7 +27,6 @@ struct ItemTable {
     void Release();
     void PrintItemTypesEnum();
 
-    int uAllItemsCount; // TODO(captainurist): DROP!
     IndexedArray<ItemDesc, ITEM_FIRST_VALID, ITEM_LAST_VALID> pItems;                   // 4-9604h
     ItemEnchantment pEnchantments[24];                // 9604h
     IndexedArray<ItemSpecialEnchantment, ITEM_ENCHANTMENT_FIRST_VALID, ITEM_ENCHANTMENT_LAST_VALID> pSpecialEnchantments;  // 97E4h -9FC4h

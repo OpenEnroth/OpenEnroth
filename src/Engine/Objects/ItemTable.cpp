@@ -176,13 +176,11 @@ void ItemTable::Initialize() {
     pItemsTXT_Raw = pEvents_LOD->LoadCompressedTexture("items.txt").string_view();
     strtok(pItemsTXT_Raw.data(), "\r");
     strtok(NULL, "\r");
-    uAllItemsCount = 0;
     for (size_t line = 0; line < 799; line++) {
         test_string = strtok(NULL, "\r") + 1;
         auto tokens = Tokenize(test_string, '\t');
 
         ITEM_TYPE item_counter = ITEM_TYPE(atoi(tokens[0]));
-        //uAllItemsCount = item_counter;
         pItems[item_counter].pIconName = RemoveQuotes(tokens[1]);
         pItems[item_counter].pName = RemoveQuotes(tokens[2]);
         pItems[item_counter].uValue = atoi(tokens[3]);
