@@ -201,6 +201,16 @@ int LODFile_Sprites::LoadSprite(const char *pContainerName, unsigned int uPalett
     return uNumLoadedSprites - 1;
 }
 
+Sprite* LODFile_Sprites::GetSprite(std::string_view pContainerName) {
+    for (int i = 0; i < uNumLoadedSprites; ++i) {
+        if (pHardwareSprites[i].pName == pContainerName) {
+            return &pHardwareSprites[i];
+        }
+    }
+    logger->Warning("Sprite not found!");
+    return nullptr;
+}
+
 void LODFile_Sprites::ReleaseLostHardwareSprites() {}
 
 void LODFile_Sprites::ReleaseAll() {}

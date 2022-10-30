@@ -133,7 +133,7 @@ Texture *Render::CreateTexture(const std::string &name) {
 Texture *Render::CreateSprite(const std::string &name, unsigned int palette_id,
                               unsigned int lod_sprite_id) {
     return TextureD3D::Create(
-        new Sprites_LOD_Loader(pSprites_LOD, palette_id, name, lod_sprite_id));
+        new Sprites_LOD_Loader(pSprites_LOD, palette_id, name, lod_sprite_id, engine->config->graphics.HWLSprites.Get()));
 }
 
 void Render::WritePixel16(int x, int y, uint16_t color) {

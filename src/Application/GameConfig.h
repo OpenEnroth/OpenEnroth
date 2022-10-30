@@ -333,10 +333,10 @@ namespace Application {
             /** Isn't currently in use? */
             ConfigValue<int> Gamma = ConfigValue<int>(this, "gamma", 4, &ValidateGamma);
 
-            /** Use low-resolution bitmaps from HWL file instead of hi-resolution ones from LOD. */
+            /** Use hi-resolution bitmaps from HWL file instead of low-resolution ones from LOD. */
             ConfigValue<bool> HWLBitmaps = ConfigValue<bool>(this, "hwl_bitmaps", false);
 
-            /** Use low-resolution sprites from HWL file instead of hi-resolution ones from LOD. */
+            /** Use hi-resolution sprites from HWL file instead of low-resolution ones from LOD. */
             ConfigValue<bool> HWLSprites = ConfigValue<bool>(this, "hwl_sprites", false);
 
             /** Allow changing trees/ground depending on current season (originally was only used in MM6) */

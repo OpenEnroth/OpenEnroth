@@ -27,7 +27,7 @@ class Sprite {
     void Release();
 
     std::string pName;
-    int uPaletteID;
+    int uPaletteID; // this is repaint palette index if it doesnt match sprite header palette
     Texture *texture;
     int uAreaX;
     int uAreaY;

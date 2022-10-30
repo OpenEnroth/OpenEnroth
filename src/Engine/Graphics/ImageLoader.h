@@ -157,11 +157,12 @@ class Sprites_LOD_Loader : public ImageLoader {
  public:
     inline Sprites_LOD_Loader(LODFile_Sprites *lod, unsigned int palette_id,
                               const std::string &filename,
-                              /*refactor*/ unsigned int lod_sprite_id) {
+                              /*refactor*/ unsigned int lod_sprite_id, bool use_hwl) {
         this->resource_name = filename;
         this->lod = lod;
         this->palette_id = palette_id;
         this->lod_sprite_id = lod_sprite_id;
+        this->use_hwl = use_hwl;
     }
 
     virtual bool Load(unsigned int *width, unsigned int *height, void **pixels,
@@ -171,4 +172,5 @@ class Sprites_LOD_Loader : public ImageLoader {
     LODFile_Sprites *lod;
     unsigned int palette_id;
     /*refactor*/ unsigned int lod_sprite_id;
+    bool use_hwl;
 };

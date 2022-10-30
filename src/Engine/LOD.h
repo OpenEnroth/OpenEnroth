@@ -217,6 +217,7 @@ class LODFile_Sprites : public LOD::File {
     int LoadSpriteFromFile(LODSprite *pSpriteHeader, const std::string &pContainer);
     bool LoadSprites(const std::string &pFilename);
     int LoadSprite(const char *pContainerName, unsigned int uPaletteID);
+    Sprite* GetSprite(std::string_view pContainerName);
     void ReleaseLostHardwareSprites();
     void ReleaseAll();
     void MoveSpritesToVideoMemory();
