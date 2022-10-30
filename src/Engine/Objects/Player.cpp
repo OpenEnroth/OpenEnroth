@@ -5169,7 +5169,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             item.uItemID = ITEM_TYPE(var_value);
             item.uAttributes = ITEM_IDENTIFIED;
             pParty->SetHoldingItem(&item);
-            if (IsArtifact(ITEM_TYPE(var_value)))
+            if (IsSpawnableArtifact(ITEM_TYPE(var_value)))
                 pParty->pIsArtifactFound[ITEM_TYPE(var_value)] = 1;
             return;
         case VAR_FixedGold:
@@ -5755,7 +5755,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             item.Reset();
             item.uAttributes = ITEM_IDENTIFIED;
             item.uItemID = ITEM_TYPE(val);
-            if (IsArtifact(ITEM_TYPE(val))) {
+            if (IsSpawnableArtifact(ITEM_TYPE(val))) {
                 pParty->pIsArtifactFound[ITEM_TYPE(val)] = 1;
             } else if (IsWand(ITEM_TYPE(val))) {
                 item.uNumCharges = rand() % 6 + item.GetDamageMod() + 1;

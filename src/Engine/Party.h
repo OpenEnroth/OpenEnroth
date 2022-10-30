@@ -342,7 +342,7 @@ struct Party {
     char uNumArenaSquireWins;
     char uNumArenaKnightWins;
     char uNumArenaLordWins;
-    IndexedArray<bool, ITEM_FIRST_ARTIFACT, ITEM_LAST_ARTIFACT> pIsArtifactFound;  // 7ba
+    IndexedArray<bool, ITEM_FIRST_SPAWNABLE_ARTIFACT, ITEM_LAST_SPAWNABLE_ARTIFACT> pIsArtifactFound;  // 7ba
     std::array<char, 39> field_7d7_set0_unused;
     unsigned char _autonote_bits[26];
     std::array<char, 60> field_818_set0_unused;

@@ -944,8 +944,8 @@ enum class ITEM_TYPE : int32_t {
     ITEM_FIRST_REGULAR = ITEM_CRUDE_LONGSWORD,
     ITEM_LAST_REGULAR = ITEM_SUN_AMULET,
 
-    ITEM_FIRST_ARTIFACT = ITEM_ARTIFACT_PUCK,
-    ITEM_LAST_ARTIFACT = ITEM_RELIC_MEKORIGS_HAMMER, // TODO(captainurist): And what's with 6 more artifacts? Like ITEM_ARTIFACT_HERMES_SANDALS?
+    ITEM_FIRST_SPAWNABLE_ARTIFACT = ITEM_ARTIFACT_PUCK,
+    ITEM_LAST_SPAWNABLE_ARTIFACT = ITEM_RELIC_MEKORIGS_HAMMER,
 
     ITEM_FIRST_MESSAGE_SCROLL = ITEM_MESSAGE_FROM_ERATHIA,
     ITEM_LAST_MESSAGE_SCROLL = ITEM_781,
@@ -963,8 +963,8 @@ enum class ITEM_TYPE : int32_t {
     ITEM_FIRST_POTION = ITEM_POTION_CATALYST,
     ITEM_LAST_POTION = ITEM_POTION_REJUVENATION,
 
-    ITEM_FIRST_RANDOM_SPAWNABLE = ITEM_CRUDE_LONGSWORD,
-    ITEM_LAST_RANDOM_SPAWNABLE = ITEM_499,
+    ITEM_FIRST_SPAWNABLE = ITEM_CRUDE_LONGSWORD,
+    ITEM_LAST_SPAWNABLE = ITEM_499,
 };
 using enum ITEM_TYPE;
 
@@ -996,8 +996,8 @@ inline bool IsMessageScroll(ITEM_TYPE type) {
     return type >= ITEM_FIRST_MESSAGE_SCROLL && type <= ITEM_LAST_MESSAGE_SCROLL;
 }
 
-inline bool IsArtifact(ITEM_TYPE type) {
-    return type >= ITEM_FIRST_ARTIFACT && type <= ITEM_LAST_ARTIFACT;
+inline bool IsSpawnableArtifact(ITEM_TYPE type) {
+    return type >= ITEM_FIRST_SPAWNABLE_ARTIFACT && type <= ITEM_LAST_SPAWNABLE_ARTIFACT;
 }
 
 inline Range<ITEM_TYPE> RecipeScrolls() {
@@ -1005,15 +1005,21 @@ inline Range<ITEM_TYPE> RecipeScrolls() {
 }
 
 /**
- * @return                              Range of all random spawnable items. Note that not all of the entries might
- *                                      actually be valid.
+ * @return                              Range of all items that can be randomly generated as loot. Note that not all
+ *                                      of the entries might actually be valid.
  */
-inline Range<ITEM_TYPE> RandomSpawnableItems() {
-    return make_range(ITEM_FIRST_RANDOM_SPAWNABLE, ITEM_LAST_RANDOM_SPAWNABLE);
+inline Range<ITEM_TYPE> SpawnableItems() {
+    return make_range(ITEM_FIRST_SPAWNABLE, ITEM_LAST_SPAWNABLE);
 }
 
-inline Range<ITEM_TYPE> Artifacts() {
-    return make_range(ITEM_FIRST_ARTIFACT, ITEM_LAST_ARTIFACT);
+/**
+ * @return                              Range of all artifacts and relics that can be randomly generated as loot
+ *                                      (e.g. picked up from a dragon corpse). Note that not all artifacts can be
+ *                                      generated this way, e.g. Hermes' Sandals can only be picked up from a
+ *                                      Mega Dragon's corpse.
+ */
+inline Range<ITEM_TYPE> SpawnableArtifacts() {
+    return make_range(ITEM_FIRST_SPAWNABLE_ARTIFACT, ITEM_LAST_SPAWNABLE_ARTIFACT);
 }
 
 /**

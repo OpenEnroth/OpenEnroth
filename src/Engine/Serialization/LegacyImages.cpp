@@ -340,7 +340,7 @@ void Serialize(const Party &src, Party_MM7 *dst) {
     dst->uNumArenaLordWins = src.uNumArenaLordWins;
 
     for (ITEM_TYPE i : src.pIsArtifactFound.indices())
-        dst->pIsArtifactFound[std::to_underlying(i) - std::to_underlying(ITEM_FIRST_ARTIFACT)] = src.pIsArtifactFound[i];
+        dst->pIsArtifactFound[std::to_underlying(i) - std::to_underlying(ITEM_FIRST_SPAWNABLE_ARTIFACT)] = src.pIsArtifactFound[i];
     for (unsigned int i = 0; i < 39; ++i)
         dst->field_7d7[i] = src.field_7d7_set0_unused[i];
     for (unsigned int i = 0; i < 26; ++i)
@@ -502,7 +502,7 @@ void Deserialize(const Party_MM7 &src, Party *dst) {
     dst->uNumArenaLordWins = src.uNumArenaLordWins;
 
     for (ITEM_TYPE i : dst->pIsArtifactFound.indices())
-        dst->pIsArtifactFound[i] = src.pIsArtifactFound[std::to_underlying(i) - std::to_underlying(ITEM_FIRST_ARTIFACT)];
+        dst->pIsArtifactFound[i] = src.pIsArtifactFound[std::to_underlying(i) - std::to_underlying(ITEM_FIRST_SPAWNABLE_ARTIFACT)];
     for (unsigned int i = 0; i < 39; ++i)
         dst->field_7d7_set0_unused[i] = src.field_7d7[i];
     for (unsigned int i = 0; i < 26; ++i)

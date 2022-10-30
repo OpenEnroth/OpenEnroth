@@ -560,7 +560,7 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
         // a2a = 1;
         if (requested_skill ==
             PLAYER_SKILL_INVALID) {  // no skill for this item needed
-            for (ITEM_TYPE i : RandomSpawnableItems()) {
+            for (ITEM_TYPE i : SpawnableItems()) {
                 if (pItems[i].uEquipType == requested_equip) {
                     val_list[j] = i;
                     ++j;
@@ -569,7 +569,7 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
                 }
             }
         } else {  // have needed skill
-            for (ITEM_TYPE i : RandomSpawnableItems()) {
+            for (ITEM_TYPE i : SpawnableItems()) {
                 if (pItems[i].uSkillType == requested_skill) {
                     val_list[j] = i;
                     ++j;
@@ -595,9 +595,9 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
     } else {
         // artifact
         if (treasureLevelMinus1 == 5) {
-            for (ITEM_TYPE i : Artifacts())
+            for (ITEM_TYPE i : SpawnableArtifacts())
                 artifact_found += pParty->pIsArtifactFound[i];
-            artifact_random_id = Sample(Artifacts());
+            artifact_random_id = Sample(SpawnableArtifacts());
             if ((rand() % 100 < 5) && !pParty->pIsArtifactFound[artifact_random_id] &&
                 (engine->config->gameplay.ArtifactLimit.Get() == 0 || artifact_found < engine->config->gameplay.ArtifactLimit.Get())) {
                 pParty->pIsArtifactFound[artifact_random_id] = 1;
