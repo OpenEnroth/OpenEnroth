@@ -876,7 +876,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
             if (pFace->Contains(Vec3i(sX, sY, 0), MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.Get(), FACE_XY_PLANE))
                 FoundFaceStore[NumFoundFaceStore++] = uFaceID;
             if (NumFoundFaceStore >= 5)
-                break;
+                break; // TODO(captainurist): we do get here sometimes (e.g. in dragon cave), increase limit?
         }
     }
 
