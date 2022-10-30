@@ -1,4 +1,5 @@
 #pragma once
+
 #include <array>
 #include <map>
 #include <string>
@@ -100,40 +101,30 @@ struct ItemDesc {  // 30h
     // Item # |Pic File|Name|Value|Equip Stat|Skill Group|Mod1|Mod2|material|
     /// ID/Rep/St|Not identified name|Sprite Index|VarA|VarB|Equip X|Equip
     /// Y|Notes
-    char *pIconName;              // 0 4
-    char *pName;                  // 4 8
-    char *pUnidentifiedName;      // 8 c
-    char *pDescription;           // 0c 10
-    uint32_t uValue;          // 10 14
-    uint16_t uSpriteID;   // 14 18
-    int16_t field_1A;             // 16
-    int16_t uEquipX;       // 18  1c
-    int16_t uEquipY;       // 1a  1e
-    ITEM_EQUIP_TYPE uEquipType;   // 1c 20
-    PLAYER_SKILL_TYPE uSkillType;   // 1d 21
-    uint8_t uDamageDice;  // 1e 22
-    uint8_t uDamageRoll;  // 1f 23
-    uint8_t uDamageMod;   // 20 24
-    ITEM_MATERIAL uMaterial;    // 21 25
-    char _additional_value;       // 22 26 // TODO(captainurist): actually ITEM_ENCHANTMENT?
-    char _bonus_type;             // 23  27 // TODO(captainurist): actually ITEM_ENCHANTMENT??
-    char _bonus_strength;         // 24 28
-    char field_25;                // 25  29
-    char field_26;                // 26   2A
-    char field_27;                // 27   2b
-    union {
-        uint8_t uChanceByTreasureLvl[6];
-        struct {
-            uint8_t uChanceByTreasureLvl1;  // 28  2c
-            uint8_t uChanceByTreasureLvl2;  // 29  2d
-            uint8_t uChanceByTreasureLvl3;  // 2A   2e
-            uint8_t uChanceByTreasureLvl4;  // 2B  2f
-            uint8_t uChanceByTreasureLvl5;  // 2C  30
-            uint8_t uChanceByTreasureLvl6;  // 2D  32
-        };
-    };
-    unsigned char uItemID_Rep_St;  // 2e 32
-    char field_2f;
+    char *pIconName = nullptr;              // 0 4
+    char *pName = nullptr;                  // 4 8
+    char *pUnidentifiedName = nullptr;      // 8 c
+    char *pDescription = nullptr;           // 0c 10
+    uint32_t uValue = 0;          // 10 14
+    uint16_t uSpriteID = 0;   // 14 18
+    int16_t field_1A = 0;             // 16
+    int16_t uEquipX = 0;       // 18  1c
+    int16_t uEquipY = 0;       // 1a  1e
+    ITEM_EQUIP_TYPE uEquipType = EQUIP_NONE;   // 1c 20
+    PLAYER_SKILL_TYPE uSkillType = PLAYER_SKILL_MISC;   // 1d 21
+    uint8_t uDamageDice = 0;  // 1e 22
+    uint8_t uDamageRoll = 0;  // 1f 23
+    uint8_t uDamageMod = 0;   // 20 24
+    ITEM_MATERIAL uMaterial = MATERIAL_COMMON;    // 21 25
+    char _additional_value = 0;       // 22 26 // TODO(captainurist): actually ITEM_ENCHANTMENT?
+    char _bonus_type = 0;             // 23  27 // TODO(captainurist): actually ITEM_ENCHANTMENT??
+    char _bonus_strength = 0;         // 24 28
+    char field_25 = 0;                // 25  29
+    char field_26 = 0;                // 26   2A
+    char field_27 = 0;                // 27   2b
+    std::array<uint8_t, 6> uChanceByTreasureLvl = {{}};
+    unsigned char uItemID_Rep_St = 0;  // 2e 32
+    char field_2f = 0;
 };
 #pragma pack(pop)
 

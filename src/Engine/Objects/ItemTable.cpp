@@ -263,12 +263,12 @@ void ItemTable::Initialize() {
         Assert(tokens.size() > 7, "Invalid number of tokens");
 
         ITEM_TYPE item_counter = ITEM_TYPE(atoi(tokens[0]));
-        pItems[item_counter].uChanceByTreasureLvl1 = atoi(tokens[2]);
-        pItems[item_counter].uChanceByTreasureLvl2 = atoi(tokens[3]);
-        pItems[item_counter].uChanceByTreasureLvl3 = atoi(tokens[4]);
-        pItems[item_counter].uChanceByTreasureLvl4 = atoi(tokens[5]);
-        pItems[item_counter].uChanceByTreasureLvl5 = atoi(tokens[6]);
-        pItems[item_counter].uChanceByTreasureLvl6 = atoi(tokens[7]);
+        pItems[item_counter].uChanceByTreasureLvl[0] = atoi(tokens[2]);
+        pItems[item_counter].uChanceByTreasureLvl[1] = atoi(tokens[3]);
+        pItems[item_counter].uChanceByTreasureLvl[2] = atoi(tokens[4]);
+        pItems[item_counter].uChanceByTreasureLvl[3] = atoi(tokens[5]);
+        pItems[item_counter].uChanceByTreasureLvl[4] = atoi(tokens[6]);
+        pItems[item_counter].uChanceByTreasureLvl[5] = atoi(tokens[7]);
     }
 
     // ChanceByTreasureLvl Summ - to calculate chance
