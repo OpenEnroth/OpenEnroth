@@ -797,8 +797,11 @@ void ItemTable::PrintItemTypesEnum() {
         } else if (desc.uEquipType == EQUIP_BOOK) {
             enumName = "SPELLBOOK_" + enumName;
         } else if (desc.uEquipType == EQUIP_MESSAGE_SCROLL) {
-            if (!enumName.starts_with("MESSAGE_"))
+            if (enumName.ends_with("_RECIPE")) {
+                enumName = "RECIPE_" + enumName.substr(0, enumName.size() - 7);
+            } else if (!enumName.starts_with("MESSAGE_")) {
                 enumName = "MESSAGE_" + enumName;
+            }
         } else if (desc.uEquipType == EQUIP_GOLD) {
             if (description == "A small pile of gold coins.") {
                 enumName = "GOLD_SMALL";
