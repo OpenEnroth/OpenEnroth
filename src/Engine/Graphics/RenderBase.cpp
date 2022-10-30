@@ -324,7 +324,6 @@ void RenderBase::TransformBillboard(SoftwareBillboard *pSoftBillboard, RenderBil
     if (engine->IsSpecular_FogIsOn() && uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
         specular = sub_47C3D7_get_fog_specular(0, 0, pSoftBillboard->screen_space_z);
     }
-    
 
     float v14 = (float)((int)pSprite->uBufferWidth / 2 - pSprite->uAreaX);
     float v15 = (float)((int)pSprite->uBufferHeight - pSprite->uAreaY);
@@ -383,8 +382,6 @@ void RenderBase::TransformBillboard(SoftwareBillboard *pSoftBillboard, RenderBil
     billboard->object_pid = pSoftBillboard->object_pid;
     billboard->sParentBillboardID = pSoftBillboard->sParentBillboardID;
     billboard->PaletteID = pBillboard->uPalette;
-
-
 }
 
 double fix2double(int fix) {

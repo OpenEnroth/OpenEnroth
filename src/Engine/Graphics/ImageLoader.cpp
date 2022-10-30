@@ -441,10 +441,6 @@ bool Sprites_LOD_Loader::Load(unsigned int *width, unsigned int *height,
     *out_pixels = nullptr;
     *out_palette = nullptr;
     *format = IMAGE_INVALID_FORMAT;
-    
-    
-
-    
 
     if (!this->use_hwl) {
         Sprite *pSprite = lod->GetSprite(this->resource_name);
@@ -461,14 +457,13 @@ bool Sprites_LOD_Loader::Load(unsigned int *width, unsigned int *height,
         for (size_t y = 0; y < h; y++) {
             for (size_t x = 0; x < w; x++) {
                 size_t p = y * w + x;
-                
                 uint8_t bitpix = pSprite->sprite_header->bitmap[p];
 
                 int r = 0, g = 0, b = 0, a = 0;
                 r = bitpix;
                 g = 0;
                 b = 0;
-                
+
                 if (bitpix == 0) {
                     a = r = g = b = 0;
                 } else {

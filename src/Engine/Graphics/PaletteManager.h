@@ -47,7 +47,7 @@ struct PaletteManager {
     uint16_t field_261600[50][256];
 
     int pPaletteIDs[50];
-    
+
     int _num_locked;
     int _pal_lock_test;
     uint8_t pPalette_mistColor[3];

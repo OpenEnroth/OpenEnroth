@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "PaletteManager.h"
 #include "Engine/Graphics/PaletteManager.h"
 
@@ -95,7 +97,7 @@ void RGB2HSV(float redin, float greenin, float bluein, float* outh, float* outs,
     }
 
     float outhcalc{0.0f};
-    
+
     // hue
     if (max == min) {
         *outh = 0.0f;
