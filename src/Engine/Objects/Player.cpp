@@ -7964,10 +7964,8 @@ bool Player::IsClass(PLAYER_CLASS_TYPE class_type, bool check_honorary) {
 }
 
 //----- (00490EEE) --------------------------------------------------------
-int Player::SelectPhrasesTransaction(
-    ItemGen* pItem, BuildingType building_type, int BuildID_2Events,
-    int ShopMenuType) {  // TODO(_): probably move this somewhere else, not really
-                         // Player:: stuff
+MERCHANT_PHRASE Player::SelectPhrasesTransaction(ItemGen* pItem, BuildingType building_type, int BuildID_2Events, int ShopMenuType) {
+    // TODO(_): probably move this somewhere else, not really Player:: stuff
     ITEM_TYPE idemId;   // edx@1
     ITEM_EQUIP_TYPE equipType;  // esi@1
     float multiplier;      // ST04_4@26
@@ -7982,32 +7980,35 @@ int Player::SelectPhrasesTransaction(
 
     switch (building_type) {
         case BuildingType_WeaponShop:
-            if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS) return 5;
-            if (equipType > EQUIP_BOW) return 4;
+            if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS)
+                return MERCHANT_PHRASE_INVALID_ACTION;
+            if (!IsWeapon(equipType))
+                return MERCHANT_PHRASE_INCOMPATIBLE_ITEM;
             break;
         case BuildingType_ArmorShop:
-            if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS) return 5;
-            if (equipType < EQUIP_ARMOUR || equipType > EQUIP_BOOTS) return 4;
+            if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS)
+                return MERCHANT_PHRASE_INVALID_ACTION;
+            if (!IsArmor(equipType))
+                return MERCHANT_PHRASE_INCOMPATIBLE_ITEM;
             break;
         case BuildingType_MagicShop:
-            if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS) return 5;
+            if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS)
+                return MERCHANT_PHRASE_INVALID_ACTION;
             if (pItemTable->pItems[idemId].uSkillType != PLAYER_SKILL_MISC)
-                return 4;
+                return MERCHANT_PHRASE_INCOMPATIBLE_ITEM;
             break;
         case BuildingType_AlchemistShop:
-            if ((idemId >= ITEM_ARTIFACT_HERMES_SANDALS &&
-                 idemId < ITEM_RECIPE_REJUVENATION) ||
-                idemId > ITEM_RECIPE_BODY_RESISTANCE)
-                return 5;
-            if (!(equipType == EQUIP_REAGENT || equipType == EQUIP_POTION ||
-                  equipType == EQUIP_MESSAGE_SCROLL))
-                return 4;
+            if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS && !IsRecipe(idemId))
+                return MERCHANT_PHRASE_INVALID_ACTION;
+            if (equipType != EQUIP_REAGENT && equipType != EQUIP_POTION && equipType != EQUIP_MESSAGE_SCROLL)
+                return MERCHANT_PHRASE_INCOMPATIBLE_ITEM;
             break;
         default:
             Error("(%u)", building_type);
             break;
     }
-    if (pItem->IsStolen()) return 6;
+    if (pItem->IsStolen())
+        return MERCAHNT_PHRASE_STOLEN_ITEM;
 
     multiplier = p2DEvents[BuildID_2Events - 1].fPriceMultiplier;
     switch (ShopMenuType) {
@@ -8033,12 +8034,12 @@ int Player::SelectPhrasesTransaction(
     }
     if (merchantLevel) {
         if (price == itemValue) {
-            return 3;
+            return MERCHANT_PHRASE_PRICE_HAGGLE_TO_ACTUAL_PRICE;
         } else {
-            return 2;
+            return MERCHANT_PHRASE_PRICE_HAGGLE;
         }
     } else {
-        return 1;
+        return MERCHANT_PHRASE_PRICE;
     }
 }
 

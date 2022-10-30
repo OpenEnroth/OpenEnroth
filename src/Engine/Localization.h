@@ -3,7 +3,7 @@
 #include <string>
 #include <utility>
 
-#include "Engine/Objects/NPCProf.h"
+#include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/PlayerEnums.h"
 #include "Engine/Conditions.h"
 

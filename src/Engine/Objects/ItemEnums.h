@@ -1071,10 +1071,19 @@ using enum ITEM_EQUIP_TYPE;
 /**
  * @param type                          Type to check.
  * @return                              Whether the provided type represents a `passive` equipment, e.g. shields,
- *                                      armor, rings, etc.
+ *                                      armor, rings, amulets, etc.
  */
 inline bool IsPassiveEquipment(ITEM_EQUIP_TYPE type) {
     return type >= EQUIP_ARMOUR && type <= EQUIP_AMULET;
+}
+
+/**
+ * @param type                          Type to check.
+ * @return                              Whether the provided type represents wearable armor, e.g. any passive
+ *                                      equipment except amulets and rings.
+ */
+inline bool IsArmor(ITEM_EQUIP_TYPE type) {
+    return type >= EQUIP_ARMOUR && type <= EQUIP_BOOTS;
 }
 
 /**

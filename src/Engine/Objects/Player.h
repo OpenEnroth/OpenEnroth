@@ -241,8 +241,7 @@ struct Player {
     unsigned int GetStatColor(int uStat);
     bool DiscardConditionIfLastsLongerThan(Condition uCondition,
                                            GameTime time);
-    int SelectPhrasesTransaction(ItemGen* pItem, BuildingType building_type,
-                                 int BuildID_2Events, int a5);
+    MERCHANT_PHRASE SelectPhrasesTransaction(ItemGen* pItem, BuildingType building_type, int BuildID_2Events, int ShopMenuType);
     int GetBodybuilding();
     int GetMeditation();
     bool CanIdentify(ItemGen* pItem);

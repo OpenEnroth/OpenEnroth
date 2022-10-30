@@ -9,6 +9,7 @@
 #include "Engine/MM7.h"
 #include "Engine/Autonotes.h"
 #include "Engine/Objects/ItemEnums.h"
+#include "Engine/Objects/NPCEnums.h"
 
 #include "GUI/GUIDialogues.h"
 
@@ -369,10 +370,10 @@ extern int dword_7241C8;
 extern std::string pAwardsTXT_Raw;
 extern std::string pScrollsTXT_Raw;
 extern std::string pMerchantsTXT_Raw;
-extern std::array<const char *, 7> pMerchantsBuyPhrases;
-extern std::array<const char *, 7> pMerchantsSellPhrases;
-extern std::array<const char *, 7> pMerchantsRepairPhrases;
-extern std::array<const char *, 7> pMerchantsIdentifyPhrases;
+extern IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsBuyPhrases;
+extern IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsSellPhrases;
+extern IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsRepairPhrases;
+extern IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsIdentifyPhrases;
 extern std::string pTransitionsTXT_Raw;
 extern std::string pAutonoteTXT_Raw;
 extern std::string pQuestsTXT_Raw;

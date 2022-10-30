@@ -149,7 +149,7 @@ void ShopDialogSellEquip(GUIWindow dialogwin, BuildingType building) {
         if (pItemID) {
             ItemGen *item =
                 &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
-            int phrases_id =
+            MERCHANT_PHRASE phrases_id =
                 pPlayers[uActiveCharacter]->SelectPhrasesTransaction(
                     item, building, window_SpeakInHouse->wData.val, 3);
             auto str = BuildDialogueString(
@@ -184,7 +184,7 @@ void ShopDialogIdentify(GUIWindow dialogwin, BuildingType building) {
 
             std::string str;
             if (!item->IsIdentified()) {
-                int phrases_id = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(
+                MERCHANT_PHRASE phrases_id = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(
                     item, building, window_SpeakInHouse->wData.val, 4);
                 str = BuildDialogueString(
                     pMerchantsIdentifyPhrases[phrases_id], uActiveCharacter - 1,
@@ -221,7 +221,7 @@ void ShopDialogRepair(GUIWindow dialogwin, BuildingType building) {
         if ((pPlayers[uActiveCharacter]->pOwnItems[pItemID - 1].uAttributes &
              ITEM_BROKEN)) {
             ItemGen *item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
-            int phrases_id = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(
+            MERCHANT_PHRASE phrases_id = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(
                 item, building, window_SpeakInHouse->wData.val, 5);
             std::string str = BuildDialogueString(
                 pMerchantsRepairPhrases[phrases_id], uActiveCharacter - 1, item,
