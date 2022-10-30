@@ -2276,8 +2276,7 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) {
                    hasteRecoveryReduction - sword_axe_bow_recovery_reduction -
                    player_speed_recovery_reduction;
 
-    // TODO(captainurist): I remember blasters firing insanely fast in mm6/7, is this check correct?
-    if (bRangedAttack) {
+    if (bRangedAttack || shooting_laser) {
         if (recovery < 5)
             recovery = 5;
     } else {
