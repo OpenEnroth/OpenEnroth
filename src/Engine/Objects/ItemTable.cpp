@@ -760,21 +760,6 @@ void ItemTable::PrintItemTypesEnum() {
             continue;
         }
 
-        if (name == "Empty Message Scroll" || name == "Name of Message") {
-            items.emplace_back("", "Empty scroll placeholder, unused.");
-            continue;
-        }
-
-        if (name == "Newname Key") {
-            items.emplace_back("", "Key placeholder, unused.");
-            continue;
-        }
-
-        if (contains(name, "Placeholder") || contains(name, "Sealed Letter")) {
-            items.emplace_back("", name + ", unused.");
-            continue;
-        }
-
         std::string enumName;
         for (char c : name) {
             if (isalnum(c)) {
@@ -784,6 +769,38 @@ void ItemTable::PrintItemTypesEnum() {
                     enumName += '_';
             }
         }
+
+        if (enumName == "EMPTY_MESSAGE_SCROLL" || enumName == "NAME_OF_MESSAGE") {
+            items.emplace_back("", "Empty scroll placeholder, unused.");
+            continue;
+        }
+
+        if (enumName == "NEWNAME_KEY") {
+            items.emplace_back("", "Key placeholder, unused.");
+            continue;
+        }
+
+        if (contains(enumName, "PLACEHOLDER") || contains(enumName, "SEALED_LETTER")) {
+            items.emplace_back("", name + ", unused.");
+            continue;
+        }
+
+        if (contains(enumName, "ORDERS_FROM_SNERGLE")) {
+            items.emplace_back("", name + ", unused remnant from MM6.");
+            continue;
+        }
+
+        if (enumName == "LICH_JAR") {
+            if (contains(description, "Empty")) {
+                enumName += "_EMPTY";
+            } else {
+                enumName += "_FULL";
+            }
+        }
+
+        if (enumName == "THE_PERFECT_BOW")
+            if (!contains(description, "off-balance"))
+                enumName += "_FIXED";
 
         if (desc.uEquipType == EQUIP_REAGENT) {
             enumName = "REAGENT_" + enumName;
@@ -825,18 +842,6 @@ void ItemTable::PrintItemTypesEnum() {
         } else if (description.starts_with("Quest")) {
             enumName = "QUEST_" + enumName;
         }
-
-        if (name == "Lich Jar") {
-            if (contains(description, "Empty")) {
-                enumName += "_EMPTY";
-            } else {
-                enumName += "_FULL";
-            }
-        }
-
-        if (name == "The Perfect Bow")
-            if (!contains(description, "off-balance"))
-                enumName += "_FIXED";
 
         if (indexByName.contains(enumName)) {
             int count = ++countByName[enumName];
