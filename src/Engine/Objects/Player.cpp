@@ -2178,26 +2178,14 @@ unsigned int Player::GetSpellSchool(unsigned int uSpellID) {
 
 //----- (0048E1B5) --------------------------------------------------------
 int Player::GetAttackRecoveryTime(bool bRangedAttack) {
-    ItemGen *weapon = nullptr, *weapon_main = nullptr;
+    ItemGen *weapon = nullptr;
     uint weapon_recovery = base_recovery_times_per_weapon_type[PLAYER_SKILL_STAFF];
-    bool shooting_laser = false;
-    uint shield_recovery = 0;
     if (bRangedAttack) {
-        // TODO(captainurist): should be ITEM_SLOT_MAIN_HAND?
-        if (HasItemEquipped(ITEM_SLOT_OFF_HAND)) {
-            weapon_main = GetMainHandItem();
-            if (weapon_main != nullptr && weapon_main->GetPlayerSkillType() == PLAYER_SKILL_BLASTER) {
-                weapon = weapon_main;
-                weapon_recovery = base_recovery_times_per_weapon_type[PLAYER_SKILL_BLASTER];
-                shooting_laser = true;
-            }
-        }
-
-        if (!shooting_laser && HasItemEquipped(ITEM_SLOT_BOW)) {
+        if (HasItemEquipped(ITEM_SLOT_BOW)) {
             weapon = GetBowItem();
             weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
         }
-    } else if (IsUnarmed() == 1 && GetActualSkillLevel(PLAYER_SKILL_UNARMED) > 0) {
+    } else if (IsUnarmed() && GetActualSkillLevel(PLAYER_SKILL_UNARMED) > 0) {
         weapon_recovery = base_recovery_times_per_weapon_type[PLAYER_SKILL_DAGGER];
     } else if (HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
         weapon = GetMainHandItem();
@@ -2208,6 +2196,7 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) {
         }
     }
 
+    uint shield_recovery = 0;
     if (HasItemEquipped(ITEM_SLOT_OFF_HAND)) {
         if (GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND) == EQUIP_SHIELD) {
             uchar skill_type = GetOffHandItem()->GetPlayerSkillType();
@@ -2235,16 +2224,16 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) {
         } else if (armour_skill_type == PLAYER_SKILL_PLATE) {
             multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 0.5f, 0.5f, 0);
         } else {
-            // PLAYER_SKILL_MISC
-            // any others?
+            // PLAYER_SKILL_MISC for wetsuit, any others?
             multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 1.0f, 1.0f, 1.0f);
         }
 
         armour_recovery = (uint)(base_armour_recovery * multiplier);
     }
 
-    uint player_speed_recovery_reduction = GetParameterBonus(GetActualSpeed()),
-         sword_axe_bow_recovery_reduction = 0;
+    uint player_speed_recovery_reduction = GetParameterBonus(GetActualSpeed());
+
+    uint sword_axe_bow_recovery_reduction = 0;
     if (weapon != nullptr) {
         if (GetActualSkillLevel(
                 (PLAYER_SKILL_TYPE)weapon->GetPlayerSkillType()) &&
@@ -2257,8 +2246,11 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) {
         }
     }
 
+    bool shooting_laser = weapon && weapon->GetPlayerSkillType() == PLAYER_SKILL_BLASTER;
+    Assert(shooting_laser ? !bRangedAttack : true); // For blasters we expect bRangedAttack == false.
+
     uint armsmaster_recovery_reduction = 0;
-    if (!bRangedAttack) {
+    if (!bRangedAttack && !shooting_laser) {
         if (uint armsmaster_level = GetActualSkillLevel(PLAYER_SKILL_ARMSMASTER)) {
             armsmaster_recovery_reduction = armsmaster_level & 0x3F;
             if (SkillToMastery(armsmaster_level) >= 4)
@@ -2284,6 +2276,7 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) {
                    hasteRecoveryReduction - sword_axe_bow_recovery_reduction -
                    player_speed_recovery_reduction;
 
+    // TODO(captainurist): I remember blasters firing insanely fast in mm6/7, is this check correct?
     if (bRangedAttack) {
         if (recovery < 5)
             recovery = 5;
