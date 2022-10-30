@@ -716,7 +716,7 @@ Vec3i blv_prev_party_pos;
 std::array<NPCTopic, 789> pNPCTopics;
 std::array<const char *, 513> pQuestTable;
 char *dword_723718_autonote_related;  // idb
-std::array<const char *, 82> pScrolls;
+IndexedArray<const char *, ITEM_FIRST_MESSAGE_SCROLL, ITEM_LAST_MESSAGE_SCROLL> pScrolls;
 int dword_7241C8;
 std::string pAwardsTXT_Raw;
 std::string pScrollsTXT_Raw;

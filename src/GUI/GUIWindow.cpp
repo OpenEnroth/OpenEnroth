@@ -54,7 +54,7 @@ GUIWindow *pPrimaryWindow;
 GUIWindow *pGUIWindow_CurrentMenu;
 GUIWindow *pDialogueWindow;
 GUIWindow *window_SpeakInHouse;
-GUIWindow *pGUIWindow_ScrollWindow; // reading a message scroll
+GUIWindow_Scroll *pGUIWindow_ScrollWindow; // reading a message scroll
 GUIWindow *ptr_507BC8;  // screen 19 - not used?
 GUIWindow *pGUIWindow_CastTargetedSpell;
 GUIWindow *pModalWindow; // UIMSG_ShowFinalWindow
@@ -996,13 +996,13 @@ void GUI_UpdateWindows() {
 }
 
 void CreateScrollWindow() {
-    GUIWindow a1 = *pGUIWindow_ScrollWindow;
+    GUIWindow_Scroll &a1 = *pGUIWindow_ScrollWindow;
     a1.sHint.clear();
     a1.uFrameX = 1;
     a1.uFrameY = 1;
     a1.uFrameWidth = 468;
     unsigned int v0 =
-        pFontSmallnum->CalcTextHeight(pScrolls[pGUIWindow_ScrollWindow->wData.val],
+        pFontSmallnum->CalcTextHeight(pScrolls[pGUIWindow_ScrollWindow->scroll_type],
             a1.uFrameWidth, 0) +
         2 * (unsigned char)pFontCreate->GetHeight() + 24;
     a1.uFrameHeight = v0;
@@ -1020,18 +1020,17 @@ void CreateScrollWindow() {
     a1.uFrameZ = a1.uFrameWidth + a1.uFrameX - 1;
     a1.uFrameW = a1.uFrameHeight + a1.uFrameY - 1;
 
-    char *v1 = pItemTable->pItems[MessageScroll(pGUIWindow_ScrollWindow->wData.val)].pName;
+    char *v1 = pItemTable->pItems[pGUIWindow_ScrollWindow->scroll_type].pName;
 
     a1.DrawTitleText(pFontCreate, 0, 0, 0, StringPrintf(format_4E2D80, colorTable.PaleCanary.C16(), v1), 3);
-    a1.DrawText(pFontSmallnum, 1, pFontCreate->GetHeight() - 3, 0, pScrolls[pGUIWindow_ScrollWindow->wData.val], 0, 0, 0);
+    a1.DrawText(pFontSmallnum, 1, pFontCreate->GetHeight() - 3, 0, pScrolls[pGUIWindow_ScrollWindow->scroll_type], 0, 0, 0);
 }
 
 //----- (00467F48) --------------------------------------------------------
 void CreateMsgScrollWindow(ITEM_TYPE mscroll_id) {
     if (!pGUIWindow_ScrollWindow && IsMessageScroll(mscroll_id)) {
-        // TODO(captainurist): get rid of to_underlying here.
         pGUIWindow_ScrollWindow =
-            new GUIWindow_Scroll(0, 0, window->GetWidth(), window->GetHeight(), std::to_underlying(mscroll_id) - 700, "");
+            new GUIWindow_Scroll(0, 0, window->GetWidth(), window->GetHeight(), mscroll_id, "");
     }
 }
 

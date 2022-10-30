@@ -944,11 +944,11 @@ enum class ITEM_TYPE : int32_t {
     ITEM_FIRST_REGULAR = ITEM_CRUDE_LONGSWORD,
     ITEM_LAST_REGULAR = ITEM_SUN_AMULET,
 
-    ITEM_FIRST_MESSAGE_SCROLL = ITEM_MESSAGE_FROM_ERATHIA, // TODO(captainurist): We're missing ITEM_MESSAGE_ORDERS_FROM_SNERGLE
-    ITEM_LAST_MESSAGE_SCROLL = ITEM_RECIPE_BODY_RESISTANCE,
-
     ITEM_FIRST_ARTIFACT = ITEM_ARTIFACT_PUCK,
     ITEM_LAST_ARTIFACT = ITEM_RELIC_MEKORIGS_HAMMER, // TODO(captainurist): And what's with 6 more artifacts? Like ITEM_ARTIFACT_HERMES_SANDALS?
+
+    ITEM_FIRST_MESSAGE_SCROLL = ITEM_MESSAGE_FROM_ERATHIA, // TODO(captainurist): We're missing ITEM_MESSAGE_ORDERS_FROM_SNERGLE
+    ITEM_LAST_MESSAGE_SCROLL = ITEM_781,
 
     ITEM_FIRST_RECIPE = ITEM_RECIPE_REJUVENATION,
     ITEM_LAST_RECIPE = ITEM_RECIPE_BODY_RESISTANCE,
@@ -997,16 +997,6 @@ inline bool IsMessageScroll(ITEM_TYPE type) {
 
 inline bool IsArtifact(ITEM_TYPE type) {
     return type >= ITEM_FIRST_ARTIFACT && type <= ITEM_LAST_ARTIFACT;
-}
-
-/**
- * @param number                        Number of the message scroll.
- * @return                              Item type corresponding to the message scroll number provided.
- */
-inline ITEM_TYPE MessageScroll(size_t number) {
-    ITEM_TYPE result = ITEM_TYPE(std::to_underlying(ITEM_FIRST_MESSAGE_SCROLL) + number);
-    Assert(result >= ITEM_FIRST_MESSAGE_SCROLL && result <= ITEM_LAST_MESSAGE_SCROLL);
-    return result;
 }
 
 inline Range<ITEM_TYPE> MessageScrolls() {

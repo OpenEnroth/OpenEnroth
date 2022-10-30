@@ -499,8 +499,11 @@ class GUIWindow {
 
 class GUIWindow_Scroll : public GUIWindow {
  public:
-    GUIWindow_Scroll(unsigned int x, unsigned int y, unsigned int width, unsigned int height, WindowData data, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_Scroll, x, y, width, height, data, hint) {
+    GUIWindow_Scroll(unsigned int x, unsigned int y, unsigned int width, unsigned int height, ITEM_TYPE scroll_type, const std::string &hint = std::string()) :
+        GUIWindow(WINDOW_Scroll, x, y, width, height, 0, hint) {
+        Assert(IsMessageScroll(scroll_type));
+
+        this->scroll_type = scroll_type;
         CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, GameKey::Digit1, "");
         CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, GameKey::Digit2, "");
         CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, GameKey::Digit3, "");
@@ -510,6 +513,8 @@ class GUIWindow_Scroll : public GUIWindow {
     virtual ~GUIWindow_Scroll() {}
 
     virtual void Update() override;
+
+    ITEM_TYPE scroll_type = ITEM_NULL;
 };
 
 class OnButtonClick : public GUIWindow {
@@ -783,7 +788,7 @@ extern GUIWindow *pPrimaryWindow;
 //extern GUIWindow *pChestWindow;
 extern GUIWindow *pDialogueWindow;
 extern GUIWindow *window_SpeakInHouse;
-extern GUIWindow *pGUIWindow_ScrollWindow;
+extern GUIWindow_Scroll *pGUIWindow_ScrollWindow;
 extern GUIWindow *ptr_507BC8;
 extern GUIWindow *pGUIWindow_CurrentMenu;
 //extern GUIWindow *ptr_507BD0;

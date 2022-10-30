@@ -14,6 +14,8 @@
 
 #include "VectorTypes.h"
 
+#include "Utility/IndexedArray.h"
+
 class GUIButton;
 class Actor;
 
@@ -361,7 +363,7 @@ extern Vec3i blv_prev_party_pos;
 extern char *dword_722F10;  // idb
 extern std::array<const char *, 513> pQuestTable;
 extern char *dword_723718_autonote_related;  // idb
-extern std::array<const char *, 82> pScrolls;
+extern IndexedArray<const char *, ITEM_FIRST_MESSAGE_SCROLL, ITEM_LAST_MESSAGE_SCROLL> pScrolls;
 extern int dword_7241C8;
 
 extern std::string pAwardsTXT_Raw;
