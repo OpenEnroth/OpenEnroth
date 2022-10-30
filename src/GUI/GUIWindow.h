@@ -509,7 +509,7 @@ class GUIWindow_Scroll : public GUIWindow {
     }
     virtual ~GUIWindow_Scroll() {}
 
-    virtual void Update();
+    virtual void Update() override;
 };
 
 class OnButtonClick : public GUIWindow {
@@ -520,7 +520,7 @@ class OnButtonClick : public GUIWindow {
     {}
     virtual ~OnButtonClick() {}
 
-    virtual void Update();
+    virtual void Update() override;
 
     bool bPlaySound;
 };
@@ -533,7 +533,7 @@ class OnButtonClick2 : public GUIWindow {
     {}
     virtual ~OnButtonClick2() {}
 
-    virtual void Update();
+    virtual void Update() override;
 
     bool bPlaySound;
 };
@@ -546,7 +546,7 @@ class OnButtonClick3 : public GUIWindow {
 
     virtual ~OnButtonClick3() {}
 
-    virtual void Update();
+    virtual void Update() override;
 };
 
 // something debug? not really sure, unused
@@ -557,7 +557,7 @@ class OnButtonClick4 : public GUIWindow {
     {}
     virtual ~OnButtonClick4() {}
 
-    virtual void Update();
+    virtual void Update() override;
 };
 
 class OnSaveLoad : public GUIWindow {
@@ -567,7 +567,7 @@ class OnSaveLoad : public GUIWindow {
     {}
     virtual ~OnSaveLoad() {}
 
-    virtual void Update();
+    virtual void Update() override;
 };
 
 class OnCancel : public GUIWindow {
@@ -577,7 +577,7 @@ class OnCancel : public GUIWindow {
     {}
     virtual ~OnCancel() {}
 
-    virtual void Update();
+    virtual void Update() override;
 };
 
 class OnCancel2 : public GUIWindow {
@@ -587,7 +587,7 @@ class OnCancel2 : public GUIWindow {
     {}
     virtual ~OnCancel2() {}
 
-    virtual void Update();
+    virtual void Update() override;
 };
 
 class OnCancel3 : public GUIWindow {
@@ -597,7 +597,7 @@ class OnCancel3 : public GUIWindow {
     {}
     virtual ~OnCancel3() {}
 
-    virtual void Update();
+    virtual void Update() override;
 };
 
 class OnCastTargetedSpell : public GUIWindow {
