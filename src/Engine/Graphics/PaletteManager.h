@@ -24,12 +24,30 @@ struct PaletteManager {
     static uint16_t *_47C30E_get_palette(int paletteIdx, char a2);
     static uint16_t *_47C33F_get_palette(int paletteIdx, char a2);
 
+    static uint8_t *GetBasePalette(int paletteID);
+
+    int GetPaletteIndex(int paletteID);
+
+
+    // dont need any of the other LUT
+                    // palette / colour / rgb
     uint8_t pBaseColors[50][256][3];
+
+    uint32_t p32ARGBpalette[50][256]{};
+
+
+
+                    // palette / value step 32 / 16b color
     uint16_t pPalette1[50][32][256];
+
     uint16_t field_D1600[50][32][256];
-    uint16_t field_199600_palettes[50][32][256];
+                    // palette / value step 32 h 1 s 1 / 16b color
+    uint16_t field_199600_palettes[50][32][256]; // alt palettes
+
     uint16_t field_261600[50][256];
+
     int pPaletteIDs[50];
+    
     int _num_locked;
     int _pal_lock_test;
     uint8_t pPalette_mistColor[3];
