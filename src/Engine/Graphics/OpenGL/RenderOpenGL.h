@@ -300,6 +300,7 @@ class RenderOpenGL : public RenderBase {
 
     // billboards shader
     GLuint billbVBO, billbVAO;
+    GLuint palbuf, paltex;
 
     // decal shader
     GLuint decalVBO, decalVAO;

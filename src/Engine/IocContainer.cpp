@@ -176,7 +176,7 @@ void IntegrityTest() {
     //static_assert(sizeof(MobileLight) == 0x12, "Wrong type size");
     //static_assert(sizeof(stru141_actor_collision_object) == 0xA8, "Wrong type size");
     static_assert(sizeof(ActionQueue) == 0x7C, "Wrong type size");
-    static_assert(sizeof(PaletteManager) == 0x267AF0, "Wrong type size");
+    //static_assert(sizeof(PaletteManager) == 0x267AF0, "Wrong type size");
     static_assert(sizeof(TrailParticle) == 0x18, "Wrong type size");
     static_assert(sizeof(EventIndex) == 0xC, "Wrong type size");
     //static_assert(sizeof(MapsLongTimer) == 0x20, "Wrong type size");

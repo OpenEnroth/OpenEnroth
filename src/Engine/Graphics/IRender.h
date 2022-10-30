@@ -124,7 +124,9 @@ struct RenderBillboardD3D {
           field_90(-1),
           object_pid(0),
           screen_space_z(0),
-          sParentBillboardID(-1) {}
+          sParentBillboardID(-1),
+          PaletteID(0),
+          PaletteIndex(0) {}
 
     enum class OpacityType : uint32_t {
         Transparent = 0,
@@ -145,6 +147,9 @@ struct RenderBillboardD3D {
     unsigned short object_pid;
     short screen_space_z;
     int sParentBillboardID;
+
+    int PaletteID;
+    int PaletteIndex;
 };
 
 struct SoftwareBillboard {

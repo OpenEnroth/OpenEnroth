@@ -3,6 +3,7 @@
 in vec4 colour;
 in vec2 texuv;
 in float screenspace;
+flat in uint paletteid;
 
 out vec4 FragColour;
 
@@ -14,12 +15,24 @@ struct FogParam {
 };
 
 uniform sampler2D texture0;
+uniform usamplerBuffer palbuf;
+uniform bool repaint;
 uniform FogParam fog;
 
 float getFogRatio(FogParam fogpar, float dist);
 
 void main() {
-    vec4 fragcol = texture(texture0, texuv) * colour;
+    vec4 fragcol = texture(texture0, texuv);
+    uint index = uint(fragcol.r * 255);
+    uvec4 newcol = texelFetch(palbuf, int( 256 * paletteid + index));
+
+   if (repaint == true) {
+	if (index > 0)
+	    fragcol = vec4(newcol.r / 255.0, newcol.g / 255.0, newcol.b / 255.0, 1.0);
+   }
+
+    fragcol *= colour;
+
     if (fog.fogstart == fog.fogend) {
         FragColour = fragcol;
         return;

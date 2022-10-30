@@ -54,6 +54,7 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
+#include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -2972,6 +2973,7 @@ struct billbverts {
     GLfloat screenspace;
     GLfloat texid;
     GLfloat blend;
+    GLfloat paletteindex;
 };
 
 billbverts billbstore[1000] {};
@@ -3005,7 +3007,15 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         //    }
         //}
 
+        int palette{ pBillboardRenderListD3D[i].PaletteID};
+        int paletteindex{ palette/*pPaletteManager->GetPaletteIndex(palette)*/ };
+
+        if (engine->config->graphics.HWLSprites.Get())
+            paletteindex = 0;
+
         if (pBillboardRenderListD3D[i].texture) {
+            //if (!engine->config->graphics.HWLSprites.Get())
+            //    palette = pBillboardRenderListD3D[i].texture->g
             auto texture = (TextureOpenGL *)pBillboardRenderListD3D[i].texture;
             gltexid = texture->GetOpenGlTexture();
         } else {
@@ -3032,8 +3042,8 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].x = billboard->pQuads[0].pos.x;
         billbstore[billbstorecnt].y = billboard->pQuads[0].pos.y;
         billbstore[billbstorecnt].z = thisdepth;
-        billbstore[billbstorecnt].u = billboard->pQuads[0].texcoord.x;
-        billbstore[billbstorecnt].v = billboard->pQuads[0].texcoord.y;
+        billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[0].texcoord.x, 0.01f, 0.99f);
+        billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[0].texcoord.y, 0.01f, 0.99f);
         billbstore[billbstorecnt].r = ((billboard->pQuads[0].diffuse >> 16) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].g = ((billboard->pQuads[0].diffuse >> 8) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].b = ((billboard->pQuads[0].diffuse >> 0) & 0xFF) / 255.0f;
@@ -3041,13 +3051,14 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
         billbstore[billbstorecnt].blend = thisblend;
+        billbstore[billbstorecnt].paletteindex = paletteindex;
         billbstorecnt++;
 
         billbstore[billbstorecnt].x = billboard->pQuads[1].pos.x;
         billbstore[billbstorecnt].y = billboard->pQuads[1].pos.y;
         billbstore[billbstorecnt].z = thisdepth;
-        billbstore[billbstorecnt].u = billboard->pQuads[1].texcoord.x;
-        billbstore[billbstorecnt].v = billboard->pQuads[1].texcoord.y;
+        billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[1].texcoord.x, 0.01f, 0.99f);
+        billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[1].texcoord.y, 0.01f, 0.99f);
         billbstore[billbstorecnt].r = ((billboard->pQuads[1].diffuse >> 16) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].g = ((billboard->pQuads[1].diffuse >> 8) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].b = ((billboard->pQuads[1].diffuse >> 0) & 0xFF) / 255.0f;
@@ -3055,13 +3066,14 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
         billbstore[billbstorecnt].blend = thisblend;
+        billbstore[billbstorecnt].paletteindex = paletteindex;
         billbstorecnt++;
 
         billbstore[billbstorecnt].x = billboard->pQuads[2].pos.x;
         billbstore[billbstorecnt].y = billboard->pQuads[2].pos.y;
         billbstore[billbstorecnt].z = thisdepth;
-        billbstore[billbstorecnt].u = billboard->pQuads[2].texcoord.x;
-        billbstore[billbstorecnt].v = billboard->pQuads[2].texcoord.y;
+        billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[2].texcoord.x, 0.01f, 0.99f);
+        billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[2].texcoord.y, 0.01f, 0.99f);
         billbstore[billbstorecnt].r = ((billboard->pQuads[2].diffuse >> 16) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].g = ((billboard->pQuads[2].diffuse >> 8) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].b = ((billboard->pQuads[2].diffuse >> 0) & 0xFF) / 255.0f;
@@ -3069,6 +3081,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
         billbstore[billbstorecnt].blend = thisblend;
+        billbstore[billbstorecnt].paletteindex = paletteindex;
         billbstorecnt++;
 
         ////////////////////////////////
@@ -3077,8 +3090,8 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
             billbstore[billbstorecnt].x = billboard->pQuads[0].pos.x;
             billbstore[billbstorecnt].y = billboard->pQuads[0].pos.y;
             billbstore[billbstorecnt].z = thisdepth;
-            billbstore[billbstorecnt].u = billboard->pQuads[0].texcoord.x;
-            billbstore[billbstorecnt].v = billboard->pQuads[0].texcoord.y;
+            billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[0].texcoord.x, 0.01f, 0.99f);
+            billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[0].texcoord.y, 0.01f, 0.99f);
             billbstore[billbstorecnt].r = ((billboard->pQuads[0].diffuse >> 16) & 0xFF) / 255.0f;
             billbstore[billbstorecnt].g = ((billboard->pQuads[0].diffuse >> 8) & 0xFF) / 255.0f;
             billbstore[billbstorecnt].b = ((billboard->pQuads[0].diffuse >> 0) & 0xFF) / 255.0f;
@@ -3086,13 +3099,14 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
             billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
             billbstore[billbstorecnt].texid = gltexid;
             billbstore[billbstorecnt].blend = thisblend;
+            billbstore[billbstorecnt].paletteindex = paletteindex;
             billbstorecnt++;
 
             billbstore[billbstorecnt].x = billboard->pQuads[2].pos.x;
             billbstore[billbstorecnt].y = billboard->pQuads[2].pos.y;
             billbstore[billbstorecnt].z = thisdepth;
-            billbstore[billbstorecnt].u = billboard->pQuads[2].texcoord.x;
-            billbstore[billbstorecnt].v = billboard->pQuads[2].texcoord.y;
+            billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[2].texcoord.x, 0.01f, 0.99f);
+            billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[2].texcoord.y, 0.01f, 0.99f);
             billbstore[billbstorecnt].r = ((billboard->pQuads[2].diffuse >> 16) & 0xFF) / 255.0f;
             billbstore[billbstorecnt].g = ((billboard->pQuads[2].diffuse >> 8) & 0xFF) / 255.0f;
             billbstore[billbstorecnt].b = ((billboard->pQuads[2].diffuse >> 0) & 0xFF) / 255.0f;
@@ -3100,13 +3114,14 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
             billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
             billbstore[billbstorecnt].texid = gltexid;
             billbstore[billbstorecnt].blend = thisblend;
+            billbstore[billbstorecnt].paletteindex = paletteindex;
             billbstorecnt++;
 
             billbstore[billbstorecnt].x = billboard->pQuads[3].pos.x;
             billbstore[billbstorecnt].y = billboard->pQuads[3].pos.y;
             billbstore[billbstorecnt].z = thisdepth;
-            billbstore[billbstorecnt].u = billboard->pQuads[3].texcoord.x;
-            billbstore[billbstorecnt].v = billboard->pQuads[3].texcoord.y;
+            billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[3].texcoord.x, 0.01f, 0.99f);
+            billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[3].texcoord.y, 0.01f, 0.99f);
             billbstore[billbstorecnt].r = ((billboard->pQuads[3].diffuse >> 16) & 0xFF) / 255.0f;
             billbstore[billbstorecnt].g = ((billboard->pQuads[3].diffuse >> 8) & 0xFF) / 255.0f;
             billbstore[billbstorecnt].b = ((billboard->pQuads[3].diffuse >> 0) & 0xFF) / 255.0f;
@@ -3114,6 +3129,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
             billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
             billbstore[billbstorecnt].texid = gltexid;
             billbstore[billbstorecnt].blend = thisblend;
+            billbstore[billbstorecnt].paletteindex = paletteindex;
             billbstorecnt++;
         }
 
@@ -3144,20 +3160,33 @@ void RenderOpenGL::DrawBillboards() {
         glBufferData(GL_ARRAY_BUFFER, sizeof(billbstore), billbstore, GL_DYNAMIC_DRAW);
 
         // position attribute
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (12 * sizeof(GLfloat)), (void *)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (13 * sizeof(GLfloat)), (void *)0);
         glEnableVertexAttribArray(0);
         // tex uv
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (12 * sizeof(GLfloat)), (void *)(3 * sizeof(GLfloat)));
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (13 * sizeof(GLfloat)), (void *)(3 * sizeof(GLfloat)));
         glEnableVertexAttribArray(1);
         // colour
-        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, (12 * sizeof(GLfloat)), (void *)(5 * sizeof(GLfloat)));
+        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, (13 * sizeof(GLfloat)), (void *)(5 * sizeof(GLfloat)));
         glEnableVertexAttribArray(2);
         // screenspace
-        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, (12 * sizeof(GLfloat)), (void *)(9 * sizeof(GLfloat)));
+        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, (13 * sizeof(GLfloat)), (void *)(9 * sizeof(GLfloat)));
         glEnableVertexAttribArray(3);
         // texid
-        glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, (12 * sizeof(GLfloat)), (void *)(10 * sizeof(GLfloat)));
-        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, (13 * sizeof(GLfloat)), (void *)(10 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(4);
+        // palette index
+        glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, (13 * sizeof(GLfloat)), (void *)(12 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(5);
+
+        // generate palette buffer texture
+        glGenBuffers(1, &palbuf);
+        glBindBuffer(GL_TEXTURE_BUFFER, palbuf);
+        glBufferData(GL_TEXTURE_BUFFER, sizeof(pPaletteManager->p32ARGBpalette), pPaletteManager->p32ARGBpalette, GL_STATIC_DRAW);
+
+        glGenTextures(1, &paltex);
+        glBindTexture(GL_TEXTURE_BUFFER, paltex);
+        glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
+        glBindBuffer(GL_TEXTURE_BUFFER, 0);
     }
 
     // update buffer
@@ -3173,8 +3202,20 @@ void RenderOpenGL::DrawBillboards() {
     glEnableVertexAttribArray(2);
     glEnableVertexAttribArray(3);
     glEnableVertexAttribArray(4);
+    glEnableVertexAttribArray(5);
 
     glUseProgram(billbshader.ID);
+
+    // set sampler to palette
+    glUniform1i(glGetUniformLocation(billbshader.ID, "palbuf"), GLint(1));
+    glActiveTexture(GL_TEXTURE0 + 1);
+    glBindTexture(GL_TEXTURE_BUFFER, paltex);
+    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
+    glActiveTexture(GL_TEXTURE0);
+
+    GLboolean repaint = !engine->config->graphics.HWLSprites.Get();
+    glUniform1i(glGetUniformLocation(billbshader.ID, "repaint"), repaint);
+
 
     // set sampler to texure0
     glUniform1i(glGetUniformLocation(billbshader.ID, "texture0"), GLint(0));
@@ -3195,6 +3236,10 @@ void RenderOpenGL::DrawBillboards() {
         // set texture
         GLfloat thistex = billbstore[offset].texid;
         glBindTexture(GL_TEXTURE_2D, billbstore[offset].texid);
+        if (repaint) {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        }
 
         GLfloat thisblend = billbstore[offset].blend;
         if (thisblend == 0.0)
@@ -3224,11 +3269,12 @@ void RenderOpenGL::DrawBillboards() {
     glDisableVertexAttribArray(2);
     glDisableVertexAttribArray(3);
     glDisableVertexAttribArray(4);
+    glDisableVertexAttribArray(5);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glBindVertexArray(0);
-
+    
     billbstorecnt = 0;
 }
 
@@ -5453,6 +5499,9 @@ void RenderOpenGL::ReloadShaders() {
     glDeleteVertexArrays(1, &billbVAO);
     glDeleteBuffers(1, &billbVBO);
     billbVAO = billbVBO = 0;
+    glDeleteTextures(1, &paltex);
+    glDeleteBuffers(1, &palbuf);
+    paltex = palbuf = 0;
     billbstorecnt = 0;
 
     if (!decalshader.reload()) logger->Warning("Decal shader failed to reload!");
