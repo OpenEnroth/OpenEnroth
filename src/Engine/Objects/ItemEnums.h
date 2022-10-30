@@ -959,6 +959,7 @@ enum class ITEM_TYPE : int32_t {
     ITEM_FIRST_WAND = ITEM_WAND_OF_FIRE,
     ITEM_LAST_WAND = ITEM_MYSTIC_WAND_OF_INCINERATION,
 
+    // TODO(captainurist): ITEM_POTION_BOTTLE equip type is EQUIP_POTION, but we don't have an empty bottle in the range below. Not good.
     ITEM_FIRST_POTION = ITEM_POTION_CATALYST,
     ITEM_LAST_POTION = ITEM_POTION_REJUVENATION,
 
