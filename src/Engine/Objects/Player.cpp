@@ -3897,7 +3897,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
-            case ITEM_POTION_MAGIC_POTION:
+            case ITEM_POTION_MAGIC:
                 v26 = pParty->pPickedItem.uEnchantmentType + 10;
                 new_mana_val = playerAffected->sMana;
                 new_mana_val += v26;
@@ -8004,8 +8004,8 @@ int Player::SelectPhrasesTransaction(
             break;
         case BuildingType_AlchemistShop:
             if ((idemId >= ITEM_ARTIFACT_HERMES_SANDALS &&
-                 idemId < ITEM_MESSAGE_REJUVENATION_RECIPE) ||
-                idemId > ITEM_MESSAGE_BODY_RESISTANCE_RECIPE)
+                 idemId < ITEM_RECIPE_REJUVENATION) ||
+                idemId > ITEM_RECIPE_BODY_RESISTANCE)
                 return 5;
             if (!(equipType == EQUIP_REAGENT || equipType == EQUIP_POTION ||
                   equipType == EQUIP_MESSAGE_SCROLL))

@@ -1933,10 +1933,10 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         }
         GameUI_DrawItemInfo(item);
         return;
-    } else if (pParty->pPickedItem.uItemID >= ITEM_POTION_FLAMING_POTION &&
+    } else if (pParty->pPickedItem.uItemID >= ITEM_POTION_FLAMING &&
       // several potions(несколько зелий)
-      pParty->pPickedItem.uItemID <= ITEM_POTION_SWIFT_POTION ||
-             pParty->pPickedItem.uItemID == ITEM_POTION_SLAYING_POTION) {
+      pParty->pPickedItem.uItemID <= ITEM_POTION_SWIFT ||
+             pParty->pPickedItem.uItemID == ITEM_POTION_SLAYING) {
         if (item->uItemID < ITEM_POTION_BOTTLE ||
             item->uItemID > ITEM_POTION_REJUVENATION) {  // all potions
             if (item->uItemID >= ITEM_BLASTER &&
@@ -1950,7 +1950,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             }
 
             item->UpdateTempBonus(pParty->GetPlayingTime());
-            if (pParty->pPickedItem.uItemID == ITEM_POTION_SLAYING_POTION) {
+            if (pParty->pPickedItem.uItemID == ITEM_POTION_SLAYING) {
                 item->special_enchantment = ITEM_ENCHANTMENT_DRAGON_SLAYING;
                 v31 = (double)(1800 * pParty->pPickedItem.uEnchantmentType);
             } else {
@@ -1963,11 +1963,11 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                     {ITEM_POTION_ENDURANCE_BOOST, (ITEM_ENCHANTMENT)164},
                     {ITEM_POTION_SPEED_BOOST, (ITEM_ENCHANTMENT)93},
                     {ITEM_POTION_ACCURACY_BOOST, (ITEM_ENCHANTMENT)22},
-                    {ITEM_POTION_FLAMING_POTION, ITEM_ENCHANTMENT_OF_FLAME},
-                    {ITEM_POTION_FREEZING_POTION, ITEM_ENCHANTMENT_OF_FROST},
-                    {ITEM_POTION_NOXIOUS_POTION, ITEM_ENCHANTMENT_OF_POISON},
-                    {ITEM_POTION_SHOCKING_POTION, ITEM_ENCHANTMENT_OF_SPARKS},
-                    {ITEM_POTION_SWIFT_POTION, (ITEM_ENCHANTMENT)59}
+                    {ITEM_POTION_FLAMING, ITEM_ENCHANTMENT_OF_FLAME},
+                    {ITEM_POTION_FREEZING, ITEM_ENCHANTMENT_OF_FROST},
+                    {ITEM_POTION_NOXIOUS, ITEM_ENCHANTMENT_OF_POISON},
+                    {ITEM_POTION_SHOCKING, ITEM_ENCHANTMENT_OF_SPARKS},
+                    {ITEM_POTION_SWIFT, (ITEM_ENCHANTMENT)59}
                 };
                 item->special_enchantment = _4E2904_enchantment_by_potion_lut[pParty->pPickedItem.uItemID];
                 v31 = (double)(1800 * pParty->pPickedItem.uEnchantmentType);
@@ -2005,7 +2005,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             case ITEM_REAGENT_HARPY_FEATHER:
             case ITEM_REAGENT_MOONSTONE:
             case ITEM_REAGENT_ELVISH_TOADSTOOL:
-                item->uItemID = ITEM_POTION_MAGIC_POTION;
+                item->uItemID = ITEM_POTION_MAGIC;
                 break;
 
             case ITEM_REAGENT_POPPYSNAPS:
