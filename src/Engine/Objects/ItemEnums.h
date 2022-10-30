@@ -1034,7 +1034,7 @@ inline std::initializer_list<ITEM_TYPE> Level1Reagents() {
     return result;
 }
 
-// TODO(captainurist): this is actually ITEM_TYPE / ITEM_CLASS
+// TODO(captainurist): this is actually ITEM_TYPE / ITEM_CLASS, and current ITEM_TYPE is ITEM_ID
 /*  331 */
 enum class ITEM_EQUIP_TYPE : uint8_t {
     EQUIP_SINGLE_HANDED = 0,

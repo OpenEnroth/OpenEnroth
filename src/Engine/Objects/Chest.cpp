@@ -617,7 +617,7 @@ void GenerateItemsInChest() {
     for (int i = 1; i < 20; ++i) {
         for (int j = 0; j < 140; ++j) {
             ItemGen *currItem = &vChests[i].igChestItems[j];
-            if (currItem->uItemID < ITEM_NULL) { // TODO(captainurist): WTF????
+            if (currItem->uItemID < ITEM_NULL) { // TODO(captainurist): -1..-7 rarity, add to ITEM_TYPE?
                 int additionaItemCount = rand() % 5;  // additional items in chect
                 additionaItemCount++;  // + 1 because it's the item at pChests[i].igChestItems[j] and the additional ones
                 int treasureLevelBot = byte_4E8168[abs(std::to_underlying(currItem->uItemID)) - 1][2 * currMapInfo->Treasure_prob];
