@@ -999,8 +999,8 @@ inline bool IsArtifact(ITEM_TYPE type) {
     return type >= ITEM_FIRST_ARTIFACT && type <= ITEM_LAST_ARTIFACT;
 }
 
-inline Range<ITEM_TYPE> MessageScrolls() {
-    return make_range(ITEM_FIRST_MESSAGE_SCROLL, ITEM_LAST_MESSAGE_SCROLL);
+inline Range<ITEM_TYPE> RecipeScrolls() {
+    return make_range(ITEM_FIRST_RECIPE, ITEM_LAST_RECIPE);
 }
 
 /**
