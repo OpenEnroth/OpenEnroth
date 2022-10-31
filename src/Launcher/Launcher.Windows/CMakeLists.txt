@@ -15,4 +15,4 @@ set(LAUNCHER_RESOURCES ico128.ico
                        shield-flip.bmp
                        shield.bmp)
 
-add_library(Launcher STATIC ${LAUNCHER_SOURCES} ${LAUNCHER_HEADERS})
+add_executable(Launcher WIN32 ${LAUNCHER_SOURCES} ${LAUNCHER_HEADERS})

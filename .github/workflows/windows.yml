@@ -16,7 +16,7 @@ jobs:
         architecture: [x86, x64]
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         submodules: 'recursive'
 
@@ -27,13 +27,18 @@ jobs:
 
     - name: Configure
       run: |
-        cmake -B build -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }}
+        cmake -B build -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DENABLE_TESTS=On
 
     - name: Build
       working-directory: build
       shell: cmd
       run: |
         nmake
+
+    - name: Tests
+      working-directory: build
+      run: |
+        nmake test
 
     - name: Prepare artifact
       shell: cmd

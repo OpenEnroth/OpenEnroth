@@ -28,11 +28,6 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   set(BUILD_COMPILER "msvc")
 endif()
 
-message(STATUS "WoMM version: ${PROJECT_VERSION}")
 message(STATUS "Build compiler: ${BUILD_COMPILER}")
 message(STATUS "Build platform: ${BUILD_PLATFORM}")
 message(STATUS "Build type: ${BUILD_TYPE}")
-
-if(NOT BUILD_TYPE STREQUAL "x86" )
-  message(WARNING "Please note that currently only x86 builds are relatively stable" )
-endif()
