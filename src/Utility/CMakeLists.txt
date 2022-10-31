@@ -8,8 +8,6 @@ set(UTILITY_SOURCES Blob.cpp
                     Streams/StringOutputStream.cpp
                     Streams/FileOutputStream.cpp)
 
-set(UTILITY_TESTS   IndexedArray_ut.cpp)
-
 set(UTILITY_HEADERS Blob.h
                     Color.h
                     DataPath.h
@@ -28,3 +26,7 @@ set(UTILITY_HEADERS Blob.h
 
 add_library(utility STATIC ${UTILITY_SOURCES} ${UTILITY_HEADERS})
 target_check_style(utility)
+
+if(ENABLE_TESTS)
+    add_subdirectory(Tests)
+endif()
