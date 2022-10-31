@@ -15,4 +15,6 @@ if(ENABLE_TESTS)
     add_custom_target(test World_of_Might_and_Magic_test
                       DEPENDS World_of_Might_and_Magic_test
                       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+    target_check_style(World_of_Might_and_Magic_test)
 endif()
