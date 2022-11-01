@@ -1,9 +1,9 @@
-#include "thirdparty/googletest/googletest/include/gtest/gtest.h"
-
 #include <numeric>
 #include <vector>
 
-#include "src/Utility/Range.h"
+#include "test/test.h"
+
+#include "Utility/Range.h"
 
 TEST(Range, Iteration) {
     enum class Index { AA, BB, CC };
