@@ -1519,3 +1519,12 @@ void Deserialize(const ODMFace_MM7 &src, ODMFace *dst) {
     dst->field_132 = src.field_132;
     dst->field_133 = src.field_133;
 }
+
+void Deserialize(const SpawnPoint_MM7 &src, SpawnPoint *dst) {
+    dst->vPosition = src.vPosition;
+    dst->uRadius = src.uRadius;
+    dst->uKind = src.uKind;
+    dst->uIndex = src.uIndex;
+    dst->uAttributes = src.uAttributes;
+    dst->uGroup = src.uGroup;
+}

@@ -942,8 +942,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
-    static_assert(sizeof(SpawnPoint) == 24);
-    stream.ReadVector(&pSpawnPoints);
+    stream.ReadLegacyVector<SpawnPoint_MM7>(&pSpawnPoints);
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 

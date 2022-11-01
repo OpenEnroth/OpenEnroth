@@ -232,17 +232,6 @@ enum LEVEL_TYPE {
 };
 extern LEVEL_TYPE uCurrentlyLoadedLevelType;
 
-/*   86 */
-#pragma pack(push, 1)
-struct SpawnPointMM6 {
-    Vec3i vPosition;
-    uint16_t uRadius;
-    uint16_t uKind;
-    uint16_t uIndex;
-    uint16_t uAttributes;
-};
-#pragma pack(pop)
-
 /*   90 */
 #pragma pack(push, 1)
 struct BLVHeader {
