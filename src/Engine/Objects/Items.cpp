@@ -712,7 +712,9 @@ uint8_t ItemGen::GetDamageMod() {
 std::string GetItemTextureFilename(ITEM_TYPE item_id, int index, int shoulder) {
     ITEM_EQUIP_TYPE pEquipType = pItemTable->pItems[item_id].uEquipType;
 
-    // TODO(captainurist): what are we even doing here?
+    // For some reason artifact textures are stored using different ids, and textures under original ids simply
+    // don't exist. Why is it obfuscated like this, especially with this global array of flags, is a good question.
+    // TODO(captainurist): deobfuscate
     if(item_id > ITEM_ARTIFACT_PUCK) {
         switch (item_id) {
             case ITEM_RELIC_HARECKS_LEATHER:
