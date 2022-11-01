@@ -128,7 +128,31 @@ enum class ITEM_MATERIAL : uint8_t {
 };
 using enum ITEM_MATERIAL;
 
-/*  330 */
+enum class ITEM_TREASURE_LEVEL : int8_t {
+    ITEM_TREASURE_LEVEL_INVALID = 0,
+    ITEM_TREASURE_LEVEL_1 = 1,
+    ITEM_TREASURE_LEVEL_2 = 2,
+    ITEM_TREASURE_LEVEL_3 = 3,
+    ITEM_TREASURE_LEVEL_4 = 4,
+    ITEM_TREASURE_LEVEL_5 = 5,
+    ITEM_TREASURE_LEVEL_ARTIFACT = 6,
+    ITEM_TREASURE_LEVEL_GUARANTEED_ARTIFACT = 7, // This is only used in chests & for random items lying around
+                                                 // on the maps. For levels 1-6 chests can generate gold instead of
+                                                 // an item (or nothing), so this value provides a way to override
+                                                 // this behavior and always spawn an artifact.
+
+    ITEM_FIRST_VALID_TREASURE_LEVEL = ITEM_TREASURE_LEVEL_1,
+    ITEM_LAST_VALID_TREASURE_LEVEL = ITEM_TREASURE_LEVEL_GUARANTEED_ARTIFACT,
+
+    ITEM_FIRST_RANDOM_TREASURE_LEVEL = ITEM_TREASURE_LEVEL_1,
+    ITEM_LAST_RANDOM_TREASURE_LEVEL = ITEM_TREASURE_LEVEL_ARTIFACT,
+};
+using enum ITEM_TREASURE_LEVEL;
+
+inline bool IsRandomTreasureLevel(ITEM_TREASURE_LEVEL level) {
+    return level >= ITEM_FIRST_RANDOM_TREASURE_LEVEL && level <= ITEM_LAST_RANDOM_TREASURE_LEVEL;
+}
+
 /**
  * Enum of all item types in the game.
  *
@@ -938,6 +962,18 @@ enum class ITEM_TYPE : int32_t {
     ITEM_798 = 798, // Unused.
     ITEM_799 = 799, // Unused.
 
+    // These are used in chests and are replaced with normal random-generated items in GenerateItemsInChest().
+    ITEM_RANDOM_LEVEL_1 = -1,
+    ITEM_RANDOM_LEVEL_2 = -2,
+    ITEM_RANDOM_LEVEL_3 = -3,
+    ITEM_RANDOM_LEVEL_4 = -4,
+    ITEM_RANDOM_LEVEL_5 = -5,
+    ITEM_RANDOM_LEVEL_6 = -6,
+    ITEM_RANDOM_LEVEL_7 = -7,
+
+    ITEM_FIRST_RANDOM = ITEM_RANDOM_LEVEL_7,
+    ITEM_LAST_RANDOM = ITEM_RANDOM_LEVEL_1,
+
     ITEM_FIRST_VALID = ITEM_CRUDE_LONGSWORD,
     ITEM_LAST_VALID = ITEM_799,
 
@@ -998,6 +1034,15 @@ inline bool IsMessageScroll(ITEM_TYPE type) {
 
 inline bool IsSpawnableArtifact(ITEM_TYPE type) {
     return type >= ITEM_FIRST_SPAWNABLE_ARTIFACT && type <= ITEM_LAST_SPAWNABLE_ARTIFACT;
+}
+
+inline bool IsRandomItem(ITEM_TYPE type) {
+    return type >= ITEM_FIRST_RANDOM && type <= ITEM_LAST_RANDOM;
+}
+
+inline ITEM_TREASURE_LEVEL RandomItemTreasureLevel(ITEM_TYPE type) {
+    Assert(IsRandomItem(type));
+    return ITEM_TREASURE_LEVEL(-std::to_underlying(type));
 }
 
 inline Segment<ITEM_TYPE> RecipeScrolls() {

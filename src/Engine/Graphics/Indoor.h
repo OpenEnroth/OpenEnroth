@@ -640,7 +640,7 @@ void PrepareDrawLists_BLV();
 void PrepareToLoadBLV(bool bLoading);
 bool GetAlertStatus();
 int SpawnEncounterMonsters(struct MapInfo *a1, int a2);
-int DropTreasureAt(int trs_level, signed int trs_type, int x, int y, int z, uint16_t facing);
+int DropTreasureAt(ITEM_TREASURE_LEVEL trs_level, signed int trs_type, int x, int y, int z, uint16_t facing);
 
 void FindBillboardsLightLevels_BLV();
 

@@ -25,6 +25,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Utility/Random.h"
 
 using EngineIoc = Engine_::IocContainer;
 
@@ -617,14 +618,11 @@ void GenerateItemsInChest() {
     for (int i = 1; i < 20; ++i) {
         for (int j = 0; j < 140; ++j) {
             ItemGen *currItem = &vChests[i].igChestItems[j];
-            if (currItem->uItemID < ITEM_NULL) { // TODO(captainurist): -1..-7 rarity, add to ITEM_TYPE?
+            if (IsRandomItem(currItem->uItemID)) {
                 int additionaItemCount = rand() % 5;  // additional items in chect
                 additionaItemCount++;  // + 1 because it's the item at pChests[i].igChestItems[j] and the additional ones
-                int treasureLevelBot = byte_4E8168[abs(std::to_underlying(currItem->uItemID)) - 1][2 * currMapInfo->Treasure_prob];
-                int treasureLevelTop = byte_4E8168[abs(std::to_underlying(currItem->uItemID)) - 1][2 * currMapInfo->Treasure_prob + 1];
-                int treasureLevelRange = treasureLevelTop - treasureLevelBot + 1;
-                int resultTreasureLevel = treasureLevelBot + rand() % treasureLevelRange;  // treasure level
-                if (resultTreasureLevel < 7) {
+                ITEM_TREASURE_LEVEL resultTreasureLevel = Sample(RemapTreasureLevel(RandomItemTreasureLevel(currItem->uItemID), currMapInfo->Treasure_prob));
+                if (resultTreasureLevel != ITEM_TREASURE_LEVEL_GUARANTEED_ARTIFACT) {
                     for (int k = 0; k < additionaItemCount; k++) {
                         int whatToGenerateProb = rand() % 100;
                         if (whatToGenerateProb < 20) {
@@ -632,28 +630,29 @@ void GenerateItemsInChest() {
                         } else if (whatToGenerateProb < 60) {  // generate gold
                             int goldAmount = 0;
                             currItem->Reset();
+                            // TODO(captainurist): merge with the other implementation?
                             switch (resultTreasureLevel) {
-                            case 1:
+                            case ITEM_TREASURE_LEVEL_1:
                                 goldAmount = rand() % 51 + 50;
                                 currItem->uItemID = ITEM_GOLD_SMALL;
                                 break;
-                            case 2:
+                            case ITEM_TREASURE_LEVEL_2:
                                 goldAmount = rand() % 101 + 100;
                                 currItem->uItemID = ITEM_GOLD_SMALL;
                                 break;
-                            case 3:
+                            case ITEM_TREASURE_LEVEL_3:
                                 goldAmount = rand() % 301 + 200;
                                 currItem->uItemID = ITEM_GOLD_MEDIUM;
                                 break;
-                            case 4:
+                            case ITEM_TREASURE_LEVEL_4:
                                 goldAmount = rand() % 501 + 500;
                                 currItem->uItemID = ITEM_GOLD_MEDIUM;
                                 break;
-                            case 5:
+                            case ITEM_TREASURE_LEVEL_5:
                                 goldAmount = rand() % 1001 + 1000;
                                 currItem->uItemID = ITEM_GOLD_LARGE;
                                 break;
-                            case 6:
+                            case ITEM_TREASURE_LEVEL_ARTIFACT:
                                 goldAmount = rand() % 3001 + 2000;
                                 currItem->uItemID = ITEM_GOLD_LARGE;
                                 break;

@@ -15,17 +15,6 @@
 
 #include "GUI/GUIButton.h"
 
-
-std::array<std::array<char, 14>, 7> byte_4E8168 = {{  // byte_4E8178 -treasure levles
-    {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}},
-    {{1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}},
-    {{1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3}},
-    {{2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4}},
-    {{2, 2, 2, 2, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5}},
-    {{2, 2, 2, 2, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6}},
-    {{2, 2, 2, 2, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7}}
-}};
-
 ItemGen* ptr_50C9A4_ItemToEnchant;
 
 struct ItemTable* pItemTable;  // 005D29E0
@@ -845,4 +834,23 @@ bool ItemGen::MerchandiseTest(int _2da_idx) {
         }
     }
     return test;
+}
+
+Segment<ITEM_TREASURE_LEVEL> RemapTreasureLevel(ITEM_TREASURE_LEVEL itemTreasureLevel, MAP_TREASURE_LEVEL mapTreasureLevel) {
+    // mapping[item_level][map_level] -> [actual_level_min, actual_level_max];
+    static constexpr std::array<std::array<Segment<int>, 7>, 7> mapping = {{
+        {{{1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}}},
+        {{{1, 1}, {1, 2}, {2, 2}, {2, 2}, {2, 2}, {2, 2}, {2, 2}}},
+        {{{1, 2}, {2, 2}, {2, 3}, {3, 3}, {3, 3}, {3, 3}, {3, 3}}},
+        {{{2, 2}, {2, 2}, {3, 3}, {3, 4}, {4, 4}, {4, 4}, {4, 4}}},
+        {{{2, 2}, {2, 2}, {3, 4}, {4, 4}, {4, 5}, {5, 5}, {5, 5}}},
+        {{{2, 2}, {2, 2}, {4, 4}, {4, 5}, {5, 5}, {5, 6}, {6, 6}}},
+        {{{2, 2}, {2, 2}, {7, 7}, {7, 7}, {7, 7}, {7, 7}, {7, 7}}}
+    }};
+
+    // TODO(captainurist) : type-safe enum diff!
+    int itemIdx = std::to_underlying(itemTreasureLevel) - std::to_underlying(ITEM_FIRST_VALID_TREASURE_LEVEL);
+    int mapIdx = std::to_underlying(mapTreasureLevel) - std::to_underlying(MAP_FIRST_TREASURE_LEVEL);
+    Segment<int> result = mapping[itemIdx][mapIdx];
+    return {ITEM_TREASURE_LEVEL(result.First()), ITEM_TREASURE_LEVEL(result.Last())};
 }

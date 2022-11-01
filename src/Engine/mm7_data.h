@@ -10,6 +10,7 @@
 #include "Engine/Autonotes.h"
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/NPCEnums.h"
+#include "Engine/MapInfo.h"
 
 #include "GUI/GUIDialogues.h"
 
@@ -75,7 +76,6 @@ extern std::array<std::array<int, 6>, 6> pNPCPortraits_y;  // 004E5EE0
 extern std::array<const char *, 11> pHouse_ExitPictures;
 extern std::array<const char *, 11> _4E6BDC_loc_names;
 extern std::array<int16_t, 11> word_4E8152;
-extern std::array<std::array<char, 14>, 7> byte_4E8168;
 extern char _4E94D0_light_type;
 extern char _4E94D2_light_type;
 extern char _4E94D3_light_type;

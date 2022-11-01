@@ -2914,7 +2914,8 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
             enc_spawn_point.vPosition.x = pParty->vPosition.x + cos(angle_from_party) * dist_from_party;
             enc_spawn_point.vPosition.y = pParty->vPosition.y + sin(angle_from_party) * dist_from_party;
             enc_spawn_point.vPosition.z = pParty->vPosition.z;
-            enc_spawn_point.uIndex = enc_index;
+            enc_spawn_point.uKind = 3;
+            enc_spawn_point.uMonsterIndex = enc_index;
 
             // get proposed floor level
             enc_spawn_point.vPosition.z = ODM_GetFloorLevel(enc_spawn_point.vPosition, 0, &bInWater, &modelPID, 0);
@@ -2950,7 +2951,8 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
             enc_spawn_point.vPosition.x = pParty->vPosition.x + cos(angle_from_party) * dist_from_party;
             enc_spawn_point.vPosition.y = pParty->vPosition.y + sin(angle_from_party) * dist_from_party;
             enc_spawn_point.vPosition.z = pParty->vPosition.z;
-            enc_spawn_point.uIndex = enc_index;
+            enc_spawn_point.uKind = 3;
+            enc_spawn_point.uMonsterIndex = enc_index;
 
             // get proposed sector
             mon_sectorID = pIndoor->GetSector(enc_spawn_point.vPosition.x, enc_spawn_point.vPosition.y, pParty->vPosition.z);
@@ -2977,7 +2979,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
 }
 
 //----- (00450521) --------------------------------------------------------
-int DropTreasureAt(int trs_level, int trs_type, int x, int y, int z, uint16_t facing) {
+int DropTreasureAt(ITEM_TREASURE_LEVEL trs_level, int trs_type, int x, int y, int z, uint16_t facing) {
     SpriteObject a1;
     pItemTable->GenerateItem(trs_level, trs_type, &a1.containing_item);
     a1.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[a1.containing_item.uItemID].uSpriteID;

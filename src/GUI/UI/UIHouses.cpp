@@ -341,7 +341,7 @@ static std::array<const char *, 19> _4F03B8_shop_background_names = {
     "MAGSHELF", "MAGSHELF", "MAGSHELF", "MAGSHELF", "MAGSHELF", "MAGSHELF" } };
 
 struct ITEM_VARIATION {
-    uint16_t treasure_level;
+    ITEM_TREASURE_LEVEL treasure_level;
     uint16_t item_class[4];
 };
 
@@ -361,57 +361,169 @@ int ItemAmountForShop(BuildingType buildingType) {
     }
 }
 
-const ITEM_VARIATION shopWeap_variation_ord[15] = {
-    { 0, { 00, 00, 00, 00 } }, { 1, { 23, 27, 20, 20 } }, { 1, { 23, 24, 28, 20 } },
-    { 2, { 23, 24, 25, 20 } }, { 2, { 27, 27, 26, 26 } }, { 4, { 24, 30, 25, 27 } },
-    { 4, { 24, 30, 25, 27 } }, { 3, { 30, 24, 20, 20 } }, { 2, { 20, 20, 20, 20 } },
-    { 3, { 27, 27, 26, 26 } }, { 3, { 28, 28, 25, 25 } }, { 2, { 23, 23, 24, 24 } },
-    { 3, { 23, 23, 26, 26 } }, { 2, { 30, 26, 26, 26 } }, { 2, { 28, 25, 28, 29 } }
+const std::array<ITEM_VARIATION, 15> shopWeap_variation_ord = {{
+    { ITEM_TREASURE_LEVEL_INVALID, { 00, 00, 00, 00 } },
+    { ITEM_TREASURE_LEVEL_1, { 23, 27, 20, 20 } },
+    { ITEM_TREASURE_LEVEL_1, { 23, 24, 28, 20 } },
+    { ITEM_TREASURE_LEVEL_2, { 23, 24, 25, 20 } },
+    { ITEM_TREASURE_LEVEL_2, { 27, 27, 26, 26 } },
+    { ITEM_TREASURE_LEVEL_4, { 24, 30, 25, 27 } },
+    { ITEM_TREASURE_LEVEL_4, { 24, 30, 25, 27 } },
+    { ITEM_TREASURE_LEVEL_3, { 30, 24, 20, 20 } },
+    { ITEM_TREASURE_LEVEL_2, { 20, 20, 20, 20 } },
+    { ITEM_TREASURE_LEVEL_3, { 27, 27, 26, 26 } },
+    { ITEM_TREASURE_LEVEL_3, { 28, 28, 25, 25 } },
+    { ITEM_TREASURE_LEVEL_2, { 23, 23, 24, 24 } },
+    { ITEM_TREASURE_LEVEL_3, { 23, 23, 26, 26 } },
+    { ITEM_TREASURE_LEVEL_2, { 30, 26, 26, 26 } },
+    { ITEM_TREASURE_LEVEL_2, { 28, 25, 28, 29 } }
+}};
+
+const std::array<ITEM_VARIATION, 28> shopArmr_variation_ord = {{
+    { ITEM_TREASURE_LEVEL_1, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_1, { 31, 31, 31, 34 } },
+    { ITEM_TREASURE_LEVEL_1, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_1, { 31, 31, 32, 34 } },
+    { ITEM_TREASURE_LEVEL_2, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_2, { 31, 32, 32, 33 } },
+    { ITEM_TREASURE_LEVEL_2, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_2, { 31, 31, 32, 32 } },
+    { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_4, { 31, 32, 33, 34 } },
+    { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_4, { 31, 32, 33, 34 } },
+    { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_3, { 31, 31, 31, 31 } },
+    { ITEM_TREASURE_LEVEL_2, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_2, { 31, 32, 34, 34 } },
+    { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_3, { 31, 31, 32, 32 } },
+    { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_3, { 32, 32, 32, 33 } },
+    { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_3, { 31, 31, 31, 32 } },
+    { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_3, { 33, 31, 32, 34 } },
+    { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_3, { 33, 31, 32, 34 } },
+    { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_4, { 33, 31, 32, 34 } }
+}};
+
+const ITEM_TREASURE_LEVEL shopMagic_treasure_lvl[14] = {
+    ITEM_TREASURE_LEVEL_INVALID,
+    ITEM_TREASURE_LEVEL_1,
+    ITEM_TREASURE_LEVEL_1,
+    ITEM_TREASURE_LEVEL_2,
+    ITEM_TREASURE_LEVEL_2,
+    ITEM_TREASURE_LEVEL_4,
+    ITEM_TREASURE_LEVEL_4,
+    ITEM_TREASURE_LEVEL_3,
+    ITEM_TREASURE_LEVEL_2,
+    ITEM_TREASURE_LEVEL_2,
+    ITEM_TREASURE_LEVEL_2,
+    ITEM_TREASURE_LEVEL_2,
+    ITEM_TREASURE_LEVEL_2,
+    ITEM_TREASURE_LEVEL_2
 };
 
-const ITEM_VARIATION shopArmr_variation_ord[28] = {
-    { 1, { 35, 35, 38, 38 } }, { 1, { 31, 31, 31, 34 } }, { 1, { 35, 35, 38, 38 } },
-    { 1, { 31, 31, 32, 34 } }, { 2, { 35, 35, 38, 38 } }, { 2, { 31, 32, 32, 33 } },
-    { 2, { 35, 35, 38, 38 } }, { 2, { 31, 31, 32, 32 } }, { 4, { 35, 35, 38, 38 } },
-    { 4, { 31, 32, 33, 34 } }, { 4, { 35, 35, 38, 38 } }, { 4, { 31, 32, 33, 34 } },
-    { 3, { 35, 35, 38, 38 } }, { 3, { 31, 31, 31, 31 } }, { 2, { 35, 35, 38, 38 } },
-    { 2, { 31, 32, 34, 34 } }, { 3, { 35, 35, 38, 38 } }, { 3, { 31, 31, 32, 32 } },
-    { 3, { 35, 35, 38, 38 } }, { 3, { 32, 32, 32, 33 } }, { 3, { 35, 35, 38, 38 } },
-    { 3, { 31, 31, 31, 32 } }, { 3, { 35, 35, 38, 38 } }, { 3, { 33, 31, 32, 34 } },
-    { 3, { 35, 35, 38, 38 } }, { 3, { 33, 31, 32, 34 } }, { 4, { 35, 35, 38, 38 } },
-    { 4, { 33, 31, 32, 34 } }
+const ITEM_TREASURE_LEVEL shopAlch_treasure_lvl[13] = {
+    ITEM_TREASURE_LEVEL_INVALID,
+    ITEM_TREASURE_LEVEL_1,
+    ITEM_TREASURE_LEVEL_1,
+    ITEM_TREASURE_LEVEL_2,
+    ITEM_TREASURE_LEVEL_2,
+    ITEM_TREASURE_LEVEL_3,
+    ITEM_TREASURE_LEVEL_3,
+    ITEM_TREASURE_LEVEL_4,
+    ITEM_TREASURE_LEVEL_4,
+    ITEM_TREASURE_LEVEL_2,
+    ITEM_TREASURE_LEVEL_2,
+    ITEM_TREASURE_LEVEL_2,
+    ITEM_TREASURE_LEVEL_2
 };
 
-const uint16_t shopMagic_treasure_lvl[14] = { 0, 1, 1, 2, 2, 4, 4,
-3, 2, 2, 2, 2, 2, 2 };
-const uint16_t shopAlch_treasure_lvl[13] = { 0, 1, 1, 2, 2, 3, 3,
-4, 4, 2, 2, 2, 2 };
+const std::array<ITEM_VARIATION, 15> shopWeap_variation_spc = {{
+    { ITEM_TREASURE_LEVEL_INVALID, { 00, 00, 00, 00 } },
+    { ITEM_TREASURE_LEVEL_2, { 25, 30, 20, 20 } },
+    { ITEM_TREASURE_LEVEL_2, { 23, 24, 28, 20 } },
+    { ITEM_TREASURE_LEVEL_3, { 23, 24, 25, 20 } },
+    { ITEM_TREASURE_LEVEL_3, { 27, 27, 26, 26 } },
+    { ITEM_TREASURE_LEVEL_5, { 23, 26, 28, 27 } },
+    { ITEM_TREASURE_LEVEL_5, { 23, 26, 28, 27 } },
+    { ITEM_TREASURE_LEVEL_4, { 30, 24, 20, 20 } },
+    { ITEM_TREASURE_LEVEL_3, { 20, 20, 20, 20 } },
+    { ITEM_TREASURE_LEVEL_4, { 27, 27, 26, 26 } },
+    { ITEM_TREASURE_LEVEL_4, { 28, 28, 25, 25 } },
+    { ITEM_TREASURE_LEVEL_4, { 23, 23, 24, 24 } },
+    { ITEM_TREASURE_LEVEL_4, { 24, 24, 27, 20 } },
+    { ITEM_TREASURE_LEVEL_4, { 30, 26, 26, 26 } },
+    { ITEM_TREASURE_LEVEL_4, { 28, 25, 28, 29 } }
+}};
 
-const ITEM_VARIATION shopWeap_variation_spc[15] = {
-    { 0, { 00, 00, 00, 00 } }, { 2, { 25, 30, 20, 20 } }, { 2, { 23, 24, 28, 20 } },
-    { 3, { 23, 24, 25, 20 } }, { 3, { 27, 27, 26, 26 } }, { 5, { 23, 26, 28, 27 } },
-    { 5, { 23, 26, 28, 27 } }, { 4, { 30, 24, 20, 20 } }, { 3, { 20, 20, 20, 20 } },
-    { 4, { 27, 27, 26, 26 } }, { 4, { 28, 28, 25, 25 } }, { 4, { 23, 23, 24, 24 } },
-    { 4, { 24, 24, 27, 20 } }, { 4, { 30, 26, 26, 26 } }, { 4, { 28, 25, 28, 29 } }
+const ITEM_TREASURE_LEVEL shopMagicSpc_treasure_lvl[14] = {
+    ITEM_TREASURE_LEVEL_INVALID,
+    ITEM_TREASURE_LEVEL_2,
+    ITEM_TREASURE_LEVEL_2,
+    ITEM_TREASURE_LEVEL_3,
+    ITEM_TREASURE_LEVEL_3,
+    ITEM_TREASURE_LEVEL_5,
+    ITEM_TREASURE_LEVEL_5,
+    ITEM_TREASURE_LEVEL_4,
+    ITEM_TREASURE_LEVEL_3,
+    ITEM_TREASURE_LEVEL_3,
+    ITEM_TREASURE_LEVEL_3,
+    ITEM_TREASURE_LEVEL_3,
+    ITEM_TREASURE_LEVEL_3,
+    ITEM_TREASURE_LEVEL_3
 };
 
-const uint16_t shopMagicSpc_treasure_lvl[14] = { 0, 2, 2, 3, 3, 5, 5,
-4, 3, 3, 3, 3, 3, 3 };
-const uint16_t shopAlchSpc_treasure_lvl[13] = { 0, 2, 2, 3, 3, 4, 4,
-5, 5, 3, 2, 2, 2 };
-
-const ITEM_VARIATION shopArmr_variation_spc[28] = {
-    { 2, { 35, 35, 38, 38 } }, { 2, { 31, 31, 31, 34 } }, { 2, { 35, 35, 38, 38 } },
-    { 2, { 31, 31, 32, 34 } }, { 3, { 35, 35, 38, 38 } }, { 3, { 31, 32, 32, 33 } },
-    { 3, { 35, 35, 38, 38 } }, { 3, { 31, 31, 32, 32 } }, { 5, { 35, 35, 38, 38 } },
-    { 5, { 31, 32, 33, 34 } }, { 5, { 35, 35, 38, 38 } }, { 5, { 31, 32, 33, 34 } },
-    { 4, { 35, 35, 38, 38 } }, { 4, { 31, 31, 31, 31 } }, { 3, { 35, 35, 38, 38 } },
-    { 3, { 31, 32, 34, 34 } }, { 4, { 35, 35, 38, 38 } }, { 4, { 31, 31, 32, 33 } },
-    { 4, { 35, 35, 38, 38 } }, { 4, { 32, 32, 33, 34 } }, { 4, { 35, 35, 38, 38 } },
-    { 4, { 31, 31, 31, 32 } }, { 4, { 35, 35, 38, 38 } }, { 4, { 32, 32, 32, 32 } },
-    { 4, { 35, 35, 38, 38 } }, { 4, { 34, 34, 34, 34 } }, { 5, { 35, 35, 38, 38 } },
-    { 5, { 33, 33, 33, 33 } }
+const ITEM_TREASURE_LEVEL shopAlchSpc_treasure_lvl[13] = {
+    ITEM_TREASURE_LEVEL_INVALID,
+    ITEM_TREASURE_LEVEL_2,
+    ITEM_TREASURE_LEVEL_2,
+    ITEM_TREASURE_LEVEL_3,
+    ITEM_TREASURE_LEVEL_3,
+    ITEM_TREASURE_LEVEL_4,
+    ITEM_TREASURE_LEVEL_4,
+    ITEM_TREASURE_LEVEL_5,
+    ITEM_TREASURE_LEVEL_5,
+    ITEM_TREASURE_LEVEL_3,
+    ITEM_TREASURE_LEVEL_2,
+    ITEM_TREASURE_LEVEL_2,
+    ITEM_TREASURE_LEVEL_2
 };
+
+const std::array<ITEM_VARIATION, 28> shopArmr_variation_spc = {{
+    { ITEM_TREASURE_LEVEL_2, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_2, { 31, 31, 31, 34 } },
+    { ITEM_TREASURE_LEVEL_2, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_2, { 31, 31, 32, 34 } },
+    { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_3, { 31, 32, 32, 33 } },
+    { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_3, { 31, 31, 32, 32 } },
+    { ITEM_TREASURE_LEVEL_5, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_5, { 31, 32, 33, 34 } },
+    { ITEM_TREASURE_LEVEL_5, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_5, { 31, 32, 33, 34 } },
+    { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_4, { 31, 31, 31, 31 } },
+    { ITEM_TREASURE_LEVEL_3, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_3, { 31, 32, 34, 34 } },
+    { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_4, { 31, 31, 32, 33 } },
+    { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_4, { 32, 32, 33, 34 } },
+    { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_4, { 31, 31, 31, 32 } },
+    { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_4, { 32, 32, 32, 32 } },
+    { ITEM_TREASURE_LEVEL_4, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_4, { 34, 34, 34, 34 } },
+    { ITEM_TREASURE_LEVEL_5, { 35, 35, 38, 38 } },
+    { ITEM_TREASURE_LEVEL_5, { 33, 33, 33, 33 } }
+}};
 
 void FillAviableSkillsToTeach(BuildingType type);
 
@@ -3441,7 +3553,7 @@ void FillAviableSkillsToTeach(BuildingType type) {
 void GenerateSpecialShopItems() {
     signed int item_count;
     signed int shop_index;
-    int treasure_lvl = 0;
+    ITEM_TREASURE_LEVEL treasure_lvl = ITEM_TREASURE_LEVEL_INVALID;
     int item_class = 0;
     int mdf;
 
@@ -3489,7 +3601,7 @@ void GenerateSpecialShopItems() {
 void GenerateStandartShopItems() {
     signed int item_count;
     signed int shop_index;
-    int treasure_lvl = 0;
+    ITEM_TREASURE_LEVEL treasure_lvl = ITEM_TREASURE_LEVEL_INVALID;
     int item_class = 0;
     int mdf;
 

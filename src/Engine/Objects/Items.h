@@ -7,6 +7,9 @@
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/PlayerEnums.h"
 #include "Engine/Time.h"
+#include "Engine/MapInfo.h"
+
+#include "Utility/IndexedArray.h"
 
 struct Player;
 
@@ -122,7 +125,7 @@ struct ItemDesc {  // 30h
     char field_25 = 0;                // 25  29
     char field_26 = 0;                // 26   2A
     char field_27 = 0;                // 27   2b
-    std::array<uint8_t, 6> uChanceByTreasureLvl = {{}};
+    IndexedArray<uint8_t, ITEM_FIRST_RANDOM_TREASURE_LEVEL, ITEM_LAST_RANDOM_TREASURE_LEVEL> uChanceByTreasureLvl = {{}};
     unsigned char uItemID_Rep_St = 0;  // 2e 32
     char field_2f = 0;
 };
@@ -240,5 +243,7 @@ class EquipemntPair {
 };
 
 std::string GetItemTextureFilename(ITEM_TYPE item_id, int index, int shoulder);
+
+Segment<ITEM_TREASURE_LEVEL> RemapTreasureLevel(ITEM_TREASURE_LEVEL itemTreasureLevel, MAP_TREASURE_LEVEL mapTreasureLevel);
 
 extern ItemGen* ptr_50C9A4_ItemToEnchant;

@@ -990,7 +990,7 @@ LABEL_47:
                 case EVENT_GiveItem: {
                     item.Reset();
                     ITEM_TYPE v102 = ITEM_TYPE(EVT_DWORD(_evt->v7));
-                    pItemTable->GenerateItem(_evt->v5, _evt->v6, &item);
+                    pItemTable->GenerateItem(ITEM_TREASURE_LEVEL(_evt->v5), _evt->v6, &item);
                     if (v102 != ITEM_NULL) item.uItemID = v102;
                     pParty->SetHoldingItem(&item);
                     ++curr_seq_num;
@@ -1217,7 +1217,7 @@ void sub_448CF4_spawn_monsters(int16_t typeindex, int16_t level, int count,
     pSpawnPoint.uGroup = group;
     pSpawnPoint.uRadius = 32;
     pSpawnPoint.uKind = 3;
-    pSpawnPoint.uIndex = typeindex + 2 * level + level;
+    pSpawnPoint.uMonsterIndex = typeindex + 2 * level + level;
     map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id) {
         old_num_actors = pActors.size();
