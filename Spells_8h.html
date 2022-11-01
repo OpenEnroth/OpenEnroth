@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;4a2d75c</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;9e23e4f</span>
    </div>
   </td>
  </tr>
@@ -82,9 +82,11 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;array&gt;</code><br />
+<code>#include &quot;<a class="el" href="ItemEnums_8h.html">Engine/Objects/ItemEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SpriteObjectType_8h.html">Engine/Objects/SpriteObjectType.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="VectorTypes_8h.html">Engine/VectorTypes.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Time_8h.html">Engine/Time.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -281,8 +283,8 @@ Variables</h2></td></tr>
 <tr class="separator:abee11e345176388e44e56589a7699aa2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afeea304dba34104f1346823e70a6ce7d"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="classSpellData.html">SpellData</a>, 100 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Spells_8h.html#afeea304dba34104f1346823e70a6ce7d">pSpellDatas</a></td></tr>
 <tr class="separator:afeea304dba34104f1346823e70a6ce7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a400a5f2eda31bbefaad7acd9bd478063"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="Spells_8h.html#a4e71efcf980b83e3205a4079c10bd8d5">SPELL_TYPE</a>, 25 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Spells_8h.html#a400a5f2eda31bbefaad7acd9bd478063">wand_spell_ids</a></td></tr>
-<tr class="separator:a400a5f2eda31bbefaad7acd9bd478063"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4aa7b0973f21f5d44b1b3769954a1268"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="Spells_8h.html#a4e71efcf980b83e3205a4079c10bd8d5">SPELL_TYPE</a>, <a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5ae12ad2fa1c22d08f1b9d32f44008603e">ITEM_FIRST_WAND</a>, <a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5aaa08704e5f1ed6255a3a2f225f6358cd">ITEM_LAST_WAND</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Spells_8h.html#a4aa7b0973f21f5d44b1b3769954a1268">wand_spell_ids</a></td></tr>
+<tr class="separator:a4aa7b0973f21f5d44b1b3769954a1268"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="a95a3159696fbb6e2369334fddc57497d" name="a95a3159696fbb6e2369334fddc57497d"></a>
@@ -675,8 +677,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a400a5f2eda31bbefaad7acd9bd478063" name="a400a5f2eda31bbefaad7acd9bd478063"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a400a5f2eda31bbefaad7acd9bd478063">&#9670;&#160;</a></span>wand_spell_ids</h2>
+<a id="a4aa7b0973f21f5d44b1b3769954a1268" name="a4aa7b0973f21f5d44b1b3769954a1268"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4aa7b0973f21f5d44b1b3769954a1268">&#9670;&#160;</a></span>wand_spell_ids</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -685,7 +687,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;<a class="el" href="Spells_8h.html#a4e71efcf980b83e3205a4079c10bd8d5">SPELL_TYPE</a>, 25&gt; wand_spell_ids</td>
+          <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="Spells_8h.html#a4e71efcf980b83e3205a4079c10bd8d5">SPELL_TYPE</a>, <a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5ae12ad2fa1c22d08f1b9d32f44008603e">ITEM_FIRST_WAND</a>, <a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5aaa08704e5f1ed6255a3a2f225f6358cd">ITEM_LAST_WAND</a>&gt; wand_spell_ids</td>
         </tr>
       </table>
   </td>

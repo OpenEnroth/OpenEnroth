@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;4a2d75c</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;9e23e4f</span>
    </div>
   </td>
  </tr>
@@ -99,8 +99,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a526f72f9208d80e349ad2563c0b39a7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adfd586182289b06806f5b15a23d86e64"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#adfd586182289b06806f5b15a23d86e64">IndexedArray</a> (std::initializer_list&lt; std::pair&lt; <a class="el" href="classIndexedArray.html#af5c5b34472590d5a46b82139f41857e1">key_type</a>, value_type &gt; &gt; init)</td></tr>
 <tr class="separator:adfd586182289b06806f5b15a23d86e64"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac44c993b3fba8b0f1b3ab2034245aa68"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structdetail_1_1IndexedArrayKeysRange.html">detail::IndexedArrayKeysRange</a>&lt; <a class="el" href="classIndexedArray.html#ad483d4958eb140b4b3ecb5b15301b83d">ActualFirstIndex</a>, <a class="el" href="classIndexedArray.html#aa030946750e8681c365d3eaf0d311791">ActualLastIndex</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#ac44c993b3fba8b0f1b3ab2034245aa68">indices</a> () const</td></tr>
-<tr class="separator:ac44c993b3fba8b0f1b3ab2034245aa68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0e35607c91a5f93095e56d43f37dfeb"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="classRange.html">Range</a>&lt; <a class="el" href="classIndexedArray.html#af5c5b34472590d5a46b82139f41857e1">key_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#ae0e35607c91a5f93095e56d43f37dfeb">indices</a> () const</td></tr>
+<tr class="separator:ae0e35607c91a5f93095e56d43f37dfeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5ecc1b27321416943cb56add73ddf300"><td class="memItemLeft" align="right" valign="top">constexpr reference&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#a5ecc1b27321416943cb56add73ddf300">at</a> (<a class="el" href="classIndexedArray.html#af5c5b34472590d5a46b82139f41857e1">key_type</a> n)</td></tr>
 <tr class="separator:a5ecc1b27321416943cb56add73ddf300"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afef3fecd0fe041f7c62407f804585dbc"><td class="memItemLeft" align="right" valign="top">constexpr const_reference&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIndexedArray.html#afef3fecd0fe041f7c62407f804585dbc">at</a> (<a class="el" href="classIndexedArray.html#af5c5b34472590d5a46b82139f41857e1">key_type</a> n) const</td></tr>
@@ -169,10 +169,10 @@ class IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt;</d
 <div class="line">    value.clear();</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// ...or get a view of its indices and use it as you would use a traditional array.</span></div>
-<div class="line"><span class="keywordflow">for</span> (TriBool i : defaultMessageMap.<a class="code hl_function" href="classIndexedArray.html#ac44c993b3fba8b0f1b3ab2034245aa68">indices</a>())</div>
+<div class="line"><span class="keywordflow">for</span> (TriBool i : defaultMessageMap.<a class="code hl_function" href="classIndexedArray.html#ae0e35607c91a5f93095e56d43f37dfeb">indices</a>())</div>
 <div class="line">    userMessageMap[i] = defaultMessageMap[i];</div>
-<div class="ttc" id="aclassIndexedArray_html"><div class="ttname"><a href="classIndexedArray.html">IndexedArray</a></div><div class="ttdef"><b>Definition:</b> IndexedArray.h:135</div></div>
-<div class="ttc" id="aclassIndexedArray_html_ac44c993b3fba8b0f1b3ab2034245aa68"><div class="ttname"><a href="classIndexedArray.html#ac44c993b3fba8b0f1b3ab2034245aa68">IndexedArray::indices</a></div><div class="ttdeci">constexpr detail::IndexedArrayKeysRange&lt; ActualFirstIndex, ActualLastIndex &gt; indices() const</div><div class="ttdef"><b>Definition:</b> IndexedArray.h:218</div></div>
+<div class="ttc" id="aclassIndexedArray_html"><div class="ttname"><a href="classIndexedArray.html">IndexedArray</a></div><div class="ttdef"><b>Definition:</b> IndexedArray.h:84</div></div>
+<div class="ttc" id="aclassIndexedArray_html_ae0e35607c91a5f93095e56d43f37dfeb"><div class="ttname"><a href="classIndexedArray.html#ae0e35607c91a5f93095e56d43f37dfeb">IndexedArray::indices</a></div><div class="ttdeci">constexpr Range&lt; key_type &gt; indices() const</div><div class="ttdef"><b>Definition:</b> IndexedArray.h:167</div></div>
 </div><!-- fragment --><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>Array element type. </td></tr>
@@ -382,8 +382,8 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLas
 
 </div>
 </div>
-<a id="ac44c993b3fba8b0f1b3ab2034245aa68" name="ac44c993b3fba8b0f1b3ab2034245aa68"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac44c993b3fba8b0f1b3ab2034245aa68">&#9670;&#160;</a></span>indices()</h2>
+<a id="ae0e35607c91a5f93095e56d43f37dfeb" name="ae0e35607c91a5f93095e56d43f37dfeb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae0e35607c91a5f93095e56d43f37dfeb">&#9670;&#160;</a></span>indices()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -394,7 +394,7 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLas
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr <a class="el" href="structdetail_1_1IndexedArrayKeysRange.html">detail::IndexedArrayKeysRange</a>&lt; <a class="el" href="classIndexedArray.html#ad483d4958eb140b4b3ecb5b15301b83d">ActualFirstIndex</a>, <a class="el" href="classIndexedArray.html#aa030946750e8681c365d3eaf0d311791">ActualLastIndex</a> &gt; <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt;::indices </td>
+          <td class="memname">constexpr <a class="el" href="classRange.html">Range</a>&lt; <a class="el" href="classIndexedArray.html#af5c5b34472590d5a46b82139f41857e1">key_type</a> &gt; <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt;::indices </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -521,7 +521,7 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLas
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">=</div>
 <div class="line">        IsZeroBased ? <span class="keyword">static_cast&lt;</span><a class="code hl_typedef" href="classIndexedArray.html#a43b19570c7cc05e0cffd8d34bf725cdc">index_type</a><span class="keyword">&gt;</span>(0) : SizeOrFirstIndex</div>
-<div class="ttc" id="aclassIndexedArray_html_a43b19570c7cc05e0cffd8d34bf725cdc"><div class="ttname"><a href="classIndexedArray.html#a43b19570c7cc05e0cffd8d34bf725cdc">IndexedArray::index_type</a></div><div class="ttdeci">decltype(SizeOrFirstIndex) index_type</div><div class="ttdef"><b>Definition:</b> IndexedArray.h:137</div></div>
+<div class="ttc" id="aclassIndexedArray_html_a43b19570c7cc05e0cffd8d34bf725cdc"><div class="ttname"><a href="classIndexedArray.html#a43b19570c7cc05e0cffd8d34bf725cdc">IndexedArray::index_type</a></div><div class="ttdeci">decltype(SizeOrFirstIndex) index_type</div><div class="ttdef"><b>Definition:</b> IndexedArray.h:86</div></div>
 </div><!-- fragment -->
 </div>
 </div>

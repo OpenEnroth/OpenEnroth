@@ -53,7 +53,7 @@ var searchData=
   ['arrival_5fx_50',['arrival_x',['../structstru365__travel__info.html#a76ef434c73cccace75b6e4108d16014c',1,'stru365_travel_info']]],
   ['arrival_5fy_51',['arrival_y',['../structstru365__travel__info.html#abd6a1cfb1270b51fa1e2c62aa08bd4c2',1,'stru365_travel_info']]],
   ['arrival_5fz_52',['arrival_z',['../structstru365__travel__info.html#abc6ef3400af90c569d16bf7641537f07',1,'stru365_travel_info']]],
-  ['artifactbonusmap_53',['artifactBonusMap',['../Items_8cpp.html#a14ead2af17b3826c8d750aa990531051',1,'Items.cpp']]],
+  ['artifactbonusmap_53',['artifactBonusMap',['../Items_8cpp.html#ae67fb39a89f1f86e0c951be6967fe2c9',1,'Items.cpp']]],
   ['artifactlimit_54',['ArtifactLimit',['../classApplication_1_1GameConfig_1_1Gameplay.html#a2f4bfca32c2a7f4a71dbe64453c2534f',1,'Application::GameConfig::Gameplay']]],
   ['aspect_55',['aspect',['../structCamera3D.html#a9d8856fa9b89a9eb60054b3acee58ba6',1,'Camera3D']]],
   ['asset_56',['asset',['../structimg.html#ab1ad4dafee116e09bbf4a842c7041306',1,'img']]],

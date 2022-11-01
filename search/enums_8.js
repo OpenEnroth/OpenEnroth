@@ -6,5 +6,6 @@ var searchData=
   ['item_5fequip_5ftype_3',['ITEM_EQUIP_TYPE',['../ItemEnums_8h.html#a6efba91e38f0848b5e0d1d4cc6011a2d',1,'ItemEnums.h']]],
   ['item_5fflag_4',['ITEM_FLAG',['../ItemEnums_8h.html#af0cd6a52bd80bbba3041a5598559975c',1,'ItemEnums.h']]],
   ['item_5fmaterial_5',['ITEM_MATERIAL',['../ItemEnums_8h.html#a8b9558898410d58fa0a62c07ede6dc96',1,'ItemEnums.h']]],
-  ['item_5ftype_6',['ITEM_TYPE',['../ItemEnums_8h.html#a025279585f93967b0c7184f5b8597490',1,'ItemEnums.h']]]
+  ['item_5fslot_6',['ITEM_SLOT',['../ItemEnums_8h.html#a0d39a5522e687048169a274163e6e2a6',1,'ItemEnums.h']]],
+  ['item_5ftype_7',['ITEM_TYPE',['../ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5',1,'ItemEnums.h']]]
 ];
