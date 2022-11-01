@@ -544,7 +544,7 @@ class Localization {
     const char* class_desciptions[36]{};
     const char* attribute_names[7]{};
     const char* attribute_descriptions[7]{};
-    IndexedArray<const char *, PLAYER_SKILL_COUNT> skill_names = {{}};
+    IndexedArray<const char *, PLAYER_SKILL_FIRST, PLAYER_SKILL_COUNT> skill_names = {{}}; // Note: includes count
     IndexedArray<const char *, PLAYER_SKILL_COUNT> skill_descriptions = {{}};
     IndexedArray<const char *, PLAYER_SKILL_COUNT> skill_descriptions_normal = {{}};
     IndexedArray<const char *, PLAYER_SKILL_COUNT> skill_descriptions_expert = {{}};

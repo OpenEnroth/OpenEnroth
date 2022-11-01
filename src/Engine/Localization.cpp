@@ -287,6 +287,7 @@ void Localization::InitializeSkillNames() {
     this->skill_names[PLAYER_SKILL_STEALING]    = this->localization_strings[90];
     this->skill_names[PLAYER_SKILL_ALCHEMY]     = this->localization_strings[95];  // Alchemy
     this->skill_names[PLAYER_SKILL_LEARNING]    = this->localization_strings[301];
+    this->skill_names[PLAYER_SKILL_COUNT]       = this->localization_strings[153]; // "None", used during character creation.
 
     skill_desc_raw = pEvents_LOD->LoadCompressedTexture("skilldes.txt").string_view();
     strtok(skill_desc_raw.data(), "\r");
