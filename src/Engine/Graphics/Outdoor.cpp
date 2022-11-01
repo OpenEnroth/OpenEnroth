@@ -942,7 +942,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
-    static_assert(sizeof(SpawnPointMM7) == 24);
+    static_assert(sizeof(SpawnPoint) == 24);
     stream.ReadVector(&pSpawnPoints);
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
@@ -3284,7 +3284,7 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
 
     if (outdoor_was_respawned && map_id) {
         for (uint i = 0; i < pOutdoor->pSpawnPoints.size(); ++i) {
-            SpawnPointMM7 *spawn = &pOutdoor->pSpawnPoints[i];
+            SpawnPoint *spawn = &pOutdoor->pSpawnPoints[i];
 
             if (spawn->IsMonsterSpawn())
                 SpawnEncounter(map_info, spawn, 0, 0, 0);

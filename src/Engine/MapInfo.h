@@ -2,6 +2,8 @@
 
 #include <string>
 
+struct SpawnPoint;
+
 enum MAP_TYPE : uint32_t {
     MAP_INVALID = 0,
     MAP_EMERALD_ISLE = 1,
@@ -33,7 +35,7 @@ enum MapStartPoint : uint32_t {
 };
 
 struct MapInfo {
-    int SpawnRandomTreasure(struct SpawnPointMM7 *a2);
+    int SpawnRandomTreasure(SpawnPoint *a2);
 
     std::string pName;
     std::string pFilename;

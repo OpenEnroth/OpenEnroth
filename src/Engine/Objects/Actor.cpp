@@ -4857,7 +4857,7 @@ void Spawn_Light_Elemental(int spell_power, int caster_skill_level, int duration
 }
 
 //----- (0044F57C) --------------------------------------------------------
-void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int a5) {
+void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5) {
     // a3 for abc modify
     // a4 count
 

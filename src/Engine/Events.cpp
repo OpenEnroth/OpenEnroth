@@ -1209,7 +1209,7 @@ void sub_448CF4_spawn_monsters(int16_t typeindex, int16_t level, int count,
     unsigned int map_id;        // eax@1
     size_t old_num_actors;      // ebx@2
     AIDirection v15;            // [sp+28h] [bp-34h]@2
-    SpawnPointMM7 pSpawnPoint;  // [sp+44h] [bp-18h]@1
+    SpawnPoint pSpawnPoint;  // [sp+44h] [bp-18h]@1
 
     pSpawnPoint.vPosition.x = x;
     pSpawnPoint.vPosition.y = y;

@@ -14,6 +14,7 @@
 
 using EngineIoc = Engine_::IocContainer;
 class Actor;
+struct SpawnPoint;
 
 /*  357 */
 #pragma pack(push, 1)
@@ -240,7 +241,7 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID);
 bool SpawnActor(unsigned int uMonsterID);
 void Spawn_Light_Elemental(int spell_power, int caster_skill_level,
                                      int duration_game_seconds);
-void SpawnEncounter(struct MapInfo *pMapInfo, struct SpawnPointMM7 *spawn,
+void SpawnEncounter(struct MapInfo *pMapInfo, SpawnPoint *spawn,
                     int a3, int a4, int a5);
 void area_of_effect__damage_evaluate();
 double sub_43AE12(signed int a1);

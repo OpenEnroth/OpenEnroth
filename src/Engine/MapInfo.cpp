@@ -237,7 +237,7 @@ MAP_TYPE MapStats::GetMapInfo(const std::string &Str2) {
     return (MAP_TYPE)-1;  // @TODO: This should be MAP_INVALID!, as it's if'ed later.
 }
 
-int MapInfo::SpawnRandomTreasure(SpawnPointMM7 *a2) {
+int MapInfo::SpawnRandomTreasure(SpawnPoint *a2) {
     SpriteObject a1a;
     a1a.containing_item.Reset();
 

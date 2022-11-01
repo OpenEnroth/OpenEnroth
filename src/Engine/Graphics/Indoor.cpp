@@ -2893,7 +2893,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
     bool failed_point = false;
     float angle_from_party;
     int dist_from_party;
-    SpawnPointMM7 enc_spawn_point;
+    SpawnPoint enc_spawn_point;
     uint loop_cnt = 0;
 
     //// why check this ??

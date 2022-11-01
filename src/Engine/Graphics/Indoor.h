@@ -244,22 +244,13 @@ struct SpawnPointMM6 {
 
 /*  102 */
 #pragma pack(push, 1)
-struct SpawnPointMM7 {
-    //----- (00448DD6) --------------------------------------------------------
-    SpawnPointMM7() {
-        uRadius = 32;
-        uAttributes = 0;
-        uIndex = 0;
-        uKind = 0;
-        uGroup = 0;
-    }
-
+struct SpawnPoint {
     Vec3i vPosition;
-    uint16_t uRadius;
-    uint16_t uKind;
-    uint16_t uIndex;
-    uint16_t uAttributes;
-    unsigned int uGroup;
+    uint16_t uRadius = 32;
+    uint16_t uKind = 0;
+    uint16_t uIndex = 0;
+    uint16_t uAttributes = 0;
+    unsigned int uGroup = 0;
 
     inline bool IsMonsterSpawn() const { return uKind == 3; }
     inline bool IsTreasureSpawn() const { return uKind != 3; }
@@ -602,7 +593,7 @@ struct IndoorLocation {
     std::vector<uint16_t> ptr_0002B0_sector_rdata;
     std::vector<uint16_t> ptr_0002B4_doors_ddata;
     std::vector<uint16_t> ptr_0002B8_sector_lrdata;
-    std::vector<SpawnPointMM7> pSpawnPoints;
+    std::vector<SpawnPoint> pSpawnPoints;
     DDM_DLV_Header dlv;
     LocationTime_stru1 stru1;
     std::array<char, 875> _visible_outlines;

@@ -128,7 +128,7 @@ struct OutdoorLocation {
     int16_t field_F2;
     int field_F4;
     char field_F8[968];
-    std::vector<SpawnPointMM7> pSpawnPoints;
+    std::vector<SpawnPoint> pSpawnPoints;
     struct DDM_DLV_Header ddm;
     LocationTime_stru1 loc_time;
     unsigned char
