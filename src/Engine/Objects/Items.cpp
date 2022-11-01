@@ -710,6 +710,8 @@ uint8_t ItemGen::GetDamageMod() {
 
 //----- (0043C91D) --------------------------------------------------------
 std::string GetItemTextureFilename(ITEM_TYPE item_id, int index, int shoulder) {
+    ITEM_EQUIP_TYPE pEquipType = pItemTable->pItems[item_id].uEquipType;
+
     // TODO(captainurist): what are we even doing here?
     if(item_id > ITEM_ARTIFACT_PUCK) {
         switch (item_id) {
@@ -786,7 +788,6 @@ std::string GetItemTextureFilename(ITEM_TYPE item_id, int index, int shoulder) {
         }
     }
 
-    ITEM_EQUIP_TYPE pEquipType = pItemTable->pItems[item_id].uEquipType;
     switch (pEquipType) {
         case EQUIP_ARMOUR:
             if (!shoulder)
