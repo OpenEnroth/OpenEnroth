@@ -6,6 +6,7 @@
 
 #include "Engine/mm7_data.h"
 #include "Engine/IocContainer.h"
+#include "Engine/SpawnPoint.h"
 
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Graphics/IRender.h"
@@ -239,21 +240,6 @@ struct SpawnPointMM6 {
     uint16_t uKind;
     uint16_t uIndex;
     uint16_t uAttributes;
-};
-#pragma pack(pop)
-
-/*  102 */
-#pragma pack(push, 1)
-struct SpawnPoint {
-    Vec3i vPosition;
-    uint16_t uRadius = 32;
-    uint16_t uKind = 0;
-    uint16_t uIndex = 0;
-    uint16_t uAttributes = 0;
-    unsigned int uGroup = 0;
-
-    inline bool IsMonsterSpawn() const { return uKind == 3; }
-    inline bool IsTreasureSpawn() const { return uKind != 3; }
 };
 #pragma pack(pop)
 

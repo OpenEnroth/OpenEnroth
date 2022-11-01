@@ -9,6 +9,7 @@
 
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/SpawnPoint.h"
 
 #define DAY_ATTRIB_FOG 1
 
