@@ -709,9 +709,7 @@ uint8_t ItemGen::GetDamageMod() {
 }
 
 //----- (0043C91D) --------------------------------------------------------
-void GetItemTextureFilename(char* pOut, ITEM_TYPE item_id, int index, int shoulder) {
-    ITEM_EQUIP_TYPE pEquipType;
-
+std::string GetItemTextureFilename(ITEM_TYPE item_id, int index, int shoulder) {
     // TODO(captainurist): what are we even doing here?
     if(item_id > ITEM_ARTIFACT_PUCK) {
         switch (item_id) {
@@ -784,29 +782,26 @@ void GetItemTextureFilename(char* pOut, ITEM_TYPE item_id, int index, int should
                     item_id = ITEM_SCROLL_HEROISM;
                 break;
             default:
-                return;
+                return std::string();
         }
     }
 
-    pEquipType = pItemTable->pItems[item_id].uEquipType;
+    ITEM_EQUIP_TYPE pEquipType = pItemTable->pItems[item_id].uEquipType;
     switch (pEquipType) {
         case EQUIP_ARMOUR:
             if (!shoulder)
-                sprintf(pOut, "item%3.3dv%d", item_id, index);
+                return StringPrintf("item%3.3dv%d", item_id, index);
             else if (shoulder == 1)
-                sprintf(pOut, "item%3.3dv%da1", item_id, index);
+                return StringPrintf("item%3.3dv%da1", item_id, index);
             else if (shoulder == 2)
-                sprintf(pOut, "item%3.3dv%da2", item_id, index);
-            break;
+                return StringPrintf("item%3.3dv%da2", item_id, index);
         case EQUIP_CLOAK:
             if (!shoulder)
-                sprintf(pOut, "item%3.3dv%d", item_id, index);
+                return StringPrintf("item%3.3dv%d", item_id, index);
             else
-                sprintf(pOut, "item%3.3dv%da1", item_id, index);
-            break;
+                return StringPrintf("item%3.3dv%da1", item_id, index);
         default:
-            sprintf(pOut, "item%3.3dv%d", item_id, index);
-            break;
+            return StringPrintf("item%3.3dv%d", item_id, index);
     }
 }
 

@@ -1430,7 +1430,6 @@ void CharacterUI_LoadPaperdollTextures() {
     signed int v33;        // [sp+10h] [bp-28h]@77
     int pItemTXTNum;       // [sp+14h] [bp-24h]@75
     signed int v38;        // [sp+14h] [bp-24h]@79
-    char pContainer[128];  // [sp+24h] [bp-14h]@12
 
     if (!ui_character_inventory_magnification_glass)
         ui_character_inventory_magnification_glass =
@@ -1453,24 +1452,18 @@ void CharacterUI_LoadPaperdollTextures() {
                 v3 = (pPlayers[i + 1]->GetSexByVoice() != 0) + 3;
             else
                 v3 = (pPlayers[i + 1]->GetSexByVoice() != 0) + 1;
-            sprintf(pContainer, "pc23v%dBod", v3);
             paperdoll_dbods[i] =
-                assets->GetImage_Alpha(pContainer);  // Body texture
-            sprintf(pContainer, "pc23v%dlad", v3);
+                assets->GetImage_Alpha(StringPrintf("pc23v%dBod", v3));  // Body texture
             paperdoll_dlads[i] =
-                assets->GetImage_Alpha(pContainer);  // Left Hand
-            sprintf(pContainer, "pc23v%dlau", v3);
+                assets->GetImage_Alpha(StringPrintf("pc23v%dlad", v3));  // Left Hand
             paperdoll_dlaus[i] =
-                assets->GetImage_Alpha(pContainer);  // Left Hand2
-            sprintf(pContainer, "pc23v%drh", v3);
+                assets->GetImage_Alpha(StringPrintf("pc23v%dlau", v3));  // Left Hand2
             paperdoll_drhs[i] =
-                assets->GetImage_Alpha(pContainer);  // Right Hand
-            sprintf(pContainer, "pc23v%dlh", v3);
+                assets->GetImage_Alpha(StringPrintf("pc23v%drh", v3));  // Right Hand
             paperdoll_dlhs[i] =
-                assets->GetImage_Alpha(pContainer);  // Left Palm
-            sprintf(pContainer, "pc23v%dlhu", v3);
+                assets->GetImage_Alpha(StringPrintf("pc23v%dlh", v3));  // Left Palm
             paperdoll_dlhus[i] =
-                assets->GetImage_Alpha(pContainer);  // Left Fist
+                assets->GetImage_Alpha(StringPrintf("pc23v%dlhu", v3));  // Left Fist
             pPlayer = pPlayers[i + 1];
 
             if (pPlayer->uCurrentFace == 12 || pPlayer->uCurrentFace == 13)
@@ -1571,16 +1564,17 @@ void CharacterUI_LoadPaperdollTextures() {
             byte_5111F6_OwnedArtifacts[16] = 1;
     }
 
-    for (uint i = 0; i < 2; ++i) {
-        for (uint j : {0, 1, 2, 3, 4, 6}) {  // Belt
-            GetItemTextureFilename(pContainer, ExistingValue(paperdoll_belt_typeByIndex, j), i + 1, 0);
-            paperdoll_belt_texture[i][j] = assets->GetImage_Alpha(pContainer);
-        }
+    auto loadTexture = [&](auto map, int itemIndex, int bodyIndex, int shoulderIndex) {
+        std::string name = GetItemTextureFilename(ExistingValue(map, itemIndex), bodyIndex + 1, shoulderIndex);
+        return assets->GetImage_Alpha(name);
+    };
 
-        for (uint j = 0; j < 16; ++j) {  // Helm
-            GetItemTextureFilename(pContainer, ExistingValue(paperdoll_helm_typeByIndex, j), i + 1, 0);
-            paperdoll_helm_texture[i][j] = assets->GetImage_Alpha(pContainer);
-        }
+    for (uint i = 0; i < 2; ++i) {
+        for (uint j : {0, 1, 2, 3, 4, 6}) // Belt
+            paperdoll_belt_texture[i][j] = loadTexture(paperdoll_belt_typeByIndex, j, i, 0);
+
+        for (uint j = 0; j < 16; ++j)  // Helm
+            paperdoll_helm_texture[i][j] = loadTexture(paperdoll_helm_typeByIndex, j, i, 0);
 
         if (IsDwarfPresentInParty(true))  // the phynaxian helm uses a slightly
                                           // different graphic for dwarves
@@ -1589,28 +1583,20 @@ void CharacterUI_LoadPaperdollTextures() {
     // v43 = 0;
     for (uint i = 0; i < 4; ++i) {
         if (ShouldLoadTexturesForRaceAndGender(i)) {
-            GetItemTextureFilename(pContainer, ExistingValue(paperdoll_belt_typeByIndex, 5) , i + 1, 0);
-            paperdoll_belt_texture[i][5] = assets->GetImage_Alpha(pContainer);  // Titans belt
+            paperdoll_belt_texture[i][5] = loadTexture(paperdoll_belt_typeByIndex, 5, i, 0);  // Titans belt
 
             for (v32 = 0; v32 < 17; ++v32) {  // simple armor
-                GetItemTextureFilename(pContainer, ExistingValue(paperdoll_armor_typeByIndex, v32), i + 1, 0);
-                paperdoll_armor_texture[i][v32][0] = assets->GetImage_Alpha(pContainer);  // armor
-                GetItemTextureFilename(pContainer, ExistingValue(paperdoll_armor_typeByIndex, v32), i + 1, 1);
-                paperdoll_armor_texture[i][v32][1] = assets->GetImage_Alpha(pContainer);  // shoulder 1
-                GetItemTextureFilename(pContainer, ExistingValue(paperdoll_armor_typeByIndex, v32), i + 1, 2);
-                paperdoll_armor_texture[i][v32][2] = assets->GetImage_Alpha(pContainer);  // shoulder 2
+                paperdoll_armor_texture[i][v32][0] = loadTexture(paperdoll_armor_typeByIndex, v32, i, 0);  // armor
+                paperdoll_armor_texture[i][v32][1] = loadTexture(paperdoll_armor_typeByIndex, v32, i, 1);  // shoulder 1
+                paperdoll_armor_texture[i][v32][2] = loadTexture(paperdoll_armor_typeByIndex, v32, i, 2);  // shoulder 2
             }
 
-            for (v33 = 0; v33 < 6; ++v33) {  // boots
-                GetItemTextureFilename(pContainer, ExistingValue(paperdoll_boots_typeByIndex, v33), i + 1, 0);
-                paperdoll_boots_texture[i][v33] = assets->GetImage_Alpha(pContainer);
-            }
+            for (v33 = 0; v33 < 6; ++v33)  // boots
+                paperdoll_boots_texture[i][v33] = loadTexture(paperdoll_boots_typeByIndex, v33, i, 0);
 
             for (v38 = 0; v38 < 10; ++v38) {  // Cloak
-                GetItemTextureFilename(pContainer, ExistingValue(paperdoll_cloak_typeByIndex, v38), i + 1, 0);
-                paperdoll_cloak_texture[i][v38] = assets->GetImage_Alpha(pContainer);
-                GetItemTextureFilename(pContainer, ExistingValue(paperdoll_cloak_typeByIndex, v38), i + 1, 1);
-                paperdoll_cloak_collar_texture[i][v38] = assets->GetImage_Alpha(pContainer);
+                paperdoll_cloak_texture[i][v38] = loadTexture(paperdoll_cloak_typeByIndex, v38, i, 0);
+                paperdoll_cloak_collar_texture[i][v38] = loadTexture(paperdoll_cloak_typeByIndex, v38, i, 1);
             }
         }
         // else

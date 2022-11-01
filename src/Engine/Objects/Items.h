@@ -239,6 +239,6 @@ class EquipemntPair {
     EquipemntPair() {}
 };
 
-void GetItemTextureFilename(char *pOut, ITEM_TYPE item_id, int index, int shoulder);
+std::string GetItemTextureFilename(ITEM_TYPE item_id, int index, int shoulder);
 
 extern ItemGen* ptr_50C9A4_ItemToEnchant;
