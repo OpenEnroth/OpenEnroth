@@ -83,26 +83,26 @@ class Segment {
     using difference_type = typename iterator::difference_type;
     using reference = typename iterator::reference;
 
-    Segment() {}
-    Segment(T first, T last) : first_(first), last_(last) {}
+    constexpr Segment() {}
+    constexpr Segment(T first, T last) : first_(first), last_(last) {}
 
-    iterator begin() const {
+    constexpr iterator begin() const {
         return iterator(first_);
     }
 
-    iterator end() const {
+    constexpr iterator end() const {
         return iterator(last_) + 1;
     }
 
-    T First() const {
+    constexpr T First() const {
         return first_;
     }
 
-    T Last() const {
+    constexpr T Last() const {
         return last_;
     }
 
-    bool contains(T value) const {
+    constexpr bool contains(T value) const {
         return first_ <= value && value <= last_;
     }
 
