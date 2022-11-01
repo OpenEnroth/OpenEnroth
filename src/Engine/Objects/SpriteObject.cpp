@@ -1085,7 +1085,8 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
 
         case SPRITE_ARROW_PROJECTILE:
         case SPRITE_PROJECTILE_550: {
-            // TODO(captainurist): what is ITEM_SPELLBOOK_FIREBALL doing here? Is it an MM6 artifact?
+            // Note that ITEM_SPELLBOOK_FIREBALL is an MM6 remnant here,
+            // in MM6 it was Percival artifact (id 405) which has swiftness and carnage enchantments
             if (pSpriteObjects[uLayingItemID].containing_item.uItemID != ITEM_SPELLBOOK_FIREBALL &&
                 pSpriteObjects[uLayingItemID].containing_item.special_enchantment != ITEM_ENCHANTMENT_OF_CARNAGE) {
                 pSpriteObjects[uLayingItemID].vVelocity.z = 0;
