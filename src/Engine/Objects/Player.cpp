@@ -3598,10 +3598,10 @@ PLAYER_SKILL_TYPE Player::GetSkillIdxByOrder(signed int order) {
         requiredValue = 1;  // 1 - available
         offset = 4;
     } else {
-        return (PLAYER_SKILL_TYPE)37;
+        return PLAYER_SKILL_COUNT;
     }
     counter = 0;
-    for (int i = 0; i < 37; i++) {
+    for (int i = 0; i < PLAYER_SKILL_COUNT; i++) {
         if ((this->pActiveSkills[i] || canBeInactive) &&
             pSkillAvailabilityPerClass[classType / 4][i] == requiredValue) {
             if (counter == order - offset) return (PLAYER_SKILL_TYPE)i;
@@ -3609,7 +3609,7 @@ PLAYER_SKILL_TYPE Player::GetSkillIdxByOrder(signed int order) {
         }
     }
 
-    return (PLAYER_SKILL_TYPE)37;
+    return PLAYER_SKILL_COUNT;
 }
 
 //----- (0049048D) --------------------------------------------------------

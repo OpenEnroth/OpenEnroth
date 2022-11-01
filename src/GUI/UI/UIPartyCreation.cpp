@@ -525,7 +525,7 @@ void GUIWindow_PartyCreation::Update() {
         auto str10 = StringPrintf("\t%03u%s", pTextCenter,
             localization->GetSkillName(pSkillsType));
         pColorText = colorTable.Green.C16();
-        if ((signed int)pSkillsType >= 37) pColorText = colorTable.Aqua.C16();
+        if ((signed int)pSkillsType >= PLAYER_SKILL_COUNT) pColorText = colorTable.Aqua.C16();
         pGUIWindow_CurrentMenu->DrawText(
             pFontCreate, uX - 24, 2 * pIntervalY + 311, pColorText, str10);
 
@@ -535,7 +535,7 @@ void GUIWindow_PartyCreation::Update() {
         auto str11 = StringPrintf("\t%03u%s", pTextCenter,
             localization->GetSkillName(pSkillsType));
         pColorText = colorTable.Green.C16();
-        if ((signed int)pSkillsType >= 37) pColorText = colorTable.Aqua.C16();
+        if ((signed int)pSkillsType >= PLAYER_SKILL_COUNT) pColorText = colorTable.Aqua.C16();
         pGUIWindow_CurrentMenu->DrawText(
             pFontCreate, uX - 24, 3 * pIntervalY + 311, pColorText, str11);
 
