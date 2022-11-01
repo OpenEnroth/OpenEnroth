@@ -1,9 +1,12 @@
 #pragma once
 #include <array>
 
+#include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/SpriteObjectType.h"
 #include "Engine/VectorTypes.h"
 #include "Engine/Time.h"
+
+#include "Utility/IndexedArray.h"
 
 /*  360 */
 enum SPELL_TYPE {
@@ -255,7 +258,7 @@ extern std::array<std::array<struct SpellBookIconPos, 12>, 9> pIconPos;
 extern std::array<stru324_spell_id_to_sprite_mapping, 103>
     spell_sprite_mapping;  // 4E3ACC
 extern std::array<SpellData, 100> pSpellDatas;
-extern std::array<SPELL_TYPE, 25> wand_spell_ids;
+extern IndexedArray<SPELL_TYPE, ITEM_FIRST_WAND, ITEM_LAST_WAND> wand_spell_ids;
 
 int _43AFE3_calc_spell_damage(int spellId, int spellLevel,
                               signed int skillMastery, int currentHp);

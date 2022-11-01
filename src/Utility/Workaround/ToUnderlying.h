@@ -1,10 +1,10 @@
 #pragma once
 
 #include <version>
+#include <utility>
 
 // TODO: drop this once we switch to Visual Studio 2022 in gitlab ci
 #ifndef __cpp_lib_to_underlying
-#include <utility>
 
 namespace std {
     template <class T>

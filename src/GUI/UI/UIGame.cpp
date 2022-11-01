@@ -583,7 +583,7 @@ void GUIWindow_GameOptions::Update() {
 
 void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
     Player *player = &pParty->pPlayers[uPlayerID - 1];
-    if (pParty->pPickedItem.uItemID) {
+    if (pParty->pPickedItem.uItemID != ITEM_NULL) {
         if (int slot = player->AddItem(-1, pParty->pPickedItem.uItemID)) {
             memcpy(&player->pInventoryItemList[slot - 1], &pParty->pPickedItem,
                    0x24u);
@@ -1039,7 +1039,7 @@ void GameUI_WritePointedObjectStatusString() {
                     return;
                 }
                 if (pickedObject.depth >= 0x200u ||
-                    pParty->pPickedItem.uItemID) {
+                    pParty->pPickedItem.uItemID != ITEM_NULL) {
                     GameUI_StatusBar_Set(pSpriteObjects[pickedObjectID]
                                              .containing_item.GetDisplayName());
                 } else {
@@ -1157,7 +1157,8 @@ void GameUI_WritePointedObjectStatusString() {
                                               // *)&pPlayers[uActiveCharacter]->pInventoryItemList[testing
                                               // - 1];
 
-                    if (pItemGen != NULL) pickedObjectID = pItemGen->uItemID;
+                    // TODO(captainurist): get rid of this std::to_underlying cast.
+                    if (pItemGen != NULL) pickedObjectID = std::to_underlying(pItemGen->uItemID);
                     // if (!pItemID)
                     // return;
                     // item =

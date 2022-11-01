@@ -105,8 +105,10 @@ union PlayerEquipment {
             // unsigned int field_38;
             // unsigned int field_3C;
         };
-        std::array<unsigned int, 16> pIndices;
+        IndexedArray<unsigned int, ITEM_SLOT_FIRST_VALID, ITEM_SLOT_LAST_VALID> pIndices;
     };
+
+    PlayerEquipment() : pIndices() {}
 };
 #pragma pack(pop)
 
@@ -190,12 +192,12 @@ struct Player {
     bool CanTrainToNextLevel();
     unsigned int GetExperienceDisplayColor();
     int CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int amount);
-    ITEM_EQUIP_TYPE GetEquippedItemEquipType(ITEM_EQUIP_TYPE uEquipSlot);
-    PLAYER_SKILL_TYPE GetEquippedItemSkillType(ITEM_EQUIP_TYPE uEquipSlot);
+    ITEM_EQUIP_TYPE GetEquippedItemEquipType(ITEM_SLOT uEquipSlot);
+    PLAYER_SKILL_TYPE GetEquippedItemSkillType(ITEM_SLOT uEquipSlot);
     bool IsUnarmed();
-    bool HasItemEquipped(ITEM_EQUIP_TYPE uEquipIndex) const;
+    bool HasItemEquipped(ITEM_SLOT uEquipIndex) const;
     bool HasEnchantedItemEquipped(int uEnchantment);
-    bool WearsItem(int item_id, ITEM_EQUIP_TYPE equip_type) const;
+    bool WearsItem(ITEM_TYPE item_id, ITEM_SLOT equip_type) const;
     int StealFromShop(ItemGen* itemToSteal, int extraStealDifficulty,
                       int reputation, int extraStealFine, int* fineIfFailed);
     int StealFromActor(unsigned int uActorID, int _steal_perm, int reputation);
@@ -249,19 +251,19 @@ struct Player {
     int GetPerception();
     int GetDisarmTrap();
     char GetLearningPercent();
-    bool CanFitItem(unsigned int uSlot, unsigned int uItemID);
+    bool CanFitItem(unsigned int uSlot, ITEM_TYPE uItemID);
     int FindFreeInventoryListSlot();
-    int CreateItemInInventory(unsigned int uSlot, unsigned int uItemID);
+    int CreateItemInInventory(unsigned int uSlot, ITEM_TYPE uItemID);
     int HasSkill(unsigned int uSkillType);
-    void WearItem(unsigned int uItemID);
-    int AddItem(int uSlot, unsigned int uItemID);
+    void WearItem(ITEM_TYPE uItemID);
+    int AddItem(int uSlot, ITEM_TYPE uItemID);
     int AddItem2(int uSlot, ItemGen* Src);
     int CreateItemInInventory2(unsigned int index, ItemGen* Src);
-    void PutItemArInventoryIndex(int uItemID, int itemListPos, int uSlot);
+    void PutItemArInventoryIndex(ITEM_TYPE uItemID, int itemListPos, int uSlot);
     void RemoveItemAtInventoryIndex(unsigned int uSlot);
     bool CanAct();
     bool CanSteal();
-    bool CanEquip_RaceAndAlignmentCheck(unsigned int uItemID);
+    bool CanEquip_RaceAndAlignmentCheck(ITEM_TYPE uItemID);
     void SetCondition(Condition uConditionIdx, int blockable);
     bool IsClass(PLAYER_CLASS_TYPE class_type, bool check_honorary = true);
     void PlaySound(PlayerSpeech speech, int a3);
@@ -289,7 +291,7 @@ struct Player {
     void PlayAwardSound();
     void EquipBody(ITEM_EQUIP_TYPE uEquipType);
     bool HasUnderwaterSuitEquipped();
-    bool HasItem(unsigned int uItemID, bool checkHeldItem);
+    bool HasItem(ITEM_TYPE uItemID, bool checkHeldItem);
     void OnInventoryLeftClick();
 
     bool PlayerHitOrMiss(Actor* pActor, int distancemod, int skillmod);
@@ -300,7 +302,7 @@ struct Player {
     int CalculateMeleeDmgToEnemyWithWeapon(ItemGen* weapon,
                                            unsigned int uTargetActorID,
                                            bool addOneDice);
-    bool WearsItemAnywhere(int item_id) const;
+    bool WearsItemAnywhere(ITEM_TYPE item_id) const;
     float GetArmorRecoveryMultiplierFromSkillLevel(
         unsigned char armour_skill_type, float param2, float param3,
         float param4, float param5);
@@ -369,8 +371,8 @@ struct Player {
     ItemGen* GetBootItem();
     ItemGen* GetAmuletItem();
     ItemGen* GetNthRingItem(int ringNum);
-    const ItemGen* GetNthEquippedIndexItem(int index) const;
-    ItemGen *GetNthEquippedIndexItem(int index);
+    const ItemGen* GetNthEquippedIndexItem(ITEM_SLOT index) const;
+    ItemGen *GetNthEquippedIndexItem(ITEM_SLOT index);
     ItemGen* GetItem(unsigned int PlayerEquipment::*itemPos);
     int GetPlayerIndex();
 

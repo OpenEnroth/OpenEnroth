@@ -151,7 +151,7 @@ class Actor {
     static void AggroSurroundingPeasants(unsigned int uActorID, int a2);
     static bool ArePeasantsOfSameFaction(Actor *a1, Actor *a2);
     static void StealFrom(unsigned int uActorID);
-    static void GiveItem(signed int uActorID, unsigned int uItemID,
+    static void GiveItem(signed int uActorID, ITEM_TYPE uItemID,
                          unsigned int bGive);
     static void ToggleFlag(signed int uActorID, ActorAttribute uFlag, bool bToggle);
     static void ApplyFineForKillingPeasant(unsigned int uActorID);
@@ -207,8 +207,8 @@ class Actor {
     uint16_t uTetherDistance = 256;
     AIState uAIState = Standing;
     ActorAnimation uCurrentActionAnimation = ANIM_Standing;
-    uint16_t uCarriedItemID = 0;  // carried items are special items the
-                                  // ncp carries (ie lute from bard)
+    ITEM_TYPE uCarriedItemID = ITEM_NULL; // carried items are special items the
+                                          // ncp carries (ie lute from bard)
     char field_B6 = 0;
     char field_B7 = 0;
     unsigned int uCurrentActionTime = 0;
@@ -233,7 +233,7 @@ extern std::vector<Actor> pActors;
 bool CheckActors_proximity();
 int IsActorAlive(unsigned int uType, unsigned int uParam,
                  unsigned int uNumAlive);  // idb
-void sub_448518_npc_set_item(int npc, unsigned int item, int a3);
+void sub_448518_npc_set_item(int npc, ITEM_TYPE item, int a3);
 void ToggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag,
                           bool bValue);
 bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID);

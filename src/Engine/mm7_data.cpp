@@ -457,13 +457,34 @@ std::array<int, 32> guild_membership_flags = {
     {54, 54, 54, 54, 52, 52, 52, 52, 55, 55, 55, 55, 53, 53, 53, 53,
      58, 58, 58, 58, 57, 57, 57, 57, 56, 56, 56, 56, 59, 59, 60, 60}};
 std::array<int16_t, 49> word_4F0754;
-std::array<int16_t, 54> _4F0882_evt_VAR_PlayerItemInHands_vals = {{
-    0x0D4, 0x270, 0x0D5, 0x21C, 0x0D6, 0x2BE, 0x0D7, 0x2BD, 0x0D8,
-    0x289, 0x0D9, 0x258, 0x0DA, 0x2AB, 0x0DB, 0x281, 0x0DC, 0x280,
-    0x0DD, 0x284, 0x0DE, 0x285, 0x0DF, 0x283, 0x0E0, 0x282, 0x0E1,
-    0x27F, 0x0E2, 0x1E7, 0x0E3, 0x287, 0x0E4, 0x272, 0x0E5, 0x267,
-    0x0E6, 0x275, 0x0E7, 0x25A, 0x0E8, 0x2A4, 0x0E9, 0x2A5, 0x0EA,
-    0x2A3, 0x0EB, 0x25C, 0x0EC, 0x25D, 0x0ED, 0x259, 0x0F1, 0x21E
+std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_PlayerItemInHands_vals = {{
+    {0x0D4, ITEM_QUEST_VASE},
+    {0x0D5, ITEM_RARE_LADY_CARMINES_DAGGER},
+    {0x0D6, ITEM_MESSAGE_SCROLL_OF_WAVES},
+    {0x0D7, ITEM_MESSAGE_CIPHER},
+    {0x0D8, ITEM_QUEST_WORN_BELT},
+    {0x0D9, ITEM_QUEST_HEART_OF_THE_WOOD},
+    {0x0DA, ITEM_MESSAGE_MAP_TO_EVENMORN_ISLAND},
+    {0x0DB, ITEM_QUEST_GOLEM_HEAD},
+    {0x0DC, ITEM_QUEST_ABBEY_NORMAL_GOLEM_HEAD},
+    {0x0DD, ITEM_QUEST_GOLEM_RIGHT_ARM},
+    {0x0DE, ITEM_QUEST_GOLEM_LEFT_ARM},
+    {0x0DF, ITEM_QUEST_GOLEM_RIGHT_LEG},
+    {0x0E0, ITEM_QUEST_GOLEM_LEFT_LEG},
+    {0x0E1, ITEM_QUEST_GOLEM_CHEST},
+    {0x0E2, ITEM_SPELLBOOK_DIVINE_INTERVENTION},
+    {0x0E3, ITEM_QUEST_DRAGON_EGG},
+    {0x0E4, ITEM_QUEST_ZOKARR_IVS_SKULL},
+    {0x0E5, ITEM_QUEST_LICH_JAR_EMPTY},
+    {0x0E6, ITEM_QUEST_ELIXIR},
+    {0x0E7, ITEM_QUEST_CASE_OF_SOUL_JARS},
+    {0x0E8, ITEM_QUEST_ALTAR_PIECE_1},
+    {0x0E9, ITEM_QUEST_ALTAR_PIECE_2},
+    {0x0EA, ITEM_QUEST_CONTROL_CUBE},
+    {0x0EB, ITEM_QUEST_WETSUIT},
+    {0x0EC, ITEM_QUEST_OSCILLATION_OVERTHRUSTER},
+    {0x0ED, ITEM_QUEST_LICH_JAR_FULL},
+    {0x0F1, ITEM_RARE_THE_PERFECT_BOW}
 }};
 std::array<unsigned short, 6> pMaxLevelPerTrainingHallType = {{5, 15, 25, 25, 200, 200}};
 
@@ -695,7 +716,7 @@ Vec3i blv_prev_party_pos;
 std::array<NPCTopic, 789> pNPCTopics;
 std::array<const char *, 513> pQuestTable;
 char *dword_723718_autonote_related;  // idb
-std::array<const char *, 82> pScrolls;
+IndexedArray<const char *, ITEM_FIRST_MESSAGE_SCROLL, ITEM_LAST_MESSAGE_SCROLL> pScrolls;
 int dword_7241C8;
 std::string pAwardsTXT_Raw;
 std::string pScrollsTXT_Raw;

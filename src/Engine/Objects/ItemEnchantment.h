@@ -2,15 +2,18 @@
 
 #include "Engine/Objects/Items.h"
 
+#include "Utility/IndexedArray.h"
+
 struct Player;
 
-typedef struct CEnchantment {
+struct CEnchantment {
+    CEnchantment() {}
     CEnchantment(int bonus, uint16_t Player::* skillPtr = nullptr)
         : statPtr(skillPtr), statBonus(bonus) {}
 
-    uint16_t Player::* statPtr;
-    int statBonus;
-} CEnchantment;
+    uint16_t Player::* statPtr = nullptr;
+    int statBonus = 0;
+};
 
 /*  177 */
 #pragma pack(push, 1)
@@ -30,7 +33,7 @@ struct ItemEnchantment {  // Bonus|Sta|Of
                             unsigned char to_ring;
                             unsigned char to_amul;
                             }; */
-    unsigned char to_item[12];
+    IndexedArray<unsigned char, EQUIP_FIRST_NORMAL_ENCHANTABLE, EQUIP_LAST_NORMAL_ENCHANTABLE> to_item;
     // };
 };
 #pragma pack(pop)
@@ -44,7 +47,7 @@ struct ItemSpecialEnchantment {  // 1Ch
 
     char* pBonusStatement;   // 0
     char* pNameAdd;          // 4
-    char to_item_apply[12];  // 8
+    IndexedArray<char, EQUIP_FIRST_SPECIAL_ENCHANTABLE, EQUIP_LAST_SPECIAL_ENCHANTABLE> to_item_apply;  // 8
     int iValue;              // 14
     int iTreasureLevel;      // 18
 };

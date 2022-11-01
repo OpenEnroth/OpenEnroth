@@ -752,7 +752,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     pGameLoadingUI_ProgressBar->Progress();
 
     for (uint i = 0; i < pSpriteObjects.size(); ++i) {
-        if (pSpriteObjects[i].containing_item.uItemID && !(pSpriteObjects[i].uAttributes & SPRITE_MISSILE)) {
+        if (pSpriteObjects[i].containing_item.uItemID != ITEM_NULL && !(pSpriteObjects[i].uAttributes & SPRITE_MISSILE)) {
             pSpriteObjects[i].uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[pSpriteObjects[i].containing_item.uItemID].uSpriteID;
             pSpriteObjects[i].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[i].uType);
         }
@@ -1538,8 +1538,8 @@ void PrepareToLoadBLV(bool bLoading) {
 
     for (uint i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].uObjectDescID) {
-            if (pSpriteObjects[i].containing_item.uItemID) {
-                if (pSpriteObjects[i].containing_item.uItemID != 220 &&
+            if (pSpriteObjects[i].containing_item.uItemID != ITEM_NULL) {
+                if (pSpriteObjects[i].containing_item.uItemID != ITEM_POTION_BOTTLE &&
                     pItemTable->pItems[pSpriteObjects[i].containing_item.uItemID].uEquipType == EQUIP_POTION &&
                     !pSpriteObjects[i].containing_item.uEnchantmentType)
                     pSpriteObjects[i].containing_item.uEnchantmentType = rand() % 15 + 5;
@@ -2389,7 +2389,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         } else {
             for (uint i = 0; i < 4; ++i) {  // receive falling damage
                 if (pParty->pPlayers[i].HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) ||
-                    pParty->pPlayers[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, EQUIP_BOOTS))
+                    pParty->pPlayers[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS))
                     continue;
 
                 pParty->pPlayers[i].ReceiveDamage(
@@ -2560,7 +2560,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             if (pParty->uFallSpeed < -500) {
                 for (uint pl = 1; pl <= 4; pl++) {
                     if (!pPlayers[pl]->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
-                        !pPlayers[pl]->WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, EQUIP_BOOTS))  // was 8
+                        !pPlayers[pl]->WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS))  // was 8
                         pPlayers[pl]->PlayEmotion(CHARACTER_EXPRESSION_SCARED, 0);
                 }
             }

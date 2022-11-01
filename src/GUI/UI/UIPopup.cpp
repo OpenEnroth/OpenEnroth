@@ -206,7 +206,8 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     int g_mask = 0x7E0;
     int b_mask = 0x1F;
 
-    if (!inspect_item->uItemID) return;
+    if (inspect_item->uItemID == ITEM_NULL)
+        return;
 
     auto inspect_item_image = assets->GetImage_ColorKey(inspect_item->GetIconName(), render->teal_mask_16);
 
@@ -1415,7 +1416,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
             return;
         }
     }
-    if (pParty->pPickedItem.uItemID) {  // нажатие на портрет перса правой кнопкой
+    if (pParty->pPickedItem.uItemID != ITEM_NULL) {  // нажатие на портрет перса правой кнопкой
                                         // мыши с раствором
         for (uint i = 0; i < 4; ++i) {
             if ((signed int)pX > RightClickPortraitXmin[i] &&
@@ -1749,7 +1750,7 @@ int no_rightlick_in_inventory = false;  // 0050CDCC
 void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
     int potion1_id;             // edx@25
     unsigned int potion2_id;    // edi@25
-    signed int potionID;        // edx@27
+    ITEM_TYPE potionID;        // edx@27
     // unsigned int pOut_y;        // edx@57
     double v31;                 // st7@112
     Vec3i v39;              // [sp-18h] [bp-A8h]@83
@@ -1780,7 +1781,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
     static int amulety = 91;
 
     int slot = 32;
-    int pos = -1;
+    ITEM_SLOT pos = ITEM_SLOT_INVALID;
 
     mouse->GetClickPos(&pX, &pY);
     inventoryYCoord = (pY - 17) / 32;
@@ -1813,14 +1814,14 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 mousey >= amulety && mousey <= (amulety + 2 * slot)) {
                 // amulet
                 // pitem = pPlayers[uActiveCharacter]->GetAmuletItem(); //9
-                pos = 9;
+                pos = ITEM_SLOT_AMULET;
             }
 
             if (mousex >= glovex && mousex <= (glovex + slot) &&
                 mousey >= glovey && mousey <= (glovey + 2 * slot)) {
                 // glove
                 // pitem = pPlayers[uActiveCharacter]->GetGloveItem(); //7
-                pos = 7;
+                pos = ITEM_SLOT_GAUTNLETS;
             }
 
             for (int i = 0; i < 6; ++i) {
@@ -1829,11 +1830,11 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                     // ring
                     // pitem = pPlayers[uActiveCharacter]->GetNthRingItem(i);
                     // //10+i
-                    pos = 10 + i;
+                    pos = RingSlot(i);
                 }
             }
 
-            if (pos != -1)
+            if (pos != ITEM_SLOT_INVALID)
                 item = pPlayers[uActiveCharacter]->GetNthEquippedIndexItem(pos);
 
             if (!item) return;
@@ -1932,36 +1933,43 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         }
         GameUI_DrawItemInfo(item);
         return;
-    } else if (pParty->pPickedItem.uItemID >= ITEM_POTION_FLAMING_POTION &&
+    } else if (pParty->pPickedItem.uItemID >= ITEM_POTION_FLAMING &&
       // several potions(несколько зелий)
-      pParty->pPickedItem.uItemID <= ITEM_POTION_SWIFT_POTION ||
-             pParty->pPickedItem.uItemID == ITEM_POTION_SLAYING_POTION) {
+      pParty->pPickedItem.uItemID <= ITEM_POTION_SWIFT ||
+             pParty->pPickedItem.uItemID == ITEM_POTION_SLAYING) {
         if (item->uItemID < ITEM_POTION_BOTTLE ||
             item->uItemID > ITEM_POTION_REJUVENATION) {  // all potions
             if (item->uItemID >= ITEM_BLASTER &&
-                    item->uItemID <= ITEM_LASER_RIFLE ||
+                item->uItemID <= ITEM_BLASTER_RIFLE ||
                 item->uItemID >= ITEM_ARTIFACT_PUCK || item->IsBroken() ||
                 item->special_enchantment || item->uEnchantmentType ||
-                !isWeapon(item->GetItemEquipType())) {
+                !IsWeapon(item->GetItemEquipType())) {
                 mouse->RemoveHoldingItem();
                 no_rightlick_in_inventory = true;
                 return;
             }
 
             item->UpdateTempBonus(pParty->GetPlayingTime());
-            if (pParty->pPickedItem.uItemID == ITEM_POTION_SLAYING_POTION) {
+            if (pParty->pPickedItem.uItemID == ITEM_POTION_SLAYING) {
                 item->special_enchantment = ITEM_ENCHANTMENT_DRAGON_SLAYING;
                 v31 = (double)(1800 * pParty->pPickedItem.uEnchantmentType);
             } else {
-                static ITEM_ENCHANTMENT _4E2904_enchantment_by_potion_lut[] = {
-                    (ITEM_ENCHANTMENT)164,      (ITEM_ENCHANTMENT)93,
-                    (ITEM_ENCHANTMENT)22,       (ITEM_ENCHANTMENT)164,
-                    (ITEM_ENCHANTMENT)93,       (ITEM_ENCHANTMENT)22,
-                    ITEM_ENCHANTMENT_OF_FLAME,  ITEM_ENCHANTMENT_OF_FROST,
-                    ITEM_ENCHANTMENT_OF_POISON, ITEM_ENCHANTMENT_OF_SPARKS,
-                    (ITEM_ENCHANTMENT)59};
-                item->special_enchantment = _4E2904_enchantment_by_potion_lut
-                    [pParty->pPickedItem.uItemID - 240];
+                // TODO(captainurist): lookup table makes no sense for the most part,
+                // why do we have (ITEM_ENCHANTMENT)93 two times here?
+                static constinit IndexedArray<ITEM_ENCHANTMENT, ITEM_FIRST_ENCHANTING_POTION, ITEM_LAST_ENCHANTING_POTION> _4E2904_enchantment_by_potion_lut = {
+                    {ITEM_POTION_MIGHT_BOOST, (ITEM_ENCHANTMENT)164},
+                    {ITEM_POTION_INTELLECT_BOOST, (ITEM_ENCHANTMENT)93},
+                    {ITEM_POTION_PERSONALITY_BOOST, (ITEM_ENCHANTMENT)22},
+                    {ITEM_POTION_ENDURANCE_BOOST, (ITEM_ENCHANTMENT)164},
+                    {ITEM_POTION_SPEED_BOOST, (ITEM_ENCHANTMENT)93},
+                    {ITEM_POTION_ACCURACY_BOOST, (ITEM_ENCHANTMENT)22},
+                    {ITEM_POTION_FLAMING, ITEM_ENCHANTMENT_OF_FLAME},
+                    {ITEM_POTION_FREEZING, ITEM_ENCHANTMENT_OF_FROST},
+                    {ITEM_POTION_NOXIOUS, ITEM_ENCHANTMENT_OF_POISON},
+                    {ITEM_POTION_SHOCKING, ITEM_ENCHANTMENT_OF_SPARKS},
+                    {ITEM_POTION_SWIFT, (ITEM_ENCHANTMENT)59}
+                };
+                item->special_enchantment = _4E2904_enchantment_by_potion_lut[pParty->pPickedItem.uItemID];
                 v31 = (double)(1800 * pParty->pPickedItem.uEnchantmentType);
             }
 
@@ -1986,32 +1994,32 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         switch (pParty->pPickedItem.uItemID) {
             case ITEM_REAGENT_WIDOWSWEEP_BERRIES:
             case ITEM_REAGENT_CRUSHED_ROSE_PETALS:
-            case ITEM_TROLL_BLOOD:
-            case ITEM_TROLL_RUBY:
-            case ITEM_DRAGON_EYE:
+            case ITEM_REAGENT_VIAL_OF_TROLL_BLOOD:
+            case ITEM_REAGENT_RUBY:
+            case ITEM_REAGENT_DRAGONS_EYE:
                 item->uItemID = ITEM_POTION_CURE_WOUNDS;
                 break;
 
-            case ITEM_PHIMA_ROOT:
-            case ITEM_METEORITE_FRAGMENT:
-            case ITEM_HARPY_FEATHER:
-            case ITEM_MOONSTONE:
-            case ITEM_ELVISH_TOADSTOOL:
-                item->uItemID = ITEM_POTION_MAGIC_POTION;
+            case ITEM_REAGENT_PHIRNA_ROOT:
+            case ITEM_REAGENT_METEORITE_FRAGMENT:
+            case ITEM_REAGENT_HARPY_FEATHER:
+            case ITEM_REAGENT_MOONSTONE:
+            case ITEM_REAGENT_ELVISH_TOADSTOOL:
+                item->uItemID = ITEM_POTION_MAGIC;
                 break;
 
-            case ITEM_POPPYSNAPS:
-            case ITEM_FAE_DUST:
-            case ITEM_SULFUR:
-            case ITEM_GARNET:
-            case ITEM_DEVIL_ICHOR:
+            case ITEM_REAGENT_POPPYSNAPS:
+            case ITEM_REAGENT_FAE_DUST:
+            case ITEM_REAGENT_SULFUR:
+            case ITEM_REAGENT_GARNET:
+            case ITEM_REAGENT_VIAL_OF_DEVIL_ICHOR:
                 item->uItemID = ITEM_POTION_CURE_WEAKNESS;
                 break;
 
-            case ITEM_MUSHROOM:
-            case ITEM_OBSIDIAN:
-            case ITEM_OOZE_ENDOPLASM_VIAL:
-            case ITEM_MERCURY:
+            case ITEM_REAGENT_MUSHROOM:
+            case ITEM_REAGENT_OBSIDIAN:
+            case ITEM_REAGENT_VIAL_OF_OOZE_ENDOPLASM:
+            case ITEM_REAGENT_MERCURY:
             case ITEM_REAGENT_PHILOSOPHERS_STONE:
                 item->uItemID = ITEM_POTION_CATALYST;
                 break;
@@ -2028,18 +2036,16 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
     }
 
     // potions mixing(смешивание двух зелий)
-    if (pParty->pPickedItem.uItemID >= ITEM_POTION_CATALYST &&
-        pParty->pPickedItem.uItemID <= ITEM_POTION_REJUVENATION &&
-        item->uItemID >= ITEM_POTION_CATALYST &&
-        item->uItemID <= ITEM_POTION_REJUVENATION) {
-        potion1_id = item->uItemID - ITEM_POTION_CURE_WOUNDS;
-        potion2_id = pParty->pPickedItem.uItemID - ITEM_POTION_CURE_WOUNDS;
+    if (IsPotion(pParty->pPickedItem.uItemID) && IsPotion(item->uItemID)) {
+        // TODO(captainurist): get rid of casts in a nice way.
+        potion1_id = std::to_underlying(item->uItemID) - std::to_underlying(ITEM_POTION_CURE_WOUNDS);
+        potion2_id = std::to_underlying(pParty->pPickedItem.uItemID) - std::to_underlying(ITEM_POTION_CURE_WOUNDS);
 
         if (pParty->pPickedItem.uItemID == ITEM_POTION_CATALYST ||
             item->uItemID == ITEM_POTION_CATALYST)
-            potionID = 5;
+            potionID = ITEM_DUELIST_BLADE; // TODO(captainurist): eeeh? // was 5
         else
-            potionID = pItemTable->potion_data[potion2_id][potion1_id];
+            potionID = ITEM_TYPE(pItemTable->potion_data[potion2_id][potion1_id]);
 
         damage_level = 0;
         if (alchemy_skill_points) {
@@ -2050,7 +2056,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                     alchemy_skill_level == 1)  // 228 >= potionID <= 239
                     damage_level = 2;
                 if (potionID >= ITEM_POTION_MIGHT_BOOST &&
-                    potionID <= ITEM_POTION_BODY_RESISTANE &&
+                    potionID <= ITEM_POTION_BODY_RESISTANCE &&
                     alchemy_skill_level <= 2)  // 240 >= potionID <= 261
                     damage_level = 3;
                 if (potionID >= ITEM_POTION_STONE_TO_FLESH &&
@@ -2065,7 +2071,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 potionID <= ITEM_POTION_CURE_INSANITY)  // 228 <= v16 <= 239
                 damage_level = 2;
             if (potionID >= ITEM_POTION_MIGHT_BOOST &&
-                potionID <= ITEM_POTION_BODY_RESISTANE)  // 240 <= v16 <= 261
+                potionID <= ITEM_POTION_BODY_RESISTANCE)  // 240 <= v16 <= 261
                 damage_level = 3;
             if (potionID >= ITEM_POTION_STONE_TO_FLESH)  // 262 <= v16
                 damage_level = 4;
@@ -2082,7 +2088,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         //   break;
         //}
         //}
-        if (!potionID) {
+        if (potionID == ITEM_NULL) {
             GameUI_DrawItemInfo(item);
             return;
         }

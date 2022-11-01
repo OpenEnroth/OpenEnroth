@@ -201,7 +201,7 @@ void LoadGame(unsigned int uSlot) {
                     __debugbreak();  // looks like offset in player's inventory
                                      // and wand_lut much like case in 0042ECB5
                     stru_A750F8[i].AddPartySpellSound(
-                        wand_spell_ids[pItemID - ITEM_WAND_FIRE], i + 9);
+                        wand_spell_ids[pItemID], i + 9);
                 }
             }
         }

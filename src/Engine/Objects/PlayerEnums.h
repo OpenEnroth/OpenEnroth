@@ -192,9 +192,14 @@ enum PLAYER_SKILL_TYPE : int8_t {
     PLAYER_SKILL_STEALING = 34,
     PLAYER_SKILL_ALCHEMY = 35,
     PLAYER_SKILL_LEARNING = 36,
-    PLAYER_SKILL_CLUB = 37,
-    PLAYER_SKILL_MISC = 38,
-    PLAYER_SKILL_INVALID = -1
+    PLAYER_SKILL_COUNT = 37,
+
+    PLAYER_SKILL_CLUB = 37, // Used only in some items, actual player skill is PLAYER_SKILL_MACE
+    PLAYER_SKILL_MISC = 38, // Hidden skill that's always zero, not stored anywhere
+    PLAYER_SKILL_INVALID = -1,
+
+    PLAYER_SKILL_FIRST = PLAYER_SKILL_STAFF,
+    PLAYER_SKILL_LAST = PLAYER_SKILL_LEARNING,
 };
 #pragma warning(pop)
 

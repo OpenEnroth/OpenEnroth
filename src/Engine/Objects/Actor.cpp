@@ -132,14 +132,14 @@ void Actor::ToggleFlag(signed int uActorID, ActorAttribute uFlag, bool bValue) {
 }
 
 //----- (00448518) --------------------------------------------------------
-void sub_448518_npc_set_item(int npc, unsigned int item, int a3) {
+void sub_448518_npc_set_item(int npc, ITEM_TYPE item, int a3) {
     for (uint i = 0; i < pActors.size(); i++) {
         if (pActors[i].sNPC_ID == npc) Actor::GiveItem(i, item, a3);
     }
 }
 
 //----- (004485A7) --------------------------------------------------------
-void Actor::GiveItem(signed int uActorID, unsigned int uItemID,
+void Actor::GiveItem(signed int uActorID, ITEM_TYPE uItemID,
                      unsigned int bGive) {
     if ((uActorID >= 0) &&
         (signed int)uActorID <= (signed int)(pActors.size() - 1)) {
@@ -183,7 +183,7 @@ void Actor::SetRandomGoldIfTheresNoItem() {
     int v2;  // edi@1
 
     v2 = 0;
-    if (!this->ActorHasItems[3].uItemID) {
+    if (this->ActorHasItems[3].uItemID == ITEM_NULL) {
         if (this->pMonsterInfo.uTreasureDiceRolls) {
             for (int i = 0; i < this->pMonsterInfo.uTreasureDiceRolls; i++)
                 v2 += rand() % this->pMonsterInfo.uTreasureDiceSides + 1;
@@ -1933,35 +1933,35 @@ void Actor::Die(unsigned int uActorID) {
         case MONSTER_HARPY_1:
         case MONSTER_HARPY_2:
         case MONSTER_HARPY_3:
-            drop.uItemID = ITEM_HARPY_FEATHER;
+            drop.uItemID = ITEM_REAGENT_HARPY_FEATHER;
             break;
 
         case MONSTER_OOZE_1:
         case MONSTER_OOZE_2:
         case MONSTER_OOZE_3:
-            drop.uItemID = ITEM_OOZE_ENDOPLASM_VIAL;
+            drop.uItemID = ITEM_REAGENT_VIAL_OF_OOZE_ENDOPLASM;
             break;
 
         case MONSTER_TROLL_1:
         case MONSTER_TROLL_2:
         case MONSTER_TROLL_3:
-            drop.uItemID = ITEM_TROLL_BLOOD;
+            drop.uItemID = ITEM_REAGENT_VIAL_OF_TROLL_BLOOD;
             break;
 
         case MONSTER_DEVIL_1:
         case MONSTER_DEVIL_2:
         case MONSTER_DEVIL_3:
-            drop.uItemID = ITEM_DEVIL_ICHOR;
+            drop.uItemID = ITEM_REAGENT_VIAL_OF_DEVIL_ICHOR;
             break;
 
         case MONSTER_DRAGON_1:
         case MONSTER_DRAGON_2:
         case MONSTER_DRAGON_3:
-            drop.uItemID = ITEM_DRAGON_EYE;
+            drop.uItemID = ITEM_REAGENT_DRAGONS_EYE;
             break;
     }
 
-    if (rand() % 100 < 20 && drop.uItemID != 0) {
+    if (rand() % 100 < 20 && drop.uItemID != ITEM_NULL) {
         SpriteObject::Drop_Item_At(
             (SPRITE_OBJECT_TYPE)pItemTable->pItems[drop.uItemID].uSpriteID,
             actor->vPosition.x, actor->vPosition.y, actor->vPosition.z + 16,
@@ -3328,8 +3328,8 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     if (!projectileSprite) {
         int main_hand_idx = player->pEquipment.uMainHand;
         IsAdditionalDamagePossible = true;
-        if (player->HasItemEquipped(EQUIP_TWO_HANDED)) {
-            uint main_hand_skill =
+        if (player->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
+            PLAYER_SKILL_TYPE main_hand_skill =
                 player->GetMainHandItem()->GetPlayerSkillType();
             uint main_hand_mastery =
                 SkillToMastery(player->pActiveSkills[main_hand_skill]);
@@ -3437,7 +3437,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 if (pMonster->pActorBuffs[ACTOR_BUFF_SHIELD].Active())
                     uDamageAmount /= 2;
                 IsAdditionalDamagePossible = true;
-                if (projectileSprite->containing_item.uItemID != 0 &&
+                if (projectileSprite->containing_item.uItemID != ITEM_NULL &&
                     projectileSprite->containing_item.special_enchantment == ITEM_ENCHANTMENT_OF_CARNAGE) {
                     attackElement = DMGT_FIRE;
                 } else if (!player->PlayerHitOrMiss(pMonster, v61, a4)) {
@@ -3480,10 +3480,10 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
             uDamageAmount +=
                 pMonster->CalcMagicalDamageToActor(attackElement, a4);
         } else {
-            for (int i = 0; i < 2; i++) {
-                if (player->HasItemEquipped((ITEM_EQUIP_TYPE)i)) {
+            for (ITEM_SLOT i : {ITEM_SLOT_OFF_HAND, ITEM_SLOT_MAIN_HAND}) {
+                if (player->HasItemEquipped(i)) {
                     ItemGen *item;
-                    if (i == 0)
+                    if (i == ITEM_SLOT_OFF_HAND)
                         item = player->GetOffHandItem();
                     else
                         item = player->GetMainHandItem();
@@ -3985,7 +3985,7 @@ void Actor::LootActor() {
             viewparams->bRedrawGameUI = 1;
         }
     } else {
-        if (this->ActorHasItems[3].uItemID != 0 &&
+        if (this->ActorHasItems[3].uItemID != ITEM_NULL &&
             this->ActorHasItems[3].GetItemEquipType() == EQUIP_GOLD) {
             v14 = this->ActorHasItems[3].special_enchantment;
             this->ActorHasItems[3].Reset();
@@ -3995,7 +3995,7 @@ void Actor::LootActor() {
             }
         }
     }
-    if (this->uCarriedItemID) {
+    if (this->uCarriedItemID != ITEM_NULL) {
         Dst.Reset();
         Dst.uItemID = this->uCarriedItemID;
 
@@ -4004,24 +4004,23 @@ void Actor::LootActor() {
             pItemTable->pItems[Dst.uItemID].pUnidentifiedName
         );
 
-        if (Dst.GetItemEquipType() == 12) {
+        if (Dst.GetItemEquipType() == EQUIP_WAND) {
             Dst.uNumCharges = rand() % 6 + Dst.GetDamageMod() + 1;
             Dst.uMaxCharges = Dst.uNumCharges;
         }
-        if (pItemTable->pItems[Dst.uItemID].uEquipType == 14 &&
-            Dst.uItemID != 220)
+        if (pItemTable->pItems[Dst.uItemID].uEquipType == EQUIP_POTION && Dst.uItemID != ITEM_POTION_BOTTLE)
             Dst.uEnchantmentType = 2 * rand() % 4 + 2;
         pItemTable->SetSpecialBonus(&Dst);
         if (!pParty->AddItemToParty(&Dst)) pParty->SetHoldingItem(&Dst);
-        this->uCarriedItemID = 0;
-        if (this->ActorHasItems[0].uItemID) {
+        this->uCarriedItemID = ITEM_NULL;
+        if (this->ActorHasItems[0].uItemID != ITEM_NULL) {
             if (!pParty->AddItemToParty(&this->ActorHasItems[0])) {
                 pParty->PickedItem_PlaceInInventory_or_Drop();
                 pParty->SetHoldingItem(&this->ActorHasItems[0]);
             }
             this->ActorHasItems[0].Reset();
         }
-        if (this->ActorHasItems[1].uItemID) {
+        if (this->ActorHasItems[1].uItemID != ITEM_NULL) {
             if (!pParty->AddItemToParty(&this->ActorHasItems[1])) {
                 pParty->PickedItem_PlaceInInventory_or_Drop();
                 pParty->SetHoldingItem(&this->ActorHasItems[1]);
@@ -4032,7 +4031,7 @@ void Actor::LootActor() {
         return;
     }
     if (this->ActorHasItem()) {
-        if (this->ActorHasItems[3].uItemID) {
+        if (this->ActorHasItems[3].uItemID != ITEM_NULL) {
             Dst = this->ActorHasItems[3];
             this->ActorHasItems[3].Reset();
 
@@ -4059,7 +4058,7 @@ void Actor::LootActor() {
             itemFound = true;
         }
     }
-    if (this->ActorHasItems[0].uItemID) {
+    if (this->ActorHasItems[0].uItemID != ITEM_NULL) {
         if (!pParty->AddItemToParty(&this->ActorHasItems[0])) {
             pParty->PickedItem_PlaceInInventory_or_Drop();
             pParty->SetHoldingItem(&this->ActorHasItems[0]);
@@ -4067,7 +4066,7 @@ void Actor::LootActor() {
         }
         this->ActorHasItems[0].Reset();
     }
-    if (this->ActorHasItems[1].uItemID) {
+    if (this->ActorHasItems[1].uItemID != ITEM_NULL) {
         if (!pParty->AddItemToParty(&this->ActorHasItems[1])) {
             pParty->PickedItem_PlaceInInventory_or_Drop();
             pParty->SetHoldingItem(&this->ActorHasItems[1]);
@@ -4263,46 +4262,44 @@ int Actor::CalcMagicalDamageToActor(DAMAGE_TYPE dmgType,
 //----- (00427662) --------------------------------------------------------
 bool Actor::DoesDmgTypeDoDamage(DAMAGE_TYPE uType) {
     signed int resist;  // esi@2
-    bool result;        // eax@13
 
     switch (uType) {
-        case 0:
+        case DMGT_FIRE:
             resist = this->pMonsterInfo.uResFire;
             break;
-        case 1:
+        case DMGT_ELECTR:
             resist = this->pMonsterInfo.uResAir;
             break;
-        case 2:
+        case DMGT_COLD:
             resist = this->pMonsterInfo.uResWater;
             break;
-        case 3:
+        case DMGT_EARTH:
             resist = this->pMonsterInfo.uResEarth;
             break;
-        case 4:
+        case DMGT_PHISYCAL:
             resist = this->pMonsterInfo.uResPhysical;
             break;
-        case 6:
+        case DMGT_SPIRIT:
             resist = this->pMonsterInfo.uResSpirit;
             break;
-        case 7:
+        case DMGT_MIND:
             resist = this->pMonsterInfo.uResMind;
-        case 8:
+        case DMGT_BODY:
             resist = this->pMonsterInfo.uResBody;
             break;
-        case 9:
+        case DMGT_LIGHT:
             resist = this->pMonsterInfo.uResLight;
             break;
-        case 10:
+        case DMGT_DARK:
             resist = this->pMonsterInfo.uResDark;
             break;
         default:
-            return 1;
+            return true;
     }
     if (resist < 200)
-        result = rand() % ((this->pMonsterInfo.uLevel >> 2) + resist + 30) < 30;
+        return rand() % ((this->pMonsterInfo.uLevel >> 2) + resist + 30) < 30;
     else
-        result = 0;
-    return result;
+        return false;
 }
 
 //----- (00448A98) --------------------------------------------------------

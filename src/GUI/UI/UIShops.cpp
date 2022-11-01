@@ -272,11 +272,11 @@ void WeaponShopWares(GUIWindow dialogwin, bool special) {
         if ((special == 0 &&
              pParty
                  ->StandartItemsInShops[window_SpeakInHouse->wData.val][i]
-                 .uItemID) ||
+                 .uItemID != ITEM_NULL) ||
             (special == 1 &&
              pParty
                  ->SpecialItemsInShops[window_SpeakInHouse->wData.val][i]
-                 .uItemID)) {
+                 .uItemID != ITEM_NULL)) {
             render->DrawTextureAlphaNew(
                 ((60 -
                   ((signed int)shop_ui_items_in_store[i]->GetWidth() / 2)) +
@@ -294,11 +294,11 @@ void WeaponShopWares(GUIWindow dialogwin, bool special) {
             if ((special == 0 &&
                  pParty
                      ->StandartItemsInShops[window_SpeakInHouse->wData.val][i]
-                     .uItemID) ||
+                     .uItemID != ITEM_NULL) ||
                 (special == 1 &&
                  pParty
                      ->SpecialItemsInShops[window_SpeakInHouse->wData.val][i]
-                     .uItemID)) {
+                     .uItemID != ITEM_NULL)) {
                 ++item_num;
             }
         }
@@ -322,7 +322,7 @@ void WeaponShopWares(GUIWindow dialogwin, bool special) {
                     item = &pParty->SpecialItemsInShops[window_SpeakInHouse->wData.val][testx];
                 }
 
-                if (item->uItemID) {  // item picking
+                if (item->uItemID != ITEM_NULL) {  // item picking
                     int testpos =
                         ((60 - ((signed int)shop_ui_items_in_store[testx]
                                     ->GetWidth() /
@@ -420,10 +420,10 @@ void ArmorShopWares(GUIWindow dialogwin, bool special) {
     for (int i = 0; i < 8; ++i) {
         if ((special == 0 &&
              pParty->StandartItemsInShops[window_SpeakInHouse->wData.val][i]
-                 .uItemID) ||
+                 .uItemID != ITEM_NULL) ||
             (special == 1 &&
              pParty->SpecialItemsInShops[window_SpeakInHouse->wData.val][i]
-                 .uItemID)) {
+                 .uItemID != ITEM_NULL)) {
             if (i >= 4) {  // low row
                 render->DrawTextureAlphaNew(
                     ((90 - (shop_ui_items_in_store[i]->GetWidth() / 2)) +
@@ -447,10 +447,10 @@ void ArmorShopWares(GUIWindow dialogwin, bool special) {
         for (int i = 0; i < 8; ++i) {
             if ((special == 0 &&
                  pParty->StandartItemsInShops[window_SpeakInHouse->wData.val][i]
-                     .uItemID) ||
+                     .uItemID != ITEM_NULL) ||
                 (special == 1 &&
                  pParty->SpecialItemsInShops[window_SpeakInHouse->wData.val][i]
-                     .uItemID))
+                     .uItemID != ITEM_NULL))
                 ++pItemCount;
         }
 
@@ -479,7 +479,7 @@ void ArmorShopWares(GUIWindow dialogwin, bool special) {
                     item = &pParty->SpecialItemsInShops[window_SpeakInHouse->wData.val][testx];
                 }
 
-                if (item->uItemID) {
+                if (item->uItemID != ITEM_NULL) {
                     int testpos;
                     if (testx >= 4) {
                         testpos =
@@ -585,9 +585,9 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
 
     for (uint i = 0; i < 12; ++i) {
         if ((special == 0 &&
-             pParty->StandartItemsInShops[window_SpeakInHouse->wData.val][i].uItemID) ||
+             pParty->StandartItemsInShops[window_SpeakInHouse->wData.val][i].uItemID != ITEM_NULL) ||
             (special == 1 &&
-             pParty->SpecialItemsInShops[window_SpeakInHouse->wData.val][i].uItemID)) {
+             pParty->SpecialItemsInShops[window_SpeakInHouse->wData.val][i].uItemID != ITEM_NULL)) {
             if (i >= 6) {  // low row
                 itemy = 308 - shop_ui_items_in_store[i]->GetHeight();
                 if (itemy < 0) itemy = 0;
@@ -623,11 +623,11 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
             if (special == 0 &&
                     pParty
                         ->StandartItemsInShops[window_SpeakInHouse->wData.val][i]
-                        .uItemID ||
+                        .uItemID != ITEM_NULL ||
                 special == 1 &&
                     pParty
                         ->SpecialItemsInShops[window_SpeakInHouse->wData.val][i]
-                        .uItemID)
+                        .uItemID != ITEM_NULL)
                 ++item_num;
         }
 
@@ -654,7 +654,7 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
                     item = &pParty->SpecialItemsInShops[window_SpeakInHouse->wData.val][testx];
                 }
 
-                if (item->uItemID) {  // item picking
+                if (item->uItemID != ITEM_NULL) {  // item picking
                     int testpos;
                     if (pt.y > 152) {
                         testpos = 75 * testx - shop_ui_items_in_store[testx]->GetWidth() / 2 + 40 - 450;
@@ -841,7 +841,7 @@ void UIShop_Buy_Identify_Repair() {
                 }
 
                 bought_item = &pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - 139][testx];
-                if (bought_item->uItemID) {
+                if (bought_item->uItemID != ITEM_NULL) {
                     int testpos;
                     if (pt.y >= 250) {
                         testpos = 32 + 70 * testx - 420;
@@ -1010,7 +1010,7 @@ void UIShop_Buy_Identify_Repair() {
                                 &pParty->SpecialItemsInShops
                                      [window_SpeakInHouse->wData.val][testx];
 
-                        if (bought_item->uItemID) {
+                        if (bought_item->uItemID != ITEM_NULL) {
                             testpos =
                                 ((60 -
                                   ((signed int)shop_ui_items_in_store[testx]
@@ -1055,7 +1055,7 @@ void UIShop_Buy_Identify_Repair() {
                                 &pParty->SpecialItemsInShops
                                      [window_SpeakInHouse->wData.val][testx];
 
-                        if (bought_item->uItemID) {
+                        if (bought_item->uItemID != ITEM_NULL) {
                             if (testx >= 4) {
                                 testpos = ((90 - (shop_ui_items_in_store[testx]
                                                       ->GetWidth() /
@@ -1110,7 +1110,7 @@ void UIShop_Buy_Identify_Repair() {
                                 &pParty->SpecialItemsInShops
                                      [window_SpeakInHouse->wData.val][testx];
 
-                        if (bought_item->uItemID) {
+                        if (bought_item->uItemID != ITEM_NULL) {
                             if (pt.y > 152) {
                                 testpos =
                                     75 * testx -
@@ -1295,7 +1295,7 @@ void ShowPopupShopItem() {
                                 &pParty->SpecialItemsInShops
                                      [window_SpeakInHouse->wData.val][testx];
 
-                        if (item->uItemID) {
+                        if (item->uItemID != ITEM_NULL) {
                             testpos =
                                 ((60 -
                                   (shop_ui_items_in_store[testx]->GetWidth() /
@@ -1338,7 +1338,7 @@ void ShowPopupShopItem() {
                                 &pParty->SpecialItemsInShops
                                      [window_SpeakInHouse->wData.val][testx];
 
-                        if (item->uItemID) {
+                        if (item->uItemID != ITEM_NULL) {
                             if (testx >= 4) {
                                 testpos = ((90 - (shop_ui_items_in_store[testx]
                                                       ->GetWidth() /
@@ -1392,7 +1392,7 @@ void ShowPopupShopItem() {
                                 &pParty->SpecialItemsInShops
                                      [window_SpeakInHouse->wData.val][testx];
 
-                        if (item->uItemID) {
+                        if (item->uItemID != ITEM_NULL) {
                             if (pt.y > 152) {
                                 testpos =
                                     75 * testx -
@@ -1469,7 +1469,7 @@ void ShowPopupShopItem() {
 
             item = &pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][testx];
 
-            if (item->uItemID) {
+            if (item->uItemID != ITEM_NULL) {
                 int testpos;
                 if (pt.y >= 250) {
                     testpos = 32 + 70 * testx - 420;
@@ -1488,7 +1488,7 @@ void ShowPopupShopItem() {
     }
 }
 
-void sub_4B1523_showSpellbookInfo(int spellItemId) {
+void sub_4B1523_showSpellbookInfo(ITEM_TYPE spellItemId) {
     int v4;               // eax@4
     long v5;              // ecx@4
     int v6;               // eax@10
@@ -1497,9 +1497,10 @@ void sub_4B1523_showSpellbookInfo(int spellItemId) {
     int v13;              // [sp+6Ch] [bp-8h]@4
     int v14;              // [sp+70h] [bp-4h]@4
 
-    int spellId = spellItemId - 399;
-    int spellLevel = (spellItemId - 400) % 11 + 1;
-    unsigned int spellSchool = 4 * (spellItemId - 400) / 11;
+    // TODO(captainurist): deal away with casts.
+    int spellId = std::to_underlying(spellItemId) - 399;
+    int spellLevel = (std::to_underlying(spellItemId) - 400) % 11 + 1;
+    unsigned int spellSchool = 4 * (std::to_underlying(spellItemId) - 400) / 11;
 
     // sprintf(tmp_str.data(), "%s%03d", spellbook_texture_filename_suffices[v11
     // / 4], v2); not used

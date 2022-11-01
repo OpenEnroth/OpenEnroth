@@ -499,8 +499,11 @@ class GUIWindow {
 
 class GUIWindow_Scroll : public GUIWindow {
  public:
-    GUIWindow_Scroll(unsigned int x, unsigned int y, unsigned int width, unsigned int height, WindowData data, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_Scroll, x, y, width, height, data, hint) {
+    GUIWindow_Scroll(unsigned int x, unsigned int y, unsigned int width, unsigned int height, ITEM_TYPE scroll_type, const std::string &hint = std::string()) :
+        GUIWindow(WINDOW_Scroll, x, y, width, height, 0, hint) {
+        Assert(IsMessageScroll(scroll_type));
+
+        this->scroll_type = scroll_type;
         CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, GameKey::Digit1, "");
         CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, GameKey::Digit2, "");
         CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, GameKey::Digit3, "");
@@ -509,7 +512,9 @@ class GUIWindow_Scroll : public GUIWindow {
     }
     virtual ~GUIWindow_Scroll() {}
 
-    virtual void Update();
+    virtual void Update() override;
+
+    ITEM_TYPE scroll_type = ITEM_NULL;
 };
 
 class OnButtonClick : public GUIWindow {
@@ -520,7 +525,7 @@ class OnButtonClick : public GUIWindow {
     {}
     virtual ~OnButtonClick() {}
 
-    virtual void Update();
+    virtual void Update() override;
 
     bool bPlaySound;
 };
@@ -533,7 +538,7 @@ class OnButtonClick2 : public GUIWindow {
     {}
     virtual ~OnButtonClick2() {}
 
-    virtual void Update();
+    virtual void Update() override;
 
     bool bPlaySound;
 };
@@ -546,7 +551,7 @@ class OnButtonClick3 : public GUIWindow {
 
     virtual ~OnButtonClick3() {}
 
-    virtual void Update();
+    virtual void Update() override;
 };
 
 // something debug? not really sure, unused
@@ -557,7 +562,7 @@ class OnButtonClick4 : public GUIWindow {
     {}
     virtual ~OnButtonClick4() {}
 
-    virtual void Update();
+    virtual void Update() override;
 };
 
 class OnSaveLoad : public GUIWindow {
@@ -567,7 +572,7 @@ class OnSaveLoad : public GUIWindow {
     {}
     virtual ~OnSaveLoad() {}
 
-    virtual void Update();
+    virtual void Update() override;
 };
 
 class OnCancel : public GUIWindow {
@@ -577,7 +582,7 @@ class OnCancel : public GUIWindow {
     {}
     virtual ~OnCancel() {}
 
-    virtual void Update();
+    virtual void Update() override;
 };
 
 class OnCancel2 : public GUIWindow {
@@ -587,7 +592,7 @@ class OnCancel2 : public GUIWindow {
     {}
     virtual ~OnCancel2() {}
 
-    virtual void Update();
+    virtual void Update() override;
 };
 
 class OnCancel3 : public GUIWindow {
@@ -597,7 +602,7 @@ class OnCancel3 : public GUIWindow {
     {}
     virtual ~OnCancel3() {}
 
-    virtual void Update();
+    virtual void Update() override;
 };
 
 class OnCastTargetedSpell : public GUIWindow {
@@ -747,7 +752,7 @@ void DrawBuff_remaining_time_string(int uY, GUIWindow *window,
 void GameUI_DrawItemInfo(struct ItemGen* inspect_item);   // idb
 void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *window);
 void SetUserInterface(PartyAlignment alignment, bool bReplace);
-void CreateMsgScrollWindow(signed int mscroll_id);
+void CreateMsgScrollWindow(ITEM_TYPE mscroll_id);
 void free_book_subwindow();
 void CreateScrollWindow();
 void OnPaperdollLeftClick();
@@ -783,7 +788,7 @@ extern GUIWindow *pPrimaryWindow;
 //extern GUIWindow *pChestWindow;
 extern GUIWindow *pDialogueWindow;
 extern GUIWindow *window_SpeakInHouse;
-extern GUIWindow *pGUIWindow_ScrollWindow;
+extern GUIWindow_Scroll *pGUIWindow_ScrollWindow;
 extern GUIWindow *ptr_507BC8;
 extern GUIWindow *pGUIWindow_CurrentMenu;
 //extern GUIWindow *ptr_507BD0;

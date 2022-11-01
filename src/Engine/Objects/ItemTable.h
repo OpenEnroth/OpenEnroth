@@ -25,9 +25,9 @@ struct ItemTable {
     bool IsMaterialSpecial(ItemGen* pItem);
     bool IsMaterialNonCommon(ItemGen* pItem);
     void Release();
+    void PrintItemTypesEnum();
 
-    int uAllItemsCount;
-    IndexedArray<ItemDesc, 1, 800> pItems;                   // 4-9604h
+    IndexedArray<ItemDesc, ITEM_FIRST_VALID, ITEM_LAST_VALID> pItems;                   // 4-9604h
     ItemEnchantment pEnchantments[24];                // 9604h
     IndexedArray<ItemSpecialEnchantment, ITEM_ENCHANTMENT_FIRST_VALID, ITEM_ENCHANTMENT_LAST_VALID> pSpecialEnchantments;  // 97E4h -9FC4h
     char field_9FC4[5000];
@@ -45,9 +45,8 @@ struct ItemTable {
     unsigned int uBonusChanceStandart[6];       // 1169c
     unsigned int uBonusChanceSpecial[6];        // 116B4
     unsigned int uBonusChanceWpSpecial[6];      // 116cc -116e4
-    unsigned int pEnchantmentsSumm[9];          // 116E4h -11708h
+    IndexedArray<unsigned int, EQUIP_FIRST_NORMAL_ENCHANTABLE, EQUIP_LAST_NORMAL_ENCHANTABLE> pEnchantmentsSumm; // 116E4h -11708h
     BonusRange bonus_ranges[6];                 // 45C2h*4 =11708h
-    unsigned int pSpecialEnchantmentsSumm[24];  // 11738h
     unsigned int pSpecialEnchantments_count;    // 11798h
     char field_1179C;
     char field_1179D;

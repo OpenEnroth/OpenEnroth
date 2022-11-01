@@ -83,10 +83,10 @@ void GuildDialog() {
 
         for (pX = 32; pX < 452; pX += 70) {  // top row
             if (pParty->SpellBooksInGuilds
-                [window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][itemxind].uItemID) {
+                [window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][itemxind].uItemID != ITEM_NULL) {
                 render->DrawTextureAlphaNew(pX / 640.0f, 90 / 480.0f, shop_ui_items_in_store[itemxind]);
             }
-            if (pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][itemxind + 6].uItemID) {
+            if (pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][itemxind + 6].uItemID != ITEM_NULL) {
                 render->DrawTextureAlphaNew(pX / 640.0f, 250 / 480.0f, shop_ui_items_in_store[itemxind + 6]);
             }
 
@@ -96,7 +96,7 @@ void GuildDialog() {
         if (HouseUI_CheckIfPlayerCanInteract()) {
             int itemcount = 0;
             for (uint i = 0; i < 12; ++i) {
-                if (pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].uItemID > 0)
+                if (pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].uItemID != ITEM_NULL)
                     ++itemcount;
             }
 
@@ -117,7 +117,7 @@ void GuildDialog() {
 
                 ItemGen *item = &pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][testx];
 
-                if (item->uItemID) {
+                if (item->uItemID != ITEM_NULL) {
                     int testpos;
                     if (pt.y >= 250) {
                         testpos = 32 + 70 * testx - 420;
@@ -146,13 +146,16 @@ void GuildDialog() {
 
 //----- (004BC8D5) --------------------------------------------------------
 void SpellBookGenerator() {  // for GuildDialogs
-    int pItemNum;   // esi@1
+    ITEM_TYPE pItemNum;   // esi@1
     int randomnum;  // esi@7
 
     for (int i = 0; i < 12; ++i) {
+        // TODO(captainurist): clean up these ITEM_TYPE casts.
         if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType >= BuildingType_FireGuild) {
             if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType <= BuildingType_DarkGuild) {
-                pItemNum = rand() % word_4F0F30[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE] + 11 * std::to_underlying(p2DEvents[window_SpeakInHouse->wData.val - 1].uType) + 345;
+                pItemNum = ITEM_TYPE(rand() % word_4F0F30[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE] +
+                    11 * std::to_underlying(p2DEvents[window_SpeakInHouse->wData.val - 1].uType) +
+                    345);
             } else {
                 if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType == BuildingType_ElementalGuild)
                     randomnum = rand() % 4;
@@ -161,13 +164,15 @@ void SpellBookGenerator() {  // for GuildDialogs
                 else if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType == BuildingType_MirroredPath)
                     randomnum = rand() % 2 + 7;
                 if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType <= BuildingType_MirroredPath)
-                    pItemNum = rand() % word_4F0F30[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE] + 11 * randomnum + 400;
+                    pItemNum = ITEM_TYPE(rand() % word_4F0F30[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE] +
+                        11 * randomnum +
+                        400);
             }
         }
 
-        if (pItemNum == ITEM_SPELLBOOK_LIGHT_DIVINE_INTERVENTION) {
+        if (pItemNum == ITEM_SPELLBOOK_DIVINE_INTERVENTION) {
             if (!_449B57_test_bit(pParty->_quest_bits, QBIT_DIVINE_INTERVENTION_RETRIEVED))
-                pItemNum = ITEM_SPELLBOOK_LIGHT_SUN_BURST;
+                pItemNum = ITEM_SPELLBOOK_SUNRAY;
         }
 
         ItemGen *item_spellbook = &pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i];

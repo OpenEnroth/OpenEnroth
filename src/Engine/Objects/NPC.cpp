@@ -748,7 +748,6 @@ void InitializeAwards() {
 
 //----- (004764C2) --------------------------------------------------------
 void InitializeScrolls() {
-    int i;
     char *test_string;
     unsigned char c;
     bool break_loop;
@@ -758,7 +757,7 @@ void InitializeScrolls() {
 
     pScrollsTXT_Raw = pEvents_LOD->LoadCompressedTexture("scroll.txt").string_view();
     strtok(pScrollsTXT_Raw.data(), "\r");
-    for (i = 0; i < 82; ++i) {
+    for (ITEM_TYPE i : pScrolls.indices()) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
         decode_step = 0;

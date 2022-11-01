@@ -43,6 +43,8 @@
 #include "Platform/Api.h"
 #include "Platform/OSWindow.h"
 
+#include "Utility/Random.h"
+
 
 using Io::TextInputType;
 using EngineIoc = Engine_::IocContainer;
@@ -422,7 +424,7 @@ void InitializaDialogueOptions_Tavern(BuildingType type) {
         num_buttons = 2;
         CreateShopDialogueButtonAtRow(0, DIALOGUE_TAVERN_ARCOMAGE_RULES);
         CreateShopDialogueButtonAtRow(1, DIALOGUE_TAVERN_ARCOMAGE_VICTORY_CONDITIONS);
-        if (pParty->HasItem(ITEM_ARCOMAGE_DECK)) {
+        if (pParty->HasItem(ITEM_QUEST_ARCOMAGE_DECK)) {
             num_buttons = 3;
             CreateShopDialogueButtonAtRow(2, DIALOGUE_TAVERN_ARCOMAGE_RESULT);
         }
@@ -953,7 +955,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     {
         if (pParty->PartyTimes.Shops_next_generation_time[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE] >= pParty->GetPlayingTime()) {
             for (uint i = 0; i < 12; ++i) {
-                if (pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].uItemID)
+                if (pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].uItemID != ITEM_NULL)
                     shop_ui_items_in_store[i] = assets->GetImage_ColorKey(
                         pParty->SpellBooksInGuilds
                         [window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].GetIconName(),
@@ -1256,7 +1258,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                 for (uint i = 0; i < ItemAmountForShop(p2DEvents[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType); ++i) {
                     if (pParty
                         ->StandartItemsInShops[window_SpeakInHouse
-                        ->wData.val][i].uItemID)
+                        ->wData.val][i].uItemID != ITEM_NULL)
                         shop_ui_items_in_store[i] = assets->GetImage_ColorKey(
                             pParty->StandartItemsInShops
                             [window_SpeakInHouse->wData.val][i].GetIconName(),
@@ -1269,7 +1271,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                         if (pParty
                             ->StandartItemsInShops
                             [window_SpeakInHouse->wData.val][i]
-                            .uItemID)
+                            .uItemID != ITEM_NULL)
                             weapons_Ypos[i] =
                             rand() %
                             (300 -
@@ -1282,7 +1284,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
             if (ItemAmountForShop(p2DEvents[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType)) {
                 for (uint i = 0; i < ItemAmountForShop(p2DEvents[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType); ++i) {
                     if (pParty->SpecialItemsInShops[
-                        window_SpeakInHouse->wData.val][i].uItemID)
+                        window_SpeakInHouse->wData.val][i].uItemID != ITEM_NULL)
                         shop_ui_items_in_store[i] = assets->GetImage_ColorKey(
                             pParty->SpecialItemsInShops
                             [window_SpeakInHouse->wData.val][i].GetIconName(),
@@ -1293,7 +1295,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                 if (ItemAmountForShop(p2DEvents[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType)) {
                     for (uint i = 0; i < ItemAmountForShop(p2DEvents[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType); ++i) {
                         if (pParty->SpecialItemsInShops[
-                            window_SpeakInHouse->wData.val][i].uItemID)
+                            window_SpeakInHouse->wData.val][i].uItemID != ITEM_NULL)
                             weapons_Ypos[i] = rand() %
                             (300 - shop_ui_items_in_store[i]->GetHeight());
                     }
@@ -2045,7 +2047,7 @@ void TavernDialog() {
             pOptionsCount = 2;
             pShopOptions[0] = localization->GetString(LSTR_RULES);
             pShopOptions[1] = localization->GetString(LSTR_VICTORY_CONDITIONS);
-            if (pParty->HasItem(ITEM_ARCOMAGE_DECK)) {
+            if (pParty->HasItem(ITEM_QUEST_ARCOMAGE_DECK)) {
                 pShopOptions[2] = localization->GetString(LSTR_PLAY);
                 pOptionsCount = 3;
             }
@@ -3466,8 +3468,7 @@ void GenerateSpecialShopItems() {
                 if (item_count < 6) {
                     pParty->SpecialItemsInShops[shop_index][item_count].Reset();
                     pParty->SpecialItemsInShops[shop_index][item_count]
-                        .uItemID =
-                        rand() % 32 + ITEM_RECIPE_REJUVENATION;  // mscrool
+                        .uItemID = Sample(RecipeScrolls());  // mscrool
                     continue;
                 } else {
                     treasure_lvl = shopAlchSpc_treasure_lvl[shop_index - 41];

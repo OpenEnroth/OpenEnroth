@@ -30,13 +30,9 @@ ItemGen* ptr_50C9A4_ItemToEnchant;
 
 struct ItemTable* pItemTable;  // 005D29E0
 
-static void AddToMap(
-    std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>*>& maptoadd,
-    int enchId, CHARACTER_ATTRIBUTE_TYPE attrId, int bonusValue = 0,
-    uint16_t Player::* skillPtr = nullptr);
-static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>*> regularBonusMap;
-static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>*> specialBonusMap;
-static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>*> artifactBonusMap;
+static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment>> regularBonusMap;
+static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment>> specialBonusMap;
+static std::map<ITEM_TYPE, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment>> artifactBonusMap;
 
 //----- (00439DF3) --------------------------------------------------------
 int ItemGen::_439DF3_get_additional_damage(DAMAGE_TYPE* damage_type,
@@ -156,7 +152,7 @@ unsigned int ItemGen::GetValue() {
         return uBaseValue;
     if (uEnchantmentType) return uBaseValue + 100 * m_enchantmentStrength;
 
-    if (special_enchantment) {
+    if (special_enchantment != ITEM_ENCHANTMENT_NULL) {
         mod = (pItemTable->pSpecialEnchantments[special_enchantment].iTreasureLevel & 4);
         bonus = pItemTable->pSpecialEnchantments[special_enchantment].iValue;
         if (!mod)
@@ -178,15 +174,13 @@ std::string ItemGen::GetDisplayName() {
 
 //----- (004564B3) --------------------------------------------------------
 std::string ItemGen::GetIdentifiedName() {
-    uint8_t equip_type;
-
-    equip_type = GetItemEquipType();
+    ITEM_EQUIP_TYPE equip_type = GetItemEquipType();
     if ((equip_type == EQUIP_REAGENT) || (equip_type == EQUIP_POTION) ||
         (equip_type == EQUIP_GOLD)) {
         return pItemTable->pItems[uItemID].pName;
     }
 
-    if (uItemID == ITEM_LICH_JAR_FULL) {  // Lich Jar
+    if (uItemID == ITEM_QUEST_LICH_JAR_FULL) {  // Lich Jar
         if (uHolderPlayer > 0 && uHolderPlayer <= 4) {
             const std::string &player_name = pPlayers[uHolderPlayer]->pName;
             if (player_name.back() == 's')
@@ -204,7 +198,7 @@ std::string ItemGen::GetIdentifiedName() {
         if (uEnchantmentType) {
             return std::string(pItemTable->pItems[uItemID].pName) + " " +
                    pItemTable->pEnchantments[uEnchantmentType - 1].pOfName;
-        } else if (!special_enchantment) {
+        } else if (special_enchantment == ITEM_ENCHANTMENT_NULL) {
             return pItemTable->pItems[uItemID].pName;
         } else {
             if (special_enchantment == ITEM_ENCHANTMENT_VAMPIRIC
@@ -240,13 +234,13 @@ std::string ItemGen::GetIdentifiedName() {
 //----- (004505CC) --------------------------------------------------------
 bool ItemGen::GenerateArtifact() {
     signed int uNumArtifactsNotFound;  // esi@1
-    int artifacts_list[32];
+    std::array<ITEM_TYPE, 32> artifacts_list;
 
-    memset(artifacts_list, 0, sizeof(artifacts_list));
+    artifacts_list.fill(ITEM_NULL);
     uNumArtifactsNotFound = 0;
 
-    for (int i = 500; i < 529; ++i)
-        if (!pParty->pIsArtifactFound[i - 500])
+    for (ITEM_TYPE i : SpawnableArtifacts())
+        if (!pParty->pIsArtifactFound[i])
             artifacts_list[uNumArtifactsNotFound++] = i;
 
     Reset();
@@ -259,20 +253,14 @@ bool ItemGen::GenerateArtifact() {
     }
 }
 
-static void AddToMap(
-    std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>*>& maptoadd,
-    int enchId, CHARACTER_ATTRIBUTE_TYPE attrId, int bonusValue /*= 0*/,
-    uint16_t Player::*skillPtr /*= NULL*/) {
-    auto key = maptoadd.find(enchId);
-    std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>* currMap;
-    if (key == maptoadd.end()) {
-        currMap = new std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>;
-        maptoadd[enchId] = currMap;
-    } else {
-        currMap = key->second;
-    }
-    Assert(currMap->find(attrId) == currMap->end(), "Attribute %d already present for enchantment %d", attrId, enchId);
-    (*currMap)[attrId] = new CEnchantment(bonusValue, skillPtr);
+template<class Key, class ActualKey>
+static void AddToMap(std::map<Key, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment>> &map,
+                     ActualKey key, CHARACTER_ATTRIBUTE_TYPE subkey, int bonusValue = 0, uint16_t Player::*skillPtr = NULL) {
+    auto &submap = map[key];
+
+    Assert(!submap.contains(subkey));
+
+    submap[subkey] = CEnchantment(bonusValue, skillPtr);
 }
 
 void ItemGen::PopulateSpecialBonusMap() {
@@ -531,8 +519,8 @@ void ItemGen::PopulateArtifactBonusMap() {
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_HANDS_OF_THE_MASTER, CHARACTER_ATTRIBUTE_SKILL_DODGE, 10);
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_HANDS_OF_THE_MASTER, CHARACTER_ATTRIBUTE_SKILL_UNARMED, 10);
 
-    AddToMap(artifactBonusMap, ITEM_ARTIFACT_LEAGUE_BOOTS, CHARACTER_ATTRIBUTE_SPEED, 40);
-    AddToMap(artifactBonusMap, ITEM_ARTIFACT_LEAGUE_BOOTS, CHARACTER_ATTRIBUTE_SKILL_WATER, 0, &Player::skillWater);
+    AddToMap(artifactBonusMap, ITEM_ARTIFACT_SEVEN_LEAGUE_BOOTS, CHARACTER_ATTRIBUTE_SPEED, 40);
+    AddToMap(artifactBonusMap, ITEM_ARTIFACT_SEVEN_LEAGUE_BOOTS, CHARACTER_ATTRIBUTE_SKILL_WATER, 0, &Player::skillWater);
 
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_RULERS_RING, CHARACTER_ATTRIBUTE_SKILL_MIND, 0, &Player::skillMind);
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_RULERS_RING, CHARACTER_ATTRIBUTE_SKILL_DARK, 0, &Player::skillDark);
@@ -545,15 +533,15 @@ void ItemGen::PopulateArtifactBonusMap() {
     AddToMap(artifactBonusMap, ITEM_RELIC_ETHRICS_STAFF, CHARACTER_ATTRIBUTE_SKILL_DARK, 0, &Player::skillDark);
     AddToMap(artifactBonusMap, ITEM_RELIC_ETHRICS_STAFF, CHARACTER_ATTRIBUTE_SKILL_MEDITATION, 15);
 
-    AddToMap(artifactBonusMap, ITEM_RELIC_HARECS_LEATHER, CHARACTER_ATTRIBUTE_SKILL_TRAP_DISARM, 5);
-    AddToMap(artifactBonusMap, ITEM_RELIC_HARECS_LEATHER, CHARACTER_ATTRIBUTE_SKILL_STEALING, 5);
-    AddToMap(artifactBonusMap, ITEM_RELIC_HARECS_LEATHER, CHARACTER_ATTRIBUTE_LUCK, 50);
-    AddToMap(artifactBonusMap, ITEM_RELIC_HARECS_LEATHER, CHARACTER_ATTRIBUTE_RESIST_FIRE, -10);
-    AddToMap(artifactBonusMap, ITEM_RELIC_HARECS_LEATHER, CHARACTER_ATTRIBUTE_RESIST_WATER, -10);
-    AddToMap(artifactBonusMap, ITEM_RELIC_HARECS_LEATHER, CHARACTER_ATTRIBUTE_RESIST_AIR, -10);
-    AddToMap(artifactBonusMap, ITEM_RELIC_HARECS_LEATHER, CHARACTER_ATTRIBUTE_RESIST_EARTH, -10);
-    AddToMap(artifactBonusMap, ITEM_RELIC_HARECS_LEATHER, CHARACTER_ATTRIBUTE_RESIST_MIND, -10);
-    AddToMap(artifactBonusMap, ITEM_RELIC_HARECS_LEATHER, CHARACTER_ATTRIBUTE_RESIST_BODY, -10);
+    AddToMap(artifactBonusMap, ITEM_RELIC_HARECKS_LEATHER, CHARACTER_ATTRIBUTE_SKILL_TRAP_DISARM, 5);
+    AddToMap(artifactBonusMap, ITEM_RELIC_HARECKS_LEATHER, CHARACTER_ATTRIBUTE_SKILL_STEALING, 5);
+    AddToMap(artifactBonusMap, ITEM_RELIC_HARECKS_LEATHER, CHARACTER_ATTRIBUTE_LUCK, 50);
+    AddToMap(artifactBonusMap, ITEM_RELIC_HARECKS_LEATHER, CHARACTER_ATTRIBUTE_RESIST_FIRE, -10);
+    AddToMap(artifactBonusMap, ITEM_RELIC_HARECKS_LEATHER, CHARACTER_ATTRIBUTE_RESIST_WATER, -10);
+    AddToMap(artifactBonusMap, ITEM_RELIC_HARECKS_LEATHER, CHARACTER_ATTRIBUTE_RESIST_AIR, -10);
+    AddToMap(artifactBonusMap, ITEM_RELIC_HARECKS_LEATHER, CHARACTER_ATTRIBUTE_RESIST_EARTH, -10);
+    AddToMap(artifactBonusMap, ITEM_RELIC_HARECKS_LEATHER, CHARACTER_ATTRIBUTE_RESIST_MIND, -10);
+    AddToMap(artifactBonusMap, ITEM_RELIC_HARECKS_LEATHER, CHARACTER_ATTRIBUTE_RESIST_BODY, -10);
 
     AddToMap(artifactBonusMap, ITEM_RELIC_OLD_NICK, CHARACTER_ATTRIBUTE_SKILL_TRAP_DISARM, 5);
 
@@ -616,12 +604,12 @@ void ItemGen::PopulateArtifactBonusMap() {
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_MINDS_EYE, CHARACTER_ATTRIBUTE_WILLPOWER, 15);
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_MINDS_EYE, CHARACTER_ATTRIBUTE_INTELLIGENCE, 15);
 
-    AddToMap(artifactBonusMap, ITEM_ELVEN_CHAINMAIL, CHARACTER_ATTRIBUTE_SPEED, 15);
-    AddToMap(artifactBonusMap, ITEM_ELVEN_CHAINMAIL, CHARACTER_ATTRIBUTE_ACCURACY, 15);
+    AddToMap(artifactBonusMap, ITEM_ARTIFACT_ELVEN_CHAINMAIL, CHARACTER_ATTRIBUTE_SPEED, 15);
+    AddToMap(artifactBonusMap, ITEM_ARTIFACT_ELVEN_CHAINMAIL, CHARACTER_ATTRIBUTE_ACCURACY, 15);
 
-    AddToMap(artifactBonusMap, ITEM_FORGE_GAUNTLETS, CHARACTER_ATTRIBUTE_STRENGTH, 15);
-    AddToMap(artifactBonusMap, ITEM_FORGE_GAUNTLETS, CHARACTER_ATTRIBUTE_ENDURANCE, 15);
-    AddToMap(artifactBonusMap, ITEM_FORGE_GAUNTLETS, CHARACTER_ATTRIBUTE_RESIST_FIRE, 30);
+    AddToMap(artifactBonusMap, ITEM_ARTIFACT_FORGE_GAUNTLETS, CHARACTER_ATTRIBUTE_STRENGTH, 15);
+    AddToMap(artifactBonusMap, ITEM_ARTIFACT_FORGE_GAUNTLETS, CHARACTER_ATTRIBUTE_ENDURANCE, 15);
+    AddToMap(artifactBonusMap, ITEM_ARTIFACT_FORGE_GAUNTLETS, CHARACTER_ATTRIBUTE_RESIST_FIRE, 30);
 
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_HEROS_BELT, CHARACTER_ATTRIBUTE_STRENGTH, 15);
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_HEROS_BELT, CHARACTER_ATTRIBUTE_SKILL_ARMSMASTER, 5);
@@ -638,65 +626,65 @@ void ItemGen::GetItemBonusSpecialEnchantment(Player* owner,
                                              CHARACTER_ATTRIBUTE_TYPE attrToGet,
                                              int* additiveBonus,
                                              int* halfSkillBonus) {
-    auto bonusList = specialBonusMap.find(this->special_enchantment);
-    if (bonusList == specialBonusMap.end()) {
+    auto pos = specialBonusMap.find(this->special_enchantment);
+    if (pos == specialBonusMap.end())
         return;
-    }
-    std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>* currList = bonusList->second;
-    if (currList->find(attrToGet) != currList->end()) {
-        CEnchantment* currBonus = (*currList)[attrToGet];
-        if (currBonus->statPtr != NULL) {
-            if (currBonus->statBonus == 0) {
-                *halfSkillBonus = owner->*currBonus->statPtr / 2;
-            } else {
-                if (*additiveBonus < currBonus->statBonus) {
-                    *additiveBonus = currBonus->statBonus;
-                }
-            }
+
+    auto subpos = pos->second.find(attrToGet);
+    if (subpos == pos->second.end())
+        return;
+
+    const CEnchantment &currBonus = subpos->second;
+    if (currBonus.statPtr != NULL) {
+        if (currBonus.statBonus == 0) {
+            *halfSkillBonus = owner->*currBonus.statPtr / 2;
         } else {
-            *additiveBonus += currBonus->statBonus;
+            if (*additiveBonus < currBonus.statBonus) {
+                *additiveBonus = currBonus.statBonus;
+            }
         }
+    } else {
+        *additiveBonus += currBonus.statBonus;
     }
 }
 
 void ItemGen::GetItemBonusArtifact(Player* owner,
                                    CHARACTER_ATTRIBUTE_TYPE attrToGet,
                                    int* bonusSum) {
-    auto bonusList = artifactBonusMap.find(this->uItemID);
-    if (bonusList == artifactBonusMap.end()) {
+    auto pos = artifactBonusMap.find(this->uItemID);
+    if (pos == artifactBonusMap.end())
         return;
-    }
-    std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>* currList = bonusList->second;
-    if (currList->find(attrToGet) != currList->end()) {
-        CEnchantment* currBonus = (*currList)[attrToGet];
-        if (currBonus->statPtr != NULL) {
-            *bonusSum = owner->*currBonus->statPtr / 2;
-        } else {
-            *bonusSum += currBonus->statBonus;
-        }
+
+    auto subpos = pos->second.find(attrToGet);
+    if (subpos == pos->second.end())
+        return;
+
+    const CEnchantment &currBonus = subpos->second;
+    if (currBonus.statPtr != NULL) {
+        *bonusSum = owner->*currBonus.statPtr / 2;
+    } else {
+        *bonusSum += currBonus.statBonus;
     }
 }
 
-bool ItemGen::IsRegularEnchanmentForAttribute(
-    CHARACTER_ATTRIBUTE_TYPE attrToGet) {
-    auto bonusList = specialBonusMap.find(this->uEnchantmentType);
-    if (bonusList == specialBonusMap.end()) {
+bool ItemGen::IsRegularEnchanmentForAttribute(CHARACTER_ATTRIBUTE_TYPE attrToGet) {
+    auto pos = specialBonusMap.find(this->uEnchantmentType);
+    if (pos == specialBonusMap.end())
         return false;
-    }
-    std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>* currList = bonusList->second;
-    return currList->find(attrToGet) != currList->end();
+
+    return pos->second.find(attrToGet) != pos->second.end();
 }
 
 ITEM_EQUIP_TYPE ItemGen::GetItemEquipType() {
     // to avoid nzi - is this safe??
-    if (this->uItemID == 0)
+    if (this->uItemID == ITEM_NULL)
         return EQUIP_NONE;
     else
         return pItemTable->pItems[this->uItemID].uEquipType;
 }
 
-unsigned char ItemGen::GetPlayerSkillType() {
-    unsigned char skl = pItemTable->pItems[this->uItemID].uSkillType;
+PLAYER_SKILL_TYPE ItemGen::GetPlayerSkillType() {
+    PLAYER_SKILL_TYPE skl = pItemTable->pItems[this->uItemID].uSkillType;
     if (skl == PLAYER_SKILL_CLUB) {
         // club skill not used but some items load it
         skl = PLAYER_SKILL_MACE;
@@ -721,104 +709,115 @@ uint8_t ItemGen::GetDamageMod() {
 }
 
 //----- (0043C91D) --------------------------------------------------------
-int GetItemTextureFilename(char* pOut, signed int item_id, int index,
-                           int shoulder) {
-    int result;  // eax@2
-    ITEM_EQUIP_TYPE pEquipType;
+std::string GetItemTextureFilename(ITEM_TYPE item_id, int index, int shoulder) {
+    ITEM_EQUIP_TYPE pEquipType = pItemTable->pItems[item_id].uEquipType;
 
-    result = 0;  // BUG   fn is void
-    pEquipType = pItemTable->pItems[item_id].uEquipType;
-    if (item_id > 500) {
+    // For some reason artifact textures are stored using different ids, and textures under original ids simply
+    // don't exist. Why is it obfuscated like this, especially with this global array of flags, is a good question.
+    // TODO(captainurist): deobfuscate
+    if(item_id > ITEM_ARTIFACT_PUCK) {
         switch (item_id) {
-            case ITEM_RELIC_HARECS_LEATHER:
-                if (byte_5111F6_OwnedArtifacts[2] != 0) item_id = 234;
+            case ITEM_RELIC_HARECKS_LEATHER:
+                if (byte_5111F6_OwnedArtifacts[2] != 0)
+                    item_id = ITEM_POTION_STONESKIN;
                 break;
             case ITEM_ARTIFACT_YORUBA:
-                if (byte_5111F6_OwnedArtifacts[1] != 0) item_id = 236;
+                if (byte_5111F6_OwnedArtifacts[1] != 0)
+                    item_id = ITEM_POTION_HARDEN_ITEM;
                 break;
             case ITEM_ARTIFACT_GOVERNORS_ARMOR:
-                if (byte_5111F6_OwnedArtifacts[0] != 0) item_id = 235;
+                if (byte_5111F6_OwnedArtifacts[0] != 0)
+                    item_id = ITEM_POTION_WATER_BREATHING;
                 break;
-            case ITEM_ELVEN_CHAINMAIL:
-                if (byte_5111F6_OwnedArtifacts[16] != 0) item_id = 73;
+            case ITEM_ARTIFACT_ELVEN_CHAINMAIL:
+                if (byte_5111F6_OwnedArtifacts[16] != 0)
+                    item_id = ITEM_FINE_CHAIN_MAIL;
                 break;
-            case ITEM_ARTIFACT_LEAGUE_BOOTS:
-                if (byte_5111F6_OwnedArtifacts[3] != 0) item_id = 312;
+            case ITEM_ARTIFACT_SEVEN_LEAGUE_BOOTS:
+                if (byte_5111F6_OwnedArtifacts[3] != 0)
+                    item_id = ITEM_SCROLL_FEATHER_FALL;
                 break;
             case ITEM_RELIC_TALEDONS_HELM:
-                if (byte_5111F6_OwnedArtifacts[4] != 0) item_id = 239;
+                if (byte_5111F6_OwnedArtifacts[4] != 0)
+                    item_id = ITEM_POTION_CURE_INSANITY;
                 break;
             case ITEM_RELIC_SCHOLARS_CAP:
-                if (byte_5111F6_OwnedArtifacts[5] != 0) item_id = 240;
+                if (byte_5111F6_OwnedArtifacts[5] != 0)
+                    item_id = ITEM_POTION_MIGHT_BOOST;
                 break;
             case ITEM_RELIC_PHYNAXIAN_CROWN:
-                if (byte_5111F6_OwnedArtifacts[6] != 0) item_id = 241;
+                if (byte_5111F6_OwnedArtifacts[6] != 0)
+                    item_id = ITEM_POTION_INTELLECT_BOOST;
                 break;
             case ITEM_ARTIFACT_MINDS_EYE:
-                if (byte_5111F6_OwnedArtifacts[7] != 0) item_id = 93;
+                if (byte_5111F6_OwnedArtifacts[7] != 0)
+                    item_id = ITEM_MOGRED_HELM;
                 break;
             case ITEM_RARE_SHADOWS_MASK:
-                if (byte_5111F6_OwnedArtifacts[8] != 0) item_id = 344;
+                if (byte_5111F6_OwnedArtifacts[8] != 0)
+                    item_id = ITEM_SCROLL_DETECT_LIFE;
                 break;
             case ITEM_RELIC_TITANS_BELT:
-                if (byte_5111F6_OwnedArtifacts[9] != 0) item_id = 324;
+                if (byte_5111F6_OwnedArtifacts[9] != 0)
+                    item_id = ITEM_SCROLL_WATER_RESISTANCE;
                 break;
             case ITEM_ARTIFACT_HEROS_BELT:
-                if (byte_5111F6_OwnedArtifacts[10] != 0) item_id = 104;
+                if (byte_5111F6_OwnedArtifacts[10] != 0)
+                    item_id = ITEM_GILDED_BELT;
                 break;
             case ITEM_RELIC_TWILIGHT:
-                if (byte_5111F6_OwnedArtifacts[11] != 0) item_id = 325;
+                if (byte_5111F6_OwnedArtifacts[11] != 0)
+                    item_id = ITEM_SCROLL_ICE_BOLT;
                 break;
             case ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP:
-                if (byte_5111F6_OwnedArtifacts[12] != 0) item_id = 330;
+                if (byte_5111F6_OwnedArtifacts[12] != 0)
+                    item_id = ITEM_SCROLL_TOWN_PORTAL;
                 break;
             case ITEM_RARE_SUN_CLOAK:
-                if (byte_5111F6_OwnedArtifacts[13] != 0) item_id = 347;
+                if (byte_5111F6_OwnedArtifacts[13] != 0)
+                    item_id = ITEM_SCROLL_TURN_UNDEAD;
                 break;
             case ITEM_RARE_MOON_CLOAK:
-                if (byte_5111F6_OwnedArtifacts[14] != 0) item_id = 348;
+                if (byte_5111F6_OwnedArtifacts[14] != 0)
+                    item_id = ITEM_SCROLL_REMOVE_CURSE;
                 break;
             case ITEM_RARE_VAMPIRES_CAPE:
-                if (byte_5111F6_OwnedArtifacts[15] != 0) item_id = 350;
+                if (byte_5111F6_OwnedArtifacts[15] != 0)
+                    item_id = ITEM_SCROLL_HEROISM;
                 break;
             default:
-                return 0;
+                return std::string();
         }
     }
 
     switch (pEquipType) {
         case EQUIP_ARMOUR:
             if (!shoulder)
-                return sprintf(pOut, "item%3.3dv%d", item_id, index);
+                return StringPrintf("item%3.3dv%d", item_id, index);
             else if (shoulder == 1)
-                return sprintf(pOut, "item%3.3dv%da1", item_id, index);
+                return StringPrintf("item%3.3dv%da1", item_id, index);
             else if (shoulder == 2)
-                return sprintf(pOut, "item%3.3dv%da2", item_id, index);
-            break;
+                return StringPrintf("item%3.3dv%da2", item_id, index);
         case EQUIP_CLOAK:
             if (!shoulder)
-                return sprintf(pOut, "item%3.3dv%d", item_id, index);
+                return StringPrintf("item%3.3dv%d", item_id, index);
             else
-                return sprintf(pOut, "item%3.3dv%da1", item_id, index);
+                return StringPrintf("item%3.3dv%da1", item_id, index);
         default:
-            return sprintf(pOut, "item%3.3dv%d", item_id, index);
+            return StringPrintf("item%3.3dv%d", item_id, index);
     }
-
-    result = item_id - 504;
-    return result;
 }
 
 //----- (004BDAAF) --------------------------------------------------------
 bool ItemGen::MerchandiseTest(int _2da_idx) {
     bool test;
 
-    if ((p2DEvents[_2da_idx - 1].uType != BuildingType_AlchemistShop ||
-         (signed int)this->uItemID < 740 || (signed int)this->uItemID > 771) &&
-            ((signed int)this->uItemID >= 600 ||
-             (signed int)this->uItemID >= 529 &&
-                 (signed int)this->uItemID <= 599) ||
+    // TODO(captainurist): move these checks into functions in ItemEnums.h?
+    if ((p2DEvents[_2da_idx - 1].uType != BuildingType_AlchemistShop || !IsRecipe(this->uItemID)) &&
+        (this->uItemID >= ITEM_QUEST_HEART_OF_THE_WOOD || this->uItemID >= ITEM_ARTIFACT_HERMES_SANDALS && this->uItemID <= ITEM_599) ||
         this->IsStolen())
         return false;
+
     switch (p2DEvents[_2da_idx - 1].uType) {
         case BuildingType_WeaponShop: {
             test = this->GetItemEquipType() <= EQUIP_BOW;
@@ -831,16 +830,13 @@ bool ItemGen::MerchandiseTest(int _2da_idx) {
         }
         case BuildingType_MagicShop: {
             test = this->GetPlayerSkillType() == PLAYER_SKILL_MISC ||
-                   this->GetItemEquipType() == EQIUP_ANY;
+                   this->GetItemEquipType() == EQUIP_BOOK;
             break;
         }
         case BuildingType_AlchemistShop: {
             test = this->GetItemEquipType() == EQUIP_REAGENT ||
                    this->GetItemEquipType() == EQUIP_POTION ||
-                   (this->GetItemEquipType() > EQUIP_POTION &&
-                    !(this->GetItemEquipType() != EQUIP_MESSAGE_SCROLL ||
-                      (signed int)this->uItemID < 740) &&
-                    this->uItemID != 771);
+                   (this->GetItemEquipType() == EQUIP_MESSAGE_SCROLL && IsRecipe(this->uItemID));
             break;
         }
         default: {

@@ -225,7 +225,8 @@ void ItemInteraction(unsigned int item_id) {
             pSpriteObjects[item_id].containing_item.special_enchantment, 0);
         viewparams->bRedrawGameUI = 1;
     } else {
-        if (pParty->pPickedItem.uItemID) return;
+        if (pParty->pPickedItem.uItemID != ITEM_NULL)
+            return;
 
         GameUI_SetStatusBar(
             LSTR_FMT_YOU_FOUND_ITEM,
@@ -235,7 +236,7 @@ void ItemInteraction(unsigned int item_id) {
         // TODO: WTF? 184 / 185 qbits are associated with Tatalia's Mercenery Guild Harmondale raids. Are these about castle's tapestries ?
         if (pSpriteObjects[item_id].containing_item.uItemID == ITEM_ARTIFACT_SPLITTER)
             _449B7E_toggle_bit(pParty->_quest_bits, QBIT_SPLITTER_FOUND, 1);
-        if (pSpriteObjects[item_id].containing_item.uItemID == ITEM_SPELLBOOK_MIND_REMOVE_FEAR)
+        if (pSpriteObjects[item_id].containing_item.uItemID == ITEM_SPELLBOOK_REMOVE_FEAR)
             _449B7E_toggle_bit(pParty->_quest_bits, 185, 1);
         if (!pParty->AddItemToParty(&pSpriteObjects[item_id].containing_item))
             pParty->SetHoldingItem(&pSpriteObjects[item_id].containing_item);
@@ -284,7 +285,8 @@ void DecorationInteraction(unsigned int id, unsigned int pid) {
 }
 
 void Engine::DropHeldItem() {
-    if (!pParty->pPickedItem.uItemID) return;
+    if (pParty->pPickedItem.uItemID == ITEM_NULL)
+        return;
 
     SpriteObject a1;
     a1.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[pParty->pPickedItem.uItemID].uSpriteID;
@@ -330,7 +332,7 @@ void Engine::OnGameViewportClick() {
         // v21 = (signed int)(uint16_t)v0 >> 3;
         if (pSpriteObjects[item_id].IsUnpickable() ||
             item_id >= 1000 || !pSpriteObjects[item_id].uObjectDescID || !in_range) {
-            if (pParty->pPickedItem.uItemID) {
+            if (pParty->pPickedItem.uItemID != ITEM_NULL) {
                 DropHeldItem();
             }
         } else {
@@ -342,13 +344,13 @@ void Engine::OnGameViewportClick() {
         if (pActors[mon_id].uAIState == Dead) {
             if (in_range)
                 pActors[mon_id].LootActor();
-            else if (pParty->pPickedItem.uItemID)
+            else if (pParty->pPickedItem.uItemID != ITEM_NULL)
                 DropHeldItem();
         } else if (!keyboardInputHandler->IsCastOnClickToggled()) {
             if (CanInteractWithActor(mon_id)) {
                 if (in_range) {
                     InteractWithActor(mon_id);
-                } else if (pParty->pPickedItem.uItemID) {
+                } else if (pParty->pPickedItem.uItemID != ITEM_NULL) {
                     DropHeldItem();
                 }
             } else {
@@ -366,7 +368,7 @@ void Engine::OnGameViewportClick() {
     } else if (PID_TYPE(pid) == OBJECT_Decoration) {
         int id = PID_ID(pid);
         if (distance - pDecorationList->GetDecoration(pLevelDecorations[id].uDecorationDescID)->uRadius >= clickable_distance) {
-            if (pParty->pPickedItem.uItemID) {
+            if (pParty->pPickedItem.uItemID != ITEM_NULL) {
                 DropHeldItem();
             }
         } else {
@@ -375,9 +377,9 @@ void Engine::OnGameViewportClick() {
     } else if (PID_TYPE(pid) == OBJECT_BModel && in_range) {
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
             if (!pIndoor->pFaces[PID_ID(pid)].Clickable()) {
-                if (!pParty->pPickedItem.uItemID) {
+                if (pParty->pPickedItem.uItemID == ITEM_NULL) {
                     GameUI_StatusBar_NothingHere();
-                    if (!pParty->pPickedItem.uItemID)
+                    if (pParty->pPickedItem.uItemID == ITEM_NULL)
                         return;
                 } else {
                     DropHeldItem();
@@ -388,9 +390,9 @@ void Engine::OnGameViewportClick() {
             }
         } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
             if (!pOutdoor->pBModels[(signed int)(pid) >> 9].pFaces[PID_ID(pid) & 0x3F].Clickable()) {
-                if (!pParty->pPickedItem.uItemID) {
+                if (pParty->pPickedItem.uItemID == ITEM_NULL) {
                     GameUI_StatusBar_NothingHere();
-                    if (!pParty->pPickedItem.uItemID)
+                    if (pParty->pPickedItem.uItemID == ITEM_NULL)
                         return;
                 } else {
                     DropHeldItem();
@@ -402,7 +404,7 @@ void Engine::OnGameViewportClick() {
                 EventProcessor(pEventID, pid, 1);
             }
         }
-    } else if (pParty->pPickedItem.uItemID) {
+    } else if (pParty->pPickedItem.uItemID != ITEM_NULL) {
         DropHeldItem();
     }
 }

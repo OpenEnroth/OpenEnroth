@@ -26,6 +26,8 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Utility/Random.h"
+
 using EngineIoc = Engine_::IocContainer;
 using Io::Mouse;
 
@@ -294,7 +296,7 @@ int Party::GetNextActiveCharacter() {
 }
 
 //----- (00493244) --------------------------------------------------------
-bool Party::HasItem(unsigned int uItemID) {
+bool Party::HasItem(ITEM_TYPE uItemID) {
     for (int player = 0; player < 4; player++) {
         for (int itemPos = 0; itemPos < 138; itemPos++) {
             if (pParty->pPlayers[player].pOwnItems[itemPos].uItemID == uItemID)
@@ -424,7 +426,6 @@ unsigned int Party::GetPartyFame() {
 void Party::CreateDefaultParty(bool bDebugGiveItems) {
     Player *pCharacter;      // esi@3
     int uSkillIdx;           // eax@11
-    unsigned int v16;        // [sp-4h] [bp-44h]@26
     signed int uNumPlayers;  // [sp+18h] [bp-28h]@1
     ItemGen Dst;             // [sp+1Ch] [bp-24h]@10
 
@@ -525,63 +526,63 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
                 if (pCharacter->pActiveSkills[uSkillIdx]) {
                     switch (uSkillIdx) {
                         case PLAYER_SKILL_STAFF:
-                            pCharacter->WearItem(ITEM_STAFF_1);
+                            pCharacter->WearItem(ITEM_STAFF);
                             break;
                         case PLAYER_SKILL_SWORD:
-                            pCharacter->WearItem(ITEM_LONGSWORD_1);
+                            pCharacter->WearItem(ITEM_CRUDE_LONGSWORD);
                             break;
                         case PLAYER_SKILL_DAGGER:
-                            pCharacter->WearItem(ITEM_DAGGER_1);
+                            pCharacter->WearItem(ITEM_DAGGER);
                             break;
                         case PLAYER_SKILL_AXE:
-                            pCharacter->WearItem(ITEM_AXE_1);
+                            pCharacter->WearItem(ITEM_CRUDE_AXE);
                             break;
                         case PLAYER_SKILL_SPEAR:
-                            pCharacter->WearItem(ITEM_SPEAR_1);
+                            pCharacter->WearItem(ITEM_CRUDE_SPEAR);
                             break;
                         case PLAYER_SKILL_BOW:
-                            pCharacter->WearItem(ITEM_CROSSBOW_1);
+                            pCharacter->WearItem(ITEM_CROSSBOW);
                             break;
                         case PLAYER_SKILL_MACE:
-                            pCharacter->WearItem(ITEM_MACE_1);
+                            pCharacter->WearItem(ITEM_MACE);
                             break;
                         case PLAYER_SKILL_SHIELD:
-                            pCharacter->WearItem(ITEM_BUCKLER_1);
+                            pCharacter->WearItem(ITEM_WOODEN_BUCKLER);
                             break;
                         case PLAYER_SKILL_LEATHER:
-                            pCharacter->WearItem(ITEM_LEATHER_1);
+                            pCharacter->WearItem(ITEM_LEATHER_ARMOR);
                             break;
                         case PLAYER_SKILL_CHAIN:
-                            pCharacter->WearItem(ITEM_CHAINMAIL_1);
+                            pCharacter->WearItem(ITEM_CHAIN_MAIL);
                             break;
                         case PLAYER_SKILL_PLATE:
-                            pCharacter->WearItem(ITEM_PLATE_1);
+                            pCharacter->WearItem(ITEM_PLATE_ARMOR);
                             break;
                         case PLAYER_SKILL_FIRE:
-                            pCharacter->AddItem(-1, ITEM_SPELLBOOK_FIRE_STRIKE);
+                            pCharacter->AddItem(-1, ITEM_SPELLBOOK_FIRE_BOLT);
                             break;
                         case PLAYER_SKILL_AIR:
                             pCharacter->AddItem(
-                                -1, ITEM_SPELLBOOK_AIR_FEATHER_FALL);
+                                -1, ITEM_SPELLBOOK_FEATHER_FALL);
                             break;
                         case PLAYER_SKILL_WATER:
                             pCharacter->AddItem(
-                                -1, ITEM_SPELLBOOK_WATER_POISON_SPRAY);
+                                -1, ITEM_SPELLBOOK_POISON_SPRAY);
                             break;
                         case PLAYER_SKILL_EARTH:
-                            pCharacter->AddItem(-1, ITEM_SPELLBOOK_EARTH_SLOW);
+                            pCharacter->AddItem(-1, ITEM_SPELLBOOK_SLOW);
                             break;
                         case PLAYER_SKILL_SPIRIT:
                             pCharacter->AddItem(-1,
-                                                ITEM_SPELLBOOK_SPIRIT_BLESS);
+                                                ITEM_SPELLBOOK_BLESS);
                             break;
                         case PLAYER_SKILL_MIND:
                             pCharacter->AddItem(-1,
-                                                ITEM_SPELLBOOK_MIND_MIND_BLAST);
+                                                ITEM_SPELLBOOK_MIND_BLAST);
                             break;
                         case PLAYER_SKILL_BODY:
                             pCharacter->AddItem(-1,
-                                                ITEM_SPELLBOOK_BODY_FIRST_AID);
+                                                ITEM_SPELLBOOK_HEAL);
                             break;
                         case PLAYER_SKILL_ITEM_ID:
                         case PLAYER_SKILL_REPAIR:
@@ -591,14 +592,14 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
                         case PLAYER_SKILL_TRAP_DISARM:
                         case PLAYER_SKILL_LEARNING:
                             pCharacter->AddItem(-1, ITEM_POTION_BOTTLE);
-                            v16 = 5 * (rand() % 3 + 40);  // simple reagent
-                            pCharacter->AddItem(-1, v16);
+                            // Add simple reagent.
+                            pCharacter->AddItem(-1, Sample(Level1Reagents()));
                             break;
                         case PLAYER_SKILL_DODGE:
-                            pCharacter->AddItem(-1, ITEM_BOOTS_1);
+                            pCharacter->AddItem(-1, ITEM_LEATHER_BOOTS);
                             break;
                         case PLAYER_SKILL_UNARMED:
-                            pCharacter->AddItem(-1, ITEM_GAUNTLETS_1);
+                            pCharacter->AddItem(-1, ITEM_GAUNTLETS);
                             break;
                         default:
                             break;
@@ -606,7 +607,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
                 }
             }
             for (int i = 0; i < 138; i++) {
-                if (pCharacter->pInventoryItemList[i].uItemID != 0)
+                if (pCharacter->pInventoryItemList[i].uItemID != ITEM_NULL)
                     pCharacter->pInventoryItemList[i].SetIdentified();
             }
         }
@@ -704,7 +705,7 @@ void Party::Reset() {
     _494035_timed_effects__water_walking_damage__etc();
     pEventTimer->Pause();
 
-    this->pPickedItem.uItemID = 0;
+    this->pPickedItem.uItemID = ITEM_NULL;
 }
 
 //----- (0043AD34) --------------------------------------------------------
@@ -931,7 +932,7 @@ void Party::RestAndHeal() {
         if (pPlayer->classType == PLAYER_CLASS_LICH) {
             have_vessels_soul = false;
             for (uint i = 0; i < 126; i++) {
-                if (pPlayer->pInventoryItemList[i].uItemID == ITEM_LICH_JAR_FULL && pPlayer->pInventoryItemList[i].uHolderPlayer == pPlayerID + 1)
+                if (pPlayer->pInventoryItemList[i].uItemID == ITEM_QUEST_LICH_JAR_FULL && pPlayer->pInventoryItemList[i].uHolderPlayer == pPlayerID + 1)
                     have_vessels_soul = true;
             }
             if (!have_vessels_soul) {
@@ -1129,9 +1130,8 @@ void Party::PartyFindsGold(
 
 void Party::PickedItem_PlaceInInventory_or_Drop() {
     // no picked item
-    if (!pParty->pPickedItem.uItemID) {
+    if (pParty->pPickedItem.uItemID == ITEM_NULL)
         return;
-    }
 
     auto texture = assets->GetImage_ColorKey(pParty->pPickedItem.GetIconName(), render->teal_mask_16);
 
@@ -1182,7 +1182,6 @@ void Party::PickedItem_PlaceInInventory_or_Drop() {
 
 //----- (0048C6F6) --------------------------------------------------------
 bool Party::AddItemToParty(ItemGen *pItem) {
-    unsigned int v2;  // eax@1
     char *v5;         // eax@8
     // Texture_MM7 *v7; // ebx@10
     signed int v8;  // esi@10
@@ -1190,7 +1189,7 @@ bool Party::AddItemToParty(ItemGen *pItem) {
     int v10;        // eax@11
     // int v21; // [sp+24h] [bp-4h]@10
 
-    v2 = pItem->uItemID;
+    ITEM_TYPE v2 = pItem->uItemID;
     if (!pItemTable->pItems[v2].uItemID_Rep_St) pItem->SetIdentified();
 
     v5 = pItemTable->pItems[v2].pIconName;

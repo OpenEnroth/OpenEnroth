@@ -215,13 +215,13 @@ void Deserialize(const SpellBuff_MM7 &src, SpellBuff *dst) {
 void Serialize(const ItemGen &src, ItemGen_MM7 *dst) {
     memzero(dst);
 
-    dst->uItemID = src.uItemID;
+    dst->uItemID = std::to_underlying(src.uItemID);
     dst->uEnchantmentType = src.uEnchantmentType;
     dst->m_enchantmentStrength = src.m_enchantmentStrength;
     dst->special_enchantment = src.special_enchantment;
     dst->uNumCharges = src.uNumCharges;
     dst->uAttributes = std::to_underlying(src.uAttributes);
-    dst->uBodyAnchor = src.uBodyAnchor;
+    dst->uBodyAnchor = std::to_underlying(src.uBodyAnchor);
     dst->uMaxCharges = src.uMaxCharges;
     dst->uHolderPlayer = src.uHolderPlayer;
     dst->field_1B = src.field_1B;
@@ -229,13 +229,13 @@ void Serialize(const ItemGen &src, ItemGen_MM7 *dst) {
 }
 
 void Deserialize(const ItemGen_MM7 &src, ItemGen *dst) {
-    dst->uItemID = src.uItemID;
+    dst->uItemID = ITEM_TYPE(src.uItemID);
     dst->uEnchantmentType = src.uEnchantmentType;
     dst->m_enchantmentStrength = src.m_enchantmentStrength;
     dst->special_enchantment = (ITEM_ENCHANTMENT)src.special_enchantment;
     dst->uNumCharges = src.uNumCharges;
     dst->uAttributes = ITEM_FLAGS(src.uAttributes);
-    dst->uBodyAnchor = src.uBodyAnchor;
+    dst->uBodyAnchor = ITEM_SLOT(src.uBodyAnchor);
     dst->uMaxCharges = src.uMaxCharges;
     dst->uHolderPlayer = src.uHolderPlayer;
     dst->field_1B = src.field_1B;
@@ -339,8 +339,8 @@ void Serialize(const Party &src, Party_MM7 *dst) {
     dst->uNumArenaKnightWins = src.uNumArenaKnightWins;
     dst->uNumArenaLordWins = src.uNumArenaLordWins;
 
-    for (unsigned int i = 0; i < 29; ++i)
-        dst->pIsArtifactFound[i] = src.pIsArtifactFound[i];
+    for (ITEM_TYPE i : src.pIsArtifactFound.indices())
+        dst->pIsArtifactFound[std::to_underlying(i) - std::to_underlying(ITEM_FIRST_SPAWNABLE_ARTIFACT)] = src.pIsArtifactFound[i];
     for (unsigned int i = 0; i < 39; ++i)
         dst->field_7d7[i] = src.field_7d7_set0_unused[i];
     for (unsigned int i = 0; i < 26; ++i)
@@ -501,8 +501,8 @@ void Deserialize(const Party_MM7 &src, Party *dst) {
     dst->uNumArenaKnightWins = src.uNumArenaKnightWins;
     dst->uNumArenaLordWins = src.uNumArenaLordWins;
 
-    for (unsigned int i = 0; i < 29; ++i)
-        dst->pIsArtifactFound[i] = src.pIsArtifactFound[i];
+    for (ITEM_TYPE i : dst->pIsArtifactFound.indices())
+        dst->pIsArtifactFound[i] = src.pIsArtifactFound[std::to_underlying(i) - std::to_underlying(ITEM_FIRST_SPAWNABLE_ARTIFACT)];
     for (unsigned int i = 0; i < 39; ++i)
         dst->field_7d7_set0_unused[i] = src.field_7d7[i];
     for (unsigned int i = 0; i < 26; ++i)
@@ -684,8 +684,8 @@ void Serialize(const Player &src, Player_MM7 *dst) {
     dst->sMana = src.sMana;
     dst->uBirthYear = src.uBirthYear;
 
-    for (unsigned int i = 0; i < 16; ++i)
-        dst->pEquipment.pIndices[i] = src.pEquipment.pIndices[i];
+    for (ITEM_SLOT i : AllItemSlots())
+        dst->pEquipment.pIndices[std::to_underlying(i) - std::to_underlying(ITEM_SLOT_FIRST_VALID)] = src.pEquipment.pIndices[i];
 
     for (unsigned int i = 0; i < 49; ++i)
         dst->field_1988[i] = src.field_1988[i];
@@ -969,8 +969,8 @@ void Deserialize(const Player_MM7 &src, Player* dst) {
     dst->sMana = src.sMana;
     dst->uBirthYear = src.uBirthYear;
 
-    for (unsigned int i = 0; i < 16; ++i)
-        dst->pEquipment.pIndices[i] = src.pEquipment.pIndices[i];
+    for (ITEM_SLOT i : AllItemSlots())
+        dst->pEquipment.pIndices[i] = src.pEquipment.pIndices[std::to_underlying(i) - std::to_underlying(ITEM_SLOT_FIRST_VALID)];
 
     for (unsigned int i = 0; i < 49; ++i)
         dst->field_1988[i] = src.field_1988[i];
@@ -1196,7 +1196,7 @@ void Serialize(const Actor &src, Actor_MM7 *dst) {
     dst->uTetherDistance = src.uTetherDistance;
     dst->uAIState = std::to_underlying(src.uAIState);
     dst->uCurrentActionAnimation = std::to_underlying(src.uCurrentActionAnimation);
-    dst->uCarriedItemID = src.uCarriedItemID;
+    dst->uCarriedItemID = std::to_underlying(src.uCarriedItemID);
     dst->field_B6 = src.field_B6;
     dst->field_B7 = src.field_B7;
     dst->uCurrentActionTime = src.uCurrentActionTime;
@@ -1309,7 +1309,7 @@ void Deserialize(const Actor_MM7 &src, Actor *dst) {
     dst->uTetherDistance = src.uTetherDistance;
     dst->uAIState = (AIState)src.uAIState;
     dst->uCurrentActionAnimation = ActorAnimation(src.uCurrentActionAnimation);
-    dst->uCarriedItemID = src.uCarriedItemID;
+    dst->uCarriedItemID = ITEM_TYPE(src.uCarriedItemID);
     dst->field_B6 = src.field_B6;
     dst->field_B7 = src.field_B7;
     dst->uCurrentActionTime = src.uCurrentActionTime;

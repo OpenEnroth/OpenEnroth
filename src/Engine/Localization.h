@@ -8,6 +8,7 @@
 #include "Engine/Conditions.h"
 
 #include "Utility/Workaround/ToUnderlying.h"
+#include "Utility/IndexedArray.h"
 
 
 #define LSTR_AC                               0   // "AC"
@@ -543,12 +544,12 @@ class Localization {
     const char* class_desciptions[36]{};
     const char* attribute_names[7]{};
     const char* attribute_descriptions[7]{};
-    const char* skill_names[38]{};
-    const char* skill_descriptions[38]{};
-    const char* skill_descriptions_normal[38]{};
-    const char* skill_descriptions_expert[38]{};
-    const char* skill_descriptions_master[38]{};
-    const char* skill_descriptions_grand[38]{};
+    IndexedArray<const char *, PLAYER_SKILL_FIRST, PLAYER_SKILL_COUNT> skill_names = {{}}; // Note: includes count
+    IndexedArray<const char *, PLAYER_SKILL_COUNT> skill_descriptions = {{}};
+    IndexedArray<const char *, PLAYER_SKILL_COUNT> skill_descriptions_normal = {{}};
+    IndexedArray<const char *, PLAYER_SKILL_COUNT> skill_descriptions_expert = {{}};
+    IndexedArray<const char *, PLAYER_SKILL_COUNT> skill_descriptions_master = {{}};
+    IndexedArray<const char *, PLAYER_SKILL_COUNT> skill_descriptions_grand = {{}};
     const char* character_conditions[19]{};
     const char* npc_profession_names[59]{};
 };

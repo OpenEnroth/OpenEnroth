@@ -50,7 +50,7 @@ struct Chest {  // 0x14cc
     }
     inline bool Trapped() const { return uFlags & CHEST_TRAPPED; }
 
-    static bool CanPlaceItemAt(int a1, int a2, int uChestID);
+    static bool CanPlaceItemAt(int test_cell_position, ITEM_TYPE item_id, int uChestID);
     static int CountChestItems(int uChestID);
     static int PutItemInChest(int a1, struct ItemGen *a2, int uChestID);
     static void PlaceItemAt(unsigned int put_cell_pos, unsigned int uItemIdx, int uChestID);

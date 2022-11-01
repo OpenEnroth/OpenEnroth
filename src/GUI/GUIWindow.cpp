@@ -54,7 +54,7 @@ GUIWindow *pPrimaryWindow;
 GUIWindow *pGUIWindow_CurrentMenu;
 GUIWindow *pDialogueWindow;
 GUIWindow *window_SpeakInHouse;
-GUIWindow *pGUIWindow_ScrollWindow; // reading a message scroll
+GUIWindow_Scroll *pGUIWindow_ScrollWindow; // reading a message scroll
 GUIWindow *ptr_507BC8;  // screen 19 - not used?
 GUIWindow *pGUIWindow_CastTargetedSpell;
 GUIWindow *pModalWindow; // UIMSG_ShowFinalWindow
@@ -996,13 +996,13 @@ void GUI_UpdateWindows() {
 }
 
 void CreateScrollWindow() {
-    GUIWindow a1 = *pGUIWindow_ScrollWindow;
+    GUIWindow_Scroll &a1 = *pGUIWindow_ScrollWindow;
     a1.sHint.clear();
     a1.uFrameX = 1;
     a1.uFrameY = 1;
     a1.uFrameWidth = 468;
     unsigned int v0 =
-        pFontSmallnum->CalcTextHeight(pScrolls[pGUIWindow_ScrollWindow->wData.val],
+        pFontSmallnum->CalcTextHeight(pScrolls[pGUIWindow_ScrollWindow->scroll_type],
             a1.uFrameWidth, 0) +
         2 * (unsigned char)pFontCreate->GetHeight() + 24;
     a1.uFrameHeight = v0;
@@ -1020,19 +1020,17 @@ void CreateScrollWindow() {
     a1.uFrameZ = a1.uFrameWidth + a1.uFrameX - 1;
     a1.uFrameW = a1.uFrameHeight + a1.uFrameY - 1;
 
-    char *v1 = pItemTable->pItems[pGUIWindow_ScrollWindow->wData.val + 700].pName;
+    char *v1 = pItemTable->pItems[pGUIWindow_ScrollWindow->scroll_type].pName;
 
     a1.DrawTitleText(pFontCreate, 0, 0, 0, StringPrintf(format_4E2D80, colorTable.PaleCanary.C16(), v1), 3);
-    a1.DrawText(pFontSmallnum, 1, pFontCreate->GetHeight() - 3, 0, pScrolls[pGUIWindow_ScrollWindow->wData.val], 0, 0, 0);
+    a1.DrawText(pFontSmallnum, 1, pFontCreate->GetHeight() - 3, 0, pScrolls[pGUIWindow_ScrollWindow->scroll_type], 0, 0, 0);
 }
 
 //----- (00467F48) --------------------------------------------------------
-void CreateMsgScrollWindow(signed int mscroll_id) {
-    if (!pGUIWindow_ScrollWindow && mscroll_id >= 700) {
-        if (mscroll_id <= 782) {
-            pGUIWindow_ScrollWindow =
-                new GUIWindow_Scroll(0, 0, window->GetWidth(), window->GetHeight(), mscroll_id - 700, "");
-        }
+void CreateMsgScrollWindow(ITEM_TYPE mscroll_id) {
+    if (!pGUIWindow_ScrollWindow && IsMessageScroll(mscroll_id)) {
+        pGUIWindow_ScrollWindow =
+            new GUIWindow_Scroll(0, 0, window->GetWidth(), window->GetHeight(), mscroll_id, "");
     }
 }
 
@@ -1674,17 +1672,16 @@ void _4B3FE5_training_dialogue(int eventId) {
  */
 void OracleDialogue() {
     ItemGen *item = nullptr;
-    int item_id = -1;
+    ITEM_TYPE item_id = ITEM_NULL;
 
     // display "You never had it" if nothing missing will be found
     current_npc_text = (char *)pNPCTopics[667].pText;
 
-    int i = 0;
-    for (i = 0; i < 54; i+=2) {
-        // only items with special subquest in range 212-237 and also 241 are recoverable
-        int quest_id = _4F0882_evt_VAR_PlayerItemInHands_vals[i];
+    // only items with special subquest in range 212-237 and also 241 are recoverable
+    for (auto pair : _4F0882_evt_VAR_PlayerItemInHands_vals) {
+        int quest_id = pair.first;
         if (_449B57_test_bit(pParty->_quest_bits, quest_id)) {
-            int search_item_id = _4F0882_evt_VAR_PlayerItemInHands_vals[i + 1];
+            ITEM_TYPE search_item_id = pair.second;
             if (!pParty->HasItem(search_item_id) && pParty->pPickedItem.uItemID != search_item_id) {
                 item_id = search_item_id;
                 break;
@@ -1693,21 +1690,21 @@ void OracleDialogue() {
     }
 
     // missing item found
-    if (item_id >= 0) {
-        pParty->pPlayers[0].AddVariable(VAR_PlayerItemInHands, item_id);
+    if (item_id != ITEM_NULL) {
+        pParty->pPlayers[0].AddVariable(VAR_PlayerItemInHands, std::to_underlying(item_id));
         // display "Here's %s that you lost. Be careful"
         current_npc_text = StringPrintf(pNPCTopics[666].pText,
             StringPrintf("\f%05d%s\f00000", colorTable.Jonquil.C16(), pItemTable->pItems[item_id].pUnidentifiedName).c_str());
     }
 
     // missing item is lich jar and we need to bind soul vessel to lich class character
-    if (item_id == ITEM_LICH_JAR_FULL) {
+    if (item_id == ITEM_QUEST_LICH_JAR_FULL) {
         for (uint i = 0; i < 4; i++) {
             if (pParty->pPlayers[i].classType == PLAYER_CLASS_LICH) {
                 bool have_vessels_soul = false;
                 for (uint pl = 0; pl < 4; pl++) {
                     for (int idx = 0; idx < 126; idx++) {
-                        if (pParty->pPlayers[pl].pInventoryItemList[idx].uItemID == ITEM_LICH_JAR_FULL) {
+                        if (pParty->pPlayers[pl].pInventoryItemList[idx].uItemID == ITEM_QUEST_LICH_JAR_FULL) {
                             if (!pParty->pPlayers[pl].pInventoryItemList[idx].uHolderPlayer)
                                 item = &pParty->pPlayers[pl].pInventoryItemList[idx];
                             if (pParty->pPlayers[pl].pInventoryItemList[idx].uHolderPlayer == i + 1)

@@ -245,7 +245,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_skill = skill_level;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                if (pPlayer->WearsItem(ITEM_ARTIFACT_ULLYSES, EQUIP_BOW))
+                if (pPlayer->WearsItem(ITEM_ARTIFACT_ULLYSES, ITEM_SLOT_BOW))
                     pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(0xBD6u);
                 pSpellSprite.vPosition.x = pParty->vPosition.x;
                 pSpellSprite.vPosition.y = pParty->vPosition.y;
@@ -740,9 +740,9 @@ void CastSpellInfoHelpers::CastSpell() {
 
                 ItemGen *item = &pParty->pPlayers[pCastSpell->uPlayerID_2].pInventoryItemList[pCastSpell->spell_target_pid];
                 item->UpdateTempBonus(pParty->GetPlayingTime());
-                if (item->uItemID == ITEM_BLASTER || item->uItemID == ITEM_LASER_RIFLE ||
+                if (item->uItemID == ITEM_BLASTER || item->uItemID == ITEM_BLASTER_RIFLE ||
                     item->IsBroken() || pItemTable->IsMaterialNonCommon(item) || item->special_enchantment != ITEM_ENCHANTMENT_NULL || item->uEnchantmentType != 0 ||
-                    !isWeapon(item->GetItemEquipType())) {
+                    !IsWeapon(item->GetItemEquipType())) {
                     _50C9D0_AfterEnchClickEventId = 113;
                     _50C9D4_AfterEnchClickEventSecondParam = 0;
                     _50C9D8_AfterEnchClickEventTimeout = 128; // was 1, increased to make message readable
@@ -1681,17 +1681,17 @@ void CastSpellInfoHelpers::CastSpell() {
                 // http://www.pottsland.com/mm6/enchant.shtml
                 // also see STDITEMS.tx and SPCITEMS.txt in Events.lod
 
-                if ((skill_level == 1 || skill_level == 2)) __debugbreak();
+                if ((skill_level == 1 || skill_level == 2)) __debugbreak(); // SPELL_WATER_ENCHANT_ITEM is a master level spell
 
                 if ((skill_level == 3 || skill_level == 4) &&
-                    spell_item_to_enchant->uItemID <= 134 &&
-                    spell_item_to_enchant->special_enchantment == 0 &&
+                    IsRegular(spell_item_to_enchant->uItemID) &&
+                    spell_item_to_enchant->special_enchantment == ITEM_ENCHANTMENT_NULL &&
                     spell_item_to_enchant->uEnchantmentType == 0 &&
                     spell_item_to_enchant->m_enchantmentStrength == 0 &&
                     !spell_item_to_enchant->IsBroken()) {
                     // break items with low value
-                    if ((spell_item_to_enchant->GetValue() < 450 && !isWeapon(this_equip_type)) ||  // not weapons
-                        (spell_item_to_enchant->GetValue() < 250 && isWeapon(this_equip_type))) {  // weapons
+                    if ((spell_item_to_enchant->GetValue() < 450 && !IsWeapon(this_equip_type)) ||  // not weapons
+                        (spell_item_to_enchant->GetValue() < 250 && IsWeapon(this_equip_type))) {  // weapons
                         if (!(spell_item_to_enchant->uAttributes & ITEM_HARDENED)) {
                             spell_item_to_enchant->SetBroken();
                         }
@@ -1703,7 +1703,7 @@ void CastSpellInfoHelpers::CastSpell() {
                                 spell_item_to_enchant->SetBroken();
                         } else {
                             // Weapons are limited to special enchantments, but all other types can have either
-                            if (rnd < 80 && isPassiveEquipment(this_equip_type)) { // chance to roll standard enchantment on non-weapons
+                            if (rnd < 80 && IsPassiveEquipment(this_equip_type)) { // chance to roll standard enchantment on non-weapons
                                 int ench_found = 0;
                                 int to_item_apply_sum = 0;
                                 int ench_array[100] = { 0 };
@@ -1713,7 +1713,7 @@ void CastSpellInfoHelpers::CastSpell() {
                                     for (int norm_ench_loop = 0; norm_ench_loop < 24; ++norm_ench_loop) {
                                         char* this_bon_state = pItemTable->pEnchantments[norm_ench_loop].pBonusStat;
                                         if (this_bon_state != NULL && (this_bon_state[0] != '\0')) {
-                                            int this_to_apply = pItemTable->pEnchantments[norm_ench_loop].to_item[this_equip_type - 3];
+                                            int this_to_apply = pItemTable->pEnchantments[norm_ench_loop].to_item[this_equip_type];
                                             to_item_apply_sum += this_to_apply;
                                             if (this_to_apply) {
                                                 ench_array[ench_found] = norm_ench_loop;
@@ -1731,7 +1731,7 @@ void CastSpellInfoHelpers::CastSpell() {
 
                                 // step through until we hit that ench
                                 for (step = 0; step < ench_found; step++) {
-                                    current_item_apply_sum += pItemTable->pEnchantments[ench_array[step]].to_item[this_equip_type - 3];
+                                    current_item_apply_sum += pItemTable->pEnchantments[ench_array[step]].to_item[this_equip_type];
                                     if (current_item_apply_sum >= target_item_apply_rand) break;
                                 }
 
@@ -2375,18 +2375,17 @@ void CastSpellInfoHelpers::CastSpell() {
                     if (!pActors[monster_id].ActorHasItem())
                         pActors[monster_id].SetRandomGoldIfTheresNoItem();
                     int gold_num = 0;
-                    if (pActors[monster_id].ActorHasItems[3].uItemID != 0) {
+                    if (pActors[monster_id].ActorHasItems[3].uItemID != ITEM_NULL) {
                         if (pItemTable->pItems[pActors[monster_id].ActorHasItems[3].uItemID].uEquipType == EQUIP_GOLD)
                             gold_num = pActors[monster_id].ActorHasItems[3].special_enchantment;
                     }
                     ItemGen item;
                     item.Reset();
-                    if (pActors[monster_id].uCarriedItemID) {
+                    if (pActors[monster_id].uCarriedItemID != ITEM_NULL) {
                         item.uItemID = pActors[monster_id].uCarriedItemID;
                     } else {
                         for (uint i = 0; i < 4; ++i) {
-                            if (pActors[monster_id].ActorHasItems[i].uItemID >
-                                    0 &&
+                            if (pActors[monster_id].ActorHasItems[i].uItemID != ITEM_NULL &&
                                     pItemTable
                                         ->pItems[pActors[monster_id]
                                                      .ActorHasItems[i]
@@ -2400,7 +2399,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         }
                     }
                     if (gold_num > 0) {
-                        if (item.uItemID)
+                        if (item.uItemID != ITEM_NULL)
                             GameUI_SetStatusBar(StringPrintf(
                                 "(%s), and %d gold",
                                 item.GetDisplayName().c_str(), gold_num));
@@ -2408,7 +2407,7 @@ void CastSpellInfoHelpers::CastSpell() {
                             GameUI_SetStatusBar(StringPrintf(
                                 "%d gold", gold_num));
                     } else {
-                        if (item.uItemID) {
+                        if (item.uItemID != ITEM_NULL) {
                             GameUI_SetStatusBar(StringPrintf(
                                 "(%s)", item.GetDisplayName().c_str()));
                         } else {
@@ -2704,8 +2703,8 @@ void CastSpellInfoHelpers::CastSpell() {
                     if (pLevelDecorations[obj_id].uEventID)
                         EventProcessor(pLevelDecorations[obj_id].uEventID,
                                        spell_targeted_at, 1);
-                    if (pLevelDecorations[pSpriteObjects[obj_id]
-                                              .containing_item.uItemID]
+                    if (pLevelDecorations[std::to_underlying(pSpriteObjects[obj_id]
+                                              .containing_item.uItemID)] // TODO(captainurist): investigate, that's a very weird std::to_underlying call.
                             .IsInteractive()) {
                         activeLevelDecoration = &pLevelDecorations[obj_id];
                         EventProcessor(

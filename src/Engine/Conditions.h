@@ -3,6 +3,8 @@
 
 #include "Engine/Objects/Items.h"
 
+#include "Utility/IndexedArray.h"
+
 struct Player;
 
 enum class Condition : uint32_t {
@@ -30,17 +32,19 @@ using enum Condition;
 
 class ConditionProcessor {
  public:
-    bool m_IsBlockedByProtFromMagic;
-    bool m_DoesNeedGmProtFromMagic;
-    int m_WorkingEnchantment;
-    std::array<EquipemntPair, 3> m_equipmentPairs;
-    ConditionProcessor(Condition, bool isblocked, bool needsGm, int enchantment,
-                       ITEM_TYPE itemtype1 = (ITEM_TYPE)0,
-                       ITEM_EQUIP_TYPE itemslot1 = (ITEM_EQUIP_TYPE)0,
-                       ITEM_TYPE itemtype2 = (ITEM_TYPE)0,
-                       ITEM_EQUIP_TYPE itemslot2 = (ITEM_EQUIP_TYPE)0,
-                       ITEM_TYPE itemtype3 = (ITEM_TYPE)0,
-                       ITEM_EQUIP_TYPE itemslot3 = (ITEM_EQUIP_TYPE)0) {
+    bool m_IsBlockedByProtFromMagic = false;
+    bool m_DoesNeedGmProtFromMagic = false;
+    ITEM_ENCHANTMENT m_WorkingEnchantment = ITEM_ENCHANTMENT_NULL;
+    std::array<EquipemntPair, 3> m_equipmentPairs = {{}};
+
+    ConditionProcessor() {}
+    ConditionProcessor(bool isblocked, bool needsGm, ITEM_ENCHANTMENT enchantment,
+                       ITEM_TYPE itemtype1 = ITEM_NULL,
+                       ITEM_SLOT itemslot1 = ITEM_SLOT_INVALID,
+                       ITEM_TYPE itemtype2 = ITEM_NULL,
+                       ITEM_SLOT itemslot2 = ITEM_SLOT_INVALID,
+                       ITEM_TYPE itemtype3 = ITEM_NULL,
+                       ITEM_SLOT itemslot3 = ITEM_SLOT_INVALID) {
         m_IsBlockedByProtFromMagic = isblocked;
         m_DoesNeedGmProtFromMagic = needsGm;
         m_WorkingEnchantment = enchantment;
@@ -55,6 +59,6 @@ class ConditionProcessor {
     static bool IsPlayerAffected(Player *, Condition, int);
 };
 
-extern std::array<ConditionProcessor, 18> conditionArray;
+extern IndexedArray<ConditionProcessor, Condition_Cursed, Condition_Zombie> conditionArray;
 
 const std::array<Condition, 18> &conditionImportancyTable();

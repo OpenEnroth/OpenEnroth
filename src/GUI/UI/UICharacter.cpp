@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
+#include <unordered_map>
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Awards.h"
@@ -29,6 +30,8 @@
 
 #include "Platform/Api.h"
 #include "Platform/OSWindow.h"
+
+#include "Utility/MapAccess.h"
 
 
 using EngineIoc = Engine_::IocContainer;
@@ -286,20 +289,31 @@ const int paperdoll_Weapon[4][16][2] = {
 const int paperdoll_Boot[4][7][2] = {  // 4E5490
     // human/goblin/elf male
     0x0E, 0x11D, 0x0D, 0x11D, 0x0C, 0x10A, 0x0A, 0xFF,  0x0D, 0xF9,
-    0x0D, 0x137, 0x0C, 0x10E,
+    0x0C, 0x10E, 0x0D, 0x137,
 
     // human/goblin/elf female
     0x14, 0x125, 0x13, 0x122, 0x15, 0x120, 0x15, 0x114, 0x13, 0x10A,
-    0x11, 0x13E, 0x11, 0x116,
+    0x11, 0x116, 0x11, 0x13E,
 
     // dwarf male
     0x1D, 0x121, 0x1C, 0x11F, 0x1B, 0x11B, 0x1C, 0x117, 0x16, 0x116,
-    0x1B, 0x137, 0x1B, 0x11B,
+    0x1B, 0x11B, 0x1B, 0x137,
 
     // dwarf female
     0x1F, 0x127, 0x1F, 0x122, 0x1B, 0x11B, 0x1D, 0x117, 0x1D, 0x116,
-    0x1D, 0x137, 0x1B, 0x11F,
+    0x1B, 0x11F, 0x1D, 0x137,
 };
+const std::unordered_map<ITEM_TYPE, int> paperdoll_boots_indexByType = {
+    {ITEM_LEATHER_BOOTS, 0},
+    {ITEM_STEEL_PLATED_BOOTS, 1},
+    {ITEM_RANGER_BOOTS, 2},
+    {ITEM_KNIGHTS_BOOTS, 3},
+    {ITEM_PALADIN_BOOTS, 4},
+    {ITEM_ARTIFACT_SEVEN_LEAGUE_BOOTS, 5},
+    {ITEM_ARTIFACT_HERMES_SANDALS, 6},
+};
+const std::unordered_map<int, ITEM_TYPE> paperdoll_boots_typeByIndex = Inverted(paperdoll_boots_indexByType);
+
 const int paperdoll_Cloak[4][10][2] = {  // 4E5570
     0x11, 0x68, 0x0F, 0x68, 0x14, 0x71, 0x19, 0x6B, 0x21, 0x6F, 0x05, 0x68,
     0x05, 0x68, 0x14, 0x71, 0x03, 0x6B, 0x0F, 0x6F,
@@ -313,6 +327,20 @@ const int paperdoll_Cloak[4][10][2] = {  // 4E5570
     0x14, 0x92, 0x10, 0x92, 0x15, 0x98, 0x1F, 0x91, 0x22, 0x90, 0x08, 0x92,
     0x0C, 0x92, 0x15, 0x98, 0x03, 0x91, 0x03, 0x90,
 };
+const std::unordered_map<ITEM_TYPE, int> paperdoll_cloak_indexByType = {
+    {ITEM_LEATHER_CLOAK, 0},
+    {ITEM_HUNTSMANS_CLOAK, 1},
+    {ITEM_RANGERS_CLOAK, 2},
+    {ITEM_ELEGANT_CLOAK, 3},
+    {ITEM_GLORIOUS_CLOAK, 4},
+    {ITEM_RELIC_TWILIGHT, 5},
+    {ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, 6},
+    {ITEM_RARE_SUN_CLOAK, 7},
+    {ITEM_RARE_MOON_CLOAK, 8},
+    {ITEM_RARE_VAMPIRES_CAPE, 9}
+};
+const std::unordered_map<int, ITEM_TYPE> paperdoll_cloak_typeByIndex = Inverted(paperdoll_cloak_indexByType);
+
 const int paperdoll_CloakCollar[4][10][2] = {  // 4E56B0
     0,    0,    0x34, 0x64, 0x21, 0x69, 0x1D, 0x67, 0x20, 0x67, 0x21, 0x68,
     0x34, 0x64, 0x21, 0x69, 0x1D, 0x67, 0x1F, 0x67,
@@ -340,6 +368,17 @@ const int paperdoll_Belt[4][7][2] = {  // 4E57F0
     0x42, 0xD2, 0x3F, 0xD0, 0x3B, 0xD7, 0x3C, 0xD5, 0x3B, 0xD6, 0x3E, 0xCF,
     0x36, 0xD6,
 };
+const std::unordered_map<ITEM_TYPE, int> paperdoll_belt_indexByType = {
+    {ITEM_LEATHER_BELT, 0},
+    {ITEM_FINE_BELT, 1},
+    {ITEM_STRONG_BELT, 2},
+    {ITEM_SILVER_BELT, 3},
+    {ITEM_GILDED_BELT, 4},
+    {ITEM_RELIC_TITANS_BELT, 5},
+    {ITEM_ARTIFACT_HEROS_BELT, 6}
+};
+const std::unordered_map<int, ITEM_TYPE> paperdoll_belt_typeByIndex = Inverted(paperdoll_belt_indexByType);
+
 const int paperdoll_Helm[4][16][2] = {  // 4E58D0
     0x3E, 0x1F, 0x41, 0x2C, 0x37, 0x2F, 0x31, 0x32, 0x37, 0x2A, 0x39, 0x28,
     0x36, 0x34, 0x41, 0x38, 0x40, 0x31, 0x40, 0x21, 0x40, 0x31, 0x3C, 0x33,
@@ -357,6 +396,26 @@ const int paperdoll_Helm[4][16][2] = {  // 4E58D0
     0x39, 0x5B, 0x45, 0x5C, 0x47, 0x5C, 0x44, 0x4B, 0x44, 0x57, 0x43, 0x55,
     0x44, 0x4A, 0x3E, 0x45, 0x3C, 0x54, 0x47, 0x70,
 };
+const std::unordered_map<ITEM_TYPE, int> paperdoll_helm_indexByType = {
+    {ITEM_HORNED_HELM, 0},
+    {ITEM_CONSCRIPTS_HELM, 1},
+    {ITEM_FULL_HELM, 2},
+    {ITEM_PHYNAXIAN_HELM, 3},
+    {ITEM_MOGRED_HELM, 4},
+    {ITEM_PEASANT_HAT, 5},
+    {ITEM_TRAVELLERS_HAT, 6},
+    {ITEM_FANCY_HAT, 7},
+    {ITEM_CROWN, 8},
+    {ITEM_NOBLE_CROWN, 9},
+    {ITEM_REGAL_CROWN, 10},
+    {ITEM_RELIC_TALEDONS_HELM, 11},
+    {ITEM_RELIC_SCHOLARS_CAP, 12},
+    {ITEM_RELIC_PHYNAXIAN_CROWN, 13},
+    {ITEM_ARTIFACT_MINDS_EYE, 14},
+    {ITEM_RARE_SHADOWS_MASK, 15}
+};
+const std::unordered_map<int, ITEM_TYPE> paperdoll_helm_typeByIndex = Inverted(paperdoll_helm_indexByType);
+
 const int pPaperdoll_Beards[4] = {  // 4E5AD0
     52,
     130,
@@ -395,6 +454,27 @@ const int paperdoll_Armor_Coord[4][17][2] = {  // 4E4E30
     0x33, 0x8E, 0x2F, 0x8F, 0x16, 0x8D, 0x18, 0x8C, 0x19, 0x8C, 0x1B, 0x8E,
     0x0C, 0x8C, 0x21, 0x8B, 0x0C, 0x8C, 0x18, 0x8C, 0x2F, 0x8F,
 };
+const std::unordered_map<ITEM_TYPE, int> paperdoll_armor_indexByType = {
+    {ITEM_LEATHER_ARMOR, 0},
+    {ITEM_STUDDED_LEATHER, 1},
+    {ITEM_OFFICERS_LEATHER, 2},
+    {ITEM_REGNAN_LEATHER, 3},
+    {ITEM_ROYAL_LEATHER, 4},
+    {ITEM_CHAIN_MAIL, 5},
+    {ITEM_STEEL_CHAIN_MAIL, 6},
+    {ITEM_FINE_CHAIN_MAIL, 7},
+    {ITEM_RESPLENDENT_CHAIN_MAIL, 8},
+    {ITEM_GOLDEN_CHAIN_MAIL, 9},
+    {ITEM_PLATE_ARMOR, 10},
+    {ITEM_SPLENDID_PLATE_ARMOR, 11},
+    {ITEM_NOBLE_PLATE_ARMOR, 12},
+    {ITEM_RELIC_HARECKS_LEATHER, 13},
+    {ITEM_ARTIFACT_YORUBA, 14},
+    {ITEM_ARTIFACT_GOVERNORS_ARMOR, 15},
+    {ITEM_ARTIFACT_ELVEN_CHAINMAIL, 16}
+};
+const std::unordered_map<int, ITEM_TYPE> paperdoll_armor_typeByIndex = Inverted(paperdoll_armor_indexByType);
+
 const int paperdoll_shoulder_coord[4][17][2] = {  // 4E5050
     0x64, 0x67, 0x61, 0x67, 0x65, 0x68, 0x6E, 0x74, 0x6C, 0x68, 0x61, 0x67,
     0x66, 0x68, 0x6C, 0x6A, 0x6E, 0x6D, 0x67, 0x69, 0x70, 0x67, 0x6E, 0x6D,
@@ -1024,27 +1104,8 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         // cloak
         item = player->GetCloakItem();
         if (item) {
-            switch (item->uItemID) {
-                case ITEM_RELIC_TWILIGHT:
-                    index = 5;
-                    break;
-                case ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP:
-                    index = 6;
-                    break;
-                case ITEM_RARE_SUN_CLOAK:
-                    index = 7;
-                    break;
-                case ITEM_RARE_MOON_CLOAK:
-                    index = 8;
-                    break;
-                case ITEM_RARE_VAMPIRES_CAPE:
-                    index = 9;
-                    break;
-                default:
-                    index = item->uItemID - 105;
-                    break;
-            }
-            if (index >= 0 && index < 10) {
+            index = ValueOr(paperdoll_cloak_indexByType, item->uItemID, -1);
+            if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Cloak[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Cloak[pBodyComplection][index][1];
 
@@ -1059,25 +1120,8 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         // armor
         item = player->GetArmorItem();
         if (item) {
-            switch (item->uItemID) {
-                case ITEM_ARTIFACT_GOVERNORS_ARMOR:
-                    index = 15;
-                    break;
-                case ITEM_ARTIFACT_YORUBA:
-                    index = 14;
-                    break;
-                case ITEM_RELIC_HARECS_LEATHER:
-                    index = 13;
-                    break;
-                case ITEM_ELVEN_CHAINMAIL:
-                    index = 16;
-                    break;
-                default:
-                    index = item->uItemID - 66;
-                    break;
-            }
-
-            if (index >= 0 && index < 17) {
+            index = ValueOr(paperdoll_armor_indexByType, item->uItemID, -1);
+            if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Armor_Coord[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Armor_Coord[pBodyComplection][index][1];
 
@@ -1089,25 +1133,17 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         // boots
         item = player->GetBootItem();
         if (item) {
-            Texture *texture = nullptr;
-            switch (item->uItemID) {
-                case ITEM_ARTIFACT_HERMES_SANDALS:
-                    index = 5;
-                    texture = (Texture *)paperdoll_flying_feet[player->uCurrentFace];
-                    break;
-                case ITEM_ARTIFACT_LEAGUE_BOOTS:
-                    index = 6;
-                    texture = (Texture *)paperdoll_boots_texture[pBodyComplection][5];
-                    break;
-                default:
-                    index = item->uItemID - 115;
-                    texture = (Texture *)paperdoll_boots_texture[pBodyComplection][index];
-                    break;
-            }
-
-            if (index >= 0 && index < 7) {
+            index = ValueOr(paperdoll_boots_indexByType, item->uItemID, -1);
+            if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Boot[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Boot[pBodyComplection][index][1];
+
+                Texture *texture = nullptr;
+                if (item->uItemID == ITEM_ARTIFACT_HERMES_SANDALS) {
+                    texture = (Texture *)paperdoll_flying_feet[player->uCurrentFace];
+                } else {
+                    texture = (Texture *)paperdoll_boots_texture[pBodyComplection][index];
+                }
 
                 CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uBoot, texture, !bRingsShownInCharScreen);
             }
@@ -1127,19 +1163,8 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         // belt
         item = player->GetBeltItem();
         if (item) {
-            switch (item->uItemID) {
-                case ITEM_RELIC_TITANS_BELT:
-                    index = 5;
-                    break;
-                case ITEM_ARTIFACT_HEROS_BELT:
-                    index = 6;
-                    break;
-                default:
-                    index = item->uItemID - 100;
-                    break;
-            }
-
-            if (index >= 0 && index < 7) {
+            index = ValueOr(paperdoll_belt_indexByType, item->uItemID, -1);
+            if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Belt[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Belt[pBodyComplection][index][1];
                 Texture *texture = nullptr;
@@ -1155,25 +1180,8 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         // armor's shoulders
         item = player->GetArmorItem();
         if (item) {
-            switch (item->uItemID) {
-                case ITEM_ARTIFACT_GOVERNORS_ARMOR:
-                    index = 15;
-                    break;
-                case ITEM_ARTIFACT_YORUBA:
-                    index = 14;
-                    break;
-                case ITEM_RELIC_HARECS_LEATHER:
-                    index = 13;
-                    break;
-                case ITEM_ELVEN_CHAINMAIL:
-                    index = 16;
-                    break;
-                default:
-                    index = item->uItemID - 66;
-                    break;
-            }
-
-            if (index >= 0 && index < 17) {
+            index = ValueOr(paperdoll_armor_indexByType, item->uItemID, -1);
+            if (index != -1) {
                 Texture *texture = nullptr;
                 // Some armors doesn't have sleeves so use normal one for two-handed or none if it also unavailable
                 if (bTwoHandedGrip && paperdoll_shoulder_second_coord[pBodyComplection][index][0]) {
@@ -1196,28 +1204,8 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         // cloak's collar
         item = player->GetCloakItem();
         if (item) {
-            switch (item->uItemID) {
-                case ITEM_RELIC_TWILIGHT:
-                    index = 5;
-                    break;
-                case ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP:
-                    index = 6;
-                    break;
-                case ITEM_RARE_SUN_CLOAK:
-                    index = 7;
-                    break;
-                case ITEM_RARE_MOON_CLOAK:
-                    index = 8;
-                    break;
-                case ITEM_RARE_VAMPIRES_CAPE:
-                    index = 9;
-                    break;
-                default:
-                    index = item->uItemID - 105;
-                    break;
-            }
-
-            if (index >= 0 && index < 10) {
+            index = ValueOr(paperdoll_cloak_indexByType, item->uItemID, -1);
+            if (index != -1) {
                 // leather cloak has no collar
                 if (paperdoll_CloakCollar[pBodyComplection][index][0]) {
                     item_X = pPaperdoll_BodyX + paperdoll_CloakCollar[pBodyComplection][index][0];
@@ -1240,33 +1228,13 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         // helm
         item = player->GetHelmItem();
         if (item) {
-            switch (item->uItemID) {
-                case ITEM_RELIC_TALEDONS_HELM:
-                    index = 11;
-                    break;
-                case ITEM_RELIC_SCHOLARS_CAP:
-                    index = 12;
-                    break;
-                case ITEM_RELIC_PHYNAXIAN_CROWN:
-                    index = 13;
-                    break;
-                case ITEM_ARTIFACT_MINDS_EYE:
-                    index = 14;
-                    break;
-                case ITEM_RARE_SHADOWS_MASK:
-                    index = 15;
-                    break;
-                default:
-                    index = item->uItemID - 89;
-                    break;
-            }
-
-            if (index >= 0 && index < 16) {
+            index = ValueOr(paperdoll_helm_indexByType, item->uItemID, -1);
+            if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Helm[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Helm[pBodyComplection][index][1];
 
                 Texture *texture = nullptr;
-                if (IsDwarf != 1 || item->uItemID != ITEM_92)
+                if (IsDwarf != 1 || item->uItemID != ITEM_PHYNAXIAN_HELM)
                     texture = (Texture *)paperdoll_helm_texture[player->GetSexByVoice()][index];
                 else
                     texture = (Texture *)paperdoll_dbrds[11];
@@ -1301,20 +1269,22 @@ void CharacterUI_DrawPaperdoll(Player *player) {
              */
             if (item->GetPlayerSkillType() == PLAYER_SKILL_DAGGER || item->GetPlayerSkillType() == PLAYER_SKILL_SWORD) {
                 switch (item->uItemID) {
-                    case 400: // Mordred
+                    case ITEM_SPELLBOOK_TORCH_LIGHT: // Mordred
                         item_X = 596;
                         item_Y = 86;
                         __debugbreak();
                         break;
-                    case 403: // Excalibur
+                    case ITEM_SPELLBOOK_FIRE_AURA: // Excalibur
                         item_X = 596;
                         item_Y = 28;
                         __debugbreak();
                         break;
-                    case 415: // Hades
+                    case ITEM_SPELLBOOK_JUMP: // Hades
                         item_X = 595;
                         item_Y = 33;
                         __debugbreak();
+                        break;
+                    default:
                         break;
                 }
             }
@@ -1367,7 +1337,7 @@ void CharacterUI_InventoryTab_Draw(Player *player, bool Cover_Strip) {
 
     for (uint i = 0; i < 126; ++i) {
         if (player->pInventoryMatrix[i] <= 0) continue;
-        if (!player->pInventoryItemList[player->pInventoryMatrix[i] - 1].uItemID)
+        if (player->pInventoryItemList[player->pInventoryMatrix[i] - 1].uItemID == ITEM_NULL)
             continue;
         unsigned int uCellY = 32 * (i / 14) + 17;
         unsigned int uCellX = 32 * (i % 14) + 14;
@@ -1460,7 +1430,6 @@ void CharacterUI_LoadPaperdollTextures() {
     signed int v33;        // [sp+10h] [bp-28h]@77
     int pItemTXTNum;       // [sp+14h] [bp-24h]@75
     signed int v38;        // [sp+14h] [bp-24h]@79
-    char pContainer[128];  // [sp+24h] [bp-14h]@12
 
     if (!ui_character_inventory_magnification_glass)
         ui_character_inventory_magnification_glass =
@@ -1483,24 +1452,18 @@ void CharacterUI_LoadPaperdollTextures() {
                 v3 = (pPlayers[i + 1]->GetSexByVoice() != 0) + 3;
             else
                 v3 = (pPlayers[i + 1]->GetSexByVoice() != 0) + 1;
-            sprintf(pContainer, "pc23v%dBod", v3);
             paperdoll_dbods[i] =
-                assets->GetImage_Alpha(pContainer);  // Body texture
-            sprintf(pContainer, "pc23v%dlad", v3);
+                assets->GetImage_Alpha(StringPrintf("pc23v%dBod", v3));  // Body texture
             paperdoll_dlads[i] =
-                assets->GetImage_Alpha(pContainer);  // Left Hand
-            sprintf(pContainer, "pc23v%dlau", v3);
+                assets->GetImage_Alpha(StringPrintf("pc23v%dlad", v3));  // Left Hand
             paperdoll_dlaus[i] =
-                assets->GetImage_Alpha(pContainer);  // Left Hand2
-            sprintf(pContainer, "pc23v%drh", v3);
+                assets->GetImage_Alpha(StringPrintf("pc23v%dlau", v3));  // Left Hand2
             paperdoll_drhs[i] =
-                assets->GetImage_Alpha(pContainer);  // Right Hand
-            sprintf(pContainer, "pc23v%dlh", v3);
+                assets->GetImage_Alpha(StringPrintf("pc23v%drh", v3));  // Right Hand
             paperdoll_dlhs[i] =
-                assets->GetImage_Alpha(pContainer);  // Left Palm
-            sprintf(pContainer, "pc23v%dlhu", v3);
+                assets->GetImage_Alpha(StringPrintf("pc23v%dlh", v3));  // Left Palm
             paperdoll_dlhus[i] =
-                assets->GetImage_Alpha(pContainer);  // Left Fist
+                assets->GetImage_Alpha(StringPrintf("pc23v%dlhu", v3));  // Left Fist
             pPlayer = pPlayers[i + 1];
 
             if (pPlayer->uCurrentFace == 12 || pPlayer->uCurrentFace == 13)
@@ -1547,6 +1510,8 @@ void CharacterUI_LoadPaperdollTextures() {
     paperdoll_dbrds[3] = assets->GetImage_Solid("ib-cd4-d");
     paperdoll_dbrds[1] = assets->GetImage_Solid("ib-cd5-d");
 
+    // TODO(captainurist): safe to delete?
+#if 0
     for (uint i = 0; i < 54; ++i) {  // test equipment
         party_has_equipment[i] = 0;
         if (pParty->pPickedItem.uItemID != i + 66) {
@@ -1556,6 +1521,8 @@ void CharacterUI_LoadPaperdollTextures() {
             }
         }
     }
+#endif
+
     memset(byte_5111F6_OwnedArtifacts.data(), 0,
            sizeof(byte_5111F6_OwnedArtifacts));
     for (uint i = 0; i < 4; ++i) {
@@ -1565,9 +1532,9 @@ void CharacterUI_LoadPaperdollTextures() {
             byte_5111F6_OwnedArtifacts[0] = 1;
         if (player->HasItem(ITEM_ARTIFACT_YORUBA, 1))
             byte_5111F6_OwnedArtifacts[1] = 1;
-        if (player->HasItem(ITEM_RELIC_HARECS_LEATHER, 1))
+        if (player->HasItem(ITEM_RELIC_HARECKS_LEATHER, 1))
             byte_5111F6_OwnedArtifacts[2] = 1;
-        if (player->HasItem(ITEM_ARTIFACT_LEAGUE_BOOTS, 1))
+        if (player->HasItem(ITEM_ARTIFACT_SEVEN_LEAGUE_BOOTS, 1))
             byte_5111F6_OwnedArtifacts[3] = 1;
         if (player->HasItem(ITEM_RELIC_TALEDONS_HELM, 1))
             byte_5111F6_OwnedArtifacts[4] = 1;
@@ -1593,31 +1560,21 @@ void CharacterUI_LoadPaperdollTextures() {
             byte_5111F6_OwnedArtifacts[14] = 1;
         if (player->HasItem(ITEM_RARE_VAMPIRES_CAPE, 1))
             byte_5111F6_OwnedArtifacts[15] = 1;
-        if (player->HasItem(ITEM_ELVEN_CHAINMAIL, 1))
+        if (player->HasItem(ITEM_ARTIFACT_ELVEN_CHAINMAIL, 1))
             byte_5111F6_OwnedArtifacts[16] = 1;
     }
 
+    auto loadTexture = [&](auto map, int itemIndex, int bodyIndex, int shoulderIndex) {
+        std::string name = GetItemTextureFilename(ExistingValue(map, itemIndex), bodyIndex + 1, shoulderIndex);
+        return assets->GetImage_Alpha(name);
+    };
+
     for (uint i = 0; i < 2; ++i) {
-        for (uint j = 0; j < 5; ++j) {  // Belt
-            GetItemTextureFilename(pContainer, j + 100, i + 1, 0);
-            paperdoll_belt_texture[i][j] = assets->GetImage_Alpha(pContainer);
-        }
-        GetItemTextureFilename(pContainer, 535, i + 1, 0);
-        paperdoll_belt_texture[i][6] = assets->GetImage_Alpha(pContainer);
-        for (uint j = 0; j < 11; ++j) {  // Helm
-            GetItemTextureFilename(pContainer, j + 89, i + 1, 0);
-            paperdoll_helm_texture[i][j] = assets->GetImage_Alpha(pContainer);
-        }
-        GetItemTextureFilename(pContainer, 521, i + 1, 0);
-        paperdoll_helm_texture[i][11] = assets->GetImage_Alpha(pContainer);
-        GetItemTextureFilename(pContainer, 522, i + 1, 0);
-        paperdoll_helm_texture[i][12] = assets->GetImage_Alpha(pContainer);
-        GetItemTextureFilename(pContainer, 523, i + 1, 0);
-        paperdoll_helm_texture[i][13] = assets->GetImage_Alpha(pContainer);
-        GetItemTextureFilename(pContainer, 532, i + 1, 0);
-        paperdoll_helm_texture[i][14] = assets->GetImage_Alpha(pContainer);
-        GetItemTextureFilename(pContainer, 544, i + 1, 0);
-        paperdoll_helm_texture[i][15] = assets->GetImage_Alpha(pContainer);
+        for (uint j : {0, 1, 2, 3, 4, 6}) // Belt
+            paperdoll_belt_texture[i][j] = loadTexture(paperdoll_belt_typeByIndex, j, i, 0);
+
+        for (uint j = 0; j < 16; ++j)  // Helm
+            paperdoll_helm_texture[i][j] = loadTexture(paperdoll_helm_typeByIndex, j, i, 0);
 
         if (IsDwarfPresentInParty(true))  // the phynaxian helm uses a slightly
                                           // different graphic for dwarves
@@ -1626,100 +1583,21 @@ void CharacterUI_LoadPaperdollTextures() {
     // v43 = 0;
     for (uint i = 0; i < 4; ++i) {
         if (ShouldLoadTexturesForRaceAndGender(i)) {
-            GetItemTextureFilename(pContainer, 524, i + 1, 0);
-            paperdoll_belt_texture[i][5] =
-                assets->GetImage_Alpha(pContainer);  // Titans belt
-            pItemTXTNum = 66;
-            for (v32 = 0; v32 < 13; ++v32) {  // simple armor
-                GetItemTextureFilename(pContainer, pItemTXTNum, i + 1, 0);
-                paperdoll_armor_texture[i][v32][0] =
-                    assets->GetImage_Alpha(pContainer);  // armor
-                GetItemTextureFilename(pContainer, pItemTXTNum, i + 1, 1);
-                paperdoll_armor_texture[i][v32][1] =
-                    assets->GetImage_Alpha(pContainer);  // shoulder 1
-                GetItemTextureFilename(pContainer, pItemTXTNum, i + 1, 2);
-                paperdoll_armor_texture[i][v32][2] =
-                    assets->GetImage_Alpha(pContainer);  // shoulder 2
-                pItemTXTNum++;
-            }
-            GetItemTextureFilename(pContainer, 516, i + 1, 0);  // artefacts
-            paperdoll_armor_texture[i][v32][0] =
-                assets->GetImage_Alpha(pContainer);
-            GetItemTextureFilename(pContainer, 516, i + 1, 1);
-            paperdoll_armor_texture[i][v32][1] =
-                assets->GetImage_Alpha(pContainer);
-            GetItemTextureFilename(pContainer, 516, i + 1, 2);
-            paperdoll_armor_texture[i][v32][2] =
-                assets->GetImage_Alpha(pContainer);
-            GetItemTextureFilename(pContainer, 505, i + 1, 0);
-            paperdoll_armor_texture[i][v32 + 1][0] =
-                assets->GetImage_Alpha(pContainer);
-            GetItemTextureFilename(pContainer, 505, i + 1, 1);
-            paperdoll_armor_texture[i][v32 + 1][1] =
-                assets->GetImage_Alpha(pContainer);
-            GetItemTextureFilename(pContainer, 505, i + 1, 2);
-            paperdoll_armor_texture[i][v32 + 1][2] =
-                assets->GetImage_Alpha(pContainer);
-            GetItemTextureFilename(pContainer, 504, i + 1, 0);
-            paperdoll_armor_texture[i][v32 + 2][0] =
-                assets->GetImage_Alpha(pContainer);
-            GetItemTextureFilename(pContainer, 504, i + 1, 1);
-            paperdoll_armor_texture[i][v32 + 2][1] =
-                assets->GetImage_Alpha(pContainer);
-            GetItemTextureFilename(pContainer, 504, i + 1, 2);
-            paperdoll_armor_texture[i][v32 + 2][2] =
-                assets->GetImage_Alpha(pContainer);
-            GetItemTextureFilename(pContainer, 533, i + 1, 0);
-            paperdoll_armor_texture[i][v32 + 3][0] =
-                assets->GetImage_Alpha(pContainer);
-            GetItemTextureFilename(pContainer, 533, i + 1, 1);
-            paperdoll_armor_texture[i][v32 + 3][1] =
-                assets->GetImage_Alpha(pContainer);
-            GetItemTextureFilename(pContainer, 533, i + 1, 2);
-            paperdoll_armor_texture[i][v32 + 3][2] =
-                assets->GetImage_Alpha(pContainer);
-            for (v33 = 0; v33 < 5; ++v33) {  // boots
-                GetItemTextureFilename(pContainer, v33 + 115, i + 1, 0);
-                paperdoll_boots_texture[i][v33] =
-                    assets->GetImage_Alpha(pContainer);
-            }
-            GetItemTextureFilename(pContainer, 512, i + 1, 0);
-            paperdoll_boots_texture[i][v33] =
-                assets->GetImage_Alpha(pContainer);
-            for (v38 = 0; v38 < 5; ++v38) {  // Cloak
-                GetItemTextureFilename(pContainer, v38 + 105, i + 1, 0);
-                paperdoll_cloak_texture[i][v38] =
-                    assets->GetImage_Alpha(pContainer);
-                GetItemTextureFilename(pContainer, v38 + 105, i + 1, 1);
-                paperdoll_cloak_collar_texture[i][v38] =
-                    assets->GetImage_Alpha(pContainer);
+            paperdoll_belt_texture[i][5] = loadTexture(paperdoll_belt_typeByIndex, 5, i, 0);  // Titans belt
+
+            for (v32 = 0; v32 < 17; ++v32) {  // simple armor
+                paperdoll_armor_texture[i][v32][0] = loadTexture(paperdoll_armor_typeByIndex, v32, i, 0);  // armor
+                paperdoll_armor_texture[i][v32][1] = loadTexture(paperdoll_armor_typeByIndex, v32, i, 1);  // shoulder 1
+                paperdoll_armor_texture[i][v32][2] = loadTexture(paperdoll_armor_typeByIndex, v32, i, 2);  // shoulder 2
             }
 
-            GetItemTextureFilename(pContainer, 525, i + 1, 0);
-            paperdoll_cloak_texture[i][5] = assets->GetImage_Alpha(pContainer);
-            GetItemTextureFilename(pContainer, 530, i + 1, 0);
-            paperdoll_cloak_texture[i][6] = assets->GetImage_Alpha(pContainer);
-            GetItemTextureFilename(pContainer, 547, i + 1, 0);
-            paperdoll_cloak_texture[i][7] = assets->GetImage_Alpha(pContainer);
-            GetItemTextureFilename(pContainer, 548, i + 1, 0);
-            paperdoll_cloak_texture[i][8] = assets->GetImage_Alpha(pContainer);
-            GetItemTextureFilename(pContainer, 550, i + 1, 0);
-            paperdoll_cloak_texture[i][9] = assets->GetImage_Alpha(pContainer);
-            GetItemTextureFilename(pContainer, 525, i + 1, 1);
-            paperdoll_cloak_collar_texture[i][5] =
-                assets->GetImage_Alpha(pContainer);
-            GetItemTextureFilename(pContainer, 530, i + 1, 1);
-            paperdoll_cloak_collar_texture[i][6] =
-                assets->GetImage_Alpha(pContainer);
-            GetItemTextureFilename(pContainer, 547, i + 1, 1);
-            paperdoll_cloak_collar_texture[i][7] =
-                assets->GetImage_Alpha(pContainer);
-            GetItemTextureFilename(pContainer, 548, i + 1, 1);
-            paperdoll_cloak_collar_texture[i][8] =
-                assets->GetImage_Alpha(pContainer);
-            GetItemTextureFilename(pContainer, 550, i + 1, 1);
-            paperdoll_cloak_collar_texture[i][9] =
-                assets->GetImage_Alpha(pContainer);
+            for (v33 = 0; v33 < 6; ++v33)  // boots
+                paperdoll_boots_texture[i][v33] = loadTexture(paperdoll_boots_typeByIndex, v33, i, 0);
+
+            for (v38 = 0; v38 < 10; ++v38) {  // Cloak
+                paperdoll_cloak_texture[i][v38] = loadTexture(paperdoll_cloak_typeByIndex, v38, i, 0);
+                paperdoll_cloak_collar_texture[i][v38] = loadTexture(paperdoll_cloak_typeByIndex, v38, i, 1);
+            }
         }
         // else
         //{
@@ -2235,7 +2113,7 @@ void OnPaperdollLeftClick() {
     static int amulety = 91;
 
     int slot = 32;
-    int pos = -1;
+    ITEM_SLOT pos = ITEM_SLOT_INVALID;
 
     ItemGen *pitem = NULL;  // condesnse with this??
                             // pitem.Reset();
@@ -2251,7 +2129,7 @@ void OnPaperdollLeftClick() {
     int v34;  // esi@90
 
     //  unsigned int v48; // [sp+30h] [bp-1Ch]@88
-    unsigned int v50;  // [sp+38h] [bp-14h]@50
+    ITEM_TYPE v50;  // [sp+38h] [bp-14h]@50
     // int v51; // [sp+3Ch] [bp-10h]@1
     int freeslot;  // [sp+40h] [bp-Ch]@5
     ITEM_EQUIP_TYPE pEquipType = EQUIP_NONE;
@@ -2268,9 +2146,9 @@ void OnPaperdollLeftClick() {
                                  .GetItemEquipType() == EQUIP_TWO_HANDED)
         twohandedequip = mainhandequip;
 
-    unsigned int pickeditem = pParty->pPickedItem.uItemID;
+    ITEM_TYPE pickeditem = pParty->pPickedItem.uItemID;
 
-    if (pParty->pPickedItem.uItemID) {  // hold item
+    if (pParty->pPickedItem.uItemID != ITEM_NULL) {  // hold item
         pEquipType = pParty->pPickedItem.GetItemEquipType();
         pSkillType = pParty->pPickedItem.GetPlayerSkillType();
 
@@ -2302,15 +2180,13 @@ void OnPaperdollLeftClick() {
             }
         }
 
-        if (!pPlayers[uActiveCharacter]->CanEquip_RaceAndAlignmentCheck(
-                pickeditem)) {  // special item checks
+        if (!pPlayers[uActiveCharacter]->CanEquip_RaceAndAlignmentCheck(pickeditem)) {  // special item checks
             pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantEquip, 0);
             return;
         }
 
-        if (pParty->pPickedItem.uItemID ==
-            ITEM_WETSUIT) {  // wetsuit check is done above
-            pPlayers[uActiveCharacter]->EquipBody((ITEM_EQUIP_TYPE)3);
+        if (pParty->pPickedItem.uItemID == ITEM_QUEST_WETSUIT) {  // wetsuit check is done above
+            pPlayers[uActiveCharacter]->EquipBody(EQUIP_ARMOUR);
             WetsuitOn(uActiveCharacter);
             return;
         }
@@ -2341,7 +2217,7 @@ void OnPaperdollLeftClick() {
                     pEquipType);  // equips item
 
                 if (pParty->pPickedItem.uItemID ==
-                    ITEM_WETSUIT)  // just taken wetsuit off
+                    ITEM_QUEST_WETSUIT)  // just taken wetsuit off
                     WetsuitOff(uActiveCharacter);
 
                 return;
@@ -2361,13 +2237,11 @@ void OnPaperdollLeftClick() {
                     //слоты для колец
                     // equippos = 0;
 
-                    for (int equippos = 0; equippos < 6; ++equippos) {
-                        if (!pPlayers[uActiveCharacter]
-                                 ->pEquipment.uRings[equippos]) {  // 0 to 5
-                            freeslot = pPlayers[uActiveCharacter]
-                                           ->FindFreeInventoryListSlot();
+                    for (ITEM_SLOT equippos : RingSlots()) {
+                        if (!pPlayers[uActiveCharacter]->pEquipment.pIndices[equippos]) {
+                            freeslot = pPlayers[uActiveCharacter]->FindFreeInventoryListSlot();
                             if (freeslot >= 0) {  // drop ring into free space
-                                pParty->pPickedItem.uBodyAnchor = equippos + 11;
+                                pParty->pPickedItem.uBodyAnchor = equippos;
                                 memcpy(
                                     &pPlayers[uActiveCharacter]
                                          ->pInventoryItemList[freeslot],
@@ -2375,8 +2249,7 @@ void OnPaperdollLeftClick() {
                                     sizeof(pPlayers[uActiveCharacter]
                                                ->pInventoryItemList[freeslot]));
                                 pPlayers[uActiveCharacter]
-                                    ->pEquipment.uRings[equippos] =
-                                    freeslot + 1;
+                                    ->pEquipment.pIndices[equippos] = freeslot + 1;
                                 mouse->RemoveHoldingItem();
                                 return;
                             }
@@ -2391,14 +2264,14 @@ void OnPaperdollLeftClick() {
                            sizeof(_this));  // copy hold item to this
                     pPlayers[uActiveCharacter]
                         ->pInventoryItemList[freeslot]
-                        .uBodyAnchor = 0;
+                        .uBodyAnchor = ITEM_SLOT_INVALID;
                     pParty->pPickedItem.Reset();  // drop holding item
                     pParty->SetHoldingItem(
                         &pPlayers[uActiveCharacter]
                              ->pInventoryItemList[freeslot]);  // set holding
                                                                // item to ring
                                                                // to swap out
-                    _this.uBodyAnchor = 16;
+                    _this.uBodyAnchor = ITEM_SLOT_RING6;
                     memcpy(&pPlayers[uActiveCharacter]
                                 ->pInventoryItemList[freeslot],
                            &_this, 0x24u);  // swap from this in
@@ -2414,19 +2287,18 @@ void OnPaperdollLeftClick() {
                             mousey >= RingsY[i] &&
                             mousey <= (RingsY[i] +
                                        slot)) {  // check against ring slots
-                            pos = i;
+                            pos = RingSlot(i);
                         }
                     }
 
-                    if (pos != -1) {  // we have a position to aim for
+                    if (pos != ITEM_SLOT_INVALID) {  // we have a position to aim for
                         pitem =
-                            pPlayers[uActiveCharacter]->GetNthEquippedIndexItem(
-                                pos + 10);
+                            pPlayers[uActiveCharacter]->GetNthEquippedIndexItem(pos);
                         if (!pitem) {  // no item in slot so just drop
                             freeslot = pPlayers[uActiveCharacter]
                                            ->FindFreeInventoryListSlot();
                             if (freeslot >= 0) {  // drop ring into free space
-                                pParty->pPickedItem.uBodyAnchor = pos + 11;
+                                pParty->pPickedItem.uBodyAnchor = pos;
                                 memcpy(
                                     &pPlayers[uActiveCharacter]
                                          ->pInventoryItemList[freeslot],
@@ -2434,29 +2306,29 @@ void OnPaperdollLeftClick() {
                                     sizeof(pPlayers[uActiveCharacter]
                                                ->pInventoryItemList[freeslot]));
                                 pPlayers[uActiveCharacter]
-                                    ->pEquipment.uRings[pos] = freeslot + 1;
+                                    ->pEquipment.pIndices[pos] = freeslot + 1;
                                 mouse->RemoveHoldingItem();
                                 return;
                             }
                         } else {  // item so swap out
                             freeslot = pPlayers[uActiveCharacter]
-                                           ->pEquipment.uRings[pos] -
+                                           ->pEquipment.pIndices[pos] -
                                        1;  // slot of ring selected
                             memcpy(&_this, &pParty->pPickedItem,
                                    sizeof(_this));  // copy hold item to this
                             pPlayers[uActiveCharacter]
                                 ->pInventoryItemList[freeslot]
-                                .uBodyAnchor = 0;
+                                .uBodyAnchor = ITEM_SLOT_INVALID;
                             pParty->pPickedItem.Reset();  // drop holding item
                             pParty->SetHoldingItem(
                                 &pPlayers[uActiveCharacter]->pInventoryItemList
                                      [freeslot]);  // set holding item to ring
                                                    // to swap out
-                            _this.uBodyAnchor = pos + 11;
+                            _this.uBodyAnchor = pos;
                             memcpy(&pPlayers[uActiveCharacter]
                                         ->pInventoryItemList[freeslot],
                                    &_this, 0x24u);  // swap from this in
-                            pPlayers[uActiveCharacter]->pEquipment.uRings[pos] =
+                            pPlayers[uActiveCharacter]->pEquipment.pIndices[pos] =
                                 freeslot + 1;  // anchor
                             return;
                         }
@@ -2486,25 +2358,25 @@ void OnPaperdollLeftClick() {
                     memcpy(&_this, &pParty->pPickedItem, sizeof(_this));
                     pPlayers[uActiveCharacter]
                         ->pInventoryItemList[shieldequip]
-                        .uBodyAnchor = 0;
+                        .uBodyAnchor = ITEM_SLOT_INVALID;
                     pParty->pPickedItem.Reset();
                     pParty->SetHoldingItem(
                         &pPlayers[uActiveCharacter]
                              ->pInventoryItemList[shieldequip]);
-                    _this.uBodyAnchor = 1;
+                    _this.uBodyAnchor = ITEM_SLOT_OFF_HAND;
                     memcpy(&pPlayers[uActiveCharacter]
                                 ->pInventoryItemList[shieldequip],
                            &_this, 0x24u);
                     pPlayers[uActiveCharacter]->pEquipment.uOffHand =
                         shieldequip + 1;
-                    if (twohandedequip == EQUIP_SINGLE_HANDED) return;
+                    if (twohandedequip == 0) return;
                 } else {
                     freeslot =
                         pPlayers[uActiveCharacter]->FindFreeInventoryListSlot();
                     if (freeslot < 0) return;
                     if (!twohandedequip) {  // обычная установка щита на пустую
                                             // руку
-                        pParty->pPickedItem.uBodyAnchor = 1;
+                        pParty->pPickedItem.uBodyAnchor = ITEM_SLOT_OFF_HAND;
                         v17 = freeslot + 1;
                         memcpy(&pPlayers[uActiveCharacter]
                                     ->pInventoryItemList[freeslot],
@@ -2519,12 +2391,12 @@ void OnPaperdollLeftClick() {
                     memcpy(&_this, &pParty->pPickedItem, sizeof(_this));
                     pPlayers[uActiveCharacter]
                         ->pInventoryItemList[mainhandequip]
-                        .uBodyAnchor = 0;
+                        .uBodyAnchor = ITEM_SLOT_INVALID;
                     pParty->pPickedItem.Reset();
                     pParty->SetHoldingItem(
                         &pPlayers[uActiveCharacter]
                              ->pInventoryItemList[mainhandequip]);
-                    _this.uBodyAnchor = 1;
+                    _this.uBodyAnchor = ITEM_SLOT_OFF_HAND;
                     memcpy(&pPlayers[uActiveCharacter]
                                 ->pInventoryItemList[freeslot],
                            &_this,
@@ -2540,8 +2412,8 @@ void OnPaperdollLeftClick() {
             case EQUIP_SINGLE_HANDED:
             case EQUIP_WAND:
                 if (pPlayers[uActiveCharacter]->HasUnderwaterSuitEquipped() &&
-                    pParty->pPickedItem.uItemID != 64 &&
-                    pParty->pPickedItem.uItemID != 65) {
+                    pParty->pPickedItem.uItemID != ITEM_BLASTER &&
+                    pParty->pPickedItem.uItemID != ITEM_BLASTER_RIFLE) {
                     pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                     return;
                 }
@@ -2549,7 +2421,7 @@ void OnPaperdollLeftClick() {
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantEquip, 0);
                     return;
                 }
-                v50 = 0;
+                v50 = ITEM_NULL;
 
                 if (pSkillType == 2 &&
                         (pPlayers[uActiveCharacter]->GetActualSkillMastery(
@@ -2567,12 +2439,12 @@ void OnPaperdollLeftClick() {
                                        sizeof(_this));
                                 pPlayers[uActiveCharacter]
                                     ->pInventoryItemList[shieldequip]
-                                    .uBodyAnchor = 0;
+                                    .uBodyAnchor = ITEM_SLOT_INVALID;
                                 pParty->pPickedItem.Reset();
                                 pParty->SetHoldingItem(
                                     &pPlayers[uActiveCharacter]
                                          ->pInventoryItemList[shieldequip]);
-                                _this.uBodyAnchor = 1;
+                                _this.uBodyAnchor = ITEM_SLOT_OFF_HAND;
                                 memcpy(&pPlayers[uActiveCharacter]
                                             ->pInventoryItemList[shieldequip],
                                        &_this, 0x24u);
@@ -2585,7 +2457,7 @@ void OnPaperdollLeftClick() {
                             v23 = pPlayers[uActiveCharacter]
                                       ->FindFreeInventoryListSlot();
                             if (v23 < 0) return;
-                            pParty->pPickedItem.uBodyAnchor = 1;
+                            pParty->pPickedItem.uBodyAnchor = ITEM_SLOT_OFF_HAND;
                             memcpy(&pPlayers[uActiveCharacter]
                                         ->pInventoryItemList[v23],
                                    &pParty->pPickedItem,
@@ -2604,7 +2476,7 @@ void OnPaperdollLeftClick() {
                     v26 =
                         pPlayers[uActiveCharacter]->FindFreeInventoryListSlot();
                     if (v26 < 0) return;
-                    pParty->pPickedItem.uBodyAnchor = 2;
+                    pParty->pPickedItem.uBodyAnchor = ITEM_SLOT_MAIN_HAND;
                     memcpy(&pPlayers[uActiveCharacter]->pInventoryItemList[v26],
                            &pParty->pPickedItem,
                            sizeof(pPlayers[uActiveCharacter]
@@ -2618,12 +2490,12 @@ void OnPaperdollLeftClick() {
                 memcpy(&_this, &pParty->pPickedItem, sizeof(_this));
                 pPlayers[uActiveCharacter]
                     ->pInventoryItemList[mainhandequip]
-                    .uBodyAnchor = 0;
+                    .uBodyAnchor = ITEM_SLOT_INVALID;
                 pParty->pPickedItem.Reset();
                 pParty->SetHoldingItem(
                     &pPlayers[uActiveCharacter]
                          ->pInventoryItemList[mainhandequip]);
-                _this.uBodyAnchor = 2;
+                _this.uBodyAnchor = ITEM_SLOT_MAIN_HAND;
                 memcpy(&pPlayers[uActiveCharacter]
                             ->pInventoryItemList[mainhandequip],
                        &_this, 0x24);
@@ -2654,12 +2526,12 @@ void OnPaperdollLeftClick() {
                     memcpy(&_this, &pParty->pPickedItem, sizeof(_this));
                     pPlayers[uActiveCharacter]
                         ->pInventoryItemList[mainhandequip]
-                        .uBodyAnchor = 0;
+                        .uBodyAnchor = ITEM_SLOT_INVALID;
                     pParty->pPickedItem.Reset();
                     pParty->SetHoldingItem(
                         &pPlayers[uActiveCharacter]
                              ->pInventoryItemList[mainhandequip]);
-                    _this.uBodyAnchor = 2;
+                    _this.uBodyAnchor = ITEM_SLOT_MAIN_HAND;
                     memcpy(&pPlayers[uActiveCharacter]
                                 ->pInventoryItemList[mainhandequip],
                            &_this, 0x24u);
@@ -2675,12 +2547,12 @@ void OnPaperdollLeftClick() {
                             memcpy(&_this, &pParty->pPickedItem, sizeof(_this));
                             pPlayers[uActiveCharacter]
                                 ->pInventoryItemList[shieldequip]
-                                .uBodyAnchor = 0;
+                                .uBodyAnchor = ITEM_SLOT_INVALID;
                             pParty->pPickedItem.Reset();
                             pParty->SetHoldingItem(
                                 &pPlayers[uActiveCharacter]
                                      ->pInventoryItemList[shieldequip]);
-                            _this.uBodyAnchor = 2;
+                            _this.uBodyAnchor = ITEM_SLOT_MAIN_HAND;
                             memcpy(&pPlayers[uActiveCharacter]
                                         ->pInventoryItemList[freeslot],
                                    &_this,
@@ -2690,7 +2562,7 @@ void OnPaperdollLeftClick() {
                             pPlayers[uActiveCharacter]->pEquipment.uMainHand =
                                 freeslot + 1;
                         } else {
-                            pParty->pPickedItem.uBodyAnchor = 2;
+                            pParty->pPickedItem.uBodyAnchor = ITEM_SLOT_MAIN_HAND;
                             memcpy(&pPlayers[uActiveCharacter]
                                         ->pInventoryItemList[freeslot],
                                    &pParty->pPickedItem,
@@ -2725,14 +2597,14 @@ void OnPaperdollLeftClick() {
             mousey >= amulety && mousey <= (amulety + 2 * slot)) {
             // amulet
             // pitem = pPlayers[uActiveCharacter]->GetAmuletItem(); //9
-            pos = 9;
+            pos = ITEM_SLOT_AMULET;
         }
 
         if (mousex >= glovex && mousex <= (glovex + slot) && mousey >= glovey &&
             mousey <= (glovey + 2 * slot)) {
             // glove
             // pitem = pPlayers[uActiveCharacter]->GetGloveItem(); //7
-            pos = 7;
+            pos = ITEM_SLOT_GAUTNLETS;
         }
 
         for (int i = 0; i < 6; ++i) {
@@ -2740,11 +2612,11 @@ void OnPaperdollLeftClick() {
                 mousey >= RingsY[i] && mousey <= (RingsY[i] + slot)) {
                 // ring
                 // pitem = pPlayers[uActiveCharacter]->GetNthRingItem(i); //10+i
-                pos = 10 + i;
+                pos = RingSlot(i);
             }
         }
 
-        if (pos != -1)
+        if (pos != ITEM_SLOT_INVALID)
             pitem = pPlayers[uActiveCharacter]->GetNthEquippedIndexItem(pos);
 
         if (!pitem) return;
@@ -2763,7 +2635,7 @@ void OnPaperdollLeftClick() {
             pSpellInfo->uFlags &= ~ON_CAST_Enchantment;
             pSpellInfo->uPlayerID_2 = uActiveCharacter - 1;
             pSpellInfo->spell_target_pid = pPlayers[uActiveCharacter]->pEquipment.pIndices[pos];
-            pSpellInfo->field_6 = pEquipType;
+            pSpellInfo->field_6 = std::to_underlying(pitem->GetItemEquipType());
 
             ptr_50C9A4_ItemToEnchant = pitem;
             _50C9A0_IsEnchantingInProgress = 0;
@@ -2775,7 +2647,7 @@ void OnPaperdollLeftClick() {
         } else {
             if (!ptr_50C9A4_ItemToEnchant) {  // снять вещь
                 pParty->SetHoldingItem(pitem);
-                pPlayers[uActiveCharacter]->pEquipment.pIndices[pitem->uBodyAnchor - 1] = 0;
+                pPlayers[uActiveCharacter]->pEquipment.pIndices[pitem->uBodyAnchor] = 0;
                 pitem->Reset();
 
                 // pParty->SetHoldingItem(&pPlayers[uActiveCharacter]->pInventoryItemList[v34
@@ -2817,7 +2689,7 @@ void OnPaperdollLeftClick() {
             pEquipType = pPlayers[uActiveCharacter]
                              ->pInventoryItemList[v34 - 1]
                              .GetItemEquipType();
-            if (pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1].uItemID == ITEM_WETSUIT) {
+            if (pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1].uItemID == ITEM_QUEST_WETSUIT) {
                 if (engine->IsUnderwater()) {
                     pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                     return;
@@ -2838,7 +2710,7 @@ void OnPaperdollLeftClick() {
                 pSpellInfo->uFlags &= ~ON_CAST_Enchantment;
                 pSpellInfo->uPlayerID_2 = uActiveCharacter - 1;
                 pSpellInfo->spell_target_pid = v34 - 1;
-                pSpellInfo->field_6 = pEquipType;
+                pSpellInfo->field_6 = std::to_underlying(pEquipType);
 
                 ptr_50C9A4_ItemToEnchant =
                     &pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1];
@@ -2855,8 +2727,7 @@ void OnPaperdollLeftClick() {
                     pPlayers[uActiveCharacter]
                         ->pEquipment.pIndices[pPlayers[uActiveCharacter]
                                                   ->pInventoryItemList[v34 - 1]
-                                                  .uBodyAnchor -
-                                              1] = 0;
+                                                  .uBodyAnchor] = 0;
                     pPlayers[uActiveCharacter]
                         ->pInventoryItemList[v34 - 1]
                         .Reset();

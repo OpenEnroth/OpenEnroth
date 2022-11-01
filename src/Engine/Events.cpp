@@ -290,7 +290,6 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
     unsigned int v98;      // edx@265
     const char *v99;       // esi@267
     int v100;              // edx@267
-    unsigned int v102;     // esi@281
     int v106;              // [sp-20h] [bp-4C8h]@278
     signed int v109;       // [sp-14h] [bp-4BCh]@278
     signed int v110;       // [sp-10h] [bp-4B8h]@278
@@ -509,11 +508,11 @@ LABEL_47:
                 } break;
                 case EVENT_NPCSetItem:
                     sub_448518_npc_set_item(EVT_DWORD(_evt->v5),
-                                            EVT_DWORD(_evt->v9), _evt->v13);
+                                            ITEM_TYPE(EVT_DWORD(_evt->v9)), _evt->v13);
                     ++curr_seq_num;
                     break;
                 case EVENT_SetActorItem:
-                    Actor::GiveItem(EVT_DWORD(_evt->v5), EVT_DWORD(_evt->v9),
+                    Actor::GiveItem(EVT_DWORD(_evt->v5), ITEM_TYPE(EVT_DWORD(_evt->v9)),
                                     _evt->v13);
                     ++curr_seq_num;
                     break;
@@ -727,7 +726,7 @@ LABEL_47:
                     } else if (player_choose == 5) {  // all
                         if (EVT_WORD(_evt->v5) == VAR_PlayerItemInHands) {
                             for (int i = 1; i < 5; ++i) {
-                                if (pPlayers[i]->HasItem(pValue, 1)) {
+                                if (pPlayers[i]->HasItem(ITEM_TYPE(pValue), 1)) {
                                     pPlayers[i]->SubtractVariable(
                                         (enum VariableType)EVT_WORD(_evt->v5), pValue);
                                     break;  // only take one item
@@ -1080,17 +1079,17 @@ LABEL_47:
                     pAudioPlayer->PlaySound((SoundID)v106, 0, 0, v109, v110, 0);
                     ++curr_seq_num;
                     break;
-                case EVENT_GiveItem:
+                case EVENT_GiveItem: {
                     item.Reset();
-                    v102 =
+                    ITEM_TYPE v102 = ITEM_TYPE(
                         _evt->v7 +
-                        ((_evt->v8 + ((_evt->v9 + ((uint)_evt->v10 << 8)) << 8))
-                         << 8);
+                        ((_evt->v8 + ((_evt->v9 + ((uint)_evt->v10 << 8)) << 8)) << 8)); // TODO(captainurist): create an accessor
                     pItemTable->GenerateItem(_evt->v5, _evt->v6, &item);
-                    if (v102) item.uItemID = v102;
+                    if (v102 != ITEM_NULL) item.uItemID = v102;
                     pParty->SetHoldingItem(&item);
                     ++curr_seq_num;
                     break;
+                }
                 case EVENT_SpeakInHouse:
                     if (EnterHouse((enum HOUSE_ID)EVT_DWORD(_evt->v5))) {
                         pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0);

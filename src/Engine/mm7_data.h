@@ -3,14 +3,18 @@
 #include <array>
 #include <vector>
 #include <string>
+#include <utility>
 
 #include "Engine/Time.h"
 #include "Engine/MM7.h"
 #include "Engine/Autonotes.h"
+#include "Engine/Objects/ItemEnums.h"
 
 #include "GUI/GUIDialogues.h"
 
 #include "VectorTypes.h"
+
+#include "Utility/IndexedArray.h"
 
 class GUIButton;
 class Actor;
@@ -97,7 +101,7 @@ extern int16_t word_4F0576[];
 
 extern std::array<int, 32> guild_membership_flags;
 extern std::array<int16_t, 49> word_4F0754;
-extern std::array<int16_t, 54> _4F0882_evt_VAR_PlayerItemInHands_vals;
+extern std::array<std::pair<int16_t, ITEM_TYPE>, 27> _4F0882_evt_VAR_PlayerItemInHands_vals;
 extern std::array<unsigned short, 6> pMaxLevelPerTrainingHallType;
 extern std::array<int, 11> price_for_membership;
 extern std::array<int16_t, 32> word_4F0F30;
@@ -359,7 +363,7 @@ extern Vec3i blv_prev_party_pos;
 extern char *dword_722F10;  // idb
 extern std::array<const char *, 513> pQuestTable;
 extern char *dword_723718_autonote_related;  // idb
-extern std::array<const char *, 82> pScrolls;
+extern IndexedArray<const char *, ITEM_FIRST_MESSAGE_SCROLL, ITEM_LAST_MESSAGE_SCROLL> pScrolls;
 extern int dword_7241C8;
 
 extern std::string pAwardsTXT_Raw;

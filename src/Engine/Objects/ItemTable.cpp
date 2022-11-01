@@ -3,6 +3,8 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <unordered_map>
+#include <utility>
 
 #include "Engine/Tables/StorylineTextTable.h"
 #include "Engine/Tables/FactionTable.h"
@@ -15,6 +17,7 @@
 #include "GUI/UI/UIHouses.h"
 
 #include "Utility/String.h"
+#include "Utility/Random.h"
 
 //----- (0045814E) --------------------------------------------------------
 void ItemTable::Release() {
@@ -80,7 +83,6 @@ void ItemTable::Initialize() {
     materialMap["special"] = MATERIAL_SPECIAL;
 
     char* test_string;
-    int item_counter;
 
     pMapStats = new MapStats;
     pMapStats->Initialize();
@@ -112,16 +114,16 @@ void ItemTable::Initialize() {
         auto tokens = Tokenize(test_string, '\t');
         pEnchantments[i].pBonusStat = RemoveQuotes(tokens[0]);
         pEnchantments[i].pOfName = RemoveQuotes(tokens[1]);
-        for (int j = 0; j < 9; j++) {
-            pEnchantments[i].to_item[j] = atoi(tokens[j + 2]);
-        }
+
+        int k = 2;
+        for (ITEM_EQUIP_TYPE j : pEnchantments[i].to_item.indices())
+            pEnchantments[i].to_item[j] = atoi(tokens[k++]);
     }
 
-    memset(&pEnchantmentsSumm, 0, 36);
-    for (int i = 0; i < 9; ++i) {
-        for (int j = 0; j < 24; ++j)
+    pEnchantmentsSumm.fill(0);
+    for (int j = 0; j < 24; ++j)
+        for (ITEM_EQUIP_TYPE i : pEnchantments[j].to_item.indices())
             pEnchantmentsSumm[i] += pEnchantments[j].to_item[i];
-    }
 
     // Bonus range for Standard by Level
     strtok(NULL, "\r");
@@ -148,9 +150,11 @@ void ItemTable::Initialize() {
         Assert(tokens.size() >= 17, "Invalid number of tokens");
         pSpecialEnchantments[i].pBonusStatement = RemoveQuotes(tokens[0]);
         pSpecialEnchantments[i].pNameAdd = RemoveQuotes(tokens[1]);
-        for (int j = 0; j < 12; j++) {
-            pSpecialEnchantments[i].to_item_apply[j] = atoi(tokens[j + 2]);
-        }
+
+        int k = 2;
+        for (ITEM_EQUIP_TYPE j : pSpecialEnchantments[i].to_item_apply.indices())
+            pSpecialEnchantments[i].to_item_apply[j] = atoi(tokens[k++]);
+
         int res;
         res = atoi(tokens[14]);
         int mask = 0;
@@ -166,26 +170,17 @@ void ItemTable::Initialize() {
     }
 
     pSpecialEnchantments_count = 72;
-    memset(&pSpecialEnchantmentsSumm, 0, 96);
-    for (int i = 0; i < 12; ++i) {
-        for (ITEM_ENCHANTMENT j : pSpecialEnchantments.indices())
-            pSpecialEnchantmentsSumm[i] += pSpecialEnchantments[j].to_item_apply[i];
-    }
 
     InitializeBuildingResidents();
 
     pItemsTXT_Raw = pEvents_LOD->LoadCompressedTexture("items.txt").string_view();
     strtok(pItemsTXT_Raw.data(), "\r");
     strtok(NULL, "\r");
-    uAllItemsCount = 0;
-    item_counter = 0;
-    while (item_counter < 800) {
+    for (size_t line = 0; line < 799; line++) {
         test_string = strtok(NULL, "\r") + 1;
-
         auto tokens = Tokenize(test_string, '\t');
 
-        item_counter = atoi(tokens[0]);
-        uAllItemsCount = item_counter;
+        ITEM_TYPE item_counter = ITEM_TYPE(atoi(tokens[0]));
         pItems[item_counter].pIconName = RemoveQuotes(tokens[1]);
         pItems[item_counter].pName = RemoveQuotes(tokens[2]);
         pItems[item_counter].uValue = atoi(tokens[3]);
@@ -247,34 +242,32 @@ void ItemTable::Initialize() {
         pItems[item_counter].uEquipX = atoi(tokens[14]);
         pItems[item_counter].uEquipY = atoi(tokens[15]);
         pItems[item_counter].pDescription = RemoveQuotes(tokens[16]);
-        item_counter++;
     }
 
-    uAllItemsCount = item_counter;
     pRndItemsTXT_Raw = pEvents_LOD->LoadCompressedTexture("rnditems.txt").string_view();
     strtok(pRndItemsTXT_Raw.data(), "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
-    for (item_counter = 0; item_counter < 619; item_counter++) {
+    for(size_t line = 0; line < 618; line++) {
         test_string = strtok(NULL, "\r") + 1;
         auto tokens = Tokenize(test_string, '\t');
         Assert(tokens.size() > 7, "Invalid number of tokens");
-        item_counter = atoi(tokens[0]);
-        pItems[item_counter].uChanceByTreasureLvl1 = atoi(tokens[2]);
-        pItems[item_counter].uChanceByTreasureLvl2 = atoi(tokens[3]);
-        pItems[item_counter].uChanceByTreasureLvl3 = atoi(tokens[4]);
-        pItems[item_counter].uChanceByTreasureLvl4 = atoi(tokens[5]);
-        pItems[item_counter].uChanceByTreasureLvl5 = atoi(tokens[6]);
-        pItems[item_counter].uChanceByTreasureLvl6 = atoi(tokens[7]);
+
+        ITEM_TYPE item_counter = ITEM_TYPE(atoi(tokens[0]));
+        pItems[item_counter].uChanceByTreasureLvl[0] = atoi(tokens[2]);
+        pItems[item_counter].uChanceByTreasureLvl[1] = atoi(tokens[3]);
+        pItems[item_counter].uChanceByTreasureLvl[2] = atoi(tokens[4]);
+        pItems[item_counter].uChanceByTreasureLvl[3] = atoi(tokens[5]);
+        pItems[item_counter].uChanceByTreasureLvl[4] = atoi(tokens[6]);
+        pItems[item_counter].uChanceByTreasureLvl[5] = atoi(tokens[7]);
     }
 
     // ChanceByTreasureLvl Summ - to calculate chance
     memset(&uChanceByTreasureLvlSumm, 0, 24);
-    for (int i = 0; i < 6; ++i) {
-        for (int j = 1; j < item_counter; ++j)
+    for (int i = 0; i < 6; ++i)
+        for (ITEM_TYPE j : pItems.indices())
             uChanceByTreasureLvlSumm[i] += pItems[j].uChanceByTreasureLvl[i];
-    }
 
     strtok(NULL, "\r");
     strtok(NULL, "\r");
@@ -441,7 +434,7 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
     int treasureLevelMinus1;      // ebx@3
     int current_chance;           // ebx@43
     int tmp_chance;               // ecx@47
-    int artifact_random_id;       // ebx@57
+    ITEM_TYPE artifact_random_id;       // ebx@57
     int v18;                      // edx@62
     unsigned int special_chance;  // edx@86
     unsigned int v26;             // edx@89
@@ -452,7 +445,8 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
     int v45;            // eax@120
     int v46;            // edx@120
     int j;              // eax@121
-    int val_list[800];  // [sp+Ch] [bp-C88h]@33
+    std::array<ITEM_TYPE, 800> val_list;  // [sp+Ch] [bp-C88h]@33
+    std::array<ITEM_ENCHANTMENT, 800> val_list2;
     int total_chance;   // [sp+C8Ch] [bp-8h]@33
     int artifact_found = 0;       // [sp+CA0h] [bp+Ch]@55
     int v57;            // [sp+CA0h] [bp+Ch]@62
@@ -548,16 +542,17 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
                 break;
             default:
                 __debugbreak();  // check this condition
+                // TODO(captainurist): explore
                 requested_equip = (ITEM_EQUIP_TYPE)(uTreasureType - 1);
                 break;
         }
-        memset(val_list, 0, sizeof(val_list));
+        val_list.fill(ITEM_NULL);
         total_chance = 0;
         j = 0;
         // a2a = 1;
         if (requested_skill ==
             PLAYER_SKILL_INVALID) {  // no skill for this item needed
-            for (uint i = 1; i < 500; ++i) {
+            for (ITEM_TYPE i : SpawnableItems()) {
                 if (pItems[i].uEquipType == requested_equip) {
                     val_list[j] = i;
                     ++j;
@@ -566,7 +561,7 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
                 }
             }
         } else {  // have needed skill
-            for (uint i = 1; i < 500; ++i) {
+            for (ITEM_TYPE i : SpawnableItems()) {
                 if (pItems[i].uSkillType == requested_skill) {
                     val_list[j] = i;
                     ++j;
@@ -587,19 +582,19 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
                 ++j;
             }
         } else {
-            out_item->uItemID = ITEM_LONGSWORD_1;
+            out_item->uItemID = ITEM_CRUDE_LONGSWORD;
         }
     } else {
         // artifact
         if (treasureLevelMinus1 == 5) {
-            for (int i = 0; i < 29; ++i)
+            for (ITEM_TYPE i : SpawnableArtifacts())
                 artifact_found += pParty->pIsArtifactFound[i];
-            artifact_random_id = rand() % 29;
+            artifact_random_id = Sample(SpawnableArtifacts());
             if ((rand() % 100 < 5) && !pParty->pIsArtifactFound[artifact_random_id] &&
                 (engine->config->gameplay.ArtifactLimit.Get() == 0 || artifact_found < engine->config->gameplay.ArtifactLimit.Get())) {
                 pParty->pIsArtifactFound[artifact_random_id] = 1;
                 out_item->uAttributes = 0;
-                out_item->uItemID = ITEM_ARTIFACT_PUCK + artifact_random_id;
+                out_item->uItemID = artifact_random_id;
                 SetSpecialBonus(out_item);
                 return;
             }
@@ -608,7 +603,8 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
         v57 = 0;
         v18 = rand() % this->uChanceByTreasureLvlSumm[treasure_level - 1] + 1;
         while (v57 < v18) {
-            ++out_item->uItemID;
+            // TODO(captainurist): what's going on here? Get rid of casts.
+            out_item->uItemID = ITEM_TYPE(std::to_underlying(out_item->uItemID) + 1);
             v57 += pItems[out_item->uItemID]
                     .uChanceByTreasureLvl[treasureLevelMinus1];
         }
@@ -623,9 +619,9 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
                 out_item->uEnchantmentType * treasure_level;
     }
 
-    if (out_item->uItemID == ITEM_SPELLBOOK_LIGHT_DIVINE_INTERVENTION &&
+    if (out_item->uItemID == ITEM_SPELLBOOK_DIVINE_INTERVENTION &&
         !(uint16_t)_449B57_test_bit(pParty->_quest_bits, 239))
-        out_item->uItemID = ITEM_SPELLBOOK_LIGHT_SUN_BURST;
+        out_item->uItemID = ITEM_SPELLBOOK_SUNRAY;
     if (pItemTable->pItems[out_item->uItemID].uItemID_Rep_St)
         out_item->uAttributes = 0;
     else
@@ -658,13 +654,12 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
             special_chance = rand() % 100;
             if (special_chance < uBonusChanceStandart[treasureLevelMinus1]) {
                 v26 = rand() %
-                      pEnchantmentsSumm[out_item->GetItemEquipType() - 3] +
-                      1;
+                      pEnchantmentsSumm[out_item->GetItemEquipType()] + 1;
                 v27 = 0;
                 while (v27 < v26) {
                     ++out_item->uEnchantmentType;
                     v27 += pEnchantments[out_item->uEnchantmentType]
-                            .to_item[out_item->GetItemEquipType() - 3];
+                            .to_item[out_item->GetItemEquipType()];
                 }
 
                 v33 = rand() % (bonus_ranges[treasureLevelMinus1].maxR -
@@ -697,7 +692,7 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
     j = 0;
     int spc_sum = 0;
     int spc;
-    memset(&val_list, 0, 3200);
+    val_list2.fill(ITEM_ENCHANTMENT_NULL);
     for (ITEM_ENCHANTMENT i : pSpecialEnchantments.indices()) {
         int tr_lv = (pSpecialEnchantments[i].iTreasureLevel) & 3;
 
@@ -715,7 +710,7 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
             spc = pSpecialEnchantments[i].to_item_apply[out_item->GetItemEquipType()];
             spc_sum += spc;
             if (spc) {
-                val_list[j++] = i;
+                val_list2[j++] = i;
             }
         }
     }
@@ -729,7 +724,138 @@ void ItemTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
         // TODO(pskelton): investigate this
         // quick fix on limit
         if (j > 799) break;
-        out_item->special_enchantment = (ITEM_ENCHANTMENT)(val_list[j]);
-        v45 += pSpecialEnchantments[(ITEM_ENCHANTMENT)val_list[j]].to_item_apply[out_item->GetItemEquipType()];
+        out_item->special_enchantment = val_list2[j];
+        v45 += pSpecialEnchantments[val_list2[j]].to_item_apply[out_item->GetItemEquipType()];
     }
+}
+
+void ItemTable::PrintItemTypesEnum() {
+    std::unordered_map<std::string, int> countByName;
+    std::unordered_map<std::string, int> indexByName;
+    std::vector<std::pair<std::string, std::string>> items;
+
+    // TODO(captainurist): use std::string::contains once we have full C++23 support.
+    auto contains = [](const std::string &haystack, const std::string &needle) {
+        return haystack.find(needle) != std::string::npos;
+    };
+
+    items.emplace_back("NULL", "");
+
+    for(ITEM_TYPE i : pItems.indices()) {
+        const ItemDesc &desc = pItems[i];
+        std::string icon = desc.pIconName;
+        std::string name = desc.pName;
+        std::string description = desc.pDescription;
+
+        if (icon.empty() || icon == "null") {
+            items.emplace_back("", "Unused.");
+            continue;
+        }
+
+        std::string enumName;
+        for (char c : name) {
+            if (isalnum(c)) {
+                enumName += static_cast<char>(toupper(c));
+            } else if (isspace(c) || c == '/' || c == '-') {
+                if (!enumName.ends_with('_'))
+                    enumName += '_';
+            }
+        }
+
+        if (enumName == "EMPTY_MESSAGE_SCROLL" || enumName == "NAME_OF_MESSAGE") {
+            items.emplace_back("", "Empty scroll placeholder, unused.");
+            continue;
+        }
+
+        if (enumName == "NEWNAME_KEY") {
+            items.emplace_back("", "Key placeholder, unused.");
+            continue;
+        }
+
+        if (contains(enumName, "PLACEHOLDER") || contains(enumName, "SEALED_LETTER")) {
+            items.emplace_back("", name + ", unused.");
+            continue;
+        }
+
+        if (contains(enumName, "ORDERS_FROM_SNERGLE")) {
+            items.emplace_back("", name + ", unused remnant from MM6.");
+            continue;
+        }
+
+        if (enumName == "LICH_JAR") {
+            if (contains(description, "Empty")) {
+                enumName += "_EMPTY";
+            } else {
+                enumName += "_FULL";
+            }
+        }
+
+        if (enumName == "THE_PERFECT_BOW")
+            if (!contains(description, "off-balance"))
+                enumName += "_FIXED";
+
+        if (desc.uEquipType == EQUIP_REAGENT) {
+            enumName = "REAGENT_" + enumName;
+        } else if (desc.uEquipType == EQUIP_POTION) {
+            if (!enumName.starts_with("POTION_"))
+                enumName = "POTION_" + enumName;
+            if (enumName.ends_with("_POTION"))
+                enumName = enumName.substr(0, enumName.size() - 7);
+        } else if (desc.uEquipType == EQUIP_SPELL_SCROLL) {
+            enumName = "SCROLL_" + enumName;
+        } else if (desc.uEquipType == EQUIP_BOOK) {
+            enumName = "SPELLBOOK_" + enumName;
+        } else if (desc.uEquipType == EQUIP_MESSAGE_SCROLL) {
+            if (enumName.ends_with("_RECIPE")) {
+                enumName = "RECIPE_" + enumName.substr(0, enumName.size() - 7);
+            } else if (!enumName.starts_with("MESSAGE_")) {
+                enumName = "MESSAGE_" + enumName;
+            }
+        } else if (desc.uEquipType == EQUIP_GOLD) {
+            if (description == "A small pile of gold coins.") {
+                enumName = "GOLD_SMALL";
+            } else if (description == "A pile of gold coins.") {
+                enumName = "GOLD_MEDIUM";
+            } else if (description == "A large pile of gold coins.") {
+                enumName = "GOLD_LARGE";
+            } else {
+                Assert(false);
+            }
+        } else if (desc.uEquipType == EQUIP_GEM) {
+            enumName = "GEM_" + enumName;
+        }
+
+        if (desc.uMaterial == MATERIAL_ARTIFACT) {
+            enumName = "ARTIFACT_" + enumName;
+        } else if (desc.uMaterial == MATERIAL_RELIC) {
+            enumName = "RELIC_" + enumName;
+        } else if (desc.uMaterial == MATERIAL_SPECIAL) {
+            enumName = "RARE_" + enumName;
+        } else if (description.starts_with("Quest")) {
+            enumName = "QUEST_" + enumName;
+        }
+
+        if (indexByName.contains(enumName)) {
+            int count = ++countByName[enumName];
+            if (count == 2)
+                items[indexByName[enumName]].first = enumName + "_1";
+
+            enumName = enumName + "_" + std::to_string(count);
+        } else {
+            indexByName[enumName] = items.size();
+            countByName[enumName] = 1;
+        }
+
+        items.emplace_back(enumName, "");
+    }
+
+    printf("enum ITEM_TYPE {\n");
+    for (size_t i = 0; i < items.size(); i++) {
+        if (!items[i].first.empty()) {
+            printf("    ITEM_%s = %d,\n", items[i].first.c_str(), static_cast<int>(i));
+        } else {
+            printf("    ITEM_%d = %d, // %s\n", static_cast<int>(i), static_cast<int>(i), items[i].second.c_str());
+        }
+    }
+    printf("};\n");
 }

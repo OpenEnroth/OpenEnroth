@@ -250,48 +250,48 @@ void Localization::InitializeCharacterConditionNames() {
 }
 
 void Localization::InitializeSkillNames() {
-    this->skill_names[0] = this->localization_strings[271];  // Staff
-    this->skill_names[1] = this->localization_strings[272];
-    this->skill_names[2] = this->localization_strings[273];
-    this->skill_names[3] = this->localization_strings[274];
-    this->skill_names[4] = this->localization_strings[275];
-    this->skill_names[5] = this->localization_strings[276];  // Bow
-    this->skill_names[6] = this->localization_strings[277];
-    this->skill_names[7] = this->localization_strings[278];
-    this->skill_names[8] = this->localization_strings[279];
-    this->skill_names[9] = this->localization_strings[280];
-    this->skill_names[10] = this->localization_strings[281];  // Chain
-    this->skill_names[11] = this->localization_strings[282];
-    this->skill_names[12] = this->localization_strings[283];
-    this->skill_names[13] = this->localization_strings[284];
-    this->skill_names[14] = this->localization_strings[285];
-    this->skill_names[15] = this->localization_strings[286];  // Earth
-    this->skill_names[16] = this->localization_strings[289];
-    this->skill_names[17] = this->localization_strings[290];
-    this->skill_names[18] = this->localization_strings[291];
-    this->skill_names[19] = this->localization_strings[287];
-    this->skill_names[20] = this->localization_strings[288];  // Dark
-    this->skill_names[21] = this->localization_strings[292];
-    this->skill_names[22] = this->localization_strings[293];
-    this->skill_names[23] = this->localization_strings[294];
-    this->skill_names[24] = this->localization_strings[295];
-    this->skill_names[25] = this->localization_strings[296];  // Meditation
-    this->skill_names[26] = this->localization_strings[297];
-    this->skill_names[27] = this->localization_strings[298];
-    this->skill_names[28] = this->localization_strings[299];
-    this->skill_names[29] = this->localization_strings[300];
-    this->skill_names[30] = this->localization_strings[50];  // Dodge
-    this->skill_names[31] = this->localization_strings[77];
-    this->skill_names[32] = this->localization_strings[88];
-    this->skill_names[33] = this->localization_strings[89];
-    this->skill_names[34] = this->localization_strings[90];
-    this->skill_names[35] = this->localization_strings[95];  // Alchemy
-    this->skill_names[36] = this->localization_strings[301];
-    this->skill_names[37] = this->localization_strings[153];  // Nothing
+    this->skill_names[PLAYER_SKILL_STAFF]       = this->localization_strings[271];  // Staff
+    this->skill_names[PLAYER_SKILL_SWORD]       = this->localization_strings[272];
+    this->skill_names[PLAYER_SKILL_DAGGER]      = this->localization_strings[273];
+    this->skill_names[PLAYER_SKILL_AXE]         = this->localization_strings[274];
+    this->skill_names[PLAYER_SKILL_SPEAR]       = this->localization_strings[275];
+    this->skill_names[PLAYER_SKILL_BOW]         = this->localization_strings[276];  // Bow
+    this->skill_names[PLAYER_SKILL_MACE]        = this->localization_strings[277];
+    this->skill_names[PLAYER_SKILL_BLASTER]     = this->localization_strings[278];
+    this->skill_names[PLAYER_SKILL_SHIELD]      = this->localization_strings[279];
+    this->skill_names[PLAYER_SKILL_LEATHER]     = this->localization_strings[280];
+    this->skill_names[PLAYER_SKILL_CHAIN]       = this->localization_strings[281];  // Chain
+    this->skill_names[PLAYER_SKILL_PLATE]       = this->localization_strings[282];
+    this->skill_names[PLAYER_SKILL_FIRE]        = this->localization_strings[283];
+    this->skill_names[PLAYER_SKILL_AIR]         = this->localization_strings[284];
+    this->skill_names[PLAYER_SKILL_WATER]       = this->localization_strings[285];
+    this->skill_names[PLAYER_SKILL_EARTH]       = this->localization_strings[286];  // Earth
+    this->skill_names[PLAYER_SKILL_SPIRIT]      = this->localization_strings[289];
+    this->skill_names[PLAYER_SKILL_MIND]        = this->localization_strings[290];
+    this->skill_names[PLAYER_SKILL_BODY]        = this->localization_strings[291];
+    this->skill_names[PLAYER_SKILL_LIGHT]       = this->localization_strings[287];
+    this->skill_names[PLAYER_SKILL_DARK]        = this->localization_strings[288];  // Dark
+    this->skill_names[PLAYER_SKILL_ITEM_ID]     = this->localization_strings[292];
+    this->skill_names[PLAYER_SKILL_MERCHANT]    = this->localization_strings[293];
+    this->skill_names[PLAYER_SKILL_REPAIR]      = this->localization_strings[294];
+    this->skill_names[PLAYER_SKILL_BODYBUILDING] = this->localization_strings[295];
+    this->skill_names[PLAYER_SKILL_MEDITATION]  = this->localization_strings[296];  // Meditation
+    this->skill_names[PLAYER_SKILL_PERCEPTION]  = this->localization_strings[297];
+    this->skill_names[PLAYER_SKILL_DIPLOMACY]   = this->localization_strings[298];
+    this->skill_names[PLAYER_SKILL_THIEVERY]    = this->localization_strings[299];
+    this->skill_names[PLAYER_SKILL_TRAP_DISARM] = this->localization_strings[300];
+    this->skill_names[PLAYER_SKILL_DODGE]       = this->localization_strings[50];  // Dodge
+    this->skill_names[PLAYER_SKILL_UNARMED]     = this->localization_strings[77];
+    this->skill_names[PLAYER_SKILL_MONSTER_ID]  = this->localization_strings[88];
+    this->skill_names[PLAYER_SKILL_ARMSMASTER]  = this->localization_strings[89];
+    this->skill_names[PLAYER_SKILL_STEALING]    = this->localization_strings[90];
+    this->skill_names[PLAYER_SKILL_ALCHEMY]     = this->localization_strings[95];  // Alchemy
+    this->skill_names[PLAYER_SKILL_LEARNING]    = this->localization_strings[301];
+    this->skill_names[PLAYER_SKILL_COUNT]       = this->localization_strings[153]; // "None", used during character creation.
 
     skill_desc_raw = pEvents_LOD->LoadCompressedTexture("skilldes.txt").string_view();
     strtok(skill_desc_raw.data(), "\r");
-    for (int i = 0; i < 37; ++i) {
+    for (PLAYER_SKILL_TYPE i : this->skill_descriptions.indices()) {
         char *test_string = strtok(NULL, "\r") + 1;
 
         auto tokens = Tokenize(test_string, '\t');
@@ -373,12 +373,9 @@ void Localization::InitializeMm6ItemCategories() {
     this->mm6_item_categories[7] = this->localization_strings[277];  // Mace
     this->mm6_item_categories[8] = this->localization_strings[278];  // Blaster
     this->mm6_item_categories[9] = this->localization_strings[279];  // Shield
-    this->mm6_item_categories[10] =
-        this->localization_strings[280];  // Leather armour
-    this->mm6_item_categories[11] =
-        this->localization_strings[281];  // Chainmail
-    this->mm6_item_categories[12] =
-        this->localization_strings[282];  // Plate armour
+    this->mm6_item_categories[10] = this->localization_strings[280];  // Leather armour
+    this->mm6_item_categories[11] = this->localization_strings[281];  // Chainmail
+    this->mm6_item_categories[12] = this->localization_strings[282];  // Plate armour
     this->mm6_item_categories[13] = this->localization_strings[143];  // Other
 }
 
