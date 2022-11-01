@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-#include "Utility/Range.h"
+#include "Utility/Segment.h"
 
 /**
  * Phrase IDs for phrases displayed in shops when hovering over items.
@@ -24,8 +24,8 @@ enum class MERCHANT_PHRASE {
 };
 using enum MERCHANT_PHRASE;
 
-inline Range<MERCHANT_PHRASE> MerchantPhrases() {
-    return make_range(MERCHANT_PHRASE_NOT_ENOUGH_GOLD, MERCAHNT_PHRASE_STOLEN_ITEM);
+inline Segment<MERCHANT_PHRASE> MerchantPhrases() {
+    return Segment(MERCHANT_PHRASE_NOT_ENOUGH_GOLD, MERCAHNT_PHRASE_STOLEN_ITEM);
 }
 
 enum NPCProf : int32_t {

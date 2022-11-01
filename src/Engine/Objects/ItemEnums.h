@@ -5,7 +5,7 @@
 #include "Engine/ErrorHandling.h"
 
 #include "Utility/Flags.h"
-#include "Utility/Range.h"
+#include "Utility/Segment.h"
 #include "Utility/Workaround/ToUnderlying.h"
 
 enum class DAMAGE_TYPE : unsigned int {
@@ -1000,16 +1000,16 @@ inline bool IsSpawnableArtifact(ITEM_TYPE type) {
     return type >= ITEM_FIRST_SPAWNABLE_ARTIFACT && type <= ITEM_LAST_SPAWNABLE_ARTIFACT;
 }
 
-inline Range<ITEM_TYPE> RecipeScrolls() {
-    return make_range(ITEM_FIRST_RECIPE, ITEM_LAST_RECIPE);
+inline Segment<ITEM_TYPE> RecipeScrolls() {
+    return Segment(ITEM_FIRST_RECIPE, ITEM_LAST_RECIPE);
 }
 
 /**
  * @return                              Range of all items that can be randomly generated as loot. Note that not all
  *                                      of the entries might actually be valid.
  */
-inline Range<ITEM_TYPE> SpawnableItems() {
-    return make_range(ITEM_FIRST_SPAWNABLE, ITEM_LAST_SPAWNABLE);
+inline Segment<ITEM_TYPE> SpawnableItems() {
+    return Segment(ITEM_FIRST_SPAWNABLE, ITEM_LAST_SPAWNABLE);
 }
 
 /**
@@ -1018,8 +1018,8 @@ inline Range<ITEM_TYPE> SpawnableItems() {
  *                                      generated this way, e.g. Hermes' Sandals can only be picked up from a
  *                                      Mega Dragon's corpse.
  */
-inline Range<ITEM_TYPE> SpawnableArtifacts() {
-    return make_range(ITEM_FIRST_SPAWNABLE_ARTIFACT, ITEM_LAST_SPAWNABLE_ARTIFACT);
+inline Segment<ITEM_TYPE> SpawnableArtifacts() {
+    return Segment(ITEM_FIRST_SPAWNABLE_ARTIFACT, ITEM_LAST_SPAWNABLE_ARTIFACT);
 }
 
 /**
@@ -1125,8 +1125,8 @@ enum class ITEM_SLOT : uint8_t {
 };
 using enum ITEM_SLOT;
 
-inline Range<ITEM_SLOT> RingSlots() {
-    return make_range(ITEM_SLOT_RING1, ITEM_SLOT_RING6);
+inline Segment<ITEM_SLOT> RingSlots() {
+    return Segment(ITEM_SLOT_RING1, ITEM_SLOT_RING6);
 }
 
 inline ITEM_SLOT RingSlot(int index) {
@@ -1134,6 +1134,6 @@ inline ITEM_SLOT RingSlot(int index) {
     return static_cast<ITEM_SLOT>(std::to_underlying(ITEM_SLOT_RING1) + index);
 }
 
-inline Range<ITEM_SLOT> AllItemSlots() {
-    return make_range(ITEM_SLOT_FIRST_VALID, ITEM_SLOT_LAST_VALID);
+inline Segment<ITEM_SLOT> AllItemSlots() {
+    return Segment(ITEM_SLOT_FIRST_VALID, ITEM_SLOT_LAST_VALID);
 }
