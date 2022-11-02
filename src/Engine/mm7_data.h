@@ -200,7 +200,6 @@ extern Vec3i layingitem_vel_50FDFC;
 extern char pStartingMapName[32];  // idb
 extern std::array<uint8_t, 5> IsPlayerWearingWatersuit;
 extern std::array<char, 54> party_has_equipment;
-extern std::array<char, 17> byte_5111F6_OwnedArtifacts;
 
 extern unsigned int uNumBlueFacesInBLVMinimap;
 extern std::array<uint16_t, 50> pBlueFacesInBLVMinimapIDs;

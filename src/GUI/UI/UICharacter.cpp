@@ -1523,47 +1523,6 @@ void CharacterUI_LoadPaperdollTextures() {
     }
 #endif
 
-    memset(byte_5111F6_OwnedArtifacts.data(), 0,
-           sizeof(byte_5111F6_OwnedArtifacts));
-    for (uint i = 0; i < 4; ++i) {
-        Player *player = &pParty->pPlayers[i];
-
-        if (player->HasItem(ITEM_ARTIFACT_GOVERNORS_ARMOR, 1))
-            byte_5111F6_OwnedArtifacts[0] = 1;
-        if (player->HasItem(ITEM_ARTIFACT_YORUBA, 1))
-            byte_5111F6_OwnedArtifacts[1] = 1;
-        if (player->HasItem(ITEM_RELIC_HARECKS_LEATHER, 1))
-            byte_5111F6_OwnedArtifacts[2] = 1;
-        if (player->HasItem(ITEM_ARTIFACT_SEVEN_LEAGUE_BOOTS, 1))
-            byte_5111F6_OwnedArtifacts[3] = 1;
-        if (player->HasItem(ITEM_RELIC_TALEDONS_HELM, 1))
-            byte_5111F6_OwnedArtifacts[4] = 1;
-        if (player->HasItem(ITEM_RELIC_SCHOLARS_CAP, 1))
-            byte_5111F6_OwnedArtifacts[5] = 1;
-        if (player->HasItem(ITEM_RELIC_PHYNAXIAN_CROWN, 1))
-            byte_5111F6_OwnedArtifacts[6] = 1;
-        if (player->HasItem(ITEM_ARTIFACT_MINDS_EYE, 1))
-            byte_5111F6_OwnedArtifacts[7] = 1;
-        if (player->HasItem(ITEM_RARE_SHADOWS_MASK, 1))
-            byte_5111F6_OwnedArtifacts[8] = 1;
-        if (player->HasItem(ITEM_RELIC_TITANS_BELT, 1))
-            byte_5111F6_OwnedArtifacts[9] = 1;
-        if (player->HasItem(ITEM_ARTIFACT_HEROS_BELT, 1))
-            byte_5111F6_OwnedArtifacts[10] = 1;
-        if (player->HasItem(ITEM_RELIC_TWILIGHT, 1))
-            byte_5111F6_OwnedArtifacts[11] = 1;
-        if (player->HasItem(ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, 1))
-            byte_5111F6_OwnedArtifacts[12] = 1;
-        if (player->HasItem(ITEM_RARE_SUN_CLOAK, 1))
-            byte_5111F6_OwnedArtifacts[13] = 1;
-        if (player->HasItem(ITEM_RARE_MOON_CLOAK, 1))
-            byte_5111F6_OwnedArtifacts[14] = 1;
-        if (player->HasItem(ITEM_RARE_VAMPIRES_CAPE, 1))
-            byte_5111F6_OwnedArtifacts[15] = 1;
-        if (player->HasItem(ITEM_ARTIFACT_ELVEN_CHAINMAIL, 1))
-            byte_5111F6_OwnedArtifacts[16] = 1;
-    }
-
     auto loadTexture = [&](const auto &map, int itemIndex, int bodyIndex, int shoulderIndex) {
         std::string name = GetItemTextureFilename(*ValuePtr(map, itemIndex), bodyIndex + 1, shoulderIndex);
         return assets->GetImage_Alpha(name);

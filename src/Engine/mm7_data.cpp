@@ -584,7 +584,6 @@ Vec3i layingitem_vel_50FDFC;
 char pStartingMapName[32];  // idb
 std::array<uint8_t, 5> IsPlayerWearingWatersuit;
 std::array<char, 54> party_has_equipment;
-std::array<char, 17> byte_5111F6_OwnedArtifacts;
 
 unsigned int uNumBlueFacesInBLVMinimap;
 std::array<uint16_t, 50> pBlueFacesInBLVMinimapIDs;
