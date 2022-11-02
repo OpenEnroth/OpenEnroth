@@ -12,8 +12,8 @@ var searchData=
   ['game_5fstate_5fparty_5fdied_9',['GAME_STATE_PARTY_DIED',['../Engine_8h.html#a4cc39f049df62b331976f9a4482bd3eaae08e2d2086c9da3361ea6ae216e70e05',1,'Engine.h']]],
   ['game_5fstate_5fplaying_10',['GAME_STATE_PLAYING',['../Engine_8h.html#a4cc39f049df62b331976f9a4482bd3eaaaf786ee27d609fe60b6a21cb91918af9',1,'Engine.h']]],
   ['game_5fstate_5fstarting_5fnew_5fgame_11',['GAME_STATE_STARTING_NEW_GAME',['../Engine_8h.html#a4cc39f049df62b331976f9a4482bd3eaaa19ff81ddace1bc490cace4c3fca6c07',1,'Engine.h']]],
-  ['gatemaster_12',['GateMaster',['../NPCProf_8h.html#ae6501f571f97d74c2c78fddcb371bad4a876a9024d25e084bf625e66cfa7de0a0',1,'NPCProf.h']]],
-  ['guide_13',['Guide',['../NPCProf_8h.html#ae6501f571f97d74c2c78fddcb371bad4aa73051e38214e2328e22c482b446defd',1,'NPCProf.h']]],
+  ['gatemaster_12',['GateMaster',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a876a9024d25e084bf625e66cfa7de0a0',1,'NPCEnums.h']]],
+  ['guide_13',['Guide',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4aa73051e38214e2328e22c482b446defd',1,'NPCEnums.h']]],
   ['guild_5fof_5fair_14',['GUILD_OF_AIR',['../GUIWindow_8h.html#ad5b17819485bfe6ede8299978e6f0c34afc9e3cb0cb8a4efc25fd889e9dc937c1',1,'GUIWindow.h']]],
   ['guild_5fof_5fbody_15',['GUILD_OF_BODY',['../GUIWindow_8h.html#ad5b17819485bfe6ede8299978e6f0c34a952255ea67563e02b44d482cbbe1614f',1,'GUIWindow.h']]],
   ['guild_5fof_5fdark_16',['GUILD_OF_DARK',['../GUIWindow_8h.html#ad5b17819485bfe6ede8299978e6f0c34ab74244eb59dc5ccb950dbff9fde1ee9b',1,'GUIWindow.h']]],
@@ -25,5 +25,5 @@ var searchData=
   ['guild_5fof_5fself_22',['GUILD_OF_SELF',['../GUIWindow_8h.html#ad5b17819485bfe6ede8299978e6f0c34a823eefb04229343a8919d0817c21c1ac',1,'GUIWindow.h']]],
   ['guild_5fof_5fspirit_23',['GUILD_OF_SPIRIT',['../GUIWindow_8h.html#ad5b17819485bfe6ede8299978e6f0c34a10952d1970c13a2ce139750b20dbeddf',1,'GUIWindow.h']]],
   ['guild_5fof_5fwater_24',['GUILD_OF_WATER',['../GUIWindow_8h.html#ad5b17819485bfe6ede8299978e6f0c34a6069d877dacd5823da46ecc469dd6079',1,'GUIWindow.h']]],
-  ['gypsy_25',['Gypsy',['../NPCProf_8h.html#ae6501f571f97d74c2c78fddcb371bad4a18ad06e6eeb6f5335c2cf6d98188e77d',1,'NPCProf.h']]]
+  ['gypsy_25',['Gypsy',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a18ad06e6eeb6f5335c2cf6d98188e77d',1,'NPCEnums.h']]]
 ];

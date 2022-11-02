@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;9e23e4f</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;c5c9b17</span>
    </div>
   </td>
  </tr>
@@ -87,6 +87,8 @@ $(function() {
 <code>#include &quot;<a class="el" href="MM7_8h.html">Engine/MM7.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Autonotes_8h.html">Engine/Autonotes.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ItemEnums_8h.html">Engine/Objects/ItemEnums.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="NPCEnums_8h.html">Engine/Objects/NPCEnums.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MapInfo_8h.html">Engine/MapInfo.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIDialogues_8h.html">GUI/GUIDialogues.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="VectorTypes_8h.html">VectorTypes.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
@@ -206,8 +208,6 @@ Variables</h2></td></tr>
 <tr class="separator:ad7204929de76f2cc3e43a6f5e92875fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a770c130797a0a50a7ef18fdc4869a9b2"><td class="memItemLeft" align="right" valign="top">std::array&lt; int16_t, 11 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#a770c130797a0a50a7ef18fdc4869a9b2">word_4E8152</a></td></tr>
 <tr class="separator:a770c130797a0a50a7ef18fdc4869a9b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a884866cb1aba240306882d01856cab27"><td class="memItemLeft" align="right" valign="top">std::array&lt; std::array&lt; char, 14 &gt;, 7 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#a884866cb1aba240306882d01856cab27">byte_4E8168</a></td></tr>
-<tr class="separator:a884866cb1aba240306882d01856cab27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c9e3cddcf1b4a335b539376a965001a"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#a1c9e3cddcf1b4a335b539376a965001a">_4E94D0_light_type</a></td></tr>
 <tr class="separator:a1c9e3cddcf1b4a335b539376a965001a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a501d911e0d5904195f31b6c5dc9f154f"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#a501d911e0d5904195f31b6c5dc9f154f">_4E94D2_light_type</a></td></tr>
@@ -426,8 +426,6 @@ Variables</h2></td></tr>
 <tr class="separator:aac46b967c11f6bb4d1804b604f07b10f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a097e515a7a8f18f8918d3251bde7180c"><td class="memItemLeft" align="right" valign="top">std::array&lt; char, 54 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#a097e515a7a8f18f8918d3251bde7180c">party_has_equipment</a></td></tr>
 <tr class="separator:a097e515a7a8f18f8918d3251bde7180c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5bb1a3109b32022de9450dade28975e6"><td class="memItemLeft" align="right" valign="top">std::array&lt; char, 17 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#a5bb1a3109b32022de9450dade28975e6">byte_5111F6_OwnedArtifacts</a></td></tr>
-<tr class="separator:a5bb1a3109b32022de9450dade28975e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a635f50ee8f03b2425d661c15f2ddc476"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#a635f50ee8f03b2425d661c15f2ddc476">uNumBlueFacesInBLVMinimap</a></td></tr>
 <tr class="separator:a635f50ee8f03b2425d661c15f2ddc476"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a61b496577d536c31f7f359ee4403ee84"><td class="memItemLeft" align="right" valign="top">std::array&lt; uint16_t, 50 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#a61b496577d536c31f7f359ee4403ee84">pBlueFacesInBLVMinimapIDs</a></td></tr>
@@ -660,14 +658,14 @@ Variables</h2></td></tr>
 <tr class="separator:a8e3bf176a8dfac3fe1a99265ae944ebc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7eddee821f0bfe82984194e44bcd448f"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#a7eddee821f0bfe82984194e44bcd448f">pMerchantsTXT_Raw</a></td></tr>
 <tr class="separator:a7eddee821f0bfe82984194e44bcd448f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a22327681bc5c26e8919a85dbb065cc0c"><td class="memItemLeft" align="right" valign="top">std::array&lt; const char *, 7 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#a22327681bc5c26e8919a85dbb065cc0c">pMerchantsBuyPhrases</a></td></tr>
-<tr class="separator:a22327681bc5c26e8919a85dbb065cc0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad6ec3a696f3a39e49b0e835730456b36"><td class="memItemLeft" align="right" valign="top">std::array&lt; const char *, 7 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#ad6ec3a696f3a39e49b0e835730456b36">pMerchantsSellPhrases</a></td></tr>
-<tr class="separator:ad6ec3a696f3a39e49b0e835730456b36"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad77c6c85342def28b23a5e7c9574e52c"><td class="memItemLeft" align="right" valign="top">std::array&lt; const char *, 7 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#ad77c6c85342def28b23a5e7c9574e52c">pMerchantsRepairPhrases</a></td></tr>
-<tr class="separator:ad77c6c85342def28b23a5e7c9574e52c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf3ec3d1f18610b35a385cccf629403e"><td class="memItemLeft" align="right" valign="top">std::array&lt; const char *, 7 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#acf3ec3d1f18610b35a385cccf629403e">pMerchantsIdentifyPhrases</a></td></tr>
-<tr class="separator:acf3ec3d1f18610b35a385cccf629403e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd25dcf75d8e4cf7f86e9ab655b33d13"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; const char *, <a class="el" href="NPCEnums_8h.html#a4daf86d2fc45619eeed9db250e6c8b67ad5563645d306e9ee1aa8dc386b40aa70">MERCHANT_PHRASE_COUNT</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#acd25dcf75d8e4cf7f86e9ab655b33d13">pMerchantsBuyPhrases</a></td></tr>
+<tr class="separator:acd25dcf75d8e4cf7f86e9ab655b33d13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2227b64bec6b60c3fb6031b944aed7ae"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; const char *, <a class="el" href="NPCEnums_8h.html#a4daf86d2fc45619eeed9db250e6c8b67ad5563645d306e9ee1aa8dc386b40aa70">MERCHANT_PHRASE_COUNT</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#a2227b64bec6b60c3fb6031b944aed7ae">pMerchantsSellPhrases</a></td></tr>
+<tr class="separator:a2227b64bec6b60c3fb6031b944aed7ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a712249bbe93df30defc048a47644dec0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; const char *, <a class="el" href="NPCEnums_8h.html#a4daf86d2fc45619eeed9db250e6c8b67ad5563645d306e9ee1aa8dc386b40aa70">MERCHANT_PHRASE_COUNT</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#a712249bbe93df30defc048a47644dec0">pMerchantsRepairPhrases</a></td></tr>
+<tr class="separator:a712249bbe93df30defc048a47644dec0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47c16a091f6844ff3548d450ea5ccf2b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; const char *, <a class="el" href="NPCEnums_8h.html#a4daf86d2fc45619eeed9db250e6c8b67ad5563645d306e9ee1aa8dc386b40aa70">MERCHANT_PHRASE_COUNT</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#a47c16a091f6844ff3548d450ea5ccf2b">pMerchantsIdentifyPhrases</a></td></tr>
+<tr class="separator:a47c16a091f6844ff3548d450ea5ccf2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2e3d90b10f7bdaffc6965b448356837"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#ae2e3d90b10f7bdaffc6965b448356837">pTransitionsTXT_Raw</a></td></tr>
 <tr class="separator:ae2e3d90b10f7bdaffc6965b448356837"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d134f2855344ddf28c9fcbfcc5bb69a"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#a8d134f2855344ddf28c9fcbfcc5bb69a">pAutonoteTXT_Raw</a></td></tr>
@@ -2169,28 +2167,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a884866cb1aba240306882d01856cab27" name="a884866cb1aba240306882d01856cab27"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a884866cb1aba240306882d01856cab27">&#9670;&#160;</a></span>byte_4E8168</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::array&lt;std::array&lt;char, 14&gt;, 7&gt; byte_4E8168</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="ae312e333acdc4d62e19030e47b21f065" name="ae312e333acdc4d62e19030e47b21f065"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae312e333acdc4d62e19030e47b21f065">&#9670;&#160;</a></span>byte_4ECF08</h2>
 
@@ -2246,28 +2222,6 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">char byte_506550</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a5bb1a3109b32022de9450dade28975e6" name="a5bb1a3109b32022de9450dade28975e6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5bb1a3109b32022de9450dade28975e6">&#9670;&#160;</a></span>byte_5111F6_OwnedArtifacts</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::array&lt;char, 17&gt; byte_5111F6_OwnedArtifacts</td>
         </tr>
       </table>
   </td>
@@ -5494,8 +5448,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a22327681bc5c26e8919a85dbb065cc0c" name="a22327681bc5c26e8919a85dbb065cc0c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a22327681bc5c26e8919a85dbb065cc0c">&#9670;&#160;</a></span>pMerchantsBuyPhrases</h2>
+<a id="acd25dcf75d8e4cf7f86e9ab655b33d13" name="acd25dcf75d8e4cf7f86e9ab655b33d13"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd25dcf75d8e4cf7f86e9ab655b33d13">&#9670;&#160;</a></span>pMerchantsBuyPhrases</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -5504,7 +5458,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;const char *, 7&gt; pMerchantsBuyPhrases</td>
+          <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;const char *, <a class="el" href="NPCEnums_8h.html#a4daf86d2fc45619eeed9db250e6c8b67ad5563645d306e9ee1aa8dc386b40aa70">MERCHANT_PHRASE_COUNT</a>&gt; pMerchantsBuyPhrases</td>
         </tr>
       </table>
   </td>
@@ -5516,8 +5470,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="acf3ec3d1f18610b35a385cccf629403e" name="acf3ec3d1f18610b35a385cccf629403e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acf3ec3d1f18610b35a385cccf629403e">&#9670;&#160;</a></span>pMerchantsIdentifyPhrases</h2>
+<a id="a47c16a091f6844ff3548d450ea5ccf2b" name="a47c16a091f6844ff3548d450ea5ccf2b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a47c16a091f6844ff3548d450ea5ccf2b">&#9670;&#160;</a></span>pMerchantsIdentifyPhrases</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -5526,7 +5480,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;const char *, 7&gt; pMerchantsIdentifyPhrases</td>
+          <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;const char *, <a class="el" href="NPCEnums_8h.html#a4daf86d2fc45619eeed9db250e6c8b67ad5563645d306e9ee1aa8dc386b40aa70">MERCHANT_PHRASE_COUNT</a>&gt; pMerchantsIdentifyPhrases</td>
         </tr>
       </table>
   </td>
@@ -5538,8 +5492,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="ad77c6c85342def28b23a5e7c9574e52c" name="ad77c6c85342def28b23a5e7c9574e52c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad77c6c85342def28b23a5e7c9574e52c">&#9670;&#160;</a></span>pMerchantsRepairPhrases</h2>
+<a id="a712249bbe93df30defc048a47644dec0" name="a712249bbe93df30defc048a47644dec0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a712249bbe93df30defc048a47644dec0">&#9670;&#160;</a></span>pMerchantsRepairPhrases</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -5548,7 +5502,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;const char *, 7&gt; pMerchantsRepairPhrases</td>
+          <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;const char *, <a class="el" href="NPCEnums_8h.html#a4daf86d2fc45619eeed9db250e6c8b67ad5563645d306e9ee1aa8dc386b40aa70">MERCHANT_PHRASE_COUNT</a>&gt; pMerchantsRepairPhrases</td>
         </tr>
       </table>
   </td>
@@ -5560,8 +5514,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="ad6ec3a696f3a39e49b0e835730456b36" name="ad6ec3a696f3a39e49b0e835730456b36"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad6ec3a696f3a39e49b0e835730456b36">&#9670;&#160;</a></span>pMerchantsSellPhrases</h2>
+<a id="a2227b64bec6b60c3fb6031b944aed7ae" name="a2227b64bec6b60c3fb6031b944aed7ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2227b64bec6b60c3fb6031b944aed7ae">&#9670;&#160;</a></span>pMerchantsSellPhrases</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -5570,7 +5524,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;const char *, 7&gt; pMerchantsSellPhrases</td>
+          <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;const char *, <a class="el" href="NPCEnums_8h.html#a4daf86d2fc45619eeed9db250e6c8b67ad5563645d306e9ee1aa8dc386b40aa70">MERCHANT_PHRASE_COUNT</a>&gt; pMerchantsSellPhrases</td>
         </tr>
       </table>
   </td>

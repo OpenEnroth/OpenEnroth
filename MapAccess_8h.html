@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;9e23e4f</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;c5c9b17</span>
    </div>
   </td>
  </tr>
@@ -87,44 +87,14 @@ Functions</h2></td></tr>
 <tr class="memitem:a0d2cc86b39152391266bac98c87b5fff"><td class="memTemplParams" colspan="2">template&lt;class Map , class Key , class Value  = typename Map::mapped_type&gt; </td></tr>
 <tr class="memitem:a0d2cc86b39152391266bac98c87b5fff"><td class="memTemplItemLeft" align="right" valign="top">Value&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MapAccess_8h.html#a0d2cc86b39152391266bac98c87b5fff">ValueOr</a> (const Map &amp;map, const Key &amp;key, const std::type_identity_t&lt; Value &gt; &amp;def=Value())</td></tr>
 <tr class="separator:a0d2cc86b39152391266bac98c87b5fff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a737003093806c9b6c2edefafef8f632f"><td class="memTemplParams" colspan="2">template&lt;class Map , class Key , class Value  = typename Map::mapped_type&gt; </td></tr>
-<tr class="memitem:a737003093806c9b6c2edefafef8f632f"><td class="memTemplItemLeft" align="right" valign="top">Value&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MapAccess_8h.html#a737003093806c9b6c2edefafef8f632f">ExistingValue</a> (const Map &amp;map, const Key &amp;key)</td></tr>
-<tr class="separator:a737003093806c9b6c2edefafef8f632f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42c7474c63e20146a17b12c88839148e"><td class="memTemplParams" colspan="2">template&lt;class Map , class Key , class Value  = typename Map::mapped_type&gt; </td></tr>
+<tr class="memitem:a42c7474c63e20146a17b12c88839148e"><td class="memTemplItemLeft" align="right" valign="top">const Value *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MapAccess_8h.html#a42c7474c63e20146a17b12c88839148e">ValuePtr</a> (const Map &amp;map, const Key &amp;key)</td></tr>
+<tr class="separator:a42c7474c63e20146a17b12c88839148e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a643e268672c6d9c3e981c966014ddeca"><td class="memTemplParams" colspan="2">template&lt;class Key , class Value &gt; </td></tr>
 <tr class="memitem:a643e268672c6d9c3e981c966014ddeca"><td class="memTemplItemLeft" align="right" valign="top">std::unordered_map&lt; Value, Key &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MapAccess_8h.html#a643e268672c6d9c3e981c966014ddeca">Inverted</a> (const std::unordered_map&lt; Key, Value &gt; &amp;map)</td></tr>
 <tr class="separator:a643e268672c6d9c3e981c966014ddeca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a737003093806c9b6c2edefafef8f632f" name="a737003093806c9b6c2edefafef8f632f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a737003093806c9b6c2edefafef8f632f">&#9670;&#160;</a></span>ExistingValue()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class Map , class Key , class Value  = typename Map::mapped_type&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">Value ExistingValue </td>
-          <td>(</td>
-          <td class="paramtype">const Map &amp;&#160;</td>
-          <td class="paramname"><em>map</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const Key &amp;&#160;</td>
-          <td class="paramname"><em>key</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a643e268672c6d9c3e981c966014ddeca" name="a643e268672c6d9c3e981c966014ddeca"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a643e268672c6d9c3e981c966014ddeca">&#9670;&#160;</a></span>Inverted()</h2>
 
@@ -142,6 +112,15 @@ template&lt;class Key , class Value &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >Inverts an unordered map, creating a map from values into keys.</p>
+<p >The values must be unique, otherwise the function will assert.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">map</td><td>Map to invert. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Inverted map. </dd></dl>
 
 </div>
 </div>
@@ -178,6 +157,55 @@ template&lt;class Map , class Key , class Value  = typename Map::mapped_type&gt;
         </tr>
       </table>
 </div><div class="memdoc">
+<p >Convenient map accessor that returns either the value stored in a map, or default value if the key doesn't exist.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">map</td><td>Map to get value from. </td></tr>
+    <tr><td class="paramname">key</td><td>Key to look up value for. </td></tr>
+    <tr><td class="paramname">def</td><td>Default value to return if the key is not in the map. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Value for the provided key, or <code>def</code> if the key was not found in the map. </dd></dl>
+
+</div>
+</div>
+<a id="a42c7474c63e20146a17b12c88839148e" name="a42c7474c63e20146a17b12c88839148e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a42c7474c63e20146a17b12c88839148e">&#9670;&#160;</a></span>ValuePtr()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Map , class Key , class Value  = typename Map::mapped_type&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">const Value * ValuePtr </td>
+          <td>(</td>
+          <td class="paramtype">const Map &amp;&#160;</td>
+          <td class="paramname"><em>map</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Key &amp;&#160;</td>
+          <td class="paramname"><em>key</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Convenient map accessor that returns either the pointer to the value stored in a map, or <code>nullptr</code> if the key doesn't exist.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">map</td><td>Map to get value from. </td></tr>
+    <tr><td class="paramname">key</td><td>Key to look up value for. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the value for the provided key, or <code>nullptr</code> if the key was not found in the map. </dd></dl>
 
 </div>
 </div>

@@ -3,8 +3,8 @@ var searchData=
   ['b_0',['B',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863a9d5ed678fe57bcca610140957afab571',1,'Io']]],
   ['backslash_1',['BackSlash',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863a3ca274eeb43af8abc2e20aaf69003282',1,'Io']]],
   ['backspace_2',['Backspace',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863acd7d13ceea728b08555f7c818cfb13ef',1,'Io']]],
-  ['banker_3',['Banker',['../NPCProf_8h.html#ae6501f571f97d74c2c78fddcb371bad4a426bb41510625be4ce5a99a1d4737c0f',1,'NPCProf.h']]],
-  ['bard_4',['Bard',['../NPCProf_8h.html#ae6501f571f97d74c2c78fddcb371bad4ab406431a097523d61e1a351b07537599',1,'NPCProf.h']]],
+  ['banker_3',['Banker',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a426bb41510625be4ce5a99a1d4737c0f',1,'NPCEnums.h']]],
+  ['bard_4',['Bard',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4ab406431a097523d61e1a351b07537599',1,'NPCEnums.h']]],
   ['become_5fmagic_5fguild_5fmember_5',['BECOME_MAGIC_GUILD_MEMBER',['../Spells_8h.html#a4e71efcf980b83e3205a4079c10bd8d5a7b26614b5cae72d067d6b2a2857d8348',1,'Spells.h']]],
   ['buildingtype_5fadventuresinn_6',['BuildingType_AdventuresInn',['../Events2D_8h.html#a1e6330273dfb88062f9ac99d61322e80adccab7a7874d4055ea421e30d8aff923',1,'Events2D.h']]],
   ['buildingtype_5fairguild_7',['BuildingType_AirGuild',['../Events2D_8h.html#a1e6330273dfb88062f9ac99d61322e80a71a97b6e7e4309bb3a1670d628ba1b53',1,'Events2D.h']]],
@@ -42,5 +42,5 @@ var searchData=
   ['buildingtype_5ftraining_39',['BuildingType_Training',['../Events2D_8h.html#a1e6330273dfb88062f9ac99d61322e80a5a94d52e56662ac92e44ef0020113176',1,'Events2D.h']]],
   ['buildingtype_5fwaterguild_40',['BuildingType_WaterGuild',['../Events2D_8h.html#a1e6330273dfb88062f9ac99d61322e80a59f18c87bb570c8fed9412e9668f74fa',1,'Events2D.h']]],
   ['buildingtype_5fweaponshop_41',['BuildingType_WeaponShop',['../Events2D_8h.html#a1e6330273dfb88062f9ac99d61322e80a6fcb590fd579a7f2b09729ae18b2fde1',1,'Events2D.h']]],
-  ['burglar_42',['Burglar',['../NPCProf_8h.html#ae6501f571f97d74c2c78fddcb371bad4ad3895440e983c6716c2bb2bf94c27ac7',1,'NPCProf.h']]]
+  ['burglar_42',['Burglar',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4ad3895440e983c6716c2bb2bf94c27ac7',1,'NPCEnums.h']]]
 ];

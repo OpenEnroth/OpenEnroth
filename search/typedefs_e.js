@@ -1,7 +1,7 @@
 var searchData=
 [
   ['validator_5ftype_0',['validator_type',['../classApplication_1_1GameConfig_1_1ConfigValue.html#aad290fbe1dbcb13ee57ec2c65c35492b',1,'Application::GameConfig::ConfigValue']]],
-  ['value_5ftype_1',['value_type',['../classdetail_1_1RangeIterator.html#a378be529edfb46483c6d4413c2f4e483',1,'detail::RangeIterator::value_type()'],['../classRange.html#aac5f8dcc6aa6e10c1b9e98236f401aca',1,'Range::value_type()']]],
+  ['value_5ftype_1',['value_type',['../classdetail_1_1RangeIterator.html#a378be529edfb46483c6d4413c2f4e483',1,'detail::RangeIterator::value_type()'],['../classSegment.html#ad832051f57ca64af3717eec1de77b2d3',1,'Segment::value_type()']]],
   ['vec2f_2',['Vec2f',['../VectorTypes_8h.html#a0a204091a6626c84fd980a6c492469f6',1,'VectorTypes.h']]],
   ['vec2i_3',['Vec2i',['../VectorTypes_8h.html#a117a07b9e7c47a4975f94512a951bd73',1,'VectorTypes.h']]],
   ['vec3f_4',['Vec3f',['../VectorTypes_8h.html#a40b8356e33151c22cb4d1adaf2b762a8',1,'VectorTypes.h']]],

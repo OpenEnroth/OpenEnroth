@@ -15,7 +15,7 @@ var searchData=
   ['encm3percent_12',['EncM3percent',['../structMapInfo.html#a88e4f0d3eb82d412a318447a35663303',1,'MapInfo']]],
   ['encounter_5fpercent_13',['Encounter_percent',['../structMapInfo.html#affc82d417c2f27b929b293d87a6dcf45',1,'MapInfo']]],
   ['end_14',['end',['../structLODSpriteLine.html#af9cf1616941f8170b9e090a2dac450fd',1,'LODSpriteLine']]],
-  ['end_5f_15',['end_',['../classRange.html#a735e8d85cfd2b9aa0b417b930f466d71',1,'Range::end_()'],['../classMemoryInputStream.html#aa499ae7b569b486c9248683e1542cfbe',1,'MemoryInputStream::end_()']]],
+  ['end_5f_15',['end_',['../classMemoryInputStream.html#aa499ae7b569b486c9248683e1542cfbe',1,'MemoryInputStream']]],
   ['engine_16',['engine',['../classApplication_1_1Game.html#ae3c2fda9154804eebacc17259ebc8088',1,'Application::Game::engine()'],['../Engine_8h.html#a911c866a46f710d4f1b358efcfb2604a',1,'engine():&#160;Engine.cpp'],['../Engine_8cpp.html#a911c866a46f710d4f1b358efcfb2604a',1,'engine():&#160;Engine.cpp']]],
   ['etype_17',['eType',['../structAutonote.html#a5be3e9d1436fbab53def086f3dbfad70',1,'Autonote::eType()'],['../structGUIMessage.html#ad4d9927598e8491ee725bf8d9206bbbd',1,'GUIMessage::eType()'],['../classSoundInfo.html#aff20802fd3eb8b96e5d9351446a57994',1,'SoundInfo::eType()'],['../structSoundDesc__mm6.html#a7b2bfe845cd6c8011f1992de26115436',1,'SoundDesc_mm6::eType()']]],
   ['event_5fid_18',['event_id',['../structEventIndex.html#a12388ed5f772a0a98818a36c24f0d4f2',1,'EventIndex']]],

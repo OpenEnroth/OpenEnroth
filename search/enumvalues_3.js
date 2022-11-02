@@ -126,7 +126,7 @@ var searchData=
   ['digit7_123',['Digit7',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863a81d5745c4198bf83761e4e7beea0cea8',1,'Io']]],
   ['digit8_124',['Digit8',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863ade5fd0dcf1793076a0b24b7db4bb749f',1,'Io']]],
   ['digit9_125',['Digit9',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863aa9296fb8a66948e9094d45022b8212ca',1,'Io']]],
-  ['diplomat_126',['Diplomat',['../NPCProf_8h.html#ae6501f571f97d74c2c78fddcb371bad4a9ff251ffa1cd6ab837aacd5930a3107b',1,'NPCProf.h']]],
+  ['diplomat_126',['Diplomat',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a9ff251ffa1cd6ab837aacd5930a3107b',1,'NPCEnums.h']]],
   ['directdraw_127',['DirectDraw',['../IRenderFactory_8h.html#ae9c668e3a273ce92b9f4e134d0cbd6ceaa3ad3cded8219daa47be18264fa03086',1,'IRenderFactory.h']]],
   ['disabled_128',['Disabled',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395fedab9f5c797ebbf55adccdd8539a65a0241',1,'ActorEnums.h']]],
   ['dmgt_5fbody_129',['DMGT_BODY',['../ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a346567df5b073bce44e6b361e3cb7c98',1,'ItemEnums.h']]],
@@ -144,6 +144,6 @@ var searchData=
   ['door_5fsetting_5fup_141',['DOOR_SETTING_UP',['../BSPModel_8h.html#aca4fbb5b4731d33480ddc765e71c176ea4cb8faa7bb18c8c47f8ab14fb871547b',1,'BSPModel.h']]],
   ['door_5ftriggered_142',['DOOR_TRIGGERED',['../BSPModel_8h.html#aca4fbb5b4731d33480ddc765e71c176ea1f0f611f92f0d184b09f13a87480604b',1,'BSPModel.h']]],
   ['down_143',['Down',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863a08a38277b0309070706f6652eeae9a53',1,'Io']]],
-  ['duper_144',['Duper',['../NPCProf_8h.html#ae6501f571f97d74c2c78fddcb371bad4af6d28093d199a8f5262d9e53b3e11827',1,'NPCProf.h']]],
+  ['duper_144',['Duper',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4af6d28093d199a8f5262d9e53b3e11827',1,'NPCEnums.h']]],
   ['dying_145',['Dying',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395feda2ef54119c1f0d131a1a60e7776fa78f0',1,'ActorEnums.h']]]
 ];

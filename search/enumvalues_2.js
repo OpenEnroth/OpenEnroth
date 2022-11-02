@@ -1,7 +1,7 @@
 var searchData=
 [
   ['c_0',['C',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863a0d61f8370cad1d412f80b84d143e1257',1,'Io']]],
-  ['cartographer_1',['Cartographer',['../NPCProf_8h.html#ae6501f571f97d74c2c78fddcb371bad4ada156cd39c2154cb96abd002b4296578',1,'NPCProf.h']]],
+  ['cartographer_1',['Cartographer',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4ada156cd39c2154cb96abd002b4296578',1,'NPCEnums.h']]],
   ['cast_2',['Cast',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca4cd9f3996d60790cd11c04f842ebc43c',1,'Io']]],
   ['castready_3',['CastReady',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90caf117632507488216671d80135b4df3d1',1,'Io']]],
   ['centerview_4',['CenterView',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca0d1dabb47110df81f77698f4d4fec283',1,'Io']]],
@@ -106,11 +106,11 @@ var searchData=
   ['character_5frace_5fgoblin_103',['CHARACTER_RACE_GOBLIN',['../PlayerEnums_8h.html#a4b7c772deaa8468a023ed914165a6ed4a286f45738c956bf88de762d754046501',1,'PlayerEnums.h']]],
   ['character_5frace_5fhuman_104',['CHARACTER_RACE_HUMAN',['../PlayerEnums_8h.html#a4b7c772deaa8468a023ed914165a6ed4ac228ca3d1d68d79ad6670556eaa3900d',1,'PlayerEnums.h']]],
   ['charcycle_105',['CharCycle',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cacaa9546e7235ebf7657170f8f0049396',1,'Io']]],
-  ['chef_106',['Chef',['../NPCProf_8h.html#ae6501f571f97d74c2c78fddcb371bad4a12aeca44989e77c33d5bd1e99d1e37af',1,'NPCProf.h']]],
+  ['chef_106',['Chef',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a12aeca44989e77c33d5bd1e99d1e37af',1,'NPCEnums.h']]],
   ['chest_5fitems_5fplaced_107',['CHEST_ITEMS_PLACED',['../Chest_8h.html#a8f7fde712c696f88932a1416622a983caf910ee80d491accd0ac5d622746a5901',1,'Chest.h']]],
   ['chest_5fopened_108',['CHEST_OPENED',['../Chest_8h.html#a8f7fde712c696f88932a1416622a983caf988014be511c3c6e8d146ba63ba9194',1,'Chest.h']]],
   ['chest_5ftrapped_109',['CHEST_TRAPPED',['../Chest_8h.html#a8f7fde712c696f88932a1416622a983ca65f3e869bbb82ed955919475928b6d92',1,'Chest.h']]],
-  ['chimneysweep_110',['ChimneySweep',['../NPCProf_8h.html#ae6501f571f97d74c2c78fddcb371bad4a2bee2beb708e55b35e8715af1afe10e5',1,'NPCProf.h']]],
+  ['chimneysweep_110',['ChimneySweep',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a2bee2beb708e55b35e8715af1afe10e5',1,'NPCEnums.h']]],
   ['closed_111',['Closed',['../structBLVDoor.html#a938bde09f5649e4d1982d7e51a31b832a692429460a25bfebc224590f0dc5efcf',1,'BLVDoor']]],
   ['closing_112',['Closing',['../structBLVDoor.html#a938bde09f5649e4d1982d7e51a31b832afebe84428e287e700bdeab34e374c978',1,'BLVDoor']]],
   ['combat_113',['Combat',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca30ad1054cf7ad7636a26844a6f782e1f',1,'Io']]],
@@ -135,5 +135,5 @@ var searchData=
   ['condition_5fweak_132',['Condition_Weak',['../Conditions_8h.html#a1675b922b385cf7d28bd256fd487a681a8461a24e643fe671695d31cbc7f75a6d',1,'Conditions.h']]],
   ['condition_5fzombie_133',['Condition_Zombie',['../Conditions_8h.html#a1675b922b385cf7d28bd256fd487a681afc7f9b9b287229a1ff184d550dfb4827',1,'Conditions.h']]],
   ['control_134',['Control',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863aa1595abbb4c3a326636dd178757cd6c1',1,'Io']]],
-  ['cook_135',['Cook',['../NPCProf_8h.html#ae6501f571f97d74c2c78fddcb371bad4a812ae39c86127376dab70e23ec8a134a',1,'NPCProf.h']]]
+  ['cook_135',['Cook',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a812ae39c86127376dab70e23ec8a134a',1,'NPCEnums.h']]]
 ];

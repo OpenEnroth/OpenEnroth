@@ -1,7 +1,7 @@
 var searchData=
 [
   ['e_0',['E',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863a3a3ea00cfc35332cedf6e5e9a32e94da',1,'Io']]],
-  ['enchanter_1',['Enchanter',['../NPCProf_8h.html#ae6501f571f97d74c2c78fddcb371bad4aeb762f74886f83a724f409ba80e53d24',1,'NPCProf.h']]],
+  ['enchanter_1',['Enchanter',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4aeb762f74886f83a724f409ba80e53d24',1,'NPCEnums.h']]],
   ['end_2',['End',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863a87557f11575c0ad78e4e28abedc13b6e',1,'Io']]],
   ['equip_5famulet_3',['EQUIP_AMULET',['../ItemEnums_8h.html#a6efba91e38f0848b5e0d1d4cc6011a2dae2838fefd623c95e7365db55a192e90b',1,'ItemEnums.h']]],
   ['equip_5farmour_4',['EQUIP_ARMOUR',['../ItemEnums_8h.html#a6efba91e38f0848b5e0d1d4cc6011a2da87b7716e5c2f917ab5a02e89edc74d2b',1,'ItemEnums.h']]],
@@ -99,6 +99,6 @@ var searchData=
   ['eventtrigger_96',['EventTrigger',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90caced2d4c94b2172cfb0175b4a0de5afec',1,'Io']]],
   ['excludetype_97',['ExcludeType',['../Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355ca1952681d05fa87ce53265961cd68719d',1,'Vis.h']]],
   ['exclusionifnoevent_98',['ExclusionIfNoEvent',['../Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355ca7b84718c91374fe2524bc7944b6544ac',1,'Vis.h']]],
-  ['experthealer_99',['ExpertHealer',['../NPCProf_8h.html#ae6501f571f97d74c2c78fddcb371bad4a70d6f857e09796de36f8b967da31dbbf',1,'NPCProf.h']]],
-  ['explorer_100',['Explorer',['../NPCProf_8h.html#ae6501f571f97d74c2c78fddcb371bad4a45f4e61dfb1852d701d865458d61a6ed',1,'NPCProf.h']]]
+  ['experthealer_99',['ExpertHealer',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a70d6f857e09796de36f8b967da31dbbf',1,'NPCEnums.h']]],
+  ['explorer_100',['Explorer',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a45f4e61dfb1852d701d865458d61a6ed',1,'NPCEnums.h']]]
 ];

@@ -41,7 +41,7 @@ var searchData=
   ['qmessages_38',['qMessages',['../structGUIMessageQueue.html#aacbef95a14ff60d5c79c2cc0f649453e',1,'GUIMessageQueue']]],
   ['quarry_5fbonus_39',['quarry_bonus',['../Arcomage_8cpp.html#a06d1a04207275f162cc5ee67fc747ee3',1,'Arcomage.cpp']]],
   ['quarry_5flevel_40',['quarry_level',['../structArcomagePlayer.html#a9cb6d7ca78930519c9afcda3b7a980a1',1,'ArcomagePlayer::quarry_level()'],['../structArcomageStartConditions.html#aadcccc0544042fcbb6714943a76039a9',1,'ArcomageStartConditions::quarry_level()']]],
-  ['quartermaster_41',['QuarterMaster',['../NPCProf_8h.html#ae6501f571f97d74c2c78fddcb371bad4a6e2e7cd6e0cfd826f3e874c36f39f03c',1,'NPCProf.h']]],
+  ['quartermaster_41',['QuarterMaster',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a6e2e7cd6e0cfd826f3e874c36f39f03c',1,'NPCEnums.h']]],
   ['quest_42',['Quest',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca07bf513a88c3df282a30cb374f8a933d',1,'Io::Quest()'],['../classApplication_1_1GameConfig_1_1Keybindings.html#aa9160843a4579c172ff1f5f86b18b4c0',1,'Application::GameConfig::Keybindings::Quest()']]],
   ['questbook_2ecpp_43',['QuestBook.cpp',['../QuestBook_8cpp.html',1,'']]],
   ['questbook_2eh_44',['QuestBook.h',['../QuestBook_8h.html',1,'']]],
