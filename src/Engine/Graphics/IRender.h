@@ -308,7 +308,7 @@ class IRender {
     virtual void DrawTextureAlphaNew(float u, float v, Image *) = 0;
     virtual void DrawTextureCustomHeight(float u, float v, Image *, int height) = 0;
     virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y, Image *) = 0;
-    virtual void DrawImage(Image *, const Rect &rect) = 0;
+    virtual void DrawImage(Image *, const Rect &rect, const uint paletteid = 0) = 0;
 
     virtual void ZDrawTextureAlpha(float u, float v, Image *pTexture, int zVal) = 0;
     virtual void BlendTextures(int a2, int a3, Image *a4, Image *a5, int t, int start_opacity, int end_opacity) = 0;

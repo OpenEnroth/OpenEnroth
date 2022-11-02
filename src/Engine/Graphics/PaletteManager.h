@@ -35,6 +35,7 @@ struct PaletteManager {
 
     uint32_t p32ARGBpalette[50][256]{};
 
+    bool palettestorechanged{ true };
 
 
                     // palette / value step 32 / 16b color

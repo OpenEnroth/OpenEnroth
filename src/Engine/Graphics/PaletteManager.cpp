@@ -520,9 +520,6 @@ int PaletteManager::LoadPalette(unsigned int uPaletteID) {
             return i;
 
     // not found in list so load
-    if (engine->config->debug.VerboseLogging.Get())
-        logger->Info("Loading palette %u", uPaletteID);
-
     char Source[32];
     sprintf(Source, "pal%03i", uPaletteID);
 
@@ -604,6 +601,9 @@ int PaletteManager::MakeBasePaletteLut(int uPaletteID, char *entries) {
     }
 
     pPaletteIDs[freeIdx] = uPaletteID;
+
+    palettestorechanged = true;
+
     CalcPalettes_LUT(freeIdx);
     return freeIdx;
 }

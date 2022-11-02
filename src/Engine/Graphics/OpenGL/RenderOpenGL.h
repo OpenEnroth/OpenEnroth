@@ -121,7 +121,7 @@ class RenderOpenGL : public RenderBase {
                                          int height) override;
     virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y,
                                    Image *) override;
-    virtual void DrawImage(Image *, const Rect &rect) override;
+    virtual void DrawImage(Image *, const Rect &rect, uint paletteid = 0) override;
 
     virtual void ZDrawTextureAlpha(float u, float v, Image *pTexture, int zVal) override;
     virtual void BlendTextures(int a2, int a3, Image *a4, Image *a5, int t,

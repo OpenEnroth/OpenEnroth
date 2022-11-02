@@ -2982,7 +2982,7 @@ void Render::DrawTextureOffset(int x, int y, int offset_x, int offset_y,
     delete bitmap;
 }
 
-void Render::DrawImage(Image *image, const Rect &rect) {
+void Render::DrawImage(Image *image, const Rect &rect, const uint paletteid) {
     Gdiplus::Bitmap *bitmap = BitmapWithImage(image);
     if (bitmap == nullptr) {
         return;
