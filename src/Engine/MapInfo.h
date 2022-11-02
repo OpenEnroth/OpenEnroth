@@ -34,6 +34,14 @@ enum MapStartPoint : uint32_t {
     MapStartPoint_West = 4
 };
 
+
+/**
+ * Map treasure / danger level, determines how treasure levels of random items are handled by the game.
+ *
+ * Higher map treasure level => better random loot given the same treasure level of a random item.
+ *
+ * @see RemapTreasureLevel
+ */
 enum class MAP_TREASURE_LEVEL : int8_t {
     MAP_TREASURE_LEVEL_1 = 0,
     MAP_TREASURE_LEVEL_2 = 1,

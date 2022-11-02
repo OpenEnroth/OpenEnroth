@@ -838,6 +838,7 @@ bool ItemGen::MerchandiseTest(int _2da_idx) {
 
 Segment<ITEM_TREASURE_LEVEL> RemapTreasureLevel(ITEM_TREASURE_LEVEL itemTreasureLevel, MAP_TREASURE_LEVEL mapTreasureLevel) {
     // mapping[item_level][map_level] -> [actual_level_min, actual_level_max];
+    // Original offset was 0x004E8168.
     static constexpr std::array<std::array<Segment<int>, 7>, 7> mapping = {{
         {{{1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}}},
         {{{1, 1}, {1, 2}, {2, 2}, {2, 2}, {2, 2}, {2, 2}, {2, 2}}},
