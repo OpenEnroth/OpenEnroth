@@ -1128,7 +1128,7 @@ void Serialize(const Actor &src, Actor_MM7 *dst) {
     dst->pMonsterInfo.uTreasureDropChance = src.pMonsterInfo.uTreasureDropChance;
     dst->pMonsterInfo.uTreasureDiceRolls = src.pMonsterInfo.uTreasureDiceRolls;
     dst->pMonsterInfo.uTreasureDiceSides = src.pMonsterInfo.uTreasureDiceSides;
-    dst->pMonsterInfo.uTreasureLevel = src.pMonsterInfo.uTreasureLevel;
+    dst->pMonsterInfo.uTreasureLevel = std::to_underlying(src.pMonsterInfo.uTreasureLevel);
     dst->pMonsterInfo.uTreasureType = src.pMonsterInfo.uTreasureType;
     dst->pMonsterInfo.uFlying = src.pMonsterInfo.uFlying;
     dst->pMonsterInfo.uMovementType = src.pMonsterInfo.uMovementType;
@@ -1241,7 +1241,7 @@ void Deserialize(const Actor_MM7 &src, Actor *dst) {
     dst->pMonsterInfo.uTreasureDropChance = src.pMonsterInfo.uTreasureDropChance;
     dst->pMonsterInfo.uTreasureDiceRolls = src.pMonsterInfo.uTreasureDiceRolls;
     dst->pMonsterInfo.uTreasureDiceSides = src.pMonsterInfo.uTreasureDiceSides;
-    dst->pMonsterInfo.uTreasureLevel = src.pMonsterInfo.uTreasureLevel;
+    dst->pMonsterInfo.uTreasureLevel = ITEM_TREASURE_LEVEL(src.pMonsterInfo.uTreasureLevel);
     dst->pMonsterInfo.uTreasureType = src.pMonsterInfo.uTreasureType;
     dst->pMonsterInfo.uFlying = src.pMonsterInfo.uFlying;
     dst->pMonsterInfo.uMovementType = src.pMonsterInfo.uMovementType;
@@ -1518,4 +1518,20 @@ void Deserialize(const ODMFace_MM7 &src, ODMFace *dst) {
     dst->bVisible = src.bVisible;
     dst->field_132 = src.field_132;
     dst->field_133 = src.field_133;
+}
+
+void Deserialize(const SpawnPoint_MM7 &src, SpawnPoint *dst) {
+    dst->vPosition = src.vPosition;
+    dst->uRadius = src.uRadius;
+    dst->uKind = src.uKind;
+    if (src.uKind == 3) {
+        dst->uItemIndex = ITEM_TREASURE_LEVEL_INVALID;
+        dst->uMonsterIndex = src.uIndex;
+    } else {
+        Assert(src.uKind == 2);
+        dst->uItemIndex = ITEM_TREASURE_LEVEL(src.uIndex);
+        dst->uMonsterIndex = 0;
+    }
+    dst->uAttributes = src.uAttributes;
+    dst->uGroup = src.uGroup;
 }

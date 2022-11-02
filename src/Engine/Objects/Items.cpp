@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
@@ -15,16 +16,7 @@
 
 #include "GUI/GUIButton.h"
 
-
-std::array<std::array<char, 14>, 7> byte_4E8168 = {{  // byte_4E8178 -treasure levles
-    {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}},
-    {{1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}},
-    {{1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3}},
-    {{2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4}},
-    {{2, 2, 2, 2, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5}},
-    {{2, 2, 2, 2, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6}},
-    {{2, 2, 2, 2, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7}}
-}};
+#include "Utility/MapAccess.h"
 
 ItemGen* ptr_50C9A4_ItemToEnchant;
 
@@ -33,6 +25,26 @@ struct ItemTable* pItemTable;  // 005D29E0
 static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment>> regularBonusMap;
 static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment>> specialBonusMap;
 static std::map<ITEM_TYPE, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment>> artifactBonusMap;
+
+static std::unordered_map<ITEM_TYPE, ITEM_TYPE> itemTextureIdByItemId = {
+    { ITEM_RELIC_HARECKS_LEATHER,       ITEM_POTION_STONESKIN },
+    { ITEM_ARTIFACT_YORUBA,             ITEM_POTION_HARDEN_ITEM },
+    { ITEM_ARTIFACT_GOVERNORS_ARMOR,    ITEM_POTION_WATER_BREATHING },
+    { ITEM_ARTIFACT_ELVEN_CHAINMAIL,    ITEM_FINE_CHAIN_MAIL },
+    { ITEM_ARTIFACT_SEVEN_LEAGUE_BOOTS, ITEM_SCROLL_FEATHER_FALL },
+    { ITEM_RELIC_TALEDONS_HELM,         ITEM_POTION_CURE_INSANITY },
+    { ITEM_RELIC_SCHOLARS_CAP,          ITEM_POTION_MIGHT_BOOST },
+    { ITEM_RELIC_PHYNAXIAN_CROWN,       ITEM_POTION_INTELLECT_BOOST },
+    { ITEM_ARTIFACT_MINDS_EYE,          ITEM_MOGRED_HELM },
+    { ITEM_RARE_SHADOWS_MASK,           ITEM_SCROLL_DETECT_LIFE },
+    { ITEM_RELIC_TITANS_BELT,           ITEM_SCROLL_WATER_RESISTANCE },
+    { ITEM_ARTIFACT_HEROS_BELT,         ITEM_GILDED_BELT },
+    { ITEM_RELIC_TWILIGHT,              ITEM_SCROLL_ICE_BOLT },
+    { ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SCROLL_TOWN_PORTAL },
+    { ITEM_RARE_SUN_CLOAK,              ITEM_SCROLL_TURN_UNDEAD },
+    { ITEM_RARE_MOON_CLOAK,             ITEM_SCROLL_REMOVE_CURSE },
+    { ITEM_RARE_VAMPIRES_CAPE,          ITEM_SCROLL_HEROISM }
+};
 
 //----- (00439DF3) --------------------------------------------------------
 int ItemGen::_439DF3_get_additional_damage(DAMAGE_TYPE* damage_type,
@@ -710,101 +722,25 @@ uint8_t ItemGen::GetDamageMod() {
 
 //----- (0043C91D) --------------------------------------------------------
 std::string GetItemTextureFilename(ITEM_TYPE item_id, int index, int shoulder) {
-    ITEM_EQUIP_TYPE pEquipType = pItemTable->pItems[item_id].uEquipType;
+    // For some reason artifact textures are stored using different ids,
+    // and textures under original ids simply don't exist.
+    int texture_id = std::to_underlying(ValueOr(itemTextureIdByItemId, item_id, item_id));
 
-    // For some reason artifact textures are stored using different ids, and textures under original ids simply
-    // don't exist. Why is it obfuscated like this, especially with this global array of flags, is a good question.
-    // TODO(captainurist): deobfuscate
-    if(item_id > ITEM_ARTIFACT_PUCK) {
-        switch (item_id) {
-            case ITEM_RELIC_HARECKS_LEATHER:
-                if (byte_5111F6_OwnedArtifacts[2] != 0)
-                    item_id = ITEM_POTION_STONESKIN;
-                break;
-            case ITEM_ARTIFACT_YORUBA:
-                if (byte_5111F6_OwnedArtifacts[1] != 0)
-                    item_id = ITEM_POTION_HARDEN_ITEM;
-                break;
-            case ITEM_ARTIFACT_GOVERNORS_ARMOR:
-                if (byte_5111F6_OwnedArtifacts[0] != 0)
-                    item_id = ITEM_POTION_WATER_BREATHING;
-                break;
-            case ITEM_ARTIFACT_ELVEN_CHAINMAIL:
-                if (byte_5111F6_OwnedArtifacts[16] != 0)
-                    item_id = ITEM_FINE_CHAIN_MAIL;
-                break;
-            case ITEM_ARTIFACT_SEVEN_LEAGUE_BOOTS:
-                if (byte_5111F6_OwnedArtifacts[3] != 0)
-                    item_id = ITEM_SCROLL_FEATHER_FALL;
-                break;
-            case ITEM_RELIC_TALEDONS_HELM:
-                if (byte_5111F6_OwnedArtifacts[4] != 0)
-                    item_id = ITEM_POTION_CURE_INSANITY;
-                break;
-            case ITEM_RELIC_SCHOLARS_CAP:
-                if (byte_5111F6_OwnedArtifacts[5] != 0)
-                    item_id = ITEM_POTION_MIGHT_BOOST;
-                break;
-            case ITEM_RELIC_PHYNAXIAN_CROWN:
-                if (byte_5111F6_OwnedArtifacts[6] != 0)
-                    item_id = ITEM_POTION_INTELLECT_BOOST;
-                break;
-            case ITEM_ARTIFACT_MINDS_EYE:
-                if (byte_5111F6_OwnedArtifacts[7] != 0)
-                    item_id = ITEM_MOGRED_HELM;
-                break;
-            case ITEM_RARE_SHADOWS_MASK:
-                if (byte_5111F6_OwnedArtifacts[8] != 0)
-                    item_id = ITEM_SCROLL_DETECT_LIFE;
-                break;
-            case ITEM_RELIC_TITANS_BELT:
-                if (byte_5111F6_OwnedArtifacts[9] != 0)
-                    item_id = ITEM_SCROLL_WATER_RESISTANCE;
-                break;
-            case ITEM_ARTIFACT_HEROS_BELT:
-                if (byte_5111F6_OwnedArtifacts[10] != 0)
-                    item_id = ITEM_GILDED_BELT;
-                break;
-            case ITEM_RELIC_TWILIGHT:
-                if (byte_5111F6_OwnedArtifacts[11] != 0)
-                    item_id = ITEM_SCROLL_ICE_BOLT;
-                break;
-            case ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP:
-                if (byte_5111F6_OwnedArtifacts[12] != 0)
-                    item_id = ITEM_SCROLL_TOWN_PORTAL;
-                break;
-            case ITEM_RARE_SUN_CLOAK:
-                if (byte_5111F6_OwnedArtifacts[13] != 0)
-                    item_id = ITEM_SCROLL_TURN_UNDEAD;
-                break;
-            case ITEM_RARE_MOON_CLOAK:
-                if (byte_5111F6_OwnedArtifacts[14] != 0)
-                    item_id = ITEM_SCROLL_REMOVE_CURSE;
-                break;
-            case ITEM_RARE_VAMPIRES_CAPE:
-                if (byte_5111F6_OwnedArtifacts[15] != 0)
-                    item_id = ITEM_SCROLL_HEROISM;
-                break;
-            default:
-                return std::string();
-        }
-    }
-
-    switch (pEquipType) {
+    switch (pItemTable->pItems[item_id].uEquipType) {
         case EQUIP_ARMOUR:
-            if (!shoulder)
-                return StringPrintf("item%3.3dv%d", item_id, index);
+            if (shoulder == 0)
+                return StringPrintf("item%3.3dv%d", texture_id, index);
             else if (shoulder == 1)
-                return StringPrintf("item%3.3dv%da1", item_id, index);
-            else if (shoulder == 2)
-                return StringPrintf("item%3.3dv%da2", item_id, index);
+                return StringPrintf("item%3.3dv%da1", texture_id, index);
+            else // shoulder == 2
+                return StringPrintf("item%3.3dv%da2", texture_id, index);
         case EQUIP_CLOAK:
-            if (!shoulder)
-                return StringPrintf("item%3.3dv%d", item_id, index);
-            else
-                return StringPrintf("item%3.3dv%da1", item_id, index);
+            if (shoulder == 0)
+                return StringPrintf("item%3.3dv%d", texture_id, index);
+            else // shoulder == 1
+                return StringPrintf("item%3.3dv%da1", texture_id, index);
         default:
-            return StringPrintf("item%3.3dv%d", item_id, index);
+            return StringPrintf("item%3.3dv%d", texture_id, index);
     }
 }
 
@@ -845,4 +781,24 @@ bool ItemGen::MerchandiseTest(int _2da_idx) {
         }
     }
     return test;
+}
+
+Segment<ITEM_TREASURE_LEVEL> RemapTreasureLevel(ITEM_TREASURE_LEVEL itemTreasureLevel, MAP_TREASURE_LEVEL mapTreasureLevel) {
+    // mapping[item_level][map_level] -> [actual_level_min, actual_level_max];
+    // Original offset was 0x004E8168.
+    static constexpr std::array<std::array<Segment<int>, 7>, 7> mapping = {{
+        {{{1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}}},
+        {{{1, 1}, {1, 2}, {2, 2}, {2, 2}, {2, 2}, {2, 2}, {2, 2}}},
+        {{{1, 2}, {2, 2}, {2, 3}, {3, 3}, {3, 3}, {3, 3}, {3, 3}}},
+        {{{2, 2}, {2, 2}, {3, 3}, {3, 4}, {4, 4}, {4, 4}, {4, 4}}},
+        {{{2, 2}, {2, 2}, {3, 4}, {4, 4}, {4, 5}, {5, 5}, {5, 5}}},
+        {{{2, 2}, {2, 2}, {4, 4}, {4, 5}, {5, 5}, {5, 6}, {6, 6}}},
+        {{{2, 2}, {2, 2}, {7, 7}, {7, 7}, {7, 7}, {7, 7}, {7, 7}}}
+    }};
+
+    // TODO(captainurist) : type-safe enum diff!
+    int itemIdx = std::to_underlying(itemTreasureLevel) - std::to_underlying(ITEM_FIRST_VALID_TREASURE_LEVEL);
+    int mapIdx = std::to_underlying(mapTreasureLevel) - std::to_underlying(MAP_FIRST_TREASURE_LEVEL);
+    Segment<int> result = mapping[itemIdx][mapIdx];
+    return {ITEM_TREASURE_LEVEL(result.First()), ITEM_TREASURE_LEVEL(result.Last())};
 }

@@ -3348,7 +3348,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pActors[monster_id].pMonsterInfo.uTreasureDropChance = 0;
                 pActors[monster_id].pMonsterInfo.uTreasureDiceRolls = 0;
                 pActors[monster_id].pMonsterInfo.uTreasureDiceSides = 0;
-                pActors[monster_id].pMonsterInfo.uTreasureLevel = 0;
+                pActors[monster_id].pMonsterInfo.uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID;
                 pActors[monster_id].pMonsterInfo.uTreasureType = 0;
                 pActors[monster_id].uAlly = 9999;
                 pActors[monster_id].ResetAggressor();  // ~0x80000

@@ -10,7 +10,7 @@
 struct BonusRange {
     unsigned int minR;
     unsigned int maxR;
-};
+}; // TODO(captainurist): Segment<int>?
 #pragma pack(pop)
 
 /*  176 */
@@ -19,7 +19,7 @@ struct ItemTable {
     void Initialize();
     void LoadPotions();
     void LoadPotionNotes();
-    void GenerateItem(int treasure_level, unsigned int uTreasureType,
+    void GenerateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uTreasureType,
         ItemGen* pItem);
     void SetSpecialBonus(ItemGen* pItem);
     bool IsMaterialSpecial(ItemGen* pItem);
@@ -41,12 +41,12 @@ struct ItemTable {
     std::string pRndItemsTXT_Raw;
     std::string pStdItemsTXT_Raw;           // 1167Ch
     std::string pSpcItemsTXT_Raw;           // 11680h
-    unsigned int uChanceByTreasureLvlSumm[6];   // 11684
-    unsigned int uBonusChanceStandart[6];       // 1169c
-    unsigned int uBonusChanceSpecial[6];        // 116B4
-    unsigned int uBonusChanceWpSpecial[6];      // 116cc -116e4
+    IndexedArray<unsigned int, ITEM_FIRST_RANDOM_TREASURE_LEVEL, ITEM_LAST_RANDOM_TREASURE_LEVEL> uChanceByTreasureLvlSumm;   // 11684
+    IndexedArray<unsigned int, ITEM_FIRST_RANDOM_TREASURE_LEVEL, ITEM_LAST_RANDOM_TREASURE_LEVEL> uBonusChanceStandart;       // 1169c
+    IndexedArray<unsigned int, ITEM_FIRST_RANDOM_TREASURE_LEVEL, ITEM_LAST_RANDOM_TREASURE_LEVEL> uBonusChanceSpecial;        // 116B4
+    IndexedArray<unsigned int, ITEM_FIRST_RANDOM_TREASURE_LEVEL, ITEM_LAST_RANDOM_TREASURE_LEVEL> uBonusChanceWpSpecial;      // 116cc -116e4
     IndexedArray<unsigned int, EQUIP_FIRST_NORMAL_ENCHANTABLE, EQUIP_LAST_NORMAL_ENCHANTABLE> pEnchantmentsSumm; // 116E4h -11708h
-    BonusRange bonus_ranges[6];                 // 45C2h*4 =11708h
+    IndexedArray<BonusRange, ITEM_FIRST_RANDOM_TREASURE_LEVEL, ITEM_LAST_RANDOM_TREASURE_LEVEL> bonus_ranges;                 // 45C2h*4 =11708h
     unsigned int pSpecialEnchantments_count;    // 11798h
     char field_1179C;
     char field_1179D;

@@ -784,7 +784,6 @@ void InitializeScrolls() {
 
 //----- (00476590) --------------------------------------------------------
 void InitializeMerchants() {
-    int i;
     char *test_string;
     unsigned char c;
     bool break_loop;
@@ -795,7 +794,7 @@ void InitializeMerchants() {
     pMerchantsTXT_Raw = pEvents_LOD->LoadCompressedTexture("merchant.txt").string_view();
     strtok(pMerchantsTXT_Raw.data(), "\r");
 
-    for (i = 0; i < 7; ++i) {
+    for (MERCHANT_PHRASE i : MerchantPhrases()) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
         decode_step = 0;
@@ -821,8 +820,7 @@ void InitializeMerchants() {
                         pMerchantsRepairPhrases[i] = RemoveQuotes(test_string);
                         break;
                     case 4:
-                        pMerchantsIdentifyPhrases[i] =
-                            RemoveQuotes(test_string);
+                        pMerchantsIdentifyPhrases[i] = RemoveQuotes(test_string);
                         break;
                 }
             } else {

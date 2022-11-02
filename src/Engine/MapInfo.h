@@ -2,6 +2,8 @@
 
 #include <string>
 
+struct SpawnPoint;
+
 enum MAP_TYPE : uint32_t {
     MAP_INVALID = 0,
     MAP_EMERALD_ISLE = 1,
@@ -32,8 +34,30 @@ enum MapStartPoint : uint32_t {
     MapStartPoint_West = 4
 };
 
+
+/**
+ * Map treasure / danger level, determines how treasure levels of random items are handled by the game.
+ *
+ * Higher map treasure level => better random loot given the same treasure level of a random item.
+ *
+ * @see RemapTreasureLevel
+ */
+enum class MAP_TREASURE_LEVEL : int8_t {
+    MAP_TREASURE_LEVEL_1 = 0,
+    MAP_TREASURE_LEVEL_2 = 1,
+    MAP_TREASURE_LEVEL_3 = 2,
+    MAP_TREASURE_LEVEL_4 = 3,
+    MAP_TREASURE_LEVEL_5 = 4,
+    MAP_TREASURE_LEVEL_6 = 5,
+    MAP_TREASURE_LEVEL_7 = 6,
+
+    MAP_FIRST_TREASURE_LEVEL = MAP_TREASURE_LEVEL_1,
+    MAP_LAST_TREASURE_LEVEL = MAP_TREASURE_LEVEL_7
+};
+using enum MAP_TREASURE_LEVEL;
+
 struct MapInfo {
-    int SpawnRandomTreasure(struct SpawnPointMM7 *a2);
+    void SpawnRandomTreasure(SpawnPoint *a2);
 
     std::string pName;
     std::string pFilename;
@@ -49,7 +73,7 @@ struct MapInfo {
     char field_2C;
     char LockX5;
     char Trap_D20;
-    char Treasure_prob;
+    MAP_TREASURE_LEVEL Treasure_prob;
     char Encounter_percent;
     char EncM1percent;
     char EncM2percent;

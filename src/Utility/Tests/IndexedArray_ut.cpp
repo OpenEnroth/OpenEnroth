@@ -55,7 +55,7 @@ GTEST(IndexedArray, MapInit) {
     EXPECT_EQ(a[D], 1);
 }
 
-TEST(IndexedArray, Indices) {
+GTEST(IndexedArray, Indices) {
     enum class Index { A = 100, B, C, D };
     using enum Index;
 

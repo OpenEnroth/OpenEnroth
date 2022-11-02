@@ -4,8 +4,7 @@
 #include <cstdint>
 #include <string>
 
-#include "Engine/Objects/NPCProf.h"
-
+#include "Engine/Objects/NPCEnums.h"
 
 struct NPCTopic {
     const char *pTopic;

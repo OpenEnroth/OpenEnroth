@@ -558,7 +558,7 @@ void MonsterStats::Initialize() {
                         pInfos[curr_rec_num].uTreasureDiceRolls = 0;
                         pInfos[curr_rec_num].uTreasureDiceSides = 0;
                         pInfos[curr_rec_num].uTreasureType = 0;
-                        pInfos[curr_rec_num].uTreasureLevel = 0;
+                        pInfos[curr_rec_num].uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID;
                         if (test_string[0] == '"') test_string[0] = ' ';
                         str_len = strlen(test_string);
                         do {
@@ -615,7 +615,7 @@ void MonsterStats::Initialize() {
                             } while (str_pos < str_len);
 
                             pInfos[curr_rec_num].uTreasureLevel =
-                                test_string[str_pos + 1] - '0';
+                                ITEM_TREASURE_LEVEL(test_string[str_pos + 1] - '0');
                             item_name = &test_string[str_pos + 2];
                             if (*item_name) {
                                 if (iequals(item_name, "WEAPON"))

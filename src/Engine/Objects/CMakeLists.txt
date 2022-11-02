@@ -19,6 +19,7 @@ set(OBJECTS_HEADERS Actor.h
                     ItemTable.h
                     Monsters.h
                     NPC.h
+                    NPCEnums.h
                     ObjectList.h
                     Player.h
                     PlayerEnums.h

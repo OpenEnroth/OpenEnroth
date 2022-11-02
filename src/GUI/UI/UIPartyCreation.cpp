@@ -920,7 +920,7 @@ bool PartyCreationUI_LoopInternal() {
                 break;
             }
         }
-        pItemTable->GenerateItem(2, 40, &item);
+        pItemTable->GenerateItem(ITEM_TREASURE_LEVEL_2, 40, &item);
         pParty->pPlayers[i].AddItem2(-1, &item);
 
         pParty->pPlayers[i].sHealth = pParty->pPlayers[i].GetMaxHealth();

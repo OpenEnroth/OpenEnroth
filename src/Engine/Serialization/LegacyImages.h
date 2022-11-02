@@ -876,4 +876,26 @@ static_assert(sizeof(ODMFace_MM7) == 308);
 
 void Deserialize(const ODMFace_MM7 &src, ODMFace *dst);
 
+
+struct SpawnPoint_MM6 {
+    Vec3i vPosition;
+    uint16_t uRadius;
+    uint16_t uKind;
+    uint16_t uIndex;
+    uint16_t uAttributes;
+};
+static_assert(sizeof(SpawnPoint_MM6) == 20);
+
+struct SpawnPoint_MM7 {
+    Vec3i vPosition;
+    uint16_t uRadius;
+    uint16_t uKind;
+    uint16_t uIndex;
+    uint16_t uAttributes;
+    unsigned int uGroup;
+};
+static_assert(sizeof(SpawnPoint_MM7) == 24);
+
+void Deserialize(const SpawnPoint_MM7 &src, SpawnPoint *dst);
+
 #pragma pack(pop)

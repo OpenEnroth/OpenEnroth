@@ -520,7 +520,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
 
         if (bDebugGiveItems) {
             Dst.Reset();
-            pItemTable->GenerateItem(2, 40, &Dst);  // ring
+            pItemTable->GenerateItem(ITEM_TREASURE_LEVEL_2, 40, &Dst);  // ring
             pCharacter->AddItem2(-1, &Dst);
             for (uSkillIdx = 0; uSkillIdx < 36; uSkillIdx++) {
                 if (pCharacter->pActiveSkills[uSkillIdx]) {

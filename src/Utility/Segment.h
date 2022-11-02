@@ -76,30 +76,37 @@ class RangeIterator {
 
 
 template<class T>
-class Range {
+class Segment {
  public:
     using iterator = detail::RangeIterator<T>;
     using value_type = typename iterator::value_type;
     using difference_type = typename iterator::difference_type;
     using reference = typename iterator::reference;
 
-    Range() {}
-    Range(T begin, T end) : begin_(begin), end_(end) {}
+    constexpr Segment() {}
+    constexpr Segment(T first, T last) : first_(first), last_(last) {}
 
-    iterator begin() const {
-        return iterator(begin_);
+    constexpr iterator begin() const {
+        return iterator(first_);
     }
 
-    iterator end() const {
-        return iterator(end_);
+    constexpr iterator end() const {
+        return iterator(last_) + 1;
+    }
+
+    constexpr T First() const {
+        return first_;
+    }
+
+    constexpr T Last() const {
+        return last_;
+    }
+
+    constexpr bool contains(T value) const {
+        return first_ <= value && value <= last_;
     }
 
  private:
-    T begin_ = T();
-    T end_ = T();
+    T first_ = T();
+    T last_ = T();
 };
-
-template<class T>
-Range<T> make_range(T first, T last) {
-    return Range<T>(first, static_cast<T>(static_cast<ptrdiff_t>(last) + 1));
-}

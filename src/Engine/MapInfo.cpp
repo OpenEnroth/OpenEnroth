@@ -9,9 +9,11 @@
 #include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
-
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Level/Decoration.h"
+
+#include "Utility/Random.h"
+
 #include "OurMath.h"
 #include "Party.h"
 
@@ -97,7 +99,7 @@ void MapStats::Initialize() {
                     pInfos[i].Trap_D20 = atoi(test_string);
                     break;
                 case 11:
-                    pInfos[i].Treasure_prob = atoi(test_string);  // treasure levels 0-6
+                    pInfos[i].Treasure_prob = MAP_TREASURE_LEVEL(atoi(test_string));  // treasure levels 0-6
                     break;
                 case 12:
                     pInfos[i].Encounter_percent = atoi(test_string);
@@ -237,43 +239,46 @@ MAP_TYPE MapStats::GetMapInfo(const std::string &Str2) {
     return (MAP_TYPE)-1;  // @TODO: This should be MAP_INVALID!, as it's if'ed later.
 }
 
-int MapInfo::SpawnRandomTreasure(SpawnPointMM7 *a2) {
+void MapInfo::SpawnRandomTreasure(SpawnPoint *a2) {
+    Assert(a2->IsTreasureSpawn());
+
     SpriteObject a1a;
     a1a.containing_item.Reset();
 
     int v34 = 0;
     int v5 = rand() % 100;
-    int v7 = (uint8_t)byte_4E8168[a2->uIndex - 1][2 * Treasure_prob];
-    int v8 = (uint8_t)byte_4E8168[a2->uIndex - 1][2 * Treasure_prob + 1];
-    int v9 = rand();
-    int v10 = v8 - v7 + 1;
-    int64_t v12 = v9;
-    int result = v9 / v10;
-    int v13 = v7 + (uint64_t)(v12 % v10);
-    if (v13 < 7) {
-        if (v5 < 20) return result;
+    ITEM_TREASURE_LEVEL v13 = Sample(RemapTreasureLevel(a2->uItemIndex, Treasure_prob));
+    if (v13 != ITEM_TREASURE_LEVEL_GUARANTEED_ARTIFACT) {
+        // [0, 20) -- nothing
+        // [20, 60) -- only gold
+        // [60, 100) -- gold & item
+        // TODO(captainurist): code in GenerateItemsInChest doesn't generate gold on [60, 100)
+
+        if (v5 < 20)
+            return;
+
         if (v5 >= 60) {
-            return DropTreasureAt(v13, rand() % 27 + 20,
+            DropTreasureAt(v13, rand() % 27 + 20,
                                                a2->vPosition.x,
                                                a2->vPosition.y,
                                                a2->vPosition.z, 0);
         }
-        if (a2->uIndex == 1) {
+        if (a2->uItemIndex == ITEM_TREASURE_LEVEL_1) {
             a1a.containing_item.uItemID = ITEM_GOLD_SMALL;
             v34 = rand() % 51 + 50;
-        } else if (a2->uIndex == 2) {
+        } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_2) {
             a1a.containing_item.uItemID = ITEM_GOLD_SMALL;
             v34 = rand() % 101 + 100;
-        } else if (a2->uIndex == 3) {
+        } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_3) {
             a1a.containing_item.uItemID = ITEM_GOLD_MEDIUM;
             v34 = rand() % 301 + 200;
-        } else if (a2->uIndex == 4) {
+        } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_4) {
             a1a.containing_item.uItemID = ITEM_GOLD_MEDIUM;
             v34 = rand() % 501 + 500;
-        } else if (a2->uIndex == 5) {
+        } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_5) {
             a1a.containing_item.uItemID = ITEM_GOLD_LARGE;
             v34 = rand() % 1001 + 1000;
-        } else if (a2->uIndex == 6) {
+        } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_ARTIFACT) {
             a1a.containing_item.uItemID = ITEM_GOLD_LARGE;
             v34 = rand() % 3001 + 2000;
         }
@@ -282,11 +287,11 @@ int MapInfo::SpawnRandomTreasure(SpawnPointMM7 *a2) {
         a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
         a1a.containing_item.special_enchantment = (ITEM_ENCHANTMENT)v34;
     } else {
-        result = a1a.containing_item.GenerateArtifact();
-        if (!result) return result;
+        if (!a1a.containing_item.GenerateArtifact())
+            return;
         a1a.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[a1a.containing_item.uItemID].uSpriteID;
         a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
-        a1a.containing_item.Reset();  // ?? this needs checking
+        a1a.containing_item.Reset();  // TODO(captainurist): this needs checking
     }
     a1a.vPosition.y = a2->vPosition.y;
     a1a.uAttributes = 0;
@@ -301,8 +306,7 @@ int MapInfo::SpawnRandomTreasure(SpawnPointMM7 *a2) {
     a1a.spell_caster_pid = 0;
     a1a.uSpriteFrameID = 0;
     a1a.uSectorID = pIndoor->GetSector(a2->vPosition.x, a2->vPosition.y, a2->vPosition.z);
-
-    return a1a.Create(0, 0, 0, 0);
+    a1a.Create(0, 0, 0, 0);
 }
 
 void TeleportToStartingPoint(MapStartPoint point) {

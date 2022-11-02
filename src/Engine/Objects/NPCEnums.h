@@ -2,6 +2,31 @@
 
 #include <cstdint>
 
+#include "Utility/Segment.h"
+
+/**
+ * Phrase IDs for phrases displayed in shops when hovering over items.
+ *
+ * IDs work for selling, buying, repairing and identifying items.
+ */
+enum class MERCHANT_PHRASE {
+    MERCHANT_PHRASE_NOT_ENOUGH_GOLD = 0,    // Not used at the moment.
+    MERCHANT_PHRASE_PRICE = 1,              // When hovering over an item w/o a merchant skill.
+    MERCHANT_PHRASE_PRICE_HAGGLE = 2,       // When hovering over an item while having a merchant skill.
+    MERCHANT_PHRASE_PRICE_HAGGLE_TO_ACTUAL_PRICE = 3,   // When hovering over an item while having a merchant skill
+                                                        // that reduces the price of an item to its actual price.
+    MERCHANT_PHRASE_INCOMPATIBLE_ITEM = 4,  // When hovering over an incompatible item, e.g. a weapon at an armor shop.
+    MERCHANT_PHRASE_INVALID_ACTION = 5,     // When hovering over an item that you cannot perform any action on,
+                                            // e.g. repairing a non-broken item, or selling a quest item.
+    MERCAHNT_PHRASE_STOLEN_ITEM = 6,        // When hovering over a stolen item.
+
+    MERCHANT_PHRASE_COUNT = 7
+};
+using enum MERCHANT_PHRASE;
+
+inline Segment<MERCHANT_PHRASE> MerchantPhrases() {
+    return Segment(MERCHANT_PHRASE_NOT_ENOUGH_GOLD, MERCAHNT_PHRASE_STOLEN_ITEM);
+}
 
 enum NPCProf : int32_t {
     Smith = 1,       // GM Weapon Repair;

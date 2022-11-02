@@ -361,10 +361,7 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
                     break;
 
                 case EVENT_CheckSkill: {
-                    v19 = _evt->v7 +
-                          ((_evt->v8 +
-                            ((_evt->v9 + ((unsigned int)_evt->v10 << 8)) << 8))
-                           << 8);
+                    v19 = EVT_DWORD(_evt->v7);
                     if (player_choose < 0) goto LABEL_47;
                     if (player_choose <= 3) {
                         v24 =
@@ -420,19 +417,11 @@ LABEL_47:
                     if (canShowMessages) {
                         // Actor::Actor(&Dst);
                         Dst = Actor();
-                        dword_5B65D0_dialogue_actor_npc_id =
-                            _evt->v5 +
-                            ((_evt->v6 +
-                              ((_evt->v7 + ((unsigned int)_evt->v8 << 8)) << 8))
-                             << 8);
+                        dword_5B65D0_dialogue_actor_npc_id = EVT_DWORD(_evt->v5);
                         Dst.sNPC_ID = dword_5B65D0_dialogue_actor_npc_id;
                         GameUI_InitializeDialogue(&Dst, false);
                     } else {
-                        bDialogueUI_InitializeActor_NPC_ID =
-                            _evt->v5 +
-                            ((_evt->v6 +
-                            ((_evt->v7 + ((unsigned int)_evt->v8 << 8)) << 8))
-                                << 8);
+                        bDialogueUI_InitializeActor_NPC_ID = EVT_DWORD(_evt->v5);
                     }
                     ++curr_seq_num;
                     break;
@@ -459,14 +448,8 @@ LABEL_47:
                 case EVENT_SetNPCTopic: {
                     // v29 = _evt->v5 + ((_evt->v6 + ((_evt->v7 +
                     // ((uint)_evt->v8 << 8)) << 8)) << 8);
-                    pEventID = _evt->v10 +
-                               ((_evt->v11 +
-                                 ((_evt->v12 + ((uint)_evt->v13 << 8)) << 8))
-                                << 8);
-                    pNPC_ID =
-                        _evt->v5 +
-                        ((_evt->v6 + ((_evt->v7 + ((uint)_evt->v8 << 8)) << 8))
-                         << 8);
+                    pEventID = EVT_DWORD(_evt->v10);
+                    pNPC_ID = EVT_DWORD(_evt->v5);
                     pIndex = _evt->v9;
                     pNPC = &pNPCStats->pNewNPCData[pNPC_ID];
                     if (pIndex == 0) pNPC->dialogue_1_evt_id = pEventID;
@@ -517,10 +500,7 @@ LABEL_47:
                     ++curr_seq_num;
                     break;
                 case EVENT_SetNPCGroupNews:
-                    pNPCStats->pGroups_copy
-                        [_evt->v5 +
-                         ((_evt->v6 + ((_evt->v7 + ((uint)_evt->v8 << 8)) << 8))
-                          << 8)] = _evt->v9 + ((uint)_evt->v10 << 8);
+                    pNPCStats->pGroups_copy[EVT_DWORD(_evt->v5)] = EVT_WORD(_evt->v9);
                     ++curr_seq_num;
                     break;
                 case EVENT_SetActorGroup:
@@ -528,21 +508,12 @@ LABEL_47:
                     *(&pActors[0].uGroup + 0x11000000 * _evt->v8 +
                       209 * (_evt->v5 +
                              ((_evt->v6 + ((uint)_evt->v7 << 8)) << 8))) =
-                        _evt->v9 +
-                        ((_evt->v10 +
-                          ((_evt->v11 + ((uint)_evt->v12 << 8)) << 8))
-                         << 8);
+                        EVT_DWORD(_evt->v9);
                     ++curr_seq_num;
                     break;
                 case EVENT_ChangeGroup:
-                    v38 =
-                        _evt->v5 +
-                        ((_evt->v6 + ((_evt->v7 + ((uint)_evt->v8 << 8)) << 8))
-                         << 8);
-                    v39 = _evt->v9 +
-                          ((_evt->v10 +
-                            ((_evt->v11 + ((uint)_evt->v12 << 8)) << 8))
-                           << 8);
+                    v38 = EVT_DWORD(_evt->v5);
+                    v39 = EVT_DWORD(_evt->v9);
                     __debugbreak();
                     for (uint actor_id = 0; actor_id < pActors.size(); actor_id++) {
                         if (pActors[actor_id].uGroup == v38)
@@ -551,14 +522,8 @@ LABEL_47:
                     ++curr_seq_num;
                     break;
                 case EVENT_ChangeGroupAlly:
-                    v42 =
-                        _evt->v5 +
-                        ((_evt->v6 + ((_evt->v7 + ((uint)_evt->v8 << 8)) << 8))
-                         << 8);
-                    v43 = _evt->v9 +
-                          ((_evt->v10 +
-                            ((_evt->v11 + ((uint)_evt->v12 << 8)) << 8))
-                           << 8);
+                    v42 = EVT_DWORD(_evt->v5);
+                    v43 = EVT_DWORD(_evt->v9);
                     __debugbreak();
                     for (uint actor_id = 0; actor_id < pActors.size(); actor_id++) {
                         if (pActors[actor_id].uGroup == v42)
@@ -640,27 +605,11 @@ LABEL_47:
                     break;
                 case EVENT_SummonItem:
                     SpriteObject::Drop_Item_At(
-                        (SPRITE_OBJECT_TYPE)(
-                            _evt->v5 +
-                            ((_evt->v6 +
-                              ((_evt->v7 + ((uint)_evt->v8 << 8)) << 8))
-                             << 8)),
-                        _evt->v9 +
-                            ((_evt->v10 +
-                              ((_evt->v11 + ((uint)_evt->v12 << 8)) << 8))
-                             << 8),
-                        _evt->v13 +
-                            ((_evt->v14 +
-                              ((_evt->v15 + ((uint)_evt->v16 << 8)) << 8))
-                             << 8),
-                        _evt->v17 +
-                            ((_evt->v18 +
-                              ((_evt->v19 + ((uint)_evt->v20 << 8)) << 8))
-                             << 8),
-                        _evt->v21 +
-                            ((_evt->v22 +
-                              ((_evt->v23 + ((uint)_evt->v24 << 8)) << 8))
-                             << 8),
+                        (SPRITE_OBJECT_TYPE)(EVT_DWORD(_evt->v5)),
+                        EVT_DWORD(_evt->v9),
+                        EVT_DWORD(_evt->v13),
+                        EVT_DWORD(_evt->v17),
+                        EVT_DWORD(_evt->v21),
                         _evt->v25, _evt->v26, 0, 0);
                     ++curr_seq_num;
                     break;
@@ -798,19 +747,11 @@ LABEL_47:
                         if (v133 == 1) OnMapLeave();
                         return;
                     }
-                    v84 = _evt->v13 +
-                          ((_evt->v14 +
-                            ((_evt->v15 + ((uint)_evt->v16 << 8)) << 8))
-                           << 8);
+                    v84 = EVT_DWORD(_evt->v13);
                     if (iequals(
                             game_ui_status_bar_event_string,
                             &pLevelStr
-                                [pLevelStrOffsets[_evt->v9 +
-                                                  ((_evt->v10 +
-                                                    ((_evt->v11 +
-                                                      ((uint)_evt->v12 << 8))
-                                                     << 8))
-                                                   << 8)]]) ||
+                                [pLevelStrOffsets[EVT_DWORD(_evt->v9)]]) ||
                         iequals(game_ui_status_bar_event_string,
                                   &pLevelStr[pLevelStrOffsets[v84]])) {
                         v11 = _evt->v17;
@@ -955,36 +896,15 @@ LABEL_47:
                     break;
                 case EVENT_MoveToMap:
                     v94 =
-                        _evt->v5 +
-                        ((_evt->v6 + ((_evt->v7 + ((uint)_evt->v8 << 8)) << 8))
-                         << 8);
+                        EVT_DWORD(_evt->v5);
                     trans_partyx =
-                        _evt->v5 +
-                        ((_evt->v6 + ((_evt->v7 + ((uint)_evt->v8 << 8)) << 8))
-                         << 8);
-                    trans_partyy = _evt->v9 +
-                           ((_evt->v10 +
-                             ((_evt->v11 + ((uint)_evt->v12 << 8)) << 8))
-                            << 8);
-                    trans_partyz = _evt->v13 +
-                           ((_evt->v14 +
-                             ((_evt->v15 + ((uint)_evt->v16 << 8)) << 8))
-                            << 8);
-                    trans_directionyaw = _evt->v17 +
-                           ((_evt->v18 +
-                             ((_evt->v19 + ((uint)_evt->v20 << 8)) << 8))
-                            << 8);
-                    trans_directionpitch = _evt->v21 +
-                          ((_evt->v22 +
-                            ((_evt->v23 + ((uint)_evt->v24 << 8)) << 8))
-                           << 8);
-                    v96 = _evt->v25;
-                    v97 = v96 + ((_evt->v26 +
-                                  ((_evt->v27 + ((uint)_evt->v28 << 8)) << 8))
-                                 << 8);
-                    trans_partyzspeed = v96 + ((_evt->v26 +
-                                   ((_evt->v27 + ((uint)_evt->v28 << 8)) << 8))
-                                  << 8);
+                        EVT_DWORD(_evt->v5);
+                    trans_partyy = EVT_DWORD(_evt->v9);
+                    trans_partyz = EVT_DWORD(_evt->v13);
+                    trans_directionyaw = EVT_DWORD(_evt->v17);
+                    trans_directionpitch = EVT_DWORD(_evt->v21);
+                    v97 = EVT_DWORD(_evt->v25);
+                    trans_partyzspeed = EVT_DWORD(_evt->v25);
                     if (_evt->v29 || _evt->v30) {
                         pDialogueWindow = new GUIWindow_Transition(
                             _evt->v29, _evt->v30, trans_partyx, trans_partyy, trans_partyz, trans_directionyaw, trans_directionpitch,
@@ -995,10 +915,7 @@ LABEL_47:
                         return;
                     }
                     Party_Teleport_Y_Pos =
-                        _evt->v9 +
-                        ((_evt->v10 +
-                          ((_evt->v11 + ((uint)_evt->v12 << 8)) << 8))
-                         << 8);
+                        EVT_DWORD(_evt->v9);
                     Party_Teleport_X_Pos = v94;
                     Party_Teleport_Z_Pos = trans_partyz;
                     if (trans_directionyaw == -1) {
@@ -1064,27 +981,16 @@ LABEL_47:
                     ++curr_seq_num;
                     break;
                 case EVENT_PlaySound:
-                    v110 = _evt->v13 +
-                           ((_evt->v14 +
-                             ((_evt->v15 + ((uint)_evt->v16 << 8)) << 8))
-                            << 8);
-                    v109 = _evt->v9 +
-                           ((_evt->v10 +
-                             ((_evt->v11 + ((uint)_evt->v12 << 8)) << 8))
-                            << 8);
-                    v106 =
-                        _evt->v5 +
-                        ((_evt->v6 + ((_evt->v7 + ((uint)_evt->v8 << 8)) << 8))
-                         << 8);
+                    v110 = EVT_DWORD(_evt->v13);
+                    v109 = EVT_DWORD(_evt->v9);
+                    v106 = EVT_DWORD(_evt->v5);
                     pAudioPlayer->PlaySound((SoundID)v106, 0, 0, v109, v110, 0);
                     ++curr_seq_num;
                     break;
                 case EVENT_GiveItem: {
                     item.Reset();
-                    ITEM_TYPE v102 = ITEM_TYPE(
-                        _evt->v7 +
-                        ((_evt->v8 + ((_evt->v9 + ((uint)_evt->v10 << 8)) << 8)) << 8)); // TODO(captainurist): create an accessor
-                    pItemTable->GenerateItem(_evt->v5, _evt->v6, &item);
+                    ITEM_TYPE v102 = ITEM_TYPE(EVT_DWORD(_evt->v7));
+                    pItemTable->GenerateItem(ITEM_TREASURE_LEVEL(_evt->v5), _evt->v6, &item);
                     if (v102 != ITEM_NULL) item.uItemID = v102;
                     pParty->SetHoldingItem(&item);
                     ++curr_seq_num;
@@ -1303,7 +1209,7 @@ void sub_448CF4_spawn_monsters(int16_t typeindex, int16_t level, int count,
     unsigned int map_id;        // eax@1
     size_t old_num_actors;      // ebx@2
     AIDirection v15;            // [sp+28h] [bp-34h]@2
-    SpawnPointMM7 pSpawnPoint;  // [sp+44h] [bp-18h]@1
+    SpawnPoint pSpawnPoint;  // [sp+44h] [bp-18h]@1
 
     pSpawnPoint.vPosition.x = x;
     pSpawnPoint.vPosition.y = y;
@@ -1311,7 +1217,7 @@ void sub_448CF4_spawn_monsters(int16_t typeindex, int16_t level, int count,
     pSpawnPoint.uGroup = group;
     pSpawnPoint.uRadius = 32;
     pSpawnPoint.uKind = 3;
-    pSpawnPoint.uIndex = typeindex + 2 * level + level;
+    pSpawnPoint.uMonsterIndex = typeindex + 2 * level + level;
     map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id) {
         old_num_actors = pActors.size();

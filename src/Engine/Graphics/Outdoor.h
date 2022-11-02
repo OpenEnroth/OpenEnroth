@@ -9,6 +9,7 @@
 
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/SpawnPoint.h"
 
 #define DAY_ATTRIB_FOG 1
 
@@ -128,7 +129,7 @@ struct OutdoorLocation {
     int16_t field_F2;
     int field_F4;
     char field_F8[968];
-    std::vector<SpawnPointMM7> pSpawnPoints;
+    std::vector<SpawnPoint> pSpawnPoints;
     struct DDM_DLV_Header ddm;
     LocationTime_stru1 loc_time;
     unsigned char

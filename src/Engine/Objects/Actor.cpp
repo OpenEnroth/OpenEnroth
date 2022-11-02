@@ -195,7 +195,7 @@ void Actor::SetRandomGoldIfTheresNoItem() {
         }
     }
     if (rand() % 100 < this->pMonsterInfo.uTreasureDropChance) {
-        if (this->pMonsterInfo.uTreasureLevel)
+        if (this->pMonsterInfo.uTreasureLevel != ITEM_TREASURE_LEVEL_INVALID)
             pItemTable->GenerateItem(this->pMonsterInfo.uTreasureLevel,
                                      this->pMonsterInfo.uTreasureType,
                                      &this->ActorHasItems[2]);
@@ -3617,7 +3617,7 @@ void Actor::Arena_summon_actor(int monster_id, int x, int y, int z) {
     actor->vPosition.x = x;
     actor->uAttributes |= ACTOR_AGGRESSOR;
     actor->pMonsterInfo.uTreasureType = 0;
-    actor->pMonsterInfo.uTreasureLevel = 0;
+    actor->pMonsterInfo.uTreasureLevel = ITEM_TREASURE_LEVEL_INVALID;
     actor->pMonsterInfo.uTreasureDiceSides = 0;
     actor->pMonsterInfo.uTreasureDiceRolls = 0;
     actor->pMonsterInfo.uTreasureDropChance = 0;
@@ -3967,7 +3967,6 @@ void StatusBarItemFound(int num_gold_found, const char * item_unidentified_name)
 //----- (00426A5A) --------------------------------------------------------
 void Actor::LootActor() {
     signed int v2;       // edi@1
-    uint8_t v7;  // al@30
     ItemGen Dst;         // [sp+Ch] [bp-2Ch]@1
     bool itemFound;      // [sp+30h] [bp-8h]@1
     int v14;             // [sp+34h] [bp-4h]@1
@@ -4045,8 +4044,8 @@ void Actor::LootActor() {
         }
     } else {
         if (rand() % 100 < this->pMonsterInfo.uTreasureDropChance &&
-            (v7 = this->pMonsterInfo.uTreasureLevel) != 0) {
-            pItemTable->GenerateItem(v7, this->pMonsterInfo.uTreasureType,
+            this->pMonsterInfo.uTreasureLevel != ITEM_TREASURE_LEVEL_INVALID) {
+            pItemTable->GenerateItem(this->pMonsterInfo.uTreasureLevel, this->pMonsterInfo.uTreasureType,
                                      &Dst);
 
             StatusBarItemFound(
@@ -4857,9 +4856,10 @@ void Spawn_Light_Elemental(int spell_power, int caster_skill_level, int duration
 }
 
 //----- (0044F57C) --------------------------------------------------------
-void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int a5) {
+void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5) {
     // a3 for abc modify
     // a4 count
+    Assert(spawn->IsMonsterSpawn());
 
     int v7;                // eax@2
     char v8;               // zf@5
@@ -4909,7 +4909,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
 
     // result = (void *)(spawn->uIndex - 1);
     NumToSpawn = 1;
-    switch (spawn->uIndex - 1) {
+    switch (spawn->uMonsterIndex - 1) {
         case 0:
             // v9 = pMapInfo->uEncounterMonster1AtLeast;
             // v10 = rand();

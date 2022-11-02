@@ -584,7 +584,6 @@ Vec3i layingitem_vel_50FDFC;
 char pStartingMapName[32];  // idb
 std::array<uint8_t, 5> IsPlayerWearingWatersuit;
 std::array<char, 54> party_has_equipment;
-std::array<char, 17> byte_5111F6_OwnedArtifacts;
 
 unsigned int uNumBlueFacesInBLVMinimap;
 std::array<uint16_t, 50> pBlueFacesInBLVMinimapIDs;
@@ -721,10 +720,10 @@ int dword_7241C8;
 std::string pAwardsTXT_Raw;
 std::string pScrollsTXT_Raw;
 std::string pMerchantsTXT_Raw;
-std::array<const char *, 7> pMerchantsBuyPhrases;
-std::array<const char *, 7> pMerchantsSellPhrases;
-std::array<const char *, 7> pMerchantsRepairPhrases;
-std::array<const char *, 7> pMerchantsIdentifyPhrases;
+IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsBuyPhrases;
+IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsSellPhrases;
+IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsRepairPhrases;
+IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsIdentifyPhrases;
 std::string pTransitionsTXT_Raw;
 std::string pAutonoteTXT_Raw;
 std::string pQuestsTXT_Raw;

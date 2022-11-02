@@ -5,7 +5,7 @@
 #include "Engine/ErrorHandling.h"
 
 #include "Utility/Flags.h"
-#include "Utility/Range.h"
+#include "Utility/Segment.h"
 #include "Utility/Workaround/ToUnderlying.h"
 
 enum class DAMAGE_TYPE : unsigned int {
@@ -128,7 +128,31 @@ enum class ITEM_MATERIAL : uint8_t {
 };
 using enum ITEM_MATERIAL;
 
-/*  330 */
+enum class ITEM_TREASURE_LEVEL : int8_t {
+    ITEM_TREASURE_LEVEL_INVALID = 0,
+    ITEM_TREASURE_LEVEL_1 = 1,
+    ITEM_TREASURE_LEVEL_2 = 2,
+    ITEM_TREASURE_LEVEL_3 = 3,
+    ITEM_TREASURE_LEVEL_4 = 4,
+    ITEM_TREASURE_LEVEL_5 = 5,
+    ITEM_TREASURE_LEVEL_ARTIFACT = 6,
+    ITEM_TREASURE_LEVEL_GUARANTEED_ARTIFACT = 7, // This is only used in chests & for random items lying around
+                                                 // on the maps. For levels 1-6 chests can generate gold instead of
+                                                 // an item (or nothing), so this value provides a way to override
+                                                 // this behavior and always spawn an artifact.
+
+    ITEM_FIRST_VALID_TREASURE_LEVEL = ITEM_TREASURE_LEVEL_1,
+    ITEM_LAST_VALID_TREASURE_LEVEL = ITEM_TREASURE_LEVEL_GUARANTEED_ARTIFACT,
+
+    ITEM_FIRST_RANDOM_TREASURE_LEVEL = ITEM_TREASURE_LEVEL_1,
+    ITEM_LAST_RANDOM_TREASURE_LEVEL = ITEM_TREASURE_LEVEL_ARTIFACT,
+};
+using enum ITEM_TREASURE_LEVEL;
+
+inline bool IsRandomTreasureLevel(ITEM_TREASURE_LEVEL level) {
+    return level >= ITEM_FIRST_RANDOM_TREASURE_LEVEL && level <= ITEM_LAST_RANDOM_TREASURE_LEVEL;
+}
+
 /**
  * Enum of all item types in the game.
  *
@@ -938,6 +962,18 @@ enum class ITEM_TYPE : int32_t {
     ITEM_798 = 798, // Unused.
     ITEM_799 = 799, // Unused.
 
+    // These are used in chests and are replaced with normal random-generated items in GenerateItemsInChest().
+    ITEM_RANDOM_LEVEL_1 = -1,
+    ITEM_RANDOM_LEVEL_2 = -2,
+    ITEM_RANDOM_LEVEL_3 = -3,
+    ITEM_RANDOM_LEVEL_4 = -4,
+    ITEM_RANDOM_LEVEL_5 = -5,
+    ITEM_RANDOM_LEVEL_6 = -6,
+    ITEM_RANDOM_LEVEL_7 = -7,
+
+    ITEM_FIRST_RANDOM = ITEM_RANDOM_LEVEL_7,
+    ITEM_LAST_RANDOM = ITEM_RANDOM_LEVEL_1,
+
     ITEM_FIRST_VALID = ITEM_CRUDE_LONGSWORD,
     ITEM_LAST_VALID = ITEM_799,
 
@@ -1000,16 +1036,25 @@ inline bool IsSpawnableArtifact(ITEM_TYPE type) {
     return type >= ITEM_FIRST_SPAWNABLE_ARTIFACT && type <= ITEM_LAST_SPAWNABLE_ARTIFACT;
 }
 
-inline Range<ITEM_TYPE> RecipeScrolls() {
-    return make_range(ITEM_FIRST_RECIPE, ITEM_LAST_RECIPE);
+inline bool IsRandomItem(ITEM_TYPE type) {
+    return type >= ITEM_FIRST_RANDOM && type <= ITEM_LAST_RANDOM;
+}
+
+inline ITEM_TREASURE_LEVEL RandomItemTreasureLevel(ITEM_TYPE type) {
+    Assert(IsRandomItem(type));
+    return ITEM_TREASURE_LEVEL(-std::to_underlying(type));
+}
+
+inline Segment<ITEM_TYPE> RecipeScrolls() {
+    return Segment(ITEM_FIRST_RECIPE, ITEM_LAST_RECIPE);
 }
 
 /**
  * @return                              Range of all items that can be randomly generated as loot. Note that not all
  *                                      of the entries might actually be valid.
  */
-inline Range<ITEM_TYPE> SpawnableItems() {
-    return make_range(ITEM_FIRST_SPAWNABLE, ITEM_LAST_SPAWNABLE);
+inline Segment<ITEM_TYPE> SpawnableItems() {
+    return Segment(ITEM_FIRST_SPAWNABLE, ITEM_LAST_SPAWNABLE);
 }
 
 /**
@@ -1018,8 +1063,8 @@ inline Range<ITEM_TYPE> SpawnableItems() {
  *                                      generated this way, e.g. Hermes' Sandals can only be picked up from a
  *                                      Mega Dragon's corpse.
  */
-inline Range<ITEM_TYPE> SpawnableArtifacts() {
-    return make_range(ITEM_FIRST_SPAWNABLE_ARTIFACT, ITEM_LAST_SPAWNABLE_ARTIFACT);
+inline Segment<ITEM_TYPE> SpawnableArtifacts() {
+    return Segment(ITEM_FIRST_SPAWNABLE_ARTIFACT, ITEM_LAST_SPAWNABLE_ARTIFACT);
 }
 
 /**
@@ -1071,10 +1116,19 @@ using enum ITEM_EQUIP_TYPE;
 /**
  * @param type                          Type to check.
  * @return                              Whether the provided type represents a `passive` equipment, e.g. shields,
- *                                      armor, rings, etc.
+ *                                      armor, rings, amulets, etc.
  */
 inline bool IsPassiveEquipment(ITEM_EQUIP_TYPE type) {
     return type >= EQUIP_ARMOUR && type <= EQUIP_AMULET;
+}
+
+/**
+ * @param type                          Type to check.
+ * @return                              Whether the provided type represents wearable armor, e.g. any passive
+ *                                      equipment except amulets and rings.
+ */
+inline bool IsArmor(ITEM_EQUIP_TYPE type) {
+    return type >= EQUIP_ARMOUR && type <= EQUIP_BOOTS;
 }
 
 /**
@@ -1116,8 +1170,8 @@ enum class ITEM_SLOT : uint8_t {
 };
 using enum ITEM_SLOT;
 
-inline Range<ITEM_SLOT> RingSlots() {
-    return make_range(ITEM_SLOT_RING1, ITEM_SLOT_RING6);
+inline Segment<ITEM_SLOT> RingSlots() {
+    return Segment(ITEM_SLOT_RING1, ITEM_SLOT_RING6);
 }
 
 inline ITEM_SLOT RingSlot(int index) {
@@ -1125,6 +1179,6 @@ inline ITEM_SLOT RingSlot(int index) {
     return static_cast<ITEM_SLOT>(std::to_underlying(ITEM_SLOT_RING1) + index);
 }
 
-inline Range<ITEM_SLOT> AllItemSlots() {
-    return make_range(ITEM_SLOT_FIRST_VALID, ITEM_SLOT_LAST_VALID);
+inline Segment<ITEM_SLOT> AllItemSlots() {
+    return Segment(ITEM_SLOT_FIRST_VALID, ITEM_SLOT_LAST_VALID);
 }

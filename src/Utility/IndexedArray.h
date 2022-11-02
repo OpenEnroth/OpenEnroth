@@ -6,7 +6,7 @@
 #include <type_traits>
 #include <utility>
 
-#include "Range.h"
+#include "Segment.h"
 
 namespace detail {
 
@@ -164,8 +164,8 @@ class IndexedArray: public std::array<T, Size> {
      *
      * @return                          View over the valid indices for the elements of this indexed array.
      */
-    constexpr Range<key_type> indices() const {
-        return make_range(ActualFirstIndex, ActualLastIndex);
+    constexpr Segment<key_type> indices() const {
+        return Segment(ActualFirstIndex, ActualLastIndex);
     }
 
     using base_type::begin;

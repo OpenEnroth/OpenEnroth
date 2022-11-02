@@ -6,6 +6,7 @@
 
 #include "Engine/mm7_data.h"
 #include "Engine/IocContainer.h"
+#include "Engine/SpawnPoint.h"
 
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Graphics/IRender.h"
@@ -230,41 +231,6 @@ enum LEVEL_TYPE {
     LEVEL_Outdoor = 0x2,
 };
 extern LEVEL_TYPE uCurrentlyLoadedLevelType;
-
-/*   86 */
-#pragma pack(push, 1)
-struct SpawnPointMM6 {
-    Vec3i vPosition;
-    uint16_t uRadius;
-    uint16_t uKind;
-    uint16_t uIndex;
-    uint16_t uAttributes;
-};
-#pragma pack(pop)
-
-/*  102 */
-#pragma pack(push, 1)
-struct SpawnPointMM7 {
-    //----- (00448DD6) --------------------------------------------------------
-    SpawnPointMM7() {
-        uRadius = 32;
-        uAttributes = 0;
-        uIndex = 0;
-        uKind = 0;
-        uGroup = 0;
-    }
-
-    Vec3i vPosition;
-    uint16_t uRadius;
-    uint16_t uKind;
-    uint16_t uIndex;
-    uint16_t uAttributes;
-    unsigned int uGroup;
-
-    inline bool IsMonsterSpawn() const { return uKind == 3; }
-    inline bool IsTreasureSpawn() const { return uKind != 3; }
-};
-#pragma pack(pop)
 
 /*   90 */
 #pragma pack(push, 1)
@@ -602,7 +568,7 @@ struct IndoorLocation {
     std::vector<uint16_t> ptr_0002B0_sector_rdata;
     std::vector<uint16_t> ptr_0002B4_doors_ddata;
     std::vector<uint16_t> ptr_0002B8_sector_lrdata;
-    std::vector<SpawnPointMM7> pSpawnPoints;
+    std::vector<SpawnPoint> pSpawnPoints;
     DDM_DLV_Header dlv;
     LocationTime_stru1 stru1;
     std::array<char, 875> _visible_outlines;
@@ -674,7 +640,7 @@ void PrepareDrawLists_BLV();
 void PrepareToLoadBLV(bool bLoading);
 bool GetAlertStatus();
 int SpawnEncounterMonsters(struct MapInfo *a1, int a2);
-int DropTreasureAt(int trs_level, signed int trs_type, int x, int y, int z, uint16_t facing);
+int DropTreasureAt(ITEM_TREASURE_LEVEL trs_level, signed int trs_type, int x, int y, int z, uint16_t facing);
 
 void FindBillboardsLightLevels_BLV();
 

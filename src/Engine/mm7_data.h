@@ -9,6 +9,8 @@
 #include "Engine/MM7.h"
 #include "Engine/Autonotes.h"
 #include "Engine/Objects/ItemEnums.h"
+#include "Engine/Objects/NPCEnums.h"
+#include "Engine/MapInfo.h"
 
 #include "GUI/GUIDialogues.h"
 
@@ -74,7 +76,6 @@ extern std::array<std::array<int, 6>, 6> pNPCPortraits_y;  // 004E5EE0
 extern std::array<const char *, 11> pHouse_ExitPictures;
 extern std::array<const char *, 11> _4E6BDC_loc_names;
 extern std::array<int16_t, 11> word_4E8152;
-extern std::array<std::array<char, 14>, 7> byte_4E8168;
 extern char _4E94D0_light_type;
 extern char _4E94D2_light_type;
 extern char _4E94D3_light_type;
@@ -199,7 +200,6 @@ extern Vec3i layingitem_vel_50FDFC;
 extern char pStartingMapName[32];  // idb
 extern std::array<uint8_t, 5> IsPlayerWearingWatersuit;
 extern std::array<char, 54> party_has_equipment;
-extern std::array<char, 17> byte_5111F6_OwnedArtifacts;
 
 extern unsigned int uNumBlueFacesInBLVMinimap;
 extern std::array<uint16_t, 50> pBlueFacesInBLVMinimapIDs;
@@ -369,10 +369,10 @@ extern int dword_7241C8;
 extern std::string pAwardsTXT_Raw;
 extern std::string pScrollsTXT_Raw;
 extern std::string pMerchantsTXT_Raw;
-extern std::array<const char *, 7> pMerchantsBuyPhrases;
-extern std::array<const char *, 7> pMerchantsSellPhrases;
-extern std::array<const char *, 7> pMerchantsRepairPhrases;
-extern std::array<const char *, 7> pMerchantsIdentifyPhrases;
+extern IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsBuyPhrases;
+extern IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsSellPhrases;
+extern IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsRepairPhrases;
+extern IndexedArray<const char *, MERCHANT_PHRASE_COUNT> pMerchantsIdentifyPhrases;
 extern std::string pTransitionsTXT_Raw;
 extern std::string pAutonoteTXT_Raw;
 extern std::string pQuestsTXT_Raw;
