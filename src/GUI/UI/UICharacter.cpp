@@ -1564,8 +1564,8 @@ void CharacterUI_LoadPaperdollTextures() {
             byte_5111F6_OwnedArtifacts[16] = 1;
     }
 
-    auto loadTexture = [&](auto map, int itemIndex, int bodyIndex, int shoulderIndex) {
-        std::string name = GetItemTextureFilename(ExistingValue(map, itemIndex), bodyIndex + 1, shoulderIndex);
+    auto loadTexture = [&](const auto &map, int itemIndex, int bodyIndex, int shoulderIndex) {
+        std::string name = GetItemTextureFilename(*ValuePtr(map, itemIndex), bodyIndex + 1, shoulderIndex);
         return assets->GetImage_Alpha(name);
     };
 
