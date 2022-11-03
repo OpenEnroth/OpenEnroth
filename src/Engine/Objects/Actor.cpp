@@ -981,7 +981,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
             outx = 0;
             break;
         }
-        case OBJECT_BModel: {
+        case OBJECT_Face: {
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
                 outx = (pIndoor->pFaces[v4].pBounding.x1 +
                         pIndoor->pFaces[v4].pBounding.x2) >>
@@ -1029,7 +1029,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
             a4 = 0;
             break;
         }
-        case OBJECT_BModel: {
+        case OBJECT_Face: {
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
                 outx2 = (float)((pIndoor->pFaces[v5].pBounding.x1 +
                                  pIndoor->pFaces[v5].pBounding.x2) >>

@@ -6891,13 +6891,13 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
 
     ObjectType pidtype = PID_TYPE(uObjID);
 
-    /*    OBJECT_Any = 0x0,
-    OBJECT_BLVDoor = 0x1,
+    /*    OBJECT_None = 0x0,
+    OBJECT_Door = 0x1,
     OBJECT_Item = 0x2,
     OBJECT_Actor = 0x3,
     OBJECT_Player = 0x4,
     OBJECT_Decoration = 0x5,
-    OBJECT_BModel = 0x6,*/
+    OBJECT_Face = 0x6,*/
 
     if (pidtype != OBJECT_Item) {  // not an item
         // hit by monster

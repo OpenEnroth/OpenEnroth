@@ -369,7 +369,7 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
             if (pFace->Indoor_sky()) {
                 render->DrawIndoorSky(uNumVerticesa, uFaceID);
             } else {
-                render->DrawIndoorPolygon(uNumVerticesa, pFace, PID(OBJECT_BModel, uFaceID), ColourMask, 0);
+                render->DrawIndoorPolygon(uNumVerticesa, pFace, PID(OBJECT_Face, uFaceID), ColourMask, 0);
             }
 
             return;
@@ -1168,10 +1168,10 @@ void BLV_UpdateDoors() {
                 open_distance = door->uMoveLength;
                 door->uState = BLVDoor::Open;
                 if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0)
-                    pAudioPlayer->PlaySound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_BLVDoor, i), 0, -1, 0, 0);
+                    pAudioPlayer->PlaySound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_Door, i), 0, -1, 0, 0);
                 // goto LABEL_18;
             } else if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0) {
-                pAudioPlayer->PlaySound(eDoorSoundID, PID(OBJECT_BLVDoor, i), 1, -1, 0, 0);
+                pAudioPlayer->PlaySound(eDoorSoundID, PID(OBJECT_Door, i), 1, -1, 0, 0);
             }
         } else {  // door closing
             signed int v5 = (signed int)(door->uTimeSinceTriggered * door->uOpenSpeed) / 128;
@@ -1179,12 +1179,12 @@ void BLV_UpdateDoors() {
                 open_distance = 0;
                 door->uState = BLVDoor::Closed;
                 if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0)
-                    pAudioPlayer->PlaySound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_BLVDoor, i), 0, -1, 0, 0);
+                    pAudioPlayer->PlaySound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_Door, i), 0, -1, 0, 0);
                 // goto LABEL_18;
             } else {
                 open_distance = door->uMoveLength - v5;
                 if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0)
-                    pAudioPlayer->PlaySound(eDoorSoundID, PID(OBJECT_BLVDoor, i), 1, -1, 0, 0);
+                    pAudioPlayer->PlaySound(eDoorSoundID, PID(OBJECT_Door, i), 1, -1, 0, 0);
             }
         }
 
@@ -2302,7 +2302,7 @@ char DoInteractionWithTopmostZObject(int pid) {
             logger->Warning("Warning: Invalid ID reached!");
             return 1;
 
-        case OBJECT_BModel:
+        case OBJECT_Face:
             if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
                 int bmodel_id = pid >> 9;
                 int face_id = id & 0x3F;
@@ -2659,7 +2659,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             int len = integer_sqrt(party_dx * party_dx + party_dy * party_dy);
             party_dx = TrigLUT->Cos(angle) * len;
             party_dy = TrigLUT->Sin(angle) * len;
-        } else if (PID_TYPE(collision_state.pid) == OBJECT_BModel) {
+        } else if (PID_TYPE(collision_state.pid) == OBJECT_Face) {
             BLVFace *pFace = &pIndoor->pFaces[PID_ID(collision_state.pid)];
             if (pFace->uPolygonType == POLYGON_Floor) {
                 if (pParty->uFallSpeed < 0)

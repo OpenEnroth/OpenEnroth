@@ -1189,7 +1189,7 @@ void Game::EventLoop() {
                     if (v45 == OBJECT_Decoration) {
                         v48 = pLevelDecorations[v46].uEventID == 0;
                     } else {
-                        if (v45 != OBJECT_BModel) continue;
+                        if (v45 != OBJECT_Face) continue;
                         if (uCurrentlyLoadedLevelType != 1) {
                             pODMFace = &pOutdoor->pBModels[v44 >> 9].pFaces[v46 & 0x3F];
                             if (!pODMFace->Clickable() ||

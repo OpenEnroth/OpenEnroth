@@ -75,7 +75,7 @@ bool Chest::Open(int uChestID) {
                 pObjectZ = pLevelDecorations[v6].vPosition.z +
                     (pDecorationList->GetDecoration(pLevelDecorations[v6].uDecorationDescID)->uDecorationHeight / 2);
             }
-            if (PID_TYPE(EvtTargetObj) == OBJECT_BModel) {
+            if (PID_TYPE(EvtTargetObj) == OBJECT_Face) {
                 if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
                     pODMFace = &pOutdoor->pBModels[EvtTargetObj >> 9]
                                     .pFaces[(EvtTargetObj >> 3) & 0x3F];

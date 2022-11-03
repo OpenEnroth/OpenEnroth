@@ -284,7 +284,7 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
         ObjectType object_type = PID_TYPE(pid);
         unsigned int object_id = PID_ID(pid);
         switch (object_type) {
-            case OBJECT_BLVDoor: {
+            case OBJECT_Door: {
                 assert(uCurrentlyLoadedLevelType == LEVEL_Indoor);
                 assert((int)object_id < pIndoor->pDoors.size());
 
@@ -348,7 +348,7 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
                // return;
                 break;
             }
-            case OBJECT_BModel: {
+            case OBJECT_Face: {
                 si.sample->Play();
 
                 break;
