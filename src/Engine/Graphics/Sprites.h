@@ -44,7 +44,13 @@ class SpriteFrame {
     std::string icon_name;
     std::string texture_name;
 
+    /**
+     * @return                              Returns int to Index of palette stored in palette manager.
+     */
     int GetPaletteIndex();
+    /**
+     * @param index                         Index to set or default 0.
+     */
     void ResetPaletteIndex(int index = 0);
 
     Sprite* hw_sprites[8] {};
@@ -52,10 +58,9 @@ class SpriteFrame {
     int uFlags = 0;  // 128 for loaded - 1 for anim
     int uGlowRadius = 0;
     int uPaletteID = 0;
-    
     int uAnimTime = 0;
     int uAnimLength = 0;
-private:
+ private:
     int uPaletteIndex = 0;
 };
 
@@ -77,6 +82,9 @@ struct SpriteFrameTable {
     SpriteFrame *GetFrame(unsigned int uSpriteID, unsigned int uTime);
     SpriteFrame *GetFrameBy_x(unsigned int uSpriteID, signed int a3);
 
+    /**
+     * Resets the uPaletteIndex of all loaded pSpriteSFrames. Called by PaletteManager on reset.
+     */
     void ResetPaletteIndexes();
 
     int uNumSpriteFrames;
