@@ -374,7 +374,7 @@ void Engine::OnGameViewportClick() {
         } else {
             DecorationInteraction(id, pid);
         }
-    } else if (PID_TYPE(pid) == OBJECT_BModel && in_range) {
+    } else if (PID_TYPE(pid) == OBJECT_Face && in_range) {
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
             if (!pIndoor->pFaces[PID_ID(pid)].Clickable()) {
                 if (pParty->pPickedItem.uItemID == ITEM_NULL) {

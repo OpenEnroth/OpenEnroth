@@ -1064,7 +1064,7 @@ void GameUI_WritePointedObjectStatusString() {
                         GameUI_StatusBar_Set(hintString);
                     }
                 }  // intentional fallthrough
-            } else if (PID_TYPE(pickedObject.object_pid) == OBJECT_BModel) {
+            } else if (PID_TYPE(pickedObject.object_pid) == OBJECT_Face) {
                 if (pickedObject.depth < 0x200u) {
                     std::string newString;
                     if (uCurrentlyLoadedLevelType != LEVEL_Indoor) {

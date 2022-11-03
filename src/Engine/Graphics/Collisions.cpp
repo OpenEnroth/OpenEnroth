@@ -318,7 +318,7 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
             if (face_id == collision_state.ignored_face_id)
                 continue;
 
-            CollideBodyWithFace(face, PID(OBJECT_BModel, face_id), ignore_ethereal, MODEL_INDOOR);
+            CollideBodyWithFace(face, PID(OBJECT_Face, face_id), ignore_ethereal, MODEL_INDOOR);
         }
     }
 }
@@ -347,7 +347,7 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
             if (face.Ethereal() || face.Portal()) // TODO: this doesn't respect ignore_ethereal parameter
                 continue;
 
-            int pid = PID(OBJECT_BModel, (mface.index | (model.index << 6)));
+            int pid = PID(OBJECT_Face, (mface.index | (model.index << 6)));
             CollideBodyWithFace(&face, pid, ignore_ethereal, model.index);
         }
     }
@@ -637,7 +637,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
             continue;
         }
 
-        if (type == OBJECT_BModel) {
+        if (type == OBJECT_Face) {
             BLVFace *face = &pIndoor->pFaces[id];
 
             collision_state.ignored_face_id = PID_ID(collision_state.pid);

@@ -1216,7 +1216,7 @@ void sub_448CF4_spawn_monsters(int16_t typeindex, int16_t level, int count,
     pSpawnPoint.vPosition.z = z;
     pSpawnPoint.uGroup = group;
     pSpawnPoint.uRadius = 32;
-    pSpawnPoint.uKind = 3;
+    pSpawnPoint.uKind = OBJECT_Actor;
     pSpawnPoint.uMonsterIndex = typeindex + 2 * level + level;
     map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id) {

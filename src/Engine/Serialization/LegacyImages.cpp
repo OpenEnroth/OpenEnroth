@@ -1523,12 +1523,12 @@ void Deserialize(const ODMFace_MM7 &src, ODMFace *dst) {
 void Deserialize(const SpawnPoint_MM7 &src, SpawnPoint *dst) {
     dst->vPosition = src.vPosition;
     dst->uRadius = src.uRadius;
-    dst->uKind = src.uKind;
-    if (src.uKind == 3) {
+    dst->uKind = ObjectType(src.uKind);
+    if (dst->uKind == OBJECT_Actor) {
         dst->uItemIndex = ITEM_TREASURE_LEVEL_INVALID;
         dst->uMonsterIndex = src.uIndex;
     } else {
-        Assert(src.uKind == 2);
+        Assert(dst->uKind == OBJECT_Item);
         dst->uItemIndex = ITEM_TREASURE_LEVEL(src.uIndex);
         dst->uMonsterIndex = 0;
     }

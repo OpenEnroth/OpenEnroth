@@ -2300,7 +2300,7 @@ void Render::DrawIndoorFaces() {
                     if (pFace->Indoor_sky()) {
                         render->DrawIndoorSky(uNumVerticesa, uFaceID);
                     } else {
-                        render->DrawIndoorPolygon(uNumVerticesa, pFace, PID(OBJECT_BModel, uFaceID), ColourMask, 0);
+                        render->DrawIndoorPolygon(uNumVerticesa, pFace, PID(OBJECT_Face, uFaceID), ColourMask, 0);
                     }
                 }
             }
@@ -3703,7 +3703,7 @@ void Render::DrawBuildingsD3D() {
                 face.bVisible = 1;
                 poly->uBModelFaceID = face.index;
                 poly->uBModelID = model.index;
-                poly->pid = PID(OBJECT_BModel, (face.index | (model.index << 6)));
+                poly->pid = PID(OBJECT_Face, (face.index | (model.index << 6)));
                 for (int vertex_id = 0; vertex_id < face.uNumVertices;
                      ++vertex_id) {
                     VertexRenderList[vertex_id] = array_73D150[vertex_id];
@@ -4329,7 +4329,7 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {
             array_507D30[i].u = (v69 + array_507D30[i].u) * 0.25f;
             array_507D30[i].v = (v55 + array_507D30[i].v) * 0.25f;
         }
-        render->DrawIndoorPolygon(uNumVertices, pFace, PID(OBJECT_BModel, uFaceID), -1, 0);
+        render->DrawIndoorPolygon(uNumVertices, pFace, PID(OBJECT_Face, uFaceID), -1, 0);
         return;
     }
     //---------------------------------------

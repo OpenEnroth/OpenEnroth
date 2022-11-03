@@ -2716,7 +2716,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         activeLevelDecoration = nullptr;
                     }
                 }
-                if (PID_TYPE(spell_targeted_at) == OBJECT_BModel) {
+                if (PID_TYPE(spell_targeted_at) == OBJECT_Face) {
                     OpenedTelekinesis = true;
                     if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
                         v448 = pIndoor

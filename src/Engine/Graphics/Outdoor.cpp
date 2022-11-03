@@ -2004,7 +2004,7 @@ void ODM_ProcessPartyActions() {
     //*****************************************
     // установить на чём стоит группа
     if (!hovering) {  // не в воздухе
-        if (pParty->floor_face_pid != PID(OBJECT_BModel, bmodel_standing_on_pid) && bmodel_standing_on_pid) {
+        if (pParty->floor_face_pid != PID(OBJECT_Face, bmodel_standing_on_pid) && bmodel_standing_on_pid) {
             int BModel_id = bmodel_standing_on_pid >> 6;
             if (BModel_id < pOutdoor->pBModels.size()) {
                 int face_id = bmodel_standing_on_pid & 0x3F;
@@ -2014,7 +2014,7 @@ void ODM_ProcessPartyActions() {
                 }
             }
         }
-        pParty->floor_face_pid = PID(OBJECT_BModel, bmodel_standing_on_pid);  // 6 - на земле
+        pParty->floor_face_pid = PID(OBJECT_Face, bmodel_standing_on_pid);  // 6 - на земле
     }
     //***********************************************
     _walk_speed = pParty->uWalkSpeed;
@@ -2492,7 +2492,7 @@ void ODM_ProcessPartyActions() {
             v128 = TrigLUT->Sin(v129) * integer_sqrt(v2 * v2 + v128 * v128);
         }
 
-        if (PID_TYPE(collision_state.pid) == OBJECT_BModel) {
+        if (PID_TYPE(collision_state.pid) == OBJECT_Face) {
             pParty->bFlying = false;
             pModel = &pOutdoor->pBModels[(signed int)collision_state.pid >> 9];
             pODMFace = &pModel->pFaces[((signed int)collision_state.pid >> 3) & 0x3F];
@@ -3124,7 +3124,7 @@ void UpdateActors_ODM() {
                     pActors[Actor_ITR].vVelocity.y =
                         TrigLUT->Sin(Angle_To_Decor) * Coll_Speed;
                     break;
-                case OBJECT_BModel: {
+                case OBJECT_Face: {
                     ODMFace * face = &pOutdoor->pBModels[collision_state.pid >> 9]
                                 .pFaces[v39 & 0x3F];
                     if (!face->Ethereal()) {
@@ -3285,7 +3285,7 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
         for (uint i = 0; i < pOutdoor->pSpawnPoints.size(); ++i) {
             SpawnPoint *spawn = &pOutdoor->pSpawnPoints[i];
 
-            if (spawn->IsMonsterSpawn())
+            if (spawn->uKind == OBJECT_Actor)
                 SpawnEncounter(map_info, spawn, 0, 0, 0);
             else
                 map_info->SpawnRandomTreasure(spawn);

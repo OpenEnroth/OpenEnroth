@@ -377,7 +377,7 @@ LABEL_13:
                     return;
             }
             if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) break;
-            if (PID_TYPE(collision_state.pid) == OBJECT_BModel) {
+            if (PID_TYPE(collision_state.pid) == OBJECT_Face) {
                 bmodel = &pOutdoor->pBModels[(signed int)collision_state.pid >> 9];
                 face = &bmodel->pFaces[PID_ID(collision_state.pid) & 0x3F];
                 if (face->uPolygonType == POLYGON_Floor) {
@@ -598,7 +598,7 @@ LABEL_25:
                 pSpriteObject->vVelocity.x = TrigLUT->Cos(v23) * v40;
                 pSpriteObject->vVelocity.y = TrigLUT->Sin(v23) * v40;
             }
-            if (PID_TYPE(collision_state.pid) == OBJECT_BModel) {
+            if (PID_TYPE(collision_state.pid) == OBJECT_Face) {
                 collision_state.ignored_face_id = PID_ID(collision_state.pid);
                 if (pIndoor->pFaces[v15].uPolygonType != POLYGON_Floor) {
                     floor_lvl = abs(pIndoor->pFaces[v15].pFacePlane_old.vNormal.x *
@@ -1007,7 +1007,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
             pSpriteObjects[uLayingItemID].uAttributes &= ~SPRITE_HALT_TURN_BASED;
         }
     }
-    if (PID_TYPE(pid) == OBJECT_BModel &&
+    if (PID_TYPE(pid) == OBJECT_Face &&
         PID_TYPE(pSpriteObjects[uLayingItemID].spell_caster_pid) != OBJECT_Player) {
         if (PID_ID(pSpriteObjects[uLayingItemID].spell_caster_pid) < 500)  // bugfix  PID_ID(v2->spell_caster_pid)==1000
             pActors[PID_ID(pSpriteObjects[uLayingItemID].spell_caster_pid)].uAttributes |= ACTOR_UNKNOW5;
@@ -1017,9 +1017,9 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
         case SPRITE_SPELL_FIRE_FIRE_SPIKE:
         case SPRITE_SPELL_AIR_SPARKS:
         case SPRITE_SPELL_DARK_TOXIC_CLOUD: {
-            if (PID_TYPE(pid) == OBJECT_BModel
+            if (PID_TYPE(pid) == OBJECT_Face
                 || PID_TYPE(pid) == OBJECT_Decoration
-                || PID_TYPE(pid) == OBJECT_Any) {
+                || PID_TYPE(pid) == OBJECT_None) {
                 return 1;
             }
             if (PID_TYPE(pid) != OBJECT_Item) {
@@ -1270,7 +1270,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
         }
 
         case SPRITE_SPELL_EARTH_ROCK_BLAST: {
-            if (PID_TYPE(pid) == OBJECT_BModel || PID_TYPE(pid) == OBJECT_Decoration || PID_TYPE(pid) == OBJECT_Any) {
+            if (PID_TYPE(pid) == OBJECT_Face || PID_TYPE(pid) == OBJECT_Decoration || PID_TYPE(pid) == OBJECT_None) {
                 return 1;
             }
             pSpriteObjects[uLayingItemID].uType = SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT;

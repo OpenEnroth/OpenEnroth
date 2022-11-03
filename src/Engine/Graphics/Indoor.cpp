@@ -369,7 +369,7 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
             if (pFace->Indoor_sky()) {
                 render->DrawIndoorSky(uNumVerticesa, uFaceID);
             } else {
-                render->DrawIndoorPolygon(uNumVerticesa, pFace, PID(OBJECT_BModel, uFaceID), ColourMask, 0);
+                render->DrawIndoorPolygon(uNumVerticesa, pFace, PID(OBJECT_Face, uFaceID), ColourMask, 0);
             }
 
             return;
@@ -1168,10 +1168,10 @@ void BLV_UpdateDoors() {
                 open_distance = door->uMoveLength;
                 door->uState = BLVDoor::Open;
                 if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0)
-                    pAudioPlayer->PlaySound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_BLVDoor, i), 0, -1, 0, 0);
+                    pAudioPlayer->PlaySound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_Door, i), 0, -1, 0, 0);
                 // goto LABEL_18;
             } else if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0) {
-                pAudioPlayer->PlaySound(eDoorSoundID, PID(OBJECT_BLVDoor, i), 1, -1, 0, 0);
+                pAudioPlayer->PlaySound(eDoorSoundID, PID(OBJECT_Door, i), 1, -1, 0, 0);
             }
         } else {  // door closing
             signed int v5 = (signed int)(door->uTimeSinceTriggered * door->uOpenSpeed) / 128;
@@ -1179,12 +1179,12 @@ void BLV_UpdateDoors() {
                 open_distance = 0;
                 door->uState = BLVDoor::Closed;
                 if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0)
-                    pAudioPlayer->PlaySound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_BLVDoor, i), 0, -1, 0, 0);
+                    pAudioPlayer->PlaySound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_Door, i), 0, -1, 0, 0);
                 // goto LABEL_18;
             } else {
                 open_distance = door->uMoveLength - v5;
                 if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0)
-                    pAudioPlayer->PlaySound(eDoorSoundID, PID(OBJECT_BLVDoor, i), 1, -1, 0, 0);
+                    pAudioPlayer->PlaySound(eDoorSoundID, PID(OBJECT_Door, i), 1, -1, 0, 0);
             }
         }
 
@@ -1443,7 +1443,7 @@ void PrepareToLoadBLV(bool bLoading) {
     v4 = pIndoor->Load(pCurrentMapName, pParty->GetPlayingTime().GetDays() + 1,
                        respawn_interval, (char *)&pDest) - 1;
     if (v4 == 0) Error("Unable to open %s", pCurrentMapName.c_str());
-    if (v4 == 1) Error("File %s is not a BLV File", pCurrentMapName.c_str()); // TODO: these checks never trigger.
+    if (v4 == 1) Error("File %s is not a BLV File", pCurrentMapName.c_str()); // TODO(captainurist): these checks never trigger.
     if (v4 == 2) Error("Attempt to open new level before clearing old");
     if (v4 == 3) Error("Out of memory loading indoor level");
     if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)) {
@@ -1457,7 +1457,7 @@ void PrepareToLoadBLV(bool bLoading) {
     if (pDest == 1) {
         for (uint i = 0; i < pIndoor->pSpawnPoints.size(); ++i) {
             auto spawn = &pIndoor->pSpawnPoints[i];
-            if (spawn->IsMonsterSpawn())
+            if (spawn->uKind == OBJECT_Actor)
                 SpawnEncounter(map_info, spawn, 0, 0, 0);
             else
                 map_info->SpawnRandomTreasure(spawn);
@@ -2302,7 +2302,7 @@ char DoInteractionWithTopmostZObject(int pid) {
             logger->Warning("Warning: Invalid ID reached!");
             return 1;
 
-        case OBJECT_BModel:
+        case OBJECT_Face:
             if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
                 int bmodel_id = pid >> 9;
                 int face_id = id & 0x3F;
@@ -2659,7 +2659,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             int len = integer_sqrt(party_dx * party_dx + party_dy * party_dy);
             party_dx = TrigLUT->Cos(angle) * len;
             party_dy = TrigLUT->Sin(angle) * len;
-        } else if (PID_TYPE(collision_state.pid) == OBJECT_BModel) {
+        } else if (PID_TYPE(collision_state.pid) == OBJECT_Face) {
             BLVFace *pFace = &pIndoor->pFaces[PID_ID(collision_state.pid)];
             if (pFace->uPolygonType == POLYGON_Floor) {
                 if (pParty->uFallSpeed < 0)
@@ -2914,7 +2914,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
             enc_spawn_point.vPosition.x = pParty->vPosition.x + cos(angle_from_party) * dist_from_party;
             enc_spawn_point.vPosition.y = pParty->vPosition.y + sin(angle_from_party) * dist_from_party;
             enc_spawn_point.vPosition.z = pParty->vPosition.z;
-            enc_spawn_point.uKind = 3;
+            enc_spawn_point.uKind = OBJECT_Actor;
             enc_spawn_point.uMonsterIndex = enc_index;
 
             // get proposed floor level
@@ -2951,7 +2951,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
             enc_spawn_point.vPosition.x = pParty->vPosition.x + cos(angle_from_party) * dist_from_party;
             enc_spawn_point.vPosition.y = pParty->vPosition.y + sin(angle_from_party) * dist_from_party;
             enc_spawn_point.vPosition.z = pParty->vPosition.z;
-            enc_spawn_point.uKind = 3;
+            enc_spawn_point.uKind = OBJECT_Actor;
             enc_spawn_point.uMonsterIndex = enc_index;
 
             // get proposed sector

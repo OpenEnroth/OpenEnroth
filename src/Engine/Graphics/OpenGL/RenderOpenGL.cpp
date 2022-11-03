@@ -1216,7 +1216,7 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID
             array_507D30[i].u = (v69 + array_507D30[i].u) * 0.25f;
             array_507D30[i].v = (v55 + array_507D30[i].v) * 0.25f;
         }
-        render->DrawIndoorPolygon(uNumVertices, pFace, PID(OBJECT_BModel, uFaceID), -1, 0);
+        render->DrawIndoorPolygon(uNumVertices, pFace, PID(OBJECT_Face, uFaceID), -1, 0);
         return;
     }
     //---------------------------------------
@@ -4539,7 +4539,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
                 poly->uBModelFaceID = face.index;
                 poly->uBModelID = model.index;
                 poly->pid =
-                    PID(OBJECT_BModel, (face.index | (model.index << 6)));
+                    PID(OBJECT_Face, (face.index | (model.index << 6)));
 
                 static stru154 static_RenderBuildingsD3D_stru_73C834;
 
