@@ -1443,7 +1443,7 @@ void PrepareToLoadBLV(bool bLoading) {
     v4 = pIndoor->Load(pCurrentMapName, pParty->GetPlayingTime().GetDays() + 1,
                        respawn_interval, (char *)&pDest) - 1;
     if (v4 == 0) Error("Unable to open %s", pCurrentMapName.c_str());
-    if (v4 == 1) Error("File %s is not a BLV File", pCurrentMapName.c_str()); // TODO: these checks never trigger.
+    if (v4 == 1) Error("File %s is not a BLV File", pCurrentMapName.c_str()); // TODO(captainurist): these checks never trigger.
     if (v4 == 2) Error("Attempt to open new level before clearing old");
     if (v4 == 3) Error("Out of memory loading indoor level");
     if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)) {
