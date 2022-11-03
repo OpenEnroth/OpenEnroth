@@ -4859,7 +4859,7 @@ void Spawn_Light_Elemental(int spell_power, int caster_skill_level, int duration
 void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5) {
     // a3 for abc modify
     // a4 count
-    Assert(spawn->IsMonsterSpawn());
+    Assert(spawn->uKind == OBJECT_Actor);
 
     int v7;                // eax@2
     char v8;               // zf@5

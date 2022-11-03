@@ -240,7 +240,7 @@ MAP_TYPE MapStats::GetMapInfo(const std::string &Str2) {
 }
 
 void MapInfo::SpawnRandomTreasure(SpawnPoint *a2) {
-    Assert(a2->IsTreasureSpawn());
+    Assert(a2->uKind == OBJECT_Item);
 
     SpriteObject a1a;
     a1a.containing_item.Reset();

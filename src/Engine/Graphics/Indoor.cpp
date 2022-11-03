@@ -1457,7 +1457,7 @@ void PrepareToLoadBLV(bool bLoading) {
     if (pDest == 1) {
         for (uint i = 0; i < pIndoor->pSpawnPoints.size(); ++i) {
             auto spawn = &pIndoor->pSpawnPoints[i];
-            if (spawn->IsMonsterSpawn())
+            if (spawn->uKind == OBJECT_Actor)
                 SpawnEncounter(map_info, spawn, 0, 0, 0);
             else
                 map_info->SpawnRandomTreasure(spawn);
@@ -2914,7 +2914,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
             enc_spawn_point.vPosition.x = pParty->vPosition.x + cos(angle_from_party) * dist_from_party;
             enc_spawn_point.vPosition.y = pParty->vPosition.y + sin(angle_from_party) * dist_from_party;
             enc_spawn_point.vPosition.z = pParty->vPosition.z;
-            enc_spawn_point.uKind = 3;
+            enc_spawn_point.uKind = OBJECT_Actor;
             enc_spawn_point.uMonsterIndex = enc_index;
 
             // get proposed floor level
@@ -2951,7 +2951,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
             enc_spawn_point.vPosition.x = pParty->vPosition.x + cos(angle_from_party) * dist_from_party;
             enc_spawn_point.vPosition.y = pParty->vPosition.y + sin(angle_from_party) * dist_from_party;
             enc_spawn_point.vPosition.z = pParty->vPosition.z;
-            enc_spawn_point.uKind = 3;
+            enc_spawn_point.uKind = OBJECT_Actor;
             enc_spawn_point.uMonsterIndex = enc_index;
 
             // get proposed sector
