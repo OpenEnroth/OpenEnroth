@@ -2117,8 +2117,9 @@ int16_t _441A4E_overlay_on_portrait(int a1) {  // for blessing
                             pOtherOverlayList->pOverlays[i].screen_space_y;
                         v10.screenspace_projection_factor_x = v11 * pFrame->scale;
                         v10.screenspace_projection_factor_y = v11 * pFrame->scale;
-                        v10.pPalette = PaletteManager::Get_Dark_or_Red_LUT(
-                            pFrame->uPaletteIndex, 0, 1);
+                        // TODO (pskelton): what is this?
+                        v10.pPalette = 0; /*PaletteManager::Get_Dark_or_Red_LUT(
+                            pFrame->uPaletteIndex, 0, 1);*/
                         v8 = pOtherOverlayList->pOverlays[i].field_2;
                         v10.screen_space_z = 0;
                         v10.object_pid = 0;

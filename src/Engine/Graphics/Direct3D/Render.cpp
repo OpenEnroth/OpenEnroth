@@ -907,7 +907,7 @@ void Render::PrepareDecorationsRenderList_ODM() {
                                 pBillboardRenderList[::uNumBillboardsToDraw - 1]
                                     .screenspace_projection_factor_y = _v41;
                                 pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .uPalette = frame->uPaletteIndex;
+                                    .uPaletteIndex = frame->GetPaletteIndex();
                                 pBillboardRenderList[::uNumBillboardsToDraw - 1]
                                     .field_1E = v38 | 0x200;
                                 pBillboardRenderList[::uNumBillboardsToDraw - 1]

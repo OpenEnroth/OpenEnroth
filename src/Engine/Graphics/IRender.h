@@ -35,7 +35,7 @@ struct RenderBillboard {
     float fov_y;
     int field_14_actor_id;
     Sprite *hwsprite;  // int16_t HwSpriteID;
-    int16_t uPalette;
+    int16_t uPaletteIndex;
     int16_t uIndoorSectorID;
     int16_t field_1E;  // flags
     int16_t world_x;
@@ -125,7 +125,6 @@ struct RenderBillboardD3D {
           object_pid(0),
           screen_space_z(0),
           sParentBillboardID(-1),
-          PaletteID(0),
           PaletteIndex(0) {}
 
     enum class OpacityType : uint32_t {
@@ -148,7 +147,7 @@ struct RenderBillboardD3D {
     short screen_space_z;
     int sParentBillboardID;
 
-    int PaletteID;
+    //int PaletteID;
     int PaletteIndex;
 };
 

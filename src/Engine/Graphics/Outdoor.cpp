@@ -850,22 +850,22 @@ void OutdoorLocation::Release() {
 bool OutdoorLocation::Load(const std::string &filename, int days_played,
                            int respawn_interval_days,
                            bool *outdoors_was_respawned) {
-    if (engine->IsUnderwater()) {
-        pPaletteManager->pPalette_tintColor[0] = 0x10;
-        pPaletteManager->pPalette_tintColor[1] = 0xC2;
-        pPaletteManager->pPalette_tintColor[2] = 0x99;
-        pPaletteManager->SetMistColor(37, 143, 92);
-    } else {
-        pPaletteManager->pPalette_tintColor[0] = 0;
-        pPaletteManager->pPalette_tintColor[1] = 0;
-        pPaletteManager->pPalette_tintColor[2] = 0;
-        if (pPaletteManager->pPalette_mistColor[0] != 128 ||
-            pPaletteManager->pPalette_mistColor[1] != 128 ||
-            pPaletteManager->pPalette_mistColor[2] != 128) {
-            pPaletteManager->SetMistColor(128, 128, 128);
-            pPaletteManager->RecalculateAll();
-        }
-    }
+    //if (engine->IsUnderwater()) {
+    //    pPaletteManager->pPalette_tintColor[0] = 0x10;
+    //    pPaletteManager->pPalette_tintColor[1] = 0xC2;
+    //    pPaletteManager->pPalette_tintColor[2] = 0x99;
+    //    pPaletteManager->SetMistColor(37, 143, 92);
+    //} else {
+    //    pPaletteManager->pPalette_tintColor[0] = 0;
+    //    pPaletteManager->pPalette_tintColor[1] = 0;
+    //    pPaletteManager->pPalette_tintColor[2] = 0;
+    //    if (pPaletteManager->pPalette_mistColor[0] != 128 ||
+    //        pPaletteManager->pPalette_mistColor[1] != 128 ||
+    //        pPaletteManager->pPalette_mistColor[2] != 128) {
+    //        pPaletteManager->SetMistColor(128, 128, 128);
+    //        //pPaletteManager->RecalculateAll();
+    //    }
+    //}
 
     _6807E0_num_decorations_with_sounds_6807B8 = 0;
 
@@ -1102,7 +1102,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
     this->sky_texture = assets->GetBitmap(loc_time.sky_texture_name);
 
-    pPaletteManager->RecalculateAll();
+    //pPaletteManager->RecalculateAll();
     //    pSoundList->LoadSound(SOUND_RunDirt, 0);  //For Dirt
     //    tyle(для звука хождения по грязи)
     //    pSoundList->LoadSound(SOUND_WalkDirt, 0);  //для
@@ -1616,7 +1616,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
                         pActors[i].uAttributes |= ACTOR_VISIBLE;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = frame->hw_sprites[Sprite_Octant];
                         pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pActors[i].uSectorID;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = frame->uPaletteIndex;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].uPaletteIndex = frame->GetPaletteIndex();
 
                         pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = proj_scale;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = proj_scale;

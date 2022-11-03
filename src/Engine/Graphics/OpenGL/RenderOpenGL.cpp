@@ -1018,7 +1018,7 @@ void RenderOpenGL::DrawMonsterPortrait(Rect rc, SpriteFrame *Portrait, int Y_Off
     rct.w = rct.y + Portrait->hw_sprites[0]->uAreaHeight;
 
     render->SetUIClipRect(rc.x, rc.y, rc.z, rc.w);
-    render->DrawImage(Portrait->hw_sprites[0]->texture, rct, Portrait->uPaletteIndex);
+    render->DrawImage(Portrait->hw_sprites[0]->texture, rct, Portrait->GetPaletteIndex());
     render->ResetUIClipRect();
 }
 
@@ -1799,7 +1799,7 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].screen_space_z = view_x;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].screenspace_projection_factor_x = _v41;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].screenspace_projection_factor_y = _v41;
-                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].uPalette = frame->uPaletteIndex;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].uPaletteIndex = frame->GetPaletteIndex();
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].field_1E = v38 | 0x200;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Decoration, i);
@@ -3026,8 +3026,8 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         //    }
         //}
 
-        int palette{ pBillboardRenderListD3D[i].PaletteID};
-        int paletteindex{ palette/*pPaletteManager->GetPaletteIndex(palette)*/ };
+        //int palette{ pBillboardRenderListD3D[i].PaletteID};
+        int paletteindex{ pBillboardRenderListD3D[i].PaletteIndex };
 
         if (engine->config->graphics.HWLSprites.Get())
             paletteindex = 0;
@@ -3202,14 +3202,14 @@ void RenderOpenGL::DrawBillboards() {
         // generate palette buffer texture
         glGenBuffers(1, &palbuf);
         glBindBuffer(GL_TEXTURE_BUFFER, palbuf);
-        glBufferData(GL_TEXTURE_BUFFER, sizeof(pPaletteManager->p32ARGBpalette), pPaletteManager->p32ARGBpalette, GL_STATIC_DRAW);
+        glBufferData(GL_TEXTURE_BUFFER, pPaletteManager->GetGLPaletteSize(), pPaletteManager->GetGLPalettePtr(), GL_STATIC_DRAW);
 
         glGenTextures(1, &paltex);
         glBindTexture(GL_TEXTURE_BUFFER, paltex);
         glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
         glBindBuffer(GL_TEXTURE_BUFFER, 0);
 
-        pPaletteManager->palettestorechanged = false;
+        pPaletteManager->GLPaletteReset();
     }
 
     // update buffer
@@ -3217,11 +3217,11 @@ void RenderOpenGL::DrawBillboards() {
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(billbverts) * billbstorecnt, billbstore);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    if (pPaletteManager->palettestorechanged) {
+    if (pPaletteManager->GetGLPaletteNeedsUpdate()) {
         glBindBuffer(GL_TEXTURE_BUFFER, palbuf);
-        glBufferData(GL_TEXTURE_BUFFER, sizeof(pPaletteManager->p32ARGBpalette), pPaletteManager->p32ARGBpalette, GL_STATIC_DRAW);
+        glBufferData(GL_TEXTURE_BUFFER, pPaletteManager->GetGLPaletteSize(), pPaletteManager->GetGLPalettePtr(), GL_STATIC_DRAW);
         glBindBuffer(GL_TEXTURE_BUFFER, 0);
-        pPaletteManager->palettestorechanged = false;
+        pPaletteManager->GLPaletteReset();
     }
 
     glBindVertexArray(billbVAO);
@@ -5690,14 +5690,14 @@ void RenderOpenGL::DrawTwodVerts() {
         // generate palette buffer texture
         glGenBuffers(1, &palbuf);
         glBindBuffer(GL_TEXTURE_BUFFER, palbuf);
-        glBufferData(GL_TEXTURE_BUFFER, sizeof(pPaletteManager->p32ARGBpalette), pPaletteManager->p32ARGBpalette, GL_STATIC_DRAW);
+        glBufferData(GL_TEXTURE_BUFFER, pPaletteManager->GetGLPaletteSize(), pPaletteManager->GetGLPalettePtr(), GL_STATIC_DRAW);
 
         glGenTextures(1, &paltex);
         glBindTexture(GL_TEXTURE_BUFFER, paltex);
         glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
         glBindBuffer(GL_TEXTURE_BUFFER, 0);
 
-        pPaletteManager->palettestorechanged = false;
+        pPaletteManager->GLPaletteReset();
     }
 
     // update buffer
@@ -5705,11 +5705,11 @@ void RenderOpenGL::DrawTwodVerts() {
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(twodverts) * twodvertscnt, twodshaderstore);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    if (pPaletteManager->palettestorechanged) {
+    if (pPaletteManager->GetGLPaletteNeedsUpdate()) {
         glBindBuffer(GL_TEXTURE_BUFFER, palbuf);
-        glBufferData(GL_TEXTURE_BUFFER, sizeof(pPaletteManager->p32ARGBpalette), pPaletteManager->p32ARGBpalette, GL_STATIC_DRAW);
+        glBufferData(GL_TEXTURE_BUFFER, pPaletteManager->GetGLPaletteSize(), pPaletteManager->GetGLPalettePtr(), GL_STATIC_DRAW);
         glBindBuffer(GL_TEXTURE_BUFFER, 0);
-        pPaletteManager->palettestorechanged = false;
+        pPaletteManager->GLPaletteReset();
     }
 
     glBindVertexArray(twodVAO);

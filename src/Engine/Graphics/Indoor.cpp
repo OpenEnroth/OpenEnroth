@@ -1423,10 +1423,10 @@ void PrepareToLoadBLV(bool bLoading) {
     if ((pCurrentMapName == "out15.odm") || (pCurrentMapName == "d23.blv")) {
         bNoNPCHiring = true;
     }
-    pPaletteManager->pPalette_tintColor[0] = 0;
-    pPaletteManager->pPalette_tintColor[1] = 0;
-    pPaletteManager->pPalette_tintColor[2] = 0;
-    pPaletteManager->RecalculateAll();
+    //pPaletteManager->pPalette_tintColor[0] = 0;
+    //pPaletteManager->pPalette_tintColor[1] = 0;
+    //pPaletteManager->pPalette_tintColor[2] = 0;
+    //pPaletteManager->RecalculateAll();
     if (_A750D8_player_speech_timer)
         _A750D8_player_speech_timer = 0;
     map_id = pMapStats->GetMapInfo(pCurrentMapName);
@@ -1797,8 +1797,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
                     if (v11->hw_sprites[v9]->texture->GetHeight() == 0 || v11->hw_sprites[v9]->texture->GetWidth() == 0)
                         __debugbreak();
 
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette =
-                        v11->uPaletteIndex;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].uPaletteIndex = v11->GetPaletteIndex();
                     pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID =
                         uSectorID;
 

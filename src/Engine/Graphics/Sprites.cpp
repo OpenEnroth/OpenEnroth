@@ -72,7 +72,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                 pSpriteSFrames[iter_uSpriteID].uFlags |= 0x80;  // set loaded
 
                 while (1) {
-                    pSpriteSFrames[iter_uSpriteID].uPaletteIndex = pPaletteManager->LoadPalette(pSpriteSFrames[iter_uSpriteID].uPaletteID);
+                    pSpriteSFrames[iter_uSpriteID].ResetPaletteIndex(pPaletteManager->LoadPalette(pSpriteSFrames[iter_uSpriteID].uPaletteID));
 
                     if (uFlags & 0x10) {  // single frame per frame sequence
                         auto v8 = pSprites_LOD->LoadSprite(pSpriteSFrames[iter_uSpriteID].texture_name.c_str(), pSpriteSFrames[iter_uSpriteID].uPaletteID);
@@ -324,6 +324,13 @@ SpriteFrame *SpriteFrameTable::GetFrameBy_x(unsigned int uSpriteID,
     return result;
 }
 
+// new
+void SpriteFrameTable::ResetPaletteIndexes() {
+    for (int i = 0; i < this->uNumSpriteFrames; i++  ) {
+        this->pSpriteSFrames[i].ResetPaletteIndex();
+    }
+}
+
 void SpriteFrameTable::ToFile() {
     FILE *file = fopen(MakeDataPath("data", "dsft.bin").c_str(), "wb");
     if (file == nullptr) {
@@ -477,4 +484,17 @@ SpriteFrame *LevelDecorationChangeSeason(const DecorationDesc *desc, int t, int 
     }
     logger->Warning("No sprite returned - LevelDecorationChangeSeason!");
     return nullptr;
+}
+
+int SpriteFrame::GetPaletteIndex() {
+    if (!engine->config->graphics.HWLSprites.Get()) {
+        if (this->uPaletteIndex == 0)
+            this->uPaletteIndex = pPaletteManager->LoadPalette(this->uPaletteID);
+        return this->uPaletteIndex;
+    }
+    return 0;
+}
+
+void SpriteFrame::ResetPaletteIndex(int index) {
+    this->uPaletteIndex = index;
 }

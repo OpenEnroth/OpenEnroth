@@ -211,7 +211,7 @@ void RenderBase::DrawSpriteObjects() {
                         projected_x - screen_space_half_width <= (signed int)pViewport->uViewportBR_X) {
                         if (projected_y >= pViewport->uViewportTL_Y && (projected_y - screen_space_height) <= pViewport->uViewportBR_Y) {
                             object->uAttributes |= SPRITE_VISIBLE;
-                            pBillboardRenderList[::uNumBillboardsToDraw].uPalette = frame->uPaletteIndex;
+                            pBillboardRenderList[::uNumBillboardsToDraw].uPaletteIndex = frame->GetPaletteIndex();
                             pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = object->uSectorID;
                             pBillboardRenderList[::uNumBillboardsToDraw].pSpriteFrame = frame;
 
@@ -381,7 +381,7 @@ void RenderBase::TransformBillboard(SoftwareBillboard *pSoftBillboard, RenderBil
     billboard->screen_space_z = pSoftBillboard->screen_space_z;
     billboard->object_pid = pSoftBillboard->object_pid;
     billboard->sParentBillboardID = pSoftBillboard->sParentBillboardID;
-    billboard->PaletteID = pBillboard->uPalette;
+    billboard->PaletteIndex = pBillboard->uPaletteIndex;
 }
 
 double fix2double(int fix) {
@@ -403,7 +403,7 @@ void RenderBase::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
     billboard->texture = texture;
     billboard->z_order = a2->screen_space_z;
     billboard->uNumVertices = 4;
-    billboard->PaletteID = 0;
+    billboard->PaletteIndex = 0;
 
     float screenspace_projection_factor = a2->screenspace_projection_factor_x;
 

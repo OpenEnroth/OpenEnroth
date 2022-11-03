@@ -44,14 +44,19 @@ class SpriteFrame {
     std::string icon_name;
     std::string texture_name;
 
+    int GetPaletteIndex();
+    void ResetPaletteIndex(int index = 0);
+
     Sprite* hw_sprites[8] {};
     float scale = 1.0;
     int uFlags = 0;  // 128 for loaded - 1 for anim
     int uGlowRadius = 0;
     int uPaletteID = 0;
-    int uPaletteIndex = 0;
+    
     int uAnimTime = 0;
     int uAnimLength = 0;
+private:
+    int uPaletteIndex = 0;
 };
 
 #pragma pack(push, 1)
@@ -71,6 +76,8 @@ struct SpriteFrameTable {
     int BinarySearch(std::string_view pSpriteName);
     SpriteFrame *GetFrame(unsigned int uSpriteID, unsigned int uTime);
     SpriteFrame *GetFrameBy_x(unsigned int uSpriteID, signed int a3);
+
+    void ResetPaletteIndexes();
 
     int uNumSpriteFrames;
     unsigned int uNumEFrames = 0;      // field_4;
