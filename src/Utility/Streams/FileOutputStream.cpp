@@ -4,7 +4,7 @@
 #include <system_error>
 
 FileOutputStream::FileOutputStream(const std::string &path) : path_(path) {
-    file_ = fopen(path_.c_str(), "rb");
+    file_ = fopen(path_.c_str(), "wb");
     if (!file_)
         ThrowFromErrno();
 }
