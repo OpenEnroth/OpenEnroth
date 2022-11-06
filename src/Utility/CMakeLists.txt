@@ -29,6 +29,15 @@ add_library(utility STATIC ${UTILITY_SOURCES} ${UTILITY_HEADERS})
 target_check_style(utility)
 
 if(ENABLE_TESTS)
-    add_subdirectory(Tests)
-    add_subdirectory(Streams/Tests)
+    set(TEST_UTILITY_SOURCES Tests/IndexedArray_ut.cpp
+                             Tests/Segment_ut.cpp
+                             Streams/Tests/FileOutputStream_ut.cpp)
+
+    add_library(test_utility OBJECT ${TEST_UTILITY_SOURCES})
+    target_compile_definitions(test_utility PRIVATE TESTGROUP=Utility)
+    target_link_libraries(test_utility utility)
+
+    target_check_style(test_utility)
+
+    target_link_libraries(World_of_Might_and_Magic_test test_utility)
 endif()
