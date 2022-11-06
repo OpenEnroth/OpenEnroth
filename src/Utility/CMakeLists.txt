@@ -30,4 +30,5 @@ target_check_style(utility)
 
 if(ENABLE_TESTS)
     add_subdirectory(Tests)
+    add_subdirectory(Streams/Tests)
 endif()
