@@ -4937,6 +4937,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                             for (int z = 0; z < (face->uNumVertices - 2); z++) {
                                 // 123, 134, 145, 156..
                                 GLshaderverts *thisvert = &BSPshaderstore[texunit][numBSPverts[texunit]];
+                                if (!thisvert) continue;
 
 
                                 // copy first
