@@ -3273,10 +3273,13 @@ void RenderOpenGL::DrawBillboards() {
         }
 
         GLfloat thisblend = billbstore[offset].blend;
-        if (thisblend == 0.0)
+        if (thisblend == 0.0) {
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        else
+            glUniform1f(glGetUniformLocation(billbshader.ID, "fog.fogstart"), GLfloat(fogstart));
+        } else {
             glBlendFunc(GL_ONE, GL_ONE);
+            glUniform1f(glGetUniformLocation(billbshader.ID, "fog.fogstart"), GLfloat(fogend));
+        }
 
 
         int cnt = 0;
