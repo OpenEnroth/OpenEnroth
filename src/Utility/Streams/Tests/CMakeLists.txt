@@ -8,4 +8,4 @@ target_link_libraries(test_utility_streams utility)
 
 target_check_style(test_utility_streams)
 
-#target_link_libraries(World_of_Might_and_Magic_Test test_utility_streams)
+target_link_libraries(World_of_Might_and_Magic_test test_utility_streams)
