@@ -1,6 +1,6 @@
-#include "test/test.h"
-
 #include <cstdlib>
+
+#include "test/test.h"
 
 #include "Utility/Streams/FileOutputStream.h"
 
