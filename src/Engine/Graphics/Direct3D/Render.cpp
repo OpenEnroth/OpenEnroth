@@ -44,6 +44,7 @@
 #include "Platform/OsWindow.h"
 
 #include "Utility/Memory.h"
+#include "Utility/Math/TrigLut.h"
 
 #pragma comment(lib, "GdiPlus.lib")
 
