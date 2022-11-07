@@ -37,6 +37,8 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Utility/Math/TrigLut.h"
+
 
 using EngineIoc = Engine_::IocContainer;
 
@@ -349,8 +351,8 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     pitch = 0;
                 } else {
                     v31 = (int64_t)sqrt((float)(v119 + v120));
-                    v32 = TrigLUT->Atan2(spellnumb, (int)v28);
-                    pitch = TrigLUT->Atan2(v31, (int)spellnumc);
+                    v32 = TrigLUT.Atan2(spellnumb, (int)v28);
+                    pitch = TrigLUT.Atan2(v31, (int)spellnumc);
                 }
                 a1.containing_item.Reset();
                 a1.uType = spell_sprite_mapping[uSpellID].uSpriteType;
@@ -402,9 +404,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 v10 = 9;
             else
                 v10 = 3;
-            spellnuma = (signed int)(60 * TrigLUT->uIntegerDoublePi) / 360;
+            spellnuma = (signed int)(60 * TrigLUT.uIntegerDoublePi) / 360;
             a1.uType = spell_sprite_mapping[uSpellID].uSpriteType;
-            v118 = (signed int)(60 * TrigLUT->uIntegerDoublePi) / 360 /
+            v118 = (signed int)(60 * TrigLUT.uIntegerDoublePi) / 360 /
                    (v10 - 1);
             a1.uObjectDescID = GetObjDescId(uSpellID);
 
@@ -636,9 +638,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             else
                 v70 = 3;
 
-            spellnume = (signed int)(60 * TrigLUT->uIntegerDoublePi) / 360;
+            spellnume = (signed int)(60 * TrigLUT.uIntegerDoublePi) / 360;
             a1.uType = spell_sprite_mapping[uSpellID].uSpriteType;
-            v116 = (signed int)(60 * TrigLUT->uIntegerDoublePi) / 360 /
+            v116 = (signed int)(60 * TrigLUT.uIntegerDoublePi) / 360 /
                    (v70 - 1);
             a1.uObjectDescID = GetObjDescId(uSpellID);
             a1.containing_item.Reset();
@@ -933,7 +935,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                 break;
             }
             if (v4 == 4) {
-                v18 = pParty->sRotationZ - TrigLUT->uIntegerHalfPi;
+                v18 = pParty->sRotationZ - TrigLUT.uIntegerHalfPi;
                 v37.z =
                     pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
                 v37.x = pParty->vPosition.x;
@@ -942,7 +944,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                 break;
             }
             if (v4 == 3) {
-                v18 = pParty->sRotationZ - TrigLUT->uIntegerHalfPi;
+                v18 = pParty->sRotationZ - TrigLUT.uIntegerHalfPi;
                 v37.z =
                     pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
                 v37.x = pParty->vPosition.x;
@@ -953,7 +955,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
             if (v4 == 2) {
                 v37.z =
                     pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
-                v18 = TrigLUT->uIntegerHalfPi + pParty->sRotationZ;
+                v18 = TrigLUT.uIntegerHalfPi + pParty->sRotationZ;
                 v37.x = pParty->vPosition.x;
                 v37.y = pParty->vPosition.y;
                 Vec3i::Rotate(8, v18, 0, v37, &outx, &outy, &outz);
@@ -962,7 +964,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
             if (v4 == 1) {
                 v37.z =
                     pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
-                v18 = TrigLUT->uIntegerHalfPi + pParty->sRotationZ;
+                v18 = TrigLUT.uIntegerHalfPi + pParty->sRotationZ;
                 v37.x = pParty->vPosition.x;
                 v37.y = pParty->vPosition.y;
                 Vec3i::Rotate(24, v18, 0, v37, &outx, &outy, &outz);
@@ -1066,9 +1068,9 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
         pOut->uDistance = (uint)v33;
         pOut->uDistanceXZ = (uint)sqrt(outy2 + outx2);
         pOut->uYawAngle =
-            TrigLUT->Atan2(v31, v32);
+            TrigLUT.Atan2(v31, v32);
         pOut->uPitchAngle =
-            TrigLUT->Atan2(pOut->uDistanceXZ, a4a);
+            TrigLUT.Atan2(pOut->uDistanceXZ, a4a);
     }
 }
 
@@ -1729,7 +1731,7 @@ void Actor::AI_RandomMove(unsigned int uActor_id, unsigned int uTarget_id,
         return;
     }
     absx += ((rand() & 0xF) * radius) / 16;
-    v9 = (TrigLUT->uIntegerDoublePi - 1) & TrigLUT->Atan2(x, y);
+    v9 = (TrigLUT.uIntegerDoublePi - 1) & TrigLUT.Atan2(x, y);
     if (rand() % 100 < 25) {
         Actor::StandAwhile(uActor_id);
         return;
@@ -1869,10 +1871,10 @@ void Actor::AI_Bored(unsigned int uActorID, unsigned int uObjID,
         8 * pSpriteFrameTable->pSpriteSFrames[actor->pSpriteIDs[ANIM_Bored]]
                 .uAnimLength;
 
-    v7 = TrigLUT->Atan2(actor->vPosition.x - pCamera3D->vCameraPos.x,
+    v7 = TrigLUT.Atan2(actor->vPosition.x - pCamera3D->vCameraPos.x,
                             actor->vPosition.y - pCamera3D->vCameraPos.y);
-    v9 = TrigLUT->uIntegerPi + actor->uYawAngle +
-         ((signed int)TrigLUT->uIntegerPi >> 3) - v7;
+    v9 = TrigLUT.uIntegerPi + actor->uYawAngle +
+         ((signed int)TrigLUT.uIntegerPi >> 3) - v7;
 
     if (v9 & 0x700) {  // turned away - just stand
         Actor::AI_Stand(uActorID, uObjID, actor->uCurrentActionLength, a4);
@@ -2049,9 +2051,9 @@ void Actor::AI_Pursue1(unsigned int uActorID, unsigned int a2, signed int arg0,
     else
         v18 = 16;
 
-    v7->uYawAngle = TrigLUT->Atan2(
-        pParty->vPosition.x + TrigLUT->Cos(v18 + TrigLUT->uIntegerPi + v10->uYawAngle) * v10->uDistanceXZ - v7->vPosition.x,
-        pParty->vPosition.y + TrigLUT->Sin(v18 + TrigLUT->uIntegerPi + v10->uYawAngle) * v10->uDistanceXZ - v7->vPosition.y);
+    v7->uYawAngle = TrigLUT.Atan2(
+        pParty->vPosition.x + TrigLUT.Cos(v18 + TrigLUT.uIntegerPi + v10->uYawAngle) * v10->uDistanceXZ - v7->vPosition.x,
+        pParty->vPosition.y + TrigLUT.Sin(v18 + TrigLUT.uIntegerPi + v10->uYawAngle) * v10->uDistanceXZ - v7->vPosition.y);
     if (uActionLength)
         v7->uCurrentActionLength = uActionLength;
     else
@@ -2093,10 +2095,10 @@ void Actor::AI_Flee(unsigned int uActorID, signed int sTargetPid,
                 v5->uCurrentActionLength = 0;
             if (v5->uCurrentActionLength > 256) v5->uCurrentActionLength = 256;
             v5->uYawAngle =
-                (short)TrigLUT->uIntegerHalfPi + (short)a4->uYawAngle;
+                (short)TrigLUT.uIntegerHalfPi + (short)a4->uYawAngle;
             v5->uYawAngle =
-                (short)TrigLUT->uDoublePiMask &
-                (v5->uYawAngle + rand() % (signed int)TrigLUT->uIntegerPi);
+                (short)TrigLUT.uDoublePiMask &
+                (v5->uYawAngle + rand() % (signed int)TrigLUT.uIntegerPi);
             v5->uCurrentActionTime = 0;
             v5->uPitchAngle = (short)a4->uPitchAngle;
             v5->uAIState = Fleeing;
@@ -2593,8 +2595,8 @@ void Actor::SummonMinion(int summonerId) {
     }
     v27 = uCurrentlyLoadedLevelType == LEVEL_Outdoor ? 128 : 64;
     v13 = rand() % 2048;
-    v15 = TrigLUT->Cos(v13) * v27 + this->vPosition.x;
-    v17 = TrigLUT->Sin(v13) * v27 + this->vPosition.y;
+    v15 = TrigLUT.Cos(v13) * v27 + this->vPosition.x;
+    v17 = TrigLUT.Sin(v13) * v27 + this->vPosition.y;
 
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         result = pIndoor->GetSector(v15, v17, this->vPosition.z);
@@ -2704,7 +2706,7 @@ void Actor::UpdateActorAI() {
         if (pParty->armageddon_timer > 417) {
             pParty->armageddon_timer = 0;
         } else {
-            pParty->sRotationZ = (TrigLUT->uIntegerDoublePi - 1) &
+            pParty->sRotationZ = (TrigLUT.uIntegerDoublePi - 1) &
                                  (pParty->sRotationZ + rand() % 16 - 8);
             pParty->sRotationY = pParty->sRotationY + rand() % 16 - 8;
             if (pParty->sRotationY > 128)
@@ -4822,8 +4824,8 @@ void Spawn_Light_Elemental(int spell_power, int caster_skill_level, int duration
     actor->pMonsterInfo.uTreasureType = 0;
     actor->pMonsterInfo.uExp = 0;
     actor->uMovementSpeed = pMonsterList->pMonsters[uMonsterID].uMovementSpeed;
-    actor->vInitialPosition.x = pParty->vPosition.x + TrigLUT->Cos(angle) * radius;
-    actor->vInitialPosition.y = pParty->vPosition.y + TrigLUT->Sin(angle) * radius;
+    actor->vInitialPosition.x = pParty->vPosition.x + TrigLUT.Cos(angle) * radius;
+    actor->vInitialPosition.y = pParty->vPosition.y + TrigLUT.Sin(angle) * radius;
     actor->vInitialPosition.z = pParty->vPosition.z;
     actor->vPosition = actor->vInitialPosition;
     actor->uTetherDistance = 256;
@@ -5089,9 +5091,9 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
         pMonster->PrepareSprites(0);
         pMonster->pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
         v32 = rand();
-        a3 = TrigLUT->Cos(v32 % 2048) * v52;
+        a3 = TrigLUT.Cos(v32 % 2048) * v52;
         pPosX = a3 + spawn->vPosition.x;
-        a3 = TrigLUT->Sin(v32 % 2048) * v52;
+        a3 = TrigLUT.Sin(v32 % 2048) * v52;
         a4 = a3 + spawn->vPosition.y;
         a3 = spawn->vPosition.z;
         if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {

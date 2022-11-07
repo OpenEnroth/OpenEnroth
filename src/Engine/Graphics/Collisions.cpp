@@ -13,6 +13,9 @@
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Graphics/Viewport.h"
 
+#include "Utility/Math/Float.h"
+#include "Utility/Math/TrigLut.h"
+
 CollisionState collision_state;
 
 /* =================
@@ -626,11 +629,11 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
             unsigned int speed = integer_sqrt(
                     actor.vVelocity.x * actor.vVelocity.x +
                     actor.vVelocity.y * actor.vVelocity.y);
-            int angle = TrigLUT->Atan2(
+            int angle = TrigLUT.Atan2(
                     actor.vPosition.x - pLevelDecorations[id].vPosition.x,
                     actor.vPosition.y - pLevelDecorations[id].vPosition.y); // Face away from the decoration.
-            actor.vVelocity.x = TrigLUT->Cos(angle) * speed;
-            actor.vVelocity.y = TrigLUT->Sin(angle) * speed;
+            actor.vVelocity.x = TrigLUT.Cos(angle) * speed;
+            actor.vVelocity.y = TrigLUT.Sin(angle) * speed;
             actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
             actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
             actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
@@ -658,7 +661,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                         collision_state.radius_lo - face->pFacePlane.SignedDistanceTo(actor.vPosition.ToFloat());
                     if (overshoot > 0)
                         actor.vPosition += (overshoot * pIndoor->pFaces[id].pFacePlane.vNormal).ToShort();
-                    actor.uYawAngle = TrigLUT->Atan2(actor.vVelocity.x, actor.vVelocity.y);
+                    actor.uYawAngle = TrigLUT.Atan2(actor.vVelocity.x, actor.vVelocity.y);
                 }
             }
             if (pIndoor->pFaces[id].uAttributes & FACE_TriggerByMonster)

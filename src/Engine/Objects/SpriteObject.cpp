@@ -27,6 +27,8 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Utility/Math/TrigLut.h"
+
 using EngineIoc = Engine_::IocContainer;
 
 // should be injected in SpriteObject but struct size cant be changed
@@ -91,9 +93,9 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
 
     // calcualte angle velocity - could use rotate func here as above
     if (speed) {
-        vVelocity.x = TrigLUT->Cos(yaw) * TrigLUT->Cos(pitch) * speed;
-        vVelocity.y = TrigLUT->Sin(yaw) * TrigLUT->Cos(pitch) * speed;
-        vVelocity.z = TrigLUT->Sin(pitch) * speed;
+        vVelocity.x = TrigLUT.Cos(yaw) * TrigLUT.Cos(pitch) * speed;
+        vVelocity.y = TrigLUT.Sin(yaw) * TrigLUT.Cos(pitch) * speed;
+        vVelocity.z = TrigLUT.Sin(pitch) * speed;
     }
 
     // copy sprite object into slot
@@ -424,11 +426,11 @@ LABEL_13:
         }
         v57 = integer_sqrt(pSpriteObjects[uLayingItemID].vVelocity.x * pSpriteObjects[uLayingItemID].vVelocity.x +
                            pSpriteObjects[uLayingItemID].vVelocity.y * pSpriteObjects[uLayingItemID].vVelocity.y);
-        v38 = TrigLUT->Atan2(
+        v38 = TrigLUT.Atan2(
             pSpriteObjects[uLayingItemID].vPosition.x - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.x,
             pSpriteObjects[uLayingItemID].vPosition.y - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.y);
-        pSpriteObjects[uLayingItemID].vVelocity.x = TrigLUT->Cos(v38) * v57;
-        pSpriteObjects[uLayingItemID].vVelocity.y = TrigLUT->Sin(v38 - TrigLUT->uIntegerHalfPi) * v57;
+        pSpriteObjects[uLayingItemID].vVelocity.x = TrigLUT.Cos(v38) * v57;
+        pSpriteObjects[uLayingItemID].vVelocity.y = TrigLUT.Sin(v38 - TrigLUT.uIntegerHalfPi) * v57;
         //goto LABEL_74; // This goto results in an infinite loop, commented out.
     }
 }
@@ -591,12 +593,12 @@ LABEL_25:
                     pSpriteObject->vVelocity.x * pSpriteObject->vVelocity.x +
                     pSpriteObject->vVelocity.y * pSpriteObject->vVelocity.y);
                 v23 =
-                    TrigLUT->Atan2(pSpriteObject->vPosition.x -
+                    TrigLUT.Atan2(pSpriteObject->vPosition.x -
                                            pLevelDecorations[v15].vPosition.x,
                                        pSpriteObject->vPosition.y -
                                            pLevelDecorations[v15].vPosition.y);
-                pSpriteObject->vVelocity.x = TrigLUT->Cos(v23) * v40;
-                pSpriteObject->vVelocity.y = TrigLUT->Sin(v23) * v40;
+                pSpriteObject->vVelocity.x = TrigLUT.Cos(v23) * v40;
+                pSpriteObject->vVelocity.y = TrigLUT.Sin(v23) * v40;
             }
             if (PID_TYPE(collision_state.pid) == OBJECT_Face) {
                 collision_state.ignored_face_id = PID_ID(collision_state.pid);
@@ -932,11 +934,11 @@ bool SpriteObject::Drop_Item_At(SPRITE_OBJECT_TYPE sprite, int x,
     if (a7) {
         if (count > 0) {
             for (uint i = count; i; --i) {
-                pSpellObject.uFacing = rand() % (int)TrigLUT->uIntegerDoublePi;
+                pSpellObject.uFacing = rand() % (int)TrigLUT.uIntegerDoublePi;
                 pSpellObject.Create(
                     (int16_t)pSpellObject.uFacing,
-                    ((int)TrigLUT->uIntegerHalfPi / 2) +
-                        (rand() % ((signed int)TrigLUT->uIntegerHalfPi / 2)),
+                    ((int)TrigLUT.uIntegerHalfPi / 2) +
+                        (rand() % ((signed int)TrigLUT.uIntegerHalfPi / 2)),
                     a4, 0);
             }
         }
@@ -945,7 +947,7 @@ bool SpriteObject::Drop_Item_At(SPRITE_OBJECT_TYPE sprite, int x,
         if (count > 0) {
             for (uint i = count; i; --i) {
                 pSpellObject.Create((int16_t)pSpellObject.uFacing,
-                                    TrigLUT->uIntegerHalfPi, a4, 0);
+                                    TrigLUT.uIntegerHalfPi, a4, 0);
             }
         }
     }
@@ -1222,9 +1224,9 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
             if (pSpriteObjects[uLayingItemID].spell_skill == 4) {
                 v65 = 9;
             }
-            int v64 = pSpriteObjects[uLayingItemID].uFacing - TrigLUT->uIntegerDoublePi;
+            int v64 = pSpriteObjects[uLayingItemID].uFacing - TrigLUT.uIntegerDoublePi;
             for (int i = 0; i < v65; i++) {
-                v64 += (int)TrigLUT->uIntegerHalfPi / 2;
+                v64 += (int)TrigLUT.uIntegerHalfPi / 2;
                 pSpriteObjects[uLayingItemID].Create(v64, 0, 1000, 0);
             }
             SpriteObject::OnInteraction(uLayingItemID);
@@ -1310,13 +1312,13 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
             pSpriteObjects[uLayingItemID].vVelocity.z = 0;
             pSpriteObjects[uLayingItemID].vVelocity.y = 0;
             pSpriteObjects[uLayingItemID].vVelocity.x = 0;
-            int v89 = pSpriteObjects[uLayingItemID].uFacing - TrigLUT->uIntegerDoublePi;
+            int v89 = pSpriteObjects[uLayingItemID].uFacing - TrigLUT.uIntegerDoublePi;
             for (int i = 0; i < 8; i++) {
                 pRnd->SetRange(-128, 128);
                 v90 = pRnd->GetInRange();
                 pRnd->SetRange(5, 500);
                 v91 = pRnd->GetInRange();
-                v89 += TrigLUT->uIntegerHalfPi / 2;
+                v89 += TrigLUT.uIntegerHalfPi / 2;
                 pSpriteObjects[uLayingItemID].Create(v90 + v89, 0, v91, 0);
             }
             SpriteObject::OnInteraction(uLayingItemID);

@@ -2,38 +2,6 @@
 
 #include <utility>
 
-TrigTableLookup* TrigLUT = new TrigTableLookup();
-
-//----- (00452969) --------------------------------------------------------
-TrigTableLookup::TrigTableLookup() {
-    for (int i = 0; i <= this->uIntegerHalfPi; i++)
-        pCosTable[i] = std::cos(i * pi_double / uIntegerPi);
-}
-
-//----- (00402CAE) --------------------------------------------------------
-float TrigTableLookup::Cos(int angle) const {
-    angle &= uDoublePiMask;
-
-    if (angle > uIntegerPi)
-        angle = uIntegerDoublePi - angle;
-    if (angle >= uIntegerHalfPi)
-        return -pCosTable[uIntegerPi - angle];
-    else
-        return pCosTable[angle];
-}
-
-//----- (0042EBDB) --------------------------------------------------------
-float TrigTableLookup::Sin(int angle) const {
-    return Cos(angle - this->uIntegerHalfPi);
-}
-
-//----- (0045281E) --------------------------------------------------------
-int TrigTableLookup::Atan2(int x, int y) const {
-    double angle = std::atan2(static_cast<double>(y), static_cast<double>(x));
-
-    return static_cast<int>(angle / pi_double * 1024) & uDoublePiMask;
-}
-
 //----- (0042EBBE) --------------------------------------------------------
 //----- (004453C0) mm6-----------------------------------------------------
 //----- (004A1760) mm6_chinese---------------------------------------------

@@ -21,6 +21,8 @@
 
 #include "Platform/OSWindow.h"
 
+#include "Utility/Math/TrigLut.h"
+
 
 bool RenderBase::Initialize() {
     window->SetWindowArea(
@@ -156,8 +158,8 @@ void RenderBase::DrawSpriteObjects() {
             }
 
             // sprite angle to camera
-            unsigned int angle = TrigLUT->Atan2(x - pCamera3D->vCameraPos.x, y - pCamera3D->vCameraPos.y);
-            int octant = ((TrigLUT->uIntegerPi + (TrigLUT->uIntegerPi >> 3) + object->uFacing - angle) >> 8) & 7;
+            unsigned int angle = TrigLUT.Atan2(x - pCamera3D->vCameraPos.x, y - pCamera3D->vCameraPos.y);
+            int octant = ((TrigLUT.uIntegerPi + (TrigLUT.uIntegerPi >> 3) + object->uFacing - angle) >> 8) & 7;
 
             pBillboardRenderList[::uNumBillboardsToDraw].hwsprite = frame->hw_sprites[octant];
             // error catching

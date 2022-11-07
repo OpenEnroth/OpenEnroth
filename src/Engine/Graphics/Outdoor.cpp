@@ -44,6 +44,7 @@
 #include "Platform/Api.h"
 
 #include "Utility/FreeDeleter.h"
+#include "Utility/Math/TrigLut.h"
 
 using EngineIoc = Engine_::IocContainer;
 
@@ -1529,12 +1530,12 @@ void OutdoorLocation::PrepareActorsDrawList() {
         int x = pActors[i].vPosition.x;
         int y = pActors[i].vPosition.y;
 
-        Angle_To_Cam = TrigLUT->Atan2(
+        Angle_To_Cam = TrigLUT.Atan2(
             pActors[i].vPosition.x - pCamera3D->vCameraPos.x,
             pActors[i].vPosition.y - pCamera3D->vCameraPos.y);
 
-        Sprite_Octant = ((signed int)(TrigLUT->uIntegerPi +
-                            ((signed int)TrigLUT->uIntegerPi >> 3) + pActors[i].uYawAngle -
+        Sprite_Octant = ((signed int)(TrigLUT.uIntegerPi +
+                            ((signed int)TrigLUT.uIntegerPi >> 3) + pActors[i].uYawAngle -
                             Angle_To_Cam) >> 8) & 7;
 
         Cur_Action_Time = pActors[i].uCurrentActionTime;
@@ -2025,9 +2026,9 @@ void ODM_ProcessPartyActions() {
                                         * (int64_t)((signed
        int)(pParty->field_20_prolly_turn_speed
                                                                       *
-       TrigLUT->uIntegerPi) / 180)) >> 16);*/
+       TrigLUT.uIntegerPi) / 180)) >> 16);*/
     int64_t dturn =
-        ((int64_t) pEventTimer->dt_fixpoint * pParty->y_rotation_speed * TrigLUT->uIntegerPi / 180) >> 16;
+        ((int64_t) pEventTimer->dt_fixpoint * pParty->y_rotation_speed * TrigLUT.uIntegerPi / 180) >> 16;
     while (pPartyActionQueue->uNumActions) {
         switch (pPartyActionQueue->Next()) {
             case PARTY_FlyUp:  // полёт вверх
@@ -2099,7 +2100,7 @@ void ODM_ProcessPartyActions() {
                 else
                     _angle_y += dturn * fTurnSpeedMultiplier;  // time-based smooth turn
 
-                _angle_y &= TrigLUT->uDoublePiMask;
+                _angle_y &= TrigLUT.uDoublePiMask;
                 break;
 
             case PARTY_TurnRight:  // поворот вправо
@@ -2108,7 +2109,7 @@ void ODM_ProcessPartyActions() {
                 else
                     _angle_y -= dturn * fTurnSpeedMultiplier;
 
-                _angle_y &= TrigLUT->uDoublePiMask;
+                _angle_y &= TrigLUT.uDoublePiMask;
                 break;
 
             case PARTY_FastTurnLeft:  // быстрый поворот влево
@@ -2117,7 +2118,7 @@ void ODM_ProcessPartyActions() {
                 else
                     _angle_y += 2.0f * fTurnSpeedMultiplier * dturn;
 
-                _angle_y &= TrigLUT->uDoublePiMask;
+                _angle_y &= TrigLUT.uDoublePiMask;
                 break;
 
             case PARTY_FastTurnRight:  // быстрый поворот вправо
@@ -2126,7 +2127,7 @@ void ODM_ProcessPartyActions() {
                 else
                     _angle_y -= 2.0f * fTurnSpeedMultiplier * dturn;
 
-                _angle_y &= TrigLUT->uDoublePiMask;
+                _angle_y &= TrigLUT.uDoublePiMask;
                 break;
 
             case PARTY_StrafeLeft:  // хождение боком в влево
@@ -2211,11 +2212,11 @@ void ODM_ProcessPartyActions() {
                     v128 = v1;
                     party_walking_flag = true;
                 } else {
-                    /*v2 += (uint64_t)(TrigLUT->Cos(_angle_y)
+                    /*v2 += (uint64_t)(TrigLUT.Cos(_angle_y)
                                      * (int64_t)(signed int)(2 *
                     (uint64_t)(int64_t)((double)_walk_speed *
                     fWalkSpeedMultiplier))) >> 16; v1 += (unsigned
-                    int64_t)((signed int)TrigLUT->Sin(_angle_y)
+                    int64_t)((signed int)TrigLUT.Sin(_angle_y)
                                      * (int64_t)(signed int)(2 *
                     (uint64_t)(int64_t)((double)_walk_speed *
                     fWalkSpeedMultiplier))) >> 16;*/
@@ -2316,7 +2317,7 @@ void ODM_ProcessPartyActions() {
     pParty->sRotationY = _angle_x;
     //-------------------------------------------
     if (pParty->bFlying) {
-        v129 = 4 * TrigLUT->Cos(OS_GetTime());
+        v129 = 4 * TrigLUT.Cos(OS_GetTime());
         party_new_Z = v113 + v129;
         if (pModel_) party_new_Z = v113;
         if (pParty->FlyActive())
@@ -2484,12 +2485,12 @@ void ODM_ProcessPartyActions() {
         }
 
         if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) {
-            v129 = TrigLUT->Atan2(
+            v129 = TrigLUT.Atan2(
                 _angle_x - pLevelDecorations[(signed int)collision_state.pid >> 3].vPosition.x,
                 _angle_y - pLevelDecorations[(signed int)collision_state.pid >> 3].vPosition.y);
-            v2 = TrigLUT->Cos(v129) * integer_sqrt(v2 * v2 + v128 * v128);
-            v122 = TrigLUT->Sin(v129) * integer_sqrt(v2 * v2 + v128 * v128);
-            v128 = TrigLUT->Sin(v129) * integer_sqrt(v2 * v2 + v128 * v128);
+            v2 = TrigLUT.Cos(v129) * integer_sqrt(v2 * v2 + v128 * v128);
+            v122 = TrigLUT.Sin(v129) * integer_sqrt(v2 * v2 + v128 * v128);
+            v128 = TrigLUT.Sin(v129) * integer_sqrt(v2 * v2 + v128 * v128);
         }
 
         if (PID_TYPE(collision_state.pid) == OBJECT_Face) {
@@ -2915,12 +2916,12 @@ void UpdateActors_ODM() {
             if (Actor_Speed > 1000) Actor_Speed = 1000;
 
             pActors[Actor_ITR].vVelocity.x =
-                TrigLUT->Cos(pActors[Actor_ITR].uYawAngle) * Actor_Speed;
+                TrigLUT.Cos(pActors[Actor_ITR].uYawAngle) * Actor_Speed;
             pActors[Actor_ITR].vVelocity.y =
-                TrigLUT->Sin(pActors[Actor_ITR].uYawAngle) * Actor_Speed;
+                TrigLUT.Sin(pActors[Actor_ITR].uYawAngle) * Actor_Speed;
             if (uIsFlying) {
                 pActors[Actor_ITR].vVelocity.z =
-                    TrigLUT->Sin(pActors[Actor_ITR].uPitchAngle) * Actor_Speed;
+                    TrigLUT.Sin(pActors[Actor_ITR].uPitchAngle) * Actor_Speed;
             }
         } else {
             pActors[Actor_ITR].vVelocity.x =
@@ -3113,16 +3114,16 @@ void UpdateActors_ODM() {
                     Coll_Speed = integer_sqrt(
                         pActors[Actor_ITR].vVelocity.x * pActors[Actor_ITR].vVelocity.x +
                         pActors[Actor_ITR].vVelocity.y * pActors[Actor_ITR].vVelocity.y);
-                    Angle_To_Decor = TrigLUT->Atan2(
+                    Angle_To_Decor = TrigLUT.Atan2(
                         pActors[Actor_ITR].vPosition.x -
                             pLevelDecorations[v39].vPosition.x,
                         pActors[Actor_ITR].vPosition.y -
                             pLevelDecorations[v39].vPosition.y);
 
                     pActors[Actor_ITR].vVelocity.x =
-                        TrigLUT->Cos(Angle_To_Decor) * Coll_Speed;
+                        TrigLUT.Cos(Angle_To_Decor) * Coll_Speed;
                     pActors[Actor_ITR].vVelocity.y =
-                        TrigLUT->Sin(Angle_To_Decor) * Coll_Speed;
+                        TrigLUT.Sin(Angle_To_Decor) * Coll_Speed;
                     break;
                 case OBJECT_Face: {
                     ODMFace * face = &pOutdoor->pBModels[collision_state.pid >> 9]
@@ -3169,7 +3170,7 @@ void UpdateActors_ODM() {
                                     pActors[Actor_ITR].vPosition.z += fixpoint_mul(
                                         v46, face->pFacePlaneOLD.vNormal.z);
                                 }
-                                pActors[Actor_ITR].uYawAngle = TrigLUT->Atan2(
+                                pActors[Actor_ITR].uYawAngle = TrigLUT.Atan2(
                                     pActors[Actor_ITR].vVelocity.x,
                                     pActors[Actor_ITR].vVelocity.y);
                             }
@@ -3228,7 +3229,7 @@ void UpdateActors_ODM() {
                             int target_x = GridCellToWorldPosX(i);
                             int target_y = GridCellToWorldPosY(j);
                             if (pActors[Actor_ITR].CanAct()) {  // head to land
-                                pActors[Actor_ITR].uYawAngle = TrigLUT->Atan2(target_x -
+                                pActors[Actor_ITR].uYawAngle = TrigLUT.Atan2(target_x -
                                     pActors[Actor_ITR].vPosition.x, target_y -
                                     pActors[Actor_ITR].vPosition.y);
                                 pActors[Actor_ITR].uCurrentActionTime = 0;

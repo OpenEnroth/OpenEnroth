@@ -4,6 +4,7 @@ set(UTILITY_SOURCES Blob.cpp
                     Color.cpp
                     DataPath.cpp
                     String.cpp
+                    Math/TrigLut.cpp
                     Streams/MemoryInputStream.cpp
                     Streams/StringOutputStream.cpp
                     Streams/FileOutputStream.cpp)
@@ -19,6 +20,8 @@ set(UTILITY_HEADERS Blob.h
                     Segment.h
                     String.h
                     Workaround/ToUnderlying.h
+                    Math/Float.h
+                    Math/TrigLut.h
                     Streams/InputStream.h
                     Streams/OutputStream.h
                     Streams/MemoryInputStream.h

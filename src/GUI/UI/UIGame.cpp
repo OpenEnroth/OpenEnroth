@@ -51,6 +51,8 @@
 #include "Platform/Api.h"
 #include "Platform/OSWindow.h"
 
+#include "Utility/Math/TrigLut.h"
+
 
 using EngineIoc = Engine_::IocContainer;
 using Io::InputAction;
@@ -1911,7 +1913,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
 
     // draw arrow on the minimap(include. Ritor1)
     uint arrow_idx;
-    unsigned int rotate = pParty->sRotationZ & TrigLUT->uDoublePiMask;
+    unsigned int rotate = pParty->sRotationZ & TrigLUT.uDoublePiMask;
     if ((signed int)rotate <= 1920) arrow_idx = 6;
     if ((signed int)rotate < 1664) arrow_idx = 5;
     if ((signed int)rotate <= 1408) arrow_idx = 4;

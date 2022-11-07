@@ -32,6 +32,8 @@
 
 #include "Platform/OSWindow.h"
 
+#include "Utility/Math/TrigLut.h"
+
 
 std::array<EventIndex, 4400> pSomeOtherEVT_Events;
 signed int uSomeOtherEVT_NumEvents;
@@ -921,9 +923,9 @@ LABEL_47:
                     if (trans_directionyaw == -1) {
                         v98 = Party_Teleport_Cam_Yaw;
                     } else {
-                        v98 = trans_directionyaw & TrigLUT->uDoublePiMask;
+                        v98 = trans_directionyaw & TrigLUT.uDoublePiMask;
                         Party_Teleport_Cam_Yaw =
-                            trans_directionyaw & TrigLUT->uDoublePiMask;
+                            trans_directionyaw & TrigLUT.uDoublePiMask;
                     }
                     v99 = (char *)&_evt->v31;
                     Party_Teleport_Cam_Pitch = trans_directionpitch;
