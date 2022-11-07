@@ -7,6 +7,8 @@
 
 #include "OurMath.h"
 
+#include "Utility/Math/FixPoint.h"
+
 template<class From, class To>
 struct vector_conversion_allowed : std::false_type {};
 
