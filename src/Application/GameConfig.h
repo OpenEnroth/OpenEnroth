@@ -295,9 +295,6 @@ namespace Application {
 
             ConfigValue<std::string> Renderer = ConfigValue<std::string>(this, "renderer", "OpenGL", &ValidateRenderer);
 
-            /** Alternative pallete mode, depends on software mode rules */
-            ConfigValue<bool> AlternativePaletteMode = ConfigValue<bool>(this, "alternative_palette_mode", false);
-
             /** Enable bloodsplats under corpses */
             ConfigValue<bool> BloodSplats = ConfigValue<bool>(this, "bloodsplats", true);
 
@@ -333,10 +330,10 @@ namespace Application {
             /** Isn't currently in use? */
             ConfigValue<int> Gamma = ConfigValue<int>(this, "gamma", 4, &ValidateGamma);
 
-            /** Use hi-resolution bitmaps from HWL file instead of low-resolution ones from LOD. */
+            /** Use low-resolution bitmaps from HWL file instead of hi-resolution ones from LOD. */
             ConfigValue<bool> HWLBitmaps = ConfigValue<bool>(this, "hwl_bitmaps", false);
 
-            /** Use hi-resolution sprites from HWL file instead of low-resolution ones from LOD. */
+            /** Use low-resolution sprites from HWL file instead of hi-resolution ones from LOD. */
             ConfigValue<bool> HWLSprites = ConfigValue<bool>(this, "hwl_sprites", false);
 
             /** Allow changing trees/ground depending on current season (originally was only used in MM6) */

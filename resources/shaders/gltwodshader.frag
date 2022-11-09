@@ -13,7 +13,7 @@ uniform bool repaint;
 void main() {
     vec4 fragcol = texture(texture0, texuv);
     uint index = uint(fragcol.r * 255);
-    uvec4 newcol = texelFetch(palbuf, int( 256 * paletteid + index));
+    vec4 newcol = texelFetch(palbuf, int( 256 * paletteid + index));
 
     if (repaint == true) {
 	if (paletteid > 0)

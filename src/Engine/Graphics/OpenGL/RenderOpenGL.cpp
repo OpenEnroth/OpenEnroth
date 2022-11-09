@@ -3274,9 +3274,11 @@ void RenderOpenGL::DrawBillboards() {
 
         GLfloat thisblend = billbstore[offset].blend;
         if (thisblend == 0.0) {
+            // disable alpha blending and enable fog for opaque items
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glUniform1f(glGetUniformLocation(billbshader.ID, "fog.fogstart"), GLfloat(fogstart));
         } else {
+            // enable blending and disable fog for transparent items
             glBlendFunc(GL_ONE, GL_ONE);
             glUniform1f(glGetUniformLocation(billbshader.ID, "fog.fogstart"), GLfloat(fogend));
         }
@@ -4160,9 +4162,9 @@ void RenderOpenGL::DrawBuildingsD3D() {
                                         face.texunit = texunit = (unitlayer & 0xFF00) >> 8;
                                     } else {
                                         logger->Warning("Texture not found in map!");
-                                        // TODO(pskelton): set to water for now - are there any instances where this will occur??
-                                        face.texlayer = 0;
-                                        face.texunit = 0;
+                                        // TODO(pskelton): set to water for now - fountains in walls of mist
+                                        texunit = face.texlayer = 0;
+                                        texlayer = face.texunit = 0;
                                     }
                                 }
 
@@ -4857,9 +4859,9 @@ void RenderOpenGL::DrawIndoorFaces() {
                                     face->texunit = texunit = (unitlayer & 0xFF00) >> 8;
                                 } else {
                                     logger->Warning("Texture not found in map!");
-                                    // TODO(pskelton): set to water for now - are there any instances where this will occur??
-                                    face->texlayer = 0;
-                                    face->texunit = 0;
+                                    // TODO(pskelton): set to water for now - fountains in walls of mist
+                                    texlayer = face->texlayer = 0;
+                                    texunit = face->texunit = 0;
                                 }
                             }
 
