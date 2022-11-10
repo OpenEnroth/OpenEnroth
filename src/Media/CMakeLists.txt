@@ -10,9 +10,7 @@ set(MEDIA_HEADERS Media.h
                   Audio/AudioPlayer.h
                   Audio/OpenALSoundProvider.h)
 
-if(APPLE)
-  add_definitions(-DFF_API_NEXT -Wno-deprecated-declarations)
-endif()
+add_compile_definitions(FF_API_NEXT)
 
 add_library(media STATIC ${MEDIA_SOURCES} ${MEDIA_HEADERS})
 target_link_libraries(media utility)
