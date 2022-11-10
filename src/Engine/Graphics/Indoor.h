@@ -10,7 +10,6 @@
 
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Graphics/IRender.h"
-#include "Engine/VectorTypes.h"
 
 struct IndoorLocation;
 

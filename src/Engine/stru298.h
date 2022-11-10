@@ -4,8 +4,6 @@
 
 #include "Engine/Objects/Actor.h"
 
-#include "VectorTypes.h"
-
 /*  303 */
 #pragma pack(push, 1)
 struct stru298 {

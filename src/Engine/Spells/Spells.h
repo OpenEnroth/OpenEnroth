@@ -3,10 +3,10 @@
 
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/SpriteObjectType.h"
-#include "Engine/VectorTypes.h"
 #include "Engine/Time.h"
 
 #include "Utility/IndexedArray.h"
+#include "Utility/Geometry/Vec.h"
 
 /*  360 */
 enum SPELL_TYPE {

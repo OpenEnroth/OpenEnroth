@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Engine/VectorTypes.h>
+#include "Utility/Geometry/Vec.h"
 
 /*  127 */
 #pragma pack(push, 1)

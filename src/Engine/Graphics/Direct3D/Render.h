@@ -9,7 +9,6 @@
 #include <memory>
 
 #include "Engine/Graphics/RenderBase.h"
-#include "Engine/VectorTypes.h"
 
 struct ODMFace;
 class RenderD3D;

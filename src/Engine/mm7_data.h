@@ -14,9 +14,8 @@
 
 #include "GUI/GUIDialogues.h"
 
-#include "VectorTypes.h"
-
 #include "Utility/IndexedArray.h"
+#include "Utility/Geometry/Vec.h"
 
 class GUIButton;
 class Actor;

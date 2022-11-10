@@ -15,7 +15,6 @@
 #include "Engine/MM7.h"
 #include "Engine/MapInfo.h"
 #include "Engine/IocContainer.h"
-#include "Engine/VectorTypes.h"
 #include "Engine/mm7_data.h"
 
 #include "Engine/Graphics/Polygon.h"

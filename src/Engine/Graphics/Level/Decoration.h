@@ -4,7 +4,7 @@
 #include <vector>
 #include <cstdint>
 
-#include "../../VectorTypes.h"
+#include "Utility/Geometry/Vec.h"
 
 enum LEVEL_DECORATION_FLAGS : uint16_t {
     LEVEL_DECORATION_TRIGGERED_BY_TOUCH = 0x01,

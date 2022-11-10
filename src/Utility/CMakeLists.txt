@@ -19,6 +19,9 @@ set(UTILITY_HEADERS Blob.h
                     Memory.h
                     Segment.h
                     String.h
+                    Geometry/BBox.h
+                    Geometry/Plane.h
+                    Geometry/Vec.h
                     Workaround/ToUnderlying.h
                     Math/Float.h
                     Math/TrigLut.h

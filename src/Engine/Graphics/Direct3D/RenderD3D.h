@@ -4,7 +4,6 @@
 
 #include <memory>
 
-#include "Engine/VectorTypes.h"
 
 #define ErrD3D(hr)                                                           \
     do {                                                                     \

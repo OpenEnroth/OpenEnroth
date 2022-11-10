@@ -5,7 +5,6 @@
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/SpriteObjectType.h"
 #include "Engine/Objects/Actor.h"
-#include "Engine/VectorTypes.h"
 
 class SpriteFrame;
 

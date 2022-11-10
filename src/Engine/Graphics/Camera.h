@@ -3,7 +3,6 @@
 #include <glm.hpp>
 
 #include "Engine/OurMath.h"
-#include "Engine/VectorTypes.h"
 
 #include "Engine/Graphics/IRender.h"
 

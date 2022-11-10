@@ -7,7 +7,6 @@
 #include "Engine/Graphics/Texture.h"
 #include "Engine/OurMath.h"
 #include "Engine/Rect.h"
-#include "Engine/VectorTypes.h"
 #include "Application/GameConfig.h"
 #include "Utility/Color.h"
 

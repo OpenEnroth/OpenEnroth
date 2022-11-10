@@ -52,7 +52,6 @@ set(ENGINE_HEADERS AssetsManager.h
                    stru314.h
                    stru367.h
                    Time.h
-                   VectorTypes.h
                    ZlibWrapper.h
                    IocContainer.h
                    EngineFactory.h)
