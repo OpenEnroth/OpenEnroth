@@ -295,9 +295,6 @@ namespace Application {
 
             ConfigValue<std::string> Renderer = ConfigValue<std::string>(this, "renderer", "OpenGL", &ValidateRenderer);
 
-            /** Alternative pallete mode, depends on software mode rules */
-            ConfigValue<bool> AlternativePaletteMode = ConfigValue<bool>(this, "alternative_palette_mode", false);
-
             /** Enable bloodsplats under corpses */
             ConfigValue<bool> BloodSplats = ConfigValue<bool>(this, "bloodsplats", true);
 

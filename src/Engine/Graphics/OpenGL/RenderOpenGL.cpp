@@ -54,6 +54,7 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
+#include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -316,10 +317,10 @@ void RenderOpenGL::BeginLines2D() {
         glBufferData(GL_ARRAY_BUFFER, sizeof(lineshaderstore), NULL, GL_DYNAMIC_DRAW);
 
         // position attribute
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, (5 * sizeof(GLfloat)), (void *)0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(linesverts), (void *)offsetof(linesverts, x));
         glEnableVertexAttribArray(0);
         // colour attribute
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (5 * sizeof(GLfloat)), (void *)(2 * sizeof(GLfloat)));
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(linesverts), (void *)offsetof(linesverts, r));
         glEnableVertexAttribArray(1);
     }
 }
@@ -397,141 +398,6 @@ void RenderOpenGL::BeginSceneD3D() {
 
 extern unsigned int BlendColors(unsigned int a1, unsigned int a2);
 
-void RenderOpenGL::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
-                                        RenderBillboard *billboard) {
-    int v11;     // eax@9
-    int v12;     // eax@9
-    float v15;  // st5@12
-    float v16;  // st4@12
-    float v17;  // st3@12
-    float v18;  // st2@12
-    int v19;     // ecx@14
-    float v20;  // st3@14
-    int v21;     // ecx@16
-    float v22;  // st3@16
-    float sprite_height;   // [sp+24h] [bp-Ch]@5
-    //float scr_proj_factor_y;   // [sp+2Ch] [bp-4h]@5
-    float half_sprite_width;   // [sp+3Ch] [bp+Ch]@5
-    float scr_proj_factor_x;    // [sp+40h] [bp+10h]@5
-
-    // if (this->uNumD3DSceneBegins == 0) {
-    //    return;
-    //}
-
-    Sprite *pSprite = billboard->hwsprite;
-    int dimming_level = billboard->dimming_level;
-
-    // v4 = pSoftBillboard;
-    // v5 = (double)pSoftBillboard->zbuffer_depth;
-    // pSoftBillboarda = pSoftBillboard->zbuffer_depth;
-    // v6 = pSoftBillboard->zbuffer_depth;
-    unsigned int v7 = Billboard_ProbablyAddToListAndSortByZOrder(
-        pSoftBillboard->screen_space_z);
-    // v8 = dimming_level;
-    // device_caps = v7;
-    int v28 = dimming_level & 0xFF000000;
-    if (dimming_level & 0xFF000000) {
-        pBillboardRenderListD3D[v7].opacity = RenderBillboardD3D::Opaque_3;
-    } else {
-        pBillboardRenderListD3D[v7].opacity = RenderBillboardD3D::Transparent;
-    }
-    // v10 = a3;
-    pBillboardRenderListD3D[v7].field_90 = pSoftBillboard->field_44;
-    pBillboardRenderListD3D[v7].screen_space_z = pSoftBillboard->screen_space_z;
-    pBillboardRenderListD3D[v7].object_pid = pSoftBillboard->object_pid;
-    pBillboardRenderListD3D[v7].sParentBillboardID =
-        pSoftBillboard->sParentBillboardID;
-    // v25 = pSoftBillboard->uScreenSpaceX;
-    // v24 = pSoftBillboard->uScreenSpaceY;
-    scr_proj_factor_x = pSoftBillboard->screenspace_projection_factor_x;
-    //scr_proj_factor_y = pSoftBillboard->screenspace_projection_factor_y;
-    half_sprite_width = static_cast<float>((pSprite->uBufferWidth >> 1) - pSprite->uAreaX);
-    sprite_height = static_cast<float>(pSprite->uBufferHeight - pSprite->uAreaY);
-    if (pSoftBillboard->uFlags & 4) {
-        half_sprite_width = half_sprite_width * -1.0f;
-    }
-    if (config->graphics.Tinting.Get() && pSoftBillboard->sTintColor) {
-        v11 = ::GetActorTintColor(dimming_level, 0,
-            pSoftBillboard->screen_space_z, 0, 0);
-        v12 = BlendColors(pSoftBillboard->sTintColor, v11);
-        if (v28)
-            v12 =
-            (uint64_t)((char *)&array_77EC08[1852].pEdgeList1[17] + 3) &
-            ((unsigned int)v12 >> 1);
-    } else {
-        v12 = ::GetActorTintColor(dimming_level, 0,
-            pSoftBillboard->screen_space_z, 0, 0);
-    }
-    // v13 = (double)v25;
-    pBillboardRenderListD3D[v7].pQuads[0].specular = 0;
-    pBillboardRenderListD3D[v7].pQuads[0].diffuse = v12;
-    pBillboardRenderListD3D[v7].pQuads[0].pos.x =
-        pSoftBillboard->screen_space_x - half_sprite_width * scr_proj_factor_x;
-    // v14 = (double)v24;
-    // v32 = v14;
-    pBillboardRenderListD3D[v7].pQuads[0].pos.y =
-        pSoftBillboard->screen_space_y - sprite_height * scr_proj_factor_x;
-    v15 = 1.0f - 1.0f / (pSoftBillboard->screen_space_z * 0.061758894f);
-    pBillboardRenderListD3D[v7].pQuads[0].pos.z = v15;
-    v16 = 1.0f / pSoftBillboard->screen_space_z;
-    pBillboardRenderListD3D[v7].pQuads[0].rhw =
-        1.0f / pSoftBillboard->screen_space_z;
-    pBillboardRenderListD3D[v7].pQuads[0].texcoord.x = 0.0;
-    pBillboardRenderListD3D[v7].pQuads[0].texcoord.y = 0.0;
-    v17 = static_cast<float>((pSprite->uBufferWidth >> 1) - pSprite->uAreaX);
-    v18 = static_cast<float>(pSprite->uBufferHeight - pSprite->uAreaY -
-        pSprite->uAreaHeight);
-    if (pSoftBillboard->uFlags & 4) {
-        v17 = v17 * -1.0f;
-    }
-    pBillboardRenderListD3D[v7].pQuads[1].specular = 0;
-    pBillboardRenderListD3D[v7].pQuads[1].diffuse = v12;
-    pBillboardRenderListD3D[v7].pQuads[1].pos.x =
-        pSoftBillboard->screen_space_x - v17 * scr_proj_factor_x;
-    pBillboardRenderListD3D[v7].pQuads[1].pos.y =
-        pSoftBillboard->screen_space_y - v18 * scr_proj_factor_x;
-    pBillboardRenderListD3D[v7].pQuads[1].pos.z = v15;
-    pBillboardRenderListD3D[v7].pQuads[1].rhw = v16;
-    pBillboardRenderListD3D[v7].pQuads[1].texcoord.x = 0.0;
-    pBillboardRenderListD3D[v7].pQuads[1].texcoord.y = 1.0;
-    v19 = pSprite->uBufferHeight - pSprite->uAreaY - pSprite->uAreaHeight;
-    v20 = static_cast<float>(pSprite->uAreaX + pSprite->uAreaWidth +
-        (pSprite->uBufferWidth >> 1) - pSprite->uBufferWidth);
-    if (pSoftBillboard->uFlags & 4) {
-        v20 = v20 * -1.0f;
-    }
-    pBillboardRenderListD3D[v7].pQuads[2].specular = 0;
-    pBillboardRenderListD3D[v7].pQuads[2].diffuse = v12;
-    pBillboardRenderListD3D[v7].pQuads[2].pos.x =
-        v20 * scr_proj_factor_x + pSoftBillboard->screen_space_x;
-    pBillboardRenderListD3D[v7].pQuads[2].pos.y =
-        pSoftBillboard->screen_space_y - v19 * scr_proj_factor_x;
-    pBillboardRenderListD3D[v7].pQuads[2].pos.z = v15;
-    pBillboardRenderListD3D[v7].pQuads[2].rhw = v16;
-    pBillboardRenderListD3D[v7].pQuads[2].texcoord.x = 1.0;
-    pBillboardRenderListD3D[v7].pQuads[2].texcoord.y = 1.0;
-    v21 = pSprite->uBufferHeight - pSprite->uAreaY;
-    v22 = static_cast<float>(pSprite->uAreaX + pSprite->uAreaWidth +
-        (pSprite->uBufferWidth >> 1) - pSprite->uBufferWidth);
-    if (pSoftBillboard->uFlags & 4) {
-        v22 = v22 * -1.0f;
-    }
-    pBillboardRenderListD3D[v7].pQuads[3].specular = 0;
-    pBillboardRenderListD3D[v7].pQuads[3].diffuse = v12;
-    pBillboardRenderListD3D[v7].pQuads[3].pos.x =
-        v22 * scr_proj_factor_x + pSoftBillboard->screen_space_x;
-    pBillboardRenderListD3D[v7].pQuads[3].pos.y =
-        pSoftBillboard->screen_space_y - v21 * scr_proj_factor_x;
-    pBillboardRenderListD3D[v7].pQuads[3].pos.z = v15;
-    pBillboardRenderListD3D[v7].pQuads[3].rhw = v16;
-    pBillboardRenderListD3D[v7].pQuads[3].texcoord.x = 1.0;
-    pBillboardRenderListD3D[v7].pQuads[3].texcoord.y = 0.0;
-    // v23 = pSprite->pTexture;
-    pBillboardRenderListD3D[v7].uNumVertices = 4;
-    pBillboardRenderListD3D[v7].z_order = pSoftBillboard->screen_space_z;
-    pBillboardRenderListD3D[v7].texture = pSprite->texture;
-}
-
 //----- (004A4CC9) ---------------------------------------
 void RenderOpenGL::BillboardSphereSpellFX(struct SpellFX_Billboard *a1, int diffuse) {
     // fireball / implosion sphere
@@ -584,38 +450,6 @@ void RenderOpenGL::BillboardSphereSpellFX(struct SpellFX_Billboard *a1, int diff
 
         pBillboardRenderListD3D[v5].pQuads[i].texcoord.x = 0.5;
         pBillboardRenderListD3D[v5].pQuads[i].texcoord.y = 0.5;
-    }
-}
-
-void RenderOpenGL::DrawBillboardList_BLV() {
-    SoftwareBillboard soft_billboard = { 0 };
-    soft_billboard.sParentBillboardID = -1;
-    //  soft_billboard.pTarget = pBLVRenderParams->pRenderTarget;
-    soft_billboard.pTargetZ = pBLVRenderParams->pTargetZBuffer;
-    //  soft_billboard.uTargetPitch = uTargetSurfacePitch;
-    soft_billboard.uViewportX = pBLVRenderParams->uViewportX;
-    soft_billboard.uViewportY = pBLVRenderParams->uViewportY;
-    soft_billboard.uViewportZ = pBLVRenderParams->uViewportZ - 1;
-    soft_billboard.uViewportW = pBLVRenderParams->uViewportW;
-
-    pODMRenderParams->uNumBillboards = ::uNumBillboardsToDraw;
-    for (uint i = 0; i < ::uNumBillboardsToDraw; ++i) {
-        RenderBillboard *p = &pBillboardRenderList[i];
-        if (p->hwsprite) {
-            soft_billboard.screen_space_x = p->screen_space_x;
-            soft_billboard.screen_space_y = p->screen_space_y;
-            soft_billboard.screen_space_z = p->screen_space_z;
-            soft_billboard.sParentBillboardID = i;
-            soft_billboard.screenspace_projection_factor_x =
-                p->screenspace_projection_factor_x;
-            soft_billboard.screenspace_projection_factor_y =
-                p->screenspace_projection_factor_y;
-            soft_billboard.object_pid = p->object_pid;
-            soft_billboard.uFlags = p->field_1E;
-            soft_billboard.sTintColor = p->sTintColor;
-
-            DrawBillboard_Indoor(&soft_billboard, p);
-        }
     }
 }
 
@@ -781,6 +615,7 @@ struct twodverts {
     GLfloat b;
     GLfloat a;
     GLfloat texid;
+    GLfloat paletteid;
 };
 
 twodverts twodshaderstore[500] = {};
@@ -814,6 +649,7 @@ void RenderOpenGL::ScreenFade(unsigned int color, float t) {
     twodshaderstore[twodvertscnt].b = blue;
     twodshaderstore[twodvertscnt].a = t;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     twodshaderstore[twodvertscnt].x = drawz;
@@ -826,6 +662,7 @@ void RenderOpenGL::ScreenFade(unsigned int color, float t) {
     twodshaderstore[twodvertscnt].b = blue;
     twodshaderstore[twodvertscnt].a = t;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     twodshaderstore[twodvertscnt].x = drawz;
@@ -838,6 +675,7 @@ void RenderOpenGL::ScreenFade(unsigned int color, float t) {
     twodshaderstore[twodvertscnt].b = blue;
     twodshaderstore[twodvertscnt].a = t;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     ////////////////////////////////
@@ -852,6 +690,7 @@ void RenderOpenGL::ScreenFade(unsigned int color, float t) {
     twodshaderstore[twodvertscnt].b = blue;
     twodshaderstore[twodvertscnt].a = t;
     twodshaderstore[twodvertscnt].texid = 0;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     twodshaderstore[twodvertscnt].x = drawz;
@@ -864,6 +703,7 @@ void RenderOpenGL::ScreenFade(unsigned int color, float t) {
     twodshaderstore[twodvertscnt].b = blue;
     twodshaderstore[twodvertscnt].a = t;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     twodshaderstore[twodvertscnt].x = drawx;
@@ -876,6 +716,7 @@ void RenderOpenGL::ScreenFade(unsigned int color, float t) {
     twodshaderstore[twodvertscnt].b = blue;
     twodshaderstore[twodvertscnt].a = t;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     if (twodvertscnt > 490) DrawTwodVerts();
@@ -890,7 +731,7 @@ void RenderOpenGL::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
 
 
 
-void RenderOpenGL::DrawImage(Image *img, const Rect &rect) {
+void RenderOpenGL::DrawImage(Image *img, const Rect &rect, uint paletteid) {
     if (!img) {
         if (engine->config->debug.VerboseLogging.Get())
             logger->Warning("Null img passed to DrawImage");
@@ -918,10 +759,10 @@ void RenderOpenGL::DrawImage(Image *img, const Rect &rect) {
     float draww = static_cast<float>(std::min(w, this->clip_w));
     float drawz = static_cast<float>(std::min(z, this->clip_z));
 
-    float texx = (drawx - x) / float(width);
-    float texy = (drawy - y) / float(height);
-    float texz = float(drawz) / z;
-    float texw = float(draww) / w;
+    float texx = (drawx - x) / float(z - x);
+    float texy = (drawy - y) / float(w - y);
+    float texz = (drawz - x) / float(z - x);
+    float texw = (draww - y) / float(w - y);
 
     // 0 1 2 / 0 2 3
 
@@ -935,6 +776,7 @@ void RenderOpenGL::DrawImage(Image *img, const Rect &rect) {
     twodshaderstore[twodvertscnt].b = 1;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
 
     twodshaderstore[twodvertscnt].x = drawz;
@@ -947,6 +789,7 @@ void RenderOpenGL::DrawImage(Image *img, const Rect &rect) {
     twodshaderstore[twodvertscnt].b = 1;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
 
     twodshaderstore[twodvertscnt].x = drawz;
@@ -959,6 +802,7 @@ void RenderOpenGL::DrawImage(Image *img, const Rect &rect) {
     twodshaderstore[twodvertscnt].b = 1;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
 
     ////////////////////////////////
@@ -973,6 +817,7 @@ void RenderOpenGL::DrawImage(Image *img, const Rect &rect) {
     twodshaderstore[twodvertscnt].b = 1;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
 
     twodshaderstore[twodvertscnt].x = drawz;
@@ -985,6 +830,7 @@ void RenderOpenGL::DrawImage(Image *img, const Rect &rect) {
     twodshaderstore[twodvertscnt].b = 1;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
 
     twodshaderstore[twodvertscnt].x = drawx;
@@ -997,6 +843,7 @@ void RenderOpenGL::DrawImage(Image *img, const Rect &rect) {
     twodshaderstore[twodvertscnt].b = 1;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
 
     if (twodvertscnt > 490) DrawTwodVerts();
@@ -1171,7 +1018,7 @@ void RenderOpenGL::DrawMonsterPortrait(Rect rc, SpriteFrame *Portrait, int Y_Off
     rct.w = rct.y + Portrait->hw_sprites[0]->uAreaHeight;
 
     render->SetUIClipRect(rc.x, rc.y, rc.z, rc.w);
-    render->DrawImage(Portrait->hw_sprites[0]->texture, rct);
+    render->DrawImage(Portrait->hw_sprites[0]->texture, rct, Portrait->GetPaletteIndex());
     render->ResetUIClipRect();
 }
 
@@ -1482,19 +1329,19 @@ void RenderOpenGL::BeginDecals() {
         glBufferData(GL_ARRAY_BUFFER, sizeof(GLdecalverts) * 10000, decalshaderstore, GL_DYNAMIC_DRAW);
 
         // position attribute
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void *)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLdecalverts), (void *)offsetof(GLdecalverts, x));
         glEnableVertexAttribArray(0);
         // tex uv attribute
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void *)(3 * sizeof(GLfloat)));
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLdecalverts), (void *)offsetof(GLdecalverts, u));
         glEnableVertexAttribArray(1);
         // tex unit attribute
-        glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void *)(5 * sizeof(GLfloat)));
+        glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(GLdecalverts), (void *)offsetof(GLdecalverts, texunit));
         glEnableVertexAttribArray(2);
         // colours
-        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void *)(6 * sizeof(GLfloat)));
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(GLdecalverts), (void *)offsetof(GLdecalverts, red));
         glEnableVertexAttribArray(3);
         // attribs - not used here yet
-        glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void *)(9 * sizeof(GLfloat)));
+        glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(GLdecalverts), (void *)offsetof(GLdecalverts, attribs));
         glEnableVertexAttribArray(4);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -1753,6 +1600,7 @@ void RenderOpenGL::DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int 
     twodshaderstore[twodvertscnt].b = b;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     twodshaderstore[twodvertscnt].x = drawz;
@@ -1765,6 +1613,7 @@ void RenderOpenGL::DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int 
     twodshaderstore[twodvertscnt].b = b;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     twodshaderstore[twodvertscnt].x = drawz;
@@ -1777,6 +1626,7 @@ void RenderOpenGL::DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int 
     twodshaderstore[twodvertscnt].b = b;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     ////////////////////////////////
@@ -1791,6 +1641,7 @@ void RenderOpenGL::DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int 
     twodshaderstore[twodvertscnt].b = b;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     twodshaderstore[twodvertscnt].x = drawz;
@@ -1803,6 +1654,7 @@ void RenderOpenGL::DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int 
     twodshaderstore[twodvertscnt].b = b;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     twodshaderstore[twodvertscnt].x = drawx;
@@ -1815,6 +1667,7 @@ void RenderOpenGL::DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int 
     twodshaderstore[twodvertscnt].b = b;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     if (twodvertscnt > 490) DrawTwodVerts();
@@ -1946,7 +1799,7 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].screen_space_z = view_x;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].screenspace_projection_factor_x = _v41;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].screenspace_projection_factor_y = _v41;
-                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].uPalette = frame->uPaletteIndex;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].uPaletteIndex = frame->GetPaletteIndex();
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].field_1E = v38 | 0x200;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Decoration, i);
@@ -2064,7 +1917,7 @@ Texture *RenderOpenGL::CreateTexture(const std::string &name) {
 Texture *RenderOpenGL::CreateSprite(const std::string &name, unsigned int palette_id,
                                     /*refactor*/ unsigned int lod_sprite_id) {
     return TextureOpenGL::Create(
-        new Sprites_LOD_Loader(pSprites_LOD, palette_id, name, lod_sprite_id));
+        new Sprites_LOD_Loader(pSprites_LOD, palette_id, name, lod_sprite_id, engine->config->graphics.HWLSprites.Get()));
 }
 
 void RenderOpenGL::Update_Texture(Texture *texture) {
@@ -2383,20 +2236,20 @@ void RenderOpenGL::DrawTerrainD3D() {
         glBufferData(GL_ARRAY_BUFFER, sizeof(terrshaderstore), terrshaderstore, GL_STATIC_DRAW);
         // submit data layout
         // position attribute
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, x));
         glEnableVertexAttribArray(0);
         // tex uv attribute
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)(3 * sizeof(GLfloat)));
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, u));
         glEnableVertexAttribArray(1);
         // tex unit attribute
         // tex array layer attribute
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)(5 * sizeof(GLfloat)));
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, texunit));
         glEnableVertexAttribArray(2);
         // normals
-        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)(7 * sizeof(GLfloat)));
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, normx));
         glEnableVertexAttribArray(3);
         // attribs - not used here yet
-        glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)(10 * sizeof(GLfloat)));
+        glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, attribs));
         glEnableVertexAttribArray(4);
 
         // texture set up - load in all previously found
@@ -2995,16 +2848,16 @@ void RenderOpenGL::DrawForcePerVerts() {
         glBufferData(GL_ARRAY_BUFFER, sizeof(forceperstore), forceperstore, GL_DYNAMIC_DRAW);
 
         // position attribute
-        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, (12 * sizeof(GLfloat)), (void *)0);
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(forcepersverts), (void *)offsetof(forcepersverts, x));
         glEnableVertexAttribArray(0);
         // tex uv
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (12 * sizeof(GLfloat)), (void *)(4 * sizeof(GLfloat)));
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(forcepersverts), (void *)offsetof(forcepersverts, u));
         glEnableVertexAttribArray(1);
         // screen space depth
-        glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, (12 * sizeof(GLfloat)), (void *)(7 * sizeof(GLfloat)));
+        glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(forcepersverts), (void *)offsetof(forcepersverts, screenspace));
         glEnableVertexAttribArray(2);
         // colour
-        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, (12 * sizeof(GLfloat)), (void *)(8 * sizeof(GLfloat)));
+        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(forcepersverts), (void *)offsetof(forcepersverts, r));
         glEnableVertexAttribArray(3);
     }
 
@@ -3139,6 +2992,7 @@ struct billbverts {
     GLfloat screenspace;
     GLfloat texid;
     GLfloat blend;
+    GLfloat paletteindex;
 };
 
 billbverts billbstore[1000] {};
@@ -3172,7 +3026,15 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         //    }
         //}
 
+        //int palette{ pBillboardRenderListD3D[i].PaletteID};
+        int paletteindex{ pBillboardRenderListD3D[i].PaletteIndex };
+
+        if (engine->config->graphics.HWLSprites.Get())
+            paletteindex = 0;
+
         if (pBillboardRenderListD3D[i].texture) {
+            //if (!engine->config->graphics.HWLSprites.Get())
+            //    palette = pBillboardRenderListD3D[i].texture->g
             auto texture = (TextureOpenGL *)pBillboardRenderListD3D[i].texture;
             gltexid = texture->GetOpenGlTexture();
         } else {
@@ -3199,8 +3061,8 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].x = billboard->pQuads[0].pos.x;
         billbstore[billbstorecnt].y = billboard->pQuads[0].pos.y;
         billbstore[billbstorecnt].z = thisdepth;
-        billbstore[billbstorecnt].u = billboard->pQuads[0].texcoord.x;
-        billbstore[billbstorecnt].v = billboard->pQuads[0].texcoord.y;
+        billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[0].texcoord.x, 0.01f, 0.99f);
+        billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[0].texcoord.y, 0.01f, 0.99f);
         billbstore[billbstorecnt].r = ((billboard->pQuads[0].diffuse >> 16) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].g = ((billboard->pQuads[0].diffuse >> 8) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].b = ((billboard->pQuads[0].diffuse >> 0) & 0xFF) / 255.0f;
@@ -3208,13 +3070,14 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
         billbstore[billbstorecnt].blend = thisblend;
+        billbstore[billbstorecnt].paletteindex = paletteindex;
         billbstorecnt++;
 
         billbstore[billbstorecnt].x = billboard->pQuads[1].pos.x;
         billbstore[billbstorecnt].y = billboard->pQuads[1].pos.y;
         billbstore[billbstorecnt].z = thisdepth;
-        billbstore[billbstorecnt].u = billboard->pQuads[1].texcoord.x;
-        billbstore[billbstorecnt].v = billboard->pQuads[1].texcoord.y;
+        billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[1].texcoord.x, 0.01f, 0.99f);
+        billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[1].texcoord.y, 0.01f, 0.99f);
         billbstore[billbstorecnt].r = ((billboard->pQuads[1].diffuse >> 16) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].g = ((billboard->pQuads[1].diffuse >> 8) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].b = ((billboard->pQuads[1].diffuse >> 0) & 0xFF) / 255.0f;
@@ -3222,13 +3085,14 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
         billbstore[billbstorecnt].blend = thisblend;
+        billbstore[billbstorecnt].paletteindex = paletteindex;
         billbstorecnt++;
 
         billbstore[billbstorecnt].x = billboard->pQuads[2].pos.x;
         billbstore[billbstorecnt].y = billboard->pQuads[2].pos.y;
         billbstore[billbstorecnt].z = thisdepth;
-        billbstore[billbstorecnt].u = billboard->pQuads[2].texcoord.x;
-        billbstore[billbstorecnt].v = billboard->pQuads[2].texcoord.y;
+        billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[2].texcoord.x, 0.01f, 0.99f);
+        billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[2].texcoord.y, 0.01f, 0.99f);
         billbstore[billbstorecnt].r = ((billboard->pQuads[2].diffuse >> 16) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].g = ((billboard->pQuads[2].diffuse >> 8) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].b = ((billboard->pQuads[2].diffuse >> 0) & 0xFF) / 255.0f;
@@ -3236,6 +3100,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
         billbstore[billbstorecnt].blend = thisblend;
+        billbstore[billbstorecnt].paletteindex = paletteindex;
         billbstorecnt++;
 
         ////////////////////////////////
@@ -3244,8 +3109,8 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
             billbstore[billbstorecnt].x = billboard->pQuads[0].pos.x;
             billbstore[billbstorecnt].y = billboard->pQuads[0].pos.y;
             billbstore[billbstorecnt].z = thisdepth;
-            billbstore[billbstorecnt].u = billboard->pQuads[0].texcoord.x;
-            billbstore[billbstorecnt].v = billboard->pQuads[0].texcoord.y;
+            billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[0].texcoord.x, 0.01f, 0.99f);
+            billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[0].texcoord.y, 0.01f, 0.99f);
             billbstore[billbstorecnt].r = ((billboard->pQuads[0].diffuse >> 16) & 0xFF) / 255.0f;
             billbstore[billbstorecnt].g = ((billboard->pQuads[0].diffuse >> 8) & 0xFF) / 255.0f;
             billbstore[billbstorecnt].b = ((billboard->pQuads[0].diffuse >> 0) & 0xFF) / 255.0f;
@@ -3253,13 +3118,14 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
             billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
             billbstore[billbstorecnt].texid = gltexid;
             billbstore[billbstorecnt].blend = thisblend;
+            billbstore[billbstorecnt].paletteindex = paletteindex;
             billbstorecnt++;
 
             billbstore[billbstorecnt].x = billboard->pQuads[2].pos.x;
             billbstore[billbstorecnt].y = billboard->pQuads[2].pos.y;
             billbstore[billbstorecnt].z = thisdepth;
-            billbstore[billbstorecnt].u = billboard->pQuads[2].texcoord.x;
-            billbstore[billbstorecnt].v = billboard->pQuads[2].texcoord.y;
+            billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[2].texcoord.x, 0.01f, 0.99f);
+            billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[2].texcoord.y, 0.01f, 0.99f);
             billbstore[billbstorecnt].r = ((billboard->pQuads[2].diffuse >> 16) & 0xFF) / 255.0f;
             billbstore[billbstorecnt].g = ((billboard->pQuads[2].diffuse >> 8) & 0xFF) / 255.0f;
             billbstore[billbstorecnt].b = ((billboard->pQuads[2].diffuse >> 0) & 0xFF) / 255.0f;
@@ -3267,13 +3133,14 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
             billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
             billbstore[billbstorecnt].texid = gltexid;
             billbstore[billbstorecnt].blend = thisblend;
+            billbstore[billbstorecnt].paletteindex = paletteindex;
             billbstorecnt++;
 
             billbstore[billbstorecnt].x = billboard->pQuads[3].pos.x;
             billbstore[billbstorecnt].y = billboard->pQuads[3].pos.y;
             billbstore[billbstorecnt].z = thisdepth;
-            billbstore[billbstorecnt].u = billboard->pQuads[3].texcoord.x;
-            billbstore[billbstorecnt].v = billboard->pQuads[3].texcoord.y;
+            billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[3].texcoord.x, 0.01f, 0.99f);
+            billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[3].texcoord.y, 0.01f, 0.99f);
             billbstore[billbstorecnt].r = ((billboard->pQuads[3].diffuse >> 16) & 0xFF) / 255.0f;
             billbstore[billbstorecnt].g = ((billboard->pQuads[3].diffuse >> 8) & 0xFF) / 255.0f;
             billbstore[billbstorecnt].b = ((billboard->pQuads[3].diffuse >> 0) & 0xFF) / 255.0f;
@@ -3281,6 +3148,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
             billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
             billbstore[billbstorecnt].texid = gltexid;
             billbstore[billbstorecnt].blend = thisblend;
+            billbstore[billbstorecnt].paletteindex = paletteindex;
             billbstorecnt++;
         }
 
@@ -3311,28 +3179,50 @@ void RenderOpenGL::DrawBillboards() {
         glBufferData(GL_ARRAY_BUFFER, sizeof(billbstore), billbstore, GL_DYNAMIC_DRAW);
 
         // position attribute
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (12 * sizeof(GLfloat)), (void *)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(billbverts), (void *)offsetof(billbverts, x));
         glEnableVertexAttribArray(0);
         // tex uv
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (12 * sizeof(GLfloat)), (void *)(3 * sizeof(GLfloat)));
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(billbverts), (void *)offsetof(billbverts, u));
         glEnableVertexAttribArray(1);
         // colour
-        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, (12 * sizeof(GLfloat)), (void *)(5 * sizeof(GLfloat)));
+        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(billbverts), (void *)offsetof(billbverts, r));
         glEnableVertexAttribArray(2);
         // screenspace
-        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, (12 * sizeof(GLfloat)), (void *)(9 * sizeof(GLfloat)));
+        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(billbverts), (void *)offsetof(billbverts, screenspace));
         glEnableVertexAttribArray(3);
         // texid
-        glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, (12 * sizeof(GLfloat)), (void *)(10 * sizeof(GLfloat)));
-        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(billbverts), (void *)offsetof(billbverts, texid));
+        glEnableVertexAttribArray(4);
+        // palette index
+        glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(billbverts), (void *)offsetof(billbverts, paletteindex));
+        glEnableVertexAttribArray(5);
+    }
+
+    if (palbuf == 0) {
+        // generate palette buffer texture
+        glGenBuffers(1, &palbuf);
+        glBindBuffer(GL_TEXTURE_BUFFER, palbuf);
+        glBufferData(GL_TEXTURE_BUFFER, pPaletteManager->GetGLPaletteSize(), pPaletteManager->GetGLPalettePtr(), GL_STATIC_DRAW);
+
+        glGenTextures(1, &paltex);
+        glBindTexture(GL_TEXTURE_BUFFER, paltex);
+        glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
+        glBindBuffer(GL_TEXTURE_BUFFER, 0);
+
+        pPaletteManager->GLPaletteReset();
     }
 
     // update buffer
     glBindBuffer(GL_ARRAY_BUFFER, billbVBO);
-
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(billbverts) * billbstorecnt, billbstore);
-
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    if (pPaletteManager->GetGLPaletteNeedsUpdate()) {
+        glBindBuffer(GL_TEXTURE_BUFFER, palbuf);
+        glBufferData(GL_TEXTURE_BUFFER, pPaletteManager->GetGLPaletteSize(), pPaletteManager->GetGLPalettePtr(), GL_STATIC_DRAW);
+        glBindBuffer(GL_TEXTURE_BUFFER, 0);
+        pPaletteManager->GLPaletteReset();
+    }
 
     glBindVertexArray(billbVAO);
     glEnableVertexAttribArray(0);
@@ -3340,8 +3230,20 @@ void RenderOpenGL::DrawBillboards() {
     glEnableVertexAttribArray(2);
     glEnableVertexAttribArray(3);
     glEnableVertexAttribArray(4);
+    glEnableVertexAttribArray(5);
 
     glUseProgram(billbshader.ID);
+
+    // set sampler to palette
+    glUniform1i(glGetUniformLocation(billbshader.ID, "palbuf"), GLint(1));
+    glActiveTexture(GL_TEXTURE0 + 1);
+    glBindTexture(GL_TEXTURE_BUFFER, paltex);
+    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
+    glActiveTexture(GL_TEXTURE0);
+
+    GLboolean repaint = !engine->config->graphics.HWLSprites.Get();
+    glUniform1i(glGetUniformLocation(billbshader.ID, "repaint"), repaint);
+
 
     // set sampler to texure0
     glUniform1i(glGetUniformLocation(billbshader.ID, "texture0"), GLint(0));
@@ -3362,12 +3264,24 @@ void RenderOpenGL::DrawBillboards() {
         // set texture
         GLfloat thistex = billbstore[offset].texid;
         glBindTexture(GL_TEXTURE_2D, billbstore[offset].texid);
+        if (repaint && billbstore[offset].paletteindex) {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        } else {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        }
 
         GLfloat thisblend = billbstore[offset].blend;
-        if (thisblend == 0.0)
+        if (thisblend == 0.0) {
+            // disable alpha blending and enable fog for opaque items
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        else
+            glUniform1f(glGetUniformLocation(billbshader.ID, "fog.fogstart"), GLfloat(fogstart));
+        } else {
+            // enable blending and disable fog for transparent items
             glBlendFunc(GL_ONE, GL_ONE);
+            glUniform1f(glGetUniformLocation(billbshader.ID, "fog.fogstart"), GLfloat(fogend));
+        }
 
 
         int cnt = 0;
@@ -3391,11 +3305,11 @@ void RenderOpenGL::DrawBillboards() {
     glDisableVertexAttribArray(2);
     glDisableVertexAttribArray(3);
     glDisableVertexAttribArray(4);
+    glDisableVertexAttribArray(5);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glBindVertexArray(0);
-
     billbstorecnt = 0;
 }
 
@@ -3500,6 +3414,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
     twodshaderstore[twodvertscnt].b = b;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     twodshaderstore[twodvertscnt].x = drawz;
@@ -3512,6 +3427,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
     twodshaderstore[twodvertscnt].b = b;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     twodshaderstore[twodvertscnt].x = drawz;
@@ -3524,6 +3440,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
     twodshaderstore[twodvertscnt].b = b;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     ////////////////////////////////
@@ -3538,6 +3455,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
     twodshaderstore[twodvertscnt].b = b;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     twodshaderstore[twodvertscnt].x = drawz;
@@ -3550,6 +3468,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
     twodshaderstore[twodvertscnt].b = b;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     twodshaderstore[twodvertscnt].x = drawx;
@@ -3562,6 +3481,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
     twodshaderstore[twodvertscnt].b = b;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     if (twodvertscnt > 490) DrawTwodVerts();
@@ -3622,6 +3542,7 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, i
     twodshaderstore[twodvertscnt].b = b;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     twodshaderstore[twodvertscnt].x = drawz;
@@ -3634,6 +3555,7 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, i
     twodshaderstore[twodvertscnt].b = b;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     twodshaderstore[twodvertscnt].x = drawz;
@@ -3646,6 +3568,7 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, i
     twodshaderstore[twodvertscnt].b = b;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     ////////////////////////////////
@@ -3660,6 +3583,7 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, i
     twodshaderstore[twodvertscnt].b = b;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     twodshaderstore[twodvertscnt].x = drawz;
@@ -3672,6 +3596,7 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, i
     twodshaderstore[twodvertscnt].b = b;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     twodshaderstore[twodvertscnt].x = drawx;
@@ -3684,6 +3609,7 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, i
     twodshaderstore[twodvertscnt].b = b;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     if (twodvertscnt > 490) DrawTwodVerts();
@@ -3737,16 +3663,16 @@ void RenderOpenGL::EndTextNew() {
         glBufferData(GL_ARRAY_BUFFER, sizeof(textshaderstore), NULL, GL_DYNAMIC_DRAW);
 
         // position attribute
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void *)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void *)offsetof(twodverts, x));
         glEnableVertexAttribArray(0);
         // tex uv
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void *)(3 * sizeof(GLfloat)));
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void *)offsetof(twodverts, u));
         glEnableVertexAttribArray(1);
         // colour
-        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void *)(5 * sizeof(GLfloat)));
+        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void *)offsetof(twodverts, r));
         glEnableVertexAttribArray(2);
         // texid
-        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void *)(9 * sizeof(GLfloat)));
+        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void *)offsetof(twodverts, texid));
         glEnableVertexAttribArray(3);
     }
 
@@ -3850,6 +3776,7 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     textshaderstore[textvertscnt].b = b;
     textshaderstore[textvertscnt].a = 1.0f;
     textshaderstore[textvertscnt].texid = (isshadow);
+    textshaderstore[textvertscnt].paletteid = 0;
     textvertscnt++;
 
     textshaderstore[textvertscnt].x = drawz;
@@ -3862,6 +3789,7 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     textshaderstore[textvertscnt].b = b;
     textshaderstore[textvertscnt].a = 1.0f;
     textshaderstore[textvertscnt].texid = (isshadow);
+    textshaderstore[textvertscnt].paletteid = 0;
     textvertscnt++;
 
     textshaderstore[textvertscnt].x = drawz;
@@ -3874,6 +3802,7 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     textshaderstore[textvertscnt].b = b;
     textshaderstore[textvertscnt].a = 1;
     textshaderstore[textvertscnt].texid = (isshadow);
+    textshaderstore[textvertscnt].paletteid = 0;
     textvertscnt++;
 
     ////////////////////////////////
@@ -3887,6 +3816,7 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     textshaderstore[textvertscnt].b = b;
     textshaderstore[textvertscnt].a = 1;
     textshaderstore[textvertscnt].texid = (isshadow);
+    textshaderstore[textvertscnt].paletteid = 0;
     textvertscnt++;
 
     textshaderstore[textvertscnt].x = drawz;
@@ -3899,6 +3829,7 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     textshaderstore[textvertscnt].b = b;
     textshaderstore[textvertscnt].a = 1;
     textshaderstore[textvertscnt].texid = (isshadow);
+    textshaderstore[textvertscnt].paletteid = 0;
     textvertscnt++;
 
     textshaderstore[textvertscnt].x = drawx;
@@ -3911,6 +3842,7 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     textshaderstore[textvertscnt].b = b;
     textshaderstore[textvertscnt].a = 1;
     textshaderstore[textvertscnt].texid = (isshadow);
+    textshaderstore[textvertscnt].paletteid = 0;
     textvertscnt++;
 
     if (textvertscnt > 9990) EndTextNew();
@@ -4122,20 +4054,20 @@ void RenderOpenGL::DrawBuildingsD3D() {
             glBufferData(GL_ARRAY_BUFFER, sizeof(GLshaderverts) * 20000, outbuildshaderstore[l], GL_DYNAMIC_DRAW);
 
             // position attribute
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)0);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, x));
             glEnableVertexAttribArray(0);
             // tex uv attribute
-            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)(3 * sizeof(GLfloat)));
+            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, u));
             glEnableVertexAttribArray(1);
             // tex unit attribute
             // tex array layer attribute
-            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)(5 * sizeof(GLfloat)));
+            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, texunit));
             glEnableVertexAttribArray(2);
             // normals
-            glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)(7 * sizeof(GLfloat)));
+            glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, normx));
             glEnableVertexAttribArray(3);
             // attribs - not used here yet
-            glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)(10 * sizeof(GLfloat)));
+            glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, attribs));
             glEnableVertexAttribArray(4);
         }
 
@@ -4230,9 +4162,9 @@ void RenderOpenGL::DrawBuildingsD3D() {
                                         face.texunit = texunit = (unitlayer & 0xFF00) >> 8;
                                     } else {
                                         logger->Warning("Texture not found in map!");
-                                        // TODO(pskelton): set to water for now - are there any instances where this will occur??
-                                        face.texlayer = 0;
-                                        face.texunit = 0;
+                                        // TODO(pskelton): set to water for now - fountains in walls of mist
+                                        texunit = face.texlayer = 0;
+                                        texlayer = face.texunit = 0;
                                     }
                                 }
 
@@ -4749,20 +4681,20 @@ void RenderOpenGL::DrawIndoorFaces() {
                 glBufferData(GL_ARRAY_BUFFER, sizeof(GLshaderverts) * 20000, NULL, GL_DYNAMIC_DRAW);
 
                 // position attribute
-                glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void*)0);
+                glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, x));
                 glEnableVertexAttribArray(0);
                 // tex uv attribute
-                glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void*)(3 * sizeof(GLfloat)));
+                glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, u));
                 glEnableVertexAttribArray(1);
                 // tex unit attribute
                 // tex array layer attribute
-                glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void*)(5 * sizeof(GLfloat)));
+                glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, texunit));
                 glEnableVertexAttribArray(2);
                 // normals
-                glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void*)(7 * sizeof(GLfloat)));
+                glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, normx));
                 glEnableVertexAttribArray(3);
-                // attribs - not used here yet
-                glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void*)(10 * sizeof(GLfloat)));
+                // attribs
+                glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, attribs));
                 glEnableVertexAttribArray(4);
             }
 
@@ -4927,9 +4859,9 @@ void RenderOpenGL::DrawIndoorFaces() {
                                     face->texunit = texunit = (unitlayer & 0xFF00) >> 8;
                                 } else {
                                     logger->Warning("Texture not found in map!");
-                                    // TODO(pskelton): set to water for now - are there any instances where this will occur??
-                                    face->texlayer = 0;
-                                    face->texunit = 0;
+                                    // TODO(pskelton): set to water for now - fountains in walls of mist
+                                    texlayer = face->texlayer = 0;
+                                    texunit = face->texunit = 0;
                                 }
                             }
 
@@ -5437,6 +5369,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     twodshaderstore[twodvertscnt].b = b;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     twodshaderstore[twodvertscnt].x = drawz;
@@ -5449,6 +5382,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     twodshaderstore[twodvertscnt].b = b;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     twodshaderstore[twodvertscnt].x = drawz;
@@ -5461,6 +5395,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     twodshaderstore[twodvertscnt].b = b;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     ////////////////////////////////
@@ -5475,6 +5410,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     twodshaderstore[twodvertscnt].b = b;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     twodshaderstore[twodvertscnt].x = drawz;
@@ -5487,6 +5423,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     twodshaderstore[twodvertscnt].b = b;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     twodshaderstore[twodvertscnt].x = drawx;
@@ -5499,6 +5436,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     twodshaderstore[twodvertscnt].b = b;
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
+    twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
 
     if (twodvertscnt > 490) DrawTwodVerts();
@@ -5566,6 +5504,7 @@ bool RenderOpenGL::InitShaders() {
         return false;
     }
     billbVAO = 0;
+    palbuf = 0;
 
     decalshader.build(MakeDataPath("shaders", "gldecalshader.vert").c_str(), MakeDataPath("shaders", "gldecalshader.frag").c_str());
     if (decalshader.ID == 0) {
@@ -5620,6 +5559,9 @@ void RenderOpenGL::ReloadShaders() {
     glDeleteVertexArrays(1, &billbVAO);
     glDeleteBuffers(1, &billbVBO);
     billbVAO = billbVBO = 0;
+    glDeleteTextures(1, &paltex);
+    glDeleteBuffers(1, &palbuf);
+    paltex = palbuf = 0;
     billbstorecnt = 0;
 
     if (!decalshader.reload()) logger->Warning("Decal shader failed to reload!");
@@ -5730,33 +5672,66 @@ void RenderOpenGL::DrawTwodVerts() {
         glBufferData(GL_ARRAY_BUFFER, sizeof(twodshaderstore), twodshaderstore, GL_DYNAMIC_DRAW);
 
         // position attribute
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void*)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void*)offsetof(twodverts, x));
         glEnableVertexAttribArray(0);
         // tex uv
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void*)(3 * sizeof(GLfloat)));
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void*)offsetof(twodverts, u));
         glEnableVertexAttribArray(1);
         // colour
-        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void*)(5 * sizeof(GLfloat)));
+        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void*)offsetof(twodverts, r));
         glEnableVertexAttribArray(2);
         // texid
-        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void*)(9 * sizeof(GLfloat)));
+        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void*)offsetof(twodverts, texid));
         glEnableVertexAttribArray(3);
+        // paletteid
+        glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(twodverts), (void*)offsetof(twodverts, paletteid));
+        glEnableVertexAttribArray(4);
+    }
+
+    if (palbuf == 0) {
+        // generate palette buffer texture
+        glGenBuffers(1, &palbuf);
+        glBindBuffer(GL_TEXTURE_BUFFER, palbuf);
+        glBufferData(GL_TEXTURE_BUFFER, pPaletteManager->GetGLPaletteSize(), pPaletteManager->GetGLPalettePtr(), GL_STATIC_DRAW);
+
+        glGenTextures(1, &paltex);
+        glBindTexture(GL_TEXTURE_BUFFER, paltex);
+        glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
+        glBindBuffer(GL_TEXTURE_BUFFER, 0);
+
+        pPaletteManager->GLPaletteReset();
     }
 
     // update buffer
     glBindBuffer(GL_ARRAY_BUFFER, twodVBO);
-
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(twodverts) * twodvertscnt, twodshaderstore);
-
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    if (pPaletteManager->GetGLPaletteNeedsUpdate()) {
+        glBindBuffer(GL_TEXTURE_BUFFER, palbuf);
+        glBufferData(GL_TEXTURE_BUFFER, pPaletteManager->GetGLPaletteSize(), pPaletteManager->GetGLPalettePtr(), GL_STATIC_DRAW);
+        glBindBuffer(GL_TEXTURE_BUFFER, 0);
+        pPaletteManager->GLPaletteReset();
+    }
 
     glBindVertexArray(twodVAO);
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
     glEnableVertexAttribArray(3);
+    glEnableVertexAttribArray(4);
 
     glUseProgram(twodshader.ID);
+
+    // set sampler to palette
+    glUniform1i(glGetUniformLocation(twodshader.ID, "palbuf"), GLint(1));
+    glActiveTexture(GL_TEXTURE0 + 1);
+    glBindTexture(GL_TEXTURE_BUFFER, paltex);
+    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
+    glActiveTexture(GL_TEXTURE0);
+
+    GLboolean repaint = !engine->config->graphics.HWLSprites.Get();
+    glUniform1i(glGetUniformLocation(twodshader.ID, "repaint"), repaint);
 
     // glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);
@@ -5774,6 +5749,13 @@ void RenderOpenGL::DrawTwodVerts() {
         // set texture
         GLfloat thistex = twodshaderstore[offset].texid;
         glBindTexture(GL_TEXTURE_2D, static_cast<GLuint>(twodshaderstore[offset].texid));
+        if (repaint && twodshaderstore[offset].paletteid) {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        } else {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        }
 
         int cnt = 0;
         do {
@@ -5795,6 +5777,7 @@ void RenderOpenGL::DrawTwodVerts() {
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
     glDisableVertexAttribArray(3);
+    glDisableVertexAttribArray(4);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -5802,6 +5785,8 @@ void RenderOpenGL::DrawTwodVerts() {
 
     twodvertscnt = 0;
     render->SetUIClipRect(savex, savey, savez, savew);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
 

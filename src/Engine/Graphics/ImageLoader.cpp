@@ -10,6 +10,7 @@
 #include "Engine/Graphics/PCX.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/ZlibWrapper.h"
+#include "Engine/Graphics/PaletteManager.h"
 
 // List of textures that require additional processing for transparent pixels.
 // TODO: move to WoMM config file.
@@ -441,38 +442,82 @@ bool Sprites_LOD_Loader::Load(unsigned int *width, unsigned int *height,
     *out_palette = nullptr;
     *format = IMAGE_INVALID_FORMAT;
 
-    HWLTexture *hwl = render->LoadHwlSprite(this->resource_name);
-    if (hwl) {
-        int dst_width = hwl->uWidth;
-        int dst_height = hwl->uHeight;
+    if (!this->use_hwl) {
+        Sprite *pSprite = lod->GetSprite(this->resource_name);
+        //Assert(thissprite->texture-> tex->paletted_pixels);
+        //Assert(tex->pPalette24);
 
-        int num_pixels = dst_width * dst_height;
-        auto pixels = new uint16_t[num_pixels];
-        if (pixels) {
-            // linear scaling
-            for (int s = 0; s < dst_height; ++s) {
-                for (int t = 0; t < dst_width; ++t) {
-                    unsigned int resampled_x = t * hwl->uWidth / dst_width,
-                                 resampled_y = s * hwl->uHeight / dst_height;
+        size_t w = pSprite->sprite_header->uWidth;
+        size_t h = pSprite->sprite_header->uHeight;
+        int numpix = w * h;
 
-                    unsigned short sample =
-                        hwl->pPixels[resampled_y * hwl->uWidth + resampled_x];
+        uint8_t *pixels = new uint8_t[numpix * 4];
+        memset(pixels, 0, numpix * 4);
 
-                    pixels[s * dst_width + t] = sample;
+        for (size_t y = 0; y < h; y++) {
+            for (size_t x = 0; x < w; x++) {
+                size_t p = y * w + x;
+                uint8_t bitpix = pSprite->sprite_header->bitmap[p];
+
+                int r = 0, g = 0, b = 0, a = 0;
+                r = bitpix;
+                g = 0;
+                b = 0;
+
+                if (bitpix == 0) {
+                    a = r = g = b = 0;
+                } else {
+                    a = 255;
                 }
+
+                pixels[p * 4] = b;
+                pixels[p * 4 + 1] = g;
+                pixels[p * 4 + 2] = r;
+                pixels[p * 4 + 3] = a;
             }
-
-            delete[] hwl->pPixels;
-            delete hwl;
-
-            *width = dst_width;
-            *height = dst_height;
-            *format = IMAGE_FORMAT_A1R5G5B5;
         }
 
+        *format = IMAGE_FORMAT_A8R8G8B8;
+        *width = w;
+        *height = h;
         *out_pixels = pixels;
+        *out_palette = nullptr;
         return true;
+    } else {
+        HWLTexture *hwl = render->LoadHwlSprite(this->resource_name);
+        if (hwl) {
+            int dst_width = hwl->uWidth;
+            int dst_height = hwl->uHeight;
+
+            int num_pixels = dst_width * dst_height;
+            auto pixels = new uint16_t[num_pixels];
+            if (pixels) {
+                // linear scaling
+                for (int s = 0; s < dst_height; ++s) {
+                    for (int t = 0; t < dst_width; ++t) {
+                        unsigned int resampled_x = t * hwl->uWidth / dst_width,
+                            resampled_y = s * hwl->uHeight / dst_height;
+
+                        unsigned short sample =
+                            hwl->pPixels[resampled_y * hwl->uWidth + resampled_x];
+
+                        pixels[s * dst_width + t] = sample;
+                    }
+                }
+
+                delete[] hwl->pPixels;
+                delete hwl;
+
+                *width = dst_width;
+                *height = dst_height;
+                *format = IMAGE_FORMAT_A1R5G5B5;
+            }
+
+            *out_pixels = pixels;
+            return true;
+        }
     }
 
     return false;
 }
+

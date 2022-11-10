@@ -133,7 +133,7 @@ Texture *Render::CreateTexture(const std::string &name) {
 Texture *Render::CreateSprite(const std::string &name, unsigned int palette_id,
                               unsigned int lod_sprite_id) {
     return TextureD3D::Create(
-        new Sprites_LOD_Loader(pSprites_LOD, palette_id, name, lod_sprite_id));
+        new Sprites_LOD_Loader(pSprites_LOD, palette_id, name, lod_sprite_id, engine->config->graphics.HWLSprites.Get()));
 }
 
 void Render::WritePixel16(int x, int y, uint16_t color) {
@@ -190,38 +190,6 @@ bool Render::CheckTextureStages() {
     pSurface2->Release();
 
     return bResult;
-}
-
-void Render::DrawBillboardList_BLV() {
-    SoftwareBillboard soft_billboard = {0};
-    soft_billboard.sParentBillboardID = -1;
-    //  soft_billboard.pTarget = pBLVRenderParams->pRenderTarget;
-    soft_billboard.pTargetZ = pBLVRenderParams->pTargetZBuffer;
-    //  soft_billboard.uTargetPitch = uTargetSurfacePitch;
-    soft_billboard.uViewportX = pBLVRenderParams->uViewportX;
-    soft_billboard.uViewportY = pBLVRenderParams->uViewportY;
-    soft_billboard.uViewportZ = pBLVRenderParams->uViewportZ - 1;
-    soft_billboard.uViewportW = pBLVRenderParams->uViewportW;
-
-    pODMRenderParams->uNumBillboards = ::uNumBillboardsToDraw;
-    for (uint i = 0; i < ::uNumBillboardsToDraw; ++i) {
-        RenderBillboard *p = &pBillboardRenderList[i];
-        if (p->hwsprite) {
-            soft_billboard.screen_space_x = p->screen_space_x;
-            soft_billboard.screen_space_y = p->screen_space_y;
-            soft_billboard.screen_space_z = p->screen_space_z;
-            soft_billboard.sParentBillboardID = i;
-            soft_billboard.screenspace_projection_factor_x =
-                p->screenspace_projection_factor_x;
-            soft_billboard.screenspace_projection_factor_y =
-                p->screenspace_projection_factor_y;
-            soft_billboard.object_pid = p->object_pid;
-            soft_billboard.uFlags = p->field_1E;
-            soft_billboard.sTintColor = p->sTintColor;
-
-            DrawBillboard_Indoor(&soft_billboard, p);
-        }
-    }
 }
 
 bool Render::AreRenderSurfacesOk() { return pFrontBuffer4 && pBackBuffer4; }
@@ -939,7 +907,7 @@ void Render::PrepareDecorationsRenderList_ODM() {
                                 pBillboardRenderList[::uNumBillboardsToDraw - 1]
                                     .screenspace_projection_factor_y = _v41;
                                 pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .uPalette = frame->uPaletteIndex;
+                                    .uPaletteIndex = frame->GetPaletteIndex();
                                 pBillboardRenderList[::uNumBillboardsToDraw - 1]
                                     .field_1E = v38 | 0x200;
                                 pBillboardRenderList[::uNumBillboardsToDraw - 1]
@@ -2477,143 +2445,6 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
         pCamera3D->debug_outline_d3d(d3d_vertex_buffer, uNumVertices, 0x00FF0000, 0.0);
 }
 
-void Render::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
-                                  RenderBillboard *billboard) {
-    int v11;     // eax@9
-    int v12;     // eax@9
-    double v15;  // st5@12
-    double v16;  // st4@12
-    double v17;  // st3@12
-    double v18;  // st2@12
-    int v19;     // ecx@14
-    double v20;  // st3@14
-    int v21;     // ecx@16
-    double v22;  // st3@16
-    float v27;   // [sp+24h] [bp-Ch]@5
-    float v29;   // [sp+2Ch] [bp-4h]@5
-    float v31;   // [sp+3Ch] [bp+Ch]@5
-    float a1;    // [sp+40h] [bp+10h]@5
-
-    if (this->uNumD3DSceneBegins == 0) {
-        return;
-    }
-
-    Sprite *pSprite = billboard->hwsprite;
-    int dimming_level = billboard->dimming_level;
-
-    // v4 = pSoftBillboard;
-    // v5 = (double)pSoftBillboard->zbuffer_depth;
-    // pSoftBillboarda = pSoftBillboard->zbuffer_depth;
-    // v6 = pSoftBillboard->zbuffer_depth;
-    unsigned int v7 = Billboard_ProbablyAddToListAndSortByZOrder(
-        pSoftBillboard->screen_space_z);
-    // v8 = dimming_level;
-    // device_caps = v7;
-    int v28 = dimming_level & 0xFF000000;
-    if (dimming_level & 0xFF000000) {
-        pBillboardRenderListD3D[v7].opacity = RenderBillboardD3D::Opaque_3;
-    } else {
-        pBillboardRenderListD3D[v7].opacity = RenderBillboardD3D::Transparent;
-    }
-    // v10 = a3;
-    pBillboardRenderListD3D[v7].field_90 = pSoftBillboard->field_44;
-    pBillboardRenderListD3D[v7].screen_space_z = pSoftBillboard->screen_space_z;
-    pBillboardRenderListD3D[v7].object_pid = pSoftBillboard->object_pid;
-    pBillboardRenderListD3D[v7].sParentBillboardID =
-        pSoftBillboard->sParentBillboardID;
-    // v25 = pSoftBillboard->uScreenSpaceX;
-    // v24 = pSoftBillboard->uScreenSpaceY;
-    a1 = pSoftBillboard->screenspace_projection_factor_x;
-    v29 = pSoftBillboard->screenspace_projection_factor_y;
-    v31 = (double)((pSprite->uBufferWidth >> 1) - pSprite->uAreaX);
-    v27 = (double)(pSprite->uBufferHeight - pSprite->uAreaY);
-    if (pSoftBillboard->uFlags & 4) {
-        v31 = v31 * -1.0;
-    }
-    if (config->graphics.Tinting.Get() && pSoftBillboard->sTintColor) {
-        v11 = ::GetActorTintColor(dimming_level, 0,
-                                  pSoftBillboard->screen_space_z, 0, 0);
-        v12 = BlendColors(pSoftBillboard->sTintColor, v11);
-        if (v28)
-            v12 =
-                (unsigned int)((char *)&array_77EC08[1852].pEdgeList1[17] + 3) &
-                ((unsigned int)v12 >> 1);
-    } else {
-        v12 = ::GetActorTintColor(dimming_level, 0,
-                                  pSoftBillboard->screen_space_z, 0, 0);
-    }
-    // v13 = (double)v25;
-    pBillboardRenderListD3D[v7].pQuads[0].specular = 0;
-    pBillboardRenderListD3D[v7].pQuads[0].diffuse = v12;
-    pBillboardRenderListD3D[v7].pQuads[0].pos.x =
-        pSoftBillboard->screen_space_x - v31 * a1;
-    // v14 = (double)v24;
-    // v32 = v14;
-    pBillboardRenderListD3D[v7].pQuads[0].pos.y =
-        pSoftBillboard->screen_space_y - v27 * v29;
-    v15 = 1.0 - 1.0 / (pSoftBillboard->screen_space_z * 0.061758894);
-    pBillboardRenderListD3D[v7].pQuads[0].pos.z = v15;
-    v16 = 1.0 / pSoftBillboard->screen_space_z;
-    pBillboardRenderListD3D[v7].pQuads[0].rhw =
-        1.0 / pSoftBillboard->screen_space_z;
-    pBillboardRenderListD3D[v7].pQuads[0].texcoord.x = 0.0;
-    pBillboardRenderListD3D[v7].pQuads[0].texcoord.y = 0.0;
-    v17 = (double)((pSprite->uBufferWidth >> 1) - pSprite->uAreaX);
-    v18 = (double)(pSprite->uBufferHeight - pSprite->uAreaY -
-                   pSprite->uAreaHeight);
-    if (pSoftBillboard->uFlags & 4) {
-        v17 = v17 * -1.0;
-    }
-    pBillboardRenderListD3D[v7].pQuads[1].specular = 0;
-    pBillboardRenderListD3D[v7].pQuads[1].diffuse = v12;
-    pBillboardRenderListD3D[v7].pQuads[1].pos.x =
-        pSoftBillboard->screen_space_x - v17 * a1;
-    pBillboardRenderListD3D[v7].pQuads[1].pos.y =
-        pSoftBillboard->screen_space_y - v18 * v29;
-    pBillboardRenderListD3D[v7].pQuads[1].pos.z = v15;
-    pBillboardRenderListD3D[v7].pQuads[1].rhw = v16;
-    pBillboardRenderListD3D[v7].pQuads[1].texcoord.x = 0.0;
-    pBillboardRenderListD3D[v7].pQuads[1].texcoord.y = 1.0;
-    v19 = pSprite->uBufferHeight - pSprite->uAreaY - pSprite->uAreaHeight;
-    v20 = (double)(pSprite->uAreaX + pSprite->uAreaWidth +
-                   (pSprite->uBufferWidth >> 1) - pSprite->uBufferWidth);
-    if (pSoftBillboard->uFlags & 4) {
-        v20 = v20 * -1.0;
-    }
-    pBillboardRenderListD3D[v7].pQuads[2].specular = 0;
-    pBillboardRenderListD3D[v7].pQuads[2].diffuse = v12;
-    pBillboardRenderListD3D[v7].pQuads[2].pos.x =
-        v20 * a1 + pSoftBillboard->screen_space_x;
-    pBillboardRenderListD3D[v7].pQuads[2].pos.y =
-        pSoftBillboard->screen_space_y - (double)v19 * v29;
-    pBillboardRenderListD3D[v7].pQuads[2].pos.z = v15;
-    pBillboardRenderListD3D[v7].pQuads[2].rhw = v16;
-    pBillboardRenderListD3D[v7].pQuads[2].texcoord.x = 1.0;
-    pBillboardRenderListD3D[v7].pQuads[2].texcoord.y = 1.0;
-    v21 = pSprite->uBufferHeight - pSprite->uAreaY;
-    v22 = (double)(pSprite->uAreaX + pSprite->uAreaWidth +
-                   (pSprite->uBufferWidth >> 1) - pSprite->uBufferWidth);
-    if (pSoftBillboard->uFlags & 4) {
-        v22 = v22 * -1.0;
-    }
-    pBillboardRenderListD3D[v7].pQuads[3].specular = 0;
-    pBillboardRenderListD3D[v7].pQuads[3].diffuse = v12;
-    pBillboardRenderListD3D[v7].pQuads[3].pos.x =
-        v22 * a1 + pSoftBillboard->screen_space_x;
-    pBillboardRenderListD3D[v7].pQuads[3].pos.y =
-        pSoftBillboard->screen_space_y - (double)v21 * v29;
-    pBillboardRenderListD3D[v7].pQuads[3].pos.z = v15;
-    pBillboardRenderListD3D[v7].pQuads[3].rhw = v16;
-    pBillboardRenderListD3D[v7].pQuads[3].texcoord.x = 1.0;
-    pBillboardRenderListD3D[v7].pQuads[3].texcoord.y = 0.0;
-    // v23 = pSprite->pTexture;
-    pBillboardRenderListD3D[v7].uNumVertices = 4;
-    pBillboardRenderListD3D[v7].z_order = pSoftBillboard->screen_space_z;
-    pBillboardRenderListD3D[v7].texture = pSprite->texture;
-
-    if (pSprite->texture->GetHeight() == 0 || pSprite->texture->GetWidth() == 0) __debugbreak();
-}
-
 void Render::DrawProjectile(float srcX, float srcY, float a3, float a4,
                             float dstX, float dstY, float a7, float a8,
                             Texture *texture) {
@@ -3151,7 +2982,7 @@ void Render::DrawTextureOffset(int x, int y, int offset_x, int offset_y,
     delete bitmap;
 }
 
-void Render::DrawImage(Image *image, const Rect &rect) {
+void Render::DrawImage(Image *image, const Rect &rect, const uint paletteid) {
     Gdiplus::Bitmap *bitmap = BitmapWithImage(image);
     if (bitmap == nullptr) {
         return;

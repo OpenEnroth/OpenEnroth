@@ -93,10 +93,7 @@ class RenderOpenGL : public RenderBase {
                                    unsigned int uColor, int a8) override;
 
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() override;
-    virtual void DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
-                                      RenderBillboard *) override;
     virtual void BillboardSphereSpellFX(struct SpellFX_Billboard *a1, int diffuse) override;
-    virtual void DrawBillboardList_BLV() override;
 
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
                                 float dstX, float dstY, float a7, float a8,
@@ -124,7 +121,7 @@ class RenderOpenGL : public RenderBase {
                                          int height) override;
     virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y,
                                    Image *) override;
-    virtual void DrawImage(Image *, const Rect &rect) override;
+    virtual void DrawImage(Image *, const Rect &rect, uint paletteid = 0) override;
 
     virtual void ZDrawTextureAlpha(float u, float v, Image *pTexture, int zVal) override;
     virtual void BlendTextures(int a2, int a3, Image *a4, Image *a5, int t,
@@ -303,6 +300,7 @@ class RenderOpenGL : public RenderBase {
 
     // billboards shader
     GLuint billbVBO, billbVAO;
+    GLuint palbuf, paltex;
 
     // decal shader
     GLuint decalVBO, decalVAO;

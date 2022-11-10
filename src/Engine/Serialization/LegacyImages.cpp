@@ -47,7 +47,7 @@ void Deserialize(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
 
     dst->uGlowRadius = src.uGlowRadius;
     dst->uPaletteID = src.uPaletteID;
-    dst->uPaletteIndex = src.uPaletteIndex;
+    dst->ResetPaletteIndex(src.uPaletteIndex);
     dst->uAnimTime = src.uAnimTime;
     dst->uAnimLength = src.uAnimLength;
 }

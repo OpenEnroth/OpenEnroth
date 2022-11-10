@@ -1255,6 +1255,7 @@ void SpellFxRenderer::RenderSpecialEffects() {
     }
 
     if (uAnimLength > 0) {
+        // prismatic light??
         v8 = 8 * pSpriteFrameTable->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")].uAnimLength - uAnimLength;
         v10 = pSpriteFrameTable->GetFrame(pSpriteFrameTable->FastFindSprite("spell84"), v8);
 

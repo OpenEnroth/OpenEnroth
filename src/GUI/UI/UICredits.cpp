@@ -18,7 +18,7 @@ GUICredits::GUICredits() :
 
     mm6title = assets->GetImage_PCXFromIconsLOD("mm6title.pcx");
 
-    std::string_view text = pEvents_LOD->LoadCompressedTexture("credits.txt").string_view();
+    std::string text{ pEvents_LOD->LoadCompressedTexture("credits.txt").string_view() };
 
     GUIWindow credit_window;
     credit_window.Init();
@@ -28,11 +28,11 @@ GUICredits::GUICredits() :
     credit_window.uFrameY = 19;
 
     width = 250;
-    height = pFontQuick->GetStringHeight2(pFontCChar, std::string(text), &credit_window, 0, 1) + 2 * credit_window.uFrameHeight;
+    height = pFontQuick->GetStringHeight2(pFontCChar, text, &credit_window, 0, 1) + 2 * credit_window.uFrameHeight;
     // cred_texture = Image::Create(width, height, IMAGE_FORMAT_A8R8G8B8);
     cred_texture = render->CreateTexture_Blank(width, height, IMAGE_FORMAT_A8R8G8B8);
 
-    pFontQuick->DrawCreditsEntry(pFontCChar, 0, credit_window.uFrameHeight, width, height, colorTable.CornFlowerBlue.C16(), colorTable.Primrose.C16(), std::string(text), cred_texture);
+    pFontQuick->DrawCreditsEntry(pFontCChar, 0, credit_window.uFrameHeight, width, height, colorTable.CornFlowerBlue.C16(), colorTable.Primrose.C16(), text, cred_texture);
 
     render->Update_Texture(cred_texture);
 

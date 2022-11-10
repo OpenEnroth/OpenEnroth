@@ -35,7 +35,7 @@ struct RenderBillboard {
     float fov_y;
     int field_14_actor_id;
     Sprite *hwsprite;  // int16_t HwSpriteID;
-    int16_t uPalette;
+    int16_t uPaletteIndex;
     int16_t uIndoorSectorID;
     int16_t field_1E;  // flags
     int16_t world_x;
@@ -124,7 +124,8 @@ struct RenderBillboardD3D {
           field_90(-1),
           object_pid(0),
           screen_space_z(0),
-          sParentBillboardID(-1) {}
+          sParentBillboardID(-1),
+          PaletteIndex(0) {}
 
     enum class OpacityType : uint32_t {
         Transparent = 0,
@@ -145,6 +146,9 @@ struct RenderBillboardD3D {
     unsigned short object_pid;
     short screen_space_z;
     int sParentBillboardID;
+
+    //int PaletteID;
+    int PaletteIndex;
 };
 
 struct SoftwareBillboard {
@@ -276,11 +280,8 @@ class IRender {
                                                   int angle) = 0;
 
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() = 0;
-    virtual void DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
-                                      RenderBillboard *billboard) = 0;
     virtual void BillboardSphereSpellFX(struct SpellFX_Billboard *a1, int diffuse) = 0;
     virtual void TransformBillboardsAndSetPalettesODM() = 0;
-    virtual void DrawBillboardList_BLV() = 0;
 
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
                                 float dstX, float dstY, float a7, float a8,
@@ -306,7 +307,7 @@ class IRender {
     virtual void DrawTextureAlphaNew(float u, float v, Image *) = 0;
     virtual void DrawTextureCustomHeight(float u, float v, Image *, int height) = 0;
     virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y, Image *) = 0;
-    virtual void DrawImage(Image *, const Rect &rect) = 0;
+    virtual void DrawImage(Image *, const Rect &rect, const uint paletteid = 0) = 0;
 
     virtual void ZDrawTextureAlpha(float u, float v, Image *pTexture, int zVal) = 0;
     virtual void BlendTextures(int a2, int a3, Image *a4, Image *a5, int t, int start_opacity, int end_opacity) = 0;

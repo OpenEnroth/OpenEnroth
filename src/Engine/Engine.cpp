@@ -976,10 +976,10 @@ void Engine::SecondaryInitialization() {
     pIcons_LOD->SetupPalettes(5, 6, 5);
     // pPaletteManager->SetColorChannelInfo(render->uTargetRBits,
     // render->uTargetGBits, render->uTargetBBits);
-    pPaletteManager->SetColorChannelInfo(5, 6, 5);
+    //pPaletteManager->SetColorChannelInfo(5, 6, 5);
 
-    pPaletteManager->SetMistColor(128, 128, 128);
-    pPaletteManager->RecalculateAll();
+    //pPaletteManager->SetMistColor(128, 128, 128);
+    //pPaletteManager->RecalculateAll();
     // pSprites_LOD->can_load_hardware_sprites = 1;
     pObjectList->InitializeSprites();
     pOverlayList->InitializeSprites();
@@ -1022,7 +1022,6 @@ void Engine::SecondaryInitialization() {
     Initialize_GlobalEVT();
     pBitmaps_LOD->_inlined_sub0();
     pSprites_LOD->_inlined_sub0();
-    pPaletteManager->LockAll();
 
     Initialize_GamesLOD_NewLOD();
 }
@@ -1161,7 +1160,7 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     if (mouse)
         mouse->SetCursorImage("MICON1");
 
-    pPaletteManager->ResetNonLocked();
+    pPaletteManager->Reset();
     pBitmaps_LOD->ReleaseAll2();
     pSprites_LOD->DeleteSomeOtherSprites();
     pIcons_LOD->ReleaseAll2();
@@ -1287,7 +1286,6 @@ void Engine::_461103_load_level_sub() {
     viewparams->bRedrawGameUI = true;
     uLevel_StartingPointType = MapStartPoint_Party;
     pSprites_LOD->_461397();
-    pPaletteManager->LockTestAll();
     if (pParty->pPickedItem.uItemID != ITEM_NULL)
         mouse->SetCursorBitmapFromItemID(pParty->pPickedItem.uItemID);
 }

@@ -5,10 +5,13 @@ layout (location = 1) in vec2 vaTexUV;
 layout (location = 2) in vec4 vaCol;
 layout (location = 3) in float vaScreenSpace;
 
+layout (location = 5) in float palid; 
+
 
 out vec4 colour;
 out vec2 texuv;
 out float screenspace;
+flat out uint paletteid;
 
 uniform mat4 view;
 uniform mat4 projection;
@@ -19,4 +22,5 @@ void main() {
     colour = vec4(vaCol.r, vaCol.g, vaCol.b, 1.0);
     texuv = vaTexUV;
     screenspace = vaScreenSpace;
+    paletteid = int(palid);
 } 

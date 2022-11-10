@@ -180,25 +180,39 @@ int LODFile_Sprites::LoadSprite(const char *pContainerName, unsigned int uPalett
     pHardwareSprites[uNumLoadedSprites].pName = pContainerName;
     pHardwareSprites[uNumLoadedSprites].uBufferWidth = header->uWidth;
     pHardwareSprites[uNumLoadedSprites].uBufferHeight = header->uHeight;
+    pHardwareSprites[uNumLoadedSprites].uAreaWidth = header->uWidth;
+    pHardwareSprites[uNumLoadedSprites].uAreaHeight = header->uHeight;
     pHardwareSprites[uNumLoadedSprites].uPaletteID = uPaletteID;
     pHardwareSprites[uNumLoadedSprites].texture = assets->GetSprite(pContainerName, uPaletteID, uNumLoadedSprites);
     pHardwareSprites[uNumLoadedSprites].sprite_header = header;
 
-    HWLTexture *hwl = render->LoadHwlSprite(pContainerName);
-    if (hwl) {
-        pHardwareSprites[uNumLoadedSprites].uBufferWidth = hwl->uBufferWidth;
-        pHardwareSprites[uNumLoadedSprites].uBufferHeight = hwl->uBufferHeight;
-        pHardwareSprites[uNumLoadedSprites].uAreaX = hwl->uAreaX;
-        pHardwareSprites[uNumLoadedSprites].uAreaY = hwl->uAreaY;
-        pHardwareSprites[uNumLoadedSprites].uAreaWidth = hwl->uAreaWidth;
-        pHardwareSprites[uNumLoadedSprites].uAreaHeight = hwl->uAreaHeigth;
+    if (engine->config->graphics.HWLSprites.Get()) {
+        HWLTexture *hwl = render->LoadHwlSprite(pContainerName);
+        if (hwl) {
+            pHardwareSprites[uNumLoadedSprites].uBufferWidth = hwl->uBufferWidth;
+            pHardwareSprites[uNumLoadedSprites].uBufferHeight = hwl->uBufferHeight;
+            pHardwareSprites[uNumLoadedSprites].uAreaX = hwl->uAreaX;
+            pHardwareSprites[uNumLoadedSprites].uAreaY = hwl->uAreaY;
+            pHardwareSprites[uNumLoadedSprites].uAreaWidth = hwl->uAreaWidth;
+            pHardwareSprites[uNumLoadedSprites].uAreaHeight = hwl->uAreaHeigth;
 
-        delete[] hwl->pPixels;
-        delete hwl;
+            delete[] hwl->pPixels;
+            delete hwl;
+        }
     }
 
     ++uNumLoadedSprites;
     return uNumLoadedSprites - 1;
+}
+
+Sprite* LODFile_Sprites::GetSprite(std::string_view pContainerName) {
+    for (int i = 0; i < uNumLoadedSprites; ++i) {
+        if (pHardwareSprites[i].pName == pContainerName) {
+            return &pHardwareSprites[i];
+        }
+    }
+    logger->Warning("Sprite not found!");
+    return nullptr;
 }
 
 void LODFile_Sprites::ReleaseLostHardwareSprites() {}

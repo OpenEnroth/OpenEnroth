@@ -32,6 +32,7 @@
   - Remove zdrawtexturealpha
   - Reduce logger spam
   - Drop all software mode rules code
+  - OpenGL shader structs - member types and padding
 
 * Major Projects:
   - New GUI/ window system
