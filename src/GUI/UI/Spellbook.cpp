@@ -242,7 +242,7 @@ void GUIWindow_Spellbook::Update() {
 
     // }
 
-    Point pt = mouse->GetCursorPos();
+    Pointi pt = mouse->GetCursorPos();
     if (pt.x < window->GetWidth() && pt.y < window->GetHeight()) {
         v10 = render->pActiveZBuffer[pt.x + pt.y * render->GetRenderWidth()] & 0xFFFF;
         if (v10) {

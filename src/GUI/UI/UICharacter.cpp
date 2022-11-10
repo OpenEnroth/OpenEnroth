@@ -792,7 +792,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
     Player *player, int x, int y, const int *skill_list, int skill_list_size,
     int right_margin, const char *skill_group_name) {
     int y_offset = y;
-    Point pt = mouse->GetCursorPos();
+    Pointi pt = mouse->GetCursorPos();
 
     auto str = StringPrintf("%s\r%03d%s", skill_group_name, right_margin,
                             localization->GetString(LSTR_LEVEL));

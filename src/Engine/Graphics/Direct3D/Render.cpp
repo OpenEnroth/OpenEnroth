@@ -1604,7 +1604,7 @@ bool Render::DrawLightmap(Lightmap *pLightmap, Vec3f *pColorMult,
 }
 
 // blue mask
-void Render::DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int a3, int blend_mode) {
+void Render::DrawFromSpriteSheet(Rect *pSrcRect, Pointi *pTargetPoint, int a3, int blend_mode) {
     uint16_t *pSrc;          // eax@2
     int uSrcTotalWidth = 0;      // ecx@4
     unsigned int v10;        // esi@9

@@ -381,7 +381,7 @@ class IRender {
                                         Texture *texture) = 0;
 
     virtual void DrawFromSpriteSheet(struct Rect *pSrcRect,
-                               struct Point *pTargetPoint, int a3,
+                               Pointi *pTargetPoint, int a3,
                                int blend_mode) = 0;
 
     virtual void DrawIndoorBatched() = 0;

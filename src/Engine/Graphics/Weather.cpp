@@ -40,7 +40,7 @@ void Weather::DrawSnow() {
 void Weather::Initialize() {
     int width = pViewport->uViewportBR_X - pViewport->uViewportTL_X;
     int height = pViewport->uViewportBR_Y - pViewport->uViewportTL_Y;
-    for (Point &point : Screen_Coord) {
+    for (Pointi &point : Screen_Coord) {
         point.x = pViewport->uViewportTL_X + rand() % width;
         point.y = pViewport->uViewportTL_Y + rand() % height;
     }
@@ -59,7 +59,7 @@ bool Weather::OnPlayerTurn(int dangle) {
 
     unsigned int screen_width = pViewport->uViewportBR_X - pViewport->uViewportTL_X;
 
-    for (Point &point : Screen_Coord) {
+    for (Pointi &point : Screen_Coord) {
         point.x += dangle;
         if (point.x < pViewport->uViewportBR_X) {
             if (point.x >= pViewport->uViewportTL_X) {

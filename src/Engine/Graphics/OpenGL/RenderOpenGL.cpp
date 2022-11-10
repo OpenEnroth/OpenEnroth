@@ -1694,7 +1694,7 @@ void RenderOpenGL::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, Text
     DrawImage(texture, targetrect);
 }
 
-void RenderOpenGL::DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int a3, int blend_mode) {
+void RenderOpenGL::DrawFromSpriteSheet(Rect *pSrcRect, Pointi *pTargetPoint, int a3, int blend_mode) {
     // want to draw psrcrect section @ point
 
     TextureOpenGL *texture = (TextureOpenGL*)pArcomageGame->pSprites;

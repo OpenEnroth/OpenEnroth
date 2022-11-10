@@ -40,7 +40,6 @@ set(ENGINE_HEADERS AssetsManager.h
                    mm7_data.h
                    OurMath.h
                    Party.h
-                   Point.h
                    Random.h
                    Rect.h
                    SaveLoad.h

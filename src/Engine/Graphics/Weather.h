@@ -2,7 +2,6 @@
 
 #include <array>
 
-#include "Engine/Point.h"
 
 class Weather {
  public:
@@ -13,7 +12,7 @@ class Weather {
     void Draw();
     bool OnPlayerTurn(int dangle);
 
-    std::array<Point, 1000> Screen_Coord;
+    std::array<Pointi, 1000> Screen_Coord;
     bool bNight;
     bool bRenderSnow;
 };

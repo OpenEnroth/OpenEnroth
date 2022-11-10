@@ -75,7 +75,7 @@ std::array<stat_coord, 26> stat_string_coord =  // 4E2940
 void CharacterUI_DrawTooltip(const char *title, std::string &content) {
     GUIWindow popup_window;  // [sp+Ch] [bp-5Ch]@1
 
-    Point pt = mouse->GetCursorPos();
+    Pointi pt = mouse->GetCursorPos();
 
     popup_window.Init();
     popup_window.uFrameWidth = 384;
@@ -216,7 +216,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     iteminfo_window.uFrameHeight = 180;
     iteminfo_window.uFrameY = 40;
 
-    Point pt = mouse->GetCursorPos();
+    Pointi pt = mouse->GetCursorPos();
     if (pt.x <= 320)
         frameXpos = pt.x + 30;
     else
@@ -1082,8 +1082,8 @@ std::string CharacterUI_GetSkillDescText(unsigned int uPlayerID, PLAYER_SKILL_TY
 }
 
 void CharacterUI_SkillsTab_ShowHint() {
-    unsigned int pX = 0;
-    unsigned int pY = 0;
+    int pX = 0;
+    int pY = 0;
     mouse->GetClickPos(&pX, &pY);
 
     if (pX < 24 || pX > 455 || pY < 18 || pY > 36) {
@@ -1112,7 +1112,7 @@ void CharacterUI_StatsTab_ShowHint() {
     int pHour;              // [sp+14h] [bp-1Ch]@15
     unsigned int pDay;      // [sp+24h] [bp-Ch]@15
 
-    Point pt = mouse->GetCursorPos();
+    Pointi pt = mouse->GetCursorPos();
     for (pStringNum = 0; pStringNum < stat_string_coord.size(); ++pStringNum) {
         if (pt.x >= stat_string_coord[pStringNum].x &&
             pt.x <= stat_string_coord[pStringNum].x +
@@ -1321,7 +1321,7 @@ void DrawSpellDescriptionPopup(int spell_index) {
     long v5;                      // ecx@4
     GUIWindow spell_info_window;  // [sp+Ch] [bp-68h]@4
 
-    Point pt = mouse->GetCursorPos();
+    Pointi pt = mouse->GetCursorPos();
 
     spell =
         &pSpellStats
@@ -1410,7 +1410,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
 
     // if ( render->bWindowMode )
     {
-        Point pt = Point(pX, pY);
+        Pointi pt = Pointi(pX, pY);
         if (pt.x < 1 || pt.y < 1 || pt.x > 638 || pt.y > 478) {
             back_to_game();
             return;
@@ -1762,9 +1762,9 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
     signed int inventoryXCoord;  // ecx@2
     int inventoryYCoord;         // eax@2
 
-    unsigned int pY;  // [sp+3Ch] [bp-Ch]@2
-    unsigned int pX;
-    // Point cursor = pMouse->GetCursorPos();
+    int pY;  // [sp+3Ch] [bp-Ch]@2
+    int pX;
+    // Pointi cursor = pMouse->GetCursorPos();
 
     ItemGen *item = nullptr;
 

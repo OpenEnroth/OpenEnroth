@@ -2,11 +2,12 @@
 #include <memory>
 #include <string>
 
-#include "Engine/Point.h"
 #include "Engine/Objects/ItemEnums.h"
 
 #include "Io/GameKey.h"
 #include "Io/IMouseController.h"
+
+#include "Utility/Geometry/Point.h"
 
 class Image;
 class OSWindow;
@@ -25,7 +26,7 @@ namespace Io {
             uMouseY = 0;
         }
 
-        void GetClickPos(unsigned int* pX, unsigned int* pY);
+        void GetClickPos(int *pX, int *pY);
         void RemoveHoldingItem();
         void SetCursorBitmapFromItemID(ITEM_TYPE uItemID);
         void SetCurrentCursorBitmap();
@@ -34,7 +35,7 @@ namespace Io {
         void ClearCursor();
         void AllocCursorSystemMem();
         void* DoAllocCursorMem();
-        Point GetCursorPos();
+        Pointi GetCursorPos();
         void Initialize(std::shared_ptr<OSWindow> window);
         void SetActive(bool active);
         void Deactivate();
@@ -82,7 +83,7 @@ namespace Io {
         int field_B8 = 0;
         int field_BC = 0;
         int field_C0 = 0;
-        Point pCursorBitmapPos{};
+        Pointi pCursorBitmapPos{};
         int uCursorBitmapWidth = 0;
         int uCursorBitmapHeight = 0;
         int field_D4 = 0;

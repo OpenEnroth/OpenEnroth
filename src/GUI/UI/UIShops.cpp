@@ -139,7 +139,7 @@ void ShopDialogSellEquip(GUIWindow dialogwin, BuildingType building) {
     if (HouseUI_CheckIfPlayerCanInteract()) {
         GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_SELL), 0);
 
-        Point pt = dialogwin.mouse->GetCursorPos();
+        Pointi pt = dialogwin.mouse->GetCursorPos();
 
         int invindex = ((pt.x - 14) / 32) + 14 * ((pt.y - 17) / 32);
         if (pt.x <= 13 || pt.x >= 462)
@@ -172,7 +172,7 @@ void ShopDialogIdentify(GUIWindow dialogwin, BuildingType building) {
     if (HouseUI_CheckIfPlayerCanInteract()) {
         GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_IDENTIFY), 0);
 
-        Point pt = EngineIoc::ResolveMouse()->GetCursorPos();
+        Pointi pt = EngineIoc::ResolveMouse()->GetCursorPos();
 
         int invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
         if (pt.x <= 13 || pt.x >= 462) return;
@@ -208,7 +208,7 @@ void ShopDialogRepair(GUIWindow dialogwin, BuildingType building) {
     if (HouseUI_CheckIfPlayerCanInteract()) {
         GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_REPAIR), 0);
 
-        Point pt = dialogwin.mouse->GetCursorPos();
+        Pointi pt = dialogwin.mouse->GetCursorPos();
 
         int invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
         if (pt.x <= 13 || pt.x >= 462)
@@ -311,7 +311,7 @@ void WeaponShopWares(GUIWindow dialogwin, bool special) {
                 localization->GetString(LSTR_SELECT_ITEM_TO_BUY), 0);
 
         if (item_num) {  // this shoudl go into func??
-            Point pt = EngineIoc::ResolveMouse()->GetCursorPos();
+            Pointi pt = EngineIoc::ResolveMouse()->GetCursorPos();
             ItemGen *item;
 
             int testx = (pt.x - 30) / 70;
@@ -463,7 +463,7 @@ void ArmorShopWares(GUIWindow dialogwin, bool special) {
         }
 
         if (pItemCount) {  // this should go into func??
-            Point pt = EngineIoc::ResolveMouse()->GetCursorPos();
+            Pointi pt = EngineIoc::ResolveMouse()->GetCursorPos();
 
             int testx = (pt.x - 40) / 105;
             // testx limits check
@@ -638,7 +638,7 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
         }
 
         if (item_num) {
-            Point pt = EngineIoc::ResolveMouse()->GetCursorPos();
+            Pointi pt = EngineIoc::ResolveMouse()->GetCursorPos();
 
             int testx = (pt.x) / 75;
             // testx limits check
@@ -824,7 +824,7 @@ void UIShop_Buy_Identify_Repair() {
         return;
     }
 
-    Point pt = EngineIoc::ResolveMouse()->GetCursorPos();
+    Pointi pt = EngineIoc::ResolveMouse()->GetCursorPos();
 
     switch (dialog_menu_id) {
         case DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
@@ -1244,8 +1244,8 @@ void UIShop_Buy_Identify_Repair() {
 
 //----- new function
 void ShowPopupShopSkills() {
-    unsigned int pX = 0;
-    unsigned int pY = 0;
+    int pX = 0;
+    int pY = 0;
     mouse->GetClickPos(&pX, &pY);
 
     if (pDialogueWindow) {
@@ -1276,7 +1276,7 @@ void ShowPopupShopItem() {
     if (in_current_building_type == BuildingType_Invalid) return;
     if (dialog_menu_id < DIALOGUE_SHOP_BUY_STANDARD) return;
 
-    Point pt = EngineIoc::ResolveMouse()->GetCursorPos();
+    Pointi pt = EngineIoc::ResolveMouse()->GetCursorPos();
     int testx;
 
     if (in_current_building_type <= BuildingType_AlchemistShop) {
@@ -1505,7 +1505,7 @@ void sub_4B1523_showSpellbookInfo(ITEM_TYPE spellItemId) {
     // sprintf(tmp_str.data(), "%s%03d", spellbook_texture_filename_suffices[v11
     // / 4], v2); not used
 
-    Point a2 = EngineIoc::ResolveMouse()->GetCursorPos();
+    Pointi a2 = EngineIoc::ResolveMouse()->GetCursorPos();
     unsigned int v3 = 30;
     if (a2.y <= 320) {
         v3 = a2.y + 30;

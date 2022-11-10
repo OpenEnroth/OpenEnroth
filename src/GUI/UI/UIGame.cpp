@@ -738,8 +738,8 @@ std::string GameUI_GetMinimapHintText() {
     unsigned int pMapID;  // eax@14
     int global_coord_X;   // [sp+10h] [bp-1Ch]@1
     int global_coord_Y;   // [sp+14h] [bp-18h]@1
-    unsigned int pY;      // [sp+1Ch] [bp-10h]@1
-    unsigned int pX;      // [sp+28h] [bp-4h]@1
+    int pY;      // [sp+1Ch] [bp-10h]@1
+    int pX;      // [sp+28h] [bp-4h]@1
 
     std::string result;
     mouse->GetClickPos(&pX, &pY);
@@ -1003,8 +1003,8 @@ void GameUI_WritePointedObjectStatusString() {
     BLVFace *pFace;                    // eax@69
     UIMessageType pMessageType2;  // esi@110
     UIMessageType pMessageType3;  // edx@117
-    unsigned int pX;                   // [sp+D4h] [bp-Ch]@1
-    unsigned int pY;                   // [sp+D8h] [bp-8h]@1
+    int pX;                   // [sp+D4h] [bp-Ch]@1
+    int pY;                   // [sp+D8h] [bp-8h]@1
 
     // int testing;
 

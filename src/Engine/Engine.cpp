@@ -374,7 +374,7 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
 
     ++qword_5C6DF0;
     particle_engine->UpdateParticles();
-    Point pt = mouse->GetCursorPos();
+    Pointi pt = mouse->GetCursorPos();
 
     // x = cursor.y;
     // y = cursor.x;

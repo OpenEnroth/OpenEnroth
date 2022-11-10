@@ -1,6 +1,5 @@
 #include "GUI/UI/UIMainMenu.h"
 
-#include "Engine/Point.h"
 #include "Engine/Localization.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
@@ -65,7 +64,7 @@ void GUIWindow_MainMenu::Update() {
 
     render->DrawTextureNew(0, 0, main_menu_background);
 
-    Point pt = mouse->GetCursorPos();
+    Pointi pt = mouse->GetCursorPos();
     GUIWindow *pWindow = this;
 
     Image *pTexture = nullptr;

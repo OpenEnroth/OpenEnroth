@@ -169,7 +169,7 @@ bool Chest::Open(int uChestID) {
 }
 
 bool Chest::ChestUI_WritePointedObjectStatusString() {
-    Point pt = mouse->GetCursorPos();
+    Pointi pt = mouse->GetCursorPos();
     unsigned int pX = pt.x;
     unsigned int pY = pt.y;
 
@@ -522,8 +522,8 @@ void Chest::OnChestLeftClick() {
     int chestheight = pChestHeightsByType[chest->uChestBitmapID];
     int chestwidth = pChestWidthsByType[chest->uChestBitmapID];
 
-    unsigned int pX;
-    unsigned int pY;
+    int pX;
+    int pY;
     mouse->GetClickPos(&pX, &pY);
     int inventoryYCoord = (pY - (pChestPixelOffsetY[chest->uChestBitmapID])) / 32;
     int inventoryXCoord = (pX - (pChestPixelOffsetX[chest->uChestBitmapID])) / 32;

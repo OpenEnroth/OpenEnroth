@@ -162,7 +162,7 @@ void Menu::EventLoop() {
             case UIMSG_SaveLoadScroll: {
                 // pskelton add for scroll click
                 int pSaveFiles{ static_cast<int>(uNumSavegameFiles) };
-                uint mx{}, my{};
+                int mx{}, my{};
                 mouse->GetClickPos(&mx, &my);
                 // 216 is offset down from top (216)
                 my -= 216;
@@ -277,7 +277,7 @@ void Menu::EventLoop() {
                     }
                     uGammaPos = 9;
                 } else {
-                    Point pt = mouse->GetCursorPos();
+                    Pointi pt = mouse->GetCursorPos();
                     uGammaPos = (pt.x - 42) / 17;
                     double v22 = (double)(signed int)uGammaPos * 0.1 + 0.6;
                     // engine->pGammaController->Initialize(v22);
@@ -303,7 +303,7 @@ void Menu::EventLoop() {
                     new_level += 1;
                     new OnButtonClick2(435, 216, 0, 0, pBtn_SliderRight, std::string(), false);
                 } else {
-                    Point pt = mouse->GetCursorPos();
+                    Pointi pt = mouse->GetCursorPos();
                     new_level = (pt.x - 263) / 17;  // for mouse
                 }
 
@@ -323,7 +323,7 @@ void Menu::EventLoop() {
                     new_level += 1;
                     new OnButtonClick2(435, 162, 0, 0, pBtn_SliderRight, std::string(), false);
                 } else {
-                    Point pt = mouse->GetCursorPos();
+                    Pointi pt = mouse->GetCursorPos();
                     new_level = (pt.x - 263) / 17;
                 }
 
@@ -354,7 +354,7 @@ void Menu::EventLoop() {
                     new_level += 1;
                     new OnButtonClick2(435, 270, 0, 0, pBtn_SliderRight, std::string(), false);
                 } else {
-                    Point pt = mouse->GetCursorPos();
+                    Pointi pt = mouse->GetCursorPos();
                     new_level = (pt.x - 263) / 17;
                 }
 

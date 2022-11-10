@@ -2087,7 +2087,7 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_ClickAwardScrollBar: {
                     books_page_number = 1;
-                    Point pt = mouse->GetCursorPos();
+                    Pointi pt = mouse->GetCursorPos();
                     if (pt.y > 178) books_page_number = -1;
                     continue;
                 }
