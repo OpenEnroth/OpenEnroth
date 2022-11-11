@@ -7,7 +7,6 @@ set(ENGINE_SOURCES AssetsManager.cpp
                    ErrorHandling.cpp
                    Localization.cpp
                    LOD.cpp
-                   Log.cpp
                    MapInfo.cpp
                    mm7text_ru.cpp
                    mm7_data.cpp
@@ -33,7 +32,6 @@ set(ENGINE_HEADERS AssetsManager.h
                    Events2D.h
                    Localization.h
                    LOD.h
-                   Log.h
                    MapInfo.h
                    MapsLongTimer.h
                    MM7.h

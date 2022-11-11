@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "Engine/IocContainer.h"
-#include "Engine/Log.h"
+#include "Utility/Log.h"
 #include "Engine/ZlibWrapper.h"
 
 #include "Platform/Api.h"

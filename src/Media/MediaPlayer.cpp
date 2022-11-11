@@ -23,7 +23,7 @@ extern "C" {
 #include "Engine/Engine.h"
 #include "Engine/ErrorHandling.h"
 #include "Engine/Graphics/IRender.h"
-#include "Engine/Log.h"
+#include "Utility/Log.h"
 
 #include "GUI/GUIWindow.h"
 

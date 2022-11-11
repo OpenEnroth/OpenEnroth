@@ -8,7 +8,7 @@
 
 #include "Engine/CommandLine.h"
 #include "Engine/IocContainer.h"
-#include "Engine/Log.h"
+#include "Utility/Log.h"
 
 using Engine_::CommandLine;
 using EngineIoc = Engine_::IocContainer;
