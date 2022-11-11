@@ -6,6 +6,7 @@ set(INCLUDE_THIRDPARTY_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}/glad/include
     ${CMAKE_CURRENT_SOURCE_DIR}/glm/glm
     ${CMAKE_CURRENT_SOURCE_DIR}/googletest/googletest/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/mini/src
     PARENT_SCOPE)
 
 add_subdirectory(glad)
