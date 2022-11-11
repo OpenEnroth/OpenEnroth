@@ -45,7 +45,7 @@ if(ENABLE_TESTS)
                              Streams/Tests/FileOutputStream_ut.cpp)
 
     add_library(test_utility OBJECT ${TEST_UTILITY_SOURCES})
-    target_compile_definitions(test_utility PRIVATE TESTGROUP=Utility)
+    target_compile_definitions(test_utility PRIVATE TEST_GROUP=Utility)
     target_link_libraries(test_utility utility)
 
     target_check_style(test_utility)

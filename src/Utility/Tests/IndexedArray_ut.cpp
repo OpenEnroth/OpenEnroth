@@ -1,8 +1,8 @@
-#include "test/test.h"
+#include "Testing/UnitTest.h"
 
 #include "Utility/IndexedArray.h"
 
-GTEST(IndexedArray, Size) {
+UNIT_TEST(IndexedArray, Size) {
     EXPECT_EQ(sizeof(IndexedArray<int, 1>), sizeof(int));
     EXPECT_EQ(sizeof(IndexedArray<int, 1, 1>), sizeof(int));
     EXPECT_EQ(sizeof(IndexedArray<int, 10>), 10 * sizeof(int));
@@ -16,7 +16,7 @@ GTEST(IndexedArray, Size) {
     EXPECT_EQ(sizeof(IndexedArray<int, A, D>), 4 * sizeof(int));
 }
 
-GTEST(IndexedArray, NonZeroIndex) {
+UNIT_TEST(IndexedArray, NonZeroIndex) {
     enum class Index {
         AA = -10,
         XX = 0,
@@ -38,7 +38,7 @@ GTEST(IndexedArray, NonZeroIndex) {
     EXPECT_EQ(a[AA], -1);
 }
 
-GTEST(IndexedArray, MapInit) {
+UNIT_TEST(IndexedArray, MapInit) {
     enum class Index { A, B, C, D };
     using enum Index;
 
@@ -55,7 +55,7 @@ GTEST(IndexedArray, MapInit) {
     EXPECT_EQ(a[D], 1);
 }
 
-GTEST(IndexedArray, Indices) {
+UNIT_TEST(IndexedArray, Indices) {
     enum class Index { A = 100, B, C, D };
     using enum Index;
 

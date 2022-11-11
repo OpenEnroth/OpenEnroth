@@ -1,11 +1,11 @@
 #include <numeric>
 #include <vector>
 
-#include "test/test.h"
+#include "Testing/UnitTest.h"
 
 #include "Utility/Segment.h"
 
-GTEST(Segment, Iteration) {
+UNIT_TEST(Segment, Iteration) {
     enum class Index { AA, BB, CC };
     using enum Index;
 
@@ -27,7 +27,7 @@ GTEST(Segment, Iteration) {
     EXPECT_EQ(v, w);
 }
 
-GTEST(Segment, Contains) {
+UNIT_TEST(Segment, Contains) {
     auto seg = Segment(0, 2);
 
     EXPECT_FALSE(seg.contains(-1));
@@ -37,7 +37,7 @@ GTEST(Segment, Contains) {
     EXPECT_FALSE(seg.contains(3));
 }
 
-GTEST(Segment, Constexpr) {
+UNIT_TEST(Segment, Constexpr) {
     constexpr auto seg = Segment(0, 2);
     constexpr bool b = seg.contains(1);
 

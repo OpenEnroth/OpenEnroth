@@ -1,10 +1,10 @@
 #include <cstdlib>
 
-#include "test/test.h"
+#include "Testing/UnitTest.h"
 
 #include "Utility/Streams/FileOutputStream.h"
 
-GTEST(FileOutputStream, Write) {
+UNIT_TEST(FileOutputStream, Write) {
     const char* tmpfile = "tmp_test.txt";
     const char* tmpfilecontent = "1234\n";
     size_t tmpfilesize = strlen(tmpfilecontent);
