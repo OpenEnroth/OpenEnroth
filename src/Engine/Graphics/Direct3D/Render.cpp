@@ -41,6 +41,7 @@
 #include "Io/Mouse.h"
 
 #include "Platform/Api.h"
+#include "Platform/OSWindow.h"
 
 #include "Utility/Memory.h"
 #include "Utility/Math/TrigLut.h"
