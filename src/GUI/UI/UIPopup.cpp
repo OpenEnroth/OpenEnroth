@@ -600,8 +600,8 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         pMonsterInfoUI_Doll.pMonsterInfo.uID) {
         v9 = pMonsterInfoUI_Doll.uCurrentActionLength;
     } else {
-        memcpy(&pMonsterInfoUI_Doll, &pActors[uActorID],
-               sizeof(pMonsterInfoUI_Doll));
+        // copy actor info if different
+        pMonsterInfoUI_Doll = pActors[uActorID];
         pMonsterInfoUI_Doll.uCurrentActionAnimation = ANIM_Bored;
         pMonsterInfoUI_Doll.uCurrentActionTime = 0;
         v9 = rand() % 256 + 128;
