@@ -402,9 +402,6 @@ namespace Application {
             /** Snow effect from MM6 where it was activated by event. Currently it shows every third day in winter. */
             ConfigValue<bool> Snow = ConfigValue<bool>(this, "snow", false);
 
-            /** Vanilla's rendering rules from software mode. Still much code use this option. */
-            ConfigValue<bool> SoftwareModeRules = ConfigValue<bool>(this, "software_mode_rules", false);
-
             /** Vanilla's monster coloring method from hardware mode. When monsters look like bucket of paint was thrown at them. */
             ConfigValue<bool> Tinting = ConfigValue<bool>(this, "tinting", false);
 

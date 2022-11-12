@@ -747,7 +747,7 @@ void LightmapBuilder::DrawLightmaps(int indices) {
     // For outdoor terrain and indoor light (VI)(VI)
 
     if (StationaryLightsCount > 0) {
-        if (engine->config->graphics.SoftwareModeRules.Get()) {
+        if (false) {
             __debugbreak();
             return;
         }

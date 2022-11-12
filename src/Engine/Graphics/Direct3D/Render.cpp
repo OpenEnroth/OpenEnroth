@@ -963,13 +963,13 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
         sCorrectedColor = -1;
     }
     engine->AlterGamma_ODM(pFace, &sCorrectedColor);
-    if (engine->config->graphics.SoftwareModeRules.Get()) {
+    if (false) {
         int v8 = ::GetActorTintColor(
             pPolygon->dimming_level, 0,
             VertexRenderList[0].vWorldViewPosition.x, 0, 0);
         lightmap_builder->DrawLightmaps(v8 /*, 0*/);
     } else {
-        if (!lightmap_builder->StationaryLightsCount || engine->config->graphics.SoftwareModeRules.Get()) {
+        if (!lightmap_builder->StationaryLightsCount) {
             // send for batching
 
             for (int z = 0; z < (uNumVertices - 2); z++) {
@@ -1958,13 +1958,13 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
     if (!this->uNumD3DSceneBegins) return;
     if (uNumVertices < 3) return;
 
-    if (engine->config->graphics.SoftwareModeRules.Get()) {
+    if (false) {
         __debugbreak();
         v11 =
             ::GetActorTintColor(a4->dimming_level, 0,
                                 VertexRenderList[0].vWorldViewPosition.x, 0, 0);
         lightmap_builder->DrawLightmaps(v11 /*, 0*/);
-    } else if (transparent || !lightmap_builder->StationaryLightsCount || engine->config->graphics.SoftwareModeRules.Get()) {
+    } else if (transparent || !lightmap_builder->StationaryLightsCount) {
         // send for batching
 
         for (int z = 0; z < (uNumVertices - 2); z++) {
@@ -2338,10 +2338,10 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
         pCamera3D->do_draw_debug_line_sw(&cam, -1, &vis->debugpick, 0xFFFF00u, 0, 0);
     }
 
-    if (engine->config->graphics.SoftwareModeRules.Get()) {
+    if (false) {
         // __debugbreak();
     } else {
-        if (!lightmap_builder->StationaryLightsCount || engine->config->graphics.SoftwareModeRules.Get()) {
+        if (!lightmap_builder->StationaryLightsCount) {
            // return;
 
             // send for batching
