@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include <string>
 
 #include "Engine/AssetsManager.h"
@@ -12,7 +11,6 @@
 
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIRest.h"
-#include "GUI/UI/UITransition.h"
 #include "GUI/GUIFont.h"
 
 #include "Media/Audio/AudioPlayer.h"

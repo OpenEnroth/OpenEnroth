@@ -13,14 +13,12 @@
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UITransition.h"
 #include "GUI/GUIFont.h"
-#include "GUI/GUIProgressBar.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-#include "Platform/Api.h"
 #include "Platform/OSWindow.h"
 
 

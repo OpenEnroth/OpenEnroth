@@ -6,7 +6,6 @@
 #include "Engine/Graphics/Direct3D/Render.h"
 #endif
 
-#include "Platform/OSWindow.h"
 
 using EngineIoc = Engine_::IocContainer;
 using Graphics::IRenderFactory;

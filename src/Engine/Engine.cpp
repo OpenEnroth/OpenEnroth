@@ -32,26 +32,14 @@
 #include "Engine/SaveLoad.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Spells/CastSpellInfo.h"
-#include "Engine/stru123.h"
-#include "Engine/Tables/FactionTable.h"
-#include "Engine/Tables/FrameTableInc.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/PlayerFrameTable.h"
-#include "Engine/Tables/StorylineTextTable.h"
 #include "Engine/Time.h"
-#include "Engine/TurnEngine/TurnEngine.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
-#include "GUI/UI/UICredits.h"
-#include "GUI/UI/UIDialogue.h"
-#include "GUI/UI/UIGame.h"
-#include "GUI/UI/UIHouses.h"
-#include "GUI/UI/UIMainMenu.h"
-#include "GUI/UI/UIPartyCreation.h"
-#include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIStatusBar.h"
 
 #include "Io/Mouse.h"
@@ -61,7 +49,6 @@
 
 #include "Platform/Api.h"
 #include "Platform/OSWindow.h"
-#include "Platform/OSWindowFactory.h"
 
 using EngineIoc = Engine_::IocContainer;
 

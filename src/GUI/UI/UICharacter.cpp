@@ -12,7 +12,6 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
-#include "Engine/MapInfo.h"
 #include "Engine/Objects/ItemTable.h"
 #include "Engine/Party.h"
 #include "Engine/Spells/CastSpellInfo.h"
@@ -21,7 +20,6 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
-#include "GUI/GUIProgressBar.h"
 #include "GUI/UI/UIInventory.h"
 
 #include "Io/Mouse.h"

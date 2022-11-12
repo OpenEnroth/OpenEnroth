@@ -19,9 +19,9 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 
-#include "Platform/OSWindow.h"
-
 #include "Utility/Math/TrigLut.h"
+
+#include "Platform/OSWindow.h"
 
 
 bool RenderBase::Initialize() {

@@ -28,10 +28,8 @@
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
-#include "GUI/UI/UIArena.h"
 #include "GUI/UI/UIBooks.h"
 #include "GUI/UI/UICharacter.h"
-#include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIPopup.h"

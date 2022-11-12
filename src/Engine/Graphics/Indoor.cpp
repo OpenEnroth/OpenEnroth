@@ -43,6 +43,7 @@
 
 #include "Platform/Api.h"
 #include "Platform/OSWindow.h"
+
 #include "Utility/FreeDeleter.h"
 #include "Utility/Math/TrigLut.h"
 

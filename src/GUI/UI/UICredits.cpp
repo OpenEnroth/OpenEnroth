@@ -6,9 +6,8 @@
 #include "Engine/LOD.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
-#include "GUI/UI/UIMainMenu.h"
 #include "Media/Audio/AudioPlayer.h"
-#include "Platform/Api.h"
+
 #include "Platform/OSWindow.h"
 
 GUICredits::GUICredits() :
