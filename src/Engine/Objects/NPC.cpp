@@ -986,7 +986,7 @@ void NPCHireableDialogPrepare() {
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, 0);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
-        471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
+        471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, PlatformKey::None,
         localization->GetString(LSTR_CANCEL),
         {ui_exit_cancel_button_background}
     );
@@ -994,14 +994,14 @@ void NPCHireableDialogPrepare() {
     if (pNPCStats->pProfessions[v1->profession].pBenefits) {
         pDialogueWindow->CreateButton(
             480, 160, 140, 30, 1, 0,
-            UIMSG_ClickNPCTopic, DIALOGUE_PROFESSION_DETAILS, GameKey::None,
+            UIMSG_ClickNPCTopic, DIALOGUE_PROFESSION_DETAILS, PlatformKey::None,
             localization->GetString(LSTR_MORE_INFORMATION)
         );
         v0 = 1;
     }
     pDialogueWindow->CreateButton(
         480, 30 * v0 + 160, 140, 30, 1, 0,
-        UIMSG_ClickNPCTopic, DIALOGUE_HIRE_FIRE, GameKey::None,
+        UIMSG_ClickNPCTopic, DIALOGUE_HIRE_FIRE, PlatformKey::None,
         localization->GetString(LSTR_HIRE)
     );
     pDialogueWindow->_41D08F_set_keyboard_control_group(v0 + 1, 1, 0, 2);
@@ -1025,17 +1025,17 @@ void _4B4224_UpdateNPCTopics(int _this) {
             pMapStats->pInfos[uHouse_ExitPic].pName.c_str()
         );
         pBtn_ExitCancel = pDialogueWindow->CreateButton(
-            566, 445, 75, 33, 1, 0, UIMSG_Escape, 0, GameKey::N,
+            566, 445, 75, 33, 1, 0, UIMSG_Escape, 0, PlatformKey::N,
             localization->GetString(LSTR_CANCEL), {ui_buttdesc2}
         );
         pBtn_YES = pDialogueWindow->CreateButton(
-            486, 445, 75, 33, 1, 0, UIMSG_BF, 1, GameKey::Y,
+            486, 445, 75, 33, 1, 0, UIMSG_BF, 1, PlatformKey::Y,
             transition_button_label.c_str(), {ui_buttyes2});
         pDialogueWindow->CreateButton(
             pNPCPortraits_x[0][0], pNPCPortraits_y[0][0], 63u, 73u, 1, 0,
-            UIMSG_BF, 1u, GameKey::Space, transition_button_label.c_str());
+            UIMSG_BF, 1u, PlatformKey::Space, transition_button_label.c_str());
         pDialogueWindow->CreateButton(
-            8, 8, 460, 344, 1, 0, UIMSG_BF, 1, GameKey::Y,
+            8, 8, 460, 344, 1, 0, UIMSG_BF, 1, PlatformKey::Y,
             transition_button_label.c_str()
         );
     } else {
@@ -1048,7 +1048,7 @@ void _4B4224_UpdateNPCTopics(int _this) {
         }
         pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 345, 0);
         pBtn_ExitCancel = pDialogueWindow->CreateButton(
-            471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
+            471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, PlatformKey::None,
             localization->GetString(LSTR_END_CONVERSATION),
             {ui_exit_cancel_button_background}
         );

@@ -54,40 +54,40 @@ GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() : GUIWindow_Book() {
 
     pBtn_Book_1 = CreateButton(
         pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1, 50, 34, 1,
-        0, UIMSG_ClickBooksBtn, 11, GameKey::None, localization->GetString(LSTR_SCROLL_DOWN),
+        0, UIMSG_ClickBooksBtn, 11, PlatformKey::None, localization->GetString(LSTR_SCROLL_DOWN),
         {ui_book_button1_on});
     pBtn_Book_2 = CreateButton(
         pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 10, GameKey::None, localization->GetString(LSTR_SCROLL_UP),
+        1, 0, UIMSG_ClickBooksBtn, 10, PlatformKey::None, localization->GetString(LSTR_SCROLL_UP),
         {ui_book_button2_on});
     pBtn_Book_3 = CreateButton(
         pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 113, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 2, GameKey::None,
+        1, 0, UIMSG_ClickBooksBtn, 2, PlatformKey::None,
         localization->GetString(LSTR_POTION_NOTES),
         {ui_book_button3_on});
     pBtn_Book_4 = CreateButton(
         pViewport->uViewportTL_X + 399, pViewport->uViewportTL_Y + 150, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 3, GameKey::None,
+        1, 0, UIMSG_ClickBooksBtn, 3, PlatformKey::None,
         localization->GetString(LSTR_FOUNTAIN_NOTES),
         {ui_book_button4_on});
     pBtn_Book_5 = CreateButton(
         pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 188, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 4, GameKey::None,
+        1, 0, UIMSG_ClickBooksBtn, 4, PlatformKey::None,
         localization->GetString(LSTR_OBELISK_NOTES),
         {ui_book_button5_on});
     pBtn_Book_6 = CreateButton(
         pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 226, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 5, GameKey::None,
+        1, 0, UIMSG_ClickBooksBtn, 5, PlatformKey::None,
         localization->GetString(LSTR_SEER_NOTES),
         {ui_book_button6_on});
     pBtn_Autonotes_Misc = CreateButton(
         pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 264, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 6, GameKey::None,
+        1, 0, UIMSG_ClickBooksBtn, 6, PlatformKey::None,
         localization->GetString(LSTR_MISC_NOTES),
         {ui_book_button7_on});
     pBtn_Autonotes_Instructors = CreateButton(
         pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 302, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 7, GameKey::None,
+        1, 0, UIMSG_ClickBooksBtn, 7, PlatformKey::None,
         localization->GetString(LSTR_INSTRUCTORS),
         {ui_book_button8_on});
 

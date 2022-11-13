@@ -49,7 +49,7 @@ static bool PartyMove(PartyAction direction) {
 void KeyboardInputHandler::GeneratePausedActions() {
     for (auto action : AllInputActions()) {
         bool isTriggered = false;
-        GameKey key = actionMapping->GetKey(action);
+        PlatformKey key = actionMapping->GetKey(action);
         if (GetToggleType(action) == KeyToggleType::TOGGLE_OneTimePress)
             isTriggered = controller->IsKeyPressed(key);
         else
@@ -91,7 +91,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
     bool resettimer = true;
     for (InputAction action : AllInputActions()) {
         bool isTriggered = false;
-        GameKey key = actionMapping->GetKey(action);
+        PlatformKey key = actionMapping->GetKey(action);
         if (GetToggleType(action) == KeyToggleType::TOGGLE_OneTimePress) {
             isTriggered = controller->IsKeyPressed(key);
         } else if (GetToggleType(action) == KeyToggleType::TOGGLE_Continuously) {
@@ -381,26 +381,26 @@ void KeyboardInputHandler::SetWindowInputStatus(WindowInputStatus status) {
 }
 
 //----- (00459F10) --------------------------------------------------------
-bool KeyboardInputHandler::ProcessTextInput(GameKey key, int c) {
+bool KeyboardInputHandler::ProcessTextInput(PlatformKey key, int c) {
     if (currently_selected_action_for_binding == InputAction::Invalid) {
         if (inputType != TextInputType::Text && inputType != TextInputType::Number) {
             return false;
         }
 
-        if (key == GameKey::Backspace) {
+        if (key == PlatformKey::Backspace) {
             if (uNumKeysPressed > 0) {
                 pPressedKeysBuffer[--uNumKeysPressed] = 0;
             }
-        } else if (key == GameKey::Return) {
+        } else if (key == PlatformKey::Return) {
             SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_CONFIRMED);
-        } else if (key == GameKey::Escape) {
+        } else if (key == PlatformKey::Escape) {
             SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_CANCELLED);
-        } else if (key == GameKey::Space && this->uNumKeysPressed < this->max_input_string_len) {
+        } else if (key == PlatformKey::Space && this->uNumKeysPressed < this->max_input_string_len) {
             if (inputType == TextInputType::Text) {
                 pPressedKeysBuffer[uNumKeysPressed++] = ' ';
                 pPressedKeysBuffer[uNumKeysPressed] = 0;
             }
-        } else if (key == GameKey::Char && this->uNumKeysPressed < this->max_input_string_len) {
+        } else if (key == PlatformKey::Char && this->uNumKeysPressed < this->max_input_string_len) {
             if (inputType == TextInputType::Text) {
                 pPressedKeysBuffer[uNumKeysPressed++] = c;
                 pPressedKeysBuffer[uNumKeysPressed] = 0;
@@ -409,7 +409,7 @@ bool KeyboardInputHandler::ProcessTextInput(GameKey key, int c) {
             }
         }
     } else {
-        if (key != GameKey::Char) {
+        if (key != PlatformKey::Char) {
             // we're setting key binding in options
             // pPressedKeysBuffer[uNumKeysPressed++] = c;
             // pPressedKeysBuffer[uNumKeysPressed] = 0;
@@ -443,37 +443,37 @@ void KeyboardInputHandler::ResetKeys() {
 }
 
 bool KeyboardInputHandler::IsRunKeyToggled() const {
-    return controller->IsKeyHeld(GameKey::Shift);
+    return controller->IsKeyHeld(PlatformKey::Shift);
 }
 
 bool KeyboardInputHandler::IsTurnStrafingToggled() const {
-    return controller->IsKeyHeld(GameKey::Control);
+    return controller->IsKeyHeld(PlatformKey::Control);
 }
 
 bool KeyboardInputHandler::IsKeyboardPickingOutlineToggled() const {
-    return controller->IsKeyHeld(GameKey::Control);
+    return controller->IsKeyHeld(PlatformKey::Control);
 }
 
 bool KeyboardInputHandler::IsStealingToggled() const {
-    return controller->IsKeyHeld(GameKey::Control);
+    return controller->IsKeyHeld(PlatformKey::Control);
 }
 
 bool KeyboardInputHandler::IsTakeAllToggled() const {
-    return controller->IsKeyHeld(GameKey::Control);
+    return controller->IsKeyHeld(PlatformKey::Control);
 }
 
 bool KeyboardInputHandler::IsAdventurerBackcycleToggled() const {
-    return controller->IsKeyHeld(GameKey::Shift);
+    return controller->IsKeyHeld(PlatformKey::Shift);
 }
 
 bool KeyboardInputHandler::IsSpellBackcycleToggled() const {
-    return controller->IsKeyHeld(GameKey::Shift);
+    return controller->IsKeyHeld(PlatformKey::Shift);
 }
 
 bool KeyboardInputHandler::IsCastOnClickToggled() const {
-    return controller->IsKeyHeld(GameKey::Shift);
+    return controller->IsKeyHeld(PlatformKey::Shift);
 }
 
-bool KeyboardInputHandler::IsKeyHeld(GameKey key) const {
+bool KeyboardInputHandler::IsKeyHeld(PlatformKey key) const {
     return controller->IsKeyHeld(key);
 }

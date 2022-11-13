@@ -335,14 +335,14 @@ void Mouse::UI_OnMouseLeftClick() {
     }
 }
 
-bool UI_OnKeyDown(GameKey key) {
+bool UI_OnKeyDown(PlatformKey key) {
     for (GUIWindow *win : lWindowList) {
         if (!win->receives_keyboard_input) {
             continue;
         }
 
         switch (key) {
-            case GameKey::Left: {
+            case PlatformKey::Left: {
                 int v12 = win->field_34;
                 if (win->pCurrentPosActiveItem - win->pStartingPosActiveItem - v12 >= 0) {
                     win->pCurrentPosActiveItem -= v12;
@@ -357,7 +357,7 @@ bool UI_OnKeyDown(GameKey key) {
                 pMessageQueue_50CBD0->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
                 break;
             }
-            case GameKey::Right: {
+            case PlatformKey::Right: {
                 int v7 = win->pCurrentPosActiveItem + win->field_34;
                 if (v7 < win->pNumPresenceButton + win->pStartingPosActiveItem) {
                     win->pCurrentPosActiveItem = v7;
@@ -372,7 +372,7 @@ bool UI_OnKeyDown(GameKey key) {
                 pMessageQueue_50CBD0->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
                 break;
             }
-            case GameKey::Down: {
+            case PlatformKey::Down: {
                 int v17 = win->pStartingPosActiveItem;
                 int v18 = win->pCurrentPosActiveItem;
                 if (v18 >= win->pNumPresenceButton + v17 - 1)
@@ -384,7 +384,7 @@ bool UI_OnKeyDown(GameKey key) {
                 pMessageQueue_50CBD0->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
                 return true;
             }
-            case GameKey::Select: {
+            case PlatformKey::Select: {
                 int uClickX;
                 int uClickY;
                 EngineIoc::ResolveMouse()->GetClickPos(&uClickX, &uClickY);
@@ -413,7 +413,7 @@ bool UI_OnKeyDown(GameKey key) {
                 }
                 break;
             }
-            case GameKey::Up: {
+            case PlatformKey::Up: {
                 int v22 = win->pCurrentPosActiveItem;
                 int v23 = win->pStartingPosActiveItem;
                 if (v22 <= v23)
@@ -428,7 +428,7 @@ bool UI_OnKeyDown(GameKey key) {
                                                     pButton->msg_param, 0);
                 return true;
             }
-            case GameKey::PageDown: {
+            case PlatformKey::PageDown: {
                 if (win->field_30 != 0) {
                     int uClickX;
                     int uClickY;

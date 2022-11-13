@@ -71,7 +71,7 @@ GUIWindow_Book::GUIWindow_Book()
 void GUIWindow_Book::BasicBookInitialization() {
     pAudioPlayer->PauseSounds(-1);
     InitializeFonts();
-    CreateButton(475, 445, 158, 34, 1, 0, UIMSG_Escape, 0, GameKey::None,
+    CreateButton(475, 445, 158, 34, 1, 0, UIMSG_Escape, 0, PlatformKey::None,
                  localization->GetString(LSTR_DIALOGUE_EXIT));
     current_screen_type = CURRENT_SCREEN::SCREEN_BOOKS;
     full_num_items_in_book = 0;

@@ -11,129 +11,127 @@
 #include "Engine/Graphics/Nuklear.h"
 #include "Platform/Sdl2Window.h"
 
-#include "Io/GameKey.h"
+#include "PlatformKey.h"
 
 #include "glad/gl.h"
 
-using Io::GameKey;
 
+std::map<SDL_Scancode, PlatformKey> scancode_lookup = {
+    { SDL_SCANCODE_F1,               PlatformKey::F1 },
+    { SDL_SCANCODE_F2,               PlatformKey::F2 },
+    { SDL_SCANCODE_F3,               PlatformKey::F3 },
+    { SDL_SCANCODE_F4,               PlatformKey::F4 },
+    { SDL_SCANCODE_F5,               PlatformKey::F5 },
+    { SDL_SCANCODE_F6,               PlatformKey::F6 },
+    { SDL_SCANCODE_F7,               PlatformKey::F7 },
+    { SDL_SCANCODE_F8,               PlatformKey::F8 },
+    { SDL_SCANCODE_F9,               PlatformKey::F9 },
+    { SDL_SCANCODE_F10,              PlatformKey::F10 },
+    { SDL_SCANCODE_F11,              PlatformKey::F11 },
+    { SDL_SCANCODE_F12,              PlatformKey::F12 },
 
-std::map<SDL_Scancode, GameKey> scancode_lookup = {
-    { SDL_SCANCODE_F1,               GameKey::F1 },
-    { SDL_SCANCODE_F2,               GameKey::F2 },
-    { SDL_SCANCODE_F3,               GameKey::F3 },
-    { SDL_SCANCODE_F4,               GameKey::F4 },
-    { SDL_SCANCODE_F5,               GameKey::F5 },
-    { SDL_SCANCODE_F6,               GameKey::F6 },
-    { SDL_SCANCODE_F7,               GameKey::F7 },
-    { SDL_SCANCODE_F8,               GameKey::F8 },
-    { SDL_SCANCODE_F9,               GameKey::F9 },
-    { SDL_SCANCODE_F10,              GameKey::F10 },
-    { SDL_SCANCODE_F11,              GameKey::F11 },
-    { SDL_SCANCODE_F12,              GameKey::F12 },
+    { SDL_SCANCODE_1,                PlatformKey::Digit1 },
+    { SDL_SCANCODE_2,                PlatformKey::Digit2 },
+    { SDL_SCANCODE_3,                PlatformKey::Digit3 },
+    { SDL_SCANCODE_4,                PlatformKey::Digit4 },
+    { SDL_SCANCODE_5,                PlatformKey::Digit5 },
+    { SDL_SCANCODE_6,                PlatformKey::Digit6 },
+    { SDL_SCANCODE_7,                PlatformKey::Digit7 },
+    { SDL_SCANCODE_8,                PlatformKey::Digit8 },
+    { SDL_SCANCODE_9,                PlatformKey::Digit9 },
+    { SDL_SCANCODE_0,                PlatformKey::Digit0 },
 
-    { SDL_SCANCODE_1,                GameKey::Digit1 },
-    { SDL_SCANCODE_2,                GameKey::Digit2 },
-    { SDL_SCANCODE_3,                GameKey::Digit3 },
-    { SDL_SCANCODE_4,                GameKey::Digit4 },
-    { SDL_SCANCODE_5,                GameKey::Digit5 },
-    { SDL_SCANCODE_6,                GameKey::Digit6 },
-    { SDL_SCANCODE_7,                GameKey::Digit7 },
-    { SDL_SCANCODE_8,                GameKey::Digit8 },
-    { SDL_SCANCODE_9,                GameKey::Digit9 },
-    { SDL_SCANCODE_0,                GameKey::Digit0 },
+    { SDL_SCANCODE_A,                PlatformKey::A },
+    { SDL_SCANCODE_B,                PlatformKey::B },
+    { SDL_SCANCODE_C,                PlatformKey::C },
+    { SDL_SCANCODE_D,                PlatformKey::D },
+    { SDL_SCANCODE_E,                PlatformKey::E },
+    { SDL_SCANCODE_F,                PlatformKey::F },
+    { SDL_SCANCODE_G,                PlatformKey::G },
+    { SDL_SCANCODE_H,                PlatformKey::H },
+    { SDL_SCANCODE_I,                PlatformKey::I },
+    { SDL_SCANCODE_J,                PlatformKey::J },
+    { SDL_SCANCODE_K,                PlatformKey::K },
+    { SDL_SCANCODE_L,                PlatformKey::L },
+    { SDL_SCANCODE_M,                PlatformKey::M },
+    { SDL_SCANCODE_N,                PlatformKey::N },
+    { SDL_SCANCODE_O,                PlatformKey::O },
+    { SDL_SCANCODE_P,                PlatformKey::P },
+    { SDL_SCANCODE_Q,                PlatformKey::Q },
+    { SDL_SCANCODE_R,                PlatformKey::R },
+    { SDL_SCANCODE_S,                PlatformKey::S },
+    { SDL_SCANCODE_T,                PlatformKey::T },
+    { SDL_SCANCODE_U,                PlatformKey::U },
+    { SDL_SCANCODE_V,                PlatformKey::V },
+    { SDL_SCANCODE_W,                PlatformKey::W },
+    { SDL_SCANCODE_X,                PlatformKey::X },
+    { SDL_SCANCODE_Y,                PlatformKey::Y },
+    { SDL_SCANCODE_Z,                PlatformKey::Z },
 
-    { SDL_SCANCODE_A,                GameKey::A },
-    { SDL_SCANCODE_B,                GameKey::B },
-    { SDL_SCANCODE_C,                GameKey::C },
-    { SDL_SCANCODE_D,                GameKey::D },
-    { SDL_SCANCODE_E,                GameKey::E },
-    { SDL_SCANCODE_F,                GameKey::F },
-    { SDL_SCANCODE_G,                GameKey::G },
-    { SDL_SCANCODE_H,                GameKey::H },
-    { SDL_SCANCODE_I,                GameKey::I },
-    { SDL_SCANCODE_J,                GameKey::J },
-    { SDL_SCANCODE_K,                GameKey::K },
-    { SDL_SCANCODE_L,                GameKey::L },
-    { SDL_SCANCODE_M,                GameKey::M },
-    { SDL_SCANCODE_N,                GameKey::N },
-    { SDL_SCANCODE_O,                GameKey::O },
-    { SDL_SCANCODE_P,                GameKey::P },
-    { SDL_SCANCODE_Q,                GameKey::Q },
-    { SDL_SCANCODE_R,                GameKey::R },
-    { SDL_SCANCODE_S,                GameKey::S },
-    { SDL_SCANCODE_T,                GameKey::T },
-    { SDL_SCANCODE_U,                GameKey::U },
-    { SDL_SCANCODE_V,                GameKey::V },
-    { SDL_SCANCODE_W,                GameKey::W },
-    { SDL_SCANCODE_X,                GameKey::X },
-    { SDL_SCANCODE_Y,                GameKey::Y },
-    { SDL_SCANCODE_Z,                GameKey::Z },
+    { SDL_SCANCODE_RETURN,           PlatformKey::Return },
+    { SDL_SCANCODE_ESCAPE,           PlatformKey::Escape },
+    { SDL_SCANCODE_TAB,              PlatformKey::Tab },
+    { SDL_SCANCODE_BACKSPACE,        PlatformKey::Backspace },
+    { SDL_SCANCODE_SPACE,            PlatformKey::Space },
+    { SDL_SCANCODE_DECIMALSEPARATOR, PlatformKey::Decimal },
+    { SDL_SCANCODE_SEMICOLON,        PlatformKey::Semicolon },
+    { SDL_SCANCODE_PERIOD,           PlatformKey::Period },
+    { SDL_SCANCODE_SLASH,            PlatformKey::Slash },
+    { SDL_SCANCODE_APOSTROPHE,       PlatformKey::SingleQuote },
+    { SDL_SCANCODE_BACKSLASH,        PlatformKey::BackSlash },
+    { SDL_SCANCODE_GRAVE,            PlatformKey::Tilde },
 
-    { SDL_SCANCODE_RETURN,           GameKey::Return },
-    { SDL_SCANCODE_ESCAPE,           GameKey::Escape },
-    { SDL_SCANCODE_TAB,              GameKey::Tab },
-    { SDL_SCANCODE_BACKSPACE,        GameKey::Backspace },
-    { SDL_SCANCODE_SPACE,            GameKey::Space },
-    { SDL_SCANCODE_DECIMALSEPARATOR, GameKey::Decimal },
-    { SDL_SCANCODE_SEMICOLON,        GameKey::Semicolon },
-    { SDL_SCANCODE_PERIOD,           GameKey::Period },
-    { SDL_SCANCODE_SLASH,            GameKey::Slash },
-    { SDL_SCANCODE_APOSTROPHE,       GameKey::SingleQuote },
-    { SDL_SCANCODE_BACKSLASH,        GameKey::BackSlash },
-    { SDL_SCANCODE_GRAVE,            GameKey::Tilde },
+    { SDL_SCANCODE_KP_MINUS,         PlatformKey::Subtract },
+    { SDL_SCANCODE_KP_PLUS,          PlatformKey::Add },
+    { SDL_SCANCODE_COMMA,            PlatformKey::Comma },
+    { SDL_SCANCODE_LEFTBRACKET,      PlatformKey::LeftBracket },
+    { SDL_SCANCODE_RIGHTBRACKET,     PlatformKey::RightBracket },
 
-    { SDL_SCANCODE_KP_MINUS,         GameKey::Subtract },
-    { SDL_SCANCODE_KP_PLUS,          GameKey::Add },
-    { SDL_SCANCODE_COMMA,            GameKey::Comma },
-    { SDL_SCANCODE_LEFTBRACKET,      GameKey::LeftBracket },
-    { SDL_SCANCODE_RIGHTBRACKET,     GameKey::RightBracket },
+    { SDL_SCANCODE_LEFT,             PlatformKey::Left },
+    { SDL_SCANCODE_RIGHT,            PlatformKey::Right },
+    { SDL_SCANCODE_UP,               PlatformKey::Up },
+    { SDL_SCANCODE_DOWN,             PlatformKey::Down },
 
-    { SDL_SCANCODE_LEFT,             GameKey::Left },
-    { SDL_SCANCODE_RIGHT,            GameKey::Right },
-    { SDL_SCANCODE_UP,               GameKey::Up },
-    { SDL_SCANCODE_DOWN,             GameKey::Down },
+    { SDL_SCANCODE_PRINTSCREEN,      PlatformKey::PrintScreen },
 
-    { SDL_SCANCODE_PRINTSCREEN,      GameKey::PrintScreen },
+    { SDL_SCANCODE_INSERT,           PlatformKey::Insert },
+    { SDL_SCANCODE_HOME,             PlatformKey::Home },
+    { SDL_SCANCODE_END,              PlatformKey::End },
+    { SDL_SCANCODE_PAGEUP,           PlatformKey::PageUp },
+    { SDL_SCANCODE_PAGEDOWN,         PlatformKey::PageDown },
+    { SDL_SCANCODE_DELETE,           PlatformKey::Delete },
+    { SDL_SCANCODE_SELECT,           PlatformKey::Select },
 
-    { SDL_SCANCODE_INSERT,           GameKey::Insert },
-    { SDL_SCANCODE_HOME,             GameKey::Home },
-    { SDL_SCANCODE_END,              GameKey::End },
-    { SDL_SCANCODE_PAGEUP,           GameKey::PageUp },
-    { SDL_SCANCODE_PAGEDOWN,         GameKey::PageDown },
-    { SDL_SCANCODE_DELETE,           GameKey::Delete },
-    { SDL_SCANCODE_SELECT,           GameKey::Select },
+    { SDL_SCANCODE_LCTRL,            PlatformKey::Control },
+    { SDL_SCANCODE_RCTRL,            PlatformKey::Control },
+    { SDL_SCANCODE_LALT,             PlatformKey::Alt },
+    { SDL_SCANCODE_RALT,             PlatformKey::Alt },
+    { SDL_SCANCODE_LSHIFT,           PlatformKey::Shift },
+    { SDL_SCANCODE_RSHIFT,           PlatformKey::Shift },
 
-    { SDL_SCANCODE_LCTRL,            GameKey::Control },
-    { SDL_SCANCODE_RCTRL,            GameKey::Control },
-    { SDL_SCANCODE_LALT,             GameKey::Alt },
-    { SDL_SCANCODE_RALT,             GameKey::Alt },
-    { SDL_SCANCODE_LSHIFT,           GameKey::Shift },
-    { SDL_SCANCODE_RSHIFT,           GameKey::Shift },
-
-    { SDL_SCANCODE_KP_0,             GameKey::Numpad0 },
-    { SDL_SCANCODE_KP_1,             GameKey::Numpad1 },
-    { SDL_SCANCODE_KP_2,             GameKey::Numpad2 },
-    { SDL_SCANCODE_KP_3,             GameKey::Numpad3 },
-    { SDL_SCANCODE_KP_4,             GameKey::Numpad4 },
-    { SDL_SCANCODE_KP_5,             GameKey::Numpad5 },
-    { SDL_SCANCODE_KP_6,             GameKey::Numpad6 },
-    { SDL_SCANCODE_KP_7,             GameKey::Numpad7 },
-    { SDL_SCANCODE_KP_8,             GameKey::Numpad8 },
-    { SDL_SCANCODE_KP_9,             GameKey::Numpad9 },
+    { SDL_SCANCODE_KP_0,             PlatformKey::Numpad0 },
+    { SDL_SCANCODE_KP_1,             PlatformKey::Numpad1 },
+    { SDL_SCANCODE_KP_2,             PlatformKey::Numpad2 },
+    { SDL_SCANCODE_KP_3,             PlatformKey::Numpad3 },
+    { SDL_SCANCODE_KP_4,             PlatformKey::Numpad4 },
+    { SDL_SCANCODE_KP_5,             PlatformKey::Numpad5 },
+    { SDL_SCANCODE_KP_6,             PlatformKey::Numpad6 },
+    { SDL_SCANCODE_KP_7,             PlatformKey::Numpad7 },
+    { SDL_SCANCODE_KP_8,             PlatformKey::Numpad8 },
+    { SDL_SCANCODE_KP_9,             PlatformKey::Numpad9 },
 };
 
-const int GAME_KEYS_NUM = (int)GameKey::None;
+const int GAME_KEYS_NUM = (int)PlatformKey::None;
 bool scancode_pressed_state_single_report[256];
 bool scancode_pressed_state[256];
 int scancode_pressed_time[256];
 
-int SDL_GetAsyncKeyState(GameKey key, bool consume) {
-    if (key != GameKey::None && key != GameKey::Char) {
+int SDL_GetAsyncKeyState(PlatformKey key, bool consume) {
+    if (key != PlatformKey::None && key != PlatformKey::Char) {
         auto mappedKey = std::find_if(
             scancode_lookup.begin(),
             scancode_lookup.end(),
-            [key](const std::pair<SDL_Scancode, GameKey>& i) -> bool {
+            [key](const std::pair<SDL_Scancode, PlatformKey>& i) -> bool {
                 return key == i.second;
             }
         );
@@ -251,7 +249,7 @@ bool Sdl2Window::NuklearEventHandler(const SDL_Event &e) {
         const Uint8 *state = SDL_GetKeyboardState(0);
         SDL_Keycode sym = e.key.keysym.sym;
 
-        GameKey mappedKey;
+        PlatformKey mappedKey;
         if (TryMapScanCode(e.key.keysym.scancode, &mappedKey)) {
             if (nuklear->KeyEvent(mappedKey))
                 return 1;
@@ -388,7 +386,7 @@ void Sdl2Window::MessageProc(const SDL_Event &e) {
                 break;
             }
 
-            GameKey mappedKey;
+            PlatformKey mappedKey;
             if (TryMapScanCode(e.key.keysym.scancode, &mappedKey)) {
                 // send key to textinput/controls binding handler
                 gameCallback->OnChar(mappedKey, -1);
@@ -648,7 +646,7 @@ bool Sdl2Window::TryMapKeyCode(SDL_Keycode key, bool uppercase, int* outKey) con
     return false;
 }
 
-bool Sdl2Window::TryMapScanCode(SDL_Scancode code, GameKey *outKey) const {
+bool Sdl2Window::TryMapScanCode(SDL_Scancode code, PlatformKey *outKey) const {
     auto mappedKey = scancode_lookup.find(code);
     if (mappedKey != scancode_lookup.end()) {
         if (outKey != nullptr) {

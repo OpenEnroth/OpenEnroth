@@ -6,9 +6,7 @@
 
 #include "GUI/GUIWindow.h"
 
-#include "Io/GameKey.h"
-
-using Io::GameKey;
+#include "Platform/PlatformKey.h"
 
 class Image;
 
@@ -36,7 +34,7 @@ class GUIButton {
     bool field_2C_is_pushed = false;
     GUIWindow *pParent = nullptr;
     std::vector<Image*> vTextures;
-    GameKey hotkey = GameKey::None;
+    PlatformKey hotkey = PlatformKey::None;
     std::string sLabel = "";
     std::string field_75 = "";
 };

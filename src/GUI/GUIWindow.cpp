@@ -193,7 +193,7 @@ void GUIMessageQueue::PopMessage(UIMessageType *pType, int *pParam,
     *a4 = message.field_8;
 }
 
-void GUI_ReplaceHotkey(GameKey oldKey, GameKey newKey, char bFirstCall) {
+void GUI_ReplaceHotkey(PlatformKey oldKey, PlatformKey newKey, char bFirstCall) {
     if (bFirstCall) {
         for (GUIWindow *pWindow : lWindowList) {
             for (GUIButton *j : pWindow->vButtons) {
@@ -214,7 +214,7 @@ void GUI_ReplaceHotkey(GameKey oldKey, GameKey newKey, char bFirstCall) {
     }
 }
 
-GUIButton *GUI_HandleHotkey(GameKey hotkey) {
+GUIButton *GUI_HandleHotkey(PlatformKey hotkey) {
      for (GUIWindow *pWindow : lWindowList) {
         for (GUIButton *result : pWindow->vButtons) {
             if (result->hotkey == hotkey) {
@@ -734,10 +734,10 @@ int GUIWindow::DrawTextInRect(GUIFont *pFont, unsigned int uX, unsigned int uY,
 }
 
 GUIButton *GUIWindow::CreateButton(int uX, int uY, int uWidth, int uHeight,
-    int a6, int a7, UIMessageType msg,
-    unsigned int msg_param, GameKey hotkey,
-    const std::string &label,
-    const std::vector<Image *> &textures) {
+                                   int a6, int a7, UIMessageType msg,
+                                   unsigned int msg_param, PlatformKey hotkey,
+                                   const std::string &label,
+                                   const std::vector<Image *> &textures) {
     GUIButton *pButton = new GUIButton();
 
     pButton->pParent = this;
@@ -817,14 +817,14 @@ void DrawJoinGuildWindow(GUILD_ID guild_id) {
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, guild_id);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
-        471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
+        471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, PlatformKey::None,
         localization->GetString(LSTR_CANCEL),
         { ui_exit_cancel_button_background }
     );
     pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0,
-        UIMSG_BuyInShop_Identify_Repair, 0, GameKey::None, "");
+                                  UIMSG_BuyInShop_Identify_Repair, 0, PlatformKey::None, "");
     pDialogueWindow->CreateButton(480, 160, 140, 30, 1, 0, UIMSG_ClickNPCTopic,
-        DIALOGUE_82_join_guild, GameKey::None, localization->GetString(LSTR_JOIN));
+                                  DIALOGUE_82_join_guild, PlatformKey::None, localization->GetString(LSTR_JOIN));
     pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
     dialog_menu_id = DIALOGUE_OTHER;
 }
@@ -970,8 +970,8 @@ void OnCancel3::Update() {
 
 void GUI_UpdateWindows() {
     if (GetCurrentMenuID() != MENU_CREATEPARTY) {
-        extern bool UI_OnKeyDown(GameKey key);
-        UI_OnKeyDown(GameKey::PageDown);
+        extern bool UI_OnKeyDown(PlatformKey key);
+        UI_OnKeyDown(PlatformKey::PageDown);
     }
 
     // should never activte this - gameui window should always be open
@@ -1650,14 +1650,14 @@ void _4B3FE5_training_dialogue(int eventId) {
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, eventId);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
-        471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
+        471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, PlatformKey::None,
         localization->GetString(LSTR_CANCEL), { ui_exit_cancel_button_background }
     );
     pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0,
-        UIMSG_BuyInShop_Identify_Repair, 0, GameKey::None, "");
+                                  UIMSG_BuyInShop_Identify_Repair, 0, PlatformKey::None, "");
     pDialogueWindow->CreateButton(
         480, 160, 0x8Cu, 0x1Eu, 1, 0, UIMSG_ClickNPCTopic,
-        DIALOGUE_79_mastery_teacher, GameKey::None,
+        DIALOGUE_79_mastery_teacher, PlatformKey::None,
         guild_membership_approved ? localization->GetString(LSTR_LEARN) : "");
     pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
     dialog_menu_id = DIALOGUE_OTHER;
@@ -1728,14 +1728,14 @@ void CheckBountyRespawnAndAward() {
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, 0);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
-        471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
+        471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, PlatformKey::None,
         localization->GetString(LSTR_CANCEL),
         { ui_exit_cancel_button_background }
     );
     pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0,
-        UIMSG_BuyInShop_Identify_Repair, 0, GameKey::None, "");
+                                  UIMSG_BuyInShop_Identify_Repair, 0, PlatformKey::None, "");
     pDialogueWindow->CreateButton(480, 160, 140, 30,
-        1, 0, UIMSG_0, DIALOGUE_83_bounty_hunting, GameKey::None, "");
+                                  1, 0, UIMSG_0, DIALOGUE_83_bounty_hunting, PlatformKey::None, "");
     pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
     dialog_menu_id = DIALOGUE_OTHER;
     // get new monster for hunting
@@ -2498,10 +2498,10 @@ void UI_Create() {
     pPrimaryWindow = new GUIWindow(WINDOW_GameUI, 0, 0, window->GetWidth(), window->GetHeight(), 0);
     pPrimaryWindow->CreateButton(7, 8, 460, 343, 1, 0, UIMSG_MouseLeftClickInGame, 0);
 
-    pPrimaryWindow->CreateButton(61, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 1, GameKey::Digit1);  // buttons for portraits
-    pPrimaryWindow->CreateButton(177, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 2, GameKey::Digit2);
-    pPrimaryWindow->CreateButton(292, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 3, GameKey::Digit3);
-    pPrimaryWindow->CreateButton(407, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 4, GameKey::Digit4);
+    pPrimaryWindow->CreateButton(61, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 1, PlatformKey::Digit1);  // buttons for portraits
+    pPrimaryWindow->CreateButton(177, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 2, PlatformKey::Digit2);
+    pPrimaryWindow->CreateButton(292, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 3, PlatformKey::Digit3);
+    pPrimaryWindow->CreateButton(407, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 4, PlatformKey::Digit4);
 
     pPrimaryWindow->CreateButton(24, 404, 5, 49, 1, 93, UIMSG_0, 1);  // buttons for HP
     pPrimaryWindow->CreateButton(139, 404, 5, 49, 1, 93, UIMSG_0, 2);
@@ -2550,7 +2550,7 @@ void UI_Create() {
         600, 361,
         game_ui_tome_storyline->GetWidth(),
         game_ui_tome_storyline->GetHeight(),
-        1, 0, UIMSG_OpenHistoryBook, 0, GameKey::H,
+        1, 0, UIMSG_OpenHistoryBook, 0, PlatformKey::H,
         localization->GetString(LSTR_HISTORY), { game_ui_tome_storyline }
     );
 
@@ -2570,40 +2570,40 @@ void UI_Create() {
         localization->GetString(LSTR_ZOOM_OUT), { game_ui_btn_zoomout });
 
     pPrimaryWindow->CreateButton(481, 0, 153, 67, 1, 92, UIMSG_0, 0);
-    pPrimaryWindow->CreateButton(491, 149, 64, 74, 1, 0, UIMSG_StartHireling1Dialogue, 0, GameKey::Digit5);
-    pPrimaryWindow->CreateButton(561, 149, 64, 74, 1, 0, UIMSG_StartHireling2Dialogue, 0, GameKey::Digit6);
+    pPrimaryWindow->CreateButton(491, 149, 64, 74, 1, 0, UIMSG_StartHireling1Dialogue, 0, PlatformKey::Digit5);
+    pPrimaryWindow->CreateButton(561, 149, 64, 74, 1, 0, UIMSG_StartHireling2Dialogue, 0, PlatformKey::Digit6);
     pPrimaryWindow->CreateButton(476, 322, 77, 17, 1, 100, UIMSG_0, 0);
     pPrimaryWindow->CreateButton(555, 322, 77, 17, 1, 101, UIMSG_0, 0);
 
     pBtn_CastSpell = pPrimaryWindow->CreateButton(476, 450,
-        game_ui_btn_cast->GetWidth(),
-        game_ui_btn_cast->GetHeight(),
-        1, 0, UIMSG_SpellBookWindow, 0, GameKey::C,
-        localization->GetString(LSTR_CAST_SPELL), { game_ui_btn_cast });
+                                                  game_ui_btn_cast->GetWidth(),
+                                                  game_ui_btn_cast->GetHeight(),
+                                                  1, 0, UIMSG_SpellBookWindow, 0, PlatformKey::C,
+                                                  localization->GetString(LSTR_CAST_SPELL), { game_ui_btn_cast });
     pBtn_Rest = pPrimaryWindow->CreateButton(518, 450,
-        game_ui_btn_rest->GetWidth(),
-        game_ui_btn_rest->GetHeight(),
-        1, 0, UIMSG_RestWindow, 0, GameKey::R,
-        localization->GetString(LSTR_REST), { game_ui_btn_rest });
+                                             game_ui_btn_rest->GetWidth(),
+                                             game_ui_btn_rest->GetHeight(),
+                                             1, 0, UIMSG_RestWindow, 0, PlatformKey::R,
+                                             localization->GetString(LSTR_REST), { game_ui_btn_rest });
     pBtn_QuickReference = pPrimaryWindow->CreateButton(560, 450,
-        game_ui_btn_quickref->GetWidth(),
-        game_ui_btn_quickref->GetHeight(),
-        1, 0, UIMSG_QuickReference, 0, GameKey::Z,
-        localization->GetString(LSTR_QUICK_REFERENCE), { game_ui_btn_quickref });
+                                                       game_ui_btn_quickref->GetWidth(),
+                                                       game_ui_btn_quickref->GetHeight(),
+                                                       1, 0, UIMSG_QuickReference, 0, PlatformKey::Z,
+                                                       localization->GetString(LSTR_QUICK_REFERENCE), { game_ui_btn_quickref });
     pBtn_GameSettings = pPrimaryWindow->CreateButton(602, 450,
-        game_ui_btn_settings->GetWidth(),
-        game_ui_btn_settings->GetHeight(),
-        1, 0, UIMSG_GameMenuButton, 0, GameKey::None,
-        localization->GetString(LSTR_GAME_OPTIONS), { game_ui_btn_settings });
+                                                     game_ui_btn_settings->GetWidth(),
+                                                     game_ui_btn_settings->GetHeight(),
+                                                     1, 0, UIMSG_GameMenuButton, 0, PlatformKey::None,
+                                                     localization->GetString(LSTR_GAME_OPTIONS), { game_ui_btn_settings });
 
     pBtn_NPCLeft = pPrimaryWindow->CreateButton(469, 178,
-        ui_btn_npc_left->GetWidth(),
-        ui_btn_npc_left->GetHeight(),
-        1, 0, UIMSG_ScrollNPCPanel, 0, GameKey::None, "", { ui_btn_npc_left });
+                                                ui_btn_npc_left->GetWidth(),
+                                                ui_btn_npc_left->GetHeight(),
+                                                1, 0, UIMSG_ScrollNPCPanel, 0, PlatformKey::None, "", {ui_btn_npc_left });
     pBtn_NPCRight = pPrimaryWindow->CreateButton(626, 178,
-        ui_btn_npc_right->GetWidth(),
-        ui_btn_npc_right->GetHeight(),
-        1, 0, UIMSG_ScrollNPCPanel, 1, GameKey::None, "", { ui_btn_npc_right });
+                                                 ui_btn_npc_right->GetWidth(),
+                                                 ui_btn_npc_right->GetHeight(),
+                                                 1, 0, UIMSG_ScrollNPCPanel, 1, PlatformKey::None, "", {ui_btn_npc_right });
 
     LoadPartyBuffIcons();
 }

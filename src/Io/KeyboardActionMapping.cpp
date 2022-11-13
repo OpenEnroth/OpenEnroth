@@ -29,11 +29,11 @@ extern std::map<InputAction, bool> key_map_conflicted;  // 506E6C
 class CKeyListElement {
  public:
     std::string m_keyName;
-    GameKey m_key;
+    PlatformKey m_key;
     InputAction m_cmdId;
     KeyToggleType m_toggType;
-    CKeyListElement(std::string keyName, GameKey key,
-        InputAction cmdId, KeyToggleType toggType)
+    CKeyListElement(std::string keyName, PlatformKey key,
+                    InputAction cmdId, KeyToggleType toggType)
         : m_keyName(keyName),
           m_key(key),
           m_cmdId(cmdId),
@@ -41,48 +41,48 @@ class CKeyListElement {
 };
 
 std::array<CKeyListElement, 30> keyMappingParams = {
-    CKeyListElement("KEY_FORWARD", GameKey::Up, InputAction::MoveForward, KeyToggleType::TOGGLE_Continuously),
-    CKeyListElement("KEY_BACKWARD", GameKey::Down, InputAction::MoveBackwards, KeyToggleType::TOGGLE_Continuously),
-    CKeyListElement("KEY_LEFT", GameKey::Left, InputAction::TurnLeft, KeyToggleType::TOGGLE_Continuously),
-    CKeyListElement("KEY_RIGHT", GameKey::Right, InputAction::TurnRight, KeyToggleType::TOGGLE_Continuously),
-    CKeyListElement("KEY_ATTACK", GameKey::A, InputAction::Attack, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_CASTREADY", GameKey::S, InputAction::CastReady, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_YELL", GameKey::Y, InputAction::Yell, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_JUMP", GameKey::X, InputAction::Jump, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_COMBAT", GameKey::Return, InputAction::Combat, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_EVENTTRIGGER", GameKey::Space, InputAction::EventTrigger, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_CAST", GameKey::C, InputAction::Cast, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_PASS", GameKey::B, InputAction::Pass, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_CHARCYCLE", GameKey::Tab, InputAction::CharCycle, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_QUEST", GameKey::Q, InputAction::Quest, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_QUICKREF", GameKey::Z, InputAction::QuickRef, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_REST", GameKey::R, InputAction::Rest, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_TIMECAL", GameKey::T, InputAction::TimeCal, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_AUTONOTES", GameKey::N, InputAction::Autonotes, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_MAPBOOK", GameKey::M, InputAction::Mapbook, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_LOOKUP", GameKey::PageDown, InputAction::LookUp, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_LOOKDOWN", GameKey::Delete, InputAction::LookDown, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_CENTERVIEWPT", GameKey::End, InputAction::CenterView, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_ZOOMIN", GameKey::Add, InputAction::ZoomIn, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_ZOOMOUT", GameKey::Subtract, InputAction::ZoomOut, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_FLYUP", GameKey::PageUp, InputAction::FlyUp, KeyToggleType::TOGGLE_Continuously),
-    CKeyListElement("KEY_FLYDOWN", GameKey::Insert, InputAction::FlyDown, KeyToggleType::TOGGLE_Continuously),
-    CKeyListElement("KEY_LAND", GameKey::Home, InputAction::Land, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_ALWAYSRUN", GameKey::U, InputAction::AlwaysRun, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_STEPLEFT", GameKey::LeftBracket, InputAction::StrafeLeft, KeyToggleType::TOGGLE_Continuously),
-    CKeyListElement("KEY_STEPRIGHT", GameKey::RightBracket, InputAction::StrafeRight, KeyToggleType::TOGGLE_Continuously)};
+    CKeyListElement("KEY_FORWARD", PlatformKey::Up, InputAction::MoveForward, KeyToggleType::TOGGLE_Continuously),
+    CKeyListElement("KEY_BACKWARD", PlatformKey::Down, InputAction::MoveBackwards, KeyToggleType::TOGGLE_Continuously),
+    CKeyListElement("KEY_LEFT", PlatformKey::Left, InputAction::TurnLeft, KeyToggleType::TOGGLE_Continuously),
+    CKeyListElement("KEY_RIGHT", PlatformKey::Right, InputAction::TurnRight, KeyToggleType::TOGGLE_Continuously),
+    CKeyListElement("KEY_ATTACK", PlatformKey::A, InputAction::Attack, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_CASTREADY", PlatformKey::S, InputAction::CastReady, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_YELL", PlatformKey::Y, InputAction::Yell, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_JUMP", PlatformKey::X, InputAction::Jump, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_COMBAT", PlatformKey::Return, InputAction::Combat, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_EVENTTRIGGER", PlatformKey::Space, InputAction::EventTrigger, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_CAST", PlatformKey::C, InputAction::Cast, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_PASS", PlatformKey::B, InputAction::Pass, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_CHARCYCLE", PlatformKey::Tab, InputAction::CharCycle, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_QUEST", PlatformKey::Q, InputAction::Quest, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_QUICKREF", PlatformKey::Z, InputAction::QuickRef, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_REST", PlatformKey::R, InputAction::Rest, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_TIMECAL", PlatformKey::T, InputAction::TimeCal, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_AUTONOTES", PlatformKey::N, InputAction::Autonotes, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_MAPBOOK", PlatformKey::M, InputAction::Mapbook, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_LOOKUP", PlatformKey::PageDown, InputAction::LookUp, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_LOOKDOWN", PlatformKey::Delete, InputAction::LookDown, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_CENTERVIEWPT", PlatformKey::End, InputAction::CenterView, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_ZOOMIN", PlatformKey::Add, InputAction::ZoomIn, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_ZOOMOUT", PlatformKey::Subtract, InputAction::ZoomOut, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_FLYUP", PlatformKey::PageUp, InputAction::FlyUp, KeyToggleType::TOGGLE_Continuously),
+    CKeyListElement("KEY_FLYDOWN", PlatformKey::Insert, InputAction::FlyDown, KeyToggleType::TOGGLE_Continuously),
+    CKeyListElement("KEY_LAND", PlatformKey::Home, InputAction::Land, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_ALWAYSRUN", PlatformKey::U, InputAction::AlwaysRun, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_STEPLEFT", PlatformKey::LeftBracket, InputAction::StrafeLeft, KeyToggleType::TOGGLE_Continuously),
+    CKeyListElement("KEY_STEPRIGHT", PlatformKey::RightBracket, InputAction::StrafeRight, KeyToggleType::TOGGLE_Continuously)};
 
 
-void KeyboardActionMapping::MapKey(InputAction action, GameKey key) {
+void KeyboardActionMapping::MapKey(InputAction action, PlatformKey key) {
     actionKeyMap[action] = key;
 }
 //----- (00459C68) --------------------------------------------------------
-void KeyboardActionMapping::MapKey(InputAction action, GameKey key, KeyToggleType type) {
+void KeyboardActionMapping::MapKey(InputAction action, PlatformKey key, KeyToggleType type) {
     actionKeyMap[action] = key;
     keyToggleMap[action] = type;
 }
 
-GameKey KeyboardActionMapping::MapDefaultKey(InputAction action) {
+PlatformKey KeyboardActionMapping::MapDefaultKey(InputAction action) {
 /*
     for (size_t i = 0; i < keyMappingParams.size(); i++) {
         if (keyMappingParams[i].m_cmdId == action) {
@@ -96,7 +96,7 @@ GameKey KeyboardActionMapping::MapDefaultKey(InputAction action) {
 }
 
 //----- (00459C82) --------------------------------------------------------
-GameKey KeyboardActionMapping::GetKey(InputAction action) const {
+PlatformKey KeyboardActionMapping::GetKey(InputAction action) const {
     return actionKeyMap.find(action)->second;
 }
 
@@ -135,8 +135,8 @@ void KeyboardActionMapping::ReadMappings() {
         //    MapKey(commandId, parsedKey);
         //else
         //    MapKey(commandId, commandDefaultKeyCode);
-        GameKey key = ConfigGetKey(commandId);
-        if (key != GameKey::None)
+        PlatformKey key = ConfigGetKey(commandId);
+        if (key != PlatformKey::None)
             MapKey(commandId, key);
         else
             MapKey(commandId, ConfigDefaultKey(commandId));
@@ -273,8 +273,8 @@ GameConfig::ConfigValue<std::string> *KeyboardActionMapping::InputActionToConfig
     return val;
 }
 
-GameKey KeyboardActionMapping::ConfigDefaultKey(InputAction action) {
-    GameKey key = GameKey::None;
+PlatformKey KeyboardActionMapping::ConfigDefaultKey(InputAction action) {
+    PlatformKey key = PlatformKey::None;
     GameConfig::ConfigValue<std::string> *val = InputActionToConfigKey(action);
 
     if (val)
@@ -283,8 +283,8 @@ GameKey KeyboardActionMapping::ConfigDefaultKey(InputAction action) {
     return key;
 }
 
-GameKey KeyboardActionMapping::ConfigGetKey(InputAction action) {
-    GameKey key = GameKey::None;
+PlatformKey KeyboardActionMapping::ConfigGetKey(InputAction action) {
+    PlatformKey key = PlatformKey::None;
     GameConfig::ConfigValue<std::string> *val = InputActionToConfigKey(action);
 
     if (val)
@@ -293,7 +293,7 @@ GameKey KeyboardActionMapping::ConfigGetKey(InputAction action) {
     return key;
 }
 
-void KeyboardActionMapping::ConfigSetKey(InputAction action, GameKey key) {
+void KeyboardActionMapping::ConfigSetKey(InputAction action, PlatformKey key) {
     GameConfig::ConfigValue<std::string> *val = InputActionToConfigKey(action);
 
     if (val)

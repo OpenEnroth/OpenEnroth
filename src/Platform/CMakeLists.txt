@@ -6,9 +6,11 @@ set(PLATFORM_SOURCES OSWindow.cpp
                      Sdl2MouseController.cpp
                      Sdl2Window.cpp
                      SDLmain.cpp
+                     PlatformKey.cpp
 )
 
 set(PLATFORM_HEADERS Api.h
+                     PlatformKey.h
                      OSWindow.h
                      OSWindowFactory.h
                      Sdl2KeyboardController.h

@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Io/GameKey.h"
+#include "Platform/PlatformKey.h"
 
 namespace Io {
     // Glue interface between Game and Platform-specific controller
     class IKeyboardController {
      public:
-        virtual bool IsKeyPressed(GameKey key) const = 0;
-        virtual bool IsKeyHeld(GameKey key) const = 0;
+        virtual bool IsKeyPressed(PlatformKey key) const = 0;
+        virtual bool IsKeyHeld(PlatformKey key) const = 0;
     };
 }

@@ -124,7 +124,7 @@ Image *game_ui_playerbuff_bless = nullptr;
 
 extern InputAction currently_selected_action_for_binding;  // 506E68
 extern std::map<InputAction, bool> key_map_conflicted;  // 506E6C
-extern std::map<InputAction, GameKey> prev_key_map;
+extern std::map<InputAction, PlatformKey> prev_key_map;
 
 GUIWindow_GameMenu::GUIWindow_GameMenu()
     : GUIWindow(WINDOW_GameMenu, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
@@ -137,26 +137,26 @@ GUIWindow_GameMenu::GUIWindow_GameMenu()
     game_ui_menu_quit = assets->GetImage_ColorKey("quit1", render->teal_mask_16);
 
     pBtn_NewGame = CreateButton(0x13u, 0x9Bu, 0xD6u, 0x28u, 1, 0,
-                                UIMSG_StartNewGame, 0, GameKey::N,
+                                UIMSG_StartNewGame, 0, PlatformKey::N,
                                 localization->GetString(LSTR_NEW_GAME),
                                 {game_ui_menu_new});
     pBtn_SaveGame = CreateButton(0x13u, 0xD1u, 0xD6u, 0x28u, 1, 0,
-                                 UIMSG_Game_OpenSaveGameDialog, 0, GameKey::S,
+                                 UIMSG_Game_OpenSaveGameDialog, 0, PlatformKey::S,
                                  localization->GetString(LSTR_SAVE_GAME),
                                  {game_ui_menu_save});
     pBtn_LoadGame = CreateButton(19, 263, 0xD6u, 0x28u, 1, 0,
-                                 UIMSG_Game_OpenLoadGameDialog, 0, GameKey::L,
+                                 UIMSG_Game_OpenLoadGameDialog, 0, PlatformKey::L,
                                  localization->GetString(LSTR_LOAD_GAME),
                                  {game_ui_menu_load});
     pBtn_GameControls = CreateButton(
-        241, 155, 214, 40, 1, 0, UIMSG_Game_OpenOptionsDialog, 0, GameKey::C,
+        241, 155, 214, 40, 1, 0, UIMSG_Game_OpenOptionsDialog, 0, PlatformKey::C,
         localization->GetString(LSTR_OPTIONS), {game_ui_menu_controls}
     );
-    pBtn_QuitGame = CreateButton(241, 209, 214, 40, 1, 0, UIMSG_Quit, 0, GameKey::Q,
+    pBtn_QuitGame = CreateButton(241, 209, 214, 40, 1, 0, UIMSG_Quit, 0, PlatformKey::Q,
                                  localization->GetString(LSTR_QUIT),
                                  {game_ui_menu_quit});
     pBtn_Resume = CreateButton(
-        241, 263, 214, 40, 1, 0, UIMSG_GameMenu_ReturnToGame, 0, GameKey::R,
+        241, 263, 214, 40, 1, 0, UIMSG_GameMenu_ReturnToGame, 0, PlatformKey::R,
         localization->GetString(LSTR_RETURN_TO_GAME),
         {game_ui_menu_resume});
     _41D08F_set_keyboard_control_group(6, 1, 0, 0);
@@ -282,7 +282,7 @@ void GUIWindow_GameKeyBindings::Update() {
 
     if (pGUIWindow_CurrentMenu->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CONFIRMED) {
         InputAction action = currently_selected_action_for_binding;
-        GameKey newKey = keyboardInputHandler->LastPressedKey();
+        PlatformKey newKey = keyboardInputHandler->LastPressedKey();
         prev_key_map[action] = newKey;
 
         for (auto action : AllInputActions()) {
@@ -497,32 +497,32 @@ GUIWindow_GameOptions::GUIWindow_GameOptions()
                  UIMSG_ToggleFlipOnExit, 0);
 
     pBtn_SliderLeft = CreateButton(
-        243, 162, 16, 16, 1, 0, UIMSG_ChangeSoundVolume, 4, GameKey::None, "",
+        243, 162, 16, 16, 1, 0, UIMSG_ChangeSoundVolume, 4, PlatformKey::None, "",
         {options_menu_skin.uTextureID_ArrowLeft});
     pBtn_SliderRight = CreateButton(
-        435, 162, 16, 16, 1, 0, UIMSG_ChangeSoundVolume, 5, GameKey::None, "",
+        435, 162, 16, 16, 1, 0, UIMSG_ChangeSoundVolume, 5, PlatformKey::None, "",
         {options_menu_skin.uTextureID_ArrowRight});
     CreateButton(263, 162, 172, 17, 1, 0, UIMSG_ChangeSoundVolume, 0);
 
     pBtn_SliderLeft = CreateButton(
-        243, 216, 16, 16, 1, 0, UIMSG_ChangeMusicVolume, 4, GameKey::None, "",
+        243, 216, 16, 16, 1, 0, UIMSG_ChangeMusicVolume, 4, PlatformKey::None, "",
         {options_menu_skin.uTextureID_ArrowLeft});
     pBtn_SliderRight = CreateButton(
-        435, 216, 16, 16, 1, 0, UIMSG_ChangeMusicVolume, 5, GameKey::None, "",
+        435, 216, 16, 16, 1, 0, UIMSG_ChangeMusicVolume, 5, PlatformKey::None, "",
         {options_menu_skin.uTextureID_ArrowRight});
     CreateButton(263, 216, 172, 17, 1, 0, UIMSG_ChangeMusicVolume, 0);
 
     pBtn_SliderLeft = CreateButton(
-        243, 270, 16, 16, 1, 0, UIMSG_ChangeVoiceVolume, 4, GameKey::None, "",
+        243, 270, 16, 16, 1, 0, UIMSG_ChangeVoiceVolume, 4, PlatformKey::None, "",
         {options_menu_skin.uTextureID_ArrowLeft});
     pBtn_SliderRight = CreateButton(
-        435, 270, 16, 16, 1, 0, UIMSG_ChangeVoiceVolume, 5, GameKey::None, "",
+        435, 270, 16, 16, 1, 0, UIMSG_ChangeVoiceVolume, 5, PlatformKey::None, "",
         {options_menu_skin.uTextureID_ArrowRight});
     CreateButton(263, 270, 172, 17, 1, 0, UIMSG_ChangeVoiceVolume, 0);
 
-    CreateButton(241, 302, 214, 40, 1, 0, UIMSG_Escape, 0, GameKey::None, localization->GetString(LSTR_RETURN_TO_GAME));
-    CreateButton(19, 140, 214, 40, 1, 0, UIMSG_OpenKeyMappingOptions, 0, GameKey::K);
-    CreateButton(19, 194, 214, 40, 1, 0, UIMSG_OpenVideoOptions, 0, GameKey::V);
+    CreateButton(241, 302, 214, 40, 1, 0, UIMSG_Escape, 0, PlatformKey::None, localization->GetString(LSTR_RETURN_TO_GAME));
+    CreateButton(19, 140, 214, 40, 1, 0, UIMSG_OpenKeyMappingOptions, 0, PlatformKey::K);
+    CreateButton(19, 194, 214, 40, 1, 0, UIMSG_OpenVideoOptions, 0, PlatformKey::V);
 }
 
 void GUIWindow_GameOptions::Update() {
@@ -2151,45 +2151,45 @@ GUIWindow_DebugMenu::GUIWindow_DebugMenu()
 
     game_ui_menu_options = assets->GetImage_ColorKey("options", render->teal_mask_16);
 
-    GUIButton *pBtn_DebugTownPortal = CreateButton(13, 140, width, height, 1, 0, UIMSG_DebugTownPortal, 0, GameKey::None, "DEBUG TOWN PORTAL");
-    GUIButton *pBtn_DebugGiveGold = CreateButton(127, 140, width, height, 1, 0, UIMSG_DebugGiveGold, 0, GameKey::None, "DEBUG GIVE GOLD (10000)");
-    GUIButton *pBtn_DebugGiveEXP = CreateButton(241, 140, width, height, 1, 0, UIMSG_DebugGiveEXP, 0, GameKey::None, "DEBUG GIVE EXP (20000)");
-    GUIButton *pBtn_DebugGiveSkillP = CreateButton(354, 140, width, height, 1, 0, UIMSG_DebugGiveSkillP, 0, GameKey::None, "DEBUG GIVE SKILL POINT (50)");
+    GUIButton *pBtn_DebugTownPortal = CreateButton(13, 140, width, height, 1, 0, UIMSG_DebugTownPortal, 0, PlatformKey::None, "DEBUG TOWN PORTAL");
+    GUIButton *pBtn_DebugGiveGold = CreateButton(127, 140, width, height, 1, 0, UIMSG_DebugGiveGold, 0, PlatformKey::None, "DEBUG GIVE GOLD (10000)");
+    GUIButton *pBtn_DebugGiveEXP = CreateButton(241, 140, width, height, 1, 0, UIMSG_DebugGiveEXP, 0, PlatformKey::None, "DEBUG GIVE EXP (20000)");
+    GUIButton *pBtn_DebugGiveSkillP = CreateButton(354, 140, width, height, 1, 0, UIMSG_DebugGiveSkillP, 0, PlatformKey::None, "DEBUG GIVE SKILL POINT (50)");
 
-    GUIButton *pBtn_DebugLearnSkill = CreateButton(13, 167, width, height, 1, 0, UIMSG_DebugLearnSkills, 0, GameKey::None, "DEBUG LEARN CLASS SKILLS");
-    GUIButton *pBtn_DebugRemoveGold = CreateButton(127, 167, width, height, 1, 0, UIMSG_DebugTakeGold, 0, GameKey::None, "DEBUG REMOVE GOLD");
-    GUIButton *pBtn_DebugAddFood = CreateButton(241, 167, width, height, 1, 0, UIMSG_DebugGiveFood, 0, GameKey::None, "DEBUG GIVE FOOD (20)");
-    GUIButton *pBtn_DebugTakeFood = CreateButton(354, 167, width, height, 1, 0, UIMSG_DebugTakeFood, 0, GameKey::None, "DEBUG REMOVE FOOD");
+    GUIButton *pBtn_DebugLearnSkill = CreateButton(13, 167, width, height, 1, 0, UIMSG_DebugLearnSkills, 0, PlatformKey::None, "DEBUG LEARN CLASS SKILLS");
+    GUIButton *pBtn_DebugRemoveGold = CreateButton(127, 167, width, height, 1, 0, UIMSG_DebugTakeGold, 0, PlatformKey::None, "DEBUG REMOVE GOLD");
+    GUIButton *pBtn_DebugAddFood = CreateButton(241, 167, width, height, 1, 0, UIMSG_DebugGiveFood, 0, PlatformKey::None, "DEBUG GIVE FOOD (20)");
+    GUIButton *pBtn_DebugTakeFood = CreateButton(354, 167, width, height, 1, 0, UIMSG_DebugTakeFood, 0, PlatformKey::None, "DEBUG REMOVE FOOD");
 
-    GUIButton *pBtn_DebugCycleAlign = CreateButton(13, 194, width, height, 1, 0, UIMSG_DebugCycleAlign, 0, GameKey::None, "DEBUG CYCLE ALIGNMENT");
-    GUIButton *pBtn_DebugWizardEye = CreateButton(127, 194, width, height, 1, 0, UIMSG_DebugWizardEye, 0, GameKey::None, "DEBUG TOGGLE WIZARD EYE");
-    GUIButton *pBtn_DebugAllMagic = CreateButton(241, 194, width, height, 1, 0, UIMSG_DebugAllMagic, 0, GameKey::None, "DEBUG TOGGLE All MAGIC");
-    GUIButton *pBtn_DebugTerrain = CreateButton(354, 194, width, height, 1, 0, UIMSG_DebugTerrain, 0, GameKey::None, "DEBUG TOGGLE TERRAIN");
+    GUIButton *pBtn_DebugCycleAlign = CreateButton(13, 194, width, height, 1, 0, UIMSG_DebugCycleAlign, 0, PlatformKey::None, "DEBUG CYCLE ALIGNMENT");
+    GUIButton *pBtn_DebugWizardEye = CreateButton(127, 194, width, height, 1, 0, UIMSG_DebugWizardEye, 0, PlatformKey::None, "DEBUG TOGGLE WIZARD EYE");
+    GUIButton *pBtn_DebugAllMagic = CreateButton(241, 194, width, height, 1, 0, UIMSG_DebugAllMagic, 0, PlatformKey::None, "DEBUG TOGGLE All MAGIC");
+    GUIButton *pBtn_DebugTerrain = CreateButton(354, 194, width, height, 1, 0, UIMSG_DebugTerrain, 0, PlatformKey::None, "DEBUG TOGGLE TERRAIN");
 
-    GUIButton *pBtn_DebugLightMap = CreateButton(13, 221, width, height, 1, 0, UIMSG_DebugLightmap, 0, GameKey::None, "DEBUG TOGGLE LIGHTMAP DECAL");
-    GUIButton *pBtn_DebugTurbo = CreateButton(127, 221, width, height, 1, 0, UIMSG_DebugTurboSpeed, 0, GameKey::None, "DEBUG TOGGLE TURBO SPEED");
-    GUIButton *pBtn_DebugNoActors = CreateButton(241, 221, width, height, 1, 0, UIMSG_DebugNoActors, 0, GameKey::None, "DEBUG TOGGLE ACTORS");
-    GUIButton *pBtn_DebugUnused = CreateButton(354, 221, width, height, 1, 0, UIMSG_DebugFog, 0, GameKey::None, "DEBUG TOGGLE FOG");
+    GUIButton *pBtn_DebugLightMap = CreateButton(13, 221, width, height, 1, 0, UIMSG_DebugLightmap, 0, PlatformKey::None, "DEBUG TOGGLE LIGHTMAP DECAL");
+    GUIButton *pBtn_DebugTurbo = CreateButton(127, 221, width, height, 1, 0, UIMSG_DebugTurboSpeed, 0, PlatformKey::None, "DEBUG TOGGLE TURBO SPEED");
+    GUIButton *pBtn_DebugNoActors = CreateButton(241, 221, width, height, 1, 0, UIMSG_DebugNoActors, 0, PlatformKey::None, "DEBUG TOGGLE ACTORS");
+    GUIButton *pBtn_DebugUnused = CreateButton(354, 221, width, height, 1, 0, UIMSG_DebugFog, 0, PlatformKey::None, "DEBUG TOGGLE FOG");
 
-    GUIButton *pBtn_DebugSnow = CreateButton(13, 248, width, height, 1, 0, UIMSG_DebugSnow, 0, GameKey::None, "DEBUG TOGGLE SNOW");
-    GUIButton *pBtn_DebugPortalLines = CreateButton(127, 248, width, height, 1, 0, UIMSG_DebugPortalLines, 0, GameKey::None, "DEBUG TOGGLE PORTAL OUTLINES");
-    GUIButton *pBtn_DebugPickedFace = CreateButton(241, 248, width, height, 1, 0, UIMSG_DebugPickedFace, 0, GameKey::None, "DEBUG TOGGLE SHOW PICKED FACE");
-    GUIButton *pBtn_DebugShowFPS = CreateButton(354, 248, width, height, 1, 0, UIMSG_DebugShowFPS, 0, GameKey::None, "DEBUG TOGGLE SHOW FPS");
+    GUIButton *pBtn_DebugSnow = CreateButton(13, 248, width, height, 1, 0, UIMSG_DebugSnow, 0, PlatformKey::None, "DEBUG TOGGLE SNOW");
+    GUIButton *pBtn_DebugPortalLines = CreateButton(127, 248, width, height, 1, 0, UIMSG_DebugPortalLines, 0, PlatformKey::None, "DEBUG TOGGLE PORTAL OUTLINES");
+    GUIButton *pBtn_DebugPickedFace = CreateButton(241, 248, width, height, 1, 0, UIMSG_DebugPickedFace, 0, PlatformKey::None, "DEBUG TOGGLE SHOW PICKED FACE");
+    GUIButton *pBtn_DebugShowFPS = CreateButton(354, 248, width, height, 1, 0, UIMSG_DebugShowFPS, 0, PlatformKey::None, "DEBUG TOGGLE SHOW FPS");
 
-    GUIButton *pBtn_DebugSeasonsChange = CreateButton(13, 275, width, height, 1, 0, UIMSG_DebugSeasonsChange, 0, GameKey::None, "DEBUG TOGGLE SEASONS CHANGE");
-    GUIButton *pBtn_DebugVerboseLogging = CreateButton(127, 275, width, height, 1, 0, UIMSG_DebugVerboseLogging, 0, GameKey::None, "DEBUG TOGGLE VERBOSE LOGGING");
-    GUIButton *pBtn_DebugGenItem = CreateButton(241, 275, width, height, 1, 0, UIMSG_DebugGenItem, 0, GameKey::None, "DEBUG GENERATE RANDOM ITEM");
-    GUIButton *pBtn_DebugSpecialItem = CreateButton(354, 275, width, height, 1, 0, UIMSG_DebugSpecialItem, 0, GameKey::None, "DEBUG GENERATE RANDOM SPECIAL ITEM");
+    GUIButton *pBtn_DebugSeasonsChange = CreateButton(13, 275, width, height, 1, 0, UIMSG_DebugSeasonsChange, 0, PlatformKey::None, "DEBUG TOGGLE SEASONS CHANGE");
+    GUIButton *pBtn_DebugVerboseLogging = CreateButton(127, 275, width, height, 1, 0, UIMSG_DebugVerboseLogging, 0, PlatformKey::None, "DEBUG TOGGLE VERBOSE LOGGING");
+    GUIButton *pBtn_DebugGenItem = CreateButton(241, 275, width, height, 1, 0, UIMSG_DebugGenItem, 0, PlatformKey::None, "DEBUG GENERATE RANDOM ITEM");
+    GUIButton *pBtn_DebugSpecialItem = CreateButton(354, 275, width, height, 1, 0, UIMSG_DebugSpecialItem, 0, PlatformKey::None, "DEBUG GENERATE RANDOM SPECIAL ITEM");
 
-    GUIButton *pBtn_DebugReloadShaders = CreateButton(13, 302, width, height, 1, 0, UIMSG_DebugReloadShader, 0, GameKey::Backspace, "DEBUG RELOAD SHADERS");
-    GUIButton *pBtn_DebugUnused1 = CreateButton(127, 302, width, height, 1, 0, UIMSG_DebugUnused, 0, GameKey::None, "DEBUG unused1");
-    GUIButton *pBtn_DebugUnused2 = CreateButton(241, 302, width, height, 1, 0, UIMSG_DebugUnused, 0, GameKey::None, "DEBUG unused2");
-    GUIButton *pBtn_DebugUnused3 = CreateButton(354, 302, width, height, 1, 0, UIMSG_DebugUnused, 0, GameKey::None, "DEBUG unused3");
+    GUIButton *pBtn_DebugReloadShaders = CreateButton(13, 302, width, height, 1, 0, UIMSG_DebugReloadShader, 0, PlatformKey::Backspace, "DEBUG RELOAD SHADERS");
+    GUIButton *pBtn_DebugUnused1 = CreateButton(127, 302, width, height, 1, 0, UIMSG_DebugUnused, 0, PlatformKey::None, "DEBUG unused1");
+    GUIButton *pBtn_DebugUnused2 = CreateButton(241, 302, width, height, 1, 0, UIMSG_DebugUnused, 0, PlatformKey::None, "DEBUG unused2");
+    GUIButton *pBtn_DebugUnused3 = CreateButton(354, 302, width, height, 1, 0, UIMSG_DebugUnused, 0, PlatformKey::None, "DEBUG unused3");
 
-    GUIButton *pBtn_DebugKillChar = CreateButton(13, 329, width, height, 1, 0, UIMSG_DebugKillChar, 0, GameKey::None, "DEBUG KILL SELECTED CHARACTER");
-    GUIButton *pBtn_DebugEradicate = CreateButton(127, 329, width, height, 1, 0, UIMSG_DebugEradicate, 0, GameKey::None, "DEBUG ERADICATE SELECTED CHARACTER");
-    GUIButton *pBtn_DebugNoDamage = CreateButton(241, 329, width, height, 1, 0, UIMSG_DebugNoDamage, 0, GameKey::None, "DEBUG TOGGLE NO DAMAGE");
-    GUIButton *pBtn_DebugFullHeal = CreateButton(354, 329, width, height, 1, 0, UIMSG_DebugFullHeal, 0, GameKey::None, "DEBUG FULLY HEAL SELECTED CHARACTER");
+    GUIButton *pBtn_DebugKillChar = CreateButton(13, 329, width, height, 1, 0, UIMSG_DebugKillChar, 0, PlatformKey::None, "DEBUG KILL SELECTED CHARACTER");
+    GUIButton *pBtn_DebugEradicate = CreateButton(127, 329, width, height, 1, 0, UIMSG_DebugEradicate, 0, PlatformKey::None, "DEBUG ERADICATE SELECTED CHARACTER");
+    GUIButton *pBtn_DebugNoDamage = CreateButton(241, 329, width, height, 1, 0, UIMSG_DebugNoDamage, 0, PlatformKey::None, "DEBUG TOGGLE NO DAMAGE");
+    GUIButton *pBtn_DebugFullHeal = CreateButton(354, 329, width, height, 1, 0, UIMSG_DebugFullHeal, 0, PlatformKey::None, "DEBUG FULLY HEAL SELECTED CHARACTER");
 }
 
 void GUIWindow_DebugMenu::Update() {

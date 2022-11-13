@@ -3,7 +3,7 @@
 #include <memory>
 #include <string>
 
-#include "Io/GameKey.h"
+#include "Platform/PlatformKey.h"
 #include "Io/IKeyboardController.h"
 #include "Io/KeyboardActionMapping.h"
 
@@ -24,7 +24,7 @@ namespace Io {
             this->controller = controller;
             this->actionMapping = actionMapping;
 
-            lastKeyPressed = GameKey::None;
+            lastKeyPressed = PlatformKey::None;
             inputType = TextInputType::None;
             window = nullptr;
             uNumKeysPressed = 0;
@@ -39,18 +39,18 @@ namespace Io {
         bool IsAdventurerBackcycleToggled() const;
         bool IsSpellBackcycleToggled() const;
         bool IsCastOnClickToggled() const;
-        bool IsKeyHeld(GameKey key) const;
+        bool IsKeyHeld(PlatformKey key) const;
 
         void GenerateInputActions();
 
         void SetWindowInputStatus(WindowInputStatus status);
-        inline GameKey LastPressedKey() const {
+        inline PlatformKey LastPressedKey() const {
             return lastKeyPressed;
         }
         void ResetKeys();
 
         void StartTextInput(TextInputType type, int max_string_len, GUIWindow* pWindow);
-        bool ProcessTextInput(GameKey key, int c);
+        bool ProcessTextInput(PlatformKey key, int c);
         void EndTextInput();
 
         std::string GetTextInput() const;
@@ -64,7 +64,7 @@ namespace Io {
         std::shared_ptr<IKeyboardController> controller;
         std::shared_ptr<KeyboardActionMapping> actionMapping;
 
-        GameKey lastKeyPressed;
+        PlatformKey lastKeyPressed;
         int keydelaytimer;
         int max_input_string_len;
         char pPressedKeysBuffer[257];
@@ -75,7 +75,7 @@ namespace Io {
 }  // namespace Io
 
 
-bool UI_OnKeyDown(Io::GameKey key);
+bool UI_OnKeyDown(PlatformKey key);
 
 
 extern std::shared_ptr<Io::KeyboardInputHandler> keyboardInputHandler;

@@ -67,6 +67,6 @@ class Sdl2Window : public OSWindow {
     Sdl2WinParams CalculateWindowParameters();
     bool NuklearEventHandler(const SDL_Event &e);
     void MessageProc(const SDL_Event &e);
-    bool TryMapScanCode(SDL_Scancode code, GameKey* outKey) const;
+    bool TryMapScanCode(SDL_Scancode code, PlatformKey* outKey) const;
     bool TryMapKeyCode(SDL_Keycode key, bool uppercase, int *outKey) const;
 };

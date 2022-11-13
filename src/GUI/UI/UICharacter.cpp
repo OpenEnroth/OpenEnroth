@@ -581,43 +581,43 @@ GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(
     pCharacterScreen_StatsBtn = CreateButton(
         pViewport->uViewportTL_X + 12, pViewport->uViewportTL_Y + 308,
         paperdoll_dbrds[9]->GetWidth(), paperdoll_dbrds[9]->GetHeight(), 1, 0,
-        UIMSG_ClickStatsBtn, 0, GameKey::S, localization->GetString(LSTR_STATS),
+        UIMSG_ClickStatsBtn, 0, PlatformKey::S, localization->GetString(LSTR_STATS),
         {{paperdoll_dbrds[10], paperdoll_dbrds[9]}});
     pCharacterScreen_SkillsBtn = CreateButton(
         pViewport->uViewportTL_X + 102, pViewport->uViewportTL_Y + 308,
         paperdoll_dbrds[7]->GetWidth(), paperdoll_dbrds[7]->GetHeight(), 1, 0,
-        UIMSG_ClickSkillsBtn, 0, GameKey::K, localization->GetString(LSTR_SKILLS),
+        UIMSG_ClickSkillsBtn, 0, PlatformKey::K, localization->GetString(LSTR_SKILLS),
         {{paperdoll_dbrds[8], paperdoll_dbrds[7]}});
     pCharacterScreen_InventoryBtn = CreateButton(
         pViewport->uViewportTL_X + 192, pViewport->uViewportTL_Y + 308,
         paperdoll_dbrds[5]->GetWidth(), paperdoll_dbrds[5]->GetHeight(), 1, 0,
-        UIMSG_ClickInventoryBtn, 0, GameKey::I,
+        UIMSG_ClickInventoryBtn, 0, PlatformKey::I,
         localization->GetString(LSTR_INVENTORY),
         {{paperdoll_dbrds[6], paperdoll_dbrds[5]}});
     pCharacterScreen_AwardsBtn = CreateButton(
         pViewport->uViewportTL_X + 282, pViewport->uViewportTL_Y + 308,
         paperdoll_dbrds[3]->GetWidth(), paperdoll_dbrds[3]->GetHeight(), 1, 0,
-        UIMSG_ClickAwardsBtn, 0, GameKey::A, localization->GetString(LSTR_AWARDS),
+        UIMSG_ClickAwardsBtn, 0, PlatformKey::A, localization->GetString(LSTR_AWARDS),
         {{paperdoll_dbrds[4], paperdoll_dbrds[3]}});
     pCharacterScreen_ExitBtn = CreateButton(
         pViewport->uViewportTL_X + 371, pViewport->uViewportTL_Y + 308,
         paperdoll_dbrds[1]->GetWidth(), paperdoll_dbrds[1]->GetHeight(), 1, 0,
-        UIMSG_ClickExitCharacterWindowBtn, 0, GameKey::None,
+        UIMSG_ClickExitCharacterWindowBtn, 0, PlatformKey::None,
         localization->GetString(LSTR_DIALOGUE_EXIT),
         {{paperdoll_dbrds[2], paperdoll_dbrds[1]}});
     CreateButton(0, 0, 476, 345, 1, 122, UIMSG_InventoryLeftClick, 0);
     pCharacterScreen_DetalizBtn =
-        CreateButton(600, 300, 30, 30, 1, 0, UIMSG_ChangeDetaliz, 0, GameKey::None,
+        CreateButton(600, 300, 30, 30, 1, 0, UIMSG_ChangeDetaliz, 0, PlatformKey::None,
                      localization->GetString(LSTR_DETAIL_TOGGLE));
     pCharacterScreen_DollBtn =
         CreateButton(476, 0, 164, 345, 1, 0, UIMSG_ClickPaperdoll, 0);
 
-    CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, GameKey::Digit1);
-    CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, GameKey::Digit2);
-    CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, GameKey::Digit3);
-    CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, GameKey::Digit4);
+    CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, PlatformKey::Digit1);
+    CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, PlatformKey::Digit2);
+    CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, PlatformKey::Digit3);
+    CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, PlatformKey::Digit4);
 
-    CreateButton(0, 0, 0, 0, 1, 0, UIMSG_CycleCharacters, 0, GameKey::Tab);
+    CreateButton(0, 0, 0, 0, 1, 0, UIMSG_CycleCharacters, 0, PlatformKey::Tab);
     FillAwardsData();
 
     ui_character_skills_background = assets->GetImage_ColorKey("fr_skill", render->teal_mask_16);
@@ -750,7 +750,7 @@ void GUIWindow_CharacterRecord::ToggleRingsOverlay() {
         x = 600;
     }
     pCharacterScreen_DetalizBtn = pGUIWindow_CurrentMenu->CreateButton(
-        x, y, w, h, 1, 0, UIMSG_ChangeDetaliz, 0, GameKey::None,
+        x, y, w, h, 1, 0, UIMSG_ChangeDetaliz, 0, PlatformKey::None,
         localization->GetString(LSTR_DETAIL_TOGGLE));
     pCharacterScreen_DollBtn = pGUIWindow_CurrentMenu->CreateButton(
         476, 0, 164, 345, 1, 0, UIMSG_ClickPaperdoll, 0);
@@ -766,7 +766,7 @@ GUIWindow *CastSpellInfo::GetCastSpellInInventoryWindow() {
     GUIWindow *CS_inventory_window = new GUIWindow_Inventory_CastSpell(
         0, 0, window->GetWidth(), window->GetHeight(), this, "");
     pCharacterScreen_ExitBtn = CS_inventory_window->CreateButton(
-        394, 318, 75, 33, 1, 0, UIMSG_ClickExitCharacterWindowBtn, 0, GameKey::None,
+        394, 318, 75, 33, 1, 0, UIMSG_ClickExitCharacterWindowBtn, 0, PlatformKey::None,
         localization->GetString(LSTR_DIALOGUE_EXIT),
         {{paperdoll_dbrds[2], paperdoll_dbrds[1]}});
     CS_inventory_window->CreateButton(0, 0, 0x1DCu, 0x159u, 1, 122,
@@ -775,13 +775,13 @@ GUIWindow *CastSpellInfo::GetCastSpellInInventoryWindow() {
         0x1DCu, 0, 0xA4u, 0x159u, 1, 0, UIMSG_ClickPaperdoll, 0);
 
     CS_inventory_window->CreateButton(61, 424, 31, 0, 2, 94,
-                                      UIMSG_SelectCharacter, 1, GameKey::Digit1);
+                                      UIMSG_SelectCharacter, 1, PlatformKey::Digit1);
     CS_inventory_window->CreateButton(177, 424, 31, 0, 2, 94,
-                                      UIMSG_SelectCharacter, 2, GameKey::Digit2);
+                                      UIMSG_SelectCharacter, 2, PlatformKey::Digit2);
     CS_inventory_window->CreateButton(292, 424, 31, 0, 2, 94,
-                                      UIMSG_SelectCharacter, 3, GameKey::Digit3);
+                                      UIMSG_SelectCharacter, 3, PlatformKey::Digit3);
     CS_inventory_window->CreateButton(407, 424, 31, 0, 2, 94,
-                                      UIMSG_SelectCharacter, 4, GameKey::Digit4);
+                                      UIMSG_SelectCharacter, 4, PlatformKey::Digit4);
 
     return CS_inventory_window;
 }
