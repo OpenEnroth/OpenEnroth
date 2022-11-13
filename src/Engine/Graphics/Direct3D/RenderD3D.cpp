@@ -2,8 +2,9 @@
 
 #include <cstdio>
 
-
 #include "Engine/LOD.h"
+
+#include "Platform/OSWindow.h"
 
 HRESULT __stdcall DDrawDisplayModesEnumerator(DDSURFACEDESC2 *pSurfaceDesc,
                                               int16_t *found_compatible_mode) {
