@@ -40,8 +40,14 @@ std::vector<char *> Tokenize(char *input, const char separator) {
     return retVect;
 }
 
-std::string MakeLower(const std::string &text) {
-    std::string tmp = text;
-    std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
-    return tmp;
+std::string ToLower(std::string_view text) {
+    std::string result(text);
+    std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+    return result;
+}
+
+std::string ToUpper(std::string_view text) {
+    std::string result(text);
+    std::transform(result.begin(), result.end(), result.begin(), ::toupper);
+    return result;
 }
