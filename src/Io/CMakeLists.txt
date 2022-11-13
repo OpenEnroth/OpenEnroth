@@ -6,7 +6,6 @@ set(IO_SOURCES InputAction.cpp
                Mouse.cpp)
 
 set(IO_HEADERS IKeyboardController.h
-               IMouseController.h
                InputAction.h
                KeyboardActionMapping.h
                KeyboardInputHandler.h
