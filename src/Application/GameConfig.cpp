@@ -4,7 +4,7 @@
 #include <string>
 
 #define MINI_CASE_SENSITIVE
-#include <mini/ini.h>
+#include "mini/ini.h"
 
 #include "Utility/DataPath.h"
 
