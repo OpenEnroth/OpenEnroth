@@ -153,7 +153,7 @@ void GameOver_Loop(int v15) {
         keyboardInputHandler->ResetKeys();
         do {
             window->HandleAllEvents();
-        } while (keyboardInputHandler->LastPressedKey() != GameKey::Escape);
+        } while (keyboardInputHandler->LastPressedKey() != PlatformKey::Escape);
         pMessageQueue_50CBD0->Flush();
     }
     if (v15) {

@@ -40,7 +40,7 @@ void GameWindowHandler::OnScreenshot() {
     }
 }
 
-bool GameWindowHandler::OnChar(GameKey key, int c) {
+bool GameWindowHandler::OnChar(PlatformKey key, int c) {
     bool textInputHandled = false;
 
     if (!keyboardInputHandler)
@@ -51,7 +51,7 @@ bool GameWindowHandler::OnChar(GameKey key, int c) {
 
     // regular text input
     if (c != -1) {
-        textInputHandled |= keyboardInputHandler->ProcessTextInput(GameKey::Char, c);
+        textInputHandled |= keyboardInputHandler->ProcessTextInput(PlatformKey::Char, c);
     }
 
     if (!textInputHandled && !viewparams->field_4C) {
@@ -72,7 +72,7 @@ void GameWindowHandler::OnMouseLeftClick(int x, int y) {
         mouse->SetMouseClick(x, y);
 
         if (GetCurrentMenuID() == MENU_CREATEPARTY) {
-            UI_OnKeyDown(GameKey::Select);
+            UI_OnKeyDown(PlatformKey::Select);
         }
 
         if (engine) {
@@ -153,7 +153,7 @@ void GameWindowHandler::OnMouseMove(int x, int y, bool left_button, bool right_b
 extern bool _507B98_ctrl_pressed;
 extern InputAction currently_selected_action_for_binding;
 
-void GameWindowHandler::OnKey(GameKey key) {
+void GameWindowHandler::OnKey(PlatformKey key) {
     if (!keyboardInputHandler)
         return;
 
@@ -164,34 +164,34 @@ void GameWindowHandler::OnKey(GameKey key) {
         pArcomageGame->stru1.am_input_type = 1;
 
         set_stru1_field_8_InArcomage(0);
-        if (key == GameKey::Escape) {
+        if (key == PlatformKey::Escape) {
             pArcomageGame->stru1.am_input_type = 10;
         } else if (pArcomageGame->check_exit) {
            pArcomageGame->check_exit = 0;
            pArcomageGame->force_redraw_1 = 1;
         }
 
-        if (key == GameKey::F3) {
+        if (key == PlatformKey::F3) {
             OnScreenshot();
-        } else if (key == GameKey::F4 && !pMovie_Track) {
+        } else if (key == PlatformKey::F4 && !pMovie_Track) {
             OnToggleFullscreen();
             pArcomageGame->stru1.am_input_type = 9;
         }
     } else {
         pMediaPlayer->StopMovie();
-        if (key == GameKey::Return) {
+        if (key == PlatformKey::Return) {
             if (!viewparams->field_4C) UI_OnKeyDown(key);
-        } else if (key == GameKey::Control) {
+        } else if (key == PlatformKey::Control) {
             _507B98_ctrl_pressed = true;
-        } else if (key == GameKey::Escape) {
+        } else if (key == PlatformKey::Escape) {
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, window_SpeakInHouse != 0, 0);
-        } else if (key == GameKey::F4 && !pMovie_Track) {
+        } else if (key == PlatformKey::F4 && !pMovie_Track) {
             OnToggleFullscreen();
-        } else if (key == GameKey::Tilde) {
+        } else if (key == PlatformKey::Tilde) {
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_OpenDebugMenu, window_SpeakInHouse != 0, 0);
-        } else if (key == GameKey::Backspace && current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
+        } else if (key == PlatformKey::Backspace && current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_DebugReloadShader, window_SpeakInHouse != 0, 0);
-        } else if (key == GameKey::Left || key == GameKey::Right || key == GameKey::Up || key == GameKey::Down) {
+        } else if (key == PlatformKey::Left || key == PlatformKey::Right || key == PlatformKey::Up || key == PlatformKey::Down) {
             if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME &&
                 current_screen_type != CURRENT_SCREEN::SCREEN_MODAL_WINDOW) {
                 if (!viewparams->field_4C) {

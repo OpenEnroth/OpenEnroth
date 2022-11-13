@@ -472,19 +472,19 @@ LABEL_47:
                                     window->GetHeight(), HOUSE_DARK_GUILD_PIT, "");
                                 window_SpeakInHouse->CreateButton(
                                     61, 424, 31, 0, 2, 94,
-                                    UIMSG_SelectCharacter, 1, GameKey::Digit1, "");
+                                    UIMSG_SelectCharacter, 1, PlatformKey::Digit1, "");
                                 window_SpeakInHouse->CreateButton(
                                     177, 424, 31, 0, 2, 94,
-                                    UIMSG_SelectCharacter, 2, GameKey::Digit2, "");
+                                    UIMSG_SelectCharacter, 2, PlatformKey::Digit2, "");
                                 window_SpeakInHouse->CreateButton(
                                     292, 424, 31, 0, 2, 94,
-                                    UIMSG_SelectCharacter, 3, GameKey::Digit3, "");
+                                    UIMSG_SelectCharacter, 3, PlatformKey::Digit3, "");
                                 window_SpeakInHouse->CreateButton(
                                     407, 424, 31, 0, 2, 94,
-                                    UIMSG_SelectCharacter, 4, GameKey::Digit4, "");
+                                    UIMSG_SelectCharacter, 4, PlatformKey::Digit4, "");
                                 window_SpeakInHouse->CreateButton(
                                     0, 0, 0, 0, 1, 0, UIMSG_CycleCharacters, 0,
-                                    GameKey::Tab, "");
+                                    PlatformKey::Tab, "");
                                 current_npc_text = pNPCTopics[90].pText;
                             }
                         }
@@ -1010,19 +1010,19 @@ LABEL_47:
                                                 window->GetHeight(), houseId);
                         window_SpeakInHouse->CreateButton(61, 424, 31, 0, 2, 94,
                                                           UIMSG_SelectCharacter,
-                                                          1, GameKey::Digit1, "");
+                                                          1, PlatformKey::Digit1, "");
                         window_SpeakInHouse->CreateButton(
                             177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2,
-                            GameKey::Digit2, "");
+                            PlatformKey::Digit2, "");
                         window_SpeakInHouse->CreateButton(
                             292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3,
-                            GameKey::Digit3, "");
+                            PlatformKey::Digit3, "");
                         window_SpeakInHouse->CreateButton(
                             407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4,
-                            GameKey::Digit4, "");
+                            PlatformKey::Digit4, "");
                         window_SpeakInHouse->CreateButton(0, 0, 0, 0, 1, 0,
                                                           UIMSG_CycleCharacters,
-                                                          0, GameKey::Tab, "");
+                                                          0, PlatformKey::Tab, "");
                     }
                     ++curr_seq_num;
                     break;

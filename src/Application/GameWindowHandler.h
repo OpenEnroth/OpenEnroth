@@ -1,10 +1,9 @@
 #pragma once
 #include <memory>
 
-#include "Io/GameKey.h"
+#include "Platform/PlatformKey.h"
 #include "Io/Mouse.h"
 
-using Io::GameKey;
 using Io::Mouse;
 
 namespace Application {
@@ -23,8 +22,8 @@ class GameWindowHandler {
     void OnMouseMove(int x, int y, bool left_button, bool right_button);
     void OnScreenshot();
     void OnToggleFullscreen();
-    void OnKey(GameKey key);
-    bool OnChar(GameKey key, int c);
+    void OnKey(PlatformKey key);
+    bool OnChar(PlatformKey key, int c);
     void OnFocus();
     void OnFocusLost();
     void OnPaint();
