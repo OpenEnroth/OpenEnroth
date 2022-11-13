@@ -51,7 +51,6 @@ class OSWindow {
     virtual void *GetWinApiHandle() = 0;
 
     virtual std::shared_ptr<IKeyboardController> GetKeyboardController() = 0;
-    virtual std::shared_ptr<IMouseController> GetMouseController() = 0;
 
     // window-renderer integration, probably should be a separate class
     virtual void OpenGlCreate() = 0;

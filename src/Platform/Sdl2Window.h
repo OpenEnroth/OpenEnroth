@@ -5,7 +5,6 @@
 
 #include "Platform/OSWindow.h"
 #include "Platform/Sdl2KeyboardController.h"
-#include "Platform/Sdl2MouseController.h"
 
 class Sdl2Window : public OSWindow {
  public:
@@ -36,10 +35,6 @@ class Sdl2Window : public OSWindow {
 
     std::shared_ptr<IKeyboardController> GetKeyboardController() override {
         return std::make_shared<Sdl2KeyboardController>();
-    }
-
-    std::shared_ptr<IMouseController> GetMouseController() override {
-        return std::make_shared<Sdl2MouseController>();
     }
 
     // Sdl2Window-specific interface follows
