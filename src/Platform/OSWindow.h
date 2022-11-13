@@ -6,12 +6,10 @@
 #include "Application/GameWindowHandler.h"
 
 #include "Io/IKeyboardController.h"
-#include "Io/IMouseController.h"
 
 
 using Application::GameWindowHandler;
 using Io::IKeyboardController;
-using Io::IMouseController;
 
 #define MessageLoopWithWait()           \
     window->HandleAllEvents();          \

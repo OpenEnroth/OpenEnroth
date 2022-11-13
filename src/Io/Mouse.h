@@ -5,7 +5,6 @@
 #include "Engine/Objects/ItemEnums.h"
 
 #include "Platform/PlatformKey.h"
-#include "Io/IMouseController.h"
 
 #include "Utility/Geometry/Point.h"
 
@@ -100,8 +99,6 @@ namespace Io {
         int field_104 = 0;
         unsigned int uMouseX = 0;
         unsigned int uMouseY = 0;
-
-        std::shared_ptr<IMouseController> mouseController = nullptr;
     };
 }  // namespace Io
 
