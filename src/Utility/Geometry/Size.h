@@ -1,10 +1,12 @@
 #pragma once
 
-
 template<class T>
-class Size {
-    T width = 0;
-    T height = 0;
+struct Size {
+    T w = 0;
+    T h = 0;
+
+    Size() = default;
+    Size(T w, T h): w(w), h(h) {}
 };
 
 using Sizei = Size<int>;
