@@ -24,6 +24,10 @@ elseif(APPLE)
   enable_libcxx_assertions(FALSE)
 endif()
 
+if(UNIX)
+  add_compile_options(-Werror=return-type) # Control reaches the end of non-void function, this is an error on MSVC
+endif()
+
 include(CppLint)
 include(Dependencies)
 

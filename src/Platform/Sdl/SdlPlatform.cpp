@@ -59,7 +59,7 @@ bool SdlPlatform::SendEvent(PlatformWindow *window, PlatformEvent *event) {
     assert(dynamic_cast<SdlWindow *>(window));
     assert(event);
 
-    static_cast<SdlWindow *>(window)->EventHandler()->Event(event);
+    return static_cast<SdlWindow *>(window)->EventHandler()->Event(event);
 }
 
 void SdlPlatform::SetCursorShown(bool cursorShown) {
