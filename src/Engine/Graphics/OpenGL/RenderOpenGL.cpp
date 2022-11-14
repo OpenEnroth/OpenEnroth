@@ -255,7 +255,7 @@ unsigned int RenderOpenGL::GetActorTintColor(int DimLevel, int tint, float World
 void RenderOpenGL::RestoreFrontBuffer() { logger->Info("RenderGl - RestoreFrontBuffer"); }
 void RenderOpenGL::RestoreBackBuffer() { logger->Info("RenderGl - RestoreBackBuffer"); }
 
-void RenderOpenGL::BltBackToFontFast(int a2, int a3, Rect *a4) {
+void RenderOpenGL::BltBackToFontFast(int a2, int a3, Recti *a4) {
     logger->Info("RenderGl - BltBackToFontFast");
     // never called anywhere
 }
@@ -732,7 +732,7 @@ void RenderOpenGL::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
 
 
 
-void RenderOpenGL::DrawImage(Image *img, const Rect &rect, uint paletteid) {
+void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid) {
     if (!img) {
         if (engine->config->debug.VerboseLogging.Get())
             logger->Warning("Null img passed to DrawImage");
@@ -744,8 +744,8 @@ void RenderOpenGL::DrawImage(Image *img, const Rect &rect, uint paletteid) {
 
     int x = rect.x;
     int y = rect.y;
-    int z = rect.z;
-    int w = rect.w;
+    int z = rect.x + rect.w;
+    int w = rect.y + rect.h;
 
     // check bounds
     if (x >= (int)window->GetWidth() || x >= this->clip_z || y >= (int)window->GetHeight() || y >= this->clip_w) return;
@@ -1011,14 +1011,14 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time
     }
 }
 
-void RenderOpenGL::DrawMonsterPortrait(Rect rc, SpriteFrame *Portrait, int Y_Offset) {
-    Rect rct;
+void RenderOpenGL::DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait, int Y_Offset) {
+    Recti rct;
     rct.x = rc.x + 64 + Portrait->hw_sprites[0]->uAreaX - Portrait->hw_sprites[0]->uBufferWidth / 2;
     rct.y = rc.y + Y_Offset + Portrait->hw_sprites[0]->uAreaY;
-    rct.z = rct.x + Portrait->hw_sprites[0]->uAreaWidth;
-    rct.w = rct.y + Portrait->hw_sprites[0]->uAreaHeight;
+    rct.w = Portrait->hw_sprites[0]->uAreaWidth;
+    rct.h = Portrait->hw_sprites[0]->uAreaHeight;
 
-    render->SetUIClipRect(rc.x, rc.y, rc.z, rc.w);
+    render->SetUIClipRect(rc.x, rc.y, rc.x + rc.w, rc.y + rc.h);
     render->DrawImage(Portrait->hw_sprites[0]->texture, rct, Portrait->GetPaletteIndex());
     render->ResetUIClipRect();
 }
@@ -1532,16 +1532,16 @@ void RenderOpenGL::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_
 
 void RenderOpenGL::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, Texture *texture) {
     //TODO(pskelton): need to add dimming  0x7F7F7F
-    Rect targetrect{};
+    Recti targetrect{};
     targetrect.x = pViewport->uViewportTL_X;
     targetrect.y = pViewport->uViewportTL_Y;
-    targetrect.z = pViewport->uViewportBR_X;
-    targetrect.w = pViewport->uViewportBR_Y;
+    targetrect.w = pViewport->uViewportBR_X - pViewport->uViewportTL_X;
+    targetrect.h = pViewport->uViewportBR_Y - pViewport->uViewportTL_Y;
 
     DrawImage(texture, targetrect);
 }
 
-void RenderOpenGL::DrawFromSpriteSheet(Rect *pSrcRect, Pointi *pTargetPoint, int a3, int blend_mode) {
+void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, int a3, int blend_mode) {
     // want to draw psrcrect section @ point
 
     TextureOpenGL *texture = (TextureOpenGL*)pArcomageGame->pSprites;
@@ -1562,8 +1562,8 @@ void RenderOpenGL::DrawFromSpriteSheet(Rect *pSrcRect, Pointi *pTargetPoint, int
     int clipw = this->clip_w;
     int clipz = this->clip_z;
 
-    int width = pSrcRect->z - pSrcRect->x;
-    int height = pSrcRect->w - pSrcRect->y;
+    int width = pSrcRect->w;
+    int height = pSrcRect->h;
 
     int x = pTargetPoint->x;
     int y = pTargetPoint->y;
@@ -1586,8 +1586,8 @@ void RenderOpenGL::DrawFromSpriteSheet(Rect *pSrcRect, Pointi *pTargetPoint, int
 
     float texx = pSrcRect->x / float(texwidth);
     float texy = pSrcRect->y / float(texheight);
-    float texz = pSrcRect->z / float(texwidth);
-    float texw = pSrcRect->w / float(texheight);
+    float texz = (pSrcRect->x + pSrcRect->w) / float(texwidth);
+    float texw = (pSrcRect->y + pSrcRect->h) / float(texheight);
 
     // 0 1 2 / 0 2 3
 

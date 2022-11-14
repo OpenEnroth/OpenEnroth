@@ -39,7 +39,6 @@ set(ENGINE_HEADERS AssetsManager.h
                    OurMath.h
                    Party.h
                    Random.h
-                   Rect.h
                    SaveLoad.h
                    SpellFxRenderer.h
                    stru123.h

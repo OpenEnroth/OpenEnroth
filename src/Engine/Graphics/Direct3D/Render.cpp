@@ -1572,7 +1572,7 @@ bool Render::DrawLightmap(Lightmap *pLightmap, Vec3f *pColorMult,
 }
 
 // blue mask
-void Render::DrawFromSpriteSheet(Rect *pSrcRect, Pointi *pTargetPoint, int a3, int blend_mode) {
+void Render::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, int a3, int blend_mode) {
     uint16_t *pSrc;          // eax@2
     int uSrcTotalWidth = 0;      // ecx@4
     unsigned int v10;        // esi@9
@@ -1588,8 +1588,8 @@ void Render::DrawFromSpriteSheet(Rect *pSrcRect, Pointi *pTargetPoint, int a3, i
         return;
     }
 
-    src_width = pSrcRect->z - pSrcRect->x;
-    src_height = pSrcRect->w - pSrcRect->y;
+    src_width = pSrcRect->w;
+    src_height = pSrcRect->h;
 
     /*if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pBackgroundPixels)
         uSrcTotalWidth = pArcomageGame->pGameBackground->GetWidth();
@@ -1886,12 +1886,18 @@ void Render::RestoreBackBuffer() {
     }
 }
 
-void Render::BltBackToFontFast(int a2, int a3, Rect *pSrcRect) {
+void Render::BltBackToFontFast(int a2, int a3, Recti *pSrcRect) {
     IDirectDrawSurface *pFront;
     IDirectDrawSurface *pBack;
     pFront = (IDirectDrawSurface *)this->pFrontBuffer4;
     pBack = (IDirectDrawSurface *)this->pBackBuffer4;
-    pFront->BltFast(NULL, NULL, pBack, (RECT *)pSrcRect, DDBLTFAST_WAIT);
+
+    RECT rect;
+    rect.left = pSrcRect->x;
+    rect.top = pSrcRect->y;
+    rect.right = pSrcRect->x + pSrcRect->w;
+    rect.bottom = pSrcRect->y + pSrcRect->h;
+    pFront->BltFast(NULL, NULL, pBack, &rect, DDBLTFAST_WAIT);
 }
 
 unsigned int Render::GetBillboardDrawListSize() {
@@ -2983,13 +2989,13 @@ void Render::DrawTextureOffset(int x, int y, int offset_x, int offset_y,
     delete bitmap;
 }
 
-void Render::DrawImage(Image *image, const Rect &rect, const uint paletteid) {
+void Render::DrawImage(Image *image, const Recti &rect, const uint paletteid) {
     Gdiplus::Bitmap *bitmap = BitmapWithImage(image);
     if (bitmap == nullptr) {
         return;
     }
 
-    Gdiplus::Rect r(rect.x, rect.y, rect.z - rect.x, rect.w - rect.y);
+    Gdiplus::Rect r(rect.x, rect.y, rect.w, rect.h);
     p2DGraphics->DrawImage(bitmap, r);
 
     delete bitmap;
@@ -3228,7 +3234,7 @@ void Render::BlendTextures(
     }
 }
 
-void Render::DrawMonsterPortrait(Rect rc, SpriteFrame *Portrait, int Y_Offset) {
+void Render::DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait, int Y_Offset) {
     int dst_x = rc.x + 64 + Portrait->hw_sprites[0]->uAreaX - Portrait->hw_sprites[0]->uBufferWidth / 2;
     int dst_y = rc.y + Y_Offset + Portrait->hw_sprites[0]->uAreaY;
     uint dst_z = dst_x + Portrait->hw_sprites[0]->uAreaWidth;
@@ -3247,10 +3253,10 @@ void Render::DrawMonsterPortrait(Rect rc, SpriteFrame *Portrait, int Y_Offset) {
         dst_y = rc.y;
     }
 
-    if (dst_z > rc.z)
-        dst_z = rc.z;
-    if (dst_w > rc.w)
-        dst_w = rc.w;
+    if (dst_z > rc.x + rc.w)
+        dst_z = rc.x + rc.w;
+    if (dst_w > rc.y + rc.h)
+        dst_w = rc.y + rc.h;
 
     Image *temp = Image::Create(128, 128, IMAGE_FORMAT_R5G6B5);
     uint16_t *temppix = (uint16_t *)temp->GetPixels(IMAGE_FORMAT_R5G6B5);
@@ -3278,7 +3284,7 @@ void Render::DrawMonsterPortrait(Rect rc, SpriteFrame *Portrait, int Y_Offset) {
         }
     }
 
-    render->SetUIClipRect(rc.x, rc.y, rc.z, rc.w);
+    render->SetUIClipRect(rc.x, rc.y, rc.x + rc.w, rc.y + rc.h);
     render->DrawTextureAlphaNew(dst_x / float(window->GetWidth()), dst_y / float(window->GetHeight()), temp);
     temp->Release();
     render->ResetUIClipRect();

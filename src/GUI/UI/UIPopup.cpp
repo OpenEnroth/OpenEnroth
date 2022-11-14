@@ -631,9 +631,8 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         }
     }
 
-    Rect doll_rect = {(signed int)(pWindow->uFrameX + 13), (signed int)(pWindow->uFrameY + 52),
-                      (signed int)((pWindow->uFrameX + 13) + 128),
-                      (signed int)((pWindow->uFrameY + 52) + 128)};
+    Recti doll_rect(pWindow->uFrameX + 13, pWindow->uFrameY + 52, 128, 128);
+
     {
         SpriteFrame *Portrait_Sprite = pSpriteFrameTable->GetFrame(
             pActors[uActorID]
@@ -644,10 +643,14 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         render->ResetUIClipRect();
         render->FillRectFast(doll_rect.x, doll_rect.y, 128, 128, colorTable.Black.C16());
         render->BeginLines2D();
-        render->RasterLine2D(doll_rect.x - 1, doll_rect.y - 1, doll_rect.z + 1, doll_rect.y - 1, colorTable.Jonquil.C16());  // горизонтальная верхняя линия
-        render->RasterLine2D(doll_rect.x - 1, doll_rect.w + 1, doll_rect.x - 1, doll_rect.y - 1, colorTable.Jonquil.C16());  // горизонтальная нижняя линия
-        render->RasterLine2D(doll_rect.z + 1, doll_rect.w + 1, doll_rect.x - 1, doll_rect.w + 1, colorTable.Jonquil.C16());  // левая вертикальная линия
-        render->RasterLine2D(doll_rect.z + 1, doll_rect.y - 1, doll_rect.z + 1, doll_rect.w + 1, colorTable.Jonquil.C16());  // правая вертикальная линия
+        int x0 = doll_rect.x;
+        int x1 = doll_rect.x + doll_rect.w;
+        int y0 = doll_rect.y;
+        int y1 = doll_rect.y + doll_rect.h;
+        render->RasterLine2D(x0 - 1, y0 - 1, x1 + 1, y0 - 1, colorTable.Jonquil.C16());  // горизонтальная верхняя линия
+        render->RasterLine2D(x0 - 1, y1 + 1, x0 - 1, y0 - 1, colorTable.Jonquil.C16());  // горизонтальная нижняя линия
+        render->RasterLine2D(x1 + 1, y1 + 1, x0 - 1, y1 + 1, colorTable.Jonquil.C16());  // левая вертикальная линия
+        render->RasterLine2D(x1 + 1, y0 - 1, x1 + 1, y1 + 1, colorTable.Jonquil.C16());  // правая вертикальная линия
         render->EndLines2D();
 
         // Draw portrait
