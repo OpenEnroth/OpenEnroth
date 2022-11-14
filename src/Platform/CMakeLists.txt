@@ -4,6 +4,7 @@ set(PLATFORM_SOURCES PlatformKey.cpp
                      PlatformEventHandler.cpp
                      Sdl/SdlEnumTranslation.cpp
                      Sdl/SdlEventLoop.cpp
+                     Sdl/SdlMain.cpp
                      Sdl/SdlOpenGLContext.cpp
                      Sdl/SdlPlatform.cpp
                      Sdl/SdlPlatformSharedState.cpp

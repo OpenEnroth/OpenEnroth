@@ -33,7 +33,7 @@ int MM_Main(int argc, char **argv) {
     }
 }
 
-int main(int argc, char** argv) {
+int PlatformMain(int argc, char** argv) {
     int result = MM_Main(argc, argv);
 
 #ifdef _WINDOWS

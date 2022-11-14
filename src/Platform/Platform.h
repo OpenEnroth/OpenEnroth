@@ -20,6 +20,9 @@ class PlatformEventHandler;
  *
  * All platform classes don't throw but write errors to log instead. See per-method docs for details on how errors
  * are reported by each method.
+ *
+ * Also platform declares its own `main` function, so you cannot declare `main` in your code. Platform expects you
+ * to define `PlatformMain` instead.
  */
 class Platform {
  public:
