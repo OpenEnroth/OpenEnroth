@@ -118,7 +118,7 @@ uintptr_t SdlWindow::SystemHandle() const {
 #elif __APPLE__
     return reinterpret_cast<uintptr_t>(info.info.cocoa.window);
 #else
-    return reinterpret_cast<uintptr_t>(info.info.x11.window);
+    return static_cast<uintptr_t>(info.info.x11.window);
 #endif
 }
 
