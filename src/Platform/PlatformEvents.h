@@ -6,6 +6,10 @@
 #include "PlatformModifiers.h"
 #include "PlatformMouseButton.h"
 
+#ifdef KeyPress
+#   undef KeyPress
+#endif
+
 class PlatformEvent {
  public:
     enum class Type {
