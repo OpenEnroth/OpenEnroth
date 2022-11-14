@@ -295,7 +295,7 @@ bool RenderD3D::CreateDevice(unsigned int uDeviceID, int bWindowed) {
     IDirectDrawClipper *lpddclipper;  // [sp+C4h] [bp-14h]@18
     LPDIRECTDRAW lpDD;                // [sp+C8h] [bp-10h]@1
 
-    auto hWnd = (HWND)window->PlatformHandle();
+    auto hWnd = (HWND)window->SystemHandle();
     int game_width = window->GetWidth();
     int game_height = window->GetHeight();
 

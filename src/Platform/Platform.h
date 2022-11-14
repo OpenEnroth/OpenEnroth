@@ -5,6 +5,10 @@
 
 #include "Utility/Geometry/Rect.h"
 
+#ifdef CreateWindow
+#   undef CreateWindow
+#endif
+
 class Log;
 class PlatformEvent;
 class PlatformWindow;

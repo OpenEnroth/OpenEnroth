@@ -1224,7 +1224,7 @@ void Render::ClearBlack() { pRenderD3D->ClearTarget(true, 0, false, 0.0); }
 
 void Render::PresentBlackScreen() {
     RECT dest_rect = {0};
-    GetWindowRect((HWND)window->PlatformHandle(), &dest_rect);
+    GetWindowRect((HWND)window->SystemHandle(), &dest_rect);
 
     DDBLTFX lpDDBltFx = {0};
     lpDDBltFx.dwSize = sizeof(DDBLTFX);
@@ -1387,7 +1387,6 @@ bool Render::InitializeFullscreen() {
     this->pFrontBuffer4 = nullptr;
     this->pDirectDraw4 = nullptr;
     Release();
-    this->window = window;
     CreateZBuffer();
 
     pRenderD3D = new RenderD3D;
@@ -1865,7 +1864,7 @@ bool Render::LockSurface_DDraw4(IDirectDrawSurface4 *pSurface,
 
 void Render::CreateClipper() {
     ErrD3D(pDirectDraw4->CreateClipper(0, &pDDrawClipper, NULL));
-    ErrD3D(pDDrawClipper->SetHWnd(0, (HWND)window->PlatformHandle()));
+    ErrD3D(pDDrawClipper->SetHWnd(0, (HWND)window->SystemHandle()));
     ErrD3D(pFrontBuffer4->SetClipper(pDDrawClipper));
 }
 
