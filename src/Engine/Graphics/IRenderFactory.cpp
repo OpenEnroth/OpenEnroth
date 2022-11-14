@@ -25,7 +25,6 @@ std::shared_ptr<IRender> IRenderFactory::Create(std::shared_ptr<Application::Gam
             logger->Info("Initializing DirectDraw renderer...");
             renderer = std::make_shared<Render>(
                 config,
-                window,
                 EngineIoc::ResolveDecalBuilder(),
                 EngineIoc::ResolveLightmapBuilder(),
                 EngineIoc::ResolveSpellFxRenderer(),
