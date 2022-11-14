@@ -6,7 +6,6 @@
 #include <cassert>
 
 #include "Platform/PlatformEvents.h"
-#include "Utility/ScopeGuard.h"
 
 #include "SdlPlatformSharedState.h"
 #include "SdlEnumTranslation.h"
