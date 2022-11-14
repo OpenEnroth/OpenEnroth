@@ -25,7 +25,7 @@ struct Rect {
         return {x + w, y + h};
     }
 
-    Size<T> Size() const {
+    ::Size<T> Size() const {
         return {w, h};
     }
 };
