@@ -3,9 +3,11 @@
 #include "Engine/Spells/Spells.h"
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/Actor.h"
-#include "Engine/VectorTypes.h"
 
 #include "GUI/GUIFont.h"
+
+#include "Utility/Geometry/Plane.h"
+#include "Utility/Geometry/BBox.h"
 
 /*
  * Party, timers, NPCs and other stuff is binary dumped into resources/savegame

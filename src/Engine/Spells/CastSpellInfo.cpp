@@ -33,6 +33,8 @@
 
 #include "Platform/OSWindow.h"
 
+#include "Utility/Math/TrigLut.h"
+
 
 using EngineIoc = Engine_::IocContainer;
 
@@ -1112,10 +1114,10 @@ void CastSpellInfoHelpers::CastSpell() {
                             HEXRAYS_LODWORD(v687) = 0;
                             HEXRAYS_HIDWORD(v687) = 0;
                         } else {
-                            HEXRAYS_HIDWORD(v687) = TrigLUT->Atan2(
+                            HEXRAYS_HIDWORD(v687) = TrigLUT.Atan2(
                                 (int64_t)sqrt((float)(j * j + k * k)),
                                 (double)spell_targeted_at - 2500);
-                            HEXRAYS_LODWORD(v687) = TrigLUT->Atan2(j, k);
+                            HEXRAYS_LODWORD(v687) = TrigLUT.Atan2(j, k);
                         }
                         pSpellSprite.containing_item.Reset();
                         pSpellSprite.spell_id = pCastSpell->uSpellID;
@@ -1265,7 +1267,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         assert(false);
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                int _v726 = (int)(60 * TrigLUT->uIntegerDoublePi) / 360;
+                int _v726 = (int)(60 * TrigLUT.uIntegerDoublePi) / 360;
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_level = spell_level;
@@ -1419,11 +1421,11 @@ void CastSpellInfoHelpers::CastSpell() {
                         HEXRAYS_LODWORD(v685) = 0;
                         HEXRAYS_HIDWORD(v685) = 0;
                     } else {
-                        HEXRAYS_HIDWORD(v685) = TrigLUT->Atan2(
+                        HEXRAYS_HIDWORD(v685) = TrigLUT.Atan2(
                             (int64_t)sqrt((float)(j * j + k * k)),
                             ((double)spell_targeted_at + (double)dist_Z -
                              (double)(dist_Z + 2500)));
-                        HEXRAYS_LODWORD(v685) = TrigLUT->Atan2(j, k);
+                        HEXRAYS_LODWORD(v685) = TrigLUT.Atan2(j, k);
                     }
                     pSpellSprite.containing_item.Reset();
                     pSpellSprite.spell_id = pCastSpell->uSpellID;
@@ -1514,7 +1516,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         assert(false);
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                int _v733 = (int)(60 * TrigLUT->uIntegerDoublePi) / 360;
+                int _v733 = (int)(60 * TrigLUT.uIntegerDoublePi) / 360;
                 if (amount == 1) {
                     pSpellSprite.containing_item.Reset();
                     pSpellSprite.spell_id = pCastSpell->uSpellID;
@@ -1940,7 +1942,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                 }
                 v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                if (pSpellSprite.Create(pParty->sRotationZ, TrigLUT->uIntegerHalfPi / 2, v659, 0) != -1 && pParty->bTurnBasedModeOn) {
+                if (pSpellSprite.Create(pParty->sRotationZ, TrigLUT.uIntegerHalfPi / 2, v659, 0) != -1 && pParty->bTurnBasedModeOn) {
                     ++pTurnEngine->pending_actions;
                 }
                 spell_sound_flag = true;
@@ -3381,7 +3383,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         assert(false);
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                signed int _v726 = ((signed int)(60 * TrigLUT->uIntegerDoublePi) / 360);
+                signed int _v726 = ((signed int)(60 * TrigLUT.uIntegerDoublePi) / 360);
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_level = spell_level;

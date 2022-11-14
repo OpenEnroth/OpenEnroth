@@ -356,7 +356,7 @@ void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
         w = window->GetHeight();
     }
 
-    Point cursor = mouse->GetCursorPos();
+    Pointi cursor = mouse->GetCursorPos();
     if ((int)this->uFrameX >= x) {
         if ((int)(this->uFrameWidth + this->uFrameX) > z) {
             this->uFrameX = z - this->uFrameWidth;

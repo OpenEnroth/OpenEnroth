@@ -2,52 +2,6 @@
 
 #include <utility>
 
-TrigTableLookup* TrigLUT = new TrigTableLookup();
-
-//----- (00452969) --------------------------------------------------------
-TrigTableLookup::TrigTableLookup() {
-    for (int i = 0; i <= this->uIntegerHalfPi; i++)
-        pCosTable[i] = std::cos(i * pi_double / uIntegerPi);
-}
-
-//----- (00402CAE) --------------------------------------------------------
-float TrigTableLookup::Cos(int angle) const {
-    angle &= uDoublePiMask;
-
-    if (angle > uIntegerPi)
-        angle = uIntegerDoublePi - angle;
-    if (angle >= uIntegerHalfPi)
-        return -pCosTable[uIntegerPi - angle];
-    else
-        return pCosTable[angle];
-}
-
-//----- (0042EBDB) --------------------------------------------------------
-float TrigTableLookup::Sin(int angle) const {
-    return Cos(angle - this->uIntegerHalfPi);
-}
-
-//----- (0045281E) --------------------------------------------------------
-int TrigTableLookup::Atan2(int x, int y) const {
-    double angle = std::atan2(static_cast<double>(y), static_cast<double>(x));
-
-    return static_cast<int>(angle / pi_double * 1024) & uDoublePiMask;
-}
-
-//----- (0042EBBE) --------------------------------------------------------
-//----- (004453C0) mm6-----------------------------------------------------
-//----- (004A1760) mm6_chinese---------------------------------------------
-int64_t fixpoint_mul(int a1, int a2) {
-    return ((int64_t)a1 * (int64_t)a2) >> 16;
-}
-
-// int64_t fixpoint_dot(int x1, int x2, int y1, int y2, int z1, int z2) {
-//    return fixpoint_mul(x1, x2) + fixpoint_mul(y1, y2) + fixpoint_mul(z1, z2);
-// }
-
-//----- (004A1780) mm6_chinese---------------------------------------------
-int64_t fixpoint_div(int a1, int a2) { return ((int64_t)a1 << 16) / a2; }
-
 // int64_t fixpoint_sub_unknown(int a1, int a2) {
 //    return (((int64_t)a1 << 16) * a2) >> 16;
 // }

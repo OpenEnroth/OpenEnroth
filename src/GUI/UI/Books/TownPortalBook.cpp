@@ -88,7 +88,7 @@ void GUIWindow_TownPortalBook::Update() {
                                       ui_book_townportal_icons[i], i + 1);
     }
 
-    Point pt = mouse->GetCursorPos();
+    Pointi pt = mouse->GetCursorPos();
     v3 = render->pActiveZBuffer[pt.x + pt.y * render->GetRenderWidth()] & 0xFFFF;
 
     if (v3) {

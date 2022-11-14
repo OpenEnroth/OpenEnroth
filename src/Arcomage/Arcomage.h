@@ -2,11 +2,12 @@
 
 #include <string>
 
-#include "Engine/Point.h"
 #include "Engine/Rect.h"
 
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Texture.h"
+
+#include "Utility/Geometry/Point.h"
 
 struct ArcomageCard {
     char pCardName[32];
@@ -85,9 +86,9 @@ struct ArcomageCard {
 struct AcromageCardOnTable {
     int uCardId = 0;
     int discarded = 0;
-    Point table_pos;
-    sPoint hide_anim_spd;
-    Point hide_anim_pos;
+    Pointi table_pos;
+    Pointi hide_anim_spd;
+    Pointi hide_anim_pos;
 };
 
 struct ArcomagePlayer {
@@ -102,7 +103,7 @@ struct ArcomagePlayer {
     int resource_gems = 0;
     int resource_beasts = 0;
     int cards_at_hand[10] {};
-    sPoint card_shift[10] {};
+    Pointi card_shift[10] {};
 };
 
 struct ArcomageGame_InputMSG {
@@ -170,7 +171,7 @@ extern void set_stru1_field_8_InArcomage(int inValue);
 
 struct spark_point_struct {
     int spark_remaining_life = 0;
-    Point spark_position {};
+    Pointi spark_position {};
     float spark_x_pos = 0;
     float spark_y_pos = 0;
     float spark_x_speed = 0;

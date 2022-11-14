@@ -44,6 +44,7 @@
 #include "Platform/Api.h"
 #include "Platform/OSWindow.h"
 #include "Utility/FreeDeleter.h"
+#include "Utility/Math/TrigLut.h"
 
 
 IndoorLocation *pIndoor = new IndoorLocation;
@@ -1359,10 +1360,10 @@ void UpdateActors_BLV() {
             if (moveSpeed > 1000)
                 moveSpeed = 1000;
 
-            actor.vVelocity.x = TrigLUT->Cos(actor.uYawAngle) * moveSpeed;
-            actor.vVelocity.y = TrigLUT->Sin(actor.uYawAngle) * moveSpeed;
+            actor.vVelocity.x = TrigLUT.Cos(actor.uYawAngle) * moveSpeed;
+            actor.vVelocity.y = TrigLUT.Sin(actor.uYawAngle) * moveSpeed;
             if (isFlying)
-                actor.vVelocity.z = TrigLUT->Sin(actor.uPitchAngle) * moveSpeed;
+                actor.vVelocity.z = TrigLUT.Sin(actor.uPitchAngle) * moveSpeed;
         } else {
             // actor is not moving
             // fixpoint(55000) = 0.83923339843, appears to be velocity decay.
@@ -1743,12 +1744,12 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     }
 
     v8 = pLevelDecorations[uDecorationID].field_10_y_rot +
-         ((signed int)TrigLUT->uIntegerPi >> 3) -
-         TrigLUT->Atan2(pLevelDecorations[uDecorationID].vPosition.x -
+         ((signed int)TrigLUT.uIntegerPi >> 3) -
+         TrigLUT.Atan2(pLevelDecorations[uDecorationID].vPosition.x -
                                 pCamera3D->vCameraPos.x,
                             pLevelDecorations[uDecorationID].vPosition.y -
                                 pCamera3D->vCameraPos.y);
-    v9 = ((signed int)(TrigLUT->uIntegerPi + v8) >> 8) & 7;
+    v9 = ((signed int)(TrigLUT.uIntegerPi + v8) >> 8) & 7;
     int v37 = pBLVRenderParams->field_0_timer_;
     if (pParty->bTurnBasedModeOn) v37 = pMiscTimer->uTotalGameTimeElapsed;
     v10 = abs(pLevelDecorations[uDecorationID].vPosition.x +
@@ -1936,7 +1937,7 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3i Pos_From)
      // __debugbreak(); // срабатывает при стрельбе огненным шаром
     // triggered by fireball
 
-     unsigned int AngleToTarget = TrigLUT->Atan2(Pos_From.x - target_x, Pos_From.y - target_y);
+     unsigned int AngleToTarget = TrigLUT.Atan2(Pos_From.x - target_x, Pos_From.y - target_y);
 
     bool LOS_Obscurred = 0;
     bool LOS_Obscurred2 = 0;
@@ -1948,8 +1949,8 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3i Pos_From)
 
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         // offset 32 to side and check LOS
-        Vec3i::Rotate(32, TrigLUT->uIntegerHalfPi + AngleToTarget, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
-        Vec3i::Rotate(32, TrigLUT->uIntegerHalfPi + AngleToTarget, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
+        Vec3i::Rotate(32, TrigLUT.uIntegerHalfPi + AngleToTarget, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
+        Vec3i::Rotate(32, TrigLUT.uIntegerHalfPi + AngleToTarget, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
         dist_y = ShiftedFromY - ShiftedTargetY;
         dist_z = ShiftedFromz - ShiftedTargetZ;
         dist_x = ShiftedFromX - ShiftedTargetX;
@@ -2030,8 +2031,8 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3i Pos_From)
         }
 
         // offset other side and repeat check
-        Vec3i::Rotate(32, AngleToTarget - TrigLUT->uIntegerHalfPi, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
-        Vec3i::Rotate(32, AngleToTarget - TrigLUT->uIntegerHalfPi, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
+        Vec3i::Rotate(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
+        Vec3i::Rotate(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
         dist_y = ShiftedFromY - ShiftedTargetY;
         dist_z = ShiftedFromz - ShiftedTargetZ;
         dist_x = ShiftedFromX - ShiftedTargetX;
@@ -2104,8 +2105,8 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3i Pos_From)
     // outdooor
     } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
         // offset 32 to side and check LOS
-        Vec3i::Rotate(32, TrigLUT->uIntegerHalfPi + AngleToTarget, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
-        Vec3i::Rotate(32, TrigLUT->uIntegerHalfPi + AngleToTarget, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
+        Vec3i::Rotate(32, TrigLUT.uIntegerHalfPi + AngleToTarget, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
+        Vec3i::Rotate(32, TrigLUT.uIntegerHalfPi + AngleToTarget, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
         dist_y = ShiftedFromY - ShiftedTargetY;
         dist_z = ShiftedFromz - ShiftedTargetZ;
         dist_x = ShiftedFromX - ShiftedTargetX;
@@ -2190,8 +2191,8 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3i Pos_From)
         }
 
         // offset 32 to other side and check LOS
-        Vec3i::Rotate(32, AngleToTarget - TrigLUT->uIntegerHalfPi, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
-        Vec3i::Rotate(32, AngleToTarget - TrigLUT->uIntegerHalfPi, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
+        Vec3i::Rotate(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
+        Vec3i::Rotate(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
         dist_y = ShiftedFromY - ShiftedTargetY;
         dist_z = ShiftedFromz - ShiftedTargetZ;
         dist_x = ShiftedFromX - ShiftedTargetX;
@@ -2441,7 +2442,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     // Calculate rotation in ticks (1024 ticks per 180 degree).
     int rotation =
-        (static_cast<int64_t>(pEventTimer->dt_fixpoint) * pParty->y_rotation_speed * TrigLUT->uIntegerPi / 180) >> 16;
+        (static_cast<int64_t>(pEventTimer->dt_fixpoint) * pParty->y_rotation_speed * TrigLUT.uIntegerPi / 180) >> 16;
 
     // If party movement delta is lower then this number then the party remains stationary.
     int64_t elapsed_time_bounded = std::min(pEventTimer->uTimeElapsed, 10000u);
@@ -2453,64 +2454,64 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         switch (pPartyActionQueue->Next()) {
             case PARTY_TurnLeft:
                 if (engine->config->settings.TurnSpeed.Get() > 0)
-                    angle = TrigLUT->uDoublePiMask & (angle + (int)engine->config->settings.TurnSpeed.Get());
+                    angle = TrigLUT.uDoublePiMask & (angle + (int)engine->config->settings.TurnSpeed.Get());
                 else
-                    angle = TrigLUT->uDoublePiMask & (angle + static_cast<int>(rotation * fTurnSpeedMultiplier));
+                    angle = TrigLUT.uDoublePiMask & (angle + static_cast<int>(rotation * fTurnSpeedMultiplier));
                 break;
             case PARTY_TurnRight:
                 if (engine->config->settings.TurnSpeed.Get() > 0)
-                    angle = TrigLUT->uDoublePiMask & (angle - (int)engine->config->settings.TurnSpeed.Get());
+                    angle = TrigLUT.uDoublePiMask & (angle - (int)engine->config->settings.TurnSpeed.Get());
                 else
-                    angle = TrigLUT->uDoublePiMask & (angle - static_cast<int>(rotation * fTurnSpeedMultiplier));
+                    angle = TrigLUT.uDoublePiMask & (angle - static_cast<int>(rotation * fTurnSpeedMultiplier));
                 break;
 
             case PARTY_FastTurnLeft:
                 if (engine->config->settings.TurnSpeed.Get() > 0)
-                    angle = TrigLUT->uDoublePiMask & (angle + (int)engine->config->settings.TurnSpeed.Get());
+                    angle = TrigLUT.uDoublePiMask & (angle + (int)engine->config->settings.TurnSpeed.Get());
                 else
-                    angle = TrigLUT->uDoublePiMask & (angle + static_cast<int>(2.0f * rotation * fTurnSpeedMultiplier));
+                    angle = TrigLUT.uDoublePiMask & (angle + static_cast<int>(2.0f * rotation * fTurnSpeedMultiplier));
                 break;
 
             case PARTY_FastTurnRight:
                 if (engine->config->settings.TurnSpeed.Get() > 0)
-                    angle = TrigLUT->uDoublePiMask & (angle - (int)engine->config->settings.TurnSpeed.Get());
+                    angle = TrigLUT.uDoublePiMask & (angle - (int)engine->config->settings.TurnSpeed.Get());
                 else
-                    angle = TrigLUT->uDoublePiMask & (angle - static_cast<int>(2.0f * rotation * fTurnSpeedMultiplier));
+                    angle = TrigLUT.uDoublePiMask & (angle - static_cast<int>(2.0f * rotation * fTurnSpeedMultiplier));
                 break;
 
             case PARTY_StrafeLeft:
-                party_dx -= TrigLUT->Sin(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier / 2;
-                party_dy += TrigLUT->Cos(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier / 2;
+                party_dx -= TrigLUT.Sin(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier / 2;
+                party_dy += TrigLUT.Cos(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier / 2;
                 party_walking_flag = true;
                 break;
 
             case PARTY_StrafeRight:
-                party_dy -= TrigLUT->Cos(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier / 2;
-                party_dx += TrigLUT->Sin(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier / 2;
+                party_dy -= TrigLUT.Cos(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier / 2;
+                party_dx += TrigLUT.Sin(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier / 2;
                 party_walking_flag = true;
                 break;
 
             case PARTY_WalkForward:
-                party_dx += TrigLUT->Cos(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier;
-                party_dy += TrigLUT->Sin(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier;
+                party_dx += TrigLUT.Cos(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier;
+                party_dy += TrigLUT.Sin(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier;
                 party_walking_flag = true;
                 break;
 
             case PARTY_WalkBackward:
-                party_dx -= TrigLUT->Cos(angle) * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
-                party_dy -= TrigLUT->Sin(angle) * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
+                party_dx -= TrigLUT.Cos(angle) * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
+                party_dy -= TrigLUT.Sin(angle) * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
                 party_walking_flag = true;
                 break;
 
             case PARTY_RunForward:
-                party_dx += TrigLUT->Cos(angle) * 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier;
-                party_dy += TrigLUT->Sin(angle) * 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier;
+                party_dx += TrigLUT.Cos(angle) * 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier;
+                party_dy += TrigLUT.Sin(angle) * 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier;
                 party_running_flag = true;
                 break;
 
             case PARTY_RunBackward:
-                party_dx -= TrigLUT->Cos(angle) * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
-                party_dy -= TrigLUT->Sin(angle) * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
+                party_dx -= TrigLUT.Cos(angle) * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
+                party_dy -= TrigLUT.Sin(angle) * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
                 party_running_flag = true;
                 break;
 
@@ -2652,12 +2653,12 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         } else if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) {
             // Bounce back from a decoration & do another round of collision checks.
             // This way the party can "slide" along & past a decoration.
-            int angle = TrigLUT->Atan2(
+            int angle = TrigLUT.Atan2(
                 new_party_x - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.x,
                 new_party_y - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.y);
             int len = integer_sqrt(party_dx * party_dx + party_dy * party_dy);
-            party_dx = TrigLUT->Cos(angle) * len;
-            party_dy = TrigLUT->Sin(angle) * len;
+            party_dx = TrigLUT.Cos(angle) * len;
+            party_dy = TrigLUT.Sin(angle) * len;
         } else if (PID_TYPE(collision_state.pid) == OBJECT_Face) {
             BLVFace *pFace = &pIndoor->pFaces[PID_ID(collision_state.pid)];
             if (pFace->uPolygonType == POLYGON_Floor) {
@@ -2909,7 +2910,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
         for (; loop_cnt < 100; ++loop_cnt) {
             // random x,y at distance from party
             dist_from_party = rand() % 1024 + 512;
-            angle_from_party = ((rand() % (signed int)TrigLUT->uIntegerDoublePi) * 2 * pi) / TrigLUT->uIntegerDoublePi;
+            angle_from_party = ((rand() % (signed int)TrigLUT.uIntegerDoublePi) * 2 * pi) / TrigLUT.uIntegerDoublePi;
             enc_spawn_point.vPosition.x = pParty->vPosition.x + cos(angle_from_party) * dist_from_party;
             enc_spawn_point.vPosition.y = pParty->vPosition.y + sin(angle_from_party) * dist_from_party;
             enc_spawn_point.vPosition.z = pParty->vPosition.z;
@@ -2946,7 +2947,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
         for (loop_cnt = 0; loop_cnt < 100; ++loop_cnt) {
             // random x,y at distance from party
             dist_from_party = rand() % 512 + 256;
-            angle_from_party = ((rand() % (signed int)TrigLUT->uIntegerDoublePi) * 2 * pi) / TrigLUT->uIntegerDoublePi;
+            angle_from_party = ((rand() % (signed int)TrigLUT.uIntegerDoublePi) * 2 * pi) / TrigLUT.uIntegerDoublePi;
             enc_spawn_point.vPosition.x = pParty->vPosition.x + cos(angle_from_party) * dist_from_party;
             enc_spawn_point.vPosition.y = pParty->vPosition.y + sin(angle_from_party) * dist_from_party;
             enc_spawn_point.vPosition.z = pParty->vPosition.z;

@@ -2,6 +2,8 @@
 
 #include <cstddef>
 
+#include <iterator>
+
 namespace detail {
 
 template<class T>

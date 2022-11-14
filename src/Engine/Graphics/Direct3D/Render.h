@@ -9,7 +9,6 @@
 #include <memory>
 
 #include "Engine/Graphics/RenderBase.h"
-#include "Engine/VectorTypes.h"
 
 struct ODMFace;
 class RenderD3D;
@@ -200,7 +199,7 @@ class Render : public RenderBase {
     virtual void DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices,
                                         Texture *texture) override;
 
-    virtual void DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int a3,
+    virtual void DrawFromSpriteSheet(Rect *pSrcRect, Pointi *pTargetPoint, int a3,
                                int blend_mode) override;
 
     virtual void ReleaseTerrain() override;

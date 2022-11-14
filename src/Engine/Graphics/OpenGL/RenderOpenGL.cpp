@@ -67,6 +67,7 @@
 #include "Platform/OSWindow.h"
 
 #include "Utility/Memory.h"
+#include "Utility/Math/TrigLut.h"
 
 #ifndef LOWORD
     #define LOWORD(l) ((unsigned short)(((std::uintptr_t)(l)) & 0xFFFF))
@@ -1540,7 +1541,7 @@ void RenderOpenGL::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, Text
     DrawImage(texture, targetrect);
 }
 
-void RenderOpenGL::DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int a3, int blend_mode) {
+void RenderOpenGL::DrawFromSpriteSheet(Rect *pSrcRect, Pointi *pTargetPoint, int a3, int blend_mode) {
     // want to draw psrcrect section @ point
 
     TextureOpenGL *texture = (TextureOpenGL*)pArcomageGame->pSprites;
@@ -1717,14 +1718,14 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
                     // v8 = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID,
                     // v6 + v7);
 
-                    int v10 = TrigLUT->Atan2(
+                    int v10 = TrigLUT.Atan2(
                         pLevelDecorations[i].vPosition.x -
                         pCamera3D->vCameraPos.x,
                         pLevelDecorations[i].vPosition.y -
                         pCamera3D->vCameraPos.y);
                     v38 = 0;
-                    v13 = ((signed int)(TrigLUT->uIntegerPi +
-                        ((signed int)TrigLUT->uIntegerPi >>
+                    v13 = ((signed int)(TrigLUT.uIntegerPi +
+                        ((signed int)TrigLUT.uIntegerPi >>
                             3) +
                         pLevelDecorations[i].field_10_y_rot -
                         (int64_t)v10) >>

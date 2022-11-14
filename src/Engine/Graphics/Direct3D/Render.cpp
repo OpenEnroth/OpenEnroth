@@ -44,6 +44,7 @@
 #include "Platform/OsWindow.h"
 
 #include "Utility/Memory.h"
+#include "Utility/Math/TrigLut.h"
 
 #pragma comment(lib, "GdiPlus.lib")
 
@@ -802,14 +803,14 @@ void Render::PrepareDecorationsRenderList_ODM() {
                     // v8 = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID,
                     // v6 + v7);
 
-                    v10 = (uint16_t *)TrigLUT->Atan2(
+                    v10 = (uint16_t *)TrigLUT.Atan2(
                         pLevelDecorations[i].vPosition.x -
                             pCamera3D->vCameraPos.x,
                         pLevelDecorations[i].vPosition.y -
                             pCamera3D->vCameraPos.y);
                     v38 = 0;
-                    v13 = ((signed int)(TrigLUT->uIntegerPi +
-                                        ((signed int)TrigLUT->uIntegerPi >>
+                    v13 = ((signed int)(TrigLUT.uIntegerPi +
+                                        ((signed int)TrigLUT.uIntegerPi >>
                                          3) +
                                         pLevelDecorations[i].field_10_y_rot -
                                         (signed int)v10) >>
@@ -1571,7 +1572,7 @@ bool Render::DrawLightmap(Lightmap *pLightmap, Vec3f *pColorMult,
 }
 
 // blue mask
-void Render::DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int a3, int blend_mode) {
+void Render::DrawFromSpriteSheet(Rect *pSrcRect, Pointi *pTargetPoint, int a3, int blend_mode) {
     uint16_t *pSrc;          // eax@2
     int uSrcTotalWidth = 0;      // ecx@4
     unsigned int v10;        // esi@9

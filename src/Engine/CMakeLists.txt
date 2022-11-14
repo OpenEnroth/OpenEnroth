@@ -40,7 +40,6 @@ set(ENGINE_HEADERS AssetsManager.h
                    mm7_data.h
                    OurMath.h
                    Party.h
-                   Point.h
                    Random.h
                    Rect.h
                    SaveLoad.h
@@ -52,7 +51,6 @@ set(ENGINE_HEADERS AssetsManager.h
                    stru314.h
                    stru367.h
                    Time.h
-                   VectorTypes.h
                    ZlibWrapper.h
                    IocContainer.h
                    EngineFactory.h)

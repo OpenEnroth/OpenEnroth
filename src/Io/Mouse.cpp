@@ -24,7 +24,7 @@ using EngineIoc = Engine_::IocContainer;
 std::shared_ptr<Mouse> mouse = nullptr;
 
 
-void Mouse::GetClickPos(unsigned int *pX, unsigned int *pY) {
+void Mouse::GetClickPos(int *pX, int *pY) {
     *pX = uMouseX;
     *pY = uMouseY;
 }
@@ -70,7 +70,7 @@ void Mouse::SetCursorImage(const std::string &name) {
 void Mouse::_469AE4() {
     this->field_8 = 1;
 
-    Point pt = GetCursorPos();
+    Pointi pt = GetCursorPos();
 
     auto v3 = pt.y;
     auto v2 = pt.x;
@@ -112,8 +112,8 @@ void Mouse::AllocCursorSystemMem() {
 
 void *Mouse::DoAllocCursorMem() { return nullptr; }
 
-Point Mouse::GetCursorPos() {
-    return Point(this->uMouseX, this->uMouseY);
+Pointi Mouse::GetCursorPos() {
+    return Pointi(this->uMouseX, this->uMouseY);
 }
 
 void Mouse::Initialize(std::shared_ptr<OSWindow> window) {
@@ -149,7 +149,7 @@ void Mouse::Deactivate() {
 
 void Mouse::DrawCursor() {
     // get mouse pos
-    Point pos;
+    Pointi pos;
     this->GetClickPos(&pos.x, &pos.y);
 
     // for party held item
@@ -270,8 +270,8 @@ void Mouse::UI_OnMouseLeftClick() {
         return;
     }
 
-    unsigned int x = 0;
-    unsigned int y = 0;
+    int x = 0;
+    int y = 0;
     GetClickPos(&x, &y);
 
     if (GetCurrentMenuID() != -1 || current_screen_type != CURRENT_SCREEN::SCREEN_GAME ||
@@ -385,8 +385,8 @@ bool UI_OnKeyDown(GameKey key) {
                 return true;
             }
             case GameKey::Select: {
-                unsigned int uClickX;
-                unsigned int uClickY;
+                int uClickX;
+                int uClickY;
                 EngineIoc::ResolveMouse()->GetClickPos(&uClickX, &uClickY);
                 int v4 = win->pStartingPosActiveItem;
                 int v28 = v4 + win->pNumPresenceButton;
@@ -430,8 +430,8 @@ bool UI_OnKeyDown(GameKey key) {
             }
             case GameKey::PageDown: {
                 if (win->field_30 != 0) {
-                    unsigned int uClickX;
-                    unsigned int uClickY;
+                    int uClickX;
+                    int uClickY;
                     EngineIoc::ResolveMouse()->GetClickPos(&uClickX, &uClickY);
                     int v29 = win->pStartingPosActiveItem + win->pNumPresenceButton;
                     for (int v4 = win->pStartingPosActiveItem; v4 < v29; ++v4) {

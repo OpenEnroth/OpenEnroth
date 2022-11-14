@@ -1,7 +1,6 @@
 #pragma once
 #include <memory>
 
-#include "Engine/Point.h"
 #include "Engine/Log.h"
 
 #include "Application/GameWindowHandler.h"

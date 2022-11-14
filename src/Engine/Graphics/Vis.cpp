@@ -14,8 +14,9 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
-
 #include "Engine/Objects/Actor.h"
+
+#include "Utility/Math/TrigLut.h"
 
 using EngineIoc = Engine_::IocContainer;
 
@@ -675,16 +676,16 @@ bool Vis::CheckIntersectBModel(BLVFace *pFace, Vec3s IntersectPoint, signed int 
 int UnprojectX(int x) {
     int v3 = pCamera3D->ViewPlaneDist_X;
 
-    return TrigLUT->Atan2(x - pViewport->uScreenCenterX, v3) -
-           TrigLUT->uIntegerHalfPi;
+    return TrigLUT.Atan2(x - pViewport->uScreenCenterX, v3) -
+           TrigLUT.uIntegerHalfPi;
 }
 
 //----- (0046A0F6) --------------------------------------------------------
 int UnprojectY(int y) {
     int v3 = pCamera3D->ViewPlaneDist_X;
 
-    return TrigLUT->Atan2(y - pViewport->uScreenCenterY, v3) -
-           TrigLUT->uIntegerHalfPi;
+    return TrigLUT.Atan2(y - pViewport->uScreenCenterY, v3) -
+           TrigLUT.uIntegerHalfPi;
 }
 
 //----- (004C248E) --------------------------------------------------------

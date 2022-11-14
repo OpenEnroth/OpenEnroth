@@ -21,6 +21,8 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Utility/Math/TrigLut.h"
+
 
 void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, int br_y, int dummy);
 
@@ -303,7 +305,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
 
     if (DrawArrow == 1) {
         int ArrowOctant = 0;
-        int PartyDirection = pParty->sRotationZ & TrigLUT->uDoublePiMask;
+        int PartyDirection = pParty->sRotationZ & TrigLUT.uDoublePiMask;
         if (PartyDirection <= 1920) ArrowOctant = 6;
         if (PartyDirection < 1664) ArrowOctant = 5;
         if (PartyDirection <= 1408) ArrowOctant = 4;

@@ -35,10 +35,10 @@ void DrawGameUI(int animation_stage);
 void DrawSparks();
 void DrawRectanglesForText();
 void DrawPlayersText();
-void DrawPlayerLevels(const std::string &str, Point *pXY);
-void DrawBricksCount(const std::string &str, Point *pXY);
-void DrawGemsCount(const std::string &str, Point *pXY);
-void DrawBeastsCount(const std::string &str, Point *pXY);
+void DrawPlayerLevels(const std::string &str, Pointi *pXY);
+void DrawBricksCount(const std::string &str, Pointi *pXY);
+void DrawGemsCount(const std::string &str, Pointi *pXY);
+void DrawBeastsCount(const std::string &str, Pointi *pXY);
 void DrawPlayersTowers();
 void DrawPlayersWall();
 void DrawCards();
@@ -49,11 +49,11 @@ bool DiscardCard(int player_num, int card_slot_index);
 bool PlayCard(int player_num, int card_slot_num);
 bool CanCardBePlayed(int player_num, int hand_card_indx);
 void ApplyCardToPlayer(int player_num, unsigned int uCardID);
-int new_explosion_effect(Point *startXY, int effect_value);
+int new_explosion_effect(Pointi *startXY, int effect_value);
 int ApplyDamageToBuildings(int player_num, int damage);
 void GameResultsApply();
 
-void am_DrawText(const std::string &str, Point *pXY);
+void am_DrawText(const std::string &str, Pointi *pXY);
 void DrawRect(Rect *pXYZW, uint16_t uColor, char bSolidFill);
 int rand_interval(int min, int max);  // idb
 
@@ -151,10 +151,10 @@ int Card_Hover_Index;
 int num_cards_to_discard;
 int num_actions_left;
 
-sPoint anim_card_spd_drawncard;  // anim card speed draw from deck
-Point anim_card_pos_drawncard;  // anim card pos draw from deck
-sPoint anim_card_spd_playdiscard;  // anim card speeds   play/discard
-Point anim_card_pos_playdiscard;  // anim card posisiotn play/discard
+Pointi anim_card_spd_drawncard;  // anim card speed draw from deck
+Pointi anim_card_pos_drawncard;  // anim card pos draw from deck
+Pointi anim_card_spd_playdiscard;  // anim card speeds   play/discard
+Pointi anim_card_pos_playdiscard;  // anim card posisiotn play/discard
 
 char drawn_card_anim_start;
 int drawn_card_anim_cnt;
@@ -342,7 +342,7 @@ int explosion_effect_struct::IsEffectActive() {
     return 3;
 }
 
-int new_explosion_effect(Point* startXY, int effect_value) {
+int new_explosion_effect(Pointi* startXY, int effect_value) {
     // find first empty effect slot
     signed int arr_slot = 0;
     for (arr_slot = 0; arr_slot < 10; arr_slot++) {
@@ -904,7 +904,7 @@ void ArcomageGame::Loop() {
             if ((v10.am_input_type == 7) || (v10.am_input_type == 8)) break;
             if (v10.am_input_type == 10) break;
 
-            Point explos_coords;
+            Pointi explos_coords;
 
             cnt++;
             if (cnt >= 8) {
@@ -1156,7 +1156,7 @@ void IncreaseResourcesInTurn(int player_num) {
 void TurnChange() {
     std::string player_name;    // [sp+4h] [bp-64h]@4
     ArcomageGame_InputMSG v10;  // [sp+54h] [bp-14h]@7
-    Point v11;               // [sp+60h] [bp-8h]@4
+    Pointi v11;               // [sp+60h] [bp-8h]@4
 
     if (!pArcomageGame->force_am_exit) {
         if (am_Players[0].IsHisTurn != 1 || am_Players[1].IsHisTurn != 1) {
@@ -1230,7 +1230,7 @@ bool IsGameOver() {
 
 char PlayerTurn(int player_num) {
     // Rect pSrcXYZW;
-    Point pTargetXY;
+    Pointi pTargetXY;
     ArcomageGame_InputMSG get_message;
 
     // reset player turn
@@ -1396,12 +1396,12 @@ void DrawGameUI(int animation_stage) {
     // draw texts
     if (pArcomageGame->check_exit) {
         std::string t = "Are you sure you want to resign?\n    Press ESC again to confirm";
-        Point p(200, 200);
+        Pointi p(200, 200);
         am_DrawText(t, &p);
     }
     if (pArcomageGame->GameOver) {
         std::string t = "Game Over!";
-        Point p(270, 200);
+        Pointi p(270, 200);
         am_DrawText(t, &p);
     }
 
@@ -1410,7 +1410,7 @@ void DrawGameUI(int animation_stage) {
 
 void DrawRectanglesForText() {
     Rect pSrcRect;
-    Point pTargetXY;
+    Pointi pTargetXY;
 
     // resources rectangles
     pSrcRect.x = 765;
@@ -1469,7 +1469,7 @@ void DrawRectanglesForText() {
 void DrawPlayersText() {
     int res_value;
     std::string text_buff;
-    Point text_position;
+    Pointi text_position;
 
     if (need_to_discard_card) {
         text_buff = localization->GetString(LSTR_ARCOMAGE_CARD_DISCARD);
@@ -1580,9 +1580,9 @@ void DrawPlayersText() {
     DrawBeastsCount(StringFromInt(am_Players[1].resource_beasts), &text_position);
 }
 
-void DrawPlayerLevels(const std::string &str, Point *pXY) {
+void DrawPlayerLevels(const std::string &str, Pointi *pXY) {
     Rect pSrcRect;
-    Point pTargetPoint;
+    Pointi pTargetPoint;
 
     pTargetPoint.x = pXY->x;
     pTargetPoint.y = pXY->y;
@@ -1602,9 +1602,9 @@ void DrawPlayerLevels(const std::string &str, Point *pXY) {
     }
 }
 
-void DrawBricksCount(const std::string &str, Point *pXY) {
+void DrawBricksCount(const std::string &str, Pointi *pXY) {
     Rect pSrcRect;
-    Point pTargetPoint;
+    Pointi pTargetPoint;
 
     pTargetPoint.x = pXY->x;
     pTargetPoint.y = pXY->y;
@@ -1624,9 +1624,9 @@ void DrawBricksCount(const std::string &str, Point *pXY) {
     }
 }
 
-void DrawGemsCount(const std::string &str, Point *pXY) {
+void DrawGemsCount(const std::string &str, Pointi *pXY) {
     Rect pSrcRect;
-    Point pTargetPoint;
+    Pointi pTargetPoint;
 
     pTargetPoint.x = pXY->x;
     pTargetPoint.y = pXY->y;
@@ -1646,9 +1646,9 @@ void DrawGemsCount(const std::string &str, Point *pXY) {
     }
 }
 
-void DrawBeastsCount(const std::string &str, Point *pXY) {
+void DrawBeastsCount(const std::string &str, Pointi *pXY) {
     Rect pSrcRect;
-    Point pTargetPoint;
+    Pointi pTargetPoint;
 
     pTargetPoint.x = pXY->x;
     pTargetPoint.y = pXY->y;
@@ -1670,7 +1670,7 @@ void DrawBeastsCount(const std::string &str, Point *pXY) {
 
 void DrawPlayersTowers() {
     Rect pSrcXYZW;
-    Point pTargetXY;
+    Pointi pTargetXY;
 
     // draw player 0 tower
     int tower_height = am_Players[0].tower_height;
@@ -1721,7 +1721,7 @@ void DrawPlayersTowers() {
 
 void DrawPlayersWall() {
     Rect pSrcXYZW;
-    Point pTargetXY;
+    Pointi pTargetXY;
 
     // draw player 0 wall
     int player_0_h = am_Players[0].wall_height;
@@ -1759,7 +1759,7 @@ void DrawPlayersWall() {
 void DrawCards() {
     // draw hand of current player and any cards on the table
     Rect pSrcXYZW;
-    Point pTargetXY;
+    Pointi pTargetXY;
 
     // draw player hand
     int card_count = GetPlayerHandCardCount(current_player_num);
@@ -1869,7 +1869,7 @@ void DrawCardAnimation(int animation_stage) {
     // draw - discard - play
 
     Rect pSrcXYZW;
-    Point pTargetXY;
+    Pointi pTargetXY;
 
     // drawing card anim
     if (drawn_card_slot_index != -1) {
@@ -2525,7 +2525,7 @@ void ApplyCardToPlayer(int player_num, unsigned int uCardID) {
 
 
     // call spark effect if required
-    Point explos_coords;
+    Pointi explos_coords;
     if (player_num) {
         if (quarry_p) {
             explos_coords.x = 573;
@@ -3011,7 +3011,7 @@ void SetStartConditions() {
     zoo_bonus = 1;
 }
 
-void am_DrawText(const std::string &str, Point *pXY) {
+void am_DrawText(const std::string &str, Pointi *pXY) {
     pPrimaryWindow->DrawText(pFontComic, pXY->x,
                              pXY->y - ((pFontComic->GetHeight() - 3) / 2) + 3,
                              0, str, false, 0, 0);

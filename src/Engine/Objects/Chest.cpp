@@ -26,6 +26,7 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Utility/Random.h"
+#include "Utility/Math/TrigLut.h"
 
 using EngineIoc = Engine_::IocContainer;
 
@@ -107,9 +108,9 @@ bool Chest::Open(int uChestID) {
                 *(float*)&sRotY = 0.0;
             } else {
                 sRotY = (int64_t)sqrt(dir_x * dir_x + dir_y * dir_y);
-                sRotX = TrigLUT->Atan2((int64_t)dir_x, (int64_t)dir_y);
+                sRotX = TrigLUT.Atan2((int64_t)dir_x, (int64_t)dir_y);
                 sRotY =
-                    TrigLUT->Atan2(dir_y * dir_y, (int64_t)dir_z);
+                    TrigLUT.Atan2(dir_y * dir_y, (int64_t)dir_z);
             }
             pDepth = 256;
             if (length_vector < 256.0)
@@ -168,7 +169,7 @@ bool Chest::Open(int uChestID) {
 }
 
 bool Chest::ChestUI_WritePointedObjectStatusString() {
-    Point pt = mouse->GetCursorPos();
+    Pointi pt = mouse->GetCursorPos();
     unsigned int pX = pt.x;
     unsigned int pY = pt.y;
 
@@ -521,8 +522,8 @@ void Chest::OnChestLeftClick() {
     int chestheight = pChestHeightsByType[chest->uChestBitmapID];
     int chestwidth = pChestWidthsByType[chest->uChestBitmapID];
 
-    unsigned int pX;
-    unsigned int pY;
+    int pX;
+    int pY;
     mouse->GetClickPos(&pX, &pY);
     int inventoryYCoord = (pY - (pChestPixelOffsetY[chest->uChestBitmapID])) / 32;
     int inventoryXCoord = (pX - (pChestPixelOffsetX[chest->uChestBitmapID])) / 32;

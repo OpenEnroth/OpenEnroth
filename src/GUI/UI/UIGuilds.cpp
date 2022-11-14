@@ -108,7 +108,7 @@ void GuildDialog() {
                 return;
             }
 
-            Point pt = EngineIoc::ResolveMouse()->GetCursorPos();
+            Pointi pt = EngineIoc::ResolveMouse()->GetCursorPos();
             int testx = (pt.x - 32) / 70;
             if (testx >= 0 && testx < 6) {
                 if (pt.y >= 250) {

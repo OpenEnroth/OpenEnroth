@@ -1,7 +1,6 @@
 #pragma once
 #include <array>
 
-#include "Engine/VectorTypes.h"
 
 class Texture;
 struct ODMFace;

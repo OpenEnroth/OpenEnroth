@@ -7,7 +7,6 @@
 #include "Engine/Graphics/Texture.h"
 #include "Engine/OurMath.h"
 #include "Engine/Rect.h"
-#include "Engine/VectorTypes.h"
 #include "Application/GameConfig.h"
 #include "Utility/Color.h"
 
@@ -383,7 +382,7 @@ class IRender {
                                         Texture *texture) = 0;
 
     virtual void DrawFromSpriteSheet(struct Rect *pSrcRect,
-                               struct Point *pTargetPoint, int a3,
+                               Pointi *pTargetPoint, int a3,
                                int blend_mode) = 0;
 
     virtual void DrawIndoorBatched() = 0;

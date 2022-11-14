@@ -11,7 +11,6 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Serialization/Deserializer.h"
 #include "Engine/Serialization/LegacyImages.h"
-#include "Engine/VectorTypes.h"
 
 
 void BSPModelList::Load(Deserializer *stream) {

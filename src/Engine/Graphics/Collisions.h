@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Engine/VectorTypes.h"
+#include "Utility/Geometry/Vec.h"
+#include "Utility/Geometry/BBox.h"
 
 struct BLVFace;
 class Actor;

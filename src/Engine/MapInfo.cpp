@@ -13,6 +13,7 @@
 #include "Engine/Graphics/Level/Decoration.h"
 
 #include "Utility/Random.h"
+#include "Utility/Math/TrigLut.h"
 
 #include "OurMath.h"
 #include "Party.h"
@@ -342,7 +343,7 @@ void TeleportToStartingPoint(MapStartPoint point) {
                     pParty->vPosition.y = pLevelDecorations[i].vPosition.y;
                     pParty->vPosition.z = pLevelDecorations[i].vPosition.z;
                     pParty->uFallStartZ = pParty->vPosition.z;
-                    pParty->sRotationZ = (int)(TrigLUT->uIntegerHalfPi *
+                    pParty->sRotationZ = (int)(TrigLUT.uIntegerHalfPi *
                                      pLevelDecorations[i].field_1A) /
                         90;
                     if (pLevelDecorations[i].field_10_y_rot)

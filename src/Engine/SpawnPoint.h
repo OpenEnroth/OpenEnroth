@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Engine/VectorTypes.h"
 #include "Engine/Objects/ActorEnums.h"
 
 struct SpawnPoint {

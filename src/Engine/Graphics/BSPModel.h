@@ -4,8 +4,9 @@
 #include <vector>
 #include <string>
 
-#include "Engine/VectorTypes.h"
 #include "Utility/Flags.h"
+#include "Utility/Geometry/Plane.h"
+#include "Utility/Geometry/BBox.h"
 
 class Deserializer;
 

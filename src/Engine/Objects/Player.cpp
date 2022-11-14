@@ -7273,8 +7273,8 @@ void Player::OnInventoryLeftClick() {
     CastSpellInfo* pSpellInfo;
 
     if (current_character_screen_window == WINDOW_CharacterWindow_Inventory) {
-        unsigned int pY;
-        unsigned int pX;
+        int pY;
+        int pX;
         mouse->GetClickPos(&pX, &pY);
 
         int inventoryYCoord = (pY - 17) / 32;

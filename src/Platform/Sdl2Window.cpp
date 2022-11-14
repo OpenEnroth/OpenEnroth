@@ -166,17 +166,17 @@ int SDL_GetAsyncKeyState(GameKey key, bool consume) {
     return 0;
 }
 
-Sdl2Window::Sdl2WinParams *Sdl2Window::CalculateWindowParameters() {
+Sdl2Window::Sdl2WinParams Sdl2Window::CalculateWindowParameters() {
     std::vector<SDL_Rect> displayBounds;
-    Sdl2Window::Sdl2WinParams *params = new(Sdl2WinParams);
+    Sdl2Window::Sdl2WinParams params;
 
-    params->flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
-    params->x = config->window.PositionX.Get();
-    params->y = config->window.PositionY.Get();
-    params->display = config->window.Display.Get();
+    params.flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
+    params.x = config->window.PositionX.Get();
+    params.y = config->window.PositionY.Get();
+    params.display = config->window.Display.Get();
     int displays = SDL_GetNumVideoDisplays();
-    if (params->display > displays - 1)
-        params->display = 0;
+    if (params.display > displays - 1)
+        params.display = 0;
 
     for (int i = 0; i < displays; i++) {
         displayBounds.push_back(SDL_Rect());
@@ -188,25 +188,25 @@ Sdl2Window::Sdl2WinParams *Sdl2Window::CalculateWindowParameters() {
 
     if (config->window.Fullscreen.Get()) {
         if (config->window.Borderless.Get())
-            params->flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+            params.flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
         else
-            params->flags |= SDL_WINDOW_FULLSCREEN;
+            params.flags |= SDL_WINDOW_FULLSCREEN;
 
-        params->x = SDL_WINDOWPOS_CENTERED_DISPLAY(params->display);
-        params->y = SDL_WINDOWPOS_CENTERED_DISPLAY(params->display);
+        params.x = SDL_WINDOWPOS_CENTERED_DISPLAY(params.display);
+        params.y = SDL_WINDOWPOS_CENTERED_DISPLAY(params.display);
     } else {
         if (config->window.Borderless.Get())
-            params->flags |= SDL_WINDOW_BORDERLESS;
+            params.flags |= SDL_WINDOW_BORDERLESS;
 
-        if (params->x >= 0 && params->x < displayBounds[params->display].w)
-            params->x += displayBounds[params->display].x;
+        if (params.x >= 0 && params.x < displayBounds[params.display].w)
+            params.x += displayBounds[params.display].x;
         else
-            params->x = SDL_WINDOWPOS_CENTERED_DISPLAY(params->display);
+            params.x = SDL_WINDOWPOS_CENTERED_DISPLAY(params.display);
 
-        if (params->y >= 0 && params->y < displayBounds[params->display].h)
-            params->y += displayBounds[params->display].y;
+        if (params.y >= 0 && params.y < displayBounds[params.display].h)
+            params.y += displayBounds[params.display].y;
         else
-            params->y = SDL_WINDOWPOS_CENTERED_DISPLAY(params->display);
+            params.y = SDL_WINDOWPOS_CENTERED_DISPLAY(params.display);
     }
 
     displayBounds.clear();
@@ -215,21 +215,16 @@ Sdl2Window::Sdl2WinParams *Sdl2Window::CalculateWindowParameters() {
 }
 
 SDL_Window* Sdl2Window::CreateSDLWindow() {
-    Sdl2Window::Sdl2WinParams *params = CalculateWindowParameters();
-    if (params == nullptr) {
-        return nullptr;
-    }
+    Sdl2Window::Sdl2WinParams params = CalculateWindowParameters();
 
     sdlWindow = SDL_CreateWindow(
         config->window.Title.Get().c_str(),
-        params->x, params->y,
+        params.x, params.y,
         config->window.Width.Get(), config->window.Height.Get(),
-        params->flags
+        params.flags
     );
 
-    config->window.Display.Set(params->display);
-
-    delete params;
+    config->window.Display.Set(params.display);
 
     if (!sdlWindow) {
         return nullptr;
@@ -540,16 +535,14 @@ void Sdl2Window::SetWindowedMode(int new_window_width, int new_window_height) {
         return;
     }
 
-    Sdl2WinParams *params = CalculateWindowParameters();
+    Sdl2WinParams params = CalculateWindowParameters();
 
     SDL_SetWindowSize(sdlWindow, new_window_width, new_window_height);
-    SDL_SetWindowPosition(sdlWindow, params->x, params->y);
+    SDL_SetWindowPosition(sdlWindow, params.x, params.y);
 
-    config->window.Display.Set(params->display);
+    config->window.Display.Set(params.display);
     config->window.Width.Set(new_window_width);
     config->window.Height.Set(new_window_height);
-
-    delete params;
 }
 
 void Sdl2Window::SetCursor(bool on = 1) {

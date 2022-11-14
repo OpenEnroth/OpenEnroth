@@ -3,7 +3,8 @@
 #include <array>
 
 #include "Engine/IocContainer.h"
-#include "Engine/VectorTypes.h"
+
+#include "Utility/Geometry/Vec.h"
 
 using EngineIoc = Engine_::IocContainer;
 
