@@ -111,6 +111,8 @@ bool NuklearEventHandler::MouseEvent(PlatformMouseButton button, const Pointi &p
 
 bool NuklearEventHandler::WheelEvent(const PlatformWheelEvent *event) {
     nk_input_scroll(nuklear->ctx, nk_vec2(event->angleDelta.x, event->angleDelta.y));
+
+    return true;
 }
 
 std::shared_ptr<NuklearEventHandler> nuklearEventHandler;
