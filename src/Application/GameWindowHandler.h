@@ -16,6 +16,11 @@ class GameWindowHandler : public PlatformEventHandler {
  public:
     GameWindowHandler();
 
+    GameKeyboardController *KeyboardController() const {
+        return keyboardController_.get();
+    }
+
+ private:
     void OnMouseLeftClick(int x, int y);
     void OnMouseRightClick(int x, int y);
     void OnMouseLeftUp();
@@ -33,11 +38,6 @@ class GameWindowHandler : public PlatformEventHandler {
     void OnActivated();
     void OnDeactivated();
 
-    GameKeyboardController *KeyboardController() const {
-        return keyboardController_.get();
-    }
-
- protected:
     virtual bool Event(const PlatformEvent *event) override;
     virtual bool KeyPressEvent(const PlatformKeyEvent *event) override;
     virtual bool KeyReleaseEvent(const PlatformKeyEvent *event) override;
