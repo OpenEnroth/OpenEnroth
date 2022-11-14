@@ -3,6 +3,7 @@
 #include <cstdio>
 
 #include "Engine/LOD.h"
+#include "Engine/EngineGlobals.h"
 
 
 HRESULT __stdcall DDrawDisplayModesEnumerator(DDSURFACEDESC2 *pSurfaceDesc,
