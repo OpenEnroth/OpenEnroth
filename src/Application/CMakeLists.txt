@@ -8,8 +8,7 @@ set(GAME_SOURCES
     GameMenu.cpp
     GameOver.cpp
     GameWindowHandler.cpp
-    IocContainer.cpp
-    main.cpp)
+    IocContainer.cpp)
 
 set(GAME_HEADERS
     Game.h
@@ -18,8 +17,8 @@ set(GAME_HEADERS
     GameKeyboardController.h
     GameMenu.h
     GameOver.h
-    IocContainer.h
-    GameWindowHandler.h)
+    GameWindowHandler.h
+    IocContainer.h)
 
 add_library(game STATIC ${GAME_SOURCES} ${GAME_HEADERS})
 target_check_style(game)
