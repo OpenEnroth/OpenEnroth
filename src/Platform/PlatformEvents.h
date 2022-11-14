@@ -9,6 +9,9 @@
 #ifdef KeyPress
 #   undef KeyPress
 #endif
+#ifdef KeyRelease
+#   undef KeyRelease
+#endif
 
 class PlatformEvent {
  public:
