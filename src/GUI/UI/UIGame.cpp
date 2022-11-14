@@ -8,6 +8,7 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Events.h"
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Graphics/DecorationList.h"
@@ -46,7 +47,6 @@
 #include "Io/Mouse.h"
 
 #include "Platform/Api.h"
-#include "Platform/OSWindow.h"
 
 #include "Utility/Math/TrigLut.h"
 

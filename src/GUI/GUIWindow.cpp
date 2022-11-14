@@ -5,6 +5,7 @@
 #include <utility>
 
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Autonotes.h"
 #include "Engine/Awards.h"
@@ -41,7 +42,6 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Platform/Api.h"
-#include "Platform/OSWindow.h"
 
 
 using EngineIoc = Engine_::IocContainer;

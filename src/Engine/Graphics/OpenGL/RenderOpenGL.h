@@ -15,11 +15,12 @@
 #define NK_SHADER_VERSION "#version 300 es\n"
 #endif
 
+class PlatformOpenGLContext;
+
 class RenderOpenGL : public RenderBase {
  public:
     RenderOpenGL(
         std::shared_ptr<Application::GameConfig> config,
-        std::shared_ptr<OSWindow> window,
         DecalBuilder* decal_builder,
         LightmapBuilder* lightmap_builder,
         SpellFxRenderer* spellfx,
@@ -233,6 +234,8 @@ class RenderOpenGL : public RenderBase {
 
     void SavePCXImage16(const std::string &filename, uint16_t *picture_data,
         int width, int height);
+
+    std::unique_ptr<PlatformOpenGLContext> context_;
 
     // these are the view and projection matrices for submission to shaders
     glm::mat4 projmat;

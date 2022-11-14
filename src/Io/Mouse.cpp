@@ -3,6 +3,7 @@
 #include <cstdlib>
 
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/LOD.h"
@@ -16,7 +17,6 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Platform/OSWindow.h"
 
 
 using EngineIoc = Engine_::IocContainer;
@@ -56,7 +56,7 @@ void Mouse::SetCursorImage(const std::string &name) {
     if (name == "MICON1") {  // arrow
         this->bActive = false;
         this->field_C = 1;
-        window->SetCursor(1);
+        platform->SetCursorShown(true);
         this->cursor_img = nullptr;
     } else {  // cursor is item or another bitmap
         this->cursor_img = assets->GetImage_ColorKey(name, 0/*render->teal_mask_16*/);
@@ -116,8 +116,7 @@ Pointi Mouse::GetCursorPos() {
     return Pointi(this->uMouseX, this->uMouseY);
 }
 
-void Mouse::Initialize(std::shared_ptr<OSWindow> window) {
-    this->window = window;
+void Mouse::Initialize() {
     this->bActive = false;
     this->bInitialized = true;
 
@@ -160,14 +159,14 @@ void Mouse::DrawCursor() {
 
         // for other cursor img ie target mouse
         if (this->cursor_img) {
-            window->SetCursor(0);
+            platform->SetCursorShown(false);
             // draw image - needs centering
             pos.x -= (this->cursor_img->GetWidth()) / 2;
             pos.y -= (this->cursor_img->GetHeight()) / 2;
 
             render->DrawTextureAlphaNew(pos.x / 640., pos.y / 480., this->cursor_img);
         } else {
-            window->SetCursor(1);
+            platform->SetCursorShown(true);
         }
     }
 
@@ -257,8 +256,6 @@ void Mouse::SetMouseClick(int x, int y) {
     uMouseX = x;
     uMouseY = y;
 }
-
-bool _507B98_ctrl_pressed = false;
 
 void Mouse::UI_OnMouseLeftClick() {
     if (current_screen_type == CURRENT_SCREEN::SCREEN_VIDEO ||

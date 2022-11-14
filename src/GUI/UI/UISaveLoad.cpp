@@ -8,6 +8,7 @@
 #include <string>
 
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageLoader.h"
@@ -24,7 +25,6 @@
 #include "GUI/UI/UIMainMenu.h"
 
 #include "Platform/Api.h"
-#include "Platform/OSWindow.h"
 
 
 using Io::TextInputType;

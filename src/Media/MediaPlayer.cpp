@@ -21,6 +21,7 @@ extern "C" {
 #include <vector>
 
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/ErrorHandling.h"
 #include "Engine/Graphics/IRender.h"
 #include "Utility/Log.h"
@@ -33,7 +34,6 @@ extern "C" {
 #include "Media/Audio/OpenALSoundProvider.h"
 
 #include "Platform/Api.h"
-#include "Platform/OSWindow.h"
 
 OpenALSoundProvider *provider = nullptr;
 

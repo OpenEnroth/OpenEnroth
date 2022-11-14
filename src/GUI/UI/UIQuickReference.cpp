@@ -2,6 +2,7 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
@@ -16,7 +17,6 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Platform/Api.h"
-#include "Platform/OSWindow.h"
 
 
 Image *ui_game_quickref_background = nullptr;

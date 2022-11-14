@@ -1,5 +1,6 @@
 #include "Engine/Events.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Events2D.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Indoor.h"
@@ -29,8 +30,6 @@
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
-
-#include "Platform/OSWindow.h"
 
 #include "Utility/Math/TrigLut.h"
 

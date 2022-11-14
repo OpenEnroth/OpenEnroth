@@ -2,6 +2,7 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/LOD.h"
@@ -16,7 +17,6 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Platform/Api.h"
-#include "Platform/OSWindow.h"
 
 
 Image *rest_ui_btn_4 = nullptr;

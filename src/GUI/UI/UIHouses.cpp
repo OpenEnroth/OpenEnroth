@@ -7,6 +7,7 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Awards.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Events.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Image.h"
@@ -41,7 +42,6 @@
 #include "Media/MediaPlayer.h"
 
 #include "Platform/Api.h"
-#include "Platform/OSWindow.h"
 
 #include "Utility/Random.h"
 #include "Utility/Math/TrigLut.h"

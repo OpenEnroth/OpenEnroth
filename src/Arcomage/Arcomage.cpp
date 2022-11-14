@@ -2,6 +2,7 @@
 
 #include "Engine/Awards.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/ImageLoader.h"
@@ -17,7 +18,6 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-#include "Platform/OSWindow.h"
 
 void SetStartConditions();
 void SetStartGameData();
@@ -517,7 +517,7 @@ bool ArcomageGame::MsgLoop(int a1, ArcomageGame_InputMSG *a2) {
     pArcomageGame->field_0 = 0;
     pArcomageGame->stru1.am_input_type = 0;
 
-    window->HandleSingleEvent();
+    eventLoop->ProcessMessages(1);
 
     *a2 = pArcomageGame->stru1;
     return pArcomageGame->stru1.am_input_type != 0;

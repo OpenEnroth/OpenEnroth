@@ -1,4 +1,5 @@
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 
 #include "Engine/Events.h"
 #include "Engine/Graphics/Camera.h"
@@ -48,7 +49,6 @@
 #include "Media/MediaPlayer.h"
 
 #include "Platform/Api.h"
-#include "Platform/OSWindow.h"
 
 using EngineIoc = Engine_::IocContainer;
 
@@ -99,9 +99,6 @@ void Engine_DeinitializeAndTerminate(int exitCode) {
 
     if (render)
         render->Release();
-
-    if (window)
-        window->Release();
 
     exit(exitCode);
 }
@@ -949,7 +946,7 @@ bool Engine::MM7_Initialize() {
 
 //----- (00465D0B) --------------------------------------------------------
 void Engine::SecondaryInitialization() {
-    mouse->Initialize(window);
+    mouse->Initialize();
 
     pItemTable = new ItemTable;
     pItemTable->Initialize();

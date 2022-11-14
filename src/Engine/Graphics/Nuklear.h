@@ -28,7 +28,7 @@ class Nuklear {
 
      Nuklear();
 
-     std::shared_ptr<Nuklear> Initialize();
+     static std::shared_ptr<Nuklear> Initialize();
      bool Create(enum WindowType winType);
      bool Draw(enum NUKLEAR_STAGE stage, enum WindowType winType, int type);
      int KeyEvent(PlatformKey key);

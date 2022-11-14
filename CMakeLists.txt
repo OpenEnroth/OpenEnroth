@@ -33,8 +33,7 @@ include_directories(${INCLUDE_DIRECTORIES} ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMA
 add_subdirectory(test)
 add_subdirectory(src)
 
-add_executable(World_of_Might_and_Magic MACOSX_BUNDLE WIN32 ./src/Engine/Engine.cpp)
-target_check_style(World_of_Might_and_Magic)
+add_executable(World_of_Might_and_Magic MACOSX_BUNDLE WIN32)
 target_fix_libcxx_assertions(World_of_Might_and_Magic)
 
 target_link_libraries(World_of_Might_and_Magic game arcomage engine gui io media platform objects spells tables graphics turnengine serialization glad nuklear libluajit glm)

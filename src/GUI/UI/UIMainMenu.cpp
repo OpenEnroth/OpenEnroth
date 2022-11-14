@@ -1,5 +1,6 @@
 #include "GUI/UI/UIMainMenu.h"
 
+#include "Engine/EngineGlobals.h"
 #include "Engine/Localization.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
@@ -12,7 +13,6 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-#include "Platform/OSWindow.h"
 
 
 GUIWindow_MainMenu *pWindow_MainMenu = nullptr;

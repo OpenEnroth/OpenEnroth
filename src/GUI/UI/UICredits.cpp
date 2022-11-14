@@ -2,13 +2,13 @@
 
 #include <string>
 
+#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/LOD.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Platform/OSWindow.h"
 
 GUICredits::GUICredits() :
     GUIWindow(WINDOW_Credits, 0, 0, window->GetWidth(), window->GetHeight(), 0) {

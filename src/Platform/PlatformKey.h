@@ -21,7 +21,7 @@ enum class PlatformKey : int {
     F11,
     F12,
 
-    Digit1, Digit2, Digit3, Digit4, Digit5, Digit6, Digit7, Digit8, Digit9, Digit0,
+    Digit0, Digit1, Digit2, Digit3, Digit4, Digit5, Digit6, Digit7, Digit8, Digit9,
     A, B, C, D, E, F, G,
     H, I, J, K, L, M, N, O, P,
     Q, R, S,
@@ -68,7 +68,9 @@ enum class PlatformKey : int {
 
     Numpad0, Numpad1, Numpad2, Numpad3, Numpad4, Numpad5, Numpad6, Numpad7, Numpad8, Numpad9,
 
-    None
+    Count,
+
+    None = Count
 };
 
 std::string GetDisplayName(PlatformKey key);

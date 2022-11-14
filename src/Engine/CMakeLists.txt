@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 set(ENGINE_SOURCES AssetsManager.cpp
                    CommandLine.cpp
                    Conditions.cpp
+                   Engine.cpp
+                   EngineGlobals.cpp
                    Events.cpp
                    ErrorHandling.cpp
                    Localization.cpp
@@ -27,6 +29,7 @@ set(ENGINE_HEADERS AssetsManager.h
                    CommandLine.cpp
                    Conditions.h
                    Engine.h
+                   EngineGlobals.h
                    ErrorHandling.h
                    Events.h
                    Events2D.h

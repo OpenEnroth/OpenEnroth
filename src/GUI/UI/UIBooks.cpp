@@ -2,6 +2,7 @@
 
 #include "Engine/Awards.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 
@@ -13,7 +14,6 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Platform/Api.h"
-#include "Platform/OSWindow.h"
 
 
 Image *ui_book_button8_off = nullptr;

@@ -1,6 +1,7 @@
 #include "GUI/UI/UIDialogue.h"
 
 #include "Engine/Events.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Level/Decoration.h"
@@ -20,7 +21,6 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Platform/OSWindow.h"
 
 using Io::TextInputType;
 

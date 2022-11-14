@@ -51,9 +51,9 @@ void KeyboardInputHandler::GeneratePausedActions() {
         bool isTriggered = false;
         PlatformKey key = actionMapping->GetKey(action);
         if (GetToggleType(action) == KeyToggleType::TOGGLE_OneTimePress)
-            isTriggered = controller->IsKeyPressed(key);
+            isTriggered = controller->ConsumeKeyPress(key);
         else
-            isTriggered = controller->IsKeyHeld(key);
+            isTriggered = controller->IsKeyDown(key);
 
         if (!isTriggered) {
             continue;
@@ -93,12 +93,12 @@ void KeyboardInputHandler::GenerateGameplayActions() {
         bool isTriggered = false;
         PlatformKey key = actionMapping->GetKey(action);
         if (GetToggleType(action) == KeyToggleType::TOGGLE_OneTimePress) {
-            isTriggered = controller->IsKeyPressed(key);
+            isTriggered = controller->ConsumeKeyPress(key);
         } else if (GetToggleType(action) == KeyToggleType::TOGGLE_Continuously) {
-            isTriggered = controller->IsKeyHeld(key);
+            isTriggered = controller->IsKeyDown(key);
         } else {
             // delay press
-            if (controller->IsKeyHeld(key)) {
+            if (controller->IsKeyDown(key)) {
                 resettimer = false;
                 if (this->keydelaytimer == 0 || this->keydelaytimer >= 15)
                     isTriggered = true;
@@ -438,42 +438,42 @@ void KeyboardInputHandler::SetTextInput(const char* text) {
 void KeyboardInputHandler::ResetKeys() {
     for (auto action : AllInputActions()) {
         // requesting KeyPressed will consume all the events due to how logic is designed in GetAsyncKeyState
-        controller->IsKeyPressed(actionMapping->GetKey(action));
+        controller->ConsumeKeyPress(actionMapping->GetKey(action));
     }
 }
 
 bool KeyboardInputHandler::IsRunKeyToggled() const {
-    return controller->IsKeyHeld(PlatformKey::Shift);
+    return controller->IsKeyDown(PlatformKey::Shift);
 }
 
 bool KeyboardInputHandler::IsTurnStrafingToggled() const {
-    return controller->IsKeyHeld(PlatformKey::Control);
+    return controller->IsKeyDown(PlatformKey::Control);
 }
 
 bool KeyboardInputHandler::IsKeyboardPickingOutlineToggled() const {
-    return controller->IsKeyHeld(PlatformKey::Control);
+    return controller->IsKeyDown(PlatformKey::Control);
 }
 
 bool KeyboardInputHandler::IsStealingToggled() const {
-    return controller->IsKeyHeld(PlatformKey::Control);
+    return controller->IsKeyDown(PlatformKey::Control);
 }
 
 bool KeyboardInputHandler::IsTakeAllToggled() const {
-    return controller->IsKeyHeld(PlatformKey::Control);
+    return controller->IsKeyDown(PlatformKey::Control);
 }
 
 bool KeyboardInputHandler::IsAdventurerBackcycleToggled() const {
-    return controller->IsKeyHeld(PlatformKey::Shift);
+    return controller->IsKeyDown(PlatformKey::Shift);
 }
 
 bool KeyboardInputHandler::IsSpellBackcycleToggled() const {
-    return controller->IsKeyHeld(PlatformKey::Shift);
+    return controller->IsKeyDown(PlatformKey::Shift);
 }
 
 bool KeyboardInputHandler::IsCastOnClickToggled() const {
-    return controller->IsKeyHeld(PlatformKey::Shift);
+    return controller->IsKeyDown(PlatformKey::Shift);
 }
 
 bool KeyboardInputHandler::IsKeyHeld(PlatformKey key) const {
-    return controller->IsKeyHeld(key);
+    return controller->IsKeyDown(key);
 }

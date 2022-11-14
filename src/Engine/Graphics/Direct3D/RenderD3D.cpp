@@ -4,7 +4,6 @@
 
 #include "Engine/LOD.h"
 
-#include "Platform/OSWindow.h"
 
 HRESULT __stdcall DDrawDisplayModesEnumerator(DDSURFACEDESC2 *pSurfaceDesc,
                                               int16_t *found_compatible_mode) {
@@ -288,7 +287,7 @@ void RenderD3D::Release() {
     }
 }
 
-bool RenderD3D::CreateDevice(unsigned int uDeviceID, int bWindowed, std::shared_ptr<OSWindow> window) {
+bool RenderD3D::CreateDevice(unsigned int uDeviceID, int bWindowed) {
     DWORD v26;                        // [sp-4h] [bp-DCh]@30
     DDSCAPS2 v27;                     // [sp+Ch] [bp-CCh]@37
     DDSURFACEDESC2 ddsd2;             // [sp+1Ch] [bp-BCh]@11
@@ -296,7 +295,7 @@ bool RenderD3D::CreateDevice(unsigned int uDeviceID, int bWindowed, std::shared_
     IDirectDrawClipper *lpddclipper;  // [sp+C4h] [bp-14h]@18
     LPDIRECTDRAW lpDD;                // [sp+C8h] [bp-10h]@1
 
-    auto hWnd = (HWND)window->GetWinApiHandle();
+    auto hWnd = (HWND)window->PlatformHandle();
     int game_width = window->GetWidth();
     int game_height = window->GetHeight();
 

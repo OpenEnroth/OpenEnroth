@@ -4,6 +4,7 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 
 #include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/ImageLoader.h"
@@ -12,7 +13,6 @@
 #include "GUI/GUIWindow.h"
 #include "Platform/PlatformKey.h"
 
-#include "Platform/OSWindow.h"
 
 #define MAX_VERTEX_MEMORY 512 * 1024
 #define MAX_ELEMENT_MEMORY 128 * 1024
@@ -3187,8 +3187,10 @@ finish:
 static int lua_window_dimensions(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
 
-    lua_pushnumber(L, window->GetWidth());
-    lua_pushnumber(L, window->GetHeight());
+    Sizei size = window->Size();
+
+    lua_pushnumber(L, size.w);
+    lua_pushnumber(L, size.h);
     lua_pushnumber(L, render->GetRenderWidth());
     lua_pushnumber(L, render->GetRenderHeight());
 

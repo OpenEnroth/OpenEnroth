@@ -1,19 +1,32 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
-set(PLATFORM_SOURCES OSWindow.cpp
-                     OSWindowFactory.cpp
-                     Sdl2KeyboardController.cpp
-                     Sdl2Window.cpp
-                     SDLmain.cpp
-                     PlatformKey.cpp
+set(PLATFORM_SOURCES PlatformKey.cpp
+                     PlatformEventHandler.cpp
+                     Sdl/SdlEnumTranslation.cpp
+                     Sdl/SdlEventLoop.cpp
+                     Sdl/SdlOpenGLContext.cpp
+                     Sdl/SdlPlatform.cpp
+                     Sdl/SdlPlatformSharedState.cpp
+                     Sdl/SdlWindow.cpp
 )
 
 set(PLATFORM_HEADERS Api.h
+                     Platform.h
                      PlatformKey.h
-                     OSWindow.h
-                     OSWindowFactory.h
-                     Sdl2KeyboardController.h
-                     Sdl2Window.h
+                     PlatformModifiers.h
+                     PlatformMouseButton.h
+                     PlatformEventHandler.h
+                     PlatformEventLoop.h
+                     PlatformEvents.h
+                     PlatformWindow.h
+                     PlatformOpenGLContext.h
+                     PlatformOpenGLOptions.h
+                     Sdl/SdlEnumTranslation.h
+                     Sdl/SdlEventLoop.h
+                     Sdl/SdlOpenGLContext.h
+                     Sdl/SdlPlatform.h
+                     Sdl/SdlPlatformSharedState.h
+                     Sdl/SdlWindow.h
 )
 
 if(WIN32)

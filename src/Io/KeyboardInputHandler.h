@@ -20,7 +20,7 @@ namespace Io {
     //      and maps it to game actions/events using KeyboardActionMapping
     class KeyboardInputHandler {
      public:
-        KeyboardInputHandler(std::shared_ptr<IKeyboardController> controller, std::shared_ptr<KeyboardActionMapping> actionMapping) {
+        KeyboardInputHandler(IKeyboardController *controller, std::shared_ptr<KeyboardActionMapping> actionMapping) {
             this->controller = controller;
             this->actionMapping = actionMapping;
 
@@ -61,7 +61,7 @@ namespace Io {
         void GeneratePausedActions();
         void GenerateGameplayActions();
 
-        std::shared_ptr<IKeyboardController> controller;
+        IKeyboardController *controller;
         std::shared_ptr<KeyboardActionMapping> actionMapping;
 
         PlatformKey lastKeyPressed;

@@ -16,17 +16,17 @@ using EngineIoc = Engine_::IocContainer;
 using GameIoc = Application::IocContainer;
 using Io::Mouse;
 
+class IRender;
+class Platform;
+class PlatformWindow;
+class PlatformEventLoop;
 
 namespace Application {
 
 class Game {
  public:
-     inline Game() {
-         this->log = EngineIoc::ResolveLogger();
-         this->decal_builder = EngineIoc::ResolveDecalBuilder();
-         this->vis = EngineIoc::ResolveVis();
-         this->menu = GameIoc::ResolveGameMenu();
-     }
+     Game(Platform *platform);
+     ~Game();
 
      bool Configure(std::shared_ptr<GameConfig> config) {
          this->config = config;
@@ -36,18 +36,21 @@ class Game {
      int Run();
 
  private:
+     void UpdateWindowFromConfig();
+     void UpdateConfigFromWindow();
      bool Loop();
      void EventLoop();
      void GameLoop();
      void CloseTargetedSpellWindow();
      void OnEscape();
      void OnPressSpace();
-     void ProcessInputActions();
 
-
+     Platform *platform = nullptr;
      std::shared_ptr<GameConfig> config;
+     GameWindowHandler *windowHandler = nullptr;
      std::shared_ptr<Engine> engine;
-     std::shared_ptr<OSWindow> window;
+     std::unique_ptr<PlatformWindow> window;
+     std::unique_ptr<PlatformEventLoop> eventLoop;
      std::shared_ptr<IRender> render;
      std::shared_ptr<Mouse> mouse = nullptr;
      Log *log = nullptr;

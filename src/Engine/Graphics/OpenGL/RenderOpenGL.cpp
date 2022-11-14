@@ -35,6 +35,7 @@
 #include <glm/glm/gtc/matrix_transform.hpp>
 
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/ImageLoader.h"
@@ -64,7 +65,6 @@
 #include "Arcomage/Arcomage.h"
 
 #include "Platform/Api.h"
-#include "Platform/OSWindow.h"
 
 #include "Utility/Memory.h"
 #include "Utility/Math/TrigLut.h"
@@ -172,14 +172,13 @@ void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y
 
 RenderOpenGL::RenderOpenGL(
     std::shared_ptr<Application::GameConfig> config,
-    std::shared_ptr<OSWindow> window,
     DecalBuilder* decal_builder,
     LightmapBuilder* lightmap_builder,
     SpellFxRenderer* spellfx,
     std::shared_ptr<ParticleEngine> particle_engine,
     Vis* vis,
     Log* logger
-) : RenderBase(config, window, decal_builder, lightmap_builder, spellfx, particle_engine, vis, logger) {
+) : RenderBase(config, decal_builder, lightmap_builder, spellfx, particle_engine, vis, logger) {
     clip_w = 0;
     clip_x = 0;
     clip_y = 0;
@@ -195,8 +194,8 @@ void RenderOpenGL::MaskGameViewport() {
 }
 
 void RenderOpenGL::SaveWinnersCertificate(const char *a1) {
-    uint winwidth{ window->GetWidth() };
-    uint winheight{ window->GetHeight() };
+    int winwidth{ window->GetWidth() };
+    int winheight{ window->GetHeight() };
     GLubyte *sPixels = new GLubyte[3 * winwidth * winheight];
     glReadPixels(0, 0, winwidth, winheight, GL_RGB, GL_UNSIGNED_BYTE, sPixels);
 
@@ -855,9 +854,9 @@ void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid) {
 void RenderOpenGL::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
     if (!img) return;
 
-    int winwidth = this->window->GetWidth();
+    int winwidth = window->GetWidth();
     int uOutX = static_cast<int>(u * winwidth);
-    int uOutY = static_cast<int>(v * this->window->GetHeight());
+    int uOutY = static_cast<int>(v * window->GetHeight());
     int imgheight = img->GetHeight();
     int imgwidth = img->GetWidth();
     auto pixels = (uint32_t *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
@@ -3325,11 +3324,11 @@ void RenderOpenGL::SetUIClipRect(unsigned int x, unsigned int y, unsigned int z,
     this->clip_y = y;
     this->clip_z = z;
     this->clip_w = w;
-    glScissor(x, this->window->GetHeight() -w, z-x, w-y);  // invert glscissor co-ords 0,0 is BL
+    glScissor(x, window->GetHeight() -w, z-x, w-y);  // invert glscissor co-ords 0,0 is BL
 }
 
 void RenderOpenGL::ResetUIClipRect() {
-    this->SetUIClipRect(0, 0, this->window->GetWidth(), this->window->GetHeight());
+    this->SetUIClipRect(0, 0, window->GetWidth(), window->GetHeight());
 }
 
 void RenderOpenGL::PresentBlackScreen() {
@@ -3869,7 +3868,7 @@ void RenderOpenGL::Present() {
     EndLines2D();
     EndTextNew();
 
-    window->OpenGlSwapBuffers();
+    openGlContext->SwapBuffers();
 
     if (engine->config->graphics.FPSLimit.Get() > 0) {
         // crude frame rate limiting
@@ -5276,7 +5275,33 @@ bool RenderOpenGL::Initialize() {
     }
 
     if (window != nullptr) {
-        window->OpenGlCreate();
+        PlatformOpenGLOptions opts;
+
+        //  Use OpenGL 4.1 core
+        opts.versionMajor = 4;
+        opts.versionMinor = 1;
+
+        //  Turn on 24bit Z buffer.
+        //  You may need to change this to 16 or 32 for your system
+        opts.depthBits = 24;
+        opts.stencilBits = 8;
+
+        opts.vSyncMode = config->graphics.VSync.Get() ? AdaptiveVSync : NoVSync;
+
+        context_ = window->CreateOpenGLContext(opts);
+        ::openGlContext = context_.get();
+
+        auto gladLoadFunc = [](void *ptr, const char *name) {
+            return reinterpret_cast<GLADapiproc>(static_cast<PlatformOpenGLContext *>(ptr)->GetProcAddress(name));
+        };
+
+        int version = gladLoadGLUserPtr(gladLoadFunc, context_.get());
+        if (!version)
+            log->Warning("GLAD: Failed to initialize the OpenGL loader");
+
+        log->Info("SDL2: supported OpenGL: %s", glGetString(GL_VERSION));
+        log->Info("SDL2: supported GLSL: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
+        log->Info("SDL2: OpenGL version: %d.%d", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
 
         gladSetGLPostCallback(GL_Check_Errors);
 
@@ -5290,7 +5315,7 @@ bool RenderOpenGL::Initialize() {
         glEnable(GL_SCISSOR_TEST);
 
         // Swap Buffers (Double Buffering)
-        window->OpenGlSwapBuffers();
+        openGlContext->SwapBuffers();
 
         this->clip_x = this->clip_y = 0;
         this->clip_z = window->GetWidth();

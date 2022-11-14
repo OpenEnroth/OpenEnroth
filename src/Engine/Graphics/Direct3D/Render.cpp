@@ -8,6 +8,7 @@
 #include "Arcomage/Arcomage.h"
 
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Camera.h"
@@ -41,7 +42,6 @@
 #include "Io/Mouse.h"
 
 #include "Platform/Api.h"
-#include "Platform/OSWindow.h"
 
 #include "Utility/Memory.h"
 #include "Utility/Math/TrigLut.h"
@@ -1168,14 +1168,13 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
 
 Render::Render(
     std::shared_ptr<Application::GameConfig> config,
-    std::shared_ptr<OSWindow> window,
     DecalBuilder* decal_builder,
     LightmapBuilder* lightmap_builder,
     SpellFxRenderer* spellfx,
     std::shared_ptr<ParticleEngine> particle_engine,
     Vis* vis,
     Log* logger
-) : RenderBase(config, window, decal_builder, lightmap_builder, spellfx, particle_engine, vis, logger) {
+) : RenderBase(config, decal_builder, lightmap_builder, spellfx, particle_engine, vis, logger) {
     this->pDirectDraw4 = nullptr;
     this->pFrontBuffer4 = nullptr;
     this->pBackBuffer4 = nullptr;
@@ -1225,7 +1224,7 @@ void Render::ClearBlack() { pRenderD3D->ClearTarget(true, 0, false, 0.0); }
 
 void Render::PresentBlackScreen() {
     RECT dest_rect = {0};
-    GetWindowRect((HWND)window->GetWinApiHandle(), &dest_rect);
+    GetWindowRect((HWND)window->PlatformHandle(), &dest_rect);
 
     DDBLTFX lpDDBltFx = {0};
     lpDDBltFx.dwSize = sizeof(DDBLTFX);
@@ -1398,15 +1397,15 @@ bool Render::InitializeFullscreen() {
     bool v8 = false;
     if (pRenderD3D->pAvailableDevices[uDesiredDirect3DDevice]
             .bIsDeviceCompatible) {
-        v8 = pRenderD3D->CreateDevice(uDesiredDirect3DDevice, true, window);
+        v8 = pRenderD3D->CreateDevice(uDesiredDirect3DDevice, true);
     } else {
         if (v7[1].bIsDeviceCompatible) {
-            v8 = pRenderD3D->CreateDevice(1, true, window);
+            v8 = pRenderD3D->CreateDevice(1, true);
         } else {
             if (!v7->bIsDeviceCompatible)
                 Error("There aren't any D3D devices to create.");
 
-            v8 = pRenderD3D->CreateDevice(0, true, window);
+            v8 = pRenderD3D->CreateDevice(0, true);
         }
     }
     if (!v8) {
@@ -1655,12 +1654,12 @@ bool Render::SwitchToWindow() {
     if (pRenderD3D->pAvailableDevices[uDesiredDirect3DDevice]
             .bIsDeviceCompatible &&
         uDesiredDirect3DDevice != 1) {
-        v7 = pRenderD3D->CreateDevice(uDesiredDirect3DDevice, true, window);
+        v7 = pRenderD3D->CreateDevice(uDesiredDirect3DDevice, true);
     } else {
         if (!pRenderD3D->pAvailableDevices[0].bIsDeviceCompatible) {
             Error("There aren't any D3D devices to init.");
         }
-        v7 = pRenderD3D->CreateDevice(0, true, window);
+        v7 = pRenderD3D->CreateDevice(0, true);
     }
     if (!v7) Error("D3Drend->Init failed.");
 
@@ -1866,7 +1865,7 @@ bool Render::LockSurface_DDraw4(IDirectDrawSurface4 *pSurface,
 
 void Render::CreateClipper() {
     ErrD3D(pDirectDraw4->CreateClipper(0, &pDDrawClipper, NULL));
-    ErrD3D(pDDrawClipper->SetHWnd(0, (HWND)window->GetWinApiHandle()));
+    ErrD3D(pDDrawClipper->SetHWnd(0, (HWND)window->PlatformHandle()));
     ErrD3D(pFrontBuffer4->SetClipper(pDDrawClipper));
 }
 
@@ -3306,9 +3305,9 @@ void Render::DrawTextureAlphaNew(float u, float v, Image *image) {
 void Render::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
     if (!img) return;
 
-    int winwidth = this->window->GetWidth();
+    int winwidth = window->GetWidth();
     int uOutX = u * winwidth;
-    int uOutY = v * this->window->GetHeight();
+    int uOutY = v * window->GetHeight();
     unsigned int imgheight = img->GetHeight();
     unsigned int imgwidth = img->GetWidth();
     auto pixels = (uint32_t *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);

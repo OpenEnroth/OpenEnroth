@@ -2,6 +2,7 @@
 
 #include "Engine/Autonotes.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Awards.h"
 #include "Engine/Events.h"
 #include "Engine/Graphics/Indoor.h"
@@ -21,7 +22,6 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Platform/Api.h"
-#include "Platform/OSWindow.h"
 
 
 int pDialogueNPCCount;

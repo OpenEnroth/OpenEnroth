@@ -10,7 +10,7 @@
 using EngineIoc = Engine_::IocContainer;
 using Graphics::IRenderFactory;
 
-std::shared_ptr<IRender> IRenderFactory::Create(std::shared_ptr<Application::GameConfig> config, std::shared_ptr<OSWindow> window) {
+std::shared_ptr<IRender> IRenderFactory::Create(std::shared_ptr<Application::GameConfig> config) {
     RendererType rendererType = RendererType::OpenGL;
     std::shared_ptr<IRender> renderer = nullptr;
 
@@ -41,7 +41,6 @@ std::shared_ptr<IRender> IRenderFactory::Create(std::shared_ptr<Application::Gam
             logger->Info("Initializing OpenGL renderer...");
             renderer = std::make_shared<RenderOpenGL>(
                 config,
-                window,
                 EngineIoc::ResolveDecalBuilder(),
                 EngineIoc::ResolveLightmapBuilder(),
                 EngineIoc::ResolveSpellFxRenderer(),

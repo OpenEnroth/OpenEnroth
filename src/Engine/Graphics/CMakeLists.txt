@@ -16,6 +16,7 @@ set(GRAPHICS_SOURCES BSPModel.cpp
                      Outdoor.cpp
                      Overlays.cpp
                      Nuklear.cpp
+                     NuklearEventHandler.cpp
                      PaletteManager.cpp
                      ParticleEngine.cpp
                      PCX.cpp
@@ -48,6 +49,7 @@ set(GRAPHICS_HEADERS BSPModel.h
                      Outdoor.h
                      Overlays.h
                      Nuklear.h
+                     NuklearEventHandler.h
                      PaletteManager.h
                      ParticleEngine.h
                      PCX.h

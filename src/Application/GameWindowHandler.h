@@ -2,14 +2,17 @@
 #include <memory>
 
 #include "Platform/PlatformKey.h"
+#include "Platform/PlatformEventHandler.h"
 #include "Io/Mouse.h"
+
+#include "GameKeyboardController.h"
 
 using Io::Mouse;
 
 namespace Application {
 
 // Handles events from game window (OSWindow)
-class GameWindowHandler {
+class GameWindowHandler : public PlatformEventHandler {
  public:
     GameWindowHandler();
 
@@ -30,8 +33,23 @@ class GameWindowHandler {
     void OnActivated();
     void OnDeactivated();
 
+    GameKeyboardController *KeyboardController() const {
+        return keyboardController_.get();
+    }
+
+ protected:
+    virtual bool Event(const PlatformEvent *event) override;
+    virtual bool KeyPressEvent(const PlatformKeyEvent *event) override;
+    virtual bool KeyReleaseEvent(const PlatformKeyEvent *event) override;
+    virtual bool MouseMoveEvent(const PlatformMouseEvent *event) override;
+    virtual bool MousePressEvent(const PlatformMouseEvent *event) override;
+    virtual bool MouseReleaseEvent(const PlatformMouseEvent *event) override;
+    virtual bool WheelEvent(const PlatformWheelEvent *event) override;
+    virtual bool ActivationEvent(const PlatformEvent *event) override;
+
  private:
     std::shared_ptr<Mouse> mouse = nullptr;
+    std::unique_ptr<GameKeyboardController> keyboardController_;
 };
 
 }  // namespace Application

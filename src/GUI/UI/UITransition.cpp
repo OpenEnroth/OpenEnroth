@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Events2D.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/LOD.h"
@@ -19,7 +20,6 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-#include "Platform/OSWindow.h"
 
 
 Image *transition_ui_icon = nullptr;

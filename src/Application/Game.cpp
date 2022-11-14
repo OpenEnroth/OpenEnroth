@@ -2,15 +2,20 @@
 
 #include <algorithm>
 #include <string>
+#include <utility>
+#include <vector>
 
 #include "Arcomage/Arcomage.h"
 
 #include "GameFactory.h"
 #include "GameMenu.h"
 
+#include "Application/GameWindowHandler.h"
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Awards.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/EngineFactory.h"
 #include "Engine/Events.h"
 #include "Engine/Graphics/DecalBuilder.h"
@@ -18,6 +23,7 @@
 #include "Engine/Graphics/IRenderFactory.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Nuklear.h"
+#include "Engine/Graphics/NuklearEventHandler.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/PaletteManager.h"
@@ -65,13 +71,14 @@
 #include "GUI/UI/UIStatusBar.h"
 
 #include "Io/Mouse.h"
+#include "Io/KeyboardInputHandler.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
 #include "Platform/Api.h"
-#include "Platform/OSWindow.h"
-#include "Platform/OSWindowFactory.h"
+#include "Platform/Platform.h"
+#include "Platform/PlatformWindow.h"
 
 #include "Utility/Random.h"
 
@@ -145,8 +152,20 @@ std::string FindMm7Directory() {
     return "";
 }
 
+Game::Game(Platform *platform) {
+    this->platform = platform;
+    this->log = EngineIoc::ResolveLogger();
+    this->decal_builder = EngineIoc::ResolveDecalBuilder();
+    this->vis = EngineIoc::ResolveVis();
+    this->menu = GameIoc::ResolveGameMenu();
+}
+
+Game::~Game() {}
+
 int Game::Run() {
     IntegrityTest();
+
+    ::platform = platform;
 
     std::string mm7dir = FindMm7Directory();
     if(mm7dir.empty()) {
@@ -157,15 +176,22 @@ int Game::Run() {
 
     config->Startup();
 
-    window = OSWindowFactory().Create(config);
-    ::window = window;
+    std::unique_ptr<GameWindowHandler> handler(Application::IocContainer::ResolveGameWindowHandler());
+    windowHandler = handler.get();
+
+    window = platform->CreateWindow(std::move(handler));
+    UpdateWindowFromConfig();
+    ::window = window.get();
+
+    eventLoop = platform->CreateEventLoop();
+    ::eventLoop = eventLoop.get();
 
     if (!window) {
         log->Warning("Window creation failed");
         return -1;
     }
 
-    render = IRenderFactory().Create(config, window);
+    render = IRenderFactory().Create(config);
     ::render = render;
 
     if (!render) {
@@ -178,17 +204,19 @@ int Game::Run() {
         return -1;
     }
 
-    nuklear = Nuklear().Initialize();
+    nuklear = Nuklear::Initialize();
     if (!nuklear) {
         log->Warning("Nuklear failed to initialize");
     }
     ::nuklear = nuklear;
+    if (nuklear)
+        nuklearEventHandler = std::make_shared<NuklearEventHandler>();
 
     keyboardActionMapping = std::make_shared<KeyboardActionMapping>(config);
     ::keyboardActionMapping = keyboardActionMapping;
 
     keyboardInputHandler = std::make_shared<KeyboardInputHandler>(
-        window->GetKeyboardController(),
+        windowHandler->KeyboardController(),
         keyboardActionMapping
     );
 
@@ -207,6 +235,7 @@ int Game::Run() {
     engine->Initialize();
 
     window->Activate();
+    eventLoop->ProcessMessages();
 
     ShowMM7IntroVideo_and_LoadingScreen();
 
@@ -222,6 +251,8 @@ int Game::Run() {
         }
     }
 
+    UpdateConfigFromWindow();
+
     if (engine) {
         engine->Deinitialize();
         engine = nullptr;
@@ -234,12 +265,68 @@ int Game::Run() {
     }
 
     if (window) {
-        window->Release();
+        window.reset();
         config->SaveConfiguration();
-        window = nullptr;
     }
 
     return 0;
+}
+
+void Game::UpdateWindowFromConfig() {
+    window->SetVisible(true);
+
+    std::vector<Recti> displays = platform->DisplayGeometries();
+
+    Pointi pos = {config->window.PositionX.Get(), config->window.PositionY.Get()};
+    Sizei size = {config->window.Width.Get(), config->window.Height.Get()};
+
+    int display = config->window.Display.Get();
+    if (display < 0 || display >= displays.size())
+        display = 0;
+
+    Recti displayRect = !displays.empty() ? displays[display] : Recti();
+
+    if (config->window.Fullscreen.Get()) {
+        pos = displayRect.TopLeft();
+    } else if (displayRect.Contains(pos)) {
+        pos += displayRect.TopLeft();
+    } else {
+        pos = displayRect.TopLeft();
+    }
+
+    window->SetPosition(pos);
+    window->Resize(size);
+    window->SetTitle(config->window.Title.Get());
+    window->SetFrameless(config->window.Borderless.Get());
+    window->SetGrabsMouse(config->window.MouseGrab.Get());
+    window->SetFullscreen(config->window.Fullscreen.Get());
+    window->SetVisible(true);
+}
+
+void Game::UpdateConfigFromWindow() {
+    std::vector<Recti> displays = platform->DisplayGeometries();
+
+    Pointi pos = window->Position();
+    Sizei size = window->Size();
+
+    Pointi relativePos = Pointi();
+    int display = 0;
+
+    for (size_t i = 0; i < displays.size(); i++) {
+        if (displays[i].Contains(pos)) {
+            display = i;
+            relativePos = pos - displays[i].TopLeft();
+            break;
+        }
+    }
+
+    config->window.PositionX.Set(relativePos.x);
+    config->window.PositionY.Set(relativePos.y);
+    config->window.Width.Set(size.w);
+    config->window.Height.Set(size.h);
+    config->window.Borderless.Set(window->IsFrameless());
+    config->window.MouseGrab.Set(window->GrabsMouse());
+    config->window.Fullscreen.Set(window->IsFullscreen());
 }
 
 bool Game::Loop() {

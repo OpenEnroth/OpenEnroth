@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Events.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Collisions.h"
@@ -42,7 +43,6 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Platform/Api.h"
-#include "Platform/OSWindow.h"
 
 #include "Utility/FreeDeleter.h"
 #include "Utility/Math/TrigLut.h"

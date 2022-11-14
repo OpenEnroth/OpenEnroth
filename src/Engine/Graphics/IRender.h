@@ -10,7 +10,6 @@
 #include "Utility/Color.h"
 #include "Utility/Geometry/Rect.h"
 
-class OSWindow;
 class Sprite;
 class SpriteFrame;
 struct SoftwareBillboard;
@@ -184,7 +183,6 @@ class IRender {
  public:
     inline IRender(
         std::shared_ptr<Application::GameConfig> config,
-        std::shared_ptr<OSWindow> window,
         DecalBuilder *decal_builder,
         LightmapBuilder *lightmap_builder,
         SpellFxRenderer *spellfx,
@@ -193,7 +191,6 @@ class IRender {
         Log *logger
     ) {
         this->config = config;
-        this->window = window;
         this->decal_builder = decal_builder;
         this->lightmap_builder = lightmap_builder;
         this->spell_fx_renderer = spellfx;
@@ -416,7 +413,6 @@ class IRender {
     LightmapBuilder *lightmap_builder = nullptr;
     std::shared_ptr<ParticleEngine> particle_engine = nullptr;
     Vis *vis = nullptr;
-    std::shared_ptr<OSWindow> window = nullptr;
 
     virtual void WritePixel16(int x, int y, uint16_t color) = 0;
 

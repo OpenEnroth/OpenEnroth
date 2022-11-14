@@ -9,13 +9,12 @@
 #include "Utility/Geometry/Point.h"
 
 class Image;
-class OSWindow;
 
 
 namespace Io {
     class Mouse {
      public:
-        inline Mouse() : cursor_img(nullptr), window(nullptr) {
+        inline Mouse() : cursor_img(nullptr) {
             pCursorBitmap_sysmem = nullptr;
             field_34 = 0;
             pCursorBitmap2_sysmem = nullptr;
@@ -35,7 +34,7 @@ namespace Io {
         void AllocCursorSystemMem();
         void* DoAllocCursorMem();
         Pointi GetCursorPos();
-        void Initialize(std::shared_ptr<OSWindow> window);
+        void Initialize();
         void SetActive(bool active);
         void Deactivate();
         void DrawCursor();
@@ -58,7 +57,6 @@ namespace Io {
         int field_1C = 0;
         int field_20 = 0;
         Image* cursor_img = nullptr;
-        std::shared_ptr<OSWindow> window;
         uint16_t* pCursorBitmap_sysmem = nullptr;
         int field_34 = 0;
         uint8_t* pCursorBitmap2_sysmem = nullptr;

@@ -62,7 +62,6 @@ struct RenderD3D_aux {
     RenderD3D_D3DDevDesc *ptr_4;
 };
 
-class OSWindow;
 
 class RenderD3D {
  public:
@@ -70,7 +69,7 @@ class RenderD3D {
 
     void GetAvailableDevices(RenderD3D__DevInfo **pOutDevices);
     void Release();
-    bool CreateDevice(unsigned int uDeviceID, int bWindowed, std::shared_ptr<OSWindow> window);
+    bool CreateDevice(unsigned int uDeviceID, int bWindowed);
     unsigned int GetDeviceCaps();
     void ClearTarget(unsigned int bClearColor, unsigned int uClearColor,
                      unsigned int bClearDepth, float z_clear);

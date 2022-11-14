@@ -216,7 +216,7 @@ bool Image::LoadImageData() {
     return initialized;
 }
 
-unsigned int Image::GetWidth() {
+int Image::GetWidth() {
     if (!initialized) {
         LoadImageData();
     }
@@ -229,7 +229,7 @@ unsigned int Image::GetWidth() {
     return 0;
 }
 
-unsigned int Image::GetHeight() {
+int Image::GetHeight() {
     if (!initialized) {
         LoadImageData();
     }
