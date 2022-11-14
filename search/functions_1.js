@@ -83,7 +83,7 @@ var searchData=
   ['alpha_5flod_5floader_80',['Alpha_LOD_Loader',['../classAlpha__LOD__Loader.html#a6999bb406ad69558d8f2efe828b265fe',1,'Alpha_LOD_Loader']]],
   ['altergamma_5fblv_81',['AlterGamma_BLV',['../structEngine.html#a0d32e6c868911aa4edcb4f58003a9e9d',1,'Engine']]],
   ['altergamma_5fodm_82',['AlterGamma_ODM',['../structEngine.html#a09ebe70631a524a05f24437a28aa0da0',1,'Engine']]],
-  ['am_5fdrawtext_83',['am_DrawText',['../Arcomage_8cpp.html#ab6bd4c3e9c4d2dda075bf4acdaffc3d9',1,'Arcomage.cpp']]],
+  ['am_5fdrawtext_83',['am_DrawText',['../Arcomage_8cpp.html#afd1d9b9cff02426ea89dc75c412901be',1,'Arcomage.cpp']]],
   ['appenddirectory_84',['AppendDirectory',['../classLOD_1_1WriteableFile.html#a20d1b14cd29a6d4538063732c802cd09',1,'LOD::WriteableFile']]],
   ['apply_85',['Apply',['../structSpellBuff.html#a6ace9fe262064f07ce52f3e69cf19800',1,'SpellBuff']]],
   ['apply_5fspell_5fsprite_5fdamage_86',['Apply_Spell_Sprite_Damage',['../SpriteObject_8cpp.html#ae4c7423dffd40822499d31df253173cd',1,'Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, int pid):&#160;SpriteObject.cpp'],['../SpriteObject_8h.html#ad9764142f3e6f9e522796585ce90f6d3',1,'Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, signed int pid):&#160;SpriteObject.h']]],

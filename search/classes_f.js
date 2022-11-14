@@ -30,7 +30,6 @@ var searchData=
   ['playerspellbookchapter_5fmm7_27',['PlayerSpellbookChapter_MM7',['../structPlayerSpellbookChapter__MM7.html',1,'']]],
   ['playerspells_28',['PlayerSpells',['../structPlayerSpells.html',1,'']]],
   ['playerspells_5fmm7_29',['PlayerSpells_MM7',['../structPlayerSpells__MM7.html',1,'']]],
-  ['point_30',['Point',['../structPoint.html',1,'']]],
-  ['polygon_31',['Polygon',['../structPolygon.html',1,'']]],
-  ['projectileanim_32',['ProjectileAnim',['../structProjectileAnim.html',1,'']]]
+  ['polygon_30',['Polygon',['../structPolygon.html',1,'']]],
+  ['projectileanim_31',['ProjectileAnim',['../structProjectileAnim.html',1,'']]]
 ];

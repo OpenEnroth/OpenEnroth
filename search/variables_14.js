@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['table_5fpos_0',['table_pos',['../structAcromageCardOnTable.html#af419af3f14c3a9bc85b8d3df4defd16d',1,'AcromageCardOnTable']]],
+  ['table_5fpos_0',['table_pos',['../structAcromageCardOnTable.html#a67dd062da52e87b00b826ef1fac9f561',1,'AcromageCardOnTable']]],
   ['tacha_1',['Tacha',['../classColorTable.html#a5e5e8e2a70b3ff9ef10736735358fb65',1,'ColorTable']]],
   ['tail_2',['tail',['../struct__evt__raw.html#ae630d4f7b3137869f859ceac7f90b607',1,'_evt_raw']]],
   ['target_5f_3',['target_',['../classStringOutputStream.html#a477c1cb4e24bb7428fa85d6d717f9012',1,'StringOutputStream']]],
@@ -127,7 +127,7 @@ var searchData=
   ['trap_5fd20_124',['Trap_D20',['../structMapInfo.html#abfbedcfc752242446552c31ec3b56787',1,'MapInfo']]],
   ['treasure_5flevel_125',['treasure_level',['../structITEM__VARIATION.html#a3d2ea14d4a8f85e96f071fc97bf66185',1,'ITEM_VARIATION']]],
   ['treasure_5fprob_126',['Treasure_prob',['../structMapInfo.html#ab6a1628d0799f7aa74ea6b409432233c',1,'MapInfo']]],
-  ['triglut_127',['TrigLUT',['../OurMath_8h.html#ad2a604cd90c1bb1a6fd61d97fdf8a0f4',1,'TrigLUT():&#160;OurMath.cpp'],['../OurMath_8cpp.html#ad2a604cd90c1bb1a6fd61d97fdf8a0f4',1,'TrigLUT():&#160;OurMath.cpp']]],
+  ['triglut_127',['TrigLUT',['../TrigLut_8h.html#a3ef652617f98fbbd5dd39ded3e0a3a15',1,'TrigLUT():&#160;TrigLut.cpp'],['../TrigLut_8cpp.html#a3ef652617f98fbbd5dd39ded3e0a3a15',1,'TrigLUT():&#160;TrigLut.cpp']]],
   ['tundora_128',['Tundora',['../classColorTable.html#adecf766dc7b77b3ee78d9209825d9a64',1,'ColorTable']]],
   ['turbospeed_129',['TurboSpeed',['../classApplication_1_1GameConfig_1_1Debug.html#ad5345439a2857516639f44022dd8bd55',1,'Application::GameConfig::Debug']]],
   ['turn_5finitiative_130',['turn_initiative',['../structstru262__TurnBased.html#a3e761a764c584f7b17a9c4aac0a06f02',1,'stru262_TurnBased']]],

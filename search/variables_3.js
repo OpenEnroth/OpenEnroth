@@ -15,7 +15,7 @@ var searchData=
   ['card_5fhover_5findex_12',['Card_Hover_Index',['../Arcomage_8cpp.html#a43101c0ae03a702ff84efa53d495c0ff',1,'Arcomage.cpp']]],
   ['card_5fpower_13',['card_power',['../structam__ai__cardpowerstruct.html#abc90467f84b3466958b194c32ec312ec',1,'am_ai_cardpowerstruct']]],
   ['card_5fresource_5ftype_14',['card_resource_type',['../structArcomageCard.html#a76b8daeaadd77422741edf42ed134659',1,'ArcomageCard']]],
-  ['card_5fshift_15',['card_shift',['../structArcomagePlayer.html#aafaba315d25287dff08f034532d67044',1,'ArcomagePlayer']]],
+  ['card_5fshift_15',['card_shift',['../structArcomagePlayer.html#ad33bec49552ed784447324da0a2a15a5',1,'ArcomagePlayer']]],
   ['cards_5fat_5fhand_16',['cards_at_hand',['../structArcomagePlayer.html#a8cb4830c0f0dde3c156217f464687988',1,'ArcomagePlayer']]],
   ['cards_5fids_17',['cards_IDs',['../structArcomageDeck.html#ad25fc5b3daaf7b7f06a1172010f4ce17',1,'ArcomageDeck']]],
   ['cards_5fpower_18',['cards_power',['../Arcomage_8cpp.html#a231836bf394dcc2cef6ad65f70180e72',1,'Arcomage.cpp']]],

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>World of Might and Magic: src/Engine/VectorTypes.h File Reference</title>
+<title>World of Might and Magic: src/Utility/Geometry/Vec.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;d1ced8a</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;476b412</span>
    </div>
   </td>
  </tr>
@@ -69,7 +69,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_3072bc1f55ed1280fe4fbe6b21c78379.html">Engine</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_9761b53e3d9349800c0cb59b71c8cd3d.html">Utility</a></li><li class="navelem"><a class="el" href="dir_278f896eec2d46a8f0a369b61c13ae22.html">Geometry</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -77,14 +77,12 @@ $(function() {
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#typedef-members">Typedefs</a>  </div>
-  <div class="headertitle"><div class="title">VectorTypes.h File Reference</div></div>
+  <div class="headertitle"><div class="title">Vec.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;cstdint&gt;</code><br />
-<code>#include &lt;cmath&gt;</code><br />
+<div class="textblock"><code>#include &lt;cmath&gt;</code><br />
+<code>#include &lt;cstdint&gt;</code><br />
 <code>#include &lt;type_traits&gt;</code><br />
-<code>#include &lt;algorithm&gt;</code><br />
-<code>#include &quot;<a class="el" href="OurMath_8h.html">OurMath.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -94,38 +92,24 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structVec3.html">Vec3&lt; T &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPlanei.html">Planei</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPlanef.html">Planef</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPlaneZCalcll.html">PlaneZCalcll</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a3e0f6a43634d91675037d611102492f0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="VectorTypes_8h.html#a3e0f6a43634d91675037d611102492f0">MM_ALLOW_VECTOR_CONVERSION</a>(FROM,  TO)</td></tr>
+<tr class="memitem:a3e0f6a43634d91675037d611102492f0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Vec_8h.html#a3e0f6a43634d91675037d611102492f0">MM_ALLOW_VECTOR_CONVERSION</a>(FROM,  TO)</td></tr>
 <tr class="separator:a3e0f6a43634d91675037d611102492f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:a117a07b9e7c47a4975f94512a951bd73"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="VectorTypes_8h.html#a117a07b9e7c47a4975f94512a951bd73">Vec2i</a> = <a class="el" href="structVec2.html">Vec2</a>&lt; int32_t &gt;</td></tr>
+<tr class="memitem:a117a07b9e7c47a4975f94512a951bd73"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Vec_8h.html#a117a07b9e7c47a4975f94512a951bd73">Vec2i</a> = <a class="el" href="structVec2.html">Vec2</a>&lt; int32_t &gt;</td></tr>
 <tr class="separator:a117a07b9e7c47a4975f94512a951bd73"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a204091a6626c84fd980a6c492469f6"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="VectorTypes_8h.html#a0a204091a6626c84fd980a6c492469f6">Vec2f</a> = <a class="el" href="structVec2.html">Vec2</a>&lt; float &gt;</td></tr>
+<tr class="memitem:a0a204091a6626c84fd980a6c492469f6"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Vec_8h.html#a0a204091a6626c84fd980a6c492469f6">Vec2f</a> = <a class="el" href="structVec2.html">Vec2</a>&lt; float &gt;</td></tr>
 <tr class="separator:a0a204091a6626c84fd980a6c492469f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6292e5605ec40bf04615dbf225d2654c"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="VectorTypes_8h.html#a6292e5605ec40bf04615dbf225d2654c">Vec3s</a> = <a class="el" href="structVec3.html">Vec3</a>&lt; int16_t &gt;</td></tr>
+<tr class="memitem:a6292e5605ec40bf04615dbf225d2654c"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Vec_8h.html#a6292e5605ec40bf04615dbf225d2654c">Vec3s</a> = <a class="el" href="structVec3.html">Vec3</a>&lt; int16_t &gt;</td></tr>
 <tr class="separator:a6292e5605ec40bf04615dbf225d2654c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adf6e1d7d066bb09da957cc89f2b3ceb2"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="VectorTypes_8h.html#adf6e1d7d066bb09da957cc89f2b3ceb2">Vec3i</a> = <a class="el" href="structVec3.html">Vec3</a>&lt; int32_t &gt;</td></tr>
+<tr class="memitem:adf6e1d7d066bb09da957cc89f2b3ceb2"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Vec_8h.html#adf6e1d7d066bb09da957cc89f2b3ceb2">Vec3i</a> = <a class="el" href="structVec3.html">Vec3</a>&lt; int32_t &gt;</td></tr>
 <tr class="separator:adf6e1d7d066bb09da957cc89f2b3ceb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40b8356e33151c22cb4d1adaf2b762a8"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="VectorTypes_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> = <a class="el" href="structVec3.html">Vec3</a>&lt; float &gt;</td></tr>
+<tr class="memitem:a40b8356e33151c22cb4d1adaf2b762a8"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> = <a class="el" href="structVec3.html">Vec3</a>&lt; float &gt;</td></tr>
 <tr class="separator:a40b8356e33151c22cb4d1adaf2b762a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2a198f50ad86b7c20980d1364f0903d6"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="VectorTypes_8h.html#a2a198f50ad86b7c20980d1364f0903d6">BBoxi</a> = <a class="el" href="structBBox.html">BBox</a>&lt; int &gt;</td></tr>
-<tr class="separator:a2a198f50ad86b7c20980d1364f0903d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a033222fae543fd9d618c62cd4f42a37a"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="VectorTypes_8h.html#a033222fae543fd9d618c62cd4f42a37a">BBoxs</a> = <a class="el" href="structBBox.html">BBox</a>&lt; short &gt;</td></tr>
-<tr class="separator:a033222fae543fd9d618c62cd4f42a37a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab5b6bfa64694c7701e1d768df5e394f0"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="VectorTypes_8h.html#ab5b6bfa64694c7701e1d768df5e394f0">BBoxf</a> = <a class="el" href="structBBox.html">BBox</a>&lt; float &gt;</td></tr>
-<tr class="separator:ab5b6bfa64694c7701e1d768df5e394f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a3e0f6a43634d91675037d611102492f0" name="a3e0f6a43634d91675037d611102492f0"></a>
@@ -155,53 +139,11 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line"><span class="keyword">template</span>&lt;&gt; \</div>
 <div class="line"><span class="keyword">struct </span><a class="code hl_struct" href="structvector__conversion__allowed.html">vector_conversion_allowed</a>&lt;FROM, TO&gt; : std::true_type {};</div>
-<div class="ttc" id="astructvector__conversion__allowed_html"><div class="ttname"><a href="structvector__conversion__allowed.html">vector_conversion_allowed</a></div><div class="ttdef"><b>Definition:</b> VectorTypes.h:11</div></div>
+<div class="ttc" id="astructvector__conversion__allowed_html"><div class="ttname"><a href="structvector__conversion__allowed.html">vector_conversion_allowed</a></div><div class="ttdef"><b>Definition:</b> Vec.h:8</div></div>
 </div><!-- fragment -->
 </div>
 </div>
 <h2 class="groupheader">Typedef Documentation</h2>
-<a id="ab5b6bfa64694c7701e1d768df5e394f0" name="ab5b6bfa64694c7701e1d768df5e394f0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab5b6bfa64694c7701e1d768df5e394f0">&#9670;&#160;</a></span>BBoxf</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="VectorTypes_8h.html#ab5b6bfa64694c7701e1d768df5e394f0">BBoxf</a> =  <a class="el" href="structBBox.html">BBox</a>&lt;float&gt;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a2a198f50ad86b7c20980d1364f0903d6" name="a2a198f50ad86b7c20980d1364f0903d6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2a198f50ad86b7c20980d1364f0903d6">&#9670;&#160;</a></span>BBoxi</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="VectorTypes_8h.html#a2a198f50ad86b7c20980d1364f0903d6">BBoxi</a> =  <a class="el" href="structBBox.html">BBox</a>&lt;int&gt;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a033222fae543fd9d618c62cd4f42a37a" name="a033222fae543fd9d618c62cd4f42a37a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a033222fae543fd9d618c62cd4f42a37a">&#9670;&#160;</a></span>BBoxs</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="VectorTypes_8h.html#a033222fae543fd9d618c62cd4f42a37a">BBoxs</a> =  <a class="el" href="structBBox.html">BBox</a>&lt;short&gt;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a0a204091a6626c84fd980a6c492469f6" name="a0a204091a6626c84fd980a6c492469f6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0a204091a6626c84fd980a6c492469f6">&#9670;&#160;</a></span>Vec2f</h2>
 
@@ -209,7 +151,7 @@ Typedefs</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="VectorTypes_8h.html#a0a204091a6626c84fd980a6c492469f6">Vec2f</a> =  <a class="el" href="structVec2.html">Vec2</a>&lt;float&gt;</td>
+          <td class="memname">using <a class="el" href="Vec_8h.html#a0a204091a6626c84fd980a6c492469f6">Vec2f</a> =  <a class="el" href="structVec2.html">Vec2</a>&lt;float&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -223,7 +165,7 @@ Typedefs</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="VectorTypes_8h.html#a117a07b9e7c47a4975f94512a951bd73">Vec2i</a> =  <a class="el" href="structVec2.html">Vec2</a>&lt;int32_t&gt;</td>
+          <td class="memname">using <a class="el" href="Vec_8h.html#a117a07b9e7c47a4975f94512a951bd73">Vec2i</a> =  <a class="el" href="structVec2.html">Vec2</a>&lt;int32_t&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -237,7 +179,7 @@ Typedefs</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="VectorTypes_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> =  <a class="el" href="structVec3.html">Vec3</a>&lt;float&gt;</td>
+          <td class="memname">using <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> =  <a class="el" href="structVec3.html">Vec3</a>&lt;float&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -251,7 +193,7 @@ Typedefs</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="VectorTypes_8h.html#adf6e1d7d066bb09da957cc89f2b3ceb2">Vec3i</a> =  <a class="el" href="structVec3.html">Vec3</a>&lt;int32_t&gt;</td>
+          <td class="memname">using <a class="el" href="Vec_8h.html#adf6e1d7d066bb09da957cc89f2b3ceb2">Vec3i</a> =  <a class="el" href="structVec3.html">Vec3</a>&lt;int32_t&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -265,7 +207,7 @@ Typedefs</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="VectorTypes_8h.html#a6292e5605ec40bf04615dbf225d2654c">Vec3s</a> =  <a class="el" href="structVec3.html">Vec3</a>&lt;int16_t&gt;</td>
+          <td class="memname">using <a class="el" href="Vec_8h.html#a6292e5605ec40bf04615dbf225d2654c">Vec3s</a> =  <a class="el" href="structVec3.html">Vec3</a>&lt;int16_t&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
