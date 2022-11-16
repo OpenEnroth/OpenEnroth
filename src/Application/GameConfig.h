@@ -394,7 +394,7 @@ namespace Application {
             ConfigValue<bool> HWLSprites = ConfigValue<bool>(this, "hwl_sprites", false);
 
             /** Max number of BSP sectors to display. */
-            ConfigValue<int> MaxVisibleSectors = ConfigValue<int>(this, "maxvisiblesectors", 6, &ValidateMaxSectors);
+            ConfigValue<int> MaxVisibleSectors = ConfigValue<int>(this, "maxvisiblesectors", 10, &ValidateMaxSectors);
 
             /** Allow changing trees/ground depending on current season (originally was only used in MM6) */
             ConfigValue<bool> SeasonsChange = ConfigValue<bool>(this, "seasons_change", true);
