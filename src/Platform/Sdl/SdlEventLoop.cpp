@@ -111,9 +111,13 @@ void SdlEventLoop::DispatchMouseButtonEvent(const SDL_MouseButtonEvent *event) {
     PlatformMouseEvent e;
     e.type = event->type == SDL_MOUSEBUTTONUP ? PlatformEvent::MouseButtonRelease : PlatformEvent::MouseButtonPress;
     e.button = TranslateSdlMouseButton(event->button);
-    e.buttons = TranslateSdlMouseButtons(SDL_GetMouseState(nullptr, nullptr)); // TODO(captainurist) : this actually needs testing.
-    e.isDoubleClick = (event->clicks % 2 == 0); // TODO: and this
+    e.buttons = TranslateSdlMouseButtons(SDL_GetMouseState(nullptr, nullptr));
     e.pos = Pointi(event->x, event->y);
+
+    // Number of clicks as reported by SDL starts at 1, and by clicking repeatedly you can get this number
+    // literally to 100s. We just treat every 2nd click as a double click.
+    assert(event->clicks > 0);
+    e.isDoubleClick = (event->clicks % 2 == 0);
 
     if (e.button != PlatformMouseButton::None)
         state_->SendEvent(event->windowID, &e);
