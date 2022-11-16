@@ -13,6 +13,7 @@ class PlatformEventHandler;
 class SdlPlatformSharedState {
  public:
     SdlPlatformSharedState(SdlPlatform *owner, Log *log);
+    ~SdlPlatformSharedState();
 
     void LogSdlError(const char *sdlFunctionName);
 
