@@ -38,14 +38,14 @@ class GameWindowHandler : public PlatformEventHandler {
     void OnActivated();
     void OnDeactivated();
 
-    virtual bool Event(const PlatformEvent *event) override;
-    virtual bool KeyPressEvent(const PlatformKeyEvent *event) override;
-    virtual bool KeyReleaseEvent(const PlatformKeyEvent *event) override;
-    virtual bool MouseMoveEvent(const PlatformMouseEvent *event) override;
-    virtual bool MousePressEvent(const PlatformMouseEvent *event) override;
-    virtual bool MouseReleaseEvent(const PlatformMouseEvent *event) override;
-    virtual bool WheelEvent(const PlatformWheelEvent *event) override;
-    virtual bool ActivationEvent(const PlatformEvent *event) override;
+    virtual void Event(PlatformWindow *window, const PlatformEvent *event) override;
+    virtual void KeyPressEvent(PlatformWindow *window, const PlatformKeyEvent *event) override;
+    virtual void KeyReleaseEvent(PlatformWindow *window, const PlatformKeyEvent *event) override;
+    virtual void MouseMoveEvent(PlatformWindow *window, const PlatformMouseEvent *event) override;
+    virtual void MousePressEvent(PlatformWindow *window, const PlatformMouseEvent *event) override;
+    virtual void MouseReleaseEvent(PlatformWindow *window, const PlatformMouseEvent *event) override;
+    virtual void WheelEvent(PlatformWindow *window, const PlatformWheelEvent *event) override;
+    virtual void ActivationEvent(PlatformWindow *window, const PlatformEvent *event) override;
 
  private:
     std::shared_ptr<Mouse> mouse = nullptr;

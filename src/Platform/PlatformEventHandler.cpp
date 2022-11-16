@@ -1,52 +1,39 @@
 #include "PlatformEventHandler.h"
 
 
-bool PlatformEventHandler::Event(const PlatformEvent *event) {
+void PlatformEventHandler::Event(PlatformWindow *window, const PlatformEvent *event) {
     switch (event->type) {
     case PlatformEvent::KeyPress:
-        return KeyPressEvent(static_cast<const PlatformKeyEvent *>(event));
+        KeyPressEvent(window, static_cast<const PlatformKeyEvent *>(event));
+        return;
     case PlatformEvent::KeyRelease:
-        return KeyReleaseEvent(static_cast<const PlatformKeyEvent *>(event));
+        KeyReleaseEvent(window, static_cast<const PlatformKeyEvent *>(event));
+        return;
     case PlatformEvent::MouseMove:
-        return MouseMoveEvent(static_cast<const PlatformMouseEvent *>(event));
+        MouseMoveEvent(window, static_cast<const PlatformMouseEvent *>(event));
+        return;
     case PlatformEvent::MouseButtonPress:
-        return MousePressEvent(static_cast<const PlatformMouseEvent *>(event));
+        MousePressEvent(window, static_cast<const PlatformMouseEvent *>(event));
+        return;
     case PlatformEvent::MouseButtonRelease:
-        return MouseReleaseEvent(static_cast<const PlatformMouseEvent *>(event));
+        MouseReleaseEvent(window, static_cast<const PlatformMouseEvent *>(event));
+        return;
     case PlatformEvent::MouseWheel:
-        return WheelEvent(static_cast<const PlatformWheelEvent *>(event));
+        WheelEvent(window, static_cast<const PlatformWheelEvent *>(event));
+        return;
     case PlatformEvent::WindowActivated:
     case PlatformEvent::WindowDeactivated:
-        return ActivationEvent(event);
+        ActivationEvent(window, event);
+        return;
     default:
-        return false;
+        return;
     }
 }
 
-bool PlatformEventHandler::KeyPressEvent(const PlatformKeyEvent *) {
-    return false;
-}
-
-bool PlatformEventHandler::KeyReleaseEvent(const PlatformKeyEvent *) {
-    return false;
-}
-
-bool PlatformEventHandler::MouseMoveEvent(const PlatformMouseEvent *) {
-    return false;
-}
-
-bool PlatformEventHandler::MousePressEvent(const PlatformMouseEvent *) {
-    return false;
-}
-
-bool PlatformEventHandler::MouseReleaseEvent(const PlatformMouseEvent *) {
-    return false;
-}
-
-bool PlatformEventHandler::WheelEvent(const PlatformWheelEvent *event) {
-    return false;
-}
-
-bool PlatformEventHandler::ActivationEvent(const PlatformEvent *event) {
-    return false;
-}
+void PlatformEventHandler::KeyPressEvent(PlatformWindow *, const PlatformKeyEvent *) {}
+void PlatformEventHandler::KeyReleaseEvent(PlatformWindow *, const PlatformKeyEvent *) {}
+void PlatformEventHandler::MouseMoveEvent(PlatformWindow *, const PlatformMouseEvent *) {}
+void PlatformEventHandler::MousePressEvent(PlatformWindow *, const PlatformMouseEvent *) {}
+void PlatformEventHandler::MouseReleaseEvent(PlatformWindow *, const PlatformMouseEvent *) {}
+void PlatformEventHandler::WheelEvent(PlatformWindow *, const PlatformWheelEvent *) {}
+void PlatformEventHandler::ActivationEvent(PlatformWindow *, const PlatformEvent *) {}

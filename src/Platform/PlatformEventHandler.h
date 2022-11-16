@@ -2,18 +2,29 @@
 
 #include "PlatformEvents.h"
 
+class PlatformWindow;
+
+/**
+ * Event handler interface, to be implemented in user code.
+ *
+ * @see PlatformEventLoop
+ */
 class PlatformEventHandler {
  public:
     virtual ~PlatformEventHandler() = default;
 
-    virtual bool Event(const PlatformEvent *event);
+    /**
+     * @param window                    Platform window that generated the event.
+     * @param event                     Event.
+     */
+    virtual void Event(PlatformWindow *window, const PlatformEvent *event);
 
  protected:
-    virtual bool KeyPressEvent(const PlatformKeyEvent *event);
-    virtual bool KeyReleaseEvent(const PlatformKeyEvent *event);
-    virtual bool MouseMoveEvent(const PlatformMouseEvent *event);
-    virtual bool MousePressEvent(const PlatformMouseEvent *event);
-    virtual bool MouseReleaseEvent(const PlatformMouseEvent *event);
-    virtual bool WheelEvent(const PlatformWheelEvent *event);
-    virtual bool ActivationEvent(const PlatformEvent *event);
+    virtual void KeyPressEvent(PlatformWindow *window, const PlatformKeyEvent *event);
+    virtual void KeyReleaseEvent(PlatformWindow *window, const PlatformKeyEvent *event);
+    virtual void MouseMoveEvent(PlatformWindow *window, const PlatformMouseEvent *event);
+    virtual void MousePressEvent(PlatformWindow *window, const PlatformMouseEvent *event);
+    virtual void MouseReleaseEvent(PlatformWindow *window, const PlatformMouseEvent *event);
+    virtual void WheelEvent(PlatformWindow *window, const PlatformWheelEvent *event);
+    virtual void ActivationEvent(PlatformWindow *window, const PlatformEvent *event);
 };

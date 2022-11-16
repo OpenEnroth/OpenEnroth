@@ -307,18 +307,18 @@ void GameWindowHandler::OnToggleFullscreen() {
     }
 }
 
-bool GameWindowHandler::Event(const PlatformEvent *event) {
+void GameWindowHandler::Event(PlatformWindow *window, const PlatformEvent *event) {
     if (nuklear && nuklearEventHandler)
-        nuklearEventHandler->Event(event);
+        nuklearEventHandler->Event(window, event);
 
-    return PlatformEventHandler::Event(event);
+    PlatformEventHandler::Event(window, event);
 }
 
-bool GameWindowHandler::KeyPressEvent(const PlatformKeyEvent *event) {
+void GameWindowHandler::KeyPressEvent(PlatformWindow *, const PlatformKeyEvent *event) {
     keyboardController_->ProcessKeyPressEvent(event);
 
     if (event->isAutoRepeat)
-        return true;
+        return;
 
     PlatformKey key = event->key;
     char c = PlatformKeyToChar(key, event->mods);
@@ -328,26 +328,20 @@ bool GameWindowHandler::KeyPressEvent(const PlatformKeyEvent *event) {
 
     if (c != 0)
         OnChar(key, c);
-
-    return true;
 }
 
-bool GameWindowHandler::KeyReleaseEvent(const PlatformKeyEvent *event) {
+void GameWindowHandler::KeyReleaseEvent(PlatformWindow *, const PlatformKeyEvent *event) {
     keyboardController_->ProcessKeyReleaseEvent(event);
 
     if (event->key == PlatformKey::PrintScreen)
         OnScreenshot();
-
-    return true;
 }
 
-bool GameWindowHandler::MouseMoveEvent(const PlatformMouseEvent *event) {
+void GameWindowHandler::MouseMoveEvent(PlatformWindow *, const PlatformMouseEvent *event) {
     OnMouseMove(event->pos.x, event->pos.y, event->buttons & PlatformMouseButton::Left, event->buttons & PlatformMouseButton::Right);
-
-    return true;
 }
 
-bool GameWindowHandler::MousePressEvent(const PlatformMouseEvent *event) {
+void GameWindowHandler::MousePressEvent(PlatformWindow *, const PlatformMouseEvent *event) {
     int x = event->pos.x;
     int y = event->pos.y;
 
@@ -364,31 +358,23 @@ bool GameWindowHandler::MousePressEvent(const PlatformMouseEvent *event) {
             OnMouseRightClick(x, y);
         }
     }
-
-    return true;
 }
 
-bool GameWindowHandler::MouseReleaseEvent(const PlatformMouseEvent *event) {
+void GameWindowHandler::MouseReleaseEvent(PlatformWindow *, const PlatformMouseEvent *event) {
     if (event->button == PlatformMouseButton::Left) {
         OnMouseLeftUp();
     } else if (event->button == PlatformMouseButton::Right) {
         OnMouseRightUp();
     }
-
-    return true;
 }
 
-bool GameWindowHandler::WheelEvent(const PlatformWheelEvent *) {
-    return true;
-}
+void GameWindowHandler::WheelEvent(PlatformWindow *, const PlatformWheelEvent *) {}
 
-bool GameWindowHandler::ActivationEvent(const PlatformEvent *event) {
+void GameWindowHandler::ActivationEvent(PlatformWindow *, const PlatformEvent *event) {
     if (event->type == PlatformEvent::WindowActivated) {
         OnActivated();
     } else if (event->type == PlatformEvent::WindowDeactivated) {
         OnDeactivated();
     }
-
-    return true;
 }
 

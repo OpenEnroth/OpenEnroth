@@ -18,6 +18,27 @@ class PlatformEventHandler;
 /**
  * Platform abstraction layer.
  *
+ * Platform classes can be broadly divided into three categories:
+ * - API handles. These classes don't hold any state and cannot be subclassed in user code.
+ * - Extension points. These classes can hold state and can be subclassed in user code.
+ * - Value types.
+ *
+ * API handles exposed by the platform are:
+ * - `Platform`, which also works as a factory for other API handles.
+ * - `PlatformWindow`, an API handle for a GUI window.
+ * - `PlatformEventLoop`, an API handle for running an event loop.
+ * - `PlatformOpenGLContext`, an API handle for accessing OpenGL API for a window.
+ *
+ * Then there are the following extension points:
+ * - `PlatformEventHandler`, which should be subclassed in user code to handle platform events. An instance is passed
+ *   to `PlatformEventLoop` methods, so this is where the calls back into the user code happen.
+ *
+ * That's it, there is only one extension point. If you want fancy event handler chains, you can do this in client code.
+ *
+ * And then there are value types:
+ * - All kinds of enums for keyboard keys, mouse keys, and modifiers.
+ * - `PlatformEvent` and subclasses for delivering events to `PlatformEventHandler`.
+ *
  * All platform classes don't throw but write errors to log instead. See per-method docs for details on how errors
  * are reported by each method.
  *
@@ -37,14 +58,11 @@ class Platform {
     static std::unique_ptr<Platform> CreateStandardPlatform(Log *log);
 
     /**
-     * Creates a new platform window with the provided event handler. Window takes ownership of the provided event
-     * handler.
+     * Creates a new platform window.
      *
-     * @param eventHandler              Event handler to use.
-     * @return                          Newly created window, or `nullptr` on error, in which case provided event
-     *                                  handler is destroyed.
+     * @return                          Newly created window, or `nullptr` on error.
      */
-    virtual std::unique_ptr<PlatformWindow> CreateWindow(std::unique_ptr<PlatformEventHandler> eventHandler) = 0;
+    virtual std::unique_ptr<PlatformWindow> CreateWindow() = 0;
 
     /**
      * Creates a new event loop.
@@ -73,14 +91,4 @@ class Platform {
      *                                  error.
      */
     virtual std::vector<Recti> DisplayGeometries() const = 0;
-
-    /**
-     * Sends an event to the provided window. It will then be handled by the window's event handler.
-     *
-     * @param window                    Window to send event to.
-     * @param event                     Event pointer. Note that this function does not take ownership of the provided
-     *                                  event, so it is safe to allocate it on the stack.
-     * @return                          Whatever the window's event handler has returned.
-     */
-    virtual bool SendEvent(PlatformWindow *window, PlatformEvent *event) = 0;
 };

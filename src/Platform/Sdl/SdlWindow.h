@@ -13,7 +13,7 @@ class PlatformEventHandler;
 
 class SdlWindow : public PlatformWindow {
  public:
-    SdlWindow(SdlPlatformSharedState *state, std::unique_ptr<PlatformEventHandler> eventHandler, SDL_Window *window, uint32_t id);
+    SdlWindow(SdlPlatformSharedState *state, SDL_Window *window, uint32_t id);
     virtual ~SdlWindow();
 
     virtual void SetTitle(const std::string &title) override;
@@ -51,13 +51,8 @@ class SdlWindow : public PlatformWindow {
         return window_;
     }
 
-    PlatformEventHandler *EventHandler() const {
-        return eventHandler_.get();
-    }
-
  private:
     SdlPlatformSharedState *state_ = nullptr;
-    std::unique_ptr<PlatformEventHandler> eventHandler_;
     SDL_Window *window_ = nullptr;
     uint32_t id_ = 0;
 };

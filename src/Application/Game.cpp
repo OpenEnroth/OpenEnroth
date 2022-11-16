@@ -176,10 +176,10 @@ int Game::Run() {
 
     config->Startup();
 
-    std::unique_ptr<GameWindowHandler> handler(Application::IocContainer::ResolveGameWindowHandler());
-    windowHandler = handler.get();
+    windowHandler.reset(Application::IocContainer::ResolveGameWindowHandler());
+    ::eventHandler = windowHandler.get();
 
-    window = platform->CreateWindow(std::move(handler));
+    window = platform->CreateWindow();
     UpdateWindowFromConfig();
     ::window = window.get();
 
@@ -235,7 +235,7 @@ int Game::Run() {
     engine->Initialize();
 
     window->Activate();
-    eventLoop->ProcessMessages();
+    eventLoop->ProcessMessages(eventHandler);
 
     ShowMM7IntroVideo_and_LoadingScreen();
 

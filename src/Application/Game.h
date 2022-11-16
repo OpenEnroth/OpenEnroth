@@ -47,7 +47,7 @@ class Game {
 
      Platform *platform = nullptr;
      std::shared_ptr<GameConfig> config;
-     GameWindowHandler *windowHandler = nullptr;
+     std::unique_ptr<GameWindowHandler> windowHandler;
      std::shared_ptr<Engine> engine;
      std::unique_ptr<PlatformWindow> window;
      std::unique_ptr<PlatformEventLoop> eventLoop;

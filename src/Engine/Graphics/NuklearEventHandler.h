@@ -6,16 +6,16 @@
 
 class NuklearEventHandler : public PlatformEventHandler {
  protected:
-    virtual bool KeyPressEvent(const PlatformKeyEvent *event) override;
-    virtual bool KeyReleaseEvent(const PlatformKeyEvent *event) override;
-    virtual bool MouseMoveEvent(const PlatformMouseEvent *event) override;
-    virtual bool MousePressEvent(const PlatformMouseEvent *event) override;
-    virtual bool MouseReleaseEvent(const PlatformMouseEvent *event) override;
-    virtual bool WheelEvent(const PlatformWheelEvent *event) override;
+    virtual void KeyPressEvent(PlatformWindow *window, const PlatformKeyEvent *event) override;
+    virtual void KeyReleaseEvent(PlatformWindow *window, const PlatformKeyEvent *event) override;
+    virtual void MouseMoveEvent(PlatformWindow *window, const PlatformMouseEvent *event) override;
+    virtual void MousePressEvent(PlatformWindow *window, const PlatformMouseEvent *event) override;
+    virtual void MouseReleaseEvent(PlatformWindow *window, const PlatformMouseEvent *event) override;
+    virtual void WheelEvent(PlatformWindow *window, const PlatformWheelEvent *event) override;
 
  private:
-    bool KeyEvent(PlatformKey key, PlatformModifiers mods, bool down);
-    bool MouseEvent(PlatformMouseButton button, const Pointi &pos, bool down);
+    void KeyEvent(PlatformKey key, PlatformModifiers mods, bool down);
+    void MouseEvent(PlatformMouseButton button, const Pointi &pos, bool down);
 };
 
 extern std::shared_ptr<NuklearEventHandler> nuklearEventHandler;

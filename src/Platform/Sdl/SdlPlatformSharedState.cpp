@@ -13,18 +13,16 @@ void SdlPlatformSharedState::LogSdlError(const char *sdlFunctionName) {
 }
 
 void SdlPlatformSharedState::RegisterWindow(SdlWindow *window) {
-    assert(!windowInfoById_.contains(window->Id()));
-    windowInfoById_[window->Id()] = window;
+    assert(!windowById_.contains(window->Id()));
+    windowById_[window->Id()] = window;
 }
 
 void SdlPlatformSharedState::UnregisterWindow(SdlWindow *window) {
-    assert(windowInfoById_.contains(window->Id()));
-
-    windowInfoById_.erase(window->Id());
+    assert(windowById_.contains(window->Id()));
+    windowById_.erase(window->Id());
 }
 
-void SdlPlatformSharedState::SendEvent(uint32_t windowId, PlatformEvent *event) {
-    assert(windowInfoById_.contains(windowId));
-
-    owner_->SendEvent(windowInfoById_[windowId], event); // Send it through the platform properly.
+SdlWindow *SdlPlatformSharedState::Window(uint32_t id) const {
+    assert(windowById_.contains(id));
+    return ValueOr(windowById_, id, nullptr);
 }

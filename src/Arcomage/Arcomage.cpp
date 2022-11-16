@@ -517,7 +517,7 @@ bool ArcomageGame::MsgLoop(int a1, ArcomageGame_InputMSG *a2) {
     pArcomageGame->field_0 = 0;
     pArcomageGame->stru1.am_input_type = 0;
 
-    eventLoop->ProcessMessages(1);
+    eventLoop->ProcessMessages(eventHandler, 1);
 
     *a2 = pArcomageGame->stru1;
     return pArcomageGame->stru1.am_input_type != 0;

@@ -25,9 +25,7 @@ SdlPlatform::~SdlPlatform() {
     SDL_Quit(); // Safe to call even if there were errors in initialization.
 }
 
-std::unique_ptr<PlatformWindow> SdlPlatform::CreateWindow(std::unique_ptr<PlatformEventHandler> eventHandler) {
-    assert(eventHandler);
-
+std::unique_ptr<PlatformWindow> SdlPlatform::CreateWindow() {
     if (!initialized_)
         return nullptr;
 
@@ -43,7 +41,7 @@ std::unique_ptr<PlatformWindow> SdlPlatform::CreateWindow(std::unique_ptr<Platfo
         return nullptr;
     }
 
-    std::unique_ptr<SdlWindow> result = std::make_unique<SdlWindow>(state_.get(), std::move(eventHandler), window, id);
+    std::unique_ptr<SdlWindow> result = std::make_unique<SdlWindow>(state_.get(), window, id);
     state_->RegisterWindow(result.get());
     return result;
 }
@@ -53,13 +51,6 @@ std::unique_ptr<PlatformEventLoop> SdlPlatform::CreateEventLoop() {
         return nullptr;
 
     return std::make_unique<SdlEventLoop>(state_.get());
-}
-
-bool SdlPlatform::SendEvent(PlatformWindow *window, PlatformEvent *event) {
-    assert(dynamic_cast<SdlWindow *>(window));
-    assert(event);
-
-    return static_cast<SdlWindow *>(window)->EventHandler()->Event(event);
 }
 
 void SdlPlatform::SetCursorShown(bool cursorShown) {

@@ -13,12 +13,11 @@
 #include "SdlPlatformSharedState.h"
 #include "SdlOpenGLContext.h"
 
-SdlWindow::SdlWindow(SdlPlatformSharedState *state, std::unique_ptr<PlatformEventHandler> eventHandler, SDL_Window *window, uint32_t id):
-    state_(state), eventHandler_(std::move(eventHandler)), window_(window), id_(id) {
-    assert(state_);
-    assert(eventHandler_);
-    assert(window_);
-    assert(id_);
+SdlWindow::SdlWindow(SdlPlatformSharedState *state, SDL_Window *window, uint32_t id):
+    state_(state), window_(window), id_(id) {
+    assert(state);
+    assert(window);
+    assert(id);
 }
 
 SdlWindow::~SdlWindow() {

@@ -2,13 +2,14 @@
 
 #include <SDL.h>
 
-#include <cstdint>
 #include <cassert>
 
 #include "Platform/PlatformEvents.h"
+#include "Platform/PlatformEventHandler.h"
 
 #include "SdlPlatformSharedState.h"
 #include "SdlEnumTranslation.h"
+#include "SdlWindow.h"
 
 SdlEventLoop::SdlEventLoop(SdlPlatformSharedState *state): state_(state) {
     assert(state);
@@ -16,7 +17,9 @@ SdlEventLoop::SdlEventLoop(SdlPlatformSharedState *state): state_(state) {
 
 SdlEventLoop::~SdlEventLoop() {}
 
-void SdlEventLoop::Exec() {
+void SdlEventLoop::Exec(PlatformEventHandler *eventHandler) {
+    assert(eventHandler);
+
     if (state_->IsTerminating())
         return;
 
@@ -24,7 +27,7 @@ void SdlEventLoop::Exec() {
 
     SDL_Event e;
     while (SDL_WaitEvent(&e)) {
-        DispatchEvent(&e);
+        DispatchEvent(eventHandler, &e);
 
         if (quitRequested_ || state_->IsTerminating())
             break;
@@ -35,12 +38,16 @@ void SdlEventLoop::Quit() {
     quitRequested_ = true;
 }
 
-void SdlEventLoop::ProcessMessages(int count) {
+void SdlEventLoop::ProcessMessages(PlatformEventHandler *eventHandler, int count) {
+    assert(eventHandler);
     assert(count != 0);
+
+    if (state_->IsTerminating())
+        return;
 
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
-        DispatchEvent(&e);
+        DispatchEvent(eventHandler, &e);
 
         if (state_->IsTerminating()) // We don't check for quitRequested_ here as it's only for leaving Exec.
             break;
@@ -56,37 +63,37 @@ void SdlEventLoop::WaitForMessages() {
         state_->LogSdlError("SDL_WaitEvent");
 }
 
-void SdlEventLoop::DispatchEvent(const SDL_Event *event) {
+void SdlEventLoop::DispatchEvent(PlatformEventHandler *eventHandler, const SDL_Event *event) {
     switch(event->type) {
     case SDL_QUIT:
-        DispatchQuitEvent(&event->quit);
+        DispatchQuitEvent(eventHandler, &event->quit);
         break;
     case SDL_KEYUP:
     case SDL_KEYDOWN:
-        DispatchKeyEvent(&event->key);
+        DispatchKeyEvent(eventHandler, &event->key);
         break;
     case SDL_MOUSEMOTION:
-        DispatchMouseMoveEvent(&event->motion);
+        DispatchMouseMoveEvent(eventHandler, &event->motion);
         break;
     case SDL_MOUSEBUTTONUP:
     case SDL_MOUSEBUTTONDOWN:
-        DispatchMouseButtonEvent(&event->button);
+        DispatchMouseButtonEvent(eventHandler, &event->button);
         break;
     case SDL_MOUSEWHEEL:
-        DispatchMouseWheelEvent(&event->wheel);
+        DispatchMouseWheelEvent(eventHandler, &event->wheel);
     case SDL_WINDOWEVENT:
-        DispatchWindowEvent(&event->window);
+        DispatchWindowEvent(eventHandler, &event->window);
     default:
         break;
     }
 }
 
-void SdlEventLoop::DispatchQuitEvent(const SDL_QuitEvent *) {
+void SdlEventLoop::DispatchQuitEvent(PlatformEventHandler *, const SDL_QuitEvent *) {
     state_->SetTerminating(true);
-    // TODO(captainurist): do we need to manually close all windows?
+    // TODO(captainurist): we need to manually close all windows
 }
 
-void SdlEventLoop::DispatchKeyEvent(const SDL_KeyboardEvent *event) {
+void SdlEventLoop::DispatchKeyEvent(PlatformEventHandler *eventHandler, const SDL_KeyboardEvent *event) {
     PlatformKeyEvent e;
     e.type = event->type == SDL_KEYUP ? PlatformEvent::KeyRelease : PlatformEvent::KeyPress;
     e.isAutoRepeat = event->repeat;
@@ -94,20 +101,20 @@ void SdlEventLoop::DispatchKeyEvent(const SDL_KeyboardEvent *event) {
     e.mods = TranslateSdlMods(event->keysym.mod);
 
     if (e.key != PlatformKey::None)
-        state_->SendEvent(event->windowID, &e);
+        DispatchEvent(eventHandler, event->windowID, &e);
 }
 
-void SdlEventLoop::DispatchMouseMoveEvent(const SDL_MouseMotionEvent *event) {
+void SdlEventLoop::DispatchMouseMoveEvent(PlatformEventHandler *eventHandler, const SDL_MouseMotionEvent *event) {
     PlatformMouseEvent e;
     e.type = PlatformEvent::MouseMove;
     e.button = PlatformMouseButton::None;
     e.buttons = TranslateSdlMouseButtons(event->state);
     e.isDoubleClick = false;
     e.pos = Pointi(event->x, event->y);
-    state_->SendEvent(event->windowID, &e);
+    DispatchEvent(eventHandler, event->windowID, &e);
 }
 
-void SdlEventLoop::DispatchMouseButtonEvent(const SDL_MouseButtonEvent *event) {
+void SdlEventLoop::DispatchMouseButtonEvent(PlatformEventHandler *eventHandler, const SDL_MouseButtonEvent *event) {
     PlatformMouseEvent e;
     e.type = event->type == SDL_MOUSEBUTTONUP ? PlatformEvent::MouseButtonRelease : PlatformEvent::MouseButtonPress;
     e.button = TranslateSdlMouseButton(event->button);
@@ -120,34 +127,30 @@ void SdlEventLoop::DispatchMouseButtonEvent(const SDL_MouseButtonEvent *event) {
     e.isDoubleClick = (event->clicks % 2 == 0);
 
     if (e.button != PlatformMouseButton::None)
-        state_->SendEvent(event->windowID, &e);
+        DispatchEvent(eventHandler, event->windowID, &e);
 }
 
-void SdlEventLoop::DispatchMouseWheelEvent(const SDL_MouseWheelEvent *event) {
+void SdlEventLoop::DispatchMouseWheelEvent(PlatformEventHandler *eventHandler, const SDL_MouseWheelEvent *event) {
     PlatformWheelEvent e;
     e.type = PlatformEvent::MouseWheel;
     e.inverted = event->direction == SDL_MOUSEWHEEL_FLIPPED;
     e.angleDelta = {event->x, event->y};
-    state_->SendEvent(event->windowID, &e);
+    DispatchEvent(eventHandler, event->windowID, &e);
 }
 
-void SdlEventLoop::DispatchWindowEvent(const SDL_WindowEvent *event) {
-    switch (event->event) {
-    case SDL_WINDOWEVENT_FOCUS_GAINED: {
-        PlatformEvent e;
+void SdlEventLoop::DispatchWindowEvent(PlatformEventHandler *eventHandler, const SDL_WindowEvent *event) {
+    PlatformEvent e;
+    if (event->type == SDL_WINDOWEVENT_FOCUS_GAINED) {
         e.type = PlatformEvent::WindowActivated;
-        state_->SendEvent(event->windowID, &e);
-        break;
-    }
-    case SDL_WINDOWEVENT_FOCUS_LOST: {
-        PlatformEvent e;
+    } else if (event->type == SDL_WINDOWEVENT_FOCUS_LOST) {
         e.type = PlatformEvent::WindowDeactivated;
-        state_->SendEvent(event->windowID, &e);
-        break;
+    } else {
+        return;
     }
-    default:
-        break;
-    }
+    DispatchEvent(eventHandler, event->windowID, &e);
 }
 
+void SdlEventLoop::DispatchEvent(PlatformEventHandler *eventHandler, uint32_t windowId, PlatformEvent *event) {
+    eventHandler->Event(state_->Window(windowId), event);
+}
 

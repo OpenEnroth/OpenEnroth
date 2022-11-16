@@ -18,8 +18,7 @@ class SdlPlatformSharedState {
 
     void RegisterWindow(SdlWindow *window);
     void UnregisterWindow(SdlWindow *window);
-
-    void SendEvent(uint32_t windowId, PlatformEvent *event);
+    SdlWindow *Window(uint32_t id) const;
 
     bool IsTerminating() const {
         return terminating_;
@@ -33,5 +32,5 @@ class SdlPlatformSharedState {
     SdlPlatform *owner_ = nullptr;
     Log *log_ = nullptr;
     bool terminating_ = false;
-    std::unordered_map<uint32_t, SdlWindow *> windowInfoById_;
+    std::unordered_map<uint32_t, SdlWindow *> windowById_;
 };
