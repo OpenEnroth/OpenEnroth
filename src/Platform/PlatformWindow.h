@@ -10,6 +10,16 @@
 
 class PlatformOpenGLContext;
 
+/**
+ * An API handle for a platform GUI window.
+ *
+ * This abstract base class is intentionally lean and doesn't store any data. Windows users can think about it as
+ * a thin wrapper atop of `HWND`, so a name like `PlatformWindowApiHandle` might've been more suitable here.
+ * Fortunately we're not writing in Java and prefer shorter names.
+ *
+ * Event processing & state storage can be done by subclassing `PlatformEventHandler` and then installing it for
+ * a window through a `PlatformApplication` API.
+ */
 class PlatformWindow {
  public:
     virtual ~PlatformWindow() = default;
