@@ -358,6 +358,8 @@ void GameWindowHandler::OnDeactivated() {
 void GameWindowHandler::OnToggleFullscreen() {
     engine->config->window.Fullscreen.Toggle();
     if (engine->config->window.Fullscreen.Get()) {
+        // TODO(captainurist): there are several fullscreen modes --- with windowsize == desktopsize, and
+        // windowsize != desktopsize, and they're even using different SDL enums. Investigate & implement properly.
         window->SetFullscreen(true);
     } else {
         window->SetBorderless(false);
