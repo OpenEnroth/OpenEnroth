@@ -82,11 +82,11 @@ bool SdlWindow::IsFullscreen() const {
     return flags & SDL_WINDOW_FULLSCREEN;
 }
 
-void SdlWindow::SetFrameless(bool frameless) {
-    SDL_SetWindowBordered(window_, frameless ? SDL_FALSE : SDL_TRUE);
+void SdlWindow::SetBorderless(bool borderless) {
+    SDL_SetWindowBordered(window_, borderless ? SDL_FALSE : SDL_TRUE);
 }
 
-bool SdlWindow::IsFrameless() const {
+bool SdlWindow::IsBorderless() const {
     uint32_t flags = SDL_GetWindowFlags(window_);
     return flags & SDL_WINDOW_BORDERLESS;
 }

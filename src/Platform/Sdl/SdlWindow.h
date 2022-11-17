@@ -31,8 +31,8 @@ class SdlWindow : public PlatformWindow {
     virtual void SetFullscreen(bool fullscreen) override;
     virtual bool IsFullscreen() const override;
 
-    virtual void SetFrameless(bool frameless) override;
-    virtual bool IsFrameless() const override;
+    virtual void SetBorderless(bool borderless) override;
+    virtual bool IsBorderless() const override;
 
     virtual void SetGrabsMouse(bool grabsMouse) override;
     virtual bool GrabsMouse() const override;

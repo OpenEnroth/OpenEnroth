@@ -78,7 +78,7 @@ void GameWindowHandler::UpdateWindowFromConfig() {
     window->SetPosition(pos);
     window->Resize(size);
     window->SetTitle(engine->config->window.Title.Get());
-    window->SetFrameless(engine->config->window.Borderless.Get());
+    window->SetBorderless(engine->config->window.Borderless.Get());
     window->SetGrabsMouse(engine->config->window.MouseGrab.Get());
     window->SetFullscreen(engine->config->window.Fullscreen.Get());
     window->SetVisible(true);
@@ -105,7 +105,7 @@ void GameWindowHandler::UpdateConfigFromWindow() {
     engine->config->window.PositionY.Set(relativePos.y);
     engine->config->window.Width.Set(size.w);
     engine->config->window.Height.Set(size.h);
-    engine->config->window.Borderless.Set(window->IsFrameless());
+    engine->config->window.Borderless.Set(window->IsBorderless());
     engine->config->window.MouseGrab.Set(window->GrabsMouse());
     engine->config->window.Fullscreen.Set(window->IsFullscreen());
 }
@@ -360,7 +360,7 @@ void GameWindowHandler::OnToggleFullscreen() {
     if (engine->config->window.Fullscreen.Get()) {
         window->SetFullscreen(true);
     } else {
-        window->SetFrameless(false);
+        window->SetBorderless(false);
         window->Resize({engine->config->window.Width.Get(), engine->config->window.Height.Get()});
         window->SetPosition({engine->config->window.PositionX.Get(), engine->config->window.PositionY.Get()});
     }

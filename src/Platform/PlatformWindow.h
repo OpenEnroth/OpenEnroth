@@ -39,8 +39,8 @@ class PlatformWindow {
     virtual void SetFullscreen(bool fullscreen) = 0;
     virtual bool IsFullscreen() const = 0;
 
-    virtual void SetFrameless(bool frameless) = 0;
-    virtual bool IsFrameless() const = 0;
+    virtual void SetBorderless(bool borderless) = 0;
+    virtual bool IsBorderless() const = 0;
 
     virtual void SetGrabsMouse(bool grabsMouse) = 0;
     virtual bool GrabsMouse() const = 0;
