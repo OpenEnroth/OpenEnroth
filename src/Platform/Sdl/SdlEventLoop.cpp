@@ -173,6 +173,9 @@ void SdlEventLoop::DispatchEvent(PlatformEventHandler *eventHandler, uint32_t wi
 void SdlEventLoop::DispatchEvent(PlatformEventHandler *eventHandler, uint32_t windowId, PlatformEvent *event) {
     assert(event->type != PlatformEvent::Invalid);
 
+    if (windowId == 0)
+        return; // This does happen, 0 means 'no window'.
+
     eventHandler->Event(state_->Window(windowId), event);
 }
 
