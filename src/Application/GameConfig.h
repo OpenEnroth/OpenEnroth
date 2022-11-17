@@ -424,7 +424,7 @@ namespace Application {
 
          private:
             static std::string ValidateRenderer(std::string renderer) {
-                if (renderer != "OpenGL" && renderer != "DirectDraw")
+                if (renderer != "OpenGL"/* && renderer != "DirectDraw"*/)
                     renderer = "OpenGL";
 
                 return renderer;
