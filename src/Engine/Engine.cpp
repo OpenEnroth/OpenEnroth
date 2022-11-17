@@ -432,10 +432,14 @@ void Engine::Deinitialize() {
     if (mouse)
         mouse->Deactivate();
 
-    pItemTable->Release();
-    pNPCStats->Release();
+    if (pItemTable)
+        pItemTable->Release();
 
-    pNew_LOD->FreeSubIndexAndIO();
+    if (pNPCStats)
+        pNPCStats->Release();
+
+    if (pNew_LOD)
+        pNew_LOD->FreeSubIndexAndIO();
 
     delete pEventTimer;
 }

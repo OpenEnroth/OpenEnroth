@@ -25,6 +25,7 @@ class PlatformEvent {
         MouseWheel,
         WindowActivated,
         WindowDeactivated,
+        WindowCloseRequested,
     };
     using enum Type;
 

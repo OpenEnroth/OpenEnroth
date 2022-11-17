@@ -31,6 +31,13 @@ void SdlPlatformSharedState::UnregisterWindow(SdlWindow *window) {
     windowById_.erase(window->Id());
 }
 
+std::vector<uint32_t> SdlPlatformSharedState::AllWindowIds() const {
+    std::vector<uint32_t> result;
+    for (auto [id, _] : windowById_)
+        result.push_back(id);
+    return result;
+}
+
 SdlWindow *SdlPlatformSharedState::Window(uint32_t id) const {
     assert(windowById_.contains(id));
     return ValueOr(windowById_, id, nullptr);

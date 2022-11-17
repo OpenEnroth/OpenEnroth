@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <vector>
 #include <unordered_map>
 
 
@@ -19,19 +20,11 @@ class SdlPlatformSharedState {
 
     void RegisterWindow(SdlWindow *window);
     void UnregisterWindow(SdlWindow *window);
+    std::vector<uint32_t> AllWindowIds() const;
     SdlWindow *Window(uint32_t id) const;
-
-    bool IsTerminating() const {
-        return terminating_;
-    }
-
-    void SetTerminating(bool terminating) {
-        terminating_ = terminating;
-    }
 
  private:
     SdlPlatform *owner_ = nullptr;
     Log *log_ = nullptr;
-    bool terminating_ = false;
     std::unordered_map<uint32_t, SdlWindow *> windowById_;
 };

@@ -20,16 +20,13 @@ SdlEventLoop::~SdlEventLoop() {}
 void SdlEventLoop::Exec(PlatformEventHandler *eventHandler) {
     assert(eventHandler);
 
-    if (state_->IsTerminating())
-        return;
-
     quitRequested_ = false;
 
     SDL_Event e;
     while (SDL_WaitEvent(&e)) {
         DispatchEvent(eventHandler, &e);
 
-        if (quitRequested_ || state_->IsTerminating())
+        if (quitRequested_)
             break;
     }
 }
@@ -42,15 +39,9 @@ void SdlEventLoop::ProcessMessages(PlatformEventHandler *eventHandler, int count
     assert(eventHandler);
     assert(count != 0);
 
-    if (state_->IsTerminating())
-        return;
-
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
         DispatchEvent(eventHandler, &e);
-
-        if (state_->IsTerminating()) // We don't check for quitRequested_ here as it's only for leaving Exec.
-            break;
 
         count--;
         if (count == 0)
@@ -88,9 +79,17 @@ void SdlEventLoop::DispatchEvent(PlatformEventHandler *eventHandler, const SDL_E
     }
 }
 
-void SdlEventLoop::DispatchQuitEvent(PlatformEventHandler *, const SDL_QuitEvent *) {
-    state_->SetTerminating(true);
-    // TODO(captainurist): we need to manually close all windows
+void SdlEventLoop::DispatchQuitEvent(PlatformEventHandler *eventHandler, const SDL_QuitEvent *) {
+    // We don't notify the app of a "termination event", but close all windows instead.
+    PlatformEvent e;
+    e.type = PlatformEvent::WindowCloseRequested;
+
+    // Saving the ids and not window pointers here is intentional as literally anything could happen
+    // inside the event handlers.
+    std::vector<uint32_t> windowIds = state_->AllWindowIds();
+    for (uint32_t id : windowIds)
+        if (state_->Window(id)) // Window still alive?
+            DispatchEvent(eventHandler, id, &e);
 }
 
 void SdlEventLoop::DispatchKeyEvent(PlatformEventHandler *eventHandler, const SDL_KeyboardEvent *event) {
@@ -140,10 +139,12 @@ void SdlEventLoop::DispatchMouseWheelEvent(PlatformEventHandler *eventHandler, c
 
 void SdlEventLoop::DispatchWindowEvent(PlatformEventHandler *eventHandler, const SDL_WindowEvent *event) {
     PlatformEvent e;
-    if (event->type == SDL_WINDOWEVENT_FOCUS_GAINED) {
+    if (event->event == SDL_WINDOWEVENT_FOCUS_GAINED) {
         e.type = PlatformEvent::WindowActivated;
-    } else if (event->type == SDL_WINDOWEVENT_FOCUS_LOST) {
+    } else if (event->event == SDL_WINDOWEVENT_FOCUS_LOST) {
         e.type = PlatformEvent::WindowDeactivated;
+    } else if (event->event == SDL_WINDOWEVENT_CLOSE) {
+        e.type = PlatformEvent::WindowCloseRequested;
     } else {
         return;
     }

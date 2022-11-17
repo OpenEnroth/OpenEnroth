@@ -378,3 +378,6 @@ void GameWindowHandler::ActivationEvent(PlatformWindow *, const PlatformEvent *e
     }
 }
 
+void GameWindowHandler::CloseEvent(PlatformWindow *window, const PlatformEvent *event) {
+    Engine_DeinitializeAndTerminate(0);
+}

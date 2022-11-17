@@ -25,6 +25,9 @@ void PlatformEventHandler::Event(PlatformWindow *window, const PlatformEvent *ev
     case PlatformEvent::WindowDeactivated:
         ActivationEvent(window, event);
         return;
+    case PlatformEvent::WindowCloseRequested:
+        CloseEvent(window, event);
+        return;
     default:
         return;
     }
@@ -37,3 +40,4 @@ void PlatformEventHandler::MousePressEvent(PlatformWindow *, const PlatformMouse
 void PlatformEventHandler::MouseReleaseEvent(PlatformWindow *, const PlatformMouseEvent *) {}
 void PlatformEventHandler::WheelEvent(PlatformWindow *, const PlatformWheelEvent *) {}
 void PlatformEventHandler::ActivationEvent(PlatformWindow *, const PlatformEvent *) {}
+void PlatformEventHandler::CloseEvent(PlatformWindow *, const PlatformEvent *) {}

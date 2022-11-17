@@ -46,6 +46,7 @@ class GameWindowHandler : public PlatformEventHandler {
     virtual void MouseReleaseEvent(PlatformWindow *window, const PlatformMouseEvent *event) override;
     virtual void WheelEvent(PlatformWindow *window, const PlatformWheelEvent *event) override;
     virtual void ActivationEvent(PlatformWindow *window, const PlatformEvent *event) override;
+    virtual void CloseEvent(PlatformWindow *window, const PlatformEvent *event) override;
 
  private:
     std::shared_ptr<Mouse> mouse = nullptr;
