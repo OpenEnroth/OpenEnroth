@@ -86,7 +86,7 @@ void NuklearEventHandler::MousePressEvent(PlatformWindow *, const PlatformMouseE
 }
 
 void NuklearEventHandler::MouseReleaseEvent(PlatformWindow *, const PlatformMouseEvent *event) {
-    MouseEvent(event->button, event->pos, true);
+    MouseEvent(event->button, event->pos, false);
 }
 
 void NuklearEventHandler::MouseEvent(PlatformMouseButton button, const Pointi &pos, bool down) {
