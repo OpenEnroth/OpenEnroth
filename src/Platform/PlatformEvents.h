@@ -23,6 +23,7 @@ class PlatformEvent {
         MouseButtonRelease,
         MouseMove,
         MouseWheel,
+        WindowMove,
         WindowActivate,
         WindowDeactivate,
         WindowCloseRequest,
@@ -62,4 +63,12 @@ class PlatformWheelEvent: public PlatformEvent {
  public:
     bool inverted; // Whether delta values delivered with the event are inverted.
     Pointi angleDelta; // 1 unit = 1/8 degree.
+};
+
+/**
+ * `WindowMove`
+ */
+class PlatformMoveEvent: public PlatformEvent {
+ public:
+    Pointi pos; // New position of the window.
 };

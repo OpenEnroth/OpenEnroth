@@ -36,8 +36,6 @@ class Game {
      int Run();
 
  private:
-     void UpdateWindowFromConfig();
-     void UpdateConfigFromWindow();
      bool Loop();
      void EventLoop();
      void GameLoop();

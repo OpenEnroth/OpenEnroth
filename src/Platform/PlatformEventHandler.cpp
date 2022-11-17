@@ -21,6 +21,9 @@ void PlatformEventHandler::Event(PlatformWindow *window, const PlatformEvent *ev
     case PlatformEvent::MouseWheel:
         WheelEvent(window, static_cast<const PlatformWheelEvent *>(event));
         return;
+    case PlatformEvent::WindowMove:
+        MoveEvent(window, static_cast<const PlatformMoveEvent *>(event));
+        return;
     case PlatformEvent::WindowActivate:
     case PlatformEvent::WindowDeactivate:
         ActivationEvent(window, event);
@@ -39,5 +42,6 @@ void PlatformEventHandler::MouseMoveEvent(PlatformWindow *, const PlatformMouseE
 void PlatformEventHandler::MousePressEvent(PlatformWindow *, const PlatformMouseEvent *) {}
 void PlatformEventHandler::MouseReleaseEvent(PlatformWindow *, const PlatformMouseEvent *) {}
 void PlatformEventHandler::WheelEvent(PlatformWindow *, const PlatformWheelEvent *) {}
+void PlatformEventHandler::MoveEvent(PlatformWindow *, const PlatformMoveEvent *) {}
 void PlatformEventHandler::ActivationEvent(PlatformWindow *, const PlatformEvent *) {}
 void PlatformEventHandler::CloseEvent(PlatformWindow *, const PlatformEvent *) {}

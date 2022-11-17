@@ -180,7 +180,6 @@ int Game::Run() {
     ::eventHandler = windowHandler.get();
 
     window = platform->CreateWindow();
-    UpdateWindowFromConfig();
     ::window = window.get();
 
     eventLoop = platform->CreateEventLoop();
@@ -233,7 +232,7 @@ int Game::Run() {
     }
 
     engine->Initialize();
-
+    windowHandler->UpdateWindowFromConfig();
     window->Activate();
     eventLoop->ProcessMessages(eventHandler);
 
@@ -250,8 +249,6 @@ int Game::Run() {
             break;
         }
     }
-
-    UpdateConfigFromWindow();
 
     if (engine) {
         engine->Deinitialize();
@@ -270,63 +267,6 @@ int Game::Run() {
     }
 
     return 0;
-}
-
-void Game::UpdateWindowFromConfig() {
-    window->SetVisible(true);
-
-    std::vector<Recti> displays = platform->DisplayGeometries();
-
-    Pointi pos = {config->window.PositionX.Get(), config->window.PositionY.Get()};
-    Sizei size = {config->window.Width.Get(), config->window.Height.Get()};
-
-    int display = config->window.Display.Get();
-    if (display < 0 || display >= displays.size())
-        display = 0;
-
-    Recti displayRect = !displays.empty() ? displays[display] : Recti();
-
-    if (config->window.Fullscreen.Get()) {
-        pos = displayRect.TopLeft();
-    } else if (displayRect.Contains(pos)) {
-        pos += displayRect.TopLeft();
-    } else {
-        pos = displayRect.TopLeft();
-    }
-
-    window->SetPosition(pos);
-    window->Resize(size);
-    window->SetTitle(config->window.Title.Get());
-    window->SetFrameless(config->window.Borderless.Get());
-    window->SetGrabsMouse(config->window.MouseGrab.Get());
-    window->SetFullscreen(config->window.Fullscreen.Get());
-    window->SetVisible(true);
-}
-
-void Game::UpdateConfigFromWindow() {
-    std::vector<Recti> displays = platform->DisplayGeometries();
-
-    Pointi pos = window->Position();
-    Sizei size = window->Size();
-
-    Pointi relativePos = Pointi();
-    int display = 0;
-
-    for (size_t i = 0; i < displays.size(); i++) {
-        if (displays[i].Contains(pos)) {
-            display = i;
-            relativePos = pos - displays[i].TopLeft();
-            break;
-        }
-    }
-
-    config->window.PositionX.Set(relativePos.x);
-    config->window.PositionY.Set(relativePos.y);
-    config->window.Width.Set(size.w);
-    config->window.Height.Set(size.h);
-    config->window.Borderless.Set(window->IsFrameless());
-    config->window.MouseGrab.Set(window->GrabsMouse());
-    config->window.Fullscreen.Set(window->IsFullscreen());
 }
 
 bool Game::Loop() {

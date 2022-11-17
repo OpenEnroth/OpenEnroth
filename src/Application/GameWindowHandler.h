@@ -20,7 +20,10 @@ class GameWindowHandler : public PlatformEventHandler {
         return keyboardController_.get();
     }
 
- private:
+    void UpdateWindowFromConfig();
+    void UpdateConfigFromWindow();
+
+private:
     void OnMouseLeftClick(int x, int y);
     void OnMouseRightClick(int x, int y);
     void OnMouseLeftUp();
@@ -45,6 +48,7 @@ class GameWindowHandler : public PlatformEventHandler {
     virtual void MousePressEvent(PlatformWindow *window, const PlatformMouseEvent *event) override;
     virtual void MouseReleaseEvent(PlatformWindow *window, const PlatformMouseEvent *event) override;
     virtual void WheelEvent(PlatformWindow *window, const PlatformWheelEvent *event) override;
+    virtual void MoveEvent(PlatformWindow *window, const PlatformMoveEvent *event) override;
     virtual void ActivationEvent(PlatformWindow *window, const PlatformEvent *event) override;
     virtual void CloseEvent(PlatformWindow *window, const PlatformEvent *event) override;
 

@@ -138,20 +138,40 @@ void SdlEventLoop::DispatchMouseWheelEvent(PlatformEventHandler *eventHandler, c
 }
 
 void SdlEventLoop::DispatchWindowEvent(PlatformEventHandler *eventHandler, const SDL_WindowEvent *event) {
-    PlatformEvent e;
-    if (event->event == SDL_WINDOWEVENT_FOCUS_GAINED) {
-        e.type = PlatformEvent::WindowActivate;
-    } else if (event->event == SDL_WINDOWEVENT_FOCUS_LOST) {
-        e.type = PlatformEvent::WindowDeactivate;
-    } else if (event->event == SDL_WINDOWEVENT_CLOSE) {
-        e.type = PlatformEvent::WindowCloseRequest;
-    } else {
+    switch (event->event) {
+    case SDL_WINDOWEVENT_FOCUS_GAINED:
+        DispatchEvent(eventHandler, event->windowID, PlatformEvent::WindowActivate);
+        return;
+    case SDL_WINDOWEVENT_FOCUS_LOST:
+        DispatchEvent(eventHandler, event->windowID, PlatformEvent::WindowDeactivate);
+        return;
+    case SDL_WINDOWEVENT_CLOSE:
+        DispatchEvent(eventHandler, event->windowID, PlatformEvent::WindowCloseRequest);
+        return;
+    case SDL_WINDOWEVENT_MOVED:
+        DispatchWindowMoveEvent(eventHandler, event);
+        return;
+    default:
         return;
     }
+}
+
+void SdlEventLoop::DispatchWindowMoveEvent(PlatformEventHandler *eventHandler, const SDL_WindowEvent *event) {
+    PlatformMoveEvent e;
+    e.type = PlatformEvent::WindowMove;
+    e.pos = {event->data1, event->data2};
     DispatchEvent(eventHandler, event->windowID, &e);
 }
 
+void SdlEventLoop::DispatchEvent(PlatformEventHandler *eventHandler, uint32_t windowId, PlatformEvent::Type type) {
+    PlatformEvent e;
+    e.type = type;
+    DispatchEvent(eventHandler, windowId, &e);
+}
+
 void SdlEventLoop::DispatchEvent(PlatformEventHandler *eventHandler, uint32_t windowId, PlatformEvent *event) {
+    assert(event->type != PlatformEvent::Invalid);
+
     eventHandler->Event(state_->Window(windowId), event);
 }
 

@@ -51,6 +51,63 @@ GameWindowHandler::GameWindowHandler() {
     this->keyboardController_ = std::make_unique<GameKeyboardController>();
 }
 
+void GameWindowHandler::UpdateWindowFromConfig() {
+    window->SetVisible(true);
+
+    std::vector<Recti> displays = platform->DisplayGeometries();
+
+    Pointi pos = {engine->config->window.PositionX.Get(), engine->config->window.PositionY.Get()};
+    Sizei size = {engine->config->window.Width.Get(), engine->config->window.Height.Get()};
+
+    int display = engine->config->window.Display.Get();
+    if (display < 0 || display >= displays.size())
+        display = 0;
+
+    Recti displayRect = !displays.empty() ? displays[display] : Recti();
+
+    if (engine->config->window.Fullscreen.Get()) {
+        pos = displayRect.TopLeft();
+    } else if (displayRect.Contains(pos)) {
+        pos += displayRect.TopLeft();
+    } else {
+        pos = displayRect.TopLeft();
+    }
+
+    window->SetPosition(pos);
+    window->Resize(size);
+    window->SetTitle(engine->config->window.Title.Get());
+    window->SetFrameless(engine->config->window.Borderless.Get());
+    window->SetGrabsMouse(engine->config->window.MouseGrab.Get());
+    window->SetFullscreen(engine->config->window.Fullscreen.Get());
+    window->SetVisible(true);
+}
+
+void GameWindowHandler::UpdateConfigFromWindow() {
+    std::vector<Recti> displays = platform->DisplayGeometries();
+
+    Pointi pos = window->Position();
+    Sizei size = window->Size();
+
+    Pointi relativePos = Pointi();
+    int display = 0;
+
+    for (size_t i = 0; i < displays.size(); i++) {
+        if (displays[i].Contains(pos)) {
+            display = i;
+            relativePos = pos - displays[i].TopLeft();
+            break;
+        }
+    }
+
+    engine->config->window.PositionX.Set(relativePos.x);
+    engine->config->window.PositionY.Set(relativePos.y);
+    engine->config->window.Width.Set(size.w);
+    engine->config->window.Height.Set(size.h);
+    engine->config->window.Borderless.Set(window->IsFrameless());
+    engine->config->window.MouseGrab.Set(window->GrabsMouse());
+    engine->config->window.Fullscreen.Set(window->IsFullscreen());
+}
+
 void GameWindowHandler::OnScreenshot() {
     if (render) {
         render->SavePCXScreenshot();
@@ -370,6 +427,8 @@ void GameWindowHandler::MouseReleaseEvent(PlatformWindow *, const PlatformMouseE
 
 void GameWindowHandler::WheelEvent(PlatformWindow *, const PlatformWheelEvent *) {}
 
+void GameWindowHandler::MoveEvent(PlatformWindow *, const PlatformMoveEvent *) {}
+
 void GameWindowHandler::ActivationEvent(PlatformWindow *, const PlatformEvent *event) {
     if (event->type == PlatformEvent::WindowActivate) {
         OnActivated();
@@ -379,5 +438,7 @@ void GameWindowHandler::ActivationEvent(PlatformWindow *, const PlatformEvent *e
 }
 
 void GameWindowHandler::CloseEvent(PlatformWindow *window, const PlatformEvent *event) {
+    UpdateConfigFromWindow();
+    engine->config->SaveConfiguration();
     Engine_DeinitializeAndTerminate(0);
 }

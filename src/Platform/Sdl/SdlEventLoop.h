@@ -3,8 +3,8 @@
 #include <SDL.h>
 
 #include "Platform/PlatformEventLoop.h"
+#include "Platform/PlatformEvents.h"
 
-class PlatformEvent;
 class SdlPlatformSharedState;
 
 class SdlEventLoop: public PlatformEventLoop {
@@ -26,6 +26,8 @@ class SdlEventLoop: public PlatformEventLoop {
     void DispatchMouseButtonEvent(PlatformEventHandler *eventHandler, const SDL_MouseButtonEvent *event);
     void DispatchMouseWheelEvent(PlatformEventHandler *eventHandler, const SDL_MouseWheelEvent *event);
     void DispatchWindowEvent(PlatformEventHandler *eventHandler, const SDL_WindowEvent *event);
+    void DispatchWindowMoveEvent(PlatformEventHandler *eventHandler, const SDL_WindowEvent *event);
+    void DispatchEvent(PlatformEventHandler *eventHandler, uint32_t windowId, PlatformEvent::Type type);
     void DispatchEvent(PlatformEventHandler *eventHandler, uint32_t windowId, PlatformEvent *event);
 
  private:
