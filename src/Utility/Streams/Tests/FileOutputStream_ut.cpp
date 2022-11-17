@@ -24,4 +24,7 @@ UNIT_TEST(FileOutputStream, Write) {
     bytes = fread(buf, 1, 1024, in);
     EXPECT_EQ(bytes, 0);
     EXPECT_TRUE(feof(in));
+
+    fclose(in);
+    remove(tmpfile);
 }
