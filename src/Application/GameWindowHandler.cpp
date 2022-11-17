@@ -362,7 +362,7 @@ void GameWindowHandler::OnToggleFullscreen() {
         // windowsize != desktopsize, and they're even using different SDL enums. Investigate & implement properly.
         window->SetFullscreen(true);
     } else {
-        window->SetBorderless(false);
+        window->SetFullscreen(false);
         window->Resize({engine->config->window.Width.Get(), engine->config->window.Height.Get()});
         window->SetPosition({engine->config->window.PositionX.Get(), engine->config->window.PositionY.Get()});
     }
