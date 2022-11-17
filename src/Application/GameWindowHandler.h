@@ -23,7 +23,7 @@ class GameWindowHandler : public PlatformEventHandler {
     void UpdateWindowFromConfig();
     void UpdateConfigFromWindow();
 
-private:
+ private:
     void OnMouseLeftClick(int x, int y);
     void OnMouseRightClick(int x, int y);
     void OnMouseLeftUp();

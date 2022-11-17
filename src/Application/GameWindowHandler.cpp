@@ -1,5 +1,7 @@
 #include "GameWindowHandler.h"
 
+#include <vector>
+
 #include "Arcomage/Arcomage.h"
 
 #include "Engine/Engine.h"
