@@ -3,6 +3,7 @@
 #include <SDL.h>
 
 #include <cassert>
+#include <vector>
 
 #include "Platform/PlatformEvents.h"
 #include "Platform/PlatformEventHandler.h"
