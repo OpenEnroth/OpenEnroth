@@ -121,10 +121,14 @@ void SdlEventLoop::DispatchMouseButtonEvent(PlatformEventHandler *eventHandler, 
     e.buttons = TranslateSdlMouseButtons(SDL_GetMouseState(nullptr, nullptr));
     e.pos = Pointi(event->x, event->y);
 
-    // Number of clicks as reported by SDL starts at 1, and by clicking repeatedly you can get this number
-    // literally to 100s. We just treat every 2nd click as a double click.
-    assert(event->clicks > 0);
-    e.isDoubleClick = (event->clicks % 2 == 0);
+    if (event->type == SDL_MOUSEBUTTONUP) {
+        e.isDoubleClick = false;
+    } else {
+        // Number of clicks as reported by SDL starts at 1, and by clicking repeatedly you can get this number
+        // literally to 100s. We just treat every 2nd click as a double click.
+        assert(event->clicks > 0);
+        e.isDoubleClick = (event->clicks % 2 == 0);
+    }
 
     if (e.button != PlatformMouseButton::None)
         DispatchEvent(eventHandler, event->windowID, &e);
