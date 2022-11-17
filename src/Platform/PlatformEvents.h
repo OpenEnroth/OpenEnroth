@@ -23,9 +23,9 @@ class PlatformEvent {
         MouseButtonRelease,
         MouseMove,
         MouseWheel,
-        WindowActivated,
-        WindowDeactivated,
-        WindowCloseRequested,
+        WindowActivate,
+        WindowDeactivate,
+        WindowCloseRequest,
     };
     using enum Type;
 

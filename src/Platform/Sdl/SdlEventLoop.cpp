@@ -82,7 +82,7 @@ void SdlEventLoop::DispatchEvent(PlatformEventHandler *eventHandler, const SDL_E
 void SdlEventLoop::DispatchQuitEvent(PlatformEventHandler *eventHandler, const SDL_QuitEvent *) {
     // We don't notify the app of a "termination event", but close all windows instead.
     PlatformEvent e;
-    e.type = PlatformEvent::WindowCloseRequested;
+    e.type = PlatformEvent::WindowCloseRequest;
 
     // Saving the ids and not window pointers here is intentional as literally anything could happen
     // inside the event handlers.
@@ -140,11 +140,11 @@ void SdlEventLoop::DispatchMouseWheelEvent(PlatformEventHandler *eventHandler, c
 void SdlEventLoop::DispatchWindowEvent(PlatformEventHandler *eventHandler, const SDL_WindowEvent *event) {
     PlatformEvent e;
     if (event->event == SDL_WINDOWEVENT_FOCUS_GAINED) {
-        e.type = PlatformEvent::WindowActivated;
+        e.type = PlatformEvent::WindowActivate;
     } else if (event->event == SDL_WINDOWEVENT_FOCUS_LOST) {
-        e.type = PlatformEvent::WindowDeactivated;
+        e.type = PlatformEvent::WindowDeactivate;
     } else if (event->event == SDL_WINDOWEVENT_CLOSE) {
-        e.type = PlatformEvent::WindowCloseRequested;
+        e.type = PlatformEvent::WindowCloseRequest;
     } else {
         return;
     }

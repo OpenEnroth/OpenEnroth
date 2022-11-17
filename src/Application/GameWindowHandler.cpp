@@ -371,9 +371,9 @@ void GameWindowHandler::MouseReleaseEvent(PlatformWindow *, const PlatformMouseE
 void GameWindowHandler::WheelEvent(PlatformWindow *, const PlatformWheelEvent *) {}
 
 void GameWindowHandler::ActivationEvent(PlatformWindow *, const PlatformEvent *event) {
-    if (event->type == PlatformEvent::WindowActivated) {
+    if (event->type == PlatformEvent::WindowActivate) {
         OnActivated();
-    } else if (event->type == PlatformEvent::WindowDeactivated) {
+    } else if (event->type == PlatformEvent::WindowDeactivate) {
         OnDeactivated();
     }
 }

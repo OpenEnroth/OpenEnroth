@@ -21,11 +21,11 @@ void PlatformEventHandler::Event(PlatformWindow *window, const PlatformEvent *ev
     case PlatformEvent::MouseWheel:
         WheelEvent(window, static_cast<const PlatformWheelEvent *>(event));
         return;
-    case PlatformEvent::WindowActivated:
-    case PlatformEvent::WindowDeactivated:
+    case PlatformEvent::WindowActivate:
+    case PlatformEvent::WindowDeactivate:
         ActivationEvent(window, event);
         return;
-    case PlatformEvent::WindowCloseRequested:
+    case PlatformEvent::WindowCloseRequest:
         CloseEvent(window, event);
         return;
     default:
