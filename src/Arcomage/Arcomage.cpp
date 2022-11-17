@@ -1594,7 +1594,7 @@ void DrawPlayerLevels(const std::string &str, Pointi *pXY) {
             pSrcRect.x = v7 - 864;
             pSrcRect.y = 190;
             pSrcRect.w = v7 - 842 - pSrcRect.x;
-            pSrcRect.w = 207 - pSrcRect.y;
+            pSrcRect.h = 207 - pSrcRect.y;
             // draw digit
             render->DrawFromSpriteSheet(&pSrcRect, &pTargetPoint, pArcomageGame->field_54, 1);
             pTargetPoint.x += 22;
