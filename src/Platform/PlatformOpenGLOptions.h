@@ -1,17 +1,24 @@
 #pragma once
 
-enum class VSyncMode {
+enum class PlatformVSyncMode {
     NoVSync,
     AdaptiveVSync,
     NormalVSync
 };
-using enum VSyncMode;
+using enum PlatformVSyncMode;
+
+enum class PlatformOpenGLProfile {
+    CoreProfile,
+    CompatibilityProfile
+};
+using enum PlatformOpenGLProfile;
 
 struct PlatformOpenGLOptions {
     int versionMajor = -1;
     int versionMinor = -1;
+    PlatformOpenGLProfile profile = CoreProfile;
 
-    VSyncMode vSyncMode = AdaptiveVSync;
+    PlatformVSyncMode vsyncMode = AdaptiveVSync;
     bool doubleBuffered = true;
 
     int depthBits = -1;

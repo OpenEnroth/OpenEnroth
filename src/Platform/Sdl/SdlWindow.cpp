@@ -11,6 +11,7 @@
 #include "Platform/PlatformEventHandler.h"
 
 #include "SdlPlatformSharedState.h"
+#include "SdlEnumTranslation.h"
 #include "SdlOpenGLContext.h"
 
 SdlWindow::SdlWindow(SdlPlatformSharedState *state, SDL_Window *window, uint32_t id):
@@ -136,7 +137,7 @@ std::unique_ptr<PlatformOpenGLContext> SdlWindow::CreateOpenGLContext(const Plat
     if (options.stencilBits != -1)
         SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, options.stencilBits);
 
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, TranslatePlatformOpenGLProfile(options.profile));
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, options.doubleBuffered);
 
     SDL_GLContext ctx = SDL_GL_CreateContext(window_);
@@ -145,16 +146,11 @@ std::unique_ptr<PlatformOpenGLContext> SdlWindow::CreateOpenGLContext(const Plat
         return nullptr;
     }
 
-    int vsyncValue = 0;
-    if (options.vSyncMode == AdaptiveVSync) {
-        vsyncValue = -1;
-    } else if (options.vSyncMode == NormalVSync) {
-        vsyncValue = 1;
-    }
+    int vsyncValue = TranslatePlatformVSyncMode(options.vsyncMode);
 
     int status = SDL_GL_SetSwapInterval(vsyncValue);
-    if (status < 0 && vsyncValue == -1)
-        status = SDL_GL_SetSwapInterval(1); // Retry with normal vsync.
+    if (status < 0 && options.vsyncMode == AdaptiveVSync)
+        status = SDL_GL_SetSwapInterval(TranslatePlatformVSyncMode(NormalVSync)); // Retry with normal vsync.
 
     if (status < 0)
         state_->LogSdlError("SDL_GL_SetSwapInterval"); // Not a critical error, we still return context in this case.

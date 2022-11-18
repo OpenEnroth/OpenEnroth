@@ -5286,7 +5286,7 @@ bool RenderOpenGL::Initialize() {
         opts.depthBits = 24;
         opts.stencilBits = 8;
 
-        opts.vSyncMode = config->graphics.VSync.Get() ? AdaptiveVSync : NoVSync;
+        opts.vsyncMode = config->graphics.VSync.Get() ? AdaptiveVSync : NoVSync;
 
         context_ = window->CreateOpenGLContext(opts);
         ::openGlContext = context_.get();

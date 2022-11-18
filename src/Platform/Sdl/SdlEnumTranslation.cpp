@@ -1,5 +1,7 @@
 #include "SdlEnumTranslation.h"
 
+#include <cassert>
+
 PlatformKey TranslateSdlKey(SDL_Scancode key) {
     switch (key) {
     case SDL_SCANCODE_F1:               return PlatformKey::F1;
@@ -143,4 +145,28 @@ PlatformMouseButtons TranslateSdlMouseButtons(uint32_t mouseButtons) {
     if (mouseButtons & SDL_BUTTON_RMASK)
         result |= PlatformMouseButton::Right;
     return result;
+}
+
+int TranslatePlatformVSyncMode(PlatformVSyncMode vsyncMode) {
+    switch (vsyncMode) {
+    case NoVSync:
+        return 0;
+    case AdaptiveVSync:
+        return -1;
+    case NormalVSync:
+        return 1;
+    }
+
+    assert(false);
+}
+
+SDL_GLprofile TranslatePlatformOpenGLProfile(PlatformOpenGLProfile profile) {
+    switch (profile) {
+    case CoreProfile:
+        return SDL_GL_CONTEXT_PROFILE_CORE;
+    case CompatibilityProfile:
+        return SDL_GL_CONTEXT_PROFILE_COMPATIBILITY;
+    }
+
+    assert(false);
 }
