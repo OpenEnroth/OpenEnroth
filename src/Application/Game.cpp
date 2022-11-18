@@ -250,6 +250,11 @@ int Game::Run() {
         }
     }
 
+    if (window) {
+        windowHandler->UpdateConfigFromWindow();
+        config->SaveConfiguration();
+    }
+
     if (engine) {
         engine->Deinitialize();
         engine = nullptr;
@@ -261,10 +266,7 @@ int Game::Run() {
         render = nullptr;
     }
 
-    if (window) {
-        window.reset();
-        config->SaveConfiguration();
-    }
+    window.reset();
 
     return 0;
 }
