@@ -54,7 +54,7 @@ int ApplyDamageToBuildings(int player_num, int damage);
 void GameResultsApply();
 
 void am_DrawText(const std::string &str, Pointi *pXY);
-void DrawRect(Recti *pXYZW, uint16_t uColor, char bSolidFill);
+void DrawRect(Recti *pRect, uint16_t uColor, char bSolidFill);
 int rand_interval(int min, int max);  // idb
 
 unsigned int R8G8B8_to_TargetFormat(int uColor) {
@@ -166,7 +166,7 @@ int hide_card_anim_count;
 
 struct arcomage_mouse {
     bool Update();
-    bool Inside(Recti* pXYZW);
+    bool Inside(Recti* pRect);
 
     int x = 0;
     int y = 0;
@@ -188,8 +188,8 @@ bool arcomage_mouse::Update() {
     return true;
 }
 
-bool arcomage_mouse::Inside(Recti *pXYZW) {
-    return (x >= pXYZW->x) && (x <= pXYZW->x + pXYZW->h) && (y >= pXYZW->y) && (y <= pXYZW->y + pXYZW->w);
+bool arcomage_mouse::Inside(Recti *pRect) {
+    return (x >= pRect->x) && (x <= pRect->x + pRect->h) && (y >= pRect->y) && (y <= pRect->y + pRect->w);
 }
 
 void ArcomageGame::OnMouseClick(char right_left, bool bDown) {
@@ -2056,7 +2056,7 @@ int GetPlayerHandCardCount(int player_num) {
 signed int DrawCardsRectangles(int player_num) {
     // draws the framing rectangle around cards on hover
     arcomage_mouse get_mouse;
-    Recti pXYZW;
+    Recti pRect;
     int color;
 
     // only do for the human player
@@ -2066,11 +2066,11 @@ signed int DrawCardsRectangles(int player_num) {
             // calc spacings and first card position
             int card_count = GetPlayerHandCardCount(player_num);
             int card_spacing = (window->GetWidth() - 96 * card_count) / (card_count + 1);
-            pXYZW.y = 327;
-            pXYZW.h = 455 - pXYZW.y;
-            pXYZW.x = card_spacing;
-            int card_offset = pXYZW.x + 96;
-            pXYZW.w = card_offset - pXYZW.x;
+            pRect.y = 327;
+            pRect.h = 455 - pRect.y;
+            pRect.x = card_spacing;
+            int card_offset = pRect.x + 96;
+            pRect.w = card_offset - pRect.x;
 
             // loop through hand of cards
             for (int hand_index = 0; hand_index < card_count; hand_index++) {
@@ -2078,33 +2078,33 @@ signed int DrawCardsRectangles(int player_num) {
                 if (am_Players[player_num].cards_at_hand[hand_index] != -1) {
                     // shift rectangle co ords
                     if (Player_Cards_Shift) {
-                        pXYZW.x += am_Players[player_num].card_shift[hand_index].x;
-                        pXYZW.y += am_Players[player_num].card_shift[hand_index].y;
+                        pRect.x += am_Players[player_num].card_shift[hand_index].x;
+                        pRect.y += am_Players[player_num].card_shift[hand_index].y;
                     }
 
                     // see if mouse is hovering
-                    if (get_mouse.Inside(&pXYZW)) {
+                    if (get_mouse.Inside(&pRect)) {
                         if (CanCardBePlayed(player_num, hand_index))
                             color = 0x00FFFFFF;  //белый цвет - white frame
                         else
                             color = 0x000000FF;  //красный цвет - red frame
 
                         // draw outline and return
-                        DrawRect(&pXYZW, R8G8B8_to_TargetFormat(color), 0);
+                        DrawRect(&pRect, R8G8B8_to_TargetFormat(color), 0);
                         return hand_index;
                     }
 
                     //рамка чёрного цвета - black frame
-                    DrawRect(&pXYZW, R8G8B8_to_TargetFormat(0), 0);
+                    DrawRect(&pRect, R8G8B8_to_TargetFormat(0), 0);
 
                     // unshift rectangle co ords
                     if (Player_Cards_Shift) {
-                        pXYZW.x -= am_Players[player_num].card_shift[hand_index].x;
-                        pXYZW.y -= am_Players[player_num].card_shift[hand_index].y;
+                        pRect.x -= am_Players[player_num].card_shift[hand_index].x;
+                        pRect.y -= am_Players[player_num].card_shift[hand_index].y;
                     }
 
                     // shift offsets along a card width
-                    pXYZW.x += card_offset;
+                    pRect.x += card_offset;
                 }
             }
         }
@@ -3012,17 +3012,17 @@ void am_DrawText(const std::string &str, Pointi *pXY) {
                              0, str, false, 0, 0);
 }
 
-void DrawRect(Recti *pXYZW, uint16_t uColor, char bSolidFill) {
+void DrawRect(Recti *pRect, uint16_t uColor, char bSolidFill) {
     if (bSolidFill) {
-        int width = pXYZW->w;
-        int height = pXYZW->h;
-        render->FillRectFast(pXYZW->x, pXYZW->y, width, height, uColor);
+        int width = pRect->w;
+        int height = pRect->h;
+        render->FillRectFast(pRect->x, pRect->y, width, height, uColor);
     } else {
         render->BeginLines2D();
-        int x0 = pXYZW->x;
-        int x1 = pXYZW->x + pXYZW->w;
-        int y0 = pXYZW->y;
-        int y1 = pXYZW->y + pXYZW->h;
+        int x0 = pRect->x;
+        int x1 = pRect->x + pRect->w;
+        int y0 = pRect->y;
+        int y1 = pRect->y + pRect->h;
         render->RasterLine2D(x0, y0, x1, y0, uColor);
         render->RasterLine2D(x1, y0, x1, y1, uColor);
         render->RasterLine2D(x1, y1, x0, y1, uColor);
