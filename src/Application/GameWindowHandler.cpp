@@ -102,6 +102,7 @@ void GameWindowHandler::UpdateConfigFromWindow() {
     engine->config->window.PositionY.Set(relativePos.y);
     engine->config->window.Width.Set(size.w);
     engine->config->window.Height.Set(size.h);
+    engine->config->window.Display.Set(display);
     engine->config->window.Borderless.Set(window->IsBorderless());
     engine->config->window.MouseGrab.Set(window->GrabsMouse());
     engine->config->window.Fullscreen.Set(window->IsFullscreen());
