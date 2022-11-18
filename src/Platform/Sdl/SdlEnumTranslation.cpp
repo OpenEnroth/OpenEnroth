@@ -158,6 +158,7 @@ int TranslatePlatformVSyncMode(PlatformVSyncMode vsyncMode) {
     }
 
     assert(false);
+    return 0; // Make the compiler happy.
 }
 
 SDL_GLprofile TranslatePlatformOpenGLProfile(PlatformOpenGLProfile profile) {
@@ -169,4 +170,5 @@ SDL_GLprofile TranslatePlatformOpenGLProfile(PlatformOpenGLProfile profile) {
     }
 
     assert(false);
+    return SDL_GL_CONTEXT_PROFILE_CORE; // Make the compiler happy.
 }
