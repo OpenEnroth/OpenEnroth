@@ -61,14 +61,17 @@ void GameWindowHandler::UpdateWindowFromConfig() {
 
     Recti displayRect;
     int display = engine->config->window.Display.Get();
-    if (display > 0 && display < displays.size())
+    if (display > 0 && display < displays.size()) {
         displayRect = displays[display];
+    } else if (!displays.empty()) {
+        displayRect = displays[0];
+    }
 
     if (engine->config->window.Fullscreen.Get()) {
         pos = displayRect.TopLeft();
     } else if (Recti(Pointi(), displayRect.Size()).Contains(pos)) {
         pos += displayRect.TopLeft();
-    } else {
+    } else if (displayRect != Recti()) {
         pos = displayRect.Center() - Pointi(size.w, size.h) / 2;
     }
 

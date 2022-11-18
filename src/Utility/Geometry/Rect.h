@@ -33,6 +33,8 @@ struct Rect {
     ::Size<T> Size() const {
         return {w, h};
     }
+
+    friend bool operator==(const Rect &l, const Rect &r) = default;
 };
 
 using Recti = Rect<int>;
