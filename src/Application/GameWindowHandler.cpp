@@ -54,25 +54,22 @@ GameWindowHandler::GameWindowHandler() {
 }
 
 void GameWindowHandler::UpdateWindowFromConfig() {
-    window->SetVisible(true);
-
     std::vector<Recti> displays = platform->DisplayGeometries();
 
     Pointi pos = {engine->config->window.PositionX.Get(), engine->config->window.PositionY.Get()};
     Sizei size = {engine->config->window.Width.Get(), engine->config->window.Height.Get()};
 
+    Recti displayRect;
     int display = engine->config->window.Display.Get();
-    if (display < 0 || display >= displays.size())
-        display = 0;
-
-    Recti displayRect = !displays.empty() ? displays[display] : Recti();
+    if (display > 0 && display < displays.size())
+        displayRect = displays[display];
 
     if (engine->config->window.Fullscreen.Get()) {
         pos = displayRect.TopLeft();
-    } else if (displayRect.Contains(pos)) {
+    } else if (Recti(Pointi(), displayRect.Size()).Contains(pos)) {
         pos += displayRect.TopLeft();
     } else {
-        pos = displayRect.TopLeft();
+        pos = displayRect.Center() - Pointi(size.w, size.h) / 2;
     }
 
     window->SetPosition(pos);

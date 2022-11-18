@@ -12,6 +12,7 @@ struct Rect {
 
     Rect() = default;
     Rect(T x, T y, T w, T h): x(x), y(y), w(w), h(h) {}
+    Rect(Point<T> topLeft, Size<T> size): x(topLeft.x), y(topLeft.y), w(size.w), h(size.h) {}
 
     bool Contains(const Point<T> &point) {
         return x <= point.x && point.x < x + w && y <= point.y && point.y < y + h;
@@ -23,6 +24,10 @@ struct Rect {
 
     Point<T> BottomRight() const {
         return {x + w, y + h};
+    }
+
+    Point<T> Center() const {
+        return {x + w / 2, y + h / 2};
     }
 
     ::Size<T> Size() const {

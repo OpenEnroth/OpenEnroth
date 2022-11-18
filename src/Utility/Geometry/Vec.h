@@ -31,6 +31,18 @@ struct Vec2 {
         return Vec2(l.x - r.x, l.y - r.y);
     }
 
+    friend Vec2 operator/(const Vec2 &l, T r) {
+        return Vec2(l.x / r, l.y / r);
+    }
+
+    friend Vec2 operator*(const Vec2 &l, T r) {
+        return Vec2(l.x * r, l.y * r);
+    }
+
+    friend Vec2 operator*(T l, const Vec2 &r) {
+        return r * l;
+    }
+
     Vec2 &operator+=(const Vec2 &v) {
         *this = *this + v;
         return *this;
