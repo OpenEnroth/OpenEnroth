@@ -12,8 +12,11 @@ GAME_TEST(Menu, PartyCreation) {
 
     EXPECT_EQ(GetCurrentMenuID(), MENU_CREATEPARTY);
 
+    EXPECT_EQ(pParty->pPlayers[0].uMight, 30);
+
     Game().LClick(527, 431); // Clear, shouldn't crash
     Game().Tick();
 
     EXPECT_EQ(pParty->pPlayers[0].classType, PLAYER_CLASS_KNIGHT);
+    EXPECT_EQ(pParty->pPlayers[0].uMight, 14);
 }
