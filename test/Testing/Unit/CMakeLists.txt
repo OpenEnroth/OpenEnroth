@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 if(ENABLE_TESTS)
-    set(TEST_SOURCES UnitTestMain.cpp)
-    set(TEST_HEADERS UnitTest.h)
+    set(UNIT_TEST_SOURCES UnitTestMain.cpp)
+    set(UNIT_TEST_HEADERS UnitTest.h)
 
-    add_executable(World_of_Might_and_Magic_test ${TEST_SOURCES} ${TEST_HEADERS})
+    add_executable(World_of_Might_and_Magic_test ${UNIT_TEST_SOURCES} ${UNIT_TEST_HEADERS})
     target_fix_libcxx_assertions(World_of_Might_and_Magic_test)
     target_link_libraries(World_of_Might_and_Magic_test GTest::gtest)
 
