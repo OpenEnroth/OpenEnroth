@@ -33,7 +33,7 @@ class PlatformEventHandler;
  * - `PlatformEventHandler`, which should be subclassed in user code to handle platform events. An instance is passed
  *   to `PlatformEventLoop` methods, so this is where the calls back into the user code happen.
  *
- * That's it, there is only one extension point. If you want fancy event handler chains, you can do this in client code.
+ * That's it, there is only one extension point. If you want fancy event handler chains, you can do this in user code.
  *
  * And then there are value types:
  * - All kinds of enums for keyboard keys, mouse keys, and modifiers.
@@ -46,7 +46,7 @@ class PlatformEventHandler;
  * to define `PlatformMain` instead.
  *
  * Some guidelines on adding new functionality to platform classes:
- * - If something can be done at the next abstraction layer, then it *should* be done at next abstraction layer.
+ * - If something can be done at the next abstraction layer, then it *should* be done at the next abstraction layer.
  *   Don't clutter platform API.
  * - Platform API should be reasonably minimal, and methods should be orthogonal. You can think of orthogonality in
  *   terms of information content, "is this method returning bits that can also be accessed through another method?"
