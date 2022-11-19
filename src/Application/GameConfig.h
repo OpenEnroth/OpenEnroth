@@ -108,15 +108,15 @@ namespace Application {
                 section->Register(this);
             }
 
-            inline const std::string &Name() {
+            inline const std::string &Name() const {
                 return name;
             }
 
-            inline const T &Default() {
+            inline const T &Default() const {
                 return defValue;
             }
 
-            inline const T &Get() {
+            inline const T &Get() const {
                 return value;
             }
 

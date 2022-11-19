@@ -53,21 +53,23 @@ GameWindowHandler::GameWindowHandler() {
     this->keyboardController_ = std::make_unique<GameKeyboardController>();
 }
 
-void GameWindowHandler::UpdateWindowFromConfig() {
+void GameWindowHandler::UpdateWindowFromConfig(const GameConfig *config) {
+    assert(config);
+
     std::vector<Recti> displays = platform->DisplayGeometries();
 
-    Pointi pos = {engine->config->window.PositionX.Get(), engine->config->window.PositionY.Get()};
-    Sizei size = {engine->config->window.Width.Get(), engine->config->window.Height.Get()};
+    Pointi pos = {config->window.PositionX.Get(), config->window.PositionY.Get()};
+    Sizei size = {config->window.Width.Get(), config->window.Height.Get()};
 
     Recti displayRect;
-    int display = engine->config->window.Display.Get();
+    int display = config->window.Display.Get();
     if (display > 0 && display < displays.size()) {
         displayRect = displays[display];
     } else if (!displays.empty()) {
         displayRect = displays[0];
     }
 
-    if (engine->config->window.Fullscreen.Get()) {
+    if (config->window.Fullscreen.Get()) {
         pos = displayRect.TopLeft();
     } else if (Recti(Pointi(), displayRect.Size()).Contains(pos)) {
         pos += displayRect.TopLeft();
@@ -79,14 +81,16 @@ void GameWindowHandler::UpdateWindowFromConfig() {
 
     window->SetPosition(pos);
     window->Resize(size);
-    window->SetTitle(engine->config->window.Title.Get());
-    window->SetBorderless(engine->config->window.Borderless.Get());
-    window->SetGrabsMouse(engine->config->window.MouseGrab.Get());
-    window->SetFullscreen(engine->config->window.Fullscreen.Get());
+    window->SetTitle(config->window.Title.Get());
+    window->SetBorderless(config->window.Borderless.Get());
+    window->SetGrabsMouse(config->window.MouseGrab.Get());
+    window->SetFullscreen(config->window.Fullscreen.Get());
     window->SetVisible(true);
 }
 
-void GameWindowHandler::UpdateConfigFromWindow() {
+void GameWindowHandler::UpdateConfigFromWindow(GameConfig *config) {
+    assert(config);
+
     std::vector<Recti> displays = platform->DisplayGeometries();
 
     Pointi pos = window->Position();
@@ -103,14 +107,14 @@ void GameWindowHandler::UpdateConfigFromWindow() {
         }
     }
 
-    engine->config->window.PositionX.Set(relativePos.x);
-    engine->config->window.PositionY.Set(relativePos.y);
-    engine->config->window.Width.Set(size.w);
-    engine->config->window.Height.Set(size.h);
-    engine->config->window.Display.Set(display);
-    engine->config->window.Borderless.Set(window->IsBorderless());
-    engine->config->window.MouseGrab.Set(window->GrabsMouse());
-    engine->config->window.Fullscreen.Set(window->IsFullscreen());
+    config->window.PositionX.Set(relativePos.x);
+    config->window.PositionY.Set(relativePos.y);
+    config->window.Width.Set(size.w);
+    config->window.Height.Set(size.h);
+    config->window.Display.Set(display);
+    config->window.Borderless.Set(window->IsBorderless());
+    config->window.MouseGrab.Set(window->GrabsMouse());
+    config->window.Fullscreen.Set(window->IsFullscreen());
 }
 
 void GameWindowHandler::OnScreenshot() {
@@ -446,7 +450,7 @@ void GameWindowHandler::ActivationEvent(PlatformWindow *, const PlatformEvent *e
 }
 
 void GameWindowHandler::CloseEvent(PlatformWindow *window, const PlatformEvent *event) {
-    UpdateConfigFromWindow();
+    UpdateConfigFromWindow(engine->config.get());
     engine->config->SaveConfiguration();
     Engine_DeinitializeAndTerminate(0);
 }

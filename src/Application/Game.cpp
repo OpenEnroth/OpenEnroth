@@ -232,7 +232,7 @@ int Game::Run() {
     }
 
     engine->Initialize();
-    windowHandler->UpdateWindowFromConfig();
+    windowHandler->UpdateWindowFromConfig(config.get());
     window->Activate();
     eventLoop->ProcessMessages(eventHandler);
 
@@ -251,7 +251,7 @@ int Game::Run() {
     }
 
     if (window) {
-        windowHandler->UpdateConfigFromWindow();
+        windowHandler->UpdateConfigFromWindow(config.get());
         config->SaveConfiguration();
     }
 

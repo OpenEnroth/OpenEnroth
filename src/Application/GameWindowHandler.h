@@ -10,6 +10,7 @@
 using Io::Mouse;
 
 namespace Application {
+class GameConfig;
 
 // Handles events from game window (OSWindow)
 class GameWindowHandler : public PlatformEventHandler {
@@ -20,8 +21,9 @@ class GameWindowHandler : public PlatformEventHandler {
         return keyboardController_.get();
     }
 
-    void UpdateWindowFromConfig();
-    void UpdateConfigFromWindow();
+    // TODO(captainurist): this probably doesn't even belong here. Find a place to move to.
+    void UpdateWindowFromConfig(const GameConfig *config);
+    void UpdateConfigFromWindow(GameConfig *config);
 
  private:
     void OnMouseLeftClick(int x, int y);
