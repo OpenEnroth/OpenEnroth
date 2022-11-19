@@ -5,9 +5,9 @@
 
 #include "Platform/PlatformEvents.h"
 
-#include "TestStateHandle.h"
-#include "TestEventLoop.h"
-#include "TestWindow.h"
+#include "Testing/Engine/TestStateHandle.h"
+#include "Testing/Engine/TestEventLoop.h"
+#include "Testing/Engine/TestWindow.h"
 
 GameWrapper::GameWrapper(TestStateHandle state) : state_(std::move(state)) {}
 

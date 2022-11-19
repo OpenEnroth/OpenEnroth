@@ -8,7 +8,7 @@
 #include "Testing/Engine/TestState.h"
 #include "Testing/Engine/TestStateHandle.h"
 #include "Testing/Engine/TestPlatform.h"
-#include "Testing/Engine/GameWrapper.h"
+#include "Testing/Game/GameWrapper.h"
 #include "Testing/Game/GameTest.h"
 
 void RunGameThread(TestState *state) {
