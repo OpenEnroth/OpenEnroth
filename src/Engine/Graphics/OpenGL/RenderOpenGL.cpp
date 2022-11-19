@@ -5280,6 +5280,7 @@ bool RenderOpenGL::Initialize() {
         //  Use OpenGL 4.1 core
         opts.versionMajor = 4;
         opts.versionMinor = 1;
+        opts.profile = CoreProfile;
 
         //  Turn on 24bit Z buffer.
         //  You may need to change this to 16 or 32 for your system
