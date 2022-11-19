@@ -4,17 +4,13 @@
 
 class GameTest : public testing::Test {
  public:
-    static void Init(GameWrapper* withWrapper);
+    static void Init(GameWrapper *withWrapper);
 
     virtual void SetUp() override;
     virtual void TearDown() override;
 
-    GameWrapper &Game() const {
-        return *game_;
-    }
-
- private:
-    GameWrapper *game_ = nullptr; // To be used in tests.
+ protected:
+    GameWrapper *const game = nullptr; // To be used in tests.
 };
 
 #ifndef TEST_GROUP

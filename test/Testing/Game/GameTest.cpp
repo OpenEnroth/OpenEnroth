@@ -2,18 +2,18 @@
 
 #include <cassert>
 
-static GameWrapper* globalGameWrapper = nullptr;
+static GameWrapper *globalGameWrapper = nullptr;
 
-void GameTest::Init(GameWrapper* withWrapper) {
+void GameTest::Init(GameWrapper *withWrapper) {
     assert(withWrapper);
 
     globalGameWrapper = withWrapper;
 }
 
 void GameTest::SetUp() {
-    game_ = globalGameWrapper;
+    const_cast<GameWrapper *&>(game) = globalGameWrapper;
 }
 
 void GameTest::TearDown() {
-    game_ = nullptr;
+    const_cast<GameWrapper *&>(game) = nullptr;
 }

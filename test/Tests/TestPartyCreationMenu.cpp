@@ -3,19 +3,19 @@
 #include "GUI/GUIWindow.h"
 
 GAME_TEST(Menu, PartyCreation) {
-    Game().Tick(100);
+    game->Tick(100);
 
     EXPECT_EQ(GetCurrentMenuID(), MENU_MAIN);
 
-    Game().LClick(495, 172); // New game
-    Game().Tick(10);
+    game->LClick(495, 172); // New game
+    game->Tick(10);
 
     EXPECT_EQ(GetCurrentMenuID(), MENU_CREATEPARTY);
 
     EXPECT_EQ(pParty->pPlayers[0].uMight, 30);
 
-    Game().LClick(527, 431); // Clear, shouldn't crash
-    Game().Tick();
+    game->LClick(527, 431); // Clear, shouldn't crash
+    game->Tick();
 
     EXPECT_EQ(pParty->pPlayers[0].classType, PLAYER_CLASS_KNIGHT);
     EXPECT_EQ(pParty->pPlayers[0].uMight, 14);
