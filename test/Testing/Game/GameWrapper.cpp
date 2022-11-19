@@ -15,7 +15,7 @@ GameWrapper::~GameWrapper() {}
 
 void GameWrapper::Tick(int count) {
     for (int i = 0; i < count; i++)
-        state_.SwitchSide();
+        state_.YieldExecution();
 }
 
 void GameWrapper::LClick(int x, int y) {

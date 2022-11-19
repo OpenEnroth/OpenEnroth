@@ -22,7 +22,7 @@ class TestStateHandle {
         return state_;
     }
 
-    void SwitchSide() {
+    void YieldExecution() {
         assert(data_->lock.owns_lock());
 
         state_->currentSide = OtherSide();

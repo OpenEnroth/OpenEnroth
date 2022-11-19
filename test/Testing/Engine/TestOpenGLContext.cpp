@@ -15,7 +15,7 @@ bool TestOpenGLContext::MakeCurrent() {
 
 void TestOpenGLContext::SwapBuffers() {
     base_->SwapBuffers();
-    state_.SwitchSide();
+    state_.YieldExecution();
 }
 
 void* TestOpenGLContext::GetProcAddress(const char* name) {
