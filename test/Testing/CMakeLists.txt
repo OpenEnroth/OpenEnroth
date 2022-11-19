@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
-add_subdirectory(Unit)
+add_subdirectory(Engine)
 add_subdirectory(Game)
+add_subdirectory(Unit)

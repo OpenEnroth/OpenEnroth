@@ -5,10 +5,11 @@
 #include "Application/Game.h"
 #include "Application/GameFactory.h"
 
-#include "GameTest.h"
-#include "GameTestState.h"
-#include "GameTestStateHandle.h"
-#include "GameTestPlatform.h"
+#include "Testing/Engine/GameTestState.h"
+#include "Testing/Engine/GameTestStateHandle.h"
+#include "Testing/Engine/GameTestPlatform.h"
+#include "Testing/Engine/GameWrapper.h"
+#include "Testing/Game/GameTest.h"
 
 void RunGameThread(GameTestState *state) {
     Log *log = EngineIoc::ResolveLogger();

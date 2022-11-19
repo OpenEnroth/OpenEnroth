@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "GameWrapper.h"
+#include "Testing/Engine/GameWrapper.h"
 
 class GameTest : public testing::Test {
  public:

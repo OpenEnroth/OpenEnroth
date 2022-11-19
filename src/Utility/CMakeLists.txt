@@ -51,5 +51,5 @@ if(ENABLE_TESTS)
 
     target_check_style(test_utility)
 
-    target_link_libraries(World_of_Might_and_Magic_test test_utility)
+    target_link_libraries(World_of_Might_and_Magic_UnitTest test_utility)
 endif()
