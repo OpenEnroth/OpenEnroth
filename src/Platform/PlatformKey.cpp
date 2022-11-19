@@ -6,6 +6,8 @@
 
 #include "PlatformKey.h"
 
+// TODO(captainurist): move out, this code doesn't belong to Platform.
+
 static std::unordered_map<PlatformKey, std::string> displayNameByKey = {
     {PlatformKey::F1,           "F1" },
     {PlatformKey::F2,           "F2" },
