@@ -5,6 +5,7 @@
 
 #include "Utility/Geometry/Size.h"
 #include "Utility/Geometry/Point.h"
+#include "Utility/Geometry/Margins.h"
 
 #include "PlatformOpenGLOptions.h"
 
@@ -45,9 +46,11 @@ class PlatformWindow {
     virtual void SetGrabsMouse(bool grabsMouse) = 0;
     virtual bool GrabsMouse() const = 0;
 
-    virtual void Activate() = 0;
+    virtual Marginsi FrameMargins() const = 0;
 
     virtual uintptr_t SystemHandle() const = 0;
+
+    virtual void Activate() = 0;
 
     virtual std::unique_ptr<PlatformOpenGLContext> CreateOpenGLContext(const PlatformOpenGLOptions &options) = 0;
 

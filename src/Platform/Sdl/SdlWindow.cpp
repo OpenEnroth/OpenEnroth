@@ -100,8 +100,13 @@ bool SdlWindow::GrabsMouse() const {
     return SDL_GetWindowGrab(window_) == SDL_TRUE;
 }
 
-void SdlWindow::Activate() {
-    SDL_RaiseWindow(window_);
+Marginsi SdlWindow::FrameMargins() const {
+    Marginsi result;
+    if(SDL_GetWindowBordersSize(window_, &result.top, &result.left, &result.bottom, &result.right) != 0) {
+        state_->LogSdlError("SDL_GetWindowBordersSize");
+        return Marginsi();
+    }
+    return result;
 }
 
 uintptr_t SdlWindow::SystemHandle() const {
@@ -120,6 +125,10 @@ uintptr_t SdlWindow::SystemHandle() const {
 #else
     return static_cast<uintptr_t>(info.info.x11.window);
 #endif
+}
+
+void SdlWindow::Activate() {
+    SDL_RaiseWindow(window_);
 }
 
 std::unique_ptr<PlatformOpenGLContext> SdlWindow::CreateOpenGLContext(const PlatformOpenGLOptions &options) {

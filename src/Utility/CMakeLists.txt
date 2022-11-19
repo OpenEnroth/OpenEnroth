@@ -22,6 +22,7 @@ set(UTILITY_HEADERS Blob.h
                     Segment.h
                     String.h
                     Geometry/BBox.h
+                    Geometry/Margins.h
                     Geometry/Plane.h
                     Geometry/Vec.h
                     Geometry/Size.h

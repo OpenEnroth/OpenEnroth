@@ -37,9 +37,11 @@ class SdlWindow : public PlatformWindow {
     virtual void SetGrabsMouse(bool grabsMouse) override;
     virtual bool GrabsMouse() const override;
 
-    virtual void Activate() override;
+    virtual Marginsi FrameMargins() const override;
 
     virtual uintptr_t SystemHandle() const override;
+
+    virtual void Activate() override;
 
     virtual std::unique_ptr<PlatformOpenGLContext> CreateOpenGLContext(const PlatformOpenGLOptions &options) override;
 
