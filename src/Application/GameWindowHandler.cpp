@@ -73,6 +73,8 @@ void GameWindowHandler::UpdateWindowFromConfig() {
         pos += displayRect.TopLeft();
     } else if (displayRect != Recti()) {
         pos = displayRect.Center() - Pointi(size.w, size.h) / 2;
+    } else {
+        pos = Pointi(0, 0); // DisplayGeometries() failed so we just give up.
     }
 
     window->SetPosition(pos);
