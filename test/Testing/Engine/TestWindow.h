@@ -5,12 +5,12 @@
 
 #include "Platform/PlatformWindow.h"
 
-#include "GameTestStateHandle.h"
+#include "TestStateHandle.h"
 
-class GameTestWindow : public PlatformWindow {
+class TestWindow : public PlatformWindow {
  public:
-    GameTestWindow(std::unique_ptr<PlatformWindow> base, GameTestStateHandle state);
-    virtual ~GameTestWindow();
+    TestWindow(std::unique_ptr<PlatformWindow> base, TestStateHandle state);
+    virtual ~TestWindow();
 
     virtual void SetTitle(const std::string &title) override;
     virtual std::string Title() const override;
@@ -41,5 +41,5 @@ class GameTestWindow : public PlatformWindow {
 
  private:
     std::unique_ptr<PlatformWindow> base_;
-    GameTestStateHandle state_;
+    TestStateHandle state_;
 };

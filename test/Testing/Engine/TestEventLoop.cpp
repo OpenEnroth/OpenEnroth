@@ -1,47 +1,47 @@
-#include "GameTestEventLoop.h"
+#include "TestEventLoop.h"
 
 #include <cassert>
 #include <utility>
 
 #include "Platform/PlatformEventHandler.h"
 
-#include "GameTestStateHandle.h"
+#include "TestStateHandle.h"
 
-GameTestEventLoop::GameTestEventLoop(std::unique_ptr<PlatformEventLoop> base, GameTestStateHandle state) :
+TestEventLoop::TestEventLoop(std::unique_ptr<PlatformEventLoop> base, TestStateHandle state) :
     base_(std::move(base)),
     state_(std::move(state)) {
     assert(!state_->eventLoop);
     state_->eventLoop = this;
 }
 
-GameTestEventLoop::~GameTestEventLoop() {
+TestEventLoop::~TestEventLoop() {
     assert(state_->eventLoop == this);
     state_->eventLoop = nullptr;
 }
 
-void GameTestEventLoop::Exec(PlatformEventHandler *eventHandler) {
+void TestEventLoop::Exec(PlatformEventHandler *eventHandler) {
     ProcessSyntheticMessages(eventHandler);
     base_->Exec(eventHandler);
 }
 
-void GameTestEventLoop::Quit() {
+void TestEventLoop::Quit() {
     base_->Quit();
 }
 
-void GameTestEventLoop::ProcessMessages(PlatformEventHandler *eventHandler, int count) {
+void TestEventLoop::ProcessMessages(PlatformEventHandler *eventHandler, int count) {
     ProcessSyntheticMessages(eventHandler);
     base_->ProcessMessages(eventHandler, count);
 }
 
-void GameTestEventLoop::WaitForMessages() {
+void TestEventLoop::WaitForMessages() {
     base_->WaitForMessages();
 }
 
-void GameTestEventLoop::PostEvent(PlatformWindow *window, std::unique_ptr<PlatformEvent> event) {
+void TestEventLoop::PostEvent(PlatformWindow *window, std::unique_ptr<PlatformEvent> event) {
     postedEvents_.push({window, std::move(event)});
 }
 
-void GameTestEventLoop::ProcessSyntheticMessages(PlatformEventHandler *eventHandler) {
+void TestEventLoop::ProcessSyntheticMessages(PlatformEventHandler *eventHandler) {
     while(!postedEvents_.empty()) {
         PostedEvent &e = postedEvents_.front();
         eventHandler->Event(e.window, e.event.get());

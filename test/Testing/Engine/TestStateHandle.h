@@ -3,20 +3,20 @@
 #include <mutex>
 #include <memory>
 
-#include "GameTestState.h"
+#include "TestState.h"
 
-class GameTestStateHandle {
+class TestStateHandle {
  public:
-    GameTestStateHandle(GameTestSide side, GameTestState *state) :
+    TestStateHandle(GameTestSide side, TestState *state) :
         state_(state),
         data_(std::make_shared<Data>(side, state->mutex))
     {}
 
-    GameTestStateHandle() = delete;
-    GameTestStateHandle(const GameTestStateHandle &) = default;
-    GameTestStateHandle(GameTestStateHandle &&) = default;
+    TestStateHandle() = delete;
+    TestStateHandle(const TestStateHandle &) = default;
+    TestStateHandle(TestStateHandle &&) = default;
 
-    GameTestState *operator->() const {
+    TestState *operator->() const {
         assert(data_->lock.owns_lock());
 
         return state_;
@@ -47,7 +47,7 @@ class GameTestStateHandle {
     }
 
  private:
-    GameTestState *state_;
+    TestState *state_;
     std::shared_ptr<Data> data_;
 };
 

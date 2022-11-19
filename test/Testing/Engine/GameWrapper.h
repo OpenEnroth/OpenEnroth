@@ -2,11 +2,11 @@
 
 #include <memory>
 
-#include "GameTestStateHandle.h"
+#include "TestStateHandle.h"
 
 class GameWrapper {
  public:
-    GameWrapper(GameTestStateHandle state);
+    GameWrapper(TestStateHandle state);
     ~GameWrapper();
 
     void Tick(int count = 1);
@@ -14,6 +14,6 @@ class GameWrapper {
     void LClick(int x, int y);
 
  private:
-    GameTestStateHandle state_;
+    TestStateHandle state_;
 };
 

@@ -5,15 +5,15 @@
 
 #include "Platform/PlatformEventLoop.h"
 
-#include "GameTestStateHandle.h"
+#include "TestStateHandle.h"
 
 class PlatformWindow;
 class PlatformEvent;
 
-class GameTestEventLoop: public PlatformEventLoop {
+class TestEventLoop: public PlatformEventLoop {
  public:
-    GameTestEventLoop(std::unique_ptr<PlatformEventLoop> base, GameTestStateHandle state);
-    virtual ~GameTestEventLoop();
+    TestEventLoop(std::unique_ptr<PlatformEventLoop> base, TestStateHandle state);
+    virtual ~TestEventLoop();
 
     virtual void Exec(PlatformEventHandler *eventHandler) override;
     virtual void Quit() override;
@@ -34,5 +34,5 @@ class GameTestEventLoop: public PlatformEventLoop {
  private:
     std::queue<PostedEvent> postedEvents_;
     std::unique_ptr<PlatformEventLoop> base_;
-    GameTestStateHandle state_;
+    TestStateHandle state_;
 };

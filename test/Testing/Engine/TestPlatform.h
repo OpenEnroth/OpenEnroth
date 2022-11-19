@@ -5,13 +5,13 @@
 
 #include "Platform/Platform.h"
 
-#include "GameTestStateHandle.h"
+#include "TestStateHandle.h"
 
 class Log;
 
-class GameTestPlatform: public Platform {
+class TestPlatform: public Platform {
  public:
-    GameTestPlatform(std::unique_ptr<Platform> base, GameTestStateHandle state);
+    TestPlatform(std::unique_ptr<Platform> base, TestStateHandle state);
 
     virtual std::unique_ptr<PlatformWindow> CreateWindow() override;
     virtual std::unique_ptr<PlatformEventLoop> CreateEventLoop() override;
@@ -21,5 +21,5 @@ class GameTestPlatform: public Platform {
 
  private:
     std::unique_ptr<Platform> base_;
-    GameTestStateHandle state_;
+    TestStateHandle state_;
 };

@@ -6,8 +6,8 @@
 
 #include "Utility/IndexedArray.h"
 
-class GameTestWindow;
-class GameTestEventLoop;
+class TestWindow;
+class TestEventLoop;
 
 enum class GameTestSide {
     GameSide,
@@ -16,10 +16,10 @@ enum class GameTestSide {
 using enum GameTestSide;
 
 
-class GameTestState {
+class TestState {
  public:
-    GameTestWindow *window = nullptr;
-    GameTestEventLoop *eventLoop = nullptr;
+    TestWindow *window = nullptr;
+    TestEventLoop *eventLoop = nullptr;
 
     GameTestSide currentSide;
     std::mutex mutex;

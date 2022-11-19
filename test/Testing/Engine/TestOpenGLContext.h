@@ -4,11 +4,11 @@
 
 #include "Platform/PlatformOpenGLContext.h"
 
-#include "GameTestStateHandle.h"
+#include "TestStateHandle.h"
 
-class GameTestOpenGLContext: public PlatformOpenGLContext {
+class TestOpenGLContext: public PlatformOpenGLContext {
  public:
-    GameTestOpenGLContext(std::unique_ptr<PlatformOpenGLContext> base, GameTestStateHandle state);
+    TestOpenGLContext(std::unique_ptr<PlatformOpenGLContext> base, TestStateHandle state);
 
     virtual bool MakeCurrent() override;
     virtual void SwapBuffers() override;
@@ -16,5 +16,5 @@ class GameTestOpenGLContext: public PlatformOpenGLContext {
 
  private:
     std::unique_ptr<PlatformOpenGLContext> base_;
-    GameTestStateHandle state_;
+    TestStateHandle state_;
 };
