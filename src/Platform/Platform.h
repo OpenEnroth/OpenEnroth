@@ -44,6 +44,21 @@ class PlatformEventHandler;
  *
  * Also platform declares its own `main` function, so you cannot declare `main` in your code. Platform expects you
  * to define `PlatformMain` instead.
+ *
+ * Some guidelines on adding new functionality to platform classes:
+ * - If something can be done at the next abstraction layer, then it *should* be done at next abstraction layer.
+ *   Don't clutter platform API.
+ * - Platform API should be reasonably minimal, and methods should be orthogonal. You can think of orthogonality in
+ *   terms of information content, "is this method returning bits that can also be accessed through another method?"
+ *   E.g. compare `Position` + `SetPosition` + `FramePosition` + `SetFramePosition` for a window class, vs `Position` +
+ *   `SetPosition` + `FrameMargins`. The latter set of methods is orthogonal, the former is not.
+ * - The points above mean that platform API handles shouldn't expose non-virtual methods.
+ * - Platform API should be getter/setter symmetric as long as the underlying OS API is symmetric. E.g. in the example
+ *   above there is no `SetFrameMargins` method because this is not how window frames work.
+ * - Platform API handles shouldn't hold state. Don't expose APIs that take ownership of user-allocated data, and don't
+ *   cache values returned by the OS (if needed, caching should be implemented at the next abstraction layer). Again,
+ *   you can think about this in terms of information content, "platform API handle doesn't expose any bits of state
+ *   through its API that cannot be accessed through the underlying OS API".
  */
 class Platform {
  public:
