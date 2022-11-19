@@ -7,6 +7,7 @@
 
 extern int dword_6BE364_game_settings_1;  // GAME_SETTINGS_*
 
+// TODO(captainurist): these globals should go, together with this header file.
 extern Platform *platform;
 extern PlatformWindow *window;
 extern PlatformOpenGLContext *openGlContext;
