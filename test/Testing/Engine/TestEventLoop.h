@@ -33,6 +33,7 @@ class TestEventLoop: public PlatformEventLoop {
 
  private:
     std::queue<PostedEvent> postedEvents_;
+    std::unique_ptr<PlatformEventHandler> emptyHandler_;
     std::unique_ptr<PlatformEventLoop> base_;
     TestStateHandle state_;
 };

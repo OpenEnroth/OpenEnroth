@@ -12,6 +12,7 @@ TestEventLoop::TestEventLoop(std::unique_ptr<PlatformEventLoop> base, TestStateH
     state_(std::move(state)) {
     assert(!state_->eventLoop);
     state_->eventLoop = this;
+    emptyHandler_ = std::make_unique<PlatformEventHandler>();
 }
 
 TestEventLoop::~TestEventLoop() {
@@ -21,7 +22,7 @@ TestEventLoop::~TestEventLoop() {
 
 void TestEventLoop::Exec(PlatformEventHandler *eventHandler) {
     ProcessSyntheticMessages(eventHandler);
-    base_->Exec(eventHandler);
+    base_->Exec(emptyHandler_.get());
 }
 
 void TestEventLoop::Quit() {
@@ -30,7 +31,7 @@ void TestEventLoop::Quit() {
 
 void TestEventLoop::ProcessMessages(PlatformEventHandler *eventHandler, int count) {
     ProcessSyntheticMessages(eventHandler);
-    base_->ProcessMessages(eventHandler, count);
+    base_->ProcessMessages(emptyHandler_.get(), count);
 }
 
 void TestEventLoop::WaitForMessages() {
