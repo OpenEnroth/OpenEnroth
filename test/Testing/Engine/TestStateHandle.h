@@ -12,6 +12,11 @@ class TestStateHandle {
         data_(std::make_shared<Data>(side, state->mutex))
     {}
 
+    ~TestStateHandle() {
+        if (data_)
+            YieldExecutionInternal(false); // unlock will get called in Data destructor.
+    }
+
     TestStateHandle() = delete;
     TestStateHandle(const TestStateHandle &) = default;
     TestStateHandle(TestStateHandle &&) = default;
@@ -23,11 +28,7 @@ class TestStateHandle {
     }
 
     void YieldExecution() {
-        assert(data_->lock.owns_lock());
-
-        state_->currentSide = OtherSide();
-        state_->wakeEvents[OtherSide()].notify_all();
-        state_->wakeEvents[MySide()].wait(data_->lock, [&] { return state_->currentSide == MySide(); });
+        YieldExecutionInternal(true);
     }
 
  private:
@@ -37,6 +38,16 @@ class TestStateHandle {
 
         Data(GameTestSide side, std::mutex &mutex) : side(side), lock(mutex) {}
     };
+
+    void YieldExecutionInternal(bool wait) {
+        assert(data_->lock.owns_lock());
+
+        state_->currentSide = OtherSide();
+        state_->wakeEvents[OtherSide()].notify_all();
+
+        if (wait)
+            state_->wakeEvents[MySide()].wait(data_->lock, [&] { return state_->currentSide == MySide(); });
+    }
 
     GameTestSide MySide() const {
         return data_->side;

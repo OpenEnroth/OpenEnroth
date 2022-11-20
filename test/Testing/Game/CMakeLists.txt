@@ -7,7 +7,7 @@ if(ENABLE_TESTS)
                           GameWrapper.h)
 
     add_library(game_test ${GAME_TEST_SOURCES} ${GAME_TEST_HEADERS})
-    target_link_libraries(game_test game test_engine GTest::gtest)
+    target_link_libraries(game_test game test_engine test_extensions GTest::gtest)
     target_compile_definitions(game_test PRIVATE TEST_GROUP=None)
 
     target_check_style(game_test)

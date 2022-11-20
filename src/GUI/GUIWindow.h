@@ -443,9 +443,13 @@ class GUIWindow {
     GUIWindow(WindowType windowType, unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, WindowData wData, const std::string &hint = std::string());
     virtual ~GUIWindow() {}
 
-    GUIButton *CreateButton(int x, int y, int width, int height, int a6, int a7,
-                            UIMessageType msg, unsigned int msg_param, PlatformKey hotkey = PlatformKey::None, const std::string &label = "",
-                            const std::vector<Image*> &textures = std::vector<Image*>());
+    GUIButton *CreateButton(int x, int y, int width, int height, int uButtonType, int uData,
+                            UIMessageType msg, unsigned int msg_param, PlatformKey hotkey = PlatformKey::None, const std::string &label = {},
+                            const std::vector<Image *> &textures = {});
+
+    GUIButton *CreateButton(std::string id, int x, int y, int width, int height, int uButtonType, int uData,
+                            UIMessageType msg, unsigned int msg_param, PlatformKey hotkey = PlatformKey::None, const std::string &label = {},
+                            const std::vector<Image *> &textures = {});
 
     bool Contains(unsigned int x, unsigned int y);
     void DrawFlashingInputCursor(int uX, int uY, GUIFont *a2);

@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#include "Testing/Extensions/ThrowingAssertions.h"
+
 #include "GameWrapper.h"
 
 class GameTest : public testing::Test {

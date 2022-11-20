@@ -11,9 +11,11 @@
 #include "Testing/Game/GameWrapper.h"
 #include "Testing/Game/GameTest.h"
 
-void RunGameThread(TestState *state) {
+void RunGameThread(TestState *unsafeState) {
+    TestStateHandle state(GameSide, unsafeState);
+
     Log *log = EngineIoc::ResolveLogger();
-    std::unique_ptr<Platform> platform = std::make_unique<TestPlatform>(Platform::CreateStandardPlatform(log), TestStateHandle(GameSide, state));
+    std::unique_ptr<Platform> platform = std::make_unique<TestPlatform>(Platform::CreateStandardPlatform(log), state);
 
     std::shared_ptr<Application::GameConfig> config = std::make_shared<Application::GameConfig>("");
     config->Startup(); // TODO(captainurist): Reads from womm.ini, not good for tests
@@ -26,27 +28,33 @@ void RunGameThread(TestState *state) {
     game->Run();
 }
 
-void RunTestThread(TestState *state, int *exitCode) {
-    GameWrapper gameWrapper(TestStateHandle(TestSide, state));
-    GameTest::Init(&gameWrapper);
+void RunTestThread(TestState *unsafeState, int *exitCode) {
+    TestStateHandle state(TestSide, unsafeState);
 
-    gameWrapper.Tick(); // Let the game thread initialize everything.
+    GameWrapper gameWrapper(state);
+    GameTest::Init(&gameWrapper);
+    gameWrapper.Tick(10); // Let the game thread initialize everything.
 
     *exitCode = RUN_ALL_TESTS();
+
+    state->terminating = true;
 }
 
 int PlatformMain(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
 
     int exitCode = 0;
-    TestState state;
+    std::thread testThread;
 
-    std::thread testThread(&RunTestThread, &state, &exitCode);
+    TestState state;
+    state.terminationHandler = [&] {
+        testThread.join();
+        Engine_DeinitializeAndTerminate(exitCode);
+    };
+
+    testThread = std::thread(&RunTestThread, &state, &exitCode);
     RunGameThread(&state);
 
-    // TODO: exit game.
-
-    testThread.join();
-
+    assert(false); // should never get here.
     return exitCode;
 }

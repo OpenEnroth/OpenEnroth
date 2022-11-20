@@ -3,6 +3,7 @@
 #include <memory>
 #include <mutex>
 #include <condition_variable>
+#include <functional>
 
 #include "Utility/IndexedArray.h"
 
@@ -20,6 +21,9 @@ class TestState {
  public:
     TestWindow *window = nullptr;
     TestEventLoop *eventLoop = nullptr;
+
+    bool terminating = false;
+    std::function<void()> terminationHandler;
 
     GameTestSide currentSide;
     std::mutex mutex;

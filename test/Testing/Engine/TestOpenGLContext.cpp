@@ -15,7 +15,15 @@ bool TestOpenGLContext::MakeCurrent() {
 
 void TestOpenGLContext::SwapBuffers() {
     base_->SwapBuffers();
-    state_.YieldExecution();
+
+    if (state_->terminating) {
+        if (state_->terminationHandler) {
+            state_->terminationHandler();
+            state_->terminationHandler = nullptr;
+        }
+    } else {
+        state_.YieldExecution();
+    }
 }
 
 void* TestOpenGLContext::GetProcAddress(const char* name) {

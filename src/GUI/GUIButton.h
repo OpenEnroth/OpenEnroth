@@ -20,14 +20,15 @@ class GUIButton {
     bool Contains(unsigned int x, unsigned int y);
     void Release();
 
+    std::string id = {}; // Button id, so that buttons can be referenced from tests.
     unsigned int uX = 0;
     unsigned int uY = 0;
     unsigned int uWidth = 0;
     unsigned int uHeight = 0;
-    unsigned int uZ = 0;
-    unsigned int uW = 0;
+    unsigned int uZ = 0; // = uX + uWidth
+    unsigned int uW = 0; // = uY + uHeight
     int uButtonType = 0;
-    int field_1C = 0;  // may be pMessageType
+    int uData = 0;  // may be pMessageType
     UIMessageType msg = UIMSG_0;
     unsigned int  msg_param = 0;
     int field_28 = 0;

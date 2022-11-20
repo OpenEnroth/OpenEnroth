@@ -789,7 +789,7 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     ui_partycreation_buttmake2 = assets->GetImage_Solid("BUTTMAKE2");
 
     pPlayerCreationUI_BtnOK = CreateButton(580, 431, 51, 39, 1, 0, UIMSG_PlayerCreationClickOK, 0, PlatformKey::Return, "", {ui_partycreation_buttmake});
-    pPlayerCreationUI_BtnReset = CreateButton(527, 431, 51, 39, 1, 0, UIMSG_PlayerCreationClickReset, 0, PlatformKey::C, "", {ui_partycreation_buttmake2});
+    pPlayerCreationUI_BtnReset = CreateButton("PartyCreation_Clear", 527, 431, 51, 39, 1, 0, UIMSG_PlayerCreationClickReset, 0, PlatformKey::C, "", {ui_partycreation_buttmake2});
     pPlayerCreationUI_BtnMinus = CreateButton(523, 393, 20, 35, 1, 0, UIMSG_PlayerCreationClickMinus, 0, PlatformKey::Subtract, "", {ui_partycreation_minus});
     pPlayerCreationUI_BtnPlus = CreateButton(613, 393, 20, 35, 1, 0, UIMSG_PlayerCreationClickPlus, 1, PlatformKey::Add, "", {ui_partycreation_plus});
 

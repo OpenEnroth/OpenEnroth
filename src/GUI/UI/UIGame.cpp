@@ -1194,7 +1194,7 @@ void GameUI_WritePointedObjectStatusString() {
                         case 1:  // for dialogue window
                             if (pButton->Contains(pX, pY)) {
                                 pMessageType1 =
-                                    (UIMessageType)pButton->field_1C;
+                                    (UIMessageType)pButton->uData;
                                 if (pMessageType1)
                                     pMessageQueue_50CBD0->AddGUIMessage(
                                         pMessageType1, pButton->msg_param, 0);
@@ -1217,7 +1217,7 @@ void GameUI_WritePointedObjectStatusString() {
 
                                 if (ratioX + ratioY < 1.0) {
                                     pMessageType2 =
-                                        (UIMessageType)pButton->field_1C;
+                                        (UIMessageType)pButton->uData;
                                     if (pMessageType2 != 0)
                                         pMessageQueue_50CBD0->AddGUIMessage(
                                             pMessageType2, pButton->msg_param,
@@ -1309,7 +1309,7 @@ void GameUI_WritePointedObjectStatusString() {
                     case 1:
                         if (pX >= pButton->uX && pX <= pButton->uZ &&
                             pY >= pButton->uY && pY <= pButton->uW) {
-                            pMessageType3 = (UIMessageType)pButton->field_1C;
+                            pMessageType3 = (UIMessageType)pButton->uData;
                             if (pMessageType3 == 0) {  // For books
                                 GameUI_StatusBar_Set(pButton->sLabel);
                             } else {
@@ -1333,7 +1333,7 @@ void GameUI_WritePointedObjectStatusString() {
 
                             if (ratioX + ratioY < 1.0) {
                                 pMessageType2 =
-                                    (UIMessageType)pButton->field_1C;
+                                    (UIMessageType)pButton->uData;
                                 if (pMessageType2 != 0)
                                     pMessageQueue_50CBD0->AddGUIMessage(
                                         pMessageType2, pButton->msg_param, 0);
