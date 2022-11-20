@@ -1,4 +1,5 @@
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
@@ -9,7 +10,6 @@
 #include "GUI/UI/UIChest.h"
 
 #include "Platform/Api.h"
-#include "Platform/OSWindow.h"
 
 int pChestPixelOffsetX[8] = {42, 18, 18, 42, 42, 42, 18, 42};
 int pChestPixelOffsetY[8] = {34, 30, 30, 34, 34, 34, 30, 34};
@@ -18,14 +18,14 @@ int pChestHeightsByType[8] = {9, 9, 9, 9, 9, 9, 9, 9};
 
 GUIWindow_Chest::GUIWindow_Chest(unsigned int chest_id)
     : GUIWindow(WINDOW_Chest, 0, 0, window->GetWidth(), window->GetHeight(), chest_id) {
-    CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, GameKey::Digit1);
-    CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, GameKey::Digit2);
-    CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, GameKey::Digit3);
-    CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, GameKey::Digit4);
-    CreateButton(0, 0, 0, 0, 1, 0, UIMSG_CycleCharacters, 0, GameKey::Tab);
+    CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, PlatformKey::Digit1);
+    CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, PlatformKey::Digit2);
+    CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, PlatformKey::Digit3);
+    CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, PlatformKey::Digit4);
+    CreateButton(0, 0, 0, 0, 1, 0, UIMSG_CycleCharacters, 0, PlatformKey::Tab);
 
     pBtn_ExitCancel =
-        CreateButton(471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
+        CreateButton(471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, PlatformKey::None,
                      localization->GetString(LSTR_DIALOGUE_EXIT),
                      {ui_exit_cancel_button_background});
     CreateButton(7, 8, 460, 343, 1, 0, UIMSG_CHEST_ClickItem, 0);

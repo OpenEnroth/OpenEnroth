@@ -2,6 +2,7 @@
 
 #include "Engine/Awards.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/ImageLoader.h"
@@ -17,7 +18,6 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-#include "Platform/OSWindow.h"
 
 void SetStartConditions();
 void SetStartGameData();
@@ -54,7 +54,7 @@ int ApplyDamageToBuildings(int player_num, int damage);
 void GameResultsApply();
 
 void am_DrawText(const std::string &str, Pointi *pXY);
-void DrawRect(Rect *pXYZW, uint16_t uColor, char bSolidFill);
+void DrawRect(Recti *pRect, uint16_t uColor, char bSolidFill);
 int rand_interval(int min, int max);  // idb
 
 unsigned int R8G8B8_to_TargetFormat(int uColor) {
@@ -166,7 +166,7 @@ int hide_card_anim_count;
 
 struct arcomage_mouse {
     bool Update();
-    bool Inside(Rect* pXYZW);
+    bool Inside(Recti* pRect);
 
     int x = 0;
     int y = 0;
@@ -188,8 +188,8 @@ bool arcomage_mouse::Update() {
     return true;
 }
 
-bool arcomage_mouse::Inside(Rect *pXYZW) {
-    return (x >= pXYZW->x) && (x <= pXYZW->z) && (y >= pXYZW->y) && (y <= pXYZW->w);
+bool arcomage_mouse::Inside(Recti *pRect) {
+    return (x >= pRect->x) && (x <= pRect->x + pRect->h) && (y >= pRect->y) && (y <= pRect->y + pRect->w);
 }
 
 void ArcomageGame::OnMouseClick(char right_left, bool bDown) {
@@ -235,8 +235,8 @@ int explosion_effect_struct::StartFill(effect_params_struct *params) {
         this->spark_array_size = params->spark_array_size;
         this->start_x_min = params->effect_area.x;
         this->start_y_max = params->effect_area.y;
-        this->start_x_max = params->effect_area.z;
-        this->start_y_min = params->effect_area.w;
+        this->start_x_max = params->effect_area.x + params->effect_area.w;
+        this->start_y_min = params->effect_area.y + params->effect_area.h;
         this->unused_param_1 = params->unused_param_1;
         this->unused_param_2 = params->unused_param_2;
         this->unused_param_3 = params->unused_param_3;
@@ -368,9 +368,9 @@ int new_explosion_effect(Pointi* startXY, int effect_value) {
 
     // fill effect params
     am_effects_array[arr_slot].eff_params.effect_area.x = startXY->x - 20;
-    am_effects_array[arr_slot].eff_params.effect_area.z = startXY->x + 20;
+    am_effects_array[arr_slot].eff_params.effect_area.w = 40;
     am_effects_array[arr_slot].eff_params.effect_area.y = startXY->y - 20;
-    am_effects_array[arr_slot].eff_params.effect_area.w = startXY->y + 20;
+    am_effects_array[arr_slot].eff_params.effect_area.h = 40;
     am_effects_array[arr_slot].eff_params.unused_param_1 = -60;
     am_effects_array[arr_slot].eff_params.unused_param_2 = 60;
     am_effects_array[arr_slot].eff_params.unused_param_3 = 180;
@@ -517,7 +517,7 @@ bool ArcomageGame::MsgLoop(int a1, ArcomageGame_InputMSG *a2) {
     pArcomageGame->field_0 = 0;
     pArcomageGame->stru1.am_input_type = 0;
 
-    window->HandleSingleEvent();
+    eventLoop->ProcessMessages(eventHandler, 1);
 
     *a2 = pArcomageGame->stru1;
     return pArcomageGame->stru1.am_input_type != 0;
@@ -1409,14 +1409,14 @@ void DrawGameUI(int animation_stage) {
 }
 
 void DrawRectanglesForText() {
-    Rect pSrcRect;
+    Recti pSrcRect;
     Pointi pTargetXY;
 
     // resources rectangles
     pSrcRect.x = 765;
     pSrcRect.y = 0;
-    pSrcRect.z = 843;
-    pSrcRect.w = 216;
+    pSrcRect.w = 843 - pSrcRect.x;
+    pSrcRect.h = 216 - pSrcRect.y;
 
     pTargetXY.x = 8;
     pTargetXY.y = 56;
@@ -1429,8 +1429,8 @@ void DrawRectanglesForText() {
     // players name rectangle
     pSrcRect.x = 283;
     pSrcRect.y = 166;
-    pSrcRect.z = 361;
-    pSrcRect.w = 190;
+    pSrcRect.w = 361 - pSrcRect.x;
+    pSrcRect.h = 190 - pSrcRect.y;
     pTargetXY.x = 8;
     pTargetXY.y = 13;
     render->DrawFromSpriteSheet(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
@@ -1442,8 +1442,8 @@ void DrawRectanglesForText() {
     // tower height rectangle
     pSrcRect.x = 234;
     pSrcRect.y = 166;
-    pSrcRect.z = 283;
-    pSrcRect.w = 190;
+    pSrcRect.w = 283 - pSrcRect.x;
+    pSrcRect.h = 190 - pSrcRect.y;
     pTargetXY.x = 100;
     pTargetXY.y = 296;
     render->DrawFromSpriteSheet(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
@@ -1455,8 +1455,8 @@ void DrawRectanglesForText() {
     // wall height rectangle
     pSrcRect.x = 192;
     pSrcRect.y = 166;
-    pSrcRect.z = 234;
-    pSrcRect.w = 190;
+    pSrcRect.w = 234 - pSrcRect.x;
+    pSrcRect.h = 190 - pSrcRect.y;
     pTargetXY.x = 168;
     pTargetXY.y = 296;
     render->DrawFromSpriteSheet(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
@@ -1581,7 +1581,7 @@ void DrawPlayersText() {
 }
 
 void DrawPlayerLevels(const std::string &str, Pointi *pXY) {
-    Rect pSrcRect;
+    Recti pSrcRect;
     Pointi pTargetPoint;
 
     pTargetPoint.x = pXY->x;
@@ -1591,10 +1591,10 @@ void DrawPlayerLevels(const std::string &str, Pointi *pXY) {
         if (*i) {
             // calc position in sprite layout
             int v7 = 22 * *i;
-            pSrcRect.z = v7 - 842;
             pSrcRect.x = v7 - 864;
             pSrcRect.y = 190;
-            pSrcRect.w = 207;
+            pSrcRect.w = v7 - 842 - pSrcRect.x;
+            pSrcRect.h = 207 - pSrcRect.y;
             // draw digit
             render->DrawFromSpriteSheet(&pSrcRect, &pTargetPoint, pArcomageGame->field_54, 1);
             pTargetPoint.x += 22;
@@ -1603,7 +1603,7 @@ void DrawPlayerLevels(const std::string &str, Pointi *pXY) {
 }
 
 void DrawBricksCount(const std::string &str, Pointi *pXY) {
-    Rect pSrcRect;
+    Recti pSrcRect;
     Pointi pTargetPoint;
 
     pTargetPoint.x = pXY->x;
@@ -1614,9 +1614,9 @@ void DrawBricksCount(const std::string &str, Pointi *pXY) {
             // calc position in sprite layout
             int v7 = 13 * *i;
             pSrcRect.x = v7 - 370;
-            pSrcRect.z = v7 - 357;
             pSrcRect.y = 128;
-            pSrcRect.w = 138;
+            pSrcRect.w = v7 - 357 - pSrcRect.x;
+            pSrcRect.h = 138 - pSrcRect.y;
             // draw digit
             render->DrawFromSpriteSheet(&pSrcRect, &pTargetPoint, 0, 2);
             pTargetPoint.x += 13;
@@ -1625,7 +1625,7 @@ void DrawBricksCount(const std::string &str, Pointi *pXY) {
 }
 
 void DrawGemsCount(const std::string &str, Pointi *pXY) {
-    Rect pSrcRect;
+    Recti pSrcRect;
     Pointi pTargetPoint;
 
     pTargetPoint.x = pXY->x;
@@ -1636,9 +1636,9 @@ void DrawGemsCount(const std::string &str, Pointi *pXY) {
             // calc position in sprite layout
             int  v7 = 13 * *i;
             pSrcRect.x = v7 - 370;
-            pSrcRect.z = v7 - 357;
             pSrcRect.y = 138;
-            pSrcRect.w = 148;
+            pSrcRect.w = v7 - 357 - pSrcRect.x;
+            pSrcRect.h = 148 - pSrcRect.y;
             // draw digit
             render->DrawFromSpriteSheet(&pSrcRect, &pTargetPoint, 0, 2);
             pTargetPoint.x += 13;
@@ -1647,7 +1647,7 @@ void DrawGemsCount(const std::string &str, Pointi *pXY) {
 }
 
 void DrawBeastsCount(const std::string &str, Pointi *pXY) {
-    Rect pSrcRect;
+    Recti pSrcRect;
     Pointi pTargetPoint;
 
     pTargetPoint.x = pXY->x;
@@ -1658,9 +1658,9 @@ void DrawBeastsCount(const std::string &str, Pointi *pXY) {
             // calc position in sprite layout
             int x_offset = 13 * *i;
             pSrcRect.x = x_offset - 370;
-            pSrcRect.z = x_offset - 357;
             pSrcRect.y = 148;
-            pSrcRect.w = 158;
+            pSrcRect.w = x_offset - 357 - pSrcRect.x;
+            pSrcRect.h = 158 - pSrcRect.y;
             // draw digit
             render->DrawFromSpriteSheet(&pSrcRect, &pTargetPoint, 0, 2);
             pTargetPoint.x += 13;
@@ -1669,7 +1669,7 @@ void DrawBeastsCount(const std::string &str, Pointi *pXY) {
 }
 
 void DrawPlayersTowers() {
-    Rect pSrcXYZW;
+    Recti pSrcXYZW;
     Pointi pTargetXY;
 
     // draw player 0 tower
@@ -1678,10 +1678,10 @@ void DrawPlayersTowers() {
     if (tower_height > max_tower_height) tower_height = max_tower_height;
     pSrcXYZW.y = 0;
     pSrcXYZW.x = 892;
-    pSrcXYZW.z = 937;
+    pSrcXYZW.w = 937 - pSrcXYZW.x;
     // calc height ratio
     int tower_top = 200 * tower_height / max_tower_height;
-    pSrcXYZW.w = tower_top;
+    pSrcXYZW.h = tower_top - pSrcXYZW.y;
     pTargetXY.x = 102;
     pTargetXY.y = 297 - tower_top;
     if (tower_height > 0) render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, 0, 2);  //стена башни
@@ -1689,8 +1689,8 @@ void DrawPlayersTowers() {
     // draw player 0 top
     pSrcXYZW.y = 0;
     pSrcXYZW.x = 384;
-    pSrcXYZW.z = 452;
-    pSrcXYZW.w = 94;
+    pSrcXYZW.w = 452 - pSrcXYZW.x;
+    pSrcXYZW.h = 94 - pSrcXYZW.y;
     pTargetXY.y = 203 - tower_top;
     pTargetXY.x = 91;
     render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);  //верхушка башни
@@ -1703,24 +1703,24 @@ void DrawPlayersTowers() {
     tower_top = 200 * tower_height / max_tower_height;
     pSrcXYZW.y = 0;
     pSrcXYZW.x = 892;
-    pSrcXYZW.z = 937;
-    pSrcXYZW.w = tower_top;
+    pSrcXYZW.w = 937 - pSrcXYZW.x;
+    pSrcXYZW.h = tower_top - pSrcXYZW.y;
     pTargetXY.x = 494;
     pTargetXY.y = 297 - tower_top;
     if (tower_height > 0) render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, 0, 2);
 
     // draw tower 1 top
     pSrcXYZW.x = 384;
-    pSrcXYZW.z = 452;
     pSrcXYZW.y = 94;
-    pSrcXYZW.w = 188;
+    pSrcXYZW.w = 452 - pSrcXYZW.x;
+    pSrcXYZW.h = 188 - pSrcXYZW.y;
     pTargetXY.x = 483;
     pTargetXY.y = 203 - tower_top;
     render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
 }
 
 void DrawPlayersWall() {
-    Rect pSrcXYZW;
+    Recti pSrcXYZW;
     Pointi pTargetXY;
 
     // draw player 0 wall
@@ -1734,8 +1734,8 @@ void DrawPlayersWall() {
         pSrcXYZW.x = 843;
         // calc ratio of wall to draw
         int player_0_pixh = 200 * player_0_h / 100;
-        pSrcXYZW.z = 867;
-        pSrcXYZW.w = player_0_pixh;
+        pSrcXYZW.w = 867 - pSrcXYZW.x;
+        pSrcXYZW.h = player_0_pixh - pSrcXYZW.y;
         pTargetXY.x = 177;
         pTargetXY.y = 297 - player_0_pixh;
         render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
@@ -1748,8 +1748,8 @@ void DrawPlayersWall() {
         pSrcXYZW.y = 0;
         pSrcXYZW.x = 843;
         int player_1_pixh = 200 * player_1_h / 100;
-        pSrcXYZW.z = 867;
-        pSrcXYZW.w = player_1_pixh;
+        pSrcXYZW.w = 867 - pSrcXYZW.x;
+        pSrcXYZW.h = player_1_pixh - pSrcXYZW.y;
         pTargetXY.x = 439;
         pTargetXY.y = 297 - player_1_pixh;
         render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
@@ -1758,7 +1758,7 @@ void DrawPlayersWall() {
 
 void DrawCards() {
     // draw hand of current player and any cards on the table
-    Rect pSrcXYZW;
+    Recti pSrcXYZW;
     Pointi pTargetXY;
 
     // draw player hand
@@ -1781,9 +1781,9 @@ void DrawCards() {
             // draw back of card for opponents turn
             if (am_Players[current_player_num].IsHisTurn == 0 && See_Opponents_Cards == 0) {
                 pSrcXYZW.x = 192;
-                pSrcXYZW.z = 288;
                 pSrcXYZW.y = 0;
-                pSrcXYZW.w = 128;
+                pSrcXYZW.w = 288 - pSrcXYZW.x;
+                pSrcXYZW.h = 128 - pSrcXYZW.y;
                 render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, 0, 2);  //рисуется оборотные стороны карт противника
             } else {
                 pArcomageGame->GetCardRect(am_Players[current_player_num].cards_at_hand[card_slot], &pSrcXYZW);
@@ -1820,9 +1820,9 @@ void DrawCards() {
                 pTargetXY.x = shown_cards[table_cards].hide_anim_pos.x + 12;
                 pTargetXY.y = shown_cards[table_cards].hide_anim_pos.y + 40;
                 pSrcXYZW.x = 843;
-                pSrcXYZW.z = 916;
                 pSrcXYZW.y = 200;
-                pSrcXYZW.w = 216;
+                pSrcXYZW.w = 916 - pSrcXYZW.x;
+                pSrcXYZW.h = 216 - pSrcXYZW.y;
                 render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
             }
         } else if (hide_card_anim_count <= 0) {
@@ -1856,9 +1856,9 @@ void DrawCards() {
 
     // blank deck card
     pSrcXYZW.x = 192;
-    pSrcXYZW.z = 288;
     pSrcXYZW.y = 0;
-    pSrcXYZW.w = 128;
+    pSrcXYZW.w = 288 - pSrcXYZW.x;
+    pSrcXYZW.h = 128 - pSrcXYZW.y;
     pTargetXY.x = 120;
     pTargetXY.y = 18;
     render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, 0, 0);
@@ -1868,7 +1868,7 @@ void DrawCardAnimation(int animation_stage) {
     // draws any card currently in animation stage
     // draw - discard - play
 
-    Rect pSrcXYZW;
+    Recti pSrcXYZW;
     Pointi pTargetXY;
 
     // drawing card anim
@@ -1898,15 +1898,15 @@ void DrawCardAnimation(int animation_stage) {
             // draw the blank card at animation position
             pSrcXYZW.x = 192;
             pSrcXYZW.y = 0;
-            pSrcXYZW.z = 288;
-            pSrcXYZW.w = 128;
+            pSrcXYZW.w = 288 - pSrcXYZW.x;
+            pSrcXYZW.h = 128 - pSrcXYZW.y;
             render->DrawFromSpriteSheet(&pSrcXYZW, &anim_card_pos_drawncard, 0, 2);
         } else {
             // animation is running - update position and draw
             pSrcXYZW.x = 192;
             pSrcXYZW.y = 0;
-            pSrcXYZW.z = 288;
-            pSrcXYZW.w = 128;
+            pSrcXYZW.w = 288 - pSrcXYZW.x;
+            pSrcXYZW.h = 128 - pSrcXYZW.y;
             anim_card_pos_drawncard.x += anim_card_spd_drawncard.x;
             anim_card_pos_drawncard.y += anim_card_spd_drawncard.y;
             render->DrawFromSpriteSheet(&pSrcXYZW, &anim_card_pos_drawncard, 0, 2);
@@ -2033,15 +2033,15 @@ void DrawCardAnimation(int animation_stage) {
     // end play card anim
 }
 
-void ArcomageGame::GetCardRect(unsigned int uCardID, Rect *pCardRect) {
+void ArcomageGame::GetCardRect(unsigned int uCardID, Recti *pCardRect) {
     // get card image position from layout
     // slot encoded as 'YX' eg 76 = yslot 7 and xslot 6
     int xslot = pCards[uCardID].slot % 10;
     int yslot = pCards[uCardID].slot / 10;
     pCardRect->y = 128 * yslot + 220;
     pCardRect->x = 96 * xslot;
-    pCardRect->w = pCardRect->y + 128;
-    pCardRect->z = pCardRect->x + 96;
+    pCardRect->h = 128;
+    pCardRect->w = 96;
 }
 
 int GetPlayerHandCardCount(int player_num) {
@@ -2056,7 +2056,7 @@ int GetPlayerHandCardCount(int player_num) {
 signed int DrawCardsRectangles(int player_num) {
     // draws the framing rectangle around cards on hover
     arcomage_mouse get_mouse;
-    Rect pXYZW;
+    Recti pRect;
     int color;
 
     // only do for the human player
@@ -2066,11 +2066,11 @@ signed int DrawCardsRectangles(int player_num) {
             // calc spacings and first card position
             int card_count = GetPlayerHandCardCount(player_num);
             int card_spacing = (window->GetWidth() - 96 * card_count) / (card_count + 1);
-            pXYZW.y = 327;
-            pXYZW.w = 455;
-            pXYZW.x = card_spacing;
-            int card_offset = pXYZW.x + 96;
-            pXYZW.z = card_offset;
+            pRect.y = 327;
+            pRect.h = 455 - pRect.y;
+            pRect.x = card_spacing;
+            int card_offset = pRect.x + 96;
+            pRect.w = card_offset - pRect.x;
 
             // loop through hand of cards
             for (int hand_index = 0; hand_index < card_count; hand_index++) {
@@ -2078,38 +2078,33 @@ signed int DrawCardsRectangles(int player_num) {
                 if (am_Players[player_num].cards_at_hand[hand_index] != -1) {
                     // shift rectangle co ords
                     if (Player_Cards_Shift) {
-                        pXYZW.x += am_Players[player_num].card_shift[hand_index].x;
-                        pXYZW.z += am_Players[player_num].card_shift[hand_index].x;
-                        pXYZW.y += am_Players[player_num].card_shift[hand_index].y;
-                        pXYZW.w += am_Players[player_num].card_shift[hand_index].y;
+                        pRect.x += am_Players[player_num].card_shift[hand_index].x;
+                        pRect.y += am_Players[player_num].card_shift[hand_index].y;
                     }
 
                     // see if mouse is hovering
-                    if (get_mouse.Inside(&pXYZW)) {
+                    if (get_mouse.Inside(&pRect)) {
                         if (CanCardBePlayed(player_num, hand_index))
                             color = 0x00FFFFFF;  //белый цвет - white frame
                         else
                             color = 0x000000FF;  //красный цвет - red frame
 
                         // draw outline and return
-                        DrawRect(&pXYZW, R8G8B8_to_TargetFormat(color), 0);
+                        DrawRect(&pRect, R8G8B8_to_TargetFormat(color), 0);
                         return hand_index;
                     }
 
                     //рамка чёрного цвета - black frame
-                    DrawRect(&pXYZW, R8G8B8_to_TargetFormat(0), 0);
+                    DrawRect(&pRect, R8G8B8_to_TargetFormat(0), 0);
 
                     // unshift rectangle co ords
                     if (Player_Cards_Shift) {
-                        pXYZW.x -= am_Players[player_num].card_shift[hand_index].x;
-                        pXYZW.z -= am_Players[player_num].card_shift[hand_index].x;
-                        pXYZW.y -= am_Players[player_num].card_shift[hand_index].y;
-                        pXYZW.w -= am_Players[player_num].card_shift[hand_index].y;
+                        pRect.x -= am_Players[player_num].card_shift[hand_index].x;
+                        pRect.y -= am_Players[player_num].card_shift[hand_index].y;
                     }
 
                     // shift offsets along a card width
-                    pXYZW.x += card_offset;
-                    pXYZW.z += card_offset;
+                    pRect.x += card_offset;
                 }
             }
         }
@@ -3017,17 +3012,21 @@ void am_DrawText(const std::string &str, Pointi *pXY) {
                              0, str, false, 0, 0);
 }
 
-void DrawRect(Rect *pXYZW, uint16_t uColor, char bSolidFill) {
+void DrawRect(Recti *pRect, uint16_t uColor, char bSolidFill) {
     if (bSolidFill) {
-        int width = pXYZW->z - pXYZW->x;
-        int height = pXYZW->w - pXYZW->y;
-        render->FillRectFast(pXYZW->x, pXYZW->y, width, height, uColor);
+        int width = pRect->w;
+        int height = pRect->h;
+        render->FillRectFast(pRect->x, pRect->y, width, height, uColor);
     } else {
         render->BeginLines2D();
-        render->RasterLine2D(pXYZW->x, pXYZW->y, pXYZW->z, pXYZW->y, uColor);
-        render->RasterLine2D(pXYZW->z, pXYZW->y, pXYZW->z, pXYZW->w, uColor);
-        render->RasterLine2D(pXYZW->z, pXYZW->w, pXYZW->x, pXYZW->w, uColor);
-        render->RasterLine2D(pXYZW->x, pXYZW->w, pXYZW->x, pXYZW->y, uColor);
+        int x0 = pRect->x;
+        int x1 = pRect->x + pRect->w;
+        int y0 = pRect->y;
+        int y1 = pRect->y + pRect->h;
+        render->RasterLine2D(x0, y0, x1, y0, uColor);
+        render->RasterLine2D(x1, y0, x1, y1, uColor);
+        render->RasterLine2D(x1, y1, x0, y1, uColor);
+        render->RasterLine2D(x0, y1, x0, y0, uColor);
         render->EndLines2D();
     }
 }

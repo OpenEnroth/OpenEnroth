@@ -47,12 +47,12 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() : GUIWindow_Book() {
     pBtn_Book_1 = this->CreateButton(
         pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1,
         ui_book_button1_on->GetWidth(), ui_book_button1_on->GetHeight(), 1, 0,
-        UIMSG_ClickBooksBtn, 11, GameKey::None, localization->GetString(LSTR_SCROLL_UP),
+        UIMSG_ClickBooksBtn, 11, PlatformKey::None, localization->GetString(LSTR_SCROLL_UP),
         {ui_book_button1_on});
     pBtn_Book_2 = this->CreateButton(
         pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38,
         ui_book_button2_on->GetWidth(), ui_book_button2_on->GetHeight(), 1, 0,
-        UIMSG_ClickBooksBtn, 10, GameKey::None, localization->GetString(LSTR_SCROLL_DOWN),
+        UIMSG_ClickBooksBtn, 10, PlatformKey::None, localization->GetString(LSTR_SCROLL_DOWN),
         {ui_book_button2_on});
 
     num_achieved_awards = 0;

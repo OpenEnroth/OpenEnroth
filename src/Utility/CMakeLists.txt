@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 set(UTILITY_SOURCES Blob.cpp
                     Color.cpp
                     DataPath.cpp
+                    Log.cpp
                     String.cpp
                     Math/TrigLut.cpp
                     Streams/MemoryInputStream.cpp
@@ -16,10 +17,12 @@ set(UTILITY_HEADERS Blob.h
                     Flags.h
                     FreeDeleter.h
                     IndexedArray.h
+                    Log.h
                     Memory.h
                     Segment.h
                     String.h
                     Geometry/BBox.h
+                    Geometry/Margins.h
                     Geometry/Plane.h
                     Geometry/Vec.h
                     Geometry/Size.h
@@ -43,7 +46,7 @@ if(ENABLE_TESTS)
                              Streams/Tests/FileOutputStream_ut.cpp)
 
     add_library(test_utility OBJECT ${TEST_UTILITY_SOURCES})
-    target_compile_definitions(test_utility PRIVATE TESTGROUP=Utility)
+    target_compile_definitions(test_utility PRIVATE TEST_GROUP=Utility)
     target_link_libraries(test_utility utility)
 
     target_check_style(test_utility)

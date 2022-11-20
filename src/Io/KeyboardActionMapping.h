@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-#include "Io/GameKey.h"
+#include "Platform/PlatformKey.h"
 #include "Io/InputAction.h"
 
 #include "Application/GameConfig.h"
@@ -27,24 +27,24 @@ namespace Io {
     struct KeyboardActionMapping {
         KeyboardActionMapping(std::shared_ptr<GameConfig> config);
 
-        void MapKey(InputAction action, GameKey key);
-        void MapKey(InputAction action, GameKey key, KeyToggleType type);
-        GameKey MapDefaultKey(InputAction action);
+        void MapKey(InputAction action, PlatformKey key);
+        void MapKey(InputAction action, PlatformKey key, KeyToggleType type);
+        PlatformKey MapDefaultKey(InputAction action);
 
-        GameKey GetKey(InputAction action) const;
+        PlatformKey GetKey(InputAction action) const;
         KeyToggleType GetToggleType(InputAction action) const;
 
         GameConfig::ConfigValue<std::string> *InputActionToConfigKey(InputAction action);
-        GameKey ConfigDefaultKey(InputAction action);
-        GameKey ConfigGetKey(InputAction action);
-        void ConfigSetKey(InputAction action, GameKey key);
+        PlatformKey ConfigDefaultKey(InputAction action);
+        PlatformKey ConfigGetKey(InputAction action);
+        void ConfigSetKey(InputAction action, PlatformKey key);
 
         void ReadMappings();
         void StoreMappings();
         void SetDefaultMapping();
 
      private:
-        std::map<InputAction, GameKey> actionKeyMap;
+        std::map<InputAction, PlatformKey> actionKeyMap;
         std::map<InputAction, KeyToggleType> keyToggleMap;
         std::shared_ptr<Application::GameConfig> config = nullptr;
     };

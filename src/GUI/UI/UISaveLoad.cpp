@@ -8,6 +8,7 @@
 #include <string>
 
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageLoader.h"
@@ -24,7 +25,6 @@
 #include "GUI/UI/UIMainMenu.h"
 
 #include "Platform/Api.h"
-#include "Platform/OSWindow.h"
 
 
 using Io::TextInputType;
@@ -104,10 +104,10 @@ GUIWindow_Save::GUIWindow_Save() :
     CreateButton(21, 298, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 5);
     CreateButton(21, 318, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 6);
 
-    pBtnLoadSlot = CreateButton(241, 302, 105, 40, 1, 0, UIMSG_SaveLoadBtn, 0, GameKey::None, "", {saveload_ui_ls_saved});
-    pBtnCancel = CreateButton(350, 302, 105, 40, 1, 0, UIMSG_Cancel, 0, GameKey::None, "", {saveload_ui_x_d});
-    pBtnArrowUp = CreateButton(215, 199, 17, 17, 1, 0, UIMSG_ArrowUp, 0, GameKey::None, "", {ui_ar_up_dn});
-    pBtnDownArrow = CreateButton(215, 323, 17, 17, 1, 0, UIMSG_DownArrow, MAX_SAVE_SLOTS, GameKey::None, "", {ui_ar_dn_dn});
+    pBtnLoadSlot = CreateButton(241, 302, 105, 40, 1, 0, UIMSG_SaveLoadBtn, 0, PlatformKey::None, "", {saveload_ui_ls_saved});
+    pBtnCancel = CreateButton(350, 302, 105, 40, 1, 0, UIMSG_Cancel, 0, PlatformKey::None, "", {saveload_ui_x_d});
+    pBtnArrowUp = CreateButton(215, 199, 17, 17, 1, 0, UIMSG_ArrowUp, 0, PlatformKey::None, "", {ui_ar_up_dn});
+    pBtnDownArrow = CreateButton(215, 323, 17, 17, 1, 0, UIMSG_DownArrow, MAX_SAVE_SLOTS, PlatformKey::None, "", {ui_ar_dn_dn});
 
     CreateButton(215, 216, 17, 107, 1, 0, UIMSG_SaveLoadScroll, MAX_SAVE_SLOTS);
 }
@@ -220,10 +220,10 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     CreateButton(21, 303, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 5);
     CreateButton(21, 324, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 6);
 
-    pBtnLoadSlot = CreateButton(241, 302, 105, 40, 1, 0, UIMSG_SaveLoadBtn, 0, GameKey::None, "", {saveload_ui_ls_saved});
-    pBtnCancel = CreateButton(350, 302, 105, 40, 1, 0, UIMSG_Cancel, 0, GameKey::None, "", {saveload_ui_x_d});
-    pBtnArrowUp = CreateButton(215, 199, 17, 17, 1, 0, UIMSG_ArrowUp, 0, GameKey::None, "", {ui_ar_up_dn});
-    pBtnDownArrow = CreateButton(215, 323, 17, 17, 1, 0, UIMSG_DownArrow, uNumSavegameFiles, GameKey::None, "", {ui_ar_dn_dn});
+    pBtnLoadSlot = CreateButton(241, 302, 105, 40, 1, 0, UIMSG_SaveLoadBtn, 0, PlatformKey::None, "", {saveload_ui_ls_saved});
+    pBtnCancel = CreateButton(350, 302, 105, 40, 1, 0, UIMSG_Cancel, 0, PlatformKey::None, "", {saveload_ui_x_d});
+    pBtnArrowUp = CreateButton(215, 199, 17, 17, 1, 0, UIMSG_ArrowUp, 0, PlatformKey::None, "", {ui_ar_up_dn});
+    pBtnDownArrow = CreateButton(215, 323, 17, 17, 1, 0, UIMSG_DownArrow, uNumSavegameFiles, PlatformKey::None, "", {ui_ar_dn_dn});
 
     CreateButton(215, 216, 17, 107, 1, 0, UIMSG_SaveLoadScroll, uNumSavegameFiles);
 }

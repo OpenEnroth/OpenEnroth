@@ -7,6 +7,7 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/LOD.h"
@@ -15,7 +16,7 @@
 #include "Engine/SaveLoad.h"
 #include "Engine/Time.h"
 
-#include "Io/GameKey.h"
+#include "Platform/PlatformKey.h"
 #include "Io/InputAction.h"
 #include "Io/KeyboardInputHandler.h"
 #include "Io/Mouse.h"
@@ -29,7 +30,6 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Platform/Api.h"
-#include "Platform/OSWindow.h"
 
 
 using Application::Menu;
@@ -40,7 +40,7 @@ using Io::InputAction;
 
 InputAction currently_selected_action_for_binding = InputAction::Invalid;  // 506E68
 std::map<InputAction, bool> key_map_conflicted;  // 506E6C
-std::map<InputAction, GameKey> prev_key_map;
+std::map<InputAction, PlatformKey> prev_key_map;
 
 void Game_StartNewGameWhilePlaying(bool force_start) {
     if (dword_6BE138 == 124 || force_start) {
@@ -216,8 +216,8 @@ void Menu::EventLoop() {
                 int v197 = 1;
                 // keyboardController->SetDefaultMapping();
                 for (auto action : AllInputActions()) {
-                    GameKey oldKey = keyboardActionMapping->GetKey(action);
-                    GameKey newKey = keyboardActionMapping->MapDefaultKey(action);
+                    PlatformKey oldKey = keyboardActionMapping->GetKey(action);
+                    PlatformKey newKey = keyboardActionMapping->MapDefaultKey(action);
 
                     if (oldKey != newKey) {
                         GUI_ReplaceHotkey(oldKey, newKey, v197);

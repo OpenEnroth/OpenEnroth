@@ -1,13 +1,12 @@
 #include "GameConfig.h"
 
+#define MINI_CASE_SENSITIVE
+#include <mini/ini.h>
+
 #include <algorithm>
-#include <cctype>
 #include <string>
 
 #include "Utility/DataPath.h"
-
-#define MINI_CASE_SENSITIVE
-#include "thirdparty/mini/src/mini/ini.h"
 
 using Application::GameConfig;
 

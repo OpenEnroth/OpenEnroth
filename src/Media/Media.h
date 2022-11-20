@@ -3,7 +3,7 @@
 #include <memory>
 #include <string>
 
-#include "Engine/Rect.h"
+#include "Utility/Geometry/Rect.h"
 #include "Utility/Blob.h"
 
 class IAudioDataSource {
@@ -89,6 +89,6 @@ class IMovie {
     virtual bool IsPlaying() const = 0;
     virtual std::shared_ptr<Blob> GetFrame() = 0;
     virtual std::string GetFormat() = 0;
-    virtual void PlayBink(Rect rect) = 0;
+    virtual void PlayBink(Recti rect) = 0;
 };
 typedef std::shared_ptr<IMovie> PMovie;

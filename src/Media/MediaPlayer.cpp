@@ -21,9 +21,10 @@ extern "C" {
 #include <vector>
 
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/ErrorHandling.h"
 #include "Engine/Graphics/IRender.h"
-#include "Engine/Log.h"
+#include "Utility/Log.h"
 
 #include "GUI/GUIWindow.h"
 
@@ -33,7 +34,6 @@ extern "C" {
 #include "Media/Audio/OpenALSoundProvider.h"
 
 #include "Platform/Api.h"
-#include "Platform/OSWindow.h"
 
 OpenALSoundProvider *provider = nullptr;
 
@@ -448,7 +448,7 @@ class Movie : public IMovie {
         return video.last_frame;
     }
 
-    virtual void PlayBink(Rect rect) {
+    virtual void PlayBink(Recti rect) {
         // fix for #39 - choppy sound with bink
 
         AVPacket packet;
@@ -782,11 +782,11 @@ void MPlayer::HouseMovieLoop() {
 
     std::shared_ptr<Blob> buffer = pMovie_Track->GetFrame();
     if (buffer) {
-        Rect rect;
+        Recti rect;
         rect.x = 8;
         rect.y = 8;
-        rect.z = rect.x + game_viewport_width;
-        rect.w = rect.y + game_viewport_height;
+        rect.w = game_viewport_width;
+        rect.h = game_viewport_height;
 
         // update pixels from buffer
         uint32_t *pix = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_A8R8G8B8);
@@ -848,11 +848,11 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
     float w = pMovie_Track->GetWidth() * ratio;
     float h = pMovie_Track->GetHeight() * ratio;
 
-    Rect rect;
+    Recti rect;
     rect.x = (float)window->GetWidth() / 2 - w / 2;
     rect.y = (float)window->GetHeight() / 2 - h / 2;
-    rect.z = rect.x + w;
-    rect.w = rect.y + h;
+    rect.w = w;
+    rect.h = h;
 
     // create texture
     Texture *tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(), IMAGE_FORMAT_A8R8G8B8);

@@ -1,4 +1,5 @@
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 
 #include "Engine/Events.h"
 #include "Engine/Graphics/Camera.h"
@@ -32,26 +33,14 @@
 #include "Engine/SaveLoad.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Spells/CastSpellInfo.h"
-#include "Engine/stru123.h"
-#include "Engine/Tables/FactionTable.h"
-#include "Engine/Tables/FrameTableInc.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/PlayerFrameTable.h"
-#include "Engine/Tables/StorylineTextTable.h"
 #include "Engine/Time.h"
-#include "Engine/TurnEngine/TurnEngine.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
-#include "GUI/UI/UICredits.h"
-#include "GUI/UI/UIDialogue.h"
-#include "GUI/UI/UIGame.h"
-#include "GUI/UI/UIHouses.h"
-#include "GUI/UI/UIMainMenu.h"
-#include "GUI/UI/UIPartyCreation.h"
-#include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIStatusBar.h"
 
 #include "Io/Mouse.h"
@@ -60,8 +49,6 @@
 #include "Media/MediaPlayer.h"
 
 #include "Platform/Api.h"
-#include "Platform/OSWindow.h"
-#include "Platform/OSWindowFactory.h"
 
 using EngineIoc = Engine_::IocContainer;
 
@@ -112,9 +99,6 @@ void Engine_DeinitializeAndTerminate(int exitCode) {
 
     if (render)
         render->Release();
-
-    if (window)
-        window->Release();
 
     exit(exitCode);
 }
@@ -448,10 +432,14 @@ void Engine::Deinitialize() {
     if (mouse)
         mouse->Deactivate();
 
-    pItemTable->Release();
-    pNPCStats->Release();
+    if (pItemTable)
+        pItemTable->Release();
 
-    pNew_LOD->FreeSubIndexAndIO();
+    if (pNPCStats)
+        pNPCStats->Release();
+
+    if (pNew_LOD)
+        pNew_LOD->FreeSubIndexAndIO();
 
     delete pEventTimer;
 }
@@ -962,7 +950,7 @@ bool Engine::MM7_Initialize() {
 
 //----- (00465D0B) --------------------------------------------------------
 void Engine::SecondaryInitialization() {
-    mouse->Initialize(window);
+    mouse->Initialize();
 
     pItemTable = new ItemTable;
     pItemTable->Initialize();

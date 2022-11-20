@@ -1,3 +1,6 @@
 #include "Vec.h"
 
-using Pointi = Vec2i;
+template<class T>
+using Point = Vec2<T>;
+
+using Pointi = Point<int>;

@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "Engine/IocContainer.h"
-#include "Engine/Log.h"
+#include "Utility/Log.h"
 #include "Engine/ZlibWrapper.h"
 
 #include "Platform/Api.h"
@@ -56,7 +56,7 @@ bool HWLContainer::Open(const std::string &pFilename) {
         fread(tmpName, 20, 1, pFile);
         tmpName[20] = 0;
         HWLNode node;
-        node.sName = MakeLower(std::string(tmpName));
+        node.sName = ToLower(std::string(tmpName));
         node.uOffset = 0;
         vNodes.push_back(node);
     }
@@ -93,7 +93,7 @@ HWLTexture *HWLContainer::LoadTexture(const std::string &pName) {
         return nullptr;
     }
 
-    std::map<std::string, size_t>::iterator it = mNodes.find(MakeLower(pName));
+    std::map<std::string, size_t>::iterator it = mNodes.find(ToLower(pName));
     if (it == mNodes.end()) {
         return nullptr;
     }

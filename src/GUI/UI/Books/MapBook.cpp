@@ -57,27 +57,27 @@ GUIWindow_MapBook::GUIWindow_MapBook() : GUIWindow_Book() {
 
     pBtn_Book_1 = CreateButton(
         pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1, 50, 34, 1,
-        0, UIMSG_ClickBooksBtn, 0, GameKey::None, localization->GetString(LSTR_ZOOM_IN),
+        0, UIMSG_ClickBooksBtn, 0, PlatformKey::None, localization->GetString(LSTR_ZOOM_IN),
         {ui_book_button1_on});
     pBtn_Book_2 = CreateButton(
         pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 1, GameKey::None, localization->GetString(LSTR_ZOOM_OUT),
+        1, 0, UIMSG_ClickBooksBtn, 1, PlatformKey::None, localization->GetString(LSTR_ZOOM_OUT),
         {ui_book_button2_on});
     pBtn_Book_3 = CreateButton(
         pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 113, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 2, GameKey::None,
+        1, 0, UIMSG_ClickBooksBtn, 2, PlatformKey::None,
         localization->GetString(LSTR_SCROLL_UP));
     pBtn_Book_4 = CreateButton(
         pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 150, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 3, GameKey::None,
+        1, 0, UIMSG_ClickBooksBtn, 3, PlatformKey::None,
         localization->GetString(LSTR_SCROLL_DOWN));
     pBtn_Book_5 = CreateButton(
         pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 188, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 4, GameKey::None,
+        1, 0, UIMSG_ClickBooksBtn, 4, PlatformKey::None,
         localization->GetString(LSTR_SCROLL_RIGHT));
     pBtn_Book_6 = CreateButton(
         pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 226, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 5, GameKey::None,
+        1, 0, UIMSG_ClickBooksBtn, 5, PlatformKey::None,
         localization->GetString(LSTR_SCROLL_LEFT));
 }
 

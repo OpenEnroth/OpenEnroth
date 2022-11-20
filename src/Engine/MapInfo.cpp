@@ -73,7 +73,7 @@ void MapStats::Initialize() {
                     pInfos[i].pName = RemoveQuotes(test_string);  // randoms crashes here  // got 1 too
                     break;
                 case 2:
-                    pInfos[i].pFilename = MakeLower(RemoveQuotes(test_string));
+                    pInfos[i].pFilename = ToLower(RemoveQuotes(test_string));
                     break;
                 case 3:
                     pInfos[i].uNumResets = atoi(test_string);
@@ -228,7 +228,7 @@ int MapStats::sub_410D99_get_map_index(int a1) {
 MAP_TYPE MapStats::GetMapInfo(const std::string &Str2) {
     Assert(uNumMaps >= 2);
 
-    std::string map_name = MakeLower(Str2);
+    std::string map_name = ToLower(Str2);
 
     for (uint i = 1; i < uNumMaps; ++i) {
         if (pInfos[i].pFilename == map_name) {

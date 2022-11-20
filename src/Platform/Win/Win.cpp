@@ -7,8 +7,6 @@
 #include <string>
 #include <vector>
 
-#include "Application/Game.h"
-
 #include "Platform/Api.h"
 
 #pragma comment(lib, "winmm.lib")

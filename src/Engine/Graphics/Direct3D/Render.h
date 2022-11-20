@@ -13,7 +13,6 @@
 struct ODMFace;
 class RenderD3D;
 class Image;
-class OSWindow;
 class Nuklear;
 
 struct BatchTriangles;
@@ -25,7 +24,6 @@ class Render : public RenderBase {
  public:
     Render(
         std::shared_ptr<Application::GameConfig> config,
-        std::shared_ptr<OSWindow> window,
         DecalBuilder* decal_builder,
         LightmapBuilder* lightmap_builder,
         SpellFxRenderer* spellfx,
@@ -84,7 +82,7 @@ class Render : public RenderBase {
     virtual void ClearZBuffer() override;
     virtual void RestoreFrontBuffer() override;
     virtual void RestoreBackBuffer() override;
-    virtual void BltBackToFontFast(int a2, int a3, Rect *pSrcRect) override;
+    virtual void BltBackToFontFast(int a2, int a3, Recti *pSrcRect) override;
     virtual void BeginSceneD3D() override;
 
     virtual unsigned int GetActorTintColor(int DimLevel, int tint, float WorldViewX, int a5, RenderBillboard *Billboard) override;
@@ -123,12 +121,12 @@ class Render : public RenderBase {
                                          int height) override;
     virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y,
                                    Image *) override;
-    virtual void DrawImage(Image *, const Rect &rect, uint paletteid = 0) override;
+    virtual void DrawImage(Image *, const Recti &rect, uint paletteid = 0) override;
 
     virtual void ZDrawTextureAlpha(float u, float v, Image *pTexture, int zVal) override;
     virtual void BlendTextures(int x, int y, Image *imgin, Image *imgblend,
                                int time, int start_opacity, int end_opacity) override;
-    virtual void DrawMonsterPortrait(Rect rc, SpriteFrame *Portrait, int Y_Offset) override;
+    virtual void DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait, int Y_Offset) override;
 
     virtual void DrawMasked(float u, float v, class Image *img,
                             unsigned int color_dimming_level, uint16_t mask) override;
@@ -199,7 +197,7 @@ class Render : public RenderBase {
     virtual void DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices,
                                         Texture *texture) override;
 
-    virtual void DrawFromSpriteSheet(Rect *pSrcRect, Pointi *pTargetPoint, int a3,
+    virtual void DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, int a3,
                                int blend_mode) override;
 
     virtual void ReleaseTerrain() override;

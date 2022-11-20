@@ -24,16 +24,20 @@ elseif(APPLE)
   enable_libcxx_assertions(FALSE)
 endif()
 
+if(UNIX)
+  add_compile_options(-Werror=return-type) # Control reaches the end of non-void function, this is an error on MSVC
+endif()
+
 include(CppLint)
 include(Dependencies)
 
 add_subdirectory(thirdparty)
 
-include_directories(${INCLUDE_DIRECTORIES} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/src ${INCLUDE_THIRDPARTY_DIRS})
+include_directories(${INCLUDE_DIRECTORIES} ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/test ${INCLUDE_THIRDPARTY_DIRS})
 add_subdirectory(test)
 add_subdirectory(src)
 
-add_executable(World_of_Might_and_Magic MACOSX_BUNDLE WIN32 ./src/Engine/Engine.cpp)
+add_executable(World_of_Might_and_Magic MACOSX_BUNDLE WIN32 src/Application/main.cpp)
 target_check_style(World_of_Might_and_Magic)
 target_fix_libcxx_assertions(World_of_Might_and_Magic)
 

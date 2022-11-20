@@ -4,6 +4,7 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/LOD.h"
@@ -25,7 +26,6 @@
 #include "Media/MediaPlayer.h"
 
 #include "Platform/Api.h"
-#include "Platform/OSWindow.h"
 
 namespace Application {
 
@@ -147,13 +147,13 @@ void GameOver_Loop(int v15) {
         HEXRAYS_LODWORD(v23) = OS_GetTime() + 5000;
         while ((unsigned int)v23 > OS_GetTime());
 
-        window->HandleAllEvents();
+        eventLoop->ProcessMessages(eventHandler);
 
         pMessageQueue_50CBD0->Flush();
         keyboardInputHandler->ResetKeys();
         do {
-            window->HandleAllEvents();
-        } while (keyboardInputHandler->LastPressedKey() != GameKey::Escape);
+            eventLoop->ProcessMessages(eventHandler);
+        } while (keyboardInputHandler->LastPressedKey() != PlatformKey::Escape);
         pMessageQueue_50CBD0->Flush();
     }
     if (v15) {

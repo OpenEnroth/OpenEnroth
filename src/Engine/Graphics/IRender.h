@@ -6,11 +6,10 @@
 #include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/Texture.h"
 #include "Engine/OurMath.h"
-#include "Engine/Rect.h"
 #include "Application/GameConfig.h"
 #include "Utility/Color.h"
+#include "Utility/Geometry/Rect.h"
 
-class OSWindow;
 class Sprite;
 class SpriteFrame;
 struct SoftwareBillboard;
@@ -184,7 +183,6 @@ class IRender {
  public:
     inline IRender(
         std::shared_ptr<Application::GameConfig> config,
-        std::shared_ptr<OSWindow> window,
         DecalBuilder *decal_builder,
         LightmapBuilder *lightmap_builder,
         SpellFxRenderer *spellfx,
@@ -193,7 +191,6 @@ class IRender {
         Log *logger
     ) {
         this->config = config;
-        this->window = window;
         this->decal_builder = decal_builder;
         this->lightmap_builder = lightmap_builder;
         this->spell_fx_renderer = spellfx;
@@ -261,7 +258,7 @@ class IRender {
     virtual void ClearZBuffer() = 0;
     virtual void RestoreFrontBuffer() = 0;
     virtual void RestoreBackBuffer() = 0;
-    virtual void BltBackToFontFast(int a2, int a3, Rect *a4) = 0;
+    virtual void BltBackToFontFast(int a2, int a3, Recti *a4) = 0;
     virtual void BeginSceneD3D() = 0;
 
     virtual unsigned int GetActorTintColor(int DimLevel, int tint, float WorldViewX, int a5, RenderBillboard *Billboard) = 0;
@@ -306,12 +303,12 @@ class IRender {
     virtual void DrawTextureAlphaNew(float u, float v, Image *) = 0;
     virtual void DrawTextureCustomHeight(float u, float v, Image *, int height) = 0;
     virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y, Image *) = 0;
-    virtual void DrawImage(Image *, const Rect &rect, const uint paletteid = 0) = 0;
+    virtual void DrawImage(Image *, const Recti &rect, const uint paletteid = 0) = 0;
 
     virtual void ZDrawTextureAlpha(float u, float v, Image *pTexture, int zVal) = 0;
     virtual void BlendTextures(int a2, int a3, Image *a4, Image *a5, int t, int start_opacity, int end_opacity) = 0;
     virtual void TexturePixelRotateDraw(float u, float v, Image *img, int time) = 0;
-    virtual void DrawMonsterPortrait(Rect rc, SpriteFrame *Portrait_Sprite, int Y_Offset) = 0;
+    virtual void DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait_Sprite, int Y_Offset) = 0;
 
     virtual void DrawMasked(float u, float v, Image *img,
                             unsigned int color_dimming_level,
@@ -381,7 +378,7 @@ class IRender {
     virtual void DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices,
                                         Texture *texture) = 0;
 
-    virtual void DrawFromSpriteSheet(struct Rect *pSrcRect,
+    virtual void DrawFromSpriteSheet(Recti *pSrcRect,
                                Pointi *pTargetPoint, int a3,
                                int blend_mode) = 0;
 
@@ -416,7 +413,6 @@ class IRender {
     LightmapBuilder *lightmap_builder = nullptr;
     std::shared_ptr<ParticleEngine> particle_engine = nullptr;
     Vis *vis = nullptr;
-    std::shared_ptr<OSWindow> window = nullptr;
 
     virtual void WritePixel16(int x, int y, uint16_t color) = 0;
 

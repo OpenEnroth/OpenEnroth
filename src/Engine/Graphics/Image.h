@@ -30,8 +30,8 @@ class Image {
                          IMAGE_FORMAT format, const void *pixels = nullptr);
     static Image *Create(ImageLoader *loader);
 
-    unsigned int GetWidth();
-    unsigned int GetHeight();
+    int GetWidth();
+    int GetHeight();
     const void *GetPixels(IMAGE_FORMAT format);
     const void *GetPalette();
     const void *GetPalettePixels();

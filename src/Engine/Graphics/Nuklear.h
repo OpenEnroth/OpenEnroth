@@ -3,7 +3,7 @@
 #include <memory>
 
 #include "GUI/GUIWindow.h"
-#include "Io/GameKey.h"
+#include "Platform/PlatformKey.h"
 
 #include <lua.hpp>
 #include "nuklear/nuklear_config.h"
@@ -28,10 +28,10 @@ class Nuklear {
 
      Nuklear();
 
-     std::shared_ptr<Nuklear> Initialize();
+     static std::shared_ptr<Nuklear> Initialize();
      bool Create(enum WindowType winType);
      bool Draw(enum NUKLEAR_STAGE stage, enum WindowType winType, int type);
-     int KeyEvent(Io::GameKey key);
+     int KeyEvent(PlatformKey key);
      bool Reload();
      void Release(enum WindowType winType);
      void Destroy();

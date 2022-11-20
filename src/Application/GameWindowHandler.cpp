@@ -1,11 +1,16 @@
 #include "GameWindowHandler.h"
 
+#include <vector>
+
 #include "Arcomage/Arcomage.h"
 
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
+#include "Engine/Graphics/Nuklear.h"
+#include "Engine/Graphics/NuklearEventHandler.h"
 #include "Engine/IocContainer.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
@@ -19,7 +24,6 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-#include "Platform/OSWindow.h"
 
 #include "IocContainer.h"
 
@@ -29,9 +33,88 @@ using ApplicationIoc = Application::IocContainer;
 using Application::GameWindowHandler;
 using Io::InputAction;
 
+static char PlatformKeyToChar(PlatformKey key, PlatformModifiers mods) {
+    if (key >= PlatformKey::Digit0 && key <= PlatformKey::Digit9) {
+        return std::to_underlying(key) - std::to_underlying(PlatformKey::Digit0) + '0';
+    } else if (key >= PlatformKey::A && key <= PlatformKey::Z) {
+        if (mods & PlatformModifier::Shift) {
+            return std::to_underlying(key) - std::to_underlying(PlatformKey::A) + 'A';
+        } else {
+            return std::to_underlying(key) - std::to_underlying(PlatformKey::A) + 'a';
+        }
+    }
+
+    return 0;
+}
+
 
 GameWindowHandler::GameWindowHandler() {
     this->mouse = EngineIoc::ResolveMouse();
+    this->keyboardController_ = std::make_unique<GameKeyboardController>();
+}
+
+void GameWindowHandler::UpdateWindowFromConfig(const GameConfig *config) {
+    assert(config);
+
+    std::vector<Recti> displays = platform->DisplayGeometries();
+
+    Pointi pos = {config->window.PositionX.Get(), config->window.PositionY.Get()};
+    Sizei size = {config->window.Width.Get(), config->window.Height.Get()};
+
+    Recti displayRect;
+    int display = config->window.Display.Get();
+    if (display > 0 && display < displays.size()) {
+        displayRect = displays[display];
+    } else if (!displays.empty()) {
+        displayRect = displays[0];
+    }
+
+    if (config->window.Fullscreen.Get()) {
+        pos = displayRect.TopLeft();
+    } else if (Recti(Pointi(), displayRect.Size()).Contains(pos)) {
+        pos += displayRect.TopLeft();
+    } else if (displayRect != Recti()) {
+        pos = displayRect.Center() - Pointi(size.w, size.h) / 2;
+    } else {
+        pos = Pointi(0, 0); // DisplayGeometries() failed so we just give up.
+    }
+
+    window->SetPosition(pos);
+    window->Resize(size);
+    window->SetTitle(config->window.Title.Get());
+    window->SetBorderless(config->window.Borderless.Get());
+    window->SetGrabsMouse(config->window.MouseGrab.Get());
+    window->SetFullscreen(config->window.Fullscreen.Get());
+    window->SetVisible(true);
+}
+
+void GameWindowHandler::UpdateConfigFromWindow(GameConfig *config) {
+    assert(config);
+
+    std::vector<Recti> displays = platform->DisplayGeometries();
+
+    Pointi pos = window->Position();
+    Sizei size = window->Size();
+
+    Pointi relativePos = Pointi();
+    int display = 0;
+
+    for (size_t i = 0; i < displays.size(); i++) {
+        if (displays[i].Contains(pos)) {
+            display = i;
+            relativePos = pos - displays[i].TopLeft();
+            break;
+        }
+    }
+
+    config->window.PositionX.Set(relativePos.x);
+    config->window.PositionY.Set(relativePos.y);
+    config->window.Width.Set(size.w);
+    config->window.Height.Set(size.h);
+    config->window.Display.Set(display);
+    config->window.Borderless.Set(window->IsBorderless());
+    config->window.MouseGrab.Set(window->GrabsMouse());
+    config->window.Fullscreen.Set(window->IsFullscreen());
 }
 
 void GameWindowHandler::OnScreenshot() {
@@ -40,7 +123,7 @@ void GameWindowHandler::OnScreenshot() {
     }
 }
 
-bool GameWindowHandler::OnChar(GameKey key, int c) {
+bool GameWindowHandler::OnChar(PlatformKey key, int c) {
     bool textInputHandled = false;
 
     if (!keyboardInputHandler)
@@ -51,7 +134,7 @@ bool GameWindowHandler::OnChar(GameKey key, int c) {
 
     // regular text input
     if (c != -1) {
-        textInputHandled |= keyboardInputHandler->ProcessTextInput(GameKey::Char, c);
+        textInputHandled |= keyboardInputHandler->ProcessTextInput(PlatformKey::Char, c);
     }
 
     if (!textInputHandled && !viewparams->field_4C) {
@@ -72,7 +155,7 @@ void GameWindowHandler::OnMouseLeftClick(int x, int y) {
         mouse->SetMouseClick(x, y);
 
         if (GetCurrentMenuID() == MENU_CREATEPARTY) {
-            UI_OnKeyDown(GameKey::Select);
+            UI_OnKeyDown(PlatformKey::Select);
         }
 
         if (engine) {
@@ -150,10 +233,9 @@ void GameWindowHandler::OnMouseMove(int x, int y, bool left_button, bool right_b
 }
 
 
-extern bool _507B98_ctrl_pressed;
 extern InputAction currently_selected_action_for_binding;
 
-void GameWindowHandler::OnKey(GameKey key) {
+void GameWindowHandler::OnKey(PlatformKey key) {
     if (!keyboardInputHandler)
         return;
 
@@ -164,34 +246,32 @@ void GameWindowHandler::OnKey(GameKey key) {
         pArcomageGame->stru1.am_input_type = 1;
 
         set_stru1_field_8_InArcomage(0);
-        if (key == GameKey::Escape) {
+        if (key == PlatformKey::Escape) {
             pArcomageGame->stru1.am_input_type = 10;
         } else if (pArcomageGame->check_exit) {
            pArcomageGame->check_exit = 0;
            pArcomageGame->force_redraw_1 = 1;
         }
 
-        if (key == GameKey::F3) {
+        if (key == PlatformKey::F3) {
             OnScreenshot();
-        } else if (key == GameKey::F4 && !pMovie_Track) {
+        } else if (key == PlatformKey::F4 && !pMovie_Track) {
             OnToggleFullscreen();
             pArcomageGame->stru1.am_input_type = 9;
         }
     } else {
         pMediaPlayer->StopMovie();
-        if (key == GameKey::Return) {
+        if (key == PlatformKey::Return) {
             if (!viewparams->field_4C) UI_OnKeyDown(key);
-        } else if (key == GameKey::Control) {
-            _507B98_ctrl_pressed = true;
-        } else if (key == GameKey::Escape) {
+        } else if (key == PlatformKey::Escape) {
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, window_SpeakInHouse != 0, 0);
-        } else if (key == GameKey::F4 && !pMovie_Track) {
+        } else if (key == PlatformKey::F4 && !pMovie_Track) {
             OnToggleFullscreen();
-        } else if (key == GameKey::Tilde) {
+        } else if (key == PlatformKey::Tilde) {
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_OpenDebugMenu, window_SpeakInHouse != 0, 0);
-        } else if (key == GameKey::Backspace && current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
+        } else if (key == PlatformKey::Backspace && current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_DebugReloadShader, window_SpeakInHouse != 0, 0);
-        } else if (key == GameKey::Left || key == GameKey::Right || key == GameKey::Up || key == GameKey::Down) {
+        } else if (key == PlatformKey::Left || key == PlatformKey::Right || key == PlatformKey::Up || key == PlatformKey::Down) {
             if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME &&
                 current_screen_type != CURRENT_SCREEN::SCREEN_MODAL_WINDOW) {
                 if (!viewparams->field_4C) {
@@ -284,8 +364,93 @@ void GameWindowHandler::OnDeactivated() {
 
 void GameWindowHandler::OnToggleFullscreen() {
     engine->config->window.Fullscreen.Toggle();
-    if (engine->config->window.Fullscreen.Get())
-        window->SetFullscreenMode();
-    else
-        window->SetWindowedMode(engine->config->window.Width.Get(), engine->config->window.Height.Get());
+    if (engine->config->window.Fullscreen.Get()) {
+        // TODO(captainurist): there are several fullscreen modes --- with windowsize == desktopsize, and
+        // windowsize != desktopsize, and they're even using different SDL enums. Investigate & implement properly.
+        // See SDL_WINDOW_FULLSCREEN_DESKTOP vs SDL_WINDOW_FULLSCREEN
+        window->SetFullscreen(true);
+    } else {
+        window->SetFullscreen(false);
+        window->Resize({engine->config->window.Width.Get(), engine->config->window.Height.Get()});
+        window->SetPosition({engine->config->window.PositionX.Get(), engine->config->window.PositionY.Get()});
+    }
+}
+
+void GameWindowHandler::Event(PlatformWindow *window, const PlatformEvent *event) {
+    if (nuklear && nuklearEventHandler)
+        nuklearEventHandler->Event(window, event);
+
+    PlatformEventHandler::Event(window, event);
+}
+
+void GameWindowHandler::KeyPressEvent(PlatformWindow *, const PlatformKeyEvent *event) {
+    keyboardController_->ProcessKeyPressEvent(event);
+
+    if (event->isAutoRepeat)
+        return;
+
+    PlatformKey key = event->key;
+    char c = PlatformKeyToChar(key, event->mods);
+
+    OnChar(key, -1);
+    OnKey(key);
+
+    if (c != 0)
+        OnChar(key, c);
+}
+
+void GameWindowHandler::KeyReleaseEvent(PlatformWindow *, const PlatformKeyEvent *event) {
+    keyboardController_->ProcessKeyReleaseEvent(event);
+
+    if (event->key == PlatformKey::PrintScreen)
+        OnScreenshot();
+}
+
+void GameWindowHandler::MouseMoveEvent(PlatformWindow *, const PlatformMouseEvent *event) {
+    OnMouseMove(event->pos.x, event->pos.y, event->buttons & PlatformMouseButton::Left, event->buttons & PlatformMouseButton::Right);
+}
+
+void GameWindowHandler::MousePressEvent(PlatformWindow *, const PlatformMouseEvent *event) {
+    int x = event->pos.x;
+    int y = event->pos.y;
+
+    if (event->button == PlatformMouseButton::Left) {
+        if (event->isDoubleClick) {
+            OnMouseLeftDoubleClick(x, y);
+        } else {
+            OnMouseLeftClick(x, y);
+        }
+    } else if (event->button == PlatformMouseButton::Right) {
+        if (event->isDoubleClick) {
+            OnMouseRightDoubleClick(x, y);
+        } else {
+            OnMouseRightClick(x, y);
+        }
+    }
+}
+
+void GameWindowHandler::MouseReleaseEvent(PlatformWindow *, const PlatformMouseEvent *event) {
+    if (event->button == PlatformMouseButton::Left) {
+        OnMouseLeftUp();
+    } else if (event->button == PlatformMouseButton::Right) {
+        OnMouseRightUp();
+    }
+}
+
+void GameWindowHandler::WheelEvent(PlatformWindow *, const PlatformWheelEvent *) {}
+
+void GameWindowHandler::MoveEvent(PlatformWindow *, const PlatformMoveEvent *) {}
+
+void GameWindowHandler::ActivationEvent(PlatformWindow *, const PlatformEvent *event) {
+    if (event->type == PlatformEvent::WindowActivate) {
+        OnActivated();
+    } else if (event->type == PlatformEvent::WindowDeactivate) {
+        OnDeactivated();
+    }
+}
+
+void GameWindowHandler::CloseEvent(PlatformWindow *window, const PlatformEvent *event) {
+    UpdateConfigFromWindow(engine->config.get());
+    engine->config->SaveConfiguration();
+    Engine_DeinitializeAndTerminate(0);
 }

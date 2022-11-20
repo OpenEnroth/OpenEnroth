@@ -9,6 +9,7 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
 
+#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/LightsStack.h"
@@ -19,16 +20,12 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 
-#include "Platform/OSWindow.h"
-
 #include "Utility/Math/TrigLut.h"
 
 
+
 bool RenderBase::Initialize() {
-    window->SetWindowArea(
-        config->window.Width.Get(),
-        config->window.Height.Get()
-    );
+    window->Resize({config->window.Width.Get(), config->window.Height.Get()});
 
     if (!pD3DBitmaps.Open(MakeDataPath("data", "d3dbitmap.hwl"))) {
         return false;
@@ -46,7 +43,7 @@ void RenderBase::PostInitialization() {
         SwitchToWindow();
     } else {
         __debugbreak();  // check required
-        window->SetFullscreenMode();
+        window->SetFullscreen(true);
         InitializeFullscreen();
     }
 }

@@ -7,6 +7,7 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Awards.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Events.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Image.h"
@@ -41,7 +42,6 @@
 #include "Media/MediaPlayer.h"
 
 #include "Platform/Api.h"
-#include "Platform/OSWindow.h"
 
 #include "Utility/Random.h"
 #include "Utility/Math/TrigLut.h"
@@ -1015,7 +1015,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
             pDialogueWindow->Release();
             pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 345, 0);
             pBtn_ExitCancel = pDialogueWindow->CreateButton(
-                526, 445, 75, 33, 1, 0, UIMSG_Escape, 0, GameKey::None,
+                526, 445, 75, 33, 1, 0, UIMSG_Escape, 0, PlatformKey::None,
                 localization->GetString(LSTR_END_CONVERSATION),
                 {ui_buttdesc2});
             pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0,
@@ -1033,7 +1033,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                 pDialogueWindow->Release();
                 pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 345, 0);
                 pBtn_ExitCancel = pDialogueWindow->CreateButton(
-                    526, 445, 75, 33, 1, 0, UIMSG_Escape, 0, GameKey::None,
+                    526, 445, 75, 33, 1, 0, UIMSG_Escape, 0, PlatformKey::None,
                     localization->GetString(LSTR_END_CONVERSATION),
                     {ui_buttdesc2});
                 pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0,
@@ -3312,7 +3312,7 @@ int HouseDialogPressCloseBtn() {
                     window_SpeakInHouse->CreateButton(
                         pNPCPortraits_x[uNumDialogueNPCPortraits - 1][i],
                         pNPCPortraits_y[uNumDialogueNPCPortraits - 1][i],
-                        63, 73, 1, 0, UIMSG_ClickHouseNPCPortrait, i, GameKey::None,
+                        63, 73, 1, 0, UIMSG_ClickHouseNPCPortrait, i, PlatformKey::None,
                         byte_591180[i].data());
             }
         }
@@ -3341,10 +3341,10 @@ void BackToHouseMenu() {
         if (EnterHouse(HOUSE_BODY_GUILD_ERATHIA)) {
             pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0);
             window_SpeakInHouse = new GUIWindow_House(0, 0, window->GetWidth(), window->GetHeight(), HOUSE_BODY_GUILD_ERATHIA, "");
-            window_SpeakInHouse->CreateButton(0x3Du, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 1, GameKey::Digit1);
-            window_SpeakInHouse->CreateButton(0xB1u, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 2, GameKey::Digit2);
-            window_SpeakInHouse->CreateButton(0x124u, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 3, GameKey::Digit3);
-            window_SpeakInHouse->CreateButton(0x197u, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 4, GameKey::Digit4);
+            window_SpeakInHouse->CreateButton(0x3Du, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 1, PlatformKey::Digit1);
+            window_SpeakInHouse->CreateButton(0xB1u, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 2, PlatformKey::Digit2);
+            window_SpeakInHouse->CreateButton(0x124u, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 3, PlatformKey::Digit3);
+            window_SpeakInHouse->CreateButton(0x197u, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 4, PlatformKey::Digit4);
         }
         bGameoverLoop = false;
     }
@@ -3654,7 +3654,7 @@ GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int wi
 
     current_screen_type = CURRENT_SCREEN::SCREEN_HOUSE;
     pBtn_ExitCancel = CreateButton(
-        471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
+        471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, PlatformKey::None,
         localization->GetString(LSTR_EXIT_BUILDING),
         {ui_exit_cancel_button_background});
     for (int v26 = 0; v26 < uNumDialogueNPCPortraits; ++v26) {
@@ -3672,8 +3672,8 @@ GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int wi
         }
         sprintf(byte_591180[v26].data(), v29, v30.c_str());
         HouseNPCPortraitsButtonsList[v26] = CreateButton(pNPCPortraits_x[uNumDialogueNPCPortraits - 1][v26],
-            pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v26],
-            63, 73, 1, 0, UIMSG_ClickHouseNPCPortrait, v26, GameKey::None, byte_591180[v26].data());
+                                                         pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v26],
+                                                         63, 73, 1, 0, UIMSG_ClickHouseNPCPortrait, v26, PlatformKey::None, byte_591180[v26].data());
     }
     if (uNumDialogueNPCPortraits == 1) {
         window_SpeakInHouse = this;

@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 set(GAME_SOURCES
     Game.cpp
-    GameBootstrapper.cpp
     GameConfig.cpp
     GameFactory.cpp
+    GameKeyboardController.cpp
     GameMenu.cpp
     GameOver.cpp
     GameWindowHandler.cpp
@@ -14,10 +14,11 @@ set(GAME_HEADERS
     Game.h
     GameConfig.h
     GameFactory.h
+    GameKeyboardController.h
     GameMenu.h
     GameOver.h
-    IocContainer.h
-    GameWindowHandler.h)
+    GameWindowHandler.h
+    IocContainer.h)
 
 add_library(game STATIC ${GAME_SOURCES} ${GAME_HEADERS})
 target_check_style(game)

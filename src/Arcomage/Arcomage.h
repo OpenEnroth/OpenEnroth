@@ -2,12 +2,11 @@
 
 #include <string>
 
-#include "Engine/Rect.h"
-
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Texture.h"
 
 #include "Utility/Geometry/Point.h"
+#include "Utility/Geometry/Rect.h"
 
 struct ArcomageCard {
     char pCardName[32];
@@ -123,7 +122,7 @@ struct ArcomageGame {
     static void PlaySound(unsigned int event_id);
     static void OnMouseClick(char right_left, bool bDown);
     static void OnMouseMove(int x, int y);
-    static void GetCardRect(unsigned int uCardID, Rect *pCardRect);
+    static void GetCardRect(unsigned int uCardID, Recti *pCardRect);
     static void PrepareArcomage();
     // static void DoBlt_Copy(uint16_t *pPixels);  // idb
 
@@ -179,7 +178,7 @@ struct spark_point_struct {
 };
 
 struct effect_params_struct {
-    Rect effect_area;
+    Recti effect_area;
     int unused_param_1;
     int unused_param_2;
     int unused_param_3;

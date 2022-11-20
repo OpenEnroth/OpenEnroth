@@ -12,12 +12,11 @@
 
 #include "GUI/GUIDialogues.h"
 
-#include "Io/GameKey.h"
+#include "Platform/PlatformKey.h"
 #include "Io/Mouse.h"
 #include "Io/KeyboardInputHandler.h"
 
 
-using Io::GameKey;
 using Io::Mouse;
 
 
@@ -445,8 +444,8 @@ class GUIWindow {
     virtual ~GUIWindow() {}
 
     GUIButton *CreateButton(int x, int y, int width, int height, int a6, int a7,
-    UIMessageType msg, unsigned int msg_param, GameKey hotkey = GameKey::None, const std::string &label = "",
-    const std::vector<Image*> &textures = std::vector<Image*>());
+                            UIMessageType msg, unsigned int msg_param, PlatformKey hotkey = PlatformKey::None, const std::string &label = "",
+                            const std::vector<Image*> &textures = std::vector<Image*>());
 
     bool Contains(unsigned int x, unsigned int y);
     void DrawFlashingInputCursor(int uX, int uY, GUIFont *a2);
@@ -504,11 +503,11 @@ class GUIWindow_Scroll : public GUIWindow {
         Assert(IsMessageScroll(scroll_type));
 
         this->scroll_type = scroll_type;
-        CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, GameKey::Digit1, "");
-        CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, GameKey::Digit2, "");
-        CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, GameKey::Digit3, "");
-        CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, GameKey::Digit4, "");
-        CreateButton(0, 0, 0, 0, 1, 0, UIMSG_CycleCharacters, 0, GameKey::Tab, "");
+        CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, PlatformKey::Digit1, "");
+        CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, PlatformKey::Digit2, "");
+        CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, PlatformKey::Digit3, "");
+        CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, PlatformKey::Digit4, "");
+        CreateButton(0, 0, 0, 0, 1, 0, UIMSG_CycleCharacters, 0, PlatformKey::Tab, "");
     }
     virtual ~GUIWindow_Scroll() {}
 
@@ -745,8 +744,8 @@ void Inventory_ItemPopupAndAlchemy();
 unsigned int UI_GetHealthManaAndOtherQualitiesStringColor(int current_pos,
                                                           int base_pos);
 unsigned int GetSizeInInventorySlots(unsigned int uNumPixels);
-class GUIButton *GUI_HandleHotkey(GameKey hotkey);
-void GUI_ReplaceHotkey(GameKey oldKey, GameKey newKey, char bFirstCall);
+class GUIButton *GUI_HandleHotkey(PlatformKey hotkey);
+void GUI_ReplaceHotkey(PlatformKey oldKey, PlatformKey newKey, char bFirstCall);
 void DrawBuff_remaining_time_string(int uY, GUIWindow *window,
                                     GameTime remaining_time, GUIFont *Font);
 void GameUI_DrawItemInfo(struct ItemGen* inspect_item);   // idb

@@ -3,13 +3,13 @@
 #include <vector>
 
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
 
-#include "Platform/OSWindow.h"
 
 GUIButton *pBtn_CloseBook;
 GUIButton *pBtn_InstallRemoveSpell;
@@ -124,7 +124,7 @@ void CreateShopDialogueButtonAtRow(int row, DIALOGUE_TYPE type) {
         0,
         UIMSG_SelectShopDialogueOption,
         type,
-        GameKey::None,
+        PlatformKey::None,
         ""
     );
 }
@@ -167,12 +167,12 @@ void CreateAwardsScrollBar() {
         }
         pBtn_Up = pGUIWindow_CurrentMenu->CreateButton(
             438, 46, ui_ar_up_up->GetWidth(), ui_ar_up_up->GetHeight(), 1, 0,
-            UIMSG_ClickAwardsUpBtn, 0, GameKey::None, "", {{ui_ar_up_up, ui_ar_up_dn}});
+            UIMSG_ClickAwardsUpBtn, 0, PlatformKey::None, "", {{ui_ar_up_up, ui_ar_up_dn}});
         pBtn_Down = pGUIWindow_CurrentMenu->CreateButton(
             438, 292, ui_ar_dn_up->GetWidth(), ui_ar_dn_up->GetHeight(), 1, 0,
-            UIMSG_ClickAwardsDownBtn, 0, GameKey::None, "", {{ui_ar_dn_up, ui_ar_dn_dn}});
+            UIMSG_ClickAwardsDownBtn, 0, PlatformKey::None, "", {{ui_ar_dn_up, ui_ar_dn_dn}});
         ptr_507BA4 = pGUIWindow_CurrentMenu->CreateButton(
-            440, 62, 16, 232, 1, 0, UIMSG_ClickAwardScrollBar, 0, GameKey::None, "");
+            440, 62, 16, 232, 1, 0, UIMSG_ClickAwardScrollBar, 0, PlatformKey::None, "");
     }
 }
 
@@ -180,8 +180,8 @@ void UI_CreateEndConversationButton() {
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 345, 0);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
-        471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
+        471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, PlatformKey::None,
         localization->GetString(LSTR_END_CONVERSATION),
         {ui_exit_cancel_button_background});
-    pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, GameKey::None, "");
+    pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, PlatformKey::None, "");
 }

@@ -4,17 +4,15 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 
 #include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/IRender.h"
 
 #include "GUI/GUIWindow.h"
-#include "Io/GameKey.h"
+#include "Platform/PlatformKey.h"
 
-#include "Platform/OSWindow.h"
-
-using Io::GameKey;
 
 #define MAX_VERTEX_MEMORY 512 * 1024
 #define MAX_ELEMENT_MEMORY 128 * 1024
@@ -32,7 +30,7 @@ enum WIN_STATE {
 };
 
 struct hotkey {
-    Io::GameKey key;
+    PlatformKey key;
     bool mod_control;
     bool mod_shift;
     bool mod_alt;
@@ -726,17 +724,17 @@ bool Nuklear::Create(WindowType winType) {
     return LuaLoadTemplate(winType);
 }
 
-int Nuklear::KeyEvent(Io::GameKey key) {
+int Nuklear::KeyEvent(PlatformKey key) {
     for (auto it = hotkeys.begin(); it < hotkeys.end(); it++) {
         struct hotkey hk = *it;
         if (hk.key == key) {
-            if (hk.mod_control && !engine->keyboardInputHandler->IsKeyHeld(GameKey::Control))
+            if (hk.mod_control && !engine->keyboardInputHandler->IsKeyHeld(PlatformKey::Control))
                 continue;
 
-            if (hk.mod_shift && !engine->keyboardInputHandler->IsKeyHeld(GameKey::Shift))
+            if (hk.mod_shift && !engine->keyboardInputHandler->IsKeyHeld(PlatformKey::Shift))
                 continue;
 
-            if (hk.mod_alt && !engine->keyboardInputHandler->IsKeyHeld(GameKey::Alt))
+            if (hk.mod_alt && !engine->keyboardInputHandler->IsKeyHeld(PlatformKey::Alt))
                 continue;
 
             lua_rawgeti(lua, LUA_REGISTRYINDEX, hk.callback);
@@ -3189,8 +3187,10 @@ finish:
 static int lua_window_dimensions(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
 
-    lua_pushnumber(L, window->GetWidth());
-    lua_pushnumber(L, window->GetHeight());
+    Sizei size = window->Size();
+
+    lua_pushnumber(L, size.w);
+    lua_pushnumber(L, size.h);
     lua_pushnumber(L, render->GetRenderWidth());
     lua_pushnumber(L, render->GetRenderHeight());
 
@@ -3210,7 +3210,7 @@ static int lua_set_hotkey(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) == 6));
 
     struct context *w = (struct context *)lua_touserdata(L, 1);
-    Io::GameKey gameKey;
+    PlatformKey gameKey;
     const char *key = luaL_checkstring(L, 2);
     bool key_control = lua_toboolean(L, 3);
     bool key_shift = lua_toboolean(L, 4);
@@ -3252,7 +3252,7 @@ static int lua_unset_hotkey(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) == 2));
 
     struct context *w = (struct context *)lua_touserdata(L, 1);
-    Io::GameKey gameKey;
+    PlatformKey gameKey;
     const char *key = luaL_checkstring(L, 2);
     if (!TryParseDisplayName(key, &gameKey)) {
         return luaL_argerror(L, 2, lua_pushfstring(L, "key '%s' is unknown", key));

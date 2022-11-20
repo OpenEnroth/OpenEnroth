@@ -3,11 +3,12 @@ cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 set(ENGINE_SOURCES AssetsManager.cpp
                    CommandLine.cpp
                    Conditions.cpp
+                   Engine.cpp
+                   EngineGlobals.cpp
                    Events.cpp
                    ErrorHandling.cpp
                    Localization.cpp
                    LOD.cpp
-                   Log.cpp
                    MapInfo.cpp
                    mm7text_ru.cpp
                    mm7_data.cpp
@@ -28,12 +29,12 @@ set(ENGINE_HEADERS AssetsManager.h
                    CommandLine.cpp
                    Conditions.h
                    Engine.h
+                   EngineGlobals.h
                    ErrorHandling.h
                    Events.h
                    Events2D.h
                    Localization.h
                    LOD.h
-                   Log.h
                    MapInfo.h
                    MapsLongTimer.h
                    MM7.h
@@ -41,7 +42,6 @@ set(ENGINE_HEADERS AssetsManager.h
                    OurMath.h
                    Party.h
                    Random.h
-                   Rect.h
                    SaveLoad.h
                    SpellFxRenderer.h
                    stru123.h

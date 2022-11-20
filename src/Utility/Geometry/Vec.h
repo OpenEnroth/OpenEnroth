@@ -21,8 +21,37 @@ struct Vec2 {
     T y = 0;
 
     Vec2() = default;
-
     Vec2(T a, T b) : x(a), y(b) {}
+
+    friend Vec2 operator+(const Vec2 &l, const Vec2 &r) {
+        return Vec2(l.x + r.x, l.y + r.y);
+    }
+
+    friend Vec2 operator-(const Vec2 &l, const Vec2 &r) {
+        return Vec2(l.x - r.x, l.y - r.y);
+    }
+
+    friend Vec2 operator/(const Vec2 &l, T r) {
+        return Vec2(l.x / r, l.y / r);
+    }
+
+    friend Vec2 operator*(const Vec2 &l, T r) {
+        return Vec2(l.x * r, l.y * r);
+    }
+
+    friend Vec2 operator*(T l, const Vec2 &r) {
+        return r * l;
+    }
+
+    Vec2 &operator+=(const Vec2 &v) {
+        *this = *this + v;
+        return *this;
+    }
+
+    Vec2 &operator-=(const Vec2 &v) {
+        *this = *this - v;
+        return *this;
+    }
 };
 
 using Vec2i = Vec2<int32_t>;
@@ -115,6 +144,11 @@ struct Vec3 {
 
     Vec3 &operator+=(const Vec3 &v) {
         *this = *this + v;
+        return *this;
+    }
+
+    Vec3 &operator-=(const Vec3 &v) {
+        *this = *this - v;
         return *this;
     }
 

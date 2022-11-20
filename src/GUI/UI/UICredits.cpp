@@ -2,14 +2,13 @@
 
 #include <string>
 
+#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/LOD.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
-#include "GUI/UI/UIMainMenu.h"
 #include "Media/Audio/AudioPlayer.h"
-#include "Platform/Api.h"
-#include "Platform/OSWindow.h"
+
 
 GUICredits::GUICredits() :
     GUIWindow(WINDOW_Credits, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
@@ -38,7 +37,7 @@ GUICredits::GUICredits() :
 
     move_Y = 0;
 
-    CreateButton(0, 0, 0, 0, 1, 0, UIMSG_Escape, 0, GameKey::Escape);
+    CreateButton(0, 0, 0, 0, 1, 0, UIMSG_Escape, 0, PlatformKey::Escape);
 }
 
 GUICredits::~GUICredits() {

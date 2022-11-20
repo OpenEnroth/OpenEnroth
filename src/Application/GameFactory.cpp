@@ -7,8 +7,8 @@ using Application::Game;
 using Application::GameConfig;
 using Application::GameFactory;
 
-std::shared_ptr<Game> GameFactory::CreateGame(const std::shared_ptr<GameConfig> &config) {
-    auto game = std::make_shared<Game>();
+std::shared_ptr<Game> GameFactory::CreateGame(Platform *platform, const std::shared_ptr<GameConfig> &config) {
+    auto game = std::make_shared<Game>(platform);
     if (game) {
         if (game->Configure(config)) {
             return game;

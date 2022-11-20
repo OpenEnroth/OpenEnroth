@@ -2,6 +2,7 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
@@ -16,7 +17,6 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Platform/Api.h"
-#include "Platform/OSWindow.h"
 
 
 Image *ui_game_quickref_background = nullptr;
@@ -35,7 +35,7 @@ GUIWindow_QuickReference::GUIWindow_QuickReference()
             assets->GetImage_ColorKey("quikref", render->teal_mask_16);
 
     pBtn_ExitCancel = CreateButton(
-        0x187u, 0x13Cu, 0x4Bu, 0x21u, 1, 0, UIMSG_Escape, 0, GameKey::None,
+        0x187u, 0x13Cu, 0x4Bu, 0x21u, 1, 0, UIMSG_Escape, 0, PlatformKey::None,
         localization->GetString(LSTR_DIALOGUE_EXIT),
         {ui_buttdesc2}
     );

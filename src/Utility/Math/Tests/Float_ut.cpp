@@ -1,8 +1,8 @@
-#include "test/test.h"
+#include "Testing/UnitTest.h"
 
-#include "src/Utility/Math/Float.h"
+#include "Utility/Math/Float.h"
 
-GTEST(Float, Fuzzy) {
+UNIT_TEST(Float, Fuzzy) {
     EXPECT_TRUE(FuzzyIsNull(0.000001f));
     EXPECT_FALSE(FuzzyIsNull(0.0001f));
 

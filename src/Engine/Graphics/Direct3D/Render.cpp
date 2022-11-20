@@ -8,6 +8,7 @@
 #include "Arcomage/Arcomage.h"
 
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Camera.h"
@@ -41,7 +42,6 @@
 #include "Io/Mouse.h"
 
 #include "Platform/Api.h"
-#include "Platform/OsWindow.h"
 
 #include "Utility/Memory.h"
 #include "Utility/Math/TrigLut.h"
@@ -1168,14 +1168,13 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
 
 Render::Render(
     std::shared_ptr<Application::GameConfig> config,
-    std::shared_ptr<OSWindow> window,
     DecalBuilder* decal_builder,
     LightmapBuilder* lightmap_builder,
     SpellFxRenderer* spellfx,
     std::shared_ptr<ParticleEngine> particle_engine,
     Vis* vis,
     Log* logger
-) : RenderBase(config, window, decal_builder, lightmap_builder, spellfx, particle_engine, vis, logger) {
+) : RenderBase(config, decal_builder, lightmap_builder, spellfx, particle_engine, vis, logger) {
     this->pDirectDraw4 = nullptr;
     this->pFrontBuffer4 = nullptr;
     this->pBackBuffer4 = nullptr;
@@ -1225,7 +1224,7 @@ void Render::ClearBlack() { pRenderD3D->ClearTarget(true, 0, false, 0.0); }
 
 void Render::PresentBlackScreen() {
     RECT dest_rect = {0};
-    GetWindowRect((HWND)window->GetWinApiHandle(), &dest_rect);
+    GetWindowRect((HWND)window->SystemHandle(), &dest_rect);
 
     DDBLTFX lpDDBltFx = {0};
     lpDDBltFx.dwSize = sizeof(DDBLTFX);
@@ -1388,7 +1387,6 @@ bool Render::InitializeFullscreen() {
     this->pFrontBuffer4 = nullptr;
     this->pDirectDraw4 = nullptr;
     Release();
-    this->window = window;
     CreateZBuffer();
 
     pRenderD3D = new RenderD3D;
@@ -1398,15 +1396,15 @@ bool Render::InitializeFullscreen() {
     bool v8 = false;
     if (pRenderD3D->pAvailableDevices[uDesiredDirect3DDevice]
             .bIsDeviceCompatible) {
-        v8 = pRenderD3D->CreateDevice(uDesiredDirect3DDevice, true, window);
+        v8 = pRenderD3D->CreateDevice(uDesiredDirect3DDevice, true);
     } else {
         if (v7[1].bIsDeviceCompatible) {
-            v8 = pRenderD3D->CreateDevice(1, true, window);
+            v8 = pRenderD3D->CreateDevice(1, true);
         } else {
             if (!v7->bIsDeviceCompatible)
                 Error("There aren't any D3D devices to create.");
 
-            v8 = pRenderD3D->CreateDevice(0, true, window);
+            v8 = pRenderD3D->CreateDevice(0, true);
         }
     }
     if (!v8) {
@@ -1572,7 +1570,7 @@ bool Render::DrawLightmap(Lightmap *pLightmap, Vec3f *pColorMult,
 }
 
 // blue mask
-void Render::DrawFromSpriteSheet(Rect *pSrcRect, Pointi *pTargetPoint, int a3, int blend_mode) {
+void Render::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, int a3, int blend_mode) {
     uint16_t *pSrc;          // eax@2
     int uSrcTotalWidth = 0;      // ecx@4
     unsigned int v10;        // esi@9
@@ -1588,8 +1586,8 @@ void Render::DrawFromSpriteSheet(Rect *pSrcRect, Pointi *pTargetPoint, int a3, i
         return;
     }
 
-    src_width = pSrcRect->z - pSrcRect->x;
-    src_height = pSrcRect->w - pSrcRect->y;
+    src_width = pSrcRect->w;
+    src_height = pSrcRect->h;
 
     /*if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pBackgroundPixels)
         uSrcTotalWidth = pArcomageGame->pGameBackground->GetWidth();
@@ -1655,12 +1653,12 @@ bool Render::SwitchToWindow() {
     if (pRenderD3D->pAvailableDevices[uDesiredDirect3DDevice]
             .bIsDeviceCompatible &&
         uDesiredDirect3DDevice != 1) {
-        v7 = pRenderD3D->CreateDevice(uDesiredDirect3DDevice, true, window);
+        v7 = pRenderD3D->CreateDevice(uDesiredDirect3DDevice, true);
     } else {
         if (!pRenderD3D->pAvailableDevices[0].bIsDeviceCompatible) {
             Error("There aren't any D3D devices to init.");
         }
-        v7 = pRenderD3D->CreateDevice(0, true, window);
+        v7 = pRenderD3D->CreateDevice(0, true);
     }
     if (!v7) Error("D3Drend->Init failed.");
 
@@ -1866,7 +1864,7 @@ bool Render::LockSurface_DDraw4(IDirectDrawSurface4 *pSurface,
 
 void Render::CreateClipper() {
     ErrD3D(pDirectDraw4->CreateClipper(0, &pDDrawClipper, NULL));
-    ErrD3D(pDDrawClipper->SetHWnd(0, (HWND)window->GetWinApiHandle()));
+    ErrD3D(pDDrawClipper->SetHWnd(0, (HWND)window->SystemHandle()));
     ErrD3D(pFrontBuffer4->SetClipper(pDDrawClipper));
 }
 
@@ -1886,12 +1884,18 @@ void Render::RestoreBackBuffer() {
     }
 }
 
-void Render::BltBackToFontFast(int a2, int a3, Rect *pSrcRect) {
+void Render::BltBackToFontFast(int a2, int a3, Recti *pSrcRect) {
     IDirectDrawSurface *pFront;
     IDirectDrawSurface *pBack;
     pFront = (IDirectDrawSurface *)this->pFrontBuffer4;
     pBack = (IDirectDrawSurface *)this->pBackBuffer4;
-    pFront->BltFast(NULL, NULL, pBack, (RECT *)pSrcRect, DDBLTFAST_WAIT);
+
+    RECT rect;
+    rect.left = pSrcRect->x;
+    rect.top = pSrcRect->y;
+    rect.right = pSrcRect->x + pSrcRect->w;
+    rect.bottom = pSrcRect->y + pSrcRect->h;
+    pFront->BltFast(NULL, NULL, pBack, &rect, DDBLTFAST_WAIT);
 }
 
 unsigned int Render::GetBillboardDrawListSize() {
@@ -2983,13 +2987,13 @@ void Render::DrawTextureOffset(int x, int y, int offset_x, int offset_y,
     delete bitmap;
 }
 
-void Render::DrawImage(Image *image, const Rect &rect, const uint paletteid) {
+void Render::DrawImage(Image *image, const Recti &rect, const uint paletteid) {
     Gdiplus::Bitmap *bitmap = BitmapWithImage(image);
     if (bitmap == nullptr) {
         return;
     }
 
-    Gdiplus::Rect r(rect.x, rect.y, rect.z - rect.x, rect.w - rect.y);
+    Gdiplus::Rect r(rect.x, rect.y, rect.w, rect.h);
     p2DGraphics->DrawImage(bitmap, r);
 
     delete bitmap;
@@ -3228,7 +3232,7 @@ void Render::BlendTextures(
     }
 }
 
-void Render::DrawMonsterPortrait(Rect rc, SpriteFrame *Portrait, int Y_Offset) {
+void Render::DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait, int Y_Offset) {
     int dst_x = rc.x + 64 + Portrait->hw_sprites[0]->uAreaX - Portrait->hw_sprites[0]->uBufferWidth / 2;
     int dst_y = rc.y + Y_Offset + Portrait->hw_sprites[0]->uAreaY;
     uint dst_z = dst_x + Portrait->hw_sprites[0]->uAreaWidth;
@@ -3247,10 +3251,10 @@ void Render::DrawMonsterPortrait(Rect rc, SpriteFrame *Portrait, int Y_Offset) {
         dst_y = rc.y;
     }
 
-    if (dst_z > rc.z)
-        dst_z = rc.z;
-    if (dst_w > rc.w)
-        dst_w = rc.w;
+    if (dst_z > rc.x + rc.w)
+        dst_z = rc.x + rc.w;
+    if (dst_w > rc.y + rc.h)
+        dst_w = rc.y + rc.h;
 
     Image *temp = Image::Create(128, 128, IMAGE_FORMAT_R5G6B5);
     uint16_t *temppix = (uint16_t *)temp->GetPixels(IMAGE_FORMAT_R5G6B5);
@@ -3278,7 +3282,7 @@ void Render::DrawMonsterPortrait(Rect rc, SpriteFrame *Portrait, int Y_Offset) {
         }
     }
 
-    render->SetUIClipRect(rc.x, rc.y, rc.z, rc.w);
+    render->SetUIClipRect(rc.x, rc.y, rc.x + rc.w, rc.y + rc.h);
     render->DrawTextureAlphaNew(dst_x / float(window->GetWidth()), dst_y / float(window->GetHeight()), temp);
     temp->Release();
     render->ResetUIClipRect();
@@ -3300,9 +3304,9 @@ void Render::DrawTextureAlphaNew(float u, float v, Image *image) {
 void Render::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
     if (!img) return;
 
-    int winwidth = this->window->GetWidth();
+    int winwidth = window->GetWidth();
     int uOutX = u * winwidth;
-    int uOutY = v * this->window->GetHeight();
+    int uOutY = v * window->GetHeight();
     unsigned int imgheight = img->GetHeight();
     unsigned int imgwidth = img->GetWidth();
     auto pixels = (uint32_t *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);

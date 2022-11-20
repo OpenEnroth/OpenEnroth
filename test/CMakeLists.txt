@@ -6,7 +6,7 @@ if(ENABLE_TESTS)
     message(STATUS "Tests have been enabled")
 
     set(TEST_SOURCES test.cpp)
-    set(TEST_HEADERS test.h)
+    set(TEST_HEADERS Testing/UnitTest.h)
 
     add_executable(World_of_Might_and_Magic_test ${TEST_SOURCES} ${TEST_HEADERS})
     target_fix_libcxx_assertions(World_of_Might_and_Magic_test)
@@ -14,7 +14,7 @@ if(ENABLE_TESTS)
 
     add_custom_target(test World_of_Might_and_Magic_test
                       DEPENDS World_of_Might_and_Magic_test
-                      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+                      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
     target_check_style(World_of_Might_and_Magic_test)
 endif()

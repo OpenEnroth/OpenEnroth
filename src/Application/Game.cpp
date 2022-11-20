@@ -2,15 +2,20 @@
 
 #include <algorithm>
 #include <string>
+#include <utility>
+#include <vector>
 
 #include "Arcomage/Arcomage.h"
 
 #include "GameFactory.h"
 #include "GameMenu.h"
 
+#include "Application/GameWindowHandler.h"
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Awards.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/EngineFactory.h"
 #include "Engine/Events.h"
 #include "Engine/Graphics/DecalBuilder.h"
@@ -18,6 +23,7 @@
 #include "Engine/Graphics/IRenderFactory.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Nuklear.h"
+#include "Engine/Graphics/NuklearEventHandler.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/PaletteManager.h"
@@ -65,13 +71,14 @@
 #include "GUI/UI/UIStatusBar.h"
 
 #include "Io/Mouse.h"
+#include "Io/KeyboardInputHandler.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
 #include "Platform/Api.h"
-#include "Platform/OSWindow.h"
-#include "Platform/OSWindowFactory.h"
+#include "Platform/Platform.h"
+#include "Platform/PlatformWindow.h"
 
 #include "Utility/Random.h"
 
@@ -145,8 +152,20 @@ std::string FindMm7Directory() {
     return "";
 }
 
+Game::Game(Platform *platform) {
+    this->platform = platform;
+    this->log = EngineIoc::ResolveLogger();
+    this->decal_builder = EngineIoc::ResolveDecalBuilder();
+    this->vis = EngineIoc::ResolveVis();
+    this->menu = GameIoc::ResolveGameMenu();
+}
+
+Game::~Game() {}
+
 int Game::Run() {
     IntegrityTest();
+
+    ::platform = platform;
 
     std::string mm7dir = FindMm7Directory();
     if(mm7dir.empty()) {
@@ -157,15 +176,21 @@ int Game::Run() {
 
     config->Startup();
 
-    window = OSWindowFactory().Create(config);
-    ::window = window;
+    windowHandler.reset(Application::IocContainer::ResolveGameWindowHandler());
+    ::eventHandler = windowHandler.get();
+
+    window = platform->CreateWindow();
+    ::window = window.get();
+
+    eventLoop = platform->CreateEventLoop();
+    ::eventLoop = eventLoop.get();
 
     if (!window) {
         log->Warning("Window creation failed");
         return -1;
     }
 
-    render = IRenderFactory().Create(config, window);
+    render = IRenderFactory().Create(config);
     ::render = render;
 
     if (!render) {
@@ -178,17 +203,19 @@ int Game::Run() {
         return -1;
     }
 
-    nuklear = Nuklear().Initialize();
+    nuklear = Nuklear::Initialize();
     if (!nuklear) {
         log->Warning("Nuklear failed to initialize");
     }
     ::nuklear = nuklear;
+    if (nuklear)
+        nuklearEventHandler = std::make_shared<NuklearEventHandler>();
 
     keyboardActionMapping = std::make_shared<KeyboardActionMapping>(config);
     ::keyboardActionMapping = keyboardActionMapping;
 
     keyboardInputHandler = std::make_shared<KeyboardInputHandler>(
-        window->GetKeyboardController(),
+        windowHandler->KeyboardController(),
         keyboardActionMapping
     );
 
@@ -205,8 +232,9 @@ int Game::Run() {
     }
 
     engine->Initialize();
-
+    windowHandler->UpdateWindowFromConfig(config.get());
     window->Activate();
+    eventLoop->ProcessMessages(eventHandler);
 
     ShowMM7IntroVideo_and_LoadingScreen();
 
@@ -222,6 +250,11 @@ int Game::Run() {
         }
     }
 
+    if (window) {
+        windowHandler->UpdateConfigFromWindow(config.get());
+        config->SaveConfiguration();
+    }
+
     if (engine) {
         engine->Deinitialize();
         engine = nullptr;
@@ -233,11 +266,7 @@ int Game::Run() {
         render = nullptr;
     }
 
-    if (window) {
-        window->Release();
-        config->SaveConfiguration();
-        window = nullptr;
-    }
+    window.reset();
 
     return 0;
 }

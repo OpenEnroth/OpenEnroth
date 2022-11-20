@@ -1,14 +1,11 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
-set(IO_SOURCES GameKey.cpp
-               InputAction.cpp
+set(IO_SOURCES InputAction.cpp
                KeyboardActionMapping.cpp
                KeyboardInputHandler.cpp
                Mouse.cpp)
 
-set(IO_HEADERS GameKey.h
-               IKeyboardController.h
-               IMouseController.h
+set(IO_HEADERS IKeyboardController.h
                InputAction.h
                KeyboardActionMapping.h
                KeyboardInputHandler.h
