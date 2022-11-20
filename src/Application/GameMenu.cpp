@@ -241,49 +241,40 @@ void Menu::EventLoop() {
                 pMessageQueue_50CBD0->Flush();
 
                 pGUIWindow_CurrentMenu->Release();
-                pGUIWindow_CurrentMenu = new GUIWindow_GameVideoOptions();  // GameMenuUI_OptionsVideo_Load();
+                pGUIWindow_CurrentMenu = new GUIWindow_GameVideoOptions();
                 viewparams->field_48 = 1;
                 current_screen_type = CURRENT_SCREEN::SCREEN_VIDEO_OPTIONS;
 
                 continue;
             }
 
-            case UIMSG_1A9:
-                __debugbreak();
+            case UIMSG_ChangeGammaLevel: {
+                int gammalevel = engine->config->graphics.Gamma.Get();
                 if (param == 4) {
-                    // --uGammaPos;
-                    if ((uGammaPos-- - 1) < 0) {
-                        uGammaPos = 0;
-                        pAudioPlayer->PlaySound(SOUND_ClickMovingSelector, 0, 0, -1, 0, 0);
-                        continue;
-                    }
-                    double v19 = (double)(signed int)uGammaPos * 0.1 + 0.6;
-                    // engine->pGammaController->Initialize(v19);
-                    new OnButtonClick2(21, 161, 0, 0, pBtn_SliderLeft,
-                                       std::string(), false);
-                    pAudioPlayer->PlaySound(SOUND_ClickMovingSelector, 0, 0, -1, 0, 0);
-                    continue;
-                }
-                if (param == 5) {
-                    ++uGammaPos;
-                    if ((signed int)uGammaPos <= 9) {
-                        double v21 = (double)(signed int)uGammaPos * 0.1 + 0.6;
-                        // engine->pGammaController->Initialize(v21);
-                        new OnButtonClick2(213, 161, 0, 0,
-                                           pBtn_SliderRight, std::string(),
-                                           false);
-                        pAudioPlayer->PlaySound(SOUND_ClickMovingSelector, 0, 0, -1, 0, 0);
-                        continue;
-                    }
-                    uGammaPos = 9;
+                    gammalevel--;
+                    new OnButtonClick2(21, 161, 0, 0, pBtn_SliderLeft, std::string(), false);
+                } else if (param == 5) {
+                    gammalevel++;
+                    new OnButtonClick2(213, 161, 0, 0, pBtn_SliderRight, std::string(), false);
                 } else {
-                    Pointi pt = mouse->GetCursorPos();
-                    uGammaPos = (pt.x - 42) / 17;
-                    double v22 = (double)(signed int)uGammaPos * 0.1 + 0.6;
-                    // engine->pGammaController->Initialize(v22);
+                    Point pt = mouse->GetCursorPos();
+                    gammalevel = (pt.x - 42) / 17;
                 }
+
+                engine->config->graphics.Gamma.Set(gammalevel);
                 pAudioPlayer->PlaySound(SOUND_ClickMovingSelector, 0, 0, -1, 0, 0);
+
+                if (gamma_preview_image) {
+                    gamma_preview_image->Release();
+                    gamma_preview_image = nullptr;
+                }
+
+                render->SaveScreenshot("gamma.pcx", 155, 117);
+                gamma_preview_image = assets->GetImage_PCXFromFile("gamma.pcx");
+
+
                 continue;
+                }
             case UIMSG_ToggleBloodsplats:
                 engine->config->graphics.BloodSplats.Toggle();
                 continue;

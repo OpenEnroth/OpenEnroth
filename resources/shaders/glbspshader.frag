@@ -40,6 +40,7 @@ uniform Sunlight sun;
 uniform vec3 CameraPos;
 uniform int flowtimer;
 uniform int watertiles;
+uniform float gamma;
 
 #define num_point_lights 40
 uniform PointLight fspointlights[num_point_lights];
@@ -127,6 +128,8 @@ void main() {
     }
 
 	FragColour = vec4(clamps,1)  * vec4(dull,1); // result, 1.0);
+
+    FragColour.rgb = pow(FragColour.rgb, vec3(1.0/gamma));
 
 }
 

@@ -400,6 +400,7 @@ void RenderOpenGL::BeginSceneD3D() {
     render->uNumBillboardsToDraw = 0;  // moved from drawbillboards - cant reset this until mouse picking finished
 
     SetFogParametersGL();
+    gamma = GetGamma();
 }
 
 extern unsigned int BlendColors(unsigned int a1, unsigned int a2);
@@ -2341,6 +2342,8 @@ void RenderOpenGL::DrawTerrainD3D() {
     glUniform1i(glGetUniformLocation(terrainshader.ID, "textureArray0"), GLint(0));
     glUniform1i(glGetUniformLocation(terrainshader.ID, "textureArray1"), GLint(1));
 
+    glUniform1f(glGetUniformLocation(terrainshader.ID, "gamma"), gamma);
+
     // set fog uniforms
     glUniform3f(glGetUniformLocation(terrainshader.ID, "fog.color"), fogr, fogg, fogb);
     glUniform1f(glGetUniformLocation(terrainshader.ID, "fog.fogstart"), GLfloat(fogstart));
@@ -3258,6 +3261,8 @@ void RenderOpenGL::DrawBillboards() {
     glUniformMatrix4fv(glGetUniformLocation(billbshader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
     //// set view
     glUniformMatrix4fv(glGetUniformLocation(billbshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
+
+    glUniform1f(glGetUniformLocation(billbshader.ID, "gamma"), gamma);
 
     // set fog uniforms
     glUniform3f(glGetUniformLocation(billbshader.ID, "fog.color"), fogr, fogg, fogb);
@@ -4266,6 +4271,8 @@ void RenderOpenGL::DrawBuildingsD3D() {
     glUniform1i(glGetUniformLocation(outbuildshader.ID, "waterframe"), GLint(this->hd_water_current_frame));
     glUniform1i(glGetUniformLocation(outbuildshader.ID, "flowtimer"), GLint(OS_GetTime() >> 4));
 
+    glUniform1f(glGetUniformLocation(outbuildshader.ID, "gamma"), gamma);
+
     // set texture unit location
     glUniform1i(glGetUniformLocation(outbuildshader.ID, "textureArray0"), GLint(0));
 
@@ -4955,6 +4962,7 @@ void RenderOpenGL::DrawIndoorFaces() {
         //// set view
         glUniformMatrix4fv(glGetUniformLocation(bspshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
 
+        glUniform1f(glGetUniformLocation(bspshader.ID, "gamma"), gamma);
         glUniform1i(glGetUniformLocation(bspshader.ID, "waterframe"), GLint(this->hd_water_current_frame));
         glUniform1i(glGetUniformLocation(bspshader.ID, "flowtimer"), GLint(OS_GetTime() >> 4));
 

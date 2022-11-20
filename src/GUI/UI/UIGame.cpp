@@ -364,6 +364,14 @@ GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions()
     // TEXTURE_16BIT_PALETTE);
 
     CreateButton(0xF1u, 0x12Eu, 0xD6u, 0x28u, 1, 0, UIMSG_Escape, 0);
+
+    // gamma buttons
+    pBtn_SliderLeft = CreateButton(21, 161, 17, 17, 1, 0, UIMSG_ChangeGammaLevel, 4, GameKey::None, "",
+        { options_menu_skin.uTextureID_ArrowLeft }); // -
+    CreateButton(42, 160, 170, 17, 1, 0, UIMSG_ChangeGammaLevel, 0);
+    pBtn_SliderRight = CreateButton(213, 161, 17, 17, 1, 0, UIMSG_ChangeGammaLevel, 5, GameKey::None, "",
+        { options_menu_skin.uTextureID_ArrowRight }); // +
+
     // if ( render->pRenderD3D )
     {
         CreateButton(0x13u, 0x118u, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleBloodsplats, 0);
@@ -378,14 +386,16 @@ void GUIWindow_GameVideoOptions::Update() {
     // 004156F0 GUI_UpdateWindows --- part
     GUIWindow msg_window;  // [sp+8h] [bp-54h]@3
 
+    int gammalevel = engine->config->graphics.Gamma.Get();
+
     render->DrawTextureAlphaNew(
         8 / 640.0f, 8 / 480.0f,
         game_ui_menu_options_video_background);  // draw base texture
     // if ( !render->bWindowMode && render->IsGammaSupported() )
     {
         render->DrawTextureAlphaNew(
-            (17 * uGammaPos + 42) / 640.0f, 162 / 480.0f,
-            game_ui_menu_options_video_gamma_positions[uGammaPos]);
+            (17 * gammalevel + 42) / 640.0f, 162 / 480.0f,
+            game_ui_menu_options_video_gamma_positions[gammalevel]);
 
         render->DrawTextureNew(274 / 640.0f, 169 / 480.0f, gamma_preview_image);
         msg_window.Init();

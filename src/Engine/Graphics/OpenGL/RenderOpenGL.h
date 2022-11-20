@@ -313,6 +313,8 @@ class RenderOpenGL : public RenderBase {
     int fogmiddle{};
     int fogend{};
 
+    float gamma{};
+
     struct nk_vertex {
         float position[2];
         float uv[2];
