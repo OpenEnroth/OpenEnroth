@@ -286,7 +286,8 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.spell_level = spell_level;
                 pSpellSprite.spell_skill = spell_mastery;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 2);
+                // TODO(pskelton): was pParty->uPartyHeight / 2
+                pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                 pSpellSprite.uAttributes = 0;
                 pSpellSprite.uSpriteFrameID = 0;
                 pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
@@ -561,7 +562,8 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.spell_skill = spell_mastery;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                 pSpellSprite.uAttributes = 0;
-                pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 2);
+                // TODO(pskelton): was pParty->uPartyHeight / 2
+                pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                 pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                 pSpellSprite.uSpriteFrameID = 0;
                 pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
@@ -3392,7 +3394,8 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.spell_level = spell_level;
                 pSpellSprite.spell_skill = spell_mastery;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 2);
+                // TODO(pskelton): was pParty->uPartyHeight / 2
+                pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                 pSpellSprite.uAttributes = 0;
                 pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                 pSpellSprite.uSpriteFrameID = 0;
