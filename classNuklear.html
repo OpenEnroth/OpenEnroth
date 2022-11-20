@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;476b412</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;39cc048</span>
    </div>
   </td>
  </tr>
@@ -72,6 +72,7 @@ $(function() {
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="classNuklear-members.html">List of all members</a>  </div>
@@ -101,14 +102,12 @@ Public Types</h2></td></tr>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aa51ff7e42af370bf078c5c4e99f765b2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNuklear.html#aa51ff7e42af370bf078c5c4e99f765b2">Nuklear</a> ()</td></tr>
 <tr class="separator:aa51ff7e42af370bf078c5c4e99f765b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afbb371ee3127bfef3006f8dc3a9968a3"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classNuklear.html">Nuklear</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNuklear.html#afbb371ee3127bfef3006f8dc3a9968a3">Initialize</a> ()</td></tr>
-<tr class="separator:afbb371ee3127bfef3006f8dc3a9968a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a17f494bf37b07deafbfe895e3e90ecbf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNuklear.html#a17f494bf37b07deafbfe895e3e90ecbf">Create</a> (enum <a class="el" href="GUIWindow_8h.html#a476342970f954b62d70552bcbb5ee509">WindowType</a> winType)</td></tr>
 <tr class="separator:a17f494bf37b07deafbfe895e3e90ecbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae878a6f5ab19a679d949ff0776942a5c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNuklear.html#ae878a6f5ab19a679d949ff0776942a5c">Draw</a> (enum <a class="el" href="classNuklear.html#a7254a0bd933c66f285a875fbfa0129fb">NUKLEAR_STAGE</a> stage, enum <a class="el" href="GUIWindow_8h.html#a476342970f954b62d70552bcbb5ee509">WindowType</a> winType, int type)</td></tr>
 <tr class="separator:ae878a6f5ab19a679d949ff0776942a5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3d47331e8d0f884002b5173a83e9da58"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNuklear.html#a3d47331e8d0f884002b5173a83e9da58">KeyEvent</a> (<a class="el" href="namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863">Io::GameKey</a> key)</td></tr>
-<tr class="separator:a3d47331e8d0f884002b5173a83e9da58"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e860df223e8f333b530f1793096d82a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNuklear.html#a7e860df223e8f333b530f1793096d82a">KeyEvent</a> (<a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> key)</td></tr>
+<tr class="separator:a7e860df223e8f333b530f1793096d82a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2295f55c8c0f9bccd4261c2662550238"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNuklear.html#a2295f55c8c0f9bccd4261c2662550238">Reload</a> ()</td></tr>
 <tr class="separator:a2295f55c8c0f9bccd4261c2662550238"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abfcc50913616ada7ed72d073ee26487f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNuklear.html#abfcc50913616ada7ed72d073ee26487f">Release</a> (enum <a class="el" href="GUIWindow_8h.html#a476342970f954b62d70552bcbb5ee509">WindowType</a> winType)</td></tr>
@@ -117,6 +116,11 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac13de3b35573a3762986f44f5f9cbf6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a220144e59839834793ff622ff75a11ec"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="classNuklear.html#a54e0d3f4afb9724a4744dbf8b56b4bf0">NUKLEAR_MODE</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNuklear.html#a220144e59839834793ff622ff75a11ec">Mode</a> (enum <a class="el" href="GUIWindow_8h.html#a476342970f954b62d70552bcbb5ee509">WindowType</a> winType)</td></tr>
 <tr class="separator:a220144e59839834793ff622ff75a11ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:afbb371ee3127bfef3006f8dc3a9968a3"><td class="memItemLeft" align="right" valign="top">static std::shared_ptr&lt; <a class="el" href="classNuklear.html">Nuklear</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNuklear.html#afbb371ee3127bfef3006f8dc3a9968a3">Initialize</a> ()</td></tr>
+<tr class="separator:afbb371ee3127bfef3006f8dc3a9968a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -283,6 +287,9 @@ Private Member Functions</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::shared_ptr&lt; <a class="el" href="classNuklear.html">Nuklear</a> &gt; Nuklear::Initialize </td>
@@ -291,12 +298,17 @@ Private Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a3d47331e8d0f884002b5173a83e9da58" name="a3d47331e8d0f884002b5173a83e9da58"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3d47331e8d0f884002b5173a83e9da58">&#9670;&#160;</a></span>KeyEvent()</h2>
+<a id="a7e860df223e8f333b530f1793096d82a" name="a7e860df223e8f333b530f1793096d82a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e860df223e8f333b530f1793096d82a">&#9670;&#160;</a></span>KeyEvent()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -304,7 +316,7 @@ Private Member Functions</h2></td></tr>
         <tr>
           <td class="memname">int Nuklear::KeyEvent </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863">Io::GameKey</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a>&#160;</td>
           <td class="paramname"><em>key</em></td><td>)</td>
           <td></td>
         </tr>

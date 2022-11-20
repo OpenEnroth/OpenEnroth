@@ -15,6 +15,5 @@ var searchData=
   ['game_5fsettings_5fno_5flogo_12',['GAME_SETTINGS_NO_LOGO',['../mm7__data_8h.html#af2ac3cbc8c256878c5cc622a5eadc71c',1,'mm7_data.h']]],
   ['game_5fsettings_5fno_5fsound_13',['GAME_SETTINGS_NO_SOUND',['../mm7__data_8h.html#a8ed1316556f7bf55e19809f6339166ba',1,'mm7_data.h']]],
   ['game_5fsettings_5fno_5fwalk_5fsound_14',['GAME_SETTINGS_NO_WALK_SOUND',['../mm7__data_8h.html#aa9d55a30473f358fa91ba3e24453af6e',1,'mm7_data.h']]],
-  ['game_5ftime_5fto_5fseconds_15',['GAME_TIME_TO_SECONDS',['../Time_8h.html#a92d0188cd169ae2c9b9bd59af68ab5f3',1,'Time.h']]],
-  ['gtest_16',['GTEST',['../test_8h.html#a95176bf6b1c6f2d4576188c2497055d8',1,'test.h']]]
+  ['game_5ftime_5fto_5fseconds_15',['GAME_TIME_TO_SECONDS',['../Time_8h.html#a92d0188cd169ae2c9b9bd59af68ab5f3',1,'Time.h']]]
 ];

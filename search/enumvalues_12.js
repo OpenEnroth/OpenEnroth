@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['s_0',['S',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863a5dbc98dcc983a70728bd082d1a47546e',1,'Io']]],
+  ['s_0',['S',['../PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecca5dbc98dcc983a70728bd082d1a47546e',1,'PlatformKey.h']]],
   ['sage_1',['Sage',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4ac88c3052f1d027381d8a9f969219b6d5',1,'NPCEnums.h']]],
   ['sailor_2',['Sailor',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4afa353f7b2c8df325edfa95c43654f3b6',1,'NPCEnums.h']]],
   ['scholar_3',['Scholar',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4af7d329b80b99906068a40f8dec9b7257',1,'NPCEnums.h']]],
@@ -39,13 +39,13 @@ var searchData=
   ['screen_5fspell_5fbook_36',['SCREEN_SPELL_BOOK',['../GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a7ef2fb8b19660a534b75c47b52be80ea',1,'GUIWindow.h']]],
   ['screen_5fvideo_37',['SCREEN_VIDEO',['../GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a610e61ee058a5573d7e6b712d9d01d51',1,'GUIWindow.h']]],
   ['screen_5fvideo_5foptions_38',['SCREEN_VIDEO_OPTIONS',['../GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a15881f4da26b67c7eff487770237a5c3',1,'GUIWindow.h']]],
-  ['select_39',['Select',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863ae0626222614bdee31951d84c64e5e9ff',1,'Io']]],
-  ['semicolon_40',['Semicolon',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863a9806fa37a3ecd39bf637c203aa011ed0',1,'Io']]],
+  ['select_39',['Select',['../PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eeccae0626222614bdee31951d84c64e5e9ff',1,'PlatformKey.h']]],
+  ['semicolon_40',['Semicolon',['../PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecca9806fa37a3ecd39bf637c203aa011ed0',1,'PlatformKey.h']]],
   ['sex_5ffemale_41',['SEX_FEMALE',['../PlayerEnums_8h.html#a8b5cdb0c1525ed7ab1d3f60dc14684f9a92811c7b80b20bafeb1006d6c5df36d9',1,'PlayerEnums.h']]],
   ['sex_5fmale_42',['SEX_MALE',['../PlayerEnums_8h.html#a8b5cdb0c1525ed7ab1d3f60dc14684f9af2431c4f4e339e595d1ef64a4dd990c1',1,'PlayerEnums.h']]],
-  ['shift_43',['Shift',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863a825a3d98017bab11815ad2817201324c',1,'Io']]],
-  ['singlequote_44',['SingleQuote',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863aab6f946be65ae6c2ee9b1131872a4f19',1,'Io']]],
-  ['slash_45',['Slash',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863a358cfe58715d680d9ab09f82e4010cbc',1,'Io']]],
+  ['shift_43',['Shift',['../PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecca825a3d98017bab11815ad2817201324c',1,'Shift():&#160;PlatformKey.h'],['../PlatformModifiers_8h.html#aaf0638d2a3414c9cae377d29330c70b3a825a3d98017bab11815ad2817201324c',1,'Shift():&#160;PlatformModifiers.h']]],
+  ['singlequote_44',['SingleQuote',['../PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eeccaab6f946be65ae6c2ee9b1131872a4f19',1,'PlatformKey.h']]],
+  ['slash_45',['Slash',['../PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecca358cfe58715d680d9ab09f82e4010cbc',1,'PlatformKey.h']]],
   ['smith_46',['Smith',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4aa744c8280b2771476692d76988b7a4e6',1,'NPCEnums.h']]],
   ['sound_5f21fly03_47',['SOUND_21fly03',['../AudioPlayer_8h.html#aa4689ee7c9a692044aebd36cb0915e61af80b8c2e4eb1e6db50b0624efa08f1ed',1,'AudioPlayer.h']]],
   ['sound_5f48_48',['SOUND_48',['../AudioPlayer_8h.html#aa4689ee7c9a692044aebd36cb0915e61a41461b28d014d14c94c063650b936c38',1,'AudioPlayer.h']]],
@@ -154,7 +154,7 @@ var searchData=
   ['sound_5fwall_5fup_151',['SOUND_wall_up',['../AudioPlayer_8h.html#aa4689ee7c9a692044aebd36cb0915e61a30b30a9669b68b7c8efa9b13edcac9d6',1,'AudioPlayer.h']]],
   ['sound_5fwaterwalk_152',['SOUND_WaterWalk',['../AudioPlayer_8h.html#aa4689ee7c9a692044aebd36cb0915e61a775c37c64972e6c7e91e053a586b7024',1,'AudioPlayer.h']]],
   ['sound_5fwooddoorclosing_153',['SOUND_WoodDoorClosing',['../AudioPlayer_8h.html#aa4689ee7c9a692044aebd36cb0915e61aad80e5893e38e47e1012060cf3841833',1,'AudioPlayer.h']]],
-  ['space_154',['Space',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863ad511f8439ecde36647437fbba67a4394',1,'Io']]],
+  ['space_154',['Space',['../PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eeccad511f8439ecde36647437fbba67a4394',1,'PlatformKey.h']]],
   ['special_5fattack_5faging_155',['SPECIAL_ATTACK_AGING',['../Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1ad1f43eca0a8aa6c907afeb8f17edff0e',1,'Monsters.h']]],
   ['special_5fattack_5fbreak_5fany_156',['SPECIAL_ATTACK_BREAK_ANY',['../Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1aa9dbd678b5de66e1a7610ffa535b54fa',1,'Monsters.h']]],
   ['special_5fattack_5fbreak_5farmor_157',['SPECIAL_ATTACK_BREAK_ARMOR',['../Monsters_8h.html#a067f95479d44d0b39da6439a62a06ba1a55ba8bbe9993628a1a5f429ac21ffb67',1,'Monsters.h']]],
@@ -635,6 +635,6 @@ var searchData=
   ['strafeleft_632',['StrafeLeft',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca619850cebb4607f51de326bd78c27429',1,'Io']]],
   ['straferight_633',['StrafeRight',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca9b4d85f3d87b8e67d74e087541ed3743',1,'Io']]],
   ['stunned_634',['Stunned',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395fedaeb8ab7d98634514cc61c2b0a0c8d93a2',1,'ActorEnums.h']]],
-  ['subtract_635',['Subtract',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863a1d9baf077ee87921f57a8fe42d510b65',1,'Io']]],
+  ['subtract_635',['Subtract',['../PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecca1d9baf077ee87921f57a8fe42d510b65',1,'PlatformKey.h']]],
   ['summoned_636',['Summoned',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395feda046bfcaf387649f3c78b193d321d4dd6',1,'ActorEnums.h']]]
 ];

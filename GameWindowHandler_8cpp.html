@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;476b412</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;39cc048</span>
    </div>
   </td>
  </tr>
@@ -75,16 +75,21 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#typedef-members">Typedefs</a> &#124;
+<a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">GameWindowHandler.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="GameWindowHandler_8h.html">GameWindowHandler.h</a>&quot;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 <code>#include &quot;<a class="el" href="Arcomage_8h.html">Arcomage/Arcomage.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="EngineGlobals_8h.html">Engine/EngineGlobals.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Camera_8h.html">Engine/Graphics/Camera.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Viewport_8h.html">Engine/Graphics/Viewport.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Vis_8h.html">Engine/Graphics/Vis.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Nuklear_8h.html">Engine/Graphics/Nuklear.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="NuklearEventHandler_8h.html">Engine/Graphics/NuklearEventHandler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Engine_2IocContainer_8h.html">Engine/IocContainer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Party_8h.html">Engine/Party.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Time_8h.html">Engine/Time.h</a>&quot;</code><br />
@@ -94,7 +99,6 @@ $(function() {
 <code>#include &quot;<a class="el" href="Mouse_8h.html">Io/Mouse.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AudioPlayer_8h.html">Media/Audio/AudioPlayer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="MediaPlayer_8h.html">Media/MediaPlayer.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="OSWindow_8h.html">Platform/OSWindow.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Application_2IocContainer_8h.html">IocContainer.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
@@ -104,10 +108,13 @@ Typedefs</h2></td></tr>
 <tr class="memitem:af5f0ed64b6030ceaa0ab5a064fbf456a"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameWindowHandler_8cpp.html#af5f0ed64b6030ceaa0ab5a064fbf456a">ApplicationIoc</a> = <a class="el" href="classApplication_1_1IocContainer.html">Application::IocContainer</a></td></tr>
 <tr class="separator:af5f0ed64b6030ceaa0ab5a064fbf456a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ab07079aa107065e637066abafbfabe17"><td class="memItemLeft" align="right" valign="top">static char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameWindowHandler_8cpp.html#ab07079aa107065e637066abafbfabe17">PlatformKeyToChar</a> (<a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> key, PlatformModifiers mods)</td></tr>
+<tr class="separator:ab07079aa107065e637066abafbfabe17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a87ea0d89e858bd74e1d223e05049a7e5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameWindowHandler_8cpp.html#a87ea0d89e858bd74e1d223e05049a7e5">_507B98_ctrl_pressed</a></td></tr>
-<tr class="separator:a87ea0d89e858bd74e1d223e05049a7e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f70373e8d65f7f76d15ae2ff1511076"><td class="memItemLeft" align="right" valign="top">InputAction&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameWindowHandler_8cpp.html#a6f70373e8d65f7f76d15ae2ff1511076">currently_selected_action_for_binding</a></td></tr>
 <tr class="separator:a6f70373e8d65f7f76d15ae2ff1511076"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -140,9 +147,9 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<h2 class="groupheader">Variable Documentation</h2>
-<a id="a87ea0d89e858bd74e1d223e05049a7e5" name="a87ea0d89e858bd74e1d223e05049a7e5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a87ea0d89e858bd74e1d223e05049a7e5">&#9670;&#160;</a></span>_507B98_ctrl_pressed</h2>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="ab07079aa107065e637066abafbfabe17" name="ab07079aa107065e637066abafbfabe17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab07079aa107065e637066abafbfabe17">&#9670;&#160;</a></span>PlatformKeyToChar()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -151,18 +158,33 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool _507B98_ctrl_pressed</td>
+          <td class="memname">static char PlatformKeyToChar </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a>&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">PlatformModifiers&#160;</td>
+          <td class="paramname"><em>mods</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 </div>
 </div>
+<h2 class="groupheader">Variable Documentation</h2>
 <a id="a6f70373e8d65f7f76d15ae2ff1511076" name="a6f70373e8d65f7f76d15ae2ff1511076"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6f70373e8d65f7f76d15ae2ff1511076">&#9670;&#160;</a></span>currently_selected_action_for_binding</h2>
 

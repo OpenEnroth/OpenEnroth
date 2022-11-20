@@ -9,5 +9,5 @@ var searchData=
   ['turn_5fengine_5fai_5faction_6',['TURN_ENGINE_AI_ACTION',['../TurnEngine_8h.html#ad787e59edbb1a7b858de87875d03acfa',1,'TurnEngine.h']]],
   ['turn_5fengine_5fflags_7',['TURN_ENGINE_FLAGS',['../TurnEngine_8h.html#a33743db842bb5d8b7e87b9e35b77201a',1,'TurnEngine.h']]],
   ['turn_5fengine_5fturn_5fstage_8',['TURN_ENGINE_TURN_STAGE',['../TurnEngine_8h.html#a760e35e380d23bde08ae732e619f2e9f',1,'TurnEngine.h']]],
-  ['type_9',['Type',['../classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072b',1,'GUIProgressBar']]]
+  ['type_9',['Type',['../classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072b',1,'GUIProgressBar::Type()'],['../classPlatformEvent.html#ab1b85cb24f01d755e87bf165a8b18ee8',1,'PlatformEvent::Type()']]]
 ];

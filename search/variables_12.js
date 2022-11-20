@@ -37,11 +37,12 @@ var searchData=
   ['rest_5fui_5frestmain_34',['rest_ui_restmain',['../UIRest_8cpp.html#aae45696239973250d5e8b92b589c57fa',1,'UIRest.cpp']]],
   ['rest_5fui_5fsky_5fframe_5fcurrent_35',['rest_ui_sky_frame_current',['../UIRest_8cpp.html#a9500e27ed48226c2682b5e72e86b33fd',1,'rest_ui_sky_frame_current():&#160;UIRest.cpp'],['../UIRest_8h.html#ac296e29920fa5a1a196659518808e6b6',1,'rest_ui_sky_frame_current():&#160;UIRest.cpp']]],
   ['rhw_36',['rhw',['../structRenderVertexD3D3.html#a20896950efa27111b72e1f8f1ab8faab',1,'RenderVertexD3D3']]],
-  ['right_37',['Right',['../classApplication_1_1GameConfig_1_1Keybindings.html#a468e7a51438e98d95c2d8f21c58eb1e9',1,'Application::GameConfig::Keybindings']]],
-  ['rightclickportraitxmax_38',['RightClickPortraitXmax',['../mm7__data_8h.html#a1e0bb2e5df8caceb874ccbac8afb592b',1,'RightClickPortraitXmax():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#a1e0bb2e5df8caceb874ccbac8afb592b',1,'RightClickPortraitXmax():&#160;mm7_data.cpp']]],
-  ['rightclickportraitxmin_39',['RightClickPortraitXmin',['../mm7__data_8h.html#a271bcf3fdc5ff14473042faddbd0cfa3',1,'RightClickPortraitXmin():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#a271bcf3fdc5ff14473042faddbd0cfa3',1,'RightClickPortraitXmin():&#160;mm7_data.cpp']]],
-  ['rot_5fx_40',['rot_x',['../structTownPortalData.html#a4e82ac9655728eaeaecabc8eca40b71a',1,'TownPortalData']]],
-  ['rot_5fy_41',['rot_y',['../structTownPortalData.html#ac1f4f99e78574e664ce01b4ca5c72a27',1,'TownPortalData']]],
-  ['rotated_5fnormal_42',['rotated_normal',['../structLightsData.html#a0f92fde30cff4753d4cfadb6ab41fcd4',1,'LightsData']]],
-  ['rotation_5fspeed_43',['rotation_speed',['../structParticle.html#afc3be85262f36cb5f78cf3a51d8e61b3',1,'Particle']]]
+  ['right_37',['right',['../structMargins.html#ae968561a502e7a0d35a1a2cd29e0a83d',1,'Margins']]],
+  ['right_38',['Right',['../classApplication_1_1GameConfig_1_1Keybindings.html#a468e7a51438e98d95c2d8f21c58eb1e9',1,'Application::GameConfig::Keybindings']]],
+  ['rightclickportraitxmax_39',['RightClickPortraitXmax',['../mm7__data_8h.html#a1e0bb2e5df8caceb874ccbac8afb592b',1,'RightClickPortraitXmax():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#a1e0bb2e5df8caceb874ccbac8afb592b',1,'RightClickPortraitXmax():&#160;mm7_data.cpp']]],
+  ['rightclickportraitxmin_40',['RightClickPortraitXmin',['../mm7__data_8h.html#a271bcf3fdc5ff14473042faddbd0cfa3',1,'RightClickPortraitXmin():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#a271bcf3fdc5ff14473042faddbd0cfa3',1,'RightClickPortraitXmin():&#160;mm7_data.cpp']]],
+  ['rot_5fx_41',['rot_x',['../structTownPortalData.html#a4e82ac9655728eaeaecabc8eca40b71a',1,'TownPortalData']]],
+  ['rot_5fy_42',['rot_y',['../structTownPortalData.html#ac1f4f99e78574e664ce01b4ca5c72a27',1,'TownPortalData']]],
+  ['rotated_5fnormal_43',['rotated_normal',['../structLightsData.html#a0f92fde30cff4753d4cfadb6ab41fcd4',1,'LightsData']]],
+  ['rotation_5fspeed_44',['rotation_speed',['../structParticle.html#afc3be85262f36cb5f78cf3a51d8e61b3',1,'Particle']]]
 ];

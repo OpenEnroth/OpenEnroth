@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['w_0',['W',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863a61e9c06ea9a85a5088a499df6458d276',1,'Io']]],
+  ['w_0',['W',['../PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecca61e9c06ea9a85a5088a499df6458d276',1,'PlatformKey.h']]],
   ['watermaster_1',['WaterMaster',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a1935722f01b3da365e11e5726429acf4',1,'NPCEnums.h']]],
   ['weaponsmaster_2',['Weaponsmaster',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4ae1bccd3f204a1eca076de2069ce5fb5e',1,'NPCEnums.h']]],
   ['windmaster_3',['WindMaster',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4ad0cc6baa0d9b095b1a8ae2769b99c373',1,'NPCEnums.h']]],
@@ -69,5 +69,9 @@ var searchData=
   ['window_5ftownportal_66',['WINDOW_TownPortal',['../GUIWindow_8h.html#a476342970f954b62d70552bcbb5ee509af7ad7ff1815bc98683cbc97294a9e663',1,'GUIWindow.h']]],
   ['window_5ftransition_67',['WINDOW_Transition',['../GUIWindow_8h.html#a476342970f954b62d70552bcbb5ee509a477fcd3643a0e743e1c9e222632091b0',1,'GUIWindow.h']]],
   ['window_5funknown_68',['WINDOW_Unknown',['../GUIWindow_8h.html#a476342970f954b62d70552bcbb5ee509aa5c41511cb54e2ac5f13e3e3374d163c',1,'GUIWindow.h']]],
-  ['window_5fvideooptions_69',['WINDOW_VideoOptions',['../GUIWindow_8h.html#a476342970f954b62d70552bcbb5ee509a464fdfe75aae553110e87a1703ba7e18',1,'GUIWindow.h']]]
+  ['window_5fvideooptions_69',['WINDOW_VideoOptions',['../GUIWindow_8h.html#a476342970f954b62d70552bcbb5ee509a464fdfe75aae553110e87a1703ba7e18',1,'GUIWindow.h']]],
+  ['windowactivate_70',['WindowActivate',['../classPlatformEvent.html#ab1b85cb24f01d755e87bf165a8b18ee8a39b9021e2e0796fb3745af064395899f',1,'PlatformEvent']]],
+  ['windowcloserequest_71',['WindowCloseRequest',['../classPlatformEvent.html#ab1b85cb24f01d755e87bf165a8b18ee8ade48b462e23d690450ff474ac1f42990',1,'PlatformEvent']]],
+  ['windowdeactivate_72',['WindowDeactivate',['../classPlatformEvent.html#ab1b85cb24f01d755e87bf165a8b18ee8a6a17f09e317eb910aa6ed6e83a920e08',1,'PlatformEvent']]],
+  ['windowmove_73',['WindowMove',['../classPlatformEvent.html#ab1b85cb24f01d755e87bf165a8b18ee8a3d9774b680140c9501d89e75d321ccfc',1,'PlatformEvent']]]
 ];

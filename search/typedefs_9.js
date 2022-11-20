@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['nodes_0',['Nodes',['../classVideoList.html#a33414b38b0010b86e7d91be7049e007c',1,'VideoList']]]
+  ['marginsi_0',['Marginsi',['../Margins_8h.html#af54b4ff4492cf2e8fcef8f00c26bb08e',1,'Margins.h']]]
 ];

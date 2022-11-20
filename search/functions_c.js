@@ -1,7 +1,7 @@
 var searchData=
 [
   ['last_0',['Last',['../classSegment.html#aea6b415fe2421cac15e85f48864c0762',1,'Segment']]],
-  ['lastpressedkey_1',['LastPressedKey',['../classIo_1_1KeyboardInputHandler.html#ae13eb251d6851653a21d03fb80c3f695',1,'Io::KeyboardInputHandler']]],
+  ['lastpressedkey_1',['LastPressedKey',['../classIo_1_1KeyboardInputHandler.html#adc4b592ab015ea6f10d7586a62b2ad6c',1,'Io::KeyboardInputHandler']]],
   ['length_2',['Length',['../structVec3.html#a508b9b39442a0c4c555de7a2089d8604',1,'Vec3']]],
   ['lengthsqr_3',['LengthSqr',['../structVec3.html#af083ae868b596d2d6d5649c11b88f0d7',1,'Vec3']]],
   ['level1reagents_4',['Level1Reagents',['../ItemEnums_8h.html#ab21efc0cda5178acc18e8b50deefeb0f',1,'ItemEnums.h']]],
@@ -61,8 +61,8 @@ var searchData=
   ['lodfile_5fsprites_58',['LODFile_Sprites',['../classLODFile__Sprites.html#af78a4ebaa4eb5fac65f67bf1e6f48b96',1,'LODFile_Sprites']]],
   ['lodsprite_59',['LODSprite',['../structLODSprite.html#af7376cd49e84f2e4b72dd6b2d7e42341',1,'LODSprite']]],
   ['lodspriteheader_60',['LODSpriteHeader',['../structLODSpriteHeader.html#a090a92eb8a6f931104df36f566fd185b',1,'LODSpriteHeader']]],
-  ['log_61',['Log',['../classLog.html#af6071a60aa52b6c1b511f99b4bc1b8fe',1,'Log']]],
-  ['log_5ferror_62',['log_error',['../Log_8cpp.html#a648e45bbf3333d23303f8114ea3b198f',1,'Log.cpp']]],
+  ['log_61',['Log',['../classLog.html#ab5a3d1f08fe469a4cbf8f30496981601',1,'Log']]],
+  ['logsdlerror_62',['LogSdlError',['../classSdlPlatformSharedState.html#a57332210b61e0611bcdb63834800a554',1,'SdlPlatformSharedState']]],
   ['loop_63',['Loop',['../classGUIWindow__MainMenu.html#ad12c43bc3078a3dbdab21a148ba71b64',1,'GUIWindow_MainMenu::Loop()'],['../structArcomageGame.html#af5f4ef42b2a0d72d14621a54895afb58',1,'ArcomageGame::Loop()'],['../classApplication_1_1Game.html#a013ffd59e8fdf1c0a396da1dbe1681ca',1,'Application::Game::Loop()']]],
   ['lootactor_64',['LootActor',['../classActor.html#a5c96e635141f504057794facc929c5e1',1,'Actor']]],
   ['ltrim_65',['ltrim',['../CommandLine_8cpp.html#a47084ee818936eef3c48be492c0e860f',1,'CommandLine.cpp']]],

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;476b412</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;39cc048</span>
    </div>
   </td>
  </tr>
@@ -92,7 +92,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="Player_8h.html">Engine/Objects/Player.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Party_8h.html">Engine/Party.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIDialogues_8h.html">GUI/GUIDialogues.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="GameKey_8h.html">Io/GameKey.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="PlatformKey_8h.html">Platform/PlatformKey.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Mouse_8h.html">Io/Mouse.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="KeyboardInputHandler_8h.html">Io/KeyboardInputHandler.h</a>&quot;</code><br />
 </div><table class="memberdecls">
@@ -593,7 +593,7 @@ Functions</h2></td></tr>
 <tr class="separator:aa3da4fb426e908bca4572d1ba810af0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aefe82c1dde38844a65d3ef9e46b55423"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#aefe82c1dde38844a65d3ef9e46b55423">GameUI_DrawCharacterSelectionFrame</a> ()</td></tr>
 <tr class="separator:aefe82c1dde38844a65d3ef9e46b55423"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a83da9a8aa6b14560e6a2132ef3d0c3f4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a83da9a8aa6b14560e6a2132ef3d0c3f4">GameUI_CharacterQuickRecord_Draw</a> (<a class="el" href="classGUIWindow.html">GUIWindow</a> *<a class="el" href="OSWindow_8cpp.html#adca3af5e71934d0b3a17fc2b75ea1b75">window</a>, <a class="el" href="structPlayer.html">Player</a> *player)</td></tr>
+<tr class="memitem:a83da9a8aa6b14560e6a2132ef3d0c3f4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a83da9a8aa6b14560e6a2132ef3d0c3f4">GameUI_CharacterQuickRecord_Draw</a> (<a class="el" href="classGUIWindow.html">GUIWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, <a class="el" href="structPlayer.html">Player</a> *player)</td></tr>
 <tr class="separator:a83da9a8aa6b14560e6a2132ef3d0c3f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00553156c8ca7ea90900a38bbe696ee5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a00553156c8ca7ea90900a38bbe696ee5">GameUI_DrawNPCPopup</a> (void *_this)</td></tr>
 <tr class="separator:a00553156c8ca7ea90900a38bbe696ee5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -638,15 +638,15 @@ Functions</h2></td></tr>
 <tr class="separator:a9afd0f907c20e063bdaa06501eae16c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5561b65e15d53767d6a54e231cf3080f"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a5561b65e15d53767d6a54e231cf3080f">GetSizeInInventorySlots</a> (unsigned int uNumPixels)</td></tr>
 <tr class="separator:a5561b65e15d53767d6a54e231cf3080f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5821dcb654674be0528deb0c495a86aa"><td class="memItemLeft" align="right" valign="top">class <a class="el" href="classGUIButton.html">GUIButton</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a5821dcb654674be0528deb0c495a86aa">GUI_HandleHotkey</a> (GameKey <a class="el" href="structhotkey.html">hotkey</a>)</td></tr>
-<tr class="separator:a5821dcb654674be0528deb0c495a86aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a466c4d559ebbbc754399b7375d9998f1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a466c4d559ebbbc754399b7375d9998f1">GUI_ReplaceHotkey</a> (GameKey oldKey, GameKey newKey, char bFirstCall)</td></tr>
-<tr class="separator:a466c4d559ebbbc754399b7375d9998f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a035c6832c1355c22e9f5ac3a19e0f844"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a035c6832c1355c22e9f5ac3a19e0f844">DrawBuff_remaining_time_string</a> (int uY, <a class="el" href="classGUIWindow.html">GUIWindow</a> *<a class="el" href="OSWindow_8cpp.html#adca3af5e71934d0b3a17fc2b75ea1b75">window</a>, <a class="el" href="structGameTime.html">GameTime</a> remaining_time, <a class="el" href="classGUIFont.html">GUIFont</a> *Font)</td></tr>
+<tr class="memitem:a29061e723abb7fe29880dbdd0b7b60c5"><td class="memItemLeft" align="right" valign="top">class <a class="el" href="classGUIButton.html">GUIButton</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a29061e723abb7fe29880dbdd0b7b60c5">GUI_HandleHotkey</a> (<a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> <a class="el" href="structhotkey.html">hotkey</a>)</td></tr>
+<tr class="separator:a29061e723abb7fe29880dbdd0b7b60c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a184fb72ca77fd7278ec6cde7b50ae905"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a184fb72ca77fd7278ec6cde7b50ae905">GUI_ReplaceHotkey</a> (<a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> oldKey, <a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> newKey, char bFirstCall)</td></tr>
+<tr class="separator:a184fb72ca77fd7278ec6cde7b50ae905"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a035c6832c1355c22e9f5ac3a19e0f844"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a035c6832c1355c22e9f5ac3a19e0f844">DrawBuff_remaining_time_string</a> (int uY, <a class="el" href="classGUIWindow.html">GUIWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, <a class="el" href="structGameTime.html">GameTime</a> remaining_time, <a class="el" href="classGUIFont.html">GUIFont</a> *Font)</td></tr>
 <tr class="separator:a035c6832c1355c22e9f5ac3a19e0f844"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9920ae2d9d62a92b2952fa613ba55ba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#ab9920ae2d9d62a92b2952fa613ba55ba">GameUI_DrawItemInfo</a> (struct <a class="el" href="structItemGen.html">ItemGen</a> *inspect_item)</td></tr>
 <tr class="separator:ab9920ae2d9d62a92b2952fa613ba55ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0654793dfed15ab2f229171b61d9fd51"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a0654793dfed15ab2f229171b61d9fd51">MonsterPopup_Draw</a> (unsigned int uActorID, <a class="el" href="classGUIWindow.html">GUIWindow</a> *<a class="el" href="OSWindow_8cpp.html#adca3af5e71934d0b3a17fc2b75ea1b75">window</a>)</td></tr>
+<tr class="memitem:a0654793dfed15ab2f229171b61d9fd51"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a0654793dfed15ab2f229171b61d9fd51">MonsterPopup_Draw</a> (unsigned int uActorID, <a class="el" href="classGUIWindow.html">GUIWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>)</td></tr>
 <tr class="separator:a0654793dfed15ab2f229171b61d9fd51"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff3bea1e9d23048f6215322c8461f04f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#aff3bea1e9d23048f6215322c8461f04f">SetUserInterface</a> (<a class="el" href="Party_8h.html#a1d55b380c0ae0f422472f1de19d01e36">PartyAlignment</a> alignment, bool bReplace)</td></tr>
 <tr class="separator:aff3bea1e9d23048f6215322c8461f04f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -2365,8 +2365,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a5821dcb654674be0528deb0c495a86aa" name="a5821dcb654674be0528deb0c495a86aa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5821dcb654674be0528deb0c495a86aa">&#9670;&#160;</a></span>GUI_HandleHotkey()</h2>
+<a id="a29061e723abb7fe29880dbdd0b7b60c5" name="a29061e723abb7fe29880dbdd0b7b60c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a29061e723abb7fe29880dbdd0b7b60c5">&#9670;&#160;</a></span>GUI_HandleHotkey()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2374,7 +2374,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">class <a class="el" href="classGUIButton.html">GUIButton</a> * GUI_HandleHotkey </td>
           <td>(</td>
-          <td class="paramtype">GameKey&#160;</td>
+          <td class="paramtype"><a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a>&#160;</td>
           <td class="paramname"><em>hotkey</em></td><td>)</td>
           <td></td>
         </tr>
@@ -2383,8 +2383,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a466c4d559ebbbc754399b7375d9998f1" name="a466c4d559ebbbc754399b7375d9998f1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a466c4d559ebbbc754399b7375d9998f1">&#9670;&#160;</a></span>GUI_ReplaceHotkey()</h2>
+<a id="a184fb72ca77fd7278ec6cde7b50ae905" name="a184fb72ca77fd7278ec6cde7b50ae905"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a184fb72ca77fd7278ec6cde7b50ae905">&#9670;&#160;</a></span>GUI_ReplaceHotkey()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2392,13 +2392,13 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">void GUI_ReplaceHotkey </td>
           <td>(</td>
-          <td class="paramtype">GameKey&#160;</td>
+          <td class="paramtype"><a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a>&#160;</td>
           <td class="paramname"><em>oldKey</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">GameKey&#160;</td>
+          <td class="paramtype"><a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a>&#160;</td>
           <td class="paramname"><em>newKey</em>, </td>
         </tr>
         <tr>

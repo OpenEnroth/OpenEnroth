@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;476b412</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;39cc048</span>
    </div>
   </td>
  </tr>
@@ -83,6 +83,7 @@ $(function() {
 <div class="textblock"><code>#include &quot;<a class="el" href="Mouse_8h.html">Io/Mouse.h</a>&quot;</code><br />
 <code>#include &lt;cstdlib&gt;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="EngineGlobals_8h.html">Engine/EngineGlobals.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Viewport_8h.html">Engine/Graphics/Viewport.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Vis_8h.html">Engine/Graphics/Vis.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="LOD_8h.html">Engine/LOD.h</a>&quot;</code><br />
@@ -93,7 +94,6 @@ $(function() {
 <code>#include &quot;<a class="el" href="GUIButton_8h.html">GUI/GUIButton.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIWindow_8h.html">GUI/GUIWindow.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AudioPlayer_8h.html">Media/Audio/AudioPlayer.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="OSWindow_8h.html">Platform/OSWindow.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -102,15 +102,13 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a2c9cbe1abdf4f286358836325e19d65d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Mouse_8cpp.html#a2c9cbe1abdf4f286358836325e19d65d">UI_OnKeyDown</a> (GameKey key)</td></tr>
-<tr class="separator:a2c9cbe1abdf4f286358836325e19d65d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7704639690d79bc0b3c1003999a51b5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Mouse_8cpp.html#ac7704639690d79bc0b3c1003999a51b5">UI_OnKeyDown</a> (<a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> key)</td></tr>
+<tr class="separator:ac7704639690d79bc0b3c1003999a51b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:a55f0f84b4b73bc6958ceaedd363cdc08"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classIo_1_1Mouse.html">Mouse</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Mouse_8cpp.html#a55f0f84b4b73bc6958ceaedd363cdc08">mouse</a> = nullptr</td></tr>
 <tr class="separator:a55f0f84b4b73bc6958ceaedd363cdc08"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a87ea0d89e858bd74e1d223e05049a7e5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Mouse_8cpp.html#a87ea0d89e858bd74e1d223e05049a7e5">_507B98_ctrl_pressed</a> = false</td></tr>
-<tr class="separator:a87ea0d89e858bd74e1d223e05049a7e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Typedef Documentation</h2>
 <a id="a8df51996eaa93ee226542e4ebb9d6f14" name="a8df51996eaa93ee226542e4ebb9d6f14"></a>
@@ -128,8 +126,8 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a2c9cbe1abdf4f286358836325e19d65d" name="a2c9cbe1abdf4f286358836325e19d65d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2c9cbe1abdf4f286358836325e19d65d">&#9670;&#160;</a></span>UI_OnKeyDown()</h2>
+<a id="ac7704639690d79bc0b3c1003999a51b5" name="ac7704639690d79bc0b3c1003999a51b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7704639690d79bc0b3c1003999a51b5">&#9670;&#160;</a></span>UI_OnKeyDown()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -137,7 +135,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">bool UI_OnKeyDown </td>
           <td>(</td>
-          <td class="paramtype">GameKey&#160;</td>
+          <td class="paramtype"><a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a>&#160;</td>
           <td class="paramname"><em>key</em></td><td>)</td>
           <td></td>
         </tr>
@@ -147,20 +145,6 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="a87ea0d89e858bd74e1d223e05049a7e5" name="a87ea0d89e858bd74e1d223e05049a7e5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a87ea0d89e858bd74e1d223e05049a7e5">&#9670;&#160;</a></span>_507B98_ctrl_pressed</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool _507B98_ctrl_pressed = false</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a55f0f84b4b73bc6958ceaedd363cdc08" name="a55f0f84b4b73bc6958ceaedd363cdc08"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a55f0f84b4b73bc6958ceaedd363cdc08">&#9670;&#160;</a></span>mouse</h2>
 

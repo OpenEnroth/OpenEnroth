@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;476b412</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;39cc048</span>
    </div>
   </td>
  </tr>
@@ -88,6 +88,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="Game_8h.html">Application/Game.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AssetsManager_8h.html">Engine/AssetsManager.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="EngineGlobals_8h.html">Engine/EngineGlobals.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Events_8h.html">Engine/Events.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="BSPModel_8h.html">Engine/Graphics/BSPModel.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="DecorationList_8h.html">Engine/Graphics/DecorationList.h</a>&quot;</code><br />
@@ -118,14 +119,11 @@ $(function() {
 <code>#include &quot;<a class="el" href="GUIFont_8h.html">GUI/GUIFont.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIWindow_8h.html">GUI/GUIWindow.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UICharacter_8h.html">GUI/UI/UICharacter.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="UIDialogue_8h.html">GUI/UI/UIDialogue.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIHouses_8h.html">GUI/UI/UIHouses.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIStatusBar_8h.html">GUI/UI/UIStatusBar.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="InputAction_8h.html">Io/InputAction.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Mouse_8h.html">Io/Mouse.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="AudioPlayer_8h.html">Media/Audio/AudioPlayer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Api_8h.html">Platform/Api.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="OSWindow_8h.html">Platform/OSWindow.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TrigLut_8h.html">Utility/Math/TrigLut.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
@@ -152,7 +150,7 @@ Functions</h2></td></tr>
 <tr class="separator:a00553156c8ca7ea90900a38bbe696ee5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab4e988fbeb5271bae2a335a377908ab2"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8cpp.html#ab4e988fbeb5271bae2a335a377908ab2">GameUI_GetMinimapHintText</a> ()</td></tr>
 <tr class="separator:ab4e988fbeb5271bae2a335a377908ab2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a83da9a8aa6b14560e6a2132ef3d0c3f4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8cpp.html#a83da9a8aa6b14560e6a2132ef3d0c3f4">GameUI_CharacterQuickRecord_Draw</a> (<a class="el" href="classGUIWindow.html">GUIWindow</a> *<a class="el" href="OSWindow_8cpp.html#adca3af5e71934d0b3a17fc2b75ea1b75">window</a>, <a class="el" href="structPlayer.html">Player</a> *player)</td></tr>
+<tr class="memitem:a83da9a8aa6b14560e6a2132ef3d0c3f4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8cpp.html#a83da9a8aa6b14560e6a2132ef3d0c3f4">GameUI_CharacterQuickRecord_Draw</a> (<a class="el" href="classGUIWindow.html">GUIWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, <a class="el" href="structPlayer.html">Player</a> *player)</td></tr>
 <tr class="separator:a83da9a8aa6b14560e6a2132ef3d0c3f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a02003a2697145383d58ef3c372687aa5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8cpp.html#a02003a2697145383d58ef3c372687aa5">GameUI_DrawRightPanelItems</a> ()</td></tr>
 <tr class="separator:a02003a2697145383d58ef3c372687aa5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -305,8 +303,8 @@ Variables</h2></td></tr>
 <tr class="separator:a6f70373e8d65f7f76d15ae2ff1511076"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac779193a7bd296fbdcabc8799a780aa0"><td class="memItemLeft" align="right" valign="top">std::map&lt; InputAction, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8cpp.html#ac779193a7bd296fbdcabc8799a780aa0">key_map_conflicted</a></td></tr>
 <tr class="separator:ac779193a7bd296fbdcabc8799a780aa0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac3a4903d356396f1bd04b4bc9ff2c6ec"><td class="memItemLeft" align="right" valign="top">std::map&lt; InputAction, GameKey &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8cpp.html#ac3a4903d356396f1bd04b4bc9ff2c6ec">prev_key_map</a></td></tr>
-<tr class="separator:ac3a4903d356396f1bd04b4bc9ff2c6ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aada17ea184b17bf23d42278b53e90d26"><td class="memItemLeft" align="right" valign="top">std::map&lt; InputAction, <a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8cpp.html#aada17ea184b17bf23d42278b53e90d26">prev_key_map</a></td></tr>
+<tr class="separator:aada17ea184b17bf23d42278b53e90d26"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad8fee78c22b710592f9800e5126ede8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structOptionsMenuSkin.html">OptionsMenuSkin</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8cpp.html#aad8fee78c22b710592f9800e5126ede8">options_menu_skin</a></td></tr>
 <tr class="separator:aad8fee78c22b710592f9800e5126ede8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -332,7 +330,7 @@ Variables</h2></td></tr>
 <div class="line">            <a class="code hl_struct" href="structimg.html">img</a> = <span class="keyword">nullptr</span>;  \</div>
 <div class="line">        }                   \</div>
 <div class="line">    }</div>
-<div class="ttc" id="astructimg_html"><div class="ttname"><a href="structimg.html">img</a></div><div class="ttdef"><b>Definition:</b> Nuklear.cpp:46</div></div>
+<div class="ttc" id="astructimg_html"><div class="ttname"><a href="structimg.html">img</a></div><div class="ttdef"><b>Definition:</b> Nuklear.cpp:44</div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -1695,8 +1693,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="ac3a4903d356396f1bd04b4bc9ff2c6ec" name="ac3a4903d356396f1bd04b4bc9ff2c6ec"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac3a4903d356396f1bd04b4bc9ff2c6ec">&#9670;&#160;</a></span>prev_key_map</h2>
+<a id="aada17ea184b17bf23d42278b53e90d26" name="aada17ea184b17bf23d42278b53e90d26"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aada17ea184b17bf23d42278b53e90d26">&#9670;&#160;</a></span>prev_key_map</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1705,7 +1703,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::map&lt;InputAction, GameKey&gt; prev_key_map</td>
+          <td class="memname">std::map&lt;InputAction, <a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a>&gt; prev_key_map</td>
         </tr>
       </table>
   </td>

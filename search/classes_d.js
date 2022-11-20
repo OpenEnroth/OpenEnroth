@@ -11,5 +11,6 @@ var searchData=
   ['npcprofessionchance_8',['NPCProfessionChance',['../structNPCProfessionChance.html',1,'']]],
   ['npcstats_9',['NPCStats',['../structNPCStats.html',1,'']]],
   ['npctopic_10',['NPCTopic',['../structNPCTopic.html',1,'']]],
-  ['nuklear_11',['Nuklear',['../classNuklear.html',1,'']]]
+  ['nuklear_11',['Nuklear',['../classNuklear.html',1,'']]],
+  ['nukleareventhandler_12',['NuklearEventHandler',['../classNuklearEventHandler.html',1,'']]]
 ];

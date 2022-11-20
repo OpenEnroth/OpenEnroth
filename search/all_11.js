@@ -1,7 +1,7 @@
 var searchData=
 [
   ['q_0',['q',['../structforcepersverts.html#aeb507719f0f6dde9b4aba4db676e3415',1,'forcepersverts']]],
-  ['q_1',['Q',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863af09564c9ca56850d4cd6b3319e541aee',1,'Io']]],
+  ['q_1',['Q',['../PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eeccaf09564c9ca56850d4cd6b3319e541aee',1,'PlatformKey.h']]],
   ['qbit_5farcomage_5fchampion_2',['QBIT_ARCOMAGE_CHAMPION',['../Party_8h.html#a90eae1c60a6a092f2d2ea08550f6cdb2adc34e20c084ac7d7beb373d07c12f085',1,'Party.h']]],
   ['qbit_5fdark_5fpath_3',['QBIT_DARK_PATH',['../Party_8h.html#a90eae1c60a6a092f2d2ea08550f6cdb2a9d142410ea611cefeb34b4995ec92e16',1,'Party.h']]],
   ['qbit_5fdivine_5fintervention_5fretrieved_4',['QBIT_DIVINE_INTERVENTION_RETRIEVED',['../Party_8h.html#a90eae1c60a6a092f2d2ea08550f6cdb2ab370417e6804da52dd3a9096e565714a',1,'Party.h']]],
@@ -49,5 +49,7 @@ var searchData=
   ['quick_5fspell_5fat_5fpage_46',['quick_spell_at_page',['../mm7__data_8cpp.html#a4d3f5a215b3a9a90db34f7d8d3715117',1,'quick_spell_at_page():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a4d3f5a215b3a9a90db34f7d8d3715117',1,'quick_spell_at_page():&#160;mm7_data.cpp']]],
   ['quickref_47',['QuickRef',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90caaac7cd14cb9bedf69f4ed5dc53360cd5',1,'Io']]],
   ['quickreference_48',['QuickReference',['../classApplication_1_1GameConfig_1_1Keybindings.html#a118ce195723e76aab5d5e189ca27ce84',1,'Application::GameConfig::Keybindings']]],
-  ['qword_5f5c6df0_49',['qword_5C6DF0',['../mm7__data_8cpp.html#a6d1003fa1d97f69e82b00f2ec0a8fe90',1,'qword_5C6DF0():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a6d1003fa1d97f69e82b00f2ec0a8fe90',1,'qword_5C6DF0():&#160;mm7_data.cpp']]]
+  ['quit_49',['Quit',['../classSdlEventLoop.html#a3e5736640b0bfb12536ba39540ec4943',1,'SdlEventLoop::Quit()'],['../classPlatformEventLoop.html#a4125e345a948163559b8ab505553fb04',1,'PlatformEventLoop::Quit()']]],
+  ['quitrequested_5f_50',['quitRequested_',['../classSdlEventLoop.html#a6e4ae5f16149c4fc228af5384d29aefd',1,'SdlEventLoop']]],
+  ['qword_5f5c6df0_51',['qword_5C6DF0',['../mm7__data_8cpp.html#a6d1003fa1d97f69e82b00f2ec0a8fe90',1,'qword_5C6DF0():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a6d1003fa1d97f69e82b00f2ec0a8fe90',1,'qword_5C6DF0():&#160;mm7_data.cpp']]]
 ];
