@@ -82,7 +82,7 @@ void GameWrapper::GoToMainMenu() {
 GUIButton *GameWrapper::AssertButton(std::string_view buttonId) {
     auto findButton = [](std::string_view buttonId) -> GUIButton * {
         for (GUIWindow *window : lWindowList)
-            for (GUIButton *button: window->vButtons)
+            for (GUIButton *button : window->vButtons)
                 if (button->id == buttonId)
                     return button;
         return nullptr;
@@ -95,7 +95,7 @@ GUIButton *GameWrapper::AssertButton(std::string_view buttonId) {
         Pointi point = Pointi(button->uX + button->uWidth / 2, button->uY + button->uHeight / 2);
 
         for (GUIWindow *window : lWindowList) {
-            for (GUIButton *otherButton: window->vButtons) {
+            for (GUIButton *otherButton : window->vButtons) {
                 if (otherButton->Contains(point.x, point.y)) {
                     ASSERT_EQ(button, otherButton) << "Button '" << button->id << "' is hidden by another button.";
                     return;
