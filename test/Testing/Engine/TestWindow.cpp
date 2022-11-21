@@ -73,12 +73,16 @@ bool TestWindow::GrabsMouse() const {
     return base_->GrabsMouse();
 }
 
-void TestWindow::Activate() {
-    base_->Activate();
+Marginsi TestWindow::FrameMargins() const {
+    return base_->FrameMargins();
 }
 
 uintptr_t TestWindow::SystemHandle() const {
     return base_->SystemHandle();
+}
+
+void TestWindow::Activate() {
+    base_->Activate();
 }
 
 std::unique_ptr<PlatformOpenGLContext> TestWindow::CreateOpenGLContext(const PlatformOpenGLOptions &options) {
