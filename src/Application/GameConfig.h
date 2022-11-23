@@ -361,6 +361,7 @@ namespace Application {
             /** D3D device number which was set by setup program in vanilla for hardware mode. */
             ConfigValue<int> D3DDevice = ConfigValue<int>(this, "d3d_device", 0);
 
+            // lightmap builder option for old drawing system
             /** Need to be eventually deleted and replaced with gamma? */
             ConfigValue<bool> DynamicBrightness = ConfigValue<bool>(this, "dynamic_brightness", true);
 
@@ -376,7 +377,7 @@ namespace Application {
             /** FPS Limit */
             ConfigValue<int> FPSLimit = ConfigValue<int>(this, "fps_limit", 60);
 
-            /** Isn't currently in use? */
+            /** Game level brightness gamma */
             ConfigValue<int> Gamma = ConfigValue<int>(this, "gamma", 4, &ValidateGamma);
 
             /** Viewport top-left offset */

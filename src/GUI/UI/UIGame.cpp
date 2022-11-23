@@ -378,6 +378,15 @@ GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions()
         CreateButton(0x13u, 0x12Eu, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleColoredLights, 0);
         CreateButton(0x13u, 0x144u, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleTint, 0);
     }
+
+    // update gamma preview
+    if (gamma_preview_image) {
+        gamma_preview_image->Release();
+        gamma_preview_image = nullptr;
+    }
+
+    render->SaveScreenshot("gamma.pcx", 155, 117);
+    gamma_preview_image = assets->GetImage_PCXFromFile("gamma.pcx");
 }
 
 //----- (00414D9A) --------------------------------------------------------

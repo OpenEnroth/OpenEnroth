@@ -2042,6 +2042,7 @@ struct GLshaderverts {
     GLfloat normy;
     GLfloat normz;
     GLfloat attribs;
+    GLfloat sector;
 };
 
 GLshaderverts terrshaderstore[127 * 127 * 6] = {};
@@ -4341,7 +4342,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
 
         glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0);
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r / 10.0, g / 10.0, b / 10.0);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
         glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
@@ -4368,7 +4369,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
 
         glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 1.0);
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r / 10.0, g / 10.0, b / 10.0);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
         glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
@@ -4709,6 +4710,9 @@ void RenderOpenGL::DrawIndoorFaces() {
                 // attribs
                 glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, attribs));
                 glEnableVertexAttribArray(4);
+                //sector
+                glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void*)offsetof(GLshaderverts, sector));
+                glEnableVertexAttribArray(5);
             }
 
             // texture set up
@@ -4883,7 +4887,6 @@ void RenderOpenGL::DrawIndoorFaces() {
                                 // 123, 134, 145, 156..
                                 GLshaderverts *thisvert = &BSPshaderstore[texunit][numBSPverts[texunit]];
 
-
                                 // copy first
                                 thisvert->x = pIndoor->pVertices[face->pVertexIDs[0]].x;
                                 thisvert->y = pIndoor->pVertices[face->pVertexIDs[0]].y;
@@ -4896,6 +4899,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                                 thisvert->normy = face->pFacePlane.vNormal.y;
                                 thisvert->normz = face->pFacePlane.vNormal.z;
                                 thisvert->attribs = attribflags;
+                                thisvert->sector = face->uSectorID;
                                 thisvert++;
 
                                 // copy other two (z+1)(z+2)
@@ -4911,6 +4915,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                                     thisvert->normy = face->pFacePlane.vNormal.y;
                                     thisvert->normz = face->pFacePlane.vNormal.z;
                                     thisvert->attribs = attribflags;
+                                    thisvert->sector = face->uSectorID;
                                     thisvert++;
                                 }
 
@@ -5006,50 +5011,6 @@ void RenderOpenGL::DrawIndoorFaces() {
         glUniform3f(glGetUniformLocation(bspshader.ID, "sun.specular"), diffuseon * 1.0f, diffuseon * 0.8f, 0.0f);
 
         // point lights - fspointlights
-
-            //lightingShader.setVec3("pointLights[0].position", pointLightPositions[0]);
-            //lightingShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
-            //lightingShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
-            //lightingShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
-            //lightingShader.setFloat("pointLights[0].constant", 1.0f);
-            //lightingShader.setFloat("pointLights[0].linear", 0.09);
-            //lightingShader.setFloat("pointLights[0].quadratic", 0.032);
-
-
-        //// test torchlight
-        //float torchradius = 0;
-        //if (!diffuseon) {
-        //    int rangemult = 1;
-        //    if (pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].Active())
-        //        rangemult = pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
-        //    torchradius = float(rangemult) * 1024.0;
-        //}
-
-        //glUniform3fv(glGetUniformLocation(bspshader.ID, "fspointlights[0].position"), 1, &camera[0]);
-        //glUniform3f(glGetUniformLocation(bspshader.ID, "fspointlights[0].ambient"), 0.85, 0.85, 0.85);
-        //glUniform3f(glGetUniformLocation(bspshader.ID, "fspointlights[0].diffuse"), 0.85, 0.85, 0.85);
-        //glUniform3f(glGetUniformLocation(bspshader.ID, "fspointlights[0].specular"), 0, 0, 1);
-        ////glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].constant"), .81);
-        ////glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].linear"), 0.003);
-        ////glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].quadratic"), 0.000007);
-        //glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].radius"), torchradius);
-
-    //        // torchlight - pointlight 1 is always party glow
-    //float torchradius = 0;
-    //if (!diffuseon) {
-    //    int rangemult = 1;
-    //    if (pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].Active())
-    //        rangemult = pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
-    //    torchradius = float(rangemult) * 1024.0;
-    //}
-
-    //glUniform3fv(glGetUniformLocation(terrainshader.ID, "fspointlights[0].position"), 1, &camera[0]);
-    //glUniform3f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].ambient"), 0.85, 0.85, 0.85);  // background
-    //glUniform3f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].diffuse"), 0.85, 0.85, 0.85);  // direct
-    //glUniform3f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].specular"), 0, 0, 1);          // for "shinyness"
-    //glUniform1f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].radius"), torchradius);
-
-
         // rest of lights stacking
         GLuint num_lights = 0;   // 1;
 
@@ -5073,7 +5034,8 @@ void RenderOpenGL::DrawIndoorFaces() {
 
             glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0f);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r / 10.0f, g / 10.0f, b / 10.0f);
+            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].sector").c_str()), 0);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
             //glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].constant"), .81);
@@ -5129,7 +5091,8 @@ void RenderOpenGL::DrawIndoorFaces() {
 
             glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 1.0f);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r / 10.0f, g / 10.0f, b / 10.0f);
+            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].sector").c_str()), test.uSectorID);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
             //glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].constant"), .81);

@@ -6,6 +6,7 @@ flat in vec2 olayer;
 in vec3 vsPos;
 in vec3 vsNorm;
 flat in int vsAttrib;
+flat in int vsSector;
 
 out vec4 FragColour;
 
@@ -22,6 +23,7 @@ struct PointLight {
     float type;  // 0- off, 1- stat, 2 - mob
 
     vec3 position;
+    float sector;
 
     //float constant;
     //float linear;
@@ -171,7 +173,16 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
 
 
     // combine results
-    vec3 ambient = light.ambient ;//* vec3(texture(material.diffuse, TexCoords));
+    vec3 ambient = light.ambient;//* vec3(texture(material.diffuse, TexCoords));
+    if (diff == 0.0) {
+	// pointing away so tone down ambient lights
+	float ambfade = 1.0 - abs(dot(normal, lightDir));
+ 	ambient *= ambfade;
+    }
+
+    if (light.sector > 0.0)
+	if (vsSector != int(light.sector)) ambient = vec3(0);
+
     vec3 diffuse = light.diffuse * diff ;//* vec3(texture(material.diffuse, TexCoords));
     vec3 specular = light.specular * spec ;//* vec3(texture(material.specular, TexCoords));
     ambient *= attenuation;
