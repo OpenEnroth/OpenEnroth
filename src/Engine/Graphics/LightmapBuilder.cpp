@@ -1058,19 +1058,7 @@ int GetActorTintColor(int max_dimm, int min_dimm, float distance, int bNoLight, 
         isNight = false;
 
     if (isNight) {
-        int partylightpower = 1;
-        if (pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].Active())
-            partylightpower = pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
-        float partylightdist = partylightpower * 1024.0f;
-
         dimminglevel = 216;
-        if (distance <= partylightdist && !bNoLight) {
-            if (distance >= 0.0f) {
-                dimminglevel = static_cast<int>(floorf(0.5f + distance * 216.0f / partylightdist));
-                dimminglevel = std::clamp(dimminglevel, 0, 216);
-            }
-        }
-
         if (pBillboard) dimminglevel = 8 * _43F55F_get_billboard_light_level(pBillboard, dimminglevel >> 3);
         dimminglevel = std::clamp(dimminglevel, 0, 216);
         return (255 - dimminglevel) | ((255 - dimminglevel) << 16) | ((255 - dimminglevel) << 8);

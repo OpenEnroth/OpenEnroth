@@ -349,6 +349,59 @@ void Engine::PushStationaryLights(int a2) {
     }
 }
 
+void Engine::StackPartyTorchLight() {
+    if (engine->config->graphics.Torchlight.Get()) {  // lightspot around party
+        int TorchLightPower = 800;
+        if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) TorchLightPower = 1024;
+
+        if (pParty->TorchlightActive()) {
+            // max is 800 * torchlight
+            // min is 800
+            int MinTorch = TorchLightPower;
+            int MaxTorch = TorchLightPower * pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
+
+            if (engine->config->graphics.LightsFlicker.Get()) {
+                // torchlight flickering effect
+                // TorchLightPower *= pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;  // 2,3,4
+                int ran = rand();
+                int mod = ((ran - (RAND_MAX * .4)) / 200);
+                TorchLightPower = (pParty->TorchLightLastIntensity + mod);
+
+                // clamp
+                if (TorchLightPower < MinTorch)
+                    TorchLightPower = MinTorch;
+                if (TorchLightPower > MaxTorch)
+                    TorchLightPower = MaxTorch;
+            } else {
+                TorchLightPower = MaxTorch;
+            }
+        }
+
+        // if outdoors and its day turn off
+        if (uCurrentlyLoadedLevelType == LEVEL_Outdoor && !pWeather->bNight)
+            TorchLightPower = 0;
+
+        pParty->TorchLightLastIntensity = TorchLightPower;
+
+        // problem with deserializing this ??
+        if (pParty->flt_TorchlightColorR == 0) {
+            // __debugbreak();
+            pParty->flt_TorchlightColorR = 96;
+            pParty->flt_TorchlightColorG = 96;
+            pParty->flt_TorchlightColorB = 96;
+        }
+
+        // TODO: either add conversion functions, or keep only glm / only Vec3_* classes.
+        Vec3f pos(pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y, pCamera3D->vCameraPos.z);
+        if (TorchLightPower > 0)
+            pMobileLightsStack->AddLight(
+                pos, pBLVRenderParams->uPartySectorID, TorchLightPower,
+                floorf(pParty->flt_TorchlightColorR + 0.5f),
+                floorf(pParty->flt_TorchlightColorG + 0.5f),
+                floorf(pParty->flt_TorchlightColorB + 0.5f), _4E94D0_light_type);
+    }
+}
+
 //----- (0044EEA7) --------------------------------------------------------
 bool Engine::_44EEA7() {  // cursor picking - particle update
     float depth;               // ST00_4@9

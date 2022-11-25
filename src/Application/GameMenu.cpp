@@ -257,7 +257,7 @@ void Menu::EventLoop() {
                     gammalevel++;
                     new OnButtonClick2(213, 161, 0, 0, pBtn_SliderRight, std::string(), false);
                 } else {
-                    Point pt = mouse->GetCursorPos();
+                    Pointi pt = mouse->GetCursorPos();
                     gammalevel = (pt.x - 42) / 17;
                 }
 

@@ -2375,24 +2375,8 @@ void RenderOpenGL::DrawTerrainD3D() {
         glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.specular"), 0, 0, 0);
     }
 
-    // torchlight - pointlight 1 is always party glow
-    float torchradius = 0;
-    if (!diffuseon) {
-        int rangemult = 1;
-        if (pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].Active())
-            rangemult = pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
-        torchradius = float(rangemult) * 1024.0;
-    }
-
-    glUniform3fv(glGetUniformLocation(terrainshader.ID, "fspointlights[0].position"), 1, &camera[0]);
-    glUniform3f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].ambient"), 0.85f, 0.85f, 0.85f);  // background
-    glUniform3f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].diffuse"), 0.85f, 0.85f, 0.85f);  // direct
-    glUniform3f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].specular"), 0.35f, 0.35f, 0.35f);          // for "shinyness"
-    glUniform1f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].radius"), torchradius);
-
-
     // rest of lights stacking
-    GLuint num_lights = 1;
+    GLuint num_lights = 0;
     for (int i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
         // maximum 20 lights sent to shader at the moment
         // TODO(pskelton): make this configurable - also lights should be sorted by distance so nearest are used first
@@ -4306,24 +4290,8 @@ void RenderOpenGL::DrawBuildingsD3D() {
         glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.specular"), 0.0f, 0.0f, 0.0f);
     }
 
-    // torchlight
-    float torchradius = 0;
-    if (!diffuseon) {
-        int rangemult = 1;
-        if (pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].Active())
-            rangemult = pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
-        torchradius = float(rangemult) * 1024.0;
-    }
-
-    glUniform3fv(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].position"), 1, &camera[0]);
-    glUniform3f(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].ambient"), 0.085f, 0.085f, 0.085f);
-    glUniform3f(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].diffuse"), 0.85f, 0.85f, 0.85f);
-    glUniform3f(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].specular"), 0.35f, 0.35f, 0.35f);
-    glUniform1f(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].radius"), torchradius);
-
-
     // rest of lights stacking
-    GLuint num_lights = 1;
+    GLuint num_lights = 0;
     for (int i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
         if (num_lights >= 20) break;
 

@@ -366,10 +366,10 @@ GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions()
     CreateButton(0xF1u, 0x12Eu, 0xD6u, 0x28u, 1, 0, UIMSG_Escape, 0);
 
     // gamma buttons
-    pBtn_SliderLeft = CreateButton(21, 161, 17, 17, 1, 0, UIMSG_ChangeGammaLevel, 4, GameKey::None, "",
+    pBtn_SliderLeft = CreateButton(21, 161, 17, 17, 1, 0, UIMSG_ChangeGammaLevel, 4, PlatformKey::None, "",
         { options_menu_skin.uTextureID_ArrowLeft }); // -
     CreateButton(42, 160, 170, 17, 1, 0, UIMSG_ChangeGammaLevel, 0);
-    pBtn_SliderRight = CreateButton(213, 161, 17, 17, 1, 0, UIMSG_ChangeGammaLevel, 5, GameKey::None, "",
+    pBtn_SliderRight = CreateButton(213, 161, 17, 17, 1, 0, UIMSG_ChangeGammaLevel, 5, PlatformKey::None, "",
         { options_menu_skin.uTextureID_ArrowRight }); // +
 
     // if ( render->pRenderD3D )
