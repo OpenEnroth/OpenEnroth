@@ -85,7 +85,7 @@ void PrepareDrawLists_BLV() {
     uNumBillboardsToDraw = 0;
 
     pMobileLightsStack->uNumLightsActive = 0;
-    pStationaryLightsStack->uNumLightsActive = 0;
+    //pStationaryLightsStack->uNumLightsActive = 0;
     engine->StackPartyTorchLight();
 
     PrepareBspRenderList_BLV();
