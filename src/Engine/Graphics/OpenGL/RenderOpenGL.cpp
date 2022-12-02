@@ -473,9 +473,10 @@ struct forcepersverts {
     GLfloat g;
     GLfloat b;
     GLfloat a;
+    GLfloat texid;
 };
 
-forcepersverts forceperstore[50]{};
+forcepersverts forceperstore[300]{};
 int forceperstorecnt{ 0 };
 
 
@@ -554,10 +555,10 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
     glDepthMask(GL_FALSE);
     glDisable(GL_CULL_FACE);
 
+    auto texid{ 0 };
+
     if (textured3d) {
-        glBindTexture(GL_TEXTURE_2D, textured3d->GetOpenGlTexture());
-    } else {
-        glBindTexture(GL_TEXTURE_2D, 0);
+        texid = textured3d->GetOpenGlTexture();
     }
 
     // load up poly
@@ -578,6 +579,7 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
         thisvert->g = 1.0f;
         thisvert->b = 1.0f;
         thisvert->a = 1.0f;
+        thisvert->texid = texid;
         thisvert++;
 
         // copy other two (z+1)(z+2)
@@ -594,13 +596,15 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
             thisvert->g = 1.0f;
             thisvert->b = 1.0f;
             thisvert->a = 1.0f;
+            thisvert->texid = texid;
             thisvert++;
         }
 
         forceperstorecnt += 3;
-        assert(forceperstorecnt <= 40);
+        assert(forceperstorecnt <= 290);
     }
 
+    // TODO(pskelton): do these need batching?
     DrawForcePerVerts();
 
     glDisable(GL_BLEND);
@@ -1059,28 +1063,8 @@ void RenderOpenGL::DrawTextureGrayShade(float a2, float a3, Image *a4) {
 }
 
 void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {
-    // TODO(pskelton): fix properly - only partially works
-    // for floor and wall(for example Celeste)-------------------
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];
-    if (pFace->uPolygonType == POLYGON_InBetweenFloorAndWall || pFace->uPolygonType == POLYGON_Floor) {
-        float v69 = (OS_GetTime() / 32.0f) - pCamera3D->vCameraPos.x;
-        float v55 = (OS_GetTime() / 32.0f) + pCamera3D->vCameraPos.y;
-        for (uint i = 0; i < uNumVertices; ++i) {
-            array_507D30[i].u = (v69 + array_507D30[i].u) * 0.25f;
-            array_507D30[i].v = (v55 + array_507D30[i].v) * 0.25f;
-        }
-        render->DrawIndoorPolygon(uNumVertices, pFace, PID(OBJECT_Face, uFaceID), -1, 0);
-        return;
-    }
-    //---------------------------------------
-
-    // TODO(pskelton): temporary hack to use outdoor sky as a coverall instead of drawing the individual segments which causes hazy transitions without rhw correction
-    SkyBillboard.CalcSkyFrustumVec(1, 0, 0, 0, 1, 0);
-    render->DrawOutdoorSkyD3D();
-    return;
-
-
-    if ((signed int)uNumVertices <= 0) return;
+    if (pFace->uNumVertices <= 0) return;
 
     struct Polygon pSkyPolygon;
     pSkyPolygon.texture = nullptr;
@@ -1089,10 +1073,10 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID
 
     pSkyPolygon.ptr_38 = &SkyBillboard;
     pSkyPolygon.dimming_level = 0;
-    pSkyPolygon.uNumVertices = uNumVertices;
+    pSkyPolygon.uNumVertices = pFace->uNumVertices;
 
-    SkyBillboard.CalcSkyFrustumVec(1, 0, 0, 0, 1, 0);
 
+    // TODO(pskelton): repeated maths could be saved when calculating sky planes
     double rot_to_rads = ((2 * pi_double) / 2048);
 
     // lowers clouds as party goes up
@@ -1117,12 +1101,23 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID
 
     float inv_viewplanedist = 1.0f / pCamera3D->ViewPlaneDist_X;
 
+    // copy to buff in
+    for (uint i = 0; i < pFace->uNumVertices; ++i) {
+        VertexRenderList[i].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[i]].x;
+        VertexRenderList[i].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[i]].y;
+        VertexRenderList[i].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[i]].z;
+        VertexRenderList[i].u = (signed short)pFace->pVertexUIDs[i];
+        VertexRenderList[i].v = (signed short)pFace->pVertexVIDs[i];
+    }
+    pCamera3D->ViewTransform(VertexRenderList, pFace->uNumVertices);
+    pCamera3D->Project(VertexRenderList, pFace->uNumVertices, 0);
+
     uint _507D30_idx = 0;
     for (; _507D30_idx < pSkyPolygon.uNumVertices; _507D30_idx++) {
         // outbound screen x dist
-        float x_dist = inv_viewplanedist * (pBLVRenderParams->uViewportCenterX - array_507D30[_507D30_idx].vWorldViewProjX);
+        float x_dist = inv_viewplanedist * (pBLVRenderParams->uViewportCenterX - VertexRenderList[_507D30_idx].vWorldViewProjX);
         // outbound screen y dist
-        float y_dist = inv_viewplanedist * (blv_horizon_height_offset - array_507D30[_507D30_idx].vWorldViewProjY);
+        float y_dist = inv_viewplanedist * (blv_horizon_height_offset - VertexRenderList[_507D30_idx].vWorldViewProjY);
 
         // rotate vectors to cam facing
         float skyfinalleft = (pSkyPolygon.ptr_38->CamVecLeft_X * x_dist) + (pSkyPolygon.ptr_38->CamVecLeft_Z * y_dist) + pSkyPolygon.ptr_38->CamVecLeft_Y;
@@ -1134,12 +1129,12 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID
 
         // offset tex coords
         float texoffset_U = ((pMiscTimer->uTotalGameTimeElapsed) / 128.0f) + ((skyfinalleft * worldviewdepth) / 16.0f);
-        array_507D30[_507D30_idx].u = texoffset_U / (pSkyPolygon.texture->GetWidth());
+        VertexRenderList[_507D30_idx].u = texoffset_U / (pSkyPolygon.texture->GetWidth());
         float texoffset_V = ((pMiscTimer->uTotalGameTimeElapsed) / 128.0f) + ((skyfinalfront * worldviewdepth) / 16.0f);
-        array_507D30[_507D30_idx].v = texoffset_V / (pSkyPolygon.texture->GetHeight());
+        VertexRenderList[_507D30_idx].v = texoffset_V / (pSkyPolygon.texture->GetHeight());
 
         // this basically acts as texture perspective correction
-        array_507D30[_507D30_idx]._rhw = worldviewdepth;
+        VertexRenderList[_507D30_idx]._rhw = worldviewdepth;
     }
 
     // no clipped polygon so draw and return??
@@ -1154,8 +1149,55 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID
 }
 
 void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon) {
-    // not used in gl now
-    return;
+    auto texture = (TextureOpenGL*)pSkyPolygon->texture;
+    auto texid = texture->GetOpenGlTexture();
+
+    uint uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0);
+    uint uTintR = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintB = uTint & 0xFF;
+    float scrspace{ pCamera3D->GetFarClip() };
+
+    // load up poly
+    for (int z = 0; z < (pSkyPolygon->uNumVertices - 2); z++) {
+        // 123, 134, 145, 156..
+        forcepersverts* thisvert = &forceperstore[forceperstorecnt];
+
+        // copy first
+        thisvert->x = VertexRenderList[0].vWorldViewProjX;
+        thisvert->y = VertexRenderList[0].vWorldViewProjY;
+        thisvert->z = 1.0f;
+        thisvert->w = VertexRenderList[0]._rhw;
+        thisvert->u = VertexRenderList[0].u;
+        thisvert->v = VertexRenderList[0].v;
+        thisvert->q = 1.0f;
+        thisvert->screenspace = scrspace;
+        thisvert->r = (uTintR) / 255.0f;
+        thisvert->g = (uTintG) / 255.0f;
+        thisvert->b = (uTintB) / 255.0f;
+        thisvert->a = 1.0f;
+        thisvert->texid = texid;
+        thisvert++;
+
+        // copy other two (z+1)(z+2)
+        for (uint i = 1; i < 3; ++i) {
+            thisvert->x = VertexRenderList[z + i].vWorldViewProjX;
+            thisvert->y = VertexRenderList[z + i].vWorldViewProjY;
+            thisvert->z = 1.0f;
+            thisvert->w = VertexRenderList[z + i]._rhw;
+            thisvert->u = VertexRenderList[z + i].u;
+            thisvert->v = VertexRenderList[z + i].v;
+            thisvert->q = 1.0f;
+            thisvert->screenspace = scrspace;
+            thisvert->r = (uTintR) / 255.0f;
+            thisvert->g = (uTintG) / 255.0f;
+            thisvert->b = (uTintB) / 255.0f;
+            thisvert->a = 1.0f;
+            thisvert->texid = texid;
+            thisvert++;
+        }
+
+        forceperstorecnt += 3;
+        assert(forceperstorecnt <= 290);
+    }
 }
 
 bool RenderOpenGL::AreRenderSurfacesOk() {
@@ -2688,8 +2730,13 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
 //----- (004A2DA3) --------------------------------------------------------
 void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
     auto texture = (TextureOpenGL *)pSkyPolygon->texture;
+    auto texid = texture->GetOpenGlTexture();
 
-    glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+    static Texture* effpar03 = assets->GetBitmap("effpar03");
+    auto texturesolid = (TextureOpenGL*)effpar03;
+    float texidsolid = static_cast<float>(texturesolid->GetOpenGlTexture());
+
+    //glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
@@ -2717,6 +2764,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
         thisvert->g = (uTintG) / 255.0f;
         thisvert->b = (uTintB) / 255.0f;
         thisvert->a = 1.0f;
+        thisvert->texid = texid;
         thisvert++;
 
         // copy other two (z+1)(z+2)
@@ -2733,11 +2781,12 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
             thisvert->g = (uTintG) / 255.0f;
             thisvert->b = (uTintB) / 255.0f;
             thisvert->a = 1.0f;
+            thisvert->texid = texid;
             thisvert++;
         }
 
         forceperstorecnt += 3;
-        assert(forceperstorecnt <= 40);
+        assert(forceperstorecnt <= 290);
     }
 
     if (engine->config->graphics.Fog.Get()) {
@@ -2760,6 +2809,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
             thisvert->g = (uTintG) / 255.0f;
             thisvert->b = (uTintB) / 255.0f;
             thisvert->a = 0.0f;
+            thisvert->texid = texidsolid;
             thisvert++;
 
             // copy other two (z+1)(z+2)
@@ -2776,11 +2826,12 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
                 thisvert->g = (uTintG) / 255.0f;
                 thisvert->b = (uTintB) / 255.0f;
                 thisvert->a = ((z + i) == 7) ? 0.0f : 1.0f;
+                thisvert->texid = texidsolid;
                 thisvert++;
             }
 
             forceperstorecnt += 3;
-            assert(forceperstorecnt <= 40);
+            assert(forceperstorecnt <= 290);
         }
 
         // draw sub sky
@@ -2802,6 +2853,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
             thisvert->g = (uTintG) / 255.0f;
             thisvert->b = (uTintB) / 255.0f;
             thisvert->a = 1.0f;
+            thisvert->texid = texidsolid;
             thisvert++;
 
             // copy other two (z+1)(z+2)
@@ -2818,11 +2870,12 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
                 thisvert->g = (uTintG) / 255.0f;
                 thisvert->b = (uTintB) / 255.0f;
                 thisvert->a = 1.0f;
+                thisvert->texid = texidsolid;
                 thisvert++;
             }
 
             forceperstorecnt += 3;
-            assert(forceperstorecnt <= 40);
+            assert(forceperstorecnt <= 290);
         }
     }
 
@@ -2910,21 +2963,26 @@ void RenderOpenGL::DrawForcePerVerts() {
     glUniform1f(glGetUniformLocation(forcepershader.ID, "fog.fogmiddle"), GLfloat(fpfogmiddle));
     glUniform1f(glGetUniformLocation(forcepershader.ID, "fog.fogend"), GLfloat(fpfogend));
 
+    // draw all similar textures in batches
+    int offset = 0;
+    while (offset < forceperstorecnt) {
+        // set texture
+        GLfloat thistex = forceperstore[offset].texid;
+        glBindTexture(GL_TEXTURE_2D, thistex);
 
-    //draw 6 for main sky / spell
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    ++drawcalls;
+        int cnt = 0;
+        do {
+            cnt++;
+            if (offset + (3 * cnt) > forceperstorecnt) {
+                --cnt;
+                break;
+            }
+        } while (forceperstore[offset + (cnt * 3)].texid == thistex);
 
-    static Texture *effpar03 = assets->GetBitmap("effpar03");
-    auto texture = (TextureOpenGL *)effpar03;
-    float gltexid = static_cast<float>(texture->GetOpenGlTexture());
+        glDrawArrays(GL_TRIANGLES, offset, (3 * cnt));
+        drawcalls++;
 
-    //change texture to balnk and draw rest
-    if (forceperstorecnt > 6) {
-        glBindTexture(GL_TEXTURE_2D,  gltexid);
-
-        glDrawArrays(GL_TRIANGLES, 6, forceperstorecnt - 6);
-        ++drawcalls;
+        offset += (3 * cnt);
     }
 
     glUseProgram(0);
@@ -4767,15 +4825,6 @@ void RenderOpenGL::DrawIndoorFaces() {
                     continue;
                 }
 
-                if (face->Indoor_sky()) {
-                    if (face->uPolygonType != POLYGON_InBetweenFloorAndWall && face->uPolygonType != POLYGON_Floor) {
-                        if (drawnsky == false) {
-                            drawnsky = true;
-                        }
-                        continue;
-                    }
-                }
-
                 IndoorCameraD3D_Vec4* portalfrustumnorm = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum;
                 unsigned int uNumFrustums = 4;
                 RenderVertexSoft* pPortalBounding = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding;
@@ -4806,6 +4855,19 @@ void RenderOpenGL::DrawIndoorFaces() {
                     if (pCamera3D->CullFaceToFrustum(static_vertices_buff_in, &uNumVerticesa, static_vertices_calc_out, portalfrustumnorm, 4)) {
                         face->uAttributes |= FACE_SeenByParty;
 
+                        float skymodtimex{};
+                        float skymodtimey{};
+                        if (face->Indoor_sky()) {
+                            if (face->uPolygonType != POLYGON_InBetweenFloorAndWall && face->uPolygonType != POLYGON_Floor) {
+                                // draw forced perspective sky
+                                DrawIndoorSky(face->uNumVertices, uFaceID);
+                                continue;
+                            } else {
+                                skymodtimex = (OS_GetTime() / 32.0f) - pCamera3D->vCameraPos.x;
+                                skymodtimey = (OS_GetTime() / 32.0f) + pCamera3D->vCameraPos.y;
+                            }
+                        }
+
                         // check face is towards camera
                         if (pCamera3D->is_face_faced_to_cameraBLV(face)) {
                             ++pBLVRenderParams->uNumFacesRenderedThisFrame;
@@ -4815,7 +4877,6 @@ void RenderOpenGL::DrawIndoorFaces() {
                             int attribflags = 0;
 
                             if (face->uAttributes & FACE_IsFluid) attribflags |= 2;
-                            if (face->uAttributes & FACE_INDOOR_SKY) attribflags |= 0x400;
 
                             if (face->uAttributes & FACE_FlowDown)
                                 attribflags |= 0x400;
@@ -4861,6 +4922,10 @@ void RenderOpenGL::DrawIndoorFaces() {
                                 thisvert->z = pIndoor->pVertices[face->pVertexIDs[0]].z;
                                 thisvert->u = face->pVertexUIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU  /*+ face->sTextureDeltaU*/;
                                 thisvert->v = face->pVertexVIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV  /*+ face->sTextureDeltaV*/;
+                                if (face->Indoor_sky()) {
+                                    thisvert->u = (skymodtimex + thisvert->u) * 0.25f;
+                                    thisvert->v = (skymodtimey + thisvert->v) * 0.25f;
+                                }
                                 thisvert->texunit = texunit;
                                 thisvert->texturelayer = texlayer;
                                 thisvert->normx = face->pFacePlane.vNormal.x;
@@ -4877,6 +4942,10 @@ void RenderOpenGL::DrawIndoorFaces() {
                                     thisvert->z = pIndoor->pVertices[face->pVertexIDs[z + i]].z;
                                     thisvert->u = face->pVertexUIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU  /*+ face->sTextureDeltaU*/;
                                     thisvert->v = face->pVertexVIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV  /*+ face->sTextureDeltaV*/;
+                                    if (face->Indoor_sky()) {
+                                        thisvert->u = (skymodtimex + thisvert->u) * 0.25f;
+                                        thisvert->v = (skymodtimey + thisvert->v) * 0.25f;
+                                    }
                                     thisvert->texunit = texunit;
                                     thisvert->texturelayer = texlayer;
                                     thisvert->normx = face->pFacePlane.vNormal.x;
@@ -5123,6 +5192,19 @@ void RenderOpenGL::DrawIndoorFaces() {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, NULL);
 
+        // indoor sky drawing
+        if (forceperstorecnt) {
+            // set forced matrixs
+            _set_ortho_projection(1);
+            _set_ortho_modelview();
+
+            SkyBillboard.CalcSkyFrustumVec(1, 0, 0, 0, 1, 0);
+
+            DrawForcePerVerts();
+
+            _set_3d_projection_matrix();
+            _set_3d_modelview_matrix();
+        }
 
 
         //end terrain debug
@@ -5130,12 +5212,6 @@ void RenderOpenGL::DrawIndoorFaces() {
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 
-
-        // do we need background sky?
-        if (drawnsky == true) {
-            SkyBillboard.CalcSkyFrustumVec(1, 0, 0, 0, 1, 0);
-            render->DrawOutdoorSkyD3D();
-        }
 
 
         // stack decals start
