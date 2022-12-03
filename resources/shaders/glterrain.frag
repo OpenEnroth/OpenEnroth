@@ -82,6 +82,7 @@ void main() {
 	vec3 result = CalcSunLight(sun, fragnorm, fragviewdir, vec3(1));
     result = clamp(result, 0.0, 0.85);
 
+	// stack torchlight if any
     result += CalcPointLight(fspointlights[0], fragnorm, vsPos, fragviewdir);
 
     // stack stationary lights
@@ -149,7 +150,8 @@ vec3 CalcSunLight(Sunlight light, vec3 normal, vec3 viewDir, vec3 thisfragcol) {
 
 // calculates the color when using a point light.
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
-    if (light.diffuse.r == 0 && light.diffuse.g == 0 && light.diffuse.b == 0) return vec3(0);    
+    if (light.diffuse.r == 0 && light.diffuse.g == 0 && light.diffuse.b == 0) return vec3(0);
+    if (light.radius < 1.0) return vec3(0);    
 
     vec3 lightDir = normalize(light.position - fragPos);
     // diffuse shading

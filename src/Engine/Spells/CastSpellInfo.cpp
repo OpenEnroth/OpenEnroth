@@ -1292,6 +1292,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 spell_spray_angle_start = (int)_v726 / -2;
                 spell_spray_angle_end = (int)_v726 / 2;
                 while (spell_spray_angle_start <= spell_spray_angle_end) {
+                    pSpellSprite.uSpriteFrameID = rand() % 64;
                     pSpellSprite.uFacing = spell_spray_angle_start + (short)target_direction.uYawAngle;
                     if (pSpellSprite.Create(
                         (int16_t)(spell_spray_angle_start + (short)target_direction.uYawAngle),

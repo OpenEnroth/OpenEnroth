@@ -891,7 +891,7 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
 
         case SPRITE_SPELL_AIR_SPARKS:
             //_4A78AE_sparks_spell(a2);
-            AddMobileLight(a2, 0x2F3351, 128);  // 0x64640F
+            //AddMobileLight(a2, 0x2F3351, 128);  // 0x64640F
             return true;
             //return false;
 

@@ -124,10 +124,6 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
     pOutdoor->UpdateFog();
     // pCamera3D->sr_Reset_list_0037C();
 
-    pMobileLightsStack->uNumLightsActive = 0;
-    pStationaryLightsStack->uNumLightsActive = 0;
-    engine->StackPartyTorchLight();
-
     // if (render->pRenderD3D) // d3d - redraw always
     {
         SkyBillboard.CalcSkyFrustumVec(1, 0, 0, 0, 1, 0);  // sky box frustum
@@ -138,6 +134,10 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
         // render->DrawBezierTerrain();
     }
 
+    // TODO(pskelton): consider order of drawing / lighting
+    pMobileLightsStack->uNumLightsActive = 0;
+    pStationaryLightsStack->uNumLightsActive = 0;
+    engine->StackPartyTorchLight();
 
     engine->PushStationaryLights(-1);
     // engine->PrepareBloodsplats(); // not used?

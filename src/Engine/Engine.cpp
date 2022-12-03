@@ -393,7 +393,7 @@ void Engine::StackPartyTorchLight() {
 
         // TODO: either add conversion functions, or keep only glm / only Vec3_* classes.
         Vec3f pos(pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y, pCamera3D->vCameraPos.z);
-        if (TorchLightPower > 0)
+        //if (TorchLightPower > 0)
             pMobileLightsStack->AddLight(
                 pos, pBLVRenderParams->uPartySectorID, TorchLightPower,
                 floorf(pParty->flt_TorchlightColorR + 0.5f),
@@ -432,8 +432,8 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
     // depth = v2;
 
     PickMouse(depth, pt.x, pt.y, false, sprite_filter, face_filter);
-    lightmap_builder->StationaryLightsCount = 0;
-    lightmap_builder->MobileLightsCount = 0;
+    //lightmap_builder->StationaryLightsCount = 0;
+    //lightmap_builder->MobileLightsCount = 0;
 
     // decal reset but actually want bloodsplat reset
     // decal_builder->DecalsCount = 0;

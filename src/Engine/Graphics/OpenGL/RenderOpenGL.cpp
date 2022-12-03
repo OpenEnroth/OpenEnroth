@@ -2417,33 +2417,33 @@ void RenderOpenGL::DrawTerrainD3D() {
         glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.specular"), 0, 0, 0);
     }
 
+
+    // TODO(pskelton): this should be a seperate function
     // rest of lights stacking
     GLuint num_lights = 0;
-    for (int i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
-        // maximum 20 lights sent to shader at the moment
-        // TODO(pskelton): make this configurable - also lights should be sorted by distance so nearest are used first
-        if (num_lights >= 20) break;
 
-        std::string slotnum = std::to_string(num_lights);
+    // get party torchlight as priority - can be radius == 0
+    for (int i = 0; i < 1; ++i) {
+        if (pMobileLightsStack->uNumLightsActive < 1) continue;
+
         auto test = pMobileLightsStack->pLights[i];
+        std::string slotnum = std::to_string(num_lights);
 
         float x = pMobileLightsStack->pLights[i].vPosition.x;
         float y = pMobileLightsStack->pLights[i].vPosition.y;
         float z = pMobileLightsStack->pLights[i].vPosition.z;
 
-        float r = pMobileLightsStack->pLights[i].uLightColorR / 255.0;
-        float g = pMobileLightsStack->pLights[i].uLightColorG / 255.0;
-        float b = pMobileLightsStack->pLights[i].uLightColorB / 255.0;
+        float r = pMobileLightsStack->pLights[i].uLightColorR / 255.0f;
+        float g = pMobileLightsStack->pLights[i].uLightColorG / 255.0f;
+        float b = pMobileLightsStack->pLights[i].uLightColorB / 255.0f;
 
-        float lightrad = pMobileLightsStack->pLights[i].uRadius;
-
-        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0);
+        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0f);
         glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
+        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].sector").c_str()), 0);
         glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
         glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), r, g, b);
-        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
-
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
+        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), test.uRadius);
         num_lights++;
     }
 
@@ -2474,6 +2474,38 @@ void RenderOpenGL::DrawTerrainD3D() {
 
         num_lights++;
     }
+
+    // mobile
+    for (int i = 1; i < pMobileLightsStack->uNumLightsActive; ++i) {
+        // maximum 20 lights sent to shader at the moment
+        // TODO(pskelton): make this configurable - also lights should be sorted by distance so nearest are used first
+        if (num_lights >= 20) break;
+
+        std::string slotnum = std::to_string(num_lights);
+        auto test = pMobileLightsStack->pLights[i];
+
+        float x = pMobileLightsStack->pLights[i].vPosition.x;
+        float y = pMobileLightsStack->pLights[i].vPosition.y;
+        float z = pMobileLightsStack->pLights[i].vPosition.z;
+
+        float r = pMobileLightsStack->pLights[i].uLightColorR / 255.0;
+        float g = pMobileLightsStack->pLights[i].uLightColorG / 255.0;
+        float b = pMobileLightsStack->pLights[i].uLightColorB / 255.0;
+
+        float lightrad = pMobileLightsStack->pLights[i].uRadius;
+
+        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), r, g, b);
+        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
+
+        num_lights++;
+    }
+
+    if (engine->config->debug.VerboseLogging.Get())
+        logger->Info("Lights this frame: %u", num_lights);
 
     // blank the rest of the lights
     for (int blank = num_lights; blank < 20; blank++) {
@@ -4348,36 +4380,39 @@ void RenderOpenGL::DrawBuildingsD3D() {
         glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.specular"), 0.0f, 0.0f, 0.0f);
     }
 
+
+    // TODO(pskelton): this should be a seperate function
     // rest of lights stacking
     GLuint num_lights = 0;
-    for (int i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
-        if (num_lights >= 20) break;
 
-        std::string slotnum = std::to_string(num_lights);
+    // get party torchlight as priority - can be radius == 0
+    for (int i = 0; i < 1; ++i) {
+        if (pMobileLightsStack->uNumLightsActive < 1) continue;
+
         auto test = pMobileLightsStack->pLights[i];
+        std::string slotnum = std::to_string(num_lights);
 
         float x = pMobileLightsStack->pLights[i].vPosition.x;
         float y = pMobileLightsStack->pLights[i].vPosition.y;
         float z = pMobileLightsStack->pLights[i].vPosition.z;
 
-        float r = pMobileLightsStack->pLights[i].uLightColorR / 255.0;
-        float g = pMobileLightsStack->pLights[i].uLightColorG / 255.0;
-        float b = pMobileLightsStack->pLights[i].uLightColorB / 255.0;
+        float r = pMobileLightsStack->pLights[i].uLightColorR / 255.0f;
+        float g = pMobileLightsStack->pLights[i].uLightColorG / 255.0f;
+        float b = pMobileLightsStack->pLights[i].uLightColorB / 255.0f;
 
-        float lightrad = pMobileLightsStack->pLights[i].uRadius;
-
-        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0);
+        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0f);
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
+        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].sector").c_str()), 0);
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
-        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
-
+        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), test.uRadius);
         num_lights++;
     }
 
-
     for (int i = 0; i < pStationaryLightsStack->uNumLightsActive; ++i) {
+        // maximum 20 lights sent to shader at the moment
+        // TODO(pskelton): make this configurable - also lights should be sorted by distance so nearest are used first
         if (num_lights >= 20) break;
 
         std::string slotnum = std::to_string(num_lights);
@@ -4397,18 +4432,50 @@ void RenderOpenGL::DrawBuildingsD3D() {
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), r, g, b);
         glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
 
         num_lights++;
     }
 
+    // mobile
+    for (int i = 1; i < pMobileLightsStack->uNumLightsActive; ++i) {
+        // maximum 20 lights sent to shader at the moment
+        // TODO(pskelton): make this configurable - also lights should be sorted by distance so nearest are used first
+        if (num_lights >= 20) break;
 
-    // blank rest of lights
+        std::string slotnum = std::to_string(num_lights);
+        auto test = pMobileLightsStack->pLights[i];
+
+        float x = pMobileLightsStack->pLights[i].vPosition.x;
+        float y = pMobileLightsStack->pLights[i].vPosition.y;
+        float z = pMobileLightsStack->pLights[i].vPosition.z;
+
+        float r = pMobileLightsStack->pLights[i].uLightColorR / 255.0;
+        float g = pMobileLightsStack->pLights[i].uLightColorG / 255.0;
+        float b = pMobileLightsStack->pLights[i].uLightColorB / 255.0;
+
+        float lightrad = pMobileLightsStack->pLights[i].uRadius;
+
+        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), r, g, b);
+        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
+
+        num_lights++;
+    }
+
+    if (engine->config->debug.VerboseLogging.Get())
+        logger->Info("Lights this frame: %u", num_lights);
+
+    // blank the rest of the lights
     for (int blank = num_lights; blank < 20; blank++) {
         std::string slotnum = std::to_string(blank);
         glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 0.0);
     }
+
 
     // toggle for water faces or not
     glUniform1i(glGetUniformLocation(outbuildshader.ID, "watertiles"), GLint(1));
@@ -5128,7 +5195,7 @@ void RenderOpenGL::DrawIndoorFaces() {
             if (!IsSphereInFrustum(test.vPosition, test.uRadius)) continue;
 
             std::string slotnum = std::to_string(num_lights);
-            
+
             float x = pMobileLightsStack->pLights[i].vPosition.x;
             float y = pMobileLightsStack->pLights[i].vPosition.y;
             float z = pMobileLightsStack->pLights[i].vPosition.z;
