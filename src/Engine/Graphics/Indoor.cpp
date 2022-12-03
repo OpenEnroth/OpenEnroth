@@ -799,6 +799,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
      // holds faces the coords are above
     int FoundFaceStore[5] = { 0 };
     int NumFoundFaceStore = 0;
+    int backupboundingsector{ 0 };
 
     // loop through sectors
     for (uint i = 1; i < pSectors.size(); ++i) {
@@ -810,6 +811,8 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
             (pSector->pBounding.y1 - 5) > sY || (pSector->pBounding.y2 + 5) < sY ||
             (pSector->pBounding.z1 - 64) > sZ || (pSector->pBounding.z2 + 64) < sZ)
             continue;  // outside sector bounding
+
+        if (!backupboundingsector) backupboundingsector = i;
 
         // logger->Warning("Sector[%u]", i);
         int FloorsAndPortals = pSector->uNumFloors + pSector->uNumPortals;
@@ -844,9 +847,13 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
 
     // No face found - outside of level
     if (!NumFoundFaceStore) {
-        logger->Warning("Sector fail: %i, %i, %i", sX, sY, sZ);
-
-        return 0;
+        if (!backupboundingsector) {
+            logger->Warning("GetSector fail: %i, %i, %i", sX, sY, sZ);
+            return 0;
+        } else {
+            logger->Warning("GetSector: Returning backup sector bounding!");
+            return backupboundingsector;
+        }
     }
 
     // when multiple possibilities are found - cycle through and use the closer one to party
