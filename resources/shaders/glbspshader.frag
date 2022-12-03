@@ -174,14 +174,18 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
 
     // combine results
     vec3 ambient = light.ambient;//* vec3(texture(material.diffuse, TexCoords));
+    
+    // no ambient light if facing away from lightsource
     if (diff == 0.0) {
-	// pointing away so tone down ambient lights
-	float ambfade = 1.0 - abs(dot(normal, lightDir));
- 	ambient *= ambfade;
+ 	ambient = vec3(0.0);
     }
 
+    // stationary sources cant light outside their sector
     if (light.sector > 0.0)
-	if (vsSector != int(light.sector)) ambient = vec3(0);
+	if (vsSector != int(light.sector)) {
+		ambient = vec3(0);
+		diff = 0.0;
+	}
 
     vec3 diffuse = light.diffuse * diff ;//* vec3(texture(material.diffuse, TexCoords));
     vec3 specular = light.specular * spec ;//* vec3(texture(material.specular, TexCoords));

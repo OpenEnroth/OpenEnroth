@@ -5051,13 +5051,12 @@ void RenderOpenGL::DrawIndoorFaces() {
         // rest of lights stacking
         GLuint num_lights = 0;   // 1;
 
-        for (int i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
-            if (num_lights >= 40) break;
+        // get party torchlight as priority
+        for (int i = 0; i < 1; ++i) {
+            if (pMobileLightsStack->uNumLightsActive < 1) continue;
 
-            // test sector/ distance?
-
-            std::string slotnum = std::to_string(num_lights);
             auto test = pMobileLightsStack->pLights[i];
+            std::string slotnum = std::to_string(num_lights);
 
             float x = pMobileLightsStack->pLights[i].vPosition.x;
             float y = pMobileLightsStack->pLights[i].vPosition.y;
@@ -5067,43 +5066,23 @@ void RenderOpenGL::DrawIndoorFaces() {
             float g = pMobileLightsStack->pLights[i].uLightColorG / 255.0f;
             float b = pMobileLightsStack->pLights[i].uLightColorB / 255.0f;
 
-            float lightrad = pMobileLightsStack->pLights[i].uRadius;
-
             glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0f);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
             glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].sector").c_str()), 0);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
-            //glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].constant"), .81);
-            //glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].linear"), 0.003);
-            //glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].quadratic"), 0.000007);
-            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
-
+            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), test.uRadius);
             num_lights++;
-
-            //    StackLight_TerrainFace(
-            //        (StationaryLight*)&pMobileLightsStack->pLights[i], pNormal,
-            //        Light_tile_dist, VertList, uStripType, bLightBackfaces, &num_lights);
         }
 
-
-
-        // sort stationary by distance ??
-
-
-
+        // stack the static lights next (wall torches)
         for (int i = 0; i < pStationaryLightsStack->uNumLightsActive; ++i) {
             if (num_lights >= 40) break;
 
-            std::string slotnum = std::to_string(num_lights);
             auto test = pStationaryLightsStack->pLights[i];
 
-
-            // kludge for getting lights in  visible sectors
-            // int sector = pIndoor->GetSector(test.vPosition.x, test.vPosition.y, test.vPosition.z);
-
-            // is this on the list
+            // is this on the sector list
             bool onlist = false;
             for (uint i = 0; i < pBspRenderer->uNumVisibleNotEmptySectors; ++i) {
                 int listsector = pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i];
@@ -5114,7 +5093,13 @@ void RenderOpenGL::DrawIndoorFaces() {
             }
             if (!onlist) continue;
 
+            // is it in the frustum
+            if (!IsSphereInFrustum(test.vPosition, test.uRadius)) continue;
 
+            // TODO(pskelton): could check is sphere is visible through relevant viewing portal
+
+
+            std::string slotnum = std::to_string(num_lights);
 
             float x = test.vPosition.x;
             float y = test.vPosition.y;
@@ -5124,30 +5109,48 @@ void RenderOpenGL::DrawIndoorFaces() {
             float g = test.uLightColorG / 255.0f;
             float b = test.uLightColorB / 255.0f;
 
-            float lightrad = test.uRadius;
-
             glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 1.0f);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
             glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].sector").c_str()), test.uSectorID);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
-            //glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].constant"), .81);
-            //glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].linear"), 0.003);
-            //glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].quadratic"), 0.000007);
-            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
-
+            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), test.uRadius);
             num_lights++;
-
-
-
-            //    StackLight_TerrainFace(&pStationaryLightsStack->pLights[i], pNormal,
-            //        Light_tile_dist, VertList, uStripType, bLightBackfaces,
-            //        &num_lights);
         }
 
-        // blank lights
+        // whatevers left for mobile lights
+        for (int i = 1; i < pMobileLightsStack->uNumLightsActive; ++i) {
+            if (num_lights >= 40) break;
 
+            // TODO(pskelton): nearest lights should be prioritsed
+            auto test = pMobileLightsStack->pLights[i];
+            if (!IsSphereInFrustum(test.vPosition, test.uRadius)) continue;
+
+            std::string slotnum = std::to_string(num_lights);
+            
+            float x = pMobileLightsStack->pLights[i].vPosition.x;
+            float y = pMobileLightsStack->pLights[i].vPosition.y;
+            float z = pMobileLightsStack->pLights[i].vPosition.z;
+
+            float r = pMobileLightsStack->pLights[i].uLightColorR / 255.0f;
+            float g = pMobileLightsStack->pLights[i].uLightColorG / 255.0f;
+            float b = pMobileLightsStack->pLights[i].uLightColorB / 255.0f;
+
+            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0f);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
+            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].sector").c_str()), 0);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
+            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), test.uRadius);
+            num_lights++;
+        }
+
+        if (engine->config->debug.VerboseLogging.Get())
+            logger->Info("Lights this frame: %u", num_lights);
+
+        // blank any lights not used
         for (int blank = num_lights; blank < 40; blank++) {
             std::string slotnum = std::to_string(blank);
             glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 0.0);
