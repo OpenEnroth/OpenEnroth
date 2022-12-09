@@ -161,7 +161,6 @@ typedef uint16_t PLAYER_SKILL;
 typedef uint8_t PLAYER_SKILL_LEVEL;
 
 enum class PLAYER_SKILL_MASTERY: int32_t { // TODO: type could be changed to something else when SpriteObject_MM7 implemented in LegacyImages
-
     PLAYER_SKILL_MASTERY_NONE = 0,
     PLAYER_SKILL_MASTERY_NOVICE = 1,
     PLAYER_SKILL_MASTERY_EXPERT = 2,

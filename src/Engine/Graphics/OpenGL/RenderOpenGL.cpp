@@ -85,7 +85,7 @@ RenderVertexSoft array_73D150[20];
 RenderVertexSoft VertexRenderList[50];
 RenderVertexD3D3 d3d_vertex_buffer[50];
 RenderVertexSoft array_507D30[50];
-Sizei output = {0,0};
+Sizei output = {0, 0};
 
 // improved error check - using glad post call back
 void GL_Check_Errors(void *ret, const char *name, GLADapiproc apiproc, int len_args, ...) {

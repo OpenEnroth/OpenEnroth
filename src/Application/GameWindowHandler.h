@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <tuple>
 
 #include "Platform/PlatformKey.h"
 #include "Platform/PlatformEventHandler.h"
