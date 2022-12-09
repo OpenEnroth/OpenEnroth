@@ -427,15 +427,12 @@ LABEL_47:
                     ++curr_seq_num;
                     break;
                 case EVENT_ChangeEvent:
-                    if (EVT_DWORD(_evt->v5)) {
-                        stru_5E4C90_MapPersistVars._decor_events
-                            [activeLevelDecoration->_idx_in_stru123] =
-                            _evt->v5 - 124;
+                    v27 = EVT_DWORD(_evt->v5);
+                    if (v27) {
+                        stru_5E4C90_MapPersistVars._decor_events[activeLevelDecoration->_idx_in_stru123 - 75] = v27 - 124;
                     } else {
-                        v26 = (LevelDecoration *)activeLevelDecoration;
-                        stru_5E4C90_MapPersistVars._decor_events
-                            [activeLevelDecoration->_idx_in_stru123] = 0;
-                        v26->uFlags |= LEVEL_DECORATION_INVISIBLE;
+                        stru_5E4C90_MapPersistVars._decor_events[activeLevelDecoration->_idx_in_stru123 - 75] = 0;
+                        activeLevelDecoration->uFlags |= LEVEL_DECORATION_INVISIBLE;
                     }
                     ++curr_seq_num;
 
