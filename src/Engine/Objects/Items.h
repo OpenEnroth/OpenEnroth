@@ -70,30 +70,12 @@ struct ItemGen {  // 0x24
     int32_t uEnchantmentType = ITEM_ENCHANTMENT_NULL;       // 4 // For potion it's potion strength.
     int32_t m_enchantmentStrength = 0;  // 8
     ITEM_ENCHANTMENT special_enchantment = ITEM_ENCHANTMENT_NULL;  // 0c // For gold it's amount
-                              // 25  +5 levels
-                              // 16  Drain Hit Points from target.
-                              // 35  Increases chance of disarming.
-                              // 39  Double damage vs Demons.
-                              // 40  Double damage vs Dragons
-                              // 45  +5 Speed and Accuracy
-                              // 56  +5 Might and Endurance.
-                              // 57  +5 Intellect and Personality.
-                              // 58  Increased Value.
-                              // 60  +3 Unarmed and Dodging skills
-                              // 61  +3 Stealing and Disarm skills.
-                              // 59  Increased Weapon speed.
-                              // 63  Double Damage vs. Elves.
-                              // 64  Double Damage vs. Undead.
-                              // 67  Adds 5 points of Body damage and +2 Disarm
-                              // skill. 68  Adds 6-8 points of Cold damage and
-                              // +5 Armor Class. 71  Prevents drowning damage.
-                              // 72  Prevents falling damage.
     int32_t uNumCharges = 0;           // 10
     ITEM_FLAGS uAttributes = 0;          // 14
     ITEM_SLOT uBodyAnchor = ITEM_SLOT_INVALID; // 18
     uint8_t uMaxCharges = 0;           // 19
     uint8_t uHolderPlayer = 0;         // 1A
-    char field_1B = 0;                 // 1B
+    bool placedInChest = false;        // 1B (was unused, repurposed)
     GameTime uExpireTime;        // uint64_t uExpireTime; //1C
 };
 #pragma pack(pop)
@@ -130,81 +112,6 @@ struct ItemDesc {  // 30h
     char field_2f = 0;
 };
 #pragma pack(pop)
-
-/*
-+10 to all Resistances.	1
-        +10 to all Seven Statistics.	2
-        Explosive Impact!	3
-        Adds 3-4 points of Cold damage.	4
-        Adds 6-8 points of Cold damage.	5
-        Adds 9-12 points of Cold damage.	6
-        Adds 2-5 points of Electrical damage.	7
-        Adds 4-10 points of Electrical damage.	8
-        Adds 6-15 points of Electrical damage.	9
-        Adds 1-6 points of Fire damage.	10
-        Adds 2-12 points of Fire damage.	11
-        Adds 3-18 points of Fire damage.	12
-        Adds 5 points of Body damage.	13
-        Adds 8 points of Body damage.	14
-        Adds 12 points of Body damage.	15
-        Drain Hit Points from target.	16
-        Increases rate of Recovery.	17
-        Wearer resistant to Diseases.	18
-        Wearer resistant to Insanity.	19
-        Wearer resistant to Paralysis.	20
-        Wearer resistant to Poison.	21
-        Wearer resistant to Sleep.	22
-        Wearer resistant to Stone.	23
-        Increased Knockback.	24
-        +5 Level.	25
-        Increases effect of all Air spells.	26
-        Increases effect of all Body spells.	27
-        Increases effect of all Dark spells.	28
-        Increases effect of all Earth spells.	29
-        Increases effect of all Fire spells.	30
-        Increases effect of all Light spells.	31
-        Increases effect of all Mind spells.	32
-        Increases effect of all Spirit spells.	33
-        Increases effect of all Water spells.	34
-        Increases chance of Disarming.	35
-        Half damage from all missile attacks.	36
-        Regenerate Hit points over time.	37
-        Regenerate Spell points over time.	38
-        Double damage vs Demons.	39
-        Double damage vs Dragons	40
-        Drain Hit Points from target and Increased Weapon speed.	41
-        +1 to Seven Stats, HP, SP, Armor, Resistances.	42
-        +10 to Endurance, Armor, Hit points.	43
-        +10 Hit points and Regenerate Hit points over time.	44
-        +5 Speed and Accuracy.	45
-        Adds 10-20 points of Fire damage and +25 Might.	46
-        +10 Spell points and Regenerate Spell points over time.	47
-        +15 Endurance and +5 Armor.	48
-        +10 Intellect and Luck.	49
-        +30 Fire Resistance and Regenerate Hit points over time.	50
-        +10 Spell points, Speed, Intellect.	51
-        +10 Endurance and Accuracy.	52
-        +10 Might and Personality.	53
-        +15 Endurance and Regenerate Hit points over time.	54
-        +15 Luck and Regenerate Spell points over time.	55
-        +5 Might and Endurance.	56
-        +5 Intellect and Personality.	57
-        Increased Value.	58
-        Increased Weapon speed.	59
-        +3 Unarmed and Dodging skills.	60
-        +3 Stealing and Disarm skills.	61
-        +3 ID Item and ID Monster skills.	62
-        Double Damage vs. Elves.	63
-        Double Damage vs. Undead.	64
-        Double Damage vs. Titans.	65
-        Regenerate Spell points and Hit points over time.	66
-        Adds 5 points of Body damage and +2 Disarm skill.	67
-        Adds 6-8 points of Cold damage and +5 Armor Class.	68
-        +20 Air Resistance and Shielding.	69
-        +10 Water Resistance and +2 Alchemy skill.	70
-        Prevents damage from drowning.	71
-        Prevents damage from falling.	72
-*/
 
 /*  391 */
 #pragma pack(push, 1)

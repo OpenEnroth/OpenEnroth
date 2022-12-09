@@ -224,7 +224,7 @@ void Serialize(const ItemGen &src, ItemGen_MM7 *dst) {
     dst->uBodyAnchor = std::to_underlying(src.uBodyAnchor);
     dst->uMaxCharges = src.uMaxCharges;
     dst->uHolderPlayer = src.uHolderPlayer;
-    dst->field_1B = src.field_1B;
+    dst->placedInChest = src.placedInChest;
     dst->uExpireTime = src.uExpireTime.value;
 }
 
@@ -238,7 +238,7 @@ void Deserialize(const ItemGen_MM7 &src, ItemGen *dst) {
     dst->uBodyAnchor = ITEM_SLOT(src.uBodyAnchor);
     dst->uMaxCharges = src.uMaxCharges;
     dst->uHolderPlayer = src.uHolderPlayer;
-    dst->field_1B = src.field_1B;
+    dst->placedInChest = src.placedInChest;
     dst->uExpireTime.value = src.uExpireTime;
 }
 

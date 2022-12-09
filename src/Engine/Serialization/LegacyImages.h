@@ -140,30 +140,12 @@ struct ItemGen_MM7 {
     /* 04 */ int32_t uEnchantmentType;
     /* 08 */ int32_t m_enchantmentStrength;
     /* 0C */ int32_t special_enchantment;
-    // 25  +5 levels
-    // 16  Drain Hit Points from target.
-    // 35  Increases chance of disarming.
-    // 39  Double damage vs Demons.
-    // 40  Double damage vs Dragons
-    // 45  +5 Speed and Accuracy
-    // 56  +5 Might and Endurance.
-    // 57  +5 Intellect and Personality.
-    // 58  Increased Value.
-    // 60  +3 Unarmed and Dodging skills
-    // 61  +3 Stealing and Disarm skills.
-    // 59  Increased Weapon speed.
-    // 63  Double Damage vs. Elves.
-    // 64  Double Damage vs. Undead.
-    // 67  Adds 5 points of Body damage and +2 Disarm skill.
-    // 68  Adds 6-8 points of Cold damage and +5 Armor Class.
-    // 71  Prevents drowning damage.
-    // 72  Prevents falling damage.
     /* 10 */ int32_t uNumCharges;
     /* 14 */ uint32_t uAttributes;
     /* 18 */ uint8_t uBodyAnchor;
-    /* 19 */ char uMaxCharges;
-    /* 1A */ char uHolderPlayer;
-    /* 1B */ char field_1B;
+    /* 19 */ uint8_t uMaxCharges;
+    /* 1A */ uint8_t uHolderPlayer;
+    /* 1B */ uint8_t placedInChest; // unknown unused 8-bit field, was repurposed
     /* 1C */ uint64_t uExpireTime;
 };
 static_assert(sizeof(ItemGen_MM7) == 0x24);

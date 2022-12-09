@@ -210,6 +210,12 @@ namespace Application {
             /** Artifact limit after which artifacts are no longer generated in loot. 0 - disable limit. */
             ConfigValue<int> ArtifactLimit = ConfigValue<int>(this, "artifact_limit", 13, &ValidateArtifactLimit);
 
+            /** There are could be situations of item loss especially in high-level chests due to chest grid-limitations
+              * 0 - Vanilla behaviour, items will be lost.
+              * 1 - Try to place previously non-fit items on every chest opening.
+              * 2 - Try to place previously non-fit items on every item pickup from the chest. */
+            ConfigValue<int> ChestTryPlaceItems = ConfigValue<int>(this, "chest_try_place_items", 2);
+
             /** Maximum allowed slack for point-inside-a-polygon checks when calculating floor z level.
               * This is needed because there are actual holes in level geometry sometimes, up to several units wide. */
             ConfigValue<int> FloorChecksEps = ConfigValue<int>(this, "floor_checks_eps", 3, &ValidateFloorChecksEps);
