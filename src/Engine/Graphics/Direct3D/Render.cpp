@@ -2282,8 +2282,9 @@ void Render::DrawIndoorFaces() {
     DrawIndoorBatched();
 }
 
-bool Render::Reinitialize() {
+bool Render::Reinitialize(bool firstInit) {
     // blank here
+    return true;
 }
 
 void Render::ReloadShaders() {

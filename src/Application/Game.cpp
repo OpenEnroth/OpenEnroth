@@ -190,10 +190,6 @@ int Game::Run() {
         return -1;
     }
 
-    /* We should setup window before render as it is requesting window size upon initialization to setup clipping dimensions, zbuffer, etc.
-     * Otherwise starting borderless fullscreen will start with renderer in 640x480 and so be broken. */
-    windowHandler->UpdateWindowFromConfig(config.get());
-
     render = IRenderFactory().Create(config);
     ::render = render;
 
@@ -236,6 +232,13 @@ int Game::Run() {
     }
 
     engine->Initialize();
+    /* TODO: We should setup window before render as it is requesting window size upon initialization to setup clipping dimensions, zbuffer, etc.
+     * Otherwise starting borderless fullscreen will start with renderer in 640x480 and so be broken.
+     * For some reason windows not liking that and hang in SDL_GL_SwapWindow if it was called after changing window position out of primary monitor.
+     * And if we try to change exlude changing position and set it after render initialization then when game started in fullscreen request will be ignored.
+     * Hack below with render reinitialization is a temporary workaround. */
+    windowHandler->UpdateWindowFromConfig(config.get());
+    render->Reinitialize();
     window->Activate();
     eventLoop->ProcessMessages(eventHandler);
 
