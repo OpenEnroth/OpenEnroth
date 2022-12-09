@@ -206,6 +206,7 @@ class Render : public RenderBase {
 
     virtual void DrawIndoorFaces() override;
 
+    virtual bool Reinitialize(bool firstInit) override;
     virtual void ReloadShaders() override;
 
  public:

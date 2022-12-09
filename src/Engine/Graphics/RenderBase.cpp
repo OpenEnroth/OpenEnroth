@@ -42,9 +42,8 @@ void RenderBase::PostInitialization() {
         // window->SetWindowedMode(game_width, game_height);
         SwitchToWindow();
     } else {
-        __debugbreak();  // check required
-        window->SetFullscreen(true);
         InitializeFullscreen();
+        window->SetFullscreen(true);
     }
 }
 

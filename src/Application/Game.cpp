@@ -190,6 +190,10 @@ int Game::Run() {
         return -1;
     }
 
+    /* We should setup window before render as it is requesting window size upon initialization to setup clipping dimensions, zbuffer, etc.
+     * Otherwise starting borderless fullscreen will start with renderer in 640x480 and so be broken. */
+    windowHandler->UpdateWindowFromConfig(config.get());
+
     render = IRenderFactory().Create(config);
     ::render = render;
 
@@ -232,7 +236,6 @@ int Game::Run() {
     }
 
     engine->Initialize();
-    windowHandler->UpdateWindowFromConfig(config.get());
     window->Activate();
     eventLoop->ProcessMessages(eventHandler);
 

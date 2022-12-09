@@ -37,6 +37,8 @@ class PlatformWindow {
     virtual void SetVisible(bool visible) = 0;
     virtual bool IsVisible() const = 0;
 
+    virtual void SetMode(bool fullscreen, bool borderless) = 0;
+
     virtual void SetFullscreen(bool fullscreen) = 0;
     virtual bool IsFullscreen() const = 0;
 

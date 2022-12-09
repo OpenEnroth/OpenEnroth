@@ -28,6 +28,8 @@ class SdlWindow : public PlatformWindow {
     virtual void SetVisible(bool visible) override;
     virtual bool IsVisible() const override;
 
+    virtual void SetMode(bool fullscreen, bool borderless) override;
+
     virtual void SetFullscreen(bool fullscreen) override;
     virtual bool IsFullscreen() const override;
 

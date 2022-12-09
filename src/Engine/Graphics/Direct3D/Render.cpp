@@ -1234,11 +1234,11 @@ void Render::PresentBlackScreen() {
 }
 
 void Render::SavePCXScreenshot() {
-    char file_name[40];
-    engine->config->settings.ScreenshotNumber.Set(engine->config->settings.ScreenshotNumber.Get() + 1);
-    sprintf(file_name, "screen%0.2i.pcx", engine->config->settings.ScreenshotNumber.Get() % 100);
+    size_t zeros_number = 5;
+    std::string screenshot_number = std::to_string(engine->config->settings.ScreenshotNumber.Increment());
+    std::string file_name = "screenshot_" + std::string(zeros_number - std::min(zeros_number, screenshot_number.length()), '0') + screenshot_number + ".pcx";
 
-    SaveWinnersCertificate(file_name);
+    SaveWinnersCertificate(file_name.c_str());
 }
 
 void Render::SaveWinnersCertificate(const char *file_name) {
@@ -2280,6 +2280,10 @@ void Render::DrawIndoorFaces() {
             }
     }
     DrawIndoorBatched();
+}
+
+bool Render::Reinitialize() {
+    // blank here
 }
 
 void Render::ReloadShaders() {

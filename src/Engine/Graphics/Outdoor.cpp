@@ -1050,7 +1050,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
-    static_assert(sizeof(SpriteObject) == 112);
+    static_assert(sizeof(SpriteObject) == 0x70);
 
     stream.ReadVector(&pSpriteObjects);
 

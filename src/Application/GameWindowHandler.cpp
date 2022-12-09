@@ -53,9 +53,7 @@ GameWindowHandler::GameWindowHandler() {
     this->keyboardController_ = std::make_unique<GameKeyboardController>();
 }
 
-void GameWindowHandler::UpdateWindowFromConfig(const GameConfig *config) {
-    assert(config);
-
+std::tuple<int, Pointi, Sizei> GameWindowHandler::GetWindowConfigPosition(const GameConfig *config) {
     std::vector<Recti> displays = platform->DisplayGeometries();
 
     Pointi pos = {config->window.PositionX.Get(), config->window.PositionY.Get()};
@@ -79,24 +77,21 @@ void GameWindowHandler::UpdateWindowFromConfig(const GameConfig *config) {
         pos = Pointi(0, 0); // DisplayGeometries() failed so we just give up.
     }
 
-    window->SetPosition(pos);
-    window->Resize(size);
-    window->SetTitle(config->window.Title.Get());
-    window->SetBorderless(config->window.Borderless.Get());
-    window->SetGrabsMouse(config->window.MouseGrab.Get());
-    window->SetFullscreen(config->window.Fullscreen.Get());
-    window->SetVisible(true);
+    return std::make_tuple(display, pos, size);
 }
 
-void GameWindowHandler::UpdateConfigFromWindow(GameConfig *config) {
-    assert(config);
-
+std::tuple<int, Pointi, Sizei> GameWindowHandler::GetWindowRelativePosition(Pointi *position) {
     std::vector<Recti> displays = platform->DisplayGeometries();
 
-    Pointi pos = window->Position();
     Sizei size = window->Size();
+    Pointi pos;
+    if (position != nullptr)
+        pos = *position;
+    else
+        pos = window->Position();
 
-    Pointi relativePos = Pointi();
+    // Fallback is centered on display 0.
+    Pointi relativePos = Pointi(-1, -1);
     int display = 0;
 
     for (size_t i = 0; i < displays.size(); i++) {
@@ -107,14 +102,44 @@ void GameWindowHandler::UpdateConfigFromWindow(GameConfig *config) {
         }
     }
 
-    config->window.PositionX.Set(relativePos.x);
-    config->window.PositionY.Set(relativePos.y);
-    config->window.Width.Set(size.w);
-    config->window.Height.Set(size.h);
-    config->window.Display.Set(display);
-    config->window.Borderless.Set(window->IsBorderless());
+    return std::make_tuple(display, relativePos, size);
+}
+
+void GameWindowHandler::UpdateWindowFromConfig(const GameConfig *config) {
+    assert(config);
+
+    Sizei size = {config->window.Width.Get(), config->window.Height.Get()};
+    Pointi pos = std::get<1>(GetWindowConfigPosition(config));
+
+    window->SetPosition(pos);
+    window->Resize(size);
+    window->SetTitle(config->window.Title.Get());
+    window->SetGrabsMouse(config->window.MouseGrab.Get());
+    window->SetMode(config->window.Fullscreen.Get(), config->window.Borderless.Get());
+    window->SetVisible(true);
+}
+
+void GameWindowHandler::UpdateConfigFromWindow(GameConfig *config) {
+    assert(config);
+
+    auto [display, relativePos, wsize] = GetWindowRelativePosition();
+
+    // Skip updating window position in fullscreen where window always forcefully moved to {0,0} position.
+    bool IsFullscreen = window->IsFullscreen();
+    if (!IsFullscreen) {
+        config->window.PositionX.Set(relativePos.x);
+        config->window.PositionY.Set(relativePos.y);
+        config->window.Display.Set(display);
+    }
+    // Skip updating window dimensions in borderless fullscreen as window always resized to monitor's resolution.
+    bool IsBorderless = window->IsBorderless();
+    if (!(IsFullscreen && window->IsBorderless())) {
+        config->window.Width.Set(wsize.w);
+        config->window.Height.Set(wsize.h);
+    }
+    config->window.Fullscreen.Set(IsFullscreen);
+    config->window.Borderless.Set(IsBorderless);
     config->window.MouseGrab.Set(window->GrabsMouse());
-    config->window.Fullscreen.Set(window->IsFullscreen());
 }
 
 void GameWindowHandler::OnScreenshot() {
@@ -239,6 +264,18 @@ void GameWindowHandler::OnKey(PlatformKey key) {
     if (!keyboardInputHandler)
         return;
 
+    // TODO: many of hardcoded keys below should be moved out of there and made configurable
+    if (key == PlatformKey::F1) {
+        OnMouseGrabToggle();
+        return;
+    }  else if (key == PlatformKey::F2 || key == PlatformKey::PrintScreen) {
+        OnScreenshot();
+        return;
+    } else if (key == PlatformKey::F3) {
+        OnToggleBorderless();
+        return;
+    }
+
     if (currently_selected_action_for_binding != InputAction::Invalid) {
         // we're setting a key binding in options
         keyboardInputHandler->ProcessTextInput(key, -1);
@@ -253,9 +290,7 @@ void GameWindowHandler::OnKey(PlatformKey key) {
            pArcomageGame->force_redraw_1 = 1;
         }
 
-        if (key == PlatformKey::F3) {
-            OnScreenshot();
-        } else if (key == PlatformKey::F4 && !pMovie_Track) {
+        if (key == PlatformKey::F4 && !pMovie_Track) {
             OnToggleFullscreen();
             pArcomageGame->stru1.am_input_type = 9;
         }
@@ -362,18 +397,22 @@ void GameWindowHandler::OnDeactivated() {
     }
 }
 
+void GameWindowHandler::OnToggleBorderless() {
+    window->SetBorderless(engine->config->window.Borderless.Toggle());
+}
+
 void GameWindowHandler::OnToggleFullscreen() {
-    engine->config->window.Fullscreen.Toggle();
-    if (engine->config->window.Fullscreen.Get()) {
-        // TODO(captainurist): there are several fullscreen modes --- with windowsize == desktopsize, and
-        // windowsize != desktopsize, and they're even using different SDL enums. Investigate & implement properly.
-        // See SDL_WINDOW_FULLSCREEN_DESKTOP vs SDL_WINDOW_FULLSCREEN
-        window->SetFullscreen(true);
-    } else {
-        window->SetFullscreen(false);
+    bool isFullscreen = engine->config->window.Fullscreen.Toggle();
+    window->SetFullscreen(isFullscreen);
+    if (!isFullscreen) {
         window->Resize({engine->config->window.Width.Get(), engine->config->window.Height.Get()});
-        window->SetPosition({engine->config->window.PositionX.Get(), engine->config->window.PositionY.Get()});
+        window->SetPosition(std::get<1>(GetWindowConfigPosition(engine->config.get())));
     }
+    render->Reinitialize();
+}
+
+void GameWindowHandler::OnMouseGrabToggle() {
+    window->SetGrabsMouse(engine->config->window.MouseGrab.Toggle());
 }
 
 void GameWindowHandler::Event(PlatformWindow *window, const PlatformEvent *event) {
@@ -401,9 +440,6 @@ void GameWindowHandler::KeyPressEvent(PlatformWindow *, const PlatformKeyEvent *
 
 void GameWindowHandler::KeyReleaseEvent(PlatformWindow *, const PlatformKeyEvent *event) {
     keyboardController_->ProcessKeyReleaseEvent(event);
-
-    if (event->key == PlatformKey::PrintScreen)
-        OnScreenshot();
 }
 
 void GameWindowHandler::MouseMoveEvent(PlatformWindow *, const PlatformMouseEvent *event) {
@@ -439,7 +475,18 @@ void GameWindowHandler::MouseReleaseEvent(PlatformWindow *, const PlatformMouseE
 
 void GameWindowHandler::WheelEvent(PlatformWindow *, const PlatformWheelEvent *) {}
 
-void GameWindowHandler::MoveEvent(PlatformWindow *, const PlatformMoveEvent *) {}
+void GameWindowHandler::MoveEvent(PlatformWindow *, const PlatformMoveEvent *event) {
+    /* Remember window position after move. Move position event is also triggered on toggling fullscreen. And we should save current window position prior to entering fullscreen.
+     * As entering fullscreen will forcefully move window to {0,0} position on current display. And we want to restore position prior to entering fullscreen and not {0,0} or startup one. */
+    if (!window->IsFullscreen()) {
+        Pointi pos = event->pos;
+        auto [display, relativePos, wsize] = GetWindowRelativePosition(&pos);
+
+        engine->config->window.PositionX.Set(relativePos.x);
+        engine->config->window.PositionY.Set(relativePos.y);
+        engine->config->window.Display.Set(display);
+    }
+}
 
 void GameWindowHandler::ActivationEvent(PlatformWindow *, const PlatformEvent *event) {
     if (event->type == PlatformEvent::WindowActivate) {

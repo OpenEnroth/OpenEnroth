@@ -120,19 +120,41 @@ namespace Application {
                 return value;
             }
 
-            inline void Set(const T &val) {
+            inline T Set(const T &val) {
                 if (validator)
                     value = validator(val);
                 else
                     value = val;
+
+                return value;
             }
 
             inline void Reset() {
                 value = defValue;
             }
 
-            inline void Toggle() requires std::is_same_v<T, bool> {
+            inline T Toggle() requires std::is_same_v<T, bool> {
                 value = !value;
+
+                return value;
+            }
+
+            inline T Increment() requires std::is_same_v<T, int> {
+                if (validator)
+                    value = validator(value + 1);
+                else
+                    value++;
+
+                return value;
+            }
+
+            inline void Decrement() requires std::is_same_v<T, int> {
+                if (validator)
+                    value = validator(value - 1);
+                else
+                    value--;
+
+                return value;
             }
 
          private:
