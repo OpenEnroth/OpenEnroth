@@ -40,6 +40,7 @@
 #include "Io/Mouse.h"
 
 #include "Media/Audio/AudioPlayer.h"
+#include "Media/MediaPlayer.h"
 
 #include "Platform/Api.h"
 
@@ -2397,6 +2398,7 @@ void WindowManager::DeleteAllVisibleWindows() {
     current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
     pMessageQueue_50C9E8->Clear();
     pMessageQueue_50CBD0->Clear();
+    pMediaPlayer->Unload();
 }
 
 void MainMenuUI_LoadFontsAndSomeStuff() {

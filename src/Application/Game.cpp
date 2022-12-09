@@ -954,6 +954,7 @@ void Game::EventLoop() {
                                             pParty->vPosition.y = -22528;
                                         if (pParty->vPosition.y > 22528)
                                             pParty->vPosition.y = 22528;
+                                        ReleaseBranchlessDialogue();
                                         DialogueEnding();
                                         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                                         viewparams->bRedrawGameUI = true;

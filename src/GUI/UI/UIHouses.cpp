@@ -1497,6 +1497,7 @@ void TravelByTransport() {
     base_price *= p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
     int pPrice = base_price * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
     if (pPrice < base_price / 3) pPrice = base_price / 3;
+    int route_id = window_SpeakInHouse->wData.val - HOUSE_STABLES_HARMONDALE;
 
     if (dialog_menu_id == DIALOGUE_MAIN) {
         if (HouseUI_CheckIfPlayerCanInteract()) {
@@ -1512,7 +1513,7 @@ void TravelByTransport() {
             std::string pTopicArray[5]{};
 
             for (uint i = pDialogueWindow->pStartingPosActiveItem; i < (unsigned int)(pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem); ++i) {
-                int schedule_id = transport_routes[window_SpeakInHouse->wData.val - HOUSE_STABLES_HARMONDALE][index];
+                int schedule_id = transport_routes[route_id][index];
                 GUIButton *pButton = pDialogueWindow->GetControl(i);
 
                 bool route_active = 0;
@@ -1581,7 +1582,8 @@ void TravelByTransport() {
 
             pParty->TakeGold(pPrice);
 
-            stru365_travel_info *pTravel = &transport_schedule[transport_routes[window_SpeakInHouse->wData.val - HOUSE_STABLES_HARMONDALE][dialog_menu_id - DIALOGUE_TRANSPORT_SCHEDULE_1]];
+            int choice_id = dialog_menu_id - DIALOGUE_TRANSPORT_SCHEDULE_1;
+            stru365_travel_info *pTravel = &transport_schedule[transport_routes[route_id][choice_id]];
 
             if (pTravel->pSchedule[pParty->uCurrentDayOfMonth % 7]) {
                 if (pCurrentMapName != pMapStats->pInfos[pTravel->uMapInfoID].pFilename) {
@@ -1596,8 +1598,7 @@ void TravelByTransport() {
                     Party_Teleport_X_Pos = pTravel->arrival_x;
                     Party_Teleport_Y_Pos = pTravel->arrival_y;
                     Party_Teleport_Z_Pos = pTravel->arrival_z;
-                    Start_Party_Teleport_Flag = pTravel->arrival_x | pTravel->arrival_y |
-                        pTravel->arrival_z | pTravel->arrival_rot_y;
+                    Start_Party_Teleport_Flag = pTravel->arrival_x | pTravel->arrival_y | pTravel->arrival_z | pTravel->arrival_rot_y;
                 } else {
                     // travelling to map we are already in
                     pCamera3D->sRotationZ = 0;
@@ -1612,12 +1613,11 @@ void TravelByTransport() {
                 }
 
                 PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_NotEnoughMoney);
-                int traveltimedays = GetTravelTimeTransportDays(transport_routes[window_SpeakInHouse->wData.val -
-                    HOUSE_STABLES_HARMONDALE][dialog_menu_id - DIALOGUE_TRANSPORT_SCHEDULE_1]);
+                int traveltimedays = GetTravelTimeTransportDays(transport_routes[route_id][choice_id]);
 
                 PlayerSpeech pSpeech;
                 int speechlength{};
-                if (window_SpeakInHouse->wData.val >= HOUSE_BOATS_EMERALD_ISLE) {
+                if (route_id >= HOUSE_BOATS_EMERALD_ISLE - HOUSE_STABLES_HARMONDALE) {
                     pSpeech = SPEECH_TravelBoat;
                     speechlength = 2500;
                 } else {
@@ -1633,7 +1633,6 @@ void TravelByTransport() {
                 while (OS_GetTime() < pauselength) OS_Sleep(1);
                 while (HouseDialogPressCloseBtn());
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
-                return;
             } else {
                 dialog_menu_id = DIALOGUE_MAIN;
                 pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
