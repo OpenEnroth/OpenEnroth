@@ -66,7 +66,8 @@ void GuildDialog() {
                 dialogopts++;
             } else {
                 PLAYER_SKILL_TYPE skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
-                if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][skill] && !pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
+                if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
+                    && !pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
                     all_text_height += pFontArrus->CalcTextHeight(localization->GetSkillName(skill), working_window.uFrameWidth, 0, 0);
                     dialogopts++;
                 }

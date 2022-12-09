@@ -10,6 +10,7 @@
 #include "Engine/Autonotes.h"
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/NPCEnums.h"
+#include "Engine/Objects/PlayerEnums.h"
 #include "Engine/MapInfo.h"
 
 #include "GUI/GUIDialogues.h"
@@ -42,10 +43,6 @@ extern unsigned int uGammaPos;
 extern std::array<int, 8> BtnTurnCoord;
 extern std::array<int16_t, 4> RightClickPortraitXmin;
 extern std::array<int16_t, 4> RightClickPortraitXmax;
-// extern int pArmorSkills[5];
-// extern int pWeaponSkills[9];
-// extern int pMiscSkills[12];
-// extern int pMagicSkills[9];
 extern std::array<unsigned int, 4> pHealthBarPos;
 extern std::array<unsigned int, 4> pManaBarPos;
 // extern std::array<char, 80> _4E2B21_buff_spell_tooltip_colors;
@@ -89,10 +86,11 @@ extern std::array<const char *, 25> pPlayerPortraitsNames;
 
 extern std::array<std::array<unsigned char, 25>, 48> byte_4ECF08;
 extern std::array<std::array<unsigned char, 8>, 110> SoundSetAction;
-extern std::array<int16_t, 4>
-    pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing;
-extern std::array<std::array<char, 37>, 36>
-    byte_4ED970_skill_learn_ability_by_class_table;
+extern std::array<int16_t, 4> pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing;
+extern IndexedArray<PLAYER_SKILL_LEVEL, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST> skills_max_level;
+extern IndexedArray<uint, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST> base_recovery_times_per_weapon_type;
+extern std::array<IndexedArray<CLASS_SKILL, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST>, 9> pSkillAvailabilityPerClass;
+extern std::array<IndexedArray<PLAYER_SKILL_MASTERY, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST>, 36> byte_4ED970_skill_learn_ability_by_class_table;
 extern std::array<unsigned int, 2> pHiredNPCsIconsOffsetsX;
 extern std::array<unsigned int, 2> pHiredNPCsIconsOffsetsY;
 extern std::array<int, 2> Party_Spec_Motion_status_ids;  // dword_4EE07C
@@ -391,7 +389,7 @@ extern std::array<int16_t, 6> weapons_Ypos;  // word_F8B158
 extern int16_t bountyHunting_monster_id_for_hunting;
 extern const char *bountyHunting_text;  // idb
 extern int guild_membership_approved;
-extern int dword_F8B1B0_MasteryBeingTaught;
+extern PLAYER_SKILL_MASTERY dword_F8B1B0_MasteryBeingTaught;
 extern int gold_transaction_amount;  // F8B1B4
 extern std::array<const char *, 4> pShopOptions;
 extern int dword_F8B1E0;

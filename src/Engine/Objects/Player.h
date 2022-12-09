@@ -225,8 +225,8 @@ struct Player {
     int GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment);
     int GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool a3 = false);
     int GetMagicalBonus(CHARACTER_ATTRIBUTE_TYPE a2);
-    int GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType);
-    int GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType);
+    PLAYER_SKILL_LEVEL GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType);
+    PLAYER_SKILL_MASTERY GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType);
     int GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE a2);
     CHARACTER_RACE GetRace() const;
     std::string GetRaceName() const;
@@ -253,7 +253,7 @@ struct Player {
     bool CanFitItem(unsigned int uSlot, ITEM_TYPE uItemID);
     int FindFreeInventoryListSlot();
     int CreateItemInInventory(unsigned int uSlot, ITEM_TYPE uItemID);
-    int HasSkill(unsigned int uSkillType);
+    int HasSkill(PLAYER_SKILL_TYPE uSkillType);
     void WearItem(ITEM_TYPE uItemID);
     int AddItem(int uSlot, ITEM_TYPE uItemID);
     int AddItem2(int uSlot, ItemGen* Src);
@@ -293,18 +293,14 @@ struct Player {
     bool HasItem(ITEM_TYPE uItemID, bool checkHeldItem);
     void OnInventoryLeftClick();
 
-    bool PlayerHitOrMiss(Actor* pActor, int distancemod, int skillmod);
+    bool PlayerHitOrMiss(Actor* pActor, int distancemod, PLAYER_SKILL_LEVEL skillmod);
 
-    unsigned int GetMultiplierForSkillLevel(PLAYER_SKILL_TYPE uSkillType,
-                                            int mult1, int mult2, int mult3,
-                                            int mult4);
+    unsigned int GetMultiplierForSkillLevel(PLAYER_SKILL_TYPE uSkillType, int mult1, int mult2, int mult3, int mult4);
     int CalculateMeleeDmgToEnemyWithWeapon(ItemGen* weapon,
                                            unsigned int uTargetActorID,
                                            bool addOneDice);
     bool WearsItemAnywhere(ITEM_TYPE item_id) const;
-    float GetArmorRecoveryMultiplierFromSkillLevel(
-        unsigned char armour_skill_type, float param2, float param3,
-        float param4, float param5);
+    float GetArmorRecoveryMultiplierFromSkillLevel(PLAYER_SKILL_TYPE armour_skill_type, float param2, float param3, float param4, float param5);
     void SetSkillByEvent(uint16_t Player::*skillToSet,
                          uint16_t skillValue);
     void AddSkillByEvent(uint16_t Player::*skillToSet,
@@ -382,6 +378,11 @@ struct Player {
     void CleanupBeacons();
     bool SetBeacon(size_t index, size_t power);
 
+    PLAYER_SKILL_LEVEL GetSkillLevel(PLAYER_SKILL_TYPE skill);
+    PLAYER_SKILL_MASTERY GetSkillMastery(PLAYER_SKILL_TYPE skill);
+    void SetSkillLevel(PLAYER_SKILL_TYPE skill, PLAYER_SKILL_LEVEL level);
+    void SetSkillMastery(PLAYER_SKILL_TYPE skill, PLAYER_SKILL_MASTERY mastery);
+
     PlayerConditions conditions;
     uint64_t uExperience;
     std::string pName;
@@ -456,11 +457,9 @@ struct Player {
             uint16_t skillStealing;
             uint16_t skillAlchemy;
             uint16_t skillLearning;
+            uint16_t skillClub;
         };
-        std::array<uint16_t, 37>
-            pActiveSkills;  // this encodes level and mastery using bitwise
-                            // comparison   ( & 0x3F for level) ( & 0x1C0
-                            // mastery 1-4)
+        IndexedArray<PLAYER_SKILL, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST> pActiveSkills;
     };
     unsigned char _achieved_awards_bits[64];
     PlayerSpells spellbook;
@@ -553,8 +552,6 @@ bool IsDwarfPresentInParty(bool b);
 bool ShouldLoadTexturesForRaceAndGender(unsigned int _this);
 int PlayerCreation_GetUnspentAttributePointCount();
 int CycleCharacter(bool backwards);
-unsigned int SkillToMastery(unsigned int skill_value);
-
 extern IndexedArray<Player *, 1, 4> pPlayers;
 
 extern enum PlayerSpeech PlayerSpeechID;

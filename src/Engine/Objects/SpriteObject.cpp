@@ -910,7 +910,7 @@ bool SpriteObject::Drop_Item_At(SPRITE_OBJECT_TYPE sprite, int x,
     if (a9)
         memcpy(&pSpellObject.containing_item, a9,
                sizeof(pSpellObject.containing_item));
-    pSpellObject.spell_skill = 0;
+    pSpellObject.spell_skill = PLAYER_SKILL_MASTERY_NONE;
     pSpellObject.spell_level = 0;
     pSpellObject.spell_id = 0;
     pSpellObject.field_54 = 0;
@@ -957,7 +957,7 @@ bool SpriteObject::Drop_Item_At(SPRITE_OBJECT_TYPE sprite, int x,
 void SpriteObject::Create_Splash_Object(int x, int y, int z) {  // splash on water
     SpriteObject a1;
     a1.containing_item.Reset();
-    a1.spell_skill = 0;
+    a1.spell_skill = PLAYER_SKILL_MASTERY_NONE;
     a1.spell_level = 0;
     a1.spell_id = 0;
     a1.field_54 = 0;
@@ -991,7 +991,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
     int v138;        // [sp+14h] [bp-18h]@207
     // int v141;        // [sp+1Ch] [bp-10h]@117
     uint16_t v150;  // [sp+20h] [bp-Ch]@208
-    int v152;        // [sp+24h] [bp-8h]@208
+    PLAYER_SKILL_MASTERY skillMastery;        // [sp+24h] [bp-8h]@208
 
     ObjectDesc *object = &pObjectList->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID];
     if (PID_TYPE(pid) == OBJECT_Actor) {
@@ -1221,7 +1221,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
             pSpriteObjects[uLayingItemID].vVelocity.y = 0;
             pSpriteObjects[uLayingItemID].vVelocity.x = 0;
             int v65 = 7;
-            if (pSpriteObjects[uLayingItemID].spell_skill == 4) {
+            if (pSpriteObjects[uLayingItemID].spell_skill == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                 v65 = 9;
             }
             int v64 = pSpriteObjects[uLayingItemID].uFacing - TrigLUT.uIntegerDoublePi;
@@ -1447,7 +1447,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
             v138 = 1;
             if (PID_TYPE(pid) != OBJECT_Actor) {
                 if (pSpriteObjects[uLayingItemID].uType != SPRITE_SPELL_DARK_SHRINKING_RAY ||
-                    pSpriteObjects[uLayingItemID].spell_skill != 4) {
+                    pSpriteObjects[uLayingItemID].spell_skill != PLAYER_SKILL_MASTERY_GRANDMASTER) {
                     SpriteObject::OnInteraction(uLayingItemID);
                     return 0;
                 }
@@ -1481,14 +1481,14 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
             }
             v150 = 0;
             v137 = pSpriteObjects[uLayingItemID].spell_level;
-            v152 = pSpriteObjects[uLayingItemID].spell_skill;
+            skillMastery = pSpriteObjects[uLayingItemID].spell_skill;
             v136 = pSpriteObjects[uLayingItemID].spell_id;
             if (pSpriteObjects[uLayingItemID].uType == SPRITE_SPELL_DARK_SHRINKING_RAY) {
                 v150 = 2;
-                if (v152 == 2) {
+                if (skillMastery == PLAYER_SKILL_MASTERY_EXPERT) {
                     v150 = 3;
                 } else {
-                    if (v152 >= 3) v150 = 4;
+                    if (skillMastery >= PLAYER_SKILL_MASTERY_MASTER) v150 = 4;
                 }
                 pActors[PID_ID(pid)].uAttributes |= ACTOR_AGGRESSOR;
                 v107 = v135;
@@ -1510,8 +1510,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
                     }
                 }
             }
-            if (pSpriteObjects[uLayingItemID].uType != SPRITE_SPELL_DARK_SHRINKING_RAY ||
-                v152 != 4) {
+            if (pSpriteObjects[uLayingItemID].uType != SPRITE_SPELL_DARK_SHRINKING_RAY || skillMastery != PLAYER_SKILL_MASTERY_GRANDMASTER) {
                 v108 = PID_ID(pid);
                 if (pActors[PID_ID(pid)].DoesDmgTypeDoDamage((DAMAGE_TYPE)v107)) {
                     v138 = 0;
@@ -1522,13 +1521,13 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
                     }
                     pActors[v108].pActorBuffs[ACTOR_BUFF_INDEX(v136)].Apply(
                         GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(v137)),
-                        v152, v150, 0, 0);
+                        skillMastery, v150, 0, 0);
                 }
             } else {
                 pSpriteObjects[uLayingItemID]._46BEF1_apply_spells_aoe();
             }
             pSpriteObjects[uLayingItemID].spell_level = 0;
-            pSpriteObjects[uLayingItemID].spell_skill = 0;
+            pSpriteObjects[uLayingItemID].spell_skill = PLAYER_SKILL_MASTERY_NONE;
             pSpriteObjects[uLayingItemID].spell_id = 0;
             if (!v138) {
                 pSpriteObjects[uLayingItemID].uType = (SPRITE_OBJECT_TYPE)(pSpriteObjects[uLayingItemID].uType + 1);

@@ -724,9 +724,7 @@ void CharacterUI_DrawPaperdoll(Player *player);
 void CharacterUI_DrawPaperdollWithRingOverlay(Player *player);
 void CharacterUI_ReleaseButtons();
 
-unsigned int GetSkillColor(unsigned int uPlayerClass,
-                           PLAYER_SKILL_TYPE uPlayerSkillType,
-                           signed int skill_level);
+unsigned int GetSkillColor(unsigned int uPlayerClass, PLAYER_SKILL_TYPE uPlayerSkillType, PLAYER_SKILL_MASTERY skill_mastery);
 
 void DrawSpellDescriptionPopup(int spell_index);
 

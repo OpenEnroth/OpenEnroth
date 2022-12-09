@@ -6,7 +6,7 @@
 #include "Engine/Objects/PlayerEnums.h"
 
 
-#define SKILL_TO_LEARNING_DIALOGUE_ID(skill)  36 + skill
+#define SKILL_TO_LEARNING_DIALOGUE_ID(skill)  36 + std::to_underlying(skill)
 
 enum DIALOGUE_TYPE : int32_t {
     DIALOGUE_NULL = 0,
@@ -116,10 +116,10 @@ enum DIALOGUE_TYPE : int32_t {
 
 
 inline bool IsSkillLearningDialogue(DIALOGUE_TYPE type) {
-    return type >= DIALOGUE_LEARN_STAFF && type <= DIALOGUE_LEARN_LEARNING;
+    return type >= DIALOGUE_LEARN_STAFF && type <= DIALOGUE_LEARN_CLUB;
 }
 
 inline PLAYER_SKILL_TYPE GetLearningDialogueSkill(DIALOGUE_TYPE type) {
     Assert(IsSkillLearningDialogue(type));
-    return (PLAYER_SKILL_TYPE)(type - DIALOGUE_LEARN_STAFF);
+    return static_cast<PLAYER_SKILL_TYPE>(type - DIALOGUE_LEARN_STAFF);
 }

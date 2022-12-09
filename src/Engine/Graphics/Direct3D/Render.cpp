@@ -1260,7 +1260,7 @@ void Render::SaveWinnersCertificate(const char *file_name) {
 void Render::SavePCXImage32(const std::string &filename, uint16_t *picture_data,
                             int width, int height) {
     // TODO(pskelton): add "Screenshots" folder?
-    auto thispath = MakeDataPath(filename);
+    std::string thispath = MakeDataPath(filename);
     FILE *result = fopen(thispath.c_str(), "wb");
     if (result == nullptr) {
         return;
@@ -1278,7 +1278,8 @@ void Render::SavePCXImage32(const std::string &filename, uint16_t *picture_data,
 
 void Render::SavePCXImage16(const std::string &filename, uint16_t *picture_data,
                             int width, int height) {
-    FILE *result = fopen(filename.c_str(), "wb");
+    std::string thispath = MakeDataPath(filename);
+    FILE *result = fopen(thispath.c_str(), "wb");
     if (result == nullptr) {
         return;
     }

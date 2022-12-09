@@ -222,7 +222,7 @@ void RenderOpenGL::SaveWinnersCertificate(const char *a1) {
 
 void RenderOpenGL::SavePCXImage16(const std::string &filename, uint16_t *picture_data, int width, int height) {
     // TODO(pskelton): add "Screenshots" folder?
-    auto thispath = MakeDataPath(filename);
+    std::string thispath = MakeDataPath(filename);
     FILE *result = fopen(thispath.c_str(), "wb");
     if (result == nullptr) {
         return;
@@ -1208,7 +1208,8 @@ Image *RenderOpenGL::TakeScreenshot(unsigned int width, unsigned int height) {
 void RenderOpenGL::SaveScreenshot(const std::string &filename, unsigned int width, unsigned int height) {
     auto pixels = MakeScreenshot16(width, height);
 
-    FILE *result = fopen(filename.c_str(), "wb");
+    std::string thispath = MakeDataPath(filename);
+    FILE *result = fopen(thispath.c_str(), "wb");
     if (result == nullptr) {
         return;
     }

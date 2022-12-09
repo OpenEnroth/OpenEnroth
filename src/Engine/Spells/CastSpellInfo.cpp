@@ -79,14 +79,12 @@ void CastSpellInfoHelpers::CastSpell() {
     AIDirection target_direction;  // [sp+DA4h] [bp-E0h]@21
 
     int dist_Y;           // [sp+DD8h] [bp-ACh]@163
-    int spell_level = 0;  // [sp+E4Ch] [bp-38h]@1
     ItemGen *_this = 0;   // [sp+E50h] [bp-34h]@23
              // [sp+E54h] [bp-30h]@23
-    int buff_resist;
+    PARTY_BUFF_INDEX buff_resist;
     bool spell_sound_flag = false;  // [sp+E5Ch] [bp-28h]@1
     Player *pPlayer;                // [sp+E64h] [bp-20h]@8
     int v730_int;
-    int skill_level = 0;  // [sp+E6Ch] [bp-18h]@48
     int v732_int;
 
     int spellduration;
@@ -151,10 +149,12 @@ void CastSpellInfoHelpers::CastSpell() {
             }
         }
 
+        PLAYER_SKILL_LEVEL spell_level;
+        PLAYER_SKILL_MASTERY spell_mastery;
         if (pCastSpell->forced_spell_skill_level) {
             // for spell scrolls - decode spell power and mastery
-            spell_level = (pCastSpell->forced_spell_skill_level) & 0x3F;  // 6 bytes
-            skill_level = ((pCastSpell->forced_spell_skill_level) & 0x1C0) / 64 + 1;
+            spell_level = GetSkillLevel(pCastSpell->forced_spell_skill_level);
+            spell_mastery = GetSkillMastery(pCastSpell->forced_spell_skill_level);
         } else {
             if (pCastSpell->uSpellID < SPELL_AIR_WIZARD_EYE)
                 which_skill = PLAYER_SKILL_FIRE;
@@ -183,11 +183,11 @@ void CastSpellInfoHelpers::CastSpell() {
                 assert(false && "Unknown spell");
 
             spell_level = pPlayer->GetActualSkillLevel(which_skill);
-            skill_level = pPlayer->GetActualSkillMastery(which_skill);
+            spell_mastery = pPlayer->GetActualSkillMastery(which_skill);
 
             if (engine->config->debug.AllMagic.Get()) {
                 spell_level = 10;
-                skill_level = 4;
+                spell_mastery = PLAYER_SKILL_MASTERY_GRANDMASTER;
             }
         }
 
@@ -195,9 +195,9 @@ void CastSpellInfoHelpers::CastSpell() {
             if (pCastSpell->forced_spell_skill_level || engine->config->debug.AllMagic.Get())
                 uRequiredMana = 0;
             else
-                uRequiredMana = pSpellDatas[pCastSpell->uSpellID].mana_per_skill[skill_level - 1];
+                uRequiredMana = pSpellDatas[pCastSpell->uSpellID].mana_per_skill[std::to_underlying(spell_mastery) - 1];
 
-            sRecoveryTime = pSpellDatas[pCastSpell->uSpellID].recovery_per_skill[skill_level - 1];
+            sRecoveryTime = pSpellDatas[pCastSpell->uSpellID].recovery_per_skill[std::to_underlying(spell_mastery) - 1];
         }
 
         if (!pCastSpell->forced_spell_skill_level) {
@@ -239,13 +239,14 @@ void CastSpellInfoHelpers::CastSpell() {
             case SPELL_BOW_ARROW:
             {
                 amount = 1;
-                if (skill_level >= 3) amount = 2;
+                if (spell_mastery >= PLAYER_SKILL_MASTERY_MASTER)
+                    amount = 2;
 
                 sRecoveryTime = pPlayer->GetAttackRecoveryTime(true);
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.spell_level = spell_level;
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
-                pSpellSprite.spell_skill = skill_level;
+                pSpellSprite.spell_skill = spell_mastery;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                 if (pPlayer->WearsItem(ITEM_ARTIFACT_ULLYSES, ITEM_SLOT_BOW))
                     pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(0xBD6u);
@@ -283,7 +284,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = skill_level;
+                pSpellSprite.spell_skill = spell_mastery;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                 pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 2);
                 pSpellSprite.uAttributes = 0;
@@ -313,15 +314,15 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_FIRE_TORCH_LIGHT:
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         amount = 2;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         amount = 3;
                         break;
-                    case 3:
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_MASTER:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         amount = 4;
                         break;
                     default:
@@ -330,24 +331,24 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (!pPlayer->CanCastSpell(uRequiredMana))
                     break;
 
-                pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].Apply(GameTime(pParty->GetPlayingTime() + (GameTime::FromSeconds(3600 * spell_level))), skill_level, amount, 0, 0);
+                pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].Apply(GameTime(pParty->GetPlayingTime() + (GameTime::FromSeconds(3600 * spell_level))), spell_mastery, amount, 0, 0);
                 spell_sound_flag = true;
                 break;
             }
 
             case SPELL_FIRE_FIRE_SPIKE:
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         amount = 3;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         amount = 5;
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         amount = 7;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         amount = 9;
                         break;
                     default:
@@ -370,7 +371,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = skill_level;
+                pSpellSprite.spell_skill = spell_mastery;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                 pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                 pSpellSprite.uAttributes = 0;
@@ -410,7 +411,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pSpellSprite.containing_item.Reset();
                     pSpellSprite.spell_id = pCastSpell->uSpellID;
                     pSpellSprite.spell_level = spell_level;
-                    pSpellSprite.spell_skill = skill_level;
+                    pSpellSprite.spell_skill = spell_mastery;
                     pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                     pSpellSprite.uAttributes = 0;
                     pSpellSprite.uSectorID = 0;
@@ -434,15 +435,15 @@ void CastSpellInfoHelpers::CastSpell() {
                 monster_id = PID_ID(spell_targeted_at);
                 if (!pPlayer->CanCastSpell(uRequiredMana))
                     break;
-                if (pActors[monster_id].DoesDmgTypeDoDamage((DAMAGE_TYPE)3)) {
-                    pActors[monster_id].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].Apply(GameTime(pMiscTimer->uTotalGameTimeElapsed + 128), 0, 0, 0, 0);
+                if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_EARTH)) {
+                    pActors[monster_id].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].Apply(GameTime(pMiscTimer->uTotalGameTimeElapsed + 128), PLAYER_SKILL_MASTERY_NONE, 0, 0, 0);
                     v704.x = 0;
                     v704.y = 0;
                     v704.z = 0;
                     pSpellSprite.containing_item.Reset();
                     pSpellSprite.spell_id = pCastSpell->uSpellID;
                     pSpellSprite.spell_level = spell_level;
-                    pSpellSprite.spell_skill = skill_level;
+                    pSpellSprite.spell_skill = spell_mastery;
                     pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                     pSpellSprite.uAttributes = 0;
                     pSpellSprite.uSectorID = 0;
@@ -476,7 +477,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = skill_level;
+                pSpellSprite.spell_skill = spell_mastery;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                 pSpellSprite.vPosition.x = pActors[PID_ID(spell_targeted_at)].vPosition.x;
                 pSpellSprite.vPosition.y = pActors[PID_ID(spell_targeted_at)].vPosition.y;
@@ -521,7 +522,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = skill_level;
+                pSpellSprite.spell_skill = spell_mastery;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                 pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                 pSpellSprite.uAttributes = 0;
@@ -557,7 +558,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = skill_level;
+                pSpellSprite.spell_skill = spell_mastery;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                 pSpellSprite.uAttributes = 0;
                 pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 2);
@@ -591,8 +592,8 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (pPlayer->CanCastSpell(uRequiredMana)) {
                     pSpellSprite.containing_item.Reset();
                     pSpellSprite.spell_id = pCastSpell->uSpellID;
-                    pSpellSprite.spell_skill = skill_level;
                     pSpellSprite.spell_level = spell_level;
+                    pSpellSprite.spell_skill = spell_mastery;
                     pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                     pSpellSprite.uAttributes = 0;
                     pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
@@ -620,9 +621,9 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 monster_id = PID_ID(spell_targeted_at);
                 if (PID_TYPE(spell_targeted_at) == OBJECT_Actor &&
-                    pActors[monster_id].DoesDmgTypeDoDamage((DAMAGE_TYPE)9)) {
+                    pActors[monster_id].DoesDmgTypeDoDamage(DMGT_LIGHT)) {
                     Actor::AI_Stand(PID_ID(spell_targeted_at), 4, 0x80, 0);
-                    pActors[monster_id].pActorBuffs[ACTOR_BUFF_PARALYZED].Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(3 * 60 * spell_level)), skill_level, 0, 0, 0);
+                    pActors[monster_id].pActorBuffs[ACTOR_BUFF_PARALYZED].Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(3 * 60 * spell_level)), spell_mastery, 0, 0, 0);
                     pActors[monster_id].uAttributes |= ACTOR_AGGRESSOR;
                     pActors[monster_id].vVelocity.x = 0;
                     pActors[monster_id].vVelocity.y = 0;
@@ -634,20 +635,20 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_EARTH_SLOW:
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         spellduration = 180 * spell_level;
                         amount = 2;
                         break;  // LODWORD(spellduration)???не применяется далее
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         spellduration = 300 * spell_level;
                         amount = 2;
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         spellduration = 300 * spell_level;
                         amount = 4;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         spellduration = 300 * spell_level;
                         amount = 8;
                         break;
@@ -658,8 +659,8 @@ void CastSpellInfoHelpers::CastSpell() {
                     break;
                 // v721 = 836 * PID_ID(spell_targeted_at);
                 monster_id = PID_ID(spell_targeted_at);
-                if (PID_TYPE(spell_targeted_at) == OBJECT_Actor && pActors[monster_id].DoesDmgTypeDoDamage((DAMAGE_TYPE)3)) {
-                    pActors[monster_id].pActorBuffs[ACTOR_BUFF_SLOWED].Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)), skill_level, amount, 0, 0);
+                if (PID_TYPE(spell_targeted_at) == OBJECT_Actor && pActors[monster_id].DoesDmgTypeDoDamage(DMGT_EARTH)) {
+                    pActors[monster_id].pActorBuffs[ACTOR_BUFF_SLOWED].Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)), spell_mastery, amount, 0, 0);
                     pActors[monster_id].uAttributes |= ACTOR_AGGRESSOR;
                     spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(&pActors[monster_id], 0);
                 }
@@ -672,20 +673,20 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (!pPlayer->CanCastSpell(uRequiredMana))
                     break;
                 monster_id = PID_ID(spell_targeted_at);
-                if (pActors[monster_id].DoesDmgTypeDoDamage((DAMAGE_TYPE)7)) {
+                if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_MIND)) {
                     uint power = 300 * spell_level;
-                    if (skill_level == 2)
+                    if (spell_mastery == PLAYER_SKILL_MASTERY_EXPERT)
                         power = 600 * spell_level;
-                    else if (skill_level == 3)
+                    else if (spell_mastery == PLAYER_SKILL_MASTERY_MASTER)
                         power = 29030400;
 
                     pActors[monster_id].pActorBuffs[ACTOR_BUFF_BERSERK].Reset();
                     pActors[monster_id].pActorBuffs[ACTOR_BUFF_ENSLAVED].Reset();
-                    pActors[monster_id].pActorBuffs[ACTOR_BUFF_CHARM].Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(power << 7)), skill_level, 0, 0, 0);
+                    pActors[monster_id].pActorBuffs[ACTOR_BUFF_CHARM].Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(power << 7)), spell_mastery, 0, 0, 0);
                     pSpellSprite.containing_item.Reset();
                     pSpellSprite.spell_id = pCastSpell->uSpellID;
                     pSpellSprite.spell_level = spell_level;
-                    pSpellSprite.spell_skill = skill_level;
+                    pSpellSprite.spell_skill = spell_mastery;
                     pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                     pSpellSprite.vPosition.x = pActors[monster_id].vPosition.x;
                     pSpellSprite.vPosition.y = pActors[monster_id].vPosition.y;
@@ -720,7 +721,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                 pSpellSprite.uFacing = target_direction.uYawAngle;
                 pSpellSprite.uSoundID = pCastSpell->sound_id;
-                pSpellSprite.spell_skill = skill_level;
+                pSpellSprite.spell_skill = spell_mastery;
                 pSpellSprite.spell_id = SPELL_FIRE_PROTECTION_FROM_FIRE;
                 pSpellSprite.spell_level = 300 * spell_level;
                 if (pParty->bTurnBasedModeOn) {
@@ -756,15 +757,15 @@ void CastSpellInfoHelpers::CastSpell() {
 
                 switch (pCastSpell->uSpellID) {
                     case SPELL_FIRE_FIRE_AURA:
-                        switch (skill_level) {
-                            case 1:
+                        switch (spell_mastery) {
+                            case PLAYER_SKILL_MASTERY_NOVICE:
                                 item->special_enchantment = ITEM_ENCHANTMENT_OF_FIRE;
                                 break;
-                            case 2:
+                            case PLAYER_SKILL_MASTERY_EXPERT:
                                 item->special_enchantment = ITEM_ENCHANTMENT_OF_FLAME;
                                 break;
-                            case 3:
-                            case 4:
+                            case PLAYER_SKILL_MASTERY_MASTER:
+                            case PLAYER_SKILL_MASTERY_GRANDMASTER:
                                 item->special_enchantment = ITEM_ENCHANTMENT_OF_INFERNOS;
                                 break;
                             default:
@@ -781,7 +782,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         __debugbreak();
                 }
 
-                if (skill_level < 4)
+                if (spell_mastery < PLAYER_SKILL_MASTERY_GRANDMASTER)
                     spellduration = 3600 * spell_level;
                 else
                     spellduration = 0;
@@ -798,17 +799,17 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_BODY_REGENERATION:
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         amount = 1;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         amount = 1;
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         amount = 3;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         amount = 10;
                         break;
                     default:
@@ -818,7 +819,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     break;
                 spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                 pParty->pPlayers[pCastSpell->uPlayerID_2].pPlayerBuffs[PLAYER_BUFF_REGENERATION]
-                    .Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(3600 * spell_level)), skill_level, amount, 0, 0);
+                    .Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(3600 * spell_level)), spell_mastery, amount, 0, 0);
                 spell_sound_flag = true;
                 break;
             }
@@ -830,12 +831,12 @@ void CastSpellInfoHelpers::CastSpell() {
             case SPELL_MIND_PROTECTION_FROM_MIND:
             case SPELL_BODY_PROTECTION_FROM_BODY:
             {
-                switch (skill_level) {
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:
-                        amount = skill_level * spell_level;
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
+                    case PLAYER_SKILL_MASTERY_MASTER:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                        amount = std::to_underlying(spell_mastery) * spell_level;
                         break;
                     default:
                         assert(false);
@@ -874,24 +875,24 @@ void CastSpellInfoHelpers::CastSpell() {
                 spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 3);
 
-                pParty->pPartyBuffs[buff_resist].Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(3600 * spell_level)), skill_level, amount, 0, 0);
+                pParty->pPartyBuffs[buff_resist].Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(3600 * spell_level)), spell_mastery, amount, 0, 0);
                 spell_sound_flag = true;
                 break;
             }
 
             case SPELL_FIRE_HASTE:  //Спешка
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         spellduration = 60 * (spell_level + 60);
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         spellduration = 60 * (spell_level + 60);
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         spellduration = 180 * (spell_level + 20);
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         spellduration = 240 * (spell_level + 15);
                         break;
                     default:
@@ -904,7 +905,7 @@ void CastSpellInfoHelpers::CastSpell() {
                             spell_sound_flag = false;
                     }
                     if (spell_sound_flag) {
-                        pParty->pPartyBuffs[PARTY_BUFF_HASTE].Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)), skill_level, 0, 0, 0);
+                        pParty->pPartyBuffs[PARTY_BUFF_HASTE].Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)), spell_mastery, 0, 0, 0);
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 0);
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 1);
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 2);
@@ -916,17 +917,17 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_SPIRIT_BLESS:
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         spellduration = 300 * (spell_level + 12);
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         spellduration = 300 * (spell_level + 12);
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         spellduration = 900 * (spell_level + 4);
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         spellduration = 3600 * (spell_level + 1);
                         break;
                     default:
@@ -935,11 +936,11 @@ void CastSpellInfoHelpers::CastSpell() {
                 amount = spell_level + 5;
                 if (!pPlayer->CanCastSpell(uRequiredMana))
                     break;
-                if (skill_level == 1) {
+                if (spell_mastery == PLAYER_SKILL_MASTERY_NOVICE) {
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                     spell_overlay_id = pOtherOverlayList->_4418B1(10000, pCastSpell->uPlayerID_2 + 310, 0, 65536);
                     pParty->pPlayers[pCastSpell->uPlayerID_2].pPlayerBuffs[PLAYER_BUFF_BLESS]
-                        .Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)), 1, amount, spell_overlay_id, 0);
+                        .Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)), spell_mastery, amount, spell_overlay_id, 0);
                     spell_sound_flag = true;
                     break;
                 }
@@ -949,7 +950,8 @@ void CastSpellInfoHelpers::CastSpell() {
                     spell_overlay_id = pOtherOverlayList->_4418B1(
                         10000, pl_id + 310, 0, 65536);
                     pParty->pPlayers[pl_id].pPlayerBuffs[PLAYER_BUFF_BLESS]
-                        .Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)), skill_level, amount, spell_overlay_id, 0);
+                        .Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)),
+                        spell_mastery, amount, spell_overlay_id, 0);
                 }
                 spell_sound_flag = true;
                 break;
@@ -974,7 +976,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         pSpellSprite.containing_item.Reset();
                         pSpellSprite.spell_id = pCastSpell->uSpellID;
                         pSpellSprite.spell_level = spell_level;
-                        pSpellSprite.spell_skill = skill_level;
+                        pSpellSprite.spell_skill = spell_mastery;
                         pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                         pSpellSprite.uAttributes = 0;
                         pSpellSprite.uSectorID = 0;
@@ -1002,17 +1004,17 @@ void CastSpellInfoHelpers::CastSpell() {
             case SPELL_EARTH_STONESKIN:  //Каменная кожа
             case SPELL_SPIRIT_HEROISM:   //Героизм
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         spellduration = 300 * (spell_level + 12);
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         spellduration = 300 * (spell_level + 12);
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         spellduration = 900 * (spell_level + 4);
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         spellduration = 3600 * (spell_level + 1);
                         break;
                     default:
@@ -1047,14 +1049,14 @@ void CastSpellInfoHelpers::CastSpell() {
                 pParty->pPartyBuffs[buff_resist].Apply(
                     GameTime(pParty->GetPlayingTime() +
                         GameTime::FromSeconds(spellduration)),
-                    skill_level, amount, 0, 0);
+                    spell_mastery, amount, 0, 0);
                 spell_sound_flag = true;
                 break;
             }
 
             case SPELL_FIRE_IMMOLATION:  //Кольцо огня
             {
-                if (skill_level == 4)
+                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
                     spellduration = 600 * spell_level;
                 else
                     spellduration = 60 * spell_level;
@@ -1070,17 +1072,18 @@ void CastSpellInfoHelpers::CastSpell() {
                 pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Apply(
                     GameTime(pParty->GetPlayingTime() +
                         GameTime::FromSeconds(spellduration)),
-                    skill_level, spell_level, 0, 0);
+                    spell_mastery, spell_level, 0, 0);
                 spell_sound_flag = true;
                 break;
             }
 
             case SPELL_FIRE_METEOR_SHOWER:
             {
-                if (skill_level < 3) break;
+                if (spell_mastery < PLAYER_SKILL_MASTERY_MASTER)
+                    break;
 
                 int meteor_num;
-                if (skill_level == 4)
+                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
                     meteor_num = 20;
                 else
                     meteor_num = 16;
@@ -1122,7 +1125,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         pSpellSprite.containing_item.Reset();
                         pSpellSprite.spell_id = pCastSpell->uSpellID;
                         pSpellSprite.spell_level = spell_level;
-                        pSpellSprite.spell_skill = skill_level;
+                        pSpellSprite.spell_skill = spell_mastery;
                         pSpellSprite.uObjectDescID =
                             pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                         pSpellSprite.uAttributes = 0;
@@ -1168,7 +1171,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = skill_level;
+                pSpellSprite.spell_skill = spell_mastery;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                 pSpellSprite.uAttributes = 0;
                 pSpellSprite.uSectorID = 0;
@@ -1205,24 +1208,24 @@ void CastSpellInfoHelpers::CastSpell() {
                         pOtherOverlayList->_4418B1(2000, pl_id + 100, 0, 65536);
                 pParty->pPartyBuffs[PARTY_BUFF_WIZARD_EYE].Apply(
                     GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)),
-                    skill_level, 0, spell_overlay_id, 0);
+                    spell_mastery, 0, spell_overlay_id, 0);
                 spell_sound_flag = true;
                 break;
             }
 
             case SPELL_AIR_FEATHER_FALL:  //Падение пера(пёрышком)
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         spellduration = 300 * spell_level;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         spellduration = 600 * spell_level;
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         spellduration = 3600 * spell_level;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         spellduration = 3600 * spell_level;
                         break;
                     default:
@@ -1243,24 +1246,24 @@ void CastSpellInfoHelpers::CastSpell() {
                 pParty->pPartyBuffs[PARTY_BUFF_FEATHER_FALL].Apply(
                     GameTime(pParty->GetPlayingTime() +
                         GameTime::FromSeconds(spellduration)),
-                    skill_level, 0, 0, 0);
+                    spell_mastery, 0, 0, 0);
                 spell_sound_flag = true;
                 break;
             }
 
             case SPELL_AIR_SPARKS:  // Искры
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         amount = 3;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         amount = 5;
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         amount = 7;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         amount = 9;
                         break;
                     default:
@@ -1271,7 +1274,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = skill_level;
+                pSpellSprite.spell_skill = spell_mastery;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                 pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                 pSpellSprite.uAttributes = 0;
@@ -1321,20 +1324,20 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_AIR_INVISIBILITY:
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         spellduration = 600 * spell_level;
                         amount = spell_level;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         spellduration = 600 * spell_level;
                         amount = 2 * spell_level;
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         spellduration = 600 * spell_level;
                         amount = 3 * spell_level;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         spellduration = 3600 * spell_level;
                         amount = 4 * spell_level;
                         break;
@@ -1354,7 +1357,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 3);
                     pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Apply(
                         GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)),
-                        skill_level, amount, 0, 0);
+                        spell_mastery, amount, 0, 0);
                     spell_sound_flag = true;
                 }
                 break;
@@ -1372,7 +1375,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     break;
                 }
-                if (skill_level == 1 || skill_level == 2 || skill_level == 3)
+                if (spell_mastery < PLAYER_SKILL_MASTERY_GRANDMASTER)
                     amount = 1;
                 else
                     amount = 0;
@@ -1382,7 +1385,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 spell_overlay_id = pOtherOverlayList->_4418B1(10008, 203, 0, 65536);
                 pParty->pPartyBuffs[PARTY_BUFF_FLY].Apply(
                     GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(3600 * spell_level)),
-                    skill_level, amount, spell_overlay_id,
+                    spell_mastery, amount, spell_overlay_id,
                     pCastSpell->uPlayerID + 1);
                 spell_sound_flag = true;
                 break;
@@ -1430,7 +1433,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pSpellSprite.containing_item.Reset();
                     pSpellSprite.spell_id = pCastSpell->uSpellID;
                     pSpellSprite.spell_level = spell_level;
-                    pSpellSprite.spell_skill = skill_level;
+                    pSpellSprite.spell_skill = spell_mastery;
                     pSpellSprite.uObjectDescID =
                         pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                     pSpellSprite.uAttributes = 0;
@@ -1462,17 +1465,17 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_WATER_AWAKEN:
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         amount = 180 * spell_level;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         amount = 3600 * spell_level;
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         amount = 86400 * spell_level;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         amount = 0;
                         break;
                     default:
@@ -1480,7 +1483,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 for (int i = 0; i < 4; i++) {
-                    if (skill_level == 4) {
+                    if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                         if (pParty->pPlayers[i].conditions.Has(Condition_Sleep)) {
                             pParty->pPlayers[i].conditions.Reset(Condition_Sleep);
                             pParty->pPlayers[i].PlaySound(SPEECH_Awaken, 0);
@@ -1499,17 +1502,17 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_WATER_POISON_SPRAY:
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         amount = 1;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         amount = 3;
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         amount = 5;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         amount = 7;
                         break;
                     default:
@@ -1520,8 +1523,8 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (amount == 1) {
                     pSpellSprite.containing_item.Reset();
                     pSpellSprite.spell_id = pCastSpell->uSpellID;
-                    pSpellSprite.spell_skill = skill_level;
                     pSpellSprite.spell_level = spell_level;
+                    pSpellSprite.spell_skill = spell_mastery;
                     pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                     pSpellSprite.uAttributes = 0;
                     pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
@@ -1543,7 +1546,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pSpellSprite.containing_item.Reset();
                     pSpellSprite.spell_id = pCastSpell->uSpellID;
                     pSpellSprite.spell_level = spell_level;
-                    pSpellSprite.spell_skill = skill_level;
+                    pSpellSprite.spell_skill = spell_mastery;
                     pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                     pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                     pSpellSprite.uAttributes = 0;
@@ -1588,13 +1591,13 @@ void CastSpellInfoHelpers::CastSpell() {
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     break;
                 }
-                switch (skill_level) {
-                    case 1:  // break;
-                    case 2:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:  // break;
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         spellduration = 600 * spell_level;
                         break;
-                    case 3:
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_MASTER:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         spellduration = 3600 * spell_level;
                         break;
                     default:
@@ -1609,9 +1612,9 @@ void CastSpellInfoHelpers::CastSpell() {
                 spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 3);
                 pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].Apply(
                     GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)),
-                    skill_level, amount, spell_overlay_id,
+                    spell_mastery, amount, spell_overlay_id,
                     pCastSpell->uPlayerID + 1);
-                if (skill_level == 4)
+                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
                     pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uFlags = 1;
                 spell_sound_flag = true;
                 break;
@@ -1634,11 +1637,11 @@ void CastSpellInfoHelpers::CastSpell() {
                 }
 
                 double spell_recharge_factor;
-                if (skill_level == 1 || skill_level == 2)
+                if (spell_mastery == PLAYER_SKILL_MASTERY_NOVICE || spell_mastery == PLAYER_SKILL_MASTERY_EXPERT)
                     spell_recharge_factor = (double)spell_level * 0.0099999998 + 0.5;  // 50 %
-                else if (skill_level == 3)
+                else if (spell_mastery == PLAYER_SKILL_MASTERY_MASTER)
                     spell_recharge_factor = (double)spell_level * 0.0099999998 + 0.69999999;  // 30 %
-                else if (skill_level == 4)
+                else if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
                     spell_recharge_factor = (double)spell_level * 0.0099999998 + 0.80000001;  // 20 %
                 else
                     spell_recharge_factor = 0.0;
@@ -1683,9 +1686,9 @@ void CastSpellInfoHelpers::CastSpell() {
                 // http://www.pottsland.com/mm6/enchant.shtml
                 // also see STDITEMS.tx and SPCITEMS.txt in Events.lod
 
-                if ((skill_level == 1 || skill_level == 2)) __debugbreak(); // SPELL_WATER_ENCHANT_ITEM is a master level spell
+                if ((spell_mastery == PLAYER_SKILL_MASTERY_NOVICE || spell_mastery == PLAYER_SKILL_MASTERY_EXPERT)) __debugbreak(); // SPELL_WATER_ENCHANT_ITEM is a master level spell
 
-                if ((skill_level == 3 || skill_level == 4) &&
+                if ((spell_mastery == PLAYER_SKILL_MASTERY_MASTER || spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) &&
                     IsRegular(spell_item_to_enchant->uItemID) &&
                     spell_item_to_enchant->special_enchantment == ITEM_ENCHANTMENT_NULL &&
                     spell_item_to_enchant->uEnchantmentType == 0 &&
@@ -1742,9 +1745,9 @@ void CastSpellInfoHelpers::CastSpell() {
 
                                 int ench_power = 0;
                                 // master 3-8  - guess work needs checking
-                                if (skill_level == 3) ench_power = (rand() % 6) + 3;
+                                if (spell_mastery == PLAYER_SKILL_MASTERY_MASTER) ench_power = (rand() % 6) + 3;
                                 // gm 6-12   - guess work needs checking
-                                if (skill_level == 4) ench_power = (rand() % 7) + 6;
+                                if (spell_mastery== PLAYER_SKILL_MASTERY_GRANDMASTER) ench_power = (rand() % 7) + 6;
 
                                 spell_item_to_enchant->m_enchantmentStrength = ench_power;
                                 spell_item_to_enchant->uAttributes |= ITEM_AURA_EFFECT_BLUE;
@@ -1762,7 +1765,8 @@ void CastSpellInfoHelpers::CastSpell() {
                                         char *this_bon_state = pItemTable->pSpecialEnchantments[spec_ench_loop].pBonusStatement;
                                         if (this_bon_state != NULL && (this_bon_state[0] != '\0')) {
                                             if (pItemTable->pSpecialEnchantments[spec_ench_loop].iTreasureLevel == 3) continue;
-                                            if (skill_level == 3 && (pItemTable->pSpecialEnchantments[spec_ench_loop].iTreasureLevel != 0)) continue;
+                                            if (spell_mastery == PLAYER_SKILL_MASTERY_MASTER && (pItemTable->pSpecialEnchantments[spec_ench_loop].iTreasureLevel != 0))
+                                                continue;
                                             int this_to_apply = pItemTable->pSpecialEnchantments[spec_ench_loop].to_item_apply[this_equip_type];
                                             to_item_apply_sum += this_to_apply;
                                             if (this_to_apply) {
@@ -1814,8 +1818,8 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (pPlayer->sMana < (signed int)uRequiredMana) break;
                 if (pParty->uFlags & (PARTY_FLAGS_1_ALERT_RED |
                                       PARTY_FLAGS_1_ALERT_YELLOW) &&
-                        skill_level != 4 ||
-                    rand() % 100 >= amount && skill_level != 4) {
+                        spell_mastery != PLAYER_SKILL_MASTERY_GRANDMASTER ||
+                    rand() % 100 >= amount && spell_mastery != PLAYER_SKILL_MASTERY_GRANDMASTER) {
                     GameUI_SetStatusBar(LSTR_SPELL_FAILED);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1,
                                             0, 0);
@@ -1851,17 +1855,17 @@ void CastSpellInfoHelpers::CastSpell() {
             }
 
             case SPELL_EARTH_STONE_TO_FLESH: {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         amount = 3600 * spell_level;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         amount = 3600 * spell_level;
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         amount = 86400 * spell_level;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         break;
                     default:
                         assert(false);
@@ -1869,7 +1873,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (!pPlayer->CanCastSpell(uRequiredMana))
                     break;
                 if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Petrified)) {
-                    if (skill_level == 4) {  // for GM
+                    if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                         pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Petrified);
                         spell_sound_flag = true;
                         break;
@@ -1890,7 +1894,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = skill_level;
+                pSpellSprite.spell_skill = spell_mastery;
                 pSpellSprite.uObjectDescID =
                     pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                 pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
@@ -1925,7 +1929,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = skill_level;
+                pSpellSprite.spell_skill = spell_mastery;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                 pSpellSprite.vPosition.x = pParty->vPosition.x;
                 pSpellSprite.vPosition.y = pParty->vPosition.y;
@@ -1951,15 +1955,15 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_SPIRIT_DETECT_LIFE:  // Детектор жизни
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         amount = 600 * spell_level;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         amount = 1800 * spell_level;
                         break;
-                    case 3:
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_MASTER:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         amount = 3600 * spell_level;
                         break;
                     default:
@@ -1976,24 +1980,24 @@ void CastSpellInfoHelpers::CastSpell() {
                     pCastSpell->uSpellID, 3);
                 pParty->pPartyBuffs[PARTY_BUFF_DETECT_LIFE].Apply(
                     GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(amount)),
-                    skill_level, 0, 0, 0);
+                    spell_mastery, 0, 0, 0);
                 spell_sound_flag = true;
                 break;
             }
 
             case SPELL_SPIRIT_FATE:  // Судьба
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         amount = spell_level;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         amount = 2 * spell_level;
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         amount = 4 * spell_level;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         amount = 6 * spell_level;
                         break;
                     default:
@@ -2008,15 +2012,14 @@ void CastSpellInfoHelpers::CastSpell() {
                         .pPlayerBuffs[PLAYER_BUFF_FATE]
                         .Apply(
                             GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(5)),
-                            skill_level, amount, 0, 0);
+                            spell_mastery, amount, 0, 0);
                     spell_sound_flag = true;
                     break;
-                }
-                if (PID_TYPE(pCastSpell->spell_target_pid) == OBJECT_Actor) {
+                } else if (PID_TYPE(pCastSpell->spell_target_pid) == OBJECT_Actor) {
                     monster_id = PID_ID(pCastSpell->spell_target_pid);
                     pActors[monster_id].pActorBuffs[ACTOR_BUFF_FATE].Apply(
                         GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(5)),
-                        skill_level, amount, 0, 0);
+                        spell_mastery, amount, 0, 0);
                     pActors[monster_id].uAttributes |= ACTOR_AGGRESSOR;
                     spell_fx_renderer
                         ->_4A7E89_sparkles_on_actor_after_it_casts_buff(
@@ -2028,17 +2031,17 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_SPIRIT_REMOVE_CURSE:  // Снятие порчи
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         amount = 3600 * spell_level;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         amount = 3600 * spell_level;
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         amount = 86400 * spell_level;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         amount = 0;
                         break;
                     default:
@@ -2049,7 +2052,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     spell_sound_flag = true;
                     break;
                 }
-                if (skill_level == 4) {  // GM
+                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                     pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Cursed);
                 } else {
                     pParty->pPlayers[pCastSpell->uPlayerID_2]
@@ -2070,19 +2073,19 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_SPIRIT_PRESERVATION:  //Сохранение
             {
-                if (skill_level == 4)
+                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
                     spellduration = 900 * (spell_level + 4);
                 else
                     spellduration = 300 * (spell_level + 12);
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                if (skill_level == 1 || skill_level == 2) {
+                if (spell_mastery == PLAYER_SKILL_MASTERY_NOVICE || spell_mastery == PLAYER_SKILL_MASTERY_EXPERT) {
                     spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                     pParty->pPlayers[pCastSpell->uPlayerID_2]
                         .pPlayerBuffs[PLAYER_BUFF_PRESERVATION]
                         .Apply(GameTime(pParty->GetPlayingTime() +
                                    GameTime::FromSeconds(spellduration)),
-                               skill_level, 0, 0, 0);
+                               spell_mastery, 0, 0, 0);
                     spell_sound_flag = true;
                     break;
                 }
@@ -2093,7 +2096,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         .pPlayerBuffs[PLAYER_BUFF_PRESERVATION]
                         .Apply(GameTime(pParty->GetPlayingTime() +
                                    GameTime::FromSeconds(spellduration)),
-                               skill_level, 0, 0, 0);
+                               spell_mastery, 0, 0, 0);
                 }
                 spell_sound_flag = true;
                 break;
@@ -2101,7 +2104,7 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_SPIRIT_TURN_UNDEAD:  //Бег мертвецов
             {
-                if (skill_level == 1 || skill_level == 2)
+                if (spell_mastery == PLAYER_SKILL_MASTERY_NOVICE || spell_mastery == PLAYER_SKILL_MASTERY_EXPERT)
                     spellduration = 60 * (spell_level + 3);
                 else
                     spellduration = 300 * spell_level + 180;
@@ -2115,7 +2118,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = skill_level;
+                pSpellSprite.spell_skill = spell_mastery;
                 pSpellSprite.uObjectDescID =
                     pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                 pSpellSprite.uAttributes = 0;
@@ -2158,7 +2161,7 @@ void CastSpellInfoHelpers::CastSpell() {
                                 .pActorBuffs[ACTOR_BUFF_AFRAID]
                                 .Apply(GameTime(pParty->GetPlayingTime() +
                                            GameTime::FromSeconds(spellduration)),
-                                       skill_level, 0, 0, 0);
+                                       spell_mastery, 0, 0, 0);
                     }
                 }
                 spell_sound_flag = true;
@@ -2167,7 +2170,7 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_SPIRIT_RAISE_DEAD:  //Оживление
             {
-                if (skill_level == 4)
+                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
                     amount = 0;
                 else
                     amount = 86400 * spell_level;
@@ -2179,7 +2182,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     break;
                 }
                 pParty->pPlayers[pCastSpell->uPlayerID_2].sHealth = 1;
-                if (skill_level == 4) {
+                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                     pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Dead);
                     pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Unconscious);
                 } else {
@@ -2201,7 +2204,7 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_SPIRIT_SHARED_LIFE:  //Общая жизнь
             {
-                if (skill_level == 4)
+                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
                     amount = 4 * spell_level;
                 else
                     amount = 3 * spell_level;
@@ -2237,17 +2240,17 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_SPIRIT_RESSURECTION:  //Воскресение
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         amount = 180 * spell_level;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         amount = 10800 * spell_level;
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         amount = 259200 * spell_level;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         amount = 0;
                         break;
                     default:
@@ -2258,7 +2261,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Dead)) {
                     if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Weak))
                         pParty->pPlayers[pCastSpell->uPlayerID_2].PlaySound(SPEECH_Weak, 0);
-                    if (skill_level == 4) {
+                    if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                         pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Eradicated);
                         pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Dead);
                         pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Unconscious);
@@ -2291,17 +2294,17 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_MIND_CURE_PARALYSIS:  //лечение паралича
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         amount = 3600 * spell_level;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         amount = 3600 * spell_level;
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         amount = 86400 * spell_level;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         amount = 0;
                         break;
                     default:
@@ -2314,7 +2317,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     spell_sound_flag = true;
                     break;
                 }
-                if (skill_level == 4) {
+                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                     pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Paralyzed);
                     spell_sound_flag = true;
                     break;
@@ -2331,17 +2334,17 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_MIND_REMOVE_FEAR:  //Снять страх
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         amount = 180 * spell_level;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         amount = 3600 * spell_level;
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         amount = 86400 * spell_level;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         amount = 0;
                         break;
                     default:
@@ -2354,7 +2357,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     spell_sound_flag = true;
                     break;
                 }
-                if (skill_level == 4) {
+                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                     pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Fear);
                     spell_sound_flag = true;
                     break;
@@ -2420,7 +2423,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pSpellSprite.containing_item.Reset();
                     pSpellSprite.spell_id = pCastSpell->uSpellID;
                     pSpellSprite.spell_level = spell_level;
-                    pSpellSprite.spell_skill = skill_level;
+                    pSpellSprite.spell_skill = spell_mastery;
                     pSpellSprite.uObjectDescID =
                         pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                     pSpellSprite.vPosition.x = pActors[monster_id].vPosition.x;
@@ -2445,17 +2448,17 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_MIND_BERSERK:  //Берсерк
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         amount = 300 * spell_level;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         amount = 300 * spell_level;
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         amount = 600 * spell_level;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         amount = 3600;
                         break;
                     default:
@@ -2466,7 +2469,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (PID_TYPE(spell_targeted_at) == OBJECT_Actor) {
                     // v730 = 836 * monster_id;
                     if (pActors[monster_id].DoesDmgTypeDoDamage(
-                            (DAMAGE_TYPE)7)) {
+                            DMGT_MIND)) {
                         pActors[monster_id]
                             .pActorBuffs[ACTOR_BUFF_CHARM]
                             .Reset();
@@ -2477,14 +2480,14 @@ void CastSpellInfoHelpers::CastSpell() {
                             .pActorBuffs[ACTOR_BUFF_BERSERK]
                             .Apply(GameTime(pParty->GetPlayingTime() +
                                        GameTime::FromSeconds(amount)),
-                                   skill_level, 0, 0, 0);
+                                   spell_mastery, 0, 0, 0);
                         pActors[monster_id].pMonsterInfo.uHostilityType =
                             MonsterInfo::Hostility_Long;
                     }
                     pSpellSprite.containing_item.Reset();
                     pSpellSprite.spell_id = pCastSpell->uSpellID;
                     pSpellSprite.spell_level = spell_level;
-                    pSpellSprite.spell_skill = skill_level;
+                    pSpellSprite.spell_skill = spell_mastery;
                     pSpellSprite.uObjectDescID =
                         pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                     pSpellSprite.vPosition.x = pActors[monster_id].vPosition.x;
@@ -2520,7 +2523,7 @@ void CastSpellInfoHelpers::CastSpell() {
                             MONSTER_SUPERTYPE_UNDEAD))
                         break;
                     if (pActors[monster_id].DoesDmgTypeDoDamage(
-                            (DAMAGE_TYPE)7)) {
+                            DMGT_MIND)) {
                         pActors[monster_id]
                             .pActorBuffs[ACTOR_BUFF_BERSERK]
                             .Reset();
@@ -2531,12 +2534,12 @@ void CastSpellInfoHelpers::CastSpell() {
                             .pActorBuffs[ACTOR_BUFF_ENSLAVED]
                             .Apply(GameTime(pParty->GetPlayingTime() +
                                        GameTime::FromSeconds(amount)),
-                                   skill_level, 0, 0, 0);
+                                   spell_mastery, 0, 0, 0);
                     }
                     pSpellSprite.containing_item.Reset();
                     pSpellSprite.spell_id = pCastSpell->uSpellID;
                     pSpellSprite.spell_level = spell_level;
-                    pSpellSprite.spell_skill = skill_level;
+                    pSpellSprite.spell_skill = spell_mastery;
                     pSpellSprite.uObjectDescID =
                         pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                     pSpellSprite.vPosition.x = pActors[monster_id].vPosition.x;
@@ -2560,7 +2563,7 @@ void CastSpellInfoHelpers::CastSpell() {
             }
 
             case SPELL_MIND_MASS_FEAR: {  // Массовый страх
-                if (skill_level == 4)
+                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
                     amount = 300 * spell_level;
                 else
                     amount = 180 * spell_level;
@@ -2574,7 +2577,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = skill_level;
+                pSpellSprite.spell_skill = spell_mastery;
                 pSpellSprite.uObjectDescID =
                     pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                 pSpellSprite.uAttributes = 0;
@@ -2616,13 +2619,13 @@ void CastSpellInfoHelpers::CastSpell() {
                     pSpellSprite.Create(0, 0, 0, 0);
                     if (pActors
                             [_50BF30_actors_in_viewport_ids[spell_targeted_at]]
-                                .DoesDmgTypeDoDamage((DAMAGE_TYPE)7)) {
+                                .DoesDmgTypeDoDamage(DMGT_MIND)) {
                         pActors
                             [_50BF30_actors_in_viewport_ids[spell_targeted_at]]
                                 .pActorBuffs[ACTOR_BUFF_AFRAID]
                                 .Apply(GameTime(pParty->GetPlayingTime() +
                                            GameTime::FromSeconds(amount)),
-                                       skill_level, 0, 0, 0);
+                                       spell_mastery, 0, 0, 0);
                     }
                 }
                 spell_sound_flag = true;
@@ -2631,7 +2634,7 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_MIND_CURE_INSANITY:  //Лечение Безумия
             {
-                if (skill_level == 4)
+                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
                     amount = 0;
                 else
                     amount = 86400 * spell_level;
@@ -2641,7 +2644,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Insane)) {
                     if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Weak))
                         pParty->pPlayers[pCastSpell->uPlayerID_2].PlaySound(SPEECH_Weak, 0);
-                    if (skill_level == 4)
+                    if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
                         pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Insane);
                     else
                         pParty->pPlayers[pCastSpell->uPlayerID_2]
@@ -2658,17 +2661,17 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_EARTH_TELEKINESIS:  //Телекинез
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         amount = 2 * spell_level;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         amount = 2 * spell_level;
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         amount = 3 * spell_level;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         amount = 4 * spell_level;
                         break;
                     default:
@@ -2737,17 +2740,17 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_BODY_CURE_WEAKNESS:  //Лечить Слабость
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         amount = 180 * spell_level;
                         break;  // 3 минуты * количество очков навыка
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         amount = 3600 * spell_level;
                         break;  // 1 час * количество очков навыка
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         amount = 86400 * spell_level;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         amount = 0;
                         break;
                     default:
@@ -2757,7 +2760,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                 if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Weak)) {
-                    if (skill_level == 4) {
+                    if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                         pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Weak);
                         spell_sound_flag = true;
                         break;
@@ -2773,17 +2776,17 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_BODY_FIRST_AID:  //Первая помощь
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         amount = 2 * spell_level + 5;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         amount = 3 * spell_level + 5;
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         amount = 4 * spell_level + 5;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         amount = 5 * spell_level + 5;
                         break;
                     default:
@@ -2814,17 +2817,17 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_BODY_CURE_POISON:  //Лечение Отравления(Противоядие)
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         amount = 3600 * spell_level;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         amount = 3600 * spell_level;
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         amount = 86400 * spell_level;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         amount = 0;
                         break;
                     default:
@@ -2838,7 +2841,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Poison_Weak) ||
                     pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Poison_Medium) ||
                     pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Poison_Severe)) {
-                    if (skill_level == 4) {
+                    if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                         pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Poison_Weak);
                         pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Poison_Medium);
                         pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Poison_Severe);
@@ -2881,7 +2884,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].Apply(
                     GameTime(pParty->GetPlayingTime() +
                         GameTime::FromSeconds(3600 * spell_level)),
-                    skill_level, spell_level, 0, 0);
+                    spell_mastery, spell_level, 0, 0);
                 spell_sound_flag = true;
                 break;
             }
@@ -2889,7 +2892,7 @@ void CastSpellInfoHelpers::CastSpell() {
             case SPELL_BODY_HAMMERHANDS:  //Руки-Молоты
             {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                if (skill_level == 4) {
+                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                     spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, 0);
                     spell_fx_renderer->SetPlayerBuffAnim(
@@ -2904,7 +2907,7 @@ void CastSpellInfoHelpers::CastSpell() {
                             .Apply(
                                 GameTime(pParty->GetPlayingTime() +
                                     GameTime::FromSeconds(3600 * spell_level)),
-                                4, spell_level, spell_level, 0);
+                                spell_mastery, spell_level, spell_level, 0);
                     }
                     spell_sound_flag = true;
                     break;
@@ -2915,7 +2918,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     .pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS]
                     .Apply(GameTime(pParty->GetPlayingTime() +
                                GameTime::FromSeconds(3600 * spell_level)),
-                           skill_level, spell_level, spell_level, 0);
+                           spell_mastery, spell_level, spell_level, 0);
                 spell_sound_flag = true;
                 break;
             }
@@ -2947,7 +2950,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = skill_level;
+                pSpellSprite.spell_skill = spell_mastery;
                 pSpellSprite.uObjectDescID =
                     pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                 pSpellSprite.uAttributes = 0;
@@ -3016,20 +3019,20 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_LIGHT_SUMMON_ELEMENTAL:  //Элементал
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         spellduration = 300 * spell_level;
                         amount = 1;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         spellduration = 300 * spell_level;
                         amount = 1;
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         spellduration = 900 * spell_level;
                         amount = 3;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         spellduration = 900 * spell_level;
                         amount = 5;
                         break;
@@ -3051,27 +3054,27 @@ void CastSpellInfoHelpers::CastSpell() {
                     continue;
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                Spawn_Light_Elemental(pCastSpell->uPlayerID, skill_level, spellduration);
+                Spawn_Light_Elemental(pCastSpell->uPlayerID, spell_mastery, spellduration);
                 spell_sound_flag = true;
                 break;
             }
 
             case SPELL_LIGHT_DAY_OF_THE_GODS:
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         spellduration = 10800 * spell_level;
                         amount = 3 * spell_level + 10;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         spellduration = 10800 * spell_level;
                         amount = 3 * spell_level + 10;
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         spellduration = 14400 * spell_level;
                         amount = 4 * spell_level + 10;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         spellduration = 18000 * spell_level;
                         amount = 5 * spell_level + 10;
                         break;
@@ -3090,7 +3093,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].Apply(
                     GameTime(pParty->GetPlayingTime() +
                         GameTime::FromSeconds(spellduration)),
-                    skill_level, amount, 0, 0);
+                    spell_mastery, amount, 0, 0);
                 spell_sound_flag = true;
                 break;
             }
@@ -3112,7 +3115,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = skill_level;
+                pSpellSprite.spell_skill = spell_mastery;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                 pSpellSprite.uAttributes = 0;
                 pSpellSprite.uSectorID = 0;
@@ -3144,20 +3147,20 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_LIGHT_DAY_OF_PROTECTION:
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         spellduration = 14400 * spell_level;
                         amount = 4 * spell_level;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         spellduration = 14400 * spell_level;
                         amount = 4 * spell_level;
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         spellduration = 14400 * spell_level;
                         amount = 4 * spell_level;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         spellduration = 18000 * spell_level;
                         amount = 5 * spell_level;
                         break;
@@ -3171,48 +3174,48 @@ void CastSpellInfoHelpers::CastSpell() {
                 spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 3);
                 pParty->pPartyBuffs[PARTY_BUFF_RESIST_BODY].Apply(
                     GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)),
-                    skill_level, amount, 0, 0);
+                    spell_mastery, amount, 0, 0);
                 pParty->pPartyBuffs[PARTY_BUFF_RESIST_MIND].Apply(
                     GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)),
-                    skill_level, amount, 0, 0);
+                    spell_mastery, amount, 0, 0);
                 pParty->pPartyBuffs[PARTY_BUFF_RESIST_FIRE].Apply(
                     GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)),
-                    skill_level, amount, 0, 0);
+                    spell_mastery, amount, 0, 0);
                 pParty->pPartyBuffs[PARTY_BUFF_RESIST_WATER].Apply(
                     GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)),
-                    skill_level, amount, 0, 0);
+                    spell_mastery, amount, 0, 0);
                 pParty->pPartyBuffs[PARTY_BUFF_RESIST_AIR].Apply(
                     GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)),
-                    skill_level, amount, 0, 0);
+                    spell_mastery, amount, 0, 0);
                 pParty->pPartyBuffs[PARTY_BUFF_RESIST_EARTH].Apply(
                     GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)),
-                    skill_level, amount, 0, 0);
+                    spell_mastery, amount, 0, 0);
                 pParty->pPartyBuffs[PARTY_BUFF_FEATHER_FALL].Apply(
                     GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)),
-                    skill_level, spell_level + 5, 0, 0);
+                    spell_mastery, spell_level + 5, 0, 0);
                 pParty->pPartyBuffs[PARTY_BUFF_WIZARD_EYE].Apply(
                     GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)),
-                    skill_level, spell_level + 5, 0, 0);
+                    spell_mastery, spell_level + 5, 0, 0);
                 spell_sound_flag = true;
                 break;
             }
 
             case SPELL_LIGHT_HOUR_OF_POWER:
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         spellduration = 4;
                         amount = 4;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         spellduration = 4;
                         amount = 4;
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         spellduration = 12;
                         amount = 12;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         spellduration = 20;
                         amount = 15;
                         break;
@@ -3230,7 +3233,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         .pPlayerBuffs[PLAYER_BUFF_BLESS]
                         .Apply(GameTime(pParty->GetPlayingTime() +
                                    GameTime::FromSeconds(300 * amount * spell_level + 60)),
-                               skill_level, spell_level + 5, 0, 0);
+                               spell_mastery, spell_level + 5, 0, 0);
                     if (pParty->pPlayers[pl_id].conditions.Has(Condition_Weak))
                         player_weak = true;
                 }
@@ -3238,21 +3241,21 @@ void CastSpellInfoHelpers::CastSpell() {
                 pParty->pPartyBuffs[PARTY_BUFF_HEROISM].Apply(
                     GameTime(pParty->GetPlayingTime() +
                         GameTime::FromSeconds(300 * amount * spell_level + 60)),
-                    skill_level, spell_level + 5, 0, 0);
+                    spell_mastery, spell_level + 5, 0, 0);
                 pParty->pPartyBuffs[PARTY_BUFF_SHIELD].Apply(
                     GameTime(pParty->GetPlayingTime() +
                         GameTime::FromSeconds(300 * amount * spell_level + 60)),
-                    skill_level, 0, 0, 0);
+                    spell_mastery, 0, 0, 0);
                 pParty->pPartyBuffs[PARTY_BUFF_STONE_SKIN].Apply(
                     GameTime(pParty->GetPlayingTime() +
                         GameTime::FromSeconds(300 * amount * spell_level + 60)),
-                    skill_level, spell_level + 5, 0, 0);
+                    spell_mastery, spell_level + 5, 0, 0);
                 if (!player_weak)
                     pParty->pPartyBuffs[PARTY_BUFF_HASTE].Apply(
                         GameTime(pParty->GetPlayingTime() +
                             GameTime::FromSeconds(
                                 60 * (spell_level * spellduration + 60))),
-                        skill_level, spell_level + 5, 0, 0);
+                        spell_mastery, spell_level + 5, 0, 0);
                 spell_sound_flag = true;
                 break;
             }
@@ -3283,17 +3286,17 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_DARK_REANIMATE:
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         amount = 2 * spell_level;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         amount = 3 * spell_level;
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         amount = 4 * spell_level;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         amount = 5 * spell_level;
                         break;
                     default:
@@ -3329,7 +3332,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = skill_level;
+                pSpellSprite.spell_skill = spell_mastery;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                 pSpellSprite.uAttributes = 0;
                 pSpellSprite.uSectorID = 0;
@@ -3366,17 +3369,17 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_DARK_SHARPMETAL:  //Шрапнель
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         amount = 5;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         amount = 5;
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         amount = 7;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         amount = 9;
                         break;
                     default:
@@ -3387,7 +3390,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = skill_level;
+                pSpellSprite.spell_skill = spell_mastery;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                 pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 2);
                 pSpellSprite.uAttributes = 0;
@@ -3420,17 +3423,17 @@ void CastSpellInfoHelpers::CastSpell() {
             case SPELL_DARK_CONTROL_UNDEAD:
             {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         spellduration = 180 * spell_level;
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         spellduration = 180 * spell_level;
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         spellduration = 300 * spell_level;
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         spellduration = 29030400;
                         break;
                     default:
@@ -3452,11 +3455,11 @@ void CastSpellInfoHelpers::CastSpell() {
                     pActors[monster_id].pActorBuffs[ACTOR_BUFF_CHARM].Reset();
                     pActors[monster_id].pActorBuffs[ACTOR_BUFF_ENSLAVED].Apply(
                         GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)),
-                        skill_level, 0, 0, 0);
+                        spell_mastery, 0, 0, 0);
                     pSpellSprite.containing_item.Reset();
                     pSpellSprite.spell_id = pCastSpell->uSpellID;
                     pSpellSprite.spell_level = spell_level;
-                    pSpellSprite.spell_skill = skill_level;
+                    pSpellSprite.spell_skill = spell_mastery;
                     pSpellSprite.uObjectDescID =
                         pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                     pSpellSprite.vPosition.x = pActors[monster_id].vPosition.x;
@@ -3516,17 +3519,17 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_DARK_PAIN_REFLECTION:
             {
-                switch (skill_level) {
-                    case 1:
+                switch (spell_mastery) {
+                    case PLAYER_SKILL_MASTERY_NOVICE:
                         spellduration = 300 * (spell_level + 12);
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         spellduration = 300 * (spell_level + 12);
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         spellduration = 300 * (spell_level + 12);
                         break;
-                    case 4:
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         spellduration = 900 * (spell_level + 4);
                         break;
                     default:
@@ -3534,13 +3537,13 @@ void CastSpellInfoHelpers::CastSpell() {
                 }
                 amount = spell_level + 5;
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                if (skill_level != 3 && skill_level != 4) {
+                if (spell_mastery != PLAYER_SKILL_MASTERY_MASTER && spell_mastery != PLAYER_SKILL_MASTERY_GRANDMASTER) {
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                     pParty->pPlayers[pCastSpell->uPlayerID_2]
                         .pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION]
                         .Apply(GameTime(pParty->GetPlayingTime() +
                                    GameTime::FromSeconds(spellduration)),
-                               skill_level, amount, 0, 0);
+                               spell_mastery, amount, 0, 0);
                     spell_sound_flag = true;
                     break;
                 }
@@ -3550,7 +3553,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         .pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION]
                         .Apply(GameTime(pParty->GetPlayingTime() +
                                    GameTime::FromSeconds(spellduration)),
-                               skill_level, amount, 0, 0);
+                               spell_mastery, amount, 0, 0);
                 }
                 spell_sound_flag = true;
                 break;
@@ -3567,7 +3570,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = skill_level;
+                pSpellSprite.spell_skill = spell_mastery;
                 pSpellSprite.uObjectDescID =
                     pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                 pSpellSprite.uAttributes = 0;
@@ -3637,7 +3640,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pCastSpell->uSpellID = 0;
                     continue;
                 }
-                if (skill_level == 4)
+                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
                     amount = 4;
                 else
                     amount = 3;
@@ -3746,15 +3749,8 @@ void CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress() {  // reset failed/ca
 //----- (0042777D) --------------------------------------------------------
 void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
                                           unsigned int uPlayerID,
-                                          unsigned int a4, SpellCastFlags flags,
+                                          PLAYER_SKILL skill_value, SpellCastFlags flags,
                                           int a6) {
-    uint16_t v9;   // cx@16
-    unsigned int v10;      // eax@18
-    uint8_t v11;   // sf@18
-    uint8_t v12;   // of@18
-    uint16_t v13;  // cx@21
-    unsigned int v14;      // eax@23
-
     // if (!pParty->bTurnBasedModeOn
     //  || (result = pTurnEngine->field_4, pTurnEngine->field_4 != 1) &&
     //  pTurnEngine->field_4 != 3 )
@@ -3826,37 +3822,30 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
                 break;
 
             case SPELL_SPIRIT_BLESS:
-                if (a4 && ~a4 & 0x01C0) {
+                if (!skill_value)
+                    skill_value = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
+                if (GetSkillMastery(skill_value) >= PLAYER_SKILL_MASTERY_EXPERT)
                     flags |= ON_CAST_WholeParty_BigImprovementAnim;
-                    break;
-                } else if ((player->pActiveSkills[PLAYER_SKILL_SPIRIT] &
-                            0x1C0) == 0) {
-                    flags |= ON_CAST_WholeParty_BigImprovementAnim;
-                    break;
-                }
                 break;
 
             case SPELL_SPIRIT_PRESERVATION:
-                v9 = a4;
-                if (!a4) v9 = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
-                v10 = SkillToMastery(v9);
-                if (v10 >= 3)
+                if (!skill_value)
+                    skill_value = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
+                if (GetSkillMastery(skill_value) >= PLAYER_SKILL_MASTERY_MASTER)
                     flags |= ON_CAST_WholeParty_BigImprovementAnim;
                 break;
 
             case SPELL_DARK_PAIN_REFLECTION:
-                v9 = a4;
-                if (!a4) v9 = player->pActiveSkills[PLAYER_SKILL_DARK];
-                v10 = SkillToMastery(v9);
-                if (v10 >= 3)
+                if (!skill_value)
+                    skill_value = player->pActiveSkills[PLAYER_SKILL_DARK];
+                if (GetSkillMastery(skill_value) >= PLAYER_SKILL_MASTERY_MASTER)
                     flags |= ON_CAST_WholeParty_BigImprovementAnim;
                 break;
 
             case SPELL_BODY_HAMMERHANDS:
-                v13 = a4;
-                if (!a4) v13 = player->pActiveSkills[PLAYER_SKILL_BODY];
-                v14 = SkillToMastery(v13);
-                if (v14 >= 4)
+                if (!skill_value)
+                    skill_value = player->pActiveSkills[PLAYER_SKILL_BODY];
+                if (GetSkillMastery(skill_value) >= PLAYER_SKILL_MASTERY_GRANDMASTER)
                     flags |= ON_CAST_WholeParty_BigImprovementAnim;
                 break;
 
@@ -3893,7 +3882,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
 
     CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress();
 
-    int result = PushCastSpellInfo(spell, uPlayerID, a4, flags, a6);
+    int result = PushCastSpellInfo(spell, uPlayerID, skill_value, flags, a6);
     if (result != -1) {
         if (flags & ON_CAST_WholeParty_BigImprovementAnim) {
             if (pGUIWindow_CastTargetedSpell) return;

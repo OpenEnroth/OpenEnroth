@@ -675,35 +675,31 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     bool grandmaster_level = false;
     bool for_effects = false;
 
-    int skill_points = 0;
-    unsigned int skill_level = 0;
+    PLAYER_SKILL_LEVEL skill_points = 0;
+    PLAYER_SKILL_MASTERY skill_mastery = PLAYER_SKILL_MASTERY_NONE;
 
     pMonsterInfoUI_Doll.uCurrentActionTime += pMiscTimer->uTimeElapsed;
     if (pPlayers[uActiveCharacter]->GetActualSkillLevel(
             PLAYER_SKILL_MONSTER_ID)) {
-        skill_points =
-            (uint8_t)pPlayers[uActiveCharacter]->GetActualSkillLevel(
-                PLAYER_SKILL_MONSTER_ID);
-        skill_level = pPlayers[uActiveCharacter]->GetActualSkillMastery(
-                          PLAYER_SKILL_MONSTER_ID) -
-                      1;
-        if (skill_level == 0) {  // (normal)
+        skill_points = pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID);
+        skill_mastery = pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_MONSTER_ID);
+        if (skill_mastery == PLAYER_SKILL_MASTERY_NOVICE) {
             if (skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel)
                 normal_level = 1;
-        } else if (skill_level == 1) {  // (expert)
+        } else if (skill_mastery == PLAYER_SKILL_MASTERY_EXPERT) {
             if (2 * skill_points + 10 >=
                 pActors[uActorID].pMonsterInfo.uLevel) {
                 normal_level = 1;
                 expert_level = 1;
             }
-        } else if (skill_level == 2) {  // (master)
+        } else if (skill_mastery == PLAYER_SKILL_MASTERY_MASTER) {
             if (3 * skill_points + 10 >=
                 pActors[uActorID].pMonsterInfo.uLevel) {
                 normal_level = 1;
                 expert_level = 1;
                 master_level = 1;
             }
-        } else if (skill_level == 3) {  // grandmaster
+        } else if (skill_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
             normal_level = 1;
             expert_level = 1;
             master_level = 1;
@@ -1064,19 +1060,24 @@ std::string CharacterUI_GetSkillDescText(unsigned int uPlayerID, PLAYER_SKILL_TY
     if (line_width < new_width)
         line_width = new_width;
 
-    std::string Format("\n\n");
-    for (int i = 1; i < 5; i++) {
+    std::string Format("%s\n\n");
+    for (PLAYER_SKILL_MASTERY i : SkillMasteries()) {
         Format += StringPrintf("\f%05d", GetSkillColor(pParty->pPlayers[uPlayerID].classType, uPlayerSkillType, i)) + "%s\t%03d:\t%03d%s\t000\n";
     }
 
     int base_skill = pParty->pPlayers[uPlayerID].pActiveSkills[uPlayerSkillType] & 0x3F;
     int actual_skill = pParty->pPlayers[uPlayerID].GetActualSkillLevel(uPlayerSkillType) & 0x3F;
 
-    std::string Description = StringPrintf(Format.c_str(),
-        localization->GetString(LSTR_NORMAL), line_width + 3, line_width + 10, localization->GetSkillDescriptionNormal(uPlayerSkillType),
-        localization->GetString(LSTR_EXPERT), line_width + 3, line_width + 10, localization->GetSkillDescriptionExpert(uPlayerSkillType),
-        localization->GetString(LSTR_MASTER), line_width + 3, line_width + 10, localization->GetSkillDescriptionMaster(uPlayerSkillType),
-        localization->GetString(LSTR_GRAND), line_width + 3, line_width + 10, localization->GetSkillDescriptionGrand(uPlayerSkillType));
+    const char *desc = localization->GetSkillDescription(uPlayerSkillType);
+    std::string Description = desc ? desc : "";
+    if (localization->GetSkillDescriptionNormal(uPlayerSkillType)) {
+        Description = StringPrintf(Format.c_str(),
+            Description.c_str(),
+            localization->GetString(LSTR_NORMAL), line_width + 3, line_width + 10, localization->GetSkillDescriptionNormal(uPlayerSkillType),
+            localization->GetString(LSTR_EXPERT), line_width + 3, line_width + 10, localization->GetSkillDescriptionExpert(uPlayerSkillType),
+            localization->GetString(LSTR_MASTER), line_width + 3, line_width + 10, localization->GetSkillDescriptionMaster(uPlayerSkillType),
+            localization->GetString(LSTR_GRAND), line_width + 3, line_width + 10, localization->GetSkillDescriptionGrand(uPlayerSkillType));
+    }
 
     if (base_skill != actual_skill)
         Description += StringPrintf("\f%05d\n%s\t%03d:\t%03d+%d\n", colorTable.White.C16(), localization->GetString(LSTR_BONUS_2), line_width + 3, line_width + 10, actual_skill - base_skill);
@@ -1375,20 +1376,15 @@ void DrawSpellDescriptionPopup(int spell_index) {
     spell_info_window.DrawText(pFontSmallnum, 120, 44, 0, str, 0, 0, 0);
     spell_info_window.uFrameWidth = 108;
     spell_info_window.uFrameZ = spell_info_window.uFrameX + 107;
-    int skill_level = SkillToMastery(
-        pPlayers[uActiveCharacter]->pActiveSkills
-            [pPlayers[uActiveCharacter]->lastOpenedSpellbookPage + 12]);
-    spell_info_window.DrawTitleText(
-        pFontComic, 12, 75, 0,
-        localization->GetSkillName(
-            static_cast<PLAYER_SKILL_TYPE>(pPlayers[uActiveCharacter]->lastOpenedSpellbookPage + 12)),
-        3);
+    PLAYER_SKILL_TYPE skill = static_cast<PLAYER_SKILL_TYPE>(pPlayers[uActiveCharacter]->lastOpenedSpellbookPage + 12);
+    PLAYER_SKILL_MASTERY skill_mastery = pPlayers[uActiveCharacter]->GetSkillMastery(skill);
+    spell_info_window.DrawTitleText(pFontComic, 12, 75, 0, localization->GetSkillName(skill), 3);
 
     auto str2 = StringPrintf(
         "%s\n%d", localization->GetString(LSTR_SP_COST),
         pSpellDatas[spell_index +
                     11 * pPlayers[uActiveCharacter]->lastOpenedSpellbookPage + 1]
-            .mana_per_skill[skill_level - 1]);
+            .mana_per_skill[std::to_underlying(skill_mastery) - 1]);
     spell_info_window.DrawTitleText(
         pFontComic, 12,
         spell_info_window.uFrameHeight - pFontComic->GetHeight() - 16, 0, str2,
@@ -1696,7 +1692,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                             static std::string hint_reference;
                             hint_reference = CharacterUI_GetSkillDescText(
                                 pButton->msg_param,
-                                (PLAYER_SKILL_TYPE)pParty
+                                pParty
                                     ->pPlayers[pButton->msg_param]
                                     .GetSkillIdxByOrder(pButton->msg -
                                                         UIMSG_48));
@@ -1882,10 +1878,8 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         return;
     }
 
-    int alchemy_skill_points =
-        pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_ALCHEMY);
-    int alchemy_skill_level =
-        pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_ALCHEMY);
+    PLAYER_SKILL_LEVEL alchemy_skill_points = pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_ALCHEMY);
+    PLAYER_SKILL_MASTERY alchemy_skill_level = pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_ALCHEMY);
 
     if (pParty->pPickedItem.uItemID == ITEM_POTION_BOTTLE) {
         GameUI_DrawItemInfo(item);
@@ -2056,14 +2050,14 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 potionID > ITEM_POTION_AWAKEN) {  // < 225 >227
                 if (potionID >= ITEM_POTION_HASTE &&
                     potionID <= ITEM_POTION_CURE_INSANITY &&
-                    alchemy_skill_level == 1)  // 228 >= potionID <= 239
+                    alchemy_skill_level == PLAYER_SKILL_MASTERY_NOVICE)  // 228 >= potionID <= 239
                     damage_level = 2;
                 if (potionID >= ITEM_POTION_MIGHT_BOOST &&
                     potionID <= ITEM_POTION_BODY_RESISTANCE &&
-                    alchemy_skill_level <= 2)  // 240 >= potionID <= 261
+                    alchemy_skill_level <= PLAYER_SKILL_MASTERY_EXPERT)  // 240 >= potionID <= 261
                     damage_level = 3;
                 if (potionID >= ITEM_POTION_STONE_TO_FLESH &&
-                    alchemy_skill_level <= 3)  // 262 < potionID
+                    alchemy_skill_level <= PLAYER_SKILL_MASTERY_MASTER)  // 262 < potionID
                     damage_level = 4;
             }
         } else {  // no skill(нет навыка)

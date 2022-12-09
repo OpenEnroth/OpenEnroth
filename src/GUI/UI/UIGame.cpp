@@ -1229,27 +1229,19 @@ void GameUI_WritePointedObjectStatusString() {
                                 }
                             }
                             break;
-                        case 3:  // click on skill
+                        case 3:  // hovering over buttons
                             if (pButton->Contains(pX, pY)) {
-                                requiredSkillpoints =
-                                    (pPlayers[uActiveCharacter]
-                                         ->pActiveSkills[pButton->msg_param] &
-                                     0x3F) +
-                                    1;
+                                PLAYER_SKILL_TYPE skill = static_cast<PLAYER_SKILL_TYPE>(pButton->msg_param);
+                                PLAYER_SKILL_LEVEL skillLevel = pPlayers[uActiveCharacter]->GetSkillLevel(skill);
+                                requiredSkillpoints = skillLevel + 1;
 
-                                std::string str;
-                                if (pPlayers[uActiveCharacter]->uSkillPoints <
-                                    requiredSkillpoints)
-                                    str = localization->FormatString(
-                                        LSTR_FMT_NEED_MORE_SKILL_POINTS,
-                                        requiredSkillpoints -
-                                            pPlayers[uActiveCharacter]->uSkillPoints);
+                                if (skills_max_level[skill] <= skillLevel)
+                                    GameUI_StatusBar_Set(localization->GetString(LSTR_SKILL_ALREADY_MASTERED));
+                                else if (pPlayers[uActiveCharacter]->uSkillPoints < requiredSkillpoints)
+                                    GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_NEED_MORE_SKILL_POINTS, requiredSkillpoints - pPlayers[uActiveCharacter]->uSkillPoints));
                                 else
-                                    str = localization->FormatString(
-                                        LSTR_FMT_CLICKING_WILL_SPEND_POINTS,
-                                        requiredSkillpoints);
+                                    GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_CLICKING_WILL_SPEND_POINTS, requiredSkillpoints));
 
-                                GameUI_StatusBar_Set(str);
                                 uLastPointedObjectID = 1;
                                 return;
                             }
@@ -1646,15 +1638,15 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     signed int uWidth = uZ - uX;
 
     bool bWizardEyeActive = pParty->WizardEyeActive();
-    int uWizardEyeSkillLevel = pParty->WizardEyeSkillLevel();
+    PLAYER_SKILL_MASTERY uWizardEyeSkillLevel = pParty->WizardEyeSkillLevel();
     if (CheckHiredNPCSpeciality(Cartographer)) {
         bWizardEyeActive = true;
-        uWizardEyeSkillLevel = std::max(2, uWizardEyeSkillLevel);
+        uWizardEyeSkillLevel = uWizardEyeSkillLevel > PLAYER_SKILL_MASTERY_EXPERT ? uWizardEyeSkillLevel : PLAYER_SKILL_MASTERY_EXPERT;
     }
 
     if (engine->config->debug.WizardEye.Get()) {
         bWizardEyeActive = true;
-        uWizardEyeSkillLevel = 3;
+        uWizardEyeSkillLevel = PLAYER_SKILL_MASTERY_MASTER;
     }
 
     if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
@@ -1749,7 +1741,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                     int linez = uCenterX + fixpoint_mul(uZoom, Vert2X);
                     int linew = uCenterY - fixpoint_mul(uZoom, Vert2Y);
 
-                    if (bWizardEyeActive && uWizardEyeSkillLevel >= 3 &&
+                    if (bWizardEyeActive && uWizardEyeSkillLevel >= PLAYER_SKILL_MASTERY_MASTER &&
                         (pIndoor->pFaces[pOutline->uFace1ID].Clickable() ||
                             pIndoor->pFaces[pOutline->uFace2ID].Clickable()) &&
                         (pIndoor->pFaceExtras[pIndoor->pFaces[pOutline->uFace1ID].uFaceExtraID].uEventID ||
@@ -1782,7 +1774,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
 
     // draw objects on the minimap
     if (bWizardEyeActive) {
-        if (uWizardEyeSkillLevel >= 2) {
+        if (uWizardEyeSkillLevel >= PLAYER_SKILL_MASTERY_EXPERT) {
             for (uint i = 0; i < pSpriteObjects.size(); ++i) {
                 if (!pSpriteObjects[i].uType ||
                     !pSpriteObjects[i].uObjectDescID)

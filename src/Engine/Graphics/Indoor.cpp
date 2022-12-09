@@ -76,7 +76,6 @@ std::array<const char *, 11> _4E6BDC_loc_names = {
 
 //----- (0043F39E) --------------------------------------------------------
 void PrepareDrawLists_BLV() {
-    int TorchLightPower;           // eax@4
     // unsigned int v7;  // ebx@8
     BLVSector *v8;    // esi@8
 
@@ -87,32 +86,33 @@ void PrepareDrawLists_BLV() {
     uNumSpritesDrawnThisFrame = 0;
     uNumBillboardsToDraw = 0;
 
-    if (!engine->config->graphics.SoftwareModeRules.Get() || engine->config->graphics.Torchlight.Get()) {  // lightspot around party
-        TorchLightPower = 800;
+    int TorchLightDistance = engine->config->graphics.TorchlightDistance.Get();
+    if (TorchLightDistance > 0) {  // lightspot around party
         if (pParty->TorchlightActive()) {
             // max is 800 * torchlight
             // min is 800
-            int MinTorch = TorchLightPower;
-            int MaxTorch = TorchLightPower * pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
+            int MinTorch = TorchLightDistance;
+            int MaxTorch = TorchLightDistance * pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
 
-            if (engine->config->graphics.LightsFlicker.Get()) {
+            int torchLightFlicker = engine->config->graphics.TorchlightFlicker.Get();
+            if (torchLightFlicker > 0) {
                 // torchlight flickering effect
                 // TorchLightPower *= pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;  // 2,3,4
                 int ran = rand();
-                int mod = ((ran - (RAND_MAX * .4)) / 200);
-                TorchLightPower = (pParty->TorchLightLastIntensity + mod);
+                int mod = ((ran - (RAND_MAX * .4)) / torchLightFlicker);
+                TorchLightDistance = (pParty->TorchLightLastIntensity + mod);
 
                 // clamp
-                if (TorchLightPower < MinTorch)
-                    TorchLightPower = MinTorch;
-                if (TorchLightPower > MaxTorch)
-                    TorchLightPower = MaxTorch;
+                if (TorchLightDistance < MinTorch)
+                    TorchLightDistance = MinTorch;
+                if (TorchLightDistance > MaxTorch)
+                    TorchLightDistance = MaxTorch;
             } else {
-                TorchLightPower = MaxTorch;
+                TorchLightDistance = MaxTorch;
             }
         }
 
-        pParty->TorchLightLastIntensity = TorchLightPower;
+        pParty->TorchLightLastIntensity = TorchLightDistance;
 
         // problem with deserializing this ??
         if (pParty->flt_TorchlightColorR == 0) {
@@ -120,13 +120,16 @@ void PrepareDrawLists_BLV() {
             pParty->flt_TorchlightColorR = 96;
             pParty->flt_TorchlightColorG = 96;
             pParty->flt_TorchlightColorB = 96;
+
+            if (engine->config->debug.VerboseLogging.Get())
+                logger->Warning("Torchlight doesn't have color");
         }
 
         // TODO: either add conversion functions, or keep only glm / only Vec3_* classes.
         Vec3f pos(pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y, pCamera3D->vCameraPos.z);
 
         pMobileLightsStack->AddLight(
-            pos, pBLVRenderParams->uPartySectorID, TorchLightPower,
+            pos, pBLVRenderParams->uPartySectorID, TorchLightDistance,
             floorf(pParty->flt_TorchlightColorR + 0.5f),
             floorf(pParty->flt_TorchlightColorG + 0.5f),
             floorf(pParty->flt_TorchlightColorB + 0.5f), _4E94D0_light_type);

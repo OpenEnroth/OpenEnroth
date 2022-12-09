@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cassert>
+
+#include "Utility/Segment.h"
 
 enum PLAYER_BUFFS {
     PLAYER_BUFF_RESIST_AIR = 0,
@@ -151,10 +154,92 @@ enum CHARACTER_RACE {
     CHARACTER_RACE_DWARF = 3,
 };
 
+/* Skill encodes level and mastery where first 0x3F are for skill level and 0x1C0 bits are for skill mastery.
+ * So max possible stored skill level is 63.
+ */
+typedef uint16_t PLAYER_SKILL;
+typedef uint8_t PLAYER_SKILL_LEVEL;
+
+enum class PLAYER_SKILL_MASTERY: int32_t { // TODO: type could be changed to something else when SpriteObject_MM7 implemented in LegacyImages
+
+    PLAYER_SKILL_MASTERY_NONE = 0,
+    PLAYER_SKILL_MASTERY_NOVICE = 1,
+    PLAYER_SKILL_MASTERY_EXPERT = 2,
+    PLAYER_SKILL_MASTERY_MASTER = 3,
+    PLAYER_SKILL_MASTERY_GRANDMASTER = 4,
+
+    PLAYER_SKILL_MASTERY_FIRST = PLAYER_SKILL_MASTERY_NOVICE,
+    PLAYER_SKILL_MASTERY_LAST = PLAYER_SKILL_MASTERY_GRANDMASTER
+};
+using enum PLAYER_SKILL_MASTERY;
+
+inline Segment<PLAYER_SKILL_MASTERY> SkillMasteries() {
+    return Segment(PLAYER_SKILL_MASTERY_FIRST, PLAYER_SKILL_MASTERY_LAST);
+}
+
+enum CLASS_SKILL: uint8_t {
+    CLASS_SKILL_DENIED = 0,
+    CLASS_SKILL_AVAILABLE = 1,
+    CLASS_SKILL_PRIMARY = 2
+};
+using enum CLASS_SKILL;
+
+inline PLAYER_SKILL_LEVEL GetSkillLevel(PLAYER_SKILL skill_value) {
+    return skill_value & 0x3F;
+}
+
+/**
+ * @offset 0x00458244.
+ */
+inline PLAYER_SKILL_MASTERY GetSkillMastery(PLAYER_SKILL skill_value) {
+    // PLAYER_SKILL_MASTERY_NONE equal PLAYER_SKILL_MASTERY_NOVICE with skill level 0.
+    //if (skill_value == 0)
+    //    return PLAYER_SKILL_MASTERY_NONE;
+
+    switch (skill_value & 0x1C0) {
+        case 0x100:
+            return PLAYER_SKILL_MASTERY_GRANDMASTER;
+        case 0x80:
+            return PLAYER_SKILL_MASTERY_MASTER;
+        case 0x40:
+            return PLAYER_SKILL_MASTERY_EXPERT;
+        case 0x00:
+            return PLAYER_SKILL_MASTERY_NOVICE;
+    }
+
+    assert(false); // should not get here
+    return PLAYER_SKILL_MASTERY_NONE;
+}
+
+inline void SetSkillLevel(PLAYER_SKILL *skill_value, PLAYER_SKILL_LEVEL level) {
+    *skill_value = (*skill_value & ~0x3F) | (level & 0x3F);
+}
+
+inline void SetSkillMastery(PLAYER_SKILL *skill_value, PLAYER_SKILL_MASTERY mastery) {
+    assert(mastery <= PLAYER_SKILL_MASTERY_GRANDMASTER);
+
+    *skill_value &= 0x3F;
+
+    switch (mastery) {
+        case(PLAYER_SKILL_MASTERY_EXPERT):
+            *skill_value |= 0x40;
+            break;
+        case(PLAYER_SKILL_MASTERY_MASTER):
+            *skill_value |= 0x80;
+            break;
+        case(PLAYER_SKILL_MASTERY_GRANDMASTER):
+            *skill_value |= 0x100;
+            break;
+        default:
+            return;
+    }
+}
+
 #pragma warning(push)
 #pragma warning(disable : 4341)
 /*  328 */
-enum PLAYER_SKILL_TYPE : int8_t {
+enum class PLAYER_SKILL_TYPE : int8_t {
+    PLAYER_SKILL_INVALID = -1,
     PLAYER_SKILL_STAFF = 0,
     PLAYER_SKILL_SWORD = 1,
     PLAYER_SKILL_DAGGER = 2,
@@ -192,15 +277,70 @@ enum PLAYER_SKILL_TYPE : int8_t {
     PLAYER_SKILL_STEALING = 34,
     PLAYER_SKILL_ALCHEMY = 35,
     PLAYER_SKILL_LEARNING = 36,
-    PLAYER_SKILL_COUNT = 37,
+    PLAYER_SKILL_CLUB = 37, // In vanilla clubs are using separate hidden & non-upgradable skill.
+    PLAYER_SKILL_COUNT = 38,
 
-    PLAYER_SKILL_CLUB = 37, // Used only in some items, actual player skill is PLAYER_SKILL_MACE
     PLAYER_SKILL_MISC = 38, // Hidden skill that's always zero, not stored anywhere
-    PLAYER_SKILL_INVALID = -1,
+
+    PLAYER_SKILL_MM7_FIRST = PLAYER_SKILL_STAFF,
+    PLAYER_SKILL_MM7_LAST = PLAYER_SKILL_LEARNING,
 
     PLAYER_SKILL_FIRST = PLAYER_SKILL_STAFF,
-    PLAYER_SKILL_LAST = PLAYER_SKILL_LEARNING,
+    PLAYER_SKILL_LAST = PLAYER_SKILL_CLUB,
 };
+using enum PLAYER_SKILL_TYPE;
+
+inline Segment<PLAYER_SKILL_TYPE> AllSkills() {
+    return Segment(PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST);
+}
+
+inline Segment<PLAYER_SKILL_TYPE> MM7Skills() {
+    return Segment(PLAYER_SKILL_MM7_FIRST, PLAYER_SKILL_MM7_LAST);
+}
+
+inline std::initializer_list<PLAYER_SKILL_TYPE> ArmorSkills() {
+    static constexpr std::initializer_list<PLAYER_SKILL_TYPE> result = {
+        PLAYER_SKILL_LEATHER, PLAYER_SKILL_CHAIN, PLAYER_SKILL_PLATE,
+        PLAYER_SKILL_SHIELD,  PLAYER_SKILL_DODGE
+    };
+
+    return result;
+}
+
+inline std::initializer_list<PLAYER_SKILL_TYPE> WeaponSkills() {
+    static constexpr std::initializer_list<PLAYER_SKILL_TYPE> result = {
+        PLAYER_SKILL_AXE,   PLAYER_SKILL_BOW,     PLAYER_SKILL_DAGGER,
+        PLAYER_SKILL_MACE,  PLAYER_SKILL_SPEAR,   PLAYER_SKILL_STAFF,
+        PLAYER_SKILL_SWORD, PLAYER_SKILL_UNARMED, PLAYER_SKILL_BLASTER,
+        PLAYER_SKILL_CLUB
+    };
+
+    return result;
+}
+
+inline std::initializer_list<PLAYER_SKILL_TYPE> MiscSkills() {
+    static constexpr std::initializer_list<PLAYER_SKILL_TYPE> result = {
+        PLAYER_SKILL_ALCHEMY,      PLAYER_SKILL_ARMSMASTER,
+        PLAYER_SKILL_BODYBUILDING, PLAYER_SKILL_ITEM_ID,
+        PLAYER_SKILL_MONSTER_ID,   PLAYER_SKILL_LEARNING,
+        PLAYER_SKILL_TRAP_DISARM,  PLAYER_SKILL_MEDITATION,
+        PLAYER_SKILL_MERCHANT,     PLAYER_SKILL_PERCEPTION,
+        PLAYER_SKILL_REPAIR,       PLAYER_SKILL_STEALING
+    };
+
+    return result;
+}
+
+inline std::initializer_list<PLAYER_SKILL_TYPE> MagicSkills() {
+    static constexpr std::initializer_list<PLAYER_SKILL_TYPE> result = {
+        PLAYER_SKILL_FIRE,  PLAYER_SKILL_AIR,    PLAYER_SKILL_WATER,
+        PLAYER_SKILL_EARTH, PLAYER_SKILL_SPIRIT, PLAYER_SKILL_MIND,
+        PLAYER_SKILL_BODY,  PLAYER_SKILL_LIGHT,  PLAYER_SKILL_DARK
+    };
+
+    return result;
+}
+
 #pragma warning(pop)
 
 /*  329 */

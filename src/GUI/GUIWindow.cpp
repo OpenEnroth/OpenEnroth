@@ -1374,21 +1374,19 @@ char sub_4637E0_is_there_popup_onscreen() {
 }
 
 //----- (00417AD4) --------------------------------------------------------
-unsigned int GetSkillColor(unsigned int uPlayerClass,
-    PLAYER_SKILL_TYPE uPlayerSkillType,
-    signed int skill_level) {
+unsigned int GetSkillColor(unsigned int uPlayerClass, PLAYER_SKILL_TYPE uPlayerSkillType, PLAYER_SKILL_MASTERY skill_mastery) {
     switch (uPlayerClass % 4) {
     case 0:
     {
         if (byte_4ED970_skill_learn_ability_by_class_table
-            [uPlayerClass][uPlayerSkillType] >= skill_level)
+            [uPlayerClass][uPlayerSkillType] >= skill_mastery)
             return ui_character_skillinfo_can_learn;
         if (byte_4ED970_skill_learn_ability_by_class_table
-            [uPlayerClass + 1][uPlayerSkillType] < skill_level &&
+            [uPlayerClass + 1][uPlayerSkillType] < skill_mastery &&
             byte_4ED970_skill_learn_ability_by_class_table
-            [uPlayerClass + 2][uPlayerSkillType] < skill_level) {
+            [uPlayerClass + 2][uPlayerSkillType] < skill_mastery) {
             if (byte_4ED970_skill_learn_ability_by_class_table
-                [uPlayerClass + 3][uPlayerSkillType] < skill_level)
+                [uPlayerClass + 3][uPlayerSkillType] < skill_mastery)
                 return ui_character_skillinfo_cant_learn;
         }
         return ui_character_skillinfo_can_learn_gm;
@@ -1397,12 +1395,12 @@ unsigned int GetSkillColor(unsigned int uPlayerClass,
     case 1:
     {
         if (byte_4ED970_skill_learn_ability_by_class_table
-            [uPlayerClass][uPlayerSkillType] >= skill_level)
+            [uPlayerClass][uPlayerSkillType] >= skill_mastery)
             return ui_character_skillinfo_can_learn;
         if (byte_4ED970_skill_learn_ability_by_class_table
-            [uPlayerClass + 1][uPlayerSkillType] < skill_level) {
+            [uPlayerClass + 1][uPlayerSkillType] < skill_mastery) {
             if (byte_4ED970_skill_learn_ability_by_class_table
-                [uPlayerClass + 2][uPlayerSkillType] < skill_level)
+                [uPlayerClass + 2][uPlayerSkillType] < skill_mastery)
                 return ui_character_skillinfo_cant_learn;
         }
         return ui_character_skillinfo_can_learn_gm;
@@ -1412,7 +1410,7 @@ unsigned int GetSkillColor(unsigned int uPlayerClass,
     case 3:
     {
         if (byte_4ED970_skill_learn_ability_by_class_table
-            [uPlayerClass][uPlayerSkillType] < skill_level)
+            [uPlayerClass][uPlayerSkillType] < skill_mastery)
             return ui_character_skillinfo_cant_learn;
         return ui_character_skillinfo_can_learn;
     } break;
@@ -1512,26 +1510,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
                 if (guild_membership_approved) {
                     pParty->TakeGold(gold_transaction_amount);
                     if (uActiveCharacter) {
-                        v12 = (char *)&pPlayers[uActiveCharacter]
-                            ->pActiveSkills[dword_F8B1AC_skill_being_taught];
-                        *(short *)v12 &= 0x3Fu;  // erase current mastery
-                        switch (dword_F8B1B0_MasteryBeingTaught) {
-                        case 2:
-                            v15 = (char *)&pPlayers[uActiveCharacter]
-                                ->pActiveSkills[dword_F8B1AC_skill_being_taught];
-                            *v15 |= 0x40u;  // expert
-                            break;
-                        case 3:
-                            v14 = (char *)&pPlayers[uActiveCharacter]
-                                ->pActiveSkills[dword_F8B1AC_skill_being_taught];
-                            *v14 |= 0x80u;  // master
-                            break;
-                        case 4:
-                            v13 = (char *)&pPlayers[uActiveCharacter]
-                                ->pActiveSkills[dword_F8B1AC_skill_being_taught];
-                            v13[1] |= 1u;  // grandmaster
-                            break;
-                        }
+                        pPlayers[uActiveCharacter]->SetSkillMastery(dword_F8B1AC_skill_being_taught, dword_F8B1B0_MasteryBeingTaught);
                         pPlayers[uActiveCharacter]->PlaySound(SPEECH_SkillMasteryInc, 0);
                     }
                     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -1777,87 +1756,52 @@ void CheckBountyRespawnAndAward() {
 
 //----- (004B254D) --------------------------------------------------------
 std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
-    int teacherLevel;                // edx@1
-    PLAYER_SKILL_TYPE skillBeingTaught;
-    int pClassType;                  // eax@7
-    int currClassMaxMastery;         // eax@7
-    int pointsInSkillWOutMastery;    // ebx@7
-    int classBaseId;                 // eax@8
-    unsigned int skillMastery;       // eax@29
-    uint16_t pointsInSkill;  // [sp+1Ch] [bp-10h]@7
-    int masteryLevelBeingTaught;     // [sp+24h] [bp-8h]@7
-
-    guild_membership_approved = false;
-    teacherLevel = (trainerInfo - 200) % 3;
-    skillBeingTaught = static_cast<PLAYER_SKILL_TYPE>((trainerInfo - 200) / 3);
+    uint8_t teacherLevel = (trainerInfo - 200) % 3;
+    PLAYER_SKILL_TYPE skillBeingTaught = static_cast<PLAYER_SKILL_TYPE>((trainerInfo - 200) / 3);
     Player *activePlayer = pPlayers[uActiveCharacter];
-    pClassType = activePlayer->classType;
-    currClassMaxMastery =
-        byte_4ED970_skill_learn_ability_by_class_table[pClassType]
-        [skillBeingTaught];
-    masteryLevelBeingTaught = teacherLevel + 2;
-    dword_F8B1B0_MasteryBeingTaught = masteryLevelBeingTaught;
-    if (currClassMaxMastery < masteryLevelBeingTaught) {
-        classBaseId = pClassType - pClassType % 4;
+    int pClassType = activePlayer->classType;
+    PLAYER_SKILL_MASTERY currClassMaxMastery = byte_4ED970_skill_learn_ability_by_class_table[pClassType][skillBeingTaught];
+    PLAYER_SKILL_MASTERY masteryLevelBeingTaught = dword_F8B1B0_MasteryBeingTaught = static_cast<PLAYER_SKILL_MASTERY>(teacherLevel + 2);
+    guild_membership_approved = false;
 
-        if (byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 1]
-            [skillBeingTaught] >=
-            masteryLevelBeingTaught) {
-            return localization->FormatString(
-                LSTR_FMT_HAVE_TO_BE_PROMOTED,
-                localization->GetClassName(classBaseId + 1));
-        } else if (byte_4ED970_skill_learn_ability_by_class_table
-            [classBaseId + 2][skillBeingTaught] >= masteryLevelBeingTaught &&
-            byte_4ED970_skill_learn_ability_by_class_table
-            [classBaseId + 3][skillBeingTaught] >= masteryLevelBeingTaught) {
-            return localization->FormatString(
-                LSTR_FMT_HAVE_TO_BE_PROMOTED_2,
-                localization->GetClassName(classBaseId + 2),
-                localization->GetClassName(classBaseId + 3)
-            );
-        } else if (byte_4ED970_skill_learn_ability_by_class_table
-            [classBaseId + 2][skillBeingTaught] >= masteryLevelBeingTaught) {
-            return localization->FormatString(
-                LSTR_FMT_HAVE_TO_BE_PROMOTED,
-                localization->GetClassName(classBaseId + 2)
-            );
-        } else if (byte_4ED970_skill_learn_ability_by_class_table
-            [classBaseId + 3][skillBeingTaught] >= masteryLevelBeingTaught) {
-            return localization->FormatString(
-                LSTR_FMT_HAVE_TO_BE_PROMOTED,
-                localization->GetClassName(classBaseId + 3)
-            );
+    if (currClassMaxMastery < masteryLevelBeingTaught) {
+        int classBaseId = pClassType - pClassType % 4;
+
+        if (byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 1][skillBeingTaught] >= masteryLevelBeingTaught) {
+            return localization->FormatString(LSTR_FMT_HAVE_TO_BE_PROMOTED, localization->GetClassName(classBaseId + 1));
+        } else if (byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 2][skillBeingTaught] >= masteryLevelBeingTaught &&
+            byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 3][skillBeingTaught] >= masteryLevelBeingTaught) {
+            return localization->FormatString(LSTR_FMT_HAVE_TO_BE_PROMOTED_2, localization->GetClassName(classBaseId + 2),
+                localization->GetClassName(classBaseId + 3));
+        } else if (byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 2][skillBeingTaught] >= masteryLevelBeingTaught) {
+            return localization->FormatString(LSTR_FMT_HAVE_TO_BE_PROMOTED, localization->GetClassName(classBaseId + 2));
+        } else if (byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 3][skillBeingTaught] >= masteryLevelBeingTaught) {
+            return localization->FormatString(LSTR_FMT_HAVE_TO_BE_PROMOTED, localization->GetClassName(classBaseId + 3));
         } else {
-            return localization->FormatString(
-                LSTR_FMT_SKILL_CANT_BE_LEARNED,
-                localization->GetClassName(pClassType)
-            );
+            return localization->FormatString(LSTR_FMT_SKILL_CANT_BE_LEARNED, localization->GetClassName(pClassType));
         }
     }
 
+    // Not in your condition!
     if (!activePlayer->CanAct())
-        return std::string(pNPCTopics[122].pText);  // Not in your condition!
+        return std::string(pNPCTopics[122].pText);
 
-    pointsInSkill = activePlayer->pActiveSkills[skillBeingTaught];
-    pointsInSkillWOutMastery = pointsInSkill & 0x3F;
-    if (!pointsInSkillWOutMastery)
-        return std::string(
-            pNPCTopics[131].pText);  // You must know the skill before you can
-                                     // become an expert in it!
+    // You must know the skill before you can become an expert in it!
+    PLAYER_SKILL_LEVEL skillLevel = activePlayer->GetSkillLevel(skillBeingTaught);
+    if (!skillLevel)
+        return std::string(pNPCTopics[131].pText);
 
-    skillMastery = SkillToMastery(pointsInSkill);
-    if (skillMastery > teacherLevel + 1)
-        return std::string(
-            pNPCTopics[teacherLevel + 128]
-            .pText);  // You are already an SKILLLEVEL in this skill.
+    // You are already have this mastery in this skill.
+    PLAYER_SKILL_MASTERY skillMastery = activePlayer->GetSkillMastery(skillBeingTaught);
+    if (std::to_underlying(skillMastery) > teacherLevel + 1)
+        return std::string(pNPCTopics[teacherLevel + 128].pText);
 
     dword_F8B1AC_skill_being_taught = skillBeingTaught;
-    if (masteryLevelBeingTaught == 2 && pointsInSkillWOutMastery < 4 ||
-        masteryLevelBeingTaught == 3 && pointsInSkillWOutMastery < 7 ||
-        masteryLevelBeingTaught == 4 && pointsInSkillWOutMastery < 10)
-        return std::string(
-            pNPCTopics[127].pText);  // You don't meet the requirements, and
-                                     // cannot be taught until you do.
+    // You don't meet the requirements, and cannot be taught until you do.
+    if (masteryLevelBeingTaught == PLAYER_SKILL_MASTERY_EXPERT && skillLevel < 4 ||
+        masteryLevelBeingTaught == PLAYER_SKILL_MASTERY_MASTER && skillLevel < 7 ||
+        masteryLevelBeingTaught == PLAYER_SKILL_MASTERY_GRANDMASTER && skillLevel < 10)
+        return std::string(pNPCTopics[127].pText);
 
     switch (dword_F8B1AC_skill_being_taught) {
     case PLAYER_SKILL_STAFF:
@@ -1869,27 +1813,31 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
     case PLAYER_SKILL_MACE:
     case PLAYER_SKILL_ARMSMASTER:
         switch (masteryLevelBeingTaught) {
-        case 2:
+        case PLAYER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 2000;
             break;
-        case 3:
+        case PLAYER_SKILL_MASTERY_MASTER:
             gold_transaction_amount = 5000;
             break;
-        case 4:
+        case PLAYER_SKILL_MASTERY_GRANDMASTER:
             gold_transaction_amount = 8000;
+            break;
+        default:
             break;
         }
         break;
     case PLAYER_SKILL_BLASTER:
         switch (masteryLevelBeingTaught) {
-        case 2:
+        case PLAYER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 0;
             break;
-        case 3:
+        case PLAYER_SKILL_MASTERY_MASTER:
             gold_transaction_amount = 0;
             break;
-        case 4:
+        case PLAYER_SKILL_MASTERY_GRANDMASTER:
             gold_transaction_amount = 0;
+            break;
+        default:
             break;
         }
         break;
@@ -1898,14 +1846,16 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
     case PLAYER_SKILL_CHAIN:
     case PLAYER_SKILL_PLATE:
         switch (masteryLevelBeingTaught) {
-        case 2:
+        case PLAYER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 1000;
             break;
-        case 3:
+        case PLAYER_SKILL_MASTERY_MASTER:
             gold_transaction_amount = 3000;
             break;
-        case 4:
+        case PLAYER_SKILL_MASTERY_GRANDMASTER:
             gold_transaction_amount = 7000;
+            break;
+        default:
             break;
         }
         break;
@@ -1917,50 +1867,56 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
     case PLAYER_SKILL_MIND:
     case PLAYER_SKILL_BODY:
         switch (masteryLevelBeingTaught) {
-        case 2:
+        case PLAYER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 1000;
             break;
-        case 3:
+        case PLAYER_SKILL_MASTERY_MASTER:
             gold_transaction_amount = 4000;
             break;
-        case 4:
+        case PLAYER_SKILL_MASTERY_GRANDMASTER:
             gold_transaction_amount = 8000;
+            break;
+        default:
             break;
         }
         break;
     case PLAYER_SKILL_LIGHT:
         switch (masteryLevelBeingTaught) {
-        case 2:
+        case PLAYER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 2000;
             break;
-        case 3:
+        case PLAYER_SKILL_MASTERY_MASTER:
             if (!_449B57_test_bit(pParty->_quest_bits, 114))
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 5000;
             break;
-        case 4:
+        case PLAYER_SKILL_MASTERY_GRANDMASTER:
             if (!activePlayer->IsClass(PLAYER_CLASS_ARCHMAGE) ||
                 !activePlayer->IsClass(PLAYER_CLASS_PRIEST_OF_SUN))
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 8000;
             break;
+        default:
+            break;
         }
         break;
     case PLAYER_SKILL_DARK:
         switch (masteryLevelBeingTaught) {
-        case 2:
+        case PLAYER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 2000;
             break;
-        case 3:
+        case PLAYER_SKILL_MASTERY_MASTER:
             if (!_449B57_test_bit(pParty->_quest_bits, 110))
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 5000;
             break;
-        case 4:
+        case PLAYER_SKILL_MASTERY_GRANDMASTER:
             if (!activePlayer->IsClass(PLAYER_CLASS_LICH) ||
                 !activePlayer->IsClass(PLAYER_CLASS_PRIEST_OF_MOON))
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 8000;
+            break;
+        default:
             break;
         }
         break;
@@ -1972,45 +1928,52 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
     case PLAYER_SKILL_MONSTER_ID:
     case PLAYER_SKILL_STEALING:
     case PLAYER_SKILL_ALCHEMY:
+    case PLAYER_SKILL_CLUB:
         switch (masteryLevelBeingTaught) {
-        case 2:
+        case PLAYER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 500;
             break;
-        case 3:
+        case PLAYER_SKILL_MASTERY_MASTER:
             gold_transaction_amount = 2500;
             break;
-        case 4:
+        case PLAYER_SKILL_MASTERY_GRANDMASTER:
             gold_transaction_amount = 6000;
+            break;
+        default:
             break;
         }
         break;
     case PLAYER_SKILL_MERCHANT:
         switch (masteryLevelBeingTaught) {
-        case 2:
+        case PLAYER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 2000;
             break;
-        case 3:
+        case PLAYER_SKILL_MASTERY_MASTER:
             if (activePlayer->GetBaseWillpower() < 50)
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 5000;
             break;
-        case 4:
+        case PLAYER_SKILL_MASTERY_GRANDMASTER:
             gold_transaction_amount = 8000;
+            break;
+        default:
             break;
         }
         break;
     case PLAYER_SKILL_BODYBUILDING:
         switch (masteryLevelBeingTaught) {
-        case 2:
+        case PLAYER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 500;
             break;
-        case 3:
+        case PLAYER_SKILL_MASTERY_MASTER:
             if (activePlayer->GetBaseEndurance() < 50)
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 2500;
             break;
-        case 4:
+        case PLAYER_SKILL_MASTERY_GRANDMASTER:
             gold_transaction_amount = 6000;
+            break;
+        default:
             break;
         }
         break;
@@ -2022,47 +1985,53 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
         break;
     case PLAYER_SKILL_DODGE:
         switch (masteryLevelBeingTaught) {
-        case 2:
+        case PLAYER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 2000;
             break;
-        case 3:
+        case PLAYER_SKILL_MASTERY_MASTER:
             gold_transaction_amount = 5000;
             break;
-        case 4:
+        case PLAYER_SKILL_MASTERY_GRANDMASTER:
             if ((activePlayer->pActiveSkills[PLAYER_SKILL_UNARMED] & 63) < 0xA)
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 8000;
+            break;
+        default:
             break;
         }
         break;
     case PLAYER_SKILL_UNARMED:
         switch (masteryLevelBeingTaught) {
-        case 2:
+        case PLAYER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 2000;
             break;
-        case 3:
+        case PLAYER_SKILL_MASTERY_MASTER:
             gold_transaction_amount = 5000;
             break;
-        case 4:
+        case PLAYER_SKILL_MASTERY_GRANDMASTER:
             if ((activePlayer->pActiveSkills[PLAYER_SKILL_DODGE] & 63) < 0xA)
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 8000;
+            break;
+        default:
             break;
         }
         break;
 
     case PLAYER_SKILL_LEARNING:
         switch (masteryLevelBeingTaught) {
-        case 2:
+        case PLAYER_SKILL_MASTERY_EXPERT:
             gold_transaction_amount = 2000;
             break;
-        case 3:
+        case PLAYER_SKILL_MASTERY_MASTER:
             if (activePlayer->GetBaseIntelligence() < 50)
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 5000;
             break;
-        case 4:
+        case PLAYER_SKILL_MASTERY_GRANDMASTER:
             gold_transaction_amount = 8000;
+            break;
+        default:
             break;
         }
         break;
@@ -2074,19 +2043,19 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
         return std::string(pNPCTopics[124].pText);  // You don't have enough gold!
 
     guild_membership_approved = true;
-    if (masteryLevelBeingTaught == 2) {
+    if (masteryLevelBeingTaught == PLAYER_SKILL_MASTERY_EXPERT) {
         return localization->FormatString(
             LSTR_FMT_BECOME_S_IN_S_FOR_D_GOLD,
             localization->GetString(LSTR_EXPERT),
             localization->GetSkillName(dword_F8B1AC_skill_being_taught),
             gold_transaction_amount);
-    } else if (masteryLevelBeingTaught == 3) {
+    } else if (masteryLevelBeingTaught == PLAYER_SKILL_MASTERY_MASTER) {
         return localization->FormatString(
             LSTR_FMT_BECOME_S_IN_S_FOR_D_GOLD,
             localization->GetString(LSTR_MASTER),
             localization->GetSkillName(dword_F8B1AC_skill_being_taught),
             gold_transaction_amount);
-    } else if (masteryLevelBeingTaught == 4) {
+    } else if (masteryLevelBeingTaught == PLAYER_SKILL_MASTERY_GRANDMASTER) {
         return localization->FormatString(
             LSTR_FMT_BECOME_S_IN_S_FOR_D_GOLD,
             localization->GetString(LSTR_GRANDMASTER),
@@ -2727,8 +2696,7 @@ void SkillTrainingDialogue(
                 (DIALOGUE_TYPE)pButton->msg_param
             );
 
-            if (!byte_4ED970_skill_learn_ability_by_class_table
-                [pPlayers[uActiveCharacter]->classType][skill_id]
+            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][skill_id] == PLAYER_SKILL_MASTERY_NONE
                 || pPlayers[uActiveCharacter]->pActiveSkills[skill_id]) {
                 pButton->uW = 0;
                 pButton->uHeight = 0;

@@ -126,7 +126,7 @@ bool Chest::Open(int uChestID) {
                 SPRITE_IGNORE_RANGE | SPRITE_NO_Z_BUFFER, 0);
 
             pSpellObject.containing_item.Reset();
-            pSpellObject.spell_skill = 0;
+            pSpellObject.spell_skill = PLAYER_SKILL_MASTERY_NONE;
             pSpellObject.spell_level = 0;
             pSpellObject.spell_id = 0;
             pSpellObject.field_54 = 0;

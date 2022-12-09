@@ -536,10 +536,12 @@ void Game::EventLoop() {
     char *v200 = nullptr;                   // [sp+34h] [bp-5C8h]@518
     // int v213;                     // [sp+98h] [bp-564h]@385
     char pOut[32];                // [sp+BCh] [bp-540h]@370
-    int v217[9] {};                  // [sp+158h] [bp-4A4h]@652
+    int spellbookPages[9] {};                  // [sp+158h] [bp-4A4h]@652
     // char Str2[128];               // [sp+238h] [bp-3C4h]@527
     Actor actor;                  // [sp+2B8h] [bp-344h]@4
     int currHour;
+    PLAYER_SKILL_TYPE skill;
+    PLAYER_SKILL_LEVEL skill_level;
 
 
     dword_50CDC8 = 0;
@@ -1953,13 +1955,15 @@ void Game::EventLoop() {
                     if (!uActiveCharacter) continue;
                     int skill_count = 0;
                     uAction = 0;
-                    for (uint i = 0; i < 9; i++) {
-                        if (pPlayers[uActiveCharacter]->pActiveSkills[PLAYER_SKILL_FIRE + i] ||
-                            engine->config->debug.AllMagic.Get()) {
-                            if (pPlayers[uActiveCharacter]->lastOpenedSpellbookPage == i)
+                    int page = 0;
+                    for (PLAYER_SKILL_TYPE i : MagicSkills()) {
+                        if (pPlayers[uActiveCharacter]->pActiveSkills[i] || engine->config->debug.AllMagic.Get()) {
+                            if (pPlayers[uActiveCharacter]->lastOpenedSpellbookPage == page)
                                 uAction = skill_count;
-                            v217[skill_count++] = i;
+                            spellbookPages[skill_count++] = page;
                         }
+
+                        page++;
                     }
                     if (!skill_count) {  //нет скиллов
                         pAudioPlayer->PlaySound(
@@ -1974,7 +1978,7 @@ void Game::EventLoop() {
                             if (uAction >= skill_count)
                                 uAction = 0;
                         }
-                        ((GUIWindow_Spellbook *)pGUIWindow_CurrentMenu)->OpenSpellbookPage(v217[uAction]);
+                        ((GUIWindow_Spellbook *)pGUIWindow_CurrentMenu)->OpenSpellbookPage(spellbookPages[uAction]);
                     }
                     continue;
                 }
@@ -2135,20 +2139,17 @@ void Game::EventLoop() {
                     OnPaperdollLeftClick();
                     continue;
                 case UIMSG_SkillUp:
+                    skill = static_cast<PLAYER_SKILL_TYPE>(uMessageParam);
                     pPlayer4 = pPlayers[uActiveCharacter];
-                    v105 = (short *)&pPlayer4->pActiveSkills[uMessageParam];
-                    HEXRAYS_LOWORD(v2) = *(short *)v105;
-                    uNumSeconds = v2;
-                    if (pPlayer4->uSkillPoints < (v2 & 0x3F) + 1) {
+                    skill_level = pPlayer4->GetSkillLevel(skill);
+                    if (pPlayer4->uSkillPoints < skill_level + 1) {
                         v87 = localization->GetString(LSTR_NOT_ENOUGH_SKILL_POINTS);
                     } else {
-                        if ((uNumSeconds & 0x3F) < 0x3C) {
-                            *(short *)v105 = uNumSeconds + 1;
-                            pPlayer4->uSkillPoints -=
-                                pPlayer4->pActiveSkills[uMessageParam] & 0x3F;
+                        if (skill_level < skills_max_level[skill]) {
+                            pPlayer4->SetSkillLevel(skill, skill_level + 1);
+                            pPlayer4->uSkillPoints -= skill_level + 1;
                             pPlayer4->PlaySound(SPEECH_SkillIncrease, 0);
-                            pAudioPlayer->PlaySound((SoundID)SOUND_quest, 0, 0,
-                                                    -1, 0, 0);
+                            pAudioPlayer->PlaySound((SoundID)SOUND_quest, 0, 0, -1, 0, 0);
                             continue;
                         }
                         v87 = localization->GetString(LSTR_SKILL_ALREADY_MASTERED);
@@ -2446,199 +2447,19 @@ void Game::EventLoop() {
                     pParty->SetGold(0);
                     continue;
                 case UIMSG_DebugLearnSkills:
-                    for (uint i = 1; i < 5; ++i) {            // loop over players
-                        for (int ski = 0; ski < 37; ++ski) {  // loop over skills
-                            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[i]->classType][ski] > 0) {            // if class can learn this skill
-                                switch (ski) {  // give skils
-                                    case 0:     // PLAYER_SKILL_STAFF = 0,
-                                        if (pPlayers[i]->skillStaff == 0)
-                                            pPlayers[i]->AddSkillByEvent(&Player::skillStaff, 1);
-                                        break;
-                                    case 1:  // PLAYER_SKILL_SWORD = 1,
-                                        if (pPlayers[i]->skillSword == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillSword, 1);
-                                        break;
-                                    case 2:  // PLAYER_SKILL_DAGGER = 2,
-                                        if (pPlayers[i]->skillDagger == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillDagger, 1);
-                                        break;
-                                    case 3:  // PLAYER_SKILL_AXE = 3,
-                                        if (pPlayers[i]->skillAxe == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillAxe, 1);
-                                        break;
-                                    case 4:  // PLAYER_SKILL_SPEAR = 4,
-                                        if (pPlayers[i]->skillSpear == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillSpear, 1);
-                                        break;
-                                    case 5:  // PLAYER_SKILL_BOW = 5,
-                                        if (pPlayers[i]->skillBow == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillBow, 1);
-                                        break;
-                                    case 6:  // PLAYER_SKILL_MACE = 6,
-                                        if (pPlayers[i]->skillMace == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillMace, 1);
-                                        break;
-                                    case 7:  // PLAYER_SKILL_BLASTER = 7,
-                                        if (pPlayers[i]->skillBlaster == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillBlaster, 1);
-                                        break;
-                                    case 8:  // PLAYER_SKILL_SHIELD = 8,
-                                        if (pPlayers[i]->skillShield == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillShield, 1);
-                                        break;
-                                    case 9:  // PLAYER_SKILL_LEATHER = 9,
-                                        if (pPlayers[i]->skillLeather == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillLeather, 1);
-                                        break;
-                                    case 10:  // PLAYER_SKILL_CHAIN = 10,
-                                        if (pPlayers[i]->skillChain == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillChain, 1);
-                                        break;
-                                    case 11:  // PLAYER_SKILL_PLATE = 11,
-                                        if (pPlayers[i]->skillPlate == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillPlate, 1);
-                                        break;
-                                    case 12:  // PLAYER_SKILL_FIRE = 12,
-                                        if (pPlayers[i]->skillFire == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillFire, 1);
-                                        break;
-                                    case 13:  // PLAYER_SKILL_AIR = 13,
-                                        if (pPlayers[i]->skillAir == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillAir, 1);
-                                        break;
-                                    case 14:  // PLAYER_SKILL_WATER = 14,
-                                        if (pPlayers[i]->skillWater == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillWater, 1);
-                                        break;
-                                    case 15:  // PLAYER_SKILL_EARTH = 15,
-                                        if (pPlayers[i]->skillEarth == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillEarth, 1);
-                                        break;
-                                    case 16:  // PLAYER_SKILL_SPIRIT = 16,
-                                        if (pPlayers[i]->skillSpirit == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillSpirit, 1);
-                                        break;
-                                    case 17:  // PLAYER_SKILL_MIND = 17,
-                                        if (pPlayers[i]->skillMind == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillMind, 1);
-                                        break;
-                                    case 18:  // PLAYER_SKILL_BODY = 18,
-                                        if (pPlayers[i]->skillBody == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillBody, 1);
-                                        break;
-                                    case 19:  // PLAYER_SKILL_LIGHT = 19,
-                                        if (pPlayers[i]->skillLight == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillLight, 1);
-                                        break;
-                                    case 20:  // PLAYER_SKILL_DARK = 20,
-                                        if (pPlayers[i]->skillDark == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillDark, 1);
-                                        break;
-                                    case 21:  // PLAYER_SKILL_ITEM_ID = 21,
-                                        if (pPlayers[i]->skillItemId == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillItemId, 1);
-                                        break;
-                                    case 22:  // PLAYER_SKILL_MERCHANT = 22,
-                                        if (pPlayers[i]->skillMerchant == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillMerchant, 1);
-                                        break;
-                                    case 23:  // PLAYER_SKILL_REPAIR = 23,
-                                        if (pPlayers[i]->skillRepair == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillRepair, 1);
-                                        break;
-                                    case 24:  // PLAYER_SKILL_BODYBUILDING = 24,
-                                        if (pPlayers[i]->skillBodybuilding == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillBodybuilding, 1);
-                                        break;
-                                    case 25:  // PLAYER_SKILL_MEDITATION = 25,
-                                        if (pPlayers[i]->skillMeditation == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillMeditation, 1);
-                                        break;
-                                    case 26:  // PLAYER_SKILL_PERCEPTION = 26,
-                                        if (pPlayers[i]->skillPerception == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillPerception, 1);
-                                        break;
-                                    case 27:  // PLAYER_SKILL_DIPLOMACY = 27,
-                                        break;
-                                    case 28:  // PLAYER_SKILL_THIEVERY = 28,
-                                        break;
-                                    case 29:  // PLAYER_SKILL_TRAP_DISARM = 29,
-                                        if (pPlayers[i]->skillDisarmTrap == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillDisarmTrap, 1);
-                                        break;
-                                    case 30:  // PLAYER_SKILL_DODGE = 30,
-                                        if (pPlayers[i]->skillDodge == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillDodge, 1);
-                                        break;
-                                    case 31:  // PLAYER_SKILL_UNARMED = 31,
-                                        if (pPlayers[i]->skillUnarmed == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillUnarmed, 1);
-                                        break;
-                                    case 32:  // PLAYER_SKILL_MONSTER_ID = 32,
-                                        if (pPlayers[i]->skillMonsterId == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillMonsterId, 1);
-                                        break;
-                                    case 33:  // PLAYER_SKILL_ARMSMASTER = 33,
-                                        if (pPlayers[i]->skillArmsmaster == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillArmsmaster, 1);
-                                        break;
-                                    case 34:  // PLAYER_SKILL_STEALING = 34,
-                                        if (pPlayers[i]->skillStealing == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillStealing, 1);
-                                        break;
-                                    case 35:  // PLAYER_SKILL_ALCHEMY = 35,
-                                        if (pPlayers[i]->skillAlchemy == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillAlchemy, 1);
-                                        break;
-                                    case 36:  // PLAYER_SKILL_LEARNING = 36,
-                                        if (pPlayers[i]->skillLearning == 0)
-                                            pPlayers[i]->AddSkillByEvent(
-                                                &Player::skillLearning, 1);
-                                        break;
-
-                                        // PLAYER_SKILL_CLUB = 37,
-                                        // PLAYER_SKILL_MISC = 38,
-                                        // PLAYER_SKILL_INVALID = -1
-                                    }
+                    for (uint i = 0; i < 4; ++i) {            // loop over players
+                        for (PLAYER_SKILL_TYPE ski : AllSkills()) {  // loop over skills
+                            // if class can learn this skill
+                            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[i]->classType][ski] > PLAYER_SKILL_MASTERY_NONE) {
+                                if (pParty->pPlayers[i].GetSkillLevel(ski) == 0)
+                                    pParty->pPlayers[i].SetSkillLevel(ski, 1);
                             }
                         }
                     }
                     continue;
                 case UIMSG_DebugGiveSkillP:
-                    for (uint i = 0; i < 4; ++i) pParty->pPlayers[i].uSkillPoints += 50;
+                    for (uint i = 0; i < 4; ++i)
+                        pParty->pPlayers[i].uSkillPoints += 50;
                     pPlayers[std::max(uActiveCharacter, 1u)]->PlayAwardSound_Anim();
                     continue;
                 case UIMSG_DebugGiveEXP:
@@ -2833,6 +2654,10 @@ void Game::GameLoop() {
                 viewparams->bRedrawGameUI = true;
             }
             pAudioPlayer->UpdateSounds();
+            // expire timed status messages
+            if (game_ui_status_bar_event_string_time_left != 0 && game_ui_status_bar_event_string_time_left < OS_GetTime()) {
+                 GameUI_StatusBar_Clear();
+            }
             if (uGameState == GAME_STATE_PLAYING) {
                 engine->Draw();
                 continue;

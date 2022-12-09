@@ -365,20 +365,15 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
                     v19 = EVT_DWORD(_evt->v7);
                     if (player_choose < 0) goto LABEL_47;
                     if (player_choose <= 3) {
-                        v24 =
-                            pParty->pPlayers[0]
-                                .pActiveSkills[3486 * player_choose + _evt->v5];
+                        v24 = pParty->pPlayers[player_choose].pActiveSkills[static_cast<PLAYER_SKILL_TYPE>(_evt->v5)];
                     } else {
                         if (player_choose == 4) {
-                            v24 = pPlayers[uActiveCharacter]
-                                ->pActiveSkills[_evt->v5];
+                            v24 = pPlayers[uActiveCharacter]->pActiveSkills[static_cast<PLAYER_SKILL_TYPE>(_evt->v5)];
                         } else {
                             if (player_choose == 5) {
                                 v20 = 0;
-                                v21 = 3486 * v130 + _evt->v5;
                                 v136 = 1;
-                                HEXRAYS_LOWORD(v21) =
-                                    pParty->pPlayers[0].pActiveSkills[v21];
+                                HEXRAYS_LOWORD(v21) = pParty->pPlayers[v130].pActiveSkills[static_cast<PLAYER_SKILL_TYPE>(_evt->v5)];
                                 v137 = v21 & 0x40;
                                 v138 = v21 & 0x80;
                                 v22 = v21 & 0x100;
@@ -397,9 +392,7 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
                             }
 LABEL_47:
                             // v10 = (ByteArray *)&v5[v9];
-                            v24 = pParty->pPlayers[0]
-                                      .pActiveSkills[_evt->v5 +
-                                                     3486 * rand() % 4];
+                            v24 = pParty->pPlayers[rand() % 4].pActiveSkills[static_cast<PLAYER_SKILL_TYPE>(_evt->v5)];
                         }
                     }
                     v136 = 1;
@@ -853,7 +846,7 @@ LABEL_47:
                     ++curr_seq_num;
                     break;
                 case EVENT_CastSpell:
-                    EventCastSpell(_evt->v5, _evt->v6, _evt->v7,
+                    EventCastSpell(_evt->v5, static_cast<PLAYER_SKILL_MASTERY>(_evt->v6), _evt->v7,
                                    EVT_DWORD(_evt->v8), EVT_DWORD(_evt->v12),
                                    EVT_DWORD(_evt->v16), EVT_DWORD(_evt->v20),
                                    EVT_DWORD(_evt->v24), EVT_DWORD(_evt->v28));

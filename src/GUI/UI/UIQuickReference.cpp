@@ -176,8 +176,9 @@ void GUIWindow_QuickReference::Update() {
                                                    localization->GetString(LSTR_SKILLS),
                                                    60, 0);
         pSkillsCount = 0;
-        for (uint j = 0; j <= 36; ++j) {
-            if (player->pActiveSkills[j]) ++pSkillsCount;
+        for (PLAYER_SKILL_TYPE j : AllSkills()) {
+            if (player->pActiveSkills[j])
+                ++pSkillsCount;
         }
         pTempString = StringPrintf("%lu", pSkillsCount);
         pGUIWindow_CurrentMenu->DrawTextInRect(

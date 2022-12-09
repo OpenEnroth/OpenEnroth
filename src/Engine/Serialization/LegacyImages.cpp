@@ -197,7 +197,7 @@ void Serialize(const SpellBuff &src, SpellBuff_MM7 *dst) {
 
     dst->uExpireTime = src.expire_time.value;
     dst->uPower = src.uPower;
-    dst->uSkill = src.uSkill;
+    dst->uSkillMastery = std::to_underlying(src.uSkillMastery);
     dst->uOverlayID = src.uOverlayID;
     dst->uCaster = src.uCaster;
     dst->uFlags = src.uFlags;
@@ -206,7 +206,7 @@ void Serialize(const SpellBuff &src, SpellBuff_MM7 *dst) {
 void Deserialize(const SpellBuff_MM7 &src, SpellBuff *dst) {
     dst->expire_time.value = src.uExpireTime;
     dst->uPower = src.uPower;
-    dst->uSkill = src.uSkill;
+    dst->uSkillMastery = PLAYER_SKILL_MASTERY(src.uSkillMastery);
     dst->uOverlayID = src.uOverlayID;
     dst->uCaster = src.uCaster;
     dst->uFlags = src.uFlags;
@@ -622,8 +622,8 @@ void Serialize(const Player &src, Player_MM7 *dst) {
     dst->field_100 = src.field_100;
     dst->field_104 = src.field_104;
 
-    for (unsigned int i = 0; i < 37; ++i)
-        dst->pActiveSkills[i] = src.pActiveSkills[i];
+    for (PLAYER_SKILL_TYPE i : MM7Skills())
+        dst->pActiveSkills[std::to_underlying(i)] = src.pActiveSkills[i];
 
     for (unsigned int i = 0; i < 64; ++i)
         dst->_achieved_awards_bits[i] = src._achieved_awards_bits[i];
@@ -907,8 +907,18 @@ void Deserialize(const Player_MM7 &src, Player* dst) {
     dst->field_100 = src.field_100;
     dst->field_104 = src.field_104;
 
-    for (unsigned int i = 0; i < 37; ++i)
-        dst->pActiveSkills[i] = src.pActiveSkills[i];
+    for (PLAYER_SKILL_TYPE i : dst->pActiveSkills.indices()) {
+        if (i == PLAYER_SKILL_CLUB) { // clubs are not saved in vanilla
+            if (engine->config->gameplay.TreatClubAsMace.Get())
+                dst->pActiveSkills[PLAYER_SKILL_CLUB] = 0;
+            else
+                dst->pActiveSkills[PLAYER_SKILL_CLUB] = 1;
+
+            continue;
+        }
+
+        dst->pActiveSkills[i] = src.pActiveSkills[std::to_underlying(i)];
+    }
 
     for (unsigned int i = 0; i < 64; ++i)
         dst->_achieved_awards_bits[i] = src._achieved_awards_bits[i];
@@ -1208,7 +1218,7 @@ void Serialize(const Actor &src, Actor_MM7 *dst) {
         dst->pSoundSampleIDs[i] = src.pSoundSampleIDs[i];
 
     for (unsigned int i = 0; i < 22; ++i)
-        dst->pActorBuffs[i] = src.pActorBuffs[ACTOR_BUFF_INDEX(i)];
+        Serialize(src.pActorBuffs[ACTOR_BUFF_INDEX(i)], &dst->pActorBuffs[i]);
 
     for (unsigned int i = 0; i < 4; ++i)
         dst->ActorHasItems[i] = src.ActorHasItems[i];
@@ -1321,7 +1331,7 @@ void Deserialize(const Actor_MM7 &src, Actor *dst) {
         dst->pSoundSampleIDs[i] = src.pSoundSampleIDs[i];
 
     for (unsigned int i = 0; i < 22; ++i)
-        dst->pActorBuffs[ACTOR_BUFF_INDEX(i)] = src.pActorBuffs[i];
+        Deserialize(src.pActorBuffs[i], &dst->pActorBuffs[ACTOR_BUFF_INDEX(i)]);
 
     for (unsigned int i = 0; i < 4; ++i)
         dst->ActorHasItems[i] = src.ActorHasItems[i];

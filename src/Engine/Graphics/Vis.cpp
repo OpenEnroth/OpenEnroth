@@ -240,7 +240,7 @@ void Vis::PickBillboards_Mouse(float fPickDepth, float fX, float fY,
 //----- (004C1607) --------------------------------------------------------
 bool Vis::IsPointInsideD3DBillboard(RenderBillboardD3D *a1, float x, float y) {
     /*Not the original implementation.
-    This function is redone to use Grayface's mouse pick implementation to take
+    This function is redone to use GrayFace's mouse pick implementation to take
     only the visible
     parts of billboards into account - I don't really have too much of an idea
     how it actually works*/

@@ -207,10 +207,8 @@ void Actor::SetRandomGoldIfTheresNoItem() {
 
 //----- (00404AC7) --------------------------------------------------------
 void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
-                           int uSpellID, ABILITY_INDEX a4, unsigned int uSkillLevel) {
+                           int uSpellID, ABILITY_INDEX a4, PLAYER_SKILL uSkillMastery) {
     Actor *actorPtr;            // esi@1
-    unsigned int realPoints;    // edi@1
-    unsigned int masteryLevel;  // eax@1
     int v8;                     // edi@16
     signed int v10;             // ecx@22
     int v19;                    // edi@34
@@ -254,8 +252,8 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
     GameTime spell_length = GameTime(0);
 
     actorPtr = &pActors[uActorID];
-    realPoints = uSkillLevel & 0x3F;
-    masteryLevel = SkillToMastery(uSkillLevel);
+    PLAYER_SKILL_LEVEL realPoints = GetSkillLevel(uSkillMastery);
+    PLAYER_SKILL_MASTERY masteryLevel = GetSkillMastery(uSkillMastery);
 
     switch (uSpellID) {
         case SPELL_FIRE_FIRE_BOLT:
@@ -276,9 +274,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             a1.uObjectDescID = GetObjDescId(uSpellID);
             a1.containing_item.Reset();
             a1.spell_id = uSpellID;
-            a1.spell_level = uSkillLevel;
+            a1.spell_level = uSkillMastery;
             a1.vPosition.x = actorPtr->vPosition.x;
-            a1.spell_skill = 0;
+            a1.spell_skill = PLAYER_SKILL_MASTERY_NONE;
             a1.vPosition.y = actorPtr->vPosition.y;
             a1.vPosition.z = actorPtr->vPosition.z +
                              ((signed int)actorPtr->uActorHeight >> 1);
@@ -310,11 +308,11 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             break;
 
         case SPELL_FIRE_HASTE:
-            if (masteryLevel == 1 || masteryLevel == 2)
+            if (masteryLevel == PLAYER_SKILL_MASTERY_NOVICE || masteryLevel == PLAYER_SKILL_MASTERY_EXPERT)
                 v39 = 60 * (realPoints + 60);
-            else if (masteryLevel == 3)
+            else if (masteryLevel == PLAYER_SKILL_MASTERY_MASTER)
                 v39 = 2 * 60 * (realPoints + 20);
-            else if (masteryLevel == 4)
+            else if (masteryLevel == PLAYER_SKILL_MASTERY_GRANDMASTER)
                 v39 = 3 * 60 * (realPoints + 15);
             else
                 v39 = 0;
@@ -333,11 +331,11 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor) return;
             v114 = pParty->vPosition.z + 2500;
             v23 = 8;
-            if (masteryLevel == 2)
+            if (masteryLevel == PLAYER_SKILL_MASTERY_EXPERT)
                 v23 = 10;
-            else if (masteryLevel == 3)
+            else if (masteryLevel == PLAYER_SKILL_MASTERY_MASTER)
                 v23 = 12;
-            else if (masteryLevel == 4)
+            else if (masteryLevel == PLAYER_SKILL_MASTERY_GRANDMASTER)
                 v23 = 14;
             spellnumb = 0;
             v28 = 0;
@@ -357,12 +355,12 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 a1.containing_item.Reset();
                 a1.uType = spell_sprite_mapping[uSpellID].uSpriteType;
                 a1.uObjectDescID = GetObjDescId(uSpellID);
-                a1.spell_level = uSkillLevel;
+                a1.spell_level = uSkillMastery;
                 a1.vPosition.x = pParty->vPosition.x;
                 a1.vPosition.y = pParty->vPosition.y;
                 a1.vPosition.z = v30 + v114;
                 a1.spell_id = SPELL_FIRE_METEOR_SHOWER;
-                a1.spell_skill = 0;
+                a1.spell_skill = PLAYER_SKILL_MASTERY_NONE;
                 a1.uAttributes = 0;
                 a1.uSectorID = 0;
                 a1.uSpriteFrameID = 0;
@@ -396,11 +394,11 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             break;
 
         case SPELL_AIR_SPARKS:
-            if (masteryLevel == 2)
+            if (masteryLevel == PLAYER_SKILL_MASTERY_EXPERT)
                 v10 = 5;
-            else if (masteryLevel == 3)
+            else if (masteryLevel == PLAYER_SKILL_MASTERY_MASTER)
                 v10 = 7;
-            else if (masteryLevel == 4)
+            else if (masteryLevel == PLAYER_SKILL_MASTERY_GRANDMASTER)
                 v10 = 9;
             else
                 v10 = 3;
@@ -412,9 +410,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
             a1.containing_item.Reset();
             a1.spell_id = SPELL_AIR_SPARKS;
-            a1.spell_level = uSkillLevel;
+            a1.spell_level = uSkillMastery;
             a1.vPosition.x = actorPtr->vPosition.x;
-            a1.spell_skill = 0;
+            a1.spell_skill = PLAYER_SKILL_MASTERY_NONE;
             a1.vPosition.y = actorPtr->vPosition.y;
             a1.vPosition.z = actorPtr->vPosition.z +
                              ((signed int)actorPtr->uActorHeight >> 1);
@@ -449,11 +447,11 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             break;
 
         case SPELL_AIR_SHIELD:
-            if (masteryLevel == 1 || masteryLevel == 2)
+            if (masteryLevel == PLAYER_SKILL_MASTERY_NOVICE || masteryLevel == PLAYER_SKILL_MASTERY_EXPERT)
                 v8 = 5 * 60 * realPoints + 3840;
-            else if (masteryLevel == 3)
+            else if (masteryLevel == PLAYER_SKILL_MASTERY_MASTER)
                 v8 = 15 * 60 * realPoints + 3840;
-            else if (masteryLevel == 4)
+            else if (masteryLevel == PLAYER_SKILL_MASTERY_GRANDMASTER)
                 v8 = 60 * 60 * (realPoints + 64);
             else
                 v8 = 0;
@@ -464,11 +462,11 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             return;
 
         case SPELL_EARTH_STONESKIN:
-            if (masteryLevel == 1 || masteryLevel == 2)
+            if (masteryLevel == PLAYER_SKILL_MASTERY_NOVICE || masteryLevel == PLAYER_SKILL_MASTERY_EXPERT)
                 v44 = 5 * 60 * realPoints + 3840;
-            else if (masteryLevel == 3)
+            else if (masteryLevel == PLAYER_SKILL_MASTERY_MASTER)
                 v44 = 15 * 60 * realPoints + 3840;
-            else if (masteryLevel == 4)
+            else if (masteryLevel == PLAYER_SKILL_MASTERY_GRANDMASTER)
                 v44 = 60 * 60 * (realPoints + 64);
             else
                 v44 = 0;
@@ -482,11 +480,11 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             return;
 
         case SPELL_SPIRIT_BLESS:
-            if (masteryLevel == 1 || masteryLevel == 2)
+            if (masteryLevel == PLAYER_SKILL_MASTERY_NOVICE || masteryLevel == PLAYER_SKILL_MASTERY_EXPERT)
                 v42 = 5 * 60 * realPoints + 3840;
-            else if (masteryLevel == 3)
+            else if (masteryLevel == PLAYER_SKILL_MASTERY_MASTER)
                 v42 = 15 * 60 * realPoints + 3840;
-            else if (masteryLevel == 4)
+            else if (masteryLevel == PLAYER_SKILL_MASTERY_GRANDMASTER)
                 v42 = 20 * 60 * realPoints + 3840;
             else
                 v42 = 0;
@@ -502,11 +500,11 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             return;
 
         case SPELL_SPIRIT_FATE:
-            if (masteryLevel == 1 || masteryLevel == 2)
+            if (masteryLevel == PLAYER_SKILL_MASTERY_NOVICE || masteryLevel == PLAYER_SKILL_MASTERY_EXPERT)
                 v48 = 2 * realPoints + 40;
-            else if (masteryLevel == 3)
+            else if (masteryLevel == PLAYER_SKILL_MASTERY_MASTER)
                 v48 = 3 * realPoints + 60;
-            else if (masteryLevel == 4)
+            else if (masteryLevel == PLAYER_SKILL_MASTERY_GRANDMASTER)
                 v48 = 2 * (3 * realPoints + 60);
             else
                 v48 = 0;
@@ -521,11 +519,11 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             return;
 
         case SPELL_SPIRIT_HEROISM:
-            if (masteryLevel == 1 || masteryLevel == 2)
+            if (masteryLevel == PLAYER_SKILL_MASTERY_NOVICE || masteryLevel == PLAYER_SKILL_MASTERY_EXPERT)
                 v54 = 5 * 60 * realPoints + 3840;
-            else if (masteryLevel == 3)
+            else if (masteryLevel == PLAYER_SKILL_MASTERY_MASTER)
                 v54 = 15 * 60 * realPoints + 3840;
-            else if (masteryLevel == 4)
+            else if (masteryLevel == PLAYER_SKILL_MASTERY_GRANDMASTER)
                 v54 = 20 * 60 * realPoints + 3840;
             else
                 v54 = 0;
@@ -540,6 +538,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             return;
 
         case SPELL_BODY_HAMMERHANDS:
+            // TODO: wtf?
             if ((signed int)masteryLevel <= 0 || (signed int)masteryLevel > 4)
                 v51 = 0;
             else
@@ -587,16 +586,16 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             return;
 
         case SPELL_LIGHT_DAY_OF_PROTECTION:
-            if (masteryLevel == 1 || masteryLevel == 2) {
+            if (masteryLevel == PLAYER_SKILL_MASTERY_NOVICE || masteryLevel == PLAYER_SKILL_MASTERY_EXPERT) {
                 v96 = 5 * 60 * realPoints + 128 * 30;
-            } else if (masteryLevel == 3) {
+            } else if (masteryLevel == PLAYER_SKILL_MASTERY_MASTER) {
                 HEXRAYS_LOWORD(realPoints) = 3 * realPoints;
-                v96 = 15 * 60 * (uSkillLevel & 0x3F) + 128 * 30;
-            } else if (masteryLevel == 4) {
+                v96 = 15 * 60 * (uSkillMastery & 0x3F) + 128 * 30;
+            } else if (masteryLevel == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                 v96 = 20 * 60 * realPoints + 128 * 30;
                 HEXRAYS_LOWORD(realPoints) = 4 * realPoints;
             } else {
-                HEXRAYS_LOWORD(realPoints) = uSkillLevel;
+                HEXRAYS_LOWORD(realPoints) = uSkillMastery;
                 v96 = 0;
             }
             spell_length = GameTime::FromMinutes(v96 / 60);
@@ -610,11 +609,11 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             return;
 
         case SPELL_LIGHT_HOUR_OF_POWER:
-            if (masteryLevel == 1 || masteryLevel == 2)
+            if (masteryLevel == PLAYER_SKILL_MASTERY_NOVICE || masteryLevel == PLAYER_SKILL_MASTERY_EXPERT)
                 v94 = 5 * 60 * realPoints + 30 * 128;
-            else if (masteryLevel == 3)
+            else if (masteryLevel == PLAYER_SKILL_MASTERY_MASTER)
                 v94 = 15 * 60 * realPoints + 30 * 128;
-            else if (masteryLevel == 4)
+            else if (masteryLevel == PLAYER_SKILL_MASTERY_GRANDMASTER)
                 v94 = 20 * 60 * realPoints + 30 * 128;
             else
                 v94 = 0;
@@ -629,11 +628,11 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             return;
 
         case SPELL_DARK_SHARPMETAL:
-            if (masteryLevel == 2)
+            if (masteryLevel == PLAYER_SKILL_MASTERY_EXPERT)
                 v70 = 5;
-            else if (masteryLevel == 3)
+            else if (masteryLevel == PLAYER_SKILL_MASTERY_MASTER)
                 v70 = 7;
-            else if (masteryLevel == 4)
+            else if (masteryLevel == PLAYER_SKILL_MASTERY_GRANDMASTER)
                 v70 = 9;
             else
                 v70 = 3;
@@ -645,9 +644,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             a1.uObjectDescID = GetObjDescId(uSpellID);
             a1.containing_item.Reset();
             a1.spell_id = uSpellID;
-            a1.spell_level = uSkillLevel;
+            a1.spell_level = uSkillMastery;
             a1.vPosition.x = actorPtr->vPosition.x;
-            a1.spell_skill = 0;
+            a1.spell_skill = PLAYER_SKILL_MASTERY_NONE;
             a1.vPosition.y = actorPtr->vPosition.y;
             a1.vPosition.z = actorPtr->vPosition.z +
                              ((signed int)actorPtr->uActorHeight >> 1);
@@ -681,10 +680,10 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             return;
 
         case SPELL_DARK_PAIN_REFLECTION:
-            if (masteryLevel == 0)
+            if (masteryLevel == PLAYER_SKILL_MASTERY_NONE)
                 v68 = 0;
-            else if (masteryLevel == 1 || (masteryLevel == 2) ||
-                     (masteryLevel == 3))
+            else if (masteryLevel == PLAYER_SKILL_MASTERY_NOVICE || (masteryLevel == PLAYER_SKILL_MASTERY_EXPERT) ||
+                     (masteryLevel == PLAYER_SKILL_MASTERY_MASTER))
                 v68 = 5 * 30 * realPoints + 30 * 128;
             else
                 v68 = 15 * 30 * realPoints + 30 * 128;
@@ -810,7 +809,7 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
     a1.vPosition.y = pActors[uActorID].vPosition.y;
     a1.vPosition.z = pActors[uActorID].vPosition.z + (pActors[uActorID].uActorHeight * 0.75);
     a1.spell_level = 0;
-    a1.spell_skill = 0;
+    a1.spell_skill = PLAYER_SKILL_MASTERY_NONE;
     a1.uFacing = pDir->uYawAngle;
     a1.uSoundID = 0;
     a1.uAttributes = 0;
@@ -860,7 +859,7 @@ void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors
     a1.containing_item.Reset();
     a1.spell_id = 0;
     a1.spell_level = 0;
-    a1.spell_skill = 0;
+    a1.spell_skill = PLAYER_SKILL_MASTERY_NONE;
     a1.vPosition.x = pActors[uActorID].vPosition.x;
     a1.vPosition.y = pActors[uActorID].vPosition.y;
     a1.vPosition.z = pActors[uActorID].vPosition.z + (pActors[uActorID].uActorHeight * 0.75);
@@ -1318,57 +1317,59 @@ void Actor::AddBloodsplatOnDamageOverlay(unsigned int uActorID, int a2,
 
 //----- (0043B3E0) --------------------------------------------------------
 int Actor::_43B3E0_CalcDamage(ABILITY_INDEX dmgSource) {
-    int v2;        // ebp@1
-    int v3;               // eax@9
-    int v4;        // edi@9
-    int v5;               // esi@9
-    uint16_t v8;  // si@21
-    int v9;               // edi@21
-    int v10;       // eax@23
-    int v11;              // [sp+10h] [bp-4h]@1
-
-    v2 = 0;
-    v11 = 0;
+    int damageDiceRolls;
+    int damageDiceSides;
+    int damageBonus;
+    uint8_t spellID;
+    int spellPower = 0;
+    PLAYER_SKILL skill;
+    PLAYER_SKILL_LEVEL skillLevel = 0;
+    PLAYER_SKILL_MASTERY skillMastery = PLAYER_SKILL_MASTERY_NONE;
 
     switch (dmgSource) {
         case ABILITY_ATTACK1:
             if (this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Active())
-                v2 = this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].uPower;
-            if (this->pActorBuffs[ACTOR_BUFF_HEROISM].Active() &&
-                this->pActorBuffs[ACTOR_BUFF_HEROISM].uPower > v2)
-                v2 = this->pActorBuffs[ACTOR_BUFF_HEROISM].uPower;
+                spellPower = this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].uPower;
+            if (this->pActorBuffs[ACTOR_BUFF_HEROISM].Active() && this->pActorBuffs[ACTOR_BUFF_HEROISM].uPower > spellPower)
+                spellPower = this->pActorBuffs[ACTOR_BUFF_HEROISM].uPower;
             if (this->pActorBuffs[ACTOR_BUFF_PAIN_HAMMERHANDS].Active())
-                v2 += this->pActorBuffs[ACTOR_BUFF_PAIN_HAMMERHANDS].uPower;
-            v3 = this->pMonsterInfo.uAttack1DamageDiceRolls;
-            v4 = this->pMonsterInfo.uAttack1DamageDiceSides;
-            v5 = this->pMonsterInfo.uAttack1DamageBonus;
+                spellPower += this->pActorBuffs[ACTOR_BUFF_PAIN_HAMMERHANDS].uPower;
+            damageDiceRolls = this->pMonsterInfo.uAttack1DamageDiceRolls;
+            damageDiceSides = this->pMonsterInfo.uAttack1DamageDiceSides;
+            damageBonus = this->pMonsterInfo.uAttack1DamageBonus;
             break;
         case ABILITY_ATTACK2:
-            v3 = this->pMonsterInfo.uAttack2DamageDiceRolls;
-            v4 = this->pMonsterInfo.uAttack2DamageDiceSides;
-            v5 = this->pMonsterInfo.uAttack2DamageBonus;
+            damageDiceRolls = this->pMonsterInfo.uAttack2DamageDiceRolls;
+            damageDiceSides = this->pMonsterInfo.uAttack2DamageDiceSides;
+            damageBonus = this->pMonsterInfo.uAttack2DamageBonus;
             break;
         case ABILITY_SPELL1:
-            v8 = this->pMonsterInfo.uSpellSkillAndMastery1;
-            v9 = this->pMonsterInfo.uSpell1ID;
-            v10 = SkillToMastery(v8);
-            return _43AFE3_calc_spell_damage(v9, v8 & 0x3F, v10, 0);
+            spellID = this->pMonsterInfo.uSpell1ID;
+            skill = this->pMonsterInfo.uSpellSkillAndMastery2;
+            skillLevel = GetSkillLevel(skill);
+            skillMastery = GetSkillMastery(skill);
+            return _43AFE3_calc_spell_damage(spellID, skillLevel, skillMastery, 0);
             break;
         case ABILITY_SPELL2:
-            v8 = this->pMonsterInfo.uSpellSkillAndMastery2;
-            v9 = this->pMonsterInfo.uSpell2ID;
-            v10 = SkillToMastery(v8);
-            return _43AFE3_calc_spell_damage(v9, v8 & 0x3F, v10, 0);
+            spellID = this->pMonsterInfo.uSpell2ID;
+            skill = this->pMonsterInfo.uSpellSkillAndMastery2;
+            skillLevel = GetSkillLevel(skill);
+            skillMastery = GetSkillMastery(skill);
+            return _43AFE3_calc_spell_damage(spellID, skillLevel, skillMastery, 0);
             break;
         case ABILITY_SPECIAL:
-            v3 = this->pMonsterInfo.uSpecialAbilityDamageDiceRolls;
-            v4 = this->pMonsterInfo.uSpecialAbilityDamageDiceSides;
-            v5 = this->pMonsterInfo.uSpecialAbilityDamageDiceBonus;
+            damageDiceRolls = this->pMonsterInfo.uSpecialAbilityDamageDiceRolls;
+            damageDiceSides = this->pMonsterInfo.uSpecialAbilityDamageDiceSides;
+            damageBonus = this->pMonsterInfo.uSpecialAbilityDamageDiceBonus;
         default:
             return 0;
     }
-    for (int i = 0; i < v3; i++) v11 += rand() % v4 + 1;
-    return v11 + v5 + v2;
+
+    int damage = 0;
+    for (int i = 0; i < damageDiceRolls; i++)
+        damage += rand() % damageDiceSides + 1;
+
+    return damage + damageBonus + spellPower;
 }
 
 //----- (00438B9B) --------------------------------------------------------
@@ -1405,7 +1406,7 @@ void Actor::StealFrom(unsigned int uActorID) {
         if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) v6 = &pIndoor->dlv;
         pPlayer->StealFromActor(uActorID, v4, v6->uReputation++);
         v8 = pPlayer->GetAttackRecoveryTime(false);
-        if (v8 < 30) v8 = 30;
+        if (v8 < engine->config->gameplay.MinRecoveryMelee.Get()) v8 = engine->config->gameplay.MinRecoveryMelee.Get();
         if (!pParty->bTurnBasedModeOn)
             pPlayer->SetRecoveryTime(
                 (int)(debug_non_combat_recovery_mul * v8 * flt_debugrecmod3));
@@ -2722,7 +2723,7 @@ void Actor::UpdateActorAI() {
                 for (size_t i = 0; i < pActors.size(); i++) {
                     pActor = &pActors[i];
                     if (pActor->CanAct()) {
-                        sDmg = pActor->CalcMagicalDamageToActor((DAMAGE_TYPE)5,
+                        sDmg = pActor->CalcMagicalDamageToActor(DMGT_MAGICAL,
                                                                 v4);
                         pActor->sCurrentHP -= sDmg;
                         if (sDmg) {
@@ -3293,13 +3294,12 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                                    Vec3i *pVelocity) {
     SpriteObject *projectileSprite;  // ebx@1
     Actor *pMonster;                 // esi@7
-    uint16_t v16;            // cx@25
     int v40;                         // ebx@107
     int extraRecoveryTime;           // qax@125
     uint16_t v43;            // ax@132
     uint16_t v45;            // ax@132
     // uint64_t v46; // [sp+Ch] [bp-60h]@6
-    signed int a4;                    // [sp+44h] [bp-28h]@1
+    PLAYER_SKILL_LEVEL skillLevel = 0;                    // [sp+44h] [bp-28h]@1
     bool IsAdditionalDamagePossible;  // [sp+50h] [bp-1Ch]@1
     int v61;                          // [sp+58h] [bp-14h]@1
     bool isLifeStealing;              // [sp+5Ch] [bp-10h]@1
@@ -3308,7 +3308,6 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
 
     projectileSprite = 0;
     uDamageAmount = 0;
-    a4 = 0;
     v61 = 0;
     IsAdditionalDamagePossible = false;
     isLifeStealing = 0;
@@ -3331,31 +3330,23 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         int main_hand_idx = player->pEquipment.uMainHand;
         IsAdditionalDamagePossible = true;
         if (player->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-            PLAYER_SKILL_TYPE main_hand_skill =
-                player->GetMainHandItem()->GetPlayerSkillType();
-            uint main_hand_mastery =
-                SkillToMastery(player->pActiveSkills[main_hand_skill]);
+            PLAYER_SKILL_TYPE main_hand_skill = player->GetMainHandItem()->GetPlayerSkillType();
+            PLAYER_SKILL_MASTERY main_hand_mastery = player->GetSkillMastery(main_hand_skill);
             switch (main_hand_skill) {
                 case PLAYER_SKILL_STAFF:
-                    if (main_hand_mastery >= 3) {
-                        if (rand() % 100 <
-                            (player->GetActualSkillLevel(PLAYER_SKILL_STAFF) &
-                             0x3F))  // stun chance when mastery >= 3
+                    if (main_hand_mastery >= PLAYER_SKILL_MASTERY_MASTER) {
+                        if (rand() % 100 < player->GetActualSkillLevel(PLAYER_SKILL_STAFF))
                             hit_will_stun = true;
                     }
                     break;
 
                 case PLAYER_SKILL_MACE:
-                    if (main_hand_mastery >= 3) {
-                        if (rand() % 100 <
-                            (player->GetActualSkillLevel(PLAYER_SKILL_MACE) &
-                             0x3F))
+                    if (main_hand_mastery >= PLAYER_SKILL_MASTERY_MASTER) {
+                        if (rand() % 100 < player->GetActualSkillLevel(PLAYER_SKILL_MACE))
                             hit_will_stun = true;
                     }
-                    if (main_hand_mastery >= 4) {
-                        if (rand() % 100 <
-                            (player->GetActualSkillLevel(PLAYER_SKILL_MACE) &
-                             0x3F))
+                    if (main_hand_mastery >= PLAYER_SKILL_MASTERY_GRANDMASTER) {
+                        if (rand() % 100 < player->GetActualSkillLevel(PLAYER_SKILL_MACE))
                             hit_will_paralyze = true;
                     }
                     break;
@@ -3364,7 +3355,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         attackElement = DMGT_PHISYCAL;
         uDamageAmount = player->CalculateMeleeDamageTo(
             false, false, pMonster->pMonsterInfo.uID);
-        if (!player->PlayerHitOrMiss(pMonster, v61, a4)) {
+        if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
             player->PlaySound(SPEECH_AttackMiss, 0);
             return;
         }
@@ -3386,13 +3377,13 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
 
         switch (projectileSprite->spell_id) {
             case SPELL_LASER_PROJECTILE:
-                v16 = player->pActiveSkills[PLAYER_SKILL_BLASTER];
+                // TODO: should be changed to GetActual* equivalents?
                 v61 = 1;
-                if (SkillToMastery(v16) >= 3)
-                    a4 = player->pActiveSkills[PLAYER_SKILL_BLASTER] & 0x3F;
+                if (player->GetSkillMastery(PLAYER_SKILL_BLASTER) >= PLAYER_SKILL_MASTERY_MASTER)
+                    skillLevel = player->GetSkillLevel(PLAYER_SKILL_BLASTER);
                 attackElement = DMGT_PHISYCAL;
                 uDamageAmount = player->CalculateMeleeDamageTo(true, true, 0);
-                if (!player->PlayerHitOrMiss(pMonster, v61, a4)) {
+                if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
                     player->PlaySound(SPEECH_AttackMiss, 0);
                     return;
                 }
@@ -3403,13 +3394,13 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 if (pMonster->pActorBuffs[ACTOR_BUFF_SHIELD].Active())
                     uDamageAmount >>= 1;
                 IsAdditionalDamagePossible = true;
-                if (!player->PlayerHitOrMiss(pMonster, v61, a4)) {
+                if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
                     player->PlaySound(SPEECH_AttackMiss, 0);
                     return;
                 }
                 break;
             case SPELL_EARTH_BLADES:
-                a4 = 5 * projectileSprite->spell_level;
+                skillLevel = 5 * projectileSprite->spell_level;
                 attackElement =
                     (DAMAGE_TYPE)player->GetSpellSchool(SPELL_EARTH_BLADES);
                 uDamageAmount = _43AFE3_calc_spell_damage(
@@ -3418,7 +3409,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 if (pMonster->pActorBuffs[ACTOR_BUFF_SHIELD].Active())
                     uDamageAmount >>= 1;
                 IsAdditionalDamagePossible = false;
-                if (!player->PlayerHitOrMiss(pMonster, v61, a4)) {
+                if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
                     player->PlaySound(SPEECH_AttackMiss, 0);
                     return;
                 }
@@ -3427,7 +3418,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 uDamageAmount = 0;
                 attackElement = DMGT_PHISYCAL;
                 hit_will_stun = 1;
-                if (!player->PlayerHitOrMiss(pMonster, v61, a4)) {
+                if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
                     player->PlaySound(SPEECH_AttackMiss, 0);
                     return;
                 }
@@ -3442,7 +3433,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 if (projectileSprite->containing_item.uItemID != ITEM_NULL &&
                     projectileSprite->containing_item.special_enchantment == ITEM_ENCHANTMENT_OF_CARNAGE) {
                     attackElement = DMGT_FIRE;
-                } else if (!player->PlayerHitOrMiss(pMonster, v61, a4)) {
+                } else if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
                     player->PlaySound(SPEECH_AttackMiss, 0);
                     return;
                 }
@@ -3465,13 +3456,13 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     if (!projectileSprite && player->IsUnarmed() &&
         player->pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active()) {
         v61 += pMonster->CalcMagicalDamageToActor(
-            (DAMAGE_TYPE)8,
+            DMGT_BODY,
             player->pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].uPower);
     }
     uDamageAmount = v61;
     if (IsAdditionalDamagePossible) {
         if (projectileSprite) {
-            a4 =
+            skillLevel =
                 projectileSprite->containing_item._439DF3_get_additional_damage(
                     &attackElement, &isLifeStealing);
             if (isLifeStealing && pMonster->sCurrentHP > 0) {
@@ -3480,7 +3471,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                     player->sHealth = player->GetMaxHealth();
             }
             uDamageAmount +=
-                pMonster->CalcMagicalDamageToActor(attackElement, a4);
+                pMonster->CalcMagicalDamageToActor(attackElement, skillLevel);
         } else {
             for (ITEM_SLOT i : {ITEM_SLOT_OFF_HAND, ITEM_SLOT_MAIN_HAND}) {
                 if (player->HasItemEquipped(i)) {
@@ -3489,7 +3480,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                         item = player->GetOffHandItem();
                     else
                         item = player->GetMainHandItem();
-                    a4 = item->_439DF3_get_additional_damage(&attackElement,
+                    skillLevel = item->_439DF3_get_additional_damage(&attackElement,
                                                              &isLifeStealing);
                     if (isLifeStealing && pMonster->sCurrentHP > 0) {
                         player->sHealth += v61 / 5;
@@ -3497,7 +3488,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                             player->sHealth = player->GetMaxHealth();
                     }
                     uDamageAmount +=
-                        pMonster->CalcMagicalDamageToActor(attackElement, a4);
+                        pMonster->CalcMagicalDamageToActor(attackElement, skillLevel);
                 }
             }
         }
@@ -3573,10 +3564,10 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     }
     if (hit_will_paralyze && pMonster->CanAct() &&
         pMonster->DoesDmgTypeDoDamage(DMGT_EARTH)) {
-        v43 = player->GetActualSkillLevel(PLAYER_SKILL_MACE);
-        v45 = SkillToMastery(v43);
-        GameTime v46 = GameTime(0, v43 & 63);  // ??
-        pMonster->pActorBuffs[ACTOR_BUFF_PARALYZED].Apply((pParty->GetPlayingTime() + v46), v45, 0, 0, 0);
+        PLAYER_SKILL_LEVEL skillLevel = player->GetActualSkillLevel(PLAYER_SKILL_MACE);
+        PLAYER_SKILL_MASTERY skillMastery = player->GetActualSkillMastery(PLAYER_SKILL_MACE);
+        GameTime v46 = GameTime(0, skillLevel);  // ??
+        pMonster->pActorBuffs[ACTOR_BUFF_PARALYZED].Apply((pParty->GetPlayingTime() + v46), skillMastery, 0, 0, 0);
         if (engine->config->settings.ShowHits.Get()) {
             GameUI_SetStatusBar(
                 LSTR_FMT_S_PARALYZES_S,
@@ -4790,14 +4781,14 @@ bool SpawnActor(unsigned int uMonsterID) {
 }
 
 //----- (0044FA4C) --------------------------------------------------------
-void Spawn_Light_Elemental(int spell_power, int caster_skill_level, int duration_game_seconds) {
+void Spawn_Light_Elemental(int spell_power, PLAYER_SKILL_MASTERY caster_skill_mastery, int duration_game_seconds) {
     unsigned int uFaceID;  // [sp+8h] [bp-18h]@16
     // size_t uActorIndex;            // [sp+10h] [bp-10h]@6
 
     const char *cMonsterName;       // [sp-4h] [bp-24h]@2
-    if (caster_skill_level == 4)
+    if (caster_skill_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
         cMonsterName = "Elemental Light C";
-    else if (caster_skill_level == 3)
+    else if (caster_skill_mastery == PLAYER_SKILL_MASTERY_MASTER)
         cMonsterName = "Elemental Light B";
     else
         cMonsterName = "Elemental Light A";
@@ -4851,7 +4842,7 @@ void Spawn_Light_Elemental(int spell_power, int caster_skill_level, int duration
         GameTime spell_length = GameTime::FromSeconds(duration_game_seconds);
 
         actor->pActorBuffs[ACTOR_BUFF_SUMMONED].Apply((pParty->GetPlayingTime() + spell_length),
-            caster_skill_level, spell_power, 0, 0);
+            caster_skill_mastery, spell_power, 0, 0);
     } else {
         actor->Remove();
     }
@@ -5320,7 +5311,7 @@ void ItemDamageFromActor(unsigned int uObjID, unsigned int uActorID,
                     pSpriteObjects[PID_ID(uObjID)].spell_skill,
                     pActors[uActorID].sCurrentHP);
                 damage = pActors[uActorID].CalcMagicalDamageToActor(
-                    (DAMAGE_TYPE)0, v6);
+                    DMGT_FIRE, v6);
                 pActors[uActorID].sCurrentHP -= damage;
                 if (damage) {
                     if (pActors[uActorID].sCurrentHP > 0)

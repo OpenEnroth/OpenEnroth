@@ -350,7 +350,7 @@ std::array<std::array<struct SpellBookIconPos, 12>, 9> pIconPos = {{
 
 //----- (00458585) --------------------------------------------------------
 void SpellBuff::Reset() {
-    uSkill = 0;
+    uSkillMastery = PLAYER_SKILL_MASTERY_NONE;
     uPower = 0;
     expire_time.Reset();
     uCaster = 0;
@@ -367,7 +367,7 @@ bool SpellBuff::IsBuffExpiredToTime(GameTime time) {
     if (this->expire_time && (this->expire_time < time)) {
         expire_time.Reset();
         uPower = 0;
-        uSkill = 0;
+        uSkillMastery = PLAYER_SKILL_MASTERY_NONE;
         uOverlayID = 0;
         return true;
     }
@@ -375,16 +375,16 @@ bool SpellBuff::IsBuffExpiredToTime(GameTime time) {
 }
 
 //----- (004584E0) --------------------------------------------------------
-bool SpellBuff::Apply(GameTime expire_time, uint16_t uSkillLevel,
-                      uint16_t uPower, int uOverlayID,
+bool SpellBuff::Apply(GameTime expire_time, PLAYER_SKILL_MASTERY uSkillMastery,
+                      PLAYER_SKILL_LEVEL uPower, int uOverlayID,
                       uint8_t caster) {
-    Assert(uSkillLevel >= 1 && uSkillLevel <= 4);
+    Assert(uSkillMastery >= PLAYER_SKILL_MASTERY_NOVICE && uSkillMastery <= PLAYER_SKILL_MASTERY_GRANDMASTER);
 
     if (this->expire_time && (expire_time < this->expire_time)) {
         return false;
     }
 
-    this->uSkill = uSkillLevel;
+    this->uSkillMastery = uSkillMastery;
     this->uPower = uPower;
     this->expire_time = expire_time;
     if (this->uOverlayID && this->uOverlayID != uOverlayID) {
@@ -441,10 +441,9 @@ void SpellStats::Initialize() {
     }
 }
 
-void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
+void EventCastSpell(int uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAYER_SKILL_LEVEL skillLevel, int fromx,
                     int fromy, int fromz, int tox, int toy, int toz) {
-    unsigned int skillMasteryPlusOne = uSkillLevel + 1;
-    Assert(skillMasteryPlusOne > 0 && skillMasteryPlusOne <= 4,
+    Assert(skillMastery >= PLAYER_SKILL_MASTERY_NOVICE && skillMastery <= PLAYER_SKILL_MASTERY_GRANDMASTER,
            "Invalid mastery level");
 
     int64_t x_coord_delta = 0;
@@ -492,8 +491,8 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
             spell_sprites.uType = spell_sprite_mapping[uSpellID].uSpriteType;
             spell_sprites.containing_item.Reset();
             spell_sprites.spell_id = uSpellID;
-            spell_sprites.spell_level = uSkill;
-            spell_sprites.spell_skill = skillMasteryPlusOne;
+            spell_sprites.spell_level = skillLevel;
+            spell_sprites.spell_skill = skillMastery;
             spell_sprites.uObjectDescID = pObjectList->ObjectIDByItemID(spell_sprites.uType);
             spell_sprites.vPosition.x = fromx;
             spell_sprites.vPosition.y = fromy;
@@ -516,6 +515,7 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
     int spell_spray_arc;
     int spell_spray_angles;
     int spriteid;
+    int buff_id = 0;
 
     switch (uSpellID) {
         case SPELL_FIRE_FIRE_BOLT:
@@ -540,7 +540,7 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
             pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Item, spriteid));
             return;
         case SPELL_WATER_POISON_SPRAY:
-            spell_num_objects = (skillMasteryPlusOne * 2) - 1;
+            spell_num_objects = (std::to_underlying(skillMastery) * 2) - 1;
             spell_sprites.spell_target_pid = 0;
             spell_sprites.uFacing = yaw;
             if (spell_num_objects == 1) {
@@ -568,7 +568,7 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
             pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Item, spriteid));
             return;
         case SPELL_AIR_SPARKS:
-            spell_num_objects = (skillMasteryPlusOne * 2) + 1;
+            spell_num_objects = (std::to_underlying(skillMastery) * 2) + 1;
             spell_spray_arc =
                 (signed int)(60 * TrigLUT.uIntegerDoublePi) / 360;
             spell_spray_angles = spell_spray_arc / (spell_num_objects - 1);
@@ -598,19 +598,19 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
             return;
 
         case SPELL_FIRE_HASTE:
-            if (skillMasteryPlusOne > 0) {
-                if (skillMasteryPlusOne <= 2)
-                    spell_length = 60 * (uSkill + 60);
-                else if (skillMasteryPlusOne == 3)
-                    spell_length = 180 * (uSkill + 20);
-                else if (skillMasteryPlusOne == 4)
-                    spell_length = 240 * (uSkill + 15);
+            if (skillMastery >= PLAYER_SKILL_MASTERY_NOVICE) {
+                if (skillMastery <= PLAYER_SKILL_MASTERY_EXPERT)
+                    spell_length = 60 * (skillLevel + 60);
+                else if (skillMastery == PLAYER_SKILL_MASTERY_MASTER)
+                    spell_length = 180 * (skillLevel + 20);
+                else if (skillMastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
+                    spell_length = 240 * (skillLevel + 15);
             }
             for (uint i = 0; i < 4; ++i)
                 if (pParty->pPlayers[i].IsWeak()) return;
             pParty->pPartyBuffs[PARTY_BUFF_HASTE].Apply(
                 GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spell_length)),
-                skillMasteryPlusOne, 0, 0, 0);
+                skillMastery, 0, 0, 0);
             spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 0);
             spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 1);
             spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 2);
@@ -622,30 +622,30 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
         case SPELL_AIR_SHIELD:
         case SPELL_EARTH_STONESKIN:
         case SPELL_SPIRIT_HEROISM:
-            switch (skillMasteryPlusOne) {
-                case 1:
-                case 2:
-                    spell_length = 300 * (uSkill + 12);
+            switch (skillMastery) {
+                case PLAYER_SKILL_MASTERY_NOVICE:
+                case PLAYER_SKILL_MASTERY_EXPERT:
+                    spell_length = 300 * (skillLevel + 12);
                     break;
-                case 3:
-                    spell_length = 900 * (uSkill + 4);
+                case PLAYER_SKILL_MASTERY_MASTER:
+                    spell_length = 900 * (skillLevel + 4);
                     break;
-                case 4:
-                    spell_length = 3600 * (uSkill + 1);
+                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                    spell_length = 3600 * (skillLevel + 1);
                     break;
             }
             switch (uSpellID) {
                 case SPELL_AIR_SHIELD:
                     spell_num_objects = 0;
-                    uSkill = 14;
+                    buff_id = PARTY_BUFF_SHIELD;
                     break;
                 case SPELL_EARTH_STONESKIN:
-                    spell_num_objects = uSkill + 5;
-                    uSkill = 15;
+                    spell_num_objects = skillLevel + 5;
+                    buff_id = PARTY_BUFF_STONE_SKIN;
                     break;
                 case SPELL_SPIRIT_HEROISM:
-                    spell_num_objects = uSkill + 5;
-                    uSkill = 9;
+                    spell_num_objects = skillLevel + 5;
+                    buff_id = PLAYER_BUFF_HEROISM;
                     break;
             }
             spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 0);
@@ -654,18 +654,18 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
             spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 3);
             spell_expire_time =
                 GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spell_length));
-            pParty->pPartyBuffs[uSkill].Apply(spell_expire_time,
-                                              skillMasteryPlusOne,
+            pParty->pPartyBuffs[buff_id].Apply(spell_expire_time,
+                                              skillMastery,
                                               spell_num_objects, 0, 0);
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
             pAudioPlayer->PlaySpellSound(uSpellID, 0);
             return;
         case SPELL_FIRE_IMMOLATION:
-            if (skillMasteryPlusOne == 4)
-                spell_length = 600 * uSkill;
+            if (skillMastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
+                spell_length = 600 * skillLevel;
             else
-                spell_length = 60 * uSkill;
+                spell_length = 60 * skillLevel;
             spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 0);
             spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 1);
             spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 2);
@@ -674,7 +674,7 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
             spell_expire_time =
                 GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spell_length));
             pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Apply(
-                spell_expire_time, skillMasteryPlusOne, uSkill, 0, 0);
+                spell_expire_time, skillMastery, skillLevel, 0, 0);
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
             pAudioPlayer->PlaySpellSound(uSpellID, 0);
@@ -685,53 +685,53 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
         case SPELL_EARTH_PROTECTION_FROM_EARTH:
         case SPELL_MIND_PROTECTION_FROM_MIND:
         case SPELL_BODY_PROTECTION_FROM_BODY:
-            spell_length = 3600 * uSkill;
-            spell_num_objects = uSkill * skillMasteryPlusOne;
+            spell_length = 3600 * skillLevel;
+            spell_num_objects = skillLevel * std::to_underlying(skillMastery);
 
             switch (uSpellID) {
                 case SPELL_FIRE_PROTECTION_FROM_FIRE:
-                    uSkill = PARTY_BUFF_RESIST_FIRE;
+                    buff_id = PARTY_BUFF_RESIST_FIRE;
                     break;
                 case SPELL_AIR_PROTECTION_FROM_AIR:
-                    uSkill = PARTY_BUFF_RESIST_AIR;
+                    buff_id = PARTY_BUFF_RESIST_AIR;
                     break;
                 case SPELL_WATER_PROTECTION_FROM_WATER:
-                    uSkill = PARTY_BUFF_RESIST_WATER;
+                    buff_id = PARTY_BUFF_RESIST_WATER;
                     break;
                 case SPELL_EARTH_PROTECTION_FROM_EARTH:
-                    uSkill = PARTY_BUFF_RESIST_EARTH;
+                    buff_id = PARTY_BUFF_RESIST_EARTH;
                     break;
                 case SPELL_MIND_PROTECTION_FROM_MIND:
-                    uSkill = PARTY_BUFF_RESIST_MIND;
+                    buff_id = PARTY_BUFF_RESIST_MIND;
                     break;
                 case SPELL_BODY_PROTECTION_FROM_BODY:
-                    uSkill = PARTY_BUFF_RESIST_BODY;
+                    buff_id = PARTY_BUFF_RESIST_BODY;
                     break;
             }
             spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 0);
             spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 1);
             spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 2);
             spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 3);
-            pParty->pPartyBuffs[uSkill].Apply(
+            pParty->pPartyBuffs[buff_id].Apply(
                 GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spell_length)),
-                skillMasteryPlusOne, spell_num_objects, 0, 0);
+                skillMastery, spell_num_objects, 0, 0);
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
             pAudioPlayer->PlaySpellSound(uSpellID, 0);
             return;
         case SPELL_LIGHT_DAY_OF_THE_GODS:
-            switch (skillMasteryPlusOne) {
-                case 2:
-                    spell_length = 10800 * uSkill;
-                    spell_power = 3 * uSkill + 10;
+            switch (skillMastery) {
+                case PLAYER_SKILL_MASTERY_EXPERT:
+                    spell_length = 10800 * skillLevel;
+                    spell_power = 3 * skillLevel + 10;
                     break;
-                case 3:
-                    spell_length = 18000 * uSkill;
-                    spell_power = 5 * uSkill + 10;
+                case PLAYER_SKILL_MASTERY_MASTER:
+                    spell_length = 18000 * skillLevel;
+                    spell_power = 5 * skillLevel + 10;
                     break;
-                case 4:
-                    spell_length = 14400 * uSkill;
-                    spell_power = 4 * uSkill + 10;
+                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                    spell_length = 14400 * skillLevel;
+                    spell_power = 4 * skillLevel + 10;
                     break;
             }
             spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 0);
@@ -742,7 +742,7 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
             spell_expire_time =
                 GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spell_length));
             pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].Apply(
-                spell_expire_time, skillMasteryPlusOne, spell_power, 0, 0);
+                spell_expire_time, skillMastery, spell_power, 0, 0);
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
             pAudioPlayer->PlaySpellSound(uSpellID, 0);
@@ -757,37 +757,31 @@ bool sub_427769_isSpellQuickCastableOnShiftClick(unsigned int uSpellID) {
     return (pSpellDatas[uSpellID].stats & 0xC) != 0;
 }
 //----- (0043AFE3) --------------------------------------------------------
-int _43AFE3_calc_spell_damage(int spellId, int spellLevel,
-                              signed int skillMastery, int currentHp) {
+int _43AFE3_calc_spell_damage(int spellId, PLAYER_SKILL_LEVEL spellLevel, PLAYER_SKILL_MASTERY skillMastery, int currentHp) {
     int result;       // eax@1
-    unsigned int v5;  // [sp-4h] [bp-8h]@9
+    unsigned int diceSides;  // [sp-4h] [bp-8h]@9
 
     result = 0;
     if (spellId == SPELL_FIRE_FIRE_SPIKE) {
         switch (skillMastery) {
-            case 1:
-            case 2:
-                v5 = 6;
+            case PLAYER_SKILL_MASTERY_NOVICE:
+            case PLAYER_SKILL_MASTERY_EXPERT:
+                diceSides = 6;
                 break;
-            case 3:
-                v5 = 8;
+            case PLAYER_SKILL_MASTERY_MASTER:
+                diceSides = 8;
                 break;
-            case 4:
-                v5 = 10;
+            case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                diceSides = 10;
                 break;
             default:
                 return 0;
         }
-        result = GetDiceResult(spellLevel, v5);
+        result = GetDiceResult(spellLevel, diceSides);
     } else if (spellId == SPELL_EARTH_MASS_DISTORTION) {
-        result = currentHp *
-            (pSpellDatas[SPELL_EARTH_MASS_DISTORTION].baseDamage +
-                2 * spellLevel) /
-            100;
+        result = currentHp * (pSpellDatas[SPELL_EARTH_MASS_DISTORTION].baseDamage + 2 * spellLevel) / 100;
     } else {
-        result =
-            pSpellDatas[spellId].baseDamage +
-            GetDiceResult(spellLevel, pSpellDatas[spellId].bonusSkillDamage);
+        result = pSpellDatas[spellId].baseDamage + GetDiceResult(spellLevel, pSpellDatas[spellId].bonusSkillDamage);
     }
 
     return result;

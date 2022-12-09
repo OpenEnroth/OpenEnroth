@@ -1447,8 +1447,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
             pPrice = v36 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
             if (pPrice < v36 / 3) pPrice = v36 / 3;
             auto skill = GetLearningDialogueSkill(option);
-            if (byte_4ED970_skill_learn_ability_by_class_table
-                [pPlayers[uActiveCharacter]->classType][skill]) {
+            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][skill] != PLAYER_SKILL_MASTERY_NONE) {
                 if (!pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
                     if (pParty->GetGold() < pPrice) {
                         GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
@@ -2118,9 +2117,8 @@ void TavernDialog() {
             auto skill = GetLearningDialogueSkill(
                 (DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param
             );
-            if (byte_4ED970_skill_learn_ability_by_class_table
-                [pPlayers[uActiveCharacter]->classType][skill] &&
-                !pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
+            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
+                && !pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
                 all_text_height = pFontArrus->CalcTextHeight(
                     localization->GetSkillName(skill),
                     dialog_window.uFrameWidth, 0);
@@ -2445,9 +2443,8 @@ void TempleDialog() {
                 auto skill = GetLearningDialogueSkill(
                     (DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param
                 );
-                if (byte_4ED970_skill_learn_ability_by_class_table
-                    [pPlayers[uActiveCharacter]->classType][skill] &&
-                    !pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
+                if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
+                    && !pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
                     all_text_height += pFontArrus->CalcTextHeight(
                         localization->GetSkillName(skill),
                         tample_window.uFrameWidth, 0);
@@ -2692,8 +2689,7 @@ void TrainingDialog(const char *s) {
                 auto skill = GetLearningDialogueSkill(
                     (DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param
                 );
-                if (byte_4ED970_skill_learn_ability_by_class_table
-                    [pPlayers[uActiveCharacter]->classType][skill]
+                if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
                     && !pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
                     all_text_height += pFontArrus->CalcTextHeight(
                         localization->GetSkillName(skill),
@@ -2753,9 +2749,8 @@ void MercenaryGuildDialog() {
             auto skill = GetLearningDialogueSkill(
                 (DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param
             );
-            if (byte_4ED970_skill_learn_ability_by_class_table
-                [pPlayers[uActiveCharacter]->classType / 3][skill] &&
-                !pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
+            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType / 3][skill] != PLAYER_SKILL_MASTERY_NONE
+                && !pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
                 all_text_height += pFontArrus->CalcTextHeight(
                     localization->GetSkillName(skill),
                     dialog_window.uFrameWidth, 0);
@@ -3538,6 +3533,9 @@ void FillAviableSkillsToTeach(BuildingType type) {
             break;
         case DIALOGUE_LEARN_ALCHEMY:
             v30 = localization->GetSkillName(PLAYER_SKILL_ALCHEMY);
+            break;
+        case DIALOGUE_LEARN_CLUB:
+            v30 = localization->GetSkillName(PLAYER_SKILL_CLUB);
             break;
         default:
             v30 = localization->GetString(LSTR_NO_TEXT);
