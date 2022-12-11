@@ -4,6 +4,7 @@
 
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Objects/Actor.h"
+#include "Camera.h"
 
 enum VisObjectType : uint32_t {
     VisObjectType_Any = 0,

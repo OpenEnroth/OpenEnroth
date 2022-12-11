@@ -156,7 +156,9 @@ vec3 CalcSunLight(Sunlight light, vec3 normal, vec3 viewDir, vec3 thisfragcol) {
 // calculates the color when using a point light.
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     if (light.diffuse.r == 0 && light.diffuse.g == 0 && light.diffuse.b == 0) return vec3(0);
-    if (light.radius < 1.0) return vec3(0);    
+    if (light.radius < 1.0) return vec3(0);
+    float distance = length(light.position - fragPos);
+    if (distance > light.radius) return vec3(0);
 
     vec3 lightDir = normalize(light.position - fragPos);
     // diffuse shading
@@ -165,7 +167,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 128); //material.shininess
     // attenuation
-    float distance = length(light.position - fragPos);
+    
 
     //float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
     float attenuation = clamp(1.0 - ((distance * distance)/(light.radius * light.radius)), 0.0, 1.0);

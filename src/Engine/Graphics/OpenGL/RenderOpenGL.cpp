@@ -5162,21 +5162,15 @@ void RenderOpenGL::DrawIndoorFaces() {
             }
             if (!onlist) continue;
 
-            // IndoorCameraD3D_Vec4* portalfrustumnorm = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum;
-            //unsigned int uNumFrustums = 4;
-            //RenderVertexSoft* pPortalBounding = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBoundin
-
+            // cull through viewing frustum
+            bool visinfrustum{ false };
             for (int i = 0; i < pBspRenderer->uNumVisibleNotEmptySectors; ++i) {
                 if (pBspRenderer->nodes[i].uSectorID == test.uSectorID) {
-
+                    if (IsSphereInFrustum(test.vPosition, test.uRadius, pBspRenderer->nodes[i].ViewportNodeFrustum))
+                        visinfrustum = true;
                 }
             }
-
-            // is it in the frustum
-            if (!IsSphereInFrustum(test.vPosition, test.uRadius)) continue;
-
-            // TODO(pskelton): could check is sphere is visible through relevant viewing portal
-
+            if (!visinfrustum) continue;
 
             std::string slotnum = std::to_string(num_lights);
 
