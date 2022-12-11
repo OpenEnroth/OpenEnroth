@@ -4918,22 +4918,24 @@ void RenderOpenGL::DrawIndoorFaces() {
                         static_vertices_buff_in[i].v = (signed short)face->pVertexVIDs[i];
                     }
 
+                    // ceiling sky faces are not frustum culled
+                    float skymodtimex{};
+                    float skymodtimey{};
+                    if (face->Indoor_sky()) {
+                        if (face->uPolygonType != POLYGON_InBetweenFloorAndWall && face->uPolygonType != POLYGON_Floor) {
+                            // draw forced perspective sky
+                            DrawIndoorSky(face->uNumVertices, uFaceID);
+                            continue;
+                        }
+                        else {
+                            skymodtimex = (OS_GetTime() / 32.0f) - pCamera3D->vCameraPos.x;
+                            skymodtimey = (OS_GetTime() / 32.0f) + pCamera3D->vCameraPos.y;
+                        }
+                    }
+
                     // check if this face is visible through current portal node
                     if (pCamera3D->CullFaceToFrustum(static_vertices_buff_in, &uNumVerticesa, static_vertices_calc_out, portalfrustumnorm, 4)) {
                         face->uAttributes |= FACE_SeenByParty;
-
-                        float skymodtimex{};
-                        float skymodtimey{};
-                        if (face->Indoor_sky()) {
-                            if (face->uPolygonType != POLYGON_InBetweenFloorAndWall && face->uPolygonType != POLYGON_Floor) {
-                                // draw forced perspective sky
-                                DrawIndoorSky(face->uNumVertices, uFaceID);
-                                continue;
-                            } else {
-                                skymodtimex = (OS_GetTime() / 32.0f) - pCamera3D->vCameraPos.x;
-                                skymodtimey = (OS_GetTime() / 32.0f) + pCamera3D->vCameraPos.y;
-                            }
-                        }
 
                         // check face is towards camera
                         if (pCamera3D->is_face_faced_to_cameraBLV(face)) {
