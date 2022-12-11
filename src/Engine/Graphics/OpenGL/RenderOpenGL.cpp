@@ -1104,14 +1104,19 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID
 
     // copy to buff in
     for (uint i = 0; i < pFace->uNumVertices; ++i) {
-        VertexRenderList[i].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[i]].x;
-        VertexRenderList[i].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[i]].y;
-        VertexRenderList[i].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[i]].z;
-        VertexRenderList[i].u = (signed short)pFace->pVertexUIDs[i];
-        VertexRenderList[i].v = (signed short)pFace->pVertexVIDs[i];
+        array_507D30[i].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[i]].x;
+        array_507D30[i].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[i]].y;
+        array_507D30[i].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[i]].z;
+        array_507D30[i].u = (signed short)pFace->pVertexUIDs[i];
+        array_507D30[i].v = (signed short)pFace->pVertexVIDs[i];
     }
-    pCamera3D->ViewTransform(VertexRenderList, pFace->uNumVertices);
-    pCamera3D->Project(VertexRenderList, pFace->uNumVertices, 0);
+
+    // clip accurately to camera
+    pCamera3D->ClipFaceToFrustum(array_507D30, &pSkyPolygon.uNumVertices, VertexRenderList, pBspRenderer->nodes[0].ViewportNodeFrustum, 4, 0, 0);
+    if (!pSkyPolygon.uNumVertices) return;
+
+    pCamera3D->ViewTransform(VertexRenderList, pSkyPolygon.uNumVertices);
+    pCamera3D->Project(VertexRenderList, pSkyPolygon.uNumVertices, false);
 
     uint _507D30_idx = 0;
     for (; _507D30_idx < pSkyPolygon.uNumVertices; _507D30_idx++) {
@@ -1157,15 +1162,19 @@ void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon 
     uint uTintR = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintB = uTint & 0xFF;
     float scrspace{ pCamera3D->GetFarClip() };
 
+    float oneon = 1.0f / (pCamera3D->GetNearClip() * 2.0f);
+    float oneof = 1.0f / (pCamera3D->GetFarClip());
+
     // load up poly
     for (int z = 0; z < (pSkyPolygon->uNumVertices - 2); z++) {
         // 123, 134, 145, 156..
         forcepersverts* thisvert = &forceperstore[forceperstorecnt];
-
+        float oneoz = 1.0f / VertexRenderList[0].vWorldViewPosition.x;
+        float thisdepth = (oneoz - oneon) / (oneof - oneon);
         // copy first
         thisvert->x = VertexRenderList[0].vWorldViewProjX;
         thisvert->y = VertexRenderList[0].vWorldViewProjY;
-        thisvert->z = 1.0f;
+        thisvert->z = thisdepth;
         thisvert->w = VertexRenderList[0]._rhw;
         thisvert->u = VertexRenderList[0].u;
         thisvert->v = VertexRenderList[0].v;
@@ -1180,9 +1189,11 @@ void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon 
 
         // copy other two (z+1)(z+2)
         for (uint i = 1; i < 3; ++i) {
+            oneoz = 1.0f / VertexRenderList[z + i].vWorldViewPosition.x;
+            thisdepth = (oneoz - oneon) / (oneof - oneon);
             thisvert->x = VertexRenderList[z + i].vWorldViewProjX;
             thisvert->y = VertexRenderList[z + i].vWorldViewProjY;
-            thisvert->z = 1.0f;
+            thisvert->z = thisdepth;
             thisvert->w = VertexRenderList[z + i]._rhw;
             thisvert->u = VertexRenderList[z + i].u;
             thisvert->v = VertexRenderList[z + i].v;
@@ -4928,8 +4939,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                             // draw forced perspective sky
                             DrawIndoorSky(face->uNumVertices, uFaceID);
                             continue;
-                        }
-                        else {
+                        } else {
                             skymodtimex = (OS_GetTime() / 32.0f) - pCamera3D->vCameraPos.x;
                             skymodtimey = (OS_GetTime() / 32.0f) + pCamera3D->vCameraPos.y;
                         }
@@ -5162,15 +5172,29 @@ void RenderOpenGL::DrawIndoorFaces() {
                     break;
                 }
             }
+
+            // does light sphere collide with current sector
+            // expanded current sector
+            bool fromexpanded{ false };
+            BBoxs cursectorexpand = pIndoor->pSectors[pBLVRenderParams->uPartySectorID].pBounding.Expanded(test.uRadius);
+            if (cursectorexpand.Contains(test.vPosition.ToShort())) {
+                onlist = true;
+                fromexpanded = true;
+            }
+
             if (!onlist) continue;
 
             // cull through viewing frustum
             bool visinfrustum{ false };
-            for (int i = 0; i < pBspRenderer->uNumVisibleNotEmptySectors; ++i) {
-                if (pBspRenderer->nodes[i].uSectorID == test.uSectorID) {
-                    if (IsSphereInFrustum(test.vPosition, test.uRadius, pBspRenderer->nodes[i].ViewportNodeFrustum))
-                        visinfrustum = true;
+            if (!fromexpanded) {
+                for (int i = 0; i < pBspRenderer->num_nodes; ++i) {
+                    if (pBspRenderer->nodes[i].uSectorID == test.uSectorID) {
+                        if (IsSphereInFrustum(test.vPosition, test.uRadius, pBspRenderer->nodes[i].ViewportNodeFrustum))
+                            visinfrustum = true;
+                    }
                 }
+            } else {
+                if (IsSphereInFrustum(test.vPosition, test.uRadius)) visinfrustum = true;
             }
             if (!visinfrustum) continue;
 
