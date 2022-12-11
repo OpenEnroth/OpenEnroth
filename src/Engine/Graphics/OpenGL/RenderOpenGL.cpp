@@ -5162,6 +5162,16 @@ void RenderOpenGL::DrawIndoorFaces() {
             }
             if (!onlist) continue;
 
+            // IndoorCameraD3D_Vec4* portalfrustumnorm = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum;
+            //unsigned int uNumFrustums = 4;
+            //RenderVertexSoft* pPortalBounding = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBoundin
+
+            for (int i = 0; i < pBspRenderer->uNumVisibleNotEmptySectors; ++i) {
+                if (pBspRenderer->nodes[i].uSectorID == test.uSectorID) {
+
+                }
+            }
+
             // is it in the frustum
             if (!IsSphereInFrustum(test.vPosition, test.uRadius)) continue;
 
