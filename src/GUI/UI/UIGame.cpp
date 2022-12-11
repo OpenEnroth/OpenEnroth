@@ -1815,8 +1815,8 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                     if (pObjectList->pObjects[pSpriteObjects[i].uObjectDescID]
                             .uFlags &
                         OBJECT_DESC_UNPICKABLE) {
-                        render->RasterLine2D(pPoint_X, pPoint_Y, pPoint_X,
-                                             pPoint_Y,
+                        render->RasterLine2D(pPoint_X, pPoint_Y, pPoint_X + 1,
+                                             pPoint_Y + 1,
                                              ui_game_minimap_projectile_color);
                     } else if (uZoom > 512) {
                         render->RasterLine2D(pPoint_X - 2, pPoint_Y,

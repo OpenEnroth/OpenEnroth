@@ -350,38 +350,40 @@ void Engine::PushStationaryLights(int a2) {
 }
 
 void Engine::StackPartyTorchLight() {
-    if (engine->config->graphics.Torchlight.Get()) {  // lightspot around party
-        int TorchLightPower = 800;
-        if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) TorchLightPower = 1024;
-
+    int TorchLightDistance = engine->config->graphics.TorchlightDistance.Get();
+    // TODO(pskelton): set this on level load
+    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) TorchLightDistance = 1024;
+    if (TorchLightDistance > 0) {  // lightspot around party
         if (pParty->TorchlightActive()) {
             // max is 800 * torchlight
             // min is 800
-            int MinTorch = TorchLightPower;
-            int MaxTorch = TorchLightPower * pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
+            int MinTorch = TorchLightDistance;
+            int MaxTorch = TorchLightDistance * pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
 
-            if (engine->config->graphics.LightsFlicker.Get()) {
+            int torchLightFlicker = engine->config->graphics.TorchlightFlicker.Get();
+            if (torchLightFlicker > 0) {
                 // torchlight flickering effect
                 // TorchLightPower *= pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;  // 2,3,4
                 int ran = rand();
-                int mod = ((ran - (RAND_MAX * .4)) / 200);
-                TorchLightPower = (pParty->TorchLightLastIntensity + mod);
+                int mod = ((ran - (RAND_MAX * .4)) / torchLightFlicker);
+                TorchLightDistance = (pParty->TorchLightLastIntensity + mod);
 
                 // clamp
-                if (TorchLightPower < MinTorch)
-                    TorchLightPower = MinTorch;
-                if (TorchLightPower > MaxTorch)
-                    TorchLightPower = MaxTorch;
+                if (TorchLightDistance < MinTorch)
+                    TorchLightDistance = MinTorch;
+                if (TorchLightDistance > MaxTorch)
+                    TorchLightDistance = MaxTorch;
             } else {
-                TorchLightPower = MaxTorch;
+                TorchLightDistance = MaxTorch;
             }
         }
 
+        // TODO(pskelton): move this
         // if outdoors and its day turn off
         if (uCurrentlyLoadedLevelType == LEVEL_Outdoor && !pWeather->bNight)
-            TorchLightPower = 0;
+            TorchLightDistance = 0;
 
-        pParty->TorchLightLastIntensity = TorchLightPower;
+        pParty->TorchLightLastIntensity = TorchLightDistance;
 
         // problem with deserializing this ??
         if (pParty->flt_TorchlightColorR == 0) {
@@ -389,16 +391,19 @@ void Engine::StackPartyTorchLight() {
             pParty->flt_TorchlightColorR = 96;
             pParty->flt_TorchlightColorG = 96;
             pParty->flt_TorchlightColorB = 96;
+
+            if (engine->config->debug.VerboseLogging.Get())
+                logger->Warning("Torchlight doesn't have color");
         }
 
         // TODO: either add conversion functions, or keep only glm / only Vec3_* classes.
         Vec3f pos(pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y, pCamera3D->vCameraPos.z);
-        //if (TorchLightPower > 0)
-            pMobileLightsStack->AddLight(
-                pos, pBLVRenderParams->uPartySectorID, TorchLightPower,
-                floorf(pParty->flt_TorchlightColorR + 0.5f),
-                floorf(pParty->flt_TorchlightColorG + 0.5f),
-                floorf(pParty->flt_TorchlightColorB + 0.5f), _4E94D0_light_type);
+
+        pMobileLightsStack->AddLight(
+            pos, pBLVRenderParams->uPartySectorID, TorchLightDistance,
+            floorf(pParty->flt_TorchlightColorR + 0.5f),
+            floorf(pParty->flt_TorchlightColorG + 0.5f),
+            floorf(pParty->flt_TorchlightColorB + 0.5f), _4E94D0_light_type);
     }
 }
 
