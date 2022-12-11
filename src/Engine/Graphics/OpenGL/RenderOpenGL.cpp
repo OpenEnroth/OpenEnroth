@@ -476,7 +476,8 @@ struct forcepersverts {
     GLfloat texid;
 };
 
-forcepersverts forceperstore[300]{};
+const int MAX_FORCEPERSTORECNT{ 498 };
+forcepersverts forceperstore[MAX_FORCEPERSTORECNT]{};
 int forceperstorecnt{ 0 };
 
 
@@ -601,7 +602,7 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
         }
 
         forceperstorecnt += 3;
-        assert(forceperstorecnt <= 290);
+        assert(forceperstorecnt <= MAX_FORCEPERSTORECNT);
     }
 
     // TODO(pskelton): do these need batching?
@@ -1196,7 +1197,8 @@ void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon 
         }
 
         forceperstorecnt += 3;
-        assert(forceperstorecnt <= 290);
+        // TODO (pskelton): should force drawing if buffer is full
+        assert(forceperstorecnt <= MAX_FORCEPERSTORECNT);
     }
 }
 
@@ -2818,7 +2820,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
         }
 
         forceperstorecnt += 3;
-        assert(forceperstorecnt <= 290);
+        assert(forceperstorecnt <= MAX_FORCEPERSTORECNT);
     }
 
     if (engine->config->graphics.Fog.Get()) {
@@ -2863,7 +2865,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
             }
 
             forceperstorecnt += 3;
-            assert(forceperstorecnt <= 290);
+            assert(forceperstorecnt <= MAX_FORCEPERSTORECNT);
         }
 
         // draw sub sky
@@ -2907,7 +2909,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
             }
 
             forceperstorecnt += 3;
-            assert(forceperstorecnt <= 290);
+            assert(forceperstorecnt <= MAX_FORCEPERSTORECNT);
         }
     }
 
