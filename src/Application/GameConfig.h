@@ -568,20 +568,11 @@ namespace Application {
 
             ConfigValue<std::string> Title = ConfigValue<std::string>(this, "title", "World of Might and Magic", &ValidateTitle);
 
-            /**
-             * Borderless mode.
-             *
-             * It removes window borders. For fullscreen mode instead of going into traditional exclusive fullscreen mode it goes into fake fullscreen mode.
-             * Fake fullscreen mode reposition window's top-left corner to 0,0 ignoring window position coordinates.
-             * And also resize window to display size.
-             */
-            ConfigValue<bool> Borderless = ConfigValue<bool>(this, "borderless", false);
-
-            /** Window mode. 1 - fullscreen, 0 - window */
-            ConfigValue<bool> Fullscreen = ConfigValue<bool>(this, "fullscreen", false);
-
             /** Display number as exposed by SDL. Order is platform-specific, e.g. on windows 0 is main display */
             ConfigValue<int> Display = ConfigValue<int>(this, "display", 0);
+
+            /** Window mode. 0 - window, 1 - borderless window, 2 - fullscreen, 3 - borderless fullscreen. */
+            ConfigValue<int> Mode = ConfigValue<int>(this, "mode", 0, &ValidateMode);
 
             /** Coordinates in pixels for position of left-top window corner. -1 is window centered on this axis. */
             ConfigValue<int> PositionX = ConfigValue<int>(this, "position_x", -1, &ValidatePosition);
@@ -600,6 +591,12 @@ namespace Application {
                      title = "World of Might and Magic";
 
                  return title;
+             }
+             static int ValidateMode(int mode) {
+                 if (mode < 0 || mode > 3)
+                     mode = 0;
+
+                 return mode;
              }
              static int ValidatePosition(int position) {
                 if (position < -1)

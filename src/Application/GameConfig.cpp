@@ -147,11 +147,8 @@ void GameConfig::Startup() {
     if (command_line->TryGetValue("window_y", &value)) {
         window.PositionY.Set(std::stoi(*value));
     }
-    if (command_line->TryGetValue("fullscreen", &value)) {
-        window.Fullscreen.Set(std::stoi(*value));
-    }
-    if (command_line->TryGetValue("borderless", &value)) {
-        window.Borderless.Set(std::stoi(*value));
+    if (command_line->TryGetValue("window_mode", &value)) {
+        window.Mode.Set(std::stoi(*value));
     }
     // minimal debug, w/o full magic etc.
     if (command_line->TryFindKey("-debug")) {
