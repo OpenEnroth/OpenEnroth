@@ -82,7 +82,7 @@ target_check_style(graphics)
 
 find_package(OpenGL REQUIRED)
 
-target_link_libraries(graphics ${OPENGL_opengl_LIBRARY} ${OPENGL_glu_LIBRARY})
+target_link_libraries(graphics ${OPENGL_opengl_LIBRARY} ${OPENGL_glu_LIBRARY} libluajit glad nuklear)
 
 if(WIN32 AND BUILD_TYPE STREQUAL "x86")
   target_link_libraries(graphics ddraw.lib dxguid.lib)

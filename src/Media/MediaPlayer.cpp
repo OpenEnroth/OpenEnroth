@@ -783,10 +783,11 @@ void MPlayer::HouseMovieLoop() {
     std::shared_ptr<Blob> buffer = pMovie_Track->GetFrame();
     if (buffer) {
         Recti rect;
-        rect.x = 8;
-        rect.y = 8;
-        rect.w = game_viewport_width;
-        rect.h = game_viewport_height;
+        Sizei wsize = window->Size();
+        rect.x = render->config->graphics.HouseMovieX1.Get();
+        rect.y = render->config->graphics.HouseMovieY1.Get();
+        rect.w = wsize.w - render->config->graphics.HouseMovieX2.Get();
+        rect.h = wsize.h - render->config->graphics.HouseMovieY2.Get();
 
         // update pixels from buffer
         uint32_t *pix = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_A8R8G8B8);
@@ -841,16 +842,17 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
 
     pMovie_Track->Play();
 
-    float ratio_width = (float)window->GetWidth() / pMovie_Track->GetWidth();
-    float ratio_height = (float)window->GetHeight() / pMovie_Track->GetHeight();
+    Sizei wsize = window->Size();
+    float ratio_width = (float)wsize.w / pMovie_Track->GetWidth();
+    float ratio_height = (float)wsize.h / pMovie_Track->GetHeight();
     float ratio = ratio_width < ratio_height ? ratio_width : ratio_height;
 
     float w = pMovie_Track->GetWidth() * ratio;
     float h = pMovie_Track->GetHeight() * ratio;
 
     Recti rect;
-    rect.x = (float)window->GetWidth() / 2 - w / 2;
-    rect.y = (float)window->GetHeight() / 2 - h / 2;
+    rect.x = (float)wsize.w / 2 - w / 2;
+    rect.y = (float)wsize.h / 2 - h / 2;
     rect.w = w;
     rect.h = h;
 

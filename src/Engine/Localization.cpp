@@ -287,21 +287,29 @@ void Localization::InitializeSkillNames() {
     this->skill_names[PLAYER_SKILL_STEALING]    = this->localization_strings[90];
     this->skill_names[PLAYER_SKILL_ALCHEMY]     = this->localization_strings[95];  // Alchemy
     this->skill_names[PLAYER_SKILL_LEARNING]    = this->localization_strings[301];
-    this->skill_names[PLAYER_SKILL_COUNT]       = this->localization_strings[153]; // "None", used during character creation.
+    this->skill_names[PLAYER_SKILL_CLUB]        = this->localization_strings[568];
+    this->skill_names[PLAYER_SKILL_MISC]        = this->localization_strings[153]; // "None", used during character creation.
+
+    // TODO: should be moved to skill descriptions eventually
+    this->skill_descriptions[PLAYER_SKILL_CLUB] = "Everyone is able to wield a club without any prior training and bonk anything with it. "
+        "But there is not much room to improve finesse or mastery for such a rudimentary weapon though. "
+        "So don't expect to become thwonking killer and devastating anyone beyond weaklings.";
 
     skill_desc_raw = pEvents_LOD->LoadCompressedTexture("skilldes.txt").string_view();
     strtok(skill_desc_raw.data(), "\r");
     for (PLAYER_SKILL_TYPE i : this->skill_descriptions.indices()) {
         char *test_string = strtok(NULL, "\r") + 1;
 
-        auto tokens = Tokenize(test_string, '\t');
-        Assert(tokens.size() >= 6, "Invalid number of tokens");
+        if (test_string != NULL && strlen(test_string) > 0) {
+            auto tokens = Tokenize(test_string, '\t');
+            Assert(tokens.size() >= 6, "Invalid number of tokens");
 
-        this->skill_descriptions[i] = RemoveQuotes(tokens[1]);
-        this->skill_descriptions_normal[i] = RemoveQuotes(tokens[2]);
-        this->skill_descriptions_expert[i] = RemoveQuotes(tokens[3]);
-        this->skill_descriptions_master[i] = RemoveQuotes(tokens[4]);
-        this->skill_descriptions_grand[i] = RemoveQuotes(tokens[5]);
+            this->skill_descriptions[i] = RemoveQuotes(tokens[1]);
+            this->skill_descriptions_normal[i] = RemoveQuotes(tokens[2]);
+            this->skill_descriptions_expert[i] = RemoveQuotes(tokens[3]);
+            this->skill_descriptions_master[i] = RemoveQuotes(tokens[4]);
+            this->skill_descriptions_grand[i] = RemoveQuotes(tokens[5]);
+        }
     }
 }
 

@@ -1,9 +1,11 @@
 #pragma once
 #include <memory>
+#include <tuple>
 
 #include "Platform/PlatformKey.h"
 #include "Platform/PlatformEventHandler.h"
 #include "Io/Mouse.h"
+#include "Utility/Geometry/Size.h"
 
 #include "GameKeyboardController.h"
 
@@ -24,6 +26,8 @@ class GameWindowHandler : public PlatformEventHandler {
     // TODO(captainurist): this probably doesn't even belong here. Find a place to move to.
     void UpdateWindowFromConfig(const GameConfig *config);
     void UpdateConfigFromWindow(GameConfig *config);
+    std::tuple<int, Pointi, Sizei> GetWindowConfigPosition(const GameConfig *config);
+    std::tuple<int, Pointi, Sizei> GetWindowRelativePosition(Pointi *position = nullptr);
 
  private:
     void OnMouseLeftClick(int x, int y);
@@ -34,7 +38,9 @@ class GameWindowHandler : public PlatformEventHandler {
     void OnMouseRightDoubleClick(int x, int y);
     void OnMouseMove(int x, int y, bool left_button, bool right_button);
     void OnScreenshot();
+    void OnToggleBorderless();
     void OnToggleFullscreen();
+    void OnMouseGrabToggle();
     void OnKey(PlatformKey key);
     bool OnChar(PlatformKey key, int c);
     void OnFocus();

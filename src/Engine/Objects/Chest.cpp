@@ -56,7 +56,8 @@ bool Chest::Open(int uChestID) {
     if ((uChestID < 0) && (uChestID >= 20)) return false;
     Chest *chest = &vChests[uChestID];
 
-    if (!chest->Initialized()) Chest::PlaceItems(uChestID);
+    if (!chest->Initialized() || engine->config->gameplay.ChestTryPlaceItems.Get() == 1)
+        Chest::PlaceItems(uChestID);
 
     if (!uActiveCharacter) return false;
     flag_shout = false;
@@ -125,7 +126,7 @@ bool Chest::Open(int uChestID) {
                 SPRITE_IGNORE_RANGE | SPRITE_NO_Z_BUFFER, 0);
 
             pSpellObject.containing_item.Reset();
-            pSpellObject.spell_skill = 0;
+            pSpellObject.spell_skill = PLAYER_SKILL_MASTERY_NONE;
             pSpellObject.spell_level = 0;
             pSpellObject.spell_id = 0;
             pSpellObject.field_54 = 0;
@@ -387,8 +388,7 @@ void Chest::PlaceItems(int uChestID) {  // only sued for setup
     char chest_cells_map[144];   // [sp+Ch] [bp-A0h]@1
 
     render->ClearZBuffer();
-    int uChestArea = pChestWidthsByType[vChests[uChestID].uChestBitmapID] *
-                     pChestHeightsByType[vChests[uChestID].uChestBitmapID];
+    int uChestArea = pChestWidthsByType[vChests[uChestID].uChestBitmapID] * pChestHeightsByType[vChests[uChestID].uChestBitmapID];
     memset(chest_cells_map, 0, 144);
     // fill cell map at random positions
     for (int items_counter = 0; items_counter < uChestArea; ++items_counter) {
@@ -408,7 +408,7 @@ void Chest::PlaceItems(int uChestID) {  // only sued for setup
     for (int items_counter = 0; items_counter < uChestArea; ++items_counter) {
         ITEM_TYPE chest_item_id = vChests[uChestID].igChestItems[items_counter].uItemID;
         assert(chest_item_id >= ITEM_NULL && "Checking that generated items are valid");
-        if (chest_item_id != ITEM_NULL) {
+        if (chest_item_id != ITEM_NULL && !vChests[uChestID].igChestItems[items_counter].placedInChest) {
             int test_position = 0;
             while (!Chest::CanPlaceItemAt((uint8_t)chest_cells_map[test_position], chest_item_id, uChestID)) {
                 ++test_position;
@@ -416,9 +416,12 @@ void Chest::PlaceItems(int uChestID) {  // only sued for setup
             }
             if (test_position < uChestArea) {
                 Chest::PlaceItemAt((uint8_t)chest_cells_map[test_position], items_counter, uChestID);
+                vChests[uChestID].igChestItems[items_counter].placedInChest = true;
                 if (vChests[uChestID].uFlags & CHEST_OPENED) {
                     vChests[uChestID].igChestItems[items_counter].SetIdentified();
                 }
+            } else if (engine->config->debug.VerboseLogging.Get()) {
+                logger->Warning("Cannot place item with id %d in the chest!", chest_item_id);
             }
         }
     }
@@ -517,7 +520,8 @@ void RemoveItemAtChestIndex(int index) {
 }
 
 void Chest::OnChestLeftClick() {
-    Chest *chest = &vChests[pGUIWindow_CurrentMenu->wData.val];
+    int uChestID = pGUIWindow_CurrentMenu->wData.val;
+    Chest *chest = &vChests[uChestID];
 
     int chestheight = pChestHeightsByType[chest->uChestBitmapID];
     int chestwidth = pChestWidthsByType[chest->uChestBitmapID];
@@ -533,7 +537,7 @@ void Chest::OnChestLeftClick() {
     if (inventoryYCoord >= 0 && inventoryYCoord < chestheight &&
         inventoryXCoord >= 0 && inventoryXCoord < chestwidth) {
         if (pParty->pPickedItem.uItemID != ITEM_NULL) {  // item held
-            if (Chest::PutItemInChest(invMatrixIndex, &pParty->pPickedItem, pGUIWindow_CurrentMenu->wData.val)) {
+            if (Chest::PutItemInChest(invMatrixIndex, &pParty->pPickedItem, uChestID)) {
                 mouse->RemoveHoldingItem();
             }
         } else {
@@ -554,6 +558,8 @@ void Chest::OnChestLeftClick() {
                 }
 
                 RemoveItemAtChestIndex(invMatrixIndex);
+                if (engine->config->gameplay.ChestTryPlaceItems.Get() == 2)
+                    Chest::PlaceItems(uChestID);
             }
         }
     }
@@ -616,10 +622,11 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
 void GenerateItemsInChest() {
     unsigned int mapType = pMapStats->GetMapInfo(pCurrentMapName);
     MapInfo *currMapInfo = &pMapStats->pInfos[mapType];
-    for (int i = 1; i < 20; ++i) {
+    for (int i = 0; i < 20; ++i) {
         for (int j = 0; j < 140; ++j) {
             ItemGen *currItem = &vChests[i].igChestItems[j];
             if (IsRandomItem(currItem->uItemID)) {
+                currItem->placedInChest = false;
                 int additionaItemCount = rand() % 5;  // additional items in chect
                 additionaItemCount++;  // + 1 because it's the item at pChests[i].igChestItems[j] and the additional ones
                 ITEM_TREASURE_LEVEL resultTreasureLevel = Sample(RemapTreasureLevel(RandomItemTreasureLevel(currItem->uItemID), currMapInfo->Treasure_prob));

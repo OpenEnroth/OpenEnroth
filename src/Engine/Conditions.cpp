@@ -51,7 +51,7 @@ std::array<Condition, 18> conditionImportancyTableDefault = {{
     Condition_Cursed
 }};
 
-std::array<Condition, 18> conditionImportancyTableGrayface = {{
+std::array<Condition, 18> conditionImportancyTableAlternative = {{
     Condition_Eradicated,
     Condition_Dead,
     Condition_Petrified,
@@ -78,7 +78,7 @@ bool ConditionProcessor::IsPlayerAffected(Player* inPlayer, Condition condToChec
     if (thisProc->m_IsBlockedByProtFromMagic &&
         pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].expire_time) {
         if (!(thisProc->m_DoesNeedGmProtFromMagic &&
-              pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].uSkill < 4)) {
+              pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].uSkillMastery < PLAYER_SKILL_MASTERY_GRANDMASTER)) {
             --pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].uPower;
             if (pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].uPower < 1)
                 pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].Reset();
@@ -104,8 +104,8 @@ bool ConditionProcessor::IsPlayerAffected(Player* inPlayer, Condition condToChec
 }
 
 const std::array<Condition, 18> &conditionImportancyTable() {
-    if (engine->config->gameplay.UseGrayfaceConditionPriorities.Get())
-        return conditionImportancyTableGrayface;
+    if (engine->config->gameplay.AlternativeConditionPriorities.Get())
+        return conditionImportancyTableAlternative;
     else
         return conditionImportancyTableDefault;
 }

@@ -173,7 +173,7 @@ int LODFile_Sprites::LoadSprite(const char *pContainerName, unsigned int uPalett
 
     LODSprite *header = new LODSprite();
     LoadSpriteFromFile(header, pContainerName);  // this line is not present here in the original.
-                                                 // necessary for Grayface's mouse picking fix
+                                                 // necessary for GrayFace's mouse picking fix
 
     // if (uNumLoadedSprites == 879) __debugbreak();
 

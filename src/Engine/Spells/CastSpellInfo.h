@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <cstring>
 
+#include "Engine/Objects/PlayerEnums.h"
+
 #include "Utility/Flags.h"
 
 #include "Spells.h"
@@ -58,5 +60,5 @@ struct CastSpellInfo {
 
 void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
                                           unsigned int uPlayerID,
-                                          unsigned int a4, SpellCastFlags flags,
+                                          PLAYER_SKILL skill_value, SpellCastFlags flags,
                                           int a6);

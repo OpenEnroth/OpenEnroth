@@ -169,17 +169,18 @@ void GUIWindow_Spellbook::Update() {
 
     render->ClearZBuffer();
 
-    for (unsigned int i = 0; i < 9; i++) {
-        if (player->pActiveSkills[PLAYER_SKILL_FIRE + i] || engine->config->debug.AllMagic.Get()) {
-            auto pPageTexture = ui_spellbook_school_tabs[i][0];
-            if (player->lastOpenedSpellbookPage == i) {
-                pPageTexture = ui_spellbook_school_tabs[i][1];
-                pX_coord = texture_tab_coord1[i][0];
-                pY_coord = texture_tab_coord1[i][1];
+    int page = 0;
+    for (PLAYER_SKILL_TYPE i : MagicSkills()) {
+        if (player->pActiveSkills[i] || engine->config->debug.AllMagic.Get()) {
+            auto pPageTexture = ui_spellbook_school_tabs[page][0];
+            if (player->lastOpenedSpellbookPage == page) {
+                pPageTexture = ui_spellbook_school_tabs[page][1];
+                pX_coord = texture_tab_coord1[page][0];
+                pY_coord = texture_tab_coord1[page][1];
             } else {
-                pPageTexture = ui_spellbook_school_tabs[i][0];
-                pX_coord = texture_tab_coord0[i][0];
-                pY_coord = texture_tab_coord0[i][1];
+                pPageTexture = ui_spellbook_school_tabs[page][0];
+                pX_coord = texture_tab_coord0[page][0];
+                pY_coord = texture_tab_coord0[page][1];
             }
             render->DrawTextureAlphaNew(pX_coord / 640.0f, pY_coord / 480.0f,
                                         pPageTexture);
@@ -234,6 +235,8 @@ void GUIWindow_Spellbook::Update() {
                 }
             }
         }
+
+        page++;
     }
 
     // if ((11 * player->lastOpenedSpellbookPage) || ((11 *

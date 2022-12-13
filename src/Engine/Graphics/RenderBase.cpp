@@ -38,14 +38,18 @@ bool RenderBase::Initialize() {
 }
 
 void RenderBase::PostInitialization() {
+    // TODO: We aren't using that routine for OpenGL renderer and it should be removed together with DirectDraw.
+    __debugbreak();
+
+/*
     if (!config->window.Fullscreen.Get()) {
         // window->SetWindowedMode(game_width, game_height);
         SwitchToWindow();
     } else {
-        __debugbreak();  // check required
-        window->SetFullscreen(true);
         InitializeFullscreen();
+        window->SetFullscreen(true);
     }
+*/
 }
 
 unsigned int RenderBase::Billboard_ProbablyAddToListAndSortByZOrder(float z) {

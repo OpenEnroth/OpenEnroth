@@ -41,7 +41,7 @@ add_executable(World_of_Might_and_Magic MACOSX_BUNDLE WIN32 src/Application/main
 target_check_style(World_of_Might_and_Magic)
 target_fix_libcxx_assertions(World_of_Might_and_Magic)
 
-target_link_libraries(World_of_Might_and_Magic game arcomage engine gui io media platform objects spells tables graphics turnengine serialization glad nuklear libluajit glm)
+target_link_libraries(World_of_Might_and_Magic game)
 
 set_property(
   DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT World_of_Might_and_Magic

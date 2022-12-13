@@ -58,7 +58,7 @@ set(ENGINE_HEADERS AssetsManager.h
 add_library(engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 target_check_style(engine)
 
-target_link_libraries(engine game utility)
+target_link_libraries(engine objects graphics serialization spells tables turnengine utility)
 target_compile_definitions(engine PRIVATE PROJECT_VERSION="${PROJECT_VERSION}"
                                           BUILD_COMPILER="${BUILD_COMPILER}"
                                           BUILD_PLATFORM="${BUILD_PLATFORM}"

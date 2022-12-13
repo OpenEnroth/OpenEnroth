@@ -38,7 +38,7 @@
   - New GUI/ window system
   - New sounds system
   - New (.WMM)?? save format with extended capabilites??
-  - Check WOMM features all fixes of Grayface patches
-  - Add all Grayface patch enchancements to WOMM
+  - Check WOMM features all fixes of GrayFace patches
+  - Add all GrayFace patch enchancements to WOMM
   - Lua scripting
   - Debug logger improvements

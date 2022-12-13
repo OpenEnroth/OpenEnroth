@@ -425,7 +425,6 @@ unsigned int Party::GetPartyFame() {
 //----- (0049137D) --------------------------------------------------------
 void Party::CreateDefaultParty(bool bDebugGiveItems) {
     Player *pCharacter;      // esi@3
-    int uSkillIdx;           // eax@11
     signed int uNumPlayers;  // [sp+18h] [bp-28h]@1
     ItemGen Dst;             // [sp+1Ch] [bp-24h]@10
 
@@ -509,11 +508,14 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
             pCharacter->sResMagicBase = 10;
 
         pCharacter->lastOpenedSpellbookPage = 0;
-        for (int i = 0; i < 9; i++) {  // for Magic Book
-            if (pPlayers[uNumPlayers].pActiveSkills[12 + i]) {
-                pCharacter->lastOpenedSpellbookPage = i;
+        int count = 0;
+        for (PLAYER_SKILL_TYPE skill : MagicSkills()) {  // for Magic Book
+            if (pPlayers[uNumPlayers].pActiveSkills[skill]) {
+                pCharacter->lastOpenedSpellbookPage = count;
                 break;
             }
+
+            count++;
         }
 
         pCharacter->uExpressionTimePassed = 0;
@@ -522,9 +524,10 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
             Dst.Reset();
             pItemTable->GenerateItem(ITEM_TREASURE_LEVEL_2, 40, &Dst);  // ring
             pCharacter->AddItem2(-1, &Dst);
-            for (uSkillIdx = 0; uSkillIdx < 36; uSkillIdx++) {
-                if (pCharacter->pActiveSkills[uSkillIdx]) {
-                    switch (uSkillIdx) {
+            for (int uSkillIdx = 0; uSkillIdx < 36; uSkillIdx++) {
+                PLAYER_SKILL_TYPE skill = (PLAYER_SKILL_TYPE)uSkillIdx;
+                if (pCharacter->pActiveSkills[skill]) {
+                    switch (skill) {
                         case PLAYER_SKILL_STAFF:
                             pCharacter->WearItem(ITEM_STAFF);
                             break;

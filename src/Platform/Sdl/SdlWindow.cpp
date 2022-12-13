@@ -73,23 +73,34 @@ bool SdlWindow::IsVisible() const {
     return false;
 }
 
-void SdlWindow::SetFullscreen(bool fullscreen) {
-    if (SDL_SetWindowFullscreen(window_, fullscreen ? SDL_WINDOW_FULLSCREEN : 0) != 0)
+void SdlWindow::SetMode(WindowMode mode) {
+    uint32_t flags = 0;
+
+    if (mode == FULLSCREEN_BORDERLESS)
+        flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+    else if (mode == FULLSCREEN)
+        flags |= SDL_WINDOW_FULLSCREEN;
+
+    if (SDL_SetWindowFullscreen(window_, flags) != 0)
         state_->LogSdlError("SDL_SetWindowFullscreen");
+
+    if (mode == WINDOWED)
+        SDL_SetWindowBordered(window_, SDL_TRUE);
+    else if (mode == WINDOWED_BORDERLESS)
+        SDL_SetWindowBordered(window_, SDL_FALSE);
 }
 
-bool SdlWindow::IsFullscreen() const {
+WindowMode SdlWindow::GetMode() {
     uint32_t flags = SDL_GetWindowFlags(window_);
-    return flags & SDL_WINDOW_FULLSCREEN;
-}
 
-void SdlWindow::SetBorderless(bool borderless) {
-    SDL_SetWindowBordered(window_, borderless ? SDL_FALSE : SDL_TRUE);
-}
+    if ((flags & SDL_WINDOW_FULLSCREEN_DESKTOP) == SDL_WINDOW_FULLSCREEN_DESKTOP)
+        return FULLSCREEN_BORDERLESS;
+    else if ((flags & SDL_WINDOW_FULLSCREEN) == SDL_WINDOW_FULLSCREEN)
+        return FULLSCREEN;
+    else if ((flags & SDL_WINDOW_BORDERLESS) > 0)
+        return WINDOWED_BORDERLESS;
 
-bool SdlWindow::IsBorderless() const {
-    uint32_t flags = SDL_GetWindowFlags(window_);
-    return flags & SDL_WINDOW_BORDERLESS;
+    return WINDOWED;
 }
 
 void SdlWindow::SetGrabsMouse(bool grabsMouse) {

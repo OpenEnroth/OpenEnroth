@@ -1036,10 +1036,12 @@ void MM6_Initialize() {
     char pDefaultGroundTexture[16];  // [sp+FCh] [bp-8Ch]@32
 
     viewparams = new ViewingParams;
-    game_viewport_x = viewparams->uScreen_topL_X = 8;
-    game_viewport_y = viewparams->uScreen_topL_Y = 8;
-    game_viewport_z = viewparams->uScreen_BttmR_X = window->GetWidth() - 172; //468;
-    game_viewport_w = viewparams->uScreen_BttmR_Y = window->GetHeight() - 128; //352;
+    Sizei wsize = window->Size();
+    game_viewport_x = viewparams->uScreen_topL_X = engine->config->graphics.ViewPortX1.Get(); //8
+    game_viewport_y = viewparams->uScreen_topL_Y = engine->config->graphics.ViewPortY1.Get(); //8
+    game_viewport_z = viewparams->uScreen_BttmR_X = wsize.w - engine->config->graphics.ViewPortX2.Get(); //468;
+    game_viewport_w = viewparams->uScreen_BttmR_Y = wsize.h - engine->config->graphics.ViewPortY2.Get(); //352;
+
     game_viewport_width = game_viewport_z - game_viewport_x;
     game_viewport_height = game_viewport_w - game_viewport_y;
 

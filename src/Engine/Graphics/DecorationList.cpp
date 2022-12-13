@@ -59,6 +59,9 @@ void DecorationList::ToFile() {
 }
 
 uint16_t DecorationList::GetDecorIdByName(std::string_view pName) {
+    if (pName.empty())
+        return 0;
+
     if (pDecorations.size() > 1) {
         for (uint uID = 1; uID < pDecorations.size(); ++uID) {
             if (iequals(pName, pDecorations[uID].pName))

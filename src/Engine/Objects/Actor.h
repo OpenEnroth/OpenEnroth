@@ -143,7 +143,7 @@ class Actor {
     static void AI_RangedAttack(unsigned int uActorID, struct AIDirection *a2,
                                 int type, ABILITY_INDEX a4);
     static void AI_SpellAttack(unsigned int uActorID, struct AIDirection *pDir,
-                               int uSpellID, ABILITY_INDEX a4, unsigned int uSkillLevel);
+                               int uSpellID, ABILITY_INDEX a4, PLAYER_SKILL uSkill);
     static void ActorDamageFromMonster(int attacker_id, unsigned int actor_id,
                                        Vec3i *pVelocity, ABILITY_INDEX a4);
 
@@ -239,8 +239,7 @@ void ToggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag,
                           bool bValue);
 bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID);
 bool SpawnActor(unsigned int uMonsterID);
-void Spawn_Light_Elemental(int spell_power, int caster_skill_level,
-                                     int duration_game_seconds);
+void Spawn_Light_Elemental(int spell_power, PLAYER_SKILL_MASTERY caster_skill_mastery, int duration_game_seconds);
 void SpawnEncounter(struct MapInfo *pMapInfo, SpawnPoint *spawn,
                     int a3, int a4, int a5);
 void area_of_effect__damage_evaluate();

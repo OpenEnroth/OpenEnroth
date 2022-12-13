@@ -350,6 +350,7 @@ bool LevelDecoration::IsInteractive() {
         case 13:   // trash pile
         case 14:   // dirt
         case 24:   // keg
+        case 34:   // barrel
         case 184:  // fire
         case 187:  // fire
         case 190:  // fire

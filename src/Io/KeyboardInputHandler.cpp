@@ -225,12 +225,12 @@ void KeyboardInputHandler::GenerateGameplayActions() {
                 break;
             }
 
-            uchar quickSpellNumber = pPlayers[uActiveCharacter]->uQuickSpell;
-            int skill_level = pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_TYPE(quickSpellNumber / 11 + 12));
+            uint8_t quickSpellNumber = pPlayers[uActiveCharacter]->uQuickSpell;
+            PLAYER_SKILL_MASTERY skill_mastery = pPlayers[uActiveCharacter]->GetActualSkillMastery(static_cast<PLAYER_SKILL_TYPE>(quickSpellNumber / 11 + 12));
 
             int uRequiredMana = 0;
             if (!engine->config->debug.AllMagic.Get()) {
-                uRequiredMana = pSpellDatas[quickSpellNumber].mana_per_skill[skill_level - 1];
+                uRequiredMana = pSpellDatas[quickSpellNumber].mana_per_skill[std::to_underlying(skill_mastery) - 1];
             }
 
             bool enoughMana = pPlayers[uActiveCharacter]->sMana >= uRequiredMana;

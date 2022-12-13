@@ -66,6 +66,7 @@
 
 #include "Platform/Api.h"
 
+#include "Utility/Geometry/Size.h"
 #include "Utility/Memory.h"
 #include "Utility/Math/TrigLut.h"
 
@@ -84,6 +85,7 @@ RenderVertexSoft array_73D150[20];
 RenderVertexSoft VertexRenderList[50];
 RenderVertexD3D3 d3d_vertex_buffer[50];
 RenderVertexSoft array_507D30[50];
+Sizei output = {0, 0};
 
 // improved error check - using glad post call back
 void GL_Check_Errors(void *ret, const char *name, GLADapiproc apiproc, int len_args, ...) {
@@ -194,20 +196,18 @@ void RenderOpenGL::MaskGameViewport() {
 }
 
 void RenderOpenGL::SaveWinnersCertificate(const char *a1) {
-    int winwidth{ window->GetWidth() };
-    int winheight{ window->GetHeight() };
-    GLubyte *sPixels = new GLubyte[3 * winwidth * winheight];
-    glReadPixels(0, 0, winwidth, winheight, GL_RGB, GL_UNSIGNED_BYTE, sPixels);
+    GLubyte *sPixels = new GLubyte[3 * output.w * output.h];
+    glReadPixels(0, 0, output.w, output.h, GL_RGB, GL_UNSIGNED_BYTE, sPixels);
 
-    uint16_t *pPixels = (uint16_t *)malloc(sizeof(uint16_t) * winheight * winwidth);
-    memset(pPixels, 0, sizeof(uint16_t) * winheight * winwidth);
+    uint16_t *pPixels = (uint16_t *)malloc(sizeof(uint16_t) * output.h * output.w);
+    memset(pPixels, 0, sizeof(uint16_t) * output.h * output.w);
 
     // reverse pixels from ogl (uses BL as 0,0)
     uint16_t *for_pixels = pPixels;
     uint8_t *p = sPixels;
-    for (uint y = 0; y < (unsigned int)winheight; ++y) {
-        for (uint x = 0; x < (unsigned int)winwidth; ++x) {
-            p = sPixels + 3 * (int)(x) + 3 * (int)(winheight -1 - y) * winwidth;
+    for (uint y = 0; y < (unsigned int)output.h; ++y) {
+        for (uint x = 0; x < (unsigned int)output.w; ++x) {
+            p = sPixels + 3 * (int)(x) + 3 * (int)(output.h -1 - y) * output.w;
 
             *for_pixels = Color16(*p & 255, *(p + 1) & 255, *(p + 2) & 255);
             ++for_pixels;
@@ -222,7 +222,7 @@ void RenderOpenGL::SaveWinnersCertificate(const char *a1) {
 
 void RenderOpenGL::SavePCXImage16(const std::string &filename, uint16_t *picture_data, int width, int height) {
     // TODO(pskelton): add "Screenshots" folder?
-    auto thispath = MakeDataPath(filename);
+    std::string thispath = MakeDataPath(filename);
     FILE *result = fopen(thispath.c_str(), "wb");
     if (result == nullptr) {
         return;
@@ -240,8 +240,10 @@ void RenderOpenGL::SavePCXImage16(const std::string &filename, uint16_t *picture
 
 
 bool RenderOpenGL::InitializeFullscreen() {
-    logger->Info("InitializeFullscreen not implemented yet");
-    return 0;
+    // pViewport->ResetScreen();
+    // CreateZBuffer();
+
+    return true;
 }
 
 unsigned int RenderOpenGL::GetActorTintColor(int DimLevel, int tint, float WorldViewX, int a5, RenderBillboard *Billboard) {
@@ -261,8 +263,8 @@ void RenderOpenGL::BltBackToFontFast(int a2, int a3, Recti *a4) {
 
 
 
-unsigned int RenderOpenGL::GetRenderWidth() const { return window->GetWidth(); }
-unsigned int RenderOpenGL::GetRenderHeight() const { return window->GetHeight(); }
+unsigned int RenderOpenGL::GetRenderWidth() const { return output.w; }
+unsigned int RenderOpenGL::GetRenderHeight() const { return output.h; }
 
 void RenderOpenGL::ClearBlack() {  // used only at start and in game over win
     ClearZBuffer();
@@ -280,14 +282,18 @@ void RenderOpenGL::ClearTarget(unsigned int uColor) {
 
 
 void RenderOpenGL::CreateZBuffer() {
-    if (!pActiveZBuffer) {
-        pActiveZBuffer = (int*)malloc(window->GetWidth() * window->GetHeight() * sizeof(int));
-        ClearZBuffer();
-    }
+    if (pActiveZBuffer)
+        free(pActiveZBuffer);
+
+    pActiveZBuffer = (int*)malloc(output.w * output.h * sizeof(int));
+    if (!pActiveZBuffer)
+        Error("Failed to create zbuffer");
+
+    ClearZBuffer();
 }
 
 void RenderOpenGL::ClearZBuffer() {
-    memset32(this->pActiveZBuffer, 0xFFFF0000, window->GetWidth() * window->GetHeight());
+    memset32(this->pActiveZBuffer, 0xFFFF0000, output.w * output.h);
 }
 
 struct linesverts {
@@ -726,7 +732,7 @@ void RenderOpenGL::ScreenFade(unsigned int color, float t) {
 
 void RenderOpenGL::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
                                      Image *pTexture) {
-    DrawTextureNew((float)(pX - move_X)/window->GetWidth(), (float)(pY - move_Y)/window->GetHeight(), pTexture);
+    DrawTextureNew((float)(pX - move_X)/output.w, (float)(pY - move_Y)/output.h, pTexture);
 }
 
 
@@ -747,7 +753,7 @@ void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid) {
     int w = rect.y + rect.h;
 
     // check bounds
-    if (x >= (int)window->GetWidth() || x >= this->clip_z || y >= (int)window->GetHeight() || y >= this->clip_w) return;
+    if (x >= output.w || x >= this->clip_z || y >= output.h || y >= this->clip_w) return;
     // check for overlap
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
@@ -854,9 +860,8 @@ void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid) {
 void RenderOpenGL::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
     if (!img) return;
 
-    int winwidth = window->GetWidth();
-    int uOutX = static_cast<int>(u * winwidth);
-    int uOutY = static_cast<int>(v * window->GetHeight());
+    int uOutX = static_cast<int>(u * output.w);
+    int uOutY = static_cast<int>(v * output.h);
     int imgheight = img->GetHeight();
     int imgwidth = img->GetWidth();
     auto pixels = (uint32_t *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
@@ -869,7 +874,7 @@ void RenderOpenGL::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
     for (int xs = 0; xs < imgwidth; xs++) {
         for (int ys = 0; ys < imgheight; ys++) {
             if (pixels[xs + imgwidth * ys] & 0xFF000000) {
-                this->pActiveZBuffer[uOutX + xs + winwidth * (uOutY + ys)] = zVal;
+                this->pActiveZBuffer[uOutX + xs + output.w * (uOutY + ys)] = zVal;
             }
         }
     }
@@ -955,7 +960,7 @@ void RenderOpenGL::BlendTextures(int x, int y, Image* imgin, Image* imgblend, in
         }
         // draw image
         render->Update_Texture(temp);
-        render->DrawTextureAlphaNew(x / float(window->GetWidth()), y / float(window->GetHeight()), temp);
+        render->DrawTextureAlphaNew(x / float(output.w), y / float(output.h), temp);
 
         render->DrawTwodVerts();
 
@@ -1168,8 +1173,8 @@ unsigned short *RenderOpenGL::MakeScreenshot16(int width, int height) {
 
     DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
 
-    GLubyte *sPixels = new GLubyte[3 * window->GetWidth() * window->GetHeight()];
-    glReadPixels(0, 0, window->GetWidth(), window->GetHeight(), GL_RGB, GL_UNSIGNED_BYTE, sPixels);
+    GLubyte *sPixels = new GLubyte[3 * output.w * output.h];
+    glReadPixels(0, 0, output.w, output.h, GL_RGB, GL_UNSIGNED_BYTE, sPixels);
 
     int interval_x = static_cast<int>(game_viewport_width / (double)width);
     int interval_y = static_cast<int>(game_viewport_height / (double)height);
@@ -1186,7 +1191,7 @@ unsigned short *RenderOpenGL::MakeScreenshot16(int width, int height) {
             for (uint x = 0; x < (unsigned int)width; ++x) {
                 uint8_t *p;
 
-                p = sPixels + 3 * (int)(x * interval_x + 8.0) + 3 * (int)(window->GetHeight() - (y * interval_y) - 8.0) * window->GetWidth();
+                p = sPixels + 3 * (int)(x * interval_x + 8.0) + 3 * (int)(output.h - (y * interval_y) - 8.0) * output.w;
 
                 *for_pixels = Color16(*p & 255, *(p + 1) & 255, *(p + 2) & 255);
                 ++for_pixels;
@@ -1208,7 +1213,8 @@ Image *RenderOpenGL::TakeScreenshot(unsigned int width, unsigned int height) {
 void RenderOpenGL::SaveScreenshot(const std::string &filename, unsigned int width, unsigned int height) {
     auto pixels = MakeScreenshot16(width, height);
 
-    FILE *result = fopen(filename.c_str(), "wb");
+    std::string thispath = MakeDataPath(filename);
+    FILE *result = fopen(thispath.c_str(), "wb");
     if (result == nullptr) {
         return;
     }
@@ -1232,11 +1238,11 @@ void RenderOpenGL::PackScreenshot(unsigned int width, unsigned int height,
 }
 
 void RenderOpenGL::SavePCXScreenshot() {
-    char file_name[40];
-    engine->config->settings.ScreenshotNumber.Set(engine->config->settings.ScreenshotNumber.Get() + 1);
-    sprintf(file_name, "screen%0.2i.pcx", engine->config->settings.ScreenshotNumber.Get() % 100);
+    size_t zeros_number = 5;
+    std::string screenshot_number = std::to_string(engine->config->settings.ScreenshotNumber.Increment());
+    std::string file_name = "screenshot_" + std::string(zeros_number - std::min(zeros_number, screenshot_number.length()), '0') + screenshot_number + ".pcx";
 
-    SaveWinnersCertificate(file_name);
+    SaveWinnersCertificate(file_name.c_str());
 }
 
 
@@ -1570,7 +1576,7 @@ void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, in
     int w = y + height;
 
     // check bounds
-    if (x >= (int)window->GetWidth() || x >= this->clip_z || y >= (int)window->GetHeight() || y >= this->clip_w) return;
+    if (x >= output.w || x >= this->clip_z || y >= output.h || y >= this->clip_w) return;
     // check for overlap
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
@@ -2004,10 +2010,10 @@ void RenderOpenGL::_set_3d_modelview_matrix() {
 
 void RenderOpenGL::_set_ortho_projection(bool gameviewport) {
     if (!gameviewport) {  // project over entire window
-        glViewport(0, 0, window->GetWidth(), window->GetHeight());
-        projmat = glm::ortho(float(0), float(window->GetWidth()), float(window->GetHeight()), float(0), float(-1), float(1));
+        glViewport(0, 0, output.w, output.h);
+        projmat = glm::ortho(float(0), float(output.w), float(output.h), float(0), float(-1), float(1));
     } else {  // project to game viewport
-        glViewport(game_viewport_x, window->GetHeight()-game_viewport_w-1, game_viewport_width, game_viewport_height);
+        glViewport(game_viewport_x, output.h-game_viewport_w-1, game_viewport_width, game_viewport_height);
         projmat = glm::ortho(float(game_viewport_x), float(game_viewport_z), float(game_viewport_w), float(game_viewport_y), float(1), float(-1));
     }
 }
@@ -3324,11 +3330,11 @@ void RenderOpenGL::SetUIClipRect(unsigned int x, unsigned int y, unsigned int z,
     this->clip_y = y;
     this->clip_z = z;
     this->clip_w = w;
-    glScissor(x, window->GetHeight() -w, z-x, w-y);  // invert glscissor co-ords 0,0 is BL
+    glScissor(x, output.h -w, z-x, w-y);  // invert glscissor co-ords 0,0 is BL
 }
 
 void RenderOpenGL::ResetUIClipRect() {
-    this->SetUIClipRect(0, 0, window->GetWidth(), window->GetHeight());
+    this->SetUIClipRect(0, 0, output.w, output.h);
 }
 
 void RenderOpenGL::PresentBlackScreen() {
@@ -3380,13 +3386,13 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
     int width = tex->GetWidth();
     int height = tex->GetHeight();
 
-    int x = u * window->GetWidth();
-    int y = v * window->GetHeight();
+    int x = u * output.w;
+    int y = v * output.h;
     int z = x + width;
     int w = y + height;
 
     // check bounds
-    if (x >= (int)window->GetWidth() || x >= this->clip_z || y >= (int)window->GetHeight() || y >= this->clip_w) return;
+    if (x >= output.w || x >= this->clip_z || y >= output.h || y >= this->clip_w) return;
     // check for overlap
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
@@ -3508,13 +3514,13 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, i
     int width = img->GetWidth();
     int height = img->GetHeight();
 
-    int x = u * window->GetWidth();
-    int y = v * window->GetHeight() + 0.5;
+    int x = u * output.w;
+    int y = v * output.h + 0.5;
     int z = x + width;
     int w = y + custom_height;
 
     // check bounds
-    if (x >= (int)window->GetWidth() || x >= this->clip_z || y >= (int)window->GetHeight() || y >= this->clip_w) return;
+    if (x >= output.w || x >= this->clip_z || y >= output.h || y >= this->clip_w) return;
     // check for overlap
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
@@ -3750,7 +3756,7 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     int z = x + width;
     int w = y + h;
     // check bounds
-    if (x >= (int)window->GetWidth() || x >= clipz || y >= (int)window->GetHeight() || y >= clipw) return;
+    if (x >= output.w || x >= clipz || y >= output.h || y >= clipw) return;
     // check for overlap
     if (!(clipx < z && clipz > x && clipy < w && clipw > y)) return;
 
@@ -5262,8 +5268,8 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace, 
 
 bool RenderOpenGL::SwitchToWindow() {
     // pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
-    pViewport->ResetScreen();
-    CreateZBuffer();
+    // pViewport->ResetScreen();
+    // CreateZBuffer();
 
     return true;
 }
@@ -5306,43 +5312,7 @@ bool RenderOpenGL::Initialize() {
 
         gladSetGLPostCallback(GL_Check_Errors);
 
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);       // Black Background
-        glClearDepth(1.0f);
-        glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LEQUAL);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glViewport(0, 0, window->GetWidth(), window->GetHeight());
-        glScissor(0, 0, window->GetWidth(), window->GetHeight());
-        glEnable(GL_SCISSOR_TEST);
-
-        // Swap Buffers (Double Buffering)
-        openGlContext->SwapBuffers();
-
-        this->clip_x = this->clip_y = 0;
-        this->clip_z = window->GetWidth();
-        this->clip_w = window->GetHeight();
-
-        PostInitialization();
-
-        // check gpu gl capability params
-        glGetIntegerv(GL_MAX_TEXTURE_SIZE, &GPU_MAX_TEX_SIZE);
-        assert(GPU_MAX_TEX_SIZE >= 512);
-        glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, &GPU_MAX_TEX_LAYERS);
-        assert(GPU_MAX_TEX_LAYERS >= 256);
-        glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &GPU_MAX_TEX_UNITS);
-        assert(GPU_MAX_TEX_UNITS >= 16);
-        glGetIntegerv(GL_MAX_FRAGMENT_UNIFORM_COMPONENTS, &GPU_MAX_UNIFORM_COMP);
-        assert(GPU_MAX_UNIFORM_COMP >= 1024);
-        glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &GPU_MAX_TOTAL_TEXTURES);
-        assert(GPU_MAX_TOTAL_TEXTURES >= 80);
-
-        // initiate shaders
-        if (!InitShaders()) {
-            logger->Warning("--- Shader initialisation has failed ---");
-            return false;
-        }
-
-        return true;
+        return Reinitialize(true);
     }
 
     return false;
@@ -5365,7 +5335,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     int w = y + uHeight;
 
     // check bounds
-    if (x >= (int)window->GetWidth() || x >= this->clip_z || y >= (int)window->GetHeight() || y >= this->clip_w) return;
+    if (x >= output.w || x >= this->clip_z || y >= output.h || y >= this->clip_w) return;
     // check for overlap
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
@@ -5551,6 +5521,76 @@ bool RenderOpenGL::InitShaders() {
     return true;
 }
 
+bool RenderOpenGL::Reinitialize(bool firstInit) {
+    output = window->Size();
+
+    if (!firstInit) {
+        game_viewport_x = viewparams->uScreen_topL_X = engine->config->graphics.ViewPortX1.Get(); //8
+        game_viewport_y = viewparams->uScreen_topL_Y = engine->config->graphics.ViewPortY1.Get(); //8
+        game_viewport_z = viewparams->uScreen_BttmR_X = output.w - engine->config->graphics.ViewPortX2.Get(); //468;
+        game_viewport_w = viewparams->uScreen_BttmR_Y = output.h - engine->config->graphics.ViewPortY2.Get(); //352;
+
+        game_viewport_width = game_viewport_z - game_viewport_x;
+        game_viewport_height = game_viewport_w - game_viewport_y;
+
+        viewparams->uSomeY = viewparams->uScreen_topL_Y;
+        viewparams->uSomeX = viewparams->uScreen_topL_X;
+        viewparams->uSomeZ = viewparams->uScreen_BttmR_X;
+        viewparams->uSomeW = viewparams->uScreen_BttmR_Y;
+
+        pViewport->SetScreen(viewparams->uScreen_topL_X, viewparams->uScreen_topL_Y,
+                            viewparams->uScreen_BttmR_X,
+                            viewparams->uScreen_BttmR_Y);
+    }
+
+    pViewport->ResetScreen();
+    CreateZBuffer();
+
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);       // Black Background
+    glClearDepth(1.0f);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glViewport(0, 0, output.w, output.h);
+    glScissor(0, 0, output.w, output.h);
+    glEnable(GL_SCISSOR_TEST);
+
+    // Swap Buffers (Double Buffering)
+    openGlContext->SwapBuffers();
+
+    this->clip_x = this->clip_y = 0;
+    this->clip_z = output.w;
+    this->clip_w = output.h;
+
+    // PostInitialization();
+
+    // check gpu gl capability params
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &GPU_MAX_TEX_SIZE);
+    assert(GPU_MAX_TEX_SIZE >= 512);
+    glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, &GPU_MAX_TEX_LAYERS);
+    assert(GPU_MAX_TEX_LAYERS >= 256);
+    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &GPU_MAX_TEX_UNITS);
+    assert(GPU_MAX_TEX_UNITS >= 16);
+    glGetIntegerv(GL_MAX_FRAGMENT_UNIFORM_COMPONENTS, &GPU_MAX_UNIFORM_COMP);
+    assert(GPU_MAX_UNIFORM_COMP >= 1024);
+    glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &GPU_MAX_TOTAL_TEXTURES);
+    assert(GPU_MAX_TOTAL_TEXTURES >= 80);
+
+    if (firstInit) {
+        // initiate shaders
+        if (!InitShaders()) {
+            logger->Warning("--- Shader initialisation has failed ---");
+            return false;
+        }
+    } else {
+        // TODO: invalidate all previously loaded textures and then load them again as they can be no longer alive on GPU (issue #199).
+
+        ReloadShaders();
+    }
+
+    return true;
+}
+
 void RenderOpenGL::ReloadShaders() {
     logger->Info("Reloading Shaders...");
     glUseProgram(0);
@@ -5602,6 +5642,18 @@ void RenderOpenGL::ReloadShaders() {
     glDeleteBuffers(1, &forceperVBO);
     forceperVAO = forceperVBO = 0;
     forceperstorecnt = 0;
+
+    if (nuklearshader.ID != 0) {
+        if (!nuklearshader.reload()) {
+            logger->Warning("Nuklear shader failed to reload!");
+        } else {
+            nk_dev.uniform_tex = glGetUniformLocation(nuklearshader.ID, "Texture");
+            nk_dev.uniform_proj = glGetUniformLocation(nuklearshader.ID, "ProjMtx");
+            nk_dev.attrib_pos = glGetAttribLocation(nuklearshader.ID, "Position");
+            nk_dev.attrib_uv = glGetAttribLocation(nuklearshader.ID, "TexCoord");
+            nk_dev.attrib_col = glGetAttribLocation(nuklearshader.ID, "Color");
+        }
+    }
 }
 
 void RenderOpenGL::ReleaseTerrain() {
@@ -5853,58 +5905,18 @@ bool RenderOpenGL::NuklearInitialize(struct nk_tex_font *tfont) {
 }
 
 bool RenderOpenGL::NuklearCreateDevice() {
-    GLint status;
-    static const GLchar* vertex_shader =
-        NK_SHADER_VERSION
-        "uniform mat4 ProjMtx;\n"
-        "in vec2 Position;\n"
-        "in vec2 TexCoord;\n"
-        "in vec4 Color;\n"
-        "out vec2 Frag_UV;\n"
-        "out vec4 Frag_Color;\n"
-        "void main() {\n"
-        "   Frag_UV = TexCoord;\n"
-        "   Frag_Color = Color;\n"
-        "   gl_Position = ProjMtx * vec4(Position.xy, 0, 1);\n"
-        "}\n";
-    static const GLchar* fragment_shader =
-        NK_SHADER_VERSION
-        "precision mediump float;\n"
-        "uniform sampler2D Texture;\n"
-        "in vec2 Frag_UV;\n"
-        "in vec4 Frag_Color;\n"
-        "out vec4 Out_Color;\n"
-        "void main(){\n"
-        "   Out_Color = Frag_Color * texture(Texture, Frag_UV.st);\n"
-        "}\n";
+    nuklearshader.build(MakeDataPath("shaders", "glnuklear.vert").c_str(), MakeDataPath("shaders", "glnuklear.frag").c_str());
+    if (nuklearshader.ID == 0) {
+        logger->Warning("Nuklear shader failed to compile!");
+        return false;
+    }
 
     nk_buffer_init_default(&nk_dev.cmds);
-    nk_dev.prog = glCreateProgram();
-    nk_dev.vert_shdr = glCreateShader(GL_VERTEX_SHADER);
-    nk_dev.frag_shdr = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(nk_dev.vert_shdr, 1, &vertex_shader, 0);
-    glShaderSource(nk_dev.frag_shdr, 1, &fragment_shader, 0);
-    glCompileShader(nk_dev.vert_shdr);
-    glCompileShader(nk_dev.frag_shdr);
-    glGetShaderiv(nk_dev.vert_shdr, GL_COMPILE_STATUS, &status);
-    if (status != GL_TRUE)
-        return false;
-    glGetShaderiv(nk_dev.frag_shdr, GL_COMPILE_STATUS, &status);
-    if (status != GL_TRUE)
-        return false;
-    glAttachShader(nk_dev.prog, nk_dev.vert_shdr);
-    glAttachShader(nk_dev.prog, nk_dev.frag_shdr);
-    glLinkProgram(nk_dev.prog);
-    glGetProgramiv(nk_dev.prog, GL_LINK_STATUS, &status);
-    if (status != GL_TRUE)
-        return false;
-
-    nk_dev.uniform_tex = glGetUniformLocation(nk_dev.prog, "Texture");
-    nk_dev.uniform_proj = glGetUniformLocation(nk_dev.prog, "ProjMtx");
-    nk_dev.attrib_pos = glGetAttribLocation(nk_dev.prog, "Position");
-    nk_dev.attrib_uv = glGetAttribLocation(nk_dev.prog, "TexCoord");
-    nk_dev.attrib_col = glGetAttribLocation(nk_dev.prog, "Color");
-
+    nk_dev.uniform_tex = glGetUniformLocation(nuklearshader.ID, "Texture");
+    nk_dev.uniform_proj = glGetUniformLocation(nuklearshader.ID, "ProjMtx");
+    nk_dev.attrib_pos = glGetAttribLocation(nuklearshader.ID, "Position");
+    nk_dev.attrib_uv = glGetAttribLocation(nuklearshader.ID, "TexCoord");
+    nk_dev.attrib_col = glGetAttribLocation(nuklearshader.ID, "Color");
     {
         GLsizei vs = sizeof(struct nk_vertex);
         size_t vp = offsetof(struct nk_vertex, position);
@@ -5955,8 +5967,8 @@ bool RenderOpenGL::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer
         { -1.0f, 1.0f,  0.0f,  1.0f },
     };
 
-    height = window->GetHeight();
-    width = window->GetWidth();
+    height = output.h;
+    width = output.w;
     display_height = render->GetRenderHeight();
     display_width = render->GetRenderWidth();
 
@@ -5977,7 +5989,7 @@ bool RenderOpenGL::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer
     glActiveTexture(GL_TEXTURE0);
 
     /* setup program */
-    glUseProgram(nk_dev.prog);
+    glUseProgram(nuklearshader.ID);
     glUniform1i(nk_dev.uniform_tex, 0);
     glUniformMatrix4fv(nk_dev.uniform_proj, 1, GL_FALSE, &ortho[0][0]);
     {
@@ -6056,11 +6068,7 @@ bool RenderOpenGL::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer
 void RenderOpenGL::NuklearRelease() {
     nk_font_atlas_clear(&nk_dev.atlas);
 
-    glDetachShader(nk_dev.prog, nk_dev.vert_shdr);
-    glDetachShader(nk_dev.prog, nk_dev.frag_shdr);
-    glDeleteShader(nk_dev.vert_shdr);
-    glDeleteShader(nk_dev.frag_shdr);
-    glDeleteProgram(nk_dev.prog);
+    glDeleteProgram(nuklearshader.ID);
     glDeleteBuffers(1, &nk_dev.vbo);
     glDeleteBuffers(1, &nk_dev.ebo);
     glDeleteVertexArrays(1, &nk_dev.vao);
@@ -6119,16 +6127,9 @@ void RenderOpenGL::NuklearFontFree(struct nk_tex_font *tfont) {
 struct nk_image RenderOpenGL::NuklearImageLoad(Image *img) {
     GLuint texid;
     auto t = (TextureOpenGL *)img;
-    //uint8_t *pixels = (uint8_t *)t->GetPixels(IMAGE_FORMAT_A8R8G8B8);
     texid = t->GetOpenGlTexture();
 
-    //glGenTextures(1, &texid);
     t->SetOpenGlTexture(texid);
-    //glBindTexture(GL_TEXTURE_2D, texid);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, t->GetWidth(), t->GetHeight(), 0, /*GL_RGBA*/GL_BGRA, GL_UNSIGNED_BYTE, pixels);
-    //glBindTexture(GL_TEXTURE_2D, 0);
     return nk_image_id(texid);
 }
 

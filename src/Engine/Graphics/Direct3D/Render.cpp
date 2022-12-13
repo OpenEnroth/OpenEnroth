@@ -1234,11 +1234,11 @@ void Render::PresentBlackScreen() {
 }
 
 void Render::SavePCXScreenshot() {
-    char file_name[40];
-    engine->config->settings.ScreenshotNumber.Set(engine->config->settings.ScreenshotNumber.Get() + 1);
-    sprintf(file_name, "screen%0.2i.pcx", engine->config->settings.ScreenshotNumber.Get() % 100);
+    size_t zeros_number = 5;
+    std::string screenshot_number = std::to_string(engine->config->settings.ScreenshotNumber.Increment());
+    std::string file_name = "screenshot_" + std::string(zeros_number - std::min(zeros_number, screenshot_number.length()), '0') + screenshot_number + ".pcx";
 
-    SaveWinnersCertificate(file_name);
+    SaveWinnersCertificate(file_name.c_str());
 }
 
 void Render::SaveWinnersCertificate(const char *file_name) {
@@ -1260,7 +1260,7 @@ void Render::SaveWinnersCertificate(const char *file_name) {
 void Render::SavePCXImage32(const std::string &filename, uint16_t *picture_data,
                             int width, int height) {
     // TODO(pskelton): add "Screenshots" folder?
-    auto thispath = MakeDataPath(filename);
+    std::string thispath = MakeDataPath(filename);
     FILE *result = fopen(thispath.c_str(), "wb");
     if (result == nullptr) {
         return;
@@ -1278,7 +1278,8 @@ void Render::SavePCXImage32(const std::string &filename, uint16_t *picture_data,
 
 void Render::SavePCXImage16(const std::string &filename, uint16_t *picture_data,
                             int width, int height) {
-    FILE *result = fopen(filename.c_str(), "wb");
+    std::string thispath = MakeDataPath(filename);
+    FILE *result = fopen(thispath.c_str(), "wb");
     if (result == nullptr) {
         return;
     }
@@ -2279,6 +2280,11 @@ void Render::DrawIndoorFaces() {
             }
     }
     DrawIndoorBatched();
+}
+
+bool Render::Reinitialize(bool firstInit) {
+    // blank here
+    return true;
 }
 
 void Render::ReloadShaders() {

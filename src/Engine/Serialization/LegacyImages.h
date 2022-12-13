@@ -140,30 +140,12 @@ struct ItemGen_MM7 {
     /* 04 */ int32_t uEnchantmentType;
     /* 08 */ int32_t m_enchantmentStrength;
     /* 0C */ int32_t special_enchantment;
-    // 25  +5 levels
-    // 16  Drain Hit Points from target.
-    // 35  Increases chance of disarming.
-    // 39  Double damage vs Demons.
-    // 40  Double damage vs Dragons
-    // 45  +5 Speed and Accuracy
-    // 56  +5 Might and Endurance.
-    // 57  +5 Intellect and Personality.
-    // 58  Increased Value.
-    // 60  +3 Unarmed and Dodging skills
-    // 61  +3 Stealing and Disarm skills.
-    // 59  Increased Weapon speed.
-    // 63  Double Damage vs. Elves.
-    // 64  Double Damage vs. Undead.
-    // 67  Adds 5 points of Body damage and +2 Disarm skill.
-    // 68  Adds 6-8 points of Cold damage and +5 Armor Class.
-    // 71  Prevents drowning damage.
-    // 72  Prevents falling damage.
     /* 10 */ int32_t uNumCharges;
     /* 14 */ uint32_t uAttributes;
     /* 18 */ uint8_t uBodyAnchor;
-    /* 19 */ char uMaxCharges;
-    /* 1A */ char uHolderPlayer;
-    /* 1B */ char field_1B;
+    /* 19 */ uint8_t uMaxCharges;
+    /* 1A */ uint8_t uHolderPlayer;
+    /* 1B */ uint8_t placedInChest; // unknown unused 8-bit field, was repurposed
     /* 1C */ uint64_t uExpireTime;
 };
 static_assert(sizeof(ItemGen_MM7) == 0x24);
@@ -175,7 +157,7 @@ void Deserialize(const ItemGen_MM7 &src, ItemGen *dst);
 struct SpellBuff_MM7 {
     /* 00 */ int64_t uExpireTime;
     /* 08 */ uint16_t uPower;
-    /* 0A */ uint16_t uSkill;
+    /* 0A */ uint16_t uSkillMastery;
     /* 0C */ uint16_t uOverlayID;
     /* 0E */ uint8_t uCaster;
     /* 0F */ uint8_t uFlags;
@@ -283,48 +265,7 @@ struct Player_MM7 {
     /* 00FC */ int32_t field_FC;
     /* 0100 */ int32_t field_100;
     /* 0104 */ int32_t field_104;
-    /* 0108 */ union {
-        struct {
-            uint16_t skillStaff;
-            uint16_t skillSword;
-            uint16_t skillDagger;
-            uint16_t skillAxe;
-            uint16_t skillSpear;
-            uint16_t skillBow;
-            uint16_t skillMace;
-            uint16_t skillBlaster;
-            uint16_t skillShield;
-            uint16_t skillLeather;
-            uint16_t skillChain;
-            uint16_t skillPlate;
-            uint16_t skillFire;
-            uint16_t skillAir;
-            uint16_t skillWater;
-            uint16_t skillEarth;
-            uint16_t skillSpirit;
-            uint16_t skillMind;
-            uint16_t skillBody;
-            uint16_t skillLight;
-            uint16_t skillDark;
-            uint16_t skillItemId;
-            uint16_t skillMerchant;
-            uint16_t skillRepair;
-            uint16_t skillBodybuilding;
-            uint16_t skillMeditation;
-            uint16_t skillPerception;
-            uint16_t skillDiplomacy;
-            uint16_t skillThievery;
-            uint16_t skillDisarmTrap;
-            uint16_t skillDodge;
-            uint16_t skillUnarmed;
-            uint16_t skillMonsterId;
-            uint16_t skillArmsmaster;
-            uint16_t skillStealing;
-            uint16_t skillAlchemy;
-            uint16_t skillLearning;
-        };
-        std::array<uint16_t, 37> pActiveSkills;
-    };
+    /* 0108 */ std::array<uint16_t, 37> pActiveSkills;
     /* 0152 */ std::array<uint8_t, 64> _achieved_awards_bits;
     /* 0192 */ PlayerSpells_MM7 spellbook;
     /* 01F6 */ std::array<char, 2> _1F6_pad;
@@ -728,7 +669,7 @@ struct Actor_MM7 {
     uint32_t uCurrentActionTime;
     std::array<uint16_t, 8> pSpriteIDs;
     std::array<uint16_t, 4> pSoundSampleIDs;  // 1 die     3 bored
-    std::array<SpellBuff, 22> pActorBuffs;
+    std::array<SpellBuff_MM7, 22> pActorBuffs;
     std::array<ItemGen, 4> ActorHasItems;
     uint32_t uGroup;
     uint32_t uAlly;

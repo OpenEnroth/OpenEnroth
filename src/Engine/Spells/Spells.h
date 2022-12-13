@@ -2,6 +2,7 @@
 #include <array>
 
 #include "Engine/Objects/ItemEnums.h"
+#include "Engine/Objects/PlayerEnums.h"
 #include "Engine/Objects/SpriteObjectType.h"
 #include "Engine/Time.h"
 
@@ -147,8 +148,8 @@ enum SPELL_SCHOOL : int {
 /*   68 */
 #pragma pack(push, 1)
 struct SpellBuff {
-    bool Apply(GameTime time, uint16_t uSkillLevel,
-               uint16_t uPower, int uOverlayID, uint8_t caster);
+    bool Apply(GameTime time, PLAYER_SKILL_MASTERY uSkillMastery,
+                      PLAYER_SKILL_LEVEL uPower, int uOverlayID, uint8_t caster);
     void Reset();
     bool IsBuffExpiredToTime(GameTime time);
 
@@ -158,7 +159,7 @@ struct SpellBuff {
 
     GameTime expire_time;
     uint16_t uPower = 0; // Spell power, semantics are spell-specific.
-    uint16_t uSkill = 0; // 1-4, normal to grandmaster.
+    PLAYER_SKILL_MASTERY uSkillMastery = PLAYER_SKILL_MASTERY_NONE; // 1-4, normal to grandmaster.
     uint16_t uOverlayID = 0;
     uint8_t uCaster = 0;
     uint8_t uFlags = 0; // 0x1 => cast at grandmaster.
@@ -260,10 +261,7 @@ extern std::array<stru324_spell_id_to_sprite_mapping, 103>
 extern std::array<SpellData, 100> pSpellDatas;
 extern IndexedArray<SPELL_TYPE, ITEM_FIRST_WAND, ITEM_LAST_WAND> wand_spell_ids;
 
-int _43AFE3_calc_spell_damage(int spellId, int spellLevel,
-                              signed int skillMastery, int currentHp);
-
+int _43AFE3_calc_spell_damage(int spellId, PLAYER_SKILL_LEVEL spellLevel, PLAYER_SKILL_MASTERY skillMastery, int currentHp);
 bool sub_427769_isSpellQuickCastableOnShiftClick(unsigned int uSpellID);
-void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
-                    int fromy, int fromz, int tox, int toy,
-                    int toz);  // sub_448DF8
+void EventCastSpell(int uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAYER_SKILL_LEVEL skillLevel, int fromx,
+                    int fromy, int fromz, int tox, int toy, int toz);  // sub_448DF8

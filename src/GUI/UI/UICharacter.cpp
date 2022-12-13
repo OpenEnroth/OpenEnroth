@@ -539,24 +539,6 @@ const char *dlhu_texnames_by_face[25] = {
     "pc15lhu", "pc16lhu", "pc17lhu", "pc18lhu", "pc19lhu", "pc20lhu", "pc21lhu",
     "pc22lhu", "pc23lhu", "pc24lhu", "pc25lhu"};
 
-const int pArmorSkills[5] = {PLAYER_SKILL_LEATHER, PLAYER_SKILL_CHAIN,
-                             PLAYER_SKILL_PLATE, PLAYER_SKILL_SHIELD,
-                             PLAYER_SKILL_DODGE};
-const int pWeaponSkills[9] = {
-    PLAYER_SKILL_AXE,   PLAYER_SKILL_BOW,     PLAYER_SKILL_DAGGER,
-    PLAYER_SKILL_MACE,  PLAYER_SKILL_SPEAR,   PLAYER_SKILL_STAFF,
-    PLAYER_SKILL_SWORD, PLAYER_SKILL_UNARMED, PLAYER_SKILL_BLASTER};
-const int pMiscSkills[12] = {PLAYER_SKILL_ALCHEMY,      PLAYER_SKILL_ARMSMASTER,
-                             PLAYER_SKILL_BODYBUILDING, PLAYER_SKILL_ITEM_ID,
-                             PLAYER_SKILL_MONSTER_ID,   PLAYER_SKILL_LEARNING,
-                             PLAYER_SKILL_TRAP_DISARM,  PLAYER_SKILL_MEDITATION,
-                             PLAYER_SKILL_MERCHANT,     PLAYER_SKILL_PERCEPTION,
-                             PLAYER_SKILL_REPAIR,       PLAYER_SKILL_STEALING};
-const int pMagicSkills[9] = {
-    PLAYER_SKILL_FIRE,  PLAYER_SKILL_AIR,    PLAYER_SKILL_WATER,
-    PLAYER_SKILL_EARTH, PLAYER_SKILL_SPIRIT, PLAYER_SKILL_MIND,
-    PLAYER_SKILL_BODY,  PLAYER_SKILL_LIGHT,  PLAYER_SKILL_DARK};
-
 Image *ui_character_skills_background = nullptr;
 Image *ui_character_awards_background = nullptr;
 Image *ui_character_stats_background = nullptr;
@@ -787,7 +769,7 @@ GUIWindow *CastSpellInfo::GetCastSpellInInventoryWindow() {
 }
 
 static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
-    Player *player, int x, int y, const int *skill_list, int skill_list_size,
+    Player *player, int x, int y, const std::initializer_list<PLAYER_SKILL_TYPE> skill_list,
     int right_margin, const char *skill_group_name) {
     int y_offset = y;
     Pointi pt = mouse->GetCursorPos();
@@ -798,51 +780,54 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
         pFontArrus, x, y, ui_character_header_text_color, str, 0, 0, 0);
 
     int num_skills_drawn = 0;
-    for (int i = 0; i < skill_list_size; ++i) {
-        PLAYER_SKILL_TYPE skill = (PLAYER_SKILL_TYPE)skill_list[i];
+    for (PLAYER_SKILL_TYPE skill : skill_list) {
         for (size_t j = 0; j < pGUIWindow_CurrentMenu->vButtons.size(); ++j) {
             GUIButton *v8 = pGUIWindow_CurrentMenu->GetControl(j);
             int v9 = v8->field_1C;
             if ((short)(v8->field_1C) >= 0)
                 continue;  // skips an of the stats skills innv awards buttons
 
-            if ((v9 & 0x7FFF) != skill)
+            if (static_cast<PLAYER_SKILL_TYPE>(v9 & 0x7FFF) != skill)
                 continue;  // skips buttons that dont match skill
 
             ++num_skills_drawn;
             y_offset = v8->uY;
 
-            //int skill_level = player->GetActualSkillLevel(skill);
-            ushort skill_value = player->pActiveSkills[skill];
-            int skill_level = skill_value & 0x3F;
+            PLAYER_SKILL_LEVEL skill_level = player->GetSkillLevel(skill);
 
             uint skill_color = 0;
             uint skill_mastery_color = 0;
-            if (player->uSkillPoints > skill_level)
+            if (player->uSkillPoints > skill_level && skills_max_level[skill] != 1)
                 skill_color = ui_character_skill_upgradeable_color;
 
             if (pt.x >= v8->uX && pt.x < v8->uZ && pt.y >= v8->uY && pt.y < v8->uW) {
-                if (player->uSkillPoints > skill_level)
+                if (player->uSkillPoints > skill_level && skills_max_level[skill] > skill_level && skills_max_level[skill] != 1)
                     skill_mastery_color = ui_character_bonus_text_color;
                 else
                     skill_mastery_color = ui_character_skill_default_color;
                 skill_color = skill_mastery_color;
             }
 
-            if (SkillToMastery(skill_value) == 1) {
-                auto Strsk = StringPrintf("%s\r%03d%2d", localization->GetSkillName(skill), right_margin, skill_level);
+            PLAYER_SKILL_MASTERY skill_mastery = player->GetSkillMastery(skill);
+            if (skill_mastery == PLAYER_SKILL_MASTERY_NOVICE) {
+                std::string Strsk;
+                if (skills_max_level[skill] == 1) { // Non-investable skill
+                    Strsk = StringPrintf("%s\r%03d-", localization->GetSkillName(skill), right_margin);
+                } else {
+                    Strsk = StringPrintf("%s\r%03d%d", localization->GetSkillName(skill), right_margin, skill_level);
+                }
                 pGUIWindow_CurrentMenu->DrawText(pFontLucida, x, v8->uY, skill_color, Strsk, 0, 0, 0);
             } else {
                 const char *skill_level_str = nullptr;
 
-                switch (SkillToMastery(skill_value)) {
-                    case 4:
+                switch (skill_mastery) {
+                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
                         skill_level_str = localization->GetString(LSTR_GRAND);
                         break;
-                    case 3:
+                    case PLAYER_SKILL_MASTERY_MASTER:
                         skill_level_str = localization->GetString(LSTR_MASTER);
                         break;
-                    case 2:
+                    case PLAYER_SKILL_MASTERY_EXPERT:
                         skill_level_str = localization->GetString(LSTR_EXPERT);
                         break;
                 }
@@ -851,7 +836,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
                     skill_mastery_color = ui_character_header_text_color;
 
                 auto Strsk = StringPrintf(
-                    "%s \f%05d%s\f%05d\r%03d%2d",
+                    "%s \f%05d%s\f%05d\r%03d%d",
                     localization->GetSkillName(skill), skill_mastery_color,
                     skill_level_str, skill_color, right_margin, skill_level
                 );
@@ -889,22 +874,22 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Player *player) {
 
     int y = 2 * pFontLucida->GetHeight() + 13;
     y = CharacterUI_SkillsTab_Draw__DrawSkillTable(
-        player, 24, y, pWeaponSkills, 9, 400,
+        player, 24, y, WeaponSkills(), 400,
         localization->GetString(LSTR_WEAPONS));
 
     y += 2 * pFontLucida->GetHeight() - 10;
     CharacterUI_SkillsTab_Draw__DrawSkillTable(
-        player, 24, y, pMagicSkills, 9, 400,
+        player, 24, y, MagicSkills(), 400,
         localization->GetString(LSTR_MAGIC));
 
     y = 2 * pFontLucida->GetHeight() + 13;
     y = CharacterUI_SkillsTab_Draw__DrawSkillTable(
-        player, 248, y, pArmorSkills, 5, 177,
+        player, 248, y, ArmorSkills(), 177,
         localization->GetString(LSTR_ARMOR));
 
     y += 2 * pFontLucida->GetHeight() - 10;
     y = CharacterUI_SkillsTab_Draw__DrawSkillTable(
-        player, 248, y, pMiscSkills, 12, 177,
+        player, 248, y, MiscSkills(), 177,
         localization->GetString(LSTR_MISC));
 }
 
@@ -1565,7 +1550,7 @@ void CharacterUI_LoadPaperdollTextures() {
 }
 
 void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
-    int skill_id;  // [sp+18h] [bp-Ch]@8
+    PLAYER_SKILL_TYPE skill;
 
     int buttons_count = 0;
     if (dword_507CC0_activ_ch) CharacterUI_ReleaseButtons();
@@ -1588,52 +1573,45 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
 
     int uCurrFontHeght = pFontLucida->GetHeight();
     unsigned int current_Y = 2 * uCurrFontHeght + 13;
-    for (int i = 0; i < 9; ++i) {
-        skill_id = pWeaponSkills[i];
-        if (curr_player->pActiveSkills[skill_id] & 0x3F) {
+    int width = 204;
+    for (PLAYER_SKILL_TYPE skill : WeaponSkills()) {
+        if (curr_player->GetSkillLevel(skill)) {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
             ++first_rows;
-            pGUIWindow_CurrentMenu->CreateButton(
-                24, current_Y, 204, uCurrFontHeght - 3, 3, skill_id | 0x8000,
-                UIMSG_SkillUp, skill_id);
+            uint skill_id = std::to_underlying(skill);
+            pGUIWindow_CurrentMenu->CreateButton(24, current_Y, width, uCurrFontHeght - 3, 3, skill_id | 0x8000, UIMSG_SkillUp, skill_id);
         }
     }
     if (!first_rows) current_Y += uCurrFontHeght - 3;
     current_Y += 2 * uCurrFontHeght - 6;
-    for (int i = 0; i < 9; ++i) {
-        skill_id = pMagicSkills[i];
-        if (curr_player->pActiveSkills[skill_id] & 0x3F /*&& buttons_count < 15*/) {
+    for (PLAYER_SKILL_TYPE skill : MagicSkills()) {
+        if (curr_player->GetSkillLevel(skill)/*&& buttons_count < 15*/) {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
-            pGUIWindow_CurrentMenu->CreateButton(
-                24, current_Y, 204, uCurrFontHeght - 3, 3, skill_id | 0x8000,
-                UIMSG_SkillUp, skill_id);
+            uint skill_id = std::to_underlying(skill);
+            pGUIWindow_CurrentMenu->CreateButton(24, current_Y, width, uCurrFontHeght - 3, 3, skill_id | 0x8000, UIMSG_SkillUp, skill_id);
         }
     }
     first_rows = 0;
     current_Y = 2 * uCurrFontHeght + 13;
-    for (int i = 0; i < 5; ++i) {
-        skill_id = pArmorSkills[i];
-        if (curr_player->pActiveSkills[skill_id] & 0x3F) {
+    for (PLAYER_SKILL_TYPE skill : ArmorSkills()) {
+        if (curr_player->GetSkillLevel(skill)) {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
             ++first_rows;
-            pGUIWindow_CurrentMenu->CreateButton(
-                246, current_Y, 204, uCurrFontHeght - 3, 3, skill_id | 0x8000,
-                UIMSG_SkillUp, skill_id);
+            uint skill_id = std::to_underlying(skill);
+            pGUIWindow_CurrentMenu->CreateButton(246, current_Y, width, uCurrFontHeght - 3, 3, skill_id | 0x8000, UIMSG_SkillUp, skill_id);
         }
     }
     if (!first_rows) current_Y += uCurrFontHeght - 3;
     current_Y += 2 * uCurrFontHeght - 6;
-    for (int i = 0; i < 12; ++i) {
-        skill_id = pMiscSkills[i];
-        if (curr_player->pActiveSkills[skill_id] & 0x3F) {
+    for (PLAYER_SKILL_TYPE skill : MiscSkills()) {
+        if (curr_player->GetSkillLevel(skill)) {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
-            pGUIWindow_CurrentMenu->CreateButton(
-                246, current_Y, 204, uCurrFontHeght - 3, 3, skill_id | 0x8000,
-                UIMSG_SkillUp, skill_id);
+            uint skill_id = std::to_underlying(skill);
+            pGUIWindow_CurrentMenu->CreateButton(246, current_Y, width, uCurrFontHeght - 3, 3, skill_id | 0x8000, UIMSG_SkillUp, skill_id);
         }
     }
 
@@ -2075,11 +2053,11 @@ void OnPaperdollLeftClick() {
     ItemGen *pitem = NULL;  // condesnse with this??
                             // pitem.Reset();
 
-    unsigned int pSkillType;  // esi@5
     // uint16_t v5; // ax@7
     // int equippos; // esi@27
     // int v8; // eax@29
     int v17;  // eax@44
+    PLAYER_SKILL_TYPE pSkillType = PLAYER_SKILL_INVALID;
 
     int v23;  // eax@62
     int v26;  // eax@69
@@ -2109,11 +2087,10 @@ void OnPaperdollLeftClick() {
         pEquipType = pParty->pPickedItem.GetItemEquipType();
         pSkillType = pParty->pPickedItem.GetPlayerSkillType();
 
-        if (pSkillType == 4) {  // PLAYER_SKILL_SPEAR
+        if (pSkillType == PLAYER_SKILL_SPEAR) {
             if (shieldequip) {
-                if (pPlayers[uActiveCharacter]->GetActualSkillMastery(
-                        PLAYER_SKILL_SPEAR) <
-                    3) {  // cant use spear in one hand till master
+                // cant use spear in one hand till master
+                if (pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_SPEAR) < PLAYER_SKILL_MASTERY_MASTER) {
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantEquip, 0);
 
                     return;
@@ -2122,15 +2099,10 @@ void OnPaperdollLeftClick() {
                 pickeditem = pParty->pPickedItem.uItemID;
             }
         } else {
-            if ((pSkillType == 8 || pSkillType == 1 ||
-                 pSkillType == 2)  // shield  sword or dagger to place
-                && mainhandequip &&
-                pPlayers[uActiveCharacter]
-                        ->pInventoryItemList[mainhandequip - 1]
-                        .GetPlayerSkillType() == 4) {  // spear in mainhand
-                if (pPlayers[uActiveCharacter]->GetActualSkillMastery(
-                        PLAYER_SKILL_SPEAR) <
-                    3) {  // cant use spear in one hand till master
+            if ((pSkillType == PLAYER_SKILL_SHIELD || pSkillType == PLAYER_SKILL_SWORD || pSkillType == PLAYER_SKILL_DAGGER) && mainhandequip &&
+                pPlayers[uActiveCharacter]->pInventoryItemList[mainhandequip - 1].GetPlayerSkillType() == PLAYER_SKILL_SPEAR) {
+                // cant use spear in one hand till master
+                if (pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_SPEAR) < PLAYER_SKILL_MASTERY_MASTER) {
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantEquip, 0);
                     return;
                 }
@@ -2158,8 +2130,7 @@ void OnPaperdollLeftClick() {
             case EQUIP_BOOTS:
             case EQUIP_AMULET:
 
-                if (!pPlayers[uActiveCharacter]->HasSkill(
-                        pSkillType)) {  // hasnt got the skill to use that
+                if (!pPlayers[uActiveCharacter]->HasSkill(pSkillType)) {  // hasnt got the skill to use that
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantEquip, 0);
                     return;
                 }
@@ -2305,8 +2276,7 @@ void OnPaperdollLeftClick() {
                     pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                     return;
                 }
-                if (!pPlayers[uActiveCharacter]->HasSkill(
-                        pSkillType)) {  // нет навыка
+                if (!pPlayers[uActiveCharacter]->HasSkill(pSkillType)) {  // нет навыка
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantEquip, 0);
                     return;
                 }
@@ -2379,15 +2349,9 @@ void OnPaperdollLeftClick() {
                     return;
                 }
                 v50 = ITEM_NULL;
-
-                if (pSkillType == 2 &&
-                        (pPlayers[uActiveCharacter]->GetActualSkillMastery(
-                             PLAYER_SKILL_DAGGER) >
-                         1)  // dagger in left hand at expert
-                    || pSkillType == 1 &&
-                           (pPlayers[uActiveCharacter]->GetActualSkillMastery(
-                                PLAYER_SKILL_SWORD) >
-                            2)) {  // sword in left hand at master
+                // dagger at expert or sword at master in left hand
+                if (pSkillType == PLAYER_SKILL_DAGGER && (pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_DAGGER) >= PLAYER_SKILL_MASTERY_EXPERT)
+                    || pSkillType == PLAYER_SKILL_SWORD && (pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_SWORD) >= PLAYER_SKILL_MASTERY_MASTER)) {
                     if ((signed int)mouse->uMouseX >= 560) {
                         if (!twohandedequip) {
                             if (shieldequip) {

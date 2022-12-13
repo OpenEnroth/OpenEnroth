@@ -251,9 +251,8 @@ void ShopDialogLearn(GUIWindow dialogwin) {
         auto skill = GetLearningDialogueSkill(
             (DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param
         );
-        if (byte_4ED970_skill_learn_ability_by_class_table
-            [pPlayers[uActiveCharacter]->classType][skill] &&
-            !pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
+        if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
+            && !pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
             all_text_height += pFontArrus->CalcTextHeight(
                 localization->GetSkillName(skill),
                 dialogwin.uFrameWidth, 0);
@@ -804,7 +803,6 @@ void UIShop_Buy_Identify_Repair() {
     ItemGen *bought_item = nullptr;      // esi@51
     int party_reputation;      // eax@55
     int v39;                   // eax@63
-    int v42;                   // esi@74
     signed int v43;            // ebx@74
     uint16_t *pSkill;  // esi@77
     int v55;                   // [sp+0h] [bp-B4h]@26
@@ -1208,15 +1206,14 @@ void UIShop_Buy_Identify_Repair() {
         default:  // if click video screen in shop
         {
             if (IsSkillLearningDialogue(dialog_menu_id)) {
-                v42 = GetLearningDialogueSkill(dialog_menu_id);
+                PLAYER_SKILL_TYPE skill = GetLearningDialogueSkill(dialog_menu_id);
                 v43 = (int64_t)(p2DEvents[
                     window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
                 uPriceItemService = v43 *
                     (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
                 if (uPriceItemService < v43 / 3) uPriceItemService = v43 / 3;
-                if (byte_4ED970_skill_learn_ability_by_class_table
-                        [pPlayers[uActiveCharacter]->classType][v42]) {
-                    pSkill = &pPlayers[uActiveCharacter]->pActiveSkills[v42];
+                if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][skill] != PLAYER_SKILL_MASTERY_NONE) {
+                    pSkill = &pPlayers[uActiveCharacter]->pActiveSkills[skill];
                     if (!*pSkill) {
                         if (pParty->GetGold() < uPriceItemService) {
                             GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
@@ -1253,11 +1250,10 @@ void ShowPopupShopSkills() {
             if (pX >= pButton->uX && pX < pButton->uZ && pY >= pButton->uY && pY < pButton->uW) {
                 if (IsSkillLearningDialogue((DIALOGUE_TYPE)pButton->msg_param)) {
                     auto skill_id = GetLearningDialogueSkill((DIALOGUE_TYPE)pButton->msg_param);
-                    if (byte_4ED970_skill_learn_ability_by_class_table
-                        [pPlayers[uActiveCharacter]->classType][skill_id] &&
-                        !pPlayers[uActiveCharacter]->pActiveSkills[skill_id]) {
+                    if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][skill_id] != PLAYER_SKILL_MASTERY_NONE
+                        && !pPlayers[uActiveCharacter]->pActiveSkills[skill_id]) {
                         // is this skill visible
-                        std::string pSkillDescText = CharacterUI_GetSkillDescText(uActiveCharacter - 1, (PLAYER_SKILL_TYPE)skill_id);
+                        std::string pSkillDescText = CharacterUI_GetSkillDescText(uActiveCharacter - 1, skill_id);
                         CharacterUI_DrawTooltip(localization->GetSkillName(skill_id), pSkillDescText);
                     }
                 }

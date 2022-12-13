@@ -120,19 +120,41 @@ namespace Application {
                 return value;
             }
 
-            inline void Set(const T &val) {
+            inline T Set(const T &val) {
                 if (validator)
                     value = validator(val);
                 else
                     value = val;
+
+                return value;
             }
 
             inline void Reset() {
                 value = defValue;
             }
 
-            inline void Toggle() requires std::is_same_v<T, bool> {
+            inline T Toggle() requires std::is_same_v<T, bool> {
                 value = !value;
+
+                return value;
+            }
+
+            inline T Increment() requires std::is_same_v<T, int> {
+                if (validator)
+                    value = validator(value + 1);
+                else
+                    value++;
+
+                return value;
+            }
+
+            inline void Decrement() requires std::is_same_v<T, int> {
+                if (validator)
+                    value = validator(value - 1);
+                else
+                    value--;
+
+                return value;
             }
 
          private:
@@ -207,8 +229,17 @@ namespace Application {
          public:
             Gameplay(GameConfig *config): ConfigSection(config, "gameplay") {}
 
+            /** Use condition priorities from Grayface patches (e.g. Zombie has the lowest priority). */
+            ConfigValue<bool> AlternativeConditionPriorities = ConfigValue<bool>(this, "alternative_condition_priorities", true);
+
             /** Artifact limit after which artifacts are no longer generated in loot. 0 - disable limit. */
             ConfigValue<int> ArtifactLimit = ConfigValue<int>(this, "artifact_limit", 13, &ValidateArtifactLimit);
+
+            /** There are could be situations of item loss especially in high-level chests due to chest grid-limitations
+              * 0 - Vanilla behaviour, items will be lost.
+              * 1 - Try to place previously non-fit items on every chest opening.
+              * 2 - Try to place previously non-fit items on every item pickup from the chest. */
+            ConfigValue<int> ChestTryPlaceItems = ConfigValue<int>(this, "chest_try_place_items", 2);
 
             /** Maximum allowed slack for point-inside-a-polygon checks when calculating floor z level.
               * This is needed because there are actual holes in level geometry sometimes, up to several units wide. */
@@ -219,6 +250,15 @@ namespace Application {
 
             /** Maximum depth for item pickup / opening chests / activating levers / etc with a keyboard (by pressing trigger key). */
             ConfigValue<float> KeyboardInteractionDepth = ConfigValue<float>(this, "keyboard_interaction_depth", 512.0f, &ValidateInteractionDepth);
+
+            /** Minimum recovery time for melee weapons. 30 - vanilla */
+            ConfigValue<int> MinRecoveryMelee = ConfigValue<int>(this, "minimum_recovery_melee", 30, &ValidateRecovery);
+
+            /** Minimum recovery time for ranged weapons. 0 - vanilla, 5 - GrayFace patches */
+            ConfigValue<int> MinRecoveryRanged = ConfigValue<int>(this, "minimum_recovery_ranged", 5, &ValidateRecovery);
+
+            /** Minimum recovery time for blasters. 0 - vanilla, 5 - Grayface patches */
+            ConfigValue<int> MinRecoveryBlasters = ConfigValue<int>(this, "minimum_recovery_blasters", 5, &ValidateRecovery);
 
             /** Maximum height which you can go with fly spell */
             ConfigValue<int> MaxFlightHeight = ConfigValue<int>(this, "max_flight_height", 4000, &ValidateMaxFlightHeight);
@@ -245,8 +285,11 @@ namespace Application {
             /** Show unidentified items in green mask in inventory, otherwise vanilla behaviour when green mask applied in shops only. */
             ConfigValue<bool> ShowUndentifiedItem = ConfigValue<bool>(this, "show_unidentified_item", false);
 
-            /** Use condition priorities from Grayface patches (e.g. Zombie has the lowest priority). */
-            ConfigValue<bool> UseGrayfaceConditionPriorities = ConfigValue<bool>(this, "use_grayface_condition_priorities", true);
+            /** New Game starting map */
+            ConfigValue<std::string> StartingMap = ConfigValue<std::string>(this, "starting_map", "out01.odm");
+
+            /** Treat clubs as maces. In vanilla clubs are using separate hidden skill and so equipable without learned Mace skill. */
+            ConfigValue<bool> TreatClubAsMace = ConfigValue<bool>(this, "treat_club_as_mace", false);
 
          private:
             static int ValidateMaxFlightHeight(int max_flight_height) {
@@ -284,6 +327,12 @@ namespace Application {
                     return 10;
 
                 return eps;
+            }
+            static int ValidateRecovery(int recovery) {
+                if (recovery < 0)
+                    return 0;
+
+                return recovery;
             }
         };
 
@@ -330,11 +379,22 @@ namespace Application {
             /** Isn't currently in use? */
             ConfigValue<int> Gamma = ConfigValue<int>(this, "gamma", 4, &ValidateGamma);
 
+            /** Viewport top-left offset */
+            ConfigValue<int> HouseMovieX1 = ConfigValue<int>(this, "house_movie_x1", 8);
+            ConfigValue<int> HouseMovieY1 = ConfigValue<int>(this, "house_movie_y1", 8);
+
+            /** Viewport bottom-right offset */
+            ConfigValue<int> HouseMovieX2 = ConfigValue<int>(this, "house_movie_x2", 172);
+            ConfigValue<int> HouseMovieY2 = ConfigValue<int>(this, "house_movie_y2", 128);
+
             /** Use low-resolution bitmaps from HWL file instead of hi-resolution ones from LOD. */
             ConfigValue<bool> HWLBitmaps = ConfigValue<bool>(this, "hwl_bitmaps", false);
 
             /** Use low-resolution sprites from HWL file instead of hi-resolution ones from LOD. */
             ConfigValue<bool> HWLSprites = ConfigValue<bool>(this, "hwl_sprites", false);
+
+            /** Max number of BSP sectors to display. */
+            ConfigValue<int> MaxVisibleSectors = ConfigValue<int>(this, "maxvisiblesectors", 6, &ValidateMaxSectors);
 
             /** Allow changing trees/ground depending on current season (originally was only used in MM6) */
             ConfigValue<bool> SeasonsChange = ConfigValue<bool>(this, "seasons_change", true);
@@ -348,16 +408,22 @@ namespace Application {
             /** Vanilla's monster coloring method from hardware mode. When monsters look like bucket of paint was thrown at them. */
             ConfigValue<bool> Tinting = ConfigValue<bool>(this, "tinting", false);
 
-            /** Torchlight lighting */
-            ConfigValue<bool> Torchlight = ConfigValue<bool>(this, "torchlight", true);
-            ConfigValue<bool> LightsFlicker = ConfigValue<bool>(this, "lightsflicker", false);
+            /** Torchlight distance per each power level. 0 - disable torchlight. */
+            ConfigValue<int> TorchlightDistance = ConfigValue<int>(this, "torchlight_distance", 800, &ValidateTorchlight);
 
-            /** Max number of BSP sectors to display. */
-            ConfigValue<int> MaxVisibleSectors = ConfigValue<int>(this, "maxvisiblesectors", 6, &ValidateMaxSectors);
+            /** Torchlight lighting flicker effect distance. 0 - disable effect. */
+            ConfigValue<int> TorchlightFlicker = ConfigValue<int>(this, "torchlight_flicker", 200, &ValidateTorchlight);
 
             /** Enable synchronization of framerate with monitor vertical refresh rate. */
             ConfigValue<bool> VSync = ConfigValue<bool>(this, "vsync", false);
 
+            /** Viewport top-left offset */
+            ConfigValue<int> ViewPortX1 = ConfigValue<int>(this, "viewport_x1", 8);
+            ConfigValue<int> ViewPortY1 = ConfigValue<int>(this, "viewport_y1", 8);
+
+            /** Viewport bottom-right offset */
+            ConfigValue<int> ViewPortX2 = ConfigValue<int>(this, "viewport_x2", 172);
+            ConfigValue<int> ViewPortY2 = ConfigValue<int>(this, "viewport_y2", 128);
 
          private:
             static std::string ValidateRenderer(std::string renderer) {
@@ -377,6 +443,12 @@ namespace Application {
             static int ValidateMaxSectors(int sectors) {
                 sectors = std::clamp(sectors, 1, 150);
                 return sectors;
+            }
+            static int ValidateTorchlight(int distance) {
+                if (distance < 0)
+                    return 0;
+
+                return distance;
             }
         };
 
@@ -496,20 +568,11 @@ namespace Application {
 
             ConfigValue<std::string> Title = ConfigValue<std::string>(this, "title", "World of Might and Magic", &ValidateTitle);
 
-            /**
-             * Borderless mode.
-             *
-             * It removes window borders. For fullscreen mode instead of going into traditional exclusive fullscreen mode it goes into fake fullscreen mode.
-             * Fake fullscreen mode reposition window's top-left corner to 0,0 ignoring window position coordinates.
-             * And also resize window to display size.
-             */
-            ConfigValue<bool> Borderless = ConfigValue<bool>(this, "borderless", false);
-
-            /** Window mode. 1 - fullscreen, 0 - window */
-            ConfigValue<bool> Fullscreen = ConfigValue<bool>(this, "fullscreen", false);
-
             /** Display number as exposed by SDL. Order is platform-specific, e.g. on windows 0 is main display */
             ConfigValue<int> Display = ConfigValue<int>(this, "display", 0);
+
+            /** Window mode. 0 - window, 1 - borderless window, 2 - fullscreen, 3 - borderless fullscreen. */
+            ConfigValue<int> Mode = ConfigValue<int>(this, "mode", 0, &ValidateMode);
 
             /** Coordinates in pixels for position of left-top window corner. -1 is window centered on this axis. */
             ConfigValue<int> PositionX = ConfigValue<int>(this, "position_x", -1, &ValidatePosition);
@@ -528,6 +591,12 @@ namespace Application {
                      title = "World of Might and Magic";
 
                  return title;
+             }
+             static int ValidateMode(int mode) {
+                 if (mode < 0 || mode > 3)
+                     mode = 0;
+
+                 return mode;
              }
              static int ValidatePosition(int position) {
                 if (position < -1)

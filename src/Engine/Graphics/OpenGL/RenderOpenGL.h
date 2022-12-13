@@ -9,12 +9,6 @@
 #include "Engine/MM7.h"
 #include "Engine/Graphics/OpenGL/GLShaderLoader.h"
 
-#ifdef __APPLE__
-#define NK_SHADER_VERSION "#version 150\n"
-#else
-#define NK_SHADER_VERSION "#version 300 es\n"
-#endif
-
 class PlatformOpenGLContext;
 
 class RenderOpenGL : public RenderBase {
@@ -213,6 +207,7 @@ class RenderOpenGL : public RenderBase {
     virtual void DrawTwodVerts() override;
     void DrawBillboards();
 
+    virtual bool Reinitialize(bool firstInit) override;
     virtual void ReloadShaders() override;
 
  public:
@@ -266,6 +261,7 @@ class RenderOpenGL : public RenderBase {
     GLShader billbshader;
     GLShader decalshader;
     GLShader forcepershader;
+    GLShader nuklearshader;
 
     // terrain shader
     GLuint terrainVBO, terrainVAO;
@@ -327,9 +323,6 @@ class RenderOpenGL : public RenderBase {
         struct nk_draw_null_texture null;
         struct nk_font_atlas atlas;
         uint32_t vbo, vao, ebo;
-        uint32_t prog;
-        uint32_t vert_shdr;
-        uint32_t frag_shdr;
         int32_t attrib_pos;
         int32_t attrib_uv;
         int32_t attrib_col;

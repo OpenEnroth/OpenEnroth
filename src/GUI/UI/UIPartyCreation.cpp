@@ -59,8 +59,9 @@ bool PlayerCreation_Choose4Skills() {
 
     for (uint j = 0; j < 4; ++j) {
         skills_count = 0;
-        for (uint i = 0; i < 37; ++i) {
-            if (pParty->pPlayers[j].pActiveSkills[i]) ++skills_count;
+        for (PLAYER_SKILL_TYPE i : AllSkills()) {
+            if (pParty->pPlayers[j].pActiveSkills[i])
+                ++skills_count;
         }
         if (skills_count < 4) {
             return false;
@@ -187,12 +188,9 @@ void CreateParty_EventLoop() {
             pAudioPlayer->PlaySound(SOUND_ClickPlus, 0, 0, -1, 0, 0);
             break;
         case UIMSG_PlayerCreationSelectActiveSkill:
-            if (pPlayer[uPlayerCreationUI_SelectedCharacter]
-                .GetSkillIdxByOrder(3) == 37)
-                pParty->pPlayers[uPlayerCreationUI_SelectedCharacter]
-                .pActiveSkills
-                [pPlayer[uPlayerCreationUI_SelectedCharacter]
-                .GetSkillIdxByOrder(param + 4)] = 1;
+            if (pPlayer[uPlayerCreationUI_SelectedCharacter].GetSkillIdxByOrder(3) == PLAYER_SKILL_MISC)
+                pParty->pPlayers[uPlayerCreationUI_SelectedCharacter].pActiveSkills[pPlayer[uPlayerCreationUI_SelectedCharacter]
+                    .GetSkillIdxByOrder(param + 4)] = 1;
             pAudioPlayer->PlaySound(SOUND_ClickSkill, 0, 0, -1, 0, 0);
             break;
         case UIMSG_PlayerCreationSelectClass:
@@ -217,32 +215,20 @@ void CreateParty_EventLoop() {
         case UIMSG_PlayerCreationRemoveUpSkill:
         {
             int v4;
-            v4 = pGUIWindow_CurrentMenu->pCurrentPosActiveItem -
-                pGUIWindow_CurrentMenu->pStartingPosActiveItem;
-            pGUIWindow_CurrentMenu->pCurrentPosActiveItem =
-                v4 % 7 + pGUIWindow_CurrentMenu->pStartingPosActiveItem +
-                7 * param;
-            if (pPlayer[param].GetSkillIdxByOrder(2) !=
-                37) {  // 37 - None(Нет)
-                pParty->pPlayers[param]
-                    .pActiveSkills[pPlayer[param].GetSkillIdxByOrder(2)] =
-                    0;
+            v4 = pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem;
+            pGUIWindow_CurrentMenu->pCurrentPosActiveItem = v4 % 7 + pGUIWindow_CurrentMenu->pStartingPosActiveItem + 7 * param;
+            if (pPlayer[param].GetSkillIdxByOrder(2) != PLAYER_SKILL_MISC) {
+                pParty->pPlayers[param].pActiveSkills[pPlayer[param].GetSkillIdxByOrder(2)] = 0;
             }
             break;
         }
         case UIMSG_PlayerCreationRemoveDownSkill:
         {
             int v4;
-            v4 = pGUIWindow_CurrentMenu->pCurrentPosActiveItem -
-                pGUIWindow_CurrentMenu->pStartingPosActiveItem;
-            pGUIWindow_CurrentMenu->pCurrentPosActiveItem =
-                v4 % 7 + pGUIWindow_CurrentMenu->pStartingPosActiveItem +
-                7 * param;
-            if (pPlayer[param].GetSkillIdxByOrder(3) !=
-                37)  // 37 - None(Нет)
-                pParty->pPlayers[param]
-                .pActiveSkills[pPlayer[param].GetSkillIdxByOrder(3)] =
-                0;
+            v4 = pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem;
+            pGUIWindow_CurrentMenu->pCurrentPosActiveItem = v4 % 7 + pGUIWindow_CurrentMenu->pStartingPosActiveItem + 7 * param;
+            if (pPlayer[param].GetSkillIdxByOrder(3) != PLAYER_SKILL_MISC)
+                pParty->pPlayers[param].pActiveSkills[pPlayer[param].GetSkillIdxByOrder(3)] = 0;
         } break;
         case UIMSG_PlayerCreationChangeName:
             pAudioPlayer->PlaySound(SOUND_ClickSkill, 0, 0, -1, 0, 0);
@@ -441,9 +427,7 @@ void GUIWindow_PartyCreation::Update() {
                 break;
             }
         } else {
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, pIntervalX, 124,
-                0, pParty->pPlayers[i].pName,
-                130, 0);
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, pIntervalX, 124, 0, pParty->pPlayers[i].pName, 130, 0);
         }
 
         std::string pRaceName = pParty->pPlayers[i].GetRaceName();
@@ -452,92 +436,65 @@ void GUIWindow_PartyCreation::Update() {
             pRaceName, 130, 0);
 
         pTextCenter = pFontCreate->AlignText_Center(150, pText);
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, pTextCenter + uX - 24,
-            291, colorTable.Tacha.C16(), pText,
-            0, 0, 0);  // Skills
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, pTextCenter + uX - 24, 291, colorTable.Tacha.C16(), pText, 0, 0, 0);  // Skills
 
-        auto str1 =
-            StringPrintf("%s\r%03d%d", localization->GetString(LSTR_MIGHT), pX_Numbers,
-                pParty->pPlayers[i].GetActualMight());
+        int posY = 169;
+
+        auto str1 = StringPrintf("%s\r%03d%d", localization->GetString(LSTR_MIGHT), pX_Numbers, pParty->pPlayers[i].GetActualMight());
         pStatColor = pParty->pPlayers[i].GetStatColor(0);
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX, 169, pStatColor,
-            str1);
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX, posY, pStatColor, str1);
 
-        auto str2 = StringPrintf(
-            "%s\r%03d%d", localization->GetString(LSTR_INTELLECT), pX_Numbers,
-            pParty->pPlayers[i].GetActualIntelligence());
+        auto str2 = StringPrintf("%s\r%03d%d", localization->GetString(LSTR_INTELLECT), pX_Numbers, pParty->pPlayers[i].GetActualIntelligence());
         pStatColor = pParty->pPlayers[i].GetStatColor(1);
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX, pIntervalY + 169,
-            pStatColor, str2);
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX, pIntervalY + posY, pStatColor, str2);
 
-        auto str3 = StringPrintf(
-            "%s\r%03d%d", localization->GetString(LSTR_PERSONALITY), pX_Numbers,
-            pParty->pPlayers[i].GetActualWillpower());
+        auto str3 = StringPrintf("%s\r%03d%d", localization->GetString(LSTR_PERSONALITY), pX_Numbers, pParty->pPlayers[i].GetActualWillpower());
         pStatColor = pParty->pPlayers[i].GetStatColor(2);
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX, 2 * pIntervalY + 169,
-            pStatColor, str3);
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX, 2 * pIntervalY + posY, pStatColor, str3);
 
-        auto str4 = StringPrintf(
-            "%s\r%03d%d", localization->GetString(LSTR_ENDURANCE), pX_Numbers,
-            pParty->pPlayers[i].GetActualEndurance());
+        auto str4 = StringPrintf("%s\r%03d%d", localization->GetString(LSTR_ENDURANCE), pX_Numbers, pParty->pPlayers[i].GetActualEndurance());
         pStatColor = pParty->pPlayers[i].GetStatColor(3);
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX, 3 * pIntervalY + 169,
-            pStatColor, str4);
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX, 3 * pIntervalY + posY, pStatColor, str4);
 
-        auto str5 = StringPrintf(
-            "%s\r%03d%d", localization->GetString(LSTR_ACCURACY), pX_Numbers,
-            pParty->pPlayers[i].GetActualAccuracy());
+        auto str5 = StringPrintf("%s\r%03d%d", localization->GetString(LSTR_ACCURACY), pX_Numbers, pParty->pPlayers[i].GetActualAccuracy());
         pStatColor = pParty->pPlayers[i].GetStatColor(4);
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX, 4 * pIntervalY + 169,
-            pStatColor, str5);
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX, 4 * pIntervalY + posY, pStatColor, str5);
 
-        auto str6 =
-            StringPrintf("%s\r%03d%d", localization->GetString(LSTR_SPEED), pX_Numbers,
-                pParty->pPlayers[i].GetActualSpeed());
+        auto str6 = StringPrintf("%s\r%03d%d", localization->GetString(LSTR_SPEED), pX_Numbers, pParty->pPlayers[i].GetActualSpeed());
         pStatColor = pParty->pPlayers[i].GetStatColor(5);
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX, 5 * pIntervalY + 169,
-            pStatColor, str6);
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX, 5 * pIntervalY + posY, pStatColor, str6);
 
-        auto str7 =
-            StringPrintf("%s\r%03d%d", localization->GetString(LSTR_LUCK), pX_Numbers,
-                pParty->pPlayers[i].GetActualLuck());
+        auto str7 = StringPrintf("%s\r%03d%d", localization->GetString(LSTR_LUCK), pX_Numbers, pParty->pPlayers[i].GetActualLuck());
         pStatColor = pParty->pPlayers[i].GetStatColor(6);
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX, 6 * pIntervalY + 169,
-            pStatColor, str7);
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX, 6 * pIntervalY + posY, pStatColor, str7);
+
+        posY = 311;
 
         pSkillsType = pParty->pPlayers[i].GetSkillIdxByOrder(0);
-        pTextCenter = pFontCreate->AlignText_Center(
-            150, localization->GetSkillName(pSkillsType));
-        auto str8 = StringPrintf("\t%03u%s", pTextCenter,
-            localization->GetSkillName(pSkillsType));
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX - 24, 311, colorTable.White.C16(), str8);
+        pTextCenter = pFontCreate->AlignText_Center(150, localization->GetSkillName(pSkillsType));
+        auto str8 = StringPrintf("\t%03u%s", pTextCenter, localization->GetSkillName(pSkillsType));
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX - 24, posY, colorTable.White.C16(), str8);
 
         pSkillsType = pParty->pPlayers[i].GetSkillIdxByOrder(1);
-        pTextCenter = pFontCreate->AlignText_Center(
-            150, localization->GetSkillName(pSkillsType));
-        auto str9 = StringPrintf("\t%03u%s", pTextCenter,
-            localization->GetSkillName(pSkillsType));
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX - 24, pIntervalY + 311, colorTable.White.C16(), str9);
+        pTextCenter = pFontCreate->AlignText_Center(150, localization->GetSkillName(pSkillsType));
+        auto str9 = StringPrintf("\t%03u%s", pTextCenter, localization->GetSkillName(pSkillsType));
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX - 24, pIntervalY + posY, colorTable.White.C16(), str9);
 
         pSkillsType = pParty->pPlayers[i].GetSkillIdxByOrder(2);
-        pTextCenter = pFontCreate->AlignText_Center(
-            150, localization->GetSkillName(pSkillsType));
-        auto str10 = StringPrintf("\t%03u%s", pTextCenter,
-            localization->GetSkillName(pSkillsType));
+        pTextCenter = pFontCreate->AlignText_Center(150, localization->GetSkillName(pSkillsType));
+        auto str10 = StringPrintf("\t%03u%s", pTextCenter, localization->GetSkillName(pSkillsType));
         pColorText = colorTable.Green.C16();
-        if ((signed int)pSkillsType >= PLAYER_SKILL_COUNT) pColorText = colorTable.Aqua.C16();
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontCreate, uX - 24, 2 * pIntervalY + 311, pColorText, str10);
+        if (pSkillsType >= PLAYER_SKILL_COUNT)
+            pColorText = colorTable.Aqua.C16();
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX - 24, 2 * pIntervalY + posY, pColorText, str10);
 
         pSkillsType = pParty->pPlayers[i].GetSkillIdxByOrder(3);
-        pTextCenter = pFontCreate->AlignText_Center(
-            150, localization->GetSkillName(pSkillsType));
-        auto str11 = StringPrintf("\t%03u%s", pTextCenter,
-            localization->GetSkillName(pSkillsType));
+        pTextCenter = pFontCreate->AlignText_Center(150, localization->GetSkillName(pSkillsType));
+        auto str11 = StringPrintf("\t%03u%s", pTextCenter, localization->GetSkillName(pSkillsType));
         pColorText = colorTable.Green.C16();
-        if ((signed int)pSkillsType >= PLAYER_SKILL_COUNT) pColorText = colorTable.Aqua.C16();
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontCreate, uX - 24, 3 * pIntervalY + 311, pColorText, str11);
+        if (pSkillsType >= PLAYER_SKILL_COUNT)
+            pColorText = colorTable.Aqua.C16();
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX - 24, 3 * pIntervalY + posY, pColorText, str11);
 
         pIntervalX += 159;
         pX_Numbers -= 158;
@@ -914,18 +871,21 @@ bool PartyCreationUI_LoopInternal() {
         if (pParty->pPlayers[i].classType == PLAYER_CLASS_KNIGHT)
             pParty->pPlayers[i].sResMagicBase = 10;
         pParty->pPlayers[i].pPlayerBuffs[22].expire_time.Reset();
-        for (uint j = 0; j < 9; j++) {
-            if (pParty->pPlayers[i].pActiveSkills[PLAYER_SKILL_FIRE + j]) {
-                pParty->pPlayers[i].lastOpenedSpellbookPage = j;
+        int page = 0;
+        for (PLAYER_SKILL_TYPE j : MagicSkills()) {
+            if (pParty->pPlayers[i].pActiveSkills[j]) {
+                pParty->pPlayers[i].lastOpenedSpellbookPage = page;
                 break;
             }
+
+            page++;
         }
         pItemTable->GenerateItem(ITEM_TREASURE_LEVEL_2, 40, &item);
         pParty->pPlayers[i].AddItem2(-1, &item);
 
         pParty->pPlayers[i].sHealth = pParty->pPlayers[i].GetMaxHealth();
         pParty->pPlayers[i].sMana = pParty->pPlayers[i].GetMaxMana();
-        for (uint j = 0; j < 37; ++j) {
+        for (PLAYER_SKILL_TYPE j : AllSkills()) {
             if (!pParty->pPlayers[i].pActiveSkills[j]) continue;
 
             switch (j) {
@@ -1024,6 +984,9 @@ bool PartyCreationUI_LoopInternal() {
             case PLAYER_SKILL_UNARMED:
                 pParty->pPlayers[i].AddItem(-1, ITEM_GAUNTLETS);
                 break;
+            case PLAYER_SKILL_CLUB:
+                pParty->pPlayers[i].AddItem(-1, ITEM_CLUB);
+                break;
             default:
                 break;
             }
@@ -1033,6 +996,9 @@ bool PartyCreationUI_LoopInternal() {
                     pParty->pPlayers[i].pOwnItems[k].SetIdentified();
             }
         }
+
+        if (!engine->config->gameplay.TreatClubAsMace.Get())
+            pParty->pPlayers[i].pActiveSkills[PLAYER_SKILL_CLUB] = 1;
     }
 
     // pAudioPlayer->PauseSounds(-1);
