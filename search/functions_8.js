@@ -6,7 +6,7 @@ var searchData=
   ['haseventhint_3',['HasEventHint',['../structODMFace.html#aa45660acb8089f14ba4dad1d0171358b',1,'ODMFace::HasEventHint()'],['../structBLVFaceExtra.html#a85e827ffe481eb788cf968421e5c9ed5',1,'BLVFaceExtra::HasEventHint()']]],
   ['hasitem_4',['HasItem',['../structPlayer.html#a2864b6285c74df5e7d2db398670d02b6',1,'Player::HasItem()'],['../structParty.html#a65c08325bb473c1c727b30def6b6c876',1,'Party::HasItem()']]],
   ['hasitemequipped_5',['HasItemEquipped',['../structPlayer.html#ad5927988c1d361953fb76ba8b5c330ce',1,'Player']]],
-  ['hasskill_6',['HasSkill',['../structPlayer.html#a027b5afeebefbe09ea701fb48130f349',1,'Player']]],
+  ['hasskill_6',['HasSkill',['../structPlayer.html#af540a355a9f2a7cbed4184f2a561d2e4',1,'Player']]],
   ['hassprite_7',['HasSprite',['../structSpriteObject.html#a0637a976da5ca21e412bf7e12df85d37',1,'SpriteObject']]],
   ['hasunderwatersuitequipped_8',['HasUnderwaterSuitEquipped',['../structPlayer.html#ae25d148d93e14f8c348a68c463060282',1,'Player']]],
   ['heal_9',['Heal',['../structPlayer.html#aa8cd993b330fecc5f4d1d888b2d7e492',1,'Player']]],

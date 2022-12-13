@@ -59,7 +59,7 @@ var searchData=
   ['playercreation_5fgetunspentattributepointcount_56',['PlayerCreation_GetUnspentAttributePointCount',['../Player_8h.html#a4f8f745d8a5e19a2f27c5ae1196a3967',1,'PlayerCreation_GetUnspentAttributePointCount():&#160;Player.cpp'],['../Player_8cpp.html#a4f8f745d8a5e19a2f27c5ae1196a3967',1,'PlayerCreation_GetUnspentAttributePointCount():&#160;Player.cpp']]],
   ['playerequipment_57',['PlayerEquipment',['../unionPlayerEquipment.html#a99b4f5d1a7173a5f6dda26a2205e055e',1,'PlayerEquipment']]],
   ['playerframetable_58',['PlayerFrameTable',['../structPlayerFrameTable.html#a3d8c9ab2452d82e0b5e54697df62621e',1,'PlayerFrameTable']]],
-  ['playerhitormiss_59',['PlayerHitOrMiss',['../structPlayer.html#ae0dda8c58bed72508b0c190201e0a8b7',1,'Player']]],
+  ['playerhitormiss_59',['PlayerHitOrMiss',['../structPlayer.html#aba16157a7310086ed46a1e8057632eef',1,'Player']]],
   ['playerturn_60',['PlayerTurn',['../Arcomage_8cpp.html#aa002c458365a310e9988b642add051cf',1,'Arcomage.cpp']]],
   ['playfullscreenmovie_61',['PlayFullscreenMovie',['../classMPlayer.html#a75a0afd464002129f6917027248b6f1f',1,'MPlayer']]],
   ['playhousesound_62',['PlayHouseSound',['../UIHouses_8h.html#af131a9157367a2d529da9174e1319534',1,'PlayHouseSound(unsigned int uHouseID, HouseSoundID sound):&#160;UIHouses.cpp'],['../UIHouses_8cpp.html#af131a9157367a2d529da9174e1319534',1,'PlayHouseSound(unsigned int uHouseID, HouseSoundID sound):&#160;UIHouses.cpp']]],

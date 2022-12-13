@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;39cc048</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;9538cb2</span>
    </div>
   </td>
  </tr>
@@ -88,6 +88,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="Autonotes_8h.html">Engine/Autonotes.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ItemEnums_8h.html">Engine/Objects/ItemEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="NPCEnums_8h.html">Engine/Objects/NPCEnums.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="PlayerEnums_8h.html">Engine/Objects/PlayerEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="MapInfo_8h.html">Engine/MapInfo.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIDialogues_8h.html">GUI/GUIDialogues.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
@@ -236,8 +237,14 @@ Variables</h2></td></tr>
 <tr class="separator:a167fa0bf6695690bbbc951b85a66191f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd3a0e86660f90a24ea69faeb3cc9fb2"><td class="memItemLeft" align="right" valign="top">std::array&lt; int16_t, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#abd3a0e86660f90a24ea69faeb3cc9fb2">pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing</a></td></tr>
 <tr class="separator:abd3a0e86660f90a24ea69faeb3cc9fb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1745a0f801c575399db654d5fd74a368"><td class="memItemLeft" align="right" valign="top">std::array&lt; std::array&lt; char, 37 &gt;, 36 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#a1745a0f801c575399db654d5fd74a368">byte_4ED970_skill_learn_ability_by_class_table</a></td></tr>
-<tr class="separator:a1745a0f801c575399db654d5fd74a368"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab75d9083d0d5b057cbec666de40fd4a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="PlayerEnums_8h.html#adb9cb0391b2119e3d28341d2f340964e">PLAYER_SKILL_LEVEL</a>, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ad7d2fb4775761af8b6e5025c83785f1c">PLAYER_SKILL_FIRST</a>, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a5c5a2546d4757ab60553f61a6f3f65f1">PLAYER_SKILL_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#aab75d9083d0d5b057cbec666de40fd4a">skills_max_level</a></td></tr>
+<tr class="separator:aab75d9083d0d5b057cbec666de40fd4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a486cbdbf871d6996a54b2a0472bd6779"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a>, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ad7d2fb4775761af8b6e5025c83785f1c">PLAYER_SKILL_FIRST</a>, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a5c5a2546d4757ab60553f61a6f3f65f1">PLAYER_SKILL_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#a486cbdbf871d6996a54b2a0472bd6779">base_recovery_times_per_weapon_type</a></td></tr>
+<tr class="separator:a486cbdbf871d6996a54b2a0472bd6779"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8a328adfbc89355482cbf71be58f46f"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="PlayerEnums_8h.html#a41cfcbb7cd5d9e8279582963908f8250">CLASS_SKILL</a>, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ad7d2fb4775761af8b6e5025c83785f1c">PLAYER_SKILL_FIRST</a>, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a5c5a2546d4757ab60553f61a6f3f65f1">PLAYER_SKILL_LAST</a> &gt;, 9 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#ad8a328adfbc89355482cbf71be58f46f">pSkillAvailabilityPerClass</a></td></tr>
+<tr class="separator:ad8a328adfbc89355482cbf71be58f46f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad13338becdf410f41f8fd272b72f5c13"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="PlayerEnums_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942">PLAYER_SKILL_MASTERY</a>, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ad7d2fb4775761af8b6e5025c83785f1c">PLAYER_SKILL_FIRST</a>, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a5c5a2546d4757ab60553f61a6f3f65f1">PLAYER_SKILL_LAST</a> &gt;, 36 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#ad13338becdf410f41f8fd272b72f5c13">byte_4ED970_skill_learn_ability_by_class_table</a></td></tr>
+<tr class="separator:ad13338becdf410f41f8fd272b72f5c13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a515c4d8d435b979a19ccfcd1a06c807a"><td class="memItemLeft" align="right" valign="top">std::array&lt; unsigned int, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#a515c4d8d435b979a19ccfcd1a06c807a">pHiredNPCsIconsOffsetsX</a></td></tr>
 <tr class="separator:a515c4d8d435b979a19ccfcd1a06c807a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a44c42557b24f3ea430144f465906873f"><td class="memItemLeft" align="right" valign="top">std::array&lt; unsigned int, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#a44c42557b24f3ea430144f465906873f">pHiredNPCsIconsOffsetsY</a></td></tr>
@@ -704,8 +711,8 @@ Variables</h2></td></tr>
 <tr class="separator:a7ecd918106be280c2dd10d99d55e4b5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a41e6f6a37a68a26205a85dee4621a3c2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#a41e6f6a37a68a26205a85dee4621a3c2">guild_membership_approved</a></td></tr>
 <tr class="separator:a41e6f6a37a68a26205a85dee4621a3c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae72435bf802091aebdb1f3db51c7cd7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#aae72435bf802091aebdb1f3db51c7cd7">dword_F8B1B0_MasteryBeingTaught</a></td></tr>
-<tr class="separator:aae72435bf802091aebdb1f3db51c7cd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afbe206ab0eb29b56e62672d4c49d0de1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="PlayerEnums_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942">PLAYER_SKILL_MASTERY</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#afbe206ab0eb29b56e62672d4c49d0de1">dword_F8B1B0_MasteryBeingTaught</a></td></tr>
+<tr class="separator:afbe206ab0eb29b56e62672d4c49d0de1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4bb6508ee8f5604384798ce3ac89243b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#a4bb6508ee8f5604384798ce3ac89243b">gold_transaction_amount</a></td></tr>
 <tr class="separator:a4bb6508ee8f5604384798ce3ac89243b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a860ffc8780eb65ed03010159873b72b4"><td class="memItemLeft" align="right" valign="top">std::array&lt; const char *, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm7__data_8h.html#a860ffc8780eb65ed03010159873b72b4">pShopOptions</a></td></tr>
@@ -1661,6 +1668,28 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="a486cbdbf871d6996a54b2a0472bd6779" name="a486cbdbf871d6996a54b2a0472bd6779"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a486cbdbf871d6996a54b2a0472bd6779">&#9670;&#160;</a></span>base_recovery_times_per_weapon_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a>, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ad7d2fb4775761af8b6e5025c83785f1c">PLAYER_SKILL_FIRST</a>, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a5c5a2546d4757ab60553f61a6f3f65f1">PLAYER_SKILL_LAST</a>&gt; base_recovery_times_per_weapon_type</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aeec6b47a335bd82456f0dc589ee5ef97" name="aeec6b47a335bd82456f0dc589ee5ef97"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aeec6b47a335bd82456f0dc589ee5ef97">&#9670;&#160;</a></span>bDialogueUI_InitializeActor_NPC_ID</h2>
 
@@ -2189,8 +2218,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a1745a0f801c575399db654d5fd74a368" name="a1745a0f801c575399db654d5fd74a368"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1745a0f801c575399db654d5fd74a368">&#9670;&#160;</a></span>byte_4ED970_skill_learn_ability_by_class_table</h2>
+<a id="ad13338becdf410f41f8fd272b72f5c13" name="ad13338becdf410f41f8fd272b72f5c13"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad13338becdf410f41f8fd272b72f5c13">&#9670;&#160;</a></span>byte_4ED970_skill_learn_ability_by_class_table</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2199,7 +2228,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;std::array&lt;char, 37&gt;, 36&gt; byte_4ED970_skill_learn_ability_by_class_table</td>
+          <td class="memname">std::array&lt;<a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="PlayerEnums_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942">PLAYER_SKILL_MASTERY</a>, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ad7d2fb4775761af8b6e5025c83785f1c">PLAYER_SKILL_FIRST</a>, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a5c5a2546d4757ab60553f61a6f3f65f1">PLAYER_SKILL_LAST</a>&gt;, 36&gt; byte_4ED970_skill_learn_ability_by_class_table</td>
         </tr>
       </table>
   </td>
@@ -3556,8 +3585,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="aae72435bf802091aebdb1f3db51c7cd7" name="aae72435bf802091aebdb1f3db51c7cd7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aae72435bf802091aebdb1f3db51c7cd7">&#9670;&#160;</a></span>dword_F8B1B0_MasteryBeingTaught</h2>
+<a id="afbe206ab0eb29b56e62672d4c49d0de1" name="afbe206ab0eb29b56e62672d4c49d0de1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afbe206ab0eb29b56e62672d4c49d0de1">&#9670;&#160;</a></span>dword_F8B1B0_MasteryBeingTaught</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3566,7 +3595,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int dword_F8B1B0_MasteryBeingTaught</td>
+          <td class="memname"><a class="el" href="PlayerEnums_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942">PLAYER_SKILL_MASTERY</a> dword_F8B1B0_MasteryBeingTaught</td>
         </tr>
       </table>
   </td>
@@ -6108,6 +6137,28 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="ad8a328adfbc89355482cbf71be58f46f" name="ad8a328adfbc89355482cbf71be58f46f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad8a328adfbc89355482cbf71be58f46f">&#9670;&#160;</a></span>pSkillAvailabilityPerClass</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::array&lt;<a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="PlayerEnums_8h.html#a41cfcbb7cd5d9e8279582963908f8250">CLASS_SKILL</a>, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ad7d2fb4775761af8b6e5025c83785f1c">PLAYER_SKILL_FIRST</a>, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a5c5a2546d4757ab60553f61a6f3f65f1">PLAYER_SKILL_LAST</a>&gt;, 9&gt; pSkillAvailabilityPerClass</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a905aac9bbe1e250677da90d4e7b06a6b" name="a905aac9bbe1e250677da90d4e7b06a6b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a905aac9bbe1e250677da90d4e7b06a6b">&#9670;&#160;</a></span>pSkillPointsAttributeDescription</h2>
 
@@ -6625,6 +6676,28 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">signed int sDialogue_SpeakingActorNPC_ID</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aab75d9083d0d5b057cbec666de40fd4a" name="aab75d9083d0d5b057cbec666de40fd4a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab75d9083d0d5b057cbec666de40fd4a">&#9670;&#160;</a></span>skills_max_level</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="PlayerEnums_8h.html#adb9cb0391b2119e3d28341d2f340964e">PLAYER_SKILL_LEVEL</a>, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ad7d2fb4775761af8b6e5025c83785f1c">PLAYER_SKILL_FIRST</a>, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a5c5a2546d4757ab60553f61a6f3f65f1">PLAYER_SKILL_LAST</a>&gt; skills_max_level</td>
         </tr>
       </table>
   </td>

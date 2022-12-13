@@ -73,5 +73,7 @@ var searchData=
   ['windowactivate_70',['WindowActivate',['../classPlatformEvent.html#ab1b85cb24f01d755e87bf165a8b18ee8a39b9021e2e0796fb3745af064395899f',1,'PlatformEvent']]],
   ['windowcloserequest_71',['WindowCloseRequest',['../classPlatformEvent.html#ab1b85cb24f01d755e87bf165a8b18ee8ade48b462e23d690450ff474ac1f42990',1,'PlatformEvent']]],
   ['windowdeactivate_72',['WindowDeactivate',['../classPlatformEvent.html#ab1b85cb24f01d755e87bf165a8b18ee8a6a17f09e317eb910aa6ed6e83a920e08',1,'PlatformEvent']]],
-  ['windowmove_73',['WindowMove',['../classPlatformEvent.html#ab1b85cb24f01d755e87bf165a8b18ee8a3d9774b680140c9501d89e75d321ccfc',1,'PlatformEvent']]]
+  ['windowed_73',['WINDOWED',['../PlatformWindow_8h.html#a5773202ab7ffd1746de9d527927198a3adaa43822b2c6abbb5d4eaf867ff6e4a4',1,'PlatformWindow.h']]],
+  ['windowed_5fborderless_74',['WINDOWED_BORDERLESS',['../PlatformWindow_8h.html#a5773202ab7ffd1746de9d527927198a3afdf8b144dd9158630830f2758831b608',1,'PlatformWindow.h']]],
+  ['windowmove_75',['WindowMove',['../classPlatformEvent.html#ab1b85cb24f01d755e87bf165a8b18ee8a3d9774b680140c9501d89e75d321ccfc',1,'PlatformEvent']]]
 ];

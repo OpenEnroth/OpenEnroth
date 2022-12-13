@@ -272,7 +272,6 @@ var menudata={children:[
 {text:"h",url:"globals_defs_h.html#index_h"},
 {text:"l",url:"globals_defs_l.html#index_l"},
 {text:"m",url:"globals_defs_m.html#index_m"},
-{text:"n",url:"globals_defs_n.html#index_n"},
 {text:"p",url:"globals_defs_p.html#index_p"},
 {text:"r",url:"globals_defs_r.html#index_r"},
 {text:"s",url:"globals_defs_s.html#index_s"},

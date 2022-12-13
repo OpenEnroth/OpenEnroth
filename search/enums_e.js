@@ -15,8 +15,9 @@ var searchData=
   ['player_5fbuffs_12',['PLAYER_BUFFS',['../PlayerEnums_8h.html#ac2005d40089d000876ce6dec2d5b123f',1,'PlayerEnums.h']]],
   ['player_5fclass_5ftype_13',['PLAYER_CLASS_TYPE',['../PlayerEnums_8h.html#a8b0f780d4f163891fe834eebde9c9955',1,'PlayerEnums.h']]],
   ['player_5fsex_14',['PLAYER_SEX',['../PlayerEnums_8h.html#a8b5cdb0c1525ed7ab1d3f60dc14684f9',1,'PlayerEnums.h']]],
-  ['player_5fskill_5ftype_15',['PLAYER_SKILL_TYPE',['../PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5',1,'PlayerEnums.h']]],
-  ['playerspeech_16',['PlayerSpeech',['../PlayerEnums_8h.html#ab50a2a71840e11476f69875990dc7265',1,'PlayerEnums.h']]],
-  ['pointercreationtype_17',['PointerCreationType',['../structVis__SelectionList.html#a9e474fcb1237991d944eecc3f71c5ee3',1,'Vis_SelectionList']]],
-  ['polygontype_18',['PolygonType',['../BSPModel_8h.html#a91fb3e69af7609c2810f12d81ecf6fab',1,'BSPModel.h']]]
+  ['player_5fskill_5fmastery_15',['PLAYER_SKILL_MASTERY',['../PlayerEnums_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942',1,'PlayerEnums.h']]],
+  ['player_5fskill_5ftype_16',['PLAYER_SKILL_TYPE',['../PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5',1,'PlayerEnums.h']]],
+  ['playerspeech_17',['PlayerSpeech',['../PlayerEnums_8h.html#ab50a2a71840e11476f69875990dc7265',1,'PlayerEnums.h']]],
+  ['pointercreationtype_18',['PointerCreationType',['../structVis__SelectionList.html#a9e474fcb1237991d944eecc3f71c5ee3',1,'Vis_SelectionList']]],
+  ['polygontype_19',['PolygonType',['../BSPModel_8h.html#a91fb3e69af7609c2810f12d81ecf6fab',1,'BSPModel.h']]]
 ];

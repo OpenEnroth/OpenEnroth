@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;39cc048</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;9538cb2</span>
    </div>
   </td>
  </tr>
@@ -107,14 +107,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a2ec121f8268afbe83842941c1eca511b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af401f825c0ca3cbfab2e52cbb9c80eaf"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#af401f825c0ca3cbfab2e52cbb9c80eaf">IsVisible</a> () const =0</td></tr>
 <tr class="separator:af401f825c0ca3cbfab2e52cbb9c80eaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad9a0489a7a8ded0fa24a02f8fcd647a1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#ad9a0489a7a8ded0fa24a02f8fcd647a1">SetFullscreen</a> (bool fullscreen)=0</td></tr>
-<tr class="separator:ad9a0489a7a8ded0fa24a02f8fcd647a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a48499a126ab3c07aceec542870c1f289"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#a48499a126ab3c07aceec542870c1f289">IsFullscreen</a> () const =0</td></tr>
-<tr class="separator:a48499a126ab3c07aceec542870c1f289"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae3a91ca545a960c6873ce96a21daaebd"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#ae3a91ca545a960c6873ce96a21daaebd">SetBorderless</a> (bool borderless)=0</td></tr>
-<tr class="separator:ae3a91ca545a960c6873ce96a21daaebd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7735887fa3317d50a56657877e024a07"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#a7735887fa3317d50a56657877e024a07">IsBorderless</a> () const =0</td></tr>
-<tr class="separator:a7735887fa3317d50a56657877e024a07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a0c9993bc33215e59e4566b32585f68"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#a9a0c9993bc33215e59e4566b32585f68">SetMode</a> (<a class="el" href="PlatformWindow_8h.html#a5773202ab7ffd1746de9d527927198a3">WindowMode</a> mode)=0</td></tr>
+<tr class="separator:a9a0c9993bc33215e59e4566b32585f68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44e0f7b0d46004f902114050ca824cac"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="PlatformWindow_8h.html#a5773202ab7ffd1746de9d527927198a3">WindowMode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#a44e0f7b0d46004f902114050ca824cac">GetMode</a> ()=0</td></tr>
+<tr class="separator:a44e0f7b0d46004f902114050ca824cac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a57309261d446ad66a2214f9667010209"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#a57309261d446ad66a2214f9667010209">SetGrabsMouse</a> (bool grabsMouse)=0</td></tr>
 <tr class="separator:a57309261d446ad66a2214f9667010209"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9058287f39208d550f30554a287b5097"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#a9058287f39208d550f30554a287b5097">GrabsMouse</a> () const =0</td></tr>
@@ -270,6 +266,33 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a44e0f7b0d46004f902114050ca824cac" name="a44e0f7b0d46004f902114050ca824cac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44e0f7b0d46004f902114050ca824cac">&#9670;&#160;</a></span>GetMode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="PlatformWindow_8h.html#a5773202ab7ffd1746de9d527927198a3">WindowMode</a> PlatformWindow::GetMode </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classSdlWindow.html#a12de4effa8da4f0ee944e6823d928798">SdlWindow</a>.</p>
+
+</div>
+</div>
 <a id="ab0eba9dea46445755418febabbc3145f" name="ab0eba9dea46445755418febabbc3145f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab0eba9dea46445755418febabbc3145f">&#9670;&#160;</a></span>GetWidth()</h2>
 
@@ -319,60 +342,6 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Implemented in <a class="el" href="classSdlWindow.html#af3373ccf26be57f6cca32beb9dfb8c2d">SdlWindow</a>.</p>
-
-</div>
-</div>
-<a id="a7735887fa3317d50a56657877e024a07" name="a7735887fa3317d50a56657877e024a07"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7735887fa3317d50a56657877e024a07">&#9670;&#160;</a></span>IsBorderless()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual bool PlatformWindow::IsBorderless </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implemented in <a class="el" href="classSdlWindow.html#a00cef6ceb5584b45a43bba15bf5fa7dd">SdlWindow</a>.</p>
-
-</div>
-</div>
-<a id="a48499a126ab3c07aceec542870c1f289" name="a48499a126ab3c07aceec542870c1f289"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a48499a126ab3c07aceec542870c1f289">&#9670;&#160;</a></span>IsFullscreen()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual bool PlatformWindow::IsFullscreen </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implemented in <a class="el" href="classSdlWindow.html#abfac50cd5e744861e8af3fa5d704cfb5">SdlWindow</a>.</p>
 
 </div>
 </div>
@@ -458,62 +427,6 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ae3a91ca545a960c6873ce96a21daaebd" name="ae3a91ca545a960c6873ce96a21daaebd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae3a91ca545a960c6873ce96a21daaebd">&#9670;&#160;</a></span>SetBorderless()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void PlatformWindow::SetBorderless </td>
-          <td>(</td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>borderless</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implemented in <a class="el" href="classSdlWindow.html#aabb1c6f3ac058d74028a3453f3be4d9a">SdlWindow</a>.</p>
-
-</div>
-</div>
-<a id="ad9a0489a7a8ded0fa24a02f8fcd647a1" name="ad9a0489a7a8ded0fa24a02f8fcd647a1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad9a0489a7a8ded0fa24a02f8fcd647a1">&#9670;&#160;</a></span>SetFullscreen()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void PlatformWindow::SetFullscreen </td>
-          <td>(</td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>fullscreen</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implemented in <a class="el" href="classSdlWindow.html#acae57067eb34cfb43ea116c3c6e1a076">SdlWindow</a>.</p>
-
-</div>
-</div>
 <a id="a57309261d446ad66a2214f9667010209" name="a57309261d446ad66a2214f9667010209"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a57309261d446ad66a2214f9667010209">&#9670;&#160;</a></span>SetGrabsMouse()</h2>
 
@@ -539,6 +452,34 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Implemented in <a class="el" href="classSdlWindow.html#a238cd0417690b6b39fbfd0a08e08160b">SdlWindow</a>.</p>
+
+</div>
+</div>
+<a id="a9a0c9993bc33215e59e4566b32585f68" name="a9a0c9993bc33215e59e4566b32585f68"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a0c9993bc33215e59e4566b32585f68">&#9670;&#160;</a></span>SetMode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void PlatformWindow::SetMode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="PlatformWindow_8h.html#a5773202ab7ffd1746de9d527927198a3">WindowMode</a>&#160;</td>
+          <td class="paramname"><em>mode</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classSdlWindow.html#af9917910d525058a30b488f54825b2d8">SdlWindow</a>.</p>
 
 </div>
 </div>

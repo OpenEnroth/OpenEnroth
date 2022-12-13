@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;39cc048</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;9538cb2</span>
    </div>
   </td>
  </tr>
@@ -74,11 +74,22 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#enum-members">Enumerations</a>  </div>
+<a href="#typedef-members">Typedefs</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">PlayerEnums.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<table class="memberdecls">
+<div class="textblock"><code>#include &lt;cassert&gt;</code><br />
+<code>#include &quot;<a class="el" href="Segment_8h.html">Utility/Segment.h</a>&quot;</code><br />
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:a014da852057119cf6298d27ce19c67cd"><td class="memItemLeft" align="right" valign="top">typedef uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PlayerEnums_8h.html#a014da852057119cf6298d27ce19c67cd">PLAYER_SKILL</a></td></tr>
+<tr class="separator:a014da852057119cf6298d27ce19c67cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb9cb0391b2119e3d28341d2f340964e"><td class="memItemLeft" align="right" valign="top">typedef uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PlayerEnums_8h.html#adb9cb0391b2119e3d28341d2f340964e">PLAYER_SKILL_LEVEL</a></td></tr>
+<tr class="separator:adb9cb0391b2119e3d28341d2f340964e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:ac2005d40089d000876ce6dec2d5b123f"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PlayerEnums_8h.html#ac2005d40089d000876ce6dec2d5b123f">PLAYER_BUFFS</a> { <br />
@@ -261,60 +272,80 @@ Enumerations</h2></td></tr>
 , <a class="el" href="PlayerEnums_8h.html#a4b7c772deaa8468a023ed914165a6ed4ac6ca0a37410bfc9d8702fc75436351e5">CHARACTER_RACE_DWARF</a> = 3
  }</td></tr>
 <tr class="separator:a4b7c772deaa8468a023ed914165a6ed4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a882aeeabc7e03f0fa334764a909ab3f5"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5">PLAYER_SKILL_TYPE</a> : int8_t { <br />
-&#160;&#160;<a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5aa657a5a16984d8bdaf80af8dc52d1fb0">PLAYER_SKILL_STAFF</a> = 0
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a63ab3727b178c2d5ecc7eb7429ba6aca">PLAYER_SKILL_SWORD</a> = 1
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a0bdb318b1d9183a93c3a89ef438fa069">PLAYER_SKILL_DAGGER</a> = 2
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5af2fce752e380fd666d11761313c5bc97">PLAYER_SKILL_AXE</a> = 3
+<tr class="memitem:ae7fdd356d1b4ddbdd59bcba036e6f942"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PlayerEnums_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942">PLAYER_SKILL_MASTERY</a> : int32_t { <br />
+&#160;&#160;<a class="el" href="PlayerEnums_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942a6f3821fb98b55732e07a3fe35c53bd7d">PLAYER_SKILL_MASTERY_NONE</a> = 0
+, <a class="el" href="PlayerEnums_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942a9310de7e143a151803e23b4685afc37a">PLAYER_SKILL_MASTERY_NOVICE</a> = 1
+, <a class="el" href="PlayerEnums_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942ae05e519c261c35ae57ff2c136008f1ac">PLAYER_SKILL_MASTERY_EXPERT</a> = 2
+, <a class="el" href="PlayerEnums_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942a284ba38f42a687f93f8cd402c31d33d2">PLAYER_SKILL_MASTERY_MASTER</a> = 3
 , <br />
-&#160;&#160;<a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ad6b004a79a27d4bb20ac88e2c0791910">PLAYER_SKILL_SPEAR</a> = 4
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a60e76a355edb525de7bc9ef70348f489">PLAYER_SKILL_BOW</a> = 5
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a4abeaadf33b697194b50759332038e90">PLAYER_SKILL_MACE</a> = 6
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5af16a32e35f7d3137a0bbd921dc44f3e8">PLAYER_SKILL_BLASTER</a> = 7
+&#160;&#160;<a class="el" href="PlayerEnums_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942a19988527435f679c15524039af5f8141">PLAYER_SKILL_MASTERY_GRANDMASTER</a> = 4
+, <a class="el" href="PlayerEnums_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942ae104ff021581230f1738b166fa9344b5">PLAYER_SKILL_MASTERY_FIRST</a> = PLAYER_SKILL_MASTERY_NOVICE
+, <a class="el" href="PlayerEnums_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942a8bf040e078072832de4714e5d27a4aec">PLAYER_SKILL_MASTERY_LAST</a> = PLAYER_SKILL_MASTERY_GRANDMASTER
+<br />
+ }</td></tr>
+<tr class="separator:ae7fdd356d1b4ddbdd59bcba036e6f942"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41cfcbb7cd5d9e8279582963908f8250"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PlayerEnums_8h.html#a41cfcbb7cd5d9e8279582963908f8250">CLASS_SKILL</a> : uint8_t { <a class="el" href="PlayerEnums_8h.html#a41cfcbb7cd5d9e8279582963908f8250ada43141a1dc8255d85e9783ca195e9a2">CLASS_SKILL_DENIED</a> = 0
+, <a class="el" href="PlayerEnums_8h.html#a41cfcbb7cd5d9e8279582963908f8250ac9fdffeda73a03431545de24d5d1118a">CLASS_SKILL_AVAILABLE</a> = 1
+, <a class="el" href="PlayerEnums_8h.html#a41cfcbb7cd5d9e8279582963908f8250a7be9c612b5378f1ba3922d282655acc8">CLASS_SKILL_PRIMARY</a> = 2
+ }</td></tr>
+<tr class="separator:a41cfcbb7cd5d9e8279582963908f8250"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a882aeeabc7e03f0fa334764a909ab3f5"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5">PLAYER_SKILL_TYPE</a> : int8_t { <br />
+&#160;&#160;<a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ad478345ba4e407b8625d93197721aef6">PLAYER_SKILL_INVALID</a> = -1
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a2c109517afe58c3b269069f132d8b47b">PLAYER_SKILL_STAFF</a> = 0
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ae94c73f9f2a4f95c8971af1980ab97b7">PLAYER_SKILL_SWORD</a> = 1
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a7810e93fc62078ca39761646998ef0f7">PLAYER_SKILL_DAGGER</a> = 2
 , <br />
-&#160;&#160;<a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a4f71cd71d58dbe5325e8a1b6de024796">PLAYER_SKILL_SHIELD</a> = 8
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a5587ca196f96d1788f81bb825565617c">PLAYER_SKILL_LEATHER</a> = 9
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a6dd3b6411326d3290f52fd9027d4856f">PLAYER_SKILL_CHAIN</a> = 10
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ab7f4fe80200ae57054b83683eced2692">PLAYER_SKILL_PLATE</a> = 11
+&#160;&#160;<a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a5c4ebfeb3edf1551f6862b1172098f44">PLAYER_SKILL_AXE</a> = 3
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5abf0e29841ae5aab4819d7e71b098c06d">PLAYER_SKILL_SPEAR</a> = 4
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5aefafc0d5942b4b80cee4661bde7d29e6">PLAYER_SKILL_BOW</a> = 5
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a51e754ab160fb656980c93bdeccfac76">PLAYER_SKILL_MACE</a> = 6
 , <br />
-&#160;&#160;<a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ae0527f6d3fd0d322e979413ea8a7a58b">PLAYER_SKILL_FIRE</a> = 12
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a4e9975f2a781f3e5618ba7b423f6e812">PLAYER_SKILL_AIR</a> = 13
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5adc9e73cc9171f286cd4365d04bda1155">PLAYER_SKILL_WATER</a> = 14
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a2a728c2479e9028a5aa9855d101bad09">PLAYER_SKILL_EARTH</a> = 15
+&#160;&#160;<a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5aa8074ad26cea8bfa280e027739afca5f">PLAYER_SKILL_BLASTER</a> = 7
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a59f6cb77ab3cad81ed233f44e8778dca">PLAYER_SKILL_SHIELD</a> = 8
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a2684411a22b520832e07dfa70f4fbfdf">PLAYER_SKILL_LEATHER</a> = 9
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ab8ea364b248eba4086440a7d42dedb3a">PLAYER_SKILL_CHAIN</a> = 10
 , <br />
-&#160;&#160;<a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5aae0003564d680d6a80695e3c1e04ed4e">PLAYER_SKILL_SPIRIT</a> = 16
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a57bc1069f5e20879f838c420dbfc61b2">PLAYER_SKILL_MIND</a> = 17
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a3469bc310e6f5b016f5a410349a4e1f3">PLAYER_SKILL_BODY</a> = 18
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5aad38c25c2798e495fb95405492d36ecb">PLAYER_SKILL_LIGHT</a> = 19
+&#160;&#160;<a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a66dba307c063aafdc09d30a7556872a3">PLAYER_SKILL_PLATE</a> = 11
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5aab06897c5f97eaca0c4944ccf2df5171">PLAYER_SKILL_FIRE</a> = 12
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a06374dd4fca833ed4e414e79de097fce">PLAYER_SKILL_AIR</a> = 13
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a4a6e6cb1e9454f92cd1a276604935a89">PLAYER_SKILL_WATER</a> = 14
 , <br />
-&#160;&#160;<a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ac84faa92fbbbf6bf1bee432f8a832aac">PLAYER_SKILL_DARK</a> = 20
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a2e9647ac233c5e024024586005a23ffc">PLAYER_SKILL_ITEM_ID</a> = 21
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a61bd6b7d6c947cd0551bb9b15bff5f40">PLAYER_SKILL_MERCHANT</a> = 22
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a5d85c4572ea3c1ab2cb55d3088d6b396">PLAYER_SKILL_REPAIR</a> = 23
+&#160;&#160;<a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a8767c7e91e30bd3b26afc9677e787567">PLAYER_SKILL_EARTH</a> = 15
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a3258d6537e000968d975bef62145fe6c">PLAYER_SKILL_SPIRIT</a> = 16
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5adb14f3cb2502a1794592efaf0685a5ba">PLAYER_SKILL_MIND</a> = 17
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ada2a13802aca177f45d4712a0825077f">PLAYER_SKILL_BODY</a> = 18
 , <br />
-&#160;&#160;<a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ab9c95fc54b8fa6d54c8f33c07ae81b7a">PLAYER_SKILL_BODYBUILDING</a> = 24
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a1406e5a657dc1b2a399adf64e3c18825">PLAYER_SKILL_MEDITATION</a> = 25
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a917c51401431c8ba74db1fc55c73eb02">PLAYER_SKILL_PERCEPTION</a> = 26
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a172aa136a5789054bf83d94c297cd0d4">PLAYER_SKILL_DIPLOMACY</a> = 27
+&#160;&#160;<a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a92f98da8476596ff9116405f52c334cd">PLAYER_SKILL_LIGHT</a> = 19
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5af66c504ef1c911d595e5f663436ba898">PLAYER_SKILL_DARK</a> = 20
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5af3f0f2f826bcd758370b3d67d4ccf737">PLAYER_SKILL_ITEM_ID</a> = 21
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a17ad28abac8ce3a9c01eeaabc42852e9">PLAYER_SKILL_MERCHANT</a> = 22
 , <br />
-&#160;&#160;<a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5af7c60bca8c00c430d10c8e7aa95f2f4e">PLAYER_SKILL_THIEVERY</a> = 28
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a336c4c0b58205292701a08355d750432">PLAYER_SKILL_TRAP_DISARM</a> = 29
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a167a4b9f67933a057e9f17f7eeb6e927">PLAYER_SKILL_DODGE</a> = 30
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a259ed83d4b2fa2e3b66090682e2f3035">PLAYER_SKILL_UNARMED</a> = 31
+&#160;&#160;<a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a3c2bffd1016eb8e965a8d5581e5432c9">PLAYER_SKILL_REPAIR</a> = 23
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ae3a7cbdff201955d170a89417f67ff7f">PLAYER_SKILL_BODYBUILDING</a> = 24
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5af5bf088321fbc3930d199d73f400a273">PLAYER_SKILL_MEDITATION</a> = 25
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a810350ac4bd3e7ce981c988bfa4569a7">PLAYER_SKILL_PERCEPTION</a> = 26
 , <br />
-&#160;&#160;<a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a924b351e53da033d740c1e59e3c99c17">PLAYER_SKILL_MONSTER_ID</a> = 32
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5aaf1615567ed63bb15c03130e653a6231">PLAYER_SKILL_ARMSMASTER</a> = 33
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5abcb83c7f4114de516e9e70222e10a4ba">PLAYER_SKILL_STEALING</a> = 34
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ac4074060185b8d6941468466a8d1f386">PLAYER_SKILL_ALCHEMY</a> = 35
+&#160;&#160;<a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a5d4e012725b65db3a7a93d3adc060235">PLAYER_SKILL_DIPLOMACY</a> = 27
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a664046a4c7e370b59dd5a98b96d98854">PLAYER_SKILL_THIEVERY</a> = 28
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ac267fc7045263769193003b2dd36149a">PLAYER_SKILL_TRAP_DISARM</a> = 29
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a41b15895ce4b8374accc7137726e3ea2">PLAYER_SKILL_DODGE</a> = 30
 , <br />
-&#160;&#160;<a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a1e32c174693d6983a712dea18157e8c9">PLAYER_SKILL_LEARNING</a> = 36
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a75d71645632743728e0a21140dad090f">PLAYER_SKILL_COUNT</a> = 37
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5aa4da1a72163a330729fc6f3bbef3096a">PLAYER_SKILL_CLUB</a> = 37
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a1db38e441554f4c4bfe20273ce0f0c98">PLAYER_SKILL_MISC</a> = 38
+&#160;&#160;<a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a15d6e8c3a27030ef37b8b5b0437f17e5">PLAYER_SKILL_UNARMED</a> = 31
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a8f6a16f795951782133a8e3b9acf2c62">PLAYER_SKILL_MONSTER_ID</a> = 32
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a107cf54bfa26a81e66535e74d9c4a0ed">PLAYER_SKILL_ARMSMASTER</a> = 33
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ad88c8bf9d0f5f9664acc7f4ab8237518">PLAYER_SKILL_STEALING</a> = 34
 , <br />
-&#160;&#160;<a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ac3d1806fa69ec00fb6fa218a71920991">PLAYER_SKILL_INVALID</a> = -1
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ab1137ee5fcaf7fa9832581b701589129">PLAYER_SKILL_FIRST</a> = PLAYER_SKILL_STAFF
-, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ad372918f521506df8e17ff7cd3a42bd0">PLAYER_SKILL_LAST</a> = PLAYER_SKILL_LEARNING
+&#160;&#160;<a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5aae058ed56c89767440afa9efee33e240">PLAYER_SKILL_ALCHEMY</a> = 35
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ae71c3f4d47224431bcb22052fd8c393f">PLAYER_SKILL_LEARNING</a> = 36
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5abfe2a9caab5b3b872b9293342531d8c1">PLAYER_SKILL_CLUB</a> = 37
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5acd66e4f26a9906d80fda75f1a885f438">PLAYER_SKILL_COUNT</a> = 38
+, <br />
+&#160;&#160;<a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a662f7e1af657009e4384e8079da580f9">PLAYER_SKILL_MISC</a> = 38
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a96c6e10be9b9471dbaf2085c03c7dddd">PLAYER_SKILL_MM7_FIRST</a> = PLAYER_SKILL_STAFF
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a07066fe378ff97bb450ef229a91b1207">PLAYER_SKILL_MM7_LAST</a> = PLAYER_SKILL_LEARNING
+, <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5ad7d2fb4775761af8b6e5025c83785f1c">PLAYER_SKILL_FIRST</a> = PLAYER_SKILL_STAFF
+, <br />
+&#160;&#160;<a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5a5c5a2546d4757ab60553f61a6f3f65f1">PLAYER_SKILL_LAST</a> = PLAYER_SKILL_CLUB
 <br />
  }</td></tr>
 <tr class="separator:a882aeeabc7e03f0fa334764a909ab3f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -495,7 +526,61 @@ Enumerations</h2></td></tr>
 <br />
  }</td></tr>
 <tr class="separator:af7a3ec7aad73ec22b61f03b17390d80a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a8c86672acb254f616b515f895246710f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="PlayerEnums_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942">PLAYER_SKILL_MASTERY</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PlayerEnums_8h.html#a8c86672acb254f616b515f895246710f">SkillMasteries</a> ()</td></tr>
+<tr class="separator:a8c86672acb254f616b515f895246710f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5caa0eacc75db341e265ecb3a18520b8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="PlayerEnums_8h.html#adb9cb0391b2119e3d28341d2f340964e">PLAYER_SKILL_LEVEL</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PlayerEnums_8h.html#a5caa0eacc75db341e265ecb3a18520b8">GetSkillLevel</a> (<a class="el" href="PlayerEnums_8h.html#a014da852057119cf6298d27ce19c67cd">PLAYER_SKILL</a> skill_value)</td></tr>
+<tr class="separator:a5caa0eacc75db341e265ecb3a18520b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6202c4568334e5ac1dc4b4314d128072"><td class="memItemLeft" align="right" valign="top"><a class="el" href="PlayerEnums_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942">PLAYER_SKILL_MASTERY</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PlayerEnums_8h.html#a6202c4568334e5ac1dc4b4314d128072">GetSkillMastery</a> (<a class="el" href="PlayerEnums_8h.html#a014da852057119cf6298d27ce19c67cd">PLAYER_SKILL</a> skill_value)</td></tr>
+<tr class="separator:a6202c4568334e5ac1dc4b4314d128072"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a91ff19dbff2694ed4177160f6d89e5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PlayerEnums_8h.html#a1a91ff19dbff2694ed4177160f6d89e5">SetSkillLevel</a> (<a class="el" href="PlayerEnums_8h.html#a014da852057119cf6298d27ce19c67cd">PLAYER_SKILL</a> *skill_value, <a class="el" href="PlayerEnums_8h.html#adb9cb0391b2119e3d28341d2f340964e">PLAYER_SKILL_LEVEL</a> level)</td></tr>
+<tr class="separator:a1a91ff19dbff2694ed4177160f6d89e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a266ca01ce2ed494a93fb636f56c3b35a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PlayerEnums_8h.html#a266ca01ce2ed494a93fb636f56c3b35a">SetSkillMastery</a> (<a class="el" href="PlayerEnums_8h.html#a014da852057119cf6298d27ce19c67cd">PLAYER_SKILL</a> *skill_value, <a class="el" href="PlayerEnums_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942">PLAYER_SKILL_MASTERY</a> mastery)</td></tr>
+<tr class="separator:a266ca01ce2ed494a93fb636f56c3b35a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a91c88ae93589de76748402d4f80c4b5c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5">PLAYER_SKILL_TYPE</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PlayerEnums_8h.html#a91c88ae93589de76748402d4f80c4b5c">AllSkills</a> ()</td></tr>
+<tr class="separator:a91c88ae93589de76748402d4f80c4b5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e0f314bd9cbd3b2ead34f73440c6879"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5">PLAYER_SKILL_TYPE</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PlayerEnums_8h.html#a5e0f314bd9cbd3b2ead34f73440c6879">MM7Skills</a> ()</td></tr>
+<tr class="separator:a5e0f314bd9cbd3b2ead34f73440c6879"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b797ac72c78f17a5edfbc80c3fea8b6"><td class="memItemLeft" align="right" valign="top">std::initializer_list&lt; <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5">PLAYER_SKILL_TYPE</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PlayerEnums_8h.html#a1b797ac72c78f17a5edfbc80c3fea8b6">ArmorSkills</a> ()</td></tr>
+<tr class="separator:a1b797ac72c78f17a5edfbc80c3fea8b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5098201e6a301db833371cec182eec03"><td class="memItemLeft" align="right" valign="top">std::initializer_list&lt; <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5">PLAYER_SKILL_TYPE</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PlayerEnums_8h.html#a5098201e6a301db833371cec182eec03">WeaponSkills</a> ()</td></tr>
+<tr class="separator:a5098201e6a301db833371cec182eec03"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04381deebc9459ff1a351056b618eb6c"><td class="memItemLeft" align="right" valign="top">std::initializer_list&lt; <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5">PLAYER_SKILL_TYPE</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PlayerEnums_8h.html#a04381deebc9459ff1a351056b618eb6c">MiscSkills</a> ()</td></tr>
+<tr class="separator:a04381deebc9459ff1a351056b618eb6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeaf086e4c7372f4c3f810e9dca4352c4"><td class="memItemLeft" align="right" valign="top">std::initializer_list&lt; <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5">PLAYER_SKILL_TYPE</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PlayerEnums_8h.html#aeaf086e4c7372f4c3f810e9dca4352c4">MagicSkills</a> ()</td></tr>
+<tr class="separator:aeaf086e4c7372f4c3f810e9dca4352c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a id="a014da852057119cf6298d27ce19c67cd" name="a014da852057119cf6298d27ce19c67cd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a014da852057119cf6298d27ce19c67cd">&#9670;&#160;</a></span>PLAYER_SKILL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef uint16_t <a class="el" href="PlayerEnums_8h.html#a014da852057119cf6298d27ce19c67cd">PLAYER_SKILL</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="adb9cb0391b2119e3d28341d2f340964e" name="adb9cb0391b2119e3d28341d2f340964e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb9cb0391b2119e3d28341d2f340964e">&#9670;&#160;</a></span>PLAYER_SKILL_LEVEL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef uint8_t <a class="el" href="PlayerEnums_8h.html#adb9cb0391b2119e3d28341d2f340964e">PLAYER_SKILL_LEVEL</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="af7a3ec7aad73ec22b61f03b17390d80a" name="af7a3ec7aad73ec22b61f03b17390d80a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af7a3ec7aad73ec22b61f03b17390d80a">&#9670;&#160;</a></span>CHARACTER_ATTRIBUTE_TYPE</h2>
@@ -644,6 +729,25 @@ Enumerations</h2></td></tr>
 
 </div>
 </div>
+<a id="a41cfcbb7cd5d9e8279582963908f8250" name="a41cfcbb7cd5d9e8279582963908f8250"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41cfcbb7cd5d9e8279582963908f8250">&#9670;&#160;</a></span>CLASS_SKILL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="PlayerEnums_8h.html#a41cfcbb7cd5d9e8279582963908f8250">CLASS_SKILL</a> : uint8_t</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a41cfcbb7cd5d9e8279582963908f8250ada43141a1dc8255d85e9783ca195e9a2" name="a41cfcbb7cd5d9e8279582963908f8250ada43141a1dc8255d85e9783ca195e9a2"></a>CLASS_SKILL_DENIED&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a41cfcbb7cd5d9e8279582963908f8250ac9fdffeda73a03431545de24d5d1118a" name="a41cfcbb7cd5d9e8279582963908f8250ac9fdffeda73a03431545de24d5d1118a"></a>CLASS_SKILL_AVAILABLE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a41cfcbb7cd5d9e8279582963908f8250a7be9c612b5378f1ba3922d282655acc8" name="a41cfcbb7cd5d9e8279582963908f8250a7be9c612b5378f1ba3922d282655acc8"></a>CLASS_SKILL_PRIMARY&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
 <a id="ac2005d40089d000876ce6dec2d5b123f" name="ac2005d40089d000876ce6dec2d5b123f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac2005d40089d000876ce6dec2d5b123f">&#9670;&#160;</a></span>PLAYER_BUFFS</h2>
 
@@ -754,61 +858,102 @@ Enumerations</h2></td></tr>
 
 </div>
 </div>
+<a id="ae7fdd356d1b4ddbdd59bcba036e6f942" name="ae7fdd356d1b4ddbdd59bcba036e6f942"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7fdd356d1b4ddbdd59bcba036e6f942">&#9670;&#160;</a></span>PLAYER_SKILL_MASTERY</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="PlayerEnums_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942">PLAYER_SKILL_MASTERY</a> : int32_t</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ae7fdd356d1b4ddbdd59bcba036e6f942a6f3821fb98b55732e07a3fe35c53bd7d" name="ae7fdd356d1b4ddbdd59bcba036e6f942a6f3821fb98b55732e07a3fe35c53bd7d"></a>PLAYER_SKILL_MASTERY_NONE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae7fdd356d1b4ddbdd59bcba036e6f942a9310de7e143a151803e23b4685afc37a" name="ae7fdd356d1b4ddbdd59bcba036e6f942a9310de7e143a151803e23b4685afc37a"></a>PLAYER_SKILL_MASTERY_NOVICE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae7fdd356d1b4ddbdd59bcba036e6f942ae05e519c261c35ae57ff2c136008f1ac" name="ae7fdd356d1b4ddbdd59bcba036e6f942ae05e519c261c35ae57ff2c136008f1ac"></a>PLAYER_SKILL_MASTERY_EXPERT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae7fdd356d1b4ddbdd59bcba036e6f942a284ba38f42a687f93f8cd402c31d33d2" name="ae7fdd356d1b4ddbdd59bcba036e6f942a284ba38f42a687f93f8cd402c31d33d2"></a>PLAYER_SKILL_MASTERY_MASTER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae7fdd356d1b4ddbdd59bcba036e6f942a19988527435f679c15524039af5f8141" name="ae7fdd356d1b4ddbdd59bcba036e6f942a19988527435f679c15524039af5f8141"></a>PLAYER_SKILL_MASTERY_GRANDMASTER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae7fdd356d1b4ddbdd59bcba036e6f942ae104ff021581230f1738b166fa9344b5" name="ae7fdd356d1b4ddbdd59bcba036e6f942ae104ff021581230f1738b166fa9344b5"></a>PLAYER_SKILL_MASTERY_FIRST&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae7fdd356d1b4ddbdd59bcba036e6f942a8bf040e078072832de4714e5d27a4aec" name="ae7fdd356d1b4ddbdd59bcba036e6f942a8bf040e078072832de4714e5d27a4aec"></a>PLAYER_SKILL_MASTERY_LAST&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
 <a id="a882aeeabc7e03f0fa334764a909ab3f5" name="a882aeeabc7e03f0fa334764a909ab3f5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a882aeeabc7e03f0fa334764a909ab3f5">&#9670;&#160;</a></span>PLAYER_SKILL_TYPE</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5">PLAYER_SKILL_TYPE</a> : int8_t</td>
+          <td class="memname">enum class <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5">PLAYER_SKILL_TYPE</a> : int8_t</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5aa657a5a16984d8bdaf80af8dc52d1fb0" name="a882aeeabc7e03f0fa334764a909ab3f5aa657a5a16984d8bdaf80af8dc52d1fb0"></a>PLAYER_SKILL_STAFF&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a63ab3727b178c2d5ecc7eb7429ba6aca" name="a882aeeabc7e03f0fa334764a909ab3f5a63ab3727b178c2d5ecc7eb7429ba6aca"></a>PLAYER_SKILL_SWORD&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a0bdb318b1d9183a93c3a89ef438fa069" name="a882aeeabc7e03f0fa334764a909ab3f5a0bdb318b1d9183a93c3a89ef438fa069"></a>PLAYER_SKILL_DAGGER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5af2fce752e380fd666d11761313c5bc97" name="a882aeeabc7e03f0fa334764a909ab3f5af2fce752e380fd666d11761313c5bc97"></a>PLAYER_SKILL_AXE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5ad6b004a79a27d4bb20ac88e2c0791910" name="a882aeeabc7e03f0fa334764a909ab3f5ad6b004a79a27d4bb20ac88e2c0791910"></a>PLAYER_SKILL_SPEAR&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a60e76a355edb525de7bc9ef70348f489" name="a882aeeabc7e03f0fa334764a909ab3f5a60e76a355edb525de7bc9ef70348f489"></a>PLAYER_SKILL_BOW&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a4abeaadf33b697194b50759332038e90" name="a882aeeabc7e03f0fa334764a909ab3f5a4abeaadf33b697194b50759332038e90"></a>PLAYER_SKILL_MACE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5af16a32e35f7d3137a0bbd921dc44f3e8" name="a882aeeabc7e03f0fa334764a909ab3f5af16a32e35f7d3137a0bbd921dc44f3e8"></a>PLAYER_SKILL_BLASTER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a4f71cd71d58dbe5325e8a1b6de024796" name="a882aeeabc7e03f0fa334764a909ab3f5a4f71cd71d58dbe5325e8a1b6de024796"></a>PLAYER_SKILL_SHIELD&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a5587ca196f96d1788f81bb825565617c" name="a882aeeabc7e03f0fa334764a909ab3f5a5587ca196f96d1788f81bb825565617c"></a>PLAYER_SKILL_LEATHER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a6dd3b6411326d3290f52fd9027d4856f" name="a882aeeabc7e03f0fa334764a909ab3f5a6dd3b6411326d3290f52fd9027d4856f"></a>PLAYER_SKILL_CHAIN&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5ab7f4fe80200ae57054b83683eced2692" name="a882aeeabc7e03f0fa334764a909ab3f5ab7f4fe80200ae57054b83683eced2692"></a>PLAYER_SKILL_PLATE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5ae0527f6d3fd0d322e979413ea8a7a58b" name="a882aeeabc7e03f0fa334764a909ab3f5ae0527f6d3fd0d322e979413ea8a7a58b"></a>PLAYER_SKILL_FIRE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a4e9975f2a781f3e5618ba7b423f6e812" name="a882aeeabc7e03f0fa334764a909ab3f5a4e9975f2a781f3e5618ba7b423f6e812"></a>PLAYER_SKILL_AIR&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5adc9e73cc9171f286cd4365d04bda1155" name="a882aeeabc7e03f0fa334764a909ab3f5adc9e73cc9171f286cd4365d04bda1155"></a>PLAYER_SKILL_WATER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a2a728c2479e9028a5aa9855d101bad09" name="a882aeeabc7e03f0fa334764a909ab3f5a2a728c2479e9028a5aa9855d101bad09"></a>PLAYER_SKILL_EARTH&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5aae0003564d680d6a80695e3c1e04ed4e" name="a882aeeabc7e03f0fa334764a909ab3f5aae0003564d680d6a80695e3c1e04ed4e"></a>PLAYER_SKILL_SPIRIT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a57bc1069f5e20879f838c420dbfc61b2" name="a882aeeabc7e03f0fa334764a909ab3f5a57bc1069f5e20879f838c420dbfc61b2"></a>PLAYER_SKILL_MIND&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a3469bc310e6f5b016f5a410349a4e1f3" name="a882aeeabc7e03f0fa334764a909ab3f5a3469bc310e6f5b016f5a410349a4e1f3"></a>PLAYER_SKILL_BODY&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5aad38c25c2798e495fb95405492d36ecb" name="a882aeeabc7e03f0fa334764a909ab3f5aad38c25c2798e495fb95405492d36ecb"></a>PLAYER_SKILL_LIGHT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5ac84faa92fbbbf6bf1bee432f8a832aac" name="a882aeeabc7e03f0fa334764a909ab3f5ac84faa92fbbbf6bf1bee432f8a832aac"></a>PLAYER_SKILL_DARK&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a2e9647ac233c5e024024586005a23ffc" name="a882aeeabc7e03f0fa334764a909ab3f5a2e9647ac233c5e024024586005a23ffc"></a>PLAYER_SKILL_ITEM_ID&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a61bd6b7d6c947cd0551bb9b15bff5f40" name="a882aeeabc7e03f0fa334764a909ab3f5a61bd6b7d6c947cd0551bb9b15bff5f40"></a>PLAYER_SKILL_MERCHANT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a5d85c4572ea3c1ab2cb55d3088d6b396" name="a882aeeabc7e03f0fa334764a909ab3f5a5d85c4572ea3c1ab2cb55d3088d6b396"></a>PLAYER_SKILL_REPAIR&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5ab9c95fc54b8fa6d54c8f33c07ae81b7a" name="a882aeeabc7e03f0fa334764a909ab3f5ab9c95fc54b8fa6d54c8f33c07ae81b7a"></a>PLAYER_SKILL_BODYBUILDING&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a1406e5a657dc1b2a399adf64e3c18825" name="a882aeeabc7e03f0fa334764a909ab3f5a1406e5a657dc1b2a399adf64e3c18825"></a>PLAYER_SKILL_MEDITATION&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a917c51401431c8ba74db1fc55c73eb02" name="a882aeeabc7e03f0fa334764a909ab3f5a917c51401431c8ba74db1fc55c73eb02"></a>PLAYER_SKILL_PERCEPTION&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a172aa136a5789054bf83d94c297cd0d4" name="a882aeeabc7e03f0fa334764a909ab3f5a172aa136a5789054bf83d94c297cd0d4"></a>PLAYER_SKILL_DIPLOMACY&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5af7c60bca8c00c430d10c8e7aa95f2f4e" name="a882aeeabc7e03f0fa334764a909ab3f5af7c60bca8c00c430d10c8e7aa95f2f4e"></a>PLAYER_SKILL_THIEVERY&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a336c4c0b58205292701a08355d750432" name="a882aeeabc7e03f0fa334764a909ab3f5a336c4c0b58205292701a08355d750432"></a>PLAYER_SKILL_TRAP_DISARM&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a167a4b9f67933a057e9f17f7eeb6e927" name="a882aeeabc7e03f0fa334764a909ab3f5a167a4b9f67933a057e9f17f7eeb6e927"></a>PLAYER_SKILL_DODGE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a259ed83d4b2fa2e3b66090682e2f3035" name="a882aeeabc7e03f0fa334764a909ab3f5a259ed83d4b2fa2e3b66090682e2f3035"></a>PLAYER_SKILL_UNARMED&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a924b351e53da033d740c1e59e3c99c17" name="a882aeeabc7e03f0fa334764a909ab3f5a924b351e53da033d740c1e59e3c99c17"></a>PLAYER_SKILL_MONSTER_ID&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5aaf1615567ed63bb15c03130e653a6231" name="a882aeeabc7e03f0fa334764a909ab3f5aaf1615567ed63bb15c03130e653a6231"></a>PLAYER_SKILL_ARMSMASTER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5abcb83c7f4114de516e9e70222e10a4ba" name="a882aeeabc7e03f0fa334764a909ab3f5abcb83c7f4114de516e9e70222e10a4ba"></a>PLAYER_SKILL_STEALING&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5ac4074060185b8d6941468466a8d1f386" name="a882aeeabc7e03f0fa334764a909ab3f5ac4074060185b8d6941468466a8d1f386"></a>PLAYER_SKILL_ALCHEMY&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a1e32c174693d6983a712dea18157e8c9" name="a882aeeabc7e03f0fa334764a909ab3f5a1e32c174693d6983a712dea18157e8c9"></a>PLAYER_SKILL_LEARNING&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a75d71645632743728e0a21140dad090f" name="a882aeeabc7e03f0fa334764a909ab3f5a75d71645632743728e0a21140dad090f"></a>PLAYER_SKILL_COUNT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5aa4da1a72163a330729fc6f3bbef3096a" name="a882aeeabc7e03f0fa334764a909ab3f5aa4da1a72163a330729fc6f3bbef3096a"></a>PLAYER_SKILL_CLUB&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a1db38e441554f4c4bfe20273ce0f0c98" name="a882aeeabc7e03f0fa334764a909ab3f5a1db38e441554f4c4bfe20273ce0f0c98"></a>PLAYER_SKILL_MISC&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5ac3d1806fa69ec00fb6fa218a71920991" name="a882aeeabc7e03f0fa334764a909ab3f5ac3d1806fa69ec00fb6fa218a71920991"></a>PLAYER_SKILL_INVALID&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5ab1137ee5fcaf7fa9832581b701589129" name="a882aeeabc7e03f0fa334764a909ab3f5ab1137ee5fcaf7fa9832581b701589129"></a>PLAYER_SKILL_FIRST&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5ad372918f521506df8e17ff7cd3a42bd0" name="a882aeeabc7e03f0fa334764a909ab3f5ad372918f521506df8e17ff7cd3a42bd0"></a>PLAYER_SKILL_LAST&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5ad478345ba4e407b8625d93197721aef6" name="a882aeeabc7e03f0fa334764a909ab3f5ad478345ba4e407b8625d93197721aef6"></a>PLAYER_SKILL_INVALID&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a2c109517afe58c3b269069f132d8b47b" name="a882aeeabc7e03f0fa334764a909ab3f5a2c109517afe58c3b269069f132d8b47b"></a>PLAYER_SKILL_STAFF&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5ae94c73f9f2a4f95c8971af1980ab97b7" name="a882aeeabc7e03f0fa334764a909ab3f5ae94c73f9f2a4f95c8971af1980ab97b7"></a>PLAYER_SKILL_SWORD&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a7810e93fc62078ca39761646998ef0f7" name="a882aeeabc7e03f0fa334764a909ab3f5a7810e93fc62078ca39761646998ef0f7"></a>PLAYER_SKILL_DAGGER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a5c4ebfeb3edf1551f6862b1172098f44" name="a882aeeabc7e03f0fa334764a909ab3f5a5c4ebfeb3edf1551f6862b1172098f44"></a>PLAYER_SKILL_AXE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5abf0e29841ae5aab4819d7e71b098c06d" name="a882aeeabc7e03f0fa334764a909ab3f5abf0e29841ae5aab4819d7e71b098c06d"></a>PLAYER_SKILL_SPEAR&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5aefafc0d5942b4b80cee4661bde7d29e6" name="a882aeeabc7e03f0fa334764a909ab3f5aefafc0d5942b4b80cee4661bde7d29e6"></a>PLAYER_SKILL_BOW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a51e754ab160fb656980c93bdeccfac76" name="a882aeeabc7e03f0fa334764a909ab3f5a51e754ab160fb656980c93bdeccfac76"></a>PLAYER_SKILL_MACE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5aa8074ad26cea8bfa280e027739afca5f" name="a882aeeabc7e03f0fa334764a909ab3f5aa8074ad26cea8bfa280e027739afca5f"></a>PLAYER_SKILL_BLASTER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a59f6cb77ab3cad81ed233f44e8778dca" name="a882aeeabc7e03f0fa334764a909ab3f5a59f6cb77ab3cad81ed233f44e8778dca"></a>PLAYER_SKILL_SHIELD&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a2684411a22b520832e07dfa70f4fbfdf" name="a882aeeabc7e03f0fa334764a909ab3f5a2684411a22b520832e07dfa70f4fbfdf"></a>PLAYER_SKILL_LEATHER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5ab8ea364b248eba4086440a7d42dedb3a" name="a882aeeabc7e03f0fa334764a909ab3f5ab8ea364b248eba4086440a7d42dedb3a"></a>PLAYER_SKILL_CHAIN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a66dba307c063aafdc09d30a7556872a3" name="a882aeeabc7e03f0fa334764a909ab3f5a66dba307c063aafdc09d30a7556872a3"></a>PLAYER_SKILL_PLATE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5aab06897c5f97eaca0c4944ccf2df5171" name="a882aeeabc7e03f0fa334764a909ab3f5aab06897c5f97eaca0c4944ccf2df5171"></a>PLAYER_SKILL_FIRE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a06374dd4fca833ed4e414e79de097fce" name="a882aeeabc7e03f0fa334764a909ab3f5a06374dd4fca833ed4e414e79de097fce"></a>PLAYER_SKILL_AIR&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a4a6e6cb1e9454f92cd1a276604935a89" name="a882aeeabc7e03f0fa334764a909ab3f5a4a6e6cb1e9454f92cd1a276604935a89"></a>PLAYER_SKILL_WATER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a8767c7e91e30bd3b26afc9677e787567" name="a882aeeabc7e03f0fa334764a909ab3f5a8767c7e91e30bd3b26afc9677e787567"></a>PLAYER_SKILL_EARTH&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a3258d6537e000968d975bef62145fe6c" name="a882aeeabc7e03f0fa334764a909ab3f5a3258d6537e000968d975bef62145fe6c"></a>PLAYER_SKILL_SPIRIT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5adb14f3cb2502a1794592efaf0685a5ba" name="a882aeeabc7e03f0fa334764a909ab3f5adb14f3cb2502a1794592efaf0685a5ba"></a>PLAYER_SKILL_MIND&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5ada2a13802aca177f45d4712a0825077f" name="a882aeeabc7e03f0fa334764a909ab3f5ada2a13802aca177f45d4712a0825077f"></a>PLAYER_SKILL_BODY&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a92f98da8476596ff9116405f52c334cd" name="a882aeeabc7e03f0fa334764a909ab3f5a92f98da8476596ff9116405f52c334cd"></a>PLAYER_SKILL_LIGHT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5af66c504ef1c911d595e5f663436ba898" name="a882aeeabc7e03f0fa334764a909ab3f5af66c504ef1c911d595e5f663436ba898"></a>PLAYER_SKILL_DARK&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5af3f0f2f826bcd758370b3d67d4ccf737" name="a882aeeabc7e03f0fa334764a909ab3f5af3f0f2f826bcd758370b3d67d4ccf737"></a>PLAYER_SKILL_ITEM_ID&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a17ad28abac8ce3a9c01eeaabc42852e9" name="a882aeeabc7e03f0fa334764a909ab3f5a17ad28abac8ce3a9c01eeaabc42852e9"></a>PLAYER_SKILL_MERCHANT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a3c2bffd1016eb8e965a8d5581e5432c9" name="a882aeeabc7e03f0fa334764a909ab3f5a3c2bffd1016eb8e965a8d5581e5432c9"></a>PLAYER_SKILL_REPAIR&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5ae3a7cbdff201955d170a89417f67ff7f" name="a882aeeabc7e03f0fa334764a909ab3f5ae3a7cbdff201955d170a89417f67ff7f"></a>PLAYER_SKILL_BODYBUILDING&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5af5bf088321fbc3930d199d73f400a273" name="a882aeeabc7e03f0fa334764a909ab3f5af5bf088321fbc3930d199d73f400a273"></a>PLAYER_SKILL_MEDITATION&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a810350ac4bd3e7ce981c988bfa4569a7" name="a882aeeabc7e03f0fa334764a909ab3f5a810350ac4bd3e7ce981c988bfa4569a7"></a>PLAYER_SKILL_PERCEPTION&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a5d4e012725b65db3a7a93d3adc060235" name="a882aeeabc7e03f0fa334764a909ab3f5a5d4e012725b65db3a7a93d3adc060235"></a>PLAYER_SKILL_DIPLOMACY&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a664046a4c7e370b59dd5a98b96d98854" name="a882aeeabc7e03f0fa334764a909ab3f5a664046a4c7e370b59dd5a98b96d98854"></a>PLAYER_SKILL_THIEVERY&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5ac267fc7045263769193003b2dd36149a" name="a882aeeabc7e03f0fa334764a909ab3f5ac267fc7045263769193003b2dd36149a"></a>PLAYER_SKILL_TRAP_DISARM&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a41b15895ce4b8374accc7137726e3ea2" name="a882aeeabc7e03f0fa334764a909ab3f5a41b15895ce4b8374accc7137726e3ea2"></a>PLAYER_SKILL_DODGE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a15d6e8c3a27030ef37b8b5b0437f17e5" name="a882aeeabc7e03f0fa334764a909ab3f5a15d6e8c3a27030ef37b8b5b0437f17e5"></a>PLAYER_SKILL_UNARMED&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a8f6a16f795951782133a8e3b9acf2c62" name="a882aeeabc7e03f0fa334764a909ab3f5a8f6a16f795951782133a8e3b9acf2c62"></a>PLAYER_SKILL_MONSTER_ID&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a107cf54bfa26a81e66535e74d9c4a0ed" name="a882aeeabc7e03f0fa334764a909ab3f5a107cf54bfa26a81e66535e74d9c4a0ed"></a>PLAYER_SKILL_ARMSMASTER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5ad88c8bf9d0f5f9664acc7f4ab8237518" name="a882aeeabc7e03f0fa334764a909ab3f5ad88c8bf9d0f5f9664acc7f4ab8237518"></a>PLAYER_SKILL_STEALING&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5aae058ed56c89767440afa9efee33e240" name="a882aeeabc7e03f0fa334764a909ab3f5aae058ed56c89767440afa9efee33e240"></a>PLAYER_SKILL_ALCHEMY&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5ae71c3f4d47224431bcb22052fd8c393f" name="a882aeeabc7e03f0fa334764a909ab3f5ae71c3f4d47224431bcb22052fd8c393f"></a>PLAYER_SKILL_LEARNING&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5abfe2a9caab5b3b872b9293342531d8c1" name="a882aeeabc7e03f0fa334764a909ab3f5abfe2a9caab5b3b872b9293342531d8c1"></a>PLAYER_SKILL_CLUB&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5acd66e4f26a9906d80fda75f1a885f438" name="a882aeeabc7e03f0fa334764a909ab3f5acd66e4f26a9906d80fda75f1a885f438"></a>PLAYER_SKILL_COUNT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a662f7e1af657009e4384e8079da580f9" name="a882aeeabc7e03f0fa334764a909ab3f5a662f7e1af657009e4384e8079da580f9"></a>PLAYER_SKILL_MISC&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a96c6e10be9b9471dbaf2085c03c7dddd" name="a882aeeabc7e03f0fa334764a909ab3f5a96c6e10be9b9471dbaf2085c03c7dddd"></a>PLAYER_SKILL_MM7_FIRST&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a07066fe378ff97bb450ef229a91b1207" name="a882aeeabc7e03f0fa334764a909ab3f5a07066fe378ff97bb450ef229a91b1207"></a>PLAYER_SKILL_MM7_LAST&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5ad7d2fb4775761af8b6e5025c83785f1c" name="a882aeeabc7e03f0fa334764a909ab3f5ad7d2fb4775761af8b6e5025c83785f1c"></a>PLAYER_SKILL_FIRST&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a882aeeabc7e03f0fa334764a909ab3f5a5c5a2546d4757ab60553f61a6f3f65f1" name="a882aeeabc7e03f0fa334764a909ab3f5a5c5a2546d4757ab60553f61a6f3f65f1"></a>PLAYER_SKILL_LAST&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -936,6 +1081,307 @@ Enumerations</h2></td></tr>
 <tr><td class="fieldname"><a id="ab50a2a71840e11476f69875990dc7265ad98ff0fcd92b4a09469ec05636abeb4d" name="ab50a2a71840e11476f69875990dc7265ad98ff0fcd92b4a09469ec05636abeb4d"></a>SPEECH_DeathBlow&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ab50a2a71840e11476f69875990dc7265a449e7a0c6bff6222147722112d386e54" name="ab50a2a71840e11476f69875990dc7265a449e7a0c6bff6222147722112d386e54"></a>SPEECH_110&#160;</td><td class="fielddoc"></td></tr>
 </table>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a91c88ae93589de76748402d4f80c4b5c" name="a91c88ae93589de76748402d4f80c4b5c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a91c88ae93589de76748402d4f80c4b5c">&#9670;&#160;</a></span>AllSkills()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5">PLAYER_SKILL_TYPE</a> &gt; AllSkills </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1b797ac72c78f17a5edfbc80c3fea8b6" name="a1b797ac72c78f17a5edfbc80c3fea8b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b797ac72c78f17a5edfbc80c3fea8b6">&#9670;&#160;</a></span>ArmorSkills()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::initializer_list&lt; <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5">PLAYER_SKILL_TYPE</a> &gt; ArmorSkills </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5caa0eacc75db341e265ecb3a18520b8" name="a5caa0eacc75db341e265ecb3a18520b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5caa0eacc75db341e265ecb3a18520b8">&#9670;&#160;</a></span>GetSkillLevel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="PlayerEnums_8h.html#adb9cb0391b2119e3d28341d2f340964e">PLAYER_SKILL_LEVEL</a> GetSkillLevel </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="PlayerEnums_8h.html#a014da852057119cf6298d27ce19c67cd">PLAYER_SKILL</a>&#160;</td>
+          <td class="paramname"><em>skill_value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6202c4568334e5ac1dc4b4314d128072" name="a6202c4568334e5ac1dc4b4314d128072"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6202c4568334e5ac1dc4b4314d128072">&#9670;&#160;</a></span>GetSkillMastery()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="PlayerEnums_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942">PLAYER_SKILL_MASTERY</a> GetSkillMastery </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="PlayerEnums_8h.html#a014da852057119cf6298d27ce19c67cd">PLAYER_SKILL</a>&#160;</td>
+          <td class="paramname"><em>skill_value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x00458244. </dd></dl>
+
+</div>
+</div>
+<a id="aeaf086e4c7372f4c3f810e9dca4352c4" name="aeaf086e4c7372f4c3f810e9dca4352c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeaf086e4c7372f4c3f810e9dca4352c4">&#9670;&#160;</a></span>MagicSkills()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::initializer_list&lt; <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5">PLAYER_SKILL_TYPE</a> &gt; MagicSkills </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a04381deebc9459ff1a351056b618eb6c" name="a04381deebc9459ff1a351056b618eb6c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04381deebc9459ff1a351056b618eb6c">&#9670;&#160;</a></span>MiscSkills()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::initializer_list&lt; <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5">PLAYER_SKILL_TYPE</a> &gt; MiscSkills </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5e0f314bd9cbd3b2ead34f73440c6879" name="a5e0f314bd9cbd3b2ead34f73440c6879"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e0f314bd9cbd3b2ead34f73440c6879">&#9670;&#160;</a></span>MM7Skills()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5">PLAYER_SKILL_TYPE</a> &gt; MM7Skills </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1a91ff19dbff2694ed4177160f6d89e5" name="a1a91ff19dbff2694ed4177160f6d89e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a91ff19dbff2694ed4177160f6d89e5">&#9670;&#160;</a></span>SetSkillLevel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SetSkillLevel </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="PlayerEnums_8h.html#a014da852057119cf6298d27ce19c67cd">PLAYER_SKILL</a> *&#160;</td>
+          <td class="paramname"><em>skill_value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="PlayerEnums_8h.html#adb9cb0391b2119e3d28341d2f340964e">PLAYER_SKILL_LEVEL</a>&#160;</td>
+          <td class="paramname"><em>level</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a266ca01ce2ed494a93fb636f56c3b35a" name="a266ca01ce2ed494a93fb636f56c3b35a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a266ca01ce2ed494a93fb636f56c3b35a">&#9670;&#160;</a></span>SetSkillMastery()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SetSkillMastery </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="PlayerEnums_8h.html#a014da852057119cf6298d27ce19c67cd">PLAYER_SKILL</a> *&#160;</td>
+          <td class="paramname"><em>skill_value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="PlayerEnums_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942">PLAYER_SKILL_MASTERY</a>&#160;</td>
+          <td class="paramname"><em>mastery</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8c86672acb254f616b515f895246710f" name="a8c86672acb254f616b515f895246710f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c86672acb254f616b515f895246710f">&#9670;&#160;</a></span>SkillMasteries()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="PlayerEnums_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942">PLAYER_SKILL_MASTERY</a> &gt; SkillMasteries </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5098201e6a301db833371cec182eec03" name="a5098201e6a301db833371cec182eec03"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5098201e6a301db833371cec182eec03">&#9670;&#160;</a></span>WeaponSkills()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::initializer_list&lt; <a class="el" href="PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5">PLAYER_SKILL_TYPE</a> &gt; WeaponSkills </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
