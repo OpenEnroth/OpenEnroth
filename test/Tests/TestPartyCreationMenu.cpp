@@ -5,13 +5,13 @@
 GAME_TEST(Menu, PartyCreation) {
     EXPECT_EQ(GetCurrentMenuID(), MENU_MAIN);
 
-    game->LClick("MainMenu_NewGame");
+    game->PressGuiButton("MainMenu_NewGame");
     game->Tick(2);
 
     EXPECT_EQ(GetCurrentMenuID(), MENU_CREATEPARTY);
     EXPECT_EQ(pParty->pPlayers[0].uMight, 30);
 
-    game->LClick("PartyCreation_Clear"); // This shouldn't crash.
+    game->PressGuiButton("PartyCreation_Clear"); // This shouldn't crash.
     game->Tick();
 
     EXPECT_EQ(pParty->pPlayers[0].classType, PLAYER_CLASS_KNIGHT);

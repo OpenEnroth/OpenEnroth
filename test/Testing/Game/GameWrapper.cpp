@@ -24,44 +24,57 @@ void GameWrapper::Tick(int count) {
         state_.YieldExecution();
 }
 
-void GameWrapper::Type(PlatformKey key) {
-    std::unique_ptr<PlatformKeyEvent> pressEvent = std::make_unique<PlatformKeyEvent>();
-    pressEvent->type = PlatformEvent::KeyPress;
-    pressEvent->key = key;
-    pressEvent->mods = 0;
-    pressEvent->isAutoRepeat = false;
-
-    std::unique_ptr<PlatformKeyEvent> releaseEvent = std::make_unique<PlatformKeyEvent>();
-    releaseEvent->type = PlatformEvent::KeyRelease;
-    releaseEvent->key = key;
-    releaseEvent->mods = 0;
-    releaseEvent->isAutoRepeat = false;
-
-    state_->eventLoop->PostEvent(state_->window, std::move(pressEvent));
-    state_->eventLoop->PostEvent(state_->window, std::move(releaseEvent));
+void GameWrapper::PressKey(PlatformKey key) {
+    std::unique_ptr<PlatformKeyEvent> event = std::make_unique<PlatformKeyEvent>();
+    event->type = PlatformEvent::KeyPress;
+    event->key = key;
+    event->mods = 0;
+    event->isAutoRepeat = false;
+    state_->eventLoop->PostEvent(state_->window, std::move(event));
 }
 
-void GameWrapper::LClick(std::string_view buttonId) {
+void GameWrapper::ReleaseKey(PlatformKey key) {
+    std::unique_ptr<PlatformKeyEvent> event = std::make_unique<PlatformKeyEvent>();
+    event->type = PlatformEvent::KeyRelease;
+    event->key = key;
+    event->mods = 0;
+    event->isAutoRepeat = false;
+    state_->eventLoop->PostEvent(state_->window, std::move(event));
+}
+
+void GameWrapper::PressButton(PlatformMouseButton button, int x, int y) {
+    std::unique_ptr<PlatformMouseEvent> event = std::make_unique<PlatformMouseEvent>();
+    event->type = PlatformEvent::MouseButtonPress;
+    event->button = PlatformMouseButton::Left;
+    event->pos = Pointi(x, y);
+    event->isDoubleClick = false;
+    state_->eventLoop->PostEvent(state_->window, std::move(event));
+}
+
+void GameWrapper::ReleaseButton(PlatformMouseButton button, int x, int y) {
+    std::unique_ptr<PlatformMouseEvent> event = std::make_unique<PlatformMouseEvent>();
+    event->type = PlatformEvent::MouseButtonRelease;
+    event->button = PlatformMouseButton::Left;
+    event->buttons = PlatformMouseButton::Left;
+    event->pos = Pointi(x, y);
+    event->isDoubleClick = false;
+    state_->eventLoop->PostEvent(state_->window, std::move(event));
+}
+
+void GameWrapper::PressAndReleaseKey(PlatformKey key) {
+    PressKey(key);
+    ReleaseKey(key);
+}
+
+void GameWrapper::PressAndReleaseButton(PlatformMouseButton button, int x, int y) {
+    PressButton(button, x, y);
+    ReleaseButton(button, x, y);
+}
+
+void GameWrapper::PressGuiButton(std::string_view buttonId) {
     GUIButton *button = AssertButton(buttonId);
 
-    LClick(button->uX + button->uWidth / 2, button->uY + button->uHeight / 2);
-}
-
-void GameWrapper::LClick(int x, int y) {
-    std::unique_ptr<PlatformMouseEvent> pressEvent = std::make_unique<PlatformMouseEvent>();
-    pressEvent->type = PlatformEvent::MouseButtonPress;
-    pressEvent->button = PlatformMouseButton::Left;
-    pressEvent->pos = Pointi(x, y);
-    pressEvent->isDoubleClick = false;
-
-    std::unique_ptr<PlatformMouseEvent> releaseEvent = std::make_unique<PlatformMouseEvent>();
-    releaseEvent->type = PlatformEvent::MouseButtonRelease;
-    releaseEvent->button = PlatformMouseButton::Left;
-    releaseEvent->buttons = PlatformMouseButton::Left;
-    releaseEvent->isDoubleClick = false;
-
-    state_->eventLoop->PostEvent(state_->window, std::move(pressEvent));
-    state_->eventLoop->PostEvent(state_->window, std::move(releaseEvent));
+    PressAndReleaseButton(PlatformMouseButton::Left, button->uX + button->uWidth / 2, button->uY + button->uHeight / 2);
 }
 
 void GameWrapper::GoToMainMenu() {
@@ -69,7 +82,7 @@ void GameWrapper::GoToMainMenu() {
         return;
 
     if (GetCurrentMenuID() == MENU_CREATEPARTY) {
-        Type(PlatformKey::Escape);
+        PressAndReleaseKey(PlatformKey::Escape);
         Tick(2);
         ASSERT_EQ(GetCurrentMenuID(), MENU_MAIN);
         return;
