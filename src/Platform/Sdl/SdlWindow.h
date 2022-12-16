@@ -28,8 +28,8 @@ class SdlWindow : public PlatformWindow {
     virtual void SetVisible(bool visible) override;
     virtual bool IsVisible() const override;
 
-    virtual void SetMode(WindowMode mode) override;
-    virtual WindowMode GetMode() override;
+    virtual void SetWindowMode(PlatformWindowMode mode) override;
+    virtual PlatformWindowMode WindowMode() override;
 
     virtual void SetGrabsMouse(bool grabsMouse) override;
     virtual bool GrabsMouse() const override;

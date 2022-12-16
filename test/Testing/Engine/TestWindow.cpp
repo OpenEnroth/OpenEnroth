@@ -49,20 +49,12 @@ bool TestWindow::IsVisible() const {
     return base_->IsVisible();
 }
 
-void TestWindow::SetFullscreen(bool fullscreen) {
-    base_->SetFullscreen(fullscreen);
+void TestWindow::SetWindowMode(PlatformWindowMode mode) {
+    base_->SetWindowMode(mode);
 }
 
-bool TestWindow::IsFullscreen() const {
-    return base_->IsFullscreen();
-}
-
-void TestWindow::SetBorderless(bool borderless) {
-    base_->SetBorderless(borderless);
-}
-
-bool TestWindow::IsBorderless() const {
-    return base_->IsBorderless();
+PlatformWindowMode TestWindow::WindowMode() {
+    return base_->WindowMode();
 }
 
 void TestWindow::SetGrabsMouse(bool grabsMouse) {

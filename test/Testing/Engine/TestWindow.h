@@ -24,11 +24,8 @@ class TestWindow : public PlatformWindow {
     virtual void SetVisible(bool visible) override;
     virtual bool IsVisible() const override;
 
-    virtual void SetFullscreen(bool fullscreen) override;
-    virtual bool IsFullscreen() const override;
-
-    virtual void SetBorderless(bool borderless) override;
-    virtual bool IsBorderless() const override;
+    virtual void SetWindowMode(PlatformWindowMode mode) override;
+    virtual PlatformWindowMode WindowMode() override;
 
     virtual void SetGrabsMouse(bool grabsMouse) override;
     virtual bool GrabsMouse() const override;
