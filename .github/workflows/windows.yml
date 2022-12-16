@@ -38,7 +38,7 @@ jobs:
     - name: Tests
       working-directory: build
       run: |
-        nmake test
+        nmake UnitTest
 
     - name: Prepare artifact
       shell: cmd
