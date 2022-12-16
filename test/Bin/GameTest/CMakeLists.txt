@@ -9,4 +9,5 @@ if(ENABLE_TESTS)
     target_compile_definitions(World_of_Might_and_Magic_GameTest PRIVATE TEST_GROUP=None)
 
     target_check_style(World_of_Might_and_Magic_GameTest)
+    PREBUILT_DEPENDENCIES_RESOLVE(World_of_Might_and_Magic_GameTest)
 endif()
