@@ -174,8 +174,6 @@ int Game::Run() {
     }
     SetDataPath(mm7dir);
 
-    config->Startup();
-
     windowHandler.reset(Application::IocContainer::ResolveGameWindowHandler());
     ::eventHandler = windowHandler.get();
 
