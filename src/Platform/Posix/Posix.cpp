@@ -66,6 +66,3 @@ std::filesystem::path OS_casepath(std::filesystem::path path) {
     return result;
 }
 
-bool OS_FileExists(const std::string& path) {
-    return _access(path.c_str(), 0) != -1;
-}

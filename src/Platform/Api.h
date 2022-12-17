@@ -31,4 +31,3 @@ std::filesystem::path OS_makepath(std::string path);
  */
 std::filesystem::path OS_casepath(std::filesystem::path path);
 
-bool OS_FileExists(const std::string &path);
