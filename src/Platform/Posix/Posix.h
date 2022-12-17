@@ -32,4 +32,4 @@ inline char *_strrev(char *str) {
 
 #define _flushall() std::cout.flush()
 
-#define _access access  // TODO: this should really be isolated behind OS_ API
+

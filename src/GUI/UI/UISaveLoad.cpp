@@ -1,11 +1,7 @@
 #include "GUI/UI/UISaveLoad.h"
 
-#ifdef _WINDOWS
-#include <io.h>
-#else
-#include "Platform/Posix/Posix.h"
-#endif
 #include <string>
+#include <filesystem>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -58,7 +54,7 @@ GUIWindow_Save::GUIWindow_Save() :
         }
 
         std::string str = MakeDataPath("saves", file_name);
-        if (_access(str.c_str(), 0) || _access(str.c_str(), 6)) {
+        if (std::filesystem::exists(str)) {
             pSavegameUsedSlots[i] = 0;
             strcpy(pSavegameHeader[i].pName, localization->GetString(LSTR_EMPTY_SAVESLOT));
         } else {
@@ -167,7 +163,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     Assert(sizeof(SavegameHeader) == 100);
     for (uint i = 0; i < uNumSavegameFiles; ++i) {
         std::string str = MakeDataPath("saves", pSavegameList->pFileList[i]);
-        if (_access(str.c_str(), 6)) {
+        if (std::filesystem::exists(str)) {
             pSavegameUsedSlots[i] = 0;
             strcpy(pSavegameHeader[i].pName, localization->GetString(LSTR_EMPTY_SAVESLOT));
             continue;
