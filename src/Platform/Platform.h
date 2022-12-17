@@ -120,4 +120,11 @@ class Platform {
      * @return                          Current value of a monotonic clock in milliseconds.
      */
     virtual int64_t TickCount() const = 0;
+
+    /**
+     * Makes sure that the process has a console that it can write to using the standard streams.
+     *
+     * This functions is a noop on non-Windows systems, thus a `Win` prefix.
+     */
+    virtual void WinEnsureConsole() const = 0;
 };

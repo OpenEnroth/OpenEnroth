@@ -9,6 +9,5 @@
 
 bool OS_GetAppString(const char *path, char *out_string, int out_string_size);
 
-bool OS_OpenConsole();
 
 

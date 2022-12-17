@@ -37,3 +37,7 @@ void TestPlatform::ShowMessageBox(const std::string &message, const std::string&
 int64_t TestPlatform::TickCount() const {
     return base_->TickCount();
 }
+
+void TestPlatform::WinEnsureConsole() const {
+    base_->WinEnsureConsole();
+}

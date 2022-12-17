@@ -107,6 +107,6 @@ int64_t SdlPlatform::TickCount() const {
     return SDL_GetTicks64();
 }
 
-std::unique_ptr<Platform> Platform::CreateStandardPlatform(Log *log) {
-    return std::make_unique<SdlPlatform>(log);
+void SdlPlatform::WinEnsureConsole() const {
+    // Do nothing.
 }

@@ -32,8 +32,10 @@ set(PLATFORM_HEADERS Api.h
 
 if(WIN32)
   list(APPEND PLATFORM_SOURCES Win/AppSettings.cpp
-                               Win/Win.cpp)
-  list(APPEND PLATFORM_HEADERS Win/Win.h)
+                               Win/Win.cpp
+                               Win/WinPlatform.cpp)
+  list(APPEND PLATFORM_HEADERS Win/Win.h
+                               Win/WinPlatform.h)
 else()
   list(APPEND PLATFORM_SOURCES Posix/Posix.cpp)
   list(APPEND PLATFORM_HEADERS Posix/Posix.h)

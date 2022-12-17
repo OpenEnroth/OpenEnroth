@@ -26,6 +26,8 @@ class SdlPlatform: public Platform {
 
     virtual int64_t TickCount() const override;
 
+    virtual void WinEnsureConsole() const override;
+
  private:
     friend class SdlWindow;
     friend class SdlEventLoop;
