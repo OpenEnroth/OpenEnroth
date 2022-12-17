@@ -30,6 +30,4 @@ inline char *_strrev(char *str) {
     return str;
 }
 
-#define _flushall() std::cout.flush()
-
 

@@ -848,7 +848,6 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     memset(&render->pBillboardRenderListD3D, 0,
            sizeof(render->pBillboardRenderListD3D));
     pGameLoadingUI_ProgressBar->Release();
-    _flushall();
 }
 
 //----- (004647AB) --------------------------------------------------------
