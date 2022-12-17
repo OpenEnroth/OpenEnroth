@@ -15,7 +15,6 @@ bool OS_OpenConsole();
  * @return                              Current value of a monotonic clock in milliseconds (1/1000s of a second).
  */
 unsigned int OS_GetTime();
-uint64_t OS_GetPrecisionTime();
 
 /**
  * On linux and on mac this function handles home-relative paths, so this is the preferred method of constructing
