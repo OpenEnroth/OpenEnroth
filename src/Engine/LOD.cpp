@@ -566,8 +566,7 @@ unsigned int LOD::WriteableFile::Write(const std::string &file_name, const void 
     }
 
     for (size_t i = 0; i < uNumSubDirs; i++) {
-        int comp_res = _stricmp(pSubIndices[i].pFilename, dir.pFilename);
-        if (comp_res == 0) {
+        if (iequals(pSubIndices[i].pFilename, dir.pFilename)) {
             insert_index = i;
             if (a4 == 0) {
                 bRewrite_data = true;
@@ -583,7 +582,7 @@ unsigned int LOD::WriteableFile::Write(const std::string &file_name, const void 
                 break;
             }
             if (a4 == 2) return 4;
-        } else if (comp_res > 0) {
+        } else if (!iless(pSubIndices[i].pFilename, dir.pFilename)) {
             if (insert_index == -1) {
                 insert_index = i;
                 break;
