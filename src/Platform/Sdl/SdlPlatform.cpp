@@ -104,7 +104,12 @@ void SdlPlatform::ShowMessageBox(const std::string &message, const std::string& 
 }
 
 int64_t SdlPlatform::TickCount() const {
+    // TODO(captainurist): bad, very bad, very very bad. Update SDL and use the same codepath everywhere.
+#ifdef _WINDOWS
+    return SDL_GetTicks();
+#else
     return SDL_GetTicks64();
+#endif
 }
 
 void SdlPlatform::WinEnsureConsole() const {
