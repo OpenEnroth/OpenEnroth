@@ -27,6 +27,7 @@ class SdlPlatform: public Platform {
     virtual int64_t TickCount() const override;
 
     virtual void WinEnsureConsole() const override;
+    virtual std::string WinQueryRegistry(const std::string &path) const override;
 
  private:
     friend class SdlWindow;

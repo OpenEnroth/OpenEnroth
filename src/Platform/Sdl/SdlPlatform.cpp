@@ -110,3 +110,8 @@ int64_t SdlPlatform::TickCount() const {
 void SdlPlatform::WinEnsureConsole() const {
     // Do nothing.
 }
+
+std::string SdlPlatform::WinQueryRegistry(const std::string &) const {
+    return {};
+}
+

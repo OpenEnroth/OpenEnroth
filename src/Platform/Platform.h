@@ -127,4 +127,12 @@ class Platform {
      * This functions is a noop on non-Windows systems, thus a `Win` prefix.
      */
     virtual void WinEnsureConsole() const = 0;
+
+    /**
+     * Windows-only function for querying the registry. Always returns an empty string on non-Windows systems.
+     *
+     * @param path                      Registry path to query.
+     * @return                          Value at the given path, or an empty string in case of an error.
+     */
+    virtual std::string WinQueryRegistry(const std::string &path) const = 0;
 };

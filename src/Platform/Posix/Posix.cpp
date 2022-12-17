@@ -18,10 +18,6 @@
 
 //////////////////// There is no Windows Registry ////////////////////
 
-bool OS_GetAppString(const char* path, char* out_string, int out_string_size) {
-    return false;
-}
-
 std::unique_ptr<Platform> Platform::CreateStandardPlatform(Log *log) {
     return std::make_unique<SdlPlatform>(log);
 }
