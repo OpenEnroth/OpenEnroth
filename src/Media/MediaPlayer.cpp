@@ -840,7 +840,7 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
 
     pEventTimer->Pause();
     pAudioPlayer->MusicPause();
-    OS_ShowCursor(false);
+    platform->SetCursorShown(false);
     current_screen_type = CURRENT_SCREEN::SCREEN_VIDEO;
 
     pMovie_Track->Play();
@@ -902,7 +902,7 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
     // prevent passing UIMSG_Escape event if video stopped by ESC key
     pMessageQueue_50CBD0->Flush();
 
-    OS_ShowCursor(true);
+    platform->SetCursorShown(true);
 }
 
 bool MPlayer::IsMoviePlaying() const {

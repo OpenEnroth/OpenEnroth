@@ -21,10 +21,6 @@ unsigned int OS_GetTime() {
     return ts.tv_sec * 1000 + ts.tv_nsec / 1000000;
 }
 
-void OS_ShowCursor(bool show) {
-    SDL_ShowCursor(show ? SDL_ENABLE : SDL_DISABLE);
-}
-
 bool OS_OpenConsole() {
     return true;
 }
