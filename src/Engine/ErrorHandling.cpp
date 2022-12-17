@@ -7,13 +7,7 @@
 #include <sstream>
 
 #include <Platform/Platform.h>
-
-static Platform *GlobalPlatform = nullptr;
-
-void SetGlobalPlatform(Platform *platform) {
-    GlobalPlatform = platform;
-}
-
+#include <Engine/EngineGlobals.h>
 
 void Error_impl_(const char *filename, const char *functionname,
                  int line, const char *format, ...) {
@@ -32,8 +26,8 @@ void Error_impl_(const char *filename, const char *functionname,
         out << "\n\n" << msg_body;
     }
 
-    if (GlobalPlatform)
-        GlobalPlatform->ShowMessageBox(out.str(), "Error");
+    if (platform)
+        platform->ShowMessageBox(out.str(), "Error");
 }
 
 void Assert_impl_(const char *filename, const char *functionname,
@@ -56,8 +50,8 @@ void Assert_impl_(const char *filename, const char *functionname,
         out << "\n\n" << msg_body;
     }
 
-    if (GlobalPlatform)
-        GlobalPlatform->ShowMessageBox(out.str(), "Assertion");
+    if (platform)
+        platform->ShowMessageBox(out.str(), "Assertion");
 
     assert(false);
 }
