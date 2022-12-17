@@ -22,6 +22,7 @@ class TestPlatform: public Platform {
     virtual void ShowMessageBox(const std::string &message, const std::string& title) const override;
     virtual int64_t TickCount() const override;
     virtual void WinEnsureConsole() const override;
+    virtual std::string WinQueryRegistry(const std::string &path) const override;
 
  private:
     std::unique_ptr<Platform> base_;

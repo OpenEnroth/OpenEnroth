@@ -41,3 +41,7 @@ int64_t TestPlatform::TickCount() const {
 void TestPlatform::WinEnsureConsole() const {
     base_->WinEnsureConsole();
 }
+
+std::string TestPlatform::WinQueryRegistry(const std::string &path) const {
+    return base_->WinQueryRegistry(path);
+}
