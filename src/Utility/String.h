@@ -5,10 +5,6 @@
 #include <string>
 #include <vector>
 
-#ifndef _WINDOWS
-#include "Platform/Posix/Posix.h"
-#endif
-
 std::string StringPrintf(const char *fmt, ...);
 std::string StringFromInt(int value);
 std::string ToLower(std::string_view text);
@@ -46,7 +42,12 @@ inline bool iequals(std::string_view a, std::string_view b) {
 }
 
 inline bool iless(std::string_view a, std::string_view b) {
-    int result = _strnicmp(a.data(), b.data(), std::min(a.size(), b.size()));
+#ifdef _WINDOWS
+    auto strncasecmp = [] (const char *a, const char *b, size_t size) {
+        return _strnicmp(a, b, size);
+    };
+#endif
+    int result = strncasecmp(a.data(), b.data(), std::min(a.size(), b.size()));
     if (result < 0)
         return true;
     if (result > 0)

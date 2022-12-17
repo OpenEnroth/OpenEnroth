@@ -5,9 +5,6 @@
 #include <memory>
 #include <string>
 #include <climits>
-#ifndef _WINDOWS
-#include "Platform/Posix/Posix.h"
-#endif
 
 #include "Engine/AssetsManager.h"
 #include "Engine/ErrorHandling.h"

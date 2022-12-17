@@ -1,5 +1,3 @@
-#include "Posix.h"
-
 #include <memory>
 
 #include "Platform/Sdl/SdlPlatform.h"
