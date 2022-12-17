@@ -1,4 +1,6 @@
-#include "Platform/Posix/Posix.h"
+#include "Posix.h"
+
+#include <memory>
 
 #include "Platform/Sdl/SdlPlatform.h"
 
