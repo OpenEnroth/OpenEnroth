@@ -7,12 +7,6 @@
 #define _strnicmp strncasecmp
 #define _mbsncmp(str1, str2, maxCount) strncmp((const char*)str1, (const char*)str2, maxCount)
 
-inline void _strlwr(char *src) {
-    char* it = src;
-    for (; *it; ++it)
-        *it = tolower(*it);
-}
-
 #include <string.h>
 inline char *_strrev(char *str) {
     if (!str || !*str)

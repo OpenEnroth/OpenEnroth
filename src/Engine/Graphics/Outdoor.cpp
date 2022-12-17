@@ -344,7 +344,7 @@ bool OutdoorLocation::GetTravelDestination(signed int sPartyX,
     std::string str = this->level_filename;
     str = str.substr(str.find_first_of("0123456789"));
     int mapNumberAsInt = atoi(str.c_str());
-    
+
     if (a5 < 10 || this->level_filename.length() != 9 || mapNumberAsInt < 1 ||
         mapNumberAsInt > 15)  // длина  .odm и количество локаций
         return 0;
