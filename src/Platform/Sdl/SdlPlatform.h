@@ -1,5 +1,6 @@
 #include <vector>
 #include <memory>
+#include <string>
 
 #include "Platform/Platform.h"
 #include "Utility/Log.h"

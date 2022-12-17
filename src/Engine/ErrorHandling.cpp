@@ -1,13 +1,12 @@
-#include "Engine/ErrorHandling.h"
+#include "ErrorHandling.h"
 
 #include <cstdarg>
 #include <cstdio>
 #include <cstring>
-
 #include <sstream>
 
-#include <Platform/Platform.h>
-#include <Engine/EngineGlobals.h>
+#include "Platform/Platform.h"
+#include "Engine/EngineGlobals.h"
 
 void Error_impl_(const char *filename, const char *functionname,
                  int line, const char *format, ...) {
