@@ -49,7 +49,7 @@ var searchData=
   ['quick_5fspell_5fat_5fpage_46',['quick_spell_at_page',['../mm7__data_8cpp.html#a4d3f5a215b3a9a90db34f7d8d3715117',1,'quick_spell_at_page():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a4d3f5a215b3a9a90db34f7d8d3715117',1,'quick_spell_at_page():&#160;mm7_data.cpp']]],
   ['quickref_47',['QuickRef',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90caaac7cd14cb9bedf69f4ed5dc53360cd5',1,'Io']]],
   ['quickreference_48',['QuickReference',['../classApplication_1_1GameConfig_1_1Keybindings.html#a118ce195723e76aab5d5e189ca27ce84',1,'Application::GameConfig::Keybindings']]],
-  ['quit_49',['Quit',['../classSdlEventLoop.html#a3e5736640b0bfb12536ba39540ec4943',1,'SdlEventLoop::Quit()'],['../classPlatformEventLoop.html#a4125e345a948163559b8ab505553fb04',1,'PlatformEventLoop::Quit()']]],
+  ['quit_49',['Quit',['../classTestEventLoop.html#a1e9e31d4b99d8ca33192bcd5ab234942',1,'TestEventLoop::Quit()'],['../classSdlEventLoop.html#a3e5736640b0bfb12536ba39540ec4943',1,'SdlEventLoop::Quit()'],['../classPlatformEventLoop.html#a4125e345a948163559b8ab505553fb04',1,'PlatformEventLoop::Quit()']]],
   ['quitrequested_5f_50',['quitRequested_',['../classSdlEventLoop.html#a6e4ae5f16149c4fc228af5384d29aefd',1,'SdlEventLoop']]],
   ['qword_5f5c6df0_51',['qword_5C6DF0',['../mm7__data_8cpp.html#a6d1003fa1d97f69e82b00f2ec0a8fe90',1,'qword_5C6DF0():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a6d1003fa1d97f69e82b00f2ec0a8fe90',1,'qword_5C6DF0():&#160;mm7_data.cpp']]]
 ];

@@ -40,5 +40,7 @@ var searchData=
   ['uistatusbar_2eh_37',['UIStatusBar.h',['../UIStatusBar_8h.html',1,'']]],
   ['uitransition_2ecpp_38',['UITransition.cpp',['../UITransition_8cpp.html',1,'']]],
   ['uitransition_2eh_39',['UITransition.h',['../UITransition_8h.html',1,'']]],
-  ['unittest_2eh_40',['UnitTest.h',['../UnitTest_8h.html',1,'']]]
+  ['unittest_2ecpp_40',['UnitTest.cpp',['../UnitTest_8cpp.html',1,'']]],
+  ['unittest_2eh_41',['UnitTest.h',['../UnitTest_8h.html',1,'']]],
+  ['unittestmain_2ecpp_42',['UnitTestMain.cpp',['../UnitTestMain_8cpp.html',1,'']]]
 ];

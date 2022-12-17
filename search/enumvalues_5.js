@@ -55,6 +55,6 @@ var searchData=
   ['fool_52',['Fool',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4aefde1481edd33e7c0ebd8c6ebffb1c13',1,'NPCEnums.h']]],
   ['frame_5ftable_5ffirst_53',['FRAME_TABLE_FIRST',['../FrameTableInc_8h.html#a7dadc6e179612a17a5fad6e60aae9a1ca88aea2e5fab8178a2b9824c99b5d74e4',1,'FrameTableInc.h']]],
   ['frame_5ftable_5fmore_5fframes_54',['FRAME_TABLE_MORE_FRAMES',['../FrameTableInc_8h.html#a7dadc6e179612a17a5fad6e60aae9a1ca3cb6a9c1a95cbaac12c1064a6a3d7148',1,'FrameTableInc.h']]],
-  ['fullscreen_55',['FULLSCREEN',['../PlatformWindow_8h.html#a5773202ab7ffd1746de9d527927198a3ab89c3d897b196ffff1537331bc659a97',1,'PlatformWindow.h']]],
-  ['fullscreen_5fborderless_56',['FULLSCREEN_BORDERLESS',['../PlatformWindow_8h.html#a5773202ab7ffd1746de9d527927198a3af9da7836414d175f796cc372f33f4a4b',1,'PlatformWindow.h']]]
+  ['fullscreen_55',['FULLSCREEN',['../PlatformWindow_8h.html#a7772d16a8207ba672642f139658d8f14ab89c3d897b196ffff1537331bc659a97',1,'PlatformWindow.h']]],
+  ['fullscreen_5fborderless_56',['FULLSCREEN_BORDERLESS',['../PlatformWindow_8h.html#a7772d16a8207ba672642f139658d8f14af9da7836414d175f796cc372f33f4a4b',1,'PlatformWindow.h']]]
 ];
