@@ -680,7 +680,7 @@ void MonsterStats::Initialize() {
                     } break;
                     case 9: {
                         pInfos[curr_rec_num].uFlying = false;
-                        if (_strnicmp(test_string, "n", 1))
+                        if (!iequals(test_string, "n"))
                             pInfos[curr_rec_num].uFlying = true;
                     } break;
                     case 10: {

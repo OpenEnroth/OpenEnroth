@@ -43,7 +43,7 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-
+#include "Utility/String.h"
 #include "Utility/Random.h"
 #include "Utility/Math/TrigLut.h"
 
@@ -3085,100 +3085,100 @@ void InitializeBuildingResidents() {
                 switch (decode_step) {
                 case 2:
                 {
-                    if (!_strnicmp(test_string, "wea", 3)) {
+                    if (iequals(test_string, "wea")) {
                         p2DEvents[i].uType = BuildingType_WeaponShop;
                         break;
                     }
-                    if (!_strnicmp(test_string, "arm", 3)) {
+                    if (iequals(test_string, "arm")) {
                         p2DEvents[i].uType = BuildingType_ArmorShop;
                         break;
                     }
-                    if (!_strnicmp(test_string, "mag", 3)) {
+                    if (iequals(test_string, "mag")) {
                         p2DEvents[i].uType = BuildingType_MagicShop;
                         break;
                     }
-                    if (!_strnicmp(test_string, "alc", 3)) {
+                    if (iequals(test_string, "alc")) {
                         p2DEvents[i].uType = BuildingType_AlchemistShop;
                         break;
                     }
-                    if (!_strnicmp(test_string, "sta", 3)) {
+                    if (iequals(test_string, "sta")) {
                         p2DEvents[i].uType = BuildingType_Stables;
                         break;
                     }
-                    if (!_strnicmp(test_string, "boa", 3)) {
+                    if (iequals(test_string, "boa")) {
                         p2DEvents[i].uType = BuildingType_Boats;
                         break;
                     }
-                    if (!_strnicmp(test_string, "tem", 3)) {
+                    if (iequals(test_string, "tem")) {
                         p2DEvents[i].uType = BuildingType_Temple;
                         break;
                     }
-                    if (!_strnicmp(test_string, "tra", 3)) {
+                    if (iequals(test_string, "tra")) {
                         p2DEvents[i].uType = BuildingType_Training;
                         break;
                     }
-                    if (!_strnicmp(test_string, "tow", 3)) {
+                    if (iequals(test_string, "tow")) {
                         p2DEvents[i].uType = BuildingType_TownHall;
                         break;
                     }
 
-                    if (!_strnicmp(test_string, "tav", 3)) {
+                    if (iequals(test_string, "tav")) {
                         p2DEvents[i].uType = BuildingType_Tavern;
                         break;
                     }
-                    if (!_strnicmp(test_string, "ban", 3)) {
+                    if (iequals(test_string, "ban")) {
                         p2DEvents[i].uType = BuildingType_Bank;
                         break;
                     }
-                    if (!_strnicmp(test_string, "fir", 3)) {
+                    if (iequals(test_string, "fir")) {
                         p2DEvents[i].uType = BuildingType_FireGuild;
                         break;
                     }
-                    if (!_strnicmp(test_string, "air", 3)) {
+                    if (iequals(test_string, "air")) {
                         p2DEvents[i].uType = BuildingType_AirGuild;
                         break;
                     }
-                    if (!_strnicmp(test_string, "wat", 3)) {
+                    if (iequals(test_string, "wat")) {
                         p2DEvents[i].uType = BuildingType_WaterGuild;
                         break;
                     }
-                    if (!_strnicmp(test_string, "ear", 3)) {
+                    if (iequals(test_string, "ear")) {
                         p2DEvents[i].uType = BuildingType_EarthGuild;
                         break;
                     }
-                    if (!_strnicmp(test_string, "spi", 3)) {
+                    if (iequals(test_string, "spi")) {
                         p2DEvents[i].uType = BuildingType_SpiritGuild;
                         break;
                     }
-                    if (!_strnicmp(test_string, "min", 3)) {
+                    if (iequals(test_string, "min")) {
                         p2DEvents[i].uType = BuildingType_MindGuild;
                         break;
                     }
-                    if (!_strnicmp(test_string, "bod", 3)) {
+                    if (iequals(test_string, "bod")) {
                         p2DEvents[i].uType = BuildingType_BodyGuild;
                         break;
                     }
-                    if (!_strnicmp(test_string, "lig", 3)) {
+                    if (iequals(test_string, "lig")) {
                         p2DEvents[i].uType = BuildingType_LightGuild;
                         break;
                     }
-                    if (!_strnicmp(test_string, "dar", 3)) {
+                    if (iequals(test_string, "dar")) {
                         p2DEvents[i].uType = BuildingType_DarkGuild;
                         break;
                     }
-                    if (!_strnicmp(test_string, "ele", 3)) { // "Element Guild" from mm6
+                    if (iequals(test_string, "ele")) { // "Element Guild" from mm6
                         p2DEvents[i].uType = BuildingType_ElementalGuild;
                         break;
                     }
-                    if (!_strnicmp(test_string, "sel", 3)) {
+                    if (iequals(test_string, "sel")) {
                         p2DEvents[i].uType = BuildingType_SelfGuild;
                         break;
                     }
-                    if (!_strnicmp(test_string, "mir", 3)) {
+                    if (iequals(test_string, "mir")) {
                         p2DEvents[i].uType = BuildingType_MirroredPath;
                         break;
                     }
-                    if (!_strnicmp(test_string, "mer", 3)) { // "Thieves Guild" from mm6
+                    if (iequals(test_string, "mer")) { // "Thieves Guild" from mm6
                         p2DEvents[i].uType = BuildingType_TownHall; //TODO: Is this right and not Merc Guild (18)?
                         break;
                     }
