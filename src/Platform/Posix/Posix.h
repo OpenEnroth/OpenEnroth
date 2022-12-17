@@ -1,5 +1,6 @@
 #pragma once
 #include <unistd.h>
+#include <string.h>
 
 #include <iostream>
 
@@ -7,7 +8,6 @@
 #define _strnicmp strncasecmp
 #define _mbsncmp(str1, str2, maxCount) strncmp((const char*)str1, (const char*)str2, maxCount)
 
-#include <string.h>
 inline char *_strrev(char *str) {
     if (!str || !*str)
         return str;
