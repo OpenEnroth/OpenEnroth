@@ -11,4 +11,5 @@ UNIT_TEST(String, iequals) {
     EXPECT_TRUE(iequals("123ab..?z", "123Ab..?Z"));
     EXPECT_TRUE(iequals("", ""));
     EXPECT_FALSE(iequals("", "Z"));
+    EXPECT_FALSE(iequals("@", "`")); // \x40 vs \x60
 }

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstring>
-#include <algorithm>
 #include <string>
 #include <vector>
 
@@ -31,29 +30,8 @@ inline std::string TrimRemoveQuotes(std::string str) {
     return str;
 }
 
-inline bool iequals(std::string_view a, std::string_view b) {
-    if (a.size() != b.size())
-        return false;
-
-    char diff = 0;
-    for (size_t i = 0, length = a.size(); i < length; i++)
-        diff |= (a[i] ^ b[i]);
-    return (diff == 0) || (diff == 32);
-}
-
-inline bool iless(std::string_view a, std::string_view b) {
-#ifdef _WINDOWS
-    auto strncasecmp = [] (const char *a, const char *b, size_t size) {
-        return _strnicmp(a, b, size);
-    };
-#endif
-    int result = strncasecmp(a.data(), b.data(), std::min(a.size(), b.size()));
-    if (result < 0)
-        return true;
-    if (result > 0)
-        return false;
-    return a.size() < b.size();
-}
+bool iequals(std::string_view a, std::string_view b);
+bool iless(std::string_view a, std::string_view b);
 
 struct ILess {
     bool operator()(std::string_view a, std::string_view b) const {
