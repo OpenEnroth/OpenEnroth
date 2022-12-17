@@ -26,21 +26,20 @@ std::filesystem::path MakeCaseInsensitivePath(std::filesystem::path path) {
         return path;
 
     std::filesystem::path result;
-    if (path.is_relative())
+    if (path.is_relative()) {
         result = std::filesystem::path(".");
+    } else {
+        result = path.root_path();
+        path = path.relative_path();
+    }
 
-    for (const std::string &part : path) {
-        if (part == "/") {
-            result = part;
-            continue;
-        }
-
+    for (const std::filesystem::path &part : path) {
         std::string foundPart;
         std::error_code error;
         for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(result, error)) {
             std::string entryName = entry.path().filename().string();
 
-            if (iequals(entryName, part)) {
+            if (iequals(entryName, part.string())) {
                 foundPart = entryName;
                 break;
             }
