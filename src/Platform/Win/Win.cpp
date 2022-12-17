@@ -22,12 +22,3 @@ bool OS_OpenConsole() {
 
     return false;
 }
-
-std::filesystem::path OS_makepath(std::string path) {
-    return path;
-}
-
-std::filesystem::path OS_casepath(std::filesystem::path path) {
-    return path;
-}
-
