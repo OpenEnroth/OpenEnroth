@@ -5,7 +5,6 @@
 #include <iostream>
 
 #define _strnicmp strncasecmp
-#define _mbsncmp(str1, str2, maxCount) strncmp((const char*)str1, (const char*)str2, maxCount)
 
 inline char *_strrev(char *str) {
     if (!str || !*str)
