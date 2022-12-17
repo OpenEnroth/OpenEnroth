@@ -338,16 +338,13 @@ bool OutdoorLocation::GetTravelDestination(signed int sPartyX,
                                            signed int sPartyZ, char *pOut,
                                            signed int a5) {
     char *mapNumberAsStr;       // eax@3
-    int mapNumberAsInt;         // eax@3
     signed int direction;       // esi@7
     signed int destinationMap;  // eax@23
-    char Str[140];              // [sp+8h] [bp-78h]@3
 
-    strcpy(Str, this->level_filename.c_str());
-    _strlwr(Str);
-    mapNumberAsStr = strtok(Str, "out");
-    mapNumberAsStr[2] = 0;
-    mapNumberAsInt = atoi(mapNumberAsStr);
+    std::string str = this->level_filename;
+    str = str.substr(str.find_first_of("0123456789"));
+    int mapNumberAsInt = atoi(str.c_str());
+    
     if (a5 < 10 || this->level_filename.length() != 9 || mapNumberAsInt < 1 ||
         mapNumberAsInt > 15)  // длина  .odm и количество локаций
         return 0;
