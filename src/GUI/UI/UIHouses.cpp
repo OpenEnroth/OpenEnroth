@@ -1,4 +1,7 @@
-#include <stdlib.h>
+#include "UIHouses.h"
+
+#include <cstdlib>
+#include <thread>
 
 #include "Application/GameOver.h"
 
@@ -30,7 +33,6 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIGuilds.h"
-#include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIPartyCreation.h"
 #include "GUI/UI/UIShops.h"
 #include "GUI/UI/UIStatusBar.h"
@@ -46,6 +48,7 @@
 #include "Utility/Random.h"
 #include "Utility/Math/TrigLut.h"
 
+using namespace std::chrono_literals;
 
 using Io::TextInputType;
 using EngineIoc = Engine_::IocContainer;
@@ -1630,8 +1633,10 @@ void TravelByTransport() {
                 int currenttime = OS_GetTime();
                 int pauselength = currenttime + speechlength;
                 if (pauselength < currenttime) pauselength = currenttime;
-                while (OS_GetTime() < pauselength) OS_Sleep(1);
-                while (HouseDialogPressCloseBtn());
+                while (OS_GetTime() < pauselength)
+                    std::this_thread::sleep_for(1ms);
+                while (HouseDialogPressCloseBtn())
+                    /* Loop. */
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
             } else {
                 dialog_menu_id = DIALOGUE_MAIN;

@@ -19,6 +19,7 @@ extern "C" {
 #include <memory>
 #include <queue>
 #include <vector>
+#include <thread>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -34,6 +35,8 @@ extern "C" {
 #include "Media/Audio/OpenALSoundProvider.h"
 
 #include "Platform/Api.h"
+
+using namespace std::chrono_literals;
 
 OpenALSoundProvider *provider = nullptr;
 
@@ -492,7 +495,7 @@ class Movie : public IMovie {
                 current_time = std::chrono::system_clock::now();
                 playback_time = (std::chrono::duration_cast<std::chrono::milliseconds>(current_time - start_time)).count();
                 desired_frame_number = (int)((playback_time / video.frame_len)/* + 0.25*/);
-                OS_Sleep(5);
+                std::this_thread::sleep_for(5ms);
             } while (lastvideopts == desired_frame_number);
 
             // ignore audio packets
@@ -542,7 +545,7 @@ class Movie : public IMovie {
             if (!playing) break;
         }
         // hold for frame length at end of packets
-        OS_Sleep(video.frame_len);
+        std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(video.frame_len)));
 
         // clean up
         while (!buffq.empty()) buffq.pop();
@@ -868,7 +871,7 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
 
             render->BeginScene();
 
-            OS_Sleep(2);
+            std::this_thread::sleep_for(2ms);
 
             std::shared_ptr<Blob> buffer = pMovie_Track->GetFrame();
             if (!buffer) {

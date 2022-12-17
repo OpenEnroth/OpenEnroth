@@ -17,8 +17,6 @@ uint64_t OS_GetPrecisionTime() { return timeGetTime(); }
 
 void OS_ShowCursor(bool show) { ShowCursor(show ? 1 : 0); }
 
-void OS_Sleep(int ms) { Sleep(ms); }
-
 bool OS_OpenConsole() {
     if (AllocConsole()) {
         freopen("conin$", "r", stdin);

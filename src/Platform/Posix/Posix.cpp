@@ -25,10 +25,6 @@ void OS_ShowCursor(bool show) {
     SDL_ShowCursor(show ? SDL_ENABLE : SDL_DISABLE);
 }
 
-void OS_Sleep(int ms) {
-    SDL_Delay(ms);
-}
-
 bool OS_OpenConsole() {
     return true;
 }
