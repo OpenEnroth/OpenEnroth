@@ -50,7 +50,6 @@ namespace Io {
     };
 }  // namespace Io
 
-void OnPressSpace();
 Io::KeyToggleType GetToggleType(Io::InputAction action);
 
 extern std::shared_ptr<Io::KeyboardActionMapping> keyboardActionMapping;

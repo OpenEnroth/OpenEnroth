@@ -30,7 +30,7 @@ GUIWindow_MainMenu::GUIWindow_MainMenu() :
     ui_mainmenu_credits = assets->GetImage_ColorKey("title_cred", render->teal_mask_16);
     ui_mainmenu_exit = assets->GetImage_ColorKey("title_exit", render->teal_mask_16);
 
-    pBtnNew = CreateButton(495, 172, ui_mainmenu_new->GetWidth(), ui_mainmenu_new->GetHeight(),
+    pBtnNew = CreateButton("MainMenu_NewGame", 495, 172, ui_mainmenu_new->GetWidth(), ui_mainmenu_new->GetHeight(),
                            1, 0, UIMSG_MainMenu_ShowPartyCreationWnd, 0, PlatformKey::N, "", {ui_mainmenu_new});
     pBtnLoad = CreateButton(495, 227, ui_mainmenu_load->GetWidth(), ui_mainmenu_load->GetHeight(),
                             1, 0, UIMSG_MainMenu_ShowLoadWindow, 1, PlatformKey::L, "", {ui_mainmenu_load});

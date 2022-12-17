@@ -58,7 +58,7 @@ std::tuple<int, Pointi, Sizei> GameWindowHandler::GetWindowConfigPosition(const 
 
     Pointi pos = {config->window.PositionX.Get(), config->window.PositionY.Get()};
     Sizei size = {config->window.Width.Get(), config->window.Height.Get()};
-    WindowMode mode = static_cast<WindowMode>(config->window.Mode.Get());
+    PlatformWindowMode mode = static_cast<PlatformWindowMode>(config->window.Mode.Get());
 
     Recti displayRect;
     int display = config->window.Display.Get();
@@ -111,13 +111,13 @@ void GameWindowHandler::UpdateWindowFromConfig(const GameConfig *config) {
 
     Sizei size = {config->window.Width.Get(), config->window.Height.Get()};
     Pointi pos = std::get<1>(GetWindowConfigPosition(config));
-    WindowMode mode = static_cast<WindowMode>(config->window.Mode.Get());
+    PlatformWindowMode mode = static_cast<PlatformWindowMode>(config->window.Mode.Get());
 
     window->SetPosition(pos);
     window->Resize(size);
     window->SetTitle(config->window.Title.Get());
     window->SetGrabsMouse(config->window.MouseGrab.Get());
-    window->SetMode(mode);
+    window->SetWindowMode(mode);
     window->SetVisible(true);
 }
 
@@ -127,7 +127,7 @@ void GameWindowHandler::UpdateConfigFromWindow(GameConfig *config) {
     auto [display, relativePos, wsize] = GetWindowRelativePosition();
 
     // Skip updating window position in fullscreen where window always forcefully moved to {0,0} position.
-    WindowMode mode = window->GetMode();
+    PlatformWindowMode mode = window->WindowMode();
     if (mode == WINDOWED || mode == WINDOWED_BORDERLESS) {
         config->window.PositionX.Set(relativePos.x);
         config->window.PositionY.Set(relativePos.y);
@@ -398,7 +398,7 @@ void GameWindowHandler::OnDeactivated() {
 }
 
 void GameWindowHandler::OnToggleBorderless() {
-    WindowMode mode = window->GetMode();
+    PlatformWindowMode mode = window->WindowMode();
     switch (mode) {
         case FULLSCREEN:
             mode = FULLSCREEN_BORDERLESS;
@@ -417,11 +417,11 @@ void GameWindowHandler::OnToggleBorderless() {
             break;
     }
 
-    window->SetMode(mode);
+    window->SetWindowMode(mode);
 }
 
 void GameWindowHandler::OnToggleFullscreen() {
-    WindowMode mode = window->GetMode();
+    PlatformWindowMode mode = window->WindowMode();
     switch (mode) {
         case FULLSCREEN:
             mode = WINDOWED;
@@ -440,7 +440,7 @@ void GameWindowHandler::OnToggleFullscreen() {
             break;
     }
 
-    window->SetMode(mode);
+    window->SetWindowMode(mode);
     engine->config->window.Mode.Set(std::to_underlying(mode));
     if (mode == WINDOWED || mode == WINDOWED_BORDERLESS) {
         window->Resize({engine->config->window.Width.Get(), engine->config->window.Height.Get()});
@@ -516,7 +516,7 @@ void GameWindowHandler::WheelEvent(PlatformWindow *, const PlatformWheelEvent *)
 void GameWindowHandler::MoveEvent(PlatformWindow *, const PlatformMoveEvent *event) {
     /* Remember window position after move. Move position event is also triggered on toggling fullscreen. And we should save current window position prior to entering fullscreen.
      * As entering fullscreen will forcefully move window to {0,0} position on current display. And we want to restore position prior to entering fullscreen and not {0,0} or startup one. */
-    WindowMode mode = window->GetMode();
+    PlatformWindowMode mode = window->WindowMode();
     if (mode == WINDOWED || mode == WINDOWED_BORDERLESS) {
         Pointi pos = event->pos;
         auto [display, relativePos, wsize] = GetWindowRelativePosition(&pos);

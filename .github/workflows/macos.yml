@@ -37,7 +37,7 @@ jobs:
     - name: Tests
       working-directory: build
       run: |
-        make test
+        make UnitTest
 
     - name: Prepare artifact
       run: |

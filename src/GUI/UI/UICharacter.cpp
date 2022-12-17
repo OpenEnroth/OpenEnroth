@@ -783,8 +783,8 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
     for (PLAYER_SKILL_TYPE skill : skill_list) {
         for (size_t j = 0; j < pGUIWindow_CurrentMenu->vButtons.size(); ++j) {
             GUIButton *v8 = pGUIWindow_CurrentMenu->GetControl(j);
-            int v9 = v8->field_1C;
-            if ((short)(v8->field_1C) >= 0)
+            int v9 = v8->uData;
+            if ((short)(v8->uData) >= 0)
                 continue;  // skips an of the stats skills innv awards buttons
 
             if (static_cast<PLAYER_SKILL_TYPE>(v9 & 0x7FFF) != skill)
@@ -2671,7 +2671,7 @@ void CharacterUI_ReleaseButtons() {
         dword_507CC0_activ_ch = 0;
         std::vector<GUIButton*> to_delete;
         for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
-            if (pButton->field_1C & 0x8000) {
+            if (pButton->uData & 0x8000) {
                 to_delete.push_back(pButton);
             }
         }

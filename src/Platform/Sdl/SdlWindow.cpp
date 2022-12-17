@@ -73,7 +73,7 @@ bool SdlWindow::IsVisible() const {
     return false;
 }
 
-void SdlWindow::SetMode(WindowMode mode) {
+void SdlWindow::SetWindowMode(PlatformWindowMode mode) {
     uint32_t flags = 0;
 
     if (mode == FULLSCREEN_BORDERLESS)
@@ -90,7 +90,7 @@ void SdlWindow::SetMode(WindowMode mode) {
         SDL_SetWindowBordered(window_, SDL_FALSE);
 }
 
-WindowMode SdlWindow::GetMode() {
+PlatformWindowMode SdlWindow::WindowMode() {
     uint32_t flags = SDL_GetWindowFlags(window_);
 
     if ((flags & SDL_WINDOW_FULLSCREEN_DESKTOP) == SDL_WINDOW_FULLSCREEN_DESKTOP)

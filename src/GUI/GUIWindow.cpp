@@ -735,7 +735,7 @@ int GUIWindow::DrawTextInRect(GUIFont *pFont, unsigned int uX, unsigned int uY,
 }
 
 GUIButton *GUIWindow::CreateButton(int uX, int uY, int uWidth, int uHeight,
-                                   int a6, int a7, UIMessageType msg,
+                                   int uButtonType, int uData, UIMessageType msg,
                                    unsigned int msg_param, PlatformKey hotkey,
                                    const std::string &label,
                                    const std::vector<Image *> &textures) {
@@ -745,17 +745,17 @@ GUIButton *GUIWindow::CreateButton(int uX, int uY, int uWidth, int uHeight,
     pButton->uWidth = uWidth;
     pButton->uHeight = uHeight;
 
-    if (a6 == 2 && !uHeight) {
+    if (uButtonType == 2 && !uHeight) {
         pButton->uHeight = uWidth;
     }
 
-    pButton->uButtonType = a6;
+    pButton->uButtonType = uButtonType;
     pButton->uX = uX + this->uFrameX;
     pButton->uY = uY + this->uFrameY;
     pButton->uZ = pButton->uX + uWidth;
     pButton->uW = pButton->uY + uHeight;
     pButton->field_2C_is_pushed = false;
-    pButton->field_1C = a7;
+    pButton->uData = uData;
     pButton->msg = msg;
     pButton->msg_param = msg_param;
     pButton->hotkey = hotkey;
@@ -765,6 +765,14 @@ GUIButton *GUIWindow::CreateButton(int uX, int uY, int uWidth, int uHeight,
     vButtons.push_back(pButton);
 
     return pButton;
+}
+
+GUIButton *GUIWindow::CreateButton(std::string id, int x, int y, int width, int height, int uButtonType, int uData,
+                        UIMessageType msg, unsigned int msg_param, PlatformKey hotkey, const std::string &label,
+                        const std::vector<Image *> &textures) {
+    GUIButton *result = CreateButton(x, y, width, height, uButtonType, uData, msg, msg_param, hotkey, label, textures);
+    result->id = std::move(id);
+    return result;
 }
 
 bool GUIWindow::Contains(unsigned int x, unsigned int y) {

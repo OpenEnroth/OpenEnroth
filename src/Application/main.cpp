@@ -24,6 +24,7 @@ int MM_Main(int argc, char **argv) {
             cmd += std::string(argv[i]) + " ";
 
         std::shared_ptr<GameConfig> gameConfig = std::make_shared<GameConfig>(cmd);
+        gameConfig->Startup();
         std::shared_ptr<Game> game = GameFactory().CreateGame(platform.get(), gameConfig);
 
         return game->Run();

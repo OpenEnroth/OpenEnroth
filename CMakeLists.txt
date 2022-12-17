@@ -10,6 +10,11 @@ include(AppleLibcxxAssertions)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(ENABLE_TESTS OFF CACHE BOOL "Enable tests")
+if(ENABLE_TESTS)
+  message(STATUS "Tests have been enabled")
+endif()
+
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   set(CMAKE_EXE_LINKER_FLAGS "-fuse-ld=gold -pthread")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")

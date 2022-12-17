@@ -1,20 +1,16 @@
 #pragma once
 
-#include <SDL.h>
-
 #include <memory>
 #include <string>
 
 #include "Platform/PlatformWindow.h"
 
-class Log;
-class SdlPlatformSharedState;
-class PlatformEventHandler;
+#include "TestStateHandle.h"
 
-class SdlWindow : public PlatformWindow {
+class TestWindow : public PlatformWindow {
  public:
-    SdlWindow(SdlPlatformSharedState *state, SDL_Window *window, uint32_t id);
-    virtual ~SdlWindow();
+    TestWindow(std::unique_ptr<PlatformWindow> base, TestStateHandle state);
+    virtual ~TestWindow();
 
     virtual void SetTitle(const std::string &title) override;
     virtual std::string Title() const override;
@@ -42,16 +38,7 @@ class SdlWindow : public PlatformWindow {
 
     virtual std::unique_ptr<PlatformOpenGLContext> CreateOpenGLContext(const PlatformOpenGLOptions &options) override;
 
-    uint32_t Id() const {
-        return id_;
-    }
-
-    SDL_Window *SdlHandle() const {
-        return window_;
-    }
-
  private:
-    SdlPlatformSharedState *state_ = nullptr;
-    SDL_Window *window_ = nullptr;
-    uint32_t id_ = 0;
+    std::unique_ptr<PlatformWindow> base_;
+    TestStateHandle state_;
 };
