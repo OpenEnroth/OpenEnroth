@@ -18,6 +18,7 @@ uniform sampler2D texture0;
 uniform usamplerBuffer palbuf;
 uniform bool repaint;
 uniform FogParam fog;
+uniform float gamma;
 
 float getFogRatio(FogParam fogpar, float dist);
 
@@ -27,8 +28,9 @@ void main() {
     vec4 newcol = texelFetch(palbuf, int( 256 * paletteid + index));
 
    if (repaint == true) {
-	if (index > 0)
-	    fragcol = vec4(newcol.r / 255.0, newcol.g / 255.0, newcol.b / 255.0, 1.0);
+	if (paletteid > 0)
+	    if (index > 0)
+	        fragcol = vec4(newcol.r / 255.0, newcol.g / 255.0, newcol.b / 255.0, 1.0);
    }
 
     fragcol *= colour;
@@ -51,6 +53,7 @@ void main() {
     }
 
     FragColour = mix(fragcol, vec4(fog.color, alpha), fograt);
+    FragColour.rgb = pow(FragColour.rgb, vec3(1.0/gamma));
 }
 
 float getFogRatio(FogParam fogpar, float dist) {

@@ -4,6 +4,7 @@
 
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Objects/Actor.h"
+#include "Camera.h"
 
 enum VisObjectType : uint32_t {
     VisObjectType_Any = 0,
@@ -175,10 +176,11 @@ bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable);
 /**
  * @param center                        Vec3f of centre point of sphere.
  * @param radius                        Float of sphere radius.
+ * @param frustum                       Ptr to vec4f set of planes to check against - camera used in not supplied
  *
- * @return                              Whether the bounding radius of the sphere is visible within the camera frustum planes.
+ * @return                              Whether the bounding radius of the sphere is visible within the frustum planes.
  */
-bool IsSphereInFrustum(Vec3f center, float radius);
+bool IsSphereInFrustum(Vec3f center, float radius, IndoorCameraD3D_Vec4* frustum = nullptr);
 
 /**
  * @param center                        Vec3f of centre point of cylinder.

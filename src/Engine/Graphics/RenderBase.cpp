@@ -469,6 +469,13 @@ void RenderBase::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
     }
 }
 
+float RenderBase::GetGamma() {
+    const float base = 0.60f;
+    const float mult = 0.1f;
+    int level = engine->config->graphics.Gamma.Get();
+    return base + mult * level;
+}
+
 HWLTexture *RenderBase::LoadHwlBitmap(const std::string &name) {
     return pD3DBitmaps.LoadTexture(name);
 }

@@ -6,6 +6,7 @@ flat in vec2 olayer;
 in vec3 vsPos;
 in vec3 vsNorm;
 flat in int vsAttrib;
+flat in int vsSector;
 
 out vec4 FragColour;
 
@@ -22,6 +23,7 @@ struct PointLight {
     float type;  // 0- off, 1- stat, 2 - mob
 
     vec3 position;
+    float sector;
 
     //float constant;
     //float linear;
@@ -40,6 +42,7 @@ uniform Sunlight sun;
 uniform vec3 CameraPos;
 uniform int flowtimer;
 uniform int watertiles;
+uniform float gamma;
 
 #define num_point_lights 40
 uniform PointLight fspointlights[num_point_lights];
@@ -128,6 +131,8 @@ void main() {
 
 	FragColour = vec4(clamps,1)  * vec4(dull,1); // result, 1.0);
 
+    FragColour.rgb = pow(FragColour.rgb, vec3(1.0/gamma));
+
 }
 
 // calculates the color when using a directional light.
@@ -150,7 +155,10 @@ vec3 CalcSunLight(Sunlight light, vec3 normal, vec3 viewDir, vec3 thisfragcol) {
 
 // calculates the color when using a point light.
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
-    if (light.diffuse.r == 0 && light.diffuse.g == 0 && light.diffuse.b == 0) return vec3(0);    
+    if (light.diffuse.r == 0 && light.diffuse.g == 0 && light.diffuse.b == 0) return vec3(0);
+    if (light.radius < 1.0) return vec3(0);
+    float distance = length(light.position - fragPos);
+    if (distance > light.radius) return vec3(0);    
 
     vec3 lightDir = normalize(light.position - fragPos);
     // diffuse shading
@@ -159,7 +167,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 128); //material.shininess
     // attenuation
-    float distance = length(light.position - fragPos);
+    
 
     //float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
     float attenuation = clamp(1.0 - ((distance * distance)/(light.radius * light.radius)), 0.0, 1.0);
@@ -168,7 +176,20 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
 
 
     // combine results
-    vec3 ambient = light.ambient ;//* vec3(texture(material.diffuse, TexCoords));
+    vec3 ambient = light.ambient;//* vec3(texture(material.diffuse, TexCoords));
+    
+    // no ambient light if facing away from lightsource
+    if (diff == 0.0) {
+ 	ambient = vec3(0.0);
+    }
+
+    // stationary sources cant light outside their sector
+    //if (light.sector > 0.0)
+//	if (vsSector != int(light.sector)) {
+//		ambient = vec3(0);
+//		diff = 0.0;
+//	}
+
     vec3 diffuse = light.diffuse * diff ;//* vec3(texture(material.diffuse, TexCoords));
     vec3 specular = light.specular * spec ;//* vec3(texture(material.specular, TexCoords));
     ambient *= attenuation;

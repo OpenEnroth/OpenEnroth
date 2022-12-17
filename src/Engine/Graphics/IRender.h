@@ -274,6 +274,7 @@ class IRender {
                                                   Texture *texture,
                                                   unsigned int uDiffuse,
                                                   int angle) = 0;
+    virtual float GetGamma() = 0;
 
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() = 0;
     virtual void BillboardSphereSpellFX(struct SpellFX_Billboard *a1, int diffuse) = 0;

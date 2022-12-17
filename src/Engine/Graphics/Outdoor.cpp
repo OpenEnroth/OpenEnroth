@@ -134,8 +134,10 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
         // render->DrawBezierTerrain();
     }
 
+    // TODO(pskelton): consider order of drawing / lighting
     pMobileLightsStack->uNumLightsActive = 0;
     pStationaryLightsStack->uNumLightsActive = 0;
+    engine->StackPartyTorchLight();
 
     engine->PushStationaryLights(-1);
     // engine->PrepareBloodsplats(); // not used?
