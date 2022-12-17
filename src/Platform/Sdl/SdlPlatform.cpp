@@ -99,6 +99,10 @@ std::vector<Recti> SdlPlatform::DisplayGeometries() const {
     return result;
 }
 
+void SdlPlatform::ShowMessageBox(const std::string &message, const std::string& title) const {
+    SDL_ShowSimpleMessageBox(0, title.c_str(), message.c_str(), nullptr);
+}
+
 std::unique_ptr<Platform> Platform::CreateStandardPlatform(Log *log) {
     return std::make_unique<SdlPlatform>(log);
 }

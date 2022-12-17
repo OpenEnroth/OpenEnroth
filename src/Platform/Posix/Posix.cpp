@@ -15,10 +15,6 @@
 
 #include "Utility/String.h"
 
-void OS_MsgBox(const char *msg, const char *title) {
-    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, title, msg, nullptr);
-}
-
 unsigned int OS_GetTime() {
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);

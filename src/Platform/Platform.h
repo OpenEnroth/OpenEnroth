@@ -106,4 +106,12 @@ class Platform {
      *                                  error.
      */
     virtual std::vector<Recti> DisplayGeometries() const = 0;
+
+    /**
+     * Shows a modal message box.
+     *
+     * @param message                   Message to display.
+     * @param title                     Title of the message box window.
+     */
+    virtual void ShowMessageBox(const std::string &message, const std::string& title) const = 0;
 };

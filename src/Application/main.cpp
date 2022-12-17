@@ -18,6 +18,7 @@ int MM_Main(int argc, char **argv) {
         Log *log = EngineIoc::ResolveLogger();
 
         std::unique_ptr<Platform> platform = Platform::CreateStandardPlatform(log);
+        SetGlobalPlatform(platform.get());
 
         std::string cmd;
         for (int i = 1; i < argc; ++i)

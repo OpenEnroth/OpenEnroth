@@ -9,8 +9,6 @@
 
 bool OS_GetAppString(const char *path, char *out_string, int out_string_size);
 
-void OS_MsgBox(const char *msg, const char *title);
-
 void OS_Sleep(int ms);
 void OS_ShowCursor(bool show);
 

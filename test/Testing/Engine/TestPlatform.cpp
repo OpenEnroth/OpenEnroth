@@ -29,3 +29,7 @@ bool TestPlatform::IsCursorShown() const {
 std::vector<Recti> TestPlatform::DisplayGeometries() const {
     return base_->DisplayGeometries();
 }
+
+void TestPlatform::ShowMessageBox(const std::string &message, const std::string& title) const {
+    base_->ShowMessageBox(message, title);
+}

@@ -21,6 +21,8 @@ class SdlPlatform: public Platform {
 
     virtual std::vector<Recti> DisplayGeometries() const override;
 
+    virtual void ShowMessageBox(const std::string &message, const std::string& title) const override;
+
  private:
     friend class SdlWindow;
     friend class SdlEventLoop;

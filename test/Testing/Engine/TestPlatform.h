@@ -18,6 +18,7 @@ class TestPlatform: public Platform {
     virtual void SetCursorShown(bool cursorShown) override;
     virtual bool IsCursorShown() const override;
     virtual std::vector<Recti> DisplayGeometries() const override;
+    virtual void ShowMessageBox(const std::string &message, const std::string& title) const override;
 
  private:
     std::unique_ptr<Platform> base_;

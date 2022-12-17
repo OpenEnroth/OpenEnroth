@@ -11,10 +11,6 @@
 
 #pragma comment(lib, "winmm.lib")
 
-void OS_MsgBox(const char *msg, const char *title) {
-    MessageBoxA(nullptr, msg, title, 0);
-}
-
 unsigned int OS_GetTime() { return GetTickCount(); }
 
 uint64_t OS_GetPrecisionTime() { return timeGetTime(); }

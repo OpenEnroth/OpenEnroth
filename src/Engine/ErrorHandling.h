@@ -2,6 +2,10 @@
 
 #include <cassert>
 
+// TODO(captainurist): This doesn't belong here, move somewhere to Library once we do the necessary code reorgs
+class Platform;
+void SetGlobalPlatform(Platform *platform);
+
 #define Error(...)                                                  \
     do {                                                            \
         Error_impl_(__FILE__, __FUNCTION__, __LINE__, __VA_ARGS__); \
