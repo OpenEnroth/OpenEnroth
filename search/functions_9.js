@@ -166,7 +166,7 @@ var searchData=
   ['isspecialname_163',['IsSpecialName',['../mm7text__ru_8cpp.html#a20fd879e0dfe9f113a87a611f353a725',1,'mm7text_ru.cpp']]],
   ['isspecular_5ffogison_164',['IsSpecular_FogIsOn',['../structEngine.html#a014fab3f3e2de790cb0eb35d69a0b075',1,'Engine']]],
   ['isspellbackcycletoggled_165',['IsSpellBackcycleToggled',['../classIo_1_1KeyboardInputHandler.html#a386b5a531c6c666ed0db972ea3d8f5ec',1,'Io::KeyboardInputHandler']]],
-  ['issphereinfrustum_166',['IsSphereInFrustum',['../Vis_8h.html#a3e731ac1cf5a301e08532749aa560572',1,'IsSphereInFrustum(Vec3f center, float radius):&#160;Vis.cpp'],['../Vis_8cpp.html#a3e731ac1cf5a301e08532749aa560572',1,'IsSphereInFrustum(Vec3f center, float radius):&#160;Vis.cpp']]],
+  ['issphereinfrustum_166',['IsSphereInFrustum',['../Vis_8h.html#a8c37adac2f10c5eeb895e97ad1dc5dc3',1,'IsSphereInFrustum(Vec3f center, float radius, IndoorCameraD3D_Vec4 *frustum=nullptr):&#160;Vis.cpp'],['../Vis_8cpp.html#a2d1bded33e6191d7e1984d4d0eb000a7',1,'IsSphereInFrustum(Vec3f center, float radius, IndoorCameraD3D_Vec4 *frustum):&#160;Vis.cpp']]],
   ['isstealingtoggled_167',['IsStealingToggled',['../classIo_1_1KeyboardInputHandler.html#ad79082532ace063e7e1a775fe9fe1b15',1,'Io::KeyboardInputHandler']]],
   ['isstolen_168',['IsStolen',['../structItemGen.html#a54bbf797a219cf77f0c08f6452443b93',1,'ItemGen']]],
   ['istakealltoggled_169',['IsTakeAllToggled',['../classIo_1_1KeyboardInputHandler.html#ad4c0a5509e335ccb85417445a1fcb993',1,'Io::KeyboardInputHandler']]],
