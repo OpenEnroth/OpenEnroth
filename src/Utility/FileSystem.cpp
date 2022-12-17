@@ -17,7 +17,7 @@ static std::string HomePath() {
 
 std::filesystem::path ExpandUserPath(std::string path) {
     if (path.starts_with("~/"))
-        return HomePath() + std::filesystem::path::preferred_separator + path.substr(2);
+        return std::filesystem::path(HomePath()) / path.substr(2);
     return path;
 }
 
