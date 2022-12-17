@@ -45,7 +45,8 @@ if(ENABLE_TESTS)
     set(TEST_UTILITY_SOURCES Tests/IndexedArray_ut.cpp
                              Tests/Segment_ut.cpp
                              Math/Tests/Float_ut.cpp
-                             Streams/Tests/FileOutputStream_ut.cpp)
+                             Streams/Tests/FileOutputStream_ut.cpp
+                             Tests/String_ut.cpp)
 
     add_library(test_utility OBJECT ${TEST_UTILITY_SOURCES})
     target_compile_definitions(test_utility PRIVATE TEST_GROUP=Utility)

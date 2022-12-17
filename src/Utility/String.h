@@ -36,7 +36,13 @@ inline std::string TrimRemoveQuotes(std::string str) {
 }
 
 inline bool iequals(std::string_view a, std::string_view b) {
-    return a.size() == b.size() && _strnicmp(a.data(), b.data(), a.size()) == 0;
+    if (a.size() != b.size())
+        return false;
+
+    char diff = 0;
+    for (size_t i = 0, length = a.size(); i < length; i++)
+        diff |= (a[i] ^ b[i]);
+    return (diff == 0) || (diff == 32);
 }
 
 inline bool iless(std::string_view a, std::string_view b) {
