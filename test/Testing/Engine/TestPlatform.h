@@ -19,6 +19,7 @@ class TestPlatform: public Platform {
     virtual bool IsCursorShown() const override;
     virtual std::vector<Recti> DisplayGeometries() const override;
     virtual void ShowMessageBox(const std::string &message, const std::string& title) const override;
+    virtual int64_t TickCount() const override;
 
  private:
     std::unique_ptr<Platform> base_;

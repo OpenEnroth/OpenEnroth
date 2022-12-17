@@ -4357,7 +4357,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
     glUniformMatrix4fv(glGetUniformLocation(outbuildshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
 
     glUniform1i(glGetUniformLocation(outbuildshader.ID, "waterframe"), GLint(this->hd_water_current_frame));
-    glUniform1i(glGetUniformLocation(outbuildshader.ID, "flowtimer"), GLint(OS_GetTime() >> 4));
+    glUniform1i(glGetUniformLocation(outbuildshader.ID, "flowtimer"), GLint(platform->TickCount() >> 4));
 
     glUniform1f(glGetUniformLocation(outbuildshader.ID, "gamma"), gamma);
 
@@ -5087,7 +5087,7 @@ void RenderOpenGL::DrawIndoorFaces() {
 
         glUniform1f(glGetUniformLocation(bspshader.ID, "gamma"), gamma);
         glUniform1i(glGetUniformLocation(bspshader.ID, "waterframe"), GLint(this->hd_water_current_frame));
-        glUniform1i(glGetUniformLocation(bspshader.ID, "flowtimer"), GLint(OS_GetTime() >> 4));
+        glUniform1i(glGetUniformLocation(bspshader.ID, "flowtimer"), GLint(platform->TickCount() >> 4));
 
         // set texture unit location
         glUniform1i(glGetUniformLocation(bspshader.ID, "textureArray0"), GLint(0));

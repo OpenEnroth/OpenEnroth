@@ -103,6 +103,10 @@ void SdlPlatform::ShowMessageBox(const std::string &message, const std::string& 
     SDL_ShowSimpleMessageBox(0, title.c_str(), message.c_str(), nullptr);
 }
 
+int64_t SdlPlatform::TickCount() const {
+    return SDL_GetTicks64();
+}
+
 std::unique_ptr<Platform> Platform::CreateStandardPlatform(Log *log) {
     return std::make_unique<SdlPlatform>(log);
 }

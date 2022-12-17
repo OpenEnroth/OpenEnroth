@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Events.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Collisions.h"
@@ -2319,7 +2320,7 @@ void ODM_ProcessPartyActions() {
     pParty->sRotationY = _angle_x;
     //-------------------------------------------
     if (pParty->bFlying) {
-        v129 = 4 * TrigLUT.Cos(OS_GetTime());
+        v129 = 4 * TrigLUT.Cos(platform->TickCount());
         party_new_Z = v113 + v129;
         if (pModel_) party_new_Z = v113;
         if (pParty->FlyActive())

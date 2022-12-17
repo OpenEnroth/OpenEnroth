@@ -12,11 +12,6 @@ bool OS_GetAppString(const char *path, char *out_string, int out_string_size);
 bool OS_OpenConsole();
 
 /**
- * @return                              Current value of a monotonic clock in milliseconds (1/1000s of a second).
- */
-unsigned int OS_GetTime();
-
-/**
  * On linux and on mac this function handles home-relative paths, so this is the preferred method of constructing
  * absolute paths instead of calling `std::filesystem::path` constructor.
  *

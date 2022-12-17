@@ -114,4 +114,9 @@ class Platform {
      * @param title                     Title of the message box window.
      */
     virtual void ShowMessageBox(const std::string &message, const std::string& title) const = 0;
+
+    /**
+     * @return                          Current value of a monotonic clock in milliseconds.
+     */
+    virtual int64_t TickCount() const = 0;
 };

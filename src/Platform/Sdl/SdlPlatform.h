@@ -23,6 +23,8 @@ class SdlPlatform: public Platform {
 
     virtual void ShowMessageBox(const std::string &message, const std::string& title) const override;
 
+    virtual int64_t TickCount() const override;
+
  private:
     friend class SdlWindow;
     friend class SdlEventLoop;

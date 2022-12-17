@@ -2660,7 +2660,7 @@ void Game::GameLoop() {
             }
             pAudioPlayer->UpdateSounds();
             // expire timed status messages
-            if (game_ui_status_bar_event_string_time_left != 0 && game_ui_status_bar_event_string_time_left < OS_GetTime()) {
+            if (game_ui_status_bar_event_string_time_left != 0 && game_ui_status_bar_event_string_time_left < platform->TickCount()) {
                  GameUI_StatusBar_Clear();
             }
             if (uGameState == GAME_STATE_PLAYING) {

@@ -314,7 +314,7 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
             Texture* face_texture = pFace->GetTexture();
             if (pFace->Fluid()) {
                 face_texture = (Texture*)pFace->resource;
-                uint eightSeconds = OS_GetTime() % 8000;
+                uint eightSeconds = platform->TickCount() % 8000;
                 float angle = (eightSeconds / 8000.0f) * 2 * 3.1415f;
 
                 // animte lava back and forth
@@ -340,7 +340,7 @@ unsigned int FaceFlowTextureOffset(unsigned int uFaceID) {  // time texture offs
     Lights.pDeltaUV[0] = pIndoor->pFaceExtras[pIndoor->pFaces[uFaceID].uFaceExtraID].sTextureDeltaU;
     Lights.pDeltaUV[1] = pIndoor->pFaceExtras[pIndoor->pFaces[uFaceID].uFaceExtraID].sTextureDeltaV;
 
-    unsigned int offset = OS_GetTime() >> 3;
+    unsigned int offset = platform->TickCount() >> 3;
 
     if (pIndoor->pFaces[uFaceID].uAttributes & FACE_FlowDown) {
         Lights.pDeltaUV[1] -= offset & (((Texture *)pIndoor->pFaces[uFaceID].resource)->GetHeight() - 1);

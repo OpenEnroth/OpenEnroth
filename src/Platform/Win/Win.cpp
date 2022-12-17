@@ -11,8 +11,6 @@
 
 #pragma comment(lib, "winmm.lib")
 
-unsigned int OS_GetTime() { return GetTickCount(); }
-
 bool OS_OpenConsole() {
     if (AllocConsole()) {
         freopen("conin$", "r", stdin);

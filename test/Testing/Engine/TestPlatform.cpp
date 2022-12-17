@@ -33,3 +33,7 @@ std::vector<Recti> TestPlatform::DisplayGeometries() const {
 void TestPlatform::ShowMessageBox(const std::string &message, const std::string& title) const {
     base_->ShowMessageBox(message, title);
 }
+
+int64_t TestPlatform::TickCount() const {
+    return base_->TickCount();
+}

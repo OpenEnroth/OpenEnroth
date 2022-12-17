@@ -1362,7 +1362,7 @@ static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, Texture *i
             ptr_50C9A4_ItemToEnchant = nullptr;
         }
 
-        render->BlendTextures(x, y, item_texture, enchantment_texture, OS_GetTime() / 10, 0, 255);
+        render->BlendTextures(x, y, item_texture, enchantment_texture, platform->TickCount() / 10, 0, 255);
     } else if (item->IsBroken()) {
         render->DrawTransparentRedShade(x / 640.0f, y / 480.0f, item_texture);
     } else if (!item->IsIdentified() && (engine->config->gameplay.ShowUndentifiedItem.Get() || id)) {
