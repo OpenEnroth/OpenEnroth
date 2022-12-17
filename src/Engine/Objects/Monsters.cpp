@@ -8,7 +8,6 @@
 #include "Engine/Serialization/Serializer.h"
 #include "Engine/Serialization/LegacyImages.h"
 
-#include "Platform/Api.h"
 
 #include "../LOD.h"
 #include "../Tables/FrameTableInc.h"

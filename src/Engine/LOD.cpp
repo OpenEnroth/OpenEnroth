@@ -9,7 +9,6 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Sprites.h"
 
-#include "Platform/Api.h"
 
 LODFile_IconsBitmaps *pEvents_LOD = nullptr;
 

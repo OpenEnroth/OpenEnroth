@@ -17,7 +17,6 @@
 
 #include "Media/Audio/OpenALSoundProvider.h"
 
-#include "Platform/Api.h"
 
 int sLastTrackLengthMS;
 AudioPlayer *pAudioPlayer;

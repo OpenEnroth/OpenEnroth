@@ -64,7 +64,6 @@
 #include "Engine/SpellFxRenderer.h"
 #include "Arcomage/Arcomage.h"
 
-#include "Platform/Api.h"
 
 #include "Utility/Geometry/Size.h"
 #include "Utility/Memory.h"

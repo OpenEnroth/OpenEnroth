@@ -34,7 +34,6 @@ extern "C" {
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/Audio/OpenALSoundProvider.h"
 
-#include "Platform/Api.h"
 
 using namespace std::chrono_literals;
 

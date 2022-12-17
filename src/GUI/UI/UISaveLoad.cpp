@@ -24,7 +24,6 @@
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UIMainMenu.h"
 
-#include "Platform/Api.h"
 
 
 using Io::TextInputType;

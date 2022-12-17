@@ -16,8 +16,6 @@
 
 #include "GUI/GUIWindow.h"
 
-#include "Platform/Api.h"
-
 using Io::InputAction;
 using Io::KeyToggleType;
 

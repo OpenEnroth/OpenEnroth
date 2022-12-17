@@ -13,8 +13,6 @@
 
 #include "GUI/UI/UIGame.h"
 
-#include "Platform/Api.h"
-
 void GameUI_StatusBar_Set(const std::string &str) {
     if (str.length() > 0) {
         if (!game_ui_status_bar_event_string_time_left) {
