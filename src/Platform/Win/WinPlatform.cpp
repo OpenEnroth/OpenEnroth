@@ -48,7 +48,7 @@ static bool OS_GetAppStringRecursive(HKEY parent_key, const char *path, char *ou
         bool result = false;
         HKEY key;
         if (!RegOpenKeyExA(parent_key, current_key, 0, KEY_READ | flags, &key)) {
-            result = OS_GetAppStringRecursive(key, path_tail, out_string, out_string_size);
+            result = OS_GetAppStringRecursive(key, path_tail, out_string, out_string_size, 0);
             RegCloseKey(key);
         }
 
