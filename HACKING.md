@@ -81,10 +81,32 @@ Source code is automatically checked against it and Pull Request will fail if yo
 
 To perform style check before pushing anything you can build `check_style` target. In Visual Studio you can do that by going to ***Solution Explorer → Change Views → CMake targets***. Right click and build `check_style`, errors will be listed in output.
 
-Some additional style preferences that we follow, in no particular order:
-* `*` and `&` in type declarations are preceded by a space. So it's `char *string`, and not `char* string`.
+We also follow some additional style preferences, as listed below.
+
+Documentation:
 * Documentation should be in doxydoc format with `@` used for tags, and starting with `/**` comment introducer.
 * Documentation should be written in English. There are some leftover comments in Russian throughout the codebase, feel free to translate them into English when you have a chance.
-* Please leave original function offsets intact. If you have a chance move them to doxygen comments using offset alias (eg `@offset 0xCAFEBEEF.`)
+* Please leave original function offsets intact. If you have a chance, move them to doxygen comments using `@offset` doxygen tag (e.g. `@offset 0xCAFEBEEF`).
+
+Naming:
+* Use `MM_` prefix for macro naming. Macro names should be in `SNAKE_CASE_ALL_CAPS`.
+* Use `CamelCase` for everything else.
+* Class names and method & function names should start with a capital letter. E.g. `FileInput::Read`.
+* Variable names should start with a lowercase letter. E.g. `int monsterCount = level->MonsterCount()`.
+* Names of private members should end with an underscore to visually distinguish them from variables without having to spell out `this->` every single time. E.g. `initialized_ = true`, where `initialized_` is a member field.
+* Note that the above doesn't apply to POD-like types as for such types all members are public and are named just like ordinary variables.
+* We haven't yet settled on a single naming convention for `enum` values, so name them the way you like. Both `CamelCaseStartingWithUppercaseLetter` and `SNAKE_CASE_ALL_CAPS` are OK.
+
+Code formatting:
+* `*` and `&` in type declarations should be preceded by a space. So it's `char *string`, and not `char* string`.
+
+Language features:
 * Use `enum class`es followed by `using enum` statements instead of ordinary `enum`s. This provides type safety without changing the syntax. For flags, use `Flags` class.
-* Use `MM_` prefix for macro naming.
+* It's OK to use plain `enum`s if you really need to have implicit casts to integer types, but this is a very rare use case. If you're using `enum` values to index into some array, consider using `enum class` coupled with `IndexedArray`.
+* Make your code speak for itself when it comes to ownership. If a function takes ownership of one of its parameters, it should take `std::unique_ptr` by value. If it allocates its result and passes ownership to the caller, then it should return `std::unique_ptr`.
+
+
+Additional Resources
+--------------------
+
+Old event decompiler and IDB files can be found [here](https://www.dropbox.com/sh/if4u3lphn633oit/AADUYMxNcrkAU6epJ50RskyXa?dl=0). Feel free to ping `zipi#6029` for more info.
