@@ -413,7 +413,7 @@ void RenderBase::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
     float rhw = 1.f / a2->screen_space_z;
     float z = 1.f - 1.f / (a2->screen_space_z * 1000.f / pCamera3D->GetFarClip());
 
-    float acos = (float)cos(angle);
+    float acos = (float)cos(angle); // TODO(captainurist): taking cos of an INT angle? WTF?
     float asin = (float)sin(angle);
 
     {

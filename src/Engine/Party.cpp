@@ -26,7 +26,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Utility/Random.h"
+#include "Utility/Random/Random.h"
 
 using EngineIoc = Engine_::IocContainer;
 using Io::Mouse;
@@ -688,7 +688,7 @@ void Party::Reset() {
 
         pPlayers[i].expression = CHARACTER_EXPRESSION_1;
         pPlayers[i].uExpressionTimePassed = 0;
-        pPlayers[i].uExpressionTimeLength = rand() % 256 + 128;
+        pPlayers[i].uExpressionTimeLength = Random(256) + 128;
     }
 
     for (uint i = 0; i < 20; ++i) pPartyBuffs[i].Reset();
@@ -787,11 +787,11 @@ void Party::UpdatePlayersAndHirelingsEmotions() {
                 continue;
 
             player->uExpressionTimePassed = 0;
-            if (player->expression != 1 || rand() % 5) {
+            if (player->expression != 1 || Random(5)) {
                 player->expression = CHARACTER_EXPRESSION_1;
-                player->uExpressionTimeLength = rand() % 256 + 32;
+                player->uExpressionTimeLength = Random(256) + 32;
             } else {
-                v4 = rand() % 100;
+                v4 = Random(100);
                 if (v4 < 25)
                     player->expression = CHARACTER_EXPRESSION_13;
                 else if (v4 < 31)

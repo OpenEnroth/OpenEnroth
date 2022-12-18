@@ -11,6 +11,8 @@
 
 #include "Engine/Tables/IconFrameTable.h"
 
+#include "Utility/Random/Random.h"
+
 GUIProgressBar *pGameLoadingUI_ProgressBar = new GUIProgressBar();
 
 GUIProgressBar::GUIProgressBar() {
@@ -41,7 +43,7 @@ bool GUIProgressBar::Initialize(Type type) {
     uType = type;
 
     if (uType == TYPE_Fullscreen) {
-        loading_bg = assets->GetImage_PCXFromIconsLOD(StringPrintf("loading%d.pcx", rand() % 5 + 1));
+        loading_bg = assets->GetImage_PCXFromIconsLOD(StringPrintf("loading%d.pcx", Random(5) + 1));
 
         uProgressCurrent = 0;
         uX = 122;

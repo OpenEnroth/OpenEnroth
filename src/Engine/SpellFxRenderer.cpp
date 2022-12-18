@@ -24,6 +24,8 @@
 
 #include "Engine/Tables/IconFrameTable.h"
 
+#include "Utility/Random/Random.h"
+
 //----- (004A7063) --------------------------------------------------------
 unsigned int ModulateColor(unsigned int diffuse, float multiplier) {
     float alpha = multiplier * ((diffuse >> 24) & 0xFF);
@@ -282,7 +284,7 @@ void SpellFxRenderer::
         local_0.r = 0.0;
         local_0.g = 0.0;
         local_0.b = 0.0;
-        local_0.timeToLive = (rand() & 0x40) + 96;
+        local_0.timeToLive = Random(0x40) + 96;
         local_0.texture = texture;
         local_0.particle_size = 1.0f;
         particle_engine->AddParticle(&local_0);
@@ -313,7 +315,7 @@ void SpellFxRenderer::
         local_0.g = 0.0f;
         local_0.b = 0.0f;
         local_0.particle_size = 1.0f;
-        local_0.timeToLive = (rand() & 0x7F) + 128;
+        local_0.timeToLive = Random(0x7F) + 128;
         local_0.texture = texture;
         particle_engine->AddParticle(&local_0);
         local_0.x = (float)a2->vPosition.x - 4.0f;
@@ -336,13 +338,13 @@ void SpellFxRenderer::_4A75CC_single_spell_collision_particle(
     local_0.uDiffuse = uDiffuse;
     local_0.z = v4;
     v5 = 10;
-    local_0.timeToLive = (rand() & 0x7F) + 128;
+    local_0.timeToLive = Random(0x7F) + 128;
     local_0.texture = texture;
     local_0.particle_size = 1.0f;
     do {
-        local_0.r = (float)(rand() & 0x1FF) - 255.0f;
-        local_0.g = (float)(rand() & 0x1FF) - 255.0f;
-        local_0.b = (float)(rand() & 0x1FF) - 255.0f;
+        local_0.r = (float) Random(0x200) - 255.0f;
+        local_0.g = (float) Random(0x200) - 255.0f;
+        local_0.b = (float) Random(0x200) - 255.0f;
         particle_engine->AddParticle(&local_0);
         --v5;
     } while (v5);
@@ -362,15 +364,15 @@ void SpellFxRenderer::_4A7688_fireball_collision_particle(SpriteObject *a2) {
     local_0.x = (float)a2->vPosition.x;
     local_0.y = (float)a2->vPosition.y;
     local_0.z = (float)a2->vPosition.z;
-    local_0.timeToLive = (rand() & 0x7F) + 128;
+    local_0.timeToLive = Random(0x80) + 128;
     local_0.texture = this->effpar01;
     local_0.particle_size = 1.0;
 
     // 10 fireball sparks
     for (unsigned int i = 0; i < 10; ++i) {
-        local_0.r = (rand() & 0x1FF) - 255;
-        local_0.g = (rand() & 0x1FF) - 255;
-        local_0.b = (rand() & 0x1FF) - 255;
+        local_0.r = Random(0x200) - 255;
+        local_0.g = Random(0x200) - 255;
+        local_0.b = Random(0x200) - 255;
         particle_engine->AddParticle(&local_0);
     }
 
@@ -407,11 +409,11 @@ void SpellFxRenderer::_4A7948_mind_blast_after_effect(SpriteObject *a1) {
     Dst.z = (float)a1->vPosition.z;
     Dst.texture = a1->GetSpriteFrame()->hw_sprites[0]->texture;
     Dst.particle_size = 1.0;
-    Dst.timeToLive = (rand() & 0x7F) + 128;
+    Dst.timeToLive = Random(0x80) + 128;
     for (int i = 0; i < 10; i++) {
-        Dst.r = (float)(rand() & 0x1FF) - 255.0f;
-        Dst.g = (float)(rand() & 0x1FF) - 255.0f;
-        Dst.b = (float)(rand() & 0x1FF) - 255.0f;
+        Dst.r = (float) Random(0x200) - 255.0f;
+        Dst.g = (float) Random(0x200) - 255.0f;
+        Dst.b = (float) Random(0x200) - 255.0f;
         particle_engine->AddParticle(&Dst);
     }
 }
@@ -430,7 +432,6 @@ void SpellFxRenderer::
     _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(
         SpriteObject *a1, unsigned int uDiffuse, Texture *texture, float a4) {
     int v5;               // eax@1
-    char v6;              // al@1
     double v7;            // st6@1
     double v8;            // st6@1
     double v9;            // st7@1
@@ -448,10 +449,9 @@ void SpellFxRenderer::
     local_0.y = (float)a1->vPosition.y;
     local_0.uDiffuse = uDiffuse;
     local_0.z = (float)(v5 + 32);
-    v6 = rand();
     local_0.particle_size = 1.0;
     v7 = 0.0 * a4;
-    local_0.timeToLive = (v6 & 0x7F) + 128;
+    local_0.timeToLive = Random(0x80) + 128;
     local_0.texture = texture;
     a1a = v7;
     local_0.r = v7;
@@ -509,14 +509,14 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
         local_0.b = 0.0f;
 
         local_0.particle_size = 3.0;
-        local_0.timeToLive = (rand() & 0x3F) + 64;
+        local_0.timeToLive = Random(0x40) + 64;
         local_0.texture = a2->GetSpriteFrame()->hw_sprites[0]->texture;
         particle_engine->AddParticle(&local_0);
         local_0.particle_size = 4.0;
         local_0.x = (float)a2->vPosition.x;
         local_0.y = (float)a2->vPosition.y;
         local_0.z = (float)a2->vPosition.z;
-        local_0.timeToLive = (rand() & 0x3F) + 64;
+        local_0.timeToLive = Random(0x40) + 64;
         particle_engine->AddParticle(&local_0);
         v6->flt_0_x = (float)a2->vPosition.x;
         v6->flt_4_y = (float)a2->vPosition.y;
@@ -535,7 +535,7 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
         local_0.r = 0.0f;
         local_0.g = 0.0f;
         local_0.b = 0.0f;
-        local_0.timeToLive = (rand() & 0x3F) + 64;
+        local_0.timeToLive = Random(0x40) + 64;
         local_0.texture = a2->GetSpriteFrame()->hw_sprites[0]->texture;
         particle_engine->AddParticle(&local_0);
     }
@@ -569,23 +569,23 @@ void SpellFxRenderer::_4A7E89_sparkles_on_actor_after_it_casts_buff(
 
     memset(&Dst, 0, sizeof(Particle_sw));
     Dst.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
-    Dst.timeToLive = (rand() & 0x7F) + 128;
+    Dst.timeToLive = Random(0x80) + 128;
     v3 = pActor;
     Dst.texture = this->effpar02;
     pActora = 50;
     Dst.particle_size = 1.0;
     do {
-        v7 = (uint8_t)rand() + v3->vPosition.x - 127;
+        v7 = Random(256) + v3->vPosition.x - 127;
         Dst.x = (float)v7;
-        v7 = (uint8_t)rand() + v3->vPosition.y - 127;
+        v7 = Random(256) + v3->vPosition.y - 127;
         Dst.y = (float)v7;
-        v7 = v3->vPosition.z + (uint8_t)rand();
+        v7 = v3->vPosition.z + Random(256);
         Dst.z = (float)v7;
         if (uDiffuse) {
             Dst.uDiffuse = uDiffuse;
         } else {
-            v4 = rand() << 16;
-            Dst.uDiffuse = rand() | v4;
+            v4 = Random(65536) << 16;
+            Dst.uDiffuse = Random(65536) | v4;
         }
         particle_engine->AddParticle(&Dst);
         --pActora;
@@ -594,7 +594,6 @@ void SpellFxRenderer::_4A7E89_sparkles_on_actor_after_it_casts_buff(
 
 //----- (004A7F74) --------------------------------------------------------
 void SpellFxRenderer::_4A7F74(int x, int y, int z) {
-    char v5;              // al@1
     signed int v6;        // edi@1
     double v8;            // st7@2
     double v9;            // st7@2
@@ -606,10 +605,9 @@ void SpellFxRenderer::_4A7F74(int x, int y, int z) {
     memset(&local_0, 0, sizeof(local_0));
     local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_1;
     local_0.uDiffuse = 0x7E7E7E;
-    v5 = rand();
     local_0.particle_size = 1.0;
     v6 = 8;
-    local_0.timeToLive = (v5 & 0x7F) + 128;
+    local_0.timeToLive = Random(0x80) + 128;
 
     v12 = (float)x;
     local_0.texture = this->effpar01;

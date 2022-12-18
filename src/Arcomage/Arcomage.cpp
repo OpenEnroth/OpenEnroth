@@ -8,7 +8,6 @@
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
-#include "Utility/String.h"
 #include "Engine/Time.h"
 
 #include "GUI/GUIFont.h"
@@ -17,6 +16,9 @@
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
+
+#include "Utility/String.h"
+#include "Utility/Random/Random.h"
 
 
 void SetStartConditions();
@@ -308,8 +310,8 @@ int explosion_effect_struct::UpdateEffect() {
                 if (total_to_init >= 1.0) {
                     // spark dead - initialze new spark
                     spark_ptr->spark_remaining_life = rand_interval(this->min_lifespan, this->max_lifespan);
-                    spark_ptr->spark_x_speed = static_cast<float> (rand() % 17 - 8);
-                    spark_ptr->spark_y_speed = static_cast<float> (rand() % 17 - 8);
+                    spark_ptr->spark_x_speed = static_cast<float> (Random(17) - 8);
+                    spark_ptr->spark_y_speed = static_cast<float> (Random(17) - 8);
                     spark_ptr->spark_x_pos = static_cast<float> (rand_interval(this->start_x_min, (this->start_x_max - 1)));
                     spark_ptr->spark_position.x = static_cast<int> (spark_ptr->spark_x_pos);
                     spark_ptr->spark_y_pos = static_cast<float> (rand_interval((this->start_y_min - 1), this->start_y_max));
@@ -1081,7 +1083,7 @@ void FillPlayerDeck() {
 
     for (i = 0; i < DECK_SIZE; ++i) {
         do {
-            rand_deck_pos = rand() % DECK_SIZE;
+            rand_deck_pos = Random(DECK_SIZE);
         } while (card_taken_flags[rand_deck_pos] == 1);
 
         card_taken_flags[rand_deck_pos] = 1;
@@ -3031,7 +3033,7 @@ void DrawRect(Recti *pRect, uint16_t uColor, char bSolidFill) {
     }
 }
 
-int rand_interval(int min, int max) { return min + rand() % (max - min + 1); }
+int rand_interval(int min, int max) { return Random(min, max + 1); }
 
 void set_stru1_field_8_InArcomage(int inValue) {  // what is this meant to be doing??
     switch (inValue) {

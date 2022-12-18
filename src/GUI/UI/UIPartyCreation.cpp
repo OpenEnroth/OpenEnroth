@@ -26,7 +26,7 @@
 #include "Media/Audio/AudioPlayer.h"
 
 
-#include "Utility/Random.h"
+#include "Utility/Random/Random.h"
 
 
 using Io::TextInputType;
@@ -850,7 +850,7 @@ bool PartyCreationUI_LoopInternal() {
     memset(v20, 0, 32);
     for (int i = 0; i < 32; i++) {
         for (v8 = 0; v8 < 10; ++v8) {
-            v9 = rand() % 32;
+            v9 = Random(32);
             if (!v20[v9]) break;
         }
         if (v8 == 10) {

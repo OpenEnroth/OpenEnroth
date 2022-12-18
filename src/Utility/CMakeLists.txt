@@ -7,6 +7,7 @@ set(UTILITY_SOURCES Blob.cpp
                     Log.cpp
                     String.cpp
                     Math/TrigLut.cpp
+                    Random/Random.cpp
                     Streams/MemoryInputStream.cpp
                     Streams/StringOutputStream.cpp
                     Streams/FileOutputStream.cpp)
@@ -32,6 +33,9 @@ set(UTILITY_HEADERS Blob.h
                     Workaround/ToUnderlying.h
                     Math/Float.h
                     Math/TrigLut.h
+                    Random/Random.h
+                    Random/RandomEngine.h
+                    Random/MersenneTwisterRandomEngine.h
                     Streams/InputStream.h
                     Streams/OutputStream.h
                     Streams/MemoryInputStream.h
@@ -46,7 +50,7 @@ if(ENABLE_TESTS)
                              Tests/Segment_ut.cpp
                              Math/Tests/Float_ut.cpp
                              Streams/Tests/FileOutputStream_ut.cpp
-                             Tests/String_ut.cpp)
+                             Tests/String_ut.cpp Random/RandomEngine.h Random/MersenneTwisterRandomEngine.h Random/Random.cpp Random/RandomEngineWrapper.h)
 
     add_library(test_utility OBJECT ${TEST_UTILITY_SOURCES})
     target_compile_definitions(test_utility PRIVATE TEST_GROUP=Utility)

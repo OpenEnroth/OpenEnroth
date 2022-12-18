@@ -52,17 +52,6 @@ int integer_sqrt(int val) {
     return result;
 }
 
-//----- (00452B2E) --------------------------------------------------------
-int GetDiceResult(unsigned int uNumDice, unsigned int uDiceSides) {
-    int v3 = 0;
-    if (uDiceSides) {
-        for (unsigned int i = 0; i < uNumDice; ++i)
-            v3 += rand() % uDiceSides + 1;
-        return v3;
-    }
-    return 0;
-}
-
 uint32_t int_get_vector_length(int32_t x, int32_t y, int32_t z) { // approx distance
     if (x < y) {
         std::swap(x, y);

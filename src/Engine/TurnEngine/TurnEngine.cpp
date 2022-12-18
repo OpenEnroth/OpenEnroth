@@ -15,6 +15,8 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Utility/Random/Random.h"
+
 #include "../Party.h"
 #include "../stru298.h"
 
@@ -179,7 +181,7 @@ void stru262_TurnBased::Start() {
                 ++a_players_count;
             }
         } else if (PID_TYPE(this->pQueue[k].uPackedID) == OBJECT_Actor) {
-            v17 = rand() % 99;
+            v17 = Random(99);
             if (v17 < 33)
                 this->pQueue[k].actor_initiative = 1;
             else
@@ -688,7 +690,7 @@ void stru262_TurnBased::AIAttacks(unsigned int queue_index) {
                                         &a4);
                         break;
                     default:
-                        if (!(rand() % 2))
+                        if (!Random(2))
                             Actor::AI_Bored(
                                 actor_id, ai_near_actors_targets_pid[actor_id],
                                 &a4);
@@ -1114,7 +1116,7 @@ void stru262_TurnBased::ActorAIChooseNewTargets() {
                         curr_acror->UpdateAnimation();
                         break;
                     }
-                    if (rand() % 2)
+                    if (Random(2))
                         Actor::AI_Stand(uActorID, target_pid, 64, &a4);
                     else
                         Actor::AI_Bored(uActorID, target_pid, &a4);

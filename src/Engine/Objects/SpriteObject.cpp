@@ -28,6 +28,7 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Utility/Math/TrigLut.h"
+#include "Utility/Random/Random.h"
 
 using EngineIoc = Engine_::IocContainer;
 
@@ -222,21 +223,21 @@ void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID) {
                 Dst.type = ParticleType_Bitmap | ParticleType_Rotating |
                            ParticleType_8;
                 Dst.uDiffuse = 0xFF3C1E;
-                Dst.timeToLive = (uint8_t)(rand() & 0x80) + 128;
+                Dst.timeToLive = Random(0x80) + 128;
                 Dst.texture = spell_fx_renderer->effpar01;
                 Dst.particle_size = 1.0f;
                 particle_engine->AddParticle(&Dst);
             } else if (object->uFlags & OBJECT_DESC_TRIAL_LINE) {
                 Dst.type = ParticleType_Line;
-                Dst.uDiffuse = rand();
+                Dst.uDiffuse = Random(RAND_MAX); // TODO(captainurist): TBH this makes no sense, investigate
                 Dst.timeToLive = 64;
                 Dst.texture = nullptr;
                 Dst.particle_size = 1.0f;
                 particle_engine->AddParticle(&Dst);
             } else if (object->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                 Dst.type = ParticleType_Bitmap | ParticleType_8;
-                Dst.uDiffuse = rand();
-                Dst.timeToLive = (uint8_t)(rand() & 0x80) + 128;
+                Dst.uDiffuse = Random(RAND_MAX);
+                Dst.timeToLive = Random(0x80) + 128;
                 Dst.texture = spell_fx_renderer->effpar03;
                 Dst.particle_size = 1.0f;
                 particle_engine->AddParticle(&Dst);
@@ -336,7 +337,7 @@ LABEL_13:
                     Dst.type = ParticleType_Bitmap | ParticleType_Rotating |
                                ParticleType_8;
                     Dst.uDiffuse = 0xFF3C1E;
-                    Dst.timeToLive = (uint8_t)(rand() & 0x80) + 128;
+                    Dst.timeToLive = Random(0x80) + 128;
                     Dst.texture = spell_fx_renderer->effpar01;
                     Dst.particle_size = 1.0f;
                     particle_engine->AddParticle(&Dst);
@@ -344,15 +345,15 @@ LABEL_13:
                 } else if (object->uFlags & OBJECT_DESC_TRIAL_LINE) {
                     Dst.type = ParticleType_Line;
                     Dst.texture = nullptr;
-                    Dst.uDiffuse = rand();
+                    Dst.uDiffuse = Random(RAND_MAX);
                     Dst.timeToLive = 64;
                     Dst.particle_size = 1.0f;
                     particle_engine->AddParticle(&Dst);
                     return;
                 } else if (object->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                     Dst.type = ParticleType_Bitmap | ParticleType_8;
-                    Dst.uDiffuse = rand();
-                    Dst.timeToLive = (uint8_t)(rand() & 0x80) + 128;
+                    Dst.uDiffuse = Random(RAND_MAX);
+                    Dst.timeToLive = Random(0x80) + 128;
                     Dst.texture = spell_fx_renderer->effpar03;
                     Dst.particle_size = 1.0f;
                     particle_engine->AddParticle(&Dst);
@@ -538,14 +539,14 @@ LABEL_25:
                     Dst.type = ParticleType_Bitmap | ParticleType_Rotating |
                                ParticleType_8;
                     Dst.uDiffuse = 0xFF3C1E;
-                    Dst.timeToLive = (uint8_t)(rand() & 0x80) + 128;
+                    Dst.timeToLive = Random(0x80) + 128;
                     Dst.texture = spell_fx_renderer->effpar01;
                     Dst.particle_size = 1.0f;
                     particle_engine->AddParticle(&Dst);
                     return;
                 } else if (pObject->uFlags & OBJECT_DESC_TRIAL_LINE) {
                     Dst.type = ParticleType_Line;
-                    Dst.uDiffuse = rand();
+                    Dst.uDiffuse = Random(RAND_MAX);
                     Dst.timeToLive = 64;
                     Dst.texture = 0;
                     Dst.particle_size = 1.0f;
@@ -553,8 +554,8 @@ LABEL_25:
                     return;
                 } else if (pObject->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                     Dst.type = ParticleType_Bitmap | ParticleType_8;
-                    Dst.uDiffuse = rand();
-                    Dst.timeToLive = (uint8_t)(rand() & 0x80) + 128;
+                    Dst.uDiffuse = Random(RAND_MAX);
+                    Dst.timeToLive = Random(0x80) + 128;
                     Dst.texture = spell_fx_renderer->effpar03;
                     Dst.particle_size = 1.0f;
                     particle_engine->AddParticle(&Dst);
@@ -726,13 +727,13 @@ LABEL_25:
                            ParticleType_8;
                 Dst.uDiffuse = 0xFF3C1E;
                 Dst.particle_size = 1.0f;
-                Dst.timeToLive = (uint8_t)(rand() & 0x80) + 128;
+                Dst.timeToLive = Random(0x80) + 128;
                 Dst.texture = spell_fx_renderer->effpar01;
                 particle_engine->AddParticle(&Dst);
                 return;
             } else if (pObject->uFlags & OBJECT_DESC_TRIAL_LINE) {
                 Dst.type = ParticleType_Line;
-                Dst.uDiffuse = rand();
+                Dst.uDiffuse = Random(RAND_MAX);
                 Dst.timeToLive = 64;
                 Dst.texture = nullptr;
                 Dst.particle_size = 1.0f;
@@ -740,9 +741,9 @@ LABEL_25:
                 return;
             } else if (pObject->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                 Dst.type = ParticleType_Bitmap | ParticleType_8;
-                Dst.uDiffuse = rand();
+                Dst.uDiffuse = Random(RAND_MAX);
                 Dst.particle_size = 1.0f;
-                Dst.timeToLive = (uint8_t)(rand() & 0x80) + 128;
+                Dst.timeToLive = Random(0x80) + 128;
                 Dst.texture = spell_fx_renderer->effpar03;
                 particle_engine->AddParticle(&Dst);
             }
@@ -769,11 +770,8 @@ void SpriteObject::ExplosionTraps() {
     unsigned int v10 = ((unsigned int)(11 * dir_y) >> 5) + (dir_z / 4) + dir_x;
     if (v10 <= 768) {
         int v11 = 5;
-        if (pMapInfo->Trap_D20) {
-            for (uint i = 0; i < pMapInfo->Trap_D20; ++i) {
-                v11 += rand() % 20 + 1;
-            }
-        }
+        if (pMapInfo->Trap_D20)
+            v11 += RandomDice(pMapInfo->Trap_D20, 20);
         DAMAGE_TYPE pDamageType;
         switch (this->uType) {
             case 811:
@@ -793,7 +791,7 @@ void SpriteObject::ExplosionTraps() {
         }
         for (unsigned int i = 1; i <= 4; ++i) {
             int v13 = pPlayers[i]->GetPerception() + 20;
-            if (pPlayers[i]->CanAct() && (rand() % v13 > 20))
+            if (pPlayers[i]->CanAct() && (Random(v13) > 20))
                 pPlayers[i]->PlaySound(SPEECH_AvoidDamage, 0);
             else
                 pPlayers[i]->ReceiveDamage(v11, pDamageType);
@@ -934,11 +932,11 @@ bool SpriteObject::Drop_Item_At(SPRITE_OBJECT_TYPE sprite, int x,
     if (a7) {
         if (count > 0) {
             for (uint i = count; i; --i) {
-                pSpellObject.uFacing = rand() % (int)TrigLUT.uIntegerDoublePi;
+                pSpellObject.uFacing = Random(TrigLUT.uIntegerDoublePi);
                 pSpellObject.Create(
                     (int16_t)pSpellObject.uFacing,
                     ((int)TrigLUT.uIntegerHalfPi / 2) +
-                        (rand() % ((signed int)TrigLUT.uIntegerHalfPi / 2)),
+                        (Random((signed int)TrigLUT.uIntegerHalfPi / 2)),
                     a4, 0);
             }
         }

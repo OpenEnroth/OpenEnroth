@@ -32,6 +32,7 @@
 #include "Media/MediaPlayer.h"
 
 #include "Utility/Math/TrigLut.h"
+#include "Utility/Random/Random.h"
 
 
 std::array<EventIndex, 4400> pSomeOtherEVT_Events;
@@ -392,7 +393,7 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
                             }
 LABEL_47:
                             // v10 = (ByteArray *)&v5[v9];
-                            v24 = pParty->pPlayers[rand() % 4].pActiveSkills[static_cast<PLAYER_SKILL_TYPE>(_evt->v5)];
+                            v24 = pParty->pPlayers[Random(4)].pActiveSkills[static_cast<PLAYER_SKILL_TYPE>(_evt->v5)];
                         }
                     }
                     v136 = 1;
@@ -568,7 +569,7 @@ LABEL_47:
                             pParty->pPlayers[i].PlayEmotion(
                                 (CHARACTER_EXPRESSION_ID)_evt->v6, 0);
                     } else {  // random player
-                        pParty->pPlayers[rand() % 4].PlayEmotion(
+                        pParty->pPlayers[Random(4)].PlayEmotion(
                             (CHARACTER_EXPRESSION_ID)_evt->v6, 0);
                     }
                     ++curr_seq_num;
@@ -585,7 +586,7 @@ LABEL_47:
                             pParty->pPlayers[i].PlaySound(
                             (PlayerSpeech)_evt->v6, 0);
                     } else {  // random
-                        pParty->pPlayers[rand() % 4].PlaySound(
+                        pParty->pPlayers[Random(4)].PlaySound(
                             (PlayerSpeech)_evt->v6, 0);
                     }
                     ++curr_seq_num;
@@ -635,7 +636,7 @@ LABEL_47:
                             ++v130;
                         }
                     } else if (player_choose == 6) {  // random
-                        if (pPlayers[rand() % 4 + 1]->CompareVariable(
+                        if (pPlayers[Random(4) + 1]->CompareVariable(
                                 (enum VariableType)EVT_WORD(_evt->v5),
                                 pValue)) {
                             // v124 = -1;
@@ -678,7 +679,7 @@ LABEL_47:
                                 (enum VariableType)EVT_WORD(_evt->v5), pValue);
                         }
                     } else if (player_choose == 6) {  // random
-                        pParty->pPlayers[rand() % 4].SubtractVariable(
+                        pParty->pPlayers[Random(4)].SubtractVariable(
                             (enum VariableType)EVT_WORD(_evt->v5), pValue);
                     }
                     ++curr_seq_num;
@@ -698,7 +699,7 @@ LABEL_47:
                             pPlayers[i]->SetVariable(
                                 (enum VariableType)EVT_WORD(_evt->v5), pValue);
                     } else if (player_choose == 6) {  // random
-                        pParty->pPlayers[rand() % 4].SetVariable(
+                        pParty->pPlayers[Random(4)].SetVariable(
                             (enum VariableType)EVT_WORD(_evt->v5), pValue);
                     }
                     ++curr_seq_num;
@@ -719,7 +720,7 @@ LABEL_47:
                                 (enum VariableType)EVT_WORD(_evt->v5), pValue);
                         }
                     } else if (player_choose == 6) {  // random
-                        pParty->pPlayers[rand() % 4].AddVariable(
+                        pParty->pPlayers[Random(4)].AddVariable(
                             (enum VariableType)EVT_WORD(_evt->v5), pValue);
                     }
                     v83 = EVT_WORD(_evt->v5);
@@ -755,7 +756,7 @@ LABEL_47:
                     // v124 = -1;
                     v11 = (uint8_t)*(
                         &_evt->v5 +
-                        rand() % ((_evt->v5 != 0) + (_evt->v6 != 0) +
+                        Random((_evt->v5 != 0) + (_evt->v6 != 0) +
                                   (_evt->v7 != 0) + (_evt->v8 != 0) +
                                   (_evt->v9 != 0) + (_evt->v10 != 0)));
                     curr_seq_num = v11 - 1;
@@ -781,7 +782,7 @@ LABEL_47:
                         break;
                     }
                     if (_evt->v5 != 5) {
-                        pParty->pPlayers[rand() % 4].ReceiveDamage(
+                        pParty->pPlayers[Random(4)].ReceiveDamage(
                             EVT_DWORD(_evt->v7), (DAMAGE_TYPE)_evt->v6);
                         ++curr_seq_num;
                         break;

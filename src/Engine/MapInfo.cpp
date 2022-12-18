@@ -12,7 +12,7 @@
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Level/Decoration.h"
 
-#include "Utility/Random.h"
+#include "Utility/Random/Random.h"
 #include "Utility/Math/TrigLut.h"
 
 #include "OurMath.h"
@@ -247,7 +247,7 @@ void MapInfo::SpawnRandomTreasure(SpawnPoint *a2) {
     a1a.containing_item.Reset();
 
     int v34 = 0;
-    int v5 = rand() % 100;
+    int v5 = Random(100);
     ITEM_TREASURE_LEVEL v13 = Sample(RemapTreasureLevel(a2->uItemIndex, Treasure_prob));
     if (v13 != ITEM_TREASURE_LEVEL_GUARANTEED_ARTIFACT) {
         // [0, 20) -- nothing
@@ -259,29 +259,29 @@ void MapInfo::SpawnRandomTreasure(SpawnPoint *a2) {
             return;
 
         if (v5 >= 60) {
-            DropTreasureAt(v13, rand() % 27 + 20,
+            DropTreasureAt(v13, Random(27) + 20,
                                                a2->vPosition.x,
                                                a2->vPosition.y,
                                                a2->vPosition.z, 0);
         }
         if (a2->uItemIndex == ITEM_TREASURE_LEVEL_1) {
             a1a.containing_item.uItemID = ITEM_GOLD_SMALL;
-            v34 = rand() % 51 + 50;
+            v34 = Random(51) + 50;
         } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_2) {
             a1a.containing_item.uItemID = ITEM_GOLD_SMALL;
-            v34 = rand() % 101 + 100;
+            v34 = Random(101) + 100;
         } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_3) {
             a1a.containing_item.uItemID = ITEM_GOLD_MEDIUM;
-            v34 = rand() % 301 + 200;
+            v34 = Random(301) + 200;
         } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_4) {
             a1a.containing_item.uItemID = ITEM_GOLD_MEDIUM;
-            v34 = rand() % 501 + 500;
+            v34 = Random(501) + 500;
         } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_5) {
             a1a.containing_item.uItemID = ITEM_GOLD_LARGE;
-            v34 = rand() % 1001 + 1000;
+            v34 = Random(1001) + 1000;
         } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_ARTIFACT) {
             a1a.containing_item.uItemID = ITEM_GOLD_LARGE;
-            v34 = rand() % 3001 + 2000;
+            v34 = Random(3001) + 2000;
         }
         a1a.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[a1a.containing_item.uItemID].uSpriteID;
         a1a.containing_item.SetIdentified();

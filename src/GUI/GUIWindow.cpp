@@ -42,6 +42,7 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
+#include "Utility/Random/Random.h"
 
 
 using EngineIoc = Engine_::IocContainer;
@@ -1731,8 +1732,8 @@ void CheckBountyRespawnAndAward() {
         pParty->monster_for_hunting_killed[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = false;
         pParty->PartyTimes.bountyHunting_next_generation_time[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] =
             GameTime((int64_t)((double)(0x12750000 * (pParty->uCurrentMonth + 12 * pParty->uCurrentYear - 14015)) * 0.033333335));
-        for (i = rand();; i = rand()) {
-            rand_monster_id = i % 258 + 1;
+        for (;;) {
+            rand_monster_id = Random(258) + 1;
             pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = rand_monster_id;
             if ((uint16_t)rand_monster_id < 0x73u || (uint16_t)rand_monster_id > 0x84u) {
                 if (((uint16_t)rand_monster_id < 0xEBu ||
@@ -2166,7 +2167,7 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                     }
                 }
                 if (v63) {
-                    if (dword_A74CDC == -1) dword_A74CDC = rand() % v63;
+                    if (dword_A74CDC == -1) dword_A74CDC = Random(v63);
                     pText =
                         pAwards[v55[dword_A74CDC]]
                         .pText;  // (char *)dword_723E80_award_related[2

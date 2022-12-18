@@ -38,7 +38,7 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Utility/Math/TrigLut.h"
-
+#include "Utility/Random/Random.h"
 
 using EngineIoc = Engine_::IocContainer;
 
@@ -187,8 +187,7 @@ void Actor::SetRandomGoldIfTheresNoItem() {
     v2 = 0;
     if (this->ActorHasItems[3].uItemID == ITEM_NULL) {
         if (this->pMonsterInfo.uTreasureDiceRolls) {
-            for (int i = 0; i < this->pMonsterInfo.uTreasureDiceRolls; i++)
-                v2 += rand() % this->pMonsterInfo.uTreasureDiceSides + 1;
+            v2 = RandomDice(this->pMonsterInfo.uTreasureDiceRolls, this->pMonsterInfo.uTreasureDiceSides);
             if (v2) {
                 this->ActorHasItems[3].uItemID = ITEM_GOLD_SMALL;
                 this->ActorHasItems[3].special_enchantment =
@@ -196,7 +195,7 @@ void Actor::SetRandomGoldIfTheresNoItem() {
             }
         }
     }
-    if (rand() % 100 < this->pMonsterInfo.uTreasureDropChance) {
+    if (Random(100) < this->pMonsterInfo.uTreasureDropChance) {
         if (this->pMonsterInfo.uTreasureLevel != ITEM_TREASURE_LEVEL_INVALID)
             pItemTable->GenerateItem(this->pMonsterInfo.uTreasureLevel,
                                      this->pMonsterInfo.uTreasureType,
@@ -340,7 +339,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             spellnumb = 0;
             v28 = 0;
             for (int i = 0; i < v23; i++) {
-                v30 = rand() % 1000;
+                v30 = Random(1000);
                 spellnumc = v30 - 2500;
                 v120 = v28 * v28;
                 v119 = spellnumb * spellnumb;
@@ -387,8 +386,8 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 if (v36 != -1) {
                     pAudioPlayer->PlaySpellSound(9, PID(OBJECT_Item, v36));
                 }
-                spellnumb = rand() % 1024 - 512;
-                v28 = rand() % 1024 - 512;
+                spellnumb = Random(1024) - 512;
+                v28 = Random(1024) - 512;
             }
             return;
             break;
@@ -576,7 +575,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                       pPlayers[i]->GetParameterBonus(
                           pPlayers[i]->GetActualLuck()) +
                       30;
-                if (rand() % v63 < 30) {
+                if (Random(v63) < 30) {
                     for (uint k = 0; k < pPlayers[i]->pPlayerBuffs.size(); k++)
                         pPlayers[i]->pPlayerBuffs[k].Reset();
                     pOtherOverlayList->_4418B1(11210, i + 99, 0, 65536);
@@ -1079,7 +1078,7 @@ void Actor::AI_FaceObject(unsigned int uActorID, unsigned int uObjID, int UNUSED
     AIDirection *Dir_Out;
     AIDirection Dir_Ret;
 
-    if (rand() % 100 >= 5) {
+    if (Random(100) >= 5) {
         if (!Dir_In) {
             Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), uObjID, &Dir_Ret, 0);
             Dir_Out = &Dir_Ret;
@@ -1104,7 +1103,7 @@ void Actor::AI_FaceObject(unsigned int uActorID, unsigned int uObjID, int UNUSED
 //----- (00403F58) --------------------------------------------------------
 void Actor::AI_StandOrBored(unsigned int uActorID, signed int uObjID,
                             int uActionLength, AIDirection *a4) {
-    if (rand() % 2)  // 0 or 1
+    if (Random(2))  // 0 or 1
         AI_Bored(uActorID, uObjID, a4);
     else
         AI_Stand(uActorID, uObjID, uActionLength, a4);
@@ -1126,7 +1125,7 @@ void Actor::AI_Stand(unsigned int uActorID, unsigned int object_to_face_pid,
     pActors[uActorID].uAIState = Standing;
     if (!uActionLength)
         pActors[uActorID].uCurrentActionLength =
-            rand() % 256 + 256;  // от 256 до 256 + 256
+            Random(256) + 256;  // от 256 до 256 + 256
     else
         pActors[uActorID].uCurrentActionLength = uActionLength;
     pActors[uActorID].uCurrentActionTime = 0;
@@ -1140,7 +1139,7 @@ void Actor::AI_Stand(unsigned int uActorID, unsigned int object_to_face_pid,
 
 //----- (00403E61) --------------------------------------------------------
 void Actor::StandAwhile(unsigned int uActorID) {
-    pActors[uActorID].uCurrentActionLength = rand() % 128 + 128;
+    pActors[uActorID].uCurrentActionLength = Random(128) + 128;
     pActors[uActorID].uCurrentActionTime = 0;
     pActors[uActorID].uAIState = Standing;
     pActors[uActorID].vVelocity.z = 0;
@@ -1220,7 +1219,7 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, signed int sTargetPid,
         pActors[uActorID].vVelocity.x = 0;
         pActors[uActorID].UpdateAnimation();
     } else {
-        Actor::AI_Pursue1(uActorID, sTargetPid, rand() % 2, 64, arg0);
+        Actor::AI_Pursue1(uActorID, sTargetPid, Random(2), 64, arg0);
     }
 }
 
@@ -1367,7 +1366,7 @@ int Actor::_43B3E0_CalcDamage(ABILITY_INDEX dmgSource) {
 
     int damage = 0;
     for (int i = 0; i < damageDiceRolls; i++)
-        damage += rand() % damageDiceSides + 1;
+        damage += Random(damageDiceSides) + 1;
 
     return damage + damageBonus + spellPower;
 }
@@ -1731,13 +1730,13 @@ void Actor::AI_RandomMove(unsigned int uActor_id, unsigned int uTarget_id,
                         &doNotInitializeBecauseShouldBeRandom);
         return;
     }
-    absx += ((rand() & 0xF) * radius) / 16;
+    absx += (Random(0x10) * radius) / 16;
     v9 = (TrigLUT.uIntegerDoublePi - 1) & TrigLUT.Atan2(x, y);
-    if (rand() % 100 < 25) {
+    if (Random(100) < 25) {
         Actor::StandAwhile(uActor_id);
         return;
     }
-    v10 = v9 + rand() % 256 - 128;
+    v10 = v9 + Random(256) - 128;
     if (abs(v10 - pActors[uActor_id].uYawAngle) > 256 &&
         !(pActors[uActor_id].uAttributes & ACTOR_ANIMATION)) {
         Actor::AI_Stand(uActor_id, uTarget_id, 256,
@@ -1752,7 +1751,7 @@ void Actor::AI_RandomMove(unsigned int uActor_id, unsigned int uTarget_id,
         pActors[uActor_id].uCurrentActionLength = 0;
     pActors[uActor_id].uCurrentActionTime = 0;
     pActors[uActor_id].uAIState = Tethered;
-    if (rand() % 100 < 2) Actor::PlaySound(uActor_id, 3);
+    if (Random(100) < 2) Actor::PlaySound(uActor_id, 3);
     pActors[uActor_id].UpdateAnimation();
 }
 
@@ -1886,7 +1885,7 @@ void Actor::AI_Bored(unsigned int uActorID, unsigned int uObjID,
         actor->vVelocity.z = 0;
         actor->vVelocity.y = 0;
         actor->vVelocity.x = 0;
-        if (rand() % 100 < 5) Actor::PlaySound(uActorID, 3);
+        if (Random(100) < 5) Actor::PlaySound(uActorID, 3);
         actor->UpdateAnimation();
     }
 }
@@ -1964,11 +1963,11 @@ void Actor::Die(unsigned int uActorID) {
             break;
     }
 
-    if (rand() % 100 < 20 && drop.uItemID != ITEM_NULL) {
+    if (Random(100) < 20 && drop.uItemID != ITEM_NULL) {
         SpriteObject::Drop_Item_At(
             (SPRITE_OBJECT_TYPE)pItemTable->pItems[drop.uItemID].uSpriteID,
             actor->vPosition.x, actor->vPosition.y, actor->vPosition.z + 16,
-            rand() % 200 + 200, 1, 1, 0, &drop);
+            Random(200) + 200, 1, 1, 0, &drop);
     }
 
     if (actor->pMonsterInfo.uSpecialAbilityType ==
@@ -2099,7 +2098,7 @@ void Actor::AI_Flee(unsigned int uActorID, signed int sTargetPid,
                 (short)TrigLUT.uIntegerHalfPi + (short)a4->uYawAngle;
             v5->uYawAngle =
                 (short)TrigLUT.uDoublePiMask &
-                (v5->uYawAngle + rand() % (signed int)TrigLUT.uIntegerPi);
+                (v5->uYawAngle + Random(TrigLUT.uIntegerPi));
             v5->uCurrentActionTime = 0;
             v5->uPitchAngle = (short)a4->uPitchAngle;
             v5->uAIState = Fleeing;
@@ -2201,7 +2200,7 @@ void Actor::AI_Pursue3(unsigned int uActorID, unsigned int a2,
         return Actor::AI_StandOrBored(uActorID, a2, uActionLength, a4);
     }
     if (uActionLength) {
-        v6->uCurrentActionLength = uActionLength + rand() % uActionLength;
+        v6->uCurrentActionLength = uActionLength + Random(uActionLength);
     } else {
         v12 = v6->uMovementSpeed;
         if (v12)
@@ -2211,7 +2210,7 @@ void Actor::AI_Pursue3(unsigned int uActorID, unsigned int a2,
         if (v6->uCurrentActionLength > 128) v6->uCurrentActionLength = 128;
     }
     v14 = (short)a4->uYawAngle;
-    if (rand() % 2)
+    if (Random(2))
         v14 += 256;
     else
         v14 -= 256;
@@ -2220,7 +2219,7 @@ void Actor::AI_Pursue3(unsigned int uActorID, unsigned int a2,
     v6->uCurrentActionTime = 0;
     v6->uPitchAngle = v16;
     v6->uAIState = Pursuing;
-    if (rand() % 100 < 2) Actor::PlaySound(uActorID, 2);
+    if (Random(100) < 2) Actor::PlaySound(uActorID, 2);
     v6->UpdateAnimation();
 }
 
@@ -2595,7 +2594,7 @@ void Actor::SummonMinion(int summonerId) {
         v19 = (uint)(monsterId * 0.33333334);
     }
     v27 = uCurrentlyLoadedLevelType == LEVEL_Outdoor ? 128 : 64;
-    v13 = rand() % 2048;
+    v13 = Random(2048);
     v15 = TrigLUT.Cos(v13) * v27 + this->vPosition.x;
     v17 = TrigLUT.Sin(v13) * v27 + this->vPosition.y;
 
@@ -2614,7 +2613,7 @@ void Actor::SummonMinion(int summonerId) {
             summonMonsterBaseType =
                 summonMonsterBaseType + extraSummonLevel - 1;
     } else {
-        v5 = rand() % 100;
+        v5 = Random(100);
         if (v5 >= 90)
             summonMonsterBaseType += 2;
         else if (v5 >= 60)
@@ -2708,8 +2707,8 @@ void Actor::UpdateActorAI() {
             pParty->armageddon_timer = 0;
         } else {
             pParty->sRotationZ = (TrigLUT.uIntegerDoublePi - 1) &
-                                 (pParty->sRotationZ + rand() % 16 - 8);
-            pParty->sRotationY = pParty->sRotationY + rand() % 16 - 8;
+                                 (pParty->sRotationZ + Random(16) - 8);
+            pParty->sRotationY = pParty->sRotationY + Random(16) - 8;
             if (pParty->sRotationY > 128)
                 pParty->sRotationY = 128;
             else if (pParty->sRotationY < -128)
@@ -3338,18 +3337,18 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
             switch (main_hand_skill) {
                 case PLAYER_SKILL_STAFF:
                     if (main_hand_mastery >= PLAYER_SKILL_MASTERY_MASTER) {
-                        if (rand() % 100 < player->GetActualSkillLevel(PLAYER_SKILL_STAFF))
+                        if (Random(100) < player->GetActualSkillLevel(PLAYER_SKILL_STAFF))
                             hit_will_stun = true;
                     }
                     break;
 
                 case PLAYER_SKILL_MACE:
                     if (main_hand_mastery >= PLAYER_SKILL_MASTERY_MASTER) {
-                        if (rand() % 100 < player->GetActualSkillLevel(PLAYER_SKILL_MACE))
+                        if (Random(100) < player->GetActualSkillLevel(PLAYER_SKILL_MACE))
                             hit_will_stun = true;
                     }
                     if (main_hand_mastery >= PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                        if (rand() % 100 < player->GetActualSkillLevel(PLAYER_SKILL_MACE))
+                        if (Random(100) < player->GetActualSkillLevel(PLAYER_SKILL_MACE))
                             hit_will_paralyze = true;
                     }
                     break;
@@ -3534,7 +3533,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
             pParty->GivePartyExp(
                 pMonsterStats->pInfos[pMonster->pMonsterInfo.uID].uExp);
         v40 = SPEECH_AttackHit;
-        if (rand() % 100 < 20)
+        if (Random(100) < 20)
             v40 = ((signed int)pMonster->pMonsterInfo.uHP >= 100) + 1;
         player->PlaySound((PlayerSpeech)v40, 0);
         if (engine->config->settings.ShowHits.Get()) {
@@ -3726,7 +3725,7 @@ int stru319::which_player_to_attack(Actor *pActor) {
                 }
             }
         }
-        if (v2) return Victims_list[rand() % v2];
+        if (v2) return Victims_list[Random(v2)];
     }
     for (uint i = 0; i < 4; ++i) {
         if (!(pPlayers[i + 1]->conditions.Has(Condition_Paralyzed) ||
@@ -3737,7 +3736,7 @@ int stru319::which_player_to_attack(Actor *pActor) {
             Victims_list[v2++] = i;
     }
     if (v2)
-        return Victims_list[rand() % v2];
+        return Victims_list[Random(v2)];
     else
         return 0;
 }
@@ -3973,8 +3972,7 @@ void Actor::LootActor() {
     itemFound = false;
     v14 = 0;
     if (!ActorHasItem()) {
-        for (uchar i = 0; i < this->pMonsterInfo.uTreasureDiceRolls; i++)
-            v14 += rand() % this->pMonsterInfo.uTreasureDiceSides + 1;
+        v14 = RandomDice(this->pMonsterInfo.uTreasureDiceRolls, this->pMonsterInfo.uTreasureDiceSides);
         if (v14) {
             pParty->PartyFindsGold(v14, 0);
             viewparams->bRedrawGameUI = 1;
@@ -4000,11 +3998,11 @@ void Actor::LootActor() {
         );
 
         if (Dst.GetItemEquipType() == EQUIP_WAND) {
-            Dst.uNumCharges = rand() % 6 + Dst.GetDamageMod() + 1;
+            Dst.uNumCharges = Random(6) + Dst.GetDamageMod() + 1;
             Dst.uMaxCharges = Dst.uNumCharges;
         }
         if (pItemTable->pItems[Dst.uItemID].uEquipType == EQUIP_POTION && Dst.uItemID != ITEM_POTION_BOTTLE)
-            Dst.uEnchantmentType = 2 * rand() % 4 + 2;
+            Dst.uEnchantmentType = 2 * Random(4) + 2;
         pItemTable->SetSpecialBonus(&Dst);
         if (!pParty->AddItemToParty(&Dst)) pParty->SetHoldingItem(&Dst);
         this->uCarriedItemID = ITEM_NULL;
@@ -4039,7 +4037,7 @@ void Actor::LootActor() {
             itemFound = true;
         }
     } else {
-        if (rand() % 100 < this->pMonsterInfo.uTreasureDropChance &&
+        if (Random(100) < this->pMonsterInfo.uTreasureDropChance &&
             this->pMonsterInfo.uTreasureLevel != ITEM_TREASURE_LEVEL_INVALID) {
             pItemTable->GenerateItem(this->pMonsterInfo.uTreasureLevel, this->pMonsterInfo.uTreasureType,
                                      &Dst);
@@ -4069,7 +4067,7 @@ void Actor::LootActor() {
         }
         this->ActorHasItems[1].Reset();
     }
-    if (!itemFound || rand() % 100 < 90)  // for repeatedly get gold and item
+    if (!itemFound || Random(100) < 90)  // for repeatedly get gold and item
         this->Remove();
 }
 
@@ -4121,16 +4119,16 @@ bool Actor::_427102_IsOkToCastSpell(enum SPELL_TYPE spell) {
 //----- (0042704B) --------------------------------------------------------
 ABILITY_INDEX Actor::special_ability_use_check(int a2) {
     if (this->pMonsterInfo.uSpecialAbilityType == 2 && this->pMonsterInfo.uSpecialAbilityDamageDiceBonus < 3 &&
-        rand() % 100 < 5)
+        Random(100) < 5)
         this->SummonMinion(a2);
 
     bool okToCastSpell1 = this->_427102_IsOkToCastSpell((SPELL_TYPE)this->pMonsterInfo.uSpell1ID);
     bool okToCastSpell2 = this->_427102_IsOkToCastSpell((SPELL_TYPE)this->pMonsterInfo.uSpell2ID);
-    if (okToCastSpell1 && this->pMonsterInfo.uSpell1UseChance && rand() % 100 < this->pMonsterInfo.uSpell1UseChance)
+    if (okToCastSpell1 && this->pMonsterInfo.uSpell1UseChance && Random(100) < this->pMonsterInfo.uSpell1UseChance)
         return ABILITY_SPELL1;
-    if (okToCastSpell2 && this->pMonsterInfo.uSpell2UseChance && rand() % 100 < this->pMonsterInfo.uSpell2UseChance)
+    if (okToCastSpell2 && this->pMonsterInfo.uSpell2UseChance && Random(100) < this->pMonsterInfo.uSpell2UseChance)
         return ABILITY_SPELL2;
-    if (this->pMonsterInfo.uAttack2Chance && rand() % 100 < this->pMonsterInfo.uAttack2Chance)
+    if (this->pMonsterInfo.uAttack2Chance && Random(100) < this->pMonsterInfo.uAttack2Chance)
         return ABILITY_ATTACK2;
     return ABILITY_ATTACK1;
 }
@@ -4162,7 +4160,7 @@ bool Actor::_4273BB_DoesHitOtherActor(Actor *defender, int a3, int a4) {
         a2a += this->pActorBuffs[ACTOR_BUFF_FATE].uPower;
         this->pActorBuffs[ACTOR_BUFF_FATE].Reset();
     }
-    return rand() % (armorSum + 2 * this->pMonsterInfo.uLevel + 10) + a2a + 1 >
+    return Random(armorSum + 2 * this->pMonsterInfo.uLevel + 10) + a2a + 1 >
            armorSum + 5;
 }
 
@@ -4183,7 +4181,7 @@ bool Actor::ActorHitOrMiss(Player *pPlayer) {
         this->pActorBuffs[ACTOR_BUFF_FATE].Reset();
     }
     v4 = pPlayer->GetActualAC() + 2 * this->pMonsterInfo.uLevel + 10;
-    v5 = rand() % v4 + 1;
+    v5 = Random(v4) + 1;
     return (v3 + v5 > pPlayer->GetActualAC() + 5);
 }
 
@@ -4244,7 +4242,7 @@ int Actor::CalcMagicalDamageToActor(DAMAGE_TYPE dmgType,
     if (v6 < 200) {
         v8 = v4 + v6 + 30;
         for (int i = 0; i < 4; i++) {
-            if (rand() % v8 < 30) break;
+            if (Random(v8) < 30) break;
             incomingDmg /= 2;
         }
         result = incomingDmg;
@@ -4292,7 +4290,7 @@ bool Actor::DoesDmgTypeDoDamage(DAMAGE_TYPE uType) {
             return true;
     }
     if (resist < 200)
-        return rand() % ((this->pMonsterInfo.uLevel >> 2) + resist + 30) < 30;
+        return Random((this->pMonsterInfo.uLevel >> 2) + resist + 30) < 30;
     else
         return false;
 }
@@ -4806,7 +4804,7 @@ void Spawn_Light_Elemental(int spell_power, PLAYER_SKILL_MASTERY caster_skill_ma
         partySectorId = pBLVRenderParams->uPartySectorID;
 
     int radius = uCurrentlyLoadedLevelType == LEVEL_Outdoor ? 128 : 64;
-    int angle = rand() % 2048;
+    int angle = Random(2048);
 
     actor->pActorName = pMonsterStats->pInfos[uMonsterID + 1].pName;
     actor->sCurrentHP = pMonsterStats->pInfos[uMonsterID + 1].uHP;
@@ -4911,7 +4909,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
             // v10 = rand();
             // v11 = pMapInfo->uEncounterMonster1AtMost;
             // pTexture = pMapInfo->pEncounterMonster1Texture;
-            v12 = rand() % (pMapInfo->uEncounterMonster1AtMost -
+            v12 = Random(pMapInfo->uEncounterMonster1AtMost -
                             pMapInfo->uEncounterMonster1AtLeast + 1);
             // v13 = pMapInfo->Dif_M1;
             v57 = pMapInfo->Dif_M1;
@@ -4938,7 +4936,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
             // v14 = rand();
             // v15 = pMapInfo->uEncounterMonster2AtMost;
             // pTexture = pMapInfo->pEncounterMonster2Texture;
-            v12 = rand() % (pMapInfo->uEncounterMonster2AtMost -
+            v12 = Random(pMapInfo->uEncounterMonster2AtMost -
                             pMapInfo->uEncounterMonster2AtLeast + 1);
             // v13 = pMapInfo->Dif_M2;
             v57 = pMapInfo->Dif_M2;
@@ -4965,7 +4963,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
             // v16 = rand();
             // v17 = pMapInfo->uEncounterMonster3AtMost;
             // pTexture = pMapInfo->pEncounterMonster3Texture;
-            v12 = rand() % (pMapInfo->uEncounterMonster3AtMost -
+            v12 = Random(pMapInfo->uEncounterMonster3AtMost -
                             pMapInfo->uEncounterMonster3AtLeast + 1);
             // v13 = pMapInfo->Dif_M3;
             v57 = pMapInfo->Dif_M3;
@@ -5026,7 +5024,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
         if (v57) {
             // if (v57 > 3) v57 = 3;
 
-            v23 = rand() % 100;
+            v23 = Random(100);
             v24 = 3;  // 2 , 10 , 20 - C
             v25 = (uint16_t)word_4E8152[3 * v57];  // v57 should be 1,2,3
             if (v23 >= v25) {
@@ -5084,10 +5082,10 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
         pMonster->uGroup = spawn->uGroup;
         pMonster->PrepareSprites(0);
         pMonster->pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
-        v32 = rand();
-        a3 = TrigLUT.Cos(v32 % 2048) * v52;
+        v32 = Random(2048);
+        a3 = TrigLUT.Cos(v32) * v52;
         pPosX = a3 + spawn->vPosition.x;
-        a3 = TrigLUT.Sin(v32 % 2048) * v52;
+        a3 = TrigLUT.Sin(v32) * v52;
         a4 = a3 + spawn->vPosition.y;
         a3 = spawn->vPosition.z;
         if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {

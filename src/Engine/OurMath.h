@@ -14,7 +14,6 @@
 const float pi = static_cast<float>(M_PI);
 
 int integer_sqrt(int val);
-int GetDiceResult(unsigned int uNumDice, unsigned int uDiceSides);  // idb
 inline int round_to_int(float x) { return (int)floor(x + 0.5f); }
 
 uint32_t int_get_vector_length(int32_t x, int32_t y, int32_t z);

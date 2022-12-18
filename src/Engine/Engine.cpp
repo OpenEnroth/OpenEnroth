@@ -48,6 +48,7 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
+#include "Utility/Random/Random.h"
 
 using EngineIoc = Engine_::IocContainer;
 
@@ -363,8 +364,8 @@ void Engine::StackPartyTorchLight() {
             if (torchLightFlicker > 0) {
                 // torchlight flickering effect
                 // TorchLightPower *= pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;  // 2,3,4
-                int ran = rand();
-                int mod = ((ran - (RAND_MAX * .4)) / torchLightFlicker);
+                int ran = Random(RAND_MAX);
+                int mod = ((ran - (RAND_MAX * .4)) / torchLightFlicker); // TODO(captainurist): this math makes no sense
                 TorchLightDistance = (pParty->TorchLightLastIntensity + mod);
 
                 // clamp
@@ -903,7 +904,7 @@ bool MM7_LoadLods() {
 
 //----- (004651F4) --------------------------------------------------------
 bool Engine::MM7_Initialize() {
-    srand(platform->TickCount());
+    SeedRandom(platform->TickCount());
 
     pEventTimer = Timer::Create();
     pEventTimer->Initialize();
@@ -1542,9 +1543,9 @@ void _494035_timed_effects__water_walking_damage__etc() {
                     if (!pParty->pPlayers[i].IsPertified() &&
                         !pParty->pPlayers[i].IsEradicated() &&
                         !pParty->pPlayers[i].IsDead()) {
-                        if (rand() % 100 < 5 * pParty->days_played_without_rest)
+                        if (Random(100) < 5 * pParty->days_played_without_rest)
                             pParty->pPlayers[i].SetCondDeadWithBlockCheck(0);
-                        if (rand() % 100 <
+                        if (Random(100) <
                             10 * pParty->days_played_without_rest)
                             pParty->pPlayers[i].SetCondInsaneWithBlockCheck(0);
                     }
