@@ -5,8 +5,13 @@
 class RandomEngine {
  public:
     /**
+     * @return                          Random number in range `[0, UINT32_MAX]`.
+     */
+    virtual uint32_t Random() = 0;
+
+    /**
      * @param hi                        Upper bound for the result. Must be greater than zero.
-     * @return                          Randomly generated number in range `[0, hi)`.
+     * @return                          Random number in range `[0, hi)`.
      */
     virtual uint32_t Random(uint32_t hi) = 0;
 

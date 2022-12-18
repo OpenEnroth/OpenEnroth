@@ -5,7 +5,6 @@
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
 #include "Engine/OurMath.h"
-#include "Engine/Random.h"
 #include "Engine/Time.h"
 #include "Engine/stru160.h"
 
@@ -595,8 +594,6 @@ void SpellFxRenderer::_4A7E89_sparkles_on_actor_after_it_casts_buff(
 //----- (004A7F74) --------------------------------------------------------
 void SpellFxRenderer::_4A7F74(int x, int y, int z) {
     signed int v6;        // edi@1
-    double v8;            // st7@2
-    double v9;            // st7@2
     Particle_sw local_0;  // [sp+8h] [bp-78h]@1
     double v11;           // [sp+70h] [bp-10h]@1
     double v12;           // [sp+78h] [bp-8h]@1
@@ -613,15 +610,13 @@ void SpellFxRenderer::_4A7F74(int x, int y, int z) {
     local_0.texture = this->effpar01;
     v11 = (float)y;
     do {
-        v8 = pRnd->GetRandom();
-        local_0.x = v8 * 40.0f - 20.0f + v12;
-        v9 = pRnd->GetRandom();
+        local_0.x = RandomFloat() * 40.0f - 20.0f + v12;
         z1 = (float)z;
         local_0.z = z1;
-        local_0.y = v9 * 40.0f - 20.0f + v11;
-        local_0.r = pRnd->GetRandom() * 400.0f - 200.0f;
-        local_0.g = pRnd->GetRandom() * 400.0f - 200.0f;
-        local_0.b = pRnd->GetRandom() * 150.0f + 50.0f;
+        local_0.y = RandomFloat() * 40.0f - 20.0f + v11;
+        local_0.r = RandomFloat() * 400.0f - 200.0f;
+        local_0.g = RandomFloat() * 400.0f - 200.0f;
+        local_0.b = RandomFloat() * 150.0f + 50.0f;
         particle_engine->AddParticle(&local_0);
         --v6;
     } while (v6);
@@ -901,8 +896,7 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             // if ( !render->pRenderD3D )
             //  return true;
             memcpy(pContainer, "sp18h1", 7);
-            pRnd->SetRange(1, 6);
-            pContainer[5] = pRnd->GetInRange() + '0';
+            pContainer[5] = Random(1, 6 + 1) + '0';
             AddProjectile(a2, 100, assets->GetBitmap(pContainer));
             return false;
         case SPRITE_SPELL_AIR_LIGHNING_BOLT_IMPACT:

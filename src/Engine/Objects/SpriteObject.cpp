@@ -10,7 +10,6 @@
 #include "Engine/LOD.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
-#include "Engine/Random.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/stru298.h"
 
@@ -1312,10 +1311,8 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
             pSpriteObjects[uLayingItemID].vVelocity.x = 0;
             int v89 = pSpriteObjects[uLayingItemID].uFacing - TrigLUT.uIntegerDoublePi;
             for (int i = 0; i < 8; i++) {
-                pRnd->SetRange(-128, 128);
-                v90 = pRnd->GetInRange();
-                pRnd->SetRange(5, 500);
-                v91 = pRnd->GetInRange();
+                v90 = Random(-128, 128 + 1);
+                v91 = Random(5, 500 + 1);
                 v89 += TrigLUT.uIntegerHalfPi / 2;
                 pSpriteObjects[uLayingItemID].Create(v90 + v89, 0, v91, 0);
             }

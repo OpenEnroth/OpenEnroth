@@ -14,7 +14,6 @@ set(ENGINE_SOURCES AssetsManager.cpp
                    mm7_data.cpp
                    OurMath.cpp
                    Party.cpp
-                   Random.cpp
                    SaveLoad.cpp
                    SpellFxRenderer.cpp
                    stru298.cpp
@@ -41,7 +40,6 @@ set(ENGINE_HEADERS AssetsManager.h
                    mm7_data.h
                    OurMath.h
                    Party.h
-                   Random.h
                    SaveLoad.h
                    SpellFxRenderer.h
                    stru123.h

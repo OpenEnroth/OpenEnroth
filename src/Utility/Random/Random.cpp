@@ -38,6 +38,12 @@ int Random(int lo, int hi) {
     return lo + GlobalRandomEngine()->Random(hi - lo);
 }
 
+float RandomFloat() {
+    uint32_t value = GlobalRandomEngine()->Random();
+
+    return static_cast<double>(value) / (static_cast<double>(UINT32_MAX) + 1);
+}
+
 int RandomDice(int count, int faces) {
     assert(count >= 0 && faces >= 0);
 

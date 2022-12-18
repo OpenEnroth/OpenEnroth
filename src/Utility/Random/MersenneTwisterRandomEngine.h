@@ -7,6 +7,10 @@
 
 class MersenneTwisterRandomEngine: public RandomEngine {
  public:
+    virtual uint32_t Random() override {
+        return Base_();
+    }
+
     virtual uint32_t Random(uint32_t hi) override {
         assert(hi > 0);
 

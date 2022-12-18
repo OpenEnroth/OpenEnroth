@@ -43,6 +43,12 @@ int Random(int hi);
 int Random(int lo, int hi);
 
 /**
+ * @return                              Random floating point number in range `[0, 1)`, generated using the global
+ *                                      random engine.
+ */
+float RandomFloat();
+
+/**
  * @offset 0x00452B2E
  *
  * @param count                         Number of dice to throw.
