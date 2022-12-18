@@ -1634,8 +1634,7 @@ void TravelByTransport() {
                 if (pauselength < currenttime) pauselength = currenttime;
                 while (platform->TickCount() < pauselength)
                     std::this_thread::sleep_for(1ms);
-                while (HouseDialogPressCloseBtn())
-                    /* Loop. */
+                while (HouseDialogPressCloseBtn());
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
             } else {
                 dialog_menu_id = DIALOGUE_MAIN;
