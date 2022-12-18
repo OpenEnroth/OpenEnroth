@@ -5,22 +5,22 @@
 
 #include "MersenneTwisterRandomEngine.h"
 
-static std::unique_ptr<RandomEngine> StaticGlobalRandomEngine;
+static constinit std::unique_ptr<RandomEngine> globalRandomEngine;
 
 RandomEngine *GlobalRandomEngine() {
-    if (!StaticGlobalRandomEngine) {
+    if (!globalRandomEngine) {
         // We don't guarantee thread safety, so this code is perfectly OK, and it rids us of potential problems with
         // static initialization order.
-        StaticGlobalRandomEngine = std::make_unique<MersenneTwisterRandomEngine>();
+        globalRandomEngine = std::make_unique<MersenneTwisterRandomEngine>();
     }
 
-    return StaticGlobalRandomEngine.get();
+    return globalRandomEngine.get();
 }
 
 void SetGlobalRandomEngine(std::unique_ptr<RandomEngine> engine) {
     assert(engine);
 
-    StaticGlobalRandomEngine = std::move(engine);
+    globalRandomEngine = std::move(engine);
 }
 
 void SeedRandom(int seed) {
