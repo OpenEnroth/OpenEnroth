@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "Platform/Sdl/SdlPlatform.h"
 
 class WinPlatform : public SdlPlatform {
