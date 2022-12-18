@@ -4939,8 +4939,8 @@ void RenderOpenGL::DrawIndoorFaces() {
                             DrawIndoorSky(face->uNumVertices, uFaceID);
                             continue;
                         } else {
-                            skymodtimex = (OS_GetTime() / 32.0f) - pCamera3D->vCameraPos.x;
-                            skymodtimey = (OS_GetTime() / 32.0f) + pCamera3D->vCameraPos.y;
+                            skymodtimex = (platform->TickCount() / 32.0f) - pCamera3D->vCameraPos.x;
+                            skymodtimey = (platform->TickCount() / 32.0f) + pCamera3D->vCameraPos.y;
                         }
                     }
 
