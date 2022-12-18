@@ -22,7 +22,5 @@ class MersenneTwisterRandomEngine: public RandomEngine {
     }
 
  private:
-    static_assert(sizeof(std::mt19937::result_type) == sizeof(uint32_t));
-
     std::mt19937 Base_;
 };
