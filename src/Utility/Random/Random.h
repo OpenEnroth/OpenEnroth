@@ -46,7 +46,7 @@ int Random(int lo, int hi);
  * @offset 0x00452B2E
  *
  * @param count                         Number of dice to throw.
- * @param sides                         Number of faces on each die.
+ * @param faces                         Number of faces on each die.
  * @return                              Result of throwing the dice, generated using the global random engine.
  */
 int RandomDice(int count, int faces);
