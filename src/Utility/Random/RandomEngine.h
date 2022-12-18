@@ -4,6 +4,8 @@
 
 class RandomEngine {
  public:
+    virtual ~RandomEngine() = default;
+
     /**
      * @return                          Random number in range `[0, UINT32_MAX]`.
      */
