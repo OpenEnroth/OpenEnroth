@@ -1,6 +1,7 @@
 #include "GameOptions.h"
 
 #include <memory>
+#include <string>
 
 #include <CLI/CLI.hpp>
 
@@ -34,7 +35,7 @@ namespace CLI::detail {                                                         
                                                                                              GameConfig::ConfigValue<TYPE> &configValue) { \
         return ::lexical_cast(input, configValue);                                                                      \
     }                                                                                                                   \
-}
+} // namespace CLI::detail
 
 MM_DEFINE_CLI_LEXICAL_CAST_FOR_CONFIG_TYPE(bool)
 MM_DEFINE_CLI_LEXICAL_CAST_FOR_CONFIG_TYPE(int)
