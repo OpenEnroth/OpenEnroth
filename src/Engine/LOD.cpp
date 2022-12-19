@@ -504,7 +504,8 @@ bool LOD::WriteableFile::FixDirectoryOffsets() {
     CloseWriteFile();
     std::filesystem::remove(MakeTempPath("lodapp.tmp"));
     std::filesystem::remove(pLODPath);
-    std::filesystem::rename(tempPath, pLODPath);
+    std::filesystem::copy(tempPath, pLODPath);
+    std::filesystem::remove(tempPath);
     CloseWriteFile();
 
     return LoadFile(pLODPath, 0);
@@ -676,7 +677,8 @@ unsigned int LOD::WriteableFile::Write(const std::string &file_name, const void 
     fclose(tmp_file);
     CloseWriteFile();
     std::filesystem::remove(pLODPath);
-    std::filesystem::rename(tempPath, pLODPath);
+    std::filesystem::copy(tempPath, pLODPath);
+    std::filesystem::remove(tempPath);
     CloseWriteFile();
 
     // reload new
