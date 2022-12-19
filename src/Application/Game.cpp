@@ -91,10 +91,7 @@ using Application::GameFactory;
 using Engine_::EngineFactory;
 using Graphics::IRenderFactory;
 
-
-
-
-std::string FindMm7Directory() {
+static std::string FindMm7Directory() {
     bool mm7_installation_found = false;
 
     // env variable override to a custom folder
@@ -152,6 +149,17 @@ std::string FindMm7Directory() {
     return "";
 }
 
+void Application::AutoInitDataPath() {
+    std::string mm7dir = FindMm7Directory();
+    if(mm7dir.empty()) {
+        EngineIoc::ResolveLogger()->Info(
+            "MM7 directory not found, consider using WOMM_PATH_OVERRIDE environment variable, "
+            "launching with expectation that current directory is MM7 directory"
+        );
+    }
+    SetDataPath(mm7dir);
+}
+
 Game::Game(Platform *platform) {
     this->platform = platform;
     this->log = EngineIoc::ResolveLogger();
@@ -166,13 +174,6 @@ int Game::Run() {
     IntegrityTest();
 
     ::platform = platform;
-
-    std::string mm7dir = FindMm7Directory();
-    if(mm7dir.empty()) {
-        log->Info("MM7 directory not found, consider using WOMM_PATH_OVERRIDE environment variable, "
-                  "launching with expectation that current directory is MM7 directory");
-    }
-    SetDataPath(mm7dir);
 
     windowHandler.reset(Application::IocContainer::ResolveGameWindowHandler());
     ::eventHandler = windowHandler.get();

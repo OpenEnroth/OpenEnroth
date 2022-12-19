@@ -23,6 +23,8 @@ int MM_Main(int argc, char **argv) {
         for (int i = 1; i < argc; ++i)
             cmd += std::string(argv[i]) + " ";
 
+        Application::AutoInitDataPath();
+
         std::shared_ptr<GameConfig> gameConfig = std::make_shared<GameConfig>(cmd);
         gameConfig->Startup();
         std::shared_ptr<Game> game = GameFactory().CreateGame(platform.get(), gameConfig);

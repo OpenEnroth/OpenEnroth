@@ -58,6 +58,8 @@ class Game {
      std::shared_ptr<Nuklear> nuklear = nullptr;
 };
 
+void AutoInitDataPath();
+
 }  // namespace Application
 
 extern class Image *gamma_preview_image;  // 506E40
