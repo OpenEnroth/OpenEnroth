@@ -101,65 +101,6 @@ void GameConfig::SaveConfiguration() {
     file.write(ini, true);
 }
 
-void GameConfig::Startup() {
-    LoadConfiguration();
-
-    std::shared_ptr<std::string> value;
-    if (command_line->TryFindKey("-nointro")) {
-        debug.NoIntro.Set(true);
-    }
-    if (command_line->TryFindKey("-nologo")) {
-        debug.NoLogo.Set(true);
-    }
-    if (command_line->TryFindKey("-nosound")) {
-        debug.NoSound.Set(true);
-    }
-    if (command_line->TryFindKey("-novideo")) {
-        debug.NoVideo.Set(true);
-    }
-    if (command_line->TryFindKey("-nomarg")) {
-        debug.NoMargareth.Set(true);
-    }
-    if (command_line->TryFindKey("-verbose")) {
-        debug.VerboseLogging.Set(true);
-    }
-    if (command_line->TryGetValue("render", &value)) {
-        graphics.Renderer.Set(*value);
-    }
-    if (command_line->TryFindKey("-nowalksound")) {
-        settings.WalkSound.Set(false);
-    }
-    if (command_line->TryFindKey("-nograb")) {
-        window.MouseGrab.Set(false);
-    }
-    if (command_line->TryGetValue("display", &value)) {
-        window.Display.Set(std::stoi(*value));
-    }
-    if (command_line->TryGetValue("window_width", &value)) {
-        window.Width.Set(std::stoi(*value));
-    }
-    if (command_line->TryGetValue("window_height", &value)) {
-        window.Height.Set(std::stoi(*value));
-    }
-    if (command_line->TryGetValue("window_x", &value)) {
-        window.PositionX.Set(std::stoi(*value));
-    }
-    if (command_line->TryGetValue("window_y", &value)) {
-        window.PositionY.Set(std::stoi(*value));
-    }
-    if (command_line->TryGetValue("window_mode", &value)) {
-        window.Mode.Set(std::stoi(*value));
-    }
-    // minimal debug, w/o full magic etc.
-    if (command_line->TryFindKey("-debug")) {
-        debug.ShowFPS.Set(true);
-        debug.ShowPickedFace.Set(true);
-        debug.TownPortal.Set(true);
-        debug.InfiniteFood.Set(true);
-        debug.InfiniteGold.Set(true);
-    }
-}
-
 GameConfig::~GameConfig() {
     ini.clear();
 }

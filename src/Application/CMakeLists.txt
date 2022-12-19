@@ -6,6 +6,7 @@ set(GAME_SOURCES
     GameFactory.cpp
     GameKeyboardController.cpp
     GameMenu.cpp
+    GameOptions.cpp
     GameOver.cpp
     GameWindowHandler.cpp
     IocContainer.cpp)
@@ -17,10 +18,11 @@ set(GAME_HEADERS
     GameKeyboardController.h
     GameMenu.h
     GameOver.h
+    GameOptions.h
     GameWindowHandler.h
     IocContainer.h)
 
 add_library(game STATIC ${GAME_SOURCES} ${GAME_HEADERS})
 target_check_style(game)
 
-target_link_libraries(game io gui engine platform graphics media utility)
+target_link_libraries(game io gui engine platform graphics media utility CLI11::CLI11)
