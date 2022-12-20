@@ -91,8 +91,6 @@ using Engine_::EngineFactory;
 using Graphics::IRenderFactory;
 
 static std::string FindMm7Directory() {
-    bool mm7_installation_found = false;
-    
     // env variable override to a custom folder
     std::string result = std::getenv("WOMM_PATH_OVERRIDE");
     if (!result.empty()) {
