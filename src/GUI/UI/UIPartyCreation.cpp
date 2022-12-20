@@ -25,7 +25,6 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Platform/Api.h"
 
 #include "Utility/Random.h"
 
@@ -204,7 +203,7 @@ void CreateParty_EventLoop() {
             if (PlayerCreation_GetUnspentAttributePointCount() ||
                 !PlayerCreation_Choose4Skills())
                 game_ui_status_bar_event_string_time_left =
-                OS_GetTime() + 4000;
+                    platform->TickCount() + 4000;
             else
                 uGameState = GAME_STATE_STARTING_NEW_GAME;
             break;
@@ -318,7 +317,7 @@ void GUIWindow_PartyCreation::Update() {
     // move sky
     render->BeginScene();
     render->DrawTextureNew(0, 0, main_menu_background);
-    int sky_slider_anim_timer = (OS_GetTime() % (window->GetWidth() * 20)) / 20;
+    int sky_slider_anim_timer = (platform->TickCount() % (window->GetWidth() * 20)) / 20;
     render->DrawTextureAlphaNew(sky_slider_anim_timer / renwidth, 2 / renheight, ui_partycreation_sky_scroller);
     render->DrawTextureAlphaNew((sky_slider_anim_timer - (int)window->GetWidth()) / renwidth, 2 / renheight, ui_partycreation_sky_scroller);
     render->DrawTextureAlphaNew(0, 0, ui_partycreation_top);
@@ -365,7 +364,7 @@ void GUIWindow_PartyCreation::Update() {
     pFrame = pIconsFrameTable->GetFrame(uIconID_CharacterFrame, pEventTimer->uStartTime);
     render->DrawTextureAlphaNew(pX / renwidth, 29 / renheight, pFrame->GetTexture());
     uPosActiveItem = pGUIWindow_CurrentMenu->GetControl(pGUIWindow_CurrentMenu->pCurrentPosActiveItem);
-    uPlayerCreationUI_ArrowAnim = 18 - (OS_GetTime() % 450) / 25;
+    uPlayerCreationUI_ArrowAnim = 18 - (platform->TickCount() % 450) / 25;
     render->DrawTextureAlphaNew((uPosActiveItem->uZ - 4) / renwidth, uPosActiveItem->uY / renheight, ui_partycreation_arrow_l[uPlayerCreationUI_ArrowAnim + 1]);
     render->DrawTextureAlphaNew((uPosActiveItem->uX - 12) / renwidth, uPosActiveItem->uY / renheight, ui_partycreation_arrow_r[uPlayerCreationUI_ArrowAnim + 1]);
 
@@ -642,7 +641,7 @@ void GUIWindow_PartyCreation::Update() {
     pTextCenter =
         pFontCreate->AlignText_Center(84, unspent_attribute_bonus_label);
     pGUIWindow_CurrentMenu->DrawText(pFontCreate, pTextCenter + 530, 410, colorTable.White.C16(), unspent_attribute_bonus_label);
-    if (game_ui_status_bar_event_string_time_left > OS_GetTime()) {
+    if (game_ui_status_bar_event_string_time_left > platform->TickCount()) {
         message_window.Init();
         message_window.sHint = localization->GetString(LSTR_PARTY_UNASSIGNED_POINTS);
         if (pBonusNum < 0)

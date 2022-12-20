@@ -1,13 +1,8 @@
 #pragma once
 
 #include <cstring>
-#include <algorithm>
 #include <string>
 #include <vector>
-
-#ifndef _WINDOWS
-#include "Platform/Posix/Posix.h"
-#endif
 
 std::string StringPrintf(const char *fmt, ...);
 std::string StringFromInt(int value);
@@ -35,18 +30,8 @@ inline std::string TrimRemoveQuotes(std::string str) {
     return str;
 }
 
-inline bool iequals(std::string_view a, std::string_view b) {
-    return a.size() == b.size() && _strnicmp(a.data(), b.data(), a.size()) == 0;
-}
-
-inline bool iless(std::string_view a, std::string_view b) {
-    int result = _strnicmp(a.data(), b.data(), std::min(a.size(), b.size()));
-    if (result < 0)
-        return true;
-    if (result > 0)
-        return false;
-    return a.size() < b.size();
-}
+bool iequals(std::string_view a, std::string_view b);
+bool iless(std::string_view a, std::string_view b);
 
 struct ILess {
     bool operator()(std::string_view a, std::string_view b) const {

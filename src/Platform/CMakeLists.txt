@@ -11,8 +11,7 @@ set(PLATFORM_SOURCES PlatformKey.cpp
                      Sdl/SdlWindow.cpp
 )
 
-set(PLATFORM_HEADERS Api.h
-                     Platform.h
+set(PLATFORM_HEADERS Platform.h
                      PlatformKey.h
                      PlatformModifiers.h
                      PlatformMouseButton.h
@@ -31,12 +30,10 @@ set(PLATFORM_HEADERS Api.h
 )
 
 if(WIN32)
-  list(APPEND PLATFORM_SOURCES Win/AppSettings.cpp
-                               Win/Win.cpp)
-  list(APPEND PLATFORM_HEADERS Win/Win.h)
+  list(APPEND PLATFORM_SOURCES Win/WinPlatform.cpp)
+  list(APPEND PLATFORM_HEADERS Win/WinPlatform.h)
 else()
-  list(APPEND PLATFORM_SOURCES Posix/Posix.cpp)
-  list(APPEND PLATFORM_HEADERS Posix/Posix.h)
+  list(APPEND PLATFORM_SOURCES Posix/PosixPlatform.cpp)
 endif()
 
 include_directories(${INCLUDE_DIRECTORIES} ${SDL2_INCLUDE_DIRS})

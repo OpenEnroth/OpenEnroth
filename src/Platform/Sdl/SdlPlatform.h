@@ -1,5 +1,6 @@
 #include <vector>
 #include <memory>
+#include <string>
 
 #include "Platform/Platform.h"
 #include "Utility/Log.h"
@@ -20,6 +21,13 @@ class SdlPlatform: public Platform {
     virtual bool IsCursorShown() const override;
 
     virtual std::vector<Recti> DisplayGeometries() const override;
+
+    virtual void ShowMessageBox(const std::string &message, const std::string& title) const override;
+
+    virtual int64_t TickCount() const override;
+
+    virtual void WinEnsureConsole() const override;
+    virtual std::string WinQueryRegistry(const std::string &path) const override;
 
  private:
     friend class SdlWindow;

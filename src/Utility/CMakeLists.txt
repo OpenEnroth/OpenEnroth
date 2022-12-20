@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 set(UTILITY_SOURCES Blob.cpp
                     Color.cpp
                     DataPath.cpp
+                    FileSystem.cpp
                     Log.cpp
                     String.cpp
                     Math/TrigLut.cpp
@@ -14,6 +15,7 @@ set(UTILITY_HEADERS Blob.h
                     Color.h
                     DataPath.h
                     Embedded.h
+                    FileSystem.h
                     Flags.h
                     FreeDeleter.h
                     IndexedArray.h
@@ -43,7 +45,8 @@ if(ENABLE_TESTS)
     set(TEST_UTILITY_SOURCES Tests/IndexedArray_ut.cpp
                              Tests/Segment_ut.cpp
                              Math/Tests/Float_ut.cpp
-                             Streams/Tests/FileOutputStream_ut.cpp)
+                             Streams/Tests/FileOutputStream_ut.cpp
+                             Tests/String_ut.cpp)
 
     add_library(test_utility OBJECT ${TEST_UTILITY_SOURCES})
     target_compile_definitions(test_utility PRIVATE TEST_GROUP=Utility)

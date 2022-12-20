@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <string>
 
-#include "Platform/Api.h"
 
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"

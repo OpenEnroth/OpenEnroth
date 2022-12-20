@@ -4,7 +4,6 @@
 
 #include "Engine/Serialization/LegacyImages.h"
 
-#include "Platform/Api.h"
 
 #include "FrameTableInc.h"
 #include "TileFrameTable.h"

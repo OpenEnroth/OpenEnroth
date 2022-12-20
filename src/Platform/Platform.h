@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+#include <string>
 
 #include "Utility/Geometry/Rect.h"
 
@@ -106,4 +107,32 @@ class Platform {
      *                                  error.
      */
     virtual std::vector<Recti> DisplayGeometries() const = 0;
+
+    /**
+     * Shows a modal message box.
+     *
+     * @param message                   Message to display.
+     * @param title                     Title of the message box window.
+     */
+    virtual void ShowMessageBox(const std::string &message, const std::string& title) const = 0;
+
+    /**
+     * @return                          Current value of a monotonic clock in milliseconds.
+     */
+    virtual int64_t TickCount() const = 0;
+
+    /**
+     * Makes sure that the process has a console that it can write to using the standard streams.
+     *
+     * This functions is a noop on non-Windows systems, thus a `Win` prefix.
+     */
+    virtual void WinEnsureConsole() const = 0;
+
+    /**
+     * Windows-only function for querying the registry. Always returns an empty string on non-Windows systems.
+     *
+     * @param path                      Registry path to query.
+     * @return                          Value at the given path, or an empty string in case of an error.
+     */
+    virtual std::string WinQueryRegistry(const std::string &path) const = 0;
 };

@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <filesystem>
 
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Level/Decoration.h"
@@ -16,7 +17,6 @@
 
 #include "Media/Audio/OpenALSoundProvider.h"
 
-#include "Platform/Api.h"
 
 int sLastTrackLengthMS;
 AudioPlayer *pAudioPlayer;
@@ -122,7 +122,7 @@ void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
 
         std::string file_path = StringPrintf("%d.mp3", eTrack);
         file_path = MakeDataPath("music", file_path);
-        if (!OS_FileExists(file_path)) {
+        if (!std::filesystem::exists(file_path)) {
             logger->Warning("AudioPlayer: %s not found", file_path.c_str());
             return;
         }

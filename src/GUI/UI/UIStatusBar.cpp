@@ -4,6 +4,7 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Localization.h"
 
 #include "Engine/Graphics/IRender.h"
@@ -11,8 +12,6 @@
 #include "GUI/GUIFont.h"
 
 #include "GUI/UI/UIGame.h"
-
-#include "Platform/Api.h"
 
 void GameUI_StatusBar_Set(const std::string &str) {
     if (str.length() > 0) {
@@ -29,7 +28,7 @@ void GameUI_StatusBar_Clear() {
 
 void GameUI_StatusBar_OnEvent_Internal(const std::string &str, unsigned int ms) {
     game_ui_status_bar_event_string = str;
-    game_ui_status_bar_event_string_time_left = OS_GetTime() + ms;
+    game_ui_status_bar_event_string_time_left = platform->TickCount() + ms;
 }
 
 void GameUI_SetStatusBar(const std::string &str) {

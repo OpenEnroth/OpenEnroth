@@ -1,12 +1,15 @@
-#ifdef _WINDOWS
-#include <mbstring.h>
-#endif
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
 #include <cstdarg>
 
 #include "Engine/Engine.h"
+
+#ifdef _WINDOWS
+#   include <mbstring.h>
+#else
+#   define _mbsncmp(str1, str2, maxCount) strncmp((const char*)str1, (const char*)str2, maxCount)
+#endif
 
 struct GenderTableEntry {
     const char *name;

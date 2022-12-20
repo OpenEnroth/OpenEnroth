@@ -1,10 +1,12 @@
-#include "Engine/ErrorHandling.h"
+#include "ErrorHandling.h"
 
 #include <cstdarg>
 #include <cstdio>
 #include <cstring>
-
 #include <sstream>
+
+#include "Platform/Platform.h"
+#include "Engine/EngineGlobals.h"
 
 void Error_impl_(const char *filename, const char *functionname,
                  int line, const char *format, ...) {
@@ -23,8 +25,8 @@ void Error_impl_(const char *filename, const char *functionname,
         out << "\n\n" << msg_body;
     }
 
-    extern void OS_MsgBox(const char *, const char *);
-    OS_MsgBox(out.str().c_str(), "Error");
+    if (platform)
+        platform->ShowMessageBox(out.str(), "Error");
 }
 
 void Assert_impl_(const char *filename, const char *functionname,
@@ -47,8 +49,8 @@ void Assert_impl_(const char *filename, const char *functionname,
         out << "\n\n" << msg_body;
     }
 
-    extern void OS_MsgBox(const char *, const char *);
-    OS_MsgBox(out.str().c_str(), "Assertion");
+    if (platform)
+        platform->ShowMessageBox(out.str(), "Assertion");
 
     assert(false);
 }

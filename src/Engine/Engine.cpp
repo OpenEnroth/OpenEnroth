@@ -48,7 +48,6 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-#include "Platform/Api.h"
 
 using EngineIoc = Engine_::IocContainer;
 
@@ -253,7 +252,7 @@ void Engine::DrawGUI() {
     static bool render_framerate = false;
     static float framerate = 0.0f;
     static uint frames_this_second = 0;
-    static uint last_frame_time = OS_GetTime();
+    static uint last_frame_time = platform->TickCount();
     static uint framerate_time_elapsed = 0;
 
     if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME &&
@@ -261,8 +260,8 @@ void Engine::DrawGUI() {
         pWeather->Draw();  // Ritor1: my include
 
                            // while(GetTickCount() - last_frame_time < 33 );//FPS control
-    uint frame_dt = OS_GetTime() - last_frame_time;
-    last_frame_time = OS_GetTime();
+    uint frame_dt = platform->TickCount() - last_frame_time;
+    last_frame_time = platform->TickCount();
     framerate_time_elapsed += frame_dt;
     if (framerate_time_elapsed >= 1000) {
         framerate = frames_this_second * (1000.0f / framerate_time_elapsed);
@@ -849,7 +848,6 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     memset(&render->pBillboardRenderListD3D, 0,
            sizeof(render->pBillboardRenderListD3D));
     pGameLoadingUI_ProgressBar->Release();
-    _flushall();
 }
 
 //----- (004647AB) --------------------------------------------------------
@@ -905,7 +903,7 @@ bool MM7_LoadLods() {
 
 //----- (004651F4) --------------------------------------------------------
 bool Engine::MM7_Initialize() {
-    srand(OS_GetTime());
+    srand(platform->TickCount());
 
     pEventTimer = Timer::Create();
     pEventTimer->Initialize();
@@ -1073,6 +1071,9 @@ void Engine::SecondaryInitialization() {
 }
 
 void Engine::Initialize() {
+    logger->Info("World of Might and Magic, compiled: %s %s", __DATE__, __TIME__);
+    logger->Info("Extra build information: %s/%s/%s %s", BUILD_PLATFORM, BUILD_TYPE, BUILD_COMPILER, PROJECT_VERSION);
+
     if (!MM7_Initialize()) {
         log->Warning("MM7_Initialize: failed");
 
@@ -1368,7 +1369,7 @@ unsigned int GetGravityStrength() {
 void GameUI_StatusBar_Update(bool force_hide) {
     if (force_hide ||
         game_ui_status_bar_event_string_time_left &&
-            OS_GetTime() >= game_ui_status_bar_event_string_time_left && !pEventTimer->bPaused) {
+            platform->TickCount() >= game_ui_status_bar_event_string_time_left && !pEventTimer->bPaused) {
         game_ui_status_bar_event_string_time_left = 0;
     }
 }

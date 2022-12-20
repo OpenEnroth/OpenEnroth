@@ -38,7 +38,6 @@
 
 #include "Io/Mouse.h"
 
-#include "Platform/Api.h"
 
 
 using Engine_::IocContainer;
@@ -48,10 +47,7 @@ Log *logger = nullptr;
 
 Log *IocContainer::ResolveLogger() {
     if (!logger) {
-        OS_OpenConsole();
         logger = new Log(stdout, stderr);
-        logger->Info("World of Might and Magic, compiled: %s %s", __DATE__, __TIME__);
-        logger->Info("Extra build information: %s/%s/%s %s", BUILD_PLATFORM, BUILD_TYPE, BUILD_COMPILER, PROJECT_VERSION);
     }
     return logger;
 }
