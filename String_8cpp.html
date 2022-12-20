@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;2915b31</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;e3d1329</span>
    </div>
   </td>
  </tr>
@@ -78,10 +78,10 @@ $(function() {
   <div class="headertitle"><div class="title">String.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;stdarg.h&gt;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="String_8h.html">String.h</a>&quot;</code><br />
+<code>#include &lt;cstdarg&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
-<code>#include &quot;<a class="el" href="String_8h.html">Utility/String.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -95,8 +95,68 @@ Functions</h2></td></tr>
 <tr class="separator:adae2b9bbd9961e47829cd5717bf8b03d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa7ee198c420e22e5a599cc8ff188a00c"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8cpp.html#aa7ee198c420e22e5a599cc8ff188a00c">ToUpper</a> (std::string_view text)</td></tr>
 <tr class="separator:aa7ee198c420e22e5a599cc8ff188a00c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a768df8f28e24918de40a4d331455b22c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8cpp.html#a768df8f28e24918de40a4d331455b22c">iequals</a> (std::string_view a, std::string_view b)</td></tr>
+<tr class="separator:a768df8f28e24918de40a4d331455b22c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4031a348e63cf678f364d5e79c63ded8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8cpp.html#a4031a348e63cf678f364d5e79c63ded8">iless</a> (std::string_view a, std::string_view b)</td></tr>
+<tr class="separator:a4031a348e63cf678f364d5e79c63ded8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a768df8f28e24918de40a4d331455b22c" name="a768df8f28e24918de40a4d331455b22c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a768df8f28e24918de40a4d331455b22c">&#9670;&#160;</a></span>iequals()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool iequals </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4031a348e63cf678f364d5e79c63ded8" name="a4031a348e63cf678f364d5e79c63ded8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4031a348e63cf678f364d5e79c63ded8">&#9670;&#160;</a></span>iless()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool iless </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a1d17f1e8332c63a13079f1a5358950cc" name="a1d17f1e8332c63a13079f1a5358950cc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1d17f1e8332c63a13079f1a5358950cc">&#9670;&#160;</a></span>StringFromInt()</h2>
 

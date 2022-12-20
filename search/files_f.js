@@ -30,6 +30,5 @@ var searchData=
   ['polygon_2eh_27',['Polygon.h',['../Polygon_8h.html',1,'']]],
   ['portalfunctions_2ecpp_28',['PortalFunctions.cpp',['../PortalFunctions_8cpp.html',1,'']]],
   ['portalfunctions_2eh_29',['PortalFunctions.h',['../PortalFunctions_8h.html',1,'']]],
-  ['posix_2ecpp_30',['Posix.cpp',['../Posix_8cpp.html',1,'']]],
-  ['posix_2eh_31',['Posix.h',['../Posix_8h.html',1,'']]]
+  ['posixplatform_2ecpp_30',['PosixPlatform.cpp',['../PosixPlatform_8cpp.html',1,'']]]
 ];

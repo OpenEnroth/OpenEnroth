@@ -35,13 +35,14 @@ var searchData=
   ['storylinetexttable_2eh_32',['StorylineTextTable.h',['../StorylineTextTable_8h.html',1,'']]],
   ['string_2ecpp_33',['String.cpp',['../String_8cpp.html',1,'']]],
   ['string_2eh_34',['String.h',['../String_8h.html',1,'']]],
-  ['stringoutputstream_2ecpp_35',['StringOutputStream.cpp',['../StringOutputStream_8cpp.html',1,'']]],
-  ['stringoutputstream_2eh_36',['StringOutputStream.h',['../StringOutputStream_8h.html',1,'']]],
-  ['stru123_2eh_37',['stru123.h',['../stru123_8h.html',1,'']]],
-  ['stru159_2eh_38',['stru159.h',['../stru159_8h.html',1,'']]],
-  ['stru160_2eh_39',['stru160.h',['../stru160_8h.html',1,'']]],
-  ['stru298_2ecpp_40',['stru298.cpp',['../stru298_8cpp.html',1,'']]],
-  ['stru298_2eh_41',['stru298.h',['../stru298_8h.html',1,'']]],
-  ['stru314_2eh_42',['stru314.h',['../stru314_8h.html',1,'']]],
-  ['stru367_2eh_43',['stru367.h',['../stru367_8h.html',1,'']]]
+  ['string_5fut_2ecpp_35',['String_ut.cpp',['../String__ut_8cpp.html',1,'']]],
+  ['stringoutputstream_2ecpp_36',['StringOutputStream.cpp',['../StringOutputStream_8cpp.html',1,'']]],
+  ['stringoutputstream_2eh_37',['StringOutputStream.h',['../StringOutputStream_8h.html',1,'']]],
+  ['stru123_2eh_38',['stru123.h',['../stru123_8h.html',1,'']]],
+  ['stru159_2eh_39',['stru159.h',['../stru159_8h.html',1,'']]],
+  ['stru160_2eh_40',['stru160.h',['../stru160_8h.html',1,'']]],
+  ['stru298_2ecpp_41',['stru298.cpp',['../stru298_8cpp.html',1,'']]],
+  ['stru298_2eh_42',['stru298.h',['../stru298_8h.html',1,'']]],
+  ['stru314_2eh_43',['stru314.h',['../stru314_8h.html',1,'']]],
+  ['stru367_2eh_44',['stru367.h',['../stru367_8h.html',1,'']]]
 ];

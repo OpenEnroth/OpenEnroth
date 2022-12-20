@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>World of Might and Magic: src/Platform/Win/AppSettings.cpp File Reference</title>
+<title>World of Might and Magic: src/Platform/Win/WinPlatform.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;2915b31</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;e3d1329</span>
    </div>
   </td>
  </tr>
@@ -74,63 +74,53 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">AppSettings.cpp File Reference</div></div>
+  <div class="headertitle"><div class="title">WinPlatform.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="Win_8h.html">Platform/Win/Win.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="WinPlatform_8h.html">WinPlatform.h</a>&quot;</code><br />
+<code>#include &lt;memory&gt;</code><br />
+<code>#include &lt;Windows.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="String_8h.html">Utility/String.h</a>&quot;</code><br />
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:ac7bef5d85e3dcd73eef56ad39ffc84a9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="WinPlatform_8cpp.html#ac7bef5d85e3dcd73eef56ad39ffc84a9">WIN32_LEAN_AND_MEAN</a></td></tr>
+<tr class="separator:ac7bef5d85e3dcd73eef56ad39ffc84a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:acfb13ddb38879cd8e4e80b789e4825f0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="AppSettings_8cpp.html#acfb13ddb38879cd8e4e80b789e4825f0">OS_GetAppStringRecursive</a> (HKEY parent_key, const char *path, char *out_string, int out_string_size, int flags=0)</td></tr>
-<tr class="separator:acfb13ddb38879cd8e4e80b789e4825f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a830acc9f064bc234e0e87be40be2bf12"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="AppSettings_8cpp.html#a830acc9f064bc234e0e87be40be2bf12">OS_GetAppString</a> (const char *path, char *out_string, int out_string_size)</td></tr>
-<tr class="separator:a830acc9f064bc234e0e87be40be2bf12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9346f5469319ebffa7de5803a0df7cd"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="WinPlatform_8cpp.html#ae9346f5469319ebffa7de5803a0df7cd">OS_GetAppStringRecursive</a> (HKEY parent_key, const char *path, char *out_string, int out_string_size, int flags)</td></tr>
+<tr class="separator:ae9346f5469319ebffa7de5803a0df7cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
-<a id="a830acc9f064bc234e0e87be40be2bf12" name="a830acc9f064bc234e0e87be40be2bf12"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a830acc9f064bc234e0e87be40be2bf12">&#9670;&#160;</a></span>OS_GetAppString()</h2>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="ac7bef5d85e3dcd73eef56ad39ffc84a9" name="ac7bef5d85e3dcd73eef56ad39ffc84a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7bef5d85e3dcd73eef56ad39ffc84a9">&#9670;&#160;</a></span>WIN32_LEAN_AND_MEAN</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool OS_GetAppString </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>path</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>out_string</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>out_string_size</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
+          <td class="memname">#define WIN32_LEAN_AND_MEAN</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="acfb13ddb38879cd8e4e80b789e4825f0" name="acfb13ddb38879cd8e4e80b789e4825f0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acfb13ddb38879cd8e4e80b789e4825f0">&#9670;&#160;</a></span>OS_GetAppStringRecursive()</h2>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="ae9346f5469319ebffa7de5803a0df7cd" name="ae9346f5469319ebffa7de5803a0df7cd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9346f5469319ebffa7de5803a0df7cd">&#9670;&#160;</a></span>OS_GetAppStringRecursive()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool OS_GetAppStringRecursive </td>
+          <td class="memname">static bool OS_GetAppStringRecursive </td>
           <td>(</td>
           <td class="paramtype">HKEY&#160;</td>
           <td class="paramname"><em>parent_key</em>, </td>
@@ -157,7 +147,7 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>flags</em> = <code>0</code>&#160;</td>
+          <td class="paramname"><em>flags</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -165,6 +155,11 @@ Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>

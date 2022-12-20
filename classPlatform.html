@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;2915b31</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;e3d1329</span>
    </div>
   </td>
  </tr>
@@ -86,6 +86,7 @@ Inheritance diagram for Platform:</div>
   <map id="Platform_map" name="Platform_map">
 <area href="classSdlPlatform.html" alt="SdlPlatform" shape="rect" coords="0,56,81,80"/>
 <area href="classTestPlatform.html" alt="TestPlatform" shape="rect" coords="91,56,172,80"/>
+<area href="classWinPlatform.html" alt="WinPlatform" shape="rect" coords="0,112,81,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -103,6 +104,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a3ba17fc63ef30ab7d2abbff4e2246934"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a337e6fa515f64de9fb07716a325bcb99"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="Rect_8h.html#a32073cc1967b01302be5d39e09079649">Recti</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#a337e6fa515f64de9fb07716a325bcb99">DisplayGeometries</a> () const =0</td></tr>
 <tr class="separator:a337e6fa515f64de9fb07716a325bcb99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a903de888d23770ca4219519c7e9b1308"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#a903de888d23770ca4219519c7e9b1308">ShowMessageBox</a> (const std::string &amp;message, const std::string &amp;title) const =0</td></tr>
+<tr class="separator:a903de888d23770ca4219519c7e9b1308"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1fdbcde1ca33e7e8c9728eccd0547d1"><td class="memItemLeft" align="right" valign="top">virtual int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#af1fdbcde1ca33e7e8c9728eccd0547d1">TickCount</a> () const =0</td></tr>
+<tr class="separator:af1fdbcde1ca33e7e8c9728eccd0547d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae32dad53d3cd359e70d80158300d24f2"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#ae32dad53d3cd359e70d80158300d24f2">WinEnsureConsole</a> () const =0</td></tr>
+<tr class="separator:ae32dad53d3cd359e70d80158300d24f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abba3521d66627895a4dbf19e8ab6110f"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#abba3521d66627895a4dbf19e8ab6110f">WinQueryRegistry</a> (const std::string &amp;path) const =0</td></tr>
+<tr class="separator:abba3521d66627895a4dbf19e8ab6110f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -351,9 +360,149 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a903de888d23770ca4219519c7e9b1308" name="a903de888d23770ca4219519c7e9b1308"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a903de888d23770ca4219519c7e9b1308">&#9670;&#160;</a></span>ShowMessageBox()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void Platform::ShowMessageBox </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>message</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>title</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Shows a modal message box.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">message</td><td>Message to display. </td></tr>
+    <tr><td class="paramname">title</td><td>Title of the message box window. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classSdlPlatform.html#a10462cc032d2b41e3a54c4bca0790ac0">SdlPlatform</a>, and <a class="el" href="classTestPlatform.html#ae8f95ca3a7a0c87f447145d36caeb7ce">TestPlatform</a>.</p>
+
+</div>
+</div>
+<a id="af1fdbcde1ca33e7e8c9728eccd0547d1" name="af1fdbcde1ca33e7e8c9728eccd0547d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af1fdbcde1ca33e7e8c9728eccd0547d1">&#9670;&#160;</a></span>TickCount()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual int64_t Platform::TickCount </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Current value of a monotonic clock in milliseconds. </dd></dl>
+
+<p>Implemented in <a class="el" href="classSdlPlatform.html#aecfb5769a4b55e63235c799555335f2d">SdlPlatform</a>, and <a class="el" href="classTestPlatform.html#ae19fe655558d248d0509cdfca7f885e7">TestPlatform</a>.</p>
+
+</div>
+</div>
+<a id="ae32dad53d3cd359e70d80158300d24f2" name="ae32dad53d3cd359e70d80158300d24f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae32dad53d3cd359e70d80158300d24f2">&#9670;&#160;</a></span>WinEnsureConsole()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void Platform::WinEnsureConsole </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Makes sure that the process has a console that it can write to using the standard streams.</p>
+<p >This functions is a noop on non-Windows systems, thus a <code>Win</code> prefix. </p>
+
+<p>Implemented in <a class="el" href="classSdlPlatform.html#af748b64b210d7ed5168b61abff0ffe61">SdlPlatform</a>, <a class="el" href="classWinPlatform.html#ad13cd1bea51b1c0f6e0b269cd00ca6c1">WinPlatform</a>, and <a class="el" href="classTestPlatform.html#a492c200377f6278c920bd45a09294dc6">TestPlatform</a>.</p>
+
+</div>
+</div>
+<a id="abba3521d66627895a4dbf19e8ab6110f" name="abba3521d66627895a4dbf19e8ab6110f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abba3521d66627895a4dbf19e8ab6110f">&#9670;&#160;</a></span>WinQueryRegistry()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::string Platform::WinQueryRegistry </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Windows-only function for querying the registry. Always returns an empty string on non-Windows systems.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>Registry path to query. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Value at the given path, or an empty string in case of an error. </dd></dl>
+
+<p>Implemented in <a class="el" href="classSdlPlatform.html#a13691166aec9982f2b61bef159784454">SdlPlatform</a>, <a class="el" href="classWinPlatform.html#a02ba58d624af0377d89f662a61271b6c">WinPlatform</a>, and <a class="el" href="classTestPlatform.html#a5412b26d8e933dcd60de7b3a51be91b1">TestPlatform</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/Platform/<a class="el" href="Platform_8h.html">Platform.h</a></li>
-<li>src/Platform/Sdl/<a class="el" href="SdlPlatform_8cpp.html">SdlPlatform.cpp</a></li>
+<li>src/Platform/Posix/<a class="el" href="PosixPlatform_8cpp.html">PosixPlatform.cpp</a></li>
+<li>src/Platform/Win/<a class="el" href="WinPlatform_8cpp.html">WinPlatform.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
