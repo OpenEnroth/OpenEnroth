@@ -9,7 +9,6 @@
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIChest.h"
 
-#include "Platform/Api.h"
 
 int pChestPixelOffsetX[8] = {42, 18, 18, 42, 42, 42, 18, 42};
 int pChestPixelOffsetY[8] = {34, 30, 30, 34, 34, 34, 30, 34};

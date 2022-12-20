@@ -12,7 +12,6 @@
 
 #include "Engine/Serialization/LegacyImages.h"
 
-#include "Platform/Api.h"
 
 struct TextureFrameTable *pTextureFrameTable;
 

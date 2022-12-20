@@ -42,6 +42,7 @@ uniform Sunlight sun;
 uniform vec3 CameraPos;
 uniform int flowtimer;
 uniform int watertiles;
+uniform float gamma;
 
 #define num_point_lights 20
 uniform PointLight fspointlights[num_point_lights];
@@ -148,6 +149,7 @@ void main() {
 	vec4 inter = vec4(clamps, vertexColour.a) * vec4(dull,1); // result, 1.0);
 	float fograt = getFogRatio(fog, abs(viewspace.z/ viewspace.w));
 	FragColour = mix(inter, vec4(fog.color, alpha), fograt);
+    FragColour.rgb = pow(FragColour.rgb, vec3(1.0/gamma));
 
 }
 
@@ -181,7 +183,8 @@ vec3 CalcSunLight(Sunlight light, vec3 normal, vec3 viewDir, vec3 thisfragcol) {
 
 // calculates the color when using a point light.
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
-    if (light.diffuse.r == 0 && light.diffuse.g == 0 && light.diffuse.b == 0) return vec3(0);    
+    if (light.diffuse.r == 0 && light.diffuse.g == 0 && light.diffuse.b == 0) return vec3(0);
+    if (light.radius < 1.0) return vec3(0);    
 
     vec3 lightDir = normalize(light.position - fragPos);
     // diffuse shading

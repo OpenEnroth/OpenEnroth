@@ -4,10 +4,9 @@
 #include <vector>
 
 #include "Engine/IocContainer.h"
-#include "Utility/Log.h"
 #include "Engine/ZlibWrapper.h"
-
-#include "Platform/Api.h"
+#include "Utility/Log.h"
+#include "Utility/String.h"
 
 
 #pragma pack(push, 1)

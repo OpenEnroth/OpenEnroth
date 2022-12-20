@@ -575,9 +575,8 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, unsigned int uX, unsigned int uY
     render->BeginTextNew(fonttex, fontshadow);
 
     unsigned int text_width = 0;
-    if (reverse_text) {
-        _strrev(text);
-    }
+    if (reverse_text)
+        std::reverse(text, text + pNumLen);
 
     size_t Str1a = 0;
     size_t i = 0;
@@ -610,9 +609,8 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, unsigned int uX, unsigned int uY
 
     pNumLen = strlen(text);
     unsigned int v28 = this->GetLineWidth(text);
-    if (reverse_text) {
-        _strrev(text);
-    }
+    if (reverse_text)
+        std::reverse(text, text + pNumLen);
 
     int text_pos_x = uX + pWindow->uFrameX;
     int text_pos_y = uY + pWindow->uFrameY;

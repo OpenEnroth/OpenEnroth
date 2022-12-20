@@ -41,7 +41,7 @@ struct BspRenderer {  // stru170
     void MakeVisibleSectorList();
 
     unsigned int num_faces;
-    BspFace faces[1000]{};
+    BspFace faces[1500]{};
 
     unsigned int num_nodes;
     BspRenderer_ViewportNode nodes[150];

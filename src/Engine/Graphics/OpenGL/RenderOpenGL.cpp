@@ -64,7 +64,6 @@
 #include "Engine/SpellFxRenderer.h"
 #include "Arcomage/Arcomage.h"
 
-#include "Platform/Api.h"
 
 #include "Utility/Geometry/Size.h"
 #include "Utility/Memory.h"
@@ -400,6 +399,7 @@ void RenderOpenGL::BeginSceneD3D() {
     render->uNumBillboardsToDraw = 0;  // moved from drawbillboards - cant reset this until mouse picking finished
 
     SetFogParametersGL();
+    gamma = GetGamma();
 }
 
 extern unsigned int BlendColors(unsigned int a1, unsigned int a2);
@@ -472,9 +472,11 @@ struct forcepersverts {
     GLfloat g;
     GLfloat b;
     GLfloat a;
+    GLfloat texid;
 };
 
-forcepersverts forceperstore[50]{};
+const int MAX_FORCEPERSTORECNT{ 498 };
+forcepersverts forceperstore[MAX_FORCEPERSTORECNT]{};
 int forceperstorecnt{ 0 };
 
 
@@ -553,10 +555,10 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
     glDepthMask(GL_FALSE);
     glDisable(GL_CULL_FACE);
 
+    auto texid{ 0 };
+
     if (textured3d) {
-        glBindTexture(GL_TEXTURE_2D, textured3d->GetOpenGlTexture());
-    } else {
-        glBindTexture(GL_TEXTURE_2D, 0);
+        texid = textured3d->GetOpenGlTexture();
     }
 
     // load up poly
@@ -577,6 +579,7 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
         thisvert->g = 1.0f;
         thisvert->b = 1.0f;
         thisvert->a = 1.0f;
+        thisvert->texid = texid;
         thisvert++;
 
         // copy other two (z+1)(z+2)
@@ -593,13 +596,15 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
             thisvert->g = 1.0f;
             thisvert->b = 1.0f;
             thisvert->a = 1.0f;
+            thisvert->texid = texid;
             thisvert++;
         }
 
         forceperstorecnt += 3;
-        assert(forceperstorecnt <= 40);
+        assert(forceperstorecnt <= MAX_FORCEPERSTORECNT);
     }
 
+    // TODO(pskelton): do these need batching?
     DrawForcePerVerts();
 
     glDisable(GL_BLEND);
@@ -1058,28 +1063,8 @@ void RenderOpenGL::DrawTextureGrayShade(float a2, float a3, Image *a4) {
 }
 
 void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {
-    // TODO(pskelton): fix properly - only partially works
-    // for floor and wall(for example Celeste)-------------------
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];
-    if (pFace->uPolygonType == POLYGON_InBetweenFloorAndWall || pFace->uPolygonType == POLYGON_Floor) {
-        float v69 = (OS_GetTime() / 32.0f) - pCamera3D->vCameraPos.x;
-        float v55 = (OS_GetTime() / 32.0f) + pCamera3D->vCameraPos.y;
-        for (uint i = 0; i < uNumVertices; ++i) {
-            array_507D30[i].u = (v69 + array_507D30[i].u) * 0.25f;
-            array_507D30[i].v = (v55 + array_507D30[i].v) * 0.25f;
-        }
-        render->DrawIndoorPolygon(uNumVertices, pFace, PID(OBJECT_Face, uFaceID), -1, 0);
-        return;
-    }
-    //---------------------------------------
-
-    // TODO(pskelton): temporary hack to use outdoor sky as a coverall instead of drawing the individual segments which causes hazy transitions without rhw correction
-    SkyBillboard.CalcSkyFrustumVec(1, 0, 0, 0, 1, 0);
-    render->DrawOutdoorSkyD3D();
-    return;
-
-
-    if ((signed int)uNumVertices <= 0) return;
+    if (pFace->uNumVertices <= 0) return;
 
     struct Polygon pSkyPolygon;
     pSkyPolygon.texture = nullptr;
@@ -1088,10 +1073,10 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID
 
     pSkyPolygon.ptr_38 = &SkyBillboard;
     pSkyPolygon.dimming_level = 0;
-    pSkyPolygon.uNumVertices = uNumVertices;
+    pSkyPolygon.uNumVertices = pFace->uNumVertices;
 
-    SkyBillboard.CalcSkyFrustumVec(1, 0, 0, 0, 1, 0);
 
+    // TODO(pskelton): repeated maths could be saved when calculating sky planes
     double rot_to_rads = ((2 * pi_double) / 2048);
 
     // lowers clouds as party goes up
@@ -1116,12 +1101,28 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID
 
     float inv_viewplanedist = 1.0f / pCamera3D->ViewPlaneDist_X;
 
+    // copy to buff in
+    for (uint i = 0; i < pFace->uNumVertices; ++i) {
+        array_507D30[i].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[i]].x;
+        array_507D30[i].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[i]].y;
+        array_507D30[i].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[i]].z;
+        array_507D30[i].u = (signed short)pFace->pVertexUIDs[i];
+        array_507D30[i].v = (signed short)pFace->pVertexVIDs[i];
+    }
+
+    // clip accurately to camera
+    pCamera3D->ClipFaceToFrustum(array_507D30, &pSkyPolygon.uNumVertices, VertexRenderList, pBspRenderer->nodes[0].ViewportNodeFrustum, 4, 0, 0);
+    if (!pSkyPolygon.uNumVertices) return;
+
+    pCamera3D->ViewTransform(VertexRenderList, pSkyPolygon.uNumVertices);
+    pCamera3D->Project(VertexRenderList, pSkyPolygon.uNumVertices, false);
+
     uint _507D30_idx = 0;
     for (; _507D30_idx < pSkyPolygon.uNumVertices; _507D30_idx++) {
         // outbound screen x dist
-        float x_dist = inv_viewplanedist * (pBLVRenderParams->uViewportCenterX - array_507D30[_507D30_idx].vWorldViewProjX);
+        float x_dist = inv_viewplanedist * (pBLVRenderParams->uViewportCenterX - VertexRenderList[_507D30_idx].vWorldViewProjX);
         // outbound screen y dist
-        float y_dist = inv_viewplanedist * (blv_horizon_height_offset - array_507D30[_507D30_idx].vWorldViewProjY);
+        float y_dist = inv_viewplanedist * (blv_horizon_height_offset - VertexRenderList[_507D30_idx].vWorldViewProjY);
 
         // rotate vectors to cam facing
         float skyfinalleft = (pSkyPolygon.ptr_38->CamVecLeft_X * x_dist) + (pSkyPolygon.ptr_38->CamVecLeft_Z * y_dist) + pSkyPolygon.ptr_38->CamVecLeft_Y;
@@ -1133,12 +1134,12 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID
 
         // offset tex coords
         float texoffset_U = ((pMiscTimer->uTotalGameTimeElapsed) / 128.0f) + ((skyfinalleft * worldviewdepth) / 16.0f);
-        array_507D30[_507D30_idx].u = texoffset_U / (pSkyPolygon.texture->GetWidth());
+        VertexRenderList[_507D30_idx].u = texoffset_U / (pSkyPolygon.texture->GetWidth());
         float texoffset_V = ((pMiscTimer->uTotalGameTimeElapsed) / 128.0f) + ((skyfinalfront * worldviewdepth) / 16.0f);
-        array_507D30[_507D30_idx].v = texoffset_V / (pSkyPolygon.texture->GetHeight());
+        VertexRenderList[_507D30_idx].v = texoffset_V / (pSkyPolygon.texture->GetHeight());
 
         // this basically acts as texture perspective correction
-        array_507D30[_507D30_idx]._rhw = worldviewdepth;
+        VertexRenderList[_507D30_idx]._rhw = worldviewdepth;
     }
 
     // no clipped polygon so draw and return??
@@ -1153,8 +1154,62 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID
 }
 
 void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon) {
-    // not used in gl now
-    return;
+    auto texture = (TextureOpenGL*)pSkyPolygon->texture;
+    auto texid = texture->GetOpenGlTexture();
+
+    uint uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0);
+    uint uTintR = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintB = uTint & 0xFF;
+    float scrspace{ pCamera3D->GetFarClip() };
+
+    float oneon = 1.0f / (pCamera3D->GetNearClip() * 2.0f);
+    float oneof = 1.0f / (pCamera3D->GetFarClip());
+
+    // load up poly
+    for (int z = 0; z < (pSkyPolygon->uNumVertices - 2); z++) {
+        // 123, 134, 145, 156..
+        forcepersverts* thisvert = &forceperstore[forceperstorecnt];
+        float oneoz = 1.0f / VertexRenderList[0].vWorldViewPosition.x;
+        float thisdepth = (oneoz - oneon) / (oneof - oneon);
+        // copy first
+        thisvert->x = VertexRenderList[0].vWorldViewProjX;
+        thisvert->y = VertexRenderList[0].vWorldViewProjY;
+        thisvert->z = thisdepth;
+        thisvert->w = VertexRenderList[0]._rhw;
+        thisvert->u = VertexRenderList[0].u;
+        thisvert->v = VertexRenderList[0].v;
+        thisvert->q = 1.0f;
+        thisvert->screenspace = scrspace;
+        thisvert->r = (uTintR) / 255.0f;
+        thisvert->g = (uTintG) / 255.0f;
+        thisvert->b = (uTintB) / 255.0f;
+        thisvert->a = 1.0f;
+        thisvert->texid = texid;
+        thisvert++;
+
+        // copy other two (z+1)(z+2)
+        for (uint i = 1; i < 3; ++i) {
+            oneoz = 1.0f / VertexRenderList[z + i].vWorldViewPosition.x;
+            thisdepth = (oneoz - oneon) / (oneof - oneon);
+            thisvert->x = VertexRenderList[z + i].vWorldViewProjX;
+            thisvert->y = VertexRenderList[z + i].vWorldViewProjY;
+            thisvert->z = thisdepth;
+            thisvert->w = VertexRenderList[z + i]._rhw;
+            thisvert->u = VertexRenderList[z + i].u;
+            thisvert->v = VertexRenderList[z + i].v;
+            thisvert->q = 1.0f;
+            thisvert->screenspace = scrspace;
+            thisvert->r = (uTintR) / 255.0f;
+            thisvert->g = (uTintG) / 255.0f;
+            thisvert->b = (uTintB) / 255.0f;
+            thisvert->a = 1.0f;
+            thisvert->texid = texid;
+            thisvert++;
+        }
+
+        forceperstorecnt += 3;
+        // TODO (pskelton): should force drawing if buffer is full
+        assert(forceperstorecnt <= MAX_FORCEPERSTORECNT);
+    }
 }
 
 bool RenderOpenGL::AreRenderSurfacesOk() {
@@ -2041,6 +2096,7 @@ struct GLshaderverts {
     GLfloat normy;
     GLfloat normz;
     GLfloat attribs;
+    GLfloat sector;
 };
 
 GLshaderverts terrshaderstore[127 * 127 * 6] = {};
@@ -2341,6 +2397,8 @@ void RenderOpenGL::DrawTerrainD3D() {
     glUniform1i(glGetUniformLocation(terrainshader.ID, "textureArray0"), GLint(0));
     glUniform1i(glGetUniformLocation(terrainshader.ID, "textureArray1"), GLint(1));
 
+    glUniform1f(glGetUniformLocation(terrainshader.ID, "gamma"), gamma);
+
     // set fog uniforms
     glUniform3f(glGetUniformLocation(terrainshader.ID, "fog.color"), fogr, fogg, fogb);
     glUniform1f(glGetUniformLocation(terrainshader.ID, "fog.fogstart"), GLfloat(fogstart));
@@ -2371,49 +2429,33 @@ void RenderOpenGL::DrawTerrainD3D() {
         glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.specular"), 0, 0, 0);
     }
 
-    // torchlight - pointlight 1 is always party glow
-    float torchradius = 0;
-    if (!diffuseon) {
-        int rangemult = 1;
-        if (pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].Active())
-            rangemult = pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
-        torchradius = float(rangemult) * 1024.0;
-    }
 
-    glUniform3fv(glGetUniformLocation(terrainshader.ID, "fspointlights[0].position"), 1, &camera[0]);
-    glUniform3f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].ambient"), 0.85f, 0.85f, 0.85f);  // background
-    glUniform3f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].diffuse"), 0.85f, 0.85f, 0.85f);  // direct
-    glUniform3f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].specular"), 0.35f, 0.35f, 0.35f);          // for "shinyness"
-    glUniform1f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].radius"), torchradius);
-
-
+    // TODO(pskelton): this should be a seperate function
     // rest of lights stacking
-    GLuint num_lights = 1;
-    for (int i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
-        // maximum 20 lights sent to shader at the moment
-        // TODO(pskelton): make this configurable - also lights should be sorted by distance so nearest are used first
-        if (num_lights >= 20) break;
+    GLuint num_lights = 0;
 
-        std::string slotnum = std::to_string(num_lights);
+    // get party torchlight as priority - can be radius == 0
+    for (int i = 0; i < 1; ++i) {
+        if (pMobileLightsStack->uNumLightsActive < 1) continue;
+
         auto test = pMobileLightsStack->pLights[i];
+        std::string slotnum = std::to_string(num_lights);
 
         float x = pMobileLightsStack->pLights[i].vPosition.x;
         float y = pMobileLightsStack->pLights[i].vPosition.y;
         float z = pMobileLightsStack->pLights[i].vPosition.z;
 
-        float r = pMobileLightsStack->pLights[i].uLightColorR / 255.0;
-        float g = pMobileLightsStack->pLights[i].uLightColorG / 255.0;
-        float b = pMobileLightsStack->pLights[i].uLightColorB / 255.0;
+        float r = pMobileLightsStack->pLights[i].uLightColorR / 255.0f;
+        float g = pMobileLightsStack->pLights[i].uLightColorG / 255.0f;
+        float b = pMobileLightsStack->pLights[i].uLightColorB / 255.0f;
 
-        float lightrad = pMobileLightsStack->pLights[i].uRadius;
-
-        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0);
+        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0f);
         glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
+        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].sector").c_str()), 0);
         glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
         glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), r, g, b);
-        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
-
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
+        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), test.uRadius);
         num_lights++;
     }
 
@@ -2444,6 +2486,38 @@ void RenderOpenGL::DrawTerrainD3D() {
 
         num_lights++;
     }
+
+    // mobile
+    for (int i = 1; i < pMobileLightsStack->uNumLightsActive; ++i) {
+        // maximum 20 lights sent to shader at the moment
+        // TODO(pskelton): make this configurable - also lights should be sorted by distance so nearest are used first
+        if (num_lights >= 20) break;
+
+        std::string slotnum = std::to_string(num_lights);
+        auto test = pMobileLightsStack->pLights[i];
+
+        float x = pMobileLightsStack->pLights[i].vPosition.x;
+        float y = pMobileLightsStack->pLights[i].vPosition.y;
+        float z = pMobileLightsStack->pLights[i].vPosition.z;
+
+        float r = pMobileLightsStack->pLights[i].uLightColorR / 255.0;
+        float g = pMobileLightsStack->pLights[i].uLightColorG / 255.0;
+        float b = pMobileLightsStack->pLights[i].uLightColorB / 255.0;
+
+        float lightrad = pMobileLightsStack->pLights[i].uRadius;
+
+        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), r, g, b);
+        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
+
+        num_lights++;
+    }
+
+    if (engine->config->debug.VerboseLogging.Get())
+        logger->Info("Lights this frame: %u", num_lights);
 
     // blank the rest of the lights
     for (int blank = num_lights; blank < 20; blank++) {
@@ -2700,8 +2774,13 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
 //----- (004A2DA3) --------------------------------------------------------
 void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
     auto texture = (TextureOpenGL *)pSkyPolygon->texture;
+    auto texid = texture->GetOpenGlTexture();
 
-    glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+    static Texture* effpar03 = assets->GetBitmap("effpar03");
+    auto texturesolid = (TextureOpenGL*)effpar03;
+    float texidsolid = static_cast<float>(texturesolid->GetOpenGlTexture());
+
+    //glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
@@ -2729,6 +2808,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
         thisvert->g = (uTintG) / 255.0f;
         thisvert->b = (uTintB) / 255.0f;
         thisvert->a = 1.0f;
+        thisvert->texid = texid;
         thisvert++;
 
         // copy other two (z+1)(z+2)
@@ -2745,11 +2825,12 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
             thisvert->g = (uTintG) / 255.0f;
             thisvert->b = (uTintB) / 255.0f;
             thisvert->a = 1.0f;
+            thisvert->texid = texid;
             thisvert++;
         }
 
         forceperstorecnt += 3;
-        assert(forceperstorecnt <= 40);
+        assert(forceperstorecnt <= MAX_FORCEPERSTORECNT);
     }
 
     if (engine->config->graphics.Fog.Get()) {
@@ -2772,6 +2853,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
             thisvert->g = (uTintG) / 255.0f;
             thisvert->b = (uTintB) / 255.0f;
             thisvert->a = 0.0f;
+            thisvert->texid = texidsolid;
             thisvert++;
 
             // copy other two (z+1)(z+2)
@@ -2788,11 +2870,12 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
                 thisvert->g = (uTintG) / 255.0f;
                 thisvert->b = (uTintB) / 255.0f;
                 thisvert->a = ((z + i) == 7) ? 0.0f : 1.0f;
+                thisvert->texid = texidsolid;
                 thisvert++;
             }
 
             forceperstorecnt += 3;
-            assert(forceperstorecnt <= 40);
+            assert(forceperstorecnt <= MAX_FORCEPERSTORECNT);
         }
 
         // draw sub sky
@@ -2814,6 +2897,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
             thisvert->g = (uTintG) / 255.0f;
             thisvert->b = (uTintB) / 255.0f;
             thisvert->a = 1.0f;
+            thisvert->texid = texidsolid;
             thisvert++;
 
             // copy other two (z+1)(z+2)
@@ -2830,11 +2914,12 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
                 thisvert->g = (uTintG) / 255.0f;
                 thisvert->b = (uTintB) / 255.0f;
                 thisvert->a = 1.0f;
+                thisvert->texid = texidsolid;
                 thisvert++;
             }
 
             forceperstorecnt += 3;
-            assert(forceperstorecnt <= 40);
+            assert(forceperstorecnt <= MAX_FORCEPERSTORECNT);
         }
     }
 
@@ -2922,21 +3007,26 @@ void RenderOpenGL::DrawForcePerVerts() {
     glUniform1f(glGetUniformLocation(forcepershader.ID, "fog.fogmiddle"), GLfloat(fpfogmiddle));
     glUniform1f(glGetUniformLocation(forcepershader.ID, "fog.fogend"), GLfloat(fpfogend));
 
+    // draw all similar textures in batches
+    int offset = 0;
+    while (offset < forceperstorecnt) {
+        // set texture
+        GLfloat thistex = forceperstore[offset].texid;
+        glBindTexture(GL_TEXTURE_2D, thistex);
 
-    //draw 6 for main sky / spell
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    ++drawcalls;
+        int cnt = 0;
+        do {
+            cnt++;
+            if (offset + (3 * cnt) > forceperstorecnt) {
+                --cnt;
+                break;
+            }
+        } while (forceperstore[offset + (cnt * 3)].texid == thistex);
 
-    static Texture *effpar03 = assets->GetBitmap("effpar03");
-    auto texture = (TextureOpenGL *)effpar03;
-    float gltexid = static_cast<float>(texture->GetOpenGlTexture());
+        glDrawArrays(GL_TRIANGLES, offset, (3 * cnt));
+        drawcalls++;
 
-    //change texture to balnk and draw rest
-    if (forceperstorecnt > 6) {
-        glBindTexture(GL_TEXTURE_2D,  gltexid);
-
-        glDrawArrays(GL_TRIANGLES, 6, forceperstorecnt - 6);
-        ++drawcalls;
+        offset += (3 * cnt);
     }
 
     glUseProgram(0);
@@ -3258,6 +3348,8 @@ void RenderOpenGL::DrawBillboards() {
     glUniformMatrix4fv(glGetUniformLocation(billbshader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
     //// set view
     glUniformMatrix4fv(glGetUniformLocation(billbshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
+
+    glUniform1f(glGetUniformLocation(billbshader.ID, "gamma"), gamma);
 
     // set fog uniforms
     glUniform3f(glGetUniformLocation(billbshader.ID, "fog.color"), fogr, fogg, fogb);
@@ -4264,7 +4356,9 @@ void RenderOpenGL::DrawBuildingsD3D() {
     glUniformMatrix4fv(glGetUniformLocation(outbuildshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
 
     glUniform1i(glGetUniformLocation(outbuildshader.ID, "waterframe"), GLint(this->hd_water_current_frame));
-    glUniform1i(glGetUniformLocation(outbuildshader.ID, "flowtimer"), GLint(OS_GetTime() >> 4));
+    glUniform1i(glGetUniformLocation(outbuildshader.ID, "flowtimer"), GLint(platform->TickCount() >> 4));
+
+    glUniform1f(glGetUniformLocation(outbuildshader.ID, "gamma"), gamma);
 
     // set texture unit location
     glUniform1i(glGetUniformLocation(outbuildshader.ID, "textureArray0"), GLint(0));
@@ -4298,52 +4392,39 @@ void RenderOpenGL::DrawBuildingsD3D() {
         glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.specular"), 0.0f, 0.0f, 0.0f);
     }
 
-    // torchlight
-    float torchradius = 0;
-    if (!diffuseon) {
-        int rangemult = 1;
-        if (pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].Active())
-            rangemult = pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
-        torchradius = float(rangemult) * 1024.0;
-    }
 
-    glUniform3fv(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].position"), 1, &camera[0]);
-    glUniform3f(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].ambient"), 0.085f, 0.085f, 0.085f);
-    glUniform3f(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].diffuse"), 0.85f, 0.85f, 0.85f);
-    glUniform3f(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].specular"), 0.35f, 0.35f, 0.35f);
-    glUniform1f(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].radius"), torchradius);
-
-
+    // TODO(pskelton): this should be a seperate function
     // rest of lights stacking
-    GLuint num_lights = 1;
-    for (int i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
-        if (num_lights >= 20) break;
+    GLuint num_lights = 0;
 
-        std::string slotnum = std::to_string(num_lights);
+    // get party torchlight as priority - can be radius == 0
+    for (int i = 0; i < 1; ++i) {
+        if (pMobileLightsStack->uNumLightsActive < 1) continue;
+
         auto test = pMobileLightsStack->pLights[i];
+        std::string slotnum = std::to_string(num_lights);
 
         float x = pMobileLightsStack->pLights[i].vPosition.x;
         float y = pMobileLightsStack->pLights[i].vPosition.y;
         float z = pMobileLightsStack->pLights[i].vPosition.z;
 
-        float r = pMobileLightsStack->pLights[i].uLightColorR / 255.0;
-        float g = pMobileLightsStack->pLights[i].uLightColorG / 255.0;
-        float b = pMobileLightsStack->pLights[i].uLightColorB / 255.0;
+        float r = pMobileLightsStack->pLights[i].uLightColorR / 255.0f;
+        float g = pMobileLightsStack->pLights[i].uLightColorG / 255.0f;
+        float b = pMobileLightsStack->pLights[i].uLightColorB / 255.0f;
 
-        float lightrad = pMobileLightsStack->pLights[i].uRadius;
-
-        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0);
+        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0f);
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r / 10.0, g / 10.0, b / 10.0);
+        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].sector").c_str()), 0);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
-        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
-
+        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), test.uRadius);
         num_lights++;
     }
 
-
     for (int i = 0; i < pStationaryLightsStack->uNumLightsActive; ++i) {
+        // maximum 20 lights sent to shader at the moment
+        // TODO(pskelton): make this configurable - also lights should be sorted by distance so nearest are used first
         if (num_lights >= 20) break;
 
         std::string slotnum = std::to_string(num_lights);
@@ -4361,20 +4442,52 @@ void RenderOpenGL::DrawBuildingsD3D() {
 
         glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 1.0);
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r / 10.0, g / 10.0, b / 10.0);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), r, g, b);
         glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
 
         num_lights++;
     }
 
+    // mobile
+    for (int i = 1; i < pMobileLightsStack->uNumLightsActive; ++i) {
+        // maximum 20 lights sent to shader at the moment
+        // TODO(pskelton): make this configurable - also lights should be sorted by distance so nearest are used first
+        if (num_lights >= 20) break;
 
-    // blank rest of lights
+        std::string slotnum = std::to_string(num_lights);
+        auto test = pMobileLightsStack->pLights[i];
+
+        float x = pMobileLightsStack->pLights[i].vPosition.x;
+        float y = pMobileLightsStack->pLights[i].vPosition.y;
+        float z = pMobileLightsStack->pLights[i].vPosition.z;
+
+        float r = pMobileLightsStack->pLights[i].uLightColorR / 255.0;
+        float g = pMobileLightsStack->pLights[i].uLightColorG / 255.0;
+        float b = pMobileLightsStack->pLights[i].uLightColorB / 255.0;
+
+        float lightrad = pMobileLightsStack->pLights[i].uRadius;
+
+        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), r, g, b);
+        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
+
+        num_lights++;
+    }
+
+    if (engine->config->debug.VerboseLogging.Get())
+        logger->Info("Lights this frame: %u", num_lights);
+
+    // blank the rest of the lights
     for (int blank = num_lights; blank < 20; blank++) {
         std::string slotnum = std::to_string(blank);
         glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 0.0);
     }
+
 
     // toggle for water faces or not
     glUniform1i(glGetUniformLocation(outbuildshader.ID, "watertiles"), GLint(1));
@@ -4702,6 +4815,9 @@ void RenderOpenGL::DrawIndoorFaces() {
                 // attribs
                 glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void *)offsetof(GLshaderverts, attribs));
                 glEnableVertexAttribArray(4);
+                //sector
+                glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(GLshaderverts), (void*)offsetof(GLshaderverts, sector));
+                glEnableVertexAttribArray(5);
             }
 
             // texture set up
@@ -4788,15 +4904,6 @@ void RenderOpenGL::DrawIndoorFaces() {
                     continue;
                 }
 
-                if (face->Indoor_sky()) {
-                    if (face->uPolygonType != POLYGON_InBetweenFloorAndWall && face->uPolygonType != POLYGON_Floor) {
-                        if (drawnsky == false) {
-                            drawnsky = true;
-                        }
-                        continue;
-                    }
-                }
-
                 IndoorCameraD3D_Vec4* portalfrustumnorm = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum;
                 unsigned int uNumFrustums = 4;
                 RenderVertexSoft* pPortalBounding = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding;
@@ -4823,6 +4930,20 @@ void RenderOpenGL::DrawIndoorFaces() {
                         static_vertices_buff_in[i].v = (signed short)face->pVertexVIDs[i];
                     }
 
+                    // ceiling sky faces are not frustum culled
+                    float skymodtimex{};
+                    float skymodtimey{};
+                    if (face->Indoor_sky()) {
+                        if (face->uPolygonType != POLYGON_InBetweenFloorAndWall && face->uPolygonType != POLYGON_Floor) {
+                            // draw forced perspective sky
+                            DrawIndoorSky(face->uNumVertices, uFaceID);
+                            continue;
+                        } else {
+                            skymodtimex = (platform->TickCount() / 32.0f) - pCamera3D->vCameraPos.x;
+                            skymodtimey = (platform->TickCount() / 32.0f) + pCamera3D->vCameraPos.y;
+                        }
+                    }
+
                     // check if this face is visible through current portal node
                     if (pCamera3D->CullFaceToFrustum(static_vertices_buff_in, &uNumVerticesa, static_vertices_calc_out, portalfrustumnorm, 4)) {
                         face->uAttributes |= FACE_SeenByParty;
@@ -4836,7 +4957,6 @@ void RenderOpenGL::DrawIndoorFaces() {
                             int attribflags = 0;
 
                             if (face->uAttributes & FACE_IsFluid) attribflags |= 2;
-                            if (face->uAttributes & FACE_INDOOR_SKY) attribflags |= 0x400;
 
                             if (face->uAttributes & FACE_FlowDown)
                                 attribflags |= 0x400;
@@ -4876,19 +4996,23 @@ void RenderOpenGL::DrawIndoorFaces() {
                                 // 123, 134, 145, 156..
                                 GLshaderverts *thisvert = &BSPshaderstore[texunit][numBSPverts[texunit]];
 
-
                                 // copy first
                                 thisvert->x = pIndoor->pVertices[face->pVertexIDs[0]].x;
                                 thisvert->y = pIndoor->pVertices[face->pVertexIDs[0]].y;
                                 thisvert->z = pIndoor->pVertices[face->pVertexIDs[0]].z;
                                 thisvert->u = face->pVertexUIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU  /*+ face->sTextureDeltaU*/;
                                 thisvert->v = face->pVertexVIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV  /*+ face->sTextureDeltaV*/;
+                                if (face->Indoor_sky()) {
+                                    thisvert->u = (skymodtimex + thisvert->u) * 0.25f;
+                                    thisvert->v = (skymodtimey + thisvert->v) * 0.25f;
+                                }
                                 thisvert->texunit = texunit;
                                 thisvert->texturelayer = texlayer;
                                 thisvert->normx = face->pFacePlane.vNormal.x;
                                 thisvert->normy = face->pFacePlane.vNormal.y;
                                 thisvert->normz = face->pFacePlane.vNormal.z;
                                 thisvert->attribs = attribflags;
+                                thisvert->sector = face->uSectorID;
                                 thisvert++;
 
                                 // copy other two (z+1)(z+2)
@@ -4898,12 +5022,17 @@ void RenderOpenGL::DrawIndoorFaces() {
                                     thisvert->z = pIndoor->pVertices[face->pVertexIDs[z + i]].z;
                                     thisvert->u = face->pVertexUIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU  /*+ face->sTextureDeltaU*/;
                                     thisvert->v = face->pVertexVIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV  /*+ face->sTextureDeltaV*/;
+                                    if (face->Indoor_sky()) {
+                                        thisvert->u = (skymodtimex + thisvert->u) * 0.25f;
+                                        thisvert->v = (skymodtimey + thisvert->v) * 0.25f;
+                                    }
                                     thisvert->texunit = texunit;
                                     thisvert->texturelayer = texlayer;
                                     thisvert->normx = face->pFacePlane.vNormal.x;
                                     thisvert->normy = face->pFacePlane.vNormal.y;
                                     thisvert->normz = face->pFacePlane.vNormal.z;
                                     thisvert->attribs = attribflags;
+                                    thisvert->sector = face->uSectorID;
                                     thisvert++;
                                 }
 
@@ -4955,8 +5084,9 @@ void RenderOpenGL::DrawIndoorFaces() {
         //// set view
         glUniformMatrix4fv(glGetUniformLocation(bspshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
 
+        glUniform1f(glGetUniformLocation(bspshader.ID, "gamma"), gamma);
         glUniform1i(glGetUniformLocation(bspshader.ID, "waterframe"), GLint(this->hd_water_current_frame));
-        glUniform1i(glGetUniformLocation(bspshader.ID, "flowtimer"), GLint(OS_GetTime() >> 4));
+        glUniform1i(glGetUniformLocation(bspshader.ID, "flowtimer"), GLint(platform->TickCount() >> 4));
 
         // set texture unit location
         glUniform1i(glGetUniformLocation(bspshader.ID, "textureArray0"), GLint(0));
@@ -4998,60 +5128,15 @@ void RenderOpenGL::DrawIndoorFaces() {
         glUniform3f(glGetUniformLocation(bspshader.ID, "sun.specular"), diffuseon * 1.0f, diffuseon * 0.8f, 0.0f);
 
         // point lights - fspointlights
-
-            //lightingShader.setVec3("pointLights[0].position", pointLightPositions[0]);
-            //lightingShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
-            //lightingShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
-            //lightingShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
-            //lightingShader.setFloat("pointLights[0].constant", 1.0f);
-            //lightingShader.setFloat("pointLights[0].linear", 0.09);
-            //lightingShader.setFloat("pointLights[0].quadratic", 0.032);
-
-
-        //// test torchlight
-        //float torchradius = 0;
-        //if (!diffuseon) {
-        //    int rangemult = 1;
-        //    if (pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].Active())
-        //        rangemult = pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
-        //    torchradius = float(rangemult) * 1024.0;
-        //}
-
-        //glUniform3fv(glGetUniformLocation(bspshader.ID, "fspointlights[0].position"), 1, &camera[0]);
-        //glUniform3f(glGetUniformLocation(bspshader.ID, "fspointlights[0].ambient"), 0.85, 0.85, 0.85);
-        //glUniform3f(glGetUniformLocation(bspshader.ID, "fspointlights[0].diffuse"), 0.85, 0.85, 0.85);
-        //glUniform3f(glGetUniformLocation(bspshader.ID, "fspointlights[0].specular"), 0, 0, 1);
-        ////glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].constant"), .81);
-        ////glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].linear"), 0.003);
-        ////glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].quadratic"), 0.000007);
-        //glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].radius"), torchradius);
-
-    //        // torchlight - pointlight 1 is always party glow
-    //float torchradius = 0;
-    //if (!diffuseon) {
-    //    int rangemult = 1;
-    //    if (pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].Active())
-    //        rangemult = pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
-    //    torchradius = float(rangemult) * 1024.0;
-    //}
-
-    //glUniform3fv(glGetUniformLocation(terrainshader.ID, "fspointlights[0].position"), 1, &camera[0]);
-    //glUniform3f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].ambient"), 0.85, 0.85, 0.85);  // background
-    //glUniform3f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].diffuse"), 0.85, 0.85, 0.85);  // direct
-    //glUniform3f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].specular"), 0, 0, 1);          // for "shinyness"
-    //glUniform1f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].radius"), torchradius);
-
-
         // rest of lights stacking
         GLuint num_lights = 0;   // 1;
 
-        for (int i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
-            if (num_lights >= 40) break;
+        // get party torchlight as priority
+        for (int i = 0; i < 1; ++i) {
+            if (pMobileLightsStack->uNumLightsActive < 1) continue;
 
-            // test sector/ distance?
-
-            std::string slotnum = std::to_string(num_lights);
             auto test = pMobileLightsStack->pLights[i];
+            std::string slotnum = std::to_string(num_lights);
 
             float x = pMobileLightsStack->pLights[i].vPosition.x;
             float y = pMobileLightsStack->pLights[i].vPosition.y;
@@ -5061,42 +5146,23 @@ void RenderOpenGL::DrawIndoorFaces() {
             float g = pMobileLightsStack->pLights[i].uLightColorG / 255.0f;
             float b = pMobileLightsStack->pLights[i].uLightColorB / 255.0f;
 
-            float lightrad = pMobileLightsStack->pLights[i].uRadius;
-
             glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0f);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r / 10.0f, g / 10.0f, b / 10.0f);
+            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].sector").c_str()), 0);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
-            //glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].constant"), .81);
-            //glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].linear"), 0.003);
-            //glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].quadratic"), 0.000007);
-            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
-
+            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), test.uRadius);
             num_lights++;
-
-            //    StackLight_TerrainFace(
-            //        (StationaryLight*)&pMobileLightsStack->pLights[i], pNormal,
-            //        Light_tile_dist, VertList, uStripType, bLightBackfaces, &num_lights);
         }
 
-
-
-        // sort stationary by distance ??
-
-
-
+        // stack the static lights next (wall torches)
         for (int i = 0; i < pStationaryLightsStack->uNumLightsActive; ++i) {
             if (num_lights >= 40) break;
 
-            std::string slotnum = std::to_string(num_lights);
             auto test = pStationaryLightsStack->pLights[i];
 
-
-            // kludge for getting lights in  visible sectors
-            // int sector = pIndoor->GetSector(test.vPosition.x, test.vPosition.y, test.vPosition.z);
-
-            // is this on the list
+            // is this on the sector list
             bool onlist = false;
             for (uint i = 0; i < pBspRenderer->uNumVisibleNotEmptySectors; ++i) {
                 int listsector = pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i];
@@ -5105,9 +5171,33 @@ void RenderOpenGL::DrawIndoorFaces() {
                     break;
                 }
             }
+
+            // does light sphere collide with current sector
+            // expanded current sector
+            bool fromexpanded{ false };
+            BBoxs cursectorexpand = pIndoor->pSectors[pBLVRenderParams->uPartySectorID].pBounding.Expanded(test.uRadius);
+            if (cursectorexpand.Contains(test.vPosition.ToShort())) {
+                onlist = true;
+                fromexpanded = true;
+            }
+
             if (!onlist) continue;
 
+            // cull through viewing frustum
+            bool visinfrustum{ false };
+            if (!fromexpanded) {
+                for (int i = 0; i < pBspRenderer->num_nodes; ++i) {
+                    if (pBspRenderer->nodes[i].uSectorID == test.uSectorID) {
+                        if (IsSphereInFrustum(test.vPosition, test.uRadius, pBspRenderer->nodes[i].ViewportNodeFrustum))
+                            visinfrustum = true;
+                    }
+                }
+            } else {
+                if (IsSphereInFrustum(test.vPosition, test.uRadius)) visinfrustum = true;
+            }
+            if (!visinfrustum) continue;
 
+            std::string slotnum = std::to_string(num_lights);
 
             float x = test.vPosition.x;
             float y = test.vPosition.y;
@@ -5117,29 +5207,48 @@ void RenderOpenGL::DrawIndoorFaces() {
             float g = test.uLightColorG / 255.0f;
             float b = test.uLightColorB / 255.0f;
 
-            float lightrad = test.uRadius;
-
             glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 1.0f);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r / 10.0f, g / 10.0f, b / 10.0f);
+            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].sector").c_str()), test.uSectorID);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
             glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
-            //glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].constant"), .81);
-            //glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].linear"), 0.003);
-            //glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].quadratic"), 0.000007);
-            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
-
+            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), test.uRadius);
             num_lights++;
-
-
-
-            //    StackLight_TerrainFace(&pStationaryLightsStack->pLights[i], pNormal,
-            //        Light_tile_dist, VertList, uStripType, bLightBackfaces,
-            //        &num_lights);
         }
 
-        // blank lights
+        // whatevers left for mobile lights
+        for (int i = 1; i < pMobileLightsStack->uNumLightsActive; ++i) {
+            if (num_lights >= 40) break;
 
+            // TODO(pskelton): nearest lights should be prioritsed
+            auto test = pMobileLightsStack->pLights[i];
+            if (!IsSphereInFrustum(test.vPosition, test.uRadius)) continue;
+
+            std::string slotnum = std::to_string(num_lights);
+
+            float x = pMobileLightsStack->pLights[i].vPosition.x;
+            float y = pMobileLightsStack->pLights[i].vPosition.y;
+            float z = pMobileLightsStack->pLights[i].vPosition.z;
+
+            float r = pMobileLightsStack->pLights[i].uLightColorR / 255.0f;
+            float g = pMobileLightsStack->pLights[i].uLightColorG / 255.0f;
+            float b = pMobileLightsStack->pLights[i].uLightColorB / 255.0f;
+
+            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0f);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
+            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].sector").c_str()), 0);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
+            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), test.uRadius);
+            num_lights++;
+        }
+
+        if (engine->config->debug.VerboseLogging.Get())
+            logger->Info("Lights this frame: %u", num_lights);
+
+        // blank any lights not used
         for (int blank = num_lights; blank < 40; blank++) {
             std::string slotnum = std::to_string(blank);
             glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 0.0);
@@ -5184,6 +5293,19 @@ void RenderOpenGL::DrawIndoorFaces() {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, NULL);
 
+        // indoor sky drawing
+        if (forceperstorecnt) {
+            // set forced matrixs
+            _set_ortho_projection(1);
+            _set_ortho_modelview();
+
+            SkyBillboard.CalcSkyFrustumVec(1, 0, 0, 0, 1, 0);
+
+            DrawForcePerVerts();
+
+            _set_3d_projection_matrix();
+            _set_3d_modelview_matrix();
+        }
 
 
         //end terrain debug
@@ -5191,12 +5313,6 @@ void RenderOpenGL::DrawIndoorFaces() {
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 
-
-        // do we need background sky?
-        if (drawnsky == true) {
-            SkyBillboard.CalcSkyFrustumVec(1, 0, 0, 0, 1, 0);
-            render->DrawOutdoorSkyD3D();
-        }
 
 
         // stack decals start

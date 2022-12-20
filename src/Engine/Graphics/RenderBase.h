@@ -26,6 +26,7 @@ class RenderBase : public IRender {
                                                   Texture *texture,
                                                   unsigned int uDiffuse,
                                                   int angle) override;
+    virtual float GetGamma() override;
 
     virtual HWLTexture *LoadHwlBitmap(const std::string &name) override;
     virtual HWLTexture *LoadHwlSprite(const std::string &name) override;

@@ -14,7 +14,6 @@
 
 #include "GUI/GUIWindow.h"
 
-#include "Platform/Api.h"
 
 #include "Sprites.h"
 

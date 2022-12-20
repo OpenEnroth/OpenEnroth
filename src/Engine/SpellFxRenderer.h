@@ -123,7 +123,6 @@ struct SpellFxRenderer {
                                                  Texture *texture);
     void _4A7688_fireball_collision_particle(struct SpriteObject *a2);
     void _4A77FD_implosion_particle_d3d(struct SpriteObject *a1);
-    void _4A78AE_sparks_spell(struct SpriteObject *a1);
     void _4A7948_mind_blast_after_effect(struct SpriteObject *a1);
     bool AddMobileLight(struct SpriteObject *a1, unsigned int uDiffuse,
                         int uRadius);

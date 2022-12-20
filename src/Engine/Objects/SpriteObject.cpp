@@ -502,9 +502,9 @@ LABEL_25:
                     CollideWithParty(true);
 
                 for (int actloop = 0; actloop < (signed int)pActors.size(); ++actloop) {
-                    // dont collide against self
+                    // dont collide against self monster type
                     if (PID_TYPE(pSpriteObject->spell_caster_pid) == OBJECT_Actor) {
-                        if (PID_ID(pSpriteObject->spell_caster_pid) == actloop) continue;
+                        if (pActors[PID_ID(pSpriteObject->spell_caster_pid)].pMonsterInfo.uID == pActors[actloop].pMonsterInfo.uID) continue;
                     }
 
                         // not sure:

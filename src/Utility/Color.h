@@ -52,7 +52,7 @@ class ColorTable {
     Color Aqua = Color(0, 247, 247);              // #00F7F7
     Color AzureRadiance = Color(0, 128, 255);     // #0080FF
     Color Black = Color(0, 0, 0);                 // #000000
-    Color Blue = Color(0, 0, 225);                // #0000FF
+    Color Blue = Color(0, 0, 255);                // #0000FF
     Color CodGray = Color(12, 12, 12);            // #0C0C0C
     Color CornFlowerBlue = Color(112, 143, 251);  // #708FFE
     Color DarkOrange = Color(255, 85, 0);         // #FF5500

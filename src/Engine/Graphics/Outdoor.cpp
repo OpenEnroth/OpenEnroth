@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Events.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Collisions.h"
@@ -41,7 +42,6 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Platform/Api.h"
 
 #include "Utility/FreeDeleter.h"
 #include "Utility/Math/TrigLut.h"
@@ -134,8 +134,10 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
         // render->DrawBezierTerrain();
     }
 
+    // TODO(pskelton): consider order of drawing / lighting
     pMobileLightsStack->uNumLightsActive = 0;
     pStationaryLightsStack->uNumLightsActive = 0;
+    engine->StackPartyTorchLight();
 
     engine->PushStationaryLights(-1);
     // engine->PrepareBloodsplats(); // not used?
@@ -336,16 +338,13 @@ bool OutdoorLocation::GetTravelDestination(signed int sPartyX,
                                            signed int sPartyZ, char *pOut,
                                            signed int a5) {
     char *mapNumberAsStr;       // eax@3
-    int mapNumberAsInt;         // eax@3
     signed int direction;       // esi@7
     signed int destinationMap;  // eax@23
-    char Str[140];              // [sp+8h] [bp-78h]@3
 
-    strcpy(Str, this->level_filename.c_str());
-    _strlwr(Str);
-    mapNumberAsStr = strtok(Str, "out");
-    mapNumberAsStr[2] = 0;
-    mapNumberAsInt = atoi(mapNumberAsStr);
+    std::string str = this->level_filename;
+    str = str.substr(str.find_first_of("0123456789"));
+    int mapNumberAsInt = atoi(str.c_str());
+
     if (a5 < 10 || this->level_filename.length() != 9 || mapNumberAsInt < 1 ||
         mapNumberAsInt > 15)  // длина  .odm и количество локаций
         return 0;
@@ -2317,7 +2316,7 @@ void ODM_ProcessPartyActions() {
     pParty->sRotationY = _angle_x;
     //-------------------------------------------
     if (pParty->bFlying) {
-        v129 = 4 * TrigLUT.Cos(OS_GetTime());
+        v129 = 4 * TrigLUT.Cos(platform->TickCount());
         party_new_Z = v113 + v129;
         if (pModel_) party_new_Z = v113;
         if (pParty->FlyActive())

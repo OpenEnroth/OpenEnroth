@@ -5,7 +5,6 @@
 #include "Engine/stru123.h"
 #include "Engine/Engine.h"
 #include "Level/Decoration.h"
-#include "Platform/Api.h"
 #include "Sprites.h"
 
 DecorationList *pDecorationList;

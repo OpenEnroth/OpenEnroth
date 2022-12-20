@@ -46,7 +46,6 @@
 #include "Io/InputAction.h"
 #include "Io/Mouse.h"
 
-#include "Platform/Api.h"
 
 #include "Utility/Math/TrigLut.h"
 
@@ -217,14 +216,14 @@ extern std::map<InputAction, bool> key_map_conflicted;  // 506E6C
 //----- (00414D24) --------------------------------------------------------
 static unsigned int GameMenuUI_GetKeyBindingColor(InputAction action) {
     if (currently_selected_action_for_binding == action) {
-        if (OS_GetTime() % 1000 < 500)
+        if (platform->TickCount() % 1000 < 500)
             return ui_gamemenu_keys_key_selection_blink_color_1;
         else
             return ui_gamemenu_keys_key_selection_blink_color_2;
     } else if (key_map_conflicted[action]) {
         int intensity;
 
-        int time = OS_GetTime() % 800;
+        int time = platform->TickCount() % 800;
         if (time < 400)
             intensity = -70 + 70 * time / 400;
         else
@@ -364,12 +363,29 @@ GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions()
     // TEXTURE_16BIT_PALETTE);
 
     CreateButton(0xF1u, 0x12Eu, 0xD6u, 0x28u, 1, 0, UIMSG_Escape, 0);
+
+    // gamma buttons
+    pBtn_SliderLeft = CreateButton(21, 161, 17, 17, 1, 0, UIMSG_ChangeGammaLevel, 4, PlatformKey::None, "",
+        { options_menu_skin.uTextureID_ArrowLeft }); // -
+    CreateButton(42, 160, 170, 17, 1, 0, UIMSG_ChangeGammaLevel, 0);
+    pBtn_SliderRight = CreateButton(213, 161, 17, 17, 1, 0, UIMSG_ChangeGammaLevel, 5, PlatformKey::None, "",
+        { options_menu_skin.uTextureID_ArrowRight }); // +
+
     // if ( render->pRenderD3D )
     {
         CreateButton(0x13u, 0x118u, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleBloodsplats, 0);
         CreateButton(0x13u, 0x12Eu, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleColoredLights, 0);
         CreateButton(0x13u, 0x144u, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleTint, 0);
     }
+
+    // update gamma preview
+    if (gamma_preview_image) {
+        gamma_preview_image->Release();
+        gamma_preview_image = nullptr;
+    }
+
+    render->SaveScreenshot("gamma.pcx", 155, 117);
+    gamma_preview_image = assets->GetImage_PCXFromFile("gamma.pcx");
 }
 
 //----- (00414D9A) --------------------------------------------------------
@@ -378,14 +394,16 @@ void GUIWindow_GameVideoOptions::Update() {
     // 004156F0 GUI_UpdateWindows --- part
     GUIWindow msg_window;  // [sp+8h] [bp-54h]@3
 
+    int gammalevel = engine->config->graphics.Gamma.Get();
+
     render->DrawTextureAlphaNew(
         8 / 640.0f, 8 / 480.0f,
         game_ui_menu_options_video_background);  // draw base texture
     // if ( !render->bWindowMode && render->IsGammaSupported() )
     {
         render->DrawTextureAlphaNew(
-            (17 * uGammaPos + 42) / 640.0f, 162 / 480.0f,
-            game_ui_menu_options_video_gamma_positions[uGammaPos]);
+            (17 * gammalevel + 42) / 640.0f, 162 / 480.0f,
+            game_ui_menu_options_video_gamma_positions[gammalevel]);
 
         render->DrawTextureNew(274 / 640.0f, 169 / 480.0f, gamma_preview_image);
         msg_window.Init();
@@ -1396,7 +1414,7 @@ void GameUI_DrawCharacterSelectionFrame() {
 
 //----- (0044162D) --------------------------------------------------------
 void GameUI_DrawPartySpells() {
-    unsigned int v0 = OS_GetTime() / 20;
+    unsigned int v0 = platform->TickCount() / 20;
     Image *spell_texture;  // [sp-4h] [bp-1Ch]@12
 
     for (uint i = 0; i < 14; ++i) {
@@ -1796,8 +1814,8 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                     if (pObjectList->pObjects[pSpriteObjects[i].uObjectDescID]
                             .uFlags &
                         OBJECT_DESC_UNPICKABLE) {
-                        render->RasterLine2D(pPoint_X, pPoint_Y, pPoint_X,
-                                             pPoint_Y,
+                        render->RasterLine2D(pPoint_X, pPoint_Y, pPoint_X + 1,
+                                             pPoint_Y + 1,
                                              ui_game_minimap_projectile_color);
                     } else if (uZoom > 512) {
                         render->RasterLine2D(pPoint_X - 2, pPoint_Y,

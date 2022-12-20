@@ -5,9 +5,6 @@
 #include <memory>
 #include <string>
 #include <climits>
-#ifndef _WINDOWS
-#include "Platform/Posix/Posix.h"
-#endif
 
 #include "Engine/AssetsManager.h"
 #include "Engine/ErrorHandling.h"
@@ -118,6 +115,7 @@ struct Engine {
     bool draw_debug_outlines();
     bool _44EEA7();
     void PushStationaryLights(int a2);
+    void StackPartyTorchLight();
     // void PrepareBloodsplats();
     void Deinitialize();
     void DrawParticles();

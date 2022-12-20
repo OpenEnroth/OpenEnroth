@@ -8,7 +8,6 @@
 #include "Engine/Serialization/Serializer.h"
 #include "Engine/Serialization/LegacyImages.h"
 
-#include "Platform/Api.h"
 
 #include "../LOD.h"
 #include "../Tables/FrameTableInc.h"
@@ -218,52 +217,55 @@ int ParseMissleAttackType(const char *missle_attack_str) {
 }
 
 int ParseSpecialAttack(char *spec_att_str) {
-    _strlwr(spec_att_str);
-    if (strstr(spec_att_str, "curse"))
+    std::string tmp = ToLower(spec_att_str);
+
+    // TODO(captainurist): we're getting strings like "Disease1" here, and they are not handled by the code below.
+
+    if (tmp.starts_with("curse"))
         return 1;
-    else if (strstr(spec_att_str, "weak"))
+    else if (tmp.starts_with("weak"))
         return 2;
-    else if (strstr(spec_att_str, "asleep"))
+    else if (tmp.starts_with("asleep"))
         return 3;
-    else if (strstr(spec_att_str, "afraid"))
+    else if (tmp.starts_with("afraid"))
         return 23;
-    else if (strstr(spec_att_str, "drunk"))
+    else if (tmp.starts_with("drunk"))
         return 4;
-    else if (strstr(spec_att_str, "insane"))
+    else if (tmp.starts_with("insane"))
         return 5;
-    else if (strstr(spec_att_str, "poison weak"))
+    else if (tmp.starts_with("poison weak"))
         return 6;
-    else if (strstr(spec_att_str, "poison medium"))
+    else if (tmp.starts_with("poison medium"))
         return 7;
-    else if (strstr(spec_att_str, "poison severe"))
+    else if (tmp.starts_with("poison severe"))
         return 8;
-    else if (strstr(spec_att_str, "disease weak"))
+    else if (tmp.starts_with("disease weak"))
         return 9;
-    else if (strstr(spec_att_str, "disease medium"))
+    else if (tmp.starts_with("disease medium"))
         return 10;
-    else if (strstr(spec_att_str, "disease severe"))
+    else if (tmp.starts_with("disease severe"))
         return 11;
-    else if (strstr(spec_att_str, "paralyze"))
+    else if (tmp.starts_with("paralyze"))
         return 12;
-    else if (strstr(spec_att_str, "uncon"))
+    else if (tmp.starts_with("uncon"))
         return 13;
-    else if (strstr(spec_att_str, "dead"))
+    else if (tmp.starts_with("dead"))
         return 14;
-    else if (strstr(spec_att_str, "stone"))
+    else if (tmp.starts_with("stone"))
         return 15;
-    else if (strstr(spec_att_str, "errad"))
+    else if (tmp.starts_with("errad"))
         return 16;
-    else if (strstr(spec_att_str, "brkitem"))
+    else if (tmp.starts_with("brkitem"))
         return 17;
-    else if (strstr(spec_att_str, "brkarmor"))
+    else if (tmp.starts_with("brkarmor"))
         return 18;
-    else if (strstr(spec_att_str, "brkweapon"))
+    else if (tmp.starts_with("brkweapon"))
         return 19;
-    else if (strstr(spec_att_str, "steal"))
+    else if (tmp.starts_with("steal"))
         return 20;
-    else if (strstr(spec_att_str, "age"))
+    else if (tmp.starts_with("age"))
         return 21;
-    else if (strstr(spec_att_str, "drainsp"))
+    else if (tmp.starts_with("drainsp"))
         return 22;
     else
         return 0;
@@ -678,7 +680,7 @@ void MonsterStats::Initialize() {
                     } break;
                     case 9: {
                         pInfos[curr_rec_num].uFlying = false;
-                        if (_strnicmp(test_string, "n", 1))
+                        if (!iequals(test_string, "n"))
                             pInfos[curr_rec_num].uFlying = true;
                     } break;
                     case 10: {

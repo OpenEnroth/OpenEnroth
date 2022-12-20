@@ -42,7 +42,6 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Platform/Api.h"
 
 #include "Utility/FreeDeleter.h"
 #include "Utility/Math/TrigLut.h"
@@ -80,60 +79,13 @@ void PrepareDrawLists_BLV() {
     BLVSector *v8;    // esi@8
 
     pBLVRenderParams->Reset();
-    pMobileLightsStack->uNumLightsActive = 0;
-    // uNumMobileLightsApplied = 0;
     uNumDecorationsDrawnThisFrame = 0;
     uNumSpritesDrawnThisFrame = 0;
     uNumBillboardsToDraw = 0;
 
-    int TorchLightDistance = engine->config->graphics.TorchlightDistance.Get();
-    if (TorchLightDistance > 0) {  // lightspot around party
-        if (pParty->TorchlightActive()) {
-            // max is 800 * torchlight
-            // min is 800
-            int MinTorch = TorchLightDistance;
-            int MaxTorch = TorchLightDistance * pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
-
-            int torchLightFlicker = engine->config->graphics.TorchlightFlicker.Get();
-            if (torchLightFlicker > 0) {
-                // torchlight flickering effect
-                // TorchLightPower *= pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;  // 2,3,4
-                int ran = rand();
-                int mod = ((ran - (RAND_MAX * .4)) / torchLightFlicker);
-                TorchLightDistance = (pParty->TorchLightLastIntensity + mod);
-
-                // clamp
-                if (TorchLightDistance < MinTorch)
-                    TorchLightDistance = MinTorch;
-                if (TorchLightDistance > MaxTorch)
-                    TorchLightDistance = MaxTorch;
-            } else {
-                TorchLightDistance = MaxTorch;
-            }
-        }
-
-        pParty->TorchLightLastIntensity = TorchLightDistance;
-
-        // problem with deserializing this ??
-        if (pParty->flt_TorchlightColorR == 0) {
-            // __debugbreak();
-            pParty->flt_TorchlightColorR = 96;
-            pParty->flt_TorchlightColorG = 96;
-            pParty->flt_TorchlightColorB = 96;
-
-            if (engine->config->debug.VerboseLogging.Get())
-                logger->Warning("Torchlight doesn't have color");
-        }
-
-        // TODO: either add conversion functions, or keep only glm / only Vec3_* classes.
-        Vec3f pos(pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y, pCamera3D->vCameraPos.z);
-
-        pMobileLightsStack->AddLight(
-            pos, pBLVRenderParams->uPartySectorID, TorchLightDistance,
-            floorf(pParty->flt_TorchlightColorR + 0.5f),
-            floorf(pParty->flt_TorchlightColorG + 0.5f),
-            floorf(pParty->flt_TorchlightColorB + 0.5f), _4E94D0_light_type);
-    }
+    pMobileLightsStack->uNumLightsActive = 0;
+    //pStationaryLightsStack->uNumLightsActive = 0;
+    engine->StackPartyTorchLight();
 
     PrepareBspRenderList_BLV();
 
@@ -361,7 +313,7 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
             Texture* face_texture = pFace->GetTexture();
             if (pFace->Fluid()) {
                 face_texture = (Texture*)pFace->resource;
-                uint eightSeconds = OS_GetTime() % 8000;
+                uint eightSeconds = platform->TickCount() % 8000;
                 float angle = (eightSeconds / 8000.0f) * 2 * 3.1415f;
 
                 // animte lava back and forth
@@ -387,7 +339,7 @@ unsigned int FaceFlowTextureOffset(unsigned int uFaceID) {  // time texture offs
     Lights.pDeltaUV[0] = pIndoor->pFaceExtras[pIndoor->pFaces[uFaceID].uFaceExtraID].sTextureDeltaU;
     Lights.pDeltaUV[1] = pIndoor->pFaceExtras[pIndoor->pFaces[uFaceID].uFaceExtraID].sTextureDeltaV;
 
-    unsigned int offset = OS_GetTime() >> 3;
+    unsigned int offset = platform->TickCount() >> 3;
 
     if (pIndoor->pFaces[uFaceID].uAttributes & FACE_FlowDown) {
         Lights.pDeltaUV[1] -= offset & (((Texture *)pIndoor->pFaces[uFaceID].resource)->GetHeight() - 1);
@@ -846,6 +798,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
      // holds faces the coords are above
     int FoundFaceStore[5] = { 0 };
     int NumFoundFaceStore = 0;
+    int backupboundingsector{ 0 };
 
     // loop through sectors
     for (uint i = 1; i < pSectors.size(); ++i) {
@@ -857,6 +810,8 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
             (pSector->pBounding.y1 - 5) > sY || (pSector->pBounding.y2 + 5) < sY ||
             (pSector->pBounding.z1 - 64) > sZ || (pSector->pBounding.z2 + 64) < sZ)
             continue;  // outside sector bounding
+
+        if (!backupboundingsector) backupboundingsector = i;
 
         // logger->Warning("Sector[%u]", i);
         int FloorsAndPortals = pSector->uNumFloors + pSector->uNumPortals;
@@ -891,9 +846,13 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
 
     // No face found - outside of level
     if (!NumFoundFaceStore) {
-        logger->Warning("Sector fail: %i, %i, %i", sX, sY, sZ);
-
-        return 0;
+        if (!backupboundingsector) {
+            logger->Warning("GetSector fail: %i, %i, %i", sX, sY, sZ);
+            return 0;
+        } else {
+            logger->Warning("GetSector: Returning backup sector bounding!");
+            return backupboundingsector;
+        }
     }
 
     // when multiple possibilities are found - cycle through and use the closer one to party

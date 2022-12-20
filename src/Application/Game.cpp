@@ -76,7 +76,6 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-#include "Platform/Api.h"
 #include "Platform/Platform.h"
 #include "Platform/PlatformWindow.h"
 
@@ -93,60 +92,36 @@ using Graphics::IRenderFactory;
 
 static std::string FindMm7Directory() {
     bool mm7_installation_found = false;
-
+    
     // env variable override to a custom folder
-    if (!mm7_installation_found) {
-        if (const char* path = std::getenv("WOMM_PATH_OVERRIDE")) {
-            mm7_installation_found = true;
-            logger->Info("MM7 Custom Folder (ENV path override): %s", path);
-            return path;
-        }
+    std::string result = std::getenv("WOMM_PATH_OVERRIDE");
+    if (!result.empty()) {
+        logger->Info("MM7 Custom Folder (ENV path override): %s", result.c_str());
+        return result;
     }
 
     // standard 1.0 installation
-    char path_buffer[2048];
-    if (!mm7_installation_found) {
-        mm7_installation_found = OS_GetAppString(
-            "HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic VII/1.0/AppPath",
-            path_buffer,
-            sizeof(path_buffer)
-        );
-
-        if (mm7_installation_found) {
-            logger->Info("Standard MM7 installation found: %s", path_buffer);
-            return path_buffer;
-        }
+    result = platform->WinQueryRegistry("HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic VII/1.0/AppPath");
+    if (!result.empty()) {
+        logger->Info("Standard MM7 installation found: %s", result.c_str());
+        return result;
     }
 
     // GoG old version
-    if (!mm7_installation_found) {
-        mm7_installation_found = OS_GetAppString(
-            "HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM7/PATH",
-            path_buffer,
-            sizeof(path_buffer)
-        );
-
-        if (mm7_installation_found) {
-            logger->Info("GoG MM7 installation found: %s", path_buffer);
-            return path_buffer;
-        }
+    result = platform->WinQueryRegistry("HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM7/PATH");
+    if (!result.empty()) {
+        logger->Info("GoG MM7 installation found: %s", result.c_str());
+        return result;
     }
 
     // GoG new version ( 2018 builds )
-    if (!mm7_installation_found) {
-        mm7_installation_found = OS_GetAppString(
-            "HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/GOG.com/Games/1207658916/Path",
-            path_buffer,
-            sizeof(path_buffer)
-        );
-
-        if (mm7_installation_found) {
-            logger->Info("GoG MM7 2018 build installation found: %s", path_buffer);
-            return path_buffer;
-        }
+    result = platform->WinQueryRegistry("HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/GOG.com/Games/1207658916/Path");
+    if (!result.empty()) {
+        logger->Info("GoG MM7 2018 build installation found: %s", result.c_str());
+        return result;
     }
 
-    return "";
+    return result;
 }
 
 void Application::AutoInitDataPath() {
@@ -2661,7 +2636,7 @@ void Game::GameLoop() {
             }
             pAudioPlayer->UpdateSounds();
             // expire timed status messages
-            if (game_ui_status_bar_event_string_time_left != 0 && game_ui_status_bar_event_string_time_left < OS_GetTime()) {
+            if (game_ui_status_bar_event_string_time_left != 0 && game_ui_status_bar_event_string_time_left < platform->TickCount()) {
                  GameUI_StatusBar_Clear();
             }
             if (uGameState == GAME_STATE_PLAYING) {

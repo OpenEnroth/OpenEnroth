@@ -397,22 +397,6 @@ void SpellFxRenderer::_4A77FD_implosion_particle_d3d(SpriteObject *a1) {
                                     ModulateColor(0x7E7E7E, v5));
 }
 
-void SpellFxRenderer::_4A78AE_sparks_spell(SpriteObject *a1) {
-    Particle_sw local_0 = { 0 };
-    local_0.x = (float)a1->vPosition.x;
-    local_0.y = (float)a1->vPosition.y;
-    local_0.z = (float)a1->vPosition.z;
-    local_0.type = ParticleType_Sprite;
-    local_0.uDiffuse = 0x7F7F7F;
-    local_0.timeToLive = 1;
-    local_0.r = 0.0f;
-    local_0.g = 0.0f;
-    local_0.b = 0.0f;
-    local_0.texture = a1->GetSpriteFrame()->hw_sprites[0]->texture;
-    local_0.particle_size = 2.0f;
-    particle_engine->AddParticle(&local_0);
-}
-
 //----- (004A7948) --------------------------------------------------------
 void SpellFxRenderer::_4A7948_mind_blast_after_effect(SpriteObject *a1) {
     Particle_sw Dst = { 0 };
@@ -906,10 +890,13 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             return false;
 
         case SPRITE_SPELL_AIR_SPARKS:
-            // if ( !render->pRenderD3D )
-            //  return true;
-            _4A78AE_sparks_spell(a2);
-            AddMobileLight(a2, 0x2F3351, 128);  // 0x64640F
+            //_4A78AE_sparks_spell(a2);
+            //AddMobileLight(a2, 0x2F3351, 128);  // 0x64640F
+            return true;
+            //return false;
+
+        case SPRITE_SPELL_AIR_SPARKS_POP:
+            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, 0xC8C814, effpar02, 200.0);
             return false;
 
         case SPRITE_SPELL_AIR_LIGHNING_BOLT:
@@ -1024,9 +1011,10 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
         case SPRITE_SPELL_BODY_HARM:
             // if ( !render->pRenderD3D )
             //  return true;
-            _4A78AE_sparks_spell(a2);
+            //_4A78AE_sparks_spell(a2);
             AddMobileLight(a2, 0x64640F, 128);
-            return false;
+            return true;
+            //return false;
         case SPRITE_SPELL_BODY_HARM_IMPACT:
             _4A75CC_single_spell_collision_particle(a2, 0xF00000, effpar01);
             return false;
@@ -1088,6 +1076,7 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             return true;
 
         default:
+            //logger->Info("sprite spell %u", a2->uType);
             return false;
     }
 }

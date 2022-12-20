@@ -29,3 +29,19 @@ bool TestPlatform::IsCursorShown() const {
 std::vector<Recti> TestPlatform::DisplayGeometries() const {
     return base_->DisplayGeometries();
 }
+
+void TestPlatform::ShowMessageBox(const std::string &message, const std::string& title) const {
+    base_->ShowMessageBox(message, title);
+}
+
+int64_t TestPlatform::TickCount() const {
+    return base_->TickCount();
+}
+
+void TestPlatform::WinEnsureConsole() const {
+    base_->WinEnsureConsole();
+}
+
+std::string TestPlatform::WinQueryRegistry(const std::string &path) const {
+    return base_->WinQueryRegistry(path);
+}

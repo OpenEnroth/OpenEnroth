@@ -1,10 +1,16 @@
-#include <stdarg.h>
+#include "String.h"
+
+#include <cstdarg>
 #include <vector>
 #include <algorithm>
 
-#include "Utility/String.h"
+#ifdef _WINDOWS
+#   define strncasecmp _strnicmp
+#endif
 
-std::string StringFromInt(int value) { return StringPrintf("%d", value); }
+std::string StringFromInt(int value) {
+    return StringPrintf("%d", value);
+}
 
 std::string StringPrintf(const char *fmt, ...) {
     int size = 1024;
@@ -50,4 +56,20 @@ std::string ToUpper(std::string_view text) {
     std::string result(text);
     std::transform(result.begin(), result.end(), result.begin(), ::toupper);
     return result;
+}
+
+bool iequals(std::string_view a, std::string_view b) {
+    if (a.size() != b.size())
+        return false;
+
+    return strncasecmp(a.data(), b.data(), a.size()) == 0;
+}
+
+bool iless(std::string_view a, std::string_view b) {
+    int result = strncasecmp(a.data(), b.data(), std::min(a.size(), b.size()));
+    if (result < 0)
+        return true;
+    if (result > 0)
+        return false;
+    return a.size() < b.size();
 }

@@ -286,7 +286,8 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.spell_level = spell_level;
                 pSpellSprite.spell_skill = spell_mastery;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 2);
+                // TODO(pskelton): was pParty->uPartyHeight / 2
+                pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                 pSpellSprite.uAttributes = 0;
                 pSpellSprite.uSpriteFrameID = 0;
                 pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
@@ -561,7 +562,8 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.spell_skill = spell_mastery;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                 pSpellSprite.uAttributes = 0;
-                pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 2);
+                // TODO(pskelton): was pParty->uPartyHeight / 2
+                pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                 pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                 pSpellSprite.uSpriteFrameID = 0;
                 pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
@@ -1290,6 +1292,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 spell_spray_angle_start = (int)_v726 / -2;
                 spell_spray_angle_end = (int)_v726 / 2;
                 while (spell_spray_angle_start <= spell_spray_angle_end) {
+                    pSpellSprite.uSpriteFrameID = rand() % 64;
                     pSpellSprite.uFacing = spell_spray_angle_start + (short)target_direction.uYawAngle;
                     if (pSpellSprite.Create(
                         (int16_t)(spell_spray_angle_start + (short)target_direction.uYawAngle),
@@ -3392,7 +3395,8 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.spell_level = spell_level;
                 pSpellSprite.spell_skill = spell_mastery;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 2);
+                // TODO(pskelton): was pParty->uPartyHeight / 2
+                pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                 pSpellSprite.uAttributes = 0;
                 pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                 pSpellSprite.uSpriteFrameID = 0;

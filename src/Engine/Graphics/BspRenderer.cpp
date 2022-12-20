@@ -16,7 +16,7 @@ void BspRenderer::AddFaceToRenderList_d3d(unsigned int node_id, unsigned int uFa
     BLVFace* pFace = &pIndoor->pFaces[uFaceID];
 
     if (!pFace->Portal()) {
-        if (num_faces < 1000) {
+        if (num_faces < 1500) {
             // add face and return
             faces[num_faces].uFaceID = uFaceID;
             faces[num_faces++].uNodeID = node_id;

@@ -232,7 +232,7 @@ enum UIMessageType : uint32_t {
     UIMSG_ToggleBloodsplats = 422,
     UIMSG_ToggleColoredLights = 423,
     UIMSG_ToggleTint = 424,
-    UIMSG_1A9 = 425,
+    UIMSG_ChangeGammaLevel = 425,
 
     UIMSG_MMT_MainMenu_MM6 = 426,
     UIMSG_MMT_MainMenu_MM7 = 427,

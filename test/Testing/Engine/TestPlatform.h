@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+#include <string>
 
 #include "Platform/Platform.h"
 
@@ -18,6 +19,10 @@ class TestPlatform: public Platform {
     virtual void SetCursorShown(bool cursorShown) override;
     virtual bool IsCursorShown() const override;
     virtual std::vector<Recti> DisplayGeometries() const override;
+    virtual void ShowMessageBox(const std::string &message, const std::string& title) const override;
+    virtual int64_t TickCount() const override;
+    virtual void WinEnsureConsole() const override;
+    virtual std::string WinQueryRegistry(const std::string &path) const override;
 
  private:
     std::unique_ptr<Platform> base_;

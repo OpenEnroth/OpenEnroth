@@ -41,7 +41,6 @@
 
 #include "Io/Mouse.h"
 
-#include "Platform/Api.h"
 
 #include "Utility/Memory.h"
 #include "Utility/Math/TrigLut.h"
@@ -963,13 +962,13 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
         sCorrectedColor = -1;
     }
     engine->AlterGamma_ODM(pFace, &sCorrectedColor);
-    if (engine->config->graphics.SoftwareModeRules.Get()) {
+    if (false) {
         int v8 = ::GetActorTintColor(
             pPolygon->dimming_level, 0,
             VertexRenderList[0].vWorldViewPosition.x, 0, 0);
         lightmap_builder->DrawLightmaps(v8 /*, 0*/);
     } else {
-        if (!lightmap_builder->StationaryLightsCount || engine->config->graphics.SoftwareModeRules.Get()) {
+        if (!lightmap_builder->StationaryLightsCount) {
             // send for batching
 
             for (int z = 0; z < (uNumVertices - 2); z++) {
@@ -1033,7 +1032,7 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
 
                 if (pFace->uAttributes & FACE_OUTLINED) {
                     int color;
-                    if (OS_GetTime() % 300 >= 150)
+                    if (platform->TickCount() % 300 >= 150)
                         color = 0xFFFF2020;
                     else
                         color = 0xFF901010;
@@ -1958,13 +1957,13 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
     if (!this->uNumD3DSceneBegins) return;
     if (uNumVertices < 3) return;
 
-    if (engine->config->graphics.SoftwareModeRules.Get()) {
+    if (false) {
         __debugbreak();
         v11 =
             ::GetActorTintColor(a4->dimming_level, 0,
                                 VertexRenderList[0].vWorldViewPosition.x, 0, 0);
         lightmap_builder->DrawLightmaps(v11 /*, 0*/);
-    } else if (transparent || !lightmap_builder->StationaryLightsCount || engine->config->graphics.SoftwareModeRules.Get()) {
+    } else if (transparent || !lightmap_builder->StationaryLightsCount) {
         // send for batching
 
         for (int z = 0; z < (uNumVertices - 2); z++) {
@@ -2261,7 +2260,7 @@ void Render::DrawIndoorFaces() {
                     Texture* face_texture = pFace->GetTexture();
                     if (pFace->Fluid()) {
                         face_texture = (Texture*)pFace->resource;
-                        uint eightSeconds = OS_GetTime() % 8000;
+                        uint eightSeconds = platform->TickCount() % 8000;
                         float angle = (eightSeconds / 8000.0f) * 2 * 3.1415f;
 
                         // animte lava back and forth
@@ -2311,7 +2310,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
     // engine->AlterGamma_BLV(pFace, &sCorrectedColor);
 
     if (engine->IsSaturateFaces() && (pFace->uAttributes & FACE_IsSecret)) {
-        uint eightSeconds = OS_GetTime() % 3000;
+        uint eightSeconds = platform->TickCount() % 3000;
         float angle = (eightSeconds / 3000.0f) * 2 * 3.1415f;
 
         int redstart = (sCorrectedColor & 0x00FF0000) >> 16;
@@ -2322,7 +2321,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
     }
 
     if (pFace->uAttributes & FACE_OUTLINED) {
-        if (OS_GetTime() % 300 >= 150)
+        if (platform->TickCount() % 300 >= 150)
             uColor = sCorrectedColor = 0xFF20FF20;
         else
             uColor = sCorrectedColor = 0xFF109010;
@@ -2338,10 +2337,10 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
         pCamera3D->do_draw_debug_line_sw(&cam, -1, &vis->debugpick, 0xFFFF00u, 0, 0);
     }
 
-    if (engine->config->graphics.SoftwareModeRules.Get()) {
+    if (false) {
         // __debugbreak();
     } else {
-        if (!lightmap_builder->StationaryLightsCount || engine->config->graphics.SoftwareModeRules.Get()) {
+        if (!lightmap_builder->StationaryLightsCount) {
            // return;
 
             // send for batching
@@ -3468,7 +3467,7 @@ void Render::DrawBuildingsD3D() {
             poly->sTextureDeltaU = face.sTextureDeltaU;
             poly->sTextureDeltaV = face.sTextureDeltaV;
 
-            unsigned int flow_anim_timer = OS_GetTime() >> 4;
+            unsigned int flow_anim_timer = platform->TickCount() >> 4;
             unsigned int flow_u_mod = poly->texture->GetWidth() - 1;
             unsigned int flow_v_mod = poly->texture->GetHeight() - 1;
 
@@ -4165,8 +4164,8 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {
     // for floor and wall(for example Celeste)-------------------
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];
     if (pFace->uPolygonType == POLYGON_InBetweenFloorAndWall || pFace->uPolygonType == POLYGON_Floor) {
-        int v69 = (OS_GetTime() / 32.0f) - pCamera3D->vCameraPos.x;
-        int v55 = (OS_GetTime() / 32.0f) + pCamera3D->vCameraPos.y;
+        int v69 = (platform->TickCount() / 32.0f) - pCamera3D->vCameraPos.x;
+        int v55 = (platform->TickCount() / 32.0f) + pCamera3D->vCameraPos.y;
         for (uint i = 0; i < uNumVertices; ++i) {
             array_507D30[i].u = (v69 + array_507D30[i].u) * 0.25f;
             array_507D30[i].v = (v55 + array_507D30[i].v) * 0.25f;

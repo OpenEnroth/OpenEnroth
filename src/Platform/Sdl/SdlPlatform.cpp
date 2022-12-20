@@ -99,6 +99,24 @@ std::vector<Recti> SdlPlatform::DisplayGeometries() const {
     return result;
 }
 
-std::unique_ptr<Platform> Platform::CreateStandardPlatform(Log *log) {
-    return std::make_unique<SdlPlatform>(log);
+void SdlPlatform::ShowMessageBox(const std::string &message, const std::string& title) const {
+    SDL_ShowSimpleMessageBox(0, title.c_str(), message.c_str(), nullptr);
 }
+
+int64_t SdlPlatform::TickCount() const {
+    // TODO(captainurist): Just update SDL
+#if SDL_VERSION_ATLEAST(2, 0, 18)
+    return SDL_GetTicks64();
+#else
+    return SDL_GetTicks();
+#endif
+}
+
+void SdlPlatform::WinEnsureConsole() const {
+    // Do nothing.
+}
+
+std::string SdlPlatform::WinQueryRegistry(const std::string &) const {
+    return {};
+}
+

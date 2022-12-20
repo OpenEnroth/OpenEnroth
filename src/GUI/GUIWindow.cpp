@@ -42,7 +42,6 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-#include "Platform/Api.h"
 
 
 using EngineIoc = Engine_::IocContainer;
@@ -785,7 +784,7 @@ void GUIWindow::InitializeGUI() {
 }
 
 void GUIWindow::DrawFlashingInputCursor(int uX, int uY, GUIFont *a2) {
-    if (OS_GetTime() % 1000 > 500) {
+    if (platform->TickCount() % 1000 > 500) {
         DrawText(a2, uX, uY, 0, "_", 0, 0, 0);
     }
 }

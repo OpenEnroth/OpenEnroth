@@ -361,6 +361,7 @@ namespace Application {
             /** D3D device number which was set by setup program in vanilla for hardware mode. */
             ConfigValue<int> D3DDevice = ConfigValue<int>(this, "d3d_device", 0);
 
+            // lightmap builder option for old drawing system
             /** Need to be eventually deleted and replaced with gamma? */
             ConfigValue<bool> DynamicBrightness = ConfigValue<bool>(this, "dynamic_brightness", true);
 
@@ -376,7 +377,7 @@ namespace Application {
             /** FPS Limit */
             ConfigValue<int> FPSLimit = ConfigValue<int>(this, "fps_limit", 60);
 
-            /** Isn't currently in use? */
+            /** Game level brightness gamma */
             ConfigValue<int> Gamma = ConfigValue<int>(this, "gamma", 4, &ValidateGamma);
 
             /** Viewport top-left offset */
@@ -394,16 +395,13 @@ namespace Application {
             ConfigValue<bool> HWLSprites = ConfigValue<bool>(this, "hwl_sprites", false);
 
             /** Max number of BSP sectors to display. */
-            ConfigValue<int> MaxVisibleSectors = ConfigValue<int>(this, "maxvisiblesectors", 6, &ValidateMaxSectors);
+            ConfigValue<int> MaxVisibleSectors = ConfigValue<int>(this, "maxvisiblesectors", 10, &ValidateMaxSectors);
 
             /** Allow changing trees/ground depending on current season (originally was only used in MM6) */
             ConfigValue<bool> SeasonsChange = ConfigValue<bool>(this, "seasons_change", true);
 
             /** Snow effect from MM6 where it was activated by event. Currently it shows every third day in winter. */
             ConfigValue<bool> Snow = ConfigValue<bool>(this, "snow", false);
-
-            /** Vanilla's rendering rules from software mode. Still much code use this option. */
-            ConfigValue<bool> SoftwareModeRules = ConfigValue<bool>(this, "software_mode_rules", false);
 
             /** Vanilla's monster coloring method from hardware mode. When monsters look like bucket of paint was thrown at them. */
             ConfigValue<bool> Tinting = ConfigValue<bool>(this, "tinting", false);
@@ -427,7 +425,7 @@ namespace Application {
 
          private:
             static std::string ValidateRenderer(std::string renderer) {
-                if (renderer != "OpenGL" && renderer != "DirectDraw")
+                if (renderer != "OpenGL"/* && renderer != "DirectDraw"*/)
                     renderer = "OpenGL";
 
                 return renderer;

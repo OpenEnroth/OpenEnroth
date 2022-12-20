@@ -48,7 +48,6 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-#include "Platform/Api.h"
 
 using EngineIoc = Engine_::IocContainer;
 
@@ -253,7 +252,7 @@ void Engine::DrawGUI() {
     static bool render_framerate = false;
     static float framerate = 0.0f;
     static uint frames_this_second = 0;
-    static uint last_frame_time = OS_GetTime();
+    static uint last_frame_time = platform->TickCount();
     static uint framerate_time_elapsed = 0;
 
     if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME &&
@@ -261,8 +260,8 @@ void Engine::DrawGUI() {
         pWeather->Draw();  // Ritor1: my include
 
                            // while(GetTickCount() - last_frame_time < 33 );//FPS control
-    uint frame_dt = OS_GetTime() - last_frame_time;
-    last_frame_time = OS_GetTime();
+    uint frame_dt = platform->TickCount() - last_frame_time;
+    last_frame_time = platform->TickCount();
     framerate_time_elapsed += frame_dt;
     if (framerate_time_elapsed >= 1000) {
         framerate = frames_this_second * (1000.0f / framerate_time_elapsed);
@@ -349,6 +348,64 @@ void Engine::PushStationaryLights(int a2) {
     }
 }
 
+void Engine::StackPartyTorchLight() {
+    int TorchLightDistance = engine->config->graphics.TorchlightDistance.Get();
+    // TODO(pskelton): set this on level load
+    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) TorchLightDistance = 1024;
+    if (TorchLightDistance > 0) {  // lightspot around party
+        if (pParty->TorchlightActive()) {
+            // max is 800 * torchlight
+            // min is 800
+            int MinTorch = TorchLightDistance;
+            int MaxTorch = TorchLightDistance * pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
+
+            int torchLightFlicker = engine->config->graphics.TorchlightFlicker.Get();
+            if (torchLightFlicker > 0) {
+                // torchlight flickering effect
+                // TorchLightPower *= pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;  // 2,3,4
+                int ran = rand();
+                int mod = ((ran - (RAND_MAX * .4)) / torchLightFlicker);
+                TorchLightDistance = (pParty->TorchLightLastIntensity + mod);
+
+                // clamp
+                if (TorchLightDistance < MinTorch)
+                    TorchLightDistance = MinTorch;
+                if (TorchLightDistance > MaxTorch)
+                    TorchLightDistance = MaxTorch;
+            } else {
+                TorchLightDistance = MaxTorch;
+            }
+        }
+
+        // TODO(pskelton): move this
+        // if outdoors and its day turn off
+        if (uCurrentlyLoadedLevelType == LEVEL_Outdoor && !pWeather->bNight)
+            TorchLightDistance = 0;
+
+        pParty->TorchLightLastIntensity = TorchLightDistance;
+
+        // problem with deserializing this ??
+        if (pParty->flt_TorchlightColorR == 0) {
+            // __debugbreak();
+            pParty->flt_TorchlightColorR = 96;
+            pParty->flt_TorchlightColorG = 96;
+            pParty->flt_TorchlightColorB = 96;
+
+            if (engine->config->debug.VerboseLogging.Get())
+                logger->Warning("Torchlight doesn't have color");
+        }
+
+        // TODO: either add conversion functions, or keep only glm / only Vec3_* classes.
+        Vec3f pos(pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y, pCamera3D->vCameraPos.z);
+
+        pMobileLightsStack->AddLight(
+            pos, pBLVRenderParams->uPartySectorID, TorchLightDistance,
+            floorf(pParty->flt_TorchlightColorR + 0.5f),
+            floorf(pParty->flt_TorchlightColorG + 0.5f),
+            floorf(pParty->flt_TorchlightColorB + 0.5f), _4E94D0_light_type);
+    }
+}
+
 //----- (0044EEA7) --------------------------------------------------------
 bool Engine::_44EEA7() {  // cursor picking - particle update
     float depth;               // ST00_4@9
@@ -379,8 +436,8 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
     // depth = v2;
 
     PickMouse(depth, pt.x, pt.y, false, sprite_filter, face_filter);
-    lightmap_builder->StationaryLightsCount = 0;
-    lightmap_builder->MobileLightsCount = 0;
+    //lightmap_builder->StationaryLightsCount = 0;
+    //lightmap_builder->MobileLightsCount = 0;
 
     // decal reset but actually want bloodsplat reset
     // decal_builder->DecalsCount = 0;
@@ -791,7 +848,6 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     memset(&render->pBillboardRenderListD3D, 0,
            sizeof(render->pBillboardRenderListD3D));
     pGameLoadingUI_ProgressBar->Release();
-    _flushall();
 }
 
 //----- (004647AB) --------------------------------------------------------
@@ -847,7 +903,7 @@ bool MM7_LoadLods() {
 
 //----- (004651F4) --------------------------------------------------------
 bool Engine::MM7_Initialize() {
-    srand(OS_GetTime());
+    srand(platform->TickCount());
 
     pEventTimer = Timer::Create();
     pEventTimer->Initialize();
@@ -1015,6 +1071,9 @@ void Engine::SecondaryInitialization() {
 }
 
 void Engine::Initialize() {
+    logger->Info("World of Might and Magic, compiled: %s %s", __DATE__, __TIME__);
+    logger->Info("Extra build information: %s/%s/%s %s", BUILD_PLATFORM, BUILD_TYPE, BUILD_COMPILER, PROJECT_VERSION);
+
     if (!MM7_Initialize()) {
         log->Warning("MM7_Initialize: failed");
 
@@ -1310,7 +1369,7 @@ unsigned int GetGravityStrength() {
 void GameUI_StatusBar_Update(bool force_hide) {
     if (force_hide ||
         game_ui_status_bar_event_string_time_left &&
-            OS_GetTime() >= game_ui_status_bar_event_string_time_left && !pEventTimer->bPaused) {
+            platform->TickCount() >= game_ui_status_bar_event_string_time_left && !pEventTimer->bPaused) {
         game_ui_status_bar_event_string_time_left = 0;
     }
 }
