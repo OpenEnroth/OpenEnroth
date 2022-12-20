@@ -92,7 +92,10 @@ using Graphics::IRenderFactory;
 
 static std::string FindMm7Directory() {
     // env variable override to a custom folder
-    std::string result = std::getenv("WOMM_PATH_OVERRIDE");
+    const char *returnval = std::getenv("WOMM_PATH_OVERRIDE");
+    std::string result{};
+    if (returnval) result = std::string(returnval);
+
     if (!result.empty()) {
         logger->Info("MM7 Custom Folder (ENV path override): %s", result.c_str());
         return result;
