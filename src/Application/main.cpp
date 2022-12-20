@@ -20,9 +20,6 @@ int MM_Main(int argc, char **argv) {
         std::unique_ptr<Platform> platform = Platform::CreateStandardPlatform(log);
         platform->WinEnsureConsole();
 
-        logger->Info("World of Might and Magic, compiled: %s %s", __DATE__, __TIME__);
-        logger->Info("Extra build information: %s/%s/%s %s", BUILD_PLATFORM, BUILD_TYPE, BUILD_COMPILER, PROJECT_VERSION);
-
         std::string cmd;
         for (int i = 1; i < argc; ++i)
             cmd += std::string(argv[i]) + " ";

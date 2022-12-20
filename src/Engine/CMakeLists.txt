@@ -59,10 +59,10 @@ add_library(engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 target_check_style(engine)
 
 target_link_libraries(engine objects graphics serialization spells tables turnengine utility)
-target_compile_definitions(engine PUBLIC PROJECT_VERSION="${PROJECT_VERSION}"
-                                         BUILD_COMPILER="${BUILD_COMPILER}"
-                                         BUILD_PLATFORM="${BUILD_PLATFORM}"
-                                         BUILD_TYPE="${BUILD_TYPE}")
+target_compile_definitions(engine PRIVATE PROJECT_VERSION="${PROJECT_VERSION}"
+                                          BUILD_COMPILER="${BUILD_COMPILER}"
+                                          BUILD_PLATFORM="${BUILD_PLATFORM}"
+                                          BUILD_TYPE="${BUILD_TYPE}")
 
 include_directories(${INCLUDE_DIRECTORIES} ${ZLIB_INCLUDE_DIRS})
 target_link_libraries(engine ${ZLIB_LIBRARIES})

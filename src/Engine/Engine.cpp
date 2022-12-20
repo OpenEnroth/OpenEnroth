@@ -1071,6 +1071,9 @@ void Engine::SecondaryInitialization() {
 }
 
 void Engine::Initialize() {
+    logger->Info("World of Might and Magic, compiled: %s %s", __DATE__, __TIME__);
+    logger->Info("Extra build information: %s/%s/%s %s", BUILD_PLATFORM, BUILD_TYPE, BUILD_COMPILER, PROJECT_VERSION);
+
     if (!MM7_Initialize()) {
         log->Warning("MM7_Initialize: failed");
 
