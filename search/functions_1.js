@@ -130,7 +130,7 @@ var searchData=
   ['auraeffectgreen_127',['AuraEffectGreen',['../structItemGen.html#a01993a32aa349ea11fe9f1c69ea7e925',1,'ItemGen']]],
   ['auraeffectpurple_128',['AuraEffectPurple',['../structItemGen.html#ab8df6976055ead2e23e59a4f74e15a48',1,'ItemGen']]],
   ['auraeffectred_129',['AuraEffectRed',['../structItemGen.html#a46143c7c9a9dbc33d1d5dd13fa9438ac',1,'ItemGen']]],
-  ['autoinitdatapath_130',['AutoInitDataPath',['../namespaceApplication.html#a993122280a736bbd3630bf59aa7463f8',1,'Application']]],
+  ['autoinitdatapath_130',['AutoInitDataPath',['../namespaceApplication.html#af7efc230288e569efe3d50f8e39c9fc9',1,'Application']]],
   ['av_5flogger_131',['av_logger',['../MediaPlayer_8cpp.html#a054d6b3e7e3609d7cd9fe2f5cde2c529',1,'MediaPlayer.cpp']]],
   ['avaudiostream_132',['AVAudioStream',['../classAVAudioStream.html#ade0557e68d44c98c395a4b40b78e5728',1,'AVAudioStream']]],
   ['avstreamwrapper_133',['AVStreamWrapper',['../classAVStreamWrapper.html#ac1b913e7ef16e9da6e7bffbfb5aec591',1,'AVStreamWrapper']]],

@@ -310,7 +310,7 @@ var searchData=
   ['auraeffectgreen_307',['AuraEffectGreen',['../structItemGen.html#a01993a32aa349ea11fe9f1c69ea7e925',1,'ItemGen']]],
   ['auraeffectpurple_308',['AuraEffectPurple',['../structItemGen.html#ab8df6976055ead2e23e59a4f74e15a48',1,'ItemGen']]],
   ['auraeffectred_309',['AuraEffectRed',['../structItemGen.html#a46143c7c9a9dbc33d1d5dd13fa9438ac',1,'ItemGen']]],
-  ['autoinitdatapath_310',['AutoInitDataPath',['../namespaceApplication.html#a993122280a736bbd3630bf59aa7463f8',1,'Application']]],
+  ['autoinitdatapath_310',['AutoInitDataPath',['../namespaceApplication.html#af7efc230288e569efe3d50f8e39c9fc9',1,'Application']]],
   ['autonote_311',['Autonote',['../structAutonote.html',1,'']]],
   ['autonote_5fmisc_312',['AUTONOTE_MISC',['../Autonotes_8h.html#ac492beabbce596a9d1992e7828d21b99a9a347a3b1bb0169f6f611e6512f711ee',1,'Autonotes.h']]],
   ['autonote_5fobelisk_313',['AUTONOTE_OBELISK',['../Autonotes_8h.html#ac492beabbce596a9d1992e7828d21b99a27594a70f27669ae86829357fce6c3bb',1,'Autonotes.h']]],
