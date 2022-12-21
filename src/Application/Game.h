@@ -58,7 +58,7 @@ class Game {
      std::shared_ptr<Nuklear> nuklear = nullptr;
 };
 
-void AutoInitDataPath();
+void AutoInitDataPath(Platform *platform);
 
 }  // namespace Application
 

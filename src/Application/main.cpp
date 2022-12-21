@@ -24,7 +24,7 @@ int MM_Main(int argc, char **argv) {
         for (int i = 1; i < argc; ++i)
             cmd += std::string(argv[i]) + " ";
 
-        Application::AutoInitDataPath();
+        Application::AutoInitDataPath(platform.get());
 
         std::shared_ptr<GameConfig> gameConfig = std::make_shared<GameConfig>(cmd);
         gameConfig->Startup();

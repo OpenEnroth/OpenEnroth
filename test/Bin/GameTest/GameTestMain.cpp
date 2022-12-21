@@ -17,7 +17,7 @@ void RunGameThread(TestState *unsafeState) {
     Log *log = EngineIoc::ResolveLogger();
     std::unique_ptr<Platform> platform = std::make_unique<TestPlatform>(Platform::CreateStandardPlatform(log), state);
 
-    Application::AutoInitDataPath();
+    Application::AutoInitDataPath(platform.get());
 
     std::shared_ptr<Application::GameConfig> config = std::make_shared<Application::GameConfig>("");
     config->Startup(); // TODO(captainurist): Reads from womm.ini, not good for tests

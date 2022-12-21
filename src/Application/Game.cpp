@@ -90,7 +90,7 @@ using Application::GameFactory;
 using Engine_::EngineFactory;
 using Graphics::IRenderFactory;
 
-static std::string FindMm7Directory() {
+static std::string FindMm7Directory(Platform *platform) {
     // env variable override to a custom folder
     std::string result = std::getenv("WOMM_PATH_OVERRIDE");
     if (!result.empty()) {
@@ -122,8 +122,8 @@ static std::string FindMm7Directory() {
     return result;
 }
 
-void Application::AutoInitDataPath() {
-    std::string mm7dir = FindMm7Directory();
+void Application::AutoInitDataPath(Platform *platform) {
+    std::string mm7dir = FindMm7Directory(platform);
     if(mm7dir.empty()) {
         EngineIoc::ResolveLogger()->Info(
             "MM7 directory not found, consider using WOMM_PATH_OVERRIDE environment variable, "
