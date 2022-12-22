@@ -10,7 +10,7 @@
 
 class Serializer {
  public:
-    Serializer(OutputStream *outputStream) {
+    explicit Serializer(OutputStream *outputStream) {
         Reset(outputStream);
     }
 
@@ -82,7 +82,7 @@ class Serializer {
 class FileSerializer : private Embedded<FileOutputStream>, public Serializer {
     using StreamBase = Embedded<FileOutputStream>;
  public:
-    FileSerializer(const std::string &path):
+    explicit FileSerializer(const std::string &path):
         StreamBase(path),
         Serializer(&StreamBase::get())
     {}

@@ -8,7 +8,7 @@ struct Player;
 
 struct CEnchantment {
     CEnchantment() {}
-    CEnchantment(int bonus, uint16_t Player::* skillPtr = nullptr)
+    explicit CEnchantment(int bonus, uint16_t Player::* skillPtr = nullptr)
         : statPtr(skillPtr), statBonus(bonus) {}
 
     uint16_t Player::* statPtr = nullptr;

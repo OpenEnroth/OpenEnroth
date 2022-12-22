@@ -9,7 +9,7 @@ class SdlPlatformSharedState;
 
 class SdlEventLoop: public PlatformEventLoop {
  public:
-    SdlEventLoop(SdlPlatformSharedState *state);
+    explicit SdlEventLoop(SdlPlatformSharedState *state);
     virtual ~SdlEventLoop();
 
     virtual void Exec(PlatformEventHandler *eventHandler) override;

@@ -11,7 +11,7 @@ class GUIButton;
 
 class GameWrapper {
  public:
-    GameWrapper(TestStateHandle state);
+    explicit GameWrapper(TestStateHandle state);
     ~GameWrapper();
 
     void Tick(int count = 1);

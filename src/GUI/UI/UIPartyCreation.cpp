@@ -856,9 +856,9 @@ bool PartyCreationUI_LoopInternal() {
         if (v8 == 10) {
             v9 = 0;
             if (v20[0]) {
-                do
+                do {
                     ++v9;
-                while (v20[v9]);
+                } while (v20[v9]);
             }
         }
         pParty->random_order_num_unused[i] = v9;

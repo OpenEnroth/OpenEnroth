@@ -25,7 +25,7 @@ namespace Io {
     };
 
     struct KeyboardActionMapping {
-        KeyboardActionMapping(std::shared_ptr<GameConfig> config);
+        explicit KeyboardActionMapping(std::shared_ptr<GameConfig> config);
 
         void MapKey(InputAction action, PlatformKey key);
         void MapKey(InputAction action, PlatformKey key, KeyToggleType type);

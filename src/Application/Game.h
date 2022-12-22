@@ -25,7 +25,7 @@ namespace Application {
 
 class Game {
  public:
-     Game(Platform *platform);
+     explicit Game(Platform *platform);
      ~Game();
 
      bool Configure(std::shared_ptr<GameConfig> config) {

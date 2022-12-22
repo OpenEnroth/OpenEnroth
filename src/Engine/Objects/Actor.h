@@ -65,7 +65,7 @@ class GUIWindow;
 class Actor {
  public:
     Actor() {}
-    Actor(int id): id(id) {}
+    explicit Actor(int id): id(id) {}
 
     void SummonMinion(int summonerId);
     void Reset();

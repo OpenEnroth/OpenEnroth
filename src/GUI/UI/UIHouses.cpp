@@ -47,7 +47,7 @@
 #include "Utility/Random.h"
 #include "Utility/Math/TrigLut.h"
 
-using namespace std::chrono_literals;
+using namespace std::chrono_literals; // NOLINT
 
 using Io::TextInputType;
 using EngineIoc = Engine_::IocContainer;
@@ -1634,7 +1634,7 @@ void TravelByTransport() {
                 if (pauselength < currenttime) pauselength = currenttime;
                 while (platform->TickCount() < pauselength)
                     std::this_thread::sleep_for(1ms);
-                while (HouseDialogPressCloseBtn());
+                while (HouseDialogPressCloseBtn()) {}
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
             } else {
                 dialog_menu_id = DIALOGUE_MAIN;

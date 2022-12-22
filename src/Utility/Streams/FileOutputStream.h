@@ -7,7 +7,7 @@
 
 class FileOutputStream : public OutputStream {
  public:
-    FileOutputStream(const std::string &path);
+    explicit FileOutputStream(const std::string &path);
     virtual ~FileOutputStream();
     virtual void Write(const void *data, size_t size) override;
     virtual void Flush() override;

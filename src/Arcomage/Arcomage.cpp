@@ -1188,7 +1188,7 @@ void TurnChange() {
             render->Present();
             // nullsub_1();
             while (1) {
-                while (!ArcomageGame::MsgLoop(20, &v10));
+                while (!ArcomageGame::MsgLoop(20, &v10)) {}
                 if (v10.am_input_type == 1) {
                     if (v10.field_4) break;
                     // nullsub_1();

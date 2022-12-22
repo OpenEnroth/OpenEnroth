@@ -95,7 +95,7 @@ struct stru10;
 #pragma pack(push, 1)
 struct Engine {
  public:
-    Engine(std::shared_ptr<Application::GameConfig> config);
+    explicit Engine(std::shared_ptr<Application::GameConfig> config);
     virtual ~Engine();
 
     // void _44E904_gamma_saturation_adjust();
