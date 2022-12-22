@@ -1812,7 +1812,7 @@ void Game::EventLoop() {
                             v90 = Random(pMapStats->uNumMaps + 1);
                         pMapInfo = &pMapStats->pInfos[v90];
 
-                        if (Random(100) <= pMapInfo->Encounter_percent) {
+                        if (Random(100) + 1 <= pMapInfo->Encounter_percent) {
                             v91 = Random(100);
                             v92 = pMapInfo->EncM1percent;
                             v93 = v91 + 1;

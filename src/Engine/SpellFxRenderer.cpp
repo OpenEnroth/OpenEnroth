@@ -314,7 +314,7 @@ void SpellFxRenderer::
         local_0.g = 0.0f;
         local_0.b = 0.0f;
         local_0.particle_size = 1.0f;
-        local_0.timeToLive = Random(0x7F) + 128;
+        local_0.timeToLive = Random(0x80) + 128;
         local_0.texture = texture;
         particle_engine->AddParticle(&local_0);
         local_0.x = (float)a2->vPosition.x - 4.0f;
@@ -337,7 +337,7 @@ void SpellFxRenderer::_4A75CC_single_spell_collision_particle(
     local_0.uDiffuse = uDiffuse;
     local_0.z = v4;
     v5 = 10;
-    local_0.timeToLive = Random(0x7F) + 128;
+    local_0.timeToLive = Random(0x80) + 128;
     local_0.texture = texture;
     local_0.particle_size = 1.0f;
     do {
