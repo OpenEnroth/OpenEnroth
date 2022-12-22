@@ -468,7 +468,7 @@ bool LOD::WriteableFile::FixDirectoryOffsets() {
         temp_offset += pSubIndices[i].uDataSize;
     }
 
-    std::string tempPath = MakeTempPath("lod.tmp");
+    std::string tempPath = pLODPath + ".tmp";
     FILE *tmp_file = fopen(tempPath.c_str(), "wb+");
     if (tmp_file == nullptr) {
         return 5;
@@ -591,7 +591,7 @@ unsigned int LOD::WriteableFile::Write(const std::string &file_name, const void 
     }
 
     int size_correction = 0;
-    std::string tempPath = MakeDataPath("lod.tmp"); // TODO: should be MakeTempPath?
+    std::string tempPath = pLODPath + ".tmp";
     FILE *tmp_file = fopen(tempPath.c_str(), "wb+");
     if (!tmp_file) return 5;
     if (!bRewrite_data)
