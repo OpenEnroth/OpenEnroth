@@ -13,16 +13,16 @@ Main dependencies:
 On windows above dependencies are resolved automatically during cmake phase but you must also have Windows SDK v10.0.20348.0 or higher installed.
 
 Additional dependencies:
-* CMake 3.20.4+ (3.20.21032501-MSVC_2 from VS2019 won't work)
+* CMake 3.20.4+ (3.24.202208181-MSVC_2 from VS2022 won't work)
 * Python 3.x (optional, for style checker functionality)
 
 Minimum required compiler versions are as follows:
-* Visual Studio 2019
+* Visual Studio 2022
 * GCC 11
 * Clang 13
 
 The following IDEs have been tested and should work fine:
-* Visual Studio (2019 or later)
+* Visual Studio (2022 or later)
 * Visual Studio Code (2022 or later)
 * CLion (2022 or later)
 
