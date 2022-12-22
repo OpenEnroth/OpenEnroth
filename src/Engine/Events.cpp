@@ -950,7 +950,7 @@ LABEL_47:
                             if (uGameState == GAME_STATE_CHANGE_LOCATION) {
                                 pAudioPlayer->PauseSounds(-1);
                                 dialog_menu_id = DIALOGUE_NULL;
-                                while (HouseDialogPressCloseBtn());
+                                while (HouseDialogPressCloseBtn()) {}
                                 pMediaPlayer->Unload();
                                 window_SpeakInHouse->Release();
                                 window_SpeakInHouse = 0;

@@ -21,7 +21,7 @@ class Deserializer {
         Overwrite
     };
 
-    Deserializer(InputStream *inputStream) {
+    explicit Deserializer(InputStream *inputStream) {
         Reset(inputStream);
     }
 
@@ -113,11 +113,11 @@ class BlobDeserializer: private Embedded<MemoryInputStream>, public Deserializer
  public:
     BlobDeserializer() : Deserializer(&StreamBase::get()) {}
 
-    BlobDeserializer(const Blob &blob) : BlobDeserializer() {
+    explicit BlobDeserializer(const Blob &blob) : BlobDeserializer() {
         Reset(blob);
     }
 
-    BlobDeserializer(Blob &&blob) : BlobDeserializer() {
+    explicit BlobDeserializer(Blob &&blob) : BlobDeserializer() {
         Reset(std::move(blob));
     }
 

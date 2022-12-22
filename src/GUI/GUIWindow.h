@@ -430,8 +430,8 @@ class GUIButton;
 
 struct WindowData {
     WindowData() {}
-    WindowData(int value): val(value) {}
-    WindowData(void *value): ptr(value) {}
+    WindowData(int value): val(value) {} // NOLINT: constructor is intentionally implicit
+    WindowData(void *value): ptr(value) {} // NOLINT: constructor is intentionally implicit
 
     int val = 0;
     void *ptr = nullptr;

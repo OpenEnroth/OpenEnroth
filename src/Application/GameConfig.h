@@ -28,7 +28,7 @@ namespace Application {
         std::vector<ConfigSection *> sections;
 
      public:
-        GameConfig(const std::string &command_line) {
+        explicit GameConfig(const std::string &command_line) {
              this->command_line = std::make_shared<CommandLine>(command_line);
              this->logger = EngineIoc::ResolveLogger();
         }
@@ -166,7 +166,7 @@ namespace Application {
 
         class Debug : public ConfigSection {
          public:
-            Debug(GameConfig *config) : ConfigSection(config, "debug") {}
+            explicit Debug(GameConfig *config) : ConfigSection(config, "debug") {}
 
             /** Enable all available spells for each character in spellbook bypassing all class restrictions. Currently also all skills will behave like they are on GM level. */
             ConfigValue<bool> AllMagic = ConfigValue<bool>(this, "all_magic", false);
@@ -227,7 +227,7 @@ namespace Application {
 
         class Gameplay : public ConfigSection {
          public:
-            Gameplay(GameConfig *config): ConfigSection(config, "gameplay") {}
+            explicit Gameplay(GameConfig *config): ConfigSection(config, "gameplay") {}
 
             /** Use condition priorities from Grayface patches (e.g. Zombie has the lowest priority). */
             ConfigValue<bool> AlternativeConditionPriorities = ConfigValue<bool>(this, "alternative_condition_priorities", true);
@@ -340,7 +340,7 @@ namespace Application {
 
         class Graphics : public ConfigSection {
          public:
-            Graphics(GameConfig *config): ConfigSection(config, "graphics") {}
+            explicit Graphics(GameConfig *config): ConfigSection(config, "graphics") {}
 
             ConfigValue<std::string> Renderer = ConfigValue<std::string>(this, "renderer", "OpenGL", &ValidateRenderer);
 
@@ -454,7 +454,7 @@ namespace Application {
 
         class Keybindings : public ConfigSection {
          public:
-            Keybindings(GameConfig *config) : ConfigSection(config, "keybindings") {}
+            explicit Keybindings(GameConfig *config) : ConfigSection(config, "keybindings") {}
 
             ConfigValue<std::string> AlwaysRun = ConfigValue<std::string>(this, "always_run", "U", &ValidateKey);
             ConfigValue<std::string> Attack = ConfigValue<std::string>(this, "attack", "A", &ValidateKey);
@@ -498,7 +498,7 @@ namespace Application {
 
         class Settings : public ConfigSection {
          public:
-            Settings(GameConfig *config) : ConfigSection(config, "settings") {}
+            explicit Settings(GameConfig *config) : ConfigSection(config, "settings") {}
 
             /** true - run, false - walk */
             ConfigValue<bool> AlwaysRun = ConfigValue<bool>(this, "always_run", true);
@@ -562,7 +562,7 @@ namespace Application {
 
         class Window : public ConfigSection {
          public:
-            Window(GameConfig *config): ConfigSection(config, "window") {}
+            explicit Window(GameConfig *config): ConfigSection(config, "window") {}
 
             ConfigValue<std::string> Title = ConfigValue<std::string>(this, "title", "World of Might and Magic", &ValidateTitle);
 

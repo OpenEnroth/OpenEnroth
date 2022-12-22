@@ -865,7 +865,7 @@ void Game::EventLoop() {
                                             uDialogueType = DIALOGUE_NULL;
                                         }
                                         if (uGameState == GAME_STATE_CHANGE_LOCATION) {
-                                            while (HouseDialogPressCloseBtn());
+                                            while (HouseDialogPressCloseBtn()) {}
                                         } else {
                                             if (HouseDialogPressCloseBtn())
                                                 continue;

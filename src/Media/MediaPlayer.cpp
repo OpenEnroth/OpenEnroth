@@ -35,7 +35,7 @@ extern "C" {
 #include "Media/Audio/OpenALSoundProvider.h"
 
 
-using namespace std::chrono_literals;
+using namespace std::chrono_literals; // NOLINT
 
 OpenALSoundProvider *provider = nullptr;
 

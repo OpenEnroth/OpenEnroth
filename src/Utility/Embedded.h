@@ -11,7 +11,7 @@ template<class T>
 class Embedded {
  public:
     template<class... Args>
-    Embedded(Args &&...args): data_(std::forward<Args>(args)...) {}
+    explicit Embedded(Args &&...args): data_(std::forward<Args>(args)...) {}
 
     T &get() {
         return data_;

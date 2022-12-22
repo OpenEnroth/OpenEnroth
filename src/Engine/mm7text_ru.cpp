@@ -694,7 +694,7 @@ int sprintfex_internal(char *str) {
                     integer_tokens_defined[next_integer_token++] = true;
 
                 auto int_begin = src;
-                while (*src++ != ']');
+                while (*src++ != ']') {}
 
                 int int_len = src - int_begin - 1;
                 strncpy(dst, int_begin, int_len);
@@ -716,11 +716,11 @@ int sprintfex_internal(char *str) {
                 src += 3;  // ^L[
 
                 auto ending1 = src;
-                while (*src++ != ';');
+                while (*src++ != ';') {}
                 auto ending2 = src;
-                while (*src++ != ';');
+                while (*src++ != ';') {}
                 auto ending3 = src;
-                while (*src++ != ']');
+                while (*src++ != ']') {}
 
                 char *actual_ending = nullptr;
                 int actual_ending_len = 0;
@@ -748,11 +748,11 @@ int sprintfex_internal(char *str) {
                 src += 3;  // ^R[
 
                 auto ending1 = src;
-                while (*src++ != ';');
+                while (*src++ != ';') {}
                 auto ending2 = src;
-                while (*src++ != ';');
+                while (*src++ != ';') {}
                 auto ending3 = src;
-                while (*src++ != ']');
+                while (*src++ != ']') {}
 
                 char *actual_ending = nullptr;
                 int actual_ending_len = 0;
@@ -803,7 +803,7 @@ int sprintfex_internal(char *str) {
 
                     strncpy(dst, name, name_len);
                     dst += name_len;
-                    while (*src++ != ']');
+                    while (*src++ != ']') {}
                     break;
                 }
 
@@ -837,13 +837,13 @@ int sprintfex_internal(char *str) {
                         dst += token_len;
                     }
                 }
-                while (*src++ != ']');
+                while (*src++ != ']') {}
             } break;
 
             default: {
             _invalid_token:
                 auto token_begin = src;
-                while (*src++ != ']');
+                while (*src++ != ']') {}
 
                 int token_len = src - token_begin;
                 char token[1024];

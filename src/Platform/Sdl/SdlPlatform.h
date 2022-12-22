@@ -11,7 +11,7 @@ class Log;
 
 class SdlPlatform: public Platform {
  public:
-    SdlPlatform(Log *log);
+    explicit SdlPlatform(Log *log);
     virtual ~SdlPlatform();
 
     virtual std::unique_ptr<PlatformWindow> CreateWindow() override;

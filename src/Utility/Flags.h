@@ -34,11 +34,11 @@ class Flags {
     using enumeration_type = Enum;
     using underlying_type = std::underlying_type_t<Enum>;
 
-    constexpr Flags(std::nullptr_t = 0) :
+    constexpr Flags(std::nullptr_t = 0) : // NOLINT: constructor is intentionally implicit
         value_(0)
     {}
 
-    constexpr Flags(enumeration_type value) :
+    constexpr Flags(enumeration_type value) : // NOLINT: constructor is intentionally implicit
         value_(static_cast<underlying_type>(value))
     {}
 
