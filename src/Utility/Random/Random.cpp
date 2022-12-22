@@ -40,9 +40,7 @@ int Random(int lo, int hi) {
 }
 
 float RandomFloat() {
-    uint32_t value = GlobalRandomEngine()->Random();
-
-    return static_cast<double>(value) / (static_cast<double>(UINT32_MAX) + 1);
+    return GlobalRandomEngine()->RandomFloat();
 }
 
 int RandomDice(int count, int faces) {

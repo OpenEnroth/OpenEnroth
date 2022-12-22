@@ -7,9 +7,9 @@ class RandomEngine {
     virtual ~RandomEngine() = default;
 
     /**
-     * @return                          Random number in range `[0, UINT32_MAX]`.
+     * @return                          Random floating point number in range `[0, 1)`.
      */
-    virtual uint32_t Random() = 0;
+    virtual float RandomFloat() = 0;
 
     /**
      * @param hi                        Upper bound for the result. Must be greater than zero.

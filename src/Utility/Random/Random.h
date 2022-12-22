@@ -57,6 +57,7 @@ float RandomFloat();
  */
 int RandomDice(int count, int faces);
 
+// TODO(captainurist): rename to RandomSample
 /**
  * @param range                         Random access range.
  * @return                              Random element from the provided range.

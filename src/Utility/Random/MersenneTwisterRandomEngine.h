@@ -7,8 +7,8 @@
 
 class MersenneTwisterRandomEngine: public RandomEngine {
  public:
-    virtual uint32_t Random() override {
-        return base_();
+    virtual float RandomFloat() override {
+        return std::uniform_real_distribution<float>(0.0f, 1.0f)(base_);
     }
 
     virtual uint32_t Random(uint32_t hi) override {
