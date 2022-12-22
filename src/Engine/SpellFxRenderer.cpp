@@ -896,7 +896,7 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             // if ( !render->pRenderD3D )
             //  return true;
             memcpy(pContainer, "sp18h1", 7);
-            pContainer[5] = Random(1, 6 + 1) + '0';
+            pContainer[5] = RandomInSegment(1, 6) + '0';
             AddProjectile(a2, 100, assets->GetBitmap(pContainer));
             return false;
         case SPRITE_SPELL_AIR_LIGHNING_BOLT_IMPACT:

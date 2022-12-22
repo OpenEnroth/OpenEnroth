@@ -34,13 +34,12 @@ void SeedRandom(int seed);
 int Random(int hi);
 
 /**
- *
- * @param lo                            Lower bound for the result.
- * @param hi                            Upper bound for the result. Must be greater than `lo`.
- * @return                              Random number in range `[lo, hi)`, generated using the global random engine.
- *                                      Note that `hi` is not included in the range.
+ * @param min                           Minimal result value.
+ * @param max                           Maximal result value. Must be greater or equal to `min`.
+ * @return                              Random number in closed interval `[min, max]`, generated using the global
+ *                                      random engine. Note that both `min` and `max` are included in the interval.
  */
-int Random(int lo, int hi);
+int RandomInSegment(int min, int max);
 
 /**
  * @return                              Random floating point number in range `[0, 1)`, generated using the global

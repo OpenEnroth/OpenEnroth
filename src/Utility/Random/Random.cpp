@@ -33,10 +33,10 @@ int Random(int hi) {
     return GlobalRandomEngine()->Random(hi);
 }
 
-int Random(int lo, int hi) {
-    assert(hi > lo);
+int RandomInSegment(int min, int max) {
+    assert(max >= min);
 
-    return lo + GlobalRandomEngine()->Random(hi - lo);
+    return min + GlobalRandomEngine()->Random(max - min + 1);
 }
 
 float RandomFloat() {

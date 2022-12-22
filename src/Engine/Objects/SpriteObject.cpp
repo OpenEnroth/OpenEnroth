@@ -1311,8 +1311,8 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
             pSpriteObjects[uLayingItemID].vVelocity.x = 0;
             int v89 = pSpriteObjects[uLayingItemID].uFacing - TrigLUT.uIntegerDoublePi;
             for (int i = 0; i < 8; i++) {
-                v90 = Random(-128, 128 + 1);
-                v91 = Random(5, 500 + 1);
+                v90 = RandomInSegment(-128, 128);
+                v91 = RandomInSegment(5, 500);
                 v89 += TrigLUT.uIntegerHalfPi / 2;
                 pSpriteObjects[uLayingItemID].Create(v90 + v89, 0, v91, 0);
             }
