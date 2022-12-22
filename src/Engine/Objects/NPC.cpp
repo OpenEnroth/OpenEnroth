@@ -632,10 +632,10 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
     gen_profession = 0;
 
     if (max_prof_cap > 0) {
-        do
+        do {
             test_prof_summ += pProfessionChance[uMapId]
-                                  .professionChancePerArea[gen_profession++];
-        while (test_prof_summ < max_prof_cap) {}
+                .professionChancePerArea[gen_profession++];
+        } while (test_prof_summ < max_prof_cap);
     }
     pNPCDataBuff->profession = (NPCProf)(gen_profession - 1);
     pNPCDataBuff->Location2D = uLocation2D;
