@@ -6,7 +6,7 @@
 
 class WinPlatform : public SdlPlatform {
  public:
-    explicit WinPlatform(Log *log);
+    explicit WinPlatform(PlatformLogLevel platformLogLevel);
 
     virtual std::string WinQueryRegistry(const std::string &path) const override;
 };
