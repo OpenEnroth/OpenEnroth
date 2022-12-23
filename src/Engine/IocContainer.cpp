@@ -47,7 +47,7 @@ Log *logger = nullptr;
 
 Log *IocContainer::ResolveLogger() {
     if (!logger) {
-        logger = new Log(stdout, stderr);
+        logger = new Log();
     }
     return logger;
 }

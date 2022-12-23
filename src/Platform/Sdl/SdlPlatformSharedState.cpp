@@ -2,23 +2,28 @@
 
 #include <cassert>
 
-#include "Utility/Log.h"
 #include "Utility/MapAccess.h"
 
 #include "SdlWindow.h"
 #include "SdlPlatform.h"
+#include "SdlLogger.h"
 
-SdlPlatformSharedState::SdlPlatformSharedState(SdlPlatform *owner, Log *log): owner_(owner), log_(log) {
+SdlPlatformSharedState::SdlPlatformSharedState(SdlPlatform *owner): owner_(owner) {
     assert(owner);
-    assert(log);
+
+    logger_ = std::make_unique<SdlLogger>();
 }
 
 SdlPlatformSharedState::~SdlPlatformSharedState() {
     assert(windowById_.empty()); // Platform should be destroyed after all windows.
 }
 
+SdlLogger *SdlPlatformSharedState::Logger() const {
+    return logger_.get();
+}
+
 void SdlPlatformSharedState::LogSdlError(const char *sdlFunctionName) {
-    log_->Warning("SDL error in %s: %s.", sdlFunctionName, SDL_GetError());
+    logger_->LogSdlError(sdlFunctionName);
 }
 
 void SdlPlatformSharedState::RegisterWindow(SdlWindow *window) {

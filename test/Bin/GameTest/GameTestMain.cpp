@@ -11,11 +11,17 @@
 #include "Testing/Game/GameWrapper.h"
 #include "Testing/Game/GameTest.h"
 
+#include "Utility/ScopeGuard.h"
+
 void RunGameThread(TestState *unsafeState) {
     TestStateHandle state(GameSide, unsafeState);
 
-    Log *log = EngineIoc::ResolveLogger();
-    std::unique_ptr<Platform> platform = std::make_unique<TestPlatform>(Platform::CreateStandardPlatform(log), state);
+    std::unique_ptr<Platform> platform = std::make_unique<TestPlatform>(
+        Platform::CreateStandardPlatform(LogDebug, WinEnsureConsoleOption),
+        state
+    );
+    EngineIoc::ResolveLogger()->SetBaseLogger(platform->Logger());
+    auto guard = ScopeGuard([] { EngineIoc::ResolveLogger()->SetBaseLogger(nullptr); });
 
     Application::AutoInitDataPath(platform.get());
 

@@ -4,7 +4,6 @@ set(UTILITY_SOURCES Blob.cpp
                     Color.cpp
                     DataPath.cpp
                     FileSystem.cpp
-                    Log.cpp
                     String.cpp
                     Math/TrigLut.cpp
                     Streams/MemoryInputStream.cpp
@@ -19,8 +18,8 @@ set(UTILITY_HEADERS Blob.h
                     Flags.h
                     FreeDeleter.h
                     IndexedArray.h
-                    Log.h
                     Memory.h
+                    ScopeGuard.h
                     Segment.h
                     String.h
                     Geometry/BBox.h

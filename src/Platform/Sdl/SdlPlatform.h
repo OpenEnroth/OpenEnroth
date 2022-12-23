@@ -3,17 +3,16 @@
 #include <string>
 
 #include "Platform/Platform.h"
-#include "Utility/Log.h"
 
 class SdlWindow;
 class SdlPlatformSharedState;
-class Log;
 
 class SdlPlatform: public Platform {
  public:
-    explicit SdlPlatform(Log *log);
+    explicit SdlPlatform(PlatformLogLevel platformLogLevel);
     virtual ~SdlPlatform();
 
+    virtual PlatformLogger *Logger() const override;
     virtual std::unique_ptr<PlatformWindow> CreateWindow() override;
     virtual std::unique_ptr<PlatformEventLoop> CreateEventLoop() override;
 
@@ -26,7 +25,6 @@ class SdlPlatform: public Platform {
 
     virtual int64_t TickCount() const override;
 
-    virtual void WinEnsureConsole() const override;
     virtual std::string WinQueryRegistry(const std::string &path) const override;
 
  private:
