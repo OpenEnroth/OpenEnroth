@@ -7,7 +7,6 @@
 
 #include "Platform/PlatformWindow.h"
 
-class Log;
 class SdlPlatformSharedState;
 class PlatformEventHandler;
 

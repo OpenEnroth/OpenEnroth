@@ -63,15 +63,7 @@ static bool OS_GetAppStringRecursive(HKEY parent_key, const char *path, char *ou
     }
 }
 
-WinPlatform::WinPlatform(Log *log) : SdlPlatform(log) {}
-
-void WinPlatform::WinEnsureConsole() const {
-    if (AllocConsole()) {
-        freopen("conin$", "r", stdin);
-        freopen("conout$", "w", stdout);
-        freopen("conout$", "w", stderr);
-    }
-}
+WinPlatform::WinPlatform(PlatformLogLevel platformLogLevel) : SdlPlatform(platformLogLevel) {}
 
 std::string WinPlatform::WinQueryRegistry(const std::string &path) const {
     char buffer[8192];
@@ -80,6 +72,14 @@ std::string WinPlatform::WinQueryRegistry(const std::string &path) const {
     return {};
 }
 
-std::unique_ptr<Platform> Platform::CreateStandardPlatform(Log *log) {
-    return std::make_unique<WinPlatform>(log);
+std::unique_ptr<Platform> Platform::CreateStandardPlatform(PlatformLogLevel platformLogLevel, PlatformCreationOptions options) {
+    if (options & WinEnsureConsoleOption) {
+        if (AllocConsole()) {
+            freopen("conin$", "r", stdin);
+            freopen("conout$", "w", stdout);
+            freopen("conout$", "w", stderr);
+        }
+    }
+
+    return std::make_unique<WinPlatform>(platformLogLevel);
 }

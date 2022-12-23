@@ -10,6 +10,10 @@ TestPlatform::TestPlatform(std::unique_ptr<Platform> base, TestStateHandle state
     state_(std::move(state))
 {}
 
+PlatformLogger *TestPlatform::Logger() const {
+    return base_->Logger();
+}
+
 std::unique_ptr<PlatformWindow> TestPlatform::CreateWindow() {
     return std::make_unique<TestWindow>(base_->CreateWindow(), state_);
 }
@@ -36,10 +40,6 @@ void TestPlatform::ShowMessageBox(const std::string &message, const std::string&
 
 int64_t TestPlatform::TickCount() const {
     return base_->TickCount();
-}
-
-void TestPlatform::WinEnsureConsole() const {
-    base_->WinEnsureConsole();
 }
 
 std::string TestPlatform::WinQueryRegistry(const std::string &path) const {

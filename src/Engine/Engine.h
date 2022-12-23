@@ -8,7 +8,7 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/ErrorHandling.h"
-#include "Utility/Log.h"
+#include "Library/Log/Log.h"
 #include "Engine/MM7.h"
 #include "Engine/MapInfo.h"
 #include "Engine/IocContainer.h"
@@ -97,6 +97,8 @@ struct Engine {
  public:
     explicit Engine(std::shared_ptr<Application::GameConfig> config);
     virtual ~Engine();
+
+    static void LogEngineBuildInfo();
 
     // void _44E904_gamma_saturation_adjust();
     // bool InitializeGammaController();

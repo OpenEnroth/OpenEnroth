@@ -3,19 +3,20 @@
 #include <cstdint>
 #include <vector>
 #include <unordered_map>
+#include <memory>
 
-
-class Log;
 class SdlWindow;
 class SdlPlatform;
+class SdlLogger;
 class PlatformEvent;
 class PlatformEventHandler;
 
 class SdlPlatformSharedState {
  public:
-    SdlPlatformSharedState(SdlPlatform *owner, Log *log);
+    explicit SdlPlatformSharedState(SdlPlatform *owner);
     ~SdlPlatformSharedState();
 
+    SdlLogger *Logger() const;
     void LogSdlError(const char *sdlFunctionName);
 
     void RegisterWindow(SdlWindow *window);
@@ -25,6 +26,6 @@ class SdlPlatformSharedState {
 
  private:
     SdlPlatform *owner_ = nullptr;
-    Log *log_ = nullptr;
+    std::unique_ptr<SdlLogger> logger_;
     std::unordered_map<uint32_t, SdlWindow *> windowById_;
 };
