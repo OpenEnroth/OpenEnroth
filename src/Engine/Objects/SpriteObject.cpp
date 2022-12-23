@@ -222,7 +222,7 @@ void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID) {
                 Dst.type = ParticleType_Bitmap | ParticleType_Rotating |
                            ParticleType_8;
                 Dst.uDiffuse = 0xFF3C1E;
-                Dst.timeToLive = Random(0x80) + 128;
+                Dst.timeToLive = Random(0x80) + 128; // was rand() & 0x80
                 Dst.texture = spell_fx_renderer->effpar01;
                 Dst.particle_size = 1.0f;
                 particle_engine->AddParticle(&Dst);
@@ -236,7 +236,7 @@ void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID) {
             } else if (object->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                 Dst.type = ParticleType_Bitmap | ParticleType_8;
                 Dst.uDiffuse = Random(RAND_MAX);
-                Dst.timeToLive = Random(0x80) + 128;
+                Dst.timeToLive = Random(0x80) + 128; // was rand() & 0x80
                 Dst.texture = spell_fx_renderer->effpar03;
                 Dst.particle_size = 1.0f;
                 particle_engine->AddParticle(&Dst);
@@ -336,7 +336,7 @@ LABEL_13:
                     Dst.type = ParticleType_Bitmap | ParticleType_Rotating |
                                ParticleType_8;
                     Dst.uDiffuse = 0xFF3C1E;
-                    Dst.timeToLive = Random(0x80) + 128;
+                    Dst.timeToLive = Random(0x80) + 128; // was rand() & 0x80
                     Dst.texture = spell_fx_renderer->effpar01;
                     Dst.particle_size = 1.0f;
                     particle_engine->AddParticle(&Dst);
@@ -352,7 +352,7 @@ LABEL_13:
                 } else if (object->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                     Dst.type = ParticleType_Bitmap | ParticleType_8;
                     Dst.uDiffuse = Random(RAND_MAX);
-                    Dst.timeToLive = Random(0x80) + 128;
+                    Dst.timeToLive = Random(0x80) + 128; // was rand() & 0x80
                     Dst.texture = spell_fx_renderer->effpar03;
                     Dst.particle_size = 1.0f;
                     particle_engine->AddParticle(&Dst);
@@ -538,7 +538,7 @@ LABEL_25:
                     Dst.type = ParticleType_Bitmap | ParticleType_Rotating |
                                ParticleType_8;
                     Dst.uDiffuse = 0xFF3C1E;
-                    Dst.timeToLive = Random(0x80) + 128;
+                    Dst.timeToLive = Random(0x80) + 128; // was rand() & 0x80
                     Dst.texture = spell_fx_renderer->effpar01;
                     Dst.particle_size = 1.0f;
                     particle_engine->AddParticle(&Dst);
@@ -554,7 +554,7 @@ LABEL_25:
                 } else if (pObject->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                     Dst.type = ParticleType_Bitmap | ParticleType_8;
                     Dst.uDiffuse = Random(RAND_MAX);
-                    Dst.timeToLive = Random(0x80) + 128;
+                    Dst.timeToLive = Random(0x80) + 128; // was rand() & 0x80
                     Dst.texture = spell_fx_renderer->effpar03;
                     Dst.particle_size = 1.0f;
                     particle_engine->AddParticle(&Dst);
@@ -726,7 +726,7 @@ LABEL_25:
                            ParticleType_8;
                 Dst.uDiffuse = 0xFF3C1E;
                 Dst.particle_size = 1.0f;
-                Dst.timeToLive = Random(0x80) + 128;
+                Dst.timeToLive = Random(0x80) + 128; // was rand() & 0x80
                 Dst.texture = spell_fx_renderer->effpar01;
                 particle_engine->AddParticle(&Dst);
                 return;
@@ -742,7 +742,7 @@ LABEL_25:
                 Dst.type = ParticleType_Bitmap | ParticleType_8;
                 Dst.uDiffuse = Random(RAND_MAX);
                 Dst.particle_size = 1.0f;
-                Dst.timeToLive = Random(0x80) + 128;
+                Dst.timeToLive = Random(0x80) + 128; // was rand() & 0x80
                 Dst.texture = spell_fx_renderer->effpar03;
                 particle_engine->AddParticle(&Dst);
             }

@@ -938,7 +938,7 @@ void Render::PrepareDecorationsRenderList_ODM() {
                 local_0.g = 0.0;
                 local_0.b = 0.0;
                 local_0.particle_size = 1.0;
-                local_0.timeToLive = Random(0x80) + 128;
+                local_0.timeToLive = Random(0x80) + 128; // was rand() & 0x80
                 local_0.texture = spell_fx_renderer->effpar01;
                 particle_engine->AddParticle(&local_0);
             }

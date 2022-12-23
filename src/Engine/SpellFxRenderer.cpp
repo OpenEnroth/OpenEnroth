@@ -283,7 +283,7 @@ void SpellFxRenderer::
         local_0.r = 0.0;
         local_0.g = 0.0;
         local_0.b = 0.0;
-        local_0.timeToLive = Random(0x40) + 96;
+        local_0.timeToLive = Random(0x40) + 96; // was rand() & 0x40
         local_0.texture = texture;
         local_0.particle_size = 1.0f;
         particle_engine->AddParticle(&local_0);
