@@ -1,5 +1,7 @@
 #include "SdlLogger.h"
 
+#include <cassert>
+
 #include <SDL_log.h>
 
 #include "SdlEnumTranslation.h"
