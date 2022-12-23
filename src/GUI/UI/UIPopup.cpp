@@ -31,6 +31,8 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Utility/Random/Random.h"
+
 using EngineIoc = Engine_::IocContainer;
 
 Texture *parchment = nullptr;
@@ -604,7 +606,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         pMonsterInfoUI_Doll = pActors[uActorID];
         pMonsterInfoUI_Doll.uCurrentActionAnimation = ANIM_Bored;
         pMonsterInfoUI_Doll.uCurrentActionTime = 0;
-        v9 = rand() % 256 + 128;
+        v9 = Random(256) + 128;
         pMonsterInfoUI_Doll.uCurrentActionLength = v9;
     }
 
@@ -613,7 +615,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         if (pMonsterInfoUI_Doll.uCurrentActionAnimation == ANIM_Bored ||
             pMonsterInfoUI_Doll.uCurrentActionAnimation == ANIM_AtkMelee) {
             pMonsterInfoUI_Doll.uCurrentActionAnimation = ANIM_Standing;
-            pMonsterInfoUI_Doll.uCurrentActionLength = rand() % 128 + 128;
+            pMonsterInfoUI_Doll.uCurrentActionLength = Random(128) + 128;
         } else {
             // rand();
             pMonsterInfoUI_Doll.uCurrentActionAnimation = ANIM_Bored;
@@ -621,7 +623,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
                  pMonsterInfoUI_Doll.pMonsterInfo.uID > 186) &&
                 (pMonsterInfoUI_Doll.pMonsterInfo.uID < 232 ||
                  pMonsterInfoUI_Doll.pMonsterInfo.uID > 249) &&
-                rand() % 30 < 100)
+                Random(30) < 100)
                 pMonsterInfoUI_Doll.uCurrentActionAnimation = ANIM_AtkMelee;
             pMonsterInfoUI_Doll.uCurrentActionLength =
                 8 *
@@ -2095,12 +2097,12 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 invMatrixIndex);  // pOut_y); ?? quickfix needs checking
 
             if (damage_level == 1) {
-                pPlayers[uActiveCharacter]->ReceiveDamage(rand() % 11 + 10, DMGT_FIRE);
+                pPlayers[uActiveCharacter]->ReceiveDamage(Random(11) + 10, DMGT_FIRE);
             } else if (damage_level == 2) {
-                pPlayers[uActiveCharacter]->ReceiveDamage(rand() % 71 + 30, DMGT_FIRE);
+                pPlayers[uActiveCharacter]->ReceiveDamage(Random(71) + 30, DMGT_FIRE);
                 pPlayers[uActiveCharacter]->ItemsPotionDmgBreak(1);  // break 1
             } else if (damage_level == 3) {
-                pPlayers[uActiveCharacter]->ReceiveDamage(rand() % 201 + 50, DMGT_FIRE);
+                pPlayers[uActiveCharacter]->ReceiveDamage(Random(201) + 50, DMGT_FIRE);
                 pPlayers[uActiveCharacter]->ItemsPotionDmgBreak(5);  // break 5
             } else if (damage_level >= 4) {
                 pPlayers[uActiveCharacter]->SetCondition(Condition_Eradicated, 0);

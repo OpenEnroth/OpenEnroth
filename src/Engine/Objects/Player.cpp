@@ -36,6 +36,7 @@
 
 #include "Utility/Memory.h"
 #include "Utility/IndexedArray.h"
+#include "Utility/Random/Random.h"
 
 using EngineIoc = Engine_::IocContainer;
 
@@ -498,7 +499,7 @@ void Player::ItemsPotionDmgBreak(int enchant_count) {
         if (enchant_count) {
             for (int i = 0; i < enchant_count; ++i) {
                 int indexbreak =
-                    item_index_tabl[rand() % avalible_items];  // random item
+                    item_index_tabl[Random(avalible_items)];  // random item
 
                 if (!(pInventoryItemList[indexbreak].uAttributes &
                       ITEM_HARDENED))  // if its not hardened
@@ -1173,7 +1174,7 @@ int Player::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
     int offHndWpnDmg = 0;
 
     if (IsUnarmed()) {  // no weapons
-        mainWpnDmg = rand() % 3 + 1;
+        mainWpnDmg = Random(3) + 1;
     } else {
         if (HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
             ItemGen* mainHandItemGen = this->GetMainHandItem();
@@ -1231,7 +1232,7 @@ int Player::CalculateMeleeDmgToEnemyWithWeapon(ItemGen* weapon,
     int diceResult = 0;
 
     for (int i = 0; i < diceCount; i++) {  // roll dice
-        diceResult += rand() % diceSides + 1;
+        diceResult += Random(diceSides) + 1;
     }
 
     int totalDmg =
@@ -1263,7 +1264,7 @@ int Player::CalculateMeleeDmgToEnemyWithWeapon(ItemGen* weapon,
 
     // master dagger triple damage backstab
     if (GetActualSkillMastery(PLAYER_SKILL_DAGGER) >= PLAYER_SKILL_MASTERY_MASTER &&
-        pItemTable->pItems[itemId].uSkillType == PLAYER_SKILL_DAGGER && rand() % 100 < 10)
+        pItemTable->pItems[itemId].uSkillType == PLAYER_SKILL_DAGGER && Random(100) < 10)
         totalDmg *= 3;
 
     return totalDmg;
@@ -1336,10 +1337,7 @@ int Player::CalculateRangedDamageTo(int uMonsterInfoID) {
     int damagefromroll = 0;
     int damage = 0;
 
-    for (int i = 0; i < pItemTable->pItems[bow->uItemID].uDamageDice;
-         i++) {  // roll damage dice
-        damagefromroll += ((rand() % dmgperroll) + 1);
-    }
+    damagefromroll = RandomDice(pItemTable->pItems[bow->uItemID].uDamageDice, dmgperroll);
 
     damage = pItemTable->pItems[bow->uItemID].uDamageMod +
              damagefromroll;  // total damage
@@ -1488,7 +1486,7 @@ int Player::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
 
     if (GetParameterBonus(player_luck) + resist_value > 0) {
         for (int i = 0; i < 4; i++) {
-            if (rand() % res_rand_divider >= 30)
+            if (Random(res_rand_divider) >= 30)
                 dmg /= 2;  // damage reduction on successful check
             else
                 break;
@@ -1588,14 +1586,14 @@ int Player::StealFromShop(
         if (IsWeapon(equiptype))
             itemvalue *= 3;
 
-        int currMaxItemValue = StealingRandomBonuses[rand() % 5] + stealskill * StealingMasteryBonuses[stealmaster];
+        int currMaxItemValue = StealingRandomBonuses[Random(5)] + stealskill * StealingMasteryBonuses[stealmaster];
         *fineIfFailed = 100 * (reputation + extraStealDifficulty) + itemvalue;
 
         if (extraStealFine) {
             *fineIfFailed += 500;
         }
 
-        if (rand() % 100 >= 5) {
+        if (Random(100) >= 5) {
             if (*fineIfFailed > currMaxItemValue) {
                 if (*fineIfFailed - currMaxItemValue < 500) {
                     return 1;  // fail with item
@@ -1628,10 +1626,10 @@ int Player::StealFromActor(
 
     PLAYER_SKILL_LEVEL stealskill = this->GetActualSkillLevel(PLAYER_SKILL_STEALING);
     PLAYER_SKILL_MASTERY stealingMastery = this->GetActualSkillMastery(PLAYER_SKILL_STEALING);
-    int currMaxItemValue = StealingRandomBonuses[rand() % 5] + stealskill * StealingMasteryBonuses[stealingMastery];
+    int currMaxItemValue = StealingRandomBonuses[Random(5)] + stealskill * StealingMasteryBonuses[stealingMastery];
     int fineIfFailed = actroPtr->pMonsterInfo.uLevel + 100 * (_steal_perm + reputation);
 
-    if (rand() % 100 < 5 || fineIfFailed > currMaxItemValue ||
+    if (Random(100) < 5 || fineIfFailed > currMaxItemValue ||
         actroPtr->ActorEnemy()) {  // busted
         Actor::AggroSurroundingPeasants(uActorID, 1);
         GameUI_SetStatusBar(
@@ -1640,9 +1638,9 @@ int Player::StealFromActor(
         );
         return STEAL_BUSTED;
     } else {
-        int random = rand();
+        int random = Random(100);
 
-        if (random % 100 >= 70) {  // stealing gold
+        if (random >= 70) {  // stealing gold
             if (actroPtr->ActorHasItems[3].GetItemEquipType() != EQUIP_GOLD) {
                 // no gold to steal - fail
                 GameUI_SetStatusBar(
@@ -1652,9 +1650,7 @@ int Player::StealFromActor(
                 return STEAL_NOTHING;
             }
 
-            unsigned int enchBonusSum = 0;  // how much to steal
-            for (int i = 0; i < stealskill; i++)
-                enchBonusSum += rand() % StealingEnchantmentBonusForSkill[stealingMastery] + 1;  // add random stealing bonuses
+            unsigned int enchBonusSum = RandomDice(stealskill, StealingEnchantmentBonusForSkill[stealingMastery]);
 
             int* enchTypePtr = (int*)&actroPtr->ActorHasItems[3].special_enchantment;  // actor has this amount of gold
 
@@ -1680,11 +1676,11 @@ int Player::StealFromActor(
             }
 
             return STEAL_SUCCESS;
-        } else if (random % 100 >= 40) {  // stealing an item
+        } else if (random >= 40) {  // stealing an item
             ItemGen tempItem;
             tempItem.Reset();
 
-            int randslot = rand() % 4;
+            int randslot = Random(4);
             ITEM_TYPE carriedItemId = actroPtr->uCarriedItemID;
 
             // check if we have an item to steal
@@ -1693,10 +1689,10 @@ int Player::StealFromActor(
                     actroPtr->uCarriedItemID = ITEM_NULL;
                     tempItem.uItemID = carriedItemId;
                     if (pItemTable->pItems[carriedItemId].uEquipType == EQUIP_WAND) {
-                        tempItem.uNumCharges = rand() % 6 + pItemTable->pItems[carriedItemId].uDamageMod + 1;
+                        tempItem.uNumCharges = Random(6) + pItemTable->pItems[carriedItemId].uDamageMod + 1;
                         tempItem.uMaxCharges = tempItem.uNumCharges;
                     } else if (pItemTable->pItems[carriedItemId].uEquipType == EQUIP_POTION && carriedItemId != ITEM_POTION_BOTTLE) {
-                        tempItem.uEnchantmentType = 2 * rand() % 4 + 2;
+                        tempItem.uEnchantmentType = 2 * Random(4) + 2;
                     }
                 } else {
                     ItemGen* itemToSteal = &actroPtr->ActorHasItems[randslot];
@@ -1857,7 +1853,7 @@ int Player::ReceiveSpecialAttackEffect(
             if (!itemstobreakcounter) return 0;
 
             itemtobreak = &this->pInventoryItemList
-                               [itemstobreaklist[rand() % itemstobreakcounter]];
+                               [itemstobreaklist[Random(itemstobreakcounter)]];
             statcheckbonus =
                 3 * (std::to_underlying(pItemTable->pItems[itemtobreak->uItemID].uMaterial) +
                      itemtobreak->GetDamageMod());
@@ -1880,7 +1876,7 @@ int Player::ReceiveSpecialAttackEffect(
             if (!itemstobreakcounter) return 0;
 
             itemtobreak = &this->pInventoryItemList
-                               [itemstobreaklist[rand() % itemstobreakcounter]];
+                               [itemstobreaklist[Random(itemstobreakcounter)]];
             statcheckbonus =
                 3 * (std::to_underlying(pItemTable->pItems[itemtobreak->uItemID].uMaterial) +
                      itemtobreak->GetDamageMod());
@@ -1906,7 +1902,7 @@ int Player::ReceiveSpecialAttackEffect(
             if (!itemstobreakcounter) return 0;
 
             itemtobreak = &this->pInventoryItemList
-                               [itemstobreaklist[rand() % itemstobreakcounter]];
+                               [itemstobreaklist[Random(itemstobreakcounter)]];
             statcheckbonus =
                 3 * (std::to_underlying(pItemTable->pItems[itemtobreak->uItemID].uMaterial) +
                      itemtobreak->GetDamageMod());
@@ -1928,7 +1924,7 @@ int Player::ReceiveSpecialAttackEffect(
             if (!itemstobreakcounter) return 0;
 
             itemtostealinvindex =
-                itemstobreaklist[rand() % itemstobreakcounter];
+                itemstobreaklist[Random(itemstobreakcounter)];
             statcheck = GetActualAccuracy();
             statcheckbonus = GetParameterBonus(statcheck);
             break;
@@ -1941,7 +1937,7 @@ int Player::ReceiveSpecialAttackEffect(
     signed int savecheck = GetParameterBonus(luckstat) + statcheckbonus + 30;
     signed int whichplayer;
 
-    if (rand() % savecheck >= 30) {  // saving throw if attacke is avoided
+    if (Random(savecheck) >= 30) {  // saving throw if attacke is avoided
         return 0;
     } else {
         for (whichplayer = 0; whichplayer < 4; whichplayer++) {
@@ -2527,7 +2523,7 @@ void Player::SetRecoveryTime(signed int rec) {
 //----- (0048E9B7) --------------------------------------------------------
 void Player::RandomizeName() {
     if (!uExpressionTimePassed)
-        pName = pNPCStats->pNPCNames[rand() % pNPCStats->uNumNPCNames[uSex]][uSex];
+        pName = pNPCStats->pNPCNames[Random(pNPCStats->uNumNPCNames[uSex])][uSex];
 }
 
 //----- (0048E9F4) --------------------------------------------------------
@@ -3471,9 +3467,9 @@ void Player::Reset(PLAYER_CLASS_TYPE cls) {
     uIntelligenceBonus = 0;
     uMightBonus = 0;
     uLevel = 1;
-    uExperience = 251ll + rand() % 100;
+    uExperience = 251ll + Random(100);
     uSkillPoints = 0;
-    uBirthYear = 1147 - rand() % 6;
+    uBirthYear = 1147 - Random(6);
     pActiveSkills.fill(0);
     memset(_achieved_awards_bits, 0, sizeof(_achieved_awards_bits));
     memset(&spellbook, 0, sizeof(spellbook));
@@ -4444,7 +4440,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     );
                     break;
                 case 11: {
-                    v8 = rand() % 6;
+                    v8 = Random(6);
 
                     auto spell_school_name =
                         localization->GetSpellSchoolName(v8 == 5 ? v8 + 1 : v8);
@@ -5088,7 +5084,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             pParty->SetGold(var_value);
             return;
         case VAR_RandomGold:
-            gold = rand() % var_value + 1;
+            gold = Random(var_value) + 1;
             pParty->SetGold(gold);
             GameUI_SetStatusBar(LSTR_FMT_YOU_HAVE_D_GOLD, gold);
             GameUI_DrawFoodAndGold();
@@ -5098,7 +5094,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             PlayAwardSound_Anim();
             return;
         case VAR_RandomFood:
-            food = rand() % var_value + 1;
+            food = Random(var_value) + 1;
             pParty->SetFood(food);
             GameUI_SetStatusBar(localization->FormatString(LSTR_FMT_YOU_HAVE_D_FOOD, food));
             GameUI_DrawFoodAndGold();
@@ -5592,13 +5588,12 @@ void Player::AddVariable(VariableType var_type, signed int val) {
     switch (var_type) {
         case VAR_RandomGold:
             if (val == 0) val = 1;
-            gold = rand();
-            pParty->PartyFindsGold(gold % val + 1, 1);
+            pParty->PartyFindsGold(Random(val) + 1, 1);
             GameUI_DrawFoodAndGold();
             return;
         case VAR_RandomFood:
             if (val == 0) val = 1;
-            food = rand() % val + 1;
+            food = Random(val) + 1;
             pParty->GiveFood(food);
             GameUI_SetStatusBar(LSTR_FMT_YOU_FIND_D_FOOD, food);
             GameUI_DrawFoodAndGold();
@@ -5670,7 +5665,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             if (IsSpawnableArtifact(ITEM_TYPE(val))) {
                 pParty->pIsArtifactFound[ITEM_TYPE(val)] = 1;
             } else if (IsWand(ITEM_TYPE(val))) {
-                item.uNumCharges = rand() % 6 + item.GetDamageMod() + 1;
+                item.uNumCharges = Random(6) + item.GetDamageMod() + 1;
                 item.uMaxCharges = item.uNumCharges;
             }
             pParty->SetHoldingItem(&item);
@@ -6189,7 +6184,7 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
             pParty->TakeGold(pValue);
             return;
         case VAR_RandomGold:
-            randGold = rand() % (signed int)pValue + 1;
+            randGold = Random(pValue) + 1;
             if (randGold > pParty->GetGold())
                 randGold = pParty->GetGold();
             pParty->TakeGold(randGold);
@@ -6201,7 +6196,7 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
             PlayAwardSound_Anim98();
             return;
         case VAR_RandomFood:
-            randFood = rand() % (signed int)pValue + 1;
+            randFood = Random(pValue) + 1;
             if (randFood > pParty->GetFood())
                 randFood = pParty->GetFood();
             pParty->TakeFood(randFood);
@@ -6842,7 +6837,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
 
         // GM unarmed 1% chance to evade attacks per skill point
         if (playerPtr->GetActualSkillMastery(PLAYER_SKILL_UNARMED) >= PLAYER_SKILL_MASTERY_GRANDMASTER &&
-            rand() % 100 < playerPtr->GetActualSkillLevel(PLAYER_SKILL_UNARMED)) {
+            Random(100) < playerPtr->GetActualSkillLevel(PLAYER_SKILL_UNARMED)) {
             GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->pName.c_str());
             playerPtr->PlaySound(SPEECH_AvoidDamage, 0);
             return;
@@ -6854,7 +6849,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
         if (!equippedArmor || equippedArmor->IsBroken() ||
             (equippedArmor->GetPlayerSkillType() != PLAYER_SKILL_CHAIN &&
              equippedArmor->GetPlayerSkillType() != PLAYER_SKILL_PLATE)) {
-            int randVal = rand() % 4;
+            int randVal = Random(4);
             switch (randVal) {
                 case 0:
                     soundToPlay = (SoundID)108;
@@ -6872,7 +6867,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                     Error("Unexpected sound value");
             }
         } else {
-            int randVal = rand() % 4;
+            int randVal = Random(4);
             switch (randVal) {
                 case 0:
                     soundToPlay = (SoundID)105;
@@ -6954,7 +6949,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
 
                         // kill speech
                         int speechToPlay = SPEECH_AttackHit;
-                        if (rand() % 100 < 20)
+                        if (Random(100) < 20)
                             speechToPlay = actorPtr->pMonsterInfo.uHP >= 100 ? 2 : 1;
                         playerPtr->PlaySound((PlayerSpeech)speechToPlay, 0);
                     }
@@ -6964,7 +6959,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
 
         // special attack trigger
         if (!engine->config->debug.NoDamage.Get() && actorPtr->pMonsterInfo.uSpecialAttackType &&
-            rand() % 100 < actorPtr->pMonsterInfo.uLevel *
+            Random(100) < actorPtr->pMonsterInfo.uLevel *
                                 actorPtr->pMonsterInfo.uSpecialAttackLevel) {
             playerPtr->ReceiveSpecialAttackEffect(actorPtr->pMonsterInfo.uSpecialAttackType, actorPtr);
         }
@@ -7008,7 +7003,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                     }
                 }
                 if (activePlayerCounter) {
-                    playerPtr = &pParty->pPlayers[v72[rand() % activePlayerCounter] - 1];
+                    playerPtr = &pParty->pPlayers[v72[Random(activePlayerCounter)] - 1];
                 }
             }
 
@@ -7041,7 +7036,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                 // GM unarmed 1% chance to evade attack per skill point
                 logger->Info("Arrpow");
                 if (playerPtr->GetActualSkillMastery(PLAYER_SKILL_UNARMED) >= PLAYER_SKILL_MASTERY_GRANDMASTER &&
-                    rand() % 100 < playerPtr->GetActualSkillLevel(PLAYER_SKILL_UNARMED)) {
+                    Random(100) < playerPtr->GetActualSkillLevel(PLAYER_SKILL_UNARMED)) {
                     GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->pName.c_str());
                     playerPtr->PlaySound(SPEECH_AvoidDamage, 0);
                     return;
@@ -7131,7 +7126,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                                 pParty->GivePartyExp(pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].uExp);
 
                             int speechToPlay = SPEECH_AttackHit;
-                            if (rand() % 100 < 20)
+                            if (Random(100) < 20)
                                 speechToPlay = actorPtr->pMonsterInfo.uHP >= 100 ? 2 : 1;
                             playerPtr->PlaySound((PlayerSpeech)speechToPlay, 0);
                         }
@@ -7142,7 +7137,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             // special attack trigger
             if (dmgSource == ABILITY_ATTACK1 && !engine->config->debug.NoDamage.Get() &&
                 actorPtr->pMonsterInfo.uSpecialAttackType &&
-                rand() % 100 < actorPtr->pMonsterInfo.uLevel *
+                Random(100) < actorPtr->pMonsterInfo.uLevel *
                                    actorPtr->pMonsterInfo.uSpecialAttackLevel) {
                 playerPtr->ReceiveSpecialAttackEffect(actorPtr->pMonsterInfo.uSpecialAttackType, actorPtr);
             }
@@ -7510,8 +7505,7 @@ bool Player::PlayerHitOrMiss(Actor* pActor, int distancemod, PLAYER_SKILL_LEVEL 
         attBonus = this->GetActualAttack(false);  // melee
 
     int attPositiveMod =
-        skillmod + rand() % (effectiveActorArmor + 2 * attBonus +
-                             30);  // positive effects to hit on attack
+        skillmod + Random(effectiveActorArmor + 2 * attBonus + 30);  // positive effects to hit on attack
 
     int attNegativeMod;  // negative effects to hit on attack
 
@@ -7770,10 +7764,10 @@ void Player::PlaySound(PlayerSpeech speech, int a3) {
             }
         }
         if (speechCount) {
-            pickedVariant = speechVariantArray[rand() % speechCount];
+            pickedVariant = speechVariantArray[Random(speechCount)];
             int numberOfSubvariants = byte_4ECF08[pickedVariant - 1][uVoiceID];
             if (numberOfSubvariants > 0) {
-                pickedSoundID = rand() % numberOfSubvariants +
+                pickedSoundID = Random(numberOfSubvariants) +
                                 2 * (pickedVariant + 50 * uVoiceID) + 4998;
                 pAudioPlayer->PlaySound(
                     (SoundID)pickedSoundID,
@@ -7791,7 +7785,7 @@ void Player::PlaySound(PlayerSpeech speech, int a3) {
     }
     if (expressionCount) {
         expression = (CHARACTER_EXPRESSION_ID)
-            expressionVariantArray[rand() % expressionCount];
+            expressionVariantArray[Random(expressionCount)];
         if (expression == CHARACTER_EXPRESSION_21 && pickedSoundID) {
             pSoundID = pickedSoundID;
             if (pSoundID >= 0) {

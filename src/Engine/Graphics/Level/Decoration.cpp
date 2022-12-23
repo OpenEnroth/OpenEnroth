@@ -6,6 +6,8 @@
 #include "../../Party.h"
 #include "Engine/Engine.h"
 
+#include "Utility/Random/Random.h"
+
 std::vector<LevelDecoration> pLevelDecorations;
 LevelDecoration* activeLevelDecoration;
 
@@ -40,7 +42,7 @@ int LevelDecoration::GetGlobalEvent() {
         case 5:
             return 32;  // dec02 "Campfire"
         case 6:
-            return 12 + rand() % 4;  // dec03 "Cauldron"
+            return 12 + Random(4);  // dec03 "Cauldron"
         case 7:
         case 8:
         case 9:
@@ -81,7 +83,7 @@ int LevelDecoration::GetGlobalEvent() {
             return 0;
 
         case 34:
-            return 4 + rand() % 6;  // dec32 "Barrel"
+            return 4 + Random(6);  // dec32 "Barrel"
         case 35:
         case 36:
         case 37:
@@ -262,13 +264,13 @@ int LevelDecoration::GetGlobalEvent() {
             return 0;
 
         case 206:
-            return 162 + rand() % 7;  // dec60
+            return 162 + Random(7);  // dec60
         case 207:
-            return 169 + rand() % 7;  // dec61
+            return 169 + Random(7);  // dec61
         case 208:
-            return 176 + rand() % 7;  // dec62
+            return 176 + Random(7);  // dec62
         case 209:
-            return 183 + rand() % 7;  // dec63
+            return 183 + Random(7);  // dec63
         case 210:
             return 150;  // dec64 "Magic pedestal"
         case 211:

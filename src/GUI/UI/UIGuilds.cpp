@@ -24,6 +24,7 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Utility/Workaround/ToUnderlying.h"
+#include "Utility/Random/Random.h"
 
 using EngineIoc = Engine_::IocContainer;
 
@@ -154,18 +155,18 @@ void SpellBookGenerator() {  // for GuildDialogs
         // TODO(captainurist): clean up these ITEM_TYPE casts.
         if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType >= BuildingType_FireGuild) {
             if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType <= BuildingType_DarkGuild) {
-                pItemNum = ITEM_TYPE(rand() % word_4F0F30[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE] +
+                pItemNum = ITEM_TYPE(Random(word_4F0F30[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE]) +
                     11 * std::to_underlying(p2DEvents[window_SpeakInHouse->wData.val - 1].uType) +
                     345);
             } else {
                 if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType == BuildingType_ElementalGuild)
-                    randomnum = rand() % 4;
+                    randomnum = Random(4);
                 else if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType == BuildingType_SelfGuild)
-                    randomnum = rand() % 3 + 4;
+                    randomnum = Random(3) + 4;
                 else if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType == BuildingType_MirroredPath)
-                    randomnum = rand() % 2 + 7;
+                    randomnum = Random(2) + 7;
                 if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType <= BuildingType_MirroredPath)
-                    pItemNum = ITEM_TYPE(rand() % word_4F0F30[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE] +
+                    pItemNum = ITEM_TYPE(Random(word_4F0F30[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE]) +
                         11 * randomnum +
                         400);
             }

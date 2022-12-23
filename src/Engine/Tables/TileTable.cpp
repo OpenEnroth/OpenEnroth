@@ -4,6 +4,7 @@
 
 #include "Engine/Serialization/LegacyImages.h"
 
+#include "Utility/Random/Random.h"
 
 #include "FrameTableInc.h"
 #include "TileFrameTable.h"
@@ -43,7 +44,7 @@ int TileTable::GetTileForTerrainType(signed int terrain_type, bool not_random) {
     if (not_random || terrain_type > 8) {
         return GetTileId(terrain_type, 0);
     }
-    v5 = rand() % 50;
+    v5 = Random(50);
     if (v5 < 20) {
         return GetTileId(terrain_type, 0);
     } else if (v5 < 30) {
@@ -53,7 +54,7 @@ int TileTable::GetTileForTerrainType(signed int terrain_type, bool not_random) {
     } else if (v5 < 48) {
         return GetTileId(terrain_type, 3);
     }
-    v6 = rand() % 8;
+    v6 = Random(8);
     return GetTileId(terrain_type, v6 + 4);
 }
 

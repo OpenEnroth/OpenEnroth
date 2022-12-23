@@ -21,6 +21,8 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Utility/Random/Random.h"
+
 
 
 int pDialogueNPCCount;
@@ -548,7 +550,7 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
     uNPCSex = NPCSexGenTable[seed];
     uRace = NPCRaceGenTable[seed];
     pNPCDataBuff->uSex = uNPCSex;
-    pNPCDataBuff->pName = pNPCNames[rand() % uNumNPCNames[uNPCSex]][uNPCSex];
+    pNPCDataBuff->pName = pNPCNames[Random(uNumNPCNames[uNPCSex])][uNPCSex];
 
     gen_attempts = 0;
     break_gen = false;
@@ -594,7 +596,7 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
         }
 
         uGeneratedPortret =
-            uPortretMin + rand() % (uPortretMax - uPortretMin + 1);
+            uPortretMin + Random(uPortretMax - uPortretMin + 1);
         if (CheckPortretAgainstSex(uGeneratedPortret, uNPCSex))
             break_gen = true;
         ++gen_attempts;
@@ -608,7 +610,7 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
     pNPCDataBuff->uFlags = 0;
     pNPCDataBuff->fame = 0;
     // generate reputation
-    rep_gen = rand() % 100 + 1;
+    rep_gen = Random(100) + 1;
 
     if (rep_gen >= 60) {
         if (rep_gen >= 90) {
@@ -627,7 +629,7 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
         pNPCDataBuff->rep = 0;
     }
 
-    max_prof_cap = rand() % pProfessionChance[uMapId].uTotalprofChance + 1;
+    max_prof_cap = Random(pProfessionChance[uMapId].uTotalprofChance) + 1;
     test_prof_summ = 0;
     gen_profession = 0;
 
@@ -659,10 +661,8 @@ char *NPCStats::sub_495366_MispronounceName(uint8_t firstLetter,
     } else {
         dword_AE336C_LastMispronouncedNameFirstLetter = firstLetter;
         if (this->uNumNPCNames[genderId] == 0) {
-            pickedName =
-                rand() %
-                this->uNumNPCNames[(genderId + 1) %
-                2];  // originally without " + 1) % 2", but
+            pickedName = Random(this->uNumNPCNames[(genderId + 1) % 2]);
+                     // originally without " + 1) % 2", but
                      // that would yield a div by zero
         } else {
             int rangeBottom = 0;
@@ -676,9 +676,9 @@ char *NPCStats::sub_495366_MispronounceName(uint8_t firstLetter,
                 }
             }
             if (rangeTop != 0)
-                pickedName = rangeBottom + rand() % (rangeTop - rangeBottom);
+                pickedName = rangeBottom + Random(rangeTop - rangeBottom);
             else
-                pickedName = rand() % this->uNumNPCNames[genderId];
+                pickedName = Random(this->uNumNPCNames[genderId]);
         }
     }
     dword_AE3370_LastMispronouncedNameResult = pickedName;

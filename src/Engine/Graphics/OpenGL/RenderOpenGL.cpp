@@ -64,10 +64,10 @@
 #include "Engine/SpellFxRenderer.h"
 #include "Arcomage/Arcomage.h"
 
-
 #include "Utility/Geometry/Size.h"
 #include "Utility/Memory.h"
 #include "Utility/Math/TrigLut.h"
+#include "Utility/Random/Random.h"
 
 #ifndef LOWORD
     #define LOWORD(l) ((unsigned short)(((std::uintptr_t)(l)) & 0xFFFF))
@@ -1884,7 +1884,7 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
                 local_0.g = 0.0f;
                 local_0.b = 0.0f;
                 local_0.particle_size = 1.0f;
-                local_0.timeToLive = (rand() & 0x80) + 128;
+                local_0.timeToLive = Random(0x80) + 128; // was rand() & 0x80
                 local_0.texture = spell_fx_renderer->effpar01;
                 particle_engine->AddParticle(&local_0);
             }
