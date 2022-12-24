@@ -13,6 +13,8 @@
 #include "SdlLogger.h"
 
 SdlPlatform::SdlPlatform(PlatformLogger *logger) {
+    assert(logger);
+
     state_ = std::make_unique<SdlPlatformSharedState>(this, logger);
 
     initialized_ = SDL_Init(SDL_INIT_VIDEO) == 0;

@@ -13,7 +13,7 @@ class PlatformLogger;
 
 class SdlPlatformSharedState {
  public:
-    explicit SdlPlatformSharedState(SdlPlatform *owner, PlatformLogger *logger);
+    SdlPlatformSharedState(SdlPlatform *owner, PlatformLogger *logger);
     ~SdlPlatformSharedState();
 
     void LogSdlError(const char *sdlFunctionName);
