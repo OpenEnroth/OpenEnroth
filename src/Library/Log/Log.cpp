@@ -13,6 +13,16 @@ void Log::SetBaseLogger(PlatformLogger *baseLogger) {
     baseLogger_ = baseLogger;
 }
 
+void Log::Write(PlatformLogLevel logLevel, const char *format, ...) {
+    if (baseLogger_ && baseLogger_->LogLevel(ApplicationLog) > logLevel)
+        return;
+
+    va_list args;
+    va_start(args, format);
+    WriteV(logLevel, format, args);
+    va_end(args);
+}
+
 void Log::Info(const char *pFormat, ...) {
     if (baseLogger_ && baseLogger_->LogLevel(ApplicationLog) > LogInfo)
         return;

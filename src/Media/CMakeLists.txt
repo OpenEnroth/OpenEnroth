@@ -2,11 +2,13 @@ cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 set(MEDIA_SOURCES Media.cpp
                   MediaPlayer.cpp
+                  MediaLogger.cpp
                   Audio/AudioPlayer.cpp
                   Audio/OpenALSoundProvider.cpp)
 
 set(MEDIA_HEADERS Media.h
                   MediaPlayer.h
+                  MediaLogger.h
                   Audio/AudioPlayer.h
                   Audio/OpenALSoundProvider.h)
 

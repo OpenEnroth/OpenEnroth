@@ -4,12 +4,15 @@
 
 #include "Platform/PlatformLogger.h"
 
+// TODO(captainurist): Rename Logger.
 class Log {
  public:
     // TODO(captainurist): this should go to ctor, but that's not doable right now because of a shitload of static
     // variables that call EngineIoc::ResolveLogger.
     PlatformLogger *BaseLogger() const;
     void SetBaseLogger(PlatformLogger *baseLogger);
+
+    void Write(PlatformLogLevel logLevel, const char *format, ...);
 
     void Info(const char *pFormat, ...);
     void Warning(const char *pFormat, ...);

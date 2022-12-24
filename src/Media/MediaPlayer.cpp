@@ -34,6 +34,7 @@ extern "C" {
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/Audio/OpenALSoundProvider.h"
 
+#include "MediaLogger.h"
 
 using namespace std::chrono_literals; // NOLINT
 
@@ -965,24 +966,14 @@ void MPlayer::Unload() {
 
 // for video//////////////////////////////////////////////////////////////////
 
-void av_logger(void *ptr, int level, const char *format, va_list args) {
-    char buf[2048];
-    int prefix = 1;
-    if (!engine->config->debug.VerboseLogging.Get())
-        return;
-
-    int ret = av_log_format_line2(ptr, level, format, args, buf, sizeof(buf), &prefix);
-    if (ret < 0)
-        fprintf(stderr, "%s", buf);
-    else
-        printf("%s", buf);
-}
-
 MPlayer::MPlayer() {
     static int libavcodec_initialized = false;
 
+    mediaLogger = std::make_unique<MediaLogger>(logger);
+    MediaLogger::SetGlobalMediaLogger(mediaLogger.get());
+
     if (!libavcodec_initialized) {
-        av_log_set_callback(av_logger);
+        av_log_set_level(AV_LOG_TRACE);
         // Register all available file formats and codecs
 #ifndef FF_API_NEXT
         avcodec_register_all();
@@ -1014,6 +1005,8 @@ MPlayer::~MPlayer() {
     }
 
     delete provider;
+
+    MediaLogger::SetGlobalMediaLogger(nullptr);
 }
 
 // AudioBaseDataSource
