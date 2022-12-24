@@ -62,7 +62,6 @@ bool Application::ParseGameOptions(int argc, char **argv, GameConfig *config) {
     std::string gameOptions = "Game Options";
     std::string windowOptions = "Window Options";
 
-    app->group(generalOptions);
     app->set_help_flag("-h,--help", "Print help and exit")->group(generalOptions);
     app->add_flag("-v,--verbose", config->debug.VerboseLogging, "Enable verbose logging")->group(generalOptions);
 
@@ -73,9 +72,9 @@ bool Application::ParseGameOptions(int argc, char **argv, GameConfig *config) {
     app->add_flag("--nomarg", config->debug.NoMargareth, "Disable Margaret the guide")->group(gameOptions);
     app->add_flag_callback("--nowalksound", unset(config->settings.WalkSound), "Disable walking sound")->group(gameOptions);
     app->add_flag_callback("--nograb", unset(config->window.MouseGrab), "Don't restrict mouse movement to the game window")->group(gameOptions);
-    app->add_flag_callback("--debug", enableDebug, "Enable minimal debugging")->group(gameOptions);
+    app->add_flag_callback("--debug", enableDebug, "Minimal debug mode")->group(gameOptions);
 
-    app->add_option("--display", config->window.Display, "Display number to place the game window at")->type_name("NUMBER")->group(windowOptions);
+    app->add_option("--display", config->window.Display, "Display number to place the game window at (0 is your main display)")->type_name("NUMBER")->group(windowOptions);
     app->add_option("--window-width", config->window.Width, "Game window width")->type_name("WIDTH")->group(windowOptions);
     app->add_option("--window-height", config->window.Height, "Game window height")->type_name("HEIGHT")->group(windowOptions);
     app->add_option("--window-x", config->window.PositionX, "Game window x position in display coordinates")->type_name("X")->group(windowOptions);
