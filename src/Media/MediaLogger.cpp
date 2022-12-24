@@ -9,8 +9,8 @@ extern "C" {
 
 #include "Engine/Engine.h" // TODO(captainurist): drop!
 
-static constinit std::mutex GlobalMediaLoggerMutex;
-static constinit MediaLogger *GlobalMediaLoggerInstance = nullptr;
+static std::mutex GlobalMediaLoggerMutex;
+static MediaLogger *GlobalMediaLoggerInstance = nullptr;
 
 static void GlobalMediaLoggerCallback(void *ptr, int logLevel, const char *format, va_list args) {
     auto lock = std::unique_lock(GlobalMediaLoggerMutex);
