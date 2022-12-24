@@ -1,4 +1,4 @@
-#include "Library/Log/Log.h"
+#include "Library/Log/Logger.h"
 
 #include "Engine/Graphics/LightsStack.h"
 

@@ -6,24 +6,24 @@
 #include <string>
 #include <thread>
 
-#include "Library/Log/Log.h"
+#include "Library/Log/Logger.h"
 
 class MediaLogger {
-public:
-    explicit MediaLogger(::Log *logger); // TODO(captainurist): Drop :: after renaming Log.
+ public:
+    explicit MediaLogger(Logger *logger);
 
     void Log(void *ptr, int logLevel, const char *format, va_list args);
 
     static void SetGlobalMediaLogger(MediaLogger *logger);
     static MediaLogger *GlobalMediaLogger();
 
-private:
+ private:
     struct LogState {
         int prefixFlag = 1;
         std::string message;
     };
 
-private:
-    ::Log *logger_ = nullptr;
+ private:
+    Logger *logger_ = nullptr;
     std::unordered_map<std::thread::id, LogState> stateByThreadId_;
 };

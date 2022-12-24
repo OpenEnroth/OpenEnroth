@@ -8,7 +8,7 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/ErrorHandling.h"
-#include "Library/Log/Log.h"
+#include "Library/Log/Logger.h"
 #include "Engine/MM7.h"
 #include "Engine/MapInfo.h"
 #include "Engine/IocContainer.h"
@@ -199,7 +199,7 @@ struct Engine {
     // GammaController *pGammaController;
     // int field_E74;
 
-    Log *log = nullptr;
+    Logger *log = nullptr;
     BloodsplatContainer *bloodsplat_container = nullptr;
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renedrer = nullptr;

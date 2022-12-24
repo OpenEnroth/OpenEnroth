@@ -19,7 +19,7 @@ static void GlobalMediaLoggerCallback(void *ptr, int logLevel, const char *forma
     GlobalMediaLoggerInstance->Log(ptr, logLevel, format, args);
 }
 
-MediaLogger::MediaLogger(::Log *logger): logger_(logger) {
+MediaLogger::MediaLogger(Logger *logger): logger_(logger) {
     assert(logger);
 }
 

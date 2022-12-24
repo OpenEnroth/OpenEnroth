@@ -7,7 +7,7 @@
 #include <algorithm>
 
 #include "Engine/IocContainer.h"
-#include "Library/Log/Log.h"
+#include "Library/Log/Logger.h"
 
 using EngineIoc = Engine_::IocContainer;
 
@@ -21,7 +21,7 @@ namespace Application {
 
      private:
         const std::string config_file = "womm.ini";
-        Log *logger = nullptr;
+        Logger *logger = nullptr;
         std::vector<ConfigSection *> sections;
 
      public:

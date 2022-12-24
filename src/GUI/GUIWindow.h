@@ -497,7 +497,7 @@ class GUIWindow {
     std::vector<GUIButton*> vButtons;
 
     std::shared_ptr<Mouse> mouse = nullptr;
-    Log *log = nullptr;
+    Logger *log = nullptr;
 };
 
 class GUIWindow_Scroll : public GUIWindow {

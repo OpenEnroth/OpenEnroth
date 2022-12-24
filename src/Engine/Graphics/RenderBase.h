@@ -14,7 +14,7 @@ class RenderBase : public IRender {
         SpellFxRenderer* spellfx,
         std::shared_ptr<ParticleEngine> particle_engine,
         Vis* vis,
-        Log* logger
+        Logger* logger
     ) : IRender(config, decal_builder, lightmap_builder, spellfx, particle_engine, vis, logger) {
     }
 

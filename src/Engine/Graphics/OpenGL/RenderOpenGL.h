@@ -20,7 +20,7 @@ class RenderOpenGL : public RenderBase {
         SpellFxRenderer* spellfx,
         std::shared_ptr<ParticleEngine> particle_engine,
         Vis* vis,
-        Log* logger
+        Logger* logger
     );
     virtual ~RenderOpenGL();
 

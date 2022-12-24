@@ -175,7 +175,7 @@ struct OutdoorLocation {
     float fFogDensity;
     int uLastSunlightUpdateMinute;
 
-    Log *log = nullptr;
+    Logger *log = nullptr;
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renderer = nullptr;
     LightmapBuilder *lightmap_builder = nullptr;

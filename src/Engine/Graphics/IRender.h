@@ -18,7 +18,7 @@ class LightmapBuilder;
 class ParticleEngine;
 struct SpellFxRenderer;
 class Vis;
-class Log;
+class Logger;
 
 namespace LOD {
 class File;
@@ -188,7 +188,7 @@ class IRender {
         SpellFxRenderer *spellfx,
         std::shared_ptr<ParticleEngine> particle_engine,
         Vis *vis,
-        Log *logger
+        Logger *logger
     ) {
         this->config = config;
         this->decal_builder = decal_builder;
@@ -409,7 +409,7 @@ class IRender {
 
     int drawcalls;
 
-    Log *log = nullptr;
+    Logger *log = nullptr;
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renderer = nullptr;
     LightmapBuilder *lightmap_builder = nullptr;

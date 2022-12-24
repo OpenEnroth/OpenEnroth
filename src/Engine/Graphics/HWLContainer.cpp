@@ -5,7 +5,7 @@
 
 #include "Engine/IocContainer.h"
 #include "Engine/ZlibWrapper.h"
-#include "Library/Log/Log.h"
+#include "Library/Log/Logger.h"
 #include "Utility/String.h"
 
 

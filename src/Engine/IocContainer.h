@@ -5,7 +5,7 @@
 struct BloodsplatContainer;
 struct DecalBuilder;
 class LightmapBuilder;
-class Log;
+class Logger;
 namespace Io {
     class Mouse;
 }
@@ -18,7 +18,7 @@ namespace Engine_ {
 
 class IocContainer {
  public:
-    static Log *ResolveLogger();
+    static Logger *ResolveLogger();
     static DecalBuilder *ResolveDecalBuilder();
     static BloodsplatContainer *ResolveBloodsplatContainer();
     static SpellFxRenderer *ResolveSpellFxRenderer();
@@ -42,4 +42,4 @@ class IocContainer {
 }  // namespace Engine_
 
 
-extern Log *logger;
+extern Logger *logger;

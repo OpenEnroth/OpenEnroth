@@ -3,17 +3,17 @@
 #include <ctime>
 #include <cassert>
 
-#include "Log.h"
+#include "Logger.h"
 
-PlatformLogger *Log::BaseLogger() const {
+PlatformLogger *Logger::BaseLogger() const {
     return baseLogger_;
 }
 
-void Log::SetBaseLogger(PlatformLogger *baseLogger) {
+void Logger::SetBaseLogger(PlatformLogger *baseLogger) {
     baseLogger_ = baseLogger;
 }
 
-void Log::Write(PlatformLogLevel logLevel, const char *format, ...) {
+void Logger::Write(PlatformLogLevel logLevel, const char *format, ...) {
     if (baseLogger_ && baseLogger_->LogLevel(ApplicationLog) > logLevel)
         return;
 
@@ -23,7 +23,7 @@ void Log::Write(PlatformLogLevel logLevel, const char *format, ...) {
     va_end(args);
 }
 
-void Log::Info(const char *pFormat, ...) {
+void Logger::Info(const char *pFormat, ...) {
     if (baseLogger_ && baseLogger_->LogLevel(ApplicationLog) > LogInfo)
         return;
 
@@ -33,7 +33,7 @@ void Log::Info(const char *pFormat, ...) {
     va_end(args);
 }
 
-void Log::Warning(const char *pFormat, ...) {
+void Logger::Warning(const char *pFormat, ...) {
     if (baseLogger_ && baseLogger_->LogLevel(ApplicationLog) > LogWarning)
         return;
 
@@ -43,7 +43,7 @@ void Log::Warning(const char *pFormat, ...) {
     va_end(args);
 }
 
-void Log::WriteV(PlatformLogLevel logLevel, const char *pFormat, va_list args) {
+void Logger::WriteV(PlatformLogLevel logLevel, const char *pFormat, va_list args) {
     char message[8192];
     vsnprintf(message, 8192, pFormat, args);
 

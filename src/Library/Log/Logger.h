@@ -4,8 +4,7 @@
 
 #include "Platform/PlatformLogger.h"
 
-// TODO(captainurist): Rename Logger.
-class Log {
+class Logger {
  public:
     // TODO(captainurist): this should go to ctor, but that's not doable right now because of a shitload of static
     // variables that call EngineIoc::ResolveLogger.

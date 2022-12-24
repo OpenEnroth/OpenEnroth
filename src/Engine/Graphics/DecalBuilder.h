@@ -122,6 +122,6 @@ struct DecalBuilder {
     float flt_30C030 = 0;
     float field_30C034 = 0;
 
-    Log* log;
+    Logger* log;
     BloodsplatContainer* bloodsplat_container;
 };

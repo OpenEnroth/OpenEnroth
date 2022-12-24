@@ -573,7 +573,7 @@ struct IndoorLocation {
     std::array<char, 875> _visible_outlines;
     char padding;
 
-    Log *log = nullptr;
+    Logger *log = nullptr;
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renderer = nullptr;
     LightmapBuilder *lightmap_builder = nullptr;
