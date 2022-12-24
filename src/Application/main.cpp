@@ -19,6 +19,9 @@ using Application::GameFactory;
 int MM_Main(int argc, char **argv) {
     try {
         std::unique_ptr<PlatformLogger> logger = PlatformLogger::CreateStandardLogger(WinEnsureConsoleOption);
+        logger->SetLogLevel(ApplicationLog, LogInfo);
+        logger->SetLogLevel(PlatformLog, LogError);
+
         std::unique_ptr<Platform> platform = Platform::CreateStandardPlatform(logger.get());
         EngineIoc::ResolveLogger()->SetBaseLogger(logger.get());
         auto guard = ScopeGuard([] { EngineIoc::ResolveLogger()->SetBaseLogger(nullptr); });
