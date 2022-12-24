@@ -5,6 +5,7 @@ extern "C" {
 }
 
 #include <cassert>
+#include <mutex>
 
 #include "Engine/Engine.h" // TODO(captainurist): drop!
 

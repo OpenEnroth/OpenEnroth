@@ -1172,7 +1172,7 @@ Render::Render(
     SpellFxRenderer* spellfx,
     std::shared_ptr<ParticleEngine> particle_engine,
     Vis* vis,
-    Log* logger
+    Logger* logger
 ) : RenderBase(config, decal_builder, lightmap_builder, spellfx, particle_engine, vis, logger) {
     this->pDirectDraw4 = nullptr;
     this->pFrontBuffer4 = nullptr;
