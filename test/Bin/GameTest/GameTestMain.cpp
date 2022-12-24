@@ -16,11 +16,9 @@
 void RunGameThread(TestState *unsafeState) {
     TestStateHandle state(GameSide, unsafeState);
 
-    std::unique_ptr<Platform> platform = std::make_unique<TestPlatform>(
-        Platform::CreateStandardPlatform(LogDebug, WinEnsureConsoleOption),
-        state
-    );
-    EngineIoc::ResolveLogger()->SetBaseLogger(platform->Logger());
+    std::unique_ptr<PlatformLogger> logger = PlatformLogger::CreateStandardLogger(WinEnsureConsoleOption);
+    std::unique_ptr<Platform> platform = std::make_unique<TestPlatform>(Platform::CreateStandardPlatform(logger.get()), state);
+    EngineIoc::ResolveLogger()->SetBaseLogger(logger.get());
     auto guard = ScopeGuard([] { EngineIoc::ResolveLogger()->SetBaseLogger(nullptr); });
 
     Application::AutoInitDataPath(platform.get());

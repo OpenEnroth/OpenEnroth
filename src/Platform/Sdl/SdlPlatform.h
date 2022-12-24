@@ -9,10 +9,9 @@ class SdlPlatformSharedState;
 
 class SdlPlatform: public Platform {
  public:
-    explicit SdlPlatform(PlatformLogLevel platformLogLevel);
+    explicit SdlPlatform(PlatformLogger *logger);
     virtual ~SdlPlatform();
 
-    virtual PlatformLogger *Logger() const override;
     virtual std::unique_ptr<PlatformWindow> CreateWindow() override;
     virtual std::unique_ptr<PlatformEventLoop> CreateEventLoop() override;
 

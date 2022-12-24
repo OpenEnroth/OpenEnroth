@@ -7,16 +7,15 @@
 
 class SdlWindow;
 class SdlPlatform;
-class SdlLogger;
 class PlatformEvent;
 class PlatformEventHandler;
+class PlatformLogger;
 
 class SdlPlatformSharedState {
  public:
-    explicit SdlPlatformSharedState(SdlPlatform *owner);
+    explicit SdlPlatformSharedState(SdlPlatform *owner, PlatformLogger *logger);
     ~SdlPlatformSharedState();
 
-    SdlLogger *Logger() const;
     void LogSdlError(const char *sdlFunctionName);
 
     void RegisterWindow(SdlWindow *window);
@@ -26,6 +25,6 @@ class SdlPlatformSharedState {
 
  private:
     SdlPlatform *owner_ = nullptr;
-    std::unique_ptr<SdlLogger> logger_;
+    PlatformLogger *logger_ = nullptr;
     std::unordered_map<uint32_t, SdlWindow *> windowById_;
 };

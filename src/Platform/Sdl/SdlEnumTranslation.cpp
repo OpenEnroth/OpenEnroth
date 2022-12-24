@@ -200,4 +200,3 @@ PlatformLogLevel TranslateSdlLogLevel(SDL_LogPriority logLevel) {
         return LogVerbose;
     }
 }
-

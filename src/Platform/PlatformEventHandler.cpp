@@ -1,6 +1,5 @@
 #include "PlatformEventHandler.h"
 
-
 void PlatformEventHandler::Event(PlatformWindow *window, const PlatformEvent *event) {
     switch (event->type) {
     case PlatformEvent::KeyPress:

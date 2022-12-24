@@ -12,7 +12,6 @@ class TestPlatform: public Platform {
  public:
     TestPlatform(std::unique_ptr<Platform> base, TestStateHandle state);
 
-    virtual PlatformLogger *Logger() const override;
     virtual std::unique_ptr<PlatformWindow> CreateWindow() override;
     virtual std::unique_ptr<PlatformEventLoop> CreateEventLoop() override;
     virtual void SetCursorShown(bool cursorShown) override;

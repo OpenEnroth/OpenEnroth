@@ -7,8 +7,6 @@
 #include "Utility/Geometry/Rect.h"
 #include "Utility/Flags.h"
 
-#include "PlatformLogger.h"
-
 #ifdef CreateWindow
 #   undef CreateWindow
 #endif
@@ -17,13 +15,7 @@ class PlatformEvent;
 class PlatformWindow;
 class PlatformEventLoop;
 class PlatformEventHandler;
-
-enum PlatformCreationOption {
-    WinEnsureConsoleOption = 0x1
-};
-using enum PlatformCreationOption;
-MM_DECLARE_FLAGS(PlatformCreationOptions, PlatformCreationOption)
-MM_DECLARE_OPERATORS_FOR_FLAGS(PlatformCreationOptions)
+class PlatformLogger;
 
 /**
  * Platform abstraction layer.
@@ -77,17 +69,10 @@ class Platform {
     /**
      * Creates a standard platform.
      *
-     * @param platformLogLevel          Log level for logging done by the platform itself.
-     * @param options                   Platform creation options.
+     * @param logger                    Logger to use. Must not be null.
      * @return                          A newly created `Platform`. This method is guaranteed to succeed.
      */
-    static std::unique_ptr<Platform> CreateStandardPlatform(PlatformLogLevel platformLogLevel, PlatformCreationOptions options);
-
-    /**
-     * @return                          Platform-specific logger. Returned logger is owned by the platform and
-     *                                  should not be deallocated in user code. This method is guaranteed to succeed.
-     */
-    virtual PlatformLogger *Logger() const = 0;
+    static std::unique_ptr<Platform> CreateStandardPlatform(PlatformLogger *logger);
 
     /**
      * Creates a new platform window.

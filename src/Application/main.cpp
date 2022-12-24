@@ -18,8 +18,9 @@ using Application::GameFactory;
 
 int MM_Main(int argc, char **argv) {
     try {
-        std::unique_ptr<Platform> platform = Platform::CreateStandardPlatform(LogError, WinEnsureConsoleOption);
-        EngineIoc::ResolveLogger()->SetBaseLogger(platform->Logger());
+        std::unique_ptr<PlatformLogger> logger = PlatformLogger::CreateStandardLogger(WinEnsureConsoleOption);
+        std::unique_ptr<Platform> platform = Platform::CreateStandardPlatform(logger.get());
+        EngineIoc::ResolveLogger()->SetBaseLogger(logger.get());
         auto guard = ScopeGuard([] { EngineIoc::ResolveLogger()->SetBaseLogger(nullptr); });
 
         Application::AutoInitDataPath(platform.get());

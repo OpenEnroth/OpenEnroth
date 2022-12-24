@@ -5,6 +5,8 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
+#include "Platform/Sdl/SdlLogger.h"
+
 #include "Utility/String.h"
 
 static bool OS_GetAppStringRecursive(HKEY parent_key, const char *path, char *out_string, int out_string_size, int flags) {
@@ -63,8 +65,6 @@ static bool OS_GetAppStringRecursive(HKEY parent_key, const char *path, char *ou
     }
 }
 
-WinPlatform::WinPlatform(PlatformLogLevel platformLogLevel) : SdlPlatform(platformLogLevel) {}
-
 std::string WinPlatform::WinQueryRegistry(const std::string &path) const {
     char buffer[8192];
     if (OS_GetAppStringRecursive(nullptr, path.c_str(), buffer, sizeof(buffer), 0))
@@ -72,7 +72,11 @@ std::string WinPlatform::WinQueryRegistry(const std::string &path) const {
     return {};
 }
 
-std::unique_ptr<Platform> Platform::CreateStandardPlatform(PlatformLogLevel platformLogLevel, PlatformCreationOptions options) {
+std::unique_ptr<Platform> Platform::CreateStandardPlatform(PlatformLogger *logger) {
+    return std::make_unique<WinPlatform>(logger);
+}
+
+std::unique_ptr<PlatformLogger> PlatformLogger::CreateStandardLogger(PlatformLoggerOptions options) {
     if (options & WinEnsureConsoleOption) {
         if (AllocConsole()) {
             freopen("conin$", "r", stdin);
@@ -81,5 +85,5 @@ std::unique_ptr<Platform> Platform::CreateStandardPlatform(PlatformLogLevel plat
         }
     }
 
-    return std::make_unique<WinPlatform>(platformLogLevel);
+    return std::make_unique<SdlLogger>();
 }

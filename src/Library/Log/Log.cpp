@@ -38,7 +38,7 @@ void Log::WriteV(PlatformLogLevel logLevel, const char *pFormat, va_list args) {
     vsnprintf(message, 8192, pFormat, args);
 
     if (baseLogger_) {
-        baseLogger_->Log(logLevel, message);
+        baseLogger_->Log(ApplicationLog, logLevel, message);
     } else {
         time_t t = time(NULL);
         struct tm tm = *localtime(&t);

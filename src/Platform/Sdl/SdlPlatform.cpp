@@ -12,9 +12,8 @@
 #include "SdlWindow.h"
 #include "SdlLogger.h"
 
-SdlPlatform::SdlPlatform(PlatformLogLevel platformLogLevel) {
-    state_ = std::make_unique<SdlPlatformSharedState>(this);
-    state_->Logger()->SetLogLevel(PlatformLog, platformLogLevel);
+SdlPlatform::SdlPlatform(PlatformLogger *logger) {
+    state_ = std::make_unique<SdlPlatformSharedState>(this, logger);
 
     initialized_ = SDL_Init(SDL_INIT_VIDEO) == 0;
     if (!initialized_)
@@ -23,10 +22,6 @@ SdlPlatform::SdlPlatform(PlatformLogLevel platformLogLevel) {
 
 SdlPlatform::~SdlPlatform() {
     SDL_Quit(); // Safe to call even if there were errors in initialization.
-}
-
-PlatformLogger *SdlPlatform::Logger() const {
-    return state_->Logger();
 }
 
 std::unique_ptr<PlatformWindow> SdlPlatform::CreateWindow() {

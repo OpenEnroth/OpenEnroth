@@ -10,10 +10,6 @@ TestPlatform::TestPlatform(std::unique_ptr<Platform> base, TestStateHandle state
     state_(std::move(state))
 {}
 
-PlatformLogger *TestPlatform::Logger() const {
-    return base_->Logger();
-}
-
 std::unique_ptr<PlatformWindow> TestPlatform::CreateWindow() {
     return std::make_unique<TestWindow>(base_->CreateWindow(), state_);
 }

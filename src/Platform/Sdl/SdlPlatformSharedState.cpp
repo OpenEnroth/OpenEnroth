@@ -8,22 +8,21 @@
 #include "SdlPlatform.h"
 #include "SdlLogger.h"
 
-SdlPlatformSharedState::SdlPlatformSharedState(SdlPlatform *owner): owner_(owner) {
+SdlPlatformSharedState::SdlPlatformSharedState(SdlPlatform *owner, PlatformLogger *logger): owner_(owner), logger_(logger) {
     assert(owner);
-
-    logger_ = std::make_unique<SdlLogger>();
+    assert(logger);
 }
 
 SdlPlatformSharedState::~SdlPlatformSharedState() {
     assert(windowById_.empty()); // Platform should be destroyed after all windows.
 }
 
-SdlLogger *SdlPlatformSharedState::Logger() const {
-    return logger_.get();
-}
-
 void SdlPlatformSharedState::LogSdlError(const char *sdlFunctionName) {
-    logger_->LogSdlError(sdlFunctionName);
+    // Note that we cannot use `SDL_Log` here because we have no guarantees on the actual type of the logger
+    // that was passed in constructor.
+    char buffer[1024];
+    snprintf(buffer, sizeof(buffer), "SDL error in %s: %s.", sdlFunctionName, SDL_GetError());
+    logger_->Log(PlatformLog, LogError, buffer);
 }
 
 void SdlPlatformSharedState::RegisterWindow(SdlWindow *window) {
