@@ -149,8 +149,6 @@ Game::~Game() {}
 int Game::Run() {
     IntegrityTest();
 
-    Engine::LogEngineBuildInfo();
-
     ::platform = platform;
 
     windowHandler.reset(Application::IocContainer::ResolveGameWindowHandler());

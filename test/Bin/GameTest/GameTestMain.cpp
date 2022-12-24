@@ -19,10 +19,11 @@ void RunGameThread(TestState *unsafeState) {
     std::unique_ptr<PlatformLogger> logger = PlatformLogger::CreateStandardLogger(WinEnsureConsoleOption);
     logger->SetLogLevel(ApplicationLog, LogInfo);
     logger->SetLogLevel(PlatformLog, LogError);
-
-    std::unique_ptr<Platform> platform = std::make_unique<TestPlatform>(Platform::CreateStandardPlatform(logger.get()), state);
     EngineIoc::ResolveLogger()->SetBaseLogger(logger.get());
     auto guard = ScopeGuard([] { EngineIoc::ResolveLogger()->SetBaseLogger(nullptr); });
+    Engine::LogEngineBuildInfo();
+
+    std::unique_ptr<Platform> platform = std::make_unique<TestPlatform>(Platform::CreateStandardPlatform(logger.get()), state);
 
     Application::AutoInitDataPath(platform.get());
 
