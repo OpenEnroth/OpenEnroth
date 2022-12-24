@@ -973,7 +973,7 @@ MPlayer::MPlayer() {
     MediaLogger::SetGlobalMediaLogger(mediaLogger.get());
 
     if (!libavcodec_initialized) {
-        av_log_set_level(AV_LOG_TRACE);
+        // av_log_set_level(AV_LOG_TRACE);
         // Register all available file formats and codecs
 #ifndef FF_API_NEXT
         avcodec_register_all();
