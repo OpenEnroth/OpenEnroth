@@ -1,12 +1,12 @@
 #include "MediaLogger.h"
 
-#include <cassert>
-
-#include <Engine/Engine.h> // TODO(captainurist): drop!
-
 extern "C" {
 #include <libavutil/log.h>
 }
+
+#include <cassert>
+
+#include "Engine/Engine.h" // TODO(captainurist): drop!
 
 static constinit std::mutex GlobalMediaLoggerMutex;
 static constinit MediaLogger *GlobalMediaLoggerInstance = nullptr;
@@ -24,7 +24,7 @@ MediaLogger::MediaLogger(Logger *logger): logger_(logger) {
 }
 
 void MediaLogger::Log(void *ptr, int logLevel, const char *format, va_list args) {
-    if (!engine->config->debug.VerboseLogging.Get()) // TODO(captainurist)
+    if (!engine->config->debug.VerboseLogging.Get()) // TODO(captainurist): just handle log levels & log categories properly
         return;
 
     LogState& state = stateByThreadId_[std::this_thread::get_id()];
