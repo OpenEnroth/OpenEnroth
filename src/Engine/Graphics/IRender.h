@@ -149,6 +149,7 @@ struct RenderBillboardD3D {
     int PaletteIndex;
 };
 
+// TODO(pskelton): do we really need 3 different billboard structs
 struct SoftwareBillboard {
     void *pTarget;
     int *pTargetZ;
@@ -170,6 +171,7 @@ struct SoftwareBillboard {
     int sParentBillboardID;
     int sTintColor;
     unsigned short object_pid;
+    int paletteID;
 };
 
 struct nk_tex_font {

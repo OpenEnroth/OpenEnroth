@@ -232,9 +232,9 @@ int PaletteManager::MakeBasePaletteLut(int uPaletteID, char *entries) {
 
 // new
 int PaletteManager::GetPaletteIndex(int uPaletteID) {
-    for (int i = 0; i < 50; ++i)
-        if (pPaletteIDs[i] == uPaletteID)
-            return i;
+    // always attempt to load a missing palette
+    int ind = LoadPalette(uPaletteID);
+    if (ind) return ind;
 
     logger->Warning("Palette %u not loaded. Returning Index to greyscale!", uPaletteID);
     return 0;

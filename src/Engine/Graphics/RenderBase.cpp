@@ -19,6 +19,7 @@
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
+#include "Engine/Graphics/PaletteManager.h"
 
 #include "Utility/Math/TrigLut.h"
 
@@ -406,7 +407,7 @@ void RenderBase::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
     billboard->texture = texture;
     billboard->z_order = a2->screen_space_z;
     billboard->uNumVertices = 4;
-    billboard->PaletteIndex = 0;
+    billboard->PaletteIndex = pPaletteManager->GetPaletteIndex(a2->paletteID);
 
     float screenspace_projection_factor = a2->screenspace_projection_factor_x;
 

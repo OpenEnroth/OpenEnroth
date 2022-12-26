@@ -510,8 +510,9 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
         local_0.particle_size = 3.0;
         local_0.timeToLive = Random(0x40) + 64;
         local_0.texture = a2->GetSpriteFrame()->hw_sprites[0]->texture;
+        local_0.paletteID = a2->GetSpriteFrame()->uPaletteID;
         particle_engine->AddParticle(&local_0);
-        local_0.particle_size = 4.0;
+        local_0.particle_size = 2.0;  // 4.0;
         local_0.x = (float)a2->vPosition.x;
         local_0.y = (float)a2->vPosition.y;
         local_0.z = (float)a2->vPosition.z;
@@ -527,7 +528,7 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
         array_4[a2->field_54 & 0x1F].flt_8_z = (float)a2->vPosition.z;
         local_0.type = ParticleType_Sprite;
         local_0.uDiffuse = 0xFFFFFF;
-        local_0.particle_size = 2.0;
+        local_0.particle_size = 1.0;  // 2.0;
         local_0.x = (float)a2->vPosition.x;
         local_0.y = (float)a2->vPosition.y;
         local_0.z = (float)a2->vPosition.z;
@@ -536,6 +537,7 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
         local_0.b = 0.0f;
         local_0.timeToLive = Random(0x40) + 64;
         local_0.texture = a2->GetSpriteFrame()->hw_sprites[0]->texture;
+        local_0.paletteID = a2->GetSpriteFrame()->uPaletteID;
         particle_engine->AddParticle(&local_0);
     }
 }

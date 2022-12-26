@@ -13,6 +13,8 @@ enum ParticleType : uint32_t {
     ParticleType_Sprite = 0x0800
 };
 
+
+// TODO(pskelton): eliminate this one
 /*  305 */
 #pragma pack(push, 1)
 struct Particle_sw {
@@ -27,6 +29,7 @@ struct Particle_sw {
     int timeToLive;
     Texture *texture;  // unsigned int resource_id;// bitmap IDirect3DTexture
                        // idx or sprite idx depending on type
+    int paletteID = 0;
     float particle_size;  // flt_28
     int field_2C;
     int field_30;
@@ -54,6 +57,7 @@ struct Particle {
     int timeToLive = 0;
     Texture *texture = nullptr;  // unsigned int resource_id;// bitmap IDirect3DTexture
                        // idx or sprite idx depending on type
+    int paletteID = 0;
     float particle_size = 0;  // field_28
     float _x = 0;
     float _y = 0;
