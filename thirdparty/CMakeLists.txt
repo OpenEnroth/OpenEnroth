@@ -9,10 +9,14 @@ set(INCLUDE_THIRDPARTY_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}/mini/src
     PARENT_SCOPE)
 
+set(BUILD_GMOCK OFF)
+set(INSTALL_GTEST OFF)
+
 add_subdirectory(glad)
 add_subdirectory(glm)
 add_subdirectory(luajit)
 add_subdirectory(nuklear)
+add_subdirectory(cli11)
 if(ENABLE_TESTS)
     add_subdirectory(googletest)
 endif()

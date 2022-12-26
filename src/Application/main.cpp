@@ -5,6 +5,7 @@
 #include "Application/Game.h"
 #include "Application/GameConfig.h"
 #include "Application/GameFactory.h"
+#include "Application/GameOptions.h"
 
 #include "Platform/Platform.h"
 
@@ -20,14 +21,13 @@ int MM_Main(int argc, char **argv) {
         std::unique_ptr<Platform> platform = Platform::CreateStandardPlatform(log);
         platform->WinEnsureConsole();
 
-        std::string cmd;
-        for (int i = 1; i < argc; ++i)
-            cmd += std::string(argv[i]) + " ";
-
         Application::AutoInitDataPath(platform.get());
 
-        std::shared_ptr<GameConfig> gameConfig = std::make_shared<GameConfig>(cmd);
-        gameConfig->Startup();
+        std::shared_ptr<GameConfig> gameConfig = std::make_shared<GameConfig>();
+        gameConfig->LoadConfiguration();
+        if (!Application::ParseGameOptions(argc, argv, &*gameConfig))
+            return 1;
+
         std::shared_ptr<Game> game = GameFactory().CreateGame(platform.get(), gameConfig);
 
         return game->Run();

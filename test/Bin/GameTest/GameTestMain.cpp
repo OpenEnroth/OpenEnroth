@@ -19,8 +19,8 @@ void RunGameThread(TestState *unsafeState) {
 
     Application::AutoInitDataPath(platform.get());
 
-    std::shared_ptr<Application::GameConfig> config = std::make_shared<Application::GameConfig>("");
-    config->Startup(); // TODO(captainurist): Reads from womm.ini, not good for tests
+    std::shared_ptr<Application::GameConfig> config = std::make_shared<Application::GameConfig>();
+    config->LoadConfiguration(); // TODO(captainurist): Reads from womm.ini, not good for tests
     config->debug.NoIntro.Set(true);
     config->debug.NoLogo.Set(true);
     config->window.MouseGrab.Set(false);

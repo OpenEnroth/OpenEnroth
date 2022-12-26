@@ -6,11 +6,9 @@
 #include <functional>
 #include <algorithm>
 
-#include "Engine/CommandLine.h"
 #include "Engine/IocContainer.h"
 #include "Utility/Log.h"
 
-using Engine_::CommandLine;
 using EngineIoc = Engine_::IocContainer;
 
 namespace Application {
@@ -23,18 +21,15 @@ namespace Application {
 
      private:
         const std::string config_file = "womm.ini";
-        std::shared_ptr<CommandLine> command_line = nullptr;
         Log *logger = nullptr;
         std::vector<ConfigSection *> sections;
 
      public:
-        explicit GameConfig(const std::string &command_line) {
-             this->command_line = std::make_shared<CommandLine>(command_line);
+        GameConfig() {
              this->logger = EngineIoc::ResolveLogger();
         }
         ~GameConfig();
 
-        void Startup();
         void LoadConfiguration();
         void SaveConfiguration();
 
