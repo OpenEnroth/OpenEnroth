@@ -46,5 +46,7 @@ PlatformLogLevel SdlLogger::LogLevel(PlatformLogCategory category) const {
 }
 
 void SdlLogger::Log(PlatformLogCategory category, PlatformLogLevel logLevel, const char* message) {
+    // SDL_LogMessage is thread-safe, thus this function is also thread-safe. The only caveat is that SDL_Init
+    // should be called before creating several threads that do logging, but we don't care to check for that.
     SDL_LogMessage(TranslatePlatformLogCategory(category), TranslatePlatformLogLevel(logLevel), "%s", message);
 }

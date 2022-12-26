@@ -63,6 +63,8 @@ class PlatformLogger {
      *     logger->Log(ApplicationLog, LogDebug, FormatMessage("blablabla %s %s", s1, s2).c_str());
      * \endcode
      *
+     * This function is thread-safe.
+     *
      * @param category                  Message log category.
      * @param logLevel                  Message log level.
      * @param message                   Message to log.
