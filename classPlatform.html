@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;d98b9e6</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;9066fe2</span>
    </div>
   </td>
  </tr>
@@ -108,15 +108,13 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a903de888d23770ca4219519c7e9b1308"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af1fdbcde1ca33e7e8c9728eccd0547d1"><td class="memItemLeft" align="right" valign="top">virtual int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#af1fdbcde1ca33e7e8c9728eccd0547d1">TickCount</a> () const =0</td></tr>
 <tr class="separator:af1fdbcde1ca33e7e8c9728eccd0547d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae32dad53d3cd359e70d80158300d24f2"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#ae32dad53d3cd359e70d80158300d24f2">WinEnsureConsole</a> () const =0</td></tr>
-<tr class="separator:ae32dad53d3cd359e70d80158300d24f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abba3521d66627895a4dbf19e8ab6110f"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#abba3521d66627895a4dbf19e8ab6110f">WinQueryRegistry</a> (const std::string &amp;path) const =0</td></tr>
 <tr class="separator:abba3521d66627895a4dbf19e8ab6110f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:ab005f66d4471bba90cd444e5a98f8b07"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classPlatform.html">Platform</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#ab005f66d4471bba90cd444e5a98f8b07">CreateStandardPlatform</a> (<a class="el" href="classLog.html">Log</a> *log)</td></tr>
-<tr class="separator:ab005f66d4471bba90cd444e5a98f8b07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79d9b81a4fb7f46256651129865ae0a8"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classPlatform.html">Platform</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#a79d9b81a4fb7f46256651129865ae0a8">CreateStandardPlatform</a> (<a class="el" href="classPlatformLogger.html">PlatformLogger</a> *<a class="el" href="Engine_2IocContainer_8cpp.html#a0009c186c3629201f6c24eded36605f4">logger</a>)</td></tr>
+<tr class="separator:a79d9b81a4fb7f46256651129865ae0a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p ><a class="el" href="classPlatform.html">Platform</a> abstraction layer.</p>
@@ -205,8 +203,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ab005f66d4471bba90cd444e5a98f8b07" name="ab005f66d4471bba90cd444e5a98f8b07"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab005f66d4471bba90cd444e5a98f8b07">&#9670;&#160;</a></span>CreateStandardPlatform()</h2>
+<a id="a79d9b81a4fb7f46256651129865ae0a8" name="a79d9b81a4fb7f46256651129865ae0a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a79d9b81a4fb7f46256651129865ae0a8">&#9670;&#160;</a></span>CreateStandardPlatform()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -217,8 +215,8 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">std::unique_ptr&lt; <a class="el" href="classPlatform.html">Platform</a> &gt; Platform::CreateStandardPlatform </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classLog.html">Log</a> *&#160;</td>
-          <td class="paramname"><em>log</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="classPlatformLogger.html">PlatformLogger</a> *&#160;</td>
+          <td class="paramname"><em>logger</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -231,7 +229,7 @@ Static Public Member Functions</h2></td></tr>
 <p >Creates a standard platform.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">log</td><td><a class="el" href="classLog.html">Log</a> stream to use. Must not be <code>nullptr</code>. </td></tr>
+    <tr><td class="paramname">logger</td><td><a class="el" href="classLogger.html">Logger</a> to use. Must not be null. </td></tr>
   </table>
   </dd>
 </dl>
@@ -431,35 +429,6 @@ Static Public Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Current value of a monotonic clock in milliseconds. </dd></dl>
 
 <p>Implemented in <a class="el" href="classSdlPlatform.html#aecfb5769a4b55e63235c799555335f2d">SdlPlatform</a>, and <a class="el" href="classTestPlatform.html#ae19fe655558d248d0509cdfca7f885e7">TestPlatform</a>.</p>
-
-</div>
-</div>
-<a id="ae32dad53d3cd359e70d80158300d24f2" name="ae32dad53d3cd359e70d80158300d24f2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae32dad53d3cd359e70d80158300d24f2">&#9670;&#160;</a></span>WinEnsureConsole()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void Platform::WinEnsureConsole </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p >Makes sure that the process has a console that it can write to using the standard streams.</p>
-<p >This functions is a noop on non-Windows systems, thus a <code>Win</code> prefix. </p>
-
-<p>Implemented in <a class="el" href="classSdlPlatform.html#af748b64b210d7ed5168b61abff0ffe61">SdlPlatform</a>, <a class="el" href="classWinPlatform.html#ad13cd1bea51b1c0f6e0b269cd00ca6c1">WinPlatform</a>, and <a class="el" href="classTestPlatform.html#a492c200377f6278c920bd45a09294dc6">TestPlatform</a>.</p>
 
 </div>
 </div>

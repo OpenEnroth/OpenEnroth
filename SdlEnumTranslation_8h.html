@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;d98b9e6</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;9066fe2</span>
    </div>
   </td>
  </tr>
@@ -83,6 +83,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="PlatformModifiers_8h.html">Platform/PlatformModifiers.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="PlatformMouseButton_8h.html">Platform/PlatformMouseButton.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="PlatformOpenGLOptions_8h.html">Platform/PlatformOpenGLOptions.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="PlatformLogger_8h.html">Platform/PlatformLogger.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -98,8 +99,30 @@ Functions</h2></td></tr>
 <tr class="separator:afb2f023511c79e6ffe79cd80d43988dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00522fecbe7fdeb1687c4106aad0ec8b"><td class="memItemLeft" align="right" valign="top">SDL_GLprofile&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SdlEnumTranslation_8h.html#a00522fecbe7fdeb1687c4106aad0ec8b">TranslatePlatformOpenGLProfile</a> (<a class="el" href="PlatformOpenGLOptions_8h.html#a29c31fe51525a30eadb91c8581c14447">PlatformOpenGLProfile</a> profile)</td></tr>
 <tr class="separator:a00522fecbe7fdeb1687c4106aad0ec8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3f9f92e453702e6c98f1fda073bccc0"><td class="memItemLeft" align="right" valign="top">SDL_LogPriority&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SdlEnumTranslation_8h.html#ac3f9f92e453702e6c98f1fda073bccc0">TranslatePlatformLogLevel</a> (<a class="el" href="PlatformLogger_8h.html#aadaf937443899628d663afc0e3f95f7b">PlatformLogLevel</a> logLevel)</td></tr>
+<tr class="separator:ac3f9f92e453702e6c98f1fda073bccc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad1bd255f8ebe78bbf4c23855b5e53d52"><td class="memItemLeft" align="right" valign="top"><a class="el" href="PlatformLogger_8h.html#aadaf937443899628d663afc0e3f95f7b">PlatformLogLevel</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SdlEnumTranslation_8h.html#ad1bd255f8ebe78bbf4c23855b5e53d52">TranslateSdlLogLevel</a> (SDL_LogPriority logLevel)</td></tr>
+<tr class="separator:ad1bd255f8ebe78bbf4c23855b5e53d52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="ac3f9f92e453702e6c98f1fda073bccc0" name="ac3f9f92e453702e6c98f1fda073bccc0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac3f9f92e453702e6c98f1fda073bccc0">&#9670;&#160;</a></span>TranslatePlatformLogLevel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">SDL_LogPriority TranslatePlatformLogLevel </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="PlatformLogger_8h.html#aadaf937443899628d663afc0e3f95f7b">PlatformLogLevel</a>&#160;</td>
+          <td class="paramname"><em>logLevel</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a00522fecbe7fdeb1687c4106aad0ec8b" name="a00522fecbe7fdeb1687c4106aad0ec8b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a00522fecbe7fdeb1687c4106aad0ec8b">&#9670;&#160;</a></span>TranslatePlatformOpenGLProfile()</h2>
 
@@ -147,6 +170,24 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype">SDL_Scancode&#160;</td>
           <td class="paramname"><em>key</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad1bd255f8ebe78bbf4c23855b5e53d52" name="ad1bd255f8ebe78bbf4c23855b5e53d52"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad1bd255f8ebe78bbf4c23855b5e53d52">&#9670;&#160;</a></span>TranslateSdlLogLevel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="PlatformLogger_8h.html#aadaf937443899628d663afc0e3f95f7b">PlatformLogLevel</a> TranslateSdlLogLevel </td>
+          <td>(</td>
+          <td class="paramtype">SDL_LogPriority&#160;</td>
+          <td class="paramname"><em>logLevel</em></td><td>)</td>
           <td></td>
         </tr>
       </table>

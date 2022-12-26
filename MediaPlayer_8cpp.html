@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;d98b9e6</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;9066fe2</span>
    </div>
   </td>
  </tr>
@@ -102,11 +102,12 @@ $(function() {
 <code>#include &quot;<a class="el" href="EngineGlobals_8h.html">Engine/EngineGlobals.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ErrorHandling_8h.html">Engine/ErrorHandling.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="IRender_8h.html">Engine/Graphics/IRender.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Log_8h.html">Utility/Log.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Logger_8h.html">Library/Logger/Logger.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIWindow_8h.html">GUI/GUIWindow.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Mouse_8h.html">Io/Mouse.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AudioPlayer_8h.html">Media/Audio/AudioPlayer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="OpenALSoundProvider_8h.html">Media/Audio/OpenALSoundProvider.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MediaLogger_8h.html">MediaLogger.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -133,8 +134,6 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a054d6b3e7e3609d7cd9fe2f5cde2c529"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MediaPlayer_8cpp.html#a054d6b3e7e3609d7cd9fe2f5cde2c529">av_logger</a> (void *ptr, int level, const char *format, va_list args)</td></tr>
-<tr class="separator:a054d6b3e7e3609d7cd9fe2f5cde2c529"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5be6bacef31d891b63a778c75e093d44"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Media_8h.html#aa9016c9de6c0ff9dbc6e13d443ec452b">PAudioDataSource</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MediaPlayer_8cpp.html#a5be6bacef31d891b63a778c75e093d44">CreateAudioFileDataSource</a> (const std::string &amp;file_name)</td></tr>
 <tr class="separator:a5be6bacef31d891b63a778c75e093d44"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3a324d25066849f9f54e27fe1398fe23"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Media_8h.html#aa9016c9de6c0ff9dbc6e13d443ec452b">PAudioDataSource</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MediaPlayer_8cpp.html#a3a324d25066849f9f54e27fe1398fe23">CreateAudioBufferDataSource</a> (std::shared_ptr&lt; <a class="el" href="classBlob.html">Blob</a> &gt; buffer)</td></tr>
@@ -150,46 +149,6 @@ Variables</h2></td></tr>
 <tr class="separator:aaf9ee4055f87a9e3ee8fca85a5226b08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a054d6b3e7e3609d7cd9fe2f5cde2c529" name="a054d6b3e7e3609d7cd9fe2f5cde2c529"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a054d6b3e7e3609d7cd9fe2f5cde2c529">&#9670;&#160;</a></span>av_logger()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void av_logger </td>
-          <td>(</td>
-          <td class="paramtype">void *&#160;</td>
-          <td class="paramname"><em>ptr</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>level</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>format</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">va_list&#160;</td>
-          <td class="paramname"><em>args</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a3a324d25066849f9f54e27fe1398fe23" name="a3a324d25066849f9f54e27fe1398fe23"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3a324d25066849f9f54e27fe1398fe23">&#9670;&#160;</a></span>CreateAudioBufferDataSource()</h2>
 

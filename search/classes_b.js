@@ -17,7 +17,8 @@ var searchData=
   ['lodsprite_14',['LODSprite',['../structLODSprite.html',1,'']]],
   ['lodspriteheader_15',['LODSpriteHeader',['../structLODSpriteHeader.html',1,'']]],
   ['lodspriteline_16',['LODSpriteLine',['../structLODSpriteLine.html',1,'']]],
-  ['log_17',['Log',['../classLog.html',1,'']]],
-  ['lua_5fnk_5fproperty_18',['lua_nk_property',['../structlua__nk__property.html',1,'']]],
-  ['lua_5fnk_5fstyle_19',['lua_nk_style',['../structlua__nk__style.html',1,'']]]
+  ['logger_17',['Logger',['../classLogger.html',1,'']]],
+  ['logstate_18',['LogState',['../structMediaLogger_1_1LogState.html',1,'MediaLogger']]],
+  ['lua_5fnk_5fproperty_19',['lua_nk_property',['../structlua__nk__property.html',1,'']]],
+  ['lua_5fnk_5fstyle_20',['lua_nk_style',['../structlua__nk__style.html',1,'']]]
 ];

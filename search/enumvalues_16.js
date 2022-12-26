@@ -75,5 +75,6 @@ var searchData=
   ['windowdeactivate_72',['WindowDeactivate',['../classPlatformEvent.html#ab1b85cb24f01d755e87bf165a8b18ee8a6a17f09e317eb910aa6ed6e83a920e08',1,'PlatformEvent']]],
   ['windowed_73',['WINDOWED',['../PlatformWindow_8h.html#a7772d16a8207ba672642f139658d8f14adaa43822b2c6abbb5d4eaf867ff6e4a4',1,'PlatformWindow.h']]],
   ['windowed_5fborderless_74',['WINDOWED_BORDERLESS',['../PlatformWindow_8h.html#a7772d16a8207ba672642f139658d8f14afdf8b144dd9158630830f2758831b608',1,'PlatformWindow.h']]],
-  ['windowmove_75',['WindowMove',['../classPlatformEvent.html#ab1b85cb24f01d755e87bf165a8b18ee8a3d9774b680140c9501d89e75d321ccfc',1,'PlatformEvent']]]
+  ['windowmove_75',['WindowMove',['../classPlatformEvent.html#ab1b85cb24f01d755e87bf165a8b18ee8a3d9774b680140c9501d89e75d321ccfc',1,'PlatformEvent']]],
+  ['winensureconsoleoption_76',['WinEnsureConsoleOption',['../PlatformLogger_8h.html#a77dda924f850bad4cf65fb929bc858caafb7f28e94dac9c19e625a429ded9645b',1,'PlatformLogger.h']]]
 ];

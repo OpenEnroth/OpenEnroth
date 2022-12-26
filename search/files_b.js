@@ -12,6 +12,6 @@ var searchData=
   ['localization_2eh_9',['Localization.h',['../Localization_8h.html',1,'']]],
   ['lod_2ecpp_10',['LOD.cpp',['../LOD_8cpp.html',1,'']]],
   ['lod_2eh_11',['LOD.h',['../LOD_8h.html',1,'']]],
-  ['log_2ecpp_12',['Log.cpp',['../Log_8cpp.html',1,'']]],
-  ['log_2eh_13',['Log.h',['../Log_8h.html',1,'']]]
+  ['logger_2ecpp_12',['Logger.cpp',['../Logger_8cpp.html',1,'']]],
+  ['logger_2eh_13',['Logger.h',['../Logger_8h.html',1,'']]]
 ];

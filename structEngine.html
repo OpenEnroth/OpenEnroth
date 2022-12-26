@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;d98b9e6</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;9066fe2</span>
    </div>
   </td>
  </tr>
@@ -71,6 +71,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="structEngine-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">Engine Struct Reference</div></div>
@@ -156,6 +157,11 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab78bfe4d96f2bb1ba01bde25042c5f41"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classIo_1_1KeyboardInputHandler.html">KeyboardInputHandler</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEngine.html#ab78bfe4d96f2bb1ba01bde25042c5f41">GetKeyboardInputHandler</a> () const</td></tr>
 <tr class="separator:ab78bfe4d96f2bb1ba01bde25042c5f41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a3c0041a61788c61d0a1a74ec908793bb"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEngine.html#a3c0041a61788c61d0a1a74ec908793bb">LogEngineBuildInfo</a> ()</td></tr>
+<tr class="separator:a3c0041a61788c61d0a1a74ec908793bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a6ffa1b4807b59574731b7185149f079e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEngine.html#a6ffa1b4807b59574731b7185149f079e">is_underwater</a> = false</td></tr>
@@ -224,8 +230,8 @@ Public Attributes</h2></td></tr>
 <tr class="separator:aa91a4ca4a384a71e6a587e904dfaca8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a09530268c7d0dc2bd637a1249405d93e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structstru10.html">stru10</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEngine.html#a09530268c7d0dc2bd637a1249405d93e">pStru10Instance</a></td></tr>
 <tr class="separator:a09530268c7d0dc2bd637a1249405d93e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5bdcb85016d835a10057b3312dfe2010"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLog.html">Log</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEngine.html#a5bdcb85016d835a10057b3312dfe2010">log</a> = nullptr</td></tr>
-<tr class="separator:a5bdcb85016d835a10057b3312dfe2010"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa6bcde7addd3082f0f6dd55b09a08f7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLogger.html">Logger</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEngine.html#afa6bcde7addd3082f0f6dd55b09a08f7">log</a> = nullptr</td></tr>
+<tr class="separator:afa6bcde7addd3082f0f6dd55b09a08f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0ac7d9d66c93225625dd6d2fd1db357"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structBloodsplatContainer.html">BloodsplatContainer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEngine.html#af0ac7d9d66c93225625dd6d2fd1db357">bloodsplat_container</a> = nullptr</td></tr>
 <tr class="separator:af0ac7d9d66c93225625dd6d2fd1db357"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad2fc611aac4ede564f2f6bad4ed907ac"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structDecalBuilder.html">DecalBuilder</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEngine.html#ad2fc611aac4ede564f2f6bad4ed907ac">decal_builder</a> = nullptr</td></tr>
@@ -746,6 +752,31 @@ Public Attributes</h2></td></tr>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3c0041a61788c61d0a1a74ec908793bb" name="a3c0041a61788c61d0a1a74ec908793bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c0041a61788c61d0a1a74ec908793bb">&#9670;&#160;</a></span>LogEngineBuildInfo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Engine::LogEngineBuildInfo </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -1555,14 +1586,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a5bdcb85016d835a10057b3312dfe2010" name="a5bdcb85016d835a10057b3312dfe2010"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5bdcb85016d835a10057b3312dfe2010">&#9670;&#160;</a></span>log</h2>
+<a id="afa6bcde7addd3082f0f6dd55b09a08f7" name="afa6bcde7addd3082f0f6dd55b09a08f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afa6bcde7addd3082f0f6dd55b09a08f7">&#9670;&#160;</a></span>log</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classLog.html">Log</a>* Engine::log = nullptr</td>
+          <td class="memname"><a class="el" href="classLogger.html">Logger</a>* Engine::log = nullptr</td>
         </tr>
       </table>
 </div><div class="memdoc">
