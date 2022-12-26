@@ -10,5 +10,6 @@ var searchData=
   ['mm7_5floc_5fstrings_7',['MM7_LOC_STRINGS',['../Localization_8cpp.html#ac71ec4519a059ecbcb1a7560514157f9',1,'Localization.cpp']]],
   ['mm_5fallow_5fvector_5fconversion_8',['MM_ALLOW_VECTOR_CONVERSION',['../Vec_8h.html#a3e0f6a43634d91675037d611102492f0',1,'Vec.h']]],
   ['mm_5fdeclare_5fflags_9',['MM_DECLARE_FLAGS',['../Flags_8h.html#a86dd1aa352680a813d6d8a5c13770153',1,'Flags.h']]],
-  ['mm_5fdeclare_5foperators_5ffor_5fflags_10',['MM_DECLARE_OPERATORS_FOR_FLAGS',['../Flags_8h.html#a496ab93f59bfb70aaad00f3afe7608df',1,'Flags.h']]]
+  ['mm_5fdeclare_5foperators_5ffor_5fflags_10',['MM_DECLARE_OPERATORS_FOR_FLAGS',['../Flags_8h.html#a496ab93f59bfb70aaad00f3afe7608df',1,'Flags.h']]],
+  ['mm_5fdefine_5fcli_5flexical_5fcast_5ffor_5fconfig_5ftype_11',['MM_DEFINE_CLI_LEXICAL_CAST_FOR_CONFIG_TYPE',['../GameOptions_8cpp.html#a937d34f4be08ed531b4d316d348e9b1a',1,'GameOptions.cpp']]]
 ];

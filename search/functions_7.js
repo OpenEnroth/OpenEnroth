@@ -7,7 +7,7 @@ var searchData=
   ['game_5fstarthirelingdialogue_4',['Game_StartHirelingDialogue',['../Game_8cpp.html#a95614f5e9785cacc471e7aa69ac9e2d8',1,'Game.cpp']]],
   ['game_5fstartnewgamewhileplaying_5',['Game_StartNewGameWhilePlaying',['../GameMenu_8cpp.html#a917340d167a2c1ae233c1234c54244b5',1,'GameMenu.cpp']]],
   ['game_5ftest_6',['GAME_TEST',['../TestPartyCreationMenu_8cpp.html#a581d4096bb51d0993da701ee6b81ba59',1,'GAME_TEST(Menu, PartyCreation):&#160;TestPartyCreationMenu.cpp'],['../TestPartyCreationMenu_8cpp.html#ad42e166ee1a36662ac07e963e2fc9919',1,'GAME_TEST(Menu, SomethingElse):&#160;TestPartyCreationMenu.cpp']]],
-  ['gameconfig_7',['GameConfig',['../classApplication_1_1GameConfig.html#a9af92cbca3a12c6438ecde87b652392e',1,'Application::GameConfig']]],
+  ['gameconfig_7',['GameConfig',['../classApplication_1_1GameConfig.html#a1fc74516847a322815decc7bc4036a4f',1,'Application::GameConfig']]],
   ['gamekeyboardcontroller_8',['GameKeyboardController',['../classGameKeyboardController.html#a0508f76c375e760e4419faf68abbfd91',1,'GameKeyboardController']]],
   ['gameloop_9',['GameLoop',['../classApplication_1_1Game.html#aaa0ff18388b32b4e6198835a35e000d3',1,'Application::Game']]],
   ['gamemenuui_5fgetkeybindingcolor_10',['GameMenuUI_GetKeyBindingColor',['../UIGame_8cpp.html#ad00492eedb99ec77c9869ba8974bb61a',1,'UIGame.cpp']]],
