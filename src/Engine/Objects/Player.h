@@ -16,8 +16,6 @@
 #include "Engine/Spells/Spells.h"
 
 #include "Utility/IndexedArray.h"
-#include "Utility/Workaround/ToUnderlying.h"
-
 
 struct LloydBeacon {
     LloydBeacon() {

@@ -6,7 +6,6 @@
 
 #include "Utility/Flags.h"
 #include "Utility/Segment.h"
-#include "Utility/Workaround/ToUnderlying.h"
 
 enum class DAMAGE_TYPE : unsigned int {
     DMGT_FIRE = 0,

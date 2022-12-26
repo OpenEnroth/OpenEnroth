@@ -4,8 +4,6 @@
 
 #include "Engine/Party.h"
 
-#include "Utility/Workaround/ToUnderlying.h"
-
 IndexedArray<ConditionProcessor, Condition_Cursed, Condition_Zombie> conditionArray = {
     // hint: condname, protfrommagic, gmprot, enchantment, ...
     {Condition_Cursed, {false, false, ITEM_ENCHANTMENT_NULL}},

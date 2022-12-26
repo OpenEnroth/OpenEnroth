@@ -30,7 +30,6 @@ set(UTILITY_HEADERS Blob.h
                     Geometry/Vec.h
                     Geometry/Size.h
                     Geometry/Point.h
-                    Workaround/ToUnderlying.h
                     Math/Float.h
                     Math/TrigLut.h
                     Random/Random.h

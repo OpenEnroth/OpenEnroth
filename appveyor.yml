@@ -1,6 +1,6 @@
 version: 1.0.{build}
 
-image: Visual Studio 2019
+image: Visual Studio 2022
 
 platform:
   - x86
@@ -9,23 +9,11 @@ configuration:
   - Debug
   - Release
 
-#cache:
-#  - C:\3rd_party -> win\WinPrebuild.ps1
-
 install:
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-http-proxy.ps1'))
-#  - ps: .\win\WinPrebuild.ps1
 
-  # build debug
-  #- ps: |
-  #    Get-ChildItem C:\3rd_party -rec
-
-  # Prepare for NMake
-  #- if "%platform%" == "x86" call "%VS140COMNTOOLS%\..\..\VC\vcvarsall.bat"
-  #- if "%platform%" == "x64" call "%VS140COMNTOOLS%\..\..\VC\vcvarsall.bat" x86_amd64
-  
-  # Workaround testing
-  - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars32.bat"
+  # Start vc++ toolset
+  - call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars32.bat"
 
 build_script:
   - cmd: cd %APPVEYOR_BUILD_FOLDER%

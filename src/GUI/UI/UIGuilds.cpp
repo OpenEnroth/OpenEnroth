@@ -23,7 +23,6 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/Random/Random.h"
 
 using EngineIoc = Engine_::IocContainer;

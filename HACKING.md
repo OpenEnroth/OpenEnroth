@@ -13,7 +13,7 @@ Main dependencies:
 On windows above dependencies are resolved automatically during cmake phase but you must also have Windows SDK v10.0.20348.0 or higher installed.
 
 Additional dependencies:
-* CMake 3.20.4+ (3.24.202208181-MSVC_2 from VS2022 won't work)
+* CMake 3.20.4+ (3.20.21032501-MSVC_2 from VS2019 won't work)
 * Python 3.x (optional, for style checker functionality)
 
 Minimum required compiler versions are as follows:
@@ -46,7 +46,7 @@ You can also select platform dependent [generator](https://cmake.org/cmake/help/
 
 Building on Windows
 ---------------
-You will require the following installed on your computer: Git and Visual Studio 2019/2022.
+You will require the following installed on your computer: Git and Visual Studio 2022.
 
 * Clone, fork or download the repo `https://github.com/gp-alex/world-of-might-and-magic.git`
 * Open the folder in Visual Studio
