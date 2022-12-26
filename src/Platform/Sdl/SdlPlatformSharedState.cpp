@@ -2,15 +2,15 @@
 
 #include <cassert>
 
-#include "Utility/Log.h"
 #include "Utility/MapAccess.h"
 
 #include "SdlWindow.h"
 #include "SdlPlatform.h"
+#include "SdlLogger.h"
 
-SdlPlatformSharedState::SdlPlatformSharedState(SdlPlatform *owner, Log *log): owner_(owner), log_(log) {
+SdlPlatformSharedState::SdlPlatformSharedState(SdlPlatform *owner, PlatformLogger *logger): owner_(owner), logger_(logger) {
     assert(owner);
-    assert(log);
+    assert(logger);
 }
 
 SdlPlatformSharedState::~SdlPlatformSharedState() {
@@ -18,7 +18,11 @@ SdlPlatformSharedState::~SdlPlatformSharedState() {
 }
 
 void SdlPlatformSharedState::LogSdlError(const char *sdlFunctionName) {
-    log_->Warning("SDL error in %s: %s.", sdlFunctionName, SDL_GetError());
+    // Note that we cannot use `SDL_Log` here because we have no guarantees on the actual type of the logger
+    // that was passed in constructor.
+    char buffer[1024];
+    snprintf(buffer, sizeof(buffer), "SDL error in %s: %s.", sdlFunctionName, SDL_GetError());
+    logger_->Log(PlatformLog, LogError, buffer);
 }
 
 void SdlPlatformSharedState::RegisterWindow(SdlWindow *window) {

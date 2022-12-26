@@ -23,7 +23,7 @@ class ImageLoader {
 
  protected:
     std::string resource_name;
-    Log *log;
+    Logger *log;
 };
 
 class Paletted_Img_Loader : public ImageLoader {

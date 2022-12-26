@@ -6,8 +6,7 @@
 
 class WinPlatform : public SdlPlatform {
  public:
-    explicit WinPlatform(Log *log);
+    using SdlPlatform::SdlPlatform;
 
-    virtual void WinEnsureConsole() const override;
     virtual std::string WinQueryRegistry(const std::string &path) const override;
 };

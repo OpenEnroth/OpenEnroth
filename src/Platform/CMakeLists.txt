@@ -18,6 +18,7 @@ set(PLATFORM_HEADERS Platform.h
                      PlatformEventHandler.h
                      PlatformEventLoop.h
                      PlatformEvents.h
+                     PlatformLogger.h
                      PlatformWindow.h
                      PlatformOpenGLContext.h
                      PlatformOpenGLOptions.h
@@ -27,7 +28,8 @@ set(PLATFORM_HEADERS Platform.h
                      Sdl/SdlPlatform.h
                      Sdl/SdlPlatformSharedState.h
                      Sdl/SdlWindow.h
-)
+                     Sdl/SdlLogger.h
+                     Sdl/SdlLogger.cpp)
 
 if(WIN32)
   list(APPEND PLATFORM_SOURCES Win/WinPlatform.cpp)

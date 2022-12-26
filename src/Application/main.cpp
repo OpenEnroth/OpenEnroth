@@ -9,6 +9,8 @@
 
 #include "Platform/Platform.h"
 
+#include "Utility/ScopeGuard.h"
+
 // TODO(captainurist): we don't need these namespaces
 using Application::Game;
 using Application::GameConfig;
@@ -16,10 +18,14 @@ using Application::GameFactory;
 
 int MM_Main(int argc, char **argv) {
     try {
-        Log *log = EngineIoc::ResolveLogger();
+        std::unique_ptr<PlatformLogger> logger = PlatformLogger::CreateStandardLogger(WinEnsureConsoleOption);
+        logger->SetLogLevel(ApplicationLog, LogInfo);
+        logger->SetLogLevel(PlatformLog, LogError);
+        EngineIoc::ResolveLogger()->SetBaseLogger(logger.get());
+        auto guard = ScopeGuard([] { EngineIoc::ResolveLogger()->SetBaseLogger(nullptr); });
+        Engine::LogEngineBuildInfo();
 
-        std::unique_ptr<Platform> platform = Platform::CreateStandardPlatform(log);
-        platform->WinEnsureConsole();
+        std::unique_ptr<Platform> platform = Platform::CreateStandardPlatform(logger.get());
 
         Application::AutoInitDataPath(platform.get());
 

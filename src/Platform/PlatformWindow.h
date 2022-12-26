@@ -11,14 +11,14 @@
 
 class PlatformOpenGLContext;
 
- /**
-  * Abstracted generic window modes.
-  *
-  * WINDOWED is a normal window with frames.
-  * WINDOWED_BORDERLESS is a window without frames.
-  * FULLSCREEN is a traditional exclusive fullscreen mode which changes display resolution and make window sole user of display.
-  * FULLSCREEN_BORDERLESS is a modern fake fullscreen AKA frameless window resized to display resolution and it's top-left corner moved to 0,0 position.
-  */
+/**
+ * - `WINDOWED` is a normal window with frame.
+ * - `WINDOWED_BORDERLESS` is a window without frame.
+ * - `FULLSCREEN` is a traditional exclusive fullscreen mode. It changes display resolution and makes the window
+ *   the sole user of the display.
+ * - `FULLSCREEN_BORDERLESS` is a modern fake fullscreen AKA frameless window resized to desktop resolution and moved
+ *   to cover the whole desktop.
+ */
 enum class PlatformWindowMode {
     WINDOWED = 0,
     WINDOWED_BORDERLESS = 1,

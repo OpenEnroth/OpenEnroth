@@ -178,7 +178,7 @@ RenderOpenGL::RenderOpenGL(
     SpellFxRenderer* spellfx,
     std::shared_ptr<ParticleEngine> particle_engine,
     Vis* vis,
-    Log* logger
+    Logger* logger
 ) : RenderBase(config, decal_builder, lightmap_builder, spellfx, particle_engine, vis, logger) {
     clip_w = 0;
     clip_x = 0;

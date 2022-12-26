@@ -5,16 +5,17 @@
 #include <string>
 
 #include "Utility/Geometry/Rect.h"
+#include "Utility/Flags.h"
 
 #ifdef CreateWindow
 #   undef CreateWindow
 #endif
 
-class Log;
 class PlatformEvent;
 class PlatformWindow;
 class PlatformEventLoop;
 class PlatformEventHandler;
+class PlatformLogger;
 
 /**
  * Platform abstraction layer.
@@ -68,10 +69,10 @@ class Platform {
     /**
      * Creates a standard platform.
      *
-     * @param log                       Log stream to use. Must not be `nullptr`.
+     * @param logger                    Logger to use. Must not be null.
      * @return                          A newly created `Platform`. This method is guaranteed to succeed.
      */
-    static std::unique_ptr<Platform> CreateStandardPlatform(Log *log);
+    static std::unique_ptr<Platform> CreateStandardPlatform(PlatformLogger *logger);
 
     /**
      * Creates a new platform window.
@@ -120,13 +121,6 @@ class Platform {
      * @return                          Current value of a monotonic clock in milliseconds.
      */
     virtual int64_t TickCount() const = 0;
-
-    /**
-     * Makes sure that the process has a console that it can write to using the standard streams.
-     *
-     * This functions is a noop on non-Windows systems, thus a `Win` prefix.
-     */
-    virtual void WinEnsureConsole() const = 0;
 
     /**
      * Windows-only function for querying the registry. Always returns an empty string on non-Windows systems.

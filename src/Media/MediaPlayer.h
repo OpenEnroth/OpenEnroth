@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <memory>
 
 #include "Media/Media.h"
 
@@ -13,6 +14,7 @@
 // MOVIE_Outro    "end_seq1"
 
 class VideoList;
+class MediaLogger;
 
 class MPlayer {
  public:
@@ -31,6 +33,7 @@ class MPlayer {
     bool StopMovie();
 
  protected:
+    std::unique_ptr<MediaLogger> mediaLogger;
     VideoList *might_list;
     VideoList *magic_list;
     std::string sInHouseMovie;

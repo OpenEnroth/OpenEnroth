@@ -5,7 +5,6 @@
 #include <cassert>
 #include <vector>
 
-#include "Platform/PlatformEvents.h"
 #include "Platform/PlatformEventHandler.h"
 
 #include "SdlPlatformSharedState.h"

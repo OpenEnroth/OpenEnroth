@@ -10,11 +10,12 @@
 #include "SdlPlatformSharedState.h"
 #include "SdlEventLoop.h"
 #include "SdlWindow.h"
+#include "SdlLogger.h"
 
-SdlPlatform::SdlPlatform(Log *log) {
-    assert(log);
+SdlPlatform::SdlPlatform(PlatformLogger *logger) {
+    assert(logger);
 
-    state_ = std::make_unique<SdlPlatformSharedState>(this, log);
+    state_ = std::make_unique<SdlPlatformSharedState>(this, logger);
 
     initialized_ = SDL_Init(SDL_INIT_VIDEO) == 0;
     if (!initialized_)
@@ -110,10 +111,6 @@ int64_t SdlPlatform::TickCount() const {
 #else
     return SDL_GetTicks();
 #endif
-}
-
-void SdlPlatform::WinEnsureConsole() const {
-    // Do nothing.
 }
 
 std::string SdlPlatform::WinQueryRegistry(const std::string &) const {

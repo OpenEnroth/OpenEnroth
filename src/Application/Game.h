@@ -51,7 +51,7 @@ class Game {
      std::unique_ptr<PlatformEventLoop> eventLoop;
      std::shared_ptr<IRender> render;
      std::shared_ptr<Mouse> mouse = nullptr;
-     Log *log = nullptr;
+     Logger *log = nullptr;
      DecalBuilder *decal_builder = nullptr;
      Vis *vis = nullptr;
      Menu *menu = nullptr;

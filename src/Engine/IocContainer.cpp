@@ -43,11 +43,11 @@
 using Engine_::IocContainer;
 using Io::Mouse;
 
-Log *logger = nullptr;
+Logger *logger = nullptr;
 
-Log *IocContainer::ResolveLogger() {
+Logger *IocContainer::ResolveLogger() {
     if (!logger) {
-        logger = new Log(stdout, stderr);
+        logger = new Logger();
     }
     return logger;
 }

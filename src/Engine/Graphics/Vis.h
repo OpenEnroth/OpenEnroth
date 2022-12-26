@@ -159,7 +159,7 @@ class Vis {
 
     RenderVertexSoft debugpick;
 
-    Log *log = nullptr;
+    Logger *log = nullptr;
 };
 #pragma pack(pop)
 

@@ -67,7 +67,7 @@ struct LightsStack_StationaryLight_ {
     std::array<StationaryLight, 400> pLights;
     unsigned int uNumLightsActive;
 
-    Log *log;
+    Logger *log;
 };
 #pragma pack(pop)
 
@@ -88,6 +88,6 @@ struct LightsStack_MobileLight_ {
 
     std::array<MobileLight, 400> pLights;
     unsigned int uNumLightsActive;
-    Log *log;
+    Logger *log;
 };
 #pragma pack(pop)

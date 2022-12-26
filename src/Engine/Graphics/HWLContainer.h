@@ -20,7 +20,7 @@ class HWLTexture {
     uint16_t *pPixels = nullptr;
 };
 
-class Log;
+class Logger;
 
 class HWLContainer {
  public:
@@ -33,6 +33,6 @@ class HWLContainer {
 
  protected:
     FILE *pFile;
-    Log *log;
+    Logger *log;
     std::map<std::string, size_t> mNodes;
 };
