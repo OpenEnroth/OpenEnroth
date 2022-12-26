@@ -7,5 +7,5 @@ class SdlLogger: public PlatformLogger {
     virtual void SetLogLevel(PlatformLogCategory category, PlatformLogLevel logLevel) override;
     virtual PlatformLogLevel LogLevel(PlatformLogCategory category) const override;
 
-    virtual void Log(PlatformLogCategory category, PlatformLogLevel logLevel, const char* message) override;
+    virtual void Log(PlatformLogCategory category, PlatformLogLevel logLevel, const char *message) override;
 };

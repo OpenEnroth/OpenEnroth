@@ -1,7 +1,5 @@
 #include <cstdarg>
 #include <cstdio>
-#include <ctime>
-#include <cassert>
 
 #include "Logger.h"
 
@@ -50,10 +48,6 @@ void Logger::LogV(PlatformLogLevel logLevel, const char *pFormat, va_list args) 
     if (baseLogger_) {
         baseLogger_->Log(ApplicationLog, logLevel, message);
     } else {
-        time_t t = time(NULL);
-        struct tm tm = *localtime(&t);
-
-        fprintf(stderr, "[%04d/%02d/%02d %02d:%02d:%02d] %s\n",
-                tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, message);
+        fprintf(stderr, "UNINITIALIZED LOGGER: %s\n", message);
     }
 }

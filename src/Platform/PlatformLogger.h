@@ -69,5 +69,5 @@ class PlatformLogger {
      * @param logLevel                  Message log level.
      * @param message                   Message to log.
      */
-    virtual void Log(PlatformLogCategory category, PlatformLogLevel logLevel, const char* message) = 0;
+    virtual void Log(PlatformLogCategory category, PlatformLogLevel logLevel, const char *message) = 0;
 };
