@@ -6,7 +6,7 @@
 #include <string>
 #include <thread>
 
-#include "Library/Log/Logger.h"
+#include "Library/Logger/Logger.h"
 
 class MediaLogger {
  public:

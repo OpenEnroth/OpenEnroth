@@ -8,7 +8,7 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/ErrorHandling.h"
-#include "Library/Log/Logger.h"
+#include "Library/Logger/Logger.h"
 #include "Engine/MM7.h"
 #include "Engine/MapInfo.h"
 #include "Engine/IocContainer.h"

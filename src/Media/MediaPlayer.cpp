@@ -25,7 +25,7 @@ extern "C" {
 #include "Engine/EngineGlobals.h"
 #include "Engine/ErrorHandling.h"
 #include "Engine/Graphics/IRender.h"
-#include "Library/Log/Logger.h"
+#include "Library/Logger/Logger.h"
 
 #include "GUI/GUIWindow.h"
 

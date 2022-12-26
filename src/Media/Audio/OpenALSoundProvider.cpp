@@ -24,7 +24,7 @@
 
 #include "Engine/ErrorHandling.h"
 #include "Engine/Engine.h"
-#include "Library/Log/Logger.h"
+#include "Library/Logger/Logger.h"
 #include "Media/MediaPlayer.h"
 
 bool CheckError() {
