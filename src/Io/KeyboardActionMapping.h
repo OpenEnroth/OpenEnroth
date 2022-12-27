@@ -34,7 +34,7 @@ namespace Io {
         PlatformKey GetKey(InputAction action) const;
         KeyToggleType GetToggleType(InputAction action) const;
 
-        GameConfig::ConfigValue<std::string> *InputActionToConfigKey(InputAction action);
+        ConfigValue<std::string> *InputActionToConfigKey(InputAction action);
         PlatformKey ConfigDefaultKey(InputAction action);
         PlatformKey ConfigGetKey(InputAction action);
         void ConfigSetKey(InputAction action, PlatformKey key);

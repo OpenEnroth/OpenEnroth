@@ -10,29 +10,26 @@
 using Application::GameConfig;
 
 // TODO(captainurist): this begs a PR to CLI11
-namespace Application {
-    template<class T>
-    bool lexical_cast(const std::string &input, GameConfig::ConfigValue<T> &configValue) {
-        T value;
-        if (!CLI::detail::lexical_cast(input, value))
-            return false;
+template<class T>
+bool lexical_cast(const std::string &input, ConfigValue<T> &configValue) {
+    T value;
+    if (!CLI::detail::lexical_cast(input, value))
+        return false;
 
-        configValue.Set(value);
-        return true;
-    }
+    configValue.Set(value);
+    return true;
+}
 
-    template<class A, class B, class T>
-    bool lexical_assign(const std::string &input, GameConfig::ConfigValue<T> &configValue) {
-        return lexical_cast(input, configValue);
-    }
-} // namespace Application
+template<class A, class B, class T>
+bool lexical_assign(const std::string &input, ConfigValue<T> &configValue) {
+    return lexical_cast(input, configValue);
+}
 
 #define MM_DEFINE_CLI_LEXICAL_CAST_FOR_CONFIG_TYPE(TYPE)                                                                \
 namespace CLI::detail {                                                                                                 \
     template<>                                                                                                          \
-    bool lexical_cast<GameConfig::ConfigValue<TYPE>>(const std::string &input,                                          \
-                                                     GameConfig::ConfigValue<TYPE> &configValue) {                      \
-        return Application::lexical_cast(input, configValue);                                                           \
+    bool lexical_cast<ConfigValue<TYPE>>(const std::string &input, ConfigValue<TYPE> &configValue) {                    \
+        return lexical_cast(input, configValue);                                                                        \
     }                                                                                                                   \
 } // namespace CLI::detail
 
@@ -52,7 +49,7 @@ bool Application::ParseGameOptions(int argc, char **argv, GameConfig *config) {
         config->debug.InfiniteGold.Set(true);
     };
 
-    auto unset = [] (GameConfig::ConfigValue<bool>& value) {
+    auto unset = [] (ConfigValue<bool>& value) {
         return [&] {
             value.Set(false);
         };

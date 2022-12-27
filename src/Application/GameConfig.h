@@ -1,163 +1,20 @@
 #pragma once
 
-#include <memory>
 #include <string>
-#include <vector>
-#include <functional>
 #include <algorithm>
 
-#include "Engine/IocContainer.h"
-#include "Library/Logger/Logger.h"
+#include "Library/Config/Config.h"
 
-using EngineIoc = Engine_::IocContainer;
+class Logger;
 
 namespace Application {
-    class GameConfig {
+    class GameConfig : private Config {
      public:
-        class ConfigSection;
-
-        template <class T>
-        class ConfigValue;
-
-     private:
-        const std::string config_file = "womm.ini";
-        Logger *logger = nullptr;
-        std::vector<ConfigSection *> sections;
-
-     public:
-        GameConfig() {
-             this->logger = EngineIoc::ResolveLogger();
-        }
+        GameConfig();
         ~GameConfig();
 
         void LoadConfiguration();
         void SaveConfiguration();
-
-        void ResetSections() {
-            for (ConfigSection *section : sections)
-                section->Reset();
-        }
-
-        void LoadSections() {
-            for (ConfigSection *section : sections)
-                section->Load();
-        }
-
-        void SaveSections() {
-            for (ConfigSection *section : sections)
-                section->Save();
-        }
-
-        void Register(ConfigSection *section) {
-            sections.push_back(section);
-        }
-
-        class ConfigSection {
-         public:
-            ConfigSection(GameConfig *config, const std::string &sectionName): sectionName(sectionName) {
-                config->Register(this);
-            }
-            ConfigSection(const ConfigSection &other) = delete; // non-copyable
-            ConfigSection(ConfigSection&& other) = delete; // non-movable
-
-            void Reset() {
-                RunAll(resetCallbacks);
-            }
-
-            void Load() {
-                RunAll(loadCallbacks);
-            }
-
-            void Save() {
-                RunAll(saveCallbacks);
-            }
-
-            template<class T>
-            void Register(ConfigValue<T> *value) {
-                resetCallbacks.push_back([value] { value->Reset(); });
-                saveCallbacks.push_back([value, this] { SaveOption(sectionName, value); });
-                loadCallbacks.push_back([value, this] { LoadOption(sectionName, value); });
-            }
-
-         private:
-            using Callback = std::function<void()>;
-
-            void RunAll(const std::vector<Callback> &callbacks) {
-                for (const Callback &callback : callbacks)
-                    callback();
-            }
-
-            std::vector<Callback> resetCallbacks;
-            std::vector<Callback> loadCallbacks;
-            std::vector<Callback> saveCallbacks;
-            std::string sectionName;
-        };
-
-        template <class T>
-        class ConfigValue {
-         public:
-            using validator_type = T (*)(T);
-
-            ConfigValue(ConfigSection *section, const std::string &n, T d, validator_type v = nullptr) :
-                name(n), defValue(d), value(d), validator(v) {
-                section->Register(this);
-            }
-
-            inline const std::string &Name() const {
-                return name;
-            }
-
-            inline const T &Default() const {
-                return defValue;
-            }
-
-            inline const T &Get() const {
-                return value;
-            }
-
-            inline T Set(const T &val) {
-                if (validator)
-                    value = validator(val);
-                else
-                    value = val;
-
-                return value;
-            }
-
-            inline void Reset() {
-                value = defValue;
-            }
-
-            inline T Toggle() requires std::is_same_v<T, bool> {
-                value = !value;
-
-                return value;
-            }
-
-            inline T Increment() requires std::is_same_v<T, int> {
-                if (validator)
-                    value = validator(value + 1);
-                else
-                    value++;
-
-                return value;
-            }
-
-            inline void Decrement() requires std::is_same_v<T, int> {
-                if (validator)
-                    value = validator(value - 1);
-                else
-                    value--;
-
-                return value;
-            }
-
-         private:
-             std::string name;
-             T value;
-             T defValue;
-             validator_type validator;
-        };
 
         class Debug : public ConfigSection {
          public:
@@ -300,28 +157,13 @@ namespace Application {
                 return artifact_limit;
             }
             static float ValidateInteractionDepth(float depth) {
-                if (depth <= 64.0f)
-                    return 64.0f;
-                else if (depth > 16192.0f)
-                    return 16192.0f;
-
-                return depth;
+                return std::clamp(depth, 64.0f, 16192.0f);
             }
             static float ValidateRangedAttackDepth(float depth) {
-                if (depth <= 64.0f)
-                    return 64.0f;
-                else if (depth > 16192.0f)
-                    return 16192.0f;
-
-                return depth;
+                return std::clamp(depth, 64.0f, 16192.0f);
             }
             static int ValidateFloorChecksEps(int eps) {
-                if (eps < 0)
-                    return 0;
-                else if (eps > 10)
-                    return 10;
-
-                return eps;
+                return std::clamp(eps, 0, 10);
             }
             static int ValidateRecovery(int recovery) {
                 if (recovery < 0)
@@ -426,16 +268,10 @@ namespace Application {
                 return renderer;
             }
             static int ValidateGamma(int level) {
-                if (level < 0)
-                    return 0;
-                else if (level > 9)
-                    return 9;
-
-                return level;
+                return std::clamp(level, 0, 9);
             }
             static int ValidateMaxSectors(int sectors) {
-                sectors = std::clamp(sectors, 1, 150);
-                return sectors;
+                return std::clamp(sectors, 1, 150);
             }
             static int ValidateTorchlight(int distance) {
                 if (distance < 0)
@@ -528,28 +364,13 @@ namespace Application {
 
          private:
             static int ValidateLevel(int level) {
-                if (level < 0)
-                    return 0;
-                else if (level > 9)
-                    return 9;
-
-                return level;
+                return std::clamp(level, 0, 9);
             }
             static int ValidateVerticalTurnSpeed(int speed) {
-                if (speed <= 0)
-                    return 1;
-                else if (speed > 128)
-                    return 128;
-
-                return speed;
+                return std::clamp(speed, 1, 128);
             }
             static float ValidateTurnSpeed(float speed) {
-                if (speed < 0.0f)
-                    return 0.0f;
-                else if (speed > 1024.0f)
-                    return 1024.0f;
-
-                return speed;
+                return std::clamp(speed, 0.0f, 1024.0f);
             }
         };
 
@@ -614,15 +435,8 @@ namespace Application {
         Window window{ this };
 
      private:
-        static void LoadOption(std::string section, GameConfig::ConfigValue<bool> *val);
-        static void LoadOption(std::string section, GameConfig::ConfigValue<float> *val);
-        static void LoadOption(std::string section, GameConfig::ConfigValue<int> *val);
-        static void LoadOption(std::string section, GameConfig::ConfigValue<std::string> *val);
-
-        static void SaveOption(std::string section, GameConfig::ConfigValue<bool> *val);
-        static void SaveOption(std::string section, GameConfig::ConfigValue<int> *val);
-        static void SaveOption(std::string section, GameConfig::ConfigValue<float> *val);
-        static void SaveOption(std::string section, GameConfig::ConfigValue<std::string> *val);
+        const std::string config_file = "womm.ini";
+        Logger *logger = nullptr;
     };
 
 }  // namespace Application

@@ -170,8 +170,8 @@ KeyToggleType GetToggleType(InputAction action) {
         return KeyToggleType::TOGGLE_Continuously;
 }
 
-GameConfig::ConfigValue<std::string> *KeyboardActionMapping::InputActionToConfigKey(InputAction action) {
-    GameConfig::ConfigValue<std::string> *val = nullptr;
+ConfigValue<std::string> *KeyboardActionMapping::InputActionToConfigKey(InputAction action) {
+    ConfigValue<std::string> *val = nullptr;
 
     switch (action) {
         case(InputAction::MoveForward):
@@ -273,7 +273,7 @@ GameConfig::ConfigValue<std::string> *KeyboardActionMapping::InputActionToConfig
 
 PlatformKey KeyboardActionMapping::ConfigDefaultKey(InputAction action) {
     PlatformKey key = PlatformKey::None;
-    GameConfig::ConfigValue<std::string> *val = InputActionToConfigKey(action);
+    ConfigValue<std::string> *val = InputActionToConfigKey(action);
 
     if (val)
         TryParseDisplayName(val->Default(), &key);
@@ -283,7 +283,7 @@ PlatformKey KeyboardActionMapping::ConfigDefaultKey(InputAction action) {
 
 PlatformKey KeyboardActionMapping::ConfigGetKey(InputAction action) {
     PlatformKey key = PlatformKey::None;
-    GameConfig::ConfigValue<std::string> *val = InputActionToConfigKey(action);
+    ConfigValue<std::string> *val = InputActionToConfigKey(action);
 
     if (val)
         TryParseDisplayName(val->Get(), &key);
@@ -292,7 +292,7 @@ PlatformKey KeyboardActionMapping::ConfigGetKey(InputAction action) {
 }
 
 void KeyboardActionMapping::ConfigSetKey(InputAction action, PlatformKey key) {
-    GameConfig::ConfigValue<std::string> *val = InputActionToConfigKey(action);
+    ConfigValue<std::string> *val = InputActionToConfigKey(action);
 
     if (val)
         val->Set(GetDisplayName(key));
