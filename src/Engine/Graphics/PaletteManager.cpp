@@ -232,6 +232,8 @@ int PaletteManager::MakeBasePaletteLut(int uPaletteID, char *entries) {
 
 // new
 int PaletteManager::GetPaletteIndex(int uPaletteID) {
+    if (!uPaletteID) return 0;
+
     // always attempt to load a missing palette
     int ind = LoadPalette(uPaletteID);
     if (ind) return ind;

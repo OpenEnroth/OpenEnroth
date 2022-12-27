@@ -457,6 +457,7 @@ void RenderOpenGL::BillboardSphereSpellFX(struct SpellFX_Billboard *a1, int diff
     pBillboardRenderListD3D[v5].texture = 0;
     pBillboardRenderListD3D[v5].uNumVertices = a1->uNumVertices;
     pBillboardRenderListD3D[v5].z_order = depth;
+    pBillboardRenderListD3D[v5].PaletteIndex = 0;
 
     pBillboardRenderListD3D[v5].pQuads[3].pos.x = 0.0f;
     pBillboardRenderListD3D[v5].pQuads[3].pos.y = 0.0f;

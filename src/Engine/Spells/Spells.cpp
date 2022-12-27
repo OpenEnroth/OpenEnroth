@@ -379,7 +379,8 @@ bool SpellBuff::IsBuffExpiredToTime(GameTime time) {
 bool SpellBuff::Apply(GameTime expire_time, PLAYER_SKILL_MASTERY uSkillMastery,
                       PLAYER_SKILL_LEVEL uPower, int uOverlayID,
                       uint8_t caster) {
-    Assert(uSkillMastery >= PLAYER_SKILL_MASTERY_NOVICE && uSkillMastery <= PLAYER_SKILL_MASTERY_GRANDMASTER);
+    // TODO(pskelton): why was this here?
+    // Assert(uSkillMastery >= PLAYER_SKILL_MASTERY_NOVICE && uSkillMastery <= PLAYER_SKILL_MASTERY_GRANDMASTER);
 
     if (this->expire_time && (expire_time < this->expire_time)) {
         return false;

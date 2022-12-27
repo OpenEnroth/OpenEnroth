@@ -270,6 +270,7 @@ void ParticleEngine::DrawParticles_BLV() {
                 v15.screen_space_y = p->uScreenSpaceY;
                 v15.object_pid = p->object_pid;
                 v15.screen_space_z = p->zbuffer_depth;
+                v15.paletteID = p->paletteID;
                 render->MakeParticleBillboardAndPush(
                     &v15, 0, p->uLightColor_bgr, p->angle);
             } else if (p->type & ParticleType_Line) {  // type doesnt appear to be used
@@ -309,6 +310,7 @@ void ParticleEngine::DrawParticles_BLV() {
                 v15.screen_space_y = p->uScreenSpaceY;
                 v15.object_pid = p->object_pid;
                 v15.screen_space_z = p->zbuffer_depth;
+                v15.paletteID = p->paletteID;
                 render->MakeParticleBillboardAndPush(
                     &v15, p->texture, p->uLightColor_bgr, p->angle);
             } else if (p->type & ParticleType_Sprite) {
