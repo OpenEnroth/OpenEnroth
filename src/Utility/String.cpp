@@ -14,7 +14,7 @@ static int AsciiCaseInsensitiveCompare(const char *l, const char *r, size_t size
     const unsigned char *ul = reinterpret_cast<const unsigned char *>(l);
     const unsigned char *ur = reinterpret_cast<const unsigned char *>(r);
 
-    for (;size > 0; size--) {
+    for (; size > 0; size--) {
         int result = static_cast<int>(AsciiToLower(*ul++)) - static_cast<int>(AsciiToLower(*ur++));
         if (result != 0)
             return result;
