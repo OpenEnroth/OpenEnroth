@@ -32,6 +32,8 @@ inline std::string TrimRemoveQuotes(std::string str) {
 
 bool iequals(std::string_view a, std::string_view b);
 bool iless(std::string_view a, std::string_view b);
+bool iequalsAscii(std::u8string_view a, std::u8string_view b);
+bool ilessAscii(std::u8string_view a, std::u8string_view b);
 
 struct ILess {
     bool operator()(std::string_view a, std::string_view b) const {
