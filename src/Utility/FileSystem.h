@@ -16,6 +16,8 @@ std::filesystem::path ExpandUserPath(std::string path);
  * This function emulates the behavior of a case-insensitive filesystem. You pass in a path, this function traverses
  * it as if the underlying filesystem was case-insensitive, and returns a case-corrected path that actually exists.
  *
+ * Case sensitivity is properly handled only for ascii characters.
+ *
  * Note that this is not about Windows vs Linux. On Windows case sensitivity can be set per directory. On Linux it's
  * possible to mount case-insensitive partitions.
  *
