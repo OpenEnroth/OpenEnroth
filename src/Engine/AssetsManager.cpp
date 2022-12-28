@@ -10,6 +10,22 @@
 
 AssetsManager *assets = new AssetsManager();
 
+void AssetsManager::ReleaseAllTextures() {
+    logger->Info("Render - Releasing Textures.");
+    // clears any textures from gpu
+    for (auto img : images) {
+        render->DeleteTexture(img.second);
+    }
+    for (auto bit : bitmaps) {
+        render->DeleteTexture(bit.second);
+    }
+    for (auto spr : sprites) {
+        render->DeleteTexture(spr.second);
+    }
+
+    return;
+}
+
 bool AssetsManager::ReleaseAllImages() {
     return true;
 

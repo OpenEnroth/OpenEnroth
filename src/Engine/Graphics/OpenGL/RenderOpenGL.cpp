@@ -2020,9 +2020,10 @@ void RenderOpenGL::DeleteTexture(Texture *texture) {
     // crash here when assets not loaded as texture
 
     auto t = (TextureOpenGL *)texture;
-    GLuint texid = t->GetOpenGlTexture();
+    GLuint texid = t->GetOpenGlTexture(false);
     if (texid != -1) {
         glDeleteTextures(1, &texid);
+        t->SetOpenGlTexture(-1);
     }
 }
 
@@ -5812,11 +5813,17 @@ bool RenderOpenGL::Reinitialize(bool firstInit) {
             logger->Warning("shader initialisation has failed!");
             return false;
         }
-    // } else {
-    //     // TODO: invalidate all previously loaded textures and then load them again as they can be no longer alive on GPU (issue #199).
+    } // else {
+        
+    if (config->window.ReloadTex.Get()) {
+        // Added config option for this - may not always be required - #199 no longer replicates on windows??
+        // TODO: invalidate all previously loaded textures and then load them again as they can be no longer alive on GPU (issue #199).
+        // TODO(pskelton): Needs testings on other platforms
+        assets->ReleaseAllTextures();
+    }
 
     //     ReloadShaders();
-    }
+    // }
 
     return true;
 }

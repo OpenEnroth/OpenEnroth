@@ -3,7 +3,7 @@
 
 class TextureOpenGL : public Texture {
  public:
-    int GetOpenGlTexture();
+    int GetOpenGlTexture(bool bLoad = true);
 
     virtual ~TextureOpenGL();
 
