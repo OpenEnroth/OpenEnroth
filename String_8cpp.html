@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;9066fe2</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;1a55bb2</span>
    </div>
   </td>
  </tr>
@@ -85,6 +85,12 @@ $(function() {
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a200104a1fb6f80123b7a86d2786983f6"><td class="memItemLeft" align="right" valign="top">static unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8cpp.html#a200104a1fb6f80123b7a86d2786983f6">AsciiToLower</a> (unsigned char c)</td></tr>
+<tr class="separator:a200104a1fb6f80123b7a86d2786983f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a707f39689e2925c728cc4fcb0d8f5a55"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8cpp.html#a707f39689e2925c728cc4fcb0d8f5a55">AsciiCaseInsensitiveCompare</a> (const char *l, const char *r, size_t size)</td></tr>
+<tr class="separator:a707f39689e2925c728cc4fcb0d8f5a55"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad1d7467ba5faad478708dd5a8efc5e2a"><td class="memItemLeft" align="right" valign="top">static std::string_view&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8cpp.html#ad1d7467ba5faad478708dd5a8efc5e2a">ToCharStringView</a> (std::u8string_view s)</td></tr>
+<tr class="separator:ad1d7467ba5faad478708dd5a8efc5e2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d17f1e8332c63a13079f1a5358950cc"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8cpp.html#a1d17f1e8332c63a13079f1a5358950cc">StringFromInt</a> (int value)</td></tr>
 <tr class="separator:a1d17f1e8332c63a13079f1a5358950cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a884f88f208e60c04785da80f6cf65407"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8cpp.html#a884f88f208e60c04785da80f6cf65407">StringPrintf</a> (const char *fmt,...)</td></tr>
@@ -99,8 +105,80 @@ Functions</h2></td></tr>
 <tr class="separator:a768df8f28e24918de40a4d331455b22c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4031a348e63cf678f364d5e79c63ded8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8cpp.html#a4031a348e63cf678f364d5e79c63ded8">iless</a> (std::string_view a, std::string_view b)</td></tr>
 <tr class="separator:a4031a348e63cf678f364d5e79c63ded8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f9d81b501ac9b4a827da9844e470524"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8cpp.html#a8f9d81b501ac9b4a827da9844e470524">iequalsAscii</a> (std::u8string_view a, std::u8string_view b)</td></tr>
+<tr class="separator:a8f9d81b501ac9b4a827da9844e470524"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae97c0d39944acb26a50e765cd746e74c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="String_8cpp.html#ae97c0d39944acb26a50e765cd746e74c">ilessAscii</a> (std::u8string_view a, std::u8string_view b)</td></tr>
+<tr class="separator:ae97c0d39944acb26a50e765cd746e74c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a707f39689e2925c728cc4fcb0d8f5a55" name="a707f39689e2925c728cc4fcb0d8f5a55"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a707f39689e2925c728cc4fcb0d8f5a55">&#9670;&#160;</a></span>AsciiCaseInsensitiveCompare()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int AsciiCaseInsensitiveCompare </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>l</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>r</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a200104a1fb6f80123b7a86d2786983f6" name="a200104a1fb6f80123b7a86d2786983f6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a200104a1fb6f80123b7a86d2786983f6">&#9670;&#160;</a></span>AsciiToLower()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static unsigned char AsciiToLower </td>
+          <td>(</td>
+          <td class="paramtype">unsigned char&#160;</td>
+          <td class="paramname"><em>c</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a768df8f28e24918de40a4d331455b22c" name="a768df8f28e24918de40a4d331455b22c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a768df8f28e24918de40a4d331455b22c">&#9670;&#160;</a></span>iequals()</h2>
 
@@ -129,6 +207,34 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a8f9d81b501ac9b4a827da9844e470524" name="a8f9d81b501ac9b4a827da9844e470524"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f9d81b501ac9b4a827da9844e470524">&#9670;&#160;</a></span>iequalsAscii()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool iequalsAscii </td>
+          <td>(</td>
+          <td class="paramtype">std::u8string_view&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::u8string_view&#160;</td>
+          <td class="paramname"><em>b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a4031a348e63cf678f364d5e79c63ded8" name="a4031a348e63cf678f364d5e79c63ded8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4031a348e63cf678f364d5e79c63ded8">&#9670;&#160;</a></span>iless()</h2>
 
@@ -145,6 +251,34 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae97c0d39944acb26a50e765cd746e74c" name="ae97c0d39944acb26a50e765cd746e74c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae97c0d39944acb26a50e765cd746e74c">&#9670;&#160;</a></span>ilessAscii()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ilessAscii </td>
+          <td>(</td>
+          <td class="paramtype">std::u8string_view&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::u8string_view&#160;</td>
           <td class="paramname"><em>b</em>&#160;</td>
         </tr>
         <tr>
@@ -199,6 +333,32 @@ Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad1d7467ba5faad478708dd5a8efc5e2a" name="ad1d7467ba5faad478708dd5a8efc5e2a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad1d7467ba5faad478708dd5a8efc5e2a">&#9670;&#160;</a></span>ToCharStringView()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::string_view ToCharStringView </td>
+          <td>(</td>
+          <td class="paramtype">std::u8string_view&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
