@@ -3080,100 +3080,100 @@ void InitializeBuildingResidents() {
                 switch (decode_step) {
                 case 2:
                 {
-                    if (iequals(test_string, "wea")) {
+                    if (istarts_with(test_string, "wea")) {
                         p2DEvents[i].uType = BuildingType_WeaponShop;
                         break;
                     }
-                    if (iequals(test_string, "arm")) {
+                    if (istarts_with(test_string, "arm")) {
                         p2DEvents[i].uType = BuildingType_ArmorShop;
                         break;
                     }
-                    if (iequals(test_string, "mag")) {
+                    if (istarts_with(test_string, "mag")) {
                         p2DEvents[i].uType = BuildingType_MagicShop;
                         break;
                     }
-                    if (iequals(test_string, "alc")) {
+                    if (istarts_with(test_string, "alc")) {
                         p2DEvents[i].uType = BuildingType_AlchemistShop;
                         break;
                     }
-                    if (iequals(test_string, "sta")) {
+                    if (istarts_with(test_string, "sta")) {
                         p2DEvents[i].uType = BuildingType_Stables;
                         break;
                     }
-                    if (iequals(test_string, "boa")) {
+                    if (istarts_with(test_string, "boa")) {
                         p2DEvents[i].uType = BuildingType_Boats;
                         break;
                     }
-                    if (iequals(test_string, "tem")) {
+                    if (istarts_with(test_string, "tem")) {
                         p2DEvents[i].uType = BuildingType_Temple;
                         break;
                     }
-                    if (iequals(test_string, "tra")) {
+                    if (istarts_with(test_string, "tra")) {
                         p2DEvents[i].uType = BuildingType_Training;
                         break;
                     }
-                    if (iequals(test_string, "tow")) {
+                    if (istarts_with(test_string, "tow")) {
                         p2DEvents[i].uType = BuildingType_TownHall;
                         break;
                     }
 
-                    if (iequals(test_string, "tav")) {
+                    if (istarts_with(test_string, "tav")) {
                         p2DEvents[i].uType = BuildingType_Tavern;
                         break;
                     }
-                    if (iequals(test_string, "ban")) {
+                    if (istarts_with(test_string, "ban")) {
                         p2DEvents[i].uType = BuildingType_Bank;
                         break;
                     }
-                    if (iequals(test_string, "fir")) {
+                    if (istarts_with(test_string, "fir")) {
                         p2DEvents[i].uType = BuildingType_FireGuild;
                         break;
                     }
-                    if (iequals(test_string, "air")) {
+                    if (istarts_with(test_string, "air")) {
                         p2DEvents[i].uType = BuildingType_AirGuild;
                         break;
                     }
-                    if (iequals(test_string, "wat")) {
+                    if (istarts_with(test_string, "wat")) {
                         p2DEvents[i].uType = BuildingType_WaterGuild;
                         break;
                     }
-                    if (iequals(test_string, "ear")) {
+                    if (istarts_with(test_string, "ear")) {
                         p2DEvents[i].uType = BuildingType_EarthGuild;
                         break;
                     }
-                    if (iequals(test_string, "spi")) {
+                    if (istarts_with(test_string, "spi")) {
                         p2DEvents[i].uType = BuildingType_SpiritGuild;
                         break;
                     }
-                    if (iequals(test_string, "min")) {
+                    if (istarts_with(test_string, "min")) {
                         p2DEvents[i].uType = BuildingType_MindGuild;
                         break;
                     }
-                    if (iequals(test_string, "bod")) {
+                    if (istarts_with(test_string, "bod")) {
                         p2DEvents[i].uType = BuildingType_BodyGuild;
                         break;
                     }
-                    if (iequals(test_string, "lig")) {
+                    if (istarts_with(test_string, "lig")) {
                         p2DEvents[i].uType = BuildingType_LightGuild;
                         break;
                     }
-                    if (iequals(test_string, "dar")) {
+                    if (istarts_with(test_string, "dar")) {
                         p2DEvents[i].uType = BuildingType_DarkGuild;
                         break;
                     }
-                    if (iequals(test_string, "ele")) { // "Element Guild" from mm6
+                    if (istarts_with(test_string, "ele")) { // "Element Guild" from mm6
                         p2DEvents[i].uType = BuildingType_ElementalGuild;
                         break;
                     }
-                    if (iequals(test_string, "sel")) {
+                    if (istarts_with(test_string, "sel")) {
                         p2DEvents[i].uType = BuildingType_SelfGuild;
                         break;
                     }
-                    if (iequals(test_string, "mir")) {
+                    if (istarts_with(test_string, "mir")) {
                         p2DEvents[i].uType = BuildingType_MirroredPath;
                         break;
                     }
-                    if (iequals(test_string, "mer")) { // "Thieves Guild" from mm6
+                    if (istarts_with(test_string, "mer")) { // "Thieves Guild" from mm6
                         p2DEvents[i].uType = BuildingType_TownHall; //TODO: Is this right and not Merc Guild (18)?
                         break;
                     }

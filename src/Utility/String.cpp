@@ -77,6 +77,13 @@ std::string ToUpper(std::string_view text) {
     return result;
 }
 
+bool istarts_with(std::string_view s, std::string_view prefix) {
+    if (s.size() < prefix.size())
+        return false;
+
+    return AsciiCaseInsensitiveCompare(s.data(), prefix.data(), prefix.size()) == 0;
+}
+
 bool iequals(std::string_view a, std::string_view b) {
     if (a.size() != b.size())
         return false;
