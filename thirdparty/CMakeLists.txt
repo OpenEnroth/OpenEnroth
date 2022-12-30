@@ -12,6 +12,7 @@ set(INCLUDE_THIRDPARTY_DIRS
 set(BUILD_GMOCK OFF)
 set(INSTALL_GTEST OFF)
 
+add_subdirectory(fmt)
 add_subdirectory(glad)
 add_subdirectory(glm)
 add_subdirectory(luajit)
