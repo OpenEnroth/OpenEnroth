@@ -8,7 +8,7 @@
 class Logger;
 
 namespace Application {
-    class GameConfig : private Config {
+    class GameConfig : public Config {
      public:
         GameConfig();
         ~GameConfig();

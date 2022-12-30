@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 #include <CLI/CLI.hpp>
 
@@ -55,12 +56,40 @@ bool Application::ParseGameOptions(int argc, char **argv, GameConfig *config) {
         };
     };
 
+    auto setOption = [&] (const std::string& string) {
+        size_t dotPos = string.find_first_of('.');
+        size_t equalsPos = string.find_first_of('=', dotPos + 1);
+        if (dotPos == std::string::npos || equalsPos == std::string::npos)
+            throw CLI::ParseError("Expected a value in SECTION.NAME=VALUE format", CLI::ExitCodes::BaseClass); // TODO(captainurist): error formatting
+
+        std::string sectionName = string.substr(0, dotPos);
+        std::string valueName = string.substr(dotPos + 1, equalsPos - dotPos - 1);
+        std::string valueString = string.substr(equalsPos + 1);
+
+        ConfigSection *section = config->Section(sectionName);
+        if (!section)
+            throw CLI::ParseError("Section doesn't exist", CLI::ExitCodes::BaseClass); // TODO(captainurist): error formatting
+
+        AbstractConfigValue *value = section->Value(valueName);
+        if (!value)
+            throw CLI::ParseError("Value doesn't exist", CLI::ExitCodes::BaseClass); // TODO(captainurist): error formatting
+
+        try {
+            value->SetString(valueString);
+        } catch (const std::exception &e) {
+            throw CLI::ParseError(e.what(), CLI::ExitCodes::BaseClass);
+        }
+    };
+
     std::string generalOptions = "General Options";
     std::string gameOptions = "Game Options";
     std::string windowOptions = "Window Options";
 
+    std::vector<std::string> setArgs;
+
     app->add_flag("-v,--verbose", config->debug.VerboseLogging, "Enable verbose logging")->group(generalOptions);
     app->set_help_flag("-h,--help", "Print help and exit")->group(generalOptions);
+    app->add_option("-s,--set", setArgs, "Set config option")->type_name("SECTION.NAME=VALUE")->group(generalOptions)->expected(1, 1000)->each(setOption);
 
     app->add_flag("--nointro", config->debug.NoIntro, "Skip intro movie")->group(gameOptions);
     app->add_flag("--nologo", config->debug.NoLogo, "Skip 3DO & NWC logos")->group(gameOptions);

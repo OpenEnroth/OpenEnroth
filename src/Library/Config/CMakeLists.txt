@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
-set(CONFIG_SOURCES Config.cpp)
+set(CONFIG_SOURCES Config.cpp
+                   ConfigSection.cpp)
 
-set(CONFIG_HEADERS Config.h
+set(CONFIG_HEADERS AbstractConfigValue.h
+                   Config.h
                    ConfigFwd.h
                    ConfigSection.h
                    ConfigSerialization.h
