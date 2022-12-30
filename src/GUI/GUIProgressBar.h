@@ -21,6 +21,8 @@ class GUIProgressBar {
     void Release();
     void Draw();
 
+    bool IsActive();
+
  protected:
     int uX;
     int uY;

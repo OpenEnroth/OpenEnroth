@@ -7,7 +7,8 @@
 
 TestWindow::TestWindow(std::unique_ptr<PlatformWindow> base, TestStateHandle state) :
     base_(std::move(base)),
-    state_(std::move(state)) {
+    state_(std::move(state))
+{
     assert(state_->window == nullptr);
     state_->window = this;
 }

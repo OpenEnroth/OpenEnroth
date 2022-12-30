@@ -24,6 +24,8 @@ void TestOpenGLContext::SwapBuffers() {
     } else {
         state_.YieldExecution();
     }
+
+    state_->time += 1000.0 / 60.0; // 60 fps
 }
 
 void* TestOpenGLContext::GetProcAddress(const char* name) {

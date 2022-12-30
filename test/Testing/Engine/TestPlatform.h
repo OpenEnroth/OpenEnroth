@@ -11,6 +11,7 @@
 class TestPlatform: public Platform {
  public:
     TestPlatform(std::unique_ptr<Platform> base, TestStateHandle state);
+    virtual ~TestPlatform();
 
     virtual std::unique_ptr<PlatformWindow> CreateWindow() override;
     virtual std::unique_ptr<PlatformEventLoop> CreateEventLoop() override;
@@ -20,6 +21,8 @@ class TestPlatform: public Platform {
     virtual void ShowMessageBox(const std::string &message, const std::string& title) const override;
     virtual int64_t TickCount() const override;
     virtual std::string WinQueryRegistry(const std::string &path) const override;
+
+    void Reset();
 
  private:
     std::unique_ptr<Platform> base_;

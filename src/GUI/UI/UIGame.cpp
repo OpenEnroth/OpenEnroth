@@ -151,7 +151,7 @@ GUIWindow_GameMenu::GUIWindow_GameMenu()
         241, 155, 214, 40, 1, 0, UIMSG_Game_OpenOptionsDialog, 0, PlatformKey::C,
         localization->GetString(LSTR_OPTIONS), {game_ui_menu_controls}
     );
-    pBtn_QuitGame = CreateButton(241, 209, 214, 40, 1, 0, UIMSG_Quit, 0, PlatformKey::Q,
+    pBtn_QuitGame = CreateButton("GameMenu_Quit", 241, 209, 214, 40, 1, 0, UIMSG_Quit, 0, PlatformKey::Q,
                                  localization->GetString(LSTR_QUIT),
                                  {game_ui_menu_quit});
     pBtn_Resume = CreateButton(

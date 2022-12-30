@@ -1,5 +1,6 @@
 #include "TestPlatform.h"
 
+#include <cassert>
 #include <utility>
 
 #include "TestWindow.h"
@@ -8,7 +9,15 @@
 TestPlatform::TestPlatform(std::unique_ptr<Platform> base, TestStateHandle state):
     base_(std::move(base)),
     state_(std::move(state))
-{}
+{
+    assert(state_->platform == nullptr);
+    state_->platform = this;
+}
+
+TestPlatform::~TestPlatform() {
+    assert(state_->platform == this);
+    state_->platform = nullptr;
+}
 
 std::unique_ptr<PlatformWindow> TestPlatform::CreateWindow() {
     return std::make_unique<TestWindow>(base_->CreateWindow(), state_);
@@ -35,9 +44,13 @@ void TestPlatform::ShowMessageBox(const std::string &message, const std::string&
 }
 
 int64_t TestPlatform::TickCount() const {
-    return base_->TickCount();
+    return state_->time;
 }
 
 std::string TestPlatform::WinQueryRegistry(const std::string &path) const {
     return base_->WinQueryRegistry(path);
+}
+
+void TestPlatform::Reset() {
+    state_->time = 0;
 }

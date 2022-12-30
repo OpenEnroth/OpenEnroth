@@ -2,22 +2,40 @@
 
 #include <gtest/gtest.h>
 
-#include <cassert>
+#include <filesystem>
 #include <utility>
+
+#include "GUI/GUIProgressBar.h"
+#include "Engine/SaveLoad.h"
 
 #include "Platform/PlatformEvents.h"
 
 #include "Testing/Engine/TestStateHandle.h"
 #include "Testing/Engine/TestEventLoop.h"
+#include "Testing/Engine/TestPlatform.h"
 #include "Testing/Engine/TestWindow.h"
 #include "Testing/Extensions/ThrowingAssertions.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
 
-GameWrapper::GameWrapper(TestStateHandle state) : state_(std::move(state)) {}
+#include "Utility/Random/Random.h"
+
+GameWrapper::GameWrapper(TestStateHandle state, const std::string &testDataDir):
+    state_(std::move(state)),
+    testDataDir_(testDataDir)
+{
+    if (!testDataDir_.ends_with('/') && !testDataDir_.ends_with('\\'))
+        testDataDir_.push_back('/');
+}
 
 GameWrapper::~GameWrapper() {}
+
+void GameWrapper::Reset() {
+    GoToMainMenu();
+    state_->platform->Reset();
+    SeedRandom(0);
+}
 
 void GameWrapper::Tick(int count) {
     for (int i = 0; i < count; i++)
@@ -88,9 +106,50 @@ void GameWrapper::GoToMainMenu() {
         return;
     }
 
+    if (GetCurrentMenuID() == -1) {
+        PressAndReleaseKey(PlatformKey::Escape);
+        Tick(1);
+        PressGuiButton("GameMenu_Quit");
+        Tick(1);
+        PressGuiButton("GameMenu_Quit");
+        while (GetCurrentMenuID() != MENU_MAIN)
+            Tick(1);
+        return;
+    }
+
     ASSERT_TRUE(false); // TODO(captainurist)
 }
 
+void GameWrapper::LoadGame(const std::string &name) {
+    std::string saveName = "___test.mm7";
+    std::string savePath = MakeDataPath("saves", saveName);
+    if (std::filesystem::exists(savePath))
+        std::filesystem::remove(savePath);
+    std::filesystem::copy_file(testDataDir_ + name, savePath);
+
+    GoToMainMenu();
+    PressGuiButton("MainMenu_LoadGame");
+    Tick(3);
+
+    EXPECT_TRUE(pSavegameUsedSlots[0]);
+    EXPECT_EQ(pSavegameList->pFileList[0], saveName);
+
+    PressGuiButton("LoadMenu_Slot0");
+    Tick(2);
+    PressGuiButton("LoadMenu_Load");
+    SkipLoadingScreen();
+
+    SeedRandom(0);
+}
+
+void GameWrapper::SkipLoadingScreen() {
+    while (!pGameLoadingUI_ProgressBar->IsActive())
+        Tick(1);
+    while (pGameLoadingUI_ProgressBar->IsActive())
+        Tick(1);
+    while (dword_6BE364_game_settings_1 & GAME_SETTINGS_0080_SKIP_USER_INPUT_THIS_FRAME)
+        Tick(1);
+}
 
 GUIButton *GameWrapper::AssertButton(std::string_view buttonId) {
     auto findButton = [](std::string_view buttonId) -> GUIButton * {

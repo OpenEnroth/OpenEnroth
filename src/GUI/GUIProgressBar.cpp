@@ -102,6 +102,8 @@ void GUIProgressBar::Release() {
         progressbar_dungeon->Release();
         progressbar_dungeon = nullptr;
     }
+
+    uType = TYPE_None;
 }
 
 void GUIProgressBar::Draw() {
@@ -128,4 +130,8 @@ void GUIProgressBar::Draw() {
 
     render->EndScene();
     render->Present();
+}
+
+bool GUIProgressBar::IsActive() {
+    return uType != TYPE_None;
 }
