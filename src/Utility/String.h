@@ -30,6 +30,7 @@ inline std::string TrimRemoveQuotes(std::string str) {
     return str;
 }
 
+bool istarts_with(std::string_view s, std::string_view prefix);
 bool iequals(std::string_view a, std::string_view b);
 bool iless(std::string_view a, std::string_view b);
 bool iequalsAscii(std::u8string_view a, std::u8string_view b);
