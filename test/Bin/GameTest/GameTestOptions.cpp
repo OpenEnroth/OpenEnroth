@@ -1,5 +1,7 @@
 #include "GameTestOptions.h"
 
+#include <memory>
+
 #include <CLI/CLI.hpp>
 
 bool GameTestOptions::Parse(int argc, char **argv) {

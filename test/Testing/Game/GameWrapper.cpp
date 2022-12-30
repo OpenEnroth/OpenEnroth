@@ -23,8 +23,7 @@
 
 GameWrapper::GameWrapper(TestStateHandle state, const std::string &testDataDir):
     state_(std::move(state)),
-    testDataDir_(testDataDir)
-{
+    testDataDir_(testDataDir) {
     if (!testDataDir_.ends_with('/') && !testDataDir_.ends_with('\\'))
         testDataDir_.push_back('/');
 }

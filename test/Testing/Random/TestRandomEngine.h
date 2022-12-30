@@ -3,7 +3,7 @@
 #include "Utility/Random/RandomEngine.h"
 
 class TestRandomEngine : public RandomEngine {
-public:
+ public:
     virtual float RandomFloat() override {
         return Random(256) / 256.0f;
     }
@@ -16,6 +16,6 @@ public:
         state_ = seed;
     }
 
-private:
+ private:
     uint32_t state_ = 0;
 };

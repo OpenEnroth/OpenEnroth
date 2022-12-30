@@ -8,8 +8,7 @@
 
 TestPlatform::TestPlatform(std::unique_ptr<Platform> base, TestStateHandle state):
     base_(std::move(base)),
-    state_(std::move(state))
-{
+    state_(std::move(state)) {
     assert(state_->platform == nullptr);
     state_->platform = this;
 }
