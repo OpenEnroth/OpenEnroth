@@ -60,14 +60,27 @@ void RunTestThread(const GameTestOptions& opts, TestState *unsafeState, int *exi
     state->terminating = true;
 }
 
-int PlatformMain(int argc, char **argv) {
+void PrintGoogleTestHelp(char *app) {
+    int argc = 2;
+    char help[] = "--help";
+    char *argv[] = { app, help, nullptr };
     testing::InitGoogleTest(&argc, argv);
+}
 
+int PlatformMain(int argc, char **argv) {
     GameTestOptions opts;
-    if (!opts.Parse(argc, argv))
-        return 1;
+    int exitCode = opts.Parse(argc, argv) ? 0 : 1;
 
-    int exitCode = 0;
+    if (opts.helpRequested) {
+        std::cout << std::endl;
+        PrintGoogleTestHelp(argv[0]);
+    } else {
+        testing::InitGoogleTest(&argc, argv);
+    }
+
+    if (exitCode != 0)
+        return exitCode;
+
     std::thread testThread;
 
     TestState state;
