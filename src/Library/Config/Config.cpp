@@ -9,15 +9,16 @@
 #include <string>
 
 #include "Utility/MapAccess.h"
+#include "Utility/Format.h"
 
 void Config::Load(const std::string &path) {
     if (!std::filesystem::exists(path))
-        throw std::runtime_error("Config file doesn't exist"); // TODO(captainurist): exception formatting
+        throw std::runtime_error(fmt::format("Config file '{}' doesn't exist"_cf, path));
 
     mINI::INIFile file(path);
     mINI::INIStructure ini;
     if (!file.read(ini))
-        throw std::runtime_error("Couldn't read config file"); // TODO(captainurist): exception formatting
+        throw std::runtime_error(fmt::format("Couldn't read config file '{}'"_cf, path));
 
     for (const auto &[sectionName, iniSection] : ini)
         if (ConfigSection *section = Section(sectionName))
@@ -35,7 +36,7 @@ void Config::Save(const std::string &path) const {
             ini[section->Name()][value->Name()] = value->GetString();
 
     if (!file.write(ini, true))
-        throw std::runtime_error("Couldn't save config file"); // TODO(captainurist): exception formatting
+        throw std::runtime_error(fmt::format("Couldn't save config file '{}'"_cf, path));
 }
 
 void Config::Reset() {

@@ -17,6 +17,7 @@ set(UTILITY_HEADERS Blob.h
                     Embedded.h
                     FileSystem.h
                     Flags.h
+                    Format.h
                     FreeDeleter.h
                     IndexedArray.h
                     Memory.h
@@ -41,6 +42,7 @@ set(UTILITY_HEADERS Blob.h
                     Streams/FileOutputStream.h)
 
 add_library(utility STATIC ${UTILITY_SOURCES} ${UTILITY_HEADERS})
+target_link_libraries(utility fmt::fmt)
 target_check_style(utility)
 
 if(ENABLE_TESTS)

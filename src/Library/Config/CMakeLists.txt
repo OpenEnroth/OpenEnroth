@@ -11,4 +11,5 @@ set(CONFIG_HEADERS AbstractConfigValue.h
                    ConfigValue.h)
 
 add_library(config STATIC ${CONFIG_SOURCES} ${CONFIG_HEADERS})
+target_link_libraries(config utility)
 target_check_style(config)

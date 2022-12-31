@@ -7,6 +7,7 @@
 #include <CLI/CLI.hpp>
 
 #include "Application/GameConfig.h"
+#include "Utility/Format.h"
 
 using Application::GameConfig;
 
@@ -60,7 +61,7 @@ bool Application::ParseGameOptions(int argc, char **argv, GameConfig *config) {
         size_t dotPos = string.find_first_of('.');
         size_t equalsPos = string.find_first_of('=', dotPos + 1);
         if (dotPos == std::string::npos || equalsPos == std::string::npos)
-            throw CLI::ParseError("Expected a value in SECTION.NAME=VALUE format", CLI::ExitCodes::BaseClass); // TODO(captainurist): error formatting
+            throw CLI::ParseError(fmt::format("Expected a value in 'SECTION.NAME=VALUE' format, got '{}'"_cf, string), CLI::ExitCodes::BaseClass);
 
         std::string sectionName = string.substr(0, dotPos);
         std::string valueName = string.substr(dotPos + 1, equalsPos - dotPos - 1);
@@ -68,11 +69,11 @@ bool Application::ParseGameOptions(int argc, char **argv, GameConfig *config) {
 
         ConfigSection *section = config->Section(sectionName);
         if (!section)
-            throw CLI::ParseError("Section doesn't exist", CLI::ExitCodes::BaseClass); // TODO(captainurist): error formatting
+            throw CLI::ParseError(fmt::format("Section '{}' doesn't exist"_cf, sectionName), CLI::ExitCodes::BaseClass);
 
         AbstractConfigValue *value = section->Value(valueName);
         if (!value)
-            throw CLI::ParseError("Value doesn't exist", CLI::ExitCodes::BaseClass); // TODO(captainurist): error formatting
+            throw CLI::ParseError(fmt::format("Value '{}' doesn't exist in section '{}'"_cf, valueName, sectionName), CLI::ExitCodes::BaseClass);
 
         try {
             value->SetString(valueString);
