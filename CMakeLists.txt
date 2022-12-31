@@ -18,7 +18,6 @@ endif()
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   set(CMAKE_EXE_LINKER_FLAGS "-fuse-ld=gold -pthread")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-  add_compile_definitions(WINDOWS_IGNORE_PACKING_MISMATCH="") # vs2019 complains about using #pragma pack()
   add_compile_definitions(NOMINMAX) # please don't pull in these macros from <Windows.h>
   add_compile_definitions(_CRT_SECURE_NO_WARNINGS) # STL security warnings are just noise
   add_compile_definitions(_CRT_NONSTDC_NO_DEPRECATE) # POSIX deprecation warnings are also just noise

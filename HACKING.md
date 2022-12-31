@@ -17,12 +17,12 @@ Additional dependencies:
 * Python 3.x (optional, for style checker functionality)
 
 Minimum required compiler versions are as follows:
-* Visual Studio 2019
+* Visual Studio 2022
 * GCC 11
 * Clang 13
 
 The following IDEs have been tested and should work fine:
-* Visual Studio (2019 or later)
+* Visual Studio (2022 or later)
 * Visual Studio Code (2022 or later)
 * CLion (2022 or later)
 
@@ -46,7 +46,7 @@ You can also select platform dependent [generator](https://cmake.org/cmake/help/
 
 Building on Windows
 ---------------
-You will require the following installed on your computer: Git and Visual Studio 2019/2022.
+You will require the following installed on your computer: Git and Visual Studio 2022.
 
 * Clone, fork or download the repo `https://github.com/gp-alex/world-of-might-and-magic.git`
 * Open the folder in Visual Studio
