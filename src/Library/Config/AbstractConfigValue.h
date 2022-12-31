@@ -6,7 +6,7 @@
 
 class AbstractConfigValue {
  public:
-    AbstractConfigValue(ConfigSection *section, const std::string &name); // Defined in Config.cpp
+    AbstractConfigValue(ConfigSection *section, const std::string &name, const std::string &description); // Defined in Config.cpp
     virtual ~AbstractConfigValue() = default;
 
     virtual std::string GetString() const = 0;
@@ -15,14 +15,19 @@ class AbstractConfigValue {
     virtual void Reset() = 0;
 
     ConfigSection *Section() const {
-        return section;
+        return section_;
     }
 
     const std::string &Name() const {
-        return name;
+        return name_;
+    }
+
+    const std::string &Description() const {
+        return description_;
     }
 
  private:
-    ConfigSection *section = nullptr;
-    std::string name;
+    ConfigSection *section_ = nullptr;
+    std::string name_;
+    std::string description_;
 };

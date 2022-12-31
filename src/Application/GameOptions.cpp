@@ -96,7 +96,7 @@ bool Application::ParseGameOptions(int argc, char **argv, GameConfig *config) {
     app->add_flag("--nologo", config->debug.NoLogo, "Skip 3DO & NWC logos")->group(gameOptions);
     app->add_flag("--nosound", config->debug.NoSound, "Disable sound")->group(gameOptions);
     app->add_flag("--novideo", config->debug.NoVideo, "Disable all videos, including house backgrounds")->group(gameOptions);
-    app->add_flag("--nomarg", config->debug.NoMargareth, "Disable Margaret the guide")->group(gameOptions);
+    app->add_flag("--nomarg", config->debug.NoMargaret, "Disable Margaret the guide")->group(gameOptions);
     app->add_flag_callback("--nowalksound", unset(config->settings.WalkSound), "Disable walking sound")->group(gameOptions);
     app->add_flag_callback("--nograb", unset(config->window.MouseGrab), "Don't restrict mouse movement to the game window")->group(gameOptions);
     app->add_flag_callback("--debug", enableDebug, "Minimal debug mode")->group(gameOptions);

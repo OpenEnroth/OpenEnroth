@@ -63,7 +63,10 @@ std::vector<ConfigSection *> Config::Sections() const {
     return result;
 }
 
-AbstractConfigValue::AbstractConfigValue(ConfigSection *section, const std::string &name): section(section), name(name) {
+AbstractConfigValue::AbstractConfigValue(ConfigSection *section, const std::string &name, const std::string &description):
+    section_(section),
+    name_(name),
+    description_(description) {
     assert(section);
     assert(!name.empty());
 

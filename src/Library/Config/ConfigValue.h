@@ -14,8 +14,11 @@ class ConfigValue : public AbstractConfigValue {
     ConfigValue(const ConfigValue &other) = delete; // non-copyable
     ConfigValue(ConfigValue&& other) = delete; // non-movable
 
-    ConfigValue(ConfigSection *section, const std::string &name, T defaultValue, validator_type v = nullptr) :
-        AbstractConfigValue(section, name), defaultValue_(defaultValue), value_(defaultValue), validator_(v) {}
+    ConfigValue(ConfigSection *section, const std::string &name, T defaultValue, validator_type validator, const std::string &description) :
+        AbstractConfigValue(section, name, description), defaultValue_(defaultValue), value_(defaultValue), validator_(validator) {}
+
+    ConfigValue(ConfigSection *section, const std::string &name, T defaultValue, const std::string &description) :
+        ConfigValue(section, name, defaultValue, nullptr, description) {}
 
     const T &Default() const {
         return defaultValue_;

@@ -16,63 +16,58 @@ namespace Application {
         void LoadConfiguration();
         void SaveConfiguration();
 
+        using Bool = ConfigValue<bool>;
+        using Int = ConfigValue<int>;
+        using Float = ConfigValue<float>;
+        using String = ConfigValue<std::string>;
+
         class Debug : public ConfigSection {
          public:
             explicit Debug(GameConfig *config) : ConfigSection(config, "debug") {}
 
-            /** Enable all available spells for each character in spellbook bypassing all class restrictions. Currently also all skills will behave like they are on GM level. */
-            ConfigValue<bool> AllMagic = ConfigValue<bool>(this, "all_magic", false);
-            ConfigValue<bool> InfiniteFood = ConfigValue<bool>(this, "infinite_food", false);
-            ConfigValue<bool> InfiniteGold = ConfigValue<bool>(this, "infinite_gold", false);
+            Bool AllMagic = Bool(this, "all_magic", false,
+                                 "Enable all available spells for each character in spellbook bypassing all class restrictions. "
+                                 "Currently also all skills will behave like they are on GM level.");
 
-            /** Debug lightmap and decals outlines. */
-            ConfigValue<bool> LightmapDecals = ConfigValue<bool>(this, "lightmap_decals", false);
+            Bool InfiniteFood = Bool(this, "infinite_food", false, "Enable unlimited food, using food won't spend it.");
+            Bool InfiniteGold = Bool(this, "infinite_gold", false, "Enable unlimited gold, paying in shops won't spend it.");
 
-            /** Draw BLV portal frames. */
-            ConfigValue<bool> PortalOutlines = ConfigValue<bool>(this, "portal_outlines", false);
-            ConfigValue<bool> Terrain = ConfigValue<bool>(this, "terrain", false);
+            Bool LightmapDecals = Bool(this, "lightmap_decals", false, "Draw lightmap and decals outlines.");
 
-            /** Bypass only activated by fountains locations block for town portal spell. */
-            ConfigValue<bool> TownPortal = ConfigValue<bool>(this, "town_portal", false);
+            Bool PortalOutlines = Bool(this, "portal_outlines", false, "Draw BLV portal outlines.");
+            Bool Terrain = Bool(this, "terrain", false, "Draw terrain as wireframe.");
 
-            /** Increase party movement speed by 12x. Most likely you want to use that option with no_damage option enabled as collision physics often will shoot you in the air. */
-            ConfigValue<bool> TurboSpeed = ConfigValue<bool>(this, "turbo_speed", false);
+            Bool TownPortal = Bool(this, "town_portal", false,
+                                   "Make all game locations reachable via town portal spell without requiring to visit them first.");
 
-            /** Game will behave like spell wizard eye is casted and it will never expire. */
-            ConfigValue<bool> WizardEye = ConfigValue<bool>(this, "wizard_eye", false);
+            Bool TurboSpeed = Bool(this, "turbo_speed", false,
+                                   "Increase party movement speed by 12x. Most likely you want to use that option with "
+                                   "no_damage option enabled as collision physics often will shoot you in the air.");
 
-            /** Activate debug HUD which show FPS and various other realtime debug information */
-            ConfigValue<bool> ShowFPS = ConfigValue<bool>(this, "show_fps", false);
+            Bool WizardEye = Bool(this, "wizard_eye", false, "Activate wizard eye spell that never expires.");
 
-            /** Face pointed by mouse will flash with red for buildings or green for indoor. */
-            ConfigValue<bool> ShowPickedFace = ConfigValue<bool>(this, "show_picked_face", false);
+            Bool ShowFPS = Bool(this, "show_fps", false, "Show debug HUD with FPS and other debug information.");
 
-            /** Skip intro movie on startup */
-            ConfigValue<bool> NoIntro = ConfigValue<bool>(this, "no_intro", false);
+            Bool ShowPickedFace = Bool(this, "show_picked_face", false,
+                                       "Face pointed with mouse will flash with red for buildings or green for dungeons.");
 
-            /** Skip 3do logo on startup */
-            ConfigValue<bool> NoLogo = ConfigValue<bool>(this, "no_logo", false);
+            Bool NoIntro = Bool(this, "no_intro", false, "Skip intro movie on startup.");
 
-            /** Don't play any sounds. Currently it doesn't affect in-house movies. */
-            ConfigValue<bool> NoSound = ConfigValue<bool>(this, "no_sound", false);
+            Bool NoLogo = Bool(this, "no_logo", false, "Skip 3do logo on startup.");
 
-            /** Don't play any movies. */
-            ConfigValue<bool> NoVideo = ConfigValue<bool>(this, "no_video", false);
+            Bool NoSound = Bool(this, "no_sound", false, "Don't play any sounds. Currently in-house movies are not affected.");
 
-            /** Disable all actors */
-            ConfigValue<bool> NoActors = ConfigValue<bool>(this, "no_actors", false);
+            Bool NoVideo = Bool(this, "no_video", false, "Don't play any movies.");
 
-            /** Disable all incoming damage to party. */
-            ConfigValue<bool> NoDamage = ConfigValue<bool>(this, "no_damage", false);
+            Bool NoActors = Bool(this, "no_actors", false, "Disable all actors.");
 
-            /** Disable all decorations */
-            ConfigValue<bool> NoDecorations = ConfigValue<bool>(this, "no_decorations", false);
+            Bool NoDamage = Bool(this, "no_damage", false, "Disable all incoming damage to party.");
 
-            /** Disable Margareth's tour messages on Emerald Island. */
-            ConfigValue<bool> NoMargareth = ConfigValue<bool>(this, "no_margareth", false);
+            Bool NoDecorations = Bool(this, "no_decorations", false, "Disable all decorations.");
 
-            /** Verbose logging to debug console. Can be extremely spammy. */
-            ConfigValue<bool> VerboseLogging = ConfigValue<bool>(this, "verbose_logging", false);
+            Bool NoMargaret = Bool(this, "no_margareth", false, "Disable Margaret's tour messages on Emerald Island.");
+
+            Bool VerboseLogging = Bool(this, "verbose_logging", false, "Verbose logging to debug console. Can be extremely spammy.");
         };
 
         Debug debug{ this };
@@ -81,67 +76,71 @@ namespace Application {
          public:
             explicit Gameplay(GameConfig *config): ConfigSection(config, "gameplay") {}
 
-            /** Use condition priorities from Grayface patches (e.g. Zombie has the lowest priority). */
-            ConfigValue<bool> AlternativeConditionPriorities = ConfigValue<bool>(this, "alternative_condition_priorities", true);
+            Bool AlternativeConditionPriorities = Bool(this, "alternative_condition_priorities", true,
+                                                       "Use condition priorities from Grayface patches (e.g. Zombie has the lowest priority).");
 
-            /** Artifact limit after which artifacts are no longer generated in loot. 0 - disable limit. */
-            ConfigValue<int> ArtifactLimit = ConfigValue<int>(this, "artifact_limit", 13, &ValidateArtifactLimit);
+            Int ArtifactLimit = Int(this, "artifact_limit", 13, &ValidateArtifactLimit,
+                                    "Max number of artifacts that the game can generate as loot in any one playthrough. Use 0 for unlimited.");
 
-            /** There are could be situations of item loss especially in high-level chests due to chest grid-limitations
-              * 0 - Vanilla behaviour, items will be lost.
-              * 1 - Try to place previously non-fit items on every chest opening.
-              * 2 - Try to place previously non-fit items on every item pickup from the chest. */
-            ConfigValue<int> ChestTryPlaceItems = ConfigValue<int>(this, "chest_try_place_items", 2);
+            Int ChestTryPlaceItems = Int(this, "chest_try_place_items", 2,
+                                         "Fix problems with item loss in high-level chests. "
+                                         "Use 0 for vanilla behaviour, items that don't fit will be lost. "
+                                         "Use 1 to try to place items that didn't fit every time the chest is opened again. "
+                                         "Use 2 to try to place items that didn't fit every an item is picked up from the chest.");
 
-            /** Maximum allowed slack for point-inside-a-polygon checks when calculating floor z level.
-              * This is needed because there are actual holes in level geometry sometimes, up to several units wide. */
-            ConfigValue<int> FloorChecksEps = ConfigValue<int>(this, "floor_checks_eps", 3, &ValidateFloorChecksEps);
+            Int FloorChecksEps = Int(this, "floor_checks_eps", 3, &ValidateFloorChecksEps,
+                                     "Maximum allowed slack for point-inside-a-polygon checks when calculating floor z level. "
+                                     "This is needed because there are actual holes in level geometry sometimes, up to several units wide.");
 
-            /** Gravity strength, the higher the more gravity, 0 - disable gravity completely. */
-            ConfigValue<int> Gravity = ConfigValue<int>(this, "gravity", 5);
+            Int Gravity = Int(this, "gravity", 5, "Gravity strength, the higher the more gravity, 0 disables gravity completely.");
 
-            /** Maximum depth for item pickup / opening chests / activating levers / etc with a keyboard (by pressing trigger key). */
-            ConfigValue<float> KeyboardInteractionDepth = ConfigValue<float>(this, "keyboard_interaction_depth", 512.0f, &ValidateInteractionDepth);
+            Float KeyboardInteractionDepth = Float(this, "keyboard_interaction_depth", 512.0f, &ValidateInteractionDepth,
+                                                   "Maximum range for item pickup / opening chests / activating levers / etc "
+                                                   "with a keyboard (by pressing spacebar).");
 
-            /** Minimum recovery time for melee weapons. 30 - vanilla */
-            ConfigValue<int> MinRecoveryMelee = ConfigValue<int>(this, "minimum_recovery_melee", 30, &ValidateRecovery);
+            Float MouseInteractionDepth = Float(this, "mouse_interaction_depth", 512.0f, &ValidateInteractionDepth,
+                                                "Maximum range for item pickup / opening chests / activating levers / etc with a mouse.");
 
-            /** Minimum recovery time for ranged weapons. 0 - vanilla, 5 - GrayFace patches */
-            ConfigValue<int> MinRecoveryRanged = ConfigValue<int>(this, "minimum_recovery_ranged", 5, &ValidateRecovery);
+            Int MinRecoveryMelee = Int(this, "minimum_recovery_melee", 30, &ValidateRecovery,
+                                       "Minimum recovery time for melee weapons. Was 30 in vanilla.");
 
-            /** Minimum recovery time for blasters. 0 - vanilla, 5 - Grayface patches */
-            ConfigValue<int> MinRecoveryBlasters = ConfigValue<int>(this, "minimum_recovery_blasters", 5, &ValidateRecovery);
+            Int MinRecoveryRanged = Int(this, "minimum_recovery_ranged", 5, &ValidateRecovery,
+                                        "Minimum recovery time for ranged weapons. Was 0 in vanilla, 5 in GrayFace patches.");
 
-            /** Maximum height which you can go with fly spell */
-            ConfigValue<int> MaxFlightHeight = ConfigValue<int>(this, "max_flight_height", 4000, &ValidateMaxFlightHeight);
+            Int MinRecoveryBlasters = Int(this, "minimum_recovery_blasters", 5, &ValidateRecovery,
+                                          "Minimum recovery time for blasters. Was 0 in vanilla, 5 in Grayface patches");
 
-            /** Maximum depth at which right clicking on a monster produces a popup.
-              * Also somehow this is the max depth for the souldrinker spell. */
-            ConfigValue<float> MouseInfoDepthIndoor = ConfigValue<float>(this, "mouse_info_depth_indoor", 16192.0f, &ValidateInteractionDepth);
-            ConfigValue<float> MouseInfoDepthOutdoor = ConfigValue<float>(this, "mouse_info_depth_outdoor", 12800.0f, &ValidateInteractionDepth); // That's 25 * 512, so 25 cells.
+            Int MaxFlightHeight = Int(this, "max_flight_height", 4000, &ValidateMaxFlightHeight,
+                                      "Maximum height for the fly spell.");
 
-            /** Maximum depth for item pickup / opening chests / activating levers / etc with a mouse. */
-            ConfigValue<float> MouseInteractionDepth = ConfigValue<float>(this, "mouse_interaction_depth", 512.0f, &ValidateInteractionDepth);
+            Float MouseInfoDepthIndoor = Float(this, "mouse_info_depth_indoor", 16192.0f, &ValidateInteractionDepth,
+                                               "Maximum range at which right clicking on a monster produces a popup indoors. "
+                                               "Also this is the max range for the souldrinker spell indoors.");
+            Float MouseInfoDepthOutdoor = Float(this, "mouse_info_depth_outdoor", 12800.0f, &ValidateInteractionDepth,
+                                                "Maximum range at which right clicking on a monster produces a popup outdoors. "
+                                                "Default value is 12800 = 25 * 512, 25 map cells. "
+                                                "Also this is the max range for the souldrinker spell outdoors.");
 
-            ConfigValue<int> NewGameFood = ConfigValue<int>(this, "new_game_food", 7);
-            ConfigValue<int> NewGameGold = ConfigValue<int>(this, "new_game_gold", 200);
+            Int NewGameFood = Int(this, "new_game_food", 7, "Starting food.");
+            Int NewGameGold = Int(this, "new_game_gold", 200, "Starting gold.");
+            String StartingMap = String(this, "starting_map", "out01.odm", "New Game starting map.");
 
-            ConfigValue<int> PartyEyeLevel = ConfigValue<int>(this, "party_eye_level", 160);
-            ConfigValue<int> PartyHeight = ConfigValue<int>(this, "party_height", 192);
-            ConfigValue<int> PartyWalkSpeed = ConfigValue<int>(this, "party_walk_speed", 384);
+            Int PartyEyeLevel = Int(this, "party_eye_level", 160, "Party eye level.");
+            Int PartyHeight = Int(this, "party_height", 192, "Party height.");
+            Int PartyWalkSpeed = Int(this, "party_walk_speed", 384, "Party walk speed.");
 
-            /** Max depth for ranged attacks and ranged spells. It's impossible to target monsters that are further away
-              * than this value. Incidentally this is also the depth at which status bar tips are displayed on mouse over. */
-            ConfigValue<float> RangedAttackDepth = ConfigValue<float>(this, "ranged_attack_depth", 5120.0f, &ValidateRangedAttackDepth);
+            Float RangedAttackDepth = Float(this, "ranged_attack_depth", 5120.0f, &ValidateRangedAttackDepth,
+                                            "Max depth for ranged attacks and ranged spells. "
+                                            "It's impossible to target monsters that are further away than this value. "
+                                            "This is also the depth at which status bar tips are displayed on mouse over.");
 
-            /** Show unidentified items in green mask in inventory, otherwise vanilla behaviour when green mask applied in shops only. */
-            ConfigValue<bool> ShowUndentifiedItem = ConfigValue<bool>(this, "show_unidentified_item", false);
+            Bool ShowUndentifiedItem = Bool(this, "show_unidentified_item", false,
+                                            "Show unidentified items with a green tint in inventory. "
+                                            "If not set, vanilla behavior will be used with green tint applied in shops only.");
 
-            /** New Game starting map */
-            ConfigValue<std::string> StartingMap = ConfigValue<std::string>(this, "starting_map", "out01.odm");
-
-            /** Treat clubs as maces. In vanilla clubs are using separate hidden skill and so equipable without learned Mace skill. */
-            ConfigValue<bool> TreatClubAsMace = ConfigValue<bool>(this, "treat_club_as_mace", false);
+            Bool TreatClubAsMace = Bool(this, "treat_club_as_mace", false,
+                                        "Treat clubs as maces. "
+                                        "In vanilla clubs are using a separate hidden skill and can be equipped without learning the mace skill.");
 
          private:
             static int ValidateMaxFlightHeight(int max_flight_height) {
@@ -179,86 +178,72 @@ namespace Application {
          public:
             explicit Graphics(GameConfig *config): ConfigSection(config, "graphics") {}
 
-            ConfigValue<std::string> Renderer = ConfigValue<std::string>(this, "renderer", "OpenGL", &ValidateRenderer);
+            String Renderer = String(this, "renderer", "OpenGL", &ValidateRenderer, "Renderer to use. Currently only 'OpenGL' is supported.");
 
-            /** Enable bloodsplats under corpses */
-            ConfigValue<bool> BloodSplats = ConfigValue<bool>(this, "bloodsplats", true);
+            Bool BloodSplats = Bool(this, "bloodsplats", true, "Enable bloodsplats under corpses.");
 
-            /** Bloodsplats radius multiplier. */
-            ConfigValue<float> BloodSplatsMultiplier = ConfigValue<float>(this, "bloodsplats_multiplier", 1.0f);
+            Float BloodSplatsMultiplier = Float(this, "bloodsplats_multiplier", 1.0f, "Bloodsplats radius multiplier.");
 
-            /** Do Bloodsplats fade. */
-            ConfigValue<bool> BloodSplatsFade = ConfigValue<bool>(this, "bloodsplats_fade", true);
+            Bool BloodSplatsFade = Bool(this, "bloodsplats_fade", true, "Enable bloodsplats fading.");
 
-            ConfigValue<float> ClipFarDistance = ConfigValue<float>(this, "clip_far_distance", 16192.0f);
-            ConfigValue<float> ClipNearDistance = ConfigValue<float>(this, "clip_near_distance", 32.0f);
+            Float ClipFarDistance = Float(this, "clip_far_distance", 16192.0f, "Far clip distance.");
+            Float ClipNearDistance = Float(this, "clip_near_distance", 32.0f, "Near clip distance.");
 
-            ConfigValue<bool> ColoredLights = ConfigValue<bool>(this, "colored_lights", true);
+            Bool ColoredLights = Bool(this, "colored_lights", true, "Enable colored lights.");
 
-            /** D3D device number which was set by setup program in vanilla for hardware mode. */
-            ConfigValue<int> D3DDevice = ConfigValue<int>(this, "d3d_device", 0);
+            // TODO(captainurist): drop
+            Int D3DDevice = Int(this, "d3d_device", 0, "D3D device number which was set by setup program in vanilla for hardware mode.");
 
-            // lightmap builder option for old drawing system
-            /** Need to be eventually deleted and replaced with gamma? */
-            ConfigValue<bool> DynamicBrightness = ConfigValue<bool>(this, "dynamic_brightness", true);
+            // TODO(captainurist): drop? lightmap builder option for old drawing system, need to be eventually deleted and replaced with gamma?
+            Bool DynamicBrightness = Bool(this, "dynamic_brightness", true, "");
 
-            /** Disable fog effect - at far clip and on fog weather */
-            ConfigValue<bool> Fog = ConfigValue<bool>(this, "fog", true);
+            Bool Fog = Bool(this, "fog", true, "Enable fog effect. Used at far clip and in foggy weather.");
 
-            /** Adjusts fog height for bottom sky horizon */
-            ConfigValue<int> FogHorizon = ConfigValue<int>(this, "fog_horizon", 39);
+            Int FogHorizon = Int(this, "fog_horizon", 39, "Fog height for bottom sky horizon.");
 
-            /** Adjust starting depth ratio of distance fog */
-            ConfigValue<float> FogDepthRatio = ConfigValue<float>(this, "fog_ratio", 0.75f);
+            Float FogDepthRatio = Float(this, "fog_ratio", 0.75f, "Starting depth ratio of distance fog.");
 
-            /** FPS Limit */
-            ConfigValue<int> FPSLimit = ConfigValue<int>(this, "fps_limit", 60);
+            Int FPSLimit = Int(this, "fps_limit", 60, "FPS limit. Use 0 for unlimited.");
 
-            /** Game level brightness gamma */
-            ConfigValue<int> Gamma = ConfigValue<int>(this, "gamma", 4, &ValidateGamma);
+            Int Gamma = Int(this, "gamma", 4, &ValidateGamma, "Game level, can be used to adjust brightness.");
 
-            /** Viewport top-left offset */
-            ConfigValue<int> HouseMovieX1 = ConfigValue<int>(this, "house_movie_x1", 8);
-            ConfigValue<int> HouseMovieY1 = ConfigValue<int>(this, "house_movie_y1", 8);
+            Int HouseMovieX1 = Int(this, "house_movie_x1", 8, "Viewport top-left offset for in-house movies.");
+            Int HouseMovieY1 = Int(this, "house_movie_y1", 8, "Viewport top-left offset for in-house movies.");
 
-            /** Viewport bottom-right offset */
-            ConfigValue<int> HouseMovieX2 = ConfigValue<int>(this, "house_movie_x2", 172);
-            ConfigValue<int> HouseMovieY2 = ConfigValue<int>(this, "house_movie_y2", 128);
+            Int HouseMovieX2 = Int(this, "house_movie_x2", 172, "Viewport bottom-right offset for in-house movies.");
+            Int HouseMovieY2 = Int(this, "house_movie_y2", 128, "Viewport bottom-right offset for in-house movies.");
 
-            /** Use low-resolution bitmaps from HWL file instead of hi-resolution ones from LOD. */
-            ConfigValue<bool> HWLBitmaps = ConfigValue<bool>(this, "hwl_bitmaps", false);
+            Bool HWLBitmaps = Bool(this, "hwl_bitmaps", false,
+                                   "Use low-resolution bitmaps from HWL file instead of hi-resolution ones from LOD.");
 
-            /** Use low-resolution sprites from HWL file instead of hi-resolution ones from LOD. */
-            ConfigValue<bool> HWLSprites = ConfigValue<bool>(this, "hwl_sprites", false);
+            Bool HWLSprites = Bool(this, "hwl_sprites", false,
+                                   "Use low-resolution sprites from HWL file instead of hi-resolution ones from LOD.");
 
-            /** Max number of BSP sectors to display. */
-            ConfigValue<int> MaxVisibleSectors = ConfigValue<int>(this, "maxvisiblesectors", 10, &ValidateMaxSectors);
+            Int MaxVisibleSectors = Int(this, "maxvisiblesectors", 10, &ValidateMaxSectors, "Max number of BSP sectors to display.");
 
-            /** Allow changing trees/ground depending on current season (originally was only used in MM6) */
-            ConfigValue<bool> SeasonsChange = ConfigValue<bool>(this, "seasons_change", true);
+            Bool SeasonsChange = Bool(this, "seasons_change", true,
+                                      "Allow changing trees/ground depending on current season (originally was only used in MM6).");
 
-            /** Snow effect from MM6 where it was activated by event. Currently it shows every third day in winter. */
-            ConfigValue<bool> Snow = ConfigValue<bool>(this, "snow", false);
+            Bool Snow = Bool(this, "snow", false,
+                             "Snow effect from MM6 (where it was activated by events). Currently it shows every third day in winter.");
 
-            /** Vanilla's monster coloring method from hardware mode. When monsters look like bucket of paint was thrown at them. */
-            ConfigValue<bool> Tinting = ConfigValue<bool>(this, "tinting", false);
+            Bool Tinting = Bool(this, "tinting", false,
+                                "Enable vanilla's monster coloring method from hardware mode. "
+                                "Where monsters look as if a bucket of paint was thrown at them.");
 
-            /** Torchlight distance per each power level. 0 - disable torchlight. */
-            ConfigValue<int> TorchlightDistance = ConfigValue<int>(this, "torchlight_distance", 800, &ValidateTorchlight);
+            Int TorchlightDistance = Int(this, "torchlight_distance", 800, &ValidateTorchlight,
+                                         "Torchlight distance per power level. Use 0 to disable torchlight.");
 
-            /** Torchlight lighting flicker effect distance. 0 - disable effect. */
-            ConfigValue<int> TorchlightFlicker = ConfigValue<int>(this, "torchlight_flicker", 200, &ValidateTorchlight);
+            Int TorchlightFlicker = Int(this, "torchlight_flicker", 200, &ValidateTorchlight,
+                                        "Torchlight lighting flicker effect distance. Use 0 to disable flicker.");
 
-            /** Enable synchronization of framerate with monitor vertical refresh rate. */
-            ConfigValue<bool> VSync = ConfigValue<bool>(this, "vsync", false);
+            Bool VSync = Bool(this, "vsync", false, "Enable synchronization of framerate with monitor vertical refresh rate.");
 
-            /** Viewport top-left offset */
-            ConfigValue<int> ViewPortX1 = ConfigValue<int>(this, "viewport_x1", 8);
-            ConfigValue<int> ViewPortY1 = ConfigValue<int>(this, "viewport_y1", 8);
+            Int ViewPortX1 = Int(this, "viewport_x1", 8, "Viewport top-left offset.");
+            Int ViewPortY1 = Int(this, "viewport_y1", 8, "Viewport top-left offset.");
 
-            /** Viewport bottom-right offset */
-            ConfigValue<int> ViewPortX2 = ConfigValue<int>(this, "viewport_x2", 172);
-            ConfigValue<int> ViewPortY2 = ConfigValue<int>(this, "viewport_y2", 128);
+            Int ViewPortX2 = Int(this, "viewport_x2", 172, "Viewport bottom-right offset.");
+            Int ViewPortY2 = Int(this, "viewport_y2", 128, "Viewport bottom-right offset.");
 
          private:
             static std::string ValidateRenderer(std::string renderer) {
@@ -287,36 +272,36 @@ namespace Application {
          public:
             explicit Keybindings(GameConfig *config) : ConfigSection(config, "keybindings") {}
 
-            ConfigValue<std::string> AlwaysRun = ConfigValue<std::string>(this, "always_run", "U", &ValidateKey);
-            ConfigValue<std::string> Attack = ConfigValue<std::string>(this, "attack", "A", &ValidateKey);
-            ConfigValue<std::string> AutoNotes = ConfigValue<std::string>(this, "auto_notes", "N", &ValidateKey);
-            ConfigValue<std::string> Backward = ConfigValue<std::string>(this, "backward", "DOWN", &ValidateKey);
-            ConfigValue<std::string> Cast = ConfigValue<std::string>(this, "cast", "C", &ValidateKey);
-            ConfigValue<std::string> CastReady = ConfigValue<std::string>(this, "cast_ready", "S", &ValidateKey);
-            ConfigValue<std::string> CenterView = ConfigValue<std::string>(this, "center_view", "END", &ValidateKey);
-            ConfigValue<std::string> CharCycle = ConfigValue<std::string>(this, "char_cycle", "TAB", &ValidateKey);
-            ConfigValue<std::string> Combat = ConfigValue<std::string>(this, "combat", "RETURN", &ValidateKey);
-            ConfigValue<std::string> EventTrigger = ConfigValue<std::string>(this, "event_trigger", "SPACE", &ValidateKey);
-            ConfigValue<std::string> FlyDown = ConfigValue<std::string>(this, "fly_down", "INSERT", &ValidateKey);
-            ConfigValue<std::string> FlyUp = ConfigValue<std::string>(this, "fly_up", "PAGE UP", &ValidateKey);
-            ConfigValue<std::string> Forward = ConfigValue<std::string>(this, "forward", "UP", &ValidateKey);
-            ConfigValue<std::string> Jump = ConfigValue<std::string>(this, "jump", "X", &ValidateKey);
-            ConfigValue<std::string> Land = ConfigValue<std::string>(this, "land", "HOME", &ValidateKey);
-            ConfigValue<std::string> Left = ConfigValue<std::string>(this, "left", "LEFT", &ValidateKey);
-            ConfigValue<std::string> LookDown = ConfigValue<std::string>(this, "look_down", "DELETE", &ValidateKey);
-            ConfigValue<std::string> LookUp = ConfigValue<std::string>(this, "look_up", "PAGE DOWN", &ValidateKey);
-            ConfigValue<std::string> MapBook = ConfigValue<std::string>(this, "map_book", "M", &ValidateKey);
-            ConfigValue<std::string> Pass = ConfigValue<std::string>(this, "pass", "B", &ValidateKey);
-            ConfigValue<std::string> Quest = ConfigValue<std::string>(this, "quest", "Q", &ValidateKey);
-            ConfigValue<std::string> QuickReference = ConfigValue<std::string>(this, "quick_reference", "Z", &ValidateKey);
-            ConfigValue<std::string> Rest = ConfigValue<std::string>(this, "rest", "R", &ValidateKey);
-            ConfigValue<std::string> Right = ConfigValue<std::string>(this, "right", "RIGHT", &ValidateKey);
-            ConfigValue<std::string> StepLeft = ConfigValue<std::string>(this, "step_left", "L BRACKET", &ValidateKey);
-            ConfigValue<std::string> StepRight = ConfigValue<std::string>(this, "step_right", "R BRACKET", &ValidateKey);
-            ConfigValue<std::string> TimeCalendar = ConfigValue<std::string>(this, "time_calendar", "T", &ValidateKey);
-            ConfigValue<std::string> Yell = ConfigValue<std::string>(this, "yell", "Y", &ValidateKey);
-            ConfigValue<std::string> ZoomIn = ConfigValue<std::string>(this, "zoom_in", "ADD", &ValidateKey);
-            ConfigValue<std::string> ZoomOut = ConfigValue<std::string>(this, "zoom_out", "SUBTRACT", &ValidateKey);
+            String AlwaysRun = String(this, "always_run", "U", &ValidateKey, "Always run toggle key.");
+            String Attack = String(this, "attack", "A", &ValidateKey, "Attack key.");
+            String AutoNotes = String(this, "auto_notes", "N", &ValidateKey, "Open autonotes key.");
+            String Backward = String(this, "backward", "DOWN", &ValidateKey, "Walk backwards key.");
+            String Cast = String(this, "cast", "C", &ValidateKey, "Cast a spell from spellbook key.");
+            String CastReady = String(this, "cast_ready", "S", &ValidateKey, "Cast a quick spell key.");
+            String CenterView = String(this, "center_view", "END", &ValidateKey, "Center view key.");
+            String CharCycle = String(this, "char_cycle", "TAB", &ValidateKey, "Switch between characters key.");
+            String Combat = String(this, "combat", "RETURN", &ValidateKey, "Switch between realtime and turn-based modes key.");
+            String EventTrigger = String(this, "event_trigger", "SPACE", &ValidateKey, "Interaction key.");
+            String FlyDown = String(this, "fly_down", "INSERT", &ValidateKey, "Fly down key.");
+            String FlyUp = String(this, "fly_up", "PAGE UP", &ValidateKey, "Fly up key.");
+            String Forward = String(this, "forward", "UP", &ValidateKey, "Move forward key.");
+            String Jump = String(this, "jump", "X", &ValidateKey, "Jump key.");
+            String Land = String(this, "land", "HOME", &ValidateKey, "Land key.");
+            String Left = String(this, "left", "LEFT", &ValidateKey, "Turn left key.");
+            String LookDown = String(this, "look_down", "DELETE", &ValidateKey, "Look down key.");
+            String LookUp = String(this, "look_up", "PAGE DOWN", &ValidateKey, "Look up key.");
+            String MapBook = String(this, "map_book", "M", &ValidateKey, "Open map key.");
+            String Pass = String(this, "pass", "B", &ValidateKey, ""); // TODO(captainurist): wat?
+            String Quest = String(this, "quest", "Q", &ValidateKey, "Open quest book key");
+            String QuickReference = String(this, "quick_reference", "Z", &ValidateKey, "Open quick re"); // TODO(captainurist): wat?
+            String Rest = String(this, "rest", "R", &ValidateKey, "Rest key.");
+            String Right = String(this, "right", "RIGHT", &ValidateKey, "Turn right key.");
+            String StepLeft = String(this, "step_left", "L BRACKET", &ValidateKey, "Strafe left key.");
+            String StepRight = String(this, "step_right", "R BRACKET", &ValidateKey, "Strafe right key.");
+            String TimeCalendar = String(this, "time_calendar", "T", &ValidateKey, "Open calendar key.");
+            String Yell = String(this, "yell", "Y", &ValidateKey, "Yell key.");
+            String ZoomIn = String(this, "zoom_in", "ADD", &ValidateKey, "Zoom in automap key.");
+            String ZoomOut = String(this, "zoom_out", "SUBTRACT", &ValidateKey, "Zoom out automap key.");
 
          private:
             static std::string ValidateKey(std::string key) {
@@ -331,36 +316,27 @@ namespace Application {
          public:
             explicit Settings(GameConfig *config) : ConfigSection(config, "settings") {}
 
-            /** true - run, false - walk */
-            ConfigValue<bool> AlwaysRun = ConfigValue<bool>(this, "always_run", true);
+            Bool AlwaysRun = Bool(this, "always_run", true, "Enable always run.");
 
-            /** Horizontal view flip upon exiting buildings */
-            ConfigValue<bool> FlipOnExit = ConfigValue<bool>(this, "flip_on_exit", false);
+            Bool FlipOnExit = Bool(this, "flip_on_exit", false, "Flip 180 degrees when leaving a building.");
 
-            /** Show hits status in status bar */
-            ConfigValue<bool> ShowHits = ConfigValue<bool>(this, "show_hits", true);
+            Bool ShowHits = Bool(this, "show_hits", true, "Show HP status in status bar.");
 
-            /** Music volume level */
-            ConfigValue<int> MusicLevel = ConfigValue<int>(this, "music_level", 3, &ValidateLevel);
+            Int MusicLevel = Int(this, "music_level", 3, &ValidateLevel, "Music volume level.");
 
-            /** Sound volume level */
-            ConfigValue<int> SoundLevel = ConfigValue<int>(this, "sound_level", 4, &ValidateLevel);
+            Int SoundLevel = Int(this, "sound_level", 4, &ValidateLevel, "Sound volume level.");
 
-            /** Voice volume level */
-            ConfigValue<int> VoiceLevel = ConfigValue<int>(this, "voice_level", 5, &ValidateLevel);
+            Int VoiceLevel = Int(this, "voice_level", 5, &ValidateLevel, "Voice volume level.");
 
-            /** Last saved screenshot number */
-            ConfigValue<int> ScreenshotNumber = ConfigValue<int>(this, "screenshot_number", 0);
+            Int ScreenshotNumber = Int(this, "screenshot_number", 0, "Last saved screenshot number.");
 
-            /** Discrete turn speed, 0 - smooth, x16 - 64 degress turn, x32 - 128 degress turn.
-              * Only smooth is usable on modern machines. */
-            ConfigValue<float> TurnSpeed = ConfigValue<float>(this, "turn_speed", 0.0f, &ValidateTurnSpeed);
+            Float TurnSpeed = Float(this, "turn_speed", 0.0f, &ValidateTurnSpeed,
+                                    "Discrete turn speed, use 0 for smooth, 16 for 64 degrees turn, 32 for 128 degrees turn, etc. "
+                                    "Only smooth is usable on modern machines.");
 
-            /** Discrete vertical turn speed. */
-            ConfigValue<int> VerticalTurnSpeed = ConfigValue<int>(this, "vertical_turn_speed", 25, &ValidateVerticalTurnSpeed);
+            Int VerticalTurnSpeed = Int(this, "vertical_turn_speed", 25, &ValidateVerticalTurnSpeed, "Discrete vertical turn speed.");
 
-            /** Party footstep's sound while moving. */
-            ConfigValue<bool> WalkSound = ConfigValue<bool>(this, "walk_sound", true);
+            Bool WalkSound = Bool(this, "walk_sound", true, "Enable footsteps sound when walking.");
 
          private:
             static int ValidateLevel(int level) {
@@ -380,24 +356,24 @@ namespace Application {
          public:
             explicit Window(GameConfig *config): ConfigSection(config, "window") {}
 
-            ConfigValue<std::string> Title = ConfigValue<std::string>(this, "title", "World of Might and Magic", &ValidateTitle);
+            String Title = String(this, "title", "World of Might and Magic", &ValidateTitle, "Game window title.");
 
-            /** Display number as exposed by SDL. Order is platform-specific, e.g. on windows 0 is main display */
-            ConfigValue<int> Display = ConfigValue<int>(this, "display", 0);
+            Int Display = Int(this, "display", 0,
+                              "Display number as exposed by SDL. "
+                              "Order is platform-specific, e.g. on windows 0 is main display");
 
-            /** Window mode. 0 - window, 1 - borderless window, 2 - fullscreen, 3 - borderless fullscreen. */
-            ConfigValue<int> Mode = ConfigValue<int>(this, "mode", 0, &ValidateMode);
+            Int Mode = Int(this, "mode", 0, &ValidateMode,
+                           "Window mode. Use 0 for windowed, 1 for borderless windowed, 2 for fullscreen, 3 for borderless (fake) fullscreen.");
 
-            /** Coordinates in pixels for position of left-top window corner. -1 is window centered on this axis. */
-            ConfigValue<int> PositionX = ConfigValue<int>(this, "position_x", -1, &ValidatePosition);
-            ConfigValue<int> PositionY = ConfigValue<int>(this, "position_y", -1, &ValidatePosition);
+            Int PositionX = Int(this, "position_x", -1, &ValidatePosition,
+                                "Game window x position in display coordinates. Use -1 for centered.");
+            Int PositionY = Int(this, "position_y", -1, &ValidatePosition,
+                                "Game window y position in display coordinates. Use -1 for centered.");
 
-            /** Window size in pixels. */
-            ConfigValue<int> Width = ConfigValue<int>(this, "width", 640, &ValidateWidth);
-            ConfigValue<int> Height = ConfigValue<int>(this, "height", 480, &ValidateHeight);
+            Int Width = Int(this, "width", 640, &ValidateWidth, "Window width.");
+            Int Height = Int(this, "height", 480, &ValidateHeight, "Window height.");
 
-            /** Grab mouse. When true you cannot move the mouse outside the game window while it is in focus. */
-            ConfigValue<bool> MouseGrab = ConfigValue<bool>(this, "mouse_grab", true);
+            Bool MouseGrab = Bool(this, "mouse_grab", true, "Restrict mouse movement to game window when it's in focus.");
 
          private:
              static std::string ValidateTitle(std::string title) {
