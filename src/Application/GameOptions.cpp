@@ -92,6 +92,8 @@ bool Application::ParseGameOptions(int argc, char **argv, GameConfig *config) {
     app->set_help_flag("-h,--help", "Print help and exit")->group(generalOptions);
     app->add_option("-s,--set", setArgs, "Set config option")->type_name("SECTION.NAME=VALUE")->group(generalOptions)->expected(1, 1000)->each(setOption);
 
+    // TODO(captainurist): redo the rest of this file, use Config directly.
+
     app->add_flag("--nointro", config->debug.NoIntro, "Skip intro movie")->group(gameOptions);
     app->add_flag("--nologo", config->debug.NoLogo, "Skip 3DO & NWC logos")->group(gameOptions);
     app->add_flag("--nosound", config->debug.NoSound, "Disable sound")->group(gameOptions);
