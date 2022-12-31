@@ -675,37 +675,37 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
     result = a2->uType;
 
     switch (a2->uType) {
-        case SPRITE_PROJECTILE_500:
+        case SPRITE_PROJECTILE_AIRBOLT:
         case SPRITE_PROJECTILE_530:
             _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
                 a2, 0x00AAAFF, effpar01);
             return false;
-        case SPRITE_PROJECTILE_500_IMPACT:
+        case SPRITE_PROJECTILE_AIRBOLT_IMPACT:
         case SPRITE_PROJECTILE_530_IMPACT:
             _4A75CC_single_spell_collision_particle(a2, 0xAAAFF, effpar01);
             return true;
 
-        case SPRITE_PROJECTILE_505:
+        case SPRITE_PROJECTILE_EARTHBOLT:
             _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
                 a2, 0x5C310E, effpar01);
             return false;
-        case SPRITE_PROJECTILE_505_IMPACT:
+        case SPRITE_PROJECTILE_EARTHBOLT_IMPACT:
             _4A75CC_single_spell_collision_particle(a2, 0x5C310E, effpar01);
             return false;
 
-        case SPRITE_PROJECTILE_510:
+        case SPRITE_PROJECTILE_FIREBOLT:
             _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
                 a2, 0xFF3C1E, effpar01);
             return false;
-        case SPRITE_PROJECTILE_510_IMPACT:
+        case SPRITE_PROJECTILE_FIREBOLT_IMPACT:
             _4A75CC_single_spell_collision_particle(a2, 0xFF3C1E, effpar01);
             return false;
 
-        case SPRITE_PROJECTILE_515:
+        case SPRITE_PROJECTILE_WATERBOLT:
             _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
                 a2, 0x0062D0, effpar01);
             return false;
-        case SPRITE_PROJECTILE_515_IMPACT:
+        case SPRITE_PROJECTILE_WATERBOLT_IMPACT:
             _4A75CC_single_spell_collision_particle(a2, 0x0062D0, effpar01);
             return false;
 
@@ -725,24 +725,24 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             _4A75CC_single_spell_collision_particle(a2, 0xC8C805, effpar01);
             return false;
 
-        case SPRITE_PROJECTILE_535:
+        case SPRITE_PROJECTILE_LIGHTBOLT:
             _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
                 a2, 0xFFFFFF, effpar01);
             return false;
-        case SPRITE_PROJECTILE_535_IMPACT:
+        case SPRITE_PROJECTILE_LIGHTBOLT_IMPACT:
             _4A75CC_single_spell_collision_particle(a2, 0xFFFFFF, effpar01);
             return false;
 
-        case SPRITE_PROJECTILE_540:
+        case SPRITE_PROJECTILE_DARKBOLT:
             _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
                 a2, 0x7E7E7E, effpar01);
             return false;
-        case SPRITE_PROJECTILE_540_IMPACT:
+        case SPRITE_PROJECTILE_DARKBOLT_IMPACT:
             _4A75CC_single_spell_collision_particle(a2, 0x7E7E7E, effpar01);
             return false;
 
         case SPRITE_ARROW_PROJECTILE:
-        case SPRITE_PROJECTILE_550:
+        case SPRITE_PROJECTILE_EXPLOSIVE:
         case SPRITE_BLASTER_PROJECTILE:
             return true;
 

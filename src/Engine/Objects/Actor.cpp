@@ -761,34 +761,34 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
             a1.uType = SPRITE_ARROW_PROJECTILE;
             break;
         case 2:
-            a1.uType = SPRITE_PROJECTILE_550;
+            a1.uType = SPRITE_PROJECTILE_EXPLOSIVE;
             break;
         case 3:
-            a1.uType = SPRITE_PROJECTILE_510;
+            a1.uType = SPRITE_PROJECTILE_FIREBOLT;
             break;
         case 4:
-            a1.uType = SPRITE_PROJECTILE_500;
+            a1.uType = SPRITE_PROJECTILE_AIRBOLT;
             break;
         case 5:
-            a1.uType = SPRITE_PROJECTILE_515;
+            a1.uType = SPRITE_PROJECTILE_WATERBOLT;
             break;
         case 6:
-            a1.uType = SPRITE_PROJECTILE_505;
+            a1.uType = SPRITE_PROJECTILE_EARTHBOLT;
             break;
         case 7:
-            a1.uType = SPRITE_PROJECTILE_530;
+            a1.uType = SPRITE_PROJECTILE_530; // - one of MIND/BODY/SPIRIT
             break;
         case 8:
-            a1.uType = SPRITE_PROJECTILE_525;
+            a1.uType = SPRITE_PROJECTILE_525; // - one of MIND/BODY/SPIRIT
             break;
         case 9:
-            a1.uType = SPRITE_PROJECTILE_520;
+            a1.uType = SPRITE_PROJECTILE_520; // - one of MIND/BODY/SPIRIT
             break;
         case 10:
-            a1.uType = SPRITE_PROJECTILE_535;
+            a1.uType = SPRITE_PROJECTILE_LIGHTBOLT;
             break;
         case 11:
-            a1.uType = SPRITE_PROJECTILE_540;
+            a1.uType = SPRITE_PROJECTILE_DARKBOLT;
             break;
         case 13:
             a1.uType = SPRITE_BLASTER_PROJECTILE;

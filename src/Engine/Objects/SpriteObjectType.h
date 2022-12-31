@@ -14,26 +14,28 @@ enum SPRITE_OBJECT_TYPE : uint16_t {
 
     SPRITE_SPELL_0 = 10,
 
-    SPRITE_PROJECTILE_500 = 500,  // blue bolt projectile + smoke   e.g. blue dragon attack
-    SPRITE_PROJECTILE_500_IMPACT = 501,
-    SPRITE_PROJECTILE_505 = 505,  // dark-brown bolt
-    SPRITE_PROJECTILE_505_IMPACT = 506,
-    SPRITE_PROJECTILE_510 = 510,  // red bolt projectile + smoke   e.g. red dragon attack
-    SPRITE_PROJECTILE_510_IMPACT = 511,
-    SPRITE_PROJECTILE_515 = 515,  // deep-blue bolt
-    SPRITE_PROJECTILE_515_IMPACT = 516,
-    SPRITE_PROJECTILE_520 = 520,  // light-green bolt
+    // basic bolt attacks
+    SPRITE_PROJECTILE_AIRBOLT = 500,  // blue bolt projectile + smoke   e.g. blue dragon attack
+    SPRITE_PROJECTILE_AIRBOLT_IMPACT = 501,
+    SPRITE_PROJECTILE_EARTHBOLT = 505,  // dark-brown bolt
+    SPRITE_PROJECTILE_EARTHBOLT_IMPACT = 506,
+    SPRITE_PROJECTILE_FIREBOLT = 510,  // red bolt projectile + smoke   e.g. red dragon attack
+    SPRITE_PROJECTILE_FIREBOLT_IMPACT = 511,
+    SPRITE_PROJECTILE_WATERBOLT = 515,  // deep-blue bolt
+    SPRITE_PROJECTILE_WATERBOLT_IMPACT = 516,
+    SPRITE_PROJECTILE_520 = 520,  // light-green bolt  - one of MIND/BODY/SPIRIT
     SPRITE_PROJECTILE_520_IMPACT = 521,
-    SPRITE_PROJECTILE_525 = 525,  // yellow bolt
+    SPRITE_PROJECTILE_525 = 525,  // yellow bolt - one of MIND/BODY/SPIRIT
     SPRITE_PROJECTILE_525_IMPACT = 526,
-    SPRITE_PROJECTILE_530 = 530,  // blue bolt projectile + smoke   e.g. blue dragon attack
+    SPRITE_PROJECTILE_530 = 530,  // blue bolt - - one of MIND/BODY/SPIRIT
     SPRITE_PROJECTILE_530_IMPACT = 531,
-    SPRITE_PROJECTILE_535 = 535,  // white bolt
-    SPRITE_PROJECTILE_535_IMPACT = 536,
-    SPRITE_PROJECTILE_540 = 540,  // gray bolt
-    SPRITE_PROJECTILE_540_IMPACT = 541,
+    SPRITE_PROJECTILE_LIGHTBOLT = 535,  // white bolt
+    SPRITE_PROJECTILE_LIGHTBOLT_IMPACT = 536,
+    SPRITE_PROJECTILE_DARKBOLT = 540,  // gray bolt
+    SPRITE_PROJECTILE_DARKBOLT_IMPACT = 541,
+
     SPRITE_ARROW_PROJECTILE = 545,
-    SPRITE_PROJECTILE_550 = 550,
+    SPRITE_PROJECTILE_EXPLOSIVE = 550,
     SPRITE_BLASTER_PROJECTILE = 555,
     SPRITE_BLASTER_IMPACT = 556,
     SPRITE_OBJECT_EXPLODE = 600,  // some reddish mobile light applied -  actor explode
