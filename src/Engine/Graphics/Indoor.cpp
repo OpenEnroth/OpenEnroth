@@ -1796,211 +1796,49 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     }
 }
 
-// TODO(pskelton): Cleanup outdoors checks - change params to both vec3i
 //----- (00407A1C) --------------------------------------------------------
-bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3i Pos_From) {  // target xyz from position v true on clear
-    int ShiftedFromz;         // [sp+64h] [bp-18h]@2
-    int ShiftedFromX;         // [sp+68h] [bp-14h]@2
-    int ShiftedFromY;         // [sp+6Ch] [bp-10h]@2
-    int ShiftedTargetZ;           // [sp+70h] [bp-Ch]@2
-    int ShiftedTargetX;           // [sp+74h] [bp-8h]@2
-    int ShiftedTargetY;           // [sp+78h] [bp-4h]@2
-
-     // __debugbreak(); // срабатывает при стрельбе огненным шаром
-    // triggered by fireball
-
-     unsigned int AngleToTarget = TrigLUT.Atan2(Pos_From.x - target_x, Pos_From.y - target_y);
-
+bool Check_LineOfSight(const Vec3i &target, const Vec3i &from) {  // target from - true on clear
+    int AngleToTarget = TrigLUT.Atan2(from.x - target.x, from.y - target.y);
     bool LOS_Obscurred = 0;
     bool LOS_Obscurred2 = 0;
 
-    Vec3i TargetVec;
-    TargetVec.z = target_z;
-    TargetVec.x = target_x;
-    TargetVec.y = target_y;
-
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-        Vec3i target{};
-        Vec3i from{};
+        Vec3i targetmod{};
+        Vec3i frommod{};
 
         // offset 32 to side and check LOS
-        Vec3i::Rotate(32, TrigLUT.uIntegerHalfPi + AngleToTarget, 0, TargetVec, &target.x, &target.y, &target.z);
-        Vec3i::Rotate(32, TrigLUT.uIntegerHalfPi + AngleToTarget, 0, Pos_From, &from.x, &from.y, &from.z);
-        LOS_Obscurred2 = Check_LOS_Obscurred_Indoors(from, target);
+        Vec3i::Rotate(32, TrigLUT.uIntegerHalfPi + AngleToTarget, 0, target, &targetmod.x, &targetmod.y, &targetmod.z);
+        Vec3i::Rotate(32, TrigLUT.uIntegerHalfPi + AngleToTarget, 0, from, &frommod.x, &frommod.y, &frommod.z);
+        LOS_Obscurred2 = Check_LOS_Obscurred_Indoors(targetmod, frommod);
 
         // offset other side and repeat check
-        Vec3i::Rotate(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0, TargetVec, &target.x, &target.y, &target.z);
-        Vec3i::Rotate(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0, Pos_From, &from.x, &from.y, &from.z);
-        LOS_Obscurred = Check_LOS_Obscurred_Indoors(from, target);
-
-    // TODO(pskelton): outdoors needs cleaning up and to check against terrain
+        Vec3i::Rotate(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0, target, &targetmod.x, &targetmod.y, &targetmod.z);
+        Vec3i::Rotate(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0, from, &frommod.x, &frommod.y, &frommod.z);
+        LOS_Obscurred = Check_LOS_Obscurred_Indoors(targetmod, frommod);
     } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+        // TODO(pskelton): Need to add check against terrain
+        Vec3i targetmod{};
+        Vec3i frommod{};
+
         // offset 32 to side and check LOS
-        Vec3i::Rotate(32, TrigLUT.uIntegerHalfPi + AngleToTarget, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
-        Vec3i::Rotate(32, TrigLUT.uIntegerHalfPi + AngleToTarget, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
-        int dist_y02 = ShiftedFromY - ShiftedTargetY;
-        int dist_z02 = ShiftedFromz - ShiftedTargetZ;
-        int dist_x02 = ShiftedFromX - ShiftedTargetX;
+        Vec3i::Rotate(32, TrigLUT.uIntegerHalfPi + AngleToTarget, 0, target, &targetmod.x, &targetmod.y, &targetmod.z);
+        Vec3i::Rotate(32, TrigLUT.uIntegerHalfPi + AngleToTarget, 0, from, &frommod.x, &frommod.y, &frommod.z);
+        LOS_Obscurred2 = Check_LOS_Obscurred_Outdoors_Bmodels(targetmod, frommod);
 
-        int v9 = integer_sqrt(dist_x02 * dist_x02 + dist_y02 * dist_y02 + dist_z02 * dist_z02);
-        int v10 = 65536;
-        if (v9) v10 = 65536 / v9;
-
-        // normalising
-        int rayxnorm = dist_x02 * v10;
-        int rayznormout = dist_z02 * v10;
-        int rayynorm = dist_y02 * v10;
-
-        int xmax = std::max(ShiftedFromX, ShiftedTargetX);
-        int xmin = std::min(ShiftedFromX, ShiftedTargetX);
-
-        int ymax = std::max(ShiftedFromY, ShiftedTargetY);
-        int ymin = std::min(ShiftedFromY, ShiftedTargetY);
-
-        int zmax = std::max(ShiftedFromz, ShiftedTargetZ);
-        int zmin = std::min(ShiftedFromz, ShiftedTargetZ);
-
-        for (BSPModel &model : pOutdoor->pBModels) {
-            if (CalcDistPointToLine(ShiftedTargetX, ShiftedTargetY, ShiftedFromX, ShiftedFromY, model.vPosition.x, model.vPosition.y) <= model.sBoundingRadius + 128) {
-                for (ODMFace &face : model.pFaces) {
-                    int v17 = fixpoint_mul(rayxnorm, face.pFacePlaneOLD.vNormal.x);
-                    int v18 = fixpoint_mul(rayynorm, face.pFacePlaneOLD.vNormal.y);
-                    int v19 = fixpoint_mul(rayznormout, face.pFacePlaneOLD.vNormal.z);
-
-                    bool FaceIsParallelout = v17 + v18 + v19 == 0;  // dot product implies face normal is perpendicular - face is parallel to LOS
-
-                    int dot_ray2 = v17 + v18 + v19;
-                    int dot_ray = v17 + v18 + v19;
-
-                    // bounds check
-                    if (xmin > face.pBoundingBox.x2 ||
-                        xmax < face.pBoundingBox.x1 ||
-                        ymin > face.pBoundingBox.y2 ||
-                        ymax < face.pBoundingBox.y1 ||
-                        zmin > face.pBoundingBox.z2 ||
-                        zmax < face.pBoundingBox.z1 || FaceIsParallelout)
-                        continue;
-
-                    // point to plane distacne
-                    int v23 = -face.pFacePlaneOLD.SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ);
-
-                    // are we on same side of plane
-                    if (dot_ray2 <= 0) {
-                        // angle obtuse - is target underneath plane
-                        if (face.pFacePlaneOLD.
-                            SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ) < 0)
-                            continue;  // can never hit
-                    } else {
-                        // angle acute - is target above plane
-                        if (face.pFacePlaneOLD.
-                            SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ) > 0)
-                            continue;  // can never hit
-                    }
-
-                    int v24 = abs(-face.pFacePlaneOLD.
-                        SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ)) >> 14;
-
-                    // maybe some sort of epsilon check?
-                    if (v24 <= abs(dot_ray2)) {
-                        // calc how far along line interesction is
-                        int v110 = fixpoint_div(v23, dot_ray);
-
-                        // less than zero means intersection is behind target point
-                        if (v110 >= 0) {
-                            Vec3i pos = Vec3i(
-                                ShiftedTargetX + ((signed int)(fixpoint_mul(v110, rayxnorm) + 0x8000) >> 16),
-                                ShiftedTargetY + ((signed int)(fixpoint_mul(v110, rayynorm) + 0x8000) >> 16),
-                                ShiftedTargetZ + ((signed int)(fixpoint_mul(v110, rayznormout) + 0x8000) >> 16));
-                            if (face.Contains(pos, model.index)) {
-                                LOS_Obscurred2 = 1;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // offset 32 to other side and check LOS
-        Vec3i::Rotate(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
-        Vec3i::Rotate(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
-        int dist_y01 = ShiftedFromY - ShiftedTargetY;
-        int dist_z01 = ShiftedFromz - ShiftedTargetZ;
-        int dist_x01 = ShiftedFromX - ShiftedTargetX;
-        int v32 = integer_sqrt(dist_x01 * dist_x01 + dist_y01 * dist_y01 + dist_z01 * dist_z01);
-        int v33 = 65536;
-        if (v32) v33 = 65536 / v32;
-        int v126 = dist_x01 * v33;
-        int v35 = dist_z01 * v33;
-        int v122 = dist_y01 * v33;
-
-        int v146 = std::max(ShiftedFromX, ShiftedTargetX);
-        int v150 = std::min(ShiftedFromX, ShiftedTargetX);
-
-        int v138 = std::max(ShiftedFromY, ShiftedTargetY);
-        int v142 = std::min(ShiftedFromY, ShiftedTargetY);
-
-        int v130 = std::max(ShiftedFromz, ShiftedTargetZ);
-        int v134 = std::min(ShiftedFromz, ShiftedTargetZ);
-
-        for (BSPModel &model : pOutdoor->pBModels) {
-            if (CalcDistPointToLine(ShiftedTargetX, ShiftedTargetY, ShiftedFromX, ShiftedFromY, model.vPosition.x,
-                           model.vPosition.y) <= model.sBoundingRadius + 128) {
-                for (ODMFace &face : model.pFaces) {
-                    int ya = fixpoint_mul(v126, face.pFacePlaneOLD.vNormal.x);
-                    int ve = fixpoint_mul(v122, face.pFacePlaneOLD.vNormal.y);
-                    int v_4 = fixpoint_mul(v35, face.pFacePlaneOLD.vNormal.z);
-                    bool FaceIsParallelout = ya + ve + v_4 == 0;
-                    int v40 = ya + ve + v_4;
-                    int va = ya + ve + v_4;
-                    if (v150 > face.pBoundingBox.x2 ||
-                        v146 < face.pBoundingBox.x1 ||
-                        v142 > face.pBoundingBox.y2 ||
-                        v138 < face.pBoundingBox.y1 ||
-                        v134 > face.pBoundingBox.z2 ||
-                        v130 < face.pBoundingBox.z1 || FaceIsParallelout)
-                        continue;
-                    int v42 = -face.pFacePlaneOLD.SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ);
-                    if (v40 <= 0) {
-                        if (face.pFacePlaneOLD.
-                            SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ) < 0)
-                            continue;
-                    } else {
-                        if (face.pFacePlaneOLD.
-                            SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ) > 0)
-                            continue;
-                    }
-                    int v_4a = abs(-face.pFacePlaneOLD.
-                        SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ)) >> 14;
-                    if (v_4a <= abs(v40)) {
-                        // LODWORD(v43) = v42 << 16;
-                        // HIDWORD(v43) = v42 >> 16;
-                        // vb = v43 / va;
-                        int vb = fixpoint_div(v42, va);
-                        if (vb >= 0) {
-                            Vec3i pos = Vec3i(
-                                ShiftedTargetX + ((int)(fixpoint_mul(vb, v126) + 0x8000) >> 16),
-                                ShiftedTargetY + ((int)(fixpoint_mul(vb, v122) + 0x8000) >> 16),
-                                ShiftedTargetZ + ((int)(fixpoint_mul(vb, v35) + 0x8000) >> 16));
-                            if (face.Contains(pos, model.index)) {
-                                LOS_Obscurred = 1;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        // offset other side and repeat check
+        Vec3i::Rotate(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0, target, &targetmod.x, &targetmod.y, &targetmod.z);
+        Vec3i::Rotate(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0, from, &frommod.x, &frommod.y, &frommod.z);
+        LOS_Obscurred = Check_LOS_Obscurred_Outdoors_Bmodels(targetmod, frommod);
     }
 
     bool result{ !LOS_Obscurred2 || !LOS_Obscurred };
     return result;  // true if LOS clear
 }
 
-bool Check_LOS_Obscurred_Indoors(const Vec3i &from, const Vec3i &to) {  // true if obscurred
-    int dist_x = from.x - to.x;
-    int dist_y = from.y - to.y;
-    int dist_z = from.z - to.z;
+bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // true if obscurred
+    int dist_x = from.x - target.x;
+    int dist_y = from.y - target.y;
+    int dist_z = from.z - target.z;
 
     int distance = integer_sqrt(dist_x * dist_x + dist_y * dist_y + dist_z * dist_z);
     int fp_normalisation = 65536;
@@ -2010,30 +1848,30 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &from, const Vec3i &to) {  // true 
     int fp_dist_y_normed = dist_y * fp_normalisation;
     int fp_dist_z_normed = dist_z * fp_normalisation;
 
-    int max_x = std::max(from.x, to.x);
-    int min_x = std::min(from.x, to.x);
+    int max_x = std::max(from.x, target.x);
+    int min_x = std::min(from.x, target.x);
 
-    int max_y = std::max(from.y, to.y);
-    int min_y = std::min(from.y, to.y);
+    int max_y = std::max(from.y, target.y);
+    int min_y = std::min(from.y, target.y);
 
-    int max_z = std::max(from.z, to.z);
-    int min_z = std::min(from.z, to.z);
+    int max_z = std::max(from.z, target.z);
+    int min_z = std::min(from.z, target.z);
 
-    for (int sectorflip = 0; sectorflip < 2; sectorflip++) {
-        int SectorID = 0;
-        if (sectorflip)
-            SectorID = pIndoor->GetSector(to.x, to.y, to.z);
+    for (int sectargetrflip = 0; sectargetrflip < 2; sectargetrflip++) {
+        int SectargetrID = 0;
+        if (sectargetrflip)
+            SectargetrID = pIndoor->GetSector(target.x, target.y, target.z);
         else
-            SectorID = pIndoor->GetSector(from.x, from.y, from.z);
+            SectargetrID = pIndoor->GetSector(from.x, from.y, from.z);
 
-        // loop over sector faces
-        for (int FaceLoop = 0; FaceLoop < pIndoor->pSectors[SectorID].uNumFaces; ++FaceLoop) {
-            BLVFace* face = &pIndoor->pFaces[pIndoor->pSectors[SectorID].pFaceIDs[FaceLoop]];
+        // loop over sectargetr faces
+        for (int FaceLoop = 0; FaceLoop < pIndoor->pSectors[SectargetrID].uNumFaces; ++FaceLoop) {
+            BLVFace* face = &pIndoor->pFaces[pIndoor->pSectors[SectargetrID].pFaceIDs[FaceLoop]];
 
             // dot product
             int x_dot = fixpoint_mul(fp_dist_x_normed, face->pFacePlane_old.vNormal.x);
-            int y_dot = fixpoint_mul(fp_dist_z_normed, face->pFacePlane_old.vNormal.z);
-            int z_dot = fixpoint_mul(fp_dist_y_normed, face->pFacePlane_old.vNormal.y);
+            int y_dot = fixpoint_mul(fp_dist_y_normed, face->pFacePlane_old.vNormal.y);
+            int z_dot = fixpoint_mul(fp_dist_z_normed, face->pFacePlane_old.vNormal.z);
             int sumdot = x_dot + y_dot + z_dot;
             bool FaceIsParallel = (sumdot == 0);
 
@@ -2044,7 +1882,7 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &from, const Vec3i &to) {  // true 
                 max_z < face->pBounding.z1 || FaceIsParallel)
                 continue;
 
-            int NegFacePlaceDist = -face->pFacePlane_old.SignedDistanceToAsFixpoint(to.x, to.y, to.z);
+            int NegFacePlaceDist = -face->pFacePlane_old.SignedDistanceToAsFixpoint(target.x, target.y, target.z);
             // are we on same side of plane
             if (sumdot <= 0) {
                 if (NegFacePlaceDist > 0)
@@ -2060,11 +1898,89 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &from, const Vec3i &to) {  // true 
                 // less than zero means intersection is behind target point
                 if (IntersectionDist >= 0) {
                     Vec3i pos = Vec3i(
-                        to.x + ((signed int)(fixpoint_mul(IntersectionDist, fp_dist_x_normed) + 0x8000) >> 16),
-                        to.y + ((signed int)(fixpoint_mul(IntersectionDist, fp_dist_y_normed) + 0x8000) >> 16),
-                        to.z + ((signed int)(fixpoint_mul(IntersectionDist, fp_dist_z_normed) + 0x8000) >> 16));
+                        target.x + ((signed int)(fixpoint_mul(IntersectionDist, fp_dist_x_normed) + 0x8000) >> 16),
+                        target.y + ((signed int)(fixpoint_mul(IntersectionDist, fp_dist_y_normed) + 0x8000) >> 16),
+                        target.z + ((signed int)(fixpoint_mul(IntersectionDist, fp_dist_z_normed) + 0x8000) >> 16));
                     if (face->Contains(pos, MODEL_INDOOR)) {
                         return true;
+                    }
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
+bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i& target, const Vec3i& from) {  // true is obscurred
+    int dist_x = from.x - target.x;
+    int dist_y = from.y - target.y;
+    int dist_z = from.z - target.z;
+
+    int distance = integer_sqrt(dist_x * dist_x + dist_y * dist_y + dist_z * dist_z);
+    int fp_normalisation = 65536;
+    if (distance) fp_normalisation = 65536 / distance;
+
+    // normalising
+    int fp_dist_x_normed = dist_x * fp_normalisation;
+    int fp_dist_y_normed = dist_y * fp_normalisation;
+    int fp_dist_z_normed = dist_z * fp_normalisation;
+
+    int max_x = std::max(from.x, target.x);
+    int min_x = std::min(from.x, target.x);
+
+    int max_y = std::max(from.y, target.y);
+    int min_y = std::min(from.y, target.y);
+
+    int max_z = std::max(from.z, target.z);
+    int min_z = std::min(from.z, target.z);
+
+    for (BSPModel& model : pOutdoor->pBModels) {
+        if (CalcDistPointToLine(target.x, target.y, from.x, from.y, model.vPosition.x, model.vPosition.y) <= model.sBoundingRadius + 128) {
+            for (ODMFace& face : model.pFaces) {
+                // dot product
+                int x_dot = fixpoint_mul(fp_dist_x_normed, face.pFacePlaneOLD.vNormal.x);
+                int y_dot = fixpoint_mul(fp_dist_z_normed, face.pFacePlaneOLD.vNormal.y);
+                int z_dot = fixpoint_mul(fp_dist_y_normed, face.pFacePlaneOLD.vNormal.z);
+                int sumdot = x_dot + y_dot + z_dot;
+                bool FaceIsParallel = (sumdot == 0);
+
+                // bounds check
+                if (min_x > face.pBoundingBox.x2 ||
+                    max_x < face.pBoundingBox.x1 ||
+                    min_y > face.pBoundingBox.y2 ||
+                    max_y < face.pBoundingBox.y1 ||
+                    min_z > face.pBoundingBox.z2 ||
+                    max_z < face.pBoundingBox.z1 || FaceIsParallel)
+                    continue;
+
+                // point target plane distacne
+                int NegFacePlaceDist = -face.pFacePlaneOLD.SignedDistanceToAsFixpoint(target.x, target.y, target.z);
+
+                // are we on same side of plane
+                if (sumdot <= 0) {
+                    // angle obtuse - is target underneath plane
+                    if (NegFacePlaceDist > 0)
+                        continue;  // can never hit
+                } else {
+                    // angle acute - is target above plane
+                    if (NegFacePlaceDist < 0)
+                        continue;  // can never hit
+                }
+
+                int EpsilonCheck = abs(NegFacePlaceDist) >> 14;
+                if (EpsilonCheck <= abs(sumdot)) {
+                    // calc how far along line interesction is
+                    int IntersectionDist = fixpoint_div(NegFacePlaceDist, sumdot);
+                    // less than zero means intersection is behind target point
+                    if (IntersectionDist >= 0) {
+                        Vec3i pos = Vec3i(
+                            target.x + ((signed int)(fixpoint_mul(IntersectionDist, fp_dist_x_normed) + 0x8000) >> 16),
+                            target.y + ((signed int)(fixpoint_mul(IntersectionDist, fp_dist_y_normed) + 0x8000) >> 16),
+                            target.z + ((signed int)(fixpoint_mul(IntersectionDist, fp_dist_z_normed) + 0x8000) >> 16));
+                        if (face.Contains(pos, model.index)) {
+                            return true;
+                        }
                     }
                 }
             }

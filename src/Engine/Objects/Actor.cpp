@@ -1189,7 +1189,7 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, signed int sTargetPid,
     v10.z = (int32_t)(pActors[uActorID].uActorHeight * 0.75 +
                       pActors[uActorID].vPosition.z);
 
-    if (Check_LineOfSight((int)v6, (int)v7, v23, v10)) {
+    if (Check_LineOfSight(Vec3i(v6, v7, v23), v10)) {
         if (arg0 != nullptr) {
             v12 = arg0;
         } else {
@@ -1449,7 +1449,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, signed int edx0,
     v7.z = v3->vPosition.z + (v19 * 0.75);
     v7.y = v3->vPosition.y;
     v7.x = v3->vPosition.x;
-    if (Check_LineOfSight(v4, v5, v21, v7)) {
+    if (Check_LineOfSight(Vec3i(v4, v5, v21), v7)) {
         if (pDir == nullptr) {
             Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), a2, &a3, 0);
             v9 = &a3;
@@ -1522,7 +1522,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid,
     v7.z = v3->vPosition.z + (v19 * 0.75);
     v7.y = v3->vPosition.y;
     v7.x = v3->vPosition.x;
-    if (Check_LineOfSight(v4, v5, v21, v7)) {
+    if (Check_LineOfSight(Vec3i(v4, v5, v21), v7)) {
         if (pDir == nullptr) {
             Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), sTargetPid,
                                     &a3, 0);
@@ -1597,7 +1597,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, signed int sTargetPid,
     v7.z = v3->vPosition.z + (v18 * 0.75);
     v7.y = v3->vPosition.y;
     v7.x = v3->vPosition.x;
-    if (Check_LineOfSight(v4, v5, v20, v7)) {
+    if (Check_LineOfSight(Vec3i(v4, v5, v20), v7)) {
         if (pDir == nullptr) {
             Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), sTargetPid,
                                     &a3, 0);
@@ -1666,8 +1666,9 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid,
     v7.z = v3->vPosition.z + (v3->uActorHeight * 0.75);
     v7.y = v3->vPosition.y;
     v7.x = v3->vPosition.x;
-    if (Check_LineOfSight(xpos, ypos, zpos, v7) ||
-        Check_LineOfSight(v7.x, v7.y, v7.z, Vec3i(xpos, ypos, zpos))) {
+    if (Check_LineOfSight(Vec3i(xpos, ypos, zpos), v7)
+        // || Check_LineOfSight(v7.x, v7.y, v7.z, Vec3i(xpos, ypos, zpos))
+        ) {
         if (pDir == nullptr) {
             Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), sTargetPid,
                                     &a3, 0);
@@ -5154,7 +5155,7 @@ void area_of_effect__damage_evaluate() {
                         attacker_coord.z = AttackerInfo.pZs[attack_index];
 
                         // check line of sight
-                        if (Check_LineOfSight(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z + pParty->sEyelevel, attacker_coord))
+                        if (Check_LineOfSight(Vec3i(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z + pParty->sEyelevel), attacker_coord))
                             DamagePlayerFromMonster(
                                 AttackerInfo.pIDs[attack_index],
                                 AttackerInfo.attack_special[attack_index],
@@ -5180,7 +5181,7 @@ void area_of_effect__damage_evaluate() {
                         attacker_coord.z = AttackerInfo.pZs[attack_index];
 
                         // check line of sight
-                        if (Check_LineOfSight(pActors[target_id].vPosition.x, pActors[target_id].vPosition.y, pActors[target_id].vPosition.z + 50, attacker_coord)) {
+                        if (Check_LineOfSight(Vec3i(pActors[target_id].vPosition.x, pActors[target_id].vPosition.y, pActors[target_id].vPosition.z + 50), attacker_coord)) {
                             normalize_to_fixpoint(&xdiff, &ydiff, &zvec);
                             AttackerInfo.vec_4B4[attack_index].x = xdiff;
                             AttackerInfo.vec_4B4[attack_index].y = ydiff;
@@ -5209,8 +5210,8 @@ void area_of_effect__damage_evaluate() {
                 attacker_coord.z = AttackerInfo.pZs[attack_index];
 
                 // check line of sight to party
-                if (Check_LineOfSight(pParty->vPosition.x, pParty->vPosition.y,
-                               pParty->vPosition.z + pParty->sEyelevel,
+                if (Check_LineOfSight(Vec3i(pParty->vPosition.x, pParty->vPosition.y,
+                               pParty->vPosition.z + pParty->sEyelevel),
                                attacker_coord)) {
                     for (uint i = 0; i < 4; ++i) {
                         if (!pParty->pPlayers[i].conditions.Has(Condition_Dead) &&
@@ -5243,9 +5244,9 @@ void area_of_effect__damage_evaluate() {
                         attacker_coord.z = AttackerInfo.pZs[attack_index];
 
                         // check line of sight
-                        if (Check_LineOfSight(pActors[actorID].vPosition.x,
+                        if (Check_LineOfSight(Vec3i(pActors[actorID].vPosition.x,
                                        pActors[actorID].vPosition.y,
-                                       pActors[actorID].vPosition.z + 50,
+                                       pActors[actorID].vPosition.z + 50),
                                        attacker_coord)) {
                             normalize_to_fixpoint(&xdiff, &ydiff, &zvec);
                             AttackerInfo.vec_4B4[attack_index].x = xdiff;
