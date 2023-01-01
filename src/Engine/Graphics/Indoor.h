@@ -670,4 +670,13 @@ int GetApproximateIndoorFloorZ(const Vec3i &pos, unsigned int *pSectorID, unsign
 
 bool Check_LineOfSight(int to_x, int to_y, int to_z, Vec3i from);
 
+
+/**
+ * @param from                           Vec3i of position to check line of sight from
+ * @param to                             Vec3i of position to check line of sight to
+ *
+ * @return                              True if line of sight obscurred by level geometery
+ */
+bool Check_LOS_Obscurred_Indoors(const Vec3i &from, const Vec3i &to);
+
 extern struct BspRenderer* pBspRenderer;

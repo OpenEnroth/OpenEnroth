@@ -1558,6 +1558,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid,
             v3->UpdateAnimation();
         }
     } else {
+        // TODO(pskelton): Consider adding potshots if no LOS
         Actor::AI_Pursue1(uActorID, sTargetPid, uActorID, 64, pDir);
     }
 }
@@ -1631,42 +1632,42 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, signed int sTargetPid,
 void Actor::AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid,
                               AIDirection *pDir) {
     Actor *v3;         // ebx@1
-    int v4;            // esi@3
-    int v5;            // edi@3
+    int xpos;            // esi@3
+    int ypos;            // edi@3
     signed int v6;     // eax@4
     Vec3i v7;      // ST04_12@6
     AIDirection *v10;  // eax@9
     int16_t v14;       // ax@11
     AIDirection a3;    // [sp+Ch] [bp-48h]@10
     AIDirection v18;   // [sp+28h] [bp-2Ch]@10
-    int v19;           // [sp+44h] [bp-10h]@6
+    //int v19;           // [sp+44h] [bp-10h]@6
     // signed int a2; // [sp+48h] [bp-Ch]@1
-    int v22 = 0;             // [sp+50h] [bp-4h]@3
+    int zpos = 0;             // [sp+50h] [bp-4h]@3
     unsigned int pDira;  // [sp+5Ch] [bp+8h]@11
 
     v3 = &pActors[uActorID];
     // a2 = edx0;
     if (PID_TYPE(sTargetPid) == OBJECT_Actor) {
         v6 = PID_ID(sTargetPid);
-        v4 = pActors[v6].vPosition.x;
-        v5 = pActors[v6].vPosition.y;
-        v22 = (int)(pActors[v6].uActorHeight * 0.75 + pActors[v6].vPosition.z);
+        xpos = pActors[v6].vPosition.x;
+        ypos = pActors[v6].vPosition.y;
+        zpos = (int)(pActors[v6].uActorHeight * 0.75 + pActors[v6].vPosition.z);
     } else {
         if (PID_TYPE(sTargetPid) == OBJECT_Player) {
-            v4 = pParty->vPosition.x;
-            v5 = pParty->vPosition.y;
-            v22 = pParty->vPosition.z + pParty->sEyelevel;
+            xpos = pParty->vPosition.x;
+            ypos = pParty->vPosition.y;
+            zpos = pParty->vPosition.z + pParty->sEyelevel;
         } else {
-            v4 = pDir->vDirection.x;
-            v5 = pDir->vDirection.x;
+            xpos = pDir->vDirection.x;
+            ypos = pDir->vDirection.x;
         }
     }
-    v19 = v3->uActorHeight;
-    v7.z = v3->vPosition.z + (v19 * 0.75);
+    //v19 = v3->uActorHeight;
+    v7.z = v3->vPosition.z + (v3->uActorHeight * 0.75);
     v7.y = v3->vPosition.y;
     v7.x = v3->vPosition.x;
-    if (Check_LineOfSight(v4, v5, v22, v7) ||
-        Check_LineOfSight(v7.x, v7.y, v7.z, Vec3i(v4, v5, v22))) {
+    if (Check_LineOfSight(xpos, ypos, zpos, v7) ||
+        Check_LineOfSight(v7.x, v7.y, v7.z, Vec3i(xpos, ypos, zpos))) {
         if (pDir == nullptr) {
             Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), sTargetPid,
                                     &a3, 0);
@@ -2224,7 +2225,7 @@ void Actor::AI_Pursue3(unsigned int uActorID, unsigned int a2,
 }
 
 //----- (00401221) --------------------------------------------------------
-void Actor::_SelectTarget(unsigned int uActorID, int *a2,
+void Actor::_SelectTarget(unsigned int uActorID, int *OutTargetPID,
                           bool can_target_party) {
     int v5;                     // ecx@1
     signed int v10;             // eax@13
@@ -2232,17 +2233,17 @@ void Actor::_SelectTarget(unsigned int uActorID, int *a2,
     uint v12;                   // eax@16
     signed int v14;             // eax@31
     uint v15;                   // edi@43
-    uint v16;                   // ebx@45
-    uint v17;                   // eax@45
+    //uint v16;                   // ebx@45
+    //uint v17;                   // eax@45
     signed int closestId;       // [sp+14h] [bp-1Ch]@1
     uint v23;                   // [sp+1Ch] [bp-14h]@16
     unsigned int lowestRadius;  // [sp+24h] [bp-Ch]@1
     uint v27;                   // [sp+2Ch] [bp-4h]@16
-    uint v28;                   // [sp+2Ch] [bp-4h]@45
+    //uint v28;                   // [sp+2Ch] [bp-4h]@45
 
     lowestRadius = UINT_MAX;
     v5 = 0;
-    *a2 = 0;
+    *OutTargetPID = PID_INVALID;
     closestId = 0;
     assert(uActorID < pActors.size());
     Actor *thisActor = &pActors[uActorID];
@@ -2285,7 +2286,7 @@ void Actor::_SelectTarget(unsigned int uActorID, int *a2,
     }
 
     if (lowestRadius != UINT_MAX) {
-        *a2 = PID(OBJECT_Actor, closestId);
+        *OutTargetPID = PID(OBJECT_Actor, closestId);
     }
 
     if (can_target_party && !pParty->Invisible()) {
@@ -2301,12 +2302,12 @@ void Actor::_SelectTarget(unsigned int uActorID, int *a2,
                 v15 = _4DF380_hostilityRanges[v14];
             else
                 v15 = _4DF380_hostilityRanges[4];
-            v16 = abs(thisActor->vPosition.x - pParty->vPosition.x);
-            v28 = abs(thisActor->vPosition.y - pParty->vPosition.y);
-            v17 = abs(thisActor->vPosition.z - pParty->vPosition.z);
+            uint v16 = abs(thisActor->vPosition.x - pParty->vPosition.x);
+            uint v28 = abs(thisActor->vPosition.y - pParty->vPosition.y);
+            uint v17 = abs(thisActor->vPosition.z - pParty->vPosition.z);
             if (v16 <= v15 && v28 <= v15 && v17 <= v15 &&
                 (v16 * v16 + v28 * v28 + v17 * v17 < lowestRadius)) {
-                *a2 = PID(OBJECT_Player, 0);
+                *OutTargetPID = PID(OBJECT_Player, 0);
             }
         }
     }
