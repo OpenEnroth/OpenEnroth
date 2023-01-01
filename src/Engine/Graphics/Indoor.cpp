@@ -403,11 +403,6 @@ void IndoorLocation::Release() {
     this->bLoaded = 0;
 }
 
-//----- (00498C45) --------------------------------------------------------
-bool IndoorLocation::Alloc() {
-    return true; // TODO: drop this method.
-}
-
 //----- (00444810) --------------------------------------------------------
 // index of special transfer message, 0 otherwise
 unsigned int IndoorLocation::GetLocationIndex(const char *Str1) {
@@ -450,8 +445,6 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     }
 
     Release();
-    if (!Alloc())
-        return false;
 
     BlobDeserializer stream(pGames_LOD->LoadCompressed(blv_filename));
 
