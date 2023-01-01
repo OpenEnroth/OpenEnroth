@@ -24,7 +24,7 @@ class TestState {
     TestWindow *window = nullptr;
     TestEventLoop *eventLoop = nullptr;
 
-    double time = 0; // In milliseconds, for TestPlatform::TickCount
+    int64_t time = 0; // In milliseconds, for TestPlatform::TickCount
 
     bool terminating = false;
     std::function<void()> terminationHandler;

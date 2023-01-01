@@ -25,7 +25,13 @@ void TestOpenGLContext::SwapBuffers() {
         state_.YieldExecution();
     }
 
-    state_->time += 1000.0 / 60.0; // 60 fps
+    // 16ms translates to 62.5fps.
+    // It is possible to use double for state here (or store microseconds / nanoseconds), but this will result in
+    // staggered frame times, with every 1st and 2nd frame taking 17ms, and every 3rd one taking 16ms.
+    // This might result in some non-determinism down the line, e.g. changing the code in level loading will change
+    // the number of frames it takes to load a level, and this will shift the timing sequence for the actual game
+    // frames after the level is loaded. Unlikely to really affect anything, but we'd rather not find out.
+    state_->time += 16;
 }
 
 void* TestOpenGLContext::GetProcAddress(const char* name) {
