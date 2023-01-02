@@ -338,15 +338,15 @@ class IRender {
                               unsigned int uWidth, unsigned int uHeight,
                               unsigned int uColor16) = 0;
 
-    virtual void DrawBuildingsD3D() = 0;
+    virtual void DrawOutdoorBuildings() = 0;
 
     virtual void DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID = 0) = 0;
-    virtual void DrawOutdoorSkyD3D() = 0;
+    virtual void DrawOutdoorSky() = 0;
 
     virtual void PrepareDecorationsRenderList_ODM() = 0;
     virtual void DrawSpriteObjects() = 0;
 
-    virtual void DrawTerrainD3D() = 0;
+    virtual void DrawOutdoorTerrain() = 0;
 
     virtual bool AreRenderSurfacesOk() = 0;
 

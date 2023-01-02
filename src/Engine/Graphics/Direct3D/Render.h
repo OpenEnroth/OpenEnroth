@@ -156,14 +156,11 @@ class Render : public RenderBase {
                               unsigned int uWidth, unsigned int uHeight,
                               unsigned int uColor16) override;
 
-    virtual void DrawBuildingsD3D() override;
+    virtual void DrawOutdoorBuildings() override;
 
     virtual void DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) override;
-    virtual void DrawOutdoorSkyD3D() override;
-
-    virtual void PrepareDecorationsRenderList_ODM() override;
-
-    virtual void DrawTerrainD3D() override;
+    virtual void DrawOutdoorSky() override;
+    virtual void DrawOutdoorTerrain() override;
 
     virtual bool AreRenderSurfacesOk() override;
 

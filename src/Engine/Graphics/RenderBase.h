@@ -22,6 +22,7 @@ class RenderBase : public IRender {
 
     virtual void TransformBillboardsAndSetPalettesODM() override;
     virtual void DrawSpriteObjects() override;
+    virtual void PrepareDecorationsRenderList_ODM() override;
     virtual void MakeParticleBillboardAndPush(SoftwareBillboard *a2,
                                                   Texture *texture,
                                                   unsigned int uDiffuse,
