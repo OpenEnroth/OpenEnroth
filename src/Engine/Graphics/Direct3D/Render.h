@@ -165,7 +165,6 @@ class Render : public RenderBase {
     virtual bool AreRenderSurfacesOk() override;
 
     virtual unsigned short* MakeScreenshot16(int width, int height) override;
-    virtual Image *TakeScreenshot(unsigned int width, unsigned int height) override;
 
     virtual int GetActorsInViewport(int pDepth) override;
 

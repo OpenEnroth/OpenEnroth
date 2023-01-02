@@ -691,3 +691,10 @@ void RenderBase::PackScreenshot(unsigned int width, unsigned int height,
     PCX::Encode16(pixels, 150, 112, out_data, data_size, screenshot_size);
     free(pixels);
 }
+
+Image* RenderBase::TakeScreenshot(unsigned int width, unsigned int height) {
+    auto pixels = MakeScreenshot16(width, height);
+    Image* image = Image::Create(width, height, IMAGE_FORMAT_R5G6B5, pixels);
+    free(pixels);
+    return image;
+}

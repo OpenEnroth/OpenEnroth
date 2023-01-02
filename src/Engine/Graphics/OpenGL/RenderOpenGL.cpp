@@ -1263,13 +1263,6 @@ unsigned short *RenderOpenGL::MakeScreenshot16(int width, int height) {
     return pPixels;
 }
 
-Image *RenderOpenGL::TakeScreenshot(unsigned int width, unsigned int height) {
-    auto pixels = MakeScreenshot16(width, height);
-    Image *image = Image::Create(width, height, IMAGE_FORMAT_R5G6B5, pixels);
-    free(pixels);
-    return image;
-}
-
 // TODO: should this be combined / moved out of render
 int RenderOpenGL::GetActorsInViewport(int pDepth) {
     int

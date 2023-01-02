@@ -3454,13 +3454,6 @@ unsigned short *Render::MakeScreenshot16(int width, int height) {
     return pPixels;
 }
 
-Image *Render::TakeScreenshot(unsigned int width, unsigned int height) {
-    auto pixels = MakeScreenshot16(width, height);
-    Image *image = Image::Create(width, height, IMAGE_FORMAT_R5G6B5, pixels);
-    free(pixels);
-    return image;
-}
-
 int Render::GetActorsInViewport(int pDepth) {
     // TODO: merge this function with RenderOpenGL::GetActorsInViewport
 
