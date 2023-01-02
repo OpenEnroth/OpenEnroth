@@ -113,12 +113,13 @@ var searchData=
   ['_7estru154_110',['~stru154',['../structstru154.html#a837b420ce7064d35664d3ddb153ad061',1,'stru154']]],
   ['_7estru314_111',['~stru314',['../structstru314.html#a19c9b3d11b111abb410af9cff3f6636b',1,'stru314']]],
   ['_7etesteventloop_112',['~TestEventLoop',['../classTestEventLoop.html#a60f9b68a9e2253d3ece84697008d483c',1,'TestEventLoop']]],
-  ['_7eteststatehandle_113',['~TestStateHandle',['../classTestStateHandle.html#a738a8b965ffeed1d783625d2f26417e9',1,'TestStateHandle']]],
-  ['_7etestwindow_114',['~TestWindow',['../classTestWindow.html#ab1601c24240f6791dbba3e6b75f533a5',1,'TestWindow']]],
-  ['_7etextured3d_115',['~TextureD3D',['../classTextureD3D.html#a1f4c8de34ea03b627e9b6b2211cd02b4',1,'TextureD3D']]],
-  ['_7etextureopengl_116',['~TextureOpenGL',['../classTextureOpenGL.html#aea59bc615664482d22fd341648c61c5c',1,'TextureOpenGL']]],
-  ['_7etiletable_117',['~TileTable',['../structTileTable.html#a8ffce6d47a3dbc149c4774e29ce8e456',1,'TileTable']]],
-  ['_7evideolist_118',['~VideoList',['../classVideoList.html#a53e59e7c17d368e3cf2f7dffa2125e2b',1,'VideoList']]],
-  ['_7evis_119',['~Vis',['../classVis.html#a9ae27677516b6805b5ad5a4517112ed6',1,'Vis']]],
-  ['_7ewindowmanager_120',['~WindowManager',['../classWindowManager.html#ad2c42494d2d9045b18a3a09e5920290f',1,'WindowManager']]]
+  ['_7etestplatform_113',['~TestPlatform',['../classTestPlatform.html#ac86616ab54c398a6fa3fd289d494dd79',1,'TestPlatform']]],
+  ['_7eteststatehandle_114',['~TestStateHandle',['../classTestStateHandle.html#a738a8b965ffeed1d783625d2f26417e9',1,'TestStateHandle']]],
+  ['_7etestwindow_115',['~TestWindow',['../classTestWindow.html#ab1601c24240f6791dbba3e6b75f533a5',1,'TestWindow']]],
+  ['_7etextured3d_116',['~TextureD3D',['../classTextureD3D.html#a1f4c8de34ea03b627e9b6b2211cd02b4',1,'TextureD3D']]],
+  ['_7etextureopengl_117',['~TextureOpenGL',['../classTextureOpenGL.html#aea59bc615664482d22fd341648c61c5c',1,'TextureOpenGL']]],
+  ['_7etiletable_118',['~TileTable',['../structTileTable.html#a8ffce6d47a3dbc149c4774e29ce8e456',1,'TileTable']]],
+  ['_7evideolist_119',['~VideoList',['../classVideoList.html#a53e59e7c17d368e3cf2f7dffa2125e2b',1,'VideoList']]],
+  ['_7evis_120',['~Vis',['../classVis.html#a9ae27677516b6805b5ad5a4517112ed6',1,'Vis']]],
+  ['_7ewindowmanager_121',['~WindowManager',['../classWindowManager.html#ad2c42494d2d9045b18a3a09e5920290f',1,'WindowManager']]]
 ];

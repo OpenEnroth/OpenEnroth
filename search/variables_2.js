@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['b_0',['b',['../structBloodsplat.html#a24ec35724d73bf7376874d1fb41e4273',1,'Bloodsplat::b()'],['../structGame__Bloodsplat.html#a150c404c40cba7084350b0eb030ac670',1,'Game_Bloodsplat::b()']]],
+  ['b_0',['b',['../structGame__Bloodsplat.html#a150c404c40cba7084350b0eb030ac670',1,'Game_Bloodsplat']]],
   ['b_1',['B',['../struct__RGBColor.html#a61c36a4c8c26fb02dec6723b3f647b42',1,'_RGBColor']]],
-  ['b_2',['b',['../structPlaneZCalcll.html#a5219a3cc6fd0b88efdcbaad4ddc56489',1,'PlaneZCalcll::b()'],['../classColorTable_1_1Color.html#a90516d250e84d92b5fecbd35190d3e31',1,'ColorTable::Color::b()'],['../structFormat.html#a916d6797dc1b96f8764091f830949b47',1,'Format::b()'],['../structParticle.html#a51cfab8e12d3ee7f3569e390f5b9c7de',1,'Particle::b()'],['../structbillbverts.html#ac9693477cc983e98f64ebfe563011eb9',1,'billbverts::b()'],['../structParticle__sw.html#aa3e18dc9778ddc2f4888d93d8a1e1c8a',1,'Particle_sw::b()'],['../structlinesverts.html#ade249d9b3e97f734f0347d35d4cfaba5',1,'linesverts::b()'],['../structforcepersverts.html#ae5ec624da708a98003eb2a4391c2bcb7',1,'forcepersverts::b()'],['../structtwodverts.html#abd16609113d1c5c1ce9f589bde2147ca',1,'twodverts::b()']]],
+  ['b_2',['b',['../structPlaneZCalcll.html#a5219a3cc6fd0b88efdcbaad4ddc56489',1,'PlaneZCalcll::b()'],['../classColorTable_1_1Color.html#a90516d250e84d92b5fecbd35190d3e31',1,'ColorTable::Color::b()'],['../structFormat.html#a916d6797dc1b96f8764091f830949b47',1,'Format::b()'],['../structParticle.html#a51cfab8e12d3ee7f3569e390f5b9c7de',1,'Particle::b()'],['../structParticle__sw.html#aa3e18dc9778ddc2f4888d93d8a1e1c8a',1,'Particle_sw::b()'],['../structtwodverts.html#abd16609113d1c5c1ce9f589bde2147ca',1,'twodverts::b()'],['../structbillbverts.html#ac9693477cc983e98f64ebfe563011eb9',1,'billbverts::b()'],['../structBloodsplat.html#a24ec35724d73bf7376874d1fb41e4273',1,'Bloodsplat::b()'],['../structlinesverts.html#ade249d9b3e97f734f0347d35d4cfaba5',1,'linesverts::b()'],['../structforcepersverts.html#ae5ec624da708a98003eb2a4391c2bcb7',1,'forcepersverts::b()']]],
   ['backward_3',['Backward',['../classApplication_1_1GameConfig_1_1Keybindings.html#a99c7388dbec8cf1f8d5d380741c9fddc',1,'Application::GameConfig::Keybindings']]],
   ['bactive_4',['bActive',['../classIo_1_1Mouse.html#a2c4810a09a156e2a025ee88aa2f1cda0',1,'Io::Mouse']]],
   ['base_5f_5',['base_',['../classMersenneTwisterRandomEngine.html#a0b0e34238f7e4f73dc342abcfe00439c',1,'MersenneTwisterRandomEngine::base_()'],['../classTestEventLoop.html#a0710f76c9677b8e8aae07693ca2a77bf',1,'TestEventLoop::base_()'],['../classTestOpenGLContext.html#a8185eb089ba6ad4fa5493f2ce00e3904',1,'TestOpenGLContext::base_()'],['../classTestPlatform.html#a58f5a249ec6781efac5a16cf97393d6c',1,'TestPlatform::base_()'],['../classTestWindow.html#a90f1fe76480187ccff217e446e8c2431',1,'TestWindow::base_()']]],
@@ -48,8 +48,8 @@ var searchData=
   ['bloodsplats_45',['BloodSplats',['../classApplication_1_1GameConfig_1_1Graphics.html#a45d668154acc1755209d1b5fab801550',1,'Application::GameConfig::Graphics']]],
   ['bloodsplatsfade_46',['BloodSplatsFade',['../classApplication_1_1GameConfig_1_1Graphics.html#a8079004cdd4c9b4e652ef4b803a4fd2c',1,'Application::GameConfig::Graphics']]],
   ['bloodsplatsmultiplier_47',['BloodSplatsMultiplier',['../classApplication_1_1GameConfig_1_1Graphics.html#ad5f7cc13fceecfd4a0d354ed1e8913df',1,'Application::GameConfig::Graphics']]],
-  ['blue_48',['blue',['../structGLdecalverts.html#a8da6f871b306f3e41b9719e749ebcb9a',1,'GLdecalverts']]],
-  ['blue_49',['Blue',['../classColorTable.html#ab96c1eca259bec2076d25ab83cb1a9c9',1,'ColorTable']]],
+  ['blue_48',['Blue',['../classColorTable.html#ab96c1eca259bec2076d25ab83cb1a9c9',1,'ColorTable']]],
+  ['blue_49',['blue',['../structGLdecalverts.html#a8da6f871b306f3e41b9719e749ebcb9a',1,'GLdecalverts']]],
   ['blv_50',['blv',['../structIndoorLocation.html#a64be8f484f885b0e0ddbb774cd9ab3b1',1,'IndoorLocation']]],
   ['blv_5ffov_5fdeg_51',['blv_fov_deg',['../structCamera3D.html#a57e7849c374219e4955b362616bac748',1,'Camera3D']]],
   ['blv_5ffov_5frad_52',['blv_fov_rad',['../structCamera3D.html#a3c012ad7bcda3d3ed3cb58a290e7a0a9',1,'Camera3D']]],

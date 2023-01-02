@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;4eaecac</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;4831919</span>
    </div>
   </td>
  </tr>
@@ -82,10 +82,12 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a7f914ad41c5f0ad7cfd1de7986ac6c31"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameWrapper.html#a7f914ad41c5f0ad7cfd1de7986ac6c31">GameWrapper</a> (<a class="el" href="classTestStateHandle.html">TestStateHandle</a> state)</td></tr>
-<tr class="separator:a7f914ad41c5f0ad7cfd1de7986ac6c31"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa954cf4cbccca467534900f6be0272b4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameWrapper.html#aa954cf4cbccca467534900f6be0272b4">GameWrapper</a> (<a class="el" href="classTestStateHandle.html">TestStateHandle</a> state, const std::string &amp;testDataDir)</td></tr>
+<tr class="separator:aa954cf4cbccca467534900f6be0272b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a580b3f29884a4b5d90115ac163553b47"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameWrapper.html#a580b3f29884a4b5d90115ac163553b47">~GameWrapper</a> ()</td></tr>
 <tr class="separator:a580b3f29884a4b5d90115ac163553b47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8cbc490c5653c8b6dbde237b322061fc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameWrapper.html#a8cbc490c5653c8b6dbde237b322061fc">Reset</a> ()</td></tr>
+<tr class="separator:a8cbc490c5653c8b6dbde237b322061fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab55663c247a3289cc1950d90ffefc623"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameWrapper.html#ab55663c247a3289cc1950d90ffefc623">Tick</a> (int count=1)</td></tr>
 <tr class="separator:ab55663c247a3289cc1950d90ffefc623"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a63d4b62a9abb1bbf116e83df7b57d15b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameWrapper.html#a63d4b62a9abb1bbf116e83df7b57d15b">PressKey</a> (<a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> key)</td></tr>
@@ -104,6 +106,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a9af46ae99cb031e38b515b1b7ce984fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a21e3a6f0a4435753d9eaa060731b7021"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameWrapper.html#a21e3a6f0a4435753d9eaa060731b7021">GoToMainMenu</a> ()</td></tr>
 <tr class="separator:a21e3a6f0a4435753d9eaa060731b7021"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e5d15278007e6709b0c9ee8be975e27"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameWrapper.html#a7e5d15278007e6709b0c9ee8be975e27">LoadGame</a> (const std::string &amp;name)</td></tr>
+<tr class="separator:a7e5d15278007e6709b0c9ee8be975e27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a80371816964798a51f03e7d10985bcc0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameWrapper.html#a80371816964798a51f03e7d10985bcc0">SkipLoadingScreen</a> ()</td></tr>
+<tr class="separator:a80371816964798a51f03e7d10985bcc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
@@ -114,30 +120,34 @@ Private Member Functions</h2></td></tr>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a4629fbaecb224b84442e13853a3619f9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTestStateHandle.html">TestStateHandle</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameWrapper.html#a4629fbaecb224b84442e13853a3619f9">state_</a></td></tr>
 <tr class="separator:a4629fbaecb224b84442e13853a3619f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e6f9d7e43566b623b0f9430cac32891"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameWrapper.html#a3e6f9d7e43566b623b0f9430cac32891">testDataDir_</a></td></tr>
+<tr class="separator:a3e6f9d7e43566b623b0f9430cac32891"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a7f914ad41c5f0ad7cfd1de7986ac6c31" name="a7f914ad41c5f0ad7cfd1de7986ac6c31"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7f914ad41c5f0ad7cfd1de7986ac6c31">&#9670;&#160;</a></span>GameWrapper()</h2>
+<a id="aa954cf4cbccca467534900f6be0272b4" name="aa954cf4cbccca467534900f6be0272b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa954cf4cbccca467534900f6be0272b4">&#9670;&#160;</a></span>GameWrapper()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">GameWrapper::GameWrapper </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classTestStateHandle.html">TestStateHandle</a>&#160;</td>
-          <td class="paramname"><em>state</em></td><td>)</td>
+          <td class="paramname"><em>state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>testDataDir</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 </div>
@@ -196,6 +206,24 @@ Private Attributes</h2></td></tr>
           <td class="memname">void GameWrapper::GoToMainMenu </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7e5d15278007e6709b0c9ee8be975e27" name="a7e5d15278007e6709b0c9ee8be975e27"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e5d15278007e6709b0c9ee8be975e27">&#9670;&#160;</a></span>LoadGame()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GameWrapper::LoadGame </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -377,6 +405,40 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a8cbc490c5653c8b6dbde237b322061fc" name="a8cbc490c5653c8b6dbde237b322061fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8cbc490c5653c8b6dbde237b322061fc">&#9670;&#160;</a></span>Reset()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GameWrapper::Reset </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a80371816964798a51f03e7d10985bcc0" name="a80371816964798a51f03e7d10985bcc0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a80371816964798a51f03e7d10985bcc0">&#9670;&#160;</a></span>SkipLoadingScreen()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GameWrapper::SkipLoadingScreen </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ab55663c247a3289cc1950d90ffefc623" name="ab55663c247a3289cc1950d90ffefc623"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab55663c247a3289cc1950d90ffefc623">&#9670;&#160;</a></span>Tick()</h2>
 
@@ -407,6 +469,28 @@ Private Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classTestStateHandle.html">TestStateHandle</a> GameWrapper::state_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3e6f9d7e43566b623b0f9430cac32891" name="a3e6f9d7e43566b623b0f9430cac32891"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e6f9d7e43566b623b0f9430cac32891">&#9670;&#160;</a></span>testDataDir_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string GameWrapper::testDataDir_</td>
         </tr>
       </table>
   </td>
