@@ -668,8 +668,8 @@ int GetIndoorFloorZ(const Vec3i &pos, unsigned int *pSectorID, unsigned int *pFa
 int GetApproximateIndoorFloorZ(const Vec3i &pos, unsigned int *pSectorID, unsigned int *pFaceID);
 
 /**
+ * @param target                         Vec3i of position to check line of sight to
  * @param from                           Vec3i of position to check line of sight from
- * @param to                             Vec3i of position to check line of sight to
  *
  * @return                              True if line of sight clear to target
  */
@@ -677,16 +677,16 @@ bool Check_LineOfSight(const Vec3i &target, const Vec3i &from);
 
 
 /**
+ * @param target                         Vec3i of position to check line of sight to
  * @param from                           Vec3i of position to check line of sight from
- * @param to                             Vec3i of position to check line of sight to
  *
  * @return                              True if line of sight obscurred by level geometery
  */
 bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from);
 
 /**
+ * @param target                         Vec3i of position to check line of sight to
  * @param from                           Vec3i of position to check line of sight from
- * @param to                             Vec3i of position to check line of sight to
  *
  * @return                              True if line of sight obscurred by outdoor models
  */
