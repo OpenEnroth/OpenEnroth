@@ -357,6 +357,7 @@ class IRender {
                                 void *out_data, unsigned int data_size,
                                 unsigned int *screenshot_size) = 0;
     virtual void SavePCXScreenshot() = 0;
+    virtual unsigned short* MakeScreenshot16(int width, int height) = 0;
 
     virtual int GetActorsInViewport(int pDepth) = 0;
 

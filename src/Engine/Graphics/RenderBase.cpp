@@ -1,6 +1,7 @@
 #include "Engine/Graphics/RenderBase.h"
 
 #include <cassert>
+#include <algorithm>
 
 #include "Engine/Engine.h"
 #include "Engine/MM7.h"
@@ -671,9 +672,22 @@ void RenderBase::SavePCXImage16(const std::string& filename, uint16_t* picture_d
     unsigned int pcx_data_size = width * height * 5;
     uint8_t* pcx_data = new uint8_t[pcx_data_size];
     unsigned int pcx_data_real_size = 0;
-    PCX::Encode16(picture_data, width, height, pcx_data, pcx_data_size,
-        &pcx_data_real_size);
+    PCX::Encode16(picture_data, width, height, pcx_data, pcx_data_size, &pcx_data_real_size);
     fwrite(pcx_data, pcx_data_real_size, 1, result);
     delete[] pcx_data;
     fclose(result);
+}
+
+void RenderBase::SaveScreenshot(const std::string& filename, unsigned int width, unsigned int height) {
+    auto pixels = render->MakeScreenshot16(width, height);
+    SavePCXImage16(filename, pixels, width, height);
+    free(pixels);
+}
+
+void RenderBase::PackScreenshot(unsigned int width, unsigned int height,
+    void* out_data, unsigned int data_size,
+    unsigned int* screenshot_size) {
+    auto pixels = render->MakeScreenshot16(width, height);
+    PCX::Encode16(pixels, 150, 112, out_data, data_size, screenshot_size);
+    free(pixels);
 }

@@ -3461,21 +3461,6 @@ Image *Render::TakeScreenshot(unsigned int width, unsigned int height) {
     return image;
 }
 
-void Render::SaveScreenshot(const std::string &filename, unsigned int width,
-                            unsigned int height) {
-    auto pixels = MakeScreenshot16(width, height);
-    SavePCXImage16(filename, pixels, width, height);
-    free(pixels);
-}
-
-void Render::PackScreenshot(unsigned int width, unsigned int height, void *data,
-                            unsigned int data_size,
-                            unsigned int *out_screenshot_size) {
-    auto pixels = MakeScreenshot16(150, 112);
-    PCX::Encode16(pixels, width, height, data, data_size, out_screenshot_size);
-    free(pixels);
-}
-
 int Render::GetActorsInViewport(int pDepth) {
     // TODO: merge this function with RenderOpenGL::GetActorsInViewport
 

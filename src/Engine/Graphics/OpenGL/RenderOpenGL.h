@@ -161,13 +161,8 @@ class RenderOpenGL : public RenderBase {
 
     virtual bool AreRenderSurfacesOk() override;
 
-    unsigned short *MakeScreenshot16(int width, int height);
+    virtual unsigned short *MakeScreenshot16(int width, int height) override;
     virtual Image *TakeScreenshot(unsigned int width, unsigned int height) override;
-    virtual void SaveScreenshot(const std::string &filename, unsigned int width,
-                                unsigned int height) override;
-    virtual void PackScreenshot(unsigned int width, unsigned int height,
-                                void *out_data, unsigned int data_size,
-                                unsigned int *screenshot_size) override;
 
     virtual int GetActorsInViewport(int pDepth) override;
 

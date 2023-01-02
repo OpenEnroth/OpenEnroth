@@ -1270,33 +1270,6 @@ Image *RenderOpenGL::TakeScreenshot(unsigned int width, unsigned int height) {
     return image;
 }
 
-void RenderOpenGL::SaveScreenshot(const std::string &filename, unsigned int width, unsigned int height) {
-    auto pixels = MakeScreenshot16(width, height);
-
-    std::string thispath = MakeDataPath(filename);
-    FILE *result = fopen(thispath.c_str(), "wb");
-    if (result == nullptr) {
-        return;
-    }
-
-    unsigned int pcx_data_size = width * height * 5;
-    uint8_t *pcx_data = new uint8_t[pcx_data_size];
-    unsigned int pcx_data_real_size = 0;
-    PCX::Encode16(pixels, width, height, pcx_data, pcx_data_size, &pcx_data_real_size);
-    fwrite(pcx_data, pcx_data_real_size, 1, result);
-    delete[] pcx_data;
-    fclose(result);
-}
-
-void RenderOpenGL::PackScreenshot(unsigned int width, unsigned int height,
-                                  void *out_data, unsigned int data_size,
-                                  unsigned int *screenshot_size) {
-    auto pixels = MakeScreenshot16(width, height);
-    SaveScreenshot("save.pcx", width, height);
-    PCX::Encode16(pixels, 150, 112, out_data, 1000000, screenshot_size);
-    free(pixels);
-}
-
 // TODO: should this be combined / moved out of render
 int RenderOpenGL::GetActorsInViewport(int pDepth) {
     int
