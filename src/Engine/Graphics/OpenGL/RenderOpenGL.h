@@ -168,7 +168,6 @@ class RenderOpenGL : public RenderBase {
     virtual void PackScreenshot(unsigned int width, unsigned int height,
                                 void *out_data, unsigned int data_size,
                                 unsigned int *screenshot_size) override;
-    virtual void SavePCXScreenshot() override;
 
     virtual int GetActorsInViewport(int pDepth) override;
 
@@ -223,9 +222,6 @@ class RenderOpenGL : public RenderBase {
     void DrawForcePerVerts();
 
     void SetFogParametersGL();
-
-    void SavePCXImage16(const std::string &filename, uint16_t *picture_data,
-        int width, int height);
 
     std::unique_ptr<PlatformOpenGLContext> context_;
 

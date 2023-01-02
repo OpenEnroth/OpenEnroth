@@ -170,7 +170,6 @@ class Render : public RenderBase {
     virtual void PackScreenshot(unsigned int width, unsigned int height,
                                 void *out_data, unsigned int data_size,
                                 unsigned int *screenshot_size) override;
-    virtual void SavePCXScreenshot() override;
 
     virtual int GetActorsInViewport(int pDepth) override;
 
@@ -252,8 +251,6 @@ class Render : public RenderBase {
 
     void CreateClipper();
 
-    void SavePCXImage16(const std::string &filename, uint16_t *picture_data,
-                        int width, int height);
     void SavePCXImage32(const std::string &filename, uint16_t *picture_data,
                         int width, int height);
 

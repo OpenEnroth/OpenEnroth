@@ -23,6 +23,7 @@
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/DecorationList.h"
+#include "Engine/Graphics/PCX.h"
 
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Random/Random.h"
@@ -651,3 +652,28 @@ HWLTexture *RenderBase::LoadHwlSprite(const std::string &name) {
     return pD3DSprites.LoadTexture(name);
 }
 
+void RenderBase::SavePCXScreenshot() {
+    size_t zeros_number = 5;
+    std::string screenshot_number = std::to_string(engine->config->settings.ScreenshotNumber.Increment());
+    std::string file_name = "screenshot_" + std::string(zeros_number - std::min(zeros_number, screenshot_number.length()), '0') + screenshot_number + ".pcx";
+
+    SaveWinnersCertificate(file_name.c_str());
+}
+
+void RenderBase::SavePCXImage16(const std::string& filename, uint16_t* picture_data, int width, int height) {
+    // TODO(pskelton): add "Screenshots" folder?
+    std::string thispath = MakeDataPath(filename);
+    FILE* result = fopen(thispath.c_str(), "wb");
+    if (result == nullptr) {
+        return;
+    }
+
+    unsigned int pcx_data_size = width * height * 5;
+    uint8_t* pcx_data = new uint8_t[pcx_data_size];
+    unsigned int pcx_data_real_size = 0;
+    PCX::Encode16(picture_data, width, height, pcx_data, pcx_data_size,
+        &pcx_data_real_size);
+    fwrite(pcx_data, pcx_data_real_size, 1, result);
+    delete[] pcx_data;
+    fclose(result);
+}

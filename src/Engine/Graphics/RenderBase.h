@@ -32,6 +32,9 @@ class RenderBase : public IRender {
     virtual HWLTexture *LoadHwlBitmap(const std::string &name) override;
     virtual HWLTexture *LoadHwlSprite(const std::string &name) override;
 
+    virtual void SavePCXScreenshot() override;
+    virtual void SavePCXImage16(const std::string& filename, uint16_t* picture_data, int width, int height);
+
  protected:
     unsigned int Billboard_ProbablyAddToListAndSortByZOrder(float z);
     void TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pBillboard);
