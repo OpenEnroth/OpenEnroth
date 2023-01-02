@@ -10,11 +10,17 @@
 #include "Testing/Engine/TestPlatform.h"
 #include "Testing/Game/GameWrapper.h"
 #include "Testing/Game/GameTest.h"
+#include "Testing/Random/TestRandomEngine.h"
 
+#include "Utility/Random/Random.h"
 #include "Utility/ScopeGuard.h"
 
-void RunGameThread(TestState *unsafeState) {
+#include "GameTestOptions.h"
+
+void RunGameThread(const GameTestOptions& opts, TestState *unsafeState) {
     TestStateHandle state(GameSide, unsafeState);
+
+    SetGlobalRandomEngine(std::make_unique<TestRandomEngine>());
 
     std::unique_ptr<PlatformLogger> logger = PlatformLogger::CreateStandardLogger(WinEnsureConsoleOption);
     logger->SetLogLevel(ApplicationLog, LogInfo);
@@ -25,23 +31,27 @@ void RunGameThread(TestState *unsafeState) {
 
     std::unique_ptr<Platform> platform = std::make_unique<TestPlatform>(Platform::CreateStandardPlatform(logger.get()), state);
 
-    Application::AutoInitDataPath(platform.get());
+    if (opts.gameDataDir.empty()) {
+        Application::AutoInitDataPath(platform.get());
+    } else {
+        SetDataPath(opts.gameDataDir);
+    }
 
     std::shared_ptr<Application::GameConfig> config = std::make_shared<Application::GameConfig>();
     config->LoadConfiguration(); // TODO(captainurist): Reads from womm.ini, not good for tests
-    config->debug.NoIntro.Set(true);
-    config->debug.NoLogo.Set(true);
+    config->debug.NoVideo.Set(true);
     config->window.MouseGrab.Set(false);
+    config->graphics.FPSLimit.Set(0); // Unlimited
 
     std::shared_ptr<Application::Game> game = Application::GameFactory().CreateGame(platform.get(), config);
 
     game->Run();
 }
 
-void RunTestThread(TestState *unsafeState, int *exitCode) {
+void RunTestThread(const GameTestOptions& opts, TestState *unsafeState, int *exitCode) {
     TestStateHandle state(TestSide, unsafeState);
 
-    GameWrapper gameWrapper(state);
+    GameWrapper gameWrapper(state, opts.testDataDir);
     GameTest::Init(&gameWrapper);
     gameWrapper.Tick(10); // Let the game thread initialize everything.
 
@@ -50,10 +60,27 @@ void RunTestThread(TestState *unsafeState, int *exitCode) {
     state->terminating = true;
 }
 
-int PlatformMain(int argc, char **argv) {
+void PrintGoogleTestHelp(char *app) {
+    int argc = 2;
+    char help[] = "--help";
+    char *argv[] = { app, help, nullptr };
     testing::InitGoogleTest(&argc, argv);
+}
 
-    int exitCode = 0;
+int PlatformMain(int argc, char **argv) {
+    GameTestOptions opts;
+    int exitCode = opts.Parse(argc, argv) ? 0 : 1;
+
+    if (opts.helpRequested) {
+        std::cout << std::endl;
+        PrintGoogleTestHelp(argv[0]);
+    } else {
+        testing::InitGoogleTest(&argc, argv);
+    }
+
+    if (exitCode != 0)
+        return exitCode;
+
     std::thread testThread;
 
     TestState state;
@@ -62,8 +89,8 @@ int PlatformMain(int argc, char **argv) {
         Engine_DeinitializeAndTerminate(exitCode);
     };
 
-    testThread = std::thread(&RunTestThread, &state, &exitCode);
-    RunGameThread(&state);
+    testThread = std::thread(&RunTestThread, opts, &state, &exitCode);
+    RunGameThread(opts, &state);
 
     assert(false); // should never get here.
     return exitCode;

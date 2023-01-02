@@ -109,6 +109,7 @@ class Platform {
      */
     virtual std::vector<Recti> DisplayGeometries() const = 0;
 
+    // TODO(captainurist): TBH the argument order with the title going first makes more sense
     /**
      * Shows a modal message box.
      *

@@ -32,7 +32,7 @@ GUIWindow_MainMenu::GUIWindow_MainMenu() :
 
     pBtnNew = CreateButton("MainMenu_NewGame", 495, 172, ui_mainmenu_new->GetWidth(), ui_mainmenu_new->GetHeight(),
                            1, 0, UIMSG_MainMenu_ShowPartyCreationWnd, 0, PlatformKey::N, "", {ui_mainmenu_new});
-    pBtnLoad = CreateButton(495, 227, ui_mainmenu_load->GetWidth(), ui_mainmenu_load->GetHeight(),
+    pBtnLoad = CreateButton("MainMenu_LoadGame", 495, 227, ui_mainmenu_load->GetWidth(), ui_mainmenu_load->GetHeight(),
                             1, 0, UIMSG_MainMenu_ShowLoadWindow, 1, PlatformKey::L, "", {ui_mainmenu_load});
     pBtnCredits = CreateButton(495, 282, ui_mainmenu_credits->GetWidth(), ui_mainmenu_credits->GetHeight(),
                                1, 0, UIMSG_ShowCredits, 2, PlatformKey::C, "", {ui_mainmenu_credits});

@@ -62,8 +62,8 @@ bool Application::ParseGameOptions(int argc, char **argv, GameConfig *config) {
     std::string gameOptions = "Game Options";
     std::string windowOptions = "Window Options";
 
-    app->set_help_flag("-h,--help", "Print help and exit")->group(generalOptions);
     app->add_flag("-v,--verbose", config->debug.VerboseLogging, "Enable verbose logging")->group(generalOptions);
+    app->set_help_flag("-h,--help", "Print help and exit")->group(generalOptions);
 
     app->add_flag("--nointro", config->debug.NoIntro, "Skip intro movie")->group(gameOptions);
     app->add_flag("--nologo", config->debug.NoLogo, "Skip 3DO & NWC logos")->group(gameOptions);

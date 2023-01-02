@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 
 #include "Testing/Engine/TestStateHandle.h"
 
@@ -8,11 +9,14 @@
 #include "Platform/PlatformMouseButton.h"
 
 class GUIButton;
+class TestPlatform;
 
 class GameWrapper {
  public:
-    explicit GameWrapper(TestStateHandle state);
+    GameWrapper(TestStateHandle state, const std::string &testDataDir);
     ~GameWrapper();
+
+    void Reset();
 
     void Tick(int count = 1);
 
@@ -25,12 +29,16 @@ class GameWrapper {
     void PressAndReleaseButton(PlatformMouseButton button, int x, int y);
 
     void PressGuiButton(std::string_view buttonId);
+
     void GoToMainMenu();
+    void LoadGame(const std::string &name);
+    void SkipLoadingScreen();
 
  private:
     GUIButton *AssertButton(std::string_view buttonId);
 
  private:
     TestStateHandle state_;
+    std::string testDataDir_;
 };
 
