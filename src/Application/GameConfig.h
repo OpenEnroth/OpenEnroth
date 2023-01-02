@@ -86,7 +86,7 @@ namespace Application {
                                          "Fix problems with item loss in high-level chests. "
                                          "Use 0 for vanilla behaviour, items that don't fit will be lost. "
                                          "Use 1 to try to place items that didn't fit every time the chest is opened again. "
-                                         "Use 2 to try to place items that didn't fit every an item is picked up from the chest.");
+                                         "Use 2 to try to place items that didn't fit every time an item is picked up from the chest.");
 
             Int FloorChecksEps = Int(this, "floor_checks_eps", 3, &ValidateFloorChecksEps,
                                      "Maximum allowed slack for point-inside-a-polygon checks when calculating floor z level. "
@@ -96,7 +96,7 @@ namespace Application {
 
             Float KeyboardInteractionDepth = Float(this, "keyboard_interaction_depth", 512.0f, &ValidateInteractionDepth,
                                                    "Maximum range for item pickup / opening chests / activating levers / etc "
-                                                   "with a keyboard (by pressing spacebar).");
+                                                   "with a keyboard (by pressing the interaction key, see keybindings.event_trigger).");
 
             Float MouseInteractionDepth = Float(this, "mouse_interaction_depth", 512.0f, &ValidateInteractionDepth,
                                                 "Maximum range for item pickup / opening chests / activating levers / etc with a mouse.");
@@ -205,7 +205,7 @@ namespace Application {
 
             Int FPSLimit = Int(this, "fps_limit", 60, "FPS limit. Use 0 for unlimited.");
 
-            Int Gamma = Int(this, "gamma", 4, &ValidateGamma, "Game level, can be used to adjust brightness.");
+            Int Gamma = Int(this, "gamma", 4, &ValidateGamma, "Gamma level, can be used to adjust brightness.");
 
             Int HouseMovieX1 = Int(this, "house_movie_x1", 8, "Viewport top-left offset for in-house movies.");
             Int HouseMovieY1 = Int(this, "house_movie_y1", 8, "Viewport top-left offset for in-house movies.");
