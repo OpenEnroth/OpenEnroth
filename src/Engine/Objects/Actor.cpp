@@ -826,9 +826,10 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
         a1.field_60_distance_related_prolly_lod = 3;
 
     a1.field_61 = a4;
+    // 1
     a1.Create(pDir->uYawAngle, pDir->uPitchAngle,
-              pObjectList->pObjects[(int16_t)a1.uObjectDescID].uSpeed,
-              0);
+              pObjectList->pObjects[(int16_t)a1.uObjectDescID].uSpeed, 0);
+
     if (pActors[uActorID].pMonsterInfo.uSpecialAbilityType == 1) {
         specAb = pActors[uActorID].pMonsterInfo.uSpecialAbilityDamageDiceBonus;
         if (specAb == 2) {
@@ -836,15 +837,13 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
             v13 = pDir->uYawAngle;
         } else {
             if (specAb != 3) return;
-            a1.Create(
-                pDir->uYawAngle + 30,  // TODO(_) find out why the YawAngle change
-                pDir->uPitchAngle,
-                pObjectList->pObjects[(int16_t)a1.uObjectDescID].uSpeed,
-                0);
+            // 3 - for sprays of 3
+            a1.Create(pDir->uYawAngle + 30, pDir->uPitchAngle,
+                pObjectList->pObjects[(int16_t)a1.uObjectDescID].uSpeed, 0);
             v13 = pDir->uYawAngle - 30;
         }
-        a1.Create(
-            v13, pDir->uPitchAngle,
+        // 2 - double height stacked / spray of 3
+        a1.Create(v13, pDir->uPitchAngle,
             pObjectList->pObjects[(int16_t)a1.uObjectDescID].uSpeed, 0);
     }
     return;
@@ -892,7 +891,7 @@ void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors
 // // but compiler converts functions returning structures by value in the such
 // way
 void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
-                             struct AIDirection *pOut, int a4) {
+                             struct AIDirection *pOut, int PreferedZ) {
     signed int v4;    // eax@1
     signed int v5;    // ecx@1
     int v18;          // edx@15
@@ -1001,32 +1000,32 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
         case OBJECT_Item: {
             outx2 = (float)pSpriteObjects[v5].vPosition.x;
             outy2 = (float)pSpriteObjects[v5].vPosition.y;
-            a4 = pSpriteObjects[v5].vPosition.z;
+            PreferedZ = pSpriteObjects[v5].vPosition.z;
             break;
         }
         case OBJECT_Actor: {
             outx2 = (float)pActors[v5].vPosition.x;
             outy2 = (float)pActors[v5].vPosition.y;
-            a4 = pActors[v5].vPosition.z + (pActors[v5].uActorHeight * 0.75);
+            PreferedZ = pActors[v5].vPosition.z + (pActors[v5].uActorHeight * 0.75);
             break;
         }
         case OBJECT_Player: {
             outx2 = (float)pParty->vPosition.x;
             outy2 = (float)pParty->vPosition.y;
-            if (!a4) a4 = pParty->sEyelevel;
-            a4 = pParty->vPosition.z + a4;
+            if (!PreferedZ) PreferedZ = pParty->sEyelevel;
+            PreferedZ = pParty->vPosition.z + PreferedZ;
             break;
         }
         case OBJECT_Decoration: {
             outx2 = (float)pLevelDecorations[v5].vPosition.x;
             outy2 = (float)pLevelDecorations[v5].vPosition.y;
-            a4 = pLevelDecorations[v5].vPosition.z;
+            PreferedZ = pLevelDecorations[v5].vPosition.z;
             break;
         }
         default: {
             outx2 = 0.0;
             outy2 = 0.0;
-            a4 = 0;
+            PreferedZ = 0;
             break;
         }
         case OBJECT_Face: {
@@ -1037,7 +1036,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                 outy2 = (float)((pIndoor->pFaces[v5].pBounding.y1 +
                                  pIndoor->pFaces[v5].pBounding.y2) >>
                                 1);
-                a4 = (pIndoor->pFaces[v5].pBounding.z1 +
+                PreferedZ = (pIndoor->pFaces[v5].pBounding.z1 +
                       pIndoor->pFaces[v5].pBounding.z2) >>
                      1;
             }
@@ -1047,7 +1046,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
 
     v31 = (float)outx2 - (float)outx;
     v32 = (float)outy2 - (float)outy;
-    a4a = (float)a4 - (float)outz;
+    a4a = (float)PreferedZ - (float)outz;
     outx2 = v32 * v32;
     outy2 = v31 * v31;
     v33 = sqrt(a4a * a4a + outy2 + outx2);
@@ -2009,26 +2008,24 @@ void Actor::PlaySound(unsigned int uActorID, unsigned int uSoundID) {
 //----- (00402AD7) --------------------------------------------------------
 void Actor::AI_Pursue1(unsigned int uActorID, unsigned int a2, signed int arg0,
                        signed int uActionLength, AIDirection *pDir) {
-    int v6;            // eax@1
     Actor *v7;         // ebx@1
     unsigned int v8;   // ecx@1
     AIDirection *v10;  // esi@6
     AIDirection a3;    // [sp+Ch] [bp-5Ch]@7
     unsigned int v18;  // [sp+64h] [bp-4h]@1
 
-    v6 = 0;
+    int WantedZ = 0;
     v7 = &pActors[uActorID];
     v8 = PID(OBJECT_Actor, uActorID);
-    if (v7->pMonsterInfo.uFlying != 0 &&
-        !pParty->bFlying) {  // TODO(_): Does v6 have a point?
+    if (v7->pMonsterInfo.uFlying != 0 && !pParty->bFlying) {
         if (v7->pMonsterInfo.uMissleAttack1Type)
-            v6 = v7->uActorRadius + 512;
+            WantedZ = v7->uActorRadius + 512; // hovering above ground for missle
         else
-            v6 = pParty->uPartyHeight;
+            WantedZ = pParty->uPartyHeight; // eye height for melee
     }
 
     if (pDir == nullptr) {
-        Actor::GetDirectionInfo(v8, a2, &a3, v6);
+        Actor::GetDirectionInfo(v8, a2, &a3, WantedZ);
         v10 = &a3;
     } else {
         v10 = pDir;
