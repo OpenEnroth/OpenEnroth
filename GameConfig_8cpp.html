@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;4831919</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;4d2d173</span>
    </div>
   </td>
  </tr>
@@ -74,51 +74,30 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#define-members">Macros</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#typedef-members">Typedefs</a>  </div>
   <div class="headertitle"><div class="title">GameConfig.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="GameConfig_8h.html">GameConfig.h</a>&quot;</code><br />
-<code>#include &lt;mini/ini.h&gt;</code><br />
-<code>#include &lt;algorithm&gt;</code><br />
-<code>#include &lt;string&gt;</code><br />
+<code>#include &lt;filesystem&gt;</code><br />
+<code>#include &quot;<a class="el" href="Engine_2IocContainer_8h.html">Engine/IocContainer.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Logger_8h.html">Library/Logger/Logger.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="DataPath_8h.html">Utility/DataPath.h</a>&quot;</code><br />
 </div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:aeca8f939c0ec92f4562e9b6eb44e1dfe"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameConfig_8cpp.html#aeca8f939c0ec92f4562e9b6eb44e1dfe">MINI_CASE_SENSITIVE</a></td></tr>
-<tr class="separator:aeca8f939c0ec92f4562e9b6eb44e1dfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:a7ca5a1ce89c0ba56ce1e8618b99f334e"><td class="memItemLeft" align="right" valign="top">mINI::INIStructure&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameConfig_8cpp.html#a7ca5a1ce89c0ba56ce1e8618b99f334e">ini</a></td></tr>
-<tr class="separator:a7ca5a1ce89c0ba56ce1e8618b99f334e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:a8df51996eaa93ee226542e4ebb9d6f14"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameConfig_8cpp.html#a8df51996eaa93ee226542e4ebb9d6f14">EngineIoc</a> = <a class="el" href="classEngine___1_1IocContainer.html">Engine_::IocContainer</a></td></tr>
+<tr class="separator:a8df51996eaa93ee226542e4ebb9d6f14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="aeca8f939c0ec92f4562e9b6eb44e1dfe" name="aeca8f939c0ec92f4562e9b6eb44e1dfe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeca8f939c0ec92f4562e9b6eb44e1dfe">&#9670;&#160;</a></span>MINI_CASE_SENSITIVE</h2>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a id="a8df51996eaa93ee226542e4ebb9d6f14" name="a8df51996eaa93ee226542e4ebb9d6f14"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8df51996eaa93ee226542e4ebb9d6f14">&#9670;&#160;</a></span>EngineIoc</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define MINI_CASE_SENSITIVE</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<h2 class="groupheader">Variable Documentation</h2>
-<a id="a7ca5a1ce89c0ba56ce1e8618b99f334e" name="a7ca5a1ce89c0ba56ce1e8618b99f334e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7ca5a1ce89c0ba56ce1e8618b99f334e">&#9670;&#160;</a></span>ini</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">mINI::INIStructure ini</td>
+          <td class="memname">using <a class="el" href="Game_8h.html#a8df51996eaa93ee226542e4ebb9d6f14">EngineIoc</a> =  <a class="el" href="classEngine___1_1IocContainer.html">Engine_::IocContainer</a></td>
         </tr>
       </table>
 </div><div class="memdoc">

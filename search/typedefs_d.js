@@ -1,6 +1,8 @@
 var searchData=
 [
-  ['sizei_0',['Sizei',['../Size_8h.html#a075755610ebd937662bd46b0703fbabf',1,'Size.h']]],
-  ['soundheader_1',['SoundHeader',['../classAudioPlayer.html#a6037ab7f3102356afacb75dfe9102a2d',1,'AudioPlayer']]],
-  ['streambase_2',['StreamBase',['../classBlobDeserializer.html#a1939bb0160bb469eb4c676173907aee4',1,'BlobDeserializer::StreamBase()'],['../classFileSerializer.html#ad7aa6ba9313e657db374969dff78fad6',1,'FileSerializer::StreamBase()']]]
+  ['uchar_0',['uchar',['../MM7_8h.html#a65f85814a8290f9797005d3b28e7e5fc',1,'MM7.h']]],
+  ['uint_1',['uint',['../MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14',1,'MM7.h']]],
+  ['ulong_2',['ulong',['../MM7_8h.html#a718b4eb2652c286f4d42dc18a8e71a1a',1,'MM7.h']]],
+  ['underlying_5ftype_3',['underlying_type',['../classFlags.html#a61795b8383eadabecb8bd837898f74fb',1,'Flags']]],
+  ['ushort_4',['ushort',['../MM7_8h.html#ab95f123a6c9bcfee6a343170ef8c5f69',1,'MM7.h']]]
 ];

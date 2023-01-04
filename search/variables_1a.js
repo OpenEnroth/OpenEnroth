@@ -11,6 +11,6 @@ var searchData=
   ['zcalc3_8',['zCalc3',['../structBLVFace__MM7.html#a6ac1bfd43fff69c1071f83429ef7c065',1,'BLVFace_MM7::zCalc3()'],['../structODMFace__MM7.html#af250cf1ff2441eac0c9be96bd2775571',1,'ODMFace_MM7::zCalc3()']]],
   ['zoo_5fbonus_9',['zoo_bonus',['../Arcomage_8cpp.html#af82c72b01e668ec6665cda79a2b609e7',1,'Arcomage.cpp']]],
   ['zoo_5flevel_10',['zoo_level',['../structArcomageStartConditions.html#a276ca7723adcfc39f4b3834ac1d95efa',1,'ArcomageStartConditions::zoo_level()'],['../structArcomagePlayer.html#ae638f2de1a835dbc11bd8e606b0b9dde',1,'ArcomagePlayer::zoo_level()']]],
-  ['zoomin_11',['ZoomIn',['../classApplication_1_1GameConfig_1_1Keybindings.html#adb8c1ca36aaf4ba021189d555ec391ad',1,'Application::GameConfig::Keybindings']]],
-  ['zoomout_12',['ZoomOut',['../classApplication_1_1GameConfig_1_1Keybindings.html#af1fd7f213a56815527ea89fddc947bce',1,'Application::GameConfig::Keybindings']]]
+  ['zoomin_11',['ZoomIn',['../classApplication_1_1GameConfig_1_1Keybindings.html#afe7746f2e60d06a59433c8976099e080',1,'Application::GameConfig::Keybindings']]],
+  ['zoomout_12',['ZoomOut',['../classApplication_1_1GameConfig_1_1Keybindings.html#aa9fea1f57ac0f3c8c49fa3722d22a0df',1,'Application::GameConfig::Keybindings']]]
 ];

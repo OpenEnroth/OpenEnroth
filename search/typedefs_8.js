@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['key_5ftype_0',['key_type',['../classIndexedArray.html#af5c5b34472590d5a46b82139f41857e1',1,'IndexedArray']]]
+  ['marginsi_0',['Marginsi',['../Margins_8h.html#af54b4ff4492cf2e8fcef8f00c26bb08e',1,'Margins.h']]]
 ];

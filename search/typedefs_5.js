@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['fake_5fbool_0',['fake_bool',['../classFlags.html#aae336b35b020818c8bc38c60f837079e',1,'Flags']]]
+  ['gameioc_0',['GameIoc',['../Game_8h.html#ae7ba6712f0b897dccb37b120d2d17571',1,'Game.h']]]
 ];
