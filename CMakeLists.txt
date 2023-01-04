@@ -34,6 +34,8 @@ if(UNIX)
   add_compile_options(-Werror=return-type) # Control reaches the end of non-void function, this is an error on MSVC
 endif()
 
+add_compile_definitions(FMT_USE_NONTYPE_TEMPLATE_ARGS) # Enable _cf literals
+
 include(CppLint)
 include(Dependencies)
 

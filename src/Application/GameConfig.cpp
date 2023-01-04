@@ -1,106 +1,37 @@
 #include "GameConfig.h"
 
-#define MINI_CASE_SENSITIVE
-#include <mini/ini.h>
+#include <filesystem>
 
-#include <algorithm>
-#include <string>
+#include "Engine/IocContainer.h"
+
+#include "Library/Logger/Logger.h"
 
 #include "Utility/DataPath.h"
 
+using EngineIoc = Engine_::IocContainer;
 using Application::GameConfig;
-
-mINI::INIStructure ini;
-
-void GameConfig::LoadOption(std::string section, GameConfig::ConfigValue<bool> *val) {
-    bool r = true;
-    std::string v = ini[section].get(val->Name());
-
-    if (v.empty()) {
-        val->Reset();
-        return;
-    }
-
-    if (v == "false" || v == "0")
-        r = false;
-
-    val->Set(r);
-}
-
-void GameConfig::LoadOption(std::string section, GameConfig::ConfigValue<float> *val) {
-    std::string v = ini[section].get(val->Name());
-
-    if (v.empty()) {
-        val->Reset();
-        return;
-    }
-
-    val->Set(std::stof(v));
-}
-
-void GameConfig::LoadOption(std::string section, GameConfig::ConfigValue<int> *val) {
-    std::string v = ini[section].get(val->Name());
-
-    if (v.empty()) {
-        val->Reset();
-        return;
-    }
-
-    val->Set(std::stoi(v));
-}
-
-void GameConfig::LoadOption(std::string section, GameConfig::ConfigValue<std::string> *val) {
-    std::string v = ini[section].get(val->Name());
-
-    if (v.empty()) {
-        val->Reset();
-        return;
-    }
-
-    val->Set(v);
-}
-
-void GameConfig::SaveOption(std::string section, GameConfig::ConfigValue<bool> *val) {
-    std::string v = "false";
-    if (val->Get())
-        v = "true";
-
-    ini[section].set(val->Name(), v);
-}
-
-void GameConfig::SaveOption(std::string section, GameConfig::ConfigValue<int> *val) {
-    ini[section].set(val->Name(), std::to_string(val->Get()));
-}
-
-void GameConfig::SaveOption(std::string section, GameConfig::ConfigValue<float> *val) {
-    ini[section].set(val->Name(), std::to_string(val->Get()));
-}
-
-void GameConfig::SaveOption(std::string section, GameConfig::ConfigValue<std::string> *val) {
-    ini[section].set(val->Name(), val->Get());
-}
 
 void GameConfig::LoadConfiguration() {
     std::string path = MakeDataPath(config_file);
-    mINI::INIFile file(path);
 
-    if (file.read(ini)) {
-        LoadSections();
+    if (std::filesystem::exists(path)) {
+        Config::Load(path);
         logger->Info("Configuration file '%s' loaded!", path.c_str());
     } else {
-        ResetSections();
+        Config::Reset();
         logger->Warning("Cound not read configuration file '%s'! Loaded default configuration instead!", path.c_str());
     }
 }
 
 void GameConfig::SaveConfiguration() {
-    mINI::INIFile file(MakeDataPath(config_file));
+    std::string path = MakeDataPath(config_file);
 
-    SaveSections();
-
-    file.write(ini, true);
+    Config::Save(path);
+    logger->Info("Configuration file '%s' saved!", path.c_str());
 }
 
-GameConfig::~GameConfig() {
-    ini.clear();
+GameConfig::GameConfig() {
+    this->logger = EngineIoc::ResolveLogger();
 }
+
+GameConfig::~GameConfig() {}
