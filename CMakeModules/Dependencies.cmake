@@ -77,10 +77,16 @@ elseif(PREBUILT_DEPENDENCIES)
     endforeach()
   endfunction()
 
+  #TODO: remove that workaround once dependencies archives are updated
+  set(DEP_PLATFORM ${BUILD_PLATFORM})
+  if (BUILD_PLATFORM STREQUAL "windows")
+    set(DEP_PLATFORM "win32")
+  endif()
+  
   set(LIB_DIR "${CMAKE_SOURCE_DIR}/lib")
-  set(LIBRARY_DIR "${LIB_DIR}/${BUILD_PLATFORM}/${BUILD_TYPE}")
+  set(LIBRARY_DIR "${LIB_DIR}/${DEP_PLATFORM}/${BUILD_TYPE}")
 
-  set(DEPS_ZIP_FILENAME "all_deps_${BUILD_PLATFORM}_${BUILD_TYPE}.zip")
+  set(DEPS_ZIP_FILENAME "all_deps_${DEP_PLATFORM}_${BUILD_TYPE}.zip")
   set(DEPS_ZIP_FULL_PATH "${LIB_DIR}/${DEPS_ZIP_FILENAME}")
   if(BUILD_PLATFORM STREQUAL "windows" AND BUILD_TYPE STREQUAL "x64")
     set(DEPS_ZIP_MD5_CHECKSUM "02cbd9b53a221f6014528305c1d1f728")
