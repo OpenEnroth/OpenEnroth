@@ -415,9 +415,9 @@ namespace Application {
             String LookDown = String(this, "look_down", "DELETE", &ValidateKey, "Look down key.");
             String LookUp = String(this, "look_up", "PAGE DOWN", &ValidateKey, "Look up key.");
             String MapBook = String(this, "map_book", "M", &ValidateKey, "Open map key.");
-            String Pass = String(this, "pass", "B", &ValidateKey, ""); // TODO(captainurist): wat?
+            String Pass = String(this, "pass", "B", &ValidateKey, "Pass turn key");
             String Quest = String(this, "quest", "Q", &ValidateKey, "Open quest book key");
-            String QuickReference = String(this, "quick_reference", "Z", &ValidateKey, "Open quick re"); // TODO(captainurist): wat?
+            String QuickReference = String(this, "quick_reference", "Z", &ValidateKey, "Open quick reference menu");
             String Rest = String(this, "rest", "R", &ValidateKey, "Rest key.");
             String Right = String(this, "right", "RIGHT", &ValidateKey, "Turn right key.");
             String StepLeft = String(this, "step_left", "L BRACKET", &ValidateKey, "Strafe left key.");
