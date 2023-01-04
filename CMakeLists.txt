@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 project("World of Might and Magic")
-add_compile_definitions(PACKAGE_BUGREPORT="https://github.com/gp-alex/world-of-might-and-magic/issues")
+add_compile_definitions(PACKAGE_BUGREPORT="https://github.com/OpenEnroth/OpenEnroth/issues")
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules)
 include(Git)
