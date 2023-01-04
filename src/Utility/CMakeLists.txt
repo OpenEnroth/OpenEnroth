@@ -1,18 +1,17 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
-set(UTILITY_SOURCES Blob.cpp
-                    Color.cpp
+set(UTILITY_SOURCES Color.cpp
                     DataPath.cpp
                     FileSystem.cpp
                     String.cpp
+                    Memory/Blob.cpp
                     Math/TrigLut.cpp
                     Random/Random.cpp
                     Streams/MemoryInputStream.cpp
                     Streams/StringOutputStream.cpp
                     Streams/FileOutputStream.cpp)
 
-set(UTILITY_HEADERS Blob.h
-                    Color.h
+set(UTILITY_HEADERS Color.h
                     DataPath.h
                     Embedded.h
                     FileSystem.h
@@ -20,10 +19,11 @@ set(UTILITY_HEADERS Blob.h
                     Format.h
                     FreeDeleter.h
                     IndexedArray.h
-                    Memory.h
                     ScopeGuard.h
                     Segment.h
                     String.h
+                    Memory/Blob.h
+                    Memory/MemSet.h
                     Geometry/BBox.h
                     Geometry/Margins.h
                     Geometry/Plane.h

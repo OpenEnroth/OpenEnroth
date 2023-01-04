@@ -8,7 +8,7 @@
 #include <utility>
 #include <vector>
 
-#include "Utility/Blob.h"
+#include "Utility/Memory/Blob.h"
 #include "Utility/Embedded.h"
 #include "Utility/Streams/InputStream.h"
 #include "Utility/Streams/MemoryInputStream.h"

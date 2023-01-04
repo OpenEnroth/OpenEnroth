@@ -5,7 +5,7 @@
 
 #include "Utility/String.h"
 #include "Utility/Flags.h"
-#include "Utility/Blob.h"
+#include "Utility/Memory/Blob.h"
 
 /*  321 */
 enum class DECORATION_DESC_FLAG : uint16_t {

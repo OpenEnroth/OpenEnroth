@@ -6,7 +6,7 @@
 
 #include "Engine/Graphics/DecorationList.h"
 
-#include "Utility/Blob.h"
+#include "Utility/Memory/Blob.h"
 
 class Texture;
 

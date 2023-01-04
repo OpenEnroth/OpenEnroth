@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Utility/Blob.h"
+#include "Utility/Memory/Blob.h"
 
 namespace zlib {
 // TODO: Use size_t in API here.

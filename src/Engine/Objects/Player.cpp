@@ -34,7 +34,7 @@
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
 
-#include "Utility/Memory.h"
+#include "Utility/Memory/MemSet.h"
 #include "Utility/IndexedArray.h"
 #include "Utility/Random/Random.h"
 

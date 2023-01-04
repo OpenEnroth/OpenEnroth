@@ -3,7 +3,7 @@
 #include <string>
 
 #include "Utility/IndexedArray.h"
-#include "Utility/Blob.h"
+#include "Utility/Memory/Blob.h"
 
 enum class IMAGE_FORMAT {
     IMAGE_FORMAT_R5G6B5 = 0,
