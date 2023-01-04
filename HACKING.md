@@ -52,7 +52,7 @@ You will require the following installed on your computer: Git (`https://git-scm
 * Clone, fork or download the repo `https://github.com/OpenEnroth/OpenEnroth`
 * Setup Cmake:
   * either install standalone cmake from the official website,
-  * or add Microsoft one (that's coming with the VS installation) to your PATH environment variable (e.g `c:\Program Files\Microsoft Visual Studio\2022<edition>\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin`) 
+  * or add Microsoft one (that's coming with the VS installation) to your PATH environment variable (e.g `c:\Program Files\Microsoft Visual Studio\2022\<edition>\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin`) 
 * Open the folder in Visual Studio
 * Select build configuration (x32 or x64) and wait for CMake configuration to complete
 * Select startup item as `World_of_Might_and_Magic.exe`
