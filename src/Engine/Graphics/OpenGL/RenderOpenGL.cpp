@@ -1,27 +1,5 @@
 #ifdef _WINDOWS
     #pragma comment(lib, "opengl32.lib")
-    #pragma comment(lib, "glu32.lib")
-
-    //  on windows, this is required in gl/glu.h
-    #if !defined(APIENTRY)
-        #define APIENTRY __stdcall
-    #endif
-
-    #if !defined(WINGDIAPI)
-        #define WINGDIAPI
-    #endif
-
-    #if !defined(CALLBACK)
-        #define CALLBACK __stdcall
-    #endif
-#endif
-
-#include "glad/gl.h"
-
-#ifdef __APPLE__
-#include <OpenGL/glu.h>
-#else
-#include <GL/glu.h>
 #endif
 
 #include <algorithm>
@@ -31,6 +9,7 @@
 #include <filesystem>
 #include <chrono>
 
+#include "glad/gl.h"
 #include <glm.hpp>
 #include <glm/glm/gtc/matrix_transform.hpp>
 
@@ -65,6 +44,7 @@
 #include "Arcomage/Arcomage.h"
 
 #include "Utility/Geometry/Size.h"
+#include "Utility/Format.h"
 #include "Utility/Memory.h"
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Random/Random.h"
@@ -84,7 +64,11 @@ RenderVertexSoft array_73D150[20];
 RenderVertexSoft VertexRenderList[50];
 RenderVertexD3D3 d3d_vertex_buffer[50];
 RenderVertexSoft array_507D30[50];
-Sizei output = {0, 0};
+Sizei outputRender = {0, 0};
+Sizei outputPresent = {0, 0};
+GLuint framebuffer = 0;
+GLuint framebufferTextures[2] = {0, 0};
+bool OpenGLES = false;
 
 // improved error check - using glad post call back
 void GL_Check_Errors(void *ret, const char *name, GLADapiproc apiproc, int len_args, ...) {
@@ -106,6 +90,36 @@ void GL_Check_Errors(void *ret, const char *name, GLADapiproc apiproc, int len_a
 
         err = glad_glGetError();
     }
+}
+
+void GL_Check_Framebuffer(const char *name) {
+    static std::string error;
+
+    GLenum status = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
+    switch (status) {
+        case GL_FRAMEBUFFER_UNDEFINED:
+            error = "framebuffer is undefined";
+            break;
+        case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+            error = "framebuffer has missing attachment";
+            break;
+        case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+            error = "framebuffer has incomplete attachment";
+            break;
+        case GL_FRAMEBUFFER_UNSUPPORTED:
+            error = "framebuffer is unsupported";
+            break;
+        case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+            error = "framebuffer has incomplete multisample";
+            break;
+        case 0:
+            error = "unknown error";
+            break;
+        default:
+            return;
+    }
+
+    logger->Warning("OpenGL Framebuffer error (%u): %s from function %s", status, error.c_str(), name);
 }
 
 // sky billboard stuff
@@ -194,19 +208,31 @@ void RenderOpenGL::MaskGameViewport() {
     // do not want in opengl mode
 }
 
-void RenderOpenGL::SaveWinnersCertificate(const char *a1) {
-    GLubyte *sPixels = new GLubyte[3 * output.w * output.h];
-    glReadPixels(0, 0, output.w, output.h, GL_RGB, GL_UNSIGNED_BYTE, sPixels);
+uint8_t *RenderOpenGL::ReadScreenPixels() {
+    GLubyte *sPixels = new GLubyte[4 * outputRender.w * outputRender.h];
+    if (outputRender != outputPresent) {
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
+    }
+    glReadPixels(0, 0, outputRender.w, outputRender.h, GL_RGBA, GL_UNSIGNED_BYTE, sPixels);
+    if (outputRender != outputPresent) {
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+    }
 
-    uint16_t *pPixels = (uint16_t *)malloc(sizeof(uint16_t) * output.h * output.w);
-    memset(pPixels, 0, sizeof(uint16_t) * output.h * output.w);
+    return sPixels;
+}
+
+void RenderOpenGL::SaveWinnersCertificate(const char *a1) {
+    GLubyte *sPixels = ReadScreenPixels();
+
+    uint16_t *pPixels = (uint16_t *)malloc(sizeof(uint16_t) * outputRender.h * outputRender.w);
+    memset(pPixels, 0, sizeof(uint16_t) * outputRender.h * outputRender.w);
 
     // reverse pixels from ogl (uses BL as 0,0)
     uint16_t *for_pixels = pPixels;
     uint8_t *p = sPixels;
-    for (uint y = 0; y < (unsigned int)output.h; ++y) {
-        for (uint x = 0; x < (unsigned int)output.w; ++x) {
-            p = sPixels + 3 * (int)(x) + 3 * (int)(output.h -1 - y) * output.w;
+    for (uint y = 0; y < (unsigned int)outputRender.h; ++y) {
+        for (uint x = 0; x < (unsigned int)outputRender.w; ++x) {
+            p = sPixels + 4 * (int)(x) + 4 * (int)(outputRender.h -1 - y) * outputRender.w;
 
             *for_pixels = Color16(*p & 255, *(p + 1) & 255, *(p + 2) & 255);
             ++for_pixels;
@@ -215,7 +241,7 @@ void RenderOpenGL::SaveWinnersCertificate(const char *a1) {
 
     delete[] sPixels;
 
-    SavePCXImage16(a1, (uint16_t *)pPixels, render->GetRenderWidth(), render->GetRenderHeight());
+    SavePCXImage16(a1, (uint16_t *)pPixels, outputRender.w, outputRender.h);
     free(pPixels);
 }
 
@@ -261,10 +287,6 @@ void RenderOpenGL::BltBackToFontFast(int a2, int a3, Recti *a4) {
 }
 
 
-
-unsigned int RenderOpenGL::GetRenderWidth() const { return output.w; }
-unsigned int RenderOpenGL::GetRenderHeight() const { return output.h; }
-
 void RenderOpenGL::ClearBlack() {  // used only at start and in game over win
     ClearZBuffer();
     ClearTarget(0);
@@ -272,7 +294,7 @@ void RenderOpenGL::ClearBlack() {  // used only at start and in game over win
 
 void RenderOpenGL::ClearTarget(unsigned int uColor) {
     glClearColor(0, 0, 0, 0/*0.9f, 0.5f, 0.1f, 1.0f*/);
-    glClearDepth(1.0f);
+    glClearDepthf(1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     return;
@@ -284,7 +306,7 @@ void RenderOpenGL::CreateZBuffer() {
     if (pActiveZBuffer)
         free(pActiveZBuffer);
 
-    pActiveZBuffer = (int*)malloc(output.w * output.h * sizeof(int));
+    pActiveZBuffer = (int*)malloc(outputRender.w * outputRender.h * sizeof(int));
     if (!pActiveZBuffer)
         Error("Failed to create zbuffer");
 
@@ -292,7 +314,7 @@ void RenderOpenGL::CreateZBuffer() {
 }
 
 void RenderOpenGL::ClearZBuffer() {
-    memset32(this->pActiveZBuffer, 0xFFFF0000, output.w * output.h);
+    memset32(this->pActiveZBuffer, 0xFFFF0000, outputRender.w * outputRender.h);
 }
 
 struct linesverts {
@@ -389,11 +411,19 @@ void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ,
 void RenderOpenGL::BeginSceneD3D() {
     // Setup for 3D
 
+    if (outputRender != outputPresent) {
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
+        glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebufferTextures[0], 0);
+        glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, framebufferTextures[1], 0);
+
+        GL_Check_Framebuffer(__FUNCTION__);
+    }
+
     glDepthMask(GL_TRUE);
     glEnable(GL_DEPTH_TEST);
 
     glClearColor(0, 0, 0, 0/*0.9f, 0.5f, 0.1f, 1.0f*/);
-    glClearDepth(1.0f);
+    glClearDepthf(1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     render->uNumBillboardsToDraw = 0;  // moved from drawbillboards - cant reset this until mouse picking finished
@@ -737,7 +767,7 @@ void RenderOpenGL::ScreenFade(unsigned int color, float t) {
 
 void RenderOpenGL::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
                                      Image *pTexture) {
-    DrawTextureNew((float)(pX - move_X)/output.w, (float)(pY - move_Y)/output.h, pTexture);
+    DrawTextureNew((float)(pX - move_X)/outputRender.w, (float)(pY - move_Y)/outputRender.h, pTexture);
 }
 
 
@@ -758,7 +788,7 @@ void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid) {
     int w = rect.y + rect.h;
 
     // check bounds
-    if (x >= output.w || x >= this->clip_z || y >= output.h || y >= this->clip_w) return;
+    if (x >= outputRender.w || x >= this->clip_z || y >= outputRender.h || y >= this->clip_w) return;
     // check for overlap
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
@@ -865,11 +895,11 @@ void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid) {
 void RenderOpenGL::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
     if (!img) return;
 
-    int uOutX = static_cast<int>(u * output.w);
-    int uOutY = static_cast<int>(v * output.h);
+    int uOutX = static_cast<int>(u * outputRender.w);
+    int uOutY = static_cast<int>(v * outputRender.h);
     int imgheight = img->GetHeight();
     int imgwidth = img->GetWidth();
-    auto pixels = (uint32_t *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+    auto pixels = (uint32_t *)img->GetPixels(IMAGE_FORMAT_A8B8G8R8);
 
     if (uOutX < 0)
         uOutX = 0;
@@ -879,7 +909,7 @@ void RenderOpenGL::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
     for (int xs = 0; xs < imgwidth; xs++) {
         for (int ys = 0; ys < imgheight; ys++) {
             if (pixels[xs + imgwidth * ys] & 0xFF000000) {
-                this->pActiveZBuffer[uOutX + xs + output.w * (uOutY + ys)] = zVal;
+                this->pActiveZBuffer[uOutX + xs + outputRender.w * (uOutY + ys)] = zVal;
             }
         }
     }
@@ -898,20 +928,20 @@ void RenderOpenGL::BlendTextures(int x, int y, Image* imgin, Image* imgblend, in
     const uint32_t* pixelpointblend;
 
     if (imgin && imgblend) {  // 2 images to blend
-        pixelpoint = (const uint32_t*)imgin->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+        pixelpoint = (const uint32_t*)imgin->GetPixels(IMAGE_FORMAT_A8B8G8R8);
         pixelpointblend =
-            (const uint32_t*)imgblend->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+            (const uint32_t*)imgblend->GetPixels(IMAGE_FORMAT_A8B8G8R8);
 
         int Width = imgin->GetWidth();
         int Height = imgin->GetHeight();
-        Texture *temp = render->CreateTexture_Blank(Width, Height, IMAGE_FORMAT_A8R8G8B8);
+        Texture *temp = render->CreateTexture_Blank(Width, Height, IMAGE_FORMAT_A8B8G8R8);
         //Image* temp = Image::Create(Width, Height, IMAGE_FORMAT_A8R8G8B8);
-        uint32_t* temppix = (uint32_t*)temp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+        uint32_t* temppix = (uint32_t*)temp->GetPixels(IMAGE_FORMAT_A8B8G8R8);
 
         uint32_t c = *(pixelpointblend + 2700);  // guess at brightest pixel
-        unsigned int bmax = (c & 0xFF);
+        unsigned int rmax = (c & 0xFF);
         unsigned int gmax = ((c >> 8) & 0xFF);
-        unsigned int rmax = ((c >> 16) & 0xFF);
+        unsigned int bmax = ((c >> 16) & 0xFF);
 
         unsigned int bmin = bmax / 10;
         unsigned int gmin = gmax / 10;
@@ -932,9 +962,9 @@ void RenderOpenGL::BlendTextures(int x, int y, Image* imgin, Image* imgblend, in
                         (ydraw % imgblend->GetHeight()) * imgblend->GetWidth();
                     uint32_t pixcol = *(pixelpointblend + nudge);
 
-                    unsigned int bcur = (pixcol & 0xFF);
+                    unsigned int rcur = (pixcol & 0xFF);
                     unsigned int gcur = ((pixcol >> 8) & 0xFF);
-                    unsigned int rcur = ((pixcol >> 16) & 0xFF);
+                    unsigned int bcur = ((pixcol >> 16) & 0xFF);
 
                     int steps = (time) % 128;
 
@@ -965,7 +995,7 @@ void RenderOpenGL::BlendTextures(int x, int y, Image* imgin, Image* imgblend, in
         }
         // draw image
         render->Update_Texture(temp);
-        render->DrawTextureAlphaNew(x / float(output.w), y / float(output.h), temp);
+        render->DrawTextureAlphaNew(x / float(outputRender.w), y / float(outputRender.h), temp);
 
         render->DrawTwodVerts();
 
@@ -991,11 +1021,11 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time
             int width = img->GetWidth();
             int height = img->GetHeight();
             if (!cachedtemp[thisslot]) {
-                cachedtemp[thisslot] = CreateTexture_Blank(width, height, IMAGE_FORMAT_A8R8G8B8);
+                cachedtemp[thisslot] = CreateTexture_Blank(width, height, IMAGE_FORMAT_A8B8G8R8);
             }
 
             uint8_t *palpoint24 = (uint8_t *)img->GetPalette();
-            uint32_t *temppix = (uint32_t *)cachedtemp[thisslot]->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+            uint32_t *temppix = (uint32_t *)cachedtemp[thisslot]->GetPixels(IMAGE_FORMAT_A8B8G8R8);
             uint8_t *texpix24 = (uint8_t *)img->GetPalettePixels();
             uint8_t thispix;
             int palindex;
@@ -1046,9 +1076,9 @@ void RenderOpenGL::DrawMasked(float u, float v, Image *pTexture, unsigned int co
     if (mask)
         col = Color32(mask);
 
-    int r = ((col >> 16) & 0xFF) & (0xFF>> color_dimming_level);
+    int b = ((col >> 16) & 0xFF) & (0xFF >> color_dimming_level);
     int g = ((col >> 8) & 0xFF) & (0xFF >> color_dimming_level);
-    int b = ((col) & 0xFF) & (0xFF >> color_dimming_level);
+    int r = ((col) & 0xFF) & (0xFF >> color_dimming_level);
 
     col = Color32(r, g, b);
 
@@ -1158,7 +1188,7 @@ void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon 
     auto texid = texture->GetOpenGlTexture();
 
     uint uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0);
-    uint uTintR = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintB = uTint & 0xFF;
+    uint uTintB = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintR = uTint & 0xFF;
     float scrspace{ pCamera3D->GetFarClip() };
 
     float oneon = 1.0f / (pCamera3D->GetNearClip() * 2.0f);
@@ -1228,9 +1258,7 @@ unsigned short *RenderOpenGL::MakeScreenshot16(int width, int height) {
 
     DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
 
-    GLubyte *sPixels = new GLubyte[3 * output.w * output.h];
-    glReadPixels(0, 0, output.w, output.h, GL_RGB, GL_UNSIGNED_BYTE, sPixels);
-
+    GLubyte *sPixels = ReadScreenPixels();
     int interval_x = static_cast<int>(game_viewport_width / (double)width);
     int interval_y = static_cast<int>(game_viewport_height / (double)height);
 
@@ -1238,7 +1266,6 @@ unsigned short *RenderOpenGL::MakeScreenshot16(int width, int height) {
     memset(pPixels, 0, sizeof(uint16_t) * height * width);
 
     uint16_t *for_pixels = pPixels;
-
     if (uCurrentlyLoadedLevelType == LEVEL_null) {
         memset(&for_pixels, 0, sizeof(for_pixels));
     } else {
@@ -1246,7 +1273,7 @@ unsigned short *RenderOpenGL::MakeScreenshot16(int width, int height) {
             for (uint x = 0; x < (unsigned int)width; ++x) {
                 uint8_t *p;
 
-                p = sPixels + 3 * (int)(x * interval_x + 8.0) + 3 * (int)(output.h - (y * interval_y) - 8.0) * output.w;
+                p = sPixels + 4 * (int)(x * interval_x + 8.0) + 4 * (int)(outputRender.h - (y * interval_y) - 8.0) * outputRender.w;
 
                 *for_pixels = Color16(*p & 255, *(p + 1) & 255, *(p + 2) & 255);
                 ++for_pixels;
@@ -1473,7 +1500,7 @@ void RenderOpenGL::EndDecals() {
     glBindVertexArray(0);
     //glBindBuffer(GL_ARRAY_BUFFER, 0);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, NULL);
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     glEnable(GL_CULL_FACE);
     glDepthMask(GL_TRUE);
@@ -1495,15 +1522,15 @@ void RenderOpenGL::DrawDecal(struct Decal *pDecal, float z_bias) {
     // color_mult = 1;
 
     // load into buffer
-    uint uDecalColorMultR = (pDecal->uColorMultiplier >> 16) & 0xFF,
+    uint uDecalColorMultB = (pDecal->uColorMultiplier >> 16) & 0xFF,
         uDecalColorMultG = (pDecal->uColorMultiplier >> 8) & 0xFF,
-        uDecalColorMultB = pDecal->uColorMultiplier & 0xFF;
+        uDecalColorMultR = pDecal->uColorMultiplier & 0xFF;
 
     for (int z = 0; z < (pDecal->uNumVertices - 2); z++) {
         // 123, 134, 145, 156..
         GLdecalverts *thisvert = &decalshaderstore[numdecalverts];
         uint uTint = GetActorTintColor(pDecal->DimmingLevel, 0, pDecal->pVertices[0].vWorldViewPosition.x, 0, nullptr);
-        uint uTintR = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintB = uTint & 0xFF;
+        uint uTintB = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintR = uTint & 0xFF;
 
         float uFinalR = floorf(uTintR / 255.0f * color_mult * uDecalColorMultR + 0.0f),
              uFinalG = floorf(uTintG / 255.0f * color_mult * uDecalColorMultG + 0.0f),
@@ -1525,7 +1552,7 @@ void RenderOpenGL::DrawDecal(struct Decal *pDecal, float z_bias) {
         // copy other two (z+1)(z+2)
         for (uint i = 1; i < 3; ++i) {
             uTint = GetActorTintColor(pDecal->DimmingLevel, 0, pDecal->pVertices[z + i].vWorldViewPosition.x, 0, nullptr);
-            uTintR = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintB = uTint & 0xFF;
+            uTintB = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintR = uTint & 0xFF;
             uFinalR = floorf(uTintR / 255.0f * color_mult * uDecalColorMultR + 0.0f),
             uFinalG = floorf(uTintG / 255.0f * color_mult * uDecalColorMultG + 0.0f),
             uFinalB = floorf(uTintB / 255.0f * color_mult * uDecalColorMultB + 0.0f);
@@ -1631,7 +1658,7 @@ void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, in
     int w = y + height;
 
     // check bounds
-    if (x >= output.w || x >= this->clip_z || y >= output.h || y >= this->clip_w) return;
+    if (x >= outputRender.w || x >= this->clip_z || y >= outputRender.h || y >= this->clip_w) return;
     // check for overlap
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
@@ -1982,12 +2009,10 @@ Texture *RenderOpenGL::CreateSprite(const std::string &name, unsigned int palett
 }
 
 void RenderOpenGL::Update_Texture(Texture *texture) {
-    // takes care of endian flip from literals here - hence BGRA
-
     auto t = (TextureOpenGL *)texture;
     glBindTexture(GL_TEXTURE_2D, t->GetOpenGlTexture());
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, t->GetWidth(), t->GetHeight(), GL_BGRA, GL_UNSIGNED_BYTE, t->GetPixels(IMAGE_FORMAT_A8R8G8B8));
-    glBindTexture(GL_TEXTURE_2D, NULL);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, t->GetWidth(), t->GetHeight(), GL_RGBA, GL_UNSIGNED_BYTE, t->GetPixels(IMAGE_FORMAT_A8B8G8R8));
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void RenderOpenGL::DeleteTexture(Texture *texture) {
@@ -2011,11 +2036,10 @@ bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
         // native_format == IMAGE_FORMAT_A1R5G5B5 ? GL_RGBA : GL_RGB;
 
     uint8_t *pixels = nullptr;
-    if (native_format == IMAGE_FORMAT_R5G6B5 || native_format == IMAGE_FORMAT_A1R5G5B5 || native_format == IMAGE_FORMAT_A8R8G8B8 || native_format == IMAGE_FORMAT_R8G8B8A8
-         || native_format == IMAGE_FORMAT_R8G8B8) {
-        pixels = (uint8_t *)t->GetPixels(IMAGE_FORMAT_A8R8G8B8);
-        // takes care of endian flip from literals here - hence BGRA
-        gl_format = GL_BGRA;
+    if (native_format == IMAGE_FORMAT_R5G6B5 || native_format == IMAGE_FORMAT_A1R5G5B5 || native_format == IMAGE_FORMAT_R8G8B8A8
+         || native_format == IMAGE_FORMAT_R8G8B8 || native_format == IMAGE_FORMAT_A8B8G8R8) {
+        pixels = (uint8_t *)t->GetPixels(IMAGE_FORMAT_A8B8G8R8);
+        gl_format = GL_RGBA;
     } else {
         if (engine->config->debug.VerboseLogging.Get())
             log->Warning("Image %s not loaded!", t->GetName()->c_str());
@@ -2027,8 +2051,7 @@ bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
         t->SetOpenGlTexture(texid);
 
         glBindTexture(GL_TEXTURE_2D, texid);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, t->GetWidth(), t->GetHeight(),
-                     0, gl_format, GL_UNSIGNED_BYTE, pixels);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, t->GetWidth(), t->GetHeight(), 0, gl_format, GL_UNSIGNED_BYTE, pixels);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -2065,10 +2088,10 @@ void RenderOpenGL::_set_3d_modelview_matrix() {
 
 void RenderOpenGL::_set_ortho_projection(bool gameviewport) {
     if (!gameviewport) {  // project over entire window
-        glViewport(0, 0, output.w, output.h);
-        projmat = glm::ortho(float(0), float(output.w), float(output.h), float(0), float(-1), float(1));
+        glViewport(0, 0, outputRender.w, outputRender.h);
+        projmat = glm::ortho(float(0), float(outputRender.w), float(outputRender.h), float(0), float(-1), float(1));
     } else {  // project to game viewport
-        glViewport(game_viewport_x, output.h-game_viewport_w-1, game_viewport_width, game_viewport_height);
+        glViewport(game_viewport_x, outputRender.h-game_viewport_w-1, game_viewport_width, game_viewport_height);
         projmat = glm::ortho(float(game_viewport_x), float(game_viewport_z), float(game_viewport_w), float(game_viewport_y), float(1), float(-1));
     }
 }
@@ -2342,9 +2365,9 @@ void RenderOpenGL::DrawTerrainD3D() {
                         0,
                         0, 0, tlayer,
                         terraintexturesizes[unit], terraintexturesizes[unit], 1,
-                        GL_BGRA,
+                        GL_RGBA,
                         GL_UNSIGNED_BYTE,
-                        texture->GetPixels(IMAGE_FORMAT_A8R8G8B8));
+                        texture->GetPixels(IMAGE_FORMAT_A8B8G8R8));
                 }
 
                 it++;
@@ -2364,8 +2387,9 @@ void RenderOpenGL::DrawTerrainD3D() {
 
     // terrain debug
     if (engine->config->debug.Terrain.Get())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
+        // TODO: OpenGL ES doesn't provide wireframe functionality so enable it only for classic OpenGL for now
+        if (!OpenGLES)
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // load texture arrays in - we only use unit 0 for water and unit 1 for tiles for time being
     for (int unit = 0; unit < 8; unit++) {
@@ -2516,9 +2540,6 @@ void RenderOpenGL::DrawTerrainD3D() {
         num_lights++;
     }
 
-    if (engine->config->debug.VerboseLogging.Get())
-        logger->Info("Lights this frame: %u", num_lights);
-
     // blank the rest of the lights
     for (int blank = num_lights; blank < 20; blank++) {
         std::string slotnum = std::to_string(blank);
@@ -2539,11 +2560,13 @@ void RenderOpenGL::DrawTerrainD3D() {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, NULL);
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     //end terrain debug
     if (engine->config->debug.Terrain.Get())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        // TODO: OpenGL ES doesn't provide wireframe functionality so enable it only for classic OpenGL for now
+        if (!OpenGLES)
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     // stack new decals onto terrain faces ////////////////////////////////////////////////
     // TODO(pskelton): clean up
@@ -2785,7 +2808,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     uint uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0);
-    uint uTintR = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintB = uTint & 0xFF;
+    uint uTintB = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintR = uTint & 0xFF;
     float scrspace{ pCamera3D->GetFarClip() };
 
 
@@ -3159,9 +3182,9 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].z = thisdepth;
         billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[0].texcoord.x, 0.01f, 0.99f);
         billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[0].texcoord.y, 0.01f, 0.99f);
-        billbstore[billbstorecnt].r = ((billboard->pQuads[0].diffuse >> 16) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].r = ((billboard->pQuads[0].diffuse >> 0) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].g = ((billboard->pQuads[0].diffuse >> 8) & 0xFF) / 255.0f;
-        billbstore[billbstorecnt].b = ((billboard->pQuads[0].diffuse >> 0) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].b = ((billboard->pQuads[0].diffuse >> 16) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].a = 1;
         billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
@@ -3174,9 +3197,9 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].z = thisdepth;
         billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[1].texcoord.x, 0.01f, 0.99f);
         billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[1].texcoord.y, 0.01f, 0.99f);
-        billbstore[billbstorecnt].r = ((billboard->pQuads[1].diffuse >> 16) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].r = ((billboard->pQuads[1].diffuse >> 0) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].g = ((billboard->pQuads[1].diffuse >> 8) & 0xFF) / 255.0f;
-        billbstore[billbstorecnt].b = ((billboard->pQuads[1].diffuse >> 0) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].b = ((billboard->pQuads[1].diffuse >> 16) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].a = 1;
         billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
@@ -3189,9 +3212,9 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].z = thisdepth;
         billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[2].texcoord.x, 0.01f, 0.99f);
         billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[2].texcoord.y, 0.01f, 0.99f);
-        billbstore[billbstorecnt].r = ((billboard->pQuads[2].diffuse >> 16) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].r = ((billboard->pQuads[2].diffuse >> 0) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].g = ((billboard->pQuads[2].diffuse >> 8) & 0xFF) / 255.0f;
-        billbstore[billbstorecnt].b = ((billboard->pQuads[2].diffuse >> 0) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].b = ((billboard->pQuads[2].diffuse >> 16) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].a = 1;
         billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
@@ -3207,9 +3230,9 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
             billbstore[billbstorecnt].z = thisdepth;
             billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[0].texcoord.x, 0.01f, 0.99f);
             billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[0].texcoord.y, 0.01f, 0.99f);
-            billbstore[billbstorecnt].r = ((billboard->pQuads[0].diffuse >> 16) & 0xFF) / 255.0f;
+            billbstore[billbstorecnt].r = ((billboard->pQuads[0].diffuse >> 0) & 0xFF) / 255.0f;
             billbstore[billbstorecnt].g = ((billboard->pQuads[0].diffuse >> 8) & 0xFF) / 255.0f;
-            billbstore[billbstorecnt].b = ((billboard->pQuads[0].diffuse >> 0) & 0xFF) / 255.0f;
+            billbstore[billbstorecnt].b = ((billboard->pQuads[0].diffuse >> 16) & 0xFF) / 255.0f;
             billbstore[billbstorecnt].a = 1;
             billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
             billbstore[billbstorecnt].texid = gltexid;
@@ -3222,9 +3245,9 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
             billbstore[billbstorecnt].z = thisdepth;
             billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[2].texcoord.x, 0.01f, 0.99f);
             billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[2].texcoord.y, 0.01f, 0.99f);
-            billbstore[billbstorecnt].r = ((billboard->pQuads[2].diffuse >> 16) & 0xFF) / 255.0f;
+            billbstore[billbstorecnt].r = ((billboard->pQuads[2].diffuse >> 0) & 0xFF) / 255.0f;
             billbstore[billbstorecnt].g = ((billboard->pQuads[2].diffuse >> 8) & 0xFF) / 255.0f;
-            billbstore[billbstorecnt].b = ((billboard->pQuads[2].diffuse >> 0) & 0xFF) / 255.0f;
+            billbstore[billbstorecnt].b = ((billboard->pQuads[2].diffuse >> 16) & 0xFF) / 255.0f;
             billbstore[billbstorecnt].a = 1;
             billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
             billbstore[billbstorecnt].texid = gltexid;
@@ -3237,9 +3260,9 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
             billbstore[billbstorecnt].z = thisdepth;
             billbstore[billbstorecnt].u = std::clamp(billboard->pQuads[3].texcoord.x, 0.01f, 0.99f);
             billbstore[billbstorecnt].v = std::clamp(billboard->pQuads[3].texcoord.y, 0.01f, 0.99f);
-            billbstore[billbstorecnt].r = ((billboard->pQuads[3].diffuse >> 16) & 0xFF) / 255.0f;
+            billbstore[billbstorecnt].r = ((billboard->pQuads[3].diffuse >> 0) & 0xFF) / 255.0f;
             billbstore[billbstorecnt].g = ((billboard->pQuads[3].diffuse >> 8) & 0xFF) / 255.0f;
-            billbstore[billbstorecnt].b = ((billboard->pQuads[3].diffuse >> 0) & 0xFF) / 255.0f;
+            billbstore[billbstorecnt].b = ((billboard->pQuads[3].diffuse >> 16) & 0xFF) / 255.0f;
             billbstore[billbstorecnt].a = 1;
             billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
             billbstore[billbstorecnt].texid = gltexid;
@@ -3422,11 +3445,11 @@ void RenderOpenGL::SetUIClipRect(unsigned int x, unsigned int y, unsigned int z,
     this->clip_y = y;
     this->clip_z = z;
     this->clip_w = w;
-    glScissor(x, output.h -w, z-x, w-y);  // invert glscissor co-ords 0,0 is BL
+    glScissor(x, outputRender.h -w, z-x, w-y);  // invert glscissor co-ords 0,0 is BL
 }
 
 void RenderOpenGL::ResetUIClipRect() {
-    this->SetUIClipRect(0, 0, output.w, output.h);
+    this->SetUIClipRect(0, 0, outputRender.w, outputRender.h);
 }
 
 void RenderOpenGL::PresentBlackScreen() {
@@ -3438,6 +3461,15 @@ void RenderOpenGL::PresentBlackScreen() {
 
 void RenderOpenGL::BeginScene() {
     // Setup for 2D
+
+    if (outputRender != outputPresent) {
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
+
+        glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebufferTextures[0], 0);
+        glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, framebufferTextures[1], 0);
+
+        GL_Check_Framebuffer(__FUNCTION__);
+    }
 
     glDepthMask(GL_FALSE);
     glDisable(GL_DEPTH_TEST);
@@ -3466,9 +3498,9 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
         return;
     }
 
-    float r = ((colourmask >> 16) & 0xFF) / 255.0f;
+    float r = ((colourmask >> 0) & 0xFF) / 255.0f;
     float g = ((colourmask >> 8) & 0xFF) / 255.0f;
-    float b = ((colourmask >> 0) & 0xFF) / 255.0f;
+    float b = ((colourmask >> 16) & 0xFF) / 255.0f;
 
     int clipx = this->clip_x;
     int clipy = this->clip_y;
@@ -3478,13 +3510,13 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
     int width = tex->GetWidth();
     int height = tex->GetHeight();
 
-    int x = u * output.w;
-    int y = v * output.h;
+    int x = u * outputRender.w;
+    int y = v * outputRender.h;
     int z = x + width;
     int w = y + height;
 
     // check bounds
-    if (x >= output.w || x >= this->clip_z || y >= output.h || y >= this->clip_w) return;
+    if (x >= outputRender.w || x >= this->clip_z || y >= outputRender.h || y >= this->clip_w) return;
     // check for overlap
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
@@ -3606,13 +3638,13 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, i
     int width = img->GetWidth();
     int height = img->GetHeight();
 
-    int x = u * output.w;
-    int y = v * output.h + 0.5;
+    int x = u * outputRender.w;
+    int y = v * outputRender.h + 0.5;
     int z = x + width;
     int w = y + custom_height;
 
     // check bounds
-    if (x >= output.w || x >= this->clip_z || y >= output.h || y >= this->clip_w) return;
+    if (x >= outputRender.w || x >= this->clip_z || y >= outputRender.h || y >= this->clip_w) return;
     // check for overlap
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
@@ -3848,7 +3880,7 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     int z = x + width;
     int w = y + h;
     // check bounds
-    if (x >= output.w || x >= clipz || y >= output.h || y >= clipw) return;
+    if (x >= outputRender.w || x >= clipz || y >= outputRender.h || y >= clipw) return;
     // check for overlap
     if (!(clipx < z && clipz > x && clipy < w && clipw > y)) return;
 
@@ -3966,6 +3998,42 @@ void RenderOpenGL::Present() {
     EndLines2D();
     EndTextNew();
 
+    if (outputRender != outputPresent) {
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        glDisable(GL_SCISSOR_TEST);
+
+        glViewport(0, 0, outputPresent.w, outputPresent.h);
+        glClearColor(0.0, 0.0, 0.0, 1.0);
+        glClearDepthf(1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        float ratio_width = (float)outputPresent.w / outputRender.w;
+        float ratio_height = (float)outputPresent.h / outputRender.h;
+        float ratio = std::min(ratio_width, ratio_height);
+
+        float w = outputRender.w * ratio;
+        float h = outputRender.h * ratio;
+
+        Recti rect;
+        rect.x = (float)outputPresent.w / 2 - w / 2;
+        rect.y = (float)outputPresent.h / 2 - h / 2;
+        rect.w = w;
+        rect.h = h;
+
+        GLenum filter = config->graphics.RenderFilter.Get() == 1 ? GL_LINEAR : GL_NEAREST;
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
+        glBlitFramebuffer(0, 0, outputRender.w, outputRender.h, rect.x, rect.y, rect.w + rect.x, rect.h + rect.y, GL_COLOR_BUFFER_BIT, filter);
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+
+        /* TODO: nuklear is expected to render at native resolution otherwise when scaled will look awful.
+         * So as a hack we call it there, but that way it will work for POST stage only.
+         * We should evaluate if we will ever need nuklear to not waste time on fixing it properly. */
+        if (nuklear && nuklear->ctx)
+            NuklearRender(NK_ANTI_ALIASING_ON, NUKLEAR_MAX_VERTEX_MEMORY, NUKLEAR_MAX_ELEMENT_MEMORY);
+
+        glEnable(GL_SCISSOR_TEST);
+        glViewport(0, 0, outputRender.w, outputRender.h);
+    }
     openGlContext->SwapBuffers();
 
     if (engine->config->graphics.FPSLimit.Get() > 0) {
@@ -4183,7 +4251,6 @@ void RenderOpenGL::DrawBuildingsD3D() {
 
             // create blank memory for later texture submission
             glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA8, outbuildtexturewidths[unit], outbuildtextureheights[unit], numoutbuildtexloaded[unit], 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-
             std::map<std::string, int>::iterator it = outbuildtexmap.begin();
             while (it != outbuildtexmap.end()) {
                 // skip if wtrtyl
@@ -4205,9 +4272,9 @@ void RenderOpenGL::DrawBuildingsD3D() {
                         0,
                         0, 0, tlayer,
                         outbuildtexturewidths[unit], outbuildtextureheights[unit], 1,
-                        GL_BGRA,
+                        GL_RGBA,
                         GL_UNSIGNED_BYTE,
-                        texture->GetPixels(IMAGE_FORMAT_A8R8G8B8));
+                        texture->GetPixels(IMAGE_FORMAT_A8B8G8R8));
                 }
 
                 it++;
@@ -4343,11 +4410,9 @@ void RenderOpenGL::DrawBuildingsD3D() {
 
     // terrain debug
     if (engine->config->debug.Terrain.Get())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-
-    ////
-
+        // TODO: OpenGL ES doesn't provide wireframe functionality so enable it only for classic OpenGL for now
+        if (!OpenGLES)
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     glUseProgram(outbuildshader.ID);
     // set projection
@@ -4479,9 +4544,6 @@ void RenderOpenGL::DrawBuildingsD3D() {
         num_lights++;
     }
 
-    if (engine->config->debug.VerboseLogging.Get())
-        logger->Info("Lights this frame: %u", num_lights);
-
     // blank the rest of the lights
     for (int blank = num_lights; blank < 20; blank++) {
         std::string slotnum = std::to_string(blank);
@@ -4519,12 +4581,13 @@ void RenderOpenGL::DrawBuildingsD3D() {
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, NULL);
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     //end terrain debug
     if (engine->config->debug.Terrain.Get())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
+        // TODO: OpenGL ES doesn't provide wireframe functionality so enable it only for classic OpenGL for now
+        if (!OpenGLES)
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     // TODO(pskelton): clean up
     // need to stack decals
@@ -4831,7 +4894,6 @@ void RenderOpenGL::DrawIndoorFaces() {
                 glGenTextures(1, &bsptextures[unit]);
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D_ARRAY, bsptextures[unit]);
-
                 glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA8, bsptexturewidths[unit], bsptextureheights[unit], bsptexloaded[unit], 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 
                 std::map<std::string, int>::iterator it = bsptexmap.begin();
@@ -4848,9 +4910,9 @@ void RenderOpenGL::DrawIndoorFaces() {
                             0,
                             0, 0, tlayer,
                             bsptexturewidths[unit], bsptextureheights[unit], 1,
-                            GL_BGRA,
+                            GL_RGBA,
                             GL_UNSIGNED_BYTE,
-                            texture->GetPixels(IMAGE_FORMAT_A8R8G8B8));
+                            texture->GetPixels(IMAGE_FORMAT_A8B8G8R8));
 
                         //numterraintexloaded[0]++;
                     }
@@ -5058,8 +5120,9 @@ void RenderOpenGL::DrawIndoorFaces() {
 
         // terrain debug
         if (engine->config->debug.Terrain.Get())
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
+            // TODO: OpenGL ES doesn't provide wireframe functionality so enable it only for classic OpenGL for now
+            if (!OpenGLES)
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         ////
         for (int unit = 0; unit < 16; unit++) {
@@ -5245,9 +5308,6 @@ void RenderOpenGL::DrawIndoorFaces() {
             num_lights++;
         }
 
-        if (engine->config->debug.VerboseLogging.Get())
-            logger->Info("Lights this frame: %u", num_lights);
-
         // blank any lights not used
         for (int blank = num_lights; blank < 40; blank++) {
             std::string slotnum = std::to_string(blank);
@@ -5291,7 +5351,7 @@ void RenderOpenGL::DrawIndoorFaces() {
 
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, NULL);
+        glBindTexture(GL_TEXTURE_2D, 0);
 
         // indoor sky drawing
         if (forceperstorecnt) {
@@ -5310,10 +5370,9 @@ void RenderOpenGL::DrawIndoorFaces() {
 
         //end terrain debug
         if (engine->config->debug.Terrain.Get())
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-
-
+            // TODO: OpenGL ES doesn't provide wireframe functionality so enable it only for classic OpenGL for now
+            if (!OpenGLES)
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         // stack decals start
 
@@ -5399,10 +5458,20 @@ bool RenderOpenGL::Initialize() {
     if (window != nullptr) {
         PlatformOpenGLOptions opts;
 
-        //  Use OpenGL 4.1 core
-        opts.versionMajor = 4;
-        opts.versionMinor = 1;
-        opts.profile = CoreProfile;
+        // Set it only on startup as currently we don't support multiple contexts to be able to switch OpenGL<->OpenGLES in the middle of runtime.
+        OpenGLES = config->graphics.Renderer.Get() == "OpenGLES";
+
+        if (!OpenGLES) {
+            //  Use OpenGL 4.1 core
+            opts.versionMajor = 4;
+            opts.versionMinor = 1;
+            opts.profile = CoreProfile;
+        } else {
+            //  Use OpenGL ES 3.2
+            opts.versionMajor = 3;
+            opts.versionMinor = 2;
+            opts.profile = ESProfile;
+        }
 
         //  Turn on 24bit Z buffer.
         //  You may need to change this to 16 or 32 for your system
@@ -5418,7 +5487,12 @@ bool RenderOpenGL::Initialize() {
             return reinterpret_cast<GLADapiproc>(static_cast<PlatformOpenGLContext *>(ptr)->GetProcAddress(name));
         };
 
-        int version = gladLoadGLUserPtr(gladLoadFunc, context_.get());
+        int version;
+        if (OpenGLES)
+            version = gladLoadGLES2UserPtr(gladLoadFunc, context_.get());
+        else
+            version = gladLoadGLUserPtr(gladLoadFunc, context_.get());
+
         if (!version)
             log->Warning("GLAD: Failed to initialize the OpenGL loader");
 
@@ -5451,7 +5525,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     int w = y + uHeight;
 
     // check bounds
-    if (x >= output.w || x >= this->clip_z || y >= output.h || y >= this->clip_w) return;
+    if (x >= outputRender.w || x >= this->clip_z || y >= outputRender.h || y >= this->clip_w) return;
     // check for overlap
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
@@ -5558,93 +5632,104 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
 
 // gl shaders
 bool RenderOpenGL::InitShaders() {
-    if (!std::filesystem::exists(MakeDataPath("shaders"))) {
-        logger->Warning("\n ----------- ERROR ----------- \nExpected to find folder:\n\n %s\n", MakeDataPath("shaders").c_str());
-        logger->Warning("Please create it and copy shader files in!\n\n --------------------------------------------");
-        return false;
-    }
+    logger->Info("initialising OpenGL shaders...");
 
-    if (std::filesystem::is_empty(MakeDataPath("shaders"))) {
-        logger->Warning("\n ----------- ERROR ----------- \nShader folder %s is empty", MakeDataPath("shaders").c_str());
-        logger->Warning(" Please copy shader files in! \n ---------------------------------------\n");
-        return false;
-    }
-
-    logger->Info("Initialising GL shaders!");
-
-    terrainshader.build(MakeDataPath("shaders", "glterrain.vert").c_str(), MakeDataPath("shaders", "glterrain.frag").c_str());
+    std::string title = "CRITICAL ERROR: shader compilation failure";
+    std::string name = "Terrain";
+    std::string message = "shader failed to compile!\nPlease consult the log and consider issuing a bug report!";
+    terrainshader.build(name, "glterrain", OpenGLES);
     if (terrainshader.ID == 0) {
-        logger->Warning("Terrain shader failed to compile!");
+        platform->ShowMessageBox(fmt::format("{} {}", name, message), title);
         return false;
     }
 
-    outbuildshader.build(MakeDataPath("shaders", "gloutbuild.vert").c_str(), MakeDataPath("shaders", "gloutbuild.frag").c_str());
+    name = "Outdoor buildings";
+    outbuildshader.build(name, "gloutbuild", OpenGLES);
     if (outbuildshader.ID == 0) {
-        logger->Warning("Outdoors building shader failed to compile!");
+        platform->ShowMessageBox(fmt::format("{} {}", name, message), title);
         return false;
     }
 
-    bspshader.build(MakeDataPath("shaders", "glbspshader.vert").c_str(), MakeDataPath("shaders", "glbspshader.frag").c_str());
+    name = "Indoor BSP";
+    bspshader.build(name, "glbspshader", OpenGLES);
     if (bspshader.ID == 0) {
-        logger->Warning("Indoors bsp shader failed to compile!");
+        platform->ShowMessageBox(fmt::format("{} {}", name, message), title);
         return false;
     }
 
-    textshader.build(MakeDataPath("shaders", "gltextshader.vert").c_str(), MakeDataPath("shaders", "gltextshader.frag").c_str());
+    name = "Text";
+    textshader.build(name, "gltextshader", OpenGLES);
     if (textshader.ID == 0) {
-        logger->Warning("Text shader failed to compile!");
+        platform->ShowMessageBox(fmt::format("{} {}", name, message), title);
         return false;
     }
     textVAO = 0;
 
-    lineshader.build(MakeDataPath("shaders", "gllinesshader.vert").c_str(), MakeDataPath("shaders", "gllinesshader.frag").c_str());
+    name = "Lines";
+    lineshader.build(name, "gllinesshader", OpenGLES);
     if (lineshader.ID == 0) {
-        logger->Warning("Lines shader failed to compile!");
+        platform->ShowMessageBox(fmt::format("{} {}", name, message), title);
         return false;
     }
     lineVAO = 0;
 
-    twodshader.build(MakeDataPath("shaders", "gltwodshader.vert").c_str(), MakeDataPath("shaders", "gltwodshader.frag").c_str());
+    name = "2D";
+    twodshader.build(name, "gltwodshader", OpenGLES);
     if (twodshader.ID == 0) {
-        logger->Warning("2d shader failed to compile!");
+        platform->ShowMessageBox(fmt::format("{} {}", name, message), title);
         return false;
     }
     twodVAO = 0;
 
-    billbshader.build(MakeDataPath("shaders", "glbillbshader.vert").c_str(), MakeDataPath("shaders", "glbillbshader.frag").c_str());
+    name = "Billboards";
+    billbshader.build(name, "glbillbshader", OpenGLES);
     if (billbshader.ID == 0) {
-        logger->Warning("Billboards shader failed to compile!");
+        platform->ShowMessageBox(fmt::format("{} {}", name, message), title);
         return false;
     }
     billbVAO = 0;
     palbuf = 0;
 
-    decalshader.build(MakeDataPath("shaders", "gldecalshader.vert").c_str(), MakeDataPath("shaders", "gldecalshader.frag").c_str());
+    name = "Decals";
+    decalshader.build(name, "gldecalshader", OpenGLES);
     if (decalshader.ID == 0) {
-        logger->Warning("Decals shader failed to compile!");
+        platform->ShowMessageBox(fmt::format("{} {}", name, message), title);
         return false;
     }
     decalVAO = 0;
 
-    forcepershader.build(MakeDataPath("shaders", "glforcepershader.vert").c_str(), MakeDataPath("shaders", "glforcepershader.frag").c_str());
+    name = "Forced perspective";
+    forcepershader.build(name, "glforcepershader", OpenGLES);
     if (forcepershader.ID == 0) {
-        logger->Warning("Forced perspective shader failed to compile!");
+        platform->ShowMessageBox(fmt::format("{} {}", name, message), title);
         return false;
     }
     forceperVAO = 0;
 
-    logger->Info("Shaders compiled successfully");
+    logger->Info("shaders have been compiled successfully!");
     return true;
 }
 
+Sizei RenderOpenGL::GetRenderDimensions() {
+    return outputRender;
+}
+
+Sizei RenderOpenGL::GetPresentDimensions() {
+    return outputPresent;
+}
+
 bool RenderOpenGL::Reinitialize(bool firstInit) {
-    output = window->Size();
+    outputPresent = window->Size();
+    if (config->graphics.RenderFilter.Get() != 0)
+        outputRender = {config->graphics.RenderWidth.Get(), config->graphics.RenderHeight.Get()};
+    else
+        outputRender = outputPresent;
 
     if (!firstInit) {
         game_viewport_x = viewparams->uScreen_topL_X = engine->config->graphics.ViewPortX1.Get(); //8
         game_viewport_y = viewparams->uScreen_topL_Y = engine->config->graphics.ViewPortY1.Get(); //8
-        game_viewport_z = viewparams->uScreen_BttmR_X = output.w - engine->config->graphics.ViewPortX2.Get(); //468;
-        game_viewport_w = viewparams->uScreen_BttmR_Y = output.h - engine->config->graphics.ViewPortY2.Get(); //352;
+        game_viewport_z = viewparams->uScreen_BttmR_X = outputRender.w - engine->config->graphics.ViewPortX2.Get(); //468;
+        game_viewport_w = viewparams->uScreen_BttmR_Y = outputRender.h - engine->config->graphics.ViewPortY2.Get(); //352;
 
         game_viewport_width = game_viewport_z - game_viewport_x;
         game_viewport_height = game_viewport_w - game_viewport_y;
@@ -5659,24 +5744,52 @@ bool RenderOpenGL::Reinitialize(bool firstInit) {
                             viewparams->uScreen_BttmR_Y);
     }
 
-    pViewport->ResetScreen();
+    // pViewport->ResetScreen();
     CreateZBuffer();
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);       // Black Background
-    glClearDepth(1.0f);
+    glClearDepthf(1.0f);
+
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glViewport(0, 0, output.w, output.h);
-    glScissor(0, 0, output.w, output.h);
+
+    if (firstInit) {
+        // clear only on first init as it will introduce brief black artifacts on window resize
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+
+    glDeleteFramebuffers(1, &framebuffer);
+    glDeleteTextures(2, framebufferTextures);
+
+    glGenFramebuffers(1, &framebuffer);
+    glGenTextures(2, framebufferTextures);
+
+    glBindTexture(GL_TEXTURE_2D, framebufferTextures[0]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, outputRender.w, outputRender.h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glBindTexture(GL_TEXTURE_2D, framebufferTextures[1]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, outputRender.w, outputRender.h, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, NULL);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glViewport(0, 0, outputRender.w, outputRender.h);
+    glScissor(0, 0, outputRender.w, outputRender.h);
     glEnable(GL_SCISSOR_TEST);
 
     // Swap Buffers (Double Buffering)
     openGlContext->SwapBuffers();
 
     this->clip_x = this->clip_y = 0;
-    this->clip_z = output.w;
-    this->clip_w = output.h;
+    this->clip_z = outputRender.w;
+    this->clip_w = outputRender.h;
 
     // PostInitialization();
 
@@ -5695,50 +5808,65 @@ bool RenderOpenGL::Reinitialize(bool firstInit) {
     if (firstInit) {
         // initiate shaders
         if (!InitShaders()) {
-            logger->Warning("--- Shader initialisation has failed ---");
+            logger->Warning("shader initialisation has failed!");
             return false;
         }
-    } else {
-        // TODO: invalidate all previously loaded textures and then load them again as they can be no longer alive on GPU (issue #199).
+    // } else {
+    //     // TODO: invalidate all previously loaded textures and then load them again as they can be no longer alive on GPU (issue #199).
 
-        ReloadShaders();
+    //     ReloadShaders();
     }
 
     return true;
 }
 
 void RenderOpenGL::ReloadShaders() {
-    logger->Info("Reloading Shaders...");
+    logger->Info("reloading Shaders...");
     glUseProgram(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-    if (!terrainshader.reload()) logger->Warning("Terrain shader failed to reload!");
-    if (!outbuildshader.reload()) logger->Warning("Outdoor buildings shader failed to reload!");
+    std::string name = "Terrain";
+    std::string message = "shader failed to reload!\nPlease consult the log and issue a bug report!";
+    if (!terrainshader.reload(name, OpenGLES))
+        logger->Warning(fmt::format("{} {}", name, message).c_str());
+    name = "Outdoor buildings";
+    if (!outbuildshader.reload(name, OpenGLES))
+        logger->Warning(fmt::format("{} {}", name, message).c_str());
     ReleaseTerrain();
 
-    if (!bspshader.reload()) logger->Warning("BSP shader failed to reload!");
+    name = "Indoor BSP";
+    if (!bspshader.reload(name, OpenGLES))
+        logger->Warning(fmt::format("{} {}", name, message).c_str());
     ReleaseBSP();
 
-    if (!textshader.reload()) logger->Warning("Text shader faied to reload!");
+    name = "Text";
+    if (!textshader.reload(name, OpenGLES))
+        logger->Warning(fmt::format("{} {}", name, message).c_str());
     glDeleteVertexArrays(1, &textVAO);
     glDeleteBuffers(1, &textVBO);
     textVAO = textVBO = 0;
     textvertscnt = 0;
 
-    if (!lineshader.reload()) logger->Warning("Line shader failed to reload!");
+    name = "Lines";
+    if (!lineshader.reload(name, OpenGLES))
+        logger->Warning(fmt::format("{} {}", name, message).c_str());
     glDeleteVertexArrays(1, &lineVAO);
     glDeleteBuffers(1, &lineVBO);
     lineVAO = lineVBO = 0;
     linevertscnt = 0;
 
-    if (!twodshader.reload()) logger->Warning("2d shader failed to reload!");
+    name = "2D";
+    if (!twodshader.reload(name, OpenGLES))
+        logger->Warning(fmt::format("{} {}", name, message).c_str());
     glDeleteVertexArrays(1, &twodVAO);
     glDeleteBuffers(1, &twodVBO);
     twodVAO = twodVBO = 0;
     twodvertscnt = 0;
 
-    if (!billbshader.reload()) logger->Warning("Billboard shader failed to reload!");
+    name = "Billboards";
+    if (!billbshader.reload(name, OpenGLES))
+        logger->Warning(fmt::format("{} {}", name, message).c_str());
     glDeleteVertexArrays(1, &billbVAO);
     glDeleteBuffers(1, &billbVBO);
     billbVAO = billbVBO = 0;
@@ -5747,21 +5875,26 @@ void RenderOpenGL::ReloadShaders() {
     paltex = palbuf = 0;
     billbstorecnt = 0;
 
-    if (!decalshader.reload()) logger->Warning("Decal shader failed to reload!");
+    name = "Decals";
+    if (!decalshader.reload(name, OpenGLES))
+        logger->Warning(fmt::format("{} {}", name, message).c_str());
     glDeleteVertexArrays(1, &decalVAO);
     glDeleteBuffers(1, &decalVBO);
     decalVAO = decalVBO = 0;
     numdecalverts = 0;
 
-    if (!forcepershader.reload()) logger->Warning("Forced perspective shader failed to reload!");
+    name = "Forced perspective";
+    if (!forcepershader.reload(name, OpenGLES))
+        logger->Warning(fmt::format("{} {}", name, message).c_str());
     glDeleteVertexArrays(1, &forceperVAO);
     glDeleteBuffers(1, &forceperVBO);
     forceperVAO = forceperVBO = 0;
     forceperstorecnt = 0;
 
     if (nuklearshader.ID != 0) {
-        if (!nuklearshader.reload()) {
-            logger->Warning("Nuklear shader failed to reload!");
+        name = "Nuklear";
+        if (!nuklearshader.reload(name, OpenGLES)) {
+            logger->Warning(fmt::format("{} {}", name, message).c_str());
         } else {
             nk_dev.uniform_tex = glGetUniformLocation(nuklearshader.ID, "Texture");
             nk_dev.uniform_proj = glGetUniformLocation(nuklearshader.ID, "ProjMtx");
@@ -6021,7 +6154,7 @@ bool RenderOpenGL::NuklearInitialize(struct nk_tex_font *tfont) {
 }
 
 bool RenderOpenGL::NuklearCreateDevice() {
-    nuklearshader.build(MakeDataPath("shaders", "glnuklear.vert").c_str(), MakeDataPath("shaders", "glnuklear.frag").c_str());
+    nuklearshader.build("nuklear", "glnuklear", OpenGLES);
     if (nuklearshader.ID == 0) {
         logger->Warning("Nuklear shader failed to compile!");
         return false;
@@ -6083,10 +6216,10 @@ bool RenderOpenGL::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer
         { -1.0f, 1.0f,  0.0f,  1.0f },
     };
 
-    height = output.h;
-    width = output.w;
-    display_height = render->GetRenderHeight();
-    display_width = render->GetRenderWidth();
+    height = outputPresent.h;
+    width = outputPresent.w;
+    display_height = outputPresent.h; // if you want it scaled with rescaler you could replace this one and one below with outputRender,
+    display_width = outputPresent.w;  // also remove call to this function in ::Present and remove condition for call to this function in Nuklear::Draw.
 
     ortho[0][0] /= (GLfloat)width;
     ortho[1][1] /= (GLfloat)height;
@@ -6095,7 +6228,6 @@ bool RenderOpenGL::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer
     scale.y = (float)display_height / (float)height;
 
     /* setup global state */
-    glViewport(0, 0, display_width, display_height);
     glEnable(GL_BLEND);
     glBlendEquation(GL_FUNC_ADD);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -6124,8 +6256,13 @@ bool RenderOpenGL::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, max_element_buffer, NULL, GL_STREAM_DRAW);
 
         /* load vertices/elements directly into vertex/element buffer */
-        vertices = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-        elements = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
+        if (OpenGLES) {
+            vertices = glMapBufferRange(GL_ARRAY_BUFFER, 0, max_vertex_buffer , GL_MAP_WRITE_BIT);
+            elements = glMapBufferRange(GL_ELEMENT_ARRAY_BUFFER, 0, max_element_buffer, GL_MAP_WRITE_BIT);
+        } else {
+            vertices = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+            elements = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
+        }
         {
             /* fill convert configuration */
             struct nk_convert_config config;

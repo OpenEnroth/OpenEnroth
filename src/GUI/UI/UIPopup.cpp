@@ -99,9 +99,7 @@ void CharacterUI_DrawTooltip(const char *title, std::string &content) {
     auto colored_title = StringPrintf(
         "\f%05d%s\f00000\n", ui_character_tooltip_header_default_color, title);
     popup_window.DrawTitleText(pFontCreate, 0, 0, 0, colored_title, 3);
-    popup_window.DrawText(
-        pFontSmallnum, 1, pFontLucida->GetHeight(), 0, content, 0, 0,
-        0);  // popup_window.uFrameY + popup_window.uFrameHeight
+    popup_window.DrawText(pFontSmallnum, {1, pFontLucida->GetHeight()}, colorTable.Black.C16(), content, 0, 0, 0);  // popup_window.uFrameY + popup_window.uFrameHeight
 }
 
 void CharacterUI_DrawTooltip(const char *title, const char *content) {
@@ -120,8 +118,9 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
 
     render->SetUIClipRect(uX, uY, uX + uWidth, uY + uHeight);
 
-    float renwidth = render->GetRenderWidth();
-    float renheight = render->GetRenderHeight();
+    Sizei renderdims = render->GetRenderDimensions();
+    float renwidth = renderdims.w;
+    float renheight = renderdims.h;
 
     unsigned int parchment_width = parchment->GetWidth();
     unsigned int parchment_height = parchment->GetHeight();
@@ -487,27 +486,21 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     iteminfo_window.uFrameW =
         iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 1;
     render->DrawTextureAlphaNew((iteminfo_window.uFrameX + (float)itemXspacing) / 640.0f,
-                                (iteminfo_window.uFrameY +
-                                    (float)(iteminfo_window.uFrameHeight -
-                                              inspect_item_image->GetHeight()) /
-                                     2.) /
-                                    480.0f,
+                                (iteminfo_window.uFrameY + (float)(iteminfo_window.uFrameHeight - inspect_item_image->GetHeight()) / 2.) / 480.0f,
                                 inspect_item_image);
 
     v34 = (int)(v85 + 35);
     Str = out_text;
     for (uint i = 1; i <= 3; i++) {
         if (*Str) {
-            iteminfo_window.DrawText(pFontComic, 100, v34, 0, Str, 0, 0, 0);
-            v34 += pFontComic->CalcTextHeight(Str, iteminfo_window.uFrameWidth,
-                                              100, 0) +
-                   3;
+            iteminfo_window.DrawText(pFontComic, {100, v34}, colorTable.Black.C16(), Str, 0, 0, 0);
+            v34 += pFontComic->CalcTextHeight(Str, iteminfo_window.uFrameWidth, 100, 0) + 3;
         }
         Str += 100;
     }
     v28 = pItemTable->pItems[inspect_item->uItemID].pDescription;
     if (*v28)
-        iteminfo_window.DrawText(pFontSmallnum, 100, v34, 0, v28, 0, 0, 0);
+        iteminfo_window.DrawText(pFontSmallnum, {100, v34}, colorTable.Black.C16(), v28, 0, 0, 0);
     iteminfo_window.uFrameX += 12;
     iteminfo_window.uFrameWidth -= 24;
     iteminfo_window.DrawTitleText(pFontArrus, 0, 0xCu,
@@ -518,10 +511,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
 
     if (GoldAmount) {
         auto txt = StringPrintf("%s: %lu", localization->GetString(LSTR_VALUE), GoldAmount);
-        iteminfo_window.DrawText(
-            pFontComic, 100,
-            iteminfo_window.uFrameHeight - pFontComic->GetHeight(), 0, txt, 0,
-            0, 0);
+        iteminfo_window.DrawText(pFontComic, {100, iteminfo_window.uFrameHeight - pFontComic->GetHeight()}, colorTable.Black.C16(), txt, 0, 0, 0);
         render->ResetUIClipRect();
     } else {
         if ((inspect_item->uAttributes & ITEM_TEMP_BONUS) &&
@@ -552,20 +542,14 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             if (formatting)
                 txt4 += StringPrintf(" %d:mn", v67.field_4_expire_minute);
 
-            iteminfo_window.DrawText(
-                pFontComic, 100,
-                iteminfo_window.uFrameHeight - 2 * pFontComic->GetHeight(), 0,
-                txt4.data(), 0, 0, 0);
+            iteminfo_window.DrawText(pFontComic, {100, iteminfo_window.uFrameHeight - 2 * pFontComic->GetHeight()}, colorTable.Black.C16(), txt4.data(), 0, 0, 0);
         }
 
         auto txt2 = StringPrintf(
             "%s: %lu", localization->GetString(LSTR_VALUE),
             inspect_item->GetValue()
         );
-        iteminfo_window.DrawText(
-            pFontComic, 100,
-            iteminfo_window.uFrameHeight - pFontComic->GetHeight(), 0,
-            txt2.data(), 0, 0, 0);
+        iteminfo_window.DrawText(pFontComic, {100, iteminfo_window.uFrameHeight - pFontComic->GetHeight()}, colorTable.Black.C16(), txt2.data(), 0, 0, 0);
 
         std::string txt3;
         if (inspect_item->uAttributes & ITEM_STOLEN) {
@@ -578,10 +562,8 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             txt3 = localization->GetString(LSTR_HARDENED);
         }
 
-        iteminfo_window.DrawText(
-            pFontComic, pFontComic->GetLineWidth(txt2.data()) + 132,
-            iteminfo_window.uFrameHeight - pFontComic->GetHeight(), r_mask,
-            txt3, 0, 0, 0);
+        iteminfo_window.DrawText(pFontComic,
+            {pFontComic->GetLineWidth(txt2.data()) + 132, iteminfo_window.uFrameHeight - pFontComic->GetHeight()}, r_mask, txt3, 0, 0, 0);
         render->ResetUIClipRect();
     }
 }
@@ -742,9 +724,9 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     int pTextHeight = 0;
     const char *pText = nullptr;
     int pTextColorID = 0;
-    pWindow->DrawText(pFontSmallnum, 12, 196, colorTable.Jonquil.C16(), localization->GetString(LSTR_EFFECTS), 0, 0, 0);
+    pWindow->DrawText(pFontSmallnum, {12, 196}, colorTable.Jonquil.C16(), localization->GetString(LSTR_EFFECTS), 0, 0, 0);
     if (!for_effects) {
-        pWindow->DrawText(pFontSmallnum, 28, pFontSmallnum->GetHeight() + 193, colorTable.White.C16(), localization->GetString(LSTR_UNKNOWN_VALUE), 0, 0, 0);
+        pWindow->DrawText(pFontSmallnum, {28, pFontSmallnum->GetHeight() + 193}, colorTable.White.C16(), localization->GetString(LSTR_UNKNOWN_VALUE), 0, 0, 0);
     } else {
         pText = "";
         pTextHeight = pFontSmallnum->GetHeight() + 193;
@@ -839,17 +821,14 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
                         break;
                 }
                 if (!iequals(pText, "")) {
-                    pWindow->DrawText(pFontSmallnum, 28, pTextHeight,
-                                      GetSpellColor(pTextColorID), pText, 0, 0,
-                                      0);
+                    pWindow->DrawText(pFontSmallnum, {28, pTextHeight}, GetSpellColor(pTextColorID), pText, 0, 0, 0);
                     pTextHeight =
                         pTextHeight + *(char *)((int64_t)pFontSmallnum + 5) - 3;
                 }
             }
         }
         if (iequals(pText, ""))
-            pWindow->DrawText(pFontSmallnum, 28, pTextHeight,
-                              colorTable.Jonquil.C16(),
+            pWindow->DrawText(pFontSmallnum, {28, pTextHeight}, colorTable.Jonquil.C16(),
                               localization->GetString(LSTR_NONE), 0, 0, 0);
     }
 
@@ -858,8 +837,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         auto str =
             StringPrintf("%s\f%05u\t100%d\n", localization->GetString(LSTR_HIT_POINTS), 0,
                          pActors[uActorID].pMonsterInfo.uHP);
-        pWindow->DrawText(pFontSmallnum, 150, (int)doll_rect.y,
-                          colorTable.Jonquil.C16(), str, 0, 0, 0);
+        pWindow->DrawText(pFontSmallnum, {150, doll_rect.y}, colorTable.Jonquil.C16(), str, 0, 0, 0);
         pTextHeight = doll_rect.y + pFontSmallnum->GetHeight() - 3;
         txt2 = StringPrintf("%s\f%05u\t100%d\n", localization->GetString(LSTR_ARMOR_CLASS), 0,
                             pActors[uActorID].pMonsterInfo.uAC);
@@ -867,15 +845,13 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         auto str = StringPrintf(
             "%s\f%05u\t100%s\n", localization->GetString(LSTR_HIT_POINTS), 0,
             localization->GetString(LSTR_UNKNOWN_VALUE));
-        pWindow->DrawText(pFontSmallnum, 150, (int)doll_rect.y,
-                          colorTable.Jonquil.C16(), str, 0, 0, 0);
+        pWindow->DrawText(pFontSmallnum, {150, doll_rect.y}, colorTable.Jonquil.C16(), str, 0, 0, 0);
         pTextHeight = doll_rect.y + pFontSmallnum->GetHeight() - 3;
         txt2 = StringPrintf(
             "%s\f%05u\t100%s\n", localization->GetString(LSTR_ARMOR_CLASS), 0,
             localization->GetString(LSTR_UNKNOWN_VALUE));
     }
-    pWindow->DrawText(pFontSmallnum, 150, pTextHeight,
-                      colorTable.Jonquil.C16(), txt2, 0, 0, 0);
+    pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil.C16(), txt2, 0, 0, 0);
     pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 6 +
                   pFontSmallnum->GetHeight();
 
@@ -897,8 +873,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         auto txt3 = StringPrintf(
             "%s\f%05u\t080%s\n", localization->GetString(LSTR_ATTACK), 0,
             content[pActors[uActorID].pMonsterInfo.uAttack1Type]);
-        pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight,
-                          colorTable.Jonquil.C16(), txt3, 0, 0, 0);
+        pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil.C16(), txt3, 0, 0, 0);
 
         pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
         if (pActors[uActorID].pMonsterInfo.uAttack1DamageBonus)
@@ -917,16 +892,14 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
             "%s\f%05u\t080%s\n", localization->GetString(LSTR_ATTACK), 0,
             localization->GetString(LSTR_UNKNOWN_VALUE)
         );
-        pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight,
-                          colorTable.Jonquil.C16(), txt3, 0, 0, 0);
+        pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil.C16(), txt3, 0, 0, 0);
         pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
         txt4 = StringPrintf(
             "%s\f%05u\t080%s\n", localization->GetString(LSTR_DAMAGE), 0,
             localization->GetString(LSTR_UNKNOWN_VALUE)
         );
     }
-    pWindow->DrawText(pFontSmallnum, 150, pTextHeight,
-                      colorTable.Jonquil.C16(), txt4, 0, 0, 0);
+    pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil.C16(), txt4, 0, 0, 0);
 
     pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 6 +
                   pFontSmallnum->GetHeight();
@@ -935,8 +908,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
             "%s\f%05u\t080%s\n", localization->GetString(LSTR_SPELL), 0,
             localization->GetString(LSTR_UNKNOWN_VALUE)
         );
-        pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight,
-                          colorTable.Jonquil.C16(), txt5, 0, 0, 0);
+        pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil.C16(), txt5, 0, 0, 0);
         pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
     } else {
         pText = localization->GetString(LSTR_SPELL);
@@ -948,8 +920,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
                 "%s\f%05u\t070%s\n", pText, 0,
                 pSpellStats->pInfos[pActors[uActorID].pMonsterInfo.uSpell1ID].pShortName
             );  // "%s\f%05u\t060%s\n"
-            pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight,
-                              colorTable.Jonquil.C16(), txt6, 0, 0, 0);
+            pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil.C16(), txt6, 0, 0, 0);
             pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
         }
         if (pActors[uActorID].pMonsterInfo.uSpell2ID) {
@@ -957,8 +928,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
                 "\f%05u\t070%s\n", 0,
                 pSpellStats->pInfos[pActors[uActorID].pMonsterInfo.uSpell2ID]
                     .pShortName);  // "%s\f%05u\t060%s\n"
-            pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight,
-                              colorTable.Jonquil.C16(), txt6, 0, 0, 0);
+            pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil.C16(), txt6, 0, 0, 0);
             pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
         }
         if (!pActors[uActorID].pMonsterInfo.uSpell1ID &&
@@ -966,14 +936,13 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
             auto txt6 = StringPrintf(
                 "%s\f%05u\t070%s\n", localization->GetString(LSTR_SPELL), 0,
                 localization->GetString(LSTR_NONE));  // "%s\f%05u\t060%s\n"
-            pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight,
-                              colorTable.Jonquil.C16(), txt6, 0, 0, 0);
+            pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil.C16(), txt6, 0, 0, 0);
             pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
         }
     }
 
     pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
-    pWindow->DrawText(pFontSmallnum, 150, pTextHeight, colorTable.Jonquil.C16(), localization->GetString(LSTR_RESISTANCES), 0, 0, 0);
+    pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil.C16(), localization->GetString(LSTR_RESISTANCES), 0, 0, 0);
     pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
 
     const char *string_name[10] = {0};
@@ -1011,12 +980,12 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
                     pText = localization->GetString(LSTR_NONE);
             }
 
-            pWindow->DrawText(pFontSmallnum, 170, pTextHeight, colorTable.Jonquil.C16(), StringPrintf("%s\f%05u\t070%s\n", string_name[i], 0, pText), 0, 0, 0);
+            pWindow->DrawText(pFontSmallnum, {170, pTextHeight}, colorTable.Jonquil.C16(), StringPrintf("%s\f%05u\t070%s\n", string_name[i], 0, pText), 0, 0, 0);
             pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
         }
     } else {
         for (uint i = 0; i < 10; ++i) {
-            pWindow->DrawText(pFontSmallnum, 170, pTextHeight, colorTable.Jonquil.C16(), StringPrintf("%s\f%05u\t070%s\n", string_name[i], 0, localization->GetString(LSTR_UNKNOWN_VALUE)), 0, 0, 0);
+            pWindow->DrawText(pFontSmallnum, {170, pTextHeight}, colorTable.Jonquil.C16(), StringPrintf("%s\f%05u\t070%s\n", string_name[i], 0, localization->GetString(LSTR_UNKNOWN_VALUE)), 0, 0, 0);
             pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
         }
     }
@@ -1375,7 +1344,7 @@ void DrawSpellDescriptionPopup(int spell_index) {
     spell_info_window.uFrameW = spell_info_window.uFrameHeight + spell_info_window.uFrameY - 1;
     spell_info_window.DrawTitleText(
         pFontArrus, 0x78u, 0xCu, colorTable.PaleCanary.C16(), spell->pName, 3);
-    spell_info_window.DrawText(pFontSmallnum, 120, 44, 0, str, 0, 0, 0);
+    spell_info_window.DrawText(pFontSmallnum, {120, 44}, 0, str, 0, 0, 0);
     spell_info_window.uFrameWidth = 108;
     spell_info_window.uFrameZ = spell_info_window.uFrameX + 107;
     PLAYER_SKILL_TYPE skill = static_cast<PLAYER_SKILL_TYPE>(pPlayers[uActiveCharacter]->lastOpenedSpellbookPage + 12);
@@ -1735,7 +1704,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
 
                 std::string str = StringPrintf("\f%05d%s\f00000\n", colorTable.PaleCanary.C16(), pStr);
                 popup_window.DrawTitleText(pFontCreate, 0, 0, 0, str.c_str(), 3);
-                popup_window.DrawText(pFontSmallnum, 1, pFontLucida->GetHeight(), 0, sHint, 0, 0, 0);
+                popup_window.DrawText(pFontSmallnum, {1, pFontLucida->GetHeight()}, colorTable.Black.C16(), sHint, 0, 0, 0);
             }
             break;
         }
@@ -1795,10 +1764,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         // popup checks if ringscreen up here
 
         if (!ringscreenactive()) {  // rings not displayd
-            int item_pid =
-                (render->pActiveZBuffer[pX + pY * render->GetRenderWidth()] &
-                 0xFFFF) -
-                1;
+            int item_pid = (render->pActiveZBuffer[pX + pY * render->GetRenderDimensions().w] & 0xFFFF) - 1;
             // zbuffer still used for paperdolls
 
             if (item_pid == -1) return;
@@ -1953,20 +1919,12 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 item->special_enchantment = ITEM_ENCHANTMENT_DRAGON_SLAYING;
                 v31 = (double)(1800 * pParty->pPickedItem.uEnchantmentType);
             } else {
-                // TODO(captainurist): lookup table makes no sense for the most part,
-                // why do we have (ITEM_ENCHANTMENT)93 two times here?
                 static constinit IndexedArray<ITEM_ENCHANTMENT, ITEM_FIRST_ENCHANTING_POTION, ITEM_LAST_ENCHANTING_POTION> _4E2904_enchantment_by_potion_lut = {
-                    {ITEM_POTION_MIGHT_BOOST, (ITEM_ENCHANTMENT)164},
-                    {ITEM_POTION_INTELLECT_BOOST, (ITEM_ENCHANTMENT)93},
-                    {ITEM_POTION_PERSONALITY_BOOST, (ITEM_ENCHANTMENT)22},
-                    {ITEM_POTION_ENDURANCE_BOOST, (ITEM_ENCHANTMENT)164},
-                    {ITEM_POTION_SPEED_BOOST, (ITEM_ENCHANTMENT)93},
-                    {ITEM_POTION_ACCURACY_BOOST, (ITEM_ENCHANTMENT)22},
                     {ITEM_POTION_FLAMING, ITEM_ENCHANTMENT_OF_FLAME},
                     {ITEM_POTION_FREEZING, ITEM_ENCHANTMENT_OF_FROST},
                     {ITEM_POTION_NOXIOUS, ITEM_ENCHANTMENT_OF_POISON},
                     {ITEM_POTION_SHOCKING, ITEM_ENCHANTMENT_OF_SPARKS},
-                    {ITEM_POTION_SWIFT, (ITEM_ENCHANTMENT)59}
+                    {ITEM_POTION_SWIFT, ITEM_ENCHANTMENT_SWIFT}
                 };
                 item->special_enchantment = _4E2904_enchantment_by_potion_lut[pParty->pPickedItem.uItemID];
                 v31 = (double)(1800 * pParty->pPickedItem.uEnchantmentType);

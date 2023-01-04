@@ -144,7 +144,7 @@ bool OverlayList::FromFileTxt(const char *Args) {
     void *v7;         // eax@9
     // FILE *v8; // ST0C_4@11
     char *i;                // eax@11
-    char Buf;               // [sp+10h] [bp-2F0h]@3
+    char Buf[490];               // [sp+10h] [bp-2F0h]@3
     FrameTableTxtLine v18;  // [sp+204h] [bp-FCh]@4
     FrameTableTxtLine v19;  // [sp+280h] [bp-80h]@4
     FILE *File;             // [sp+2FCh] [bp-4h]@1
@@ -160,12 +160,12 @@ bool OverlayList::FromFileTxt(const char *Args) {
 
     v5 = 0;
     Argsa = 0;
-    if (fgets(&Buf, 490, v4)) {
+    if (fgets(Buf, sizeof(Buf), v4)) {
         do {
-            *strchr(&Buf, 10) = 0;
-            memcpy(&v19, txt_file_frametable_parser(&Buf, &v18), sizeof(v19));
+            *strchr(Buf, 10) = 0;
+            memcpy(&v19, txt_file_frametable_parser(Buf, &v18), sizeof(v19));
             if (v19.uPropCount && *v19.pProperties[0] != 47) ++Argsa;
-        } while (fgets(&Buf, 490, File));
+        } while (fgets(Buf, sizeof(Buf), File));
         v5 = Argsa;
         v3 = 0;
     }
@@ -179,9 +179,9 @@ bool OverlayList::FromFileTxt(const char *Args) {
     // v8 = File;
     this->uNumOverlays = v3;
     fseek(File, v3, v3);
-    for (i = fgets(&Buf, 490, File); i; i = fgets(&Buf, 490, File)) {
-        *strchr(&Buf, 10) = 0;
-        memcpy(&v19, txt_file_frametable_parser(&Buf, &v18), sizeof(v19));
+    for (i = fgets(Buf, sizeof(Buf), File); i; i = fgets(Buf, sizeof(Buf), File)) {
+        *strchr(Buf, 10) = 0;
+        memcpy(&v19, txt_file_frametable_parser(Buf, &v18), sizeof(v19));
         if (v19.uPropCount && *v19.pProperties[0] != 47) {
             this->pOverlays[this->uNumOverlays].uOverlayID =
                 atoi(v19.pProperties[0]);

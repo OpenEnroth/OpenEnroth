@@ -97,15 +97,11 @@ void GameUI_StatusBar_Draw() {
     }
 
     if (status.length() > 0) {
-        pPrimaryWindow->DrawText(
-            pFontLucida, pFontLucida->AlignText_Center(450, status) + 11, 357,
-            uGameUIFontMain, status, 0, 0, uGameUIFontShadow);
+        pPrimaryWindow->DrawText(pFontLucida, {pFontLucida->AlignText_Center(450, status) + 11, 357}, uGameUIFontMain, status, 0, 0, uGameUIFontShadow);
     }
 }
 
 void GameUI_StatusBar_DrawImmediate(const std::string &str, int color) {
     render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
-    pPrimaryWindow->DrawText(pFontLucida,
-                             pFontLucida->AlignText_Center(450, str) + 11, 357,
-                             color, str);
+    pPrimaryWindow->DrawText(pFontLucida, {pFontLucida->AlignText_Center(450, str) + 11, 357}, color, str);
 }

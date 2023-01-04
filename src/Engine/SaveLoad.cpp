@@ -379,7 +379,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             LloydBeacon *beacon = &player->vBeacons[j];
             Image *image = beacon->image;
             if ((beacon->uBeaconTime.Valid()) && (image != nullptr)) {
-                const void *pixels = image->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+                const void *pixels = image->GetPixels(IMAGE_FORMAT_A8B8G8R8);
                 if (!pixels)
                     __debugbreak();
                 unsigned int pcx_data_size = 30000;
@@ -551,7 +551,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
     if (IsAutoSAve) {
         if (!CopyFile(MakeDataPath("data", "new.lod"), MakeDataPath("saves", "autosave.mm7"))) {
-            logger->Warning("Copy autosave.mm7 failed");
+            logger->Warning("Copying of autosave.mm7 failed");
         }
     }
     pParty->vPosition.x = pPositionX;

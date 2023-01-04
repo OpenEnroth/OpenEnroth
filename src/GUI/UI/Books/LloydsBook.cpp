@@ -11,11 +11,11 @@
 #include "GUI/GUIFont.h"
 #include "GUI/UI/Books/LloydsBook.h"
 
-std::array<unsigned int, 5> pLloydsBeaconsPreviewXs = {
+std::array<int, 5> pLloydsBeaconsPreviewXs = {
     {61, 281, 61, 281, 171}};  // 004E249C
-std::array<unsigned int, 5> pLloydsBeaconsPreviewYs = {{84, 84, 228, 228, 155}};
-std::array<unsigned int, 5> pLloydsBeacons_SomeXs = {{59, 279, 59, 279, 169}};
-std::array<unsigned int, 5> pLloydsBeacons_SomeYs = {{82, 82, 226, 226, 153}};
+std::array<int, 5> pLloydsBeaconsPreviewYs = {{84, 84, 228, 228, 155}};
+std::array<int, 5> pLloydsBeacons_SomeXs = {{59, 279, 59, 279, 169}};
+std::array<int, 5> pLloydsBeacons_SomeYs = {{82, 82, 226, 226, 153}};
 
 bool _506360_installing_beacon;  // 506360
 
@@ -36,12 +36,8 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() : GUIWindow_Book() {
     ui_book_button1_on = assets->GetImage_Alpha("tab-an-6b");
     ui_book_button1_off = assets->GetImage_Alpha("tab-an-6a");
 
-    pBtn_Book_1 = CreateButton(
-        415, 13, 39, 36, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 0,
-        PlatformKey::None, localization->GetString(LSTR_SET_BEACON));
-    pBtn_Book_2 = CreateButton(
-        415, 48, 39, 36, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 1,
-        PlatformKey::None, localization->GetString(LSTR_RECALL_BEACON));
+    pBtn_Book_1 = CreateButton({415, 13}, {39, 36}, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 0, InputAction::Invalid, localization->GetString(LSTR_SET_BEACON));
+    pBtn_Book_2 = CreateButton({415, 48}, {39, 36}, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 1, InputAction::Invalid, localization->GetString(LSTR_RECALL_BEACON));
 
     int max_beacons = 1;
     int water_skill = pParty->pPlayers[_506348_current_lloyd_playerid]
@@ -56,8 +52,7 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() : GUIWindow_Book() {
         max_beacons = 5;
 
     for (int i = 0; i < max_beacons; ++i) {
-        CreateButton(pLloydsBeaconsPreviewXs[i], pLloydsBeaconsPreviewYs[i], 92,
-                     68, 1, UIMSG_HintBeaconSlot, UIMSG_InstallBeacon, i);
+        CreateButton({pLloydsBeaconsPreviewXs[i], pLloydsBeaconsPreviewYs[i]}, {92, 68}, 1, UIMSG_HintBeaconSlot, UIMSG_InstallBeacon, i);
     }
 
     // purges expired beacons

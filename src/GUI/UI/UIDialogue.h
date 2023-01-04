@@ -7,7 +7,7 @@
 
 class GUIWindow_Dialogue : public GUIWindow {
  public:
-    GUIWindow_Dialogue(unsigned int x, unsigned int y, unsigned int width, unsigned int height, WindowData data, const std::string &hint = std::string());
+    GUIWindow_Dialogue(Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string());
     virtual ~GUIWindow_Dialogue() {}
 
     virtual void Update();
@@ -18,7 +18,7 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello);
 
 class GUIWindow_GenericDialogue : public GUIWindow {
  public:
-    GUIWindow_GenericDialogue(unsigned int x, unsigned int y, unsigned int width, unsigned int height, WindowData data, const std::string &hint = std::string());
+    GUIWindow_GenericDialogue(Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string());
     virtual ~GUIWindow_GenericDialogue() {}
 
     virtual void Update();

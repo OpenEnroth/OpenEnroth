@@ -27,6 +27,8 @@ class PlatformEventHandler {
     virtual void MouseReleaseEvent(PlatformWindow *window, const PlatformMouseEvent *event);
     virtual void WheelEvent(PlatformWindow *window, const PlatformWheelEvent *event);
     virtual void MoveEvent(PlatformWindow *window, const PlatformMoveEvent *event);
+    virtual void ResizeEvent(PlatformWindow *window, const PlatformResizeEvent *event);
     virtual void ActivationEvent(PlatformWindow *window, const PlatformEvent *event);
     virtual void CloseEvent(PlatformWindow *window, const PlatformEvent *event);
+    virtual void GamepadDeviceEvent(PlatformWindow *window, const PlatformGamepadDeviceEvent *event);
 };

@@ -1,4 +1,4 @@
-#version 410 core
+precision highp float;
 
 in vec4 colour;
 in vec2 texuv;

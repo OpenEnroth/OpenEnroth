@@ -20,6 +20,16 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y glslang-tools 
 
-    - name: Check shaders
+    - name: Check OpenGL 4.1 (Core) shaders
+      working-directory: resources/shaders
       run: |
-        find resources/shaders -type f | xargs -n1 glslangValidator 
+        mkdir ../shaders_opengl41core
+        find . -type f -exec bash -c 'echo "#version 410 core" > ../shaders_opengl41core/{} && cat {} >> ../shaders_opengl41core/{}' \;
+        find ../shaders_opengl41core -type f | xargs -n1 glslangValidator
+
+    - name: Check OpenGL ES 3.2 shaders
+      working-directory: resources/shaders
+      run: |
+        mkdir ../shaders_opengles32
+        find . -type f -exec bash -c 'echo "#version 320 es" > ../shaders_opengles32/{} && cat {} >> ../shaders_opengles32/{}' \;
+        find ../shaders_opengles32 -type f | xargs -n1 glslangValidator

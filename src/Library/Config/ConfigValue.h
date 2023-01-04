@@ -1,5 +1,6 @@
 #pragma once
 
+#include <climits>
 #include <string>
 
 #include "ConfigFwd.h"
@@ -72,11 +73,35 @@ class ConfigValue : public AbstractConfigValue {
         return value_;
     }
 
-    void Decrement() requires std::is_same_v<T, int> {
+    T Decrement() requires std::is_same_v<T, int> {
         if (validator_)
             value_ = validator_(value_ - 1);
         else
             value_--;
+
+        return value_;
+    }
+
+    T CycleIncrement() requires std::is_same_v<T, int> {
+        // we rely on validator with std::clamp-like behaviour.
+        assert(validator_);
+
+        int old = value_;
+        value_ = validator_(value_ + 1);
+        if (value_ == old)
+            value_ = validator_(INT_MIN);
+
+        return value_;
+    }
+
+    T CycleDecrement() requires std::is_same_v<T, int> {
+        // we rely on validator with std::clamp-like behaviour.
+        assert(validator_);
+
+        int old = value_;
+        value_ = validator_(value_ - 1);
+        if (value_ == old)
+            value_ = validator_(INT_MAX);
 
         return value_;
     }

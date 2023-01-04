@@ -6,9 +6,5 @@ set(SERIALIZATION_HEADERS LegacyImages.h
                           Deserializer.h
                           Serializer.h)
 
-if(WIN32)
-else()
-endif()
-
 add_library(serialization STATIC ${SERIALIZATION_SOURCES} ${SERIALIZATION_HEADERS})
 target_check_style(serialization)

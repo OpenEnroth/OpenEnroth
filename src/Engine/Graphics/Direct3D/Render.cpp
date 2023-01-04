@@ -83,9 +83,6 @@ void ErrHR(HRESULT hr, const char *pAPI, const char *pFunction,
     Error(msg);
 }
 
-unsigned int Render::GetRenderWidth() const { return window->GetWidth(); }
-unsigned int Render::GetRenderHeight() const { return window->GetHeight(); }
-
 Texture *Render::CreateTexture_Paletted(const std::string &name) {
     return TextureD3D::Create(new Paletted_Img_Loader(pIcons_LOD, name, 0));
 }
@@ -1240,6 +1237,8 @@ void Render::SavePCXScreenshot() {
     SaveWinnersCertificate(file_name.c_str());
 }
 
+uint8_t *ReadScreenPixels() {}
+
 void Render::SaveWinnersCertificate(const char *file_name) {
     BeginScene();
 
@@ -1249,7 +1248,7 @@ void Render::SaveWinnersCertificate(const char *file_name) {
     Dst.dwSize = sizeof(Dst);
 
     if (LockSurface_DDraw4(pRenderD3D->pBackBuffer, &Dst, DDLOCK_WAIT)) {
-        SavePCXImage32(file_name, (uint16_t *)Dst.lpSurface, render->GetRenderWidth(), render->GetRenderHeight());
+        SavePCXImage32(file_name, (uint16_t *)Dst.lpSurface, render->GetRenderDimensions().w, render->GetRenderDimensions().h);
         ErrD3D(pRenderD3D->pBackBuffer->Unlock(NULL));
     }
 
@@ -2279,6 +2278,13 @@ void Render::DrawIndoorFaces() {
             }
     }
     DrawIndoorBatched();
+}
+
+Sizei Render::GetRenderDimensions() {
+    return window->Size();
+}
+Sizei Render::GetPresentDimensions() {
+    return window->Size();
 }
 
 bool Render::Reinitialize(bool firstInit) {

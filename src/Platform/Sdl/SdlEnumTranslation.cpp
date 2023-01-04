@@ -1,5 +1,6 @@
 #include "SdlEnumTranslation.h"
 
+#include <algorithm>
 #include <cassert>
 
 PlatformKey TranslateSdlKey(SDL_Scancode key) {
@@ -112,6 +113,85 @@ PlatformKey TranslateSdlKey(SDL_Scancode key) {
     }
 }
 
+PlatformKey TranslateSdlGamepadButton(SDL_GameControllerButton button) {
+    switch (button) {
+    case SDL_CONTROLLER_BUTTON_A:               return PlatformKey::Gamepad_A;
+    case SDL_CONTROLLER_BUTTON_B:               return PlatformKey::Gamepad_B;
+    case SDL_CONTROLLER_BUTTON_X:               return PlatformKey::Gamepad_X;
+    case SDL_CONTROLLER_BUTTON_Y:               return PlatformKey::Gamepad_Y;
+
+    case SDL_CONTROLLER_BUTTON_DPAD_LEFT:       return PlatformKey::Gamepad_Left;
+    case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:      return PlatformKey::Gamepad_Right;
+    case SDL_CONTROLLER_BUTTON_DPAD_UP:         return PlatformKey::Gamepad_Up;
+    case SDL_CONTROLLER_BUTTON_DPAD_DOWN:       return PlatformKey::Gamepad_Down;
+
+    case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:    return PlatformKey::Gamepad_L1;
+    case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER:   return PlatformKey::Gamepad_R1;
+    case SDL_CONTROLLER_BUTTON_LEFTSTICK:       return PlatformKey::Gamepad_L3;
+    case SDL_CONTROLLER_BUTTON_RIGHTSTICK:      return PlatformKey::Gamepad_R3;
+
+    case SDL_CONTROLLER_BUTTON_START:           return PlatformKey::Gamepad_Start;
+    case SDL_CONTROLLER_BUTTON_BACK:            return PlatformKey::Gamepad_Back;
+
+    case SDL_CONTROLLER_BUTTON_GUIDE:           return PlatformKey::Gamepad_Guide;
+
+    // on DS4 touchpad is working like mouse by default and this event treated as left mouse click, so not expose
+    // case SDL_CONTROLLER_BUTTON_TOUCHPAD:        return PlatformKey::Gamepad_Touchpad;
+
+    default:
+        return PlatformKey::None;
+    }
+}
+
+std::pair<PlatformKey, PlatformKeyType> TranslateSdlGamepadAxis(SDL_GameControllerAxis axis, float value) {
+    PlatformKey key = PlatformKey::None;
+    PlatformKeyType keyType = PlatformKeyType::KEY_TYPE_GAMEPAD_AXIS;
+
+    switch (axis) {
+    case SDL_CONTROLLER_AXIS_LEFTX:
+        if (value > 0.0f)
+            key = PlatformKey::Gamepad_LeftStick_Right;
+        else if (value < 0.0f)
+            key = PlatformKey::Gamepad_LeftStick_Left;
+
+        break;
+    case SDL_CONTROLLER_AXIS_LEFTY:
+        if (value > 0.0f)
+            key = PlatformKey::Gamepad_LeftStick_Down;
+        else if (value < 0.0f)
+            key = PlatformKey::Gamepad_LeftStick_Up;
+
+        break;
+    case SDL_CONTROLLER_AXIS_RIGHTX:
+        if (value > 0.0f)
+            key = PlatformKey::Gamepad_RightStick_Right;
+        else if (value < 0.0f)
+            key = PlatformKey::Gamepad_RightStick_Left;
+
+        break;
+    case SDL_CONTROLLER_AXIS_RIGHTY:
+        if (value > 0.0f)
+            key = PlatformKey::Gamepad_RightStick_Down;
+        else if (value < 0.0f)
+            key = PlatformKey::Gamepad_RightStick_Up;
+
+        break;
+    case SDL_CONTROLLER_AXIS_TRIGGERLEFT:
+        key = PlatformKey::Gamepad_L2;
+        keyType = PlatformKeyType::KEY_TYPE_GAMEPAD_TRIGGER;
+        break;
+    case SDL_CONTROLLER_AXIS_TRIGGERRIGHT:
+        key = PlatformKey::Gamepad_R2;
+        keyType = PlatformKeyType::KEY_TYPE_GAMEPAD_TRIGGER;
+        break;
+
+    default:
+        break;
+    }
+
+    return {key, keyType};
+}
+
 PlatformModifiers TranslateSdlMods(uint16_t mods) {
     PlatformModifiers result;
     if (static_cast<bool>(mods & KMOD_SHIFT) ^ static_cast<bool>(mods & KMOD_CAPS))
@@ -167,6 +247,8 @@ SDL_GLprofile TranslatePlatformOpenGLProfile(PlatformOpenGLProfile profile) {
         return SDL_GL_CONTEXT_PROFILE_CORE;
     case CompatibilityProfile:
         return SDL_GL_CONTEXT_PROFILE_COMPATIBILITY;
+    case ESProfile:
+        return SDL_GL_CONTEXT_PROFILE_ES;
     }
 
     assert(false);

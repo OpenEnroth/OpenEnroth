@@ -292,7 +292,7 @@ bool MonsterList::FromFileTxt(const char *Args) {
     signed int v19;         // esi@16
     uint16_t v20;   // ax@17
     int v21;                // ecx@17
-    char Buf;               // [sp+4h] [bp-304h]@3
+    char Buf[490];           // [sp+4h] [bp-304h]@3
     FrameTableTxtLine v24;  // [sp+1F8h] [bp-110h]@4
     FrameTableTxtLine v25;  // [sp+274h] [bp-94h]@4
     int v26;                // [sp+2F0h] [bp-18h]@16
@@ -306,21 +306,21 @@ bool MonsterList::FromFileTxt(const char *Args) {
 
     v4 = 0;
     Argsa = 0;
-    if (fgets(&Buf, 490, v3)) {
+    if (fgets(Buf, sizeof(Buf), v3)) {
         do {
-            *strchr(&Buf, 10) = 0;
-            memcpy(&v25, frame_table_txt_parser(&Buf, &v24), sizeof(v25));
+            *strchr(Buf, 10) = 0;
+            memcpy(&v25, frame_table_txt_parser(Buf, &v24), sizeof(v25));
             if (v25.uPropCount && *v25.pProperties[0] != 47) ++Argsa;
-        } while (fgets(&Buf, 490, File));
+        } while (fgets(Buf, sizeof(Buf), File));
         v4 = Argsa;
     }
 
     this->pMonsters.clear();
     v6 = File;
     fseek(v6, 0, 0);
-    for (i = fgets(&Buf, 490, File); i; i = fgets(&Buf, 490, File)) {
-        *strchr(&Buf, 10) = 0;
-        memcpy(&v25, frame_table_txt_parser(&Buf, &v24), sizeof(v25));
+    for (i = fgets(Buf, sizeof(Buf), File); i; i = fgets(Buf, sizeof(Buf), File)) {
+        *strchr(Buf, 10) = 0;
+        memcpy(&v25, frame_table_txt_parser(Buf, &v24), sizeof(v25));
         v8 = 0;
         if (v25.uPropCount && *v25.pProperties[0] != 47) {
             MonsterDesc &monster = this->pMonsters.emplace_back();

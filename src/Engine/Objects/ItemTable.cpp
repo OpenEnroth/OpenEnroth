@@ -721,6 +721,11 @@ void ItemTable::GenerateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
     }
 }
 
+// TODO: use std::string::contains once Android have full C++23 support.
+auto contains = [](const std::string &haystack, const std::string &needle) {
+    return haystack.find(needle) != std::string::npos;
+};
+
 void ItemTable::PrintItemTypesEnum() {
     std::unordered_map<std::string, int> countByName;
     std::unordered_map<std::string, int> indexByName;
@@ -759,18 +764,18 @@ void ItemTable::PrintItemTypesEnum() {
             continue;
         }
 
-        if (enumName.contains("PLACEHOLDER") || enumName.contains("SEALED_LETTER")) {
+        if (contains(enumName, "PLACEHOLDER") || contains(enumName, "SEALED_LETTER")) {
             items.emplace_back("", name + ", unused.");
             continue;
         }
 
-        if (enumName.contains("ORDERS_FROM_SNERGLE")) {
+        if (contains(enumName, "ORDERS_FROM_SNERGLE")) {
             items.emplace_back("", name + ", unused remnant from MM6.");
             continue;
         }
 
         if (enumName == "LICH_JAR") {
-            if (description.contains("Empty")) {
+            if (contains(description, "Empty")) {
                 enumName += "_EMPTY";
             } else {
                 enumName += "_FULL";
@@ -778,7 +783,7 @@ void ItemTable::PrintItemTypesEnum() {
         }
 
         if (enumName == "THE_PERFECT_BOW")
-            if (!description.contains("off-balance"))
+            if (!contains(description, "off-balance"))
                 enumName += "_FIXED";
 
         if (desc.uEquipType == EQUIP_REAGENT) {

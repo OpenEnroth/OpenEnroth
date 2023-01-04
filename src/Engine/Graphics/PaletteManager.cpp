@@ -111,9 +111,9 @@ void RGB2HSV(float redin, float greenin, float bluein, float* outh, float* outs,
 
 //----- (0048A959) --------------------------------------------------------
 int ReplaceHSV(unsigned int uColor, float h_replace, float s_replace, float v_replace) {
-    float r = ((uColor & 0x00FF0000) >> 16) / 255.0f,
+    float b = ((uColor & 0x00FF0000) >> 16) / 255.0f,
         g = ((uColor & 0x0000FF00) >> 8) / 255.0f,
-        b = (uColor & 0x000000FF) / 255.0f;
+        r = (uColor & 0x000000FF) / 255.0f;
 
     float h, s, v;
     RGB2HSV(r, g, b, &h, &s, &v);
@@ -123,9 +123,9 @@ int ReplaceHSV(unsigned int uColor, float h_replace, float s_replace, float v_re
     if (v_replace != -1.0) v = v_replace;
     HSV2RGB(&r, &g, &b, h, s, v);
 
-    return (((uint)round_to_int(r * 255.0f) & 0xFF) << 16) |
+    return (((uint)round_to_int(b * 255.0f) & 0xFF) << 16) |
         (((uint)round_to_int(g * 255.0f) & 0xFF) << 8) |
-        (((uint)round_to_int(b * 255.0f) & 0xFF));
+        (((uint)round_to_int(r * 255.0f) & 0xFF));
 }
 
 //----- (0048A300) --------------------------------------------------------

@@ -39,7 +39,7 @@ using Io::InputAction;
 
 InputAction currently_selected_action_for_binding = InputAction::Invalid;  // 506E68
 std::map<InputAction, bool> key_map_conflicted;  // 506E6C
-std::map<InputAction, PlatformKey> prev_key_map;
+std::map<InputAction, PlatformKey> curr_key_map;
 
 void Game_StartNewGameWhilePlaying(bool force_start) {
     if (dword_6BE138 == 124 || force_start) {
@@ -100,21 +100,21 @@ void Menu::EventLoop() {
             case UIMSG_ArrowUp:
                 --pSaveListPosition;
                 if (pSaveListPosition < 0) pSaveListPosition = 0;
-                new OnButtonClick2(215, 199, 17, 17, pBtnArrowUp);
+                new OnButtonClick2({215, 199}, {17, 17}, pBtnArrowUp);
                 continue;
 
             case UIMSG_DownArrow:
                 ++pSaveListPosition;
                 if (pSaveListPosition > (param - 7) ) pSaveListPosition = (param - 7);
-                new OnButtonClick2(215, 323, 17, 17, pBtnDownArrow);
+                new OnButtonClick2({215, 323}, {17, 17}, pBtnDownArrow);
                 continue;
 
             case UIMSG_Cancel:
-                new OnCancel(350, 302, 106, 42, pBtnCancel);
+                new OnCancel({350, 302}, {106, 42}, pBtnCancel);
                 continue;
 
             case UIMSG_SaveLoadBtn:
-                new OnSaveLoad(241, 302, 106, 42, pBtnLoadSlot);
+                new OnSaveLoad({241, 302}, {106, 42}, pBtnLoadSlot);
                 continue;
             case UIMSG_SelectLoadSlot: {
                 if (pGUIWindow_CurrentMenu->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS)
@@ -170,7 +170,7 @@ void Menu::EventLoop() {
                 int newlistpost = std::round((param - 7) * fmy);
                 newlistpost = std::clamp(newlistpost, 0, (param - 7));
                 pSaveListPosition = newlistpost;
-                new OnButtonClick2(pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 197, 0, 0, pBtnArrowUp);
+                new OnButtonClick2({pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 197}, {0, 0}, pBtnArrowUp);
                 continue;
             }
             case UIMSG_Game_OpenOptionsDialog:  // Open
@@ -212,19 +212,14 @@ void Menu::EventLoop() {
             }
 
             case UIMSG_ResetKeyMapping: {
-                int v197 = 1;
-                // keyboardController->SetDefaultMapping();
-                for (auto action : AllInputActions()) {
-                    PlatformKey oldKey = keyboardActionMapping->GetKey(action);
+                for (InputAction action : VanillaInputActions()) {
                     PlatformKey newKey = keyboardActionMapping->MapDefaultKey(action);
 
-                    if (oldKey != newKey) {
-                        GUI_ReplaceHotkey(oldKey, newKey, v197);
-                        v197 = 0;
-                    }
-                    prev_key_map[action] = oldKey;
+                    curr_key_map[action] = newKey;
                     key_map_conflicted[action] = false;
+                    keyboardActionMapping->MapKey(action, newKey, GetToggleType(action));
                 }
+                keyboardActionMapping->StoreMappings();
                 pAudioPlayer->PlaySound(SOUND_chimes, 0, 0, -1, 0, 0);
                 continue;
             }
@@ -251,10 +246,10 @@ void Menu::EventLoop() {
                 int gammalevel = engine->config->graphics.Gamma.Get();
                 if (param == 4) {
                     gammalevel--;
-                    new OnButtonClick2(21, 161, 0, 0, pBtn_SliderLeft, std::string(), false);
+                    new OnButtonClick2({21, 161}, {0, 0}, pBtn_SliderLeft, std::string(), false);
                 } else if (param == 5) {
                     gammalevel++;
-                    new OnButtonClick2(213, 161, 0, 0, pBtn_SliderRight, std::string(), false);
+                    new OnButtonClick2({213, 161}, {0, 0}, pBtn_SliderRight, std::string(), false);
                 } else {
                     Pointi pt = mouse->GetCursorPos();
                     gammalevel = (pt.x - 42) / 17;
@@ -288,10 +283,10 @@ void Menu::EventLoop() {
                 int new_level = engine->config->settings.MusicLevel.Get();
                 if (param == 4) {
                     new_level -= 1;
-                    new OnButtonClick2(243, 216, 0, 0, pBtn_SliderLeft, std::string(), false);
+                    new OnButtonClick2({243, 216}, {0, 0}, pBtn_SliderLeft, std::string(), false);
                 } else if (param == 5) {
                     new_level += 1;
-                    new OnButtonClick2(435, 216, 0, 0, pBtn_SliderRight, std::string(), false);
+                    new OnButtonClick2({435, 216}, {0, 0}, pBtn_SliderRight, std::string(), false);
                 } else {
                     Pointi pt = mouse->GetCursorPos();
                     new_level = (pt.x - 263) / 17;  // for mouse
@@ -308,10 +303,10 @@ void Menu::EventLoop() {
                 int new_level = engine->config->settings.SoundLevel.Get();
                 if (param == 4) {
                     new_level -= 1;
-                    new OnButtonClick2(243, 162, 0, 0, pBtn_SliderLeft, std::string(), false);
+                    new OnButtonClick2({243, 162}, {0, 0}, pBtn_SliderLeft, std::string(), false);
                 } else if (param == 5) {
                     new_level += 1;
-                    new OnButtonClick2(435, 162, 0, 0, pBtn_SliderRight, std::string(), false);
+                    new OnButtonClick2({435, 162}, {0, 0}, pBtn_SliderRight, std::string(), false);
                 } else {
                     Pointi pt = mouse->GetCursorPos();
                     new_level = (pt.x - 263) / 17;
@@ -339,10 +334,10 @@ void Menu::EventLoop() {
                 int new_level = engine->config->settings.VoiceLevel.Get();
                 if (param == 4) {
                     new_level -= 1;
-                    new OnButtonClick2(243, 270, 0, 0, pBtn_SliderLeft, std::string(), false);
+                    new OnButtonClick2({243, 270}, {0, 0}, pBtn_SliderLeft, std::string(), false);
                 } else if (param == 5) {
                     new_level += 1;
-                    new OnButtonClick2(435, 270, 0, 0, pBtn_SliderRight, std::string(), false);
+                    new OnButtonClick2({435, 270}, {0, 0}, pBtn_SliderRight, std::string(), false);
                 } else {
                     Pointi pt = mouse->GetCursorPos();
                     new_level = (pt.x - 263) / 17;
@@ -429,13 +424,15 @@ void Menu::EventLoop() {
                     int v197 = 1;
                     bool anyBindingErrors = false;
 
-                    for (auto action : AllInputActions()) {
+                    for (auto action : VanillaInputActions()) {
                         if (key_map_conflicted[action]) {
                             anyBindingErrors = true;
+                            continue;
                         }
                     }
                     if (anyBindingErrors) {
                         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+                        break; // deny to exit options until all key conflicts are solved
                     } else {
                         for (uint i = 0; i < 5; i++) {
                             if (game_ui_options_controls[i]) {
@@ -444,16 +441,8 @@ void Menu::EventLoop() {
                             }
                         }
 
-                        for (auto action : AllInputActions()) {
-                            if (keyboardActionMapping->GetKey(action) != prev_key_map[action]) {
-                                GUI_ReplaceHotkey(
-                                    keyboardActionMapping->GetKey(action),
-                                    prev_key_map[action],
-                                    v197);
-                                v197 = 0;
-                            }
-
-                            keyboardActionMapping->MapKey(action, prev_key_map[action], GetToggleType(action));
+                        for (auto action : VanillaInputActions()) {
+                            keyboardActionMapping->MapKey(action, curr_key_map[action], GetToggleType(action));
                         }
                         keyboardActionMapping->StoreMappings();
                     }

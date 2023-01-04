@@ -9,7 +9,8 @@ class OSWindow;
 
 enum class RendererType {
     DirectDraw,
-    OpenGL
+    OpenGL,
+    OpenGLES
 };
 
 namespace Graphics {

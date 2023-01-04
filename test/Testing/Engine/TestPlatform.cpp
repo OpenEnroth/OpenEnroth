@@ -5,6 +5,7 @@
 
 #include "TestWindow.h"
 #include "TestEventLoop.h"
+#include "TestGamepad.h"
 
 TestPlatform::TestPlatform(std::unique_ptr<Platform> base, TestStateHandle state):
     base_(std::move(base)),
@@ -24,6 +25,10 @@ std::unique_ptr<PlatformWindow> TestPlatform::CreateWindow() {
 
 std::unique_ptr<PlatformEventLoop> TestPlatform::CreateEventLoop() {
     return std::make_unique<TestEventLoop>(base_->CreateEventLoop(), state_);
+}
+
+std::unique_ptr<PlatformGamepad> TestPlatform::CreateGamepad(uint32_t id) {
+    return std::make_unique<TestGamepad>(base_->CreateGamepad(id), state_);
 }
 
 void TestPlatform::SetCursorShown(bool cursorShown) {
@@ -52,4 +57,8 @@ std::string TestPlatform::WinQueryRegistry(const std::string &path) const {
 
 void TestPlatform::Reset() {
     state_->time = 0;
+}
+
+std::string TestPlatform::StoragePath(const PLATFORM_STORAGE type) const {
+    return base_->StoragePath(type);
 }

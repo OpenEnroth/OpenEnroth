@@ -78,9 +78,10 @@ void Mouse::_469AE4() {
     this->uMouseX = v2;
     this->uMouseY = v3;
 
+    Sizei renDims = render->GetPresentDimensions();
     if (true /*render->bWindowMode*/ &&
-        (v2 < 0 || v3 < 0 || v2 > window->GetWidth() - 1 ||
-         v3 > window->GetHeight() - 1)) {
+        (v2 < 0 || v3 < 0 || v2 > renDims.w - 1 ||
+         v3 > renDims.h - 1)) {
         this->bActive = false;
         this->field_8 = 0;
     }
@@ -338,113 +339,105 @@ bool UI_OnKeyDown(PlatformKey key) {
             continue;
         }
 
-        switch (key) {
-            case PlatformKey::Left: {
-                int v12 = win->field_34;
-                if (win->pCurrentPosActiveItem - win->pStartingPosActiveItem - v12 >= 0) {
-                    win->pCurrentPosActiveItem -= v12;
-                    if (current_screen_type == CURRENT_SCREEN::SCREEN_PARTY_CREATION) {
-                        pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
-                    }
+        if (keyboardActionMapping->IsKeyMatchAction(InputAction::DialogLeft, key)) {
+            int v12 = win->field_34;
+            if (win->pCurrentPosActiveItem - win->pStartingPosActiveItem - v12 >= 0) {
+                win->pCurrentPosActiveItem -= v12;
+                if (current_screen_type == CURRENT_SCREEN::SCREEN_PARTY_CREATION) {
+                    pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
                 }
-                if (win->field_30 != 0) {
-                    break;
-                }
-                GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
-                pMessageQueue_50CBD0->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
+            }
+            if (win->field_30 != 0) {
                 break;
             }
-            case PlatformKey::Right: {
-                int v7 = win->pCurrentPosActiveItem + win->field_34;
-                if (v7 < win->pNumPresenceButton + win->pStartingPosActiveItem) {
-                    win->pCurrentPosActiveItem = v7;
-                    if (current_screen_type == CURRENT_SCREEN::SCREEN_PARTY_CREATION) {
-                        pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
-                    }
+            GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
+            pMessageQueue_50CBD0->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
+            break;
+        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::DialogRight, key)) {
+            int v7 = win->pCurrentPosActiveItem + win->field_34;
+            if (v7 < win->pNumPresenceButton + win->pStartingPosActiveItem) {
+                win->pCurrentPosActiveItem = v7;
+                if (current_screen_type == CURRENT_SCREEN::SCREEN_PARTY_CREATION) {
+                    pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
                 }
-                if (win->field_30 != 0) {
-                    break;
-                }
-                GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
-                pMessageQueue_50CBD0->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
+            }
+            if (win->field_30 != 0) {
                 break;
             }
-            case PlatformKey::Down: {
-                int v17 = win->pStartingPosActiveItem;
-                int v18 = win->pCurrentPosActiveItem;
-                if (v18 >= win->pNumPresenceButton + v17 - 1)
-                    win->pCurrentPosActiveItem = v17;
-                else
-                    win->pCurrentPosActiveItem = v18 + 1;
-                if (win->field_30 != 0) return true;
-                GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
-                pMessageQueue_50CBD0->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
+            GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
+            pMessageQueue_50CBD0->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
+            break;
+        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::DialogDown, key)) {
+            int v17 = win->pStartingPosActiveItem;
+            int v18 = win->pCurrentPosActiveItem;
+            if (v18 >= win->pNumPresenceButton + v17 - 1)
+                win->pCurrentPosActiveItem = v17;
+            else
+                win->pCurrentPosActiveItem = v18 + 1;
+            if (win->field_30 != 0) return true;
+            GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
+            pMessageQueue_50CBD0->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
+            return true;
+        } else if (key == PlatformKey::Select) {
+            int uClickX;
+            int uClickY;
+            EngineIoc::ResolveMouse()->GetClickPos(&uClickX, &uClickY);
+            int v4 = win->pStartingPosActiveItem;
+            int v28 = v4 + win->pNumPresenceButton;
+            if (v4 < v4 + win->pNumPresenceButton) {
+                while (true) {
+                    GUIButton *pButton = win->GetControl(v4);
+                    if (uClickX >= pButton->uX  // test for StatsTab in
+                                                // PlayerCreation Window
+                        && uClickX <= pButton->uZ &&
+                        uClickY >= pButton->uY && uClickY <= pButton->uW)
+                        break;
+                    ++v4;
+                    if (v4 >= v28) {
+                        // v1 = 0;
+                        // v2 = pMessageQueue_50CBD0->uNumMessages;
+                        // --i;
+                        // if ( i < 0 )
+                        return false;
+                        // continue;
+                    }
+                }
+                win->pCurrentPosActiveItem = v4;
                 return true;
             }
-            case PlatformKey::Select: {
+            break;
+        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::DialogUp, key)) {
+            int v22 = win->pCurrentPosActiveItem;
+            int v23 = win->pStartingPosActiveItem;
+            if (v22 <= v23)
+                win->pCurrentPosActiveItem =
+                    win->pNumPresenceButton + v23 - 1;
+            else
+                win->pCurrentPosActiveItem = v22 - 1;
+            if (win->field_30 != 0) return true;
+            GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
+            pMessageQueue_50CBD0->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
+            return true;
+        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::DialogSelect, key)) {
+            GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
+            pMessageQueue_50CBD0->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
+        } else if (key == PlatformKey::PageDown) { // not button event from user, but a call from GUI_UpdateWindows to track mouse
+            if (win->field_30 != 0) {
                 int uClickX;
                 int uClickY;
                 EngineIoc::ResolveMouse()->GetClickPos(&uClickX, &uClickY);
-                int v4 = win->pStartingPosActiveItem;
-                int v28 = v4 + win->pNumPresenceButton;
-                if (v4 < v4 + win->pNumPresenceButton) {
-                    while (true) {
-                        GUIButton *pButton = win->GetControl(v4);
-                        if (uClickX >= pButton->uX  // test for StatsTab in
-                                                    // PlayerCreation Window
-                            && uClickX <= pButton->uZ &&
-                            uClickY >= pButton->uY && uClickY <= pButton->uW)
-                            break;
-                        ++v4;
-                        if (v4 >= v28) {
-                            // v1 = 0;
-                            // v2 = pMessageQueue_50CBD0->uNumMessages;
-                            // --i;
-                            // if ( i < 0 )
-                            return false;
-                            // continue;
-                        }
-                    }
-                    win->pCurrentPosActiveItem = v4;
-                    return true;
-                }
-                break;
-            }
-            case PlatformKey::Up: {
-                int v22 = win->pCurrentPosActiveItem;
-                int v23 = win->pStartingPosActiveItem;
-                if (v22 <= v23)
-                    win->pCurrentPosActiveItem =
-                        win->pNumPresenceButton + v23 - 1;
-                else
-                    win->pCurrentPosActiveItem = v22 - 1;
-                if (win->field_30 != 0) return true;
-                GUIButton *pButton =
-                    win->GetControl(win->pCurrentPosActiveItem);
-                pMessageQueue_50CBD0->AddGUIMessage(pButton->msg,
-                                                    pButton->msg_param, 0);
-                return true;
-            }
-            case PlatformKey::PageDown: {
-                if (win->field_30 != 0) {
-                    int uClickX;
-                    int uClickY;
-                    EngineIoc::ResolveMouse()->GetClickPos(&uClickX, &uClickY);
-                    int v29 = win->pStartingPosActiveItem + win->pNumPresenceButton;
-                    for (int v4 = win->pStartingPosActiveItem; v4 < v29; ++v4) {
-                        GUIButton *pButton = win->GetControl(v4);
-                        if (!pButton) continue;
-                        if (uClickX >= pButton->uX && uClickX <= pButton->uZ &&
-                            uClickY >= pButton->uY && uClickY <= pButton->uW) {
-                            win->pCurrentPosActiveItem = v4;
-                            return true;
-                        }
+                int v29 = win->pStartingPosActiveItem + win->pNumPresenceButton;
+                for (int v4 = win->pStartingPosActiveItem; v4 < v29; ++v4) {
+                    GUIButton *pButton = win->GetControl(v4);
+                    if (!pButton) continue;
+                    if (uClickX >= pButton->uX && uClickX <= pButton->uZ &&
+                        uClickY >= pButton->uY && uClickY <= pButton->uW) {
+                        win->pCurrentPosActiveItem = v4;
+                        return true;
                     }
                 }
-                break;
             }
-            default:
-                break;
+            break;
         }
     }
 

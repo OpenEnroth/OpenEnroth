@@ -56,6 +56,7 @@ class RenderOpenGL : public RenderBase {
     virtual void ClearBlack() override;
     virtual void PresentBlackScreen() override;
 
+    virtual uint8_t *ReadScreenPixels();
     virtual void SaveWinnersCertificate(const char *a1) override;
     virtual void ClearTarget(unsigned int uColor) override;
     virtual void Present() override;
@@ -207,14 +208,13 @@ class RenderOpenGL : public RenderBase {
     virtual void DrawTwodVerts() override;
     void DrawBillboards();
 
+    virtual Sizei GetRenderDimensions() override;
+    virtual Sizei GetPresentDimensions() override;
     virtual bool Reinitialize(bool firstInit) override;
     virtual void ReloadShaders() override;
 
  public:
     virtual void WritePixel16(int x, int y, uint16_t color) override;
-
-    virtual unsigned int GetRenderWidth() const override;
-    virtual unsigned int GetRenderHeight() const override;
 
  protected:
     void DoRenderBillboards_D3D();

@@ -65,7 +65,7 @@ void GameOver_Loop(int v15) {
     background->Release();
     background = nullptr;
 
-    window_SpeakInHouse = new GUIWindow(WINDOW_Unknown, 0, 0, window->GetWidth(), window->GetHeight(), 0);
+    window_SpeakInHouse = new GUIWindow(WINDOW_Unknown, {0, 0}, render->GetRenderDimensions(), 0);
     pWindow.uFrameX = 75;
     pWindow.uFrameY = 60;
     pWindow.uFrameWidth = 469;
@@ -152,7 +152,7 @@ void GameOver_Loop(int v15) {
         keyboardInputHandler->ResetKeys();
         do {
             eventLoop->ProcessMessages(eventHandler);
-        } while (keyboardInputHandler->LastPressedKey() != PlatformKey::Escape);
+        } while (keyboardActionMapping->IsKeyMatchAction(InputAction::Escape, keyboardInputHandler->LastPressedKey()));
         pMessageQueue_50CBD0->Flush();
     }
     if (v15) {

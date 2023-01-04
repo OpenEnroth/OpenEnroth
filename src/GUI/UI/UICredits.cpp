@@ -9,9 +9,8 @@
 #include "GUI/GUIWindow.h"
 #include "Media/Audio/AudioPlayer.h"
 
-
 GUICredits::GUICredits() :
-    GUIWindow(WINDOW_Credits, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
+    GUIWindow(WINDOW_Credits, {0, 0}, render->GetRenderDimensions(), 0) {
     pFontQuick = GUIFont::LoadFont("quick.fnt", "FONTPAL");
     pFontCChar = GUIFont::LoadFont("cchar.fnt", "FONTPAL");
 
@@ -29,7 +28,7 @@ GUICredits::GUICredits() :
     width = 250;
     height = pFontQuick->GetStringHeight2(pFontCChar, text, &credit_window, 0, 1) + 2 * credit_window.uFrameHeight;
     // cred_texture = Image::Create(width, height, IMAGE_FORMAT_A8R8G8B8);
-    cred_texture = render->CreateTexture_Blank(width, height, IMAGE_FORMAT_A8R8G8B8);
+    cred_texture = render->CreateTexture_Blank(width, height, IMAGE_FORMAT_A8B8G8R8);
 
     pFontQuick->DrawCreditsEntry(pFontCChar, 0, credit_window.uFrameHeight, width, height, colorTable.CornFlowerBlue.C16(), colorTable.Primrose.C16(), text, cred_texture);
 
@@ -37,7 +36,7 @@ GUICredits::GUICredits() :
 
     move_Y = 0;
 
-    CreateButton(0, 0, 0, 0, 1, 0, UIMSG_Escape, 0, PlatformKey::Escape);
+    CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_Escape, 0, InputAction::Escape);
 }
 
 GUICredits::~GUICredits() {

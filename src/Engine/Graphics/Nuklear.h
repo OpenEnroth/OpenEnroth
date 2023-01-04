@@ -8,6 +8,9 @@
 #include <lua.hpp>
 #include "nuklear/nuklear_config.h"
 
+#define NUKLEAR_MAX_VERTEX_MEMORY 512 * 1024
+#define NUKLEAR_MAX_ELEMENT_MEMORY 128 * 1024
+
 class Nuklear {
  public:
      enum NUKLEAR_MODE: int32_t {

@@ -10,6 +10,7 @@
 class TestPlatform;
 class TestWindow;
 class TestEventLoop;
+class TestGamepad;
 
 enum class GameTestSide {
     GameSide,
@@ -23,6 +24,7 @@ class TestState {
     TestPlatform *platform = nullptr;
     TestWindow *window = nullptr;
     TestEventLoop *eventLoop = nullptr;
+    TestGamepad *gamepad = nullptr;
 
     int64_t time = 0; // In milliseconds, for TestPlatform::TickCount
 

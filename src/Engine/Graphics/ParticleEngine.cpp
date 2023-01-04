@@ -187,9 +187,9 @@ void ParticleEngine::UpdateParticles() {
         v22 = 2 * p->timeToLive;
         if (v22 >= 255) v22 = 255;
         // v10 = (double)v22 * 0.0039215689;
-        p->uLightColor_bgr = ((uint)floorf(p->b * (v22 / 255.0f) + 0.5) << 16) |
+        p->uLightColor_bgr = ((uint)floorf(p->b * (v22 / 255.0f) + 0.5) << 0) |
                              ((uint)floorf(p->g * (v22 / 255.0f) + 0.5) << 8) |
-                             ((uint)floorf(p->r * (v22 / 255.0f) + 0.5) << 0);
+                             ((uint)floorf(p->r * (v22 / 255.0f) + 0.5) << 16);
         if (i < v19) v19 = i;
         if (i > v20) v20 = i;
     }

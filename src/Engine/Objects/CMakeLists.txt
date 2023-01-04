@@ -25,7 +25,7 @@ set(OBJECTS_HEADERS Actor.h
                     PlayerEnums.h
                     SpriteObject.h)
 
-if(NOT WIN32)
+if(NOT BUILD_PLATFORM STREQUAL "windows")
   set(CMAKE_CXX_FLAGS "-fpermissive ${CMAKE_CXX_FLAGS}")
 endif()
 

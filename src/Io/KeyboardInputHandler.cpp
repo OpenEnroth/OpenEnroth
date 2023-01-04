@@ -92,13 +92,14 @@ void KeyboardInputHandler::GenerateGameplayActions() {
     for (InputAction action : AllInputActions()) {
         bool isTriggered = false;
         PlatformKey key = actionMapping->GetKey(action);
+        PlatformKey gamepadkey = actionMapping->GetGamepadKey(action);
         if (GetToggleType(action) == KeyToggleType::TOGGLE_OneTimePress) {
-            isTriggered = controller->ConsumeKeyPress(key);
+            isTriggered = controller->ConsumeKeyPress(key) || controller->ConsumeKeyPress(gamepadkey);
         } else if (GetToggleType(action) == KeyToggleType::TOGGLE_Continuously) {
-            isTriggered = controller->IsKeyDown(key);
+            isTriggered = controller->IsKeyDown(key) || controller->IsKeyDown(gamepadkey);
         } else {
             // delay press
-            if (controller->IsKeyDown(key)) {
+            if (controller->IsKeyDown(key) || controller->IsKeyDown(gamepadkey)) {
                 resettimer = false;
                 if (this->keydelaytimer == 0 || this->keydelaytimer >= 15)
                     isTriggered = true;
@@ -315,6 +316,10 @@ void KeyboardInputHandler::GenerateGameplayActions() {
 
         case InputAction::AlwaysRun:
             engine->config->settings.AlwaysRun.Toggle();
+            break;
+
+        case InputAction::Escape:
+            // pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, window_SpeakInHouse != 0, 0);
             break;
 
         default:

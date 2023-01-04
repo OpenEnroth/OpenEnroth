@@ -81,7 +81,7 @@ char DecalBuilder::BuildAndApplyDecals(int light_level, LocationFlags locationFl
                     light_level, uSectorID,
                     buildsplat->x, buildsplat->y, buildsplat->z);
 
-            int ColourMult = buildsplat->b | (buildsplat->g << 8) | (buildsplat->r << 16);
+            int ColourMult = buildsplat->r | (buildsplat->g << 8) | (buildsplat->b << 16);
             int BloodSplatX = (int64_t)buildsplat->x;
 
             if (!this->Build_Decal_Geometry(

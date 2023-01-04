@@ -30,7 +30,7 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() : GUIWindow_Book() {
 
     pEventTimer->Pause();
     pAudioPlayer->PauseSounds(-1);
-    pChildBooksOverlay = new GUIWindow_BooksButtonOverlay(0x258u, 0x169u, 0, 0, pBtn_History);
+    pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({600, 361}, {0, 0}, pBtn_History);
     bFlashHistoryBook = 0;
 
     int pTextHeight;           // eax@12
@@ -44,15 +44,12 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() : GUIWindow_Book() {
     ui_book_button1_off = assets->GetImage_Alpha("tab-an-6a");
     ui_book_button2_off = assets->GetImage_Alpha("tab-an-7a");
 
-    pBtn_Book_1 = this->CreateButton(
-        pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1,
-        ui_book_button1_on->GetWidth(), ui_book_button1_on->GetHeight(), 1, 0,
-        UIMSG_ClickBooksBtn, 11, PlatformKey::None, localization->GetString(LSTR_SCROLL_UP),
-        {ui_book_button1_on});
-    pBtn_Book_2 = this->CreateButton(
-        pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38,
-        ui_book_button2_on->GetWidth(), ui_book_button2_on->GetHeight(), 1, 0,
-        UIMSG_ClickBooksBtn, 10, PlatformKey::None, localization->GetString(LSTR_SCROLL_DOWN),
+    pBtn_Book_1 = this->CreateButton({pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1},
+        {ui_book_button1_on->GetWidth(), ui_book_button1_on->GetHeight()}, 1, 0,
+        UIMSG_ClickBooksBtn, 11, InputAction::Invalid, localization->GetString(LSTR_SCROLL_UP), {ui_book_button1_on});
+    pBtn_Book_2 = this->CreateButton({pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38},
+        {ui_book_button2_on->GetWidth(), ui_book_button2_on->GetHeight()}, 1, 0,
+        UIMSG_ClickBooksBtn, 10, InputAction::Invalid, localization->GetString(LSTR_SCROLL_DOWN),
         {ui_book_button2_on});
 
     num_achieved_awards = 0;
@@ -191,10 +188,8 @@ void GUIWindow_JournalBook::Update() {
             str.c_str(), &journal_window, 1,
             (uint8_t)
                 Journal_limitation_factor[books_primary_item_per_page]);
-        journal_window.DrawText(
-            pAutonoteFont, 1, 0, ui_book_journal_text_color, pStringOnPage, 0,
-            journal_window.uFrameY + journal_window.uFrameHeight,
-            ui_book_journal_text_shadow);
+        journal_window.DrawText(pAutonoteFont, {1, 0}, ui_book_journal_text_color, pStringOnPage, 0,
+            journal_window.uFrameY + journal_window.uFrameHeight, ui_book_journal_text_shadow);
         ++num_achieved_awards;
     }
 }

@@ -504,7 +504,7 @@ bool LightmapBuilder::ApplyLights(LightsData *pLights, stru154 *FacePlane, unsig
                  (uint)floorf(pLights->_blv_lights_gs[i] * 255.0 + 0.5f) & 0xFF,
              uColorB =
                  (uint)floorf(pLights->_blv_lights_bs[i] * 255.0 + 0.5f) & 0xFF;
-        uint uColor = (uColorR << 16) | (uColorG << 8) | uColorB;
+        uint uColor = (uColorB << 16) | (uColorG << 8) | uColorR;
 
         if (!uColor) {
             uColor = 0x00FFFFFF;  // 0x00FFFFF;
@@ -1090,7 +1090,7 @@ int GetActorTintColor(int max_dimm, int min_dimm, float distance, int bNoLight, 
         int red = static_cast<int>(floorf(col * 16.0f + 0.5f));
         int grn = static_cast<int>(floorf(col * 194.0f + 0.5f));
         int blue = static_cast<int>(floorf(col * 153.0f + 0.5f));
-        return blue | (grn << 8) | (red << 16);
+        return red | (grn << 8) | (blue << 16);
     }
 }
 

@@ -6,8 +6,7 @@ set(SPELLS_SOURCES CastSpellInfo.cpp
 set(SPELLS_HEADERS CastSpellInfo.h
                    Spells.h)
 
-if(WIN32)
-else()
+if(NOT BUILD_PLATFORM STREQUAL "windows")
   set(CMAKE_CXX_FLAGS "-fpermissive ${CMAKE_CXX_FLAGS}")
 endif()
 

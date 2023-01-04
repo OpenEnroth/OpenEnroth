@@ -3,6 +3,7 @@
 #include <SDL.h>
 
 #include <cassert>
+#include <memory>
 #include <utility>
 
 #include "Platform/PlatformEventHandler.h"
@@ -11,13 +12,14 @@
 #include "SdlEventLoop.h"
 #include "SdlWindow.h"
 #include "SdlLogger.h"
+#include "SdlGamepad.h"
 
 SdlPlatform::SdlPlatform(PlatformLogger *logger) {
     assert(logger);
 
     state_ = std::make_unique<SdlPlatformSharedState>(this, logger);
 
-    initialized_ = SDL_Init(SDL_INIT_VIDEO) == 0;
+    initialized_ = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) == 0;
     if (!initialized_)
         state_->LogSdlError("SDL_Init");
 }
@@ -29,6 +31,11 @@ SdlPlatform::~SdlPlatform() {
 std::unique_ptr<PlatformWindow> SdlPlatform::CreateWindow() {
     if (!initialized_)
         return nullptr;
+
+#if __ANDROID__
+    // TODO: SDL orientation code turned out to be buggy and works only before window creation, hardcode only landscape modes there for now.
+    SDL_SetHintWithPriority(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight", SDL_HINT_OVERRIDE);
+#endif
 
     SDL_Window *window = SDL_CreateWindow("", 0, 0, 100, 100, SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL);
     if (!window) {
@@ -117,3 +124,41 @@ std::string SdlPlatform::WinQueryRegistry(const std::string &) const {
     return {};
 }
 
+std::string SdlPlatform::StoragePath(const PLATFORM_STORAGE type) const {
+    std::string result{};
+    const char *path = NULL;
+
+    switch (type) {
+#if __ANDROID__
+        case (ANDROID_STORAGE_INTERNAL):
+            path = SDL_AndroidGetInternalStoragePath();
+            if (path)
+                result = path;
+            break;
+        case (ANDROID_STORAGE_EXTERNAL):
+            path = SDL_AndroidGetExternalStoragePath();
+            if (path)
+                result = path;
+            break;
+#endif
+        default:
+            break;
+    }
+
+    return result;
+}
+
+std::unique_ptr<PlatformGamepad> SdlPlatform::CreateGamepad(uint32_t id) {
+    if (!initialized_)
+        return nullptr;
+
+    SDL_GameController *gamepad = SDL_GameControllerOpen(id);
+    if (!gamepad) {
+        state_->LogSdlError("SDL_GameControllerOpen");
+        return nullptr;
+    }
+
+    std::unique_ptr<SdlGamepad> result = std::make_unique<SdlGamepad>(state_.get(), gamepad, id);
+    state_->RegisterGamepad(result.get());
+    return result;
+}

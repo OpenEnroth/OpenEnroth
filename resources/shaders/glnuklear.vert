@@ -1,5 +1,3 @@
-#version 410 core
-
 uniform mat4 ProjMtx;
 
 in vec2 Position;

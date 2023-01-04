@@ -14,9 +14,5 @@ set(TABLES_HEADERS FactionTable.h
                    StorylineTextTable.h
                    TileFrameTable.h)
 
-if(WIN32)
-else()
-endif()
-
 add_library(tables STATIC ${TABLES_SOURCES} ${TABLES_HEADERS})
 target_check_style(tables)

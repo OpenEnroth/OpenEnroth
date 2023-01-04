@@ -37,7 +37,7 @@ GUIWindow_MapBook::GUIWindow_MapBook() : GUIWindow_Book() {
     viewparams->sViewCenterX = pParty->vPosition.x;
     viewparams->sViewCenterY = pParty->vPosition.y;
     pAudioPlayer->PauseSounds(-1);
-    pChildBooksOverlay = new GUIWindow_BooksButtonOverlay(546, 353, 0, 0, pBtn_Maps);
+    pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({546, 353}, {0, 0}, pBtn_Maps);
 
     MapBookOpen = 1;
 
@@ -55,30 +55,18 @@ GUIWindow_MapBook::GUIWindow_MapBook() : GUIWindow_Book() {
     ui_book_button5_off = assets->GetImage_Alpha("tabEoff");
     ui_book_button6_off = assets->GetImage_Alpha("tabWoff");
 
-    pBtn_Book_1 = CreateButton(
-        pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1, 50, 34, 1,
-        0, UIMSG_ClickBooksBtn, 0, PlatformKey::None, localization->GetString(LSTR_ZOOM_IN),
-        {ui_book_button1_on});
-    pBtn_Book_2 = CreateButton(
-        pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 1, PlatformKey::None, localization->GetString(LSTR_ZOOM_OUT),
-        {ui_book_button2_on});
-    pBtn_Book_3 = CreateButton(
-        pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 113, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 2, PlatformKey::None,
-        localization->GetString(LSTR_SCROLL_UP));
-    pBtn_Book_4 = CreateButton(
-        pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 150, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 3, PlatformKey::None,
-        localization->GetString(LSTR_SCROLL_DOWN));
-    pBtn_Book_5 = CreateButton(
-        pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 188, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 4, PlatformKey::None,
-        localization->GetString(LSTR_SCROLL_RIGHT));
-    pBtn_Book_6 = CreateButton(
-        pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 226, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 5, PlatformKey::None,
-        localization->GetString(LSTR_SCROLL_LEFT));
+    pBtn_Book_1 = CreateButton({pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1}, {50, 34}, 1, 0,
+        UIMSG_ClickBooksBtn, 0, InputAction::Invalid, localization->GetString(LSTR_ZOOM_IN), {ui_book_button1_on});
+    pBtn_Book_2 = CreateButton({pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38}, {50, 34}, 1, 0,
+        UIMSG_ClickBooksBtn, 1, InputAction::Invalid, localization->GetString(LSTR_ZOOM_OUT), {ui_book_button2_on});
+    pBtn_Book_3 = CreateButton({pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 113}, {50, 34}, 1, 0,
+        UIMSG_ClickBooksBtn, 2, InputAction::Invalid, localization->GetString(LSTR_SCROLL_UP));
+    pBtn_Book_4 = CreateButton({pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 150}, {50, 34}, 1, 0,
+        UIMSG_ClickBooksBtn, 3, InputAction::Invalid, localization->GetString(LSTR_SCROLL_DOWN));
+    pBtn_Book_5 = CreateButton({pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 188}, {50, 34}, 1, 0,
+        UIMSG_ClickBooksBtn, 4, InputAction::Invalid, localization->GetString(LSTR_SCROLL_RIGHT));
+    pBtn_Book_6 = CreateButton({pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 226}, {50, 34}, 1, 0,
+        UIMSG_ClickBooksBtn, 5, InputAction::Invalid, localization->GetString(LSTR_SCROLL_LEFT));
 }
 
 void GUIWindow_MapBook::Update() {
@@ -210,10 +198,10 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
 
         static Texture *minimaptemp = nullptr;
         if (!minimaptemp) {
-            minimaptemp = render->CreateTexture_Blank(screenWidth, screenHeight, IMAGE_FORMAT_A8R8G8B8);
+            minimaptemp = render->CreateTexture_Blank(screenWidth, screenHeight, IMAGE_FORMAT_A8B8G8R8);
         }
-        auto minitempix = (uint32_t *)minimaptemp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
-        auto minimap_pixels = (uint32_t *)viewparams->location_minimap->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+        auto minitempix = (uint32_t *)minimaptemp->GetPixels(IMAGE_FORMAT_A8B8G8R8);
+        auto minimap_pixels = (uint32_t *)viewparams->location_minimap->GetPixels(IMAGE_FORMAT_A8B8G8R8);
         int textr_width = viewparams->location_minimap->GetWidth();
 
         // nearest neiborhood scaling

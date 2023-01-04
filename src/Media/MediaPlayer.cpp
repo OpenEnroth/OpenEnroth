@@ -208,7 +208,7 @@ class AVVideoStream : public AVStreamWrapper {
 
         converter = sws_getContext(
             dec_ctx->width, dec_ctx->height, dec_ctx->pix_fmt, width, height,
-            AV_PIX_FMT_RGB32, SWS_BICUBIC, nullptr, nullptr, nullptr);
+            AV_PIX_FMT_BGR32, SWS_BICUBIC, nullptr, nullptr, nullptr);
 
         return true;
     }
@@ -268,6 +268,28 @@ class AVVideoStream : public AVStreamWrapper {
     int width;
     int height;
 };
+
+static Recti calculateVideoRectangle(const PMovie &pMovie_Track) {
+    Sizei scaleSize;
+    if (render->GetPresentDimensions() != render->GetRenderDimensions())
+        scaleSize = render->GetRenderDimensions();
+    else
+        scaleSize = window->Size();
+    float ratio_width = (float)scaleSize.w / pMovie_Track->GetWidth();
+    float ratio_height = (float)scaleSize.h / pMovie_Track->GetHeight();
+    float ratio = std::min(ratio_width, ratio_height);
+
+    float w = pMovie_Track->GetWidth() * ratio;
+    float h = pMovie_Track->GetHeight() * ratio;
+
+    Recti rect;
+    rect.x = (float)scaleSize.w / 2 - w / 2;
+    rect.y = (float)scaleSize.h / 2 - h / 2;
+    rect.w = w;
+    rect.h = h;
+
+    return rect;
+}
 
 class Movie : public IMovie {
  public:
@@ -451,14 +473,14 @@ class Movie : public IMovie {
         return video.last_frame;
     }
 
-    virtual void PlayBink(Recti rect) {
+    virtual void PlayBink() {
         // fix for #39 - choppy sound with bink
 
         AVPacket packet;
 
 
         // create texture
-        Texture* tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(), IMAGE_FORMAT_A8R8G8B8);
+        Texture* tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(), IMAGE_FORMAT_A8B8G8R8);
 
         // holds decoded audio
         std::queue<std::shared_ptr<Blob>, std::deque<std::shared_ptr<Blob>>> buffq;
@@ -525,14 +547,14 @@ class Movie : public IMovie {
 
                 render->BeginScene();
                 // update pixels from buffer
-                uint32_t* pix = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+                uint32_t* pix = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_A8B8G8R8);
                 unsigned int num_pixels = tex->GetWidth() * tex->GetHeight();
-                unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_A8R8G8B8);
+                unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_A8B8G8R8);
                 memcpy(pix, tmp_buf->data(), num_pixels_bytes);
 
                 // update texture
                 render->Update_Texture(tex);
-                render->DrawImage(tex, rect);
+                render->DrawImage(tex, calculateVideoRectangle(pMovie_Track));
                 render->EndScene();
                 render->Present();
             }
@@ -780,22 +802,22 @@ void MPlayer::HouseMovieLoop() {
 
     static Texture *tex;
     if (!tex) {
-        tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(), IMAGE_FORMAT_A8R8G8B8);
+        tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(), IMAGE_FORMAT_A8B8G8R8);
     }
 
     std::shared_ptr<Blob> buffer = pMovie_Track->GetFrame();
     if (buffer) {
         Recti rect;
-        Sizei wsize = window->Size();
+        Sizei wsize = render->GetRenderDimensions();
         rect.x = render->config->graphics.HouseMovieX1.Get();
         rect.y = render->config->graphics.HouseMovieY1.Get();
         rect.w = wsize.w - render->config->graphics.HouseMovieX2.Get();
         rect.h = wsize.h - render->config->graphics.HouseMovieY2.Get();
 
         // update pixels from buffer
-        uint32_t *pix = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+        uint32_t *pix = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_A8B8G8R8);
         unsigned int num_pixels = tex->GetWidth() * tex->GetHeight();
-        unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_A8R8G8B8);
+        unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_A8B8G8R8);
         memcpy(pix, buffer->data(), num_pixels_bytes);
 
         // update texture
@@ -845,30 +867,20 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
 
     pMovie_Track->Play();
 
-    Sizei wsize = window->Size();
-    float ratio_width = (float)wsize.w / pMovie_Track->GetWidth();
-    float ratio_height = (float)wsize.h / pMovie_Track->GetHeight();
-    float ratio = ratio_width < ratio_height ? ratio_width : ratio_height;
-
-    float w = pMovie_Track->GetWidth() * ratio;
-    float h = pMovie_Track->GetHeight() * ratio;
-
-    Recti rect;
-    rect.x = (float)wsize.w / 2 - w / 2;
-    rect.y = (float)wsize.h / 2 - h / 2;
-    rect.w = w;
-    rect.h = h;
+    Sizei wSize = window->Size();
+    Sizei scaleSize;
 
     // create texture
-    Texture *tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(), IMAGE_FORMAT_A8R8G8B8);
+    Texture *tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(), IMAGE_FORMAT_A8B8G8R8);
 
     if (pMovie->GetFormat() == "bink") {
         logger->Info("bink file");
-        pMovie->PlayBink(rect);
+        pMovie->PlayBink();
     } else {
         while (true) {
             MessageLoopWithWait();
 
+            render->ClearBlack();
             render->BeginScene();
 
             std::this_thread::sleep_for(2ms);
@@ -879,14 +891,14 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
             }
 
             // update pixels from buffer
-            uint32_t* pix = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+            uint32_t* pix = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_A8B8G8R8);
             unsigned int num_pixels = tex->GetWidth() * tex->GetHeight();
-            unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_A8R8G8B8);
+            unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_A8B8G8R8);
             memcpy(pix, buffer->data(), num_pixels_bytes);
 
             // update texture
             render->Update_Texture(tex);
-            render->DrawImage(tex, rect);
+            render->DrawImage(tex, calculateVideoRectangle(pMovie_Track));
 
             render->EndScene();
             render->Present();

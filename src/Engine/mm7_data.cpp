@@ -169,8 +169,8 @@ struct PlayerFrameTable *pPlayerFrameTable;  // idb
 //-------------------------------------------------------------------------
 // Data declarations
 
-unsigned int game_viewport_width;
-unsigned int game_viewport_height;
+int game_viewport_width;
+int game_viewport_height;
 int game_viewport_x;
 int game_viewport_y;
 int game_viewport_z;
@@ -206,7 +206,7 @@ std::array<int16_t, 4> RightClickPortraitXmax = {{83, 198, 312, 423}};
 std::array<unsigned int, 4> pHealthBarPos = {{23, 138, 251, 366}}; //was 22, 137
 std::array<unsigned int, 4> pManaBarPos = {{102, 217, 331, 447}};
 
-std::array<char, 88> monster_popup_y_offsets = {
+std::array<int8_t, 88> monster_popup_y_offsets = {
     {-20, 20, 0,   -40, 0,   0,   0,   0,   0,   0,   -50, 20,  0,   -10, -10,
      -20, 10, -10, 0,   0,   0,   -20, 10,  -10, 0,   0,   0,   -20, -10, 0,
      0,   0,  -40, -20, 0,   0,   0,   -50, -30, -30, -30, -30, -30, -30, 0,
@@ -2379,7 +2379,6 @@ struct NPCData *ptr_50C9E0;
 // int dword_50C9EC[120];
 int dword_50CDC8;
 Vec3i layingitem_vel_50FDFC;
-char pStartingMapName[32];  // idb
 std::array<uint8_t, 5> IsPlayerWearingWatersuit;
 std::array<char, 54> party_has_equipment;
 

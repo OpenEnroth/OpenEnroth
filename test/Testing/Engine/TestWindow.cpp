@@ -49,12 +49,28 @@ bool TestWindow::IsVisible() const {
     return base_->IsVisible();
 }
 
+void TestWindow::SetResizable(bool resizable) {
+    base_->SetResizable(resizable);
+}
+
+bool TestWindow::Resizable() const {
+    return base_->Resizable();
+}
+
 void TestWindow::SetWindowMode(PlatformWindowMode mode) {
     base_->SetWindowMode(mode);
 }
 
 PlatformWindowMode TestWindow::WindowMode() {
     return base_->WindowMode();
+}
+
+void TestWindow::SetOrientations(PlatformWindowOrientations orientations) {
+    base_->SetOrientations(orientations);
+}
+
+PlatformWindowOrientations TestWindow::Orientations() {
+    return base_->Orientations();
 }
 
 void TestWindow::SetGrabsMouse(bool grabsMouse) {

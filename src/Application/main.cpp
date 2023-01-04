@@ -53,6 +53,10 @@ int PlatformMain(int argc, char** argv) {
         printf("[Press any key to close this window]");
         getchar();
     }
+#elif __ANDROID__
+    // TODO: on android without this it won't close application properly until it finishes music track?!
+    // Something is not closing and preventing proper teardown?
+    exit(0);
 #endif
 
     return result;

@@ -29,15 +29,23 @@ namespace Io {
 
         void MapKey(InputAction action, PlatformKey key);
         void MapKey(InputAction action, PlatformKey key, KeyToggleType type);
+        void MapGamepadKey(InputAction action, PlatformKey key);
         PlatformKey MapDefaultKey(InputAction action);
 
         PlatformKey GetKey(InputAction action) const;
+        PlatformKey GetGamepadKey(InputAction action) const;
         KeyToggleType GetToggleType(InputAction action) const;
+        bool IsKeyMatchAction(InputAction action, PlatformKey key) const;
 
-        ConfigValue<std::string> *InputActionToConfigKey(InputAction action);
+        GameConfig::String *InputActionToConfigKey(InputAction action);
         PlatformKey ConfigDefaultKey(InputAction action);
         PlatformKey ConfigGetKey(InputAction action);
         void ConfigSetKey(InputAction action, PlatformKey key);
+
+        GameConfig::String *InputActionToConfigGamepadKey(InputAction action);
+        PlatformKey ConfigDefaultGamepadKey(InputAction action);
+        PlatformKey ConfigGetGamepadKey(InputAction action);
+        void ConfigSetGamepadKey(InputAction action, PlatformKey key);
 
         void ReadMappings();
         void StoreMappings();
@@ -45,6 +53,7 @@ namespace Io {
 
      private:
         std::map<InputAction, PlatformKey> actionKeyMap;
+        std::map<InputAction, PlatformKey> gamepadKeyMap;
         std::map<InputAction, KeyToggleType> keyToggleMap;
         std::shared_ptr<Application::GameConfig> config = nullptr;
     };

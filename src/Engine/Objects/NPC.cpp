@@ -983,25 +983,19 @@ void NPCHireableDialogPrepare() {
     v0 = 0;
     v1 = HouseNPCData[pDialogueNPCCount + -(dword_591080 != 0)];  //- 1
     pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, 0);
-    pBtn_ExitCancel = pDialogueWindow->CreateButton(
-        471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, PlatformKey::None,
-        localization->GetString(LSTR_CANCEL),
-        {ui_exit_cancel_button_background}
+    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 350}, 0);
+    pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0,
+        UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_CANCEL), {ui_exit_cancel_button_background}
     );
-    pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
+    pDialogueWindow->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
     if (pNPCStats->pProfessions[v1->profession].pBenefits) {
-        pDialogueWindow->CreateButton(
-            480, 160, 140, 30, 1, 0,
-            UIMSG_ClickNPCTopic, DIALOGUE_PROFESSION_DETAILS, PlatformKey::None,
-            localization->GetString(LSTR_MORE_INFORMATION)
+        pDialogueWindow->CreateButton({480, 160}, {140, 30}, 1, 0,
+            UIMSG_ClickNPCTopic, DIALOGUE_PROFESSION_DETAILS, InputAction::Invalid, localization->GetString(LSTR_MORE_INFORMATION)
         );
         v0 = 1;
     }
-    pDialogueWindow->CreateButton(
-        480, 30 * v0 + 160, 140, 30, 1, 0,
-        UIMSG_ClickNPCTopic, DIALOGUE_HIRE_FIRE, PlatformKey::None,
-        localization->GetString(LSTR_HIRE)
+    pDialogueWindow->CreateButton({480, 30 * v0 + 160}, {140, 30}, 1, 0,
+        UIMSG_ClickNPCTopic, DIALOGUE_HIRE_FIRE, InputAction::Invalid, localization->GetString(LSTR_HIRE)
     );
     pDialogueWindow->_41D08F_set_keyboard_control_group(v0 + 1, 1, 0, 2);
     dialog_menu_id = DIALOGUE_OTHER;
@@ -1016,26 +1010,20 @@ void _4B4224_UpdateNPCTopics(int _this) {
 
     num_menu_buttons = 0;
     pDialogueNPCCount = (_this + 1);
+    Sizei renDims = render->GetRenderDimensions();
     if (_this + 1 == uNumDialogueNPCPortraits && uHouse_ExitPic) {
         pDialogueWindow->Release();
-        pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), window->GetHeight(), 0);
-        transition_button_label = localization->FormatString(
-            LSTR_FMT_ENTER_S,
-            pMapStats->pInfos[uHouse_ExitPic].pName.c_str()
+        pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, renDims, 0);
+        transition_button_label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[uHouse_ExitPic].pName.c_str()
         );
-        pBtn_ExitCancel = pDialogueWindow->CreateButton(
-            566, 445, 75, 33, 1, 0, UIMSG_Escape, 0, PlatformKey::N,
-            localization->GetString(LSTR_CANCEL), {ui_buttdesc2}
-        );
-        pBtn_YES = pDialogueWindow->CreateButton(
-            486, 445, 75, 33, 1, 0, UIMSG_BF, 1, PlatformKey::Y,
-            transition_button_label.c_str(), {ui_buttyes2});
-        pDialogueWindow->CreateButton(
-            pNPCPortraits_x[0][0], pNPCPortraits_y[0][0], 63u, 73u, 1, 0,
-            UIMSG_BF, 1u, PlatformKey::Space, transition_button_label.c_str());
-        pDialogueWindow->CreateButton(
-            8, 8, 460, 344, 1, 0, UIMSG_BF, 1, PlatformKey::Y,
-            transition_button_label.c_str()
+        pBtn_ExitCancel = pDialogueWindow->CreateButton({566, 445}, {75, 33}, 1, 0,
+            UIMSG_Escape, 0, InputAction::No, localization->GetString(LSTR_CANCEL), {ui_buttdesc2});
+        pBtn_YES = pDialogueWindow->CreateButton({486, 445}, {75, 33}, 1, 0,
+            UIMSG_BF, 1, InputAction::Yes, transition_button_label.c_str(), {ui_buttyes2});
+        pDialogueWindow->CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {63, 73}, 1, 0,
+            UIMSG_BF, 1, InputAction::EventTrigger, transition_button_label.c_str());
+        pDialogueWindow->CreateButton({8, 8}, {460, 344}, 1, 0,
+            UIMSG_BF, 1, InputAction::Yes, transition_button_label.c_str()
         );
     } else {
         v17 = HouseNPCData[_this + 1 - ((dword_591080 != 0) ? 1 : 0)];  //+ 1
@@ -1045,22 +1033,17 @@ void _4B4224_UpdateNPCTopics(int _this) {
             for (i = 0; i < uNumDialogueNPCPortraits; ++i)
                 HouseNPCPortraitsButtonsList[i]->Release();
         }
-        pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 345, 0);
-        pBtn_ExitCancel = pDialogueWindow->CreateButton(
-            471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, PlatformKey::None,
-            localization->GetString(LSTR_END_CONVERSATION),
-            {ui_exit_cancel_button_background}
+        pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {renDims.w, 345}, 0);
+        pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0,
+            UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_END_CONVERSATION), {ui_exit_cancel_button_background}
         );
-        pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
+        pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
         if (pDialogueNPCCount == 1 && dword_591080) {
             InitializaDialogueOptions(in_current_building_type);
         } else {
             if (v17->is_joinable) {
                 num_menu_buttons = 1;
-                pDialogueWindow->CreateButton(
-                    480, 160, 140, 30, 1, 0, UIMSG_ClickNPCTopic,
-                    DIALOGUE_13_hiring_related
-                );
+                pDialogueWindow->CreateButton({480, 160}, {140, 30}, 1, 0, UIMSG_ClickNPCTopic, DIALOGUE_13_hiring_related);
             }
 
             #define AddScriptedDialogueLine(EVENT_ID, MSG_PARAM) \
@@ -1068,10 +1051,7 @@ void _4B4224_UpdateNPCTopics(int _this) {
                     if (num_menu_buttons < 4) { \
                         int res = NPCDialogueEventProcessor(EVENT_ID); \
                         if (res == 1 || res == 2) \
-                            pDialogueWindow->CreateButton( \
-                                480, 160 + 30 * num_menu_buttons++, 140, 30, \
-                                1, 0, UIMSG_ClickNPCTopic, MSG_PARAM \
-                            ); \
+                            pDialogueWindow->CreateButton({480, 160 + 30 * num_menu_buttons++}, {140, 30}, 1, 0, UIMSG_ClickNPCTopic, MSG_PARAM); \
                     } \
                 }
 

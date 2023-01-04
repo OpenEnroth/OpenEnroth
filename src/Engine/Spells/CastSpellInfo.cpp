@@ -3887,55 +3887,39 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
 
     int result = PushCastSpellInfo(spell, uPlayerID, skill_value, flags, a6);
     if (result != -1) {
+        Sizei renDims = render->GetRenderDimensions();
         if (flags & ON_CAST_WholeParty_BigImprovementAnim) {
             if (pGUIWindow_CastTargetedSpell) return;
-            pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell(
-                0, 0, window->GetWidth(), window->GetHeight(),
-                &pCastSpellInfo[result]);
-            pGUIWindow_CastTargetedSpell->CreateButton(
-                52, 422, 35, 0, 2, 0,
-                UIMSG_CastSpell_Character_Big_Improvement, 0, PlatformKey::Digit1);
-            pGUIWindow_CastTargetedSpell->CreateButton(
-                165, 422, 35, 0, 2, 0,
-                UIMSG_CastSpell_Character_Big_Improvement, 1, PlatformKey::Digit2);
-            pGUIWindow_CastTargetedSpell->CreateButton(
-                280, 422, 35, 0, 2, 0,
-                UIMSG_CastSpell_Character_Big_Improvement, 2, PlatformKey::Digit3);
-            pGUIWindow_CastTargetedSpell->CreateButton(
-                390, 422, 35, 0, 2, 0,
-                UIMSG_CastSpell_Character_Big_Improvement, 3, PlatformKey::Digit4);
+            pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell({0, 0}, renDims, &pCastSpellInfo[result]);
+            pGUIWindow_CastTargetedSpell->CreateButton({52, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_Character_Big_Improvement, 0, InputAction::SelectChar1);
+            pGUIWindow_CastTargetedSpell->CreateButton({165, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_Character_Big_Improvement, 1, InputAction::SelectChar2);
+            pGUIWindow_CastTargetedSpell->CreateButton({280, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_Character_Big_Improvement, 2, InputAction::SelectChar3);
+            pGUIWindow_CastTargetedSpell->CreateButton({390, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_Character_Big_Improvement, 3, InputAction::SelectChar4);
             pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
         if (flags & ON_CAST_TargetCrosshair) {
             if (pGUIWindow_CastTargetedSpell) return;
 
-            pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell(
-                0, 0, window->GetWidth(), window->GetHeight(),
-                &pCastSpellInfo[result]);
-            pGUIWindow_CastTargetedSpell->CreateButton(
-                game_viewport_x, game_viewport_y, game_viewport_width,
-                game_viewport_height, 1, 0, UIMSG_CastSpell_Shoot_Monster, 0);
+            pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell({0, 0}, renDims, &pCastSpellInfo[result]);
+            pGUIWindow_CastTargetedSpell->CreateButton({game_viewport_x, game_viewport_y}, {game_viewport_width, game_viewport_height}, 1, 0,
+                UIMSG_CastSpell_Shoot_Monster, 0);
             pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
         if (flags & ON_CAST_Telekenesis) {
             if (pGUIWindow_CastTargetedSpell) return;
 
-            pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell(
-                0, 0, window->GetWidth(), window->GetHeight(),
-                &pCastSpellInfo[result]);
-            pGUIWindow_CastTargetedSpell->CreateButton(
-                game_viewport_x, game_viewport_y, game_viewport_width,
-                game_viewport_height, 1, 0, UIMSG_CastSpell_Telekinesis, 0);
+            pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell({0, 0}, renDims, &pCastSpellInfo[result]);
+            pGUIWindow_CastTargetedSpell->CreateButton({game_viewport_x, game_viewport_y}, {game_viewport_width, game_viewport_height}, 1, 0,
+                UIMSG_CastSpell_Telekinesis, 0);
             pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
         if (flags & ON_CAST_Enchantment) {
             if (pGUIWindow_CastTargetedSpell) return;
 
-            pGUIWindow_CastTargetedSpell =
-                pCastSpellInfo[result].GetCastSpellInInventoryWindow();
+            pGUIWindow_CastTargetedSpell = pCastSpellInfo[result].GetCastSpellInInventoryWindow();
             _50C9A0_IsEnchantingInProgress = 1;
             some_active_character = uActiveCharacter;
             pParty->PickedItem_PlaceInInventory_or_Drop();
@@ -3943,42 +3927,22 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
         }
         if (flags & ON_CAST_MonsterSparkles) {
             if (pGUIWindow_CastTargetedSpell) return;
-            pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell(
-                0, 0, window->GetWidth(), window->GetHeight(),
-                &pCastSpellInfo[result]);
-            pGUIWindow_CastTargetedSpell->CreateButton(
-                0x34u, 0x1A6u, 0x23u, 0, 2, 0,
-                UIMSG_CastSpell_Character_Small_Improvement, 0, PlatformKey::Digit1);
-            pGUIWindow_CastTargetedSpell->CreateButton(
-                0xA5u, 0x1A6u, 0x23u, 0, 2, 0,
-                UIMSG_CastSpell_Character_Small_Improvement, 1, PlatformKey::Digit2);
-            pGUIWindow_CastTargetedSpell->CreateButton(
-                0x118u, 0x1A6u, 0x23u, 0, 2, 0,
-                UIMSG_CastSpell_Character_Small_Improvement, 2, PlatformKey::Digit3);
-            pGUIWindow_CastTargetedSpell->CreateButton(
-                0x186u, 0x1A6u, 0x23u, 0, 2, 0,
-                UIMSG_CastSpell_Character_Small_Improvement, 3, PlatformKey::Digit4);
-            pGUIWindow_CastTargetedSpell->CreateButton(
-                8, 8, game_viewport_width, game_viewport_height, 1, 0,
-                UIMSG_CastSpell_Monster_Improvement, 0);
+            pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell({0, 0}, renDims, &pCastSpellInfo[result]);
+            pGUIWindow_CastTargetedSpell->CreateButton({0x34u, 0x1A6u}, {0x23u, 0}, 2, 0, UIMSG_CastSpell_Character_Small_Improvement, 0, InputAction::SelectChar1);
+            pGUIWindow_CastTargetedSpell->CreateButton({0xA5u, 0x1A6u}, {0x23u, 0}, 2, 0, UIMSG_CastSpell_Character_Small_Improvement, 1, InputAction::SelectChar2);
+            pGUIWindow_CastTargetedSpell->CreateButton({0x118u, 0x1A6u}, {0x23u, 0}, 2, 0, UIMSG_CastSpell_Character_Small_Improvement, 2, InputAction::SelectChar3);
+            pGUIWindow_CastTargetedSpell->CreateButton({0x186u, 0x1A6u}, {0x23u, 0}, 2, 0, UIMSG_CastSpell_Character_Small_Improvement, 3, InputAction::SelectChar4);
+            pGUIWindow_CastTargetedSpell->CreateButton({8, 8}, {game_viewport_width, game_viewport_height}, 1, 0, UIMSG_CastSpell_Monster_Improvement, 0);
             pParty->PickedItem_PlaceInInventory_or_Drop();
         }
         if (flags & ON_CAST_DarkSacrifice && !pGUIWindow_CastTargetedSpell) {
-            pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell(
-                0, 0, window->GetWidth(), window->GetHeight(),
-                &pCastSpellInfo[result]);
-            pBtn_NPCLeft = pGUIWindow_CastTargetedSpell->CreateButton(
-                469, 178, ui_btn_npc_left->GetWidth(),
-                ui_btn_npc_left->GetHeight(), 1, 0, UIMSG_ScrollNPCPanel, 0, PlatformKey::None,
-                "", {ui_btn_npc_left});
-            pBtn_NPCRight = pGUIWindow_CastTargetedSpell->CreateButton(
-                626, 178, ui_btn_npc_right->GetWidth(),
-                ui_btn_npc_right->GetHeight(), 1, 0, UIMSG_ScrollNPCPanel, 1, PlatformKey::None,
-                "", {ui_btn_npc_right});
-            pGUIWindow_CastTargetedSpell->CreateButton(
-                491, 149, 64, 74, 1, 0, UIMSG_HiredNPC_CastSpell, 4, PlatformKey::Digit5);
-            pGUIWindow_CastTargetedSpell->CreateButton(
-                561, 149, 64, 74, 1, 0, UIMSG_HiredNPC_CastSpell, 5, PlatformKey::Digit6);
+            pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell({0, 0}, renDims, &pCastSpellInfo[result]);
+            pBtn_NPCLeft = pGUIWindow_CastTargetedSpell->CreateButton({469, 178}, {ui_btn_npc_left->GetWidth(), ui_btn_npc_left->GetHeight()}, 1, 0,
+                UIMSG_ScrollNPCPanel, 0, InputAction::Invalid, "", {ui_btn_npc_left});
+            pBtn_NPCRight = pGUIWindow_CastTargetedSpell->CreateButton({626, 178}, {ui_btn_npc_right->GetWidth(), ui_btn_npc_right->GetHeight()}, 1, 0,
+                UIMSG_ScrollNPCPanel, 1, InputAction::Invalid, "", {ui_btn_npc_right});
+            pGUIWindow_CastTargetedSpell->CreateButton({491, 149}, {64, 74}, 1, 0, UIMSG_HiredNPC_CastSpell, 4, InputAction::SelectNPC1);
+            pGUIWindow_CastTargetedSpell->CreateButton({561, 149}, {64, 74}, 1, 0, UIMSG_HiredNPC_CastSpell, 5, InputAction::SelectNPC2);
         }
     }
 }

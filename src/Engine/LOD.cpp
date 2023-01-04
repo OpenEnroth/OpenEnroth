@@ -501,7 +501,8 @@ bool LOD::WriteableFile::FixDirectoryOffsets() {
     fclose(pOutputFileHandle);
     pOutputFileHandle = nullptr;
     CloseWriteFile();
-    std::filesystem::remove(MakeTempPath("lodapp.tmp"));
+    std::string tempLODAppPath = pLODPath + ".app.tmp";
+    std::filesystem::remove(tempLODAppPath);
     std::filesystem::remove(pLODPath);
     std::filesystem::rename(tempPath, pLODPath);
     CloseWriteFile();
@@ -526,7 +527,8 @@ int LOD::WriteableFile::CreateTempFile() {
 
     if (pIOBuffer && uIOBufferSize) {
         uNumSubDirs = 0;
-        pOutputFileHandle = fopen(MakeTempPath("lodapp.tmp").c_str(), "wb+");
+        std::string tempLODAppPath = pLODPath + ".app.tmp";
+        pOutputFileHandle = fopen(tempLODAppPath.c_str(), "wb+");
         return pOutputFileHandle ? 1 : 7;
     } else {
         return 5;

@@ -240,6 +240,7 @@ class IRender {
     virtual void ClearBlack() = 0;
     virtual void PresentBlackScreen() = 0;
 
+    virtual uint8_t *ReadScreenPixels() = 0;
     virtual void SaveWinnersCertificate(const char *a1) = 0;
     virtual void ClearTarget(unsigned int uColor) = 0;
     virtual void Present() = 0;
@@ -391,6 +392,8 @@ class IRender {
 
     virtual void DrawTwodVerts() = 0;
 
+    virtual Sizei GetRenderDimensions() = 0;
+    virtual Sizei GetPresentDimensions() = 0;
     virtual bool Reinitialize(bool firstInit = false) = 0;
     virtual void ReloadShaders() = 0;
 
@@ -417,9 +420,6 @@ class IRender {
     Vis *vis = nullptr;
 
     virtual void WritePixel16(int x, int y, uint16_t color) = 0;
-
-    virtual unsigned int GetRenderWidth() const = 0;
-    virtual unsigned int GetRenderHeight() const = 0;
 
     virtual HWLTexture *LoadHwlBitmap(const std::string &name) = 0;
     virtual HWLTexture *LoadHwlSprite(const std::string &name) = 0;

@@ -6,6 +6,7 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
+#include "Engine/Graphics/IRender.h"
 
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
@@ -101,12 +102,9 @@ void GUIButton::Release() {
     delete this;
 }
 
-void GUIButton::DrawLabel(const std::string &label_text, GUIFont *pFont, int a5,
-                          int uFontShadowColor) {
-    return pParent->DrawText(
-        pFont,
-        this->uX + (int)(this->uWidth - pFont->GetLineWidth(label_text)) / 2,
-        this->uY + (int)(this->uHeight - pFont->GetHeight()) / 2, a5,
+void GUIButton::DrawLabel(const std::string &label_text, GUIFont *pFont, int a5, int uFontShadowColor) {
+    return pParent->DrawText(pFont,
+        {this->uX + (int)(this->uWidth - pFont->GetLineWidth(label_text)) / 2, this->uY + (int)(this->uHeight - pFont->GetHeight()) / 2}, a5,
         label_text, 0, 0, uFontShadowColor);
 }
 
@@ -115,18 +113,7 @@ bool GUIButton::Contains(unsigned int x, unsigned int y) {
 }
 
 void CreateShopDialogueButtonAtRow(int row, DIALOGUE_TYPE type) {
-    pDialogueWindow->CreateButton(
-        480,
-        146 + 30 * row,
-        140,
-        30,
-        1,
-        0,
-        UIMSG_SelectShopDialogueOption,
-        type,
-        PlatformKey::None,
-        ""
-    );
+    pDialogueWindow->CreateButton({480, 146 + 30 * row}, {140, 30}, 1, 0, UIMSG_SelectShopDialogueOption, type, InputAction::Invalid, "");
 }
 
 void ReleaseAwardsScrollBar() {
@@ -165,23 +152,18 @@ void CreateAwardsScrollBar() {
                 pButton->uX = 0;
             }
         }
-        pBtn_Up = pGUIWindow_CurrentMenu->CreateButton(
-            438, 46, ui_ar_up_up->GetWidth(), ui_ar_up_up->GetHeight(), 1, 0,
-            UIMSG_ClickAwardsUpBtn, 0, PlatformKey::None, "", {{ui_ar_up_up, ui_ar_up_dn}});
-        pBtn_Down = pGUIWindow_CurrentMenu->CreateButton(
-            438, 292, ui_ar_dn_up->GetWidth(), ui_ar_dn_up->GetHeight(), 1, 0,
-            UIMSG_ClickAwardsDownBtn, 0, PlatformKey::None, "", {{ui_ar_dn_up, ui_ar_dn_dn}});
-        ptr_507BA4 = pGUIWindow_CurrentMenu->CreateButton(
-            440, 62, 16, 232, 1, 0, UIMSG_ClickAwardScrollBar, 0, PlatformKey::None, "");
+        pBtn_Up = pGUIWindow_CurrentMenu->CreateButton({438, 46}, {ui_ar_up_up->GetWidth(), ui_ar_up_up->GetHeight()}, 1, 0,
+            UIMSG_ClickAwardsUpBtn, 0, InputAction::Invalid, "", {{ui_ar_up_up, ui_ar_up_dn}});
+        pBtn_Down = pGUIWindow_CurrentMenu->CreateButton({438, 292}, {ui_ar_dn_up->GetWidth(), ui_ar_dn_up->GetHeight()}, 1, 0,
+            UIMSG_ClickAwardsDownBtn, 0, InputAction::Invalid, "", {{ui_ar_dn_up, ui_ar_dn_dn}});
+        ptr_507BA4 = pGUIWindow_CurrentMenu->CreateButton({440, 62}, {16, 232}, 1, 0, UIMSG_ClickAwardScrollBar, 0, InputAction::Invalid, "");
     }
 }
 
 void UI_CreateEndConversationButton() {
     pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 345, 0);
-    pBtn_ExitCancel = pDialogueWindow->CreateButton(
-        471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, PlatformKey::None,
-        localization->GetString(LSTR_END_CONVERSATION),
-        {ui_exit_cancel_button_background});
-    pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, PlatformKey::None, "");
+    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetPresentDimensions().w, 345}, 0);
+    pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid,
+        localization->GetString(LSTR_END_CONVERSATION), {ui_exit_cancel_button_background});
+    pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, InputAction::Invalid, "");
 }

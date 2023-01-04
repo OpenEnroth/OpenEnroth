@@ -9,7 +9,8 @@ using enum PlatformVSyncMode;
 
 enum class PlatformOpenGLProfile {
     CoreProfile,
-    CompatibilityProfile
+    CompatibilityProfile,
+    ESProfile
 };
 using enum PlatformOpenGLProfile;
 

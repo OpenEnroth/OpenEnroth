@@ -3,6 +3,7 @@
 #include <string>
 #include <memory>
 
+#include "Utility/Flags.h"
 #include "Utility/Geometry/Size.h"
 #include "Utility/Geometry/Point.h"
 #include "Utility/Geometry/Margins.h"
@@ -26,6 +27,16 @@ enum class PlatformWindowMode {
     FULLSCREEN_BORDERLESS = 3,
 };
 using enum PlatformWindowMode;
+
+enum class PlatformWindowOrientation {
+    LANDSCAPE_LEFT = 0x01,
+    LANDSCAPE_RIGHT = 0x02,
+    PORTRAIT_UP = 0x04,
+    PORTRAIT_DOWN = 0x08,
+};
+using enum PlatformWindowOrientation;
+MM_DECLARE_FLAGS(PlatformWindowOrientations, PlatformWindowOrientation)
+MM_DECLARE_OPERATORS_FOR_FLAGS(PlatformWindowOrientations)
 
 /**
  * Abstraction for accessing platform-specific window API.
@@ -53,11 +64,17 @@ class PlatformWindow {
     virtual void SetVisible(bool visible) = 0;
     virtual bool IsVisible() const = 0;
 
+    virtual void SetResizable(bool resizable) = 0;
+    virtual bool Resizable() const = 0;
+
     virtual void SetWindowMode(PlatformWindowMode mode) = 0;
     virtual PlatformWindowMode WindowMode() = 0;
 
     virtual void SetGrabsMouse(bool grabsMouse) = 0;
     virtual bool GrabsMouse() const = 0;
+
+    virtual void SetOrientations(PlatformWindowOrientations orientations) = 0;
+    virtual PlatformWindowOrientations Orientations() = 0;
 
     virtual Marginsi FrameMargins() const = 0;
 
@@ -67,7 +84,8 @@ class PlatformWindow {
 
     virtual std::unique_ptr<PlatformOpenGLContext> CreateOpenGLContext(const PlatformOpenGLOptions &options) = 0;
 
-    // TODO(captainurist): compat methods, drop
+#ifdef DDRAW_ENABLED
+    // TODO: compat methods, drop alongside with directdraw renderer
     int GetWidth() const {
         return Size().w;
     }
@@ -75,4 +93,5 @@ class PlatformWindow {
     int GetHeight() const {
         return Size().h;
     }
+#endif
 };

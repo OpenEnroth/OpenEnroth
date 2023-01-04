@@ -26,9 +26,9 @@ void ObjectList::InitializeSprites() {
 void ObjectList::InitializeColors() {
     for (unsigned int i = 0; i < pObjectList->uNumObjects; ++i) {
         pObjectList->pObjects[i].uParticleTrailColor =
-            ((unsigned int)pObjectList->pObjects[i].uParticleTrailColorB) |
+            ((unsigned int)pObjectList->pObjects[i].uParticleTrailColorB << 16) |
             ((unsigned int)pObjectList->pObjects[i].uParticleTrailColorG << 8) |
-            ((unsigned int)pObjectList->pObjects[i].uParticleTrailColorR << 16);
+            ((unsigned int)pObjectList->pObjects[i].uParticleTrailColorR);
     }
 }
 
