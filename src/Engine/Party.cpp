@@ -1201,7 +1201,7 @@ bool Party::AddItemToParty(ItemGen *pItem) {
     if (v5) {
         auto texture = assets->GetImage_ColorKey(v5, render->teal_mask_16);
         v8 = 0;
-        uint current_player = std::min(1u, uActiveCharacter);
+        uint current_player = std::max(1u, uActiveCharacter);
         for (int i = 0; i < 4; i++) {
             current_player = current_player + i;
             if (current_player > 4) current_player = current_player - 4;

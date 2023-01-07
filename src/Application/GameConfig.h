@@ -548,8 +548,7 @@ namespace Application {
 
             Bool Resizable = ConfigValue<bool>(this, "resizable", true, "Make window resizable by user or not.");
 
-            /** Reload texture assets if window is reinitialised. */
-            ConfigValue<bool> ReloadTex = ConfigValue<bool>(this, "reload_tex", true);
+            Bool ReloadTex = ConfigValue<bool>(this, "reload_tex", true, "Reload texture assets if window is reinitialised.");
 
          private:
              static std::string ValidateTitle(std::string title) {

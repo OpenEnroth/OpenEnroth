@@ -1852,7 +1852,7 @@ void OutdoorLocation::subconstuctor() {
     // DLVHeader::DLVHeader(&v1->ddm);
 }
 
-// TODO(pskelton): Move to party?
+// TODO(pskelton): Pass party as param
 //----- (00473893) --------------------------------------------------------
 void ODM_ProcessPartyActions() {
     int v1;            // edi@1

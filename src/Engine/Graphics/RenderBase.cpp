@@ -255,6 +255,7 @@ void RenderBase::DrawSpriteObjects() {
     }
 }
 
+// TODO(pskelton): Move to outdoors - clean up
 void RenderBase::PrepareDecorationsRenderList_ODM() {
     unsigned int v6;        // edi@9
     int v7;                 // eax@9

@@ -149,7 +149,7 @@ struct RenderBillboardD3D {
     int PaletteIndex;
 };
 
-// TODO(pskelton): do we really need 3 different billboard structs
+// TODO(pskelton): Simplify/remove/combine different billboard structs
 struct SoftwareBillboard {
     void *pTarget;
     int *pTargetZ;

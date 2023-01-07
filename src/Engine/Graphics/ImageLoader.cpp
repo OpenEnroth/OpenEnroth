@@ -13,7 +13,7 @@
 #include "Engine/Graphics/PaletteManager.h"
 
 // List of textures that require additional processing for transparent pixels.
-// TODO: move to WoMM config file.
+// TODO: move to OpenEnroth config file.
 static const std::unordered_set<std::string_view> transparentTextures = {
     "hwtrdre",
     "hwtrdrne",

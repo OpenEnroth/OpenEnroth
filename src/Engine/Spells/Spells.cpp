@@ -379,8 +379,9 @@ bool SpellBuff::IsBuffExpiredToTime(GameTime time) {
 bool SpellBuff::Apply(GameTime expire_time, PLAYER_SKILL_MASTERY uSkillMastery,
                       PLAYER_SKILL_LEVEL uPower, int uOverlayID,
                       uint8_t caster) {
-    // TODO(pskelton): why was this here?
-    // Assert(uSkillMastery >= PLAYER_SKILL_MASTERY_NOVICE && uSkillMastery <= PLAYER_SKILL_MASTERY_GRANDMASTER);
+    // For bug catching
+    Assert(uSkillMastery >= PLAYER_SKILL_MASTERY_NOVICE && uSkillMastery <= PLAYER_SKILL_MASTERY_GRANDMASTER
+        && "SpellBuff::Apply");
 
     if (this->expire_time && (expire_time < this->expire_time)) {
         return false;
@@ -445,9 +446,9 @@ void SpellStats::Initialize() {
 
 void EventCastSpell(int uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAYER_SKILL_LEVEL skillLevel, int fromx,
                     int fromy, int fromz, int tox, int toy, int toz) {
-    // TODO(pskelton): why was this here?
-    // Assert(skillMastery >= PLAYER_SKILL_MASTERY_NOVICE && skillMastery <= PLAYER_SKILL_MASTERY_GRANDMASTER,
-    //       "Invalid mastery level");
+    // For bug catching
+    Assert(skillMastery >= PLAYER_SKILL_MASTERY_NOVICE && skillMastery <= PLAYER_SKILL_MASTERY_GRANDMASTER,
+          "EventCastSpell - Invalid mastery level");
 
     int64_t x_coord_delta = 0;
     int64_t y_coord_delta = 0;

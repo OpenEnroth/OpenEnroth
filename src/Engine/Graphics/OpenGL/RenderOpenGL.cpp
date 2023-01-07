@@ -5591,7 +5591,7 @@ bool RenderOpenGL::Reinitialize(bool firstInit) {
             return false;
         }
     } // else {
-        
+
     if (config->window.ReloadTex.Get()) {
         // Added config option for this - may not always be required - #199 no longer replicates on windows??
         // TODO: invalidate all previously loaded textures and then load them again as they can be no longer alive on GPU (issue #199).
