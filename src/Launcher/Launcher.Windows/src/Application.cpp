@@ -143,13 +143,13 @@ void Application::Run() {
     PROCESS_INFORMATION pi;
     ZeroMemory(&pi, sizeof(pi));
 
-    std::string womm_filename = GetExePath() + "/" + "World of Might and Magic.exe";
-    std::string command_line = womm_filename + " -window -nointro -nologo -novideo -nomarg -render=" + GetRenderer();
+    std::string openenroth_filename = GetExePath() + "/" + "OpenEnroth.exe";
+    std::string command_line = openenroth_filename + " -window -nointro -nologo -novideo -nomarg -render=" + GetRenderer();
 
     std::vector<char> cmd(command_line.begin(), command_line.end());
     cmd.push_back(0);
     CreateProcessA(
-        womm_filename.c_str(), cmd.data(), nullptr, nullptr, FALSE,
+        openenroth_filename.c_str(), cmd.data(), nullptr, nullptr, FALSE,
         NORMAL_PRIORITY_CLASS, nullptr,
         config.mm7_install_path.c_str(), &si, &pi);
 

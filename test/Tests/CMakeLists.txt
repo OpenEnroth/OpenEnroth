@@ -8,5 +8,5 @@ if(ENABLE_TESTS)
 
     target_check_style(tests)
 
-    target_link_libraries(World_of_Might_and_Magic_GameTest tests)
+    target_link_libraries(Open_Enroth_GameTest tests)
 endif()

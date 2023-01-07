@@ -62,18 +62,18 @@ jobs:
     - name: Prepare artifact
       run: |
         mkdir dist
-        cp build/World_of_Might_and_Magic dist/
+        cp build/Open_Enroth dist/
         cp -r resources/* dist/
 
     - name: Copy Shared libs
       run: |
         mkdir libs
-        ldd build/World_of_Might_and_Magic | grep '=> /' | awk '{print $3;}' | xargs -I '{}' cp -v '{}' ./libs/
+        ldd build/Open_Enroth | grep '=> /' | awk '{print $3;}' | xargs -I '{}' cp -v '{}' ./libs/
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
-        name: World of Might and Magic (Linux, ${{ matrix.configuration }}, ${{ matrix.architecture }})
+        name: Open Enroth (Linux, ${{ matrix.configuration }}, ${{ matrix.architecture }})
         path: dist/**
 
     - name: Upload shared libs
