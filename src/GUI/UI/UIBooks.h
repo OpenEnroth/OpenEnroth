@@ -22,8 +22,8 @@ class GUIWindow_Book : public GUIWindow {
 
 class GUIWindow_BooksButtonOverlay : public GUIWindow {
  public:
-    GUIWindow_BooksButtonOverlay(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_BooksButtonOverlay, x, y, width, height, button, hint)
+    GUIWindow_BooksButtonOverlay(Pointi position, Sizei dimensions, GUIButton *button, const std::string &hint = std::string()) :
+        GUIWindow(WINDOW_BooksButtonOverlay, position, dimensions, button, hint)
     {}
     virtual ~GUIWindow_BooksButtonOverlay() {}
 

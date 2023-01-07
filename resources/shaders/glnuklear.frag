@@ -1,6 +1,4 @@
-#version 410 core
-
-precision mediump float;
+precision highp float;
 uniform sampler2D Texture;
 
 in vec2 Frag_UV;

@@ -1,6 +1,7 @@
 #include "Game.h"
 
 #include <algorithm>
+#include <filesystem>
 #include <string>
 #include <utility>
 #include <vector>
@@ -79,6 +80,7 @@
 #include "Platform/Platform.h"
 #include "Platform/PlatformWindow.h"
 
+#include "Utility/Format.h"
 #include "Utility/Random/Random.h"
 
 void ShowMM7IntroVideo_and_LoadingScreen();
@@ -91,10 +93,20 @@ using Engine_::EngineFactory;
 using Graphics::IRenderFactory;
 
 static std::string FindMm7Directory(Platform *platform) {
+    std::string result{};
+
+#ifdef __ANDROID__
+    // TODO: find a better way to deal with paths and remove this android specific block.
+    result = platform->StoragePath(ANDROID_STORAGE_EXTERNAL);
+    if (result.empty())
+        result = platform->StoragePath(ANDROID_STORAGE_INTERNAL);
+    return result;
+#endif
+
     // env variable override to a custom folder
     const char *returnval = std::getenv("WOMM_PATH_OVERRIDE");
-    std::string result{};
-    if (returnval) result = std::string(returnval);
+    if (returnval)
+        result = std::string(returnval);
 
     if (!result.empty()) {
         logger->Info("MM7 Custom Folder (ENV path override): %s", result.c_str());
@@ -127,13 +139,27 @@ static std::string FindMm7Directory(Platform *platform) {
 
 void Application::AutoInitDataPath(Platform *platform) {
     std::string mm7dir = FindMm7Directory(platform);
-    if(mm7dir.empty()) {
-        EngineIoc::ResolveLogger()->Info(
-            "MM7 directory not found, consider using WOMM_PATH_OVERRIDE environment variable, "
-            "launching with expectation that current directory is MM7 directory"
-        );
+
+#ifdef __ANDROID__
+    if (mm7dir.empty()) {
+        platform->ShowMessageBox("Your device doesn't have any storage so it is unsupported!", "Device currently unsupported");
+        return;
     }
-    SetDataPath(mm7dir);
+#endif
+
+    if (ValidataDataPath(mm7dir)) {
+        SetDataPath(mm7dir);
+
+        std::string savesPath = MakeDataPath("saves");
+        if (!std::filesystem::exists(savesPath))
+            std::filesystem::create_directory(savesPath);
+    } else {
+        platform->ShowMessageBox(fmt::format("Required resources aren't found!\n"
+                              "You should acquire licensed copy of M&M VII and copy its resources to \n{}\n\n"
+                              "Additionally you should also copy the content from\n"
+                              "resources directory from our repository there as well!",
+                               !mm7dir.empty() ? mm7dir : "current directory"), "CRITICAL ERROR: missing resources");
+    }
 }
 
 Game::Game(Platform *platform) {
@@ -210,7 +236,7 @@ int Game::Run() {
     /* TODO: We should setup window before render as it is requesting window size upon initialization to setup clipping dimensions, zbuffer, etc.
      * Otherwise starting borderless fullscreen will start with renderer in 640x480 and so be broken.
      * For some reason windows not liking that and hang in SDL_GL_SwapWindow if it was called after changing window position out of primary monitor.
-     * And if we try to change exlude changing position and set it after render initialization then when game started in fullscreen request will be ignored.
+     * And if we try to exclude changing position and set it after render initialization then when game started in fullscreen request will be ignored.
      * Hack below with render reinitialization is a temporary workaround. */
     windowHandler->UpdateWindowFromConfig(config.get());
     render->Reinitialize();
@@ -272,7 +298,7 @@ bool Game::Loop() {
 
             pParty->pPickedItem.uItemID = ITEM_NULL;
 
-            pCurrentMapName = pStartingMapName;
+            pCurrentMapName = config->gameplay.StartingMap.Get();
             bFlashQuestBook = true;
             pMediaPlayer->PlayFullscreenMovie("Intro Post");
             SaveNewGame();
@@ -594,7 +620,7 @@ void Game::EventLoop() {
                                      // WINDOW_8, 0, 0);
                     continue;
                 case UIMSG_Cancel:
-                    new OnCancel(350, 302, 106, 42, pBtnCancel);
+                    new OnCancel({350, 302}, {106, 42}, pBtnCancel);
                     continue;
                 case UIMSG_OpenQuestBook:
                     pMessageQueue_50CBD0->Flush();
@@ -741,9 +767,7 @@ void Game::EventLoop() {
                     if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
                         if (!pGUIWindow_CastTargetedSpell) {  // Draw Menu
                             dword_6BE138 = -1;
-                            new OnButtonClick2(0x25Au, 0x1C2u, 0, 0,
-                                               pBtn_GameSettings, std::string(),
-                                               false);
+                            new OnButtonClick2({602, 450}, {0, 0}, pBtn_GameSettings, std::string(), false);
 
                             pMessageQueue_50CBD0->Flush();
                             menu->MenuLoop();
@@ -972,7 +996,7 @@ void Game::EventLoop() {
                 case UIMSG_ScrollNPCPanel:  // Right and Left button for
                                             // NPCPanel
                     if (uMessageParam) {
-                        new OnButtonClick2(626, 179, 0, 0, pBtn_NPCRight);
+                        new OnButtonClick2({626, 179}, {0, 0}, pBtn_NPCRight);
                         v37 = (!pParty->pHirelings[0].pName.empty()) +
                               (!pParty->pHirelings[1].pName.empty()) +
                               (uint8_t)pParty->cNonHireFollowers - 2;
@@ -981,7 +1005,7 @@ void Game::EventLoop() {
                             ++pParty->hirelingScrollPosition;
                         }
                     } else {
-                        new OnButtonClick2(469, 179, 0, 0, pBtn_NPCLeft);
+                        new OnButtonClick2({469, 179}, {0, 0}, pBtn_NPCLeft);
                         if (pParty->hirelingScrollPosition > 0) {
                             --pParty->hirelingScrollPosition;
                         }
@@ -1688,10 +1712,7 @@ void Game::EventLoop() {
                         Player::_42ECB5_PlayerAttacksActor();
                     continue;
                 case UIMSG_ExitRest:
-                    new OnCancel(pButton_RestUI_Exit->uX,
-                                 pButton_RestUI_Exit->uY, 0, 0,
-                                 pButton_RestUI_Exit,
-                                 localization->GetString(LSTR_EXIT_REST));
+                    new OnCancel({pButton_RestUI_Exit->uX, pButton_RestUI_Exit->uY}, {0, 0}, pButton_RestUI_Exit, localization->GetString(LSTR_EXIT_REST));
                     continue;
                 case UIMSG_Wait5Minutes:
                     if (_506F14_resting_stage == 2) {
@@ -1699,10 +1720,7 @@ void Game::EventLoop() {
                         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                         continue;
                     }
-                    new OnButtonClick2(
-                        pButton_RestUI_Wait5Minutes->uX,
-                        pButton_RestUI_Wait5Minutes->uY, 0, 0,
-                        pButton_RestUI_Wait5Minutes,
+                    new OnButtonClick2({pButton_RestUI_Wait5Minutes->uX, pButton_RestUI_Wait5Minutes->uY}, {0, 0}, pButton_RestUI_Wait5Minutes,
                         localization->GetString(LSTR_WAIT_5_MINUTES));
                     _506F14_resting_stage = 1;
                     _506F18_num_minutes_to_sleep = 5;
@@ -1713,10 +1731,7 @@ void Game::EventLoop() {
                         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                         continue;
                     }
-                    new OnButtonClick2(
-                        pButton_RestUI_Wait1Hour->uX,
-                        pButton_RestUI_Wait1Hour->uY, 0, 0,
-                        pButton_RestUI_Wait1Hour,
+                    new OnButtonClick2({pButton_RestUI_Wait1Hour->uX, pButton_RestUI_Wait1Hour->uY}, {0, 0}, pButton_RestUI_Wait1Hour,
                         localization->GetString(LSTR_WAIT_1_HOUR));
                     _506F14_resting_stage = 1;
                     _506F18_num_minutes_to_sleep = 60;
@@ -1795,6 +1810,7 @@ void Game::EventLoop() {
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantRestHere, 0);
                     continue;
                 case UIMSG_Rest8Hour:
+                    pMessageQueue_50CBD0->Clear(); // TODO: sometimes it is called twice, prevent that for now and investigate why later
                     if (_506F14_resting_stage != 0) {
                         GameUI_SetStatusBar(LSTR_ALREADY_RESTING);
                         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
@@ -1851,16 +1867,13 @@ void Game::EventLoop() {
                         pParty->pPlayers[0].SetAsleep(GameTime(1));
                     }
                     continue;
-                case UIMSG_AlreadyResting:
+                case UIMSG_WaitTillDawn:
                     if (_506F14_resting_stage == 2) {
                         GameUI_SetStatusBar(LSTR_ALREADY_RESTING);
                         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                         continue;
                     }
-                    new OnButtonClick2(
-                        pButton_RestUI_WaitUntilDawn->uX,
-                        pButton_RestUI_WaitUntilDawn->uY, 0, 0,
-                        pButton_RestUI_WaitUntilDawn,
+                    new OnButtonClick2({pButton_RestUI_WaitUntilDawn->uX, pButton_RestUI_WaitUntilDawn->uY}, {0, 0}, pButton_RestUI_WaitUntilDawn,
                         localization->GetString(LSTR_WAIT_UNTIL_DAWN));
                     v97 = _494820_training_time(pParty->uCurrentHour);
                     _506F14_resting_stage = 1;
@@ -1912,9 +1925,7 @@ void Game::EventLoop() {
                 }
 
                 case UIMSG_ClickInstallRemoveQuickSpellBtn: {
-                    new OnButtonClick2(pBtn_InstallRemoveSpell->uX,
-                                       pBtn_InstallRemoveSpell->uY, 0, 0,
-                                       pBtn_InstallRemoveSpell);
+                    new OnButtonClick2({pBtn_InstallRemoveSpell->uX, pBtn_InstallRemoveSpell->uY}, {0, 0}, pBtn_InstallRemoveSpell);
                     if (!uActiveCharacter) continue;
                     pPlayer10 = pPlayers[uActiveCharacter];
                     if (!byte_506550 || !quick_spell_at_page) {
@@ -2041,7 +2052,7 @@ void Game::EventLoop() {
                                 GameUI_StatusBar_Clear();
                             }
                             // open window
-                            new OnButtonClick2(476, 450, 0, 0, pBtn_CastSpell);
+                            new OnButtonClick2({476, 450}, {0, 0}, pBtn_CastSpell);
                             pGUIWindow_CurrentMenu = new GUIWindow_Spellbook();
                             continue;
                         }
@@ -2064,7 +2075,7 @@ void Game::EventLoop() {
                         GameUI_StatusBar_Clear();
                     }
                     // open window
-                    new OnButtonClick2(0x230u, 0x1C2u, 0, 0, pBtn_QuickReference);
+                    new OnButtonClick2({560, 450}, {0, 0}, pBtn_QuickReference);
                     viewparams->bRedrawGameUI = true;
                     pGUIWindow_CurrentMenu = new GUIWindow_QuickReference();
                     continue;
@@ -2081,11 +2092,9 @@ void Game::EventLoop() {
                         gamma_preview_image = nullptr;
                     }
                     render->SaveScreenshot("gamma.pcx", 155, 117);
-                    gamma_preview_image =
-                        assets->GetImage_PCXFromFile("gamma.pcx");
+                    gamma_preview_image = assets->GetImage_PCXFromFile("gamma.pcx");
 
-                    new OnButtonClick(0x25Au, 0x1C2u, 0, 0,
-                                      pBtn_GameSettings);
+                    new OnButtonClick({602, 450}, {0, 0}, pBtn_GameSettings);
                     // LABEL_453:
                     /*if ( (signed int)pMessageQueue_50CBD0->uNumMessages >= 40
                     ) continue;
@@ -2106,11 +2115,11 @@ void Game::EventLoop() {
                     continue;
                 }
                 case UIMSG_ClickAwardsUpBtn:
-                    new OnButtonClick3(WINDOW_CharacterWindow_Awards, pBtn_Up->uX, pBtn_Up->uY, 0, 0, pBtn_Up);
+                    new OnButtonClick3(WINDOW_CharacterWindow_Awards, {pBtn_Up->uX, pBtn_Up->uY}, {0, 0}, pBtn_Up);
                     BtnUp_flag = 1;
                     continue;
                 case UIMSG_ClickAwardsDownBtn:
-                    new OnButtonClick3(WINDOW_CharacterWindow_Awards, pBtn_Down->uX, pBtn_Down->uY, 0, 0, pBtn_Down);
+                    new OnButtonClick3(WINDOW_CharacterWindow_Awards, {pBtn_Down->uX, pBtn_Down->uY}, {0, 0}, pBtn_Down);
                     BtnDown_flag = 1;
                     continue;
                 case UIMSG_ChangeDetaliz:
@@ -2138,25 +2147,19 @@ void Game::EventLoop() {
                     GameUI_SetStatusBar(v87);
                     continue;
                 case UIMSG_ClickStatsBtn:
-                    ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)
-                        ->ShowStatsTab();
+                    ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->ShowStatsTab();
                     continue;
                 case UIMSG_ClickSkillsBtn:
-                    ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)
-                        ->ShowSkillsTab();
+                    ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->ShowSkillsTab();
                     continue;
                 case UIMSG_ClickInventoryBtn:
-                    ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)
-                        ->ShowInventoryTab();
+                    ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->ShowInventoryTab();
                     continue;
                 case UIMSG_ClickAwardsBtn:
-                    ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)
-                        ->ShowAwardsTab();
+                    ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->ShowAwardsTab();
                     continue;
                 case UIMSG_ClickExitCharacterWindowBtn:
-                    new OnCancel2(pCharacterScreen_ExitBtn->uX,
-                                  pCharacterScreen_ExitBtn->uY, 0, 0,
-                                  pCharacterScreen_ExitBtn);
+                    new OnCancel2({pCharacterScreen_ExitBtn->uX, pCharacterScreen_ExitBtn->uY}, {0, 0}, pCharacterScreen_ExitBtn);
                     continue;
                 case UIMSG_ClickBooksBtn:
                     switch (uMessageParam) {
@@ -2208,8 +2211,7 @@ void Game::EventLoop() {
                         default:
                             continue;
                     }
-                    new OnButtonClick(pButton->uX, pButton->uY, 0, 0,
-                                      pButton, std::string(), false);
+                    new OnButtonClick({pButton->uX, pButton->uY}, {0, 0}, pButton, std::string(), false);
                     continue;
                 case UIMSG_SelectCharacter:
                     pMessageQueue_50CBD0->Flush();
@@ -2320,7 +2322,7 @@ void Game::EventLoop() {
                 case UIMSG_ClickZoomInBtn:
                     if (!(current_screen_type == CURRENT_SCREEN::SCREEN_GAME)) continue;
                     pParty->uFlags |= 2u;
-                    new OnButtonClick2(519, 136, 0, 0, pBtn_ZoomIn);
+                    new OnButtonClick2({519, 136}, {0, 0}, pBtn_ZoomIn);
                     uNumSeconds = 131072;
 
                     ++viewparams->field_28;
@@ -2341,8 +2343,8 @@ void Game::EventLoop() {
                     break;
                 case UIMSG_ClickZoomOutBtn:
                     if (!(current_screen_type == CURRENT_SCREEN::SCREEN_GAME)) continue;
-                    pParty->uFlags |= 2u;
-                    new OnButtonClick2(574, 136, 0, 0, pBtn_ZoomOut);
+                    pParty->uFlags |= 2;
+                    new OnButtonClick2({574, 136}, {0, 0}, pBtn_ZoomOut);
                     uNumSeconds = 32768;
 
                     --viewparams->field_28;
@@ -2550,8 +2552,14 @@ void Game::OnPressSpace() {
                          &vis_sprite_filter_3, &vis_door_filter);
 
     uint16_t pid = vis->get_picked_object_zbuf_val().object_pid;
-    if (pid != PID_INVALID)
+    if (pid != PID_INVALID) {
+        // wasn't there, but we decided to deny interactions where there are no active character
+        if (uActiveCharacter == 0) {
+            GameUI_SetStatusBar(localization->GetString(LSTR_NOBODY_IS_IN_CONDITION));
+            return;
+        }
         DoInteractionWithTopmostZObject(pid);
+    }
 }
 
 void Game::GameLoop() {
@@ -2724,7 +2732,7 @@ void Game::GameLoop() {
                     pParty->vPosition.y = 1816;
                     pParty->vPosition.z = 0;
                     pParty->sRotationZ = 512;
-                    pLocationName = "out01.odm";
+                    pLocationName = config->gameplay.StartingMap.Get().c_str();
                 }
                 strcpy(Source, pLocationName);
                 pParty->uFallStartZ = pParty->vPosition.z;

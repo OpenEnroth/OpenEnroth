@@ -13,10 +13,6 @@
 #include "GUI/GUIWindow.h"
 #include "Platform/PlatformKey.h"
 
-
-#define MAX_VERTEX_MEMORY 512 * 1024
-#define MAX_ELEMENT_MEMORY 128 * 1024
-
 lua_State *lua = nullptr;
 std::shared_ptr<Nuklear> nuklear;
 
@@ -970,7 +966,8 @@ bool Nuklear::Draw(NUKLEAR_STAGE stage, WindowType winType, int id) {
         if (stage == NUKLEAR_STAGE_POST) {
             nk_input_end(nuklear->ctx);
             //render->BeginScene();
-            render->NuklearRender(NK_ANTI_ALIASING_ON, MAX_VERTEX_MEMORY, MAX_ELEMENT_MEMORY);
+            if (render->GetPresentDimensions() == render->GetRenderDimensions())
+                render->NuklearRender(NK_ANTI_ALIASING_ON, NUKLEAR_MAX_VERTEX_MEMORY, NUKLEAR_MAX_ELEMENT_MEMORY);
             //render->EndScene();
             //render->Present();
             nk_input_begin(nuklear->ctx);
@@ -3188,11 +3185,12 @@ static int lua_window_dimensions(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
 
     Sizei size = window->Size();
+    Sizei renderSize = render->GetRenderDimensions();
 
     lua_pushnumber(L, size.w);
     lua_pushnumber(L, size.h);
-    lua_pushnumber(L, render->GetRenderWidth());
-    lua_pushnumber(L, render->GetRenderHeight());
+    lua_pushnumber(L, renderSize.w);
+    lua_pushnumber(L, renderSize.h);
 
     return 4;
 }

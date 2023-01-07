@@ -132,16 +132,16 @@ int TileTable::FromFileTxt(const char *pFilename) {
     FILE *File;             // [sp+4h] [bp-2F0h]@1
     FrameTableTxtLine v84;  // [sp+8h] [bp-2ECh]@4
     FrameTableTxtLine v85;  // [sp+84h] [bp-270h]@4
-    char Buf;               // [sp+100h] [bp-1F4h]@4
+    char Buf[490];          // [sp+100h] [bp-1F4h]@4
 
     v2 = this;
     v3 = fopen(pFilename, "r");
     File = v3;
     if (!v3) Error("TileTable::load - Unable to open file: %s.");
     v4 = 0;
-    for (i = v3; fgets(&Buf, 490, i); i = File) {
-        *strchr(&Buf, 10) = 0;
-        memcpy(&v84, txt_file_frametable_parser(&Buf, &v85), sizeof(v84));
+    for (i = v3; fgets(Buf, sizeof(Buf), i); i = File) {
+        *strchr(Buf, 10) = 0;
+        memcpy(&v84, txt_file_frametable_parser(Buf, &v85), sizeof(v84));
         if (v84.uPropCount && *v84.pProperties[0] != 47) ++v4;
     }
     v2->sNumTiles = v4;
@@ -152,9 +152,9 @@ int TileTable::FromFileTxt(const char *pFilename) {
     v2->sNumTiles = 0;
     fseek(File, 0, 0);
 
-    while (fgets(&Buf, 490, File)) {
-        *strchr(&Buf, 10) = 0;
-        memcpy(&v84, txt_file_frametable_parser(&Buf, &v85), sizeof(v84));
+    while (fgets(Buf, sizeof(Buf), File)) {
+        *strchr(Buf, 10) = 0;
+        memcpy(&v84, txt_file_frametable_parser(Buf, &v85), sizeof(v84));
         if (v84.uPropCount) {
             if (*v84.pProperties[0] != 47) {
                 // strcpy(v2->pTiles[v2->sNumTiles].pTileName, v84.pProperties[0]);

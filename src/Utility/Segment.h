@@ -1,7 +1,7 @@
 #pragma once
 
+#include <compare>
 #include <cstddef>
-
 #include <iterator>
 
 namespace detail {

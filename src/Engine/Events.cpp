@@ -457,24 +457,12 @@ LABEL_47:
                             pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
                             if (EnterHouse(HOUSE_DARK_GUILD_PIT)) {
                                 pAudioPlayer->PauseSounds(-1);
-                                window_SpeakInHouse = new GUIWindow_House(
-                                    0, 0, window->GetWidth(),
-                                    window->GetHeight(), HOUSE_DARK_GUILD_PIT, "");
-                                window_SpeakInHouse->CreateButton(
-                                    61, 424, 31, 0, 2, 94,
-                                    UIMSG_SelectCharacter, 1, PlatformKey::Digit1, "");
-                                window_SpeakInHouse->CreateButton(
-                                    177, 424, 31, 0, 2, 94,
-                                    UIMSG_SelectCharacter, 2, PlatformKey::Digit2, "");
-                                window_SpeakInHouse->CreateButton(
-                                    292, 424, 31, 0, 2, 94,
-                                    UIMSG_SelectCharacter, 3, PlatformKey::Digit3, "");
-                                window_SpeakInHouse->CreateButton(
-                                    407, 424, 31, 0, 2, 94,
-                                    UIMSG_SelectCharacter, 4, PlatformKey::Digit4, "");
-                                window_SpeakInHouse->CreateButton(
-                                    0, 0, 0, 0, 1, 0, UIMSG_CycleCharacters, 0,
-                                    PlatformKey::Tab, "");
+                                window_SpeakInHouse = new GUIWindow_House({0, 0}, render->GetRenderDimensions(), HOUSE_DARK_GUILD_PIT, "");
+                                window_SpeakInHouse->CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1, "");
+                                window_SpeakInHouse->CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, InputAction::SelectChar2, "");
+                                window_SpeakInHouse->CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, InputAction::SelectChar3, "");
+                                window_SpeakInHouse->CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, InputAction::SelectChar4, "");
+                                window_SpeakInHouse->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, InputAction::CharCycle, "");
                                 current_npc_text = pNPCTopics[90].pText;
                             }
                         }
@@ -535,9 +523,7 @@ LABEL_47:
                             activeLevelDecoration = (LevelDecoration *)1;
                             if (EnterHouse(HOUSE_BODY_GUILD_ERATHIA)) {
                                 pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0);
-                                window_SpeakInHouse = new GUIWindow_House(
-                                    0, 0, window->GetWidth(),
-                                    window->GetHeight(), HOUSE_BODY_GUILD_ERATHIA, "");
+                                window_SpeakInHouse = new GUIWindow_House({0, 0}, render->GetRenderDimensions(), HOUSE_BODY_GUILD_ERATHIA, "");
                                 window_SpeakInHouse->DeleteButtons();
                             }
                             //          else {
@@ -847,7 +833,7 @@ LABEL_47:
                     ++curr_seq_num;
                     break;
                 case EVENT_CastSpell:
-                    EventCastSpell(_evt->v5, static_cast<PLAYER_SKILL_MASTERY>(_evt->v6), _evt->v7,
+                    EventCastSpell(_evt->v5, static_cast<PLAYER_SKILL_MASTERY>(_evt->v6 + 1), _evt->v7,
                                    EVT_DWORD(_evt->v8), EVT_DWORD(_evt->v12),
                                    EVT_DWORD(_evt->v16), EVT_DWORD(_evt->v20),
                                    EVT_DWORD(_evt->v24), EVT_DWORD(_evt->v28));
@@ -996,23 +982,12 @@ LABEL_47:
                         if (uCurrentHouse_Animation != 167)
                             houseId = static_cast<HOUSE_ID>(EVT_DWORD(_evt->v5));
                         window_SpeakInHouse =
-                            new GUIWindow_House(0, 0, window->GetWidth(),
-                                                window->GetHeight(), houseId);
-                        window_SpeakInHouse->CreateButton(61, 424, 31, 0, 2, 94,
-                                                          UIMSG_SelectCharacter,
-                                                          1, PlatformKey::Digit1, "");
-                        window_SpeakInHouse->CreateButton(
-                            177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2,
-                            PlatformKey::Digit2, "");
-                        window_SpeakInHouse->CreateButton(
-                            292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3,
-                            PlatformKey::Digit3, "");
-                        window_SpeakInHouse->CreateButton(
-                            407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4,
-                            PlatformKey::Digit4, "");
-                        window_SpeakInHouse->CreateButton(0, 0, 0, 0, 1, 0,
-                                                          UIMSG_CycleCharacters,
-                                                          0, PlatformKey::Tab, "");
+                            new GUIWindow_House({0, 0}, render->GetRenderDimensions(), houseId);
+                        window_SpeakInHouse->CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1, "");
+                        window_SpeakInHouse->CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, InputAction::SelectChar2, "");
+                        window_SpeakInHouse->CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, InputAction::SelectChar3, "");
+                        window_SpeakInHouse->CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, InputAction::SelectChar4, "");
+                        window_SpeakInHouse->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, InputAction::CharCycle, "");
                     }
                     ++curr_seq_num;
                     break;
@@ -1119,6 +1094,7 @@ std::string GetEventHintString(unsigned int uEventID) {
             }
         }
 
+        // TODO: there is compiler warning, need to check: bound to dereferenced null pointer in well-defined C++ code; comparison may be assumed to always evaluate to true
         if (&pLevelStr[pLevelStrOffsets[EVT_BYTE(last_evt->v5)]] != NULL)
             result = &pLevelStr[pLevelStrOffsets[EVT_BYTE(last_evt->v5)]];
 

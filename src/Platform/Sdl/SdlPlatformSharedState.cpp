@@ -7,6 +7,7 @@
 #include "SdlWindow.h"
 #include "SdlPlatform.h"
 #include "SdlLogger.h"
+#include "SdlGamepad.h"
 
 SdlPlatformSharedState::SdlPlatformSharedState(SdlPlatform *owner, PlatformLogger *logger): owner_(owner), logger_(logger) {
     assert(owner);
@@ -45,4 +46,51 @@ std::vector<uint32_t> SdlPlatformSharedState::AllWindowIds() const {
 SdlWindow *SdlPlatformSharedState::Window(uint32_t id) const {
     assert(windowById_.contains(id));
     return ValueOr(windowById_, id, nullptr);
+}
+
+void SdlPlatformSharedState::RegisterGamepad(SdlGamepad *gamepad) {
+    int32_t id = NextFreeGamepadId();
+    assert(id >= 0);
+
+    gamepadById_[id] = gamepad;
+}
+
+void SdlPlatformSharedState::UnregisterGamepad(SdlGamepad *gamepad) {
+    for (auto it = gamepadById_.begin(); it != gamepadById_.end(); it++) {
+        if (gamepad == it->second) {
+            gamepadById_.erase(it);
+            return;
+        }
+    }
+
+    assert(0); //shouldn't happen
+}
+
+int32_t SdlPlatformSharedState::GetGamepadIdBySdlId(uint32_t id) {
+    int32_t ret = -1;
+
+    for (auto it = gamepadById_.begin(); it != gamepadById_.end(); it++) {
+        SdlGamepad *gamepad = it->second;
+        if (gamepad->GamepadSdlId() == id)
+            return gamepad->Id();
+    }
+
+    return ret;
+}
+
+SdlGamepad *SdlPlatformSharedState::Gamepad(uint32_t id) const {
+    assert(gamepadById_.contains(id));
+    return ValueOr(gamepadById_, id, nullptr);
+}
+
+int32_t SdlPlatformSharedState::NextFreeGamepadId() {
+    int32_t ret = -1;
+    for (int i = 0; i < SDL_NumJoysticks(); i++) {
+        if (!gamepadById_.contains(i)) {
+            ret = i;
+            break;
+        }
+    }
+
+    return ret;
 }

@@ -1192,6 +1192,8 @@ bool Party::AddItemToParty(ItemGen *pItem) {
     int v10;        // eax@11
     // int v21; // [sp+24h] [bp-4h]@10
 
+    assert(uActiveCharacter > 0); // code in this function couldn't handle uActiveCharacter = 0 and crash
+
     ITEM_TYPE v2 = pItem->uItemID;
     if (!pItemTable->pItems[v2].uItemID_Rep_St) pItem->SetIdentified();
 

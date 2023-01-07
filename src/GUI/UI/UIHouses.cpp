@@ -999,6 +999,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     render->ClearZBuffer();
 
     if (dialog_menu_id == DIALOGUE_MAIN) {
+        Sizei renDims = render->GetRenderDimensions();
         if (in_current_building_type == BuildingType_Training) {
             if (option == DIALOGUE_TRAINING_HALL_TRAIN) {
                 experience_for_next_level = 0;
@@ -1015,13 +1016,10 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                     return;
             }
             pDialogueWindow->Release();
-            pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 345, 0);
-            pBtn_ExitCancel = pDialogueWindow->CreateButton(
-                526, 445, 75, 33, 1, 0, UIMSG_Escape, 0, PlatformKey::None,
-                localization->GetString(LSTR_END_CONVERSATION),
-                {ui_buttdesc2});
-            pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0,
-                UIMSG_BuyInShop_Identify_Repair, 0);
+            pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {renDims.w, 345}, 0);
+            pBtn_ExitCancel = pDialogueWindow->CreateButton({526, 445}, {75, 33}, 1, 0,
+                UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_END_CONVERSATION), {ui_buttdesc2});
+            pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
         }
         if (in_current_building_type != BuildingType_Training) {
             if ((in_current_building_type == BuildingType_Stables ||
@@ -1033,13 +1031,10 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                 in_current_building_type != BuildingType_Temple ||
                 in_current_building_type != BuildingType_MindGuild) {
                 pDialogueWindow->Release();
-                pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 345, 0);
-                pBtn_ExitCancel = pDialogueWindow->CreateButton(
-                    526, 445, 75, 33, 1, 0, UIMSG_Escape, 0, PlatformKey::None,
-                    localization->GetString(LSTR_END_CONVERSATION),
-                    {ui_buttdesc2});
-                pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0,
-                    UIMSG_BuyInShop_Identify_Repair, 0);
+                pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {renDims.w, 345}, 0);
+                pBtn_ExitCancel = pDialogueWindow->CreateButton({526, 445}, {75, 33}, 1, 0,
+                    UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_END_CONVERSATION), {ui_buttdesc2});
+                pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
             } else if (uActiveCharacter) {
                 if (!pPlayers[uActiveCharacter]->IsPlayerHealableByTemple())
                     return;
@@ -1491,6 +1486,8 @@ void TravelByTransport() {
     travel_window.uFrameWidth = 143;
     travel_window.uFrameZ = 334;
 
+    assert(uActiveCharacter > 0); // code in this function couldn't handle uActiveCharacter = 0 and crash
+
     int base_price = p2DEvents[window_SpeakInHouse->wData.val - 1].uType == BuildingType_Stables ? 25 : 50;
     base_price *= p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
     int pPrice = base_price * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
@@ -1733,7 +1730,7 @@ void TownHallDialog() {
         render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
         render->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
         // window.DrawText(pOutString, 13, 354 - pTextHeight, 0, pOutString->FitTextInAWindow(current_npc_text, window.uFrameWidth, 13), 0, 0, 0);
-        window.DrawText(pOutString, 13, 354 - pTextHeight, 0, current_npc_text, 0, 0, 0);
+        window.DrawText(pOutString, {13, 354 - pTextHeight}, 0, current_npc_text, 0, 0, 0);
         break;
     }
     case DIALOGUE_TOWNHALL_PAY_FINE:
@@ -2014,25 +2011,15 @@ void TavernDialog() {
         std::string str = pNPCTopics[354].pText;
         dialog_window.uFrameWidth = game_viewport_width;
         dialog_window.uFrameZ = 452;
-        pTextHeight =
-            pFontArrus->CalcTextHeight(str, dialog_window.uFrameWidth, 12) +
-            7;
+        pTextHeight = pFontArrus->CalcTextHeight(str, dialog_window.uFrameWidth, 12) + 7;
         if (352 - pTextHeight < 8) {
             pOutString = pFontCreate;
-            pTextHeight = pFontCreate->CalcTextHeight(
-                str, dialog_window.uFrameWidth, 12) +
-                7;
+            pTextHeight = pFontCreate->CalcTextHeight(str, dialog_window.uFrameWidth, 12) + 7;
         }
-        render->DrawTextureCustomHeight(8 / 640.0f,
-            (352 - pTextHeight) / 480.0f,
-            ui_leather_mm7, pTextHeight);
-        render->DrawTextureAlphaNew(
-            8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-        window_SpeakInHouse->DrawText(
-            pOutString, 12, 354 - pTextHeight, 0,
-            pOutString->FitTextInAWindow(str, dialog_window.uFrameWidth,
-                12),
-            0, 0, 0);
+        render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
+        render->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
+        window_SpeakInHouse->DrawText(pOutString, {12, 354 - pTextHeight}, colorTable.Black.C16(),
+            pOutString->FitTextInAWindow(str, dialog_window.uFrameWidth, 12), 0, 0, 0);
         break;
     }
 
@@ -2050,10 +2037,8 @@ void TavernDialog() {
             ui_leather_mm7, pTextHeight);
         render->DrawTextureAlphaNew(
             8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-        window_SpeakInHouse->DrawText(
-            pFontArrus, 12, 354 - pTextHeight, 0,
-            pFontArrus->FitTextInAWindow(label, dialog_window.uFrameWidth,
-                12));
+        window_SpeakInHouse->DrawText(pFontArrus, {12, 354 - pTextHeight}, colorTable.Black.C16(),
+            pFontArrus->FitTextInAWindow(label, dialog_window.uFrameWidth, 12));
         break;
     }
 
@@ -2870,11 +2855,8 @@ void SimpleHouseDialog() {
 
                 int h = (pFontArrus->CalcTextHeight(pInString, house_window.uFrameWidth, 13) + 7);
                 render->DrawTextureAlphaNew(8 / 640.0f, (347 - h) / 480.0f, _591428_endcap);
-                pDialogueWindow->DrawText(
-                    pFontArrus, 13, 354 - h, 0,
-                    pFontArrus->FitTextInAWindow(pInString,
-                        house_window.uFrameWidth, 13),
-                    0, 0, 0);
+                pDialogueWindow->DrawText(pFontArrus, {13, 354 - h}, colorTable.Black.C16(),
+                    pFontArrus->FitTextInAWindow(pInString, house_window.uFrameWidth, 13), 0, 0, 0);
             }
         }
     }
@@ -3029,10 +3011,7 @@ void SimpleHouseDialog() {
             ui_leather_mm7, pTextHeight);
         render->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f,
             _591428_endcap);
-        house_window.DrawText(
-            pTextFont, 13, 354 - pTextHeight, 0,
-            pTextFont->FitTextInAWindow(current_npc_text, w.uFrameWidth, 13), 0,
-            0, 0);
+        house_window.DrawText(pTextFont, {13, 354 - pTextHeight}, colorTable.Black.C16(), pTextFont->FitTextInAWindow(current_npc_text, w.uFrameWidth, 13), 0, 0, 0);
     }
 }
 
@@ -3299,14 +3278,10 @@ int HouseDialogPressCloseBtn() {
 
         pBtn_ExitCancel = window_SpeakInHouse->vButtons.front();
         if (uNumDialogueNPCPortraits > 0) {
-            for (uint i = 0; i < (unsigned int)uNumDialogueNPCPortraits;
-                ++i) {
-                HouseNPCPortraitsButtonsList[i] =
-                    window_SpeakInHouse->CreateButton(
-                        pNPCPortraits_x[uNumDialogueNPCPortraits - 1][i],
-                        pNPCPortraits_y[uNumDialogueNPCPortraits - 1][i],
-                        63, 73, 1, 0, UIMSG_ClickHouseNPCPortrait, i, PlatformKey::None,
-                        byte_591180[i].data());
+            for (uint i = 0; i < (unsigned int)uNumDialogueNPCPortraits; ++i) {
+                HouseNPCPortraitsButtonsList[i] = window_SpeakInHouse->CreateButton(
+                    {pNPCPortraits_x[uNumDialogueNPCPortraits - 1][i], pNPCPortraits_y[uNumDialogueNPCPortraits - 1][i]}, {63, 73}, 1, 0,
+                    UIMSG_ClickHouseNPCPortrait, i, InputAction::Invalid, byte_591180[i].data());
             }
         }
 
@@ -3333,11 +3308,11 @@ void BackToHouseMenu() {
         pParty->uFlags &= 0xFFFFFFFD;
         if (EnterHouse(HOUSE_BODY_GUILD_ERATHIA)) {
             pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0);
-            window_SpeakInHouse = new GUIWindow_House(0, 0, window->GetWidth(), window->GetHeight(), HOUSE_BODY_GUILD_ERATHIA, "");
-            window_SpeakInHouse->CreateButton(0x3Du, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 1, PlatformKey::Digit1);
-            window_SpeakInHouse->CreateButton(0xB1u, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 2, PlatformKey::Digit2);
-            window_SpeakInHouse->CreateButton(0x124u, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 3, PlatformKey::Digit3);
-            window_SpeakInHouse->CreateButton(0x197u, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 4, PlatformKey::Digit4);
+            window_SpeakInHouse = new GUIWindow_House({0, 0}, render->GetRenderDimensions(), HOUSE_BODY_GUILD_ERATHIA, "");
+            window_SpeakInHouse->CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1);
+            window_SpeakInHouse->CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, InputAction::SelectChar2);
+            window_SpeakInHouse->CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, InputAction::SelectChar3);
+            window_SpeakInHouse->CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, InputAction::SelectChar4);
         }
         bGameoverLoop = false;
     }
@@ -3643,15 +3618,13 @@ void GenerateStandartShopItems() {
     pParty->InTheShopFlags[shop_index] = 0;
 }
 
-GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int width, unsigned int height, HOUSE_ID houseId, const std::string &hint) :
-    GUIWindow(WINDOW_HouseInterior, x, y, width, height, houseId, hint) {
+GUIWindow_House::GUIWindow_House(Pointi position, Sizei dimensions, HOUSE_ID houseId, const std::string &hint) :
+    GUIWindow(WINDOW_HouseInterior, position, dimensions, houseId, hint) {
     pEventTimer->Pause();  // pause timer so not attacked
     // pAudioPlayer->PauseSounds(-1);
 
     current_screen_type = CURRENT_SCREEN::SCREEN_HOUSE;
-    pBtn_ExitCancel = CreateButton(
-        471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, PlatformKey::None,
-        localization->GetString(LSTR_EXIT_BUILDING),
+    pBtn_ExitCancel = CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_EXIT_BUILDING),
         {ui_exit_cancel_button_background});
     for (int v26 = 0; v26 < uNumDialogueNPCPortraits; ++v26) {
         const char *v29;
@@ -3667,9 +3640,9 @@ GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int wi
             v29 = localization->GetString(LSTR_FMT_CONVERSE_WITH_S);
         }
         sprintf(byte_591180[v26].data(), v29, v30.c_str());
-        HouseNPCPortraitsButtonsList[v26] = CreateButton(pNPCPortraits_x[uNumDialogueNPCPortraits - 1][v26],
-                                                         pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v26],
-                                                         63, 73, 1, 0, UIMSG_ClickHouseNPCPortrait, v26, PlatformKey::None, byte_591180[v26].data());
+        HouseNPCPortraitsButtonsList[v26] = CreateButton(
+            {pNPCPortraits_x[uNumDialogueNPCPortraits - 1][v26], pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v26]}, {63, 73}, 1, 0,
+            UIMSG_ClickHouseNPCPortrait, v26, InputAction::Invalid, byte_591180[v26].data());
     }
     if (uNumDialogueNPCPortraits == 1) {
         window_SpeakInHouse = this;

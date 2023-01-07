@@ -1,5 +1,7 @@
 #include "GameWindowHandler.h"
 
+#include <algorithm>
+#include <string>
 #include <vector>
 
 #include "Arcomage/Arcomage.h"
@@ -118,6 +120,7 @@ void GameWindowHandler::UpdateWindowFromConfig(const GameConfig *config) {
     window->SetTitle(config->window.Title.Get());
     window->SetGrabsMouse(config->window.MouseGrab.Get());
     window->SetWindowMode(mode);
+    window->SetResizable(config->window.Resizable.Get());
     window->SetVisible(true);
 }
 
@@ -140,6 +143,7 @@ void GameWindowHandler::UpdateConfigFromWindow(GameConfig *config) {
     }
     config->window.Mode.Set(std::to_underlying(mode));
     config->window.MouseGrab.Set(window->GrabsMouse());
+    config->window.Resizable.Set(window->Resizable());
 }
 
 void GameWindowHandler::OnScreenshot() {
@@ -168,7 +172,26 @@ bool GameWindowHandler::OnChar(PlatformKey key, int c) {
     return false;
 }
 
-void GameWindowHandler::OnMouseLeftClick(int x, int y) {
+Pointi GameWindowHandler::MapToRender(Pointi position) {
+    Sizef renDims = {(float)render->GetRenderDimensions().w, (float)render->GetRenderDimensions().h};
+    Sizef prDims = {(float)render->GetPresentDimensions().w, (float)render->GetPresentDimensions().h};
+    Pointi result = position;
+
+    if (renDims != prDims) {
+        Sizef ratioCorections = {prDims.w / renDims.w, prDims.h / renDims.h};
+        float ratioCorrection = std::min(ratioCorections.w, ratioCorections.h);
+
+        float w = renDims.w * ratioCorrection;
+        float h = renDims.h * ratioCorrection;
+
+        result.x = (float)position.x / ratioCorrection - ((float)prDims.w / 2 - w / 2) / ratioCorrection;
+        result.y = (float)position.y / ratioCorrection - ((float)prDims.h / 2 - h / 2) / ratioCorrection;
+    }
+
+    return result;
+}
+
+void GameWindowHandler::OnMouseLeftClick(Pointi position) {
     if (pArcomageGame->bGameInProgress) {
         pArcomageGame->stru1.am_input_type = 7;
         pArcomageGame->check_exit = 0;
@@ -177,14 +200,14 @@ void GameWindowHandler::OnMouseLeftClick(int x, int y) {
     } else {
         pMediaPlayer->StopMovie();
 
-        mouse->SetMouseClick(x, y);
+        mouse->SetMouseClick(position.x, position.y);
 
         if (GetCurrentMenuID() == MENU_CREATEPARTY) {
             UI_OnKeyDown(PlatformKey::Select);
         }
 
         if (engine) {
-            engine->PickMouse(engine->config->gameplay.MouseInteractionDepth.Get(), x, y, false,
+            engine->PickMouse(engine->config->gameplay.MouseInteractionDepth.Get(), position.x, position.y, false,
                               &vis_sprite_filter_3, &vis_door_filter);
         }
 
@@ -192,7 +215,7 @@ void GameWindowHandler::OnMouseLeftClick(int x, int y) {
     }
 }
 
-void GameWindowHandler::OnMouseRightClick(int x, int y) {
+void GameWindowHandler::OnMouseRightClick(Pointi position) {
     if (pArcomageGame->bGameInProgress) {
         pArcomageGame->stru1.am_input_type = 8;
         pArcomageGame->check_exit = 0;
@@ -201,13 +224,13 @@ void GameWindowHandler::OnMouseRightClick(int x, int y) {
     } else {
         pMediaPlayer->StopMovie();
 
-        mouse->SetMouseClick(x, y);
+        mouse->SetMouseClick(position.x, position.y);
 
         if (engine) {
-            engine->PickMouse(pCamera3D->GetMouseInfoDepth(), x, y, 0, &vis_sprite_filter_2, &vis_door_filter);
+            engine->PickMouse(pCamera3D->GetMouseInfoDepth(), position.x, position.y, 0, &vis_sprite_filter_2, &vis_door_filter);
         }
 
-        UI_OnMouseRightClick(x, y);
+        UI_OnMouseRightClick(position.x, position.y);
     }
 }
 
@@ -229,30 +252,30 @@ void GameWindowHandler::OnMouseRightUp() {
     }
 }
 
-void GameWindowHandler::OnMouseLeftDoubleClick(int x, int y) {
+void GameWindowHandler::OnMouseLeftDoubleClick(Pointi position) {
     if (pArcomageGame->bGameInProgress) {
         pArcomageGame->stru1.am_input_type = 7;
     } else {
-        OnMouseLeftClick(x, y);
+        OnMouseLeftClick(position);
     }
 }
 
-void GameWindowHandler::OnMouseRightDoubleClick(int x, int y) {
+void GameWindowHandler::OnMouseRightDoubleClick(Pointi position) {
     if (pArcomageGame->bGameInProgress) {
         pArcomageGame->stru1.am_input_type = 8;
     } else {
-        OnMouseRightClick(x, y);
+        OnMouseRightClick(position);
     }
 }
 
-void GameWindowHandler::OnMouseMove(int x, int y, bool left_button, bool right_button) {
+void GameWindowHandler::OnMouseMove(Pointi position, bool left_button, bool right_button) {
     if (pArcomageGame->bGameInProgress) {
-        ArcomageGame::OnMouseMove(x, y);
+        ArcomageGame::OnMouseMove(position.x, position.y);
         ArcomageGame::OnMouseClick(0, left_button);
         ArcomageGame::OnMouseClick(1, right_button);
     } else {
         if (mouse) {
-            mouse->SetMouseClick(x, y);
+            mouse->SetMouseClick(position.x, position.y);
         }
     }
 }
@@ -261,18 +284,24 @@ void GameWindowHandler::OnMouseMove(int x, int y, bool left_button, bool right_b
 extern InputAction currently_selected_action_for_binding;
 
 void GameWindowHandler::OnKey(PlatformKey key) {
-    if (!keyboardInputHandler)
+    if (!keyboardInputHandler || !keyboardActionMapping)
         return;
 
     // TODO: many of hardcoded keys below should be moved out of there and made configurable
-    if (key == PlatformKey::F1) {
+    if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleMouseGrab, key)) {
         OnMouseGrabToggle();
         return;
-    }  else if (key == PlatformKey::F2 || key == PlatformKey::PrintScreen) {
+    }  else if (keyboardActionMapping->IsKeyMatchAction(InputAction::Screenshot, key)) {
         OnScreenshot();
         return;
-    } else if (key == PlatformKey::F3) {
+    } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleBorderless, key)) {
         OnToggleBorderless();
+        return;
+    } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleResizable, key)) {
+        OnToggleResizable();
+        return;
+    } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::CycleFilter, key)) {
+        OnCycleFilter();
         return;
     }
 
@@ -283,30 +312,32 @@ void GameWindowHandler::OnKey(PlatformKey key) {
         pArcomageGame->stru1.am_input_type = 1;
 
         set_stru1_field_8_InArcomage(0);
-        if (key == PlatformKey::Escape) {
+        if (keyboardActionMapping->IsKeyMatchAction(InputAction::Escape, key)) {
             pArcomageGame->stru1.am_input_type = 10;
         } else if (pArcomageGame->check_exit) {
            pArcomageGame->check_exit = 0;
            pArcomageGame->force_redraw_1 = 1;
         }
 
-        if (key == PlatformKey::F4 && !pMovie_Track) {
+        if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleFullscreen, key) && !pMovie_Track) {
             OnToggleFullscreen();
             pArcomageGame->stru1.am_input_type = 9;
         }
     } else {
         pMediaPlayer->StopMovie();
-        if (key == PlatformKey::Return) {
+        if (keyboardActionMapping->IsKeyMatchAction(InputAction::Return, key)) {
             if (!viewparams->field_4C) UI_OnKeyDown(key);
-        } else if (key == PlatformKey::Escape) {
+        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::Escape, key)) {
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, window_SpeakInHouse != 0, 0);
-        } else if (key == PlatformKey::F4 && !pMovie_Track) {
+        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleFullscreen, key) && !pMovie_Track) {
             OnToggleFullscreen();
-        } else if (key == PlatformKey::Tilde) {
+        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::Console, key)) {
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_OpenDebugMenu, window_SpeakInHouse != 0, 0);
-        } else if (key == PlatformKey::Backspace && current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
+        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ReloadShaders, key) && current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_DebugReloadShader, window_SpeakInHouse != 0, 0);
-        } else if (key == PlatformKey::Left || key == PlatformKey::Right || key == PlatformKey::Up || key == PlatformKey::Down) {
+        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::DialogLeft, key) || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogRight, key)
+            || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogUp, key) || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogDown, key)
+            || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogSelect, key)) {
             if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME &&
                 current_screen_type != CURRENT_SCREEN::SCREEN_MODAL_WINDOW) {
                 if (!viewparams->field_4C) {
@@ -341,6 +372,8 @@ void GameWindowHandler::OnActivated() {
         //          pMediaPlayer->
         //          if (pMovie_Track)
         //            pMediaPlayer->bPlaying_Movie = true;
+
+        render->Reinitialize();
 
         dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_APP_INACTIVE;
 
@@ -449,6 +482,15 @@ void GameWindowHandler::OnToggleFullscreen() {
     render->Reinitialize();
 }
 
+void GameWindowHandler::OnToggleResizable() {
+    window->SetResizable(engine->config->window.Resizable.Toggle());
+}
+
+void GameWindowHandler::OnCycleFilter() {
+    engine->config->graphics.RenderFilter.CycleIncrement();
+    render->Reinitialize();
+}
+
 void GameWindowHandler::OnMouseGrabToggle() {
     window->SetGrabsMouse(engine->config->window.MouseGrab.Toggle());
 }
@@ -481,24 +523,22 @@ void GameWindowHandler::KeyReleaseEvent(PlatformWindow *, const PlatformKeyEvent
 }
 
 void GameWindowHandler::MouseMoveEvent(PlatformWindow *, const PlatformMouseEvent *event) {
-    OnMouseMove(event->pos.x, event->pos.y, event->buttons & PlatformMouseButton::Left, event->buttons & PlatformMouseButton::Right);
+    OnMouseMove(MapToRender(event->pos), event->buttons & PlatformMouseButton::Left, event->buttons & PlatformMouseButton::Right);
 }
 
 void GameWindowHandler::MousePressEvent(PlatformWindow *, const PlatformMouseEvent *event) {
-    int x = event->pos.x;
-    int y = event->pos.y;
-
+    Pointi position = MapToRender(event->pos);
     if (event->button == PlatformMouseButton::Left) {
         if (event->isDoubleClick) {
-            OnMouseLeftDoubleClick(x, y);
+            OnMouseLeftDoubleClick(position);
         } else {
-            OnMouseLeftClick(x, y);
+            OnMouseLeftClick(position);
         }
     } else if (event->button == PlatformMouseButton::Right) {
         if (event->isDoubleClick) {
-            OnMouseRightDoubleClick(x, y);
+            OnMouseRightDoubleClick(position);
         } else {
-            OnMouseRightClick(x, y);
+            OnMouseRightClick(position);
         }
     }
 }
@@ -527,6 +567,10 @@ void GameWindowHandler::MoveEvent(PlatformWindow *, const PlatformMoveEvent *eve
     }
 }
 
+void GameWindowHandler::ResizeEvent(PlatformWindow *, const PlatformResizeEvent *event) {
+    render->Reinitialize();
+}
+
 void GameWindowHandler::ActivationEvent(PlatformWindow *, const PlatformEvent *event) {
     if (event->type == PlatformEvent::WindowActivate) {
         OnActivated();
@@ -535,8 +579,43 @@ void GameWindowHandler::ActivationEvent(PlatformWindow *, const PlatformEvent *e
     }
 }
 
-void GameWindowHandler::CloseEvent(PlatformWindow *window, const PlatformEvent *event) {
+void GameWindowHandler::CloseEvent(PlatformWindow *, const PlatformEvent *event) {
     UpdateConfigFromWindow(engine->config.get());
     engine->config->SaveConfiguration();
     Engine_DeinitializeAndTerminate(0);
+}
+
+void GameWindowHandler::GamepadDeviceEvent(PlatformWindow *, const PlatformGamepadDeviceEvent *event) {
+    if (event->type == PlatformEvent::GamepadConnected) {
+        gamepads_[event->id] = platform->CreateGamepad(event->id);
+        if (gamepads_[event->id]) {
+            PlatformGamepad *gamepad = gamepads_[event->id].get();
+            std::string message = "gamepad #" + std::to_string(event->id) + " connected";
+
+            std::string model = gamepad->Model();
+            if (!model.empty())
+                message += ", model: " + model;
+
+            std::string serial = gamepad->Serial();
+            if (!serial.empty())
+                message += ", serial: " + serial;
+
+            logger->Info(message.c_str());
+            return;
+        }
+
+        logger->Warning("gamepad #%d initialization failed", event->id);
+    } else if (event->type == PlatformEvent::GamepadDisconnected) {
+        for (auto it = gamepads_.begin(); it != gamepads_.end(); it++) {
+            PlatformGamepad *gamepad = it->second.get();
+
+            if (gamepad->Id() == event->id) {
+                gamepads_.erase(it);
+                logger->Info("gamepad #%d disconnected", event->id);
+                return;
+            }
+        }
+
+        logger->Warning("gamepad #%d disconnection failed", event->id);
+    }
 }

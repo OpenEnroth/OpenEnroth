@@ -14,11 +14,13 @@
 
 #include "Platform/PlatformKey.h"
 #include "Io/Mouse.h"
+#include "Io/InputAction.h"
 #include "Io/KeyboardInputHandler.h"
 
+#include "Utility/Geometry/Size.h"
 
 using Io::Mouse;
-
+using Io::InputAction;
 
 enum GUILD_ID : int32_t {
     GUILD_OF_ELEMENTS = 0,
@@ -113,7 +115,7 @@ enum UIMessageType : uint32_t {
     UIMSG_QuickReference = 106,
     UIMSG_GameMenuButton = 107,
 
-    UIMSG_AlreadyResting = 109,
+    UIMSG_WaitTillDawn = 109,
     UIMSG_SelectCharacter = 110,
     UIMSG_ChangeSoundVolume = 111,
     UIMSG_ChangeMusicVolume = 112,
@@ -440,25 +442,25 @@ struct WindowData {
 class GUIWindow {
  public:
     GUIWindow();
-    GUIWindow(WindowType windowType, unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, WindowData wData, const std::string &hint = std::string());
+    GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, WindowData wData, const std::string &hint = std::string());
     virtual ~GUIWindow() {}
 
-    GUIButton *CreateButton(int x, int y, int width, int height, int uButtonType, int uData,
-                            UIMessageType msg, unsigned int msg_param, PlatformKey hotkey = PlatformKey::None, const std::string &label = {},
+    GUIButton *CreateButton(Pointi position, Sizei dimensions, int uButtonType, int uData,
+                            UIMessageType msg, unsigned int msg_param, InputAction action = InputAction::Invalid, const std::string &label = {},
                             const std::vector<Image *> &textures = {});
 
-    GUIButton *CreateButton(std::string id, int x, int y, int width, int height, int uButtonType, int uData,
-                            UIMessageType msg, unsigned int msg_param, PlatformKey hotkey = PlatformKey::None, const std::string &label = {},
+    GUIButton *CreateButton(std::string id, Pointi position, Sizei dimensions, int uButtonType, int uData,
+                            UIMessageType msg, unsigned int msg_param, InputAction action = InputAction::Invalid, const std::string &label = {},
                             const std::vector<Image *> &textures = {});
 
     bool Contains(unsigned int x, unsigned int y);
     void DrawFlashingInputCursor(int uX, int uY, GUIFont *a2);
 
-    int DrawTextInRect(GUIFont *font, unsigned int x, unsigned int y, unsigned int color, const char *text, int rect_width, int reverse_text);
-    int DrawTextInRect(GUIFont *font, unsigned int x, unsigned int y, unsigned int color, std::string &str, int rect_width, int reverse_text);
+    int DrawTextInRect(GUIFont *font, Pointi position, unsigned int color, const char *text, int rect_width, int reverse_text);
+    int DrawTextInRect(GUIFont *font, Pointi position, unsigned int color, std::string &str, int rect_width, int reverse_text);
 
-    void DrawText(GUIFont *font, int x, int y, unsigned short uFontColor, const char *str, bool present_time_transparency = false, int max_text_height = 0, int uFontShadowColor = 0);
-    void DrawText(GUIFont *font, int x, int y, unsigned short uFontColor, const std::string &str, bool present_time_transparency = false, int max_text_height = 0, int uFontShadowColor = 0);
+    void DrawText(GUIFont *font, Pointi position, uint16_t uFontColor, const char *str, bool present_time_transparency = false, int max_text_height = 0, int uFontShadowColor = 0);
+    void DrawText(GUIFont *font, Pointi position, uint16_t uFontColor, const std::string &str, bool present_time_transparency = false, int max_text_height = 0, int uFontShadowColor = 0);
 
     void DrawTitleText(GUIFont *font, int horizontal_margin, int vertical_margin, uint16_t uDefaultColor, const char *pInString, int line_spacing);
     void DrawTitleText(GUIFont *font, int horizontal_margin, int vertical_margin, uint16_t uDefaultColor, const std::string &str, int line_spacing);
@@ -477,12 +479,12 @@ class GUIWindow {
     static void InitializeGUI();
     void Init();
 
-    unsigned int uFrameX;
-    unsigned int uFrameY;
-    unsigned int uFrameWidth;
-    unsigned int uFrameHeight;
-    unsigned int uFrameZ;
-    unsigned int uFrameW;
+    int uFrameX;
+    int uFrameY;
+    int uFrameWidth;
+    int uFrameHeight;
+    int uFrameZ;
+    int uFrameW;
     WindowType eWindowType;
     WindowData wData; // Window-specific
     int field_24;
@@ -502,16 +504,16 @@ class GUIWindow {
 
 class GUIWindow_Scroll : public GUIWindow {
  public:
-    GUIWindow_Scroll(unsigned int x, unsigned int y, unsigned int width, unsigned int height, ITEM_TYPE scroll_type, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_Scroll, x, y, width, height, 0, hint) {
+    GUIWindow_Scroll(Pointi position, Sizei dimensions, ITEM_TYPE scroll_type, const std::string &hint = std::string()) :
+        GUIWindow(WINDOW_Scroll, position, dimensions, 0, hint) {
         Assert(IsMessageScroll(scroll_type));
 
         this->scroll_type = scroll_type;
-        CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, PlatformKey::Digit1, "");
-        CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, PlatformKey::Digit2, "");
-        CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, PlatformKey::Digit3, "");
-        CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, PlatformKey::Digit4, "");
-        CreateButton(0, 0, 0, 0, 1, 0, UIMSG_CycleCharacters, 0, PlatformKey::Tab, "");
+        CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1, "");
+        CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, InputAction::SelectChar2, "");
+        CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, InputAction::SelectChar3, "");
+        CreateButton({407, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 4, InputAction::SelectChar4, "");
+        CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, InputAction::CharCycle, "");
     }
     virtual ~GUIWindow_Scroll() {}
 
@@ -522,8 +524,8 @@ class GUIWindow_Scroll : public GUIWindow {
 
 class OnButtonClick : public GUIWindow {
  public:
-    OnButtonClick(unsigned int x, unsigned int y, unsigned int width, unsigned int height, WindowData data, const std::string &hint = std::string(), bool play_sound = true) :
-        GUIWindow(WINDOW_CharacterCreationBtn, x, y, width, height, data, hint),
+    OnButtonClick(Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string(), bool play_sound = true) :
+        GUIWindow(WINDOW_CharacterCreationBtn, position, dimensions, data, hint),
         bPlaySound(play_sound)
     {}
     virtual ~OnButtonClick() {}
@@ -535,8 +537,8 @@ class OnButtonClick : public GUIWindow {
 
 class OnButtonClick2 : public GUIWindow {
  public:
-    OnButtonClick2(unsigned int x, unsigned int y, unsigned int width, unsigned int height, WindowData data, const std::string &hint = std::string(), bool play_sound = true) :
-        GUIWindow(WINDOW_PressedButton2, x, y, width, height, data, hint),
+    OnButtonClick2(Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string(), bool play_sound = true) :
+        GUIWindow(WINDOW_PressedButton2, position, dimensions, data, hint),
         bPlaySound(play_sound)
     {}
     virtual ~OnButtonClick2() {}
@@ -548,8 +550,8 @@ class OnButtonClick2 : public GUIWindow {
 
 class OnButtonClick3 : public GUIWindow {
  public:
-    OnButtonClick3(WindowType windowType, unsigned int x, unsigned int y, unsigned int width, unsigned int height, WindowData data, const std::string &hint = std::string())
-        : GUIWindow(windowType, x, y, width, height, data, hint) {
+    OnButtonClick3(WindowType windowType, Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string())
+        : GUIWindow(windowType, position, dimensions, data, hint) {
     }
 
     virtual ~OnButtonClick3() {}
@@ -560,8 +562,8 @@ class OnButtonClick3 : public GUIWindow {
 // something debug? not really sure, unused
 class OnButtonClick4 : public GUIWindow {
  public:
-    OnButtonClick4(unsigned int x, unsigned int y, unsigned int width, unsigned int height, WindowData data, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_59, x, y, width, height, data, hint)
+    OnButtonClick4(Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string()) :
+        GUIWindow(WINDOW_59, position, dimensions, data, hint)
     {}
     virtual ~OnButtonClick4() {}
 
@@ -570,8 +572,8 @@ class OnButtonClick4 : public GUIWindow {
 
 class OnSaveLoad : public GUIWindow {
  public:
-    OnSaveLoad(unsigned int x, unsigned int y, unsigned int width, unsigned int height, WindowData data, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_SaveLoadBtn, x, y, width, height, data, hint)
+    OnSaveLoad(Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string()) :
+        GUIWindow(WINDOW_SaveLoadBtn, position, dimensions, data, hint)
     {}
     virtual ~OnSaveLoad() {}
 
@@ -580,8 +582,8 @@ class OnSaveLoad : public GUIWindow {
 
 class OnCancel : public GUIWindow {
  public:
-    OnCancel(unsigned int x, unsigned int y, unsigned int width, unsigned int height, WindowData data, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_GenericCancel, x, y, width, height, data, hint)
+    OnCancel(Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string()) :
+        GUIWindow(WINDOW_GenericCancel, position, dimensions, data, hint)
     {}
     virtual ~OnCancel() {}
 
@@ -590,8 +592,8 @@ class OnCancel : public GUIWindow {
 
 class OnCancel2 : public GUIWindow {
  public:
-    OnCancel2(unsigned int x, unsigned int y, unsigned int width, unsigned int height, WindowData data, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_ExitCharacterWindow, x, y, width, height, data, hint)
+    OnCancel2(Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string()) :
+        GUIWindow(WINDOW_ExitCharacterWindow, position, dimensions, data, hint)
     {}
     virtual ~OnCancel2() {}
 
@@ -600,8 +602,8 @@ class OnCancel2 : public GUIWindow {
 
 class OnCancel3 : public GUIWindow {
  public:
-    OnCancel3(unsigned int x, unsigned int y, unsigned int width, unsigned int height, WindowData data, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_LoadGame_CancelBtn, x, y, width, height, data, hint)
+    OnCancel3(Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string()) :
+        GUIWindow(WINDOW_LoadGame_CancelBtn, position, dimensions, data, hint)
     {}
     virtual ~OnCancel3() {}
 
@@ -610,7 +612,7 @@ class OnCancel3 : public GUIWindow {
 
 class OnCastTargetedSpell : public GUIWindow {
  public:
-    OnCastTargetedSpell(unsigned int x, unsigned int y, unsigned int width, unsigned int height, WindowData data, const std::string &hint = std::string());
+    OnCastTargetedSpell(Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string());
     virtual ~OnCastTargetedSpell() {}
 };
 

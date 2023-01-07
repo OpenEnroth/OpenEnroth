@@ -65,13 +65,12 @@ void GUIWindow_Book::Release() {
 }
 
 GUIWindow_Book::GUIWindow_Book()
-    : GUIWindow(WINDOW_Book, 0, 0, window->GetWidth(), window->GetHeight(), 0) {}
+    : GUIWindow(WINDOW_Book, {0, 0}, render->GetRenderDimensions(), 0) {}
 
 void GUIWindow_Book::BasicBookInitialization() {
     pAudioPlayer->PauseSounds(-1);
     InitializeFonts();
-    CreateButton(475, 445, 158, 34, 1, 0, UIMSG_Escape, 0, PlatformKey::None,
-                 localization->GetString(LSTR_DIALOGUE_EXIT));
+    CreateButton({475, 445}, {158, 34}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_DIALOGUE_EXIT));
     current_screen_type = CURRENT_SCREEN::SCREEN_BOOKS;
     full_num_items_in_book = 0;
     books_primary_item_per_page = 0;

@@ -26,7 +26,7 @@ GUIWindow_QuestBook::GUIWindow_QuestBook() : GUIWindow_Book() {
     // 004304E7 Game_EventLoop --- part
     pEventTimer->Pause();
     pAudioPlayer->PauseSounds(-1);
-    pChildBooksOverlay = new GUIWindow_BooksButtonOverlay(493u, 355u, 0, 0, pBtn_Quests);
+    pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({493, 355}, {0, 0}, pBtn_Quests);
     bFlashQuestBook = 0;
 
     // ----------------------------------------------
@@ -39,18 +39,10 @@ GUIWindow_QuestBook::GUIWindow_QuestBook() : GUIWindow_Book() {
     ui_book_button1_off = assets->GetImage_Alpha("tab-an-6a");
     ui_book_button2_off = assets->GetImage_Alpha("tab-an-7a");
 
-    pBtn_Book_1 = CreateButton(
-        pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1,
-        ui_book_button1_on->GetWidth(), ui_book_button1_on->GetWidth(), 1, 0,
-        UIMSG_ClickBooksBtn, 0xBu, PlatformKey::None,
-        localization->GetString(LSTR_SCROLL_UP),
-        {ui_book_button1_on});
-    pBtn_Book_2 = CreateButton(
-        pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38,
-        ui_book_button2_on->GetWidth(), ui_book_button2_on->GetHeight(), 1, 0,
-        UIMSG_ClickBooksBtn, 0xAu, PlatformKey::None,
-        localization->GetString(LSTR_SCROLL_DOWN),
-        {ui_book_button2_on});
+    pBtn_Book_1 = CreateButton({pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1}, {ui_book_button1_on->GetWidth(), ui_book_button1_on->GetWidth()}, 1, 0,
+        UIMSG_ClickBooksBtn, 11, InputAction::Invalid, localization->GetString(LSTR_SCROLL_UP), {ui_book_button1_on});
+    pBtn_Book_2 = CreateButton({pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38}, {ui_book_button2_on->GetWidth(), ui_book_button2_on->GetHeight()}, 1, 0,
+        UIMSG_ClickBooksBtn, 10, InputAction::Invalid, localization->GetString(LSTR_SCROLL_DOWN), {ui_book_button2_on});
     num_achieved_awards = 0;
     memset(achieved_awards.data(), 0, 4000);
     for (uint i = books_primary_item_per_page; i < 512; ++i) {
@@ -150,21 +142,12 @@ void GUIWindow_QuestBook::Update() {
     for (uint i = books_primary_item_per_page; i < full_num_items_in_book;
          ++i) {
         ++num_achieved_awards;
-        questbook_window.DrawText(pAutonoteFont, 1, 0,
-                                  ui_book_quests_text_color,
-                                  pQuestTable[achieved_awards[i]], 0, 0, 0);
-        pTextHeight = pAutonoteFont->CalcTextHeight(
-            pQuestTable[achieved_awards[i]], questbook_window.uFrameWidth, 1);
-        if ((signed int)(questbook_window.uFrameY + pTextHeight) >
-            (signed int)questbook_window.uFrameHeight)
+        questbook_window.DrawText(pAutonoteFont, {1, 0}, ui_book_quests_text_color, pQuestTable[achieved_awards[i]], 0, 0, 0);
+        pTextHeight = pAutonoteFont->CalcTextHeight(pQuestTable[achieved_awards[i]], questbook_window.uFrameWidth, 1);
+        if ((signed int)(questbook_window.uFrameY + pTextHeight) > (signed int)questbook_window.uFrameHeight)
             break;
 
-        render->DrawTextureAlphaNew(
-            100 / 640.0f,
-            ((questbook_window.uFrameY + pTextHeight) + 12) / 480.0f,
-            ui_book_quest_div_bar);
-
-        questbook_window.uFrameY =
-            (questbook_window.uFrameY + pTextHeight) + 24;
+        render->DrawTextureAlphaNew(100 / 640.0f, ((questbook_window.uFrameY + pTextHeight) + 12) / 480.0f, ui_book_quest_div_bar);
+        questbook_window.uFrameY = (questbook_window.uFrameY + pTextHeight) + 24;
     }
 }

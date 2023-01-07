@@ -7,7 +7,7 @@ static uint16_t Color16(uint8_t r, uint8_t g, uint8_t b) {
 }
 
 static uint32_t Color32(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) {
-    return (a << 24) | (r << 16) | (g << 8) | b;
+    return (a << 24) | (b << 16) | (g << 8) | r;
 }
 
 static uint32_t Color32(uint16_t color16) {
@@ -17,15 +17,6 @@ static uint32_t Color32(uint16_t color16) {
     uint8_t r = ((c >> 11) & 31) * 8;
 
     return Color32(r, g, b);
-}
-
-static uint32_t Color32_SwapRedBlue(uint16_t color16) {
-    uint16_t c = color16;
-    uint8_t b = (c & 31) * 8;
-    uint8_t g = ((c >> 5) & 63) * 4;
-    uint8_t r = ((c >> 11) & 31) * 8;
-
-    return (b << 16) | (g << 8) | r;
 }
 
 class ColorTable {

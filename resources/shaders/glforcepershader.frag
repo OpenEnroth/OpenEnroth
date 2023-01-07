@@ -1,4 +1,4 @@
-#version 410 core
+precision highp float;
 
 in vec4 colour;
 in vec4 texuv;
@@ -30,13 +30,13 @@ void main() {
     float fograt = getFogRatio(fog, screenspace);
     if (fragcol.a < 0.004) fograt = 0.0;
     //if (fragcol.r < 0.04 && fragcol.g < 0.04 && fragcol.b < 0.04) fograt = 0.0;
-  
+
     float alpha = 0.0;
     // day fog
     if (fog.fogmiddle > fog.fogstart) alpha = 1.0;
 
     FragColour = mix(fragcol, vec4(fog.color, alpha), fograt);
-} 
+}
 
 float getFogRatio(FogParam fogpar, float dist) {
 

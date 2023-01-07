@@ -54,7 +54,7 @@ std::array<Image *, 9> ui_spellbook_school_backgrounds;
 std::array<std::array<Image *, 2>, 9> ui_spellbook_school_tabs;
 
 GUIWindow_Spellbook::GUIWindow_Spellbook()
-    : GUIWindow(WINDOW_SpellBook, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
+    : GUIWindow(WINDOW_SpellBook, {0, 0}, render->GetRenderDimensions(), 0) {
     current_screen_type = CURRENT_SCREEN::SCREEN_SPELL_BOOK;
     pEventTimer->Pause();
 
@@ -95,59 +95,45 @@ void GUIWindow_Spellbook::OpenSpellbook() {
         v4 = pPlayer->lastOpenedSpellbookPage;
         // v4 = (12 * pPlayer->lastOpenedSpellbookPage +
         // pSpellbookSpellIndices[pPlayer->lastOpenedSpellbookPage][i + 1]);
-        CreateButton(pViewport->uViewportTL_X + pIconPos[v4][pSpellbookSpellIndices[v4][i + 1]].Xpos,
-                     pViewport->uViewportTL_Y + pIconPos[v4][pSpellbookSpellIndices[v4][i + 1]].Ypos,  // dword_4E20D0
-                     SBPageSSpellsTextureList[i + 1]->GetWidth(),
-                     SBPageSSpellsTextureList[i + 1]->GetHeight(), 1, 79,
+        CreateButton({pViewport->uViewportTL_X + pIconPos[v4][pSpellbookSpellIndices[v4][i + 1]].Xpos,
+                     pViewport->uViewportTL_Y + pIconPos[v4][pSpellbookSpellIndices[v4][i + 1]].Ypos},  // dword_4E20D0
+                     {SBPageSSpellsTextureList[i + 1]->GetWidth(), SBPageSSpellsTextureList[i + 1]->GetHeight()}, 1, 79,
                      UIMSG_SelectSpell, i);
         ++a2;
         // ++v3;
     }
     // while ( (signed int)v3 < 11 );
 
-    CreateButton(0, 0, 0, 0, 1, 0, UIMSG_SpellBook_PressTab, 0, PlatformKey::Tab);
+    CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_SpellBook_PressTab, 0, InputAction::CharCycle);
     if (a2) _41D08F_set_keyboard_control_group(a2, 0, 0, 0);
 
     if (pPlayer->pActiveSkills[PLAYER_SKILL_FIRE] || engine->config->debug.AllMagic.Get())
-        CreateButton(399, 10, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 0, PlatformKey::None,
-                     localization->GetSpellSchoolName(0));
+        CreateButton({399, 10}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 0, InputAction::Invalid, localization->GetSpellSchoolName(0));
     if (pPlayer->pActiveSkills[PLAYER_SKILL_AIR] || engine->config->debug.AllMagic.Get())
-        CreateButton(399, 46, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 1, PlatformKey::None,
-                     localization->GetSpellSchoolName(1));
+        CreateButton({399, 46}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 1, InputAction::Invalid, localization->GetSpellSchoolName(1));
     if (pPlayer->pActiveSkills[PLAYER_SKILL_WATER] || engine->config->debug.AllMagic.Get())
-        CreateButton(399, 83, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 2, PlatformKey::None,
-                     localization->GetSpellSchoolName(2));
+        CreateButton({399, 83}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 2, InputAction::Invalid, localization->GetSpellSchoolName(2));
     if (pPlayer->pActiveSkills[PLAYER_SKILL_EARTH] || engine->config->debug.AllMagic.Get())
-        CreateButton(399, 121, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 3, PlatformKey::None,
-                     localization->GetSpellSchoolName(3));
+        CreateButton({399, 121}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 3, InputAction::Invalid, localization->GetSpellSchoolName(3));
     if (pPlayer->pActiveSkills[PLAYER_SKILL_SPIRIT] || engine->config->debug.AllMagic.Get())
-        CreateButton(399, 158, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 4, PlatformKey::None,
-                     localization->GetSpellSchoolName(5));
+        CreateButton({399, 158}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 4, InputAction::Invalid, localization->GetSpellSchoolName(5));
     if (pPlayer->pActiveSkills[PLAYER_SKILL_MIND] || engine->config->debug.AllMagic.Get())
-        CreateButton(400, 196, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 5, PlatformKey::None,
-                     localization->GetSpellSchoolName(4));
+        CreateButton({400, 196}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 5, InputAction::Invalid, localization->GetSpellSchoolName(4));
     if (pPlayer->pActiveSkills[PLAYER_SKILL_BODY] || engine->config->debug.AllMagic.Get())
-        CreateButton(400, 234, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 6, PlatformKey::None,
-                     localization->GetSpellSchoolName(6));
+        CreateButton({400, 234}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 6, InputAction::Invalid, localization->GetSpellSchoolName(6));
     if (pPlayer->pActiveSkills[PLAYER_SKILL_LIGHT] || engine->config->debug.AllMagic.Get())
-        CreateButton(400, 271, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 7, PlatformKey::None,
-                     localization->GetSpellSchoolName(7));
+        CreateButton({400, 271}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 7, InputAction::Invalid, localization->GetSpellSchoolName(7));
     if (pPlayer->pActiveSkills[PLAYER_SKILL_DARK] || engine->config->debug.AllMagic.Get())
-        CreateButton(400, 307, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 8, PlatformKey::None,
-                     localization->GetSpellSchoolName(8));
+        CreateButton({400, 307}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 8, InputAction::Invalid, localization->GetSpellSchoolName(8));
 
-    CreateButton(476, 450, ui_spellbook_btn_quckspell->GetWidth(),
-                 ui_spellbook_btn_quckspell->GetHeight(), 1, 78,
-                 UIMSG_ClickInstallRemoveQuickSpellBtn, 0);
-    pBtn_InstallRemoveSpell = CreateButton(
-        476, 450, 48, 32, 1, 78, UIMSG_ClickInstallRemoveQuickSpellBtn, 0, PlatformKey::None,
-        "", {ui_spellbook_btn_quckspell_click});
-    CreateButton(561, 450, ui_spellbook_btn_close->GetWidth(),
-                 ui_spellbook_btn_close->GetHeight(), 1, 0, UIMSG_Escape, 0, PlatformKey::None,
-                 localization->GetString(LSTR_DIALOGUE_EXIT));
-    pBtn_CloseBook = CreateButton(561, 450, 48, 32, 1, 0, UIMSG_Escape, 0, PlatformKey::None,
-                                  localization->GetString(LSTR_DIALOGUE_EXIT),
-                                  {ui_spellbook_btn_close_click});
+    CreateButton({476, 450}, {ui_spellbook_btn_quckspell->GetWidth(), ui_spellbook_btn_quckspell->GetHeight()}, 1, 78,
+        UIMSG_ClickInstallRemoveQuickSpellBtn, 0);
+    pBtn_InstallRemoveSpell = CreateButton({476, 450}, {48, 32}, 1, 78,
+        UIMSG_ClickInstallRemoveQuickSpellBtn, 0, InputAction::Invalid, "", {ui_spellbook_btn_quckspell_click});
+    CreateButton({561, 450}, {ui_spellbook_btn_close->GetWidth(), ui_spellbook_btn_close->GetHeight()}, 1, 0,
+        UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_DIALOGUE_EXIT));
+    pBtn_CloseBook = CreateButton({561, 450}, {48, 32}, 1, 0,
+        UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_DIALOGUE_EXIT), {ui_spellbook_btn_close_click});
 }
 
 void GUIWindow_Spellbook::Update() {
@@ -247,8 +233,9 @@ void GUIWindow_Spellbook::Update() {
     // }
 
     Pointi pt = mouse->GetCursorPos();
-    if (pt.x < window->GetWidth() && pt.y < window->GetHeight()) {
-        v10 = render->pActiveZBuffer[pt.x + pt.y * render->GetRenderWidth()] & 0xFFFF;
+    Sizei renDims = render->GetRenderDimensions();
+    if (pt.x < renDims.w && pt.y < renDims.h) {
+        v10 = render->pActiveZBuffer[pt.x + pt.y * render->GetRenderDimensions().w] & 0xFFFF;
         if (v10) {
             if (SBPageCSpellsTextureList[v10]) {
                 pX_coord =

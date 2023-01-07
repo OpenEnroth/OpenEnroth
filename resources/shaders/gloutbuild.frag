@@ -1,4 +1,5 @@
-#version 410 core
+precision highp float;
+precision highp sampler2DArray;
 
 in vec4 vertexColour;
 in vec2 texuv;
@@ -11,11 +12,11 @@ in vec4 viewspace;
 out vec4 FragColour;
 
 struct Sunlight {
-	vec3 direction;
+    vec3 direction;
 
-	vec3 ambient;
-	vec3 diffuse;
-	vec3 specular;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
 };
 
 struct PointLight {
@@ -56,40 +57,39 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 float getFogRatio(FogParam fogpar, float dist);
 
 void main() {
-
-	vec3 fragnorm = normalize(vsNorm);
+    vec3 fragnorm = normalize(vsNorm);
     vec3 fragviewdir = normalize(CameraPos - vsPos);
 
-	vec4 fragcol = vec4(1.0);
+    vec4 fragcol = vec4(1.0);
     vec2 texcoords = vec2(1.0);
     vec2 texuvmod = vec2(0.0);
     vec2 deltas = vec2(0.0);
 
     // texture flow mods
     if (abs(vsNorm.z) >= 0.9) {
-        if ((vsAttrib & 0x400) > 0) texuvmod.y = 1;
-        if ((vsAttrib & 0x800) > 0) texuvmod.y = -1;
+        if ((vsAttrib & 0x400) > 0) texuvmod.y = 1.0;
+        if ((vsAttrib & 0x800) > 0) texuvmod.y = -1.0;
     } else {
-        if ((vsAttrib & 0x400) > 0) texuvmod.y = -1;
-        if ((vsAttrib & 0x800) > 0) texuvmod.y = 1;
+        if ((vsAttrib & 0x400) > 0) texuvmod.y = -1.0;
+        if ((vsAttrib & 0x800) > 0) texuvmod.y = 1.0;
     }
 
     if ((vsAttrib & 0x1000) > 0) {
-        texuvmod.x = -1;    
+        texuvmod.x = -1.0;
     } else if ((vsAttrib & 0x2000) > 0) {
-        texuvmod.x = 1;    
+        texuvmod.x = 1.0;
     }
 
-    deltas.x = texuvmod.x * (flowtimer & int(textureSize(textureArray0,0).x-1));
-    deltas.y = texuvmod.y * (flowtimer & int(textureSize(textureArray0,0).y-1));
-    texcoords.x = (deltas.x + texuv.x) / textureSize(textureArray0,0).x;
-    texcoords.y = (deltas.y + texuv.y) / textureSize(textureArray0,0).y; 
+    deltas.x = texuvmod.x * float(flowtimer & int(textureSize(textureArray0,0).x-1));
+    deltas.y = texuvmod.y * float(flowtimer & int(textureSize(textureArray0,0).y-1));
+    texcoords.x = (deltas.x + texuv.x) / float(textureSize(textureArray0,0).x);
+    texcoords.y = (deltas.y + texuv.y) / float(textureSize(textureArray0,0).y);
     fragcol = texture(textureArray0, vec3(texcoords.x,texcoords.y,olayer.y));
 
     vec4 toplayer = texture(textureArray0, vec3(texcoords.x,texcoords.y,0));
     vec4 watercol = texture(textureArray0, vec3(texcoords.x,texcoords.y,waterframe));
 
-    if ((watertiles == 1) && (olayer.y == 0)){
+    if ((watertiles == 1) && (olayer.y == 0.0)){
         if ((vsAttrib & 0x3C00) != 0){ // water anim disabled
             fragcol = toplayer;
         } else {
@@ -98,14 +98,14 @@ void main() {
     }
 
     // sunlight
-	vec3 result = CalcSunLight(sun, fragnorm, fragviewdir, vec3(1)); //fragcol.rgb);
+    vec3 result = CalcSunLight(sun, fragnorm, fragviewdir, vec3(1)); //fragcol.rgb);
     result = clamp(result, 0.0, 0.85);
 
     result += CalcPointLight(fspointlights[0], fragnorm, vsPos, fragviewdir);
 
     // stack stationary
     for(int i = 1; i < num_point_lights; i++) {
-        if (fspointlights[i].type == 1)
+        if (fspointlights[i].type == 1.0)
             result += CalcPointLight(fspointlights[i], fragnorm, vsPos, fragviewdir);
     }
 
@@ -114,7 +114,7 @@ void main() {
     // stack mobile
 
     for(int i = 1; i < num_point_lights; i++) {
-        if (fspointlights[i].type == 2)
+        if (fspointlights[i].type == 2.0)
             result += CalcPointLight(fspointlights[i], fragnorm, vsPos, fragviewdir);
     }
 
@@ -124,7 +124,7 @@ void main() {
 
     // percpetion red fade
     if ((vsAttrib & 0x10000) > 0) {
-        float ss = (sin(flowtimer/30.0)+ 1.0) / 2.0;
+        float ss = (sin(float(flowtimer) / 30.0) + 1.0) / 2.0;
         dull = vec3(1, ss, ss);
     } else {
         dull = vec3(1,1,1);
@@ -146,11 +146,10 @@ void main() {
         }
     }
 
-	vec4 inter = vec4(clamps, vertexColour.a) * vec4(dull,1); // result, 1.0);
-	float fograt = getFogRatio(fog, abs(viewspace.z/ viewspace.w));
-	FragColour = mix(inter, vec4(fog.color, alpha), fograt);
+    vec4 inter = vec4(clamps, vertexColour.a) * vec4(dull,1); // result, 1.0);
+    float fograt = getFogRatio(fog, abs(viewspace.z/ viewspace.w));
+    FragColour = mix(inter, vec4(fog.color, alpha), fograt);
     FragColour.rgb = pow(FragColour.rgb, vec3(1.0/gamma));
-
 }
 
 float getFogRatio(FogParam fogpar, float dist) {
@@ -170,36 +169,36 @@ vec3 CalcSunLight(Sunlight light, vec3 normal, vec3 viewDir, vec3 thisfragcol) {
     float diff = max(dot(normal, lightDir), 0.0);
     // specular shading
     vec3 reflectDir = reflect(-lightDir, normal);
-   float spec = pow(max(dot(viewDir, reflectDir), 0.0), 128.0 ); //material.shininess
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 128.0 ); //material.shininess
     // combine results
     vec3 ambient = light.ambient * thisfragcol;
     vec3 diffuse = light.diffuse * diff * thisfragcol;
     vec3 specular = light.specular * spec * thisfragcol;  // should be spec map
 
-	vec3 clamped = clamp((light.ambient + (light.diffuse * diff) + (light.specular * spec)), 0, 1) * thisfragcol;
+    vec3 clamped = clamp((light.ambient + (light.diffuse * diff) + (light.specular * spec)), 0.0, 1.0) * thisfragcol;
 
     return clamped; //(ambient + diffuse + specular);
 }
 
 // calculates the color when using a point light.
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
-    if (light.diffuse.r == 0 && light.diffuse.g == 0 && light.diffuse.b == 0) return vec3(0);
-    if (light.radius < 1.0) return vec3(0);    
+    if (light.diffuse.r == 0.0 && light.diffuse.g == 0.0 && light.diffuse.b == 0.0)
+        return vec3(0);
+    if (light.radius < 1.0)
+        return vec3(0);
 
     vec3 lightDir = normalize(light.position - fragPos);
     // diffuse shading
     float diff = max(dot(normal, lightDir), 0.0);
     // specular shading
     vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 128); //material.shininess
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 128.0); //material.shininess
     // attenuation
     float distance = length(light.position - fragPos);
 
     //float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
     float attenuation = clamp(1.0 - ((distance * distance)/(light.radius * light.radius)), 0.0, 1.0);
     attenuation *= attenuation;
-
-
 
     // combine results
     vec3 ambient = light.ambient ;//* vec3(texture(material.diffuse, TexCoords));
@@ -209,4 +208,4 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     diffuse *= attenuation;
     specular *= attenuation;
     return (ambient + diffuse + specular);
-} 
+}

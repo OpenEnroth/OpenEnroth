@@ -1,3 +1,5 @@
+#pragma once
+
 #include <vector>
 #include <memory>
 #include <string>
@@ -5,6 +7,7 @@
 #include "Platform/Platform.h"
 
 class SdlWindow;
+class SdlGamepad;
 class SdlPlatformSharedState;
 
 class SdlPlatform: public Platform {
@@ -14,6 +17,7 @@ class SdlPlatform: public Platform {
 
     virtual std::unique_ptr<PlatformWindow> CreateWindow() override;
     virtual std::unique_ptr<PlatformEventLoop> CreateEventLoop() override;
+    virtual std::unique_ptr<PlatformGamepad> CreateGamepad(uint32_t id) override;
 
     virtual void SetCursorShown(bool cursorShown) override;
     virtual bool IsCursorShown() const override;
@@ -26,9 +30,12 @@ class SdlPlatform: public Platform {
 
     virtual std::string WinQueryRegistry(const std::string &path) const override;
 
+    virtual std::string StoragePath(const PLATFORM_STORAGE type) const override;
+
  private:
     friend class SdlWindow;
     friend class SdlEventLoop;
+    friend class SdlGamepad;
 
  private:
     bool initialized_ = false;

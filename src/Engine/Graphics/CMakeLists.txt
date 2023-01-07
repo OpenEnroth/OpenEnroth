@@ -67,7 +67,7 @@ set(GRAPHICS_HEADERS BSPModel.h
                      OpenGL/TextureOpenGL.h
                      Level/Decoration.h)
 
-if(WIN32)
+if(ENABLE_DIRECTDRAW)
   list(APPEND GRAPHICS_SOURCES Direct3D/Render.cpp
                                Direct3D/RenderD3D.cpp
                                Direct3D/TextureD3D.cpp)
@@ -80,14 +80,12 @@ endif()
 add_library(graphics STATIC ${GRAPHICS_SOURCES} ${GRAPHICS_HEADERS})
 target_check_style(graphics)
 
-find_package(OpenGL REQUIRED)
-
-target_link_libraries(graphics ${OPENGL_opengl_LIBRARY} ${OPENGL_glu_LIBRARY} libluajit glad nuklear)
-
-if(WIN32 AND BUILD_TYPE STREQUAL "x86")
-  target_link_libraries(graphics ddraw.lib dxguid.lib)
-  target_compile_definitions(graphics PRIVATE DDRAW_ENABLED)
+target_link_libraries(graphics libluajit glad nuklear utility)
+if(NOT BUILD_PLATFORM STREQUAL "android")
+  find_package(OpenGL REQUIRED)
+  target_link_libraries(graphics ${OPENGL_opengl_LIBRARY})
 endif()
 
-message(VERBOSE "OPENGL_opengl_LIBRARY: ${OPENGL_opengl_LIBRARY}")
-message(VERBOSE "OPENGL_glu_LIBRARY: ${OPENGL_glu_LIBRARY}")
+if(ENABLE_DIRECTDRAW)
+  target_link_libraries(graphics ddraw.lib dxguid.lib)
+endif()

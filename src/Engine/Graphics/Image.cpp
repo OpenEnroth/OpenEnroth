@@ -32,6 +32,8 @@ const char *IMAGE_FORMAT_ToString(IMAGE_FORMAT format) {
             return "IMAGE_FORMAT_R8G8B8";
         case IMAGE_FORMAT_R8G8B8A8:
             return "IMAGE_FORMAT_R8G8B8A8";
+        case IMAGE_FORMAT_A8B8G8R8:
+            return "IMAGE_FORMAT_A8B8G8R8";
 
         default:
             Error("Invalid format: %d", format);
@@ -50,6 +52,8 @@ unsigned int IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT format) {
         case IMAGE_FORMAT_R8G8B8:
             return 3;
         case IMAGE_FORMAT_R8G8B8A8:
+            return 4;
+        case IMAGE_FORMAT_A8B8G8R8:
             return 4;
 
         default:
@@ -280,37 +284,41 @@ const void *Image::GetPixels(IMAGE_FORMAT format) {
 
         auto native_pixels = this->pixels[this->native_format];
         if (native_pixels) {
-            static constinit IndexedArray<IndexedArray<ImageFormatConverter, IMAGE_NUM_FORMATS>, IMAGE_NUM_FORMATS> converters = {
+            static constexpr IndexedArray<IndexedArray<ImageFormatConverter, IMAGE_NUM_FORMATS>, IMAGE_NUM_FORMATS> converters = {
                 {IMAGE_FORMAT_R5G6B5, {
                     {IMAGE_FORMAT_R5G6B5,       nullptr},
                     {IMAGE_FORMAT_A1R5G5B5,     nullptr},
-                    {IMAGE_FORMAT_A8R8G8B8,     Image_R5G6B5_to_A8R8G8B8},
+                    {IMAGE_FORMAT_A8R8G8B8,     nullptr},
                     {IMAGE_FORMAT_R8G8B8,       nullptr},
-                    {IMAGE_FORMAT_R8G8B8A8,     nullptr}
+                    {IMAGE_FORMAT_R8G8B8A8,     nullptr},
+                    {IMAGE_FORMAT_A8B8G8R8,     Image_R5G6B5_to_A8B8G8R8}
                 }},
 
                 {IMAGE_FORMAT_A1R5G5B5, {
                     {IMAGE_FORMAT_R5G6B5,       nullptr},
                     {IMAGE_FORMAT_A1R5G5B5,     nullptr},
-                    {IMAGE_FORMAT_A8R8G8B8,     Image_A1R5G5B5_to_A8R8G8B8},
+                    {IMAGE_FORMAT_A8R8G8B8,     nullptr},
                     {IMAGE_FORMAT_R8G8B8,       nullptr},
-                    {IMAGE_FORMAT_R8G8B8A8,     nullptr}
+                    {IMAGE_FORMAT_R8G8B8A8,     nullptr},
+                    {IMAGE_FORMAT_A8B8G8R8,     Image_A1R5G5B5_to_A8B8G8R8}
                 }},
 
                 {IMAGE_FORMAT_A8R8G8B8, {
                     {IMAGE_FORMAT_R5G6B5,       nullptr},
-                    {IMAGE_FORMAT_A1R5G5B5,     Image_A8R8G8B8_to_A1R5G5B5},
+                    {IMAGE_FORMAT_A1R5G5B5,     nullptr},
                     {IMAGE_FORMAT_A8R8G8B8,     nullptr},
                     {IMAGE_FORMAT_R8G8B8,       nullptr},
-                    {IMAGE_FORMAT_R8G8B8A8,     nullptr}
+                    {IMAGE_FORMAT_R8G8B8A8,     nullptr},
+                    {IMAGE_FORMAT_A8B8G8R8,     Image_A8R8G8B8_to_A8B8G8R8}
                 }},
 
                 {IMAGE_FORMAT_R8G8B8, {
                     {IMAGE_FORMAT_R5G6B5,       nullptr},
                     {IMAGE_FORMAT_A1R5G5B5,     nullptr},
-                    {IMAGE_FORMAT_A8R8G8B8,     Image_R8G8B8_to_A8R8G8B8},
+                    {IMAGE_FORMAT_A8R8G8B8,     nullptr},
                     {IMAGE_FORMAT_R8G8B8,       nullptr},
-                    {IMAGE_FORMAT_R8G8B8A8,     nullptr}
+                    {IMAGE_FORMAT_R8G8B8A8,     nullptr},
+                    {IMAGE_FORMAT_A8B8G8R8,     Image_R8G8B8_to_A8B8G8R8}
                 }},
 
                 {IMAGE_FORMAT_R8G8B8A8, {
@@ -318,7 +326,17 @@ const void *Image::GetPixels(IMAGE_FORMAT format) {
                     {IMAGE_FORMAT_A1R5G5B5,     nullptr},
                     {IMAGE_FORMAT_A8R8G8B8,     nullptr},
                     {IMAGE_FORMAT_R8G8B8,       nullptr},
-                    {IMAGE_FORMAT_R8G8B8A8,     nullptr}
+                    {IMAGE_FORMAT_R8G8B8A8,     nullptr},
+                    {IMAGE_FORMAT_A8B8G8R8,     nullptr}
+                }},
+
+                {IMAGE_FORMAT_A8B8G8R8, {
+                    {IMAGE_FORMAT_R5G6B5,       nullptr},
+                    {IMAGE_FORMAT_A1R5G5B5,     nullptr},
+                    {IMAGE_FORMAT_A8R8G8B8,     Image_A8B8G8R8_to_A8R8G8B8},
+                    {IMAGE_FORMAT_R8G8B8,       nullptr},
+                    {IMAGE_FORMAT_R8G8B8A8,     nullptr},
+                    {IMAGE_FORMAT_A8B8G8R8,     nullptr}
                 }}
             };
 

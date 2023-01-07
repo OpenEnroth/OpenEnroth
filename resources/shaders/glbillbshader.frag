@@ -1,9 +1,10 @@
-#version 410 core
+precision highp float;
+precision highp usamplerBuffer;
 
 in vec4 colour;
 in vec2 texuv;
 in float screenspace;
-flat in uint paletteid;
+flat in int paletteid;
 
 out vec4 FragColour;
 
@@ -24,14 +25,14 @@ float getFogRatio(FogParam fogpar, float dist);
 
 void main() {
     vec4 fragcol = texture(texture0, texuv);
-    uint index = uint(fragcol.r * 255);
-    vec4 newcol = texelFetch(palbuf, int( 256 * paletteid + index));
+    int index = int(fragcol.r * 255.0);
+    vec4 newcol = vec4(texelFetch(palbuf, int(256 * paletteid + index)));
 
-   if (repaint == true) {
-	if (paletteid > 0)
-	    if (index > 0)
-	        fragcol = vec4(newcol.r / 255.0, newcol.g / 255.0, newcol.b / 255.0, 1.0);
-   }
+    if (repaint == true) {
+        if (paletteid > 0)
+            if (index > 0)
+                fragcol = vec4(newcol.r / 255.0, newcol.g / 255.0, newcol.b / 255.0, 1.0);
+    }
 
     fragcol *= colour;
 

@@ -7,6 +7,7 @@
 
 #include "Utility/Flags.h"
 #include "Utility/Segment.h"
+#include "Utility/Workaround/ToUnderlying.h"
 
 enum class DAMAGE_TYPE : unsigned int {
     DMGT_FIRE = 0,
@@ -989,7 +990,7 @@ enum class ITEM_TYPE : int32_t {
     ITEM_FIRST_RECIPE = ITEM_RECIPE_REJUVENATION,
     ITEM_LAST_RECIPE = ITEM_RECIPE_BODY_RESISTANCE,
 
-    ITEM_FIRST_ENCHANTING_POTION = ITEM_POTION_MIGHT_BOOST,
+    ITEM_FIRST_ENCHANTING_POTION = ITEM_POTION_FLAMING,
     ITEM_LAST_ENCHANTING_POTION = ITEM_POTION_SWIFT,
 
     ITEM_FIRST_WAND = ITEM_WAND_OF_FIRE,

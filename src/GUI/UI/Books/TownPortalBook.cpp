@@ -39,9 +39,7 @@ GUIWindow_TownPortalBook::GUIWindow_TownPortalBook()  // const char *a1)
     ui_book_townportal_icons[5] = assets->GetImage_ColorKey("tphell", render->teal_mask_16);
 
     for (uint i = 0; i < 6; ++i)
-        CreateButton(pTownPortalBook_xs[i], pTownPortalBook_ys[i],
-                     pTownPortalBook_ws[i], pTownPortalBook_hs[i], 1, 182,
-                     UIMSG_ClickTownInTP, i);
+        CreateButton({pTownPortalBook_xs[i], pTownPortalBook_ys[i]}, {pTownPortalBook_ws[i], pTownPortalBook_hs[i]}, 1, 182, UIMSG_ClickTownInTP, i);
 }
 
 void GUIWindow_TownPortalBook::Update() {
@@ -89,7 +87,7 @@ void GUIWindow_TownPortalBook::Update() {
     }
 
     Pointi pt = mouse->GetCursorPos();
-    v3 = render->pActiveZBuffer[pt.x + pt.y * render->GetRenderWidth()] & 0xFFFF;
+    v3 = render->pActiveZBuffer[pt.x + pt.y * render->GetRenderDimensions().w] & 0xFFFF;
 
     if (v3) {
         if (_449B57_test_bit(pParty->_quest_bits, fountain_bits_lut[v3 - 1]) || engine->config->debug.TownPortal.Get())

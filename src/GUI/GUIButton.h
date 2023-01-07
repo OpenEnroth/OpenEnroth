@@ -21,12 +21,12 @@ class GUIButton {
     void Release();
 
     std::string id = {}; // Button id, so that buttons can be referenced from tests.
-    unsigned int uX = 0;
-    unsigned int uY = 0;
-    unsigned int uWidth = 0;
-    unsigned int uHeight = 0;
-    unsigned int uZ = 0; // = uX + uWidth
-    unsigned int uW = 0; // = uY + uHeight
+    int uX = 0;
+    int uY = 0;
+    int uWidth = 0;
+    int uHeight = 0;
+    int uZ = 0; // = uX + uWidth
+    int uW = 0; // = uY + uHeight
     int uButtonType = 0;
     int uData = 0;  // may be pMessageType
     UIMessageType msg = UIMSG_0;
@@ -35,7 +35,7 @@ class GUIButton {
     bool field_2C_is_pushed = false;
     GUIWindow *pParent = nullptr;
     std::vector<Image*> vTextures;
-    PlatformKey hotkey = PlatformKey::None;
+    InputAction action = InputAction::Invalid;
     std::string sLabel = "";
     std::string field_75 = "";
 };

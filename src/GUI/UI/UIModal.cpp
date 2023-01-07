@@ -2,6 +2,7 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/Localization.h"
 #include "Engine/Time.h"
+#include "Engine/Graphics/IRender.h"
 
 #include "GUI/UI/UIModal.h"
 
@@ -9,8 +10,7 @@
 CURRENT_SCREEN modal_window_prev_screen_type;
 
 GUIWindow_Modal::GUIWindow_Modal(const char *message, UIMessageType on_release_event)
-    : GUIWindow(WINDOW_ModalWindow, 0, 0, window->GetWidth(), window->GetHeight(),
-                on_release_event, message) {
+    : GUIWindow(WINDOW_ModalWindow, {0, 0}, render->GetRenderDimensions(), on_release_event, message) {
     pEventTimer->Pause();
     prev_screen_type = current_screen_type;
     current_screen_type = CURRENT_SCREEN::SCREEN_MODAL_WINDOW;

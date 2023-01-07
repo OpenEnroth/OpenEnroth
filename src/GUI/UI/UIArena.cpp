@@ -78,14 +78,12 @@ void Arena_SelectionFightLevel() {
     } else {
         uDialogueType = DIALOGUE_ARENA_WELCOME;
         pDialogueWindow->DeleteButtons();
-        pBtn_ExitCancel = pDialogueWindow->CreateButton(
-            471, 445, 0xA9u, 0x23u, 1, 0, UIMSG_Escape, 0, PlatformKey::None,
-            localization->GetString(LSTR_DIALOGUE_EXIT),
-            {ui_exit_cancel_button_background});
-        pDialogueWindow->CreateButton(480, 160, 0x8Cu, 0x1Eu, 1, 0, UIMSG_SelectNPCDialogueOption, DIALOGUE_ARENA_SELECT_PAGE);
-        pDialogueWindow->CreateButton(480, 190, 0x8Cu, 0x1Eu, 1, 0, UIMSG_SelectNPCDialogueOption, DIALOGUE_ARENA_SELECT_SQUIRE);
-        pDialogueWindow->CreateButton(480, 220, 0x8Cu, 0x1Eu, 1, 0, UIMSG_SelectNPCDialogueOption, DIALOGUE_ARENA_SELECT_KNIGHT);
-        pDialogueWindow->CreateButton(480, 250, 0x8Cu, 0x1Eu, 1, 0, UIMSG_SelectNPCDialogueOption, DIALOGUE_ARENA_SELECT_CHAMPION);
+        pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {0xA9u, 0x23u}, 1, 0,
+            UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_DIALOGUE_EXIT), {ui_exit_cancel_button_background});
+        pDialogueWindow->CreateButton({480, 160}, {0x8Cu, 0x1Eu}, 1, 0, UIMSG_SelectNPCDialogueOption, DIALOGUE_ARENA_SELECT_PAGE);
+        pDialogueWindow->CreateButton({480, 190}, {0x8Cu, 0x1Eu}, 1, 0, UIMSG_SelectNPCDialogueOption, DIALOGUE_ARENA_SELECT_SQUIRE);
+        pDialogueWindow->CreateButton({480, 220}, {0x8Cu, 0x1Eu}, 1, 0, UIMSG_SelectNPCDialogueOption, DIALOGUE_ARENA_SELECT_KNIGHT);
+        pDialogueWindow->CreateButton({480, 250}, {0x8Cu, 0x1Eu}, 1, 0, UIMSG_SelectNPCDialogueOption, DIALOGUE_ARENA_SELECT_CHAMPION);
         pDialogueWindow->_41D08F_set_keyboard_control_group(4, 1, 0, 1);
     }
 }
@@ -136,7 +134,7 @@ void ArenaFight() {
     std::string v1 = pFontArrus->FitTextInAWindow(
         localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON), window.uFrameWidth,
         13);
-    pDialogueWindow->DrawText(pFontArrus, 13, 354 - v0, 0, v1, 0, 0, 0);
+    pDialogueWindow->DrawText(pFontArrus, {13, 354 - v0}, 0, v1, 0, 0, 0);
     render->EndScene();
     render->Present();
     pParty->vPosition.x = 3849;

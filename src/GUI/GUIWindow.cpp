@@ -37,6 +37,7 @@
 #include "GUI/UI/UIStatusBar.h"
 
 #include "Io/InputAction.h"
+#include "Io/KeyboardInputHandler.h"
 #include "Io/Mouse.h"
 
 #include "Media/Audio/AudioPlayer.h"
@@ -149,12 +150,8 @@ bool PauseGameDrawing() {
     return false;
 }
 
-OnCastTargetedSpell::OnCastTargetedSpell(unsigned int x, unsigned int y,
-    unsigned int width,
-    unsigned int height, WindowData data,
-    const std::string &hint
-)
-    : GUIWindow(WINDOW_CastSpell, x, y, width, height, data, hint) {
+OnCastTargetedSpell::OnCastTargetedSpell(Pointi position, Sizei dimensions, WindowData data, const std::string &hint)
+    : GUIWindow(WINDOW_CastSpell, position, dimensions, data, hint) {
     pEventTimer->Pause();
     pAudioPlayer->PauseSounds(-1);
     mouse->SetCursorImage("MICON2");
@@ -194,37 +191,18 @@ void GUIMessageQueue::PopMessage(UIMessageType *pType, int *pParam,
     *a4 = message.field_8;
 }
 
-void GUI_ReplaceHotkey(PlatformKey oldKey, PlatformKey newKey, char bFirstCall) {
-    if (bFirstCall) {
-        for (GUIWindow *pWindow : lWindowList) {
-            for (GUIButton *j : pWindow->vButtons) {
-                j->field_28 = 0;
-            }
-        }
-    }
-
-    for (GUIWindow *pWindow : lWindowList) {
-        for (GUIButton *j : pWindow->vButtons) {
-            if (j->hotkey == oldKey) {
-                if (j->field_28 == 0) {
-                    j->field_28 = 1;
-                    j->hotkey = newKey;
-                }
-            }
-        }
-    }
-}
-
 GUIButton *GUI_HandleHotkey(PlatformKey hotkey) {
-     for (GUIWindow *pWindow : lWindowList) {
+    for (GUIWindow *pWindow : lWindowList) {
         for (GUIButton *result : pWindow->vButtons) {
-            if (result->hotkey == hotkey) {
+            if (result->action != InputAction::Invalid && keyboardActionMapping->IsKeyMatchAction(result->action, hotkey)) {
                 pMessageQueue_50CBD0->AddGUIMessage(result->msg, result->msg_param, 0);
                 return result;
             }
         }
+
+        int width = render->GetPresentDimensions().w;
         if (pWindow->uFrameX == 0 && pWindow->uFrameY == 0 &&
-            pWindow->uFrameWidth == window->GetWidth() && pWindow->uFrameHeight == window->GetWidth()) {
+            pWindow->uFrameWidth == width && pWindow->uFrameHeight == width) {
             break;
         }
     }
@@ -260,7 +238,7 @@ void GUIWindow::_41D73D_draw_buff_tooltip() {
             text_color =
                 Color16(spell_tooltip_colors[i].R, spell_tooltip_colors[i].G,
                     spell_tooltip_colors[i].B);
-            DrawText(pFontComic, 52, Y_pos, text_color,
+            DrawText(pFontComic, {52, Y_pos}, text_color,
                 localization->GetSpellName(i), 0, 0, 0);
             DrawBuff_remaining_time_string(Y_pos, this, remaing_time,
                 pFontComic);
@@ -351,8 +329,9 @@ void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
         y = pViewport->uViewportTL_Y;
         w = pViewport->uViewportBR_Y;
     } else {
-        z = window->GetWidth();
-        w = window->GetHeight();
+        Sizei renDims = render->GetRenderDimensions();
+        z = renDims.w;
+        w = renDims.h;
     }
 
     Pointi cursor = mouse->GetCursorPos();
@@ -465,13 +444,8 @@ void GUIWindow::HouseDialogManager() {
             render->DrawTextureCustomHeight(8 / 640.0f,
                 (352 - (pTextHeight + 7)) / 480.0f,
                 ui_leather_mm7, pTextHeight + 7);
-            render->DrawTextureAlphaNew(8 / 640.0f, (347 - v6) / 480.0f,
-                _591428_endcap);
-            window_SpeakInHouse->DrawText(
-                pFontArrus, 13, 354 - v6, 0,
-                pFontArrus->FitTextInAWindow(current_npc_text,
-                    pDialogWindow.uFrameWidth, 13),
-                0, 0, 0);
+            render->DrawTextureAlphaNew(8 / 640.0f, (347 - v6) / 480.0f, _591428_endcap);
+            window_SpeakInHouse->DrawText(pFontArrus, {13, 354 - v6}, 0, pFontArrus->FitTextInAWindow(current_npc_text, pDialogWindow.uFrameWidth, 13), 0, 0, 0);
         }
         if (uNumDialogueNPCPortraits <= 0) {
             if (pDialogueNPCCount == uNumDialogueNPCPortraits &&
@@ -682,83 +656,76 @@ void GUIWindow::DrawTitleText(GUIFont *font, int horizontal_margin,
 }
 
 //----- (0044D406) --------------------------------------------------------
-void GUIWindow::DrawTitleText(GUIFont *pFont, int uHorizontalMargin,
-    int uVerticalMargin,
-    uint16_t uDefaultColor,
-    const char *pInString, int uLineSpacing) {
+void GUIWindow::DrawTitleText(GUIFont *pFont, int uHorizontalMargin, int uVerticalMargin, uint16_t uDefaultColor, const char *pInString, int uLineSpacing) {
     int width = this->uFrameWidth - uHorizontalMargin;
     ui_current_text_color = uDefaultColor;
-    std::string resString = pFont->FitTextInAWindow(pInString, this->uFrameWidth,
-        uHorizontalMargin);
+    std::string resString = pFont->FitTextInAWindow(pInString, this->uFrameWidth, uHorizontalMargin);
     std::istringstream stream(resString);
     std::string line;
     int x = uHorizontalMargin + this->uFrameX;
     int y = uVerticalMargin + this->uFrameY;
     while (std::getline(stream, line)) {
-        unsigned int x_offset = pFont->AlignText_Center(width, line);
-        pFont->DrawTextLine(line, uDefaultColor, x + x_offset, y,
-            window->GetWidth());
+        int x_offset = pFont->AlignText_Center(width, line);
+        pFont->DrawTextLine(line, uDefaultColor, {x + x_offset, y}, render->GetRenderDimensions().w);
         y += pFont->GetHeight() - uLineSpacing;
     }
 }
 
-void GUIWindow::DrawText(GUIFont *font, int x, int y, unsigned short uFontColor,
+void GUIWindow::DrawText(GUIFont *font, Pointi position, uint16_t uFontColor,
     const std::string &str, bool present_time_transparency,
     int max_text_height, int uFontShadowColor) {
-    this->DrawText(font, x, y, uFontColor, str.c_str(),
+    this->DrawText(font, position, uFontColor, str.c_str(),
         present_time_transparency, max_text_height,
         uFontShadowColor);
 }
 
 //----- (0044CE08) --------------------------------------------------------
-void GUIWindow::DrawText(GUIFont *font, int uX, int uY,
-    unsigned short uFontColor, const char *Str,
+void GUIWindow::DrawText(GUIFont *font, Pointi position,
+    uint16_t uFontColor, const char *Str,
     bool present_time_transparency, int max_text_height,
     int uFontShadowColor) {
-    font->DrawText(this, uX, uY, uFontColor, Str, present_time_transparency,
-        max_text_height, uFontShadowColor);
+    font->DrawText(this, position, uFontColor, Str, present_time_transparency, max_text_height, uFontShadowColor);
 }
 
-int GUIWindow::DrawTextInRect(GUIFont *font, unsigned int x, unsigned int y,
+int GUIWindow::DrawTextInRect(GUIFont *font, Pointi position,
     unsigned int color, const char *text,
     int rect_width, int reverse_text) {
     std::string label = std::string(text);
-    return DrawTextInRect(font, x, y, color, label, rect_width, reverse_text);
+    return DrawTextInRect(font, position, color, label, rect_width, reverse_text);
 }
 
 //----- (0044CB4F) --------------------------------------------------------
-int GUIWindow::DrawTextInRect(GUIFont *pFont, unsigned int uX, unsigned int uY,
+int GUIWindow::DrawTextInRect(GUIFont *pFont, Pointi position,
     unsigned int uColor, std::string &str, int rect_width,
     int reverse_text) {
-    return pFont->DrawTextInRect(this, uX, uY, uColor, str, rect_width,
-        reverse_text);
+    return pFont->DrawTextInRect(this, position, uColor, str, rect_width, reverse_text);
 }
 
-GUIButton *GUIWindow::CreateButton(int uX, int uY, int uWidth, int uHeight,
+GUIButton *GUIWindow::CreateButton(Pointi position, Sizei dimensions,
                                    int uButtonType, int uData, UIMessageType msg,
-                                   unsigned int msg_param, PlatformKey hotkey,
+                                   unsigned int msg_param, InputAction action,
                                    const std::string &label,
                                    const std::vector<Image *> &textures) {
     GUIButton *pButton = new GUIButton();
 
     pButton->pParent = this;
-    pButton->uWidth = uWidth;
-    pButton->uHeight = uHeight;
+    pButton->uWidth = dimensions.w;
+    pButton->uHeight = dimensions.h;
 
-    if (uButtonType == 2 && !uHeight) {
-        pButton->uHeight = uWidth;
+    if (uButtonType == 2 && !dimensions.h) {
+        pButton->uHeight = dimensions.w;
     }
 
     pButton->uButtonType = uButtonType;
-    pButton->uX = uX + this->uFrameX;
-    pButton->uY = uY + this->uFrameY;
-    pButton->uZ = pButton->uX + uWidth;
-    pButton->uW = pButton->uY + uHeight;
+    pButton->uX = position.x + this->uFrameX;
+    pButton->uY = position.y + this->uFrameY;
+    pButton->uZ = pButton->uX + dimensions.w;
+    pButton->uW = pButton->uY + dimensions.h;
     pButton->field_2C_is_pushed = false;
     pButton->uData = uData;
     pButton->msg = msg;
     pButton->msg_param = msg_param;
-    pButton->hotkey = hotkey;
+    pButton->action = action;
     pButton->sLabel = label;
     pButton->vTextures = textures;
 
@@ -767,10 +734,10 @@ GUIButton *GUIWindow::CreateButton(int uX, int uY, int uWidth, int uHeight,
     return pButton;
 }
 
-GUIButton *GUIWindow::CreateButton(std::string id, int x, int y, int width, int height, int uButtonType, int uData,
-                        UIMessageType msg, unsigned int msg_param, PlatformKey hotkey, const std::string &label,
+GUIButton *GUIWindow::CreateButton(std::string id, Pointi position, Sizei dimensions, int uButtonType, int uData,
+                        UIMessageType msg, unsigned int msg_param, InputAction action, const std::string &label,
                         const std::vector<Image *> &textures) {
-    GUIButton *result = CreateButton(x, y, width, height, uButtonType, uData, msg, msg_param, hotkey, label, textures);
+    GUIButton *result = CreateButton(position, dimensions, uButtonType, uData, msg, msg_param, action, label, textures);
     result->id = std::move(id);
     return result;
 }
@@ -786,7 +753,7 @@ void GUIWindow::InitializeGUI() {
 
 void GUIWindow::DrawFlashingInputCursor(int uX, int uY, GUIFont *a2) {
     if (platform->TickCount() % 1000 > 500) {
-        DrawText(a2, uX, uY, 0, "_", 0, 0, 0);
+        DrawText(a2, {uX, uY}, 0, "_", 0, 0, 0);
     }
 }
 
@@ -795,8 +762,7 @@ GUIWindow::GUIWindow() : eWindowType(WINDOW_null) {
     this->log = EngineIoc::ResolveLogger();
 }
 
-GUIWindow::GUIWindow(WindowType windowType, unsigned int uX, unsigned int uY, unsigned int uWidth,
-    unsigned int uHeight, WindowData wData, const std::string &hint
+GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, WindowData wData, const std::string &hint
 )
     : eWindowType(windowType) {
     this->mouse = EngineIoc::ResolveMouse();
@@ -804,13 +770,13 @@ GUIWindow::GUIWindow(WindowType windowType, unsigned int uX, unsigned int uY, un
 
     log->Info("New window: %s", ToString(windowType));
     lWindowList.push_front(this);
-    this->uFrameWidth = uWidth;
-    this->uFrameHeight = uHeight;
+    this->uFrameWidth = dimensions.w;
+    this->uFrameHeight = dimensions.h;
 
-    this->uFrameX = uX;
-    this->uFrameY = uY;
-    this->uFrameZ = uX + uWidth - 1;
-    this->uFrameW = uY + uHeight - 1;
+    this->uFrameX = position.x;
+    this->uFrameY = position.y;
+    this->uFrameZ = position.x + dimensions.w - 1;
+    this->uFrameW = position.y + dimensions.h - 1;
 
     this->wData = wData;
     this->sHint = hint;
@@ -824,16 +790,13 @@ void DrawJoinGuildWindow(GUILD_ID guild_id) {
     current_npc_text = (char *)pNPCTopics[guild_id + 99].pText;
     GetJoinGuildDialogueOption(guild_id);
     pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, guild_id);
-    pBtn_ExitCancel = pDialogueWindow->CreateButton(
-        471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, PlatformKey::None,
-        localization->GetString(LSTR_CANCEL),
-        { ui_exit_cancel_button_background }
+    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 350}, guild_id);
+    pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid,
+        localization->GetString(LSTR_CANCEL), { ui_exit_cancel_button_background }
     );
-    pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0,
-                                  UIMSG_BuyInShop_Identify_Repair, 0, PlatformKey::None, "");
-    pDialogueWindow->CreateButton(480, 160, 140, 30, 1, 0, UIMSG_ClickNPCTopic,
-                                  DIALOGUE_82_join_guild, PlatformKey::None, localization->GetString(LSTR_JOIN));
+    pDialogueWindow->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, InputAction::Invalid, "");
+    pDialogueWindow->CreateButton({480, 160}, {140, 30}, 1, 0, UIMSG_ClickNPCTopic, DIALOGUE_82_join_guild, InputAction::Invalid,
+        localization->GetString(LSTR_JOIN));
     pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
     dialog_menu_id = DIALOGUE_OTHER;
 }
@@ -876,8 +839,9 @@ void OnButtonClick2::Update() {
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
-    if (pButton->uX >= 0 && pButton->uX <= window->GetWidth()) {
-        if (pButton->uY >= 0 && pButton->uY <= window->GetHeight()) {
+    Sizei renDims = render->GetRenderDimensions();
+    if (pButton->uX >= 0 && pButton->uX <= renDims.w) {
+        if (pButton->uY >= 0 && pButton->uY <= renDims.h) {
             render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
         }
     }
@@ -980,7 +944,7 @@ void OnCancel3::Update() {
 void GUI_UpdateWindows() {
     if (GetCurrentMenuID() != MENU_CREATEPARTY) {
         extern bool UI_OnKeyDown(PlatformKey key);
-        UI_OnKeyDown(PlatformKey::PageDown);
+        UI_OnKeyDown(PlatformKey::PageDown); // hack to highlight dialog options under mouse cursor
     }
 
     // should never activte this - gameui window should always be open
@@ -1030,14 +994,13 @@ void CreateScrollWindow() {
     char *v1 = pItemTable->pItems[pGUIWindow_ScrollWindow->scroll_type].pName;
 
     a1.DrawTitleText(pFontCreate, 0, 0, 0, StringPrintf(format_4E2D80, colorTable.PaleCanary.C16(), v1), 3);
-    a1.DrawText(pFontSmallnum, 1, pFontCreate->GetHeight() - 3, 0, pScrolls[pGUIWindow_ScrollWindow->scroll_type], 0, 0, 0);
+    a1.DrawText(pFontSmallnum, {1, pFontCreate->GetHeight() - 3}, 0, pScrolls[pGUIWindow_ScrollWindow->scroll_type], 0, 0, 0);
 }
 
 //----- (00467F48) --------------------------------------------------------
 void CreateMsgScrollWindow(ITEM_TYPE mscroll_id) {
     if (!pGUIWindow_ScrollWindow && IsMessageScroll(mscroll_id)) {
-        pGUIWindow_ScrollWindow =
-            new GUIWindow_Scroll(0, 0, window->GetWidth(), window->GetHeight(), mscroll_id, "");
+        pGUIWindow_ScrollWindow = new GUIWindow_Scroll({0, 0}, render->GetRenderDimensions(), mscroll_id, "");
     }
 }
 
@@ -1360,9 +1323,8 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
     }
 }
 
-void DrawBuff_remaining_time_string(int uY, GUIWindow *window, GameTime remaining_time,
-    GUIFont *Font) {
-    window->DrawText(Font, 32, uY, 0, "\r020" + MakeDateTimeString(remaining_time), 0, 0, 0);
+void DrawBuff_remaining_time_string(int uY, GUIWindow *window, GameTime remaining_time, GUIFont *Font) {
+    window->DrawText(Font, {32, uY}, 0, "\r020" + MakeDateTimeString(remaining_time), 0, 0, 0);
 }
 
 void GUIMessageQueue::AddMessageImpl(UIMessageType msg, int param,
@@ -1636,16 +1598,12 @@ void _4B3FE5_training_dialogue(int eventId) {
     current_npc_text = std::string(pNPCTopics[eventId + 168].pText);
     _4B254D_SkillMasteryTeacher(eventId);  // checks whether the facility can be used
     pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, eventId);
-    pBtn_ExitCancel = pDialogueWindow->CreateButton(
-        471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, PlatformKey::None,
+    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 350}, eventId);
+    pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid,
         localization->GetString(LSTR_CANCEL), { ui_exit_cancel_button_background }
     );
-    pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0,
-                                  UIMSG_BuyInShop_Identify_Repair, 0, PlatformKey::None, "");
-    pDialogueWindow->CreateButton(
-        480, 160, 0x8Cu, 0x1Eu, 1, 0, UIMSG_ClickNPCTopic,
-        DIALOGUE_79_mastery_teacher, PlatformKey::None,
+    pDialogueWindow->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, InputAction::Invalid, "");
+    pDialogueWindow->CreateButton({480, 160}, {0x8Cu, 0x1Eu}, 1, 0, UIMSG_ClickNPCTopic, DIALOGUE_79_mastery_teacher, InputAction::Invalid,
         guild_membership_approved ? localization->GetString(LSTR_LEARN) : "");
     pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
     dialog_menu_id = DIALOGUE_OTHER;
@@ -1714,16 +1672,12 @@ void CheckBountyRespawnAndAward() {
 
     uDialogueType = DIALOGUE_83_bounty_hunting;
     pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, 0);
-    pBtn_ExitCancel = pDialogueWindow->CreateButton(
-        471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, PlatformKey::None,
-        localization->GetString(LSTR_CANCEL),
-        { ui_exit_cancel_button_background }
+    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 350}, 0);
+    pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid,
+        localization->GetString(LSTR_CANCEL), { ui_exit_cancel_button_background }
     );
-    pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0,
-                                  UIMSG_BuyInShop_Identify_Repair, 0, PlatformKey::None, "");
-    pDialogueWindow->CreateButton(480, 160, 140, 30,
-                                  1, 0, UIMSG_0, DIALOGUE_83_bounty_hunting, PlatformKey::None, "");
+    pDialogueWindow->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, InputAction::Invalid, "");
+    pDialogueWindow->CreateButton({480, 160}, {140, 30}, 1, 0, UIMSG_0, DIALOGUE_83_bounty_hunting, InputAction::Invalid, "");
     pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
     dialog_menu_id = DIALOGUE_OTHER;
     // get new monster for hunting
@@ -2474,62 +2428,47 @@ void UI_Create() {
     ui_buttyes2 = assets->GetImage_Alpha("BUTTYES2");
 
     nuklear->Create(WINDOW_GameUI);
-    pPrimaryWindow = new GUIWindow(WINDOW_GameUI, 0, 0, window->GetWidth(), window->GetHeight(), 0);
-    pPrimaryWindow->CreateButton(7, 8, 460, 343, 1, 0, UIMSG_MouseLeftClickInGame, 0);
+    pPrimaryWindow = new GUIWindow(WINDOW_GameUI, {0, 0}, render->GetRenderDimensions(), 0);
+    pPrimaryWindow->CreateButton({7, 8}, {460, 343}, 1, 0, UIMSG_MouseLeftClickInGame, 0);
 
-    pPrimaryWindow->CreateButton(61, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 1, PlatformKey::Digit1);  // buttons for portraits
-    pPrimaryWindow->CreateButton(177, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 2, PlatformKey::Digit2);
-    pPrimaryWindow->CreateButton(292, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 3, PlatformKey::Digit3);
-    pPrimaryWindow->CreateButton(407, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 4, PlatformKey::Digit4);
+    pPrimaryWindow->CreateButton({61, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1);  // buttons for portraits
+    pPrimaryWindow->CreateButton({177, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 2, InputAction::SelectChar2);
+    pPrimaryWindow->CreateButton({292, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 3, InputAction::SelectChar3);
+    pPrimaryWindow->CreateButton({407, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 4, InputAction::SelectChar4);
 
-    pPrimaryWindow->CreateButton(24, 404, 5, 49, 1, 93, UIMSG_0, 1);  // buttons for HP
-    pPrimaryWindow->CreateButton(139, 404, 5, 49, 1, 93, UIMSG_0, 2);
-    pPrimaryWindow->CreateButton(255, 404, 5, 49, 1, 93, UIMSG_0, 3);
-    pPrimaryWindow->CreateButton(370, 404, 5, 49, 1, 93, UIMSG_0, 4);
+    pPrimaryWindow->CreateButton({24, 404}, {5, 49}, 1, 93, UIMSG_0, 1);  // buttons for HP
+    pPrimaryWindow->CreateButton({139, 404}, {5, 49}, 1, 93, UIMSG_0, 2);
+    pPrimaryWindow->CreateButton({255, 404}, {5, 49}, 1, 93, UIMSG_0, 3);
+    pPrimaryWindow->CreateButton({370, 404}, {5, 49}, 1, 93, UIMSG_0, 4);
 
-    pPrimaryWindow->CreateButton(97, 404, 5, 49, 1, 93, UIMSG_0, 1);  // buttons for SP
-    pPrimaryWindow->CreateButton(212, 404, 5, 49, 1, 93, UIMSG_0, 2);
-    pPrimaryWindow->CreateButton(328, 404, 5, 49, 1, 93, UIMSG_0, 3);
-    pPrimaryWindow->CreateButton(443, 404, 5, 49, 1, 93, UIMSG_0, 4);
+    pPrimaryWindow->CreateButton({97, 404}, {5, 49}, 1, 93, UIMSG_0, 1);  // buttons for SP
+    pPrimaryWindow->CreateButton({212, 404}, {5, 49}, 1, 93, UIMSG_0, 2);
+    pPrimaryWindow->CreateButton({328, 404}, {5, 49}, 1, 93, UIMSG_0, 3);
+    pPrimaryWindow->CreateButton({443, 404}, {5, 49}, 1, 93, UIMSG_0, 4);
 
     game_ui_tome_quests = assets->GetImage_ColorKey("ib-td1-A", render->teal_mask_16);
-    pBtn_Quests = pPrimaryWindow->CreateButton(
-        491, 353,
-        game_ui_tome_quests->GetWidth(),
-        game_ui_tome_quests->GetHeight(),
-        1, 0, UIMSG_OpenQuestBook, 0, keyboardActionMapping->GetKey(InputAction::Quest),
+    pBtn_Quests = pPrimaryWindow->CreateButton({491, 353}, {game_ui_tome_quests->GetWidth(), game_ui_tome_quests->GetHeight()}, 1, 0,
+        UIMSG_OpenQuestBook, 0, InputAction::Quest,
         localization->GetString(LSTR_CURRENT_QUESTS), { game_ui_tome_quests });
 
     game_ui_tome_autonotes = assets->GetImage_ColorKey("ib-td2-A", render->teal_mask_16);
-    pBtn_Autonotes = pPrimaryWindow->CreateButton(
-        527, 353,
-        game_ui_tome_autonotes->GetWidth(),
-        game_ui_tome_autonotes->GetHeight(),
-        1, 0, UIMSG_OpenAutonotes, 0, keyboardActionMapping->GetKey(InputAction::Autonotes),
+    pBtn_Autonotes = pPrimaryWindow->CreateButton({527, 353}, {game_ui_tome_autonotes->GetWidth(), game_ui_tome_autonotes->GetHeight()}, 1, 0,
+        UIMSG_OpenAutonotes, 0, InputAction::Autonotes,
         localization->GetString(LSTR_AUTONOTES), { game_ui_tome_autonotes });
 
     game_ui_tome_maps = assets->GetImage_ColorKey("ib-td3-A", render->teal_mask_16);
-    pBtn_Maps = pPrimaryWindow->CreateButton(
-        546, 353,
-        game_ui_tome_maps->GetWidth(),
-        game_ui_tome_maps->GetHeight(),
-        1, 0, UIMSG_OpenMapBook, 0, keyboardActionMapping->GetKey(InputAction::Mapbook),
+    pBtn_Maps = pPrimaryWindow->CreateButton({546, 353}, {game_ui_tome_maps->GetWidth(), game_ui_tome_maps->GetHeight()}, 1, 0,
+        UIMSG_OpenMapBook, 0, InputAction::Mapbook,
         localization->GetString(LSTR_MAPS), { game_ui_tome_maps });
 
     game_ui_tome_calendar = assets->GetImage_ColorKey("ib-td4-A", render->teal_mask_16);
-    pBtn_Calendar = pPrimaryWindow->CreateButton(
-        570, 353,
-        game_ui_tome_calendar->GetWidth(),
-        game_ui_tome_calendar->GetHeight(),
-        1, 0, UIMSG_OpenCalendar, 0, keyboardActionMapping->GetKey(InputAction::TimeCal),
+    pBtn_Calendar = pPrimaryWindow->CreateButton({570, 353}, {game_ui_tome_calendar->GetWidth(), game_ui_tome_calendar->GetHeight()}, 1, 0,
+        UIMSG_OpenCalendar, 0, InputAction::TimeCal,
         localization->GetString(LSTR_CALENDAR), { game_ui_tome_calendar });
 
     game_ui_tome_storyline = assets->GetImage_ColorKey("ib-td5-A", render->teal_mask_16);
-    pBtn_History = pPrimaryWindow->CreateButton(
-        600, 361,
-        game_ui_tome_storyline->GetWidth(),
-        game_ui_tome_storyline->GetHeight(),
-        1, 0, UIMSG_OpenHistoryBook, 0, PlatformKey::H,
+    pBtn_History = pPrimaryWindow->CreateButton({600, 361}, {game_ui_tome_storyline->GetWidth(), game_ui_tome_storyline->GetHeight()}, 1, 0,
+        UIMSG_OpenHistoryBook, 0, InputAction::History,
         localization->GetString(LSTR_HISTORY), { game_ui_tome_storyline }
     );
 
@@ -2537,52 +2476,37 @@ void UI_Create() {
     bFlashQuestBook = 0;
     bFlashHistoryBook = 0;
 
-    pBtn_ZoomIn = pPrimaryWindow->CreateButton(519, 136, game_ui_btn_zoomin->GetWidth(),
-        game_ui_btn_zoomin->GetHeight(), 2, 0, UIMSG_ClickZoomInBtn, 0,
-        keyboardActionMapping->GetKey(InputAction::ZoomIn),
+    pBtn_ZoomIn = pPrimaryWindow->CreateButton({519, 136}, {game_ui_btn_zoomin->GetWidth(), game_ui_btn_zoomin->GetHeight()}, 2, 0,
+        UIMSG_ClickZoomInBtn, 0, InputAction::ZoomIn,
         localization->GetString(LSTR_ZOOM_IN), { game_ui_btn_zoomin }
     );
 
-    pBtn_ZoomOut = pPrimaryWindow->CreateButton(574, 136, game_ui_btn_zoomout->GetWidth(),
-        game_ui_btn_zoomout->GetHeight(), 2, 0, UIMSG_ClickZoomOutBtn, 0,
-        keyboardActionMapping->GetKey(InputAction::ZoomOut),
+    pBtn_ZoomOut = pPrimaryWindow->CreateButton({574, 136}, {game_ui_btn_zoomout->GetWidth(), game_ui_btn_zoomout->GetHeight()}, 2, 0,
+        UIMSG_ClickZoomOutBtn, 0, InputAction::ZoomOut,
         localization->GetString(LSTR_ZOOM_OUT), { game_ui_btn_zoomout });
 
-    pPrimaryWindow->CreateButton(481, 0, 153, 67, 1, 92, UIMSG_0, 0);
-    pPrimaryWindow->CreateButton(491, 149, 64, 74, 1, 0, UIMSG_StartHireling1Dialogue, 0, PlatformKey::Digit5);
-    pPrimaryWindow->CreateButton(561, 149, 64, 74, 1, 0, UIMSG_StartHireling2Dialogue, 0, PlatformKey::Digit6);
-    pPrimaryWindow->CreateButton(476, 322, 77, 17, 1, 100, UIMSG_0, 0);
-    pPrimaryWindow->CreateButton(555, 322, 77, 17, 1, 101, UIMSG_0, 0);
+    pPrimaryWindow->CreateButton({481, 0}, {153, 67}, 1, 92, UIMSG_0, 0);
+    pPrimaryWindow->CreateButton({491, 149}, {64, 74}, 1, 0, UIMSG_StartHireling1Dialogue, 0, InputAction::SelectNPC1);
+    pPrimaryWindow->CreateButton({561, 149}, {64, 74}, 1, 0, UIMSG_StartHireling2Dialogue, 0, InputAction::SelectNPC2);
+    pPrimaryWindow->CreateButton({476, 322}, {77, 17}, 1, 100, UIMSG_0, 0);
+    pPrimaryWindow->CreateButton({555, 322}, {77, 17}, 1, 101, UIMSG_0, 0);
 
-    pBtn_CastSpell = pPrimaryWindow->CreateButton(476, 450,
-                                                  game_ui_btn_cast->GetWidth(),
-                                                  game_ui_btn_cast->GetHeight(),
-                                                  1, 0, UIMSG_SpellBookWindow, 0, PlatformKey::C,
-                                                  localization->GetString(LSTR_CAST_SPELL), { game_ui_btn_cast });
-    pBtn_Rest = pPrimaryWindow->CreateButton(518, 450,
-                                             game_ui_btn_rest->GetWidth(),
-                                             game_ui_btn_rest->GetHeight(),
-                                             1, 0, UIMSG_RestWindow, 0, PlatformKey::R,
-                                             localization->GetString(LSTR_REST), { game_ui_btn_rest });
-    pBtn_QuickReference = pPrimaryWindow->CreateButton(560, 450,
-                                                       game_ui_btn_quickref->GetWidth(),
-                                                       game_ui_btn_quickref->GetHeight(),
-                                                       1, 0, UIMSG_QuickReference, 0, PlatformKey::Z,
-                                                       localization->GetString(LSTR_QUICK_REFERENCE), { game_ui_btn_quickref });
-    pBtn_GameSettings = pPrimaryWindow->CreateButton(602, 450,
-                                                     game_ui_btn_settings->GetWidth(),
-                                                     game_ui_btn_settings->GetHeight(),
-                                                     1, 0, UIMSG_GameMenuButton, 0, PlatformKey::None,
-                                                     localization->GetString(LSTR_GAME_OPTIONS), { game_ui_btn_settings });
-
-    pBtn_NPCLeft = pPrimaryWindow->CreateButton(469, 178,
-                                                ui_btn_npc_left->GetWidth(),
-                                                ui_btn_npc_left->GetHeight(),
-                                                1, 0, UIMSG_ScrollNPCPanel, 0, PlatformKey::None, "", {ui_btn_npc_left });
-    pBtn_NPCRight = pPrimaryWindow->CreateButton(626, 178,
-                                                 ui_btn_npc_right->GetWidth(),
-                                                 ui_btn_npc_right->GetHeight(),
-                                                 1, 0, UIMSG_ScrollNPCPanel, 1, PlatformKey::None, "", {ui_btn_npc_right });
+    pBtn_CastSpell = pPrimaryWindow->CreateButton({476, 450}, {game_ui_btn_cast->GetWidth(), game_ui_btn_cast->GetHeight()}, 1, 0,
+        UIMSG_SpellBookWindow, 0, InputAction::Cast,
+        localization->GetString(LSTR_CAST_SPELL), { game_ui_btn_cast });
+    pBtn_Rest = pPrimaryWindow->CreateButton({518, 450}, {game_ui_btn_rest->GetWidth(), game_ui_btn_rest->GetHeight()}, 1, 0,
+        UIMSG_RestWindow, 0, InputAction::Rest,
+        localization->GetString(LSTR_REST), { game_ui_btn_rest });
+    pBtn_QuickReference = pPrimaryWindow->CreateButton({560, 450}, {game_ui_btn_quickref->GetWidth(), game_ui_btn_quickref->GetHeight()}, 1, 0,
+        UIMSG_QuickReference, 0, InputAction::QuickRef,
+        localization->GetString(LSTR_QUICK_REFERENCE), { game_ui_btn_quickref });
+    pBtn_GameSettings = pPrimaryWindow->CreateButton({602, 450}, {game_ui_btn_settings->GetWidth(), game_ui_btn_settings->GetHeight()}, 1, 0,
+        UIMSG_GameMenuButton, 0, InputAction::Invalid,
+        localization->GetString(LSTR_GAME_OPTIONS), { game_ui_btn_settings });
+    pBtn_NPCLeft = pPrimaryWindow->CreateButton({469, 178}, {ui_btn_npc_left->GetWidth(), ui_btn_npc_left->GetHeight()}, 1, 0,
+        UIMSG_ScrollNPCPanel, 0, InputAction::Invalid, "", {ui_btn_npc_left });
+    pBtn_NPCRight = pPrimaryWindow->CreateButton({626, 178}, {ui_btn_npc_right->GetWidth(), ui_btn_npc_right->GetHeight()}, 1, 0,
+        UIMSG_ScrollNPCPanel, 1, InputAction::Invalid, "", {ui_btn_npc_right });
 
     LoadPartyBuffIcons();
 }
@@ -2740,7 +2664,7 @@ void SkillTrainingDialogue(
 const char* GetJoinGuildDialogueOption(GUILD_ID guild_id) {
     static const int dialogue_base = 110;
     guild_membership_approved = false;
-    dword_F8B1AC_award_bit_number = (AwardType)(Award_Membership_ElementalGuilds + guild_id);
+    dword_F8B1AC_award_bit_number = static_cast<AwardType>(Award_Membership_ElementalGuilds + std::to_underlying(guild_id));
     gold_transaction_amount = price_for_membership[guild_id];
 
     if (uActiveCharacter == 0)

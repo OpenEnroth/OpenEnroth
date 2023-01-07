@@ -2,6 +2,10 @@
 
 void PlatformEventHandler::Event(PlatformWindow *window, const PlatformEvent *event) {
     switch (event->type) {
+    case PlatformEvent::GamepadConnected:
+    case PlatformEvent::GamepadDisconnected:
+        GamepadDeviceEvent(window, static_cast<const PlatformGamepadDeviceEvent *>(event));
+        return;
     case PlatformEvent::KeyPress:
         KeyPressEvent(window, static_cast<const PlatformKeyEvent *>(event));
         return;
@@ -23,6 +27,9 @@ void PlatformEventHandler::Event(PlatformWindow *window, const PlatformEvent *ev
     case PlatformEvent::WindowMove:
         MoveEvent(window, static_cast<const PlatformMoveEvent *>(event));
         return;
+    case PlatformEvent::WindowResize:
+        ResizeEvent(window, static_cast<const PlatformResizeEvent *>(event));
+        return;
     case PlatformEvent::WindowActivate:
     case PlatformEvent::WindowDeactivate:
         ActivationEvent(window, event);
@@ -42,5 +49,7 @@ void PlatformEventHandler::MousePressEvent(PlatformWindow *, const PlatformMouse
 void PlatformEventHandler::MouseReleaseEvent(PlatformWindow *, const PlatformMouseEvent *) {}
 void PlatformEventHandler::WheelEvent(PlatformWindow *, const PlatformWheelEvent *) {}
 void PlatformEventHandler::MoveEvent(PlatformWindow *, const PlatformMoveEvent *) {}
+void PlatformEventHandler::ResizeEvent(PlatformWindow *, const PlatformResizeEvent *) {}
 void PlatformEventHandler::ActivationEvent(PlatformWindow *, const PlatformEvent *) {}
 void PlatformEventHandler::CloseEvent(PlatformWindow *, const PlatformEvent *) {}
+void PlatformEventHandler::GamepadDeviceEvent(PlatformWindow *, const PlatformGamepadDeviceEvent *) {}

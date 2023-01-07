@@ -3,7 +3,7 @@ set(DEBUG_LIBCXX_COMPILES FALSE)
 set(DEBUG_LIBCXX_WORKAROUND_WORKS FALSE)
 set(DEBUG_LIBCXX_SOURCE_ROOT ${CMAKE_CURRENT_LIST_DIR})
 
-if(APPLE)
+if(BUILD_PLATFORM STREQUAL "darwin")
     try_compile(
         DEBUG_LIBCXX_COMPILES
         ${CMAKE_BINARY_DIR}/apple_libcxx_assertion_test
@@ -22,7 +22,7 @@ if(APPLE)
 endif()
 
 function(enable_libcxx_assertions ENABLE_IN_RELEASE_TOO)
-    if(NOT APPLE)
+    if(NOT BUILD_PLATFORM STREQUAL "darwin")
         message(WARNING "enable_libcxx_assertions() only works on mac os builds.")
         return()
     endif()
@@ -35,7 +35,7 @@ function(enable_libcxx_assertions ENABLE_IN_RELEASE_TOO)
 endfunction()
 
 function(target_fix_libcxx_assertions TARGET)
-    if(NOT APPLE OR DEBUG_LIBCXX_COMPILES)
+    if(NOT BUILD_PLATFORM STREQUAL "darwin" OR DEBUG_LIBCXX_COMPILES)
         return()
     endif()
 

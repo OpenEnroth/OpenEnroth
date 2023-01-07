@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <string>
 #include <utility>
@@ -421,10 +421,17 @@
                                                  // your plans.  Soon the world will bow to your every whim!
                                                  // Still, you can't help but wonder what was beyond the Gate
                                                  // the other side was trying so hard to build."
+
+#define MM7_LOC_STRINGS 677
+
 // WoMM string IDs
 #define LSTR_FMT_S_STOLE_D_ITEM             677  // "%s stole %s!"
 #define LSTR_FMT_RECOVERY_TIME_D            678  // "Recovery time: %d"
 #define LSTR_FMT_S_U_OUT_OF_U               679  // "%s: %lu out of %lu"
+#define LSTR_NOBODY_IS_IN_CONDITION         680  // "Nobody is in condition to do anything!"
+#define LSTR_KEY_CONFLICT                   681  // "Please resolve all key conflicts!"
+
+#define MAX_LOC_STRINGS MM7_LOC_STRINGS + 5
 
 class Localization {
  public:

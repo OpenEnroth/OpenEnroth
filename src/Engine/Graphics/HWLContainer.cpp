@@ -36,7 +36,7 @@ bool HWLContainer::Open(const std::string &pFilename) {
 
     HWLHeader header;
     fread(&header, sizeof(HWLHeader), 1, pFile);
-    if (header.uSignature != 'TD3D') {
+    if (memcmp(&header.uSignature, "D3DT", 4) != 0) {
         log->Warning("Invalid format: %s", pFilename.c_str());
         return false;
     }

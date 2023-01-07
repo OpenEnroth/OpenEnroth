@@ -24,8 +24,8 @@ class Actor;
 //-------------------------------------------------------------------------
 // Data declarations
 
-extern unsigned int game_viewport_width;
-extern unsigned int game_viewport_height;
+extern int game_viewport_width;
+extern int game_viewport_height;
 extern int game_viewport_x;
 extern int game_viewport_y;
 extern int game_viewport_z;
@@ -46,7 +46,7 @@ extern std::array<int16_t, 4> RightClickPortraitXmax;
 extern std::array<unsigned int, 4> pHealthBarPos;
 extern std::array<unsigned int, 4> pManaBarPos;
 // extern std::array<char, 80> _4E2B21_buff_spell_tooltip_colors;
-extern std::array<char, 88> monster_popup_y_offsets;
+extern std::array<int8_t, 88> monster_popup_y_offsets;
 extern unsigned char hourglass_icon_idx;
 
 extern const char *format_4E2D80;

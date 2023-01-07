@@ -123,10 +123,10 @@ Image *game_ui_playerbuff_bless = nullptr;
 
 extern InputAction currently_selected_action_for_binding;  // 506E68
 extern std::map<InputAction, bool> key_map_conflicted;  // 506E6C
-extern std::map<InputAction, PlatformKey> prev_key_map;
+extern std::map<InputAction, PlatformKey> curr_key_map;
 
 GUIWindow_GameMenu::GUIWindow_GameMenu()
-    : GUIWindow(WINDOW_GameMenu, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
+    : GUIWindow(WINDOW_GameMenu, {0, 0}, render->GetRenderDimensions(), 0) {
     game_ui_menu_options = assets->GetImage_ColorKey("options", render->teal_mask_16);
     game_ui_menu_new = assets->GetImage_ColorKey("new1", render->teal_mask_16);
     game_ui_menu_load = assets->GetImage_ColorKey("load1", render->teal_mask_16);
@@ -135,29 +135,19 @@ GUIWindow_GameMenu::GUIWindow_GameMenu()
     game_ui_menu_resume = assets->GetImage_ColorKey("resume1", render->teal_mask_16);
     game_ui_menu_quit = assets->GetImage_ColorKey("quit1", render->teal_mask_16);
 
-    pBtn_NewGame = CreateButton(0x13u, 0x9Bu, 0xD6u, 0x28u, 1, 0,
-                                UIMSG_StartNewGame, 0, PlatformKey::N,
-                                localization->GetString(LSTR_NEW_GAME),
-                                {game_ui_menu_new});
-    pBtn_SaveGame = CreateButton(0x13u, 0xD1u, 0xD6u, 0x28u, 1, 0,
-                                 UIMSG_Game_OpenSaveGameDialog, 0, PlatformKey::S,
-                                 localization->GetString(LSTR_SAVE_GAME),
-                                 {game_ui_menu_save});
-    pBtn_LoadGame = CreateButton(19, 263, 0xD6u, 0x28u, 1, 0,
-                                 UIMSG_Game_OpenLoadGameDialog, 0, PlatformKey::L,
-                                 localization->GetString(LSTR_LOAD_GAME),
-                                 {game_ui_menu_load});
-    pBtn_GameControls = CreateButton(
-        241, 155, 214, 40, 1, 0, UIMSG_Game_OpenOptionsDialog, 0, PlatformKey::C,
-        localization->GetString(LSTR_OPTIONS), {game_ui_menu_controls}
-    );
-    pBtn_QuitGame = CreateButton("GameMenu_Quit", 241, 209, 214, 40, 1, 0, UIMSG_Quit, 0, PlatformKey::Q,
-                                 localization->GetString(LSTR_QUIT),
-                                 {game_ui_menu_quit});
-    pBtn_Resume = CreateButton(
-        241, 263, 214, 40, 1, 0, UIMSG_GameMenu_ReturnToGame, 0, PlatformKey::R,
-        localization->GetString(LSTR_RETURN_TO_GAME),
-        {game_ui_menu_resume});
+    pBtn_NewGame = CreateButton({0x13u, 0x9Bu}, {0xD6u, 0x28u}, 1, 0,
+        UIMSG_StartNewGame, 0, InputAction::NewGame, localization->GetString(LSTR_NEW_GAME), {game_ui_menu_new});
+    pBtn_SaveGame = CreateButton({0x13u, 0xD1u}, {0xD6u, 0x28u}, 1, 0,
+        UIMSG_Game_OpenSaveGameDialog, 0, InputAction::SaveGame, localization->GetString(LSTR_SAVE_GAME), {game_ui_menu_save});
+    pBtn_LoadGame = CreateButton({19, 263}, {0xD6u, 0x28u}, 1, 0,
+        UIMSG_Game_OpenLoadGameDialog, 0, InputAction::LoadGame, localization->GetString(LSTR_LOAD_GAME), {game_ui_menu_load});
+    pBtn_GameControls = CreateButton({241, 155}, {214, 40}, 1, 0,
+        UIMSG_Game_OpenOptionsDialog, 0, InputAction::Options, localization->GetString(LSTR_OPTIONS), {game_ui_menu_controls});
+    pBtn_QuitGame = CreateButton("GameMenu_Quit", {241, 209}, {214, 40}, 1, 0,
+        UIMSG_Quit, 0, InputAction::ExitGame, localization->GetString(LSTR_QUIT), {game_ui_menu_quit});
+    pBtn_Resume = CreateButton({241, 263}, {214, 40}, 1, 0,
+        UIMSG_GameMenu_ReturnToGame, 0, InputAction::ReturnToGame, localization->GetString(LSTR_RETURN_TO_GAME), {game_ui_menu_resume});
+
     _41D08F_set_keyboard_control_group(6, 1, 0, 0);
 }
 
@@ -236,41 +226,41 @@ static unsigned int GameMenuUI_GetKeyBindingColor(InputAction action) {
 }
 
 GUIWindow_GameKeyBindings::GUIWindow_GameKeyBindings()
-    : GUIWindow(WINDOW_KeyMappingOptions, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
+    : GUIWindow(WINDOW_KeyMappingOptions, {0, 0}, render->GetPresentDimensions(), 0) {
     game_ui_options_controls[0] = assets->GetImage_ColorKey("optkb", render->teal_mask_16);
     game_ui_options_controls[1] = assets->GetImage_ColorKey("optkb_h", render->teal_mask_16);
     game_ui_options_controls[2] = assets->GetImage_ColorKey("resume1", render->teal_mask_16);
     game_ui_options_controls[3] = assets->GetImage_ColorKey("optkb_1", render->teal_mask_16);
     game_ui_options_controls[4] = assets->GetImage_ColorKey("optkb_2", render->teal_mask_16);
 
-    CreateButton(241, 302, 214, 40, 1, 0, UIMSG_Escape, 0);
+    CreateButton({241, 302}, {214, 40}, 1, 0, UIMSG_Escape, 0);
 
-    CreateButton(19, 302, 108, 20, 1, 0, UIMSG_SelectKeyPage1, 0);
-    CreateButton(127, 302, 108, 20, 1, 0, UIMSG_SelectKeyPage2, 0);
-    CreateButton(127, 324, 108, 20, 1, 0, UIMSG_ResetKeyMapping, 0);
-    CreateButton(19, 324, 108, 20, 1, 0, UIMSG_Game_OpenOptionsDialog, 0);
+    CreateButton({19, 302}, {108, 20}, 1, 0, UIMSG_SelectKeyPage1, 0);
+    CreateButton({127, 302}, {108, 20}, 1, 0, UIMSG_SelectKeyPage2, 0);
+    CreateButton({127, 324}, {108, 20}, 1, 0, UIMSG_ResetKeyMapping, 0);
+    CreateButton({19, 324}, {108, 20}, 1, 0, UIMSG_Game_OpenOptionsDialog, 0);
 
-    CreateButton(129, 148, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 0);
-    CreateButton(129, 167, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 1);
-    CreateButton(129, 186, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 2);
-    CreateButton(129, 205, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 3);
-    CreateButton(129, 224, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 4);
-    CreateButton(129, 243, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 5);
-    CreateButton(129, 262, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 6);
+    CreateButton({129, 148}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 0);
+    CreateButton({129, 167}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 1);
+    CreateButton({129, 186}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 2);
+    CreateButton({129, 205}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 3);
+    CreateButton({129, 224}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 4);
+    CreateButton({129, 243}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 5);
+    CreateButton({129, 262}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 6);
 
-    CreateButton(350, 148, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 7);
-    CreateButton(350, 167, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 8);
-    CreateButton(350, 186, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 9);
-    CreateButton(350, 205, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 10);
-    CreateButton(350, 224, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 11);
-    CreateButton(350, 243, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 12);
-    CreateButton(350, 262, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 13);
+    CreateButton({350, 148}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 7);
+    CreateButton({350, 167}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 8);
+    CreateButton({350, 186}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 9);
+    CreateButton({350, 205}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 10);
+    CreateButton({350, 224}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 11);
+    CreateButton({350, 243}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 12);
+    CreateButton({350, 262}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 13);
 
     currently_selected_action_for_binding = InputAction::Invalid;
     KeyboardPageNum = 1;
-    for (auto action : AllInputActions()) {
+    for (auto action : VanillaInputActions()) {
         key_map_conflicted[action] = false;
-        prev_key_map[action] = keyboardActionMapping->GetKey(action);
+        curr_key_map[action] = keyboardActionMapping->GetKey(action);
     }
 }
 
@@ -282,18 +272,29 @@ void GUIWindow_GameKeyBindings::Update() {
     if (pGUIWindow_CurrentMenu->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CONFIRMED) {
         InputAction action = currently_selected_action_for_binding;
         PlatformKey newKey = keyboardInputHandler->LastPressedKey();
-        prev_key_map[action] = newKey;
+        curr_key_map[action] = newKey;
 
-        for (auto action : AllInputActions()) {
+        GameUI_StatusBar_Clear();
+
+        for (auto action : VanillaInputActions()) {
             key_map_conflicted[action] = false;
         }
 
-        for (auto x : prev_key_map) {
-            if (x.first != action && x.second == newKey) {
-                key_map_conflicted[action] = true;
-                key_map_conflicted[x.first] = true;
+        bool anyConflicts = false;
+        for (auto x : curr_key_map) {
+            for (auto y : curr_key_map) {
+                if (x.first != y.first && x.second == y.second) {
+                    key_map_conflicted[x.first] = true;
+                    key_map_conflicted[y.first] = true;
+                    anyConflicts = true;
+                }
             }
         }
+
+        if (anyConflicts)
+            GameUI_SetStatusBar(localization->GetString(LSTR_KEY_CONFLICT));
+        else
+            GameUI_StatusBar_Clear();
 
         keyboardInputHandler->EndTextInput();
         currently_selected_action_for_binding = InputAction::Invalid;
@@ -310,34 +311,18 @@ void GUIWindow_GameKeyBindings::Update() {
 
     for (int i = 0; i < 7; ++i) {
         InputAction action1 = (InputAction)(base_controls_offset + i);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 23, 142 + i * 21,
-            ui_gamemenu_keys_action_name_color,
-            GetDisplayName(action1).c_str(), 0, 0, 0
-        );
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 127, 142 + i * 21,
-            GameMenuUI_GetKeyBindingColor(action1),
-            GetDisplayName(prev_key_map[action1]), 0, 0, 0
-        );
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {23, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action1).c_str(), 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {127, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action1), GetDisplayName(curr_key_map[action1]), 0, 0, 0);
 
         int j = i + 7;
         InputAction action2 = (InputAction)(base_controls_offset + j);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 247, 142 + i * 21,
-            ui_gamemenu_keys_action_name_color,
-            GetDisplayName(action2).c_str(), 0, 0, 0
-        );
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 350, 142 + i * 21,
-            GameMenuUI_GetKeyBindingColor(action2),
-            GetDisplayName(prev_key_map[action2]), 0, 0, 0
-        );
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {247, 142 + i * 21}, ui_gamemenu_keys_action_name_color, GetDisplayName(action2).c_str(), 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, {350, 142 + i * 21}, GameMenuUI_GetKeyBindingColor(action2), GetDisplayName(curr_key_map[action2]), 0, 0, 0);
     }
 }
 
 GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions()
-    : GUIWindow(WINDOW_VideoOptions, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
+    : GUIWindow(WINDOW_VideoOptions, {0, 0}, render->GetRenderDimensions(), 0) {
     // -------------------------------------
     // GameMenuUI_OptionsVideo_Load --- part
     game_ui_menu_options_video_background = assets->GetImage_ColorKey("optvid", render->teal_mask_16);
@@ -362,20 +347,18 @@ GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions()
     // not_available_tinting_texture_id = pIcons_LOD->LoadTexture("opvdG-tn",
     // TEXTURE_16BIT_PALETTE);
 
-    CreateButton(0xF1u, 0x12Eu, 0xD6u, 0x28u, 1, 0, UIMSG_Escape, 0);
+    CreateButton({0xF1u, 0x12Eu}, {0xD6u, 0x28u}, 1, 0, UIMSG_Escape, 0);
 
     // gamma buttons
-    pBtn_SliderLeft = CreateButton(21, 161, 17, 17, 1, 0, UIMSG_ChangeGammaLevel, 4, PlatformKey::None, "",
-        { options_menu_skin.uTextureID_ArrowLeft }); // -
-    CreateButton(42, 160, 170, 17, 1, 0, UIMSG_ChangeGammaLevel, 0);
-    pBtn_SliderRight = CreateButton(213, 161, 17, 17, 1, 0, UIMSG_ChangeGammaLevel, 5, PlatformKey::None, "",
-        { options_menu_skin.uTextureID_ArrowRight }); // +
+    pBtn_SliderLeft = CreateButton({21, 161}, {17, 17}, 1, 0, UIMSG_ChangeGammaLevel, 4, InputAction::Invalid, "", { options_menu_skin.uTextureID_ArrowLeft }); // -
+    CreateButton({42, 160}, {170, 17}, 1, 0, UIMSG_ChangeGammaLevel, 0);
+    pBtn_SliderRight = CreateButton({213, 161}, {17, 17}, 1, 0, UIMSG_ChangeGammaLevel, 5, InputAction::Invalid, "", { options_menu_skin.uTextureID_ArrowRight }); // +
 
     // if ( render->pRenderD3D )
     {
-        CreateButton(0x13u, 0x118u, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleBloodsplats, 0);
-        CreateButton(0x13u, 0x12Eu, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleColoredLights, 0);
-        CreateButton(0x13u, 0x144u, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleTint, 0);
+        CreateButton({0x13u, 0x118u}, {0xD6u, 0x12u}, 1, 0, UIMSG_ToggleBloodsplats, 0);
+        CreateButton({0x13u, 0x12Eu}, {0xD6u, 0x12u}, 1, 0, UIMSG_ToggleColoredLights, 0);
+        CreateButton({0x13u, 0x144u}, {0xD6u, 0x12u}, 1, 0, UIMSG_ToggleTint, 0);
     }
 
     // update gamma preview
@@ -405,7 +388,8 @@ void GUIWindow_GameVideoOptions::Update() {
             (17 * gammalevel + 42) / 640.0f, 162 / 480.0f,
             game_ui_menu_options_video_gamma_positions[gammalevel]);
 
-        render->DrawTextureNew(274 / 640.0f, 169 / 480.0f, gamma_preview_image);
+        if (gamma_preview_image)
+            render->DrawTextureNew(274 / 640.0f, 169 / 480.0f, gamma_preview_image);
         msg_window.Init();
         msg_window.uFrameX = 22;
         msg_window.uFrameY = 190;
@@ -468,7 +452,7 @@ void OptionsMenuSkin::Release() {
 }
 
 GUIWindow_GameOptions::GUIWindow_GameOptions()
-    : GUIWindow(WINDOW_GameOptions, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
+    : GUIWindow(WINDOW_GameOptions, {0, 0}, render->GetRenderDimensions(), 0) {
     options_menu_skin.uTextureID_Background = assets->GetImage_ColorKey("ControlBG", render->teal_mask_16);
     options_menu_skin.uTextureID_TurnSpeed[2] = assets->GetImage_ColorKey("con_16x", render->teal_mask_16);
     options_menu_skin.uTextureID_TurnSpeed[1] = assets->GetImage_ColorKey("con_32x", render->teal_mask_16);
@@ -490,57 +474,43 @@ GUIWindow_GameOptions::GUIWindow_GameOptions()
     options_menu_skin.uTextureID_ShowDamage = assets->GetImage_ColorKey("option02", render->teal_mask_16);
     options_menu_skin.uTextureID_WalkSound = assets->GetImage_ColorKey("option01", render->teal_mask_16);
 
-    CreateButton(22, 270, options_menu_skin.uTextureID_TurnSpeed[2]->GetWidth(),
-                 options_menu_skin.uTextureID_TurnSpeed[2]->GetHeight(), 1, 0,
-                 UIMSG_SetTurnSpeed, 0x80);
-    CreateButton(93, 270, options_menu_skin.uTextureID_TurnSpeed[1]->GetWidth(),
-                 options_menu_skin.uTextureID_TurnSpeed[1]->GetHeight(), 1, 0,
-                 UIMSG_SetTurnSpeed, 0x40u);
-    CreateButton(164, 270,
-                 options_menu_skin.uTextureID_TurnSpeed[0]->GetWidth(),
-                 options_menu_skin.uTextureID_TurnSpeed[0]->GetHeight(), 1, 0,
-                 UIMSG_SetTurnSpeed, 0);
+    CreateButton({22, 270}, {options_menu_skin.uTextureID_TurnSpeed[2]->GetWidth(), options_menu_skin.uTextureID_TurnSpeed[2]->GetHeight()}, 1, 0,
+        UIMSG_SetTurnSpeed, 0x80);
+    CreateButton({93, 270}, {options_menu_skin.uTextureID_TurnSpeed[1]->GetWidth(), options_menu_skin.uTextureID_TurnSpeed[1]->GetHeight()}, 1, 0,
+        UIMSG_SetTurnSpeed, 0x40u);
+    CreateButton({164, 270}, {options_menu_skin.uTextureID_TurnSpeed[0]->GetWidth(), options_menu_skin.uTextureID_TurnSpeed[0]->GetHeight()}, 1, 0,
+        UIMSG_SetTurnSpeed, 0);
 
-    CreateButton(20, 303, options_menu_skin.uTextureID_WalkSound->GetWidth(),
-                 options_menu_skin.uTextureID_WalkSound->GetHeight(), 1, 0,
-                 UIMSG_ToggleWalkSound, 0);
-    CreateButton(128, 303, options_menu_skin.uTextureID_ShowDamage->GetWidth(),
-                 options_menu_skin.uTextureID_ShowDamage->GetHeight(), 1, 0,
-                 UIMSG_ToggleShowDamage, 0);
-    CreateButton(20, 325, options_menu_skin.uTextureID_AlwaysRun->GetWidth(),
-                 options_menu_skin.uTextureID_AlwaysRun->GetHeight(), 1, 0,
-                 UIMSG_ToggleAlwaysRun, 0);
-    CreateButton(128, 325, options_menu_skin.uTextureID_FlipOnExit->GetWidth(),
-                 options_menu_skin.uTextureID_FlipOnExit->GetHeight(), 1, 0,
-                 UIMSG_ToggleFlipOnExit, 0);
+    CreateButton({20, 303}, {options_menu_skin.uTextureID_WalkSound->GetWidth(), options_menu_skin.uTextureID_WalkSound->GetHeight()}, 1, 0,
+        UIMSG_ToggleWalkSound, 0);
+    CreateButton({128, 303}, {options_menu_skin.uTextureID_ShowDamage->GetWidth(), options_menu_skin.uTextureID_ShowDamage->GetHeight()}, 1, 0,
+        UIMSG_ToggleShowDamage, 0);
+    CreateButton({20, 325}, {options_menu_skin.uTextureID_AlwaysRun->GetWidth(), options_menu_skin.uTextureID_AlwaysRun->GetHeight()}, 1, 0,
+        UIMSG_ToggleAlwaysRun, 0);
+    CreateButton({128, 325}, {options_menu_skin.uTextureID_FlipOnExit->GetWidth(), options_menu_skin.uTextureID_FlipOnExit->GetHeight()}, 1, 0,
+        UIMSG_ToggleFlipOnExit, 0);
 
-    pBtn_SliderLeft = CreateButton(
-        243, 162, 16, 16, 1, 0, UIMSG_ChangeSoundVolume, 4, PlatformKey::None, "",
+    pBtn_SliderLeft = CreateButton({243, 162}, {16, 16}, 1, 0, UIMSG_ChangeSoundVolume, 4, InputAction::Invalid, "",
         {options_menu_skin.uTextureID_ArrowLeft});
-    pBtn_SliderRight = CreateButton(
-        435, 162, 16, 16, 1, 0, UIMSG_ChangeSoundVolume, 5, PlatformKey::None, "",
+    pBtn_SliderRight = CreateButton({435, 162}, {16, 16}, 1, 0, UIMSG_ChangeSoundVolume, 5, InputAction::Invalid, "",
         {options_menu_skin.uTextureID_ArrowRight});
-    CreateButton(263, 162, 172, 17, 1, 0, UIMSG_ChangeSoundVolume, 0);
+    CreateButton({263, 162}, {172, 17}, 1, 0, UIMSG_ChangeSoundVolume, 0);
 
-    pBtn_SliderLeft = CreateButton(
-        243, 216, 16, 16, 1, 0, UIMSG_ChangeMusicVolume, 4, PlatformKey::None, "",
+    pBtn_SliderLeft = CreateButton({243, 216}, {16, 16}, 1, 0, UIMSG_ChangeMusicVolume, 4, InputAction::Invalid, "",
         {options_menu_skin.uTextureID_ArrowLeft});
-    pBtn_SliderRight = CreateButton(
-        435, 216, 16, 16, 1, 0, UIMSG_ChangeMusicVolume, 5, PlatformKey::None, "",
+    pBtn_SliderRight = CreateButton({435, 216}, {16, 16}, 1, 0, UIMSG_ChangeMusicVolume, 5, InputAction::Invalid, "",
         {options_menu_skin.uTextureID_ArrowRight});
-    CreateButton(263, 216, 172, 17, 1, 0, UIMSG_ChangeMusicVolume, 0);
+    CreateButton({263, 216}, {172, 17}, 1, 0, UIMSG_ChangeMusicVolume, 0);
 
-    pBtn_SliderLeft = CreateButton(
-        243, 270, 16, 16, 1, 0, UIMSG_ChangeVoiceVolume, 4, PlatformKey::None, "",
+    pBtn_SliderLeft = CreateButton({243, 270}, {16, 16}, 1, 0, UIMSG_ChangeVoiceVolume, 4, InputAction::Invalid, "",
         {options_menu_skin.uTextureID_ArrowLeft});
-    pBtn_SliderRight = CreateButton(
-        435, 270, 16, 16, 1, 0, UIMSG_ChangeVoiceVolume, 5, PlatformKey::None, "",
+    pBtn_SliderRight = CreateButton({435, 270}, {16, 16}, 1, 0, UIMSG_ChangeVoiceVolume, 5, InputAction::Invalid, "",
         {options_menu_skin.uTextureID_ArrowRight});
-    CreateButton(263, 270, 172, 17, 1, 0, UIMSG_ChangeVoiceVolume, 0);
+    CreateButton({263, 270}, {172, 17}, 1, 0, UIMSG_ChangeVoiceVolume, 0);
 
-    CreateButton(241, 302, 214, 40, 1, 0, UIMSG_Escape, 0, PlatformKey::None, localization->GetString(LSTR_RETURN_TO_GAME));
-    CreateButton(19, 140, 214, 40, 1, 0, UIMSG_OpenKeyMappingOptions, 0, PlatformKey::K);
-    CreateButton(19, 194, 214, 40, 1, 0, UIMSG_OpenVideoOptions, 0, PlatformKey::V);
+    CreateButton({241, 302}, {214, 40}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_RETURN_TO_GAME));
+    CreateButton({19, 140}, {214, 40}, 1, 0, UIMSG_OpenKeyMappingOptions, 0, InputAction::Controls);
+    CreateButton({19, 194}, {214, 40}, 1, 0, UIMSG_OpenVideoOptions, 0, InputAction::Options);
 }
 
 void GUIWindow_GameOptions::Update() {
@@ -741,7 +711,7 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
                 popup_window.DrawTitleText(pFontArrus, 0, 12, colorTable.PaleCanary.C16(), NameAndTitle(pNPC), 3);
                 popup_window.uFrameWidth -= 24;
                 popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
-                popup_window.DrawText(pFontArrus, 100, 36, 0, BuildDialogueString((char *)lpsz, uActiveCharacter - 1, 0, 0, 0));
+                popup_window.DrawText(pFontArrus, {100, 36}, 0, BuildDialogueString((char *)lpsz, uActiveCharacter - 1, 0, 0, 0));
             }
         }
     }
@@ -870,14 +840,14 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
 
     str += StringPrintf("%s: %s", localization->GetString(LSTR_QUICK_SPELL), v29);
 
-    window->DrawText(pFontArrus, 120, 22, 0, str, 0, 0, 0);
+    window->DrawText(pFontArrus, {120, 22}, 0, str, 0, 0, 0);
 
     uFramesetIDa = 0;
     for (uint i = 0; i < 24; ++i) {
         SpellBuff *buff = &player->pPlayerBuffs[i];
         if (buff->Active()) {
             v36 = uFramesetIDa++ * pFontComic->GetHeight() + 134;
-            window->DrawText(pFontComic, 52, v36,
+            window->DrawText(pFontComic, {52, v36},
                              ui_game_character_record_playerbuff_colors[i],
                              localization->GetSpellName(20 + i), 0, 0, 0);
             DrawBuff_remaining_time_string(
@@ -889,7 +859,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
     auto active_spells = localization->FormatString(
         LSTR_FMT_ACTIVE_SPELLS_S,
         uFramesetIDa == 0 ? localization->GetString(LSTR_NONE) : "");
-    window->DrawText(pFontArrus, 14, 114, 0, active_spells, 0, 0, 0);
+    window->DrawText(pFontArrus, {14, 114}, 0, active_spells, 0, 0, 0);
 }
 
 //----- (0041AD6E) --------------------------------------------------------
@@ -924,14 +894,10 @@ void GameUI_DrawFoodAndGold() {
     if (uGameState != GAME_STATE_FINAL_WINDOW) {
         text_y = _44100D_should_alter_right_panel() != 0 ? 381 : 322;
 
-        pPrimaryWindow->DrawText(
-            pFontSmallnum, 0, text_y, uGameUIFontMain,
-            StringPrintf("\r087%d", pParty->GetFood()), 0, 0,
-            uGameUIFontShadow);
-        pPrimaryWindow->DrawText(
-            pFontSmallnum, 0, text_y, uGameUIFontMain,
-            StringPrintf("\r028%d", pParty->GetGold()), 0, 0,
-            uGameUIFontShadow);
+        pPrimaryWindow->DrawText(pFontSmallnum, {0, text_y}, uGameUIFontMain, StringPrintf("\r087%d", pParty->GetFood()), 0, 0, uGameUIFontShadow);
+        pPrimaryWindow->DrawText(pFontSmallnum, {0, text_y}, uGameUIFontMain, StringPrintf("\r028%d", pParty->GetGold()), 0, 0, uGameUIFontShadow);
+        // force to render all queued text now so it wont be delayed and drawn over things it isn't supposed to, like item in hand or nuklear
+        render->EndTextNew();
     }
 }
 
@@ -1025,13 +991,14 @@ void GameUI_WritePointedObjectStatusString() {
 
     mouse->uPointingObjectID = 0;
     mouse->GetClickPos(&pX, &pY);
-    if (pX < 0 || pX > window->GetWidth() - 1 || pY < 0 ||
-        pY > window->GetHeight() - 1)
+    Sizei renDims = render->GetPresentDimensions();
+    if (pX < 0 || pX > renDims.w - 1 || pY < 0 ||
+        pY > renDims.h - 1)
         return;
 
     if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
-        if (pX <= (window->GetWidth() - 1) * 0.73125 &&
-            pY <= (window->GetHeight() - 1) * 0.73125) {
+        if (pX <= (renDims.w - 1) * 0.73125 &&
+            pY <= (renDims.h - 1) * 0.73125) {
             if (!pViewport->Contains(pX, pY)) {
                 if (uLastPointedObjectID != 0) {
                     game_ui_status_bar_string.clear();
@@ -1140,8 +1107,8 @@ void GameUI_WritePointedObjectStatusString() {
             return;
         }
     } else if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST) {
-        if (pX <= (window->GetWidth() - 1) * 0.73125 &&
-            pY <= (window->GetHeight() - 1) * 0.73125) {  // if in chest area
+        if (pX <= (renDims.w - 1) * 0.73125 &&
+            pY <= (renDims.h - 1) * 0.73125) {  // if in chest area
             if (Chest::ChestUI_WritePointedObjectStatusString()) {
                 return;
             } else if (uLastPointedObjectID != 0) {  // not found so reset
@@ -1670,7 +1637,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
         static Texture* minimaptemp;
         if (!minimaptemp) {
-            minimaptemp = render->CreateTexture_Blank(uWidth, uHeight, IMAGE_FORMAT_A8R8G8B8);
+            minimaptemp = render->CreateTexture_Blank(uWidth, uHeight, IMAGE_FORMAT_A8B8G8R8);
         }
 
         static uint16_t pOdmMinimap[117][137];
@@ -1713,9 +1680,9 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 assert(uWidth == 137 && uHeight == 117);
 
                 ushort MapImgWidth = viewparams->location_minimap->GetWidth();
-                auto pMapLod0Line = (uint32_t*)viewparams->location_minimap->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+                auto pMapLod0Line = (uint32_t*)viewparams->location_minimap->GetPixels(IMAGE_FORMAT_A8B8G8R8);
                 // Image *minimaptemp = Image::Create(uWidth, uHeight, IMAGE_FORMAT_A8R8G8B8);
-                auto minitempix = (uint32_t*)minimaptemp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+                auto minitempix = (uint32_t*)minimaptemp->GetPixels(IMAGE_FORMAT_A8B8G8R8);
 
                 for (int y = 0; y < uHeight; ++y) {
                     for (int x = 0; x < uWidth; ++x) {
@@ -2085,16 +2052,17 @@ int16_t _441A4E_overlay_on_portrait(int a1) {  // for blessing
     SoftwareBillboard v10 {};                     // [sp+Ch] [bp-5Ch]@1
     int v11;                                   // [sp+5Ch] [bp-Ch]@6
     int v12;                                   // [sp+60h] [bp-8h]@1
+    Sizei renDims = render->GetPresentDimensions();
 
     v10.sParentBillboardID = -1;
     v10.pTargetZ = render->pActiveZBuffer;
-    v10.uTargetPitch = render->GetRenderWidth();
+    v10.uTargetPitch = renDims.w;
     result = 0;
     v2 = a1;
     v10.uViewportX = 0;
     v10.uViewportY = 0;
-    v10.uViewportZ = window->GetWidth() - 1;
-    v10.uViewportW = window->GetHeight() - 1;
+    v10.uViewportZ = renDims.w - 1;
+    v10.uViewportW = renDims.h - 1;
     v12 = 0;
     // v3 = (char *)&pOtherOverlayList->pOverlays[0].field_C;
     // do
@@ -2153,7 +2121,7 @@ int16_t _441A4E_overlay_on_portrait(int a1) {  // for blessing
 
 
 GUIWindow_DebugMenu::GUIWindow_DebugMenu()
-    : GUIWindow(WINDOW_DebugMenu, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
+    : GUIWindow(WINDOW_DebugMenu, {0, 0}, render->GetRenderDimensions(), 0) {
 
     pEventTimer->Pause();
     int width = 108;
@@ -2161,45 +2129,45 @@ GUIWindow_DebugMenu::GUIWindow_DebugMenu()
 
     game_ui_menu_options = assets->GetImage_ColorKey("options", render->teal_mask_16);
 
-    GUIButton *pBtn_DebugTownPortal = CreateButton(13, 140, width, height, 1, 0, UIMSG_DebugTownPortal, 0, PlatformKey::None, "DEBUG TOWN PORTAL");
-    GUIButton *pBtn_DebugGiveGold = CreateButton(127, 140, width, height, 1, 0, UIMSG_DebugGiveGold, 0, PlatformKey::None, "DEBUG GIVE GOLD (10000)");
-    GUIButton *pBtn_DebugGiveEXP = CreateButton(241, 140, width, height, 1, 0, UIMSG_DebugGiveEXP, 0, PlatformKey::None, "DEBUG GIVE EXP (20000)");
-    GUIButton *pBtn_DebugGiveSkillP = CreateButton(354, 140, width, height, 1, 0, UIMSG_DebugGiveSkillP, 0, PlatformKey::None, "DEBUG GIVE SKILL POINT (50)");
+    GUIButton *pBtn_DebugTownPortal = CreateButton({13, 140}, {width, height}, 1, 0, UIMSG_DebugTownPortal, 0, InputAction::Invalid, "DEBUG TOWN PORTAL");
+    GUIButton *pBtn_DebugGiveGold = CreateButton({127, 140}, {width, height}, 1, 0, UIMSG_DebugGiveGold, 0, InputAction::Invalid, "DEBUG GIVE GOLD (10000)");
+    GUIButton *pBtn_DebugGiveEXP = CreateButton({241, 140}, {width, height}, 1, 0, UIMSG_DebugGiveEXP, 0, InputAction::Invalid, "DEBUG GIVE EXP (20000)");
+    GUIButton *pBtn_DebugGiveSkillP = CreateButton({354, 140}, {width, height}, 1, 0, UIMSG_DebugGiveSkillP, 0, InputAction::Invalid, "DEBUG GIVE SKILL POINT (50)");
 
-    GUIButton *pBtn_DebugLearnSkill = CreateButton(13, 167, width, height, 1, 0, UIMSG_DebugLearnSkills, 0, PlatformKey::None, "DEBUG LEARN CLASS SKILLS");
-    GUIButton *pBtn_DebugRemoveGold = CreateButton(127, 167, width, height, 1, 0, UIMSG_DebugTakeGold, 0, PlatformKey::None, "DEBUG REMOVE GOLD");
-    GUIButton *pBtn_DebugAddFood = CreateButton(241, 167, width, height, 1, 0, UIMSG_DebugGiveFood, 0, PlatformKey::None, "DEBUG GIVE FOOD (20)");
-    GUIButton *pBtn_DebugTakeFood = CreateButton(354, 167, width, height, 1, 0, UIMSG_DebugTakeFood, 0, PlatformKey::None, "DEBUG REMOVE FOOD");
+    GUIButton *pBtn_DebugLearnSkill = CreateButton({13, 167}, {width, height}, 1, 0, UIMSG_DebugLearnSkills, 0, InputAction::Invalid, "DEBUG LEARN CLASS SKILLS");
+    GUIButton *pBtn_DebugRemoveGold = CreateButton({127, 167}, {width, height}, 1, 0, UIMSG_DebugTakeGold, 0, InputAction::Invalid, "DEBUG REMOVE GOLD");
+    GUIButton *pBtn_DebugAddFood = CreateButton({241, 167}, {width, height}, 1, 0, UIMSG_DebugGiveFood, 0, InputAction::Invalid, "DEBUG GIVE FOOD (20)");
+    GUIButton *pBtn_DebugTakeFood = CreateButton({354, 167}, {width, height}, 1, 0, UIMSG_DebugTakeFood, 0, InputAction::Invalid, "DEBUG REMOVE FOOD");
 
-    GUIButton *pBtn_DebugCycleAlign = CreateButton(13, 194, width, height, 1, 0, UIMSG_DebugCycleAlign, 0, PlatformKey::None, "DEBUG CYCLE ALIGNMENT");
-    GUIButton *pBtn_DebugWizardEye = CreateButton(127, 194, width, height, 1, 0, UIMSG_DebugWizardEye, 0, PlatformKey::None, "DEBUG TOGGLE WIZARD EYE");
-    GUIButton *pBtn_DebugAllMagic = CreateButton(241, 194, width, height, 1, 0, UIMSG_DebugAllMagic, 0, PlatformKey::None, "DEBUG TOGGLE All MAGIC");
-    GUIButton *pBtn_DebugTerrain = CreateButton(354, 194, width, height, 1, 0, UIMSG_DebugTerrain, 0, PlatformKey::None, "DEBUG TOGGLE TERRAIN");
+    GUIButton *pBtn_DebugCycleAlign = CreateButton({13, 194}, {width, height}, 1, 0, UIMSG_DebugCycleAlign, 0, InputAction::Invalid, "DEBUG CYCLE ALIGNMENT");
+    GUIButton *pBtn_DebugWizardEye = CreateButton({127, 194}, {width, height}, 1, 0, UIMSG_DebugWizardEye, 0, InputAction::Invalid, "DEBUG TOGGLE WIZARD EYE");
+    GUIButton *pBtn_DebugAllMagic = CreateButton({241, 194}, {width, height}, 1, 0, UIMSG_DebugAllMagic, 0, InputAction::Invalid, "DEBUG TOGGLE All MAGIC");
+    GUIButton *pBtn_DebugTerrain = CreateButton({354, 194}, {width, height}, 1, 0, UIMSG_DebugTerrain, 0, InputAction::Invalid, "DEBUG TOGGLE TERRAIN");
 
-    GUIButton *pBtn_DebugLightMap = CreateButton(13, 221, width, height, 1, 0, UIMSG_DebugLightmap, 0, PlatformKey::None, "DEBUG TOGGLE LIGHTMAP DECAL");
-    GUIButton *pBtn_DebugTurbo = CreateButton(127, 221, width, height, 1, 0, UIMSG_DebugTurboSpeed, 0, PlatformKey::None, "DEBUG TOGGLE TURBO SPEED");
-    GUIButton *pBtn_DebugNoActors = CreateButton(241, 221, width, height, 1, 0, UIMSG_DebugNoActors, 0, PlatformKey::None, "DEBUG TOGGLE ACTORS");
-    GUIButton *pBtn_DebugUnused = CreateButton(354, 221, width, height, 1, 0, UIMSG_DebugFog, 0, PlatformKey::None, "DEBUG TOGGLE FOG");
+    GUIButton *pBtn_DebugLightMap = CreateButton({13, 221}, {width, height}, 1, 0, UIMSG_DebugLightmap, 0, InputAction::Invalid, "DEBUG TOGGLE LIGHTMAP DECAL");
+    GUIButton *pBtn_DebugTurbo = CreateButton({127, 221}, {width, height}, 1, 0, UIMSG_DebugTurboSpeed, 0, InputAction::Invalid, "DEBUG TOGGLE TURBO SPEED");
+    GUIButton *pBtn_DebugNoActors = CreateButton({241, 221}, {width, height}, 1, 0, UIMSG_DebugNoActors, 0, InputAction::Invalid, "DEBUG TOGGLE ACTORS");
+    GUIButton *pBtn_DebugUnused = CreateButton({354, 221}, {width, height}, 1, 0, UIMSG_DebugFog, 0, InputAction::Invalid, "DEBUG TOGGLE FOG");
 
-    GUIButton *pBtn_DebugSnow = CreateButton(13, 248, width, height, 1, 0, UIMSG_DebugSnow, 0, PlatformKey::None, "DEBUG TOGGLE SNOW");
-    GUIButton *pBtn_DebugPortalLines = CreateButton(127, 248, width, height, 1, 0, UIMSG_DebugPortalLines, 0, PlatformKey::None, "DEBUG TOGGLE PORTAL OUTLINES");
-    GUIButton *pBtn_DebugPickedFace = CreateButton(241, 248, width, height, 1, 0, UIMSG_DebugPickedFace, 0, PlatformKey::None, "DEBUG TOGGLE SHOW PICKED FACE");
-    GUIButton *pBtn_DebugShowFPS = CreateButton(354, 248, width, height, 1, 0, UIMSG_DebugShowFPS, 0, PlatformKey::None, "DEBUG TOGGLE SHOW FPS");
+    GUIButton *pBtn_DebugSnow = CreateButton({13, 248}, {width, height}, 1, 0, UIMSG_DebugSnow, 0, InputAction::Invalid, "DEBUG TOGGLE SNOW");
+    GUIButton *pBtn_DebugPortalLines = CreateButton({127, 248}, {width, height}, 1, 0, UIMSG_DebugPortalLines, 0, InputAction::Invalid, "DEBUG TOGGLE PORTAL OUTLINES");
+    GUIButton *pBtn_DebugPickedFace = CreateButton({241, 248}, {width, height}, 1, 0, UIMSG_DebugPickedFace, 0, InputAction::Invalid, "DEBUG TOGGLE SHOW PICKED FACE");
+    GUIButton *pBtn_DebugShowFPS = CreateButton({354, 248}, {width, height}, 1, 0, UIMSG_DebugShowFPS, 0, InputAction::Invalid, "DEBUG TOGGLE SHOW FPS");
 
-    GUIButton *pBtn_DebugSeasonsChange = CreateButton(13, 275, width, height, 1, 0, UIMSG_DebugSeasonsChange, 0, PlatformKey::None, "DEBUG TOGGLE SEASONS CHANGE");
-    GUIButton *pBtn_DebugVerboseLogging = CreateButton(127, 275, width, height, 1, 0, UIMSG_DebugVerboseLogging, 0, PlatformKey::None, "DEBUG TOGGLE VERBOSE LOGGING");
-    GUIButton *pBtn_DebugGenItem = CreateButton(241, 275, width, height, 1, 0, UIMSG_DebugGenItem, 0, PlatformKey::None, "DEBUG GENERATE RANDOM ITEM");
-    GUIButton *pBtn_DebugSpecialItem = CreateButton(354, 275, width, height, 1, 0, UIMSG_DebugSpecialItem, 0, PlatformKey::None, "DEBUG GENERATE RANDOM SPECIAL ITEM");
+    GUIButton *pBtn_DebugSeasonsChange = CreateButton({13, 275}, {width, height}, 1, 0, UIMSG_DebugSeasonsChange, 0, InputAction::Invalid, "DEBUG TOGGLE SEASONS CHANGE");
+    GUIButton *pBtn_DebugVerboseLogging = CreateButton({127, 275}, {width, height}, 1, 0, UIMSG_DebugVerboseLogging, 0, InputAction::Invalid, "DEBUG TOGGLE VERBOSE LOGGING");
+    GUIButton *pBtn_DebugGenItem = CreateButton({241, 275}, {width, height}, 1, 0, UIMSG_DebugGenItem, 0, InputAction::Invalid, "DEBUG GENERATE RANDOM ITEM");
+    GUIButton *pBtn_DebugSpecialItem = CreateButton({354, 275}, {width, height}, 1, 0, UIMSG_DebugSpecialItem, 0, InputAction::Invalid, "DEBUG GENERATE RANDOM SPECIAL ITEM");
 
-    GUIButton *pBtn_DebugReloadShaders = CreateButton(13, 302, width, height, 1, 0, UIMSG_DebugReloadShader, 0, PlatformKey::Backspace, "DEBUG RELOAD SHADERS");
-    GUIButton *pBtn_DebugUnused1 = CreateButton(127, 302, width, height, 1, 0, UIMSG_DebugUnused, 0, PlatformKey::None, "DEBUG unused1");
-    GUIButton *pBtn_DebugUnused2 = CreateButton(241, 302, width, height, 1, 0, UIMSG_DebugUnused, 0, PlatformKey::None, "DEBUG unused2");
-    GUIButton *pBtn_DebugUnused3 = CreateButton(354, 302, width, height, 1, 0, UIMSG_DebugUnused, 0, PlatformKey::None, "DEBUG unused3");
+    GUIButton *pBtn_DebugReloadShaders = CreateButton({13, 302}, {width, height}, 1, 0, UIMSG_DebugReloadShader, 0, InputAction::ReloadShaders, "DEBUG RELOAD SHADERS");
+    GUIButton *pBtn_DebugUnused1 = CreateButton({127, 302}, {width, height}, 1, 0, UIMSG_DebugUnused, 0, InputAction::Invalid, "DEBUG unused1");
+    GUIButton *pBtn_DebugUnused2 = CreateButton({241, 302}, {width, height}, 1, 0, UIMSG_DebugUnused, 0, InputAction::Invalid, "DEBUG unused2");
+    GUIButton *pBtn_DebugUnused3 = CreateButton({354, 302}, {width, height}, 1, 0, UIMSG_DebugUnused, 0, InputAction::Invalid, "DEBUG unused3");
 
-    GUIButton *pBtn_DebugKillChar = CreateButton(13, 329, width, height, 1, 0, UIMSG_DebugKillChar, 0, PlatformKey::None, "DEBUG KILL SELECTED CHARACTER");
-    GUIButton *pBtn_DebugEradicate = CreateButton(127, 329, width, height, 1, 0, UIMSG_DebugEradicate, 0, PlatformKey::None, "DEBUG ERADICATE SELECTED CHARACTER");
-    GUIButton *pBtn_DebugNoDamage = CreateButton(241, 329, width, height, 1, 0, UIMSG_DebugNoDamage, 0, PlatformKey::None, "DEBUG TOGGLE NO DAMAGE");
-    GUIButton *pBtn_DebugFullHeal = CreateButton(354, 329, width, height, 1, 0, UIMSG_DebugFullHeal, 0, PlatformKey::None, "DEBUG FULLY HEAL SELECTED CHARACTER");
+    GUIButton *pBtn_DebugKillChar = CreateButton({13, 329}, {width, height}, 1, 0, UIMSG_DebugKillChar, 0, InputAction::Invalid, "DEBUG KILL SELECTED CHARACTER");
+    GUIButton *pBtn_DebugEradicate = CreateButton({127, 329}, {width, height}, 1, 0, UIMSG_DebugEradicate, 0, InputAction::Invalid, "DEBUG ERADICATE SELECTED CHARACTER");
+    GUIButton *pBtn_DebugNoDamage = CreateButton({241, 329}, {width, height}, 1, 0, UIMSG_DebugNoDamage, 0, InputAction::Invalid, "DEBUG TOGGLE NO DAMAGE");
+    GUIButton *pBtn_DebugFullHeal = CreateButton({354, 329}, {width, height}, 1, 0, UIMSG_DebugFullHeal, 0, InputAction::Invalid, "DEBUG FULLY HEAL SELECTED CHARACTER");
 }
 
 void GUIWindow_DebugMenu::Update() {
@@ -2214,7 +2182,7 @@ void GUIWindow_DebugMenu::Update() {
         pViewport->uViewportTL_Y / 480.0f,
         game_ui_menu_options);
 
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 0, 10, 0, "Debug Menu", 0, 0, 0);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {0, 10}, 0, "Debug Menu", 0, 0, 0);
 
     buttonbox(13, 140, "Town Portal", engine->config->debug.TownPortal.Get());
     buttonbox(127, 140, "Give Gold", 2);
@@ -2288,5 +2256,5 @@ void buttonbox(int x, int y, const char* text, int col) {
     if (col == 1) {
         colour = ui_character_bonus_text_color;
     }
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, x+1, y+2, colour, text, 0, 0, 0);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {x+1, y+2}, colour, text, 0, 0, 0);
 }

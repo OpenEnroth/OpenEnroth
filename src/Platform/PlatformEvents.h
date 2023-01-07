@@ -1,10 +1,12 @@
 #pragma once
 
 #include "Utility/Geometry/Point.h"
+#include "Utility/Geometry/Size.h"
 
 #include "PlatformKey.h"
 #include "PlatformModifiers.h"
 #include "PlatformMouseButton.h"
+#include "PlatformGamepad.h"
 
 #ifdef KeyPress
 #   undef KeyPress
@@ -19,11 +21,14 @@ class PlatformEvent {
         Invalid,
         KeyPress,
         KeyRelease,
+        GamepadConnected,
+        GamepadDisconnected,
         MouseButtonPress,
         MouseButtonRelease,
         MouseMove,
         MouseWheel,
         WindowMove,
+        WindowResize,
         WindowActivate,
         WindowDeactivate,
         WindowCloseRequest,
@@ -40,7 +45,10 @@ class PlatformEvent {
  */
 class PlatformKeyEvent: public PlatformEvent {
  public:
+    uint32_t id;
     PlatformKey key;
+    PlatformKeyType keyType;
+    PlatformKeyValue keyValue;
     PlatformModifiers mods;
     bool isAutoRepeat = false;
 };
@@ -71,4 +79,17 @@ class PlatformWheelEvent: public PlatformEvent {
 class PlatformMoveEvent: public PlatformEvent {
  public:
     Pointi pos; // New position of the window.
+};
+
+/**
+ * `WindowResize`
+ */
+class PlatformResizeEvent: public PlatformEvent {
+ public:
+    Sizei size; // New size of the window.
+};
+
+class PlatformGamepadDeviceEvent: public PlatformEvent {
+ public:
+    uint32_t id;
 };

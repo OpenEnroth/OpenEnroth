@@ -1,4 +1,4 @@
-#version 410 core
+precision highp float;
 
 in vec4 vertexColour;
 in vec2 texuv;
@@ -9,7 +9,6 @@ in vec2 texuv;
 in vec4 viewspace;
 
 out vec4 FragColour;
-
 
 struct FogParam {
     vec3 color;
@@ -25,7 +24,7 @@ float getFogRatio(FogParam fogpar, float dist);
 
 void main() {
     vec4 fragcol = texture(texture0, texuv) * vertexColour;
-	if (fog.fogstart == fog.fogend) {
+    if (fog.fogstart == fog.fogend) {
         FragColour = fragcol;
         return;
     }

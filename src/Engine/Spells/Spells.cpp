@@ -171,7 +171,7 @@ SpellData::SpellData(int16_t innormalMana, int16_t inExpertLevelMana,
 std::array<SpellData, 100> pSpellDatas = {
     {SpellData(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
      SpellData(1, 1, 1, 1, 60, 60, 60, 40, 0, 0, 0),  // 0 fire
-     SpellData(2, 2, 2, 2, 110, 110, 100, 90, 3, 3, 0),
+     SpellData(2, 2, 2, 2, 110, 110, 100, 90, 0, 3, 0),
      SpellData(3, 3, 3, 3, 120, 120, 120, 120, 0, 0, 0),
      SpellData(4, 4, 4, 4, 120, 120, 120, 120, 0, 0, 0),
      SpellData(5, 5, 5, 5, 120, 120, 120, 120, 0, 0, 0),
@@ -239,7 +239,7 @@ std::array<SpellData, 100> pSpellDatas = {
      SpellData(10, 10, 10, 10, 120, 120, 120, 120, 0, 0, 0),
      SpellData(15, 15, 15, 15, 80, 80, 80, 80, 0, 0, 0),
      SpellData(20, 20, 20, 20, 120, 120, 120, 120, 0, 0, 0),
-     SpellData(25, 25, 25, 25, 110, 110, 110, 100, 12, 12, 0),
+     SpellData(25, 25, 25, 25, 110, 110, 110, 100, 12, 1, 0),
      SpellData(30, 30, 30, 30, 120, 120, 120, 120, 0, 0, 0),
 
      SpellData(1, 1, 1, 1, 120, 120, 120, 120, 0, 0, 0),  // 6 body
@@ -634,6 +634,8 @@ void EventCastSpell(int uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAYER_SKIL
                 case PLAYER_SKILL_MASTERY_GRANDMASTER:
                     spell_length = 3600 * (skillLevel + 1);
                     break;
+                default:
+                    break;
             }
             switch (uSpellID) {
                 case SPELL_AIR_SHIELD:
@@ -733,6 +735,8 @@ void EventCastSpell(int uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAYER_SKIL
                 case PLAYER_SKILL_MASTERY_GRANDMASTER:
                     spell_length = 14400 * skillLevel;
                     spell_power = 4 * skillLevel + 10;
+                    break;
+                default:
                     break;
             }
             spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 0);

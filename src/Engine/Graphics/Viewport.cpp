@@ -320,6 +320,12 @@ void Engine::OnGameViewportClick() {
     if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME /*CURRENT_SCREEN::SCREEN_NPC_DIALOGUE*/)
         return;
 
+    // wasn't there, but we decided to deny interactions where there are no active character
+    if (uActiveCharacter == 0) {
+        GameUI_SetStatusBar(localization->GetString(LSTR_NOBODY_IS_IN_CONDITION));
+        return;
+    }
+
     auto pidAndDepth = vis->get_picked_object_zbuf_val();
     uint16_t pid = pidAndDepth.object_pid;
     int16_t distance = pidAndDepth.depth;

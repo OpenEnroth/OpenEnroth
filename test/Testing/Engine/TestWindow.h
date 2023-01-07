@@ -24,11 +24,17 @@ class TestWindow : public PlatformWindow {
     virtual void SetVisible(bool visible) override;
     virtual bool IsVisible() const override;
 
+    virtual void SetResizable(bool resizable) override;
+    virtual bool Resizable() const override;
+
     virtual void SetWindowMode(PlatformWindowMode mode) override;
     virtual PlatformWindowMode WindowMode() override;
 
     virtual void SetGrabsMouse(bool grabsMouse) override;
     virtual bool GrabsMouse() const override;
+
+    virtual void SetOrientations(PlatformWindowOrientations orientations) override;
+    virtual PlatformWindowOrientations Orientations() override;
 
     virtual Marginsi FrameMargins() const override;
 

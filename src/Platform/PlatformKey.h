@@ -68,6 +68,34 @@ enum class PlatformKey : int {
 
     Numpad0, Numpad1, Numpad2, Numpad3, Numpad4, Numpad5, Numpad6, Numpad7, Numpad8, Numpad9,
 
+    Gamepad_A,
+    Gamepad_B,
+    Gamepad_X,
+    Gamepad_Y,
+    Gamepad_Left,
+    Gamepad_Right,
+    Gamepad_Up,
+    Gamepad_Down,
+    Gamepad_L1,
+    Gamepad_R1,
+    Gamepad_L3,
+    Gamepad_R3 ,
+    Gamepad_Start,
+    Gamepad_Back,
+    Gamepad_Guide,
+    Gamepad_Touchpad,
+
+    Gamepad_LeftStick_Left,
+    Gamepad_LeftStick_Right,
+    Gamepad_LeftStick_Up,
+    Gamepad_LeftStick_Down,
+    Gamepad_RightStick_Left,
+    Gamepad_RightStick_Right,
+    Gamepad_RightStick_Up,
+    Gamepad_RightStick_Down,
+    Gamepad_L2,
+    Gamepad_R2,
+
     Count,
 
     None = Count
@@ -75,3 +103,12 @@ enum class PlatformKey : int {
 
 std::string GetDisplayName(PlatformKey key);
 bool TryParseDisplayName(std::string_view displayName, PlatformKey *outKey);
+
+enum class PlatformKeyType : int {
+    KEY_TYPE_KEYBOARD_BUTTON,
+    KEY_TYPE_GAMEPAD_BUTTON,
+    KEY_TYPE_GAMEPAD_AXIS,
+    KEY_TYPE_GAMEPAD_TRIGGER
+};
+
+typedef float PlatformKeyValue;

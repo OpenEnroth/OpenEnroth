@@ -18,7 +18,7 @@
 GUIWindow_MainMenu *pWindow_MainMenu = nullptr;
 
 GUIWindow_MainMenu::GUIWindow_MainMenu() :
-    GUIWindow(WINDOW_MainMenu, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
+    GUIWindow(WINDOW_MainMenu, {0, 0}, render->GetRenderDimensions(), 0) {
     nuklear->Create(WINDOW_MainMenu);
     if (nuklear->Mode(WINDOW_MainMenu) == nuklear->NUKLEAR_MODE_EXCLUSIVE)
         return;
@@ -30,14 +30,14 @@ GUIWindow_MainMenu::GUIWindow_MainMenu() :
     ui_mainmenu_credits = assets->GetImage_ColorKey("title_cred", render->teal_mask_16);
     ui_mainmenu_exit = assets->GetImage_ColorKey("title_exit", render->teal_mask_16);
 
-    pBtnNew = CreateButton("MainMenu_NewGame", 495, 172, ui_mainmenu_new->GetWidth(), ui_mainmenu_new->GetHeight(),
-                           1, 0, UIMSG_MainMenu_ShowPartyCreationWnd, 0, PlatformKey::N, "", {ui_mainmenu_new});
-    pBtnLoad = CreateButton("MainMenu_LoadGame", 495, 227, ui_mainmenu_load->GetWidth(), ui_mainmenu_load->GetHeight(),
-                            1, 0, UIMSG_MainMenu_ShowLoadWindow, 1, PlatformKey::L, "", {ui_mainmenu_load});
-    pBtnCredits = CreateButton(495, 282, ui_mainmenu_credits->GetWidth(), ui_mainmenu_credits->GetHeight(),
-                               1, 0, UIMSG_ShowCredits, 2, PlatformKey::C, "", {ui_mainmenu_credits});
-    pBtnExit = CreateButton(495, 337, ui_mainmenu_exit->GetWidth(), ui_mainmenu_exit->GetHeight(),
-                            1, 0, UIMSG_ExitToWindows, 3, PlatformKey::None, "", {ui_mainmenu_exit});
+    pBtnNew = CreateButton("MainMenu_NewGame", {495, 172}, {ui_mainmenu_new->GetWidth(), ui_mainmenu_new->GetHeight()}, 1, 0,
+        UIMSG_MainMenu_ShowPartyCreationWnd, 0, InputAction::NewGame, "", {ui_mainmenu_new});
+    pBtnLoad = CreateButton("MainMenu_LoadGame", {495, 227}, {ui_mainmenu_load->GetWidth(), ui_mainmenu_load->GetHeight()}, 1, 0,
+        UIMSG_MainMenu_ShowLoadWindow, 1, InputAction::LoadGame, "", {ui_mainmenu_load});
+    pBtnCredits = CreateButton({495, 282}, {ui_mainmenu_credits->GetWidth(), ui_mainmenu_credits->GetHeight()}, 1, 0,
+        UIMSG_ShowCredits, 2, InputAction::Credits, "", {ui_mainmenu_credits});
+    pBtnExit = CreateButton({495, 337}, {ui_mainmenu_exit->GetWidth(), ui_mainmenu_exit->GetHeight()}, 1, 0,
+        UIMSG_ExitToWindows, 3, InputAction::ExitGame, "", {ui_mainmenu_exit});
 }
 
 GUIWindow_MainMenu::~GUIWindow_MainMenu() {
@@ -91,7 +91,7 @@ void GUIWindow_MainMenu::Update() {
                         pY = 337;
                         break;
                 }
-                render->DrawTextureAlphaNew(495 / float(render->GetRenderWidth()), pY / float(render->GetRenderHeight()), pTexture);
+                render->DrawTextureAlphaNew(495 / float(render->GetRenderDimensions().w), pY / float(render->GetRenderDimensions().h), pTexture);
             }
         }
     }
@@ -113,19 +113,19 @@ void GUIWindow_MainMenu::EventLoop() {
 
         switch (pUIMessageType) {  // For buttons of window MainMenu
         case UIMSG_MainMenu_ShowPartyCreationWnd:
-            new OnButtonClick2(495, 172, 0, 0, pBtnNew);
+            new OnButtonClick2({495, 172}, {0, 0}, pBtnNew);
             SetCurrentMenuID(MENU_NEWGAME);
             break;
         case UIMSG_MainMenu_ShowLoadWindow:
-            new OnButtonClick2(495, 227, 0, 0, pBtnLoad);
+            new OnButtonClick2({495, 227}, {0, 0}, pBtnLoad);
             SetCurrentMenuID(MENU_SAVELOAD);
             break;
         case UIMSG_ShowCredits:
-            new OnButtonClick2(495, 282, 0, 0, pBtnCredits);
+            new OnButtonClick2({495, 282}, {0, 0}, pBtnCredits);
             SetCurrentMenuID(MENU_CREDITS);
             break;
         case UIMSG_ExitToWindows:
-            new OnButtonClick2(495, 337, 0, 0, pBtnExit);
+            new OnButtonClick2({495, 337}, {0, 0}, pBtnExit);
             SetCurrentMenuID(MENU_EXIT_GAME);
             break;
         case UIMSG_ChangeGameState:

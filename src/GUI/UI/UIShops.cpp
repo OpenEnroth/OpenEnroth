@@ -1548,7 +1548,7 @@ void sub_4B1523_showSpellbookInfo(ITEM_TYPE spellItemId) {
     a1.uFrameW = a1.uFrameHeight + a1.uFrameY - 1;
     v8 = colorTable.PaleCanary.C16();
     a1.DrawTitleText(pFontArrus, 0x78u, 0xCu, v8, v7, 3u);
-    a1.DrawText(pFontSmallnum, 120, 44, 0, str, 0, 0, 0);
+    a1.DrawText(pFontSmallnum, {120, 44}, colorTable.Black.C16(), str, 0, 0, 0);
     a1.uFrameZ = a1.uFrameX + 107;
     a1.uFrameWidth = 108;
     a1.DrawTitleText(pFontComic, 0xCu, 0x4Bu, 0,

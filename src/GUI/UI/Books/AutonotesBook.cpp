@@ -27,7 +27,7 @@ GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() : GUIWindow_Book() {
     // 004304E7 Game_EventLoop --- part
     pEventTimer->Pause();
     pAudioPlayer->PauseSounds(-1);
-    pChildBooksOverlay = new GUIWindow_BooksButtonOverlay(527, 353, 0, 0, pBtn_Autonotes);
+    pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({527, 353}, {0, 0}, pBtn_Autonotes);
     bFlashAutonotesBook = 0;
 
     // ----------------------------------------------
@@ -52,44 +52,22 @@ GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() : GUIWindow_Book() {
     ui_book_button7_off = assets->GetImage_Alpha("tab-an-4a");
     ui_book_button8_off = assets->GetImage_Alpha("tab-an-8a");
 
-    pBtn_Book_1 = CreateButton(
-        pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1, 50, 34, 1,
-        0, UIMSG_ClickBooksBtn, 11, PlatformKey::None, localization->GetString(LSTR_SCROLL_DOWN),
-        {ui_book_button1_on});
-    pBtn_Book_2 = CreateButton(
-        pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 10, PlatformKey::None, localization->GetString(LSTR_SCROLL_UP),
-        {ui_book_button2_on});
-    pBtn_Book_3 = CreateButton(
-        pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 113, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 2, PlatformKey::None,
-        localization->GetString(LSTR_POTION_NOTES),
-        {ui_book_button3_on});
-    pBtn_Book_4 = CreateButton(
-        pViewport->uViewportTL_X + 399, pViewport->uViewportTL_Y + 150, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 3, PlatformKey::None,
-        localization->GetString(LSTR_FOUNTAIN_NOTES),
-        {ui_book_button4_on});
-    pBtn_Book_5 = CreateButton(
-        pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 188, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 4, PlatformKey::None,
-        localization->GetString(LSTR_OBELISK_NOTES),
-        {ui_book_button5_on});
-    pBtn_Book_6 = CreateButton(
-        pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 226, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 5, PlatformKey::None,
-        localization->GetString(LSTR_SEER_NOTES),
-        {ui_book_button6_on});
-    pBtn_Autonotes_Misc = CreateButton(
-        pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 264, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 6, PlatformKey::None,
-        localization->GetString(LSTR_MISC_NOTES),
-        {ui_book_button7_on});
-    pBtn_Autonotes_Instructors = CreateButton(
-        pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 302, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 7, PlatformKey::None,
-        localization->GetString(LSTR_INSTRUCTORS),
-        {ui_book_button8_on});
+    pBtn_Book_1 = CreateButton({pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1}, {50, 34}, 1, 0,
+        UIMSG_ClickBooksBtn, 11, InputAction::Invalid, localization->GetString(LSTR_SCROLL_DOWN), {ui_book_button1_on});
+    pBtn_Book_2 = CreateButton({pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38}, {50, 34}, 1, 0,
+        UIMSG_ClickBooksBtn, 10, InputAction::Invalid, localization->GetString(LSTR_SCROLL_UP), {ui_book_button2_on});
+    pBtn_Book_3 = CreateButton({pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 113}, {50, 34}, 1, 0,
+        UIMSG_ClickBooksBtn, 2, InputAction::Invalid, localization->GetString(LSTR_POTION_NOTES), {ui_book_button3_on});
+    pBtn_Book_4 = CreateButton({pViewport->uViewportTL_X + 399, pViewport->uViewportTL_Y + 150}, {50, 34}, 1, 0,
+        UIMSG_ClickBooksBtn, 3, InputAction::Invalid, localization->GetString(LSTR_FOUNTAIN_NOTES), {ui_book_button4_on});
+    pBtn_Book_5 = CreateButton({pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 188}, {50, 34}, 1, 0,
+        UIMSG_ClickBooksBtn, 4, InputAction::Invalid, localization->GetString(LSTR_OBELISK_NOTES), {ui_book_button5_on});
+    pBtn_Book_6 = CreateButton({pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 226}, {50, 34}, 1, 0,
+        UIMSG_ClickBooksBtn, 5, InputAction::Invalid, localization->GetString(LSTR_SEER_NOTES), {ui_book_button6_on});
+    pBtn_Autonotes_Misc = CreateButton({pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 264}, {50, 34}, 1, 0,
+        UIMSG_ClickBooksBtn, 6, InputAction::Invalid, localization->GetString(LSTR_MISC_NOTES), {ui_book_button7_on});
+    pBtn_Autonotes_Instructors = CreateButton({pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 302}, {50, 34}, 1, 0,
+        UIMSG_ClickBooksBtn, 7, InputAction::Invalid, localization->GetString(LSTR_INSTRUCTORS), {ui_book_button8_on});
 
     int num_achieved_awards = 0;
     for (uint i = books_primary_item_per_page; i < 196; ++i) {
@@ -365,12 +343,9 @@ void GUIWindow_AutonotesBook::Update() {
     Autonotes_Misc_page_flag = 0;
     Autonotes_Instructors_page_flag = 0;
     num_achieved_awards = 0;
-    for (uint i = books_primary_item_per_page; i < full_num_items_in_book;
-         ++i) {
+    for (uint i = books_primary_item_per_page; i < full_num_items_in_book; ++i) {
         ++num_achieved_awards;
-        autonotes_window.DrawText(
-            pAutonoteFont, 1, 0, ui_book_autonotes_text_color,
-            pAutonoteTxt[achieved_awards[i]].pText, 0, 0, 0);
+        autonotes_window.DrawText(pAutonoteFont, {1, 0}, ui_book_autonotes_text_color, pAutonoteTxt[achieved_awards[i]].pText, 0, 0, 0);
         pTextHeight = pAutonoteFont->CalcTextHeight(
             pAutonoteTxt[achieved_awards[i]].pText,
             autonotes_window.uFrameWidth, 1);
@@ -378,12 +353,7 @@ void GUIWindow_AutonotesBook::Update() {
             (signed int)autonotes_window.uFrameHeight)
             break;
 
-        render->DrawTextureAlphaNew(
-            100 / 640.0f,
-            ((autonotes_window.uFrameY + pTextHeight) + 12) / 480.0f,
-            ui_book_quest_div_bar);
-
-        autonotes_window.uFrameY =
-            (autonotes_window.uFrameY + pTextHeight) + 24;
+        render->DrawTextureAlphaNew(100 / 640.0f, ((autonotes_window.uFrameY + pTextHeight) + 12) / 480.0f, ui_book_quest_div_bar);
+        autonotes_window.uFrameY = (autonotes_window.uFrameY + pTextHeight) + 24;
     }
 }

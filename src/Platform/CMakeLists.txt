@@ -9,7 +9,8 @@ set(PLATFORM_SOURCES PlatformKey.cpp
                      Sdl/SdlPlatform.cpp
                      Sdl/SdlPlatformSharedState.cpp
                      Sdl/SdlWindow.cpp
-)
+                     Sdl/SdlLogger.cpp
+                     Sdl/SdlGamepad.cpp)
 
 set(PLATFORM_HEADERS Platform.h
                      PlatformKey.h
@@ -20,6 +21,7 @@ set(PLATFORM_HEADERS Platform.h
                      PlatformEvents.h
                      PlatformLogger.h
                      PlatformWindow.h
+                     PlatformGamepad.h
                      PlatformOpenGLContext.h
                      PlatformOpenGLOptions.h
                      Sdl/SdlEnumTranslation.h
@@ -29,9 +31,9 @@ set(PLATFORM_HEADERS Platform.h
                      Sdl/SdlPlatformSharedState.h
                      Sdl/SdlWindow.h
                      Sdl/SdlLogger.h
-                     Sdl/SdlLogger.cpp)
+                     Sdl/SdlGamepad.h)
 
-if(WIN32)
+if(BUILD_PLATFORM STREQUAL "windows")
   list(APPEND PLATFORM_SOURCES Win/WinPlatform.cpp)
   list(APPEND PLATFORM_HEADERS Win/WinPlatform.h)
 else()

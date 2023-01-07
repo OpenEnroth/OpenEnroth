@@ -34,12 +34,22 @@ std::filesystem::path MakeCaseInsensitivePath(std::filesystem::path path) {
     }
 
     for (const std::filesystem::path &part : path) {
+#ifdef __ANDROID__
+        // TODO: android have troubles with std::u8string, so use std::string for now instead
+        std::string foundPart;
+#else
         std::u8string foundPart;
+#endif
         std::error_code error;
         for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(result, error)) {
+#ifdef __ANDROID__
+            // TODO: android have troubles with std::u8string, so use std::string for now instead
+            std::string entryName = entry.path().filename();
+            if (iequals(entryName, part.string())) {
+#else
             std::u8string entryName = entry.path().filename().u8string();
-
             if (iequalsAscii(entryName, part.u8string())) {
+#endif
                 foundPart = entryName;
                 break;
             }

@@ -1,5 +1,3 @@
-#version 410 core
-
 layout (location = 0) in vec3 vaPos;
 layout (location = 1) in vec2 vaTexUV;
 layout (location = 2) in vec2 vaTexLayer;
@@ -20,16 +18,15 @@ uniform mat4 projection;
 
 
 void main() {
-	gl_Position = projection * view * vec4(vaPos, 1.0);
+    gl_Position = projection * view * vec4(vaPos, 1.0);
 
-	//unused
-	vertexColour = vec4(0.0005 * vaPos.y, 0.30, 0.30, 1.0);
+    //unused
+    vertexColour = vec4(0.0005 * vaPos.y, 0.30, 0.30, 1.0);
 
-	texuv = vaTexUV;
-	olayer = vaTexLayer;
-	vsPos = vaPos;
-	vsNorm = vaNormal;
-	vsAttrib = int(vaAttrib);
-	vsSector = int(vaSector);
-
-} 
+    texuv = vaTexUV;
+    olayer = vaTexLayer;
+    vsPos = vaPos;
+    vsNorm = vaNormal;
+    vsAttrib = int(vaAttrib);
+    vsSector = int(vaSector);
+}

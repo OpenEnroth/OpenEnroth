@@ -5,6 +5,9 @@
 GameKeyboardController::GameKeyboardController() {}
 
 bool GameKeyboardController::ConsumeKeyPress(PlatformKey key) {
+    if (key == PlatformKey::None)
+        return false;
+
     if (!isKeyDown_[key])
         return false;
 

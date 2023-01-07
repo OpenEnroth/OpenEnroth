@@ -57,7 +57,7 @@ uint32_t *MakeImageAlpha(unsigned int width, unsigned int height,
             auto g = palette[(index * 3) + 1];
             auto b = palette[(index * 3) + 2];
             if (index == 0) {
-                res[y * width + x] = 0x00000000;
+                res[y * width + x] = Color32(0, 0, 0, 0);
             } else {
                 res[y * width + x] = Color32(r, g, b);
             }
@@ -79,7 +79,7 @@ uint32_t *MakeImageColorKey(unsigned int width, unsigned int height,
             auto g = palette[(index * 3) + 1];
             auto b = palette[(index * 3) + 2];
             if (Color16(r, g, b) == color_key) {
-                res[y * width + x] = 0x00000000;
+                res[y * width + x] = Color32(0, 0, 0, 0);
             } else {
                 res[y * width + x] = Color32(r, g, b);
             }
@@ -162,7 +162,7 @@ bool ColorKey_LOD_Loader::Load(unsigned int *out_width,
 
     *out_width = tex->header.uTextureWidth;
     *out_height = tex->header.uTextureHeight;
-    *out_format = IMAGE_FORMAT_A8R8G8B8;
+    *out_format = IMAGE_FORMAT_A8B8G8R8;
     *out_palette = tex->pPalette24;
 
     return true;
@@ -199,7 +199,7 @@ bool Image16bit_LOD_Loader::Load(unsigned int *out_width,
 
     *out_width = tex->header.uTextureWidth;
     *out_height = tex->header.uTextureHeight;
-    *out_format = IMAGE_FORMAT_A8R8G8B8;
+    *out_format = IMAGE_FORMAT_A8B8G8R8;
     *out_palette = tex->pPalette24;
 
     return true;
@@ -235,7 +235,7 @@ bool Alpha_LOD_Loader::Load(unsigned int *out_width, unsigned int *out_height,
 
     *out_width = tex->header.uTextureWidth;
     *out_height = tex->header.uTextureHeight;
-    *out_format = IMAGE_FORMAT_A8R8G8B8;
+    *out_format = IMAGE_FORMAT_A8B8G8R8;
     *out_palette = tex->pPalette24;
 
     return true;
@@ -244,7 +244,7 @@ bool Alpha_LOD_Loader::Load(unsigned int *out_width, unsigned int *out_height,
 bool PCX_Loader::InternalLoad(void *file, size_t filesize,
                                    unsigned int *width, unsigned int *height,
                                    void **pixels, IMAGE_FORMAT *format) {
-    IMAGE_FORMAT request_format = IMAGE_FORMAT_A8R8G8B8;
+    IMAGE_FORMAT request_format = IMAGE_FORMAT_A8B8G8R8;
     if (engine->config->graphics.Renderer.Get() == "DirectDraw")
         request_format = IMAGE_FORMAT_R5G6B5;
 
@@ -263,7 +263,7 @@ bool PCX_File_Loader::Load(unsigned int *width, unsigned int *height,
     *format = IMAGE_INVALID_FORMAT;
     *out_palette = nullptr;
 
-    FILE *file = fopen(this->resource_name.c_str(), "rb");
+    FILE *file = fopen(MakeDataPath(this->resource_name).c_str(), "rb");
     if (!file) {
         log->Warning("Unable to load %s", this->resource_name.c_str());
         return false;
@@ -321,7 +321,7 @@ bool PCX_LOD_Compressed_Loader::Load(unsigned int *width, unsigned int *height,
 }
 
 static void ProcessTransparentPixel(uint8_t* pixels, uint8_t* palette,
-                                    size_t x, size_t y, size_t w, size_t h, uint8_t* bgra) {
+                                    size_t x, size_t y, size_t w, size_t h, uint8_t* rgba) {
     size_t count = 0;
     size_t r = 0, g = 0, b = 0;
 
@@ -329,9 +329,9 @@ static void ProcessTransparentPixel(uint8_t* pixels, uint8_t* palette,
         int pal = pixels[y * w + x];
         if (pal != 0) {
             count++;
-            r += palette[3 * pal + 0];
-            g += palette[3 * pal + 1];
             b += palette[3 * pal + 2];
+            g += palette[3 * pal + 1];
+            r += palette[3 * pal + 0];
         }
     };
 
@@ -363,10 +363,10 @@ static void ProcessTransparentPixel(uint8_t* pixels, uint8_t* palette,
         b /= count;
     }
 
-    bgra[0] = static_cast<uint8_t>(b);
-    bgra[1] = static_cast<uint8_t>(g);
-    bgra[2] = static_cast<uint8_t>(r);
-    bgra[3] = 0;
+    rgba[0] = static_cast<uint8_t>(r);
+    rgba[1] = static_cast<uint8_t>(g);
+    rgba[2] = static_cast<uint8_t>(b);
+    rgba[3] = 0;
 }
 
 bool Bitmaps_LOD_Loader::Load(unsigned int *width, unsigned int *height,
@@ -392,15 +392,15 @@ bool Bitmaps_LOD_Loader::Load(unsigned int *width, unsigned int *height,
                 if (haveTransparency && pal == 0) {
                     ProcessTransparentPixel(tex->paletted_pixels, tex->pPalette24, x, y, w, h, &pixels[p * 4]);
                 } else {
-                    pixels[p * 4 + 0] = tex->pPalette24[3 * pal + 2];
+                    pixels[p * 4 + 0] = tex->pPalette24[3 * pal + 0];
                     pixels[p * 4 + 1] = tex->pPalette24[3 * pal + 1];
-                    pixels[p * 4 + 2] = tex->pPalette24[3 * pal + 0];
+                    pixels[p * 4 + 2] = tex->pPalette24[3 * pal + 2];
                     pixels[p * 4 + 3] = 255;
                 }
             }
         }
 
-        *format = IMAGE_FORMAT_A8R8G8B8;
+        *format = IMAGE_FORMAT_A8B8G8R8;
         *width = tex->header.uTextureWidth;
         *height = tex->header.uTextureHeight;
         *out_pixels = pixels;
@@ -470,14 +470,14 @@ bool Sprites_LOD_Loader::Load(unsigned int *width, unsigned int *height,
                     a = 255;
                 }
 
-                pixels[p * 4] = b;
+                pixels[p * 4] = r;
                 pixels[p * 4 + 1] = g;
-                pixels[p * 4 + 2] = r;
+                pixels[p * 4 + 2] = b;
                 pixels[p * 4 + 3] = a;
             }
         }
 
-        *format = IMAGE_FORMAT_A8R8G8B8;
+        *format = IMAGE_FORMAT_A8B8G8R8;
         *width = w;
         *height = h;
         *out_pixels = pixels;

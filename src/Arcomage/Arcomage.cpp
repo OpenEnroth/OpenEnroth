@@ -530,7 +530,7 @@ bool ArcomageGame::LoadSprites() {
     pArcomageGame->pSpritesPixels = (uint16_t *)pArcomageGame->pSprites->GetPixels(IMAGE_FORMAT_R5G6B5);
 
     // mask out blue
-    uint32_t *pix = (uint32_t *)pArcomageGame->pSprites->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+    uint32_t *pix = (uint32_t *)pArcomageGame->pSprites->GetPixels(IMAGE_FORMAT_A8B8G8R8);
     int width = pArcomageGame->pSprites->GetWidth();
     uint32_t mask = colorTable.Blue.C32();
     for (int x = 0; x < width; ++x) {
@@ -1765,7 +1765,7 @@ void DrawCards() {
     // draw player hand
     int card_count = GetPlayerHandCardCount(current_player_num);
     pTargetXY.y = 327;
-    int card_spacing = (window->GetWidth() - 96 * card_count) / (card_count + 1);
+    int card_spacing = (render->GetRenderDimensions().w - 96 * card_count) / (card_count + 1);
     pTargetXY.x = card_spacing;
 
     for (int card_slot = 0; card_slot < card_count; ++card_slot) {
@@ -1879,7 +1879,7 @@ void DrawCardAnimation(int animation_stage) {
             anim_card_pos_drawncard.y = 18;
             anim_card_pos_drawncard.x = 120;
             int card_count = GetPlayerHandCardCount(current_player_num);
-            int card_spacing = (window->GetWidth() - (96 * card_count)) / (card_count + 1);
+            int card_spacing = (render->GetRenderDimensions().w - (96 * card_count)) / (card_count + 1);
 
             int targetx = drawn_card_slot_index * (card_spacing + 96) + card_spacing;
             int targety = 327;
@@ -2066,7 +2066,7 @@ signed int DrawCardsRectangles(int player_num) {
         if (get_mouse.Update()) {
             // calc spacings and first card position
             int card_count = GetPlayerHandCardCount(player_num);
-            int card_spacing = (window->GetWidth() - 96 * card_count) / (card_count + 1);
+            int card_spacing = (render->GetRenderDimensions().w - 96 * card_count) / (card_count + 1);
             pRect.y = 327;
             pRect.h = 455 - pRect.y;
             pRect.x = card_spacing;
@@ -2122,7 +2122,7 @@ bool DiscardCard(int player_num, int card_slot_index) {
     if (pCards[am_Players[player_num].cards_at_hand[card_slot_index]].can_be_discarded) {
         // calc animation position and move speed
         int card_count = GetPlayerHandCardCount(current_player_num);
-        int card_spacing = (window->GetWidth() - (96 * card_count)) / (card_count + 1);
+        int card_spacing = (render->GetRenderDimensions().w - (96 * card_count)) / (card_count + 1);
 
         anim_card_pos_playdiscard.x = am_Players[player_num].card_shift[card_slot_index].x + (card_slot_index * (card_spacing + 96) + card_spacing);
         anim_card_pos_playdiscard.y = am_Players[player_num].card_shift[card_slot_index].y + 327;
@@ -2160,7 +2160,7 @@ bool PlayCard(int player_num, int card_slot_num) {
     if (CanCardBePlayed(player_num, card_slot_num)) {
         // calc animation position and move speed
         int cards_at_hand = GetPlayerHandCardCount(current_player_num);
-        int card_spacing = (window->GetWidth() - (96 * cards_at_hand)) / (cards_at_hand + 1);
+        int card_spacing = (render->GetRenderDimensions().w - (96 * cards_at_hand)) / (cards_at_hand + 1);
 
         anim_card_pos_playdiscard.x = am_Players[player_num].card_shift[card_slot_num].x + (card_slot_num * (card_spacing + 96) + card_spacing);
         anim_card_pos_playdiscard.y = am_Players[player_num].card_shift[card_slot_num].y + 327;
@@ -3008,9 +3008,7 @@ void SetStartConditions() {
 }
 
 void am_DrawText(const std::string &str, Pointi *pXY) {
-    pPrimaryWindow->DrawText(pFontComic, pXY->x,
-                             pXY->y - ((pFontComic->GetHeight() - 3) / 2) + 3,
-                             0, str, false, 0, 0);
+    pPrimaryWindow->DrawText(pFontComic, {pXY->x, pXY->y - ((pFontComic->GetHeight() - 3) / 2) + 3}, 0, str, false, 0, 0);
 }
 
 void DrawRect(Recti *pRect, uint16_t uColor, char bSolidFill) {

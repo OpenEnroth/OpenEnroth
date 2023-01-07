@@ -16,24 +16,30 @@ function(enable_check_style)
   endif()
 endfunction()
 
-function(target_check_style TARGET)
+function(source_check_style TARGET TARGET_SOURCES)
   if(CPPLINT_FOUND)
-    get_target_property(TARGET_SOURCES ${TARGET} SOURCES)
-
     set(TARGET_NAME "check_style_${TARGET}")
 
     set(SOURCES_LIST)
-    foreach(sourcefile ${TARGET_SOURCES})
-        if(sourcefile MATCHES \\.c$|\\.cxx$|\\.cpp$|\\.cc$|\\.h$|\\.hh$)
-            list(APPEND SOURCES_LIST ${sourcefile})
+    foreach(SOURCE_FILE ${TARGET_SOURCES})
+        if(SOURCE_FILE MATCHES \\.c$|\\.cxx$|\\.cpp$|\\.cc$|\\.h$|\\.hh$)
+            list(APPEND SOURCES_LIST ${SOURCE_FILE})
         endif()
-    endforeach(sourcefile)
+    endforeach(SOURCE_FILE)
 
     add_custom_target(${TARGET_NAME} ${PYTHON_EXECUTABLE} ${CPPLINT_COMMAND} "--quiet" ${SOURCES_LIST}
                       DEPENDS ${SOURCES_LIST}
                       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
     add_dependencies(check_style ${TARGET_NAME})
     set_property(TARGET ${TARGET_NAME} PROPERTY FOLDER "check_style")
+  endif()
+endfunction()
+
+function(target_check_style TARGET)
+  if(CPPLINT_FOUND)
+    get_target_property(TARGET_SOURCES ${TARGET} SOURCES)
+
+    source_check_style(${TARGET} "${TARGET_SOURCES}")
   endif()
 endfunction()
 

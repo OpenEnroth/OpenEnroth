@@ -2,7 +2,7 @@
 
 #include "Engine/IocContainer.h"
 #include "Engine/Graphics/OpenGL/RenderOpenGL.h"
-#ifdef _WINDOWS
+#ifdef DDRAW_ENABLED
 #include "Engine/Graphics/Direct3D/Render.h"
 #endif
 
@@ -14,8 +14,10 @@ std::shared_ptr<IRender> IRenderFactory::Create(std::shared_ptr<Application::Gam
     RendererType rendererType = RendererType::OpenGL;
     std::shared_ptr<IRender> renderer = nullptr;
 
+    if (config->graphics.Renderer.Get() == "OpenGLES")
+        rendererType = RendererType::OpenGLES;
 #ifdef DDRAW_ENABLED
-    if (config->graphics.Renderer.Get() == "DirectDraw")
+    else if (config->graphics.Renderer.Get() == "DirectDraw")
         rendererType = RendererType::DirectDraw;
 #endif
 
@@ -48,6 +50,20 @@ std::shared_ptr<IRender> IRenderFactory::Create(std::shared_ptr<Application::Gam
                 EngineIoc::ResolveLogger()
             );
             config->graphics.Renderer.Set("OpenGL");
+            break;
+
+        case RendererType::OpenGLES:
+            logger->Info("Initializing OpenGL ES renderer...");
+            renderer = std::make_shared<RenderOpenGL>(
+                config,
+                EngineIoc::ResolveDecalBuilder(),
+                EngineIoc::ResolveLightmapBuilder(),
+                EngineIoc::ResolveSpellFxRenderer(),
+                EngineIoc::ResolveParticleEngine(),
+                EngineIoc::ResolveVis(),
+                EngineIoc::ResolveLogger()
+            );
+            config->graphics.Renderer.Set("OpenGLES");
             break;
 
         default:

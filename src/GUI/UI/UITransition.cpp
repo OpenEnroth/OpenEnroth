@@ -68,7 +68,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
                                            int x, int y, int z, int directiony,
                                            int directionx, int a8,
                                            const char *pLocationName)
-    : GUIWindow(WINDOW_Transition, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
+    : GUIWindow(WINDOW_Transition, {0, 0}, render->GetRenderDimensions(), 0) {
     Party_Teleport_X_Pos = x;
     Party_Teleport_Y_Pos = y;
     Party_Teleport_Z_Pos = z;
@@ -150,22 +150,15 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
 
     prev_screen_type = current_screen_type;
     current_screen_type = CURRENT_SCREEN::SCREEN_INPUT_BLV;
-    pBtn_ExitCancel = CreateButton(
-        0x236u, 0x1BDu, 0x4Bu, 0x21u, 1, 0, UIMSG_TransitionWindowCloseBtn, 0,
-        PlatformKey::N, localization->GetString(LSTR_CANCEL), {ui_buttdesc2}
-    );
-    pBtn_YES = CreateButton(
-        0x1E6u, 0x1BDu, 0x4Bu, 0x21u, 1, 0,
-        UIMSG_TransitionUI_Confirm, 0, PlatformKey::Y, hint, {ui_buttyes2});
-    CreateButton(
-        pNPCPortraits_x[0][0], pNPCPortraits_y[0][0], 0x3Fu, 0x49u, 1,
-        0, UIMSG_TransitionUI_Confirm, 1, PlatformKey::Space, hint);
-    CreateButton(
-        8, 8, 0x1CCu, 0x158u, 1, 0, UIMSG_TransitionUI_Confirm, 1u, PlatformKey::None, hint);
+    pBtn_ExitCancel = CreateButton({0x236u, 0x1BDu}, {0x4Bu, 0x21u}, 1, 0,
+        UIMSG_TransitionWindowCloseBtn, 0, InputAction::No, localization->GetString(LSTR_CANCEL), {ui_buttdesc2});
+    pBtn_YES = CreateButton({0x1E6u, 0x1BDu}, {0x4Bu, 0x21u}, 1, 0, UIMSG_TransitionUI_Confirm, 0, InputAction::Yes, hint, {ui_buttyes2});
+    CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {0x3Fu, 0x49u}, 1, 0, UIMSG_TransitionUI_Confirm, 1, InputAction::EventTrigger, hint);
+    CreateButton({8, 8}, {0x1CCu, 0x158u}, 1, 0, UIMSG_TransitionUI_Confirm, 1u, InputAction::Invalid, hint);
 }
 
 GUIWindow_Travel::GUIWindow_Travel()
-    : GUIWindow(WINDOW_ChangeLocation, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
+    : GUIWindow(WINDOW_ChangeLocation, {0, 0}, render->GetRenderDimensions(), 0) {
     std::string pContainer;  // [sp+0h] [bp-28h]@1
 
     pEventTimer->Pause();
@@ -197,26 +190,21 @@ GUIWindow_Travel::GUIWindow_Travel()
 
     prev_screen_type = current_screen_type;
     current_screen_type = CURRENT_SCREEN::SCREEN_CHANGE_LOCATION;
-    pBtn_ExitCancel = CreateButton(
-        566, 445, 75, 33, 1, 0, UIMSG_CHANGE_LOCATION_ClickCancelBtn, 0, PlatformKey::N,
+    pBtn_ExitCancel = CreateButton({566, 445}, {75, 33}, 1, 0, UIMSG_CHANGE_LOCATION_ClickCancelBtn, 0, InputAction::No,
         localization->GetString(LSTR_STAY_IN_THIS_AREA), {ui_buttdesc2}
     );
-    pBtn_YES = CreateButton(486, 445, 75, 33, 1, 0, UIMSG_OnTravelByFoot, 0,
-                            PlatformKey::Y, hint, {ui_buttyes2});
-    CreateButton(pNPCPortraits_x[0][0], pNPCPortraits_y[0][0], 63, 73, 1, 0,
-                 UIMSG_OnTravelByFoot, 1, PlatformKey::Space, hint);
-    CreateButton(8, 8, 460, 344, 1, 0, UIMSG_OnTravelByFoot, 1, PlatformKey::None, hint);
+    pBtn_YES = CreateButton({486, 445}, {75, 33}, 1, 0, UIMSG_OnTravelByFoot, 0, InputAction::Yes, hint, {ui_buttyes2});
+    CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {63, 73}, 1, 0, UIMSG_OnTravelByFoot, 1, InputAction::EventTrigger, hint);
+    CreateButton({8, 8}, {460, 344}, 1, 0, UIMSG_OnTravelByFoot, 1, InputAction::Invalid, hint);
 }
 
 void GUIWindow_Travel::Update() {
     char pDestinationMapName[32];
 
-    pOutdoor->GetTravelDestination(pParty->vPosition.x, pParty->vPosition.y,
-                                   pDestinationMapName, 20);
+    pOutdoor->GetTravelDestination(pParty->vPosition.x, pParty->vPosition.y, pDestinationMapName, 20);
     render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
     render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
-    render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f,
-                           pNPCPortraits_y[0][0] / 480.0f, transition_ui_icon);
+    render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, transition_ui_icon);
     render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
     render->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
     if (pMapStats->GetMapInfo(pDestinationMapName)) {

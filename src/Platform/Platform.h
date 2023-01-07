@@ -16,6 +16,13 @@ class PlatformWindow;
 class PlatformEventLoop;
 class PlatformEventHandler;
 class PlatformLogger;
+class PlatformGamepad;
+
+enum class PLATFORM_STORAGE {
+    ANDROID_STORAGE_INTERNAL,
+    ANDROID_STORAGE_EXTERNAL
+};
+using enum PLATFORM_STORAGE;
 
 /**
  * Platform abstraction layer.
@@ -89,6 +96,14 @@ class Platform {
     virtual std::unique_ptr<PlatformEventLoop> CreateEventLoop() = 0;
 
     /**
+     * Creates a new gamepad.
+     *
+     * @param id                        Gamepad identifier from event.
+     * @return                          Newly created gamepad, or `nullptr` on error.
+     */
+    virtual std::unique_ptr<PlatformGamepad> CreateGamepad(uint32_t id) = 0;
+
+    /**
      * Shows / hides system cursor (on top of all windows created by this platform).
      *
      * @param cursorShown               Whether to show the system cursor.
@@ -130,4 +145,11 @@ class Platform {
      * @return                          Value at the given path, or an empty string in case of an error.
      */
     virtual std::string WinQueryRegistry(const std::string &path) const = 0;
+
+    /**
+     * Get various application filesystem paths
+     *
+     * @param type                      Storage type
+     */
+    virtual std::string StoragePath(const PLATFORM_STORAGE type) const = 0;
 };

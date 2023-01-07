@@ -3,6 +3,8 @@
 #include <vector>
 #include <string>
 
+#include "Utility/Geometry/Point.h"
+
 #pragma pack(push, 1)
 struct GUICharMetric {
     int32_t uLeftSpacing;
@@ -40,23 +42,21 @@ class GUIFont {
     static GUIFont *LoadFont(const char *pFontFile, const char *pFontPalette);
 
     bool IsCharValid(unsigned char c) const;
-    unsigned int GetHeight() const;
+    int GetHeight() const;
 
-    unsigned int AlignText_Center(unsigned int width, const std::string &str);
+    int AlignText_Center(int width, const std::string &str);
 
-    unsigned int GetLineWidth(const std::string &str);
+    int GetLineWidth(const std::string &str);
 
-    unsigned int CalcTextHeight(const std::string &str, unsigned int width,
-                                int x_offset, bool return_on_carriage = false);
+    int CalcTextHeight(const std::string &str, int width, int x_offset, bool return_on_carriage = false);
 
     std::string GetPageTop(const std::string &pInString, GUIWindow *pWindow,
                       unsigned int uX, int a5);
-    void DrawTextLine(const std::string &text, uint16_t uDefaultColor, int uX,
-                      int uY, int max_len_pix);
-    void DrawText(GUIWindow *pWindow, int uX, int uY, uint16_t uFontColor,
+    void DrawTextLine(const std::string &text, uint16_t uDefaultColor, Pointi position, int max_len_pix);
+    void DrawText(GUIWindow *pWindow, Pointi position, uint16_t uFontColor,
                   const std::string &str, bool present_time_transparency,
                   int max_text_height, int uFontShadowColor);
-    int DrawTextInRect(GUIWindow *pWindow, unsigned int uX, unsigned int uY,
+    int DrawTextInRect(GUIWindow *pWindow, Pointi position,
                        uint16_t uColor, const std::string &str, int rect_width,
                        int reverse_text);
 

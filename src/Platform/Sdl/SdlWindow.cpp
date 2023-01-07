@@ -73,6 +73,18 @@ bool SdlWindow::IsVisible() const {
     return false;
 }
 
+void SdlWindow::SetResizable(bool resizable) {
+    SDL_SetWindowResizable(window_, resizable ? SDL_TRUE : SDL_FALSE);
+}
+
+bool SdlWindow::Resizable() const {
+    uint32_t flags = SDL_GetWindowFlags(window_);
+    if (flags & SDL_WINDOW_RESIZABLE)
+        return true;
+
+    return false;
+}
+
 void SdlWindow::SetWindowMode(PlatformWindowMode mode) {
     uint32_t flags = 0;
 
@@ -101,6 +113,36 @@ PlatformWindowMode SdlWindow::WindowMode() {
         return WINDOWED_BORDERLESS;
 
     return WINDOWED;
+}
+
+void SdlWindow::SetOrientations(PlatformWindowOrientations orientations) {
+    std::string hints{};
+
+    if (orientations & LANDSCAPE_LEFT)
+        hints += "LandscapeLeft ";
+    if (orientations & LANDSCAPE_RIGHT)
+        hints += "LandscapeRight ";
+    if (orientations & PORTRAIT_UP)
+        hints += "Portrait ";
+    if (orientations & PORTRAIT_DOWN)
+        hints += "PortraitUpsideDown ";
+
+    SDL_SetHintWithPriority(SDL_HINT_ORIENTATIONS, hints.c_str(), SDL_HINT_OVERRIDE);
+}
+
+PlatformWindowOrientations SdlWindow::Orientations() {
+    PlatformWindowOrientations orientations;
+
+    if (SDL_GetHint("LandscapeLeft"))
+        orientations |= LANDSCAPE_LEFT;
+    if (SDL_GetHint("LandscapeRight"))
+        orientations |= LANDSCAPE_RIGHT;
+    if (SDL_GetHint("Portrait"))
+        orientations |= PORTRAIT_UP;
+    if (SDL_GetHint("PortraitUpsideDown"))
+        orientations |= PORTRAIT_DOWN;
+
+    return orientations;
 }
 
 void SdlWindow::SetGrabsMouse(bool grabsMouse) {
@@ -133,6 +175,8 @@ uintptr_t SdlWindow::SystemHandle() const {
     return reinterpret_cast<uintptr_t>(info.info.win.window);
 #elif __APPLE__
     return reinterpret_cast<uintptr_t>(info.info.cocoa.window);
+#elif ANDROID
+    return reinterpret_cast<uintptr_t>(info.info.android.window);
 #else
     return static_cast<uintptr_t>(info.info.x11.window);
 #endif

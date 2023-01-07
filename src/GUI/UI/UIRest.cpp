@@ -59,7 +59,7 @@ void PrepareToLoadRestUI() {
     }
     pEventTimer->Pause();
     if (_506F14_resting_stage != 2)
-        new OnButtonClick2(518, 450, 0, 0, pBtn_Rest);
+        new OnButtonClick2({518, 450}, {0, 0}, pBtn_Rest);
     _506F18_num_minutes_to_sleep = 0;
     _506F14_resting_stage = 0;
     uRestUI_FoodRequiredToRest = 2;
@@ -83,7 +83,7 @@ void PrepareToLoadRestUI() {
 
 //----- (0041F6C1) --------------------------------------------------------
 GUIWindow_Rest::GUIWindow_Rest()
-    : GUIWindow(WINDOW_Rest, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
+    : GUIWindow(WINDOW_Rest, {0, 0}, render->GetRenderDimensions(), 0) {
     PrepareToLoadRestUI();
     current_screen_type = CURRENT_SCREEN::SCREEN_REST;
 
@@ -99,16 +99,11 @@ GUIWindow_Rest::GUIWindow_Rest()
 
     // auto wnd = new GUIWindow_Rest(0, 0, window->GetWidth(),
     // window->GetHeight());
-    pButton_RestUI_Exit = CreateButton(
-        280, 297, 154, 37, 1, 0, UIMSG_ExitRest, 0, PlatformKey::None, "", {rest_ui_btn_exit});
-    pButton_RestUI_Main = CreateButton(
-        24, 154, 225, 37, 1, 0, UIMSG_Rest8Hour, 0, PlatformKey::R, "", {rest_ui_btn_4});
-    pButton_RestUI_WaitUntilDawn = CreateButton(
-        61, 232, 154, 33, 1, 0, UIMSG_AlreadyResting, 0, PlatformKey::D, "", {rest_ui_btn_1});
-    pButton_RestUI_Wait1Hour = CreateButton(
-        61, 264, 154, 33, 1, 0, UIMSG_Wait1Hour, 0, PlatformKey::H, "", {rest_ui_btn_2});
-    pButton_RestUI_Wait5Minutes = CreateButton(
-        61, 296, 154, 33, 1, 0, UIMSG_Wait5Minutes, 0, PlatformKey::M, "", {rest_ui_btn_3});
+    pButton_RestUI_Exit = CreateButton({280, 297}, {154, 37}, 1, 0, UIMSG_ExitRest, 0, InputAction::Invalid, "", {rest_ui_btn_exit});
+    pButton_RestUI_Main = CreateButton({24, 154}, {225, 37}, 1, 0, UIMSG_Rest8Hour, 0, InputAction::Rest8Hours, "", {rest_ui_btn_4});
+    pButton_RestUI_WaitUntilDawn = CreateButton({61, 232}, {154, 33}, 1, 0, UIMSG_WaitTillDawn, 0, InputAction::WaitTillDawn, "", {rest_ui_btn_1});
+    pButton_RestUI_Wait1Hour = CreateButton({61, 264}, {154, 33}, 1, 0, UIMSG_Wait1Hour, 0, InputAction::WaitHour, "", {rest_ui_btn_2});
+    pButton_RestUI_Wait5Minutes = CreateButton({61, 296}, {154, 33}, 1, 0, UIMSG_Wait5Minutes, 0, InputAction::Wait5Minutes, "", {rest_ui_btn_3});
 }
 
 //----- (0041FA01) --------------------------------------------------------
@@ -168,7 +163,7 @@ void GUIWindow_Rest::Update() {
         tmp_button.pParent = 0;
 
         auto str1 = StringPrintf("\r408%d", uRestUI_FoodRequiredToRest);
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, 0, 164, colorTable.Diesel.C16(), str1, 0, 0, colorTable.StarkWhite.C16());
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, {0, 164}, colorTable.Diesel.C16(), str1, 0, 0, colorTable.StarkWhite.C16());
 
         pButton_RestUI_WaitUntilDawn->DrawLabel(localization->GetString(LSTR_WAIT_UNTIL_DAWN), pFontCreate, colorTable.Diesel.C16(), colorTable.StarkWhite.C16());
         pButton_RestUI_Wait1Hour->DrawLabel(localization->GetString(LSTR_WAIT_1_HOUR), pFontCreate, colorTable.Diesel.C16(), colorTable.StarkWhite.C16());
@@ -189,15 +184,15 @@ void GUIWindow_Rest::Update() {
            colorTable.Diesel.C16(), colorTable.StarkWhite.C16());
         tmp_button.pParent = 0;
         std::string str2 = StringPrintf("%d:%02d %s", am_pm_hours, pParty->uCurrentMinute, localization->GetAmPm((pParty->uCurrentHour >= 12 && pParty->uCurrentHour < 24) ? 1 : 0));
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, 368, 168, colorTable.Diesel.C16(), str2, 0, 0, colorTable.StarkWhite.C16());
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, {368, 168}, colorTable.Diesel.C16(), str2, 0, 0, colorTable.StarkWhite.C16());
         std::string str3 = StringPrintf("%s\r190%d", localization->GetString(LSTR_DAY_CAPITALIZED), pParty->uCurrentDayOfMonth + 1);
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 190, colorTable.Diesel.C16(), str3, 0, 0, colorTable.StarkWhite.C16());
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, {350, 190}, colorTable.Diesel.C16(), str3, 0, 0, colorTable.StarkWhite.C16());
         std::string str4 = StringPrintf("%s\r190%d", localization->GetString(LSTR_MONTH), pParty->uCurrentMonth + 1);
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 222, colorTable.Diesel.C16(), str4, 0, 0, colorTable.StarkWhite.C16());
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, {350, 222}, colorTable.Diesel.C16(), str4, 0, 0, colorTable.StarkWhite.C16());
         std::string str5 = StringPrintf("%s\r190%d", localization->GetString(LSTR_YEAR), pParty->uCurrentYear);
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 254, colorTable.Diesel.C16(), str5, 0, 0, colorTable.StarkWhite.C16());
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, {350, 254}, colorTable.Diesel.C16(), str5, 0, 0, colorTable.StarkWhite.C16());
         if (_506F14_resting_stage) Party::Sleep8Hours();
     } else {
-        new OnCancel(pButton_RestUI_Exit->uX, pButton_RestUI_Exit->uY, 0, 0, pButton_RestUI_Exit, localization->GetString(LSTR_EXIT_REST));
+        new OnCancel({pButton_RestUI_Exit->uX, pButton_RestUI_Exit->uY}, {0, 0}, pButton_RestUI_Exit, localization->GetString(LSTR_EXIT_REST));
     }
 }

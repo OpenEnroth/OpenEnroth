@@ -234,8 +234,8 @@ class SpellData {
 
 #pragma pack(push, 1)
 struct SpellBookIconPos {
-    unsigned int Xpos;
-    unsigned int Ypos;
+    int32_t Xpos;
+    int32_t Ypos;
 };
 
 #pragma pack(pop)

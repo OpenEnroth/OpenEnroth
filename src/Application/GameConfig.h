@@ -5,6 +5,14 @@
 
 #include "Library/Config/Config.h"
 
+#ifdef __ANDROID__
+#define ConfigRenderer "OpenGLES"
+#define ConfigWindowMode 2
+#else
+#define ConfigRenderer "OpenGL"
+#define ConfigWindowMode 0
+#endif
+
 class Logger;
 
 namespace Application {
@@ -134,7 +142,7 @@ namespace Application {
                                             "It's impossible to target monsters that are further away than this value. "
                                             "This is also the depth at which status bar tips are displayed on mouse over.");
 
-            Bool ShowUndentifiedItem = Bool(this, "show_unidentified_item", false,
+            Bool ShowUndentifiedItem = Bool(this, "show_unidentified_item", true,
                                             "Show unidentified items with a green tint in inventory. "
                                             "If not set, vanilla behavior will be used with green tint applied in shops only.");
 
@@ -172,13 +180,103 @@ namespace Application {
             }
         };
 
+        class Gamepad : public ConfigSection {
+         public:
+            explicit Gamepad(GameConfig *config) : ConfigSection(config, "gamepad") {}
+
+            String AlwaysRun = String(this, "always_run", "L3", &ValidateKey, "Always run toggle key.");
+            String Attack = String(this, "attack", "L1", &ValidateKey, "Attack key.");
+            String AutoNotes = String(this, "auto_notes", "DPAD UP", &ValidateKey, "Open autonotes key.");
+            String Backward = String(this, "backward", "LSTICK DOWN", &ValidateKey, "Walk backwards key.");
+            String Cast = String(this, "cast", "DPAD DOWN", &ValidateKey, "Cast a spell from spellbook key.");
+            String CastReady = String(this, "cast_ready", "R1", &ValidateKey, "Cast a quick spell key.");
+            String CenterView = String(this, "center_view", "", &ValidateKey, "Center view key.");
+            String CharCycle = String(this, "char_cycle", "", &ValidateKey, "Switch between characters key.");
+            String Combat = String(this, "combat", "START", &ValidateKey, "Switch between realtime and turn-based modes key.");
+            String EventTrigger = String(this, "event_trigger", "A (CROSS)", &ValidateKey, "Interaction key.");
+            String FlyDown = String(this, "fly_down", "L2", &ValidateKey, "Fly down key.");
+            String FlyUp = String(this, "fly_up", "R2", &ValidateKey, "Fly up key.");
+            String Forward = String(this, "forward", "LSTICK UP", &ValidateKey, "Move forward key.");
+            String Jump = String(this, "jump", "Y (TRIANGLE)", &ValidateKey, "Jump key.");
+            String Land = String(this, "land", "R3", &ValidateKey, "Land key.");
+            String Left = String(this, "left", "RSTICK LEFT", &ValidateKey, "Turn left key.");
+            String LookDown = String(this, "look_down", "RSTICK DOWN", &ValidateKey, "Look down key.");
+            String LookUp = String(this, "look_up", "RSTICK UP", &ValidateKey, "Look up key.");
+            String MapBook = String(this, "map_book", "DPAD LEFT", &ValidateKey, "Open map key.");
+            String Pass = String(this, "pass", "GUIDE", &ValidateKey, "Pass turn key");
+            String Quest = String(this, "quest", "DPAD RIGHT", &ValidateKey, "Open quest book key");
+            String QuickReference = String(this, "quick_reference", "", &ValidateKey, "Open quick reference menu");
+            String Rest = String(this, "rest", "BACK", &ValidateKey, "Rest key.");
+            String Right = String(this, "right", "RSTICK RIGHT", &ValidateKey, "Turn right key.");
+            String StepLeft = String(this, "step_left", "LSTICK LEFT", &ValidateKey, "Strafe left key.");
+            String StepRight = String(this, "step_right", "LSTICK RIGHT", &ValidateKey, "Strafe right key.");
+            String TimeCalendar = String(this, "time_calendar", "", &ValidateKey, "Open calendar key.");
+            String Yell = String(this, "yell", "X (SQUARE)", &ValidateKey, "Yell key.");
+            String ZoomIn = String(this, "zoom_in", "", &ValidateKey, "Zoom in automap key.");
+            String ZoomOut = String(this, "zoom_out", "", &ValidateKey, "Zoom out automap key.");
+
+            String QuickSave = String(this, "quick_save", "", &ValidateKey, "Quick save key");
+            String QuickLoad = String(this, "quick_load", "", &ValidateKey, "Quick load key");
+            String History = String(this, "history", "", &ValidateKey, "History book key");
+            String Stats = String(this, "stats", "A (CROSS)", &ValidateKey, "Stats tab key");
+            String Skills = String(this, "skills", "X (SQUARE)", &ValidateKey, "Skills tab key");
+            String Inventory = String(this, "inventory", "Y (TRIANGLE)", &ValidateKey, "Inventory tab key");
+            String Awards = String(this, "awards", "L1", &ValidateKey, "Stats tab key");
+            String NewGame = String(this, "new_game", "A (CROSS)", &ValidateKey, "New Game menu key");
+            String SaveGame = String(this, "save_game", "Y (TRIANGLE)", &ValidateKey, "Save Game menu key");
+            String LoadGame = String(this, "load_game", "X (SQUARE)", &ValidateKey, "Load Game menu key");
+            String ExitGame = String(this, "exit_game", "B (CIRCLE)", &ValidateKey, "Exit Game key");
+            String ReturnToGame = String(this, "return_to_game", "B (CIRCLE)", &ValidateKey, "Return to Game mode key");
+            String Controls = String(this, "controls", "L1", &ValidateKey, "Controls change menu key");
+            String Options = String(this, "options", "R1", &ValidateKey, "Options menu key");
+            String Credits = String(this, "credits", "Y (TRIANGLE)", &ValidateKey, "Credits menu key");
+            String Clear = String(this, "clear", "Y (TRIANGLE)", &ValidateKey, "Clear button in New Party Creation menu");
+            String Return = String(this, "return", "A (CROSS)", &ValidateKey, "Ok button in New Party Creation menu");
+            String Minus = String(this, "minus", "L1", &ValidateKey, "Minus button in New Party Creation menu");
+            String Plus = String(this, "plus", "R1", &ValidateKey, "Plus button in New Party Creation menu");
+            String Yes = String(this, "yes", "A (CROSS)", &ValidateKey, "Yes answer key");
+            String No = String(this, "no", "B (CIRCLE)", &ValidateKey, "No answer key");
+            String Rest8Hours = String(this, "rest_8_hours", "BACK", &ValidateKey, "Rest for 8 hours key in Rest menu");
+            String WaitTillDawn = String(this, "wait_till_dawn", "Y (TRIANGLE)", &ValidateKey, "Wait till dawn key in Rest menu");
+            String WaitHour = String(this, "wait_hour", "X (SQUARE)", &ValidateKey, "Wait hour in Rest menu");
+            String Wait5Minutes = String(this, "wait_5_minutes", "A (CROSS)", &ValidateKey, "Wait 5 minutes in Rest menu");
+            String Screenshot = String(this, "screenshot", "", &ValidateKey, "Make screenshot key");
+            String Console = String(this, "console", "", &ValidateKey, "Open console key (currently it is opening debug menu)");
+            String ToggleMouseGrab = String(this, "toggle_mouse_grab", "", &ValidateKey, "Toggle mouse grab key");
+            String ToggleBorderless = String(this, "toggle_borderless", "", &ValidateKey, "Toggle window borderless key");
+            String ToggleFullscreen = String(this, "toggle_fullscreen", "", &ValidateKey, "Toggle window fullscreen key");
+            String ToggleResizable = String(this, "toggle_resizable", "", &ValidateKey, "Toggle window resizable key");
+            String CycleFilter = String(this, "cycle_filter", "", &ValidateKey, "Cycle rescale filter modes key");
+            String ReloadShaders = String(this, "reload_shaders", "", &ValidateKey, "Reload shaders key");
+            String SelectChar1 = String(this, "select_char_1", "", &ValidateKey, "Select 1 character key");
+            String SelectChar2 = String(this, "select_char_2", "", &ValidateKey, "Select 2 character key");
+            String SelectChar3 = String(this, "select_char_3", "", &ValidateKey, "Select 3 character key");
+            String SelectChar4 = String(this, "select_char_4", "", &ValidateKey, "Select 4 character key");
+            String SelectNPC1 = String(this, "select_npc_1", "", &ValidateKey, "Select 1 hireling key");
+            String SelectNPC2 = String(this, "select_npc_2", "", &ValidateKey, "Select 2 hireling key");
+            String DialogUp = String(this, "dialog_up", "DPAD UP", &ValidateKey, "Dialog up key");
+            String DialogDown = String(this, "dialog_down", "DPAD DOWN", &ValidateKey, "Dialog down key");
+            String DialogLeft = String(this, "dialog_left", "DPAD LEFT", &ValidateKey, "Dialog left key");
+            String DialogRight = String(this, "dialog_right", "DPAD RIGHT", &ValidateKey, "Dialog right key");
+            String DialogSelect = String(this, "dialog_select", "A (CROSS)", &ValidateKey, "Dialog select key");
+            String Escape = String(this, "escape", "B (CIRCLE)", &ValidateKey, "Escape key");
+
+         private:
+            static std::string ValidateKey(std::string key) {
+                // TODO [config]: validation, maybe via GameKey::displayNames
+                return key;
+            }
+        };
+
+        Gamepad gamepad{ this };
+
         Gameplay gameplay{ this };
 
         class Graphics : public ConfigSection {
          public:
             explicit Graphics(GameConfig *config): ConfigSection(config, "graphics") {}
 
-            String Renderer = String(this, "renderer", "OpenGL", &ValidateRenderer, "Renderer to use. Currently only 'OpenGL' is supported.");
+            String Renderer = String(this, "renderer", ConfigRenderer, &ValidateRenderer, "Renderer to use. OpenGL or OpenGLES");
 
             Bool BloodSplats = Bool(this, "bloodsplats", true, "Enable bloodsplats under corpses.");
 
@@ -245,9 +343,20 @@ namespace Application {
             Int ViewPortX2 = Int(this, "viewport_x2", 172, "Viewport bottom-right offset.");
             Int ViewPortY2 = Int(this, "viewport_y2", 128, "Viewport bottom-right offset.");
 
+            Int RenderWidth = Int(this, "render_width", 640, &ValidateRenderWidth, "Internal rendered resolution width");
+            Int RenderHeight = Int(this, "render_height", 480, &ValidateRenderHeight, "Internal rendered resolution height");
+
+            Int RenderFilter = Int(this, "render_filter", 2, &ValidateRenderFilter,
+                                    "Filtering method when scaling rendered framebuffer to window dimensions if they differ."
+                                    " 0 - disabled (render dimensions will always match window dimensions), 1 - linear filter, 2 - nearest filter");
+
          private:
             static std::string ValidateRenderer(std::string renderer) {
-                if (renderer != "OpenGL"/* && renderer != "DirectDraw"*/)
+                if (renderer != "OpenGL" && renderer != "OpenGLES"
+#ifdef DDRAW_ENABLED
+                    && renderer != "DirectDraw"
+#endif
+                )
                     renderer = "OpenGL";
 
                 return renderer;
@@ -263,6 +372,21 @@ namespace Application {
                     return 0;
 
                 return distance;
+            }
+            static int ValidateRenderWidth(int dimension) {
+                if (dimension < 640)
+                    return 640;
+
+                return dimension;
+            }
+            static int ValidateRenderHeight(int dimension) {
+                if (dimension < 480)
+                    return 480;
+
+                return dimension;
+            }
+            static int ValidateRenderFilter(int filter) {
+                return std::clamp(filter, 0, 2);
             }
         };
 
@@ -291,9 +415,9 @@ namespace Application {
             String LookDown = String(this, "look_down", "DELETE", &ValidateKey, "Look down key.");
             String LookUp = String(this, "look_up", "PAGE DOWN", &ValidateKey, "Look up key.");
             String MapBook = String(this, "map_book", "M", &ValidateKey, "Open map key.");
-            String Pass = String(this, "pass", "B", &ValidateKey, ""); // TODO(captainurist): wat?
+            String Pass = String(this, "pass", "B", &ValidateKey, "Pass turn key");
             String Quest = String(this, "quest", "Q", &ValidateKey, "Open quest book key");
-            String QuickReference = String(this, "quick_reference", "Z", &ValidateKey, "Open quick re"); // TODO(captainurist): wat?
+            String QuickReference = String(this, "quick_reference", "Z", &ValidateKey, "Open quick reference menu");
             String Rest = String(this, "rest", "R", &ValidateKey, "Rest key.");
             String Right = String(this, "right", "RIGHT", &ValidateKey, "Turn right key.");
             String StepLeft = String(this, "step_left", "L BRACKET", &ValidateKey, "Strafe left key.");
@@ -302,6 +426,53 @@ namespace Application {
             String Yell = String(this, "yell", "Y", &ValidateKey, "Yell key.");
             String ZoomIn = String(this, "zoom_in", "ADD", &ValidateKey, "Zoom in automap key.");
             String ZoomOut = String(this, "zoom_out", "SUBTRACT", &ValidateKey, "Zoom out automap key.");
+
+            String QuickSave = String(this, "quick_save", "F5", &ValidateKey, "Quick save key");
+            String QuickLoad = String(this, "quick_load", "F9", &ValidateKey, "Quick load key");
+            String History = String(this, "history", "H", &ValidateKey, "History book key");
+            String Stats = String(this, "stats", "C", &ValidateKey, "Stats tab key");
+            String Skills = String(this, "skills", "S", &ValidateKey, "Skills tab key");
+            String Inventory = String(this, "inventory", "I", &ValidateKey, "Inventory tab key");
+            String Awards = String(this, "awards", "A", &ValidateKey, "Stats tab key");
+            String NewGame = String(this, "new_game", "N", &ValidateKey, "New Game menu key");
+            String SaveGame = String(this, "save_game", "S", &ValidateKey, "Save Game menu key");
+            String LoadGame = String(this, "load_game", "L", &ValidateKey, "Load Game menu key");
+            String ExitGame = String(this, "exit_game", "Q", &ValidateKey, "Exit Game key");
+            String ReturnToGame = String(this, "return_to_game", "R", &ValidateKey, "Return to Game mode key");
+            String Controls = String(this, "controls", "C", &ValidateKey, "Controls change menu key");
+            String Options = String(this, "options", "O", &ValidateKey, "Options menu key");
+            String Credits = String(this, "credits", "C", &ValidateKey, "Credits menu key");
+            String Clear = String(this, "clear", "C", &ValidateKey, "Clear button in New Party Creation menu");
+            String Return = String(this, "return", "RETURN", &ValidateKey, "Ok button in New Party Creation menu");
+            String Minus = String(this, "minus", "SUBTRACT", &ValidateKey, "Minus button in New Party Creation menu");
+            String Plus = String(this, "plus", "ADD", &ValidateKey, "Plus button in New Party Creation menu");
+            String Yes = String(this, "yes", "Y", &ValidateKey, "Yes answer key");
+            String No = String(this, "no", "N", &ValidateKey, "No answer key");
+            String Rest8Hours = String(this, "rest_8_hours", "R", &ValidateKey, "Rest for 8 hours key in Rest menu");
+            String WaitTillDawn = String(this, "wait_till_dawn", "D", &ValidateKey, "Wait till dawn key in Rest menu");
+            String WaitHour = String(this, "wait_hour", "H", &ValidateKey, "Wait hour in Rest menu");
+            String Wait5Minutes = String(this, "wait_5_minutes", "M", &ValidateKey, "Wait 5 minutes in Rest menu");
+            String Screenshot = String(this, "screenshot", "F2", &ValidateKey, "Make screenshot key");
+            String Console = String(this, "console", "~", &ValidateKey, "Open console key (currently it is opening debug menu)");
+            String ToggleMouseGrab = String(this, "toggle_mouse_grab", "F1", &ValidateKey, "Toggle mouse grab key");
+            String ToggleBorderless = String(this, "toggle_borderless", "F3", &ValidateKey, "Toggle window borderless key");
+            String ToggleFullscreen = String(this, "toggle_fullscreen", "F4", &ValidateKey, "Toggle window fullscreen key");
+            String ToggleResizable = String(this, "toggle_resizable", "F6", &ValidateKey, "Toggle window resizable key");
+            String CycleFilter = String(this, "cycle_filter", "F7", &ValidateKey, "Cycle rescale filter modes key");
+            String ReloadShaders = String(this, "reload_shaders", "BACKSPACE", &ValidateKey, "Reload shaders key");
+            String SelectChar1 = String(this, "select_char_1", "1", &ValidateKey, "Select 1 character key");
+            String SelectChar2 = String(this, "select_char_2", "2", &ValidateKey, "Select 2 character key");
+            String SelectChar3 = String(this, "select_char_3", "3", &ValidateKey, "Select 3 character key");
+            String SelectChar4 = String(this, "select_char_4", "4", &ValidateKey, "Select 4 character key");
+            String SelectNPC1 = String(this, "select_npc_1", "5", &ValidateKey, "Select 1 hireling key");
+            String SelectNPC2 = String(this, "select_npc_2", "6", &ValidateKey, "Select 2 hireling key");
+            String DialogUp = String(this, "dialog_up", "UP", &ValidateKey, "Dialog up key");
+            String DialogDown = String(this, "dialog_down", "DOWN", &ValidateKey, "Dialog down key");
+            String DialogLeft = String(this, "dialog_left", "LEFT", &ValidateKey, "Dialog left key");
+            String DialogRight = String(this, "dialog_right", "RIGHT", &ValidateKey, "Dialog right key");
+            String DialogSelect = String(this, "dialog_select", "RETURN", &ValidateKey, "Dialog select key");
+
+            String Escape = String(this, "escape", "Escape", &ValidateKey, "Escape key");
 
          private:
             static std::string ValidateKey(std::string key) {
@@ -362,7 +533,7 @@ namespace Application {
                               "Display number as exposed by SDL. "
                               "Order is platform-specific, e.g. on windows 0 is main display");
 
-            Int Mode = Int(this, "mode", 0, &ValidateMode,
+            Int Mode = Int(this, "mode", ConfigWindowMode, &ValidateMode,
                            "Window mode. Use 0 for windowed, 1 for borderless windowed, 2 for fullscreen, 3 for borderless (fake) fullscreen.");
 
             Int PositionX = Int(this, "position_x", -1, &ValidatePosition,
@@ -374,6 +545,8 @@ namespace Application {
             Int Height = Int(this, "height", 480, &ValidateHeight, "Window height.");
 
             Bool MouseGrab = Bool(this, "mouse_grab", true, "Restrict mouse movement to game window when it's in focus.");
+
+            Bool Resizable = ConfigValue<bool>(this, "resizable", true, "Make window resizable by user or not.");
 
          private:
              static std::string ValidateTitle(std::string title) {
@@ -395,13 +568,13 @@ namespace Application {
                 return position;
             }
             static int ValidateWidth(int dimension) {
-                if (dimension < 640)
+                if (dimension <= 0)
                     return 640;
 
                 return dimension;
             }
             static int ValidateHeight(int dimension) {
-                if (dimension < 480)
+                if (dimension <= 0)
                     return 480;
 
                 return dimension;
