@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;009e8e1</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;f6860bd</span>
    </div>
   </td>
  </tr>
@@ -133,10 +133,18 @@ Private Member Functions</h2></td></tr>
 <tr class="separator:a603bbaba3c9418fb55e69ed0dfc21acb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a593042706010884a4a5f68600aa23b84"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlEventLoop.html#a593042706010884a4a5f68600aa23b84">DispatchWindowMoveEvent</a> (<a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *<a class="el" href="EngineGlobals_8cpp.html#a902aed380990e0d902240438707b6d10">eventHandler</a>, const SDL_WindowEvent *event)</td></tr>
 <tr class="separator:a593042706010884a4a5f68600aa23b84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af56612b588471613ecbda5358f095976"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlEventLoop.html#af56612b588471613ecbda5358f095976">DispatchWindowResizeEvent</a> (<a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *<a class="el" href="EngineGlobals_8cpp.html#a902aed380990e0d902240438707b6d10">eventHandler</a>, const SDL_WindowEvent *event)</td></tr>
+<tr class="separator:af56612b588471613ecbda5358f095976"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a08e7b5f5f50f4c4deb19c96068cad644"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlEventLoop.html#a08e7b5f5f50f4c4deb19c96068cad644">DispatchEvent</a> (<a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *<a class="el" href="EngineGlobals_8cpp.html#a902aed380990e0d902240438707b6d10">eventHandler</a>, uint32_t windowId, <a class="el" href="classPlatformEvent.html#ab1b85cb24f01d755e87bf165a8b18ee8">PlatformEvent::Type</a> type)</td></tr>
 <tr class="separator:a08e7b5f5f50f4c4deb19c96068cad644"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afc7e4a056567bddd1008b37f0edeca69"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlEventLoop.html#afc7e4a056567bddd1008b37f0edeca69">DispatchEvent</a> (<a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *<a class="el" href="EngineGlobals_8cpp.html#a902aed380990e0d902240438707b6d10">eventHandler</a>, uint32_t windowId, <a class="el" href="classPlatformEvent.html">PlatformEvent</a> *event)</td></tr>
 <tr class="separator:afc7e4a056567bddd1008b37f0edeca69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb3bb721fe7b0673f7dffb7a1067b931"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlEventLoop.html#abb3bb721fe7b0673f7dffb7a1067b931">DispatchGamepadDeviceEvent</a> (<a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *<a class="el" href="EngineGlobals_8cpp.html#a902aed380990e0d902240438707b6d10">eventHandler</a>, const SDL_ControllerDeviceEvent *event)</td></tr>
+<tr class="separator:abb3bb721fe7b0673f7dffb7a1067b931"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af80d3df98563936502c36d6584c7ace0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlEventLoop.html#af80d3df98563936502c36d6584c7ace0">DispatchGamepadButtonEvent</a> (<a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *<a class="el" href="EngineGlobals_8cpp.html#a902aed380990e0d902240438707b6d10">eventHandler</a>, const SDL_ControllerButtonEvent *event)</td></tr>
+<tr class="separator:af80d3df98563936502c36d6584c7ace0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad479f67ba4e8c6eeb70e306f99f1f6db"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlEventLoop.html#ad479f67ba4e8c6eeb70e306f99f1f6db">DispatchGamepadAxisEvent</a> (<a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *<a class="el" href="EngineGlobals_8cpp.html#a902aed380990e0d902240438707b6d10">eventHandler</a>, const SDL_ControllerAxisEvent *event)</td></tr>
+<tr class="separator:ad479f67ba4e8c6eeb70e306f99f1f6db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -302,6 +310,114 @@ Private Attributes</h2></td></tr>
           <td></td>
           <td class="paramtype"><a class="el" href="classPlatformEvent.html#ab1b85cb24f01d755e87bf165a8b18ee8">PlatformEvent::Type</a>&#160;</td>
           <td class="paramname"><em>type</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad479f67ba4e8c6eeb70e306f99f1f6db" name="ad479f67ba4e8c6eeb70e306f99f1f6db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad479f67ba4e8c6eeb70e306f99f1f6db">&#9670;&#160;</a></span>DispatchGamepadAxisEvent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SdlEventLoop::DispatchGamepadAxisEvent </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *&#160;</td>
+          <td class="paramname"><em>eventHandler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const SDL_ControllerAxisEvent *&#160;</td>
+          <td class="paramname"><em>event</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af80d3df98563936502c36d6584c7ace0" name="af80d3df98563936502c36d6584c7ace0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af80d3df98563936502c36d6584c7ace0">&#9670;&#160;</a></span>DispatchGamepadButtonEvent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SdlEventLoop::DispatchGamepadButtonEvent </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *&#160;</td>
+          <td class="paramname"><em>eventHandler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const SDL_ControllerButtonEvent *&#160;</td>
+          <td class="paramname"><em>event</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abb3bb721fe7b0673f7dffb7a1067b931" name="abb3bb721fe7b0673f7dffb7a1067b931"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb3bb721fe7b0673f7dffb7a1067b931">&#9670;&#160;</a></span>DispatchGamepadDeviceEvent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SdlEventLoop::DispatchGamepadDeviceEvent </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *&#160;</td>
+          <td class="paramname"><em>eventHandler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const SDL_ControllerDeviceEvent *&#160;</td>
+          <td class="paramname"><em>event</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -545,6 +661,42 @@ Private Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">void SdlEventLoop::DispatchWindowMoveEvent </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *&#160;</td>
+          <td class="paramname"><em>eventHandler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const SDL_WindowEvent *&#160;</td>
+          <td class="paramname"><em>event</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af56612b588471613ecbda5358f095976" name="af56612b588471613ecbda5358f095976"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af56612b588471613ecbda5358f095976">&#9670;&#160;</a></span>DispatchWindowResizeEvent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SdlEventLoop::DispatchWindowResizeEvent </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *&#160;</td>
           <td class="paramname"><em>eventHandler</em>, </td>

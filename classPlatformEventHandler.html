@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;009e8e1</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;f6860bd</span>
    </div>
   </td>
  </tr>
@@ -112,10 +112,14 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:ab89fea025cb55e8cc4b2f85a586ed67f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e2a01afe09ad116758a21175781211e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventHandler.html#a7e2a01afe09ad116758a21175781211e">MoveEvent</a> (<a class="el" href="classPlatformWindow.html">PlatformWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, const <a class="el" href="classPlatformMoveEvent.html">PlatformMoveEvent</a> *event)</td></tr>
 <tr class="separator:a7e2a01afe09ad116758a21175781211e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54d9f8994be64831ea0254fd316bb57a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventHandler.html#a54d9f8994be64831ea0254fd316bb57a">ResizeEvent</a> (<a class="el" href="classPlatformWindow.html">PlatformWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, const <a class="el" href="classPlatformResizeEvent.html">PlatformResizeEvent</a> *event)</td></tr>
+<tr class="separator:a54d9f8994be64831ea0254fd316bb57a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab8c0dddd55a3e3aab7427211971a5b66"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventHandler.html#ab8c0dddd55a3e3aab7427211971a5b66">ActivationEvent</a> (<a class="el" href="classPlatformWindow.html">PlatformWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, const <a class="el" href="classPlatformEvent.html">PlatformEvent</a> *event)</td></tr>
 <tr class="separator:ab8c0dddd55a3e3aab7427211971a5b66"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9d9620b7c2304642d6ef318528c1bb01"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventHandler.html#a9d9620b7c2304642d6ef318528c1bb01">CloseEvent</a> (<a class="el" href="classPlatformWindow.html">PlatformWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, const <a class="el" href="classPlatformEvent.html">PlatformEvent</a> *event)</td></tr>
 <tr class="separator:a9d9620b7c2304642d6ef318528c1bb01"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7dc7d8235deb4947cdd3a32782f74e1c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventHandler.html#a7dc7d8235deb4947cdd3a32782f74e1c">GamepadDeviceEvent</a> (<a class="el" href="classPlatformWindow.html">PlatformWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, const <a class="el" href="classPlatformGamepadDeviceEvent.html">PlatformGamepadDeviceEvent</a> *event)</td></tr>
+<tr class="separator:a7dc7d8235deb4947cdd3a32782f74e1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Event handler interface, to be implemented in user code.</p>
@@ -265,6 +269,44 @@ Protected Member Functions</h2></td></tr>
 </dl>
 
 <p>Reimplemented in <a class="el" href="classApplication_1_1GameWindowHandler.html#a565322eb3bac39a3776543c15267c3db">Application::GameWindowHandler</a>.</p>
+
+</div>
+</div>
+<a id="a7dc7d8235deb4947cdd3a32782f74e1c" name="a7dc7d8235deb4947cdd3a32782f74e1c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7dc7d8235deb4947cdd3a32782f74e1c">&#9670;&#160;</a></span>GamepadDeviceEvent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PlatformEventHandler::GamepadDeviceEvent </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classPlatformWindow.html">PlatformWindow</a> *&#160;</td>
+          <td class="paramname"><em>window</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classPlatformGamepadDeviceEvent.html">PlatformGamepadDeviceEvent</a> *&#160;</td>
+          <td class="paramname"><em>event</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented in <a class="el" href="classApplication_1_1GameWindowHandler.html#a12818c4d66699c55bad5ad1eeb895837">Application::GameWindowHandler</a>.</p>
 
 </div>
 </div>
@@ -493,6 +535,44 @@ Protected Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Reimplemented in <a class="el" href="classApplication_1_1GameWindowHandler.html#ac5cfb9541211531385713bd6b3bf6024">Application::GameWindowHandler</a>.</p>
+
+</div>
+</div>
+<a id="a54d9f8994be64831ea0254fd316bb57a" name="a54d9f8994be64831ea0254fd316bb57a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a54d9f8994be64831ea0254fd316bb57a">&#9670;&#160;</a></span>ResizeEvent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PlatformEventHandler::ResizeEvent </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classPlatformWindow.html">PlatformWindow</a> *&#160;</td>
+          <td class="paramname"><em>window</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classPlatformResizeEvent.html">PlatformResizeEvent</a> *&#160;</td>
+          <td class="paramname"><em>event</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented in <a class="el" href="classApplication_1_1GameWindowHandler.html#a142649999abb070449688dd21692e0bb">Application::GameWindowHandler</a>.</p>
 
 </div>
 </div>

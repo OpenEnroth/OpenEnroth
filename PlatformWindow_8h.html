@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;009e8e1</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;f6860bd</span>
    </div>
   </td>
  </tr>
@@ -81,6 +81,7 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &lt;string&gt;</code><br />
 <code>#include &lt;memory&gt;</code><br />
+<code>#include &quot;<a class="el" href="Flags_8h.html">Utility/Flags.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Size_8h.html">Utility/Geometry/Size.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Point_8h.html">Utility/Geometry/Point.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Margins_8h.html">Utility/Geometry/Margins.h</a>&quot;</code><br />
@@ -99,6 +100,12 @@ Enumerations</h2></td></tr>
 , <a class="el" href="PlatformWindow_8h.html#a7772d16a8207ba672642f139658d8f14af9da7836414d175f796cc372f33f4a4b">FULLSCREEN_BORDERLESS</a> = 3
  }</td></tr>
 <tr class="separator:a7772d16a8207ba672642f139658d8f14"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acef92f6f6dcb8940ab858cd4fe1c64bc"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PlatformWindow_8h.html#acef92f6f6dcb8940ab858cd4fe1c64bc">PlatformWindowOrientation</a> { <a class="el" href="PlatformWindow_8h.html#acef92f6f6dcb8940ab858cd4fe1c64bcaf20145b5d77d7dd17c06a922e4895885">LANDSCAPE_LEFT</a> = 0x01
+, <a class="el" href="PlatformWindow_8h.html#acef92f6f6dcb8940ab858cd4fe1c64bca223c617210b9abad14670bbda0b80fdf">LANDSCAPE_RIGHT</a> = 0x02
+, <a class="el" href="PlatformWindow_8h.html#acef92f6f6dcb8940ab858cd4fe1c64bca55961a0edf48ddea54efca22c6308323">PORTRAIT_UP</a> = 0x04
+, <a class="el" href="PlatformWindow_8h.html#acef92f6f6dcb8940ab858cd4fe1c64bcae6d6a81eeb54ec5b32e4cd2996b39005">PORTRAIT_DOWN</a> = 0x08
+ }</td></tr>
+<tr class="separator:acef92f6f6dcb8940ab858cd4fe1c64bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="a7772d16a8207ba672642f139658d8f14" name="a7772d16a8207ba672642f139658d8f14"></a>
@@ -131,6 +138,34 @@ Enumerations</h2></td></tr>
 <tr><td class="fieldname"><a id="a7772d16a8207ba672642f139658d8f14afdf8b144dd9158630830f2758831b608" name="a7772d16a8207ba672642f139658d8f14afdf8b144dd9158630830f2758831b608"></a>WINDOWED_BORDERLESS&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a7772d16a8207ba672642f139658d8f14ab89c3d897b196ffff1537331bc659a97" name="a7772d16a8207ba672642f139658d8f14ab89c3d897b196ffff1537331bc659a97"></a>FULLSCREEN&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a7772d16a8207ba672642f139658d8f14af9da7836414d175f796cc372f33f4a4b" name="a7772d16a8207ba672642f139658d8f14af9da7836414d175f796cc372f33f4a4b"></a>FULLSCREEN_BORDERLESS&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="acef92f6f6dcb8940ab858cd4fe1c64bc" name="acef92f6f6dcb8940ab858cd4fe1c64bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acef92f6f6dcb8940ab858cd4fe1c64bc">&#9670;&#160;</a></span>PlatformWindowOrientation</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="PlatformWindow_8h.html#acef92f6f6dcb8940ab858cd4fe1c64bc">PlatformWindowOrientation</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="acef92f6f6dcb8940ab858cd4fe1c64bcaf20145b5d77d7dd17c06a922e4895885" name="acef92f6f6dcb8940ab858cd4fe1c64bcaf20145b5d77d7dd17c06a922e4895885"></a>LANDSCAPE_LEFT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="acef92f6f6dcb8940ab858cd4fe1c64bca223c617210b9abad14670bbda0b80fdf" name="acef92f6f6dcb8940ab858cd4fe1c64bca223c617210b9abad14670bbda0b80fdf"></a>LANDSCAPE_RIGHT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="acef92f6f6dcb8940ab858cd4fe1c64bca55961a0edf48ddea54efca22c6308323" name="acef92f6f6dcb8940ab858cd4fe1c64bca55961a0edf48ddea54efca22c6308323"></a>PORTRAIT_UP&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="acef92f6f6dcb8940ab858cd4fe1c64bcae6d6a81eeb54ec5b32e4cd2996b39005" name="acef92f6f6dcb8940ab858cd4fe1c64bcae6d6a81eeb54ec5b32e4cd2996b39005"></a>PORTRAIT_DOWN&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>

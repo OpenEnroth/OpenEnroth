@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;009e8e1</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;f6860bd</span>
    </div>
   </td>
  </tr>
@@ -144,15 +144,13 @@ Functions</h2></td></tr>
 <div class="line">                    if (num_dialugue_options &lt; 4) { \</div>
 <div class="line">                        <span class="keywordtype">int</span> res = <a class="code hl_function" href="NPC_8cpp.html#ac25757143328dd4d862cb5cbc5861da8">NPCDialogueEventProcessor</a>(DIALOGUE_EVENT_ID); \</div>
 <div class="line">                        if (res == 1 || res == 2) \</div>
-<div class="line">                            CreateButton( \</div>
-<div class="line">                                480, 130 + num_dialugue_options++ * text_line_height, \</div>
-<div class="line">                                140, text_line_height, \</div>
-<div class="line">                                1, 0, <a class="code hl_enumvalue" href="GUIWindow_8h.html#a2519966952faeb9397447ce89e9bcb02a5a718dd0452e52b71df691945bd9fe44">UIMSG_SelectNPCDialogueOption</a>, MSG_PARAM \</div>
+<div class="line">                            CreateButton({480, 130 + num_dialugue_options++ * text_line_height}, {140, text_line_height}, 1, 0, \</div>
+<div class="line">                                <a class="code hl_enumvalue" href="GUIWindow_8h.html#a2519966952faeb9397447ce89e9bcb02a5a718dd0452e52b71df691945bd9fe44">UIMSG_SelectNPCDialogueOption</a>, MSG_PARAM \</div>
 <div class="line">                            ); \</div>
 <div class="line">                    } \</div>
 <div class="line">                }</div>
-<div class="ttc" id="aGUIWindow_8h_html_a2519966952faeb9397447ce89e9bcb02a5a718dd0452e52b71df691945bd9fe44"><div class="ttname"><a href="GUIWindow_8h.html#a2519966952faeb9397447ce89e9bcb02a5a718dd0452e52b71df691945bd9fe44">UIMSG_SelectNPCDialogueOption</a></div><div class="ttdeci">@ UIMSG_SelectNPCDialogueOption</div><div class="ttdef"><b>Definition:</b> GUIWindow.h:142</div></div>
-<div class="ttc" id="aNPC_8cpp_html_ac25757143328dd4d862cb5cbc5861da8"><div class="ttname"><a href="NPC_8cpp.html#ac25757143328dd4d862cb5cbc5861da8">NPCDialogueEventProcessor</a></div><div class="ttdeci">int NPCDialogueEventProcessor(int npc_event_id, int entry_line)</div><div class="ttdef"><b>Definition:</b> NPC.cpp:1105</div></div>
+<div class="ttc" id="aGUIWindow_8h_html_a2519966952faeb9397447ce89e9bcb02a5a718dd0452e52b71df691945bd9fe44"><div class="ttname"><a href="GUIWindow_8h.html#a2519966952faeb9397447ce89e9bcb02a5a718dd0452e52b71df691945bd9fe44">UIMSG_SelectNPCDialogueOption</a></div><div class="ttdeci">@ UIMSG_SelectNPCDialogueOption</div><div class="ttdef"><b>Definition:</b> GUIWindow.h:144</div></div>
+<div class="ttc" id="aNPC_8cpp_html_ac25757143328dd4d862cb5cbc5861da8"><div class="ttname"><a href="NPC_8cpp.html#ac25757143328dd4d862cb5cbc5861da8">NPCDialogueEventProcessor</a></div><div class="ttdeci">int NPCDialogueEventProcessor(int npc_event_id, int entry_line)</div><div class="ttdef"><b>Definition:</b> NPC.cpp:1085</div></div>
 </div><!-- fragment -->
 </div>
 </div>

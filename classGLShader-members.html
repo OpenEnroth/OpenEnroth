@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;009e8e1</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;f6860bd</span>
    </div>
   </td>
  </tr>
@@ -75,15 +75,15 @@ $(function() {
 
 <p>This is the complete list of members for <a class="el" href="classGLShader.html">GLShader</a>, including all inherited members.</p>
 <table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="classGLShader.html#a42f5469782e6c298e217e62303dfba68">build</a>(const char *vertexPath, const char *fragmentPath, bool reload=false, const char *geometryPath=nullptr)</td><td class="entry"><a class="el" href="classGLShader.html">GLShader</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classGLShader.html#a01bb4e6505dc419a21a64c1a7097d63a">checkCompileErrors</a>(GLuint shader, std::string type)</td><td class="entry"><a class="el" href="classGLShader.html">GLShader</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classGLShader.html#a145ec6994981142f0932a8d829c6b24d">build</a>(const std::string &amp;name, const std::string &amp;filename, bool OpenGLES=false, bool reload=false)</td><td class="entry"><a class="el" href="classGLShader.html">GLShader</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classGLShader.html#a95b9a52278b191c39acde96b10e53a07">checkCompileErrors</a>(GLuint shader, const std::string &amp;name, const std::string &amp;type)</td><td class="entry"><a class="el" href="classGLShader.html">GLShader</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">private</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classGLShader.html#a71d842a6a99dac037c8d0f91e4de593b">GLShader</a>()</td><td class="entry"><a class="el" href="classGLShader.html">GLShader</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classGLShader.html#a5d325c5559cb9ef12f885c20cef14a5d">GLShader</a>(const char *vertexPath, const char *fragmentPath, const char *geometryPath=nullptr)</td><td class="entry"><a class="el" href="classGLShader.html">GLShader</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classGLShader.html#abc5e80c1895af424b40f86131337101f">ID</a></td><td class="entry"><a class="el" href="classGLShader.html">GLShader</a></td><td class="entry"></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classGLShader.html#af74c08c56a0c1290b3e8c922ea8cbfd4">reload</a>()</td><td class="entry"><a class="el" href="classGLShader.html">GLShader</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classGLShader.html#ac13aeffae510d360e2e856667a4f90b9">sFragpath</a></td><td class="entry"><a class="el" href="classGLShader.html">GLShader</a></td><td class="entry"></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classGLShader.html#a0e2dfdd4dd439e1043c140a2beb3c4c4">sGeopath</a></td><td class="entry"><a class="el" href="classGLShader.html">GLShader</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classGLShader.html#a4d6bc2298642752246e262914178ce21">sVertpath</a></td><td class="entry"><a class="el" href="classGLShader.html">GLShader</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classGLShader.html#abc5e80c1895af424b40f86131337101f">ID</a></td><td class="entry"><a class="el" href="classGLShader.html">GLShader</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classGLShader.html#a08235ec21146a1982fcff9c5fac02eda">load</a>(const std::string &amp;name, const std::string &amp;filename, GLenum type, bool OpenGLES, bool nonFatal=false)</td><td class="entry"><a class="el" href="classGLShader.html">GLShader</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">private</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classGLShader.html#a28b164dd3cf319f3a78a5cebbf85b87e">reload</a>(const std::string &amp;name, bool OpenGLES)</td><td class="entry"><a class="el" href="classGLShader.html">GLShader</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classGLShader.html#a25b8531857aaa77fec1735f2260322f8">sFilename</a></td><td class="entry"><a class="el" href="classGLShader.html">GLShader</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classGLShader.html#aa1c5c0d478ea33e54a914246be011d9b">shaderTypeToExtension</a>(GLenum type)</td><td class="entry"><a class="el" href="classGLShader.html">GLShader</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classGLShader.html#a30ca34873e6ee2a66ad8db0adbcc0052">shaderTypeToName</a>(GLenum type)</td><td class="entry"><a class="el" href="classGLShader.html">GLShader</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">private</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classGLShader.html#af765a2607d1d4cc056aabd9295702e09">use</a>()</td><td class="entry"><a class="el" href="classGLShader.html">GLShader</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
 </table></div><!-- contents -->
 <!-- start footer part -->

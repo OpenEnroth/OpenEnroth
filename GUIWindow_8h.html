@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;009e8e1</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;f6860bd</span>
    </div>
   </td>
  </tr>
@@ -94,7 +94,9 @@ $(function() {
 <code>#include &quot;<a class="el" href="GUIDialogues_8h.html">GUI/GUIDialogues.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="PlatformKey_8h.html">Platform/PlatformKey.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Mouse_8h.html">Io/Mouse.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="InputAction_8h.html">Io/InputAction.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="KeyboardInputHandler_8h.html">Io/KeyboardInputHandler.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Size_8h.html">Utility/Geometry/Size.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -232,7 +234,7 @@ Enumerations</h2></td></tr>
 , <a class="el" href="GUIWindow_8h.html#a2519966952faeb9397447ce89e9bcb02aef64674f6d53a732d754dc711e68e282">UIMSG_QuickReference</a> = 106
 , <br />
 &#160;&#160;<a class="el" href="GUIWindow_8h.html#a2519966952faeb9397447ce89e9bcb02a3a0599995a0f0d35a8a2aeafe715f76b">UIMSG_GameMenuButton</a> = 107
-, <a class="el" href="GUIWindow_8h.html#a2519966952faeb9397447ce89e9bcb02a258888c311a3612134f8ec0e0479119c">UIMSG_AlreadyResting</a> = 109
+, <a class="el" href="GUIWindow_8h.html#a2519966952faeb9397447ce89e9bcb02a1f61173dfa918d8939b719fdf42c11fb">UIMSG_WaitTillDawn</a> = 109
 , <a class="el" href="GUIWindow_8h.html#a2519966952faeb9397447ce89e9bcb02a6e5c3487e11ac91db70a89d9e60627fd">UIMSG_SelectCharacter</a> = 110
 , <a class="el" href="GUIWindow_8h.html#a2519966952faeb9397447ce89e9bcb02a5344286107546f840b7afac16737ccec">UIMSG_ChangeSoundVolume</a> = 111
 , <br />
@@ -1116,7 +1118,7 @@ Variables</h2></td></tr>
 <tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02a2ea53600219de124064103f0f9f8e39c" name="a2519966952faeb9397447ce89e9bcb02a2ea53600219de124064103f0f9f8e39c"></a>UIMSG_SpellBookWindow&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02aef64674f6d53a732d754dc711e68e282" name="a2519966952faeb9397447ce89e9bcb02aef64674f6d53a732d754dc711e68e282"></a>UIMSG_QuickReference&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02a3a0599995a0f0d35a8a2aeafe715f76b" name="a2519966952faeb9397447ce89e9bcb02a3a0599995a0f0d35a8a2aeafe715f76b"></a>UIMSG_GameMenuButton&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02a258888c311a3612134f8ec0e0479119c" name="a2519966952faeb9397447ce89e9bcb02a258888c311a3612134f8ec0e0479119c"></a>UIMSG_AlreadyResting&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02a1f61173dfa918d8939b719fdf42c11fb" name="a2519966952faeb9397447ce89e9bcb02a1f61173dfa918d8939b719fdf42c11fb"></a>UIMSG_WaitTillDawn&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02a6e5c3487e11ac91db70a89d9e60627fd" name="a2519966952faeb9397447ce89e9bcb02a6e5c3487e11ac91db70a89d9e60627fd"></a>UIMSG_SelectCharacter&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02a5344286107546f840b7afac16737ccec" name="a2519966952faeb9397447ce89e9bcb02a5344286107546f840b7afac16737ccec"></a>UIMSG_ChangeSoundVolume&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02a27b01f96aa11823c543ec79aa51fab5d" name="a2519966952faeb9397447ce89e9bcb02a27b01f96aa11823c543ec79aa51fab5d"></a>UIMSG_ChangeMusicVolume&#160;</td><td class="fielddoc"></td></tr>

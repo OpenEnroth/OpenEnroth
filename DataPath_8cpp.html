@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;009e8e1</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;f6860bd</span>
    </div>
   </td>
  </tr>
@@ -80,6 +80,8 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="DataPath_8h.html">DataPath.h</a>&quot;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+<code>#include &lt;set&gt;</code><br />
 <code>#include &quot;<a class="el" href="FileSystem_8h.html">FileSystem.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
@@ -88,6 +90,8 @@ Functions</h2></td></tr>
 <tr class="separator:a41217f982e053877b5400bf06ed5cc82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a865362ac12438a688b0d9e03e730a850"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DataPath_8cpp.html#a865362ac12438a688b0d9e03e730a850">MakeDataPath</a> (std::initializer_list&lt; std::string_view &gt; paths)</td></tr>
 <tr class="separator:a865362ac12438a688b0d9e03e730a850"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a502109ee1573a970fe54a1578e6fb874"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DataPath_8cpp.html#a502109ee1573a970fe54a1578e6fb874">ValidataDataPath</a> (const std::string &amp;data_path)</td></tr>
+<tr class="separator:a502109ee1573a970fe54a1578e6fb874"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee012efb3907a0773b42808a49f3345a"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DataPath_8cpp.html#aee012efb3907a0773b42808a49f3345a">MakeTempPath</a> (const char *file_rel_path)</td></tr>
 <tr class="separator:aee012efb3907a0773b42808a49f3345a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -95,6 +99,8 @@ Functions</h2></td></tr>
 Variables</h2></td></tr>
 <tr class="memitem:a59f12d379a4dfbc491cc92e27884a744"><td class="memItemLeft" align="right" valign="top">static std::filesystem::path&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DataPath_8cpp.html#a59f12d379a4dfbc491cc92e27884a744">s_data_path</a></td></tr>
 <tr class="separator:a59f12d379a4dfbc491cc92e27884a744"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1112f2b1d201080e4c7728b994530fc5"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; std::vector&lt; std::string_view &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DataPath_8cpp.html#a1112f2b1d201080e4c7728b994530fc5">validateList</a></td></tr>
+<tr class="separator:a1112f2b1d201080e4c7728b994530fc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a865362ac12438a688b0d9e03e730a850" name="a865362ac12438a688b0d9e03e730a850"></a>
@@ -151,6 +157,24 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="a502109ee1573a970fe54a1578e6fb874" name="a502109ee1573a970fe54a1578e6fb874"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a502109ee1573a970fe54a1578e6fb874">&#9670;&#160;</a></span>ValidataDataPath()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ValidataDataPath </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>data_path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Variable Documentation</h2>
 <a id="a59f12d379a4dfbc491cc92e27884a744" name="a59f12d379a4dfbc491cc92e27884a744"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a59f12d379a4dfbc491cc92e27884a744">&#9670;&#160;</a></span>s_data_path</h2>
@@ -163,6 +187,28 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::filesystem::path s_data_path</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1112f2b1d201080e4c7728b994530fc5" name="a1112f2b1d201080e4c7728b994530fc5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1112f2b1d201080e4c7728b994530fc5">&#9670;&#160;</a></span>validateList</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::vector&lt;std::string_view&gt; &gt; validateList</td>
         </tr>
       </table>
   </td>

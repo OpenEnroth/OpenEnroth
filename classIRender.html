@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;009e8e1</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;f6860bd</span>
    </div>
   </td>
  </tr>
@@ -140,6 +140,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a4e64f4b8cb3bc015f27597fc38a5094e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac3d3a94785d135c00f3e226472deb204"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#ac3d3a94785d135c00f3e226472deb204">PresentBlackScreen</a> ()=0</td></tr>
 <tr class="separator:ac3d3a94785d135c00f3e226472deb204"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5dd43a1768dae07c89ae557d136a899b"><td class="memItemLeft" align="right" valign="top">virtual uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a5dd43a1768dae07c89ae557d136a899b">ReadScreenPixels</a> ()=0</td></tr>
+<tr class="separator:a5dd43a1768dae07c89ae557d136a899b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa0ad0bb3e27c435e64fba3747bcb277e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#aa0ad0bb3e27c435e64fba3747bcb277e">SaveWinnersCertificate</a> (const char *a1)=0</td></tr>
 <tr class="separator:aa0ad0bb3e27c435e64fba3747bcb277e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac9ca745f8fc4d48427b4042105f4b2ff"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#ac9ca745f8fc4d48427b4042105f4b2ff">ClearTarget</a> (unsigned int uColor)=0</td></tr>
@@ -306,16 +308,16 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a0838832b098523e7ac02cd5e499eb148"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adfbff9bcb735079ba54dc01b77e2b301"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#adfbff9bcb735079ba54dc01b77e2b301">DrawTwodVerts</a> ()=0</td></tr>
 <tr class="separator:adfbff9bcb735079ba54dc01b77e2b301"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7bbeeb9308253d26b33e11f09b2e1d37"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="Size_8h.html#a075755610ebd937662bd46b0703fbabf">Sizei</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a7bbeeb9308253d26b33e11f09b2e1d37">GetRenderDimensions</a> ()=0</td></tr>
+<tr class="separator:a7bbeeb9308253d26b33e11f09b2e1d37"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74da1c23634397c9eb286df4c9d11911"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="Size_8h.html#a075755610ebd937662bd46b0703fbabf">Sizei</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a74da1c23634397c9eb286df4c9d11911">GetPresentDimensions</a> ()=0</td></tr>
+<tr class="separator:a74da1c23634397c9eb286df4c9d11911"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8072e813db48acdecbe1016f3bae1a33"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a8072e813db48acdecbe1016f3bae1a33">Reinitialize</a> (bool firstInit=false)=0</td></tr>
 <tr class="separator:a8072e813db48acdecbe1016f3bae1a33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a64b75ae58f37d81aa4b1fce9d03c3da4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a64b75ae58f37d81aa4b1fce9d03c3da4">ReloadShaders</a> ()=0</td></tr>
 <tr class="separator:a64b75ae58f37d81aa4b1fce9d03c3da4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a182ff1e20d7a82c6c400e8732ddfa52e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a182ff1e20d7a82c6c400e8732ddfa52e">WritePixel16</a> (int x, int y, uint16_t color)=0</td></tr>
 <tr class="separator:a182ff1e20d7a82c6c400e8732ddfa52e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aafb9bd4a1435005d5f31266328785a6d"><td class="memItemLeft" align="right" valign="top">virtual unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#aafb9bd4a1435005d5f31266328785a6d">GetRenderWidth</a> () const =0</td></tr>
-<tr class="separator:aafb9bd4a1435005d5f31266328785a6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a21a206c4e5a99972e7ff6fe9d0eb6ccf"><td class="memItemLeft" align="right" valign="top">virtual unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a21a206c4e5a99972e7ff6fe9d0eb6ccf">GetRenderHeight</a> () const =0</td></tr>
-<tr class="separator:a21a206c4e5a99972e7ff6fe9d0eb6ccf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9d83fdb5bcfc54d5a36b377dd4ce3653"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classHWLTexture.html">HWLTexture</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a9d83fdb5bcfc54d5a36b377dd4ce3653">LoadHwlBitmap</a> (const std::string &amp;name)=0</td></tr>
 <tr class="separator:a9d83fdb5bcfc54d5a36b377dd4ce3653"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac287aa07c0432e9979c49f8051818e6b"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classHWLTexture.html">HWLTexture</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#ac287aa07c0432e9979c49f8051818e6b">LoadHwlSprite</a> (const std::string &amp;name)=0</td></tr>
@@ -3092,8 +3094,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a21a206c4e5a99972e7ff6fe9d0eb6ccf" name="a21a206c4e5a99972e7ff6fe9d0eb6ccf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a21a206c4e5a99972e7ff6fe9d0eb6ccf">&#9670;&#160;</a></span>GetRenderHeight()</h2>
+<a id="a74da1c23634397c9eb286df4c9d11911" name="a74da1c23634397c9eb286df4c9d11911"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74da1c23634397c9eb286df4c9d11911">&#9670;&#160;</a></span>GetPresentDimensions()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3102,10 +3104,10 @@ Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual unsigned int IRender::GetRenderHeight </td>
+          <td class="memname">virtual <a class="el" href="Size_8h.html#a075755610ebd937662bd46b0703fbabf">Sizei</a> IRender::GetPresentDimensions </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td> const</td>
+          <td></td>
         </tr>
       </table>
   </td>
@@ -3115,12 +3117,12 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classRender.html#a2ec9b8770a8e45059cbf9e2675267811">Render</a>, and <a class="el" href="classRenderOpenGL.html#a5c9224b3424393e7650af931438dd935">RenderOpenGL</a>.</p>
+<p>Implemented in <a class="el" href="classRender.html#aefe5e003c37905001bef53662893a5fe">Render</a>, and <a class="el" href="classRenderOpenGL.html#a9c297a7ab52a022ce294867ea0fe771c">RenderOpenGL</a>.</p>
 
 </div>
 </div>
-<a id="aafb9bd4a1435005d5f31266328785a6d" name="aafb9bd4a1435005d5f31266328785a6d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aafb9bd4a1435005d5f31266328785a6d">&#9670;&#160;</a></span>GetRenderWidth()</h2>
+<a id="a7bbeeb9308253d26b33e11f09b2e1d37" name="a7bbeeb9308253d26b33e11f09b2e1d37"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7bbeeb9308253d26b33e11f09b2e1d37">&#9670;&#160;</a></span>GetRenderDimensions()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3129,10 +3131,10 @@ Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual unsigned int IRender::GetRenderWidth </td>
+          <td class="memname">virtual <a class="el" href="Size_8h.html#a075755610ebd937662bd46b0703fbabf">Sizei</a> IRender::GetRenderDimensions </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td> const</td>
+          <td></td>
         </tr>
       </table>
   </td>
@@ -3142,7 +3144,7 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classRender.html#a2b7508551b7ddfc79badbfedbef04b38">Render</a>, and <a class="el" href="classRenderOpenGL.html#a2503680f5137ef11d37ed138ced2edd1">RenderOpenGL</a>.</p>
+<p>Implemented in <a class="el" href="classRender.html#a652ac6f6aae0d7a003b87cd233d351a5">Render</a>, and <a class="el" href="classRenderOpenGL.html#a6e01a928b8209c0f4b61fc89aabec6e9">RenderOpenGL</a>.</p>
 
 </div>
 </div>
@@ -3799,6 +3801,33 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Implemented in <a class="el" href="classRender.html#abd062f4cb31e86f68e4ea1b4be8cb8a6">Render</a>.</p>
+
+</div>
+</div>
+<a id="a5dd43a1768dae07c89ae557d136a899b" name="a5dd43a1768dae07c89ae557d136a899b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5dd43a1768dae07c89ae557d136a899b">&#9670;&#160;</a></span>ReadScreenPixels()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual uint8_t * IRender::ReadScreenPixels </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classRenderOpenGL.html#a3cfe6284ef09b6a4a951dcf66f8e6cd8">RenderOpenGL</a>, and <a class="el" href="classRender.html#a25a3d809e66ac89eeef83570ffe26246">Render</a>.</p>
 
 </div>
 </div>

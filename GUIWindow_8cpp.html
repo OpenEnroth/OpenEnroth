@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;009e8e1</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;f6860bd</span>
    </div>
   </td>
  </tr>
@@ -116,6 +116,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="UIPopup_8h.html">GUI/UI/UIPopup.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIStatusBar_8h.html">GUI/UI/UIStatusBar.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="InputAction_8h.html">Io/InputAction.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="KeyboardInputHandler_8h.html">Io/KeyboardInputHandler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Mouse_8h.html">Io/Mouse.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AudioPlayer_8h.html">Media/Audio/AudioPlayer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="MediaPlayer_8h.html">Media/MediaPlayer.h</a>&quot;</code><br />
@@ -143,8 +144,6 @@ Functions</h2></td></tr>
 <tr class="separator:a839bc8361ffe7444793beceebebcb228"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6945bcb6854c648afd995364124e3e17"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8cpp.html#a6945bcb6854c648afd995364124e3e17">PauseGameDrawing</a> ()</td></tr>
 <tr class="separator:a6945bcb6854c648afd995364124e3e17"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a184fb72ca77fd7278ec6cde7b50ae905"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8cpp.html#a184fb72ca77fd7278ec6cde7b50ae905">GUI_ReplaceHotkey</a> (<a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> oldKey, <a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> newKey, char bFirstCall)</td></tr>
-<tr class="separator:a184fb72ca77fd7278ec6cde7b50ae905"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd07d3cdc8b1265cd0ecc8e46005eef4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGUIButton.html">GUIButton</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8cpp.html#afd07d3cdc8b1265cd0ecc8e46005eef4">GUI_HandleHotkey</a> (<a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> <a class="el" href="structhotkey.html">hotkey</a>)</td></tr>
 <tr class="separator:afd07d3cdc8b1265cd0ecc8e46005eef4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9687bf16d9ab309d1827aaa993af4ee"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8cpp.html#ad9687bf16d9ab309d1827aaa993af4ee">MakeDateTimeString</a> (<a class="el" href="structGameTime.html">GameTime</a> time)</td></tr>
@@ -713,40 +712,6 @@ Variables</h2></td></tr>
           <td class="paramtype"><a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a>&#160;</td>
           <td class="paramname"><em>hotkey</em></td><td>)</td>
           <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a184fb72ca77fd7278ec6cde7b50ae905" name="a184fb72ca77fd7278ec6cde7b50ae905"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a184fb72ca77fd7278ec6cde7b50ae905">&#9670;&#160;</a></span>GUI_ReplaceHotkey()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void GUI_ReplaceHotkey </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a>&#160;</td>
-          <td class="paramname"><em>oldKey</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a>&#160;</td>
-          <td class="paramname"><em>newKey</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char&#160;</td>
-          <td class="paramname"><em>bFirstCall</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">

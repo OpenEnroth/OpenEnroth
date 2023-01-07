@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;009e8e1</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;f6860bd</span>
    </div>
   </td>
  </tr>
@@ -74,6 +74,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">GameOptions.cpp File Reference</div></div>
 </div><!--header-->
@@ -86,6 +87,11 @@ $(function() {
 <code>#include &quot;<a class="el" href="GameConfig_8h.html">Application/GameConfig.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Format_8h.html">Utility/Format.h</a>&quot;</code><br />
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a937d34f4be08ed531b4d316d348e9b1a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameOptions_8cpp.html#a937d34f4be08ed531b4d316d348e9b1a">MM_DEFINE_CLI_LEXICAL_CAST_FOR_CONFIG_TYPE</a>(TYPE)</td></tr>
+<tr class="separator:a937d34f4be08ed531b4d316d348e9b1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ab0c5c4fa6282ba541a8e2d8d3dab1aef"><td class="memTemplParams" colspan="2">template&lt;class <a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eeccab9ece18c950afbfa6b0fdbfa4ff731d3">T</a> &gt; </td></tr>
@@ -95,6 +101,33 @@ Functions</h2></td></tr>
 <tr class="memitem:ad0242e9c6a4c425bee29c8f88891ccee"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="GameOptions_8cpp.html#ad0242e9c6a4c425bee29c8f88891ccee">lexical_assign</a> (const std::string &amp;input, <a class="el" href="classConfigValue.html">ConfigValue</a>&lt; <a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eeccab9ece18c950afbfa6b0fdbfa4ff731d3">T</a> &gt; &amp;configValue)</td></tr>
 <tr class="separator:ad0242e9c6a4c425bee29c8f88891ccee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a937d34f4be08ed531b4d316d348e9b1a" name="a937d34f4be08ed531b4d316d348e9b1a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a937d34f4be08ed531b4d316d348e9b1a">&#9670;&#160;</a></span>MM_DEFINE_CLI_LEXICAL_CAST_FOR_CONFIG_TYPE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MM_DEFINE_CLI_LEXICAL_CAST_FOR_CONFIG_TYPE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">TYPE</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span>CLI::detail {                                                                                                 \</div>
+<div class="line">    <span class="keyword">template</span>&lt;&gt;                                                                                                          \</div>
+<div class="line">    <span class="keywordtype">bool</span> lexical_cast&lt;ConfigValue&lt;TYPE&gt;&gt;(<span class="keyword">const</span> std::string &amp;input, <a class="code hl_class" href="classConfigValue.html">ConfigValue&lt;TYPE&gt;</a> &amp;configValue) {                    \</div>
+<div class="line">        <span class="keywordflow">return</span> <a class="code hl_function" href="GameOptions_8cpp.html#ab0c5c4fa6282ba541a8e2d8d3dab1aef">lexical_cast</a>(input, configValue);                                                                        \</div>
+<div class="line">    }                                                                                                                   \</div>
+<div class="line">}</div>
+<div class="ttc" id="aGameOptions_8cpp_html_ab0c5c4fa6282ba541a8e2d8d3dab1aef"><div class="ttname"><a href="GameOptions_8cpp.html#ab0c5c4fa6282ba541a8e2d8d3dab1aef">lexical_cast</a></div><div class="ttdeci">bool lexical_cast(const std::string &amp;input, ConfigValue&lt; T &gt; &amp;configValue)</div><div class="ttdef"><b>Definition:</b> GameOptions.cpp:16</div></div>
+<div class="ttc" id="aclassConfigValue_html"><div class="ttname"><a href="classConfigValue.html">ConfigValue</a></div><div class="ttdef"><b>Definition:</b> ConfigValue.h:11</div></div>
+</div><!-- fragment -->
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ad0242e9c6a4c425bee29c8f88891ccee" name="ad0242e9c6a4c425bee29c8f88891ccee"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad0242e9c6a4c425bee29c8f88891ccee">&#9670;&#160;</a></span>lexical_assign()</h2>

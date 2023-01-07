@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;009e8e1</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;f6860bd</span>
    </div>
   </td>
  </tr>
@@ -91,10 +91,20 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a2b51c9ac7e222e0c94640a4f62c5c10e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adca9e788e1b5334d0294d7e7ba9eb1f8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#adca9e788e1b5334d0294d7e7ba9eb1f8">UnregisterWindow</a> (<a class="el" href="classSdlWindow.html">SdlWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>)</td></tr>
 <tr class="separator:adca9e788e1b5334d0294d7e7ba9eb1f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a016934b039b1d5cdc95401de03e53ea6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#a016934b039b1d5cdc95401de03e53ea6">RegisterGamepad</a> (<a class="el" href="classSdlGamepad.html">SdlGamepad</a> *gamepad)</td></tr>
+<tr class="separator:a016934b039b1d5cdc95401de03e53ea6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98419f71d483f3a604d1f430dc2a271e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#a98419f71d483f3a604d1f430dc2a271e">UnregisterGamepad</a> (<a class="el" href="classSdlGamepad.html">SdlGamepad</a> *gamepad)</td></tr>
+<tr class="separator:a98419f71d483f3a604d1f430dc2a271e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac189c91b7ff93f5907739e9f1a96217a"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#ac189c91b7ff93f5907739e9f1a96217a">GetGamepadIdBySdlId</a> (uint32_t id)</td></tr>
+<tr class="separator:ac189c91b7ff93f5907739e9f1a96217a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeec3ccb155fd7fb849935746d7863bf7"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#aeec3ccb155fd7fb849935746d7863bf7">NextFreeGamepadId</a> ()</td></tr>
+<tr class="separator:aeec3ccb155fd7fb849935746d7863bf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a479603e416f00258b9c6832ca8b88639"><td class="memItemLeft" align="right" valign="top">std::vector&lt; uint32_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#a479603e416f00258b9c6832ca8b88639">AllWindowIds</a> () const</td></tr>
 <tr class="separator:a479603e416f00258b9c6832ca8b88639"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a35f125a580eb74cd023cb961a427c80f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSdlWindow.html">SdlWindow</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#a35f125a580eb74cd023cb961a427c80f">Window</a> (uint32_t id) const</td></tr>
 <tr class="separator:a35f125a580eb74cd023cb961a427c80f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab93d90960eac8b027d74865cbfbc7f44"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSdlGamepad.html">SdlGamepad</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#ab93d90960eac8b027d74865cbfbc7f44">Gamepad</a> (uint32_t id) const</td></tr>
+<tr class="separator:ab93d90960eac8b027d74865cbfbc7f44"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -104,6 +114,8 @@ Private Attributes</h2></td></tr>
 <tr class="separator:aeb89776094e41a0a88373441bd5dd017"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a065f3f34239b96e4b8ce6ad00e786308"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; uint32_t, <a class="el" href="classSdlWindow.html">SdlWindow</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#a065f3f34239b96e4b8ce6ad00e786308">windowById_</a></td></tr>
 <tr class="separator:a065f3f34239b96e4b8ce6ad00e786308"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6f00355f89ac8a626de56c99845d3e2"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; uint32_t, <a class="el" href="classSdlGamepad.html">SdlGamepad</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#ac6f00355f89ac8a626de56c99845d3e2">gamepadById_</a></td></tr>
+<tr class="separator:ac6f00355f89ac8a626de56c99845d3e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a390e455252a75ade6dd9790d7d3d6d6a" name="a390e455252a75ade6dd9790d7d3d6d6a"></a>
@@ -169,6 +181,42 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="ab93d90960eac8b027d74865cbfbc7f44" name="ab93d90960eac8b027d74865cbfbc7f44"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab93d90960eac8b027d74865cbfbc7f44">&#9670;&#160;</a></span>Gamepad()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classSdlGamepad.html">SdlGamepad</a> * SdlPlatformSharedState::Gamepad </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>id</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac189c91b7ff93f5907739e9f1a96217a" name="ac189c91b7ff93f5907739e9f1a96217a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac189c91b7ff93f5907739e9f1a96217a">&#9670;&#160;</a></span>GetGamepadIdBySdlId()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t SdlPlatformSharedState::GetGamepadIdBySdlId </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a57332210b61e0611bcdb63834800a554" name="a57332210b61e0611bcdb63834800a554"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a57332210b61e0611bcdb63834800a554">&#9670;&#160;</a></span>LogSdlError()</h2>
 
@@ -187,6 +235,41 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="aeec3ccb155fd7fb849935746d7863bf7" name="aeec3ccb155fd7fb849935746d7863bf7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeec3ccb155fd7fb849935746d7863bf7">&#9670;&#160;</a></span>NextFreeGamepadId()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t SdlPlatformSharedState::NextFreeGamepadId </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a016934b039b1d5cdc95401de03e53ea6" name="a016934b039b1d5cdc95401de03e53ea6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a016934b039b1d5cdc95401de03e53ea6">&#9670;&#160;</a></span>RegisterGamepad()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SdlPlatformSharedState::RegisterGamepad </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classSdlGamepad.html">SdlGamepad</a> *&#160;</td>
+          <td class="paramname"><em>gamepad</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a2b51c9ac7e222e0c94640a4f62c5c10e" name="a2b51c9ac7e222e0c94640a4f62c5c10e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2b51c9ac7e222e0c94640a4f62c5c10e">&#9670;&#160;</a></span>RegisterWindow()</h2>
 
@@ -198,6 +281,24 @@ Private Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classSdlWindow.html">SdlWindow</a> *&#160;</td>
           <td class="paramname"><em>window</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a98419f71d483f3a604d1f430dc2a271e" name="a98419f71d483f3a604d1f430dc2a271e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98419f71d483f3a604d1f430dc2a271e">&#9670;&#160;</a></span>UnregisterGamepad()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SdlPlatformSharedState::UnregisterGamepad </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classSdlGamepad.html">SdlGamepad</a> *&#160;</td>
+          <td class="paramname"><em>gamepad</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -242,6 +343,28 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="ac6f00355f89ac8a626de56c99845d3e2" name="ac6f00355f89ac8a626de56c99845d3e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6f00355f89ac8a626de56c99845d3e2">&#9670;&#160;</a></span>gamepadById_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unordered_map&lt;uint32_t, <a class="el" href="classSdlGamepad.html">SdlGamepad</a> *&gt; SdlPlatformSharedState::gamepadById_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aeb89776094e41a0a88373441bd5dd017" name="aeb89776094e41a0a88373441bd5dd017"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aeb89776094e41a0a88373441bd5dd017">&#9670;&#160;</a></span>logger_</h2>
 

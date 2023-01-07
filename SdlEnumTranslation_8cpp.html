@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;009e8e1</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;f6860bd</span>
    </div>
   </td>
  </tr>
@@ -79,12 +79,17 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="SdlEnumTranslation_8h.html">SdlEnumTranslation.h</a>&quot;</code><br />
+<code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;cassert&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a20a25bc0bb02a124457bb6ec36c26255"><td class="memItemLeft" align="right" valign="top"><a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SdlEnumTranslation_8cpp.html#a20a25bc0bb02a124457bb6ec36c26255">TranslateSdlKey</a> (SDL_Scancode key)</td></tr>
 <tr class="separator:a20a25bc0bb02a124457bb6ec36c26255"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a931eabe03b6d712113b889907285a8bf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SdlEnumTranslation_8cpp.html#a931eabe03b6d712113b889907285a8bf">TranslateSdlGamepadButton</a> (SDL_GameControllerButton button)</td></tr>
+<tr class="separator:a931eabe03b6d712113b889907285a8bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6fdc40ffd61465ecdc93fdc906c73460"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a>, <a class="el" href="PlatformKey_8h.html#a0aece42f1e1473301d9de209067349b9">PlatformKeyType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SdlEnumTranslation_8cpp.html#a6fdc40ffd61465ecdc93fdc906c73460">TranslateSdlGamepadAxis</a> (SDL_GameControllerAxis axis, float value)</td></tr>
+<tr class="separator:a6fdc40ffd61465ecdc93fdc906c73460"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a54e2121ab9e940f876e7f0fe6d0bbbf4"><td class="memItemLeft" align="right" valign="top">PlatformModifiers&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SdlEnumTranslation_8cpp.html#a54e2121ab9e940f876e7f0fe6d0bbbf4">TranslateSdlMods</a> (uint16_t mods)</td></tr>
 <tr class="separator:a54e2121ab9e940f876e7f0fe6d0bbbf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8cff1ecb73433ebd892b704460c834d5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="PlatformMouseButton_8h.html#a24f0ba632b7eb4b8c479f745c38d4558">PlatformMouseButton</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SdlEnumTranslation_8cpp.html#a8cff1ecb73433ebd892b704460c834d5">TranslateSdlMouseButton</a> (uint8_t mouseButton)</td></tr>
@@ -148,6 +153,52 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype"><a class="el" href="PlatformOpenGLOptions_8h.html#a86988928758fb093416934fad8f60bbf">PlatformVSyncMode</a>&#160;</td>
           <td class="paramname"><em>vsyncMode</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6fdc40ffd61465ecdc93fdc906c73460" name="a6fdc40ffd61465ecdc93fdc906c73460"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6fdc40ffd61465ecdc93fdc906c73460">&#9670;&#160;</a></span>TranslateSdlGamepadAxis()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::pair&lt; <a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a>, <a class="el" href="PlatformKey_8h.html#a0aece42f1e1473301d9de209067349b9">PlatformKeyType</a> &gt; TranslateSdlGamepadAxis </td>
+          <td>(</td>
+          <td class="paramtype">SDL_GameControllerAxis&#160;</td>
+          <td class="paramname"><em>axis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a931eabe03b6d712113b889907285a8bf" name="a931eabe03b6d712113b889907285a8bf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a931eabe03b6d712113b889907285a8bf">&#9670;&#160;</a></span>TranslateSdlGamepadButton()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> TranslateSdlGamepadButton </td>
+          <td>(</td>
+          <td class="paramtype">SDL_GameControllerButton&#160;</td>
+          <td class="paramname"><em>button</em></td><td>)</td>
           <td></td>
         </tr>
       </table>

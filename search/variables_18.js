@@ -5,5 +5,5 @@ var searchData=
   ['x2_2',['x2',['../structBBox.html#a587b0f0fef10e2a36b821cbfc292c24b',1,'BBox']]],
   ['xmax_3',['xmax',['../structPCXHeader.html#aebb023fc309bf4ef1c6e9f341633ddd9',1,'PCXHeader']]],
   ['xmin_4',['xmin',['../structPCXHeader.html#abc5078a7b18513a571de1818b5a506b8',1,'PCXHeader']]],
-  ['xpos_5',['Xpos',['../structSpellBookIconPos.html#a48f576f99d104b12a5b243bec78571d7',1,'SpellBookIconPos']]]
+  ['xpos_5',['Xpos',['../structSpellBookIconPos.html#a5c238bd00b38ebc0821b2239db77c9be',1,'SpellBookIconPos']]]
 ];

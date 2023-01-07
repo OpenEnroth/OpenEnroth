@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;009e8e1</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;f6860bd</span>
    </div>
   </td>
  </tr>
@@ -108,6 +108,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a2ec121f8268afbe83842941c1eca511b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af401f825c0ca3cbfab2e52cbb9c80eaf"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#af401f825c0ca3cbfab2e52cbb9c80eaf">IsVisible</a> () const =0</td></tr>
 <tr class="separator:af401f825c0ca3cbfab2e52cbb9c80eaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94d71295ed6f2932670909f271c04a72"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#a94d71295ed6f2932670909f271c04a72">SetResizable</a> (bool resizable)=0</td></tr>
+<tr class="separator:a94d71295ed6f2932670909f271c04a72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03219a909b5e244be0a5393e8489bc38"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#a03219a909b5e244be0a5393e8489bc38">Resizable</a> () const =0</td></tr>
+<tr class="separator:a03219a909b5e244be0a5393e8489bc38"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a66a2a02d8912e66cfea6db5b5b24b780"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#a66a2a02d8912e66cfea6db5b5b24b780">SetWindowMode</a> (<a class="el" href="PlatformWindow_8h.html#a7772d16a8207ba672642f139658d8f14">PlatformWindowMode</a> mode)=0</td></tr>
 <tr class="separator:a66a2a02d8912e66cfea6db5b5b24b780"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74994f64dfab5f5eb9d232f3803feebd"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="PlatformWindow_8h.html#a7772d16a8207ba672642f139658d8f14">PlatformWindowMode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#a74994f64dfab5f5eb9d232f3803feebd">WindowMode</a> ()=0</td></tr>
@@ -116,6 +120,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a57309261d446ad66a2214f9667010209"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9058287f39208d550f30554a287b5097"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#a9058287f39208d550f30554a287b5097">GrabsMouse</a> () const =0</td></tr>
 <tr class="separator:a9058287f39208d550f30554a287b5097"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad9009b8b2c2e25469a46e914d7991989"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#ad9009b8b2c2e25469a46e914d7991989">SetOrientations</a> (PlatformWindowOrientations orientations)=0</td></tr>
+<tr class="separator:ad9009b8b2c2e25469a46e914d7991989"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd7cdba2b1198484e61f2f2fdb9e8a5c"><td class="memItemLeft" align="right" valign="top">virtual PlatformWindowOrientations&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#acd7cdba2b1198484e61f2f2fdb9e8a5c">Orientations</a> ()=0</td></tr>
+<tr class="separator:acd7cdba2b1198484e61f2f2fdb9e8a5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afef3aee07a354b72017c3db7e86d65ff"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="Margins_8h.html#af54b4ff4492cf2e8fcef8f00c26bb08e">Marginsi</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#afef3aee07a354b72017c3db7e86d65ff">FrameMargins</a> () const =0</td></tr>
 <tr class="separator:afef3aee07a354b72017c3db7e86d65ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1f7086e6b41c514d0192ea04bf3a56d0"><td class="memItemLeft" align="right" valign="top">virtual uintptr_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#a1f7086e6b41c514d0192ea04bf3a56d0">SystemHandle</a> () const =0</td></tr>
@@ -124,10 +132,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a8a9ed39bbb72e2644ad01e22901802c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e157b29cadf22d4245372c11660c1ad"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="classPlatformOpenGLContext.html">PlatformOpenGLContext</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#a4e157b29cadf22d4245372c11660c1ad">CreateOpenGLContext</a> (const <a class="el" href="structPlatformOpenGLOptions.html">PlatformOpenGLOptions</a> &amp;options)=0</td></tr>
 <tr class="separator:a4e157b29cadf22d4245372c11660c1ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0eba9dea46445755418febabbc3145f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#ab0eba9dea46445755418febabbc3145f">GetWidth</a> () const</td></tr>
-<tr class="separator:ab0eba9dea46445755418febabbc3145f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3315b376cb736eada11e822403c22bcf"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#a3315b376cb736eada11e822403c22bcf">GetHeight</a> () const</td></tr>
-<tr class="separator:a3315b376cb736eada11e822403c22bcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Abstraction for accessing platform-specific window API.</p>
@@ -242,56 +246,6 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a3315b376cb736eada11e822403c22bcf" name="a3315b376cb736eada11e822403c22bcf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3315b376cb736eada11e822403c22bcf">&#9670;&#160;</a></span>GetHeight()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int PlatformWindow::GetHeight </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ab0eba9dea46445755418febabbc3145f" name="ab0eba9dea46445755418febabbc3145f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab0eba9dea46445755418febabbc3145f">&#9670;&#160;</a></span>GetWidth()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int PlatformWindow::GetWidth </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a9058287f39208d550f30554a287b5097" name="a9058287f39208d550f30554a287b5097"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9058287f39208d550f30554a287b5097">&#9670;&#160;</a></span>GrabsMouse()</h2>
 
@@ -346,6 +300,33 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="acd7cdba2b1198484e61f2f2fdb9e8a5c" name="acd7cdba2b1198484e61f2f2fdb9e8a5c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd7cdba2b1198484e61f2f2fdb9e8a5c">&#9670;&#160;</a></span>Orientations()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual PlatformWindowOrientations PlatformWindow::Orientations </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classSdlWindow.html#a81ad9dbb6edbe4e79a2082ed328fd6ce">SdlWindow</a>, and <a class="el" href="classTestWindow.html#aeb250c12561c2809dd2ec4839ac058bb">TestWindow</a>.</p>
+
+</div>
+</div>
 <a id="a9f7ea0a561c350c8910dd4a59546b675" name="a9f7ea0a561c350c8910dd4a59546b675"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9f7ea0a561c350c8910dd4a59546b675">&#9670;&#160;</a></span>Position()</h2>
 
@@ -370,6 +351,33 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Implemented in <a class="el" href="classSdlWindow.html#ab6700d28d62527478275d130af3bda83">SdlWindow</a>, and <a class="el" href="classTestWindow.html#aa8b1632d356bf5e52d1708ec3f61c901">TestWindow</a>.</p>
+
+</div>
+</div>
+<a id="a03219a909b5e244be0a5393e8489bc38" name="a03219a909b5e244be0a5393e8489bc38"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03219a909b5e244be0a5393e8489bc38">&#9670;&#160;</a></span>Resizable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool PlatformWindow::Resizable </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classSdlWindow.html#a71f9e72f0cd362b93c3fbe75f8654d37">SdlWindow</a>, and <a class="el" href="classTestWindow.html#adb26f61f2967980e753a172468528228">TestWindow</a>.</p>
 
 </div>
 </div>
@@ -429,6 +437,34 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="ad9009b8b2c2e25469a46e914d7991989" name="ad9009b8b2c2e25469a46e914d7991989"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad9009b8b2c2e25469a46e914d7991989">&#9670;&#160;</a></span>SetOrientations()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void PlatformWindow::SetOrientations </td>
+          <td>(</td>
+          <td class="paramtype">PlatformWindowOrientations&#160;</td>
+          <td class="paramname"><em>orientations</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classSdlWindow.html#a1fdbec74ad2f3ba7379236addabdc3d3">SdlWindow</a>, and <a class="el" href="classTestWindow.html#a06c60d4ed549054b547a8080060e0621">TestWindow</a>.</p>
+
+</div>
+</div>
 <a id="afc64c286af04e2497fa8c5f94bb769b5" name="afc64c286af04e2497fa8c5f94bb769b5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afc64c286af04e2497fa8c5f94bb769b5">&#9670;&#160;</a></span>SetPosition()</h2>
 
@@ -454,6 +490,34 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Implemented in <a class="el" href="classSdlWindow.html#acf2bd8dbc787d814a5d56a0b26ba5e67">SdlWindow</a>, and <a class="el" href="classTestWindow.html#aa874bf93c008f26037c3b369206f3411">TestWindow</a>.</p>
+
+</div>
+</div>
+<a id="a94d71295ed6f2932670909f271c04a72" name="a94d71295ed6f2932670909f271c04a72"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a94d71295ed6f2932670909f271c04a72">&#9670;&#160;</a></span>SetResizable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void PlatformWindow::SetResizable </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>resizable</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classSdlWindow.html#a4678ac1cbfcb8fe441fb64fa7d4e1713">SdlWindow</a>, and <a class="el" href="classTestWindow.html#af69db8880023cef72384719ac7dffa09">TestWindow</a>.</p>
 
 </div>
 </div>
