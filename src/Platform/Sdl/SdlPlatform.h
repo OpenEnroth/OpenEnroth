@@ -28,7 +28,7 @@ class SdlPlatform: public Platform {
 
     virtual int64_t TickCount() const override;
 
-    virtual std::string WinQueryRegistry(const std::string &path) const override;
+    virtual std::string WinQueryRegistry(const std::wstring &path) const override;
 
     virtual std::string StoragePath(const PLATFORM_STORAGE type) const override;
 

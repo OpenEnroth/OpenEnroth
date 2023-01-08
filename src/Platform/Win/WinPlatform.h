@@ -8,5 +8,5 @@ class WinPlatform : public SdlPlatform {
  public:
     using SdlPlatform::SdlPlatform;
 
-    virtual std::string WinQueryRegistry(const std::string &path) const override;
+    virtual std::string WinQueryRegistry(const std::wstring &path) const override;
 };

@@ -21,7 +21,7 @@ class TestPlatform: public Platform {
     virtual std::vector<Recti> DisplayGeometries() const override;
     virtual void ShowMessageBox(const std::string &message, const std::string& title) const override;
     virtual int64_t TickCount() const override;
-    virtual std::string WinQueryRegistry(const std::string &path) const override;
+    virtual std::string WinQueryRegistry(const std::wstring &path) const override;
     virtual std::string StoragePath(const PLATFORM_STORAGE type) const override;
 
     void Reset();

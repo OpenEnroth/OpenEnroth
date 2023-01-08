@@ -12,6 +12,7 @@
 #include "GameMenu.h"
 
 #include "Application/GameWindowHandler.h"
+#include "Application/GamePathResolver.h"
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Awards.h"
@@ -83,6 +84,7 @@
 #include "Utility/Format.h"
 #include "Utility/Random/Random.h"
 
+
 void ShowMM7IntroVideo_and_LoadingScreen();
 void IntegrityTest();
 
@@ -92,53 +94,13 @@ using Application::GameFactory;
 using Engine_::EngineFactory;
 using Graphics::IRenderFactory;
 
-static std::string FindMm7Directory(Platform *platform) {
-    std::string result{};
-
-#ifdef __ANDROID__
-    // TODO: find a better way to deal with paths and remove this android specific block.
-    result = platform->StoragePath(ANDROID_STORAGE_EXTERNAL);
-    if (result.empty())
-        result = platform->StoragePath(ANDROID_STORAGE_INTERNAL);
-    return result;
-#endif
-
-    // env variable override to a custom folder
-    const char *returnval = std::getenv("WOMM_PATH_OVERRIDE");
-    if (returnval)
-        result = std::string(returnval);
-
-    if (!result.empty()) {
-        logger->Info("MM7 Custom Folder (ENV path override): %s", result.c_str());
-        return result;
-    }
-
-    // standard 1.0 installation
-    result = platform->WinQueryRegistry("HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic VII/1.0/AppPath");
-    if (!result.empty()) {
-        logger->Info("Standard MM7 installation found: %s", result.c_str());
-        return result;
-    }
-
-    // GoG old version
-    result = platform->WinQueryRegistry("HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM7/PATH");
-    if (!result.empty()) {
-        logger->Info("GoG MM7 installation found: %s", result.c_str());
-        return result;
-    }
-
-    // GoG new version ( 2018 builds )
-    result = platform->WinQueryRegistry("HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/GOG.com/Games/1207658916/Path");
-    if (!result.empty()) {
-        logger->Info("GoG MM7 2018 build installation found: %s", result.c_str());
-        return result;
-    }
-
-    return result;
-}
 
 void Application::AutoInitDataPath(Platform *platform) {
-    std::string mm7dir = FindMm7Directory(platform);
+    // TODO (captainurist): we should consider reading Unicode (utf8) strings from win32 registry, as it might contain paths
+    // curretnly we convert all strings out of registry into CP_ACP (default windows ansi)
+    // it is later on passed to std::filesystem that should be ascii on windows as well
+    // this means we will can't handle win32 unicode paths at the time
+    std::string mm7dir = ResolveMm7Path(platform);
 
 #ifdef __ANDROID__
     if (mm7dir.empty()) {
@@ -151,14 +113,19 @@ void Application::AutoInitDataPath(Platform *platform) {
         SetDataPath(mm7dir);
 
         std::string savesPath = MakeDataPath("saves");
-        if (!std::filesystem::exists(savesPath))
+        if (!std::filesystem::exists(savesPath)) {
             std::filesystem::create_directory(savesPath);
+        }
+
+        EngineIoc::ResolveLogger()->Info("Using MM7 directory: %s", mm7dir.c_str());
     } else {
-        platform->ShowMessageBox(fmt::format("Required resources aren't found!\n"
-                              "You should acquire licensed copy of M&M VII and copy its resources to \n{}\n\n"
-                              "Additionally you should also copy the content from\n"
-                              "resources directory from our repository there as well!",
-                               !mm7dir.empty() ? mm7dir : "current directory"), "CRITICAL ERROR: missing resources");
+        std::string message = fmt::format("Required resources aren't found!\n"
+                                          "You should acquire licensed copy of M&M VII and copy its resources to \n{}\n\n"
+                                          "Additionally you should also copy the content from\n"
+                                           "resources directory from our repository there as well!",
+                                            !mm7dir.empty() ? mm7dir : "current directory");
+        EngineIoc::ResolveLogger()->Warning(message.c_str());
+        platform->ShowMessageBox(message, "CRITICAL ERROR: missing resources");
     }
 }
 
