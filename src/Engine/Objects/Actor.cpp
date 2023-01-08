@@ -2241,7 +2241,8 @@ void Actor::_SelectTarget(unsigned int uActorID, int *OutTargetPID,
 
     lowestRadius = UINT_MAX;
     v5 = 0;
-    *OutTargetPID = PID_INVALID;
+    // TODO(pskelton): change to PID_INVALID and sort logic in calling funcs
+    *OutTargetPID = 0;
     closestId = 0;
     assert(uActorID < pActors.size());
     Actor *thisActor = &pActors[uActorID];
