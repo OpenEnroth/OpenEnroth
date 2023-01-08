@@ -41,6 +41,9 @@ class GUIFont {
     GUIFont () : pData(new FontData()) {}
     static GUIFont *LoadFont(const char *pFontFile, const char *pFontPalette);
 
+    void CreateFontTex();
+    void ReleaseFontTex();
+
     bool IsCharValid(unsigned char c) const;
     int GetHeight() const;
 
@@ -84,6 +87,8 @@ class GUIFont {
     void DrawTextLineToBuff(uint16_t uColor, uint32_t *uX_buff_pos,
                             const std::string &text, int line_width);
 };
+
+void ReloadFonts();
 
 extern GUIFont *pAutonoteFont;
 extern GUIFont *pSpellFont;

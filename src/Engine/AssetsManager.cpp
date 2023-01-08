@@ -7,6 +7,7 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Texture.h"
+#include "GUI/GUIFont.h"
 
 AssetsManager *assets = new AssetsManager();
 
@@ -22,6 +23,8 @@ void AssetsManager::ReleaseAllTextures() {
     for (auto spr : sprites) {
         render->DeleteTexture(spr.second);
     }
+
+    ReloadFonts();
 
     return;
 }
