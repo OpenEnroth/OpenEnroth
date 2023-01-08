@@ -5597,6 +5597,8 @@ bool RenderOpenGL::Reinitialize(bool firstInit) {
         // TODO: invalidate all previously loaded textures and then load them again as they can be no longer alive on GPU (issue #199).
         // TODO(pskelton): Needs testings on other platforms
         assets->ReleaseAllTextures();
+        ReleaseTerrain();
+        ReleaseBSP();
     }
 
     //     ReloadShaders();
