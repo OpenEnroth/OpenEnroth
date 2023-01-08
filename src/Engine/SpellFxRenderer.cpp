@@ -379,7 +379,7 @@ void SpellFxRenderer::_4A7688_fireball_collision_particle(SpriteObject *a2) {
                                     (float)a2->vPosition.y,
                                     (float)a2->vPosition.z,
                                     floorf(0.5f + (512.0 * v3)),
-                                    ModulateColor(0xFF3C1E, v4));
+                                    ModulateColor(0x1E3CFF, v4));
 }
 
 void SpellFxRenderer::_4A77FD_implosion_particle_d3d(SpriteObject *a1) {
