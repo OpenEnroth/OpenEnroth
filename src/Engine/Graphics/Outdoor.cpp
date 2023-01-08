@@ -48,6 +48,9 @@
 
 using EngineIoc = Engine_::IocContainer;
 
+// TODO(pskelton): make this neater
+static DecalBuilder* decal_builder = EngineIoc::ResolveDecalBuilder();
+
 MapStartPoint uLevel_StartingPointType;
 
 OutdoorLocation *pOutdoor = new OutdoorLocation;
@@ -2897,6 +2900,21 @@ void UpdateActors_ODM() {
 
         bool uIsAboveFloor = (pActors[Actor_ITR].vPosition.z > (Floor_Level + 1));
 
+        // make bloodsplat when the ground is hit
+        if (!pActors[Actor_ITR].donebloodsplat) {
+            if (pActors[Actor_ITR].uAIState == Dead || pActors[Actor_ITR].uAIState == Dying) {
+                if (pActors[Actor_ITR].vPosition.z < Floor_Level + 30) {
+                    if (pMonsterStats->pInfos[pActors[Actor_ITR].pMonsterInfo.uID].bQuestMonster & 1) {
+                        if (engine->config->graphics.BloodSplats.Get()) {
+                            float splatRadius = pActors[Actor_ITR].uActorRadius * engine->config->graphics.BloodSplatsMultiplier.Get();
+                            decal_builder->AddBloodsplat((float)pActors[Actor_ITR].vPosition.x, (float)pActors[Actor_ITR].vPosition.y, (float)(Floor_Level + 30), 1.0, 0.0, 0.0, splatRadius);
+                        }
+                        pActors[Actor_ITR].donebloodsplat = true;
+                    }
+                }
+            }
+        }
+
         if (pActors[Actor_ITR].uAIState == Dead && uIsOnWater && !uIsAboveFloor) {
             pActors[Actor_ITR].uAIState = Removed;
             continue;
@@ -3050,6 +3068,7 @@ void UpdateActors_ODM() {
                     }
                 }
             }
+
             if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
                 pActors[Actor_ITR].vPosition.x = collision_state.new_position_lo.x;
                 pActors[Actor_ITR].vPosition.y = collision_state.new_position_lo.y;

@@ -413,7 +413,7 @@ void Render::DrawOutdoorTerrain() {  // New function
                 pTilePolygon->dimming_level = 20.0f - floorf(20.0f * _f + 0.5f);
 
                 lightmap_builder->StackLights_TerrainFace(norm, &Light_tile_dist, VertexRenderList, 3, 1);
-                decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm, &Light_tile_dist, VertexRenderList, 3, 1);
+                decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm, &Light_tile_dist, VertexRenderList, 3, 1, 0);
 
                 unsigned int a5 = 4;
 
@@ -508,7 +508,7 @@ void Render::DrawOutdoorTerrain() {  // New function
                     lightmap_builder->StackLights_TerrainFace(norm2, &Light_tile_dist, VertexRenderList, 3, 0);
 
                     decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm2,
-                        &Light_tile_dist, VertexRenderList, 3, 0);
+                        &Light_tile_dist, VertexRenderList, 3, 0, 0);
 
 
                     unsigned int a5_2 = 4;
@@ -581,7 +581,7 @@ void Render::DrawOutdoorTerrain() {  // New function
                 pTilePolygon->dimming_level = 20.0f - floorf(20.0f * _f + 0.5f);
 
                 lightmap_builder->StackLights_TerrainFace(norm, &Light_tile_dist, VertexRenderList, pTilePolygon->uNumVertices, 1);
-                decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm, &Light_tile_dist, VertexRenderList, pTilePolygon->uNumVertices, 1);
+                decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm, &Light_tile_dist, VertexRenderList, pTilePolygon->uNumVertices, 1, 0);
 
                 unsigned int a5 = 4;
 

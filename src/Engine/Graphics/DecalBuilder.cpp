@@ -251,7 +251,7 @@ bool DecalBuilder::ApplyBloodSplat_OutdoorFace(ODMFace* pFace) {
 //----- (0049BE8A) --------------------------------------------------------
 // apply outdoor blodsplats - check to see if bloodsplat hits terrain triangle
 bool DecalBuilder::ApplyBloodSplatToTerrain(struct Polygon* terrpoly, Vec3f* terrnorm, float* tridotdist,
-                                            RenderVertexSoft* triverts, unsigned int uStripType, char tri_orient) {
+                                            RenderVertexSoft* triverts, unsigned int uStripType, char tri_orient, int whichsplat) {
     float WorldYPosU = 0;
     float WorldYPosD = 0;
     float WorldXPosL = 0;
@@ -267,74 +267,71 @@ bool DecalBuilder::ApplyBloodSplatToTerrain(struct Polygon* terrpoly, Vec3f* ter
     unsigned int NumBloodsplats = bloodsplat_container->uNumBloodsplats;
 
     if (NumBloodsplats > 0) {
-        // loop over blood to lay
-        for (uint i = 0; i < NumBloodsplats; ++i) {
-            // get triangle geometery
-            if (uStripType == 4) {
-                WorldXPosR = triverts[0].vWorldPosition.x;  // left
-                WorldXPosL = triverts[3].vWorldPosition.x;  // right
-                WorldYPosU = triverts[1].vWorldPosition.y;  // bott
-                WorldYPosD = triverts[0].vWorldPosition.y;  // top
-            } else if (uStripType == 3) {
-                if (tri_orient) {
-                    WorldXPosR = triverts->vWorldPosition.x;
-                    WorldXPosL = triverts[2].vWorldPosition.x;
-                    WorldYPosU = triverts[1].vWorldPosition.y;
-                    WorldYPosD = triverts[2].vWorldPosition.y;
-                } else {
-                    WorldXPosR = triverts[1].vWorldPosition.x;
-                    WorldXPosL = triverts[2].vWorldPosition.x;
-                    WorldYPosU = triverts[1].vWorldPosition.y;
-                    WorldYPosD = triverts->vWorldPosition.y;
-                }
+        // get triangle geometery
+        if (uStripType == 4) {
+            WorldXPosR = triverts[0].vWorldPosition.x;  // left
+            WorldXPosL = triverts[3].vWorldPosition.x;  // right
+            WorldYPosU = triverts[1].vWorldPosition.y;  // bott
+            WorldYPosD = triverts[0].vWorldPosition.y;  // top
+        } else if (uStripType == 3) {
+            if (tri_orient) {
+                WorldXPosR = triverts->vWorldPosition.x;
+                WorldXPosL = triverts[2].vWorldPosition.x;
+                WorldYPosU = triverts[1].vWorldPosition.y;
+                WorldYPosD = triverts[2].vWorldPosition.y;
             } else {
-                log->Warning("Uknown strip type detected!");
+                WorldXPosR = triverts[1].vWorldPosition.x;
+                WorldXPosL = triverts[2].vWorldPosition.x;
+                WorldYPosU = triverts[1].vWorldPosition.y;
+                WorldYPosD = triverts->vWorldPosition.y;
             }
+        } else {
+            log->Warning("Uknown strip type detected!");
+        }
 
-            WorldMinZ = pOutdoor->GetPolygonMinZ(triverts, uStripType);
-            WorldMaxZ = pOutdoor->GetPolygonMaxZ(triverts, uStripType);
+        WorldMinZ = pOutdoor->GetPolygonMinZ(triverts, uStripType);
+        WorldMaxZ = pOutdoor->GetPolygonMaxZ(triverts, uStripType);
 
-            // check xy bounds
-            if (WorldXPosR - bloodsplat_container->pBloodsplats_to_apply[i].radius <
-                bloodsplat_container->pBloodsplats_to_apply[i].x &&
-                WorldXPosL + bloodsplat_container->pBloodsplats_to_apply[i].radius >
-                bloodsplat_container->pBloodsplats_to_apply[i].x &&
-                WorldYPosU - bloodsplat_container->pBloodsplats_to_apply[i].radius <
-                bloodsplat_container->pBloodsplats_to_apply[i].y &&
-                WorldYPosD + bloodsplat_container->pBloodsplats_to_apply[i].radius >
-                bloodsplat_container->pBloodsplats_to_apply[i].y) {
-                // check z bounds
-                if (WorldMinZ - bloodsplat_container->pBloodsplats_to_apply[i].radius <
-                    bloodsplat_container->pBloodsplats_to_apply[i].z &&
-                    WorldMaxZ + bloodsplat_container->pBloodsplats_to_apply[i].radius >
-                    bloodsplat_container->pBloodsplats_to_apply[i].z) {
-                    // check plane distance
-                    *tridotdist = -Dot(triverts->vWorldPosition, *terrnorm);
+        // check xy bounds
+        if (WorldXPosR - bloodsplat_container->pBloodsplats_to_apply[whichsplat].radius <
+            bloodsplat_container->pBloodsplats_to_apply[whichsplat].x &&
+            WorldXPosL + bloodsplat_container->pBloodsplats_to_apply[whichsplat].radius >
+            bloodsplat_container->pBloodsplats_to_apply[whichsplat].x &&
+            WorldYPosU - bloodsplat_container->pBloodsplats_to_apply[whichsplat].radius <
+            bloodsplat_container->pBloodsplats_to_apply[whichsplat].y &&
+            WorldYPosD + bloodsplat_container->pBloodsplats_to_apply[whichsplat].radius >
+            bloodsplat_container->pBloodsplats_to_apply[whichsplat].y) {
+            // check z bounds
+            if (WorldMinZ - bloodsplat_container->pBloodsplats_to_apply[whichsplat].radius <
+                bloodsplat_container->pBloodsplats_to_apply[whichsplat].z &&
+                WorldMaxZ + bloodsplat_container->pBloodsplats_to_apply[whichsplat].radius >
+                bloodsplat_container->pBloodsplats_to_apply[whichsplat].z) {
+                // check plane distance
+                *tridotdist = -Dot(triverts->vWorldPosition, *terrnorm);
 
-                    planedist = terrnorm->y * bloodsplat_container->pBloodsplats_to_apply[i].y +
-                        terrnorm->z * bloodsplat_container->pBloodsplats_to_apply[i].z +
-                        terrnorm->x * bloodsplat_container->pBloodsplats_to_apply[i].x + *tridotdist;
-                    planedist += 0.5f;
+                planedist = terrnorm->y * bloodsplat_container->pBloodsplats_to_apply[whichsplat].y +
+                    terrnorm->z * bloodsplat_container->pBloodsplats_to_apply[whichsplat].z +
+                    terrnorm->x * bloodsplat_container->pBloodsplats_to_apply[whichsplat].x + *tridotdist;
+                planedist += 0.5f;
 
-                    if (planedist <= bloodsplat_container->pBloodsplats_to_apply[i].radius) {
-                        // blood splat hits this terrain tri
+                if (planedist <= bloodsplat_container->pBloodsplats_to_apply[whichsplat].radius) {
+                    // blood splat hits this terrain tri
 
-                        // check if water or something else (maybe should be border tile or swampy>)
-                        if (terrpoly->flags & 2 || terrpoly->flags & 0x100) {
-                            // apply fade flags
-                            if (!(bloodsplat_container->pBloodsplats_to_apply[i].blood_flags & DecalFlagsFade)) {
-                                bloodsplat_container->pBloodsplats_to_apply[i].blood_flags |= DecalFlagsFade;
-                                bloodsplat_container->pBloodsplats_to_apply[i].fade_timer = pEventTimer->Time();
-                            }
+                    // check if water or something else (maybe should be border tile or swampy>)
+                    if (terrpoly->flags & 2 || terrpoly->flags & 0x100) {
+                        // apply fade flags
+                        if (!(bloodsplat_container->pBloodsplats_to_apply[whichsplat].blood_flags & DecalFlagsFade)) {
+                            bloodsplat_container->pBloodsplats_to_apply[whichsplat].blood_flags |= DecalFlagsFade;
+                            bloodsplat_container->pBloodsplats_to_apply[whichsplat].fade_timer = pEventTimer->Time();
                         }
-
-                        bloodsplat_container->pBloodsplats_to_apply[i].fade_timer = pEventTimer->Time();
-                        bloodsplat_container->pBloodsplats_to_apply[i].dot_dist = planedist;
-
-                        // store this decal to apply
-                        this->WhichSplatsOnThisFace[this->uNumSplatsThisFace] = i;
-                        ++this->uNumSplatsThisFace;
                     }
+
+                    bloodsplat_container->pBloodsplats_to_apply[whichsplat].fade_timer = pEventTimer->Time();
+                    bloodsplat_container->pBloodsplats_to_apply[whichsplat].dot_dist = planedist;
+
+                    // store this decal to apply
+                    this->WhichSplatsOnThisFace[this->uNumSplatsThisFace] = whichsplat;
+                    ++this->uNumSplatsThisFace;
                 }
             }
         }

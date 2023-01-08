@@ -1722,6 +1722,7 @@ void UpdateObjects() {
                 &pObjectList->pObjects[pSpriteObjects[i].uObjectDescID];
             if (pSpriteObjects[i].AttachedToActor()) {
                 v5 = PID_ID(pSpriteObjects[i].spell_target_pid);
+                if (v5 > pActors.size()) continue;
                 pSpriteObjects[i].vPosition.x = pActors[v5].vPosition.x;
                 pSpriteObjects[i].vPosition.y = pActors[v5].vPosition.y;
                 pSpriteObjects[i].vPosition.z =

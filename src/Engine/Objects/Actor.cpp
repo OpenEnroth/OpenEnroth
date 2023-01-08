@@ -3520,12 +3520,6 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 );
         }
     } else {
-        if (pMonsterStats->pInfos[pMonster->pMonsterInfo.uID].bQuestMonster & 1) {
-            if (engine->config->graphics.BloodSplats.Get()) {
-                float splatRadius = pMonster->uActorRadius * engine->config->graphics.BloodSplatsMultiplier.Get();
-                decal_builder->AddBloodsplat((float)pMonster->vPosition.x, (float)pMonster->vPosition.y, (float)pMonster->vPosition.z, 1.0, 0.0, 0.0, splatRadius);
-            }
-        }
         Actor::Die(uActorID_Monster);
         Actor::ApplyFineForKillingPeasant(uActorID_Monster);
         Actor::AggroSurroundingPeasants(uActorID_Monster, 1);

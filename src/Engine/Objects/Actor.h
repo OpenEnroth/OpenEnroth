@@ -224,6 +224,7 @@ class Actor {
     unsigned int uLastCharacterIDToHit = 0;
     int dword_000334_unique_name = 0;
     char field_338[12] = {};
+    bool donebloodsplat{ false };
 };
 #pragma pack(pop)
 

@@ -6936,11 +6936,6 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                         Actor::AggroSurroundingPeasants(uActorID, 1);
                     } else {
                         // actor has died from retaliation
-                        // add bloodsplat
-                        if (pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].bQuestMonster & 1 && engine->config->graphics.BloodSplats.Get()) {
-                            float splatRadius = actorPtr->uActorRadius * engine->config->graphics.BloodSplatsMultiplier.Get();
-                            decal_builder->AddBloodsplat(actorPtr->vPosition.x, actorPtr->vPosition.y, actorPtr->vPosition.z, 1.0, 0.0, 0.0, splatRadius);
-                        }
                         Actor::Die(uActorID);
                         Actor::ApplyFineForKillingPeasant(uActorID);
                         Actor::AggroSurroundingPeasants(uActorID, 1);
@@ -7115,12 +7110,6 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                             Actor::AggroSurroundingPeasants(uActorID, 1);
                         } else {
                             // actor killed by retaliation
-                            if (pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].bQuestMonster & 1 &&
-                                engine->config->graphics.BloodSplats.Get()) {
-                                float splatRadius = actorPtr->uActorRadius * engine->config->graphics.BloodSplatsMultiplier.Get();
-                                decal_builder->AddBloodsplat(actorPtr->vPosition.x, actorPtr->vPosition.y, actorPtr->vPosition.z, 1.0, 0.0, 0.0, splatRadius);
-                            }
-
                             Actor::Die(uActorID);
                             Actor::ApplyFineForKillingPeasant(uActorID);
                             Actor::AggroSurroundingPeasants(uActorID, 1);
