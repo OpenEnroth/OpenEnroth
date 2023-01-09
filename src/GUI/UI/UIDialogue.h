@@ -28,3 +28,5 @@ class GUIWindow_GenericDialogue : public GUIWindow {
 void StartBranchlessDialogue(int eventid, int entryline, int button);
 
 void OnSelectNPCDialogueOption(DIALOGUE_TYPE option);
+
+extern const IndexedArray<const char *, PartyAlignment_Good, PartyAlignment_Evil> DialogueBackgroundResourceByAlignment;

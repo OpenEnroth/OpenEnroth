@@ -145,6 +145,7 @@ enum class PartyAlignment: int32_t {
     PartyAlignment_Neutral = 1,
     PartyAlignment_Evil = 2
 };
+using enum PartyAlignment;
 
 /*  208 */
 #pragma pack(push, 1)

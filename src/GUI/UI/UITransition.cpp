@@ -16,6 +16,7 @@
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"
+#include "GUI/UI/UIDialogue.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
@@ -84,21 +85,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
     mapid = pMapStats->GetMapInfo(pCurrentMapName);
     mapname = pLocationName;
 
-    std::string filename;
-    switch (pParty->alignment) {
-        case PartyAlignment::PartyAlignment_Good:
-            filename = "evt02-b";
-            break;
-        case PartyAlignment::PartyAlignment_Neutral:
-            filename = "evt02";
-            break;
-        case PartyAlignment::PartyAlignment_Evil:
-            filename = "evt02-c";
-            break;
-        default:
-            Error("Invalid alignment: %u", pParty->alignment);
-    }
-    game_ui_dialogue_background = assets->GetImage_Solid(filename);
+    game_ui_dialogue_background = assets->GetImage_Solid(DialogueBackgroundResourceByAlignment[pParty->alignment]);
 
     transition_ui_icon = assets->GetImage_Solid(pHouse_ExitPictures[exit_pic_id]);
 
@@ -157,26 +144,10 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
     CreateButton({8, 8}, {0x1CCu, 0x158u}, 1, 0, UIMSG_TransitionUI_Confirm, 1u, InputAction::Invalid, hint);
 }
 
-GUIWindow_Travel::GUIWindow_Travel()
-    : GUIWindow(WINDOW_ChangeLocation, {0, 0}, render->GetRenderDimensions(), 0) {
-    std::string pContainer;  // [sp+0h] [bp-28h]@1
-
+GUIWindow_Travel::GUIWindow_Travel() : GUIWindow(WINDOW_ChangeLocation, {0, 0}, render->GetRenderDimensions(), 0) {
     pEventTimer->Pause();
 
-    switch (pParty->alignment) {
-        case PartyAlignment::PartyAlignment_Good:
-            pContainer = "evt02-b";
-            break;
-        case PartyAlignment::PartyAlignment_Neutral:
-            pContainer = "evt02";
-            break;
-        case PartyAlignment::PartyAlignment_Evil:
-            pContainer = "evt02-c";
-            break;
-        default:
-            Error("Invalid alignment: %u", pParty->alignment);
-    }
-    game_ui_dialogue_background = assets->GetImage_Solid(pContainer);
+    game_ui_dialogue_background = assets->GetImage_Solid(DialogueBackgroundResourceByAlignment[pParty->alignment]);
 
     transition_ui_icon = assets->GetImage_Solid("outside");
     if (pMapStats->GetMapInfo(pCurrentMapName))

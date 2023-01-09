@@ -12,6 +12,13 @@
 #include "Engine/Tables/IconFrameTable.h"
 
 #include "Utility/Random/Random.h"
+#include "Utility/IndexedArray.h"
+
+static const IndexedArray<const char *, PartyAlignment_Good, PartyAlignment_Evil> ProgressBarResourceByAlignment = {
+    {PartyAlignment_Good, "bardata-b"},
+    {PartyAlignment_Neutral, "bardata"},
+    {PartyAlignment_Evil, "bardata-c"}
+};
 
 GUIProgressBar *pGameLoadingUI_ProgressBar = new GUIProgressBar();
 
@@ -56,19 +63,7 @@ bool GUIProgressBar::Initialize(Type type) {
         Draw();
         return true;
     } else {
-        switch (pParty->alignment) {
-            case PartyAlignment::PartyAlignment_Good:
-                progressbar_dungeon = assets->GetImage_ColorKey("bardata-b", render->teal_mask_16);
-                break;
-            case PartyAlignment::PartyAlignment_Neutral:
-                progressbar_dungeon = assets->GetImage_ColorKey("bardata", render->teal_mask_16);
-                break;
-            case PartyAlignment::PartyAlignment_Evil:
-                progressbar_dungeon = assets->GetImage_ColorKey("bardata-c", render->teal_mask_16);
-                break;
-            default:
-                Error("Invalid alignment type: %u", pParty->alignment);
-        }
+        progressbar_dungeon = assets->GetImage_ColorKey(ProgressBarResourceByAlignment[pParty->alignment], render->teal_mask_16);
     }
 
     uProgressCurrent = 0;

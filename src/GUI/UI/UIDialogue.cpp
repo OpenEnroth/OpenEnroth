@@ -24,6 +24,11 @@
 
 using Io::TextInputType;
 
+const IndexedArray<const char *, PartyAlignment_Good, PartyAlignment_Evil> DialogueBackgroundResourceByAlignment = {
+    {PartyAlignment_Good, "evt02-b"},
+    {PartyAlignment_Neutral, "evt02"},
+    {PartyAlignment_Evil, "evt02-c"}
+};
 
 void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
     dword_A74CDC = -1;
@@ -39,20 +44,7 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
         pNPCInfo->uFlags = pNPCInfo->uFlags + 1;
     }
 
-    std::string filename;
-    switch (pParty->alignment) {
-    case PartyAlignment::PartyAlignment_Good:
-            filename = "evt02-b";
-            break;
-        case PartyAlignment::PartyAlignment_Neutral:
-            filename = "evt02";
-            break;
-        case PartyAlignment::PartyAlignment_Evil:
-            filename = "evt02-c";
-            break;
-        default:
-            Error("Invalid alignment: %u", pParty->alignment);
-    }
+    std::string filename = DialogueBackgroundResourceByAlignment[pParty->alignment];
     game_ui_dialogue_background = assets->GetImage_Solid(filename);
 
     pDialogueNPCCount = 0;
