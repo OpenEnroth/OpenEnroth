@@ -81,10 +81,35 @@ Source code is automatically checked against it and Pull Request will fail if yo
 
 To perform style check before pushing anything you can build `check_style` target. In Visual Studio you can do that by going to ***Solution Explorer → Change Views → CMake targets***. Right click and build `check_style`, errors will be listed in output.
 
-Some additional style preferences that we follow, in no particular order:
-* `*` and `&` in type declarations are preceded by a space. So it's `char *string`, and not `char* string`.
+We also follow some additional style preferences, as listed below.
+
+Documentation:
 * Documentation should be in doxydoc format with `@` used for tags, and starting with `/**` comment introducer.
-* Documentation should be written in English. There are some leftover comments in Russian throughout the codebase, feel free to translate them into English when you have a chance.
-* Please leave original function offsets intact. If you have a chance move them to doxygen comments using offset alias (eg `@offset 0xCAFEBEEF.`)
+* Documentation should be written in English.
+* Please leave original function offsets intact. If you have a chance, move them to doxygen comments using `@offset` doxygen tag (e.g. `@offset 0xCAFEBEEF`).
+
+Naming:
+* Use `MM_` prefix for macro naming. Macro names should be in `SNAKE_CASE_ALL_CAPS`.
+* Use `SNAKE_CASE_ALL_CAPS` for `enum` values. E.g. `ITEM_CRATE_OF_ARROWHEADS`, `ITEM_SLOT_RING6`.
+* Use `CamelCase` for everything else.
+* Type names should start with a capital letter. E.g. `IndexedArray`, `InputAction`, `PlatformLogLevel`. This applies to all types, including classes, structs, enums and typedefs, with certain exceptions as listed below.
+* Method & function names should start with a lowercase letter. E.g. `Vec3::length`, `gridCellToWorldPosX`, `getCeilingHeight`.
+* Variable names should start with a lowercase letter. E.g. `int monsterCount = level->MonsterCount()`.
+* Names of private members should start with an underscore to visually distinguish them from variables without having to spell out `this->` every single time. E.g. `_initialized = true`, where `_initialized` is a member field.
+* Note that the above doesn't apply to POD-like types as for such types all members are public and are named just like ordinary variables.
+* Exceptions to the rules above are STL-compatible interfaces, which should follow STL naming rules. So it's `value_type` for iterator value type, and `push_back` for a method that's adding an element to a container.
+
+Code formatting:
+* `*` and `&` in type declarations should be preceded by a space. So it's `char *string`, and not `char* string`.
+
+Language features:
 * Use `enum class`es followed by `using enum` statements instead of ordinary `enum`s. This provides type safety without changing the syntax. For flags, use `Flags` class.
-* Use `MM_` prefix for macro naming.
+* It's OK to use plain `enum`s if you really need to have implicit casts to integer types, but this is a very rare use case. If you're using `enum` values to index into some array, consider using `enum class` coupled with `IndexedArray`.
+* Make your code speak for itself when it comes to ownership. If a function takes ownership of one of its parameters, it should take `std::unique_ptr` by value. If it allocates its result and passes ownership to the caller, then it should return `std::unique_ptr`.
+
+There is a lot of code in the project that doesn't follow these conventions. Please feel free to fix it, preferably not mixing up style and logical changes in the same PR.
+
+Additional Resources
+--------------------
+
+Old event decompiler and IDB files can be found [here](https://www.dropbox.com/sh/if4u3lphn633oit/AADUYMxNcrkAU6epJ50RskyXa?dl=0). Feel free to ping `zipi#6029` for more info.
