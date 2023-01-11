@@ -2,17 +2,15 @@
 
 #include <memory>
 
-#include "Platform/PlatformOpenGLContext.h"
+#include "Platform/Proxy/ProxyOpenGLContext.h"
 
 #include "TestStateHandle.h"
 
-class TestOpenGLContext: public PlatformOpenGLContext {
+class TestOpenGLContext: public ProxyOpenGLContext {
  public:
     TestOpenGLContext(std::unique_ptr<PlatformOpenGLContext> base, TestStateHandle state);
 
-    virtual bool MakeCurrent() override;
     virtual void SwapBuffers() override;
-    virtual void* GetProcAddress(const char* name) override;
 
  private:
     std::unique_ptr<PlatformOpenGLContext> base_;

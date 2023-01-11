@@ -2,12 +2,10 @@ cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 if(ENABLE_TESTS)
     set(TEST_ENGINE_SOURCES TestEventLoop.cpp
-                            TestGamepad.cpp
                             TestOpenGLContext.cpp
                             TestPlatform.cpp
                             TestWindow.cpp)
     set(TEST_ENGINE_HEADERS TestEventLoop.h
-                            TestGamepad.h
                             TestOpenGLContext.h
                             TestPlatform.h
                             TestState.h
