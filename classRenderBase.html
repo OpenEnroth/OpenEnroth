@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;9f266b6</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;6109bf3</span>
    </div>
   </td>
  </tr>
@@ -101,6 +101,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ae2d5141b76e82e0a604372d9ca308bb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acdcd112abf0b2e2c8f5a1945779f6b0b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderBase.html#acdcd112abf0b2e2c8f5a1945779f6b0b">DrawSpriteObjects</a> () override</td></tr>
 <tr class="separator:acdcd112abf0b2e2c8f5a1945779f6b0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5045db2f727e420d60398ff24cc4b45d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderBase.html#a5045db2f727e420d60398ff24cc4b45d">PrepareDecorationsRenderList_ODM</a> () override</td></tr>
+<tr class="separator:a5045db2f727e420d60398ff24cc4b45d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4066bd07b80374166cb41166412340f2"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderBase.html#a4066bd07b80374166cb41166412340f2">MakeParticleBillboardAndPush</a> (<a class="el" href="structSoftwareBillboard.html">SoftwareBillboard</a> *a2, <a class="el" href="classTexture.html">Texture</a> *texture, unsigned int uDiffuse, int angle) override</td></tr>
 <tr class="separator:a4066bd07b80374166cb41166412340f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a578079a02dfc25d728c7d2d0e544acc3"><td class="memItemLeft" align="right" valign="top">virtual float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderBase.html#a578079a02dfc25d728c7d2d0e544acc3">GetGamma</a> () override</td></tr>
@@ -109,6 +111,16 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a3ae8447247a78c9293c1f26818bfc7aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5dc5e8f18589b4d449cd64aff7dfb1d1"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classHWLTexture.html">HWLTexture</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderBase.html#a5dc5e8f18589b4d449cd64aff7dfb1d1">LoadHwlSprite</a> (const std::string &amp;name) override</td></tr>
 <tr class="separator:a5dc5e8f18589b4d449cd64aff7dfb1d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a638f09bfa829cb8a6f1ade279015b9c3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderBase.html#a638f09bfa829cb8a6f1ade279015b9c3">SavePCXScreenshot</a> () override</td></tr>
+<tr class="separator:a638f09bfa829cb8a6f1ade279015b9c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a960ccc6db3bc7c9969b39421c01db59e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderBase.html#a960ccc6db3bc7c9969b39421c01db59e">SavePCXImage16</a> (const std::string &amp;filename, uint16_t *picture_data, int width, int height)</td></tr>
+<tr class="separator:a960ccc6db3bc7c9969b39421c01db59e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38fd40ce7a1a795cd060df0fd4265f7b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderBase.html#a38fd40ce7a1a795cd060df0fd4265f7b">SaveScreenshot</a> (const std::string &amp;filename, unsigned int width, unsigned int height) override</td></tr>
+<tr class="separator:a38fd40ce7a1a795cd060df0fd4265f7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8ae971540bc9f7e893505ad692ee493"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderBase.html#ad8ae971540bc9f7e893505ad692ee493">PackScreenshot</a> (unsigned int width, unsigned int height, void *out_data, unsigned int data_size, unsigned int *screenshot_size) override</td></tr>
+<tr class="separator:ad8ae971540bc9f7e893505ad692ee493"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b7ad285d8af8518426617a485d5ec06"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classImage.html">Image</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderBase.html#a2b7ad285d8af8518426617a485d5ec06">TakeScreenshot</a> (unsigned int width, unsigned int height) override</td></tr>
+<tr class="separator:a2b7ad285d8af8518426617a485d5ec06"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classIRender"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classIRender')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classIRender.html">IRender</a></td></tr>
 <tr class="memitem:a70165e47d794fb18dba8becaf97c3d2f inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a70165e47d794fb18dba8becaf97c3d2f">IRender</a> (std::shared_ptr&lt; <a class="el" href="classApplication_1_1GameConfig.html">Application::GameConfig</a> &gt; <a class="el" href="classIRender.html#a84a2d7552b15274729ce23439dfe69af">config</a>, <a class="el" href="structDecalBuilder.html">DecalBuilder</a> *<a class="el" href="classIRender.html#a8128322c20f1c59dad1664f556c5c8ba">decal_builder</a>, <a class="el" href="classLightmapBuilder.html">LightmapBuilder</a> *<a class="el" href="classIRender.html#aa2ce43d56c21ebb170d03bfdb7509a2e">lightmap_builder</a>, <a class="el" href="structSpellFxRenderer.html">SpellFxRenderer</a> *spellfx, std::shared_ptr&lt; <a class="el" href="classParticleEngine.html">ParticleEngine</a> &gt; <a class="el" href="classIRender.html#a781bd56457da88552d3078a0d976d0d0">particle_engine</a>, <a class="el" href="classVis.html">Vis</a> *<a class="el" href="classIRender.html#a2aface712c4c3dbfb2bfa7811095b9dc">vis</a>, <a class="el" href="classLogger.html">Logger</a> *<a class="el" href="Engine_2IocContainer_8cpp.html#a0009c186c3629201f6c24eded36605f4">logger</a>)</td></tr>
 <tr class="separator:a70165e47d794fb18dba8becaf97c3d2f inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -268,18 +280,18 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aa32dbb28e88013053f00e26ea5be098f inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa0222ebd6e224e60117f37f2de74c7d9 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#aa0222ebd6e224e60117f37f2de74c7d9">FillRectFast</a> (unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, unsigned int uColor16)=0</td></tr>
 <tr class="separator:aa0222ebd6e224e60117f37f2de74c7d9 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2cb24de9bcee5345831506ef2a5ed947 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a2cb24de9bcee5345831506ef2a5ed947">DrawBuildingsD3D</a> ()=0</td></tr>
-<tr class="separator:a2cb24de9bcee5345831506ef2a5ed947 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87645459e4f1e8740dffe1603e27fc8b inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a87645459e4f1e8740dffe1603e27fc8b">DrawOutdoorBuildings</a> ()=0</td></tr>
+<tr class="separator:a87645459e4f1e8740dffe1603e27fc8b inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf15577a2de80a2b1f51aa87a9266706 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#acf15577a2de80a2b1f51aa87a9266706">DrawIndoorSky</a> (unsigned int uNumVertices, unsigned int uFaceID=0)=0</td></tr>
 <tr class="separator:acf15577a2de80a2b1f51aa87a9266706 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aafb36117e0b3cb5a7dfb2983e02de840 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#aafb36117e0b3cb5a7dfb2983e02de840">DrawOutdoorSkyD3D</a> ()=0</td></tr>
-<tr class="separator:aafb36117e0b3cb5a7dfb2983e02de840 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44623a99820671bd81f6328e4f4ead27 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a44623a99820671bd81f6328e4f4ead27">DrawOutdoorSky</a> ()=0</td></tr>
+<tr class="separator:a44623a99820671bd81f6328e4f4ead27 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7dbfa0d560da60e69be299e00675f150 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a7dbfa0d560da60e69be299e00675f150">PrepareDecorationsRenderList_ODM</a> ()=0</td></tr>
 <tr class="separator:a7dbfa0d560da60e69be299e00675f150 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1be6fcb91cc4cc7fcce7fd969d0d49c9 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a1be6fcb91cc4cc7fcce7fd969d0d49c9">DrawSpriteObjects</a> ()=0</td></tr>
 <tr class="separator:a1be6fcb91cc4cc7fcce7fd969d0d49c9 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af10bd3447778b94e112e74a406f80d0a inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#af10bd3447778b94e112e74a406f80d0a">DrawTerrainD3D</a> ()=0</td></tr>
-<tr class="separator:af10bd3447778b94e112e74a406f80d0a inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7c2c6a52e6392c2e9ea2559c97e9399 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#ac7c2c6a52e6392c2e9ea2559c97e9399">DrawOutdoorTerrain</a> ()=0</td></tr>
+<tr class="separator:ac7c2c6a52e6392c2e9ea2559c97e9399 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6793c2d3be80c77d5c7215fa6b02483c inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a6793c2d3be80c77d5c7215fa6b02483c">AreRenderSurfacesOk</a> ()=0</td></tr>
 <tr class="separator:a6793c2d3be80c77d5c7215fa6b02483c inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ff389743c969dd73e3f4a1bec2297d3 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classImage.html">Image</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a0ff389743c969dd73e3f4a1bec2297d3">TakeScreenshot</a> (unsigned int width, unsigned int height)=0</td></tr>
@@ -290,6 +302,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a02781770f1f725d45913a8223a12699f inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2ddff8d7a64a69ca3d6289956d57815 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#ae2ddff8d7a64a69ca3d6289956d57815">SavePCXScreenshot</a> ()=0</td></tr>
 <tr class="separator:ae2ddff8d7a64a69ca3d6289956d57815 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4caca6860f7b0dfe94d7621151ee94e8 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual unsigned short *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a4caca6860f7b0dfe94d7621151ee94e8">MakeScreenshot16</a> (int width, int height)=0</td></tr>
+<tr class="separator:a4caca6860f7b0dfe94d7621151ee94e8 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4280bc8bf39453cf3166bb22ca314612 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a4280bc8bf39453cf3166bb22ca314612">GetActorsInViewport</a> (int pDepth)=0</td></tr>
 <tr class="separator:a4280bc8bf39453cf3166bb22ca314612 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c595d7bcc11babf0ccbac408e90fe74 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a5c595d7bcc11babf0ccbac408e90fe74">BeginLightmaps</a> ()=0</td></tr>
@@ -680,6 +694,62 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a id="ad8ae971540bc9f7e893505ad692ee493" name="ad8ae971540bc9f7e893505ad692ee493"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad8ae971540bc9f7e893505ad692ee493">&#9670;&#160;</a></span>PackScreenshot()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void RenderBase::PackScreenshot </td>
+          <td>(</td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>height</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>out_data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>data_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int *&#160;</td>
+          <td class="paramname"><em>screenshot_size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classIRender.html#a02781770f1f725d45913a8223a12699f">IRender</a>.</p>
+
+</div>
+</div>
 <a id="a098842ca50b330d84ab258d6e8512d4f" name="a098842ca50b330d84ab258d6e8512d4f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a098842ca50b330d84ab258d6e8512d4f">&#9670;&#160;</a></span>PostInitialization()</h2>
 
@@ -702,6 +772,190 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5045db2f727e420d60398ff24cc4b45d" name="a5045db2f727e420d60398ff24cc4b45d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5045db2f727e420d60398ff24cc4b45d">&#9670;&#160;</a></span>PrepareDecorationsRenderList_ODM()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void RenderBase::PrepareDecorationsRenderList_ODM </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classIRender.html#a7dbfa0d560da60e69be299e00675f150">IRender</a>.</p>
+
+</div>
+</div>
+<a id="a960ccc6db3bc7c9969b39421c01db59e" name="a960ccc6db3bc7c9969b39421c01db59e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a960ccc6db3bc7c9969b39421c01db59e">&#9670;&#160;</a></span>SavePCXImage16()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void RenderBase::SavePCXImage16 </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>filename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t *&#160;</td>
+          <td class="paramname"><em>picture_data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>height</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a638f09bfa829cb8a6f1ade279015b9c3" name="a638f09bfa829cb8a6f1ade279015b9c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a638f09bfa829cb8a6f1ade279015b9c3">&#9670;&#160;</a></span>SavePCXScreenshot()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void RenderBase::SavePCXScreenshot </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classIRender.html#ae2ddff8d7a64a69ca3d6289956d57815">IRender</a>.</p>
+
+</div>
+</div>
+<a id="a38fd40ce7a1a795cd060df0fd4265f7b" name="a38fd40ce7a1a795cd060df0fd4265f7b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38fd40ce7a1a795cd060df0fd4265f7b">&#9670;&#160;</a></span>SaveScreenshot()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void RenderBase::SaveScreenshot </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>filename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>height</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classIRender.html#a3072463b6a2d7e8103e46bed4c20630c">IRender</a>.</p>
+
+</div>
+</div>
+<a id="a2b7ad285d8af8518426617a485d5ec06" name="a2b7ad285d8af8518426617a485d5ec06"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b7ad285d8af8518426617a485d5ec06">&#9670;&#160;</a></span>TakeScreenshot()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classImage.html">Image</a> * RenderBase::TakeScreenshot </td>
+          <td>(</td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>height</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classIRender.html#a0ff389743c969dd73e3f4a1bec2297d3">IRender</a>.</p>
 
 </div>
 </div>

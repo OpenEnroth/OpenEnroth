@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;9f266b6</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;6109bf3</span>
    </div>
   </td>
  </tr>
@@ -135,6 +135,8 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a98c47feed3a36da5e13cb8a0b39cddcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a24bd9bc929a7e7e574660a727ae5430f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classApplication_1_1GameConfig.html#a5a96d6be6bc62a5a23e23f6ce078fa8a">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classApplication_1_1GameConfig_1_1Window.html#a24bd9bc929a7e7e574660a727ae5430f">Resizable</a> = <a class="el" href="classConfigValue.html">ConfigValue</a>&lt;bool&gt;(this, &quot;resizable&quot;, true, &quot;Make <a class="el" href="classApplication_1_1GameConfig.html#a1cd398884813fc1a7ecedf0bc785fc26">window</a> resizable by user or not.&quot;)</td></tr>
 <tr class="separator:a24bd9bc929a7e7e574660a727ae5430f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a166755373998c33b30c17c0b4fd62556"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classApplication_1_1GameConfig.html#a5a96d6be6bc62a5a23e23f6ce078fa8a">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classApplication_1_1GameConfig_1_1Window.html#a166755373998c33b30c17c0b4fd62556">ReloadTex</a> = <a class="el" href="classConfigValue.html">ConfigValue</a>&lt;bool&gt;(this, &quot;reload_tex&quot;, true, &quot;Reload texture <a class="el" href="AssetsManager_8cpp.html#a645270130330d2d99964c967b7d33cd8">assets</a> if <a class="el" href="classApplication_1_1GameConfig.html#a1cd398884813fc1a7ecedf0bc785fc26">window</a> is reinitialised.&quot;)</td></tr>
+<tr class="separator:a166755373998c33b30c17c0b4fd62556"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-static-methods" name="pri-static-methods"></a>
 Static Private Member Functions</h2></td></tr>
@@ -354,7 +356,7 @@ Static Private Member Functions</h2></td></tr>
 <b>Initial value:</b><div class="fragment"><div class="line">= <a class="code hl_typedef" href="classApplication_1_1GameConfig.html#aa3e758cf629f38ac99bbadb5ae8aeec7">Int</a>(<span class="keyword">this</span>, <span class="stringliteral">&quot;mode&quot;</span>, <a class="code hl_define" href="GameConfig_8h.html#a1e1c5b84911d53bfb633b2ac3eab53fe">ConfigWindowMode</a>, &amp;<a class="code hl_function" href="classApplication_1_1GameConfig_1_1Window.html#abb4c79c35cb7b7e7d6cbcca928923149">ValidateMode</a>,</div>
 <div class="line">                           <span class="stringliteral">&quot;Window mode. Use 0 for windowed, 1 for borderless windowed, 2 for fullscreen, 3 for borderless (fake) fullscreen.&quot;</span>)</div>
 <div class="ttc" id="aGameConfig_8h_html_a1e1c5b84911d53bfb633b2ac3eab53fe"><div class="ttname"><a href="GameConfig_8h.html#a1e1c5b84911d53bfb633b2ac3eab53fe">ConfigWindowMode</a></div><div class="ttdeci">#define ConfigWindowMode</div><div class="ttdef"><b>Definition:</b> GameConfig.h:13</div></div>
-<div class="ttc" id="aclassApplication_1_1GameConfig_1_1Window_html_abb4c79c35cb7b7e7d6cbcca928923149"><div class="ttname"><a href="classApplication_1_1GameConfig_1_1Window.html#abb4c79c35cb7b7e7d6cbcca928923149">Application::GameConfig::Window::ValidateMode</a></div><div class="ttdeci">static int ValidateMode(int mode)</div><div class="ttdef"><b>Definition:</b> GameConfig.h:558</div></div>
+<div class="ttc" id="aclassApplication_1_1GameConfig_1_1Window_html_abb4c79c35cb7b7e7d6cbcca928923149"><div class="ttname"><a href="classApplication_1_1GameConfig_1_1Window.html#abb4c79c35cb7b7e7d6cbcca928923149">Application::GameConfig::Window::ValidateMode</a></div><div class="ttdeci">static int ValidateMode(int mode)</div><div class="ttdef"><b>Definition:</b> GameConfig.h:560</div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -385,7 +387,7 @@ Static Private Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">= <a class="code hl_typedef" href="classApplication_1_1GameConfig.html#aa3e758cf629f38ac99bbadb5ae8aeec7">Int</a>(<span class="keyword">this</span>, <span class="stringliteral">&quot;position_x&quot;</span>, -1, &amp;<a class="code hl_function" href="classApplication_1_1GameConfig_1_1Window.html#abc84b2ef3788b9cec308fa7a7e2be270">ValidatePosition</a>,</div>
 <div class="line">                                <span class="stringliteral">&quot;Game window x position in display coordinates. Use -1 for centered.&quot;</span>)</div>
-<div class="ttc" id="aclassApplication_1_1GameConfig_1_1Window_html_abc84b2ef3788b9cec308fa7a7e2be270"><div class="ttname"><a href="classApplication_1_1GameConfig_1_1Window.html#abc84b2ef3788b9cec308fa7a7e2be270">Application::GameConfig::Window::ValidatePosition</a></div><div class="ttdeci">static int ValidatePosition(int position)</div><div class="ttdef"><b>Definition:</b> GameConfig.h:564</div></div>
+<div class="ttc" id="aclassApplication_1_1GameConfig_1_1Window_html_abc84b2ef3788b9cec308fa7a7e2be270"><div class="ttname"><a href="classApplication_1_1GameConfig_1_1Window.html#abc84b2ef3788b9cec308fa7a7e2be270">Application::GameConfig::Window::ValidatePosition</a></div><div class="ttdeci">static int ValidatePosition(int position)</div><div class="ttdef"><b>Definition:</b> GameConfig.h:566</div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -403,6 +405,20 @@ Static Private Member Functions</h2></td></tr>
 <b>Initial value:</b><div class="fragment"><div class="line">= <a class="code hl_typedef" href="classApplication_1_1GameConfig.html#aa3e758cf629f38ac99bbadb5ae8aeec7">Int</a>(<span class="keyword">this</span>, <span class="stringliteral">&quot;position_y&quot;</span>, -1, &amp;<a class="code hl_function" href="classApplication_1_1GameConfig_1_1Window.html#abc84b2ef3788b9cec308fa7a7e2be270">ValidatePosition</a>,</div>
 <div class="line">                                <span class="stringliteral">&quot;Game window y position in display coordinates. Use -1 for centered.&quot;</span>)</div>
 </div><!-- fragment -->
+</div>
+</div>
+<a id="a166755373998c33b30c17c0b4fd62556" name="a166755373998c33b30c17c0b4fd62556"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a166755373998c33b30c17c0b4fd62556">&#9670;&#160;</a></span>ReloadTex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classApplication_1_1GameConfig.html#a5a96d6be6bc62a5a23e23f6ce078fa8a">Bool</a> Application::GameConfig::Window::ReloadTex = <a class="el" href="classConfigValue.html">ConfigValue</a>&lt;bool&gt;(this, &quot;reload_tex&quot;, true, &quot;Reload texture <a class="el" href="AssetsManager_8cpp.html#a645270130330d2d99964c967b7d33cd8">assets</a> if <a class="el" href="classApplication_1_1GameConfig.html#a1cd398884813fc1a7ecedf0bc785fc26">window</a> is reinitialised.&quot;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
 </div>
 </div>
 <a id="a24bd9bc929a7e7e574660a727ae5430f" name="a24bd9bc929a7e7e574660a727ae5430f"></a>

@@ -261,7 +261,7 @@ var searchData=
   ['getnumlights_258',['GetNumLights',['../structLightsStack__StationaryLight__.html#a338659dcfe635c65d345fd892999bb2d',1,'LightsStack_StationaryLight_']]],
   ['getobjdescid_259',['GetObjDescId',['../classActor.html#a441d491a322c7d95290c13f5ece8bb1c',1,'Actor']]],
   ['getoffhanditem_260',['GetOffHandItem',['../structPlayer.html#aa21a62746eeab18923a9574f8bbeb1f5',1,'Player']]],
-  ['getopengltexture_261',['GetOpenGlTexture',['../classTextureOpenGL.html#ae6b54b3c8d77d2b782a31952a5f079e7',1,'TextureOpenGL']]],
+  ['getopengltexture_261',['GetOpenGlTexture',['../classTextureOpenGL.html#ac79e8ff7e08a4a45860bd175d287d885',1,'TextureOpenGL']]],
   ['getpagetop_262',['GetPageTop',['../classGUIFont.html#a621cd0a0bb13177ed58682a9f3554138',1,'GUIFont']]],
   ['getpalette_263',['GetPalette',['../classImage.html#a1aefcff924483c315b768ae0fe4f5666',1,'Image']]],
   ['getpaletteindex_264',['GetPaletteIndex',['../structPaletteManager.html#accd91ea981635f587ca50812eb857c2d',1,'PaletteManager::GetPaletteIndex()'],['../classSpriteFrame.html#ae1cc14703b0fa4a83aa0e9c02fe53b3e',1,'SpriteFrame::GetPaletteIndex()']]],
