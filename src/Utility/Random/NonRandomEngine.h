@@ -2,7 +2,7 @@
 
 #include "Utility/Random/RandomEngine.h"
 
-class TestRandomEngine : public RandomEngine {
+class NonRandomEngine : public RandomEngine {
  public:
     virtual float RandomFloat() override {
         return Random(256) / 256.0f;

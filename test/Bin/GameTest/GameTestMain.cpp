@@ -10,9 +10,9 @@
 #include "Testing/Engine/TestPlatform.h"
 #include "Testing/Game/GameWrapper.h"
 #include "Testing/Game/GameTest.h"
-#include "Testing/Random/TestRandomEngine.h"
 
 #include "Utility/Random/Random.h"
+#include "Utility/Random/NonRandomEngine.h"
 #include "Utility/ScopeGuard.h"
 
 #include "GameTestOptions.h"
@@ -20,7 +20,7 @@
 void RunGameThread(const GameTestOptions& opts, TestState *unsafeState) {
     TestStateHandle state(GameSide, unsafeState);
 
-    SetGlobalRandomEngine(std::make_unique<TestRandomEngine>());
+    SetGlobalRandomEngine(std::make_unique<NonRandomEngine>());
 
     std::unique_ptr<PlatformLogger> logger = PlatformLogger::CreateStandardLogger(WinEnsureConsoleOption);
     logger->SetLogLevel(ApplicationLog, LogInfo);
