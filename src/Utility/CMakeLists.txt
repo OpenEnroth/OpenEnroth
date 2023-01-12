@@ -35,6 +35,7 @@ set(UTILITY_HEADERS Blob.h
                     Random/Random.h
                     Random/RandomEngine.h
                     Random/MersenneTwisterRandomEngine.h
+                    Random/NonRandomEngine.h
                     Streams/InputStream.h
                     Streams/OutputStream.h
                     Streams/MemoryInputStream.h
