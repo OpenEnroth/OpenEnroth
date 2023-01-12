@@ -37,7 +37,7 @@
   - New GUI/ window system
   - New sounds system
   - New (.WMM)?? save format with extended capabilites??
-  - Check WOMM features all fixes of GrayFace patches
-  - Add all GrayFace patch enchancements to WOMM
+  - Check OpenEnroth features all fixes of GrayFace patches
+  - Add all GrayFace patch enchancements to OpenEnroth
   - Lua scripting
   - Debug logger improvements

@@ -761,34 +761,34 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
             a1.uType = SPRITE_ARROW_PROJECTILE;
             break;
         case 2:
-            a1.uType = SPRITE_PROJECTILE_550;
+            a1.uType = SPRITE_PROJECTILE_EXPLOSIVE;
             break;
         case 3:
-            a1.uType = SPRITE_PROJECTILE_510;
+            a1.uType = SPRITE_PROJECTILE_FIREBOLT;
             break;
         case 4:
-            a1.uType = SPRITE_PROJECTILE_500;
+            a1.uType = SPRITE_PROJECTILE_AIRBOLT;
             break;
         case 5:
-            a1.uType = SPRITE_PROJECTILE_515;
+            a1.uType = SPRITE_PROJECTILE_WATERBOLT;
             break;
         case 6:
-            a1.uType = SPRITE_PROJECTILE_505;
+            a1.uType = SPRITE_PROJECTILE_EARTHBOLT;
             break;
         case 7:
-            a1.uType = SPRITE_PROJECTILE_530;
+            a1.uType = SPRITE_PROJECTILE_530; // - one of MIND/BODY/SPIRIT
             break;
         case 8:
-            a1.uType = SPRITE_PROJECTILE_525;
+            a1.uType = SPRITE_PROJECTILE_525; // - one of MIND/BODY/SPIRIT
             break;
         case 9:
-            a1.uType = SPRITE_PROJECTILE_520;
+            a1.uType = SPRITE_PROJECTILE_520; // - one of MIND/BODY/SPIRIT
             break;
         case 10:
-            a1.uType = SPRITE_PROJECTILE_535;
+            a1.uType = SPRITE_PROJECTILE_LIGHTBOLT;
             break;
         case 11:
-            a1.uType = SPRITE_PROJECTILE_540;
+            a1.uType = SPRITE_PROJECTILE_DARKBOLT;
             break;
         case 13:
             a1.uType = SPRITE_BLASTER_PROJECTILE;
@@ -826,9 +826,10 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
         a1.field_60_distance_related_prolly_lod = 3;
 
     a1.field_61 = a4;
+    // 1
     a1.Create(pDir->uYawAngle, pDir->uPitchAngle,
-              pObjectList->pObjects[(int16_t)a1.uObjectDescID].uSpeed,
-              0);
+              pObjectList->pObjects[(int16_t)a1.uObjectDescID].uSpeed, 0);
+
     if (pActors[uActorID].pMonsterInfo.uSpecialAbilityType == 1) {
         specAb = pActors[uActorID].pMonsterInfo.uSpecialAbilityDamageDiceBonus;
         if (specAb == 2) {
@@ -836,15 +837,13 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
             v13 = pDir->uYawAngle;
         } else {
             if (specAb != 3) return;
-            a1.Create(
-                pDir->uYawAngle + 30,  // TODO(_) find out why the YawAngle change
-                pDir->uPitchAngle,
-                pObjectList->pObjects[(int16_t)a1.uObjectDescID].uSpeed,
-                0);
+            // 3 - for sprays of 3
+            a1.Create(pDir->uYawAngle + 30, pDir->uPitchAngle,
+                pObjectList->pObjects[(int16_t)a1.uObjectDescID].uSpeed, 0);
             v13 = pDir->uYawAngle - 30;
         }
-        a1.Create(
-            v13, pDir->uPitchAngle,
+        // 2 - double height stacked / spray of 3
+        a1.Create(v13, pDir->uPitchAngle,
             pObjectList->pObjects[(int16_t)a1.uObjectDescID].uSpeed, 0);
     }
     return;
@@ -892,7 +891,7 @@ void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors
 // // but compiler converts functions returning structures by value in the such
 // way
 void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
-                             struct AIDirection *pOut, int a4) {
+                             struct AIDirection *pOut, int PreferedZ) {
     signed int v4;    // eax@1
     signed int v5;    // ecx@1
     int v18;          // edx@15
@@ -1001,32 +1000,32 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
         case OBJECT_Item: {
             outx2 = (float)pSpriteObjects[v5].vPosition.x;
             outy2 = (float)pSpriteObjects[v5].vPosition.y;
-            a4 = pSpriteObjects[v5].vPosition.z;
+            PreferedZ = pSpriteObjects[v5].vPosition.z;
             break;
         }
         case OBJECT_Actor: {
             outx2 = (float)pActors[v5].vPosition.x;
             outy2 = (float)pActors[v5].vPosition.y;
-            a4 = pActors[v5].vPosition.z + (pActors[v5].uActorHeight * 0.75);
+            PreferedZ = pActors[v5].vPosition.z + (pActors[v5].uActorHeight * 0.75);
             break;
         }
         case OBJECT_Player: {
             outx2 = (float)pParty->vPosition.x;
             outy2 = (float)pParty->vPosition.y;
-            if (!a4) a4 = pParty->sEyelevel;
-            a4 = pParty->vPosition.z + a4;
+            if (!PreferedZ) PreferedZ = pParty->sEyelevel;
+            PreferedZ = pParty->vPosition.z + PreferedZ;
             break;
         }
         case OBJECT_Decoration: {
             outx2 = (float)pLevelDecorations[v5].vPosition.x;
             outy2 = (float)pLevelDecorations[v5].vPosition.y;
-            a4 = pLevelDecorations[v5].vPosition.z;
+            PreferedZ = pLevelDecorations[v5].vPosition.z;
             break;
         }
         default: {
             outx2 = 0.0;
             outy2 = 0.0;
-            a4 = 0;
+            PreferedZ = 0;
             break;
         }
         case OBJECT_Face: {
@@ -1037,7 +1036,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                 outy2 = (float)((pIndoor->pFaces[v5].pBounding.y1 +
                                  pIndoor->pFaces[v5].pBounding.y2) >>
                                 1);
-                a4 = (pIndoor->pFaces[v5].pBounding.z1 +
+                PreferedZ = (pIndoor->pFaces[v5].pBounding.z1 +
                       pIndoor->pFaces[v5].pBounding.z2) >>
                      1;
             }
@@ -1047,7 +1046,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
 
     v31 = (float)outx2 - (float)outx;
     v32 = (float)outy2 - (float)outy;
-    a4a = (float)a4 - (float)outz;
+    a4a = (float)PreferedZ - (float)outz;
     outx2 = v32 * v32;
     outy2 = v31 * v31;
     v33 = sqrt(a4a * a4a + outy2 + outx2);
@@ -1189,7 +1188,7 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, signed int sTargetPid,
     v10.z = (int32_t)(pActors[uActorID].uActorHeight * 0.75 +
                       pActors[uActorID].vPosition.z);
 
-    if (Check_LineOfSight((int)v6, (int)v7, v23, v10)) {
+    if (Check_LineOfSight(Vec3i(v6, v7, v23), v10)) {
         if (arg0 != nullptr) {
             v12 = arg0;
         } else {
@@ -1449,7 +1448,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, signed int edx0,
     v7.z = v3->vPosition.z + (v19 * 0.75);
     v7.y = v3->vPosition.y;
     v7.x = v3->vPosition.x;
-    if (Check_LineOfSight(v4, v5, v21, v7)) {
+    if (Check_LineOfSight(Vec3i(v4, v5, v21), v7)) {
         if (pDir == nullptr) {
             Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), a2, &a3, 0);
             v9 = &a3;
@@ -1522,7 +1521,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid,
     v7.z = v3->vPosition.z + (v19 * 0.75);
     v7.y = v3->vPosition.y;
     v7.x = v3->vPosition.x;
-    if (Check_LineOfSight(v4, v5, v21, v7)) {
+    if (Check_LineOfSight(Vec3i(v4, v5, v21), v7)) {
         if (pDir == nullptr) {
             Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), sTargetPid,
                                     &a3, 0);
@@ -1558,6 +1557,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid,
             v3->UpdateAnimation();
         }
     } else {
+        // TODO(pskelton): Consider adding potshots if no LOS
         Actor::AI_Pursue1(uActorID, sTargetPid, uActorID, 64, pDir);
     }
 }
@@ -1596,7 +1596,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, signed int sTargetPid,
     v7.z = v3->vPosition.z + (v18 * 0.75);
     v7.y = v3->vPosition.y;
     v7.x = v3->vPosition.x;
-    if (Check_LineOfSight(v4, v5, v20, v7)) {
+    if (Check_LineOfSight(Vec3i(v4, v5, v20), v7)) {
         if (pDir == nullptr) {
             Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), sTargetPid,
                                     &a3, 0);
@@ -1631,42 +1631,43 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, signed int sTargetPid,
 void Actor::AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid,
                               AIDirection *pDir) {
     Actor *v3;         // ebx@1
-    int v4;            // esi@3
-    int v5;            // edi@3
+    int xpos;            // esi@3
+    int ypos;            // edi@3
     signed int v6;     // eax@4
     Vec3i v7;      // ST04_12@6
     AIDirection *v10;  // eax@9
     int16_t v14;       // ax@11
     AIDirection a3;    // [sp+Ch] [bp-48h]@10
     AIDirection v18;   // [sp+28h] [bp-2Ch]@10
-    int v19;           // [sp+44h] [bp-10h]@6
+    //int v19;           // [sp+44h] [bp-10h]@6
     // signed int a2; // [sp+48h] [bp-Ch]@1
-    int v22 = 0;             // [sp+50h] [bp-4h]@3
+    int zpos = 0;             // [sp+50h] [bp-4h]@3
     unsigned int pDira;  // [sp+5Ch] [bp+8h]@11
 
     v3 = &pActors[uActorID];
     // a2 = edx0;
     if (PID_TYPE(sTargetPid) == OBJECT_Actor) {
         v6 = PID_ID(sTargetPid);
-        v4 = pActors[v6].vPosition.x;
-        v5 = pActors[v6].vPosition.y;
-        v22 = (int)(pActors[v6].uActorHeight * 0.75 + pActors[v6].vPosition.z);
+        xpos = pActors[v6].vPosition.x;
+        ypos = pActors[v6].vPosition.y;
+        zpos = (int)(pActors[v6].uActorHeight * 0.75 + pActors[v6].vPosition.z);
     } else {
         if (PID_TYPE(sTargetPid) == OBJECT_Player) {
-            v4 = pParty->vPosition.x;
-            v5 = pParty->vPosition.y;
-            v22 = pParty->vPosition.z + pParty->sEyelevel;
+            xpos = pParty->vPosition.x;
+            ypos = pParty->vPosition.y;
+            zpos = pParty->vPosition.z + pParty->sEyelevel;
         } else {
-            v4 = pDir->vDirection.x;
-            v5 = pDir->vDirection.x;
+            xpos = pDir->vDirection.x;
+            ypos = pDir->vDirection.x;
         }
     }
-    v19 = v3->uActorHeight;
-    v7.z = v3->vPosition.z + (v19 * 0.75);
+    //v19 = v3->uActorHeight;
+    v7.z = v3->vPosition.z + (v3->uActorHeight * 0.75);
     v7.y = v3->vPosition.y;
     v7.x = v3->vPosition.x;
-    if (Check_LineOfSight(v4, v5, v22, v7) ||
-        Check_LineOfSight(v7.x, v7.y, v7.z, Vec3i(v4, v5, v22))) {
+    if (Check_LineOfSight(Vec3i(xpos, ypos, zpos), v7)
+        // || Check_LineOfSight(v7.x, v7.y, v7.z, Vec3i(xpos, ypos, zpos))
+        ) {
         if (pDir == nullptr) {
             Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), sTargetPid,
                                     &a3, 0);
@@ -2007,26 +2008,24 @@ void Actor::PlaySound(unsigned int uActorID, unsigned int uSoundID) {
 //----- (00402AD7) --------------------------------------------------------
 void Actor::AI_Pursue1(unsigned int uActorID, unsigned int a2, signed int arg0,
                        signed int uActionLength, AIDirection *pDir) {
-    int v6;            // eax@1
     Actor *v7;         // ebx@1
     unsigned int v8;   // ecx@1
     AIDirection *v10;  // esi@6
     AIDirection a3;    // [sp+Ch] [bp-5Ch]@7
     unsigned int v18;  // [sp+64h] [bp-4h]@1
 
-    v6 = 0;
+    int WantedZ = 0;
     v7 = &pActors[uActorID];
     v8 = PID(OBJECT_Actor, uActorID);
-    if (v7->pMonsterInfo.uFlying != 0 &&
-        !pParty->bFlying) {  // TODO(_): Does v6 have a point?
+    if (v7->pMonsterInfo.uFlying != 0 && !pParty->bFlying) {
         if (v7->pMonsterInfo.uMissleAttack1Type)
-            v6 = v7->uActorRadius + 512;
+            WantedZ = v7->uActorRadius + 512; // hovering above ground for missle
         else
-            v6 = pParty->uPartyHeight;
+            WantedZ = pParty->uPartyHeight; // eye height for melee
     }
 
     if (pDir == nullptr) {
-        Actor::GetDirectionInfo(v8, a2, &a3, v6);
+        Actor::GetDirectionInfo(v8, a2, &a3, WantedZ);
         v10 = &a3;
     } else {
         v10 = pDir;
@@ -2224,7 +2223,7 @@ void Actor::AI_Pursue3(unsigned int uActorID, unsigned int a2,
 }
 
 //----- (00401221) --------------------------------------------------------
-void Actor::_SelectTarget(unsigned int uActorID, int *a2,
+void Actor::_SelectTarget(unsigned int uActorID, int *OutTargetPID,
                           bool can_target_party) {
     int v5;                     // ecx@1
     signed int v10;             // eax@13
@@ -2232,17 +2231,18 @@ void Actor::_SelectTarget(unsigned int uActorID, int *a2,
     uint v12;                   // eax@16
     signed int v14;             // eax@31
     uint v15;                   // edi@43
-    uint v16;                   // ebx@45
-    uint v17;                   // eax@45
+    //uint v16;                   // ebx@45
+    //uint v17;                   // eax@45
     signed int closestId;       // [sp+14h] [bp-1Ch]@1
     uint v23;                   // [sp+1Ch] [bp-14h]@16
     unsigned int lowestRadius;  // [sp+24h] [bp-Ch]@1
     uint v27;                   // [sp+2Ch] [bp-4h]@16
-    uint v28;                   // [sp+2Ch] [bp-4h]@45
+    //uint v28;                   // [sp+2Ch] [bp-4h]@45
 
     lowestRadius = UINT_MAX;
     v5 = 0;
-    *a2 = 0;
+    // TODO(pskelton): change to PID_INVALID and sort logic in calling funcs
+    *OutTargetPID = 0;
     closestId = 0;
     assert(uActorID < pActors.size());
     Actor *thisActor = &pActors[uActorID];
@@ -2285,7 +2285,7 @@ void Actor::_SelectTarget(unsigned int uActorID, int *a2,
     }
 
     if (lowestRadius != UINT_MAX) {
-        *a2 = PID(OBJECT_Actor, closestId);
+        *OutTargetPID = PID(OBJECT_Actor, closestId);
     }
 
     if (can_target_party && !pParty->Invisible()) {
@@ -2301,12 +2301,12 @@ void Actor::_SelectTarget(unsigned int uActorID, int *a2,
                 v15 = _4DF380_hostilityRanges[v14];
             else
                 v15 = _4DF380_hostilityRanges[4];
-            v16 = abs(thisActor->vPosition.x - pParty->vPosition.x);
-            v28 = abs(thisActor->vPosition.y - pParty->vPosition.y);
-            v17 = abs(thisActor->vPosition.z - pParty->vPosition.z);
+            uint v16 = abs(thisActor->vPosition.x - pParty->vPosition.x);
+            uint v28 = abs(thisActor->vPosition.y - pParty->vPosition.y);
+            uint v17 = abs(thisActor->vPosition.z - pParty->vPosition.z);
             if (v16 <= v15 && v28 <= v15 && v17 <= v15 &&
                 (v16 * v16 + v28 * v28 + v17 * v17 < lowestRadius)) {
-                *a2 = PID(OBJECT_Player, 0);
+                *OutTargetPID = PID(OBJECT_Player, 0);
             }
         }
     }
@@ -5153,7 +5153,7 @@ void area_of_effect__damage_evaluate() {
                         attacker_coord.z = AttackerInfo.pZs[attack_index];
 
                         // check line of sight
-                        if (Check_LineOfSight(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z + pParty->sEyelevel, attacker_coord))
+                        if (Check_LineOfSight(Vec3i(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z + pParty->sEyelevel), attacker_coord))
                             DamagePlayerFromMonster(
                                 AttackerInfo.pIDs[attack_index],
                                 AttackerInfo.attack_special[attack_index],
@@ -5179,7 +5179,7 @@ void area_of_effect__damage_evaluate() {
                         attacker_coord.z = AttackerInfo.pZs[attack_index];
 
                         // check line of sight
-                        if (Check_LineOfSight(pActors[target_id].vPosition.x, pActors[target_id].vPosition.y, pActors[target_id].vPosition.z + 50, attacker_coord)) {
+                        if (Check_LineOfSight(Vec3i(pActors[target_id].vPosition.x, pActors[target_id].vPosition.y, pActors[target_id].vPosition.z + 50), attacker_coord)) {
                             normalize_to_fixpoint(&xdiff, &ydiff, &zvec);
                             AttackerInfo.vec_4B4[attack_index].x = xdiff;
                             AttackerInfo.vec_4B4[attack_index].y = ydiff;
@@ -5208,8 +5208,8 @@ void area_of_effect__damage_evaluate() {
                 attacker_coord.z = AttackerInfo.pZs[attack_index];
 
                 // check line of sight to party
-                if (Check_LineOfSight(pParty->vPosition.x, pParty->vPosition.y,
-                               pParty->vPosition.z + pParty->sEyelevel,
+                if (Check_LineOfSight(Vec3i(pParty->vPosition.x, pParty->vPosition.y,
+                               pParty->vPosition.z + pParty->sEyelevel),
                                attacker_coord)) {
                     for (uint i = 0; i < 4; ++i) {
                         if (!pParty->pPlayers[i].conditions.Has(Condition_Dead) &&
@@ -5242,9 +5242,9 @@ void area_of_effect__damage_evaluate() {
                         attacker_coord.z = AttackerInfo.pZs[attack_index];
 
                         // check line of sight
-                        if (Check_LineOfSight(pActors[actorID].vPosition.x,
+                        if (Check_LineOfSight(Vec3i(pActors[actorID].vPosition.x,
                                        pActors[actorID].vPosition.y,
-                                       pActors[actorID].vPosition.z + 50,
+                                       pActors[actorID].vPosition.z + 50),
                                        attacker_coord)) {
                             normalize_to_fixpoint(&xdiff, &ydiff, &zvec);
                             AttackerInfo.vec_4B4[attack_index].x = xdiff;

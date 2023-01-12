@@ -82,7 +82,7 @@ bool Localization::Initialize() {
     if (!this->localization_strings[LSTR_FMT_S_U_OUT_OF_U])
         this->localization_strings[LSTR_FMT_S_U_OUT_OF_U] = "%s: %lu out of %lu";
     if (!this->localization_strings[LSTR_NOBODY_IS_IN_CONDITION])
-        this->localization_strings[LSTR_NOBODY_IS_IN_CONDITION] = "Nobody is in condition to do anything!";
+        this->localization_strings[LSTR_NOBODY_IS_IN_CONDITION] = "Nobody is in a condition to do anything!";
     if (!this->localization_strings[LSTR_KEY_CONFLICT])
         this->localization_strings[LSTR_KEY_CONFLICT] = "Please resolve all key conflicts!";
 

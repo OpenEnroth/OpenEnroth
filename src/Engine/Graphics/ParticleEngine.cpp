@@ -97,6 +97,7 @@ void ParticleEngine::AddParticle(Particle_sw *a2) {
             // v6 = (v4->uType & 4) == 0;
             v4->timeToLive = a2->timeToLive;
             v4->texture = a2->texture;
+            v4->paletteID = a2->paletteID;
             v4->particle_size = a2->particle_size;
             if (v4->type & ParticleType_Rotating) {
                 v4->rotation_speed = Random(256) - 128;
@@ -269,6 +270,7 @@ void ParticleEngine::DrawParticles_BLV() {
                 v15.screen_space_y = p->uScreenSpaceY;
                 v15.object_pid = p->object_pid;
                 v15.screen_space_z = p->zbuffer_depth;
+                v15.paletteID = p->paletteID;
                 render->MakeParticleBillboardAndPush(
                     &v15, 0, p->uLightColor_bgr, p->angle);
             } else if (p->type & ParticleType_Line) {  // type doesnt appear to be used
@@ -308,6 +310,7 @@ void ParticleEngine::DrawParticles_BLV() {
                 v15.screen_space_y = p->uScreenSpaceY;
                 v15.object_pid = p->object_pid;
                 v15.screen_space_z = p->zbuffer_depth;
+                v15.paletteID = p->paletteID;
                 render->MakeParticleBillboardAndPush(
                     &v15, p->texture, p->uLightColor_bgr, p->angle);
             } else if (p->type & ParticleType_Sprite) {
@@ -317,6 +320,7 @@ void ParticleEngine::DrawParticles_BLV() {
                 v15.screen_space_y = p->uScreenSpaceY;
                 v15.object_pid = p->object_pid;
                 v15.screen_space_z = p->zbuffer_depth;
+                v15.paletteID = p->paletteID;
                 render->MakeParticleBillboardAndPush(
                     &v15, p->texture, p->uLightColor_bgr, p->angle);
             }

@@ -7004,6 +7004,9 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                 }
                 if (activePlayerCounter) {
                     playerPtr = &pParty->pPlayers[v72[Random(activePlayerCounter)] - 1];
+                } else {
+                    // for rare instances where party is "dead" at this point but still being damaged
+                    playerPtr = &pParty->pPlayers[Random(3)];
                 }
             }
 

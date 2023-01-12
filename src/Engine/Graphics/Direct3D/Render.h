@@ -156,24 +156,15 @@ class Render : public RenderBase {
                               unsigned int uWidth, unsigned int uHeight,
                               unsigned int uColor16) override;
 
-    virtual void DrawBuildingsD3D() override;
+    virtual void DrawOutdoorBuildings() override;
 
     virtual void DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) override;
-    virtual void DrawOutdoorSkyD3D() override;
-
-    virtual void PrepareDecorationsRenderList_ODM() override;
-
-    virtual void DrawTerrainD3D() override;
+    virtual void DrawOutdoorSky() override;
+    virtual void DrawOutdoorTerrain() override;
 
     virtual bool AreRenderSurfacesOk() override;
 
-    virtual Image *TakeScreenshot(unsigned int width, unsigned int height) override;
-    virtual void SaveScreenshot(const std::string &filename, unsigned int width,
-                                unsigned int height) override;
-    virtual void PackScreenshot(unsigned int width, unsigned int height,
-                                void *out_data, unsigned int data_size,
-                                unsigned int *screenshot_size) override;
-    virtual void SavePCXScreenshot() override;
+    virtual unsigned short* MakeScreenshot16(int width, int height) override;
 
     virtual int GetActorsInViewport(int pDepth) override;
 
@@ -249,14 +240,11 @@ class Render : public RenderBase {
 
     void DrawBorderTiles(struct Polygon *poly);
 
-    unsigned short *MakeScreenshot16(signed int width, signed int height);
     bool CheckTextureStages();
     void ParseTargetPixelFormat();
 
     void CreateClipper();
 
-    void SavePCXImage16(const std::string &filename, uint16_t *picture_data,
-                        int width, int height);
     void SavePCXImage32(const std::string &filename, uint16_t *picture_data,
                         int width, int height);
 

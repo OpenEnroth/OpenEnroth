@@ -127,9 +127,9 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
     // if (render->pRenderD3D) // d3d - redraw always
     {
         SkyBillboard.CalcSkyFrustumVec(1, 0, 0, 0, 1, 0);  // sky box frustum
-        render->DrawOutdoorSkyD3D();
-        render->DrawTerrainD3D();
-        render->DrawBuildingsD3D();
+        render->DrawOutdoorSky();
+        render->DrawOutdoorTerrain();
+        render->DrawOutdoorBuildings();
 
         // render->DrawBezierTerrain();
     }
@@ -1852,6 +1852,7 @@ void OutdoorLocation::subconstuctor() {
     // DLVHeader::DLVHeader(&v1->ddm);
 }
 
+// TODO(pskelton): Pass party as param
 //----- (00473893) --------------------------------------------------------
 void ODM_ProcessPartyActions() {
     int v1;            // edi@1

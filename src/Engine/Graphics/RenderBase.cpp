@@ -1,6 +1,7 @@
 #include "Engine/Graphics/RenderBase.h"
 
 #include <cassert>
+#include <algorithm>
 
 #include "Engine/Engine.h"
 #include "Engine/MM7.h"
@@ -19,8 +20,14 @@
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
+#include "Engine/Graphics/PaletteManager.h"
+#include "Engine/Graphics/ParticleEngine.h"
+#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Graphics/DecorationList.h"
+#include "Engine/Graphics/PCX.h"
 
 #include "Utility/Math/TrigLut.h"
+#include "Utility/Random/Random.h"
 
 
 
@@ -118,7 +125,10 @@ unsigned int RenderBase::Billboard_ProbablyAddToListAndSortByZOrder(float z) {
 void RenderBase::DrawSpriteObjects() {
     for (unsigned int i = 0; i < pSpriteObjects.size(); ++i) {
         // exit if we are at max sprites
-        if (::uNumBillboardsToDraw >= 500) break;
+        if (::uNumBillboardsToDraw >= 500) {
+            logger->Warning("Billboards Full");
+            break;
+        }
 
         SpriteObject *object = &pSpriteObjects[i];
         if (!object->uObjectDescID) {  // item probably pciked up - this also gets wiped at end of sprite anims/ particle effects
@@ -240,6 +250,166 @@ void RenderBase::DrawSpriteObjects() {
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+// TODO(pskelton): Move to outdoors - clean up
+void RenderBase::PrepareDecorationsRenderList_ODM() {
+    unsigned int v6;        // edi@9
+    int v7;                 // eax@9
+    SpriteFrame* frame;     // eax@9
+    int v13;                // ecx@9
+    int r;                 // ecx@20
+    int g;                 // dl@20
+    int b_;                // eax@20
+    Particle_sw local_0;    // [sp+Ch] [bp-98h]@7
+    int v38;                // [sp+88h] [bp-1Ch]@9
+
+    for (unsigned int i = 0; i < pLevelDecorations.size(); ++i) {
+        if (::uNumBillboardsToDraw >= 500) {
+            logger->Warning("Billboards Full");
+            return;
+        }
+
+        // view cull
+        if (!IsCylinderInFrustum(pLevelDecorations[i].vPosition.ToFloat(), 512.0f)) continue;
+
+        // LevelDecoration* decor = &pLevelDecorations[i];
+        if ((!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_OBELISK_CHEST) ||
+            pLevelDecorations[i].IsObeliskChestActive()) &&
+            !(pLevelDecorations[i].uFlags & LEVEL_DECORATION_INVISIBLE)) {
+            const DecorationDesc* decor_desc = pDecorationList->GetDecoration(pLevelDecorations[i].uDecorationDescID);
+            if (!(decor_desc->uFlags & DECORATION_DESC_EMITS_FIRE)) {
+                if (!(decor_desc->uFlags & (DECORATION_DESC_MARKER | DECORATION_DESC_DONT_DRAW))) {
+                    v6 = pMiscTimer->uTotalGameTimeElapsed;
+                    v7 = abs(pLevelDecorations[i].vPosition.x +
+                        pLevelDecorations[i].vPosition.y);
+
+                    frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID,
+                        v6 + v7);
+
+                    if (engine->config->graphics.SeasonsChange.Get()) {
+                        frame = LevelDecorationChangeSeason(decor_desc, v6 + v7, pParty->uCurrentMonth);
+                    }
+
+                    if (!frame || frame->texture_name == "null" || frame->hw_sprites[0] == NULL) {
+                        continue;
+                    }
+
+                    // v8 = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID,
+                    // v6 + v7);
+
+                    int v10 = TrigLUT.Atan2(
+                        pLevelDecorations[i].vPosition.x -
+                        pCamera3D->vCameraPos.x,
+                        pLevelDecorations[i].vPosition.y -
+                        pCamera3D->vCameraPos.y);
+                    v38 = 0;
+                    v13 = ((signed int)(TrigLUT.uIntegerPi +
+                        ((signed int)TrigLUT.uIntegerPi >>
+                            3) +
+                        pLevelDecorations[i].field_10_y_rot -
+                        (int64_t)v10) >>
+                        8) &
+                        7;
+                    int v37 = v13;
+                    if (frame->uFlags & 2) v38 = 2;
+                    if ((256 << v13) & frame->uFlags) v38 |= 4;
+                    if (frame->uFlags & 0x40000) v38 |= 0x40;
+                    if (frame->uFlags & 0x20000) v38 |= 0x80;
+
+                    // for light
+                    if (frame->uGlowRadius) {
+                        r = 255;
+                        g = 255;
+                        b_ = 255;
+                        if (render->config->graphics.ColoredLights.Get()) {
+                            r = decor_desc->uColoredLightRed;
+                            g = decor_desc->uColoredLightGreen;
+                            b_ = decor_desc->uColoredLightBlue;
+                            // to avoid blank lights
+                            if (!r && !g && !b_) {
+                                r = g = b_ = 255;
+                            }
+                        }
+                        pStationaryLightsStack->AddLight(
+                            pLevelDecorations[i].vPosition.ToFloat() +
+                            Vec3f(0, 0, decor_desc->uDecorationHeight / 2),
+                            frame->uGlowRadius, r, g, b_, _4E94D0_light_type);
+                    }  // for light
+
+                       // v17 = (pLevelDecorations[i].vPosition.x -
+                       // pCamera3D->vCameraPos.x) << 16; v40 =
+                       // (pLevelDecorations[i].vPosition.y -
+                       // pCamera3D->vCameraPos.y) << 16;
+                    int party_to_decor_x = static_cast<int>(pLevelDecorations[i].vPosition.x - pCamera3D->vCameraPos.x);
+                    int party_to_decor_y = static_cast<int>(pLevelDecorations[i].vPosition.y - pCamera3D->vCameraPos.y);
+                    int party_to_decor_z = static_cast<int>(pLevelDecorations[i].vPosition.z - pCamera3D->vCameraPos.z);
+
+                    int view_x = 0;
+                    int view_y = 0;
+                    int view_z = 0;
+                    bool visible = pCamera3D->ViewClip(
+                        pLevelDecorations[i].vPosition.x,
+                        pLevelDecorations[i].vPosition.y,
+                        pLevelDecorations[i].vPosition.z, &view_x, &view_y,
+                        &view_z);
+
+                    if (visible) {
+                        if (2 * abs(view_x) >= abs(view_y)) {
+                            int projected_x = 0;
+                            int projected_y = 0;
+                            pCamera3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
+
+                            float _v41 = frame->scale * (pCamera3D->ViewPlaneDist_X) / (view_x);
+
+                            int screen_space_half_width = static_cast<int>(_v41 * frame->hw_sprites[(int64_t)v37]->uBufferWidth / 2.0f);
+                            int screen_space_height = static_cast<int>(_v41 * frame->hw_sprites[(int64_t)v37]->uBufferHeight);
+
+                            if (projected_x + screen_space_half_width >= (signed int)pViewport->uViewportTL_X &&
+                                projected_x - screen_space_half_width <= (signed int)pViewport->uViewportBR_X) {
+                                if (projected_y >= pViewport->uViewportTL_Y && (projected_y - screen_space_height) <= pViewport->uViewportBR_Y) {
+                                    ::uNumBillboardsToDraw++;
+                                    ++uNumDecorationsDrawnThisFrame;
+
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].hwsprite = frame->hw_sprites[(int64_t)v37];
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].world_x = pLevelDecorations[i].vPosition.x;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].world_y = pLevelDecorations[i].vPosition.y;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].world_z = pLevelDecorations[i].vPosition.z;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].screen_space_x = projected_x;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].screen_space_y = projected_y;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].screen_space_z = view_x;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].screenspace_projection_factor_x = _v41;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].screenspace_projection_factor_y = _v41;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].uPaletteIndex = frame->GetPaletteIndex();
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].field_1E = v38 | 0x200;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Decoration, i);
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].dimming_level = 0;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].pSpriteFrame = frame;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].sTintColor = 0;
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                memset(&local_0, 0, sizeof(Particle_sw));
+                local_0.type = ParticleType_Bitmap | ParticleType_Rotating |
+                    ParticleType_8;
+                local_0.uDiffuse = 0xFF3C1E;
+                local_0.x = static_cast<float>(pLevelDecorations[i].vPosition.x);
+                local_0.y = static_cast<float>(pLevelDecorations[i].vPosition.y);
+                local_0.z = static_cast<float>(pLevelDecorations[i].vPosition.z);
+                local_0.r = 0.0f;
+                local_0.g = 0.0f;
+                local_0.b = 0.0f;
+                local_0.particle_size = 1.0f;
+                local_0.timeToLive = Random(0x80) + 128; // was rand() & 0x80
+                local_0.texture = spell_fx_renderer->effpar01;
+                particle_engine->AddParticle(&local_0);
             }
         }
     }
@@ -406,7 +576,7 @@ void RenderBase::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
     billboard->texture = texture;
     billboard->z_order = a2->screen_space_z;
     billboard->uNumVertices = 4;
-    billboard->PaletteIndex = 0;
+    billboard->PaletteIndex = pPaletteManager->GetPaletteIndex(a2->paletteID);
 
     float screenspace_projection_factor = a2->screenspace_projection_factor_x;
 
@@ -484,3 +654,48 @@ HWLTexture *RenderBase::LoadHwlSprite(const std::string &name) {
     return pD3DSprites.LoadTexture(name);
 }
 
+void RenderBase::SavePCXScreenshot() {
+    size_t zeros_number = 5;
+    std::string screenshot_number = std::to_string(engine->config->settings.ScreenshotNumber.Increment());
+    std::string file_name = "screenshot_" + std::string(zeros_number - std::min(zeros_number, screenshot_number.length()), '0') + screenshot_number + ".pcx";
+
+    SaveWinnersCertificate(file_name.c_str());
+}
+
+void RenderBase::SavePCXImage16(const std::string& filename, uint16_t* picture_data, int width, int height) {
+    // TODO(pskelton): add "Screenshots" folder?
+    std::string thispath = MakeDataPath(filename);
+    FILE* result = fopen(thispath.c_str(), "wb");
+    if (result == nullptr) {
+        return;
+    }
+
+    unsigned int pcx_data_size = width * height * 5;
+    uint8_t* pcx_data = new uint8_t[pcx_data_size];
+    unsigned int pcx_data_real_size = 0;
+    PCX::Encode16(picture_data, width, height, pcx_data, pcx_data_size, &pcx_data_real_size);
+    fwrite(pcx_data, pcx_data_real_size, 1, result);
+    delete[] pcx_data;
+    fclose(result);
+}
+
+void RenderBase::SaveScreenshot(const std::string& filename, unsigned int width, unsigned int height) {
+    auto pixels = render->MakeScreenshot16(width, height);
+    SavePCXImage16(filename, pixels, width, height);
+    free(pixels);
+}
+
+void RenderBase::PackScreenshot(unsigned int width, unsigned int height,
+    void* out_data, unsigned int data_size,
+    unsigned int* screenshot_size) {
+    auto pixels = render->MakeScreenshot16(width, height);
+    PCX::Encode16(pixels, 150, 112, out_data, data_size, screenshot_size);
+    free(pixels);
+}
+
+Image* RenderBase::TakeScreenshot(unsigned int width, unsigned int height) {
+    auto pixels = MakeScreenshot16(width, height);
+    Image* image = Image::Create(width, height, IMAGE_FORMAT_R5G6B5, pixels);
+    free(pixels);
+    return image;
+}

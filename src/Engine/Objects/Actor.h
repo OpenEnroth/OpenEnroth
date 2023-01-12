@@ -98,7 +98,7 @@ class Actor {
         return uAttributes & ACTOR_NEARBY;
     }
 
-    static void _SelectTarget(unsigned int uActorID, int *a2,
+    static void _SelectTarget(unsigned int uActorID, int *OutTargetPID,
                               bool can_target_party);
     static void AI_Pursue3(unsigned int uActorID, unsigned int a2,
                            signed int uActionLength, struct AIDirection *a4);

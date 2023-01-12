@@ -15,6 +15,7 @@
 
 extern LODFile_IconsBitmaps *pIcons_LOD;
 
+// TODO(pskelton): Move these to asset manager
 GUIFont *pAutonoteFont = nullptr;
 GUIFont *pSpellFont = nullptr;
 GUIFont *pFontArrus = nullptr;
@@ -25,6 +26,29 @@ GUIFont *pFontCreate = nullptr;
 GUIFont *pFontCChar = nullptr;
 GUIFont *pFontComic = nullptr;
 GUIFont *pFontSmallnum = nullptr;
+
+void ReloadFonts() {
+    if (pAutonoteFont)
+        pAutonoteFont->CreateFontTex();
+    if (pSpellFont)
+        pSpellFont->CreateFontTex();
+    if (pFontArrus)
+        pFontArrus->CreateFontTex();
+    if (pFontLucida)
+        pFontLucida->CreateFontTex();
+    if (pBook2Font)
+        pBook2Font->CreateFontTex();
+    if (pBookFont)
+        pBookFont->CreateFontTex();
+    if  (pFontCreate)
+        pFontCreate->CreateFontTex();
+    if (pFontCChar)
+        pFontCChar->CreateFontTex();
+    if (pFontComic)
+        pFontComic->CreateFontTex();
+    if (pFontSmallnum)
+        pFontSmallnum->CreateFontTex();
+}
 
 char temp_string[2048];
 
@@ -53,21 +77,29 @@ GUIFont *GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette) {
         if (pFont->pData->pMetrics[l].uWidth > pFont->maxcharwidth) pFont->maxcharwidth = pFont->pData->pMetrics[l].uWidth;
     }
 
+    pFont->CreateFontTex();
+
+    return pFont;
+}
+
+// TODO(pskelton): Save built atlas so it doesnt get recalcualted on reload?
+void GUIFont::CreateFontTex() {
+    this->ReleaseFontTex();
     // create blank textures
-    pFont->fonttex = render->CreateTexture_Blank(512, 512, IMAGE_FORMAT_A8B8G8R8);
-    pFont->fontshadow = render->CreateTexture_Blank(512, 512, IMAGE_FORMAT_A8B8G8R8);
-    uint32_t *pPixelsfont = (uint32_t *)pFont->fonttex->GetPixels(IMAGE_FORMAT_A8B8G8R8);
-    uint32_t *pPixelsshadow = (uint32_t *)pFont->fontshadow->GetPixels(IMAGE_FORMAT_A8B8G8R8);
+    this->fonttex = render->CreateTexture_Blank(512, 512, IMAGE_FORMAT_A8B8G8R8);
+    this->fontshadow = render->CreateTexture_Blank(512, 512, IMAGE_FORMAT_A8B8G8R8);
+    uint32_t* pPixelsfont = (uint32_t*)this->fonttex->GetPixels(IMAGE_FORMAT_A8B8G8R8);
+    uint32_t* pPixelsshadow = (uint32_t*)this->fontshadow->GetPixels(IMAGE_FORMAT_A8B8G8R8);
 
     // load in char pixels into squares within texture
     for (int l = 0; l < 256; l++) {
         int xsq = l % 16;
         int ysq = l / 16;
         int offset = 32 * xsq + 32 * ysq * 512;
-        uint8_t *pCharPixels = &pFont->pData->pFontData[pFont->pData->font_pixels_offset[l]];
+        uint8_t* pCharPixels = &this->pData->pFontData[this->pData->font_pixels_offset[l]];
 
-        for (uint y = 0; y < pFont->pData->uFontHeight; ++y) {
-            for (uint x = 0; x < pFont->pData->pMetrics[l].uWidth; ++x) {
+        for (uint y = 0; y < this->pData->uFontHeight; ++y) {
+            for (uint x = 0; x < this->pData->pMetrics[l].uWidth; ++x) {
                 if (*pCharPixels) {
                     if (*pCharPixels != 1) {
                         // add to normal
@@ -83,11 +115,15 @@ GUIFont *GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette) {
         }
     }
 
-    render->Update_Texture(pFont->fonttex);
-    render->Update_Texture(pFont->fontshadow);
+    render->Update_Texture(this->fonttex);
+    render->Update_Texture(this->fontshadow);
+}
 
-
-    return pFont;
+void GUIFont::ReleaseFontTex() {
+    if (this->fonttex)
+        render->DeleteTexture(this->fonttex);
+    if (this->fontshadow)
+        render->DeleteTexture(this->fontshadow);
 }
 
 bool GUIFont::IsCharValid(unsigned char c) const {

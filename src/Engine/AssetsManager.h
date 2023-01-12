@@ -10,6 +10,8 @@ class AssetsManager {
  public:
     AssetsManager() {}
 
+    void ReleaseAllTextures();
+
     bool ReleaseAllImages();
     bool ReleaseAllSprites();
 

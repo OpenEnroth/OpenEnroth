@@ -7,8 +7,27 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Texture.h"
+#include "GUI/GUIFont.h"
 
 AssetsManager *assets = new AssetsManager();
+
+void AssetsManager::ReleaseAllTextures() {
+    logger->Info("Render - Releasing Textures.");
+    // clears any textures from gpu
+    for (auto img : images) {
+        render->DeleteTexture(img.second);
+    }
+    for (auto bit : bitmaps) {
+        render->DeleteTexture(bit.second);
+    }
+    for (auto spr : sprites) {
+        render->DeleteTexture(spr.second);
+    }
+
+    ReloadFonts();
+
+    return;
+}
 
 bool AssetsManager::ReleaseAllImages() {
     return true;

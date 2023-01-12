@@ -43,13 +43,16 @@ Texture *TextureOpenGL::Create(ImageLoader *loader) {
     return tex;
 }
 
-int TextureOpenGL::GetOpenGlTexture() {
-    if (!this->initialized) {
-        this->LoadImageData();
-    }
+int TextureOpenGL::GetOpenGlTexture(bool bLoad) {
+    if (bLoad) {
+        if (!this->initialized) {
+            this->LoadImageData();
+        }
 
-    if (this->ogl_texture < 0) {
-        __debugbreak();  // prob not loaded in as texture and recast so problems
+        // texture needs reloading to gpu
+        if (this->ogl_texture < 0) {
+            render->MoveTextureToDevice(this);
+        }
     }
 
     return this->ogl_texture;

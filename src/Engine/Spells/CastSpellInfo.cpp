@@ -421,7 +421,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
                     pSpellSprite.uSoundID = (short)pCastSpell->sound_id;
                     pSpellSprite.vPosition.x = pActors[monster_id].vPosition.x;
-                    pSpellSprite.vPosition.z = pActors[monster_id].vPosition.z;
+                    pSpellSprite.vPosition.z = pActors[monster_id].vPosition.z + pActors[monster_id].uActorHeight / 2;
                     pSpellSprite.vPosition.y = pActors[monster_id].vPosition.y;
                     pSpellSprite.spell_target_pid = PID(OBJECT_Actor, monster_id);
                     Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, &v697);

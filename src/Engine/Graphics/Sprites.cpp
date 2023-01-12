@@ -63,7 +63,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
     if (uSpriteID <= this->uNumSpriteFrames) {
         if (uSpriteID >= 0) {
             uint iter_uSpriteID = uSpriteID;
-            //if (iter_uSpriteID == 807) __debugbreak();
+            //if (iter_uSpriteID == 603) __debugbreak();
 
             int uFlags = pSpriteSFrames[iter_uSpriteID].uFlags;
 

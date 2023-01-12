@@ -193,7 +193,7 @@ bool Render::AreRenderSurfacesOk() { return pFrontBuffer4 && pBackBuffer4; }
 
 extern unsigned int BlendColors(unsigned int a1, unsigned int a2);
 
-void Render::DrawTerrainD3D() {  // New function
+void Render::DrawOutdoorTerrain() {  // New function
     // warning: the game uses CW culling by default, ccw is incosistent
     pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_CW);
 
@@ -760,189 +760,6 @@ void Render::DrawBorderTiles(struct Polygon *poly) {
 }
 
 
-void Render::PrepareDecorationsRenderList_ODM() {
-    unsigned int v6;        // edi@9
-    int v7;                 // eax@9
-    SpriteFrame *frame;     // eax@9
-    uint16_t *v10;  // eax@9
-    int v13;                // ecx@9
-    int r;                 // ecx@20
-    int g;                 // dl@20
-    int b_;                // eax@20
-    Particle_sw local_0;    // [sp+Ch] [bp-98h]@7
-    uint16_t *v37;  // [sp+84h] [bp-20h]@9
-    int v38;                // [sp+88h] [bp-1Ch]@9
-
-    for (unsigned int i = 0; i < pLevelDecorations.size(); ++i) {
-        // LevelDecoration* decor = &pLevelDecorations[i];
-        if ((!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_OBELISK_CHEST) ||
-             pLevelDecorations[i].IsObeliskChestActive()) &&
-            !(pLevelDecorations[i].uFlags & LEVEL_DECORATION_INVISIBLE)) {
-            const DecorationDesc *decor_desc = pDecorationList->GetDecoration(pLevelDecorations[i].uDecorationDescID);
-            if (!(decor_desc->uFlags & DECORATION_DESC_EMITS_FIRE)) {
-                if (!(decor_desc->uFlags & (DECORATION_DESC_MARKER | DECORATION_DESC_DONT_DRAW))) {
-                    v6 = pMiscTimer->uTotalGameTimeElapsed;
-                    v7 = abs(pLevelDecorations[i].vPosition.x +
-                             pLevelDecorations[i].vPosition.y);
-
-                    frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID,
-                                                        v6 + v7);
-
-                    if (engine->config->graphics.SeasonsChange.Get()) {
-                        frame = LevelDecorationChangeSeason(decor_desc, v6 + v7, pParty->uCurrentMonth);
-                    }
-
-                    if (!frame || frame->texture_name == "null" || frame->hw_sprites[0] == NULL) {
-                        continue;
-                    }
-
-                    // v8 = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID,
-                    // v6 + v7);
-
-                    v10 = (uint16_t *)TrigLUT.Atan2(
-                        pLevelDecorations[i].vPosition.x -
-                            pCamera3D->vCameraPos.x,
-                        pLevelDecorations[i].vPosition.y -
-                            pCamera3D->vCameraPos.y);
-                    v38 = 0;
-                    v13 = ((signed int)(TrigLUT.uIntegerPi +
-                                        ((signed int)TrigLUT.uIntegerPi >>
-                                         3) +
-                                        pLevelDecorations[i].field_10_y_rot -
-                                        (signed int)v10) >>
-                           8) &
-                          7;
-                    v37 = (uint16_t *)v13;
-                    if (frame->uFlags & 2) v38 = 2;
-                    if ((256 << v13) & frame->uFlags) v38 |= 4;
-                    if (frame->uFlags & 0x40000) v38 |= 0x40;
-                    if (frame->uFlags & 0x20000) v38 |= 0x80;
-
-                    // for light
-                    if (frame->uGlowRadius) {
-                        r = 255;
-                        g = 255;
-                        b_ = 255;
-                        if (render->config->graphics.ColoredLights.Get()) {
-                            r = decor_desc->uColoredLightRed;
-                            g = decor_desc->uColoredLightGreen;
-                            b_ = decor_desc->uColoredLightBlue;
-                        }
-                        pStationaryLightsStack->AddLight(
-                            pLevelDecorations[i].vPosition.ToFloat() +
-                                Vec3f(0, 0, decor_desc->uDecorationHeight / 2),
-                            frame->uGlowRadius, r, g, b_, _4E94D0_light_type);
-                    }  // for light
-
-                    // v17 = (pLevelDecorations[i].vPosition.x -
-                    // pCamera3D->vCameraPos.x) << 16; v40 =
-                    // (pLevelDecorations[i].vPosition.y -
-                    // pCamera3D->vCameraPos.y) << 16;
-                    int party_to_decor_x = pLevelDecorations[i].vPosition.x -
-                                           pCamera3D->vCameraPos.x;
-                    int party_to_decor_y = pLevelDecorations[i].vPosition.y -
-                                           pCamera3D->vCameraPos.y;
-                    int party_to_decor_z = pLevelDecorations[i].vPosition.z -
-                                           pCamera3D->vCameraPos.z;
-
-                    int view_x = 0;
-                    int view_y = 0;
-                    int view_z = 0;
-                    bool visible = pCamera3D->ViewClip(
-                        pLevelDecorations[i].vPosition.x,
-                        pLevelDecorations[i].vPosition.y,
-                        pLevelDecorations[i].vPosition.z, &view_x, &view_y,
-                        &view_z);
-
-                    if (visible) {
-                        // if (2 * abs(view_x) >= abs(view_y)) {
-                            int projected_x = 0;
-                            int projected_y = 0;
-                            pCamera3D->Project(view_x, view_y, view_z,
-                                                      &projected_x,
-                                                      &projected_y);
-
-                            float _v41 = frame->scale *
-                                pCamera3D->ViewPlaneDist_X /
-                                view_x;
-
-                            int screen_space_half_width = 0;
-                            screen_space_half_width =
-                                _v41 *
-                                frame->hw_sprites[(int)v37]->uBufferWidth / 2;
-
-
-                            if (projected_x + screen_space_half_width >=
-                                    (signed int)pViewport->uViewportTL_X &&
-                                projected_x - screen_space_half_width <=
-                                    (signed int)pViewport->uViewportBR_X) {
-                                if (::uNumBillboardsToDraw >= 500) return;
-                                ::uNumBillboardsToDraw++;
-                                ++uNumDecorationsDrawnThisFrame;
-
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .hwsprite = frame->hw_sprites[(int)v37];
-
-                                // error catching
-                                if (frame->hw_sprites[(int)v37]->texture->GetHeight() == 0 || frame->hw_sprites[(int)v37]->texture->GetWidth() == 0)
-                                    __debugbreak();
-
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .world_x = pLevelDecorations[i].vPosition.x;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .world_y = pLevelDecorations[i].vPosition.y;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .world_z = pLevelDecorations[i].vPosition.z;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .screen_space_x = projected_x;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .screen_space_y = projected_y;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .screen_space_z = view_x;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .screenspace_projection_factor_x = _v41;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .screenspace_projection_factor_y = _v41;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .uPaletteIndex = frame->GetPaletteIndex();
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .field_1E = v38 | 0x200;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .uIndoorSectorID = 0;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .object_pid = PID(OBJECT_Decoration, i);
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .dimming_level = 0;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .pSpriteFrame = frame;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .sTintColor = 0;
-                            } else {
-                                // temp
-                            }
-                       // }
-                    }
-                }
-            } else {
-                memset(&local_0, 0, sizeof(Particle_sw));
-                local_0.type = ParticleType_Bitmap | ParticleType_Rotating |
-                               ParticleType_8;
-                local_0.uDiffuse = 0xFF3C1E;
-                local_0.x = (double)pLevelDecorations[i].vPosition.x;
-                local_0.y = (double)pLevelDecorations[i].vPosition.y;
-                local_0.z = (double)pLevelDecorations[i].vPosition.z;
-                local_0.r = 0.0;
-                local_0.g = 0.0;
-                local_0.b = 0.0;
-                local_0.particle_size = 1.0;
-                local_0.timeToLive = Random(0x80) + 128; // was rand() & 0x80
-                local_0.texture = spell_fx_renderer->effpar01;
-                particle_engine->AddParticle(&local_0);
-            }
-        }
-    }
-}
-
 void Render::DrawPolygon(struct Polygon *pPolygon) {
     if ((uNumD3DSceneBegins == 0) || (pPolygon->uNumVertices < 3)) {
         return;
@@ -1229,16 +1046,6 @@ void Render::PresentBlackScreen() {
     render->Present();
 }
 
-void Render::SavePCXScreenshot() {
-    size_t zeros_number = 5;
-    std::string screenshot_number = std::to_string(engine->config->settings.ScreenshotNumber.Increment());
-    std::string file_name = "screenshot_" + std::string(zeros_number - std::min(zeros_number, screenshot_number.length()), '0') + screenshot_number + ".pcx";
-
-    SaveWinnersCertificate(file_name.c_str());
-}
-
-uint8_t *ReadScreenPixels() {}
-
 void Render::SaveWinnersCertificate(const char *file_name) {
     BeginScene();
 
@@ -1268,24 +1075,6 @@ void Render::SavePCXImage32(const std::string &filename, uint16_t *picture_data,
     uint8_t *pcx_data = new uint8_t[pcx_data_size];
     unsigned int pcx_data_real_size = 0;
     PCX::Encode32(picture_data, width, height, pcx_data, pcx_data_size,
-                  &pcx_data_real_size);
-    fwrite(pcx_data, pcx_data_real_size, 1, result);
-    delete[] pcx_data;
-    fclose(result);
-}
-
-void Render::SavePCXImage16(const std::string &filename, uint16_t *picture_data,
-                            int width, int height) {
-    std::string thispath = MakeDataPath(filename);
-    FILE *result = fopen(thispath.c_str(), "wb");
-    if (result == nullptr) {
-        return;
-    }
-
-    unsigned int pcx_data_size = width * height * 5;
-    uint8_t *pcx_data = new uint8_t[pcx_data_size];
-    unsigned int pcx_data_real_size = 0;
-    PCX::Encode16(picture_data, width, height, pcx_data, pcx_data_size,
                   &pcx_data_real_size);
     fwrite(pcx_data, pcx_data_real_size, 1, result);
     delete[] pcx_data;
@@ -3428,7 +3217,7 @@ void Render::MaskGameViewport() {
     );
 }
 
-void Render::DrawBuildingsD3D() {
+void Render::DrawOutdoorBuildings() {
     int farclip;  // [sp+2Ch] [bp-2Ch]@10
     int nearclip;  // [sp+30h] [bp-28h]@34
     // int v51;  // [sp+34h] [bp-24h]@35
@@ -3663,28 +3452,6 @@ unsigned short *Render::MakeScreenshot16(int width, int height) {
         ErrD3D(pBackBuffer4->Unlock(NULL));
     }
     return pPixels;
-}
-
-Image *Render::TakeScreenshot(unsigned int width, unsigned int height) {
-    auto pixels = MakeScreenshot16(width, height);
-    Image *image = Image::Create(width, height, IMAGE_FORMAT_R5G6B5, pixels);
-    free(pixels);
-    return image;
-}
-
-void Render::SaveScreenshot(const std::string &filename, unsigned int width,
-                            unsigned int height) {
-    auto pixels = MakeScreenshot16(width, height);
-    SavePCXImage16(filename, pixels, width, height);
-    free(pixels);
-}
-
-void Render::PackScreenshot(unsigned int width, unsigned int height, void *data,
-                            unsigned int data_size,
-                            unsigned int *out_screenshot_size) {
-    auto pixels = MakeScreenshot16(150, 112);
-    PCX::Encode16(pixels, width, height, data, data_size, out_screenshot_size);
-    free(pixels);
 }
 
 int Render::GetActorsInViewport(int pDepth) {
@@ -4067,7 +3834,7 @@ unsigned int _452442_color_cvt(uint16_t a1, uint16_t a2, int a3,
 //    return 1;
 //}
 
-void Render::DrawOutdoorSkyD3D() {
+void Render::DrawOutdoorSky() {
     double rot_to_rads = ((2 * pi_double) / 2048);
 
     // lowers clouds as party goes up
@@ -4248,217 +4015,6 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {
         DrawIndoorSkyPolygon(pSkyPolygon.uNumVertices, &pSkyPolygon);
         return;
     }
-
-
-
-
-
-
-    logger->Info("past normal section");
-    __debugbreak();
-    // please provide save game / details if you get here
-    // TODO(pskelton): below looks like some vert clipping but dont think its ever gets here now - delete below after testing
-
-        // copy last to first
-    memcpy(&array_507D30[uNumVertices], array_507D30, sizeof(array_507D30[uNumVertices]));
-
-    int texture_height = pSkyPolygon.texture->GetHeight() - 1;
-    int texture_width = pSkyPolygon.texture->GetWidth() - 1;
-    float tex_u_offset = 224 * pMiscTimer->uTotalGameTimeElapsed & texture_height;
-    float tex_v_offset = 224 * pMiscTimer->uTotalGameTimeElapsed & texture_width;
-    float one_over_texheight = 1.0 / (double)pSkyPolygon.texture->GetHeight();
-    float one_over_texwidth = 1.0 / (double)pSkyPolygon.texture->GetWidth();
-    double y_proj;
-    double v28;
-    double v33;                  // st6@23
-    const void *v35;             // ecx@31
-    int v36;                     // eax@31
-    const void *v37;             // edi@31
-    int64_t v38;          // qax@31
-    int v39;                     // ecx@31
-    int v40;                     // ebx@33
-    int v41;                     // eax@36
-    int64_t v42 {};          // qtt@39
-    int v43;                     // eax@39
-    double v48;                  // st7@41
-    double v51;                  // st7@46
-    unsigned int v65;            // [sp+128h] [bp-4Ch]@1
-    int64_t v69 {};                 // [sp+13Ch] [bp-38h]@3
-    int X {};                       // [sp+148h] [bp-2Ch]@9
-    float v73 {};                   // [sp+150h] [bp-24h]@16
-    signed int inter_left;            // [sp+154h] [bp-20h]@3
-    RenderVertexSoft *v75;       // [sp+158h] [bp-1Ch]@3
-    float v76 {};                   // [sp+15Ch] [bp-18h]@9
-    int v77 {};                     // [sp+160h] [bp-14h]@9
-    int toggle_flag;                     // [sp+164h] [bp-10h]@7
-    void *fp_worldviewdepth;                   // [sp+168h] [bp-Ch]@9
-    float v80;                   // [sp+16Ch] [bp-8h]@3
-    const void *v81;             // [sp+170h] [bp-4h]@7
-    int fp_over_viewplanedist {};
-
-    HEXRAYS_LODWORD(v73) = 0;
-    v80 = v76;
-
-    if ((signed int)pSkyPolygon.uNumVertices > 0) {
-        v28 = (double)HEXRAYS_SLODWORD(v76);
-        y_proj = (int)(char *)VertexRenderList + 28;
-        uint i = 0;
-        for (toggle_flag = pSkyPolygon.uNumVertices; toggle_flag; --toggle_flag) {
-            ++HEXRAYS_LODWORD(v73);
-            VertexRenderList[i] = array_507D30[i];
-            y_proj += 48;
-            if (v28 <= array_507D30[i].vWorldViewProjY ||
-                v28 >= array_507D30[i + 1].vWorldViewProjY) {
-                if (v28 >= array_507D30[i].vWorldViewProjY ||
-                    v28 <= array_507D30[i + 1].vWorldViewProjY) {
-                    i++;
-                    continue;
-                }
-                v33 = (array_507D30[i + 1].vWorldViewProjX - array_507D30[i].vWorldViewProjX) *
-                    v28 /
-                    (array_507D30[i + 1].vWorldViewProjY - array_507D30[i].vWorldViewProjY) +
-                    array_507D30[i + 1].vWorldViewProjX;
-            } else {
-                v33 = (array_507D30[i].vWorldViewProjX - array_507D30[i + 1].vWorldViewProjX) *
-                    v28 /
-                    (array_507D30[i].vWorldViewProjY - array_507D30[i + 1].vWorldViewProjY) +
-                    array_507D30[i].vWorldViewProjX;
-            }
-            VertexRenderList[i + 1].vWorldViewProjX = v33;
-            ++HEXRAYS_LODWORD(v73);
-            *(unsigned int *)(int64_t)y_proj = v28;
-            y_proj += 48;
-            i++;
-        }
-    }
-    uint j = 0;
-    if (HEXRAYS_SLODWORD(v73) <= 0) goto LABEL_40;
-    // v34 = (char *)&VertexRenderList[0].vWorldViewProjY;
-    v65 = v77 >> 14;
-    // HIDWORD(v69) = LODWORD(v73);
-    for (int t = (int)HEXRAYS_LODWORD(v73); t > 1; t--) {
-        v35 = (const void *)(fp_over_viewplanedist * ((int)blv_horizon_height_offset - (uint64_t)(int64_t)
-            VertexRenderList[j]
-            .vWorldViewProjY));
-
-        // toggle_flag = pSkyPolygon.ptr_38->viewing_angle_from_west_east;
-        // v81 = (const void
-        // *)fixpoint_mul(pSkyPolygon.ptr_38->viewing_angle_from_west_east, v35);
-        v36 =
-            fixpoint_mul(static_cast<int>(pSkyPolygon.ptr_38->CamVecLeft_Z * 65536.0), (int)v35) +
-            pSkyPolygon.ptr_38->CamVecLeft_Y * 65536.0;
-
-        v81 = v35;
-        inter_left = v36;
-        // toggle_flag = pSkyPolygon.ptr_38->viewing_angle_from_north_south;
-        v81 = (const void *)fixpoint_mul(
-            static_cast<int>(pSkyPolygon.ptr_38->CamVecFront_Z * 65536.0), (int)v35);
-        toggle_flag = (int)v35;
-        v75 = (RenderVertexSoft *)((char *)v81 +
-            int(pSkyPolygon.ptr_38->CamVecFront_Y * 65536.0));
-        // v81 = (const void *)pSkyPolygon.v_18.z;
-        toggle_flag = fixpoint_mul(pSkyPolygon.v_18.z, (int)v35);
-        v37 = (const void *)(fp_over_viewplanedist * (pBLVRenderParams->uViewportCenterX -
-            (uint64_t)(int64_t)
-            VertexRenderList[j]
-            .vWorldViewProjX));
-        v38 = (int64_t)(VertexRenderList[j].vWorldViewProjY - 1.0);
-        v81 = 0;
-        y_proj = v38;
-        v39 = fp_over_viewplanedist * (blv_horizon_height_offset - v38);
-        while (1) {
-            toggle_flag = v39;
-            if (!X) goto LABEL_36;
-            v40 = abs(X);
-            if (abs((int64_t)v65) <= v40) break;
-            if (HEXRAYS_SLODWORD(v76) <= (signed int)pViewport->uViewportTL_Y)
-                break;
-            v39 = toggle_flag;
-        LABEL_36:
-            toggle_flag = pSkyPolygon.v_18.z;
-            v41 = fixpoint_mul(pSkyPolygon.v_18.z, v39);
-            --y_proj;
-            v39 += fp_over_viewplanedist;
-            X = v41 + pSkyPolygon.v_18.x;
-            v81 = (const void *)1;
-        }
-        if (v81) {
-            fp_worldviewdepth = (void *)pSkyPolygon.v_18.z;
-            toggle_flag = 2 * (int64_t)y_proj;
-            v81 = (const void *)fixpoint_mul(
-                pSkyPolygon.v_18.z,
-                static_cast<int>(
-                (((double)blv_horizon_height_offset - ((double)(2 * (int64_t)y_proj) -
-                    VertexRenderList[j].vWorldViewProjY)) *
-                    (double)fp_over_viewplanedist)));
-            X = (int)((char *)v81 + pSkyPolygon.v_18.x);
-        }
-        HEXRAYS_LODWORD(v42) = v77 << 16;
-        HEXRAYS_HIDWORD(v42) = v77 >> 16;
-        fp_worldviewdepth = (void *)(v42 / X);
-        v81 = v37;
-
-        // toggle_flag = pSkyPolygon.ptr_38->angle_from_west;
-        v81 = (const void *)fixpoint_mul(static_cast<int>(pSkyPolygon.ptr_38->CamVecLeft_X * 65536.0f),
-            (int)v37);
-        v43 = inter_left + fixpoint_mul(static_cast<int>(pSkyPolygon.ptr_38->CamVecLeft_X * 65536.0f), (int)v37);
-        inter_left = (unsigned int)v37;
-        y_proj = v43;
-
-        // toggle_flag = pSkyPolygon.ptr_38->angle_from_south;
-        v75 = (RenderVertexSoft *)((char *)v75 +
-            fixpoint_mul(
-                static_cast<int>(pSkyPolygon.ptr_38->CamVecFront_X * 65536.0f),
-                (int)v37));
-        // inter_left = fixpoint_mul(v43, v42 / X);
-        v81 = (const void *)fixpoint_mul((int)v75, v42 / X);
-
-        // v34 += 48;
-        // toggle_flag = tex_v_offset + ((signed int)fixpoint_mul(v43, v42 / X) >> 4);
-        // v44 = HIDWORD(v69)-- == 1;
-        // v45 = (double)(tex_v_offset + ((signed int)fixpoint_mul(v43, v42 / X) >> 4)) *
-        // 0.000015259022; toggle_flag = tex_u_offset + ((signed int)fixpoint_mul((int)v75, v42 /
-        // X) >> 4);
-        VertexRenderList[j].u =
-            ((double)(tex_v_offset + ((signed int)fixpoint_mul(v43, v42 / X) >> 4)) *
-                0.000015259022) *
-                (1.0 / (double)pSkyPolygon.texture->GetWidth());
-        VertexRenderList[j].v =
-            ((double)(tex_v_offset + ((signed int)fixpoint_mul(v43, v42 / X) >> 4)) *
-                0.000015259022) *
-            one_over_texheight;
-        // v46 = (double)(signed int)fp_worldviewdepth;
-        VertexRenderList[j].vWorldViewPosition.x =
-            0.000015258789 * (double)(signed int)fp_worldviewdepth;
-        VertexRenderList[j]._rhw = 65536.0 / (double)(signed int)fp_worldviewdepth;
-        ++j;
-    }
-    // while ( !v44 );
-LABEL_40:
-    uint i = 0;
-    if (HEXRAYS_SLODWORD(v73) > 0) {
-        v48 = (double)HEXRAYS_SLODWORD(v80);
-        for (HEXRAYS_HIDWORD(v69) = HEXRAYS_LODWORD(v73); HEXRAYS_HIDWORD(v69);
-            --HEXRAYS_HIDWORD(v69)) {
-            if (v48 >= VertexRenderList[i].vWorldViewProjY) {
-                ++i;
-                array_507D30[i] = VertexRenderList[i];
-            }
-        }
-    }
-    pSkyPolygon.uNumVertices = i;
-    DrawIndoorSkyPolygon(pSkyPolygon.uNumVertices, &pSkyPolygon);
-    int pNumVertices = 0;
-    if (HEXRAYS_SLODWORD(v73) > 0) {
-        v51 = (double)HEXRAYS_SLODWORD(v80);
-        for (v80 = v73; v80 != 0.0; --HEXRAYS_LODWORD(v80)) {
-            if (v51 <= VertexRenderList[pNumVertices].vWorldViewProjY) {
-                ++pNumVertices;
-                array_507D30[pNumVertices] = VertexRenderList[pNumVertices];
-            }
-        }
-    }
-    DrawIndoorSkyPolygon(pNumVertices, &pSkyPolygon);
 }
 
 void Render::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {

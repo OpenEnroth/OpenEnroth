@@ -1057,15 +1057,15 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
             return 0;
         }
 
-        case SPRITE_PROJECTILE_500:
-        case SPRITE_PROJECTILE_505:
-        case SPRITE_PROJECTILE_510:
-        case SPRITE_PROJECTILE_515:
+        case SPRITE_PROJECTILE_AIRBOLT:
+        case SPRITE_PROJECTILE_EARTHBOLT:
+        case SPRITE_PROJECTILE_FIREBOLT:
+        case SPRITE_PROJECTILE_WATERBOLT:
         case SPRITE_PROJECTILE_520:
         case SPRITE_PROJECTILE_525:
         case SPRITE_PROJECTILE_530:
-        case SPRITE_PROJECTILE_535:
-        case SPRITE_PROJECTILE_540: {
+        case SPRITE_PROJECTILE_LIGHTBOLT:
+        case SPRITE_PROJECTILE_DARKBOLT: {
             Apply_Spell_Sprite_Damage(uLayingItemID, pid);
             pSpriteObjects[uLayingItemID].uType = (SPRITE_OBJECT_TYPE)(pSpriteObjects[uLayingItemID].uType + 1);
             pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[uLayingItemID].uType);
@@ -1083,7 +1083,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
         }
 
         case SPRITE_ARROW_PROJECTILE:
-        case SPRITE_PROJECTILE_550: {
+        case SPRITE_PROJECTILE_EXPLOSIVE: {
             // Note that ITEM_SPELLBOOK_FIREBALL is an MM6 remnant here,
             // in MM6 it was Percival artifact (id 405) which has swiftness and carnage enchantments
             if (pSpriteObjects[uLayingItemID].containing_item.uItemID != ITEM_SPELLBOOK_FIREBALL &&

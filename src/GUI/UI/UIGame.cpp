@@ -755,7 +755,7 @@ std::string GameUI_GetMinimapHintText() {
                         }
                     }
                 }
-                return result;
+                if (!result.empty()) return result;
             }
         }
         pMapID = pMapStats->GetMapInfo(pCurrentMapName);

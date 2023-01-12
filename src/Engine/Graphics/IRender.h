@@ -149,6 +149,7 @@ struct RenderBillboardD3D {
     int PaletteIndex;
 };
 
+// TODO(pskelton): Simplify/remove/combine different billboard structs
 struct SoftwareBillboard {
     void *pTarget;
     int *pTargetZ;
@@ -170,6 +171,7 @@ struct SoftwareBillboard {
     int sParentBillboardID;
     int sTintColor;
     unsigned short object_pid;
+    int paletteID;
 };
 
 struct nk_tex_font {
@@ -336,15 +338,15 @@ class IRender {
                               unsigned int uWidth, unsigned int uHeight,
                               unsigned int uColor16) = 0;
 
-    virtual void DrawBuildingsD3D() = 0;
+    virtual void DrawOutdoorBuildings() = 0;
 
     virtual void DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID = 0) = 0;
-    virtual void DrawOutdoorSkyD3D() = 0;
+    virtual void DrawOutdoorSky() = 0;
 
     virtual void PrepareDecorationsRenderList_ODM() = 0;
     virtual void DrawSpriteObjects() = 0;
 
-    virtual void DrawTerrainD3D() = 0;
+    virtual void DrawOutdoorTerrain() = 0;
 
     virtual bool AreRenderSurfacesOk() = 0;
 
@@ -355,6 +357,7 @@ class IRender {
                                 void *out_data, unsigned int data_size,
                                 unsigned int *screenshot_size) = 0;
     virtual void SavePCXScreenshot() = 0;
+    virtual unsigned short* MakeScreenshot16(int width, int height) = 0;
 
     virtual int GetActorsInViewport(int pDepth) = 0;
 
