@@ -5,12 +5,12 @@ This document contains information about required dependencies and various guida
 Dependencies
 ---------------
 Main dependencies:
-* [SDL2](https://www.libsdl.org/download-2.0.php) - crossplatform media framework
-* [FFmpeg](https://ffmpeg.zeranoe.com/builds/) - video support (NB 5.x currently unsupported)
-* [OpenAL](https://www.openal.org/downloads/OpenAL11CoreSDK.zip) - audio support
-* [Zlib](http://gnuwin32.sourceforge.net/packages/zlib.htm) - compression
+* [SDL2](https://www.libsdl.org/download-2.0.php) — crossplatform media framework;
+* [FFmpeg](https://ffmpeg.zeranoe.com/builds/) — video support;
+* [OpenAL](https://www.openal.org/downloads/OpenAL11CoreSDK.zip) — audio support;
+* [Zlib](http://gnuwin32.sourceforge.net/packages/zlib.htm) — compression.
 
-On windows, the above dependencies are resolved automatically during the cmake phase.
+On Windows, the above dependencies are resolved automatically during the cmake phase.
 
 Additional dependencies:
 * CMake 3.20.4+ (3.20.21032501-MSVC_2 from VS2019 won't work)
@@ -46,8 +46,8 @@ You can also select platform dependent [generator](https://cmake.org/cmake/help/
 
 Building on Windows
 ---------------
-You will require the following installed on your computer: Git (`https://git-scm.com/download/win`) and Visual Studio 2022.
 
+* Get git (`https://git-scm.com/download/win`) and Visual Studio 2022
 * Make sure you have Windows SDK v10.0.20348.0 or higher
 * Clone, fork or download the repo `https://github.com/OpenEnroth/OpenEnroth`
 * Setup Cmake:
@@ -94,7 +94,7 @@ Naming:
 * Use `CamelCase` for everything else.
 * Type names should start with a capital letter. E.g. `IndexedArray`, `InputAction`, `PlatformLogLevel`. This applies to all types, including classes, structs, enums and typedefs, with certain exceptions as listed below.
 * Method & function names should start with a lowercase letter. E.g. `Vec3::length`, `gridCellToWorldPosX`, `getCeilingHeight`.
-* Variable names should start with a lowercase letter. E.g. `int monsterCount = level->MonsterCount()`.
+* Variable names should start with a lowercase letter. E.g. `int monsterCount = level->monsterCount()`.
 * Names of private members should start with an underscore to visually distinguish them from variables without having to spell out `this->` every single time. E.g. `_initialized = true`, where `_initialized` is a member field.
 * Note that the above doesn't apply to POD-like types as for such types all members are public and are named just like ordinary variables.
 * Exceptions to the rules above are STL-compatible interfaces, which should follow STL naming rules. So it's `value_type` for iterator value type, and `push_back` for a method that's adding an element to a container.
