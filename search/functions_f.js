@@ -70,7 +70,7 @@ var searchData=
   ['operator_20fake_5fbool_67',['operator fake_bool',['../classFlags.html#a5585f7ce1b00a2b7d7a013084e55ebad',1,'Flags']]],
   ['operator_20int64_5ft_68',['operator int64_t',['../structGameTime.html#a584fe4419e65e8413dd94414533f7427',1,'GameTime']]],
   ['operator_20underlying_5ftype_69',['operator underlying_type',['../classFlags.html#a6d05f8dd18dc01ba59a51d80bea6a918',1,'Flags']]],
-  ['operator_21_70',['operator!',['../classFlags.html#afcab06add08ddf73228d076e14be8b95',1,'Flags::operator!()'],['../classBlob.html#ae078d303a2bb9effa4cf1deefa405ee1',1,'Blob::operator!()']]],
+  ['operator_21_70',['operator!',['../classBlob.html#ae078d303a2bb9effa4cf1deefa405ee1',1,'Blob::operator!()'],['../classFlags.html#afcab06add08ddf73228d076e14be8b95',1,'Flags::operator!() const']]],
   ['operator_26_3d_71',['operator&amp;=',['../classFlags.html#a05ad423f067ee37cf0ed21070e2973b7',1,'Flags::operator&amp;=(Flags mask)'],['../classFlags.html#aaaa9580de7098d7e67338f57923d1a04',1,'Flags::operator&amp;=(enumeration_type mask)']]],
   ['operator_28_29_72',['operator()',['../structFreeDeleter.html#a35a90ff9457104453630cb7acd3f2c55',1,'FreeDeleter::operator()()'],['../structILess.html#a5dec71565ce7cfb8474f2f1c464ad6ea',1,'ILess::operator()()']]],
   ['operator_2a_73',['operator*',['../classdetail_1_1RangeIterator.html#ae0a2392317c3c45ac4412ce6ca4a9e17',1,'detail::RangeIterator']]],

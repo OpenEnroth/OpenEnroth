@@ -135,7 +135,7 @@ var searchData=
   ['operator_20fake_5fbool_132',['operator fake_bool',['../classFlags.html#a5585f7ce1b00a2b7d7a013084e55ebad',1,'Flags']]],
   ['operator_20int64_5ft_133',['operator int64_t',['../structGameTime.html#a584fe4419e65e8413dd94414533f7427',1,'GameTime']]],
   ['operator_20underlying_5ftype_134',['operator underlying_type',['../classFlags.html#a6d05f8dd18dc01ba59a51d80bea6a918',1,'Flags']]],
-  ['operator_21_135',['operator!',['../classFlags.html#afcab06add08ddf73228d076e14be8b95',1,'Flags::operator!()'],['../classBlob.html#ae078d303a2bb9effa4cf1deefa405ee1',1,'Blob::operator!()']]],
+  ['operator_21_135',['operator!',['../classBlob.html#ae078d303a2bb9effa4cf1deefa405ee1',1,'Blob::operator!()'],['../classFlags.html#afcab06add08ddf73228d076e14be8b95',1,'Flags::operator!() const']]],
   ['operator_26_136',['operator&amp;',['../classFlags.html#aa4a82d5b142841102c58fa34e0b325fd',1,'Flags::operator&amp;()'],['../classFlags.html#a5827373190c2ff7cc99dc69821f2ef71',1,'Flags::operator&amp;()'],['../classFlags.html#aa4b53bae35bc7fb41fa289bb0f473395',1,'Flags::operator&amp;()']]],
   ['operator_26_3d_137',['operator&amp;=',['../classFlags.html#a05ad423f067ee37cf0ed21070e2973b7',1,'Flags::operator&amp;=(Flags mask)'],['../classFlags.html#aaaa9580de7098d7e67338f57923d1a04',1,'Flags::operator&amp;=(enumeration_type mask)']]],
   ['operator_28_29_138',['operator()',['../structFreeDeleter.html#a35a90ff9457104453630cb7acd3f2c55',1,'FreeDeleter::operator()()'],['../structILess.html#a5dec71565ce7cfb8474f2f1c464ad6ea',1,'ILess::operator()()']]],
