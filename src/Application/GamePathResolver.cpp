@@ -84,6 +84,6 @@ static std::string _resolvePath(
         }
     }
 
-    return ".";
+    return "";
 #endif
 }
