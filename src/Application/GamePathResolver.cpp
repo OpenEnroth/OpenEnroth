@@ -10,11 +10,11 @@
 using EngineIoc = Engine_::IocContainer;
 
 
-static std::string _ResolvePath(Platform *platform, const char *envVarOverride, const std::vector<const wchar_t *> &registryKeys);
+static std::string _resolvePath(Platform *platform, const char *envVarOverride, const std::vector<const wchar_t *> &registryKeys);
 
 
-std::string Application::ResolveMm6Path(Platform *platform) {
-    return _ResolvePath(
+std::string Application::resolveMm6Path(Platform *platform) {
+    return _resolvePath(
         platform,
         mm6PathOverrideKey,
         {
@@ -26,8 +26,8 @@ std::string Application::ResolveMm6Path(Platform *platform) {
 }
 
 
-std::string Application::ResolveMm7Path(Platform *platform) {
-    return _ResolvePath(
+std::string Application::resolveMm7Path(Platform *platform) {
+    return _resolvePath(
         platform,
         mm7PathOverrideKey,
         {
@@ -39,8 +39,8 @@ std::string Application::ResolveMm7Path(Platform *platform) {
 }
 
 
-std::string Application::ResolveMm8Path(Platform *platform) {
-    return _ResolvePath(
+std::string Application::resolveMm8Path(Platform *platform) {
+    return _resolvePath(
         platform,
         mm8PathOverrideKey,
         {
@@ -51,14 +51,14 @@ std::string Application::ResolveMm8Path(Platform *platform) {
 }
 
 
-static std::string _ResolvePath(
+static std::string _resolvePath(
     Platform *platform,
     const char *envVarOverride,
     const std::vector<const wchar_t *> &registryKeys
 ) {
 #ifdef __ANDROID__
     // TODO: find a better way to deal with paths and remove this android specific block.
-    result = platform->StoragePath(ANDROID_STORAGE_EXTERNAL);
+    std::string result = platform->StoragePath(ANDROID_STORAGE_EXTERNAL);
     if (result.empty()) {
         result = platform->StoragePath(ANDROID_STORAGE_INTERNAL);
     }

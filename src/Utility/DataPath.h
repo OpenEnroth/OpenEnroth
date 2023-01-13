@@ -14,4 +14,4 @@ std::string MakeDataPath(Ts&&... paths) {
 }
 
 std::string MakeTempPath(const char *file_rel_path);
-bool ValidataDataPath(const std::string &data_path);
+bool validateDataPath(const std::string &data_path);

@@ -100,7 +100,7 @@ void Application::AutoInitDataPath(Platform *platform) {
     // curretnly we convert all strings out of registry into CP_ACP (default windows ansi)
     // it is later on passed to std::filesystem that should be ascii on windows as well
     // this means we will can't handle win32 unicode paths at the time
-    std::string mm7dir = ResolveMm7Path(platform);
+    std::string mm7dir = resolveMm7Path(platform);
 
 #ifdef __ANDROID__
     if (mm7dir.empty()) {
@@ -109,7 +109,7 @@ void Application::AutoInitDataPath(Platform *platform) {
     }
 #endif
 
-    if (ValidataDataPath(mm7dir)) {
+    if (validateDataPath(mm7dir)) {
         SetDataPath(mm7dir);
 
         std::string savesPath = MakeDataPath("saves");

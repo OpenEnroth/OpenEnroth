@@ -53,7 +53,7 @@ std::string MakeDataPath(std::initializer_list<std::string_view> paths) {
     return MakeCaseInsensitivePath(result).string();
 }
 
-bool ValidataDataPath(const std::string &data_path) {
+bool validateDataPath(const std::string &data_path) {
     bool isGood = true;
     for (auto v : validateList) {
         std::filesystem::path path = data_path;
