@@ -119,11 +119,13 @@ void Application::AutoInitDataPath(Platform *platform) {
 
         EngineIoc::ResolveLogger()->Info("Using MM7 directory: %s", mm7dir.c_str());
     } else {
-        std::string message = fmt::format("Required resources aren't found!\n"
-                                          "You should acquire licensed copy of M&M VII and copy its resources to \n{}\n\n"
-                                          "Additionally you should also copy the content from\n"
-                                           "resources directory from our repository there as well!",
-                                            !mm7dir.empty() ? mm7dir : "current directory");
+        std::string message = fmt::format(
+            "Required resources aren't found!\n"
+            "You should acquire licensed copy of M&M VII and copy its resources to \n{}\n\n"
+            "Additionally you should also copy the content from\n"
+            "resources directory from our repository there as well!",
+            !mm7dir.empty() ? mm7dir : "current directory"
+        );
         EngineIoc::ResolveLogger()->Warning(message.c_str());
         platform->ShowMessageBox(message, "CRITICAL ERROR: missing resources");
     }
