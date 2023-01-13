@@ -51,7 +51,7 @@ int64_t TestPlatform::TickCount() const {
     return state_->time;
 }
 
-std::string TestPlatform::WinQueryRegistry(const std::string &path) const {
+std::string TestPlatform::WinQueryRegistry(const std::wstring &path) const {
     return base_->WinQueryRegistry(path);
 }
 

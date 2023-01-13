@@ -120,7 +120,7 @@ int64_t SdlPlatform::TickCount() const {
 #endif
 }
 
-std::string SdlPlatform::WinQueryRegistry(const std::string &) const {
+std::string SdlPlatform::WinQueryRegistry(const std::wstring &) const {
     return {};
 }
 

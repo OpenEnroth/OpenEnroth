@@ -8,6 +8,7 @@ set(GAME_SOURCES
     GameMenu.cpp
     GameOptions.cpp
     GameOver.cpp
+    GamePathResolver.cpp
     GameWindowHandler.cpp
     IocContainer.cpp)
 
@@ -18,6 +19,7 @@ set(GAME_HEADERS
     GameKeyboardController.h
     GameMenu.h
     GameOver.h
+    GamePathResolver.h
     GameOptions.h
     GameWindowHandler.h
     IocContainer.h)
