@@ -92,7 +92,7 @@ var searchData=
   ['optionsmenuskin_89',['OptionsMenuSkin',['../structOptionsMenuSkin.html#a4f1b33b50a216c82b73e857e3ce10b90',1,'OptionsMenuSkin']]],
   ['oracledialogue_90',['OracleDialogue',['../GUIWindow_8h.html#ac9811e84ae49203948b4fe17c3322f86',1,'OracleDialogue():&#160;GUIWindow.cpp'],['../GUIWindow_8cpp.html#ac9811e84ae49203948b4fe17c3322f86',1,'OracleDialogue():&#160;GUIWindow.cpp']]],
   ['orientations_91',['Orientations',['../classTestWindow.html#aeb250c12561c2809dd2ec4839ac058bb',1,'TestWindow::Orientations()'],['../classSdlWindow.html#a81ad9dbb6edbe4e79a2082ed328fd6ce',1,'SdlWindow::Orientations()'],['../classPlatformWindow.html#acd7cdba2b1198484e61f2f2fdb9e8a5c',1,'PlatformWindow::Orientations()']]],
-  ['os_5fgetappstringrecursive_92',['OS_GetAppStringRecursive',['../WinPlatform_8cpp.html#ae9346f5469319ebffa7de5803a0df7cd',1,'WinPlatform.cpp']]],
+  ['os_5fgetappstringrecursive_92',['OS_GetAppStringRecursive',['../WinPlatform_8cpp.html#accc93512f07d76ba8fd42baf6e3bc552',1,'WinPlatform.cpp']]],
   ['otheroverlay_93',['OtherOverlay',['../structOtherOverlay.html#a43a9075189313fc52879244ccb8e02a9',1,'OtherOverlay']]],
   ['otheroverlaylist_94',['OtherOverlayList',['../structOtherOverlayList.html#ad36dbee31da9afcbd6fccf746bd3421f',1,'OtherOverlayList']]],
   ['otherside_95',['OtherSide',['../classTestStateHandle.html#abfc0392bf42a3879d1d5327272893c72',1,'TestStateHandle']]],

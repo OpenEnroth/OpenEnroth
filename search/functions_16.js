@@ -1,8 +1,8 @@
 var searchData=
 [
   ['valid_0',['Valid',['../structGameTime.html#a7be2495c8b562bc9065128876a224679',1,'GameTime']]],
-  ['validatadatapath_1',['ValidataDataPath',['../DataPath_8cpp.html#a502109ee1573a970fe54a1578e6fb874',1,'ValidataDataPath(const std::string &amp;data_path):&#160;DataPath.cpp'],['../DataPath_8h.html#a502109ee1573a970fe54a1578e6fb874',1,'ValidataDataPath(const std::string &amp;data_path):&#160;DataPath.cpp']]],
-  ['validateartifactlimit_2',['ValidateArtifactLimit',['../classApplication_1_1GameConfig_1_1Gameplay.html#a9faa39b8dbbf491cfe10d7e45242d932',1,'Application::GameConfig::Gameplay']]],
+  ['validateartifactlimit_1',['ValidateArtifactLimit',['../classApplication_1_1GameConfig_1_1Gameplay.html#a9faa39b8dbbf491cfe10d7e45242d932',1,'Application::GameConfig::Gameplay']]],
+  ['validatedatapath_2',['validateDataPath',['../DataPath_8cpp.html#a2fc07bbc4ad979168d091d1e709f457f',1,'validateDataPath(const std::string &amp;data_path):&#160;DataPath.cpp'],['../DataPath_8h.html#a2fc07bbc4ad979168d091d1e709f457f',1,'validateDataPath(const std::string &amp;data_path):&#160;DataPath.cpp']]],
   ['validatefloorcheckseps_3',['ValidateFloorChecksEps',['../classApplication_1_1GameConfig_1_1Gameplay.html#a41240ebd3be6ce1eac94359b7594275f',1,'Application::GameConfig::Gameplay']]],
   ['validategamma_4',['ValidateGamma',['../classApplication_1_1GameConfig_1_1Graphics.html#acfb92f373a28623409b3866ae963ef0c',1,'Application::GameConfig::Graphics']]],
   ['validateheight_5',['ValidateHeight',['../classApplication_1_1GameConfig_1_1Window.html#af8706e7730df135406845ade50f57587',1,'Application::GameConfig::Window']]],

@@ -130,7 +130,7 @@ var searchData=
   ['winplatform_127',['WinPlatform',['../classWinPlatform.html',1,'']]],
   ['winplatform_2ecpp_128',['WinPlatform.cpp',['../WinPlatform_8cpp.html',1,'']]],
   ['winplatform_2eh_129',['WinPlatform.h',['../WinPlatform_8h.html',1,'']]],
-  ['winqueryregistry_130',['WinQueryRegistry',['../classTestPlatform.html#a5412b26d8e933dcd60de7b3a51be91b1',1,'TestPlatform::WinQueryRegistry()'],['../classWinPlatform.html#a02ba58d624af0377d89f662a61271b6c',1,'WinPlatform::WinQueryRegistry()'],['../classSdlPlatform.html#a13691166aec9982f2b61bef159784454',1,'SdlPlatform::WinQueryRegistry()'],['../classPlatform.html#abba3521d66627895a4dbf19e8ab6110f',1,'Platform::WinQueryRegistry()']]],
+  ['winqueryregistry_130',['WinQueryRegistry',['../classTestPlatform.html#a0b5fb5fd5e3f93b7fc5117e5f923a054',1,'TestPlatform::WinQueryRegistry()'],['../classWinPlatform.html#ae73c61967530984b32d467506fed3152',1,'WinPlatform::WinQueryRegistry()'],['../classSdlPlatform.html#a89f5fb56bc4267735ac24e3f2f7908e6',1,'SdlPlatform::WinQueryRegistry()'],['../classPlatform.html#a3991e3d6a9c1d7f2f251588c1fe1c459',1,'Platform::WinQueryRegistry()']]],
   ['wins_131',['wins',['../Nuklear_8cpp.html#a702c632a67022953484b487b5d0686e5',1,'Nuklear.cpp']]],
   ['wintype_132',['winType',['../structcontext.html#ae0834c166c749041fb2cbd4fa9de6973',1,'context::winType()'],['../structhotkey.html#a1e74f3b3b53b6a9286a4e352517787af',1,'hotkey::winType()']]],
   ['wizardeye_133',['WizardEye',['../classApplication_1_1GameConfig_1_1Debug.html#a4a5f48b9558f0d61c45b07f68a3aa1f2',1,'Application::GameConfig::Debug']]],
