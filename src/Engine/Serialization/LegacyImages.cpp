@@ -14,7 +14,7 @@
 #include "Engine/Time.h"
 
 #include "Utility/Color.h"
-#include "Utility/Memory.h"
+#include "Utility/Memory/MemSet.h"
 
 template<size_t N>
 static void Serialize(const std::string &src, std::array<char, N> *dst) {

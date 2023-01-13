@@ -4,7 +4,7 @@
 #include <cstring>
 #include <cstdint>
 
-#include "Utility/Blob.h"
+#include "Utility/Memory/Blob.h"
 
 class Texture;
 

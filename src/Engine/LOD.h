@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "Engine/Graphics/Image.h"
-#include "Utility/Blob.h"
+#include "Utility/Memory/Blob.h"
 
 class Sprite;
 

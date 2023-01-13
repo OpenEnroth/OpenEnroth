@@ -6,7 +6,7 @@
 #include <memory>
 
 #include "Utility/String.h"
-#include "Utility/Blob.h"
+#include "Utility/Memory/Blob.h"
 #include "Media/Media.h"
 
 enum SoundID {

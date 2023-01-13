@@ -45,7 +45,7 @@
 
 #include "Utility/Geometry/Size.h"
 #include "Utility/Format.h"
-#include "Utility/Memory.h"
+#include "Utility/Memory/MemSet.h"
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Random/Random.h"
 

@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-#include "Utility/Blob.h"
+#include "Utility/Memory/Blob.h"
 
 enum OBJECT_DESC_FLAGS {
     OBJECT_DESC_NO_SPRITE = 0x1,

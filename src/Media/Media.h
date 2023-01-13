@@ -4,7 +4,7 @@
 #include <string>
 
 #include "Utility/Geometry/Rect.h"
-#include "Utility/Blob.h"
+#include "Utility/Memory/Blob.h"
 
 class IAudioDataSource {
  public:

@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include "Utility/Blob.h"
+#include "Utility/Memory/Blob.h"
 #include "Utility/IndexedArray.h"
 
 #include "ActorEnums.h"

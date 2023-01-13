@@ -31,6 +31,7 @@
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
+#include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIGuilds.h"
 #include "GUI/UI/UIPartyCreation.h"
@@ -872,20 +873,7 @@ bool EnterHouse(HOUSE_ID uHouseID) {
             }
         }
 
-        std::string pContainer;
-        switch (pParty->alignment) {
-            case PartyAlignment::PartyAlignment_Good:
-                pContainer = "evt02-b";
-                break;
-            case PartyAlignment::PartyAlignment_Neutral:
-                pContainer = "evt02";
-                break;
-            case PartyAlignment::PartyAlignment_Evil:
-                pContainer = "evt02-c";
-                break;
-            default:
-                Error("Invalid alignment: %u", pParty->alignment);
-        }
+        std::string pContainer = DialogueBackgroundResourceByAlignment[pParty->alignment];
 
         pDialogueNPCCount = 0;
         game_ui_dialogue_background = assets->GetImage_Solid(pContainer);

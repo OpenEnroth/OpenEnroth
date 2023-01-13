@@ -5,7 +5,7 @@
 
 #include "Engine/Objects/Items.h"
 
-#include "Utility/Blob.h"
+#include "Utility/Memory/Blob.h"
 #include "Utility/Flags.h"
 
 enum class CHEST_FLAG : uint16_t {
