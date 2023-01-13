@@ -124,7 +124,7 @@ void Application::AutoInitDataPath(Platform *platform) {
             "You should acquire licensed copy of M&M VII and copy its resources to \n{}\n\n"
             "Additionally you should also copy the content from\n"
             "resources directory from our repository there as well!",
-            !mm7dir.empty() ? mm7dir : "current directory"
+            mm7dir
         );
         EngineIoc::ResolveLogger()->Warning(message.c_str());
         platform->ShowMessageBox(message, "CRITICAL ERROR: missing resources");
