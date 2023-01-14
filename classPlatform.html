@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;3fa02b3</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;1ed5ca3</span>
    </div>
   </td>
  </tr>
@@ -84,9 +84,11 @@ Inheritance diagram for Platform:</div>
  <div class="center">
   <img src="classPlatform.png" usemap="#Platform_map" alt=""/>
   <map id="Platform_map" name="Platform_map">
-<area href="classSdlPlatform.html" alt="SdlPlatform" shape="rect" coords="0,56,81,80"/>
-<area href="classTestPlatform.html" alt="TestPlatform" shape="rect" coords="91,56,172,80"/>
-<area href="classWinPlatform.html" alt="WinPlatform" shape="rect" coords="0,112,81,136"/>
+<area href="classProxyBase.html" alt="ProxyBase&lt; Platform &gt;" shape="rect" coords="0,56,143,80"/>
+<area href="classSdlPlatform.html" alt="SdlPlatform" shape="rect" coords="153,56,296,80"/>
+<area href="classProxyPlatform.html" alt="ProxyPlatform" shape="rect" coords="0,112,143,136"/>
+<area href="classWinPlatform.html" alt="WinPlatform" shape="rect" coords="153,112,296,136"/>
+<area href="classTestPlatform.html" alt="TestPlatform" shape="rect" coords="0,168,143,192"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -203,7 +205,7 @@ Static Public Member Functions</h2></td></tr>
 <p >Creates a new event loop.</p>
 <dl class="section return"><dt>Returns</dt><dd>Newly created event loop, or <code>nullptr</code> on error. </dd></dl>
 
-<p>Implemented in <a class="el" href="classSdlPlatform.html#af500fa184f30c4f9b228473cb94ee196">SdlPlatform</a>, and <a class="el" href="classTestPlatform.html#a6ae6b1b83e7e107aa7f53186b5fab40a">TestPlatform</a>.</p>
+<p>Implemented in <a class="el" href="classProxyPlatform.html#a3c4c075b15ac5f3c0e661ba2219a204d">ProxyPlatform</a>, <a class="el" href="classSdlPlatform.html#af500fa184f30c4f9b228473cb94ee196">SdlPlatform</a>, and <a class="el" href="classTestPlatform.html#a6ae6b1b83e7e107aa7f53186b5fab40a">TestPlatform</a>.</p>
 
 </div>
 </div>
@@ -239,7 +241,7 @@ Static Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Newly created gamepad, or <code>nullptr</code> on error. </dd></dl>
 
-<p>Implemented in <a class="el" href="classSdlPlatform.html#a4d41d6e951b0257a7a997690bfe284fe">SdlPlatform</a>, and <a class="el" href="classTestPlatform.html#a458549f16b7bc1ffa59213e719e97e65">TestPlatform</a>.</p>
+<p>Implemented in <a class="el" href="classProxyPlatform.html#a101c66c027cb20d2bc74e77ecf292b84">ProxyPlatform</a>, and <a class="el" href="classSdlPlatform.html#a4d41d6e951b0257a7a997690bfe284fe">SdlPlatform</a>.</p>
 
 </div>
 </div>
@@ -302,7 +304,7 @@ Static Public Member Functions</h2></td></tr>
 <p >Creates a new platform window.</p>
 <dl class="section return"><dt>Returns</dt><dd>Newly created window, or <code>nullptr</code> on error. </dd></dl>
 
-<p>Implemented in <a class="el" href="classSdlPlatform.html#abc26bab52c0e4e44740e66ff16f26528">SdlPlatform</a>, and <a class="el" href="classTestPlatform.html#a4dd434287d918fbfbcd0bba5a78785cc">TestPlatform</a>.</p>
+<p>Implemented in <a class="el" href="classProxyPlatform.html#a0bc206be64471f9624edefe41b7be760">ProxyPlatform</a>, <a class="el" href="classSdlPlatform.html#abc26bab52c0e4e44740e66ff16f26528">SdlPlatform</a>, and <a class="el" href="classTestPlatform.html#a4dd434287d918fbfbcd0bba5a78785cc">TestPlatform</a>.</p>
 
 </div>
 </div>
@@ -330,7 +332,7 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Geometries of all monitors on current system, or an empty vector in case of an error. </dd></dl>
 
-<p>Implemented in <a class="el" href="classSdlPlatform.html#af4ac290a658cf536d241dad690a5bd51">SdlPlatform</a>, and <a class="el" href="classTestPlatform.html#adc067deff5b852efe371dc4275b976ae">TestPlatform</a>.</p>
+<p>Implemented in <a class="el" href="classProxyPlatform.html#aef83bbb9cdf140fdab02f730285ceac2">ProxyPlatform</a>, and <a class="el" href="classSdlPlatform.html#af4ac290a658cf536d241dad690a5bd51">SdlPlatform</a>.</p>
 
 </div>
 </div>
@@ -359,7 +361,7 @@ Static Public Member Functions</h2></td></tr>
 <p >Getter for <code>SetCursorShown</code>.</p>
 <dl class="section return"><dt>Returns</dt><dd>Whether the system cursor is currently shown on top of windows created by this platform. </dd></dl>
 
-<p>Implemented in <a class="el" href="classSdlPlatform.html#a6ebe71f9a8f0b22ce8f682876ad464e5">SdlPlatform</a>, and <a class="el" href="classTestPlatform.html#ab9e960965774fcf4f4f8883400b44ee6">TestPlatform</a>.</p>
+<p>Implemented in <a class="el" href="classProxyPlatform.html#ac537840f4a961630e8c9c90cd1deacd9">ProxyPlatform</a>, and <a class="el" href="classSdlPlatform.html#a6ebe71f9a8f0b22ce8f682876ad464e5">SdlPlatform</a>.</p>
 
 </div>
 </div>
@@ -394,7 +396,7 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classSdlPlatform.html#a7ff0d3e14171f40e6969aebfd32a0d58">SdlPlatform</a>, and <a class="el" href="classTestPlatform.html#adb8795ee8ae4b35f22f6b7d8b9df43c6">TestPlatform</a>.</p>
+<p>Implemented in <a class="el" href="classProxyPlatform.html#ae3e8eac768bd92e903bbbb2b041c7049">ProxyPlatform</a>, and <a class="el" href="classSdlPlatform.html#a7ff0d3e14171f40e6969aebfd32a0d58">SdlPlatform</a>.</p>
 
 </div>
 </div>
@@ -440,7 +442,7 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classSdlPlatform.html#a10462cc032d2b41e3a54c4bca0790ac0">SdlPlatform</a>, and <a class="el" href="classTestPlatform.html#ae8f95ca3a7a0c87f447145d36caeb7ce">TestPlatform</a>.</p>
+<p>Implemented in <a class="el" href="classProxyPlatform.html#a9c7fe346a57648b67faf9387261c08a1">ProxyPlatform</a>, and <a class="el" href="classSdlPlatform.html#a10462cc032d2b41e3a54c4bca0790ac0">SdlPlatform</a>.</p>
 
 </div>
 </div>
@@ -475,7 +477,7 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classSdlPlatform.html#a807491a44a136533d8ba0916e4a0fea6">SdlPlatform</a>, and <a class="el" href="classTestPlatform.html#a7df327f2e069fd5976b16fc7ca1841f2">TestPlatform</a>.</p>
+<p>Implemented in <a class="el" href="classProxyPlatform.html#abdca92dfe66c303b44c2bb1e226921ed">ProxyPlatform</a>, and <a class="el" href="classSdlPlatform.html#a807491a44a136533d8ba0916e4a0fea6">SdlPlatform</a>.</p>
 
 </div>
 </div>
@@ -503,7 +505,7 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Current value of a monotonic clock in milliseconds. </dd></dl>
 
-<p>Implemented in <a class="el" href="classSdlPlatform.html#aecfb5769a4b55e63235c799555335f2d">SdlPlatform</a>, and <a class="el" href="classTestPlatform.html#ae19fe655558d248d0509cdfca7f885e7">TestPlatform</a>.</p>
+<p>Implemented in <a class="el" href="classProxyPlatform.html#ab5769bf85cf249700ede6e686263790f">ProxyPlatform</a>, <a class="el" href="classSdlPlatform.html#aecfb5769a4b55e63235c799555335f2d">SdlPlatform</a>, and <a class="el" href="classTestPlatform.html#ae19fe655558d248d0509cdfca7f885e7">TestPlatform</a>.</p>
 
 </div>
 </div>
@@ -539,7 +541,7 @@ Static Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value at the given path, or an empty string in case of an error. </dd></dl>
 
-<p>Implemented in <a class="el" href="classSdlPlatform.html#a89f5fb56bc4267735ac24e3f2f7908e6">SdlPlatform</a>, <a class="el" href="classWinPlatform.html#ae73c61967530984b32d467506fed3152">WinPlatform</a>, and <a class="el" href="classTestPlatform.html#a0b5fb5fd5e3f93b7fc5117e5f923a054">TestPlatform</a>.</p>
+<p>Implemented in <a class="el" href="classProxyPlatform.html#ae7fa2817c00cd01e59f8585fb8baaa3b">ProxyPlatform</a>, <a class="el" href="classSdlPlatform.html#a89f5fb56bc4267735ac24e3f2f7908e6">SdlPlatform</a>, and <a class="el" href="classWinPlatform.html#ae73c61967530984b32d467506fed3152">WinPlatform</a>.</p>
 
 </div>
 </div>

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>World of Might and Magic: TestGamepad Class Reference</title>
+<title>World of Might and Magic: ProxyGamepad Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;3fa02b3</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;1ed5ca3</span>
    </div>
   </td>
  </tr>
@@ -71,35 +71,42 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pri-attribs">Private Attributes</a> &#124;
-<a href="classTestGamepad-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">TestGamepad Class Reference</div></div>
+<a href="classProxyGamepad-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">ProxyGamepad Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;TestGamepad.h&gt;</code></p>
+<p><code>#include &lt;ProxyGamepad.h&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for TestGamepad:</div>
+Inheritance diagram for ProxyGamepad:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="classTestGamepad.png" usemap="#TestGamepad_map" alt=""/>
-  <map id="TestGamepad_map" name="TestGamepad_map">
-<area href="classPlatformGamepad.html" alt="PlatformGamepad" shape="rect" coords="0,0,111,24"/>
+  <img src="classProxyGamepad.png" usemap="#ProxyGamepad_map" alt=""/>
+  <map id="ProxyGamepad_map" name="ProxyGamepad_map">
+<area href="classProxyBase.html" alt="ProxyBase&lt; PlatformGamepad &gt;" shape="rect" coords="0,56,196,80"/>
+<area href="classPlatformGamepad.html" alt="PlatformGamepad" shape="rect" coords="0,0,196,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ad56251daf6b3ce731532b6d60429a5b6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestGamepad.html#ad56251daf6b3ce731532b6d60429a5b6">TestGamepad</a> (std::unique_ptr&lt; <a class="el" href="classPlatformGamepad.html">PlatformGamepad</a> &gt; base, <a class="el" href="classTestStateHandle.html">TestStateHandle</a> state)</td></tr>
-<tr class="separator:ad56251daf6b3ce731532b6d60429a5b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afaa19e9dda6e19da810b33bcaf0d102b"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestGamepad.html#afaa19e9dda6e19da810b33bcaf0d102b">~TestGamepad</a> ()</td></tr>
-<tr class="separator:afaa19e9dda6e19da810b33bcaf0d102b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a34aac4e20392aed759bee850d92108b7"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestGamepad.html#a34aac4e20392aed759bee850d92108b7">Model</a> () const override</td></tr>
-<tr class="separator:a34aac4e20392aed759bee850d92108b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ace9d48f9c57c361e2a4eca0494e6d796"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestGamepad.html#ace9d48f9c57c361e2a4eca0494e6d796">Serial</a> () const override</td></tr>
-<tr class="separator:ace9d48f9c57c361e2a4eca0494e6d796"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7aac94ceded124428f7c845f2f59c7af"><td class="memItemLeft" align="right" valign="top">virtual uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestGamepad.html#a7aac94ceded124428f7c845f2f59c7af">Id</a> () const override</td></tr>
-<tr class="separator:a7aac94ceded124428f7c845f2f59c7af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a612e247f15facc924ddd797a6e676703"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProxyGamepad.html#a612e247f15facc924ddd797a6e676703">ProxyGamepad</a> (<a class="el" href="classPlatformGamepad.html">PlatformGamepad</a> *base=nullptr)</td></tr>
+<tr class="separator:a612e247f15facc924ddd797a6e676703"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac639b9d1fcd8ecd0e6fdc2932879e7b4"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProxyGamepad.html#ac639b9d1fcd8ecd0e6fdc2932879e7b4">~ProxyGamepad</a> ()=default</td></tr>
+<tr class="separator:ac639b9d1fcd8ecd0e6fdc2932879e7b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8603639a1b8aeb309c39a5135509fa86"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProxyGamepad.html#a8603639a1b8aeb309c39a5135509fa86">Model</a> () const override</td></tr>
+<tr class="separator:a8603639a1b8aeb309c39a5135509fa86"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adaa373a2147fd67597ea4a798f5b633d"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProxyGamepad.html#adaa373a2147fd67597ea4a798f5b633d">Serial</a> () const override</td></tr>
+<tr class="separator:adaa373a2147fd67597ea4a798f5b633d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af00598e4526478dc7b7ca672b575ac38"><td class="memItemLeft" align="right" valign="top">virtual uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProxyGamepad.html#af00598e4526478dc7b7ca672b575ac38">Id</a> () const override</td></tr>
+<tr class="separator:af00598e4526478dc7b7ca672b575ac38"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classProxyBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classProxyBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classProxyBase.html">ProxyBase&lt; PlatformGamepad &gt;</a></td></tr>
+<tr class="memitem:a79b240aecfb48a7b55613635647db708 inherit pub_methods_classProxyBase"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProxyBase.html#a79b240aecfb48a7b55613635647db708">ProxyBase</a> (<a class="el" href="classPlatformGamepad.html">PlatformGamepad</a> *base)</td></tr>
+<tr class="separator:a79b240aecfb48a7b55613635647db708 inherit pub_methods_classProxyBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:affd5ddec83d77286a31e51ffe3d283dc inherit pub_methods_classProxyBase"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPlatformGamepad.html">PlatformGamepad</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProxyBase.html#affd5ddec83d77286a31e51ffe3d283dc">Base</a> () const</td></tr>
+<tr class="separator:affd5ddec83d77286a31e51ffe3d283dc inherit pub_methods_classProxyBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f29682285f8df3153d8843f729d151f inherit pub_methods_classProxyBase"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProxyBase.html#a2f29682285f8df3153d8843f729d151f">SetBase</a> (<a class="el" href="classPlatformGamepad.html">PlatformGamepad</a> *base)</td></tr>
+<tr class="separator:a2f29682285f8df3153d8843f729d151f inherit pub_methods_classProxyBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPlatformGamepad"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPlatformGamepad')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPlatformGamepad.html">PlatformGamepad</a></td></tr>
 <tr class="memitem:a0cae27c693bb08d7e1f86a7c84791e08 inherit pub_methods_classPlatformGamepad"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformGamepad.html#a0cae27c693bb08d7e1f86a7c84791e08">~PlatformGamepad</a> ()=default</td></tr>
 <tr class="separator:a0cae27c693bb08d7e1f86a7c84791e08 inherit pub_methods_classPlatformGamepad"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -110,44 +117,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:abc2ca95f78a48675cf4438f3140f1316 inherit pub_methods_classPlatformGamepad"><td class="memItemLeft" align="right" valign="top">virtual uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformGamepad.html#abc2ca95f78a48675cf4438f3140f1316">Id</a> () const =0</td></tr>
 <tr class="separator:abc2ca95f78a48675cf4438f3140f1316 inherit pub_methods_classPlatformGamepad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
-Private Attributes</h2></td></tr>
-<tr class="memitem:a4a2a079c6e21216649828ed1f37a96a4"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classPlatformGamepad.html">PlatformGamepad</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestGamepad.html#a4a2a079c6e21216649828ed1f37a96a4">base_</a></td></tr>
-<tr class="separator:a4a2a079c6e21216649828ed1f37a96a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae8dc2a29ca6a44851d1484500da0b8b3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTestStateHandle.html">TestStateHandle</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestGamepad.html#ae8dc2a29ca6a44851d1484500da0b8b3">state_</a></td></tr>
-<tr class="separator:ae8dc2a29ca6a44851d1484500da0b8b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pro_methods_classProxyBase"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classProxyBase')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classProxyBase.html">ProxyBase&lt; PlatformGamepad &gt;</a></td></tr>
+<tr class="memitem:a3bc826c282c3946b73dabfc1f8c45958 inherit pro_methods_classProxyBase"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPlatformGamepad.html">PlatformGamepad</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProxyBase.html#a3bc826c282c3946b73dabfc1f8c45958">NonNullBase</a> () const</td></tr>
+<tr class="separator:a3bc826c282c3946b73dabfc1f8c45958 inherit pro_methods_classProxyBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="ad56251daf6b3ce731532b6d60429a5b6" name="ad56251daf6b3ce731532b6d60429a5b6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad56251daf6b3ce731532b6d60429a5b6">&#9670;&#160;</a></span>TestGamepad()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">TestGamepad::TestGamepad </td>
-          <td>(</td>
-          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="classPlatformGamepad.html">PlatformGamepad</a> &gt;&#160;</td>
-          <td class="paramname"><em>base</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classTestStateHandle.html">TestStateHandle</a>&#160;</td>
-          <td class="paramname"><em>state</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="afaa19e9dda6e19da810b33bcaf0d102b" name="afaa19e9dda6e19da810b33bcaf0d102b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afaa19e9dda6e19da810b33bcaf0d102b">&#9670;&#160;</a></span>~TestGamepad()</h2>
+<a id="a612e247f15facc924ddd797a6e676703" name="a612e247f15facc924ddd797a6e676703"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a612e247f15facc924ddd797a6e676703">&#9670;&#160;</a></span>ProxyGamepad()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -156,7 +134,33 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">TestGamepad::~TestGamepad </td>
+          <td class="memname">ProxyGamepad::ProxyGamepad </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classPlatformGamepad.html">PlatformGamepad</a> *&#160;</td>
+          <td class="paramname"><em>base</em> = <code>nullptr</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac639b9d1fcd8ecd0e6fdc2932879e7b4" name="ac639b9d1fcd8ecd0e6fdc2932879e7b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac639b9d1fcd8ecd0e6fdc2932879e7b4">&#9670;&#160;</a></span>~ProxyGamepad()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual ProxyGamepad::~ProxyGamepad </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -164,7 +168,7 @@ Private Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">virtual</span><span class="mlabel">default</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -172,8 +176,8 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a7aac94ceded124428f7c845f2f59c7af" name="a7aac94ceded124428f7c845f2f59c7af"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7aac94ceded124428f7c845f2f59c7af">&#9670;&#160;</a></span>Id()</h2>
+<a id="af00598e4526478dc7b7ca672b575ac38" name="af00598e4526478dc7b7ca672b575ac38"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af00598e4526478dc7b7ca672b575ac38">&#9670;&#160;</a></span>Id()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -182,7 +186,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">uint32_t TestGamepad::Id </td>
+          <td class="memname">uint32_t ProxyGamepad::Id </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -199,8 +203,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a34aac4e20392aed759bee850d92108b7" name="a34aac4e20392aed759bee850d92108b7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a34aac4e20392aed759bee850d92108b7">&#9670;&#160;</a></span>Model()</h2>
+<a id="a8603639a1b8aeb309c39a5135509fa86" name="a8603639a1b8aeb309c39a5135509fa86"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8603639a1b8aeb309c39a5135509fa86">&#9670;&#160;</a></span>Model()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -209,7 +213,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::string TestGamepad::Model </td>
+          <td class="memname">std::string ProxyGamepad::Model </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -226,8 +230,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ace9d48f9c57c361e2a4eca0494e6d796" name="ace9d48f9c57c361e2a4eca0494e6d796"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ace9d48f9c57c361e2a4eca0494e6d796">&#9670;&#160;</a></span>Serial()</h2>
+<a id="adaa373a2147fd67597ea4a798f5b633d" name="adaa373a2147fd67597ea4a798f5b633d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adaa373a2147fd67597ea4a798f5b633d">&#9670;&#160;</a></span>Serial()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -236,7 +240,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::string TestGamepad::Serial </td>
+          <td class="memname">std::string ProxyGamepad::Serial </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -253,54 +257,9 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="a4a2a079c6e21216649828ed1f37a96a4" name="a4a2a079c6e21216649828ed1f37a96a4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4a2a079c6e21216649828ed1f37a96a4">&#9670;&#160;</a></span>base_</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="classPlatformGamepad.html">PlatformGamepad</a>&gt; TestGamepad::base_</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ae8dc2a29ca6a44851d1484500da0b8b3" name="ae8dc2a29ca6a44851d1484500da0b8b3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae8dc2a29ca6a44851d1484500da0b8b3">&#9670;&#160;</a></span>state_</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classTestStateHandle.html">TestStateHandle</a> TestGamepad::state_</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>test/Testing/Engine/<a class="el" href="TestGamepad_8h.html">TestGamepad.h</a></li>
-<li>test/Testing/Engine/<a class="el" href="TestGamepad_8cpp.html">TestGamepad.cpp</a></li>
+<li>src/Platform/Proxy/<a class="el" href="ProxyGamepad_8h.html">ProxyGamepad.h</a></li>
+<li>src/Platform/Proxy/<a class="el" href="ProxyGamepad_8cpp.html">ProxyGamepad.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

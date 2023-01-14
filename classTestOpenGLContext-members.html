@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;3fa02b3</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;1ed5ca3</span>
    </div>
   </td>
  </tr>
@@ -75,13 +75,19 @@ $(function() {
 
 <p>This is the complete list of members for <a class="el" href="classTestOpenGLContext.html">TestOpenGLContext</a>, including all inherited members.</p>
 <table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="classTestOpenGLContext.html#a8185eb089ba6ad4fa5493f2ce00e3904">base_</a></td><td class="entry"><a class="el" href="classTestOpenGLContext.html">TestOpenGLContext</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classTestOpenGLContext.html#a711849fe2dadbf51b5ba026195f9835b">GetProcAddress</a>(const char *name) override</td><td class="entry"><a class="el" href="classTestOpenGLContext.html">TestOpenGLContext</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classTestOpenGLContext.html#a17990594fd3525cc7007e0bb292240ad">MakeCurrent</a>() override</td><td class="entry"><a class="el" href="classTestOpenGLContext.html">TestOpenGLContext</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classTestOpenGLContext.html#a16b5a66b73159448c652756e81ba661f">state_</a></td><td class="entry"><a class="el" href="classTestOpenGLContext.html">TestOpenGLContext</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classTestOpenGLContext.html#a9a6629fdf1f3639f38e0371786b7f851">SwapBuffers</a>() override</td><td class="entry"><a class="el" href="classTestOpenGLContext.html">TestOpenGLContext</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classTestOpenGLContext.html#a01e31f72a68994270caed6199e6e59f7">TestOpenGLContext</a>(std::unique_ptr&lt; PlatformOpenGLContext &gt; base, TestStateHandle state)</td><td class="entry"><a class="el" href="classTestOpenGLContext.html">TestOpenGLContext</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classPlatformOpenGLContext.html#a37cf06185f6b7f54e26cfb1479b18b98">~PlatformOpenGLContext</a>()=default</td><td class="entry"><a class="el" href="classPlatformOpenGLContext.html">PlatformOpenGLContext</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classProxyBase.html#affd5ddec83d77286a31e51ffe3d283dc">Base</a>() const</td><td class="entry"><a class="el" href="classProxyBase.html">ProxyBase&lt; PlatformOpenGLContext &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classTestOpenGLContext.html#a8185eb089ba6ad4fa5493f2ce00e3904">base_</a></td><td class="entry"><a class="el" href="classTestOpenGLContext.html">TestOpenGLContext</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classProxyOpenGLContext.html#a52ff1981086641891ada366e69f2f25f">GetProcAddress</a>(const char *name) override</td><td class="entry"><a class="el" href="classProxyOpenGLContext.html">ProxyOpenGLContext</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classProxyOpenGLContext.html#a1ba0236f6a5714c6a74ac775baf1f068">MakeCurrent</a>() override</td><td class="entry"><a class="el" href="classProxyOpenGLContext.html">ProxyOpenGLContext</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classProxyBase.html#a3bc826c282c3946b73dabfc1f8c45958">NonNullBase</a>() const</td><td class="entry"><a class="el" href="classProxyBase.html">ProxyBase&lt; PlatformOpenGLContext &gt;</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">protected</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classProxyBase.html#a79b240aecfb48a7b55613635647db708">ProxyBase</a>(PlatformOpenGLContext *base)</td><td class="entry"><a class="el" href="classProxyBase.html">ProxyBase&lt; PlatformOpenGLContext &gt;</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">explicit</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classProxyOpenGLContext.html#a8989d8f7d75573b6f72647f84b98b061">ProxyOpenGLContext</a>(PlatformOpenGLContext *base=nullptr)</td><td class="entry"><a class="el" href="classProxyOpenGLContext.html">ProxyOpenGLContext</a></td><td class="entry"><span class="mlabel">explicit</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classProxyBase.html#a2f29682285f8df3153d8843f729d151f">SetBase</a>(PlatformOpenGLContext *base)</td><td class="entry"><a class="el" href="classProxyBase.html">ProxyBase&lt; PlatformOpenGLContext &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classTestOpenGLContext.html#a16b5a66b73159448c652756e81ba661f">state_</a></td><td class="entry"><a class="el" href="classTestOpenGLContext.html">TestOpenGLContext</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classTestOpenGLContext.html#a9a6629fdf1f3639f38e0371786b7f851">SwapBuffers</a>() override</td><td class="entry"><a class="el" href="classTestOpenGLContext.html">TestOpenGLContext</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classTestOpenGLContext.html#a01e31f72a68994270caed6199e6e59f7">TestOpenGLContext</a>(std::unique_ptr&lt; PlatformOpenGLContext &gt; base, TestStateHandle state)</td><td class="entry"><a class="el" href="classTestOpenGLContext.html">TestOpenGLContext</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classPlatformOpenGLContext.html#a37cf06185f6b7f54e26cfb1479b18b98">~PlatformOpenGLContext</a>()=default</td><td class="entry"><a class="el" href="classPlatformOpenGLContext.html">PlatformOpenGLContext</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classProxyOpenGLContext.html#a6b3afbf20f7a50f20bf749e94ee5a1e4">~ProxyOpenGLContext</a>()=default</td><td class="entry"><a class="el" href="classProxyOpenGLContext.html">ProxyOpenGLContext</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
 </table></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

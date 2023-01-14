@@ -47,5 +47,16 @@ var searchData=
   ['playerspells_5fmm7_44',['PlayerSpells_MM7',['../structPlayerSpells__MM7.html',1,'']]],
   ['polygon_45',['Polygon',['../structPolygon.html',1,'']]],
   ['postedevent_46',['PostedEvent',['../structTestEventLoop_1_1PostedEvent.html',1,'TestEventLoop']]],
-  ['projectileanim_47',['ProjectileAnim',['../structProjectileAnim.html',1,'']]]
+  ['projectileanim_47',['ProjectileAnim',['../structProjectileAnim.html',1,'']]],
+  ['proxybase_48',['ProxyBase',['../classProxyBase.html',1,'']]],
+  ['proxybase_3c_20platform_20_3e_49',['ProxyBase&lt; Platform &gt;',['../classProxyBase.html',1,'']]],
+  ['proxybase_3c_20platformeventloop_20_3e_50',['ProxyBase&lt; PlatformEventLoop &gt;',['../classProxyBase.html',1,'']]],
+  ['proxybase_3c_20platformgamepad_20_3e_51',['ProxyBase&lt; PlatformGamepad &gt;',['../classProxyBase.html',1,'']]],
+  ['proxybase_3c_20platformopenglcontext_20_3e_52',['ProxyBase&lt; PlatformOpenGLContext &gt;',['../classProxyBase.html',1,'']]],
+  ['proxybase_3c_20platformwindow_20_3e_53',['ProxyBase&lt; PlatformWindow &gt;',['../classProxyBase.html',1,'']]],
+  ['proxyeventloop_54',['ProxyEventLoop',['../classProxyEventLoop.html',1,'']]],
+  ['proxygamepad_55',['ProxyGamepad',['../classProxyGamepad.html',1,'']]],
+  ['proxyopenglcontext_56',['ProxyOpenGLContext',['../classProxyOpenGLContext.html',1,'']]],
+  ['proxyplatform_57',['ProxyPlatform',['../classProxyPlatform.html',1,'']]],
+  ['proxywindow_58',['ProxyWindow',['../classProxyWindow.html',1,'']]]
 ];
