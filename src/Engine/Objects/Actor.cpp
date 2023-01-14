@@ -320,7 +320,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
             actorPtr->pActorBuffs[ACTOR_BUFF_HASTE].Apply((pParty->GetPlayingTime() + spell_length),
                 masteryLevel, 0, 0, 0);
-            spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xFF3C1Eu);
+            spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, colorTable.OrangeyRed.C32());
             pAudioPlayer->PlaySound((SoundID)SOUND_Haste,
                                     PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
@@ -601,7 +601,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             actorPtr->pActorBuffs[ACTOR_BUFF_DAY_OF_PROTECTION].Apply(
                 (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, realPoints, 0, 0);
-            spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xFFFFFFu);
+            spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, colorTable.White.C32());
             pAudioPlayer->PlaySound((SoundID)SOUND_94dayofprotection03,
                                     PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
@@ -620,7 +620,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             actorPtr->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Apply(
                 (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, realPoints + 5, 0, 0);
-            spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xFFFFFFu);
+            spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, colorTable.White.C32());
             pAudioPlayer->PlaySound((SoundID)SOUND_9armageddon01,
                                     PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
@@ -690,7 +690,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             actorPtr->pActorBuffs[ACTOR_BUFF_PAIN_REFLECTION].Apply(
                 (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, 0, 0, 0);
-            spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0x7E7E7Eu);
+            spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, colorTable.MediumGrey.C32());
             pAudioPlayer->PlaySound((SoundID)SOUND_Sacrifice2,
                                     PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);

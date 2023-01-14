@@ -365,6 +365,7 @@ void RenderOpenGL::EndLines2D() {
     linevertscnt = 0;
 }
 
+// TODO(pskelton): change to color32
 void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ,
                                 signed int uW, uint16_t uColor) {
     float b = ((uColor & 0x1F)*8) / 255.0f;
@@ -644,12 +645,13 @@ struct twodverts {
 twodverts twodshaderstore[500] = {};
 int twodvertscnt = 0;
 
+// TODO(pskelton): change to color32
 void RenderOpenGL::ScreenFade(unsigned int color, float t) {
     t = std::clamp(t, 0.0f, 1.0f);
     //color is 24bits r8g8b8?
-    float red = ((color & 0xFF0000) >> 16) / 255.0f;
+    float blue = ((color & 0xFF0000) >> 16) / 255.0f;
     float green = ((color & 0xFF00) >> 8) / 255.0f;
-    float blue = ((color & 0xFF)) / 255.0f;
+    float red = ((color & 0xFF)) / 255.0f;
 
     float drawx = static_cast<float>(pViewport->uViewportTL_X);
     float drawy = static_cast<float>(pViewport->uViewportTL_Y);
@@ -1052,6 +1054,7 @@ void RenderOpenGL::DrawTransparentGreenShade(float u, float v, Image *pTexture) 
     DrawMasked(u, v, pTexture, 0, 0x07E0);
 }
 
+// TODO(pskelton): change to color32
 void RenderOpenGL::DrawMasked(float u, float v, Image *pTexture, unsigned int color_dimming_level, uint16_t mask) {
     uint32_t col = colorTable.White.C32();
 
@@ -1553,7 +1556,7 @@ void RenderOpenGL::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_
 }
 
 void RenderOpenGL::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, Texture *texture) {
-    //TODO(pskelton): need to add dimming  0x7F7F7F
+    //TODO(pskelton): need to add dimming  0x7F7F7F - medium grey
     Recti targetrect{};
     targetrect.x = pViewport->uViewportTL_X;
     targetrect.y = pViewport->uViewportTL_Y;
@@ -5259,6 +5262,7 @@ bool RenderOpenGL::Initialize() {
 // do not use
 void RenderOpenGL::WritePixel16(int x, int y, uint16_t color) { return; }
 
+// TODO(pskelton): change to color32
 void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
                                 unsigned int uWidth, unsigned int uHeight,
                                 unsigned int uColor16) {

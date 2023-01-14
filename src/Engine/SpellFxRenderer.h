@@ -1,7 +1,9 @@
 #pragma once
 
-#include <cstdint>
+#include <Utility/Color.h>
+
 #include <memory>
+#include <cstdint>
 
 class Actor;
 class Texture;
@@ -105,7 +107,7 @@ struct SpellFxRenderer {
         this->uAnimLength = 0;
 
         pStru1 = new SpellFX_Billboard();
-        pStru1->Initialize(0xFF3C1Eu);
+        pStru1->Initialize(colorTable.OrangeyRed.C32());
     }
     //----- (004A71DC) --------------------------------------------------------
     ~SpellFxRenderer() {
