@@ -8,7 +8,7 @@ UNIT_TEST(Serialization, Standard) {
     EXPECT_EQ(fromString<int>(toString(INT_MAX)), INT_MAX);
     EXPECT_EQ(fromString<int>(toString(INT_MIN)), INT_MIN);
     EXPECT_EQ(fromString<unsigned int>(toString(UINT_MAX)), UINT_MAX);
-    EXPECT_EQ(fromString<unsigned  long long>(toString(ULONG_LONG_MAX)), ULONG_LONG_MAX);
+    EXPECT_EQ(fromString<unsigned  long long>(toString(ULLONG_MAX)), ULLONG_MAX);
 
     EXPECT_EQ(fromString<bool>(toString(true)), true);
     EXPECT_EQ(fromString<bool>(toString(false)), false);
