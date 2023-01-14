@@ -54,14 +54,6 @@ class EnumSerializer {
  public:
     EnumSerializer() {}
 
-    /**
-     * Creates an enum serializer.
-     *
-     * Some notes on the mapping:
-     * - Each enum value might map into several different strings. When serializing, the first string will be used.
-     *   This basically provides support for enum aliases.
-     * - Each string value must map to exactly one enum value.
-     */
     EnumSerializer(CaseSensitivity caseSensitivity, std::initializer_list<std::pair<T, const char *>> pairs) : _table(caseSensitivity, pairs) {}
 
     bool trySerialize(T src, std::string *dst) const {
