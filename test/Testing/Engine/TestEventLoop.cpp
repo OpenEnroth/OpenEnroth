@@ -8,6 +8,7 @@
 #include "TestStateHandle.h"
 
 TestEventLoop::TestEventLoop(std::unique_ptr<PlatformEventLoop> base, TestStateHandle state) :
+    ProxyEventLoop(base.get()),
     base_(std::move(base)),
     state_(std::move(state)) {
     assert(!state_->eventLoop);
@@ -25,17 +26,9 @@ void TestEventLoop::Exec(PlatformEventHandler *eventHandler) {
     base_->Exec(emptyHandler_.get());
 }
 
-void TestEventLoop::Quit() {
-    base_->Quit();
-}
-
 void TestEventLoop::ProcessMessages(PlatformEventHandler *eventHandler, int count) {
     ProcessSyntheticMessages(eventHandler);
     base_->ProcessMessages(emptyHandler_.get(), count);
-}
-
-void TestEventLoop::WaitForMessages() {
-    base_->WaitForMessages();
 }
 
 void TestEventLoop::PostEvent(PlatformWindow *window, std::unique_ptr<PlatformEvent> event) {

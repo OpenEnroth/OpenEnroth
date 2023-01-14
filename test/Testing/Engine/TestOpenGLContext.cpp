@@ -5,13 +5,10 @@
 #include "TestStateHandle.h"
 
 TestOpenGLContext::TestOpenGLContext(std::unique_ptr<PlatformOpenGLContext> base, TestStateHandle state) :
+    ProxyOpenGLContext(base.get()),
     base_(std::move(base)),
     state_(std::move(state))
 {}
-
-bool TestOpenGLContext::MakeCurrent() {
-    return base_->MakeCurrent();
-}
 
 void TestOpenGLContext::SwapBuffers() {
     base_->SwapBuffers();
@@ -32,8 +29,4 @@ void TestOpenGLContext::SwapBuffers() {
     // the number of frames it takes to load a level, and this will shift the timing sequence for the actual game
     // frames after the level is loaded. Unlikely to really affect anything, but we'd rather not find out.
     state_->time += 16;
-}
-
-void* TestOpenGLContext::GetProcAddress(const char* name) {
-    return base_->GetProcAddress(name);
 }

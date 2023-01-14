@@ -10,7 +10,12 @@ set(PLATFORM_SOURCES PlatformKey.cpp
                      Sdl/SdlPlatformSharedState.cpp
                      Sdl/SdlWindow.cpp
                      Sdl/SdlLogger.cpp
-                     Sdl/SdlGamepad.cpp)
+                     Sdl/SdlGamepad.cpp
+                     Proxy/ProxyPlatform.cpp
+                     Proxy/ProxyWindow.cpp
+                     Proxy/ProxyEventLoop.cpp
+                     Proxy/ProxyOpenGLContext.cpp
+                     Proxy/ProxyGamepad.cpp)
 
 set(PLATFORM_HEADERS Platform.h
                      PlatformKey.h
@@ -31,7 +36,13 @@ set(PLATFORM_HEADERS Platform.h
                      Sdl/SdlPlatformSharedState.h
                      Sdl/SdlWindow.h
                      Sdl/SdlLogger.h
-                     Sdl/SdlGamepad.h)
+                     Sdl/SdlGamepad.h
+                     Proxy/ProxyPlatform.h
+                     Proxy/ProxyWindow.h
+                     Proxy/ProxyEventLoop.h
+                     Proxy/ProxyOpenGLContext.h
+                     Proxy/ProxyGamepad.h
+                     Proxy/ProxyBase.h)
 
 if(BUILD_PLATFORM STREQUAL "windows")
   list(APPEND PLATFORM_SOURCES Win/WinPlatform.cpp)
