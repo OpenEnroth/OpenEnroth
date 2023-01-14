@@ -2348,16 +2348,16 @@ void RenderOpenGL::DrawOutdoorTerrain() {
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     // stack new decals onto terrain faces ////////////////////////////////////////////////
-    // TODO(pskelton): clean up
+    // TODO(pskelton): clean up and move to seperate function in decal builder
     if (!decal_builder->bloodsplat_container->uNumBloodsplats) return;
     unsigned int NumBloodsplats = decal_builder->bloodsplat_container->uNumBloodsplats;
 
     // loop over blood to lay
     for (uint i = 0; i < NumBloodsplats; ++i) {
         // approx location of bloodsplat
-        int splatx = decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].x;
-        int splaty = decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].y;
-        int splatz = decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].z;
+        int splatx = decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].pos.x;
+        int splaty = decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].pos.y;
+        int splatz = decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].pos.z;
         int testx = WorldPosToGridCellX(splatx);
         int testy = WorldPosToGridCellY(splaty);
         // use terrain squares in block surrounding to try and stack faces
@@ -2371,26 +2371,6 @@ void RenderOpenGL::DrawOutdoorTerrain() {
                 if (loopx < 0) continue;
                 if (loopx > 127) continue;
 
-                struct Polygon *pTilePolygon = &array_77EC08[pODMRenderParams->uNumPolygons];
-                pTilePolygon->flags = pOutdoor->GetTileAttribByGrid(loopx, loopy);
-
-                uint norm_idx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 2];  // 2 is top tri // 3 is bottom
-                uint bottnormidx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 3];
-                assert(norm_idx < pTerrainNormals.size());
-                assert(bottnormidx < pTerrainNormals.size());
-                Vec3f *norm = &pTerrainNormals[norm_idx];
-                Vec3f *norm2 = &pTerrainNormals[bottnormidx];
-
-                float _f1 = norm->x * pOutdoor->vSunlight.x + norm->y * pOutdoor->vSunlight.y + norm->z * pOutdoor->vSunlight.z;
-                pTilePolygon->dimming_level = 20.0f - floorf(20.0f * _f1 + 0.5f);
-                pTilePolygon->dimming_level = std::clamp((int)pTilePolygon->dimming_level, 0, 31);
-
-                float Light_tile_dist = 0.0;
-
-                int blockScale = 512;
-                int heightScale = 32;
-
-                static stru154 static_sub_0048034E_stru_154;
 
                 // top tri
                 // x, y
@@ -2406,6 +2386,54 @@ void RenderOpenGL::DrawOutdoorTerrain() {
                 VertexRenderList[2].vWorldPosition.y = terrshaderstore[6 * (loopx + (127 * loopy)) + 2].y;
                 VertexRenderList[2].vWorldPosition.z = terrshaderstore[6 * (loopx + (127 * loopy)) + 2].z;
 
+                // bottom tri
+                // x, y
+                VertexRenderList[3].vWorldPosition.x = terrshaderstore[6 * (loopx + (127 * loopy)) + 3].x;
+                VertexRenderList[3].vWorldPosition.y = terrshaderstore[6 * (loopx + (127 * loopy)) + 3].y;
+                VertexRenderList[3].vWorldPosition.z = terrshaderstore[6 * (loopx + (127 * loopy)) + 3].z;
+                // x, y + 1
+                VertexRenderList[4].vWorldPosition.x = terrshaderstore[6 * (loopx + (127 * loopy)) + 4].x;
+                VertexRenderList[4].vWorldPosition.y = terrshaderstore[6 * (loopx + (127 * loopy)) + 4].y;
+                VertexRenderList[4].vWorldPosition.z = terrshaderstore[6 * (loopx + (127 * loopy)) + 4].z;
+                // x + 1, y + 1
+                VertexRenderList[5].vWorldPosition.x = terrshaderstore[6 * (loopx + (127 * loopy)) + 5].x;
+                VertexRenderList[5].vWorldPosition.y = terrshaderstore[6 * (loopx + (127 * loopy)) + 5].y;
+                VertexRenderList[5].vWorldPosition.z = terrshaderstore[6 * (loopx + (127 * loopy)) + 5].z;
+
+                float WorldMinZ = pOutdoor->GetPolygonMinZ(VertexRenderList, 6);
+                float WorldMaxZ = pOutdoor->GetPolygonMaxZ(VertexRenderList, 6);
+
+                // TODO(pskelton): terrain and boxes should be saved for easier retrieval
+                // test expanded box against bloodsplat
+                BBoxf thissquare{ terrshaderstore[6 * (loopx + (127 * loopy))].x ,
+                                  terrshaderstore[6 * (loopx + (127 * loopy)) + 1].x,
+                                  terrshaderstore[6 * (loopx + (127 * loopy)) + 1].y,
+                                  terrshaderstore[6 * (loopx + (127 * loopy))].y,
+                                  WorldMinZ,
+                                  WorldMaxZ };
+
+                // skip this square if no splat over lap
+                if (!thissquare.Expanded(decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].radius).Contains(decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].pos)) continue;
+
+                // splat hits this square of terrain
+                struct Polygon *pTilePolygon = &array_77EC08[pODMRenderParams->uNumPolygons];
+                pTilePolygon->flags = pOutdoor->GetTileAttribByGrid(loopx, loopy);
+
+                uint norm_idx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 2];  // 2 is top tri // 3 is bottom
+                uint bottnormidx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 3];
+                assert(norm_idx < pTerrainNormals.size());
+                assert(bottnormidx < pTerrainNormals.size());
+                Vec3f *norm = &pTerrainNormals[norm_idx];
+                Vec3f *norm2 = &pTerrainNormals[bottnormidx];
+
+                float Light_tile_dist = 0.0;
+                static stru154 static_sub_0048034E_stru_154;
+
+                // top tri
+                float _f1 = norm->x * pOutdoor->vSunlight.x + norm->y * pOutdoor->vSunlight.y + norm->z * pOutdoor->vSunlight.z;
+                pTilePolygon->dimming_level = 20.0f - floorf(20.0f * _f1 + 0.5f);
+                pTilePolygon->dimming_level = std::clamp((int)pTilePolygon->dimming_level, 0, 31);
+
                 decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm, &Light_tile_dist, VertexRenderList, 3, 1, i);
                 static_sub_0048034E_stru_154.ClassifyPolygon(norm, Light_tile_dist);
                 if (decal_builder->uNumSplatsThisFace > 0)
@@ -2416,23 +2444,10 @@ void RenderOpenGL::DrawOutdoorTerrain() {
                 pTilePolygon->dimming_level = 20.0 - floorf(20.0 * _f + 0.5f);
                 pTilePolygon->dimming_level = std::clamp((int)pTilePolygon->dimming_level, 0, 31);
 
-                // x, y
-                VertexRenderList[0].vWorldPosition.x = terrshaderstore[6 * (loopx + (127 * loopy)) + 3].x;
-                VertexRenderList[0].vWorldPosition.y = terrshaderstore[6 * (loopx + (127 * loopy)) + 3].y;
-                VertexRenderList[0].vWorldPosition.z = terrshaderstore[6 * (loopx + (127 * loopy)) + 3].z;
-                // x, y + 1
-                VertexRenderList[1].vWorldPosition.x = terrshaderstore[6 * (loopx + (127 * loopy)) + 4].x;
-                VertexRenderList[1].vWorldPosition.y = terrshaderstore[6 * (loopx + (127 * loopy)) + 4].y;
-                VertexRenderList[1].vWorldPosition.z = terrshaderstore[6 * (loopx + (127 * loopy)) + 4].z;
-                // x + 1, y + 1
-                VertexRenderList[2].vWorldPosition.x = terrshaderstore[6 * (loopx + (127 * loopy)) + 5].x;
-                VertexRenderList[2].vWorldPosition.y = terrshaderstore[6 * (loopx + (127 * loopy)) + 5].y;
-                VertexRenderList[2].vWorldPosition.z = terrshaderstore[6 * (loopx + (127 * loopy)) + 5].z;
-
-                decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm2, &Light_tile_dist, VertexRenderList, 3, 0, i);
+                decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm2, &Light_tile_dist, (VertexRenderList + 3), 3, 0, i);
                 static_sub_0048034E_stru_154.ClassifyPolygon(norm2, Light_tile_dist);
                 if (decal_builder->uNumSplatsThisFace > 0)
-                    decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level, LocationTerrain, &static_sub_0048034E_stru_154, 3, VertexRenderList, 0, -1);
+                    decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level, LocationTerrain, &static_sub_0048034E_stru_154, 3, (VertexRenderList + 3), 0, -1);
             }
         }
     }
@@ -4381,7 +4396,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
         bool found{ false };
         for (int splat = 0; splat < decal_builder->bloodsplat_container->uNumBloodsplats; ++splat) {
             Bloodsplat* thissplat = &decal_builder->bloodsplat_container->pBloodsplats_to_apply[splat];
-            if (model.pBoundingBox.Expanded(thissplat->radius).Contains(Vec3i(thissplat->x, thissplat->y, thissplat->z))) {
+            if (model.pBoundingBox.Expanded(thissplat->radius).Contains(thissplat->pos.ToInt())) {
                 found = true;
                 break;
             }

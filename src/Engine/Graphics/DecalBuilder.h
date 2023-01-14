@@ -28,9 +28,10 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(LocationFlags)
 
 // bloodsplats are created at enemy death as locations of where blood decal needs to be applied
 struct Bloodsplat {
-    float x = 0;
-    float y = 0;
-    float z = 0;
+    Vec3f pos;
+    //float x = 0;
+    //float y = 0;
+    //float z = 0;
     float radius = 0;
     float dot_dist = 0;
     unsigned char r = 0;
@@ -97,8 +98,24 @@ struct DecalBuilder {
         RenderVertexSoft* faceverts, char uClipFlags);
     bool ApplyBloodsplatDecals_IndoorFace(unsigned int uFaceID);
     bool ApplyBloodSplat_OutdoorFace(ODMFace* pFace);
-    bool ApplyBloodSplatToTerrain(struct Polygon* terrpoly, Vec3f* terrnorm, float* tridotdist,
-                                RenderVertexSoft* triverts, unsigned int uStripType, char tri_orient, int whichsplat);
+
+    /**
+     * @offset 0x0049BE8A
+     * 
+     * Attemps to apply a certain bloodsplat onto the supplied terrain triangle.
+     * 
+     * @param terrpoly                      Polygon used to pass flags through - TODO(pskelton): Just pass flags
+     * @param terrnorm                      Normal vector of supplied triangle.
+     * @param[out] tridotdist               Plane dot distance of supplied vertices.
+     * @param triverts                      Vertices of terrain triangle to apply splat onto.
+     * @param uStripType                    How many vertices are in triverts (3/4) - TODO(pskelton): Drop
+     * @param tri_orient                    Top (1) or bottom (0) triangle from terrain square - TODO(pskelton): drop.
+     * @param whichsplat                    Index of which bloodsplat in bloodsplat_container->pBloodsplats_to_apply[index] to use.
+     * 
+     * @return                              True if bloodsplat_container->uNumBloodsplats > 0, false otherwise.
+     */
+    bool ApplyBloodSplatToTerrain(struct Polygon *terrpoly, Vec3f *terrnorm, float *tridotdist,
+                                RenderVertexSoft *triverts, unsigned int uStripType, char tri_orient, int whichsplat);
     void DrawDecals(float z_bias);
     void DrawBloodsplats();
     void DrawDecalDebugOutlines();

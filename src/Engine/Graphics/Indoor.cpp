@@ -1303,8 +1303,8 @@ void UpdateActors_BLV() {
         // make bloodsplat when the ground is hit
         if (!actor.donebloodsplat) {
             if (actor.uAIState == Dead || actor.uAIState == Dying) {
-                if (actor.vPosition.z < floorZ + 30) {
-                    if (pMonsterStats->pInfos[actor.pMonsterInfo.uID].bQuestMonster & 1) {
+                if (actor.vPosition.z < floorZ + 30) { // 30 to provide small error / rounding factor
+                    if (pMonsterStats->pInfos[actor.pMonsterInfo.uID].bBloodSplatOnDeath) {
                         if (engine->config->graphics.BloodSplats.Get()) {
                             float splatRadius = actor.uActorRadius * engine->config->graphics.BloodSplatsMultiplier.Get();
                             decal_builder->AddBloodsplat((float)actor.vPosition.x, (float)actor.vPosition.y, (float)(floorZ + 30), 1.0, 0.0, 0.0, splatRadius);

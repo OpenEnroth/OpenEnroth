@@ -674,9 +674,9 @@ void MonsterStats::Initialize() {
                         }
                     } break;
                     case 8: {
-                        pInfos[curr_rec_num].bQuestMonster = 0;
+                        pInfos[curr_rec_num].bBloodSplatOnDeath = false;
                         if (atoi(test_string))
-                            pInfos[curr_rec_num].bQuestMonster = 1;
+                            pInfos[curr_rec_num].bBloodSplatOnDeath = true;
                     } break;
                     case 9: {
                         pInfos[curr_rec_num].uFlying = false;

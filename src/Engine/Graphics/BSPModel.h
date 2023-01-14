@@ -176,6 +176,7 @@ struct ODMFace {
 
     int16_t sTextureDeltaU = 0;
     int16_t sTextureDeltaV = 0;
+    // TODO(pskelton): Geometry should be float
     BBoxs pBoundingBox;
     int16_t sCogNumber = 0;
     int16_t sCogTriggeredID = 0;
@@ -199,7 +200,7 @@ class BSPModel {
     unsigned int index = 0;
     std::string pModelName;
     std::string pModelName2;
-    int32_t field_40 = 0;
+    int32_t field_40 = 0; // visibility flag TODO(pskelton): use for map tooltip checking or remove
     int32_t sCenterX = 0;
     int32_t sCenterY = 0;
     Vec3i vPosition {};

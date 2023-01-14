@@ -423,6 +423,7 @@ struct BLVFace {  // 60h
 
     uint16_t uSectorID;
     int16_t uBackSectorID;
+    // TODO(pskelton): Geometry should be float
     BBoxs pBounding;
     PolygonType uPolygonType;
     uint8_t uNumVertices;

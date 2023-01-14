@@ -2903,8 +2903,8 @@ void UpdateActors_ODM() {
         // make bloodsplat when the ground is hit
         if (!pActors[Actor_ITR].donebloodsplat) {
             if (pActors[Actor_ITR].uAIState == Dead || pActors[Actor_ITR].uAIState == Dying) {
-                if (pActors[Actor_ITR].vPosition.z < Floor_Level + 30) {
-                    if (pMonsterStats->pInfos[pActors[Actor_ITR].pMonsterInfo.uID].bQuestMonster & 1) {
+                if (pActors[Actor_ITR].vPosition.z < Floor_Level + 30) { // 30 to provide small error / rounding factor
+                    if (pMonsterStats->pInfos[pActors[Actor_ITR].pMonsterInfo.uID].bBloodSplatOnDeath) {
                         if (engine->config->graphics.BloodSplats.Get()) {
                             float splatRadius = pActors[Actor_ITR].uActorRadius * engine->config->graphics.BloodSplatsMultiplier.Get();
                             decal_builder->AddBloodsplat((float)pActors[Actor_ITR].vPosition.x, (float)pActors[Actor_ITR].vPosition.y, (float)(Floor_Level + 30), 1.0, 0.0, 0.0, splatRadius);
