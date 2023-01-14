@@ -13,6 +13,12 @@
 #include "glad/gl.h"
 #include <glm.hpp>
 
+#include "Engine/IocContainer.h"
+
+#include "Library/Logger/Logger.h"
+
+#include "Utility/DataPath.h"
+
 class GLShader {
  public:
     unsigned int ID{};
@@ -88,29 +94,8 @@ class GLShader {
     }
 
  private:
-    std::string shaderTypeToExtension(GLenum type) {
-        switch (type) {
-            case GL_VERTEX_SHADER: return "vert";
-            case GL_FRAGMENT_SHADER: return "frag";
-            case GL_GEOMETRY_SHADER: return "geom";
-            case GL_COMPUTE_SHADER: return "comp";
-            case GL_TESS_CONTROL_SHADER: return "tesc";
-            case GL_TESS_EVALUATION_SHADER: return "tese";
-            default: return {};
-        }
-    }
-
-    std::string shaderTypeToName(GLenum type) {
-        switch (type) {
-            case GL_VERTEX_SHADER: return "vertex";
-            case GL_FRAGMENT_SHADER: return "fragment";
-            case GL_GEOMETRY_SHADER: return "geometry";
-            case GL_COMPUTE_SHADER: return "compute";
-            case GL_TESS_CONTROL_SHADER: return "tessellation control";
-            case GL_TESS_EVALUATION_SHADER: return "tessellation evaluation";
-            default: return {};
-        }
-    }
+    static std::string shaderTypeToExtension(GLenum type);
+    static std::string shaderTypeToName(GLenum type);
 
     // utility function for checking shader compilation/linking errors.
     bool checkCompileErrors(GLuint shader, const std::string &name, const std::string &type) {

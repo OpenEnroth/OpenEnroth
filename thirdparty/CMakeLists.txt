@@ -12,10 +12,12 @@ set(INCLUDE_THIRDPARTY_DIRS
 set(BUILD_GMOCK OFF)
 set(INSTALL_GTEST OFF)
 
+add_subdirectory(fast_float)
 add_subdirectory(fmt)
 add_subdirectory(glad)
 add_subdirectory(glm)
 add_subdirectory(luajit)
+add_subdirectory(magic_enum)
 add_subdirectory(nuklear)
 add_subdirectory(cli11)
 if(ENABLE_TESTS)

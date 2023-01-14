@@ -13,6 +13,8 @@
 #include "GUI/GUIWindow.h"
 #include "Platform/PlatformKey.h"
 
+#include "Library/Serialization/Serialization.h"
+
 lua_State *lua = nullptr;
 std::shared_ptr<Nuklear> nuklear;
 
@@ -994,7 +996,7 @@ bool Nuklear::LuaLoadTemplate(WindowType winType) {
     std::string name;
 
     if (!wins[winType].tmpl) {
-        logger->Warning("Nuklear: [%s] unknown template", ToString(winType));
+        logger->Warning("Nuklear: [%s] unknown template", toString(winType).c_str());
         return false;
     }
 

@@ -12,6 +12,8 @@
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Level/Decoration.h"
 
+#include "Library/Serialization/EnumSerialization.h"
+
 #include "Utility/Random/Random.h"
 #include "Utility/Math/TrigLut.h"
 
@@ -310,31 +312,17 @@ void MapInfo::SpawnRandomTreasure(SpawnPoint *a2) {
     a1a.Create(0, 0, 0, 0);
 }
 
+MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(MapStartPoint, CASE_SENSITIVE, {
+    {MapStartPoint_Party, "Party Start"},
+    {MapStartPoint_North, "North Start"},
+    {MapStartPoint_South, "South Start"},
+    {MapStartPoint_East, "East Start"},
+    {MapStartPoint_West, "West Start"}
+})
+
 void TeleportToStartingPoint(MapStartPoint point) {
-    const char *model_name;  // [sp-4h] [bp-84h]@6
-    char pName[128];         // [sp+8h] [bp-78h]@11
+    std::string pName = toString(point);
 
-    switch (point) {
-        case MapStartPoint_Party:
-            model_name = "Party Start";
-            break;
-        case MapStartPoint_North:
-            model_name = "North Start";
-            break;
-        case MapStartPoint_South:
-            model_name = "South Start";
-            break;
-        case MapStartPoint_East:
-            model_name = "East Start";
-            break;
-        case MapStartPoint_West:
-            model_name = "West Start";
-            break;
-        default:
-            Error("Invalid enum value: %u", point);
-    }
-
-    strcpy(pName, model_name);
     if (pDecorationList->GetDecorIdByName(pName)) {
         if (!pLevelDecorations.empty()) {
             for (size_t i = 0; i < pLevelDecorations.size(); ++i) {

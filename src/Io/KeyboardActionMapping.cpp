@@ -236,7 +236,7 @@ KeyToggleType GetToggleType(InputAction action) {
         return KeyToggleType::TOGGLE_Continuously;
 }
 
-GameConfig::String *KeyboardActionMapping::InputActionToConfigKey(InputAction action) {
+GameConfig::Key *KeyboardActionMapping::InputActionToConfigKey(InputAction action) {
     switch (action) {
         case(InputAction::MoveForward): return &config->keybindings.Forward;
         case(InputAction::MoveBackwards): return &config->keybindings.Backward;
@@ -320,44 +320,26 @@ GameConfig::String *KeyboardActionMapping::InputActionToConfigKey(InputAction ac
 }
 
 PlatformKey KeyboardActionMapping::ConfigDefaultKey(InputAction action) {
-    PlatformKey key = PlatformKey::None;
-    ConfigValue<std::string> *val = InputActionToConfigKey(action);
-
-    if (val)
-        TryParseDisplayName(val->Default(), &key);
-
-    return key;
+    ConfigValue<PlatformKey> *val = InputActionToConfigKey(action);
+    return val ? val->Default() : PlatformKey::None;
 }
 
 PlatformKey KeyboardActionMapping::ConfigGetKey(InputAction action) {
-    PlatformKey key = PlatformKey::None;
-    ConfigValue<std::string> *val = InputActionToConfigKey(action);
-
-    if (val)
-        TryParseDisplayName(val->Get(), &key);
-
-    return key;
+    ConfigValue<PlatformKey> *val = InputActionToConfigKey(action);
+    return val ? val->Default() : PlatformKey::None;
 }
 
 void KeyboardActionMapping::ConfigSetKey(InputAction action, PlatformKey key) {
-    ConfigValue<std::string> *val = InputActionToConfigKey(action);
-
-    if (val) {
-        val->Set(GetDisplayName(key));
-    }
+    if (ConfigValue<PlatformKey> *val = InputActionToConfigKey(action))
+        val->Set(key);
 }
 
 PlatformKey KeyboardActionMapping::ConfigDefaultGamepadKey(InputAction action) {
-    PlatformKey key = PlatformKey::None;
-    GameConfig::String *val = InputActionToConfigGamepadKey(action);
-
-    if (val)
-        TryParseDisplayName(val->Default(), &key);
-
-    return key;
+    GameConfig::Key *val = InputActionToConfigGamepadKey(action);
+    return val ? val->Default() : PlatformKey::None;
 }
 
-GameConfig::String *KeyboardActionMapping::InputActionToConfigGamepadKey(InputAction action) {
+GameConfig::Key *KeyboardActionMapping::InputActionToConfigGamepadKey(InputAction action) {
     switch (action) {
         case(InputAction::MoveForward): return &config->gamepad.Forward;
         case(InputAction::MoveBackwards): return &config->gamepad.Backward;
@@ -441,19 +423,11 @@ GameConfig::String *KeyboardActionMapping::InputActionToConfigGamepadKey(InputAc
 }
 
 PlatformKey KeyboardActionMapping::ConfigGetGamepadKey(InputAction action) {
-    PlatformKey key = PlatformKey::None;
-    GameConfig::String *val = InputActionToConfigGamepadKey(action);
-
-    if (val)
-        TryParseDisplayName(val->Get(), &key);
-
-    return key;
+    GameConfig::Key *val = InputActionToConfigGamepadKey(action);
+    return val ? val->Get() : PlatformKey::None;
 }
 
 void KeyboardActionMapping::ConfigSetGamepadKey(InputAction action, PlatformKey key) {
-    GameConfig::String *val = InputActionToConfigGamepadKey(action);
-
-    if (val) {
-        val->Set(GetDisplayName(key));
-    }
+    if (GameConfig::Key *val = InputActionToConfigGamepadKey(action))
+        val->Set(key);
 }

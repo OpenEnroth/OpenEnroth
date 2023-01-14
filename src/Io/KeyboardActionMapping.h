@@ -37,12 +37,12 @@ namespace Io {
         KeyToggleType GetToggleType(InputAction action) const;
         bool IsKeyMatchAction(InputAction action, PlatformKey key) const;
 
-        GameConfig::String *InputActionToConfigKey(InputAction action);
+        GameConfig::Key *InputActionToConfigKey(InputAction action);
         PlatformKey ConfigDefaultKey(InputAction action);
         PlatformKey ConfigGetKey(InputAction action);
         void ConfigSetKey(InputAction action, PlatformKey key);
 
-        GameConfig::String *InputActionToConfigGamepadKey(InputAction action);
+        GameConfig::Key *InputActionToConfigGamepadKey(InputAction action);
         PlatformKey ConfigDefaultGamepadKey(InputAction action);
         PlatformKey ConfigGetGamepadKey(InputAction action);
         void ConfigSetGamepadKey(InputAction action, PlatformKey key);

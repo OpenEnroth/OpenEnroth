@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "Platform/PlatformKey.h"
+
 namespace Io {
     enum class InputAction : int {
         MoveForward,  // = 0
@@ -88,5 +90,4 @@ namespace Io {
 
 const std::vector<Io::InputAction> AllInputActions();
 const std::vector<Io::InputAction> VanillaInputActions();
-std::string ToString(Io::InputAction action);
 std::string GetDisplayName(Io::InputAction action);
