@@ -125,10 +125,13 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformKey, CASE_INSENSITIVE, {
     {PlatformKey::Gamepad_RightStick_Down,  "RSTICK DOWN"},
     {PlatformKey::Gamepad_L2,               "L2"},
     {PlatformKey::Gamepad_R2,               "R2"},
-    {PlatformKey::None,                     "-NOT-SET-"}
+    {PlatformKey::None,                     ""},
+    {PlatformKey::None,                     "-NOT-SET-"} // Allowed for deserialization only, relied on in TryParseDisplayName
 })
 
 std::string GetDisplayName(PlatformKey key) {
+    if (key == PlatformKey::None)
+        return "-NOT-SET-";
     return toString(key); // Should always work.
 }
 
