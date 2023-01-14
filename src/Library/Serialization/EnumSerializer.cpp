@@ -84,7 +84,7 @@ bool detail::EnumSerializationTable::tryDeserializeFlags(std::string_view src, u
         if (end == std::string_view::npos)
             end = src.size();
 
-        std::string_view string = Trim(src.substr(pos, end - pos));
+        std::string_view string = trim(src.substr(pos, end - pos));
 
         uint64_t bit;
         if (string == "0") {

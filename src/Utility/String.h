@@ -30,7 +30,7 @@ inline std::string TrimRemoveQuotes(std::string str) {
     return str;
 }
 
-inline std::string_view Trim(std::string_view s) {
+inline std::string_view trim(std::string_view s) {
     size_t l = 0;
     size_t r = s.size();
     while (l < r && s[l] == ' ')
