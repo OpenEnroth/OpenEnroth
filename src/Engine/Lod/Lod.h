@@ -41,7 +41,6 @@ public:
      * Closing the LOD file.
      *
      * This function closes the file and frees all associated resources, commiting any pending changes when in Write mode.
-     *
      */
     void close();
 
@@ -78,6 +77,8 @@ public:
      * This function reads a file at the path provided.
      *
      * @param path              File name relative to the current directory (can be a path).
+     * @param outFileSize       Optional pointer to file size in bytes.
+     * @param failIfMissing     Generate an error if the file is missing, otherwise issue a warning and return null.
      */
     std::shared_ptr<void> read(const std::string &path, size_t *outFileSize = nullptr, bool failIfMissing = false);
 
@@ -87,6 +88,8 @@ public:
      * This function writes a file to LOD at the path provided.
      *
      * @param path              File name relative to the current directory (can be a path).
+     * @param fileData          File bytes.
+     * @param fileDataSize      File size in bytes.
      */
     bool write(const std::string &path, const void *fileData, size_t fileDataSize);
 
@@ -94,7 +97,6 @@ public:
      * Commit all the changes to LOD.
      *
      * This function commits all the changes buffered so far (e.g writes) to the LOD file.
-     *
      */
     bool commit();
 
