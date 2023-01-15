@@ -5,9 +5,9 @@
 #include <string>
 #include <string_view>
 #include <vector>
-#include <type_traits>
 #include <functional>
 #include <utility>
+#include <type_traits>
 
 #include "Utility/Flags.h"
 

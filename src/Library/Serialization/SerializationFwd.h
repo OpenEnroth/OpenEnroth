@@ -4,9 +4,9 @@
 #include <string_view>
 
 /**
- * Forward-declares string serialization functions for the given type.
+ * Forward-declares lexical serialization functions for the given type.
  *
- * @param TYPE                          Type to forward-declare string serialization functions for.
+ * @param TYPE                          Type to forward-declare lexical serialization functions for.
  */
 #define MM_DECLARE_SERIALIZATION_FUNCTIONS(TYPE)                                                                        \
     [[nodiscard]] bool trySerialize(const TYPE &src, std::string *dst);                                                 \

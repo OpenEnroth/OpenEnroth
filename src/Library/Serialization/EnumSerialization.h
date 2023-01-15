@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cassert>
-#include <unordered_map>
 #include <string>
 
 #define MAGIC_ENUM_RANGE_MIN (-256)
@@ -15,8 +14,8 @@
 #include "EnumSerializer.h"
 
 /**
- * This macro generates enum serialization functions. The typical use case is to use it in the `cpp` file, and use
- * `MM_DECLARE_SERIALIZATION_FUNCTIONS` in the header file.
+ * This macro generates lexical serialization functions for the provided enumeration type.. The typical use case is to
+ * use it in the `cpp` file, and use `MM_DECLARE_SERIALIZATION_FUNCTIONS` in the header file.
  *
  * Note that it should be invoked from the namespace of the target enumeration type, otherwise argument-dependent
  * lookup won't find it, and unqualified calls to `serialize` / `trySerialize` / `deserialize` / `tryDeserialize`
@@ -76,8 +75,8 @@
 
 
 /**
- * This macro provides a limited support for flags serialization. Can only be used after an invocation of
- * `MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS` for the underlying enum type.
+ * This macro provides a limited support for lexical serialization of `Flags<T>`. It can only be used after an
+ * invocation of `MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS` for the underlying enum type.
  *
  * @param FLAGS                         Flags type to generate lexical serialization functions for.
  */
