@@ -93,7 +93,7 @@ var searchData=
   ['apply_5fspell_5fsprite_5fdamage_90',['Apply_Spell_Sprite_Damage',['../SpriteObject_8h.html#ad9764142f3e6f9e522796585ce90f6d3',1,'Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, signed int pid):&#160;SpriteObject.h'],['../SpriteObject_8cpp.html#ae4c7423dffd40822499d31df253173cd',1,'Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, int pid):&#160;SpriteObject.cpp']]],
   ['applybloodsplat_5foutdoorface_91',['ApplyBloodSplat_OutdoorFace',['../structDecalBuilder.html#addfbb7a18569b72ad34eec3607b3a333',1,'DecalBuilder']]],
   ['applybloodsplatdecals_5findoorface_92',['ApplyBloodsplatDecals_IndoorFace',['../structDecalBuilder.html#ad0e9f1b9e141c341bd78ad61466fb09b',1,'DecalBuilder']]],
-  ['applybloodsplattoterrain_93',['ApplyBloodSplatToTerrain',['../structDecalBuilder.html#a0268265eb76ce668c16e1d6af0a8c766',1,'DecalBuilder']]],
+  ['applybloodsplattoterrain_93',['ApplyBloodSplatToTerrain',['../structDecalBuilder.html#a50b1d28b58c41b3464eda44c25c1f70b',1,'DecalBuilder']]],
   ['applycardtoplayer_94',['ApplyCardToPlayer',['../Arcomage_8cpp.html#ade405a947de12828dbb9889158aff519',1,'Arcomage.cpp']]],
   ['applydamagetobuildings_95',['ApplyDamageToBuildings',['../Arcomage_8cpp.html#afc7cb047f9c91dc5375e83e4f25aff20',1,'Arcomage.cpp']]],
   ['applyfineforkillingpeasant_96',['ApplyFineForKillingPeasant',['../classActor.html#a73e25bd23c0650a92999a32a747cc2c1',1,'Actor']]],
