@@ -145,7 +145,7 @@ PlatformKey TranslateSdlGamepadButton(SDL_GameControllerButton button) {
 
 std::pair<PlatformKey, PlatformKeyType> TranslateSdlGamepadAxis(SDL_GameControllerAxis axis, float value) {
     PlatformKey key = PlatformKey::None;
-    PlatformKeyType keyType = PlatformKeyType::KEY_TYPE_GAMEPAD_AXIS;
+    PlatformKeyType keyType = KEY_TYPE_GAMEPAD_AXIS;
 
     switch (axis) {
     case SDL_CONTROLLER_AXIS_LEFTX:
@@ -178,11 +178,11 @@ std::pair<PlatformKey, PlatformKeyType> TranslateSdlGamepadAxis(SDL_GameControll
         break;
     case SDL_CONTROLLER_AXIS_TRIGGERLEFT:
         key = PlatformKey::Gamepad_L2;
-        keyType = PlatformKeyType::KEY_TYPE_GAMEPAD_TRIGGER;
+        keyType = KEY_TYPE_GAMEPAD_TRIGGER;
         break;
     case SDL_CONTROLLER_AXIS_TRIGGERRIGHT:
         key = PlatformKey::Gamepad_R2;
-        keyType = PlatformKeyType::KEY_TYPE_GAMEPAD_TRIGGER;
+        keyType = KEY_TYPE_GAMEPAD_TRIGGER;
         break;
 
     default:

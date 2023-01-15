@@ -13,6 +13,7 @@
 
 #include "Application/GameWindowHandler.h"
 #include "Application/GamePathResolver.h"
+#include "Application/GameTraceHandler.h"
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Awards.h"
@@ -78,8 +79,11 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
+#include "Library/Application/PlatformApplication.h"
+#include "Library/Trace/EventTracer.h"
+
 #include "Platform/Platform.h"
-#include "Platform/PlatformWindow.h"
+#include "Platform/Filters/FilteringEventHandler.h"
 
 #include "Utility/Format.h"
 #include "Utility/Random/Random.h"
@@ -131,8 +135,8 @@ void Application::AutoInitDataPath(Platform *platform) {
     }
 }
 
-Game::Game(Platform *platform) {
-    this->platform = platform;
+Game::Game(PlatformApplication *app) {
+    this->app = app;
     this->log = EngineIoc::ResolveLogger();
     this->decal_builder = EngineIoc::ResolveDecalBuilder();
     this->vis = EngineIoc::ResolveVis();
@@ -144,16 +148,21 @@ Game::~Game() {}
 int Game::Run() {
     IntegrityTest();
 
-    ::platform = platform;
+    ::application = app;
+    ::platform = app->platform();
+    ::eventLoop = app->eventLoop();
+    ::window = app->window();
+    ::eventHandler = app->eventHandler();
+    ::openGLContext = app->openGLContext(); // OK to store into a global even if not yet initialized
 
     windowHandler.reset(Application::IocContainer::ResolveGameWindowHandler());
-    ::eventHandler = windowHandler.get();
-
-    window = platform->CreateWindow();
-    ::window = window.get();
-
-    eventLoop = platform->CreateEventLoop();
-    ::eventLoop = eventLoop.get();
+    eventTracer = std::make_unique<EventTracer>();
+    traceHandler = std::make_unique<GameTraceHandler>(eventTracer.get());
+    app->eventHandler()->installEventFilter(windowHandler.get());
+    app->eventHandler()->installEventFilter(eventTracer.get());
+    app->eventHandler()->installEventFilter(traceHandler.get());
+    app->installProxy(eventTracer.get());
+    // TODO(captainurist): This code works for now, but these ^ need to be uninstalled properly.
 
     if (!window) {
         log->Warning("Window creation failed");
@@ -241,8 +250,6 @@ int Game::Run() {
         render->Release();
         render = nullptr;
     }
-
-    window.reset();
 
     return 0;
 }

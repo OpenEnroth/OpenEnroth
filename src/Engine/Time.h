@@ -129,10 +129,10 @@ struct Timer {
     void TrackGameTime();
     void StopGameTime();
 
-    unsigned int bReady;
+    unsigned int bReady; // Unused
     unsigned int bPaused;
     int bTackGameTime;
-    unsigned int uStartTime;
+    unsigned int uStartTime; // Last tick (frame) time, in 1/128th of a second.
     unsigned int uStopTime;
     int uGameTimeStart;
     int field_18;

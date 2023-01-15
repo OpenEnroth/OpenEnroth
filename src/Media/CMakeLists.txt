@@ -13,7 +13,7 @@ set(MEDIA_HEADERS Media.h
                   Audio/OpenALSoundProvider.h)
 
 add_library(media STATIC ${MEDIA_SOURCES} ${MEDIA_HEADERS})
-target_link_libraries(media utility)
+target_link_libraries(media utility game)
 target_compile_definitions(media PRIVATE FF_API_NEXT)
 
 include_directories(${INCLUDE_DIRECTORIES} ${OPENAL_INCLUDE_DIRS} ${FFMPEG_INCLUDE_DIRS})

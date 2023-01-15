@@ -6,18 +6,19 @@
 #include <utility>
 
 #include "GUI/GUIProgressBar.h"
-#include "Engine/SaveLoad.h"
-
-#include "Platform/PlatformEvents.h"
-
-#include "Testing/Engine/TestStateHandle.h"
-#include "Testing/Engine/TestEventLoop.h"
-#include "Testing/Engine/TestPlatform.h"
-#include "Testing/Engine/TestWindow.h"
-#include "Testing/Extensions/ThrowingAssertions.h"
-
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
+
+#include "Engine/SaveLoad.h"
+
+#include "Testing/Engine/TestStateHandle.h"
+#include "Testing/Engine/TestProxy.h"
+#include "Testing/Extensions/ThrowingAssertions.h"
+
+#include "Library/Application/PlatformApplication.h"
+#include "Library/Trace/EventTrace.h"
+
+#include "Platform/PlatformEvents.h"
 
 #include "Utility/Random/Random.h"
 
@@ -32,7 +33,7 @@ GameWrapper::~GameWrapper() {}
 
 void GameWrapper::Reset() {
     GoToMainMenu();
-    state_->platform->Reset();
+    state_->proxy->reset();
     SeedRandom(0);
 }
 
@@ -47,7 +48,7 @@ void GameWrapper::PressKey(PlatformKey key) {
     event->key = key;
     event->mods = 0;
     event->isAutoRepeat = false;
-    state_->eventLoop->PostEvent(state_->window, std::move(event));
+    state_->proxy->postEvent(state_->application->window(), std::move(event));
 }
 
 void GameWrapper::ReleaseKey(PlatformKey key) {
@@ -56,7 +57,7 @@ void GameWrapper::ReleaseKey(PlatformKey key) {
     event->key = key;
     event->mods = 0;
     event->isAutoRepeat = false;
-    state_->eventLoop->PostEvent(state_->window, std::move(event));
+    state_->proxy->postEvent(state_->application->window(), std::move(event));
 }
 
 void GameWrapper::PressButton(PlatformMouseButton button, int x, int y) {
@@ -65,7 +66,7 @@ void GameWrapper::PressButton(PlatformMouseButton button, int x, int y) {
     event->button = PlatformMouseButton::Left;
     event->pos = Pointi(x, y);
     event->isDoubleClick = false;
-    state_->eventLoop->PostEvent(state_->window, std::move(event));
+    state_->proxy->postEvent(state_->application->window(), std::move(event));
 }
 
 void GameWrapper::ReleaseButton(PlatformMouseButton button, int x, int y) {
@@ -75,7 +76,7 @@ void GameWrapper::ReleaseButton(PlatformMouseButton button, int x, int y) {
     event->buttons = PlatformMouseButton::Left;
     event->pos = Pointi(x, y);
     event->isDoubleClick = false;
-    state_->eventLoop->PostEvent(state_->window, std::move(event));
+    state_->proxy->postEvent(state_->application->window(), std::move(event));
 }
 
 void GameWrapper::PressAndReleaseKey(PlatformKey key) {
@@ -178,4 +179,16 @@ GUIButton *GameWrapper::AssertButton(std::string_view buttonId) {
     checkButton(result);
 
     return result;
+}
+
+void GameWrapper::PlayTrace(const std::string &name) {
+    auto trace = EventTrace::loadFromFile(testDataDir_ + name).takeEvents();
+
+    for (std::unique_ptr<PlatformEvent> &event : trace) {
+        if (event->type == EventTrace::PaintEvent) {
+            Tick(1);
+        } else {
+            state_->proxy->postEvent(state_->application->window(), std::move(event));
+        }
+    }
 }

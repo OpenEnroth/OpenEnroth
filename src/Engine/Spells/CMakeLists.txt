@@ -11,4 +11,5 @@ if(NOT BUILD_PLATFORM STREQUAL "windows")
 endif()
 
 add_library(spells STATIC ${SPELLS_SOURCES} ${SPELLS_HEADERS})
+target_link_libraries(spells engine)
 target_check_style(spells)

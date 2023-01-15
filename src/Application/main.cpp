@@ -7,6 +7,8 @@
 #include "Application/GameFactory.h"
 #include "Application/GameOptions.h"
 
+#include "Library/Application/PlatformApplication.h"
+
 #include "Platform/Platform.h"
 
 #include "Utility/ScopeGuard.h"
@@ -25,20 +27,20 @@ int MM_Main(int argc, char **argv) {
         auto guard = ScopeGuard([] { EngineIoc::ResolveLogger()->SetBaseLogger(nullptr); });
         Engine::LogEngineBuildInfo();
 
-        std::unique_ptr<Platform> platform = Platform::CreateStandardPlatform(logger.get());
+        std::unique_ptr<PlatformApplication> app = std::make_unique<PlatformApplication>(logger.get());
 
-        Application::AutoInitDataPath(platform.get());
+        Application::AutoInitDataPath(app->platform());
 
         std::shared_ptr<GameConfig> gameConfig = std::make_shared<GameConfig>();
         gameConfig->LoadConfiguration();
         if (!Application::ParseGameOptions(argc, argv, &*gameConfig))
             return 1;
 
-        std::shared_ptr<Game> game = GameFactory().CreateGame(platform.get(), gameConfig);
+        std::shared_ptr<Game> game = GameFactory().CreateGame(app.get(), gameConfig);
 
         return game->Run();
     } catch (const std::exception &e) {
-        fprintf(stderr, "%s", e.what());
+        fprintf(stderr, "%s\n", e.what());
         return 1;
     }
 }

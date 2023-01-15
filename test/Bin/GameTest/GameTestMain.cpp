@@ -7,9 +7,11 @@
 
 #include "Testing/Engine/TestState.h"
 #include "Testing/Engine/TestStateHandle.h"
-#include "Testing/Engine/TestPlatform.h"
+#include "Testing/Engine/TestProxy.h"
 #include "Testing/Game/GameWrapper.h"
 #include "Testing/Game/GameTest.h"
+
+#include "Library/Application/PlatformApplication.h"
 
 #include "Utility/Random/Random.h"
 #include "Utility/Random/NonRandomEngine.h"
@@ -17,80 +19,116 @@
 
 #include "GameTestOptions.h"
 
-void RunGameThread(const GameTestOptions& opts, TestState *unsafeState) {
-    TestStateHandle state(GameSide, unsafeState);
+class GameThread {
+ public:
+    explicit GameThread(const GameTestOptions& options) {
+        SetGlobalRandomEngine(std::make_unique<NonRandomEngine>());
 
-    SetGlobalRandomEngine(std::make_unique<NonRandomEngine>());
+        _logger = PlatformLogger::CreateStandardLogger(WinEnsureConsoleOption);
+        _logger->SetLogLevel(ApplicationLog, LogInfo);
+        _logger->SetLogLevel(PlatformLog, LogError);
+        EngineIoc::ResolveLogger()->SetBaseLogger(_logger.get());
+        auto guard = ScopeGuard([] { EngineIoc::ResolveLogger()->SetBaseLogger(nullptr); });
+        Engine::LogEngineBuildInfo();
 
-    std::unique_ptr<PlatformLogger> logger = PlatformLogger::CreateStandardLogger(WinEnsureConsoleOption);
-    logger->SetLogLevel(ApplicationLog, LogInfo);
-    logger->SetLogLevel(PlatformLog, LogError);
-    EngineIoc::ResolveLogger()->SetBaseLogger(logger.get());
-    auto guard = ScopeGuard([] { EngineIoc::ResolveLogger()->SetBaseLogger(nullptr); });
-    Engine::LogEngineBuildInfo();
+        _application = std::make_unique<PlatformApplication>(_logger.get());
 
-    std::unique_ptr<Platform> platform = std::make_unique<TestPlatform>(Platform::CreateStandardPlatform(logger.get()), state);
+        _unsafeState = std::make_unique<TestState>(_application.get());
 
-    if (opts.gameDataDir.empty()) {
-        Application::AutoInitDataPath(platform.get());
-    } else {
-        SetDataPath(opts.gameDataDir);
+        _proxy = std::make_unique<TestProxy>(TestStateHandle(GameSide, _unsafeState.get())); // State is locked here
+        _application->installProxy(_proxy.get());
+
+        if (options.gameDataDir.empty()) {
+            Application::AutoInitDataPath(_application->platform());
+        } else {
+            SetDataPath(options.gameDataDir);
+        }
+
+        _config = std::make_shared<Application::GameConfig>();
+        _config->LoadConfiguration(); // TODO(captainurist): Reads from openenroth.ini, not good for tests
+        _config->debug.NoVideo.Set(true);
+        _config->window.MouseGrab.Set(false);
+        _config->graphics.FPSLimit.Set(0); // Unlimited
+
+        _game = Application::GameFactory().CreateGame(_application.get(), _config);
     }
 
-    std::shared_ptr<Application::GameConfig> config = std::make_shared<Application::GameConfig>();
-    config->LoadConfiguration(); // TODO(captainurist): Reads from openenroth.ini, not good for tests
-    config->debug.NoVideo.Set(true);
-    config->window.MouseGrab.Set(false);
-    config->graphics.FPSLimit.Set(0); // Unlimited
+    void run() {
+        _game->Run();
+    }
 
-    std::shared_ptr<Application::Game> game = Application::GameFactory().CreateGame(platform.get(), config);
+    TestState *unsafeState() const {
+        return _unsafeState.get();
+    }
 
-    game->Run();
-}
+ private:
+    std::unique_ptr<PlatformLogger> _logger;
+    std::unique_ptr<PlatformApplication> _application;
+    std::unique_ptr<TestState> _unsafeState;
+    std::unique_ptr<TestProxy> _proxy;
+    std::shared_ptr<Application::GameConfig> _config;
+    std::shared_ptr<Application::Game> _game;
+};
 
-void RunTestThread(const GameTestOptions& opts, TestState *unsafeState, int *exitCode) {
-    TestStateHandle state(TestSide, unsafeState);
+class TestThread {
+ public:
+    TestThread(const GameTestOptions& options, TestState *unsafeState, int *exitCode) : _options(options), _unsafeState(unsafeState), _exitCode(exitCode) {}
 
-    GameWrapper gameWrapper(state, opts.testDataDir);
-    GameTest::Init(&gameWrapper);
-    gameWrapper.Tick(10); // Let the game thread initialize everything.
+    void run() {
+        TestStateHandle state(TestSide, _unsafeState);
 
-    *exitCode = RUN_ALL_TESTS();
+        GameWrapper gameWrapper(state, _options.testDataDir);
+        GameTest::Init(&gameWrapper);
+        gameWrapper.Tick(10); // Let the game thread initialize everything.
 
-    state->terminating = true;
-}
+        *_exitCode = RUN_ALL_TESTS();
 
-void PrintGoogleTestHelp(char *app) {
+        state->terminating = true;
+    }
+
+ private:
+    GameTestOptions _options;
+    TestState *_unsafeState = nullptr;
+    int *_exitCode;
+};
+
+void printGoogleTestHelp(char *app) {
     int argc = 2;
     char help[] = "--help";
     char *argv[] = { app, help, nullptr };
     testing::InitGoogleTest(&argc, argv);
 }
 
-int PlatformMain(int argc, char **argv) {
-    GameTestOptions opts;
-    int exitCode = opts.Parse(argc, argv) ? 0 : 1;
+int parseOptions(int argc, char **argv, GameTestOptions *opts) {
+    int exitCode = opts->Parse(argc, argv) ? 0 : 1;
 
-    if (opts.helpRequested) {
+    if (opts->helpRequested) {
         std::cout << std::endl;
-        PrintGoogleTestHelp(argv[0]);
+        printGoogleTestHelp(argv[0]);
     } else {
         testing::InitGoogleTest(&argc, argv);
     }
 
+    return exitCode;
+}
+
+int PlatformMain(int argc, char **argv) {
+    GameTestOptions opts;
+    int exitCode = parseOptions(argc, argv, &opts);
     if (exitCode != 0)
         return exitCode;
 
-    std::thread testThread;
+    GameThread gameThread(opts);
+    TestThread testThread(opts, gameThread.unsafeState(), &exitCode);
 
-    TestState state;
-    state.terminationHandler = [&] {
-        testThread.join();
+    std::thread thread;
+    gameThread.unsafeState()->terminationHandler = [&] {
+        thread.join();
         Engine_DeinitializeAndTerminate(exitCode);
     };
 
-    testThread = std::thread(&RunTestThread, opts, &state, &exitCode);
-    RunGameThread(opts, &state);
+    thread = std::thread(&TestThread::run, &testThread);
+    gameThread.run();
 
     assert(false); // should never get here.
     return exitCode;

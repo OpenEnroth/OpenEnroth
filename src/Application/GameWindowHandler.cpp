@@ -26,7 +26,6 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-
 #include "IocContainer.h"
 
 
@@ -50,10 +49,12 @@ static char PlatformKeyToChar(PlatformKey key, PlatformModifiers mods) {
 }
 
 
-GameWindowHandler::GameWindowHandler() {
+GameWindowHandler::GameWindowHandler() : PlatformEventFilter(PlatformEventFilter::ALL_EVENTS) {
     this->mouse = EngineIoc::ResolveMouse();
     this->keyboardController_ = std::make_unique<GameKeyboardController>();
 }
+
+GameWindowHandler::~GameWindowHandler() {}
 
 std::tuple<int, Pointi, Sizei> GameWindowHandler::GetWindowConfigPosition(const GameConfig *config) {
     std::vector<Recti> displays = platform->DisplayGeometries();
@@ -495,18 +496,18 @@ void GameWindowHandler::OnMouseGrabToggle() {
     window->SetGrabsMouse(engine->config->window.MouseGrab.Toggle());
 }
 
-void GameWindowHandler::Event(PlatformWindow *window, const PlatformEvent *event) {
+bool GameWindowHandler::Event(PlatformWindow *window, const PlatformEvent *event) {
     if (nuklear && nuklearEventHandler)
         nuklearEventHandler->Event(window, event);
 
-    PlatformEventHandler::Event(window, event);
+    return PlatformEventFilter::Event(window, event);
 }
 
-void GameWindowHandler::KeyPressEvent(PlatformWindow *, const PlatformKeyEvent *event) {
+bool GameWindowHandler::KeyPressEvent(PlatformWindow *, const PlatformKeyEvent *event) {
     keyboardController_->ProcessKeyPressEvent(event);
 
     if (event->isAutoRepeat)
-        return;
+        return false;
 
     PlatformKey key = event->key;
     char c = PlatformKeyToChar(key, event->mods);
@@ -516,17 +517,20 @@ void GameWindowHandler::KeyPressEvent(PlatformWindow *, const PlatformKeyEvent *
 
     if (c != 0)
         OnChar(key, c);
+    return false;
 }
 
-void GameWindowHandler::KeyReleaseEvent(PlatformWindow *, const PlatformKeyEvent *event) {
+bool GameWindowHandler::KeyReleaseEvent(PlatformWindow *, const PlatformKeyEvent *event) {
     keyboardController_->ProcessKeyReleaseEvent(event);
+    return false;
 }
 
-void GameWindowHandler::MouseMoveEvent(PlatformWindow *, const PlatformMouseEvent *event) {
+bool GameWindowHandler::MouseMoveEvent(PlatformWindow *, const PlatformMouseEvent *event) {
     OnMouseMove(MapToRender(event->pos), event->buttons & PlatformMouseButton::Left, event->buttons & PlatformMouseButton::Right);
+    return false;
 }
 
-void GameWindowHandler::MousePressEvent(PlatformWindow *, const PlatformMouseEvent *event) {
+bool GameWindowHandler::MousePressEvent(PlatformWindow *, const PlatformMouseEvent *event) {
     Pointi position = MapToRender(event->pos);
     if (event->button == PlatformMouseButton::Left) {
         if (event->isDoubleClick) {
@@ -541,19 +545,21 @@ void GameWindowHandler::MousePressEvent(PlatformWindow *, const PlatformMouseEve
             OnMouseRightClick(position);
         }
     }
+    return false;
 }
 
-void GameWindowHandler::MouseReleaseEvent(PlatformWindow *, const PlatformMouseEvent *event) {
+bool GameWindowHandler::MouseReleaseEvent(PlatformWindow *, const PlatformMouseEvent *event) {
     if (event->button == PlatformMouseButton::Left) {
         OnMouseLeftUp();
     } else if (event->button == PlatformMouseButton::Right) {
         OnMouseRightUp();
     }
+    return false;
 }
 
-void GameWindowHandler::WheelEvent(PlatformWindow *, const PlatformWheelEvent *) {}
+bool GameWindowHandler::WheelEvent(PlatformWindow *, const PlatformWheelEvent *) { return false; }
 
-void GameWindowHandler::MoveEvent(PlatformWindow *, const PlatformMoveEvent *event) {
+bool GameWindowHandler::MoveEvent(PlatformWindow *, const PlatformMoveEvent *event) {
     /* Remember window position after move. Move position event is also triggered on toggling fullscreen. And we should save current window position prior to entering fullscreen.
      * As entering fullscreen will forcefully move window to {0,0} position on current display. And we want to restore position prior to entering fullscreen and not {0,0} or startup one. */
     PlatformWindowMode mode = window->WindowMode();
@@ -565,27 +571,31 @@ void GameWindowHandler::MoveEvent(PlatformWindow *, const PlatformMoveEvent *eve
         engine->config->window.PositionY.Set(relativePos.y);
         engine->config->window.Display.Set(display);
     }
+    return false;
 }
 
-void GameWindowHandler::ResizeEvent(PlatformWindow *, const PlatformResizeEvent *event) {
+bool GameWindowHandler::ResizeEvent(PlatformWindow *, const PlatformResizeEvent *event) {
     render->Reinitialize();
+    return false;
 }
 
-void GameWindowHandler::ActivationEvent(PlatformWindow *, const PlatformEvent *event) {
+bool GameWindowHandler::ActivationEvent(PlatformWindow *, const PlatformEvent *event) {
     if (event->type == PlatformEvent::WindowActivate) {
         OnActivated();
     } else if (event->type == PlatformEvent::WindowDeactivate) {
         OnDeactivated();
     }
+    return false;
 }
 
-void GameWindowHandler::CloseEvent(PlatformWindow *, const PlatformEvent *event) {
+bool GameWindowHandler::CloseEvent(PlatformWindow *, const PlatformEvent *event) {
     UpdateConfigFromWindow(engine->config.get());
     engine->config->SaveConfiguration();
     Engine_DeinitializeAndTerminate(0);
+    return false;
 }
 
-void GameWindowHandler::GamepadDeviceEvent(PlatformWindow *, const PlatformGamepadDeviceEvent *event) {
+bool GameWindowHandler::GamepadDeviceEvent(PlatformWindow *, const PlatformGamepadDeviceEvent *event) {
     if (event->type == PlatformEvent::GamepadConnected) {
         gamepads_[event->id] = platform->CreateGamepad(event->id);
         if (gamepads_[event->id]) {
@@ -601,7 +611,7 @@ void GameWindowHandler::GamepadDeviceEvent(PlatformWindow *, const PlatformGamep
                 message += ", serial: " + serial;
 
             logger->Info(message.c_str());
-            return;
+            return false;
         }
 
         logger->Warning("gamepad #%d initialization failed", event->id);
@@ -612,10 +622,12 @@ void GameWindowHandler::GamepadDeviceEvent(PlatformWindow *, const PlatformGamep
             if (gamepad->Id() == event->id) {
                 gamepads_.erase(it);
                 logger->Info("gamepad #%d disconnected", event->id);
-                return;
+                return false;
             }
         }
 
         logger->Warning("gamepad #%d disconnection failed", event->id);
     }
+
+    return false;
 }

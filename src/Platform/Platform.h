@@ -42,7 +42,8 @@ using enum PLATFORM_STORAGE;
  * - `PlatformEventHandler`, which should be subclassed in user code to handle platform events. An instance is passed
  *   to `PlatformEventLoop` methods, so this is where the calls back into the user code happen.
  *
- * That's it, there is only one extension point. If you want fancy event handler chains, you can do this in user code.
+ * That's it, there is only one extension point. If you want fancy event handler chains, you can
+ * use `FilteringEventHandler`.
  *
  * And then there are value types:
  * - All kinds of enums for keyboard keys, mouse keys, and modifiers.

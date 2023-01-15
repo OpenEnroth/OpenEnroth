@@ -43,6 +43,7 @@
 #include "Engine/SpellFxRenderer.h"
 #include "Arcomage/Arcomage.h"
 
+#include "Library/Application/PlatformApplication.h"
 #include "Library/Serialization/EnumSerialization.h"
 
 #include "Utility/Geometry/Size.h"
@@ -3827,7 +3828,7 @@ void RenderOpenGL::Present() {
         glEnable(GL_SCISSOR_TEST);
         glViewport(0, 0, outputRender.w, outputRender.h);
     }
-    openGlContext->SwapBuffers();
+    openGLContext->SwapBuffers();
 
     if (engine->config->graphics.FPSLimit.Get() > 0) {
         // crude frame rate limiting
@@ -5227,8 +5228,7 @@ bool RenderOpenGL::Initialize() {
 
         opts.vsyncMode = config->graphics.VSync.Get() ? AdaptiveVSync : NoVSync;
 
-        context_ = window->CreateOpenGLContext(opts);
-        ::openGlContext = context_.get();
+        application->initializeOpenGLContext(opts);
 
         auto gladLoadFunc = [](void *ptr, const char *name) {
             return reinterpret_cast<GLADapiproc>(static_cast<PlatformOpenGLContext *>(ptr)->GetProcAddress(name));
@@ -5236,9 +5236,9 @@ bool RenderOpenGL::Initialize() {
 
         int version;
         if (OpenGLES)
-            version = gladLoadGLES2UserPtr(gladLoadFunc, context_.get());
+            version = gladLoadGLES2UserPtr(gladLoadFunc, openGLContext);
         else
-            version = gladLoadGLUserPtr(gladLoadFunc, context_.get());
+            version = gladLoadGLUserPtr(gladLoadFunc, openGLContext);
 
         if (!version)
             log->Warning("GLAD: Failed to initialize the OpenGL loader");
@@ -5533,7 +5533,7 @@ bool RenderOpenGL::Reinitialize(bool firstInit) {
     glEnable(GL_SCISSOR_TEST);
 
     // Swap Buffers (Double Buffering)
-    openGlContext->SwapBuffers();
+    openGLContext->SwapBuffers();
 
     this->clip_x = this->clip_y = 0;
     this->clip_z = outputRender.w;
