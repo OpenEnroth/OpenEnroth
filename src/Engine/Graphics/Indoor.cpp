@@ -47,6 +47,8 @@
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Random/Random.h"
 
+// TODO(pskelton): make this neater
+static DecalBuilder* decal_builder = EngineIoc::ResolveDecalBuilder();
 
 IndoorLocation *pIndoor = new IndoorLocation;
 BLVRenderParams *pBLVRenderParams = new BLVRenderParams;
@@ -1298,6 +1300,21 @@ void UpdateActors_BLV() {
         if (actor.vPosition.z > floorZ + 1)
             isAboveGround = true;
 
+        // make bloodsplat when the ground is hit
+        if (!actor.donebloodsplat) {
+            if (actor.uAIState == Dead || actor.uAIState == Dying) {
+                if (actor.vPosition.z < floorZ + 30) { // 30 to provide small error / rounding factor
+                    if (pMonsterStats->pInfos[actor.pMonsterInfo.uID].bBloodSplatOnDeath) {
+                        if (engine->config->graphics.BloodSplats.Get()) {
+                            float splatRadius = actor.uActorRadius * engine->config->graphics.BloodSplatsMultiplier.Get();
+                            decal_builder->AddBloodsplat((float)actor.vPosition.x, (float)actor.vPosition.y, (float)(floorZ + 30), 1.0, 0.0, 0.0, splatRadius);
+                        }
+                        actor.donebloodsplat = true;
+                    }
+                }
+            }
+        }
+
         if (actor.uCurrentActionAnimation == ANIM_Walking) {  // actor is moving
             int moveSpeed = actor.uMovementSpeed;
 
@@ -1682,7 +1699,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
         memset(&particle, 0, sizeof(Particle_sw));  // fire,  like at the Pit's tavern
         particle.type =
             ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
-        particle.uDiffuse = 0xFF3C1E;
+        particle.uDiffuse = colorTable.OrangeyRed.C32();
         particle.x = (double)pLevelDecorations[uDecorationID].vPosition.x;
         particle.y = (double)pLevelDecorations[uDecorationID].vPosition.y;
         particle.z = (double)pLevelDecorations[uDecorationID].vPosition.z;

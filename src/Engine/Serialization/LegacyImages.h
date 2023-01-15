@@ -594,7 +594,7 @@ struct MonsterInfo_MM7 {
     uint8_t uNumCharactersAttackedPerSpecialAbility;
     char field_33;
     uint16_t uID;
-    uint16_t bQuestMonster;
+    uint16_t bBloodSplatOnDeath;
     uint16_t uSpellSkillAndMastery1;
     uint16_t uSpellSkillAndMastery2;
     int16_t field_3C_some_special_attack;

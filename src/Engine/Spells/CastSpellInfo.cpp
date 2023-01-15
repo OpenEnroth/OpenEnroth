@@ -1194,7 +1194,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)),
                         _50BF30_actors_in_viewport_ids[i], &v700);
                     spell_fx_renderer->RenderAsSprite(&pSpellSprite);
-                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(0xFF3C1E, 0x40);
+                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.OrangeyRed.C32(), 0x40);
                 }
                 spell_sound_flag = true;
                 break;
@@ -2113,7 +2113,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 int mon_num = render->GetActorsInViewport(4096);
                 spell_fx_renderer
-                    ->FadeScreen__like_Turn_Undead_and_mb_Armageddon(0xFFFFFF,
+                    ->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.White.C32(),
                                                                      192);
                 // ++pSpellSprite.uType;
                 pSpellSprite.uType = SPRITE_SPELL_SPIRIT_TURN_UNDEAD_1;
@@ -2572,7 +2572,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 int mon_num = render->GetActorsInViewport(4096);
                 spell_fx_renderer
-                    ->FadeScreen__like_Turn_Undead_and_mb_Armageddon(0xA0A0A,
+                    ->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.Night.C32(),
                                                                      192);
                 // ++pSpellSprite.uType;
                 pSpellSprite.uType = SPRITE_SPELL_MIND_MASS_FEAR_1;
@@ -2941,7 +2941,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 sRecoveryTime -= spell_level;
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 spell_fx_renderer
-                    ->FadeScreen__like_Turn_Undead_and_mb_Armageddon(0xAFF0A,
+                    ->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.VibrantGreen.C32(),
                                                                      192);
                 int mon_num = render->GetActorsInViewport(4096);
                 // ++pSpellSprite.uType;
@@ -3630,7 +3630,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         pPlayers[pl_array[j]]->sHealth = pPlayers[pl_array[j]]->GetMaxHealth();
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pl_array[j]);
                 }
-                spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(0, 64);
+                spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.Black.C32(), 64);
                 spell_sound_flag = true;
                 break;
             }

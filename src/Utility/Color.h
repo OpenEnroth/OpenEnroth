@@ -70,6 +70,19 @@ class ColorTable {
     Color Tundora = Color(75, 75, 75);            // #4B4B4B
     Color Yellow = Color(255, 255, 0);            // #FFFF00
     Color White = Color(255, 255, 255);           // #FFFFFF
+    Color OrangeyRed = Color(255, 60, 30);        // #FF3C1E
+    Color MustardYellow = Color(200, 200, 20);    // #C8C814
+    Color MediumGrey = Color(126, 126, 126);      // #7E7E7E
+    Color CarolinaBlue = Color(158, 185, 241);    // #9EB9F1
+    Color GreenTeal = Color(10, 180, 80);         // #0AB450
+    Color DirtyYellow = Color(200, 200, 5);       // #C8C805
+    Color ScienceBlue = Color(0, 98, 208);        // #0062D0
+    Color CarnabyTan = Color(92, 49, 14);         // #5C310E
+    Color Azure = Color(10, 170, 255);            // #0AAAFF
+    Color GreenishBrown = Color(100, 100, 15);    // #64640F
+    Color BloodRed = Color(240, 0, 0);            // #F00000
+    Color VibrantGreen = Color(10, 255, 10);      // #0AFF0A
+    Color Night = Color(10, 10, 10);              // #0A0A0A
 };
 
 extern ColorTable colorTable;

@@ -1179,7 +1179,7 @@ void Serialize(const Actor &src, Actor_MM7 *dst) {
     dst->pMonsterInfo.uNumCharactersAttackedPerSpecialAbility = src.pMonsterInfo.uNumCharactersAttackedPerSpecialAbility;
     dst->pMonsterInfo.field_33 = src.pMonsterInfo.field_33;
     dst->pMonsterInfo.uID = src.pMonsterInfo.uID;
-    dst->pMonsterInfo.bQuestMonster = src.pMonsterInfo.bQuestMonster;
+    dst->pMonsterInfo.bBloodSplatOnDeath = src.pMonsterInfo.bBloodSplatOnDeath;
     dst->pMonsterInfo.uSpellSkillAndMastery1 = src.pMonsterInfo.uSpellSkillAndMastery1;
     dst->pMonsterInfo.uSpellSkillAndMastery2 = src.pMonsterInfo.uSpellSkillAndMastery2;
     dst->pMonsterInfo.field_3C_some_special_attack = src.pMonsterInfo.field_3C_some_special_attack;
@@ -1292,7 +1292,7 @@ void Deserialize(const Actor_MM7 &src, Actor *dst) {
     dst->pMonsterInfo.uNumCharactersAttackedPerSpecialAbility = src.pMonsterInfo.uNumCharactersAttackedPerSpecialAbility;
     dst->pMonsterInfo.field_33 = src.pMonsterInfo.field_33;
     dst->pMonsterInfo.uID = src.pMonsterInfo.uID;
-    dst->pMonsterInfo.bQuestMonster = src.pMonsterInfo.bQuestMonster;
+    dst->pMonsterInfo.bBloodSplatOnDeath = src.pMonsterInfo.bBloodSplatOnDeath;
     dst->pMonsterInfo.uSpellSkillAndMastery1 = src.pMonsterInfo.uSpellSkillAndMastery1;
     dst->pMonsterInfo.uSpellSkillAndMastery2 = src.pMonsterInfo.uSpellSkillAndMastery2;
     dst->pMonsterInfo.field_3C_some_special_attack = src.pMonsterInfo.field_3C_some_special_attack;

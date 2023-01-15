@@ -221,7 +221,7 @@ void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID) {
             if (object->uFlags & OBJECT_DESC_TRIAL_FIRE) {
                 Dst.type = ParticleType_Bitmap | ParticleType_Rotating |
                            ParticleType_8;
-                Dst.uDiffuse = 0xFF3C1E;
+                Dst.uDiffuse = colorTable.OrangeyRed.C32();
                 Dst.timeToLive = Random(0x80) + 128; // was rand() & 0x80
                 Dst.texture = spell_fx_renderer->effpar01;
                 Dst.particle_size = 1.0f;
@@ -335,7 +335,7 @@ LABEL_13:
                 if (object->uFlags & OBJECT_DESC_TRIAL_FIRE) {
                     Dst.type = ParticleType_Bitmap | ParticleType_Rotating |
                                ParticleType_8;
-                    Dst.uDiffuse = 0xFF3C1E;
+                    Dst.uDiffuse = colorTable.OrangeyRed.C32();
                     Dst.timeToLive = Random(0x80) + 128; // was rand() & 0x80
                     Dst.texture = spell_fx_renderer->effpar01;
                     Dst.particle_size = 1.0f;
@@ -537,7 +537,7 @@ LABEL_25:
                 if (pObject->uFlags & OBJECT_DESC_TRIAL_FIRE) {
                     Dst.type = ParticleType_Bitmap | ParticleType_Rotating |
                                ParticleType_8;
-                    Dst.uDiffuse = 0xFF3C1E;
+                    Dst.uDiffuse = colorTable.OrangeyRed.C32();
                     Dst.timeToLive = Random(0x80) + 128; // was rand() & 0x80
                     Dst.texture = spell_fx_renderer->effpar01;
                     Dst.particle_size = 1.0f;
@@ -724,7 +724,7 @@ LABEL_25:
             if (pObject->uFlags & OBJECT_DESC_TRIAL_FIRE) {
                 Dst.type = ParticleType_Bitmap | ParticleType_Rotating |
                            ParticleType_8;
-                Dst.uDiffuse = 0xFF3C1E;
+                Dst.uDiffuse = colorTable.OrangeyRed.C32();
                 Dst.particle_size = 1.0f;
                 Dst.timeToLive = Random(0x80) + 128; // was rand() & 0x80
                 Dst.texture = spell_fx_renderer->effpar01;
@@ -1722,6 +1722,7 @@ void UpdateObjects() {
                 &pObjectList->pObjects[pSpriteObjects[i].uObjectDescID];
             if (pSpriteObjects[i].AttachedToActor()) {
                 v5 = PID_ID(pSpriteObjects[i].spell_target_pid);
+                if (v5 > pActors.size()) continue;
                 pSpriteObjects[i].vPosition.x = pActors[v5].vPosition.x;
                 pSpriteObjects[i].vPosition.y = pActors[v5].vPosition.y;
                 pSpriteObjects[i].vPosition.z =

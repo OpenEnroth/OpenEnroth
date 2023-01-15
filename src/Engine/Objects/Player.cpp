@@ -6936,11 +6936,6 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                         Actor::AggroSurroundingPeasants(uActorID, 1);
                     } else {
                         // actor has died from retaliation
-                        // add bloodsplat
-                        if (pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].bQuestMonster & 1 && engine->config->graphics.BloodSplats.Get()) {
-                            float splatRadius = actorPtr->uActorRadius * engine->config->graphics.BloodSplatsMultiplier.Get();
-                            decal_builder->AddBloodsplat(actorPtr->vPosition.x, actorPtr->vPosition.y, actorPtr->vPosition.z, 1.0, 0.0, 0.0, splatRadius);
-                        }
                         Actor::Die(uActorID);
                         Actor::ApplyFineForKillingPeasant(uActorID);
                         Actor::AggroSurroundingPeasants(uActorID, 1);
@@ -7035,18 +7030,17 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
             uint16_t spriteType = spritefrom->uType;
 
-            if (spritefrom->uType == 545) {  // arrows
+            if (spritefrom->uType == SPRITE_ARROW_PROJECTILE) {  // arrows
                 // GM unarmed 1% chance to evade attack per skill point
-                logger->Info("Arrpow");
                 if (playerPtr->GetActualSkillMastery(PLAYER_SKILL_UNARMED) >= PLAYER_SKILL_MASTERY_GRANDMASTER &&
                     Random(100) < playerPtr->GetActualSkillLevel(PLAYER_SKILL_UNARMED)) {
                     GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->pName.c_str());
                     playerPtr->PlaySound(SPEECH_AvoidDamage, 0);
                     return;
                 }
-            } else if (spriteType == 555 || spriteType == 510 ||  // dragonflies firebolt
+            } else if (spriteType == SPRITE_BLASTER_PROJECTILE || spriteType == 510 ||  // dragonflies firebolt
                        spriteType == 500 || spriteType == 515 ||
-                       spriteType == 505 || spriteType == 530 ||  // all missile types?
+                       spriteType == 505 || spriteType == 530 ||  // TODO(pskelton): Use enums here
                        spriteType == 525 || spriteType == 520 ||
                        spriteType == 535 || spriteType == 540) {
                 // reduce missle damage with skills / armour
@@ -7116,12 +7110,6 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                             Actor::AggroSurroundingPeasants(uActorID, 1);
                         } else {
                             // actor killed by retaliation
-                            if (pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].bQuestMonster & 1 &&
-                                engine->config->graphics.BloodSplats.Get()) {
-                                float splatRadius = actorPtr->uActorRadius * engine->config->graphics.BloodSplatsMultiplier.Get();
-                                decal_builder->AddBloodsplat(actorPtr->vPosition.x, actorPtr->vPosition.y, actorPtr->vPosition.z, 1.0, 0.0, 0.0, splatRadius);
-                            }
-
                             Actor::Die(uActorID);
                             Actor::ApplyFineForKillingPeasant(uActorID);
                             Actor::AggroSurroundingPeasants(uActorID, 1);

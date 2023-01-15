@@ -251,19 +251,19 @@ void MapInfo::SpawnRandomTreasure(SpawnPoint *a2) {
     ITEM_TREASURE_LEVEL v13 = Sample(RemapTreasureLevel(a2->uItemIndex, Treasure_prob));
     if (v13 != ITEM_TREASURE_LEVEL_GUARANTEED_ARTIFACT) {
         // [0, 20) -- nothing
-        // [20, 60) -- only gold
-        // [60, 100) -- gold & item
-        // TODO(captainurist): code in GenerateItemsInChest doesn't generate gold on [60, 100)
+        // [20, 60) -- gold
+        // [60, 100) -- item
 
         if (v5 < 20)
             return;
 
         if (v5 >= 60) {
-            DropTreasureAt(v13, Random(27) + 20,
-                                               a2->vPosition.x,
+            DropTreasureAt(v13, Random(27) + 20, a2->vPosition.x,
                                                a2->vPosition.y,
                                                a2->vPosition.z, 0);
+            return;
         }
+
         if (a2->uItemIndex == ITEM_TREASURE_LEVEL_1) {
             a1a.containing_item.uItemID = ITEM_GOLD_SMALL;
             v34 = Random(51) + 50;
