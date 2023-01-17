@@ -101,9 +101,6 @@ enum class PlatformKey : int {
     None = Count
 };
 
-std::string GetDisplayName(PlatformKey key);
-bool TryParseDisplayName(std::string_view displayName, PlatformKey *outKey);
-
 enum class PlatformKeyType : int {
     KEY_TYPE_KEYBOARD_BUTTON,
     KEY_TYPE_GAMEPAD_BUTTON,
