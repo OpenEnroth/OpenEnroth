@@ -16,8 +16,9 @@ RandomEngine *GlobalRandomEngine();
 /**
  * @param engine                        New global random engine to use for `Random` and other functions.
  *                                      This function takes ownership of the provided random engine.
+ * @returns                             Old random engine.
  */
-void SetGlobalRandomEngine(std::unique_ptr<RandomEngine> engine);
+std::unique_ptr<RandomEngine> SetGlobalRandomEngine(std::unique_ptr<RandomEngine> engine);
 
 /**
  * Reseeds the global random engine.

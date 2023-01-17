@@ -17,7 +17,7 @@ class PlatformEventLoop {
      *
      * @param eventHandler              Callback for event processing.
      */
-    virtual void Exec(PlatformEventHandler *eventHandler) = 0;
+    virtual void Exec(PlatformEventHandler *eventHandler) = 0; // TODO(captainurist): add a flag to proxy all native events
 
     /**
      * Tells this event loop to exit. Does nothing if the event loop is not running.

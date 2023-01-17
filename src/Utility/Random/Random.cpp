@@ -17,10 +17,10 @@ RandomEngine *GlobalRandomEngine() {
     return globalRandomEngine.get();
 }
 
-void SetGlobalRandomEngine(std::unique_ptr<RandomEngine> engine) {
+std::unique_ptr<RandomEngine> SetGlobalRandomEngine(std::unique_ptr<RandomEngine> engine) {
     assert(engine);
-
-    globalRandomEngine = std::move(engine);
+    std::swap(engine, globalRandomEngine);
+    return std::move(engine);
 }
 
 void SeedRandom(int seed) {

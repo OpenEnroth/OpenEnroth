@@ -78,7 +78,7 @@ class PlatformWindow {
 
     virtual Marginsi FrameMargins() const = 0;
 
-    virtual uintptr_t SystemHandle() const = 0;
+    virtual uintptr_t SystemHandle() const = 0; // TODO(captainurist): docs, @return HWND, etc.
 
     virtual void Activate() = 0;
 

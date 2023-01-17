@@ -32,6 +32,7 @@ class PlatformEvent {
         WindowActivate,
         WindowDeactivate,
         WindowCloseRequest,
+        // TODO(captainurist): NativeEvent // untranslated native event, useful for prototyping.
     };
     using enum Type;
 
@@ -45,7 +46,7 @@ class PlatformEvent {
  */
 class PlatformKeyEvent: public PlatformEvent {
  public:
-    uint32_t id;
+    uint32_t id; // TODO(captainurist): move into a separate PlatformGamepadEvent
     PlatformKey key;
     PlatformKeyType keyType;
     PlatformKeyValue keyValue;
@@ -93,3 +94,5 @@ class PlatformGamepadDeviceEvent: public PlatformEvent {
  public:
     uint32_t id;
 };
+
+// TODO(captainurist): PlatformNativeEvent { const void *nativeEvent = nullptr; }

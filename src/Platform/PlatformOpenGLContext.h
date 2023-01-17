@@ -8,5 +8,5 @@ class PlatformOpenGLContext {
 
     virtual void SwapBuffers() = 0;
 
-    virtual void* GetProcAddress(const char* name) = 0;
+    virtual void *GetProcAddress(const char *name) = 0;
 };
