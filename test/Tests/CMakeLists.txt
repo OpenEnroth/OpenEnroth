@@ -8,5 +8,5 @@ if(ENABLE_TESTS)
 
     target_check_style(tests)
 
-    target_link_libraries(Open_Enroth_GameTest tests)
+    target_link_libraries(OpenEnroth_GameTest tests)
 endif()

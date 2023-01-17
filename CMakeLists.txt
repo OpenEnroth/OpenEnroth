@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
-project("Open Enroth")
+project("OpenEnroth")
 add_compile_definitions(PACKAGE_BUGREPORT="https://github.com/OpenEnroth/OpenEnroth/issues")
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules)
@@ -61,15 +61,15 @@ if(BUILD_PLATFORM STREQUAL "android")
     target_check_style(main)
     target_link_libraries(main game)
 else()
-    add_executable(Open_Enroth MACOSX_BUNDLE WIN32 src/Application/main.cpp)
-    target_check_style(Open_Enroth)
-    target_fix_libcxx_assertions(Open_Enroth)
+    add_executable(OpenEnroth MACOSX_BUNDLE WIN32 src/Application/main.cpp)
+    target_check_style(OpenEnroth)
+    target_fix_libcxx_assertions(OpenEnroth)
 
-    target_link_libraries(Open_Enroth game)
+    target_link_libraries(OpenEnroth game)
 
     set_property(
-        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Open_Enroth
+        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenEnroth
     )
 
-    PREBUILT_DEPENDENCIES_RESOLVE(Open_Enroth)
+    PREBUILT_DEPENDENCIES_RESOLVE(OpenEnroth)
 endif()

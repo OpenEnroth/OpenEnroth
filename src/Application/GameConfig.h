@@ -514,7 +514,7 @@ namespace Application {
          public:
             explicit Window(GameConfig *config): ConfigSection(config, "window") {}
 
-            String Title = String(this, "title", "Open Enroth", &ValidateTitle, "Game window title.");
+            String Title = String(this, "title", "OpenEnroth", &ValidateTitle, "Game window title.");
 
             Int Display = Int(this, "display", 0,
                               "Display number as exposed by SDL. "
@@ -540,7 +540,7 @@ namespace Application {
          private:
              static std::string ValidateTitle(std::string title) {
                  if (title.empty())
-                     title = "Open Enroth";
+                     title = "OpenEnroth";
 
                  return title;
              }

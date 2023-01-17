@@ -5,13 +5,13 @@ if(ENABLE_TESTS)
                                GameTestOptions.cpp)
     set(GAME_TEST_MAIN_HEADERS GameTestOptions.h)
 
-    add_executable(Open_Enroth_GameTest ${GAME_TEST_MAIN_SOURCES} ${GAME_TEST_MAIN_HEADERS})
-    target_fix_libcxx_assertions(Open_Enroth_GameTest)
-    target_link_libraries(Open_Enroth_GameTest game game_test test_engine GTest::gtest)
-    target_compile_definitions(Open_Enroth_GameTest PRIVATE TEST_GROUP=None)
+    add_executable(OpenEnroth_GameTest ${GAME_TEST_MAIN_SOURCES} ${GAME_TEST_MAIN_HEADERS})
+    target_fix_libcxx_assertions(OpenEnroth_GameTest)
+    target_link_libraries(OpenEnroth_GameTest game game_test test_engine GTest::gtest)
+    target_compile_definitions(OpenEnroth_GameTest PRIVATE TEST_GROUP=None)
 
-    target_check_style(Open_Enroth_GameTest)
-    PREBUILT_DEPENDENCIES_RESOLVE(Open_Enroth_GameTest)
+    target_check_style(OpenEnroth_GameTest)
+    PREBUILT_DEPENDENCIES_RESOLVE(OpenEnroth_GameTest)
 
 
     # OpenEnroth_TestData
@@ -27,8 +27,8 @@ if(ENABLE_TESTS)
 
     # GameTest
     add_custom_target(GameTest
-        Open_Enroth_GameTest --test-data ${CMAKE_CURRENT_BINARY_DIR}/test_data/data
-        DEPENDS Open_Enroth_GameTest OpenEnroth_TestData
+        OpenEnroth_GameTest --test-data ${CMAKE_CURRENT_BINARY_DIR}/test_data/data
+        DEPENDS OpenEnroth_GameTest OpenEnroth_TestData
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
 endif()

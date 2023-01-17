@@ -55,7 +55,7 @@ Building on Windows
   * or add Microsoft one (that's coming with the VS installation) to your PATH environment variable (e.g `c:\Program Files\Microsoft Visual Studio\2022\<edition>\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin`) 
 * Open the folder in Visual Studio
 * Select build configuration (x32 or x64) and wait for CMake configuration to complete
-* Select startup item as `Open_Enroth.exe`
+* Select startup item as `OpenEnroth.exe`
 * Run!
 
 If you wish you can also disable autoresolving main dependencies by turning off `PREBUILT_DEPENDENCIES` cmake option and pass your own dependencies source, e.g. via [vcpkg](https://github.com/microsoft/vcpkg) integration.
