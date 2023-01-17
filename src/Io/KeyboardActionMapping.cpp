@@ -326,7 +326,7 @@ PlatformKey KeyboardActionMapping::ConfigDefaultKey(InputAction action) {
 
 PlatformKey KeyboardActionMapping::ConfigGetKey(InputAction action) {
     ConfigValue<PlatformKey> *val = InputActionToConfigKey(action);
-    return val ? val->Default() : PlatformKey::None;
+    return val ? val->Get() : PlatformKey::None;
 }
 
 void KeyboardActionMapping::ConfigSetKey(InputAction action, PlatformKey key) {
