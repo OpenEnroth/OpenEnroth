@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['a_0',['a',['../structforcepersverts.html#a097658bcd729ee81c271bda89e3a4a3b',1,'forcepersverts::a()'],['../structtwodverts.html#af8d1b73307d9b7bd2ec3478dbf3ff8a0',1,'twodverts::a()'],['../structbillbverts.html#aa4d690423304fd86d2bc9fda56d8cb88',1,'billbverts::a()'],['../structParticle.html#a8820cc4b7d902fc100a7c4d23dee99ef',1,'Particle::a()'],['../structPlaneZCalcll.html#ae8b25f6908692974f4319c8391066358',1,'PlaneZCalcll::a()']]],
-  ['a_1',['A',['../PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecca7fc56270e7a70fa81a5935b72eacbe29',1,'PlatformKey.h']]],
+  ['a_0',['A',['../PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecca7fc56270e7a70fa81a5935b72eacbe29',1,'PlatformKey.h']]],
+  ['a_1',['a',['../structforcepersverts.html#a097658bcd729ee81c271bda89e3a4a3b',1,'forcepersverts::a()'],['../structtwodverts.html#af8d1b73307d9b7bd2ec3478dbf3ff8a0',1,'twodverts::a()'],['../structbillbverts.html#aa4d690423304fd86d2bc9fda56d8cb88',1,'billbverts::a()'],['../structParticle.html#a8820cc4b7d902fc100a7c4d23dee99ef',1,'Particle::a()'],['../structTestPair.html#a3adb5b0569d0c1e1b453df4d1b511bac',1,'TestPair::a()'],['../structPlaneZCalcll.html#ae8b25f6908692974f4319c8391066358',1,'PlaneZCalcll::a()']]],
   ['a1r5g5b5_5fextract_5fa_2',['A1R5G5B5_extract_A',['../ImageFormatConverter_8h.html#adf2b1a0005df71e46bb914d080a9ceb1',1,'ImageFormatConverter.h']]],
   ['a1r5g5b5_5fextract_5fb_3',['A1R5G5B5_extract_B',['../ImageFormatConverter_8h.html#a2f707a9807d15ca043f8955072daf991',1,'ImageFormatConverter.h']]],
   ['a1r5g5b5_5fextract_5fg_4',['A1R5G5B5_extract_G',['../ImageFormatConverter_8h.html#a0da5a7b25d9c3204b011d43a2f1a31b5',1,'ImageFormatConverter.h']]],
@@ -28,7 +28,7 @@ var searchData=
   ['activationevent_25',['ActivationEvent',['../classPlatformEventHandler.html#ab8c0dddd55a3e3aab7427211971a5b66',1,'PlatformEventHandler::ActivationEvent()'],['../classApplication_1_1GameWindowHandler.html#af2ba428825708ed9871a17f2e8b5ec9c',1,'Application::GameWindowHandler::ActivationEvent()']]],
   ['active_26',['Active',['../structSpellBuff.html#aa8120188fb27f4eac35052ee945cce00',1,'SpellBuff']]],
   ['activeleveldecoration_27',['activeLevelDecoration',['../Decoration_8h.html#ad0fa06b8c2179a9134b5d63f3949a141',1,'activeLevelDecoration():&#160;Decoration.cpp'],['../Decoration_8cpp.html#ad0fa06b8c2179a9134b5d63f3949a141',1,'activeLevelDecoration():&#160;Decoration.cpp']]],
-  ['actor_28',['Actor',['../classActor.html#a161d53d20061f2835401a2e97bb881b5',1,'Actor::Actor()'],['../classActor.html',1,'Actor'],['../classActor.html#a2a0ff4335a1ee9096df90f288c026c8b',1,'Actor::Actor()']]],
+  ['actor_28',['Actor',['../classActor.html#a2a0ff4335a1ee9096df90f288c026c8b',1,'Actor::Actor()'],['../classActor.html#a161d53d20061f2835401a2e97bb881b5',1,'Actor::Actor(int id)'],['../classActor.html',1,'Actor']]],
   ['actor_2ecpp_29',['Actor.cpp',['../Actor_8cpp.html',1,'']]],
   ['actor_2eh_30',['Actor.h',['../Actor_8h.html',1,'']]],
   ['actor_5factive_31',['ACTOR_ACTIVE',['../ActorEnums_8h.html#a0449589ea79a89a7e564d1cf1b0a9b5fa86649eed105d4718fb27126ea3947263',1,'ActorEnums.h']]],
