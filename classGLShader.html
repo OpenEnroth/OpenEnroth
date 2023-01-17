@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;67c08a9</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;bbf7423</span>
    </div>
   </td>
  </tr>
@@ -73,6 +73,7 @@ $(function() {
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-static-methods">Static Private Member Functions</a> &#124;
 <a href="classGLShader-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">GLShader Class Reference</div></div>
 </div><!--header-->
@@ -100,14 +101,17 @@ Public Attributes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:aa1c5c0d478ea33e54a914246be011d9b"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGLShader.html#aa1c5c0d478ea33e54a914246be011d9b">shaderTypeToExtension</a> (GLenum type)</td></tr>
-<tr class="separator:aa1c5c0d478ea33e54a914246be011d9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a30ca34873e6ee2a66ad8db0adbcc0052"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGLShader.html#a30ca34873e6ee2a66ad8db0adbcc0052">shaderTypeToName</a> (GLenum type)</td></tr>
-<tr class="separator:a30ca34873e6ee2a66ad8db0adbcc0052"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a95b9a52278b191c39acde96b10e53a07"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGLShader.html#a95b9a52278b191c39acde96b10e53a07">checkCompileErrors</a> (GLuint shader, const std::string &amp;name, const std::string &amp;type)</td></tr>
 <tr class="separator:a95b9a52278b191c39acde96b10e53a07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a08235ec21146a1982fcff9c5fac02eda"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGLShader.html#a08235ec21146a1982fcff9c5fac02eda">load</a> (const std::string &amp;name, const std::string &amp;filename, GLenum type, bool <a class="el" href="RenderOpenGL_8cpp.html#ad12c1f606bb601dcbeb8617f088772ef">OpenGLES</a>, bool nonFatal=false)</td></tr>
 <tr class="separator:a08235ec21146a1982fcff9c5fac02eda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-static-methods" name="pri-static-methods"></a>
+Static Private Member Functions</h2></td></tr>
+<tr class="memitem:aa1c5c0d478ea33e54a914246be011d9b"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGLShader.html#aa1c5c0d478ea33e54a914246be011d9b">shaderTypeToExtension</a> (GLenum type)</td></tr>
+<tr class="separator:aa1c5c0d478ea33e54a914246be011d9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30ca34873e6ee2a66ad8db0adbcc0052"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGLShader.html#a30ca34873e6ee2a66ad8db0adbcc0052">shaderTypeToName</a> (GLenum type)</td></tr>
+<tr class="separator:a30ca34873e6ee2a66ad8db0adbcc0052"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a71d842a6a99dac037c8d0f91e4de593b" name="a71d842a6a99dac037c8d0f91e4de593b"></a>
@@ -335,7 +339,7 @@ Private Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -361,7 +365,7 @@ Private Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -422,8 +426,9 @@ Private Member Functions</h2></td></tr>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/Engine/Graphics/OpenGL/<a class="el" href="GLShaderLoader_8h.html">GLShaderLoader.h</a></li>
+<li>src/Engine/Graphics/OpenGL/<a class="el" href="GLShaderLoader_8cpp.html">GLShaderLoader.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

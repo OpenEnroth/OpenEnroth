@@ -207,5 +207,6 @@ var searchData=
   ['uimsg_5fwait5minutes_204',['UIMSG_Wait5Minutes',['../GUIWindow_8h.html#a2519966952faeb9397447ce89e9bcb02a46e41022707cf849bc7ace60fe9d32aa',1,'GUIWindow.h']]],
   ['uimsg_5fwaittilldawn_205',['UIMSG_WaitTillDawn',['../GUIWindow_8h.html#a2519966952faeb9397447ce89e9bcb02a1f61173dfa918d8939b719fdf42c11fb',1,'GUIWindow.h']]],
   ['unique_206',['Unique',['../structVis__SelectionList.html#a9e474fcb1237991d944eecc3f71c5ee3ad019979a29c88c8d69bab3a63388da97',1,'Vis_SelectionList']]],
-  ['up_207',['Up',['../PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecca258f49887ef8d14ac268c92b02503aaa',1,'PlatformKey.h']]]
+  ['unserializable_207',['UNSERIALIZABLE',['../Serialization__ut_8cpp.html#a94beb900defc123803319b326e764a0da607014cced6f0bf4ad95bbc80e4e2e82',1,'Serialization_ut.cpp']]],
+  ['up_208',['Up',['../PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecca258f49887ef8d14ac268c92b02503aaa',1,'PlatformKey.h']]]
 ];

@@ -21,6 +21,5 @@ var searchData=
   ['configfwd_2eh_18',['ConfigFwd.h',['../ConfigFwd_8h.html',1,'']]],
   ['configsection_2ecpp_19',['ConfigSection.cpp',['../ConfigSection_8cpp.html',1,'']]],
   ['configsection_2eh_20',['ConfigSection.h',['../ConfigSection_8h.html',1,'']]],
-  ['configserialization_2eh_21',['ConfigSerialization.h',['../ConfigSerialization_8h.html',1,'']]],
-  ['configvalue_2eh_22',['ConfigValue.h',['../ConfigValue_8h.html',1,'']]]
+  ['configvalue_2eh_21',['ConfigValue.h',['../ConfigValue_8h.html',1,'']]]
 ];

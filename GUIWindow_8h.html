@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;67c08a9</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;bbf7423</span>
    </div>
   </td>
  </tr>
@@ -96,6 +96,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="Mouse_8h.html">Io/Mouse.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="InputAction_8h.html">Io/InputAction.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="KeyboardInputHandler_8h.html">Io/KeyboardInputHandler.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="SerializationFwd_8h.html">Library/Serialization/SerializationFwd.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Size_8h.html">Utility/Geometry/Size.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
@@ -133,8 +134,6 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a31087e8b6fa9beb70cab4114ebfdd1fd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a31087e8b6fa9beb70cab4114ebfdd1fd">ENUM_TO_STRING_CASE</a>(val)&#160;&#160;&#160;case val: return #val;</td></tr>
-<tr class="separator:a31087e8b6fa9beb70cab4114ebfdd1fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a25b68130b07896dbb9b5407382c8697f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a25b68130b07896dbb9b5407382c8697f">AddGUIMessage</a>(msg,  param,  a4)&#160;&#160;&#160;    AddMessageImpl((msg), (param), (a4), __FILE__, __LINE__)</td></tr>
 <tr class="separator:a25b68130b07896dbb9b5407382c8697f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -434,6 +433,7 @@ Enumerations</h2></td></tr>
 , <a class="el" href="GUIWindow_8h.html#a0be99aa2d974499af97de5b44821500daee708c230569227210358ab20000063c">MENU_CREDITSCLOSE</a> = 11
 , <br />
 &#160;&#160;<a class="el" href="GUIWindow_8h.html#a0be99aa2d974499af97de5b44821500daba0fd41ee74b5487620f3feec8fa86e7">MENU_MMT_MAIN_MENU</a> = 12
+, <a class="el" href="GUIWindow_8h.html#a0be99aa2d974499af97de5b44821500dae7c93f3587cf592f4c4e1f527642c460">MENU_NONE</a> = -1
 <br />
  }</td></tr>
 <tr class="separator:a0be99aa2d974499af97de5b44821500d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -563,8 +563,6 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a7bad5f379da449c936310287221aa61f"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a7bad5f379da449c936310287221aa61f">ToString</a> (<a class="el" href="GUIWindow_8h.html#a476342970f954b62d70552bcbb5ee509">WindowType</a> windowType)</td></tr>
-<tr class="separator:a7bad5f379da449c936310287221aa61f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af6151e5c72717e701f7f8a645e231cb7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#af6151e5c72717e701f7f8a645e231cb7">draw_leather</a> ()</td></tr>
 <tr class="separator:af6151e5c72717e701f7f8a645e231cb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a820ed99a03030a29e6d14ef53cfa20d8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a820ed99a03030a29e6d14ef53cfa20d8">MainMenuUI_LoadFontsAndSomeStuff</a> ()</td></tr>
@@ -912,24 +910,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a31087e8b6fa9beb70cab4114ebfdd1fd" name="a31087e8b6fa9beb70cab4114ebfdd1fd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a31087e8b6fa9beb70cab4114ebfdd1fd">&#9670;&#160;</a></span>ENUM_TO_STRING_CASE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define ENUM_TO_STRING_CASE</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val</td><td>)</td>
-          <td>&#160;&#160;&#160;case val: return #val;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="af188298480c77be8835d6760fa6edfd7" name="af188298480c77be8835d6760fa6edfd7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af188298480c77be8835d6760fa6edfd7">&#9670;&#160;</a></span>CURRENT_SCREEN</h2>
@@ -1041,6 +1021,7 @@ Variables</h2></td></tr>
 <tr><td class="fieldname"><a id="a0be99aa2d974499af97de5b44821500da1c8ea209830b479bdfae3b0100785f59" name="a0be99aa2d974499af97de5b44821500da1c8ea209830b479bdfae3b0100785f59"></a>MENU_DebugBLVLevel&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a0be99aa2d974499af97de5b44821500daee708c230569227210358ab20000063c" name="a0be99aa2d974499af97de5b44821500daee708c230569227210358ab20000063c"></a>MENU_CREDITSCLOSE&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a0be99aa2d974499af97de5b44821500daba0fd41ee74b5487620f3feec8fa86e7" name="a0be99aa2d974499af97de5b44821500daba0fd41ee74b5487620f3feec8fa86e7"></a>MENU_MMT_MAIN_MENU&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a0be99aa2d974499af97de5b44821500dae7c93f3587cf592f4c4e1f527642c460" name="a0be99aa2d974499af97de5b44821500dae7c93f3587cf592f4c4e1f527642c460"></a>MENU_NONE&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -2781,32 +2762,6 @@ Variables</h2></td></tr>
           <td></td>
         </tr>
       </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a7bad5f379da449c936310287221aa61f" name="a7bad5f379da449c936310287221aa61f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7bad5f379da449c936310287221aa61f">&#9670;&#160;</a></span>ToString()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const char * ToString </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="GUIWindow_8h.html#a476342970f954b62d70552bcbb5ee509">WindowType</a>&#160;</td>
-          <td class="paramname"><em>windowType</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 </div>

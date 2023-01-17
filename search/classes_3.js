@@ -22,6 +22,7 @@ var searchData=
   ['configvalue_3c_20bool_20_3e_19',['ConfigValue&lt; bool &gt;',['../classConfigValue.html',1,'']]],
   ['configvalue_3c_20float_20_3e_20',['ConfigValue&lt; float &gt;',['../classConfigValue.html',1,'']]],
   ['configvalue_3c_20int_20_3e_21',['ConfigValue&lt; int &gt;',['../classConfigValue.html',1,'']]],
-  ['configvalue_3c_20std_3a_3astring_20_3e_22',['ConfigValue&lt; std::string &gt;',['../classConfigValue.html',1,'']]],
-  ['context_23',['context',['../structcontext.html',1,'']]]
+  ['configvalue_3c_20platformkey_20_3e_22',['ConfigValue&lt; PlatformKey &gt;',['../classConfigValue.html',1,'']]],
+  ['configvalue_3c_20std_3a_3astring_20_3e_23',['ConfigValue&lt; std::string &gt;',['../classConfigValue.html',1,'']]],
+  ['context_24',['context',['../structcontext.html',1,'']]]
 ];

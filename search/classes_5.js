@@ -6,7 +6,9 @@ var searchData=
   ['embedded_3c_20memoryinputstream_20_3e_3',['Embedded&lt; MemoryInputStream &gt;',['../classEmbedded.html',1,'']]],
   ['engine_4',['Engine',['../structEngine.html',1,'']]],
   ['enginefactory_5',['EngineFactory',['../classEngine___1_1EngineFactory.html',1,'Engine_']]],
-  ['equipemntpair_6',['EquipemntPair',['../classEquipemntPair.html',1,'']]],
-  ['eventindex_7',['EventIndex',['../structEventIndex.html',1,'']]],
-  ['explosion_5feffect_5fstruct_8',['explosion_effect_struct',['../structexplosion__effect__struct.html',1,'']]]
+  ['enumserializationtable_6',['EnumSerializationTable',['../classdetail_1_1EnumSerializationTable.html',1,'detail']]],
+  ['enumserializer_7',['EnumSerializer',['../classdetail_1_1EnumSerializer.html',1,'detail']]],
+  ['equipemntpair_8',['EquipemntPair',['../classEquipemntPair.html',1,'']]],
+  ['eventindex_9',['EventIndex',['../structEventIndex.html',1,'']]],
+  ['explosion_5feffect_5fstruct_10',['explosion_effect_struct',['../structexplosion__effect__struct.html',1,'']]]
 ];

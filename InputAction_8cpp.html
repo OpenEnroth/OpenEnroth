@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;67c08a9</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;bbf7423</span>
    </div>
   </td>
  </tr>
@@ -74,48 +74,25 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">InputAction.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="InputAction_8h.html">Io/InputAction.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="EnumSerialization_8h.html">Library/Serialization/EnumSerialization.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="PlatformKey_8h.html">Platform/PlatformKey.h</a>&quot;</code><br />
 </div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:ab8227b806a5307f4c788a86e3b1ed51f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="InputAction_8cpp.html#ab8227b806a5307f4c788a86e3b1ed51f">ENUM_CASE</a>(x)&#160;&#160;&#160;case Io::InputAction::x: return #x;</td></tr>
-<tr class="separator:ab8227b806a5307f4c788a86e3b1ed51f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a3f0d4185ffd27275ed1b97cc21828f79"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="InputAction_8cpp.html#a3f0d4185ffd27275ed1b97cc21828f79">MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS</a> (InputAction, <a class="el" href="EnumSerializer_8h.html#aaa929f83398f109dfbff9789108b159ba2144545143b2322969cdd90988e5b4bc">CASE_INSENSITIVE</a>, { {InputAction::MoveForward, &quot;FORWARD&quot;}, {InputAction::MoveBackwards, &quot;BACKWARD&quot;}, {InputAction::TurnLeft, &quot;LEFT&quot;}, {InputAction::TurnRight, &quot;RIGHT&quot;}, {InputAction::Yell, &quot;YELL&quot;}, {InputAction::Jump, &quot;JUMP&quot;}, {InputAction::Combat, &quot;COMBAT&quot;}, {InputAction::CastReady, &quot;CAST READY&quot;}, {InputAction::Attack, &quot;ATTACK&quot;}, {InputAction::EventTrigger, &quot;TRIGGER&quot;}, {InputAction::Cast, &quot;CAST&quot;}, {InputAction::Pass, &quot;PASS&quot;}, {InputAction::CharCycle, &quot;CHAR CYCLE&quot;}, {InputAction::Quest, &quot;QUEST&quot;}, {InputAction::QuickRef, &quot;QUICK REF&quot;}, {<a class="el" href="Party_8cpp.html#a717b7f1fb1f8ca29c15744772604573e">InputAction::Rest</a>, &quot;REST&quot;}, {InputAction::TimeCal, &quot;TIME/CAL&quot;}, {InputAction::Autonotes, &quot;AUTONOTES&quot;}, {InputAction::Mapbook, &quot;MAP BOOK&quot;}, {InputAction::AlwaysRun, &quot;ALWAYS RUN&quot;}, {InputAction::LookUp, &quot;LOOK UP&quot;}, {InputAction::LookDown, &quot;LOOK DOWN&quot;}, {InputAction::CenterView, &quot;CTR VIEW&quot;}, {InputAction::ZoomIn, &quot;ZOOM IN&quot;}, {InputAction::ZoomOut, &quot;ZOOM OUT&quot;}, {InputAction::FlyUp, &quot;FLY UP&quot;}, {InputAction::FlyDown, &quot;FLY DOWN&quot;}, {InputAction::Land, &quot;LAND&quot;}, {InputAction::StrafeLeft, &quot;STRAFE LEFT&quot;}, {InputAction::StrafeRight, &quot;STRAFE RIGHT&quot;}, {InputAction::QuickSave, &quot;QUICK SAVE&quot;}, {InputAction::QuickLoad, &quot;QUICK LOAD&quot;}, {InputAction::History, &quot;HISTORY&quot;}, {InputAction::Stats, &quot;STATS&quot;}, {InputAction::Skills, &quot;SKILLS&quot;}, {InputAction::Awards, &quot;INVENTORY&quot;}, {InputAction::Inventory, &quot;AWARDS&quot;}, {InputAction::NewGame, &quot;NEW GAME&quot;}, {<a class="el" href="SaveLoad_8cpp.html#a8877c76af6a19304100073ae590e1b8d">InputAction::SaveGame</a>, &quot;SAVE GAME&quot;}, {<a class="el" href="SaveLoad_8cpp.html#aec4ea4d9c15c927eed9a2a9227c4b16c">InputAction::LoadGame</a>, &quot;Load GAME&quot;}, {InputAction::ExitGame, &quot;EXIT GAME&quot;}, {InputAction::ReturnToGame, &quot;RETURN TO GAME&quot;}, {InputAction::Controls, &quot;CONTROLS&quot;}, {InputAction::Options, &quot;OPTIONS&quot;}, {InputAction::Credits, &quot;CREDITS&quot;}, {InputAction::Clear, &quot;CLEAR&quot;}, {<a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecca988fd738de9c6d177440c5dcf69e73ce">InputAction::Return</a>, &quot;RETURN&quot;}, {InputAction::Minus, &quot;MINUS&quot;}, {InputAction::Plus, &quot;PLUS&quot;}, {InputAction::Yes, &quot;YES&quot;}, {InputAction::No, &quot;NO&quot;}, {InputAction::Rest8Hours, &quot;REST 8 HOURS&quot;}, {InputAction::WaitTillDawn, &quot;WAIT TILL DAWN&quot;}, {InputAction::WaitHour, &quot;WAIT 1 HOUR&quot;}, {InputAction::Wait5Minutes, &quot;WAIT 5 MINUTES&quot;}, {InputAction::Screenshot, &quot;SCREENSHOT&quot;}, {InputAction::Console, &quot;CONSOLE&quot;}, {InputAction::ToggleMouseGrab, &quot;TOGGLE MOUSE GRAB&quot;}, {InputAction::ToggleBorderless, &quot;TOGGLE BORDERLESS&quot;}, {InputAction::ToggleFullscreen, &quot;TOGGLE FULLSCREEN&quot;}, {InputAction::ToggleResizable, &quot;TOGGLE RESIZABLE&quot;}, {InputAction::CycleFilter, &quot;CYCLE FILTER&quot;}, {InputAction::ReloadShaders, &quot;RELOAD SHADERS&quot;}, {InputAction::SelectChar1, &quot;CHAR 1&quot;}, {InputAction::SelectChar2, &quot;CHAR 2&quot;}, {InputAction::SelectChar3, &quot;CHAR 3&quot;}, {InputAction::SelectChar4, &quot;CHAR 4&quot;}, {InputAction::SelectNPC1, &quot;NPC 1&quot;}, {InputAction::SelectNPC2, &quot;NPC 2&quot;}, {InputAction::DialogUp, &quot;DIALOG UP&quot;}, {InputAction::DialogDown, &quot;DIALOG DOWN&quot;}, {InputAction::DialogLeft, &quot;DIALOG LEFT&quot;}, {InputAction::DialogRight, &quot;DIALOG RIGHT&quot;}, {InputAction::DialogSelect, &quot;DIALOG SELECT&quot;}, {<a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecca013ec032d3460d4be4431c6ab1f8f224">InputAction::Escape</a>, &quot;ESCAPE&quot;} })</td></tr>
+<tr class="separator:a3f0d4185ffd27275ed1b97cc21828f79"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a50cb04b96d227e140e39be963ed14017"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="InputAction_8cpp.html#a50cb04b96d227e140e39be963ed14017">GetDisplayName</a> (InputAction action)</td></tr>
 <tr class="separator:a50cb04b96d227e140e39be963ed14017"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e0675ecd890756b790f36491d373adb"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; InputAction &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="InputAction_8cpp.html#a4e0675ecd890756b790f36491d373adb">AllInputActions</a> ()</td></tr>
 <tr class="separator:a4e0675ecd890756b790f36491d373adb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd6d030dfa2d67e1e91cf9b2ec880b80"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; InputAction &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="InputAction_8cpp.html#acd6d030dfa2d67e1e91cf9b2ec880b80">VanillaInputActions</a> ()</td></tr>
 <tr class="separator:acd6d030dfa2d67e1e91cf9b2ec880b80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a501739cb5fc697f301f9f95d4cd04e"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="InputAction_8cpp.html#a5a501739cb5fc697f301f9f95d4cd04e">ToString</a> (InputAction action)</td></tr>
-<tr class="separator:a5a501739cb5fc697f301f9f95d4cd04e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="ab8227b806a5307f4c788a86e3b1ed51f" name="ab8227b806a5307f4c788a86e3b1ed51f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab8227b806a5307f4c788a86e3b1ed51f">&#9670;&#160;</a></span>ENUM_CASE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define ENUM_CASE</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">x</td><td>)</td>
-          <td>&#160;&#160;&#160;case Io::InputAction::x: return #x;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a4e0675ecd890756b790f36491d373adb" name="a4e0675ecd890756b790f36491d373adb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4e0675ecd890756b790f36491d373adb">&#9670;&#160;</a></span>AllInputActions()</h2>
@@ -152,18 +129,34 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a5a501739cb5fc697f301f9f95d4cd04e" name="a5a501739cb5fc697f301f9f95d4cd04e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5a501739cb5fc697f301f9f95d4cd04e">&#9670;&#160;</a></span>ToString()</h2>
+<a id="a3f0d4185ffd27275ed1b97cc21828f79" name="a3f0d4185ffd27275ed1b97cc21828f79"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f0d4185ffd27275ed1b97cc21828f79">&#9670;&#160;</a></span>MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::string ToString </td>
+          <td class="memname">MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS </td>
           <td>(</td>
           <td class="paramtype">InputAction&#160;</td>
-          <td class="paramname"><em>action</em></td><td>)</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="EnumSerializer_8h.html#aaa929f83398f109dfbff9789108b159ba2144545143b2322969cdd90988e5b4bc">CASE_INSENSITIVE</a>&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">{ {InputAction::MoveForward, &quot;FORWARD&quot;}, {InputAction::MoveBackwards, &quot;BACKWARD&quot;}, {InputAction::TurnLeft, &quot;LEFT&quot;}, {InputAction::TurnRight, &quot;RIGHT&quot;}, {InputAction::Yell, &quot;YELL&quot;}, {InputAction::Jump, &quot;JUMP&quot;}, {InputAction::Combat, &quot;COMBAT&quot;}, {InputAction::CastReady, &quot;CAST READY&quot;}, {InputAction::Attack, &quot;ATTACK&quot;}, {InputAction::EventTrigger, &quot;TRIGGER&quot;}, {InputAction::Cast, &quot;CAST&quot;}, {InputAction::Pass, &quot;PASS&quot;}, {InputAction::CharCycle, &quot;CHAR CYCLE&quot;}, {InputAction::Quest, &quot;QUEST&quot;}, {InputAction::QuickRef, &quot;QUICK REF&quot;}, {<a class="el" href="Party_8cpp.html#a717b7f1fb1f8ca29c15744772604573e">InputAction::Rest</a>, &quot;REST&quot;}, {InputAction::TimeCal, &quot;TIME/CAL&quot;}, {InputAction::Autonotes, &quot;AUTONOTES&quot;}, {InputAction::Mapbook, &quot;MAP BOOK&quot;}, {InputAction::AlwaysRun, &quot;ALWAYS RUN&quot;}, {InputAction::LookUp, &quot;LOOK UP&quot;}, {InputAction::LookDown, &quot;LOOK DOWN&quot;}, {InputAction::CenterView, &quot;CTR VIEW&quot;}, {InputAction::ZoomIn, &quot;ZOOM IN&quot;}, {InputAction::ZoomOut, &quot;ZOOM OUT&quot;}, {InputAction::FlyUp, &quot;FLY UP&quot;}, {InputAction::FlyDown, &quot;FLY DOWN&quot;}, {InputAction::Land, &quot;LAND&quot;}, {InputAction::StrafeLeft, &quot;STRAFE LEFT&quot;}, {InputAction::StrafeRight, &quot;STRAFE RIGHT&quot;}, {InputAction::QuickSave, &quot;QUICK SAVE&quot;}, {InputAction::QuickLoad, &quot;QUICK LOAD&quot;}, {InputAction::History, &quot;HISTORY&quot;}, {InputAction::Stats, &quot;STATS&quot;}, {InputAction::Skills, &quot;SKILLS&quot;}, {InputAction::Awards, &quot;INVENTORY&quot;}, {InputAction::Inventory, &quot;AWARDS&quot;}, {InputAction::NewGame, &quot;NEW GAME&quot;}, {<a class="el" href="SaveLoad_8cpp.html#a8877c76af6a19304100073ae590e1b8d">InputAction::SaveGame</a>, &quot;SAVE GAME&quot;}, {<a class="el" href="SaveLoad_8cpp.html#aec4ea4d9c15c927eed9a2a9227c4b16c">InputAction::LoadGame</a>, &quot;Load GAME&quot;}, {InputAction::ExitGame, &quot;EXIT GAME&quot;}, {InputAction::ReturnToGame, &quot;RETURN TO GAME&quot;}, {InputAction::Controls, &quot;CONTROLS&quot;}, {InputAction::Options, &quot;OPTIONS&quot;}, {InputAction::Credits, &quot;CREDITS&quot;}, {InputAction::Clear, &quot;CLEAR&quot;}, {<a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecca988fd738de9c6d177440c5dcf69e73ce">InputAction::Return</a>, &quot;RETURN&quot;}, {InputAction::Minus, &quot;MINUS&quot;}, {InputAction::Plus, &quot;PLUS&quot;}, {InputAction::Yes, &quot;YES&quot;}, {InputAction::No, &quot;NO&quot;}, {InputAction::Rest8Hours, &quot;REST 8 HOURS&quot;}, {InputAction::WaitTillDawn, &quot;WAIT TILL DAWN&quot;}, {InputAction::WaitHour, &quot;WAIT 1 HOUR&quot;}, {InputAction::Wait5Minutes, &quot;WAIT 5 MINUTES&quot;}, {InputAction::Screenshot, &quot;SCREENSHOT&quot;}, {InputAction::Console, &quot;CONSOLE&quot;}, {InputAction::ToggleMouseGrab, &quot;TOGGLE MOUSE GRAB&quot;}, {InputAction::ToggleBorderless, &quot;TOGGLE BORDERLESS&quot;}, {InputAction::ToggleFullscreen, &quot;TOGGLE FULLSCREEN&quot;}, {InputAction::ToggleResizable, &quot;TOGGLE RESIZABLE&quot;}, {InputAction::CycleFilter, &quot;CYCLE FILTER&quot;}, {InputAction::ReloadShaders, &quot;RELOAD SHADERS&quot;}, {InputAction::SelectChar1, &quot;CHAR 1&quot;}, {InputAction::SelectChar2, &quot;CHAR 2&quot;}, {InputAction::SelectChar3, &quot;CHAR 3&quot;}, {InputAction::SelectChar4, &quot;CHAR 4&quot;}, {InputAction::SelectNPC1, &quot;NPC 1&quot;}, {InputAction::SelectNPC2, &quot;NPC 2&quot;}, {InputAction::DialogUp, &quot;DIALOG UP&quot;}, {InputAction::DialogDown, &quot;DIALOG DOWN&quot;}, {InputAction::DialogLeft, &quot;DIALOG LEFT&quot;}, {InputAction::DialogRight, &quot;DIALOG RIGHT&quot;}, {InputAction::DialogSelect, &quot;DIALOG SELECT&quot;}, {<a class="el" href="PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecca013ec032d3460d4be4431c6ab1f8f224">InputAction::Escape</a>, &quot;ESCAPE&quot;} }&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">

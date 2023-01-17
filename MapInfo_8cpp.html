@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;67c08a9</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;bbf7423</span>
    </div>
   </td>
  </tr>
@@ -90,6 +90,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="SpriteObject_8h.html">Engine/Objects/SpriteObject.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="DecorationList_8h.html">Engine/Graphics/DecorationList.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Decoration_8h.html">Engine/Graphics/Level/Decoration.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="EnumSerialization_8h.html">Library/Serialization/EnumSerialization.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Random_8h.html">Utility/Random/Random.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TrigLut_8h.html">Utility/Math/TrigLut.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="OurMath_8h.html">OurMath.h</a>&quot;</code><br />
@@ -97,8 +98,8 @@ $(function() {
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ab77e6eeddb252822cbab29444d66a41c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MapInfo_8cpp.html#ab77e6eeddb252822cbab29444d66a41c">TeleportToStartingPoint</a> (<a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312f">MapStartPoint</a> point)</td></tr>
-<tr class="separator:ab77e6eeddb252822cbab29444d66a41c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a9791e42aa176a61c2594a4b6fa6843"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MapInfo_8cpp.html#a7a9791e42aa176a61c2594a4b6fa6843">MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS</a> (<a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312f">MapStartPoint</a>, <a class="el" href="EnumSerializer_8h.html#aaa929f83398f109dfbff9789108b159baef326cd1b3186d4e62050fb62b6dcb1d">CASE_SENSITIVE</a>, { {<a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312fa894ff85c1a2b84a9fbcf98958e5cf943">MapStartPoint_Party</a>, &quot;Party Start&quot;}, {<a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312faa71727ebd5078eb3155d1080807d152b">MapStartPoint_North</a>, &quot;North Start&quot;}, {<a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312fa08a6e041b97028eb16fd386af18474aa">MapStartPoint_South</a>, &quot;South Start&quot;}, {<a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312fa1280f76e73c09850ea446d603f08282c">MapStartPoint_East</a>, &quot;East Start&quot;}, {<a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312face0f20399f9ed8f385c77fc2e887ed4d">MapStartPoint_West</a>, &quot;West Start&quot;} }) void <a class="el" href="MapInfo_8h.html#ab77e6eeddb252822cbab29444d66a41c">TeleportToStartingPoint</a>(<a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312f">MapStartPoint</a> point)</td></tr>
+<tr class="separator:a7a9791e42aa176a61c2594a4b6fa6843"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -106,18 +107,34 @@ Variables</h2></td></tr>
 <tr class="separator:a8a7cf96be8fe34afc4c23f7894301b5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ab77e6eeddb252822cbab29444d66a41c" name="ab77e6eeddb252822cbab29444d66a41c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab77e6eeddb252822cbab29444d66a41c">&#9670;&#160;</a></span>TeleportToStartingPoint()</h2>
+<a id="a7a9791e42aa176a61c2594a4b6fa6843" name="a7a9791e42aa176a61c2594a4b6fa6843"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a9791e42aa176a61c2594a4b6fa6843">&#9670;&#160;</a></span>MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void TeleportToStartingPoint </td>
+          <td class="memname">MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312f">MapStartPoint</a>&#160;</td>
-          <td class="paramname"><em>point</em></td><td>)</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="EnumSerializer_8h.html#aaa929f83398f109dfbff9789108b159baef326cd1b3186d4e62050fb62b6dcb1d">CASE_SENSITIVE</a>&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">{ {<a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312fa894ff85c1a2b84a9fbcf98958e5cf943">MapStartPoint_Party</a>, &quot;Party Start&quot;}, {<a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312faa71727ebd5078eb3155d1080807d152b">MapStartPoint_North</a>, &quot;North Start&quot;}, {<a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312fa08a6e041b97028eb16fd386af18474aa">MapStartPoint_South</a>, &quot;South Start&quot;}, {<a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312fa1280f76e73c09850ea446d603f08282c">MapStartPoint_East</a>, &quot;East Start&quot;}, {<a class="el" href="MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312face0f20399f9ed8f385c77fc2e887ed4d">MapStartPoint_West</a>, &quot;West Start&quot;} }&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
