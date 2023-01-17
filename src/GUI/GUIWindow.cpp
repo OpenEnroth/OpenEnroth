@@ -43,6 +43,8 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
+#include "Library/Serialization/EnumSerialization.h"
+
 #include "Utility/Random/Random.h"
 
 
@@ -110,30 +112,12 @@ DIALOGUE_TYPE _dword_F8B1D8_last_npc_topic_menu;
 AwardType dword_F8B1AC_award_bit_number;
 PLAYER_SKILL_TYPE dword_F8B1AC_skill_being_taught; // Address the same as above --- splitting a union into two variables.
 
-
-const wchar_t *MENU_STATE_to_string(MENU_STATE m) {
-    switch (m) {
-    case -1: return L"-1";
-    case MENU_MAIN: return L"MENU_MAIN";
-    case MENU_NEWGAME: return L"MENU_NEWGAME";
-    case MENU_CREDITS: return L"MENU_CREDITS";
-    case MENU_SAVELOAD: return L"MENU_SAVELOAD";
-    case MENU_EXIT_GAME: return L"MENU_EXIT_GAME";
-    case MENU_5: return L"MENU_5";
-    case MENU_CREATEPARTY: return L"MENU_CREATEPARTY";
-    case MENU_NAMEPANELESC: return L"MENU_NAMEPANELESC";
-    case MENU_CREDITSPROC: return L"MENU_CREDITSPROC";
-    case MENU_LoadingProcInMainMenu: return L"MENU_LoadingProcInMainMenu";
-    case MENU_DebugBLVLevel: return L"MENU_DebugBLVLevel";
-    case MENU_CREDITSCLOSE: return L"MENU_CREDITSCLOSE";
-    case MENU_MMT_MAIN_MENU: return L"MENU_MMT_MAIN_MENU";
-    default: return L"invalid";
-    }
-}
+MM_DEFINE_ENUM_MAGIC_SERIALIZATION_FUNCTIONS(MENU_STATE)
+MM_DEFINE_ENUM_MAGIC_SERIALIZATION_FUNCTIONS(WindowType)
 
 void SetCurrentMenuID(MENU_STATE uMenu) {
     sCurrentMenuID = uMenu;
-    logger->Warning("CurrentMenu = %s \n", MENU_STATE_to_string(uMenu));
+    logger->Warning("CurrentMenu = %s \n", toString(uMenu).c_str());
 }
 
 MENU_STATE GetCurrentMenuID() {
@@ -301,7 +285,7 @@ void GUIWindow::Release() {
     if (this->eWindowType == WINDOW_GameUI)
         nuklear->Release(WINDOW_GameUI);
 
-    log->Info("Release window: %s", ToString(eWindowType));
+    log->Info("Release window: %s", toString(eWindowType).c_str());
     pAudioPlayer->ResumeSounds();
 }
 
@@ -768,7 +752,7 @@ GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, W
     this->mouse = EngineIoc::ResolveMouse();
     this->log = EngineIoc::ResolveLogger();
 
-    log->Info("New window: %s", ToString(windowType));
+    log->Info("New window: %s", toString(windowType).c_str());
     lWindowList.push_front(this);
     this->uFrameWidth = dimensions.w;
     this->uFrameHeight = dimensions.h;

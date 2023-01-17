@@ -17,3 +17,9 @@
 [submodule "thirdparty/fmt"]
 	path = thirdparty/fmt
 	url = https://github.com/fmtlib/fmt.git
+[submodule "thirdparty/magic_enum"]
+	path = thirdparty/magic_enum
+	url = https://github.com/Neargye/magic_enum.git
+[submodule "thirdparty/fast_float"]
+	path = thirdparty/fast_float
+	url = https://github.com/fastfloat/fast_float.git

@@ -7,9 +7,8 @@ set(CONFIG_HEADERS AbstractConfigValue.h
                    Config.h
                    ConfigFwd.h
                    ConfigSection.h
-                   ConfigSerialization.h
                    ConfigValue.h)
 
 add_library(config STATIC ${CONFIG_SOURCES} ${CONFIG_HEADERS})
-target_link_libraries(config utility)
+target_link_libraries(config utility serialization)
 target_check_style(config)

@@ -1,10 +1,11 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
-set(SERIALIZATION_SOURCES LegacyImages.cpp)
+set(ENGINE_SERIALIZATION_SOURCES LegacyImages.cpp)
 
-set(SERIALIZATION_HEADERS LegacyImages.h
-                          Deserializer.h
-                          Serializer.h)
+set(ENGINE_SERIALIZATION_HEADERS LegacyImages.h
+                                 Deserializer.h
+                                 Serializer.h)
 
-add_library(serialization STATIC ${SERIALIZATION_SOURCES} ${SERIALIZATION_HEADERS})
-target_check_style(serialization)
+add_library(engine_serialization STATIC ${ENGINE_SERIALIZATION_SOURCES} ${ENGINE_SERIALIZATION_HEADERS})
+target_link_libraries(engine_serialization engine)
+target_check_style(engine_serialization)

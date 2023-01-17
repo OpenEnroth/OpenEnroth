@@ -28,6 +28,7 @@ set(GRAPHICS_SOURCES BSPModel.cpp
                      Vis.cpp
                      Weather.cpp
                      Level/Decoration.cpp
+                     OpenGL/GLShaderLoader.cpp
                      OpenGL/RenderOpenGL.cpp
                      OpenGL/TextureOpenGL.cpp)
 
@@ -80,7 +81,7 @@ endif()
 add_library(graphics STATIC ${GRAPHICS_SOURCES} ${GRAPHICS_HEADERS})
 target_check_style(graphics)
 
-target_link_libraries(graphics libluajit glad nuklear utility)
+target_link_libraries(graphics libluajit glad nuklear utility serialization)
 if(NOT BUILD_PLATFORM STREQUAL "android")
   find_package(OpenGL REQUIRED)
   target_link_libraries(graphics ${OPENGL_opengl_LIBRARY})

@@ -17,6 +17,8 @@
 #include "Io/InputAction.h"
 #include "Io/KeyboardInputHandler.h"
 
+#include "Library/Serialization/SerializationFwd.h"
+
 #include "Utility/Geometry/Size.h"
 
 using Io::Mouse;
@@ -291,6 +293,7 @@ enum MENU_STATE : int32_t {
     MENU_DebugBLVLevel = 10,
     MENU_CREDITSCLOSE = 11,
     MENU_MMT_MAIN_MENU = 12,
+    MENU_NONE = -1,
 };
 
 
@@ -358,72 +361,7 @@ enum WindowType {
     // ToString (below) is updated until this point
 };
 
-#define ENUM_TO_STRING_CASE(val) case val: return #val;
-inline const char* ToString(WindowType windowType) {
-    switch (windowType) {
-        ENUM_TO_STRING_CASE(WINDOW_null)
-        ENUM_TO_STRING_CASE(WINDOW_MainMenu)
-        ENUM_TO_STRING_CASE(WINDOW_GameMenu)
-        ENUM_TO_STRING_CASE(WINDOW_CharacterRecord)
-        ENUM_TO_STRING_CASE(WINDOW_Options)
-        ENUM_TO_STRING_CASE(WINDOW_8)
-        ENUM_TO_STRING_CASE(WINDOW_Book)
-        ENUM_TO_STRING_CASE(WINDOW_Dialogue)
-        ENUM_TO_STRING_CASE(WINDOW_QuickReference)
-        ENUM_TO_STRING_CASE(WINDOW_F)
-        ENUM_TO_STRING_CASE(WINDOW_Rest)
-        ENUM_TO_STRING_CASE(WINDOW_ChangeLocation)
-        ENUM_TO_STRING_CASE(WINDOW_SpellBook)
-        ENUM_TO_STRING_CASE(WINDOW_GreetingNPC)
-        ENUM_TO_STRING_CASE(WINDOW_Chest)
-        ENUM_TO_STRING_CASE(WINDOW_22)
-        ENUM_TO_STRING_CASE(WINDOW_SaveLoadButtons)
-        ENUM_TO_STRING_CASE(WINDOW_MainMenu_Load)
-        ENUM_TO_STRING_CASE(WINDOW_HouseInterior)
-        ENUM_TO_STRING_CASE(WINDOW_Transition)
-        ENUM_TO_STRING_CASE(WINDOW_CastSpell)
-        ENUM_TO_STRING_CASE(WINDOW_Scroll)
-        ENUM_TO_STRING_CASE(WINDOW_CastSpell_InInventory)
-        ENUM_TO_STRING_CASE(WINDOW_ModalWindow)
-        ENUM_TO_STRING_CASE(WINDOW_50)
-        ENUM_TO_STRING_CASE(WINDOW_59)
-        ENUM_TO_STRING_CASE(WINDOW_PressedButton2)
-        ENUM_TO_STRING_CASE(WINDOW_CharactersPressedButton)
-        ENUM_TO_STRING_CASE(WINDOW_PressedButton)
-        ENUM_TO_STRING_CASE(WINDOW_5D)
-        ENUM_TO_STRING_CASE(WINDOW_SaveLoadBtn)
-        ENUM_TO_STRING_CASE(WINDOW_LoadGame_CancelBtn)
-        ENUM_TO_STRING_CASE(WINDOW_CloseRestWindowBtn)
-        ENUM_TO_STRING_CASE(WINDOW_ExitCharacterWindow)
-        ENUM_TO_STRING_CASE(WINDOW_RestWindow)
-        ENUM_TO_STRING_CASE(WINDOW_BooksButtonOverlay)
-        ENUM_TO_STRING_CASE(WINDOW_CharacterWindow_Stats)
-        ENUM_TO_STRING_CASE(WINDOW_CharacterWindow_Skills)
-        ENUM_TO_STRING_CASE(WINDOW_CharacterWindow_Awards)
-        ENUM_TO_STRING_CASE(WINDOW_CharacterWindow_Inventory)
-        ENUM_TO_STRING_CASE(WINDOW_GameOptions)
-        ENUM_TO_STRING_CASE(WINDOW_KeyMappingOptions)
-        ENUM_TO_STRING_CASE(WINDOW_VideoOptions)
-        ENUM_TO_STRING_CASE(WINDOW_LloydsBeacon)
-        ENUM_TO_STRING_CASE(WINDOW_TownPortal)
-        ENUM_TO_STRING_CASE(WINDOW_QuestBook)
-        ENUM_TO_STRING_CASE(WINDOW_AutonotesBook)
-        ENUM_TO_STRING_CASE(WINDOW_MapsBook)
-        ENUM_TO_STRING_CASE(WINDOW_CalendarBook)
-        ENUM_TO_STRING_CASE(WINDOW_JournalBook)
-        ENUM_TO_STRING_CASE(WINDOW_Unknown)
-        ENUM_TO_STRING_CASE(WINDOW_CharacterCreation)
-        ENUM_TO_STRING_CASE(WINDOW_CharacterCreationBtn)
-        ENUM_TO_STRING_CASE(WINDOW_GenericCancel)
-        ENUM_TO_STRING_CASE(WINDOW_GameUI)
-        ENUM_TO_STRING_CASE(WINDOW_Credits)
-        ENUM_TO_STRING_CASE(WINDOW_Save)
-        ENUM_TO_STRING_CASE(WINDOW_Load)
-        ENUM_TO_STRING_CASE(WINDOW_DebugMenu)
-    }
-
-    return nullptr;
-}
+MM_DECLARE_SERIALIZATION_FUNCTIONS(WindowType)
 
 struct Texture_MM7;
 

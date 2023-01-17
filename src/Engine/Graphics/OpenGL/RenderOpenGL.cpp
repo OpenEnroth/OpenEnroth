@@ -43,6 +43,8 @@
 #include "Engine/SpellFxRenderer.h"
 #include "Arcomage/Arcomage.h"
 
+#include "Library/Serialization/EnumSerialization.h"
+
 #include "Utility/Geometry/Size.h"
 #include "Utility/Format.h"
 #include "Utility/Memory/MemSet.h"
@@ -70,21 +72,24 @@ GLuint framebuffer = 0;
 GLuint framebufferTextures[2] = {0, 0};
 bool OpenGLES = false;
 
+namespace detail_gl_error {
+MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(GLenum, CASE_SENSITIVE, {
+    { GL_INVALID_OPERATION, "INVALID_OPERATION" },
+    { GL_INVALID_ENUM, "INVALID_ENUM" },
+    { GL_INVALID_VALUE, "INVALID_VALUE" },
+    { GL_OUT_OF_MEMORY, "OUT_OF_MEMORY" },
+    { GL_INVALID_FRAMEBUFFER_OPERATION, "INVALID_FRAMEBUFFER_OPERATION" }
+})
+} // namespace detail_gl_error
+
 // improved error check - using glad post call back
 void GL_Check_Errors(void *ret, const char *name, GLADapiproc apiproc, int len_args, ...) {
     GLenum err = glad_glGetError();
 
     while (err != GL_NO_ERROR) {
         static std::string error;
-
-        switch (err) {
-            case GL_INVALID_OPERATION:      error = "INVALID_OPERATION";      break;
-            case GL_INVALID_ENUM:           error = "INVALID_ENUM";           break;
-            case GL_INVALID_VALUE:          error = "INVALID_VALUE";          break;
-            case GL_OUT_OF_MEMORY:          error = "OUT_OF_MEMORY";          break;
-            case GL_INVALID_FRAMEBUFFER_OPERATION:  error = "INVALID_FRAMEBUFFER_OPERATION";  break;
-            default:                        error = "Unknown Error";  break;
-        }
+        if (!detail_gl_error::trySerialize(err, &error))
+            error = "Unknown Error";
 
         logger->Warning("OpenGL error (%u): %s from function %s", err, error.c_str(), name);
 
@@ -92,32 +97,23 @@ void GL_Check_Errors(void *ret, const char *name, GLADapiproc apiproc, int len_a
     }
 }
 
+namespace detail_fb_error {
+MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(GLenum, CASE_SENSITIVE, {
+    {GL_FRAMEBUFFER_UNDEFINED, "framebuffer is undefined"},
+    {GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT, "framebuffer has missing attachment"},
+    {GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT, "framebuffer has incomplete attachment"},
+    {GL_FRAMEBUFFER_UNSUPPORTED, "framebuffer is unsupported"},
+    {GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE, "framebuffer has incomplete multisample"},
+    {0, "unknown error"}
+})
+} // namespace detail_fb_error
+
 void GL_Check_Framebuffer(const char *name) {
     static std::string error;
 
     GLenum status = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
-    switch (status) {
-        case GL_FRAMEBUFFER_UNDEFINED:
-            error = "framebuffer is undefined";
-            break;
-        case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-            error = "framebuffer has missing attachment";
-            break;
-        case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-            error = "framebuffer has incomplete attachment";
-            break;
-        case GL_FRAMEBUFFER_UNSUPPORTED:
-            error = "framebuffer is unsupported";
-            break;
-        case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
-            error = "framebuffer has incomplete multisample";
-            break;
-        case 0:
-            error = "unknown error";
-            break;
-        default:
-            return;
-    }
+    if (!detail_fb_error::trySerialize(status, &error))
+        return;
 
     logger->Warning("OpenGL Framebuffer error (%u): %s from function %s", status, error.c_str(), name);
 }

@@ -9,7 +9,10 @@ set(IO_HEADERS IKeyboardController.h
                InputAction.h
                KeyboardActionMapping.h
                KeyboardInputHandler.h
-               Mouse.h)
+               Mouse.h
+               Key.h
+               Key.cpp)
 
 add_library(io STATIC ${IO_SOURCES} ${IO_HEADERS})
+target_link_libraries(io serialization)
 target_check_style(io)

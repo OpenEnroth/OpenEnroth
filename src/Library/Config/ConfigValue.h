@@ -3,9 +3,10 @@
 #include <climits>
 #include <string>
 
+#include "Library/Serialization/Serialization.h"
+
 #include "ConfigFwd.h"
 #include "AbstractConfigValue.h"
-#include "ConfigSerialization.h"
 
 template <class T>
 class ConfigValue : public AbstractConfigValue {
@@ -39,19 +40,15 @@ class ConfigValue : public AbstractConfigValue {
     }
 
     virtual std::string GetString() const override {
-        std::string result;
-        SerializeConfigValue(value_, &result);
-        return result;
+        return toString(value_);
     }
 
     virtual std::string DefaultString() const override {
-        std::string result;
-        SerializeConfigValue(defaultValue_, &result);
-        return result;
+        return toString(defaultValue_);
     }
 
     virtual void SetString(const std::string &value) override {
-        DeserializeConfigValue(value, &value_);
+        value_ = fromString<T>(value);
     }
 
     virtual void Reset() override {

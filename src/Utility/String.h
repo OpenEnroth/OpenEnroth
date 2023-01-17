@@ -30,6 +30,16 @@ inline std::string TrimRemoveQuotes(std::string str) {
     return str;
 }
 
+inline std::string_view trim(std::string_view s) {
+    size_t l = 0;
+    size_t r = s.size();
+    while (l < r && s[l] == ' ')
+        l++;
+    while (l < r && s[r - 1] == ' ')
+        r--;
+    return s.substr(l, r - l);
+}
+
 bool istarts_with(std::string_view s, std::string_view prefix);
 bool iequals(std::string_view a, std::string_view b);
 bool iless(std::string_view a, std::string_view b);

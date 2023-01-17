@@ -4,6 +4,7 @@
 #include <algorithm>
 
 #include "Library/Config/Config.h"
+#include "Io/Key.h"
 
 #ifdef __ANDROID__
 #define ConfigRenderer "OpenGLES"
@@ -28,6 +29,7 @@ namespace Application {
         using Int = ConfigValue<int>;
         using Float = ConfigValue<float>;
         using String = ConfigValue<std::string>;
+        using Key = ConfigValue<PlatformKey>;
 
         class Debug : public ConfigSection {
          public:
@@ -184,88 +186,81 @@ namespace Application {
          public:
             explicit Gamepad(GameConfig *config) : ConfigSection(config, "gamepad") {}
 
-            String AlwaysRun = String(this, "always_run", "L3", &ValidateKey, "Always run toggle key.");
-            String Attack = String(this, "attack", "L1", &ValidateKey, "Attack key.");
-            String AutoNotes = String(this, "auto_notes", "DPAD UP", &ValidateKey, "Open autonotes key.");
-            String Backward = String(this, "backward", "LSTICK DOWN", &ValidateKey, "Walk backwards key.");
-            String Cast = String(this, "cast", "DPAD DOWN", &ValidateKey, "Cast a spell from spellbook key.");
-            String CastReady = String(this, "cast_ready", "R1", &ValidateKey, "Cast a quick spell key.");
-            String CenterView = String(this, "center_view", "", &ValidateKey, "Center view key.");
-            String CharCycle = String(this, "char_cycle", "", &ValidateKey, "Switch between characters key.");
-            String Combat = String(this, "combat", "START", &ValidateKey, "Switch between realtime and turn-based modes key.");
-            String EventTrigger = String(this, "event_trigger", "A (CROSS)", &ValidateKey, "Interaction key.");
-            String FlyDown = String(this, "fly_down", "L2", &ValidateKey, "Fly down key.");
-            String FlyUp = String(this, "fly_up", "R2", &ValidateKey, "Fly up key.");
-            String Forward = String(this, "forward", "LSTICK UP", &ValidateKey, "Move forward key.");
-            String Jump = String(this, "jump", "Y (TRIANGLE)", &ValidateKey, "Jump key.");
-            String Land = String(this, "land", "R3", &ValidateKey, "Land key.");
-            String Left = String(this, "left", "RSTICK LEFT", &ValidateKey, "Turn left key.");
-            String LookDown = String(this, "look_down", "RSTICK DOWN", &ValidateKey, "Look down key.");
-            String LookUp = String(this, "look_up", "RSTICK UP", &ValidateKey, "Look up key.");
-            String MapBook = String(this, "map_book", "DPAD LEFT", &ValidateKey, "Open map key.");
-            String Pass = String(this, "pass", "GUIDE", &ValidateKey, "Pass turn key");
-            String Quest = String(this, "quest", "DPAD RIGHT", &ValidateKey, "Open quest book key");
-            String QuickReference = String(this, "quick_reference", "", &ValidateKey, "Open quick reference menu");
-            String Rest = String(this, "rest", "BACK", &ValidateKey, "Rest key.");
-            String Right = String(this, "right", "RSTICK RIGHT", &ValidateKey, "Turn right key.");
-            String StepLeft = String(this, "step_left", "LSTICK LEFT", &ValidateKey, "Strafe left key.");
-            String StepRight = String(this, "step_right", "LSTICK RIGHT", &ValidateKey, "Strafe right key.");
-            String TimeCalendar = String(this, "time_calendar", "", &ValidateKey, "Open calendar key.");
-            String Yell = String(this, "yell", "X (SQUARE)", &ValidateKey, "Yell key.");
-            String ZoomIn = String(this, "zoom_in", "", &ValidateKey, "Zoom in automap key.");
-            String ZoomOut = String(this, "zoom_out", "", &ValidateKey, "Zoom out automap key.");
-
-            String QuickSave = String(this, "quick_save", "", &ValidateKey, "Quick save key");
-            String QuickLoad = String(this, "quick_load", "", &ValidateKey, "Quick load key");
-            String History = String(this, "history", "", &ValidateKey, "History book key");
-            String Stats = String(this, "stats", "A (CROSS)", &ValidateKey, "Stats tab key");
-            String Skills = String(this, "skills", "X (SQUARE)", &ValidateKey, "Skills tab key");
-            String Inventory = String(this, "inventory", "Y (TRIANGLE)", &ValidateKey, "Inventory tab key");
-            String Awards = String(this, "awards", "L1", &ValidateKey, "Stats tab key");
-            String NewGame = String(this, "new_game", "A (CROSS)", &ValidateKey, "New Game menu key");
-            String SaveGame = String(this, "save_game", "Y (TRIANGLE)", &ValidateKey, "Save Game menu key");
-            String LoadGame = String(this, "load_game", "X (SQUARE)", &ValidateKey, "Load Game menu key");
-            String ExitGame = String(this, "exit_game", "B (CIRCLE)", &ValidateKey, "Exit Game key");
-            String ReturnToGame = String(this, "return_to_game", "B (CIRCLE)", &ValidateKey, "Return to Game mode key");
-            String Controls = String(this, "controls", "L1", &ValidateKey, "Controls change menu key");
-            String Options = String(this, "options", "R1", &ValidateKey, "Options menu key");
-            String Credits = String(this, "credits", "Y (TRIANGLE)", &ValidateKey, "Credits menu key");
-            String Clear = String(this, "clear", "Y (TRIANGLE)", &ValidateKey, "Clear button in New Party Creation menu");
-            String Return = String(this, "return", "A (CROSS)", &ValidateKey, "Ok button in New Party Creation menu");
-            String Minus = String(this, "minus", "L1", &ValidateKey, "Minus button in New Party Creation menu");
-            String Plus = String(this, "plus", "R1", &ValidateKey, "Plus button in New Party Creation menu");
-            String Yes = String(this, "yes", "A (CROSS)", &ValidateKey, "Yes answer key");
-            String No = String(this, "no", "B (CIRCLE)", &ValidateKey, "No answer key");
-            String Rest8Hours = String(this, "rest_8_hours", "BACK", &ValidateKey, "Rest for 8 hours key in Rest menu");
-            String WaitTillDawn = String(this, "wait_till_dawn", "Y (TRIANGLE)", &ValidateKey, "Wait till dawn key in Rest menu");
-            String WaitHour = String(this, "wait_hour", "X (SQUARE)", &ValidateKey, "Wait hour in Rest menu");
-            String Wait5Minutes = String(this, "wait_5_minutes", "A (CROSS)", &ValidateKey, "Wait 5 minutes in Rest menu");
-            String Screenshot = String(this, "screenshot", "", &ValidateKey, "Make screenshot key");
-            String Console = String(this, "console", "", &ValidateKey, "Open console key (currently it is opening debug menu)");
-            String ToggleMouseGrab = String(this, "toggle_mouse_grab", "", &ValidateKey, "Toggle mouse grab key");
-            String ToggleBorderless = String(this, "toggle_borderless", "", &ValidateKey, "Toggle window borderless key");
-            String ToggleFullscreen = String(this, "toggle_fullscreen", "", &ValidateKey, "Toggle window fullscreen key");
-            String ToggleResizable = String(this, "toggle_resizable", "", &ValidateKey, "Toggle window resizable key");
-            String CycleFilter = String(this, "cycle_filter", "", &ValidateKey, "Cycle rescale filter modes key");
-            String ReloadShaders = String(this, "reload_shaders", "", &ValidateKey, "Reload shaders key");
-            String SelectChar1 = String(this, "select_char_1", "", &ValidateKey, "Select 1 character key");
-            String SelectChar2 = String(this, "select_char_2", "", &ValidateKey, "Select 2 character key");
-            String SelectChar3 = String(this, "select_char_3", "", &ValidateKey, "Select 3 character key");
-            String SelectChar4 = String(this, "select_char_4", "", &ValidateKey, "Select 4 character key");
-            String SelectNPC1 = String(this, "select_npc_1", "", &ValidateKey, "Select 1 hireling key");
-            String SelectNPC2 = String(this, "select_npc_2", "", &ValidateKey, "Select 2 hireling key");
-            String DialogUp = String(this, "dialog_up", "DPAD UP", &ValidateKey, "Dialog up key");
-            String DialogDown = String(this, "dialog_down", "DPAD DOWN", &ValidateKey, "Dialog down key");
-            String DialogLeft = String(this, "dialog_left", "DPAD LEFT", &ValidateKey, "Dialog left key");
-            String DialogRight = String(this, "dialog_right", "DPAD RIGHT", &ValidateKey, "Dialog right key");
-            String DialogSelect = String(this, "dialog_select", "A (CROSS)", &ValidateKey, "Dialog select key");
-            String Escape = String(this, "escape", "B (CIRCLE)", &ValidateKey, "Escape key");
-
-         private:
-            static std::string ValidateKey(std::string key) {
-                // TODO [config]: validation, maybe via GameKey::displayNames
-                return key;
-            }
+            Key AlwaysRun = Key(this, "always_run", PlatformKey::Gamepad_L3, "Always run toggle key.");
+            Key Attack = Key(this, "attack", PlatformKey::Gamepad_L1, "Attack key.");
+            Key AutoNotes = Key(this, "auto_notes", PlatformKey::Gamepad_Up, "Open autonotes key.");
+            Key Backward = Key(this, "backward", PlatformKey::Gamepad_LeftStick_Down, "Walk backwards key.");
+            Key Cast = Key(this, "cast", PlatformKey::Gamepad_Down, "Cast a spell from spellbook key.");
+            Key CastReady = Key(this, "cast_ready", PlatformKey::Gamepad_R1, "Cast a quick spell key.");
+            Key CenterView = Key(this, "center_view", PlatformKey::None, "Center view key.");
+            Key CharCycle = Key(this, "char_cycle", PlatformKey::None, "Switch between characters key.");
+            Key Combat = Key(this, "combat", PlatformKey::Gamepad_Start, "Switch between realtime and turn-based modes key.");
+            Key EventTrigger = Key(this, "event_trigger", PlatformKey::Gamepad_A, "Interaction key.");
+            Key FlyDown = Key(this, "fly_down", PlatformKey::Gamepad_L2, "Fly down key.");
+            Key FlyUp = Key(this, "fly_up", PlatformKey::Gamepad_R2, "Fly up key.");
+            Key Forward = Key(this, "forward", PlatformKey::Gamepad_LeftStick_Up, "Move forward key.");
+            Key Jump = Key(this, "jump", PlatformKey::Gamepad_Y, "Jump key.");
+            Key Land = Key(this, "land", PlatformKey::Gamepad_R3, "Land key.");
+            Key Left = Key(this, "left", PlatformKey::Gamepad_RightStick_Left, "Turn left key.");
+            Key LookDown = Key(this, "look_down", PlatformKey::Gamepad_RightStick_Down, "Look down key.");
+            Key LookUp = Key(this, "look_up", PlatformKey::Gamepad_RightStick_Up, "Look up key.");
+            Key MapBook = Key(this, "map_book", PlatformKey::Gamepad_Left, "Open map key.");
+            Key Pass = Key(this, "pass", PlatformKey::Gamepad_Guide, "Pass turn key");
+            Key Quest = Key(this, "quest", PlatformKey::Gamepad_Right, "Open quest book key");
+            Key QuickReference = Key(this, "quick_reference", PlatformKey::None, "Open quick reference menu");
+            Key Rest = Key(this, "rest", PlatformKey::Gamepad_Back, "Rest key.");
+            Key Right = Key(this, "right", PlatformKey::Gamepad_RightStick_Right, "Turn right key.");
+            Key StepLeft = Key(this, "step_left", PlatformKey::Gamepad_LeftStick_Left, "Strafe left key.");
+            Key StepRight = Key(this, "step_right", PlatformKey::Gamepad_LeftStick_Right, "Strafe right key.");
+            Key TimeCalendar = Key(this, "time_calendar", PlatformKey::None, "Open calendar key.");
+            Key Yell = Key(this, "yell", PlatformKey::Gamepad_X, "Yell key.");
+            Key ZoomIn = Key(this, "zoom_in", PlatformKey::None, "Zoom in automap key.");
+            Key ZoomOut = Key(this, "zoom_out", PlatformKey::None, "Zoom out automap key.");
+            Key QuickSave = Key(this, "quick_save", PlatformKey::None, "Quick save key");
+            Key QuickLoad = Key(this, "quick_load", PlatformKey::None, "Quick load key");
+            Key History = Key(this, "history", PlatformKey::None, "History book key");
+            Key Stats = Key(this, "stats", PlatformKey::Gamepad_A, "Stats tab key");
+            Key Skills = Key(this, "skills", PlatformKey::Gamepad_X, "Skills tab key");
+            Key Inventory = Key(this, "inventory", PlatformKey::Gamepad_Y, "Inventory tab key");
+            Key Awards = Key(this, "awards", PlatformKey::Gamepad_L1, "Stats tab key");
+            Key NewGame = Key(this, "new_game", PlatformKey::Gamepad_A, "New Game menu key");
+            Key SaveGame = Key(this, "save_game", PlatformKey::Gamepad_Y, "Save Game menu key");
+            Key LoadGame = Key(this, "load_game", PlatformKey::Gamepad_X, "Load Game menu key");
+            Key ExitGame = Key(this, "exit_game", PlatformKey::Gamepad_B, "Exit Game key");
+            Key ReturnToGame = Key(this, "return_to_game", PlatformKey::Gamepad_B, "Return to Game mode key");
+            Key Controls = Key(this, "controls", PlatformKey::Gamepad_L1, "Controls change menu key");
+            Key Options = Key(this, "options", PlatformKey::Gamepad_R1, "Options menu key");
+            Key Credits = Key(this, "credits", PlatformKey::Gamepad_Y, "Credits menu key");
+            Key Clear = Key(this, "clear", PlatformKey::Gamepad_Y, "Clear button in New Party Creation menu");
+            Key Return = Key(this, "return", PlatformKey::Gamepad_A, "Ok button in New Party Creation menu");
+            Key Minus = Key(this, "minus", PlatformKey::Gamepad_L1, "Minus button in New Party Creation menu");
+            Key Plus = Key(this, "plus", PlatformKey::Gamepad_R1, "Plus button in New Party Creation menu");
+            Key Yes = Key(this, "yes", PlatformKey::Gamepad_A, "Yes answer key");
+            Key No = Key(this, "no", PlatformKey::Gamepad_B, "No answer key");
+            Key Rest8Hours = Key(this, "rest_8_hours", PlatformKey::Gamepad_Back, "Rest for 8 hours key in Rest menu");
+            Key WaitTillDawn = Key(this, "wait_till_dawn", PlatformKey::Gamepad_Y, "Wait till dawn key in Rest menu");
+            Key WaitHour = Key(this, "wait_hour", PlatformKey::Gamepad_X, "Wait hour in Rest menu");
+            Key Wait5Minutes = Key(this, "wait_5_minutes", PlatformKey::Gamepad_A, "Wait 5 minutes in Rest menu");
+            Key Screenshot = Key(this, "screenshot", PlatformKey::None, "Make screenshot key");
+            Key Console = Key(this, "console", PlatformKey::None, "Open console key (currently it is opening debug menu)");
+            Key ToggleMouseGrab = Key(this, "toggle_mouse_grab", PlatformKey::None, "Toggle mouse grab key");
+            Key ToggleBorderless = Key(this, "toggle_borderless", PlatformKey::None, "Toggle window borderless key");
+            Key ToggleFullscreen = Key(this, "toggle_fullscreen", PlatformKey::None, "Toggle window fullscreen key");
+            Key ToggleResizable = Key(this, "toggle_resizable", PlatformKey::None, "Toggle window resizable key");
+            Key CycleFilter = Key(this, "cycle_filter", PlatformKey::None, "Cycle rescale filter modes key");
+            Key ReloadShaders = Key(this, "reload_shaders", PlatformKey::None, "Reload shaders key");
+            Key SelectChar1 = Key(this, "select_char_1", PlatformKey::None, "Select 1 character key");
+            Key SelectChar2 = Key(this, "select_char_2", PlatformKey::None, "Select 2 character key");
+            Key SelectChar3 = Key(this, "select_char_3", PlatformKey::None, "Select 3 character key");
+            Key SelectChar4 = Key(this, "select_char_4", PlatformKey::None, "Select 4 character key");
+            Key SelectNPC1 = Key(this, "select_npc_1", PlatformKey::None, "Select 1 hireling key");
+            Key SelectNPC2 = Key(this, "select_npc_2", PlatformKey::None, "Select 2 hireling key");
+            Key DialogUp = Key(this, "dialog_up", PlatformKey::Gamepad_Up, "Dialog up key");
+            Key DialogDown = Key(this, "dialog_down", PlatformKey::Gamepad_Down, "Dialog down key");
+            Key DialogLeft = Key(this, "dialog_left", PlatformKey::Gamepad_Left, "Dialog left key");
+            Key DialogRight = Key(this, "dialog_right", PlatformKey::Gamepad_Right, "Dialog right key");
+            Key DialogSelect = Key(this, "dialog_select", PlatformKey::Gamepad_A, "Dialog select key");
+            Key Escape = Key(this, "escape", PlatformKey::Gamepad_B, "Escape key");
         };
 
         Gamepad gamepad{ this };
@@ -396,89 +391,81 @@ namespace Application {
          public:
             explicit Keybindings(GameConfig *config) : ConfigSection(config, "keybindings") {}
 
-            String AlwaysRun = String(this, "always_run", "U", &ValidateKey, "Always run toggle key.");
-            String Attack = String(this, "attack", "A", &ValidateKey, "Attack key.");
-            String AutoNotes = String(this, "auto_notes", "N", &ValidateKey, "Open autonotes key.");
-            String Backward = String(this, "backward", "DOWN", &ValidateKey, "Walk backwards key.");
-            String Cast = String(this, "cast", "C", &ValidateKey, "Cast a spell from spellbook key.");
-            String CastReady = String(this, "cast_ready", "S", &ValidateKey, "Cast a quick spell key.");
-            String CenterView = String(this, "center_view", "END", &ValidateKey, "Center view key.");
-            String CharCycle = String(this, "char_cycle", "TAB", &ValidateKey, "Switch between characters key.");
-            String Combat = String(this, "combat", "RETURN", &ValidateKey, "Switch between realtime and turn-based modes key.");
-            String EventTrigger = String(this, "event_trigger", "SPACE", &ValidateKey, "Interaction key.");
-            String FlyDown = String(this, "fly_down", "INSERT", &ValidateKey, "Fly down key.");
-            String FlyUp = String(this, "fly_up", "PAGE UP", &ValidateKey, "Fly up key.");
-            String Forward = String(this, "forward", "UP", &ValidateKey, "Move forward key.");
-            String Jump = String(this, "jump", "X", &ValidateKey, "Jump key.");
-            String Land = String(this, "land", "HOME", &ValidateKey, "Land key.");
-            String Left = String(this, "left", "LEFT", &ValidateKey, "Turn left key.");
-            String LookDown = String(this, "look_down", "DELETE", &ValidateKey, "Look down key.");
-            String LookUp = String(this, "look_up", "PAGE DOWN", &ValidateKey, "Look up key.");
-            String MapBook = String(this, "map_book", "M", &ValidateKey, "Open map key.");
-            String Pass = String(this, "pass", "B", &ValidateKey, "Pass turn key");
-            String Quest = String(this, "quest", "Q", &ValidateKey, "Open quest book key");
-            String QuickReference = String(this, "quick_reference", "Z", &ValidateKey, "Open quick reference menu");
-            String Rest = String(this, "rest", "R", &ValidateKey, "Rest key.");
-            String Right = String(this, "right", "RIGHT", &ValidateKey, "Turn right key.");
-            String StepLeft = String(this, "step_left", "L BRACKET", &ValidateKey, "Strafe left key.");
-            String StepRight = String(this, "step_right", "R BRACKET", &ValidateKey, "Strafe right key.");
-            String TimeCalendar = String(this, "time_calendar", "T", &ValidateKey, "Open calendar key.");
-            String Yell = String(this, "yell", "Y", &ValidateKey, "Yell key.");
-            String ZoomIn = String(this, "zoom_in", "ADD", &ValidateKey, "Zoom in automap key.");
-            String ZoomOut = String(this, "zoom_out", "SUBTRACT", &ValidateKey, "Zoom out automap key.");
-
-            String QuickSave = String(this, "quick_save", "F5", &ValidateKey, "Quick save key");
-            String QuickLoad = String(this, "quick_load", "F9", &ValidateKey, "Quick load key");
-            String History = String(this, "history", "H", &ValidateKey, "History book key");
-            String Stats = String(this, "stats", "C", &ValidateKey, "Stats tab key");
-            String Skills = String(this, "skills", "S", &ValidateKey, "Skills tab key");
-            String Inventory = String(this, "inventory", "I", &ValidateKey, "Inventory tab key");
-            String Awards = String(this, "awards", "A", &ValidateKey, "Stats tab key");
-            String NewGame = String(this, "new_game", "N", &ValidateKey, "New Game menu key");
-            String SaveGame = String(this, "save_game", "S", &ValidateKey, "Save Game menu key");
-            String LoadGame = String(this, "load_game", "L", &ValidateKey, "Load Game menu key");
-            String ExitGame = String(this, "exit_game", "Q", &ValidateKey, "Exit Game key");
-            String ReturnToGame = String(this, "return_to_game", "R", &ValidateKey, "Return to Game mode key");
-            String Controls = String(this, "controls", "C", &ValidateKey, "Controls change menu key");
-            String Options = String(this, "options", "O", &ValidateKey, "Options menu key");
-            String Credits = String(this, "credits", "C", &ValidateKey, "Credits menu key");
-            String Clear = String(this, "clear", "C", &ValidateKey, "Clear button in New Party Creation menu");
-            String Return = String(this, "return", "RETURN", &ValidateKey, "Ok button in New Party Creation menu");
-            String Minus = String(this, "minus", "SUBTRACT", &ValidateKey, "Minus button in New Party Creation menu");
-            String Plus = String(this, "plus", "ADD", &ValidateKey, "Plus button in New Party Creation menu");
-            String Yes = String(this, "yes", "Y", &ValidateKey, "Yes answer key");
-            String No = String(this, "no", "N", &ValidateKey, "No answer key");
-            String Rest8Hours = String(this, "rest_8_hours", "R", &ValidateKey, "Rest for 8 hours key in Rest menu");
-            String WaitTillDawn = String(this, "wait_till_dawn", "D", &ValidateKey, "Wait till dawn key in Rest menu");
-            String WaitHour = String(this, "wait_hour", "H", &ValidateKey, "Wait hour in Rest menu");
-            String Wait5Minutes = String(this, "wait_5_minutes", "M", &ValidateKey, "Wait 5 minutes in Rest menu");
-            String Screenshot = String(this, "screenshot", "F2", &ValidateKey, "Make screenshot key");
-            String Console = String(this, "console", "~", &ValidateKey, "Open console key (currently it is opening debug menu)");
-            String ToggleMouseGrab = String(this, "toggle_mouse_grab", "F1", &ValidateKey, "Toggle mouse grab key");
-            String ToggleBorderless = String(this, "toggle_borderless", "F3", &ValidateKey, "Toggle window borderless key");
-            String ToggleFullscreen = String(this, "toggle_fullscreen", "F4", &ValidateKey, "Toggle window fullscreen key");
-            String ToggleResizable = String(this, "toggle_resizable", "F6", &ValidateKey, "Toggle window resizable key");
-            String CycleFilter = String(this, "cycle_filter", "F7", &ValidateKey, "Cycle rescale filter modes key");
-            String ReloadShaders = String(this, "reload_shaders", "BACKSPACE", &ValidateKey, "Reload shaders key");
-            String SelectChar1 = String(this, "select_char_1", "1", &ValidateKey, "Select 1 character key");
-            String SelectChar2 = String(this, "select_char_2", "2", &ValidateKey, "Select 2 character key");
-            String SelectChar3 = String(this, "select_char_3", "3", &ValidateKey, "Select 3 character key");
-            String SelectChar4 = String(this, "select_char_4", "4", &ValidateKey, "Select 4 character key");
-            String SelectNPC1 = String(this, "select_npc_1", "5", &ValidateKey, "Select 1 hireling key");
-            String SelectNPC2 = String(this, "select_npc_2", "6", &ValidateKey, "Select 2 hireling key");
-            String DialogUp = String(this, "dialog_up", "UP", &ValidateKey, "Dialog up key");
-            String DialogDown = String(this, "dialog_down", "DOWN", &ValidateKey, "Dialog down key");
-            String DialogLeft = String(this, "dialog_left", "LEFT", &ValidateKey, "Dialog left key");
-            String DialogRight = String(this, "dialog_right", "RIGHT", &ValidateKey, "Dialog right key");
-            String DialogSelect = String(this, "dialog_select", "RETURN", &ValidateKey, "Dialog select key");
-
-            String Escape = String(this, "escape", "Escape", &ValidateKey, "Escape key");
-
-         private:
-            static std::string ValidateKey(std::string key) {
-                // TODO [config]: validation, maybe via GameKey::displayNames
-                return key;
-            }
+            Key AlwaysRun = Key(this, "always_run", PlatformKey::U, "Always run toggle key.");
+            Key Attack = Key(this, "attack", PlatformKey::A, "Attack key.");
+            Key AutoNotes = Key(this, "auto_notes", PlatformKey::N, "Open autonotes key.");
+            Key Backward = Key(this, "backward", PlatformKey::Down, "Walk backwards key.");
+            Key Cast = Key(this, "cast", PlatformKey::C, "Cast a spell from spellbook key.");
+            Key CastReady = Key(this, "cast_ready", PlatformKey::S, "Cast a quick spell key.");
+            Key CenterView = Key(this, "center_view", PlatformKey::End, "Center view key.");
+            Key CharCycle = Key(this, "char_cycle", PlatformKey::Tab, "Switch between characters key.");
+            Key Combat = Key(this, "combat", PlatformKey::Return, "Switch between realtime and turn-based modes key.");
+            Key EventTrigger = Key(this, "event_trigger", PlatformKey::Space, "Interaction key.");
+            Key FlyDown = Key(this, "fly_down", PlatformKey::Insert, "Fly down key.");
+            Key FlyUp = Key(this, "fly_up", PlatformKey::PageUp, "Fly up key.");
+            Key Forward = Key(this, "forward", PlatformKey::Up, "Move forward key.");
+            Key Jump = Key(this, "jump", PlatformKey::X, "Jump key.");
+            Key Land = Key(this, "land", PlatformKey::Home, "Land key.");
+            Key Left = Key(this, "left", PlatformKey::Left, "Turn left key.");
+            Key LookDown = Key(this, "look_down", PlatformKey::Delete, "Look down key.");
+            Key LookUp = Key(this, "look_up", PlatformKey::PageDown, "Look up key.");
+            Key MapBook = Key(this, "map_book", PlatformKey::M, "Open map key.");
+            Key Pass = Key(this, "pass", PlatformKey::B, "Pass turn key");
+            Key Quest = Key(this, "quest", PlatformKey::Q, "Open quest book key");
+            Key QuickReference = Key(this, "quick_reference", PlatformKey::Z, "Open quick reference menu");
+            Key Rest = Key(this, "rest", PlatformKey::R, "Rest key.");
+            Key Right = Key(this, "right", PlatformKey::Right, "Turn right key.");
+            Key StepLeft = Key(this, "step_left", PlatformKey::LeftBracket, "Strafe left key.");
+            Key StepRight = Key(this, "step_right", PlatformKey::RightBracket, "Strafe right key.");
+            Key TimeCalendar = Key(this, "time_calendar", PlatformKey::T, "Open calendar key.");
+            Key Yell = Key(this, "yell", PlatformKey::Y, "Yell key.");
+            Key ZoomIn = Key(this, "zoom_in", PlatformKey::Add, "Zoom in automap key.");
+            Key ZoomOut = Key(this, "zoom_out", PlatformKey::Subtract, "Zoom out automap key.");
+            Key QuickSave = Key(this, "quick_save", PlatformKey::F5, "Quick save key");
+            Key QuickLoad = Key(this, "quick_load", PlatformKey::F9, "Quick load key");
+            Key History = Key(this, "history", PlatformKey::H, "History book key");
+            Key Stats = Key(this, "stats", PlatformKey::C, "Stats tab key");
+            Key Skills = Key(this, "skills", PlatformKey::S, "Skills tab key");
+            Key Inventory = Key(this, "inventory", PlatformKey::I, "Inventory tab key");
+            Key Awards = Key(this, "awards", PlatformKey::A, "Stats tab key");
+            Key NewGame = Key(this, "new_game", PlatformKey::N, "New Game menu key");
+            Key SaveGame = Key(this, "save_game", PlatformKey::S, "Save Game menu key");
+            Key LoadGame = Key(this, "load_game", PlatformKey::L, "Load Game menu key");
+            Key ExitGame = Key(this, "exit_game", PlatformKey::Q, "Exit Game key");
+            Key ReturnToGame = Key(this, "return_to_game", PlatformKey::R, "Return to Game mode key");
+            Key Controls = Key(this, "controls", PlatformKey::C, "Controls change menu key");
+            Key Options = Key(this, "options", PlatformKey::O, "Options menu key");
+            Key Credits = Key(this, "credits", PlatformKey::C, "Credits menu key");
+            Key Clear = Key(this, "clear", PlatformKey::C, "Clear button in New Party Creation menu");
+            Key Return = Key(this, "return", PlatformKey::Return, "Ok button in New Party Creation menu");
+            Key Minus = Key(this, "minus", PlatformKey::Subtract, "Minus button in New Party Creation menu");
+            Key Plus = Key(this, "plus", PlatformKey::Add, "Plus button in New Party Creation menu");
+            Key Yes = Key(this, "yes", PlatformKey::Y, "Yes answer key");
+            Key No = Key(this, "no", PlatformKey::N, "No answer key");
+            Key Rest8Hours = Key(this, "rest_8_hours", PlatformKey::R, "Rest for 8 hours key in Rest menu");
+            Key WaitTillDawn = Key(this, "wait_till_dawn", PlatformKey::D, "Wait till dawn key in Rest menu");
+            Key WaitHour = Key(this, "wait_hour", PlatformKey::H, "Wait hour in Rest menu");
+            Key Wait5Minutes = Key(this, "wait_5_minutes", PlatformKey::M, "Wait 5 minutes in Rest menu");
+            Key Screenshot = Key(this, "screenshot", PlatformKey::F2, "Make screenshot key");
+            Key Console = Key(this, "console", PlatformKey::Tilde, "Open console key (currently it is opening debug menu)");
+            Key ToggleMouseGrab = Key(this, "toggle_mouse_grab", PlatformKey::F1, "Toggle mouse grab key");
+            Key ToggleBorderless = Key(this, "toggle_borderless", PlatformKey::F3, "Toggle window borderless key");
+            Key ToggleFullscreen = Key(this, "toggle_fullscreen", PlatformKey::F4, "Toggle window fullscreen key");
+            Key ToggleResizable = Key(this, "toggle_resizable", PlatformKey::F6, "Toggle window resizable key");
+            Key CycleFilter = Key(this, "cycle_filter", PlatformKey::F7, "Cycle rescale filter modes key");
+            Key ReloadShaders = Key(this, "reload_shaders", PlatformKey::Backspace, "Reload shaders key");
+            Key SelectChar1 = Key(this, "select_char_1", PlatformKey::Digit1, "Select 1 character key");
+            Key SelectChar2 = Key(this, "select_char_2", PlatformKey::Digit2, "Select 2 character key");
+            Key SelectChar3 = Key(this, "select_char_3", PlatformKey::Digit3, "Select 3 character key");
+            Key SelectChar4 = Key(this, "select_char_4", PlatformKey::Digit4, "Select 4 character key");
+            Key SelectNPC1 = Key(this, "select_npc_1", PlatformKey::Digit5, "Select 1 hireling key");
+            Key SelectNPC2 = Key(this, "select_npc_2", PlatformKey::Digit6, "Select 2 hireling key");
+            Key DialogUp = Key(this, "dialog_up", PlatformKey::Up, "Dialog up key");
+            Key DialogDown = Key(this, "dialog_down", PlatformKey::Down, "Dialog down key");
+            Key DialogLeft = Key(this, "dialog_left", PlatformKey::Left, "Dialog left key");
+            Key DialogRight = Key(this, "dialog_right", PlatformKey::Right, "Dialog right key");
+            Key DialogSelect = Key(this, "dialog_select", PlatformKey::Return, "Dialog select key");
+            Key Escape = Key(this, "escape", PlatformKey::Escape, "Escape key");
         };
 
         Keybindings keybindings{ this };
