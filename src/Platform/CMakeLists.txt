@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
-set(PLATFORM_SOURCES PlatformKey.cpp
-                     PlatformEventHandler.cpp
+set(PLATFORM_SOURCES PlatformEventHandler.cpp
                      Sdl/SdlEnumTranslation.cpp
                      Sdl/SdlEventLoop.cpp
                      Sdl/SdlMain.cpp
