@@ -13,6 +13,7 @@ bool GameTestOptions::Parse(int argc, char **argv) {
     app->add_option("--test-data", testDataDir, "Path to test data dir")->check(CLI::ExistingDirectory)->option_text("PATH")->required()->group(requiredOptions);
     app->add_option("--game-data", gameDataDir, "Path to game data dir")->check(CLI::ExistingDirectory)->option_text("PATH")->group(otherOptions);
     app->set_help_flag("-h,--help", "Print help and exit")->group(otherOptions);
+    app->allow_extras();
 
     try {
         app->parse(argc, argv);

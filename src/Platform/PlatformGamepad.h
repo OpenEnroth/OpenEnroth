@@ -3,6 +3,7 @@
 #include <string>
 #include <memory>
 
+// TODO(captainurist): this should be just a POD
 class PlatformGamepad {
  public:
     virtual ~PlatformGamepad() = default;

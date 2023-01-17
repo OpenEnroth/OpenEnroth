@@ -146,6 +146,7 @@ class Flags {
     }
 
 
+// TODO(captainurist): technically this is UB
 namespace std {
     template<class Enum>
     typename Flags<Enum>::underlying_type to_underlying(Flags<Enum> flags) {

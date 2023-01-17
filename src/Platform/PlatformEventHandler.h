@@ -13,6 +13,7 @@ class PlatformEventHandler {
  public:
     virtual ~PlatformEventHandler() = default;
 
+    // TODO(captainurist): maybe PlatformWindow * belongs inside Event after all? Not all events even have windows.
     /**
      * @param window                    Platform window that generated the event.
      * @param event                     Event.
@@ -31,4 +32,5 @@ class PlatformEventHandler {
     virtual void ActivationEvent(PlatformWindow *window, const PlatformEvent *event);
     virtual void CloseEvent(PlatformWindow *window, const PlatformEvent *event);
     virtual void GamepadDeviceEvent(PlatformWindow *window, const PlatformGamepadDeviceEvent *event);
+    // TODO(captainurist): nativeEvent(PlatformWindow *window, const PlatformNativeEvent *event);
 };

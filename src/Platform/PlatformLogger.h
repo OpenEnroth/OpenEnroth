@@ -39,7 +39,7 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(PlatformLoggerOptions)
  * Platform-specific logger that takes all the quirks of a specific platform into account (e.g. calling
  * `OutputDebugString` / `WriteConsole` on Windows).
  *
- * Note that platform logger doesn't provide and API for log formatting and log category management. If needed, this
+ * Note that platform logger doesn't provide an API for log formatting and log category management. If needed, this
  * functionality should be added at the next abstraction layer.
  *
  * The two existing log categories are provided to differentiate logging calls made by user code and by the platform

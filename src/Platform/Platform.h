@@ -95,6 +95,7 @@ class Platform {
      */
     virtual std::unique_ptr<PlatformEventLoop> CreateEventLoop() = 0;
 
+    // TODO(captainurist): virtual PlatformGamepadInfo gamepadInfo(uint32_t id) const = 0;
     /**
      * Creates a new gamepad.
      *
@@ -147,9 +148,9 @@ class Platform {
     virtual std::string WinQueryRegistry(const std::wstring &path) const = 0;
 
     /**
-     * Get various application filesystem paths
+     * Get various application filesystem paths.
      *
-     * @param type                      Storage type
+     * @param type                      Storage type.
      */
     virtual std::string StoragePath(const PLATFORM_STORAGE type) const = 0;
 };

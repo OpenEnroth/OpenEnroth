@@ -155,7 +155,7 @@ class IndexedArray: public std::array<T, Size> {
     // default operator= is OK
 
     /**
-     * Use this function is you want to iterate over this indexed array's like it's a normal array, e.g.:
+     * Use this function is you want to iterate over this indexed array like it's a normal array, e.g.:
      * @code
      * for (SomeEnum i : array.keys()) {
      *     // use i and array[i]

@@ -2,6 +2,8 @@
 
 #include <cstdlib>
 
+// TODO(captainurist): move to Memory?
+
 /**
  * Deleter class to be used with `std::unique_ptr` for managing memory allocated with `malloc`.
  *
