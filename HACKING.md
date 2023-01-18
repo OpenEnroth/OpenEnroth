@@ -33,7 +33,7 @@ Use the following commands to clone repository and build (it is recommended to b
 
 ```
 $ git clone https://github.com/OpenEnroth/OpenEnroth.git
-$ cd open-enroth
+$ cd OpenEnroth
 $ mkdir build && cd build
 $ cmake ..
 $ make
