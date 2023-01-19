@@ -4,7 +4,6 @@
 #include "Utility/Geometry/Size.h"
 
 #include "PlatformEnums.h"
-#include "PlatformGamepad.h"
 
 #ifdef KeyPress
 #   undef KeyPress
@@ -30,7 +29,7 @@ class PlatformEvent {
         WindowActivate,
         WindowDeactivate,
         WindowCloseRequest,
-        // TODO(captainurist): NativeEvent // untranslated native event, useful for prototyping.
+        NativeEvent,
 
         FirstEventType = KeyPress,
         LastEventType = WindowCloseRequest
@@ -96,4 +95,10 @@ class PlatformGamepadDeviceEvent: public PlatformEvent {
     uint32_t id;
 };
 
-// TODO(captainurist): PlatformNativeEvent { const void *nativeEvent = nullptr; }
+/**
+ * `NativeEvent`, sent only when platform is built with `MM_PLATFORM_SEND_NATIVE_EVENTS` defined.
+ */
+class PlatformNativeEvent: public PlatformEvent {
+ public:
+    const void *nativeEvent = nullptr; // Pointer to a native event, in our case this is `SDL_Event`. Never `nullptr`.
+};

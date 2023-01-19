@@ -20,6 +20,7 @@ class SdlEventLoop: public PlatformEventLoop {
 
  private:
     void DispatchEvent(PlatformEventHandler *eventHandler, const SDL_Event *event);
+    void DispatchNativeEvent(PlatformEventHandler *eventHandler, const SDL_Event *event);
     void DispatchQuitEvent(PlatformEventHandler *eventHandler, const SDL_QuitEvent *event);
     void DispatchKeyEvent(PlatformEventHandler *eventHandler, const SDL_KeyboardEvent *event);
     void DispatchMouseMoveEvent(PlatformEventHandler *eventHandler, const SDL_MouseMotionEvent *event);
