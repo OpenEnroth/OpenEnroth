@@ -9,7 +9,7 @@
 #include <unordered_map>
 
 #include "Platform/PlatformEventHandler.h"
-#include "Platform/PlatformModifiers.h"
+#include "Platform/PlatformEnums.h"
 
 #include "SdlPlatformSharedState.h"
 #include "SdlEnumTranslation.h"

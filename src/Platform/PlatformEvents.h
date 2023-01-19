@@ -3,9 +3,7 @@
 #include "Utility/Geometry/Point.h"
 #include "Utility/Geometry/Size.h"
 
-#include "PlatformKey.h"
-#include "PlatformModifiers.h"
-#include "PlatformMouseButton.h"
+#include "PlatformEnums.h"
 #include "PlatformGamepad.h"
 
 #ifdef KeyPress

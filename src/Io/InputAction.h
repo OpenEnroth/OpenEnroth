@@ -3,8 +3,6 @@
 #include <string>
 #include <vector>
 
-#include "Platform/PlatformKey.h"
-
 namespace Io {
     enum class InputAction : int {
         MoveForward,  // = 0

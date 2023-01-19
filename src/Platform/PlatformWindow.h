@@ -9,34 +9,10 @@
 #include "Utility/Geometry/Margins.h"
 
 #include "PlatformOpenGLOptions.h"
+#include "PlatformEnums.h"
 
 class PlatformOpenGLContext;
 
-/**
- * - `WINDOWED` is a normal window with frame.
- * - `WINDOWED_BORDERLESS` is a window without frame.
- * - `FULLSCREEN` is a traditional exclusive fullscreen mode. It changes display resolution and makes the window
- *   the sole user of the display.
- * - `FULLSCREEN_BORDERLESS` is a modern fake fullscreen AKA frameless window resized to desktop resolution and moved
- *   to cover the whole desktop.
- */
-enum class PlatformWindowMode {
-    WINDOWED = 0,
-    WINDOWED_BORDERLESS = 1,
-    FULLSCREEN = 2,
-    FULLSCREEN_BORDERLESS = 3,
-};
-using enum PlatformWindowMode;
-
-enum class PlatformWindowOrientation {
-    LANDSCAPE_LEFT = 0x01,
-    LANDSCAPE_RIGHT = 0x02,
-    PORTRAIT_UP = 0x04,
-    PORTRAIT_DOWN = 0x08,
-};
-using enum PlatformWindowOrientation;
-MM_DECLARE_FLAGS(PlatformWindowOrientations, PlatformWindowOrientation)
-MM_DECLARE_OPERATORS_FOR_FLAGS(PlatformWindowOrientations)
 
 /**
  * Abstraction for accessing platform-specific window API.

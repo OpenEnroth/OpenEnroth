@@ -2,8 +2,6 @@
 
 #include "Library/Serialization/EnumSerialization.h"
 
-#include "Platform/PlatformKey.h"
-
 using Io::InputAction;
 
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(InputAction, CASE_INSENSITIVE, {

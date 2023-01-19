@@ -4,8 +4,6 @@
 
 #include "Engine/Objects/ItemEnums.h"
 
-#include "Platform/PlatformKey.h"
-
 #include "Utility/Geometry/Point.h"
 
 class Image;

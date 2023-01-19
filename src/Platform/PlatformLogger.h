@@ -2,38 +2,7 @@
 
 #include <memory>
 
-#include "Utility/Flags.h"
-
-/**
- * Platform log level as used by `PlatformLogger`.
- */
-enum class PlatformLogLevel {
-    LogVerbose,
-    LogDebug,
-    LogInfo,
-    LogWarning,
-    LogError,
-    LogCritical
-};
-using enum PlatformLogLevel;
-
-/**
- * Platform log category as used by `PlatformLogger`.
- *
- * Note that platform doesn't have an API to define custom log categories, this should be done in user code if needed.
- */
-enum class PlatformLogCategory {
-    PlatformLog,
-    ApplicationLog
-};
-using enum PlatformLogCategory;
-
-enum PlatformLoggerOption {
-    WinEnsureConsoleOption = 0x1
-};
-using enum PlatformLoggerOption;
-MM_DECLARE_FLAGS(PlatformLoggerOptions, PlatformLoggerOption)
-MM_DECLARE_OPERATORS_FOR_FLAGS(PlatformLoggerOptions)
+#include "PlatformEnums.h"
 
 /**
  * Platform-specific logger that takes all the quirks of a specific platform into account (e.g. calling

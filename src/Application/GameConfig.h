@@ -6,18 +6,20 @@
 #include "Library/Config/Config.h"
 #include "Engine/Graphics/RendererType.h"
 #include "Io/Key.h"
+#include "Platform/PlatformEnums.h"
 
 #ifdef __ANDROID__
 #define ConfigRenderer RendererType::OpenGLES
-#define ConfigWindowMode 2
+#define ConfigWindowMode WINDOW_MODE_FULLSCREEN
 #else
 #define ConfigRenderer RendererType::OpenGL
-#define ConfigWindowMode 0
+#define ConfigWindowMode WINDOW_MODE_WINDOWED
 #endif
 
 class Logger;
 
 MM_DECLARE_SERIALIZATION_FUNCTIONS(RendererType)
+MM_DECLARE_SERIALIZATION_FUNCTIONS(PlatformWindowMode)
 
 namespace Application {
     class GameConfig : public Config {
@@ -513,8 +515,8 @@ namespace Application {
                               "Display number as exposed by SDL. "
                               "Order is platform-specific, e.g. on windows 0 is main display");
 
-            Int Mode = Int(this, "mode", ConfigWindowMode, &ValidateMode,
-                           "Window mode. Use 0 for windowed, 1 for borderless windowed, 2 for fullscreen, 3 for borderless (fake) fullscreen.");
+            ConfigValue<PlatformWindowMode> Mode = ConfigValue<PlatformWindowMode>(this, "mode", ConfigWindowMode,
+                           "Window mode, one of 'windowed', 'borderless', 'fullscreen' or 'fake_fullscreen'.");
 
             Int PositionX = Int(this, "position_x", -1, &ValidatePosition,
                                 "Game window x position in display coordinates. Use -1 for centered.");
@@ -536,12 +538,6 @@ namespace Application {
                      title = "OpenEnroth";
 
                  return title;
-             }
-             static int ValidateMode(int mode) {
-                 if (mode < 0 || mode > 3)
-                     mode = 0;
-
-                 return mode;
              }
              static int ValidatePosition(int position) {
                 if (position < -1)

@@ -7,6 +7,8 @@
 #include "Utility/Geometry/Rect.h"
 #include "Utility/Flags.h"
 
+#include "PlatformEnums.h"
+
 #ifdef CreateWindow
 #   undef CreateWindow
 #endif
@@ -17,12 +19,6 @@ class PlatformEventLoop;
 class PlatformEventHandler;
 class PlatformLogger;
 class PlatformGamepad;
-
-enum class PLATFORM_STORAGE {
-    ANDROID_STORAGE_INTERNAL,
-    ANDROID_STORAGE_EXTERNAL
-};
-using enum PLATFORM_STORAGE;
 
 /**
  * Platform abstraction layer.

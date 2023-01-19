@@ -3,7 +3,7 @@
 #include <memory>
 
 #include "GUI/GUIWindow.h"
-#include "Platform/PlatformKey.h"
+#include "Platform/PlatformEnums.h"
 
 #include <lua.hpp>
 #include "nuklear/nuklear_config.h"

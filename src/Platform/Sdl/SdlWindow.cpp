@@ -88,17 +88,17 @@ bool SdlWindow::Resizable() const {
 void SdlWindow::SetWindowMode(PlatformWindowMode mode) {
     uint32_t flags = 0;
 
-    if (mode == FULLSCREEN_BORDERLESS)
+    if (mode == WINDOW_MODE_FAKE_FULLSCREEN)
         flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-    else if (mode == FULLSCREEN)
+    else if (mode == WINDOW_MODE_FULLSCREEN)
         flags |= SDL_WINDOW_FULLSCREEN;
 
     if (SDL_SetWindowFullscreen(window_, flags) != 0)
         state_->LogSdlError("SDL_SetWindowFullscreen");
 
-    if (mode == WINDOWED)
+    if (mode == WINDOW_MODE_WINDOWED)
         SDL_SetWindowBordered(window_, SDL_TRUE);
-    else if (mode == WINDOWED_BORDERLESS)
+    else if (mode == WINDOW_MODE_BORDERLESS)
         SDL_SetWindowBordered(window_, SDL_FALSE);
 }
 
@@ -106,13 +106,13 @@ PlatformWindowMode SdlWindow::WindowMode() {
     uint32_t flags = SDL_GetWindowFlags(window_);
 
     if ((flags & SDL_WINDOW_FULLSCREEN_DESKTOP) == SDL_WINDOW_FULLSCREEN_DESKTOP)
-        return FULLSCREEN_BORDERLESS;
+        return WINDOW_MODE_FAKE_FULLSCREEN;
     else if ((flags & SDL_WINDOW_FULLSCREEN) == SDL_WINDOW_FULLSCREEN)
-        return FULLSCREEN;
+        return WINDOW_MODE_FULLSCREEN;
     else if ((flags & SDL_WINDOW_BORDERLESS) > 0)
-        return WINDOWED_BORDERLESS;
+        return WINDOW_MODE_BORDERLESS;
 
-    return WINDOWED;
+    return WINDOW_MODE_WINDOWED;
 }
 
 void SdlWindow::SetOrientations(PlatformWindowOrientations orientations) {
