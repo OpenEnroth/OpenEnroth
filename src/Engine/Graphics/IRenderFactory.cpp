@@ -13,11 +13,6 @@ using Graphics::IRenderFactory;
 std::shared_ptr<IRender> IRenderFactory::Create(std::shared_ptr<Application::GameConfig> config) {
     RendererType rendererType = config->graphics.Renderer.Get();
 
-#ifndef DDRAW_ENABLED
-    if (config->graphics.Renderer.Get() == RendererType::DirectDraw)
-        rendererType = RendererType::OpenGL;
-#endif
-
     switch (rendererType) {
 #ifdef DDRAW_ENABLED
         case RendererType::DirectDraw:
@@ -56,8 +51,8 @@ std::shared_ptr<IRender> IRenderFactory::Create(std::shared_ptr<Application::Gam
                 EngineIoc::ResolveVis(),
                 EngineIoc::ResolveLogger()
             );
-    }
 
-    assert(false);
-    return nullptr; // Make the compiler happy.
+        default:
+            return nullptr;
+    }
 }
