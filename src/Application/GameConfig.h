@@ -4,17 +4,20 @@
 #include <algorithm>
 
 #include "Library/Config/Config.h"
+#include "Engine/Graphics/RendererType.h"
 #include "Io/Key.h"
 
 #ifdef __ANDROID__
-#define ConfigRenderer "OpenGLES"
+#define ConfigRenderer RendererType::OpenGLES
 #define ConfigWindowMode 2
 #else
-#define ConfigRenderer "OpenGL"
+#define ConfigRenderer RendererType::OpenGL
 #define ConfigWindowMode 0
 #endif
 
 class Logger;
+
+MM_DECLARE_SERIALIZATION_FUNCTIONS(RendererType)
 
 namespace Application {
     class GameConfig : public Config {
@@ -271,7 +274,7 @@ namespace Application {
          public:
             explicit Graphics(GameConfig *config): ConfigSection(config, "graphics") {}
 
-            String Renderer = String(this, "renderer", ConfigRenderer, &ValidateRenderer, "Renderer to use. OpenGL or OpenGLES");
+            ConfigValue<RendererType> Renderer = ConfigValue<RendererType>(this, "renderer", ConfigRenderer, "Renderer to use, 'OpenGL' or 'OpenGLES'.");
 
             Bool BloodSplats = Bool(this, "bloodsplats", true, "Enable bloodsplats under corpses.");
 
@@ -346,16 +349,6 @@ namespace Application {
                                     " 0 - disabled (render dimensions will always match window dimensions), 1 - linear filter, 2 - nearest filter");
 
          private:
-            static std::string ValidateRenderer(std::string renderer) {
-                if (renderer != "OpenGL" && renderer != "OpenGLES"
-#ifdef DDRAW_ENABLED
-                    && renderer != "DirectDraw"
-#endif
-                )
-                    renderer = "OpenGL";
-
-                return renderer;
-            }
             static int ValidateGamma(int level) {
                 return std::clamp(level, 0, 9);
             }

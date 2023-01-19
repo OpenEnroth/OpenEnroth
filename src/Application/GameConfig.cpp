@@ -5,8 +5,15 @@
 #include "Engine/IocContainer.h"
 
 #include "Library/Logger/Logger.h"
+#include "Library/Serialization/EnumSerialization.h"
 
 #include "Utility/DataPath.h"
+
+MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(RendererType, CASE_INSENSITIVE, {
+    {RendererType::OpenGL, "OpenGL"},
+    {RendererType::OpenGLES, "OpenGLES"},
+    {RendererType::DirectDraw, "DirectDraw"}
+})
 
 using EngineIoc = Engine_::IocContainer;
 using Application::GameConfig;

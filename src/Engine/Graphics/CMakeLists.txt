@@ -56,6 +56,7 @@ set(GRAPHICS_HEADERS BSPModel.h
                      PCX.h
                      Polygon.h
                      RenderBase.h
+                     RendererType.h
                      Sprites.h
                      PortalFunctions.h
                      ClippingFunctions.h
