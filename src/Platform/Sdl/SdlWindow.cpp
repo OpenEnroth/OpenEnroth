@@ -213,8 +213,8 @@ std::unique_ptr<PlatformOpenGLContext> SdlWindow::CreateOpenGLContext(const Plat
     int vsyncValue = TranslatePlatformVSyncMode(options.vsyncMode);
 
     int status = SDL_GL_SetSwapInterval(vsyncValue);
-    if (status < 0 && options.vsyncMode == AdaptiveVSync)
-        status = SDL_GL_SetSwapInterval(TranslatePlatformVSyncMode(NormalVSync)); // Retry with normal vsync.
+    if (status < 0 && options.vsyncMode == GL_VSYNC_ADAPTIVE)
+        status = SDL_GL_SetSwapInterval(TranslatePlatformVSyncMode(GL_VSYNC_NORMAL)); // Retry with normal vsync.
 
     if (status < 0)
         state_->LogSdlError("SDL_GL_SetSwapInterval"); // Not a critical error, we still return context in this case.

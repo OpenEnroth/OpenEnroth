@@ -229,11 +229,11 @@ PlatformMouseButtons TranslateSdlMouseButtons(uint32_t mouseButtons) {
 
 int TranslatePlatformVSyncMode(PlatformVSyncMode vsyncMode) {
     switch (vsyncMode) {
-    case NoVSync:
+    case GL_VSYNC_NONE:
         return 0;
-    case AdaptiveVSync:
+    case GL_VSYNC_ADAPTIVE:
         return -1;
-    case NormalVSync:
+    case GL_VSYNC_NORMAL:
         return 1;
     }
 
@@ -243,11 +243,11 @@ int TranslatePlatformVSyncMode(PlatformVSyncMode vsyncMode) {
 
 SDL_GLprofile TranslatePlatformOpenGLProfile(PlatformOpenGLProfile profile) {
     switch (profile) {
-    case CoreProfile:
+    case GL_PROFILE_CORE:
         return SDL_GL_CONTEXT_PROFILE_CORE;
-    case CompatibilityProfile:
+    case GL_PROFILE_COMPATIBILITY:
         return SDL_GL_CONTEXT_PROFILE_COMPATIBILITY;
-    case ESProfile:
+    case GL_PROFILE_ES:
         return SDL_GL_CONTEXT_PROFILE_ES;
     }
 
