@@ -38,7 +38,7 @@ void RunGameThread(const GameTestOptions& opts, TestState *unsafeState) {
     }
 
     std::shared_ptr<Application::GameConfig> config = std::make_shared<Application::GameConfig>();
-    config->LoadConfiguration(); // TODO(captainurist): Reads from womm.ini, not good for tests
+    config->LoadConfiguration(); // TODO(captainurist): Reads from openenroth.ini, not good for tests
     config->debug.NoVideo.Set(true);
     config->window.MouseGrab.Set(false);
     config->graphics.FPSLimit.Set(0); // Unlimited

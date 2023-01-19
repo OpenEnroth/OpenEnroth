@@ -20,5 +20,5 @@ if(ENABLE_TESTS)
 
     target_check_style(test_json)
 
-    target_link_libraries(World_of_Might_and_Magic_UnitTest test_json)
+    target_link_libraries(OpenEnroth_UnitTest test_json)
 endif()

@@ -42,12 +42,12 @@ jobs:
     - name: Prepare artifact
       run: |
         mkdir dist
-        cp -r build/World_of_Might_and_Magic.app dist/
+        cp -r build/OpenEnroth.app dist/
         cp -r resources/* dist/
-        hdiutil create World_of_Might_and_Magic.dmg -ov -volname "World of Might and Magic" -fs HFS+ -srcfolder dist
+        hdiutil create OpenEnroth.dmg -ov -volname "OpenEnroth" -fs HFS+ -srcfolder dist
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
-        name: World of Might and Magic (MacOS, ${{ matrix.configuration }}, ${{ matrix.architecture }})
-        path: World_of_Might_and_Magic.dmg
+        name: OpenEnroth (MacOS, ${{ matrix.configuration }}, ${{ matrix.architecture }})
+        path: OpenEnroth.dmg

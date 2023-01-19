@@ -5,13 +5,13 @@ if(ENABLE_TESTS)
                                GameTestOptions.cpp)
     set(GAME_TEST_MAIN_HEADERS GameTestOptions.h)
 
-    add_executable(World_of_Might_and_Magic_GameTest ${GAME_TEST_MAIN_SOURCES} ${GAME_TEST_MAIN_HEADERS})
-    target_fix_libcxx_assertions(World_of_Might_and_Magic_GameTest)
-    target_link_libraries(World_of_Might_and_Magic_GameTest game game_test test_engine GTest::gtest)
-    target_compile_definitions(World_of_Might_and_Magic_GameTest PRIVATE TEST_GROUP=None)
+    add_executable(OpenEnroth_GameTest ${GAME_TEST_MAIN_SOURCES} ${GAME_TEST_MAIN_HEADERS})
+    target_fix_libcxx_assertions(OpenEnroth_GameTest)
+    target_link_libraries(OpenEnroth_GameTest game game_test test_engine GTest::gtest)
+    target_compile_definitions(OpenEnroth_GameTest PRIVATE TEST_GROUP=None)
 
-    target_check_style(World_of_Might_and_Magic_GameTest)
-    PREBUILT_DEPENDENCIES_RESOLVE(World_of_Might_and_Magic_GameTest)
+    target_check_style(OpenEnroth_GameTest)
+    PREBUILT_DEPENDENCIES_RESOLVE(OpenEnroth_GameTest)
 
 
     # OpenEnroth_TestData
@@ -28,8 +28,8 @@ if(ENABLE_TESTS)
 
     # GameTest
     add_custom_target(GameTest
-        World_of_Might_and_Magic_GameTest --test-data ${CMAKE_CURRENT_BINARY_DIR}/test_data/data
-        DEPENDS World_of_Might_and_Magic_GameTest OpenEnroth_TestData
+        OpenEnroth_GameTest --test-data ${CMAKE_CURRENT_BINARY_DIR}/test_data/data
+        DEPENDS OpenEnroth_GameTest OpenEnroth_TestData
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
 endif()

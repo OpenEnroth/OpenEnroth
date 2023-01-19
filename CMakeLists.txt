@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
-project("World of Might and Magic")
+project("OpenEnroth")
 add_compile_definitions(PACKAGE_BUGREPORT="https://github.com/OpenEnroth/OpenEnroth/issues")
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules)
@@ -61,15 +61,15 @@ if(BUILD_PLATFORM STREQUAL "android")
     target_check_style(main)
     target_link_libraries(main game)
 else()
-    add_executable(World_of_Might_and_Magic MACOSX_BUNDLE WIN32 src/Application/main.cpp)
-    target_check_style(World_of_Might_and_Magic)
-    target_fix_libcxx_assertions(World_of_Might_and_Magic)
+    add_executable(OpenEnroth MACOSX_BUNDLE WIN32 src/Application/main.cpp)
+    target_check_style(OpenEnroth)
+    target_fix_libcxx_assertions(OpenEnroth)
 
-    target_link_libraries(World_of_Might_and_Magic game)
+    target_link_libraries(OpenEnroth game)
 
     set_property(
-        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT World_of_Might_and_Magic
+        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenEnroth
     )
 
-    PREBUILT_DEPENDENCIES_RESOLVE(World_of_Might_and_Magic)
+    PREBUILT_DEPENDENCIES_RESOLVE(OpenEnroth)
 endif()

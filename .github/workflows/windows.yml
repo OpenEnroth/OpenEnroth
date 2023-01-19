@@ -44,13 +44,13 @@ jobs:
       shell: cmd
       run: |
         mkdir dist
-        copy build\World_of_Might_and_Magic.exe dist\ /Y
+        copy build\OpenEnroth.exe dist\ /Y
         copy build\*.dll dist\ /Y
         xcopy resources dist\ /E/H/C/I
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
-        name: World of Might and Magic (Windows, ${{ matrix.configuration }}, ${{ matrix.architecture }})
+        name: OpenEnroth (Windows, ${{ matrix.configuration }}, ${{ matrix.architecture }})
         path: |
           dist/**

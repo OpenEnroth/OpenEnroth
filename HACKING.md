@@ -32,8 +32,8 @@ This project uses the [CMake](https://cmake.org) build system.
 Use the following commands to clone repository and build (it is recommended to build in a separate directory as shown here):
 
 ```
-$ git clone https://github.com/gp-alex/world-of-might-and-magic.git
-$ cd world-of-might-and-magic
+$ git clone https://github.com/OpenEnroth/OpenEnroth.git
+$ cd OpenEnroth
 $ mkdir build && cd build
 $ cmake ..
 $ make
@@ -55,7 +55,7 @@ Building on Windows
   * or add Microsoft one (that's coming with the VS installation) to your PATH environment variable (e.g `c:\Program Files\Microsoft Visual Studio\2022\<edition>\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin`) 
 * Open the folder in Visual Studio
 * Select build configuration (x32 or x64) and wait for CMake configuration to complete
-* Select startup item as `World_of_Might_and_Magic.exe`
+* Select startup item as `OpenEnroth.exe`
 * Run!
 
 If you wish you can also disable autoresolving main dependencies by turning off `PREBUILT_DEPENDENCIES` cmake option and pass your own dependencies source, e.g. via [vcpkg](https://github.com/microsoft/vcpkg) integration.

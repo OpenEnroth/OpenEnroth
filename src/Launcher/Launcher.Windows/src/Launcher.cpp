@@ -67,7 +67,7 @@ bool OS_GetAppString(const char *path, char *out_string, int out_string_size) {
 void GetDefaultConfig(ApplicationConfig &config) {
     char mm7_path[2048];
 
-    if (const char *path_override = std::getenv("WOMM_PATH_OVERRIDE")) {
+    if (const char *path_override = std::getenv("OPENENROTH_MM7_PATH")) {
         config.mm7_install_type = "Custom Folder (ENV path override)";
         config.mm7_install_path = path_override;
         return;
