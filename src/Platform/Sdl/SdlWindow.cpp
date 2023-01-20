@@ -88,7 +88,7 @@ bool SdlWindow::Resizable() const {
 void SdlWindow::SetWindowMode(PlatformWindowMode mode) {
     uint32_t flags = 0;
 
-    if (mode == WINDOW_MODE_FAKE_FULLSCREEN)
+    if (mode == WINDOW_MODE_FULLSCREEN_BORDERLESS)
         flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
     else if (mode == WINDOW_MODE_FULLSCREEN)
         flags |= SDL_WINDOW_FULLSCREEN;
@@ -106,7 +106,7 @@ PlatformWindowMode SdlWindow::WindowMode() {
     uint32_t flags = SDL_GetWindowFlags(window_);
 
     if ((flags & SDL_WINDOW_FULLSCREEN_DESKTOP) == SDL_WINDOW_FULLSCREEN_DESKTOP)
-        return WINDOW_MODE_FAKE_FULLSCREEN;
+        return WINDOW_MODE_FULLSCREEN_BORDERLESS;
     else if ((flags & SDL_WINDOW_FULLSCREEN) == SDL_WINDOW_FULLSCREEN)
         return WINDOW_MODE_FULLSCREEN;
     else if ((flags & SDL_WINDOW_BORDERLESS) > 0)

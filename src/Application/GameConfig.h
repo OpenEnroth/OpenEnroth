@@ -516,7 +516,7 @@ namespace Application {
                            "Order is platform-specific, e.g. on windows 0 is main display"};
 
             ConfigValue<PlatformWindowMode> Mode = {this, "mode", ConfigWindowMode,
-                                                    "Window mode, one of 'windowed', 'borderless', 'fullscreen' or 'fake_fullscreen'."};
+                                                    "Window mode, one of 'windowed', 'borderless', 'fullscreen' or 'fullscreen_borderless'."};
 
             Int PositionX = {this, "position_x", -1, &ValidatePosition,
                              "Game window x position in display coordinates. Use -1 for centered."};

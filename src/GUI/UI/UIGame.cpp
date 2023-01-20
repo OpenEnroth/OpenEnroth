@@ -1754,8 +1754,11 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
         }
     }
 
+    // TODO(captainurist): just drop this check after we drop directdraw renderer.
     // opengl needs slightly modified lines to show up properly
-    int lineadj = engine->config->graphics.Renderer.Get() == RendererType::OpenGL; // TODO(captainurist): don't we need to check for ES too?
+    int lineadj =
+        engine->config->graphics.Renderer.Get() == RendererType::OpenGL ||
+        engine->config->graphics.Renderer.Get() == RendererType::OpenGLES;
 
     // draw objects on the minimap
     if (bWizardEyeActive) {

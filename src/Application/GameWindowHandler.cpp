@@ -71,7 +71,7 @@ std::tuple<int, Pointi, Sizei> GameWindowHandler::GetWindowConfigPosition(const 
         displayRect = displays[0];
     }
 
-    if (mode == WINDOW_MODE_FULLSCREEN || mode == WINDOW_MODE_FAKE_FULLSCREEN) {
+    if (mode == WINDOW_MODE_FULLSCREEN || mode == WINDOW_MODE_FULLSCREEN_BORDERLESS) {
         pos = displayRect.TopLeft();
     } else if (Recti(Pointi(), displayRect.Size()).Contains(pos)) {
         pos += displayRect.TopLeft();
@@ -138,7 +138,7 @@ void GameWindowHandler::UpdateConfigFromWindow(GameConfig *config) {
         config->window.Display.Set(display);
     }
     // Skip updating window dimensions in borderless fullscreen as window always resized to monitor's resolution.
-    if (mode != WINDOW_MODE_FAKE_FULLSCREEN) {
+    if (mode != WINDOW_MODE_FULLSCREEN_BORDERLESS) {
         config->window.Width.Set(wsize.w);
         config->window.Height.Set(wsize.h);
     }
@@ -435,9 +435,9 @@ void GameWindowHandler::OnToggleBorderless() {
     PlatformWindowMode mode = window->WindowMode();
     switch (mode) {
         case WINDOW_MODE_FULLSCREEN:
-            mode = WINDOW_MODE_FAKE_FULLSCREEN;
+            mode = WINDOW_MODE_FULLSCREEN_BORDERLESS;
             break;
-        case WINDOW_MODE_FAKE_FULLSCREEN:
+        case WINDOW_MODE_FULLSCREEN_BORDERLESS:
             mode = WINDOW_MODE_FULLSCREEN;
             break;
         case WINDOW_MODE_WINDOWED:
@@ -460,14 +460,14 @@ void GameWindowHandler::OnToggleFullscreen() {
         case WINDOW_MODE_FULLSCREEN:
             mode = WINDOW_MODE_WINDOWED;
             break;
-        case WINDOW_MODE_FAKE_FULLSCREEN:
+        case WINDOW_MODE_FULLSCREEN_BORDERLESS:
             mode = WINDOW_MODE_BORDERLESS;
             break;
         case WINDOW_MODE_WINDOWED:
             mode = WINDOW_MODE_FULLSCREEN;
             break;
         case WINDOW_MODE_BORDERLESS:
-            mode = WINDOW_MODE_FAKE_FULLSCREEN;
+            mode = WINDOW_MODE_FULLSCREEN_BORDERLESS;
             break;
         default:
             assert(false); //should never get there.

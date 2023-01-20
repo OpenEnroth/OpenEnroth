@@ -19,13 +19,14 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformWindowMode, CASE_INSENSITIVE, {
     {WINDOW_MODE_WINDOWED, "windowed"},
     {WINDOW_MODE_BORDERLESS, "borderless"},
     {WINDOW_MODE_FULLSCREEN, "fullscreen"},
-    {WINDOW_MODE_FAKE_FULLSCREEN, "fake_fullscreen"},
+    {WINDOW_MODE_FULLSCREEN_BORDERLESS, "fullscreen_borderless"},
+    {WINDOW_MODE_FULLSCREEN_BORDERLESS, "borderless_fullscreen"}, // Alias for convenience
 
     // Compatibility with old serialization:
     {WINDOW_MODE_WINDOWED, "0"},
     {WINDOW_MODE_BORDERLESS, "1"},
     {WINDOW_MODE_FULLSCREEN, "2"},
-    {WINDOW_MODE_FAKE_FULLSCREEN, "3"}
+    {WINDOW_MODE_FULLSCREEN_BORDERLESS, "3"}
 })
 
 using EngineIoc = Engine_::IocContainer;
