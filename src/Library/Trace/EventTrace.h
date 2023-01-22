@@ -17,7 +17,7 @@ class EventTrace {
     static constexpr PlatformEvent::Type PaintEvent = PlatformEvent::Invalid;
 
     void saveToFile(std::string_view path) const;
-    static EventTrace loadFromFile(std::string_view path);
+    static EventTrace loadFromFile(std::string_view path, PlatformWindow *window);
 
     void recordEvent(const PlatformEvent *event);
     void recordRepaint();

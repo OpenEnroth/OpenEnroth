@@ -35,7 +35,7 @@ class EventTracer : private ProxyPlatform, private ProxyOpenGLContext, public Pl
 
     virtual int64_t TickCount() const override;
     virtual void SwapBuffers() override;
-    virtual bool Event(PlatformWindow *window, const PlatformEvent *event) override;
+    virtual bool Event(const PlatformEvent *event) override;
 
  private:
     bool _tracing = false;

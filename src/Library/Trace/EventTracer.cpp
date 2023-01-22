@@ -46,7 +46,7 @@ void EventTracer::SwapBuffers() {
     }
 }
 
-bool EventTracer::Event(PlatformWindow *window, const PlatformEvent *event) {
+bool EventTracer::Event(const PlatformEvent *event) {
     if (_tracing)
         _trace.recordEvent(event);
 

@@ -26,7 +26,7 @@ class TestProxy : private ProxyPlatform, private ProxyEventLoop, private ProxyOp
 
     void reset();
 
-    void postEvent(PlatformWindow *window, std::unique_ptr<PlatformEvent> event);
+    void postEvent(std::unique_ptr<PlatformEvent> event);
 
  private:
     friend class PlatformProxyIntrospection;
@@ -38,14 +38,9 @@ class TestProxy : private ProxyPlatform, private ProxyEventLoop, private ProxyOp
 
     void processSyntheticMessages(PlatformEventHandler *eventHandler);
 
-    struct PostedEvent {
-        PlatformWindow *window;
-        std::unique_ptr<PlatformEvent> event;
-    };
-
  private:
     TestStateHandle _state;
     int64_t _tickCount = 0;
-    std::queue<PostedEvent> postedEvents_;
+    std::queue<std::unique_ptr<PlatformEvent>> postedEvents_;
     std::unique_ptr<PlatformEventHandler> emptyHandler_;
 };

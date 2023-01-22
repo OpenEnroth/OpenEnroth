@@ -21,8 +21,8 @@ void TestProxy::reset() {
     _tickCount = 0;
 }
 
-void TestProxy::postEvent(PlatformWindow *window, std::unique_ptr<PlatformEvent> event) {
-    postedEvents_.push({window, std::move(event)});
+void TestProxy::postEvent(std::unique_ptr<PlatformEvent> event) {
+    postedEvents_.push(std::move(event));
 }
 
 int64_t TestProxy::TickCount() const {
@@ -61,9 +61,9 @@ void TestProxy::ProcessMessages(PlatformEventHandler *eventHandler, int count) {
 }
 
 void TestProxy::processSyntheticMessages(PlatformEventHandler *eventHandler) {
-    while(!postedEvents_.empty()) {
-        PostedEvent event = std::move(postedEvents_.front());
+    while (!postedEvents_.empty()) {
+        std::unique_ptr<PlatformEvent> event = std::move(postedEvents_.front());
         postedEvents_.pop();
-        eventHandler->Event(event.window, event.event.get());
+        eventHandler->Event(event.get());
     }
 }

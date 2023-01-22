@@ -140,8 +140,9 @@ inline void DispatchByEventType(PlatformEvent::Type type, Callable &&callable) {
     case PlatformEventType::WindowActivate:
     case PlatformEventType::WindowDeactivate:
     case PlatformEventType::WindowCloseRequest:
+        callable(static_cast<PlatformWindowEvent *>(nullptr));
     case EventTrace::PaintEvent:
-        callable(static_cast<PlatformEvent *>(nullptr));
+        callable(static_cast<PlatformEvent *>(nullptr)); // TODO(captainurist): UserEvent.
         break;
     default:
         return;
@@ -189,7 +190,7 @@ void EventTrace::saveToFile(std::string_view path) const {
     f << std::setw(4) << json;
 }
 
-EventTrace EventTrace::loadFromFile(std::string_view path) {
+EventTrace EventTrace::loadFromFile(std::string_view path, PlatformWindow *window) {
     std::ifstream f;
     f.exceptions(std::ios_base::failbit | std::ios_base::badbit);
     f.open(std::string(path));
@@ -199,6 +200,15 @@ EventTrace EventTrace::loadFromFile(std::string_view path) {
 
     EventTrace result;
     from_json(json, result._events);
+
+    for (std::unique_ptr<PlatformEvent> &event : result._events) {
+        DispatchByEventType(event->type, [&]<class T>(T *) {
+            if constexpr (std::is_base_of_v<PlatformWindowEvent, T>) {
+                static_cast<PlatformWindowEvent *>(event.get())->window = window;
+            }
+        });
+    }
+
     return result;
 }
 

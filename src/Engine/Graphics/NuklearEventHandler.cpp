@@ -2,7 +2,7 @@
 
 #include "Nuklear.h"
 
-void NuklearEventHandler::KeyPressEvent(PlatformWindow *, const PlatformKeyEvent *event) {
+void NuklearEventHandler::KeyPressEvent(const PlatformKeyEvent *event) {
     PlatformKey key = event->key;
     PlatformModifiers mods = event->mods;
 
@@ -12,7 +12,7 @@ void NuklearEventHandler::KeyPressEvent(PlatformWindow *, const PlatformKeyEvent
     KeyEvent(key, mods, true);
 }
 
-void NuklearEventHandler::KeyReleaseEvent(PlatformWindow *, const PlatformKeyEvent *event) {
+void NuklearEventHandler::KeyReleaseEvent(const PlatformKeyEvent *event) {
     PlatformKey key = event->key;
     PlatformModifiers mods = event->mods;
 
@@ -74,18 +74,18 @@ void NuklearEventHandler::KeyEvent(PlatformKey key, PlatformModifiers mods, bool
     }
 }
 
-void NuklearEventHandler::MouseMoveEvent(PlatformWindow *, const PlatformMouseEvent *event) {
+void NuklearEventHandler::MouseMoveEvent(const PlatformMouseEvent *event) {
     nk_input_motion(nuklear->ctx, event->pos.x, event->pos.y);
 }
 
-void NuklearEventHandler::MousePressEvent(PlatformWindow *, const PlatformMouseEvent *event) {
+void NuklearEventHandler::MousePressEvent(const PlatformMouseEvent *event) {
     if (event->button == PlatformMouseButton::Left && event->isDoubleClick)
         nk_input_button(nuklear->ctx, NK_BUTTON_DOUBLE, event->pos.x, event->pos.y, true);
 
     MouseEvent(event->button, event->pos, true);
 }
 
-void NuklearEventHandler::MouseReleaseEvent(PlatformWindow *, const PlatformMouseEvent *event) {
+void NuklearEventHandler::MouseReleaseEvent(const PlatformMouseEvent *event) {
     MouseEvent(event->button, event->pos, false);
 }
 
@@ -100,7 +100,7 @@ void NuklearEventHandler::MouseEvent(PlatformMouseButton button, const Pointi &p
     }
 }
 
-void NuklearEventHandler::WheelEvent(PlatformWindow *, const PlatformWheelEvent *event) {
+void NuklearEventHandler::WheelEvent(const PlatformWheelEvent *event) {
     nk_input_scroll(nuklear->ctx, nk_vec2(event->angleDelta.x, event->angleDelta.y));
 }
 

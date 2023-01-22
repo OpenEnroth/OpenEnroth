@@ -496,14 +496,14 @@ void GameWindowHandler::OnMouseGrabToggle() {
     window->SetGrabsMouse(engine->config->window.MouseGrab.Toggle());
 }
 
-bool GameWindowHandler::Event(PlatformWindow *window, const PlatformEvent *event) {
+bool GameWindowHandler::Event(const PlatformEvent *event) {
     if (nuklear && nuklearEventHandler)
-        nuklearEventHandler->Event(window, event);
+        nuklearEventHandler->Event(event);
 
-    return PlatformEventFilter::Event(window, event);
+    return PlatformEventFilter::Event(event);
 }
 
-bool GameWindowHandler::KeyPressEvent(PlatformWindow *, const PlatformKeyEvent *event) {
+bool GameWindowHandler::KeyPressEvent(const PlatformKeyEvent *event) {
     keyboardController_->ProcessKeyPressEvent(event);
 
     if (event->isAutoRepeat)
@@ -520,17 +520,17 @@ bool GameWindowHandler::KeyPressEvent(PlatformWindow *, const PlatformKeyEvent *
     return false;
 }
 
-bool GameWindowHandler::KeyReleaseEvent(PlatformWindow *, const PlatformKeyEvent *event) {
+bool GameWindowHandler::KeyReleaseEvent(const PlatformKeyEvent *event) {
     keyboardController_->ProcessKeyReleaseEvent(event);
     return false;
 }
 
-bool GameWindowHandler::MouseMoveEvent(PlatformWindow *, const PlatformMouseEvent *event) {
+bool GameWindowHandler::MouseMoveEvent(const PlatformMouseEvent *event) {
     OnMouseMove(MapToRender(event->pos), event->buttons & PlatformMouseButton::Left, event->buttons & PlatformMouseButton::Right);
     return false;
 }
 
-bool GameWindowHandler::MousePressEvent(PlatformWindow *, const PlatformMouseEvent *event) {
+bool GameWindowHandler::MousePressEvent(const PlatformMouseEvent *event) {
     Pointi position = MapToRender(event->pos);
     if (event->button == PlatformMouseButton::Left) {
         if (event->isDoubleClick) {
@@ -548,7 +548,7 @@ bool GameWindowHandler::MousePressEvent(PlatformWindow *, const PlatformMouseEve
     return false;
 }
 
-bool GameWindowHandler::MouseReleaseEvent(PlatformWindow *, const PlatformMouseEvent *event) {
+bool GameWindowHandler::MouseReleaseEvent(const PlatformMouseEvent *event) {
     if (event->button == PlatformMouseButton::Left) {
         OnMouseLeftUp();
     } else if (event->button == PlatformMouseButton::Right) {
@@ -557,9 +557,9 @@ bool GameWindowHandler::MouseReleaseEvent(PlatformWindow *, const PlatformMouseE
     return false;
 }
 
-bool GameWindowHandler::WheelEvent(PlatformWindow *, const PlatformWheelEvent *) { return false; }
+bool GameWindowHandler::WheelEvent(const PlatformWheelEvent *) { return false; }
 
-bool GameWindowHandler::MoveEvent(PlatformWindow *, const PlatformMoveEvent *event) {
+bool GameWindowHandler::MoveEvent(const PlatformMoveEvent *event) {
     /* Remember window position after move. Move position event is also triggered on toggling fullscreen. And we should save current window position prior to entering fullscreen.
      * As entering fullscreen will forcefully move window to {0,0} position on current display. And we want to restore position prior to entering fullscreen and not {0,0} or startup one. */
     PlatformWindowMode mode = window->WindowMode();
@@ -574,12 +574,12 @@ bool GameWindowHandler::MoveEvent(PlatformWindow *, const PlatformMoveEvent *eve
     return false;
 }
 
-bool GameWindowHandler::ResizeEvent(PlatformWindow *, const PlatformResizeEvent *event) {
+bool GameWindowHandler::ResizeEvent(const PlatformResizeEvent *event) {
     render->Reinitialize();
     return false;
 }
 
-bool GameWindowHandler::ActivationEvent(PlatformWindow *, const PlatformEvent *event) {
+bool GameWindowHandler::ActivationEvent(const PlatformWindowEvent *event) {
     if (event->type == PlatformEvent::WindowActivate) {
         OnActivated();
     } else if (event->type == PlatformEvent::WindowDeactivate) {
@@ -588,14 +588,14 @@ bool GameWindowHandler::ActivationEvent(PlatformWindow *, const PlatformEvent *e
     return false;
 }
 
-bool GameWindowHandler::CloseEvent(PlatformWindow *, const PlatformEvent *event) {
+bool GameWindowHandler::CloseEvent(const PlatformWindowEvent *event) {
     UpdateConfigFromWindow(engine->config.get());
     engine->config->SaveConfiguration();
     Engine_DeinitializeAndTerminate(0);
     return false;
 }
 
-bool GameWindowHandler::GamepadDeviceEvent(PlatformWindow *, const PlatformGamepadDeviceEvent *event) {
+bool GameWindowHandler::GamepadDeviceEvent(const PlatformGamepadDeviceEvent *event) {
     if (event->type == PlatformEvent::GamepadConnected) {
         gamepads_[event->id] = platform->CreateGamepad(event->id);
         if (gamepads_[event->id]) {

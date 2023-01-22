@@ -16,25 +16,25 @@ class PlatformEventFilter {
     explicit PlatformEventFilter(std::initializer_list<PlatformEvent::Type> eventTypes);
     explicit PlatformEventFilter(EventWildcard eventTypes);
 
-    virtual bool Event(PlatformWindow *window, const PlatformEvent *event);
+    virtual bool Event(const PlatformEvent *event);
 
     const std::vector<PlatformEvent::Type> eventTypes() const {
         return _eventTypes;
     }
 
  protected:
-    virtual bool KeyPressEvent(PlatformWindow *window, const PlatformKeyEvent *event);
-    virtual bool KeyReleaseEvent(PlatformWindow *window, const PlatformKeyEvent *event);
-    virtual bool MouseMoveEvent(PlatformWindow *window, const PlatformMouseEvent *event);
-    virtual bool MousePressEvent(PlatformWindow *window, const PlatformMouseEvent *event);
-    virtual bool MouseReleaseEvent(PlatformWindow *window, const PlatformMouseEvent *event);
-    virtual bool WheelEvent(PlatformWindow *window, const PlatformWheelEvent *event);
-    virtual bool MoveEvent(PlatformWindow *window, const PlatformMoveEvent *event);
-    virtual bool ResizeEvent(PlatformWindow *window, const PlatformResizeEvent *event);
-    virtual bool ActivationEvent(PlatformWindow *window, const PlatformEvent *event);
-    virtual bool CloseEvent(PlatformWindow *window, const PlatformEvent *event);
-    virtual bool GamepadDeviceEvent(PlatformWindow *window, const PlatformGamepadDeviceEvent *event);
-    virtual bool NativeEvent(PlatformWindow *window, const PlatformNativeEvent *event);
+    virtual bool KeyPressEvent(const PlatformKeyEvent *event);
+    virtual bool KeyReleaseEvent(const PlatformKeyEvent *event);
+    virtual bool MouseMoveEvent(const PlatformMouseEvent *event);
+    virtual bool MousePressEvent(const PlatformMouseEvent *event);
+    virtual bool MouseReleaseEvent(const PlatformMouseEvent *event);
+    virtual bool WheelEvent(const PlatformWheelEvent *event);
+    virtual bool MoveEvent(const PlatformMoveEvent *event);
+    virtual bool ResizeEvent(const PlatformResizeEvent *event);
+    virtual bool ActivationEvent(const PlatformWindowEvent *event);
+    virtual bool CloseEvent(const PlatformWindowEvent *event);
+    virtual bool GamepadDeviceEvent(const PlatformGamepadDeviceEvent *event);
+    virtual bool NativeEvent(const PlatformNativeEvent *event);
 
  private:
     std::vector<PlatformEvent::Type> _eventTypes;

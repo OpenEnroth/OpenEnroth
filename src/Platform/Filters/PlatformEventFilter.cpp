@@ -13,83 +13,83 @@ PlatformEventFilter::PlatformEventFilter(EventWildcard eventTypes) {
         _eventTypes.push_back(type);
 }
 
-bool PlatformEventFilter::Event(PlatformWindow *window, const PlatformEvent *event) {
+bool PlatformEventFilter::Event(const PlatformEvent *event) {
     switch (event->type) {
     case PlatformEvent::GamepadConnected:
     case PlatformEvent::GamepadDisconnected:
-        return GamepadDeviceEvent(window, static_cast<const PlatformGamepadDeviceEvent *>(event));
+        return GamepadDeviceEvent(static_cast<const PlatformGamepadDeviceEvent *>(event));
     case PlatformEvent::KeyPress:
-        return KeyPressEvent(window, static_cast<const PlatformKeyEvent *>(event));
+        return KeyPressEvent(static_cast<const PlatformKeyEvent *>(event));
     case PlatformEvent::KeyRelease:
-        return KeyReleaseEvent(window, static_cast<const PlatformKeyEvent *>(event));
+        return KeyReleaseEvent(static_cast<const PlatformKeyEvent *>(event));
     case PlatformEvent::MouseMove:
-        return MouseMoveEvent(window, static_cast<const PlatformMouseEvent *>(event));
+        return MouseMoveEvent(static_cast<const PlatformMouseEvent *>(event));
     case PlatformEvent::MouseButtonPress:
-        return MousePressEvent(window, static_cast<const PlatformMouseEvent *>(event));
+        return MousePressEvent(static_cast<const PlatformMouseEvent *>(event));
     case PlatformEvent::MouseButtonRelease:
-        return MouseReleaseEvent(window, static_cast<const PlatformMouseEvent *>(event));
+        return MouseReleaseEvent(static_cast<const PlatformMouseEvent *>(event));
     case PlatformEvent::MouseWheel:
-        return WheelEvent(window, static_cast<const PlatformWheelEvent *>(event));
+        return WheelEvent(static_cast<const PlatformWheelEvent *>(event));
     case PlatformEvent::WindowMove:
-        return MoveEvent(window, static_cast<const PlatformMoveEvent *>(event));
+        return MoveEvent(static_cast<const PlatformMoveEvent *>(event));
     case PlatformEvent::WindowResize:
-        return ResizeEvent(window, static_cast<const PlatformResizeEvent *>(event));
+        return ResizeEvent(static_cast<const PlatformResizeEvent *>(event));
     case PlatformEvent::WindowActivate:
     case PlatformEvent::WindowDeactivate:
-        return ActivationEvent(window, event);
+        return ActivationEvent(static_cast<const PlatformWindowEvent *>(event));
     case PlatformEvent::WindowCloseRequest:
-        return CloseEvent(window, event);
+        return CloseEvent(static_cast<const PlatformWindowEvent *>(event));
     case PlatformEvent::NativeEvent:
-        return NativeEvent(window, static_cast<const PlatformNativeEvent *>(event));
+        return NativeEvent(static_cast<const PlatformNativeEvent *>(event));
     default:
         return false;
     }
 }
 
-bool PlatformEventFilter::KeyPressEvent(PlatformWindow *, const PlatformKeyEvent *) {
+bool PlatformEventFilter::KeyPressEvent(const PlatformKeyEvent *) {
     return false;
 }
 
-bool PlatformEventFilter::KeyReleaseEvent(PlatformWindow *, const PlatformKeyEvent *) {
+bool PlatformEventFilter::KeyReleaseEvent(const PlatformKeyEvent *) {
     return false;
 }
 
-bool PlatformEventFilter::MouseMoveEvent(PlatformWindow *, const PlatformMouseEvent *) {
+bool PlatformEventFilter::MouseMoveEvent(const PlatformMouseEvent *) {
     return false;
 }
 
-bool PlatformEventFilter::MousePressEvent(PlatformWindow *, const PlatformMouseEvent *) {
+bool PlatformEventFilter::MousePressEvent(const PlatformMouseEvent *) {
     return false;
 }
 
-bool PlatformEventFilter::MouseReleaseEvent(PlatformWindow *, const PlatformMouseEvent *) {
+bool PlatformEventFilter::MouseReleaseEvent(const PlatformMouseEvent *) {
     return false;
 }
 
-bool PlatformEventFilter::WheelEvent(PlatformWindow *, const PlatformWheelEvent *) {
+bool PlatformEventFilter::WheelEvent(const PlatformWheelEvent *) {
     return false;
 }
 
-bool PlatformEventFilter::MoveEvent(PlatformWindow *, const PlatformMoveEvent *) {
+bool PlatformEventFilter::MoveEvent(const PlatformMoveEvent *) {
     return false;
 }
 
-bool PlatformEventFilter::ResizeEvent(PlatformWindow *, const PlatformResizeEvent *) {
+bool PlatformEventFilter::ResizeEvent(const PlatformResizeEvent *) {
     return false;
 }
 
-bool PlatformEventFilter::ActivationEvent(PlatformWindow *, const PlatformEvent *) {
+bool PlatformEventFilter::ActivationEvent(const PlatformWindowEvent *) {
     return false;
 }
 
-bool PlatformEventFilter::CloseEvent(PlatformWindow *, const PlatformEvent *) {
+bool PlatformEventFilter::CloseEvent(const PlatformWindowEvent *) {
     return false;
 }
 
-bool PlatformEventFilter::GamepadDeviceEvent(PlatformWindow *, const PlatformGamepadDeviceEvent *) {
+bool PlatformEventFilter::GamepadDeviceEvent(const PlatformGamepadDeviceEvent *) {
     return false;
 }
 
-bool PlatformEventFilter::NativeEvent(PlatformWindow *, const PlatformNativeEvent *) {
+bool PlatformEventFilter::NativeEvent(const PlatformNativeEvent *) {
     return false;
 }

@@ -12,6 +12,8 @@
 #   undef KeyRelease
 #endif
 
+class PlatformWindow;
+
 class PlatformEvent {
  public:
     enum class Type {
@@ -41,10 +43,15 @@ class PlatformEvent {
     Type type = Invalid;
 };
 
+class PlatformWindowEvent: public PlatformEvent {
+ public:
+    PlatformWindow *window = nullptr;
+};
+
 /**
  * `KeyPress` or `KeyRelease` event.
  */
-class PlatformKeyEvent: public PlatformEvent {
+class PlatformKeyEvent: public PlatformWindowEvent {
  public:
     uint32_t id; // TODO(captainurist): move into a separate PlatformGamepadEvent
     PlatformKey key;
@@ -57,7 +64,7 @@ class PlatformKeyEvent: public PlatformEvent {
 /**
  * `MouseButtonPress`, `MouseButtonRelease` or `MouseMove` event.
  */
-class PlatformMouseEvent: public PlatformEvent {
+class PlatformMouseEvent: public PlatformWindowEvent {
  public:
     PlatformMouseButton button; // Button that caused this event, or PlatformMouseButton::None for move events.
     PlatformMouseButtons buttons; // Currently pressed mouse buttons.
@@ -68,7 +75,7 @@ class PlatformMouseEvent: public PlatformEvent {
 /**
  * `MouseWheel`
  */
-class PlatformWheelEvent: public PlatformEvent {
+class PlatformWheelEvent: public PlatformWindowEvent {
  public:
     Pointi angleDelta; // 1 unit = 1/8 degree.
     bool inverted; // Whether delta values delivered with the event are inverted.
@@ -77,7 +84,7 @@ class PlatformWheelEvent: public PlatformEvent {
 /**
  * `WindowMove`
  */
-class PlatformMoveEvent: public PlatformEvent {
+class PlatformMoveEvent: public PlatformWindowEvent {
  public:
     Pointi pos; // New position of the window.
 };
@@ -85,7 +92,7 @@ class PlatformMoveEvent: public PlatformEvent {
 /**
  * `WindowResize`
  */
-class PlatformResizeEvent: public PlatformEvent {
+class PlatformResizeEvent: public PlatformWindowEvent {
  public:
     Sizei size; // New size of the window.
 };

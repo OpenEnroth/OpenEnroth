@@ -1,59 +1,59 @@
 #include "PlatformEventHandler.h"
 
-void PlatformEventHandler::Event(PlatformWindow *window, const PlatformEvent *event) {
+void PlatformEventHandler::Event(const PlatformEvent *event) {
     switch (event->type) {
     case PlatformEvent::GamepadConnected:
     case PlatformEvent::GamepadDisconnected:
-        GamepadDeviceEvent(window, static_cast<const PlatformGamepadDeviceEvent *>(event));
+        GamepadDeviceEvent(static_cast<const PlatformGamepadDeviceEvent *>(event));
         return;
     case PlatformEvent::KeyPress:
-        KeyPressEvent(window, static_cast<const PlatformKeyEvent *>(event));
+        KeyPressEvent(static_cast<const PlatformKeyEvent *>(event));
         return;
     case PlatformEvent::KeyRelease:
-        KeyReleaseEvent(window, static_cast<const PlatformKeyEvent *>(event));
+        KeyReleaseEvent(static_cast<const PlatformKeyEvent *>(event));
         return;
     case PlatformEvent::MouseMove:
-        MouseMoveEvent(window, static_cast<const PlatformMouseEvent *>(event));
+        MouseMoveEvent(static_cast<const PlatformMouseEvent *>(event));
         return;
     case PlatformEvent::MouseButtonPress:
-        MousePressEvent(window, static_cast<const PlatformMouseEvent *>(event));
+        MousePressEvent(static_cast<const PlatformMouseEvent *>(event));
         return;
     case PlatformEvent::MouseButtonRelease:
-        MouseReleaseEvent(window, static_cast<const PlatformMouseEvent *>(event));
+        MouseReleaseEvent(static_cast<const PlatformMouseEvent *>(event));
         return;
     case PlatformEvent::MouseWheel:
-        WheelEvent(window, static_cast<const PlatformWheelEvent *>(event));
+        WheelEvent(static_cast<const PlatformWheelEvent *>(event));
         return;
     case PlatformEvent::WindowMove:
-        MoveEvent(window, static_cast<const PlatformMoveEvent *>(event));
+        MoveEvent(static_cast<const PlatformMoveEvent *>(event));
         return;
     case PlatformEvent::WindowResize:
-        ResizeEvent(window, static_cast<const PlatformResizeEvent *>(event));
+        ResizeEvent(static_cast<const PlatformResizeEvent *>(event));
         return;
     case PlatformEvent::WindowActivate:
     case PlatformEvent::WindowDeactivate:
-        ActivationEvent(window, event);
+        ActivationEvent(static_cast<const PlatformWindowEvent *>(event));
         return;
     case PlatformEvent::WindowCloseRequest:
-        CloseEvent(window, event);
+        CloseEvent(static_cast<const PlatformWindowEvent *>(event));
         return;
     case PlatformEvent::NativeEvent:
-        NativeEvent(window, static_cast<const PlatformNativeEvent *>(event));
+        NativeEvent(static_cast<const PlatformNativeEvent *>(event));
         return;
     default:
         return;
     }
 }
 
-void PlatformEventHandler::KeyPressEvent(PlatformWindow *, const PlatformKeyEvent *) {}
-void PlatformEventHandler::KeyReleaseEvent(PlatformWindow *, const PlatformKeyEvent *) {}
-void PlatformEventHandler::MouseMoveEvent(PlatformWindow *, const PlatformMouseEvent *) {}
-void PlatformEventHandler::MousePressEvent(PlatformWindow *, const PlatformMouseEvent *) {}
-void PlatformEventHandler::MouseReleaseEvent(PlatformWindow *, const PlatformMouseEvent *) {}
-void PlatformEventHandler::WheelEvent(PlatformWindow *, const PlatformWheelEvent *) {}
-void PlatformEventHandler::MoveEvent(PlatformWindow *, const PlatformMoveEvent *) {}
-void PlatformEventHandler::ResizeEvent(PlatformWindow *, const PlatformResizeEvent *) {}
-void PlatformEventHandler::ActivationEvent(PlatformWindow *, const PlatformEvent *) {}
-void PlatformEventHandler::CloseEvent(PlatformWindow *, const PlatformEvent *) {}
-void PlatformEventHandler::GamepadDeviceEvent(PlatformWindow *, const PlatformGamepadDeviceEvent *) {}
-void PlatformEventHandler::NativeEvent(PlatformWindow *, const PlatformNativeEvent *) {}
+void PlatformEventHandler::KeyPressEvent(const PlatformKeyEvent *) {}
+void PlatformEventHandler::KeyReleaseEvent(const PlatformKeyEvent *) {}
+void PlatformEventHandler::MouseMoveEvent(const PlatformMouseEvent *) {}
+void PlatformEventHandler::MousePressEvent(const PlatformMouseEvent *) {}
+void PlatformEventHandler::MouseReleaseEvent(const PlatformMouseEvent *) {}
+void PlatformEventHandler::WheelEvent(const PlatformWheelEvent *) {}
+void PlatformEventHandler::MoveEvent(const PlatformMoveEvent *) {}
+void PlatformEventHandler::ResizeEvent(const PlatformResizeEvent *) {}
+void PlatformEventHandler::ActivationEvent(const PlatformWindowEvent *) {}
+void PlatformEventHandler::CloseEvent(const PlatformWindowEvent *) {}
+void PlatformEventHandler::GamepadDeviceEvent(const PlatformGamepadDeviceEvent *) {}
+void PlatformEventHandler::NativeEvent(const PlatformNativeEvent *) {}

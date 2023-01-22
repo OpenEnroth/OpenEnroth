@@ -6,12 +6,12 @@
 
 class NuklearEventHandler : public PlatformEventHandler {
  protected:
-    virtual void KeyPressEvent(PlatformWindow *window, const PlatformKeyEvent *event) override;
-    virtual void KeyReleaseEvent(PlatformWindow *window, const PlatformKeyEvent *event) override;
-    virtual void MouseMoveEvent(PlatformWindow *window, const PlatformMouseEvent *event) override;
-    virtual void MousePressEvent(PlatformWindow *window, const PlatformMouseEvent *event) override;
-    virtual void MouseReleaseEvent(PlatformWindow *window, const PlatformMouseEvent *event) override;
-    virtual void WheelEvent(PlatformWindow *window, const PlatformWheelEvent *event) override;
+    virtual void KeyPressEvent(const PlatformKeyEvent *event) override;
+    virtual void KeyReleaseEvent(const PlatformKeyEvent *event) override;
+    virtual void MouseMoveEvent(const PlatformMouseEvent *event) override;
+    virtual void MousePressEvent(const PlatformMouseEvent *event) override;
+    virtual void MouseReleaseEvent(const PlatformMouseEvent *event) override;
+    virtual void WheelEvent(const PlatformWheelEvent *event) override;
 
  private:
     void KeyEvent(PlatformKey key, PlatformModifiers mods, bool down);

@@ -45,38 +45,42 @@ void GameWrapper::Tick(int count) {
 void GameWrapper::PressKey(PlatformKey key) {
     std::unique_ptr<PlatformKeyEvent> event = std::make_unique<PlatformKeyEvent>();
     event->type = PlatformEvent::KeyPress;
+    event->window = state_->application->window();
     event->key = key;
     event->mods = 0;
     event->isAutoRepeat = false;
-    state_->proxy->postEvent(state_->application->window(), std::move(event));
+    state_->proxy->postEvent(std::move(event));
 }
 
 void GameWrapper::ReleaseKey(PlatformKey key) {
     std::unique_ptr<PlatformKeyEvent> event = std::make_unique<PlatformKeyEvent>();
     event->type = PlatformEvent::KeyRelease;
+    event->window = state_->application->window();
     event->key = key;
     event->mods = 0;
     event->isAutoRepeat = false;
-    state_->proxy->postEvent(state_->application->window(), std::move(event));
+    state_->proxy->postEvent(std::move(event));
 }
 
 void GameWrapper::PressButton(PlatformMouseButton button, int x, int y) {
     std::unique_ptr<PlatformMouseEvent> event = std::make_unique<PlatformMouseEvent>();
     event->type = PlatformEvent::MouseButtonPress;
+    event->window = state_->application->window();
     event->button = PlatformMouseButton::Left;
     event->pos = Pointi(x, y);
     event->isDoubleClick = false;
-    state_->proxy->postEvent(state_->application->window(), std::move(event));
+    state_->proxy->postEvent(std::move(event));
 }
 
 void GameWrapper::ReleaseButton(PlatformMouseButton button, int x, int y) {
     std::unique_ptr<PlatformMouseEvent> event = std::make_unique<PlatformMouseEvent>();
     event->type = PlatformEvent::MouseButtonRelease;
+    event->window = state_->application->window();
     event->button = PlatformMouseButton::Left;
     event->buttons = PlatformMouseButton::Left;
     event->pos = Pointi(x, y);
     event->isDoubleClick = false;
-    state_->proxy->postEvent(state_->application->window(), std::move(event));
+    state_->proxy->postEvent(std::move(event));
 }
 
 void GameWrapper::PressAndReleaseKey(PlatformKey key) {
@@ -185,13 +189,13 @@ GUIButton *GameWrapper::AssertButton(std::string_view buttonId) {
 }
 
 void GameWrapper::PlayTrace(const std::string &name) {
-    auto trace = EventTrace::loadFromFile(testDataDir_ + name).takeEvents();
+    auto trace = EventTrace::loadFromFile(testDataDir_ + name, state_->application->window()).takeEvents();
 
     for (std::unique_ptr<PlatformEvent> &event : trace) {
         if (event->type == EventTrace::PaintEvent) {
             Tick(1);
         } else {
-            state_->proxy->postEvent(state_->application->window(), std::move(event));
+            state_->proxy->postEvent(std::move(event));
         }
     }
 }

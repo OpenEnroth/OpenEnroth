@@ -20,6 +20,7 @@ class SdlEventLoop: public PlatformEventLoop {
 
  private:
     void DispatchEvent(PlatformEventHandler *eventHandler, const SDL_Event *event);
+    void DispatchEvent(PlatformEventHandler *eventHandler, const PlatformEvent *event);
     void DispatchNativeEvent(PlatformEventHandler *eventHandler, const SDL_Event *event);
     void DispatchQuitEvent(PlatformEventHandler *eventHandler, const SDL_QuitEvent *event);
     void DispatchKeyEvent(PlatformEventHandler *eventHandler, const SDL_KeyboardEvent *event);
@@ -29,8 +30,6 @@ class SdlEventLoop: public PlatformEventLoop {
     void DispatchWindowEvent(PlatformEventHandler *eventHandler, const SDL_WindowEvent *event);
     void DispatchWindowMoveEvent(PlatformEventHandler *eventHandler, const SDL_WindowEvent *event);
     void DispatchWindowResizeEvent(PlatformEventHandler *eventHandler, const SDL_WindowEvent *event);
-    void DispatchEvent(PlatformEventHandler *eventHandler, uint32_t windowId, PlatformEvent::Type type);
-    void DispatchEvent(PlatformEventHandler *eventHandler, uint32_t windowId, PlatformEvent *event);
     void DispatchGamepadDeviceEvent(PlatformEventHandler *eventHandler, const SDL_ControllerDeviceEvent *event);
     void DispatchGamepadButtonEvent(PlatformEventHandler *eventHandler, const SDL_ControllerButtonEvent *event);
     void DispatchGamepadAxisEvent(PlatformEventHandler *eventHandler, const SDL_ControllerAxisEvent *event);
