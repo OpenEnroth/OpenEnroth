@@ -34,7 +34,7 @@ class PlatformEvent {
         NativeEvent,
 
         FirstEventType = KeyPress,
-        LastEventType = WindowCloseRequest
+        LastEventType = NativeEvent
     };
     using enum Type;
 
