@@ -497,9 +497,6 @@ void GameWindowHandler::OnMouseGrabToggle() {
 }
 
 bool GameWindowHandler::Event(const PlatformEvent *event) {
-    if (nuklear && nuklearEventHandler)
-        nuklearEventHandler->Event(event);
-
     return PlatformEventFilter::Event(event);
 }
 

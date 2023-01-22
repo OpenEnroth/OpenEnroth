@@ -2,20 +2,20 @@
 
 #include <memory>
 
-#include "Platform/PlatformEventHandler.h"
+#include "Platform/Filters/PlatformEventFilter.h"
 
-class NuklearEventHandler : public PlatformEventHandler {
- protected:
-    virtual void KeyPressEvent(const PlatformKeyEvent *event) override;
-    virtual void KeyReleaseEvent(const PlatformKeyEvent *event) override;
-    virtual void MouseMoveEvent(const PlatformMouseEvent *event) override;
-    virtual void MousePressEvent(const PlatformMouseEvent *event) override;
-    virtual void MouseReleaseEvent(const PlatformMouseEvent *event) override;
-    virtual void WheelEvent(const PlatformWheelEvent *event) override;
+class NuklearEventHandler : public PlatformEventFilter {
+ public:
+    NuklearEventHandler();
 
  private:
-    void KeyEvent(PlatformKey key, PlatformModifiers mods, bool down);
-    void MouseEvent(PlatformMouseButton button, const Pointi &pos, bool down);
-};
+    virtual bool KeyPressEvent(const PlatformKeyEvent *event) override;
+    virtual bool KeyReleaseEvent(const PlatformKeyEvent *event) override;
+    virtual bool MouseMoveEvent(const PlatformMouseEvent *event) override;
+    virtual bool MousePressEvent(const PlatformMouseEvent *event) override;
+    virtual bool MouseReleaseEvent(const PlatformMouseEvent *event) override;
+    virtual bool WheelEvent(const PlatformWheelEvent *event) override;
 
-extern std::shared_ptr<NuklearEventHandler> nuklearEventHandler; // TODO(captainurist) : convert into an event filter
+    bool KeyEvent(PlatformKey key, PlatformModifiers mods, bool down);
+    bool MouseEvent(PlatformMouseButton button, const Pointi &pos, bool down);
+};

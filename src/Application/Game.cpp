@@ -163,6 +163,8 @@ Game::~Game() {
     app->eventHandler()->removeEventFilter(traceHandler.get());
     app->eventHandler()->removeEventFilter(eventTracer.get());
     app->eventHandler()->removeEventFilter(windowHandler.get());
+    if (nuklearHandler)
+        app->eventHandler()->removeEventFilter(nuklearHandler.get());
 }
 
 int Game::Run() {
@@ -186,8 +188,10 @@ int Game::Run() {
         log->Warning("Nuklear failed to initialize");
     }
     ::nuklear = nuklear;
-    if (nuklear)
-        nuklearEventHandler = std::make_shared<NuklearEventHandler>();
+    if (nuklear) {
+        nuklearHandler = std::make_unique<NuklearEventHandler>();
+        app->eventHandler()->installEventFilter(nuklearHandler.get());
+    }
 
     keyboardActionMapping = std::make_shared<KeyboardActionMapping>(config);
     ::keyboardActionMapping = keyboardActionMapping;
