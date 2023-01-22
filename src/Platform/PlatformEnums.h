@@ -43,7 +43,7 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(PlatformLoggerOptions)
 
 enum class PlatformKey : int {
     // usual text input
-    Char,
+    Char, // TODO(captainurist): this doesn't belong here
 
     // scancodes (language and case neutral)
     F1,
