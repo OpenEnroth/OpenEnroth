@@ -2347,7 +2347,7 @@ void Game::EventLoop() {
                         continue;
 
                     for(size_t attempt = 0; attempt < 500; attempt++) {
-                        ITEM_TYPE pItemID = Sample(SpawnableItems());
+                        ITEM_TYPE pItemID = RandomSample(SpawnableItems());
                         if (pItemTable->pItems[pItemID].uItemID_Rep_St > 6) {
                             pPlayers[uActiveCharacter]->AddItem(-1, pItemID);
                             break;
@@ -2362,7 +2362,7 @@ void Game::EventLoop() {
                         continue;
 
                     for (size_t attempt = 0; attempt < 500; attempt++) {
-                        ITEM_TYPE pItemID = Sample(SpawnableItems());
+                        ITEM_TYPE pItemID = RandomSample(SpawnableItems());
                         // if (pItemTable->pItems[pItemID].uItemID_Rep_St ==
                         //   (item_id - 40015 + 1)) {
                         pPlayers[uActiveCharacter]->AddItem(-1, pItemID);

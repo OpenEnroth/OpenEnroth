@@ -57,13 +57,12 @@ float RandomFloat();
  */
 int RandomDice(int count, int faces);
 
-// TODO(captainurist): rename to RandomSample
 /**
  * @param range                         Random access range.
  * @return                              Random element from the provided range.
  */
 template<class Range, class T = typename Range::value_type>
-T Sample(const Range &range) {
+T RandomSample(const Range &range) {
     using std::begin;
     using std::end;
 
@@ -78,5 +77,5 @@ T Sample(const Range &range) {
 
 template<class T>
 T Sample(std::initializer_list<T> range) {
-    return Sample<std::initializer_list<T>, T>(range);
+    return RandomSample<std::initializer_list<T>, T>(range);
 }
