@@ -37,6 +37,9 @@ void PlatformEventHandler::Event(PlatformWindow *window, const PlatformEvent *ev
     case PlatformEvent::WindowCloseRequest:
         CloseEvent(window, event);
         return;
+    case PlatformEvent::NativeEvent:
+        NativeEvent(window, static_cast<const PlatformNativeEvent *>(event));
+        return;
     default:
         return;
     }
@@ -53,3 +56,4 @@ void PlatformEventHandler::ResizeEvent(PlatformWindow *, const PlatformResizeEve
 void PlatformEventHandler::ActivationEvent(PlatformWindow *, const PlatformEvent *) {}
 void PlatformEventHandler::CloseEvent(PlatformWindow *, const PlatformEvent *) {}
 void PlatformEventHandler::GamepadDeviceEvent(PlatformWindow *, const PlatformGamepadDeviceEvent *) {}
+void PlatformEventHandler::NativeEvent(PlatformWindow *, const PlatformNativeEvent *) {}

@@ -39,6 +39,8 @@ bool PlatformEventFilter::Event(PlatformWindow *window, const PlatformEvent *eve
         return ActivationEvent(window, event);
     case PlatformEvent::WindowCloseRequest:
         return CloseEvent(window, event);
+    case PlatformEvent::NativeEvent:
+        return NativeEvent(window, static_cast<const PlatformNativeEvent *>(event));
     default:
         return false;
     }
@@ -88,3 +90,6 @@ bool PlatformEventFilter::GamepadDeviceEvent(PlatformWindow *, const PlatformGam
     return false;
 }
 
+bool PlatformEventFilter::NativeEvent(PlatformWindow *, const PlatformNativeEvent *) {
+    return false;
+}

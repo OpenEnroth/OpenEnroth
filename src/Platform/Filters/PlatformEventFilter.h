@@ -34,6 +34,7 @@ class PlatformEventFilter {
     virtual bool ActivationEvent(PlatformWindow *window, const PlatformEvent *event);
     virtual bool CloseEvent(PlatformWindow *window, const PlatformEvent *event);
     virtual bool GamepadDeviceEvent(PlatformWindow *window, const PlatformGamepadDeviceEvent *event);
+    virtual bool NativeEvent(PlatformWindow *window, const PlatformNativeEvent *event);
 
  private:
     std::vector<PlatformEvent::Type> _eventTypes;

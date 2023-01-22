@@ -32,5 +32,5 @@ class PlatformEventHandler {
     virtual void ActivationEvent(PlatformWindow *window, const PlatformEvent *event);
     virtual void CloseEvent(PlatformWindow *window, const PlatformEvent *event);
     virtual void GamepadDeviceEvent(PlatformWindow *window, const PlatformGamepadDeviceEvent *event);
-    // TODO(captainurist): nativeEvent(PlatformWindow *window, const PlatformNativeEvent *event);
+    virtual void NativeEvent(PlatformWindow *window, const PlatformNativeEvent *event);
 };
