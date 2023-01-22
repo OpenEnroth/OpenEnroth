@@ -23,8 +23,8 @@ void EventTracer::start() {
 void EventTracer::finish(std::string_view path) {
     assert(ProxyPlatform::Base() && _tracing); // Proxies are installed && is tracing
 
-    _trace.saveToFile(path);
-    _trace.clear();
+    EventTrace::saveToFile(path, _trace);
+    _trace.events.clear();
     SetGlobalRandomEngine(std::move(_oldRandomEngine));
     _tracing = false;
 }
@@ -41,14 +41,17 @@ void EventTracer::SwapBuffers() {
     ProxyOpenGLContext::SwapBuffers();
 
     if (_tracing) {
-        _trace.recordRepaint();
+        PlatformEvent e;
+        e.type = EventTrace::PaintEvent;
+
+        _trace.events.emplace_back(std::make_unique<PlatformEvent>(e));
         _tickCount += 16; // Must be the same as the value in TestProxy::SwapBuffers.
     }
 }
 
 bool EventTracer::Event(const PlatformEvent *event) {
     if (_tracing)
-        _trace.recordEvent(event);
+        _trace.events.emplace_back(EventTrace::cloneEvent(event));
 
     return false; // We just record events & don't filter anything.
 }

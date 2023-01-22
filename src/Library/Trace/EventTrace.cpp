@@ -175,7 +175,7 @@ static void from_json(const Json &json, std::unique_ptr<PlatformEvent> &value) {
     });
 }
 
-void EventTrace::saveToFile(std::string_view path) const {
+void EventTrace::saveToFile(std::string_view path, const EventTrace &trace) {
     std::ofstream f;
     f.exceptions(std::ios_base::failbit | std::ios_base::badbit);
     f.open(std::string(path));
@@ -184,8 +184,8 @@ void EventTrace::saveToFile(std::string_view path) const {
     // to_json calls for individual elements. Fix upstream?
     // Note: there is an example in tests to reproduce.
     Json json;
-    for (size_t i = 0; i < _events.size(); i++)
-        to_json(json[i], _events[i]);
+    for (size_t i = 0; i < trace.events.size(); i++)
+        to_json(json[i], trace.events[i]);
 
     f << std::setw(4) << json;
 }
@@ -199,9 +199,9 @@ EventTrace EventTrace::loadFromFile(std::string_view path, PlatformWindow *windo
     f >> json;
 
     EventTrace result;
-    from_json(json, result._events);
+    from_json(json, result.events);
 
-    for (std::unique_ptr<PlatformEvent> &event : result._events) {
+    for (std::unique_ptr<PlatformEvent> &event : result.events) {
         DispatchByEventType(event->type, [&]<class T>(T *) {
             if constexpr (std::is_base_of_v<PlatformWindowEvent, T>) {
                 static_cast<PlatformWindowEvent *>(event.get())->window = window;
@@ -212,21 +212,12 @@ EventTrace EventTrace::loadFromFile(std::string_view path, PlatformWindow *windo
     return result;
 }
 
-void EventTrace::recordEvent(const PlatformEvent *event) {
-    assert(event->type != PaintEvent);
+std::unique_ptr<PlatformEvent> EventTrace::cloneEvent(const PlatformEvent *event) {
+    std::unique_ptr<PlatformEvent> result;
 
     DispatchByEventType(event->type, [&]<class T>(T *) {
-        _events.emplace_back(std::make_unique<T>(*static_cast<const T *>(event)));
+        result = std::make_unique<T>(*static_cast<const T *>(event));
     });
-}
 
-void EventTrace::recordRepaint() {
-    PlatformEvent tmp;
-    tmp.type = PaintEvent;
-
-    _events.emplace_back(std::make_unique<PlatformEvent>(tmp));
-}
-
-void EventTrace::clear() {
-    _events.clear();
+    return result;
 }

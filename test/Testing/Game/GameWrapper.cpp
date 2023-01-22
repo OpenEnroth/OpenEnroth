@@ -189,9 +189,9 @@ GUIButton *GameWrapper::AssertButton(std::string_view buttonId) {
 }
 
 void GameWrapper::PlayTrace(const std::string &name) {
-    auto trace = EventTrace::loadFromFile(testDataDir_ + name, state_->application->window()).takeEvents();
+    EventTrace trace = EventTrace::loadFromFile(testDataDir_ + name, state_->application->window());
 
-    for (std::unique_ptr<PlatformEvent> &event : trace) {
+    for (std::unique_ptr<PlatformEvent> &event : trace.events) {
         if (event->type == EventTrace::PaintEvent) {
             Tick(1);
         } else {
