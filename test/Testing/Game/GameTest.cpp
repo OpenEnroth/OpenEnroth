@@ -13,6 +13,7 @@ void GameTest::Init(GameWrapper *withWrapper) {
 void GameTest::SetUp() {
     const_cast<GameWrapper *&>(game) = globalGameWrapper;
 
+    game->GoToMainMenu();
     game->Reset();
 }
 

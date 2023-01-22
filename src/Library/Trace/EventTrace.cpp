@@ -9,21 +9,23 @@
 
 #include "Io/Key.h" // TODO(captainurist): doesn't belong here
 
+#include "PaintEvent.h"
+
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformEvent::Type, CASE_SENSITIVE, {
-    {PlatformEvent::KeyPress,                   "keyPress"},
-    {PlatformEvent::KeyRelease,                 "keyRelease"},
-    {PlatformEvent::GamepadConnected,           "gamepadConnected"},
-    {PlatformEvent::GamepadDisconnected,        "gamepadDisconnected"},
-    {PlatformEvent::MouseButtonPress,           "mouseButtonPress"},
-    {PlatformEvent::MouseButtonRelease,         "mouseButtonRelease"},
-    {PlatformEvent::MouseMove,                  "mouseMove"},
-    {PlatformEvent::MouseWheel,                 "mouseWheel"},
-    {PlatformEvent::WindowMove,                 "windowMove"},
-    {PlatformEvent::WindowResize,               "windowResize"},
-    {PlatformEvent::WindowActivate,             "windowActivate"},
-    {PlatformEvent::WindowDeactivate,           "windowDeactivate"},
-    {PlatformEvent::WindowCloseRequest,         "windowCloseRequest"},
-    {EventTrace::PaintEvent,                    "paint"}
+    {PlatformEvent::KeyPress,               "keyPress"},
+    {PlatformEvent::KeyRelease,             "keyRelease"},
+    {PlatformEvent::GamepadConnected,       "gamepadConnected"},
+    {PlatformEvent::GamepadDisconnected,    "gamepadDisconnected"},
+    {PlatformEvent::MouseButtonPress,       "mouseButtonPress"},
+    {PlatformEvent::MouseButtonRelease,     "mouseButtonRelease"},
+    {PlatformEvent::MouseMove,              "mouseMove"},
+    {PlatformEvent::MouseWheel,             "mouseWheel"},
+    {PlatformEvent::WindowMove,             "windowMove"},
+    {PlatformEvent::WindowResize,           "windowResize"},
+    {PlatformEvent::WindowActivate,         "windowActivate"},
+    {PlatformEvent::WindowDeactivate,       "windowDeactivate"},
+    {PlatformEvent::WindowCloseRequest,     "windowCloseRequest"},
+    {PaintEvent::Paint,                     "paint"}
 })
 MM_DEFINE_JSON_LEXICAL_SERIALIZATION_FUNCTIONS(PlatformEvent::Type)
 
@@ -110,6 +112,12 @@ MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(PlatformGamepadDeviceEvent, (
     (id, "id")
 ))
 
+MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(PaintEvent, (
+    (type, "type"),
+    (tickCount, "tickCount"),
+    (randomState, "randomState")
+))
+
 template<class Callable>
 inline void DispatchByEventType(PlatformEvent::Type type, Callable &&callable) {
     using PlatformEventType = PlatformEvent::Type; // TODO(captainurist): workaround for gcc-12 ice, drop once we have gcc-13.
@@ -141,8 +149,8 @@ inline void DispatchByEventType(PlatformEvent::Type type, Callable &&callable) {
     case PlatformEventType::WindowDeactivate:
     case PlatformEventType::WindowCloseRequest:
         callable(static_cast<PlatformWindowEvent *>(nullptr));
-    case EventTrace::PaintEvent:
-        callable(static_cast<PlatformEvent *>(nullptr));
+    case PaintEvent::Paint:
+        callable(static_cast<PaintEvent *>(nullptr));
         break;
     default:
         return;

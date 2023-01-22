@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #include "Utility/Geometry/Point.h"
 #include "Utility/Geometry/Size.h"
 

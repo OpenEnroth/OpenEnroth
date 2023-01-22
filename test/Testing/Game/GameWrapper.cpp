@@ -17,6 +17,7 @@
 
 #include "Library/Application/PlatformApplication.h"
 #include "Library/Trace/EventTrace.h"
+#include "Library/Trace/PaintEvent.h"
 
 #include "Platform/PlatformEvents.h"
 
@@ -32,7 +33,6 @@ GameWrapper::GameWrapper(TestStateHandle state, const std::string &testDataDir):
 GameWrapper::~GameWrapper() {}
 
 void GameWrapper::Reset() {
-    GoToMainMenu();
     state_->proxy->reset();
     SeedRandom(0);
 }
@@ -191,9 +191,24 @@ GUIButton *GameWrapper::AssertButton(std::string_view buttonId) {
 void GameWrapper::PlayTrace(const std::string &name) {
     EventTrace trace = EventTrace::loadFromFile(testDataDir_ + name, state_->application->window());
 
+    ASSERT_GE(trace.events.size(), 1);
+    ASSERT_EQ(trace.events[0]->type, PaintEvent::Paint); // Trace should start with a paint event.
+
+    bool isFirstPaintEvent = true;
+
     for (std::unique_ptr<PlatformEvent> &event : trace.events) {
-        if (event->type == EventTrace::PaintEvent) {
-            Tick(1);
+        if (event->type == PaintEvent::Paint) {
+            const PaintEvent *paintEvent = static_cast<const PaintEvent *>(event.get());
+
+            if (isFirstPaintEvent) {
+                Reset();
+                isFirstPaintEvent = false;
+            } else {
+                Tick(1);
+            }
+
+            EXPECT_EQ(Random(1024), paintEvent->randomState);
+            EXPECT_EQ(state_->application->platform()->TickCount(), paintEvent->tickCount);
         } else {
             state_->proxy->postEvent(std::move(event));
         }

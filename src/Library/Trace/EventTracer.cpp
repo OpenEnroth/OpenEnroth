@@ -7,6 +7,8 @@
 #include "Utility/Random/MersenneTwisterRandomEngine.h"
 #include "Utility/Random/Random.h"
 
+#include "PaintEvent.h"
+
 EventTracer::EventTracer() : PlatformEventFilter(PlatformEventFilter::ALL_EVENTS) {}
 
 EventTracer::~EventTracer() {}
@@ -40,22 +42,27 @@ int64_t EventTracer::TickCount() const {
 void EventTracer::SwapBuffers() {
     ProxyOpenGLContext::SwapBuffers();
 
-    if (_state == STATE_DISABLED)
+    switch (_state) {
+    case STATE_DISABLED:
         return;
-
-    if (_state == STATE_WAITING) {
+    case STATE_WAITING:
         _tickCount = 0;
         _oldRandomEngine = SetGlobalRandomEngine(std::make_unique<NonRandomEngine>());
         _state = STATE_TRACING;
+        break;
+    case STATE_TRACING:
+        _tickCount += EventTrace::FRAME_TIME_MS;
+        break;
     }
 
     assert(_state == STATE_TRACING);
 
-    PlatformEvent e;
-    e.type = EventTrace::PaintEvent;
+    PaintEvent e;
+    e.type = PaintEvent::Paint;
+    e.tickCount = _tickCount;
+    e.randomState = Random(1024);
 
-    _trace.events.emplace_back(std::make_unique<PlatformEvent>(e));
-    _tickCount += 16; // Must be the same as the value in TestProxy::SwapBuffers.
+    _trace.events.emplace_back(std::make_unique<PaintEvent>(e));
 }
 
 bool EventTracer::Event(const PlatformEvent *event) {
