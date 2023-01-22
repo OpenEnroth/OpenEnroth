@@ -107,7 +107,7 @@ void SdlEventLoop::DispatchEvent(PlatformEventHandler *eventHandler, const SDL_E
 }
 
 void SdlEventLoop::DispatchEvent(PlatformEventHandler *eventHandler, const PlatformEvent *event) {
-    assert(Segment(PlatformEvent::FirstEventType, PlatformEvent::LastEventType).contains(event->type) || event->type >= PlatformEvent::UserEvent);
+    assert(Segment(PlatformEvent::FirstEventType, PlatformEvent::LastEventType).contains(event->type));
 
     eventHandler->Event(event);
 }

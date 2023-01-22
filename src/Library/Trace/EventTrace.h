@@ -7,14 +7,15 @@
 
 #include "Platform/PlatformEvents.h"
 
+#include "Utility/Workaround/ToUnderlying.h"
+
 class PlatformApplication;
 
 // TODO(captainurist): just make this into a POD, and add static methods saveToFile, loadFromFile, cloneEvent.
 class EventTrace {
  public:
-    // TODO(captainurist): Just add User to PlatformEvent::Type, handle it properly everywhere, and don't resort to
-    // hacks here. Also, add current random state to PaintEvent, to debug later. And maybe also current tick count.
-    static constexpr PlatformEvent::Type PaintEvent = PlatformEvent::Invalid;
+    // TODO(captainurist): Add current random state to PaintEvent, to debug later. And maybe also current tick count.
+    static constexpr PlatformEvent::Type PaintEvent = static_cast<PlatformEvent::Type>(std::to_underlying(PlatformEvent::LastEventType) + 1);
 
     void saveToFile(std::string_view path) const;
     static EventTrace loadFromFile(std::string_view path, PlatformWindow *window);

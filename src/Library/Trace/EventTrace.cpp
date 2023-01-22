@@ -142,7 +142,7 @@ inline void DispatchByEventType(PlatformEvent::Type type, Callable &&callable) {
     case PlatformEventType::WindowCloseRequest:
         callable(static_cast<PlatformWindowEvent *>(nullptr));
     case EventTrace::PaintEvent:
-        callable(static_cast<PlatformEvent *>(nullptr)); // TODO(captainurist): UserEvent.
+        callable(static_cast<PlatformEvent *>(nullptr));
         break;
     default:
         return;
