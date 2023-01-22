@@ -27,10 +27,17 @@ class EventTracer : private ProxyPlatform, private ProxyOpenGLContext, public Pl
     void finish(std::string_view path); // TODO(captainurist): return trace here.
 
     bool isTracing() const {
-        return _tracing;
+        return _state != STATE_DISABLED;
     }
 
  private:
+    enum class State {
+        STATE_DISABLED, // Not tracing.
+        STATE_WAITING, // Requested to start tracing, waiting for `SwapBuffers` call.
+        STATE_TRACING // Tracing.
+    };
+    using enum State;
+
     friend class PlatformProxyIntrospection;
 
     virtual int64_t TickCount() const override;
@@ -38,7 +45,7 @@ class EventTracer : private ProxyPlatform, private ProxyOpenGLContext, public Pl
     virtual bool Event(const PlatformEvent *event) override;
 
  private:
-    bool _tracing = false;
+    State _state = STATE_DISABLED;
     int64_t _tickCount = 0;
     EventTrace _trace;
     std::unique_ptr<RandomEngine> _oldRandomEngine;
