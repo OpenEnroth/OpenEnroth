@@ -141,12 +141,6 @@ Game::Game(PlatformApplication *app) {
     this->decal_builder = EngineIoc::ResolveDecalBuilder();
     this->vis = EngineIoc::ResolveVis();
     this->menu = GameIoc::ResolveGameMenu();
-}
-
-Game::~Game() {}
-
-int Game::Run() {
-    IntegrityTest();
 
     ::application = app;
     ::platform = app->platform();
@@ -162,12 +156,17 @@ int Game::Run() {
     app->eventHandler()->installEventFilter(eventTracer.get());
     app->eventHandler()->installEventFilter(traceHandler.get());
     app->installProxy(eventTracer.get());
-    // TODO(captainurist): This code works for now, but these ^ need to be uninstalled properly.
+}
 
-    if (!window) {
-        log->Warning("Window creation failed");
-        return -1;
-    }
+Game::~Game() {
+    app->removeProxy(eventTracer.get());
+    app->eventHandler()->removeEventFilter(traceHandler.get());
+    app->eventHandler()->removeEventFilter(eventTracer.get());
+    app->eventHandler()->removeEventFilter(windowHandler.get());
+}
+
+int Game::Run() {
+    IntegrityTest();
 
     render = IRenderFactory().Create(config);
     ::render = render;
