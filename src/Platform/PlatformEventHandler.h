@@ -2,21 +2,16 @@
 
 #include "PlatformEvents.h"
 
-class PlatformWindow;
-
 /**
  * Event handler interface, to be implemented in user code.
  *
  * @see PlatformEventLoop
+ * @see FilteringEventHandler
  */
 class PlatformEventHandler {
  public:
     virtual ~PlatformEventHandler() = default;
 
-    /**
-     * @param window                    Platform window that generated the event.
-     * @param event                     Event.
-     */
     virtual void Event(const PlatformEvent *event);
 
  protected:

@@ -4,8 +4,6 @@
 
 #include "Platform/PlatformEvents.h"
 
-class PlatformWindow;
-
 class PlatformEventFilter {
  public:
     enum class EventWildcard { // TODO(captainurist): revisit after renaming event types for the new codestyle
