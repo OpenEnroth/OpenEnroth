@@ -14,5 +14,9 @@ var searchData=
   ['errorhandling_2eh_11',['ErrorHandling.h',['../ErrorHandling_8h.html',1,'']]],
   ['events_2ecpp_12',['Events.cpp',['../Events_8cpp.html',1,'']]],
   ['events_2eh_13',['Events.h',['../Events_8h.html',1,'']]],
-  ['events2d_2eh_14',['Events2D.h',['../Events2D_8h.html',1,'']]]
+  ['events2d_2eh_14',['Events2D.h',['../Events2D_8h.html',1,'']]],
+  ['eventtrace_2ecpp_15',['EventTrace.cpp',['../EventTrace_8cpp.html',1,'']]],
+  ['eventtrace_2eh_16',['EventTrace.h',['../EventTrace_8h.html',1,'']]],
+  ['eventtracer_2ecpp_17',['EventTracer.cpp',['../EventTracer_8cpp.html',1,'']]],
+  ['eventtracer_2eh_18',['EventTracer.h',['../EventTracer_8h.html',1,'']]]
 ];

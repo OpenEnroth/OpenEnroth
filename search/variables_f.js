@@ -13,7 +13,7 @@ var searchData=
   ['ogl_5ftexture_10',['ogl_texture',['../classTextureOpenGL.html#a56ab006b37ad443252cc0771853154f9',1,'TextureOpenGL']]],
   ['opacity_11',['opacity',['../structRenderBillboardD3D.html#af4af66e549bd75fa66224a4446c652cb',1,'RenderBillboardD3D']]],
   ['openedtelekinesis_12',['OpenedTelekinesis',['../mm7__data_8cpp.html#a9f4cbdd95ab59ddb837d6988e323b3f3',1,'OpenedTelekinesis():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a9f4cbdd95ab59ddb837d6988e323b3f3',1,'OpenedTelekinesis():&#160;mm7_data.cpp']]],
-  ['openglcontext_13',['openGlContext',['../EngineGlobals_8h.html#a83cbbe321843921101d9eba26f3042ff',1,'openGlContext():&#160;EngineGlobals.cpp'],['../EngineGlobals_8cpp.html#a83cbbe321843921101d9eba26f3042ff',1,'openGlContext():&#160;EngineGlobals.cpp']]],
+  ['openglcontext_13',['openGLContext',['../EngineGlobals_8h.html#a52cbe563574903b29c71a3d42ef6b803',1,'openGLContext():&#160;EngineGlobals.cpp'],['../EngineGlobals_8cpp.html#a52cbe563574903b29c71a3d42ef6b803',1,'openGLContext():&#160;EngineGlobals.cpp']]],
   ['opengles_14',['OpenGLES',['../RenderOpenGL_8cpp.html#ad12c1f606bb601dcbeb8617f088772ef',1,'RenderOpenGL.cpp']]],
   ['opponent_5fmastery_15',['opponent_mastery',['../Arcomage_8cpp.html#a99f9dd8e7c666013c89a5dfc2adc6db0',1,'Arcomage.cpp']]],
   ['opponents_5fturn_16',['opponents_turn',['../Arcomage_8cpp.html#a0baedb8d9f104c2b021dfea21fc2ee8e',1,'Arcomage.cpp']]],

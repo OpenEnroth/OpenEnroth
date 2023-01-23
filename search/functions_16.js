@@ -39,5 +39,6 @@ var searchData=
   ['viewtransform_36',['ViewTransform',['../structCamera3D.html#a396badc1e3335dc188a2c88d61f8a7f6',1,'Camera3D::ViewTransform(struct RenderVertexSoft *a1a, unsigned int uNumVertices)'],['../structCamera3D.html#a525586eca7cf9a04905be7702dae1625',1,'Camera3D::ViewTransform(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z)']]],
   ['viewtransfrom_5foffsetuv_37',['ViewTransfrom_OffsetUV',['../structCamera3D.html#a96859e741fc9eac1df1ddba1fd451edd',1,'Camera3D']]],
   ['vis_38',['Vis',['../classVis.html#abf7e70e0019fe93122ce8b53f5eedc50',1,'Vis']]],
-  ['visible_39',['Visible',['../structODMFace.html#a8113cb0afb1f45cc292fd22959459daa',1,'ODMFace::Visible()'],['../structBLVFace.html#ab0f27bf592ba9ca357dde5deef3459b4',1,'BLVFace::Visible()']]]
+  ['visible_39',['Visible',['../structODMFace.html#a8113cb0afb1f45cc292fd22959459daa',1,'ODMFace::Visible()'],['../structBLVFace.html#ab0f27bf592ba9ca357dde5deef3459b4',1,'BLVFace::Visible()']]],
+  ['visit_40',['visit',['../classPlatformProxyIntrospection.html#ad0ccdf20fc1480366f0230921a51e08f',1,'PlatformProxyIntrospection']]]
 ];

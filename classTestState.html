@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;36ba7be</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b439978</span>
    </div>
   </td>
  </tr>
@@ -70,6 +70,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classTestState-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">TestState Class Reference</div></div>
@@ -78,16 +79,17 @@ $(function() {
 
 <p><code>#include &lt;TestState.h&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:aaf15dd2d178fc43e056fdeeffe7e1c5c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestState.html#aaf15dd2d178fc43e056fdeeffe7e1c5c">TestState</a> (<a class="el" href="classPlatformApplication.html">PlatformApplication</a> *<a class="el" href="classTestState.html#ace5ac8bc5cffa358e86e7259aff8982e">application</a>)</td></tr>
+<tr class="separator:aaf15dd2d178fc43e056fdeeffe7e1c5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a25676c531908c73f368f8ee681f1dc4e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTestPlatform.html">TestPlatform</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestState.html#a25676c531908c73f368f8ee681f1dc4e">platform</a> = nullptr</td></tr>
-<tr class="separator:a25676c531908c73f368f8ee681f1dc4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab13d7b40e3b2140a1f0eb12294cc8439"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTestWindow.html">TestWindow</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestState.html#ab13d7b40e3b2140a1f0eb12294cc8439">window</a> = nullptr</td></tr>
-<tr class="separator:ab13d7b40e3b2140a1f0eb12294cc8439"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8eb2cf75a44bf80d319dd785323f11ce"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTestEventLoop.html">TestEventLoop</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestState.html#a8eb2cf75a44bf80d319dd785323f11ce">eventLoop</a> = nullptr</td></tr>
-<tr class="separator:a8eb2cf75a44bf80d319dd785323f11ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae562d963c50265952fd5954c50061f08"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestState.html#ae562d963c50265952fd5954c50061f08">time</a> = 0</td></tr>
-<tr class="separator:ae562d963c50265952fd5954c50061f08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace5ac8bc5cffa358e86e7259aff8982e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPlatformApplication.html">PlatformApplication</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestState.html#ace5ac8bc5cffa358e86e7259aff8982e">application</a> = nullptr</td></tr>
+<tr class="separator:ace5ac8bc5cffa358e86e7259aff8982e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc1de753997de81ff93835b6ddbafa6f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTestProxy.html">TestProxy</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestState.html#adc1de753997de81ff93835b6ddbafa6f">proxy</a> = nullptr</td></tr>
+<tr class="separator:adc1de753997de81ff93835b6ddbafa6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad7f4c070d0148f906847ccb8d334994c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestState.html#ad7f4c070d0148f906847ccb8d334994c">terminating</a> = false</td></tr>
 <tr class="separator:ad7f4c070d0148f906847ccb8d334994c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a351903f7dcf2f1e9e17816f21f468b9b"><td class="memItemLeft" align="right" valign="top">std::function&lt; void()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestState.html#a351903f7dcf2f1e9e17816f21f468b9b">terminationHandler</a></td></tr>
@@ -99,7 +101,48 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:ae9a658b57828aa07653da5563ad7d2c5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; std::condition_variable, <a class="el" href="TestState_8h.html#aeac096f44fc856cfde016f31a112a0aeacd56e51c0c8473db1b42fc8d9af7fa6f">GameSide</a>, <a class="el" href="TestState_8h.html#aeac096f44fc856cfde016f31a112a0aeabc835fed8cdbffe6bf4319e3b09c2969">TestSide</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestState.html#ae9a658b57828aa07653da5563ad7d2c5">wakeEvents</a></td></tr>
 <tr class="separator:ae9a658b57828aa07653da5563ad7d2c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="aaf15dd2d178fc43e056fdeeffe7e1c5c" name="aaf15dd2d178fc43e056fdeeffe7e1c5c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaf15dd2d178fc43e056fdeeffe7e1c5c">&#9670;&#160;</a></span>TestState()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TestState::TestState </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classPlatformApplication.html">PlatformApplication</a> *&#160;</td>
+          <td class="paramname"><em>application</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="ace5ac8bc5cffa358e86e7259aff8982e" name="ace5ac8bc5cffa358e86e7259aff8982e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace5ac8bc5cffa358e86e7259aff8982e">&#9670;&#160;</a></span>application</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classPlatformApplication.html">PlatformApplication</a>* TestState::application = nullptr</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a69af536ecbede1bfd6d4ca299ae620c9" name="a69af536ecbede1bfd6d4ca299ae620c9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a69af536ecbede1bfd6d4ca299ae620c9">&#9670;&#160;</a></span>currentSide</h2>
 
@@ -108,20 +151,6 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="TestState_8h.html#aeac096f44fc856cfde016f31a112a0ae">GameTestSide</a> TestState::currentSide</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a8eb2cf75a44bf80d319dd785323f11ce" name="a8eb2cf75a44bf80d319dd785323f11ce"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8eb2cf75a44bf80d319dd785323f11ce">&#9670;&#160;</a></span>eventLoop</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classTestEventLoop.html">TestEventLoop</a>* TestState::eventLoop = nullptr</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -142,14 +171,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a25676c531908c73f368f8ee681f1dc4e" name="a25676c531908c73f368f8ee681f1dc4e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a25676c531908c73f368f8ee681f1dc4e">&#9670;&#160;</a></span>platform</h2>
+<a id="adc1de753997de81ff93835b6ddbafa6f" name="adc1de753997de81ff93835b6ddbafa6f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adc1de753997de81ff93835b6ddbafa6f">&#9670;&#160;</a></span>proxy</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classTestPlatform.html">TestPlatform</a>* TestState::platform = nullptr</td>
+          <td class="memname"><a class="el" href="classTestProxy.html">TestProxy</a>* TestState::proxy = nullptr</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -184,20 +213,6 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ae562d963c50265952fd5954c50061f08" name="ae562d963c50265952fd5954c50061f08"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae562d963c50265952fd5954c50061f08">&#9670;&#160;</a></span>time</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int64_t TestState::time = 0</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="ae9a658b57828aa07653da5563ad7d2c5" name="ae9a658b57828aa07653da5563ad7d2c5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae9a658b57828aa07653da5563ad7d2c5">&#9670;&#160;</a></span>wakeEvents</h2>
 
@@ -206,20 +221,6 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;std::condition_variable, <a class="el" href="TestState_8h.html#aeac096f44fc856cfde016f31a112a0aeacd56e51c0c8473db1b42fc8d9af7fa6f">GameSide</a>, <a class="el" href="TestState_8h.html#aeac096f44fc856cfde016f31a112a0aeabc835fed8cdbffe6bf4319e3b09c2969">TestSide</a>&gt; TestState::wakeEvents</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ab13d7b40e3b2140a1f0eb12294cc8439" name="ab13d7b40e3b2140a1f0eb12294cc8439"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab13d7b40e3b2140a1f0eb12294cc8439">&#9670;&#160;</a></span>window</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classTestWindow.html">TestWindow</a>* TestState::window = nullptr</td>
         </tr>
       </table>
 </div><div class="memdoc">

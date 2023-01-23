@@ -14,5 +14,6 @@ var searchData=
   ['renderd3d_5fd3ddevdesc_11',['RenderD3D_D3DDevDesc',['../structRenderD3D__D3DDevDesc.html',1,'']]],
   ['renderopengl_12',['RenderOpenGL',['../classRenderOpenGL.html',1,'']]],
   ['rendervertexd3d3_13',['RenderVertexD3D3',['../structRenderVertexD3D3.html',1,'']]],
-  ['rendervertexsoft_14',['RenderVertexSoft',['../structRenderVertexSoft.html',1,'']]]
+  ['rendervertexsoft_14',['RenderVertexSoft',['../structRenderVertexSoft.html',1,'']]],
+  ['reversedrange_15',['ReversedRange',['../classdetail_1_1ReversedRange.html',1,'detail']]]
 ];

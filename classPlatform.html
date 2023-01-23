@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;36ba7be</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b439978</span>
    </div>
   </td>
  </tr>
@@ -84,11 +84,13 @@ Inheritance diagram for Platform:</div>
  <div class="center">
   <img src="classPlatform.png" usemap="#Platform_map" alt=""/>
   <map id="Platform_map" name="Platform_map">
-<area href="classProxyBase.html" alt="ProxyBase&lt; Platform &gt;" shape="rect" coords="0,56,143,80"/>
-<area href="classSdlPlatform.html" alt="SdlPlatform" shape="rect" coords="153,56,296,80"/>
-<area href="classProxyPlatform.html" alt="ProxyPlatform" shape="rect" coords="0,112,143,136"/>
-<area href="classWinPlatform.html" alt="WinPlatform" shape="rect" coords="153,112,296,136"/>
-<area href="classTestPlatform.html" alt="TestPlatform" shape="rect" coords="0,168,143,192"/>
+<area href="classProxyBase.html" alt="ProxyBase&lt; Platform &gt;" shape="rect" coords="153,56,296,80"/>
+<area href="classSdlPlatform.html" alt="SdlPlatform" shape="rect" coords="306,56,449,80"/>
+<area href="classProxyPlatform.html" alt="ProxyPlatform" shape="rect" coords="153,112,296,136"/>
+<area href="classWinPlatform.html" alt="WinPlatform" shape="rect" coords="306,112,449,136"/>
+<area href="classApplicationProxy.html" alt="ApplicationProxy" shape="rect" coords="0,168,143,192"/>
+<area href="classEventTracer.html" alt="EventTracer" shape="rect" coords="153,168,296,192"/>
+<area href="classTestProxy.html" alt="TestProxy" shape="rect" coords="306,168,449,192"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -138,7 +140,7 @@ Static Public Member Functions</h2></td></tr>
 <p >Then there are the following extension points:</p><ul>
 <li><code><a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a></code>, which should be subclassed in user code to handle platform events. An instance is passed to <code><a class="el" href="classPlatformEventLoop.html">PlatformEventLoop</a></code> methods, so this is where the calls back into the user code happen.</li>
 </ul>
-<p >That's it, there is only one extension point. If you want fancy event handler chains, you can do this in user code.</p>
+<p >That's it, there is only one extension point. If you want fancy event handler chains, you can use <code><a class="el" href="classFilteringEventHandler.html">FilteringEventHandler</a></code>.</p>
 <p >And then there are value types:</p><ul>
 <li>All kinds of enums for keyboard keys, mouse keys, and modifiers.</li>
 <li><code><a class="el" href="classPlatformEvent.html">PlatformEvent</a></code> and subclasses for delivering events to <code><a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a></code>.</li>
@@ -205,7 +207,7 @@ Static Public Member Functions</h2></td></tr>
 <p >Creates a new event loop.</p>
 <dl class="section return"><dt>Returns</dt><dd>Newly created event loop, or <code>nullptr</code> on error. </dd></dl>
 
-<p>Implemented in <a class="el" href="classProxyPlatform.html#a3c4c075b15ac5f3c0e661ba2219a204d">ProxyPlatform</a>, <a class="el" href="classSdlPlatform.html#af500fa184f30c4f9b228473cb94ee196">SdlPlatform</a>, and <a class="el" href="classTestPlatform.html#a6ae6b1b83e7e107aa7f53186b5fab40a">TestPlatform</a>.</p>
+<p>Implemented in <a class="el" href="classApplicationProxy.html#ac23e0d003c2f13cd9ac6261e9cb756e4">ApplicationProxy</a>, <a class="el" href="classProxyPlatform.html#a3c4c075b15ac5f3c0e661ba2219a204d">ProxyPlatform</a>, and <a class="el" href="classSdlPlatform.html#af500fa184f30c4f9b228473cb94ee196">SdlPlatform</a>.</p>
 
 </div>
 </div>
@@ -304,7 +306,7 @@ Static Public Member Functions</h2></td></tr>
 <p >Creates a new platform window.</p>
 <dl class="section return"><dt>Returns</dt><dd>Newly created window, or <code>nullptr</code> on error. </dd></dl>
 
-<p>Implemented in <a class="el" href="classProxyPlatform.html#a0bc206be64471f9624edefe41b7be760">ProxyPlatform</a>, <a class="el" href="classSdlPlatform.html#abc26bab52c0e4e44740e66ff16f26528">SdlPlatform</a>, and <a class="el" href="classTestPlatform.html#a4dd434287d918fbfbcd0bba5a78785cc">TestPlatform</a>.</p>
+<p>Implemented in <a class="el" href="classApplicationProxy.html#a79c81873d8238a1e379aa7567ee6d6a0">ApplicationProxy</a>, <a class="el" href="classProxyPlatform.html#a0bc206be64471f9624edefe41b7be760">ProxyPlatform</a>, and <a class="el" href="classSdlPlatform.html#abc26bab52c0e4e44740e66ff16f26528">SdlPlatform</a>.</p>
 
 </div>
 </div>
@@ -505,7 +507,7 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Current value of a monotonic clock in milliseconds. </dd></dl>
 
-<p>Implemented in <a class="el" href="classProxyPlatform.html#ab5769bf85cf249700ede6e686263790f">ProxyPlatform</a>, <a class="el" href="classSdlPlatform.html#aecfb5769a4b55e63235c799555335f2d">SdlPlatform</a>, and <a class="el" href="classTestPlatform.html#ae19fe655558d248d0509cdfca7f885e7">TestPlatform</a>.</p>
+<p>Implemented in <a class="el" href="classEventTracer.html#aa6fbd8960e7b91e14888548b3c760fcb">EventTracer</a>, <a class="el" href="classProxyPlatform.html#ab5769bf85cf249700ede6e686263790f">ProxyPlatform</a>, <a class="el" href="classSdlPlatform.html#aecfb5769a4b55e63235c799555335f2d">SdlPlatform</a>, and <a class="el" href="classTestProxy.html#a1b19b1d0fc322c50c1ecfc9a1f8ec339">TestProxy</a>.</p>
 
 </div>
 </div>
