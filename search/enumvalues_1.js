@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['b_0',['B',['../PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecca9d5ed678fe57bcca610140957afab571',1,'PlatformKey.h']]],
-  ['backslash_1',['BackSlash',['../PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecca3ca274eeb43af8abc2e20aaf69003282',1,'PlatformKey.h']]],
-  ['backspace_2',['Backspace',['../PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eeccacd7d13ceea728b08555f7c818cfb13ef',1,'PlatformKey.h']]],
+  ['b_0',['B',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca9d5ed678fe57bcca610140957afab571',1,'PlatformEnums.h']]],
+  ['backslash_1',['BackSlash',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca3ca274eeb43af8abc2e20aaf69003282',1,'PlatformEnums.h']]],
+  ['backspace_2',['Backspace',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eeccacd7d13ceea728b08555f7c818cfb13ef',1,'PlatformEnums.h']]],
   ['banker_3',['Banker',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a426bb41510625be4ce5a99a1d4737c0f',1,'NPCEnums.h']]],
   ['bard_4',['Bard',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4ab406431a097523d61e1a351b07537599',1,'NPCEnums.h']]],
   ['become_5fmagic_5fguild_5fmember_5',['BECOME_MAGIC_GUILD_MEMBER',['../Spells_8h.html#a4e71efcf980b83e3205a4079c10bd8d5a7b26614b5cae72d067d6b2a2857d8348',1,'Spells.h']]],

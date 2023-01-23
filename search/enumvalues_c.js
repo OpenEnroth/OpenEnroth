@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['m_0',['M',['../PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecca69691c7bdcc3ce6d5d8a1361f22d04ac',1,'PlatformKey.h']]],
+  ['m_0',['M',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca69691c7bdcc3ce6d5d8a1361f22d04ac',1,'PlatformEnums.h']]],
   ['magic_5fa_1',['MAGIC_A',['../Serialization__ut_8cpp.html#adb7b8082bc42eac875e12a319393e1b3af6c185c1b24ad3e23bd2a64cafe2b775',1,'Serialization_ut.cpp']]],
   ['magic_5fb_2',['MAGIC_B',['../Serialization__ut_8cpp.html#adb7b8082bc42eac875e12a319393e1b3a07dfaae59aa149dac1ef539cc5004ab4',1,'Serialization_ut.cpp']]],
   ['magic_5fc_3',['MAGIC_C',['../Serialization__ut_8cpp.html#adb7b8082bc42eac875e12a319393e1b3a4ab1c71f71ca34b246a797612cf9a90b',1,'Serialization_ut.cpp']]],
@@ -66,8 +66,8 @@ var searchData=
   ['merchant_5fphrase_5fprice_63',['MERCHANT_PHRASE_PRICE',['../NPCEnums_8h.html#a4daf86d2fc45619eeed9db250e6c8b67a890cc89d65cff2243eed8dbe9a73509d',1,'NPCEnums.h']]],
   ['merchant_5fphrase_5fprice_5fhaggle_64',['MERCHANT_PHRASE_PRICE_HAGGLE',['../NPCEnums_8h.html#a4daf86d2fc45619eeed9db250e6c8b67abea208ef23de2a7d6d7db33298486543',1,'NPCEnums.h']]],
   ['merchant_5fphrase_5fprice_5fhaggle_5fto_5factual_5fprice_65',['MERCHANT_PHRASE_PRICE_HAGGLE_TO_ACTUAL_PRICE',['../NPCEnums_8h.html#a4daf86d2fc45619eeed9db250e6c8b67abd00cb8801681a2bb0be04a70de212c3',1,'NPCEnums.h']]],
-  ['meta_66',['Meta',['../PlatformModifiers_8h.html#aaf0638d2a3414c9cae377d29330c70b3ab6755d218d5f4e1cef9cce9cc39aeda9',1,'PlatformModifiers.h']]],
-  ['middle_67',['Middle',['../PlatformMouseButton_8h.html#a24f0ba632b7eb4b8c479f745c38d4558ab1ca34f82e83c52b010f86955f264e05',1,'PlatformMouseButton.h']]],
+  ['meta_66',['Meta',['../PlatformEnums_8h.html#aaf0638d2a3414c9cae377d29330c70b3ab6755d218d5f4e1cef9cce9cc39aeda9',1,'PlatformEnums.h']]],
+  ['middle_67',['Middle',['../PlatformEnums_8h.html#a24f0ba632b7eb4b8c479f745c38d4558ab1ca34f82e83c52b010f86955f264e05',1,'PlatformEnums.h']]],
   ['minus_68',['Minus',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca453fb623e752c5993f65bc410fd74fe5',1,'Io']]],
   ['model_5findoor_69',['MODEL_INDOOR',['../Indoor_8h.html#adc29c2ff13d900c2f185ee95427fb06ca08100875ef7374b310de5c908192348e',1,'Indoor.h']]],
   ['monk_70',['Monk',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a646908332e7cd02817736e398bc80b0a',1,'NPCEnums.h']]],

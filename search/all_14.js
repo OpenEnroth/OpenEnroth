@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['t_0',['T',['../PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eeccab9ece18c950afbfa6b0fdbfa4ff731d3',1,'PlatformKey.h']]],
-  ['tab_1',['Tab',['../PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecca5c6ba25104401c9ee0650230fc6ba413',1,'PlatformKey.h']]],
+  ['t_0',['T',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eeccab9ece18c950afbfa6b0fdbfa4ff731d3',1,'PlatformEnums.h']]],
+  ['tab_1',['Tab',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca5c6ba25104401c9ee0650230fc6ba413',1,'PlatformEnums.h']]],
   ['table_5fpos_2',['table_pos',['../structAcromageCardOnTable.html#a67dd062da52e87b00b826ef1fac9f561',1,'AcromageCardOnTable']]],
   ['tacha_3',['Tacha',['../classColorTable.html#a5e5e8e2a70b3ff9ef10736735358fb65',1,'ColorTable']]],
   ['tail_4',['tail',['../struct__evt__raw.html#ae630d4f7b3137869f859ceac7f90b607',1,'_evt_raw']]],
@@ -88,9 +88,9 @@ var searchData=
   ['textshader_85',['textshader',['../classRenderOpenGL.html#a1d5ef9717bc8beb2b9c12b2dfb9c433c',1,'RenderOpenGL']]],
   ['textshaderstore_86',['textshaderstore',['../RenderOpenGL_8cpp.html#a0398a1fb3dcd30de4ddae2c08b7a815d',1,'RenderOpenGL.cpp']]],
   ['texture_87',['Texture',['../classTexture.html',1,'']]],
-  ['texture_88',['texture',['../structRenderBillboardD3D.html#a3414ee852a723a7e61a3c7af15fb6269',1,'RenderBillboardD3D::texture()'],['../structParticle.html#a1fb77b0e53df04ef3951c276e3d37a1d',1,'Particle::texture()'],['../structParticle__sw.html#a78f7bf67be87334df23d7d821a43420f',1,'Particle_sw::texture()'],['../structBatchTriangles.html#a56949b882245c0f58f7242ca63fcb1b3',1,'BatchTriangles::texture()']]],
+  ['texture_88',['texture',['../structBatchTriangles.html#a56949b882245c0f58f7242ca63fcb1b3',1,'BatchTriangles::texture()'],['../structParticle__sw.html#a78f7bf67be87334df23d7d821a43420f',1,'Particle_sw::texture()'],['../structRenderBillboardD3D.html#a3414ee852a723a7e61a3c7af15fb6269',1,'RenderBillboardD3D::texture()']]],
   ['texture_89',['Texture',['../classTexture.html#af6fad6785a33ca3fb5fed571cd038db7',1,'Texture']]],
-  ['texture_90',['texture',['../classTileDesc.html#a06faf2648d95d5acc4bccd3363c37af1',1,'TileDesc::texture()'],['../structProjectileAnim.html#a4a9a3dc9c0f3b961cd432e788c4639ae',1,'ProjectileAnim::texture()'],['../classSprite.html#a3d42412fa0ae1138f7f7bcf4e8d85110',1,'Sprite::texture()'],['../structPolygon.html#a2a60cf80c92379d1e786cef7edf16a40',1,'Polygon::texture()']]],
+  ['texture_90',['texture',['../classTileDesc.html#a06faf2648d95d5acc4bccd3363c37af1',1,'TileDesc::texture()'],['../structProjectileAnim.html#a4a9a3dc9c0f3b961cd432e788c4639ae',1,'ProjectileAnim::texture()'],['../classSprite.html#a3d42412fa0ae1138f7f7bcf4e8d85110',1,'Sprite::texture()'],['../structPolygon.html#a2a60cf80c92379d1e786cef7edf16a40',1,'Polygon::texture()'],['../structParticle.html#a1fb77b0e53df04ef3951c276e3d37a1d',1,'Particle::texture()']]],
   ['texture_2eh_91',['Texture.h',['../Texture_8h.html',1,'']]],
   ['texture_5f24bit_5fpalette_92',['TEXTURE_24BIT_PALETTE',['../LOD_8h.html#a7359f4c244be23e8dc2b5fc4232c8c54ae64ff87fe2a3228f6f65eb507237e3ed',1,'LOD.h']]],
   ['texture_5fdefault_93',['TEXTURE_DEFAULT',['../LOD_8h.html#a7359f4c244be23e8dc2b5fc4232c8c54a1c1fa6ee771ae6e5643eea6259295aac',1,'LOD.h']]],
@@ -127,7 +127,7 @@ var searchData=
   ['thrownumberdeserializationerror_124',['throwNumberDeserializationError',['../SerializationExceptions_8cpp.html#a48eeac745b96bb0a6da9974aeb933e6d',1,'throwNumberDeserializationError(std::string_view invalidValue, std::string_view typeName, std::errc error):&#160;SerializationExceptions.cpp'],['../SerializationExceptions_8h.html#a48eeac745b96bb0a6da9974aeb933e6d',1,'throwNumberDeserializationError(std::string_view invalidValue, std::string_view typeName, std::errc error):&#160;SerializationExceptions.cpp']]],
   ['tick_125',['Tick',['../classGameWrapper.html#ab55663c247a3289cc1950d90ffefc623',1,'GameWrapper']]],
   ['tickcount_126',['TickCount',['../classProxyPlatform.html#ab5769bf85cf249700ede6e686263790f',1,'ProxyPlatform::TickCount()'],['../classPlatform.html#af1fdbcde1ca33e7e8c9728eccd0547d1',1,'Platform::TickCount()'],['../classEventTracer.html#aa6fbd8960e7b91e14888548b3c760fcb',1,'EventTracer::TickCount()'],['../classSdlPlatform.html#aecfb5769a4b55e63235c799555335f2d',1,'SdlPlatform::TickCount()'],['../classTestProxy.html#a1b19b1d0fc322c50c1ecfc9a1f8ec339',1,'TestProxy::TickCount()']]],
-  ['tilde_127',['Tilde',['../PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecca77a804418d76dc407383a618b60853ab',1,'PlatformKey.h']]],
+  ['tilde_127',['Tilde',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca77a804418d76dc407383a618b60853ab',1,'PlatformEnums.h']]],
   ['tile_5fdesc_5fblock_128',['TILE_DESC_BLOCK',['../TileFrameTable_8h.html#a2cad1e88b6356c36f6dbc1bd0002ff8ca8932b79269db18b511b71696d6c162e9',1,'TileFrameTable.h']]],
   ['tile_5fdesc_5fburn_129',['TILE_DESC_BURN',['../TileFrameTable_8h.html#a2cad1e88b6356c36f6dbc1bd0002ff8ca1fc6fb6d7f12bff477172e9fc726b4dc',1,'TileFrameTable.h']]],
   ['tile_5fdesc_5fdont_5fdraw_130',['TILE_DESC_DONT_DRAW',['../TileFrameTable_8h.html#a2cad1e88b6356c36f6dbc1bd0002ff8ca70c379175b9ea074368e5aa83a938a67',1,'TileFrameTable.h']]],
@@ -395,11 +395,10 @@ var searchData=
   ['twodverts_392',['twodverts',['../structtwodverts.html',1,'']]],
   ['twodvertscnt_393',['twodvertscnt',['../RenderOpenGL_8cpp.html#a1b08d9638f463d97eb0aa54227c5b31e',1,'RenderOpenGL.cpp']]],
   ['txt_5ffile_5fframetable_5fparser_394',['txt_file_frametable_parser',['../FrameTableInc_8cpp.html#a68ac929c18f6338aba8ad246660a454f',1,'txt_file_frametable_parser(const char *str_to_parse, FrameTableTxtLine *tokens_table):&#160;FrameTableInc.cpp'],['../FrameTableInc_8h.html#a68ac929c18f6338aba8ad246660a454f',1,'txt_file_frametable_parser(const char *str_to_parse, FrameTableTxtLine *tokens_table):&#160;FrameTableInc.cpp']]],
-  ['type_395',['type',['../classAVStreamWrapper.html#a679e7c64d493a1f58994b1703a2ef823',1,'AVStreamWrapper']]],
+  ['type_395',['type',['../structParticle__sw.html#ad5caf699963ae1b98018e2891f7a374f',1,'Particle_sw::type()'],['../classPlatformEvent.html#a39567c6515b4c927dcf3c576ffb9ff54',1,'PlatformEvent::type()'],['../classAVStreamWrapper.html#a679e7c64d493a1f58994b1703a2ef823',1,'AVStreamWrapper::type()'],['../structParticle.html#af36c2527a2a500195d7b2fd090aabc1f',1,'Particle::type()'],['../structlua__nk__property.html#a77c9e851e2de19124f989a81a9815443',1,'lua_nk_property::type()']]],
   ['type_396',['Type',['../classPlatformEvent.html#ab1b85cb24f01d755e87bf165a8b18ee8',1,'PlatformEvent::Type()'],['../classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072b',1,'GUIProgressBar::Type()']]],
-  ['type_397',['type',['../classPlatformEvent.html#a39567c6515b4c927dcf3c576ffb9ff54',1,'PlatformEvent::type()'],['../structParticle.html#af36c2527a2a500195d7b2fd090aabc1f',1,'Particle::type()'],['../structParticle__sw.html#ad5caf699963ae1b98018e2891f7a374f',1,'Particle_sw::type()'],['../structlua__nk__property.html#a77c9e851e2de19124f989a81a9815443',1,'lua_nk_property::type()']]],
-  ['type_5fbox_398',['TYPE_Box',['../classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072ba9c59acc74de3663121b8fbfd9bfcd043',1,'GUIProgressBar']]],
-  ['type_5ffullscreen_399',['TYPE_Fullscreen',['../classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072ba7d7f91a7f500ac551bba7eb426d12dce',1,'GUIProgressBar']]],
-  ['type_5fnone_400',['TYPE_None',['../classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072ba818af8bd9eceb7740bb08466a7cf4015',1,'GUIProgressBar']]],
-  ['typename_401',['typeName',['../namespacedetail.html#abc7d0567dd4f86b4f4589749e91bd294',1,'detail']]]
+  ['type_5fbox_397',['TYPE_Box',['../classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072ba9c59acc74de3663121b8fbfd9bfcd043',1,'GUIProgressBar']]],
+  ['type_5ffullscreen_398',['TYPE_Fullscreen',['../classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072ba7d7f91a7f500ac551bba7eb426d12dce',1,'GUIProgressBar']]],
+  ['type_5fnone_399',['TYPE_None',['../classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072ba818af8bd9eceb7740bb08466a7cf4015',1,'GUIProgressBar']]],
+  ['typename_400',['typeName',['../namespacedetail.html#abc7d0567dd4f86b4f4589749e91bd294',1,'detail']]]
 ];

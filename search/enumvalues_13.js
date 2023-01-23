@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['t_0',['T',['../PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eeccab9ece18c950afbfa6b0fdbfa4ff731d3',1,'PlatformKey.h']]],
-  ['tab_1',['Tab',['../PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecca5c6ba25104401c9ee0650230fc6ba413',1,'PlatformKey.h']]],
+  ['t_0',['T',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eeccab9ece18c950afbfa6b0fdbfa4ff731d3',1,'PlatformEnums.h']]],
+  ['tab_1',['Tab',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca5c6ba25104401c9ee0650230fc6ba413',1,'PlatformEnums.h']]],
   ['targetundead_2',['TargetUndead',['../Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355ca02b5468b3b7bce8611a85e8fecf406b7',1,'Vis.h']]],
   ['te_5fai_5fflee_3',['TE_AI_FLEE',['../TurnEngine_8h.html#ad787e59edbb1a7b858de87875d03acfaa513d6bf8a6061e600e223e5e4c961c30',1,'TurnEngine.h']]],
   ['te_5fai_5fmelee_5fattack_4',['TE_AI_MELEE_ATTACK',['../TurnEngine_8h.html#ad787e59edbb1a7b858de87875d03acfaae811b34ad016562fa65165e2365fe0e7',1,'TurnEngine.h']]],
@@ -29,7 +29,7 @@ var searchData=
   ['texture_5fdefault_26',['TEXTURE_DEFAULT',['../LOD_8h.html#a7359f4c244be23e8dc2b5fc4232c8c54a1c1fa6ee771ae6e5643eea6259295aac',1,'LOD.h']]],
   ['texture_5fframe_5ftable_5ffirst_27',['TEXTURE_FRAME_TABLE_FIRST',['../Image_8h.html#a5e9939c5e3b64ffedfe177fd6e8100bca19952e6ead4a02921cbdb36cbab0d0c1',1,'Image.h']]],
   ['texture_5fframe_5ftable_5fmore_5fframes_28',['TEXTURE_FRAME_TABLE_MORE_FRAMES',['../Image_8h.html#a5e9939c5e3b64ffedfe177fd6e8100bca67be46ebaac4eaa1f85e4ea06440d3fd',1,'Image.h']]],
-  ['tilde_29',['Tilde',['../PlatformKey_8h.html#a2ba59747730ab559dd1191f51081eecca77a804418d76dc407383a618b60853ab',1,'PlatformKey.h']]],
+  ['tilde_29',['Tilde',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca77a804418d76dc407383a618b60853ab',1,'PlatformEnums.h']]],
   ['tile_5fdesc_5fblock_30',['TILE_DESC_BLOCK',['../TileFrameTable_8h.html#a2cad1e88b6356c36f6dbc1bd0002ff8ca8932b79269db18b511b71696d6c162e9',1,'TileFrameTable.h']]],
   ['tile_5fdesc_5fburn_31',['TILE_DESC_BURN',['../TileFrameTable_8h.html#a2cad1e88b6356c36f6dbc1bd0002ff8ca1fc6fb6d7f12bff477172e9fc726b4dc',1,'TileFrameTable.h']]],
   ['tile_5fdesc_5fdont_5fdraw_32',['TILE_DESC_DONT_DRAW',['../TileFrameTable_8h.html#a2cad1e88b6356c36f6dbc1bd0002ff8ca70c379175b9ea074368e5aa83a938a67',1,'TileFrameTable.h']]],
