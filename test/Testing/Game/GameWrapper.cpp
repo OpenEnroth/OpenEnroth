@@ -121,18 +121,21 @@ void GameWrapper::GoToMainMenu() {
 }
 
 void GameWrapper::LoadGame(const std::string &name) {
-    std::string saveName = "___test.mm7";
+    std::string saveName = "!!!test.mm7";
     std::string savePath = MakeDataPath("saves", saveName);
     if (std::filesystem::exists(savePath))
         std::filesystem::remove(savePath);
     std::filesystem::copy_file(testDataDir_ + name, savePath);
 
+    // TODO(captainurist): these tricks might fail if we have more than 45 save files.
+
     GoToMainMenu();
     PressGuiButton("MainMenu_LoadGame");
     Tick(3);
 
-    EXPECT_TRUE(pSavegameUsedSlots[0]);
-    EXPECT_EQ(pSavegameList->pFileList[0], saveName);
+    // Using asserts here as if we can't load the save then there's usually little reason to continue the test.
+    ASSERT_TRUE(pSavegameUsedSlots[0]);
+    ASSERT_EQ(pSavegameList->pFileList[0], saveName);
 
     PressGuiButton("LoadMenu_Slot0");
     Tick(2);
