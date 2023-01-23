@@ -1,16 +1,13 @@
 #pragma once
 
-#include <memory>
 #include <mutex>
 #include <condition_variable>
 #include <functional>
 
 #include "Utility/IndexedArray.h"
 
-class TestPlatform;
-class TestWindow;
-class TestEventLoop;
-class TestGamepad;
+class TestProxy;
+class PlatformApplication;
 
 enum class GameTestSide {
     GameSide,
@@ -18,14 +15,12 @@ enum class GameTestSide {
 };
 using enum GameTestSide;
 
-
 class TestState {
  public:
-    TestPlatform *platform = nullptr;
-    TestWindow *window = nullptr;
-    TestEventLoop *eventLoop = nullptr;
+    explicit TestState(PlatformApplication *application) : application(application) {}
 
-    int64_t time = 0; // In milliseconds, for TestPlatform::TickCount
+    PlatformApplication *application = nullptr;
+    TestProxy *proxy = nullptr;
 
     bool terminating = false;
     std::function<void()> terminationHandler;

@@ -34,6 +34,8 @@ class GameWrapper {
     void LoadGame(const std::string &name);
     void SkipLoadingScreen();
 
+    void PlayTrace(const std::string &name);
+
  private:
     GUIButton *AssertButton(std::string_view buttonId);
 

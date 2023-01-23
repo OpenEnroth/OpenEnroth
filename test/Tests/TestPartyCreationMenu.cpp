@@ -28,3 +28,12 @@ GAME_TEST(Issues, Issue315) {
     game->PressGuiButton("PartyCreation_OK");
     game->SkipLoadingScreen(); // This shouldn't crash
 }
+
+GAME_TEST(Prs, Pr347) {
+    // Testing that shops work
+    int oldGold = pParty->uNumGold;
+    game->LoadGame("pr_347.mm7");
+    game->PlayTrace("pr_347.json");
+    EXPECT_NE(oldGold, pParty->uNumGold); // Spent on items
+}
+

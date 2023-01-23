@@ -18,8 +18,8 @@
 class PlatformEvent {
  public:
     enum class Type {
-        Invalid,
-        KeyPress,
+        Invalid = -1,
+        KeyPress = 0,
         KeyRelease,
         GamepadConnected,
         GamepadDisconnected,
@@ -33,6 +33,9 @@ class PlatformEvent {
         WindowDeactivate,
         WindowCloseRequest,
         // TODO(captainurist): NativeEvent // untranslated native event, useful for prototyping.
+
+        FirstEventType = KeyPress,
+        LastEventType = WindowCloseRequest
     };
     using enum Type;
 

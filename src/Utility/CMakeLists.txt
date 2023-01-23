@@ -19,6 +19,7 @@ set(UTILITY_HEADERS Color.h
                     Format.h
                     FreeDeleter.h
                     IndexedArray.h
+                    Reversed.h
                     ScopeGuard.h
                     Segment.h
                     String.h

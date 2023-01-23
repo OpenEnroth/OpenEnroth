@@ -107,5 +107,6 @@ enum class PlatformKeyType : int {
     KEY_TYPE_GAMEPAD_AXIS,
     KEY_TYPE_GAMEPAD_TRIGGER
 };
+using enum PlatformKeyType;
 
 typedef float PlatformKeyValue;

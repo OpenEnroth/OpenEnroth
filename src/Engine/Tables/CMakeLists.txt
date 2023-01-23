@@ -15,4 +15,5 @@ set(TABLES_HEADERS FactionTable.h
                    TileFrameTable.h)
 
 add_library(tables STATIC ${TABLES_SOURCES} ${TABLES_HEADERS})
+target_link_libraries(tables engine)
 target_check_style(tables)

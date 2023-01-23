@@ -4,7 +4,7 @@
 #include <unordered_map>
 
 #include "Platform/PlatformKey.h"
-#include "Platform/PlatformEventHandler.h"
+#include "Platform/Filters/PlatformEventFilter.h"
 #include "Io/Mouse.h"
 #include "Utility/Geometry/Size.h"
 
@@ -16,9 +16,10 @@ namespace Application {
 class GameConfig;
 
 // Handles events from game window (OSWindow)
-class GameWindowHandler : public PlatformEventHandler {
+class GameWindowHandler : public PlatformEventFilter {
  public:
     GameWindowHandler();
+    virtual ~GameWindowHandler();
 
     GameKeyboardController *KeyboardController() const {
         return keyboardController_.get();
@@ -53,18 +54,18 @@ class GameWindowHandler : public PlatformEventHandler {
     void OnActivated();
     void OnDeactivated();
 
-    virtual void Event(PlatformWindow *window, const PlatformEvent *event) override;
-    virtual void KeyPressEvent(PlatformWindow *window, const PlatformKeyEvent *event) override;
-    virtual void KeyReleaseEvent(PlatformWindow *window, const PlatformKeyEvent *event) override;
-    virtual void MouseMoveEvent(PlatformWindow *window, const PlatformMouseEvent *event) override;
-    virtual void MousePressEvent(PlatformWindow *window, const PlatformMouseEvent *event) override;
-    virtual void MouseReleaseEvent(PlatformWindow *window, const PlatformMouseEvent *event) override;
-    virtual void WheelEvent(PlatformWindow *window, const PlatformWheelEvent *event) override;
-    virtual void MoveEvent(PlatformWindow *window, const PlatformMoveEvent *event) override;
-    virtual void ResizeEvent(PlatformWindow *window, const PlatformResizeEvent *event) override;
-    virtual void ActivationEvent(PlatformWindow *window, const PlatformEvent *event) override;
-    virtual void CloseEvent(PlatformWindow *window, const PlatformEvent *event) override;
-    virtual void GamepadDeviceEvent(PlatformWindow *window, const PlatformGamepadDeviceEvent *event) override;
+    virtual bool Event(PlatformWindow *window, const PlatformEvent *event) override;
+    virtual bool KeyPressEvent(PlatformWindow *window, const PlatformKeyEvent *event) override;
+    virtual bool KeyReleaseEvent(PlatformWindow *window, const PlatformKeyEvent *event) override;
+    virtual bool MouseMoveEvent(PlatformWindow *window, const PlatformMouseEvent *event) override;
+    virtual bool MousePressEvent(PlatformWindow *window, const PlatformMouseEvent *event) override;
+    virtual bool MouseReleaseEvent(PlatformWindow *window, const PlatformMouseEvent *event) override;
+    virtual bool WheelEvent(PlatformWindow *window, const PlatformWheelEvent *event) override;
+    virtual bool MoveEvent(PlatformWindow *window, const PlatformMoveEvent *event) override;
+    virtual bool ResizeEvent(PlatformWindow *window, const PlatformResizeEvent *event) override;
+    virtual bool ActivationEvent(PlatformWindow *window, const PlatformEvent *event) override;
+    virtual bool CloseEvent(PlatformWindow *window, const PlatformEvent *event) override;
+    virtual bool GamepadDeviceEvent(PlatformWindow *window, const PlatformGamepadDeviceEvent *event) override;
 
  private:
     std::shared_ptr<Mouse> mouse = nullptr;

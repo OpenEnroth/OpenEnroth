@@ -120,7 +120,7 @@ void SdlEventLoop::DispatchKeyEvent(PlatformEventHandler *eventHandler, const SD
     e.type = event->type == SDL_KEYUP ? PlatformEvent::KeyRelease : PlatformEvent::KeyPress;
     e.isAutoRepeat = event->repeat;
     e.key = TranslateSdlKey(event->keysym.scancode);
-    e.keyType = PlatformKeyType::KEY_TYPE_KEYBOARD_BUTTON;
+    e.keyType = KEY_TYPE_KEYBOARD_BUTTON;
     e.keyValue = 0.0f;
     e.mods = TranslateSdlMods(event->keysym.mod);
 
@@ -249,7 +249,7 @@ void SdlEventLoop::DispatchGamepadButtonEvent(PlatformEventHandler *eventHandler
     e.id = state_->GetGamepadIdBySdlId(event->which);
     e.type = event->type == SDL_CONTROLLERBUTTONUP ? PlatformEvent::KeyRelease : PlatformEvent::KeyPress;
     e.key = TranslateSdlGamepadButton(static_cast<SDL_GameControllerButton>(event->button));
-    e.keyType = PlatformKeyType::KEY_TYPE_GAMEPAD_BUTTON;
+    e.keyType = KEY_TYPE_GAMEPAD_BUTTON;
     e.keyValue = 0.0f;
     e.isAutoRepeat = false;
     e.mods = 0;

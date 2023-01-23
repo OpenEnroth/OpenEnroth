@@ -18,44 +18,45 @@ using Io::Mouse;
 
 class IRender;
 class Platform;
-class PlatformWindow;
-class PlatformEventLoop;
+class PlatformApplication;
+class EventTracer;
+class GameTraceHandler;
 
 namespace Application {
 
 class Game {
  public:
-     explicit Game(Platform *platform);
-     ~Game();
+    explicit Game(PlatformApplication *app);
+    ~Game();
 
-     bool Configure(std::shared_ptr<GameConfig> config) {
-         this->config = config;
-         return true;
-     }
+    bool Configure(std::shared_ptr<GameConfig> config) {
+        this->config = config;
+        return true;
+    }
 
-     int Run();
+    int Run();
 
  private:
-     bool Loop();
-     void EventLoop();
-     void GameLoop();
-     void CloseTargetedSpellWindow();
-     void OnEscape();
-     void OnPressSpace();
+    bool Loop();
+    void EventLoop();
+    void GameLoop();
+    void CloseTargetedSpellWindow();
+    void OnEscape();
+    void OnPressSpace();
 
-     Platform *platform = nullptr;
-     std::shared_ptr<GameConfig> config;
-     std::unique_ptr<GameWindowHandler> windowHandler;
-     std::shared_ptr<Engine> engine;
-     std::unique_ptr<PlatformWindow> window;
-     std::unique_ptr<PlatformEventLoop> eventLoop;
-     std::shared_ptr<IRender> render;
-     std::shared_ptr<Mouse> mouse = nullptr;
-     Logger *log = nullptr;
-     DecalBuilder *decal_builder = nullptr;
-     Vis *vis = nullptr;
-     Menu *menu = nullptr;
-     std::shared_ptr<Nuklear> nuklear = nullptr;
+    PlatformApplication *app = nullptr;
+    std::shared_ptr<GameConfig> config;
+    std::unique_ptr<GameWindowHandler> windowHandler;
+    std::unique_ptr<EventTracer> eventTracer;
+    std::unique_ptr<GameTraceHandler> traceHandler;
+    std::shared_ptr<Engine> engine;
+    std::shared_ptr<IRender> render;
+    std::shared_ptr<Mouse> mouse = nullptr;
+    Logger *log = nullptr;
+    DecalBuilder *decal_builder = nullptr;
+    Vis *vis = nullptr;
+    Menu *menu = nullptr;
+    std::shared_ptr<Nuklear> nuklear = nullptr;
 };
 
 void AutoInitDataPath(Platform *platform);

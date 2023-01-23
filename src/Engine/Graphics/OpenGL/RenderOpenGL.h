@@ -217,8 +217,6 @@ class RenderOpenGL : public RenderBase {
 
     void SetFogParametersGL();
 
-    std::unique_ptr<PlatformOpenGLContext> context_;
-
     // these are the view and projection matrices for submission to shaders
     glm::mat4 projmat;
     glm::mat4 viewmat;

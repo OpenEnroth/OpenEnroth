@@ -9,6 +9,7 @@ set(GAME_SOURCES
     GameOptions.cpp
     GameOver.cpp
     GamePathResolver.cpp
+    GameTraceHandler.cpp
     GameWindowHandler.cpp
     IocContainer.cpp)
 
@@ -21,10 +22,11 @@ set(GAME_HEADERS
     GameOver.h
     GamePathResolver.h
     GameOptions.h
+    GameTraceHandler.h
     GameWindowHandler.h
     IocContainer.h)
 
 add_library(game STATIC ${GAME_SOURCES} ${GAME_HEADERS})
 target_check_style(game)
 
-target_link_libraries(game io gui engine platform graphics media utility config CLI11::CLI11)
+target_link_libraries(game io gui engine platform graphics media utility config trace application CLI11::CLI11)

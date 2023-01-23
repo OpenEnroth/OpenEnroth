@@ -18,4 +18,4 @@ class NuklearEventHandler : public PlatformEventHandler {
     void MouseEvent(PlatformMouseButton button, const Pointi &pos, bool down);
 };
 
-extern std::shared_ptr<NuklearEventHandler> nuklearEventHandler;
+extern std::shared_ptr<NuklearEventHandler> nuklearEventHandler; // TODO(captainurist) : convert into an event filter

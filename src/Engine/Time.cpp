@@ -4,13 +4,15 @@
 
 #include "Io/KeyboardInputHandler.h"
 
+#include "EngineGlobals.h"
+
 Timer *pMiscTimer = new Timer;
 Timer *pEventTimer;
 
 //----- (00426317) --------------------------------------------------------
 uint64_t Timer::Time() {
-    std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
-    uint64_t v2 = 128 * ms.count() / 1000;
+    int64_t ms = platform->TickCount();
+    uint64_t v2 = 128 * ms / 1000;
     if (v2 < uStartTime) uStartTime = 0;
     return v2;
 }
@@ -57,8 +59,14 @@ void Timer::Update() {
     // char v4; // zf@5
 
     uint64_t new_time = Time();
-    while (new_time <= uStartTime) new_time = Time();
 
+    // TODO(captainurist): I had to comment the line below because it's now hooking into platform, and platform
+    // code return the same tick count on every call when playing back an event trace.
+    // while (new_time <= uStartTime) new_time = Time();
+
+    // TODO(captainurist): this magically works with EventTracer because of how Time() is written:
+    // it sets uStartTime to zero if it's larger than current time. And TickCount() in EventTracer starts at zero.
+    // This looks very fragile, but rethinking it would require diving into how timers work.
     uTimeElapsed = new_time - uStartTime;
     uStartTime = new_time;
 
