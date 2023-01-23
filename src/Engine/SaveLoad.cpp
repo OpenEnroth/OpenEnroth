@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <string>
 
-
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
@@ -40,36 +39,6 @@ std::array<unsigned int, MAX_SAVE_SLOTS> pSavegameUsedSlots;
 std::array<Image *, MAX_SAVE_SLOTS> pSavegameThumbnails;
 std::array<SavegameHeader, MAX_SAVE_SLOTS> pSavegameHeader;
 
-bool CopyFile(const std::string &from, const std::string &to) {
-    int file_size = -1;
-    int bytes_read = 0;
-    int bytes_wrote = 0;
-
-    FILE *copy_from = fopen(from.c_str(), "rb");
-    if (copy_from) {
-        FILE *copy_to = fopen(to.c_str(), "wb+");
-        if (copy_to) {
-            fseek(copy_from, 0, SEEK_END);
-            file_size = ftell(copy_from);
-            fseek(copy_from, 0, SEEK_SET);
-
-            unsigned char *buf = new unsigned char[file_size];
-            if (buf) {
-                bytes_read = fread(buf, 1, file_size, copy_from);
-                if (bytes_read == file_size) {
-                    bytes_wrote = fwrite(buf, 1, file_size, copy_to);
-                }
-
-                delete[] buf;
-            }
-            fclose(copy_to);
-        }
-        fclose(copy_from);
-    }
-
-    return file_size != -1 && bytes_read == bytes_wrote;
-}
-
 void LoadGame(unsigned int uSlot) {
     MapsLongTimers_count = 0;
     if (!pSavegameUsedSlots[uSlot]) {
@@ -83,10 +52,10 @@ void LoadGame(unsigned int uSlot) {
 
     std::string filename = MakeDataPath("saves", pSavegameList->pFileList[uSlot]);
     std::string to_file_path = MakeDataPath("data", "new.lod");
-    remove(to_file_path.c_str());
-    if (!CopyFile(filename, to_file_path)) {
+
+    std::error_code ec;
+    if (!std::filesystem::copy_file(filename, to_file_path, std::filesystem::copy_options::overwrite_existing, ec))
         Error("Failed to copy: %s", filename.c_str());
-    }
 
     pNew_LOD->LoadFile(to_file_path, 0);
 
@@ -550,9 +519,11 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     free(uncompressed_buff);
 
     if (IsAutoSAve) {
-        if (!CopyFile(MakeDataPath("data", "new.lod"), MakeDataPath("saves", "autosave.mm7"))) {
+        std::string src = MakeDataPath("data", "new.lod");
+        std::string dst = MakeDataPath("saves", "autosave.mm7");
+        std::error_code ec;
+        if (!std::filesystem::copy_file(src, dst, std::filesystem::copy_options::overwrite_existing, ec))
             logger->Warning("Copying of autosave.mm7 failed");
-        }
     }
     pParty->vPosition.x = pPositionX;
     pParty->vPosition.y = pPositionY;
@@ -569,8 +540,11 @@ void DoSavegame(unsigned int uSlot) {
         pSavegameHeader[uSlot].playing_time = pParty->GetPlayingTime();
         pNew_LOD->Write("header.bin", &pSavegameHeader[uSlot], sizeof(SavegameHeader), 0);
         pNew_LOD->CloseWriteFile();  //закрыть
-        std::string file_name = StringPrintf("save%03d.mm7", uSlot);
-        CopyFile(MakeDataPath("data", "new.lod"), MakeDataPath("saves", file_name));
+        std::string src = MakeDataPath("data", "new.lod");
+        std::string dst = MakeDataPath("saves", StringPrintf("save%03d.mm7", uSlot));
+        std::error_code ec;
+        if (!std::filesystem::copy_file(src, dst, std::filesystem::copy_options::overwrite_existing, ec))
+            Error("Failed to copy: %s", src.c_str());
     }
     GUI_UpdateWindows();
     pGUIWindow_CurrentMenu->Release();
