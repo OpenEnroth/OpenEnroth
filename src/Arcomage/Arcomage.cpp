@@ -235,9 +235,9 @@ int explosion_effect_struct::StartFill(effect_params_struct *params) {
     if (this->mem_signature == SIG_MEMALOC) {
         this->spark_array_size = params->spark_array_size;
         this->start_x_min = params->effect_area.x;
-        this->start_y_max = params->effect_area.y;
         this->start_x_max = params->effect_area.x + params->effect_area.w;
-        this->start_y_min = params->effect_area.y + params->effect_area.h;
+        this->start_y_min = params->effect_area.y;
+        this->start_y_max = params->effect_area.y + params->effect_area.h;
         this->unused_param_1 = params->unused_param_1;
         this->unused_param_2 = params->unused_param_2;
         this->unused_param_3 = params->unused_param_3;
