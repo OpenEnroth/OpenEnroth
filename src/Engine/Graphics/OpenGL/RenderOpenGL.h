@@ -151,7 +151,7 @@ class RenderOpenGL : public RenderBase {
 
     virtual void FillRectFast(unsigned int uX, unsigned int uY,
                               unsigned int uWidth, unsigned int uHeight,
-                              unsigned int uColor16) override;
+                              uint32_t uColor32) override;
 
     virtual void DrawOutdoorBuildings() override;
 

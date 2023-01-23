@@ -336,7 +336,7 @@ class IRender {
 
     virtual void FillRectFast(unsigned int uX, unsigned int uY,
                               unsigned int uWidth, unsigned int uHeight,
-                              unsigned int uColor16) = 0;
+                              uint32_t uColor32) = 0;
 
     virtual void DrawOutdoorBuildings() = 0;
 
@@ -410,6 +410,7 @@ class IRender {
     RenderBillboardD3D pBillboardRenderListD3D[1000];
     unsigned int uNumBillboardsToDraw;
 
+    // TODO(pskelton): move to color table
     const uint16_t teal_mask_16 = 0x7FF;
     const uint32_t teal_mask_32 = 0xFF00FCF8;
 

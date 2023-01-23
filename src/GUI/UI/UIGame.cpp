@@ -1703,7 +1703,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
         }
         render->BeginLines2D();
     } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-        render->FillRectFast(uX, uY, uZ - uX, uHeight, 0xF);
+        render->FillRectFast(uX, uY, uZ - uX, uHeight, colorTable.HyperlinkBlue.C32());
         uNumBlueFacesInBLVMinimap = 0;
         render->BeginLines2D();
         for (uint i = 0; i < (uint)pIndoor->pMapOutlines.size(); ++i) {
@@ -2243,7 +2243,7 @@ void GUIWindow_DebugMenu::Update() {
 void buttonbox(int x, int y, const char* text, int col) {
     int width = 108;
     int height = 20;
-    render->FillRectFast(x, y, width+1, height+1, Color16(50, 50, 50));
+    render->FillRectFast(x, y, width+1, height+1, Color32(50, 50, 50));
 
     //render->BeginLines2D();
     render->RasterLine2D(x-1, y-1, x+width+1, y-1, colorTable.Jonquil.C16());

@@ -113,7 +113,7 @@ void GUIProgressBar::Draw() {
 
         render->DrawTextureAlphaNew(80 / 640.0f, 122 / 480.0f, progressbar_dungeon);
         render->DrawTextureAlphaNew(100 / 640.0f, 146 / 480.0f, pIconsFrameTable->GetFrame(uIconID_TurnHour, 0)->GetTexture());
-        render->FillRectFast(174, 164, floorf(((double)(113 * uProgressCurrent) / (double)uProgressMax) + 0.5f), 16, 0xF800);
+        render->FillRectFast(174, 164, floorf(((double)(113 * uProgressCurrent) / (double)uProgressMax) + 0.5f), 16, colorTable.Red.C32());
     } else {
         if (loading_bg) {
             render->DrawTextureNew(0, 0, loading_bg);

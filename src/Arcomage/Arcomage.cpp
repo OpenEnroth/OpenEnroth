@@ -405,14 +405,15 @@ int new_explosion_effect(Pointi* startXY, int effect_value) {
     return 0;
 }
 
+// TODO(pskelton): Hardcoded limit checks need changing
 void DrawSparks() {
-    uint16_t rgb_pixel_color{};
+    uint32_t rgb_pixel_color{};
 
     for (int i = 0; i < 10; ++i) {
         if (am_effects_array[i].have_effect && (am_effects_array[i].explosion_eff->IsEffectActive() == 2)) {
             // set the pixel color
-            rgb_pixel_color = colorTable.Green.C16();
-            if (!am_effects_array[i].effect_sign) rgb_pixel_color = colorTable.Red.C16();
+            rgb_pixel_color = colorTable.Green.C32();
+            if (!am_effects_array[i].effect_sign) rgb_pixel_color = colorTable.Red.C32();
 
             // draw sparks
             for (int j = 0; j < 150; ++j) {
@@ -3012,11 +3013,12 @@ void am_DrawText(const std::string &str, Pointi *pXY) {
     pPrimaryWindow->DrawText(pFontComic, {pXY->x, pXY->y - ((pFontComic->GetHeight() - 3) / 2) + 3}, 0, str, false, 0, 0);
 }
 
+// TODO(pskelton): change to color32
 void DrawRect(Recti *pRect, uint16_t uColor, char bSolidFill) {
     if (bSolidFill) {
         int width = pRect->w;
         int height = pRect->h;
-        render->FillRectFast(pRect->x, pRect->y, width, height, uColor);
+        render->FillRectFast(pRect->x, pRect->y, width, height, Color32(uColor));
     } else {
         render->BeginLines2D();
         int x0 = pRect->x;

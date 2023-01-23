@@ -625,7 +625,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
 
         // Draw portrait border
         render->ResetUIClipRect();
-        render->FillRectFast(doll_rect.x, doll_rect.y, 128, 128, colorTable.Black.C16());
+        render->FillRectFast(doll_rect.x, doll_rect.y, 128, 128, colorTable.Black.C32());
         render->BeginLines2D();
         int x0 = doll_rect.x;
         int x1 = doll_rect.x + doll_rect.w;

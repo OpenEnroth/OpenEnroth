@@ -2804,12 +2804,13 @@ void Render::DrawTextureGrayShade(float u, float v, Image *img) {
 }
 
 void Render::FillRectFast(unsigned int uX, unsigned int uY, unsigned int uWidth,
-                          unsigned int uHeight, unsigned int color) {
-    unsigned int b = (color & 0x1F) << 3;
-    unsigned int g = ((color >> 5) & 0x3F) << 2;
-    unsigned int r = ((color >> 11) & 0x1F) << 3;
-
-    Gdiplus::Color c(r, g, b);
+                          unsigned int uHeight, uint32_t color32) {
+    unsigned int a = (color32 >> 24) & 0xFF;
+    unsigned int b = (color32 >> 16) & 0xFF;
+    unsigned int g = (color32 >> 8) & 0xFF;
+    unsigned int r = color32 & 0xFF;
+    
+    Gdiplus::Color c(a, r, g, b);
     Gdiplus::SolidBrush brush(c);
     p2DGraphics->FillRectangle(&brush, (INT)uX, (INT)uY, (INT)uWidth,
         (INT)uHeight);
@@ -3213,7 +3214,7 @@ void Render::MaskGameViewport() {
         pViewport->uViewportTL_X, pViewport->uViewportTL_Y,
         pViewport->uViewportBR_X - pViewport->uViewportTL_X,
         pViewport->uViewportBR_Y - pViewport->uViewportTL_Y,
-        teal_mask_16
+        teal_mask_32
     );
 }
 

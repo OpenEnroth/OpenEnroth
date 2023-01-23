@@ -5258,13 +5258,12 @@ bool RenderOpenGL::Initialize() {
 // do not use
 void RenderOpenGL::WritePixel16(int x, int y, uint16_t color) { return; }
 
-// TODO(pskelton): change to color32
-void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
-                                unsigned int uWidth, unsigned int uHeight,
-                                unsigned int uColor16) {
-    float b = ((uColor16 & 0x1F) * 8) / 255.0f;
-    float g = (((uColor16 >> 5) & 0x3F) * 4) / 255.0f;
-    float r = (((uColor16 >> 11) & 0x1F) * 8) / 255.0f;
+void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY, unsigned int uWidth,
+                                unsigned int uHeight, uint32_t uColor32) {
+    float a = ((uColor32 >> 24) & 0xFF) / 255.0f;
+    float b = ((uColor32 >> 16) & 0xFF) / 255.0f;
+    float g = ((uColor32 >> 8) & 0xFF) / 255.0f;
+    float r = (uColor32 & 0xFF) / 255.0f;
 
     float depth = 0;
     int x = uX;
@@ -5276,7 +5275,6 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     if (x >= outputRender.w || x >= this->clip_z || y >= outputRender.h || y >= this->clip_w) return;
     // check for overlap
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
-
 
     static Texture* effpar03 = assets->GetBitmap("effpar03");
     auto texture = (TextureOpenGL*)effpar03;
@@ -5302,7 +5300,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     twodshaderstore[twodvertscnt].r = r;
     twodshaderstore[twodvertscnt].g = g;
     twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].a = a;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -5315,7 +5313,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     twodshaderstore[twodvertscnt].r = r;
     twodshaderstore[twodvertscnt].g = g;
     twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].a = a;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -5328,7 +5326,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     twodshaderstore[twodvertscnt].r = r;
     twodshaderstore[twodvertscnt].g = g;
     twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].a = a;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -5343,7 +5341,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     twodshaderstore[twodvertscnt].r = r;
     twodshaderstore[twodvertscnt].g = g;
     twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].a = a;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -5356,7 +5354,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     twodshaderstore[twodvertscnt].r = r;
     twodshaderstore[twodvertscnt].g = g;
     twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].a = a;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -5369,7 +5367,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     twodshaderstore[twodvertscnt].r = r;
     twodshaderstore[twodvertscnt].g = g;
     twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].a = a;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
