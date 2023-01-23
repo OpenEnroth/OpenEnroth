@@ -207,8 +207,11 @@ void GameWrapper::PlayTrace(const std::string &name) {
                 Tick(1);
             }
 
-            EXPECT_EQ(Random(1024), paintEvent->randomState);
-            EXPECT_EQ(state_->application->platform()->TickCount(), paintEvent->tickCount);
+            // TODO(captainurist): just re-record the relevant trace and drop != -1 checks.
+            if (paintEvent->randomState != -1)
+                EXPECT_EQ(Random(1024), paintEvent->randomState);
+            if (paintEvent->tickCount != -1)
+                EXPECT_EQ(state_->application->platform()->TickCount(), paintEvent->tickCount);
         } else {
             state_->proxy->postEvent(std::move(event));
         }
