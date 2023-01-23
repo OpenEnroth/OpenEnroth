@@ -19,11 +19,10 @@ bool GameTraceHandler::KeyPressEvent(const PlatformKeyEvent *event) {
         _waitingForKeyRelease = true;
 
         if (!_tracer->isTracing()) {
-            // TODO(captainurist) : also save game here
-            _tracer->start();
+            _tracer->start("trace.json", "trace.mm7");
             logger->Info("Tracing started.");
         } else {
-            _tracer->finish("trace.json");
+            _tracer->finish();
             logger->Info("Tracing finished.");
         }
         return true;

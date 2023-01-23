@@ -2,10 +2,14 @@
 
 #include <memory>
 #include <utility>
+#include <filesystem>
 
 #include "Utility/Random/NonRandomEngine.h"
 #include "Utility/Random/MersenneTwisterRandomEngine.h"
 #include "Utility/Random/Random.h"
+#include "Utility/DataPath.h"
+
+#include "Engine/SaveLoad.h" // TODO(captainurist): EventTracer now belongs in Engine, not in Library
 
 #include "PaintEvent.h"
 
@@ -13,18 +17,20 @@ EventTracer::EventTracer() : PlatformEventFilter(PlatformEventFilter::ALL_EVENTS
 
 EventTracer::~EventTracer() {}
 
-void EventTracer::start() {
+void EventTracer::start(const std::string &tracePath, const std::string &savePath) {
     assert(ProxyPlatform::Base()); // Installed as a proxy.
     assert(_state == STATE_DISABLED);
 
     _state = STATE_WAITING;
+    _tracePath = tracePath;
+    _savePath = savePath;
 }
 
-void EventTracer::finish(std::string_view path) {
+void EventTracer::finish() {
     assert(ProxyPlatform::Base()); // Installed as a proxy.
     assert(_state != STATE_DISABLED);
 
-    EventTrace::saveToFile(path, _trace);
+    EventTrace::saveToFile(_tracePath, _trace);
     _trace.events.clear();
     if (_oldRandomEngine)
         SetGlobalRandomEngine(std::move(_oldRandomEngine));
@@ -45,11 +51,19 @@ void EventTracer::SwapBuffers() {
     switch (_state) {
     case STATE_DISABLED:
         return;
-    case STATE_WAITING:
+    case STATE_WAITING: {
+        SaveGame(true, false);
+
+        std::error_code ec;
+        std::string src = MakeDataPath("saves", "autosave.mm7");
+        std::filesystem::copy_file(src, _savePath, std::filesystem::copy_options::overwrite_existing, ec);
+        // TODO(captainurist): at least log on error
+
         _tickCount = 0;
         _oldRandomEngine = SetGlobalRandomEngine(std::make_unique<NonRandomEngine>());
         _state = STATE_TRACING;
         break;
+    }
     case STATE_TRACING:
         _tickCount += EventTrace::FRAME_TIME_MS;
         break;
