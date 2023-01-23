@@ -86,7 +86,7 @@
 #include "Platform/Filters/FilteringEventHandler.h"
 
 #include "Utility/Format.h"
-#include "Utility/Random/Random.h"
+#include "Library/Random/Random.h"
 
 
 void ShowMM7IntroVideo_and_LoadingScreen();

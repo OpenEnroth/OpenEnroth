@@ -43,7 +43,7 @@
 
 #include "Utility/Memory/MemSet.h"
 #include "Utility/Math/TrigLut.h"
-#include "Utility/Random/Random.h"
+#include "Library/Random/Random.h"
 
 #pragma comment(lib, "GdiPlus.lib")
 

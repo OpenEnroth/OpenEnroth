@@ -14,7 +14,7 @@
 
 #include "Library/Serialization/EnumSerialization.h"
 
-#include "Utility/Random/Random.h"
+#include "Library/Random/Random.h"
 #include "Utility/Math/TrigLut.h"
 
 #include "OurMath.h"

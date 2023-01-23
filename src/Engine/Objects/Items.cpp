@@ -17,7 +17,7 @@
 #include "GUI/GUIButton.h"
 
 #include "Utility/MapAccess.h"
-#include "Utility/Random/Random.h"
+#include "Library/Random/Random.h"
 
 ItemGen* ptr_50C9A4_ItemToEnchant;
 

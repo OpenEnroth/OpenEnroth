@@ -17,7 +17,7 @@
 #include "GUI/UI/UIHouses.h"
 
 #include "Utility/String.h"
-#include "Utility/Random/Random.h"
+#include "Library/Random/Random.h"
 
 //----- (0045814E) --------------------------------------------------------
 void ItemTable::Release() {

@@ -21,7 +21,7 @@
 
 #include "Platform/PlatformEvents.h"
 
-#include "Utility/Random/Random.h"
+#include "Library/Random/Random.h"
 
 GameWrapper::GameWrapper(TestStateHandle state, const std::string &testDataDir):
     state_(std::move(state)),

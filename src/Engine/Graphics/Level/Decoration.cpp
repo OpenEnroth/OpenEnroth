@@ -6,7 +6,7 @@
 #include "../../Party.h"
 #include "Engine/Engine.h"
 
-#include "Utility/Random/Random.h"
+#include "Library/Random/Random.h"
 
 std::vector<LevelDecoration> pLevelDecorations;
 LevelDecoration* activeLevelDecoration;

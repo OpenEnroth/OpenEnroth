@@ -19,7 +19,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Utility/Random/Random.h"
+#include "Library/Random/Random.h"
 
 std::array<Vec2i, 20> pMonsterArenaPlacements = {{
     Vec2i(1524, 8332),    Vec2i(2186, 8844),

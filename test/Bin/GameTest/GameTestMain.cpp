@@ -13,8 +13,8 @@
 
 #include "Library/Application/PlatformApplication.h"
 
-#include "Utility/Random/Random.h"
-#include "Utility/Random/NonRandomEngine.h"
+#include "Library/Random/Random.h"
+#include "Library/Random/NonRandomEngine.h"
 #include "Utility/ScopeGuard.h"
 
 #include "GameTestOptions.h"

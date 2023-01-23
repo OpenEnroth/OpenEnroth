@@ -23,7 +23,7 @@
 
 #include "Engine/Tables/IconFrameTable.h"
 
-#include "Utility/Random/Random.h"
+#include "Library/Random/Random.h"
 
 //----- (004A7063) --------------------------------------------------------
 unsigned int ModulateColor(unsigned int diffuse, float multiplier) {

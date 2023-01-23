@@ -15,7 +15,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Utility/Random/Random.h"
+#include "Library/Random/Random.h"
 
 #include "../Party.h"
 #include "../stru298.h"

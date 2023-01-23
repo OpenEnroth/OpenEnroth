@@ -45,7 +45,7 @@
 
 #include "Utility/FreeDeleter.h"
 #include "Utility/Math/TrigLut.h"
-#include "Utility/Random/Random.h"
+#include "Library/Random/Random.h"
 
 // TODO(pskelton): make this neater
 static DecalBuilder* decal_builder = EngineIoc::ResolveDecalBuilder();

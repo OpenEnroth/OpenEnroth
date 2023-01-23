@@ -11,7 +11,7 @@
 
 #include "Engine/Tables/IconFrameTable.h"
 
-#include "Utility/Random/Random.h"
+#include "Library/Random/Random.h"
 #include "Utility/IndexedArray.h"
 
 static const IndexedArray<const char *, PartyAlignment_Good, PartyAlignment_Evil> ProgressBarResourceByAlignment = {
