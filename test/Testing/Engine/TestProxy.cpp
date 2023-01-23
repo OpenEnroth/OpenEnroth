@@ -1,6 +1,7 @@
 #include "TestProxy.h"
 
 #include <cassert>
+#include <utility>
 
 #include "Library/Trace/EventTrace.h"
 

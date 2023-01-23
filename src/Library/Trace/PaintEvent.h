@@ -7,7 +7,7 @@
 #include "Utility/Workaround/ToUnderlying.h"
 
 class PaintEvent : public PlatformEvent {
-public:
+ public:
     // TODO(captainurist): Rename properly.
     static constexpr PlatformEvent::Type Paint = static_cast<PlatformEvent::Type>(std::to_underlying(PlatformEvent::LastEventType) + 1);
 
