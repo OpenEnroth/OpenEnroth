@@ -3,7 +3,8 @@
 #include <tuple>
 #include <unordered_map>
 
-#include "Platform/PlatformKey.h"
+#include "Platform/PlatformEnums.h"
+#include "Platform/PlatformGamepad.h"
 #include "Platform/Filters/PlatformEventFilter.h"
 #include "Io/Mouse.h"
 #include "Utility/Geometry/Size.h"

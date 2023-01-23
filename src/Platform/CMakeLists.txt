@@ -19,9 +19,7 @@ set(PLATFORM_SOURCES PlatformEventHandler.cpp
                      Proxy/ProxyGamepad.cpp)
 
 set(PLATFORM_HEADERS Platform.h
-                     PlatformKey.h
-                     PlatformModifiers.h
-                     PlatformMouseButton.h
+                     PlatformEnums.h
                      PlatformEventHandler.h
                      PlatformEventLoop.h
                      PlatformEvents.h

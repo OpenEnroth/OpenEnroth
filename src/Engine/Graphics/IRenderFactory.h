@@ -4,14 +4,10 @@
 
 #include "Application/GameConfig.h"
 
+#include "RendererType.h"
+
 class IRender;
 class OSWindow;
-
-enum class RendererType {
-    DirectDraw,
-    OpenGL,
-    OpenGLES
-};
 
 namespace Graphics {
     class IRenderFactory {

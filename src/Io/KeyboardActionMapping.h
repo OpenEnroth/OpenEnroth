@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-#include "Platform/PlatformKey.h"
+#include "Platform/PlatformEnums.h"
 #include "Io/InputAction.h"
 
 #include "Application/GameConfig.h"

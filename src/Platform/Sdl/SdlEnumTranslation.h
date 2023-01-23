@@ -4,11 +4,8 @@
 
 #include <utility>
 
-#include "Platform/PlatformKey.h"
-#include "Platform/PlatformModifiers.h"
-#include "Platform/PlatformMouseButton.h"
+#include "Platform/PlatformEnums.h"
 #include "Platform/PlatformOpenGLOptions.h"
-#include "Platform/PlatformLogger.h"
 
 PlatformKey TranslateSdlKey(SDL_Scancode key);
 PlatformKey TranslateSdlGamepadButton(SDL_GameControllerButton button);

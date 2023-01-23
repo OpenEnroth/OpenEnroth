@@ -11,7 +11,7 @@
 #include "Engine/Graphics/IRender.h"
 
 #include "GUI/GUIWindow.h"
-#include "Platform/PlatformKey.h"
+#include "Platform/PlatformEnums.h"
 
 #include "Library/Serialization/Serialization.h"
 

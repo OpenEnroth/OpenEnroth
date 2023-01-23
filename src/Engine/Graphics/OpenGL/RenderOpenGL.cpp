@@ -5207,18 +5207,18 @@ bool RenderOpenGL::Initialize() {
         PlatformOpenGLOptions opts;
 
         // Set it only on startup as currently we don't support multiple contexts to be able to switch OpenGL<->OpenGLES in the middle of runtime.
-        OpenGLES = config->graphics.Renderer.Get() == "OpenGLES";
+        OpenGLES = config->graphics.Renderer.Get() == RendererType::OpenGLES;
 
         if (!OpenGLES) {
             //  Use OpenGL 4.1 core
             opts.versionMajor = 4;
             opts.versionMinor = 1;
-            opts.profile = CoreProfile;
+            opts.profile = GL_PROFILE_CORE;
         } else {
             //  Use OpenGL ES 3.2
             opts.versionMajor = 3;
             opts.versionMinor = 2;
-            opts.profile = ESProfile;
+            opts.profile = GL_PROFILE_ES;
         }
 
         //  Turn on 24bit Z buffer.
@@ -5226,7 +5226,7 @@ bool RenderOpenGL::Initialize() {
         opts.depthBits = 24;
         opts.stencilBits = 8;
 
-        opts.vsyncMode = config->graphics.VSync.Get() ? AdaptiveVSync : NoVSync;
+        opts.vsyncMode = config->graphics.VSync.Get() ? GL_VSYNC_ADAPTIVE : GL_VSYNC_NONE;
 
         application->initializeOpenGLContext(opts);
 

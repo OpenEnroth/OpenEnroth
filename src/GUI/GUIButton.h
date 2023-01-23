@@ -6,8 +6,6 @@
 
 #include "GUI/GUIWindow.h"
 
-#include "Platform/PlatformKey.h"
-
 class Image;
 
 class GUIButton {

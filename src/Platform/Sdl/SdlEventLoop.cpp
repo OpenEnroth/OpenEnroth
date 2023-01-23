@@ -9,7 +9,7 @@
 #include <unordered_map>
 
 #include "Platform/PlatformEventHandler.h"
-#include "Platform/PlatformModifiers.h"
+#include "Platform/PlatformEnums.h"
 
 #include "SdlPlatformSharedState.h"
 #include "SdlEnumTranslation.h"
@@ -61,7 +61,10 @@ void SdlEventLoop::WaitForMessages() {
 }
 
 void SdlEventLoop::DispatchEvent(PlatformEventHandler *eventHandler, const SDL_Event *event) {
-    SDL_GameController *controller = nullptr;
+#ifdef MM_PLATFORM_SEND_NATIVE_EVENTS
+    DispatchNativeEvent(eventHandler, event);
+#endif
+
     switch(event->type) {
     case SDL_QUIT:
         DispatchQuitEvent(eventHandler, &event->quit);
@@ -99,6 +102,18 @@ void SdlEventLoop::DispatchEvent(PlatformEventHandler *eventHandler, const SDL_E
     default:
         break;
     }
+}
+
+void SdlEventLoop::DispatchNativeEvent(PlatformEventHandler *eventHandler, const SDL_Event *event) {
+    PlatformNativeEvent e;
+    e.type = PlatformEvent::NativeEvent;
+    e.nativeEvent = event;
+
+    // TODO(captainurist): this is getting ugly, just move the window into event itself.
+    std::vector<uint32_t> windowIds = state_->AllWindowIds();
+    for (uint32_t id : windowIds)
+        if (state_->Window(id)) // Window still alive?
+            DispatchEvent(eventHandler, id, &e);
 }
 
 void SdlEventLoop::DispatchQuitEvent(PlatformEventHandler *eventHandler, const SDL_QuitEvent *) {

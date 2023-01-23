@@ -16,7 +16,7 @@
 #include "Engine/SaveLoad.h"
 #include "Engine/Time.h"
 
-#include "Platform/PlatformKey.h"
+#include "Platform/PlatformEnums.h"
 #include "Io/InputAction.h"
 #include "Io/KeyboardInputHandler.h"
 #include "Io/Mouse.h"

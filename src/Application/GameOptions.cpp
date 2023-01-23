@@ -109,8 +109,7 @@ bool Application::ParseGameOptions(int argc, char **argv, GameConfig *config) {
     app->add_option("--window-x", config->window.PositionX, "Game window x position in display coordinates")->type_name("X")->group(windowOptions);
     app->add_option("--window-y", config->window.PositionY, "Game window y position in display coordinates")->type_name("Y")->group(windowOptions);
     app->add_option("--window-mode", config->window.Mode,
-                    "Game window mode, use 0 for windowed, 1 for borderless windowed, 2 for fullscreen and 3 for borderless "
-                    "(fake) fullscreen")->check(CLI::Range(0, 3).description(""))->type_name("MODE")->group(windowOptions);
+                    "Game window mode, one of 'windowed', 'borderless', 'fullscreen' or 'fullscreen_borderless'")->type_name("MODE")->group(windowOptions);
 
     try {
         app->parse(argc, argv);

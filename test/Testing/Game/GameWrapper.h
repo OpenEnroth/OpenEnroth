@@ -5,8 +5,7 @@
 
 #include "Testing/Engine/TestStateHandle.h"
 
-#include "Platform/PlatformKey.h"
-#include "Platform/PlatformMouseButton.h"
+#include "Platform/PlatformEnums.h"
 
 class GUIButton;
 class TestPlatform;

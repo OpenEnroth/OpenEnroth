@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Platform/PlatformKey.h"
+#include "Platform/PlatformEnums.h"
 
 namespace Io {
 
