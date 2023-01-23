@@ -34,6 +34,7 @@
 #include "Media/Audio/AudioPlayer.h"
 
 struct SavegameList *pSavegameList = new SavegameList;
+// TODO(pskelton): combine these all into savegamelist
 unsigned int uNumSavegameFiles;
 std::array<unsigned int, MAX_SAVE_SLOTS> pSavegameUsedSlots;
 std::array<Image *, MAX_SAVE_SLOTS> pSavegameThumbnails;
@@ -578,7 +579,7 @@ void SavegameList::Initialize() {
         for (const auto& entry : std::filesystem::directory_iterator(saves_dir)) {
             if (entry.path().extension() == ".mm7") {
                 pSavegameList->pFileList[uNumSavegameFiles++] = entry.path().filename().string();
-                if (uNumSavegameFiles == (MAX_SAVE_SLOTS - 1)) break;
+                if (uNumSavegameFiles == MAX_SAVE_SLOTS) break;
             }
         }
     } else {
@@ -586,7 +587,7 @@ void SavegameList::Initialize() {
     }
 
     if (uNumSavegameFiles)
-        std::sort(&pSavegameList->pFileList[0], &pSavegameList->pFileList[uNumSavegameFiles]);
+        std::sort(&pSavegameList->pFileList[0], &pSavegameList->pFileList[uNumSavegameFiles - 1]);
 }
 
 SavegameList::SavegameList() { Reset(); }
