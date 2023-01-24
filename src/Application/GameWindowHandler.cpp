@@ -496,10 +496,6 @@ void GameWindowHandler::OnMouseGrabToggle() {
     window->SetGrabsMouse(engine->config->window.MouseGrab.Toggle());
 }
 
-bool GameWindowHandler::Event(const PlatformEvent *event) {
-    return PlatformEventFilter::Event(event);
-}
-
 bool GameWindowHandler::KeyPressEvent(const PlatformKeyEvent *event) {
     keyboardController_->ProcessKeyPressEvent(event);
 

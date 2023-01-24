@@ -1,4 +1,5 @@
 #pragma once
+
 #include <memory>
 #include <tuple>
 #include <unordered_map>
@@ -55,7 +56,6 @@ class GameWindowHandler : public PlatformEventFilter {
     void OnActivated();
     void OnDeactivated();
 
-    virtual bool Event(const PlatformEvent *event) override;
     virtual bool KeyPressEvent(const PlatformKeyEvent *event) override;
     virtual bool KeyReleaseEvent(const PlatformKeyEvent *event) override;
     virtual bool MouseMoveEvent(const PlatformMouseEvent *event) override;
