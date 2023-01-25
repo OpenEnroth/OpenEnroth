@@ -22,8 +22,6 @@
 class GameThread {
  public:
     explicit GameThread(const GameTestOptions& options) {
-        SetGlobalRandomEngine(std::make_unique<NonRandomEngine>());
-
         _logger = PlatformLogger::CreateStandardLogger(WinEnsureConsoleOption);
         _logger->SetLogLevel(ApplicationLog, LogInfo);
         _logger->SetLogLevel(PlatformLog, LogError);
