@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;67f04eb</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5f58c78</span>
    </div>
   </td>
  </tr>
@@ -70,7 +70,6 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
@@ -93,11 +92,6 @@ Inheritance diagram for TestProxy:</div>
   </map>
 </div></div>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTestProxy_1_1PostedEvent.html">PostedEvent</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ab2cea669105e0bfd9b6682469f309948"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestProxy.html#ab2cea669105e0bfd9b6682469f309948">TestProxy</a> (<a class="el" href="classTestStateHandle.html">TestStateHandle</a> state)</td></tr>
@@ -106,8 +100,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ad20bfe7aebb3723967a9c5906565dd06"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0769f0f15301f73495c3ceca769eeed7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestProxy.html#a0769f0f15301f73495c3ceca769eeed7">reset</a> ()</td></tr>
 <tr class="separator:a0769f0f15301f73495c3ceca769eeed7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40e6f54e410e50b9ae521af7e657037c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestProxy.html#a40e6f54e410e50b9ae521af7e657037c">postEvent</a> (<a class="el" href="classPlatformWindow.html">PlatformWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, std::unique_ptr&lt; <a class="el" href="classPlatformEvent.html">PlatformEvent</a> &gt; event)</td></tr>
-<tr class="separator:a40e6f54e410e50b9ae521af7e657037c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a411b2cbf65c711551d0075cd4bbefcad"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestProxy.html#a411b2cbf65c711551d0075cd4bbefcad">postEvent</a> (std::unique_ptr&lt; <a class="el" href="classPlatformEvent.html">PlatformEvent</a> &gt; event)</td></tr>
+<tr class="separator:a411b2cbf65c711551d0075cd4bbefcad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
@@ -247,8 +241,8 @@ Private Attributes</h2></td></tr>
 <tr class="separator:ae9da7a3d6f3f08d5307fe8865f8e196a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a29a1d3cf0d2273682815476d032f1c21"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestProxy.html#a29a1d3cf0d2273682815476d032f1c21">_tickCount</a> = 0</td></tr>
 <tr class="separator:a29a1d3cf0d2273682815476d032f1c21"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a87377c2163d6860293056f5a52edc27d"><td class="memItemLeft" align="right" valign="top">std::queue&lt; <a class="el" href="structTestProxy_1_1PostedEvent.html">PostedEvent</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestProxy.html#a87377c2163d6860293056f5a52edc27d">postedEvents_</a></td></tr>
-<tr class="separator:a87377c2163d6860293056f5a52edc27d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5428f5aefa02d037f42151f1faa3cb56"><td class="memItemLeft" align="right" valign="top">std::queue&lt; std::unique_ptr&lt; <a class="el" href="classPlatformEvent.html">PlatformEvent</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestProxy.html#a5428f5aefa02d037f42151f1faa3cb56">postedEvents_</a></td></tr>
+<tr class="separator:a5428f5aefa02d037f42151f1faa3cb56"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1555e8d4764c726b830334381a9e1e11"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestProxy.html#a1555e8d4764c726b830334381a9e1e11">emptyHandler_</a></td></tr>
 <tr class="separator:a1555e8d4764c726b830334381a9e1e11"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -359,8 +353,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a40e6f54e410e50b9ae521af7e657037c" name="a40e6f54e410e50b9ae521af7e657037c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a40e6f54e410e50b9ae521af7e657037c">&#9670;&#160;</a></span>postEvent()</h2>
+<a id="a411b2cbf65c711551d0075cd4bbefcad" name="a411b2cbf65c711551d0075cd4bbefcad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a411b2cbf65c711551d0075cd4bbefcad">&#9670;&#160;</a></span>postEvent()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -368,19 +362,9 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">void TestProxy::postEvent </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classPlatformWindow.html">PlatformWindow</a> *&#160;</td>
-          <td class="paramname"><em>window</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">std::unique_ptr&lt; <a class="el" href="classPlatformEvent.html">PlatformEvent</a> &gt;&#160;</td>
-          <td class="paramname"><em>event</em>&#160;</td>
-        </tr>
-        <tr>
+          <td class="paramname"><em>event</em></td><td>)</td>
           <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -621,8 +605,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a87377c2163d6860293056f5a52edc27d" name="a87377c2163d6860293056f5a52edc27d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a87377c2163d6860293056f5a52edc27d">&#9670;&#160;</a></span>postedEvents_</h2>
+<a id="a5428f5aefa02d037f42151f1faa3cb56" name="a5428f5aefa02d037f42151f1faa3cb56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5428f5aefa02d037f42151f1faa3cb56">&#9670;&#160;</a></span>postedEvents_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -631,7 +615,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::queue&lt;<a class="el" href="structTestProxy_1_1PostedEvent.html">PostedEvent</a>&gt; TestProxy::postedEvents_</td>
+          <td class="memname">std::queue&lt;std::unique_ptr&lt;<a class="el" href="classPlatformEvent.html">PlatformEvent</a>&gt; &gt; TestProxy::postedEvents_</td>
         </tr>
       </table>
   </td>

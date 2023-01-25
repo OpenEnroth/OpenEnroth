@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;67f04eb</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5f58c78</span>
    </div>
   </td>
  </tr>
@@ -71,6 +71,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-types">Private Types</a> &#124;
 <a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="#friends">Friends</a> &#124;
@@ -98,10 +99,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ae9157d6a58160f0213a032c5496fb3c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a26f2bb374eebee1090c0a76c7d00b754"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventTracer.html#a26f2bb374eebee1090c0a76c7d00b754">~EventTracer</a> ()</td></tr>
 <tr class="separator:a26f2bb374eebee1090c0a76c7d00b754"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a28ac4613c5be5a26b962a6d374c7ab9d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventTracer.html#a28ac4613c5be5a26b962a6d374c7ab9d">start</a> ()</td></tr>
-<tr class="separator:a28ac4613c5be5a26b962a6d374c7ab9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a35e3f773e7543dbaa4479c3344b6eec1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventTracer.html#a35e3f773e7543dbaa4479c3344b6eec1">finish</a> (std::string_view path)</td></tr>
-<tr class="separator:a35e3f773e7543dbaa4479c3344b6eec1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64ec44ee94f628d3ccc0aea1a7f8af38"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventTracer.html#a64ec44ee94f628d3ccc0aea1a7f8af38">start</a> (const std::string &amp;tracePath, const std::string &amp;savePath)</td></tr>
+<tr class="separator:a64ec44ee94f628d3ccc0aea1a7f8af38"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15dac356c961c107984f1639a9e5601a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventTracer.html#a15dac356c961c107984f1639a9e5601a">finish</a> ()</td></tr>
+<tr class="separator:a15dac356c961c107984f1639a9e5601a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e7721070327072005ad9fb2ae8ee5f5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventTracer.html#a7e7721070327072005ad9fb2ae8ee5f5">isTracing</a> () const</td></tr>
 <tr class="separator:a7e7721070327072005ad9fb2ae8ee5f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPlatformEventFilter"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPlatformEventFilter')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPlatformEventFilter.html">PlatformEventFilter</a></td></tr>
@@ -109,10 +110,18 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aca06b95a372fd03925286d19ba3fe6f2 inherit pub_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a740de278fac42acbaf7c4afe2e700a6e inherit pub_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#a740de278fac42acbaf7c4afe2e700a6e">PlatformEventFilter</a> (<a class="el" href="classPlatformEventFilter.html#ac9b0caf4f6435fee88d85accadaaa49b">EventWildcard</a> <a class="el" href="classPlatformEventFilter.html#ac6977f67d1d85308c0e4badb2e03a2be">eventTypes</a>)</td></tr>
 <tr class="separator:a740de278fac42acbaf7c4afe2e700a6e inherit pub_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae3a88654899fb7edbb50f3b35c9cf807 inherit pub_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#ae3a88654899fb7edbb50f3b35c9cf807">Event</a> (<a class="el" href="classPlatformWindow.html">PlatformWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, const <a class="el" href="classPlatformEvent.html">PlatformEvent</a> *event)</td></tr>
-<tr class="separator:ae3a88654899fb7edbb50f3b35c9cf807 inherit pub_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b7c718c335e30b81d0c7c1f969bf909 inherit pub_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#a3b7c718c335e30b81d0c7c1f969bf909">Event</a> (const <a class="el" href="classPlatformEvent.html">PlatformEvent</a> *event)</td></tr>
+<tr class="separator:a3b7c718c335e30b81d0c7c1f969bf909 inherit pub_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac6977f67d1d85308c0e4badb2e03a2be inherit pub_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="classPlatformEvent.html#ab1b85cb24f01d755e87bf165a8b18ee8">PlatformEvent::Type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#ac6977f67d1d85308c0e4badb2e03a2be">eventTypes</a> () const</td></tr>
 <tr class="separator:ac6977f67d1d85308c0e4badb2e03a2be inherit pub_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-types" name="pri-types"></a>
+Private Types</h2></td></tr>
+<tr class="memitem:a2b09187da3ea91ed297b2ca33ed50d4d"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventTracer.html#a2b09187da3ea91ed297b2ca33ed50d4d">State</a> { <a class="el" href="classEventTracer.html#a2b09187da3ea91ed297b2ca33ed50d4daa2207335b5190a70145e019740992dc9">STATE_DISABLED</a>
+, <a class="el" href="classEventTracer.html#a2b09187da3ea91ed297b2ca33ed50d4da95011b7ace34a916f1334ee03a077f8a">STATE_WAITING</a>
+, <a class="el" href="classEventTracer.html#a2b09187da3ea91ed297b2ca33ed50d4da56239aa0001185f32869d2cdb2834df6">STATE_TRACING</a>
+ }</td></tr>
+<tr class="separator:a2b09187da3ea91ed297b2ca33ed50d4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
@@ -120,8 +129,8 @@ Private Member Functions</h2></td></tr>
 <tr class="separator:aa6fbd8960e7b91e14888548b3c760fcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56c3104057b81717138b630d81294c8d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventTracer.html#a56c3104057b81717138b630d81294c8d">SwapBuffers</a> () override</td></tr>
 <tr class="separator:a56c3104057b81717138b630d81294c8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3eb1b440de580d2c6ac69dce46940e59"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventTracer.html#a3eb1b440de580d2c6ac69dce46940e59">Event</a> (<a class="el" href="classPlatformWindow.html">PlatformWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, const <a class="el" href="classPlatformEvent.html">PlatformEvent</a> *event) override</td></tr>
-<tr class="separator:a3eb1b440de580d2c6ac69dce46940e59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7c87634d02afd3ac59800e8d8975521"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventTracer.html#aa7c87634d02afd3ac59800e8d8975521">Event</a> (const <a class="el" href="classPlatformEvent.html">PlatformEvent</a> *event) override</td></tr>
+<tr class="separator:aa7c87634d02afd3ac59800e8d8975521"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classProxyPlatform"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classProxyPlatform')"><img src="closed.png" alt="-"/>&#160;Private Member Functions inherited from <a class="el" href="classProxyPlatform.html">ProxyPlatform</a></td></tr>
 <tr class="memitem:ac9c733afe283ebe467f8c8c7f115c8d4 inherit pub_methods_classProxyPlatform"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProxyPlatform.html#ac9c733afe283ebe467f8c8c7f115c8d4">ProxyPlatform</a> (<a class="el" href="classPlatform.html">Platform</a> *base=nullptr)</td></tr>
 <tr class="separator:ac9c733afe283ebe467f8c8c7f115c8d4 inherit pub_methods_classProxyPlatform"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -211,14 +220,18 @@ Private Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a6fb40576c82293faac3499efd0f4322b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventTracer.html#a6fb40576c82293faac3499efd0f4322b">_tracing</a> = false</td></tr>
-<tr class="separator:a6fb40576c82293faac3499efd0f4322b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2e1455a93bc16b6aba15f58412f1eaf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEventTracer.html#a2b09187da3ea91ed297b2ca33ed50d4d">State</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventTracer.html#ae2e1455a93bc16b6aba15f58412f1eaf">_state</a> = <a class="el" href="classEventTracer.html#a2b09187da3ea91ed297b2ca33ed50d4daa2207335b5190a70145e019740992dc9">STATE_DISABLED</a></td></tr>
+<tr class="separator:ae2e1455a93bc16b6aba15f58412f1eaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abf95c96c5c037856a3d9b286ebcaaecf"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventTracer.html#abf95c96c5c037856a3d9b286ebcaaecf">_tickCount</a> = 0</td></tr>
 <tr class="separator:abf95c96c5c037856a3d9b286ebcaaecf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a37324cde0ed7cc3da40ff61baa3cb1a0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEventTrace.html">EventTrace</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventTracer.html#a37324cde0ed7cc3da40ff61baa3cb1a0">_trace</a></td></tr>
+<tr class="memitem:a37324cde0ed7cc3da40ff61baa3cb1a0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structEventTrace.html">EventTrace</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventTracer.html#a37324cde0ed7cc3da40ff61baa3cb1a0">_trace</a></td></tr>
 <tr class="separator:a37324cde0ed7cc3da40ff61baa3cb1a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a280c0d44e0d3e1bced5843d5b015b634"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classRandomEngine.html">RandomEngine</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventTracer.html#a280c0d44e0d3e1bced5843d5b015b634">_oldRandomEngine</a></td></tr>
 <tr class="separator:a280c0d44e0d3e1bced5843d5b015b634"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad1a7bce39e5410b22b7c149acaf330a9"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventTracer.html#ad1a7bce39e5410b22b7c149acaf330a9">_tracePath</a></td></tr>
+<tr class="separator:ad1a7bce39e5410b22b7c149acaf330a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a14bd4e460a42327d09243592d828f0a2"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventTracer.html#a14bd4e460a42327d09243592d828f0a2">_savePath</a></td></tr>
+<tr class="separator:a14bd4e460a42327d09243592d828f0a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
 Friends</h2></td></tr>
@@ -232,28 +245,30 @@ Additional Inherited Members</h2></td></tr>
  }</td></tr>
 <tr class="separator:ac9b0caf4f6435fee88d85accadaaa49b inherit pub_types_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classPlatformEventFilter"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classPlatformEventFilter')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classPlatformEventFilter.html">PlatformEventFilter</a></td></tr>
-<tr class="memitem:ae85a4f5ad72c2ac09a1811d374dc4ed7 inherit pro_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#ae85a4f5ad72c2ac09a1811d374dc4ed7">KeyPressEvent</a> (<a class="el" href="classPlatformWindow.html">PlatformWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, const <a class="el" href="classPlatformKeyEvent.html">PlatformKeyEvent</a> *event)</td></tr>
-<tr class="separator:ae85a4f5ad72c2ac09a1811d374dc4ed7 inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa5534e7a10b0f07ffb6171a3083efa2f inherit pro_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#aa5534e7a10b0f07ffb6171a3083efa2f">KeyReleaseEvent</a> (<a class="el" href="classPlatformWindow.html">PlatformWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, const <a class="el" href="classPlatformKeyEvent.html">PlatformKeyEvent</a> *event)</td></tr>
-<tr class="separator:aa5534e7a10b0f07ffb6171a3083efa2f inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51061bd4271b60fdcd2d7d94615e1052 inherit pro_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#a51061bd4271b60fdcd2d7d94615e1052">MouseMoveEvent</a> (<a class="el" href="classPlatformWindow.html">PlatformWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, const <a class="el" href="classPlatformMouseEvent.html">PlatformMouseEvent</a> *event)</td></tr>
-<tr class="separator:a51061bd4271b60fdcd2d7d94615e1052 inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe8578e6d00376c39c1ff2312fe520cd inherit pro_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#abe8578e6d00376c39c1ff2312fe520cd">MousePressEvent</a> (<a class="el" href="classPlatformWindow.html">PlatformWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, const <a class="el" href="classPlatformMouseEvent.html">PlatformMouseEvent</a> *event)</td></tr>
-<tr class="separator:abe8578e6d00376c39c1ff2312fe520cd inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a115386021f3176848d6b540ba7e043be inherit pro_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#a115386021f3176848d6b540ba7e043be">MouseReleaseEvent</a> (<a class="el" href="classPlatformWindow.html">PlatformWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, const <a class="el" href="classPlatformMouseEvent.html">PlatformMouseEvent</a> *event)</td></tr>
-<tr class="separator:a115386021f3176848d6b540ba7e043be inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeb8de2a89fa2d666459303a421de886a inherit pro_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#aeb8de2a89fa2d666459303a421de886a">WheelEvent</a> (<a class="el" href="classPlatformWindow.html">PlatformWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, const <a class="el" href="classPlatformWheelEvent.html">PlatformWheelEvent</a> *event)</td></tr>
-<tr class="separator:aeb8de2a89fa2d666459303a421de886a inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a981ecd865fe03ad44e590a6b00a1e3b5 inherit pro_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#a981ecd865fe03ad44e590a6b00a1e3b5">MoveEvent</a> (<a class="el" href="classPlatformWindow.html">PlatformWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, const <a class="el" href="classPlatformMoveEvent.html">PlatformMoveEvent</a> *event)</td></tr>
-<tr class="separator:a981ecd865fe03ad44e590a6b00a1e3b5 inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a242737a30ca298af3b2d927f749a8f14 inherit pro_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#a242737a30ca298af3b2d927f749a8f14">ResizeEvent</a> (<a class="el" href="classPlatformWindow.html">PlatformWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, const <a class="el" href="classPlatformResizeEvent.html">PlatformResizeEvent</a> *event)</td></tr>
-<tr class="separator:a242737a30ca298af3b2d927f749a8f14 inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2a2acfed7342ae9e868b2c59c144d197 inherit pro_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#a2a2acfed7342ae9e868b2c59c144d197">ActivationEvent</a> (<a class="el" href="classPlatformWindow.html">PlatformWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, const <a class="el" href="classPlatformEvent.html">PlatformEvent</a> *event)</td></tr>
-<tr class="separator:a2a2acfed7342ae9e868b2c59c144d197 inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab3ac396da4ba14500960ac980abb0e2e inherit pro_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#ab3ac396da4ba14500960ac980abb0e2e">CloseEvent</a> (<a class="el" href="classPlatformWindow.html">PlatformWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, const <a class="el" href="classPlatformEvent.html">PlatformEvent</a> *event)</td></tr>
-<tr class="separator:ab3ac396da4ba14500960ac980abb0e2e inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a971a6034b72d902906424568619b3ac2 inherit pro_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#a971a6034b72d902906424568619b3ac2">GamepadDeviceEvent</a> (<a class="el" href="classPlatformWindow.html">PlatformWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, const <a class="el" href="classPlatformGamepadDeviceEvent.html">PlatformGamepadDeviceEvent</a> *event)</td></tr>
-<tr class="separator:a971a6034b72d902906424568619b3ac2 inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb2c7e7f6afca95b1798f4af05afa209 inherit pro_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#acb2c7e7f6afca95b1798f4af05afa209">KeyPressEvent</a> (const <a class="el" href="classPlatformKeyEvent.html">PlatformKeyEvent</a> *event)</td></tr>
+<tr class="separator:acb2c7e7f6afca95b1798f4af05afa209 inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0cb57ce55f7d44c722e6ac80f317e57d inherit pro_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#a0cb57ce55f7d44c722e6ac80f317e57d">KeyReleaseEvent</a> (const <a class="el" href="classPlatformKeyEvent.html">PlatformKeyEvent</a> *event)</td></tr>
+<tr class="separator:a0cb57ce55f7d44c722e6ac80f317e57d inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec05d42493c3b16837bb7327199f1524 inherit pro_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#aec05d42493c3b16837bb7327199f1524">MouseMoveEvent</a> (const <a class="el" href="classPlatformMouseEvent.html">PlatformMouseEvent</a> *event)</td></tr>
+<tr class="separator:aec05d42493c3b16837bb7327199f1524 inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78ab829532d71ac18c4295c080dd7acb inherit pro_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#a78ab829532d71ac18c4295c080dd7acb">MousePressEvent</a> (const <a class="el" href="classPlatformMouseEvent.html">PlatformMouseEvent</a> *event)</td></tr>
+<tr class="separator:a78ab829532d71ac18c4295c080dd7acb inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9538a10d35f331f03f4e7bda07b7fbe inherit pro_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#ae9538a10d35f331f03f4e7bda07b7fbe">MouseReleaseEvent</a> (const <a class="el" href="classPlatformMouseEvent.html">PlatformMouseEvent</a> *event)</td></tr>
+<tr class="separator:ae9538a10d35f331f03f4e7bda07b7fbe inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a666186dc65fa47217037b9ee723bc330 inherit pro_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#a666186dc65fa47217037b9ee723bc330">WheelEvent</a> (const <a class="el" href="classPlatformWheelEvent.html">PlatformWheelEvent</a> *event)</td></tr>
+<tr class="separator:a666186dc65fa47217037b9ee723bc330 inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2504deef7fbbe81255ca61e863a7122 inherit pro_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#ad2504deef7fbbe81255ca61e863a7122">MoveEvent</a> (const <a class="el" href="classPlatformMoveEvent.html">PlatformMoveEvent</a> *event)</td></tr>
+<tr class="separator:ad2504deef7fbbe81255ca61e863a7122 inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af017ed7317d52a120cc4a0a1295a4bfc inherit pro_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#af017ed7317d52a120cc4a0a1295a4bfc">ResizeEvent</a> (const <a class="el" href="classPlatformResizeEvent.html">PlatformResizeEvent</a> *event)</td></tr>
+<tr class="separator:af017ed7317d52a120cc4a0a1295a4bfc inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4512fa838a7ee8e29d658e803a296ee9 inherit pro_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#a4512fa838a7ee8e29d658e803a296ee9">ActivationEvent</a> (const <a class="el" href="classPlatformWindowEvent.html">PlatformWindowEvent</a> *event)</td></tr>
+<tr class="separator:a4512fa838a7ee8e29d658e803a296ee9 inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5a90c7951125d6c460ab1df2cd486ff inherit pro_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#ae5a90c7951125d6c460ab1df2cd486ff">CloseEvent</a> (const <a class="el" href="classPlatformWindowEvent.html">PlatformWindowEvent</a> *event)</td></tr>
+<tr class="separator:ae5a90c7951125d6c460ab1df2cd486ff inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0577ba5cd5a4111ee896860048024a3 inherit pro_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#ab0577ba5cd5a4111ee896860048024a3">GamepadDeviceEvent</a> (const <a class="el" href="classPlatformGamepadDeviceEvent.html">PlatformGamepadDeviceEvent</a> *event)</td></tr>
+<tr class="separator:ab0577ba5cd5a4111ee896860048024a3 inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50283ae49ba8556521aee66cde97a650 inherit pro_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#a50283ae49ba8556521aee66cde97a650">NativeEvent</a> (const <a class="el" href="classPlatformNativeEvent.html">PlatformNativeEvent</a> *event)</td></tr>
+<tr class="separator:a50283ae49ba8556521aee66cde97a650 inherit pro_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_static_methods_classPlatform"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classPlatform')"><img src="closed.png" alt="-"/>&#160;Static Private Member Functions inherited from <a class="el" href="classPlatform.html">Platform</a></td></tr>
 <tr class="memitem:a79d9b81a4fb7f46256651129865ae0a8 inherit pub_static_methods_classPlatform"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classPlatform.html">Platform</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#a79d9b81a4fb7f46256651129865ae0a8">CreateStandardPlatform</a> (<a class="el" href="classPlatformLogger.html">PlatformLogger</a> *<a class="el" href="Engine_2IocContainer_8cpp.html#a0009c186c3629201f6c24eded36605f4">logger</a>)</td></tr>
 <tr class="separator:a79d9b81a4fb7f46256651129865ae0a8 inherit pub_static_methods_classPlatform"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -264,7 +279,35 @@ Additional Inherited Members</h2></td></tr>
 <li>Install it as an event filter. This is how it will record events, so you have a certain degree of control of what to record.</li>
 <li>Install it as a platform proxy. This is needed to override the default timer. </li>
 </ul>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="a2b09187da3ea91ed297b2ca33ed50d4d" name="a2b09187da3ea91ed297b2ca33ed50d4d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b09187da3ea91ed297b2ca33ed50d4d">&#9670;&#160;</a></span>State</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="classEventTracer.html#a2b09187da3ea91ed297b2ca33ed50d4d">EventTracer::State</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a2b09187da3ea91ed297b2ca33ed50d4daa2207335b5190a70145e019740992dc9" name="a2b09187da3ea91ed297b2ca33ed50d4daa2207335b5190a70145e019740992dc9"></a>STATE_DISABLED&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a2b09187da3ea91ed297b2ca33ed50d4da95011b7ace34a916f1334ee03a077f8a" name="a2b09187da3ea91ed297b2ca33ed50d4da95011b7ace34a916f1334ee03a077f8a"></a>STATE_WAITING&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a2b09187da3ea91ed297b2ca33ed50d4da56239aa0001185f32869d2cdb2834df6" name="a2b09187da3ea91ed297b2ca33ed50d4da56239aa0001185f32869d2cdb2834df6"></a>STATE_TRACING&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ae9157d6a58160f0213a032c5496fb3c6" name="ae9157d6a58160f0213a032c5496fb3c6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae9157d6a58160f0213a032c5496fb3c6">&#9670;&#160;</a></span>EventTracer()</h2>
 
@@ -300,8 +343,8 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a3eb1b440de580d2c6ac69dce46940e59" name="a3eb1b440de580d2c6ac69dce46940e59"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3eb1b440de580d2c6ac69dce46940e59">&#9670;&#160;</a></span>Event()</h2>
+<a id="aa7c87634d02afd3ac59800e8d8975521" name="aa7c87634d02afd3ac59800e8d8975521"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa7c87634d02afd3ac59800e8d8975521">&#9670;&#160;</a></span>Event()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -312,19 +355,9 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">bool EventTracer::Event </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classPlatformWindow.html">PlatformWindow</a> *&#160;</td>
-          <td class="paramname"><em>window</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">const <a class="el" href="classPlatformEvent.html">PlatformEvent</a> *&#160;</td>
-          <td class="paramname"><em>event</em>&#160;</td>
-        </tr>
-        <tr>
+          <td class="paramname"><em>event</em></td><td>)</td>
           <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -334,12 +367,12 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented from <a class="el" href="classPlatformEventFilter.html#ae3a88654899fb7edbb50f3b35c9cf807">PlatformEventFilter</a>.</p>
+<p>Reimplemented from <a class="el" href="classPlatformEventFilter.html#a3b7c718c335e30b81d0c7c1f969bf909">PlatformEventFilter</a>.</p>
 
 </div>
 </div>
-<a id="a35e3f773e7543dbaa4479c3344b6eec1" name="a35e3f773e7543dbaa4479c3344b6eec1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a35e3f773e7543dbaa4479c3344b6eec1">&#9670;&#160;</a></span>finish()</h2>
+<a id="a15dac356c961c107984f1639a9e5601a" name="a15dac356c961c107984f1639a9e5601a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a15dac356c961c107984f1639a9e5601a">&#9670;&#160;</a></span>finish()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -347,8 +380,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">void EventTracer::finish </td>
           <td>(</td>
-          <td class="paramtype">std::string_view&#160;</td>
-          <td class="paramname"><em>path</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -381,8 +413,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a28ac4613c5be5a26b962a6d374c7ab9d" name="a28ac4613c5be5a26b962a6d374c7ab9d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a28ac4613c5be5a26b962a6d374c7ab9d">&#9670;&#160;</a></span>start()</h2>
+<a id="a64ec44ee94f628d3ccc0aea1a7f8af38" name="a64ec44ee94f628d3ccc0aea1a7f8af38"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a64ec44ee94f628d3ccc0aea1a7f8af38">&#9670;&#160;</a></span>start()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -390,8 +422,19 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">void EventTracer::start </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>tracePath</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>savePath</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -499,6 +542,50 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a id="a14bd4e460a42327d09243592d828f0a2" name="a14bd4e460a42327d09243592d828f0a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a14bd4e460a42327d09243592d828f0a2">&#9670;&#160;</a></span>_savePath</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string EventTracer::_savePath</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae2e1455a93bc16b6aba15f58412f1eaf" name="ae2e1455a93bc16b6aba15f58412f1eaf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae2e1455a93bc16b6aba15f58412f1eaf">&#9670;&#160;</a></span>_state</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classEventTracer.html#a2b09187da3ea91ed297b2ca33ed50d4d">State</a> EventTracer::_state = <a class="el" href="classEventTracer.html#a2b09187da3ea91ed297b2ca33ed50d4daa2207335b5190a70145e019740992dc9">STATE_DISABLED</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="abf95c96c5c037856a3d9b286ebcaaecf" name="abf95c96c5c037856a3d9b286ebcaaecf"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abf95c96c5c037856a3d9b286ebcaaecf">&#9670;&#160;</a></span>_tickCount</h2>
 
@@ -531,7 +618,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classEventTrace.html">EventTrace</a> EventTracer::_trace</td>
+          <td class="memname"><a class="el" href="structEventTrace.html">EventTrace</a> EventTracer::_trace</td>
         </tr>
       </table>
   </td>
@@ -543,8 +630,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a6fb40576c82293faac3499efd0f4322b" name="a6fb40576c82293faac3499efd0f4322b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6fb40576c82293faac3499efd0f4322b">&#9670;&#160;</a></span>_tracing</h2>
+<a id="ad1a7bce39e5410b22b7c149acaf330a9" name="ad1a7bce39e5410b22b7c149acaf330a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad1a7bce39e5410b22b7c149acaf330a9">&#9670;&#160;</a></span>_tracePath</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -553,7 +640,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool EventTracer::_tracing = false</td>
+          <td class="memname">std::string EventTracer::_tracePath</td>
         </tr>
       </table>
   </td>

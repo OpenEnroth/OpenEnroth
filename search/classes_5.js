@@ -10,7 +10,7 @@ var searchData=
   ['enumserializer_7',['EnumSerializer',['../classdetail_1_1EnumSerializer.html',1,'detail']]],
   ['equipemntpair_8',['EquipemntPair',['../classEquipemntPair.html',1,'']]],
   ['eventindex_9',['EventIndex',['../structEventIndex.html',1,'']]],
-  ['eventtrace_10',['EventTrace',['../classEventTrace.html',1,'']]],
+  ['eventtrace_10',['EventTrace',['../structEventTrace.html',1,'']]],
   ['eventtracer_11',['EventTracer',['../classEventTracer.html',1,'']]],
   ['explosion_5feffect_5fstruct_12',['explosion_effect_struct',['../structexplosion__effect__struct.html',1,'']]]
 ];
