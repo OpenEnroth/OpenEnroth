@@ -1703,7 +1703,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
         }
         render->BeginLines2D();
     } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-        render->FillRectFast(uX, uY, uZ - uX, uHeight, colorTable.HyperlinkBlue.C32());
+        render->FillRectFast(uX, uY, uZ - uX, uHeight, colorTable.NavyBlue.C32());
         uNumBlueFacesInBLVMinimap = 0;
         render->BeginLines2D();
         for (uint i = 0; i < (uint)pIndoor->pMapOutlines.size(); ++i) {

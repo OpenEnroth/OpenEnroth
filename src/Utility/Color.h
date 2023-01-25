@@ -83,7 +83,7 @@ class ColorTable {
     Color BloodRed = Color(240, 0, 0);            // #F00000
     Color VibrantGreen = Color(10, 255, 10);      // #0AFF0A
     Color Night = Color(10, 10, 10);              // #0A0A0A
-    Color HyperlinkBlue = Color(0, 0, 240);       // #0000F0
+    Color NavyBlue = Color(0, 0, 120);            // #000078
 };
 
 extern ColorTable colorTable;
