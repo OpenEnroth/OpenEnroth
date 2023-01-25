@@ -2,35 +2,29 @@
 
 #include "PlatformEvents.h"
 
-class PlatformWindow;
-
 /**
  * Event handler interface, to be implemented in user code.
  *
  * @see PlatformEventLoop
+ * @see FilteringEventHandler
  */
 class PlatformEventHandler {
  public:
     virtual ~PlatformEventHandler() = default;
 
-    // TODO(captainurist): maybe PlatformWindow * belongs inside Event after all? Not all events even have windows.
-    /**
-     * @param window                    Platform window that generated the event.
-     * @param event                     Event.
-     */
-    virtual void Event(PlatformWindow *window, const PlatformEvent *event);
+    virtual void Event(const PlatformEvent *event);
 
  protected:
-    virtual void KeyPressEvent(PlatformWindow *window, const PlatformKeyEvent *event);
-    virtual void KeyReleaseEvent(PlatformWindow *window, const PlatformKeyEvent *event);
-    virtual void MouseMoveEvent(PlatformWindow *window, const PlatformMouseEvent *event);
-    virtual void MousePressEvent(PlatformWindow *window, const PlatformMouseEvent *event);
-    virtual void MouseReleaseEvent(PlatformWindow *window, const PlatformMouseEvent *event);
-    virtual void WheelEvent(PlatformWindow *window, const PlatformWheelEvent *event);
-    virtual void MoveEvent(PlatformWindow *window, const PlatformMoveEvent *event);
-    virtual void ResizeEvent(PlatformWindow *window, const PlatformResizeEvent *event);
-    virtual void ActivationEvent(PlatformWindow *window, const PlatformEvent *event);
-    virtual void CloseEvent(PlatformWindow *window, const PlatformEvent *event);
-    virtual void GamepadDeviceEvent(PlatformWindow *window, const PlatformGamepadDeviceEvent *event);
-    // TODO(captainurist): nativeEvent(PlatformWindow *window, const PlatformNativeEvent *event);
+    virtual void KeyPressEvent(const PlatformKeyEvent *event);
+    virtual void KeyReleaseEvent(const PlatformKeyEvent *event);
+    virtual void MouseMoveEvent(const PlatformMouseEvent *event);
+    virtual void MousePressEvent(const PlatformMouseEvent *event);
+    virtual void MouseReleaseEvent(const PlatformMouseEvent *event);
+    virtual void WheelEvent(const PlatformWheelEvent *event);
+    virtual void MoveEvent(const PlatformMoveEvent *event);
+    virtual void ResizeEvent(const PlatformResizeEvent *event);
+    virtual void ActivationEvent(const PlatformWindowEvent *event);
+    virtual void CloseEvent(const PlatformWindowEvent *event);
+    virtual void GamepadDeviceEvent(const PlatformGamepadDeviceEvent *event);
+    virtual void NativeEvent(const PlatformNativeEvent *event);
 };

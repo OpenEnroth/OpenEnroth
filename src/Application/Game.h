@@ -21,6 +21,7 @@ class Platform;
 class PlatformApplication;
 class EventTracer;
 class GameTraceHandler;
+class NuklearEventHandler;
 
 namespace Application {
 
@@ -49,6 +50,7 @@ class Game {
     std::unique_ptr<GameWindowHandler> windowHandler;
     std::unique_ptr<EventTracer> eventTracer;
     std::unique_ptr<GameTraceHandler> traceHandler;
+    std::unique_ptr<NuklearEventHandler> nuklearHandler;
     std::shared_ptr<Engine> engine;
     std::shared_ptr<IRender> render;
     std::shared_ptr<Mouse> mouse = nullptr;

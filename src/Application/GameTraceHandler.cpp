@@ -11,7 +11,7 @@ GameTraceHandler::GameTraceHandler(EventTracer *tracer) : PlatformEventFilter({P
     assert(tracer);
 }
 
-bool GameTraceHandler::KeyPressEvent(PlatformWindow *, const PlatformKeyEvent *event) {
+bool GameTraceHandler::KeyPressEvent(const PlatformKeyEvent *event) {
     if (isTriggerKey(event) && _waitingForKeyRelease)
         return true; // Ignore auto-repeats
 
@@ -19,11 +19,10 @@ bool GameTraceHandler::KeyPressEvent(PlatformWindow *, const PlatformKeyEvent *e
         _waitingForKeyRelease = true;
 
         if (!_tracer->isTracing()) {
-            // TODO(captainurist) : also save game here
-            _tracer->start();
+            _tracer->start("trace.json", "trace.mm7");
             logger->Info("Tracing started.");
         } else {
-            _tracer->finish("trace.json");
+            _tracer->finish();
             logger->Info("Tracing finished.");
         }
         return true;
@@ -32,7 +31,7 @@ bool GameTraceHandler::KeyPressEvent(PlatformWindow *, const PlatformKeyEvent *e
     return false;
 }
 
-bool GameTraceHandler::KeyReleaseEvent(PlatformWindow *, const PlatformKeyEvent *event) {
+bool GameTraceHandler::KeyReleaseEvent(const PlatformKeyEvent *event) {
     if (isTriggerKey(event) && _waitingForKeyRelease) {
         _waitingForKeyRelease = false;
 

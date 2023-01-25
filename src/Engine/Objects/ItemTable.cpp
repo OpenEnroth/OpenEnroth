@@ -588,7 +588,7 @@ void ItemTable::GenerateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
         if (treasure_level == ITEM_TREASURE_LEVEL_ARTIFACT) {
             for (ITEM_TYPE i : SpawnableArtifacts())
                 artifact_found += pParty->pIsArtifactFound[i];
-            artifact_random_id = Sample(SpawnableArtifacts());
+            artifact_random_id = RandomSample(SpawnableArtifacts());
             if ((Random(100) < 5) && !pParty->pIsArtifactFound[artifact_random_id] &&
                 (engine->config->gameplay.ArtifactLimit.Get() == 0 || artifact_found < engine->config->gameplay.ArtifactLimit.Get())) {
                 pParty->pIsArtifactFound[artifact_random_id] = 1;

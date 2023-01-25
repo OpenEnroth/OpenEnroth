@@ -16,8 +16,8 @@ class GameTraceHandler : public PlatformEventFilter {
     explicit GameTraceHandler(EventTracer *tracer);
     virtual ~GameTraceHandler() = default;
 
-    virtual bool KeyPressEvent(PlatformWindow *window, const PlatformKeyEvent *event) override;
-    virtual bool KeyReleaseEvent(PlatformWindow *window, const PlatformKeyEvent *event) override;
+    virtual bool KeyPressEvent(const PlatformKeyEvent *event) override;
+    virtual bool KeyReleaseEvent(const PlatformKeyEvent *event) override;
 
  private:
     bool isTriggerKey(const PlatformKeyEvent *event) const;

@@ -9,21 +9,23 @@
 
 #include "Io/Key.h" // TODO(captainurist): doesn't belong here
 
+#include "PaintEvent.h"
+
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformEvent::Type, CASE_SENSITIVE, {
-    {PlatformEvent::KeyPress,                   "keyPress"},
-    {PlatformEvent::KeyRelease,                 "keyRelease"},
-    {PlatformEvent::GamepadConnected,           "gamepadConnected"},
-    {PlatformEvent::GamepadDisconnected,        "gamepadDisconnected"},
-    {PlatformEvent::MouseButtonPress,           "mouseButtonPress"},
-    {PlatformEvent::MouseButtonRelease,         "mouseButtonRelease"},
-    {PlatformEvent::MouseMove,                  "mouseMove"},
-    {PlatformEvent::MouseWheel,                 "mouseWheel"},
-    {PlatformEvent::WindowMove,                 "windowMove"},
-    {PlatformEvent::WindowResize,               "windowResize"},
-    {PlatformEvent::WindowActivate,             "windowActivate"},
-    {PlatformEvent::WindowDeactivate,           "windowDeactivate"},
-    {PlatformEvent::WindowCloseRequest,         "windowCloseRequest"},
-    {EventTrace::PaintEvent,                    "paint"}
+    {PlatformEvent::KeyPress,               "keyPress"},
+    {PlatformEvent::KeyRelease,             "keyRelease"},
+    {PlatformEvent::GamepadConnected,       "gamepadConnected"},
+    {PlatformEvent::GamepadDisconnected,    "gamepadDisconnected"},
+    {PlatformEvent::MouseButtonPress,       "mouseButtonPress"},
+    {PlatformEvent::MouseButtonRelease,     "mouseButtonRelease"},
+    {PlatformEvent::MouseMove,              "mouseMove"},
+    {PlatformEvent::MouseWheel,             "mouseWheel"},
+    {PlatformEvent::WindowMove,             "windowMove"},
+    {PlatformEvent::WindowResize,           "windowResize"},
+    {PlatformEvent::WindowActivate,         "windowActivate"},
+    {PlatformEvent::WindowDeactivate,       "windowDeactivate"},
+    {PlatformEvent::WindowCloseRequest,     "windowCloseRequest"},
+    {PaintEvent::Paint,                     "paint"}
 })
 MM_DEFINE_JSON_LEXICAL_SERIALIZATION_FUNCTIONS(PlatformEvent::Type)
 
@@ -110,6 +112,12 @@ MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(PlatformGamepadDeviceEvent, (
     (id, "id")
 ))
 
+MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(PaintEvent, (
+    (type, "type"),
+    (tickCount, "tickCount"),
+    (randomState, "randomState")
+))
+
 template<class Callable>
 inline void DispatchByEventType(PlatformEvent::Type type, Callable &&callable) {
     using PlatformEventType = PlatformEvent::Type; // TODO(captainurist): workaround for gcc-12 ice, drop once we have gcc-13.
@@ -140,8 +148,9 @@ inline void DispatchByEventType(PlatformEvent::Type type, Callable &&callable) {
     case PlatformEventType::WindowActivate:
     case PlatformEventType::WindowDeactivate:
     case PlatformEventType::WindowCloseRequest:
-    case EventTrace::PaintEvent:
-        callable(static_cast<PlatformEvent *>(nullptr));
+        callable(static_cast<PlatformWindowEvent *>(nullptr));
+    case PaintEvent::Paint:
+        callable(static_cast<PaintEvent *>(nullptr));
         break;
     default:
         return;
@@ -174,7 +183,7 @@ static void from_json(const Json &json, std::unique_ptr<PlatformEvent> &value) {
     });
 }
 
-void EventTrace::saveToFile(std::string_view path) const {
+void EventTrace::saveToFile(std::string_view path, const EventTrace &trace) {
     std::ofstream f;
     f.exceptions(std::ios_base::failbit | std::ios_base::badbit);
     f.open(std::string(path));
@@ -183,13 +192,13 @@ void EventTrace::saveToFile(std::string_view path) const {
     // to_json calls for individual elements. Fix upstream?
     // Note: there is an example in tests to reproduce.
     Json json;
-    for (size_t i = 0; i < _events.size(); i++)
-        to_json(json[i], _events[i]);
+    for (size_t i = 0; i < trace.events.size(); i++)
+        to_json(json[i], trace.events[i]);
 
     f << std::setw(4) << json;
 }
 
-EventTrace EventTrace::loadFromFile(std::string_view path) {
+EventTrace EventTrace::loadFromFile(std::string_view path, PlatformWindow *window) {
     std::ifstream f;
     f.exceptions(std::ios_base::failbit | std::ios_base::badbit);
     f.open(std::string(path));
@@ -198,25 +207,25 @@ EventTrace EventTrace::loadFromFile(std::string_view path) {
     f >> json;
 
     EventTrace result;
-    from_json(json, result._events);
+    from_json(json, result.events);
+
+    for (std::unique_ptr<PlatformEvent> &event : result.events) {
+        DispatchByEventType(event->type, [&]<class T>(T *) {
+            if constexpr (std::is_base_of_v<PlatformWindowEvent, T>) {
+                static_cast<PlatformWindowEvent *>(event.get())->window = window;
+            }
+        });
+    }
+
     return result;
 }
 
-void EventTrace::recordEvent(const PlatformEvent *event) {
-    assert(event->type != PaintEvent);
+std::unique_ptr<PlatformEvent> EventTrace::cloneEvent(const PlatformEvent *event) {
+    std::unique_ptr<PlatformEvent> result;
 
     DispatchByEventType(event->type, [&]<class T>(T *) {
-        _events.emplace_back(std::make_unique<T>(*static_cast<const T *>(event)));
+        result = std::make_unique<T>(*static_cast<const T *>(event));
     });
-}
 
-void EventTrace::recordRepaint() {
-    PlatformEvent tmp;
-    tmp.type = PaintEvent;
-
-    _events.emplace_back(std::make_unique<PlatformEvent>(tmp));
-}
-
-void EventTrace::clear() {
-    _events.clear();
+    return result;
 }

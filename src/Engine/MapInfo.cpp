@@ -250,7 +250,7 @@ void MapInfo::SpawnRandomTreasure(SpawnPoint *a2) {
 
     int v34 = 0;
     int v5 = Random(100);
-    ITEM_TREASURE_LEVEL v13 = Sample(RemapTreasureLevel(a2->uItemIndex, Treasure_prob));
+    ITEM_TREASURE_LEVEL v13 = RandomSample(RemapTreasureLevel(a2->uItemIndex, Treasure_prob));
     if (v13 != ITEM_TREASURE_LEVEL_GUARANTEED_ARTIFACT) {
         // [0, 20) -- nothing
         // [20, 60) -- gold

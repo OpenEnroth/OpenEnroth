@@ -141,12 +141,6 @@ Game::Game(PlatformApplication *app) {
     this->decal_builder = EngineIoc::ResolveDecalBuilder();
     this->vis = EngineIoc::ResolveVis();
     this->menu = GameIoc::ResolveGameMenu();
-}
-
-Game::~Game() {}
-
-int Game::Run() {
-    IntegrityTest();
 
     ::application = app;
     ::platform = app->platform();
@@ -162,12 +156,19 @@ int Game::Run() {
     app->eventHandler()->installEventFilter(eventTracer.get());
     app->eventHandler()->installEventFilter(traceHandler.get());
     app->installProxy(eventTracer.get());
-    // TODO(captainurist): This code works for now, but these ^ need to be uninstalled properly.
+}
 
-    if (!window) {
-        log->Warning("Window creation failed");
-        return -1;
-    }
+Game::~Game() {
+    app->removeProxy(eventTracer.get());
+    app->eventHandler()->removeEventFilter(traceHandler.get());
+    app->eventHandler()->removeEventFilter(eventTracer.get());
+    app->eventHandler()->removeEventFilter(windowHandler.get());
+    if (nuklearHandler)
+        app->eventHandler()->removeEventFilter(nuklearHandler.get());
+}
+
+int Game::Run() {
+    IntegrityTest();
 
     render = IRenderFactory().Create(config);
     ::render = render;
@@ -187,8 +188,10 @@ int Game::Run() {
         log->Warning("Nuklear failed to initialize");
     }
     ::nuklear = nuklear;
-    if (nuklear)
-        nuklearEventHandler = std::make_shared<NuklearEventHandler>();
+    if (nuklear) {
+        nuklearHandler = std::make_unique<NuklearEventHandler>();
+        app->eventHandler()->installEventFilter(nuklearHandler.get());
+    }
 
     keyboardActionMapping = std::make_shared<KeyboardActionMapping>(config);
     ::keyboardActionMapping = keyboardActionMapping;
@@ -2344,7 +2347,7 @@ void Game::EventLoop() {
                         continue;
 
                     for(size_t attempt = 0; attempt < 500; attempt++) {
-                        ITEM_TYPE pItemID = Sample(SpawnableItems());
+                        ITEM_TYPE pItemID = RandomSample(SpawnableItems());
                         if (pItemTable->pItems[pItemID].uItemID_Rep_St > 6) {
                             pPlayers[uActiveCharacter]->AddItem(-1, pItemID);
                             break;
@@ -2359,7 +2362,7 @@ void Game::EventLoop() {
                         continue;
 
                     for (size_t attempt = 0; attempt < 500; attempt++) {
-                        ITEM_TYPE pItemID = Sample(SpawnableItems());
+                        ITEM_TYPE pItemID = RandomSample(SpawnableItems());
                         // if (pItemTable->pItems[pItemID].uItemID_Rep_St ==
                         //   (item_id - 40015 + 1)) {
                         pPlayers[uActiveCharacter]->AddItem(-1, pItemID);

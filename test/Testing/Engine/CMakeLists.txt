@@ -7,7 +7,7 @@ if(ENABLE_TESTS)
                             TestStateHandle.h)
 
     add_library(test_engine ${TEST_ENGINE_SOURCES} ${TEST_ENGINE_HEADERS})
-    target_link_libraries(test_engine platform utility)
+    target_link_libraries(test_engine trace platform utility)
 
     target_check_style(test_engine)
 endif()

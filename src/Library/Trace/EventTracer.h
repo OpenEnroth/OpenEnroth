@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 
 #include "Platform/Proxy/ProxyPlatform.h"
 #include "Platform/Proxy/ProxyOpenGLContext.h"
@@ -23,23 +24,32 @@ class EventTracer : private ProxyPlatform, private ProxyOpenGLContext, public Pl
     EventTracer();
     ~EventTracer();
 
-    void start();
-    void finish(std::string_view path); // TODO(captainurist): return trace here.
+    void start(const std::string &tracePath, const std::string &savePath);
+    void finish();
 
     bool isTracing() const {
-        return _tracing;
+        return _state != STATE_DISABLED;
     }
 
  private:
+    enum class State {
+        STATE_DISABLED, // Not tracing.
+        STATE_WAITING, // Requested to start tracing, waiting for `SwapBuffers` call.
+        STATE_TRACING // Tracing.
+    };
+    using enum State;
+
     friend class PlatformProxyIntrospection;
 
     virtual int64_t TickCount() const override;
     virtual void SwapBuffers() override;
-    virtual bool Event(PlatformWindow *window, const PlatformEvent *event) override;
+    virtual bool Event(const PlatformEvent *event) override;
 
  private:
-    bool _tracing = false;
+    State _state = STATE_DISABLED;
     int64_t _tickCount = 0;
     EventTrace _trace;
     std::unique_ptr<RandomEngine> _oldRandomEngine;
+    std::string _tracePath;
+    std::string _savePath;
 };

@@ -10,7 +10,7 @@ class PlatformEventFilter;
 
 class FilteringEventHandler : public PlatformEventHandler {
  public:
-    virtual void Event(PlatformWindow *window, const PlatformEvent *event) override;
+    virtual void Event(const PlatformEvent *event) override;
 
     void installEventFilter(PlatformEventFilter *filter);
     void removeEventFilter(PlatformEventFilter *filter);

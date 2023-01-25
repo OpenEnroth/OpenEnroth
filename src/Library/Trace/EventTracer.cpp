@@ -2,35 +2,43 @@
 
 #include <memory>
 #include <utility>
+#include <filesystem>
 
 #include "Utility/Random/NonRandomEngine.h"
 #include "Utility/Random/MersenneTwisterRandomEngine.h"
 #include "Utility/Random/Random.h"
+#include "Utility/DataPath.h"
+
+#include "Engine/SaveLoad.h" // TODO(captainurist): EventTracer now belongs in Engine, not in Library
+
+#include "PaintEvent.h"
 
 EventTracer::EventTracer() : PlatformEventFilter(PlatformEventFilter::ALL_EVENTS) {}
 
 EventTracer::~EventTracer() {}
 
-void EventTracer::start() {
-    assert(ProxyPlatform::Base() && !_tracing); // Proxies are installed && not already tracing
+void EventTracer::start(const std::string &tracePath, const std::string &savePath) {
+    assert(ProxyPlatform::Base()); // Installed as a proxy.
+    assert(_state == STATE_DISABLED);
 
-    // TODO(captainurist): tracing should start inside SwapBuffers() call, because that's where playback starts.
-    _tickCount = 0;
-    _oldRandomEngine = SetGlobalRandomEngine(std::make_unique<NonRandomEngine>());
-    _tracing = true;
+    _state = STATE_WAITING;
+    _tracePath = tracePath;
+    _savePath = savePath;
 }
 
-void EventTracer::finish(std::string_view path) {
-    assert(ProxyPlatform::Base() && _tracing); // Proxies are installed && is tracing
+void EventTracer::finish() {
+    assert(ProxyPlatform::Base()); // Installed as a proxy.
+    assert(_state != STATE_DISABLED);
 
-    _trace.saveToFile(path);
-    _trace.clear();
-    SetGlobalRandomEngine(std::move(_oldRandomEngine));
-    _tracing = false;
+    EventTrace::saveToFile(_tracePath, _trace);
+    _trace.events.clear();
+    if (_oldRandomEngine)
+        SetGlobalRandomEngine(std::move(_oldRandomEngine));
+    _state = STATE_DISABLED;
 }
 
 int64_t EventTracer::TickCount() const {
-    if (_tracing) {
+    if (_state == STATE_TRACING) {
         return _tickCount;
     } else {
         return ProxyPlatform::TickCount();
@@ -40,15 +48,40 @@ int64_t EventTracer::TickCount() const {
 void EventTracer::SwapBuffers() {
     ProxyOpenGLContext::SwapBuffers();
 
-    if (_tracing) {
-        _trace.recordRepaint();
-        _tickCount += 16; // Must be the same as the value in TestProxy::SwapBuffers.
+    switch (_state) {
+    case STATE_DISABLED:
+        return;
+    case STATE_WAITING: {
+        SaveGame(true, false);
+
+        std::error_code ec;
+        std::string src = MakeDataPath("saves", "autosave.mm7");
+        std::filesystem::copy_file(src, _savePath, std::filesystem::copy_options::overwrite_existing, ec);
+        // TODO(captainurist): at least log on error
+
+        _tickCount = 0;
+        _oldRandomEngine = SetGlobalRandomEngine(std::make_unique<NonRandomEngine>());
+        _state = STATE_TRACING;
+        break;
     }
+    case STATE_TRACING:
+        _tickCount += EventTrace::FRAME_TIME_MS;
+        break;
+    }
+
+    assert(_state == STATE_TRACING);
+
+    PaintEvent e;
+    e.type = PaintEvent::Paint;
+    e.tickCount = _tickCount;
+    e.randomState = Random(1024);
+
+    _trace.events.emplace_back(std::make_unique<PaintEvent>(e));
 }
 
-bool EventTracer::Event(PlatformWindow *window, const PlatformEvent *event) {
-    if (_tracing)
-        _trace.recordEvent(event);
+bool EventTracer::Event(const PlatformEvent *event) {
+    if (_state == STATE_TRACING)
+        _trace.events.emplace_back(EventTrace::cloneEvent(event));
 
     return false; // We just record events & don't filter anything.
 }

@@ -17,6 +17,7 @@
 
 #include "Library/Application/PlatformApplication.h"
 #include "Library/Trace/EventTrace.h"
+#include "Library/Trace/PaintEvent.h"
 
 #include "Platform/PlatformEvents.h"
 
@@ -32,7 +33,6 @@ GameWrapper::GameWrapper(TestStateHandle state, const std::string &testDataDir):
 GameWrapper::~GameWrapper() {}
 
 void GameWrapper::Reset() {
-    GoToMainMenu();
     state_->proxy->reset();
     SeedRandom(0);
 }
@@ -45,38 +45,42 @@ void GameWrapper::Tick(int count) {
 void GameWrapper::PressKey(PlatformKey key) {
     std::unique_ptr<PlatformKeyEvent> event = std::make_unique<PlatformKeyEvent>();
     event->type = PlatformEvent::KeyPress;
+    event->window = state_->application->window();
     event->key = key;
     event->mods = 0;
     event->isAutoRepeat = false;
-    state_->proxy->postEvent(state_->application->window(), std::move(event));
+    state_->proxy->postEvent(std::move(event));
 }
 
 void GameWrapper::ReleaseKey(PlatformKey key) {
     std::unique_ptr<PlatformKeyEvent> event = std::make_unique<PlatformKeyEvent>();
     event->type = PlatformEvent::KeyRelease;
+    event->window = state_->application->window();
     event->key = key;
     event->mods = 0;
     event->isAutoRepeat = false;
-    state_->proxy->postEvent(state_->application->window(), std::move(event));
+    state_->proxy->postEvent(std::move(event));
 }
 
 void GameWrapper::PressButton(PlatformMouseButton button, int x, int y) {
     std::unique_ptr<PlatformMouseEvent> event = std::make_unique<PlatformMouseEvent>();
     event->type = PlatformEvent::MouseButtonPress;
+    event->window = state_->application->window();
     event->button = PlatformMouseButton::Left;
     event->pos = Pointi(x, y);
     event->isDoubleClick = false;
-    state_->proxy->postEvent(state_->application->window(), std::move(event));
+    state_->proxy->postEvent(std::move(event));
 }
 
 void GameWrapper::ReleaseButton(PlatformMouseButton button, int x, int y) {
     std::unique_ptr<PlatformMouseEvent> event = std::make_unique<PlatformMouseEvent>();
     event->type = PlatformEvent::MouseButtonRelease;
+    event->window = state_->application->window();
     event->button = PlatformMouseButton::Left;
     event->buttons = PlatformMouseButton::Left;
     event->pos = Pointi(x, y);
     event->isDoubleClick = false;
-    state_->proxy->postEvent(state_->application->window(), std::move(event));
+    state_->proxy->postEvent(std::move(event));
 }
 
 void GameWrapper::PressAndReleaseKey(PlatformKey key) {
@@ -185,13 +189,31 @@ GUIButton *GameWrapper::AssertButton(std::string_view buttonId) {
 }
 
 void GameWrapper::PlayTrace(const std::string &name) {
-    auto trace = EventTrace::loadFromFile(testDataDir_ + name).takeEvents();
+    EventTrace trace = EventTrace::loadFromFile(testDataDir_ + name, state_->application->window());
 
-    for (std::unique_ptr<PlatformEvent> &event : trace) {
-        if (event->type == EventTrace::PaintEvent) {
-            Tick(1);
+    ASSERT_GE(trace.events.size(), 1);
+    ASSERT_EQ(trace.events[0]->type, PaintEvent::Paint); // Trace should start with a paint event.
+
+    bool isFirstPaintEvent = true;
+
+    for (std::unique_ptr<PlatformEvent> &event : trace.events) {
+        if (event->type == PaintEvent::Paint) {
+            const PaintEvent *paintEvent = static_cast<const PaintEvent *>(event.get());
+
+            if (isFirstPaintEvent) {
+                Reset();
+                isFirstPaintEvent = false;
+            } else {
+                Tick(1);
+            }
+
+            // TODO(captainurist): just re-record the relevant trace and drop != -1 checks.
+            if (paintEvent->randomState != -1)
+                EXPECT_EQ(Random(1024), paintEvent->randomState);
+            if (paintEvent->tickCount != -1)
+                EXPECT_EQ(state_->application->platform()->TickCount(), paintEvent->tickCount);
         } else {
-            state_->proxy->postEvent(state_->application->window(), std::move(event));
+            state_->proxy->postEvent(std::move(event));
         }
     }
 }

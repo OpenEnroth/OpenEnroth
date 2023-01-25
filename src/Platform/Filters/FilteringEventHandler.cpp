@@ -5,12 +5,12 @@
 
 #include "PlatformEventFilter.h"
 
-void FilteringEventHandler::Event(PlatformWindow *window, const PlatformEvent *event) {
+void FilteringEventHandler::Event(const PlatformEvent *event) {
     _insideEvent = true;
     auto guard = ScopeGuard([&] { _insideEvent = false; });
 
     for (PlatformEventFilter *filter : Reversed(_filters[event->type]))
-        if (filter->Event(window, event))
+        if (filter->Event(event))
             return;
 }
 

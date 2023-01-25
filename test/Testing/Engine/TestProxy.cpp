@@ -3,6 +3,8 @@
 #include <cassert>
 #include <utility>
 
+#include "Library/Trace/EventTrace.h"
+
 #include "Platform/PlatformEventHandler.h"
 
 TestProxy::TestProxy(TestStateHandle state) : _state(state) {
@@ -21,8 +23,8 @@ void TestProxy::reset() {
     _tickCount = 0;
 }
 
-void TestProxy::postEvent(PlatformWindow *window, std::unique_ptr<PlatformEvent> event) {
-    postedEvents_.push({window, std::move(event)});
+void TestProxy::postEvent(std::unique_ptr<PlatformEvent> event) {
+    postedEvents_.push(std::move(event));
 }
 
 int64_t TestProxy::TickCount() const {
@@ -32,6 +34,8 @@ int64_t TestProxy::TickCount() const {
 void TestProxy::SwapBuffers() {
     ProxyOpenGLContext::SwapBuffers();
 
+    _tickCount += EventTrace::FRAME_TIME_MS;
+
     if (_state->terminating) {
         if (_state->terminationHandler) {
             _state->terminationHandler();
@@ -40,14 +44,6 @@ void TestProxy::SwapBuffers() {
     } else {
         _state.YieldExecution();
     }
-
-    // 16ms translates to 62.5fps.
-    // It is possible to use double for state here (or store microseconds / nanoseconds), but this will result in
-    // staggered frame times, with every 1st and 2nd frame taking 17ms, and every 3rd one taking 16ms.
-    // This might result in some non-determinism down the line, e.g. changing the code in level loading will change
-    // the number of frames it takes to load a level, and this will shift the timing sequence for the actual game
-    // frames after the level is loaded. Unlikely to really affect anything, but we'd rather not find out.
-    _tickCount += 16;
 }
 
 void TestProxy::Exec(PlatformEventHandler *eventHandler) {
@@ -61,9 +57,9 @@ void TestProxy::ProcessMessages(PlatformEventHandler *eventHandler, int count) {
 }
 
 void TestProxy::processSyntheticMessages(PlatformEventHandler *eventHandler) {
-    while(!postedEvents_.empty()) {
-        PostedEvent event = std::move(postedEvents_.front());
+    while (!postedEvents_.empty()) {
+        std::unique_ptr<PlatformEvent> event = std::move(postedEvents_.front());
         postedEvents_.pop();
-        eventHandler->Event(event.window, event.event.get());
+        eventHandler->Event(event.get());
     }
 }

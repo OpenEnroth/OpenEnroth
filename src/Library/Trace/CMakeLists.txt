@@ -4,7 +4,8 @@ set(TRACE_SOURCES EventTrace.cpp
                   EventTracer.cpp)
 
 set(TRACE_HEADERS EventTrace.h
-                  EventTracer.h)
+                  EventTracer.h
+                  PaintEvent.h)
 
 add_library(trace STATIC ${TRACE_SOURCES} ${TRACE_HEADERS})
 target_link_libraries(trace serialization platform json)
