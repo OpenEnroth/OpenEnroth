@@ -493,7 +493,7 @@ void OutdoorLocation::SetFog() {
         map_id == MAP_THE_PIT || map_id > MAP_SHOALS)
         return;
 
-    uint chance = Random(100);
+    uint chance = vrng->Random(100);
 
     if (chance < fog_probability_table[map_id - 1].small_fog_chance) {
         ::day_fogrange_1 = 4096;
@@ -1093,10 +1093,10 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     } else if (loc_time.last_visit) {
         if (loc_time.last_visit.GetDays() % 28 != pParty->uCurrentDayOfMonth) {
             int sky_to_use;
-            if (Random(100) >= 20)
-                sky_to_use = dword_4EC268[Random(dword_4EC2A8)];
+            if (vrng->Random(100) >= 20)
+                sky_to_use = dword_4EC268[vrng->Random(dword_4EC2A8)];
             else
-                sky_to_use = dword_4EC28C[Random(dword_4EC2AC)];
+                sky_to_use = dword_4EC28C[vrng->Random(dword_4EC2AC)];
             sprintf(loc_time.sky_texture_name, "plansky%d", sky_to_use);
         }
     } else {
@@ -1407,7 +1407,7 @@ void OutdoorLocation::ArrangeSpriteObjects() {
                     if (pSpriteObjects[i].containing_item.uItemID != ITEM_POTION_BOTTLE &&
                         pItemTable->pItems[pSpriteObjects[i].containing_item.uItemID].uEquipType == EQUIP_POTION &&
                         !pSpriteObjects[i].containing_item.uEnchantmentType)
-                        pSpriteObjects[i].containing_item.uEnchantmentType = Random(15) + 5;
+                        pSpriteObjects[i].containing_item.uEnchantmentType = grng->Random(15) + 5;
                     pItemTable->SetSpecialBonus(&pSpriteObjects[i].containing_item);
                 }
             }
@@ -2983,11 +2983,11 @@ void UpdateActors_ODM() {
 
         // ARMAGEDDON PANIC
         if (pParty->armageddon_timer != 0 && pActors[Actor_ITR].CanAct()) {
-            pActors[Actor_ITR].vVelocity.x += Random(100) - 50;
-            pActors[Actor_ITR].vVelocity.y += Random(100) - 50;
-            pActors[Actor_ITR].vVelocity.z += Random(100) - 20;
+            pActors[Actor_ITR].vVelocity.x += grng->Random(100) - 50;
+            pActors[Actor_ITR].vVelocity.y += grng->Random(100) - 50;
+            pActors[Actor_ITR].vVelocity.z += grng->Random(100) - 20;
             pActors[Actor_ITR].uAIState = Stunned;
-            pActors[Actor_ITR].uYawAngle += Random(32) - 16;
+            pActors[Actor_ITR].uYawAngle += grng->Random(32) - 16;
             pActors[Actor_ITR].UpdateAnimation();
         }
 

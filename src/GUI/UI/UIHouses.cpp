@@ -1073,7 +1073,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                 pParty->monster_for_hunting_killed[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = false;
                 pParty->PartyTimes.bountyHunting_next_generation_time[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = GameTime((int64_t)((double)(309657600 *
                     (pParty->uCurrentMonth + 12ll * pParty->uCurrentYear - 14015)) * 0.033333335));
-                pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = Random(258) + 1;
+                pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = grng->Random(258) + 1;
                 v16 = window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE;
                 if (!v16) {
                     while (1) {
@@ -1104,7 +1104,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                                 (uint16_t)v24 > 0x63u))
                                 break;
                         }
-                        pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = Random(258) + 1;
+                        pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = grng->Random(258) + 1;
                     }
                 }
                 if (v16 == 1) {
@@ -1142,7 +1142,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                                 (uint16_t)v24 > 0xCFu))
                                 break;
                         }
-                        pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = Random(258) + 1;
+                        pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = grng->Random(258) + 1;
                     }
                 }
                 if (v16 == 2) {
@@ -1174,7 +1174,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                                 (uint16_t)v24 > 0x1Eu))
                                 break;
                         }
-                        pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = Random(258) + 1;
+                        pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = grng->Random(258) + 1;
                     }
                 }
                 if (v16 == 3) {
@@ -1212,7 +1212,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                                 (uint16_t)v24 > 0x6Cu))
                                 break;
                         }
-                        pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = Random(258) + 1;
+                        pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = grng->Random(258) + 1;
                     }
                 }
                 if (v16 == 4) {
@@ -1258,7 +1258,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                                 (uint16_t)v24 > 0x12u))
                                 break;
                         }
-                        pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = Random(258) + 1;
+                        pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = grng->Random(258) + 1;
                     }
                 }
             }
@@ -1369,8 +1369,10 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                         if (pParty
                             ->StandartItemsInShops
                             [window_SpeakInHouse->wData.val][i]
-                            .uItemID != ITEM_NULL)
-                            weapons_Ypos[i] = Random(300 - shop_ui_items_in_store[i]->GetHeight());
+                            .uItemID != ITEM_NULL) {
+                            // Note that we're using mrng here for a reason - we want recorded mouse clicks to work.
+                            weapons_Ypos[i] = grng->Random(300 - shop_ui_items_in_store[i]->GetHeight());
+                        }
                     }
                 }
             }
@@ -1390,8 +1392,10 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                 if (ItemAmountForShop(p2DEvents[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType)) {
                     for (uint i = 0; i < ItemAmountForShop(p2DEvents[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType); ++i) {
                         if (pParty->SpecialItemsInShops[
-                            window_SpeakInHouse->wData.val][i].uItemID != ITEM_NULL)
-                            weapons_Ypos[i] = Random(300 - shop_ui_items_in_store[i]->GetHeight());
+                            window_SpeakInHouse->wData.val][i].uItemID != ITEM_NULL) {
+                            // Note that we're using mrng here for a reason - we want recorded mouse clicks to work.
+                            weapons_Ypos[i] = grng->Random(300 - shop_ui_items_in_store[i]->GetHeight());
+                        }
                     }
                 }
             }
@@ -3524,7 +3528,7 @@ void GenerateSpecialShopItems() {
                 treasure_lvl =
                     shopWeap_variation_spc[shop_index].treasure_level;
                 item_class =
-                    shopWeap_variation_spc[shop_index].item_class[Random(4)];
+                    shopWeap_variation_spc[shop_index].item_class[grng->Random(4)];
             } else if (shop_index <= 28) {  // armor shop
                 mdf = 0;
                 if (item_count > 3) ++mdf;
@@ -3532,7 +3536,7 @@ void GenerateSpecialShopItems() {
                     shopArmr_variation_spc[2 * (shop_index - 15) + mdf]
                     .treasure_level;
                 item_class = shopArmr_variation_spc[2 * (shop_index - 15) + mdf]
-                    .item_class[Random(4)];
+                    .item_class[grng->Random(4)];
             } else if (shop_index <= 41) {  // magic shop
                 treasure_lvl = shopMagicSpc_treasure_lvl[shop_index - 28];
                 item_class = 22;          // misc
@@ -3540,7 +3544,7 @@ void GenerateSpecialShopItems() {
                 if (item_count < 6) {
                     pParty->SpecialItemsInShops[shop_index][item_count].Reset();
                     pParty->SpecialItemsInShops[shop_index][item_count]
-                        .uItemID = RandomSample(RecipeScrolls());  // mscrool
+                        .uItemID = grng->RandomSample(RecipeScrolls());  // mscrool
                     continue;
                 } else {
                     treasure_lvl = shopAlchSpc_treasure_lvl[shop_index - 41];
@@ -3572,7 +3576,7 @@ void GenerateStandartShopItems() {
                 treasure_lvl =
                     shopWeap_variation_ord[shop_index].treasure_level;
                 item_class =
-                    shopWeap_variation_ord[shop_index].item_class[Random(4)];
+                    shopWeap_variation_ord[shop_index].item_class[grng->Random(4)];
             } else if (shop_index <= 28) {  // armor shop
                 mdf = 0;
                 if (item_count > 3) ++mdf;  // rechek offsets
@@ -3580,7 +3584,7 @@ void GenerateStandartShopItems() {
                     shopArmr_variation_ord[2 * (shop_index - 15) + mdf]
                     .treasure_level;
                 item_class = shopArmr_variation_ord[2 * (shop_index - 15) + mdf]
-                    .item_class[Random(4)];
+                    .item_class[grng->Random(4)];
             } else if (shop_index <= 41) {  // magic shop
                 treasure_lvl = shopMagic_treasure_lvl[shop_index - 28];
                 item_class = 22;          // misc

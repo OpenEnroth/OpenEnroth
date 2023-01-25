@@ -32,7 +32,7 @@ void EventTracer::finish() {
     EventTrace::saveToFile(_tracePath, _trace);
     _trace.events.clear();
     if (_oldRandomEngine)
-        SetGlobalRandomEngine(std::move(_oldRandomEngine));
+        grng = std::move(_oldRandomEngine);
     _state = STATE_DISABLED;
 }
 
@@ -59,8 +59,9 @@ void EventTracer::SwapBuffers() {
         // TODO(captainurist): at least log on error
 
         _tickCount = 0;
-        _oldRandomEngine = SetGlobalRandomEngine(std::make_unique<NonRandomEngine>());
         _state = STATE_TRACING;
+        _oldRandomEngine = std::move(grng);
+        grng = std::make_unique<NonRandomEngine>();
         break;
     }
     case STATE_TRACING:
@@ -73,7 +74,7 @@ void EventTracer::SwapBuffers() {
     PaintEvent e;
     e.type = PaintEvent::Paint;
     e.tickCount = _tickCount;
-    e.randomState = Random(1024);
+    e.randomState = grng->Random(1024);
 
     _trace.events.emplace_back(std::make_unique<PaintEvent>(e));
 }

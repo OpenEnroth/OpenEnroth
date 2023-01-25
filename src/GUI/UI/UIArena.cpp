@@ -217,7 +217,7 @@ void ArenaFight() {
             // v12 = __OFSUB__(v9, num_monsters);
             // v11 = v9 - num_monsters < 0;
             // *((short *)&window.pControlsTail + v9 + 1) = v23[rand() % v6];
-            monster_ids[i] = v23[Random(v6)];
+            monster_ids[i] = v23[grng->Random(v6)];
         }
         // while ( v11 ^ v12 );
     }
@@ -225,17 +225,17 @@ void ArenaFight() {
     if (uDialogueType == DIALOGUE_ARENA_SELECT_PAGE) {
         v17 = 3;
         v22 = 50;
-        v18 = Random(v17);
+        v18 = grng->Random(v17);
         v13 = v22;
         v14 = v18 + 6;
     } else if (uDialogueType == DIALOGUE_ARENA_SELECT_SQUIRE) {
         v17 = 7;
         v22 = 100;
-        v18 = Random(v17);
+        v18 = grng->Random(v17);
         v13 = v22;
         v14 = v18 + 6;
     } else if (uDialogueType == DIALOGUE_ARENA_SELECT_KNIGHT) {
-        v15 = Random(11);
+        v15 = grng->Random(11);
         v13 = 200;
         v14 = v15 + 10;
     } else {
@@ -251,7 +251,7 @@ void ArenaFight() {
     }
     gold_transaction_amount = v26 * v13;
     for (i = 0; i < v14; ++i)
-        Actor::Arena_summon_actor(monster_ids[Random(num_monsters)],
+        Actor::Arena_summon_actor(monster_ids[grng->Random(num_monsters)],
                                   pMonsterArenaPlacements[i].x,
                                   pMonsterArenaPlacements[i].y, 1);
     pAudioPlayer->PlaySound(SOUND_51heroism03, 0, 0, -1, 0, 0);

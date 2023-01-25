@@ -213,7 +213,7 @@ void CastSpellInfoHelpers::CastSpell() {
             continue;
         }
 
-        if (pPlayer->IsCursed() && pCastSpell->uSpellID < SPELL_BOW_ARROW && Random(100) < 50) {  // player is cursed and have a chance to fail spell casting
+        if (pPlayer->IsCursed() && pCastSpell->uSpellID < SPELL_BOW_ARROW && grng->Random(100) < 50) {  // player is cursed and have a chance to fail spell casting
             if (!pParty->bTurnBasedModeOn) {
                 pPlayer->SetRecoveryTime((int64_t)(debug_non_combat_recovery_mul * flt_debugrecmod3 * 100.0));
             } else {
@@ -1112,7 +1112,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (meteor_num > 0) {
                     v730_int = obj_type == OBJECT_Actor ? spell_targeted_at : 0;
                     for (; meteor_num; meteor_num--) {
-                        spell_targeted_at = Random(1000);
+                        spell_targeted_at = grng->Random(1000);
                         if (sqrt(((double)spell_targeted_at - 2500) *
                                      ((double)spell_targeted_at - 2500) + j * j + k * k) <= 1.0) {
                             HEXRAYS_LODWORD(v687) = 0;
@@ -1147,8 +1147,8 @@ void CastSpellInfoHelpers::CastSpell() {
                         if (pSpellSprite.Create(v687, HEXRAYS_SHIDWORD(v687), pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed, 0) != -1 && pParty->bTurnBasedModeOn) {
                             ++pTurnEngine->pending_actions;
                         }
-                        j = Random(1024) - 512;
-                        k = Random(1024) - 512;
+                        j = grng->Random(1024) - 512;
+                        k = grng->Random(1024) - 512;
                     }
                 }
                 spell_sound_flag = true;
@@ -1291,7 +1291,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 spell_spray_angle_start = (int)_v726 / -2;
                 spell_spray_angle_end = (int)_v726 / 2;
                 while (spell_spray_angle_start <= spell_spray_angle_end) {
-                    pSpellSprite.uSpriteFrameID = Random(64);
+                    pSpellSprite.uSpriteFrameID = grng->Random(64); // TODO(captainurist): this doesn't look like a frame id initialization
                     pSpellSprite.uFacing = spell_spray_angle_start + (short)target_direction.uYawAngle;
                     if (pSpellSprite.Create(
                         (int16_t)(spell_spray_angle_start + (short)target_direction.uYawAngle),
@@ -1417,7 +1417,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 int j = 0;
                 v730_int = obj_type == OBJECT_Actor ? spell_targeted_at : 0;
                 for (uint star_num = 20; star_num; star_num--) {
-                    spell_targeted_at = Random(1000);
+                    spell_targeted_at = grng->Random(1000);
                     if (sqrt(((double)spell_targeted_at + (double)dist_Z -
                               (double)(dist_Z + 2500)) *
                                  ((double)spell_targeted_at + (double)dist_Z -
@@ -1458,8 +1458,8 @@ void CastSpellInfoHelpers::CastSpell() {
                         pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
                     }
-                    j = Random(1024) - 512;
-                    k = Random(1024) - 512;
+                    j = grng->Random(1024) - 512;
+                    k = grng->Random(1024) - 512;
                 }
                 spell_sound_flag = true;
                 break;
@@ -1677,7 +1677,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 uRequiredMana = 0;
                 amount = 10 * spell_level;
                 bool item_not_broken = true;
-                int rnd = Random(100);
+                int rnd = grng->Random(100);
                 pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID_2];
                 ItemGen *spell_item_to_enchant = &pPlayer->pInventoryItemList[pCastSpell->spell_target_pid];
                 ItemDesc *_v725 = &pItemTable->pItems[spell_item_to_enchant->uItemID];
@@ -1731,7 +1731,7 @@ void CastSpellInfoHelpers::CastSpell() {
                                 // }
 
                                 // pick a random ench
-                                int item_apply_rand = Random(to_item_apply_sum);
+                                int item_apply_rand = grng->Random(to_item_apply_sum);
                                 int target_item_apply_rand = item_apply_rand + 1;
                                 int current_item_apply_sum = 0;
                                 int step = 0;
@@ -1747,9 +1747,9 @@ void CastSpellInfoHelpers::CastSpell() {
 
                                 int ench_power = 0;
                                 // master 3-8  - guess work needs checking
-                                if (spell_mastery == PLAYER_SKILL_MASTERY_MASTER) ench_power = Random(6) + 3;
+                                if (spell_mastery == PLAYER_SKILL_MASTERY_MASTER) ench_power = grng->Random(6) + 3;
                                 // gm 6-12   - guess work needs checking
-                                if (spell_mastery== PLAYER_SKILL_MASTERY_GRANDMASTER) ench_power = Random(7) + 6;
+                                if (spell_mastery== PLAYER_SKILL_MASTERY_GRANDMASTER) ench_power = grng->Random(7) + 6;
 
                                 spell_item_to_enchant->m_enchantmentStrength = ench_power;
                                 spell_item_to_enchant->uAttributes |= ITEM_AURA_EFFECT_BLUE;
@@ -1780,7 +1780,7 @@ void CastSpellInfoHelpers::CastSpell() {
                                 }
 
                                 // pick a random ench
-                                int item_apply_rand = Random(to_item_apply_sum);
+                                int item_apply_rand = grng->Random(to_item_apply_sum);
                                 int target_item_apply_rand = item_apply_rand + 1;
                                 int current_item_apply_sum = 0;
                                 int step = 0;
@@ -1821,7 +1821,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (pParty->uFlags & (PARTY_FLAGS_1_ALERT_RED |
                                       PARTY_FLAGS_1_ALERT_YELLOW) &&
                         spell_mastery != PLAYER_SKILL_MASTERY_GRANDMASTER ||
-                    Random(100) >= amount && spell_mastery != PLAYER_SKILL_MASTERY_GRANDMASTER) {
+                    grng->Random(100) >= amount && spell_mastery != PLAYER_SKILL_MASTERY_GRANDMASTER) {
                     GameUI_SetStatusBar(LSTR_SPELL_FAILED);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1,
                                             0, 0);
@@ -3662,8 +3662,8 @@ void CastSpellInfoHelpers::CastSpell() {
                     ++pTurnEngine->pending_actions;
                 }
                 for (uint i = 0; i < 50; i++) {
-                    v642 = Random(4096) - 2048;
-                    v643 = Random(4096) - 2048;
+                    v642 = grng->Random(4096) - 2048;
+                    v643 = grng->Random(4096) - 2048;
                     bool bOnWater = false;
                     v732_int = GetTerrainHeightsAroundParty2(
                         v642 + pParty->vPosition.x,
@@ -3672,7 +3672,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         SPRITE_SPELL_EARTH_ROCK_BLAST,
                         v642 + pParty->vPosition.x,
                         pParty->vPosition.y + v643, v732_int + 16,
-                        Random(500) + 500, 1, 0, 0, 0);
+                        grng->Random(500) + 500, 1, 0, 0, 0);
                 }
                 spell_sound_flag = true;
                 break;

@@ -50,7 +50,7 @@ bool GUIProgressBar::Initialize(Type type) {
     uType = type;
 
     if (uType == TYPE_Fullscreen) {
-        loading_bg = assets->GetImage_PCXFromIconsLOD(StringPrintf("loading%d.pcx", Random(5) + 1));
+        loading_bg = assets->GetImage_PCXFromIconsLOD(StringPrintf("loading%d.pcx", vrng->Random(5) + 1));
 
         uProgressCurrent = 0;
         uX = 122;

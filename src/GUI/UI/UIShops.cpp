@@ -1590,7 +1590,7 @@ void GetHouseGoodbyeSpeech() {
                 if (v5) {
                     _A750D8_player_speech_timer = 256;
                     PlayerSpeechID = SPEECH_ShopRude;
-                    uSpeakingCharacter = v7[Random(v5)];
+                    uSpeakingCharacter = v7[vrng->Random(v5)];
                     return;
                 }
             }
@@ -1603,7 +1603,7 @@ void GetHouseGoodbyeSpeech() {
                 if (v2) {
                     _A750D8_player_speech_timer = 256;
                     PlayerSpeechID = SPEECH_ShopRude;
-                    uSpeakingCharacter = v7[Random(v2)];
+                    uSpeakingCharacter = v7[vrng->Random(v2)];
                     return;
                 }
             }

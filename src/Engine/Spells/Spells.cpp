@@ -785,11 +785,11 @@ int _43AFE3_calc_spell_damage(int spellId, PLAYER_SKILL_LEVEL spellLevel, PLAYER
             default:
                 return 0;
         }
-        result = RandomDice(spellLevel, diceSides);
+        result = grng->RandomDice(spellLevel, diceSides);
     } else if (spellId == SPELL_EARTH_MASS_DISTORTION) {
         result = currentHp * (pSpellDatas[SPELL_EARTH_MASS_DISTORTION].baseDamage + 2 * spellLevel) / 100;
     } else {
-        result = pSpellDatas[spellId].baseDamage + RandomDice(spellLevel, pSpellDatas[spellId].bonusSkillDamage);
+        result = pSpellDatas[spellId].baseDamage + grng->RandomDice(spellLevel, pSpellDatas[spellId].bonusSkillDamage);
     }
 
     return result;

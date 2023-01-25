@@ -396,6 +396,7 @@ void RenderBase::PrepareDecorationsRenderList_ODM() {
                     }
                 }
             } else {
+                // Emit fire particles.
                 memset(&local_0, 0, sizeof(Particle_sw));
                 local_0.type = ParticleType_Bitmap | ParticleType_Rotating |
                     ParticleType_8;
@@ -407,7 +408,7 @@ void RenderBase::PrepareDecorationsRenderList_ODM() {
                 local_0.g = 0.0f;
                 local_0.b = 0.0f;
                 local_0.particle_size = 1.0f;
-                local_0.timeToLive = Random(0x80) + 128; // was rand() & 0x80
+                local_0.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
                 local_0.texture = spell_fx_renderer->effpar01;
                 particle_engine->AddParticle(&local_0);
             }

@@ -222,21 +222,21 @@ void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID) {
                 Dst.type = ParticleType_Bitmap | ParticleType_Rotating |
                            ParticleType_8;
                 Dst.uDiffuse = colorTable.OrangeyRed.C32();
-                Dst.timeToLive = Random(0x80) + 128; // was rand() & 0x80
+                Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
                 Dst.texture = spell_fx_renderer->effpar01;
                 Dst.particle_size = 1.0f;
                 particle_engine->AddParticle(&Dst);
             } else if (object->uFlags & OBJECT_DESC_TRIAL_LINE) {
                 Dst.type = ParticleType_Line;
-                Dst.uDiffuse = Random(RAND_MAX); // TODO(captainurist): TBH this makes no sense, investigate
+                Dst.uDiffuse = vrng->Random(RAND_MAX); // TODO(captainurist): TBH this makes no sense, investigate
                 Dst.timeToLive = 64;
                 Dst.texture = nullptr;
                 Dst.particle_size = 1.0f;
                 particle_engine->AddParticle(&Dst);
             } else if (object->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                 Dst.type = ParticleType_Bitmap | ParticleType_8;
-                Dst.uDiffuse = Random(RAND_MAX);
-                Dst.timeToLive = Random(0x80) + 128; // was rand() & 0x80
+                Dst.uDiffuse = vrng->Random(RAND_MAX);
+                Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
                 Dst.texture = spell_fx_renderer->effpar03;
                 Dst.particle_size = 1.0f;
                 particle_engine->AddParticle(&Dst);
@@ -336,7 +336,7 @@ LABEL_13:
                     Dst.type = ParticleType_Bitmap | ParticleType_Rotating |
                                ParticleType_8;
                     Dst.uDiffuse = colorTable.OrangeyRed.C32();
-                    Dst.timeToLive = Random(0x80) + 128; // was rand() & 0x80
+                    Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
                     Dst.texture = spell_fx_renderer->effpar01;
                     Dst.particle_size = 1.0f;
                     particle_engine->AddParticle(&Dst);
@@ -344,15 +344,15 @@ LABEL_13:
                 } else if (object->uFlags & OBJECT_DESC_TRIAL_LINE) {
                     Dst.type = ParticleType_Line;
                     Dst.texture = nullptr;
-                    Dst.uDiffuse = Random(RAND_MAX);
+                    Dst.uDiffuse = vrng->Random(RAND_MAX);
                     Dst.timeToLive = 64;
                     Dst.particle_size = 1.0f;
                     particle_engine->AddParticle(&Dst);
                     return;
                 } else if (object->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                     Dst.type = ParticleType_Bitmap | ParticleType_8;
-                    Dst.uDiffuse = Random(RAND_MAX);
-                    Dst.timeToLive = Random(0x80) + 128; // was rand() & 0x80
+                    Dst.uDiffuse = vrng->Random(RAND_MAX);
+                    Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
                     Dst.texture = spell_fx_renderer->effpar03;
                     Dst.particle_size = 1.0f;
                     particle_engine->AddParticle(&Dst);
@@ -538,14 +538,14 @@ LABEL_25:
                     Dst.type = ParticleType_Bitmap | ParticleType_Rotating |
                                ParticleType_8;
                     Dst.uDiffuse = colorTable.OrangeyRed.C32();
-                    Dst.timeToLive = Random(0x80) + 128; // was rand() & 0x80
+                    Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
                     Dst.texture = spell_fx_renderer->effpar01;
                     Dst.particle_size = 1.0f;
                     particle_engine->AddParticle(&Dst);
                     return;
                 } else if (pObject->uFlags & OBJECT_DESC_TRIAL_LINE) {
                     Dst.type = ParticleType_Line;
-                    Dst.uDiffuse = Random(RAND_MAX);
+                    Dst.uDiffuse = vrng->Random(RAND_MAX);
                     Dst.timeToLive = 64;
                     Dst.texture = 0;
                     Dst.particle_size = 1.0f;
@@ -553,8 +553,8 @@ LABEL_25:
                     return;
                 } else if (pObject->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                     Dst.type = ParticleType_Bitmap | ParticleType_8;
-                    Dst.uDiffuse = Random(RAND_MAX);
-                    Dst.timeToLive = Random(0x80) + 128; // was rand() & 0x80
+                    Dst.uDiffuse = vrng->Random(RAND_MAX);
+                    Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
                     Dst.texture = spell_fx_renderer->effpar03;
                     Dst.particle_size = 1.0f;
                     particle_engine->AddParticle(&Dst);
@@ -726,13 +726,13 @@ LABEL_25:
                            ParticleType_8;
                 Dst.uDiffuse = colorTable.OrangeyRed.C32();
                 Dst.particle_size = 1.0f;
-                Dst.timeToLive = Random(0x80) + 128; // was rand() & 0x80
+                Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
                 Dst.texture = spell_fx_renderer->effpar01;
                 particle_engine->AddParticle(&Dst);
                 return;
             } else if (pObject->uFlags & OBJECT_DESC_TRIAL_LINE) {
                 Dst.type = ParticleType_Line;
-                Dst.uDiffuse = Random(RAND_MAX);
+                Dst.uDiffuse = vrng->Random(RAND_MAX);
                 Dst.timeToLive = 64;
                 Dst.texture = nullptr;
                 Dst.particle_size = 1.0f;
@@ -740,9 +740,9 @@ LABEL_25:
                 return;
             } else if (pObject->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                 Dst.type = ParticleType_Bitmap | ParticleType_8;
-                Dst.uDiffuse = Random(RAND_MAX);
+                Dst.uDiffuse = vrng->Random(RAND_MAX);
                 Dst.particle_size = 1.0f;
-                Dst.timeToLive = Random(0x80) + 128; // was rand() & 0x80
+                Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
                 Dst.texture = spell_fx_renderer->effpar03;
                 particle_engine->AddParticle(&Dst);
             }
@@ -770,7 +770,7 @@ void SpriteObject::ExplosionTraps() {
     if (v10 <= 768) {
         int v11 = 5;
         if (pMapInfo->Trap_D20)
-            v11 += RandomDice(pMapInfo->Trap_D20, 20);
+            v11 += grng->RandomDice(pMapInfo->Trap_D20, 20);
         DAMAGE_TYPE pDamageType;
         switch (this->uType) {
             case 811:
@@ -790,7 +790,7 @@ void SpriteObject::ExplosionTraps() {
         }
         for (unsigned int i = 1; i <= 4; ++i) {
             int v13 = pPlayers[i]->GetPerception() + 20;
-            if (pPlayers[i]->CanAct() && (Random(v13) > 20))
+            if (pPlayers[i]->CanAct() && (grng->Random(v13) > 20))
                 pPlayers[i]->PlaySound(SPEECH_AvoidDamage, 0);
             else
                 pPlayers[i]->ReceiveDamage(v11, pDamageType);
@@ -931,11 +931,12 @@ bool SpriteObject::Drop_Item_At(SPRITE_OBJECT_TYPE sprite, int x,
     if (a7) {
         if (count > 0) {
             for (uint i = count; i; --i) {
-                pSpellObject.uFacing = Random(TrigLUT.uIntegerDoublePi);
+                // TODO(captainurist): not sure if using grng here is right
+                pSpellObject.uFacing = grng->Random(TrigLUT.uIntegerDoublePi);
                 pSpellObject.Create(
                     (int16_t)pSpellObject.uFacing,
                     ((int)TrigLUT.uIntegerHalfPi / 2) +
-                        (Random((signed int)TrigLUT.uIntegerHalfPi / 2)),
+                        (grng->Random((signed int)TrigLUT.uIntegerHalfPi / 2)),
                     a4, 0);
             }
         }
@@ -1311,8 +1312,8 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
             pSpriteObjects[uLayingItemID].vVelocity.x = 0;
             int v89 = pSpriteObjects[uLayingItemID].uFacing - TrigLUT.uIntegerDoublePi;
             for (int i = 0; i < 8; i++) {
-                v90 = RandomInSegment(-128, 128);
-                v91 = RandomInSegment(5, 500);
+                v90 = grng->RandomInSegment(-128, 128);
+                v91 = grng->RandomInSegment(5, 500);
                 v89 += TrigLUT.uIntegerHalfPi / 2;
                 pSpriteObjects[uLayingItemID].Create(v90 + v89, 0, v91, 0);
             }
