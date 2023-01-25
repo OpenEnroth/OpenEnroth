@@ -3284,6 +3284,7 @@ void RenderOpenGL::DrawTextureAlphaNew(float u, float v, Image *img) {
     return;
 }
 
+// TODO(pskelton): use alpha from mask too
 void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourmask) {
     TextureOpenGL *texture = dynamic_cast<TextureOpenGL *>(tex);
     if (!texture) {
@@ -3412,6 +3413,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
     return;
 }
 
+// TODO(pskelton): add optional colour32
 void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, int custom_height) {
     TextureOpenGL* texture = dynamic_cast<TextureOpenGL*>(img);
     if (!texture) {
@@ -3659,6 +3661,7 @@ void RenderOpenGL::EndTextNew() {
     return;
 }
 
+// TODO(pskelton): make color 32
 void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v1, float u2, float v2, int isshadow, uint16_t colour) {
     float b = ((colour & 31) * 8) / 255.0f;
     float g = (((colour >> 5) & 63) * 4) / 255.0f;
