@@ -165,7 +165,7 @@ void Mouse::DrawCursor() {
             pos.x -= (this->cursor_img->GetWidth()) / 2;
             pos.y -= (this->cursor_img->GetHeight()) / 2;
 
-            render->DrawTextureAlphaNew(pos.x / 640., pos.y / 480., this->cursor_img);
+            render->DrawTextureNew(pos.x / 640., pos.y / 480., this->cursor_img);
         } else {
             platform->SetCursorShown(true);
         }
@@ -231,7 +231,7 @@ void Mouse::DrawCursorToTarget() {  //??? DrawCursorWithItem
         return;
     }
     //пишем на экран курсор с вещью
-    render->DrawTextureAlphaNew(uCursorWithItemX / 640.0f,
+    render->DrawTextureNew(uCursorWithItemX / 640.0f,
                                 uCursorWithItemY / 480.0f, pPickedItem);
 }
 
@@ -247,7 +247,7 @@ void Mouse::DrawPickedItem() {
     } else if (!pParty->pPickedItem.IsIdentified()) {
         render->DrawTransparentGreenShade(uMouseX / 640.0f, uMouseY / 480.0f, pTexture);
     } else {
-        render->DrawTextureAlphaNew(uMouseX / 640.0f, uMouseY / 480.0f, pTexture);
+        render->DrawTextureNew(uMouseX / 640.0f, uMouseY / 480.0f, pTexture);
     }
 }
 

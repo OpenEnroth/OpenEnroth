@@ -154,7 +154,7 @@ GUIWindow_GameMenu::GUIWindow_GameMenu()
 void GUIWindow_GameMenu::Update() {
     // -----------------------------------
     // 004156F0 GUI_UpdateWindows --- part
-    render->DrawTextureAlphaNew(pViewport->uViewportTL_X / 640.0f,
+    render->DrawTextureNew(pViewport->uViewportTL_X / 640.0f,
                                 pViewport->uViewportTL_Y / 480.0f,
                                 game_ui_menu_options);
 
@@ -299,14 +299,14 @@ void GUIWindow_GameKeyBindings::Update() {
         keyboardInputHandler->EndTextInput();
         currently_selected_action_for_binding = InputAction::Invalid;
     }
-    render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, game_ui_options_controls[0]);  // draw base texture
+    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, game_ui_options_controls[0]);  // draw base texture
 
     int base_controls_offset = 0;
     if (KeyboardPageNum == 1) {
-        render->DrawTextureAlphaNew(19 / 640.0f, 302 / 480.0f, game_ui_options_controls[3]);
+        render->DrawTextureNew(19 / 640.0f, 302 / 480.0f, game_ui_options_controls[3]);
     } else {
         base_controls_offset = 14;
-        render->DrawTextureAlphaNew(127 / 640.0f, 302 / 480.0f, game_ui_options_controls[4]);
+        render->DrawTextureNew(127 / 640.0f, 302 / 480.0f, game_ui_options_controls[4]);
     }
 
     for (int i = 0; i < 7; ++i) {
@@ -379,12 +379,12 @@ void GUIWindow_GameVideoOptions::Update() {
 
     int gammalevel = engine->config->graphics.Gamma.Get();
 
-    render->DrawTextureAlphaNew(
+    render->DrawTextureNew(
         8 / 640.0f, 8 / 480.0f,
         game_ui_menu_options_video_background);  // draw base texture
     // if ( !render->bWindowMode && render->IsGammaSupported() )
     {
-        render->DrawTextureAlphaNew(
+        render->DrawTextureNew(
             (17 * gammalevel + 42) / 640.0f, 162 / 480.0f,
             game_ui_menu_options_video_gamma_positions[gammalevel]);
 
@@ -404,11 +404,11 @@ void GUIWindow_GameVideoOptions::Update() {
     }
 
     if (engine->config->graphics.BloodSplats.Get())
-        render->DrawTextureAlphaNew(20 / 640.0f, 281 / 480.0f, game_ui_menu_options_video_bloodsplats);
+        render->DrawTextureNew(20 / 640.0f, 281 / 480.0f, game_ui_menu_options_video_bloodsplats);
     if (engine->config->graphics.ColoredLights.Get())
-        render->DrawTextureAlphaNew(20 / 640.0f, 303 / 480.0f, game_ui_menu_options_video_coloredlights);
+        render->DrawTextureNew(20 / 640.0f, 303 / 480.0f, game_ui_menu_options_video_coloredlights);
     if (engine->config->graphics.Tinting.Get())
-        render->DrawTextureAlphaNew(20 / 640.0f, 325 / 480.0f, game_ui_menu_options_video_tinting);
+        render->DrawTextureNew(20 / 640.0f, 325 / 480.0f, game_ui_menu_options_video_tinting);
 }
 
 OptionsMenuSkin options_menu_skin;  // 507C60
@@ -514,56 +514,56 @@ GUIWindow_GameOptions::GUIWindow_GameOptions()
 }
 
 void GUIWindow_GameOptions::Update() {
-    render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, game_ui_menu_options);
-    render->DrawTextureAlphaNew(8 / 640.0f, 132 / 480.0f,
+    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, game_ui_menu_options);
+    render->DrawTextureNew(8 / 640.0f, 132 / 480.0f,
                                 options_menu_skin.uTextureID_Background);
 
     switch ((int)engine->config->settings.TurnSpeed.Get()) {
         case 64:
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 BtnTurnCoord[1] / 640.0f, 270 / 480.0f,
                 options_menu_skin.uTextureID_TurnSpeed[1]);
             break;
         case 128:
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 BtnTurnCoord[2] / 640.0f, 270 / 480.0f,
                 options_menu_skin.uTextureID_TurnSpeed[2]);
             break;
         default:
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 BtnTurnCoord[0] / 640.0f, 270 / 480.0f,
                 options_menu_skin.uTextureID_TurnSpeed[0]);
             break;
     }
 
     if (engine->config->settings.WalkSound.Get()) {
-        render->DrawTextureAlphaNew(
+        render->DrawTextureNew(
             20 / 640.0f, 303 / 480.0f,
             options_menu_skin.uTextureID_WalkSound);
     }
     if (engine->config->settings.ShowHits.Get()) {
-        render->DrawTextureAlphaNew(
+        render->DrawTextureNew(
             128 / 640.0f, 303 / 480.0f,
             options_menu_skin.uTextureID_ShowDamage);
     }
     if (engine->config->settings.FlipOnExit.Get()) {
-        render->DrawTextureAlphaNew(
+        render->DrawTextureNew(
             128 / 640.0f, 325 / 480.0f,
             options_menu_skin.uTextureID_FlipOnExit);
     }
     if (engine->config->settings.AlwaysRun.Get()) {
-        render->DrawTextureAlphaNew(
+        render->DrawTextureNew(
             20 / 640.0f, 325 / 480.0f,
             options_menu_skin.uTextureID_AlwaysRun);
     }
 
-    render->DrawTextureAlphaNew(
+    render->DrawTextureNew(
         (265 + 17 * engine->config->settings.SoundLevel.Get()) / 640.0f, 162 / 480.0f,
         options_menu_skin.uTextureID_SoundLevels[engine->config->settings.SoundLevel.Get()]);
-    render->DrawTextureAlphaNew(
+    render->DrawTextureNew(
         (265 + 17 * engine->config->settings.MusicLevel.Get()) / 640.0f, 216 / 480.0f,
         options_menu_skin.uTextureID_SoundLevels[engine->config->settings.MusicLevel.Get()]);
-    render->DrawTextureAlphaNew(
+    render->DrawTextureNew(
         (265 + 17 * engine->config->settings.VoiceLevel.Get()) / 640.0f, 270 / 480.0f,
         options_menu_skin.uTextureID_SoundLevels[engine->config->settings.VoiceLevel.Get()]);
 }
@@ -703,7 +703,7 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
                 popup_window.DrawMessageBox(0);
 
                 auto tex_name = StringPrintf("NPC%03d", pNPC->uPortraitID);
-                render->DrawTextureAlphaNew(
+                render->DrawTextureNew(
                     (popup_window.uFrameX + 22) / 640.0f,
                     (popup_window.uFrameY + 36) / 480.0f,
                     assets->GetImage_ColorKey(tex_name, render->teal_mask_16));
@@ -810,7 +810,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
         v13 = game_ui_player_faces[window->wData.val][v15->uTextureID - 1];
     }
 
-    render->DrawTextureAlphaNew((window->uFrameX + 24) / 640.0f,
+    render->DrawTextureNew((window->uFrameX + 24) / 640.0f,
                                 (window->uFrameY + 24) / 480.0f, v13);
 
     auto str =
@@ -876,13 +876,13 @@ void GameUI_DrawRightPanelItems() {
 
     if (_50697C_book_flasher && current_screen_type != CURRENT_SCREEN::SCREEN_REST) {
         if (bFlashQuestBook)
-            render->DrawTextureAlphaNew(493 / 640.0f, 355 / 480.0f,
+            render->DrawTextureNew(493 / 640.0f, 355 / 480.0f,
                                         game_ui_tome_quests);
         if (bFlashAutonotesBook)
-            render->DrawTextureAlphaNew(527 / 640.0f, 353 / 480.0f,
+            render->DrawTextureNew(527 / 640.0f, 353 / 480.0f,
                                         game_ui_tome_autonotes);
         if (bFlashHistoryBook)
-            render->DrawTextureAlphaNew(600 / 640.0f, 361 / 480.0f,
+            render->DrawTextureNew(600 / 640.0f, 361 / 480.0f,
                                         game_ui_tome_storyline);
     }
 }
@@ -928,7 +928,7 @@ void GameUI_DrawLifeManaBars() {
                         402,
                     v17 + pHealthBarPos[i] + pTextureHealth->GetWidth(),
                     pTextureHealth->GetHeight() + 402);
-                render->DrawTextureAlphaNew((v17 + pHealthBarPos[i]) / 640.0f,
+                render->DrawTextureNew((v17 + pHealthBarPos[i]) / 640.0f,
                                             402 / 480.0f, pTextureHealth);
                 render->ResetUIClipRect();
             }
@@ -945,7 +945,7 @@ void GameUI_DrawLifeManaBars() {
                     402,
                 v17 + pManaBarPos[i] + game_ui_bar_blue->GetWidth(),
                 game_ui_bar_blue->GetHeight() + 402);
-            render->DrawTextureAlphaNew((v17 + pManaBarPos[i]) / 640.0f,
+            render->DrawTextureNew((v17 + pManaBarPos[i]) / 640.0f,
                                         402 / 480.0f, game_ui_bar_blue);
             render->ResetUIClipRect();
         }
@@ -954,7 +954,7 @@ void GameUI_DrawLifeManaBars() {
 
 //----- (0041B3B6) --------------------------------------------------------
 void GameUI_DrawRightPanel() {
-    render->DrawTextureAlphaNew(pViewport->uViewportBR_X / 640.0f, 0,
+    render->DrawTextureNew(pViewport->uViewportBR_X / 640.0f, 0,
                                 game_ui_right_panel_frame);
 }
 
@@ -1371,7 +1371,7 @@ void GameUI_WritePointedObjectStatusString() {
 //----- (0044158F) --------------------------------------------------------
 void GameUI_DrawCharacterSelectionFrame() {
     if (uActiveCharacter)
-        render->DrawTextureAlphaNew(
+        render->DrawTextureNew(
             (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing
                  [uActiveCharacter - 1] -
              9) /
@@ -1402,7 +1402,7 @@ void GameUI_DrawPartySpells() {
             else
                 spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, 0)
                                     ->GetTexture();
-            render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, spell_texture);
+            render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, spell_texture);
         }
         if (pParty->WaterWalkActive()) {
             if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER)
@@ -1413,31 +1413,31 @@ void GameUI_DrawPartySpells() {
                 spell_texture =
                     pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, 0)
                         ->GetTexture();
-            render->DrawTextureAlphaNew(396 / 640.0f, 8 / 480.0f,
+            render->DrawTextureNew(396 / 640.0f, 8 / 480.0f,
                                         spell_texture);
         }
     }
 
     for (uint i = 0; i < 4; ++i) {
         if (pParty->pPlayers[i].pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active())
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) /
                     640.0f,
                 427 / 480.0f, game_ui_playerbuff_hammerhands);
         if (pParty->pPlayers[i].pPlayerBuffs[PLAYER_BUFF_BLESS].Active())
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) /
                     640.0f,
                 393 / 480.0f, game_ui_playerbuff_bless);
         if (pParty->pPlayers[i].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active())
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) /
                     640.0f,
                 410 / 480.0f, game_ui_playerbuff_preservation);
         if (pParty->pPlayers[i]
                 .pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION]
                 .Active())
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) /
                     640.0f,
                 444 / 480.0f, game_ui_playerbuff_pain_reflection);
@@ -1469,7 +1469,7 @@ void GameUI_DrawPortraits(unsigned int _this) {
                         640.0f,
                     387 / 480.0f, pPortrait); // was 388
             else
-                render->DrawTextureAlphaNew(
+                render->DrawTextureNew(
                     (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] +
                      1) /
                         640.0f,
@@ -1491,7 +1491,7 @@ void GameUI_DrawPortraits(unsigned int _this) {
                         640.0f,
                     388 / 480.0f, pPortrait);
             else
-                render->DrawTextureAlphaNew(
+                render->DrawTextureNew(
                     (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] +
                      1) /
                         640.0f,
@@ -1533,7 +1533,7 @@ void GameUI_DrawPortraits(unsigned int _this) {
                         640.0f,
                     388 / 480.0f, pPortrait);
             else
-                render->DrawTextureAlphaNew(
+                render->DrawTextureNew(
                     (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] +
                      1) /
                         640.0f,
@@ -1564,7 +1564,7 @@ void GameUI_DrawPortraits(unsigned int _this) {
                         else if (pParty->GetYellowAlert())
                             alert_texture = game_ui_player_alert_yellow;
 
-                        render->DrawTextureAlphaNew(
+                        render->DrawTextureNew(
                             (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing
                                  [PID_ID(pTurnEngine->pQueue[i].uPackedID)] -
                              4) /
@@ -1584,7 +1584,7 @@ void GameUI_DrawPortraits(unsigned int _this) {
                 else if (pParty->GetYellowAlert())
                     alert_texture = game_ui_player_alert_yellow;
 
-                render->DrawTextureAlphaNew(
+                render->DrawTextureNew(
                     (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] -
                      4) /
                         640.0f,
@@ -1694,12 +1694,12 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 }
                 // draw image
                 render->Update_Texture(minimaptemp);
-                render->DrawTextureAlphaNew(uX / 640., uY / 480., minimaptemp);
+                render->DrawTextureNew(uX / 640., uY / 480., minimaptemp);
                 // minimaptemp->Release();
             }
         } else {
             // no need to update map - just redraw
-            render->DrawTextureAlphaNew(uX / 640., uY / 480., minimaptemp);
+            render->DrawTextureNew(uX / 640., uY / 480., minimaptemp);
         }
         render->BeginLines2D();
     } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
@@ -1899,13 +1899,13 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     if ((signed int)rotate < 640) arrow_idx = 1;
     if ((signed int)rotate <= 384) arrow_idx = 0;
     if ((signed int)rotate < 128 || (signed int)rotate > 1920) arrow_idx = 7;
-    render->DrawTextureAlphaNew((uCenterX - 3) / 640.0f, (uCenterY - 3) / 480.0f, game_ui_minimap_dirs[arrow_idx]);
+    render->DrawTextureNew((uCenterX - 3) / 640.0f, (uCenterY - 3) / 480.0f, game_ui_minimap_dirs[arrow_idx]);
 
     render->SetUIClipRect(541, 0, 567, 480);
-    render->DrawTextureAlphaNew((floorf(((double)pParty->sRotationZ * 0.1171875) + 0.5f) + 285) / 640.0f,
+    render->DrawTextureNew((floorf(((double)pParty->sRotationZ * 0.1171875) + 0.5f) + 285) / 640.0f,
         136 / 480.0f, game_ui_minimap_compass);
     render->ResetUIClipRect();
-    render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_minimap_frame);
+    render->DrawTextureNew(468 / 640.0f, 0, game_ui_minimap_frame);
 }
 
 //----- (00441498) --------------------------------------------------------
@@ -1922,7 +1922,7 @@ void GameUI_DrawTorchlightAndWizardEye() {
         current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS ||
         current_screen_type == CURRENT_SCREEN::SCREEN_BRANCHLESS_NPC_DIALOG) {
         if (pParty->TorchlightActive()) {
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 pUIAnum_Torchlight->x / 640.0f, pUIAnum_Torchlight->y / 480.0f,
                 pIconsFrameTable
                     ->GetFrame(pUIAnum_Torchlight->icon->id,
@@ -1930,7 +1930,7 @@ void GameUI_DrawTorchlightAndWizardEye() {
                     ->GetTexture());
         }
         if (pParty->WizardEyeActive()) {
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 pUIAnim_WizardEye->x / 640.0f, pUIAnim_WizardEye->y / 480.0f,
                 pIconsFrameTable
                     ->GetFrame(pUIAnim_WizardEye->icon->id, pEventTimer->Time())
@@ -1955,7 +1955,7 @@ void GameUI_DrawHiredNPCs() {
 
         for (int i = pParty->hirelingScrollPosition; i < buf.Size() && pNPC_limit_ID < 2; i++) {
             sprintf(pContainer, "NPC%03d", buf.Get(i)->uPortraitID);
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                     pHiredNPCsIconsOffsetsX[pNPC_limit_ID] / 640.0f,
                     pHiredNPCsIconsOffsetsY[pNPC_limit_ID] / 480.0f,
                     assets->GetImage_ColorKey(pContainer, render->teal_mask_16));
@@ -1969,7 +1969,7 @@ void GameUI_DrawHiredNPCs() {
                             break;
                     }
                 }
-                render->DrawTextureAlphaNew(
+                render->DrawTextureNew(
                     pHiredNPCsIconsOffsetsX[pNPC_limit_ID] / 640.0f,
                     pHiredNPCsIconsOffsetsY[pNPC_limit_ID] / 480.0f,
                     pIconsFrameTable->GetFrame(v13, uFrameID)->GetTexture());
@@ -2181,7 +2181,7 @@ void GUIWindow_DebugMenu::Update() {
 
     render->BeginLines2D();
 
-    render->DrawTextureAlphaNew(pViewport->uViewportTL_X / 640.0f,
+    render->DrawTextureNew(pViewport->uViewportTL_X / 640.0f,
         pViewport->uViewportTL_Y / 480.0f,
         game_ui_menu_options);
 

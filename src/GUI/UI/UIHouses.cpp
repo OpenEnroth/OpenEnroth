@@ -1720,7 +1720,7 @@ void TownHallDialog() {
             pTextHeight = pFontCreate->CalcTextHeight(current_npc_text, window.uFrameWidth, 13) + 7;
         }
         render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
-        render->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
+        render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
         // window.DrawText(pOutString, 13, 354 - pTextHeight, 0, pOutString->FitTextInAWindow(current_npc_text, window.uFrameWidth, 13), 0, 0, 0);
         window.DrawText(pOutString, {13, 354 - pTextHeight}, 0, current_npc_text, 0, 0, 0);
         break;
@@ -2009,7 +2009,7 @@ void TavernDialog() {
             pTextHeight = pFontCreate->CalcTextHeight(str, dialog_window.uFrameWidth, 12) + 7;
         }
         render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
-        render->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
+        render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
         window_SpeakInHouse->DrawText(pOutString, {12, 354 - pTextHeight}, colorTable.Black.C16(),
             pOutString->FitTextInAWindow(str, dialog_window.uFrameWidth, 12), 0, 0, 0);
         break;
@@ -2027,7 +2027,7 @@ void TavernDialog() {
         render->DrawTextureCustomHeight(8 / 640.0f,
             (352 - pTextHeight) / 480.0f,
             ui_leather_mm7, pTextHeight);
-        render->DrawTextureAlphaNew(
+        render->DrawTextureNew(
             8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
         window_SpeakInHouse->DrawText(pFontArrus, {12, 354 - pTextHeight}, colorTable.Black.C16(),
             pFontArrus->FitTextInAWindow(label, dialog_window.uFrameWidth, 12));
@@ -2846,7 +2846,7 @@ void SimpleHouseDialog() {
                         house_window.uFrameWidth, 13) + 7));
 
                 int h = (pFontArrus->CalcTextHeight(pInString, house_window.uFrameWidth, 13) + 7);
-                render->DrawTextureAlphaNew(8 / 640.0f, (347 - h) / 480.0f, _591428_endcap);
+                render->DrawTextureNew(8 / 640.0f, (347 - h) / 480.0f, _591428_endcap);
                 pDialogueWindow->DrawText(pFontArrus, {13, 354 - h}, colorTable.Black.C16(),
                     pFontArrus->FitTextInAWindow(pInString, house_window.uFrameWidth, 13), 0, 0, 0);
             }
@@ -3001,7 +3001,7 @@ void SimpleHouseDialog() {
         render->DrawTextureCustomHeight(8 / 640.0f,
             (352 - pTextHeight) / 480.0f,
             ui_leather_mm7, pTextHeight);
-        render->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f,
+        render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f,
             _591428_endcap);
         house_window.DrawText(pTextFont, {13, 354 - pTextHeight}, colorTable.Black.C16(), pTextFont->FitTextInAWindow(current_npc_text, w.uFrameWidth, 13), 0, 0, 0);
     }

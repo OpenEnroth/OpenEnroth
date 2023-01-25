@@ -101,7 +101,6 @@ void GUICredits::ExecuteCredits() {
             pWindow_Credits->EventLoop();
             GUI_UpdateWindows();
         }
-        render->EndScene();
         render->Present();
     }
 

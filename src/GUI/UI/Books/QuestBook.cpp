@@ -65,7 +65,7 @@ void GUIWindow_QuestBook::Update() {
     // ----- (00413CC6) --------------------------------------------------------
     // void BookUI_Draw(WindowType book) --- part
     // {
-    render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f,
+    render->DrawTextureNew(471 / 640.0f, 445 / 480.0f,
                                 ui_exit_cancel_button_background);
     //     BookUI_Questbook_Draw();
 
@@ -80,22 +80,22 @@ void GUIWindow_QuestBook::Update() {
                            ui_book_quests_background);
     if (BtnUp_flag ||
         !books_primary_item_per_page)  // Bookmark Up(Закладка вверх)
-        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 407) / 640.0f,
+        render->DrawTextureNew((pViewport->uViewportTL_X + 407) / 640.0f,
                                     (pViewport->uViewportTL_Y + 2) / 480.0f,
                                     ui_book_button1_off);
     else
-        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 398) / 640.0f,
+        render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f,
                                     (pViewport->uViewportTL_Y + 1) / 480.0f,
                                     ui_book_button1_on);
 
     if (BtnDown_flag ||
         books_primary_item_per_page + num_achieved_awards >=
             full_num_items_in_book)  // Bookmark Down(Закладка вниз)
-        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 407) / 640.0f,
+        render->DrawTextureNew((pViewport->uViewportTL_X + 407) / 640.0f,
                                     (pViewport->uViewportTL_Y + 38) / 480.0f,
                                     ui_book_button2_off);
     else
-        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 398) / 640.0f,
+        render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f,
                                     (pViewport->uViewportTL_Y + 38) / 480.0f,
                                     ui_book_button2_on);
 
@@ -147,7 +147,7 @@ void GUIWindow_QuestBook::Update() {
         if ((signed int)(questbook_window.uFrameY + pTextHeight) > (signed int)questbook_window.uFrameHeight)
             break;
 
-        render->DrawTextureAlphaNew(100 / 640.0f, ((questbook_window.uFrameY + pTextHeight) + 12) / 480.0f, ui_book_quest_div_bar);
+        render->DrawTextureNew(100 / 640.0f, ((questbook_window.uFrameY + pTextHeight) + 12) / 480.0f, ui_book_quest_div_bar);
         questbook_window.uFrameY = (questbook_window.uFrameY + pTextHeight) + 24;
     }
 }

@@ -174,10 +174,10 @@ void GUIWindow_Travel::Update() {
 
     pOutdoor->GetTravelDestination(pParty->vPosition.x, pParty->vPosition.y, pDestinationMapName, 20);
     render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
-    render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
+    render->DrawTextureNew(468 / 640.0f, 0, game_ui_right_panel_frame);
     render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, transition_ui_icon);
-    render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
-    render->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
+    render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
+    render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
     if (pMapStats->GetMapInfo(pDestinationMapName)) {
         GUIWindow travel_window = *pPrimaryWindow;
         travel_window.uFrameX = 493;
@@ -223,15 +223,15 @@ void GUIWindow_Transition::Update() {
     unsigned int v9 =
         IndoorLocation::GetLocationIndex(mapname.c_str());
     render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
-    render->DrawTextureAlphaNew((pNPCPortraits_x[0][0] - 4) / 640.0f,
+    render->DrawTextureNew((pNPCPortraits_x[0][0] - 4) / 640.0f,
                                 (pNPCPortraits_y[0][0] - 4) / 480.0f,
                                 game_ui_evtnpc);
     render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f,
                            pNPCPortraits_y[0][0] / 480.0f, transition_ui_icon);
 
-    render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
-    render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
-    render->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
+    render->DrawTextureNew(468 / 640.0f, 0, game_ui_right_panel_frame);
+    render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
+    render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
     unsigned int map_id = mapid;
     if ((pMovie_Track || v9) && *Party_Teleport_Map_Name != ' ') {
         map_id = pMapStats->GetMapInfo(mapname);

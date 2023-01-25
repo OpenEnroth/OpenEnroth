@@ -248,9 +248,9 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     // saving - please wait
 
     // if (current_screen_type == SCREEN_SAVEGAME) {
-    //    render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f,
+    //    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f,
     //        saveload_ui_loadsave);
-    //    render->DrawTextureAlphaNew(18 / 640.0f, 141 / 480.0f,
+    //    render->DrawTextureNew(18 / 640.0f, 141 / 480.0f,
     //        saveload_ui_loadsave);
     //    int text_pos = pFontSmallnum->AlignText_Center(186, localization->GetString(190));
     //    pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 219, 0,

@@ -138,14 +138,14 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
         coord_y += parchment_height;
     }
 
-    render->DrawTextureAlphaNew(uX / renwidth, uY / renheight, messagebox_corner_x);
-    render->DrawTextureAlphaNew(
+    render->DrawTextureNew(uX / renwidth, uY / renheight, messagebox_corner_x);
+    render->DrawTextureNew(
         uX / renwidth, (uY + uHeight - messagebox_corner_y->GetHeight()) / renheight,
         messagebox_corner_y);
-    render->DrawTextureAlphaNew(
+    render->DrawTextureNew(
         (uX + uWidth - messagebox_corner_z->GetWidth()) / renwidth, uY / renheight,
         messagebox_corner_z);
-    render->DrawTextureAlphaNew(
+    render->DrawTextureNew(
         (uX + uWidth - messagebox_corner_z->GetWidth()) / renwidth,
         (uY + uHeight - messagebox_corner_y->GetHeight()) / renheight,
         messagebox_corner_w);
@@ -160,9 +160,9 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
         for (unsigned int x = uX + messagebox_corner_x->GetWidth();
              x < uX + uWidth - messagebox_corner_x->GetWidth();
              x += messagebox_border_top->GetWidth()) {
-            render->DrawTextureAlphaNew(x / renwidth, uY / renheight,
+            render->DrawTextureNew(x / renwidth, uY / renheight,
                                         messagebox_border_top);
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 x / renwidth,
                 (uY + uHeight - messagebox_border_bottom->GetHeight()) / renheight,
                 messagebox_border_bottom);
@@ -179,9 +179,9 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
         for (unsigned int y = uY + messagebox_corner_x->GetHeight();
              y < uY + uHeight - messagebox_corner_y->GetHeight();
              y += messagebox_border_right->GetHeight()) {
-            render->DrawTextureAlphaNew(uX / renwidth, y / renheight,
+            render->DrawTextureNew(uX / renwidth, y / renheight,
                                         messagebox_border_left);
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (uX + uWidth - messagebox_border_right->GetWidth() - 1) /
                     renwidth,
                 y / renheight, messagebox_border_right);
@@ -321,7 +321,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 1;
         iteminfo_window.uFrameW =
             iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 1;
-        render->DrawTextureAlphaNew(
+        render->DrawTextureNew(
             (iteminfo_window.uFrameX + (float)itemXspacing) / 640.0f,
             (itemYspacing + (float)iteminfo_window.uFrameY + 30) / 480.0f, inspect_item_image);
         iteminfo_window.DrawTitleText(
@@ -485,7 +485,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 1;
     iteminfo_window.uFrameW =
         iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 1;
-    render->DrawTextureAlphaNew((iteminfo_window.uFrameX + (float)itemXspacing) / 640.0f,
+    render->DrawTextureNew((iteminfo_window.uFrameX + (float)itemXspacing) / 640.0f,
                                 (iteminfo_window.uFrameY + (float)(iteminfo_window.uFrameHeight - inspect_item_image->GetHeight()) / 2.) / 480.0f,
                                 inspect_item_image);
 
@@ -1515,7 +1515,6 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                     render->BeginScene();
                     popup_window.DrawMessageBox(1);
                     MonsterPopup_Draw(PID_ID(v5), &popup_window);
-                    render->EndScene();
                 }
                 if (PID_TYPE(v5) == OBJECT_Item) {
                     if (!(pObjectList

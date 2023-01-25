@@ -52,7 +52,7 @@ void GUIWindow_TownPortalBook::Update() {
     // ----- (00413CC6) --------------------------------------------------------
     // void BookUI_Draw(WindowType book) --- part
     // {
-    render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f,
+    render->DrawTextureNew(471 / 640.0f, 445 / 480.0f,
                                 ui_exit_cancel_button_background);
     //     BookUI_DrawTownPortalMap();
 
@@ -65,7 +65,7 @@ void GUIWindow_TownPortalBook::Update() {
     render->ClearZBuffer();
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f,
                            ui_book_townportal_background);
-    render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f,
+    render->DrawTextureNew(471 / 640.0f, 445 / 480.0f,
                                 ui_exit_cancel_button_background);
 
     TownPortalWindow.uFrameX = game_viewport_x;
@@ -91,7 +91,7 @@ void GUIWindow_TownPortalBook::Update() {
 
     if (v3) {
         if (_449B57_test_bit(pParty->_quest_bits, fountain_bits_lut[v3 - 1]) || engine->config->debug.TownPortal.Get())
-            render->DrawTextureAlphaNew(pTownPortalBook_xs[v3 - 1] / 640.0f,
+            render->DrawTextureNew(pTownPortalBook_xs[v3 - 1] / 640.0f,
                                         pTownPortalBook_ys[v3 - 1] / 480.0f,
                                         ui_book_townportal_icons[v3 - 1]);
     }

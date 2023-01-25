@@ -141,13 +141,6 @@ void BLVRenderParams::Reset() {
 //----- (00440B44) --------------------------------------------------------
 void IndoorLocation::DrawIndoorFaces(bool bD3D) {
     render->DrawIndoorFaces();
-        //for (uint i = 0; i < pBspRenderer->num_faces; ++i) {
-        //    // viewed through portal
-        //    IndoorLocation::ExecDraw_d3d(pBspRenderer->faces[i].uFaceID,
-        //        pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum,
-        //        4, pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding);
-        //}
-        //render->DrawIndoorBatched();
 }
 
 
@@ -180,6 +173,7 @@ void BLVFace::FromODM(ODMFace *face) {
     this->pVertexIDs = face->pVertexIDs.data();
 }
 
+// TODO(pskelton): delete this
 //----- (004B0A25) --------------------------------------------------------
 void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
                                   IndoorCameraD3D_Vec4 *portalfrustumnorm,
@@ -329,7 +323,7 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
             if (pFace->Indoor_sky()) {
                 render->DrawIndoorSky(uNumVerticesa, uFaceID);
             } else {
-                render->DrawIndoorPolygon(uNumVerticesa, pFace, PID(OBJECT_Face, uFaceID), ColourMask, 0);
+              //  render->DrawIndoorPolygon(uNumVerticesa, pFace, PID(OBJECT_Face, uFaceID), ColourMask, 0);
             }
 
             return;

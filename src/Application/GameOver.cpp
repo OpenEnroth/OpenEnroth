@@ -51,7 +51,6 @@ void GameOver_Loop(int v15) {
     pAudioPlayer->PauseSounds(-1);
     render->BeginScene();
     render->ClearBlack();
-    render->EndScene();
     render->Present();
     // pMediaPlayer->pResetflag = 0;
     _449B57_test_bit(pParty->_quest_bits, QBIT_LIGHT_PATH);
@@ -60,7 +59,6 @@ void GameOver_Loop(int v15) {
     {
         render->BeginScene();
         render->DrawTextureNew(0, 0, background);
-        render->EndScene();
     }
     background->Release();
     background = nullptr;
@@ -132,7 +130,6 @@ void GameOver_Loop(int v15) {
     pWindow.DrawTitleText(pFont, 1, pWindow.uFrameHeight, 1,
         localization->FormatString(LSTR_FMT_YOUR_SCORE_D, v23), 3);
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
-    render->EndScene();
     render->Present();
     // if ( render->pRenderD3D )
     render->pBeforePresentFunction();

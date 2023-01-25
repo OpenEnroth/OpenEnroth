@@ -306,9 +306,9 @@ void GUIWindow_PartyCreation::Update() {
     render->BeginScene();
     render->DrawTextureNew(0, 0, main_menu_background);
     int sky_slider_anim_timer = (platform->TickCount() % ((int)oldDims.w * 20)) / 20;
-    render->DrawTextureAlphaNew(sky_slider_anim_timer / oldDims.w, 2 / oldDims.h, ui_partycreation_sky_scroller);
-    render->DrawTextureAlphaNew((sky_slider_anim_timer - (int)oldDims.w) / oldDims.w, 2 / oldDims.h, ui_partycreation_sky_scroller);
-    render->DrawTextureAlphaNew(0, 0, ui_partycreation_top);
+    render->DrawTextureNew(sky_slider_anim_timer / oldDims.w, 2 / oldDims.h, ui_partycreation_sky_scroller);
+    render->DrawTextureNew((sky_slider_anim_timer - (int)oldDims.w) / oldDims.w, 2 / oldDims.h, ui_partycreation_sky_scroller);
+    render->DrawTextureNew(0, 0, ui_partycreation_top);
 
     uPlayerCreationUI_SelectedCharacter = (pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem) / 7;
     switch (uPlayerCreationUI_SelectedCharacter) {
@@ -333,18 +333,18 @@ void GUIWindow_PartyCreation::Update() {
     pGUIWindow_CurrentMenu->DrawText(ui_partycreation_font, {pTextCenter + 1, 0}, colorTable.Black.C16(),
         localization->GetString(LSTR_CREATE_PARTY_FANCY), 0, 0, 0);
 
-    render->DrawTextureAlphaNew(17 / oldDims.w, 35 / oldDims.h, ui_partycreation_portraits[pParty->pPlayers[0].uCurrentFace]);
-    render->DrawTextureAlphaNew(176 / oldDims.w, 35 / oldDims.h, ui_partycreation_portraits[pParty->pPlayers[1].uCurrentFace]);
-    render->DrawTextureAlphaNew(335 / oldDims.w, 35 / oldDims.h, ui_partycreation_portraits[pParty->pPlayers[2].uCurrentFace]);
-    render->DrawTextureAlphaNew(494 / oldDims.w, 35 / oldDims.h, ui_partycreation_portraits[pParty->pPlayers[3].uCurrentFace]);
+    render->DrawTextureNew(17 / oldDims.w, 35 / oldDims.h, ui_partycreation_portraits[pParty->pPlayers[0].uCurrentFace]);
+    render->DrawTextureNew(176 / oldDims.w, 35 / oldDims.h, ui_partycreation_portraits[pParty->pPlayers[1].uCurrentFace]);
+    render->DrawTextureNew(335 / oldDims.w, 35 / oldDims.h, ui_partycreation_portraits[pParty->pPlayers[2].uCurrentFace]);
+    render->DrawTextureNew(494 / oldDims.w, 35 / oldDims.h, ui_partycreation_portraits[pParty->pPlayers[3].uCurrentFace]);
 
     // arrows
     pFrame = pIconsFrameTable->GetFrame(uIconID_CharacterFrame, pEventTimer->uStartTime);
-    render->DrawTextureAlphaNew(pX / oldDims.w, 29 / oldDims.h, pFrame->GetTexture());
+    render->DrawTextureNew(pX / oldDims.w, 29 / oldDims.h, pFrame->GetTexture());
     uPosActiveItem = pGUIWindow_CurrentMenu->GetControl(pGUIWindow_CurrentMenu->pCurrentPosActiveItem);
     uPlayerCreationUI_ArrowAnim = 18 - (platform->TickCount() % 450) / 25;
-    render->DrawTextureAlphaNew((uPosActiveItem->uZ - 4) / oldDims.w, uPosActiveItem->uY / oldDims.h, ui_partycreation_arrow_l[uPlayerCreationUI_ArrowAnim + 1]);
-    render->DrawTextureAlphaNew((uPosActiveItem->uX - 12) / oldDims.w, uPosActiveItem->uY / oldDims.h, ui_partycreation_arrow_r[uPlayerCreationUI_ArrowAnim + 1]);
+    render->DrawTextureNew((uPosActiveItem->uZ - 4) / oldDims.w, uPosActiveItem->uY / oldDims.h, ui_partycreation_arrow_l[uPlayerCreationUI_ArrowAnim + 1]);
+    render->DrawTextureNew((uPosActiveItem->uX - 12) / oldDims.w, uPosActiveItem->uY / oldDims.h, ui_partycreation_arrow_r[uPlayerCreationUI_ArrowAnim + 1]);
 
     memset(pText, 0, sizeof(pText));
     strcpy(pText, localization->GetString(LSTR_SKILLS));
@@ -359,7 +359,7 @@ void GUIWindow_PartyCreation::Update() {
     for (int i = 0; i < 4; ++i) {
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pIntervalX + 73, 100}, colorTable.Black.C16(),
             localization->GetClassName(pParty->pPlayers[i].classType), 0, 0, 0);
-        render->DrawTextureAlphaNew((pIntervalX + 77) / oldDims.w, 50 / oldDims.h, ui_partycreation_class_icons[pParty->pPlayers[i].classType / 4]);
+        render->DrawTextureNew((pIntervalX + 77) / oldDims.w, 50 / oldDims.h, ui_partycreation_class_icons[pParty->pPlayers[i].classType / 4]);
 
         if (pGUIWindow_CurrentMenu->keyboard_input_status != WindowInputStatus::WINDOW_INPUT_NONE &&
             pGUIWindow_CurrentMenu->wData.val == i) {
@@ -601,7 +601,6 @@ void GUIWindow_PartyCreation::Update() {
     // force draw so overlays dont get muddled
     render->DrawTwodVerts();
     render->EndTextNew();
-    render->EndScene();
 }
 
 //----- (0049695A) --------------------------------------------------------
@@ -769,7 +768,6 @@ bool PartyCreationUI_LoopInternal() {
         CreateParty_EventLoop();
         render->BeginScene();
         GUI_UpdateWindows();
-        render->EndScene();
         render->Present();
         if (uGameState ==
             GAME_FINISHED) {  // if click Esc in PlayerCreation Window

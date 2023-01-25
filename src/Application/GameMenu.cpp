@@ -490,7 +490,6 @@ void Menu::MenuLoop() {
         engine->DrawGUI();
         GUI_UpdateWindows();
         GameUI_StatusBar_Draw();
-        render->EndScene();
         render->Present();
 
         EventLoop();

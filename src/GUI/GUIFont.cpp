@@ -184,9 +184,6 @@ void GUIFont::DrawTextLine(const std::string &text, uint16_t uDefaultColor, Poin
                     render->DrawTextNew(uX_pos, position.y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, 0);
                     render->DrawTextNew(uX_pos, position.y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, draw_color);
 
-                    // TODO(pskelton): remove this with d3d render
-                    render->DrawText(uX_pos, position.y, pCharPixels, uCharWidth, pData->uFontHeight, pData->pFontPalettes[0], draw_color, 0);
-
                     uX_pos += uCharWidth;
                     if (i < text_length) {
                         uX_pos += pData->pMetrics[c].uRightSpacing;
@@ -548,9 +545,6 @@ void GUIFont::DrawText(GUIWindow *pWindow, Pointi position, uint16_t uFontColor,
                         float v1 = (ysq * 32.0f) / 512.0f;
                         float v2 = (ysq * 32.0f + pData->uFontHeight) / 512.0f;
 
-                        // TODO(pskelton): remove this with d3d render
-                        render->DrawText(out_x, out_y, letter_pixels, pData->pMetrics[c].uWidth, pData->uFontHeight, pData->pFontPalettes[0], uFontColor, uFontShadowColor);
-
                         render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, uFontShadowColor);
                         render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, uFontColor);
                     } else {
@@ -576,9 +570,6 @@ void GUIFont::DrawText(GUIWindow *pWindow, Pointi position, uint16_t uFontColor,
                         float u2 = (xsq * 32.0f + pData->pMetrics[c].uWidth) / 512.0f;
                         float v1 = (ysq * 32.0f) / 512.0f;
                         float v2 = (ysq * 32.0f + pData->uFontHeight) / 512.0f;
-
-                        // TODO(pskelton): remove this with d3d render
-                        render->DrawTextAlpha(out_x, out_y, letter_pixels, pData->pMetrics[c].uWidth, pData->uFontHeight, pData->pFontPalettes[0], present_time_transparency);
 
                         render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, Color16(r, g, b));
                         render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, colorTable.Black.C16());
@@ -705,8 +696,6 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, Pointi position, uint16_t uColor
 
                     render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, 0);
                     render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, uColor);
-
-                    render->DrawText(text_pos_x, text_pos_y, char_pix_ptr, char_width, pData->uFontHeight, pData->pFontPalettes[0], uColor, 0);
                 } else {
                     // pallette24 check for colour
                     unsigned char *pix = char_pix_ptr;
@@ -733,9 +722,6 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, Pointi position, uint16_t uColor
 
                     render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, Color16(r, g, b));
                     render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, colorTable.Black.C16());
-
-                    // TODO(pskelton): remove this with d3d render
-                    render->DrawTextAlpha(text_pos_x, text_pos_y, char_pix_ptr, char_width, pData->uFontHeight, pData->pFontPalettes[0], false);
                 }
                 text_pos_x += char_width;
                 if (i < (int)pNumLen) {

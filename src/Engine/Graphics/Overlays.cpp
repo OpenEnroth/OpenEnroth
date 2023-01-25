@@ -90,7 +90,7 @@ void OtherOverlayList::DrawTurnBasedIcon(int a2) {
         return;
     }
     // if ( render->pRenderD3D )
-    render->DrawTextureAlphaNew(394 / 640.0f, 288 / 480.0f,
+    render->DrawTextureNew(394 / 640.0f, 288 / 480.0f,
                                 frame->GetTexture());
     /*else
       render->DrawTextureIndexedAlpha(0x18Au, 0x120u, v7);*/

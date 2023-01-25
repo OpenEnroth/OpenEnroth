@@ -266,12 +266,8 @@ class IRender {
 
     virtual unsigned int GetActorTintColor(int DimLevel, int tint, float WorldViewX, int a5, RenderBillboard *Billboard) = 0;
 
-    virtual void DrawPolygon(struct Polygon *a3) = 0;
     virtual void DrawTerrainPolygon(struct Polygon *a4, bool transparent,
                                     bool clampAtTextureBorders) = 0;
-    virtual void DrawIndoorPolygon(unsigned int uNumVertices,
-                                   struct BLVFace *a3, int uPackedID,
-                                   unsigned int uColor, int a8) = 0;
 
     virtual void MakeParticleBillboardAndPush(SoftwareBillboard *a2,
                                                   Texture *texture,
@@ -294,17 +290,13 @@ class IRender {
 
 
     virtual void BeginScene() = 0;
-    virtual void EndScene() = 0;
     virtual void ScreenFade(unsigned int color, float t) = 0;
 
     virtual void SetUIClipRect(unsigned int uX, unsigned int uY,
                                unsigned int uZ, unsigned int uW) = 0;
     virtual void ResetUIClipRect() = 0;
 
-    virtual void MaskGameViewport() = 0;
-
     virtual void DrawTextureNew(float u, float v, Image *img, uint32_t colourmask = 0xFFFFFFFF) = 0;
-    virtual void DrawTextureAlphaNew(float u, float v, Image *) = 0;
     virtual void DrawTextureCustomHeight(float u, float v, Image *, int height) = 0;
     virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y, Image *) = 0;
     virtual void DrawImage(Image *, const Recti &rect, const uint paletteid = 0) = 0;
@@ -321,14 +313,6 @@ class IRender {
     virtual void DrawTransparentRedShade(float u, float v, Image *a4) = 0;
     virtual void DrawTransparentGreenShade(float u, float v, Image *pTexture) = 0;
     // virtual void DrawFansTransparent(const RenderVertexD3D3 *vertices, unsigned int num_vertices) = 0;
-
-    virtual void DrawTextAlpha(int x, int y, unsigned char *font_pixels, int a5,
-                               unsigned int uFontHeight, uint8_t *pPalette,
-                               bool present_time_transparency) = 0;
-    virtual void DrawText(int uOutX, int uOutY, uint8_t *pFontPixels,
-                          unsigned int uCharWidth, unsigned int uCharHeight,
-                          uint8_t *pFontPalette, uint16_t uFaceColor,
-                          uint16_t uShadowColor) = 0;
 
     virtual void BeginTextNew(Texture *main, Texture *shadow) = 0;
     virtual void EndTextNew() = 0;
@@ -387,7 +371,6 @@ class IRender {
                                Pointi *pTargetPoint, int a3,
                                int blend_mode) = 0;
 
-    virtual void DrawIndoorBatched() = 0;
     virtual void DrawIndoorFaces() = 0;
 
     virtual void ReleaseTerrain() = 0;
@@ -422,8 +405,6 @@ class IRender {
     LightmapBuilder *lightmap_builder = nullptr;
     std::shared_ptr<ParticleEngine> particle_engine = nullptr;
     Vis *vis = nullptr;
-
-    virtual void WritePixel16(int x, int y, uint16_t color) = 0;
 
     virtual HWLTexture *LoadHwlBitmap(const std::string &name) = 0;
     virtual HWLTexture *LoadHwlSprite(const std::string &name) = 0;

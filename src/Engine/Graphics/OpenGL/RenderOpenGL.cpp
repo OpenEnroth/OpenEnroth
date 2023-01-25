@@ -124,7 +124,7 @@ void GL_Check_Framebuffer(const char *name) {
 void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y2, int z2) {
     // 6 0 0 0 6 0
 
-    // TODO(pskelton): clean up
+    // TODO(pskelton): clean up and move out of here
 
     float cosz = pCamera3D->fRotationZCosine;
     float cosx = pCamera3D->fRotationYCosine;
@@ -200,10 +200,6 @@ RenderOpenGL::RenderOpenGL(
 RenderOpenGL::~RenderOpenGL() { logger->Info("RenderGl - Destructor"); }
 
 void RenderOpenGL::Release() { logger->Info("RenderGL - Release"); }
-
-void RenderOpenGL::MaskGameViewport() {
-    // do not want in opengl mode
-}
 
 uint8_t *RenderOpenGL::ReadScreenPixels() {
     GLubyte *sPixels = new GLubyte[4 * outputRender.w * outputRender.h];
@@ -752,7 +748,7 @@ void RenderOpenGL::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
 }
 
 
-
+// TODO(pskelton): add optional colour32
 void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid) {
     if (!img) {
         if (engine->config->debug.VerboseLogging.Get())
@@ -976,7 +972,7 @@ void RenderOpenGL::BlendTextures(int x, int y, Image* imgin, Image* imgblend, in
         }
         // draw image
         render->Update_Texture(temp);
-        render->DrawTextureAlphaNew(x / float(outputRender.w), y / float(outputRender.h), temp);
+        render->DrawTextureNew(x / float(outputRender.w), y / float(outputRender.h), temp);
 
         render->DrawTwodVerts();
 
@@ -1027,7 +1023,7 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time
             render->Update_Texture(cachedtemp[thisslot]);
         }
 
-        render->DrawTextureAlphaNew(u, v, cachedtemp[thisslot]);
+        render->DrawTextureNew(u, v, cachedtemp[thisslot]);
     }
 }
 
@@ -1043,10 +1039,12 @@ void RenderOpenGL::DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait, int Y_Of
     render->ResetUIClipRect();
 }
 
+// TODO(pskelton): to colour 32
 void RenderOpenGL::DrawTransparentRedShade(float u, float v, Image *a4) {
     DrawMasked(u, v, a4, 0, 0xF800);
 }
 
+// TODO(pskelton): to colour 32
 void RenderOpenGL::DrawTransparentGreenShade(float u, float v, Image *pTexture) {
     DrawMasked(u, v, pTexture, 0, 0x07E0);
 }
@@ -1518,6 +1516,7 @@ void RenderOpenGL::Do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
     // not required - using wireframe drawing for gl debug lines
 }
 
+// TODO(pskelton):  covert to colour 32
 // used for debug protal lines
 void RenderOpenGL::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices) {
     BeginLines2D();
@@ -3249,10 +3248,10 @@ void RenderOpenGL::ResetUIClipRect() {
 void RenderOpenGL::PresentBlackScreen() {
     BeginScene();
     ClearBlack();
-    EndScene();
     Present();
 }
 
+// TODO(pskelton): rename BeginScene2D?
 void RenderOpenGL::BeginScene() {
     // Setup for 2D
 
@@ -3271,17 +3270,6 @@ void RenderOpenGL::BeginScene() {
 
     _set_ortho_projection();
     _set_ortho_modelview();
-}
-
-void RenderOpenGL::EndScene() {
-    // blank in d3d
-}
-
-
-
-void RenderOpenGL::DrawTextureAlphaNew(float u, float v, Image *img) {
-    DrawTextureNew(u, v, img);
-    return;
 }
 
 // TODO(pskelton): use alpha from mask too
@@ -3773,20 +3761,6 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     textvertscnt++;
 
     if (textvertscnt > 9990) EndTextNew();
-}
-
-void RenderOpenGL::DrawText(int uOutX, int uOutY, uint8_t* pFontPixels,
-                            unsigned int uCharWidth, unsigned int uCharHeight,
-                            uint8_t* pFontPalette, uint16_t uFaceColor,
-                            uint16_t uShadowColor) {
-    return;
-}
-
-void RenderOpenGL::DrawTextAlpha(int x, int y, unsigned char *font_pixels,
-                                 int uCharWidth, unsigned int uFontHeight,
-                                 uint8_t *pPalette,
-                                 bool present_time_transparency) {
-    return;
 }
 
 void RenderOpenGL::Present() {
@@ -5185,13 +5159,6 @@ void RenderOpenGL::DrawIndoorFaces() {
         return;
 }
 
-// d3d only
-void RenderOpenGL::DrawIndoorBatched() { return; }
-
-// no longer require with shaders
-void RenderOpenGL::DrawPolygon(struct Polygon *pPolygon) { return; }
-void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace, int uPackedID, unsigned int uColor, int a8) { return; }
-
 bool RenderOpenGL::SwitchToWindow() {
     // pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
     // pViewport->ResetScreen();
@@ -5257,9 +5224,6 @@ bool RenderOpenGL::Initialize() {
 
     return false;
 }
-
-// do not use
-void RenderOpenGL::WritePixel16(int x, int y, uint16_t color) { return; }
 
 void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY, unsigned int uWidth,
                                 unsigned int uHeight, uint32_t uColor32) {

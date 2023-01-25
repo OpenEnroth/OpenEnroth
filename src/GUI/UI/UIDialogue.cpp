@@ -195,11 +195,11 @@ void GUIWindow_Dialogue::Update() {
     window.uFrameWidth -= 10;
     window.uFrameZ -= 10;
     render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
-    render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
-    render->DrawTextureAlphaNew((pNPCPortraits_x[0][0] - 4) / 640.0f,
+    render->DrawTextureNew(468 / 640.0f, 0, game_ui_right_panel_frame);
+    render->DrawTextureNew((pNPCPortraits_x[0][0] - 4) / 640.0f,
                                 (pNPCPortraits_y[0][0] - 4) / 480.0f,
                                 game_ui_evtnpc);
-    render->DrawTextureAlphaNew(pNPCPortraits_x[0][0] / 640.0f,
+    render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f,
                                 pNPCPortraits_y[0][0] / 480.0f,
                                 pDialogueNPCPortraits[0]);
 
@@ -300,7 +300,7 @@ void GUIWindow_Dialogue::Update() {
                                             (352 - pTextHeight) / 480.0f,
                                             ui_leather_mm7, pTextHeight);
 
-        render->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f,
+        render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f,
                                     _591428_endcap);
         pDialogueWindow->DrawText(font, {13, 354 - pTextHeight}, 0, font->FitTextInAWindow(dialogue_string, window.uFrameWidth, 13), 0, 0, 0);
     }
@@ -446,7 +446,7 @@ void GUIWindow_Dialogue::Update() {
                                  pButton->sLabel, 3);
         }
     }
-    render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f,
+    render->DrawTextureNew(471 / 640.0f, 445 / 480.0f,
                                 ui_exit_cancel_button_background);
 }
 
@@ -492,7 +492,7 @@ void GUIWindow_GenericDialogue::Update() {
 
     render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f,
                                     ui_leather_mm7, pTextHeight);
-    render->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f,
+    render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f,
                                 _591428_endcap);
     pGUIWindow2->DrawText(pFont, {12, 354 - pTextHeight}, 0,
         pFont->FitTextInAWindow(branchless_dialogue_str, BranchlessDlg_window.uFrameWidth, 12),

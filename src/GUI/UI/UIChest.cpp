@@ -35,7 +35,7 @@ void GUIWindow_Chest::Update() {
         render->ClearZBuffer();
         draw_leather();
         CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
-        render->DrawTextureAlphaNew(pBtn_ExitCancel->uX / 640.0f,
+        render->DrawTextureNew(pBtn_ExitCancel->uX / 640.0f,
                                     pBtn_ExitCancel->uY / 480.0f,
                                     ui_exit_cancel_button_background);
     } else if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST) {
@@ -51,7 +51,7 @@ void GUIWindow_Chest::Update() {
 
         Image *chest_background = assets->GetImage_ColorKey(
             StringPrintf("chest%02d", pChestList->vChests[chestBitmapId].uTextureID), render->teal_mask_16);
-        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, chest_background);
+        render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, chest_background);
 
         for (int item_counter = 0;
              item_counter < chestWidthCells * chestHeghtCells; ++item_counter) {
@@ -69,7 +69,7 @@ void GUIWindow_Chest::Update() {
                 signed int Y_offset = (((signed int)((itemPixelHeght - 14) & 0xFFFFFFE0) + 32) - itemPixelHeght) / 2;
                 int itemPixelPosX = chest_offs_x + 32 * (item_counter % chestWidthCells) + X_offset;
                 int itemPixelPosY = chest_offs_y + 32 * (item_counter / chestHeghtCells) + Y_offset;
-                render->DrawTextureAlphaNew(itemPixelPosX / 640.0f,
+                render->DrawTextureNew(itemPixelPosX / 640.0f,
                                             itemPixelPosY / 480.0f,
                                             item_texture);
                 //        ZBuffer_DoFill2(&v16[itemPixelPosX +
@@ -77,7 +77,7 @@ void GUIWindow_Chest::Update() {
                 //        item_counter + 1);
             }
         }
-        render->DrawTextureAlphaNew(pBtn_ExitCancel->uX / 640.0f,
+        render->DrawTextureNew(pBtn_ExitCancel->uX / 640.0f,
                                     pBtn_ExitCancel->uY / 480.0f,
                                     ui_exit_cancel_button_background);
     }

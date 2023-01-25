@@ -81,12 +81,8 @@ class RenderOpenGL : public RenderBase {
 
     virtual unsigned int GetActorTintColor(int DimLevel, int tint, float WorldViewX, int a5, RenderBillboard *Billboard) override;
 
-    virtual void DrawPolygon(struct Polygon *a3) override;
     virtual void DrawTerrainPolygon(struct Polygon *a4, bool transparent,
                                     bool clampAtTextureBorders) override;
-    virtual void DrawIndoorPolygon(unsigned int uNumVertices,
-                                   struct BLVFace *a3, int uPackedID,
-                                   unsigned int uColor, int a8) override;
 
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() override;
     virtual void BillboardSphereSpellFX(struct SpellFX_Billboard *a1, int diffuse) override;
@@ -103,7 +99,6 @@ class RenderOpenGL : public RenderBase {
     virtual void DeleteTexture(Texture *texture) override;
 
     virtual void BeginScene() override;
-    virtual void EndScene() override;
     virtual void ScreenFade(unsigned int color, float t) override;
 
     virtual void SetUIClipRect(unsigned int uX, unsigned int uY,
@@ -111,7 +106,6 @@ class RenderOpenGL : public RenderBase {
     virtual void ResetUIClipRect() override;
 
     virtual void DrawTextureNew(float u, float v, class Image *, uint32_t colourmask = 0xFFFFFFFF) override;
-    virtual void DrawTextureAlphaNew(float u, float v, class Image *) override;
 
         virtual void DrawTextureCustomHeight(float u, float v, class Image *,
                                          int height) override;
@@ -126,8 +120,6 @@ class RenderOpenGL : public RenderBase {
     virtual void DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait_Sprite, int Y_Offset) override;
 
 
-    virtual void MaskGameViewport() override;
-
     virtual void DrawMasked(float u, float v, class Image *img,
                             unsigned int color_dimming_level,
                             uint16_t mask) override;
@@ -135,15 +127,6 @@ class RenderOpenGL : public RenderBase {
     virtual void DrawTransparentRedShade(float u, float v, class Image *a4) override;
     virtual void DrawTransparentGreenShade(float u, float v,
                                            class Image *pTexture) override;
-
-
-    virtual void DrawTextAlpha(int x, int y, unsigned char *font_pixels, int a5,
-                               unsigned int uFontHeight, uint8_t *pPalette,
-                               bool present_time_transparency) override;
-    virtual void DrawText(int uOutX, int uOutY, uint8_t *pFontPixels,
-                          unsigned int uCharWidth, unsigned int uCharHeight,
-                          uint8_t *pFontPalette, uint16_t uFaceColor,
-                          uint16_t uShadowColor) override;
 
     virtual void BeginTextNew(Texture *main, Texture *shadow) override;
     virtual void EndTextNew() override;
@@ -190,7 +173,6 @@ class RenderOpenGL : public RenderBase {
                                int blend_mode) override;
 
     virtual void DrawIndoorFaces() override;
-    virtual void DrawIndoorBatched() override;
 
     virtual void ReleaseTerrain() override;
     virtual void ReleaseBSP() override;
@@ -202,9 +184,6 @@ class RenderOpenGL : public RenderBase {
     virtual Sizei GetPresentDimensions() override;
     virtual bool Reinitialize(bool firstInit) override;
     virtual void ReloadShaders() override;
-
- public:
-    virtual void WritePixel16(int x, int y, uint16_t color) override;
 
  protected:
     void DoRenderBillboards_D3D();

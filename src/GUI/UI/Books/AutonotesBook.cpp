@@ -94,7 +94,7 @@ void GUIWindow_AutonotesBook::Update() {
     // ----- (00413CC6) --------------------------------------------------------
     // void BookUI_Draw(WindowType book) --- part
     // {
-    render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f,
+    render->DrawTextureNew(471 / 640.0f, 445 / 480.0f,
                                 ui_exit_cancel_button_background);
     //     BookUI_Autonotes_Draw();
 
@@ -106,32 +106,32 @@ void GUIWindow_AutonotesBook::Update() {
     GUIWindow autonotes_window;  // [sp+14h] [bp-54h]@46
 
     change_flag = false;
-    render->DrawTextureAlphaNew(pViewport->uViewportTL_X / 640.0f,
+    render->DrawTextureNew(pViewport->uViewportTL_X / 640.0f,
                                 pViewport->uViewportTL_Y / 480.0f,
                                 ui_book_autonotes_background);
     if (BtnUp_flag || !books_primary_item_per_page)
-        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 407) / 640.0f,
+        render->DrawTextureNew((pViewport->uViewportTL_X + 407) / 640.0f,
                                     (pViewport->uViewportTL_Y + 2) / 480.0f,
                                     ui_book_button1_off);
     else
-        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 398) / 640.0f,
+        render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f,
                                     (pViewport->uViewportTL_Y + 1) / 480.0f,
                                     ui_book_button1_on);
 
     if (BtnDown_flag || books_primary_item_per_page + num_achieved_awards >=
                             full_num_items_in_book)
-        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 407) / 640.0f,
+        render->DrawTextureNew((pViewport->uViewportTL_X + 407) / 640.0f,
                                     (pViewport->uViewportTL_Y + 38) / 480.0f,
                                     ui_book_button2_off);
     else
-        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 398) / 640.0f,
+        render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f,
                                     (pViewport->uViewportTL_Y + 38) / 480.0f,
                                     ui_book_button2_on);
 
     if (Book_PageBtn3_flag) {  // Potions_page_flag
         if (_506568_autonote_type ==
             AUTONOTE_POTION_RECEPIE) {  // press again(повторное нажатие)
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 398) / 640.0f,
                 (pViewport->uViewportTL_Y + 113) / 480.0f, ui_book_button3_on);
         } else {  // press(нажатие)
@@ -139,25 +139,25 @@ void GUIWindow_AutonotesBook::Update() {
             pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0,
                                     0);
             _506568_autonote_type = AUTONOTE_POTION_RECEPIE;
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 398) / 640.0f,
                 (pViewport->uViewportTL_Y + 113) / 480.0f, ui_book_button3_on);
         }
     } else {
         if (_506568_autonote_type ==
             AUTONOTE_POTION_RECEPIE)  // default(по умолчанию при запуске окна)
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 398) / 640.0f,
                 (pViewport->uViewportTL_Y + 113) / 480.0f, ui_book_button3_on);
         else  // Potions_page not active(вкладка снадобья не активна)
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 408) / 640.0f,
                 (pViewport->uViewportTL_Y + 113) / 480.0f, ui_book_button3_off);
     }
 
     if (Book_PageBtn4_flag) {  // Fontains_page_flag
         if (_506568_autonote_type == AUTONOTE_STAT_HINT) {
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 399) / 640.0f,
                 (pViewport->uViewportTL_Y + 150) / 480.0f, ui_book_button4_on);
         } else {
@@ -165,24 +165,24 @@ void GUIWindow_AutonotesBook::Update() {
             pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0,
                                     0);
             _506568_autonote_type = AUTONOTE_STAT_HINT;
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 399) / 640.0f,
                 (pViewport->uViewportTL_Y + 150) / 480.0f, ui_book_button4_on);
         }
     } else {
         if (_506568_autonote_type == AUTONOTE_STAT_HINT)
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 399) / 640.0f,
                 (pViewport->uViewportTL_Y + 150) / 480.0f, ui_book_button4_on);
         else
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 408) / 640.0f,
                 (pViewport->uViewportTL_Y + 150) / 480.0f, ui_book_button4_off);
     }
 
     if (Book_PageBtn5_flag) {  // Autonotes_Obelisks_page_flag
         if (_506568_autonote_type == AUTONOTE_OBELISK) {
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 397) / 640.0f,
                 (pViewport->uViewportTL_Y + 188) / 480.0f, ui_book_button5_on);
         } else {
@@ -190,24 +190,24 @@ void GUIWindow_AutonotesBook::Update() {
             pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0,
                                     0);
             _506568_autonote_type = AUTONOTE_OBELISK;
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 397) / 640.0f,
                 (pViewport->uViewportTL_Y + 188) / 480.0f, ui_book_button5_on);
         }
     } else {
         if (_506568_autonote_type == AUTONOTE_OBELISK)
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 397) / 640.0f,
                 (pViewport->uViewportTL_Y + 188) / 480.0f, ui_book_button5_on);
         else
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 408) / 640.0f,
                 (pViewport->uViewportTL_Y + 188) / 480.0f, ui_book_button5_off);
     }
 
     if (Book_PageBtn6_flag) {  // Autonotes_Seer_page_flag
         if (_506568_autonote_type == AUTONOTE_SEER) {
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 397) / 640.0f,
                 (pViewport->uViewportTL_Y + 226) / 480.0f, ui_book_button6_on);
         } else {
@@ -215,24 +215,24 @@ void GUIWindow_AutonotesBook::Update() {
             pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0,
                                     0);
             _506568_autonote_type = AUTONOTE_SEER;
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 397) / 640.0f,
                 (pViewport->uViewportTL_Y + 226) / 480.0f, ui_book_button6_on);
         }
     } else {
         if (_506568_autonote_type == AUTONOTE_SEER)
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 397) / 640.0f,
                 (pViewport->uViewportTL_Y + 226) / 480.0f, ui_book_button6_on);
         else
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 408) / 640.0f,
                 (pViewport->uViewportTL_Y + 226) / 480.0f, ui_book_button6_off);
     }
 
     if (Autonotes_Misc_page_flag) {
         if (_506568_autonote_type == AUTONOTE_MISC) {
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 397) / 640.0f,
                 (pViewport->uViewportTL_Y + 264) / 480.0f, ui_book_button7_on);
         } else {
@@ -240,24 +240,24 @@ void GUIWindow_AutonotesBook::Update() {
             pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0,
                                     0);
             _506568_autonote_type = AUTONOTE_MISC;
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 397) / 640.0f,
                 (pViewport->uViewportTL_Y + 264) / 480.0f, ui_book_button7_on);
         }
     } else {
         if (_506568_autonote_type == AUTONOTE_MISC)
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 397) / 640.0f,
                 (pViewport->uViewportTL_Y + 264) / 480.0f, ui_book_button7_on);
         else
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 408) / 640.0f,
                 (pViewport->uViewportTL_Y + 263) / 480.0f, ui_book_button7_off);
     }
 
     if (Autonotes_Instructors_page_flag) {
         if (_506568_autonote_type == AUTONOTE_TEACHER) {
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 397) / 640.0f,
                 (pViewport->uViewportTL_Y + 302) / 480.0f, ui_book_button8_on);
         } else {
@@ -265,17 +265,17 @@ void GUIWindow_AutonotesBook::Update() {
             pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0,
                                     0);
             _506568_autonote_type = AUTONOTE_TEACHER;
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 397) / 640.0f,
                 (pViewport->uViewportTL_Y + 302) / 480.0f, ui_book_button8_on);
         }
     } else {
         if (_506568_autonote_type == AUTONOTE_TEACHER)
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 397) / 640.0f,
                 (pViewport->uViewportTL_Y + 302) / 480.0f, ui_book_button8_on);
         else
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 408) / 640.0f,
                 (pViewport->uViewportTL_Y + 302) / 480.0f, ui_book_button8_off);
     }
@@ -353,7 +353,7 @@ void GUIWindow_AutonotesBook::Update() {
             (signed int)autonotes_window.uFrameHeight)
             break;
 
-        render->DrawTextureAlphaNew(100 / 640.0f, ((autonotes_window.uFrameY + pTextHeight) + 12) / 480.0f, ui_book_quest_div_bar);
+        render->DrawTextureNew(100 / 640.0f, ((autonotes_window.uFrameY + pTextHeight) + 12) / 480.0f, ui_book_quest_div_bar);
         autonotes_window.uFrameY = (autonotes_window.uFrameY + pTextHeight) + 24;
     }
 }

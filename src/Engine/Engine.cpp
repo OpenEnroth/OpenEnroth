@@ -78,14 +78,14 @@ b = true;
 }
 
 auto icon = pIconsFrameTable->GetFrame(torchA.icon->id, GetTickCount()/2);
-render->DrawTextureAlphaNew(64 / 640.0f, 48 / 480.0f, icon->texture);
+render->DrawTextureNew(64 / 640.0f, 48 / 480.0f, icon->texture);
 
 icon = pIconsFrameTable->GetFrame(torchB.icon->id, GetTickCount() / 2);
-render->DrawTextureAlphaNew((64 + torchA.icon->texture->GetWidth())/ 640.0f, 48
+render->DrawTextureNew((64 + torchA.icon->texture->GetWidth())/ 640.0f, 48
 / 480.0f, icon->texture);
 
 icon = pIconsFrameTable->GetFrame(torchC.icon->id, GetTickCount() / 2);
-render->DrawTextureAlphaNew((64 + torchA.icon->texture->GetWidth() +
+render->DrawTextureNew((64 + torchA.icon->texture->GetWidth() +
 torchB.icon->texture->GetWidth()) / 640.0f, 48 / 480.0f, icon->texture);
 
 */
@@ -194,7 +194,6 @@ void Engine::Draw() {
 
     engine->nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_GameUI, 1);
 
-    render->EndScene();
     render->Present();
     pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
 }
@@ -225,8 +224,6 @@ void Engine::DrawGUI() {
         GameUI_DrawMinimap(488, 16, 625, 133, viewparams->uMinimapZoom, true);  // redraw = pParty->uFlags & 2);
         if (v4) {
             if (!PauseGameDrawing() /*&& render->pRenderD3D*/) {
-                // clear game viewport with transparent color
-                render->MaskGameViewport();
                 viewparams->field_48 = 0;
             }
         }

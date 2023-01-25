@@ -265,7 +265,7 @@ void ShopDialogLearn(GUIWindow dialogwin) {
 }
 
 void WeaponShopWares(GUIWindow dialogwin, bool special) {
-    render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
+    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
     int item_X = 0;
 
     for (uint i = 0; i < 6; ++i) {
@@ -277,7 +277,7 @@ void WeaponShopWares(GUIWindow dialogwin, bool special) {
              pParty
                  ->SpecialItemsInShops[window_SpeakInHouse->wData.val][i]
                  .uItemID != ITEM_NULL)) {
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 ((60 -
                   ((signed int)shop_ui_items_in_store[i]->GetWidth() / 2)) +
                  item_X) /
@@ -414,7 +414,7 @@ void WeaponShopDialog() {
 }
 
 void ArmorShopWares(GUIWindow dialogwin, bool special) {
-    render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
+    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
     int item_x = 0;
 
     for (int i = 0; i < 8; ++i) {
@@ -425,13 +425,13 @@ void ArmorShopWares(GUIWindow dialogwin, bool special) {
              pParty->SpecialItemsInShops[window_SpeakInHouse->wData.val][i]
                  .uItemID != ITEM_NULL)) {
             if (i >= 4) {  // low row
-                render->DrawTextureAlphaNew(
+                render->DrawTextureNew(
                     ((90 - (shop_ui_items_in_store[i]->GetWidth() / 2)) +
                      item_x - 420) /
                         640.0f,
                     126 / 480.0f, shop_ui_items_in_store[i]);
             } else {
-                render->DrawTextureAlphaNew(
+                render->DrawTextureNew(
                     ((86 - (shop_ui_items_in_store[i]->GetWidth() / 2)) +
                      item_x) /
                         640.0f,
@@ -578,7 +578,7 @@ void ArmorShopDialog() {
 
 void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
                            bool special) {
-    render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
+    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
 
     int itemx;
     int itemy;
@@ -611,7 +611,7 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
                     itemx = 457 - shop_ui_items_in_store[i]->GetWidth();
             }
 
-            render->DrawTextureAlphaNew(itemx / 640.0f, itemy / 480.0f,
+            render->DrawTextureNew(itemx / 640.0f, itemy / 480.0f,
                                         shop_ui_items_in_store[i]);
         }
     }

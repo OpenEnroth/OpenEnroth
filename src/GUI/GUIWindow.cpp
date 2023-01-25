@@ -390,7 +390,7 @@ void GUIWindow::HouseDialogManager() {
     pWindow.uFrameWidth -= 18;
     pWindow.uFrameZ -= 18;
     render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
-    render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
+    render->DrawTextureNew(468 / 640.0f, 0, game_ui_right_panel_frame);
     if (pDialogueNPCCount != uNumDialogueNPCPortraits || !uHouse_ExitPic) {
         const char *pHouseName = p2DEvents[window_SpeakInHouse->wData.val - 1].pName;
         if (pHouseName) {
@@ -408,12 +408,12 @@ void GUIWindow::HouseDialogManager() {
             JailDialog();
             if (pDialogueNPCCount == uNumDialogueNPCPortraits &&
                 uHouse_ExitPic) {
-                render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f,
+                render->DrawTextureNew(556 / 640.0f, 451 / 480.0f,
                     dialogue_ui_x_x_u);
-                render->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f,
+                render->DrawTextureNew(476 / 640.0f, 451 / 480.0f,
                     dialogue_ui_x_ok_u);
             } else {
-                render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f,
+                render->DrawTextureNew(471 / 640.0f, 445 / 480.0f,
                     ui_exit_cancel_button_background);
             }
             return;
@@ -428,18 +428,18 @@ void GUIWindow::HouseDialogManager() {
             render->DrawTextureCustomHeight(8 / 640.0f,
                 (352 - (pTextHeight + 7)) / 480.0f,
                 ui_leather_mm7, pTextHeight + 7);
-            render->DrawTextureAlphaNew(8 / 640.0f, (347 - v6) / 480.0f, _591428_endcap);
+            render->DrawTextureNew(8 / 640.0f, (347 - v6) / 480.0f, _591428_endcap);
             window_SpeakInHouse->DrawText(pFontArrus, {13, 354 - v6}, 0, pFontArrus->FitTextInAWindow(current_npc_text, pDialogWindow.uFrameWidth, 13), 0, 0, 0);
         }
         if (uNumDialogueNPCPortraits <= 0) {
             if (pDialogueNPCCount == uNumDialogueNPCPortraits &&
                 uHouse_ExitPic) {
-                render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f,
+                render->DrawTextureNew(556 / 640.0f, 451 / 480.0f,
                     dialogue_ui_x_x_u);
-                render->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f,
+                render->DrawTextureNew(476 / 640.0f, 451 / 480.0f,
                     dialogue_ui_x_ok_u);
             } else {
-                render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f,
+                render->DrawTextureNew(471 / 640.0f, 445 / 480.0f,
                     ui_exit_cancel_button_background);
             }
             return;
@@ -448,13 +448,13 @@ void GUIWindow::HouseDialogManager() {
         unsigned int v10 = 0;
 
         for (int v8 = 0; v8 < uNumDialogueNPCPortraits; ++v8) {
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 (pNPCPortraits_x[uNumDialogueNPCPortraits - 1][v8] - 4) /
                 640.0f,
                 (pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v8] - 4) /
                 480.0f,
                 game_ui_evtnpc);
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 pNPCPortraits_x[uNumDialogueNPCPortraits - 1][v8] / 640.0f,
                 pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v8] / 480.0f,
                 pDialogueNPCPortraits[v8]);
@@ -478,33 +478,33 @@ void GUIWindow::HouseDialogManager() {
             }
         }
         if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
-            render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f,
+            render->DrawTextureNew(556 / 640.0f, 451 / 480.0f,
                 dialogue_ui_x_x_u);
-            render->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f,
+            render->DrawTextureNew(476 / 640.0f, 451 / 480.0f,
                 dialogue_ui_x_ok_u);
         } else {
-            render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f,
+            render->DrawTextureNew(471 / 640.0f, 445 / 480.0f,
                 ui_exit_cancel_button_background);
         }
         return;
     }
 
     int v4 = pDialogueNPCCount - 1;
-    render->DrawTextureAlphaNew((pNPCPortraits_x[0][0] - 4) / 640.0f,
+    render->DrawTextureNew((pNPCPortraits_x[0][0] - 4) / 640.0f,
         (pNPCPortraits_y[0][0] - 4) / 480.0f,
         game_ui_evtnpc);
-    render->DrawTextureAlphaNew(pNPCPortraits_x[0][0] / 640.0f,
+    render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f,
         pNPCPortraits_y[0][0] / 480.0f,
         pDialogueNPCPortraits[v4]);
     if (current_screen_type == CURRENT_SCREEN::SCREEN_E) {
         CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
         if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
-            render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f,
+            render->DrawTextureNew(556 / 640.0f, 451 / 480.0f,
                 dialogue_ui_x_x_u);
-            render->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f,
+            render->DrawTextureNew(476 / 640.0f, 451 / 480.0f,
                 dialogue_ui_x_ok_u);
         } else {
-            render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f,
+            render->DrawTextureNew(471 / 640.0f, 445 / 480.0f,
                 ui_exit_cancel_button_background);
         }
         return;
@@ -577,12 +577,12 @@ void GUIWindow::HouseDialogManager() {
         }
     }
     if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
-        render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f,
+        render->DrawTextureNew(556 / 640.0f, 451 / 480.0f,
             dialogue_ui_x_x_u);
-        render->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f,
+        render->DrawTextureNew(476 / 640.0f, 451 / 480.0f,
             dialogue_ui_x_ok_u);
     } else {
-        render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f,
+        render->DrawTextureNew(471 / 640.0f, 445 / 480.0f,
             ui_exit_cancel_button_background);
     }
 }
@@ -797,7 +797,7 @@ void DialogueEnding() {
 
 void GUIWindow_BooksButtonOverlay::Update() {
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
-    render->DrawTextureAlphaNew(uFrameY / 640.0f, uFrameX / 480.0f, pButton->vTextures[0]);
+    render->DrawTextureNew(uFrameY / 640.0f, uFrameX / 480.0f, pButton->vTextures[0]);
     viewparams->bRedrawGameUI = true;
 }
 
@@ -810,7 +810,7 @@ void OnButtonClick::Update() {
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
-    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
+    render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
     viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
         pButton->DrawLabel(sHint, pFontCreate, 0, 0);
@@ -826,7 +826,7 @@ void OnButtonClick2::Update() {
     Sizei renDims = render->GetRenderDimensions();
     if (pButton->uX >= 0 && pButton->uX <= renDims.w) {
         if (pButton->uY >= 0 && pButton->uY <= renDims.h) {
-            render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
+            render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
         }
     }
     viewparams->bRedrawGameUI = true;
@@ -841,7 +841,7 @@ void OnButtonClick3::Update() {
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
-    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
+    render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
     viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
         pButton->DrawLabel(sHint, pFontCreate, 0, 0);
@@ -854,7 +854,7 @@ void OnButtonClick4::Update() {
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
-    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
+    render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
     viewparams->bRedrawGameUI = true;
 
     Release();
@@ -865,7 +865,7 @@ void OnSaveLoad::Update() {
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
-    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
+    render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
     viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
         pButton->DrawLabel(sHint, pFontCreate, 0, 0);
@@ -884,7 +884,7 @@ void OnCancel::Update() {
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
     GUIButton *pGUIButton = static_cast<GUIButton *>(wData.ptr);
-    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pGUIButton->vTextures[0]);
+    render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pGUIButton->vTextures[0]);
     viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
         pGUIButton->DrawLabel(sHint, pFontCreate, 0, 0);
@@ -899,7 +899,7 @@ void OnCancel2::Update() {
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
-    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
+    render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
     viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
         pButton->DrawLabel(sHint, pFontCreate, 0, 0);
@@ -915,7 +915,7 @@ void OnCancel3::Update() {
     }
 
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
-    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
+    render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
     viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
         pButton->DrawLabel(sHint, pFontCreate, 0, 0);

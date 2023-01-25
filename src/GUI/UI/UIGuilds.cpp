@@ -79,16 +79,16 @@ void GuildDialog() {
     }
 
     if (dialog_menu_id == DIALOGUE_GUILD_BUY_BOOKS) {
-        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
+        render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
         int itemxind = 0;
 
         for (pX = 32; pX < 452; pX += 70) {  // top row
             if (pParty->SpellBooksInGuilds
                 [window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][itemxind].uItemID != ITEM_NULL) {
-                render->DrawTextureAlphaNew(pX / 640.0f, 90 / 480.0f, shop_ui_items_in_store[itemxind]);
+                render->DrawTextureNew(pX / 640.0f, 90 / 480.0f, shop_ui_items_in_store[itemxind]);
             }
             if (pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][itemxind + 6].uItemID != ITEM_NULL) {
-                render->DrawTextureAlphaNew(pX / 640.0f, 250 / 480.0f, shop_ui_items_in_store[itemxind + 6]);
+                render->DrawTextureNew(pX / 640.0f, 250 / 480.0f, shop_ui_items_in_store[itemxind + 6]);
             }
 
             ++itemxind;
