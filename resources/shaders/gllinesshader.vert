@@ -1,7 +1,7 @@
 layout (location = 0) in vec3 vaPos;
-layout (location = 1) in vec3 vaCol;
+layout (location = 1) in vec4 vaCol;
 
-out vec3 colour;
+out vec4 colour;
 
 uniform mat4 view;
 uniform mat4 projection;

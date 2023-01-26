@@ -3025,10 +3025,10 @@ void DrawRect(Recti *pRect, uint16_t uColor, char bSolidFill) {
         int x1 = pRect->x + pRect->w;
         int y0 = pRect->y;
         int y1 = pRect->y + pRect->h;
-        render->RasterLine2D(x0, y0, x1, y0, uColor);
-        render->RasterLine2D(x1, y0, x1, y1, uColor);
-        render->RasterLine2D(x1, y1, x0, y1, uColor);
-        render->RasterLine2D(x0, y1, x0, y0, uColor);
+        render->RasterLine2D(x0, y0, x1, y0, Color32(uColor));
+        render->RasterLine2D(x1, y0, x1, y1, Color32(uColor));
+        render->RasterLine2D(x1, y1, x0, y1, Color32(uColor));
+        render->RasterLine2D(x0, y1, x0, y0, Color32(uColor));
         render->EndLines2D();
     }
 }

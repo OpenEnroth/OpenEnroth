@@ -71,7 +71,7 @@ class RenderOpenGL : public RenderBase {
     virtual void BeginLines2D() override;
     virtual void EndLines2D() override;
     virtual void RasterLine2D(signed int uX, signed int uY, signed int uZ,
-                              signed int uW, uint16_t uColor) override;
+                              signed int uW, uint32_t uColor32) override;
 
     virtual void ClearZBuffer() override;
     virtual void RestoreFrontBuffer() override;

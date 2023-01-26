@@ -38,6 +38,8 @@ void WetsuitOff(unsigned int uPlayerID);
 
 int bRingsShownInCharScreen;  // 5118E0
 
+// TODO(pskelton): convert to color32
+
 unsigned int ui_mainmenu_copyright_color;
 
 unsigned int ui_character_tooltip_header_default_color;

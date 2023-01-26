@@ -256,7 +256,7 @@ class IRender {
 
     virtual void BeginLines2D() = 0;
     virtual void EndLines2D() = 0;
-    virtual void RasterLine2D(int uX, int uY, int uZ, int uW, uint16_t uColor) = 0;
+    virtual void RasterLine2D(int uX, int uY, int uZ, int uW, uint32_t uColor32) = 0;
 
     virtual void ClearZBuffer() = 0;
     virtual void RestoreFrontBuffer() = 0;

@@ -1739,7 +1739,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
 
                     LineGreyDim = abs(pOutline->sZ - pParty->vPosition.z) / 8;
                     if (LineGreyDim > 100) LineGreyDim = 100;
-                    render->RasterLine2D(linex, liney, linez, linew, viewparams->pPalette[-LineGreyDim + 200]);
+                    render->RasterLine2D(linex, liney, linez, linew, Color32(viewparams->pPalette[-LineGreyDim + 200]));
                 }
             }
         }
@@ -1750,7 +1750,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
             int pY = uCenterY - ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex1ID].y)) << 16) - uZoom * pParty->vPosition.y) >> 16);
             int pZ = uCenterX + ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex2ID].x)) << 16) - uZoom * pParty->vPosition.x) >> 16);
             int pW = uCenterY - ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex2ID].y)) << 16) - uZoom * pParty->vPosition.y) >> 16);
-            render->RasterLine2D(pX, pY, pZ, pW, ui_game_minimap_outline_color);
+            render->RasterLine2D(pX, pY, pZ, pW, Color32(ui_game_minimap_outline_color));
         }
     }
 
@@ -1783,30 +1783,30 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                         OBJECT_DESC_UNPICKABLE) {
                         render->RasterLine2D(pPoint_X, pPoint_Y, pPoint_X + 1,
                                              pPoint_Y + 1,
-                                             ui_game_minimap_projectile_color);
+                                            Color32(ui_game_minimap_projectile_color));
                     } else if (uZoom > 512) {
                         render->RasterLine2D(pPoint_X - 2, pPoint_Y,
                                              pPoint_X - 2, pPoint_Y + 1 + lineadj,
-                                             ui_game_minimap_treasure_color);
+                                            Color32(ui_game_minimap_treasure_color));
                         render->RasterLine2D(pPoint_X - 1, pPoint_Y - 1,
                                              pPoint_X - 1, pPoint_Y + 1 + lineadj,
-                                             ui_game_minimap_treasure_color);
+                                            Color32(ui_game_minimap_treasure_color));
                         render->RasterLine2D(pPoint_X, pPoint_Y - 2, pPoint_X,
                                              pPoint_Y + 1 + lineadj,
-                                             ui_game_minimap_treasure_color);
+                                            Color32(ui_game_minimap_treasure_color));
                         render->RasterLine2D(pPoint_X + 1, pPoint_Y - 1,
                                              pPoint_X + 1, pPoint_Y + 1 + lineadj,
-                                             ui_game_minimap_treasure_color);
+                                            Color32(ui_game_minimap_treasure_color));
                         render->RasterLine2D(pPoint_X + 2, pPoint_Y,
                                              pPoint_X + 2, pPoint_Y + 1 + lineadj,
-                                             ui_game_minimap_treasure_color);
+                                            Color32(ui_game_minimap_treasure_color));
                     } else {
                         render->RasterLine2D(pPoint_X - 1, pPoint_Y - 1,
                                              pPoint_X - 1, pPoint_Y + lineadj,
-                                             ui_game_minimap_treasure_color);
+                                            Color32(ui_game_minimap_treasure_color));
                         render->RasterLine2D(pPoint_X, pPoint_Y - 1, pPoint_X,
                                              pPoint_Y + lineadj,
-                                             ui_game_minimap_treasure_color);
+                                            Color32(ui_game_minimap_treasure_color));
                     }
                 }
             }
@@ -1830,9 +1830,9 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 {
                     pColor = ui_game_minimap_actor_friendly_color;
                     if (pActors[i].uAttributes & ACTOR_HOSTILE)
-                        pColor = ui_game_minimap_actor_hostile_color;
+                        pColor = Color32(ui_game_minimap_actor_hostile_color);
                     if (pActors[i].uAIState == Dead)
-                        pColor = ui_game_minimap_actor_corpse_color;
+                        pColor = Color32(ui_game_minimap_actor_corpse_color);
                     if (uZoom > 1024) {
                         render->RasterLine2D(pPoint_X - 2, pPoint_Y - 1,
                                              pPoint_X - 2, pPoint_Y + 1 + lineadj,
@@ -1872,11 +1872,11 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 //  render->raster_clip_w )
                 {
                     if ((signed int)uZoom > 512) {
-                        render->RasterLine2D(pPoint_X - 1, pPoint_Y - 1, pPoint_X - 1, pPoint_Y + 1, ui_game_minimap_decoration_color_1);
-                        render->RasterLine2D(pPoint_X, pPoint_Y - 1, pPoint_X, pPoint_Y + 1, ui_game_minimap_decoration_color_1);
-                        render->RasterLine2D(pPoint_X + 1, pPoint_Y - 1, pPoint_X + 1, pPoint_Y + 1, ui_game_minimap_decoration_color_1);
+                        render->RasterLine2D(pPoint_X - 1, pPoint_Y - 1, pPoint_X - 1, pPoint_Y + 1, Color32(ui_game_minimap_decoration_color_1));
+                        render->RasterLine2D(pPoint_X, pPoint_Y - 1, pPoint_X, pPoint_Y + 1, Color32(ui_game_minimap_decoration_color_1));
+                        render->RasterLine2D(pPoint_X + 1, pPoint_Y - 1, pPoint_X + 1, pPoint_Y + 1, Color32(ui_game_minimap_decoration_color_1));
                     } else {
-                        render->RasterLine2D(pPoint_X, pPoint_Y, pPoint_X, pPoint_Y, ui_game_minimap_decoration_color_1);
+                        render->RasterLine2D(pPoint_X, pPoint_Y, pPoint_X, pPoint_Y, Color32(ui_game_minimap_decoration_color_1));
                     }
                 }
             }
@@ -2243,10 +2243,10 @@ void buttonbox(int x, int y, const char* text, int col) {
     render->FillRectFast(x, y, width+1, height+1, Color32(50, 50, 50));
 
     //render->BeginLines2D();
-    render->RasterLine2D(x-1, y-1, x+width+1, y-1, colorTable.Jonquil.C16());
-    render->RasterLine2D(x-1, y-1, x-1, y+height+1, colorTable.Jonquil.C16());
-    render->RasterLine2D(x-1, y+height+1, x+width+1, y+height+1, colorTable.Jonquil.C16());
-    render->RasterLine2D(x+width+1, y-1, x+width+1, y+height+1, colorTable.Jonquil.C16());
+    render->RasterLine2D(x-1, y-1, x+width+1, y-1, colorTable.Jonquil.C32());
+    render->RasterLine2D(x-1, y-1, x-1, y+height+1, colorTable.Jonquil.C32());
+    render->RasterLine2D(x-1, y+height+1, x+width+1, y+height+1, colorTable.Jonquil.C32());
+    render->RasterLine2D(x+width+1, y-1, x+width+1, y+height+1, colorTable.Jonquil.C32());
     //render->EndLines2D();
 
     uint16_t colour = ui_character_condition_severe_color;

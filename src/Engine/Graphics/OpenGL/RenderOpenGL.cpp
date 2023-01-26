@@ -297,6 +297,7 @@ struct linesverts {
     GLfloat r;
     GLfloat g;
     GLfloat b;
+    GLfloat a;
 };
 
 linesverts lineshaderstore[2000] = {};
@@ -321,7 +322,7 @@ void RenderOpenGL::BeginLines2D() {
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(linesverts), (void *)offsetof(linesverts, x));
         glEnableVertexAttribArray(0);
         // colour attribute
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(linesverts), (void *)offsetof(linesverts, r));
+        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(linesverts), (void *)offsetof(linesverts, r));
         glEnableVertexAttribArray(1);
     }
 }
@@ -358,18 +359,19 @@ void RenderOpenGL::EndLines2D() {
     linevertscnt = 0;
 }
 
-// TODO(pskelton): change to color32
 void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ,
-                                signed int uW, uint16_t uColor) {
-    float b = ((uColor & 0x1F)*8) / 255.0f;
-    float g = (((uColor >> 5) & 0x3F)*4) / 255.0f;
-    float r = (((uColor >> 11) & 0x1F)*8) / 255.0f;
+                                signed int uW, uint32_t uColor32) {
+    float a = ((uColor32 >> 24) & 0xFF) / 255.0f;
+    float b = ((uColor32 >> 16) & 0xFF) / 255.0f;
+    float g = ((uColor32 >> 8) & 0xFF) / 255.0f;
+    float r = (uColor32 & 0xFF) / 255.0f;
 
     lineshaderstore[linevertscnt].x = static_cast<float>(uX);
     lineshaderstore[linevertscnt].y = static_cast<float>(uY);
     lineshaderstore[linevertscnt].r = r;
     lineshaderstore[linevertscnt].g = g;
     lineshaderstore[linevertscnt].b = b;
+    lineshaderstore[linevertscnt].a = a;
     linevertscnt++;
 
     lineshaderstore[linevertscnt].x = static_cast<float>(uZ);
@@ -377,6 +379,7 @@ void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ,
     lineshaderstore[linevertscnt].r = r;
     lineshaderstore[linevertscnt].g = g;
     lineshaderstore[linevertscnt].b = b;
+    lineshaderstore[linevertscnt].a = a;
     linevertscnt++;
 
     // draw if buffer full

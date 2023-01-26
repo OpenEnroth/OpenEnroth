@@ -258,7 +258,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
                         int linez = ScreenCenterX + fixpoint_mul(Vert2X, viewparams->uMapBookMapZoom);
                         int linew = ScreenCenterY - fixpoint_mul(Vert2Y, viewparams->uMapBookMapZoom);
 
-                        render->RasterLine2D(linex, liney, linez, linew, colorTable.Black.C16());
+                        render->RasterLine2D(linex, liney, linez, linew, colorTable.Black.C32());
                     }
                 }
             }
@@ -316,11 +316,11 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
                 int decypos = ScreenCenterY - fixpoint_mul(DecY, viewparams->uMapBookMapZoom);
 
                 if (viewparams->uMapBookMapZoom > 512) {
-                    render->RasterLine2D(decxpos - 1, decypos - 1, decxpos - 1, decypos + 1, colorTable.White.C16());
-                    render->RasterLine2D(decxpos, decypos - 1, decxpos, decypos + 1, colorTable.White.C16());
-                    render->RasterLine2D(decxpos + 1, decypos - 1, decxpos + 1, decypos + 1, colorTable.White.C16());
+                    render->RasterLine2D(decxpos - 1, decypos - 1, decxpos - 1, decypos + 1, colorTable.White.C32());
+                    render->RasterLine2D(decxpos, decypos - 1, decxpos, decypos + 1, colorTable.White.C32());
+                    render->RasterLine2D(decxpos + 1, decypos - 1, decxpos + 1, decypos + 1, colorTable.White.C32());
                 } else {
-                    render->RasterLine2D(decxpos, decypos, decxpos, decypos, colorTable.White.C16());
+                    render->RasterLine2D(decxpos, decypos, decxpos, decypos, colorTable.White.C32());
                 }
             }
         }

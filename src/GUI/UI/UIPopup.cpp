@@ -631,10 +631,10 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         int x1 = doll_rect.x + doll_rect.w;
         int y0 = doll_rect.y;
         int y1 = doll_rect.y + doll_rect.h;
-        render->RasterLine2D(x0 - 1, y0 - 1, x1 + 1, y0 - 1, colorTable.Jonquil.C16());  // горизонтальная верхняя линия
-        render->RasterLine2D(x0 - 1, y1 + 1, x0 - 1, y0 - 1, colorTable.Jonquil.C16());  // горизонтальная нижняя линия
-        render->RasterLine2D(x1 + 1, y1 + 1, x0 - 1, y1 + 1, colorTable.Jonquil.C16());  // левая вертикальная линия
-        render->RasterLine2D(x1 + 1, y0 - 1, x1 + 1, y1 + 1, colorTable.Jonquil.C16());  // правая вертикальная линия
+        render->RasterLine2D(x0 - 1, y0 - 1, x1 + 1, y0 - 1, colorTable.Jonquil.C32());  // горизонтальная верхняя линия
+        render->RasterLine2D(x0 - 1, y1 + 1, x0 - 1, y0 - 1, colorTable.Jonquil.C32());  // горизонтальная нижняя линия
+        render->RasterLine2D(x1 + 1, y1 + 1, x0 - 1, y1 + 1, colorTable.Jonquil.C32());  // левая вертикальная линия
+        render->RasterLine2D(x1 + 1, y0 - 1, x1 + 1, y1 + 1, colorTable.Jonquil.C32());  // правая вертикальная линия
         render->EndLines2D();
 
         // Draw portrait
