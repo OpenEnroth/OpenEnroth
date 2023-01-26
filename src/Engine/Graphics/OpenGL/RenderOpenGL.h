@@ -111,7 +111,7 @@ class RenderOpenGL : public RenderBase {
                                          int height) override;
     virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y,
                                    Image *) override;
-    virtual void DrawImage(Image *, const Recti &rect, uint paletteid = 0) override;
+    virtual void DrawImage(Image *, const Recti &rect, uint paletteid = 0, uint32_t colourmask32 = 0xFFFFFFFF) override;
 
     virtual void ZDrawTextureAlpha(float u, float v, Image *pTexture, int zVal) override;
     virtual void BlendTextures(int a2, int a3, Image *a4, Image *a5, int t,
@@ -166,8 +166,7 @@ class RenderOpenGL : public RenderBase {
     virtual void DrawLines(const RenderVertexD3D3 *vertices,
                            unsigned int num_vertices) override;
 
-    virtual void DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices,
-                                        Texture *texture) override;
+    virtual void DrawSpecialEffectsQuad(Texture *texture, int palette) override;
 
     virtual void DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, int a3,
                                int blend_mode) override;

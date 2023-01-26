@@ -748,13 +748,17 @@ void RenderOpenGL::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
 }
 
 
-// TODO(pskelton): add optional colour32
-void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid) {
+void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid, uint32_t uColor32) {
     if (!img) {
         if (engine->config->debug.VerboseLogging.Get())
             logger->Warning("Null img passed to DrawImage");
         return;
     }
+
+    float a = ((uColor32 >> 24) & 0xFF) / 255.0f;
+    float b = ((uColor32 >> 16) & 0xFF) / 255.0f;
+    float g = ((uColor32 >> 8) & 0xFF) / 255.0f;
+    float r = (uColor32 & 0xFF) / 255.0f;
 
     int width = img->GetWidth();
     int height = img->GetHeight();
@@ -789,10 +793,10 @@ void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid) {
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texx;
     twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].r = 1;
-    twodshaderstore[twodvertscnt].g = 1;
-    twodshaderstore[twodvertscnt].b = 1;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = a;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
@@ -802,10 +806,10 @@ void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid) {
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texz;
     twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].r = 1;
-    twodshaderstore[twodvertscnt].g = 1;
-    twodshaderstore[twodvertscnt].b = 1;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = a;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
@@ -815,10 +819,10 @@ void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid) {
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texz;
     twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].r = 1;
-    twodshaderstore[twodvertscnt].g = 1;
-    twodshaderstore[twodvertscnt].b = 1;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = a;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
@@ -830,10 +834,10 @@ void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid) {
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texx;
     twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].r = 1;
-    twodshaderstore[twodvertscnt].g = 1;
-    twodshaderstore[twodvertscnt].b = 1;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = a;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
@@ -843,10 +847,10 @@ void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid) {
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texz;
     twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].r = 1;
-    twodshaderstore[twodvertscnt].g = 1;
-    twodshaderstore[twodvertscnt].b = 1;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = a;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
@@ -856,10 +860,10 @@ void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid) {
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texx;
     twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].r = 1;
-    twodshaderstore[twodvertscnt].g = 1;
-    twodshaderstore[twodvertscnt].b = 1;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = a;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
@@ -1551,15 +1555,14 @@ void RenderOpenGL::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_
     EndLines2D();
 }
 
-void RenderOpenGL::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, Texture *texture) {
-    //TODO(pskelton): need to add dimming  0x7F7F7F - medium grey
+void RenderOpenGL::DrawSpecialEffectsQuad(Texture *texture, int palette) {
     Recti targetrect{};
     targetrect.x = pViewport->uViewportTL_X;
     targetrect.y = pViewport->uViewportTL_Y;
     targetrect.w = pViewport->uViewportBR_X - pViewport->uViewportTL_X;
     targetrect.h = pViewport->uViewportBR_Y - pViewport->uViewportTL_Y;
 
-    DrawImage(texture, targetrect);
+    DrawImage(texture, targetrect, palette, colorTable.MediumGrey.C32());
 }
 
 void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, int a3, int blend_mode) {

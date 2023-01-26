@@ -296,10 +296,10 @@ class IRender {
                                unsigned int uZ, unsigned int uW) = 0;
     virtual void ResetUIClipRect() = 0;
 
-    virtual void DrawTextureNew(float u, float v, Image *img, uint32_t colourmask = 0xFFFFFFFF) = 0;
+    virtual void DrawTextureNew(float u, float v, Image *img, uint32_t colourmask32 = 0xFFFFFFFF) = 0;
     virtual void DrawTextureCustomHeight(float u, float v, Image *, int height) = 0;
     virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y, Image *) = 0;
-    virtual void DrawImage(Image *, const Recti &rect, const uint paletteid = 0) = 0;
+    virtual void DrawImage(Image *, const Recti &rect, const uint paletteid = 0, uint32_t colourmask32 = 0xFFFFFFFF) = 0;
 
     virtual void ZDrawTextureAlpha(float u, float v, Image *pTexture, int zVal) = 0;
     virtual void BlendTextures(int a2, int a3, Image *a4, Image *a5, int t, int start_opacity, int end_opacity) = 0;
@@ -364,8 +364,7 @@ class IRender {
     virtual void DrawLines(const RenderVertexD3D3 *vertices,
                            unsigned int num_vertices) = 0;
 
-    virtual void DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices,
-                                        Texture *texture) = 0;
+    virtual void DrawSpecialEffectsQuad(Texture *texture, int palette) = 0;
 
     virtual void DrawFromSpriteSheet(Recti *pSrcRect,
                                Pointi *pTargetPoint, int a3,
