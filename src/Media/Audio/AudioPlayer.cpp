@@ -354,8 +354,13 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
                 break;
             }
 
-            default:
+            default: {
+                // TODO(pskelton): temp fix to reduce instances of sounds not playing
+                si.sample->Play();
+                if (engine->config->debug.VerboseLogging.Get())
+                    logger->Warning("Unexpected object type from PID in PlaySound");
                 break;
+            }
         }
     }
 
