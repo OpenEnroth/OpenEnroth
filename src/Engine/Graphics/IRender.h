@@ -308,7 +308,7 @@ class IRender {
 
     virtual void DrawMasked(float u, float v, Image *img,
                             unsigned int color_dimming_level,
-                            uint16_t mask) = 0;
+                            uint32_t mask = 0xFFFFFFFF) = 0;
     virtual void DrawTextureGrayShade(float u, float v, Image *a4) = 0;
     virtual void DrawTransparentRedShade(float u, float v, Image *a4) = 0;
     virtual void DrawTransparentGreenShade(float u, float v, Image *pTexture) = 0;

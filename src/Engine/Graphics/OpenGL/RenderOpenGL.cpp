@@ -1046,39 +1046,6 @@ void RenderOpenGL::DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait, int Y_Of
     render->ResetUIClipRect();
 }
 
-// TODO(pskelton): to colour 32
-void RenderOpenGL::DrawTransparentRedShade(float u, float v, Image *a4) {
-    DrawMasked(u, v, a4, 0, 0xF800);
-}
-
-// TODO(pskelton): to colour 32
-void RenderOpenGL::DrawTransparentGreenShade(float u, float v, Image *pTexture) {
-    DrawMasked(u, v, pTexture, 0, 0x07E0);
-}
-
-// TODO(pskelton): change to color32
-void RenderOpenGL::DrawMasked(float u, float v, Image *pTexture, unsigned int color_dimming_level, uint16_t mask) {
-    uint32_t col = colorTable.White.C32();
-
-    if (mask)
-        col = Color32(mask);
-
-    int b = ((col >> 16) & 0xFF) & (0xFF >> color_dimming_level);
-    int g = ((col >> 8) & 0xFF) & (0xFF >> color_dimming_level);
-    int r = ((col) & 0xFF) & (0xFF >> color_dimming_level);
-
-    col = Color32(r, g, b);
-
-    DrawTextureNew(u, v, pTexture, col);
-    return;
-}
-
-
-
-void RenderOpenGL::DrawTextureGrayShade(float a2, float a3, Image *a4) {
-    DrawMasked(a2, a3, a4, 1, 0x7BEF);
-}
-
 void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];
     if (pFace->uNumVertices <= 0) return;

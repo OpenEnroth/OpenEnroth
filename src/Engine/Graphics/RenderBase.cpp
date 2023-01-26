@@ -434,6 +434,7 @@ void RenderBase::TransformBillboardsAndSetPalettesODM() {
     }
 }
 
+// TODO(pskelton): this is wrong now to abgr!
 unsigned int BlendColors(unsigned int a1, unsigned int a2) {
     uint alpha =
         (uint)floorf(0.5f + (a1 >> 24) / 255.0f * (a2 >> 24) / 255.0f * 255.0f);
@@ -684,4 +685,26 @@ Image* RenderBase::TakeScreenshot(unsigned int width, unsigned int height) {
     Image* image = Image::Create(width, height, IMAGE_FORMAT_R5G6B5, pixels);
     free(pixels);
     return image;
+}
+
+void RenderBase::DrawTextureGrayShade(float a2, float a3, Image* a4) {
+    DrawMasked(a2, a3, a4, 1, colorTable.MediumGrey.C32());
+}
+
+void RenderBase::DrawTransparentRedShade(float u, float v, Image* a4) {
+    DrawMasked(u, v, a4, 0, colorTable.Red.C32());
+}
+
+void RenderBase::DrawTransparentGreenShade(float u, float v, Image* pTexture) {
+    DrawMasked(u, v, pTexture, 0, colorTable.Green.C32());
+}
+
+void RenderBase::DrawMasked(float u, float v, Image* pTexture, unsigned int color_dimming_level, uint32_t mask) {
+    int b = ((mask >> 16) & 0xFF) & (0xFF >> color_dimming_level);
+    int g = ((mask >> 8) & 0xFF) & (0xFF >> color_dimming_level);
+    int r = ((mask) & 0xFF) & (0xFF >> color_dimming_level);
+    mask = Color32(r, g, b);
+
+    DrawTextureNew(u, v, pTexture, mask);
+    return;
 }

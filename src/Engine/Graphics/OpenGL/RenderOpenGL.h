@@ -119,15 +119,6 @@ class RenderOpenGL : public RenderBase {
     virtual void TexturePixelRotateDraw(float u, float v, Image *img, int time) override;
     virtual void DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait_Sprite, int Y_Offset) override;
 
-
-    virtual void DrawMasked(float u, float v, class Image *img,
-                            unsigned int color_dimming_level,
-                            uint16_t mask) override;
-    virtual void DrawTextureGrayShade(float u, float v, class Image *a4) override;
-    virtual void DrawTransparentRedShade(float u, float v, class Image *a4) override;
-    virtual void DrawTransparentGreenShade(float u, float v,
-                                           class Image *pTexture) override;
-
     virtual void BeginTextNew(Texture *main, Texture *shadow) override;
     virtual void EndTextNew() override;
     virtual void DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, int isshadow, uint16_t colour) override;
