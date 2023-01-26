@@ -34,9 +34,8 @@ Use the following commands to clone repository and build (it is recommended to b
 ```
 $ git clone https://github.com/OpenEnroth/OpenEnroth.git
 $ cd OpenEnroth
-$ mkdir build && cd build
-$ cmake ..
-$ make
+$ cmake -B build -S .
+$ cmake --build build
 ```
 
 To compile x86 build on x86_64 platform you can pass `-m32` via compiler flags to cmake.
