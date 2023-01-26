@@ -59,15 +59,4 @@ class PlatformWindow {
     virtual void Activate() = 0;
 
     virtual std::unique_ptr<PlatformOpenGLContext> CreateOpenGLContext(const PlatformOpenGLOptions &options) = 0;
-
-#ifdef DDRAW_ENABLED
-    // TODO: compat methods, drop alongside with directdraw renderer
-    int GetWidth() const {
-        return Size().w;
-    }
-
-    int GetHeight() const {
-        return Size().h;
-    }
-#endif
 };

@@ -44,8 +44,6 @@ class RenderBase : public IRender {
     unsigned int Billboard_ProbablyAddToListAndSortByZOrder(float z);
     void TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pBillboard);
 
-    void PostInitialization();
-
     HWLContainer pD3DBitmaps;
     HWLContainer pD3DSprites;
 };

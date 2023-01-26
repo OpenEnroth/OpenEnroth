@@ -3,16 +3,6 @@ if(NOT BUILD_PLATFORM STREQUAL "windows")
   link_directories("/usr/local/lib")
 endif()
 
-#TODO: this block should be removed with DirectDraw renderer
-if(BUILD_PLATFORM STREQUAL "windows" AND BUILD_TYPE STREQUAL "x86")
-  if(ENABLE_DIRECTDRAW)
-    message(WARNING "DirectDraw is no longer supported!")
-    add_compile_definitions(DDRAW_ENABLED)
-  endif()
-else()
-  set(ENABLE_DIRECTDRAW OFF)
-endif()
-
 function(PREBUILT_DEPENDENCIES_RESOLVE targetName)
 endfunction()
 

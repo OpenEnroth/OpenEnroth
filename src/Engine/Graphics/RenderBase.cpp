@@ -44,21 +44,6 @@ bool RenderBase::Initialize() {
     return true;
 }
 
-void RenderBase::PostInitialization() {
-    // TODO: We aren't using that routine for OpenGL renderer and it should be removed together with DirectDraw.
-    __debugbreak();
-
-/*
-    if (!config->window.Fullscreen.Get()) {
-        // window->SetWindowedMode(game_width, game_height);
-        SwitchToWindow();
-    } else {
-        InitializeFullscreen();
-        window->SetFullscreen(true);
-    }
-*/
-}
-
 unsigned int RenderBase::Billboard_ProbablyAddToListAndSortByZOrder(float z) {
     if (uNumBillboardsToDraw >= 999) {
         return 0;

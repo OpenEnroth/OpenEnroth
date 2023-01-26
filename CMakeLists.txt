@@ -6,8 +6,6 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules)
 include(Git)
 include(Detection)
 
-#TODO: this option should be removed with DirectDraw renderer
-set(ENABLE_DIRECTDRAW OFF CACHE BOOL "Enable DirectDraw on Windows x86")
 set(ENABLE_TESTS OFF CACHE BOOL "Enable tests")
 #TODO: prebuilts should be available for all platforms and not just MSVC compiler
 if(BUILD_COMPILER STREQUAL "msvc")

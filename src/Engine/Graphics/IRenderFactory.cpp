@@ -14,20 +14,6 @@ std::shared_ptr<IRender> IRenderFactory::Create(std::shared_ptr<Application::Gam
     RendererType rendererType = config->graphics.Renderer.Get();
 
     switch (rendererType) {
-#ifdef DDRAW_ENABLED
-        case RendererType::DirectDraw:
-            logger->Info("Initializing DirectDraw renderer...");
-            return std::make_shared<Render>(
-                config,
-                EngineIoc::ResolveDecalBuilder(),
-                EngineIoc::ResolveLightmapBuilder(),
-                EngineIoc::ResolveSpellFxRenderer(),
-                EngineIoc::ResolveParticleEngine(),
-                EngineIoc::ResolveVis(),
-                EngineIoc::ResolveLogger()
-            );
-#endif
-
         case RendererType::OpenGL:
             logger->Info("Initializing OpenGL renderer...");
             return std::make_shared<RenderOpenGL>(
