@@ -32,25 +32,25 @@ class RandomEngine {
     virtual void Seed(uint32_t seed) = 0;
 
     /**
-     * @param min                           Minimal result value.
-     * @param max                           Maximal result value. Must be greater or equal to `min`.
-     * @return                              Random number in closed interval `[min, max]`. Note that both `min` and
-     *                                      `max` are included in the interval.
+     * @param min                       Minimal result value.
+     * @param max                       Maximal result value. Must be greater or equal to `min`.
+     * @return                          Random number in closed interval `[min, max]`. Note that both `min` and
+     *                                  `max` are included in the interval.
      */
     int RandomInSegment(int min, int max);
 
     /**
      * @offset 0x00452B2E
      *
-     * @param count                         Number of dice to throw.
-     * @param faces                         Number of faces on each die.
-     * @return                              Result of throwing the dice.
+     * @param count                     Number of dice to throw.
+     * @param faces                     Number of faces on each die.
+     * @return                          Result of throwing the dice.
      */
     int RandomDice(int count, int faces);
 
     /**
-     * @param range                         Random access range.
-     * @return                              Random element from the provided range.
+     * @param range                     Random access range.
+     * @return                          Random element from the provided range.
      */
     template<class Range, class T = typename Range::value_type>
     T RandomSample(const Range &range) {
