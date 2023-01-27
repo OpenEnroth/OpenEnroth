@@ -1129,8 +1129,9 @@ void GetNextCardFromDeck(int player_num) {
     if (card_slot_indx != -1) {
         drawn_card_slot_index = card_slot_indx;
         am_Players[player_num].cards_at_hand[card_slot_indx] = new_card_id;
-        am_Players[player_num].card_shift[card_slot_indx].x = vrng->RandomInSegment(-4, 4);
-        am_Players[player_num].card_shift[card_slot_indx].y = vrng->RandomInSegment(-4, 4);
+        // Note that we're using grng here for a reason - we want recorded mouse clicks to work.
+        am_Players[player_num].card_shift[card_slot_indx].x = grng->RandomInSegment(-4, 4);
+        am_Players[player_num].card_shift[card_slot_indx].y = grng->RandomInSegment(-4, 4);
         pArcomageGame->force_redraw_1 = 1;
         drawn_card_anim_start = 1;
     }

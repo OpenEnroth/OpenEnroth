@@ -1370,7 +1370,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                             ->StandartItemsInShops
                             [window_SpeakInHouse->wData.val][i]
                             .uItemID != ITEM_NULL) {
-                            // Note that we're using mrng here for a reason - we want recorded mouse clicks to work.
+                            // Note that we're using grng here for a reason - we want recorded mouse clicks to work.
                             weapons_Ypos[i] = grng->Random(300 - shop_ui_items_in_store[i]->GetHeight());
                         }
                     }
@@ -1393,7 +1393,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                     for (uint i = 0; i < ItemAmountForShop(p2DEvents[window_SpeakInHouse->wData.val - HOUSE_SMITH_EMERALD_ISLE].uType); ++i) {
                         if (pParty->SpecialItemsInShops[
                             window_SpeakInHouse->wData.val][i].uItemID != ITEM_NULL) {
-                            // Note that we're using mrng here for a reason - we want recorded mouse clicks to work.
+                            // Note that we're using grng here for a reason - we want recorded mouse clicks to work.
                             weapons_Ypos[i] = grng->Random(300 - shop_ui_items_in_store[i]->GetHeight());
                         }
                     }

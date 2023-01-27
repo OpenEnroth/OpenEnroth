@@ -931,7 +931,7 @@ bool SpriteObject::Drop_Item_At(SPRITE_OBJECT_TYPE sprite, int x,
     if (a7) {
         if (count > 0) {
             for (uint i = count; i; --i) {
-                // TODO(captainurist): not sure if using grng here is right
+                // Not sure if using grng is right here, but would rather err on the side of safety.
                 pSpellObject.uFacing = grng->Random(TrigLUT.uIntegerDoublePi);
                 pSpellObject.Create(
                     (int16_t)pSpellObject.uFacing,

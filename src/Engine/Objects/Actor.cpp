@@ -1752,7 +1752,7 @@ void Actor::AI_RandomMove(unsigned int uActor_id, unsigned int uTarget_id,
         pActors[uActor_id].uCurrentActionLength = 0;
     pActors[uActor_id].uCurrentActionTime = 0;
     pActors[uActor_id].uAIState = Tethered;
-    if (grng->Random(100) < 2) Actor::PlaySound(uActor_id, 3);
+    if (vrng->Random(100) < 2) Actor::PlaySound(uActor_id, 3);
     pActors[uActor_id].UpdateAnimation();
 }
 
