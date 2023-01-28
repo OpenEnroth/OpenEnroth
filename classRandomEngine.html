@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b1650fa</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;093e253</span>
    </div>
   </td>
  </tr>
@@ -98,8 +98,21 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a1f0b4168d7d00cfcd844b96fdcab32aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c40b94c1f521ff47e76cbc1af6f45e1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRandomEngine.html#a6c40b94c1f521ff47e76cbc1af6f45e1">Seed</a> (uint32_t seed)=0</td></tr>
 <tr class="separator:a6c40b94c1f521ff47e76cbc1af6f45e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7893bfe206cfb6ac2ced7c0d3816b7c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRandomEngine.html#ad7893bfe206cfb6ac2ced7c0d3816b7c">RandomInSegment</a> (int min, int max)</td></tr>
+<tr class="separator:ad7893bfe206cfb6ac2ced7c0d3816b7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57c22b517b59618a9d006ae83644349e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRandomEngine.html#a57c22b517b59618a9d006ae83644349e">RandomDice</a> (int count, int faces)</td></tr>
+<tr class="separator:a57c22b517b59618a9d006ae83644349e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab364b27e3a3eb08076dca17a06941334"><td class="memTemplParams" colspan="2">template&lt;class Range , class T  = typename Range::value_type&gt; </td></tr>
+<tr class="memitem:ab364b27e3a3eb08076dca17a06941334"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classRandomEngine.html#ab364b27e3a3eb08076dca17a06941334">RandomSample</a> (const Range &amp;range)</td></tr>
+<tr class="separator:ab364b27e3a3eb08076dca17a06941334"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c0c990bcf7864bfbee994843766abde"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a2c0c990bcf7864bfbee994843766abde"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classRandomEngine.html#a2c0c990bcf7864bfbee994843766abde">RandomSample</a> (std::initializer_list&lt; T &gt; range)</td></tr>
+<tr class="separator:a2c0c990bcf7864bfbee994843766abde"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Random number generator interface.</p>
+<p >Note that the methods of this class are NOT thread-safe, unlike their libc counterparts. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aeefb0e852951547da7a92802d3c15da7" name="aeefb0e852951547da7a92802d3c15da7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aeefb0e852951547da7a92802d3c15da7">&#9670;&#160;</a></span>~RandomEngine()</h2>
 
@@ -161,6 +174,43 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a57c22b517b59618a9d006ae83644349e" name="a57c22b517b59618a9d006ae83644349e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57c22b517b59618a9d006ae83644349e">&#9670;&#160;</a></span>RandomDice()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int RandomEngine::RandomDice </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>faces</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x00452B2E</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">count</td><td>Number of dice to throw. </td></tr>
+    <tr><td class="paramname">faces</td><td>Number of faces on each die. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Result of throwing the dice. </dd></dl>
+
+</div>
+</div>
 <a id="a1642255e5adffcdfee3b47aff2aa4701" name="a1642255e5adffcdfee3b47aff2aa4701"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1642255e5adffcdfee3b47aff2aa4701">&#9670;&#160;</a></span>RandomFloat()</h2>
 
@@ -186,6 +236,105 @@ Public Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Random floating point number in range <code>[0, 1)</code>. </dd></dl>
 
 <p>Implemented in <a class="el" href="classMersenneTwisterRandomEngine.html#a36ed37f3853d92a96e82ad29ec35e3ea">MersenneTwisterRandomEngine</a>, and <a class="el" href="classNonRandomEngine.html#a7ed1f21dc6d5083e5919db1cf5c14e7c">NonRandomEngine</a>.</p>
+
+</div>
+</div>
+<a id="ad7893bfe206cfb6ac2ced7c0d3816b7c" name="ad7893bfe206cfb6ac2ced7c0d3816b7c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7893bfe206cfb6ac2ced7c0d3816b7c">&#9670;&#160;</a></span>RandomInSegment()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int RandomEngine::RandomInSegment </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>min</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>max</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">min</td><td>Minimal result value. </td></tr>
+    <tr><td class="paramname">max</td><td>Maximal result value. Must be greater or equal to <code>min</code>. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Random number in closed interval <code>[min, max]</code>. Note that both <code>min</code> and <code>max</code> are included in the interval. </dd></dl>
+
+</div>
+</div>
+<a id="ab364b27e3a3eb08076dca17a06941334" name="ab364b27e3a3eb08076dca17a06941334"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab364b27e3a3eb08076dca17a06941334">&#9670;&#160;</a></span>RandomSample() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Range , class T  = typename Range::value_type&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">T RandomEngine::RandomSample </td>
+          <td>(</td>
+          <td class="paramtype">const Range &amp;&#160;</td>
+          <td class="paramname"><em>range</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">range</td><td>Random access range. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Random element from the provided range. </dd></dl>
+
+</div>
+</div>
+<a id="a2c0c990bcf7864bfbee994843766abde" name="a2c0c990bcf7864bfbee994843766abde"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c0c990bcf7864bfbee994843766abde">&#9670;&#160;</a></span>RandomSample() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">T RandomEngine::RandomSample </td>
+          <td>(</td>
+          <td class="paramtype">std::initializer_list&lt; T &gt;&#160;</td>
+          <td class="paramname"><em>range</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -224,8 +373,9 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/Utility/Random/<a class="el" href="RandomEngine_8h.html">RandomEngine.h</a></li>
+<hr/>The documentation for this class was generated from the following files:<ul>
+<li>src/Library/Random/<a class="el" href="RandomEngine_8h.html">RandomEngine.h</a></li>
+<li>src/Library/Random/<a class="el" href="RandomEngine_8cpp.html">RandomEngine.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
