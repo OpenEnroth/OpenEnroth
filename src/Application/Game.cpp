@@ -99,6 +99,8 @@ using Engine_::EngineFactory;
 using Graphics::IRenderFactory;
 
 
+#include "Library/Lod/LodReader.h"
+
 void Application::AutoInitDataPath(Platform *platform) {
     // TODO (captainurist): we should consider reading Unicode (utf8) strings from win32 registry, as it might contain paths
     // curretnly we convert all strings out of registry into CP_ACP (default windows ansi)
@@ -133,6 +135,15 @@ void Application::AutoInitDataPath(Platform *platform) {
         EngineIoc::ResolveLogger()->Warning(message.c_str());
         platform->ShowMessageBox(message, "CRITICAL ERROR: missing resources");
     }
+
+    // assuming MM7 here
+    auto icons = LodReader::open(MakeDataPath("data", "icons.lod"));
+    auto games = LodReader::open(MakeDataPath("data", "games.lod"));
+
+    auto test_exists = icons->exists("AFRAME1");
+    auto test_loading_uncompressed = icons->read("AFRAME1");
+    auto test_loading_compressed = games->read("out01.odm");
+
 }
 
 Game::Game(PlatformApplication *app) {

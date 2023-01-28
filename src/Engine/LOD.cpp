@@ -141,12 +141,12 @@ int LODFile_Sprites::LoadSpriteFromFile(LODSprite *pSprite, const std::string &p
     return 1;
 }
 
-bool LODFile_Sprites::LoadSprites(const std::string &pFilename) {
+bool LODFile_Sprites::Load(const std::string &pFilename, const std::string &folder) {
     if (!Open(pFilename)) {
         return false;
     }
 
-    return LoadSubIndices("sprites08");
+    return LoadSubIndices(folder);
 }
 
 int LODFile_Sprites::LoadSprite(const char *pContainerName, unsigned int uPaletteID) {
