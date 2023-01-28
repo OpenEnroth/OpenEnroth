@@ -7,5 +7,3 @@ enum class LodVersion {
     LOD_VERSION_MM7,
     LOD_VERSION_MM8,
 };
-
-using enum LodVersion;

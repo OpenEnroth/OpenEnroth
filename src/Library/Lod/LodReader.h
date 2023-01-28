@@ -30,7 +30,11 @@ class LodReader final {
     bool exists(const std::string &filename) const;
     Blob read(const std::string &filename);
 
+<<<<<<< HEAD
  private:
+=======
+private:
+>>>>>>> 58de78502 (pr comments)
     bool _isFileCompressed(const LodFile &file);
 
     FILE *_fp;
