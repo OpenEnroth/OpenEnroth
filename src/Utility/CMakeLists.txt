@@ -6,7 +6,6 @@ set(UTILITY_SOURCES Color.cpp
                     String.cpp
                     Memory/Blob.cpp
                     Math/TrigLut.cpp
-                    Random/Random.cpp
                     Streams/MemoryInputStream.cpp
                     Streams/StringOutputStream.cpp
                     Streams/FileOutputStream.cpp)
@@ -33,10 +32,6 @@ set(UTILITY_HEADERS Color.h
                     Geometry/Point.h
                     Math/Float.h
                     Math/TrigLut.h
-                    Random/Random.h
-                    Random/RandomEngine.h
-                    Random/MersenneTwisterRandomEngine.h
-                    Random/NonRandomEngine.h
                     Streams/InputStream.h
                     Streams/OutputStream.h
                     Streams/MemoryInputStream.h

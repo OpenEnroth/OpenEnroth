@@ -86,7 +86,7 @@
 #include "Platform/Filters/FilteringEventHandler.h"
 
 #include "Utility/Format.h"
-#include "Utility/Random/Random.h"
+#include "Library/Random/Random.h"
 
 
 void ShowMM7IntroVideo_and_LoadingScreen();
@@ -1807,11 +1807,11 @@ void Game::EventLoop() {
                         pParty->pPlayers[0].conditions.Set(Condition_Sleep, pParty->GetPlayingTime());
                         v90 = pMapStats->GetMapInfo(pCurrentMapName);
                         if (!v90)
-                            v90 = Random(pMapStats->uNumMaps + 1);
+                            v90 = grng->Random(pMapStats->uNumMaps + 1);
                         pMapInfo = &pMapStats->pInfos[v90];
 
-                        if (Random(100) + 1 <= pMapInfo->Encounter_percent) {
-                            v91 = Random(100);
+                        if (grng->Random(100) + 1 <= pMapInfo->Encounter_percent) {
+                            v91 = grng->Random(100);
                             v92 = pMapInfo->EncM1percent;
                             v93 = v91 + 1;
                             if (v93 > v92)
@@ -1823,9 +1823,9 @@ void Game::EventLoop() {
                                 encounter_index = 0;
 
                             if (encounter_index) {
-                                pPlayerNum = Random(4);
+                                pPlayerNum = grng->Random(4);
                                 pParty->pPlayers[pPlayerNum].conditions.Reset(Condition_Sleep);
-                                Rest(Random(6) + 60);
+                                Rest(grng->Random(6) + 60);
                                 _506F18_num_minutes_to_sleep = 0;
                                 _506F14_resting_stage = 0;
 
@@ -1938,7 +1938,7 @@ void Game::EventLoop() {
                     }
                     if (!skill_count) {  //нет скиллов
                         pAudioPlayer->PlaySound(
-                            (SoundID)(Random(2) + SOUND_TurnPageU), 0, 0, -1, 0, 0);
+                            (SoundID)(vrng->Random(2) + SOUND_TurnPageU), 0, 0, -1, 0, 0);
                     } else {
                         if (keyboardInputHandler->IsSpellBackcycleToggled()) {
                             --uAction;
@@ -2347,7 +2347,7 @@ void Game::EventLoop() {
                         continue;
 
                     for(size_t attempt = 0; attempt < 500; attempt++) {
-                        ITEM_TYPE pItemID = RandomSample(SpawnableItems());
+                        ITEM_TYPE pItemID = grng->RandomSample(SpawnableItems());
                         if (pItemTable->pItems[pItemID].uItemID_Rep_St > 6) {
                             pPlayers[uActiveCharacter]->AddItem(-1, pItemID);
                             break;
@@ -2362,7 +2362,7 @@ void Game::EventLoop() {
                         continue;
 
                     for (size_t attempt = 0; attempt < 500; attempt++) {
-                        ITEM_TYPE pItemID = RandomSample(SpawnableItems());
+                        ITEM_TYPE pItemID = grng->RandomSample(SpawnableItems());
                         // if (pItemTable->pItems[pItemID].uItemID_Rep_St ==
                         //   (item_id - 40015 + 1)) {
                         pPlayers[uActiveCharacter]->AddItem(-1, pItemID);
@@ -2740,7 +2740,7 @@ void Game::GameLoop() {
                 }
                 if (num_conscious_players) {
                     int idx =
-                        conscious_players_ids[Random(num_conscious_players)];
+                        conscious_players_ids[vrng->Random(num_conscious_players)];
                     Assert(idx >= 0);
                     pParty->pPlayers[idx].PlaySound(SPEECH_CheatedDeath, 0);
                 }

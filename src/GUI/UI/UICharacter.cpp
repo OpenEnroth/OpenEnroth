@@ -28,7 +28,7 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Utility/MapAccess.h"
-#include "Utility/Random/Random.h"
+#include "Library/Random/Random.h"
 
 using EngineIoc = Engine_::IocContainer;
 
@@ -1898,9 +1898,10 @@ void FillAwardsData() {
     // sort awards index
 
     if (full_num_items_in_book > 0) {
-        for (int i = 0; i < full_num_items_in_book; ++i)
-            achieved_awards[full_num_items_in_book + i] =
-                (AwardType)Random(16);  //случайные значения от 0 до 15
+        // TODO(captainurist): what was the code below doing?
+        //for (int i = 0; i < full_num_items_in_book; ++i)
+        //    achieved_awards[full_num_items_in_book + i] =
+        //        (AwardType)Random(16);  //случайные значения от 0 до 15
         for (int i = 1; i < full_num_items_in_book; ++i) {
             for (int j = i; j < full_num_items_in_book; ++j) {
                 AwardType tmp;

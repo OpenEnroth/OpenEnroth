@@ -13,8 +13,8 @@
 
 #include "Library/Application/PlatformApplication.h"
 
-#include "Utility/Random/Random.h"
-#include "Utility/Random/NonRandomEngine.h"
+#include "Library/Random/Random.h"
+#include "Library/Random/NonRandomEngine.h"
 #include "Utility/ScopeGuard.h"
 
 #include "GameTestOptions.h"
@@ -22,8 +22,6 @@
 class GameThread {
  public:
     explicit GameThread(const GameTestOptions& options) {
-        SetGlobalRandomEngine(std::make_unique<NonRandomEngine>());
-
         _logger = PlatformLogger::CreateStandardLogger(WinEnsureConsoleOption);
         _logger->SetLogLevel(ApplicationLog, LogInfo);
         _logger->SetLogLevel(PlatformLog, LogError);

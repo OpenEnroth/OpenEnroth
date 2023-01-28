@@ -50,7 +50,7 @@
 #include "Utility/Format.h"
 #include "Utility/Memory/MemSet.h"
 #include "Utility/Math/TrigLut.h"
-#include "Utility/Random/Random.h"
+#include "Library/Random/Random.h"
 
 #ifndef LOWORD
     #define LOWORD(l) ((unsigned short)(((std::uintptr_t)(l)) & 0xFFFF))

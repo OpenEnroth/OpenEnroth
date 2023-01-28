@@ -45,7 +45,7 @@
 
 #include "Utility/FreeDeleter.h"
 #include "Utility/Math/TrigLut.h"
-#include "Utility/Random/Random.h"
+#include "Library/Random/Random.h"
 
 // TODO(pskelton): make this neater
 static DecalBuilder* decal_builder = EngineIoc::ResolveDecalBuilder();
@@ -1517,7 +1517,7 @@ void PrepareToLoadBLV(bool bLoading) {
                 if (pSpriteObjects[i].containing_item.uItemID != ITEM_POTION_BOTTLE &&
                     pItemTable->pItems[pSpriteObjects[i].containing_item.uItemID].uEquipType == EQUIP_POTION &&
                     !pSpriteObjects[i].containing_item.uEnchantmentType)
-                    pSpriteObjects[i].containing_item.uEnchantmentType = Random(15) + 5;
+                    pSpriteObjects[i].containing_item.uEnchantmentType = grng->Random(15) + 5;
                 pItemTable->SetSpecialBonus(&pSpriteObjects[i].containing_item);
             }
         }
@@ -1584,7 +1584,7 @@ void PrepareToLoadBLV(bool bLoading) {
         if (!active.empty()) {
             _A750D8_player_speech_timer = 256;
             PlayerSpeechID = SPEECH_EnterDungeon;
-            uSpeakingCharacter = active[Random(active.size())];
+            uSpeakingCharacter = active[vrng->Random(active.size())];
         }
     }
 }
@@ -1707,7 +1707,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
         particle.g = 0.0;
         particle.b = 0.0;
         particle.particle_size = 1.0;
-        particle.timeToLive = Random(0x80) + 128; // was rand() & 0x80
+        particle.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
         particle.texture = spell_fx_renderer->effpar01;
         particle_engine->AddParticle(&particle);
         return;
@@ -2645,8 +2645,8 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
         // 100 attempts to make a usuable spawn point
         for (; loop_cnt < 100; ++loop_cnt) {
             // random x,y at distance from party
-            dist_from_party = Random(1024) + 512;
-            angle_from_party = (Random(TrigLUT.uIntegerDoublePi) * 2 * pi) / TrigLUT.uIntegerDoublePi;
+            dist_from_party = grng->Random(1024) + 512;
+            angle_from_party = (grng->Random(TrigLUT.uIntegerDoublePi) * 2 * pi) / TrigLUT.uIntegerDoublePi;
             enc_spawn_point.vPosition.x = pParty->vPosition.x + cos(angle_from_party) * dist_from_party;
             enc_spawn_point.vPosition.y = pParty->vPosition.y + sin(angle_from_party) * dist_from_party;
             enc_spawn_point.vPosition.z = pParty->vPosition.z;
@@ -2682,8 +2682,8 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
         // 100 attempts to make a usuable spawn point
         for (loop_cnt = 0; loop_cnt < 100; ++loop_cnt) {
             // random x,y at distance from party
-            dist_from_party = Random(512) + 256;
-            angle_from_party = (Random(TrigLUT.uIntegerDoublePi) * 2 * pi) / TrigLUT.uIntegerDoublePi;
+            dist_from_party = grng->Random(512) + 256;
+            angle_from_party = (grng->Random(TrigLUT.uIntegerDoublePi) * 2 * pi) / TrigLUT.uIntegerDoublePi;
             enc_spawn_point.vPosition.x = pParty->vPosition.x + cos(angle_from_party) * dist_from_party;
             enc_spawn_point.vPosition.y = pParty->vPosition.y + sin(angle_from_party) * dist_from_party;
             enc_spawn_point.vPosition.z = pParty->vPosition.z;

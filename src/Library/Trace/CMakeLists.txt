@@ -8,5 +8,5 @@ set(TRACE_HEADERS EventTrace.h
                   PaintEvent.h)
 
 add_library(trace STATIC ${TRACE_SOURCES} ${TRACE_HEADERS})
-target_link_libraries(trace serialization platform json)
+target_link_libraries(trace serialization platform json random)
 target_check_style(trace)

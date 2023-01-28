@@ -25,7 +25,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Utility/Random/Random.h"
+#include "Library/Random/Random.h"
 #include "Utility/Math/TrigLut.h"
 
 using EngineIoc = Engine_::IocContainer;
@@ -69,7 +69,7 @@ bool Chest::Open(int uChestID) {
             pSpriteID[1] = SPRITE_812;
             pSpriteID[2] = SPRITE_813;
             pSpriteID[3] = SPRITE_814;
-            int pRandom = Random(4);
+            int pRandom = grng->Random(4); // Not sure if this should be grng or vrng, so we'd rather err on the side of safety.
             int v6 = PID_ID(EvtTargetObj);
             if (PID_TYPE(EvtTargetObj) == OBJECT_Decoration) {
                 pObjectX = pLevelDecorations[v6].vPosition.x;
@@ -360,7 +360,7 @@ void Chest::PlaceItemAt(unsigned int put_cell_pos, unsigned int item_at_cell, in
     ITEM_TYPE uItemID = vChests[uChestID].igChestItems[item_at_cell].uItemID;
     pItemTable->SetSpecialBonus(&vChests[uChestID].igChestItems[item_at_cell]);
     if (IsWand(uItemID) && !vChests[uChestID].igChestItems[item_at_cell].uNumCharges) {
-        int v6 = Random(21) + 10;
+        int v6 = grng->Random(21) + 10;
         vChests[uChestID].igChestItems[item_at_cell].uNumCharges = v6;
         vChests[uChestID].igChestItems[item_at_cell].uMaxCharges = v6;
     }
@@ -395,7 +395,7 @@ void Chest::PlaceItems(int uChestID) {  // only sued for setup
         // get random position in chest
         int random_chest_pos = 0;
         do {
-            random_chest_pos = Random(256);
+            random_chest_pos = grng->Random(256);
         } while (random_chest_pos >= uChestArea);
         // if this pos occupied move to next
         while (chest_cells_map[random_chest_pos]) {
@@ -627,13 +627,13 @@ void GenerateItemsInChest() {
             ItemGen *currItem = &vChests[i].igChestItems[j];
             if (IsRandomItem(currItem->uItemID)) {
                 currItem->placedInChest = false;
-                int additionaItemCount = Random(5);  // additional items in chect
+                int additionaItemCount = grng->Random(5);  // additional items in chect
                 additionaItemCount++;  // + 1 because it's the item at pChests[i].igChestItems[j] and the additional ones
-                ITEM_TREASURE_LEVEL resultTreasureLevel = RandomSample(
+                ITEM_TREASURE_LEVEL resultTreasureLevel = grng->RandomSample(
                     RemapTreasureLevel(RandomItemTreasureLevel(currItem->uItemID), currMapInfo->Treasure_prob));
                 if (resultTreasureLevel != ITEM_TREASURE_LEVEL_GUARANTEED_ARTIFACT) {
                     for (int k = 0; k < additionaItemCount; k++) {
-                        int whatToGenerateProb = Random(100);
+                        int whatToGenerateProb = grng->Random(100);
                         if (whatToGenerateProb < 20) {
                             currItem->Reset();
                         } else if (whatToGenerateProb < 60) {  // generate gold
@@ -642,27 +642,27 @@ void GenerateItemsInChest() {
                             // TODO(captainurist): merge with the other implementation?
                             switch (resultTreasureLevel) {
                             case ITEM_TREASURE_LEVEL_1:
-                                goldAmount = Random(51) + 50;
+                                goldAmount = grng->Random(51) + 50;
                                 currItem->uItemID = ITEM_GOLD_SMALL;
                                 break;
                             case ITEM_TREASURE_LEVEL_2:
-                                goldAmount = Random(101) + 100;
+                                goldAmount = grng->Random(101) + 100;
                                 currItem->uItemID = ITEM_GOLD_SMALL;
                                 break;
                             case ITEM_TREASURE_LEVEL_3:
-                                goldAmount = Random(301) + 200;
+                                goldAmount = grng->Random(301) + 200;
                                 currItem->uItemID = ITEM_GOLD_MEDIUM;
                                 break;
                             case ITEM_TREASURE_LEVEL_4:
-                                goldAmount = Random(501) + 500;
+                                goldAmount = grng->Random(501) + 500;
                                 currItem->uItemID = ITEM_GOLD_MEDIUM;
                                 break;
                             case ITEM_TREASURE_LEVEL_5:
-                                goldAmount = Random(1001) + 1000;
+                                goldAmount = grng->Random(1001) + 1000;
                                 currItem->uItemID = ITEM_GOLD_LARGE;
                                 break;
                             case ITEM_TREASURE_LEVEL_ARTIFACT:
-                                goldAmount = Random(3001) + 2000;
+                                goldAmount = grng->Random(3001) + 2000;
                                 currItem->uItemID = ITEM_GOLD_LARGE;
                                 break;
                             }

@@ -26,7 +26,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Utility/Random/Random.h"
+#include "Library/Random/Random.h"
 
 using EngineIoc = Engine_::IocContainer;
 using Io::Mouse;
@@ -595,8 +595,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
                         case PLAYER_SKILL_TRAP_DISARM:
                         case PLAYER_SKILL_LEARNING:
                             pCharacter->AddItem(-1, ITEM_POTION_BOTTLE);
-                            // Add simple reagent.
-                            pCharacter->AddItem(-1, Sample(Level1Reagents()));
+                            pCharacter->AddItem(-1, grng->RandomSample(Level1Reagents())); // Add simple reagent.
                             break;
                         case PLAYER_SKILL_DODGE:
                             pCharacter->AddItem(-1, ITEM_LEATHER_BOOTS);
@@ -688,7 +687,7 @@ void Party::Reset() {
 
         pPlayers[i].expression = CHARACTER_EXPRESSION_1;
         pPlayers[i].uExpressionTimePassed = 0;
-        pPlayers[i].uExpressionTimeLength = Random(256) + 128;
+        pPlayers[i].uExpressionTimeLength = vrng->Random(256) + 128;
     }
 
     for (uint i = 0; i < 20; ++i) pPartyBuffs[i].Reset();
@@ -787,11 +786,11 @@ void Party::UpdatePlayersAndHirelingsEmotions() {
                 continue;
 
             player->uExpressionTimePassed = 0;
-            if (player->expression != 1 || Random(5)) {
+            if (player->expression != 1 || vrng->Random(5)) {
                 player->expression = CHARACTER_EXPRESSION_1;
-                player->uExpressionTimeLength = Random(256) + 32;
+                player->uExpressionTimeLength = vrng->Random(256) + 32;
             } else {
-                v4 = Random(100);
+                v4 = vrng->Random(100);
                 if (v4 < 25)
                     player->expression = CHARACTER_EXPRESSION_13;
                 else if (v4 < 31)

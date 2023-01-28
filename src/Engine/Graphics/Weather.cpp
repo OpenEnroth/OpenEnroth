@@ -5,7 +5,7 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Weather.h"
 
-#include "Utility/Random/Random.h"
+#include "Library/Random/Random.h"
 
 Weather *pWeather = new Weather;
 
@@ -21,16 +21,16 @@ void Weather::DrawSnow() {
             base = 5;
         }
 
-        Screen_Coord[i].x += Random(base) - base / 2;
-        Screen_Coord[i].y += Random(size) + size;
+        Screen_Coord[i].x += vrng->Random(base) - base / 2;
+        Screen_Coord[i].y += vrng->Random(size) + size;
         if (Screen_Coord[i].x < pViewport->uViewportTL_X) {
-            Screen_Coord[i].x = pViewport->uViewportTL_X + Random(base);
+            Screen_Coord[i].x = pViewport->uViewportTL_X + vrng->Random(base);
         } else if (Screen_Coord[i].x >= (pViewport->uViewportBR_X - size)) {
-            Screen_Coord[i].x = pViewport->uViewportBR_X - Random(base);
+            Screen_Coord[i].x = pViewport->uViewportBR_X - vrng->Random(base);
         }
         if (Screen_Coord[i].y >= (pViewport->uViewportBR_Y - size)) {
             Screen_Coord[i].y = pViewport->uViewportTL_Y;
-            Screen_Coord[i].x = pViewport->uViewportTL_X + Random(pViewport->uViewportBR_X - pViewport->uViewportTL_X - size);
+            Screen_Coord[i].x = pViewport->uViewportTL_X + vrng->Random(pViewport->uViewportBR_X - pViewport->uViewportTL_X - size);
         }
 
         render->FillRectFast(Screen_Coord[i].x, Screen_Coord[i].y, size, size, 0xFFFF);
@@ -41,8 +41,8 @@ void Weather::Initialize() {
     int width = pViewport->uViewportBR_X - pViewport->uViewportTL_X;
     int height = pViewport->uViewportBR_Y - pViewport->uViewportTL_Y;
     for (Pointi &point : Screen_Coord) {
-        point.x = pViewport->uViewportTL_X + Random(width);
-        point.y = pViewport->uViewportTL_Y + Random(height);
+        point.x = pViewport->uViewportTL_X + vrng->Random(width);
+        point.y = pViewport->uViewportTL_Y + vrng->Random(height);
     }
 }
 

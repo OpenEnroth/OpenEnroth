@@ -21,7 +21,8 @@
 
 #include "Platform/PlatformEvents.h"
 
-#include "Utility/Random/Random.h"
+#include "Library/Random/Random.h"
+#include "Library/Random/NonRandomEngine.h"
 
 GameWrapper::GameWrapper(TestStateHandle state, const std::string &testDataDir):
     state_(std::move(state)),
@@ -34,7 +35,7 @@ GameWrapper::~GameWrapper() {}
 
 void GameWrapper::Reset() {
     state_->proxy->reset();
-    SeedRandom(0);
+    grng = std::make_unique<NonRandomEngine>();
 }
 
 void GameWrapper::Tick(int count) {
@@ -146,7 +147,7 @@ void GameWrapper::LoadGame(const std::string &name) {
     PressGuiButton("LoadMenu_Load");
     SkipLoadingScreen();
 
-    SeedRandom(0);
+    grng->Seed(0);
 }
 
 void GameWrapper::SkipLoadingScreen() {
@@ -209,7 +210,7 @@ void GameWrapper::PlayTrace(const std::string &name) {
 
             // TODO(captainurist): just re-record the relevant trace and drop != -1 checks.
             if (paintEvent->randomState != -1)
-                EXPECT_EQ(Random(1024), paintEvent->randomState);
+                EXPECT_EQ(grng->Random(1024), paintEvent->randomState);
             if (paintEvent->tickCount != -1)
                 EXPECT_EQ(state_->application->platform()->TickCount(), paintEvent->tickCount);
         } else {

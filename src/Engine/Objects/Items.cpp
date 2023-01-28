@@ -17,7 +17,7 @@
 #include "GUI/GUIButton.h"
 
 #include "Utility/MapAccess.h"
-#include "Utility/Random/Random.h"
+#include "Library/Random/Random.h"
 
 ItemGen* ptr_50C9A4_ItemToEnchant;
 
@@ -57,15 +57,15 @@ int ItemGen::_439DF3_get_additional_damage(DAMAGE_TYPE* damage_type,
     UpdateTempBonus(pParty->GetPlayingTime());
     if (uItemID == ITEM_ARTIFACT_IRON_FEATHER) {
         *damage_type = DMGT_ELECTR;
-        return Random(10) + 6;
+        return grng->Random(10) + 6;
     }
     if (uItemID == ITEM_ARTIFACT_GHOULSBANE) {
         *damage_type = DMGT_FIRE;
-        return Random(16) + 3;
+        return grng->Random(16) + 3;
     }
     if (uItemID == ITEM_ARTIFACT_ULLYSES) {
         *damage_type = DMGT_COLD;
-        return Random(4) + 9;
+        return grng->Random(4) + 9;
     }
     if (uItemID == ITEM_RELIC_OLD_NICK) {
         *damage_type = DMGT_BODY;
@@ -75,39 +75,39 @@ int ItemGen::_439DF3_get_additional_damage(DAMAGE_TYPE* damage_type,
     switch (special_enchantment) {
         case ITEM_ENCHANTMENT_OF_COLD:
             *damage_type = DMGT_COLD;
-            return Random(2) + 3;
+            return grng->Random(2) + 3;
             break;
         case ITEM_ENCHANTMENT_OF_FROST:
             *damage_type = DMGT_COLD;
-            return Random(3) + 6;
+            return grng->Random(3) + 6;
             break;
         case ITEM_ENCHANTMENT_OF_ICE:
             *damage_type = DMGT_COLD;
-            return Random(4) + 9;
+            return grng->Random(4) + 9;
             break;
         case ITEM_ENCHANTMENT_OF_SPARKS:
             *damage_type = DMGT_ELECTR;
-            return Random(4) + 2;
+            return grng->Random(4) + 2;
             break;
         case ITEM_ENCHANTMENT_OF_LIGHTNING:
             *damage_type = DMGT_ELECTR;
-            return Random(7) + 4;
+            return grng->Random(7) + 4;
             break;
         case ITEM_ENCHANTMENT_OF_THUNDERBOLTS:
             *damage_type = DMGT_ELECTR;
-            return Random(10) + 6;
+            return grng->Random(10) + 6;
             break;
         case ITEM_ENCHANTMENT_OF_FIRE:
             *damage_type = DMGT_FIRE;
-            return RandomDice(1, 6);
+            return grng->RandomDice(1, 6);
             break;
         case ITEM_ENCHANTMENT_OF_FLAME:
             *damage_type = DMGT_FIRE;
-            return RandomDice(2, 6);
+            return grng->RandomDice(2, 6);
             break;
         case ITEM_ENCHANTMENT_OF_INFERNOS:
             *damage_type = DMGT_FIRE;
-            return RandomDice(3, 6);
+            return grng->RandomDice(3, 6);
             break;
         case ITEM_ENCHANTMENT_OF_POISON:
             *damage_type = DMGT_BODY;
@@ -130,7 +130,7 @@ int ItemGen::_439DF3_get_additional_damage(DAMAGE_TYPE* damage_type,
 
         case ITEM_ENCHANTMENT_OF_DRAGON:
             *damage_type = DMGT_FIRE;
-            return Random(11) + 10;
+            return grng->Random(11) + 10;
             break;
         default:
             *damage_type = DMGT_FIRE;
@@ -258,7 +258,7 @@ bool ItemGen::GenerateArtifact() {
 
     Reset();
     if (uNumArtifactsNotFound) {
-        uItemID = artifacts_list[Random(uNumArtifactsNotFound)];
+        uItemID = artifacts_list[grng->Random(uNumArtifactsNotFound)];
         pItemTable->SetSpecialBonus(this);
         return true;
     } else {

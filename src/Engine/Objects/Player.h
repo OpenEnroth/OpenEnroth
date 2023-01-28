@@ -111,6 +111,7 @@ union PlayerEquipment {
 #pragma pack(pop)
 
 
+// TODO(captainurist): ENUM!
 #define STEAL_BUSTED   0
 #define STEAL_NOTHING  1
 #define STEAL_SUCCESS  2

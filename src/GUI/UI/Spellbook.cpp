@@ -17,7 +17,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Utility/Random/Random.h"
+#include "Library/Random/Random.h"
 
 
 void InitializeSpellBookTextures();
@@ -69,7 +69,7 @@ void GUIWindow_Spellbook::OpenSpellbookPage(int page) {
     OnCloseSpellBookPage();
     pPlayers[uActiveCharacter]->lastOpenedSpellbookPage = page;
     OpenSpellbook();
-    pAudioPlayer->PlaySound((SoundID)(SOUND_TurnPageU + Random(2)), 0, 0, -1, 0, 0);
+    pAudioPlayer->PlaySound((SoundID)(SOUND_TurnPageU + vrng->Random(2)), 0, 0, -1, 0, 0);
 }
 
 void GUIWindow_Spellbook::OpenSpellbook() {
