@@ -209,7 +209,7 @@ Blob LodReader::read(const std::string &filename) {
             return res;
         }
     }
-    
+
     Blob res = Blob::Allocate(file->dataSize);
     assert(1 == fread(res.data(), res.size(), 1, _fp));
 

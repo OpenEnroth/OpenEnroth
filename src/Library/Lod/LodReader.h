@@ -18,7 +18,7 @@
  *      into the first available directory, which is consistent with the vanilla behaviour.
  */
 class LodReader final {
-public:
+ public:
     static std::unique_ptr<LodReader> open(const std::string &filename);
 
     inline ~LodReader() {
@@ -30,7 +30,7 @@ public:
     bool exists(const std::string &filename) const;
     Blob read(const std::string &filename);
 
-private:
+ private:
     bool _isFileCompressed(const LodFile &file);
 
     FILE *_fp;
