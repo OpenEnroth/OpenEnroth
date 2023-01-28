@@ -1,8 +1,8 @@
 #pragma once
 
 #include <array>
-
-#include <stdint.h>
+#include <cstring> // memset
+#include <cstdint>
 
 
 #pragma pack(push, 1)
@@ -11,12 +11,12 @@ struct LodFileHeader_Mm6 {
         memset(this, 0, sizeof(this));
     }
 
-    std::array<uint8_t, 16> name;
-    uint32_t dataOffset;
-    uint32_t size;
-    uint32_t dword_000018;
-    uint16_t numItems;
-    uint16_t priority;
+    std::array<std::uint8_t, 16> name;
+    std::uint32_t dataOffset;
+    std::uint32_t size;
+    std::uint32_t dword_000018;
+    std::uint16_t numItems;
+    std::uint16_t priority;
 };
 #pragma pack(pop)
 
@@ -27,22 +27,22 @@ struct LodFileHeader_Mm8 {
         memset(this, 0, sizeof(this));
     }
 
-    std::array<uint8_t, 16> name;
-    int32_t unk_0;
-    int32_t unk_1;
-    int32_t unk_2;
-    int32_t unk_3;
-    int32_t unk_4;
-    int32_t unk_5;
-    int32_t unk_6;
-    int32_t unk_7;
-    int32_t unk_8;
-    int32_t unk_9;
-    int32_t unk_10;
-    int32_t unk_11;
-    int32_t dataOffset;
-    int32_t dataSize;
-    int32_t unk_14;
+    std::array<std::uint8_t, 16> name;
+    std::int32_t unk_0;
+    std::int32_t unk_1;
+    std::int32_t unk_2;
+    std::int32_t unk_3;
+    std::int32_t unk_4;
+    std::int32_t unk_5;
+    std::int32_t unk_6;
+    std::int32_t unk_7;
+    std::int32_t unk_8;
+    std::int32_t unk_9;
+    std::int32_t unk_10;
+    std::int32_t unk_11;
+    std::int32_t dataOffset;
+    std::int32_t dataSize;
+    std::int32_t unk_14;
 };
 #pragma pack(pop)
 
@@ -53,9 +53,9 @@ struct LodFileCompressionHeader_Mm6 {
         memset(this, 0, sizeof(this));
     }
 
-    uint32_t version;
-    std::array<uint8_t, 4> signature;
-    uint32_t compressedSize;
-    uint32_t decompressedSize;
+    std::uint32_t version;
+    std::array<std::uint8_t, 4> signature;
+    std::uint32_t compressedSize;
+    std::uint32_t decompressedSize;
 };
 #pragma pack(pop)

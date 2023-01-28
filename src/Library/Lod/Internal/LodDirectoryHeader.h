@@ -1,8 +1,8 @@
 #pragma once
 
 #include <array>
-
-#include <stdint.h>
+#include <cstring> // memset
+#include <cstdint>
 
 
 #pragma pack(push, 1)
@@ -11,11 +11,11 @@ struct LodDirectoryHeader_Mm6 {
         memset(this, 0, sizeof(this));
     }
 
-    std::array<uint8_t, 16> filename;
-    uint32_t dataOffset;
-    uint32_t dataSize;
-    uint32_t dword_000018;
-    uint16_t numFiles;
-    uint16_t priority;
+    std::array<std::uint8_t, 16> filename;
+    std::uint32_t dataOffset;
+    std::uint32_t dataSize;
+    std::uint32_t dword_000018;
+    std::uint16_t numFiles;
+    std::uint16_t priority;
 };
 #pragma pack(pop)
