@@ -1,5 +1,6 @@
 #include "LodReader.h"
 
+#include <algorithm>
 #include <cassert>
 #include <map>
 
