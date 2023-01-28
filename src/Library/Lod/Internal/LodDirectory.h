@@ -10,5 +10,5 @@ struct LodDirectory final {
     std::string name;
     std::vector<LodFile> files;
 
-    size_t file_headers_offset = 0;
+    size_t fileHeadersOffset = 0;
 };

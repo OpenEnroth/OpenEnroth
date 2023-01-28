@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 #include <stdint.h>
 
 
@@ -9,11 +11,11 @@ struct LodFileHeader_Mm6 {
         memset(this, 0, sizeof(this));
     }
 
-    uint8_t name[16];
-    uint32_t data_offset;
+    std::array<uint8_t, 16> name;
+    uint32_t dataOffset;
     uint32_t size;
     uint32_t dword_000018;
-    uint16_t num_items;
+    uint16_t numItems;
     uint16_t priority;
 };
 #pragma pack(pop)
@@ -25,7 +27,7 @@ struct LodFileHeader_Mm8 {
         memset(this, 0, sizeof(this));
     }
 
-    uint8_t name[16];
+    std::array<uint8_t, 16> name;
     int32_t unk_0;
     int32_t unk_1;
     int32_t unk_2;
@@ -38,8 +40,8 @@ struct LodFileHeader_Mm8 {
     int32_t unk_9;
     int32_t unk_10;
     int32_t unk_11;
-    int32_t data_offset;
-    int32_t data_size;
+    int32_t dataOffset;
+    int32_t dataSize;
     int32_t unk_14;
 };
 #pragma pack(pop)
@@ -52,8 +54,8 @@ struct LodFileCompressionHeader_Mm6 {
     }
 
     uint32_t version;
-    uint8_t signature[4];
-    uint32_t compressed_size;
-    uint32_t decompressed_size;
+    std::array<uint8_t, 4> signature;
+    uint32_t compressedSize;
+    uint32_t decompressedSize;
 };
 #pragma pack(pop)

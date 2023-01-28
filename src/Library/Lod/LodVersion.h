@@ -8,5 +8,3 @@ enum class LodVersion {
     Mm8,
     OpenEnroth = 1337,
 };
-
-using enum LodVersion;
