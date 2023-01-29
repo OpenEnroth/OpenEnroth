@@ -2715,7 +2715,7 @@ void Actor::UpdateActorAI() {
                 pParty->sRotationY = -128;
 
             pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
-            pParty->armageddon_timer -= pMiscTimer->uTimeElapsed;
+            pParty->armageddon_timer -= pEventTimer->uTimeElapsed; // Was pMiscTimer
             v4 = pParty->armageddonDamage + 50;
             if (pParty->armageddon_timer <= 0) {
                 pParty->armageddon_timer = 0;
@@ -2799,9 +2799,9 @@ void Actor::UpdateActorAI() {
 
         // Calculate RecoveryTime
         pActor->pMonsterInfo.uRecoveryTime = std::max((signed int)
-            (pActor->pMonsterInfo.uRecoveryTime - pMiscTimer->uTimeElapsed), 0);
+            (pActor->pMonsterInfo.uRecoveryTime - pEventTimer->uTimeElapsed), 0); // was pMiscTimer
 
-        pActor->uCurrentActionTime += pMiscTimer->uTimeElapsed;
+        pActor->uCurrentActionTime += pEventTimer->uTimeElapsed; // was pMiscTimer
         if (pActor->uCurrentActionTime < pActor->uCurrentActionLength) continue;
 
         if (pActor->uAIState == Dying) {
@@ -2883,9 +2883,9 @@ void Actor::UpdateActorAI() {
             continue;
         }
 
-        v27 = pMiscTimer->uTimeElapsed;
+        v27 = pEventTimer->uTimeElapsed; // was pMiscTimer
         v28 = pActor->pMonsterInfo.uRecoveryTime;
-        pActor->uCurrentActionTime += pMiscTimer->uTimeElapsed;
+        pActor->uCurrentActionTime += pEventTimer->uTimeElapsed; // was pMiscTimer
 
         if ((signed int)v28 > 0) pActor->pMonsterInfo.uRecoveryTime = v28 - v27;
         if (pActor->pMonsterInfo.uRecoveryTime < 0)
