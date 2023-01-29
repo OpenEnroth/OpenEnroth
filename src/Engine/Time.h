@@ -136,7 +136,7 @@ struct Timer {
     unsigned int uStopTime;
     int uGameTimeStart;
     int field_18;
-    unsigned int uTimeElapsed; // dt in 1/128th of a second.
+    int uTimeElapsed; // dt in 1/128th of a second.
     int dt_fixpoint; // dt in seconds in fixpoint format
     unsigned int uTotalGameTimeElapsed;
 

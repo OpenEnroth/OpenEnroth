@@ -2181,7 +2181,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         (static_cast<int64_t>(pEventTimer->dt_fixpoint) * pParty->y_rotation_speed * TrigLUT.uIntegerPi / 180) >> 16;
 
     // If party movement delta is lower then this number then the party remains stationary.
-    int64_t elapsed_time_bounded = std::min(pEventTimer->uTimeElapsed, 10000u);
+    int64_t elapsed_time_bounded = std::min(pEventTimer->uTimeElapsed, 10000);
     int min_party_move_delta_sqr = 400 * elapsed_time_bounded * elapsed_time_bounded / 8;
 
     int party_dy = 0;

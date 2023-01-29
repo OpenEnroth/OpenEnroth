@@ -647,9 +647,7 @@ void Party::Reset() {
     pPlayers[0].uPrevVoiceID = 17;
     pPlayers[0].uVoiceID = 17;
     pPlayers[0].SetInitialStats();
-
     pPlayers[0].uSex = pPlayers[0].GetSexByVoice();
-    pPlayers[0].RandomizeName();
     pPlayers[0].pName = localization->GetString(LSTR_PC_NAME_ZOLTAN);
 
     pPlayers[1].Reset(PLAYER_CLASS_THIEF);
@@ -658,7 +656,6 @@ void Party::Reset() {
     pPlayers[1].uVoiceID = 3;
     pPlayers[1].SetInitialStats();
     pPlayers[1].uSex = pPlayers[1].GetSexByVoice();
-    pPlayers[1].RandomizeName();
     pPlayers[1].pName = localization->GetString(LSTR_PC_NAME_RODERIC);
 
     pPlayers[2].Reset(PLAYER_CLASS_CLERIC);
@@ -667,7 +664,6 @@ void Party::Reset() {
     pPlayers[2].uVoiceID = 14;
     pPlayers[2].SetInitialStats();
     pPlayers[2].uSex = pPlayers[3].GetSexByVoice();
-    pPlayers[2].RandomizeName();
     pPlayers[2].pName = localization->GetString(LSTR_PC_NAME_SERENA);
 
     pPlayers[3].Reset(PLAYER_CLASS_SORCERER);
@@ -676,7 +672,6 @@ void Party::Reset() {
     pPlayers[3].uVoiceID = 10;
     pPlayers[3].SetInitialStats();
     pPlayers[3].uSex = pPlayers[3].GetSexByVoice();
-    pPlayers[3].RandomizeName();
     pPlayers[3].pName = localization->GetString(LSTR_PC_NAME_ALEXIS);
 
     for (uint i = 0; i < 4; ++i) {
