@@ -18,10 +18,10 @@ Join our discord channel to discuss, track progress or involve in development of
 
 Getting Started
 ---------------
-1. You will require a GoG or any older version of Might and Magic 7 installed for engine to guess game assets folder. You can override assets/game path in launcher or by using OPENENROTH_MM7_PATH env variable.
+1. You will require a GoG or any older version of Might and Magic 7 installed for engine to guess game assets folder. You can override assets/game path by using OPENENROTH_MM7_PATH env variable.
 2. Copy OpenEnroth-specific resources from the 'resources' folder of the repo to the game assets folder.
 3. Use any IDE with CMake integration.
-4. Build & run the game directly, or via launcher.
+4. Build & run the game directly OpenEnroth.exe.
 
 Development
 ---------------
