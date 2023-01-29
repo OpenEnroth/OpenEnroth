@@ -19,7 +19,7 @@ using Io::Mouse;
 class IRender;
 class Platform;
 class PlatformApplication;
-class EventTracer;
+class EngineTracer;
 class GameTraceHandler;
 class NuklearEventHandler;
 
@@ -48,8 +48,6 @@ class Game {
     PlatformApplication *app = nullptr;
     std::shared_ptr<GameConfig> config;
     std::unique_ptr<GameWindowHandler> windowHandler;
-    std::unique_ptr<EventTracer> eventTracer;
-    std::unique_ptr<GameTraceHandler> traceHandler;
     std::unique_ptr<NuklearEventHandler> nuklearHandler;
     std::shared_ptr<Engine> engine;
     std::shared_ptr<IRender> render;

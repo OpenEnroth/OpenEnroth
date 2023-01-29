@@ -5,14 +5,14 @@
 GAME_TEST(Menu, PartyCreation) {
     EXPECT_EQ(GetCurrentMenuID(), MENU_MAIN);
 
-    game->PressGuiButton("MainMenu_NewGame");
-    game->Tick(2);
+    game->pressGuiButton("MainMenu_NewGame");
+    game->tick(2);
 
     EXPECT_EQ(GetCurrentMenuID(), MENU_CREATEPARTY);
     EXPECT_EQ(pParty->pPlayers[0].uMight, 30);
 
-    game->PressGuiButton("PartyCreation_Clear"); // This shouldn't crash.
-    game->Tick();
+    game->pressGuiButton("PartyCreation_Clear"); // This shouldn't crash.
+    game->tick();
 
     EXPECT_EQ(pParty->pPlayers[0].classType, PLAYER_CLASS_KNIGHT);
     EXPECT_EQ(pParty->pPlayers[0].uMight, 14);
@@ -21,19 +21,18 @@ GAME_TEST(Menu, PartyCreation) {
 GAME_TEST(Issues, Issue315) {
     EXPECT_EQ(GetCurrentMenuID(), MENU_MAIN);
 
-    game->LoadGame("issue_315.mm7");
-    game->GoToMainMenu();
-    game->PressGuiButton("MainMenu_NewGame");
-    game->Tick(2);
-    game->PressGuiButton("PartyCreation_OK");
-    game->SkipLoadingScreen(); // This shouldn't crash
+    test->loadGameFromTestData("issue_315.mm7");
+    game->goToMainMenu();
+    game->pressGuiButton("MainMenu_NewGame");
+    game->tick(2);
+    game->pressGuiButton("PartyCreation_OK");
+    game->skipLoadingScreen(); // This shouldn't crash.
 }
 
 GAME_TEST(Prs, Pr347) {
-    // Testing that shops work
-    int oldGold = pParty->uNumGold;
-    game->LoadGame("pr_347.mm7");
-    game->PlayTrace("pr_347.json");
-    EXPECT_NE(oldGold, pParty->uNumGold); // Spent on items
+    // Testing that shops work.
+    int oldGold = 0;
+    test->playTraceFromTestData("pr_347.mm7", "pr_347.json", [&] { oldGold = pParty->uNumGold; });
+    EXPECT_NE(oldGold, pParty->uNumGold); // Spent on items.
 }
 

@@ -204,6 +204,7 @@ void LoadGame(unsigned int uSlot) {
     // pAudioPlayer->SetMasterVolume(engine->config->sound_level);
 
     // TODO: what is this magic? old party position correction with current angle settings?
+    // TODO(captainurist): might be a source of non-determinism, just drop this.
     if (engine->config->settings.TurnSpeed.Get() > 0) {
         pParty->sRotationZ = engine->config->settings.TurnSpeed.Get() * pParty->sRotationZ / engine->config->settings.TurnSpeed.Get();
     }

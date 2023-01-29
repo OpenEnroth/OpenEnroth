@@ -33,3 +33,8 @@ void GameKeyboardController::ProcessKeyPressEvent(const PlatformKeyEvent *event)
 void GameKeyboardController::ProcessKeyReleaseEvent(const PlatformKeyEvent *event) {
     isKeyDown_[event->key] = false;
 }
+
+void GameKeyboardController::reset() {
+    isKeyDown_.fill(false);
+    isKeyDownReported_.fill(false);
+}

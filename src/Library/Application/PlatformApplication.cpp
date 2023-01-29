@@ -2,6 +2,8 @@
 
 #include <cassert>
 
+#include "Utility/MapAccess.h"
+
 #include "Platform/Proxy/ProxyPlatform.h"
 #include "Platform/Proxy/ProxyEventLoop.h"
 #include "Platform/Proxy/ProxyWindow.h"
@@ -76,7 +78,12 @@ PlatformApplication::PlatformApplication(PlatformLogger *logger) : _logger(logge
     initProxyLeaf<PlatformWindow>(_rootProxy.get(), _window.get());
 }
 
-PlatformApplication::~PlatformApplication() {}
+PlatformApplication::~PlatformApplication() {
+    while (!_cleanupRoutines.empty()) {
+        _cleanupRoutines.back()();
+        _cleanupRoutines.pop_back(); // This also destroys the stored plugin.
+    }
+}
 
 void PlatformApplication::initializeOpenGLContext(const PlatformOpenGLOptions &options) {
     assert(!_openGLContext);
@@ -105,40 +112,8 @@ PlatformOpenGLContext *PlatformApplication::openGLContext() {
     return _rootProxy.get();
 }
 
-FilteringEventHandler *PlatformApplication::eventHandler() {
+PlatformEventHandler *PlatformApplication::eventHandler() {
     return _eventHandler.get();
-}
-
-void PlatformApplication::installProxy(ProxyPlatform *platform) {
-    installTypedProxy<Platform>(_rootProxy.get(), platform);
-}
-
-void PlatformApplication::removeProxy(ProxyPlatform *platform) {
-    removeTypedProxy<Platform>(_rootProxy.get(), platform, _platform.get());
-}
-
-void PlatformApplication::installProxy(ProxyEventLoop *eventLoop) {
-    installTypedProxy<PlatformEventLoop>(_rootProxy.get(), eventLoop);
-}
-
-void PlatformApplication::removeProxy(ProxyEventLoop *eventLoop) {
-    removeTypedProxy<PlatformEventLoop>(_rootProxy.get(), eventLoop, _eventLoop.get());
-}
-
-void PlatformApplication::installProxy(ProxyWindow *window) {
-    installTypedProxy<PlatformWindow>(_rootProxy.get(), window);
-}
-
-void PlatformApplication::removeProxy(ProxyWindow *window) {
-    removeTypedProxy<PlatformWindow>(_rootProxy.get(), window, _window.get());
-}
-
-void PlatformApplication::installProxy(ProxyOpenGLContext *openGLContext) {
-    installTypedProxy<PlatformOpenGLContext>(_rootProxy.get(), openGLContext);
-}
-
-void PlatformApplication::removeProxy(ProxyOpenGLContext *openGLContext) {
-    removeTypedProxy<PlatformOpenGLContext>(_rootProxy.get(), openGLContext, _openGLContext.get());
 }
 
 void PlatformApplication::processMessages(int count) {
@@ -148,3 +123,79 @@ void PlatformApplication::processMessages(int count) {
 void PlatformApplication::waitForMessages() {
     eventLoop()->WaitForMessages();
 }
+
+void PlatformApplication::installInternal(ProxyPlatform *platform) {
+    installTypedProxy<Platform>(_rootProxy.get(), platform);
+}
+
+void PlatformApplication::removeInternal(ProxyPlatform *platform) {
+    removeTypedProxy<Platform>(_rootProxy.get(), platform, _platform.get());
+}
+
+void PlatformApplication::installInternal(ProxyEventLoop *eventLoop) {
+    installTypedProxy<PlatformEventLoop>(_rootProxy.get(), eventLoop);
+}
+
+void PlatformApplication::removeInternal(ProxyEventLoop *eventLoop) {
+    removeTypedProxy<PlatformEventLoop>(_rootProxy.get(), eventLoop, _eventLoop.get());
+}
+
+void PlatformApplication::installInternal(ProxyWindow *window) {
+    installTypedProxy<PlatformWindow>(_rootProxy.get(), window);
+}
+
+void PlatformApplication::removeInternal(ProxyWindow *window) {
+    removeTypedProxy<PlatformWindow>(_rootProxy.get(), window, _window.get());
+}
+
+void PlatformApplication::installInternal(ProxyOpenGLContext *openGLContext) {
+    installTypedProxy<PlatformOpenGLContext>(_rootProxy.get(), openGLContext);
+}
+
+void PlatformApplication::removeInternal(ProxyOpenGLContext *openGLContext) {
+    removeTypedProxy<PlatformOpenGLContext>(_rootProxy.get(), openGLContext, _openGLContext.get());
+}
+
+void PlatformApplication::installInternal(PlatformEventFilter *eventFilter) {
+    _eventHandler->installEventFilter(eventFilter);
+}
+
+void PlatformApplication::removeInternal(PlatformEventFilter *eventFilter) {
+    _eventHandler->removeEventFilter(eventFilter);
+}
+
+void PlatformApplication::installInternal(PlatformApplicationAware *aware) {
+    assert(aware->application() == nullptr);
+    aware->setApplication(this);
+    aware->installNotify();
+}
+
+void PlatformApplication::removeInternal(PlatformApplicationAware *aware) {
+    if (aware->application() == nullptr)
+        return; // All remove methods allow double-removal.
+
+    assert(aware->application() == this);
+    aware->removeNotify();
+    aware->setApplication(nullptr);
+}
+
+void PlatformApplication::installInternal(std::type_index pluginType, void *plugin) {
+    assert(plugin);
+    assert(!_pluginByType.contains(pluginType));
+    _pluginByType.emplace(pluginType, plugin);
+}
+
+void PlatformApplication::removeInternal(std::type_index pluginType, void *plugin) {
+    assert(plugin);
+    assert(!_pluginByType.contains(pluginType) || ValueOr(_pluginByType, pluginType, nullptr) == plugin);
+    _pluginByType.erase(pluginType);
+}
+
+bool PlatformApplication::hasInternal(std::type_index pluginType) const {
+    return _pluginByType.contains(pluginType);
+}
+
+void *PlatformApplication::getInternal(std::type_index pluginType) const {
+    return ValueOr(_pluginByType, pluginType, nullptr);
+}
+

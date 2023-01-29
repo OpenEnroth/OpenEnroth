@@ -2,21 +2,28 @@
 
 #include <cassert>
 
-static GameWrapper *globalGameWrapper = nullptr;
+#include "Engine/Plugins/EngineController.h"
 
-void GameTest::Init(GameWrapper *withWrapper) {
-    assert(withWrapper);
+static EngineController *globalEngineController = nullptr;
+static TestController *globalTestController = nullptr;
 
-    globalGameWrapper = withWrapper;
+void GameTest::init(EngineController *engineController, TestController *testController) {
+    assert(!globalEngineController && !globalTestController);
+    assert(engineController && testController);
+
+    globalEngineController = engineController;
+    globalTestController = testController;
 }
 
 void GameTest::SetUp() {
-    const_cast<GameWrapper *&>(game) = globalGameWrapper;
+    const_cast<EngineController *&>(game) = globalEngineController;
+    const_cast<TestController *&>(test) = globalTestController;
 
-    game->GoToMainMenu();
-    game->Reset();
+    game->goToMainMenu();
+    test->prepareForNextTest();
 }
 
 void GameTest::TearDown() {
-    const_cast<GameWrapper *&>(game) = nullptr;
+    const_cast<EngineController *&>(game) = nullptr;
+    const_cast<TestController *&>(test) = nullptr;
 }
