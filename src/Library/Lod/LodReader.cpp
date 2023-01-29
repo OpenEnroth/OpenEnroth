@@ -18,10 +18,10 @@
 
 static inline size_t _getDirectoryHeaderImgSize(LodVersion lod_version) {
     switch (lod_version) {
-    case LodVersion::Mm6:
-    case LodVersion::GameMm6:
-    case LodVersion::Mm7:
-    case LodVersion::Mm8:
+    case LOD_VERSION_MM6:
+    case LOD_VERSION_MM6_GAME:
+    case LOD_VERSION_MM7:
+    case LOD_VERSION_MM8:
         return sizeof(LodDirectoryHeader_Mm6);
     }
 
@@ -31,10 +31,10 @@ static inline size_t _getDirectoryHeaderImgSize(LodVersion lod_version) {
 
 static bool _lodHeaderParseVersion(const LodHeader_Mm6 &header, LodVersion &out_version) {
     static std::map<std::string, LodVersion> version_map = {
-        {"MMVI",     LodVersion::Mm6},
-        {"GameMMVI", LodVersion::GameMm6},
-        {"MMVII",    LodVersion::Mm7},
-        {"MMVIII",   LodVersion::Mm8},
+        {"MMVI",     LOD_VERSION_MM6},
+        {"GameMMVI", LOD_VERSION_MM6_GAME},
+        {"MMVII",    LOD_VERSION_MM7},
+        {"MMVIII",   LOD_VERSION_MM8},
     };
 
     auto it = version_map.find((const char *)header.version.data());
@@ -82,9 +82,9 @@ static inline void _lodParseDirectoryFiles(
     fseek(fp, dir.fileHeadersOffset, SEEK_SET);
     for (size_t i = 0; i < num_expected_files; ++i) {
         switch (version) {
-        case LodVersion::Mm6:
-        case LodVersion::GameMm6:
-        case LodVersion::Mm7: {
+        case LOD_VERSION_MM6:
+        case LOD_VERSION_MM6_GAME:
+        case LOD_VERSION_MM7: {
             LodFileHeader_Mm6 header;
             assert(1 == fread(&header, sizeof(header), 1, fp));
 
@@ -96,7 +96,7 @@ static inline void _lodParseDirectoryFiles(
             break;
         }
 
-        case LodVersion::Mm8: {
+        case LOD_VERSION_MM8: {
             LodFileHeader_Mm8 header;
             assert(1 == fread(&header, sizeof(header), 1, fp));
 
