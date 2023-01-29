@@ -257,6 +257,7 @@ class IRender {
     virtual void BeginLines2D() = 0;
     virtual void EndLines2D() = 0;
     virtual void RasterLine2D(int uX, int uY, int uZ, int uW, uint32_t uColor32) = 0;
+    virtual void DrawLines(const RenderVertexD3D3* vertices, unsigned int num_vertices) = 0;
 
     virtual void ClearZBuffer() = 0;
     virtual void RestoreFrontBuffer() = 0;
@@ -355,14 +356,6 @@ class IRender {
     virtual void BeginDecals() = 0;
     virtual void EndDecals() = 0;
     virtual void DrawDecal(struct Decal *pDecal, float z_bias) = 0;
-
-    virtual void Do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
-                                        signed int sDiffuseBegin,
-                                        const RenderVertexD3D3 *pLineEnd,
-                                        signed int sDiffuseEnd,
-                                        float z_stuff) = 0;
-    virtual void DrawLines(const RenderVertexD3D3 *vertices,
-                           unsigned int num_vertices) = 0;
 
     virtual void DrawSpecialEffectsQuad(Texture *texture, int palette) = 0;
 

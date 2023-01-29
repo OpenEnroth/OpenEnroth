@@ -72,6 +72,8 @@ class RenderOpenGL : public RenderBase {
     virtual void EndLines2D() override;
     virtual void RasterLine2D(signed int uX, signed int uY, signed int uZ,
                               signed int uW, uint32_t uColor32) override;
+    virtual void DrawLines(const RenderVertexD3D3* vertices,
+        unsigned int num_vertices) override;
 
     virtual void ClearZBuffer() override;
     virtual void RestoreFrontBuffer() override;
@@ -149,13 +151,6 @@ class RenderOpenGL : public RenderBase {
     virtual void BeginDecals() override;
     virtual void EndDecals() override;
     virtual void DrawDecal(struct Decal *pDecal, float z_bias) override;
-
-    virtual void Do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
-                                        signed int sDiffuseBegin,
-                                        const RenderVertexD3D3 *pLineEnd,
-                                        signed int sDiffuseEnd, float z_stuff) override;
-    virtual void DrawLines(const RenderVertexD3D3 *vertices,
-                           unsigned int num_vertices) override;
 
     virtual void DrawSpecialEffectsQuad(Texture *texture, int palette) override;
 
