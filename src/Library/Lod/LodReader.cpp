@@ -161,6 +161,9 @@ std::unique_ptr<LodReader> LodReader::open(const std::string &filename) {
 
     bool is_index_ok = _lodParseDirectories(fp, lod->_version, num_expected_directories, lod->_index);
     if (is_index_ok) {
+#ifdef _DEBUG
+        lod->_filename = filename;
+#endif
         lod->_fp = fp;
         return lod;
     }

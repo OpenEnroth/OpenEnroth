@@ -30,9 +30,20 @@ class LodReader final {
     bool exists(const std::string &filename) const;
     Blob read(const std::string &filename);
 
+    const auto begin() const {
+        return _index.front().files.cbegin();
+    }
+
+    const auto end() const {
+        return _index.front().files.cend();
+    }
+
  private:
     bool _isFileCompressed(const LodFile &file);
 
+#ifdef _DEBUG
+    std::string _filename;
+#endif
     FILE *_fp;
     LodVersion _version;
     std::string _description;

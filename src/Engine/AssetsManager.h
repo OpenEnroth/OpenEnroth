@@ -1,14 +1,19 @@
 #pragma once
 
 #include <map>
+#include <memory>
 #include <string>
+
 
 class Image;
 class Texture;
 
+
 class AssetsManager {
  public:
-    AssetsManager() {}
+    static std::unique_ptr<AssetsManager> create(const std::string &resources_path);
+
+    inline AssetsManager() {}
 
     void ReleaseAllTextures();
 
@@ -37,4 +42,4 @@ class AssetsManager {
     std::map<std::string, Texture *> images;
 };
 
-extern AssetsManager *assets;
+extern std::unique_ptr<AssetsManager> assets;

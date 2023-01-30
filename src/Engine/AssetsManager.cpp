@@ -1,6 +1,7 @@
 #include "Engine/AssetsManager.h"
 
 #include <algorithm>
+#include <filesystem>
 
 #include "Engine/LOD.h"
 
@@ -8,8 +9,33 @@
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Texture.h"
 #include "GUI/GUIFont.h"
+#include "Library/Lod/LodReader.h"
 
-AssetsManager *assets = new AssetsManager();
+
+std::unique_ptr<AssetsManager> assets = nullptr;
+
+
+std::unique_ptr<AssetsManager> AssetsManager::create(const std::string &resources_path) {
+    std::map<std::string, std::shared_ptr<LodReader>> resource_to_lod;
+
+    std::vector<std::shared_ptr<LodReader>> lods;
+    for (const auto &entry : std::filesystem::directory_iterator(resources_path)) {
+        auto path = entry.path();
+        if (!iequals(path.extension().generic_string(), ".LOD")) {
+            continue;
+        }
+
+        std::shared_ptr<LodReader> lod = LodReader::open(path.generic_string());
+        lods.push_back(lod);
+
+        for (const auto &file : *lod) {
+            resource_to_lod[file.name] = lod;
+        }
+    }
+
+    return std::make_unique<AssetsManager>();
+}
+
 
 void AssetsManager::ReleaseAllTextures() {
     logger->Info("Render - Releasing Textures.");
@@ -55,8 +81,7 @@ bool AssetsManager::ReleaseImage(const std::string &name) {
 
 Texture *AssetsManager::GetImage_Paletted(const std::string &name) {
     auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(),
-        ::tolower);
+    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -71,8 +96,7 @@ Texture *AssetsManager::GetImage_Paletted(const std::string &name) {
 
 Texture *AssetsManager::GetImage_ColorKey(const std::string &name, uint16_t colorkey) {
     auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(),
-        ::tolower);
+    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -88,8 +112,7 @@ Texture *AssetsManager::GetImage_ColorKey(const std::string &name, uint16_t colo
 
 Texture *AssetsManager::GetImage_Solid(const std::string &name) {
     auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(),
-                   ::tolower);
+    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -103,8 +126,7 @@ Texture *AssetsManager::GetImage_Solid(const std::string &name) {
 
 Texture *AssetsManager::GetImage_Alpha(const std::string &name) {
     auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(),
-                   ::tolower);
+    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -118,8 +140,7 @@ Texture *AssetsManager::GetImage_Alpha(const std::string &name) {
 
 Texture *AssetsManager::GetImage_PCXFromIconsLOD(const std::string &name) {
     auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(),
-                   ::tolower);
+    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -133,8 +154,7 @@ Texture *AssetsManager::GetImage_PCXFromIconsLOD(const std::string &name) {
 
 Texture *AssetsManager::GetImage_PCXFromNewLOD(const std::string &name) {
     auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(),
-                   ::tolower);
+    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -148,8 +168,7 @@ Texture *AssetsManager::GetImage_PCXFromNewLOD(const std::string &name) {
 
 Texture *AssetsManager::GetImage_PCXFromFile(const std::string &name) {
     auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(),
-                   ::tolower);
+    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -163,8 +182,7 @@ Texture *AssetsManager::GetImage_PCXFromFile(const std::string &name) {
 
 Texture *AssetsManager::GetBitmap(const std::string &name) {
     auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(),
-                   ::tolower);
+    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 
     auto i = bitmaps.find(filename);
     if (i == bitmaps.end()) {
@@ -179,8 +197,7 @@ Texture *AssetsManager::GetBitmap(const std::string &name) {
 Texture *AssetsManager::GetSprite(const std::string &name, unsigned int palette_id,
                                   unsigned int lod_sprite_id) {
     auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(),
-                   ::tolower);
+    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 
     auto i = sprites.find(filename);
     if (i == sprites.end()) {
