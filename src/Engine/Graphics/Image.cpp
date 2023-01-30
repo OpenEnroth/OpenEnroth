@@ -339,6 +339,7 @@ const void *Image::GetPixels(IMAGE_FORMAT format) {
                 logger->Warning("No ImageConverter defined from %s to %s",
                                 toString(this->native_format).c_str(),
                                 toString(format).c_str());
+                assert(false);
             }
         }
     }

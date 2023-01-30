@@ -2,10 +2,6 @@
 
 #include "Engine/IocContainer.h"
 #include "Engine/Graphics/OpenGL/RenderOpenGL.h"
-#ifdef DDRAW_ENABLED
-#include "Engine/Graphics/Direct3D/Render.h"
-#endif
-
 
 using EngineIoc = Engine_::IocContainer;
 using Graphics::IRenderFactory;
