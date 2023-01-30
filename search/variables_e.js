@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['name_0',['name',['../classTextureFrame.html#a2a51b66cfd0a2491f7f0312a11172ea6',1,'TextureFrame::name()'],['../structGenderTableEntry.html#a24f4d78e8cb584799c573fd18f32958b',1,'GenderTableEntry::name()'],['../classTileDesc.html#a809310afa0f1e07811ffe56a83059187',1,'TileDesc::name()'],['../structArcomageDeck.html#a458b998e3ca7a64df92884d94c18c3a3',1,'ArcomageDeck::name()']]],
+  ['name_0',['name',['../classTextureFrame.html#a2a51b66cfd0a2491f7f0312a11172ea6',1,'TextureFrame::name()'],['../structGenderTableEntry.html#a24f4d78e8cb584799c573fd18f32958b',1,'GenderTableEntry::name()'],['../classTileDesc.html#a809310afa0f1e07811ffe56a83059187',1,'TileDesc::name()'],['../structLodDirectory.html#afa36eaed2ce033ee5b13518f06c7f0ab',1,'LodDirectory::name()'],['../structLodFile.html#a1710b22583ffa124a83253dccec52007',1,'LodFile::name()'],['../structLodFileHeader__Mm6.html#a38db2043daf709f3c73285324d98b23b',1,'LodFileHeader_Mm6::name()'],['../structLodFileHeader__Mm8.html#ac2d55b1c987866321f105b94afb7078e',1,'LodFileHeader_Mm8::name()'],['../structArcomageDeck.html#a458b998e3ca7a64df92884d94c18c3a3',1,'ArcomageDeck::name()']]],
   ['name_5f_1',['name_',['../classAbstractConfigValue.html#a3617de76fd0b33a22e82d1084eecf606',1,'AbstractConfigValue::name_()'],['../classConfigSection.html#a16e0f2b4d67637e0ae66f482aa3c2ef1',1,'ConfigSection::name_()']]],
   ['native_5fformat_2',['native_format',['../classImage.html#a7c6b2a8dfc83049e12c972a87039777b',1,'Image']]],
   ['nativeevent_3',['nativeEvent',['../classPlatformNativeEvent.html#a683431e9fa2f938a3ad481e2a1132abf',1,'PlatformNativeEvent']]],
@@ -44,7 +44,7 @@ var searchData=
   ['npc_5fprofession_5fnames_41',['npc_profession_names',['../classLocalization.html#a9da6e26abf2e70fc5b14a2f106085778',1,'Localization']]],
   ['npcidtodismissafterdialogue_42',['npcIdToDismissAfterDialogue',['../mm7__data_8cpp.html#a0e85dc697836d609e7088228044261c1',1,'npcIdToDismissAfterDialogue():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a0e85dc697836d609e7088228044261c1',1,'npcIdToDismissAfterDialogue():&#160;mm7_data.cpp']]],
   ['nplanes_43',['nplanes',['../structPCXHeader.html#a572675c585b4118bea678c1468504203',1,'PCXHeader']]],
-  ['nuklear_44',['nuklear',['../Nuklear_8h.html#a744d8792693c6d41ea3a03b57bb56f82',1,'nuklear():&#160;Nuklear.cpp'],['../Nuklear_8cpp.html#a744d8792693c6d41ea3a03b57bb56f82',1,'nuklear():&#160;Nuklear.cpp'],['../classEngine___1_1IocContainer.html#aebc3b0615d64ae25b808296e6fc024f6',1,'Engine_::IocContainer::nuklear()'],['../structEngine.html#a6fc70d7e1ad1e8f0ae98e791a699872e',1,'Engine::nuklear()'],['../classApplication_1_1Game.html#a57b675063ff5bf7d905538853a25ae66',1,'Application::Game::nuklear()']]],
+  ['nuklear_44',['nuklear',['../classApplication_1_1Game.html#a57b675063ff5bf7d905538853a25ae66',1,'Application::Game::nuklear()'],['../structEngine.html#a6fc70d7e1ad1e8f0ae98e791a699872e',1,'Engine::nuklear()'],['../classEngine___1_1IocContainer.html#aebc3b0615d64ae25b808296e6fc024f6',1,'Engine_::IocContainer::nuklear()'],['../Nuklear_8h.html#a744d8792693c6d41ea3a03b57bb56f82',1,'nuklear():&#160;Nuklear.cpp'],['../Nuklear_8cpp.html#a744d8792693c6d41ea3a03b57bb56f82',1,'nuklear():&#160;Nuklear.cpp']]],
   ['nuklearhandler_45',['nuklearHandler',['../classApplication_1_1Game.html#a01c96b2f6a1c22b649fe737da018c90e',1,'Application::Game']]],
   ['nuklearshader_46',['nuklearshader',['../classRenderOpenGL.html#ac9ffc6e6f2e40e6b8f20e109f11f8f2f',1,'RenderOpenGL']]],
   ['null_47',['null',['../structRenderOpenGL_1_1nk__device.html#a2beaae7f98fe3c34c2eccbb25d623322',1,'RenderOpenGL::nk_device']]],
@@ -58,8 +58,11 @@ var searchData=
   ['num_5fparticles_55',['num_particles',['../structTrailParticleGenerator.html#afa202247b6680c63642c8b0c543ef127',1,'TrailParticleGenerator']]],
   ['numbspverts_56',['numBSPverts',['../RenderOpenGL_8cpp.html#a3b5a2d36c725b66030e4f39f7869bb00',1,'RenderOpenGL.cpp']]],
   ['numdecalverts_57',['numdecalverts',['../RenderOpenGL_8cpp.html#ad8ab09ce7e966384b163b1672abae1b3',1,'RenderOpenGL.cpp']]],
-  ['numoutbuildtexloaded_58',['numoutbuildtexloaded',['../classRenderOpenGL.html#a3da8f4e7d9ae533b60d5fefff2af2040',1,'RenderOpenGL']]],
-  ['numoutbuildverts_59',['numoutbuildverts',['../RenderOpenGL_8cpp.html#a499b0c70e74f9bac98059166082b490f',1,'RenderOpenGL.cpp']]],
-  ['numterraintexloaded_60',['numterraintexloaded',['../classRenderOpenGL.html#a2c79443fe4f2ae353873c47007f027ab',1,'RenderOpenGL']]],
-  ['numvertices_61',['NumVertices',['../structLightmap.html#a6a01d0deb6f394815923c6cb49718d1e',1,'Lightmap']]]
+  ['numdirectories_58',['numDirectories',['../structLodHeader__Mm6.html#a2b785f8444b16223af974ddaa3d2ca69',1,'LodHeader_Mm6']]],
+  ['numfiles_59',['numFiles',['../structLodDirectoryHeader__Mm6.html#ae2b8079fdf4c08008a88e96bf621f6fb',1,'LodDirectoryHeader_Mm6']]],
+  ['numitems_60',['numItems',['../structLodFileHeader__Mm6.html#adc012f21f618a0792b46f351ae72c64b',1,'LodFileHeader_Mm6']]],
+  ['numoutbuildtexloaded_61',['numoutbuildtexloaded',['../classRenderOpenGL.html#a3da8f4e7d9ae533b60d5fefff2af2040',1,'RenderOpenGL']]],
+  ['numoutbuildverts_62',['numoutbuildverts',['../RenderOpenGL_8cpp.html#a499b0c70e74f9bac98059166082b490f',1,'RenderOpenGL.cpp']]],
+  ['numterraintexloaded_63',['numterraintexloaded',['../classRenderOpenGL.html#a2c79443fe4f2ae353873c47007f027ab',1,'RenderOpenGL']]],
+  ['numvertices_64',['NumVertices',['../structLightmap.html#a6a01d0deb6f394815923c6cb49718d1e',1,'Lightmap']]]
 ];

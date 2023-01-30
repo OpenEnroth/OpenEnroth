@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;1445842</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e5279d6</span>
    </div>
   </td>
  </tr>
@@ -104,8 +104,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a173793f7c47dda7a0d31f9e393803ae4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a658d6ecee3095a2d8afcf43ca3fe739e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLODFile__Sprites.html#a658d6ecee3095a2d8afcf43ca3fe739e">LoadSpriteFromFile</a> (<a class="el" href="structLODSprite.html">LODSprite</a> *pSpriteHeader, const std::string &amp;pContainer)</td></tr>
 <tr class="separator:a658d6ecee3095a2d8afcf43ca3fe739e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad6416428d92e2dbc2a3f2d11f5b9a598"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLODFile__Sprites.html#ad6416428d92e2dbc2a3f2d11f5b9a598">LoadSprites</a> (const std::string &amp;pFilename)</td></tr>
-<tr class="separator:ad6416428d92e2dbc2a3f2d11f5b9a598"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ebe208ac31b99cefa1d33bf95ed0141"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLODFile__Sprites.html#a5ebe208ac31b99cefa1d33bf95ed0141">Load</a> (const std::string &amp;pFilename, const std::string &amp;folder)</td></tr>
+<tr class="separator:a5ebe208ac31b99cefa1d33bf95ed0141"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9196ad3e3bbbfe3a18751a754aff5661"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLODFile__Sprites.html#a9196ad3e3bbbfe3a18751a754aff5661">LoadSprite</a> (const char *<a class="el" href="classLOD_1_1File.html#a8f2c9f8cbbf6c07c7c9d285c6da04846">pContainerName</a>, unsigned int uPaletteID)</td></tr>
 <tr class="separator:a9196ad3e3bbbfe3a18751a754aff5661"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a576c4bb326c85f81c1b6c37c2c6a51de"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSprite.html">Sprite</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLODFile__Sprites.html#a576c4bb326c85f81c1b6c37c2c6a51de">GetSprite</a> (std::string_view <a class="el" href="classLOD_1_1File.html#a8f2c9f8cbbf6c07c7c9d285c6da04846">pContainerName</a>)</td></tr>
@@ -367,6 +367,34 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a id="a5ebe208ac31b99cefa1d33bf95ed0141" name="a5ebe208ac31b99cefa1d33bf95ed0141"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ebe208ac31b99cefa1d33bf95ed0141">&#9670;&#160;</a></span>Load()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LODFile_Sprites::Load </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>pFilename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>folder</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a9196ad3e3bbbfe3a18751a754aff5661" name="a9196ad3e3bbbfe3a18751a754aff5661"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9196ad3e3bbbfe3a18751a754aff5661">&#9670;&#160;</a></span>LoadSprite()</h2>
 
@@ -417,24 +445,6 @@ Additional Inherited Members</h2></td></tr>
           <td></td>
           <td>)</td>
           <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ad6416428d92e2dbc2a3f2d11f5b9a598" name="ad6416428d92e2dbc2a3f2d11f5b9a598"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad6416428d92e2dbc2a3f2d11f5b9a598">&#9670;&#160;</a></span>LoadSprites()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool LODFile_Sprites::LoadSprites </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>pFilename</em></td><td>)</td>
-          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
