@@ -701,11 +701,11 @@ bool Player::CanFitItem(unsigned int uSlot, ITEM_TYPE uItemID) {
 
     Assert(slotHeight > 0 && slotWidth > 0,
            "Items should have nonzero dimensions");
-    if ((slotWidth + uSlot % INVETORYSLOTSWIDTH) <= INVETORYSLOTSWIDTH &&
-        (slotHeight + uSlot / INVETORYSLOTSWIDTH) <= INVETORYSLOTSHEIGHT) {
+    if ((slotWidth + uSlot % INVENTORY_SLOTS_WIDTH) <= INVENTORY_SLOTS_WIDTH &&
+        (slotHeight + uSlot / INVENTORY_SLOTS_WIDTH) <= INVENTORY_SLOTS_HEIGHT) {
         for (unsigned int x = 0; x < slotWidth; x++) {
             for (unsigned int y = 0; y < slotHeight; y++) {
-                if (pInventoryMatrix[y * INVETORYSLOTSWIDTH + x + uSlot] != 0) {
+                if (pInventoryMatrix[y * INVENTORY_SLOTS_WIDTH + x + uSlot] != 0) {
                     return false;
                 }
             }
@@ -772,12 +772,12 @@ void Player::WearItem(ITEM_TYPE uItemID) {
 int Player::AddItem(int index, ITEM_TYPE uItemID) {
     if (uItemID == ITEM_NULL) return 0;
     if (index == -1) {  // no location specified - search for space
-        for (int xcoord = 0; xcoord < INVETORYSLOTSWIDTH; xcoord++) {
-            for (int ycoord = 0; ycoord < INVETORYSLOTSHEIGHT; ycoord++) {
-                if (CanFitItem(ycoord * INVETORYSLOTSWIDTH + xcoord,
+        for (int xcoord = 0; xcoord < INVENTORY_SLOTS_WIDTH; xcoord++) {
+            for (int ycoord = 0; ycoord < INVENTORY_SLOTS_HEIGHT; ycoord++) {
+                if (CanFitItem(ycoord * INVENTORY_SLOTS_WIDTH + xcoord,
                                uItemID)) {  // found space
                     return CreateItemInInventory(
-                        ycoord * INVETORYSLOTSWIDTH + xcoord, uItemID);
+                        ycoord * INVENTORY_SLOTS_WIDTH + xcoord, uItemID);
                 }
             }
         }
@@ -799,12 +799,12 @@ int Player::AddItem2(int index, ItemGen* Src) {  // are both required - check
     pItemTable->SetSpecialBonus(Src);
 
     if (index == -1) {  // no loaction specified
-        for (int xcoord = 0; xcoord < INVETORYSLOTSWIDTH; xcoord++) {
-            for (int ycoord = 0; ycoord < INVETORYSLOTSHEIGHT; ycoord++) {
-                if (CanFitItem(ycoord * INVETORYSLOTSWIDTH + xcoord,
+        for (int xcoord = 0; xcoord < INVENTORY_SLOTS_WIDTH; xcoord++) {
+            for (int ycoord = 0; ycoord < INVENTORY_SLOTS_HEIGHT; ycoord++) {
+                if (CanFitItem(ycoord * INVENTORY_SLOTS_WIDTH + xcoord,
                                Src->uItemID)) {  // found space
                     return CreateItemInInventory2(
-                        ycoord * INVETORYSLOTSWIDTH + xcoord, Src);
+                        ycoord * INVENTORY_SLOTS_WIDTH + xcoord, Src);
                 }
             }
         }
@@ -851,7 +851,7 @@ void Player::PutItemArInventoryIndex(
                      slot_width);  // TODO(_): try to come up with a better
                                    // solution. negative values are used when
                                    // drawing the inventory - nothing is drawn
-            pInvPos += INVETORYSLOTSWIDTH;
+            pInvPos += INVENTORY_SLOTS_WIDTH;
         }
     }
 
@@ -877,7 +877,7 @@ void Player::RemoveItemAtInventoryIndex(unsigned int index) {
         int* pInvPos = &pInventoryMatrix[index];
         for (unsigned int i = 0; i < slot_height; i++) {
             memset32(pInvPos, 0, slot_width);
-            pInvPos += INVETORYSLOTSWIDTH;
+            pInvPos += INVENTORY_SLOTS_WIDTH;
         }
     }
 }
@@ -7189,10 +7189,10 @@ void Player::OnInventoryLeftClick() {
 
         int inventoryYCoord = (pY - 17) / 32;
         int inventoryXCoord = (pX - 14) / 32;
-        int invMatrixIndex = inventoryXCoord + (INVETORYSLOTSWIDTH * inventoryYCoord);
+        int invMatrixIndex = inventoryXCoord + (INVENTORY_SLOTS_WIDTH * inventoryYCoord);
 
-        if (inventoryYCoord >= 0 && inventoryYCoord < INVETORYSLOTSHEIGHT &&
-            inventoryXCoord >= 0 && inventoryXCoord < INVETORYSLOTSWIDTH) {
+        if (inventoryYCoord >= 0 && inventoryYCoord < INVENTORY_SLOTS_HEIGHT &&
+            inventoryXCoord >= 0 && inventoryXCoord < INVENTORY_SLOTS_WIDTH) {
             if (_50C9A0_IsEnchantingInProgress) {
                 unsigned int enchantedItemPos = this->GetItemListAtInventoryIndex(invMatrixIndex);
 

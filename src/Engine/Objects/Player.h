@@ -147,11 +147,11 @@ class PlayerConditions {
 
 
 struct Player {
-    static const unsigned int INVETORYSLOTSWIDTH = 14;
-    static const unsigned int INVETORYSLOTSHEIGHT = 9;
+    static const unsigned int INVENTORY_SLOTS_WIDTH = 14;
+    static const unsigned int INVENTORY_SLOTS_HEIGHT = 9;
 
     // Maximum number of items the player inventory can hold
-    static const unsigned int INVENTORY_SLOT_COUNT = INVETORYSLOTSWIDTH*INVETORYSLOTSHEIGHT;
+    static const unsigned int INVENTORY_SLOT_COUNT = INVENTORY_SLOTS_WIDTH*INVENTORY_SLOTS_HEIGHT;
     static const unsigned int ADDITIONAL_SLOT_COUNT = 12; // TODO: investigate, these look unused
     static const unsigned int TOTAL_ITEM_SLOT_COUNT = INVENTORY_SLOT_COUNT + ADDITIONAL_SLOT_COUNT;
 
