@@ -18,7 +18,7 @@ var searchData=
   ['hide_5fcard_5fanim_5fstart_15',['hide_card_anim_start',['../Arcomage_8cpp.html#a9bf9272a1fd53d48c201ff380fb53ead',1,'Arcomage.cpp']]],
   ['hirelingscrollposition_16',['hirelingScrollPosition',['../structParty.html#a9c7d0f2cdf2357565052b81d024ce813',1,'Party::hirelingScrollPosition()'],['../structParty__MM7.html#a1483a976f8306f33339dc3d5d416c29f',1,'Party_MM7::hirelingScrollPosition()']]],
   ['history_17',['History',['../classApplication_1_1GameConfig_1_1Gamepad.html#ab6f8e23043b63b9faa814026a2acd72f',1,'Application::GameConfig::Gamepad::History()'],['../classApplication_1_1GameConfig_1_1Keybindings.html#a58daa56cf7339824f1893e0bced8ac2f',1,'Application::GameConfig::Keybindings::History()']]],
-  ['historyeventtimes_18',['HistoryEventTimes',['../structPartyTimeStruct__MM7.html#a312eb75d1eeebe324f800a8b5d169212',1,'PartyTimeStruct_MM7::HistoryEventTimes()'],['../structPartyTimeStruct.html#a2866b9e52d33fc9925ebd3b21ebb8813',1,'PartyTimeStruct::HistoryEventTimes()']]],
+  ['historyeventtimes_18',['HistoryEventTimes',['../structPartyTimeStruct.html#a2866b9e52d33fc9925ebd3b21ebb8813',1,'PartyTimeStruct::HistoryEventTimes()'],['../structPartyTimeStruct__MM7.html#a312eb75d1eeebe324f800a8b5d169212',1,'PartyTimeStruct_MM7::HistoryEventTimes()']]],
   ['hotkeys_19',['hotkeys',['../Nuklear_8cpp.html#a47d7359ae2b6b4e1cef094ac9838bb5e',1,'Nuklear.cpp']]],
   ['hour_20',['Hour',['../structTimer.html#aece83d6a9db76b82a8d36c92666fead2',1,'Timer']]],
   ['hourglass_5ficon_5fidx_21',['hourglass_icon_idx',['../mm7__data_8h.html#a32256751cfd75a6e510924369c9ca385',1,'hourglass_icon_idx():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#a32256751cfd75a6e510924369c9ca385',1,'hourglass_icon_idx():&#160;mm7_data.cpp']]],
@@ -28,12 +28,11 @@ var searchData=
   ['housemoviex2_25',['HouseMovieX2',['../classApplication_1_1GameConfig_1_1Graphics.html#adc4d288d4d9668b5873eab89055c7670',1,'Application::GameConfig::Graphics']]],
   ['housemoviey1_26',['HouseMovieY1',['../classApplication_1_1GameConfig_1_1Graphics.html#a23a4e7559771fd16adeb7ad41292e727',1,'Application::GameConfig::Graphics']]],
   ['housemoviey2_27',['HouseMovieY2',['../classApplication_1_1GameConfig_1_1Graphics.html#a473b8143ad611fe6cf32f3667cb0ded0',1,'Application::GameConfig::Graphics']]],
-  ['housenpcdata_28',['HouseNPCData',['../mm7__data_8h.html#ac93254c7952fa50ba081cf89b6602251',1,'HouseNPCData():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#ac93254c7952fa50ba081cf89b6602251',1,'HouseNPCData():&#160;mm7_data.cpp']]],
-  ['housenpcportraitsbuttonslist_29',['HouseNPCPortraitsButtonsList',['../mm7__data_8h.html#ad2210b7fb396df6fdfda22d3041a9018',1,'HouseNPCPortraitsButtonsList():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#ad2210b7fb396df6fdfda22d3041a9018',1,'HouseNPCPortraitsButtonsList():&#160;mm7_data.cpp']]],
+  ['housenpcdata_28',['HouseNPCData',['../mm7__data_8cpp.html#ac93254c7952fa50ba081cf89b6602251',1,'HouseNPCData():&#160;mm7_data.cpp'],['../mm7__data_8h.html#ac93254c7952fa50ba081cf89b6602251',1,'HouseNPCData():&#160;mm7_data.cpp']]],
+  ['housenpcportraitsbuttonslist_29',['HouseNPCPortraitsButtonsList',['../mm7__data_8cpp.html#ad2210b7fb396df6fdfda22d3041a9018',1,'HouseNPCPortraitsButtonsList():&#160;mm7_data.cpp'],['../mm7__data_8h.html#ad2210b7fb396df6fdfda22d3041a9018',1,'HouseNPCPortraitsButtonsList():&#160;mm7_data.cpp']]],
   ['hres_30',['hres',['../structPCXHeader.html#a182817b2b03ff8e33f15b0122c859a19',1,'PCXHeader']]],
   ['hw_5fsprites_31',['hw_sprites',['../classSpriteFrame.html#a570870a98efb87232e903eaf9dd1b3c0',1,'SpriteFrame']]],
-  ['hwindow_32',['hWindow',['../classRenderD3D.html#aa0ab2f223764e67570f5543ce50c4737',1,'RenderD3D']]],
-  ['hwlbitmaps_33',['HWLBitmaps',['../classApplication_1_1GameConfig_1_1Graphics.html#aac7fcaad9036805d16ed3601ae280235',1,'Application::GameConfig::Graphics']]],
-  ['hwlsprites_34',['HWLSprites',['../classApplication_1_1GameConfig_1_1Graphics.html#a264fb384bd078e863295129d4d58bcfa',1,'Application::GameConfig::Graphics']]],
-  ['hwsprite_35',['hwsprite',['../structRenderBillboard.html#a0a19983757101fd9c21b5859f972b901',1,'RenderBillboard']]]
+  ['hwlbitmaps_32',['HWLBitmaps',['../classApplication_1_1GameConfig_1_1Graphics.html#aac7fcaad9036805d16ed3601ae280235',1,'Application::GameConfig::Graphics']]],
+  ['hwlsprites_33',['HWLSprites',['../classApplication_1_1GameConfig_1_1Graphics.html#a264fb384bd078e863295129d4d58bcfa',1,'Application::GameConfig::Graphics']]],
+  ['hwsprite_34',['hwsprite',['../structRenderBillboard.html#a0a19983757101fd9c21b5859f972b901',1,'RenderBillboard']]]
 ];

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;323a3dc</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;1445842</span>
    </div>
   </td>
  </tr>
@@ -168,8 +168,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a07e139a78dc3ac8bbec6fdf806c98f11"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a415ca8b0ba13c0f8c390855ba589eade"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a415ca8b0ba13c0f8c390855ba589eade">EndLines2D</a> () override</td></tr>
 <tr class="separator:a415ca8b0ba13c0f8c390855ba589eade"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40875eeba9e1a8e53c6080f4bd96b359"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a40875eeba9e1a8e53c6080f4bd96b359">RasterLine2D</a> (signed int uX, signed int uY, signed int uZ, signed int uW, uint16_t uColor) override</td></tr>
-<tr class="separator:a40875eeba9e1a8e53c6080f4bd96b359"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98ba54dfa4983f4549d91334ca20f030"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a98ba54dfa4983f4549d91334ca20f030">RasterLine2D</a> (signed int uX, signed int uY, signed int uZ, signed int uW, uint32_t uColor32) override</td></tr>
+<tr class="separator:a98ba54dfa4983f4549d91334ca20f030"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac6bbf17c88a900bc295df3c33a687ba"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#aac6bbf17c88a900bc295df3c33a687ba">DrawLines</a> (const <a class="el" href="structRenderVertexD3D3.html">RenderVertexD3D3</a> *vertices, unsigned int num_vertices) override</td></tr>
+<tr class="separator:aac6bbf17c88a900bc295df3c33a687ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a36cd35914683ad6dd51572fb80c71787"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a36cd35914683ad6dd51572fb80c71787">ClearZBuffer</a> () override</td></tr>
 <tr class="separator:a36cd35914683ad6dd51572fb80c71787"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec23e305f7263d783cc2229ca121f04a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#aec23e305f7263d783cc2229ca121f04a">RestoreFrontBuffer</a> () override</td></tr>
@@ -182,12 +184,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a9aefc35f4aa9ffc09ee9bb906b21b6de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a337c80ef40525d3eceb0ce8134548317"><td class="memItemLeft" align="right" valign="top">virtual unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a337c80ef40525d3eceb0ce8134548317">GetActorTintColor</a> (int DimLevel, int tint, float WorldViewX, int a5, <a class="el" href="structRenderBillboard.html">RenderBillboard</a> *Billboard) override</td></tr>
 <tr class="separator:a337c80ef40525d3eceb0ce8134548317"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afae924c202397c5f04e6edc14e9912d0"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#afae924c202397c5f04e6edc14e9912d0">DrawPolygon</a> (struct <a class="el" href="structPolygon.html">Polygon</a> *a3) override</td></tr>
-<tr class="separator:afae924c202397c5f04e6edc14e9912d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89bfd46d0d1dca5fff0cf95fd701d0f1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a89bfd46d0d1dca5fff0cf95fd701d0f1">DrawTerrainPolygon</a> (struct <a class="el" href="structPolygon.html">Polygon</a> *a4, bool transparent, bool clampAtTextureBorders) override</td></tr>
 <tr class="separator:a89bfd46d0d1dca5fff0cf95fd701d0f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae2f11a5d85ac75992fd4c77038deddc"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#aae2f11a5d85ac75992fd4c77038deddc">DrawIndoorPolygon</a> (unsigned int uNumVertices, struct <a class="el" href="structBLVFace.html">BLVFace</a> *a3, int uPackedID, unsigned int uColor, int a8) override</td></tr>
-<tr class="separator:aae2f11a5d85ac75992fd4c77038deddc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8dd9775c300b1713a64ee23967e9b7f5"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a8dd9775c300b1713a64ee23967e9b7f5">DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene</a> () override</td></tr>
 <tr class="separator:a8dd9775c300b1713a64ee23967e9b7f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a46cd0a27ecc368ebc4ce34dec48306"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a0a46cd0a27ecc368ebc4ce34dec48306">BillboardSphereSpellFX</a> (struct <a class="el" href="structSpellFX__Billboard.html">SpellFX_Billboard</a> *a1, int diffuse) override</td></tr>
@@ -204,8 +202,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ab44a3c0299f08a3506a2e9ee8f091a3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a31e67db7bd84446728a52a04b9fab87d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a31e67db7bd84446728a52a04b9fab87d">BeginScene</a> () override</td></tr>
 <tr class="separator:a31e67db7bd84446728a52a04b9fab87d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a39e594bbcfb3115277ee78a330b89dd1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a39e594bbcfb3115277ee78a330b89dd1">EndScene</a> () override</td></tr>
-<tr class="separator:a39e594bbcfb3115277ee78a330b89dd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc13193b4f7d39d22a95f7a95abc3605"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#adc13193b4f7d39d22a95f7a95abc3605">ScreenFade</a> (unsigned int color, float t) override</td></tr>
 <tr class="separator:adc13193b4f7d39d22a95f7a95abc3605"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca4475d1cdf9c3edc2fc0f86b06ec76c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#aca4475d1cdf9c3edc2fc0f86b06ec76c">SetUIClipRect</a> (unsigned int uX, unsigned int uY, unsigned int uZ, unsigned int uW) override</td></tr>
@@ -214,14 +210,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a514359050133bef6213a7d054a5617e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a61b35ec9ac408a75e7138308d51d9788"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a61b35ec9ac408a75e7138308d51d9788">DrawTextureNew</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, class <a class="el" href="classImage.html">Image</a> *, uint32_t colourmask=0xFFFFFFFF) override</td></tr>
 <tr class="separator:a61b35ec9ac408a75e7138308d51d9788"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a95ac5354e46d143f9fe373ca71fd6812"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a95ac5354e46d143f9fe373ca71fd6812">DrawTextureAlphaNew</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, class <a class="el" href="classImage.html">Image</a> *) override</td></tr>
-<tr class="separator:a95ac5354e46d143f9fe373ca71fd6812"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9fe56298594fdb8b372cea0f11d5febc"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a9fe56298594fdb8b372cea0f11d5febc">DrawTextureCustomHeight</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, class <a class="el" href="classImage.html">Image</a> *, int height) override</td></tr>
 <tr class="separator:a9fe56298594fdb8b372cea0f11d5febc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a557b64d91d1e69a831e34acc9fa58c52"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a557b64d91d1e69a831e34acc9fa58c52">DrawTextureOffset</a> (int x, int y, int offset_x, int offset_y, <a class="el" href="classImage.html">Image</a> *) override</td></tr>
 <tr class="separator:a557b64d91d1e69a831e34acc9fa58c52"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae7fe3c8ee61aaeb1a431b9722fe33981"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#ae7fe3c8ee61aaeb1a431b9722fe33981">DrawImage</a> (<a class="el" href="classImage.html">Image</a> *, const <a class="el" href="Rect_8h.html#a32073cc1967b01302be5d39e09079649">Recti</a> &amp;rect, <a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a> paletteid=0) override</td></tr>
-<tr class="separator:ae7fe3c8ee61aaeb1a431b9722fe33981"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a917285f3fa16ba634d6681cb013ed7fb"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a917285f3fa16ba634d6681cb013ed7fb">DrawImage</a> (<a class="el" href="classImage.html">Image</a> *, const <a class="el" href="Rect_8h.html#a32073cc1967b01302be5d39e09079649">Recti</a> &amp;rect, <a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a> paletteid=0, uint32_t colourmask32=0xFFFFFFFF) override</td></tr>
+<tr class="separator:a917285f3fa16ba634d6681cb013ed7fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9cbaafdec54e8dffeb0aa042ee9a702c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a9cbaafdec54e8dffeb0aa042ee9a702c">ZDrawTextureAlpha</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, <a class="el" href="classImage.html">Image</a> *pTexture, int zVal) override</td></tr>
 <tr class="separator:a9cbaafdec54e8dffeb0aa042ee9a702c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae0168a288d9f1ad7423a34dd26cec7ff"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#ae0168a288d9f1ad7423a34dd26cec7ff">BlendTextures</a> (int a2, int a3, <a class="el" href="classImage.html">Image</a> *a4, <a class="el" href="classImage.html">Image</a> *a5, int t, int start_opacity, int end_opacity) override</td></tr>
@@ -230,28 +224,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ae25459620b2d463909fe4b974cbf7228"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af9da44f74406699095fd64848979a08c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#af9da44f74406699095fd64848979a08c">DrawMonsterPortrait</a> (<a class="el" href="Rect_8h.html#a32073cc1967b01302be5d39e09079649">Recti</a> rc, <a class="el" href="classSpriteFrame.html">SpriteFrame</a> *Portrait_Sprite, int Y_Offset) override</td></tr>
 <tr class="separator:af9da44f74406699095fd64848979a08c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abbb2656561effa3e6164b97dc868bfd8"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#abbb2656561effa3e6164b97dc868bfd8">MaskGameViewport</a> () override</td></tr>
-<tr class="separator:abbb2656561effa3e6164b97dc868bfd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2d4b8c68d672d182a1f248ba837ba54"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#ab2d4b8c68d672d182a1f248ba837ba54">DrawMasked</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, class <a class="el" href="classImage.html">Image</a> *<a class="el" href="structimg.html">img</a>, unsigned int color_dimming_level, uint16_t mask) override</td></tr>
-<tr class="separator:ab2d4b8c68d672d182a1f248ba837ba54"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5665ff2490abffcbd593e9414860519b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a5665ff2490abffcbd593e9414860519b">DrawTextureGrayShade</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, class <a class="el" href="classImage.html">Image</a> *a4) override</td></tr>
-<tr class="separator:a5665ff2490abffcbd593e9414860519b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4db74c39ae54d9384160333132c9da3b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a4db74c39ae54d9384160333132c9da3b">DrawTransparentRedShade</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, class <a class="el" href="classImage.html">Image</a> *a4) override</td></tr>
-<tr class="separator:a4db74c39ae54d9384160333132c9da3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71db26761bab9bab008ad408dc86d6e3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a71db26761bab9bab008ad408dc86d6e3">DrawTransparentGreenShade</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, class <a class="el" href="classImage.html">Image</a> *pTexture) override</td></tr>
-<tr class="separator:a71db26761bab9bab008ad408dc86d6e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aea39f88a5d5712691f9fa341ee29e4a9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#aea39f88a5d5712691f9fa341ee29e4a9">DrawTextAlpha</a> (int x, int y, unsigned char *font_pixels, int a5, unsigned int uFontHeight, uint8_t *pPalette, bool present_time_transparency) override</td></tr>
-<tr class="separator:aea39f88a5d5712691f9fa341ee29e4a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa966afa89b0f4c7aff4f725c38c982fa"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#aa966afa89b0f4c7aff4f725c38c982fa">DrawText</a> (int uOutX, int uOutY, uint8_t *pFontPixels, unsigned int uCharWidth, unsigned int uCharHeight, uint8_t *pFontPalette, uint16_t uFaceColor, uint16_t uShadowColor) override</td></tr>
-<tr class="separator:aa966afa89b0f4c7aff4f725c38c982fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a4dd444b432ddfd186bb9b6739e3c57"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a0a4dd444b432ddfd186bb9b6739e3c57">BeginTextNew</a> (<a class="el" href="classTexture.html">Texture</a> *<a class="el" href="AppleLibcxxAssertionTest_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, <a class="el" href="classTexture.html">Texture</a> *shadow) override</td></tr>
 <tr class="separator:a0a4dd444b432ddfd186bb9b6739e3c57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a77c69aa01127fd4ad0c85a658a8bb7f9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a77c69aa01127fd4ad0c85a658a8bb7f9">EndTextNew</a> () override</td></tr>
 <tr class="separator:a77c69aa01127fd4ad0c85a658a8bb7f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae40b06227e1079978116c84af1666628"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#ae40b06227e1079978116c84af1666628">DrawTextNew</a> (int x, int y, int w, int h, float u1, float v1, float u2, float v2, int isshadow, uint16_t colour) override</td></tr>
 <tr class="separator:ae40b06227e1079978116c84af1666628"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7f3b33526523d2126f46b418da56c92"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#af7f3b33526523d2126f46b418da56c92">FillRectFast</a> (unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, unsigned int uColor16) override</td></tr>
-<tr class="separator:af7f3b33526523d2126f46b418da56c92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f227c4d5d5f7845ea883b5ba55783f6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a4f227c4d5d5f7845ea883b5ba55783f6">FillRectFast</a> (unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, uint32_t uColor32) override</td></tr>
+<tr class="separator:a4f227c4d5d5f7845ea883b5ba55783f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af819f522929a1bffe84dcce2002ea6c9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#af819f522929a1bffe84dcce2002ea6c9">DrawOutdoorBuildings</a> () override</td></tr>
 <tr class="separator:af819f522929a1bffe84dcce2002ea6c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad81704f057e36a32d749832ac905c8f9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#ad81704f057e36a32d749832ac905c8f9">DrawIndoorSky</a> (unsigned int uNumVertices, unsigned int uFaceID) override</td></tr>
@@ -282,18 +262,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a37811ee0f0225a5f9f3e89b3e8592362"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6cde7987a168f380cd2acb6e8e40a011"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a6cde7987a168f380cd2acb6e8e40a011">DrawDecal</a> (struct <a class="el" href="structDecal.html">Decal</a> *pDecal, float z_bias) override</td></tr>
 <tr class="separator:a6cde7987a168f380cd2acb6e8e40a011"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab641b353fda7f1c4dd1016049aba93e8"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#ab641b353fda7f1c4dd1016049aba93e8">Do_draw_debug_line_d3d</a> (const <a class="el" href="structRenderVertexD3D3.html">RenderVertexD3D3</a> *pLineBegin, signed int sDiffuseBegin, const <a class="el" href="structRenderVertexD3D3.html">RenderVertexD3D3</a> *pLineEnd, signed int sDiffuseEnd, float z_stuff) override</td></tr>
-<tr class="separator:ab641b353fda7f1c4dd1016049aba93e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac6bbf17c88a900bc295df3c33a687ba"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#aac6bbf17c88a900bc295df3c33a687ba">DrawLines</a> (const <a class="el" href="structRenderVertexD3D3.html">RenderVertexD3D3</a> *vertices, unsigned int num_vertices) override</td></tr>
-<tr class="separator:aac6bbf17c88a900bc295df3c33a687ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af8ce914580cadaafcdd6e8aef1342000"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#af8ce914580cadaafcdd6e8aef1342000">DrawSpecialEffectsQuad</a> (const <a class="el" href="structRenderVertexD3D3.html">RenderVertexD3D3</a> *vertices, <a class="el" href="classTexture.html">Texture</a> *texture) override</td></tr>
-<tr class="separator:af8ce914580cadaafcdd6e8aef1342000"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a108f48aade1741d967b97136e8f13ce1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a108f48aade1741d967b97136e8f13ce1">DrawSpecialEffectsQuad</a> (<a class="el" href="classTexture.html">Texture</a> *texture, int palette) override</td></tr>
+<tr class="separator:a108f48aade1741d967b97136e8f13ce1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a97e7ec1974101112bdd541e3d11007be"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a97e7ec1974101112bdd541e3d11007be">DrawFromSpriteSheet</a> (<a class="el" href="Rect_8h.html#a32073cc1967b01302be5d39e09079649">Recti</a> *pSrcRect, <a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> *pTargetPoint, int a3, int blend_mode) override</td></tr>
 <tr class="separator:a97e7ec1974101112bdd541e3d11007be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a92b1624e769834693682b7e81c50380f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a92b1624e769834693682b7e81c50380f">DrawIndoorFaces</a> () override</td></tr>
 <tr class="separator:a92b1624e769834693682b7e81c50380f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad4f6d3336bfa4a87bd65ff9a23a7a069"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#ad4f6d3336bfa4a87bd65ff9a23a7a069">DrawIndoorBatched</a> () override</td></tr>
-<tr class="separator:ad4f6d3336bfa4a87bd65ff9a23a7a069"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa556fc14c717fed7a8b1398d6b7c3ffc"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#aa556fc14c717fed7a8b1398d6b7c3ffc">ReleaseTerrain</a> () override</td></tr>
 <tr class="separator:aa556fc14c717fed7a8b1398d6b7c3ffc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74fbd33814ccb643ba4b9d65520a194e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a74fbd33814ccb643ba4b9d65520a194e">ReleaseBSP</a> () override</td></tr>
@@ -310,8 +284,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a28abad44f730464c5f8956b8721c9402"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a278be3592b53f85bca6ab1195536c335"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a278be3592b53f85bca6ab1195536c335">ReloadShaders</a> () override</td></tr>
 <tr class="separator:a278be3592b53f85bca6ab1195536c335"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad142ea5ec19f9d9ad290c5fb4c6a3ee2"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#ad142ea5ec19f9d9ad290c5fb4c6a3ee2">WritePixel16</a> (int x, int y, uint16_t color) override</td></tr>
-<tr class="separator:ad142ea5ec19f9d9ad290c5fb4c6a3ee2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classRenderBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classRenderBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classRenderBase.html">RenderBase</a></td></tr>
 <tr class="memitem:ade4b99435dfc059ebfbbe2fdbea830ac inherit pub_methods_classRenderBase"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderBase.html#ade4b99435dfc059ebfbbe2fdbea830ac">RenderBase</a> (std::shared_ptr&lt; <a class="el" href="classApplication_1_1GameConfig.html">Application::GameConfig</a> &gt; <a class="el" href="classIRender.html#a84a2d7552b15274729ce23439dfe69af">config</a>, <a class="el" href="structDecalBuilder.html">DecalBuilder</a> *<a class="el" href="classIRender.html#a8128322c20f1c59dad1664f556c5c8ba">decal_builder</a>, <a class="el" href="classLightmapBuilder.html">LightmapBuilder</a> *<a class="el" href="classIRender.html#aa2ce43d56c21ebb170d03bfdb7509a2e">lightmap_builder</a>, <a class="el" href="structSpellFxRenderer.html">SpellFxRenderer</a> *spellfx, std::shared_ptr&lt; <a class="el" href="classParticleEngine.html">ParticleEngine</a> &gt; <a class="el" href="classIRender.html#a781bd56457da88552d3078a0d976d0d0">particle_engine</a>, <a class="el" href="classVis.html">Vis</a> *<a class="el" href="classIRender.html#a2aface712c4c3dbfb2bfa7811095b9dc">vis</a>, <a class="el" href="classLogger.html">Logger</a> *<a class="el" href="Engine_2IocContainer_8cpp.html#a0009c186c3629201f6c24eded36605f4">logger</a>)</td></tr>
 <tr class="separator:ade4b99435dfc059ebfbbe2fdbea830ac inherit pub_methods_classRenderBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -341,6 +313,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ad8ae971540bc9f7e893505ad692ee493 inherit pub_methods_classRenderBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b7ad285d8af8518426617a485d5ec06 inherit pub_methods_classRenderBase"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classImage.html">Image</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderBase.html#a2b7ad285d8af8518426617a485d5ec06">TakeScreenshot</a> (unsigned int width, unsigned int height) override</td></tr>
 <tr class="separator:a2b7ad285d8af8518426617a485d5ec06 inherit pub_methods_classRenderBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc7b3cf86b2a20c4a511bfa8eec8d9b4 inherit pub_methods_classRenderBase"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderBase.html#abc7b3cf86b2a20c4a511bfa8eec8d9b4">DrawMasked</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, class <a class="el" href="classImage.html">Image</a> *<a class="el" href="structimg.html">img</a>, unsigned int color_dimming_level, uint32_t mask=0xFFFFFFFF) override</td></tr>
+<tr class="separator:abc7b3cf86b2a20c4a511bfa8eec8d9b4 inherit pub_methods_classRenderBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9d9ac13f4a69b97864d37512601f6ef inherit pub_methods_classRenderBase"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderBase.html#ac9d9ac13f4a69b97864d37512601f6ef">DrawTextureGrayShade</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, class <a class="el" href="classImage.html">Image</a> *a4) override</td></tr>
+<tr class="separator:ac9d9ac13f4a69b97864d37512601f6ef inherit pub_methods_classRenderBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1333f008eff28079311f5f430b75a60 inherit pub_methods_classRenderBase"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderBase.html#aa1333f008eff28079311f5f430b75a60">DrawTransparentRedShade</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, class <a class="el" href="classImage.html">Image</a> *a4) override</td></tr>
+<tr class="separator:aa1333f008eff28079311f5f430b75a60 inherit pub_methods_classRenderBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af17a7d48989ff3e1d5fd6dde127b371d inherit pub_methods_classRenderBase"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderBase.html#af17a7d48989ff3e1d5fd6dde127b371d">DrawTransparentGreenShade</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, class <a class="el" href="classImage.html">Image</a> *pTexture) override</td></tr>
+<tr class="separator:af17a7d48989ff3e1d5fd6dde127b371d inherit pub_methods_classRenderBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classIRender"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classIRender')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classIRender.html">IRender</a></td></tr>
 <tr class="memitem:a70165e47d794fb18dba8becaf97c3d2f inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a70165e47d794fb18dba8becaf97c3d2f">IRender</a> (std::shared_ptr&lt; <a class="el" href="classApplication_1_1GameConfig.html">Application::GameConfig</a> &gt; <a class="el" href="classIRender.html#a84a2d7552b15274729ce23439dfe69af">config</a>, <a class="el" href="structDecalBuilder.html">DecalBuilder</a> *<a class="el" href="classIRender.html#a8128322c20f1c59dad1664f556c5c8ba">decal_builder</a>, <a class="el" href="classLightmapBuilder.html">LightmapBuilder</a> *<a class="el" href="classIRender.html#aa2ce43d56c21ebb170d03bfdb7509a2e">lightmap_builder</a>, <a class="el" href="structSpellFxRenderer.html">SpellFxRenderer</a> *spellfx, std::shared_ptr&lt; <a class="el" href="classParticleEngine.html">ParticleEngine</a> &gt; <a class="el" href="classIRender.html#a781bd56457da88552d3078a0d976d0d0">particle_engine</a>, <a class="el" href="classVis.html">Vis</a> *<a class="el" href="classIRender.html#a2aface712c4c3dbfb2bfa7811095b9dc">vis</a>, <a class="el" href="classLogger.html">Logger</a> *<a class="el" href="Engine_2IocContainer_8cpp.html#a0009c186c3629201f6c24eded36605f4">logger</a>)</td></tr>
 <tr class="separator:a70165e47d794fb18dba8becaf97c3d2f inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -410,8 +390,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a51fa4f6f5ce9f3e8a5843bb4c4a1ce03 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8eb256340b87af19bed6f8d4e6abd063 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a8eb256340b87af19bed6f8d4e6abd063">EndLines2D</a> ()=0</td></tr>
 <tr class="separator:a8eb256340b87af19bed6f8d4e6abd063 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2545b41e086465be6d46b25285c76118 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a2545b41e086465be6d46b25285c76118">RasterLine2D</a> (int uX, int uY, int uZ, int uW, uint16_t uColor)=0</td></tr>
-<tr class="separator:a2545b41e086465be6d46b25285c76118 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d80bb1e015914909c851cbde7e0b99a inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a8d80bb1e015914909c851cbde7e0b99a">RasterLine2D</a> (int uX, int uY, int uZ, int uW, uint32_t uColor32)=0</td></tr>
+<tr class="separator:a8d80bb1e015914909c851cbde7e0b99a inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94aefc3d0131c3860a3ce53cf8f2a2e6 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a94aefc3d0131c3860a3ce53cf8f2a2e6">DrawLines</a> (const <a class="el" href="structRenderVertexD3D3.html">RenderVertexD3D3</a> *vertices, unsigned int num_vertices)=0</td></tr>
+<tr class="separator:a94aefc3d0131c3860a3ce53cf8f2a2e6 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae857d09dd4589531f3b4423a4c848536 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#ae857d09dd4589531f3b4423a4c848536">ClearZBuffer</a> ()=0</td></tr>
 <tr class="separator:ae857d09dd4589531f3b4423a4c848536 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac2afa54348036c223204b9aa6e3eda1 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#aac2afa54348036c223204b9aa6e3eda1">RestoreFrontBuffer</a> ()=0</td></tr>
@@ -424,12 +406,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aa5ca0a14af7f2bc01995b6ade5611a1d inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5e9e3a3f7029d57af9557e97605b83e5 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a5e9e3a3f7029d57af9557e97605b83e5">GetActorTintColor</a> (int DimLevel, int tint, float WorldViewX, int a5, <a class="el" href="structRenderBillboard.html">RenderBillboard</a> *Billboard)=0</td></tr>
 <tr class="separator:a5e9e3a3f7029d57af9557e97605b83e5 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0b02b7d1c817e2aad479375c9ddfb80e inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a0b02b7d1c817e2aad479375c9ddfb80e">DrawPolygon</a> (struct <a class="el" href="structPolygon.html">Polygon</a> *a3)=0</td></tr>
-<tr class="separator:a0b02b7d1c817e2aad479375c9ddfb80e inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c34fd8ecbe93d9a2ff53833fffca2a4 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a7c34fd8ecbe93d9a2ff53833fffca2a4">DrawTerrainPolygon</a> (struct <a class="el" href="structPolygon.html">Polygon</a> *a4, bool transparent, bool clampAtTextureBorders)=0</td></tr>
 <tr class="separator:a7c34fd8ecbe93d9a2ff53833fffca2a4 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a097cf40dc7c462fe1489d8c7067781fa inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a097cf40dc7c462fe1489d8c7067781fa">DrawIndoorPolygon</a> (unsigned int uNumVertices, struct <a class="el" href="structBLVFace.html">BLVFace</a> *a3, int uPackedID, unsigned int uColor, int a8)=0</td></tr>
-<tr class="separator:a097cf40dc7c462fe1489d8c7067781fa inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e261dcefcdcd0f92386ae36b709dacd inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a2e261dcefcdcd0f92386ae36b709dacd">MakeParticleBillboardAndPush</a> (<a class="el" href="structSoftwareBillboard.html">SoftwareBillboard</a> *a2, <a class="el" href="classTexture.html">Texture</a> *texture, unsigned int uDiffuse, int angle)=0</td></tr>
 <tr class="separator:a2e261dcefcdcd0f92386ae36b709dacd inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9249171de272e485202b51cd97fd90df inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a9249171de272e485202b51cd97fd90df">GetGamma</a> ()=0</td></tr>
@@ -452,26 +430,20 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a2302c9d67381422c24b230bd7e6db46e inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a626110d608f356e7f2744d6cbee77348 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a626110d608f356e7f2744d6cbee77348">BeginScene</a> ()=0</td></tr>
 <tr class="separator:a626110d608f356e7f2744d6cbee77348 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b1adcfbaa4a19d8abc60a408d99f053 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a3b1adcfbaa4a19d8abc60a408d99f053">EndScene</a> ()=0</td></tr>
-<tr class="separator:a3b1adcfbaa4a19d8abc60a408d99f053 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a798682602c2083ac54d2fc7ce91c5f9a inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a798682602c2083ac54d2fc7ce91c5f9a">ScreenFade</a> (unsigned int color, float t)=0</td></tr>
 <tr class="separator:a798682602c2083ac54d2fc7ce91c5f9a inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd79dff022ce8a660e5928812f52cfaa inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#acd79dff022ce8a660e5928812f52cfaa">SetUIClipRect</a> (unsigned int uX, unsigned int uY, unsigned int uZ, unsigned int uW)=0</td></tr>
 <tr class="separator:acd79dff022ce8a660e5928812f52cfaa inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a230ae59fc899588a397a71ad93125996 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a230ae59fc899588a397a71ad93125996">ResetUIClipRect</a> ()=0</td></tr>
 <tr class="separator:a230ae59fc899588a397a71ad93125996 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8fe2e56097a453a29bb23d42bbe42716 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a8fe2e56097a453a29bb23d42bbe42716">MaskGameViewport</a> ()=0</td></tr>
-<tr class="separator:a8fe2e56097a453a29bb23d42bbe42716 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a745e54aa46c4e957df115695006a4e12 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a745e54aa46c4e957df115695006a4e12">DrawTextureNew</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, <a class="el" href="classImage.html">Image</a> *<a class="el" href="structimg.html">img</a>, uint32_t colourmask=0xFFFFFFFF)=0</td></tr>
-<tr class="separator:a745e54aa46c4e957df115695006a4e12 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a22785d74bc736d59bc415c6d3f52e2ba inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a22785d74bc736d59bc415c6d3f52e2ba">DrawTextureAlphaNew</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, <a class="el" href="classImage.html">Image</a> *)=0</td></tr>
-<tr class="separator:a22785d74bc736d59bc415c6d3f52e2ba inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33fb87ae78e6d8d8d422a755dc5cc4b1 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a33fb87ae78e6d8d8d422a755dc5cc4b1">DrawTextureNew</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, <a class="el" href="classImage.html">Image</a> *<a class="el" href="structimg.html">img</a>, uint32_t colourmask32=0xFFFFFFFF)=0</td></tr>
+<tr class="separator:a33fb87ae78e6d8d8d422a755dc5cc4b1 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ec2d017f277499e0318dfaec4bb3576 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a4ec2d017f277499e0318dfaec4bb3576">DrawTextureCustomHeight</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, <a class="el" href="classImage.html">Image</a> *, int height)=0</td></tr>
 <tr class="separator:a4ec2d017f277499e0318dfaec4bb3576 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af63e368492b01f930440a5e415bd6b2f inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#af63e368492b01f930440a5e415bd6b2f">DrawTextureOffset</a> (int x, int y, int offset_x, int offset_y, <a class="el" href="classImage.html">Image</a> *)=0</td></tr>
 <tr class="separator:af63e368492b01f930440a5e415bd6b2f inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c49ed5371ac956c9b2328cfca769145 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a3c49ed5371ac956c9b2328cfca769145">DrawImage</a> (<a class="el" href="classImage.html">Image</a> *, const <a class="el" href="Rect_8h.html#a32073cc1967b01302be5d39e09079649">Recti</a> &amp;rect, const <a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a> paletteid=0)=0</td></tr>
-<tr class="separator:a3c49ed5371ac956c9b2328cfca769145 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9418a82974d401b1ef640f7d28ed9588 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a9418a82974d401b1ef640f7d28ed9588">DrawImage</a> (<a class="el" href="classImage.html">Image</a> *, const <a class="el" href="Rect_8h.html#a32073cc1967b01302be5d39e09079649">Recti</a> &amp;rect, const <a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a> paletteid=0, uint32_t colourmask32=0xFFFFFFFF)=0</td></tr>
+<tr class="separator:a9418a82974d401b1ef640f7d28ed9588 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeff0f5e102c077cdfae7c8071867483a inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#aeff0f5e102c077cdfae7c8071867483a">ZDrawTextureAlpha</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, <a class="el" href="classImage.html">Image</a> *pTexture, int zVal)=0</td></tr>
 <tr class="separator:aeff0f5e102c077cdfae7c8071867483a inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a17b8e5fd61200f0d9ea272fd4771e438 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a17b8e5fd61200f0d9ea272fd4771e438">BlendTextures</a> (int a2, int a3, <a class="el" href="classImage.html">Image</a> *a4, <a class="el" href="classImage.html">Image</a> *a5, int t, int start_opacity, int end_opacity)=0</td></tr>
@@ -480,26 +452,22 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a8a5b43a4431e1bd9fbf03f13f6884348 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af83f366f1b2a0c3a4a8cc2653c7944de inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#af83f366f1b2a0c3a4a8cc2653c7944de">DrawMonsterPortrait</a> (<a class="el" href="Rect_8h.html#a32073cc1967b01302be5d39e09079649">Recti</a> rc, <a class="el" href="classSpriteFrame.html">SpriteFrame</a> *Portrait_Sprite, int Y_Offset)=0</td></tr>
 <tr class="separator:af83f366f1b2a0c3a4a8cc2653c7944de inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a13168e064b0a8d540a2af6254947b84a inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a13168e064b0a8d540a2af6254947b84a">DrawMasked</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, <a class="el" href="classImage.html">Image</a> *<a class="el" href="structimg.html">img</a>, unsigned int color_dimming_level, uint16_t mask)=0</td></tr>
-<tr class="separator:a13168e064b0a8d540a2af6254947b84a inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a224984e390750d9fb4c94dce45dfbcfc inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a224984e390750d9fb4c94dce45dfbcfc">DrawMasked</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, <a class="el" href="classImage.html">Image</a> *<a class="el" href="structimg.html">img</a>, unsigned int color_dimming_level, uint32_t mask=0xFFFFFFFF)=0</td></tr>
+<tr class="separator:a224984e390750d9fb4c94dce45dfbcfc inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9bd6d1700fdc14ea479f811fb5e4849c inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a9bd6d1700fdc14ea479f811fb5e4849c">DrawTextureGrayShade</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, <a class="el" href="classImage.html">Image</a> *a4)=0</td></tr>
 <tr class="separator:a9bd6d1700fdc14ea479f811fb5e4849c inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a39935cb163395a413a52a69680302a inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a2a39935cb163395a413a52a69680302a">DrawTransparentRedShade</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, <a class="el" href="classImage.html">Image</a> *a4)=0</td></tr>
 <tr class="separator:a2a39935cb163395a413a52a69680302a inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a34c00db99e469d009d210043ee71145a inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a34c00db99e469d009d210043ee71145a">DrawTransparentGreenShade</a> (float u, float <a class="el" href="Json__ut_8cpp.html#a3ed32accd846b2ea66b4133b8b0bacbd">v</a>, <a class="el" href="classImage.html">Image</a> *pTexture)=0</td></tr>
 <tr class="separator:a34c00db99e469d009d210043ee71145a inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9b8910af61ac244ed9da66a79b52dc4 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#ae9b8910af61ac244ed9da66a79b52dc4">DrawTextAlpha</a> (int x, int y, unsigned char *font_pixels, int a5, unsigned int uFontHeight, uint8_t *pPalette, bool present_time_transparency)=0</td></tr>
-<tr class="separator:ae9b8910af61ac244ed9da66a79b52dc4 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8921c7e64f6a121297456127df12e0fd inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a8921c7e64f6a121297456127df12e0fd">DrawText</a> (int uOutX, int uOutY, uint8_t *pFontPixels, unsigned int uCharWidth, unsigned int uCharHeight, uint8_t *pFontPalette, uint16_t uFaceColor, uint16_t uShadowColor)=0</td></tr>
-<tr class="separator:a8921c7e64f6a121297456127df12e0fd inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d12aeef8f49001d28b1ea21e61d41ba inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a4d12aeef8f49001d28b1ea21e61d41ba">BeginTextNew</a> (<a class="el" href="classTexture.html">Texture</a> *<a class="el" href="AppleLibcxxAssertionTest_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>, <a class="el" href="classTexture.html">Texture</a> *shadow)=0</td></tr>
 <tr class="separator:a4d12aeef8f49001d28b1ea21e61d41ba inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3bd88bff97a3ad1126706e4c2f31987e inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a3bd88bff97a3ad1126706e4c2f31987e">EndTextNew</a> ()=0</td></tr>
 <tr class="separator:a3bd88bff97a3ad1126706e4c2f31987e inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa32dbb28e88013053f00e26ea5be098f inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#aa32dbb28e88013053f00e26ea5be098f">DrawTextNew</a> (int x, int y, int w, int h, float u1, float v1, float u2, float v2, int isshadow, uint16_t colour)=0</td></tr>
 <tr class="separator:aa32dbb28e88013053f00e26ea5be098f inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa0222ebd6e224e60117f37f2de74c7d9 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#aa0222ebd6e224e60117f37f2de74c7d9">FillRectFast</a> (unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, unsigned int uColor16)=0</td></tr>
-<tr class="separator:aa0222ebd6e224e60117f37f2de74c7d9 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae8b68ba842678888625c03a793a304fa inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#ae8b68ba842678888625c03a793a304fa">FillRectFast</a> (unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, uint32_t uColor32)=0</td></tr>
+<tr class="separator:ae8b68ba842678888625c03a793a304fa inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87645459e4f1e8740dffe1603e27fc8b inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a87645459e4f1e8740dffe1603e27fc8b">DrawOutdoorBuildings</a> ()=0</td></tr>
 <tr class="separator:a87645459e4f1e8740dffe1603e27fc8b inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf15577a2de80a2b1f51aa87a9266706 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#acf15577a2de80a2b1f51aa87a9266706">DrawIndoorSky</a> (unsigned int uNumVertices, unsigned int uFaceID=0)=0</td></tr>
@@ -542,16 +510,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a569f637a2fa23026149a1f894fec6774 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e321251f60c4d7326bf00792b6cab7f inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a7e321251f60c4d7326bf00792b6cab7f">DrawDecal</a> (struct <a class="el" href="structDecal.html">Decal</a> *pDecal, float z_bias)=0</td></tr>
 <tr class="separator:a7e321251f60c4d7326bf00792b6cab7f inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa76ac30faaf6e9fea5d1dce04e00da6 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#afa76ac30faaf6e9fea5d1dce04e00da6">Do_draw_debug_line_d3d</a> (const <a class="el" href="structRenderVertexD3D3.html">RenderVertexD3D3</a> *pLineBegin, signed int sDiffuseBegin, const <a class="el" href="structRenderVertexD3D3.html">RenderVertexD3D3</a> *pLineEnd, signed int sDiffuseEnd, float z_stuff)=0</td></tr>
-<tr class="separator:afa76ac30faaf6e9fea5d1dce04e00da6 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a94aefc3d0131c3860a3ce53cf8f2a2e6 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a94aefc3d0131c3860a3ce53cf8f2a2e6">DrawLines</a> (const <a class="el" href="structRenderVertexD3D3.html">RenderVertexD3D3</a> *vertices, unsigned int num_vertices)=0</td></tr>
-<tr class="separator:a94aefc3d0131c3860a3ce53cf8f2a2e6 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a146a3915a6d0263df504864b8cc3c868 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a146a3915a6d0263df504864b8cc3c868">DrawSpecialEffectsQuad</a> (const <a class="el" href="structRenderVertexD3D3.html">RenderVertexD3D3</a> *vertices, <a class="el" href="classTexture.html">Texture</a> *texture)=0</td></tr>
-<tr class="separator:a146a3915a6d0263df504864b8cc3c868 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a098df8cc242f6bc70781460588be9ea4 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a098df8cc242f6bc70781460588be9ea4">DrawSpecialEffectsQuad</a> (<a class="el" href="classTexture.html">Texture</a> *texture, int palette)=0</td></tr>
+<tr class="separator:a098df8cc242f6bc70781460588be9ea4 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a23e25d8a86cb01563bcb41e8b10d18eb inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a23e25d8a86cb01563bcb41e8b10d18eb">DrawFromSpriteSheet</a> (<a class="el" href="Rect_8h.html#a32073cc1967b01302be5d39e09079649">Recti</a> *pSrcRect, <a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> *pTargetPoint, int a3, int blend_mode)=0</td></tr>
 <tr class="separator:a23e25d8a86cb01563bcb41e8b10d18eb inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf0504ab2ec2452087cbbb59d5ec035b inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#acf0504ab2ec2452087cbbb59d5ec035b">DrawIndoorBatched</a> ()=0</td></tr>
-<tr class="separator:acf0504ab2ec2452087cbbb59d5ec035b inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab10ff82ade12efd3cd9217289d4ea880 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#ab10ff82ade12efd3cd9217289d4ea880">DrawIndoorFaces</a> ()=0</td></tr>
 <tr class="separator:ab10ff82ade12efd3cd9217289d4ea880 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac446770a7f1b656ae69986b464a2e5c inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#aac446770a7f1b656ae69986b464a2e5c">ReleaseTerrain</a> ()=0</td></tr>
@@ -568,8 +530,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a8072e813db48acdecbe1016f3bae1a33 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a64b75ae58f37d81aa4b1fce9d03c3da4 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a64b75ae58f37d81aa4b1fce9d03c3da4">ReloadShaders</a> ()=0</td></tr>
 <tr class="separator:a64b75ae58f37d81aa4b1fce9d03c3da4 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a182ff1e20d7a82c6c400e8732ddfa52e inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a182ff1e20d7a82c6c400e8732ddfa52e">WritePixel16</a> (int x, int y, uint16_t color)=0</td></tr>
-<tr class="separator:a182ff1e20d7a82c6c400e8732ddfa52e inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9d83fdb5bcfc54d5a36b377dd4ce3653 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classHWLTexture.html">HWLTexture</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a9d83fdb5bcfc54d5a36b377dd4ce3653">LoadHwlBitmap</a> (const std::string &amp;name)=0</td></tr>
 <tr class="separator:a9d83fdb5bcfc54d5a36b377dd4ce3653 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac287aa07c0432e9979c49f8051818e6b inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classHWLTexture.html">HWLTexture</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#ac287aa07c0432e9979c49f8051818e6b">LoadHwlSprite</a> (const std::string &amp;name)=0</td></tr>
@@ -604,8 +564,6 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:a18f94bfc431e24e140d93e7521bd270a inherit pro_methods_classRenderBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2fffe899daa2365ffd63e61e690b4427 inherit pro_methods_classRenderBase"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderBase.html#a2fffe899daa2365ffd63e61e690b4427">TransformBillboard</a> (<a class="el" href="structSoftwareBillboard.html">SoftwareBillboard</a> *a2, <a class="el" href="structRenderBillboard.html">RenderBillboard</a> *pBillboard)</td></tr>
 <tr class="separator:a2fffe899daa2365ffd63e61e690b4427 inherit pro_methods_classRenderBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a098842ca50b330d84ab258d6e8512d4f inherit pro_methods_classRenderBase"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderBase.html#a098842ca50b330d84ab258d6e8512d4f">PostInitialization</a> ()</td></tr>
-<tr class="separator:a098842ca50b330d84ab258d6e8512d4f inherit pro_methods_classRenderBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -1855,62 +1813,6 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="ab641b353fda7f1c4dd1016049aba93e8" name="ab641b353fda7f1c4dd1016049aba93e8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab641b353fda7f1c4dd1016049aba93e8">&#9670;&#160;</a></span>Do_draw_debug_line_d3d()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void RenderOpenGL::Do_draw_debug_line_d3d </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structRenderVertexD3D3.html">RenderVertexD3D3</a> *&#160;</td>
-          <td class="paramname"><em>pLineBegin</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">signed int&#160;</td>
-          <td class="paramname"><em>sDiffuseBegin</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="structRenderVertexD3D3.html">RenderVertexD3D3</a> *&#160;</td>
-          <td class="paramname"><em>pLineEnd</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">signed int&#160;</td>
-          <td class="paramname"><em>sDiffuseEnd</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>z_stuff</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implements <a class="el" href="classIRender.html#afa76ac30faaf6e9fea5d1dce04e00da6">IRender</a>.</p>
-
-</div>
-</div>
 <a id="aa8450e2f9a2794c223a911b44c9e625d" name="aa8450e2f9a2794c223a911b44c9e625d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa8450e2f9a2794c223a911b44c9e625d">&#9670;&#160;</a></span>DoRenderBillboards_D3D()</h2>
 
@@ -2093,8 +1995,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="ae7fe3c8ee61aaeb1a431b9722fe33981" name="ae7fe3c8ee61aaeb1a431b9722fe33981"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae7fe3c8ee61aaeb1a431b9722fe33981">&#9670;&#160;</a></span>DrawImage()</h2>
+<a id="a917285f3fa16ba634d6681cb013ed7fb" name="a917285f3fa16ba634d6681cb013ed7fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a917285f3fa16ba634d6681cb013ed7fb">&#9670;&#160;</a></span>DrawImage()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2118,7 +2020,13 @@ Additional Inherited Members</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a>&#160;</td>
-          <td class="paramname"><em>paletteid</em> = <code>0</code>&#160;</td>
+          <td class="paramname"><em>paletteid</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>colourmask32</em> = <code>0xFFFFFFFF</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -2133,34 +2041,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implements <a class="el" href="classIRender.html#a3c49ed5371ac956c9b2328cfca769145">IRender</a>.</p>
-
-</div>
-</div>
-<a id="ad4f6d3336bfa4a87bd65ff9a23a7a069" name="ad4f6d3336bfa4a87bd65ff9a23a7a069"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad4f6d3336bfa4a87bd65ff9a23a7a069">&#9670;&#160;</a></span>DrawIndoorBatched()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void RenderOpenGL::DrawIndoorBatched </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implements <a class="el" href="classIRender.html#acf0504ab2ec2452087cbbb59d5ec035b">IRender</a>.</p>
+<p>Implements <a class="el" href="classIRender.html#a9418a82974d401b1ef640f7d28ed9588">IRender</a>.</p>
 
 </div>
 </div>
@@ -2188,62 +2069,6 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Implements <a class="el" href="classIRender.html#ab10ff82ade12efd3cd9217289d4ea880">IRender</a>.</p>
-
-</div>
-</div>
-<a id="aae2f11a5d85ac75992fd4c77038deddc" name="aae2f11a5d85ac75992fd4c77038deddc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aae2f11a5d85ac75992fd4c77038deddc">&#9670;&#160;</a></span>DrawIndoorPolygon()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void RenderOpenGL::DrawIndoorPolygon </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>uNumVertices</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structBLVFace.html">BLVFace</a> *&#160;</td>
-          <td class="paramname"><em>a3</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>uPackedID</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>uColor</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>a8</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implements <a class="el" href="classIRender.html#a097cf40dc7c462fe1489d8c7067781fa">IRender</a>.</p>
 
 </div>
 </div>
@@ -2403,62 +2228,6 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="ab2d4b8c68d672d182a1f248ba837ba54" name="ab2d4b8c68d672d182a1f248ba837ba54"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab2d4b8c68d672d182a1f248ba837ba54">&#9670;&#160;</a></span>DrawMasked()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void RenderOpenGL::DrawMasked </td>
-          <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>u</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>v</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">class <a class="el" href="classImage.html">Image</a> *&#160;</td>
-          <td class="paramname"><em>img</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>color_dimming_level</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>mask</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implements <a class="el" href="classIRender.html#a13168e064b0a8d540a2af6254947b84a">IRender</a>.</p>
-
-</div>
-</div>
 <a id="af9da44f74406699095fd64848979a08c" name="af9da44f74406699095fd64848979a08c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af9da44f74406699095fd64848979a08c">&#9670;&#160;</a></span>DrawMonsterPortrait()</h2>
 
@@ -2610,34 +2379,6 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="afae924c202397c5f04e6edc14e9912d0" name="afae924c202397c5f04e6edc14e9912d0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afae924c202397c5f04e6edc14e9912d0">&#9670;&#160;</a></span>DrawPolygon()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void RenderOpenGL::DrawPolygon </td>
-          <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structPolygon.html">Polygon</a> *&#160;</td>
-          <td class="paramname"><em>a3</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implements <a class="el" href="classIRender.html#a0b02b7d1c817e2aad479375c9ddfb80e">IRender</a>.</p>
-
-</div>
-</div>
 <a id="acd20313422dc8b89ade512f60e0469d0" name="acd20313422dc8b89ade512f60e0469d0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acd20313422dc8b89ade512f60e0469d0">&#9670;&#160;</a></span>DrawProjectile()</h2>
 
@@ -2718,8 +2459,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="af8ce914580cadaafcdd6e8aef1342000" name="af8ce914580cadaafcdd6e8aef1342000"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af8ce914580cadaafcdd6e8aef1342000">&#9670;&#160;</a></span>DrawSpecialEffectsQuad()</h2>
+<a id="a108f48aade1741d967b97136e8f13ce1" name="a108f48aade1741d967b97136e8f13ce1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a108f48aade1741d967b97136e8f13ce1">&#9670;&#160;</a></span>DrawSpecialEffectsQuad()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2730,14 +2471,14 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">void RenderOpenGL::DrawSpecialEffectsQuad </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structRenderVertexD3D3.html">RenderVertexD3D3</a> *&#160;</td>
-          <td class="paramname"><em>vertices</em>, </td>
+          <td class="paramtype"><a class="el" href="classTexture.html">Texture</a> *&#160;</td>
+          <td class="paramname"><em>texture</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classTexture.html">Texture</a> *&#160;</td>
-          <td class="paramname"><em>texture</em>&#160;</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>palette</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -2752,7 +2493,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implements <a class="el" href="classIRender.html#a146a3915a6d0263df504864b8cc3c868">IRender</a>.</p>
+<p>Implements <a class="el" href="classIRender.html#a098df8cc242f6bc70781460588be9ea4">IRender</a>.</p>
 
 </div>
 </div>
@@ -2797,148 +2538,6 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Implements <a class="el" href="classIRender.html#a7c34fd8ecbe93d9a2ff53833fffca2a4">IRender</a>.</p>
-
-</div>
-</div>
-<a id="aa966afa89b0f4c7aff4f725c38c982fa" name="aa966afa89b0f4c7aff4f725c38c982fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa966afa89b0f4c7aff4f725c38c982fa">&#9670;&#160;</a></span>DrawText()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void RenderOpenGL::DrawText </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>uOutX</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>uOutY</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t *&#160;</td>
-          <td class="paramname"><em>pFontPixels</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>uCharWidth</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>uCharHeight</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t *&#160;</td>
-          <td class="paramname"><em>pFontPalette</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>uFaceColor</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>uShadowColor</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implements <a class="el" href="classIRender.html#a8921c7e64f6a121297456127df12e0fd">IRender</a>.</p>
-
-</div>
-</div>
-<a id="aea39f88a5d5712691f9fa341ee29e4a9" name="aea39f88a5d5712691f9fa341ee29e4a9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aea39f88a5d5712691f9fa341ee29e4a9">&#9670;&#160;</a></span>DrawTextAlpha()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void RenderOpenGL::DrawTextAlpha </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>x</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>y</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned char *&#160;</td>
-          <td class="paramname"><em>font_pixels</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>a5</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>uFontHeight</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t *&#160;</td>
-          <td class="paramname"><em>pPalette</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>present_time_transparency</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implements <a class="el" href="classIRender.html#ae9b8910af61ac244ed9da66a79b52dc4">IRender</a>.</p>
 
 </div>
 </div>
@@ -3028,50 +2627,6 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a95ac5354e46d143f9fe373ca71fd6812" name="a95ac5354e46d143f9fe373ca71fd6812"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a95ac5354e46d143f9fe373ca71fd6812">&#9670;&#160;</a></span>DrawTextureAlphaNew()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void RenderOpenGL::DrawTextureAlphaNew </td>
-          <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>u</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>v</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">class <a class="el" href="classImage.html">Image</a> *&#160;</td>
-          <td class="paramname"><em>img</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implements <a class="el" href="classIRender.html#a22785d74bc736d59bc415c6d3f52e2ba">IRender</a>.</p>
-
-</div>
-</div>
 <a id="a9fe56298594fdb8b372cea0f11d5febc" name="a9fe56298594fdb8b372cea0f11d5febc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9fe56298594fdb8b372cea0f11d5febc">&#9670;&#160;</a></span>DrawTextureCustomHeight()</h2>
 
@@ -3122,50 +2677,6 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a5665ff2490abffcbd593e9414860519b" name="a5665ff2490abffcbd593e9414860519b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5665ff2490abffcbd593e9414860519b">&#9670;&#160;</a></span>DrawTextureGrayShade()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void RenderOpenGL::DrawTextureGrayShade </td>
-          <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>u</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>v</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">class <a class="el" href="classImage.html">Image</a> *&#160;</td>
-          <td class="paramname"><em>a4</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implements <a class="el" href="classIRender.html#a9bd6d1700fdc14ea479f811fb5e4849c">IRender</a>.</p>
-
-</div>
-</div>
 <a id="a61b35ec9ac408a75e7138308d51d9788" name="a61b35ec9ac408a75e7138308d51d9788"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a61b35ec9ac408a75e7138308d51d9788">&#9670;&#160;</a></span>DrawTextureNew()</h2>
 
@@ -3212,7 +2723,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implements <a class="el" href="classIRender.html#a745e54aa46c4e957df115695006a4e12">IRender</a>.</p>
+<p>Implements <a class="el" href="classIRender.html#a33fb87ae78e6d8d8d422a755dc5cc4b1">IRender</a>.</p>
 
 </div>
 </div>
@@ -3269,94 +2780,6 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Implements <a class="el" href="classIRender.html#af63e368492b01f930440a5e415bd6b2f">IRender</a>.</p>
-
-</div>
-</div>
-<a id="a71db26761bab9bab008ad408dc86d6e3" name="a71db26761bab9bab008ad408dc86d6e3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a71db26761bab9bab008ad408dc86d6e3">&#9670;&#160;</a></span>DrawTransparentGreenShade()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void RenderOpenGL::DrawTransparentGreenShade </td>
-          <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>u</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>v</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">class <a class="el" href="classImage.html">Image</a> *&#160;</td>
-          <td class="paramname"><em>pTexture</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implements <a class="el" href="classIRender.html#a34c00db99e469d009d210043ee71145a">IRender</a>.</p>
-
-</div>
-</div>
-<a id="a4db74c39ae54d9384160333132c9da3b" name="a4db74c39ae54d9384160333132c9da3b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4db74c39ae54d9384160333132c9da3b">&#9670;&#160;</a></span>DrawTransparentRedShade()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void RenderOpenGL::DrawTransparentRedShade </td>
-          <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>u</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>v</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">class <a class="el" href="classImage.html">Image</a> *&#160;</td>
-          <td class="paramname"><em>a4</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implements <a class="el" href="classIRender.html#a2a39935cb163395a413a52a69680302a">IRender</a>.</p>
 
 </div>
 </div>
@@ -3495,33 +2918,6 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a39e594bbcfb3115277ee78a330b89dd1" name="a39e594bbcfb3115277ee78a330b89dd1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a39e594bbcfb3115277ee78a330b89dd1">&#9670;&#160;</a></span>EndScene()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void RenderOpenGL::EndScene </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implements <a class="el" href="classIRender.html#a3b1adcfbaa4a19d8abc60a408d99f053">IRender</a>.</p>
-
-</div>
-</div>
 <a id="a77c69aa01127fd4ad0c85a658a8bb7f9" name="a77c69aa01127fd4ad0c85a658a8bb7f9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a77c69aa01127fd4ad0c85a658a8bb7f9">&#9670;&#160;</a></span>EndTextNew()</h2>
 
@@ -3549,8 +2945,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="af7f3b33526523d2126f46b418da56c92" name="af7f3b33526523d2126f46b418da56c92"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af7f3b33526523d2126f46b418da56c92">&#9670;&#160;</a></span>FillRectFast()</h2>
+<a id="a4f227c4d5d5f7845ea883b5ba55783f6" name="a4f227c4d5d5f7845ea883b5ba55783f6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f227c4d5d5f7845ea883b5ba55783f6">&#9670;&#160;</a></span>FillRectFast()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3585,8 +2981,8 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>uColor16</em>&#160;</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>uColor32</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -3601,7 +2997,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implements <a class="el" href="classIRender.html#aa0222ebd6e224e60117f37f2de74c7d9">IRender</a>.</p>
+<p>Implements <a class="el" href="classIRender.html#ae8b68ba842678888625c03a793a304fa">IRender</a>.</p>
 
 </div>
 </div>
@@ -3857,33 +3253,6 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Implements <a class="el" href="classIRender.html#a4caca6860f7b0dfe94d7621151ee94e8">IRender</a>.</p>
-
-</div>
-</div>
-<a id="abbb2656561effa3e6164b97dc868bfd8" name="abbb2656561effa3e6164b97dc868bfd8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abbb2656561effa3e6164b97dc868bfd8">&#9670;&#160;</a></span>MaskGameViewport()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void RenderOpenGL::MaskGameViewport </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implements <a class="el" href="classIRender.html#a8fe2e56097a453a29bb23d42bbe42716">IRender</a>.</p>
 
 </div>
 </div>
@@ -4217,8 +3586,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a40875eeba9e1a8e53c6080f4bd96b359" name="a40875eeba9e1a8e53c6080f4bd96b359"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a40875eeba9e1a8e53c6080f4bd96b359">&#9670;&#160;</a></span>RasterLine2D()</h2>
+<a id="a98ba54dfa4983f4549d91334ca20f030" name="a98ba54dfa4983f4549d91334ca20f030"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98ba54dfa4983f4549d91334ca20f030">&#9670;&#160;</a></span>RasterLine2D()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -4253,8 +3622,8 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>uColor</em>&#160;</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>uColor32</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -4812,50 +4181,6 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Implements <a class="el" href="classIRender.html#a89b729857d4c5fdc9f9040587f6d6591">IRender</a>.</p>
-
-</div>
-</div>
-<a id="ad142ea5ec19f9d9ad290c5fb4c6a3ee2" name="ad142ea5ec19f9d9ad290c5fb4c6a3ee2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad142ea5ec19f9d9ad290c5fb4c6a3ee2">&#9670;&#160;</a></span>WritePixel16()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void RenderOpenGL::WritePixel16 </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>x</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>y</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>color</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implements <a class="el" href="classIRender.html#a182ff1e20d7a82c6c400e8732ddfa52e">IRender</a>.</p>
 
 </div>
 </div>
