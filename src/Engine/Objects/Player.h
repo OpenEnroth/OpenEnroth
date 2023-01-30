@@ -147,8 +147,13 @@ class PlayerConditions {
 
 
 struct Player {
-    static const unsigned int INVETORYSLOTSWIDTH = 14;
-    static const unsigned int INVETORYSLOTSHEIGHT = 9;
+    static const unsigned int INVENTORY_SLOTS_WIDTH = 14;
+    static const unsigned int INVENTORY_SLOTS_HEIGHT = 9;
+
+    // Maximum number of items the player inventory can hold
+    static const unsigned int INVENTORY_SLOT_COUNT = INVENTORY_SLOTS_WIDTH*INVENTORY_SLOTS_HEIGHT;
+    static const unsigned int ADDITIONAL_SLOT_COUNT = 12; // TODO: investigate, these look unused
+    static const unsigned int TOTAL_ITEM_SLOT_COUNT = INVENTORY_SLOT_COUNT + ADDITIONAL_SLOT_COUNT;
 
     Player();
 
@@ -472,13 +477,13 @@ struct Player {
     int pure_might_used;
     union {  // 214h
         struct {
-            ItemGen pInventoryItemList[126];
-            ItemGen pEquippedItems[12];
+            ItemGen pInventoryItemList[INVENTORY_SLOT_COUNT];
+            ItemGen pEquippedItems[ADDITIONAL_SLOT_COUNT];
         };
-        std::array<ItemGen, 138> pOwnItems;
+        std::array<ItemGen, TOTAL_ITEM_SLOT_COUNT> pOwnItems;
     };
 
-    std::array<int, 126> pInventoryMatrix;
+    std::array<int, INVENTORY_SLOT_COUNT> pInventoryMatrix;
     int16_t sResFireBase;
     int16_t sResAirBase;
     int16_t sResWaterBase;

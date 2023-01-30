@@ -488,10 +488,10 @@ unsigned int Player::GetItemMainInventoryIndex(int inout_item_cell) {
 void Player::ItemsPotionDmgBreak(int enchant_count) {
     int avalible_items = 0;
 
-    int16_t item_index_tabl[138];                         // table holding items
+    int16_t item_index_tabl[TOTAL_ITEM_SLOT_COUNT];  // table holding items
     memset(item_index_tabl, 0, sizeof(item_index_tabl));  // set to zero
 
-    for (int i = 0; i < 138; ++i)  // scan through and log in table
+    for (int i = 0; i < TOTAL_ITEM_SLOT_COUNT; ++i)  // scan through and log in table
         if (IsRegular(pOwnItems[i].uItemID))
             item_index_tabl[avalible_items++] = i;
 
@@ -701,11 +701,11 @@ bool Player::CanFitItem(unsigned int uSlot, ITEM_TYPE uItemID) {
 
     Assert(slotHeight > 0 && slotWidth > 0,
            "Items should have nonzero dimensions");
-    if ((slotWidth + uSlot % INVETORYSLOTSWIDTH) <= INVETORYSLOTSWIDTH &&
-        (slotHeight + uSlot / INVETORYSLOTSWIDTH) <= INVETORYSLOTSHEIGHT) {
+    if ((slotWidth + uSlot % INVENTORY_SLOTS_WIDTH) <= INVENTORY_SLOTS_WIDTH &&
+        (slotHeight + uSlot / INVENTORY_SLOTS_WIDTH) <= INVENTORY_SLOTS_HEIGHT) {
         for (unsigned int x = 0; x < slotWidth; x++) {
             for (unsigned int y = 0; y < slotHeight; y++) {
-                if (pInventoryMatrix[y * INVETORYSLOTSWIDTH + x + uSlot] != 0) {
+                if (pInventoryMatrix[y * INVENTORY_SLOTS_WIDTH + x + uSlot] != 0) {
                     return false;
                 }
             }
@@ -717,7 +717,7 @@ bool Player::CanFitItem(unsigned int uSlot, ITEM_TYPE uItemID) {
 
 //----- (004925E6) --------------------------------------------------------
 int Player::FindFreeInventoryListSlot() {
-    for (int i = 0; i < 126; i++) {
+    for (int i = 0; i < INVENTORY_SLOT_COUNT; i++) {
         if (pInventoryItemList[i].uItemID == ITEM_NULL) {
             return i;  // space at i
         }
@@ -772,12 +772,12 @@ void Player::WearItem(ITEM_TYPE uItemID) {
 int Player::AddItem(int index, ITEM_TYPE uItemID) {
     if (uItemID == ITEM_NULL) return 0;
     if (index == -1) {  // no location specified - search for space
-        for (int xcoord = 0; xcoord < INVETORYSLOTSWIDTH; xcoord++) {
-            for (int ycoord = 0; ycoord < INVETORYSLOTSHEIGHT; ycoord++) {
-                if (CanFitItem(ycoord * INVETORYSLOTSWIDTH + xcoord,
+        for (int xcoord = 0; xcoord < INVENTORY_SLOTS_WIDTH; xcoord++) {
+            for (int ycoord = 0; ycoord < INVENTORY_SLOTS_HEIGHT; ycoord++) {
+                if (CanFitItem(ycoord * INVENTORY_SLOTS_WIDTH + xcoord,
                                uItemID)) {  // found space
                     return CreateItemInInventory(
-                        ycoord * INVETORYSLOTSWIDTH + xcoord, uItemID);
+                        ycoord * INVENTORY_SLOTS_WIDTH + xcoord, uItemID);
                 }
             }
         }
@@ -799,12 +799,12 @@ int Player::AddItem2(int index, ItemGen* Src) {  // are both required - check
     pItemTable->SetSpecialBonus(Src);
 
     if (index == -1) {  // no loaction specified
-        for (int xcoord = 0; xcoord < INVETORYSLOTSWIDTH; xcoord++) {
-            for (int ycoord = 0; ycoord < INVETORYSLOTSHEIGHT; ycoord++) {
-                if (CanFitItem(ycoord * INVETORYSLOTSWIDTH + xcoord,
+        for (int xcoord = 0; xcoord < INVENTORY_SLOTS_WIDTH; xcoord++) {
+            for (int ycoord = 0; ycoord < INVENTORY_SLOTS_HEIGHT; ycoord++) {
+                if (CanFitItem(ycoord * INVENTORY_SLOTS_WIDTH + xcoord,
                                Src->uItemID)) {  // found space
                     return CreateItemInInventory2(
-                        ycoord * INVETORYSLOTSWIDTH + xcoord, Src);
+                        ycoord * INVENTORY_SLOTS_WIDTH + xcoord, Src);
                 }
             }
         }
@@ -851,7 +851,7 @@ void Player::PutItemArInventoryIndex(
                      slot_width);  // TODO(_): try to come up with a better
                                    // solution. negative values are used when
                                    // drawing the inventory - nothing is drawn
-            pInvPos += INVETORYSLOTSWIDTH;
+            pInvPos += INVENTORY_SLOTS_WIDTH;
         }
     }
 
@@ -877,7 +877,7 @@ void Player::RemoveItemAtInventoryIndex(unsigned int index) {
         int* pInvPos = &pInventoryMatrix[index];
         for (unsigned int i = 0; i < slot_height; i++) {
             memset32(pInvPos, 0, slot_width);
-            pInvPos += INVETORYSLOTSWIDTH;
+            pInvPos += INVENTORY_SLOTS_WIDTH;
         }
     }
 }
@@ -1838,16 +1838,16 @@ int Player::ReceiveSpecialAttackEffect(
             break;
 
         case SPECIAL_ATTACK_BREAK_ANY:
-            for (int i = 0; i < 138; i++) {
-                if (i < 126) {
+            for (int i = 0; i < TOTAL_ITEM_SLOT_COUNT; i++) {
+                if (i < INVENTORY_SLOT_COUNT) {
                     itemtocheck = &this->pInventoryItemList[i];
                 } else {
-                    itemtocheck = &this->pEquippedItems[i - 126];
+                    itemtocheck = &this->pEquippedItems[i - INVENTORY_SLOT_COUNT];
                 }
 
-                if (IsRegular(itemtocheck->uItemID) &&
-                    !itemtocheck->IsBroken())
+                if (IsRegular(itemtocheck->uItemID) && !itemtocheck->IsBroken()) {
                     itemstobreaklist[itemstobreakcounter++] = i;
+                }
             }
 
             if (!itemstobreakcounter) return 0;
@@ -1909,7 +1909,7 @@ int Player::ReceiveSpecialAttackEffect(
             break;
 
         case SPECIAL_ATTACK_STEAL:
-            for (int i = 0; i < 126; i++) {
+            for (int i = 0; i < INVENTORY_SLOT_COUNT; i++) {
                 int ItemPosInList = this->pInventoryMatrix[i];
 
                 if (ItemPosInList > 0) {
@@ -3484,8 +3484,8 @@ void Player::Reset(PLAYER_CLASS_TYPE cls) {
 
     memset(&pEquipment, 0, sizeof(PlayerEquipment));
     pInventoryMatrix.fill(0);
-    for (uint i = 0; i < 126; ++i) pInventoryItemList[i].Reset();
-    for (uint i = 0; i < 12; ++i) pEquippedItems[i].Reset();
+    for (uint i = 0; i < INVENTORY_SLOT_COUNT; ++i) pInventoryItemList[i].Reset();
+    for (uint i = 0; i < ADDITIONAL_SLOT_COUNT; ++i) pEquippedItems[i].Reset();
 
     sHealth = GetMaxHealth();
     sMana = GetMaxMana();
@@ -4594,7 +4594,7 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
             return _449B57_test_bit(pParty->_quest_bits, pValue);
         case VAR_PlayerItemInHands:
             // for (int i = 0; i < 138; i++)
-            for (int i = 0; i < 126; i++) {
+            for (int i = 0; i < INVENTORY_SLOT_COUNT; i++) {
                 if (pInventoryItemList[i].uItemID == ITEM_TYPE(pValue)) {
                     return true;
                 }
@@ -4866,10 +4866,14 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
                                 // regeneration
             v4 = 0;
             for (int playerNum = 0; playerNum < 4; playerNum++) {
-                for (int invPos = 0; invPos < 138; invPos++) {
-                    ITEM_TYPE itemId = pParty->pPlayers[playerNum]
-                                     .pInventoryItemList[invPos]
-                                     .uItemID;
+                for (int invPos = 0; invPos < TOTAL_ITEM_SLOT_COUNT; invPos++) {
+                    ITEM_TYPE itemId;
+
+                    if (invPos < INVENTORY_SLOT_COUNT) {
+                        itemId = pParty->pPlayers[playerNum].pInventoryItemList[invPos].uItemID;
+                    } else {
+                        itemId = pParty->pPlayers[playerNum].pEquippedItems[invPos - INVENTORY_SLOT_COUNT].uItemID;
+                    }
                     switch (itemId) {
                         case ITEM_SPELLBOOK_REGENERATION:
                             ++v4;
@@ -4995,7 +4999,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
         case VAR_Class:
             this->classType = (PLAYER_CLASS_TYPE)var_value;
             if ((PLAYER_CLASS_TYPE)var_value == PLAYER_CLASS_LICH) {
-                for (int i = 0; i < 138; i++) {
+                for (int i = 0; i < TOTAL_ITEM_SLOT_COUNT; i++) {
                     if (this->pOwnItems[i].uItemID == ITEM_QUEST_LICH_JAR_EMPTY) {
                         this->pOwnItems[i].uItemID = ITEM_QUEST_LICH_JAR_FULL;
                         this->pOwnItems[i].uHolderPlayer = GetPlayerIndex() + 1;
@@ -6162,7 +6166,7 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
                     }
                 }
             }
-            for (int i = 0; i < 126; i++) {
+            for (int i = 0; i < INVENTORY_SLOT_COUNT; i++) {
                 int id_ = this->pInventoryMatrix[i];
                 if (id_ > 0) {
                     if (this->pInventoryItemList[id_ - 1].uItemID == ITEM_TYPE(pValue)) {
@@ -6725,7 +6729,7 @@ bool Player::HasUnderwaterSuitEquipped() {
 //----- (0043EE15) --------------------------------------------------------
 bool Player::HasItem(ITEM_TYPE uItemID, bool checkHeldItem) {
     if (!checkHeldItem || pParty->pPickedItem.uItemID != uItemID) {
-        for (uint i = 0; i < 126; ++i) {
+        for (uint i = 0; i < INVENTORY_SLOT_COUNT; ++i) {
             if (this->pInventoryMatrix[i] > 0) {
                 if (this
                         ->pInventoryItemList[this->pInventoryMatrix[i] - 1]
@@ -7185,10 +7189,10 @@ void Player::OnInventoryLeftClick() {
 
         int inventoryYCoord = (pY - 17) / 32;
         int inventoryXCoord = (pX - 14) / 32;
-        int invMatrixIndex = inventoryXCoord + (INVETORYSLOTSWIDTH * inventoryYCoord);
+        int invMatrixIndex = inventoryXCoord + (INVENTORY_SLOTS_WIDTH * inventoryYCoord);
 
-        if (inventoryYCoord >= 0 && inventoryYCoord < INVETORYSLOTSHEIGHT &&
-            inventoryXCoord >= 0 && inventoryXCoord < INVETORYSLOTSWIDTH) {
+        if (inventoryYCoord >= 0 && inventoryYCoord < INVENTORY_SLOTS_HEIGHT &&
+            inventoryXCoord >= 0 && inventoryXCoord < INVENTORY_SLOTS_WIDTH) {
             if (_50C9A0_IsEnchantingInProgress) {
                 unsigned int enchantedItemPos = this->GetItemListAtInventoryIndex(invMatrixIndex);
 
@@ -7947,8 +7951,8 @@ MERCHANT_PHRASE Player::SelectPhrasesTransaction(ItemGen* pItem, BuildingType bu
 Player::Player() {
     memset(&pEquipment, 0, sizeof(PlayerEquipment));
     pInventoryMatrix.fill(0);
-    for (uint i = 0; i < 126; ++i) pInventoryItemList[i].Reset();
-    for (uint i = 0; i < 12; ++i) pEquippedItems[i].Reset();
+    for (uint i = 0; i < INVENTORY_SLOT_COUNT; ++i) pInventoryItemList[i].Reset();
+    for (uint i = 0; i < ADDITIONAL_SLOT_COUNT; ++i) pEquippedItems[i].Reset();
 
     for (uint i = 0; i < 24; ++i) {
         pPlayerBuffs[i].uSkillMastery = PLAYER_SKILL_MASTERY_NONE;
