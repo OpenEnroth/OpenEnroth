@@ -150,6 +150,10 @@ struct Player {
     static const unsigned int INVETORYSLOTSWIDTH = 14;
     static const unsigned int INVETORYSLOTSHEIGHT = 9;
 
+    static const unsigned int INVENTORY_ITEMS_MAX = 126;
+    static const unsigned int EQUIPPED_ITEMS_MAX = 12;
+    static const unsigned int TOTAL_ITEMS_MAX = INVENTORY_ITEMS_MAX + EQUIPPED_ITEMS_MAX;
+
     Player();
 
     void SetVariable(VariableType var, signed int a3);
@@ -472,13 +476,13 @@ struct Player {
     int pure_might_used;
     union {  // 214h
         struct {
-            ItemGen pInventoryItemList[126];
-            ItemGen pEquippedItems[12];
+            ItemGen pInventoryItemList[INVENTORY_ITEMS_MAX];
+            ItemGen pEquippedItems[EQUIPPED_ITEMS_MAX];
         };
-        std::array<ItemGen, 138> pOwnItems;
+        std::array<ItemGen, TOTAL_ITEMS_MAX> pOwnItems;
     };
 
-    std::array<int, 126> pInventoryMatrix;
+    std::array<int, INVENTORY_ITEMS_MAX> pInventoryMatrix;
     int16_t sResFireBase;
     int16_t sResAirBase;
     int16_t sResWaterBase;
