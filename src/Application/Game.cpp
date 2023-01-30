@@ -99,8 +99,6 @@ using Engine_::EngineFactory;
 using Graphics::IRenderFactory;
 
 
-#include "Library/Lod/LodReader.h"
-
 void Application::AutoInitDataPath(Platform *platform) {
     // TODO (captainurist): we should consider reading Unicode (utf8) strings from win32 registry, as it might contain paths
     // curretnly we convert all strings out of registry into CP_ACP (default windows ansi)
@@ -134,38 +132,6 @@ void Application::AutoInitDataPath(Platform *platform) {
         );
         EngineIoc::ResolveLogger()->Warning(message.c_str());
         platform->ShowMessageBox(message, "CRITICAL ERROR: missing resources");
-    }
-
-    SetDataPath("c:/g/mm7");
-    {
-        auto bitmaps = LodReader::open(MakeDataPath("data", "bitmaps.lod"));
-        auto events = LodReader::open(MakeDataPath("data", "events.lod"));
-        auto games = LodReader::open(MakeDataPath("data", "games.lod"));
-        auto icons = LodReader::open(MakeDataPath("data", "icons.lod"));
-        auto new_ = LodReader::open(MakeDataPath("data", "new.lod"));
-        auto sprites = LodReader::open(MakeDataPath("data", "sprites.lod"));
-
-        auto test_exists = icons->exists("AFRAME1");
-        auto test_loading_uncompressed = icons->read("AFRAME1");
-        auto test_loading_compressed = games->read("out01.odm");
-    }
-
-    SetDataPath("c:/g/mm6");
-    {
-        auto bitmaps = LodReader::open(MakeDataPath("data", "bitmaps.lod"));
-        auto games = LodReader::open(MakeDataPath("data", "games.lod"));
-        auto icons = LodReader::open(MakeDataPath("data", "icons.lod"));
-        auto sprites = LodReader::open(MakeDataPath("data", "sprites.lod"));
-    }
-
-    SetDataPath("c:/g/mm8");
-    {
-        auto bitmaps = LodReader::open(MakeDataPath("data", "bitmaps.lod"));
-        auto english_d = LodReader::open(MakeDataPath("data", "EnglishD.lod"));
-        auto english_t = LodReader::open(MakeDataPath("data", "EnglishT.lod"));
-        auto games = LodReader::open(MakeDataPath("data", "games.lod"));
-        auto icons = LodReader::open(MakeDataPath("data", "icons.lod"));
-        auto sprites = LodReader::open(MakeDataPath("data", "sprites.lod"));
     }
 }
 
