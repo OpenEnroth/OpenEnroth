@@ -137,6 +137,6 @@ var searchData=
   ['ringslots_134',['RingSlots',['../ItemEnums_8h.html#a5d59af3eaebaba842ba302895beb7868',1,'ItemEnums.h']]],
   ['rotate_135',['Rotate',['../structVec3.html#a0e8207e48900a63abc276882189d95f0',1,'Vec3']]],
   ['round_5fto_5fint_136',['round_to_int',['../OurMath_8h.html#a50ee4d4946888926bdf5a920129a322a',1,'OurMath.h']]],
-  ['run_137',['Run',['../classApplication_1_1Game.html#a1880d9816a978b82bb91e4679743173d',1,'Application::Game']]],
-  ['run_138',['run',['../classGameThread.html#a5d4531cb04b18f0f50a7ec71c05a41cd',1,'GameThread::run()'],['../classTestThread.html#aa8b97705464849de965b265ce216d45e',1,'TestThread::run()']]]
+  ['run_137',['run',['../classGameThread.html#a5d4531cb04b18f0f50a7ec71c05a41cd',1,'GameThread::run()'],['../classTestThread.html#aa8b97705464849de965b265ce216d45e',1,'TestThread::run()']]],
+  ['run_138',['Run',['../classApplication_1_1Game.html#a1880d9816a978b82bb91e4679743173d',1,'Application::Game']]]
 ];
