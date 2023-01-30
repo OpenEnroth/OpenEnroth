@@ -608,12 +608,12 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
                     }
                 }
             }
-            for (int i = 0; i < Player::INVENTORY_ITEMS_MAX; i++) {
+            for (int i = 0; i < Player::INVENTORY_SLOT_COUNT; i++) {
                 if (pCharacter->pInventoryItemList[i].uItemID != ITEM_NULL) {
                     pCharacter->pInventoryItemList[i].SetIdentified();
                 }
             }
-            for (int i = 0; i < Player::EQUIPPED_ITEMS_MAX; i++) {
+            for (int i = 0; i < Player::ADDITIONAL_SLOT_COUNT; i++) {
                 if (pCharacter->pEquippedItems[i].uItemID != ITEM_NULL) {
                     pCharacter->pEquippedItems[i].SetIdentified();
                 }
@@ -934,7 +934,7 @@ void Party::RestAndHeal() {
         pPlayer->sMana = pPlayer->GetMaxMana();
         if (pPlayer->classType == PLAYER_CLASS_LICH) {
             have_vessels_soul = false;
-            for (uint i = 0; i < Player::INVENTORY_ITEMS_MAX; i++) {
+            for (uint i = 0; i < Player::INVENTORY_SLOT_COUNT; i++) {
                 if (pPlayer->pInventoryItemList[i].uItemID == ITEM_QUEST_LICH_JAR_FULL && pPlayer->pInventoryItemList[i].uHolderPlayer == pPlayerID + 1)
                     have_vessels_soul = true;
             }
