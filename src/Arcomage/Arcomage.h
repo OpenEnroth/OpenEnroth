@@ -144,9 +144,6 @@ struct ArcomageGame {
     char field_39 = 0;
     char mouse_right = 0;
     char field_3B = 0;
-    // uint16_t *pBackgroundPixels = nullptr;
-    uint16_t *pSpritesPixels = nullptr;
-    uint16_t *pBlit_Copy_pixels = nullptr;
     GUIFont *pfntComic = nullptr;  // ptr_48;
     GUIFont *pfntArrus = nullptr;  // ptr_4C;
     int field_50 = 0;

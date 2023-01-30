@@ -528,7 +528,6 @@ bool ArcomageGame::MsgLoop(int a1, ArcomageGame_InputMSG *a2) {
 bool ArcomageGame::LoadSprites() {
     // load layout sprite
     pArcomageGame->pSprites = assets->GetImage_PCXFromIconsLOD("sprites.pcx");
-    pArcomageGame->pSpritesPixels = (uint16_t *)pArcomageGame->pSprites->GetPixels(IMAGE_FORMAT_R5G6B5);
 
     // mask out blue
     uint32_t *pix = (uint32_t *)pArcomageGame->pSprites->GetPixels(IMAGE_FORMAT_A8B8G8R8);
@@ -1367,8 +1366,6 @@ char PlayerTurn(int player_num) {
 }
 
 void DrawGameUI(int animation_stage) {
-    // set copy image location
-    pArcomageGame->pBlit_Copy_pixels = pArcomageGame->pSpritesPixels;
     // draw background
     render->DrawTextureNew(0, 0, pArcomageGame->pGameBackground);
 
