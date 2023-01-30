@@ -881,7 +881,7 @@ bool MM7_LoadLods() {
     }
 
     pSprites_LOD = new LODFile_Sprites;
-    if (!pSprites_LOD->LoadSprites(MakeDataPath("data", "sprites.lod"))) {
+    if (!pSprites_LOD->Load(MakeDataPath("data", "sprites.lod"), "sprites08")) {
         Error(
             localization->GetString(LSTR_PLEASE_REINSTALL),
             localization->GetString(LSTR_REINSTALL_NECESSARY)
