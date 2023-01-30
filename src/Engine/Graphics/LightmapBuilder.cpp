@@ -1024,13 +1024,13 @@ void LightmapBuilder::DrawDebugOutlines(
         for (int i = 0; i < this->StationaryLightsCount; ++i)
             pCamera3D->debug_outline_sw(
                 this->StationaryLights[i].pVertices,
-                this->StationaryLights[i].NumVertices, 0xFF00, 0.0f);
+                this->StationaryLights[i].NumVertices, colorTable.Red.C32(), 0.0f);
     }
     if (bit_one_for_list1__bit_two_for_list2 & 2) {
         for (uint i = 0; i < this->MobileLightsCount; ++i)
             pCamera3D->debug_outline_sw(
                 this->MobileLights[i].pVertices,
-                this->MobileLights[i].NumVertices, 0xC04000, 0.00019999999f);
+                this->MobileLights[i].NumVertices, colorTable.Mahogany.C32(), 0.00019999999f);
     }
 }
 

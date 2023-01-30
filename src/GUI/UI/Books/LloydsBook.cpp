@@ -60,11 +60,11 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() : GUIWindow_Book() {
 }
 
 void GUIWindow_LloydsBook::Update() {
-    render->DrawTextureAlphaNew(
+    render->DrawTextureNew(
         471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
 
     Player *pPlayer = &pParty->pPlayers[_506348_current_lloyd_playerid];
-    render->DrawTextureAlphaNew(
+    render->DrawTextureNew(
         8 / 640.0f, 8 / 480.0f, ui_book_lloyds_backgrounds[bRecallingBeacon ? 1 : 0]);
     std::string pText = localization->GetString(LSTR_RECALL_BEACON);
 
@@ -81,17 +81,17 @@ void GUIWindow_LloydsBook::Update() {
 
     pWindow.DrawTitleText(pBook2Font, 0, 22, 0, pText, 3);
     if (bRecallingBeacon) {
-        render->DrawTextureAlphaNew(pBtn_Book_1->uX / 640.0f,
+        render->DrawTextureNew(pBtn_Book_1->uX / 640.0f,
                                     pBtn_Book_1->uY / 480.0f,
                                     ui_book_button1_on);
-        render->DrawTextureAlphaNew(pBtn_Book_2->uX / 640.0f,
+        render->DrawTextureNew(pBtn_Book_2->uX / 640.0f,
                                     pBtn_Book_2->uY / 480.0f,
                                     ui_book_button1_off);
     } else {
-        render->DrawTextureAlphaNew(pBtn_Book_1->uX / 640.0f,
+        render->DrawTextureNew(pBtn_Book_1->uX / 640.0f,
                                     pBtn_Book_1->uY / 480.0f,
                                     ui_book_button1_off);
-        render->DrawTextureAlphaNew(pBtn_Book_2->uX / 640.0f,
+        render->DrawTextureNew(pBtn_Book_2->uX / 640.0f,
                                     pBtn_Book_2->uY / 480.0f,
                                     ui_book_button1_on);
     }
@@ -119,7 +119,7 @@ void GUIWindow_LloydsBook::Update() {
             pWindow.uFrameW = pWindow.uFrameY + 67;
             pWindow.uFrameZ = pLloydsBeaconsPreviewXs[BeaconID] + 91;
 
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 pLloydsBeacons_SomeXs[BeaconID] / 640.0f,
                 pLloydsBeacons_SomeYs[BeaconID] / 480.0f,
                 ui_book_lloyds_border);

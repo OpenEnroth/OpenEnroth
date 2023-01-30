@@ -38,6 +38,8 @@ void WetsuitOff(unsigned int uPlayerID);
 
 int bRingsShownInCharScreen;  // 5118E0
 
+// TODO(pskelton): convert to color32
+
 unsigned int ui_mainmenu_copyright_color;
 
 unsigned int ui_character_tooltip_header_default_color;
@@ -608,7 +610,7 @@ void GUIWindow_CharacterRecord::Update() {
             CharacterUI_ReleaseButtons();
             ReleaseAwardsScrollBar();
             CharacterUI_StatsTab_Draw(player);
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 pCharacterScreen_StatsBtn->uX / 640.0f,
                 pCharacterScreen_StatsBtn->uY / 480.0f,
                 assets->GetImage_ColorKey("ib-cd1-d", render->teal_mask_16));
@@ -621,7 +623,7 @@ void GUIWindow_CharacterRecord::Update() {
             }
             ReleaseAwardsScrollBar();
             CharacterUI_SkillsTab_Draw(player);
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 pCharacterScreen_SkillsBtn->uX / 640.0f,
                 pCharacterScreen_SkillsBtn->uY / 480.0f,
                 assets->GetImage_ColorKey("ib-cd2-d", render->teal_mask_16));
@@ -631,7 +633,7 @@ void GUIWindow_CharacterRecord::Update() {
             CharacterUI_ReleaseButtons();
             CreateAwardsScrollBar();
             CharacterUI_AwardsTab_Draw(player);
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 pCharacterScreen_AwardsBtn->uX / 640.0f,
                 pCharacterScreen_AwardsBtn->uY / 480.0f,
                 assets->GetImage_ColorKey("ib-cd4-d", render->teal_mask_16));
@@ -641,7 +643,7 @@ void GUIWindow_CharacterRecord::Update() {
             CharacterUI_ReleaseButtons();
             ReleaseAwardsScrollBar();
             CharacterUI_InventoryTab_Draw(player, false);
-            render->DrawTextureAlphaNew(
+            render->DrawTextureNew(
                 pCharacterScreen_InventoryBtn->uX / 640.0f,
                 pCharacterScreen_InventoryBtn->uY / 480.0f,
                 assets->GetImage_ColorKey("ib-cd3-d", render->teal_mask_16));
@@ -823,7 +825,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
 
 //----- (00419719) --------------------------------------------------------
 void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Player *player) {
-    render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f,
+    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f,
                                 ui_character_skills_background);
 
     auto str = StringPrintf(
@@ -863,7 +865,7 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
     // char Source[100];         // [sp+Ch] [bp-C4h]@1
     GUIWindow awards_window;  // [sp+70h] [bp-60h]@1
 
-    render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f,
+    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f,
                                 ui_character_awards_background);
 
     std::string str = StringPrintf(
@@ -1004,7 +1006,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         __debugbreak();
 
     render->ResetUIClipRect();
-    render->DrawTextureAlphaNew(467 / 640.0f, 0, ui_character_inventory_paperdoll_background);
+    render->DrawTextureNew(467 / 640.0f, 0, ui_character_inventory_paperdoll_background);
 
     ItemGen *itemMainHand = player->GetMainHandItem();
     ItemGen *itemOffHand = player->GetOffHandItem();
@@ -1012,7 +1014,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
 
     // Aqua-Lung
     if (IsPlayerWearingWatersuit[uPlayerID]) {
-        render->DrawTextureAlphaNew(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID - 1]);
+        render->DrawTextureNew(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID - 1]);
         if (!bRingsShownInCharScreen)
             render->ZDrawTextureAlpha(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID - 1], player->pEquipment.uArmor);
 
@@ -1021,7 +1023,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
             item_X = pPaperdoll_BodyX + pPaperdoll_LeftHand[pBodyComplection][0];
             item_Y = pPaperdoll_BodyY + pPaperdoll_LeftHand[pBodyComplection][1];
 
-            render->DrawTextureAlphaNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlads[uPlayerID - 1]);
+            render->DrawTextureNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlads[uPlayerID - 1]);
         }
 
         // main hand's item
@@ -1060,7 +1062,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         }
 
         // paperdoll
-        render->DrawTextureAlphaNew(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID - 1]);
+        render->DrawTextureNew(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID - 1]);
 
         // armor
         item = player->GetArmorItem();
@@ -1098,11 +1100,11 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         if (!bTwoHandedGrip) {
             item_X = pPaperdoll_BodyX + pPaperdoll_LeftHand[pBodyComplection][0];
             item_Y = pPaperdoll_BodyY + pPaperdoll_LeftHand[pBodyComplection][1];
-            render->DrawTextureAlphaNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlads[uPlayerID - 1]);
+            render->DrawTextureNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlads[uPlayerID - 1]);
         } else {
             item_X = pPaperdoll_BodyX + pPaperdoll_SecondLeftHand[pBodyComplection][0];
             item_Y = pPaperdoll_BodyY + pPaperdoll_SecondLeftHand[pBodyComplection][1];
-            render->DrawTextureAlphaNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlaus[uPlayerID - 1]);
+            render->DrawTextureNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlaus[uPlayerID - 1]);
         }
 
         // belt
@@ -1167,7 +1169,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
             item_X = pPaperdoll_BodyX + pPaperdoll_Beards[2 * player->uCurrentFace - 24];
             item_Y = pPaperdoll_BodyY + pPaperdoll_Beards[2 * player->uCurrentFace - 23];
 
-            render->DrawTextureAlphaNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dbrds[player->uCurrentFace]);
+            render->DrawTextureNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dbrds[player->uCurrentFace]);
         }
 
         // helm
@@ -1243,7 +1245,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         item_X = pPaperdoll_BodyX + pPaperdoll_RightHand[pBodyComplection][0];
         item_Y = pPaperdoll_BodyY + pPaperdoll_RightHand[pBodyComplection][1];
 
-        render->DrawTextureAlphaNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_drhs[uPlayerID - 1]);
+        render->DrawTextureNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_drhs[uPlayerID - 1]);
     }
 
     // offhand's wrist
@@ -1251,23 +1253,23 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         item_X = pPaperdoll_BodyX + pPaperdoll_SecondLeftHand[pBodyComplection][0];
         item_Y = pPaperdoll_BodyY + pPaperdoll_SecondLeftHand[pBodyComplection][1];
 
-        render->DrawTextureAlphaNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlhus[uPlayerID - 1]);
+        render->DrawTextureNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlhus[uPlayerID - 1]);
     } else if (!itemOffHand || itemOffHand && itemOffHand->GetItemEquipType() != EQUIP_SHIELD) {
         item_X = pPaperdoll_BodyX + pPaperdollLeftEmptyHand[pBodyComplection][0];
         item_Y = pPaperdoll_BodyY + pPaperdollLeftEmptyHand[pBodyComplection][1];
-        render->DrawTextureAlphaNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlhs[uPlayerID - 1]);
+        render->DrawTextureNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlhs[uPlayerID - 1]);
     }
 
     // magnifying glass
     if (!bRingsShownInCharScreen)
-        render->DrawTextureAlphaNew(603 / 640.0f, 299 / 480.0f, ui_character_inventory_magnification_glass);
+        render->DrawTextureNew(603 / 640.0f, 299 / 480.0f, ui_character_inventory_magnification_glass);
 
-    render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
+    render->DrawTextureNew(468 / 640.0f, 0, game_ui_right_panel_frame);
 }
 
 //----- (0041A2D1) --------------------------------------------------------
 void CharacterUI_InventoryTab_Draw(Player *player, bool Cover_Strip) {
-    render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f,
+    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f,
         ui_character_inventory_background);
     if (Cover_Strip) {
         if (ui_character_inventory_background_strip == nullptr) {
@@ -1276,7 +1278,7 @@ void CharacterUI_InventoryTab_Draw(Player *player, bool Cover_Strip) {
             ui_character_inventory_background_strip =
                 assets->GetImage_ColorKey("fr_strip", render->teal_mask_16);
         }
-        render->DrawTextureAlphaNew(8 / 640.0f, 305 / 480.0f,
+        render->DrawTextureNew(8 / 640.0f, 305 / 480.0f,
             ui_character_inventory_background_strip);
     }
 
@@ -1330,7 +1332,7 @@ static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, Texture *i
     } else if (!item->IsIdentified() && (engine->config->gameplay.ShowUndentifiedItem.Get() || id)) {
         render->DrawTransparentGreenShade(x / 640.0f, y / 480.0f, item_texture);
     } else {
-        render->DrawTextureAlphaNew(x / 640.0f, y / 480.0f, item_texture);
+        render->DrawTextureNew(x / 640.0f, y / 480.0f, item_texture);
     }
 
     if (doZDraw)
@@ -1341,10 +1343,10 @@ static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, Texture *i
 void CharacterUI_DrawPaperdollWithRingOverlay(Player *player) {
     CharacterUI_DrawPaperdoll(player);
 
-    render->DrawTextureAlphaNew(
+    render->DrawTextureNew(
         473 / 640.0f, 0, ui_character_inventory_paperdoll_rings_background);
-    render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
-    render->DrawTextureAlphaNew(pCharacterScreen_DetalizBtn->uX / 640.0f,
+    render->DrawTextureNew(468 / 640.0f, 0, game_ui_right_panel_frame);
+    render->DrawTextureNew(pCharacterScreen_DetalizBtn->uX / 640.0f,
                                 pCharacterScreen_DetalizBtn->uY / 480.0f,
                                 ui_character_inventory_paperdoll_rings_close);
 
@@ -1588,7 +1590,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
     const char *pText;        // eax@9
     const char *text_format;  // [sp+14h] [bp-Ch]@4
 
-    render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f,
+    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f,
                                 ui_character_stats_background);
 
     auto str1 =

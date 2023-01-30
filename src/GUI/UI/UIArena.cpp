@@ -123,19 +123,16 @@ void ArenaFight() {
 
     render->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
     render->BeginScene();
-    // if ( render->pRenderD3D )
-    render->MaskGameViewport();
 
     render->DrawTextureCustomHeight(8 / 640.0f, (352 - v0) / 480.0f,
                                     ui_leather_mm7, v0);
 
-    render->DrawTextureAlphaNew(8 / 640.0f, (347 - v0) / 480.0f,
+    render->DrawTextureNew(8 / 640.0f, (347 - v0) / 480.0f,
                                 _591428_endcap);
     std::string v1 = pFontArrus->FitTextInAWindow(
         localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON), window.uFrameWidth,
         13);
     pDialogueWindow->DrawText(pFontArrus, {13, 354 - v0}, 0, v1, 0, 0, 0);
-    render->EndScene();
     render->Present();
     pParty->vPosition.x = 3849;
     pParty->vPosition.y = 5770;

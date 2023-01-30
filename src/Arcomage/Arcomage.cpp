@@ -235,9 +235,9 @@ int explosion_effect_struct::StartFill(effect_params_struct *params) {
     if (this->mem_signature == SIG_MEMALOC) {
         this->spark_array_size = params->spark_array_size;
         this->start_x_min = params->effect_area.x;
-        this->start_y_max = params->effect_area.y;
         this->start_x_max = params->effect_area.x + params->effect_area.w;
-        this->start_y_min = params->effect_area.y + params->effect_area.h;
+        this->start_y_min = params->effect_area.y;
+        this->start_y_max = params->effect_area.y + params->effect_area.h;
         this->unused_param_1 = params->unused_param_1;
         this->unused_param_2 = params->unused_param_2;
         this->unused_param_3 = params->unused_param_3;
@@ -405,14 +405,15 @@ int new_explosion_effect(Pointi* startXY, int effect_value) {
     return 0;
 }
 
+// TODO(pskelton): Hardcoded limit checks need changing
 void DrawSparks() {
-    uint16_t rgb_pixel_color{};
+    uint32_t rgb_pixel_color{};
 
     for (int i = 0; i < 10; ++i) {
         if (am_effects_array[i].have_effect && (am_effects_array[i].explosion_eff->IsEffectActive() == 2)) {
             // set the pixel color
-            rgb_pixel_color = colorTable.Green.C16();
-            if (!am_effects_array[i].effect_sign) rgb_pixel_color = colorTable.Red.C16();
+            rgb_pixel_color = colorTable.Green.C32();
+            if (!am_effects_array[i].effect_sign) rgb_pixel_color = colorTable.Red.C32();
 
             // draw sparks
             for (int j = 0; j < 150; ++j) {
@@ -3012,21 +3013,22 @@ void am_DrawText(const std::string &str, Pointi *pXY) {
     pPrimaryWindow->DrawText(pFontComic, {pXY->x, pXY->y - ((pFontComic->GetHeight() - 3) / 2) + 3}, 0, str, false, 0, 0);
 }
 
+// TODO(pskelton): change to color32
 void DrawRect(Recti *pRect, uint16_t uColor, char bSolidFill) {
     if (bSolidFill) {
         int width = pRect->w;
         int height = pRect->h;
-        render->FillRectFast(pRect->x, pRect->y, width, height, uColor);
+        render->FillRectFast(pRect->x, pRect->y, width, height, Color32(uColor));
     } else {
         render->BeginLines2D();
         int x0 = pRect->x;
         int x1 = pRect->x + pRect->w;
         int y0 = pRect->y;
         int y1 = pRect->y + pRect->h;
-        render->RasterLine2D(x0, y0, x1, y0, uColor);
-        render->RasterLine2D(x1, y0, x1, y1, uColor);
-        render->RasterLine2D(x1, y1, x0, y1, uColor);
-        render->RasterLine2D(x0, y1, x0, y0, uColor);
+        render->RasterLine2D(x0, y0, x1, y0, Color32(uColor));
+        render->RasterLine2D(x1, y0, x1, y1, Color32(uColor));
+        render->RasterLine2D(x1, y1, x0, y1, Color32(uColor));
+        render->RasterLine2D(x0, y1, x0, y0, Color32(uColor));
         render->EndLines2D();
     }
 }

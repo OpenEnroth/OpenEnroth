@@ -11,8 +11,7 @@
 
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(RendererType, CASE_INSENSITIVE, {
     {RendererType::OpenGL, "OpenGL"},
-    {RendererType::OpenGLES, "OpenGLES"},
-    {RendererType::DirectDraw, "DirectDraw"}
+    {RendererType::OpenGLES, "OpenGLES"}
 })
 
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformWindowMode, CASE_INSENSITIVE, {

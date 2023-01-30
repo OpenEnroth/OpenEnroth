@@ -109,10 +109,10 @@ GUIWindow_Save::GUIWindow_Save() :
 
 void GUIWindow_Save::Update() {
     if (GetCurrentMenuID() != MENU_SAVELOAD && GetCurrentMenuID() != MENU_LoadingProcInMainMenu) {
-        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, saveload_ui_loadsave);
-        render->DrawTextureAlphaNew(241 / 640.0f, 302 / 480.0f, saveload_ui_saveu);
-        render->DrawTextureAlphaNew(18 / 640.0f, 139 / 480.0f, saveload_ui_save_up);
-        render->DrawTextureAlphaNew(351 / 640.0f, 302 / 480.0f, saveload_ui_x_u);
+        render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, saveload_ui_loadsave);
+        render->DrawTextureNew(241 / 640.0f, 302 / 480.0f, saveload_ui_saveu);
+        render->DrawTextureNew(18 / 640.0f, 139 / 480.0f, saveload_ui_save_up);
+        render->DrawTextureNew(351 / 640.0f, 302 / 480.0f, saveload_ui_x_u);
     }
     UI_DrawSaveLoad(true);
 }
@@ -137,10 +137,10 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
         main_menu_background = assets->GetImage_PCXFromIconsLOD("lsave640.pcx");
         render->DrawTextureNew(0, 0, main_menu_background);
     } else {
-        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, saveload_ui_loadsave);
-        render->DrawTextureAlphaNew(241 / 640.0f, 302 / 480.0f, saveload_ui_loadu);
-        render->DrawTextureAlphaNew(18 / 640.0f, 139 / 480.0f, saveload_ui_load_up);
-        render->DrawTextureAlphaNew(351 / 640.0f, 302 / 480.0f, saveload_ui_x_u);
+        render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, saveload_ui_loadsave);
+        render->DrawTextureNew(241 / 640.0f, 302 / 480.0f, saveload_ui_loadu);
+        render->DrawTextureNew(18 / 640.0f, 139 / 480.0f, saveload_ui_load_up);
+        render->DrawTextureNew(351 / 640.0f, 302 / 480.0f, saveload_ui_x_u);
     }
 
     // GUIWindow::GUIWindow
@@ -228,10 +228,10 @@ void GUIWindow_Load::Update() {
         render->DrawTextureNew(0, 0, main_menu_background);
     }
     if (GetCurrentMenuID() != MENU_SAVELOAD && GetCurrentMenuID() != MENU_LoadingProcInMainMenu) {
-        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, saveload_ui_loadsave);
-        render->DrawTextureAlphaNew(241 / 640.0f, 302 / 480.0f, saveload_ui_loadu);
-        render->DrawTextureAlphaNew(18 / 640.0f, 139 / 480.0f, saveload_ui_load_up);
-        render->DrawTextureAlphaNew(351 / 640.0f, 302 / 480.0f, saveload_ui_x_u);
+        render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, saveload_ui_loadsave);
+        render->DrawTextureNew(241 / 640.0f, 302 / 480.0f, saveload_ui_loadu);
+        render->DrawTextureNew(18 / 640.0f, 139 / 480.0f, saveload_ui_load_up);
+        render->DrawTextureNew(351 / 640.0f, 302 / 480.0f, saveload_ui_x_u);
     }
     UI_DrawSaveLoad(false);
 }
@@ -307,13 +307,13 @@ static void UI_DrawSaveLoad(bool save) {
 
             // ingame save scroll bar
             float ypos3 = (float(pSaveListPosition) / (pSaveFiles - 7)) * 89.f;
-            render->DrawTextureAlphaNew(216 / 640.f, (217 + ypos3) / 480.f, scrollstop);
+            render->DrawTextureNew(216 / 640.f, (217 + ypos3) / 480.f, scrollstop);
         } else {
             pSaveFiles = uNumSavegameFiles;
 
             // load scroll bar
             float ypos = (float(pSaveListPosition) / (pSaveFiles - 7)) * 89.f;
-            render->DrawTextureAlphaNew((216+ pGUIWindow_CurrentMenu->uFrameX) / 640.f, (217 + pGUIWindow_CurrentMenu->uFrameY + ypos) / 480.f, scrollstop);
+            render->DrawTextureNew((216+ pGUIWindow_CurrentMenu->uFrameX) / 640.f, (217 + pGUIWindow_CurrentMenu->uFrameY + ypos) / 480.f, scrollstop);
         }
 
         int slot_Y = 199;

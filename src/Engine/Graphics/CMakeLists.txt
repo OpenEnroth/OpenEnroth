@@ -69,16 +69,6 @@ set(GRAPHICS_HEADERS BSPModel.h
                      OpenGL/TextureOpenGL.h
                      Level/Decoration.h)
 
-if(ENABLE_DIRECTDRAW)
-  list(APPEND GRAPHICS_SOURCES Direct3D/Render.cpp
-                               Direct3D/RenderD3D.cpp
-                               Direct3D/TextureD3D.cpp)
-
-  list(APPEND GRAPHICS_HEADERS Direct3D/Render.h
-                               Direct3D/RenderD3D.h
-                               Direct3D/TextureD3D.h)
-endif()
-
 add_library(graphics STATIC ${GRAPHICS_SOURCES} ${GRAPHICS_HEADERS})
 target_check_style(graphics)
 
@@ -86,8 +76,4 @@ target_link_libraries(graphics libluajit glad nuklear utility serialization)
 if(NOT BUILD_PLATFORM STREQUAL "android")
   find_package(OpenGL REQUIRED)
   target_link_libraries(graphics ${OPENGL_opengl_LIBRARY})
-endif()
-
-if(ENABLE_DIRECTDRAW)
-  target_link_libraries(graphics ddraw.lib dxguid.lib)
 endif()

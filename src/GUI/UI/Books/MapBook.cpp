@@ -70,60 +70,60 @@ GUIWindow_MapBook::GUIWindow_MapBook() : GUIWindow_Book() {
 }
 
 void GUIWindow_MapBook::Update() {
-    render->DrawTextureAlphaNew(471 /  640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
-    render->DrawTextureAlphaNew(pViewport->uViewportTL_X / 640.0f, pViewport->uViewportTL_Y / 480.0f, ui_book_map_background);
+    render->DrawTextureNew(471 /  640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+    render->DrawTextureNew(pViewport->uViewportTL_X / 640.0f, pViewport->uViewportTL_Y / 480.0f, ui_book_map_background);
 
     if (BtnUp_flag || viewparams->uMapBookMapZoom / 128 >= 12)  // Button 1
-        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 408) / 640.0f,
+        render->DrawTextureNew((pViewport->uViewportTL_X + 408) / 640.0f,
         (pViewport->uViewportTL_Y + 2) / 480.0f,
             ui_book_button1_off);
     else
-        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 398) / 640.0f,
+        render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f,
         (pViewport->uViewportTL_Y + 1) / 480.0f,
             ui_book_button1_on);
 
     if (BtnDown_flag || viewparams->uMapBookMapZoom / 128 <= 3)  // Button 2
-        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 408) / 640.0f,
+        render->DrawTextureNew((pViewport->uViewportTL_X + 408) / 640.0f,
         (pViewport->uViewportTL_Y + 38) / 480.0f,
             ui_book_button2_off);
     else
-        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 398) / 640.0f,
+        render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f,
         (pViewport->uViewportTL_Y + 38) / 480.0f,
             ui_book_button2_on);
 
     if (Book_PageBtn3_flag)  // Button 3
-        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 408) / 640.0f,
+        render->DrawTextureNew((pViewport->uViewportTL_X + 408) / 640.0f,
         (pViewport->uViewportTL_Y + 113) / 480.0f,
             ui_book_button3_off);
     else
-        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 398) / 640.0f,
+        render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f,
         (pViewport->uViewportTL_Y + 113) / 480.0f,
             ui_book_button3_on);
 
     if (Book_PageBtn4_flag)  // Button 4
-        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 408) / 640.0f,
+        render->DrawTextureNew((pViewport->uViewportTL_X + 408) / 640.0f,
         (pViewport->uViewportTL_Y + 150) / 480.0f,
             ui_book_button4_off);
     else
-        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 399) / 640.0f,
+        render->DrawTextureNew((pViewport->uViewportTL_X + 399) / 640.0f,
         (pViewport->uViewportTL_Y + 150) / 480.0f,
             ui_book_button4_on);
 
     if (Book_PageBtn5_flag)  // Button 5
-        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 408) / 640.0f,
+        render->DrawTextureNew((pViewport->uViewportTL_X + 408) / 640.0f,
         (pViewport->uViewportTL_Y + 188) / 480.0f,
             ui_book_button5_off);
     else
-        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 397) / 640.0f,
+        render->DrawTextureNew((pViewport->uViewportTL_X + 397) / 640.0f,
         (pViewport->uViewportTL_Y + 188) / 480.0f,
             ui_book_button5_on);
 
     if (Book_PageBtn6_flag)  // Button 6
-        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 408) / 640.0f,
+        render->DrawTextureNew((pViewport->uViewportTL_X + 408) / 640.0f,
         (pViewport->uViewportTL_Y + 226) / 480.0f,
             ui_book_button6_off);
     else
-        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 397) / 640.0f,
+        render->DrawTextureNew((pViewport->uViewportTL_X + 397) / 640.0f,
         (pViewport->uViewportTL_Y + 226) / 480.0f,
             ui_book_button6_on);
 
@@ -145,7 +145,7 @@ void GUIWindow_MapBook::Update() {
     Book_PageBtn4_flag = 0;
     Book_PageBtn3_flag = 0;
 
-    render->DrawTextureAlphaNew(75 / 640.0f, 22 / 480.0f, ui_book_map_frame);
+    render->DrawTextureNew(75 / 640.0f, 22 / 480.0f, ui_book_map_frame);
     DrawBook_Map_sub(97, 49, 361, 313, 0);
     render->ResetUIClipRect();
 
@@ -234,7 +234,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
         }
 
         render->Update_Texture(minimaptemp);
-        render->DrawTextureAlphaNew(tl_x / 640., tl_y / 480., minimaptemp);
+        render->DrawTextureNew(tl_x / 640., tl_y / 480., minimaptemp);
     } else {  // indoors
         if (!pIndoor->pMapOutlines.empty()) {
             render->BeginLines2D();
@@ -258,7 +258,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
                         int linez = ScreenCenterX + fixpoint_mul(Vert2X, viewparams->uMapBookMapZoom);
                         int linew = ScreenCenterY - fixpoint_mul(Vert2Y, viewparams->uMapBookMapZoom);
 
-                        render->RasterLine2D(linex, liney, linez, linew, colorTable.Black.C16());
+                        render->RasterLine2D(linex, liney, linez, linew, colorTable.Black.C32());
                     }
                 }
             }
@@ -316,11 +316,11 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
                 int decypos = ScreenCenterY - fixpoint_mul(DecY, viewparams->uMapBookMapZoom);
 
                 if (viewparams->uMapBookMapZoom > 512) {
-                    render->RasterLine2D(decxpos - 1, decypos - 1, decxpos - 1, decypos + 1, colorTable.White.C16());
-                    render->RasterLine2D(decxpos, decypos - 1, decxpos, decypos + 1, colorTable.White.C16());
-                    render->RasterLine2D(decxpos + 1, decypos - 1, decxpos + 1, decypos + 1, colorTable.White.C16());
+                    render->RasterLine2D(decxpos - 1, decypos - 1, decxpos - 1, decypos + 1, colorTable.White.C32());
+                    render->RasterLine2D(decxpos, decypos - 1, decxpos, decypos + 1, colorTable.White.C32());
+                    render->RasterLine2D(decxpos + 1, decypos - 1, decxpos + 1, decypos + 1, colorTable.White.C32());
                 } else {
-                    render->RasterLine2D(decxpos, decypos, decxpos, decypos, colorTable.White.C16());
+                    render->RasterLine2D(decxpos, decypos, decxpos, decypos, colorTable.White.C32());
                 }
             }
         }

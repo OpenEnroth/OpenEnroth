@@ -1238,50 +1238,13 @@ void SpellFxRenderer::RenderSpecialEffects() {
     }
 
     if (uAnimLength > 0) {
-        // prismatic light??
+        // prismatic light
         v8 = 8 * pSpriteFrameTable->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")].uAnimLength - uAnimLength;
         v10 = pSpriteFrameTable->GetFrame(pSpriteFrameTable->FastFindSprite("spell84"), v8);
-
+        int pal = v10->GetPaletteIndex();
         uAnimLength -= pEventTimer->uTimeElapsed;
-        // if ( render->pRenderD3D )
-        //{
-        vd3d[0].pos.x = (double)(signed int)pViewport->uViewportTL_X;
-        vd3d[0].pos.y = (double)(signed int)pViewport->uViewportTL_Y;
-        vd3d[0].pos.z = 0.0;
-        vd3d[0].diffuse = colorTable.MediumGrey.C32();
-        vd3d[0].specular = 0;
-        vd3d[0].rhw = 1.0;
-        vd3d[0].texcoord.x = 0.0;
-        vd3d[0].texcoord.y = 0.0;
 
-        vd3d[1].pos.x = (double)(signed int)pViewport->uViewportTL_X;
-        vd3d[1].pos.y = (double)(pViewport->uViewportBR_Y);
-        vd3d[1].pos.z = 0.0;
-        vd3d[1].diffuse = colorTable.MediumGrey.C32();
-        vd3d[1].specular = 0;
-        vd3d[1].rhw = 1.0;
-        vd3d[1].texcoord.x = 0.0;
-        vd3d[1].texcoord.y = 1.0;
-
-        vd3d[2].pos.x = (double)(signed int)pViewport->uViewportBR_X;
-        vd3d[2].pos.y = (double)(pViewport->uViewportBR_Y);
-        vd3d[2].pos.z = 0.0;
-        vd3d[2].diffuse = colorTable.MediumGrey.C32();
-        vd3d[2].specular = 0;
-        vd3d[2].rhw = 1.0;
-        vd3d[2].texcoord.x = 1.0;
-        vd3d[2].texcoord.y = 1.0;
-
-        vd3d[3].pos.x = (double)(signed int)pViewport->uViewportBR_X;
-        vd3d[3].pos.y = (double)(signed int)pViewport->uViewportTL_Y;
-        vd3d[3].pos.z = 0.0;
-        vd3d[3].diffuse = colorTable.MediumGrey.C32();
-        vd3d[3].specular = 0;
-        vd3d[3].rhw = 1.0;
-        vd3d[3].texcoord.x = 1.0;
-        vd3d[3].texcoord.y = 0.0;
-
-        render->DrawSpecialEffectsQuad(vd3d, v10->hw_sprites[0]->texture);
+        render->DrawSpecialEffectsQuad(v10->hw_sprites[0]->texture, pal);
     }
 }
 
@@ -1299,7 +1262,7 @@ void SpellFxRenderer::DrawPlayerBuffAnims() {
 
         Icon *icon = pIconsFrameTable->GetFrame(buff->uSpellIconID,
                                                 buff->uSpellAnimTimeElapsed);
-        render->DrawTextureAlphaNew(
+        render->DrawTextureNew(
             pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f,
             385 / 480.0f, icon->GetTexture());
 

@@ -39,7 +39,7 @@ void GUIWindow_RestWindow::Update() {
     GUIButton2.uHeight = 37;
     GUIButton2.pParent = pButton_RestUI_WaitUntilDawn->pParent;
     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
-    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f,
+    render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f,
                                 *(static_cast<Image **>(wData.ptr) + 15));
     viewparams->bRedrawGameUI = 1;
     GUIButton2.DrawLabel(
@@ -120,7 +120,7 @@ void GUIWindow_Rest::Update() {
             ++live_characters;
 
     if (live_characters) {
-        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, rest_ui_restmain);
+        render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, rest_ui_restmain);
         am_pm_hours = pParty->uCurrentHour;
         dword_506F1C = pGUIWindow_CurrentMenu->pCurrentPosActiveItem;
         if ((signed int)pParty->uCurrentHour <= 12) {
@@ -128,7 +128,7 @@ void GUIWindow_Rest::Update() {
         } else {
             am_pm_hours -= 12;
         }
-        render->DrawTextureAlphaNew(16 / 640.0f, 26 / 480.0f,
+        render->DrawTextureNew(16 / 640.0f, 26 / 480.0f,
                                     rest_ui_sky_frame_current);
         if (rest_ui_hourglass_frame_current) {
             rest_ui_hourglass_frame_current->Release();
@@ -148,7 +148,7 @@ void GUIWindow_Rest::Update() {
         {
             rest_ui_hourglass_frame_current = assets->GetImage_ColorKey(
                 StringPrintf("hglas%03d", hourglass_icon_idx), render->teal_mask_16);
-            render->DrawTextureAlphaNew(267 / 640.0f, 159 / 480.0f,
+            render->DrawTextureNew(267 / 640.0f, 159 / 480.0f,
                                         rest_ui_hourglass_frame_current);
         }
 

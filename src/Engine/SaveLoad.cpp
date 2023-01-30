@@ -34,6 +34,7 @@
 #include "Media/Audio/AudioPlayer.h"
 
 struct SavegameList *pSavegameList = new SavegameList;
+// TODO(pskelton): combine these all into savegamelist
 unsigned int uNumSavegameFiles;
 std::array<unsigned int, MAX_SAVE_SLOTS> pSavegameUsedSlots;
 std::array<Image *, MAX_SAVE_SLOTS> pSavegameThumbnails;
@@ -247,9 +248,9 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     // saving - please wait
 
     // if (current_screen_type == SCREEN_SAVEGAME) {
-    //    render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f,
+    //    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f,
     //        saveload_ui_loadsave);
-    //    render->DrawTextureAlphaNew(18 / 640.0f, 141 / 480.0f,
+    //    render->DrawTextureNew(18 / 640.0f, 141 / 480.0f,
     //        saveload_ui_loadsave);
     //    int text_pos = pFontSmallnum->AlignText_Center(186, localization->GetString(190));
     //    pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 219, 0,
@@ -578,7 +579,7 @@ void SavegameList::Initialize() {
         for (const auto& entry : std::filesystem::directory_iterator(saves_dir)) {
             if (entry.path().extension() == ".mm7") {
                 pSavegameList->pFileList[uNumSavegameFiles++] = entry.path().filename().string();
-                if (uNumSavegameFiles == (MAX_SAVE_SLOTS - 1)) break;
+                if (uNumSavegameFiles == MAX_SAVE_SLOTS) break;
             }
         }
     } else {
@@ -586,7 +587,7 @@ void SavegameList::Initialize() {
     }
 
     if (uNumSavegameFiles)
-        std::sort(&pSavegameList->pFileList[0], &pSavegameList->pFileList[uNumSavegameFiles]);
+        std::sort(&pSavegameList->pFileList[0], &pSavegameList->pFileList[uNumSavegameFiles - 1]);
 }
 
 SavegameList::SavegameList() { Reset(); }

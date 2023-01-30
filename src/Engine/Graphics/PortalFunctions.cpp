@@ -316,13 +316,8 @@ bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
         v26.vWorldPosition.y = pCamera3D->vCameraPos.y;
         v26.vWorldPosition.z = pCamera3D->vCameraPos.z;
 
-        /*pCamera3D->do_draw_debug_line_sw(&v26, 0xFF0000u, &pOutBounding[0], 0xFF0000u, 0, 0);
-        pCamera3D->do_draw_debug_line_sw(&v26, 0xFF00u, &pOutBounding[1], 0xFF00u, 0, 0);
-        pCamera3D->do_draw_debug_line_sw(&v26, 0xFFu, &pOutBounding[2], 0xFFu, 0, 0);
-        pCamera3D->do_draw_debug_line_sw(&v26, 0xFFFFFFu, &pOutBounding[3], 0xFFFFFFu, 0, 0);*/
-
         // portal bounding
-        pCamera3D->debug_outline_sw(pOutBounding, uNumVertices, 0x1EFF1Eu, 0.00019999999);
+        pCamera3D->debug_outline_sw(pOutBounding, uNumVertices, colorTable.NeonGreen.C32(), 0.00019999999);
 
         // portal normal
         v25.vWorldPosition.x = face_center_x;
@@ -333,7 +328,7 @@ bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
         v26.vWorldPosition.y = face_center_y + a1.y * 400.0f;
         v26.vWorldPosition.z = face_center_z + a1.z * 400.0f;
 
-        pCamera3D->do_draw_debug_line_sw(&v25, -1, &v26, 0xFFFF00u, 0, 0);
+        pCamera3D->do_draw_debug_line_sw(&v25, colorTable.White.C32(), &v26, colorTable.Yellow.C32(), 0, 0);
     }
 
 

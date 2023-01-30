@@ -55,7 +55,7 @@ void GUIWindow_QuickReference::Update() {
     int pFontHeight;          // [sp+18h] [bp-14h]@1
     std::string pTempString;
 
-    render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f,
+    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f,
                                 ui_game_quickref_background);
 
     pFontHeight = pFontArrus->GetHeight() + 1;

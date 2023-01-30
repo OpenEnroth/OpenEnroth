@@ -169,7 +169,7 @@ void GUIWindow_Spellbook::Update() {
                 pX_coord = texture_tab_coord0[page][0];
                 pY_coord = texture_tab_coord0[page][1];
             }
-            render->DrawTextureAlphaNew(pX_coord / 640.0f, pY_coord / 480.0f,
+            render->DrawTextureNew(pX_coord / 640.0f, pY_coord / 480.0f,
                                         pPageTexture);
 
             PlayerSpellbookChapter *chapter =
@@ -198,7 +198,7 @@ void GUIWindow_Spellbook::Update() {
                                              [i+1]]
                                             .Ypos;
 
-                            render->DrawTextureAlphaNew(
+                            render->DrawTextureNew(
                                 pX_coord / 640.0f, pY_coord / 480.0f, pTexture);
 
                             //
@@ -251,7 +251,7 @@ void GUIWindow_Spellbook::Update() {
                     [v10]]
                 .Ypos;
 
-                render->DrawTextureAlphaNew(pX_coord / 640.0f, pY_coord / 480.0f,
+                render->DrawTextureNew(pX_coord / 640.0f, pY_coord / 480.0f,
                     SBPageCSpellsTextureList[v10]);
             }
         }
@@ -298,12 +298,12 @@ static void BookUI_Spellbook_DrawCurrentSchoolBackground() {
     if (uActiveCharacter) {
         pTexID = pParty->pPlayers[uActiveCharacter - 1].lastOpenedSpellbookPage;
     }
-    render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f,
+    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f,
                                 ui_spellbook_school_backgrounds[pTexID]);
 
-    render->DrawTextureAlphaNew(476 / 640.0f, 450 / 480.0f,
+    render->DrawTextureNew(476 / 640.0f, 450 / 480.0f,
                                 ui_spellbook_btn_quckspell);
-    render->DrawTextureAlphaNew(561 / 640.0f, 450 / 480.0f,
+    render->DrawTextureNew(561 / 640.0f, 450 / 480.0f,
                                 ui_spellbook_btn_close);
 }
 

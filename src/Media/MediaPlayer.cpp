@@ -555,7 +555,6 @@ class Movie : public IMovie {
                 // update texture
                 render->Update_Texture(tex);
                 render->DrawImage(tex, calculateVideoRectangle(pMovie_Track));
-                render->EndScene();
                 render->Present();
             }
 
@@ -838,8 +837,6 @@ void MPlayer::HouseMovieLoop() {
         // callback to prevent skipped frame draw
         HouseMovieLoop();
     }
-
-    render->EndScene();
 }
 
 void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
@@ -900,7 +897,6 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
             render->Update_Texture(tex);
             render->DrawImage(tex, calculateVideoRectangle(pMovie_Track));
 
-            render->EndScene();
             render->Present();
         }
     }

@@ -100,20 +100,20 @@ void Actor::DrawHealthBar(Actor *actor, GUIWindow *window) {
     unsigned int uX = window->uFrameX + (signed int)(window->uFrameWidth - bar_length) / 2;
 
     render->SetUIClipRect(uX, window->uFrameY + 32, uX + bar_length, window->uFrameY + 52);
-    render->DrawTextureAlphaNew(uX / 640.0f, (window->uFrameY + 32) / 480.0f,
+    render->DrawTextureNew(uX / 640.0f, (window->uFrameY + 32) / 480.0f,
                                 game_ui_monster_hp_background);
 
     render->SetUIClipRect(uX, window->uFrameY + 32, uX + bar_filled_length,
                           window->uFrameY + 52);
-    render->DrawTextureAlphaNew(uX / 640.0f, (window->uFrameY + 34) / 480.0f,
+    render->DrawTextureNew(uX / 640.0f, (window->uFrameY + 34) / 480.0f,
                                 bar_image);
 
     // draw hp bar ends
     render->ResetUIClipRect();
-    render->DrawTextureAlphaNew((uX - 5) / 640.0f,
+    render->DrawTextureNew((uX - 5) / 640.0f,
                                 (window->uFrameY + 32) / 480.0f,
                                 game_ui_monster_hp_border_left);
-    render->DrawTextureAlphaNew((uX + bar_length) / 640.0f,
+    render->DrawTextureNew((uX + bar_length) / 640.0f,
                                 (window->uFrameY + 32) / 480.0f,
                                 game_ui_monster_hp_border_right);
 }

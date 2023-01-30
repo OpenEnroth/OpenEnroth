@@ -2656,7 +2656,6 @@ void Game::GameLoop() {
             if (uGameState == GAME_STATE_FINAL_WINDOW) {
                 render->BeginScene();
                 GUI_UpdateWindows();
-                render->EndScene();
                 render->Present();
                 continue;
             }

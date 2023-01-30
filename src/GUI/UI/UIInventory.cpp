@@ -52,5 +52,5 @@ void GUIWindow_Inventory_CastSpell::Update() {
     draw_leather();
     CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
     CharacterUI_DrawPaperdoll(pPlayers[uActiveCharacter]);
-    render->DrawTextureAlphaNew(pBtn_ExitCancel->uX / 640.0f, pBtn_ExitCancel->uY / 480.0f, dialogue_ui_x_x_u);
+    render->DrawTextureNew(pBtn_ExitCancel->uX / 640.0f, pBtn_ExitCancel->uY / 480.0f, dialogue_ui_x_x_u);
 }

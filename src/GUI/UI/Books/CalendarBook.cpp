@@ -59,7 +59,7 @@ static const char *GetDayPart() {
 }
 
 void GUIWindow_CalendarBook::Update() {
-    render->DrawTextureAlphaNew(
+    render->DrawTextureNew(
         471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
 
     int am;  // ecx@5
@@ -78,7 +78,7 @@ void GUIWindow_CalendarBook::Update() {
         1, 1, 1, 1
     };
 
-    render->DrawTextureAlphaNew(pViewport->uViewportTL_X / 640.0f, pViewport->uViewportTL_Y / 480.0f, ui_book_calendar_background);
+    render->DrawTextureNew(pViewport->uViewportTL_X / 640.0f, pViewport->uViewportTL_Y / 480.0f, ui_book_calendar_background);
     pHour = pParty->uCurrentHour;
     if ((int)pHour >= 12) {
         pHour -= 12;

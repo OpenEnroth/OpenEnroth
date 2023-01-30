@@ -124,7 +124,7 @@ void GL_Check_Framebuffer(const char *name) {
 void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y2, int z2) {
     // 6 0 0 0 6 0
 
-    // TODO(pskelton): clean up
+    // TODO(pskelton): clean up and move out of here
 
     float cosz = pCamera3D->fRotationZCosine;
     float cosx = pCamera3D->fRotationYCosine;
@@ -200,10 +200,6 @@ RenderOpenGL::RenderOpenGL(
 RenderOpenGL::~RenderOpenGL() { logger->Info("RenderGl - Destructor"); }
 
 void RenderOpenGL::Release() { logger->Info("RenderGL - Release"); }
-
-void RenderOpenGL::MaskGameViewport() {
-    // do not want in opengl mode
-}
 
 uint8_t *RenderOpenGL::ReadScreenPixels() {
     GLubyte *sPixels = new GLubyte[4 * outputRender.w * outputRender.h];
@@ -301,6 +297,7 @@ struct linesverts {
     GLfloat r;
     GLfloat g;
     GLfloat b;
+    GLfloat a;
 };
 
 linesverts lineshaderstore[2000] = {};
@@ -325,7 +322,7 @@ void RenderOpenGL::BeginLines2D() {
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(linesverts), (void *)offsetof(linesverts, x));
         glEnableVertexAttribArray(0);
         // colour attribute
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(linesverts), (void *)offsetof(linesverts, r));
+        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(linesverts), (void *)offsetof(linesverts, r));
         glEnableVertexAttribArray(1);
     }
 }
@@ -362,18 +359,19 @@ void RenderOpenGL::EndLines2D() {
     linevertscnt = 0;
 }
 
-// TODO(pskelton): change to color32
 void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ,
-                                signed int uW, uint16_t uColor) {
-    float b = ((uColor & 0x1F)*8) / 255.0f;
-    float g = (((uColor >> 5) & 0x3F)*4) / 255.0f;
-    float r = (((uColor >> 11) & 0x1F)*8) / 255.0f;
+                                signed int uW, uint32_t uColor32) {
+    float a = ((uColor32 >> 24) & 0xFF) / 255.0f;
+    float b = ((uColor32 >> 16) & 0xFF) / 255.0f;
+    float g = ((uColor32 >> 8) & 0xFF) / 255.0f;
+    float r = (uColor32 & 0xFF) / 255.0f;
 
     lineshaderstore[linevertscnt].x = static_cast<float>(uX);
     lineshaderstore[linevertscnt].y = static_cast<float>(uY);
     lineshaderstore[linevertscnt].r = r;
     lineshaderstore[linevertscnt].g = g;
     lineshaderstore[linevertscnt].b = b;
+    lineshaderstore[linevertscnt].a = a;
     linevertscnt++;
 
     lineshaderstore[linevertscnt].x = static_cast<float>(uZ);
@@ -381,10 +379,49 @@ void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ,
     lineshaderstore[linevertscnt].r = r;
     lineshaderstore[linevertscnt].g = g;
     lineshaderstore[linevertscnt].b = b;
+    lineshaderstore[linevertscnt].a = a;
     linevertscnt++;
 
     // draw if buffer full
     if (linevertscnt == 2000) EndLines2D();
+}
+
+// used for debug protal lines
+void RenderOpenGL::DrawLines(const RenderVertexD3D3* vertices, unsigned int num_vertices) {
+    BeginLines2D();
+    for (uint i = 0; i < num_vertices - 1; ++i) {
+        uint uColor32 = vertices[i].diffuse;
+        float a1 = ((uColor32 >> 24) & 0xFF) / 255.0f;
+        float b1 = ((uColor32 >> 16) & 0xFF) / 255.0f;
+        float g1 = ((uColor32 >> 8) & 0xFF) / 255.0f;
+        float r1 = (uColor32 & 0xFF) / 255.0f;
+
+        uint uColor32_2 = vertices[i + 1].diffuse;
+        float a2 = ((uColor32_2 >> 24) & 0xFF) / 255.0f;
+        float b2 = ((uColor32_2 >> 16) & 0xFF) / 255.0f;
+        float g2 = ((uColor32_2 >> 8) & 0xFF) / 255.0f;
+        float r2 = (uColor32_2 & 0xFF) / 255.0f;
+
+        lineshaderstore[linevertscnt].x = vertices[i].pos.x;
+        lineshaderstore[linevertscnt].y = vertices[i].pos.y;
+        lineshaderstore[linevertscnt].r = r1;
+        lineshaderstore[linevertscnt].g = g1;
+        lineshaderstore[linevertscnt].b = b1;
+        lineshaderstore[linevertscnt].a = a1;
+        linevertscnt++;
+
+        lineshaderstore[linevertscnt].x = vertices[i + 1].pos.x + 0.5f;
+        lineshaderstore[linevertscnt].y = vertices[i + 1].pos.y + 0.5f;
+        lineshaderstore[linevertscnt].r = r2;
+        lineshaderstore[linevertscnt].g = g2;
+        lineshaderstore[linevertscnt].b = b2;
+        lineshaderstore[linevertscnt].a = a2;
+        linevertscnt++;
+
+        // draw if buffer full
+        if (linevertscnt == 2000) EndLines2D();
+    }
+    EndLines2D();
 }
 
 void RenderOpenGL::BeginSceneD3D() {
@@ -752,13 +789,17 @@ void RenderOpenGL::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
 }
 
 
-
-void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid) {
+void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid, uint32_t uColor32) {
     if (!img) {
         if (engine->config->debug.VerboseLogging.Get())
             logger->Warning("Null img passed to DrawImage");
         return;
     }
+
+    float a = ((uColor32 >> 24) & 0xFF) / 255.0f;
+    float b = ((uColor32 >> 16) & 0xFF) / 255.0f;
+    float g = ((uColor32 >> 8) & 0xFF) / 255.0f;
+    float r = (uColor32 & 0xFF) / 255.0f;
 
     int width = img->GetWidth();
     int height = img->GetHeight();
@@ -793,10 +834,10 @@ void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid) {
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texx;
     twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].r = 1;
-    twodshaderstore[twodvertscnt].g = 1;
-    twodshaderstore[twodvertscnt].b = 1;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = a;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
@@ -806,10 +847,10 @@ void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid) {
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texz;
     twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].r = 1;
-    twodshaderstore[twodvertscnt].g = 1;
-    twodshaderstore[twodvertscnt].b = 1;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = a;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
@@ -819,10 +860,10 @@ void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid) {
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texz;
     twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].r = 1;
-    twodshaderstore[twodvertscnt].g = 1;
-    twodshaderstore[twodvertscnt].b = 1;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = a;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
@@ -834,10 +875,10 @@ void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid) {
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texx;
     twodshaderstore[twodvertscnt].v = texy;
-    twodshaderstore[twodvertscnt].r = 1;
-    twodshaderstore[twodvertscnt].g = 1;
-    twodshaderstore[twodvertscnt].b = 1;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = a;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
@@ -847,10 +888,10 @@ void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid) {
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texz;
     twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].r = 1;
-    twodshaderstore[twodvertscnt].g = 1;
-    twodshaderstore[twodvertscnt].b = 1;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = a;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
@@ -860,10 +901,10 @@ void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid) {
     twodshaderstore[twodvertscnt].z = 0;
     twodshaderstore[twodvertscnt].u = texx;
     twodshaderstore[twodvertscnt].v = texw;
-    twodshaderstore[twodvertscnt].r = 1;
-    twodshaderstore[twodvertscnt].g = 1;
-    twodshaderstore[twodvertscnt].b = 1;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = a;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = paletteid;
     twodvertscnt++;
@@ -976,7 +1017,7 @@ void RenderOpenGL::BlendTextures(int x, int y, Image* imgin, Image* imgblend, in
         }
         // draw image
         render->Update_Texture(temp);
-        render->DrawTextureAlphaNew(x / float(outputRender.w), y / float(outputRender.h), temp);
+        render->DrawTextureNew(x / float(outputRender.w), y / float(outputRender.h), temp);
 
         render->DrawTwodVerts();
 
@@ -1027,7 +1068,7 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time
             render->Update_Texture(cachedtemp[thisslot]);
         }
 
-        render->DrawTextureAlphaNew(u, v, cachedtemp[thisslot]);
+        render->DrawTextureNew(u, v, cachedtemp[thisslot]);
     }
 }
 
@@ -1041,37 +1082,6 @@ void RenderOpenGL::DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait, int Y_Of
     render->SetUIClipRect(rc.x, rc.y, rc.x + rc.w, rc.y + rc.h);
     render->DrawImage(Portrait->hw_sprites[0]->texture, rct, Portrait->GetPaletteIndex());
     render->ResetUIClipRect();
-}
-
-void RenderOpenGL::DrawTransparentRedShade(float u, float v, Image *a4) {
-    DrawMasked(u, v, a4, 0, 0xF800);
-}
-
-void RenderOpenGL::DrawTransparentGreenShade(float u, float v, Image *pTexture) {
-    DrawMasked(u, v, pTexture, 0, 0x07E0);
-}
-
-// TODO(pskelton): change to color32
-void RenderOpenGL::DrawMasked(float u, float v, Image *pTexture, unsigned int color_dimming_level, uint16_t mask) {
-    uint32_t col = colorTable.White.C32();
-
-    if (mask)
-        col = Color32(mask);
-
-    int b = ((col >> 16) & 0xFF) & (0xFF >> color_dimming_level);
-    int g = ((col >> 8) & 0xFF) & (0xFF >> color_dimming_level);
-    int r = ((col) & 0xFF) & (0xFF >> color_dimming_level);
-
-    col = Color32(r, g, b);
-
-    DrawTextureNew(u, v, pTexture, col);
-    return;
-}
-
-
-
-void RenderOpenGL::DrawTextureGrayShade(float a2, float a3, Image *a4) {
-    DrawMasked(a2, a3, a4, 1, 0x7BEF);
 }
 
 void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {
@@ -1510,57 +1520,14 @@ void RenderOpenGL::DrawDecal(struct Decal *pDecal, float z_bias) {
     }
 }
 
-void RenderOpenGL::Do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
-                                          signed int sDiffuseBegin,
-                                          const RenderVertexD3D3 *pLineEnd,
-                                          signed int sDiffuseEnd,
-                                          float z_stuff) {
-    // not required - using wireframe drawing for gl debug lines
-}
-
-// used for debug protal lines
-void RenderOpenGL::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices) {
-    BeginLines2D();
-    for (uint i = 0; i < num_vertices - 1; ++i) {
-        uint uColor = vertices[i].diffuse;
-        float b1 = ((uColor & 0x1F) * 8) / 255.0f;
-        float g1 = (((uColor >> 5) & 0x3F) * 4) / 255.0f;
-        float r1 = (((uColor >> 11) & 0x1F) * 8) / 255.0f;
-
-        uint uColor2 = vertices[i+1].diffuse;
-        float b2 = ((uColor2 & 0x1F) * 8) / 255.0f;
-        float g2 = (((uColor2 >> 5) & 0x3F) * 4) / 255.0f;
-        float r2 = (((uColor2 >> 11) & 0x1F) * 8) / 255.0f;
-
-        lineshaderstore[linevertscnt].x = vertices[i].pos.x;
-        lineshaderstore[linevertscnt].y = vertices[i].pos.y;
-        lineshaderstore[linevertscnt].r = r1;
-        lineshaderstore[linevertscnt].g = g1;
-        lineshaderstore[linevertscnt].b = b1;
-        linevertscnt++;
-
-        lineshaderstore[linevertscnt].x = vertices[i + 1].pos.x + 0.5f;
-        lineshaderstore[linevertscnt].y = vertices[i + 1].pos.y + 0.5f;
-        lineshaderstore[linevertscnt].r = r2;
-        lineshaderstore[linevertscnt].g = g2;
-        lineshaderstore[linevertscnt].b = b2;
-        linevertscnt++;
-
-        // draw if buffer full
-        if (linevertscnt == 2000) EndLines2D();
-    }
-    EndLines2D();
-}
-
-void RenderOpenGL::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, Texture *texture) {
-    //TODO(pskelton): need to add dimming  0x7F7F7F - medium grey
+void RenderOpenGL::DrawSpecialEffectsQuad(Texture *texture, int palette) {
     Recti targetrect{};
     targetrect.x = pViewport->uViewportTL_X;
     targetrect.y = pViewport->uViewportTL_Y;
     targetrect.w = pViewport->uViewportBR_X - pViewport->uViewportTL_X;
     targetrect.h = pViewport->uViewportBR_Y - pViewport->uViewportTL_Y;
 
-    DrawImage(texture, targetrect);
+    DrawImage(texture, targetrect, palette, colorTable.MediumGrey.C32());
 }
 
 void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, int a3, int blend_mode) {
@@ -3249,10 +3216,10 @@ void RenderOpenGL::ResetUIClipRect() {
 void RenderOpenGL::PresentBlackScreen() {
     BeginScene();
     ClearBlack();
-    EndScene();
     Present();
 }
 
+// TODO(pskelton): rename BeginScene2D?
 void RenderOpenGL::BeginScene() {
     // Setup for 2D
 
@@ -3273,17 +3240,7 @@ void RenderOpenGL::BeginScene() {
     _set_ortho_modelview();
 }
 
-void RenderOpenGL::EndScene() {
-    // blank in d3d
-}
-
-
-
-void RenderOpenGL::DrawTextureAlphaNew(float u, float v, Image *img) {
-    DrawTextureNew(u, v, img);
-    return;
-}
-
+// TODO(pskelton): use alpha from mask too
 void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourmask) {
     TextureOpenGL *texture = dynamic_cast<TextureOpenGL *>(tex);
     if (!texture) {
@@ -3412,6 +3369,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
     return;
 }
 
+// TODO(pskelton): add optional colour32
 void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, int custom_height) {
     TextureOpenGL* texture = dynamic_cast<TextureOpenGL*>(img);
     if (!texture) {
@@ -3659,6 +3617,7 @@ void RenderOpenGL::EndTextNew() {
     return;
 }
 
+// TODO(pskelton): make color 32
 void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v1, float u2, float v2, int isshadow, uint16_t colour) {
     float b = ((colour & 31) * 8) / 255.0f;
     float g = (((colour >> 5) & 63) * 4) / 255.0f;
@@ -3770,20 +3729,6 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     textvertscnt++;
 
     if (textvertscnt > 9990) EndTextNew();
-}
-
-void RenderOpenGL::DrawText(int uOutX, int uOutY, uint8_t* pFontPixels,
-                            unsigned int uCharWidth, unsigned int uCharHeight,
-                            uint8_t* pFontPalette, uint16_t uFaceColor,
-                            uint16_t uShadowColor) {
-    return;
-}
-
-void RenderOpenGL::DrawTextAlpha(int x, int y, unsigned char *font_pixels,
-                                 int uCharWidth, unsigned int uFontHeight,
-                                 uint8_t *pPalette,
-                                 bool present_time_transparency) {
-    return;
 }
 
 void RenderOpenGL::Present() {
@@ -5182,13 +5127,6 @@ void RenderOpenGL::DrawIndoorFaces() {
         return;
 }
 
-// d3d only
-void RenderOpenGL::DrawIndoorBatched() { return; }
-
-// no longer require with shaders
-void RenderOpenGL::DrawPolygon(struct Polygon *pPolygon) { return; }
-void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace, int uPackedID, unsigned int uColor, int a8) { return; }
-
 bool RenderOpenGL::SwitchToWindow() {
     // pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
     // pViewport->ResetScreen();
@@ -5255,16 +5193,12 @@ bool RenderOpenGL::Initialize() {
     return false;
 }
 
-// do not use
-void RenderOpenGL::WritePixel16(int x, int y, uint16_t color) { return; }
-
-// TODO(pskelton): change to color32
-void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
-                                unsigned int uWidth, unsigned int uHeight,
-                                unsigned int uColor16) {
-    float b = ((uColor16 & 0x1F) * 8) / 255.0f;
-    float g = (((uColor16 >> 5) & 0x3F) * 4) / 255.0f;
-    float r = (((uColor16 >> 11) & 0x1F) * 8) / 255.0f;
+void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY, unsigned int uWidth,
+                                unsigned int uHeight, uint32_t uColor32) {
+    float a = ((uColor32 >> 24) & 0xFF) / 255.0f;
+    float b = ((uColor32 >> 16) & 0xFF) / 255.0f;
+    float g = ((uColor32 >> 8) & 0xFF) / 255.0f;
+    float r = (uColor32 & 0xFF) / 255.0f;
 
     float depth = 0;
     int x = uX;
@@ -5276,7 +5210,6 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     if (x >= outputRender.w || x >= this->clip_z || y >= outputRender.h || y >= this->clip_w) return;
     // check for overlap
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
-
 
     static Texture* effpar03 = assets->GetBitmap("effpar03");
     auto texture = (TextureOpenGL*)effpar03;
@@ -5302,7 +5235,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     twodshaderstore[twodvertscnt].r = r;
     twodshaderstore[twodvertscnt].g = g;
     twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].a = a;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -5315,7 +5248,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     twodshaderstore[twodvertscnt].r = r;
     twodshaderstore[twodvertscnt].g = g;
     twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].a = a;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -5328,7 +5261,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     twodshaderstore[twodvertscnt].r = r;
     twodshaderstore[twodvertscnt].g = g;
     twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].a = a;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -5343,7 +5276,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     twodshaderstore[twodvertscnt].r = r;
     twodshaderstore[twodvertscnt].g = g;
     twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].a = a;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -5356,7 +5289,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     twodshaderstore[twodvertscnt].r = r;
     twodshaderstore[twodvertscnt].g = g;
     twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].a = a;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;
@@ -5369,7 +5302,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     twodshaderstore[twodvertscnt].r = r;
     twodshaderstore[twodvertscnt].g = g;
     twodshaderstore[twodvertscnt].b = b;
-    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].a = a;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodshaderstore[twodvertscnt].paletteid = 0;
     twodvertscnt++;

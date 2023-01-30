@@ -91,7 +91,7 @@ void GUIWindow_MainMenu::Update() {
                         pY = 337;
                         break;
                 }
-                render->DrawTextureAlphaNew(495 / float(render->GetRenderDimensions().w), pY / float(render->GetRenderDimensions().h), pTexture);
+                render->DrawTextureNew(495 / float(render->GetRenderDimensions().w), pY / float(render->GetRenderDimensions().h), pTexture);
             }
         }
     }
@@ -162,7 +162,6 @@ void GUIWindow_MainMenu::Loop() {
                 DrawMM7CopyrightWindow();
             }
             nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_MainMenu_Load, 1);
-            render->EndScene();
             render->Present();
 
             engine->SecondaryInitialization();
@@ -192,7 +191,6 @@ void GUIWindow_MainMenu::Loop() {
             pWindow_MainMenu->EventLoop();
             GUI_UpdateWindows();
         }
-        render->EndScene();
         render->Present();
     }
 

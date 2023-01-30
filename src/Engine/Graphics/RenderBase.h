@@ -39,12 +39,15 @@ class RenderBase : public IRender {
         void* out_data, unsigned int data_size, unsigned int* screenshot_size) override;
     virtual Image* TakeScreenshot(unsigned int width, unsigned int height) override;
 
+    virtual void DrawMasked(float u, float v, class Image* img,
+        unsigned int color_dimming_level, uint32_t mask = 0xFFFFFFFF) override;
+    virtual void DrawTextureGrayShade(float u, float v, class Image* a4) override;
+    virtual void DrawTransparentRedShade(float u, float v, class Image* a4) override;
+    virtual void DrawTransparentGreenShade(float u, float v, class Image* pTexture) override;
 
  protected:
     unsigned int Billboard_ProbablyAddToListAndSortByZOrder(float z);
     void TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pBillboard);
-
-    void PostInitialization();
 
     HWLContainer pD3DBitmaps;
     HWLContainer pD3DSprites;

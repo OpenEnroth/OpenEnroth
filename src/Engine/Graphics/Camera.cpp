@@ -187,9 +187,9 @@ bool Camera3D::is_face_faced_to_cameraODM(ODMFace* pFace, RenderVertexSoft* a2) 
 
 //----- (00437AB5) --------------------------------------------------------
 void Camera3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
-                                            signed int sStartDiffuse,
+                                            signed int sStartDiffuse32,
                                             RenderVertexSoft *pLineEnd,
-                                            signed int sEndDiffuse,
+                                            signed int sEndDiffuse32,
                                             unsigned int uOutNumVertices,
                                             float z_stuff) {
     RenderVertexSoft a1[20];         // [sp+8h] [bp-7C4h]@6
@@ -209,14 +209,14 @@ void Camera3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
         v24[0].pos.x = pVertices[0].vWorldViewProjX;
         v24[0].pos.y = pVertices[0].vWorldViewProjY;
         v24[0].pos.z = 0.001 - z_stuff;
-        v24[0].diffuse = sStartDiffuse;
+        v24[0].diffuse = sStartDiffuse32;
         v24[0].rhw = 0.001f;
         v24[0].texcoord.x = 0.0f;
         v24[0].texcoord.y = 0.0f;
 
         v24[1].pos.x = pVertices[1].vWorldViewProjX;
         v24[1].pos.y = pVertices[1].vWorldViewProjY;
-        v24[1].diffuse = sEndDiffuse;
+        v24[1].diffuse = sEndDiffuse32;
         v24[1].pos.z = 0.001 - z_stuff;
         v24[1].specular = 0;
         v24[1].rhw = 0.001f;
@@ -242,14 +242,14 @@ void Camera3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
         v24[0].pos.x = pVertices[0].vWorldViewProjX;
         v24[0].pos.y = pVertices[0].vWorldViewProjY;
         v24[0].pos.z = 0.001 - z_stuff;
-        v24[0].diffuse = sStartDiffuse;
+        v24[0].diffuse = sStartDiffuse32;
         v24[0].rhw = 0.001f;
         v24[0].texcoord.x = 0.0;
         v24[0].texcoord.y = 0.0;
 
         v24[1].pos.x = pVertices[1].vWorldViewProjX;
         v24[1].pos.y = pVertices[1].vWorldViewProjY;
-        v24[1].diffuse = sEndDiffuse;
+        v24[1].diffuse = sEndDiffuse32;
         v24[1].pos.z = 0.001 - z_stuff;
         v24[1].specular = 0;
         v24[1].rhw = 0.001f;
@@ -262,29 +262,30 @@ void Camera3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
     //}
 }
 
+// TODO(pskelton): drop this
 //----- (00437A55) --------------------------------------------------------
 void Camera3D::debug_outline_d3d(const RenderVertexD3D3 *pLineVertices,
                                         unsigned int uNumLines, int uDiffuse,
                                         float z_stuff) {
-    for (int i = 0; i < uNumLines - 1; ++i)
-        render->Do_draw_debug_line_d3d(&pLineVertices[i], uDiffuse,
-                                       &pLineVertices[i + 1], uDiffuse,
-                                       z_stuff);
-    render->Do_draw_debug_line_d3d(&pLineVertices[uNumLines - 1], uDiffuse,
-                                   pLineVertices, uDiffuse, z_stuff);
+    //for (int i = 0; i < uNumLines - 1; ++i)
+    //    render->Do_draw_debug_line_d3d(&pLineVertices[i], uDiffuse,
+    //                                   &pLineVertices[i + 1], uDiffuse,
+    //                                   z_stuff);
+    //render->Do_draw_debug_line_d3d(&pLineVertices[uNumLines - 1], uDiffuse,
+    //                               pLineVertices, uDiffuse, z_stuff);
 }
 
 //----- (004379EE) --------------------------------------------------------
 void Camera3D::debug_outline_sw(RenderVertexSoft *a2,
                                        unsigned int uNumVertices,
-                                       unsigned int uDiffuse, float a5) {
+                                       unsigned int uDiffuse32, float a5) {
     if (!uNumVertices) return;
     if ((signed int)(uNumVertices - 1) > 0) {
         for (uint i = 0; i < uNumVertices - 1; i++)
-            do_draw_debug_line_sw(&a2[i], uDiffuse, &a2[i + 1], uDiffuse, 0,
+            do_draw_debug_line_sw(&a2[i], uDiffuse32, &a2[i + 1], uDiffuse32, 0,
                                   a5);
     }
-    do_draw_debug_line_sw(&a2[uNumVertices - 1], uDiffuse, a2, uDiffuse, 0, a5);
+    do_draw_debug_line_sw(&a2[uNumVertices - 1], uDiffuse32, a2, uDiffuse32, 0, a5);
 }
 
 //----- (004376E7) --------------------------------------------------------
