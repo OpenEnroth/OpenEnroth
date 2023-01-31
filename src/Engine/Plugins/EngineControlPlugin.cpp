@@ -25,7 +25,7 @@ static void controlThread(EngineControlState *unsafeState) {
             state->controlRoutineQueue.front()(&controller);
 
             // Let the game consume all posted events before dropping the current control routine. Note that it's
-            // important to do this inside a try block as Tick() throws.
+            // important to do this inside a try block as tick() throws.
             if (!state->postedEvents.empty())
                 controller.tick();
             assert(state->postedEvents.empty()); // We assume that the main thread processes all events each tick.

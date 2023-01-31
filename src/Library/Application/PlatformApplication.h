@@ -30,7 +30,7 @@ class ApplicationProxy;
  * The plugins you install are inserted into the proxy and event filter chains exactly in the order of installation.
  * The ordering is usually important, so it makes sense to install everything in a single place. If this model doesn't
  * work for you (e.g. you have two plugins that implement several proxies that need to be ordered differently w.r.t.
- * each other), then you'll have to split the plugin into several parts.
+ * each other), then you'll have to split your plugin into several parts.
  */
 class PlatformApplication {
  public:

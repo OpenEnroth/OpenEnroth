@@ -151,7 +151,7 @@ void EngineController::loadGame(const std::string &path) {
     pressGuiButton("MainMenu_LoadGame");
     tick(3);
 
-    // TODO(captainurist): these tricks above might fail if we have more than 45 save files
+    // TODO(captainurist): the tricks above might fail if we have more than 45 save files
     assert(pSavegameUsedSlots[0]);
     assert(pSavegameList->pFileList[0] == saveName);
 
