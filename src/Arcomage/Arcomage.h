@@ -156,7 +156,6 @@ struct ArcomageGame {
     std::string pPlayer2Name;
     char force_am_exit = 0;
     char GameOver = 0;
-    char force_redraw_1 = 0;
     char prev_mouse_left = 0;
     char prev_mouse_right = 0;
     char check_exit = 0;

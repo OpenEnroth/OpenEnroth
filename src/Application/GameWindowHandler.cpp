@@ -196,7 +196,6 @@ void GameWindowHandler::OnMouseLeftClick(Pointi position) {
     if (pArcomageGame->bGameInProgress) {
         pArcomageGame->stru1.am_input_type = 7;
         pArcomageGame->check_exit = 0;
-        pArcomageGame->force_redraw_1 = 1;
         ArcomageGame::OnMouseClick(0, true);
     } else {
         pMediaPlayer->StopMovie();
@@ -220,7 +219,6 @@ void GameWindowHandler::OnMouseRightClick(Pointi position) {
     if (pArcomageGame->bGameInProgress) {
         pArcomageGame->stru1.am_input_type = 8;
         pArcomageGame->check_exit = 0;
-        pArcomageGame->force_redraw_1 = 1;
         ArcomageGame::OnMouseClick(1, true);
     } else {
         pMediaPlayer->StopMovie();
@@ -317,7 +315,6 @@ void GameWindowHandler::OnKey(PlatformKey key) {
             pArcomageGame->stru1.am_input_type = 10;
         } else if (pArcomageGame->check_exit) {
            pArcomageGame->check_exit = 0;
-           pArcomageGame->force_redraw_1 = 1;
         }
 
         if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleFullscreen, key) && !pMovie_Track) {
@@ -358,9 +355,6 @@ void GameWindowHandler::OnFocusLost() {
 }
 
 void GameWindowHandler::OnPaint() {
-    if (pArcomageGame->bGameInProgress) {
-        pArcomageGame->force_redraw_1 = 1;
-    }
     if (render && render->AreRenderSurfacesOk()) {
         render->Present();
     }
@@ -379,7 +373,7 @@ void GameWindowHandler::OnActivated() {
         dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_APP_INACTIVE;
 
         if (pArcomageGame->bGameInProgress) {
-            pArcomageGame->force_redraw_1 = 1;
+           // pArcomageGame->force_redraw_1 = 1;
         } else {
             if (dword_6BE364_game_settings_1 & GAME_SETTINGS_0200_EVENT_TIMER)
                 dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_0200_EVENT_TIMER;
