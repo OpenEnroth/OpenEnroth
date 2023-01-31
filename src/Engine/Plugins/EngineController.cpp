@@ -132,7 +132,7 @@ void EngineController::skipLoadingScreen() {
 
 void EngineController::saveGame(const std::string &path) {
     // SaveGame makes a screenshot, and we're in control thread, so gotta activate the gl context first.
-    ::application->openGLContext()->MakeCurrent();
+    ::application->openGLContext()->Bind();
     ::SaveGame(true, false);
 
     std::string src = MakeDataPath("saves", "autosave.mm7");
