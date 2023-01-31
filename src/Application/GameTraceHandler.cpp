@@ -56,5 +56,7 @@ bool GameTraceHandler::isTriggerKey(const PlatformKeyEvent *event) const {
 
 bool GameTraceHandler::isTriggerKeySequence(const PlatformKeyEvent *event) const {
     // TODO(captainurist) : make configurable
-    return event->key == PlatformKey::R && event->mods == (PlatformModifier::Ctrl | PlatformModifier::Shift);
+    PlatformModifiers mods = PlatformModifier::Ctrl | PlatformModifier::Shift;
+
+    return event->key == PlatformKey::R && (event->mods & mods) == mods;
 }
