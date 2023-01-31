@@ -13,7 +13,7 @@ SdlOpenGLContext::SdlOpenGLContext(SdlPlatformSharedState *state, SDL_Window *wi
 SdlOpenGLContext::~SdlOpenGLContext() {}
 
 bool SdlOpenGLContext::MakeCurrent() {
-    bool succeeded = SDL_GL_MakeCurrent(window_, context_) != 0;
+    bool succeeded = SDL_GL_MakeCurrent(window_, context_) == 0;
 
     if (!succeeded)
         state_->LogSdlError("SDL_GL_MakeCurrent");
