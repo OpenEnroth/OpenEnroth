@@ -23,7 +23,6 @@ class GameThread {
         _logger->SetLogLevel(ApplicationLog, LogInfo);
         _logger->SetLogLevel(PlatformLog, LogError);
         EngineIoc::ResolveLogger()->SetBaseLogger(_logger.get());
-        MM_AT_SCOPE_EXIT(EngineIoc::ResolveLogger()->SetBaseLogger(nullptr));
         Engine::LogEngineBuildInfo();
 
         _application = std::make_unique<PlatformApplication>(_logger.get());
@@ -41,6 +40,10 @@ class GameThread {
         _config->graphics.FPSLimit.Set(0); // Unlimited
 
         _game = Application::GameFactory().CreateGame(_application.get(), _config);
+    }
+
+    ~GameThread() {
+        EngineIoc::ResolveLogger()->SetBaseLogger(nullptr);
     }
 
     PlatformApplication *app() const {
