@@ -102,6 +102,13 @@ void EngineControlPlugin::SwapBuffers() {
     // Not tail calling here for a reason - the control routine should run AFTER all the proxies are done.
     ProxyOpenGLContext::SwapBuffers();
 
-    if (hasControlRoutine())
-        _state.yieldExecution();
+    if (hasControlRoutine()) {
+        while (true) {
+            _state.yieldExecution();
+            if (!_state->gameRoutine)
+                break;
+            _state->gameRoutine();
+            _state->gameRoutine = EngineControlState::GameRoutine();
+        }
+    }
 }
