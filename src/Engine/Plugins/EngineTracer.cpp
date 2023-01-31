@@ -128,8 +128,8 @@ void EngineTracer::installNotify() {
     _tracePlugin = application()->get<EngineTracePlugin>();
     _deterministicPlugin = application()->get<EngineDeterministicPlugin>();
     _keyboardController = application()->get<GameKeyboardController>();
-    assert((_options & ENABLE_RECORDING) ? _controlPlugin && _deterministicPlugin && _keyboardController : true);
-    assert((_options & ENABLE_PLAYBACK) ? _controlPlugin && _deterministicPlugin && _tracePlugin && _keyboardController : true);
+    assert((_options & ENABLE_RECORDING) ? _controlPlugin && _deterministicPlugin && _tracePlugin && _keyboardController : true);
+    assert((_options & ENABLE_PLAYBACK) ? _controlPlugin && _deterministicPlugin && _keyboardController : true);
 }
 
 void EngineTracer::removeNotify() {

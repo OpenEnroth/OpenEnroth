@@ -19,8 +19,8 @@ class GameKeyboardController;
 /**
  * Plugin that exposes a trace playback and trace recording interface.
  *
- * Depends on `EngineControlPlugin`, `EngineDeterministicPlugin` and (if you use `ENABLE_PLAYBACK`) `EngineTracePlugin`,
- * install them into `PlatformApplication` first.
+ * Depends on `EngineControlPlugin`, `EngineDeterministicPlugin` and (if you use `ENABLE_RECORDING`)
+ * `EngineTracePlugin`, install them into `PlatformApplication` first.
  *
  * Note that the difference from `EngineTracePlugin` is that this plugin isn't dumb and offers a complete solution to
  * trace recording and playback. Traces that were recorded with `startTraceRecording` / `finishTraceRecording` can
