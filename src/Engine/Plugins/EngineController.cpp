@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <filesystem>
 #include <utility>
+#include <thread>
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
@@ -24,9 +25,12 @@ EngineController::~EngineController() = default;
 
 void EngineController::tick(int count) {
     for (int i = 0; i < count; i++) {
+        _state.yieldExecution();
+
+        // We should check `terminating` after a call to `yieldExecution` because it cannot be set before the call -
+        // the only place it's set is the main thread, and main thread wasn't running before the call.
         if (_state->terminating)
             throw EngineControlState::TerminationException();
-        _state.yieldExecution();
     }
 }
 
@@ -133,10 +137,8 @@ void EngineController::skipLoadingScreen() {
 void EngineController::saveGame(const std::string &path) {
     // SaveGame makes a screenshot and needs the opengl context that's bound in game thread, so we cannot call it from
     // the control thread. One option is to unbind every time we switch to control thread, but this is slow, and not
-    // needed 99% of the time. So we go the retarded way and just call back into the game thread.
-    _state->gameRoutine = [] { ::SaveGame(true, false); };
-    _state.yieldExecution();
-    assert(!_state->gameRoutine); // Must have finished.
+    // needed 99% of the time. So we just call back into the game thread.
+    runGameRoutine([] { ::SaveGame(true, false); });
 
     std::string src = MakeDataPath("saves", "autosave.mm7");
     std::filesystem::copy_file(src, path, std::filesystem::copy_options::overwrite_existing); // This might throw.
@@ -159,6 +161,13 @@ void EngineController::loadGame(const std::string &path) {
     tick(2);
     pressGuiButton("LoadMenu_Load");
     skipLoadingScreen();
+}
+
+void EngineController::runGameRoutine(GameRoutine routine) {
+    _state->gameRoutine = std::move(routine);
+    _state.yieldExecution();
+    assert(!_state->gameRoutine); // Must have finished.
+    assert(!_state->terminating); // Please don't do anything crazy in the game routine.
 }
 
 GUIButton *EngineController::existingButton(std::string_view buttonId) {

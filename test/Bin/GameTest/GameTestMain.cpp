@@ -89,17 +89,17 @@ int PlatformMain(int argc, char **argv) {
 
     GameThread gameThread(opts);
 
-    gameThread.app()->get<EngineControlPlugin>()->runControlRoutine([&] (EngineController *engineController) {
-        TestController testController(engineController, opts.testDataDir);
+    gameThread.app()->get<EngineControlPlugin>()->runControlRoutine([&] (EngineController *game) {
+        TestController test(game, opts.testDataDir);
 
-        GameTest::init(engineController, &testController);
+        GameTest::init(game, &test);
         gameThread.app()->get<EngineDeterministicPlugin>()->enterDeterministicMode(); // And never leave it.
-        engineController->tick(10); // Let the game thread initialize everything.
+        game->tick(10); // Let the game thread initialize everything.
 
         exitCode = RUN_ALL_TESTS();
 
-        engineController->goToMainMenu();
-        engineController->pressGuiButton("MainMenu_ExitGame");
+        game->goToMainMenu();
+        game->pressGuiButton("MainMenu_ExitGame");
     });
 
     gameThread.run();

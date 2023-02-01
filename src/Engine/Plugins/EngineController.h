@@ -21,6 +21,8 @@ class PlatformEvent;
  */
 class EngineController {
  public:
+    using GameRoutine = std::function<void()>;
+
     explicit EngineController(EngineControlStateHandle state);
     ~EngineController();
 
@@ -76,6 +78,14 @@ class EngineController {
      * @throws std::runtime_error       On OS error, e.g. if the file doesn't exist.
      */
     void loadGame(const std::string &path);
+
+    /**
+     * Runs the provided routine in game thread and returns once it's finished. This is mainly for running OpenGL code
+     * as the corresponding context is bound in the main thread.
+     *
+     * @param routine                   Routine to run.
+     */
+    void runGameRoutine(GameRoutine routine);
 
  private:
     GUIButton *existingButton(std::string_view buttonId);
