@@ -372,9 +372,7 @@ void GameWindowHandler::OnActivated() {
 
         dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_APP_INACTIVE;
 
-        if (pArcomageGame->bGameInProgress) {
-           // pArcomageGame->force_redraw_1 = 1;
-        } else {
+        if (!pArcomageGame->bGameInProgress) {
             if (dword_6BE364_game_settings_1 & GAME_SETTINGS_0200_EVENT_TIMER)
                 dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_0200_EVENT_TIMER;
             else

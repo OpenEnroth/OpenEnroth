@@ -1170,13 +1170,7 @@ void TurnChange() {
             v11.y = 260;
             v11.x = 320;  // - 12 * v4 / 2;
             am_DrawText(am_Players[current_player_num].pPlayerName, &v11);
-            /* v6.left = 0;
-            v6.right = 640;
-            v6.top = 0;
-            v6.bottom = 480;*/
-            // nullsub_1();
-            // render->Present();
-            // nullsub_1();
+
             while (1) {
                 while (!ArcomageGame::MsgLoop(20, &v10)) {}
                 if (v10.am_input_type == 1) {
@@ -1191,14 +1185,6 @@ void TurnChange() {
                     break;
                 }
             }
-            /*  v11.x = 0;
-            v11.y = 0;
-            v6.left = 0;
-            v6.right = 640;
-            v6.top = 0;
-            v6.bottom = 480;*/
-            // nullsub_1();
-            // render->Present();
         }
     }
 }
