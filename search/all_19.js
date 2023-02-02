@@ -12,8 +12,8 @@ var searchData=
   ['yell_9',['Yell',['../classApplication_1_1GameConfig_1_1Gamepad.html#a88bf324ff95ba2bfe4e1600bdbc05b28',1,'Application::GameConfig::Gamepad::Yell()'],['../classApplication_1_1GameConfig_1_1Keybindings.html#ac6d24df2a5e606e8e574a107db8bee6a',1,'Application::GameConfig::Keybindings::Yell()'],['../structParty.html#a9ebb068597066706a01fa0d12b3c4203',1,'Party::Yell()'],['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca13a7a219f971512ebec62e4b689ab603',1,'Io::Yell()']]],
   ['yellow_10',['Yellow',['../classColorTable.html#af212222751a310ffcd62a8f9755bfbd3',1,'ColorTable']]],
   ['yes_11',['Yes',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca93cba07454f06a4a960172bbd6e2a435',1,'Io::Yes()'],['../classApplication_1_1GameConfig_1_1Keybindings.html#a704a746a11882d273ecbb16cbfafe45b',1,'Application::GameConfig::Keybindings::Yes()'],['../classApplication_1_1GameConfig_1_1Gamepad.html#aee57f239954f9859169baac3b37ddb2e',1,'Application::GameConfig::Gamepad::Yes()']]],
-  ['yieldexecution_12',['YieldExecution',['../classTestStateHandle.html#a97383e4214343564c2cad38ea7472ed6',1,'TestStateHandle']]],
-  ['yieldexecutioninternal_13',['YieldExecutionInternal',['../classTestStateHandle.html#af64858c025cd1f15034e22edc2e65522',1,'TestStateHandle']]],
+  ['yieldexecution_12',['yieldExecution',['../classEngineControlStateHandle.html#a9018f441294ace77f60ac9766436d7c1',1,'EngineControlStateHandle']]],
+  ['yieldexecutioninternal_13',['yieldExecutionInternal',['../structEngineControlStateHandle_1_1SharedData.html#a2c3621c9ffeba1de86af6a086b2b0a3c',1,'EngineControlStateHandle::SharedData']]],
   ['ymax_14',['ymax',['../structPCXHeader.html#ae7da24b0de134476f17b922e25987619',1,'PCXHeader']]],
   ['ymin_15',['ymin',['../structPCXHeader.html#a37ffbcf2e56608f929895daa104721dd',1,'PCXHeader']]],
   ['ypos_16',['Ypos',['../structSpellBookIconPos.html#aa94e5152a5ffcd7498f6abd26381fdc8',1,'SpellBookIconPos']]]

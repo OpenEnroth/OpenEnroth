@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9c2ce4c</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e17a2cc</span>
    </div>
   </td>
  </tr>
@@ -72,7 +72,6 @@ $(function() {
   <div class="summary">
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="structEventTrace-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">EventTrace Struct Reference</div></div>
 </div><!--header-->
@@ -86,18 +85,17 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a15654673ac724fdb61edfab5b630c0eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4486050e3ff37e2e7c8be1805333ecd3"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structEventTrace.html">EventTrace</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEventTrace.html#a4486050e3ff37e2e7c8be1805333ecd3">loadFromFile</a> (std::string_view path, <a class="el" href="classPlatformWindow.html">PlatformWindow</a> *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>)</td></tr>
 <tr class="separator:a4486050e3ff37e2e7c8be1805333ecd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62973ef03b19f274e72363a49c58c4f1"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEventTrace.html#a62973ef03b19f274e72363a49c58c4f1">isTraceable</a> (const <a class="el" href="classPlatformEvent.html">PlatformEvent</a> *event)</td></tr>
+<tr class="separator:a62973ef03b19f274e72363a49c58c4f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62821d2dc12bf09948acc90757a67565"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classPlatformEvent.html">PlatformEvent</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEventTrace.html#a62821d2dc12bf09948acc90757a67565">cloneEvent</a> (const <a class="el" href="classPlatformEvent.html">PlatformEvent</a> *event)</td></tr>
 <tr class="separator:a62821d2dc12bf09948acc90757a67565"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
+<tr class="memitem:a387ae60b8a8e701621be8e210aa04671"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structEventTraceHeader.html">EventTraceHeader</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEventTrace.html#a387ae60b8a8e701621be8e210aa04671">header</a></td></tr>
+<tr class="separator:a387ae60b8a8e701621be8e210aa04671"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c297d46a572e2ff499bb61165743ab4"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::unique_ptr&lt; <a class="el" href="classPlatformEvent.html">PlatformEvent</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEventTrace.html#a6c297d46a572e2ff499bb61165743ab4">events</a></td></tr>
 <tr class="separator:a6c297d46a572e2ff499bb61165743ab4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
-Static Public Attributes</h2></td></tr>
-<tr class="memitem:aa7b00ac76593b2d45d07a72830ae1252"><td class="memItemLeft" align="right" valign="top">static constexpr int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEventTrace.html#aa7b00ac76593b2d45d07a72830ae1252">FRAME_TIME_MS</a> = 16</td></tr>
-<tr class="separator:aa7b00ac76593b2d45d07a72830ae1252"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="a62821d2dc12bf09948acc90757a67565" name="a62821d2dc12bf09948acc90757a67565"></a>
@@ -111,6 +109,32 @@ Static Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">static std::unique_ptr&lt; <a class="el" href="classPlatformEvent.html">PlatformEvent</a> &gt; EventTrace::cloneEvent </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classPlatformEvent.html">PlatformEvent</a> *&#160;</td>
+          <td class="paramname"><em>event</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a62973ef03b19f274e72363a49c58c4f1" name="a62973ef03b19f274e72363a49c58c4f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62973ef03b19f274e72363a49c58c4f1">&#9670;&#160;</a></span>isTraceable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool EventTrace::isTraceable </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classPlatformEvent.html">PlatformEvent</a> *&#160;</td>
           <td class="paramname"><em>event</em></td><td>)</td>
@@ -213,27 +237,17 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aa7b00ac76593b2d45d07a72830ae1252" name="aa7b00ac76593b2d45d07a72830ae1252"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa7b00ac76593b2d45d07a72830ae1252">&#9670;&#160;</a></span>FRAME_TIME_MS</h2>
+<a id="a387ae60b8a8e701621be8e210aa04671" name="a387ae60b8a8e701621be8e210aa04671"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a387ae60b8a8e701621be8e210aa04671">&#9670;&#160;</a></span>header</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr int64_t EventTrace::FRAME_TIME_MS = 16</td>
+          <td class="memname"><a class="el" href="structEventTraceHeader.html">EventTraceHeader</a> EventTrace::header</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">constexpr</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
-<p >16ms translates to 62.5fps.</p>
-<p >It is possible to target 60fps and use double here (or store microseconds / nanoseconds), but since the platform API is in milliseconds, this will result in staggered frame times, with every 1st and 2nd frame taking 17ms, and every 3rd one taking 16ms. This might result in some non-determinism down the line, e.g. changing the code in level loading will change the number of frames it takes to load a level, and this will shift the timing sequence for the actual game frames after the level is loaded. Unlikely to really affect anything, but we'd rather not find out. </p>
 
 </div>
 </div>

@@ -6,7 +6,7 @@ var searchData=
   ['hd_5fwater_5fcurrent_5fframe_3',['hd_water_current_frame',['../classIRender.html#a5a4fa7ac179b1cb9634a3a7bc566a515',1,'IRender']]],
   ['hd_5fwater_5ftile_5fanim_4',['hd_water_tile_anim',['../classIRender.html#aa83095c295b53d48c4ca89e2fe23fa0f',1,'IRender']]],
   ['hdpi_5',['hdpi',['../structPCXHeader.html#a30a0df6cd5155de2f951930098082e03',1,'PCXHeader']]],
-  ['header_6',['header',['../structTexture__MM7.html#a97b3fae1ab456cc63971d88fef8a5220',1,'Texture_MM7::header()'],['../classLOD_1_1File.html#a2ce37440b37d55351995559664161bd8',1,'LOD::File::header()']]],
+  ['header_6',['header',['../structTexture__MM7.html#a97b3fae1ab456cc63971d88fef8a5220',1,'Texture_MM7::header()'],['../classLOD_1_1File.html#a2ce37440b37d55351995559664161bd8',1,'LOD::File::header()'],['../structEventTrace.html#a387ae60b8a8e701621be8e210aa04671',1,'EventTrace::header()']]],
   ['height_7',['height',['../classMovie.html#aef7596d03b6eb49289603c6c65db8ac1',1,'Movie']]],
   ['height_8',['Height',['../classApplication_1_1GameConfig_1_1Window.html#a29e7c23aaeb88c35ae7ef28f9522ef4b',1,'Application::GameConfig::Window']]],
   ['height_9',['height',['../classAVVideoStream.html#ac3a0bc76b91fefd43f84f6f67b12fa6f',1,'AVVideoStream::height()'],['../structstat__coord.html#ab2d9bd94223a82072ff9b95c679bd871',1,'stat_coord::height()'],['../classGUICredits.html#a8c9036afc9308fb56ab897f8363f63d2',1,'GUICredits::height()'],['../classImage.html#a9f4e463326771ddb955ee17032a78d77',1,'Image::height()']]],

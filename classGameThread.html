@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9c2ce4c</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e17a2cc</span>
    </div>
   </td>
  </tr>
@@ -81,10 +81,12 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a789fb5724c6736c5908b45320935e15a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameThread.html#a789fb5724c6736c5908b45320935e15a">GameThread</a> (const <a class="el" href="structGameTestOptions.html">GameTestOptions</a> &amp;options)</td></tr>
 <tr class="separator:a789fb5724c6736c5908b45320935e15a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44094484faa49fd8906e848a688996e8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameThread.html#a44094484faa49fd8906e848a688996e8">~GameThread</a> ()</td></tr>
+<tr class="separator:a44094484faa49fd8906e848a688996e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae1bde491bb6d5f4ad590ac44ab8870e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPlatformApplication.html">PlatformApplication</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameThread.html#aae1bde491bb6d5f4ad590ac44ab8870e">app</a> () const</td></tr>
+<tr class="separator:aae1bde491bb6d5f4ad590ac44ab8870e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d4531cb04b18f0f50a7ec71c05a41cd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameThread.html#a5d4531cb04b18f0f50a7ec71c05a41cd">run</a> ()</td></tr>
 <tr class="separator:a5d4531cb04b18f0f50a7ec71c05a41cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac1d658d2863cb10c11f6004fd25030c3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTestState.html">TestState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameThread.html#ac1d658d2863cb10c11f6004fd25030c3">unsafeState</a> () const</td></tr>
-<tr class="separator:ac1d658d2863cb10c11f6004fd25030c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -92,10 +94,6 @@ Private Attributes</h2></td></tr>
 <tr class="separator:a7191168424885ed75f48c619d093e696"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a04139b7a8ce94273fa358e2a869765e9"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classPlatformApplication.html">PlatformApplication</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameThread.html#a04139b7a8ce94273fa358e2a869765e9">_application</a></td></tr>
 <tr class="separator:a04139b7a8ce94273fa358e2a869765e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a072263db758608296b273a6cca2da7a9"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classTestState.html">TestState</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameThread.html#a072263db758608296b273a6cca2da7a9">_unsafeState</a></td></tr>
-<tr class="separator:a072263db758608296b273a6cca2da7a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a459686f7067d4bd479d6ba87584353ce"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classTestProxy.html">TestProxy</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameThread.html#a459686f7067d4bd479d6ba87584353ce">_proxy</a></td></tr>
-<tr class="separator:a459686f7067d4bd479d6ba87584353ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa2c86b8ba4f79bed391b5424e7ae11f"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classApplication_1_1GameConfig.html">Application::GameConfig</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameThread.html#afa2c86b8ba4f79bed391b5424e7ae11f">_config</a></td></tr>
 <tr class="separator:afa2c86b8ba4f79bed391b5424e7ae11f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af975876bf7ca81d69bddd5328e6598dd"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classApplication_1_1Game.html">Application::Game</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameThread.html#af975876bf7ca81d69bddd5328e6598dd">_game</a></td></tr>
@@ -128,9 +126,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a id="a5d4531cb04b18f0f50a7ec71c05a41cd" name="a5d4531cb04b18f0f50a7ec71c05a41cd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5d4531cb04b18f0f50a7ec71c05a41cd">&#9670;&#160;</a></span>run()</h2>
+<a id="a44094484faa49fd8906e848a688996e8" name="a44094484faa49fd8906e848a688996e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44094484faa49fd8906e848a688996e8">&#9670;&#160;</a></span>~GameThread()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -139,7 +136,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void GameThread::run </td>
+          <td class="memname">GameThread::~GameThread </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -154,8 +151,9 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ac1d658d2863cb10c11f6004fd25030c3" name="ac1d658d2863cb10c11f6004fd25030c3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac1d658d2863cb10c11f6004fd25030c3">&#9670;&#160;</a></span>unsafeState()</h2>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="aae1bde491bb6d5f4ad590ac44ab8870e" name="aae1bde491bb6d5f4ad590ac44ab8870e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae1bde491bb6d5f4ad590ac44ab8870e">&#9670;&#160;</a></span>app()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -164,10 +162,35 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classTestState.html">TestState</a> * GameThread::unsafeState </td>
+          <td class="memname"><a class="el" href="classPlatformApplication.html">PlatformApplication</a> * GameThread::app </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5d4531cb04b18f0f50a7ec71c05a41cd" name="a5d4531cb04b18f0f50a7ec71c05a41cd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d4531cb04b18f0f50a7ec71c05a41cd">&#9670;&#160;</a></span>run()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GameThread::run </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
         </tr>
       </table>
   </td>
@@ -257,50 +280,6 @@ Private Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::unique_ptr&lt;<a class="el" href="classPlatformLogger.html">PlatformLogger</a>&gt; GameThread::_logger</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a459686f7067d4bd479d6ba87584353ce" name="a459686f7067d4bd479d6ba87584353ce"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a459686f7067d4bd479d6ba87584353ce">&#9670;&#160;</a></span>_proxy</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="classTestProxy.html">TestProxy</a>&gt; GameThread::_proxy</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a072263db758608296b273a6cca2da7a9" name="a072263db758608296b273a6cca2da7a9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a072263db758608296b273a6cca2da7a9">&#9670;&#160;</a></span>_unsafeState</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="classTestState.html">TestState</a>&gt; GameThread::_unsafeState</td>
         </tr>
       </table>
   </td>

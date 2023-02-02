@@ -38,5 +38,6 @@ var searchData=
   ['viewtransfrom_5foffsetuv_35',['ViewTransfrom_OffsetUV',['../structCamera3D.html#a96859e741fc9eac1df1ddba1fd451edd',1,'Camera3D']]],
   ['vis_36',['Vis',['../classVis.html#abf7e70e0019fe93122ce8b53f5eedc50',1,'Vis']]],
   ['visible_37',['Visible',['../structODMFace.html#a8113cb0afb1f45cc292fd22959459daa',1,'ODMFace::Visible()'],['../structBLVFace.html#ab0f27bf592ba9ca357dde5deef3459b4',1,'BLVFace::Visible()']]],
-  ['visit_38',['visit',['../classPlatformProxyIntrospection.html#ad0ccdf20fc1480366f0230921a51e08f',1,'PlatformProxyIntrospection']]]
+  ['visit_38',['visit',['../classPlatformIntrospection.html#aef153109800e003b98d448d4a167300d',1,'PlatformIntrospection']]],
+  ['visitinternal_39',['visitInternal',['../classPlatformIntrospection.html#a116720f64583f5e4eb51c13cf09b4f8d',1,'PlatformIntrospection']]]
 ];

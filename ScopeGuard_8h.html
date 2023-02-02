@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9c2ce4c</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e17a2cc</span>
    </div>
   </td>
  </tr>
@@ -74,17 +74,44 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a>  </div>
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#define-members">Macros</a>  </div>
   <div class="headertitle"><div class="title">ScopeGuard.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;utility&gt;</code><br />
+<code>#include &quot;<a class="el" href="Preprocessor_8h.html">Preprocessor.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classScopeGuard.html">ScopeGuard&lt; T &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a4a20ee1bc9bea38e0a552629ecdccff7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ScopeGuard_8h.html#a4a20ee1bc9bea38e0a552629ecdccff7">MM_AT_SCOPE_EXIT</a>(...)&#160;&#160;&#160;    auto <a class="el" href="Preprocessor_8h.html#a28514c385ffb7a29b325a2c209ec2da7">MM_PP_CAT</a>(guard, __LINE__) = <a class="el" href="classScopeGuard.html">ScopeGuard</a>([&amp;] { __VA_ARGS__; })</td></tr>
+<tr class="separator:a4a20ee1bc9bea38e0a552629ecdccff7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a4a20ee1bc9bea38e0a552629ecdccff7" name="a4a20ee1bc9bea38e0a552629ecdccff7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a20ee1bc9bea38e0a552629ecdccff7">&#9670;&#160;</a></span>MM_AT_SCOPE_EXIT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MM_AT_SCOPE_EXIT</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em></td><td>)</td>
+          <td>&#160;&#160;&#160;    auto <a class="el" href="Preprocessor_8h.html#a28514c385ffb7a29b325a2c209ec2da7">MM_PP_CAT</a>(guard, __LINE__) = <a class="el" href="classScopeGuard.html">ScopeGuard</a>([&amp;] { __VA_ARGS__; })</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Runs provided statements at scope exit by creating a temporary <code><a class="el" href="classScopeGuard.html">ScopeGuard</a></code> object. </p>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

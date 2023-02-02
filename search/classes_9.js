@@ -25,7 +25,7 @@ var searchData=
   ['indexedarray_3c_20itemspecialenchantment_2c_20item_5fenchantment_5ffirst_5fvalid_2c_20item_5fenchantment_5flast_5fvalid_20_3e_22',['IndexedArray&lt; ItemSpecialEnchantment, ITEM_ENCHANTMENT_FIRST_VALID, ITEM_ENCHANTMENT_LAST_VALID &gt;',['../classIndexedArray.html',1,'']]],
   ['indexedarray_3c_20player_5fskill_2c_20player_5fskill_5ffirst_2c_20player_5fskill_5flast_20_3e_23',['IndexedArray&lt; PLAYER_SKILL, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST &gt;',['../classIndexedArray.html',1,'']]],
   ['indexedarray_3c_20spellbuff_2c_20actor_5fbuff_5fcount_20_3e_24',['IndexedArray&lt; SpellBuff, ACTOR_BUFF_COUNT &gt;',['../classIndexedArray.html',1,'']]],
-  ['indexedarray_3c_20std_3a_3acondition_5fvariable_2c_20gameside_2c_20testside_20_3e_25',['IndexedArray&lt; std::condition_variable, GameSide, TestSide &gt;',['../classIndexedArray.html',1,'']]],
+  ['indexedarray_3c_20std_3a_3acondition_5fvariable_2c_20side_5fgame_2c_20side_5fcontrol_20_3e_25',['IndexedArray&lt; std::condition_variable, SIDE_GAME, SIDE_CONTROL &gt;',['../classIndexedArray.html',1,'']]],
   ['indexedarray_3c_20std_3a_3astring_2c_20anim_5fcount_20_3e_26',['IndexedArray&lt; std::string, ANIM_Count &gt;',['../classIndexedArray.html',1,'']]],
   ['indexedarray_3c_20std_3a_3avector_3c_20platformeventfilter_20_2a_20_3e_2c_20platformevent_3a_3afirsteventtype_2c_20platformevent_3a_3alasteventtype_20_3e_27',['IndexedArray&lt; std::vector&lt; PlatformEventFilter * &gt;, PlatformEvent::FirstEventType, PlatformEvent::LastEventType &gt;',['../classIndexedArray.html',1,'']]],
   ['indexedarray_3c_20uint16_5ft_2c_20anim_5fcount_20_3e_28',['IndexedArray&lt; uint16_t, ANIM_Count &gt;',['../classIndexedArray.html',1,'']]],

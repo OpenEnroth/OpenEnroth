@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9c2ce4c</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e17a2cc</span>
    </div>
   </td>
  </tr>
@@ -91,8 +91,8 @@ Inheritance diagram for GameTraceHandler:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:adbfbae8111bf074a1cfad7e34fa31e0e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameTraceHandler.html#adbfbae8111bf074a1cfad7e34fa31e0e">GameTraceHandler</a> (<a class="el" href="classEventTracer.html">EventTracer</a> *tracer)</td></tr>
-<tr class="separator:adbfbae8111bf074a1cfad7e34fa31e0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8910f0fd67f456e3b7ae0d8926b2bb6c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameTraceHandler.html#a8910f0fd67f456e3b7ae0d8926b2bb6c">GameTraceHandler</a> (<a class="el" href="classEngineTracer.html">EngineTracer</a> *tracer)</td></tr>
+<tr class="separator:a8910f0fd67f456e3b7ae0d8926b2bb6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c5f5ea7e850c9e583200cd1aa20d872"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameTraceHandler.html#a6c5f5ea7e850c9e583200cd1aa20d872">~GameTraceHandler</a> ()=default</td></tr>
 <tr class="separator:a6c5f5ea7e850c9e583200cd1aa20d872"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80f5224f614fe6bd4cf159e9b3366b37"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameTraceHandler.html#a80f5224f614fe6bd4cf159e9b3366b37">KeyPressEvent</a> (const <a class="el" href="classPlatformKeyEvent.html">PlatformKeyEvent</a> *event) override</td></tr>
@@ -118,8 +118,8 @@ Private Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:add767dc36858a2db6acc5515c1c2dd7d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEventTracer.html">EventTracer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameTraceHandler.html#add767dc36858a2db6acc5515c1c2dd7d">_tracer</a> = nullptr</td></tr>
-<tr class="separator:add767dc36858a2db6acc5515c1c2dd7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38ba89cce8b10155c933b1bd15500073"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEngineTracer.html">EngineTracer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameTraceHandler.html#a38ba89cce8b10155c933b1bd15500073">_tracer</a> = nullptr</td></tr>
+<tr class="separator:a38ba89cce8b10155c933b1bd15500073"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6882dc649ca9a336ee25c660698918b5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameTraceHandler.html#a6882dc649ca9a336ee25c660698918b5">_waitingForKeyRelease</a> = false</td></tr>
 <tr class="separator:a6882dc649ca9a336ee25c660698918b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -157,10 +157,10 @@ Additional Inherited Members</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Event filter that reacts to start/stop recording hotkey and calls into event tracer to start/stop recording.</p>
-<p >Note that this event filter should be installed last (or at least after the <code><a class="el" href="classEventTracer.html">EventTracer</a></code>), so that the start/stop keystrokes don't end up being recorded. Technically there's nothing wrong with recording them, but there's little point in doing so. </p>
+<p >Note that this event filter should be installed last (or at least after the <code>EventTracer</code>), so that the start/stop keystrokes don't end up being recorded. Technically there's nothing wrong with recording them, but there's little point in doing so. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="adbfbae8111bf074a1cfad7e34fa31e0e" name="adbfbae8111bf074a1cfad7e34fa31e0e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adbfbae8111bf074a1cfad7e34fa31e0e">&#9670;&#160;</a></span>GameTraceHandler()</h2>
+<a id="a8910f0fd67f456e3b7ae0d8926b2bb6c" name="a8910f0fd67f456e3b7ae0d8926b2bb6c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8910f0fd67f456e3b7ae0d8926b2bb6c">&#9670;&#160;</a></span>GameTraceHandler()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -171,7 +171,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">GameTraceHandler::GameTraceHandler </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classEventTracer.html">EventTracer</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="classEngineTracer.html">EngineTracer</a> *&#160;</td>
           <td class="paramname"><em>tracer</em></td><td>)</td>
           <td></td>
         </tr>
@@ -320,8 +320,8 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="add767dc36858a2db6acc5515c1c2dd7d" name="add767dc36858a2db6acc5515c1c2dd7d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#add767dc36858a2db6acc5515c1c2dd7d">&#9670;&#160;</a></span>_tracer</h2>
+<a id="a38ba89cce8b10155c933b1bd15500073" name="a38ba89cce8b10155c933b1bd15500073"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38ba89cce8b10155c933b1bd15500073">&#9670;&#160;</a></span>_tracer</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -330,7 +330,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classEventTracer.html">EventTracer</a>* GameTraceHandler::_tracer = nullptr</td>
+          <td class="memname"><a class="el" href="classEngineTracer.html">EngineTracer</a>* GameTraceHandler::_tracer = nullptr</td>
         </tr>
       </table>
   </td>
