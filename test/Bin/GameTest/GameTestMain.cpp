@@ -96,6 +96,10 @@ int PlatformMain(int argc, char **argv) {
         gameThread.app()->get<EngineDeterministicPlugin>()->enterDeterministicMode(); // And never leave it.
         game->tick(10); // Let the game thread initialize everything.
 
+        // TODO(captainurist): just remap the events properly and drop resize calls here and in EngineTracer
+        game->resizeWindow(640, 480);
+        game->tick();
+
         exitCode = RUN_ALL_TESTS();
 
         game->goToMainMenu();
