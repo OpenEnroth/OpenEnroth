@@ -36,6 +36,7 @@
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/PlayerFrameTable.h"
 #include "Engine/Time.h"
+#include "Engine/stru298.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
@@ -813,6 +814,9 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     v5 = pMapStats->GetMapInfo(pCurrentMapName);
 
     uLevelMapStatsID = v5;
+
+    // TODO(captainurist): need to zero this one out when loading a save, but is this a proper place to do that?
+    AttackerInfo.count = 0;
 
     engine->SetUnderwater(Is_out15odm_underwater());
 

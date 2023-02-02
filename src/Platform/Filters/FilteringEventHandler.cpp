@@ -7,7 +7,7 @@
 
 void FilteringEventHandler::Event(const PlatformEvent *event) {
     _insideEvent = true;
-    auto guard = ScopeGuard([&] { _insideEvent = false; });
+    MM_AT_SCOPE_EXIT(_insideEvent = false);
 
     for (PlatformEventFilter *filter : Reversed(_filters[event->type]))
         if (filter->Event(event))

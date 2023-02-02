@@ -33,6 +33,10 @@
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
+#include "Engine/Plugins/EngineTracer.h"
+#include "Engine/Plugins/EngineControlPlugin.h"
+#include "Engine/Plugins/EngineDeterministicPlugin.h"
+#include "Engine/Plugins/EngineTracePlugin.h"
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
@@ -80,7 +84,6 @@
 #include "Media/MediaPlayer.h"
 
 #include "Library/Application/PlatformApplication.h"
-#include "Library/Trace/EventTracer.h"
 
 #include "Platform/Platform.h"
 #include "Platform/Filters/FilteringEventHandler.h"
@@ -149,22 +152,24 @@ Game::Game(PlatformApplication *app) {
     ::eventHandler = app->eventHandler();
     ::openGLContext = app->openGLContext(); // OK to store into a global even if not yet initialized
 
+    // It doesn't matter where to put control plugin as it's running the control routine after a call to `SwapBuffers`.
+    // But the trace plugin should go after the deterministic plugin - deterministic plugin updates tick count, and then
+    // trace plugin stores the updated value in a recorded `PaintEvent`.
     windowHandler.reset(Application::IocContainer::ResolveGameWindowHandler());
-    eventTracer = std::make_unique<EventTracer>();
-    traceHandler = std::make_unique<GameTraceHandler>(eventTracer.get());
-    app->eventHandler()->installEventFilter(windowHandler.get());
-    app->eventHandler()->installEventFilter(eventTracer.get());
-    app->eventHandler()->installEventFilter(traceHandler.get());
-    app->installProxy(eventTracer.get());
+    app->install(windowHandler.get()); // TODO(captainurist): actually move ownership into PlatformApplication?
+    app->install(windowHandler->KeyboardController()); // TODO(captainurist): do this properly
+    app->install(std::make_unique<EngineControlPlugin>());
+    app->install(std::make_unique<EngineTracePlugin>());
+    app->install(std::make_unique<EngineDeterministicPlugin>());
+    app->install(std::make_unique<EngineTracer>(EngineTracer::ENABLE_RECORDING | EngineTracer::ENABLE_PLAYBACK)); // TODO(captainurist): make configurable
+    app->install(std::make_unique<GameTraceHandler>(app->get<EngineTracer>())); // TODO(captainurist): get() call not needed.
 }
 
 Game::~Game() {
-    app->removeProxy(eventTracer.get());
-    app->eventHandler()->removeEventFilter(traceHandler.get());
-    app->eventHandler()->removeEventFilter(eventTracer.get());
-    app->eventHandler()->removeEventFilter(windowHandler.get());
+    app->remove(windowHandler->KeyboardController()); // TODO(captainurist): do this properly
+    app->remove(windowHandler.get());
     if (nuklearHandler)
-        app->eventHandler()->removeEventFilter(nuklearHandler.get());
+        app->remove(nuklearHandler.get());
 }
 
 int Game::Run() {
@@ -190,7 +195,7 @@ int Game::Run() {
     ::nuklear = nuklear;
     if (nuklear) {
         nuklearHandler = std::make_unique<NuklearEventHandler>();
-        app->eventHandler()->installEventFilter(nuklearHandler.get());
+        app->install(nuklearHandler.get());
     }
 
     keyboardActionMapping = std::make_shared<KeyboardActionMapping>(config);

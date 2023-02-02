@@ -24,7 +24,7 @@ int MM_Main(int argc, char **argv) {
         logger->SetLogLevel(ApplicationLog, LogInfo);
         logger->SetLogLevel(PlatformLog, LogError);
         EngineIoc::ResolveLogger()->SetBaseLogger(logger.get());
-        auto guard = ScopeGuard([] { EngineIoc::ResolveLogger()->SetBaseLogger(nullptr); });
+        MM_AT_SCOPE_EXIT(EngineIoc::ResolveLogger()->SetBaseLogger(nullptr));
         Engine::LogEngineBuildInfo();
 
         std::unique_ptr<PlatformApplication> app = std::make_unique<PlatformApplication>(logger.get());

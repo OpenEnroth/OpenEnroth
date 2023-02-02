@@ -2,8 +2,9 @@
 
 #include "Platform/Filters/PlatformEventFilter.h"
 
-class EventTracer;
+class EngineTracer;
 
+// TODO(captainurist): tbh we just need a hotkey system instead of this monstrosity.
 /**
  * Event filter that reacts to start/stop recording hotkey and calls into event tracer to start/stop recording.
  *
@@ -13,7 +14,7 @@ class EventTracer;
  */
 class GameTraceHandler : public PlatformEventFilter {
  public:
-    explicit GameTraceHandler(EventTracer *tracer);
+    explicit GameTraceHandler(EngineTracer *tracer);
     virtual ~GameTraceHandler() = default;
 
     virtual bool KeyPressEvent(const PlatformKeyEvent *event) override;
@@ -24,6 +25,6 @@ class GameTraceHandler : public PlatformEventFilter {
     bool isTriggerKeySequence(const PlatformKeyEvent *event) const;
 
  private:
-    EventTracer *_tracer = nullptr;
+    EngineTracer *_tracer = nullptr;
     bool _waitingForKeyRelease = false;
 };

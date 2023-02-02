@@ -2,17 +2,21 @@
 
 #include "Testing/Extensions/ThrowingAssertions.h"
 
-#include "GameWrapper.h"
+#include "Engine/Plugins/EngineController.h"
+
+#include "TestController.h"
 
 class GameTest : public testing::Test {
  public:
-    static void Init(GameWrapper *withWrapper);
+    static void init(EngineController *engineController, TestController *testController);
 
+ private:
     virtual void SetUp() override;
     virtual void TearDown() override;
 
  protected:
-    GameWrapper *const game = nullptr; // To be used in tests.
+    EngineController *const game = nullptr;
+    TestController *const test = nullptr;
 };
 
 #ifndef TEST_GROUP

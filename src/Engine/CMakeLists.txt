@@ -68,6 +68,7 @@ add_subdirectory(Objects)
 add_subdirectory(Serialization)
 add_subdirectory(Spells)
 add_subdirectory(Tables)
+add_subdirectory(Plugins)
 add_subdirectory(TurnEngine)
 
 message(VERBOSE "ZLIB_LIBRARIES: ${ZLIB_LIBRARIES}")

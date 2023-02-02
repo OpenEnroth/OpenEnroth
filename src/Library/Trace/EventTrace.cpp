@@ -183,6 +183,15 @@ static void from_json(const Json &json, std::unique_ptr<PlatformEvent> &value) {
     });
 }
 
+MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(EventTraceHeader, (
+    (saveFileSize, "saveFileSize")
+))
+
+MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(EventTrace, (
+    (header, "header"),
+    (events, "trace")
+))
+
 void EventTrace::saveToFile(std::string_view path, const EventTrace &trace) {
     std::ofstream f;
     f.exceptions(std::ios_base::failbit | std::ios_base::badbit);
@@ -192,9 +201,7 @@ void EventTrace::saveToFile(std::string_view path, const EventTrace &trace) {
     // to_json calls for individual elements. Fix upstream?
     // Note: there is an example in tests to reproduce.
     Json json;
-    for (size_t i = 0; i < trace.events.size(); i++)
-        to_json(json[i], trace.events[i]);
-
+    to_json(json, trace);
     f << std::setw(4) << json;
 }
 
@@ -207,7 +214,7 @@ EventTrace EventTrace::loadFromFile(std::string_view path, PlatformWindow *windo
     f >> json;
 
     EventTrace result;
-    from_json(json, result.events);
+    from_json(json, result);
 
     for (std::unique_ptr<PlatformEvent> &event : result.events) {
         DispatchByEventType(event->type, [&]<class T>(T *) {
@@ -220,7 +227,15 @@ EventTrace EventTrace::loadFromFile(std::string_view path, PlatformWindow *windo
     return result;
 }
 
+bool EventTrace::isTraceable(const PlatformEvent *event) {
+    bool result = false;
+    DispatchByEventType(event->type, [&](auto) { result = true; }); // Callback not invoked => not supported.
+    return result;
+}
+
 std::unique_ptr<PlatformEvent> EventTrace::cloneEvent(const PlatformEvent *event) {
+    assert(isTraceable(event));
+
     std::unique_ptr<PlatformEvent> result;
 
     DispatchByEventType(event->type, [&]<class T>(T *) {

@@ -11,7 +11,8 @@ class SdlOpenGLContext: public PlatformOpenGLContext {
     SdlOpenGLContext(SdlPlatformSharedState *state, SDL_Window *window, SDL_GLContext context);
     virtual ~SdlOpenGLContext();
 
-    virtual bool MakeCurrent() override;
+    virtual bool Bind() override;
+    virtual bool Unbind() override;
     virtual void SwapBuffers() override;
     virtual void *GetProcAddress(const char *name) override;
 

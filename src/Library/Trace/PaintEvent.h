@@ -11,6 +11,10 @@ class PaintEvent : public PlatformEvent {
     // TODO(captainurist): Rename properly.
     static constexpr PlatformEvent::Type Paint = static_cast<PlatformEvent::Type>(std::to_underlying(PlatformEvent::LastEventType) + 1);
 
-    int64_t tickCount = -1; // Tick count after this paint event, mainly for debugging.
-    int randomState = -1; // Result of a `Random(1024)` call from inside `SwapBuffers`, mainly for debugging.
+    /** Tick count for the next frame. */
+    int64_t tickCount = -1; //
+
+    /** Result of `grng->Random(1024)` call from inside `SwapBuffers`, basically a random state at the start of the
+     * next frame. */
+    int randomState = -1;
 };

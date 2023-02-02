@@ -25,6 +25,7 @@ class PlatformEventLoop {
     virtual void Quit() = 0;
 
     // TODO(captainurist): count parameter should be dropped.
+    // TODO(captainurist): rename processEvents
     /**
      * Processes the messages that are currently in the message queue, and returns. Returns immediately if there are
      * no messages in the message queue.
@@ -35,6 +36,7 @@ class PlatformEventLoop {
     virtual void ProcessMessages(PlatformEventHandler *eventHandler, int count = -1) = 0;
 
     // TODO(captainurist): this should be dropped.
+    // TODO(captainurist): rename waitForEvents
     /**
      * Blocks until at least one message is delivered to the queue, and returns.
      */

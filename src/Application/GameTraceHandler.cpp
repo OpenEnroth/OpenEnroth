@@ -3,27 +3,31 @@
 #include <cassert>
 
 #include "Engine/IocContainer.h"
+#include "Engine/Plugins/EngineTracer.h"
 
 #include "Library/Logger/Logger.h"
-#include "Library/Trace/EventTracer.h"
 
-GameTraceHandler::GameTraceHandler(EventTracer *tracer) : PlatformEventFilter({PlatformEvent::KeyPress, PlatformEvent::KeyRelease}), _tracer(tracer) {
+GameTraceHandler::GameTraceHandler(EngineTracer *tracer) : PlatformEventFilter({PlatformEvent::KeyPress, PlatformEvent::KeyRelease}), _tracer(tracer) {
     assert(tracer);
 }
 
 bool GameTraceHandler::KeyPressEvent(const PlatformKeyEvent *event) {
-    if (isTriggerKey(event) && _waitingForKeyRelease)
-        return true; // Ignore auto-repeats
+    if (isTriggerKey(event) && _waitingForKeyRelease) {
+        if (event->isAutoRepeat) {
+            return true; // Ignore auto-repeats
+        } else {
+            _waitingForKeyRelease = false; // Looks like we've missed the key release.
+        }
+    }
 
     if (isTriggerKeySequence(event)) {
         _waitingForKeyRelease = true;
 
-        if (!_tracer->isTracing()) {
-            _tracer->start("trace.json", "trace.mm7");
-            logger->Info("Tracing started.");
+        if (_tracer->state() == EngineTracer::CHILLING) {
+            _tracer->startTraceRecording("trace.mm7", "trace.json");
         } else {
-            _tracer->finish();
-            logger->Info("Tracing finished.");
+            assert(_tracer->state() == EngineTracer::RECORDING);
+            _tracer->finishTraceRecording();
         }
         return true;
     }
@@ -50,5 +54,7 @@ bool GameTraceHandler::isTriggerKey(const PlatformKeyEvent *event) const {
 
 bool GameTraceHandler::isTriggerKeySequence(const PlatformKeyEvent *event) const {
     // TODO(captainurist) : make configurable
-    return event->key == PlatformKey::R && event->mods == (PlatformModifier::Ctrl | PlatformModifier::Shift);
+    PlatformModifiers mods = PlatformModifier::Ctrl | PlatformModifier::Shift;
+
+    return event->key == PlatformKey::R && (event->mods & mods) == mods;
 }

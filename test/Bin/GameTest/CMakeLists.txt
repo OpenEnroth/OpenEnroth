@@ -7,7 +7,7 @@ if(ENABLE_TESTS)
 
     add_executable(OpenEnroth_GameTest ${GAME_TEST_MAIN_SOURCES} ${GAME_TEST_MAIN_HEADERS})
     target_fix_libcxx_assertions(OpenEnroth_GameTest)
-    target_link_libraries(OpenEnroth_GameTest game game_test test_engine GTest::gtest)
+    target_link_libraries(OpenEnroth_GameTest game game_test GTest::gtest)
     target_compile_definitions(OpenEnroth_GameTest PRIVATE TEST_GROUP=None)
 
     target_check_style(OpenEnroth_GameTest)
@@ -18,7 +18,7 @@ if(ENABLE_TESTS)
     ExternalProject_Add(OpenEnroth_TestData
         PREFIX ${CMAKE_CURRENT_BINARY_DIR}/test_data_tmp
         GIT_REPOSITORY https://github.com/OpenEnroth/OpenEnroth_TestData.git
-        GIT_TAG b29759ac3b635746cfb023c27f81f0a46e66fc95
+        GIT_TAG 36a349ed815324f1f5adea39d3c1e468bc1f7aea
         SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/test_data
         CONFIGURE_COMMAND ""
         BUILD_COMMAND ""

@@ -29,4 +29,4 @@ set(GAME_HEADERS
 add_library(game STATIC ${GAME_SOURCES} ${GAME_HEADERS})
 target_check_style(game)
 
-target_link_libraries(game io gui engine platform graphics media lod utility config trace application CLI11::CLI11)
+target_link_libraries(game io gui engine platform graphics media lod utility config trace application plugins CLI11::CLI11)
