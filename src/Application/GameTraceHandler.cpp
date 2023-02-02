@@ -25,11 +25,9 @@ bool GameTraceHandler::KeyPressEvent(const PlatformKeyEvent *event) {
 
         if (_tracer->state() == EngineTracer::CHILLING) {
             _tracer->startTraceRecording("trace.mm7", "trace.json");
-            logger->Info("Tracing started.");
         } else {
             assert(_tracer->state() == EngineTracer::RECORDING);
             _tracer->finishTraceRecording();
-            logger->Info("Tracing finished.");
         }
         return true;
     }

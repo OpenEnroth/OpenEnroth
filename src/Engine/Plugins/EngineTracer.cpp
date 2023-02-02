@@ -45,6 +45,8 @@ void EngineTracer::startTraceRecording(const std::string &savePath, const std::s
         _keyboardController->reset(); // Reset all pressed buttons.
         _tracePlugin->start();
         engine->config->graphics.FPSLimit.Set(EngineDeterministicPlugin::TARGET_FPS); // But don't turn the party into a wall-running doomguy.
+
+        logger->Info("Tracing started.");
     });
 }
 
@@ -62,6 +64,10 @@ void EngineTracer::finishTraceRecording() {
         EventTrace trace = _tracePlugin->finish();
         trace.header.saveFileSize = std::filesystem::file_size(savePath); // This function can throw.
         EventTrace::saveToFile(tracePath, trace);
+
+        logger->Info("Trace saved to %s and %s",
+                     absolute(std::filesystem::path(tracePath)).generic_string().c_str(),
+                     absolute(std::filesystem::path(savePath)).generic_string().c_str());
     });
 
     _state = CHILLING;
