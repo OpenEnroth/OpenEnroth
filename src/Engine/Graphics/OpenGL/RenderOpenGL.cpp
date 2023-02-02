@@ -245,6 +245,7 @@ bool RenderOpenGL::InitializeFullscreen() {
     return true;
 }
 
+// TODO(pskelton): drop from render
 unsigned int RenderOpenGL::GetActorTintColor(int DimLevel, int tint, float WorldViewX, int a5, RenderBillboard *Billboard) {
     // GetActorTintColor(int max_dimm, int min_dimm, float distance, int a4, RenderBillboard *a5)
     return ::GetActorTintColor(DimLevel, tint, WorldViewX, a5, Billboard);
@@ -260,7 +261,7 @@ void RenderOpenGL::BltBackToFontFast(int a2, int a3, Recti *a4) {
     // never called anywhere
 }
 
-
+// TODO(pskelton): renderbase
 void RenderOpenGL::ClearBlack() {  // used only at start and in game over win
     ClearZBuffer();
     ClearTarget(0);
@@ -275,7 +276,7 @@ void RenderOpenGL::ClearTarget(unsigned int uColor) {
 }
 
 
-
+// TODO(pskelton): z buffer must go
 void RenderOpenGL::CreateZBuffer() {
     if (pActiveZBuffer)
         free(pActiveZBuffer);
@@ -287,6 +288,7 @@ void RenderOpenGL::CreateZBuffer() {
     ClearZBuffer();
 }
 
+// TODO(pskelton): z buffer must go
 void RenderOpenGL::ClearZBuffer() {
     memset32(this->pActiveZBuffer, 0xFFFF0000, outputRender.w * outputRender.h);
 }
@@ -450,6 +452,7 @@ void RenderOpenGL::BeginSceneD3D() {
 
 extern unsigned int BlendColors(unsigned int a1, unsigned int a2);
 
+// TODO(pskelton): renderbase
 //----- (004A4CC9) ---------------------------------------
 void RenderOpenGL::BillboardSphereSpellFX(struct SpellFX_Billboard *a1, int diffuse) {
     // fireball / implosion sphere
@@ -913,7 +916,7 @@ void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid, uint
     return;
 }
 
-
+// TODO(pskelton): zbuffer must go
 void RenderOpenGL::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
     if (!img) return;
 
@@ -1025,6 +1028,7 @@ void RenderOpenGL::BlendTextures(int x, int y, Image* imgin, Image* imgblend, in
     }
 }
 
+// TODO(pskelton): renderbase
 //----- (004A65CC) --------------------------------------------------------
 //_4A65CC(unsigned int x, unsigned int y, Texture_MM7 *a4, Texture_MM7 *a5, int a6, int a7, int a8)
 // a6 is time, a7 is 0, a8 is 63
@@ -1072,6 +1076,7 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time
     }
 }
 
+// TODO(pskelton): renderbase
 void RenderOpenGL::DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait, int Y_Offset) {
     Recti rct;
     rct.x = rc.x + 64 + Portrait->hw_sprites[0]->uAreaX - Portrait->hw_sprites[0]->uBufferWidth / 2;
@@ -1084,6 +1089,7 @@ void RenderOpenGL::DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait, int Y_Of
     render->ResetUIClipRect();
 }
 
+// TODO(pskelton): renderbase
 void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];
     if (pFace->uNumVertices <= 0) return;
@@ -1315,7 +1321,7 @@ int RenderOpenGL::GetActorsInViewport(int pDepth) {
     return mon_num;
 }
 
-// not required in gl renderer now
+// TODO(pskelton): drop - not required in gl renderer now
 void RenderOpenGL::BeginLightmaps() { return; }
 void RenderOpenGL::EndLightmaps() { return; }
 void RenderOpenGL::BeginLightmaps2() { return; }
@@ -1520,6 +1526,7 @@ void RenderOpenGL::DrawDecal(struct Decal *pDecal, float z_bias) {
     }
 }
 
+// TODO(pskelton): renderbase
 void RenderOpenGL::DrawSpecialEffectsQuad(Texture *texture, int palette) {
     Recti targetrect{};
     targetrect.x = pViewport->uViewportTL_X;
@@ -1664,46 +1671,6 @@ void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, in
     return;
 }
 
-/*#pragma pack(push, 1)
-typedef struct {
-        char  idlength;
-        char  colourmaptype;
-        char  datatypecode;
-        short int colourmaporigin;
-        short int colourmaplength;
-        char  colourmapdepth;
-        short int x_origin;
-        short int y_origin;
-        short width;
-        short height;
-        char  bitsperpixel;
-        char  imagedescriptor;
-} tga;
-#pragma pack(pop)
-
-FILE *CreateTga(const char *filename, int image_width, int image_height)
-{
-        auto f = fopen(filename, "w+b");
-
-        tga tga_header;
-        memset(&tga_header, 0, sizeof(tga_header));
-
-        tga_header.colourmaptype = 0;
-        tga_header.datatypecode = 2;
-        //tga_header.colourmaporigin = 0;
-        //tga_header.colourmaplength = image_width * image_height;
-        //tga_header.colourmapdepth = 32;
-        tga_header.x_origin = 0;
-        tga_header.y_origin = 0;
-        tga_header.width = image_width;
-        tga_header.height = image_height;
-        tga_header.bitsperpixel = 32;
-        tga_header.imagedescriptor = 32; // top-down
-        fwrite(&tga_header, 1, sizeof(tga_header), f);
-
-        return f;
-}*/
-
 Texture *RenderOpenGL::CreateTexture_Paletted(const std::string &name) {
     return TextureOpenGL::Create(new Paletted_Img_Loader(pIcons_LOD, name, 0));
 }
@@ -1741,7 +1708,6 @@ Texture *RenderOpenGL::CreateTexture_Blank(unsigned int width, unsigned int heig
 
     return TextureOpenGL::Create(width, height, format, pixels);
 }
-
 
 Texture *RenderOpenGL::CreateTexture(const std::string &name) {
     return TextureOpenGL::Create(new Bitmaps_LOD_Loader(pBitmaps_LOD, name, engine->config->graphics.HWLBitmaps.Get()));
@@ -1809,6 +1775,7 @@ bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
     return false;
 }
 
+// TODO(pskelton): to camera?
 void RenderOpenGL::_set_3d_projection_matrix() {
     float near_clip = pCamera3D->GetNearClip();
     float far_clip = pCamera3D->GetFarClip();
@@ -1817,6 +1784,7 @@ void RenderOpenGL::_set_3d_projection_matrix() {
     projmat = glm::perspective(glm::radians(pCamera3D->fov_y_deg), pCamera3D->aspect, near_clip, far_clip);
 }
 
+// TODO(pskelton): to camera?
 void RenderOpenGL::_set_3d_modelview_matrix() {
     float camera_x = pCamera3D->vCameraPos.x;
     float camera_y = pCamera3D->vCameraPos.y;
@@ -1832,6 +1800,7 @@ void RenderOpenGL::_set_3d_modelview_matrix() {
     viewmat = glm::lookAtLH(campos, eyepos, upvec);
 }
 
+// TODO(pskelton): to camera?
 void RenderOpenGL::_set_ortho_projection(bool gameviewport) {
     if (!gameviewport) {  // project over entire window
         glViewport(0, 0, outputRender.w, outputRender.h);
@@ -1842,6 +1811,7 @@ void RenderOpenGL::_set_ortho_projection(bool gameviewport) {
     }
 }
 
+// TODO(pskelton): to camera?
 void RenderOpenGL::_set_ortho_modelview() {
     // load identity matrix
     viewmat = glm::mat4x4(1);
@@ -2425,9 +2395,10 @@ void RenderOpenGL::DrawOutdoorTerrain() {
     // end shder version
 }
 
-// this is now obselete with shader terrain drawing
+// TODO(pskelton): drop - this is now obselete with shader terrain drawing
 void RenderOpenGL::DrawTerrainPolygon(struct Polygon *poly, bool transparent, bool clampAtTextureBorders) { return; }
 
+// TODO(pskelton): renderbase
 void RenderOpenGL::DrawOutdoorSky() {
     double rot_to_rads = ((2 * pi_double) / 2048);
 
@@ -2826,6 +2797,7 @@ void RenderOpenGL::DrawForcePerVerts() {
     forceperstorecnt = 0;
 }
 
+// TODO(pskelton): move ?
 void RenderOpenGL::SetFogParametersGL() {
     uint fogcol{ GetLevelFogColor() };
 
@@ -2853,6 +2825,7 @@ void RenderOpenGL::SetFogParametersGL() {
     }
 }
 
+// TODO(pskelton): to renderbase
 void RenderOpenGL::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {
     engine->draw_debug_outlines();
     this->DoRenderBillboards_D3D();
@@ -3213,6 +3186,7 @@ void RenderOpenGL::ResetUIClipRect() {
     this->SetUIClipRect(0, 0, outputRender.w, outputRender.h);
 }
 
+// TODO(pskelton): renderbase
 void RenderOpenGL::PresentBlackScreen() {
     BeginScene();
     ClearBlack();

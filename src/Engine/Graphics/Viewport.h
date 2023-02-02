@@ -86,8 +86,7 @@ struct ViewingParams {
     int field_60 = 0;
     int field_64 = 0;
     int field_68 = 0;
-    // TODO(pskelton): convert to color32
-    uint16_t pPalette[256] {};
+    uint32_t pPalette[256] {};
 };
 #pragma pack(pop)
 

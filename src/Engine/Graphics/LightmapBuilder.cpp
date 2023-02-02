@@ -20,6 +20,8 @@ LightsStack_MobileLight_ *pMobileLightsStack = new LightsStack_MobileLight_;
 // MobileLight pMobileLights[400];
 // int uNumMobileLightsApplied;
 
+// TODO(pskelton): drop most of this - no longer using lightmaps
+
 //----- (0045DF13) --------------------------------------------------------
 Lightmap::Lightmap() {
     // For initialization step(I)

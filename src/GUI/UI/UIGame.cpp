@@ -1739,7 +1739,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
 
                     LineGreyDim = abs(pOutline->sZ - pParty->vPosition.z) / 8;
                     if (LineGreyDim > 100) LineGreyDim = 100;
-                    render->RasterLine2D(linex, liney, linez, linew, Color32(viewparams->pPalette[-LineGreyDim + 200]));
+                    render->RasterLine2D(linex, liney, linez, linew, viewparams->pPalette[-LineGreyDim + 200]);
                 }
             }
         }
@@ -1828,7 +1828,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 //  && pPoint_Y >= render->raster_clip_y && pPoint_Y <=
                 //  render->raster_clip_w )
                 {
-                    pColor = ui_game_minimap_actor_friendly_color;
+                    pColor = Color32(ui_game_minimap_actor_friendly_color);
                     if (pActors[i].uAttributes & ACTOR_HOSTILE)
                         pColor = Color32(ui_game_minimap_actor_hostile_color);
                     if (pActors[i].uAIState == Dead)
