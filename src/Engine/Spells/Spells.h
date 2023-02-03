@@ -265,3 +265,5 @@ int _43AFE3_calc_spell_damage(int spellId, PLAYER_SKILL_LEVEL spellLevel, PLAYER
 bool sub_427769_isSpellQuickCastableOnShiftClick(unsigned int uSpellID);
 void EventCastSpell(int uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAYER_SKILL_LEVEL skillLevel, int fromx,
                     int fromy, int fromz, int tox, int toy, int toz);  // sub_448DF8
+
+void armageddonProgress();

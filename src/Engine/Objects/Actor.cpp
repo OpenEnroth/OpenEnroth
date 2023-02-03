@@ -1705,6 +1705,7 @@ void Actor::AI_RandomMove(unsigned int uActor_id, unsigned int uTarget_id,
     int absy;                                          // eax@1
     unsigned int v9;                                   // ebx@11
     int v10;                                           // ebx@13
+    // TODO(captainurist): yaw/pitch angles are actually initialized to 0 despite the name!
     AIDirection doNotInitializeBecauseShouldBeRandom;  // [sp+Ch] [bp-30h]@7
     int y;                                             // [sp+30h] [bp-Ch]@1
     int absx;                                          // [sp+38h] [bp-4h]@1
@@ -2662,11 +2663,7 @@ void Actor::SummonMinion(int summonerId) {
 
 //----- (00401A91) --------------------------------------------------------
 void Actor::UpdateActorAI() {
-    signed int v4;    // edi@10
-    signed int sDmg;  // eax@14
-    Player *pPlayer;  // ecx@21
     Actor *pActor;    // esi@34
-    // uint16_t v22; // ax@86
     unsigned int v27;        // ecx@123
     unsigned int v28;        // eax@123
     int v33;                 // eax@144
@@ -2701,49 +2698,8 @@ void Actor::UpdateActorAI() {
         Actor::MakeActorAIList_BLV();
 
     // Armageddon damage mechanic
-    if (uCurrentlyLoadedLevelType != LEVEL_Indoor && pParty->armageddon_timer > 0) {
-        if (pParty->armageddon_timer > 417) {
-            pParty->armageddon_timer = 0;
-        } else {
-            pParty->sRotationZ = TrigLUT.uDoublePiMask & (pParty->sRotationZ + grng->Random(16) - 8);
-            pParty->sRotationY = pParty->sRotationY + grng->Random(16) - 8;
-            if (pParty->sRotationY > 128)
-                pParty->sRotationY = 128;
-            else if (pParty->sRotationY < -128)
-                pParty->sRotationY = -128;
-
-            pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
-            pParty->armageddon_timer -= pEventTimer->uTimeElapsed; // Was pMiscTimer
-            v4 = pParty->armageddonDamage + 50;
-            if (pParty->armageddon_timer <= 0) {
-                pParty->armageddon_timer = 0;
-                for (size_t i = 0; i < pActors.size(); i++) {
-                    pActor = &pActors[i];
-                    if (pActor->CanAct()) {
-                        sDmg = pActor->CalcMagicalDamageToActor(DMGT_MAGICAL, v4);
-                        pActor->sCurrentHP -= sDmg;
-                        if (sDmg) {
-                            if (pActor->sCurrentHP >= 0) {
-                                Actor::AI_Stun(i, 4, 0);
-                            } else {
-                                Actor::Die(i);
-                                if (pActor->pMonsterInfo.uExp)
-                                    pParty->GivePartyExp(pMonsterStats->pInfos[pActor->pMonsterInfo.uID].uExp);
-                            }
-                        }
-                    }
-                }
-                for (int i = 1; i <= 4; i++) {
-                    pPlayer = pPlayers[i];
-                    if (!pPlayer->conditions.Has(Condition_Dead) &&
-                        !pPlayer->conditions.Has(Condition_Petrified) &&
-                        !pPlayer->conditions.Has(Condition_Eradicated))
-                        pPlayer->ReceiveDamage(v4, DMGT_MAGICAL);
-                }
-            }
-            if (pTurnEngine->pending_actions) --pTurnEngine->pending_actions;
-        }
-    }
+    if (uCurrentlyLoadedLevelType != LEVEL_Indoor && pParty->armageddon_timer > 0)
+        armageddonProgress();
 
     // Turn-based mode: return
     if (pParty->bTurnBasedModeOn) {
