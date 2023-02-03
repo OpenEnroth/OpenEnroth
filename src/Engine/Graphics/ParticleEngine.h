@@ -1,8 +1,11 @@
 #pragma once
+
+#include "Utility/Flags.h"
+
 #include "Engine/Graphics/IRender.h"
 #include "Engine/OurMath.h"
 
-enum ParticleType : uint32_t {
+enum class ParticleFlag : uint32_t {
     ParticleType_Invalid = 0,
     ParticleType_1 = 0x0001,
     ParticleType_Rotating = 0x0004,
@@ -12,13 +15,15 @@ enum ParticleType : uint32_t {
     ParticleType_Bitmap = 0x0400,   // textured planed
     ParticleType_Sprite = 0x0800
 };
-
+using enum ParticleFlag;
+MM_DECLARE_FLAGS(ParticleFlags, ParticleFlag)
+MM_DECLARE_OPERATORS_FOR_FLAGS(ParticleFlags)
 
 // TODO(pskelton): eliminate this one
 /*  305 */
 #pragma pack(push, 1)
 struct Particle_sw {
-    unsigned int type;
+    ParticleFlags type;
     float x;
     float y;
     float z;
@@ -41,7 +46,7 @@ struct Particle_sw {
 /*  109 */
 #pragma pack(push, 1)
 struct Particle {
-    unsigned int type = 0;
+    ParticleFlags type = ParticleType_Invalid;
     float x = 0;
     float y = 0;
     float z = 0;
