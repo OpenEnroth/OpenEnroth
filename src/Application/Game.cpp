@@ -1211,7 +1211,7 @@ void Game::EventLoop() {
                         v48 = pLevelDecorations[v46].uEventID == 0;
                     } else {
                         if (v45 != OBJECT_Face) continue;
-                        if (uCurrentlyLoadedLevelType != 1) {
+                        if (uCurrentlyLoadedLevelType != LEVEL_Indoor) {
                             pODMFace = &pOutdoor->pBModels[v44 >> 9].pFaces[v46 & 0x3F];
                             if (!pODMFace->Clickable() ||
                                 !pODMFace->sCogTriggeredID)

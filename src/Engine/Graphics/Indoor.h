@@ -224,11 +224,12 @@ struct LocationTime_stru1 {
 #pragma pack(pop)
 
 /*  319 */
-enum LEVEL_TYPE {
+enum class LEVEL_TYPE {
     LEVEL_null = 0,
     LEVEL_Indoor = 0x1,
     LEVEL_Outdoor = 0x2,
 };
+using enum LEVEL_TYPE;
 extern LEVEL_TYPE uCurrentlyLoadedLevelType;
 
 /*   90 */
