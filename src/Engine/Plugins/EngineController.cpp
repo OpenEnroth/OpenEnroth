@@ -6,6 +6,8 @@
 #include <utility>
 #include <thread>
 
+#include "Arcomage/Arcomage.h"
+
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
@@ -98,6 +100,16 @@ void EngineController::pressGuiButton(std::string_view buttonId) {
 void EngineController::goToMainMenu() {
     if (GetCurrentMenuID() == MENU_MAIN)
         return;
+
+    while (pArcomageGame->bGameInProgress) {
+        pressAndReleaseKey(PlatformKey::Escape);
+        tick(1);
+    }
+
+    while (current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE) {
+        pressAndReleaseKey(PlatformKey::Escape);
+        tick(1);
+    }
 
     if (GetCurrentMenuID() == MENU_CREATEPARTY) {
         pressAndReleaseKey(PlatformKey::Escape);
