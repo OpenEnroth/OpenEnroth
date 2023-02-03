@@ -736,7 +736,7 @@ void Vis::CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY, floa
 }
 
 //----- (004C2551) --------------------------------------------------------
-Vis_ObjectInfo *Vis_SelectionList::SelectionPointers(int pVisObjectType,
+Vis_ObjectInfo *Vis_SelectionList::SelectionPointers(VisObjectType pVisObjectType,
                                                      int pid) {
     // unsigned int v3; // esi@1
     // signed int v4; // edx@1
