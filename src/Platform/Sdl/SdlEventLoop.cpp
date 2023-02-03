@@ -228,7 +228,12 @@ void SdlEventLoop::DispatchWindowEvent(PlatformEventHandler *eventHandler, const
     case SDL_WINDOWEVENT_MOVED:
         DispatchWindowMoveEvent(eventHandler, event);
         return;
-    case SDL_WINDOWEVENT_RESIZED:
+    case SDL_WINDOWEVENT_SIZE_CHANGED:
+        // SDL reports window resizes with two events:
+        // SDL_WINDOWEVENT_RESIZED - this one is fired only for resizes triggered by user / window manager.
+        // SDL_WINDOWEVENT_SIZE_CHANGED - this one is fired every time window size changes, including with a call to
+        //                                SDL_SetWindowSize.
+        // We obviously need the latter of the two.
         DispatchWindowResizeEvent(eventHandler, event);
         return;
     default:

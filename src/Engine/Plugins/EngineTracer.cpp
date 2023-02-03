@@ -36,6 +36,9 @@ void EngineTracer::startTraceRecording(const std::string &savePath, const std::s
 
     // TODO(captainurist): this is actually unsafe, we need to cancel running routines in dtor if there are any.
     _controlPlugin->runControlRoutine([this, savePath] (EngineController *game) {
+        game->resizeWindow(640, 480);
+        game->tick();
+
         _oldFpsLimit = engine->config->graphics.FPSLimit.Get();
         engine->config->graphics.FPSLimit.Set(1000); // Load game real quick!
         game->saveGame(savePath);
@@ -43,6 +46,7 @@ void EngineTracer::startTraceRecording(const std::string &savePath, const std::s
         game->loadGame(savePath);
         _deterministicPlugin->resetDeterministicState();
         _keyboardController->reset(); // Reset all pressed buttons.
+
         _tracePlugin->start();
         engine->config->graphics.FPSLimit.Set(EngineDeterministicPlugin::TARGET_FPS); // But don't turn the party into a wall-running doomguy.
 
@@ -92,6 +96,9 @@ void EngineTracer::playTrace(EngineController *game, const std::string &savePath
         ));
     }
     // TODO(captainurist): add an option to skip all checks
+
+    game->resizeWindow(640, 480);
+    game->tick();
 
     _deterministicPlugin->enterDeterministicMode();
     MM_AT_SCOPE_EXIT(_deterministicPlugin->leaveDeterministicMode());

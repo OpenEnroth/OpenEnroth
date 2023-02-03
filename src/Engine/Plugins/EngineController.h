@@ -87,6 +87,9 @@ class EngineController {
      */
     void runGameRoutine(GameRoutine routine);
 
+    // TODO(captainurist): drop!
+    void resizeWindow(int w, int h);
+
  private:
     GUIButton *existingButton(std::string_view buttonId);
 

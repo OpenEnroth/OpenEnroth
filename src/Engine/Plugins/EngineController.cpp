@@ -170,6 +170,17 @@ void EngineController::runGameRoutine(GameRoutine routine) {
     assert(!_state->terminating); // Please don't do anything crazy in the game routine.
 }
 
+void EngineController::resizeWindow(int w, int h) {
+    runGameRoutine([=] { ::application->window()->Resize({w, h});});
+
+    // Spontaneous events are ignored, gotta post one.
+    std::unique_ptr<PlatformResizeEvent> event = std::make_unique<PlatformResizeEvent>();
+    event->type = PlatformEvent::WindowResize;
+    event->window = ::application->window();
+    event->size = {w, h};
+    postEvent(std::move(event));
+}
+
 GUIButton *EngineController::existingButton(std::string_view buttonId) {
     auto findButton = [](std::string_view buttonId) -> GUIButton * {
         for (GUIWindow *window : lWindowList)
