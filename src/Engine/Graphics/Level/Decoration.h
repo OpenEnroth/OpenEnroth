@@ -5,8 +5,9 @@
 #include <cstdint>
 
 #include "Utility/Geometry/Vec.h"
+#include "Utility/Flags.h"
 
-enum LEVEL_DECORATION_FLAGS : uint16_t {
+enum class LevelDecorationFlag : uint16_t {
     LEVEL_DECORATION_TRIGGERED_BY_TOUCH = 0x01,
     LEVEL_DECORATION_TRIGGERED_BY_MONSTER = 0x02,
     LEVEL_DECORATION_TRIGGERED_BY_OBJECT = 0x04,
@@ -15,6 +16,10 @@ enum LEVEL_DECORATION_FLAGS : uint16_t {
     LEVEL_DECORATION_INVISIBLE = 0x20,
     LEVEL_DECORATION_OBELISK_CHEST = 0x40,
 };
+using enum LevelDecorationFlag;
+MM_DECLARE_FLAGS(LevelDecorationFlags, LevelDecorationFlag)
+MM_DECLARE_OPERATORS_FOR_FLAGS(LevelDecorationFlags)
+
 
 /*   74 */
 #pragma pack(push, 1)
@@ -25,7 +30,7 @@ struct LevelDecoration {
     bool IsObeliskChestActive();
 
     uint16_t uDecorationDescID;
-    uint16_t uFlags;
+    LevelDecorationFlags uFlags;
     Vec3i vPosition;
     int32_t field_10_y_rot;
     uint16_t uCog;
