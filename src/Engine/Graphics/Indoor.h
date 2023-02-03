@@ -285,12 +285,13 @@ struct BLVLightMM8 {
 /*  100 */
 #pragma pack(push, 1)
 struct BLVDoor {  // 50h
-    enum State : uint16_t {
+    enum class State : uint16_t {
         Closed = 0,
         Opening = 1,
         Open = 2,
         Closing = 3
     };
+    using enum State;
 
     DoorAttributes uAttributes;
     uint32_t uDoorID;

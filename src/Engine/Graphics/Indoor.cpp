@@ -2498,7 +2498,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
 //----- (00449A49) --------------------------------------------------------
 void Door_switch_animation(unsigned int uDoorID, int a2) {
-    int old_state;       // eax@1
+    BLVDoor::State old_state;       // eax@1
     signed int door_id;  // esi@2
 
     if (pIndoor->pDoors.empty()) return;
@@ -2517,7 +2517,7 @@ void Door_switch_animation(unsigned int uDoorID, int a2) {
         if (pIndoor->pDoors[door_id].uState == BLVDoor::Closing ||
             pIndoor->pDoors[door_id].uState == BLVDoor::Opening)
             return;
-        if (pIndoor->pDoors[door_id].uState) {
+        if (pIndoor->pDoors[door_id].uState != BLVDoor::Closed) {
             if (pIndoor->pDoors[door_id].uState != BLVDoor::Closed &&
                 pIndoor->pDoors[door_id].uState != BLVDoor::Closing) {
                 pIndoor->pDoors[door_id].uState = BLVDoor::Closing;

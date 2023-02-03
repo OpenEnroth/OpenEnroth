@@ -1364,7 +1364,7 @@ void Serialize(const BLVDoor &src, BLVDoor_MM7 *dst) {
     dst->uNumFaces = src.uNumFaces;
     dst->uNumSectors = src.uNumSectors;
     dst->uNumOffsets = src.uNumOffsets;
-    dst->uState = src.uState;
+    dst->uState = std::to_underlying(src.uState);
     dst->field_4E = src.field_4E;
 }
 
@@ -1380,7 +1380,7 @@ void Deserialize(const BLVDoor_MM7 &src, BLVDoor *dst) {
     dst->uNumFaces = src.uNumFaces;
     dst->uNumSectors = src.uNumSectors;
     dst->uNumOffsets = src.uNumOffsets;
-    dst->uState = (BLVDoor::State)src.uState;
+    dst->uState = static_cast<BLVDoor::State>(src.uState);
     dst->field_4E = src.field_4E;
 }
 
