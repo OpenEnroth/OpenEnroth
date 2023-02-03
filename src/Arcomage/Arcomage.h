@@ -4,6 +4,7 @@
 
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Texture.h"
+#include "Engine/Graphics/FrameLimiter.h"
 
 #include "Utility/Geometry/Point.h"
 #include "Utility/Geometry/Rect.h"
@@ -128,6 +129,8 @@ struct ArcomageGame {
 
     static void Loop();
 
+    FrameLimiter _frameLimiter;
+
     char field_0 = 0;  // msg??
     char field_1 = 0;  // msg??
     char field_2 = 0;  // msg??
@@ -150,7 +153,6 @@ struct ArcomageGame {
     int field_54 = 0;  // blend mode ??
     Texture *pGameBackground = nullptr;
     Texture *pSprites = nullptr;
-    int event_timer_time = 0;
     int uGameWinner = 0;
     int Victory_type = 0;
     std::string pPlayer1Name;

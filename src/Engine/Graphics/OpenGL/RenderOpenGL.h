@@ -1,8 +1,10 @@
 #pragma once
+
 #include <memory>
 #include <string>
 #include <map>
 
+#include "Engine/Graphics/FrameLimiter.h"
 #include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/HWLContainer.h"
 #include "Engine/Graphics/RenderBase.h"
@@ -180,6 +182,8 @@ class RenderOpenGL : public RenderBase {
     void DrawForcePerVerts();
 
     void SetFogParametersGL();
+
+    FrameLimiter _frameLimiter;
 
     // these are the view and projection matrices for submission to shaders
     glm::mat4 projmat;

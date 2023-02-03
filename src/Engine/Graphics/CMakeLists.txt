@@ -5,6 +5,7 @@ set(GRAPHICS_SOURCES BSPModel.cpp
                      Collisions.cpp
                      DecalBuilder.cpp
                      DecorationList.cpp
+                     FrameLimiter.cpp
                      HWLContainer.cpp
                      IRenderFactory.cpp
                      Image.cpp
@@ -37,6 +38,7 @@ set(GRAPHICS_HEADERS BSPModel.h
                      Collisions.h
                      DecalBuilder.h
                      DecorationList.h
+                     FrameLimiter.h
                      HWLContainer.h
                      IRenderFactory.h
                      Image.h
