@@ -194,8 +194,6 @@ Pointi GameWindowHandler::MapToRender(Pointi position) {
 
 void GameWindowHandler::OnMouseLeftClick(Pointi position) {
     if (pArcomageGame->bGameInProgress) {
-        pArcomageGame->stru1.am_input_type = 7;
-        pArcomageGame->check_exit = 0;
         ArcomageGame::OnMouseClick(0, true);
     } else {
         pMediaPlayer->StopMovie();
@@ -217,8 +215,6 @@ void GameWindowHandler::OnMouseLeftClick(Pointi position) {
 
 void GameWindowHandler::OnMouseRightClick(Pointi position) {
     if (pArcomageGame->bGameInProgress) {
-        pArcomageGame->stru1.am_input_type = 8;
-        pArcomageGame->check_exit = 0;
         ArcomageGame::OnMouseClick(1, true);
     } else {
         pMediaPlayer->StopMovie();
@@ -235,7 +231,6 @@ void GameWindowHandler::OnMouseRightClick(Pointi position) {
 
 void GameWindowHandler::OnMouseLeftUp() {
     if (pArcomageGame->bGameInProgress) {
-        pArcomageGame->stru1.am_input_type = 3;
         ArcomageGame::OnMouseClick(0, 0);
     } else {
         back_to_game();
@@ -244,7 +239,6 @@ void GameWindowHandler::OnMouseLeftUp() {
 
 void GameWindowHandler::OnMouseRightUp() {
     if (pArcomageGame->bGameInProgress) {
-        pArcomageGame->stru1.am_input_type = 4;
         ArcomageGame::OnMouseClick(1, false);
     } else {
         back_to_game();
@@ -253,7 +247,7 @@ void GameWindowHandler::OnMouseRightUp() {
 
 void GameWindowHandler::OnMouseLeftDoubleClick(Pointi position) {
     if (pArcomageGame->bGameInProgress) {
-        pArcomageGame->stru1.am_input_type = 7;
+        pArcomageGame->OnMouseClick(0, true);
     } else {
         OnMouseLeftClick(position);
     }
@@ -261,7 +255,7 @@ void GameWindowHandler::OnMouseLeftDoubleClick(Pointi position) {
 
 void GameWindowHandler::OnMouseRightDoubleClick(Pointi position) {
     if (pArcomageGame->bGameInProgress) {
-        pArcomageGame->stru1.am_input_type = 8;
+        pArcomageGame->OnMouseClick(1, true);
     } else {
         OnMouseRightClick(position);
     }
@@ -308,19 +302,11 @@ void GameWindowHandler::OnKey(PlatformKey key) {
         // we're setting a key binding in options
         keyboardInputHandler->ProcessTextInput(key, -1);
     } else if (pArcomageGame->bGameInProgress) {
-        pArcomageGame->stru1.am_input_type = 1;
-
-        set_stru1_field_8_InArcomage(0);
-        if (keyboardActionMapping->IsKeyMatchAction(InputAction::Escape, key)) {
-            pArcomageGame->stru1.am_input_type = 10;
-        } else if (pArcomageGame->check_exit) {
-           pArcomageGame->check_exit = 0;
-        }
-
+        // TODO(pskelton): how should this be handled?
         if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleFullscreen, key) && !pMovie_Track) {
             OnToggleFullscreen();
-            pArcomageGame->stru1.am_input_type = 9;
         }
+        pArcomageGame->onKeyPress(key);
     } else {
         pMediaPlayer->StopMovie();
         if (keyboardActionMapping->IsKeyMatchAction(InputAction::Return, key)) {

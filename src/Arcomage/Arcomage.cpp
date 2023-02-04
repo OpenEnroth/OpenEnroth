@@ -194,11 +194,47 @@ void ArcomageGame::OnMouseClick(char right_left, bool bDown) {
         pArcomageGame->mouse_right = bDown;
     else
         pArcomageGame->mouse_left = bDown;
+
+    // only accept one message input
+    if (pArcomageGame->stru1.am_input_type == 0) {
+        if (bDown) {
+            pArcomageGame->check_exit = 0;
+            if (!right_left) {
+                pArcomageGame->stru1.am_input_type = 7;
+            } else {
+                pArcomageGame->stru1.am_input_type = 8;
+            }
+        } else {
+            if (!right_left) {
+                pArcomageGame->stru1.am_input_type = 3;
+            } else {
+                pArcomageGame->stru1.am_input_type = 4;
+            }
+        }
+    }
 }
 
 void ArcomageGame::OnMouseMove(int x, int y) {
     pArcomageGame->mouse_x = x;
     pArcomageGame->mouse_y = y;
+}
+
+void ArcomageGame::onKeyPress(PlatformKey key) {
+    // only accept one message input
+    if (pArcomageGame->stru1.am_input_type == 0) {
+        pArcomageGame->stru1.am_input_type = 1;
+
+        set_stru1_field_8_InArcomage(0);
+        if (keyboardActionMapping->IsKeyMatchAction(InputAction::Escape, key)) {
+            pArcomageGame->stru1.am_input_type = 10;
+        } else if (pArcomageGame->check_exit) {
+            pArcomageGame->check_exit = 0;
+        }
+
+        if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleFullscreen, key) && !pMovie_Track) {
+            pArcomageGame->stru1.am_input_type = 9;
+        }
+    }
 }
 
 explosion_effect_struct *explosion_effect_struct::New() {
@@ -512,10 +548,10 @@ void ArcomageGame::PlaySound(unsigned int event_id) {
 }
 
 bool ArcomageGame::MsgLoop(int a1, ArcomageGame_InputMSG *a2) {
-    pArcomageGame->field_0 = 0;
+    // blank message input
     pArcomageGame->stru1.am_input_type = 0;
 
-    eventLoop->processMessages(eventHandler, 1);
+    eventLoop->processMessages(eventHandler, -1);
 
     *a2 = pArcomageGame->stru1;
     return pArcomageGame->stru1.am_input_type != 0;
@@ -2991,7 +3027,8 @@ void DrawRect(Recti *pRect, uint32_t uColor, char bSolidFill) {
     }
 }
 
-void set_stru1_field_8_InArcomage(int inValue) {  // what is this meant to be doing??
+// TODO(pskelton): restore this using PlatformKey so can play with keyboard?
+void set_stru1_field_8_InArcomage(int inValue) {  // keyboard input - broken atm
     switch (inValue) {
         case 91:
             HEXRAYS_LOBYTE(pArcomageGame->stru1.am_input_key) = 123;

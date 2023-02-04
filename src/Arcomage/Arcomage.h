@@ -9,6 +9,8 @@
 #include "Utility/Geometry/Point.h"
 #include "Utility/Geometry/Rect.h"
 
+#include "Platform/PlatformEnums.h"
+
 struct ArcomageCard {
     char pCardName[32];
     int slot;
@@ -106,8 +108,9 @@ struct ArcomagePlayer {
     Pointi card_shift[10] {};
 };
 
+// TODO(pskelton): enum input type
 struct ArcomageGame_InputMSG {
-    int am_input_type;  // 1 - other key down, 3 - l mouse up, 4 - r mouse up, 7 - lmouse, 8 - r mouse
+    int am_input_type;  // 0 - no message 1 - other key down, 3 - l mouse up, 4 - r mouse up, 7 - lmouse, 8 - r mouse, 9 - fullscreen, 10 - esc
     int field_4;
     int am_input_key;  // waht other key
 };
@@ -121,6 +124,7 @@ struct ArcomageGame {
     static bool LoadSprites();
     static bool MsgLoop(int a1, ArcomageGame_InputMSG *a2);
     static void PlaySound(unsigned int event_id);
+    static void onKeyPress(PlatformKey key);
     static void OnMouseClick(char right_left, bool bDown);
     static void OnMouseMove(int x, int y);
     static void GetCardRect(unsigned int uCardID, Recti *pCardRect);
@@ -131,12 +135,7 @@ struct ArcomageGame {
 
     FrameLimiter _frameLimiter;
 
-    char field_0 = 0;  // msg??
-    char field_1 = 0;  // msg??
-    char field_2 = 0;  // msg??
-    char field_3 = 0;  // msg??
-    int field_4 = 0;   // msg??
-    ArcomageGame_InputMSG stru1;   // msg??
+    ArcomageGame_InputMSG stru1;
 
     int mouse_x = 0;
     int mouse_y = 0;
