@@ -515,7 +515,7 @@ var searchData=
   ['framelimiter_512',['FrameLimiter',['../classFrameLimiter.html',1,'FrameLimiter'],['../classFrameLimiter.html#aff1b9dd8be02feaa2ed8b24c1fb1d5e2',1,'FrameLimiter::FrameLimiter()']]],
   ['framelimiter_2ecpp_513',['FrameLimiter.cpp',['../FrameLimiter_8cpp.html',1,'']]],
   ['framelimiter_2eh_514',['FrameLimiter.h',['../FrameLimiter_8h.html',1,'']]],
-  ['framemargins_515',['FrameMargins',['../classSdlWindow.html#af69b16e840a0f6b76d889edbc50d2069',1,'SdlWindow::FrameMargins()'],['../classPlatformWindow.html#afef3aee07a354b72017c3db7e86d65ff',1,'PlatformWindow::FrameMargins()'],['../classProxyWindow.html#ab7c7ce8411392371a4a8a4193b48b80a',1,'ProxyWindow::FrameMargins()']]],
+  ['framemargins_515',['frameMargins',['../classSdlWindow.html#a0a2577b80c5f5fb5f2c0fd5e89aa66a6',1,'SdlWindow::frameMargins()'],['../classPlatformWindow.html#a0a7dc359543aab96a396ab5f90cf6f55',1,'PlatformWindow::frameMargins()'],['../classProxyWindow.html#ac62493a1711340d12c2f442a3746d036',1,'ProxyWindow::frameMargins()']]],
   ['frames_5fper_5fsecond_516',['frames_per_second',['../classAVVideoStream.html#ae8bea843d69afc425faab4a90edb14ae',1,'AVVideoStream']]],
   ['frametableinc_2ecpp_517',['FrameTableInc.cpp',['../FrameTableInc_8cpp.html',1,'']]],
   ['frametableinc_2eh_518',['FrameTableInc.h',['../FrameTableInc_8h.html',1,'']]],

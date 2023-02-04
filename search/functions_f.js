@@ -92,7 +92,7 @@ var searchData=
   ['opponentsaiturn_89',['OpponentsAITurn',['../Arcomage_8cpp.html#a1cc7fa71c0782bc6edd73578da1d83a0',1,'Arcomage.cpp']]],
   ['optionsmenuskin_90',['OptionsMenuSkin',['../structOptionsMenuSkin.html#a4f1b33b50a216c82b73e857e3ce10b90',1,'OptionsMenuSkin']]],
   ['oracledialogue_91',['OracleDialogue',['../GUIWindow_8h.html#ac9811e84ae49203948b4fe17c3322f86',1,'OracleDialogue():&#160;GUIWindow.cpp'],['../GUIWindow_8cpp.html#ac9811e84ae49203948b4fe17c3322f86',1,'OracleDialogue():&#160;GUIWindow.cpp']]],
-  ['orientations_92',['Orientations',['../classSdlWindow.html#a81ad9dbb6edbe4e79a2082ed328fd6ce',1,'SdlWindow::Orientations()'],['../classProxyWindow.html#a08e637f7b18420cdcb19ab56b840a478',1,'ProxyWindow::Orientations()'],['../classPlatformWindow.html#acd7cdba2b1198484e61f2f2fdb9e8a5c',1,'PlatformWindow::Orientations()']]],
+  ['orientations_92',['orientations',['../classSdlWindow.html#ae1cd18fa23d48f1448971e8638d51f45',1,'SdlWindow::orientations()'],['../classProxyWindow.html#a2c2d0b6d6b155a59926c9dc3081c7880',1,'ProxyWindow::orientations()'],['../classPlatformWindow.html#aafd03f0e345d23c1eb1dfdd8b8f0313a',1,'PlatformWindow::orientations()']]],
   ['os_5fgetappstringrecursive_93',['OS_GetAppStringRecursive',['../WinPlatform_8cpp.html#accc93512f07d76ba8fd42baf6e3bc552',1,'WinPlatform.cpp']]],
   ['otheroverlay_94',['OtherOverlay',['../structOtherOverlay.html#a43a9075189313fc52879244ccb8e02a9',1,'OtherOverlay']]],
   ['otheroverlaylist_95',['OtherOverlayList',['../structOtherOverlayList.html#ad36dbee31da9afcbd6fccf746bd3421f',1,'OtherOverlayList']]],

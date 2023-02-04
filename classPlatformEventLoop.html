@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;319c0f6</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2e26b01</span>
    </div>
   </td>
  </tr>
@@ -95,14 +95,14 @@ Inheritance diagram for PlatformEventLoop:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ae528a81cdd7b9271d8e5f3afbe4947c3"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventLoop.html#ae528a81cdd7b9271d8e5f3afbe4947c3">~PlatformEventLoop</a> ()=default</td></tr>
 <tr class="separator:ae528a81cdd7b9271d8e5f3afbe4947c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2895b957015cfd558af5836f4c6d9b39"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventLoop.html#a2895b957015cfd558af5836f4c6d9b39">Exec</a> (<a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *<a class="el" href="EngineGlobals_8cpp.html#a902aed380990e0d902240438707b6d10">eventHandler</a>)=0</td></tr>
-<tr class="separator:a2895b957015cfd558af5836f4c6d9b39"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4125e345a948163559b8ab505553fb04"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventLoop.html#a4125e345a948163559b8ab505553fb04">Quit</a> ()=0</td></tr>
-<tr class="separator:a4125e345a948163559b8ab505553fb04"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad48ccfcf9595028e46d12185a870b103"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventLoop.html#ad48ccfcf9595028e46d12185a870b103">ProcessMessages</a> (<a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *<a class="el" href="EngineGlobals_8cpp.html#a902aed380990e0d902240438707b6d10">eventHandler</a>, int count=-1)=0</td></tr>
-<tr class="separator:ad48ccfcf9595028e46d12185a870b103"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a498bf3860321495f516d87d11ff34d3a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventLoop.html#a498bf3860321495f516d87d11ff34d3a">WaitForMessages</a> ()=0</td></tr>
-<tr class="separator:a498bf3860321495f516d87d11ff34d3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac961f9f888cf89c3c5dd7dd32b20dc18"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventLoop.html#ac961f9f888cf89c3c5dd7dd32b20dc18">exec</a> (<a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *<a class="el" href="EngineGlobals_8cpp.html#a902aed380990e0d902240438707b6d10">eventHandler</a>)=0</td></tr>
+<tr class="separator:ac961f9f888cf89c3c5dd7dd32b20dc18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86243e0d297d5c8d74e10eccb65679b3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventLoop.html#a86243e0d297d5c8d74e10eccb65679b3">quit</a> ()=0</td></tr>
+<tr class="separator:a86243e0d297d5c8d74e10eccb65679b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa245259170e7b80efa192b908169c753"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventLoop.html#aa245259170e7b80efa192b908169c753">processMessages</a> (<a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *<a class="el" href="EngineGlobals_8cpp.html#a902aed380990e0d902240438707b6d10">eventHandler</a>, int count=-1)=0</td></tr>
+<tr class="separator:aa245259170e7b80efa192b908169c753"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4037638cdbd173edc78112afcc64f33a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventLoop.html#a4037638cdbd173edc78112afcc64f33a">waitForMessages</a> ()=0</td></tr>
+<tr class="separator:a4037638cdbd173edc78112afcc64f33a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Abstraction around a platform-specific event loop. </p>
@@ -133,8 +133,8 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a2895b957015cfd558af5836f4c6d9b39" name="a2895b957015cfd558af5836f4c6d9b39"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2895b957015cfd558af5836f4c6d9b39">&#9670;&#160;</a></span>Exec()</h2>
+<a id="ac961f9f888cf89c3c5dd7dd32b20dc18" name="ac961f9f888cf89c3c5dd7dd32b20dc18"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac961f9f888cf89c3c5dd7dd32b20dc18">&#9670;&#160;</a></span>exec()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -143,7 +143,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void PlatformEventLoop::Exec </td>
+          <td class="memname">virtual void PlatformEventLoop::exec </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *&#160;</td>
           <td class="paramname"><em>eventHandler</em></td><td>)</td>
@@ -157,7 +157,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p >Starts this event loop.</p>
-<p >This function blocks until either <code>Quit</code> is called from inside the event handler code, or an application is closed by the user (e.g. after the last window is closed, or <code>Command+Q</code> is pressed on Mac).</p>
+<p >This function blocks until either <code>quit</code> is called from inside the event handler code, or an application is closed by the user (e.g. after the last window is closed, or <code>Command+Q</code> is pressed on Mac).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">eventHandler</td><td>Callback for event processing. </td></tr>
@@ -165,12 +165,12 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classEngineControlPlugin.html#a0e1d49f7c82a452d1060e056886e3f15">EngineControlPlugin</a>, <a class="el" href="classProxyEventLoop.html#a2c729c540bd15ef0adc1b41a9ad5038c">ProxyEventLoop</a>, and <a class="el" href="classSdlEventLoop.html#a984bc6fb183ba7132e644eb241141e91">SdlEventLoop</a>.</p>
+<p>Implemented in <a class="el" href="classEngineControlPlugin.html#aa823e1e1bae3363ec458807260e35c86">EngineControlPlugin</a>, <a class="el" href="classProxyEventLoop.html#a3868b9a2fc1bee7f3fe3449d3f02f1d4">ProxyEventLoop</a>, and <a class="el" href="classSdlEventLoop.html#a39c751979694dd79f5e737a022fdf545">SdlEventLoop</a>.</p>
 
 </div>
 </div>
-<a id="ad48ccfcf9595028e46d12185a870b103" name="ad48ccfcf9595028e46d12185a870b103"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad48ccfcf9595028e46d12185a870b103">&#9670;&#160;</a></span>ProcessMessages()</h2>
+<a id="aa245259170e7b80efa192b908169c753" name="aa245259170e7b80efa192b908169c753"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa245259170e7b80efa192b908169c753">&#9670;&#160;</a></span>processMessages()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -179,7 +179,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void PlatformEventLoop::ProcessMessages </td>
+          <td class="memname">virtual void PlatformEventLoop::processMessages </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *&#160;</td>
           <td class="paramname"><em>eventHandler</em>, </td>
@@ -211,12 +211,12 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classEngineControlPlugin.html#a9ca1e220a930f5605b73df5748456413">EngineControlPlugin</a>, <a class="el" href="classProxyEventLoop.html#a62d85bb62b2b5d2d05c658508708c40b">ProxyEventLoop</a>, and <a class="el" href="classSdlEventLoop.html#a11fff1349bbd01e2d08296d4a0bdd207">SdlEventLoop</a>.</p>
+<p>Implemented in <a class="el" href="classEngineControlPlugin.html#aba19549a2a862a84e2968862d29ef0bb">EngineControlPlugin</a>, <a class="el" href="classProxyEventLoop.html#a44b7eb8b1c58f1697c1d17bd83c35765">ProxyEventLoop</a>, and <a class="el" href="classSdlEventLoop.html#a8b59b30ca237d6c0e4d29324dc02f65f">SdlEventLoop</a>.</p>
 
 </div>
 </div>
-<a id="a4125e345a948163559b8ab505553fb04" name="a4125e345a948163559b8ab505553fb04"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4125e345a948163559b8ab505553fb04">&#9670;&#160;</a></span>Quit()</h2>
+<a id="a86243e0d297d5c8d74e10eccb65679b3" name="a86243e0d297d5c8d74e10eccb65679b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86243e0d297d5c8d74e10eccb65679b3">&#9670;&#160;</a></span>quit()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -225,7 +225,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void PlatformEventLoop::Quit </td>
+          <td class="memname">virtual void PlatformEventLoop::quit </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -239,12 +239,12 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p >Tells this event loop to exit. Does nothing if the event loop is not running. </p>
 
-<p>Implemented in <a class="el" href="classProxyEventLoop.html#a64d5853cf9ea5ff395eef797633b84bb">ProxyEventLoop</a>, and <a class="el" href="classSdlEventLoop.html#a3e5736640b0bfb12536ba39540ec4943">SdlEventLoop</a>.</p>
+<p>Implemented in <a class="el" href="classProxyEventLoop.html#a16ecbd3804189d6ea5907b08c379f8e0">ProxyEventLoop</a>, and <a class="el" href="classSdlEventLoop.html#ad83ec550f07d9bf2d4c187879beac6c9">SdlEventLoop</a>.</p>
 
 </div>
 </div>
-<a id="a498bf3860321495f516d87d11ff34d3a" name="a498bf3860321495f516d87d11ff34d3a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a498bf3860321495f516d87d11ff34d3a">&#9670;&#160;</a></span>WaitForMessages()</h2>
+<a id="a4037638cdbd173edc78112afcc64f33a" name="a4037638cdbd173edc78112afcc64f33a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4037638cdbd173edc78112afcc64f33a">&#9670;&#160;</a></span>waitForMessages()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -253,7 +253,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void PlatformEventLoop::WaitForMessages </td>
+          <td class="memname">virtual void PlatformEventLoop::waitForMessages </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -267,7 +267,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p >Blocks until at least one message is delivered to the queue, and returns. </p>
 
-<p>Implemented in <a class="el" href="classEngineControlPlugin.html#a8b600d7b6f57fe28d8b6fc510cbce005">EngineControlPlugin</a>, <a class="el" href="classProxyEventLoop.html#aef6def1707d2f3d6723da9c0c7a2b2e9">ProxyEventLoop</a>, and <a class="el" href="classSdlEventLoop.html#a8594184da9114af407b81069e8938a40">SdlEventLoop</a>.</p>
+<p>Implemented in <a class="el" href="classEngineControlPlugin.html#abbaecfa799e79b279854ead756969b7b">EngineControlPlugin</a>, <a class="el" href="classProxyEventLoop.html#a63ef4c77720e1b330d1a84decaf081ab">ProxyEventLoop</a>, and <a class="el" href="classSdlEventLoop.html#a8cc91323e5c274ea9471a9d7f8192856">SdlEventLoop</a>.</p>
 
 </div>
 </div>
