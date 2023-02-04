@@ -361,7 +361,7 @@ void Engine::OnGameViewportClick() {
                 }
             } else {
                 if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
-                    pTurnEngine->field_18 |= TE_FLAG_8_finished;
+                    pTurnEngine->flags |= TE_FLAG_8_finished;
                 } else {
                     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Attack, 0, 0);
                 }

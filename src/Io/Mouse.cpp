@@ -327,7 +327,7 @@ void Mouse::UI_OnMouseLeftClick() {
 
         if (pParty->bTurnBasedModeOn) {
             if (pTurnEngine->turn_stage == TE_MOVEMENT) {
-                pTurnEngine->field_18 |= TE_FLAG_8_finished;
+                pTurnEngine->flags |= TE_FLAG_8_finished;
             }
         }
     }

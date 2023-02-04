@@ -181,7 +181,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
             if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) break;
 
             if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
-                pTurnEngine->field_18 |= TE_FLAG_8_finished;
+                pTurnEngine->flags |= TE_FLAG_8_finished;
                 break;
             }
             if (uActiveCharacter != 0) {
@@ -218,7 +218,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
             }
 
             if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
-                pTurnEngine->field_18 |= TE_FLAG_8_finished;
+                pTurnEngine->flags |= TE_FLAG_8_finished;
                 break;
             }
 
@@ -251,7 +251,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
             }
 
             if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
-                pTurnEngine->field_18 |= TE_FLAG_8_finished;
+                pTurnEngine->flags |= TE_FLAG_8_finished;
             } else {
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Attack, 0, 0);
             }

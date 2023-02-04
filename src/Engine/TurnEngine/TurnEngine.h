@@ -1,19 +1,25 @@
 #pragma once
 
-enum TURN_ENGINE_FLAGS {
+#include "Utility/Flags.h"
+
+enum class TURN_ENGINE_FLAG {
     TE_FLAG_1 = 1,
     TE_HAVE_PENDING_ACTIONS = 2,
     TE_PLAYER_TURN = 4,
     TE_FLAG_8_finished = 8
 };
+using enum TURN_ENGINE_FLAG;
+MM_DECLARE_FLAGS(TURN_ENGINE_FLAGS, TURN_ENGINE_FLAG)
+MM_DECLARE_OPERATORS_FOR_FLAGS(TURN_ENGINE_FLAGS)
 
-enum TURN_ENGINE_AI_ACTION {
+enum class TURN_ENGINE_AI_ACTION {
     TE_AI_STAND = 0,
     TE_AI_RANGED_ATTACK = 1,
     TE_AI_PURSUE = 2,
     TE_AI_MELEE_ATTACK = 3,
     TE_AI_FLEE = 4
 };
+using enum TURN_ENGINE_AI_ACTION;
 
 enum TURN_ENGINE_TURN_STAGE {
     TE_NONE = 0,
@@ -21,6 +27,7 @@ enum TURN_ENGINE_TURN_STAGE {
     TE_ATTACK = 2,
     TE_MOVEMENT = 3,
 };
+using enum TURN_ENGINE_TURN_STAGE;
 
 /*  299 */
 #pragma pack(push, 1)
@@ -29,12 +36,12 @@ struct TurnBased_QueueElem {
         uPackedID = 0;
         actor_initiative = 0;
         uActionLength = 0;
-        AI_action_type = 0;
+        AI_action_type = TE_AI_STAND;
     }
     int uPackedID;
     int actor_initiative;  // act first who have less
     int uActionLength;
-    int AI_action_type;
+    TURN_ENGINE_AI_ACTION AI_action_type;
 };
 #pragma pack(pop)
 
@@ -48,7 +55,7 @@ struct stru262_TurnBased {
         uActorQueueSize = 0;
         turn_initiative = 0;
         uActionPointsLeft = 0;
-        field_18 = 0;
+        flags = 0;
         pending_actions = 0;
     }
 
@@ -77,7 +84,7 @@ struct stru262_TurnBased {
     int uActorQueueSize;  // c
     int turn_initiative;
     int uActionPointsLeft;  // 14
-    int field_18;
+    TURN_ENGINE_FLAGS flags;
     int pending_actions;
     TurnBased_QueueElem pQueue[530];  // 20
 };
