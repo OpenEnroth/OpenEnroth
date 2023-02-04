@@ -2,23 +2,29 @@
 
 #include <variant>
 
+#include "Utility/Flags.h"
+
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Objects/Actor.h"
 #include "Camera.h"
 
-enum VisObjectType : uint32_t {
+enum class VisObjectType : uint32_t {
     VisObjectType_Any = 0,
     VisObjectType_Sprite = 1,
     VisObjectType_Face = 2
 };
+using enum VisObjectType;
 
-enum VisSelectFlags : uint32_t {
+enum class VisSelectFlag : uint32_t {
     None = 0,
-    VisSelectFlags_1 = 1,  // not set in any of the standard filters. Used to check something that seems to be ally/enemy-based?
+    VisSelectFlags_1 = 1,  // Used to check something that seems to be ally/enemy-based?
     ExcludeType = 2,
     ExclusionIfNoEvent = 4,
     TargetUndead = 8
 };
+using enum VisSelectFlag;
+MM_DECLARE_FLAGS(VisSelectFlags, VisSelectFlag)
+MM_DECLARE_OPERATORS_FOR_FLAGS(VisSelectFlags)
 
 /*  150 */
 #pragma pack(push, 1)
@@ -61,7 +67,7 @@ struct Vis_SelectionList {
     enum class PointerCreationType { All = 0, Unique = 1 };
     using enum PointerCreationType;
 
-    Vis_ObjectInfo *SelectionPointers(int a2, int a3);
+    Vis_ObjectInfo *SelectionPointers(VisObjectType pVisObjectType, int pid);
     void create_object_pointers(PointerCreationType type = All);
     void sort_object_pointers();
 

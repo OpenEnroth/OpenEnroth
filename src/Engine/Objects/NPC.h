@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <string>
 
+#include "Utility/IndexedArray.h"
+
 #include "Engine/Objects/NPCEnums.h"
 
 struct NPCTopic {
@@ -100,7 +102,7 @@ struct NPCStats {
     std::array<NPCData, 501> pNPCData;     // 0 - 94BCh count from 1
     std::array<NPCData, 501> pNewNPCData;  // 94BCh- 12978h count from 1
     char *pNPCNames[540][2];
-    NPCProfession pProfessions[59]{};  // count from 1
+    IndexedArray<NPCProfession, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST> pProfessions = {{}};  // count from 1
     std::array<NPCData, 100> pAdditionalNPC;
     char *pCatchPhrases[52];   // 15CA4h
     char *pNPCUnicNames[500];  // from first batch

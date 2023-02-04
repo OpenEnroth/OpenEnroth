@@ -1211,7 +1211,7 @@ void Game::EventLoop() {
                         v48 = pLevelDecorations[v46].uEventID == 0;
                     } else {
                         if (v45 != OBJECT_Face) continue;
-                        if (uCurrentlyLoadedLevelType != 1) {
+                        if (uCurrentlyLoadedLevelType != LEVEL_Indoor) {
                             pODMFace = &pOutdoor->pBModels[v44 >> 9].pFaces[v46 & 0x3F];
                             if (!pODMFace->Clickable() ||
                                 !pODMFace->sCogTriggeredID)
@@ -1675,7 +1675,7 @@ void Game::EventLoop() {
                     if (pTurnEngine->turn_stage == TE_WAIT ||
                         pTurnEngine->turn_stage == TE_MOVEMENT)
                         continue;
-                    if (!(pTurnEngine->field_18 & TE_HAVE_PENDING_ACTIONS)) {
+                    if (!(pTurnEngine->flags & TE_HAVE_PENDING_ACTIONS)) {
                         if (pActors[uMessageParam].uAIState == AIState::Dead)
                             pActors[uMessageParam].LootActor();
                         else
@@ -1692,7 +1692,7 @@ void Game::EventLoop() {
                     if (pTurnEngine->turn_stage == TE_WAIT ||
                         pTurnEngine->turn_stage == TE_MOVEMENT)
                         continue;
-                    if (!(pTurnEngine->field_18 & TE_HAVE_PENDING_ACTIONS))
+                    if (!(pTurnEngine->flags & TE_HAVE_PENDING_ACTIONS))
                         Player::_42ECB5_PlayerAttacksActor();
                     continue;
                 case UIMSG_ExitRest:

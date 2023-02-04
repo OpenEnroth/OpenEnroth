@@ -91,13 +91,14 @@ UNIT_TEST(Serialization, EnumMultiString) {
     EXPECT_EQ(fromString<TestFlags>("ZUGZUG"), ALL_FLAGS);
 }
 
-enum TestEnum2 {
+enum class TestEnum2 {
     TEST_0 = 0,
     TEST_1 = 1,
     TEST_2 = 2,
     TEST_3 = 3,
     TEST_4 = 4,
 };
+using enum TestEnum2;
 MM_DECLARE_FLAGS(TestFlags2, TestEnum2)
 MM_DECLARE_OPERATORS_FOR_FLAGS(TestFlags2)
 
@@ -133,19 +134,21 @@ UNIT_TEST(Serialization, CaseInsensitiveEnumWithNamespace) {
     EXPECT_EQ(f, TEST_4 | TEST_1);
 }
 
-enum BrokenFlag0 {
+enum class BrokenFlag0 {
     BROKEN_FLAG_123 = 123,
 };
+using enum BrokenFlag0;
 
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(BrokenFlag0, CASE_SENSITIVE, {
     {BROKEN_FLAG_123, "0"}
 })
 
-enum BrokenFlag1 {
+enum class BrokenFlag1 {
     BROKEN_FLAG_1 = 1,
     BROKEN_FLAG_2 = 2,
     BROKEN_FLAG_3 = 3,
 };
+using enum BrokenFlag1;
 
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(BrokenFlag1, CASE_SENSITIVE, {
     {BROKEN_FLAG_1, "LOL"},
@@ -153,9 +156,10 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(BrokenFlag1, CASE_SENSITIVE, {
     {BROKEN_FLAG_3, "LOL|WUT"} // Ye, don't do that
 })
 
-enum NonBrokenFlag1 {
+enum class NonBrokenFlag1 {
     NON_BROKEN_FLAG_0 = 0
 };
+using enum NonBrokenFlag1;
 
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(NonBrokenFlag1, CASE_SENSITIVE, {
     {NON_BROKEN_FLAG_0, "0"}
@@ -171,13 +175,14 @@ UNIT_TEST(Serialization, BrokenFlags) {
     EXPECT_TRUE(serializer(&nb1)->isUsableWithFlags());
 }
 
-enum MagicEnum {
+enum class MagicEnum {
     MAGIC_A = 0,
     MAGIC_B = 1,
     MAGIC_C = 2,
     MAGIC_D = 3,
     MAGIC_E = 4,
 };
+using enum MagicEnum;
 
 MM_DEFINE_ENUM_MAGIC_SERIALIZATION_FUNCTIONS(MagicEnum)
 

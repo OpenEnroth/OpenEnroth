@@ -86,10 +86,10 @@ void stru262_TurnBased::SortTurnQueue() {
     uActorQueueSize = active_actors;
     if (PID_TYPE(pQueue[0].uPackedID) == OBJECT_Player) {  // we have player at queue top
         uActiveCharacter = PID_ID(pQueue[0].uPackedID) + 1;
-        field_18 |= TE_PLAYER_TURN;
+        flags |= TE_PLAYER_TURN;
     } else {
         uActiveCharacter = 0;
-        field_18 &= ~TE_PLAYER_TURN;
+        flags &= ~TE_PLAYER_TURN;
     }
     for (i = 0; i < uActorQueueSize; ++i) {
         if (PID_TYPE(pQueue[i].uPackedID) ==
@@ -118,7 +118,7 @@ void stru262_TurnBased::Start() {
     int i, j;
     int temp;
 
-    pTurnEngine->field_18 &= ~TE_HAVE_PENDING_ACTIONS;
+    pTurnEngine->flags &= ~TE_HAVE_PENDING_ACTIONS;
     pEventTimer->TrackGameTime();
     pAudioPlayer->PauseSounds(-1);
     pAudioPlayer->PlaySound(SOUND_batllest, 0, 0, -1, 0, 0);
@@ -250,7 +250,7 @@ void stru262_TurnBased::End(bool bPlaySound) {
     pAudioPlayer->PauseSounds(-1);
     if (bPlaySound != 0)
         pAudioPlayer->PlaySound(SOUND_batlleen, 0, 0, -1, 0, 0);
-    pTurnEngine->field_18 &= ~TE_HAVE_PENDING_ACTIONS;
+    pTurnEngine->flags &= ~TE_HAVE_PENDING_ACTIONS;
     pEventTimer->StopGameTime();
     dword_50C994 = 0;
     dword_50C998_turnbased_icon_1A = 0;
@@ -314,7 +314,7 @@ void stru262_TurnBased::AITurnBasedAction() {
         }
         ai_turn_timer -= pEventTimer->uTimeElapsed;
     } else if (turn_stage == TE_ATTACK) {
-        if (!(field_18 & TE_FLAG_1)) {
+        if (!(flags & TE_FLAG_1)) {
             if (turn_initiative == 100) {
                 StartTurn();
                 SetAIRecoveryTimes();
@@ -328,10 +328,10 @@ void stru262_TurnBased::AITurnBasedAction() {
         }
         NextTurn();
     } else if (turn_stage == TE_MOVEMENT) {
-        if ((uActionPointsLeft > 0) && (!(field_18 & TE_FLAG_8_finished))) {
+        if ((uActionPointsLeft > 0) && (!(flags & TE_FLAG_8_finished))) {
             ActorAIChooseNewTargets();
         } else {
-            field_18 &= ~TE_FLAG_8_finished;
+            flags &= ~TE_FLAG_8_finished;
             turn_stage = TE_WAIT;
             ai_turn_timer = 64;
         }
@@ -404,10 +404,10 @@ void stru262_TurnBased::NextTurn() {
     viewparams->bRedrawGameUI = true;
 
     if (pending_actions) {
-        pTurnEngine->field_18 |= TE_HAVE_PENDING_ACTIONS;
+        pTurnEngine->flags |= TE_HAVE_PENDING_ACTIONS;
         return;
     }
-    pTurnEngine->field_18 &= ~TE_HAVE_PENDING_ACTIONS;
+    pTurnEngine->flags &= ~TE_HAVE_PENDING_ACTIONS;
     if (pQueue[0].actor_initiative <= 0) return;
 
     v13 = 0;
@@ -443,12 +443,12 @@ void stru262_TurnBased::NextTurn() {
             }
         }
         if (v13 != 0) {
-            field_18 |= TE_FLAG_1;
+            flags |= TE_FLAG_1;
             return;
         }
     }
 
-    field_18 &= ~TE_FLAG_1;
+    flags &= ~TE_FLAG_1;
     // set all actors to stay
     for (int i = 0; i < uActorQueueSize; ++i) {
         if (PID_TYPE(pQueue[i].uPackedID) == OBJECT_Actor) {
@@ -967,7 +967,7 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
         if (v11 < 10240) {
             Actor::AI_Flee(uActorID, ai_near_actors_targets_pid[uActorID], 0,
                            &pDir);
-            pTurnEngine->pQueue[queue_position].AI_action_type = 4;
+            pTurnEngine->pQueue[queue_position].AI_action_type = TE_AI_FLEE;
         } else {
             Actor::AI_RandomMove(uActorID, ai_near_actors_targets_pid[uActorID],
                                  1024, 0);

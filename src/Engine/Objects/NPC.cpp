@@ -456,7 +456,7 @@ void NPCStats::Initialize() {
     strtok(NULL, "\r");
     strtok(NULL, "\r");
 
-    for (i = 1; i < 59; ++i) {
+    for (NPCProf i : Segment(NPC_PROFESSION_FIRST_VALID, NPC_PROFESSION_LAST_VALID)) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
         decode_step = 0;
@@ -1184,7 +1184,7 @@ const char *GetProfessionActionText(NPCProf prof) {
     case Acolyte:
     case Piper:
     case FallenWizard:
-        return pNPCStats->pProfessions[(int)prof].pActionText;
+        return pNPCStats->pProfessions[prof].pActionText;
     default:
         return pNPCTopics[407].pTopic;
     }

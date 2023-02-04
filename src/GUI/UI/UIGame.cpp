@@ -1858,7 +1858,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
             }
         }
         for (uint i = 0; i < (signed int)pLevelDecorations.size(); ++i) {  // draw items(отрисовка предметов)
-            if (pLevelDecorations[i].uFlags & 8) {
+            if (pLevelDecorations[i].uFlags & LEVEL_DECORATION_VISIBLE_ON_MAP) {
                 pPoint_X =
                     uCenterX + (fixpoint_mul((pLevelDecorations[i].vPosition.x -
                                               pParty->vPosition.x), uZoom));

@@ -1087,7 +1087,7 @@ void Party::PartyFindsGold(
     unsigned int amount,
     int _1_dont_share_with_followers___2_the_same_but_without_a_message__else_normal) {
     NPCData *v12;              // ecx@21
-    unsigned int v13;          // ecx@23
+    NPCProf v13;          // ecx@23
     int hirelingCount;  // [sp+Ch] [bp-4h]@6
 
     int hirelingSalaries = 0;
@@ -1106,7 +1106,7 @@ void Party::PartyFindsGold(
         for (int i = 0; i < buf.Size(); i++) {
             v12 = buf.Get(i);
             v13 = v12->profession;
-            if (v13)
+            if (v13 != NoProfession)
                 hirelingSalaries += pNPCStats->pProfessions[v13].uHirePrice;
         }
         if (CheckHiredNPCSpeciality(Factor))

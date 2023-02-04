@@ -107,6 +107,7 @@ struct Texture_MM7 {
 };
 
 /*  323 */
+// TODO(captainurist): where is this used?
 enum TEXTURE_FRAME_TABLE_FLAGS {
     TEXTURE_FRAME_TABLE_MORE_FRAMES = 0x1,
     TEXTURE_FRAME_TABLE_FIRST = 0x2,

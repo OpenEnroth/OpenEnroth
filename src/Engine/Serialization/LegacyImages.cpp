@@ -112,7 +112,7 @@ void Serialize(const NPCData &src, NPCData_MM7 *dst) {
     dst->fame = src.fame;
     dst->rep = src.rep;
     dst->Location2D = src.Location2D;
-    dst->uProfession = src.profession;
+    dst->uProfession = std::to_underlying(src.profession);
     dst->greet = src.greet;
     dst->joins = src.is_joinable;
     dst->field_24 = src.field_24;
@@ -135,7 +135,7 @@ void Deserialize(const NPCData_MM7 &src, NPCData *dst) {
     dst->fame = src.fame;
     dst->rep = src.rep;
     dst->Location2D = src.Location2D;
-    dst->profession = (NPCProf)src.uProfession;
+    dst->profession = static_cast<NPCProf>(src.uProfession);
     dst->greet = src.greet;
     dst->is_joinable = src.joins;
     dst->field_24 = src.field_24;
@@ -1364,7 +1364,7 @@ void Serialize(const BLVDoor &src, BLVDoor_MM7 *dst) {
     dst->uNumFaces = src.uNumFaces;
     dst->uNumSectors = src.uNumSectors;
     dst->uNumOffsets = src.uNumOffsets;
-    dst->uState = src.uState;
+    dst->uState = std::to_underlying(src.uState);
     dst->field_4E = src.field_4E;
 }
 
@@ -1380,7 +1380,7 @@ void Deserialize(const BLVDoor_MM7 &src, BLVDoor *dst) {
     dst->uNumFaces = src.uNumFaces;
     dst->uNumSectors = src.uNumSectors;
     dst->uNumOffsets = src.uNumOffsets;
-    dst->uState = (BLVDoor::State)src.uState;
+    dst->uState = static_cast<BLVDoor::State>(src.uState);
     dst->field_4E = src.field_4E;
 }
 
