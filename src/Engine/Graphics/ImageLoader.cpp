@@ -9,7 +9,6 @@
 #include "Engine/Graphics/ImageFormatConverter.h"
 #include "Engine/Graphics/PCX.h"
 #include "Engine/Graphics/Sprites.h"
-#include "Engine/ZlibWrapper.h"
 #include "Engine/Graphics/PaletteManager.h"
 
 // List of textures that require additional processing for transparent pixels.

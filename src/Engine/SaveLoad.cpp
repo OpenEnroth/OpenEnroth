@@ -5,12 +5,13 @@
 #include <algorithm>
 #include <string>
 
+#include "Library/Compression/Compression.h"
+
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
-#include "Engine/ZlibWrapper.h"
 #include "Engine/stru123.h"
 
 #include "Engine/Graphics/ImageLoader.h"

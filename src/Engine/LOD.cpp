@@ -2,8 +2,9 @@
 
 #include <filesystem>
 
+#include "Library/Compression/Compression.h"
+
 #include "Engine/Engine.h"
-#include "Engine/ZlibWrapper.h"
 
 #include "Engine/Graphics/HWLContainer.h"
 #include "Engine/Graphics/IRender.h"
