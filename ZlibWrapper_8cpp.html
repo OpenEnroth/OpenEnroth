@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/Library/Compression/Compression.h File Reference</title>
+<title>OpenEnroth: src/Engine/ZlibWrapper.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9d1b04c</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;725f863</span>
    </div>
   </td>
  </tr>
@@ -69,17 +69,21 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_f741251061e5c7c7ed48ab45c3348f11.html">Library</a></li><li class="navelem"><a class="el" href="dir_a5aaecc1cf524a9911efd67eddd3805d.html">Compression</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_3072bc1f55ed1280fe4fbe6b21c78379.html">Engine</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">Compression.h File Reference</div></div>
+  <div class="headertitle"><div class="title">ZlibWrapper.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="Blob_8h.html">Utility/Memory/Blob.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="ZlibWrapper_8h.html">Engine/ZlibWrapper.h</a>&quot;</code><br />
+<code>#include &lt;zlib.h&gt;</code><br />
+<code>#include &lt;cstring&gt;</code><br />
+<code>#include &lt;memory&gt;</code><br />
+<code>#include &quot;<a class="el" href="FreeDeleter_8h.html">Utility/FreeDeleter.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
@@ -88,10 +92,10 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:abce69f330c230c102535d820ca92bf9c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezlib.html#abce69f330c230c102535d820ca92bf9c">zlib::Compress</a> (void *dest, unsigned int *destLen, void *source, unsigned int sourceLen)</td></tr>
-<tr class="separator:abce69f330c230c102535d820ca92bf9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae552beaf4387a81c63a28b01a9cc7ab4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezlib.html#ae552beaf4387a81c63a28b01a9cc7ab4">zlib::Uncompress</a> (void *dest, unsigned int *destLen, const void *source, unsigned int sourceLen)</td></tr>
 <tr class="separator:ae552beaf4387a81c63a28b01a9cc7ab4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abce69f330c230c102535d820ca92bf9c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezlib.html#abce69f330c230c102535d820ca92bf9c">zlib::Compress</a> (void *dest, unsigned int *destLen, void *source, unsigned int sourceLen)</td></tr>
+<tr class="separator:abce69f330c230c102535d820ca92bf9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac4ab58de5e14d3c66b09b2cc61db0ce2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezlib.html#ac4ab58de5e14d3c66b09b2cc61db0ce2">zlib::Compress</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;source)</td></tr>
 <tr class="separator:ac4ab58de5e14d3c66b09b2cc61db0ce2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd54f866cdfaf7ea7a02871d04ce21a6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezlib.html#abd54f866cdfaf7ea7a02871d04ce21a6">zlib::Uncompress</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;source, size_t sizeHint)</td></tr>
