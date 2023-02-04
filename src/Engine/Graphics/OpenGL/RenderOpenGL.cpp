@@ -3775,21 +3775,8 @@ void RenderOpenGL::Present() {
     }
     openGLContext->SwapBuffers();
 
-    if (engine->config->graphics.FPSLimit.Get() > 0) {
-        // crude frame rate limiting
-        const float MIN_FRAME_TIME = 1000000000 / (float)engine->config->graphics.FPSLimit.Get();
-
-        static std::chrono::time_point<std::chrono::high_resolution_clock> lastframe{ std::chrono::high_resolution_clock::now() };
-        uint64_t framedt{};
-        std::chrono::time_point<std::chrono::high_resolution_clock> now{};
-
-        // run in circles
-        do {
-            now = std::chrono::high_resolution_clock::now();
-            framedt = std::chrono::duration_cast<std::chrono::nanoseconds>(now - lastframe).count();
-        } while (framedt < MIN_FRAME_TIME);
-        lastframe = now;
-    }
+    if (engine->config->graphics.FPSLimit.Get() > 0)
+        _frameLimiter.tick(engine->config->graphics.FPSLimit.Get());
 }
 
 GLshaderverts *outbuildshaderstore[16] = { nullptr };

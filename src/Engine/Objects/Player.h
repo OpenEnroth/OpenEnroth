@@ -123,6 +123,13 @@ class PlayerConditions {
         return this->times_[std::to_underlying(condition)].Valid();
     }
 
+    [[nodiscard]] bool HasAny(std::initializer_list<Condition> conditions) const {
+        for (Condition condition : conditions)
+            if (Has(condition))
+                return true;
+        return false;
+    }
+
     void Reset(Condition condition) {
         this->times_[std::to_underlying(condition)].Reset();
     }

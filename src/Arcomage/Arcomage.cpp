@@ -856,7 +856,7 @@ bool OpponentsAITurn(int player_num) {
 
 void ArcomageGame::Loop() {
     // reset timer
-    pArcomageGame->event_timer_time = (int)pEventTimer->Time();
+    pArcomageGame->_frameLimiter.reset();
 
     bool am_turn_not_finished = false;
     while (!pArcomageGame->GameOver) {
@@ -892,11 +892,7 @@ void ArcomageGame::Loop() {
         int frame_quant_time = 0;
         int cnt = 0;
         while (1) {
-            // frame limiter apprx 32fps 128 / 32 = 4
-            do {
-                frame_quant_time = (int)pEventTimer->Time() - (int)pArcomageGame->event_timer_time;
-            } while (frame_quant_time < 4);
-            pArcomageGame->event_timer_time = (int)pEventTimer->Time();
+            pArcomageGame->_frameLimiter.tick(32);
 
             ArcomageGame::MsgLoop(20, &v10);
             if (v10.am_input_type == 1) {
@@ -1251,11 +1247,7 @@ char PlayerTurn(int player_num) {
     int frame_quant_time = 0;
     bool break_loop = false;
     do {
-        // frame limiter apprx 32fps 128 / 32 = 4
-        do {
-            frame_quant_time = (int)pEventTimer->Time() - (int)pArcomageGame->event_timer_time;
-        } while (frame_quant_time < 4);
-        pArcomageGame->event_timer_time = (int)pEventTimer->Time();
+        pArcomageGame->_frameLimiter.tick(32);
 
         // get input message
         if (pArcomageGame->force_am_exit) break_loop = true;

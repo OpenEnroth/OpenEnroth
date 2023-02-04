@@ -12,6 +12,7 @@
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/SpellFxRenderer.h"
+#include "Engine/TurnEngine/TurnEngine.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
@@ -793,4 +794,49 @@ int _43AFE3_calc_spell_damage(int spellId, PLAYER_SKILL_LEVEL spellLevel, PLAYER
     }
 
     return result;
+}
+
+void armageddonProgress() {
+    assert(uCurrentlyLoadedLevelType == LEVEL_Outdoor && pParty->armageddon_timer > 0);
+
+    if (pParty->armageddon_timer > 417) {
+        pParty->armageddon_timer = 0;
+        return; // TODO(captainurist): wtf? Looks like a quick hack for some bug.
+    }
+
+    if (pTurnEngine->pending_actions)
+        --pTurnEngine->pending_actions;
+
+    pParty->sRotationZ = TrigLUT.uDoublePiMask & (pParty->sRotationZ + grng->RandomInSegment(-8, 8)); // Was RandomInSegment(-8, 7)
+    pParty->sRotationY = std::clamp(pParty->sRotationY + grng->RandomInSegment(-8, 8), -128, 128); // Was RandomInSegment(-8, 7)
+    pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
+    pParty->armageddon_timer -= pEventTimer->uTimeElapsed; // Was pMiscTimer
+
+    if (pParty->armageddon_timer > 0)
+        return; // Deal damage only when timer gets to 0.
+    pParty->armageddon_timer = 0;
+
+    int outgoingDamage = pParty->armageddonDamage + 50;
+
+    for (Actor &actor : pActors) {
+        if (!actor.CanAct())
+            continue; // TODO(captainurist): paralyzed & summoned actors should receive damage too!
+
+        int incomingDamage = actor.CalcMagicalDamageToActor(DMGT_MAGICAL, outgoingDamage);
+        if (incomingDamage > 0) {
+            actor.sCurrentHP -= incomingDamage;
+
+            if (actor.sCurrentHP >= 0) {
+                Actor::AI_Stun(actor.id, 4, 0);
+            } else {
+                Actor::Die(actor.id);
+                if (actor.pMonsterInfo.uExp)
+                    pParty->GivePartyExp(pMonsterStats->pInfos[actor.pMonsterInfo.uID].uExp);
+            }
+        }
+    }
+
+    for (Player &player : pParty->pPlayers)
+        if (!player.conditions.HasAny({Condition_Dead, Condition_Petrified, Condition_Eradicated}))
+            player.ReceiveDamage(outgoingDamage, DMGT_MAGICAL);
 }

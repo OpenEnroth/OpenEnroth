@@ -2105,6 +2105,10 @@ void OnMapLoad() {
     unsigned int days;     // [sp+3Ch] [bp-14h]@26
     unsigned int months;   // [sp+40h] [bp-10h]@26
 
+    // TODO(captainurist): if we don't set this one here, then some events might fire on map load in OnTimer()
+    // because delta time is calculated there using this variable. Redo this properly.
+    _5773B8_event_timer = pParty->GetPlayingTime();
+
     for (uint i = 0; i < uLevelEVT_NumEvents; ++i) {
         EventIndex pEvent = pLevelEVT_Index[i];
 
