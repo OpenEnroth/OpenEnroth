@@ -1614,10 +1614,10 @@ void TravelByTransport() {
 
                 RestAndHeal(24 * 60 * traveltimedays);
                 pPlayers[uActiveCharacter]->PlaySound(pSpeech, 0);
-                int currenttime = platform->TickCount();
+                int currenttime = platform->tickCount();
                 int pauselength = currenttime + speechlength;
                 if (pauselength < currenttime) pauselength = currenttime;
-                while (platform->TickCount() < pauselength)
+                while (platform->tickCount() < pauselength)
                     std::this_thread::sleep_for(1ms);
                 while (HouseDialogPressCloseBtn()) {}
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);

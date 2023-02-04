@@ -251,7 +251,7 @@ void Engine::DrawGUI() {
     static bool render_framerate = false;
     static float framerate = 0.0f;
     static uint frames_this_second = 0;
-    static uint last_frame_time = platform->TickCount();
+    static uint last_frame_time = platform->tickCount();
     static uint framerate_time_elapsed = 0;
 
     if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME &&
@@ -259,8 +259,8 @@ void Engine::DrawGUI() {
         pWeather->Draw();  // Ritor1: my include
 
                            // while(GetTickCount() - last_frame_time < 33 );//FPS control
-    uint frame_dt = platform->TickCount() - last_frame_time;
-    last_frame_time = platform->TickCount();
+    uint frame_dt = platform->tickCount() - last_frame_time;
+    last_frame_time = platform->tickCount();
     framerate_time_elapsed += frame_dt;
     if (framerate_time_elapsed >= 1000) {
         framerate = frames_this_second * (1000.0f / framerate_time_elapsed);
@@ -288,7 +288,7 @@ void Engine::DrawGUI() {
                 StringPrintf("Party Sector ID:        %u/%zu\n", sector_id, pIndoor->pSectors.size()), 0, 0, 0);
         }
         pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset + 16}, colorTable.White.C16(),
-            StringPrintf("Party Position:         % d % d % d", pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z), 0, 0, 0);
+            StringPrintf("Party position:         % d % d % d", pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z), 0, 0, 0);
 
         std::string floor_level_str;
 
@@ -898,8 +898,8 @@ bool MM7_LoadLods() {
 
 //----- (004651F4) --------------------------------------------------------
 bool Engine::MM7_Initialize() {
-    grng->Seed(platform->TickCount());
-    vrng->Seed(platform->TickCount());
+    grng->Seed(platform->tickCount());
+    vrng->Seed(platform->tickCount());
 
     pEventTimer = Timer::Create();
     pEventTimer->Initialize();
@@ -1088,7 +1088,7 @@ void MM6_Initialize() {
     char pDefaultGroundTexture[16];  // [sp+FCh] [bp-8Ch]@32
 
     viewparams = new ViewingParams;
-    Sizei wsize = window->Size();
+    Sizei wsize = window->size();
     game_viewport_x = viewparams->uScreen_topL_X = engine->config->graphics.ViewPortX1.Get(); //8
     game_viewport_y = viewparams->uScreen_topL_Y = engine->config->graphics.ViewPortY1.Get(); //8
     game_viewport_z = viewparams->uScreen_BttmR_X = wsize.w - engine->config->graphics.ViewPortX2.Get(); //468;
@@ -1360,7 +1360,7 @@ unsigned int GetGravityStrength() {
 void GameUI_StatusBar_Update(bool force_hide) {
     if (force_hide ||
         game_ui_status_bar_event_string_time_left &&
-            platform->TickCount() >= game_ui_status_bar_event_string_time_left && !pEventTimer->bPaused) {
+            platform->tickCount() >= game_ui_status_bar_event_string_time_left && !pEventTimer->bPaused) {
         game_ui_status_bar_event_string_time_left = 0;
     }
 }

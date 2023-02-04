@@ -19,7 +19,7 @@ class PlatformEvent;
  * platform events.
  *
  * The implementation just uses a separate thread that runs a control routine, and the execution can switch between
- * threads from inside the `SwapBuffers` call. This effectively means that the control routine runs in between game
+ * threads from inside the `swapBuffers` call. This effectively means that the control routine runs in between game
  * frames.
  *
  * If the control plugin is destroyed while the control routine is still running, the control routine will be terminated
@@ -37,7 +37,7 @@ class EngineControlPlugin : private ProxyOpenGLContext, private ProxyEventLoop {
 
     /**
      * Schedules a control routine for execution. It will be started in a control thread from inside the next
-     * `SwapBuffers` call. All spontaneous (OS-generated) events will be blocked while the control routine is running.
+     * `swapBuffers` call. All spontaneous (OS-generated) events will be blocked while the control routine is running.
      *
      * If another control routine is already running, passed routine will be added to the queue.
      *
@@ -59,10 +59,10 @@ class EngineControlPlugin : private ProxyOpenGLContext, private ProxyEventLoop {
 
     void processSyntheticEvents(PlatformEventHandler *eventHandler, int count = -1);
 
-    virtual void Exec(PlatformEventHandler *eventHandler) override;
-    virtual void ProcessMessages(PlatformEventHandler *eventHandler, int count) override;
-    virtual void WaitForMessages() override;
-    virtual void SwapBuffers() override;
+    virtual void exec(PlatformEventHandler *eventHandler) override;
+    virtual void processMessages(PlatformEventHandler *eventHandler, int count) override;
+    virtual void waitForMessages() override;
+    virtual void swapBuffers() override;
 
  private:
     std::thread _controlThread;

@@ -2,18 +2,18 @@
 
 ProxyOpenGLContext::ProxyOpenGLContext(PlatformOpenGLContext *base) : ProxyBase<PlatformOpenGLContext>(base) {}
 
-bool ProxyOpenGLContext::Bind() {
-    return NonNullBase()->Bind();
+bool ProxyOpenGLContext::bind() {
+    return nonNullBase()->bind();
 }
 
-bool ProxyOpenGLContext::Unbind() {
-    return NonNullBase()->Unbind();
+bool ProxyOpenGLContext::unbind() {
+    return nonNullBase()->unbind();
 }
 
-void ProxyOpenGLContext::SwapBuffers() {
-    NonNullBase()->SwapBuffers();
+void ProxyOpenGLContext::swapBuffers() {
+    nonNullBase()->swapBuffers();
 }
 
-void *ProxyOpenGLContext::GetProcAddress(const char *name) {
-    return NonNullBase()->GetProcAddress(name);
+void *ProxyOpenGLContext::getProcAddress(const char *name) {
+    return nonNullBase()->getProcAddress(name);
 }

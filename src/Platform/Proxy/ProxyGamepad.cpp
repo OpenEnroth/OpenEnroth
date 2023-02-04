@@ -2,14 +2,14 @@
 
 ProxyGamepad::ProxyGamepad(PlatformGamepad *base): ProxyBase<PlatformGamepad>(base) {}
 
-std::string ProxyGamepad::Model() const {
-    return NonNullBase()->Model();
+std::string ProxyGamepad::model() const {
+    return nonNullBase()->model();
 }
 
-std::string ProxyGamepad::Serial() const {
-    return NonNullBase()->Serial();
+std::string ProxyGamepad::serial() const {
+    return nonNullBase()->serial();
 }
 
-uint32_t ProxyGamepad::Id() const {
-    return NonNullBase()->Id();
+uint32_t ProxyGamepad::id() const {
+    return nonNullBase()->id();
 }

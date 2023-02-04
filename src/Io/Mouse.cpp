@@ -56,7 +56,7 @@ void Mouse::SetCursorImage(const std::string &name) {
     if (name == "MICON1") {  // arrow
         this->bActive = false;
         this->field_C = 1;
-        platform->SetCursorShown(true);
+        platform->setCursorShown(true);
         this->cursor_img = nullptr;
     } else {  // cursor is item or another bitmap
         this->cursor_img = assets->GetImage_ColorKey(name, 0/*render->teal_mask_16*/);
@@ -160,14 +160,14 @@ void Mouse::DrawCursor() {
 
         // for other cursor img ie target mouse
         if (this->cursor_img) {
-            platform->SetCursorShown(false);
+            platform->setCursorShown(false);
             // draw image - needs centering
             pos.x -= (this->cursor_img->GetWidth()) / 2;
             pos.y -= (this->cursor_img->GetHeight()) / 2;
 
             render->DrawTextureNew(pos.x / 640., pos.y / 480., this->cursor_img);
         } else {
-            platform->SetCursorShown(true);
+            platform->setCursorShown(true);
         }
     }
 

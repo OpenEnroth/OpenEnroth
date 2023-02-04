@@ -171,7 +171,7 @@ void EngineController::runGameRoutine(GameRoutine routine) {
 }
 
 void EngineController::resizeWindow(int w, int h) {
-    runGameRoutine([=] { ::application->window()->Resize({w, h});});
+    runGameRoutine([=] { ::application->window()->resize({w, h});});
 
     // Spontaneous events are ignored, gotta post one.
     std::unique_ptr<PlatformResizeEvent> event = std::make_unique<PlatformResizeEvent>();

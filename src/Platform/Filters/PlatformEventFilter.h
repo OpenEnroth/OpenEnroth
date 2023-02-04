@@ -14,25 +14,25 @@ class PlatformEventFilter {
     explicit PlatformEventFilter(std::initializer_list<PlatformEvent::Type> eventTypes);
     explicit PlatformEventFilter(EventWildcard eventTypes);
 
-    virtual bool Event(const PlatformEvent *event);
+    virtual bool event(const PlatformEvent *event);
 
     const std::vector<PlatformEvent::Type> eventTypes() const {
         return _eventTypes;
     }
 
  protected:
-    virtual bool KeyPressEvent(const PlatformKeyEvent *event);
-    virtual bool KeyReleaseEvent(const PlatformKeyEvent *event);
-    virtual bool MouseMoveEvent(const PlatformMouseEvent *event);
-    virtual bool MousePressEvent(const PlatformMouseEvent *event);
-    virtual bool MouseReleaseEvent(const PlatformMouseEvent *event);
-    virtual bool WheelEvent(const PlatformWheelEvent *event);
-    virtual bool MoveEvent(const PlatformMoveEvent *event);
-    virtual bool ResizeEvent(const PlatformResizeEvent *event);
-    virtual bool ActivationEvent(const PlatformWindowEvent *event);
-    virtual bool CloseEvent(const PlatformWindowEvent *event);
-    virtual bool GamepadDeviceEvent(const PlatformGamepadDeviceEvent *event);
-    virtual bool NativeEvent(const PlatformNativeEvent *event);
+    virtual bool keyPressEvent(const PlatformKeyEvent *event);
+    virtual bool keyReleaseEvent(const PlatformKeyEvent *event);
+    virtual bool mouseMoveEvent(const PlatformMouseEvent *event);
+    virtual bool mousePressEvent(const PlatformMouseEvent *event);
+    virtual bool mouseReleaseEvent(const PlatformMouseEvent *event);
+    virtual bool wheelEvent(const PlatformWheelEvent *event);
+    virtual bool moveEvent(const PlatformMoveEvent *event);
+    virtual bool resizeEvent(const PlatformResizeEvent *event);
+    virtual bool activationEvent(const PlatformWindowEvent *event);
+    virtual bool closeEvent(const PlatformWindowEvent *event);
+    virtual bool gamepadDeviceEvent(const PlatformGamepadDeviceEvent *event);
+    virtual bool nativeEvent(const PlatformNativeEvent *event);
 
  private:
     std::vector<PlatformEvent::Type> _eventTypes;

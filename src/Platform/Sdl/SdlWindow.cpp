@@ -15,55 +15,55 @@
 #include "SdlOpenGLContext.h"
 
 SdlWindow::SdlWindow(SdlPlatformSharedState *state, SDL_Window *window, uint32_t id):
-    state_(state), window_(window), id_(id) {
+    _state(state), _window(window), _id(id) {
     assert(state);
     assert(window);
     assert(id);
 }
 
 SdlWindow::~SdlWindow() {
-    state_->UnregisterWindow(this);
-    SDL_DestroyWindow(window_);
+    _state->unregisterWindow(this);
+    SDL_DestroyWindow(_window);
 }
 
-void SdlWindow::SetTitle(const std::string &title) {
-    SDL_SetWindowTitle(window_, title.c_str());
+void SdlWindow::setTitle(const std::string &title) {
+    SDL_SetWindowTitle(_window, title.c_str());
 }
 
-std::string SdlWindow::Title() const {
-    return SDL_GetWindowTitle(window_);
+std::string SdlWindow::title() const {
+    return SDL_GetWindowTitle(_window);
 }
 
-void SdlWindow::Resize(const Sizei &size) {
-    SDL_SetWindowSize(window_, size.w, size.h);
+void SdlWindow::resize(const Sizei &size) {
+    SDL_SetWindowSize(_window, size.w, size.h);
 }
 
-Sizei SdlWindow::Size() const {
+Sizei SdlWindow::size() const {
     Sizei result;
-    SDL_GetWindowSize(window_, &result.w, &result.h);
+    SDL_GetWindowSize(_window, &result.w, &result.h);
     return result;
 }
 
-void SdlWindow::SetPosition(const Pointi &pos) {
-    SDL_SetWindowPosition(window_, pos.x, pos.y);
+void SdlWindow::setPosition(const Pointi &pos) {
+    SDL_SetWindowPosition(_window, pos.x, pos.y);
 }
 
-Pointi SdlWindow::Position() const {
+Pointi SdlWindow::position() const {
     Pointi result;
-    SDL_GetWindowPosition(window_, &result.x, &result.y);
+    SDL_GetWindowPosition(_window, &result.x, &result.y);
     return result;
 }
 
-void SdlWindow::SetVisible(bool visible) {
+void SdlWindow::setVisible(bool visible) {
     if (visible) {
-        SDL_ShowWindow(window_);
+        SDL_ShowWindow(_window);
     } else {
-        SDL_HideWindow(window_);
+        SDL_HideWindow(_window);
     }
 }
 
-bool SdlWindow::IsVisible() const {
-    uint32_t flags = SDL_GetWindowFlags(window_);
+bool SdlWindow::isVisible() const {
+    uint32_t flags = SDL_GetWindowFlags(_window);
     if (flags & SDL_WINDOW_SHOWN)
         return true;
     if (flags & SDL_WINDOW_HIDDEN)
@@ -73,19 +73,19 @@ bool SdlWindow::IsVisible() const {
     return false;
 }
 
-void SdlWindow::SetResizable(bool resizable) {
-    SDL_SetWindowResizable(window_, resizable ? SDL_TRUE : SDL_FALSE);
+void SdlWindow::setResizable(bool resizable) {
+    SDL_SetWindowResizable(_window, resizable ? SDL_TRUE : SDL_FALSE);
 }
 
-bool SdlWindow::Resizable() const {
-    uint32_t flags = SDL_GetWindowFlags(window_);
+bool SdlWindow::isResizable() const {
+    uint32_t flags = SDL_GetWindowFlags(_window);
     if (flags & SDL_WINDOW_RESIZABLE)
         return true;
 
     return false;
 }
 
-void SdlWindow::SetWindowMode(PlatformWindowMode mode) {
+void SdlWindow::setWindowMode(PlatformWindowMode mode) {
     uint32_t flags = 0;
 
     if (mode == WINDOW_MODE_FULLSCREEN_BORDERLESS)
@@ -93,17 +93,17 @@ void SdlWindow::SetWindowMode(PlatformWindowMode mode) {
     else if (mode == WINDOW_MODE_FULLSCREEN)
         flags |= SDL_WINDOW_FULLSCREEN;
 
-    if (SDL_SetWindowFullscreen(window_, flags) != 0)
-        state_->LogSdlError("SDL_SetWindowFullscreen");
+    if (SDL_SetWindowFullscreen(_window, flags) != 0)
+        _state->logSdlError("SDL_SetWindowFullscreen");
 
     if (mode == WINDOW_MODE_WINDOWED)
-        SDL_SetWindowBordered(window_, SDL_TRUE);
+        SDL_SetWindowBordered(_window, SDL_TRUE);
     else if (mode == WINDOW_MODE_BORDERLESS)
-        SDL_SetWindowBordered(window_, SDL_FALSE);
+        SDL_SetWindowBordered(_window, SDL_FALSE);
 }
 
-PlatformWindowMode SdlWindow::WindowMode() {
-    uint32_t flags = SDL_GetWindowFlags(window_);
+PlatformWindowMode SdlWindow::windowMode() {
+    uint32_t flags = SDL_GetWindowFlags(_window);
 
     if ((flags & SDL_WINDOW_FULLSCREEN_DESKTOP) == SDL_WINDOW_FULLSCREEN_DESKTOP)
         return WINDOW_MODE_FULLSCREEN_BORDERLESS;
@@ -115,7 +115,7 @@ PlatformWindowMode SdlWindow::WindowMode() {
     return WINDOW_MODE_WINDOWED;
 }
 
-void SdlWindow::SetOrientations(PlatformWindowOrientations orientations) {
+void SdlWindow::setOrientations(PlatformWindowOrientations orientations) {
     std::string hints{};
 
     if (orientations & LANDSCAPE_LEFT)
@@ -130,7 +130,7 @@ void SdlWindow::SetOrientations(PlatformWindowOrientations orientations) {
     SDL_SetHintWithPriority(SDL_HINT_ORIENTATIONS, hints.c_str(), SDL_HINT_OVERRIDE);
 }
 
-PlatformWindowOrientations SdlWindow::Orientations() {
+PlatformWindowOrientations SdlWindow::orientations() {
     PlatformWindowOrientations orientations;
 
     if (SDL_GetHint("LandscapeLeft"))
@@ -145,29 +145,29 @@ PlatformWindowOrientations SdlWindow::Orientations() {
     return orientations;
 }
 
-void SdlWindow::SetGrabsMouse(bool grabsMouse) {
-    SDL_SetWindowGrab(window_, grabsMouse ? SDL_TRUE : SDL_FALSE);
+void SdlWindow::setGrabsMouse(bool grabsMouse) {
+    SDL_SetWindowGrab(_window, grabsMouse ? SDL_TRUE : SDL_FALSE);
 }
 
-bool SdlWindow::GrabsMouse() const {
-    return SDL_GetWindowGrab(window_) == SDL_TRUE;
+bool SdlWindow::grabsMouse() const {
+    return SDL_GetWindowGrab(_window) == SDL_TRUE;
 }
 
-Marginsi SdlWindow::FrameMargins() const {
+Marginsi SdlWindow::frameMargins() const {
     Marginsi result;
-    if(SDL_GetWindowBordersSize(window_, &result.top, &result.left, &result.bottom, &result.right) != 0) {
-        state_->LogSdlError("SDL_GetWindowBordersSize");
+    if(SDL_GetWindowBordersSize(_window, &result.top, &result.left, &result.bottom, &result.right) != 0) {
+        _state->logSdlError("SDL_GetWindowBordersSize");
         return Marginsi();
     }
     return result;
 }
 
-uintptr_t SdlWindow::SystemHandle() const {
+uintptr_t SdlWindow::systemHandle() const {
     SDL_SysWMinfo info;
     SDL_VERSION(&info.version);
 
-    if (SDL_GetWindowWMInfo(window_, &info) != SDL_TRUE) {
-        state_->LogSdlError("SDL_GetWindowWMInfo");
+    if (SDL_GetWindowWMInfo(_window, &info) != SDL_TRUE) {
+        _state->logSdlError("SDL_GetWindowWMInfo");
         return 0;
     }
 
@@ -182,11 +182,11 @@ uintptr_t SdlWindow::SystemHandle() const {
 #endif
 }
 
-void SdlWindow::Activate() {
-    SDL_RaiseWindow(window_);
+void SdlWindow::activate() {
+    SDL_RaiseWindow(_window);
 }
 
-std::unique_ptr<PlatformOpenGLContext> SdlWindow::CreateOpenGLContext(const PlatformOpenGLOptions &options) {
+std::unique_ptr<PlatformOpenGLContext> SdlWindow::createOpenGLContext(const PlatformOpenGLOptions &options) {
     int version;
 
     if (options.versionMajor != -1)
@@ -201,23 +201,23 @@ std::unique_ptr<PlatformOpenGLContext> SdlWindow::CreateOpenGLContext(const Plat
     if (options.stencilBits != -1)
         SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, options.stencilBits);
 
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, TranslatePlatformOpenGLProfile(options.profile));
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, translatePlatformOpenGLProfile(options.profile));
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, options.doubleBuffered);
 
-    SDL_GLContext ctx = SDL_GL_CreateContext(window_);
+    SDL_GLContext ctx = SDL_GL_CreateContext(_window);
     if (!ctx) {
-        state_->LogSdlError("SDL_GL_CreateContext");
+        _state->logSdlError("SDL_GL_CreateContext");
         return nullptr;
     }
 
-    int vsyncValue = TranslatePlatformVSyncMode(options.vsyncMode);
+    int vsyncValue = translatePlatformVSyncMode(options.vsyncMode);
 
     int status = SDL_GL_SetSwapInterval(vsyncValue);
     if (status < 0 && options.vsyncMode == GL_VSYNC_ADAPTIVE)
-        status = SDL_GL_SetSwapInterval(TranslatePlatformVSyncMode(GL_VSYNC_NORMAL)); // Retry with normal vsync.
+        status = SDL_GL_SetSwapInterval(translatePlatformVSyncMode(GL_VSYNC_NORMAL)); // Retry with normal vsync.
 
     if (status < 0)
-        state_->LogSdlError("SDL_GL_SetSwapInterval"); // Not a critical error, we still return context in this case.
+        _state->logSdlError("SDL_GL_SetSwapInterval"); // Not a critical error, we still return context in this case.
 
-    return std::make_unique<SdlOpenGLContext>(state_, window_, ctx);
+    return std::make_unique<SdlOpenGLContext>(_state, _window, ctx);
 }

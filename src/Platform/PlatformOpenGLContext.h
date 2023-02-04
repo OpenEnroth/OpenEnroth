@@ -4,10 +4,10 @@ class PlatformOpenGLContext {
  public:
     virtual ~PlatformOpenGLContext() = default;
 
-    virtual bool Bind() = 0;
-    virtual bool Unbind() = 0;
+    virtual bool bind() = 0;
+    virtual bool unbind() = 0;
 
-    virtual void SwapBuffers() = 0;
+    virtual void swapBuffers() = 0;
 
-    virtual void *GetProcAddress(const char *name) = 0;
+    virtual void *getProcAddress(const char *name) = 0;
 };

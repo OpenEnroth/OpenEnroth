@@ -134,7 +134,7 @@ void Application::AutoInitDataPath(Platform *platform) {
             !mm7dir.empty() ? mm7dir : "current directory"
         );
         EngineIoc::ResolveLogger()->Warning(message.c_str());
-        platform->ShowMessageBox(message, "CRITICAL ERROR: missing resources");
+        platform->showMessageBox(message, "CRITICAL ERROR: missing resources");
     }
 }
 
@@ -226,8 +226,8 @@ int Game::Run() {
      * Hack below with render reinitialization is a temporary workaround. */
     windowHandler->UpdateWindowFromConfig(config.get());
     render->Reinitialize();
-    window->Activate();
-    eventLoop->ProcessMessages(eventHandler);
+    window->activate();
+    eventLoop->processMessages(eventHandler);
 
     ShowMM7IntroVideo_and_LoadingScreen();
 
@@ -2628,7 +2628,7 @@ void Game::GameLoop() {
             }
             pAudioPlayer->UpdateSounds();
             // expire timed status messages
-            if (game_ui_status_bar_event_string_time_left != 0 && game_ui_status_bar_event_string_time_left < platform->TickCount()) {
+            if (game_ui_status_bar_event_string_time_left != 0 && game_ui_status_bar_event_string_time_left < platform->tickCount()) {
                  GameUI_StatusBar_Clear();
             }
             if (uGameState == GAME_STATE_PLAYING) {

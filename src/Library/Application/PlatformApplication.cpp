@@ -15,17 +15,17 @@ class ApplicationProxy : public ProxyPlatform, public ProxyEventLoop, public Pro
  public:
     ApplicationProxy() {}
 
-    virtual std::unique_ptr<PlatformWindow> CreateWindow() override {
+    virtual std::unique_ptr<PlatformWindow> createWindow() override {
         assert(false && "use PlatformApplication::window");
         return nullptr;
     }
 
-    virtual std::unique_ptr<PlatformEventLoop> CreateEventLoop() override {
+    virtual std::unique_ptr<PlatformEventLoop> createEventLoop() override {
         assert(false && "use PlatformApplication::eventLoop");
         return nullptr;
     }
 
-    virtual std::unique_ptr<PlatformOpenGLContext> CreateOpenGLContext(const PlatformOpenGLOptions &) override {
+    virtual std::unique_ptr<PlatformOpenGLContext> createOpenGLContext(const PlatformOpenGLOptions &) override {
         assert(false && "use PlatformApplication::initializeOpenGLContext");
         return nullptr;
     }
@@ -33,9 +33,9 @@ class ApplicationProxy : public ProxyPlatform, public ProxyEventLoop, public Pro
 
 template<class T>
 static void installTypedProxy(ProxyBase<T> *root, ProxyBase<T> *proxy) {
-    T *tmp = root->Base();
-    root->SetBase(proxy);
-    proxy->SetBase(tmp);
+    T *tmp = root->base();
+    root->setBase(proxy);
+    proxy->setBase(tmp);
 }
 
 template<class T>
@@ -43,13 +43,13 @@ static void removeTypedProxy(ProxyBase<T> *root, ProxyBase<T> *proxy, T *leaf) {
     while (true) {
         assert(root); // Can only trigger this if passing invalid leaf
 
-        if (root->Base() == leaf)
+        if (root->base() == leaf)
             return;
 
-        ProxyBase<T> *next = static_cast<ProxyBase<T> *>(root->Base());
+        ProxyBase<T> *next = static_cast<ProxyBase<T> *>(root->base());
         if (proxy == next) {
-            root->SetBase(proxy->Base());
-            proxy->SetBase(nullptr);
+            root->setBase(proxy->base());
+            proxy->setBase(nullptr);
             return;
         }
 
@@ -59,17 +59,17 @@ static void removeTypedProxy(ProxyBase<T> *root, ProxyBase<T> *proxy, T *leaf) {
 
 template<class T>
 static void initProxyLeaf(ProxyBase<T> *root, T *leaf) {
-    while (root->Base() != nullptr)
-        root = static_cast<ProxyBase<T> *>(root->Base());
-    root->SetBase(leaf);
+    while (root->base() != nullptr)
+        root = static_cast<ProxyBase<T> *>(root->base());
+    root->setBase(leaf);
 }
 
 PlatformApplication::PlatformApplication(PlatformLogger *logger) : _logger(logger) {
     assert(logger);
 
-    _platform = Platform::CreateStandardPlatform(logger);
-    _eventLoop = _platform->CreateEventLoop();
-    _window = _platform->CreateWindow();
+    _platform = Platform::createStandardPlatform(logger);
+    _eventLoop = _platform->createEventLoop();
+    _window = _platform->createWindow();
     _eventHandler = std::make_unique<FilteringEventHandler>();
 
     _rootProxy = std::make_unique<ApplicationProxy>();
@@ -88,7 +88,7 @@ PlatformApplication::~PlatformApplication() {
 void PlatformApplication::initializeOpenGLContext(const PlatformOpenGLOptions &options) {
     assert(!_openGLContext);
 
-    _openGLContext = _window->CreateOpenGLContext(options);
+    _openGLContext = _window->createOpenGLContext(options);
     initProxyLeaf<PlatformOpenGLContext>(_rootProxy.get(), _openGLContext.get());
 }
 
@@ -117,11 +117,11 @@ PlatformEventHandler *PlatformApplication::eventHandler() {
 }
 
 void PlatformApplication::processMessages(int count) {
-    eventLoop()->ProcessMessages(eventHandler(), count);
+    eventLoop()->processMessages(eventHandler(), count);
 }
 
 void PlatformApplication::waitForMessages() {
-    eventLoop()->WaitForMessages();
+    eventLoop()->waitForMessages();
 }
 
 void PlatformApplication::installInternal(ProxyPlatform *platform) {

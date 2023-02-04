@@ -11,7 +11,7 @@ Timer *pEventTimer;
 
 //----- (00426317) --------------------------------------------------------
 uint64_t Timer::Time() {
-    int64_t ms = platform->TickCount();
+    int64_t ms = platform->tickCount();
     uint64_t v2 = 128 * ms / 1000;
     if (v2 < uStartTime) uStartTime = 0;
     return v2;

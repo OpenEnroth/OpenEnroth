@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <cassert>
 
-PlatformKey TranslateSdlKey(SDL_Scancode key) {
+PlatformKey translateSdlKey(SDL_Scancode key) {
     switch (key) {
     case SDL_SCANCODE_F1:               return PlatformKey::F1;
     case SDL_SCANCODE_F2:               return PlatformKey::F2;
@@ -113,7 +113,7 @@ PlatformKey TranslateSdlKey(SDL_Scancode key) {
     }
 }
 
-PlatformKey TranslateSdlGamepadButton(SDL_GameControllerButton button) {
+PlatformKey translateSdlGamepadButton(SDL_GameControllerButton button) {
     switch (button) {
     case SDL_CONTROLLER_BUTTON_A:               return PlatformKey::Gamepad_A;
     case SDL_CONTROLLER_BUTTON_B:               return PlatformKey::Gamepad_B;
@@ -143,7 +143,7 @@ PlatformKey TranslateSdlGamepadButton(SDL_GameControllerButton button) {
     }
 }
 
-std::pair<PlatformKey, PlatformKeyType> TranslateSdlGamepadAxis(SDL_GameControllerAxis axis, float value) {
+std::pair<PlatformKey, PlatformKeyType> translateSdlGamepadAxis(SDL_GameControllerAxis axis, float value) {
     PlatformKey key = PlatformKey::None;
     PlatformKeyType keyType = KEY_TYPE_GAMEPAD_AXIS;
 
@@ -192,7 +192,7 @@ std::pair<PlatformKey, PlatformKeyType> TranslateSdlGamepadAxis(SDL_GameControll
     return {key, keyType};
 }
 
-PlatformModifiers TranslateSdlMods(uint16_t mods) {
+PlatformModifiers translateSdlMods(uint16_t mods) {
     PlatformModifiers result;
     if (static_cast<bool>(mods & KMOD_SHIFT) ^ static_cast<bool>(mods & KMOD_CAPS))
         result |= PlatformModifier::Shift;
@@ -207,7 +207,7 @@ PlatformModifiers TranslateSdlMods(uint16_t mods) {
     return result;
 }
 
-PlatformMouseButton TranslateSdlMouseButton(uint8_t mouseButton) {
+PlatformMouseButton translateSdlMouseButton(uint8_t mouseButton) {
     switch (mouseButton) {
     case SDL_BUTTON_LEFT:   return PlatformMouseButton::Left;
     case SDL_BUTTON_MIDDLE: return PlatformMouseButton::Middle;
@@ -216,7 +216,7 @@ PlatformMouseButton TranslateSdlMouseButton(uint8_t mouseButton) {
     }
 }
 
-PlatformMouseButtons TranslateSdlMouseButtons(uint32_t mouseButtons) {
+PlatformMouseButtons translateSdlMouseButtons(uint32_t mouseButtons) {
     PlatformMouseButtons result;
     if (mouseButtons & SDL_BUTTON_LMASK)
         result |= PlatformMouseButton::Left;
@@ -227,7 +227,7 @@ PlatformMouseButtons TranslateSdlMouseButtons(uint32_t mouseButtons) {
     return result;
 }
 
-int TranslatePlatformVSyncMode(PlatformVSyncMode vsyncMode) {
+int translatePlatformVSyncMode(PlatformVSyncMode vsyncMode) {
     switch (vsyncMode) {
     case GL_VSYNC_NONE:
         return 0;
@@ -241,7 +241,7 @@ int TranslatePlatformVSyncMode(PlatformVSyncMode vsyncMode) {
     return 0; // Make the compiler happy.
 }
 
-SDL_GLprofile TranslatePlatformOpenGLProfile(PlatformOpenGLProfile profile) {
+SDL_GLprofile translatePlatformOpenGLProfile(PlatformOpenGLProfile profile) {
     switch (profile) {
     case GL_PROFILE_CORE:
         return SDL_GL_CONTEXT_PROFILE_CORE;
@@ -255,7 +255,7 @@ SDL_GLprofile TranslatePlatformOpenGLProfile(PlatformOpenGLProfile profile) {
     return SDL_GL_CONTEXT_PROFILE_CORE; // Make the compiler happy.
 }
 
-SDL_LogPriority TranslatePlatformLogLevel(PlatformLogLevel logLevel) {
+SDL_LogPriority translatePlatformLogLevel(PlatformLogLevel logLevel) {
     switch (logLevel) {
     case LogVerbose:    return SDL_LOG_PRIORITY_VERBOSE;
     case LogDebug:      return SDL_LOG_PRIORITY_DEBUG;
@@ -269,7 +269,7 @@ SDL_LogPriority TranslatePlatformLogLevel(PlatformLogLevel logLevel) {
     }
 }
 
-PlatformLogLevel TranslateSdlLogLevel(SDL_LogPriority logLevel) {
+PlatformLogLevel translateSdlLogLevel(SDL_LogPriority logLevel) {
     switch (logLevel) {
     case SDL_LOG_PRIORITY_VERBOSE:  return LogVerbose;
     case SDL_LOG_PRIORITY_DEBUG:    return LogDebug;

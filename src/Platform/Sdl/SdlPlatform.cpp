@@ -17,19 +17,19 @@
 SdlPlatform::SdlPlatform(PlatformLogger *logger) {
     assert(logger);
 
-    state_ = std::make_unique<SdlPlatformSharedState>(this, logger);
+    _state = std::make_unique<SdlPlatformSharedState>(logger);
 
-    initialized_ = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) == 0;
-    if (!initialized_)
-        state_->LogSdlError("SDL_Init");
+    _initialized = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) == 0;
+    if (!_initialized)
+        _state->logSdlError("SDL_Init");
 }
 
 SdlPlatform::~SdlPlatform() {
     SDL_Quit(); // Safe to call even if there were errors in initialization.
 }
 
-std::unique_ptr<PlatformWindow> SdlPlatform::CreateWindow() {
-    if (!initialized_)
+std::unique_ptr<PlatformWindow> SdlPlatform::createWindow() {
+    if (!_initialized)
         return nullptr;
 
 #if __ANDROID__
@@ -39,56 +39,56 @@ std::unique_ptr<PlatformWindow> SdlPlatform::CreateWindow() {
 
     SDL_Window *window = SDL_CreateWindow("", 0, 0, 100, 100, SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL);
     if (!window) {
-        state_->LogSdlError("SDL_CreateWindow");
+        _state->logSdlError("SDL_CreateWindow");
         return nullptr;
     }
 
     uint32_t id = SDL_GetWindowID(window);
     if (!id) {
-        state_->LogSdlError("SDL_GetWindowID");
+        _state->logSdlError("SDL_GetWindowID");
         return nullptr;
     }
 
-    std::unique_ptr<SdlWindow> result = std::make_unique<SdlWindow>(state_.get(), window, id);
-    state_->RegisterWindow(result.get());
+    std::unique_ptr<SdlWindow> result = std::make_unique<SdlWindow>(_state.get(), window, id);
+    _state->registerWindow(result.get());
     return result;
 }
 
-std::unique_ptr<PlatformEventLoop> SdlPlatform::CreateEventLoop() {
-    if (!initialized_)
+std::unique_ptr<PlatformEventLoop> SdlPlatform::createEventLoop() {
+    if (!_initialized)
         return nullptr;
 
-    return std::make_unique<SdlEventLoop>(state_.get());
+    return std::make_unique<SdlEventLoop>(_state.get());
 }
 
-void SdlPlatform::SetCursorShown(bool cursorShown) {
-    if (!initialized_)
+void SdlPlatform::setCursorShown(bool cursorShown) {
+    if (!_initialized)
         return;
 
     if (SDL_ShowCursor(cursorShown ? SDL_ENABLE : SDL_DISABLE) < 0)
-        state_->LogSdlError("SDL_ShowCursor");
+        _state->logSdlError("SDL_ShowCursor");
 }
 
-bool SdlPlatform::IsCursorShown() const {
-    if (!initialized_)
+bool SdlPlatform::isCursorShown() const {
+    if (!_initialized)
         return true;
 
     int result = SDL_ShowCursor(SDL_QUERY);
     if (result < 0) {
-        state_->LogSdlError("SDL_ShowCursor");
+        _state->logSdlError("SDL_ShowCursor");
         return true;
     } else {
         return result == SDL_ENABLE;
     }
 }
 
-std::vector<Recti> SdlPlatform::DisplayGeometries() const {
-    if (!initialized_)
+std::vector<Recti> SdlPlatform::displayGeometries() const {
+    if (!_initialized)
         return {};
 
     int displays = SDL_GetNumVideoDisplays();
     if (displays < 0) {
-        state_->LogSdlError("SDL_GetNumVideoDisplays");
+        _state->logSdlError("SDL_GetNumVideoDisplays");
         return {};
     }
 
@@ -97,7 +97,7 @@ std::vector<Recti> SdlPlatform::DisplayGeometries() const {
     SDL_Rect rect;
     for (int i = 0; i < displays; i++) {
         if (SDL_GetDisplayBounds(i, &rect) != 0) {
-            state_->LogSdlError("SDL_GetDisplayBounds");
+            _state->logSdlError("SDL_GetDisplayBounds");
             return {};
         }
 
@@ -107,11 +107,11 @@ std::vector<Recti> SdlPlatform::DisplayGeometries() const {
     return result;
 }
 
-void SdlPlatform::ShowMessageBox(const std::string &message, const std::string& title) const {
+void SdlPlatform::showMessageBox(const std::string &message, const std::string& title) const {
     SDL_ShowSimpleMessageBox(0, title.c_str(), message.c_str(), nullptr);
 }
 
-int64_t SdlPlatform::TickCount() const {
+int64_t SdlPlatform::tickCount() const {
     // TODO(captainurist): Just update SDL
 #if SDL_VERSION_ATLEAST(2, 0, 18)
     return SDL_GetTicks64();
@@ -120,11 +120,11 @@ int64_t SdlPlatform::TickCount() const {
 #endif
 }
 
-std::string SdlPlatform::WinQueryRegistry(const std::wstring &) const {
+std::string SdlPlatform::winQueryRegistry(const std::wstring &) const {
     return {};
 }
 
-std::string SdlPlatform::StoragePath(const PLATFORM_STORAGE type) const {
+std::string SdlPlatform::storagePath(const PLATFORM_STORAGE type) const {
     std::string result{};
     const char *path = NULL;
 
@@ -148,17 +148,17 @@ std::string SdlPlatform::StoragePath(const PLATFORM_STORAGE type) const {
     return result;
 }
 
-std::unique_ptr<PlatformGamepad> SdlPlatform::CreateGamepad(uint32_t id) {
-    if (!initialized_)
+std::unique_ptr<PlatformGamepad> SdlPlatform::createGamepad(uint32_t id) {
+    if (!_initialized)
         return nullptr;
 
     SDL_GameController *gamepad = SDL_GameControllerOpen(id);
     if (!gamepad) {
-        state_->LogSdlError("SDL_GameControllerOpen");
+        _state->logSdlError("SDL_GameControllerOpen");
         return nullptr;
     }
 
-    std::unique_ptr<SdlGamepad> result = std::make_unique<SdlGamepad>(state_.get(), gamepad, id);
-    state_->RegisterGamepad(result.get());
+    std::unique_ptr<SdlGamepad> result = std::make_unique<SdlGamepad>(_state.get(), gamepad, id);
+    _state->registerGamepad(result.get());
     return result;
 }

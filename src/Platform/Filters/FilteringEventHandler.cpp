@@ -5,12 +5,12 @@
 
 #include "PlatformEventFilter.h"
 
-void FilteringEventHandler::Event(const PlatformEvent *event) {
+void FilteringEventHandler::event(const PlatformEvent *event) {
     _insideEvent = true;
     MM_AT_SCOPE_EXIT(_insideEvent = false);
 
     for (PlatformEventFilter *filter : Reversed(_filters[event->type]))
-        if (filter->Event(event))
+        if (filter->event(event))
             return;
 }
 

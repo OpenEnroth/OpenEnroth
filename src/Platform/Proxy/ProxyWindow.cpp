@@ -4,82 +4,82 @@
 
 ProxyWindow::ProxyWindow(PlatformWindow *base) : ProxyBase<PlatformWindow>(base) {}
 
-void ProxyWindow::SetTitle(const std::string &title) {
-    NonNullBase()->SetTitle(title);
+void ProxyWindow::setTitle(const std::string &title) {
+    nonNullBase()->setTitle(title);
 }
 
-std::string ProxyWindow::Title() const {
-    return NonNullBase()->Title();
+std::string ProxyWindow::title() const {
+    return nonNullBase()->title();
 }
 
-void ProxyWindow::Resize(const Sizei &size) {
-    NonNullBase()->Resize(size);
+void ProxyWindow::resize(const Sizei &size) {
+    nonNullBase()->resize(size);
 }
 
-Sizei ProxyWindow::Size() const {
-    return NonNullBase()->Size();
+Sizei ProxyWindow::size() const {
+    return nonNullBase()->size();
 }
 
-void ProxyWindow::SetPosition(const Pointi &pos) {
-    NonNullBase()->SetPosition(pos);
+void ProxyWindow::setPosition(const Pointi &pos) {
+    nonNullBase()->setPosition(pos);
 }
 
-Pointi ProxyWindow::Position() const {
-    return NonNullBase()->Position();
+Pointi ProxyWindow::position() const {
+    return nonNullBase()->position();
 }
 
-void ProxyWindow::SetVisible(bool visible) {
-    NonNullBase()->SetVisible(visible);
+void ProxyWindow::setVisible(bool visible) {
+    nonNullBase()->setVisible(visible);
 }
 
-bool ProxyWindow::IsVisible() const {
-    return NonNullBase()->IsVisible();
+bool ProxyWindow::isVisible() const {
+    return nonNullBase()->isVisible();
 }
 
-void ProxyWindow::SetResizable(bool resizable) {
-    NonNullBase()->SetResizable(resizable);
+void ProxyWindow::setResizable(bool resizable) {
+    nonNullBase()->setResizable(resizable);
 }
 
-bool ProxyWindow::Resizable() const {
-    return NonNullBase()->Resizable();
+bool ProxyWindow::isResizable() const {
+    return nonNullBase()->isResizable();
 }
 
-void ProxyWindow::SetWindowMode(PlatformWindowMode mode) {
-    NonNullBase()->SetWindowMode(mode);
+void ProxyWindow::setWindowMode(PlatformWindowMode mode) {
+    nonNullBase()->setWindowMode(mode);
 }
 
-PlatformWindowMode ProxyWindow::WindowMode() {
-    return NonNullBase()->WindowMode();
+PlatformWindowMode ProxyWindow::windowMode() {
+    return nonNullBase()->windowMode();
 }
 
-void ProxyWindow::SetOrientations(PlatformWindowOrientations orientations) {
-    NonNullBase()->SetOrientations(orientations);
+void ProxyWindow::setOrientations(PlatformWindowOrientations orientations) {
+    nonNullBase()->setOrientations(orientations);
 }
 
-PlatformWindowOrientations ProxyWindow::Orientations() {
-    return NonNullBase()->Orientations();
+PlatformWindowOrientations ProxyWindow::orientations() {
+    return nonNullBase()->orientations();
 }
 
-void ProxyWindow::SetGrabsMouse(bool grabsMouse) {
-    NonNullBase()->SetGrabsMouse(grabsMouse);
+void ProxyWindow::setGrabsMouse(bool grabsMouse) {
+    nonNullBase()->setGrabsMouse(grabsMouse);
 }
 
-bool ProxyWindow::GrabsMouse() const {
-    return NonNullBase()->GrabsMouse();
+bool ProxyWindow::grabsMouse() const {
+    return nonNullBase()->grabsMouse();
 }
 
-Marginsi ProxyWindow::FrameMargins() const {
-    return NonNullBase()->FrameMargins();
+Marginsi ProxyWindow::frameMargins() const {
+    return nonNullBase()->frameMargins();
 }
 
-uintptr_t ProxyWindow::SystemHandle() const {
-    return NonNullBase()->SystemHandle();
+uintptr_t ProxyWindow::systemHandle() const {
+    return nonNullBase()->systemHandle();
 }
 
-void ProxyWindow::Activate() {
-    NonNullBase()->Activate();
+void ProxyWindow::activate() {
+    nonNullBase()->activate();
 }
 
-std::unique_ptr<PlatformOpenGLContext> ProxyWindow::CreateOpenGLContext(const PlatformOpenGLOptions &options) {
-    return NonNullBase()->CreateOpenGLContext(options);
+std::unique_ptr<PlatformOpenGLContext> ProxyWindow::createOpenGLContext(const PlatformOpenGLOptions &options) {
+    return nonNullBase()->createOpenGLContext(options);
 }

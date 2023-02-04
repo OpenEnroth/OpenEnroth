@@ -92,18 +92,18 @@ static bool OS_GetAppStringRecursive(HKEY parent_key, const wchar_t *path, char 
     }
 }
 
-std::string WinPlatform::WinQueryRegistry(const std::wstring &path) const {
+std::string WinPlatform::winQueryRegistry(const std::wstring &path) const {
     char buffer[8192];
     if (OS_GetAppStringRecursive(nullptr, path.c_str(), buffer, sizeof(buffer), 0))
         return std::string(buffer);
     return {};
 }
 
-std::unique_ptr<Platform> Platform::CreateStandardPlatform(PlatformLogger *logger) {
+std::unique_ptr<Platform> Platform::createStandardPlatform(PlatformLogger *logger) {
     return std::make_unique<WinPlatform>(logger);
 }
 
-std::unique_ptr<PlatformLogger> PlatformLogger::CreateStandardLogger(PlatformLoggerOptions options) {
+std::unique_ptr<PlatformLogger> PlatformLogger::createStandardLogger(PlatformLoggerOptions options) {
     if (options & WinEnsureConsoleOption) {
         if (AllocConsole()) {
             freopen("conin$", "r", stdin);

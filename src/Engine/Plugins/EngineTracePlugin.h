@@ -27,8 +27,8 @@ class EngineTracePlugin : private ProxyOpenGLContext, private PlatformEventFilte
  private:
     friend class PlatformIntrospection; // Give access to private bases.
 
-    virtual void SwapBuffers() override;
-    virtual bool Event(const PlatformEvent *event) override;
+    virtual void swapBuffers() override;
+    virtual bool event(const PlatformEvent *event) override;
 
  private:
     bool _tracing = false;

@@ -18,18 +18,18 @@ class PlatformLogger {
  public:
     virtual ~PlatformLogger() = default;
 
-    static std::unique_ptr<PlatformLogger> CreateStandardLogger(PlatformLoggerOptions options);
+    static std::unique_ptr<PlatformLogger> createStandardLogger(PlatformLoggerOptions options);
 
-    virtual void SetLogLevel(PlatformLogCategory category, PlatformLogLevel logLevel) = 0;
-    virtual PlatformLogLevel LogLevel(PlatformLogCategory category) const = 0;
+    virtual void setLogLevel(PlatformLogCategory category, PlatformLogLevel logLevel) = 0;
+    virtual PlatformLogLevel logLevel(PlatformLogCategory category) const = 0;
 
     /**
      * Logs provided message. The message will be ignored if the provided log level is lower than the log level set
      * for the provided category. It is advised to also do the log level check at the call site to avoid message
      * formatting overhead:
      * \code
-     * if (logger->LogLevel(ApplicationLog) <= LogDebug)
-     *     logger->Log(ApplicationLog, LogDebug, FormatMessage("blablabla %s %s", s1, s2).c_str());
+     * if (logger->logLevel(ApplicationLog) <= LogDebug)
+     *     logger->log(ApplicationLog, LogDebug, FormatMessage("blablabla %s %s", s1, s2).c_str());
      * \endcode
      *
      * This function is thread-safe.
@@ -38,5 +38,5 @@ class PlatformLogger {
      * @param logLevel                  Message log level.
      * @param message                   Message to log.
      */
-    virtual void Log(PlatformLogCategory category, PlatformLogLevel logLevel, const char *message) = 0;
+    virtual void log(PlatformLogCategory category, PlatformLogLevel logLevel, const char *message) = 0;
 };
