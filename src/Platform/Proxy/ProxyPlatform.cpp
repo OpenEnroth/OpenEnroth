@@ -8,42 +8,42 @@
 
 ProxyPlatform::ProxyPlatform(Platform *base): ProxyBase<Platform>(base) {}
 
-std::unique_ptr<PlatformWindow> ProxyPlatform::CreateWindow() {
-    return NonNullBase()->CreateWindow();
+std::unique_ptr<PlatformWindow> ProxyPlatform::createWindow() {
+    return nonNullBase()->createWindow();
 }
 
-std::unique_ptr<PlatformEventLoop> ProxyPlatform::CreateEventLoop() {
-    return NonNullBase()->CreateEventLoop();
+std::unique_ptr<PlatformEventLoop> ProxyPlatform::createEventLoop() {
+    return nonNullBase()->createEventLoop();
 }
 
-std::unique_ptr<PlatformGamepad> ProxyPlatform::CreateGamepad(uint32_t id) {
-    return NonNullBase()->CreateGamepad(id);
+std::unique_ptr<PlatformGamepad> ProxyPlatform::createGamepad(uint32_t id) {
+    return nonNullBase()->createGamepad(id);
 }
 
-void ProxyPlatform::SetCursorShown(bool cursorShown) {
-    return NonNullBase()->SetCursorShown(cursorShown);
+void ProxyPlatform::setCursorShown(bool cursorShown) {
+    return nonNullBase()->setCursorShown(cursorShown);
 }
 
-bool ProxyPlatform::IsCursorShown() const {
-    return NonNullBase()->IsCursorShown();
+bool ProxyPlatform::isCursorShown() const {
+    return nonNullBase()->isCursorShown();
 }
 
-std::vector<Recti> ProxyPlatform::DisplayGeometries() const {
-    return NonNullBase()->DisplayGeometries();
+std::vector<Recti> ProxyPlatform::displayGeometries() const {
+    return nonNullBase()->displayGeometries();
 }
 
-void ProxyPlatform::ShowMessageBox(const std::string &message, const std::string& title) const {
-    NonNullBase()->ShowMessageBox(message, title);
+void ProxyPlatform::showMessageBox(const std::string &message, const std::string& title) const {
+    nonNullBase()->showMessageBox(message, title);
 }
 
-int64_t ProxyPlatform::TickCount() const {
-    return NonNullBase()->TickCount();
+int64_t ProxyPlatform::tickCount() const {
+    return nonNullBase()->tickCount();
 }
 
-std::string ProxyPlatform::WinQueryRegistry(const std::wstring &path) const {
-    return NonNullBase()->WinQueryRegistry(path);
+std::string ProxyPlatform::winQueryRegistry(const std::wstring &path) const {
+    return nonNullBase()->winQueryRegistry(path);
 }
 
-std::string ProxyPlatform::StoragePath(const PLATFORM_STORAGE type) const {
-    return NonNullBase()->StoragePath(type);
+std::string ProxyPlatform::storagePath(const PLATFORM_STORAGE type) const {
+    return nonNullBase()->storagePath(type);
 }

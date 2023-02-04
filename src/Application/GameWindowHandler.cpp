@@ -57,7 +57,7 @@ GameWindowHandler::GameWindowHandler() : PlatformEventFilter(PlatformEventFilter
 GameWindowHandler::~GameWindowHandler() {}
 
 std::tuple<int, Pointi, Sizei> GameWindowHandler::GetWindowConfigPosition(const GameConfig *config) {
-    std::vector<Recti> displays = platform->DisplayGeometries();
+    std::vector<Recti> displays = platform->displayGeometries();
 
     Pointi pos = {config->window.PositionX.Get(), config->window.PositionY.Get()};
     Sizei size = {config->window.Width.Get(), config->window.Height.Get()};
@@ -85,14 +85,14 @@ std::tuple<int, Pointi, Sizei> GameWindowHandler::GetWindowConfigPosition(const 
 }
 
 std::tuple<int, Pointi, Sizei> GameWindowHandler::GetWindowRelativePosition(Pointi *position) {
-    std::vector<Recti> displays = platform->DisplayGeometries();
+    std::vector<Recti> displays = platform->displayGeometries();
 
-    Sizei size = window->Size();
+    Sizei size = window->size();
     Pointi pos;
     if (position != nullptr)
         pos = *position;
     else
-        pos = window->Position();
+        pos = window->position();
 
     // Fallback is centered on display 0.
     Pointi relativePos = Pointi(-1, -1);
@@ -116,13 +116,13 @@ void GameWindowHandler::UpdateWindowFromConfig(const GameConfig *config) {
     Pointi pos = std::get<1>(GetWindowConfigPosition(config));
     PlatformWindowMode mode = config->window.Mode.Get();
 
-    window->SetPosition(pos);
-    window->Resize(size);
-    window->SetTitle(config->window.Title.Get());
-    window->SetGrabsMouse(config->window.MouseGrab.Get());
-    window->SetWindowMode(mode);
-    window->SetResizable(config->window.Resizable.Get());
-    window->SetVisible(true);
+    window->setPosition(pos);
+    window->resize(size);
+    window->setTitle(config->window.Title.Get());
+    window->setGrabsMouse(config->window.MouseGrab.Get());
+    window->setWindowMode(mode);
+    window->setResizable(config->window.Resizable.Get());
+    window->setVisible(true);
 }
 
 void GameWindowHandler::UpdateConfigFromWindow(GameConfig *config) {
@@ -131,7 +131,7 @@ void GameWindowHandler::UpdateConfigFromWindow(GameConfig *config) {
     auto [display, relativePos, wsize] = GetWindowRelativePosition();
 
     // Skip updating window position in fullscreen where window always forcefully moved to {0,0} position.
-    PlatformWindowMode mode = window->WindowMode();
+    PlatformWindowMode mode = window->windowMode();
     if (mode == WINDOW_MODE_WINDOWED || mode == WINDOW_MODE_BORDERLESS) {
         config->window.PositionX.Set(relativePos.x);
         config->window.PositionY.Set(relativePos.y);
@@ -143,8 +143,8 @@ void GameWindowHandler::UpdateConfigFromWindow(GameConfig *config) {
         config->window.Height.Set(wsize.h);
     }
     config->window.Mode.Set(mode);
-    config->window.MouseGrab.Set(window->GrabsMouse());
-    config->window.Resizable.Set(window->Resizable());
+    config->window.MouseGrab.Set(window->grabsMouse());
+    config->window.Resizable.Set(window->isResizable());
 }
 
 void GameWindowHandler::OnScreenshot() {
@@ -432,7 +432,7 @@ void GameWindowHandler::OnDeactivated() {
 }
 
 void GameWindowHandler::OnToggleBorderless() {
-    PlatformWindowMode mode = window->WindowMode();
+    PlatformWindowMode mode = window->windowMode();
     switch (mode) {
         case WINDOW_MODE_FULLSCREEN:
             mode = WINDOW_MODE_FULLSCREEN_BORDERLESS;
@@ -451,11 +451,11 @@ void GameWindowHandler::OnToggleBorderless() {
             break;
     }
 
-    window->SetWindowMode(mode);
+    window->setWindowMode(mode);
 }
 
 void GameWindowHandler::OnToggleFullscreen() {
-    PlatformWindowMode mode = window->WindowMode();
+    PlatformWindowMode mode = window->windowMode();
     switch (mode) {
         case WINDOW_MODE_FULLSCREEN:
             mode = WINDOW_MODE_WINDOWED;
@@ -474,17 +474,17 @@ void GameWindowHandler::OnToggleFullscreen() {
             break;
     }
 
-    window->SetWindowMode(mode);
+    window->setWindowMode(mode);
     engine->config->window.Mode.Set(mode);
     if (mode == WINDOW_MODE_WINDOWED || mode == WINDOW_MODE_BORDERLESS) {
-        window->Resize({engine->config->window.Width.Get(), engine->config->window.Height.Get()});
-        window->SetPosition(std::get<1>(GetWindowConfigPosition(engine->config.get())));
+        window->resize({engine->config->window.Width.Get(), engine->config->window.Height.Get()});
+        window->setPosition(std::get<1>(GetWindowConfigPosition(engine->config.get())));
     }
     render->Reinitialize();
 }
 
 void GameWindowHandler::OnToggleResizable() {
-    window->SetResizable(engine->config->window.Resizable.Toggle());
+    window->setResizable(engine->config->window.Resizable.Toggle());
 }
 
 void GameWindowHandler::OnCycleFilter() {
@@ -493,10 +493,10 @@ void GameWindowHandler::OnCycleFilter() {
 }
 
 void GameWindowHandler::OnMouseGrabToggle() {
-    window->SetGrabsMouse(engine->config->window.MouseGrab.Toggle());
+    window->setGrabsMouse(engine->config->window.MouseGrab.Toggle());
 }
 
-bool GameWindowHandler::KeyPressEvent(const PlatformKeyEvent *event) {
+bool GameWindowHandler::keyPressEvent(const PlatformKeyEvent *event) {
     keyboardController_->ProcessKeyPressEvent(event);
 
     if (event->isAutoRepeat)
@@ -513,17 +513,17 @@ bool GameWindowHandler::KeyPressEvent(const PlatformKeyEvent *event) {
     return false;
 }
 
-bool GameWindowHandler::KeyReleaseEvent(const PlatformKeyEvent *event) {
+bool GameWindowHandler::keyReleaseEvent(const PlatformKeyEvent *event) {
     keyboardController_->ProcessKeyReleaseEvent(event);
     return false;
 }
 
-bool GameWindowHandler::MouseMoveEvent(const PlatformMouseEvent *event) {
+bool GameWindowHandler::mouseMoveEvent(const PlatformMouseEvent *event) {
     OnMouseMove(MapToRender(event->pos), event->buttons & PlatformMouseButton::Left, event->buttons & PlatformMouseButton::Right);
     return false;
 }
 
-bool GameWindowHandler::MousePressEvent(const PlatformMouseEvent *event) {
+bool GameWindowHandler::mousePressEvent(const PlatformMouseEvent *event) {
     Pointi position = MapToRender(event->pos);
     if (event->button == PlatformMouseButton::Left) {
         if (event->isDoubleClick) {
@@ -541,7 +541,7 @@ bool GameWindowHandler::MousePressEvent(const PlatformMouseEvent *event) {
     return false;
 }
 
-bool GameWindowHandler::MouseReleaseEvent(const PlatformMouseEvent *event) {
+bool GameWindowHandler::mouseReleaseEvent(const PlatformMouseEvent *event) {
     if (event->button == PlatformMouseButton::Left) {
         OnMouseLeftUp();
     } else if (event->button == PlatformMouseButton::Right) {
@@ -550,12 +550,12 @@ bool GameWindowHandler::MouseReleaseEvent(const PlatformMouseEvent *event) {
     return false;
 }
 
-bool GameWindowHandler::WheelEvent(const PlatformWheelEvent *) { return false; }
+bool GameWindowHandler::wheelEvent(const PlatformWheelEvent *) { return false; }
 
-bool GameWindowHandler::MoveEvent(const PlatformMoveEvent *event) {
+bool GameWindowHandler::moveEvent(const PlatformMoveEvent *event) {
     /* Remember window position after move. Move position event is also triggered on toggling fullscreen. And we should save current window position prior to entering fullscreen.
      * As entering fullscreen will forcefully move window to {0,0} position on current display. And we want to restore position prior to entering fullscreen and not {0,0} or startup one. */
-    PlatformWindowMode mode = window->WindowMode();
+    PlatformWindowMode mode = window->windowMode();
     if (mode == WINDOW_MODE_WINDOWED || mode == WINDOW_MODE_BORDERLESS) {
         Pointi pos = event->pos;
         auto [display, relativePos, wsize] = GetWindowRelativePosition(&pos);
@@ -567,12 +567,12 @@ bool GameWindowHandler::MoveEvent(const PlatformMoveEvent *event) {
     return false;
 }
 
-bool GameWindowHandler::ResizeEvent(const PlatformResizeEvent *event) {
+bool GameWindowHandler::resizeEvent(const PlatformResizeEvent *event) {
     render->Reinitialize();
     return false;
 }
 
-bool GameWindowHandler::ActivationEvent(const PlatformWindowEvent *event) {
+bool GameWindowHandler::activationEvent(const PlatformWindowEvent *event) {
     if (event->type == PlatformEvent::WindowActivate) {
         OnActivated();
     } else if (event->type == PlatformEvent::WindowDeactivate) {
@@ -581,25 +581,25 @@ bool GameWindowHandler::ActivationEvent(const PlatformWindowEvent *event) {
     return false;
 }
 
-bool GameWindowHandler::CloseEvent(const PlatformWindowEvent *event) {
+bool GameWindowHandler::closeEvent(const PlatformWindowEvent *event) {
     UpdateConfigFromWindow(engine->config.get());
     engine->config->SaveConfiguration();
     Engine_DeinitializeAndTerminate(0);
     return false;
 }
 
-bool GameWindowHandler::GamepadDeviceEvent(const PlatformGamepadDeviceEvent *event) {
+bool GameWindowHandler::gamepadDeviceEvent(const PlatformGamepadDeviceEvent *event) {
     if (event->type == PlatformEvent::GamepadConnected) {
-        gamepads_[event->id] = platform->CreateGamepad(event->id);
+        gamepads_[event->id] = platform->createGamepad(event->id);
         if (gamepads_[event->id]) {
             PlatformGamepad *gamepad = gamepads_[event->id].get();
             std::string message = "gamepad #" + std::to_string(event->id) + " connected";
 
-            std::string model = gamepad->Model();
+            std::string model = gamepad->model();
             if (!model.empty())
                 message += ", model: " + model;
 
-            std::string serial = gamepad->Serial();
+            std::string serial = gamepad->serial();
             if (!serial.empty())
                 message += ", serial: " + serial;
 
@@ -612,7 +612,7 @@ bool GameWindowHandler::GamepadDeviceEvent(const PlatformGamepadDeviceEvent *eve
         for (auto it = gamepads_.begin(); it != gamepads_.end(); it++) {
             PlatformGamepad *gamepad = it->second.get();
 
-            if (gamepad->Id() == event->id) {
+            if (gamepad->id() == event->id) {
                 gamepads_.erase(it);
                 logger->Info("gamepad #%d disconnected", event->id);
                 return false;

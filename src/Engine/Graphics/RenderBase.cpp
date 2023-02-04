@@ -32,7 +32,7 @@
 
 
 bool RenderBase::Initialize() {
-    window->Resize({config->window.Width.Get(), config->window.Height.Get()});
+    window->resize({config->window.Width.Get(), config->window.Height.Get()});
 
     if (!pD3DBitmaps.Open(MakeDataPath("data", "d3dbitmap.hwl"))) {
         return false;

@@ -49,15 +49,15 @@ class PlatformGamepad;
  * are reported by each method.
  *
  * Also platform declares its own `main` function, so you cannot declare `main` in your code. Platform expects you
- * to define `PlatformMain` instead.
+ * to define `platformMain` instead.
  *
  * Some guidelines on adding new functionality to platform classes:
  * - If something can be done at the next abstraction layer, then it *should* be done at the next abstraction layer.
  *   Don't clutter platform API.
  * - Platform API should be reasonably minimal, and methods should be orthogonal. You can think of orthogonality in
  *   terms of information content, "is this method returning bits that can also be accessed through another method?"
- *   E.g. compare `Position` + `SetPosition` + `FramePosition` + `SetFramePosition` for a window class, vs `Position` +
- *   `SetPosition` + `FrameMargins`. The latter set of methods is orthogonal, the former is not.
+ *   E.g. compare `position` + `setPosition` + `framePosition` + `setFramePosition` for a window class, vs `position` +
+ *   `setPosition` + `frameMargins`. The latter set of methods is orthogonal, the former is not.
  * - The points above mean that platform API handles shouldn't expose non-virtual methods.
  * - Platform API should be getter/setter symmetric as long as the underlying OS API is symmetric. E.g. in the example
  *   above there is no `SetFrameMargins` method because this is not how window frames work.
@@ -76,21 +76,21 @@ class Platform {
      * @param logger                    Logger to use. Must not be null.
      * @return                          A newly created `Platform`. This method is guaranteed to succeed.
      */
-    static std::unique_ptr<Platform> CreateStandardPlatform(PlatformLogger *logger);
+    static std::unique_ptr<Platform> createStandardPlatform(PlatformLogger *logger);
 
     /**
      * Creates a new platform window.
      *
      * @return                          Newly created window, or `nullptr` on error.
      */
-    virtual std::unique_ptr<PlatformWindow> CreateWindow() = 0;
+    virtual std::unique_ptr<PlatformWindow> createWindow() = 0;
 
     /**
      * Creates a new event loop.
      *
      * @return                          Newly created event loop, or `nullptr` on error.
      */
-    virtual std::unique_ptr<PlatformEventLoop> CreateEventLoop() = 0;
+    virtual std::unique_ptr<PlatformEventLoop> createEventLoop() = 0;
 
     // TODO(captainurist): virtual PlatformGamepadInfo gamepadInfo(uint32_t id) const = 0;
     /**
@@ -99,28 +99,28 @@ class Platform {
      * @param id                        Gamepad identifier from event.
      * @return                          Newly created gamepad, or `nullptr` on error.
      */
-    virtual std::unique_ptr<PlatformGamepad> CreateGamepad(uint32_t id) = 0;
+    virtual std::unique_ptr<PlatformGamepad> createGamepad(uint32_t id) = 0;
 
     /**
      * Shows / hides system cursor (on top of all windows created by this platform).
      *
      * @param cursorShown               Whether to show the system cursor.
      */
-    virtual void SetCursorShown(bool cursorShown) = 0;
+    virtual void setCursorShown(bool cursorShown) = 0;
 
     /**
-     * Getter for `SetCursorShown`.
+     * Getter for `setCursorShown`.
      *
      * @return                          Whether the system cursor is currently shown on top of windows created by this
      *                                  platform.
      */
-    virtual bool IsCursorShown() const = 0;
+    virtual bool isCursorShown() const = 0;
 
     /**
      * @return                          Geometries of all monitors on current system, or an empty vector in case of an
      *                                  error.
      */
-    virtual std::vector<Recti> DisplayGeometries() const = 0;
+    virtual std::vector<Recti> displayGeometries() const = 0;
 
     // TODO(captainurist): TBH the argument order with the title going first makes more sense
     /**
@@ -129,12 +129,12 @@ class Platform {
      * @param message                   Message to display.
      * @param title                     Title of the message box window.
      */
-    virtual void ShowMessageBox(const std::string &message, const std::string& title) const = 0;
+    virtual void showMessageBox(const std::string &message, const std::string& title) const = 0;
 
     /**
      * @return                          Current value of a monotonic clock in milliseconds.
      */
-    virtual int64_t TickCount() const = 0;
+    virtual int64_t tickCount() const = 0;
 
     /**
      * Windows-only function for querying the registry. Always returns an empty string on non-Windows systems.
@@ -142,12 +142,12 @@ class Platform {
      * @param path                      Registry path to query.
      * @return                          Value at the given path, or an empty string in case of an error.
      */
-    virtual std::string WinQueryRegistry(const std::wstring &path) const = 0;
+    virtual std::string winQueryRegistry(const std::wstring &path) const = 0;
 
     /**
      * Get various application filesystem paths.
      *
      * @param type                      Storage type.
      */
-    virtual std::string StoragePath(const PLATFORM_STORAGE type) const = 0;
+    virtual std::string storagePath(const PLATFORM_STORAGE type) const = 0;
 };

@@ -11,13 +11,13 @@ class SdlOpenGLContext: public PlatformOpenGLContext {
     SdlOpenGLContext(SdlPlatformSharedState *state, SDL_Window *window, SDL_GLContext context);
     virtual ~SdlOpenGLContext();
 
-    virtual bool Bind() override;
-    virtual bool Unbind() override;
-    virtual void SwapBuffers() override;
-    virtual void *GetProcAddress(const char *name) override;
+    virtual bool bind() override;
+    virtual bool unbind() override;
+    virtual void swapBuffers() override;
+    virtual void *getProcAddress(const char *name) override;
 
  private:
-    SdlPlatformSharedState *state_ = nullptr;
-    SDL_Window *window_ = nullptr;
-    SDL_GLContext context_ = nullptr;
+    SdlPlatformSharedState *_state = nullptr;
+    SDL_Window *_window = nullptr;
+    SDL_GLContext _context = nullptr;
 };

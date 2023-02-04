@@ -206,14 +206,14 @@ extern std::map<InputAction, bool> key_map_conflicted;  // 506E6C
 //----- (00414D24) --------------------------------------------------------
 static unsigned int GameMenuUI_GetKeyBindingColor(InputAction action) {
     if (currently_selected_action_for_binding == action) {
-        if (platform->TickCount() % 1000 < 500)
+        if (platform->tickCount() % 1000 < 500)
             return ui_gamemenu_keys_key_selection_blink_color_1;
         else
             return ui_gamemenu_keys_key_selection_blink_color_2;
     } else if (key_map_conflicted[action]) {
         int intensity;
 
-        int time = platform->TickCount() % 800;
+        int time = platform->tickCount() % 800;
         if (time < 400)
             intensity = -70 + 70 * time / 400;
         else
@@ -1381,7 +1381,7 @@ void GameUI_DrawCharacterSelectionFrame() {
 
 //----- (0044162D) --------------------------------------------------------
 void GameUI_DrawPartySpells() {
-    unsigned int v0 = platform->TickCount() / 20;
+    unsigned int v0 = platform->tickCount() / 20;
     Image *spell_texture;  // [sp-4h] [bp-1Ch]@12
 
     for (uint i = 0; i < 14; ++i) {

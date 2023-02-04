@@ -56,17 +56,17 @@ class GameWindowHandler : public PlatformEventFilter {
     void OnActivated();
     void OnDeactivated();
 
-    virtual bool KeyPressEvent(const PlatformKeyEvent *event) override;
-    virtual bool KeyReleaseEvent(const PlatformKeyEvent *event) override;
-    virtual bool MouseMoveEvent(const PlatformMouseEvent *event) override;
-    virtual bool MousePressEvent(const PlatformMouseEvent *event) override;
-    virtual bool MouseReleaseEvent(const PlatformMouseEvent *event) override;
-    virtual bool WheelEvent(const PlatformWheelEvent *event) override;
-    virtual bool MoveEvent(const PlatformMoveEvent *event) override;
-    virtual bool ResizeEvent(const PlatformResizeEvent *event) override;
-    virtual bool ActivationEvent(const PlatformWindowEvent *event) override;
-    virtual bool CloseEvent(const PlatformWindowEvent *event) override;
-    virtual bool GamepadDeviceEvent(const PlatformGamepadDeviceEvent *event) override;
+    virtual bool keyPressEvent(const PlatformKeyEvent *event) override;
+    virtual bool keyReleaseEvent(const PlatformKeyEvent *event) override;
+    virtual bool mouseMoveEvent(const PlatformMouseEvent *event) override;
+    virtual bool mousePressEvent(const PlatformMouseEvent *event) override;
+    virtual bool mouseReleaseEvent(const PlatformMouseEvent *event) override;
+    virtual bool wheelEvent(const PlatformWheelEvent *event) override;
+    virtual bool moveEvent(const PlatformMoveEvent *event) override;
+    virtual bool resizeEvent(const PlatformResizeEvent *event) override;
+    virtual bool activationEvent(const PlatformWindowEvent *event) override;
+    virtual bool closeEvent(const PlatformWindowEvent *event) override;
+    virtual bool gamepadDeviceEvent(const PlatformGamepadDeviceEvent *event) override;
 
  private:
     std::shared_ptr<Mouse> mouse = nullptr;

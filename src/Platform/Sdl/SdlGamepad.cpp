@@ -5,28 +5,28 @@
 #include "SdlPlatformSharedState.h"
 
 SdlGamepad::SdlGamepad(SdlPlatformSharedState *state, SDL_GameController *gamepad, uint32_t id):
-    state_(state), gamepad_(gamepad), id_(id) {
+    _state(state), _gamepad(gamepad), _id(id) {
     assert(state);
     assert(gamepad);
 }
 
 SdlGamepad::~SdlGamepad() {
-    state_->UnregisterGamepad(this);
-    SDL_GameControllerClose(gamepad_);
+    _state->unregisterGamepad(this);
+    SDL_GameControllerClose(_gamepad);
 }
 
-std::string SdlGamepad::Model() const {
-    const char *model = SDL_GameControllerName(SdlHandle());
+std::string SdlGamepad::model() const {
+    const char *model = SDL_GameControllerName(sdlHandle());
     if (model != NULL)
         return model;
 
     return {};
 }
 
-std::string SdlGamepad::Serial() const {
+std::string SdlGamepad::serial() const {
     // TODO: Just update SDL
 #if SDL_VERSION_ATLEAST(2, 0, 14)
-    const char *serial = SDL_GameControllerGetSerial(SdlHandle());
+    const char *serial = SDL_GameControllerGetSerial(sdlHandle());
     if (serial != NULL)
         return serial;
 #endif
@@ -34,8 +34,8 @@ std::string SdlGamepad::Serial() const {
     return {};
 }
 
-int32_t SdlGamepad::GamepadSdlId() {
-    SDL_Joystick *joystick = SDL_GameControllerGetJoystick(SdlHandle());
+int32_t SdlGamepad::gamepadSdlId() {
+    SDL_Joystick *joystick = SDL_GameControllerGetJoystick(sdlHandle());
     int32_t joystickId =  SDL_JoystickInstanceID(joystick);
 
     return joystickId;

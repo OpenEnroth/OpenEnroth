@@ -37,18 +37,18 @@ void EngineDeterministicPlugin::leaveDeterministicMode() {
         grng = std::move(_oldRandomEngine);
 }
 
-int64_t EngineDeterministicPlugin::TickCount() const {
+int64_t EngineDeterministicPlugin::tickCount() const {
     if (_deterministicCounter > 0) {
         return _tickCount;
     } else {
-        return ProxyPlatform::TickCount();
+        return ProxyPlatform::tickCount();
     }
 }
 
-void EngineDeterministicPlugin::SwapBuffers() {
+void EngineDeterministicPlugin::swapBuffers() {
     if (_deterministicCounter > 0)
         _tickCount += FRAME_TIME_MS;
 
     // Tail calling is good practice - this way users can reason about the order of proxy execution.
-    ProxyOpenGLContext::SwapBuffers();
+    ProxyOpenGLContext::swapBuffers();
 }

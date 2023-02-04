@@ -2320,7 +2320,7 @@ void ODM_ProcessPartyActions() {
     pParty->sRotationY = _angle_x;
     //-------------------------------------------
     if (pParty->bFlying) {
-        v129 = 4 * TrigLUT.Cos(platform->TickCount());
+        v129 = 4 * TrigLUT.Cos(platform->tickCount());
         party_new_Z = v113 + v129;
         if (pModel_) party_new_Z = v113;
         if (pParty->FlyActive())

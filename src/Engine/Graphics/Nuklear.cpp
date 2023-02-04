@@ -3186,7 +3186,7 @@ finish:
 static int lua_window_dimensions(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
 
-    Sizei size = window->Size();
+    Sizei size = window->size();
     Sizei renderSize = render->GetRenderDimensions();
 
     lua_pushnumber(L, size.w);

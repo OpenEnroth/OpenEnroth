@@ -78,7 +78,7 @@ static std::string _resolvePath(
     }
 
     for (auto key : registryKeys) {
-        envPath = platform->WinQueryRegistry(key);
+        envPath = platform->winQueryRegistry(key);
         if (!envPath.empty()) {
             return envPath;
         }

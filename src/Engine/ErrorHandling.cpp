@@ -26,7 +26,7 @@ void Error_impl_(const char *filename, const char *functionname,
     }
 
     if (platform)
-        platform->ShowMessageBox(out.str(), "Error");
+        platform->showMessageBox(out.str(), "Error");
 }
 
 void Assert_impl_(const char *filename, const char *functionname,
@@ -50,7 +50,7 @@ void Assert_impl_(const char *filename, const char *functionname,
     }
 
     if (platform)
-        platform->ShowMessageBox(out.str(), "Assertion");
+        platform->showMessageBox(out.str(), "Assertion");
 
     assert(false);
 }

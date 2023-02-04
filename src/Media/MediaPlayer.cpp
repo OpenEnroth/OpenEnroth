@@ -274,7 +274,7 @@ static Recti calculateVideoRectangle(const PMovie &pMovie_Track) {
     if (render->GetPresentDimensions() != render->GetRenderDimensions())
         scaleSize = render->GetRenderDimensions();
     else
-        scaleSize = window->Size();
+        scaleSize = window->size();
     float ratio_width = (float)scaleSize.w / pMovie_Track->GetWidth();
     float ratio_height = (float)scaleSize.h / pMovie_Track->GetHeight();
     float ratio = std::min(ratio_width, ratio_height);
@@ -859,12 +859,12 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
 
     pEventTimer->Pause();
     pAudioPlayer->MusicPause();
-    platform->SetCursorShown(false);
+    platform->setCursorShown(false);
     current_screen_type = CURRENT_SCREEN::SCREEN_VIDEO;
 
     pMovie_Track->Play();
 
-    Sizei wSize = window->Size();
+    Sizei wSize = window->size();
     Sizei scaleSize;
 
     // create texture
@@ -910,7 +910,7 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
     // prevent passing UIMSG_Escape event if video stopped by ESC key
     pMessageQueue_50CBD0->Flush();
 
-    platform->SetCursorShown(true);
+    platform->setCursorShown(true);
 }
 
 bool MPlayer::IsMoviePlaying() const {

@@ -28,35 +28,35 @@ class PlatformWindow {
  public:
     virtual ~PlatformWindow() = default;
 
-    virtual void SetTitle(const std::string &title) = 0;
-    virtual std::string Title() const = 0;
+    virtual void setTitle(const std::string &title) = 0;
+    virtual std::string title() const = 0;
 
-    virtual void Resize(const Sizei &size) = 0;
-    virtual Sizei Size() const = 0;
+    virtual void resize(const Sizei &size) = 0;
+    virtual Sizei size() const = 0;
 
-    virtual void SetPosition(const Pointi &pos) = 0;
-    virtual Pointi Position() const = 0;
+    virtual void setPosition(const Pointi &pos) = 0;
+    virtual Pointi position() const = 0;
 
-    virtual void SetVisible(bool visible) = 0;
-    virtual bool IsVisible() const = 0;
+    virtual void setVisible(bool visible) = 0;
+    virtual bool isVisible() const = 0;
 
-    virtual void SetResizable(bool resizable) = 0;
-    virtual bool Resizable() const = 0;
+    virtual void setResizable(bool resizable) = 0;
+    virtual bool isResizable() const = 0;
 
-    virtual void SetWindowMode(PlatformWindowMode mode) = 0;
-    virtual PlatformWindowMode WindowMode() = 0;
+    virtual void setWindowMode(PlatformWindowMode mode) = 0;
+    virtual PlatformWindowMode windowMode() = 0;
 
-    virtual void SetGrabsMouse(bool grabsMouse) = 0;
-    virtual bool GrabsMouse() const = 0;
+    virtual void setGrabsMouse(bool grabsMouse) = 0;
+    virtual bool grabsMouse() const = 0;
 
-    virtual void SetOrientations(PlatformWindowOrientations orientations) = 0;
-    virtual PlatformWindowOrientations Orientations() = 0;
+    virtual void setOrientations(PlatformWindowOrientations orientations) = 0;
+    virtual PlatformWindowOrientations orientations() = 0;
 
-    virtual Marginsi FrameMargins() const = 0;
+    virtual Marginsi frameMargins() const = 0;
 
-    virtual uintptr_t SystemHandle() const = 0; // TODO(captainurist): docs, @return HWND, etc.
+    virtual uintptr_t systemHandle() const = 0; // TODO(captainurist): docs, @return HWND, etc.
 
-    virtual void Activate() = 0;
+    virtual void activate() = 0;
 
-    virtual std::unique_ptr<PlatformOpenGLContext> CreateOpenGLContext(const PlatformOpenGLOptions &options) = 0;
+    virtual std::unique_ptr<PlatformOpenGLContext> createOpenGLContext(const PlatformOpenGLOptions &options) = 0;
 };

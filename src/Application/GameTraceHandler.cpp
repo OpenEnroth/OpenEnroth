@@ -11,7 +11,7 @@ GameTraceHandler::GameTraceHandler(EngineTracer *tracer) : PlatformEventFilter({
     assert(tracer);
 }
 
-bool GameTraceHandler::KeyPressEvent(const PlatformKeyEvent *event) {
+bool GameTraceHandler::keyPressEvent(const PlatformKeyEvent *event) {
     if (isTriggerKey(event) && _waitingForKeyRelease) {
         if (event->isAutoRepeat) {
             return true; // Ignore auto-repeats
@@ -35,7 +35,7 @@ bool GameTraceHandler::KeyPressEvent(const PlatformKeyEvent *event) {
     return false;
 }
 
-bool GameTraceHandler::KeyReleaseEvent(const PlatformKeyEvent *event) {
+bool GameTraceHandler::keyReleaseEvent(const PlatformKeyEvent *event) {
     if (isTriggerKey(event) && _waitingForKeyRelease) {
         _waitingForKeyRelease = false;
 

@@ -59,8 +59,8 @@ class EngineDeterministicPlugin : private ProxyPlatform, private ProxyOpenGLCont
  private:
     friend class PlatformIntrospection; // Give access to private bases.
 
-    virtual int64_t TickCount() const override;
-    virtual void SwapBuffers() override;
+    virtual int64_t tickCount() const override;
+    virtual void swapBuffers() override;
 
  private:
     int _deterministicCounter = 0;

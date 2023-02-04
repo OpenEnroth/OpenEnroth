@@ -9,8 +9,8 @@ class ProxyOpenGLContext: public ProxyBase<PlatformOpenGLContext> {
     explicit ProxyOpenGLContext(PlatformOpenGLContext *base = nullptr);
     virtual ~ProxyOpenGLContext() = default;
 
-    virtual bool Bind() override;
-    virtual bool Unbind() override;
-    virtual void SwapBuffers() override;
-    virtual void *GetProcAddress(const char *name) override;
+    virtual bool bind() override;
+    virtual bool unbind() override;
+    virtual void swapBuffers() override;
+    virtual void *getProcAddress(const char *name) override;
 };

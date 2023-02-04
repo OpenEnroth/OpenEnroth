@@ -64,43 +64,43 @@ void EngineControlPlugin::processSyntheticEvents(PlatformEventHandler *eventHand
     while (!_state->postedEvents.empty() && count != 0) {
         std::unique_ptr<PlatformEvent> event = std::move(_state->postedEvents.front());
         _state->postedEvents.pop();
-        eventHandler->Event(event.get());
+        eventHandler->event(event.get());
         count--; // Negative count will never get to zero, as intended.
     }
 }
 
-void EngineControlPlugin::Exec(PlatformEventHandler *eventHandler) {
+void EngineControlPlugin::exec(PlatformEventHandler *eventHandler) {
     if (!hasControlRoutine()) {
         assert(_state->postedEvents.empty());
-        ProxyEventLoop::Exec(eventHandler);
+        ProxyEventLoop::exec(eventHandler);
     } else {
         processSyntheticEvents(eventHandler);
-        ProxyEventLoop::Exec(_emptyHandler.get());
+        ProxyEventLoop::exec(_emptyHandler.get());
     }
 }
 
-void EngineControlPlugin::ProcessMessages(PlatformEventHandler *eventHandler, int count) {
+void EngineControlPlugin::processMessages(PlatformEventHandler *eventHandler, int count) {
     if (!hasControlRoutine()) {
         assert(_state->postedEvents.empty());
-        ProxyEventLoop::ProcessMessages(eventHandler, count);
+        ProxyEventLoop::processMessages(eventHandler, count);
     } else {
         processSyntheticEvents(eventHandler, count);
-        ProxyEventLoop::ProcessMessages(_emptyHandler.get());
+        ProxyEventLoop::processMessages(_emptyHandler.get());
     }
 }
 
-void EngineControlPlugin::WaitForMessages() {
+void EngineControlPlugin::waitForMessages() {
     if (!hasControlRoutine()) {
         assert(_state->postedEvents.empty());
-        ProxyEventLoop::WaitForMessages();
+        ProxyEventLoop::waitForMessages();
     } else {
         return; // Don't hang up in this function when control routine is running.
     }
 }
 
-void EngineControlPlugin::SwapBuffers() {
+void EngineControlPlugin::swapBuffers() {
     // Not tail calling here for a reason - the control routine should run AFTER all the proxies are done.
-    ProxyOpenGLContext::SwapBuffers();
+    ProxyOpenGLContext::swapBuffers();
 
     if (hasControlRoutine()) {
         while (true) {

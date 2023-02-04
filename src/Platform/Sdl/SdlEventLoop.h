@@ -12,29 +12,29 @@ class SdlEventLoop: public PlatformEventLoop {
     explicit SdlEventLoop(SdlPlatformSharedState *state);
     virtual ~SdlEventLoop();
 
-    virtual void Exec(PlatformEventHandler *eventHandler) override;
-    virtual void Quit() override;
+    virtual void exec(PlatformEventHandler *eventHandler) override;
+    virtual void quit() override;
 
-    virtual void ProcessMessages(PlatformEventHandler *eventHandler, int count = -1) override;
-    virtual void WaitForMessages() override;
-
- private:
-    void DispatchEvent(PlatformEventHandler *eventHandler, const SDL_Event *event);
-    void DispatchEvent(PlatformEventHandler *eventHandler, const PlatformEvent *event);
-    void DispatchNativeEvent(PlatformEventHandler *eventHandler, const SDL_Event *event);
-    void DispatchQuitEvent(PlatformEventHandler *eventHandler, const SDL_QuitEvent *event);
-    void DispatchKeyEvent(PlatformEventHandler *eventHandler, const SDL_KeyboardEvent *event);
-    void DispatchMouseMoveEvent(PlatformEventHandler *eventHandler, const SDL_MouseMotionEvent *event);
-    void DispatchMouseButtonEvent(PlatformEventHandler *eventHandler, const SDL_MouseButtonEvent *event);
-    void DispatchMouseWheelEvent(PlatformEventHandler *eventHandler, const SDL_MouseWheelEvent *event);
-    void DispatchWindowEvent(PlatformEventHandler *eventHandler, const SDL_WindowEvent *event);
-    void DispatchWindowMoveEvent(PlatformEventHandler *eventHandler, const SDL_WindowEvent *event);
-    void DispatchWindowResizeEvent(PlatformEventHandler *eventHandler, const SDL_WindowEvent *event);
-    void DispatchGamepadDeviceEvent(PlatformEventHandler *eventHandler, const SDL_ControllerDeviceEvent *event);
-    void DispatchGamepadButtonEvent(PlatformEventHandler *eventHandler, const SDL_ControllerButtonEvent *event);
-    void DispatchGamepadAxisEvent(PlatformEventHandler *eventHandler, const SDL_ControllerAxisEvent *event);
+    virtual void processMessages(PlatformEventHandler *eventHandler, int count = -1) override;
+    virtual void waitForMessages() override;
 
  private:
-    SdlPlatformSharedState *state_ = nullptr;
-    bool quitRequested_ = false;
+    void dispatchEvent(PlatformEventHandler *eventHandler, const SDL_Event *event);
+    void dispatchEvent(PlatformEventHandler *eventHandler, const PlatformEvent *event);
+    void dispatchNativeEvent(PlatformEventHandler *eventHandler, const SDL_Event *event);
+    void dispatchQuitEvent(PlatformEventHandler *eventHandler, const SDL_QuitEvent *event);
+    void dispatchKeyEvent(PlatformEventHandler *eventHandler, const SDL_KeyboardEvent *event);
+    void dispatchMouseMoveEvent(PlatformEventHandler *eventHandler, const SDL_MouseMotionEvent *event);
+    void dispatchMouseButtonEvent(PlatformEventHandler *eventHandler, const SDL_MouseButtonEvent *event);
+    void dispatchMouseWheelEvent(PlatformEventHandler *eventHandler, const SDL_MouseWheelEvent *event);
+    void dispatchWindowEvent(PlatformEventHandler *eventHandler, const SDL_WindowEvent *event);
+    void dispatchWindowMoveEvent(PlatformEventHandler *eventHandler, const SDL_WindowEvent *event);
+    void dispatchWindowResizeEvent(PlatformEventHandler *eventHandler, const SDL_WindowEvent *event);
+    void dispatchGamepadDeviceEvent(PlatformEventHandler *eventHandler, const SDL_ControllerDeviceEvent *event);
+    void dispatchGamepadButtonEvent(PlatformEventHandler *eventHandler, const SDL_ControllerButtonEvent *event);
+    void dispatchGamepadAxisEvent(PlatformEventHandler *eventHandler, const SDL_ControllerAxisEvent *event);
+
+ private:
+    SdlPlatformSharedState *_state = nullptr;
+    bool _quitRequested = false;
 };

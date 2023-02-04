@@ -8,7 +8,7 @@
 #include "SdlEnumTranslation.h"
 
 // This one is not in `SdlEnumTranslation.h` because it's closely tied to the implementation below.
-static SDL_LogCategory TranslatePlatformLogCategory(PlatformLogCategory category) {
+static SDL_LogCategory translatePlatformLogCategory(PlatformLogCategory category) {
     if (category == ApplicationLog) {
         return SDL_LOG_CATEGORY_APPLICATION;
     } else {
@@ -19,9 +19,9 @@ static SDL_LogCategory TranslatePlatformLogCategory(PlatformLogCategory category
     }
 }
 
-void SdlLogger::SetLogLevel(PlatformLogCategory category, PlatformLogLevel logLevel) {
+void SdlLogger::setLogLevel(PlatformLogCategory category, PlatformLogLevel logLevel) {
     if (category == ApplicationLog) {
-        SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, TranslatePlatformLogLevel(logLevel));
+        SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, translatePlatformLogLevel(logLevel));
     } else {
         assert(category == PlatformLog);
         SDL_LogPriority applicationPriority = SDL_LogGetPriority(SDL_LOG_CATEGORY_APPLICATION);
@@ -31,7 +31,7 @@ void SdlLogger::SetLogLevel(PlatformLogCategory category, PlatformLogLevel logLe
         // categories and calling `SDL_LogSetPriority` because it sets a single global variable inside SDL
         // (`SDL_default_priority`). Making several calls would instead allocate a linked list of category-priority
         // pairs which will then be traversed in O(n) every time we call `SDL_Log`.
-        SDL_LogSetAllPriority(TranslatePlatformLogLevel(logLevel));
+        SDL_LogSetAllPriority(translatePlatformLogLevel(logLevel));
 
         // Then we need to roll back assert priority. All SDL asserts are issued at `SDL_LOG_PRIORITY_WARN` which
         // makes little sense, they should be at `SDL_LOG_PRIORITY_CRITICAL`.
@@ -42,15 +42,15 @@ void SdlLogger::SetLogLevel(PlatformLogCategory category, PlatformLogLevel logLe
     }
 }
 
-PlatformLogLevel SdlLogger::LogLevel(PlatformLogCategory category) const {
-    return TranslateSdlLogLevel(SDL_LogGetPriority(TranslatePlatformLogCategory(category)));
+PlatformLogLevel SdlLogger::logLevel(PlatformLogCategory category) const {
+    return translateSdlLogLevel(SDL_LogGetPriority(translatePlatformLogCategory(category)));
 }
 
-void SdlLogger::Log(PlatformLogCategory category, PlatformLogLevel logLevel, const char *message) {
+void SdlLogger::log(PlatformLogCategory category, PlatformLogLevel logLevel, const char *message) {
     // SDL_LogMessage is thread-safe, thus this function is also thread-safe. The only caveat is that SDL_Init
     // should be called before creating several threads that do logging, but we don't care to check for that.
-    SDL_LogCategory sdlCategory = TranslatePlatformLogCategory(category);
-    SDL_LogPriority sdlPriority = TranslatePlatformLogLevel(logLevel);
+    SDL_LogCategory sdlCategory = translatePlatformLogCategory(category);
+    SDL_LogPriority sdlPriority = translatePlatformLogLevel(logLevel);
 #ifdef __APPLE__
     // SDL_LogMessage on apple uses NSLog, and it prepends timestamp
     // TODO(captainurist): check if android does the same.

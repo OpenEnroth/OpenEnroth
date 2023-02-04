@@ -14,7 +14,7 @@ class PaintEvent : public PlatformEvent {
     /** Tick count for the next frame. */
     int64_t tickCount = -1; //
 
-    /** Result of `grng->Random(1024)` call from inside `SwapBuffers`, basically a random state at the start of the
+    /** Result of `grng->Random(1024)` call from inside `swapBuffers`, basically a random state at the start of the
      * next frame. */
     int randomState = -1;
 };

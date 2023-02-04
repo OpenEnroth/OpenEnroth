@@ -115,7 +115,7 @@ void EngineTracer::playTrace(EngineController *game, const std::string &savePath
 
             const PaintEvent *paintEvent = static_cast<const PaintEvent *>(event.get());
 
-            int64_t tickCount = application()->platform()->TickCount();
+            int64_t tickCount = application()->platform()->tickCount();
             if (tickCount != paintEvent->tickCount) {
                 throw std::runtime_error(fmt::format(
                     "Tick count desynchronized when playing back trace '{}': expected {}, got {}",

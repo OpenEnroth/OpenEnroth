@@ -12,7 +12,7 @@ void Logger::SetBaseLogger(PlatformLogger *baseLogger) {
 }
 
 void Logger::Log(PlatformLogLevel logLevel, const char *format, ...) {
-    if (baseLogger_ && baseLogger_->LogLevel(ApplicationLog) > logLevel)
+    if (baseLogger_ && baseLogger_->logLevel(ApplicationLog) > logLevel)
         return;
 
     va_list args;
@@ -22,7 +22,7 @@ void Logger::Log(PlatformLogLevel logLevel, const char *format, ...) {
 }
 
 void Logger::Info(const char *pFormat, ...) {
-    if (baseLogger_ && baseLogger_->LogLevel(ApplicationLog) > LogInfo)
+    if (baseLogger_ && baseLogger_->logLevel(ApplicationLog) > LogInfo)
         return;
 
     va_list args;
@@ -32,7 +32,7 @@ void Logger::Info(const char *pFormat, ...) {
 }
 
 void Logger::Warning(const char *pFormat, ...) {
-    if (baseLogger_ && baseLogger_->LogLevel(ApplicationLog) > LogWarning)
+    if (baseLogger_ && baseLogger_->logLevel(ApplicationLog) > LogWarning)
         return;
 
     va_list args;
@@ -46,7 +46,7 @@ void Logger::LogV(PlatformLogLevel logLevel, const char *pFormat, va_list args) 
     vsnprintf(message, 8192, pFormat, args);
 
     if (baseLogger_) {
-        baseLogger_->Log(ApplicationLog, logLevel, message);
+        baseLogger_->log(ApplicationLog, logLevel, message);
     } else {
         fprintf(stderr, "UNINITIALIZED LOGGER: %s\n", message);
     }

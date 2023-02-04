@@ -140,15 +140,15 @@ void GameOver_Loop(int v15) {
     if (v15 == 2) {
         result = pMessageQueue_50CBD0->qMessages.size();
     } else {
-        HEXRAYS_LODWORD(v23) = platform->TickCount() + 5000;
-        while ((unsigned int)v23 > platform->TickCount()) {}
+        HEXRAYS_LODWORD(v23) = platform->tickCount() + 5000;
+        while ((unsigned int)v23 > platform->tickCount()) {}
 
-        eventLoop->ProcessMessages(eventHandler);
+        eventLoop->processMessages(eventHandler);
 
         pMessageQueue_50CBD0->Flush();
         keyboardInputHandler->ResetKeys();
         do {
-            eventLoop->ProcessMessages(eventHandler);
+            eventLoop->processMessages(eventHandler);
         } while (keyboardActionMapping->IsKeyMatchAction(InputAction::Escape, keyboardInputHandler->LastPressedKey()));
         pMessageQueue_50CBD0->Flush();
     }

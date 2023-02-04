@@ -19,9 +19,9 @@
 class GameThread {
  public:
     explicit GameThread(const GameTestOptions& options) {
-        _logger = PlatformLogger::CreateStandardLogger(WinEnsureConsoleOption);
-        _logger->SetLogLevel(ApplicationLog, LogInfo);
-        _logger->SetLogLevel(PlatformLog, LogError);
+        _logger = PlatformLogger::createStandardLogger(WinEnsureConsoleOption);
+        _logger->setLogLevel(ApplicationLog, LogInfo);
+        _logger->setLogLevel(PlatformLog, LogError);
         EngineIoc::ResolveLogger()->SetBaseLogger(_logger.get());
         Engine::LogEngineBuildInfo();
 
@@ -81,7 +81,7 @@ int parseOptions(int argc, char **argv, GameTestOptions *opts) {
     return exitCode;
 }
 
-int PlatformMain(int argc, char **argv) {
+int platformMain(int argc, char **argv) {
     GameTestOptions opts;
     int exitCode = parseOptions(argc, argv, &opts);
     if (exitCode != 0)

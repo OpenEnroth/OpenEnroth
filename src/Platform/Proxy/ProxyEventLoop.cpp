@@ -2,19 +2,19 @@
 
 ProxyEventLoop::ProxyEventLoop(PlatformEventLoop *base) : ProxyBase<PlatformEventLoop>(base) {}
 
-void ProxyEventLoop::Exec(PlatformEventHandler *eventHandler) {
-    NonNullBase()->Exec(eventHandler);
+void ProxyEventLoop::exec(PlatformEventHandler *eventHandler) {
+    nonNullBase()->exec(eventHandler);
 }
 
-void ProxyEventLoop::Quit() {
-    NonNullBase()->Quit();
+void ProxyEventLoop::quit() {
+    nonNullBase()->quit();
 }
 
-void ProxyEventLoop::ProcessMessages(PlatformEventHandler *eventHandler, int count) {
-    NonNullBase()->ProcessMessages(eventHandler, count);
+void ProxyEventLoop::processMessages(PlatformEventHandler *eventHandler, int count) {
+    nonNullBase()->processMessages(eventHandler, count);
 }
 
-void ProxyEventLoop::WaitForMessages() {
-    NonNullBase()->WaitForMessages();
+void ProxyEventLoop::waitForMessages() {
+    nonNullBase()->waitForMessages();
 }
 

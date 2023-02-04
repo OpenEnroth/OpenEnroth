@@ -4,7 +4,7 @@
 
 NuklearEventHandler::NuklearEventHandler() : PlatformEventFilter(PlatformEventFilter::ALL_EVENTS) {}
 
-bool NuklearEventHandler::KeyPressEvent(const PlatformKeyEvent *event) {
+bool NuklearEventHandler::keyPressEvent(const PlatformKeyEvent *event) {
     PlatformKey key = event->key;
     PlatformModifiers mods = event->mods;
 
@@ -14,7 +14,7 @@ bool NuklearEventHandler::KeyPressEvent(const PlatformKeyEvent *event) {
     return KeyEvent(key, mods, true);
 }
 
-bool NuklearEventHandler::KeyReleaseEvent(const PlatformKeyEvent *event) {
+bool NuklearEventHandler::keyReleaseEvent(const PlatformKeyEvent *event) {
     PlatformKey key = event->key;
     PlatformModifiers mods = event->mods;
 
@@ -77,19 +77,19 @@ bool NuklearEventHandler::KeyEvent(PlatformKey key, PlatformModifiers mods, bool
     return false;
 }
 
-bool NuklearEventHandler::MouseMoveEvent(const PlatformMouseEvent *event) {
+bool NuklearEventHandler::mouseMoveEvent(const PlatformMouseEvent *event) {
     nk_input_motion(nuklear->ctx, event->pos.x, event->pos.y);
     return false;
 }
 
-bool NuklearEventHandler::MousePressEvent(const PlatformMouseEvent *event) {
+bool NuklearEventHandler::mousePressEvent(const PlatformMouseEvent *event) {
     if (event->button == PlatformMouseButton::Left && event->isDoubleClick)
         nk_input_button(nuklear->ctx, NK_BUTTON_DOUBLE, event->pos.x, event->pos.y, true);
 
     return MouseEvent(event->button, event->pos, true);
 }
 
-bool NuklearEventHandler::MouseReleaseEvent(const PlatformMouseEvent *event) {
+bool NuklearEventHandler::mouseReleaseEvent(const PlatformMouseEvent *event) {
     return MouseEvent(event->button, event->pos, false);
 }
 
@@ -105,7 +105,7 @@ bool NuklearEventHandler::MouseEvent(PlatformMouseButton button, const Pointi &p
     return false;
 }
 
-bool NuklearEventHandler::WheelEvent(const PlatformWheelEvent *event) {
+bool NuklearEventHandler::wheelEvent(const PlatformWheelEvent *event) {
     nk_input_scroll(nuklear->ctx, nk_vec2(event->angleDelta.x, event->angleDelta.y));
     return false;
 }

@@ -11,7 +11,7 @@ class ProxyGamepad: public ProxyBase<PlatformGamepad> {
     explicit ProxyGamepad(PlatformGamepad *base = nullptr);
     virtual ~ProxyGamepad() = default;
 
-    virtual std::string Model() const override;
-    virtual std::string Serial() const override;
-    virtual uint32_t Id() const override;
+    virtual std::string model() const override;
+    virtual std::string serial() const override;
+    virtual uint32_t id() const override;
 };

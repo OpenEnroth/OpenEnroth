@@ -9,56 +9,55 @@
 #include "SdlLogger.h"
 #include "SdlGamepad.h"
 
-SdlPlatformSharedState::SdlPlatformSharedState(SdlPlatform *owner, PlatformLogger *logger): owner_(owner), logger_(logger) {
-    assert(owner);
+SdlPlatformSharedState::SdlPlatformSharedState(PlatformLogger *logger): _logger(logger) {
     assert(logger);
 }
 
 SdlPlatformSharedState::~SdlPlatformSharedState() {
-    assert(windowById_.empty()); // Platform should be destroyed after all windows.
+    assert(_windowById.empty()); // Platform should be destroyed after all windows.
 }
 
-void SdlPlatformSharedState::LogSdlError(const char *sdlFunctionName) {
+void SdlPlatformSharedState::logSdlError(const char *sdlFunctionName) {
     // Note that we cannot use `SDL_Log` here because we have no guarantees on the actual type of the logger
     // that was passed in constructor.
     char buffer[1024];
     snprintf(buffer, sizeof(buffer), "SDL error in %s: %s.", sdlFunctionName, SDL_GetError());
-    logger_->Log(PlatformLog, LogError, buffer);
+    _logger->log(PlatformLog, LogError, buffer);
 }
 
-void SdlPlatformSharedState::RegisterWindow(SdlWindow *window) {
-    assert(!windowById_.contains(window->Id()));
-    windowById_[window->Id()] = window;
+void SdlPlatformSharedState::registerWindow(SdlWindow *window) {
+    assert(!_windowById.contains(window->Id()));
+    _windowById[window->Id()] = window;
 }
 
-void SdlPlatformSharedState::UnregisterWindow(SdlWindow *window) {
-    assert(windowById_.contains(window->Id()));
-    windowById_.erase(window->Id());
+void SdlPlatformSharedState::unregisterWindow(SdlWindow *window) {
+    assert(_windowById.contains(window->Id()));
+    _windowById.erase(window->Id());
 }
 
-std::vector<uint32_t> SdlPlatformSharedState::AllWindowIds() const {
+std::vector<uint32_t> SdlPlatformSharedState::allWindowIds() const {
     std::vector<uint32_t> result;
-    for (auto [id, _] : windowById_)
+    for (auto [id, _] : _windowById)
         result.push_back(id);
     return result;
 }
 
-SdlWindow *SdlPlatformSharedState::Window(uint32_t id) const {
-    assert(windowById_.contains(id));
-    return ValueOr(windowById_, id, nullptr);
+SdlWindow *SdlPlatformSharedState::window(uint32_t id) const {
+    assert(_windowById.contains(id));
+    return ValueOr(_windowById, id, nullptr);
 }
 
-void SdlPlatformSharedState::RegisterGamepad(SdlGamepad *gamepad) {
-    int32_t id = NextFreeGamepadId();
+void SdlPlatformSharedState::registerGamepad(SdlGamepad *gamepad) {
+    int32_t id = nextFreeGamepadId();
     assert(id >= 0);
 
-    gamepadById_[id] = gamepad;
+    _gamepadById[id] = gamepad;
 }
 
-void SdlPlatformSharedState::UnregisterGamepad(SdlGamepad *gamepad) {
-    for (auto it = gamepadById_.begin(); it != gamepadById_.end(); it++) {
+void SdlPlatformSharedState::unregisterGamepad(SdlGamepad *gamepad) {
+    for (auto it = _gamepadById.begin(); it != _gamepadById.end(); it++) {
         if (gamepad == it->second) {
-            gamepadById_.erase(it);
+            _gamepadById.erase(it);
             return;
         }
     }
@@ -66,27 +65,27 @@ void SdlPlatformSharedState::UnregisterGamepad(SdlGamepad *gamepad) {
     assert(0); //shouldn't happen
 }
 
-int32_t SdlPlatformSharedState::GetGamepadIdBySdlId(uint32_t id) {
+int32_t SdlPlatformSharedState::getGamepadIdBySdlId(uint32_t id) {
     int32_t ret = -1;
 
-    for (auto it = gamepadById_.begin(); it != gamepadById_.end(); it++) {
+    for (auto it = _gamepadById.begin(); it != _gamepadById.end(); it++) {
         SdlGamepad *gamepad = it->second;
-        if (gamepad->GamepadSdlId() == id)
-            return gamepad->Id();
+        if (gamepad->gamepadSdlId() == id)
+            return gamepad->id();
     }
 
     return ret;
 }
 
-SdlGamepad *SdlPlatformSharedState::Gamepad(uint32_t id) const {
-    assert(gamepadById_.contains(id));
-    return ValueOr(gamepadById_, id, nullptr);
+SdlGamepad *SdlPlatformSharedState::gamepad(uint32_t id) const {
+    assert(_gamepadById.contains(id));
+    return ValueOr(_gamepadById, id, nullptr);
 }
 
-int32_t SdlPlatformSharedState::NextFreeGamepadId() {
+int32_t SdlPlatformSharedState::nextFreeGamepadId() {
     int32_t ret = -1;
     for (int i = 0; i < SDL_NumJoysticks(); i++) {
-        if (!gamepadById_.contains(i)) {
+        if (!_gamepadById.contains(i)) {
             ret = i;
             break;
         }

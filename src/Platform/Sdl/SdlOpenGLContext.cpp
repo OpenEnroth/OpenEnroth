@@ -4,7 +4,7 @@
 
 #include "SdlPlatformSharedState.h"
 
-SdlOpenGLContext::SdlOpenGLContext(SdlPlatformSharedState *state, SDL_Window *window, SDL_GLContext context): state_(state), window_(window), context_(context) {
+SdlOpenGLContext::SdlOpenGLContext(SdlPlatformSharedState *state, SDL_Window *window, SDL_GLContext context): _state(state), _window(window), _context(context) {
     assert(state);
     assert(window);
     assert(context);
@@ -12,31 +12,31 @@ SdlOpenGLContext::SdlOpenGLContext(SdlPlatformSharedState *state, SDL_Window *wi
 
 SdlOpenGLContext::~SdlOpenGLContext() {}
 
-bool SdlOpenGLContext::Bind() {
-    bool succeeded = SDL_GL_MakeCurrent(window_, context_) == 0;
+bool SdlOpenGLContext::bind() {
+    bool succeeded = SDL_GL_MakeCurrent(_window, _context) == 0;
 
     if (!succeeded)
-        state_->LogSdlError("SDL_GL_MakeCurrent");
+        _state->logSdlError("SDL_GL_MakeCurrent");
 
     return succeeded;
 }
 
-bool SdlOpenGLContext::Unbind() {
-    bool succeeded = SDL_GL_MakeCurrent(window_, nullptr) == 0;
+bool SdlOpenGLContext::unbind() {
+    bool succeeded = SDL_GL_MakeCurrent(_window, nullptr) == 0;
 
     if (!succeeded)
-        state_->LogSdlError("SDL_GL_MakeCurrent");
+        _state->logSdlError("SDL_GL_MakeCurrent");
 
     return succeeded;
 }
 
-void SdlOpenGLContext::SwapBuffers() {
-    SDL_GL_SwapWindow(window_);
+void SdlOpenGLContext::swapBuffers() {
+    SDL_GL_SwapWindow(_window);
 }
 
-void *SdlOpenGLContext::GetProcAddress(const char* name) {
-    if (SDL_GL_GetCurrentWindow() != window_ || SDL_GL_GetCurrentContext() != context_)
-        if (!Bind())
+void *SdlOpenGLContext::getProcAddress(const char* name) {
+    if (SDL_GL_GetCurrentWindow() != _window || SDL_GL_GetCurrentContext() != _context)
+        if (!bind())
             return nullptr;
 
     return SDL_GL_GetProcAddress(name);
