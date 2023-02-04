@@ -10,7 +10,7 @@ var searchData=
   ['tileset_7',['Tileset',['../TileFrameTable_8h.html#a853fa224fcbff1ba70f01db3865fa9e3',1,'TileFrameTable.h']]],
   ['totallybrokenenum_8',['TotallyBrokenEnum',['../Json__ut_8cpp.html#a6391cb104127d8e1737f9b9af4981691',1,'Json_ut.cpp']]],
   ['turn_5fengine_5fai_5faction_9',['TURN_ENGINE_AI_ACTION',['../TurnEngine_8h.html#ad787e59edbb1a7b858de87875d03acfa',1,'TurnEngine.h']]],
-  ['turn_5fengine_5fflags_10',['TURN_ENGINE_FLAGS',['../TurnEngine_8h.html#a33743db842bb5d8b7e87b9e35b77201a',1,'TurnEngine.h']]],
+  ['turn_5fengine_5fflag_10',['TURN_ENGINE_FLAG',['../TurnEngine_8h.html#a41706c1a815b2c6b07ad948794f6cb67',1,'TurnEngine.h']]],
   ['turn_5fengine_5fturn_5fstage_11',['TURN_ENGINE_TURN_STAGE',['../TurnEngine_8h.html#a760e35e380d23bde08ae732e619f2e9f',1,'TurnEngine.h']]],
   ['type_12',['Type',['../classGUIProgressBar.html#a220a1995f8a01ff3556b5fb2c6ae072b',1,'GUIProgressBar::Type()'],['../classPlatformEvent.html#ab1b85cb24f01d755e87bf165a8b18ee8',1,'PlatformEvent::Type()']]]
 ];

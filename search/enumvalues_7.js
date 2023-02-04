@@ -1,11 +1,11 @@
 var searchData=
 [
   ['h_0',['H',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eeccac1d9f50f86825a1a2302ec2449c17196',1,'PlatformEnums.h']]],
-  ['healer_1',['Healer',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a988682b30cc22b1ec22bb5e1cf61cd68',1,'NPCEnums.h']]],
-  ['herbalist_2',['Herbalist',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a095bbd92f5217aebf7ed26d4546d75f1',1,'NPCEnums.h']]],
+  ['healer_1',['Healer',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a6e56f394da8a56773678be26f5d4d3b0',1,'NPCEnums.h']]],
+  ['herbalist_2',['Herbalist',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a1cfb520fe919b15767ffb5193527fa61',1,'NPCEnums.h']]],
   ['history_3',['History',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca16d2b386b2034b9488996466aaae0b57',1,'Io']]],
   ['home_4',['Home',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca8cf04a9734132302f96da8e113e80ce5',1,'PlatformEnums.h']]],
-  ['horseman_5',['Horseman',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a9898d6259b8e8091de47234b4d0e9016',1,'NPCEnums.h']]],
+  ['horseman_5',['Horseman',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4ab056aa09efa8bdfd965edd5678fbfbad',1,'NPCEnums.h']]],
   ['hostility_5fclose_6',['Hostility_Close',['../structMonsterInfo.html#a110c64aadfccebdf40039599c96cde07a37b8d246dbd9fd3fb3c51d5d41e023f7',1,'MonsterInfo']]],
   ['hostility_5ffriendly_7',['Hostility_Friendly',['../structMonsterInfo.html#a110c64aadfccebdf40039599c96cde07aba95b66025de368cd0a2180c769dc570',1,'MonsterInfo']]],
   ['hostility_5flong_8',['Hostility_Long',['../structMonsterInfo.html#a110c64aadfccebdf40039599c96cde07ac8ef6787ec3d5ab5d9ddf8c71cd3047e',1,'MonsterInfo']]],
@@ -77,5 +77,5 @@ var searchData=
   ['housesound_5fgreeting_74',['HouseSound_Greeting',['../UIHouses_8h.html#a6e9b41a32161066fa074c8e5b1e15b69a26571d4ab21f7594c8691d81c10f8d58',1,'UIHouses.h']]],
   ['housesound_5fgreeting_5f2_75',['HouseSound_Greeting_2',['../UIHouses_8h.html#a6e9b41a32161066fa074c8e5b1e15b69a6f5bf798f5ad28c66e3207b4056205ae',1,'UIHouses.h']]],
   ['housesound_5fnotenoughmoney_76',['HouseSound_NotEnoughMoney',['../UIHouses_8h.html#a6e9b41a32161066fa074c8e5b1e15b69a9b35e43f24798b7a054f3165dbeffad5',1,'UIHouses.h']]],
-  ['hunter_77',['Hunter',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4add4aff506740d6e6568579d1bbbfe58a',1,'NPCEnums.h']]]
+  ['hunter_77',['Hunter',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a5e409e09f43d85c6e61301149e4f803b',1,'NPCEnums.h']]]
 ];

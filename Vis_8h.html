@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9ec6887</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9d1b04c</span>
    </div>
   </td>
  </tr>
@@ -83,6 +83,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;variant&gt;</code><br />
+<code>#include &quot;<a class="el" href="Flags_8h.html">Utility/Flags.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="IRender_8h.html">Engine/Graphics/IRender.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Actor_8h.html">Engine/Objects/Actor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Camera_8h.html">Camera.h</a>&quot;</code><br />
@@ -107,21 +108,21 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:ae18f1a9725894d10f4422f0ec7f3bc5e"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5e">VisObjectType</a> : uint32_t { <a class="el" href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5eadc0e957887a5d2750d8d3d39c995cc6d">VisObjectType_Any</a> = 0
-, <a class="el" href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5eae22ab771ab9e99711aaa43ca9c188ffa">VisObjectType_Sprite</a> = 1
-, <a class="el" href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5ea181847fc56fbbbbf7e6425be645bd9ea">VisObjectType_Face</a> = 2
+<tr class="memitem:ae18f1a9725894d10f4422f0ec7f3bc5e"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5e">VisObjectType</a> : uint32_t { <a class="el" href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5ea6e5027b8211b576257b46eddd73d4668">VisObjectType_Any</a> = 0
+, <a class="el" href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5ea69c9865283843d6e6121b3e460821db2">VisObjectType_Sprite</a> = 1
+, <a class="el" href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5eaa5dcb89edb2bb28bc49c43e75fe5704b">VisObjectType_Face</a> = 2
  }</td></tr>
 <tr class="separator:ae18f1a9725894d10f4422f0ec7f3bc5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa0e1584b10e9b28e435aa1dd0a42355c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355c">VisSelectFlags</a> : uint32_t { <br />
-&#160;&#160;<a class="el" href="Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355cac9d3e887722f2bc482bcca9d41c512af">None</a> = 0
-, <a class="el" href="Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355ca4d2222c35c1ea12da4b08db83b1a5d70">VisSelectFlags_1</a> = 1
-, <a class="el" href="Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355ca1952681d05fa87ce53265961cd68719d">ExcludeType</a> = 2
-, <a class="el" href="Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355ca7b84718c91374fe2524bc7944b6544ac">ExclusionIfNoEvent</a> = 4
+<tr class="memitem:a2865df6bc80c1bc4152df5c77cd624a4"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Vis_8h.html#a2865df6bc80c1bc4152df5c77cd624a4">VisSelectFlag</a> : uint32_t { <br />
+&#160;&#160;<a class="el" href="Vis_8h.html#a2865df6bc80c1bc4152df5c77cd624a4a6adf97f83acf6453d4a6a4b1070f3754">None</a> = 0
+, <a class="el" href="Vis_8h.html#a2865df6bc80c1bc4152df5c77cd624a4a5c7d954cb041efc30f76ac2d7a4c92c4">VisSelectFlags_1</a> = 1
+, <a class="el" href="Vis_8h.html#a2865df6bc80c1bc4152df5c77cd624a4ac2c39887fe0c24cd899ba7b85c0af7d6">ExcludeType</a> = 2
+, <a class="el" href="Vis_8h.html#a2865df6bc80c1bc4152df5c77cd624a4aa854f493a30042fdeb5cdf0bde2312e1">ExclusionIfNoEvent</a> = 4
 , <br />
-&#160;&#160;<a class="el" href="Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355ca02b5468b3b7bce8611a85e8fecf406b7">TargetUndead</a> = 8
+&#160;&#160;<a class="el" href="Vis_8h.html#a2865df6bc80c1bc4152df5c77cd624a4add5015a5d2aa5af045059a1120b07e1e">TargetUndead</a> = 8
 <br />
  }</td></tr>
-<tr class="separator:aa0e1584b10e9b28e435aa1dd0a42355c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a2865df6bc80c1bc4152df5c77cd624a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -168,37 +169,53 @@ Variables</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5e">VisObjectType</a> : uint32_t</td>
+          <td class="memname">enum class <a class="el" href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5e">VisObjectType</a> : uint32_t</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ae18f1a9725894d10f4422f0ec7f3bc5eadc0e957887a5d2750d8d3d39c995cc6d" name="ae18f1a9725894d10f4422f0ec7f3bc5eadc0e957887a5d2750d8d3d39c995cc6d"></a>VisObjectType_Any&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae18f1a9725894d10f4422f0ec7f3bc5eae22ab771ab9e99711aaa43ca9c188ffa" name="ae18f1a9725894d10f4422f0ec7f3bc5eae22ab771ab9e99711aaa43ca9c188ffa"></a>VisObjectType_Sprite&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae18f1a9725894d10f4422f0ec7f3bc5ea181847fc56fbbbbf7e6425be645bd9ea" name="ae18f1a9725894d10f4422f0ec7f3bc5ea181847fc56fbbbbf7e6425be645bd9ea"></a>VisObjectType_Face&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ae18f1a9725894d10f4422f0ec7f3bc5ea6e5027b8211b576257b46eddd73d4668" name="ae18f1a9725894d10f4422f0ec7f3bc5ea6e5027b8211b576257b46eddd73d4668"></a>VisObjectType_Any&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae18f1a9725894d10f4422f0ec7f3bc5ea69c9865283843d6e6121b3e460821db2" name="ae18f1a9725894d10f4422f0ec7f3bc5ea69c9865283843d6e6121b3e460821db2"></a>VisObjectType_Sprite&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae18f1a9725894d10f4422f0ec7f3bc5eaa5dcb89edb2bb28bc49c43e75fe5704b" name="ae18f1a9725894d10f4422f0ec7f3bc5eaa5dcb89edb2bb28bc49c43e75fe5704b"></a>VisObjectType_Face&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
 </div>
-<a id="aa0e1584b10e9b28e435aa1dd0a42355c" name="aa0e1584b10e9b28e435aa1dd0a42355c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa0e1584b10e9b28e435aa1dd0a42355c">&#9670;&#160;</a></span>VisSelectFlags</h2>
+<a id="a2865df6bc80c1bc4152df5c77cd624a4" name="a2865df6bc80c1bc4152df5c77cd624a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2865df6bc80c1bc4152df5c77cd624a4">&#9670;&#160;</a></span>VisSelectFlag</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355c">VisSelectFlags</a> : uint32_t</td>
+          <td class="memname">enum class <a class="el" href="Vis_8h.html#a2865df6bc80c1bc4152df5c77cd624a4">VisSelectFlag</a> : uint32_t</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aa0e1584b10e9b28e435aa1dd0a42355cac9d3e887722f2bc482bcca9d41c512af" name="aa0e1584b10e9b28e435aa1dd0a42355cac9d3e887722f2bc482bcca9d41c512af"></a>None&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa0e1584b10e9b28e435aa1dd0a42355ca4d2222c35c1ea12da4b08db83b1a5d70" name="aa0e1584b10e9b28e435aa1dd0a42355ca4d2222c35c1ea12da4b08db83b1a5d70"></a>VisSelectFlags_1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa0e1584b10e9b28e435aa1dd0a42355ca1952681d05fa87ce53265961cd68719d" name="aa0e1584b10e9b28e435aa1dd0a42355ca1952681d05fa87ce53265961cd68719d"></a>ExcludeType&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa0e1584b10e9b28e435aa1dd0a42355ca7b84718c91374fe2524bc7944b6544ac" name="aa0e1584b10e9b28e435aa1dd0a42355ca7b84718c91374fe2524bc7944b6544ac"></a>ExclusionIfNoEvent&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa0e1584b10e9b28e435aa1dd0a42355ca02b5468b3b7bce8611a85e8fecf406b7" name="aa0e1584b10e9b28e435aa1dd0a42355ca02b5468b3b7bce8611a85e8fecf406b7"></a>TargetUndead&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a2865df6bc80c1bc4152df5c77cd624a4a6adf97f83acf6453d4a6a4b1070f3754" name="a2865df6bc80c1bc4152df5c77cd624a4a6adf97f83acf6453d4a6a4b1070f3754"></a>None&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a2865df6bc80c1bc4152df5c77cd624a4a5c7d954cb041efc30f76ac2d7a4c92c4" name="a2865df6bc80c1bc4152df5c77cd624a4a5c7d954cb041efc30f76ac2d7a4c92c4"></a>VisSelectFlags_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a2865df6bc80c1bc4152df5c77cd624a4ac2c39887fe0c24cd899ba7b85c0af7d6" name="a2865df6bc80c1bc4152df5c77cd624a4ac2c39887fe0c24cd899ba7b85c0af7d6"></a>ExcludeType&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a2865df6bc80c1bc4152df5c77cd624a4aa854f493a30042fdeb5cdf0bde2312e1" name="a2865df6bc80c1bc4152df5c77cd624a4aa854f493a30042fdeb5cdf0bde2312e1"></a>ExclusionIfNoEvent&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a2865df6bc80c1bc4152df5c77cd624a4add5015a5d2aa5af045059a1120b07e1e" name="a2865df6bc80c1bc4152df5c77cd624a4add5015a5d2aa5af045059a1120b07e1e"></a>TargetUndead&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>

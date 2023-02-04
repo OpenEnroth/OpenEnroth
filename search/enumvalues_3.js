@@ -131,7 +131,7 @@ var searchData=
   ['digit7_128',['Digit7',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca81d5745c4198bf83761e4e7beea0cea8',1,'PlatformEnums.h']]],
   ['digit8_129',['Digit8',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eeccade5fd0dcf1793076a0b24b7db4bb749f',1,'PlatformEnums.h']]],
   ['digit9_130',['Digit9',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eeccaa9296fb8a66948e9094d45022b8212ca',1,'PlatformEnums.h']]],
-  ['diplomat_131',['Diplomat',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a9ff251ffa1cd6ab837aacd5930a3107b',1,'NPCEnums.h']]],
+  ['diplomat_131',['Diplomat',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a31b6692af5e8d8cd9ec0ea5e4febf99d',1,'NPCEnums.h']]],
   ['disabled_132',['Disabled',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395fedab9f5c797ebbf55adccdd8539a65a0241',1,'ActorEnums.h']]],
   ['dmgt_5fbody_133',['DMGT_BODY',['../ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a346567df5b073bce44e6b361e3cb7c98',1,'ItemEnums.h']]],
   ['dmgt_5fcold_134',['DMGT_COLD',['../ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891a1289c3412b20d31767a56454c4a8f733',1,'ItemEnums.h']]],
@@ -148,6 +148,6 @@ var searchData=
   ['door_5fsetting_5fup_145',['DOOR_SETTING_UP',['../BSPModel_8h.html#aca4fbb5b4731d33480ddc765e71c176ea4cb8faa7bb18c8c47f8ab14fb871547b',1,'BSPModel.h']]],
   ['door_5ftriggered_146',['DOOR_TRIGGERED',['../BSPModel_8h.html#aca4fbb5b4731d33480ddc765e71c176ea1f0f611f92f0d184b09f13a87480604b',1,'BSPModel.h']]],
   ['down_147',['Down',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca08a38277b0309070706f6652eeae9a53',1,'PlatformEnums.h']]],
-  ['duper_148',['Duper',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4af6d28093d199a8f5262d9e53b3e11827',1,'NPCEnums.h']]],
+  ['duper_148',['Duper',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4ac3ec4265a411ae97d8dad58692cfb693',1,'NPCEnums.h']]],
   ['dying_149',['Dying',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395feda2ef54119c1f0d131a1a60e7776fa78f0',1,'ActorEnums.h']]]
 ];

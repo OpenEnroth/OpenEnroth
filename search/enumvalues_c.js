@@ -1,11 +1,11 @@
 var searchData=
 [
   ['m_0',['M',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca69691c7bdcc3ce6d5d8a1361f22d04ac',1,'PlatformEnums.h']]],
-  ['magic_5fa_1',['MAGIC_A',['../Serialization__ut_8cpp.html#adb7b8082bc42eac875e12a319393e1b3af6c185c1b24ad3e23bd2a64cafe2b775',1,'Serialization_ut.cpp']]],
-  ['magic_5fb_2',['MAGIC_B',['../Serialization__ut_8cpp.html#adb7b8082bc42eac875e12a319393e1b3a07dfaae59aa149dac1ef539cc5004ab4',1,'Serialization_ut.cpp']]],
-  ['magic_5fc_3',['MAGIC_C',['../Serialization__ut_8cpp.html#adb7b8082bc42eac875e12a319393e1b3a4ab1c71f71ca34b246a797612cf9a90b',1,'Serialization_ut.cpp']]],
-  ['magic_5fd_4',['MAGIC_D',['../Serialization__ut_8cpp.html#adb7b8082bc42eac875e12a319393e1b3a72b781dcb555fdf639df11ced85a9a0b',1,'Serialization_ut.cpp']]],
-  ['magic_5fe_5',['MAGIC_E',['../Serialization__ut_8cpp.html#adb7b8082bc42eac875e12a319393e1b3a38163f13fda519e1baed03e9ce53e8fb',1,'Serialization_ut.cpp']]],
+  ['magic_5fa_1',['MAGIC_A',['../Serialization__ut_8cpp.html#adb7b8082bc42eac875e12a319393e1b3a5a90d1b9b4162d34f7c5ad014d68e3c5',1,'Serialization_ut.cpp']]],
+  ['magic_5fb_2',['MAGIC_B',['../Serialization__ut_8cpp.html#adb7b8082bc42eac875e12a319393e1b3a3845ce50a00c528d674a8574c395c38f',1,'Serialization_ut.cpp']]],
+  ['magic_5fc_3',['MAGIC_C',['../Serialization__ut_8cpp.html#adb7b8082bc42eac875e12a319393e1b3a4a16591d5214e09238d337db26beeac6',1,'Serialization_ut.cpp']]],
+  ['magic_5fd_4',['MAGIC_D',['../Serialization__ut_8cpp.html#adb7b8082bc42eac875e12a319393e1b3a377ed60bccbe3dc89570d57d261dbe8c',1,'Serialization_ut.cpp']]],
+  ['magic_5fe_5',['MAGIC_E',['../Serialization__ut_8cpp.html#adb7b8082bc42eac875e12a319393e1b3af344e4b8ea49d9f3c9333bd092c177e6',1,'Serialization_ut.cpp']]],
   ['map_5farena_6',['MAP_ARENA',['../MapInfo_8h.html#adf27fa94c483739f6a21ebe139e71e26ab4f612b5c13e82251823d80d0ab728b6',1,'MapInfo.h']]],
   ['map_5favlee_7',['MAP_AVLEE',['../MapInfo_8h.html#adf27fa94c483739f6a21ebe139e71e26a9d2feefefca3fa90d531f9552de093d5',1,'MapInfo.h']]],
   ['map_5fbarrow_5fdowns_8',['MAP_BARROW_DOWNS',['../MapInfo_8h.html#adf27fa94c483739f6a21ebe139e71e26a51ccb01c91d70f40ed881c15cf11aaac',1,'MapInfo.h']]],
@@ -38,7 +38,7 @@ var searchData=
   ['mapstartpoint_5fparty_35',['MapStartPoint_Party',['../MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312fa894ff85c1a2b84a9fbcf98958e5cf943',1,'MapInfo.h']]],
   ['mapstartpoint_5fsouth_36',['MapStartPoint_South',['../MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312fa08a6e041b97028eb16fd386af18474aa',1,'MapInfo.h']]],
   ['mapstartpoint_5fwest_37',['MapStartPoint_West',['../MapInfo_8h.html#adad43ef8fbf56e2a3bc00fd08cca312face0f20399f9ed8f385c77fc2e887ed4d',1,'MapInfo.h']]],
-  ['masterhealer_38',['MasterHealer',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4aac5309a7ec04f0e3f52b7658aab7fb85',1,'NPCEnums.h']]],
+  ['masterhealer_38',['MasterHealer',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a807591eb5f8d2a03f99c297931628d69',1,'NPCEnums.h']]],
   ['material_5fartifact_39',['MATERIAL_ARTIFACT',['../ItemEnums_8h.html#a8b9558898410d58fa0a62c07ede6dc96ad874a40864815658c4d2f0893438400c',1,'ItemEnums.h']]],
   ['material_5fcommon_40',['MATERIAL_COMMON',['../ItemEnums_8h.html#a8b9558898410d58fa0a62c07ede6dc96a3217df66842aa59f37198e9f5d4e58a4',1,'ItemEnums.h']]],
   ['material_5frelic_41',['MATERIAL_RELIC',['../ItemEnums_8h.html#a8b9558898410d58fa0a62c07ede6dc96aed60d459b76f2a76343a8d512c2bd434',1,'ItemEnums.h']]],
@@ -58,7 +58,7 @@ var searchData=
   ['menu_5fnone_55',['MENU_NONE',['../GUIWindow_8h.html#a0be99aa2d974499af97de5b44821500dae7c93f3587cf592f4c4e1f527642c460',1,'GUIWindow.h']]],
   ['menu_5fsaveload_56',['MENU_SAVELOAD',['../GUIWindow_8h.html#a0be99aa2d974499af97de5b44821500dacd4e00175a372be9c851d7aeec05a3bb',1,'GUIWindow.h']]],
   ['mercahnt_5fphrase_5fstolen_5fitem_57',['MERCAHNT_PHRASE_STOLEN_ITEM',['../NPCEnums_8h.html#a4daf86d2fc45619eeed9db250e6c8b67a2edd7f401ae67f74b9d824bcdc676f52',1,'NPCEnums.h']]],
-  ['merchant_58',['Merchant',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4afc34b224592571bc192e18c5ee7e1c98',1,'NPCEnums.h']]],
+  ['merchant_58',['Merchant',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a896890bfb700eac98300d639ca970f2b',1,'NPCEnums.h']]],
   ['merchant_5fphrase_5fcount_59',['MERCHANT_PHRASE_COUNT',['../NPCEnums_8h.html#a4daf86d2fc45619eeed9db250e6c8b67ad5563645d306e9ee1aa8dc386b40aa70',1,'NPCEnums.h']]],
   ['merchant_5fphrase_5fincompatible_5fitem_60',['MERCHANT_PHRASE_INCOMPATIBLE_ITEM',['../NPCEnums_8h.html#a4daf86d2fc45619eeed9db250e6c8b67a2ddd1a9c4e918b1dd06ebb99a13f3b79',1,'NPCEnums.h']]],
   ['merchant_5fphrase_5finvalid_5faction_61',['MERCHANT_PHRASE_INVALID_ACTION',['../NPCEnums_8h.html#a4daf86d2fc45619eeed9db250e6c8b67a5b798f6279341324be15aad24a0d9863',1,'NPCEnums.h']]],
@@ -70,7 +70,7 @@ var searchData=
   ['middle_67',['Middle',['../PlatformEnums_8h.html#a24f0ba632b7eb4b8c479f745c38d4558ab1ca34f82e83c52b010f86955f264e05',1,'PlatformEnums.h']]],
   ['minus_68',['Minus',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca453fb623e752c5993f65bc410fd74fe5',1,'Io']]],
   ['model_5findoor_69',['MODEL_INDOOR',['../Indoor_8h.html#adc29c2ff13d900c2f185ee95427fb06ca08100875ef7374b310de5c908192348e',1,'Indoor.h']]],
-  ['monk_70',['Monk',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a646908332e7cd02817736e398bc80b0a',1,'NPCEnums.h']]],
+  ['monk_70',['Monk',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a844a2b0ce474227509eb629bc56c1359',1,'NPCEnums.h']]],
   ['monster_5fdevil_5f1_71',['MONSTER_DEVIL_1',['../Monsters_8h.html#a40319983e674274211bc156688920fdea1a32958dd0d3d36afcaaa3f9fafb9a4a',1,'Monsters.h']]],
   ['monster_5fdevil_5f2_72',['MONSTER_DEVIL_2',['../Monsters_8h.html#a40319983e674274211bc156688920fdea5bd24a9cba0a9ce4601096ecec0dacb6',1,'Monsters.h']]],
   ['monster_5fdevil_5f3_73',['MONSTER_DEVIL_3',['../Monsters_8h.html#a40319983e674274211bc156688920fdea80531d341f3a0a25c10915bca7d3622f',1,'Monsters.h']]],
@@ -139,5 +139,5 @@ var searchData=
   ['moveforward_136',['MoveForward',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca122077e11a3cc3a56a2d82f1d15dbd32',1,'Io']]],
   ['music_5fcredits_137',['MUSIC_Credits',['../AudioPlayer_8h.html#a68946471db0c45b6ce503ef14572f078ac8fa77ddc75ad59d7541dd78916ad82a',1,'AudioPlayer.h']]],
   ['music_5fmainmenu_138',['MUSIC_MainMenu',['../AudioPlayer_8h.html#a68946471db0c45b6ce503ef14572f078a56b078091103d2c6a626a8bdef7bc595',1,'AudioPlayer.h']]],
-  ['mystic_139',['Mystic',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a7e9f06e48368d74aeaabcea7ccd28055',1,'NPCEnums.h']]]
+  ['mystic_139',['Mystic',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a7b28158d613ea1869441676fa32a3b5a',1,'NPCEnums.h']]]
 ];

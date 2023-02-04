@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['particletype_0',['ParticleType',['../ParticleEngine_8h.html#a70555b8606c05618f7f4180c162bc9db',1,'ParticleEngine.h']]],
+  ['particleflag_0',['ParticleFlag',['../ParticleEngine_8h.html#a7b352370d86b5775e02f698569088034',1,'ParticleEngine.h']]],
   ['party_5fbuff_5findex_1',['PARTY_BUFF_INDEX',['../Party_8h.html#a7935db13258ffa8a17fd65aa633b80df',1,'Party.h']]],
   ['party_5fflags_5f1_2',['PARTY_FLAGS_1',['../Party_8h.html#a7ba652169aade3baa03ee56a91cb5dc1',1,'Party.h']]],
   ['party_5fflags_5f2_3',['PARTY_FLAGS_2',['../Party_8h.html#a09dcebc28a84afbca0bf362f5e1348d8',1,'Party.h']]],

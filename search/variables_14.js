@@ -144,7 +144,7 @@ var searchData=
   ['tundora_141',['Tundora',['../classColorTable.html#adecf766dc7b77b3ee78d9209825d9a64',1,'ColorTable']]],
   ['turbospeed_142',['TurboSpeed',['../classApplication_1_1GameConfig_1_1Debug.html#ac070abf83b96f540e82abdf5db328c3a',1,'Application::GameConfig::Debug']]],
   ['turn_5finitiative_143',['turn_initiative',['../structstru262__TurnBased.html#a3e761a764c584f7b17a9c4aac0a06f02',1,'stru262_TurnBased']]],
-  ['turn_5fstage_144',['turn_stage',['../structstru262__TurnBased.html#a10e68759e9c1c29f0cf17b183e0c3785',1,'stru262_TurnBased']]],
+  ['turn_5fstage_144',['turn_stage',['../structstru262__TurnBased.html#a387677ebd13143c117de530fd4c32b1f',1,'stru262_TurnBased']]],
   ['turns_5fcount_145',['turns_count',['../structstru262__TurnBased.html#a998fa646c47b2bd6e657bf1ad85403d5',1,'stru262_TurnBased']]],
   ['turnspeed_146',['TurnSpeed',['../classApplication_1_1GameConfig_1_1Settings.html#a7144241139937a694c8f31a4973ffa7e',1,'Application::GameConfig::Settings']]],
   ['twodshader_147',['twodshader',['../classRenderOpenGL.html#ada37f13e87af7c542edf7d9481e082b5',1,'RenderOpenGL']]],
@@ -152,5 +152,5 @@ var searchData=
   ['twodvao_149',['twodVAO',['../classRenderOpenGL.html#aa183b9b9a2809b7586d6f5c85e79431e',1,'RenderOpenGL']]],
   ['twodvbo_150',['twodVBO',['../classRenderOpenGL.html#a12713ad2b247e12465292171ebfb776b',1,'RenderOpenGL']]],
   ['twodvertscnt_151',['twodvertscnt',['../RenderOpenGL_8cpp.html#a1b08d9638f463d97eb0aa54227c5b31e',1,'RenderOpenGL.cpp']]],
-  ['type_152',['type',['../classPlatformEvent.html#a39567c6515b4c927dcf3c576ffb9ff54',1,'PlatformEvent::type()'],['../classAVStreamWrapper.html#a679e7c64d493a1f58994b1703a2ef823',1,'AVStreamWrapper::type()'],['../structParticle.html#af36c2527a2a500195d7b2fd090aabc1f',1,'Particle::type()'],['../structParticle__sw.html#ad5caf699963ae1b98018e2891f7a374f',1,'Particle_sw::type()'],['../structlua__nk__property.html#a77c9e851e2de19124f989a81a9815443',1,'lua_nk_property::type()']]]
+  ['type_152',['type',['../classPlatformEvent.html#a39567c6515b4c927dcf3c576ffb9ff54',1,'PlatformEvent::type()'],['../classAVStreamWrapper.html#a679e7c64d493a1f58994b1703a2ef823',1,'AVStreamWrapper::type()'],['../structParticle.html#a9e5b65a09c1e4a78db0f5a55543044f9',1,'Particle::type()'],['../structParticle__sw.html#a0ec066923d44c733a2cbf600401de3b2',1,'Particle_sw::type()'],['../structlua__nk__property.html#a77c9e851e2de19124f989a81a9815443',1,'lua_nk_property::type()']]]
 ];

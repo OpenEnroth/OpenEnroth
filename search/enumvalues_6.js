@@ -40,14 +40,14 @@ var searchData=
   ['gamepad_5fy_37',['Gamepad_Y',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eeccae5c1c280296f3a29e384f954d2528d5d',1,'PlatformEnums.h']]],
   ['gamepadconnected_38',['GamepadConnected',['../classPlatformEvent.html#ab1b85cb24f01d755e87bf165a8b18ee8ad5909d240c46150dc002123ef8abcc2f',1,'PlatformEvent']]],
   ['gamepaddisconnected_39',['GamepadDisconnected',['../classPlatformEvent.html#ab1b85cb24f01d755e87bf165a8b18ee8ac1c12a889ebdc886dc3738b5a146def0',1,'PlatformEvent']]],
-  ['gatemaster_40',['GateMaster',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a876a9024d25e084bf625e66cfa7de0a0',1,'NPCEnums.h']]],
+  ['gatemaster_40',['GateMaster',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a9bd5f012724235e3b6a1aa2ea4c79500',1,'NPCEnums.h']]],
   ['gl_5fprofile_5fcompatibility_41',['GL_PROFILE_COMPATIBILITY',['../PlatformOpenGLOptions_8h.html#a29c31fe51525a30eadb91c8581c14447aaba38f29b8d9dae642a96dedbc09e0fd',1,'PlatformOpenGLOptions.h']]],
   ['gl_5fprofile_5fcore_42',['GL_PROFILE_CORE',['../PlatformOpenGLOptions_8h.html#a29c31fe51525a30eadb91c8581c14447a9320095eda39ae9953b016debb0133c4',1,'PlatformOpenGLOptions.h']]],
   ['gl_5fprofile_5fes_43',['GL_PROFILE_ES',['../PlatformOpenGLOptions_8h.html#a29c31fe51525a30eadb91c8581c14447a4a10376662e974c6cf24418ed9b1f485',1,'PlatformOpenGLOptions.h']]],
   ['gl_5fvsync_5fadaptive_44',['GL_VSYNC_ADAPTIVE',['../PlatformOpenGLOptions_8h.html#a86988928758fb093416934fad8f60bbfab496898d23860fe838cb976c0a3a7665',1,'PlatformOpenGLOptions.h']]],
   ['gl_5fvsync_5fnone_45',['GL_VSYNC_NONE',['../PlatformOpenGLOptions_8h.html#a86988928758fb093416934fad8f60bbfa7bdaba1fa265226eb0d16fedba74d5b4',1,'PlatformOpenGLOptions.h']]],
   ['gl_5fvsync_5fnormal_46',['GL_VSYNC_NORMAL',['../PlatformOpenGLOptions_8h.html#a86988928758fb093416934fad8f60bbfa80b232b04258b480d4c0a4a434283ab2',1,'PlatformOpenGLOptions.h']]],
-  ['guide_47',['Guide',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4aa73051e38214e2328e22c482b446defd',1,'NPCEnums.h']]],
+  ['guide_47',['Guide',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a6602bbeb2956c035fb4cb5e844a4861b',1,'NPCEnums.h']]],
   ['guild_5fof_5fair_48',['GUILD_OF_AIR',['../GUIWindow_8h.html#ad5b17819485bfe6ede8299978e6f0c34afc9e3cb0cb8a4efc25fd889e9dc937c1',1,'GUIWindow.h']]],
   ['guild_5fof_5fbody_49',['GUILD_OF_BODY',['../GUIWindow_8h.html#ad5b17819485bfe6ede8299978e6f0c34a952255ea67563e02b44d482cbbe1614f',1,'GUIWindow.h']]],
   ['guild_5fof_5fdark_50',['GUILD_OF_DARK',['../GUIWindow_8h.html#ad5b17819485bfe6ede8299978e6f0c34ab74244eb59dc5ccb950dbff9fde1ee9b',1,'GUIWindow.h']]],
@@ -59,5 +59,5 @@ var searchData=
   ['guild_5fof_5fself_56',['GUILD_OF_SELF',['../GUIWindow_8h.html#ad5b17819485bfe6ede8299978e6f0c34a823eefb04229343a8919d0817c21c1ac',1,'GUIWindow.h']]],
   ['guild_5fof_5fspirit_57',['GUILD_OF_SPIRIT',['../GUIWindow_8h.html#ad5b17819485bfe6ede8299978e6f0c34a10952d1970c13a2ce139750b20dbeddf',1,'GUIWindow.h']]],
   ['guild_5fof_5fwater_58',['GUILD_OF_WATER',['../GUIWindow_8h.html#ad5b17819485bfe6ede8299978e6f0c34a6069d877dacd5823da46ecc469dd6079',1,'GUIWindow.h']]],
-  ['gypsy_59',['Gypsy',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a18ad06e6eeb6f5335c2cf6d98188e77d',1,'NPCEnums.h']]]
+  ['gypsy_59',['Gypsy',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4ab19f670b28843eccd6ff4b3659083281',1,'NPCEnums.h']]]
 ];

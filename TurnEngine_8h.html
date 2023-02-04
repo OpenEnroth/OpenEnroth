@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9ec6887</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9d1b04c</span>
    </div>
   </td>
  </tr>
@@ -80,7 +80,8 @@ $(function() {
   <div class="headertitle"><div class="title">TurnEngine.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<table class="memberdecls">
+<div class="textblock"><code>#include &quot;<a class="el" href="Flags_8h.html">Utility/Flags.h</a>&quot;</code><br />
+</div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTurnBased__QueueElem.html">TurnBased_QueueElem</a></td></tr>
@@ -90,26 +91,26 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a33743db842bb5d8b7e87b9e35b77201a"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TurnEngine_8h.html#a33743db842bb5d8b7e87b9e35b77201a">TURN_ENGINE_FLAGS</a> { <a class="el" href="TurnEngine_8h.html#a33743db842bb5d8b7e87b9e35b77201aa19ace7cfbfd44dd616c6eb2984be1fc9">TE_FLAG_1</a> = 1
-, <a class="el" href="TurnEngine_8h.html#a33743db842bb5d8b7e87b9e35b77201aa64c68e97d4aee8f4eeb7cb922298e0d6">TE_HAVE_PENDING_ACTIONS</a> = 2
-, <a class="el" href="TurnEngine_8h.html#a33743db842bb5d8b7e87b9e35b77201aa713cb10903b83757af6a7ceca7665c35">TE_PLAYER_TURN</a> = 4
-, <a class="el" href="TurnEngine_8h.html#a33743db842bb5d8b7e87b9e35b77201aa3503d4ff590cae7da3378869c51bd6b8">TE_FLAG_8_finished</a> = 8
+<tr class="memitem:a41706c1a815b2c6b07ad948794f6cb67"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TurnEngine_8h.html#a41706c1a815b2c6b07ad948794f6cb67">TURN_ENGINE_FLAG</a> { <a class="el" href="TurnEngine_8h.html#a41706c1a815b2c6b07ad948794f6cb67a78196d3fca2a73f80ceaa69e73288186">TE_FLAG_1</a> = 1
+, <a class="el" href="TurnEngine_8h.html#a41706c1a815b2c6b07ad948794f6cb67a24f01d96983ddd3de2836bcefe453d59">TE_HAVE_PENDING_ACTIONS</a> = 2
+, <a class="el" href="TurnEngine_8h.html#a41706c1a815b2c6b07ad948794f6cb67a77c6b5b6717124bc64fb0a70051a9799">TE_PLAYER_TURN</a> = 4
+, <a class="el" href="TurnEngine_8h.html#a41706c1a815b2c6b07ad948794f6cb67a439862dea00437cf82128fde83043de5">TE_FLAG_8_finished</a> = 8
  }</td></tr>
-<tr class="separator:a33743db842bb5d8b7e87b9e35b77201a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad787e59edbb1a7b858de87875d03acfa"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TurnEngine_8h.html#ad787e59edbb1a7b858de87875d03acfa">TURN_ENGINE_AI_ACTION</a> { <br />
-&#160;&#160;<a class="el" href="TurnEngine_8h.html#ad787e59edbb1a7b858de87875d03acfaa54fad8bbd3205b6871fad30f6519d647">TE_AI_STAND</a> = 0
-, <a class="el" href="TurnEngine_8h.html#ad787e59edbb1a7b858de87875d03acfaafd783a4a9cf13d49a75532b0dba5b216">TE_AI_RANGED_ATTACK</a> = 1
-, <a class="el" href="TurnEngine_8h.html#ad787e59edbb1a7b858de87875d03acfaa2cfe5dcc64049cb7ae83eb9b08d044d3">TE_AI_PURSUE</a> = 2
-, <a class="el" href="TurnEngine_8h.html#ad787e59edbb1a7b858de87875d03acfaae811b34ad016562fa65165e2365fe0e7">TE_AI_MELEE_ATTACK</a> = 3
+<tr class="separator:a41706c1a815b2c6b07ad948794f6cb67"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad787e59edbb1a7b858de87875d03acfa"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TurnEngine_8h.html#ad787e59edbb1a7b858de87875d03acfa">TURN_ENGINE_AI_ACTION</a> { <br />
+&#160;&#160;<a class="el" href="TurnEngine_8h.html#ad787e59edbb1a7b858de87875d03acfaa3013679f7bcbe0de1439a03a9ed58b19">TE_AI_STAND</a> = 0
+, <a class="el" href="TurnEngine_8h.html#ad787e59edbb1a7b858de87875d03acfaa0403abceef7d363afbff11e1fcffed31">TE_AI_RANGED_ATTACK</a> = 1
+, <a class="el" href="TurnEngine_8h.html#ad787e59edbb1a7b858de87875d03acfaa2e85ca5eb524ea76c611ecad7b09f67f">TE_AI_PURSUE</a> = 2
+, <a class="el" href="TurnEngine_8h.html#ad787e59edbb1a7b858de87875d03acfaadd425dda74665baab19ec0923c979da7">TE_AI_MELEE_ATTACK</a> = 3
 , <br />
-&#160;&#160;<a class="el" href="TurnEngine_8h.html#ad787e59edbb1a7b858de87875d03acfaa513d6bf8a6061e600e223e5e4c961c30">TE_AI_FLEE</a> = 4
+&#160;&#160;<a class="el" href="TurnEngine_8h.html#ad787e59edbb1a7b858de87875d03acfaa8d9095a82d25e848cb0d68165e9d68df">TE_AI_FLEE</a> = 4
 <br />
  }</td></tr>
 <tr class="separator:ad787e59edbb1a7b858de87875d03acfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a760e35e380d23bde08ae732e619f2e9f"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TurnEngine_8h.html#a760e35e380d23bde08ae732e619f2e9f">TURN_ENGINE_TURN_STAGE</a> { <a class="el" href="TurnEngine_8h.html#a760e35e380d23bde08ae732e619f2e9fa43df086f2199baf7bfa5f32e100f82f1">TE_NONE</a> = 0
-, <a class="el" href="TurnEngine_8h.html#a760e35e380d23bde08ae732e619f2e9fa6fbf139abbb8dae3ef5de59384b33b00">TE_WAIT</a> = 1
-, <a class="el" href="TurnEngine_8h.html#a760e35e380d23bde08ae732e619f2e9fa9a4ae91df7e9439192eb3f144c00a775">TE_ATTACK</a> = 2
-, <a class="el" href="TurnEngine_8h.html#a760e35e380d23bde08ae732e619f2e9fab2a666dfd6f40adba23ac540d2d165b7">TE_MOVEMENT</a> = 3
+<tr class="memitem:a760e35e380d23bde08ae732e619f2e9f"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TurnEngine_8h.html#a760e35e380d23bde08ae732e619f2e9f">TURN_ENGINE_TURN_STAGE</a> { <a class="el" href="TurnEngine_8h.html#a760e35e380d23bde08ae732e619f2e9fa7297984494b9980aad046dba59b343c4">TE_NONE</a> = 0
+, <a class="el" href="TurnEngine_8h.html#a760e35e380d23bde08ae732e619f2e9fa786f5948b1036fb1095351861a123caf">TE_WAIT</a> = 1
+, <a class="el" href="TurnEngine_8h.html#a760e35e380d23bde08ae732e619f2e9faa2a453512428ae657898d95b51400e09">TE_ATTACK</a> = 2
+, <a class="el" href="TurnEngine_8h.html#a760e35e380d23bde08ae732e619f2e9fa1106abb1927e35abc3c747c94cf339fc">TE_MOVEMENT</a> = 3
  }</td></tr>
 <tr class="separator:a760e35e380d23bde08ae732e619f2e9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -124,38 +125,54 @@ Variables</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="TurnEngine_8h.html#ad787e59edbb1a7b858de87875d03acfa">TURN_ENGINE_AI_ACTION</a></td>
+          <td class="memname">enum class <a class="el" href="TurnEngine_8h.html#ad787e59edbb1a7b858de87875d03acfa">TURN_ENGINE_AI_ACTION</a></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ad787e59edbb1a7b858de87875d03acfaa54fad8bbd3205b6871fad30f6519d647" name="ad787e59edbb1a7b858de87875d03acfaa54fad8bbd3205b6871fad30f6519d647"></a>TE_AI_STAND&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ad787e59edbb1a7b858de87875d03acfaafd783a4a9cf13d49a75532b0dba5b216" name="ad787e59edbb1a7b858de87875d03acfaafd783a4a9cf13d49a75532b0dba5b216"></a>TE_AI_RANGED_ATTACK&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ad787e59edbb1a7b858de87875d03acfaa2cfe5dcc64049cb7ae83eb9b08d044d3" name="ad787e59edbb1a7b858de87875d03acfaa2cfe5dcc64049cb7ae83eb9b08d044d3"></a>TE_AI_PURSUE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ad787e59edbb1a7b858de87875d03acfaae811b34ad016562fa65165e2365fe0e7" name="ad787e59edbb1a7b858de87875d03acfaae811b34ad016562fa65165e2365fe0e7"></a>TE_AI_MELEE_ATTACK&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ad787e59edbb1a7b858de87875d03acfaa513d6bf8a6061e600e223e5e4c961c30" name="ad787e59edbb1a7b858de87875d03acfaa513d6bf8a6061e600e223e5e4c961c30"></a>TE_AI_FLEE&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ad787e59edbb1a7b858de87875d03acfaa3013679f7bcbe0de1439a03a9ed58b19" name="ad787e59edbb1a7b858de87875d03acfaa3013679f7bcbe0de1439a03a9ed58b19"></a>TE_AI_STAND&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ad787e59edbb1a7b858de87875d03acfaa0403abceef7d363afbff11e1fcffed31" name="ad787e59edbb1a7b858de87875d03acfaa0403abceef7d363afbff11e1fcffed31"></a>TE_AI_RANGED_ATTACK&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ad787e59edbb1a7b858de87875d03acfaa2e85ca5eb524ea76c611ecad7b09f67f" name="ad787e59edbb1a7b858de87875d03acfaa2e85ca5eb524ea76c611ecad7b09f67f"></a>TE_AI_PURSUE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ad787e59edbb1a7b858de87875d03acfaadd425dda74665baab19ec0923c979da7" name="ad787e59edbb1a7b858de87875d03acfaadd425dda74665baab19ec0923c979da7"></a>TE_AI_MELEE_ATTACK&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ad787e59edbb1a7b858de87875d03acfaa8d9095a82d25e848cb0d68165e9d68df" name="ad787e59edbb1a7b858de87875d03acfaa8d9095a82d25e848cb0d68165e9d68df"></a>TE_AI_FLEE&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
 </div>
-<a id="a33743db842bb5d8b7e87b9e35b77201a" name="a33743db842bb5d8b7e87b9e35b77201a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a33743db842bb5d8b7e87b9e35b77201a">&#9670;&#160;</a></span>TURN_ENGINE_FLAGS</h2>
+<a id="a41706c1a815b2c6b07ad948794f6cb67" name="a41706c1a815b2c6b07ad948794f6cb67"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41706c1a815b2c6b07ad948794f6cb67">&#9670;&#160;</a></span>TURN_ENGINE_FLAG</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="TurnEngine_8h.html#a33743db842bb5d8b7e87b9e35b77201a">TURN_ENGINE_FLAGS</a></td>
+          <td class="memname">enum class <a class="el" href="TurnEngine_8h.html#a41706c1a815b2c6b07ad948794f6cb67">TURN_ENGINE_FLAG</a></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a33743db842bb5d8b7e87b9e35b77201aa19ace7cfbfd44dd616c6eb2984be1fc9" name="a33743db842bb5d8b7e87b9e35b77201aa19ace7cfbfd44dd616c6eb2984be1fc9"></a>TE_FLAG_1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a33743db842bb5d8b7e87b9e35b77201aa64c68e97d4aee8f4eeb7cb922298e0d6" name="a33743db842bb5d8b7e87b9e35b77201aa64c68e97d4aee8f4eeb7cb922298e0d6"></a>TE_HAVE_PENDING_ACTIONS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a33743db842bb5d8b7e87b9e35b77201aa713cb10903b83757af6a7ceca7665c35" name="a33743db842bb5d8b7e87b9e35b77201aa713cb10903b83757af6a7ceca7665c35"></a>TE_PLAYER_TURN&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a33743db842bb5d8b7e87b9e35b77201aa3503d4ff590cae7da3378869c51bd6b8" name="a33743db842bb5d8b7e87b9e35b77201aa3503d4ff590cae7da3378869c51bd6b8"></a>TE_FLAG_8_finished&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a41706c1a815b2c6b07ad948794f6cb67a78196d3fca2a73f80ceaa69e73288186" name="a41706c1a815b2c6b07ad948794f6cb67a78196d3fca2a73f80ceaa69e73288186"></a>TE_FLAG_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a41706c1a815b2c6b07ad948794f6cb67a24f01d96983ddd3de2836bcefe453d59" name="a41706c1a815b2c6b07ad948794f6cb67a24f01d96983ddd3de2836bcefe453d59"></a>TE_HAVE_PENDING_ACTIONS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a41706c1a815b2c6b07ad948794f6cb67a77c6b5b6717124bc64fb0a70051a9799" name="a41706c1a815b2c6b07ad948794f6cb67a77c6b5b6717124bc64fb0a70051a9799"></a>TE_PLAYER_TURN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a41706c1a815b2c6b07ad948794f6cb67a439862dea00437cf82128fde83043de5" name="a41706c1a815b2c6b07ad948794f6cb67a439862dea00437cf82128fde83043de5"></a>TE_FLAG_8_finished&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -165,17 +182,25 @@ Variables</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="TurnEngine_8h.html#a760e35e380d23bde08ae732e619f2e9f">TURN_ENGINE_TURN_STAGE</a></td>
+          <td class="memname">enum class <a class="el" href="TurnEngine_8h.html#a760e35e380d23bde08ae732e619f2e9f">TURN_ENGINE_TURN_STAGE</a></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a760e35e380d23bde08ae732e619f2e9fa43df086f2199baf7bfa5f32e100f82f1" name="a760e35e380d23bde08ae732e619f2e9fa43df086f2199baf7bfa5f32e100f82f1"></a>TE_NONE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a760e35e380d23bde08ae732e619f2e9fa6fbf139abbb8dae3ef5de59384b33b00" name="a760e35e380d23bde08ae732e619f2e9fa6fbf139abbb8dae3ef5de59384b33b00"></a>TE_WAIT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a760e35e380d23bde08ae732e619f2e9fa9a4ae91df7e9439192eb3f144c00a775" name="a760e35e380d23bde08ae732e619f2e9fa9a4ae91df7e9439192eb3f144c00a775"></a>TE_ATTACK&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a760e35e380d23bde08ae732e619f2e9fab2a666dfd6f40adba23ac540d2d165b7" name="a760e35e380d23bde08ae732e619f2e9fab2a666dfd6f40adba23ac540d2d165b7"></a>TE_MOVEMENT&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a760e35e380d23bde08ae732e619f2e9fa7297984494b9980aad046dba59b343c4" name="a760e35e380d23bde08ae732e619f2e9fa7297984494b9980aad046dba59b343c4"></a>TE_NONE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a760e35e380d23bde08ae732e619f2e9fa786f5948b1036fb1095351861a123caf" name="a760e35e380d23bde08ae732e619f2e9fa786f5948b1036fb1095351861a123caf"></a>TE_WAIT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a760e35e380d23bde08ae732e619f2e9faa2a453512428ae657898d95b51400e09" name="a760e35e380d23bde08ae732e619f2e9faa2a453512428ae657898d95b51400e09"></a>TE_ATTACK&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a760e35e380d23bde08ae732e619f2e9fa1106abb1927e35abc3c747c94cf339fc" name="a760e35e380d23bde08ae732e619f2e9fa1106abb1927e35abc3c747c94cf339fc"></a>TE_MOVEMENT&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
