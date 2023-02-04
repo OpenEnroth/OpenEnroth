@@ -797,7 +797,7 @@ int _43AFE3_calc_spell_damage(int spellId, PLAYER_SKILL_LEVEL spellLevel, PLAYER
 }
 
 void armageddonProgress() {
-    assert(uCurrentlyLoadedLevelType == LEVEL_Indoor && pParty->armageddon_timer > 0);
+    assert(uCurrentlyLoadedLevelType == LEVEL_Outdoor && pParty->armageddon_timer > 0);
 
     if (pParty->armageddon_timer > 417) {
         pParty->armageddon_timer = 0;
