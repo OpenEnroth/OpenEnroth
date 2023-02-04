@@ -7,13 +7,14 @@
 #include <vector>
 #include <filesystem>
 
+#include "Library/Compression/Compression.h"
+
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/MM7.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Party.h"
-#include "Engine/ZlibWrapper.h"
 
 #include "Media/Audio/OpenALSoundProvider.h"
 

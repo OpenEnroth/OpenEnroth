@@ -6,8 +6,7 @@
 
 // TODO(captainurist): errorhandling should be moved to utility/library out of the engine
 #include "Engine/ErrorHandling.h"
-// TODO(captainurist): zlibwrapper should be moved to utility/library out of the engine
-#include "Engine/ZlibWrapper.h"
+#include "Library/Compression/Compression.h"
 #include "Library/Lod/Internal/LodDirectory.h"
 #include "Library/Lod/Internal/LodDirectoryHeader.h"
 #include "Library/Lod/Internal/LodFile.h"

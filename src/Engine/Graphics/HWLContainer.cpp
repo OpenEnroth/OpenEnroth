@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "Engine/IocContainer.h"
-#include "Engine/ZlibWrapper.h"
+#include "Library/Compression/Compression.h"
 #include "Library/Logger/Logger.h"
 #include "Utility/String.h"
 

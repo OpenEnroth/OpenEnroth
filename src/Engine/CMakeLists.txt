@@ -17,7 +17,6 @@ set(ENGINE_SOURCES AssetsManager.cpp
                    SpellFxRenderer.cpp
                    stru298.cpp
                    Time.cpp
-                   ZlibWrapper.cpp
                    IocContainer.cpp
                    EngineFactory.cpp)
 
@@ -47,21 +46,17 @@ set(ENGINE_HEADERS AssetsManager.h
                    stru314.h
                    stru367.h
                    Time.h
-                   ZlibWrapper.h
                    IocContainer.h
                    EngineFactory.h)
 
 add_library(engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 target_check_style(engine)
 
-target_link_libraries(engine objects graphics engine_serialization spells tables turnengine utility logger serialization)
+target_link_libraries(engine objects graphics engine_serialization spells tables turnengine utility logger compression serialization)
 target_compile_definitions(engine PRIVATE PROJECT_VERSION="${PROJECT_VERSION}"
                                           BUILD_COMPILER="${BUILD_COMPILER}"
                                           BUILD_PLATFORM="${BUILD_PLATFORM}"
                                           BUILD_TYPE="${BUILD_TYPE}")
-
-include_directories(${INCLUDE_DIRECTORIES} ${ZLIB_INCLUDE_DIRS})
-target_link_libraries(engine ${ZLIB_LIBRARIES})
 
 add_subdirectory(Graphics)
 add_subdirectory(Objects)
@@ -71,4 +66,3 @@ add_subdirectory(Tables)
 add_subdirectory(Plugins)
 add_subdirectory(TurnEngine)
 
-message(VERBOSE "ZLIB_LIBRARIES: ${ZLIB_LIBRARIES}")

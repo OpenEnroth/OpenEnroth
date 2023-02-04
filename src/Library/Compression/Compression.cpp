@@ -1,4 +1,4 @@
-#include "Engine/ZlibWrapper.h"
+#include "Compression.h"
 
 #include <zlib.h>
 

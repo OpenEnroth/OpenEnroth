@@ -7,5 +7,5 @@ set(LOD_HEADERS
                 LodVersion.h)
 
 add_library(lod STATIC ${LOD_SOURCES} ${LOD_HEADERS})
-target_link_libraries(lod utility)
+target_link_libraries(lod compression utility)
 target_check_style(lod)
