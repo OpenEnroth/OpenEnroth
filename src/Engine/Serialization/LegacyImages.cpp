@@ -112,7 +112,7 @@ void Serialize(const NPCData &src, NPCData_MM7 *dst) {
     dst->fame = src.fame;
     dst->rep = src.rep;
     dst->Location2D = src.Location2D;
-    dst->uProfession = src.profession;
+    dst->uProfession = std::to_underlying(src.profession);
     dst->greet = src.greet;
     dst->joins = src.is_joinable;
     dst->field_24 = src.field_24;
@@ -135,7 +135,7 @@ void Deserialize(const NPCData_MM7 &src, NPCData *dst) {
     dst->fame = src.fame;
     dst->rep = src.rep;
     dst->Location2D = src.Location2D;
-    dst->profession = (NPCProf)src.uProfession;
+    dst->profession = static_cast<NPCProf>(src.uProfession);
     dst->greet = src.greet;
     dst->is_joinable = src.joins;
     dst->field_24 = src.field_24;

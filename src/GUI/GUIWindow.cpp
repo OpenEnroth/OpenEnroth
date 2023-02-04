@@ -2523,10 +2523,8 @@ std::string NameAndTitle(const std::string &name, NPCProf profession) {
 
 std::string NameAndTitle(NPCData* npc) {
     if (!npc->pName.empty()) {
-        if (npc->profession) {
-            Assert(npc->profession < 59);
+        if (npc->profession != NoProfession)
             return NameAndTitle(npc->pName, npc->profession);
-        }
 
         return npc->pName;
     }

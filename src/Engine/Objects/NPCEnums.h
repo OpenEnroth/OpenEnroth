@@ -28,7 +28,8 @@ inline Segment<MERCHANT_PHRASE> MerchantPhrases() {
     return Segment(MERCHANT_PHRASE_NOT_ENOUGH_GOLD, MERCAHNT_PHRASE_STOLEN_ITEM);
 }
 
-enum NPCProf : int32_t {
+enum class NPCProf : int32_t {
+    NoProfession = 0,
     Smith = 1,       // GM Weapon Repair;
     Armorer = 2,     // GM Armor Repair;
     Alchemist = 3,   // GM Potion Repair;
@@ -86,5 +87,12 @@ enum NPCProf : int32_t {
     Prelate = 55,      // Spirit: +4;                Mind: +4;              Body: +4;
     Monk = 56,   // Unarmed: +2;               Dodge: +2;
     Sage = 57,   // Monster ID: +6
-    Hunter = 58  // Monster ID: +6
+    Hunter = 58,  // Monster ID: +6
+
+    NPC_PROFESSION_FIRST = NoProfession,
+    NPC_PROFESSION_LAST = Hunter,
+
+    NPC_PROFESSION_FIRST_VALID = Smith,
+    NPC_PROFESSION_LAST_VALID = NPC_PROFESSION_LAST
 };
+using enum NPCProf;

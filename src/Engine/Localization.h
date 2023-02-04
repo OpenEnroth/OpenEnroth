@@ -509,7 +509,6 @@ class Localization {
     }
 
     const char *GetNpcProfessionName(NPCProf prof) const {
-        Assert((int)prof >= 0 && (int)prof < 59);
         return this->npc_profession_names[prof];
     }
 
@@ -557,7 +556,7 @@ class Localization {
     IndexedArray<const char *, PLAYER_SKILL_COUNT> skill_descriptions_master = {{}};
     IndexedArray<const char *, PLAYER_SKILL_COUNT> skill_descriptions_grand = {{}};
     const char* character_conditions[19]{};
-    const char* npc_profession_names[59]{};
+    IndexedArray<const char *, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST> npc_profession_names = {{}};
 };
 
 extern Localization *localization;
