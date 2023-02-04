@@ -25,10 +25,6 @@ set(OBJECTS_HEADERS Actor.h
                     PlayerEnums.h
                     SpriteObject.h)
 
-if(NOT BUILD_PLATFORM STREQUAL "windows")
-  set(CMAKE_CXX_FLAGS "-fpermissive ${CMAKE_CXX_FLAGS}")
-endif()
-
 add_library(objects STATIC ${OBJECTS_SOURCES} ${OBJECTS_HEADERS})
 target_check_style(objects)
 
