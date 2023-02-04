@@ -14,7 +14,9 @@ var searchData=
   ['float_2eh_11',['Float.h',['../Float_8h.html',1,'']]],
   ['float_5fut_2ecpp_12',['Float_ut.cpp',['../Float__ut_8cpp.html',1,'']]],
   ['format_2eh_13',['Format.h',['../Format_8h.html',1,'']]],
-  ['frametableinc_2ecpp_14',['FrameTableInc.cpp',['../FrameTableInc_8cpp.html',1,'']]],
-  ['frametableinc_2eh_15',['FrameTableInc.h',['../FrameTableInc_8h.html',1,'']]],
-  ['freedeleter_2eh_16',['FreeDeleter.h',['../FreeDeleter_8h.html',1,'']]]
+  ['framelimiter_2ecpp_14',['FrameLimiter.cpp',['../FrameLimiter_8cpp.html',1,'']]],
+  ['framelimiter_2eh_15',['FrameLimiter.h',['../FrameLimiter_8h.html',1,'']]],
+  ['frametableinc_2ecpp_16',['FrameTableInc.cpp',['../FrameTableInc_8cpp.html',1,'']]],
+  ['frametableinc_2eh_17',['FrameTableInc.h',['../FrameTableInc_8h.html',1,'']]],
+  ['freedeleter_2eh_18',['FreeDeleter.h',['../FreeDeleter_8h.html',1,'']]]
 ];
