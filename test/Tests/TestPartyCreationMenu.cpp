@@ -2,6 +2,15 @@
 
 #include "GUI/GUIWindow.h"
 
+#include "Engine/Objects/ItemTable.h"
+
+GAME_TEST(Items, GenerateItem) {
+    // Calling GenerateItem 100 times shouldn't assert.
+    ItemGen item;
+    for (int i = 0; i < 100; i++)
+        pItemTable->GenerateItem(ITEM_TREASURE_LEVEL_6, 0, &item);
+}
+
 GAME_TEST(Menu, PartyCreation) {
     EXPECT_EQ(GetCurrentMenuID(), MENU_MAIN);
 
@@ -55,4 +64,3 @@ GAME_TEST(Prs, Pr347) {
     test->playTraceFromTestData("pr_347.mm7", "pr_347.json", [&] { oldGold = pParty->uNumGold; });
     EXPECT_NE(oldGold, pParty->uNumGold); // Spent on items.
 }
-
