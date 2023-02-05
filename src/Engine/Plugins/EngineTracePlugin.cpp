@@ -25,7 +25,7 @@ EventTrace EngineTracePlugin::finish() {
 void EngineTracePlugin::swapBuffers() {
     if (_tracing) {
         std::unique_ptr<PaintEvent> e = std::make_unique<PaintEvent>();
-        e->type = PaintEvent::Paint;
+        e->type = EVENT_PAINT;
         e->tickCount = application()->platform()->tickCount();
         e->randomState = grng->Random(1024);
         _trace.events.push_back(std::move(e));

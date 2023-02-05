@@ -107,14 +107,14 @@ void SdlEventLoop::dispatchEvent(PlatformEventHandler *eventHandler, const SDL_E
 }
 
 void SdlEventLoop::dispatchEvent(PlatformEventHandler *eventHandler, const PlatformEvent *event) {
-    assert(Segment(PlatformEvent::FirstEventType, PlatformEvent::LastEventType).contains(event->type));
+    assert(Segment(EVENT_FIRST, EVENT_LAST).contains(event->type));
 
     eventHandler->event(event);
 }
 
 void SdlEventLoop::dispatchNativeEvent(PlatformEventHandler *eventHandler, const SDL_Event *event) {
     PlatformNativeEvent e;
-    e.type = PlatformEvent::NativeEvent;
+    e.type = EVENT_NATIVE;
     e.nativeEvent = event;
 
     dispatchEvent(eventHandler, &e);
@@ -123,7 +123,7 @@ void SdlEventLoop::dispatchNativeEvent(PlatformEventHandler *eventHandler, const
 void SdlEventLoop::dispatchQuitEvent(PlatformEventHandler *eventHandler, const SDL_QuitEvent *event) {
     // We don't notify the app of a "termination event", but close all windows instead.
     PlatformWindowEvent e;
-    e.type = PlatformEvent::WindowCloseRequest;
+    e.type = EVENT_WINDOW_CLOSE_REQUEST;
 
     // Saving the ids and not window pointers here is intentional as literally anything could happen
     // inside the event handlers.
@@ -143,7 +143,7 @@ void SdlEventLoop::dispatchKeyEvent(PlatformEventHandler *eventHandler, const SD
     PlatformKeyEvent e;
     e.window = _state->window(event->windowID);
     e.id = UINT32_MAX; // SDL doesn't discern between multiple keyboards
-    e.type = event->type == SDL_KEYUP ? PlatformEvent::KeyRelease : PlatformEvent::KeyPress;
+    e.type = event->type == SDL_KEYUP ? EVENT_KEY_RELEASE : EVENT_KEY_PRESS;
     e.isAutoRepeat = event->repeat;
     e.key = translateSdlKey(event->keysym.scancode);
     e.keyType = KEY_TYPE_KEYBOARD_BUTTON;
@@ -159,7 +159,7 @@ void SdlEventLoop::dispatchMouseMoveEvent(PlatformEventHandler *eventHandler, co
         return; // This happens.
 
     PlatformMouseEvent e;
-    e.type = PlatformEvent::MouseMove;
+    e.type = EVENT_MOUSE_MOVE;
     e.window = _state->window(event->windowID);
     e.button = BUTTON_NONE;
     e.buttons = translateSdlMouseButtons(event->state);
@@ -173,7 +173,7 @@ void SdlEventLoop::dispatchMouseButtonEvent(PlatformEventHandler *eventHandler, 
         return; // This happens.
 
     PlatformMouseEvent e;
-    e.type = event->type == SDL_MOUSEBUTTONUP ? PlatformEvent::MouseButtonRelease : PlatformEvent::MouseButtonPress;
+    e.type = event->type == SDL_MOUSEBUTTONUP ? EVENT_MOUSE_BUTTON_RELEASE : EVENT_MOUSE_BUTTON_PRESS;
     e.window = _state->window(event->windowID);
     e.button = translateSdlMouseButton(event->button);
     e.buttons = translateSdlMouseButtons(SDL_GetMouseState(nullptr, nullptr));
@@ -202,7 +202,7 @@ void SdlEventLoop::dispatchMouseWheelEvent(PlatformEventHandler *eventHandler, c
         return; // This happens.
 
     PlatformWheelEvent e;
-    e.type = PlatformEvent::MouseWheel;
+    e.type = EVENT_MOUSE_WHEEL;
     e.window = _state->window(event->windowID);
     e.inverted = event->direction == SDL_MOUSEWHEEL_FLIPPED;
     e.angleDelta = {event->x, event->y};
@@ -213,17 +213,17 @@ void SdlEventLoop::dispatchWindowEvent(PlatformEventHandler *eventHandler, const
     if (event->windowID == 0)
         return; // Shouldn't really happen, but we check just in case.
 
-    PlatformEvent::Type type = PlatformEvent::Invalid;
+    PlatformEventType type = EVENT_INVALID;
 
     switch (event->event) {
     case SDL_WINDOWEVENT_FOCUS_GAINED:
-        type = PlatformEvent::WindowActivate;
+        type = EVENT_WINDOW_ACTIVATE;
         break;
     case SDL_WINDOWEVENT_FOCUS_LOST:
-        type = PlatformEvent::WindowDeactivate;
+        type = EVENT_WINDOW_DEACTIVATE;
         break;
     case SDL_WINDOWEVENT_CLOSE:
-        type = PlatformEvent::WindowCloseRequest;
+        type = EVENT_WINDOW_CLOSE_REQUEST;
         break;
     case SDL_WINDOWEVENT_MOVED:
         dispatchWindowMoveEvent(eventHandler, event);
@@ -250,7 +250,7 @@ void SdlEventLoop::dispatchWindowMoveEvent(PlatformEventHandler *eventHandler, c
     assert(event->windowID != 0); // Checked by caller.
 
     PlatformMoveEvent e;
-    e.type = PlatformEvent::WindowMove;
+    e.type = EVENT_WINDOW_MOVE;
     e.window = _state->window(event->windowID);
     e.pos = {event->data1, event->data2};
     dispatchEvent(eventHandler, &e);
@@ -260,7 +260,7 @@ void SdlEventLoop::dispatchWindowResizeEvent(PlatformEventHandler *eventHandler,
     assert(event->windowID != 0); // Checked by caller.
 
     PlatformResizeEvent e;
-    e.type = PlatformEvent::WindowResize;
+    e.type = EVENT_WINDOW_RESIZE;
     e.window = _state->window(event->windowID);
     e.size = {event->data1, event->data2};
     dispatchEvent(eventHandler, &e);
@@ -270,10 +270,10 @@ void SdlEventLoop::dispatchGamepadDeviceEvent(PlatformEventHandler *eventHandler
     PlatformGamepadDeviceEvent e;
     int32_t id = -1;
     if (event->type == SDL_CONTROLLERDEVICEADDED) {
-        e.type = PlatformEvent::GamepadConnected;
+        e.type = EVENT_GAMEPAD_CONNECTED;
         id = _state->nextFreeGamepadId();
     } else if (event->type == SDL_CONTROLLERDEVICEREMOVED) {
-        e.type = PlatformEvent::GamepadDisconnected;
+        e.type = EVENT_GAMEPAD_DISCONNECTED;
         id = _state->getGamepadIdBySdlId(event->which);
     } else {
         return;
@@ -288,7 +288,7 @@ void SdlEventLoop::dispatchGamepadDeviceEvent(PlatformEventHandler *eventHandler
 void SdlEventLoop::dispatchGamepadButtonEvent(PlatformEventHandler *eventHandler, const SDL_ControllerButtonEvent *event) {
     PlatformKeyEvent e;
     e.id = _state->getGamepadIdBySdlId(event->which);
-    e.type = event->type == SDL_CONTROLLERBUTTONUP ? PlatformEvent::KeyRelease : PlatformEvent::KeyPress;
+    e.type = event->type == SDL_CONTROLLERBUTTONUP ? EVENT_KEY_RELEASE : EVENT_KEY_PRESS;
     e.key = translateSdlGamepadButton(static_cast<SDL_GameControllerButton>(event->button));
     e.keyType = KEY_TYPE_GAMEPAD_BUTTON;
     e.keyValue = 0.0f;
@@ -320,9 +320,9 @@ void SdlEventLoop::dispatchGamepadAxisEvent(PlatformEventHandler *eventHandler, 
     float value = abs(event->value) > deadzone ? std::clamp(event->value / 31767.0f, -1.0f, 1.0f) : 0.0f;
 
     if (value == 0.0f)
-        e.type = PlatformEvent::KeyRelease;
+        e.type = EVENT_KEY_RELEASE;
     else
-        e.type = PlatformEvent::KeyPress;
+        e.type = EVENT_KEY_PRESS;
 
     std::pair<PlatformKey, PlatformKeyType> key = translateSdlGamepadAxis(
         static_cast<SDL_GameControllerAxis>(event->axis), event->value);

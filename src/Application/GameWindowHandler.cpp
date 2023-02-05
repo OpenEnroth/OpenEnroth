@@ -573,9 +573,9 @@ bool GameWindowHandler::resizeEvent(const PlatformResizeEvent *event) {
 }
 
 bool GameWindowHandler::activationEvent(const PlatformWindowEvent *event) {
-    if (event->type == PlatformEvent::WindowActivate) {
+    if (event->type == EVENT_WINDOW_ACTIVATE) {
         OnActivated();
-    } else if (event->type == PlatformEvent::WindowDeactivate) {
+    } else if (event->type == EVENT_WINDOW_DEACTIVATE) {
         OnDeactivated();
     }
     return false;
@@ -589,7 +589,7 @@ bool GameWindowHandler::closeEvent(const PlatformWindowEvent *event) {
 }
 
 bool GameWindowHandler::gamepadDeviceEvent(const PlatformGamepadDeviceEvent *event) {
-    if (event->type == PlatformEvent::GamepadConnected) {
+    if (event->type == EVENT_GAMEPAD_CONNECTED) {
         gamepads_[event->id] = platform->createGamepad(event->id);
         if (gamepads_[event->id]) {
             PlatformGamepad *gamepad = gamepads_[event->id].get();
@@ -608,7 +608,7 @@ bool GameWindowHandler::gamepadDeviceEvent(const PlatformGamepadDeviceEvent *eve
         }
 
         logger->Warning("gamepad #%d initialization failed", event->id);
-    } else if (event->type == PlatformEvent::GamepadDisconnected) {
+    } else if (event->type == EVENT_GAMEPAD_DISCONNECTED) {
         for (auto it = gamepads_.begin(); it != gamepads_.end(); it++) {
             PlatformGamepad *gamepad = it->second.get();
 

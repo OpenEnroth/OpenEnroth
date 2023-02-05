@@ -23,5 +23,5 @@ class ProxyPlatform : public ProxyBase<Platform> {
     virtual void showMessageBox(const std::string& title, const std::string &message) const override;
     virtual int64_t tickCount() const override;
     virtual std::string winQueryRegistry(const std::wstring &path) const override;
-    virtual std::string storagePath(const PLATFORM_STORAGE type) const override;
+    virtual std::string storagePath(const PlatformStorage type) const override;
 };

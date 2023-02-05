@@ -42,7 +42,7 @@ void EngineController::postEvent(std::unique_ptr<PlatformEvent> event) {
 
 void EngineController::pressKey(PlatformKey key) {
     std::unique_ptr<PlatformKeyEvent> event = std::make_unique<PlatformKeyEvent>();
-    event->type = PlatformEvent::KeyPress;
+    event->type = EVENT_KEY_PRESS;
     event->window = ::application->window();
     event->key = key;
     event->mods = 0;
@@ -52,7 +52,7 @@ void EngineController::pressKey(PlatformKey key) {
 
 void EngineController::releaseKey(PlatformKey key) {
     std::unique_ptr<PlatformKeyEvent> event = std::make_unique<PlatformKeyEvent>();
-    event->type = PlatformEvent::KeyRelease;
+    event->type = EVENT_KEY_RELEASE;
     event->window = ::application->window();
     event->key = key;
     event->mods = 0;
@@ -62,7 +62,7 @@ void EngineController::releaseKey(PlatformKey key) {
 
 void EngineController::pressButton(PlatformMouseButton button, int x, int y) {
     std::unique_ptr<PlatformMouseEvent> event = std::make_unique<PlatformMouseEvent>();
-    event->type = PlatformEvent::MouseButtonPress;
+    event->type = EVENT_MOUSE_BUTTON_PRESS;
     event->window = ::application->window();
     event->button = BUTTON_LEFT;
     event->pos = Pointi(x, y);
@@ -72,7 +72,7 @@ void EngineController::pressButton(PlatformMouseButton button, int x, int y) {
 
 void EngineController::releaseButton(PlatformMouseButton button, int x, int y) {
     std::unique_ptr<PlatformMouseEvent> event = std::make_unique<PlatformMouseEvent>();
-    event->type = PlatformEvent::MouseButtonRelease;
+    event->type = EVENT_MOUSE_BUTTON_RELEASE;
     event->window = ::application->window();
     event->button = BUTTON_LEFT;
     event->buttons = BUTTON_LEFT;
@@ -187,7 +187,7 @@ void EngineController::resizeWindow(int w, int h) {
 
     // Spontaneous events are ignored, gotta post one.
     std::unique_ptr<PlatformResizeEvent> event = std::make_unique<PlatformResizeEvent>();
-    event->type = PlatformEvent::WindowResize;
+    event->type = EVENT_WINDOW_RESIZE;
     event->window = ::application->window();
     event->size = {w, h};
     postEvent(std::move(event));

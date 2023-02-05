@@ -7,7 +7,7 @@
 
 #include "Library/Logger/Logger.h"
 
-GameTraceHandler::GameTraceHandler(EngineTracer *tracer) : PlatformEventFilter({PlatformEvent::KeyPress, PlatformEvent::KeyRelease}), _tracer(tracer) {
+GameTraceHandler::GameTraceHandler(EngineTracer *tracer) : PlatformEventFilter({EVENT_KEY_PRESS, EVENT_KEY_RELEASE}), _tracer(tracer) {
     assert(tracer);
 }
 

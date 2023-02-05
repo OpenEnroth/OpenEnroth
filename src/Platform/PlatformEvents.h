@@ -14,31 +14,9 @@ class PlatformWindow;
 
 class PlatformEvent {
  public:
-    enum class Type {
-        Invalid = -1,
-        KeyPress = 0,
-        KeyRelease,
-        GamepadConnected,
-        GamepadDisconnected,
-        MouseButtonPress,
-        MouseButtonRelease,
-        MouseMove,
-        MouseWheel,
-        WindowMove,
-        WindowResize,
-        WindowActivate,
-        WindowDeactivate,
-        WindowCloseRequest,
-        NativeEvent,
-
-        FirstEventType = KeyPress,
-        LastEventType = NativeEvent
-    };
-    using enum Type;
-
     virtual ~PlatformEvent() = default;
 
-    Type type = Invalid;
+    PlatformEventType type = EVENT_INVALID;
 };
 
 class PlatformWindowEvent: public PlatformEvent {

@@ -30,7 +30,7 @@ class SdlPlatform: public Platform {
 
     virtual std::string winQueryRegistry(const std::wstring &path) const override;
 
-    virtual std::string storagePath(const PLATFORM_STORAGE type) const override;
+    virtual std::string storagePath(const PlatformStorage type) const override;
 
  private:
     friend class SdlWindow;

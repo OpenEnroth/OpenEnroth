@@ -16,6 +16,6 @@ class FilteringEventHandler : public PlatformEventHandler {
     void removeEventFilter(PlatformEventFilter *filter);
 
  private:
-    IndexedArray<std::vector<PlatformEventFilter *>, PlatformEvent::FirstEventType, PlatformEvent::LastEventType> _filters;
+    IndexedArray<std::vector<PlatformEventFilter *>, EVENT_FIRST, EVENT_LAST> _filters;
     bool _insideEvent = false;
 };

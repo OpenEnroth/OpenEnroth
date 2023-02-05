@@ -110,7 +110,7 @@ void EngineTracer::playTrace(EngineController *game, const std::string &savePath
     postLoadCallback();
 
     for (std::unique_ptr<PlatformEvent> &event : trace.events) {
-        if (event->type == PaintEvent::Paint) {
+        if (event->type == EVENT_PAINT) {
             game->tick(1);
 
             const PaintEvent *paintEvent = static_cast<const PaintEvent *>(event.get());

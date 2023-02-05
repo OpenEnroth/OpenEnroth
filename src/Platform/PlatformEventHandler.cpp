@@ -2,42 +2,42 @@
 
 void PlatformEventHandler::event(const PlatformEvent *event) {
     switch (event->type) {
-    case PlatformEvent::GamepadConnected:
-    case PlatformEvent::GamepadDisconnected:
+    case EVENT_GAMEPAD_CONNECTED:
+    case EVENT_GAMEPAD_DISCONNECTED:
         gamepadDeviceEvent(static_cast<const PlatformGamepadDeviceEvent *>(event));
         return;
-    case PlatformEvent::KeyPress:
+    case EVENT_KEY_PRESS:
         keyPressEvent(static_cast<const PlatformKeyEvent *>(event));
         return;
-    case PlatformEvent::KeyRelease:
+    case EVENT_KEY_RELEASE:
         keyReleaseEvent(static_cast<const PlatformKeyEvent *>(event));
         return;
-    case PlatformEvent::MouseMove:
+    case EVENT_MOUSE_MOVE:
         mouseMoveEvent(static_cast<const PlatformMouseEvent *>(event));
         return;
-    case PlatformEvent::MouseButtonPress:
+    case EVENT_MOUSE_BUTTON_PRESS:
         mousePressEvent(static_cast<const PlatformMouseEvent *>(event));
         return;
-    case PlatformEvent::MouseButtonRelease:
+    case EVENT_MOUSE_BUTTON_RELEASE:
         mouseReleaseEvent(static_cast<const PlatformMouseEvent *>(event));
         return;
-    case PlatformEvent::MouseWheel:
+    case EVENT_MOUSE_WHEEL:
         wheelEvent(static_cast<const PlatformWheelEvent *>(event));
         return;
-    case PlatformEvent::WindowMove:
+    case EVENT_WINDOW_MOVE:
         moveEvent(static_cast<const PlatformMoveEvent *>(event));
         return;
-    case PlatformEvent::WindowResize:
+    case EVENT_WINDOW_RESIZE:
         resizeEvent(static_cast<const PlatformResizeEvent *>(event));
         return;
-    case PlatformEvent::WindowActivate:
-    case PlatformEvent::WindowDeactivate:
+    case EVENT_WINDOW_ACTIVATE:
+    case EVENT_WINDOW_DEACTIVATE:
         activationEvent(static_cast<const PlatformWindowEvent *>(event));
         return;
-    case PlatformEvent::WindowCloseRequest:
+    case EVENT_WINDOW_CLOSE_REQUEST:
         closeEvent(static_cast<const PlatformWindowEvent *>(event));
         return;
-    case PlatformEvent::NativeEvent:
+    case EVENT_NATIVE:
         nativeEvent(static_cast<const PlatformNativeEvent *>(event));
         return;
     default:

@@ -149,5 +149,5 @@ class Platform {
      *
      * @param type                      Storage type.
      */
-    virtual std::string storagePath(const PLATFORM_STORAGE type) const = 0;
+    virtual std::string storagePath(const PlatformStorage type) const = 0;
 };

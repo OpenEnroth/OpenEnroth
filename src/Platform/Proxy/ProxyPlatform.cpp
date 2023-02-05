@@ -44,6 +44,6 @@ std::string ProxyPlatform::winQueryRegistry(const std::wstring &path) const {
     return nonNullBase()->winQueryRegistry(path);
 }
 
-std::string ProxyPlatform::storagePath(const PLATFORM_STORAGE type) const {
+std::string ProxyPlatform::storagePath(const PlatformStorage type) const {
     return nonNullBase()->storagePath(type);
 }

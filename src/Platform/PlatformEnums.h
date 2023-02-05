@@ -9,11 +9,33 @@
 #undef MOD_CONTROL  // We're using MOD_CTRL, but would rather not get this more confusing.
 #undef MOD_WIN      // Same here, we have MOD_META instead.
 
-enum class PLATFORM_STORAGE {
+enum class PlatformEventType {
+    EVENT_INVALID = -1,
+    EVENT_KEY_PRESS = 0,
+    EVENT_KEY_RELEASE,
+    EVENT_GAMEPAD_CONNECTED,
+    EVENT_GAMEPAD_DISCONNECTED,
+    EVENT_MOUSE_BUTTON_PRESS,
+    EVENT_MOUSE_BUTTON_RELEASE,
+    EVENT_MOUSE_MOVE,
+    EVENT_MOUSE_WHEEL,
+    EVENT_WINDOW_MOVE,
+    EVENT_WINDOW_RESIZE,
+    EVENT_WINDOW_ACTIVATE,
+    EVENT_WINDOW_DEACTIVATE,
+    EVENT_WINDOW_CLOSE_REQUEST,
+    EVENT_NATIVE,
+
+    EVENT_FIRST = EVENT_KEY_PRESS,
+    EVENT_LAST = EVENT_NATIVE
+};
+using enum PlatformEventType;
+
+enum class PlatformStorage {
     ANDROID_STORAGE_INTERNAL,
     ANDROID_STORAGE_EXTERNAL
 };
-using enum PLATFORM_STORAGE;
+using enum PlatformStorage;
 
 /**
  * Platform log level as used by `PlatformLogger`.

@@ -11,12 +11,12 @@ class PlatformEventFilter {
     };
     using enum EventWildcard;
 
-    explicit PlatformEventFilter(std::initializer_list<PlatformEvent::Type> eventTypes);
+    explicit PlatformEventFilter(std::initializer_list<PlatformEventType> eventTypes);
     explicit PlatformEventFilter(EventWildcard eventTypes);
 
     virtual bool event(const PlatformEvent *event);
 
-    const std::vector<PlatformEvent::Type> eventTypes() const {
+    const std::vector<PlatformEventType> eventTypes() const {
         return _eventTypes;
     }
 
@@ -35,6 +35,6 @@ class PlatformEventFilter {
     virtual bool nativeEvent(const PlatformNativeEvent *event);
 
  private:
-    std::vector<PlatformEvent::Type> _eventTypes;
+    std::vector<PlatformEventType> _eventTypes;
 };
 
