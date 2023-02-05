@@ -287,17 +287,17 @@ void Localization::InitializeSkillNames() {
     this->skill_names[PLAYER_SKILL_STEALING]    = this->localization_strings[90];
     this->skill_names[PLAYER_SKILL_ALCHEMY]     = this->localization_strings[95];  // Alchemy
     this->skill_names[PLAYER_SKILL_LEARNING]    = this->localization_strings[301];
-    this->skill_names[PLAYER_SKILL_CLUB]        = this->localization_strings[568];
-    this->skill_names[PLAYER_SKILL_MISC]        = this->localization_strings[153]; // "None", used during character creation.
+    this->skill_names[PLAYER_SKILL_INVALID]     = this->localization_strings[153]; // "None", used during character creation.
 
-    // TODO: should be moved to skill descriptions eventually
-    this->skill_descriptions[PLAYER_SKILL_CLUB] = "Everyone is able to wield a club without any prior training and bonk anything with it. "
-        "But there is not much room to improve finesse or mastery for such a rudimentary weapon though. "
-        "So don't expect to become thwonking killer and devastating anyone beyond weaklings.";
+    // TODO(captainurist): Not currently used anywhere
+    // this->skill_names[PLAYER_SKILL_CLUB]        = this->localization_strings[568];
+    // this->skill_descriptions[PLAYER_SKILL_CLUB] = "Everyone is able to wield a club without any prior training and bonk anything with it. "
+    //    "But there is not much room to improve finesse or mastery for such a rudimentary weapon though. "
+    //    "So don't expect to become thwonking killer and devastating anyone beyond weaklings.";
 
     skill_desc_raw = pEvents_LOD->LoadCompressedTexture("skilldes.txt").string_view();
     strtok(skill_desc_raw.data(), "\r");
-    for (PLAYER_SKILL_TYPE i : this->skill_descriptions.indices()) {
+    for (PLAYER_SKILL_TYPE i : StoredSkills()) {
         char *test_string = strtok(NULL, "\r") + 1;
 
         if (test_string != NULL && strlen(test_string) > 0) {

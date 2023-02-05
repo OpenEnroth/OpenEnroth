@@ -235,7 +235,7 @@ inline void SetSkillMastery(PLAYER_SKILL *skill_value, PLAYER_SKILL_MASTERY mast
 }
 
 #pragma warning(push)
-#pragma warning(disable : 4341)
+#pragma warning(disable : 4341) // TODO(captainurist): what is this about?
 /*  328 */
 enum class PLAYER_SKILL_TYPE : int8_t {
     PLAYER_SKILL_INVALID = -1,
@@ -277,15 +277,14 @@ enum class PLAYER_SKILL_TYPE : int8_t {
     PLAYER_SKILL_ALCHEMY = 35,
     PLAYER_SKILL_LEARNING = 36,
     PLAYER_SKILL_CLUB = 37, // In vanilla clubs are using separate hidden & non-upgradable skill.
-    PLAYER_SKILL_COUNT = 38,
+    PLAYER_SKILL_MISC = 38, // Hidden skill that's always 1. Used for wetsuits, for example.
+    PLAYER_SKILL_COUNT = 39,
 
-    PLAYER_SKILL_MISC = 38, // Hidden skill that's always zero, not stored anywhere
-
-    PLAYER_SKILL_MM7_FIRST = PLAYER_SKILL_STAFF,
-    PLAYER_SKILL_MM7_LAST = PLAYER_SKILL_LEARNING,
+    PLAYER_SKILL_FIRST_STORED = PLAYER_SKILL_STAFF,
+    PLAYER_SKILL_LAST_STORED = PLAYER_SKILL_LEARNING,
 
     PLAYER_SKILL_FIRST = PLAYER_SKILL_STAFF,
-    PLAYER_SKILL_LAST = PLAYER_SKILL_CLUB,
+    PLAYER_SKILL_LAST = PLAYER_SKILL_MISC,
 };
 using enum PLAYER_SKILL_TYPE;
 
@@ -293,10 +292,17 @@ inline Segment<PLAYER_SKILL_TYPE> AllSkills() {
     return Segment(PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST);
 }
 
-inline Segment<PLAYER_SKILL_TYPE> MM7Skills() {
-    return Segment(PLAYER_SKILL_MM7_FIRST, PLAYER_SKILL_MM7_LAST);
+/**
+ * @return                              List of skills that are saved in an MM7 savegame.
+ */
+inline Segment<PLAYER_SKILL_TYPE> StoredSkills() {
+    return Segment(PLAYER_SKILL_FIRST_STORED, PLAYER_SKILL_LAST_STORED);
 }
 
+/**
+ * @return                              List of skills that are drawn in the "Armor" section of the character
+ *                                      screen's skills tab.
+ */
 inline std::initializer_list<PLAYER_SKILL_TYPE> ArmorSkills() {
     static constexpr std::initializer_list<PLAYER_SKILL_TYPE> result = {
         PLAYER_SKILL_LEATHER, PLAYER_SKILL_CHAIN, PLAYER_SKILL_PLATE,
@@ -306,17 +312,25 @@ inline std::initializer_list<PLAYER_SKILL_TYPE> ArmorSkills() {
     return result;
 }
 
+/**
+ * @return                              List of skills that are drawn in the "Weapons" section of the character
+ *                                      screen's skills tab.
+ */
 inline std::initializer_list<PLAYER_SKILL_TYPE> WeaponSkills() {
     static constexpr std::initializer_list<PLAYER_SKILL_TYPE> result = {
         PLAYER_SKILL_AXE,   PLAYER_SKILL_BOW,     PLAYER_SKILL_DAGGER,
         PLAYER_SKILL_MACE,  PLAYER_SKILL_SPEAR,   PLAYER_SKILL_STAFF,
-        PLAYER_SKILL_SWORD, PLAYER_SKILL_UNARMED, PLAYER_SKILL_BLASTER,
-        PLAYER_SKILL_CLUB
+        PLAYER_SKILL_SWORD, PLAYER_SKILL_UNARMED, PLAYER_SKILL_BLASTER
+        // PLAYER_SKILL_CLUB is not displayed in skills.
     };
 
     return result;
 }
 
+/**
+ * @return                              List of skills that are drawn in the "Misc" section of the character
+ *                                      screen's skills tab.
+ */
 inline std::initializer_list<PLAYER_SKILL_TYPE> MiscSkills() {
     static constexpr std::initializer_list<PLAYER_SKILL_TYPE> result = {
         PLAYER_SKILL_ALCHEMY,      PLAYER_SKILL_ARMSMASTER,
@@ -330,6 +344,10 @@ inline std::initializer_list<PLAYER_SKILL_TYPE> MiscSkills() {
     return result;
 }
 
+/**
+ * @return                              List of skills that are drawn in the "Magic" section of the character
+ *                                      screen's skills tab.
+ */
 inline std::initializer_list<PLAYER_SKILL_TYPE> MagicSkills() {
     static constexpr std::initializer_list<PLAYER_SKILL_TYPE> result = {
         PLAYER_SKILL_FIRE,  PLAYER_SKILL_AIR,    PLAYER_SKILL_WATER,

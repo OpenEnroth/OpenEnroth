@@ -2439,7 +2439,7 @@ void Game::EventLoop() {
                     for (uint i = 0; i < 4; ++i) {            // loop over players
                         for (PLAYER_SKILL_TYPE ski : AllSkills()) {  // loop over skills
                             // if class can learn this skill
-                            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[i]->classType][ski] > PLAYER_SKILL_MASTERY_NONE) {
+                            if (byte_4ED970_skill_learn_ability_by_class_table[pParty->pPlayers[i].classType][ski] > PLAYER_SKILL_MASTERY_NONE) {
                                 if (pParty->pPlayers[i].GetSkillLevel(ski) == 0)
                                     pParty->pPlayers[i].SetSkillLevel(ski, 1);
                             }

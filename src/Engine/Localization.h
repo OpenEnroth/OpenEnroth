@@ -549,12 +549,12 @@ class Localization {
     const char* class_desciptions[36]{};
     const char* attribute_names[7]{};
     const char* attribute_descriptions[7]{};
-    IndexedArray<const char *, PLAYER_SKILL_FIRST, PLAYER_SKILL_COUNT> skill_names = {{}}; // Note: includes count
-    IndexedArray<const char *, PLAYER_SKILL_COUNT> skill_descriptions = {{}};
-    IndexedArray<const char *, PLAYER_SKILL_COUNT> skill_descriptions_normal = {{}};
-    IndexedArray<const char *, PLAYER_SKILL_COUNT> skill_descriptions_expert = {{}};
-    IndexedArray<const char *, PLAYER_SKILL_COUNT> skill_descriptions_master = {{}};
-    IndexedArray<const char *, PLAYER_SKILL_COUNT> skill_descriptions_grand = {{}};
+    IndexedArray<const char *, PLAYER_SKILL_INVALID, PLAYER_SKILL_LAST_STORED> skill_names = {{}};
+    IndexedArray<const char *, PLAYER_SKILL_INVALID, PLAYER_SKILL_LAST_STORED> skill_descriptions = {{}};
+    IndexedArray<const char *, PLAYER_SKILL_INVALID, PLAYER_SKILL_LAST_STORED> skill_descriptions_normal = {{}};
+    IndexedArray<const char *, PLAYER_SKILL_INVALID, PLAYER_SKILL_LAST_STORED> skill_descriptions_expert = {{}};
+    IndexedArray<const char *, PLAYER_SKILL_INVALID, PLAYER_SKILL_LAST_STORED> skill_descriptions_master = {{}};
+    IndexedArray<const char *, PLAYER_SKILL_INVALID, PLAYER_SKILL_LAST_STORED> skill_descriptions_grand = {{}};
     const char* character_conditions[19]{};
     IndexedArray<const char *, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST> npc_profession_names = {{}};
 };
