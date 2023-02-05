@@ -96,7 +96,7 @@ void GUICredits::ExecuteCredits() {
     while (GetCurrentMenuID() == MENU_CREDITSPROC) {
         MessageLoopWithWait();
 
-        render->BeginScene();
+        render->BeginScene2D();
         {
             pWindow_Credits->EventLoop();
             GUI_UpdateWindows();

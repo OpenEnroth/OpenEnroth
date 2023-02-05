@@ -303,7 +303,7 @@ void GUIWindow_PartyCreation::Update() {
     Sizef oldDims = {640.0, 480.0};
 
     // move sky
-    render->BeginScene();
+    render->BeginScene2D();
     render->DrawTextureNew(0, 0, main_menu_background);
     int sky_slider_anim_timer = (platform->tickCount() % ((int)oldDims.w * 20)) / 20;
     render->DrawTextureNew(sky_slider_anim_timer / oldDims.w, 2 / oldDims.h, ui_partycreation_sky_scroller);
@@ -766,7 +766,7 @@ bool PartyCreationUI_LoopInternal() {
         // PlayerCreationUI_Draw();
         // MainMenu_EventLoop();
         CreateParty_EventLoop();
-        render->BeginScene();
+        render->BeginScene2D();
         GUI_UpdateWindows();
         render->Present();
         if (uGameState ==

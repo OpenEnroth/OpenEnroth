@@ -44,6 +44,12 @@ class RenderBase : public IRender {
     virtual void DrawTextureGrayShade(float u, float v, class Image* a4) override;
     virtual void DrawTransparentRedShade(float u, float v, class Image* a4) override;
     virtual void DrawTransparentGreenShade(float u, float v, class Image* pTexture) override;
+    virtual void ClearBlack() override;
+    virtual void BillboardSphereSpellFX(struct SpellFX_Billboard* a1, int diffuse) override;
+    virtual void DrawMonsterPortrait(Recti rc, SpriteFrame* Portrait_Sprite, int Y_Offset) override;
+    virtual void DrawSpecialEffectsQuad(Texture* texture, int palette) override;
+    virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() override;
+    virtual void PresentBlackScreen() override;
 
  protected:
     unsigned int Billboard_ProbablyAddToListAndSortByZOrder(float z);

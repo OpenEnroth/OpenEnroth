@@ -432,7 +432,7 @@ void MainMenuLoad_Loop() {
     while (GetCurrentMenuID() == MENU_SAVELOAD && current_screen_type == CURRENT_SCREEN::SCREEN_LOADGAME) {
         MessageLoopWithWait();
 
-        render->BeginScene();
+        render->BeginScene2D();
         GUI_UpdateWindows();
         MainMenuLoad_EventLoop();
         render->Present();

@@ -114,7 +114,7 @@ void ArenaFight() {
     v0 = pFontArrus->CalcTextHeight(
         localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON),
         window.uFrameWidth, 13) + 7;
-    render->BeginSceneD3D();
+    render->BeginScene3D();
 
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
         pIndoor->Draw();
@@ -122,7 +122,7 @@ void ArenaFight() {
         pOutdoor->Draw();
 
     render->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
-    render->BeginScene();
+    render->BeginScene2D();
 
     render->DrawTextureCustomHeight(8 / 640.0f, (352 - v0) / 480.0f,
                                     ui_leather_mm7, v0);

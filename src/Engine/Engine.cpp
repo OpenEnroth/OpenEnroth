@@ -122,7 +122,7 @@ void Engine::Draw() {
     if (pMovie_Track) {
         /*if ( !render->pRenderD3D )
         {
-        render->BeginSceneD3D();
+        render->BeginScene3D();
         pMouse->DrawCursorToTarget();
         render->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
         }*/
@@ -143,7 +143,7 @@ void Engine::Draw() {
         pParty->sPrevRotationY = pParty->sRotationY;
 
         pParty->sPrevEyelevel = pParty->sEyelevel;
-        render->BeginSceneD3D();
+        render->BeginScene3D();
 
         // if ( !render->pRenderD3D )
         // pMouse->DrawCursorToTarget();
@@ -173,7 +173,7 @@ void Engine::Draw() {
     // DEBUG: force redraw gui
     viewparams->bRedrawGameUI = true;
 
-    render->BeginScene();
+    render->BeginScene2D();
     nuklear->Draw(nuklear->NUKLEAR_STAGE_PRE, WINDOW_GameUI, 1);
     if (nuklear->Mode(WINDOW_GameUI) == nuklear->NUKLEAR_MODE_EXCLUSIVE) {
         nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_GameUI, 1);

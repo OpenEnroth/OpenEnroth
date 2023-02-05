@@ -154,7 +154,7 @@ void GUIWindow_MainMenu::Loop() {
         }
 
         render->ResetUIClipRect();
-        render->BeginScene();
+        render->BeginScene2D();
         {
             nuklear->Draw(nuklear->NUKLEAR_STAGE_PRE, WINDOW_MainMenu_Load, 1);
             if (nuklear->Mode(WINDOW_MainMenu_Load) != nuklear->NUKLEAR_MODE_EXCLUSIVE) {
@@ -186,7 +186,7 @@ void GUIWindow_MainMenu::Loop() {
     while (GetCurrentMenuID() == MENU_MAIN) {
         MessageLoopWithWait();
 
-        render->BeginScene();
+        render->BeginScene2D();
         {
             pWindow_MainMenu->EventLoop();
             GUI_UpdateWindows();

@@ -486,7 +486,7 @@ void Menu::MenuLoop() {
         MessageLoopWithWait();
 
         GameUI_WritePointedObjectStatusString();
-        render->BeginScene();
+        render->BeginScene2D();
         engine->DrawGUI();
         GUI_UpdateWindows();
         GameUI_StatusBar_Draw();

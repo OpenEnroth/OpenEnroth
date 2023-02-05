@@ -1512,7 +1512,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                 /*else
                 v5 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];*/
                 if (PID_TYPE(v5) == OBJECT_Actor) {
-                    render->BeginScene();
+                    render->BeginScene2D();
                     popup_window.DrawMessageBox(1);
                     MonsterPopup_Draw(PID_ID(v5), &popup_window);
                 }

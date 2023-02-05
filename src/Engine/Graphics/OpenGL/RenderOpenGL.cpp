@@ -253,12 +253,6 @@ void RenderOpenGL::BltBackToFontFast(int a2, int a3, Recti *a4) {
     // never called anywhere
 }
 
-// TODO(pskelton): renderbase
-void RenderOpenGL::ClearBlack() {  // used only at start and in game over win
-    ClearZBuffer();
-    ClearTarget(0);
-}
-
 void RenderOpenGL::ClearTarget(unsigned int uColor) {
     glClearColor(0, 0, 0, 0/*0.9f, 0.5f, 0.1f, 1.0f*/);
     glClearDepthf(1.0f);
@@ -418,7 +412,7 @@ void RenderOpenGL::DrawLines(const RenderVertexD3D3* vertices, unsigned int num_
     EndLines2D();
 }
 
-void RenderOpenGL::BeginSceneD3D() {
+void RenderOpenGL::BeginScene3D() {
     // Setup for 3D
 
     if (outputRender != outputPresent) {
@@ -440,63 +434,6 @@ void RenderOpenGL::BeginSceneD3D() {
 
     SetFogParametersGL();
     gamma = GetGamma();
-}
-
-// TODO(pskelton): renderbase
-//----- (004A4CC9) ---------------------------------------
-void RenderOpenGL::BillboardSphereSpellFX(struct SpellFX_Billboard *a1, int diffuse) {
-    // fireball / implosion sphere
-    // TODO(pskelton): could draw in 3d rather than convert to billboard for ogl
-
-    if (a1->uNumVertices < 3) {
-        return;
-    }
-
-    float depth = 1000000.0;
-    for (uint i = 0; i < (unsigned int)a1->uNumVertices; ++i) {
-        if (a1->field_104[i].z < depth) {
-            depth = a1->field_104[i].z;
-        }
-    }
-
-    unsigned int v5 = Billboard_ProbablyAddToListAndSortByZOrder(depth);
-    pBillboardRenderListD3D[v5].field_90 = 0;
-    pBillboardRenderListD3D[v5].sParentBillboardID = -1;
-    pBillboardRenderListD3D[v5].opacity = RenderBillboardD3D::Opaque_2;
-    pBillboardRenderListD3D[v5].texture = 0;
-    pBillboardRenderListD3D[v5].uNumVertices = a1->uNumVertices;
-    pBillboardRenderListD3D[v5].z_order = depth;
-    pBillboardRenderListD3D[v5].PaletteIndex = 0;
-
-    pBillboardRenderListD3D[v5].pQuads[3].pos.x = 0.0f;
-    pBillboardRenderListD3D[v5].pQuads[3].pos.y = 0.0f;
-    pBillboardRenderListD3D[v5].pQuads[3].pos.z = 0.0f;
-
-    for (unsigned int i = 0; i < (unsigned int)a1->uNumVertices; ++i) {
-        pBillboardRenderListD3D[v5].pQuads[i].pos.x = a1->field_104[i].x;
-        pBillboardRenderListD3D[v5].pQuads[i].pos.y = a1->field_104[i].y;
-        pBillboardRenderListD3D[v5].pQuads[i].pos.z = a1->field_104[i].z;
-
-        float rhw = 1.f / a1->field_104[i].z;
-        float z = 1.f - 1.f / (a1->field_104[i].z * 1000.f / pCamera3D->GetFarClip());
-
-        double v10 = a1->field_104[i].z;
-        v10 *= 1000.f / pCamera3D->GetFarClip();
-
-        pBillboardRenderListD3D[v5].pQuads[i].rhw = rhw;
-
-        int v12;
-        if (diffuse & 0xFF000000) {
-            v12 = a1->field_104[i].diffuse;
-        } else {
-            v12 = diffuse;
-        }
-        pBillboardRenderListD3D[v5].pQuads[i].diffuse = v12;
-        pBillboardRenderListD3D[v5].pQuads[i].specular = 0;
-
-        pBillboardRenderListD3D[v5].pQuads[i].texcoord.x = 0.5;
-        pBillboardRenderListD3D[v5].pQuads[i].texcoord.y = 0.5;
-    }
 }
 
 struct forcepersverts {
@@ -1067,19 +1004,6 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time
 }
 
 // TODO(pskelton): renderbase
-void RenderOpenGL::DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait, int Y_Offset) {
-    Recti rct;
-    rct.x = rc.x + 64 + Portrait->hw_sprites[0]->uAreaX - Portrait->hw_sprites[0]->uBufferWidth / 2;
-    rct.y = rc.y + Y_Offset + Portrait->hw_sprites[0]->uAreaY;
-    rct.w = Portrait->hw_sprites[0]->uAreaWidth;
-    rct.h = Portrait->hw_sprites[0]->uAreaHeight;
-
-    render->SetUIClipRect(rc.x, rc.y, rc.x + rc.w, rc.y + rc.h);
-    render->DrawImage(Portrait->hw_sprites[0]->texture, rct, Portrait->GetPaletteIndex());
-    render->ResetUIClipRect();
-}
-
-// TODO(pskelton): renderbase
 void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];
     if (pFace->uNumVertices <= 0) return;
@@ -1232,7 +1156,7 @@ bool RenderOpenGL::AreRenderSurfacesOk() {
 }
 
 unsigned short *RenderOpenGL::MakeScreenshot16(int width, int height) {
-    BeginSceneD3D();
+    BeginScene3D();
 
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         pIndoor->Draw();
@@ -1514,17 +1438,6 @@ void RenderOpenGL::DrawDecal(struct Decal *pDecal, float z_bias) {
         numdecalverts += 3;
         assert(numdecalverts <= 9999);
     }
-}
-
-// TODO(pskelton): renderbase
-void RenderOpenGL::DrawSpecialEffectsQuad(Texture *texture, int palette) {
-    Recti targetrect{};
-    targetrect.x = pViewport->uViewportTL_X;
-    targetrect.y = pViewport->uViewportTL_Y;
-    targetrect.w = pViewport->uViewportBR_X - pViewport->uViewportTL_X;
-    targetrect.h = pViewport->uViewportBR_Y - pViewport->uViewportTL_Y;
-
-    DrawImage(texture, targetrect, palette, colorTable.MediumGrey.C32());
 }
 
 void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, int a3, int blend_mode) {
@@ -2815,13 +2728,6 @@ void RenderOpenGL::SetFogParametersGL() {
     }
 }
 
-// TODO(pskelton): to renderbase
-void RenderOpenGL::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {
-    engine->draw_debug_outlines();
-    this->DoRenderBillboards_D3D();
-    spell_fx_renderer->RenderSpecialEffects();
-}
-
 struct billbverts {
     GLfloat x;
     GLfloat y;
@@ -3176,15 +3082,7 @@ void RenderOpenGL::ResetUIClipRect() {
     this->SetUIClipRect(0, 0, outputRender.w, outputRender.h);
 }
 
-// TODO(pskelton): renderbase
-void RenderOpenGL::PresentBlackScreen() {
-    BeginScene();
-    ClearBlack();
-    Present();
-}
-
-// TODO(pskelton): rename BeginScene2D?
-void RenderOpenGL::BeginScene() {
+void RenderOpenGL::BeginScene2D() {
     // Setup for 2D
 
     if (outputRender != outputPresent) {

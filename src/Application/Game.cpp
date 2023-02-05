@@ -2659,7 +2659,7 @@ void Game::GameLoop() {
                 continue;
             }
             if (uGameState == GAME_STATE_FINAL_WINDOW) {
-                render->BeginScene();
+                render->BeginScene2D();
                 GUI_UpdateWindows();
                 render->Present();
                 continue;
