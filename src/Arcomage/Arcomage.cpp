@@ -56,11 +56,7 @@ int ApplyDamageToBuildings(int player_num, int damage);
 void GameResultsApply();
 
 void am_DrawText(const std::string &str, Pointi *pXY);
-void DrawRect(Recti *pRect, uint16_t uColor, char bSolidFill);
-
-unsigned int R8G8B8_to_TargetFormat(int uColor) {
-    return Color16(uColor & 0xFF, (uColor >> 8) & 0xFF, (uColor >> 16) & 0xFF);
-}
+void DrawRect(Recti *pRect, uint32_t uColor, char bSolidFill);
 
 struct ArcomageStartConditions {
     int16_t max_tower;
@@ -198,6 +194,24 @@ void ArcomageGame::OnMouseClick(char right_left, bool bDown) {
         pArcomageGame->mouse_right = bDown;
     else
         pArcomageGame->mouse_left = bDown;
+
+    // only accept one message input
+    if (pArcomageGame->stru1.am_input_type == 0) {
+        if (bDown) {
+            pArcomageGame->check_exit = 0;
+            if (!right_left) {
+                pArcomageGame->stru1.am_input_type = 7;
+            } else {
+                pArcomageGame->stru1.am_input_type = 8;
+            }
+        } else {
+            if (!right_left) {
+                pArcomageGame->stru1.am_input_type = 3;
+            } else {
+                pArcomageGame->stru1.am_input_type = 4;
+            }
+        }
+    }
 }
 
 void ArcomageGame::OnMouseMove(int x, int y) {
@@ -205,8 +219,26 @@ void ArcomageGame::OnMouseMove(int x, int y) {
     pArcomageGame->mouse_y = y;
 }
 
+void ArcomageGame::onKeyPress(PlatformKey key) {
+    // only accept one message input
+    if (pArcomageGame->stru1.am_input_type == 0) {
+        pArcomageGame->stru1.am_input_type = 1;
+
+        set_stru1_field_8_InArcomage(0);
+        if (keyboardActionMapping->IsKeyMatchAction(InputAction::Escape, key)) {
+            pArcomageGame->stru1.am_input_type = 10;
+        } else if (pArcomageGame->check_exit) {
+            pArcomageGame->check_exit = 0;
+        }
+
+        if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleFullscreen, key) && !pMovie_Track) {
+            pArcomageGame->stru1.am_input_type = 9;
+        }
+    }
+}
+
 explosion_effect_struct *explosion_effect_struct::New() {
-    explosion_effect_struct *v2 = (explosion_effect_struct *)malloc(0x5Cu);
+    explosion_effect_struct *v2 = (explosion_effect_struct *)malloc(sizeof(explosion_effect_struct));
     if (v2 == nullptr) {
         logger->Warning("Malloc error");
         Error("Malloc");  // is this recoverable
@@ -516,10 +548,10 @@ void ArcomageGame::PlaySound(unsigned int event_id) {
 }
 
 bool ArcomageGame::MsgLoop(int a1, ArcomageGame_InputMSG *a2) {
-    pArcomageGame->field_0 = 0;
+    // blank message input
     pArcomageGame->stru1.am_input_type = 0;
 
-    eventLoop->processMessages(eventHandler, 1);
+    eventLoop->processMessages(eventHandler, -1);
 
     *a2 = pArcomageGame->stru1;
     return pArcomageGame->stru1.am_input_type != 0;
@@ -528,7 +560,6 @@ bool ArcomageGame::MsgLoop(int a1, ArcomageGame_InputMSG *a2) {
 bool ArcomageGame::LoadSprites() {
     // load layout sprite
     pArcomageGame->pSprites = assets->GetImage_PCXFromIconsLOD("sprites.pcx");
-    pArcomageGame->pSpritesPixels = (uint16_t *)pArcomageGame->pSprites->GetPixels(IMAGE_FORMAT_R5G6B5);
 
     // mask out blue
     uint32_t *pix = (uint32_t *)pArcomageGame->pSprites->GetPixels(IMAGE_FORMAT_A8B8G8R8);
@@ -860,7 +891,6 @@ void ArcomageGame::Loop() {
 
     bool am_turn_not_finished = false;
     while (!pArcomageGame->GameOver) {
-        pArcomageGame->force_redraw_1 = 1;
         am_turn_not_finished = true;
         IncreaseResourcesInTurn(current_player_num);
         // LABEL_8:
@@ -892,7 +922,7 @@ void ArcomageGame::Loop() {
         int frame_quant_time = 0;
         int cnt = 0;
         while (1) {
-            pArcomageGame->_frameLimiter.tick(32);
+            pArcomageGame->_frameLimiter.tick(pArcomageGame->_targetFPS);
 
             ArcomageGame::MsgLoop(20, &v10);
             if (v10.am_input_type == 1) {
@@ -1088,7 +1118,6 @@ void FillPlayerDeck() {
     }
 
     deck_walk_index = 0;
-    pArcomageGame->force_redraw_1 = 1;
 }
 
 void InitalHandsFill() {
@@ -1097,7 +1126,6 @@ void InitalHandsFill() {
         // GetNextCardFromDeck(1);
         GetNextCardFromDeck(Player_Gets_First_Turn);
     }
-    pArcomageGame->force_redraw_1 = 1;
 }
 
 void GetNextCardFromDeck(int player_num) {
@@ -1129,7 +1157,6 @@ void GetNextCardFromDeck(int player_num) {
         // Note that we're using grng here for a reason - we want recorded mouse clicks to work.
         am_Players[player_num].card_shift[card_slot_indx].x = grng->RandomInSegment(-4, 4);
         am_Players[player_num].card_shift[card_slot_indx].y = grng->RandomInSegment(-4, 4);
-        pArcomageGame->force_redraw_1 = 1;
         drawn_card_anim_start = 1;
     }
 }
@@ -1179,13 +1206,7 @@ void TurnChange() {
             v11.y = 260;
             v11.x = 320;  // - 12 * v4 / 2;
             am_DrawText(am_Players[current_player_num].pPlayerName, &v11);
-            /* v6.left = 0;
-            v6.right = 640;
-            v6.top = 0;
-            v6.bottom = 480;*/
-            // nullsub_1();
-            render->Present();
-            // nullsub_1();
+
             while (1) {
                 while (!ArcomageGame::MsgLoop(20, &v10)) {}
                 if (v10.am_input_type == 1) {
@@ -1200,14 +1221,6 @@ void TurnChange() {
                     break;
                 }
             }
-            /*  v11.x = 0;
-            v11.y = 0;
-            v6.left = 0;
-            v6.right = 640;
-            v6.top = 0;
-            v6.bottom = 480;*/
-            // nullsub_1();
-            render->Present();
         }
     }
 }
@@ -1247,7 +1260,7 @@ char PlayerTurn(int player_num) {
     int frame_quant_time = 0;
     bool break_loop = false;
     do {
-        pArcomageGame->_frameLimiter.tick(32);
+        pArcomageGame->_frameLimiter.tick(pArcomageGame->_targetFPS);
 
         // get input message
         if (pArcomageGame->force_am_exit) break_loop = true;
@@ -1262,7 +1275,6 @@ char PlayerTurn(int player_num) {
                 }
                 break;
             case 9:  // toggle fullscreen
-                pArcomageGame->force_redraw_1 = 1;
                 break;
             case 10:  // hit escape key
                 if (pArcomageGame->check_exit == 1) {
@@ -1274,7 +1286,6 @@ char PlayerTurn(int player_num) {
                     pArcomageGame->force_am_exit = 1;
                 } else {
                     pArcomageGame->check_exit = 1;
-                    pArcomageGame->force_redraw_1 = 1;
                 }
                 break;
         }
@@ -1291,8 +1302,6 @@ char PlayerTurn(int player_num) {
 
         if (playdiscard_anim_start || drawn_card_anim_start || am_Players[current_player_num].IsHisTurn != 1) {
             // player cant act
-            pArcomageGame->force_redraw_1 = 1;
-
             // card drawing animation
             if (drawn_card_anim_start) {
                 --drawn_card_anim_cnt;
@@ -1353,22 +1362,17 @@ char PlayerTurn(int player_num) {
         // if the hover rectangle has moved redraw
         if (Card_Hover_Index != DrawCardsRectangles(player_num)) {
             Card_Hover_Index = DrawCardsRectangles(player_num);
-            pArcomageGame->force_redraw_1 = 1;
         }
 
-        // do we need to draw
-        if (true/*pArcomageGame->force_redraw_1*/) {
-            DrawGameUI(animation_stage);
-            pArcomageGame->force_redraw_1 = 0;
-        }
+        // always redraw
+        DrawGameUI(animation_stage);
     } while (!break_loop);
 
     return num_actions_left > 0;
 }
 
 void DrawGameUI(int animation_stage) {
-    // set copy image location
-    pArcomageGame->pBlit_Copy_pixels = pArcomageGame->pSpritesPixels;
+    render->BeginScene();
     // draw background
     render->DrawTextureNew(0, 0, pArcomageGame->pGameBackground);
 
@@ -2052,7 +2056,7 @@ signed int DrawCardsRectangles(int player_num) {
     // draws the framing rectangle around cards on hover
     arcomage_mouse get_mouse;
     Recti pRect;
-    int color;
+    uint32_t color;
 
     // only do for the human player
     if (am_Players[player_num].IsHisTurn) {
@@ -2080,17 +2084,17 @@ signed int DrawCardsRectangles(int player_num) {
                     // see if mouse is hovering
                     if (get_mouse.Inside(&pRect)) {
                         if (CanCardBePlayed(player_num, hand_index))
-                            color = 0x00FFFFFF;  //белый цвет - white frame
+                            color = colorTable.White.C32();  //белый цвет - white frame
                         else
-                            color = 0x000000FF;  //красный цвет - red frame
+                            color = colorTable.Red.C32();  //красный цвет - red frame
 
                         // draw outline and return
-                        DrawRect(&pRect, R8G8B8_to_TargetFormat(color), 0);
+                        DrawRect(&pRect, color, 0);
                         return hand_index;
                     }
 
                     //рамка чёрного цвета - black frame
-                    DrawRect(&pRect, R8G8B8_to_TargetFormat(0), 0);
+                    DrawRect(&pRect, colorTable.Black.C32(), 0);
 
                     // unshift rectangle co ords
                     if (Player_Cards_Shift) {
@@ -2137,7 +2141,6 @@ bool DiscardCard(int player_num, int card_slot_index) {
         discarded_card_id = am_Players[player_num].cards_at_hand[card_slot_index];
         am_Players[player_num].cards_at_hand[card_slot_index] = -1;
         need_to_discard_card = 0;
-        pArcomageGame->force_redraw_1 = 1;
 
         return true;
     } else {
@@ -2172,7 +2175,6 @@ bool PlayCard(int player_num, int card_slot_num) {
         // set anim card and remove from player
         played_card_id = am_Players[player_num].cards_at_hand[card_slot_num];
         am_Players[player_num].cards_at_hand[card_slot_num] = -1;
-        pArcomageGame->force_redraw_1 = 1;
 
         return true;
     } else {
@@ -2931,6 +2933,7 @@ void ArcomageGame::PrepareArcomage() {
     pArcomageGame->pPlayer2Name = Player2Name;
 
     // load in background pic and render
+    render->BeginScene();
     pArcomageGame->pGameBackground = assets->GetImage_PCXFromIconsLOD("layout.pcx");
     render->DrawTextureNew(0, 0, pArcomageGame->pGameBackground);
     render->Present();
@@ -3005,27 +3008,27 @@ void am_DrawText(const std::string &str, Pointi *pXY) {
     pPrimaryWindow->DrawText(pFontComic, {pXY->x, pXY->y - ((pFontComic->GetHeight() - 3) / 2) + 3}, 0, str, false, 0, 0);
 }
 
-// TODO(pskelton): change to color32
-void DrawRect(Recti *pRect, uint16_t uColor, char bSolidFill) {
+void DrawRect(Recti *pRect, uint32_t uColor, char bSolidFill) {
     if (bSolidFill) {
         int width = pRect->w;
         int height = pRect->h;
-        render->FillRectFast(pRect->x, pRect->y, width, height, Color32(uColor));
+        render->FillRectFast(pRect->x, pRect->y, width, height, uColor);
     } else {
         render->BeginLines2D();
         int x0 = pRect->x;
         int x1 = pRect->x + pRect->w;
         int y0 = pRect->y;
         int y1 = pRect->y + pRect->h;
-        render->RasterLine2D(x0, y0, x1, y0, Color32(uColor));
-        render->RasterLine2D(x1, y0, x1, y1, Color32(uColor));
-        render->RasterLine2D(x1, y1, x0, y1, Color32(uColor));
-        render->RasterLine2D(x0, y1, x0, y0, Color32(uColor));
+        render->RasterLine2D(x0, y0, x1, y0, uColor);
+        render->RasterLine2D(x1, y0, x1, y1, uColor);
+        render->RasterLine2D(x1, y1, x0, y1, uColor);
+        render->RasterLine2D(x0, y1, x0, y0, uColor);
         render->EndLines2D();
     }
 }
 
-void set_stru1_field_8_InArcomage(int inValue) {  // what is this meant to be doing??
+// TODO(pskelton): restore this using PlatformKey so can play with keyboard?
+void set_stru1_field_8_InArcomage(int inValue) {  // keyboard input - broken atm
     switch (inValue) {
         case 91:
             HEXRAYS_LOBYTE(pArcomageGame->stru1.am_input_key) = 123;

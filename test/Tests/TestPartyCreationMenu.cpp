@@ -1,6 +1,7 @@
 #include "Testing/Game/GameTest.h"
 
 #include "GUI/GUIWindow.h"
+#include "Arcomage/Arcomage.h"
 
 #include "Engine/Objects/ItemTable.h"
 
@@ -69,3 +70,18 @@ GAME_TEST(Prs, Pr347) {
     test->playTraceFromTestData("pr_347.mm7", "pr_347.json", [&] { oldGold = pParty->uNumGold; });
     EXPECT_NE(oldGold, pParty->uNumGold); // Spent on items.
 }
+
+GAME_TEST(Issues, Issue388) {
+    // Testing that Arcomage works
+    int oldfpslimit = pArcomageGame->_targetFPS;
+    pArcomageGame->_targetFPS = 500;
+    // Trace enters tavern, plays arcomage, plays a couple of cards then exits and leaves tavern
+    CURRENT_SCREEN oldscreen = CURRENT_SCREEN::SCREEN_GAME;
+    test->playTraceFromTestData("issue_388.mm7", "issue_388.json", [&] {oldscreen = current_screen_type; });
+    // we should return to game screen
+    EXPECT_EQ(oldscreen, current_screen_type);
+    // with arcomage exit flag
+    EXPECT_EQ(pArcomageGame->GameOver, 1);
+    pArcomageGame->_targetFPS = oldfpslimit;
+}
+
