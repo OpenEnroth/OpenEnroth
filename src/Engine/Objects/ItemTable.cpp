@@ -260,7 +260,7 @@ void ItemTable::Initialize() {
         pItems[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_3] = atoi(tokens[4]);
         pItems[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_4] = atoi(tokens[5]);
         pItems[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_5] = atoi(tokens[6]);
-        pItems[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_ARTIFACT] = atoi(tokens[7]);
+        pItems[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_6] = atoi(tokens[7]);
     }
 
     // ChanceByTreasureLvl Summ - to calculate chance
@@ -285,7 +285,7 @@ void ItemTable::Initialize() {
                 uBonusChanceStandart[ITEM_TREASURE_LEVEL_3] = atoi(tokens[4]);
                 uBonusChanceStandart[ITEM_TREASURE_LEVEL_4] = atoi(tokens[5]);
                 uBonusChanceStandart[ITEM_TREASURE_LEVEL_5] = atoi(tokens[6]);
-                uBonusChanceStandart[ITEM_TREASURE_LEVEL_ARTIFACT] = atoi(tokens[7]);
+                uBonusChanceStandart[ITEM_TREASURE_LEVEL_6] = atoi(tokens[7]);
                 break;
             case 1:
                 uBonusChanceSpecial[ITEM_TREASURE_LEVEL_1] = atoi(tokens[2]);
@@ -293,7 +293,7 @@ void ItemTable::Initialize() {
                 uBonusChanceSpecial[ITEM_TREASURE_LEVEL_3] = atoi(tokens[4]);
                 uBonusChanceSpecial[ITEM_TREASURE_LEVEL_4] = atoi(tokens[5]);
                 uBonusChanceSpecial[ITEM_TREASURE_LEVEL_5] = atoi(tokens[6]);
-                uBonusChanceSpecial[ITEM_TREASURE_LEVEL_ARTIFACT] = atoi(tokens[7]);
+                uBonusChanceSpecial[ITEM_TREASURE_LEVEL_6] = atoi(tokens[7]);
                 break;
             case 2:
                 uBonusChanceWpSpecial[ITEM_TREASURE_LEVEL_1] = atoi(tokens[2]);
@@ -301,7 +301,7 @@ void ItemTable::Initialize() {
                 uBonusChanceWpSpecial[ITEM_TREASURE_LEVEL_3] = atoi(tokens[4]);
                 uBonusChanceWpSpecial[ITEM_TREASURE_LEVEL_4] = atoi(tokens[5]);
                 uBonusChanceWpSpecial[ITEM_TREASURE_LEVEL_5] = atoi(tokens[6]);
-                uBonusChanceWpSpecial[ITEM_TREASURE_LEVEL_ARTIFACT] = atoi(tokens[7]);
+                uBonusChanceWpSpecial[ITEM_TREASURE_LEVEL_6] = atoi(tokens[7]);
                 break;
         }
     }
@@ -442,8 +442,6 @@ void ItemTable::GenerateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
     int v32;                      // ecx@91
     int v33;                      // eax@91
     //    unsigned int v34; // eax@97
-    int v45;            // eax@120
-    int v46;            // edx@120
     int j;              // eax@121
     std::array<ITEM_TYPE, 800> val_list;  // [sp+Ch] [bp-C88h]@33
     std::array<ITEM_ENCHANTMENT, 800> val_list2;
@@ -585,7 +583,7 @@ void ItemTable::GenerateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
         }
     } else {
         // artifact
-        if (treasure_level == ITEM_TREASURE_LEVEL_ARTIFACT) {
+        if (treasure_level == ITEM_TREASURE_LEVEL_6) {
             for (ITEM_TYPE i : SpawnableArtifacts())
                 artifact_found += pParty->pIsArtifactFound[i];
             artifact_random_id = grng->RandomSample(SpawnableArtifacts());
@@ -698,7 +696,7 @@ void ItemTable::GenerateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
         if ((treasure_level == ITEM_TREASURE_LEVEL_3) && (tr_lv == 1 || tr_lv == 0) ||
             (treasure_level == ITEM_TREASURE_LEVEL_4) && (tr_lv == 2 || tr_lv == 1 || tr_lv == 0) ||
             (treasure_level == ITEM_TREASURE_LEVEL_5) && (tr_lv == 3 || tr_lv == 2 || tr_lv == 1) ||
-            (treasure_level == ITEM_TREASURE_LEVEL_ARTIFACT) && (tr_lv == 3)) {
+            (treasure_level == ITEM_TREASURE_LEVEL_6) && (tr_lv == 3)) {
             spc = pSpecialEnchantments[i].to_item_apply[out_item->GetItemEquipType()];
             spc_sum += spc;
             if (spc) {
@@ -707,18 +705,15 @@ void ItemTable::GenerateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
         }
     }
 
-    v46 = grng->Random(spc_sum) + 1;  //случайные значения от 1 до spc_sum
-    j = 0;
-    v45 = 0;
-    while (v45 < v46) {
-        ++j;
-
-        // TODO(pskelton): investigate this
-        // quick fix on limit
-        if (j > 799) break;
-        out_item->special_enchantment = val_list2[j];
-        v45 += pSpecialEnchantments[val_list2[j]].to_item_apply[out_item->GetItemEquipType()];
+    int target = grng->Random(spc_sum);
+    for (int currentSum = 0, k = 0; k < j; k++) {
+        currentSum += pSpecialEnchantments[val_list2[k]].to_item_apply[out_item->GetItemEquipType()];
+        if (currentSum > target) {
+            out_item->special_enchantment = val_list2[k];
+            return;
+        }
     }
+    assert(false); // Should never get here.
 }
 
 // TODO: use std::string::contains once Android have full C++23 support.

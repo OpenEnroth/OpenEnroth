@@ -281,7 +281,7 @@ void MapInfo::SpawnRandomTreasure(SpawnPoint *a2) {
         } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_5) {
             a1a.containing_item.uItemID = ITEM_GOLD_LARGE;
             v34 = grng->Random(1001) + 1000;
-        } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_ARTIFACT) {
+        } else if (a2->uItemIndex == ITEM_TREASURE_LEVEL_6) {
             a1a.containing_item.uItemID = ITEM_GOLD_LARGE;
             v34 = grng->Random(3001) + 2000;
         }

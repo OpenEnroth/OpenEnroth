@@ -136,7 +136,7 @@ enum class ITEM_TREASURE_LEVEL : int8_t {
     ITEM_TREASURE_LEVEL_3 = 3,
     ITEM_TREASURE_LEVEL_4 = 4,
     ITEM_TREASURE_LEVEL_5 = 5,
-    ITEM_TREASURE_LEVEL_ARTIFACT = 6,
+    ITEM_TREASURE_LEVEL_6 = 6, // 5% chance for an artifact.
     ITEM_TREASURE_LEVEL_GUARANTEED_ARTIFACT = 7, // This is only used in chests & for random items lying around
                                                  // on the maps. For levels 1-6 chests can generate gold instead of
                                                  // an item (or nothing), so this value provides a way to override
@@ -146,7 +146,7 @@ enum class ITEM_TREASURE_LEVEL : int8_t {
     ITEM_LAST_VALID_TREASURE_LEVEL = ITEM_TREASURE_LEVEL_GUARANTEED_ARTIFACT,
 
     ITEM_FIRST_RANDOM_TREASURE_LEVEL = ITEM_TREASURE_LEVEL_1,
-    ITEM_LAST_RANDOM_TREASURE_LEVEL = ITEM_TREASURE_LEVEL_ARTIFACT,
+    ITEM_LAST_RANDOM_TREASURE_LEVEL = ITEM_TREASURE_LEVEL_6,
 };
 using enum ITEM_TREASURE_LEVEL;
 

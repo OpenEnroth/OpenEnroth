@@ -661,7 +661,7 @@ void GenerateItemsInChest() {
                                 goldAmount = grng->Random(1001) + 1000;
                                 currItem->uItemID = ITEM_GOLD_LARGE;
                                 break;
-                            case ITEM_TREASURE_LEVEL_ARTIFACT:
+                            case ITEM_TREASURE_LEVEL_6:
                                 goldAmount = grng->Random(3001) + 2000;
                                 currItem->uItemID = ITEM_GOLD_LARGE;
                                 break;

@@ -2,6 +2,15 @@
 
 #include "GUI/GUIWindow.h"
 
+#include "Engine/Objects/ItemTable.h"
+
+GAME_TEST(Items, GenerateItem) {
+    // Calling GenerateItem 100 times shouldn't assert.
+    ItemGen item;
+    for (int i = 0; i < 100; i++)
+        pItemTable->GenerateItem(ITEM_TREASURE_LEVEL_6, 0, &item);
+}
+
 GAME_TEST(Menu, PartyCreation) {
     EXPECT_EQ(GetCurrentMenuID(), MENU_MAIN);
 
@@ -49,10 +58,14 @@ GAME_TEST(Issues, Issue315) {
     game->skipLoadingScreen(); // This shouldn't crash.
 }
 
+GAME_TEST(Issues, Issue403) {
+    // Entering Lincoln shouldn't crash.
+    test->playTraceFromTestData("issue_403.mm7", "issue_403.json", [] {});
+}
+
 GAME_TEST(Prs, Pr347) {
     // Testing that shops work.
     int oldGold = 0;
     test->playTraceFromTestData("pr_347.mm7", "pr_347.json", [&] { oldGold = pParty->uNumGold; });
     EXPECT_NE(oldGold, pParty->uNumGold); // Spent on items.
 }
-
