@@ -265,8 +265,6 @@ class IRender {
     virtual void BltBackToFontFast(int a2, int a3, Recti *a4) = 0;
     virtual void BeginSceneD3D() = 0;
 
-    virtual unsigned int GetActorTintColor(int DimLevel, int tint, float WorldViewX, int a5, RenderBillboard *Billboard) = 0;
-
     virtual void DrawTerrainPolygon(struct Polygon *a4, bool transparent,
                                     bool clampAtTextureBorders) = 0;
 

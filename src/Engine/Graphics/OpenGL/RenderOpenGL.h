@@ -83,8 +83,6 @@ class RenderOpenGL : public RenderBase {
     virtual void BltBackToFontFast(int a2, int a3, Recti *pSrcRect) override;
     virtual void BeginSceneD3D() override;
 
-    virtual unsigned int GetActorTintColor(int DimLevel, int tint, float WorldViewX, int a5, RenderBillboard *Billboard) override;
-
     virtual void DrawTerrainPolygon(struct Polygon *a4, bool transparent,
                                     bool clampAtTextureBorders) override;
 

@@ -434,17 +434,12 @@ void RenderBase::TransformBillboardsAndSetPalettesODM() {
     }
 }
 
-// TODO(pskelton): this is wrong now to abgr!
-unsigned int BlendColors(unsigned int a1, unsigned int a2) {
-    uint alpha =
-        (uint)floorf(0.5f + (a1 >> 24) / 255.0f * (a2 >> 24) / 255.0f * 255.0f);
-    uint red = (uint)floorf(0.5f + ((a1 >> 16) & 0xFF) / 255.0f *
-                                       ((a2 >> 16) & 0xFF) / 255.0f * 255.0f);
-    uint green = (uint)floorf(0.5f + ((a1 >> 8) & 0xFF) / 255.0f *
-                                         ((a2 >> 8) & 0xFF) / 255.0f * 255.0f);
-    uint blue = (uint)floorf(0.5f + ((a1 >> 0) & 0xFF) / 255.0f *
-                                        ((a2 >> 0) & 0xFF) / 255.0f * 255.0f);
-    return (alpha << 24) | (red << 16) | (green << 8) | blue;
+uint32_t BlendColors(uint32_t a1, uint32_t a2) {
+    uint alpha = (uint)floorf(0.5f + (a1 >> 24) / 255.0f * (a2 >> 24) / 255.0f * 255.0f);
+    uint blue = (uint)floorf(0.5f + ((a1 >> 16) & 0xFF) / 255.0f * ((a2 >> 16) & 0xFF) / 255.0f * 255.0f);
+    uint green = (uint)floorf(0.5f + ((a1 >> 8) & 0xFF) / 255.0f * ((a2 >> 8) & 0xFF) / 255.0f * 255.0f);
+    uint red = (uint)floorf(0.5f + ((a1 >> 0) & 0xFF) / 255.0f * ((a2 >> 0) & 0xFF) / 255.0f * 255.0f);
+    return (alpha << 24) | (blue << 16) | (green << 8) | red;
 }
 
 void RenderBase::TransformBillboard(SoftwareBillboard *pSoftBillboard, RenderBillboard *pBillboard) {

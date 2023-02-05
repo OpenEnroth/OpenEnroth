@@ -245,13 +245,6 @@ bool RenderOpenGL::InitializeFullscreen() {
     return true;
 }
 
-// TODO(pskelton): drop from render
-unsigned int RenderOpenGL::GetActorTintColor(int DimLevel, int tint, float WorldViewX, int a5, RenderBillboard *Billboard) {
-    // GetActorTintColor(int max_dimm, int min_dimm, float distance, int a4, RenderBillboard *a5)
-    return ::GetActorTintColor(DimLevel, tint, WorldViewX, a5, Billboard);
-}
-
-
 // when losing and regaining window focus - not required for OGL??
 void RenderOpenGL::RestoreFrontBuffer() { logger->Info("RenderGl - RestoreFrontBuffer"); }
 void RenderOpenGL::RestoreBackBuffer() { logger->Info("RenderGl - RestoreBackBuffer"); }
@@ -449,8 +442,6 @@ void RenderOpenGL::BeginSceneD3D() {
     SetFogParametersGL();
     gamma = GetGamma();
 }
-
-extern unsigned int BlendColors(unsigned int a1, unsigned int a2);
 
 // TODO(pskelton): renderbase
 //----- (004A4CC9) ---------------------------------------

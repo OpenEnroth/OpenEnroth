@@ -1037,7 +1037,6 @@ void LightmapBuilder::DrawDebugOutlines(
 }
 
 /**
- * @todo(pskelton) Remove this from render classes
  *
  * @param max_dimm                      Maximum dimming level allowed (0-31). 31 * 8 ~ 255.
  * @param min_dimm                      Minimum dimming level allowed (0-31).
