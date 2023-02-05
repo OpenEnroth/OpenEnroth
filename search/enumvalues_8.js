@@ -936,7 +936,7 @@ var searchData=
   ['item_5ftreasure_5flevel_5f3_933',['ITEM_TREASURE_LEVEL_3',['../ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca23a3f3592095f08dfbe5e598e4c81d84',1,'ItemEnums.h']]],
   ['item_5ftreasure_5flevel_5f4_934',['ITEM_TREASURE_LEVEL_4',['../ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca63ba1cb7cd2a85d9dbe2ddf3d423b291',1,'ItemEnums.h']]],
   ['item_5ftreasure_5flevel_5f5_935',['ITEM_TREASURE_LEVEL_5',['../ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9caa75efd62506770ffa26bc595c4a7f668',1,'ItemEnums.h']]],
-  ['item_5ftreasure_5flevel_5fartifact_936',['ITEM_TREASURE_LEVEL_ARTIFACT',['../ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca8c7fb064583e9b8a89782caabdf72b60',1,'ItemEnums.h']]],
+  ['item_5ftreasure_5flevel_5f6_936',['ITEM_TREASURE_LEVEL_6',['../ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca533854c20d42c3393e81dd9a0827cf89',1,'ItemEnums.h']]],
   ['item_5ftreasure_5flevel_5fguaranteed_5fartifact_937',['ITEM_TREASURE_LEVEL_GUARANTEED_ARTIFACT',['../ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9caeb8ea0ba42501726420879e859f422f8',1,'ItemEnums.h']]],
   ['item_5ftreasure_5flevel_5finvalid_938',['ITEM_TREASURE_LEVEL_INVALID',['../ItemEnums_8h.html#ad20c3ee7b5967d80cee8e0ec3e061a9ca78ba700f0f1a30c34d65999a54edc150',1,'ItemEnums.h']]],
   ['item_5ftrident_939',['ITEM_TRIDENT',['../ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5a898c6163d2dbe36d5994491168d2df64',1,'ItemEnums.h']]],
