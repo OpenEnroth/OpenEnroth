@@ -922,7 +922,7 @@ void ArcomageGame::Loop() {
         int frame_quant_time = 0;
         int cnt = 0;
         while (1) {
-            pArcomageGame->_frameLimiter.tick(32);
+            pArcomageGame->_frameLimiter.tick(pArcomageGame->_targetFPS);
 
             ArcomageGame::MsgLoop(20, &v10);
             if (v10.am_input_type == 1) {
@@ -1260,7 +1260,7 @@ char PlayerTurn(int player_num) {
     int frame_quant_time = 0;
     bool break_loop = false;
     do {
-        pArcomageGame->_frameLimiter.tick(32);
+        pArcomageGame->_frameLimiter.tick(pArcomageGame->_targetFPS);
 
         // get input message
         if (pArcomageGame->force_am_exit) break_loop = true;

@@ -134,6 +134,7 @@ struct ArcomageGame {
     static void Loop();
 
     FrameLimiter _frameLimiter;
+    int _targetFPS{ 32 };
 
     ArcomageGame_InputMSG stru1;
 
