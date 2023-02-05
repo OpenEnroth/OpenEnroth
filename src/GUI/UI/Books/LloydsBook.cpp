@@ -28,11 +28,11 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() : GUIWindow_Book() {
 
     _506360_installing_beacon = false;
     if (!ui_book_lloyds_border) {
-        ui_book_lloyds_border = assets->GetImage_ColorKey("lb_bordr", render->teal_mask_16);
+        ui_book_lloyds_border = assets->GetImage_ColorKey("lb_bordr", colorTable.TealMask.C16());
     }
 
-    ui_book_lloyds_backgrounds[0] = assets->GetImage_ColorKey("sbmap", render->teal_mask_16);
-    ui_book_lloyds_backgrounds[1] = assets->GetImage_ColorKey("sbmap", render->teal_mask_16);
+    ui_book_lloyds_backgrounds[0] = assets->GetImage_ColorKey("sbmap", colorTable.TealMask.C16());
+    ui_book_lloyds_backgrounds[1] = assets->GetImage_ColorKey("sbmap", colorTable.TealMask.C16());
     ui_book_button1_on = assets->GetImage_Alpha("tab-an-6b");
     ui_book_button1_off = assets->GetImage_Alpha("tab-an-6a");
 

@@ -1136,7 +1136,7 @@ void Party::PickedItem_PlaceInInventory_or_Drop() {
     if (pParty->pPickedItem.uItemID == ITEM_NULL)
         return;
 
-    auto texture = assets->GetImage_ColorKey(pParty->pPickedItem.GetIconName(), render->teal_mask_16);
+    auto texture = assets->GetImage_ColorKey(pParty->pPickedItem.GetIconName(), colorTable.TealMask.C16());
 
     // check if active player has room in inventory
     int InventIndex = ::pPlayers[uActiveCharacter]->AddItem(-1, pParty->pPickedItem.uItemID);
@@ -1199,7 +1199,7 @@ bool Party::AddItemToParty(ItemGen *pItem) {
 
     v5 = pItemTable->pItems[v2].pIconName;
     if (v5) {
-        auto texture = assets->GetImage_ColorKey(v5, render->teal_mask_16);
+        auto texture = assets->GetImage_ColorKey(v5, colorTable.TealMask.C16());
         v8 = 0;
         uint current_player = std::max(1u, uActiveCharacter);
         for (int i = 0; i < 4; i++) {

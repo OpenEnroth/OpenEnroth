@@ -225,7 +225,7 @@ bool Alpha_LOD_Loader::Load(unsigned int *out_width, unsigned int *out_height,
     } else {
         *out_pixels = MakeImageColorKey(
             tex->header.uTextureWidth, tex->header.uTextureHeight,
-            tex->paletted_pixels, tex->pPalette24, render->teal_mask_16);
+            tex->paletted_pixels, tex->pPalette24, colorTable.TealMask.C16());
     }
 
     if (*out_pixels == nullptr) {

@@ -41,7 +41,7 @@ GUIWindow_MapBook::GUIWindow_MapBook() : GUIWindow_Book() {
 
     MapBookOpen = 1;
 
-    ui_book_map_background = assets->GetImage_ColorKey("sbmap", render->teal_mask_16);
+    ui_book_map_background = assets->GetImage_ColorKey("sbmap", colorTable.TealMask.C16());
     ui_book_button1_on = assets->GetImage_Alpha("zoom-on");
     ui_book_button2_on = assets->GetImage_Alpha("zoot-on");
     ui_book_button3_on = assets->GetImage_Alpha("tabNon");

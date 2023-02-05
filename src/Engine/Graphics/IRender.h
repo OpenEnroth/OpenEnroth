@@ -383,10 +383,6 @@ class IRender {
     RenderBillboardD3D pBillboardRenderListD3D[1000];
     unsigned int uNumBillboardsToDraw;
 
-    // TODO(pskelton): move to color table
-    const uint16_t teal_mask_16 = 0x7FF;
-    const uint32_t teal_mask_32 = 0xFF00FCF8;
-
     int drawcalls;
 
     Logger *log = nullptr;

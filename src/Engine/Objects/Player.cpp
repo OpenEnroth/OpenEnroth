@@ -695,7 +695,7 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
 //----- (00492528) --------------------------------------------------------
 bool Player::CanFitItem(unsigned int uSlot, ITEM_TYPE uItemID) {
     auto img = assets->GetImage_ColorKey(pItemTable->pItems[uItemID].pIconName,
-                                         render->teal_mask_16);
+                                         colorTable.TealMask.C16());
     unsigned int slotWidth = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slotHeight = GetSizeInInventorySlots(img->GetHeight());
 
@@ -840,7 +840,7 @@ void Player::PutItemArInventoryIndex(
     int index) {  // originally accepted ItemGen* but needed only its uItemID
 
     auto img = assets->GetImage_ColorKey(pItemTable->pItems[uItemID].pIconName,
-                                         render->teal_mask_16);
+                                         colorTable.TealMask.C16());
     unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
 
@@ -862,7 +862,7 @@ void Player::PutItemArInventoryIndex(
 void Player::RemoveItemAtInventoryIndex(unsigned int index) {
     ItemGen* item_in_slot = this->GetItemAtInventoryIndex(index);
 
-    auto img = assets->GetImage_ColorKey(item_in_slot->GetIconName(), render->teal_mask_16);
+    auto img = assets->GetImage_ColorKey(item_in_slot->GetIconName(), colorTable.TealMask.C16());
     unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
 

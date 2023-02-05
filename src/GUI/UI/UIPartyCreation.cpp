@@ -615,27 +615,27 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     uPlayerCreationUI_SelectedCharacter = 0;
     int v0 = pFontCreate->GetHeight() - 2;
 
-    ui_partycreation_class_icons[0] = assets->GetImage_ColorKey("IC_KNIGHT", render->teal_mask_16);
-    ui_partycreation_class_icons[1] = assets->GetImage_ColorKey("IC_THIEF", render->teal_mask_16);
-    ui_partycreation_class_icons[2] = assets->GetImage_ColorKey("IC_MONK", render->teal_mask_16);
-    ui_partycreation_class_icons[3] = assets->GetImage_ColorKey("IC_PALAD", render->teal_mask_16);
-    ui_partycreation_class_icons[4] = assets->GetImage_ColorKey("IC_ARCH", render->teal_mask_16);
-    ui_partycreation_class_icons[5] = assets->GetImage_ColorKey("IC_RANGER", render->teal_mask_16);
-    ui_partycreation_class_icons[6] = assets->GetImage_ColorKey("IC_CLER", render->teal_mask_16);
-    ui_partycreation_class_icons[7] = assets->GetImage_ColorKey("IC_DRUID", render->teal_mask_16);
-    ui_partycreation_class_icons[8] = assets->GetImage_ColorKey("IC_SORC", render->teal_mask_16);
+    ui_partycreation_class_icons[0] = assets->GetImage_ColorKey("IC_KNIGHT", colorTable.TealMask.C16());
+    ui_partycreation_class_icons[1] = assets->GetImage_ColorKey("IC_THIEF", colorTable.TealMask.C16());
+    ui_partycreation_class_icons[2] = assets->GetImage_ColorKey("IC_MONK", colorTable.TealMask.C16());
+    ui_partycreation_class_icons[3] = assets->GetImage_ColorKey("IC_PALAD", colorTable.TealMask.C16());
+    ui_partycreation_class_icons[4] = assets->GetImage_ColorKey("IC_ARCH", colorTable.TealMask.C16());
+    ui_partycreation_class_icons[5] = assets->GetImage_ColorKey("IC_RANGER", colorTable.TealMask.C16());
+    ui_partycreation_class_icons[6] = assets->GetImage_ColorKey("IC_CLER", colorTable.TealMask.C16());
+    ui_partycreation_class_icons[7] = assets->GetImage_ColorKey("IC_DRUID", colorTable.TealMask.C16());
+    ui_partycreation_class_icons[8] = assets->GetImage_ColorKey("IC_SORC", colorTable.TealMask.C16());
 
-    ui_partycreation_top = assets->GetImage_Alpha("MAKETOP");  // , render->teal_mask_16);
+    ui_partycreation_top = assets->GetImage_Alpha("MAKETOP");  // , colorTable.TealMask.C16());
     ui_partycreation_sky_scroller = assets->GetImage_Solid("MAKESKY");
 
     for (int uX = 0; uX < 22; ++uX) {
-        ui_partycreation_portraits[uX] = assets->GetImage_ColorKey(StringPrintf("%s01", pPlayerPortraitsNames[uX]), render->teal_mask_16);
+        ui_partycreation_portraits[uX] = assets->GetImage_ColorKey(StringPrintf("%s01", pPlayerPortraitsNames[uX]), colorTable.TealMask.C16());
     }
 
-    ui_partycreation_minus = assets->GetImage_ColorKey("buttminu", render->teal_mask_16);
-    ui_partycreation_plus = assets->GetImage_ColorKey("buttplus", render->teal_mask_16);
-    ui_partycreation_right = assets->GetImage_ColorKey("presrigh", render->teal_mask_16);
-    ui_partycreation_left = assets->GetImage_ColorKey("presleft", render->teal_mask_16);
+    ui_partycreation_minus = assets->GetImage_ColorKey("buttminu", colorTable.TealMask.C16());
+    ui_partycreation_plus = assets->GetImage_ColorKey("buttplus", colorTable.TealMask.C16());
+    ui_partycreation_right = assets->GetImage_ColorKey("presrigh", colorTable.TealMask.C16());
+    ui_partycreation_left = assets->GetImage_ColorKey("presleft", colorTable.TealMask.C16());
 
     for (int i = 1; i < 20; ++i) {
         ui_partycreation_arrow_l[i] = assets->GetImage_Alpha(StringPrintf("arrowl%d", i));

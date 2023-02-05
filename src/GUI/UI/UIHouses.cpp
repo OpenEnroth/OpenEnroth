@@ -950,13 +950,13 @@ void PrepareHouse(HOUSE_ID house) {
 
     for (int i = 0; i < uNumDialogueNPCPortraits; ++i) {
         pDialogueNPCPortraits[i] = assets->GetImage_ColorKey(
-            StringPrintf("npc%03u", npc_id_arr[i]), render->teal_mask_16);
+            StringPrintf("npc%03u", npc_id_arr[i]), colorTable.TealMask.C16());
     }
 
     if (uHouse_ExitPic) {
         pDialogueNPCPortraits[uNumDialogueNPCPortraits] =
             assets->GetImage_ColorKey(pHouse_ExitPictures[uHouse_ExitPic],
-                render->teal_mask_16);
+                colorTable.TealMask.C16());
         ++uNumDialogueNPCPortraits;
         uHouse_ExitPic = p2DEvents[house - HOUSE_SMITH_EMERALD_ISLE].uExitMapID;
     }
@@ -1032,7 +1032,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
         if (in_current_building_type < BuildingType_TownHall_MM6) {
             shop_ui_background = assets->GetImage_ColorKey(
                 _4F03B8_shop_background_names[(int)in_current_building_type],
-                render->teal_mask_16);
+                colorTable.TealMask.C16());
         }
     }
 
@@ -1057,7 +1057,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                     shop_ui_items_in_store[i] = assets->GetImage_ColorKey(
                         pParty->SpellBooksInGuilds
                         [window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].GetIconName(),
-                        render->teal_mask_16);
+                        colorTable.TealMask.C16());
             }
         } else {  // generation new books
             SpellBookGenerator();
@@ -1360,7 +1360,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                         shop_ui_items_in_store[i] = assets->GetImage_ColorKey(
                             pParty->StandartItemsInShops
                             [window_SpeakInHouse->wData.val][i].GetIconName(),
-                        render->teal_mask_16);
+                        colorTable.TealMask.C16());
                 }
             }
             if (in_current_building_type == BuildingType_WeaponShop) {
@@ -1385,7 +1385,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                         shop_ui_items_in_store[i] = assets->GetImage_ColorKey(
                             pParty->SpecialItemsInShops
                             [window_SpeakInHouse->wData.val][i].GetIconName(),
-                            render->teal_mask_16);
+                            colorTable.TealMask.C16());
                 }
             }
             if (in_current_building_type == BuildingType_WeaponShop) {

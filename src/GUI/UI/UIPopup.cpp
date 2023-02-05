@@ -210,7 +210,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     if (inspect_item->uItemID == ITEM_NULL)
         return;
 
-    auto inspect_item_image = assets->GetImage_ColorKey(inspect_item->GetIconName(), render->teal_mask_16);
+    auto inspect_item_image = assets->GetImage_ColorKey(inspect_item->GetIconName(), colorTable.TealMask.C16());
 
     iteminfo_window.sHint.clear();
     iteminfo_window.uFrameWidth = 384;

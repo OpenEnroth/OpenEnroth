@@ -1829,7 +1829,7 @@ void OutdoorLocation::LoadActualSkyFrame() {
 
     rest_ui_sky_frame_current = assets->GetImage_ColorKey(
         StringPrintf("TERRA%03d", pParty->uCurrentMinute / 6 + 10 * pParty->uCurrentHour),
-        render->teal_mask_16);
+        colorTable.TealMask.C16());
 }
 
 OutdoorLocation::OutdoorLocation() {

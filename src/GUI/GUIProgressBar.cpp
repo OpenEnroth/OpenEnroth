@@ -63,7 +63,7 @@ bool GUIProgressBar::Initialize(Type type) {
         Draw();
         return true;
     } else {
-        progressbar_dungeon = assets->GetImage_ColorKey(ProgressBarResourceByAlignment[pParty->alignment], render->teal_mask_16);
+        progressbar_dungeon = assets->GetImage_ColorKey(ProgressBarResourceByAlignment[pParty->alignment], colorTable.TealMask.C16());
     }
 
     uProgressCurrent = 0;

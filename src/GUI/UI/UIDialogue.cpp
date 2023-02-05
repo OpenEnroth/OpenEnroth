@@ -51,7 +51,7 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
     uNumDialogueNPCPortraits = 1;
 
     filename = StringPrintf("npc%03u", pNPCInfo->uPortraitID);
-    pDialogueNPCPortraits[0] = assets->GetImage_ColorKey(filename, render->teal_mask_16);
+    pDialogueNPCPortraits[0] = assets->GetImage_ColorKey(filename, colorTable.TealMask.C16());
 
     int pNumberContacts = 0;
     int v9 = 0;
