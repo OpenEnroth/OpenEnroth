@@ -4,15 +4,15 @@
 
 #include "Platform/PlatformEvents.h"
 
+enum class PlatformEventWildcard {
+    EVENTS_ALL
+};
+using enum PlatformEventWildcard;
+
 class PlatformEventFilter {
  public:
-    enum class EventWildcard { // TODO(captainurist): revisit after renaming event types for the new codestyle
-        ALL_EVENTS
-    };
-    using enum EventWildcard;
-
     explicit PlatformEventFilter(std::initializer_list<PlatformEventType> eventTypes);
-    explicit PlatformEventFilter(EventWildcard eventTypes);
+    explicit PlatformEventFilter(PlatformEventWildcard eventTypes);
 
     virtual bool event(const PlatformEvent *event);
 

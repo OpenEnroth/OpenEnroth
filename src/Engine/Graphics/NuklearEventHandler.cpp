@@ -2,7 +2,7 @@
 
 #include "Nuklear.h"
 
-NuklearEventHandler::NuklearEventHandler() : PlatformEventFilter(PlatformEventFilter::ALL_EVENTS) {}
+NuklearEventHandler::NuklearEventHandler() : PlatformEventFilter(EVENTS_ALL) {}
 
 bool NuklearEventHandler::keyPressEvent(const PlatformKeyEvent *event) {
     PlatformKey key = event->key;

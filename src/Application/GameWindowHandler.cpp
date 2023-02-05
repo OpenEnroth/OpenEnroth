@@ -49,7 +49,7 @@ static char PlatformKeyToChar(PlatformKey key, PlatformModifiers mods) {
 }
 
 
-GameWindowHandler::GameWindowHandler() : PlatformEventFilter(PlatformEventFilter::ALL_EVENTS) {
+GameWindowHandler::GameWindowHandler() : PlatformEventFilter(EVENTS_ALL) {
     this->mouse = EngineIoc::ResolveMouse();
     this->keyboardController_ = std::make_unique<GameKeyboardController>();
 }

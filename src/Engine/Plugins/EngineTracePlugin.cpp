@@ -8,7 +8,7 @@
 #include "Library/Random/Random.h"
 #include "Library/Trace/PaintEvent.h"
 
-EngineTracePlugin::EngineTracePlugin(): PlatformEventFilter(PlatformEventFilter::ALL_EVENTS) {}
+EngineTracePlugin::EngineTracePlugin(): PlatformEventFilter(EVENTS_ALL) {}
 EngineTracePlugin::~EngineTracePlugin() = default;
 
 void EngineTracePlugin::start() {

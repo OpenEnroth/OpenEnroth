@@ -6,8 +6,8 @@
 
 PlatformEventFilter::PlatformEventFilter(std::initializer_list<PlatformEventType> eventTypes) : _eventTypes(eventTypes) {}
 
-PlatformEventFilter::PlatformEventFilter(EventWildcard eventTypes) {
-    assert(eventTypes == ALL_EVENTS);
+PlatformEventFilter::PlatformEventFilter(PlatformEventWildcard eventTypes) {
+    assert(eventTypes == EVENTS_ALL);
 
     for (PlatformEventType type : Segment(EVENT_FIRST, EVENT_LAST))
         _eventTypes.push_back(type);
