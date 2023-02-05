@@ -54,7 +54,10 @@ class PlatformWindow {
 
     virtual Marginsi frameMargins() const = 0;
 
-    virtual uintptr_t systemHandle() const = 0; // TODO(captainurist): docs, @return HWND, etc.
+    /**
+     * @return                          System handle of a window, e.g. `HWND` on windows or `NSWindow *` on mac.
+     */
+    virtual uintptr_t systemHandle() const = 0;
 
     virtual void activate() = 0;
 

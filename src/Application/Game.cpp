@@ -111,7 +111,7 @@ void Application::AutoInitDataPath(Platform *platform) {
 
 #ifdef __ANDROID__
     if (mm7dir.empty()) {
-        platform->ShowMessageBox("Your device doesn't have any storage so it is unsupported!", "Device currently unsupported");
+        platform->ShowMessageBox("Device currently unsupported", "Your device doesn't have any storage so it is unsupported!");
         return;
     }
 #endif
@@ -134,7 +134,7 @@ void Application::AutoInitDataPath(Platform *platform) {
             !mm7dir.empty() ? mm7dir : "current directory"
         );
         EngineIoc::ResolveLogger()->Warning(message.c_str());
-        platform->showMessageBox(message, "CRITICAL ERROR: missing resources");
+        platform->showMessageBox("CRITICAL ERROR: missing resources", message);
     }
 }
 

@@ -126,10 +126,10 @@ class Platform {
     /**
      * Shows a modal message box.
      *
-     * @param message                   Message to display.
      * @param title                     Title of the message box window.
+     * @param message                   Message to display.
      */
-    virtual void showMessageBox(const std::string &message, const std::string& title) const = 0;
+    virtual void showMessageBox(const std::string& title, const std::string &message) const = 0;
 
     /**
      * @return                          Current value of a monotonic clock in milliseconds.
