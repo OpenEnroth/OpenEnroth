@@ -7,12 +7,8 @@
 
 #include "PlatformEnums.h"
 
-#ifdef KeyPress
-#   undef KeyPress
-#endif
-#ifdef KeyRelease
-#   undef KeyRelease
-#endif
+#undef KeyPress
+#undef KeyRelease
 
 class PlatformWindow;
 
@@ -68,7 +64,7 @@ class PlatformKeyEvent: public PlatformWindowEvent {
  */
 class PlatformMouseEvent: public PlatformWindowEvent {
  public:
-    PlatformMouseButton button; // Button that caused this event, or PlatformMouseButton::None for move events.
+    PlatformMouseButton button; // Button that caused this event, or BUTTON_NONE for move events.
     PlatformMouseButtons buttons; // Currently pressed mouse buttons.
     Pointi pos; // Window-relative cursor position.
     bool isDoubleClick = false;

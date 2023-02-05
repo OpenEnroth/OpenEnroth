@@ -161,7 +161,7 @@ void SdlEventLoop::dispatchMouseMoveEvent(PlatformEventHandler *eventHandler, co
     PlatformMouseEvent e;
     e.type = PlatformEvent::MouseMove;
     e.window = _state->window(event->windowID);
-    e.button = PlatformMouseButton::None;
+    e.button = BUTTON_NONE;
     e.buttons = translateSdlMouseButtons(event->state);
     e.isDoubleClick = false;
     e.pos = Pointi(event->x, event->y);
@@ -193,7 +193,7 @@ void SdlEventLoop::dispatchMouseButtonEvent(PlatformEventHandler *eventHandler, 
 #endif
     }
 
-    if (e.button != PlatformMouseButton::None)
+    if (e.button != BUTTON_NONE)
         dispatchEvent(eventHandler, &e);
 }
 

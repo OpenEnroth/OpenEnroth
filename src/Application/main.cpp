@@ -20,9 +20,9 @@ using Application::GameFactory;
 
 int MM_Main(int argc, char **argv) {
     try {
-        std::unique_ptr<PlatformLogger> logger = PlatformLogger::createStandardLogger(WinEnsureConsoleOption);
-        logger->setLogLevel(ApplicationLog, LogInfo);
-        logger->setLogLevel(PlatformLog, LogError);
+        std::unique_ptr<PlatformLogger> logger = PlatformLogger::createStandardLogger(WIN_ENSURE_CONSOLE_OPTION);
+        logger->setLogLevel(APPLICATION_LOG, LOG_INFO);
+        logger->setLogLevel(PLATFORM_LOG, LOG_ERROR);
         EngineIoc::ResolveLogger()->SetBaseLogger(logger.get());
         MM_AT_SCOPE_EXIT(EngineIoc::ResolveLogger()->SetBaseLogger(nullptr));
         Engine::LogEngineBuildInfo();

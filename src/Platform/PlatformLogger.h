@@ -4,6 +4,7 @@
 
 #include "PlatformEnums.h"
 
+// TODO(captainurist): this should be just a callback, adding a log factory to platform was a bad idea after all.
 /**
  * Platform-specific logger that takes all the quirks of a specific platform into account (e.g. calling
  * `OutputDebugString` / `WriteConsole` on Windows).

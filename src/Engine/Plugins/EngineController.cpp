@@ -64,7 +64,7 @@ void EngineController::pressButton(PlatformMouseButton button, int x, int y) {
     std::unique_ptr<PlatformMouseEvent> event = std::make_unique<PlatformMouseEvent>();
     event->type = PlatformEvent::MouseButtonPress;
     event->window = ::application->window();
-    event->button = PlatformMouseButton::Left;
+    event->button = BUTTON_LEFT;
     event->pos = Pointi(x, y);
     event->isDoubleClick = false;
     postEvent(std::move(event));
@@ -74,8 +74,8 @@ void EngineController::releaseButton(PlatformMouseButton button, int x, int y) {
     std::unique_ptr<PlatformMouseEvent> event = std::make_unique<PlatformMouseEvent>();
     event->type = PlatformEvent::MouseButtonRelease;
     event->window = ::application->window();
-    event->button = PlatformMouseButton::Left;
-    event->buttons = PlatformMouseButton::Left;
+    event->button = BUTTON_LEFT;
+    event->buttons = BUTTON_LEFT;
     event->pos = Pointi(x, y);
     event->isDoubleClick = false;
     postEvent(std::move(event));
@@ -94,7 +94,7 @@ void EngineController::pressAndReleaseButton(PlatformMouseButton button, int x, 
 void EngineController::pressGuiButton(std::string_view buttonId) {
     GUIButton *button = existingButton(buttonId);
 
-    pressAndReleaseButton(PlatformMouseButton::Left, button->uX + button->uWidth / 2, button->uY + button->uHeight / 2);
+    pressAndReleaseButton(BUTTON_LEFT, button->uX + button->uWidth / 2, button->uY + button->uHeight / 2);
 }
 
 void EngineController::goToMainMenu() {

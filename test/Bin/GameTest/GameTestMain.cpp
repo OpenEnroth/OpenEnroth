@@ -19,9 +19,9 @@
 class GameThread {
  public:
     explicit GameThread(const GameTestOptions& options) {
-        _logger = PlatformLogger::createStandardLogger(WinEnsureConsoleOption);
-        _logger->setLogLevel(ApplicationLog, LogInfo);
-        _logger->setLogLevel(PlatformLog, LogError);
+        _logger = PlatformLogger::createStandardLogger(WIN_ENSURE_CONSOLE_OPTION);
+        _logger->setLogLevel(APPLICATION_LOG, LOG_INFO);
+        _logger->setLogLevel(PLATFORM_LOG, LOG_ERROR);
         EngineIoc::ResolveLogger()->SetBaseLogger(_logger.get());
         Engine::LogEngineBuildInfo();
 

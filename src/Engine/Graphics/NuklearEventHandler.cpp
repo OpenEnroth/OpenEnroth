@@ -18,7 +18,7 @@ bool NuklearEventHandler::keyReleaseEvent(const PlatformKeyEvent *event) {
     PlatformKey key = event->key;
     PlatformModifiers mods = event->mods;
 
-    if (key == PlatformKey::Tilde && (mods & PlatformModifier::Ctrl))
+    if (key == PlatformKey::Tilde && (mods & MOD_CTRL))
         nuklear->Reload();
 
     return KeyEvent(key, mods, false);
@@ -45,31 +45,31 @@ bool NuklearEventHandler::KeyEvent(PlatformKey key, PlatformModifiers mods, bool
         nk_input_key(nuklear->ctx, NK_KEY_SCROLL_DOWN, down);
     } else if (key == PlatformKey::PageUp) {
         nk_input_key(nuklear->ctx, NK_KEY_SCROLL_UP, down);
-    } else if (key == PlatformKey::Z && (mods & PlatformModifier::Ctrl)) {
+    } else if (key == PlatformKey::Z && (mods & MOD_CTRL)) {
         nk_input_key(nuklear->ctx, NK_KEY_TEXT_UNDO, down);
-    } else if (key == PlatformKey::R && (mods & PlatformModifier::Ctrl)) {
+    } else if (key == PlatformKey::R && (mods & MOD_CTRL)) {
         nk_input_key(nuklear->ctx, NK_KEY_TEXT_REDO, down);
-    } else if (key == PlatformKey::C && (mods & PlatformModifier::Ctrl)) {
+    } else if (key == PlatformKey::C && (mods & MOD_CTRL)) {
         nk_input_key(nuklear->ctx, NK_KEY_COPY, down);
-    } else if (key == PlatformKey::V && (mods & PlatformModifier::Ctrl)) {
+    } else if (key == PlatformKey::V && (mods & MOD_CTRL)) {
         nk_input_key(nuklear->ctx, NK_KEY_PASTE, down);
-    } else if (key == PlatformKey::X && (mods & PlatformModifier::Ctrl)) {
+    } else if (key == PlatformKey::X && (mods & MOD_CTRL)) {
         nk_input_key(nuklear->ctx, NK_KEY_CUT, down);
-    } else if (key == PlatformKey::B && (mods & PlatformModifier::Ctrl)) {
+    } else if (key == PlatformKey::B && (mods & MOD_CTRL)) {
         nk_input_key(nuklear->ctx, NK_KEY_TEXT_LINE_START, down);
-    } else if (key == PlatformKey::E && (mods & PlatformModifier::Ctrl)) {
+    } else if (key == PlatformKey::E && (mods & MOD_CTRL)) {
         nk_input_key(nuklear->ctx, NK_KEY_TEXT_LINE_END, down);
     } else if (key == PlatformKey::Up) {
         nk_input_key(nuklear->ctx, NK_KEY_UP, down);
     } else if (key == PlatformKey::Down) {
         nk_input_key(nuklear->ctx, NK_KEY_DOWN, down);
     } else if (key == PlatformKey::Left) {
-        if (mods & PlatformModifier::Ctrl)
+        if (mods & MOD_CTRL)
             nk_input_key(nuklear->ctx, NK_KEY_TEXT_WORD_LEFT, down);
         else
             nk_input_key(nuklear->ctx, NK_KEY_LEFT, down);
     } else if (key == PlatformKey::Right) {
-        if (mods & PlatformModifier::Ctrl)
+        if (mods & MOD_CTRL)
             nk_input_key(nuklear->ctx, NK_KEY_TEXT_WORD_RIGHT, down);
         else
             nk_input_key(nuklear->ctx, NK_KEY_RIGHT, down);
@@ -83,7 +83,7 @@ bool NuklearEventHandler::mouseMoveEvent(const PlatformMouseEvent *event) {
 }
 
 bool NuklearEventHandler::mousePressEvent(const PlatformMouseEvent *event) {
-    if (event->button == PlatformMouseButton::Left && event->isDoubleClick)
+    if (event->button == BUTTON_LEFT && event->isDoubleClick)
         nk_input_button(nuklear->ctx, NK_BUTTON_DOUBLE, event->pos.x, event->pos.y, true);
 
     return MouseEvent(event->button, event->pos, true);
@@ -95,11 +95,11 @@ bool NuklearEventHandler::mouseReleaseEvent(const PlatformMouseEvent *event) {
 
 bool NuklearEventHandler::MouseEvent(PlatformMouseButton button, const Pointi &pos, bool down) {
     /* mouse button */
-    if (button == PlatformMouseButton::Left) {
+    if (button == BUTTON_LEFT) {
         nk_input_button(nuklear->ctx, NK_BUTTON_LEFT, pos.x, pos.y, down);
-    } else if (button == PlatformMouseButton::Middle) {
+    } else if (button == BUTTON_MIDDLE) {
         nk_input_button(nuklear->ctx, NK_BUTTON_MIDDLE, pos.x, pos.y, down);
-    } else if (button == PlatformMouseButton::Right) {
+    } else if (button == BUTTON_RIGHT) {
         nk_input_button(nuklear->ctx, NK_BUTTON_RIGHT, pos.x, pos.y, down);
     }
     return false;

@@ -38,7 +38,7 @@ static char PlatformKeyToChar(PlatformKey key, PlatformModifiers mods) {
     if (key >= PlatformKey::Digit0 && key <= PlatformKey::Digit9) {
         return std::to_underlying(key) - std::to_underlying(PlatformKey::Digit0) + '0';
     } else if (key >= PlatformKey::A && key <= PlatformKey::Z) {
-        if (mods & PlatformModifier::Shift) {
+        if (mods & MOD_SHIFT) {
             return std::to_underlying(key) - std::to_underlying(PlatformKey::A) + 'A';
         } else {
             return std::to_underlying(key) - std::to_underlying(PlatformKey::A) + 'a';
@@ -519,19 +519,19 @@ bool GameWindowHandler::keyReleaseEvent(const PlatformKeyEvent *event) {
 }
 
 bool GameWindowHandler::mouseMoveEvent(const PlatformMouseEvent *event) {
-    OnMouseMove(MapToRender(event->pos), event->buttons & PlatformMouseButton::Left, event->buttons & PlatformMouseButton::Right);
+    OnMouseMove(MapToRender(event->pos), event->buttons & BUTTON_LEFT, event->buttons & BUTTON_RIGHT);
     return false;
 }
 
 bool GameWindowHandler::mousePressEvent(const PlatformMouseEvent *event) {
     Pointi position = MapToRender(event->pos);
-    if (event->button == PlatformMouseButton::Left) {
+    if (event->button == BUTTON_LEFT) {
         if (event->isDoubleClick) {
             OnMouseLeftDoubleClick(position);
         } else {
             OnMouseLeftClick(position);
         }
-    } else if (event->button == PlatformMouseButton::Right) {
+    } else if (event->button == BUTTON_RIGHT) {
         if (event->isDoubleClick) {
             OnMouseRightDoubleClick(position);
         } else {
@@ -542,9 +542,9 @@ bool GameWindowHandler::mousePressEvent(const PlatformMouseEvent *event) {
 }
 
 bool GameWindowHandler::mouseReleaseEvent(const PlatformMouseEvent *event) {
-    if (event->button == PlatformMouseButton::Left) {
+    if (event->button == BUTTON_LEFT) {
         OnMouseLeftUp();
-    } else if (event->button == PlatformMouseButton::Right) {
+    } else if (event->button == BUTTON_RIGHT) {
         OnMouseRightUp();
     }
     return false;

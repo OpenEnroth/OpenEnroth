@@ -38,21 +38,21 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformKeyType, CASE_SENSITIVE, {
 MM_DEFINE_JSON_LEXICAL_SERIALIZATION_FUNCTIONS(PlatformKeyType)
 
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformMouseButton, CASE_SENSITIVE, {
-    {PlatformMouseButton::None, "none"},
-    {PlatformMouseButton::Left, "left"},
-    {PlatformMouseButton::Middle, "middle"},
-    {PlatformMouseButton::Right, "right"}
+    {BUTTON_NONE, "none"},
+    {BUTTON_LEFT, "left"},
+    {BUTTON_MIDDLE, "middle"},
+    {BUTTON_RIGHT, "right"}
 })
 MM_DEFINE_FLAGS_SERIALIZATION_FUNCTIONS(PlatformMouseButtons)
 MM_DEFINE_JSON_LEXICAL_SERIALIZATION_FUNCTIONS(PlatformMouseButton)
 MM_DEFINE_JSON_LEXICAL_SERIALIZATION_FUNCTIONS(PlatformMouseButtons)
 
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformModifier, CASE_SENSITIVE, {
-    {PlatformModifier::Shift, "shift"},
-    {PlatformModifier::Ctrl, "ctrl"},
-    {PlatformModifier::Alt, "alt"},
-    {PlatformModifier::Meta, "meta"},
-    {PlatformModifier::NumPad, "num"},
+    {MOD_SHIFT, "shift"},
+    {MOD_CTRL, "ctrl"},
+    {MOD_ALT, "alt"},
+    {MOD_META, "meta"},
+    {MOD_NUM, "num"},
 })
 MM_DEFINE_FLAGS_SERIALIZATION_FUNCTIONS(PlatformModifiers)
 MM_DEFINE_JSON_LEXICAL_SERIALIZATION_FUNCTIONS(PlatformModifiers)

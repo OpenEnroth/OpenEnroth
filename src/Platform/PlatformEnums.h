@@ -4,6 +4,11 @@
 
 #include "Utility/Flags.h"
 
+#undef MOD_ALT
+#undef MOD_SHIFT
+#undef MOD_CONTROL  // We're using MOD_CTRL, but would rather not get this more confusing.
+#undef MOD_WIN      // Same here, we have MOD_META instead.
+
 enum class PLATFORM_STORAGE {
     ANDROID_STORAGE_INTERNAL,
     ANDROID_STORAGE_EXTERNAL
@@ -14,33 +19,35 @@ using enum PLATFORM_STORAGE;
  * Platform log level as used by `PlatformLogger`.
  */
 enum class PlatformLogLevel {
-    LogVerbose,
-    LogDebug,
-    LogInfo,
-    LogWarning,
-    LogError,
-    LogCritical
+    LOG_VERBOSE,
+    LOG_DEBUG,
+    LOG_INFO,
+    LOG_WARNING,
+    LOG_ERROR,
+    LOG_CRITICAL
 };
 using enum PlatformLogLevel;
 
+// TODO(captainurist): this will be dropped
 /**
  * Platform log category as used by `PlatformLogger`.
  *
  * Note that platform doesn't have an API to define custom log categories, this should be done in user code if needed.
  */
 enum class PlatformLogCategory {
-    PlatformLog,
-    ApplicationLog
+    PLATFORM_LOG,
+    APPLICATION_LOG
 };
 using enum PlatformLogCategory;
 
 enum PlatformLoggerOption {
-    WinEnsureConsoleOption = 0x1
+    WIN_ENSURE_CONSOLE_OPTION = 0x1
 };
 using enum PlatformLoggerOption;
 MM_DECLARE_FLAGS(PlatformLoggerOptions, PlatformLoggerOption)
 MM_DECLARE_OPERATORS_FOR_FLAGS(PlatformLoggerOptions)
 
+// TODO(captainurist): enum codestyle
 enum class PlatformKey : int {
     // usual text input
     Char, // TODO(captainurist): this doesn't belong here
@@ -150,23 +157,23 @@ using enum PlatformKeyType;
 typedef float PlatformKeyValue;
 
 enum class PlatformModifier : uint32_t {
-    Shift  = 0x00000001,
-    Ctrl   = 0x00000002,
-    Alt    = 0x00000004,
-    Meta   = 0x00000008,
-    NumPad = 0x00000010,
+    MOD_SHIFT   = 0x00000001,
+    MOD_CTRL    = 0x00000002,
+    MOD_ALT     = 0x00000004,
+    MOD_META    = 0x00000008,
+    MOD_NUM     = 0x00000010,
 };
-
+using enum PlatformModifier;
 MM_DECLARE_FLAGS(PlatformModifiers, PlatformModifier)
 MM_DECLARE_OPERATORS_FOR_FLAGS(PlatformModifiers)
 
 enum class PlatformMouseButton {
-    None    = 0,
-    Left    = 0x1,
-    Middle  = 0x2,
-    Right   = 0x4
+    BUTTON_NONE     = 0,
+    BUTTON_LEFT     = 0x1,
+    BUTTON_MIDDLE   = 0x2,
+    BUTTON_RIGHT    = 0x4
 };
-
+using enum PlatformMouseButton;
 MM_DECLARE_FLAGS(PlatformMouseButtons, PlatformMouseButton)
 MM_DECLARE_OPERATORS_FOR_FLAGS(PlatformMouseButtons)
 
