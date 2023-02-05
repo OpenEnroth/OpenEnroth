@@ -160,6 +160,9 @@ bool Camera3D::GetFacetOrientation(PolygonType polyType, Vec3f *a2,
 bool Camera3D::is_face_faced_to_cameraBLV(BLVFace *pFace) {
     // if (pFace->Portal()) return false;
 
+    if (pFace->uNumVertices == 0)
+        return false; // TODO(captainurist): would be great to just filter these our on load & assert instead.
+
     float x = pIndoor->pVertices[pFace->pVertexIDs[0]].x;
     float y = pIndoor->pVertices[pFace->pVertexIDs[0]].y;
     float z = pIndoor->pVertices[pFace->pVertexIDs[0]].z;

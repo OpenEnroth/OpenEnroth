@@ -58,6 +58,11 @@ GAME_TEST(Issues, Issue315) {
     game->skipLoadingScreen(); // This shouldn't crash.
 }
 
+GAME_TEST(Issues, Issue403) {
+    // Entering Lincoln shouldn't crash.
+    test->playTraceFromTestData("issue_403.mm7", "issue_403.json", [] {});
+}
+
 GAME_TEST(Prs, Pr347) {
     // Testing that shops work.
     int oldGold = 0;
