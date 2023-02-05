@@ -147,6 +147,5 @@ var searchData=
   ['cook_144',['Cook',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a1bf70a91b0b28b92dc52e03d45abf61a',1,'NPCEnums.h']]],
   ['count_145',['Count',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cae93f994f01c537c4e2f7d8528c3eb5e9',1,'Io::Count()'],['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eeccae93f994f01c537c4e2f7d8528c3eb5e9',1,'Count():&#160;PlatformEnums.h']]],
   ['credits_146',['Credits',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca948a2e3548aaf7f9941a3192fa607d51',1,'Io']]],
-  ['ctrl_147',['Ctrl',['../PlatformEnums_8h.html#aaf0638d2a3414c9cae377d29330c70b3a2b61e0d5977f2e38f06e16281c802b47',1,'PlatformEnums.h']]],
-  ['cyclefilter_148',['CycleFilter',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cafb76dc41ca56f4e090cf65021285c8a9',1,'Io']]]
+  ['cyclefilter_147',['CycleFilter',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cafb76dc41ca56f4e090cf65021285c8a9',1,'Io']]]
 ];

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2e26b01</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8f0802d</span>
    </div>
   </td>
  </tr>
@@ -151,11 +151,9 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Logs provided message. The message will be ignored if the provided log level is lower than the log level set for the provided category. It is advised to also do the log level check at the call site to avoid message formatting overhead: </p><div class="fragment"><div class="line"><span class="keywordflow">if</span> (<a class="code hl_variable" href="Engine_2IocContainer_8cpp.html#a0009c186c3629201f6c24eded36605f4">logger</a>-&gt;logLevel(<a class="code hl_enumvalue" href="PlatformEnums_8h.html#a295f3cae32081443bbf0a7952a17c531a214bf7947257ebd43cfe58905f986d48">ApplicationLog</a>) &lt;= <a class="code hl_enumvalue" href="PlatformEnums_8h.html#aadaf937443899628d663afc0e3f95f7ba214c4405f21e8ee843d5c79c77ae4e7d">LogDebug</a>)</div>
-<div class="line">    <a class="code hl_variable" href="Engine_2IocContainer_8cpp.html#a0009c186c3629201f6c24eded36605f4">logger</a>-&gt;log(<a class="code hl_enumvalue" href="PlatformEnums_8h.html#a295f3cae32081443bbf0a7952a17c531a214bf7947257ebd43cfe58905f986d48">ApplicationLog</a>, <a class="code hl_enumvalue" href="PlatformEnums_8h.html#aadaf937443899628d663afc0e3f95f7ba214c4405f21e8ee843d5c79c77ae4e7d">LogDebug</a>, FormatMessage(<span class="stringliteral">&quot;blablabla %s %s&quot;</span>, s1, s2).c_str());</div>
+<p >Logs provided message. The message will be ignored if the provided log level is lower than the log level set for the provided category. It is advised to also do the log level check at the call site to avoid message formatting overhead: </p><div class="fragment"><div class="line"><span class="keywordflow">if</span> (<a class="code hl_variable" href="Engine_2IocContainer_8cpp.html#a0009c186c3629201f6c24eded36605f4">logger</a>-&gt;logLevel(ApplicationLog) &lt;= LogDebug)</div>
+<div class="line">    <a class="code hl_variable" href="Engine_2IocContainer_8cpp.html#a0009c186c3629201f6c24eded36605f4">logger</a>-&gt;log(ApplicationLog, LogDebug, FormatMessage(<span class="stringliteral">&quot;blablabla %s %s&quot;</span>, s1, s2).c_str());</div>
 <div class="ttc" id="aEngine_2IocContainer_8cpp_html_a0009c186c3629201f6c24eded36605f4"><div class="ttname"><a href="Engine_2IocContainer_8cpp.html#a0009c186c3629201f6c24eded36605f4">logger</a></div><div class="ttdeci">Logger * logger</div><div class="ttdef"><b>Definition:</b> IocContainer.cpp:46</div></div>
-<div class="ttc" id="aPlatformEnums_8h_html_a295f3cae32081443bbf0a7952a17c531a214bf7947257ebd43cfe58905f986d48"><div class="ttname"><a href="PlatformEnums_8h.html#a295f3cae32081443bbf0a7952a17c531a214bf7947257ebd43cfe58905f986d48">PlatformLogCategory::ApplicationLog</a></div><div class="ttdeci">@ ApplicationLog</div></div>
-<div class="ttc" id="aPlatformEnums_8h_html_aadaf937443899628d663afc0e3f95f7ba214c4405f21e8ee843d5c79c77ae4e7d"><div class="ttname"><a href="PlatformEnums_8h.html#aadaf937443899628d663afc0e3f95f7ba214c4405f21e8ee843d5c79c77ae4e7d">PlatformLogLevel::LogDebug</a></div><div class="ttdeci">@ LogDebug</div></div>
 </div><!-- fragment --><p >This function is thread-safe.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">

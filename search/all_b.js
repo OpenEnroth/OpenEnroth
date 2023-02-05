@@ -1,11 +1,11 @@
 var searchData=
 [
   ['k_0',['K',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eeccaa5f3c6a11b03839d46af9fb43c97c188',1,'PlatformEnums.h']]],
-  ['key_1',['key',['../classPlatformKeyEvent.html#a47843d2ef4759e9938f79913f8999f54',1,'PlatformKeyEvent::key()'],['../structhotkey.html#ad4f9fda682e5faab90e374c6786d7b20',1,'hotkey::key()']]],
-  ['key_2',['Key',['../classApplication_1_1GameConfig.html#acd89e3396451f4162bac9d07f738986d',1,'Application::GameConfig']]],
+  ['key_1',['Key',['../classApplication_1_1GameConfig.html#acd89e3396451f4162bac9d07f738986d',1,'Application::GameConfig']]],
+  ['key_2',['key',['../classPlatformKeyEvent.html#a47843d2ef4759e9938f79913f8999f54',1,'PlatformKeyEvent::key()'],['../structhotkey.html#ad4f9fda682e5faab90e374c6786d7b20',1,'hotkey::key()']]],
   ['key_2ecpp_3',['Key.cpp',['../Key_8cpp.html',1,'']]],
   ['key_2eh_4',['Key.h',['../Key_8h.html',1,'']]],
-  ['key_5fmap_5fconflicted_5',['key_map_conflicted',['../GameMenu_8cpp.html#a979368a7f3588cd9e91fcd2c0784a810',1,'key_map_conflicted():&#160;GameMenu.cpp'],['../KeyboardActionMapping_8cpp.html#ac779193a7bd296fbdcabc8799a780aa0',1,'key_map_conflicted():&#160;GameMenu.cpp'],['../UIGame_8cpp.html#ac779193a7bd296fbdcabc8799a780aa0',1,'key_map_conflicted():&#160;UIGame.cpp']]],
+  ['key_5fmap_5fconflicted_5',['key_map_conflicted',['../UIGame_8cpp.html#ac779193a7bd296fbdcabc8799a780aa0',1,'key_map_conflicted():&#160;UIGame.cpp'],['../KeyboardActionMapping_8cpp.html#ac779193a7bd296fbdcabc8799a780aa0',1,'key_map_conflicted():&#160;GameMenu.cpp'],['../GameMenu_8cpp.html#a979368a7f3588cd9e91fcd2c0784a810',1,'key_map_conflicted():&#160;GameMenu.cpp']]],
   ['key_5ftype_6',['key_type',['../classIndexedArray.html#af5c5b34472590d5a46b82139f41857e1',1,'IndexedArray']]],
   ['key_5ftype_5fgamepad_5faxis_7',['KEY_TYPE_GAMEPAD_AXIS',['../PlatformEnums_8h.html#a0aece42f1e1473301d9de209067349b9a55c26aa804dd21bb4eb386a20a279122',1,'PlatformEnums.h']]],
   ['key_5ftype_5fgamepad_5fbutton_8',['KEY_TYPE_GAMEPAD_BUTTON',['../PlatformEnums_8h.html#a0aece42f1e1473301d9de209067349b9aec3a7d894ddbae7c850d42873a3ad870',1,'PlatformEnums.h']]],
@@ -30,12 +30,10 @@ var searchData=
   ['keydelaytimer_27',['keydelaytimer',['../classIo_1_1KeyboardInputHandler.html#a0a8abf92e3c5f9a82cc6be1b3259682d',1,'Io::KeyboardInputHandler']]],
   ['keyevent_28',['KeyEvent',['../classNuklearEventHandler.html#ab81d25b54261688e2b0963814cf2423d',1,'NuklearEventHandler::KeyEvent()'],['../classNuklear.html#a7e860df223e8f333b530f1793096d82a',1,'Nuklear::KeyEvent()']]],
   ['keymappingparams_29',['keyMappingParams',['../KeyboardActionMapping_8cpp.html#a492680900722e89bbe10e67c802ee43e',1,'KeyboardActionMapping.cpp']]],
-  ['keypress_30',['KeyPress',['../classPlatformEvent.html#ab1b85cb24f01d755e87bf165a8b18ee8a65a1aa093fcf3acd50b318f1942c02f5',1,'PlatformEvent']]],
-  ['keypressevent_31',['keyPressEvent',['../classApplication_1_1GameWindowHandler.html#a74a6b9a691b30884df03b125c09154e8',1,'Application::GameWindowHandler::keyPressEvent()'],['../classPlatformEventHandler.html#aa61e05d7964c1ee873a72176209a1aa1',1,'PlatformEventHandler::keyPressEvent()'],['../classPlatformEventFilter.html#a31b2af9591a8f4c42768bed4805e506d',1,'PlatformEventFilter::keyPressEvent()'],['../classNuklearEventHandler.html#a8f07bfe57ee36afdf8aff6cb14433b80',1,'NuklearEventHandler::keyPressEvent()'],['../classGameTraceHandler.html#ada5c2ff7851a93fcaf4ee25975a94540',1,'GameTraceHandler::keyPressEvent()']]],
-  ['keyrelease_32',['KeyRelease',['../classPlatformEvent.html#ab1b85cb24f01d755e87bf165a8b18ee8a17ee17cec34ff017c382ba1ce8dc4cdc',1,'PlatformEvent']]],
-  ['keyreleaseevent_33',['keyReleaseEvent',['../classPlatformEventHandler.html#a9292d2132651bc487858ddc05971963e',1,'PlatformEventHandler::keyReleaseEvent()'],['../classPlatformEventFilter.html#a94c447fef1096ee7034b201f21e13158',1,'PlatformEventFilter::keyReleaseEvent()'],['../classNuklearEventHandler.html#a9eb3a029e21ae3b3025f6400cdcb1151',1,'NuklearEventHandler::keyReleaseEvent()'],['../classApplication_1_1GameWindowHandler.html#aea9e3bfa329b538c22de7c4eccb3efa9',1,'Application::GameWindowHandler::keyReleaseEvent()'],['../classGameTraceHandler.html#a14ca7609c3cf38430cbae53ba34e782e',1,'GameTraceHandler::keyReleaseEvent()']]],
-  ['keytogglemap_34',['keyToggleMap',['../structIo_1_1KeyboardActionMapping.html#a6bec1fe1388d4246402e7351ef5cc070',1,'Io::KeyboardActionMapping']]],
-  ['keytoggletype_35',['KeyToggleType',['../namespaceIo.html#a2c93bc6b898f8766fc71035a886995fd',1,'Io']]],
-  ['keytype_36',['keyType',['../classPlatformKeyEvent.html#ae6461db5c8ed094c8559ebc67f11e1c8',1,'PlatformKeyEvent']]],
-  ['keyvalue_37',['keyValue',['../classPlatformKeyEvent.html#a6dd22168666bd04ad8d31f461fee3d36',1,'PlatformKeyEvent']]]
+  ['keypressevent_30',['keyPressEvent',['../classApplication_1_1GameWindowHandler.html#a74a6b9a691b30884df03b125c09154e8',1,'Application::GameWindowHandler::keyPressEvent()'],['../classPlatformEventHandler.html#aa61e05d7964c1ee873a72176209a1aa1',1,'PlatformEventHandler::keyPressEvent()'],['../classPlatformEventFilter.html#a31b2af9591a8f4c42768bed4805e506d',1,'PlatformEventFilter::keyPressEvent()'],['../classNuklearEventHandler.html#a8f07bfe57ee36afdf8aff6cb14433b80',1,'NuklearEventHandler::keyPressEvent()'],['../classGameTraceHandler.html#ada5c2ff7851a93fcaf4ee25975a94540',1,'GameTraceHandler::keyPressEvent()']]],
+  ['keyreleaseevent_31',['keyReleaseEvent',['../classPlatformEventHandler.html#a9292d2132651bc487858ddc05971963e',1,'PlatformEventHandler::keyReleaseEvent()'],['../classPlatformEventFilter.html#a94c447fef1096ee7034b201f21e13158',1,'PlatformEventFilter::keyReleaseEvent()'],['../classNuklearEventHandler.html#a9eb3a029e21ae3b3025f6400cdcb1151',1,'NuklearEventHandler::keyReleaseEvent()'],['../classApplication_1_1GameWindowHandler.html#aea9e3bfa329b538c22de7c4eccb3efa9',1,'Application::GameWindowHandler::keyReleaseEvent()'],['../classGameTraceHandler.html#a14ca7609c3cf38430cbae53ba34e782e',1,'GameTraceHandler::keyReleaseEvent()']]],
+  ['keytogglemap_32',['keyToggleMap',['../structIo_1_1KeyboardActionMapping.html#a6bec1fe1388d4246402e7351ef5cc070',1,'Io::KeyboardActionMapping']]],
+  ['keytoggletype_33',['KeyToggleType',['../namespaceIo.html#a2c93bc6b898f8766fc71035a886995fd',1,'Io']]],
+  ['keytype_34',['keyType',['../classPlatformKeyEvent.html#ae6461db5c8ed094c8559ebc67f11e1c8',1,'PlatformKeyEvent']]],
+  ['keyvalue_35',['keyValue',['../classPlatformKeyEvent.html#a6dd22168666bd04ad8d31f461fee3d36',1,'PlatformKeyEvent']]]
 ];

@@ -13,7 +13,7 @@ var searchData=
   ['insert_10',['Insert',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eeccaa458be0f08b7e4ff3c0f633c100176c0',1,'PlatformEnums.h']]],
   ['instructor_11',['Instructor',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a07f8bcc8ac3a48011c67c0d0f77f07d0',1,'NPCEnums.h']]],
   ['interacting_12',['Interacting',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395fedaf023446a52e84d38f186937dad1d8f76',1,'ActorEnums.h']]],
-  ['invalid_13',['Invalid',['../classPlatformEvent.html#ab1b85cb24f01d755e87bf165a8b18ee8a4bbb8f967da6d1a610596d7257179c2b',1,'PlatformEvent::Invalid()'],['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca4bbb8f967da6d1a610596d7257179c2b',1,'Io::Invalid()']]],
+  ['invalid_13',['Invalid',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca4bbb8f967da6d1a610596d7257179c2b',1,'Io']]],
   ['invalidlastindex_14',['InvalidLastIndex',['../namespacedetail.html#ad7e74ca17ca07607d4d237aa8149040aa5ffa99e0f80cf8de04cb4afdea560207',1,'detail']]],
   ['inventory_15',['Inventory',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca4d604dd8f008145471dc845683399189',1,'Io']]],
   ['item_5f160_16',['ITEM_160',['../ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5a86021086cae377d1b3aeb9dd31290cab',1,'ItemEnums.h']]],

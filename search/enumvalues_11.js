@@ -9,6 +9,6 @@ var searchData=
   ['resurrected_6',['Resurrected',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395fedaead662696e0486cb7a478ecd13a0b5c5',1,'ActorEnums.h']]],
   ['return_7',['Return',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca988fd738de9c6d177440c5dcf69e73ce',1,'Io::Return()'],['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca988fd738de9c6d177440c5dcf69e73ce',1,'Return():&#160;PlatformEnums.h']]],
   ['returntogame_8',['ReturnToGame',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90caef9b613c6628881c7fec25b190eda077',1,'Io']]],
-  ['right_9',['Right',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca92b09c7c48c520c3c55e497875da437c',1,'Right():&#160;PlatformEnums.h'],['../PlatformEnums_8h.html#a24f0ba632b7eb4b8c479f745c38d4558a92b09c7c48c520c3c55e497875da437c',1,'Right():&#160;PlatformEnums.h']]],
+  ['right_9',['Right',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca92b09c7c48c520c3c55e497875da437c',1,'PlatformEnums.h']]],
   ['rightbracket_10',['RightBracket',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca455364d8991395f71ef9ccc5cc449e5c',1,'PlatformEnums.h']]]
 ];

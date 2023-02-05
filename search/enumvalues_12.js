@@ -51,7 +51,7 @@ var searchData=
   ['semicolon_48',['Semicolon',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca9806fa37a3ecd39bf637c203aa011ed0',1,'PlatformEnums.h']]],
   ['sex_5ffemale_49',['SEX_FEMALE',['../PlayerEnums_8h.html#a8b5cdb0c1525ed7ab1d3f60dc14684f9a92811c7b80b20bafeb1006d6c5df36d9',1,'PlayerEnums.h']]],
   ['sex_5fmale_50',['SEX_MALE',['../PlayerEnums_8h.html#a8b5cdb0c1525ed7ab1d3f60dc14684f9af2431c4f4e339e595d1ef64a4dd990c1',1,'PlayerEnums.h']]],
-  ['shift_51',['Shift',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca825a3d98017bab11815ad2817201324c',1,'Shift():&#160;PlatformEnums.h'],['../PlatformEnums_8h.html#aaf0638d2a3414c9cae377d29330c70b3a825a3d98017bab11815ad2817201324c',1,'Shift():&#160;PlatformEnums.h']]],
+  ['shift_51',['Shift',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca825a3d98017bab11815ad2817201324c',1,'PlatformEnums.h']]],
   ['side_5fcontrol_52',['SIDE_CONTROL',['../EngineControlState_8h.html#a244c41d3a64ac6f3ceb24e6b484cbfd8ace05cb155fb6cf2a8b236b6dafa87e14',1,'EngineControlState.h']]],
   ['side_5fgame_53',['SIDE_GAME',['../EngineControlState_8h.html#a244c41d3a64ac6f3ceb24e6b484cbfd8a30ad8354db1edfacfeea7440d6dabcdf',1,'EngineControlState.h']]],
   ['singlequote_54',['SingleQuote',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eeccaab6f946be65ae6c2ee9b1131872a4f19',1,'PlatformEnums.h']]],

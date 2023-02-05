@@ -77,7 +77,7 @@ var searchData=
   ['period_74',['Period',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca1901606ea069a83dc7beea17881ef95a',1,'PlatformEnums.h']]],
   ['piper_75',['Piper',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a0da9013116bd7591cb6d61b1e310ed29',1,'NPCEnums.h']]],
   ['pirate_76',['Pirate',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a95aa99a5810a35a3659d5322fe4bad00',1,'NPCEnums.h']]],
-  ['platformlog_77',['PlatformLog',['../PlatformEnums_8h.html#a295f3cae32081443bbf0a7952a17c531a3f6308f2035ac833d1bcea3026f65316',1,'PlatformEnums.h']]],
+  ['platform_5flog_77',['PLATFORM_LOG',['../PlatformEnums_8h.html#a295f3cae32081443bbf0a7952a17c531a7bcabb3764d999e5e47897b2cb42862b',1,'PlatformEnums.h']]],
   ['player_5fbuff_5faccuracy_78',['PLAYER_BUFF_ACCURACY',['../PlayerEnums_8h.html#ac2005d40089d000876ce6dec2d5b123fae8486139402ec92adbb45ce154a234f2',1,'PlayerEnums.h']]],
   ['player_5fbuff_5fbless_79',['PLAYER_BUFF_BLESS',['../PlayerEnums_8h.html#ac2005d40089d000876ce6dec2d5b123fa06abfb1dbd636c4589b74508ce9f8d42',1,'PlayerEnums.h']]],
   ['player_5fbuff_5fendurance_80',['PLAYER_BUFF_ENDURANCE',['../PlayerEnums_8h.html#ac2005d40089d000876ce6dec2d5b123fae9237e416b980445aecead617ac116d6',1,'PlayerEnums.h']]],

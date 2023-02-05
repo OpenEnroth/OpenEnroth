@@ -43,5 +43,9 @@ var searchData=
   ['buildingtype_5ftraining_40',['BuildingType_Training',['../Events2D_8h.html#a1e6330273dfb88062f9ac99d61322e80a5a94d52e56662ac92e44ef0020113176',1,'Events2D.h']]],
   ['buildingtype_5fwaterguild_41',['BuildingType_WaterGuild',['../Events2D_8h.html#a1e6330273dfb88062f9ac99d61322e80a59f18c87bb570c8fed9412e9668f74fa',1,'Events2D.h']]],
   ['buildingtype_5fweaponshop_42',['BuildingType_WeaponShop',['../Events2D_8h.html#a1e6330273dfb88062f9ac99d61322e80a6fcb590fd579a7f2b09729ae18b2fde1',1,'Events2D.h']]],
-  ['burglar_43',['Burglar',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a330fdf856085e8951a2714e3a2141e67',1,'NPCEnums.h']]]
+  ['burglar_43',['Burglar',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a330fdf856085e8951a2714e3a2141e67',1,'NPCEnums.h']]],
+  ['button_5fleft_44',['BUTTON_LEFT',['../PlatformEnums_8h.html#a24f0ba632b7eb4b8c479f745c38d4558a36d9e3a4330b098458b81de2a861cbaa',1,'PlatformEnums.h']]],
+  ['button_5fmiddle_45',['BUTTON_MIDDLE',['../PlatformEnums_8h.html#a24f0ba632b7eb4b8c479f745c38d4558a02029eeec1878b3c58e83b74ce07d11c',1,'PlatformEnums.h']]],
+  ['button_5fnone_46',['BUTTON_NONE',['../PlatformEnums_8h.html#a24f0ba632b7eb4b8c479f745c38d4558a4f6d316e9c91ae3f7b3735526fc1e169',1,'PlatformEnums.h']]],
+  ['button_5fright_47',['BUTTON_RIGHT',['../PlatformEnums_8h.html#a24f0ba632b7eb4b8c479f745c38d4558ae075c9b2c5940dd1aa3b1564a8353f27',1,'PlatformEnums.h']]]
 ];
