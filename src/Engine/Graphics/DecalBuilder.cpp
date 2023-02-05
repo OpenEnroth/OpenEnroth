@@ -240,7 +240,7 @@ bool DecalBuilder::ApplyBloodSplat_OutdoorFace(ODMFace* pFace) {
 //----- (0049BE8A) --------------------------------------------------------
 // apply outdoor blodsplats - check to see if bloodsplat hits terrain triangle
 bool DecalBuilder::ApplyBloodSplatToTerrain(struct Polygon *terrpoly, Vec3f *terrnorm, float *tridotdist,
-                                            RenderVertexSoft *triverts, unsigned int uStripType, char tri_orient, int whichsplat) {
+                                            RenderVertexSoft *triverts, int whichsplat) {
     // tracks how many decals are applied to this tri
     this->uNumSplatsThisFace = 0;
 

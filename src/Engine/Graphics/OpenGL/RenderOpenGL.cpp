@@ -2361,7 +2361,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
                 pTilePolygon->dimming_level = 20.0f - floorf(20.0f * _f1 + 0.5f);
                 pTilePolygon->dimming_level = std::clamp((int)pTilePolygon->dimming_level, 0, 31);
 
-                decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm, &Light_tile_dist, VertexRenderList, 3, 1, i);
+                decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm, &Light_tile_dist, VertexRenderList, i);
                 static_sub_0048034E_stru_154.ClassifyPolygon(norm, Light_tile_dist);
                 if (decal_builder->uNumSplatsThisFace > 0)
                     decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level, LocationTerrain, &static_sub_0048034E_stru_154, 3, VertexRenderList, 0, -1);
@@ -2371,7 +2371,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
                 pTilePolygon->dimming_level = 20.0 - floorf(20.0 * _f + 0.5f);
                 pTilePolygon->dimming_level = std::clamp((int)pTilePolygon->dimming_level, 0, 31);
 
-                decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm2, &Light_tile_dist, (VertexRenderList + 3), 3, 0, i);
+                decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm2, &Light_tile_dist, (VertexRenderList + 3), i);
                 static_sub_0048034E_stru_154.ClassifyPolygon(norm2, Light_tile_dist);
                 if (decal_builder->uNumSplatsThisFace > 0)
                     decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level, LocationTerrain, &static_sub_0048034E_stru_154, 3, (VertexRenderList + 3), 0, -1);

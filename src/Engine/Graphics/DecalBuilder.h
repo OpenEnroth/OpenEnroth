@@ -108,14 +108,12 @@ struct DecalBuilder {
      * @param terrnorm                      Normal vector of supplied triangle.
      * @param[out] tridotdist               Plane dot distance of supplied vertices.
      * @param triverts                      Vertices of terrain triangle to apply splat onto.
-     * @param uStripType                    How many vertices are in triverts (3/4) - TODO(pskelton): Drop
-     * @param tri_orient                    Top (1) or bottom (0) triangle from terrain square - TODO(pskelton): drop.
      * @param whichsplat                    Index of which bloodsplat in bloodsplat_container->pBloodsplats_to_apply[index] to use.
      * 
      * @return                              True if bloodsplat_container->uNumBloodsplats > 0, false otherwise.
      */
     bool ApplyBloodSplatToTerrain(struct Polygon *terrpoly, Vec3f *terrnorm, float *tridotdist,
-                                RenderVertexSoft *triverts, unsigned int uStripType, char tri_orient, int whichsplat);
+                                RenderVertexSoft *triverts, int whichsplat);
     void DrawDecals(float z_bias);
     void DrawBloodsplats();
     void DrawDecalDebugOutlines();
