@@ -4586,11 +4586,6 @@ void RenderOpenGL::DrawIndoorFaces() {
             bool drawnsky = false;
 
             for (uint i = 0; i < pBspRenderer->num_faces; ++i) {
-                // viewed through portal
-                /*IndoorLocation::ExecDraw_d3d(pBspRenderer->faces[i].uFaceID,
-                    pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum,
-                    4, pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding);*/
-
                 unsigned int uFaceID = pBspRenderer->faces[i].uFaceID;
                 if (uFaceID >= pIndoor->pFaces.size())
                     continue;

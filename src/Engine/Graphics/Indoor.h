@@ -542,11 +542,6 @@ struct IndoorLocation {
 
     static unsigned int GetLocationIndex(const char *Str1);
     void DrawIndoorFaces(bool bD3D);
-    // static void ExecDraw_sw(unsigned int uFaceID);
-    void ExecDraw_d3d(unsigned int uFaceID,
-                             struct IndoorCameraD3D_Vec4 *pVertices,
-                             unsigned int uNumVertices,
-                             struct RenderVertexSoft *pPortalBounding);
     void PrepareActorRenderList_BLV();
     void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, unsigned int uSectorID);
     void PrepareItemsRenderList_BLV();
