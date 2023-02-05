@@ -935,9 +935,6 @@ bool PartyCreationUI_LoopInternal() {
                     pParty->pPlayers[i].pOwnItems[k].SetIdentified();
             }
         }
-
-        if (!engine->config->gameplay.TreatClubAsMace.Get())
-            pParty->pPlayers[i].pActiveSkills[PLAYER_SKILL_CLUB] = 1;
     }
 
     // pAudioPlayer->PauseSounds(-1);

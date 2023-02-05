@@ -622,7 +622,7 @@ void Serialize(const Player &src, Player_MM7 *dst) {
     dst->field_100 = src.field_100;
     dst->field_104 = src.field_104;
 
-    for (PLAYER_SKILL_TYPE i : StoredSkills())
+    for (PLAYER_SKILL_TYPE i : VisibleSkills())
         dst->pActiveSkills[std::to_underlying(i)] = src.pActiveSkills[i];
 
     for (unsigned int i = 0; i < 64; ++i)
@@ -907,7 +907,7 @@ void Deserialize(const Player_MM7 &src, Player* dst) {
     dst->field_100 = src.field_100;
     dst->field_104 = src.field_104;
 
-    for (PLAYER_SKILL_TYPE i : StoredSkills())
+    for (PLAYER_SKILL_TYPE i : VisibleSkills())
         dst->pActiveSkills[i] = src.pActiveSkills[std::to_underlying(i)];
 
     for (unsigned int i = 0; i < 64; ++i)

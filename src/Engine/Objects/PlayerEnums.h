@@ -293,9 +293,9 @@ inline Segment<PLAYER_SKILL_TYPE> AllSkills() {
 }
 
 /**
- * @return                              List of skills that are saved in an MM7 savegame.
+ * @return                              List of skills that are visible to the player and that are stored in a savegame.
  */
-inline Segment<PLAYER_SKILL_TYPE> StoredSkills() {
+inline Segment<PLAYER_SKILL_TYPE> VisibleSkills() {
     return Segment(PLAYER_SKILL_FIRST_STORED, PLAYER_SKILL_LAST_STORED);
 }
 

@@ -3476,6 +3476,8 @@ void Player::Reset(PLAYER_CLASS_TYPE cls) {
     uSkillPoints = 0;
     uBirthYear = 1147 - grng->Random(6);
     pActiveSkills.fill(0);
+    pActiveSkills[PLAYER_SKILL_CLUB] = 1; // Hidden skills, always at 1.
+    pActiveSkills[PLAYER_SKILL_MISC] = 1;
     memset(_achieved_awards_bits, 0, sizeof(_achieved_awards_bits));
     memset(&spellbook, 0, sizeof(spellbook));
     uQuickSpell = 0;
@@ -3519,7 +3521,7 @@ PLAYER_SKILL_TYPE Player::GetSkillIdxByOrder(signed int order) {
         return PLAYER_SKILL_INVALID;
     }
     counter = 0;
-    for (PLAYER_SKILL_TYPE i : AllSkills()) {
+    for (PLAYER_SKILL_TYPE i : VisibleSkills()) {
         if ((this->pActiveSkills[i] || canBeInactive) &&
             pSkillAvailabilityPerClass[classType / 4][i] == requiredValue) {
             if (counter == order - offset) return i;
