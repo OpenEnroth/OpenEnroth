@@ -11,23 +11,23 @@
 
 #include "PaintEvent.h"
 
-MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformEvent::Type, CASE_SENSITIVE, {
-    {PlatformEvent::KeyPress,               "keyPress"},
-    {PlatformEvent::KeyRelease,             "keyRelease"},
-    {PlatformEvent::GamepadConnected,       "gamepadConnected"},
-    {PlatformEvent::GamepadDisconnected,    "gamepadDisconnected"},
-    {PlatformEvent::MouseButtonPress,       "mouseButtonPress"},
-    {PlatformEvent::MouseButtonRelease,     "mouseButtonRelease"},
-    {PlatformEvent::MouseMove,              "mouseMove"},
-    {PlatformEvent::MouseWheel,             "mouseWheel"},
-    {PlatformEvent::WindowMove,             "windowMove"},
-    {PlatformEvent::WindowResize,           "windowResize"},
-    {PlatformEvent::WindowActivate,         "windowActivate"},
-    {PlatformEvent::WindowDeactivate,       "windowDeactivate"},
-    {PlatformEvent::WindowCloseRequest,     "windowCloseRequest"},
-    {PaintEvent::Paint,                     "paint"}
+MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformEventType, CASE_SENSITIVE, {
+    {EVENT_KEY_PRESS,               "keyPress"},
+    {EVENT_KEY_RELEASE,             "keyRelease"},
+    {EVENT_GAMEPAD_CONNECTED,       "gamepadConnected"},
+    {EVENT_GAMEPAD_DISCONNECTED,    "gamepadDisconnected"},
+    {EVENT_MOUSE_BUTTON_PRESS,      "mouseButtonPress"},
+    {EVENT_MOUSE_BUTTON_RELEASE,    "mouseButtonRelease"},
+    {EVENT_MOUSE_MOVE,              "mouseMove"},
+    {EVENT_MOUSE_WHEEL,             "mouseWheel"},
+    {EVENT_WINDOW_MOVE,             "windowMove"},
+    {EVENT_WINDOW_RESIZE,           "windowResize"},
+    {EVENT_WINDOW_ACTIVATE,         "windowActivate"},
+    {EVENT_WINDOW_DEACTIVATE,       "windowDeactivate"},
+    {EVENT_WINDOW_CLOSE_REQUEST,    "windowCloseRequest"},
+    {EVENT_PAINT,                   "paint"}
 })
-MM_DEFINE_JSON_LEXICAL_SERIALIZATION_FUNCTIONS(PlatformEvent::Type)
+MM_DEFINE_JSON_LEXICAL_SERIALIZATION_FUNCTIONS(PlatformEventType)
 
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformKeyType, CASE_SENSITIVE, {
     {KEY_TYPE_KEYBOARD_BUTTON, "keyboard"},
@@ -38,21 +38,21 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformKeyType, CASE_SENSITIVE, {
 MM_DEFINE_JSON_LEXICAL_SERIALIZATION_FUNCTIONS(PlatformKeyType)
 
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformMouseButton, CASE_SENSITIVE, {
-    {PlatformMouseButton::None, "none"},
-    {PlatformMouseButton::Left, "left"},
-    {PlatformMouseButton::Middle, "middle"},
-    {PlatformMouseButton::Right, "right"}
+    {BUTTON_NONE, "none"},
+    {BUTTON_LEFT, "left"},
+    {BUTTON_MIDDLE, "middle"},
+    {BUTTON_RIGHT, "right"}
 })
 MM_DEFINE_FLAGS_SERIALIZATION_FUNCTIONS(PlatformMouseButtons)
 MM_DEFINE_JSON_LEXICAL_SERIALIZATION_FUNCTIONS(PlatformMouseButton)
 MM_DEFINE_JSON_LEXICAL_SERIALIZATION_FUNCTIONS(PlatformMouseButtons)
 
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformModifier, CASE_SENSITIVE, {
-    {PlatformModifier::Shift, "shift"},
-    {PlatformModifier::Ctrl, "ctrl"},
-    {PlatformModifier::Alt, "alt"},
-    {PlatformModifier::Meta, "meta"},
-    {PlatformModifier::NumPad, "num"},
+    {MOD_SHIFT, "shift"},
+    {MOD_CTRL, "ctrl"},
+    {MOD_ALT, "alt"},
+    {MOD_META, "meta"},
+    {MOD_NUM, "num"},
 })
 MM_DEFINE_FLAGS_SERIALIZATION_FUNCTIONS(PlatformModifiers)
 MM_DEFINE_JSON_LEXICAL_SERIALIZATION_FUNCTIONS(PlatformModifiers)
@@ -119,37 +119,35 @@ MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(PaintEvent, (
 ))
 
 template<class Callable>
-inline void DispatchByEventType(PlatformEvent::Type type, Callable &&callable) {
-    using PlatformEventType = PlatformEvent::Type; // TODO(captainurist): workaround for gcc-12 ice, drop once we have gcc-13.
-
+inline void DispatchByEventType(PlatformEventType type, Callable &&callable) {
     switch (type) {
-    case PlatformEventType::KeyPress:
-    case PlatformEventType::KeyRelease:
+    case EVENT_KEY_PRESS:
+    case EVENT_KEY_RELEASE:
         callable(static_cast<PlatformKeyEvent *>(nullptr));
         break;
-    case PlatformEventType::GamepadConnected:
-    case PlatformEventType::GamepadDisconnected:
+    case EVENT_GAMEPAD_CONNECTED:
+    case EVENT_GAMEPAD_DISCONNECTED:
         callable(static_cast<PlatformGamepadDeviceEvent *>(nullptr));
         break;
-    case PlatformEventType::MouseButtonPress:
-    case PlatformEventType::MouseButtonRelease:
-    case PlatformEventType::MouseMove:
+    case EVENT_MOUSE_BUTTON_PRESS:
+    case EVENT_MOUSE_BUTTON_RELEASE:
+    case EVENT_MOUSE_MOVE:
         callable(static_cast<PlatformMouseEvent *>(nullptr));
         break;
-    case PlatformEventType::MouseWheel:
+    case EVENT_MOUSE_WHEEL:
         callable(static_cast<PlatformWheelEvent *>(nullptr));
         break;
-    case PlatformEventType::WindowMove:
+    case EVENT_WINDOW_MOVE:
         callable(static_cast<PlatformMoveEvent *>(nullptr));
         break;
-    case PlatformEventType::WindowResize:
+    case EVENT_WINDOW_RESIZE:
         callable(static_cast<PlatformResizeEvent *>(nullptr));
         break;
-    case PlatformEventType::WindowActivate:
-    case PlatformEventType::WindowDeactivate:
-    case PlatformEventType::WindowCloseRequest:
+    case EVENT_WINDOW_ACTIVATE:
+    case EVENT_WINDOW_DEACTIVATE:
+    case EVENT_WINDOW_CLOSE_REQUEST:
         callable(static_cast<PlatformWindowEvent *>(nullptr));
-    case PaintEvent::Paint:
+    case EVENT_PAINT:
         callable(static_cast<PaintEvent *>(nullptr));
         break;
     default:

@@ -8,7 +8,7 @@
 #include "Library/Random/Random.h"
 #include "Library/Trace/PaintEvent.h"
 
-EngineTracePlugin::EngineTracePlugin(): PlatformEventFilter(PlatformEventFilter::ALL_EVENTS) {}
+EngineTracePlugin::EngineTracePlugin(): PlatformEventFilter(EVENTS_ALL) {}
 EngineTracePlugin::~EngineTracePlugin() = default;
 
 void EngineTracePlugin::start() {
@@ -25,7 +25,7 @@ EventTrace EngineTracePlugin::finish() {
 void EngineTracePlugin::swapBuffers() {
     if (_tracing) {
         std::unique_ptr<PaintEvent> e = std::make_unique<PaintEvent>();
-        e->type = PaintEvent::Paint;
+        e->type = EVENT_PAINT;
         e->tickCount = application()->platform()->tickCount();
         e->randomState = grng->Random(1024);
         _trace.events.push_back(std::move(e));

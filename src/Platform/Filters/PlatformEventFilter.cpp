@@ -4,42 +4,42 @@
 
 #include "Utility/Segment.h"
 
-PlatformEventFilter::PlatformEventFilter(std::initializer_list<PlatformEvent::Type> eventTypes) : _eventTypes(eventTypes) {}
+PlatformEventFilter::PlatformEventFilter(std::initializer_list<PlatformEventType> eventTypes) : _eventTypes(eventTypes) {}
 
-PlatformEventFilter::PlatformEventFilter(EventWildcard eventTypes) {
-    assert(eventTypes == ALL_EVENTS);
+PlatformEventFilter::PlatformEventFilter(PlatformEventWildcard eventTypes) {
+    assert(eventTypes == EVENTS_ALL);
 
-    for (PlatformEvent::Type type : Segment(PlatformEvent::FirstEventType, PlatformEvent::LastEventType))
+    for (PlatformEventType type : Segment(EVENT_FIRST, EVENT_LAST))
         _eventTypes.push_back(type);
 }
 
 bool PlatformEventFilter::event(const PlatformEvent *event) {
     switch (event->type) {
-    case PlatformEvent::GamepadConnected:
-    case PlatformEvent::GamepadDisconnected:
+    case EVENT_GAMEPAD_CONNECTED:
+    case EVENT_GAMEPAD_DISCONNECTED:
         return gamepadDeviceEvent(static_cast<const PlatformGamepadDeviceEvent *>(event));
-    case PlatformEvent::KeyPress:
+    case EVENT_KEY_PRESS:
         return keyPressEvent(static_cast<const PlatformKeyEvent *>(event));
-    case PlatformEvent::KeyRelease:
+    case EVENT_KEY_RELEASE:
         return keyReleaseEvent(static_cast<const PlatformKeyEvent *>(event));
-    case PlatformEvent::MouseMove:
+    case EVENT_MOUSE_MOVE:
         return mouseMoveEvent(static_cast<const PlatformMouseEvent *>(event));
-    case PlatformEvent::MouseButtonPress:
+    case EVENT_MOUSE_BUTTON_PRESS:
         return mousePressEvent(static_cast<const PlatformMouseEvent *>(event));
-    case PlatformEvent::MouseButtonRelease:
+    case EVENT_MOUSE_BUTTON_RELEASE:
         return mouseReleaseEvent(static_cast<const PlatformMouseEvent *>(event));
-    case PlatformEvent::MouseWheel:
+    case EVENT_MOUSE_WHEEL:
         return wheelEvent(static_cast<const PlatformWheelEvent *>(event));
-    case PlatformEvent::WindowMove:
+    case EVENT_WINDOW_MOVE:
         return moveEvent(static_cast<const PlatformMoveEvent *>(event));
-    case PlatformEvent::WindowResize:
+    case EVENT_WINDOW_RESIZE:
         return resizeEvent(static_cast<const PlatformResizeEvent *>(event));
-    case PlatformEvent::WindowActivate:
-    case PlatformEvent::WindowDeactivate:
+    case EVENT_WINDOW_ACTIVATE:
+    case EVENT_WINDOW_DEACTIVATE:
         return activationEvent(static_cast<const PlatformWindowEvent *>(event));
-    case PlatformEvent::WindowCloseRequest:
+    case EVENT_WINDOW_CLOSE_REQUEST:
         return closeEvent(static_cast<const PlatformWindowEvent *>(event));
-    case PlatformEvent::NativeEvent:
+    case EVENT_NATIVE:
         return nativeEvent(static_cast<const PlatformNativeEvent *>(event));
     default:
         return false;

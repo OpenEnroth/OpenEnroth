@@ -22,7 +22,7 @@ void SdlPlatformSharedState::logSdlError(const char *sdlFunctionName) {
     // that was passed in constructor.
     char buffer[1024];
     snprintf(buffer, sizeof(buffer), "SDL error in %s: %s.", sdlFunctionName, SDL_GetError());
-    _logger->log(PlatformLog, LogError, buffer);
+    _logger->log(PLATFORM_LOG, LOG_ERROR, buffer);
 }
 
 void SdlPlatformSharedState::registerWindow(SdlWindow *window) {

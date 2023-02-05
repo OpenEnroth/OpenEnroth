@@ -32,8 +32,8 @@ std::vector<Recti> ProxyPlatform::displayGeometries() const {
     return nonNullBase()->displayGeometries();
 }
 
-void ProxyPlatform::showMessageBox(const std::string &message, const std::string& title) const {
-    nonNullBase()->showMessageBox(message, title);
+void ProxyPlatform::showMessageBox(const std::string& title, const std::string &message) const {
+    nonNullBase()->showMessageBox(title, message);
 }
 
 int64_t ProxyPlatform::tickCount() const {
@@ -44,6 +44,6 @@ std::string ProxyPlatform::winQueryRegistry(const std::wstring &path) const {
     return nonNullBase()->winQueryRegistry(path);
 }
 
-std::string ProxyPlatform::storagePath(const PLATFORM_STORAGE type) const {
+std::string ProxyPlatform::storagePath(const PlatformStorage type) const {
     return nonNullBase()->storagePath(type);
 }

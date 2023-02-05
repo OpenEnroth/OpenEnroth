@@ -104,7 +104,7 @@ std::unique_ptr<Platform> Platform::createStandardPlatform(PlatformLogger *logge
 }
 
 std::unique_ptr<PlatformLogger> PlatformLogger::createStandardLogger(PlatformLoggerOptions options) {
-    if (options & WinEnsureConsoleOption) {
+    if (options & WIN_ENSURE_CONSOLE_OPTION) {
         if (AllocConsole()) {
             freopen("conin$", "r", stdin);
             freopen("conout$", "w", stdout);

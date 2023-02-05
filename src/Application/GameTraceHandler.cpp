@@ -7,7 +7,7 @@
 
 #include "Library/Logger/Logger.h"
 
-GameTraceHandler::GameTraceHandler(EngineTracer *tracer) : PlatformEventFilter({PlatformEvent::KeyPress, PlatformEvent::KeyRelease}), _tracer(tracer) {
+GameTraceHandler::GameTraceHandler(EngineTracer *tracer) : PlatformEventFilter({EVENT_KEY_PRESS, EVENT_KEY_RELEASE}), _tracer(tracer) {
     assert(tracer);
 }
 
@@ -54,7 +54,7 @@ bool GameTraceHandler::isTriggerKey(const PlatformKeyEvent *event) const {
 
 bool GameTraceHandler::isTriggerKeySequence(const PlatformKeyEvent *event) const {
     // TODO(captainurist) : make configurable
-    PlatformModifiers mods = PlatformModifier::Ctrl | PlatformModifier::Shift;
+    PlatformModifiers mods = MOD_CTRL | MOD_SHIFT;
 
     return event->key == PlatformKey::R && (event->mods & mods) == mods;
 }

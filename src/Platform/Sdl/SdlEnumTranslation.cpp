@@ -195,35 +195,35 @@ std::pair<PlatformKey, PlatformKeyType> translateSdlGamepadAxis(SDL_GameControll
 PlatformModifiers translateSdlMods(uint16_t mods) {
     PlatformModifiers result;
     if (static_cast<bool>(mods & KMOD_SHIFT) ^ static_cast<bool>(mods & KMOD_CAPS))
-        result |= PlatformModifier::Shift;
+        result |= MOD_SHIFT;
     if (mods & KMOD_CTRL)
-        result |= PlatformModifier::Ctrl;
+        result |= MOD_CTRL;
     if (mods & KMOD_ALT)
-        result |= PlatformModifier::Alt;
+        result |= MOD_ALT;
     if (mods & KMOD_GUI)
-        result |= PlatformModifier::Meta;
+        result |= MOD_META;
     if (mods & KMOD_NUM)
-        result |= PlatformModifier::NumPad;
+        result |= MOD_NUM;
     return result;
 }
 
 PlatformMouseButton translateSdlMouseButton(uint8_t mouseButton) {
     switch (mouseButton) {
-    case SDL_BUTTON_LEFT:   return PlatformMouseButton::Left;
-    case SDL_BUTTON_MIDDLE: return PlatformMouseButton::Middle;
-    case SDL_BUTTON_RIGHT:  return PlatformMouseButton::Right;
-    default:                return PlatformMouseButton::None;
+    case SDL_BUTTON_LEFT:   return BUTTON_LEFT;
+    case SDL_BUTTON_MIDDLE: return BUTTON_MIDDLE;
+    case SDL_BUTTON_RIGHT:  return BUTTON_RIGHT;
+    default:                return BUTTON_NONE;
     }
 }
 
 PlatformMouseButtons translateSdlMouseButtons(uint32_t mouseButtons) {
     PlatformMouseButtons result;
     if (mouseButtons & SDL_BUTTON_LMASK)
-        result |= PlatformMouseButton::Left;
+        result |= BUTTON_LEFT;
     if (mouseButtons & SDL_BUTTON_MMASK)
-        result |= PlatformMouseButton::Middle;
+        result |= BUTTON_MIDDLE;
     if (mouseButtons & SDL_BUTTON_RMASK)
-        result |= PlatformMouseButton::Right;
+        result |= BUTTON_RIGHT;
     return result;
 }
 
@@ -257,12 +257,12 @@ SDL_GLprofile translatePlatformOpenGLProfile(PlatformOpenGLProfile profile) {
 
 SDL_LogPriority translatePlatformLogLevel(PlatformLogLevel logLevel) {
     switch (logLevel) {
-    case LogVerbose:    return SDL_LOG_PRIORITY_VERBOSE;
-    case LogDebug:      return SDL_LOG_PRIORITY_DEBUG;
-    case LogInfo:       return SDL_LOG_PRIORITY_INFO;
-    case LogWarning:    return SDL_LOG_PRIORITY_WARN;
-    case LogError:      return SDL_LOG_PRIORITY_ERROR;
-    case LogCritical:   return SDL_LOG_PRIORITY_CRITICAL;
+    case LOG_VERBOSE:   return SDL_LOG_PRIORITY_VERBOSE;
+    case LOG_DEBUG:     return SDL_LOG_PRIORITY_DEBUG;
+    case LOG_INFO:      return SDL_LOG_PRIORITY_INFO;
+    case LOG_WARNING:   return SDL_LOG_PRIORITY_WARN;
+    case LOG_ERROR:     return SDL_LOG_PRIORITY_ERROR;
+    case LOG_CRITICAL:  return SDL_LOG_PRIORITY_CRITICAL;
     default:
         assert(false);
         return SDL_LOG_PRIORITY_VERBOSE;
@@ -271,14 +271,14 @@ SDL_LogPriority translatePlatformLogLevel(PlatformLogLevel logLevel) {
 
 PlatformLogLevel translateSdlLogLevel(SDL_LogPriority logLevel) {
     switch (logLevel) {
-    case SDL_LOG_PRIORITY_VERBOSE:  return LogVerbose;
-    case SDL_LOG_PRIORITY_DEBUG:    return LogDebug;
-    case SDL_LOG_PRIORITY_INFO:     return LogInfo;
-    case SDL_LOG_PRIORITY_WARN:     return LogWarning;
-    case SDL_LOG_PRIORITY_ERROR:    return LogError;
-    case SDL_LOG_PRIORITY_CRITICAL: return LogCritical;
+    case SDL_LOG_PRIORITY_VERBOSE:  return LOG_VERBOSE;
+    case SDL_LOG_PRIORITY_DEBUG:    return LOG_DEBUG;
+    case SDL_LOG_PRIORITY_INFO:     return LOG_INFO;
+    case SDL_LOG_PRIORITY_WARN:     return LOG_WARNING;
+    case SDL_LOG_PRIORITY_ERROR:    return LOG_ERROR;
+    case SDL_LOG_PRIORITY_CRITICAL: return LOG_CRITICAL;
     default:
         assert(false);
-        return LogVerbose;
+        return LOG_VERBOSE;
     }
 }

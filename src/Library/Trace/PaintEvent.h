@@ -6,11 +6,10 @@
 
 #include "Utility/Workaround/ToUnderlying.h"
 
+inline constexpr PlatformEventType EVENT_PAINT = static_cast<PlatformEventType>(std::to_underlying(EVENT_LAST) + 1);
+
 class PaintEvent : public PlatformEvent {
  public:
-    // TODO(captainurist): Rename properly.
-    static constexpr PlatformEvent::Type Paint = static_cast<PlatformEvent::Type>(std::to_underlying(PlatformEvent::LastEventType) + 1);
-
     /** Tick count for the next frame. */
     int64_t tickCount = -1; //
 

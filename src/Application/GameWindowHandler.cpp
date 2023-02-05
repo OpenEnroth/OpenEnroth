@@ -38,7 +38,7 @@ static char PlatformKeyToChar(PlatformKey key, PlatformModifiers mods) {
     if (key >= PlatformKey::Digit0 && key <= PlatformKey::Digit9) {
         return std::to_underlying(key) - std::to_underlying(PlatformKey::Digit0) + '0';
     } else if (key >= PlatformKey::A && key <= PlatformKey::Z) {
-        if (mods & PlatformModifier::Shift) {
+        if (mods & MOD_SHIFT) {
             return std::to_underlying(key) - std::to_underlying(PlatformKey::A) + 'A';
         } else {
             return std::to_underlying(key) - std::to_underlying(PlatformKey::A) + 'a';
@@ -49,7 +49,7 @@ static char PlatformKeyToChar(PlatformKey key, PlatformModifiers mods) {
 }
 
 
-GameWindowHandler::GameWindowHandler() : PlatformEventFilter(PlatformEventFilter::ALL_EVENTS) {
+GameWindowHandler::GameWindowHandler() : PlatformEventFilter(EVENTS_ALL) {
     this->mouse = EngineIoc::ResolveMouse();
     this->keyboardController_ = std::make_unique<GameKeyboardController>();
 }
@@ -519,19 +519,19 @@ bool GameWindowHandler::keyReleaseEvent(const PlatformKeyEvent *event) {
 }
 
 bool GameWindowHandler::mouseMoveEvent(const PlatformMouseEvent *event) {
-    OnMouseMove(MapToRender(event->pos), event->buttons & PlatformMouseButton::Left, event->buttons & PlatformMouseButton::Right);
+    OnMouseMove(MapToRender(event->pos), event->buttons & BUTTON_LEFT, event->buttons & BUTTON_RIGHT);
     return false;
 }
 
 bool GameWindowHandler::mousePressEvent(const PlatformMouseEvent *event) {
     Pointi position = MapToRender(event->pos);
-    if (event->button == PlatformMouseButton::Left) {
+    if (event->button == BUTTON_LEFT) {
         if (event->isDoubleClick) {
             OnMouseLeftDoubleClick(position);
         } else {
             OnMouseLeftClick(position);
         }
-    } else if (event->button == PlatformMouseButton::Right) {
+    } else if (event->button == BUTTON_RIGHT) {
         if (event->isDoubleClick) {
             OnMouseRightDoubleClick(position);
         } else {
@@ -542,9 +542,9 @@ bool GameWindowHandler::mousePressEvent(const PlatformMouseEvent *event) {
 }
 
 bool GameWindowHandler::mouseReleaseEvent(const PlatformMouseEvent *event) {
-    if (event->button == PlatformMouseButton::Left) {
+    if (event->button == BUTTON_LEFT) {
         OnMouseLeftUp();
-    } else if (event->button == PlatformMouseButton::Right) {
+    } else if (event->button == BUTTON_RIGHT) {
         OnMouseRightUp();
     }
     return false;
@@ -573,9 +573,9 @@ bool GameWindowHandler::resizeEvent(const PlatformResizeEvent *event) {
 }
 
 bool GameWindowHandler::activationEvent(const PlatformWindowEvent *event) {
-    if (event->type == PlatformEvent::WindowActivate) {
+    if (event->type == EVENT_WINDOW_ACTIVATE) {
         OnActivated();
-    } else if (event->type == PlatformEvent::WindowDeactivate) {
+    } else if (event->type == EVENT_WINDOW_DEACTIVATE) {
         OnDeactivated();
     }
     return false;
@@ -589,7 +589,7 @@ bool GameWindowHandler::closeEvent(const PlatformWindowEvent *event) {
 }
 
 bool GameWindowHandler::gamepadDeviceEvent(const PlatformGamepadDeviceEvent *event) {
-    if (event->type == PlatformEvent::GamepadConnected) {
+    if (event->type == EVENT_GAMEPAD_CONNECTED) {
         gamepads_[event->id] = platform->createGamepad(event->id);
         if (gamepads_[event->id]) {
             PlatformGamepad *gamepad = gamepads_[event->id].get();
@@ -608,7 +608,7 @@ bool GameWindowHandler::gamepadDeviceEvent(const PlatformGamepadDeviceEvent *eve
         }
 
         logger->Warning("gamepad #%d initialization failed", event->id);
-    } else if (event->type == PlatformEvent::GamepadDisconnected) {
+    } else if (event->type == EVENT_GAMEPAD_DISCONNECTED) {
         for (auto it = gamepads_.begin(); it != gamepads_.end(); it++) {
             PlatformGamepad *gamepad = it->second.get();
 

@@ -24,13 +24,13 @@ class SdlPlatform: public Platform {
 
     virtual std::vector<Recti> displayGeometries() const override;
 
-    virtual void showMessageBox(const std::string &message, const std::string& title) const override;
+    virtual void showMessageBox(const std::string& title, const std::string &message) const override;
 
     virtual int64_t tickCount() const override;
 
     virtual std::string winQueryRegistry(const std::wstring &path) const override;
 
-    virtual std::string storagePath(const PLATFORM_STORAGE type) const override;
+    virtual std::string storagePath(const PlatformStorage type) const override;
 
  private:
     friend class SdlWindow;

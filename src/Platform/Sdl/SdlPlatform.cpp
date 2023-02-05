@@ -107,7 +107,7 @@ std::vector<Recti> SdlPlatform::displayGeometries() const {
     return result;
 }
 
-void SdlPlatform::showMessageBox(const std::string &message, const std::string& title) const {
+void SdlPlatform::showMessageBox(const std::string& title, const std::string &message) const {
     SDL_ShowSimpleMessageBox(0, title.c_str(), message.c_str(), nullptr);
 }
 
@@ -124,7 +124,7 @@ std::string SdlPlatform::winQueryRegistry(const std::wstring &) const {
     return {};
 }
 
-std::string SdlPlatform::storagePath(const PLATFORM_STORAGE type) const {
+std::string SdlPlatform::storagePath(const PlatformStorage type) const {
     std::string result{};
     const char *path = NULL;
 

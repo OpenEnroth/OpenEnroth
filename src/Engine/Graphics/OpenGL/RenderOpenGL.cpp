@@ -5307,28 +5307,28 @@ bool RenderOpenGL::InitShaders() {
     std::string message = "shader failed to compile!\nPlease consult the log and consider issuing a bug report!";
     terrainshader.build(name, "glterrain", OpenGLES);
     if (terrainshader.ID == 0) {
-        platform->showMessageBox(fmt::format("{} {}", name, message), title);
+        platform->showMessageBox(title, fmt::format("{} {}", name, message));
         return false;
     }
 
     name = "Outdoor buildings";
     outbuildshader.build(name, "gloutbuild", OpenGLES);
     if (outbuildshader.ID == 0) {
-        platform->showMessageBox(fmt::format("{} {}", name, message), title);
+        platform->showMessageBox(title, fmt::format("{} {}", name, message));
         return false;
     }
 
     name = "Indoor BSP";
     bspshader.build(name, "glbspshader", OpenGLES);
     if (bspshader.ID == 0) {
-        platform->showMessageBox(fmt::format("{} {}", name, message), title);
+        platform->showMessageBox(title, fmt::format("{} {}", name, message));
         return false;
     }
 
     name = "Text";
     textshader.build(name, "gltextshader", OpenGLES);
     if (textshader.ID == 0) {
-        platform->showMessageBox(fmt::format("{} {}", name, message), title);
+        platform->showMessageBox(title, fmt::format("{} {}", name, message));
         return false;
     }
     textVAO = 0;
@@ -5336,7 +5336,7 @@ bool RenderOpenGL::InitShaders() {
     name = "Lines";
     lineshader.build(name, "gllinesshader", OpenGLES);
     if (lineshader.ID == 0) {
-        platform->showMessageBox(fmt::format("{} {}", name, message), title);
+        platform->showMessageBox(title, fmt::format("{} {}", name, message));
         return false;
     }
     lineVAO = 0;
@@ -5344,7 +5344,7 @@ bool RenderOpenGL::InitShaders() {
     name = "2D";
     twodshader.build(name, "gltwodshader", OpenGLES);
     if (twodshader.ID == 0) {
-        platform->showMessageBox(fmt::format("{} {}", name, message), title);
+        platform->showMessageBox(title, fmt::format("{} {}", name, message));
         return false;
     }
     twodVAO = 0;
@@ -5352,7 +5352,7 @@ bool RenderOpenGL::InitShaders() {
     name = "Billboards";
     billbshader.build(name, "glbillbshader", OpenGLES);
     if (billbshader.ID == 0) {
-        platform->showMessageBox(fmt::format("{} {}", name, message), title);
+        platform->showMessageBox(title, fmt::format("{} {}", name, message));
         return false;
     }
     billbVAO = 0;
@@ -5361,7 +5361,7 @@ bool RenderOpenGL::InitShaders() {
     name = "Decals";
     decalshader.build(name, "gldecalshader", OpenGLES);
     if (decalshader.ID == 0) {
-        platform->showMessageBox(fmt::format("{} {}", name, message), title);
+        platform->showMessageBox(title, fmt::format("{} {}", name, message));
         return false;
     }
     decalVAO = 0;
@@ -5369,7 +5369,7 @@ bool RenderOpenGL::InitShaders() {
     name = "Forced perspective";
     forcepershader.build(name, "glforcepershader", OpenGLES);
     if (forcepershader.ID == 0) {
-        platform->showMessageBox(fmt::format("{} {}", name, message), title);
+        platform->showMessageBox(title, fmt::format("{} {}", name, message));
         return false;
     }
     forceperVAO = 0;

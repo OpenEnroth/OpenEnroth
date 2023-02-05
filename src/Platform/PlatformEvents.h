@@ -7,42 +7,16 @@
 
 #include "PlatformEnums.h"
 
-#ifdef KeyPress
-#   undef KeyPress
-#endif
-#ifdef KeyRelease
-#   undef KeyRelease
-#endif
+#undef KeyPress
+#undef KeyRelease
 
 class PlatformWindow;
 
 class PlatformEvent {
  public:
-    enum class Type {
-        Invalid = -1,
-        KeyPress = 0,
-        KeyRelease,
-        GamepadConnected,
-        GamepadDisconnected,
-        MouseButtonPress,
-        MouseButtonRelease,
-        MouseMove,
-        MouseWheel,
-        WindowMove,
-        WindowResize,
-        WindowActivate,
-        WindowDeactivate,
-        WindowCloseRequest,
-        NativeEvent,
-
-        FirstEventType = KeyPress,
-        LastEventType = NativeEvent
-    };
-    using enum Type;
-
     virtual ~PlatformEvent() = default;
 
-    Type type = Invalid;
+    PlatformEventType type = EVENT_INVALID;
 };
 
 class PlatformWindowEvent: public PlatformEvent {
@@ -68,7 +42,7 @@ class PlatformKeyEvent: public PlatformWindowEvent {
  */
 class PlatformMouseEvent: public PlatformWindowEvent {
  public:
-    PlatformMouseButton button; // Button that caused this event, or PlatformMouseButton::None for move events.
+    PlatformMouseButton button; // Button that caused this event, or BUTTON_NONE for move events.
     PlatformMouseButtons buttons; // Currently pressed mouse buttons.
     Pointi pos; // Window-relative cursor position.
     bool isDoubleClick = false;

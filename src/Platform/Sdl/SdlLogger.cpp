@@ -9,10 +9,10 @@
 
 // This one is not in `SdlEnumTranslation.h` because it's closely tied to the implementation below.
 static SDL_LogCategory translatePlatformLogCategory(PlatformLogCategory category) {
-    if (category == ApplicationLog) {
+    if (category == APPLICATION_LOG) {
         return SDL_LOG_CATEGORY_APPLICATION;
     } else {
-        assert(category == PlatformLog);
+        assert(category == PLATFORM_LOG);
 
         // `SDL_LOG_CATEGORY_CUSTOM` will query `SDL_default_priority` on a call to `SDL_LogGetPriority`.
         return SDL_LOG_CATEGORY_CUSTOM;
@@ -20,10 +20,10 @@ static SDL_LogCategory translatePlatformLogCategory(PlatformLogCategory category
 }
 
 void SdlLogger::setLogLevel(PlatformLogCategory category, PlatformLogLevel logLevel) {
-    if (category == ApplicationLog) {
+    if (category == APPLICATION_LOG) {
         SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, translatePlatformLogLevel(logLevel));
     } else {
-        assert(category == PlatformLog);
+        assert(category == PLATFORM_LOG);
         SDL_LogPriority applicationPriority = SDL_LogGetPriority(SDL_LOG_CATEGORY_APPLICATION);
         SDL_LogPriority assertPriority = SDL_LogGetPriority(SDL_LOG_CATEGORY_ASSERT);
 
