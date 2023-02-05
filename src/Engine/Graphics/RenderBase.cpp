@@ -476,9 +476,6 @@ void RenderBase::TransformBillboard(SoftwareBillboard *pSoftBillboard, RenderBil
         billboard->opacity = RenderBillboardD3D::Transparent;
 
     unsigned int specular = 0;
-    if (engine->IsSpecular_FogIsOn() && uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-        specular = sub_47C3D7_get_fog_specular(0, 0, pSoftBillboard->screen_space_z);
-    }
 
     float v14 = (float)((int)pSprite->uBufferWidth / 2 - pSprite->uAreaX);
     float v15 = (float)((int)pSprite->uBufferHeight - pSprite->uAreaY);

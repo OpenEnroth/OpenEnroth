@@ -284,7 +284,7 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
 
             FaceFlowTextureOffset(uFaceID);
 
-            lightmap_builder->ApplyLights_IndoorFace(uFaceID);
+            //lightmap_builder->ApplyLights_IndoorFace(uFaceID);
 
             LightLevel = Lights.uCurrentAmbientLightLevel & 31;
             // lightlevel is 0 to 31
@@ -295,7 +295,7 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
             pCamera3D->ViewTransfrom_OffsetUV(static_vertices_calc_out, uNumVerticesa, array_507D30, &Lights);
             pCamera3D->Project(array_507D30, uNumVerticesa, 0);
 
-            lightmap_builder->StationaryLightsCount = 0;
+            //lightmap_builder->StationaryLightsCount = 0;
             if (Lights.uNumLightsApplied > 0 || decal_builder->uNumSplatsThisFace > 0) {
                 FacePlaneHolder.face_plane.vNormal.x = pFace->pFacePlane.vNormal.x;
                 FacePlaneHolder.polygonType = pFace->uPolygonType;
@@ -304,8 +304,8 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
                 FacePlaneHolder.face_plane.dist = pFace->pFacePlane.dist;
             }
 
-            if (Lights.uNumLightsApplied > 0 && !pFace->Indoor_sky())  // for torchlight(для света факелов)
-                lightmap_builder->ApplyLights(&Lights, &FacePlaneHolder, uNumVerticesa, array_507D30, /*pVertices*/0, 0);
+            //if (Lights.uNumLightsApplied > 0 && !pFace->Indoor_sky())  // for torchlight(для света факелов)
+                //lightmap_builder->ApplyLights(&Lights, &FacePlaneHolder, uNumVerticesa, array_507D30, /*pVertices*/0, 0);
 
             Texture* face_texture = pFace->GetTexture();
             if (pFace->Fluid()) {

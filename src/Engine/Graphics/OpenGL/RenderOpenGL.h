@@ -18,7 +18,6 @@ class RenderOpenGL : public RenderBase {
     RenderOpenGL(
         std::shared_ptr<Application::GameConfig> config,
         DecalBuilder* decal_builder,
-        LightmapBuilder* lightmap_builder,
         SpellFxRenderer* spellfx,
         std::shared_ptr<ParticleEngine> particle_engine,
         Vis* vis,

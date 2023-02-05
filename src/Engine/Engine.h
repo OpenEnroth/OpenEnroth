@@ -84,7 +84,6 @@ struct Game_Bloodsplat {
 #pragma pack(pop)
 
 class Vis;
-class LightmapBuilder;
 class ParticleEngine;
 class CShow;
 class GammaController;
@@ -133,7 +132,6 @@ struct Engine {
     bool is_targeting = false;
     bool is_saturate_faces = false;
     bool is_forceredraw = false;
-    bool is_specular_FogIsOn = false;
     bool is_fog = false; // keeps track of whether fog enabled in d3d
 
     inline bool IsTargetingMode() const { return is_targeting; }
@@ -144,8 +142,6 @@ struct Engine {
     inline void SetSaturateFaces(bool is_saturate_faces) { this->is_saturate_faces = is_saturate_faces; }
     inline bool IsForceRedraw() const { return is_forceredraw; }
     inline void SetForceRedraw(bool is_forceredraw) { this->is_forceredraw = is_forceredraw; }
-    inline bool IsSpecular_FogIsOn() const { return is_specular_FogIsOn; }
-    inline void SetSpecular_FogIsOn(bool is_specular_FogIsOn) { this->is_specular_FogIsOn = is_specular_FogIsOn; }
     inline bool IsFog() const { return is_fog; }
     inline void SetFog(bool is_fog) { this->is_fog = is_fog; } // fog off rather than on??
 
@@ -186,7 +182,6 @@ struct Engine {
     // void ThreadWard *pThreadWardInstance;
     // ParticleEngine *pParticleEngine;
     // Mouse *pMouseInstance;
-    // LightmapBuilder *pLightmapBuilder;
     // Vis *pVisInstance;
     // struct SpellFxRenderer *spellfx;
     // Camera3D *pCamera3D;
@@ -203,7 +198,6 @@ struct Engine {
     BloodsplatContainer *bloodsplat_container = nullptr;
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renedrer = nullptr;
-    LightmapBuilder *lightmap_builder = nullptr;
     std::shared_ptr<Mouse> mouse = nullptr;
     std::shared_ptr<Nuklear> nuklear = nullptr;
     std::shared_ptr<ParticleEngine> particle_engine = nullptr;

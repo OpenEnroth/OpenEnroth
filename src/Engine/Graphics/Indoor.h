@@ -515,7 +515,6 @@ struct IndoorLocation {
         this->log = EngineIoc::ResolveLogger();
         this->decal_builder = EngineIoc::ResolveDecalBuilder();
         this->spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
-        this->lightmap_builder = EngineIoc::ResolveLightmapBuilder();
         this->particle_engine = EngineIoc::ResolveParticleEngine();
     }
 
@@ -578,7 +577,6 @@ struct IndoorLocation {
     Logger *log = nullptr;
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renderer = nullptr;
-    LightmapBuilder *lightmap_builder = nullptr;
     std::shared_ptr<ParticleEngine> particle_engine = nullptr;
 };
 #pragma pack(pop)
