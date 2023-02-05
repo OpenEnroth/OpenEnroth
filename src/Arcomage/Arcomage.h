@@ -108,9 +108,21 @@ struct ArcomagePlayer {
     Pointi card_shift[10] {};
 };
 
-// TODO(pskelton): enum input type
+enum class ArcomageMessageType {
+    ARCO_MSG_NULL,
+    ARCO_MSG_KEYDOWN,
+    ARCO_MSG_FORCEQUIT,
+    ARCO_MSG_LM_UP,
+    ARCO_MSG_RM_UP,
+    ARCO_MSG_LM_DOWN,
+    ARCO_MSG_RM_DOWN,
+    ARCO_MSG_SWITCH_FULLSCREEN,
+    ARCO_MSG_ESCAPE
+};
+using enum ArcomageMessageType;
+
 struct ArcomageGame_InputMSG {
-    int am_input_type;  // 0 - no message 1 - other key down, 3 - l mouse up, 4 - r mouse up, 7 - lmouse, 8 - r mouse, 9 - fullscreen, 10 - esc
+    ArcomageMessageType am_input_type;
     int field_4;
     int am_input_key;  // waht other key
 };

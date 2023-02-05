@@ -196,19 +196,19 @@ void ArcomageGame::OnMouseClick(char right_left, bool bDown) {
         pArcomageGame->mouse_left = bDown;
 
     // only accept one message input
-    if (pArcomageGame->stru1.am_input_type == 0) {
+    if (pArcomageGame->stru1.am_input_type == ARCO_MSG_NULL) {
         if (bDown) {
             pArcomageGame->check_exit = 0;
             if (!right_left) {
-                pArcomageGame->stru1.am_input_type = 7;
+                pArcomageGame->stru1.am_input_type = ARCO_MSG_LM_DOWN;
             } else {
-                pArcomageGame->stru1.am_input_type = 8;
+                pArcomageGame->stru1.am_input_type = ARCO_MSG_RM_DOWN;
             }
         } else {
             if (!right_left) {
-                pArcomageGame->stru1.am_input_type = 3;
+                pArcomageGame->stru1.am_input_type = ARCO_MSG_LM_UP;
             } else {
-                pArcomageGame->stru1.am_input_type = 4;
+                pArcomageGame->stru1.am_input_type = ARCO_MSG_RM_UP;
             }
         }
     }
@@ -221,18 +221,18 @@ void ArcomageGame::OnMouseMove(int x, int y) {
 
 void ArcomageGame::onKeyPress(PlatformKey key) {
     // only accept one message input
-    if (pArcomageGame->stru1.am_input_type == 0) {
-        pArcomageGame->stru1.am_input_type = 1;
+    if (pArcomageGame->stru1.am_input_type == ARCO_MSG_NULL) {
+        pArcomageGame->stru1.am_input_type = ARCO_MSG_KEYDOWN;
 
         set_stru1_field_8_InArcomage(0);
         if (keyboardActionMapping->IsKeyMatchAction(InputAction::Escape, key)) {
-            pArcomageGame->stru1.am_input_type = 10;
+            pArcomageGame->stru1.am_input_type = ARCO_MSG_ESCAPE;
         } else if (pArcomageGame->check_exit) {
             pArcomageGame->check_exit = 0;
         }
 
         if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleFullscreen, key) && !pMovie_Track) {
-            pArcomageGame->stru1.am_input_type = 9;
+            pArcomageGame->stru1.am_input_type = ARCO_MSG_SWITCH_FULLSCREEN;
         }
     }
 }
@@ -549,12 +549,12 @@ void ArcomageGame::PlaySound(unsigned int event_id) {
 
 bool ArcomageGame::MsgLoop(int a1, ArcomageGame_InputMSG *a2) {
     // blank message input
-    pArcomageGame->stru1.am_input_type = 0;
+    pArcomageGame->stru1.am_input_type = ARCO_MSG_NULL;
 
     eventLoop->processMessages(eventHandler, -1);
 
     *a2 = pArcomageGame->stru1;
-    return pArcomageGame->stru1.am_input_type != 0;
+    return pArcomageGame->stru1.am_input_type != ARCO_MSG_NULL;
 }
 
 bool ArcomageGame::LoadSprites() {
@@ -925,12 +925,12 @@ void ArcomageGame::Loop() {
             pArcomageGame->_frameLimiter.tick(pArcomageGame->_targetFPS);
 
             ArcomageGame::MsgLoop(20, &v10);
-            if (v10.am_input_type == 1) {
+            if (v10.am_input_type == ARCO_MSG_KEYDOWN) {
                 if (v10.field_4) break;
                 continue;
             }
-            if ((v10.am_input_type == 7) || (v10.am_input_type == 8)) break;
-            if (v10.am_input_type == 10) break;
+            if ((v10.am_input_type == ARCO_MSG_LM_DOWN) || (v10.am_input_type == ARCO_MSG_RM_DOWN)) break;
+            if (v10.am_input_type == ARCO_MSG_ESCAPE) break;
 
             Pointi explos_coords;
 
@@ -1180,10 +1180,6 @@ void IncreaseResourcesInTurn(int player_num) {
 }
 
 void TurnChange() {
-    std::string player_name;    // [sp+4h] [bp-64h]@4
-    ArcomageGame_InputMSG v10;  // [sp+54h] [bp-14h]@7
-    Pointi v11;               // [sp+60h] [bp-8h]@4
-
     if (!pArcomageGame->force_am_exit) {
         if (am_Players[0].IsHisTurn != 1 || am_Players[1].IsHisTurn != 1) {
             ++current_player_num;
@@ -1191,36 +1187,7 @@ void TurnChange() {
             if (current_player_num >= 2) current_player_num = 0;
         } else {
             // this is never called - pause when switching turns
-
-            // nullsub_1();
-            //   v11.x = 0;
-            //   v11.y = 0;
-
-            v11.y = 200;
-            v11.x = 320;  // - 12 * v0 / 2;
-            am_DrawText("The Next Player is: ", &v11);  // "След"
-            hide_card_anim_start = 1;
-            ++current_player_num;
-            if (current_player_num >= 2) current_player_num = 0;
-            // v4 = 0;
-            v11.y = 260;
-            v11.x = 320;  // - 12 * v4 / 2;
-            am_DrawText(am_Players[current_player_num].pPlayerName, &v11);
-
-            while (1) {
-                while (!ArcomageGame::MsgLoop(20, &v10)) {}
-                if (v10.am_input_type == 1) {
-                    if (v10.field_4) break;
-                    // nullsub_1();
-                    continue;
-                }
-                if ((v10.am_input_type > 4) && (v10.am_input_type <= 8)) break;
-                if (v10.am_input_type == 10) {
-                    pArcomageGame->force_am_exit = 1;
-                    // byte_4FAA74 = 1;
-                    break;
-                }
-            }
+            assert(false);
         }
     }
 }
@@ -1266,7 +1233,7 @@ char PlayerTurn(int player_num) {
         if (pArcomageGame->force_am_exit) break_loop = true;
         ArcomageGame::MsgLoop(0, &get_message);
         switch (get_message.am_input_type) {
-            case 2:  // unkown ??
+            case ARCO_MSG_FORCEQUIT:  // unkown ??
                 if (get_message.field_4 == 129 && get_message.am_input_key == 1) {
                     pAudioPlayer->PauseSounds(-1);
                     num_actions_left = 0;
@@ -1274,9 +1241,9 @@ char PlayerTurn(int player_num) {
                     pArcomageGame->force_am_exit = 1;
                 }
                 break;
-            case 9:  // toggle fullscreen
+            case ARCO_MSG_SWITCH_FULLSCREEN:  // toggle fullscreen
                 break;
-            case 10:  // hit escape key
+            case ARCO_MSG_ESCAPE:  // hit escape key
                 if (pArcomageGame->check_exit == 1) {
                     pAudioPlayer->PauseSounds(-1);
                     pArcomageGame->GameOver = 1;
@@ -1333,7 +1300,7 @@ char PlayerTurn(int player_num) {
             // can play cards
             if (need_to_discard_card) {
                 // any mouse - try and discard
-                if ((get_message.am_input_type == 7 || get_message.am_input_type == 8) && DiscardCard(player_num, current_card_slot_index)) {
+                if ((get_message.am_input_type == ARCO_MSG_LM_DOWN || get_message.am_input_type == ARCO_MSG_RM_DOWN) && DiscardCard(player_num, current_card_slot_index)) {
                     if (hide_card_anim_start) hide_card_anim_runnning = 1;
                     if (num_cards_to_discard > 0) {
                         --num_cards_to_discard;
@@ -1342,14 +1309,14 @@ char PlayerTurn(int player_num) {
                     playdiscard_anim_start = 1;
                 }
             } else {
-                if (get_message.am_input_type == 7) {
+                if (get_message.am_input_type == ARCO_MSG_LM_DOWN) {
                     // left mouse - try and play card
                     if (PlayCard(player_num, current_card_slot_index)) {
                         playdiscard_anim_start = 1;
                         if (hide_card_anim_start) hide_card_anim_runnning = 1;
                     }
                 }
-                if (get_message.am_input_type == 8) {
+                if (get_message.am_input_type == ARCO_MSG_RM_DOWN) {
                     // right mouse - try and discard card
                     if (DiscardCard(player_num, current_card_slot_index)) {
                         playdiscard_anim_start = 1;
@@ -1372,7 +1339,7 @@ char PlayerTurn(int player_num) {
 }
 
 void DrawGameUI(int animation_stage) {
-    render->BeginScene();
+    render->BeginScene2D();
     // draw background
     render->DrawTextureNew(0, 0, pArcomageGame->pGameBackground);
 
@@ -2933,7 +2900,7 @@ void ArcomageGame::PrepareArcomage() {
     pArcomageGame->pPlayer2Name = Player2Name;
 
     // load in background pic and render
-    render->BeginScene();
+    render->BeginScene2D();
     pArcomageGame->pGameBackground = assets->GetImage_PCXFromIconsLOD("layout.pcx");
     render->DrawTextureNew(0, 0, pArcomageGame->pGameBackground);
     render->Present();
