@@ -1,4 +1,6 @@
-set(PROJECT_VERSION "unknown")
+if(NOT PROJECT_VERSION)
+    set(PROJECT_VERSION "unknown")
+endif()
 
 find_package(Git)
 
