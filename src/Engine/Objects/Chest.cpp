@@ -264,7 +264,7 @@ bool Chest::CanPlaceItemAt(int test_cell_position, ITEM_TYPE item_id, int uChest
     int chest_cell_heght = pChestHeightsByType[vChests[uChestID].uChestBitmapID];
     int chest_cell_width = pChestWidthsByType[vChests[uChestID].uChestBitmapID];
 
-    auto img = assets->GetImage_ColorKey(pItemTable->pItems[item_id].pIconName, colorTable.TealMask.C16());
+    auto img = assets->GetImage_ColorKey(pItemTable->pItems[item_id].pIconName);
     unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
 
@@ -337,7 +337,7 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
         }
     }
 
-    Image *texture = assets->GetImage_ColorKey(put_item->GetIconName(), colorTable.TealMask.C16());
+    Image *texture = assets->GetImage_ColorKey(put_item->GetIconName());
     unsigned int slot_width = GetSizeInInventorySlots(texture->GetWidth());
     unsigned int slot_height = GetSizeInInventorySlots(texture->GetHeight());
 
@@ -501,7 +501,7 @@ void RemoveItemAtChestIndex(int index) {
     int chestindex = chest->pInventoryIndices[index];
     ItemGen *item_in_slot = &chest->igChestItems[chestindex - 1];
 
-    auto img = assets->GetImage_ColorKey(item_in_slot->GetIconName(), colorTable.TealMask.C16());
+    auto img = assets->GetImage_ColorKey(item_in_slot->GetIconName());
     unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
 

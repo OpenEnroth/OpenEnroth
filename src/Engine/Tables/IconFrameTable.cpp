@@ -10,7 +10,7 @@
 
 Texture *Icon::GetTexture() {
     if (!this->img) {
-        this->img = assets->GetImage_ColorKey(this->pTextureName, colorTable.TealMask.C16());
+        this->img = assets->GetImage_ColorKey(this->pTextureName);
     }
 
     return this->img;

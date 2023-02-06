@@ -1233,7 +1233,7 @@ char PlayerTurn(int player_num) {
         if (pArcomageGame->force_am_exit) break_loop = true;
         ArcomageGame::MsgLoop(0, &get_message);
         switch (get_message.am_input_type) {
-            case ARCO_MSG_FORCEQUIT:  // unkown ??
+            case ARCO_MSG_FORCEQUIT:
                 if (get_message.field_4 == 129 && get_message.am_input_key == 1) {
                     pAudioPlayer->PauseSounds(-1);
                     num_actions_left = 0;
@@ -1241,9 +1241,9 @@ char PlayerTurn(int player_num) {
                     pArcomageGame->force_am_exit = 1;
                 }
                 break;
-            case ARCO_MSG_SWITCH_FULLSCREEN:  // toggle fullscreen
+            case ARCO_MSG_SWITCH_FULLSCREEN:
                 break;
-            case ARCO_MSG_ESCAPE:  // hit escape key
+            case ARCO_MSG_ESCAPE:
                 if (pArcomageGame->check_exit == 1) {
                     pAudioPlayer->PauseSounds(-1);
                     pArcomageGame->GameOver = 1;

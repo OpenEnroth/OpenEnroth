@@ -595,10 +595,10 @@ GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(
     CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, InputAction::CharCycle);
     FillAwardsData();
 
-    ui_character_skills_background = assets->GetImage_ColorKey("fr_skill", colorTable.TealMask.C16());
-    ui_character_awards_background = assets->GetImage_ColorKey("fr_award", colorTable.TealMask.C16());
-    ui_character_stats_background = assets->GetImage_ColorKey("fr_stats", colorTable.TealMask.C16());
-    ui_character_inventory_background_strip = assets->GetImage_ColorKey("fr_strip", colorTable.TealMask.C16());
+    ui_character_skills_background = assets->GetImage_ColorKey("fr_skill");
+    ui_character_awards_background = assets->GetImage_ColorKey("fr_award");
+    ui_character_stats_background = assets->GetImage_ColorKey("fr_stats");
+    ui_character_inventory_background_strip = assets->GetImage_ColorKey("fr_strip");
 }
 
 void GUIWindow_CharacterRecord::Update() {
@@ -613,7 +613,7 @@ void GUIWindow_CharacterRecord::Update() {
             render->DrawTextureNew(
                 pCharacterScreen_StatsBtn->uX / 640.0f,
                 pCharacterScreen_StatsBtn->uY / 480.0f,
-                assets->GetImage_ColorKey("ib-cd1-d", colorTable.TealMask.C16()));
+                assets->GetImage_ColorKey("ib-cd1-d"));
             break;
         }
         case WINDOW_CharacterWindow_Skills: {
@@ -626,7 +626,7 @@ void GUIWindow_CharacterRecord::Update() {
             render->DrawTextureNew(
                 pCharacterScreen_SkillsBtn->uX / 640.0f,
                 pCharacterScreen_SkillsBtn->uY / 480.0f,
-                assets->GetImage_ColorKey("ib-cd2-d", colorTable.TealMask.C16()));
+                assets->GetImage_ColorKey("ib-cd2-d"));
             break;
         }
         case WINDOW_CharacterWindow_Awards: {
@@ -636,7 +636,7 @@ void GUIWindow_CharacterRecord::Update() {
             render->DrawTextureNew(
                 pCharacterScreen_AwardsBtn->uX / 640.0f,
                 pCharacterScreen_AwardsBtn->uY / 480.0f,
-                assets->GetImage_ColorKey("ib-cd4-d", colorTable.TealMask.C16()));
+                assets->GetImage_ColorKey("ib-cd4-d"));
             break;
         }
         case WINDOW_CharacterWindow_Inventory: {
@@ -646,7 +646,7 @@ void GUIWindow_CharacterRecord::Update() {
             render->DrawTextureNew(
                 pCharacterScreen_InventoryBtn->uX / 640.0f,
                 pCharacterScreen_InventoryBtn->uY / 480.0f,
-                assets->GetImage_ColorKey("ib-cd3-d", colorTable.TealMask.C16()));
+                assets->GetImage_ColorKey("ib-cd3-d"));
             break;
         }
         default:
@@ -1276,7 +1276,7 @@ void CharacterUI_InventoryTab_Draw(Player *player, bool Cover_Strip) {
             // strip doesnt load if you havent already look at
                         // inventorys
             ui_character_inventory_background_strip =
-                assets->GetImage_ColorKey("fr_strip", colorTable.TealMask.C16());
+                assets->GetImage_ColorKey("fr_strip");
         }
         render->DrawTextureNew(8 / 640.0f, 305 / 480.0f,
             ui_character_inventory_background_strip);
@@ -1309,13 +1309,13 @@ static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, Texture *i
     if (item->ItemEnchanted()) { // enchant animation
         Image *enchantment_texture = nullptr;
         if (item->AuraEffectRed())
-            enchantment_texture = assets->GetImage_ColorKey("sptext01", colorTable.TealMask.C16());
+            enchantment_texture = assets->GetImage_ColorKey("sptext01");
         else if (item->AuraEffectBlue())
-            enchantment_texture = assets->GetImage_ColorKey("sp28a", colorTable.TealMask.C16());
+            enchantment_texture = assets->GetImage_ColorKey("sp28a");
         else if (item->AuraEffectGreen())
-            enchantment_texture = assets->GetImage_ColorKey("sp30a", colorTable.TealMask.C16());
+            enchantment_texture = assets->GetImage_ColorKey("sp30a");
         else if (item->AuraEffectPurple())
-            enchantment_texture = assets->GetImage_ColorKey("sp91a", colorTable.TealMask.C16());
+            enchantment_texture = assets->GetImage_ColorKey("sp91a");
         else
             __debugbreak();
 
@@ -1386,7 +1386,7 @@ void CharacterUI_LoadPaperdollTextures() {
     // == 2 )
     if (!ui_character_inventory_paperdoll_background)
         ui_character_inventory_paperdoll_background =
-            assets->GetImage_ColorKey("BACKDOLL", colorTable.TealMask.C16());
+            assets->GetImage_ColorKey("BACKDOLL");
 
     ui_character_inventory_paperdoll_rings_background =
         assets->GetImage_Alpha("BACKHAND");

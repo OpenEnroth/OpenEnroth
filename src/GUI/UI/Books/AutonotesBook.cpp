@@ -32,7 +32,7 @@ GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() : GUIWindow_Book() {
 
     // ----------------------------------------------
     // 00411BFC GUIWindow::InitializeBookView -- part
-    ui_book_autonotes_background = assets->GetImage_ColorKey("sbautnot", colorTable.TealMask.C16());
+    ui_book_autonotes_background = assets->GetImage_ColorKey("sbautnot");
     ui_book_quest_div_bar = assets->GetImage_Alpha("divbar");
 
     ui_book_button1_on = assets->GetImage_Alpha("tab-an-6b");

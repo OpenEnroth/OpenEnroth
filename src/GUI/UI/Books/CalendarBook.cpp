@@ -37,13 +37,12 @@ GUIWindow_CalendarBook::GUIWindow_CalendarBook() : GUIWindow_Book() {
 
     // ----------------------------------------------
     // 00411BFC GUIWindow::InitializeBookView -- part
-    ui_book_calendar_background =
-        assets->GetImage_ColorKey("sbdate-time", colorTable.TealMask.C16());
-    ui_book_calendar_moon_new = assets->GetImage_ColorKey("moon_new", colorTable.TealMask.C16());
-    ui_book_calendar_moon_4 = assets->GetImage_ColorKey("moon_4", colorTable.TealMask.C16());
-    ui_book_calendar_moon_2 = assets->GetImage_ColorKey("moon_2", colorTable.TealMask.C16());
-    ui_book_calendar_moon_2_2 = assets->GetImage_ColorKey("moon_2", colorTable.TealMask.C16());
-    ui_book_calendar_moon_full = assets->GetImage_ColorKey("moon_ful", colorTable.TealMask.C16());
+    ui_book_calendar_background = assets->GetImage_ColorKey("sbdate-time");
+    ui_book_calendar_moon_new = assets->GetImage_ColorKey("moon_new");
+    ui_book_calendar_moon_4 = assets->GetImage_ColorKey("moon_4");
+    ui_book_calendar_moon_2 = assets->GetImage_ColorKey("moon_2");
+    ui_book_calendar_moon_2_2 = assets->GetImage_ColorKey("moon_2");
+    ui_book_calendar_moon_full = assets->GetImage_ColorKey("moon_ful");
 }
 
 //----- (00413D3C) --------------------------------------------------------
