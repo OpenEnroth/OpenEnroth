@@ -700,11 +700,6 @@ void CastSpellInfoHelpers::CastSpell() {
 
                     if (spell_mastery < PLAYER_SKILL_MASTERY_GRANDMASTER) {
                         spellduration = 3600 * spell_level;
-                    } else {
-                        spellduration = 0;
-                    }
-
-                    if (spellduration > 0) {
                         item->uExpireTime = GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration));
                         item->uAttributes |= ITEM_TEMP_BONUS;
                     }
@@ -2372,13 +2367,13 @@ void CastSpellInfoHelpers::CastSpell() {
                 {
                     switch (spell_mastery) {
                         case PLAYER_SKILL_MASTERY_NOVICE:
-                            amount = 180 * spell_level;
-                            break;  // 3 минуты * количество очков навыка
+                            amount = 60 * 3 * spell_level; // skill points * (3 minutes)
+                            break;
                         case PLAYER_SKILL_MASTERY_EXPERT:
-                            amount = 3600 * spell_level;
-                            break;  // 1 час * количество очков навыка
+                            amount = 60 * 60 * spell_level; // skill points * (1 hour)
+                            break;
                         case PLAYER_SKILL_MASTERY_MASTER:
-                            amount = 86400 * spell_level;
+                            amount = 60 * 60 * 24 * spell_level; // skill points * (1 day)
                             break;
                         case PLAYER_SKILL_MASTERY_GRANDMASTER:
                             amount = 0;
@@ -3183,7 +3178,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     break;
                 }
                 default:
-                    break;
+                    continue;
             }
 
             spell_sound_flag = true;
