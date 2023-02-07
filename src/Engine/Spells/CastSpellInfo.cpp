@@ -359,7 +359,6 @@ void CastSpellInfoHelpers::CastSpell() {
                     pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].Apply(
                             GameTime(pParty->GetPlayingTime() + (GameTime::FromSeconds(3600 * spell_level))),
                             spell_mastery, amount, 0, 0);
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -407,7 +406,6 @@ void CastSpellInfoHelpers::CastSpell() {
                     if (pSpellSprite.Create(pParty->sRotationZ, pParty->sRotationY + 10, spell_speed, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -416,6 +414,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     monster_id = PID_ID(spell_targeted_at);
                     if (!spell_targeted_at) {
                         SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        pPlayer->CastSpellModifyMana(uRequiredMana); // decrease mana on failure
                         continue;
                     }
                     if (PID_TYPE(spell_targeted_at) == OBJECT_Actor) {
@@ -429,7 +428,6 @@ void CastSpellInfoHelpers::CastSpell() {
                         pSpellSprite.spell_target_pid = PID(OBJECT_Actor, monster_id);
                         Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, &spell_velocity);
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -448,7 +446,6 @@ void CastSpellInfoHelpers::CastSpell() {
                         pSpellSprite.spell_target_pid = PID(OBJECT_Actor, monster_id);
                         Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, &spell_velocity);
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -473,10 +470,10 @@ void CastSpellInfoHelpers::CastSpell() {
                     int obj_id = pSpellSprite.Create(0, 0, 0, 0);
                     if (!MonsterStats::BelongsToSupertype(pActors[PID_ID(spell_targeted_at)].pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
                         SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        pPlayer->CastSpellModifyMana(uRequiredMana); // decrease mana on failure
                         continue;
                     }
                     Actor::DamageMonsterFromParty(PID(OBJECT_Item, obj_id), PID_ID(spell_targeted_at), &spell_velocity);
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -514,7 +511,6 @@ void CastSpellInfoHelpers::CastSpell() {
                     if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -537,7 +533,6 @@ void CastSpellInfoHelpers::CastSpell() {
                     if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -562,7 +557,6 @@ void CastSpellInfoHelpers::CastSpell() {
                     if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -578,7 +572,6 @@ void CastSpellInfoHelpers::CastSpell() {
                         pActors[monster_id].vVelocity.y = 0;
                         spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(&pActors[monster_id], 0);
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -611,7 +604,6 @@ void CastSpellInfoHelpers::CastSpell() {
                         pActors[monster_id].uAttributes |= ACTOR_AGGRESSOR;
                         spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(&pActors[monster_id], 0);
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -640,7 +632,6 @@ void CastSpellInfoHelpers::CastSpell() {
                         pSpellSprite.uAttributes |= SPRITE_ATTACHED_TO_HEAD;
                         pSpellSprite.Create(0, 0, 0, pCastSpell->uPlayerID + 1);
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -661,7 +652,6 @@ void CastSpellInfoHelpers::CastSpell() {
                     if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -677,6 +667,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         _50C9D4_AfterEnchClickEventSecondParam = 0;
                         _50C9D8_AfterEnchClickEventTimeout = 128; // was 1, increased to make message readable
                         SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        pPlayer->CastSpellModifyMana(uRequiredMana); // decrease mana on failure
                         continue;
                     }
 
@@ -719,7 +710,6 @@ void CastSpellInfoHelpers::CastSpell() {
                     }
 
                     _50C9A8_item_enchantment_timer = 256;
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -744,7 +734,6 @@ void CastSpellInfoHelpers::CastSpell() {
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                     pParty->pPlayers[pCastSpell->uPlayerID_2].pPlayerBuffs[PLAYER_BUFF_REGENERATION]
                         .Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(3600 * spell_level)), spell_mastery, amount, 0, 0);
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -794,7 +783,6 @@ void CastSpellInfoHelpers::CastSpell() {
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 3);
 
                     pParty->pPartyBuffs[buff_resist].Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(3600 * spell_level)), spell_mastery, amount, 0, 0);
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -816,18 +804,19 @@ void CastSpellInfoHelpers::CastSpell() {
                         default:
                             assert(false);
                     }
+                    bool has_weak = false;
                     for (uint pl_id = 0; pl_id < 4; pl_id++) {
-                        if (pParty->pPlayers[pl_id].conditions.Has(Condition_Weak))
-                            spell_sound_flag = false;
+                        if (pParty->pPlayers[pl_id].conditions.Has(Condition_Weak)) {
+                            has_weak = true;
+                        }
                     }
-                    if (spell_sound_flag) {
+                    if (has_weak) {
                         pParty->pPartyBuffs[PARTY_BUFF_HASTE].Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)), spell_mastery, 0, 0, 0);
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 0);
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 1);
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 2);
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 3);
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -855,19 +844,17 @@ void CastSpellInfoHelpers::CastSpell() {
                         spell_overlay_id = pOtherOverlayList->_4418B1(10000, pCastSpell->uPlayerID_2 + 310, 0, 65536);
                         pParty->pPlayers[pCastSpell->uPlayerID_2].pPlayerBuffs[PLAYER_BUFF_BLESS]
                             .Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)), spell_mastery, amount, spell_overlay_id, 0);
-                        spell_sound_flag = true;
-                        break;
+                    } else {
+                        for (uint pl_id = 0; pl_id < 4; pl_id++) {
+                            spell_fx_renderer->SetPlayerBuffAnim(
+                                    pCastSpell->uSpellID, pl_id);
+                            spell_overlay_id = pOtherOverlayList->_4418B1(
+                                    10000, pl_id + 310, 0, 65536);
+                            pParty->pPlayers[pl_id].pPlayerBuffs[PLAYER_BUFF_BLESS]
+                                .Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)),
+                                        spell_mastery, amount, spell_overlay_id, 0);
+                        }
                     }
-                    for (uint pl_id = 0; pl_id < 4; pl_id++) {
-                        spell_fx_renderer->SetPlayerBuffAnim(
-                                pCastSpell->uSpellID, pl_id);
-                        spell_overlay_id = pOtherOverlayList->_4418B1(
-                                10000, pl_id + 310, 0, 65536);
-                        pParty->pPlayers[pl_id].pPlayerBuffs[PLAYER_BUFF_BLESS]
-                            .Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)),
-                                    spell_mastery, amount, spell_overlay_id, 0);
-                    }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -893,11 +880,17 @@ void CastSpellInfoHelpers::CastSpell() {
                             pSpellSprite.vPosition.z = pActors[monster_id].vPosition.z - (int)((double)pActors[monster_id].uActorHeight * -0.8);
                             pSpellSprite.spell_target_pid = PID(OBJECT_Actor, spell_targeted_at);
                             Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, &spell_velocity);
-                            spell_sound_flag = true;
                         } else {
                             SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                            pPlayer->CastSpellModifyMana(uRequiredMana); // decrease mana on failure
                             continue;
                         }
+                    } else
+                    {
+                        // Previous behavoiur - decrease mana but do not play sound even if
+                        // spell is targeted wrong
+                        pPlayer->CastSpellModifyMana(uRequiredMana);
+                        continue;
                     }
                     break;
                 }
@@ -951,7 +944,6 @@ void CastSpellInfoHelpers::CastSpell() {
                             GameTime(pParty->GetPlayingTime() +
                                 GameTime::FromSeconds(spellduration)),
                             spell_mastery, amount, 0, 0);
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -974,7 +966,6 @@ void CastSpellInfoHelpers::CastSpell() {
                             GameTime(pParty->GetPlayingTime() +
                                 GameTime::FromSeconds(spellduration)),
                             spell_mastery, spell_level, 0, 0);
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -1040,7 +1031,6 @@ void CastSpellInfoHelpers::CastSpell() {
                             k = grng->Random(1024) - 512;
                         }
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -1069,7 +1059,6 @@ void CastSpellInfoHelpers::CastSpell() {
                         spell_fx_renderer->RenderAsSprite(&pSpellSprite);
                         spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.OrangeyRed.C32(), 0x40);
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -1083,7 +1072,6 @@ void CastSpellInfoHelpers::CastSpell() {
                     pParty->pPartyBuffs[PARTY_BUFF_WIZARD_EYE].Apply(
                             GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)),
                             spell_mastery, 0, spell_overlay_id, 0);
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -1116,7 +1104,6 @@ void CastSpellInfoHelpers::CastSpell() {
                     pParty->pPartyBuffs[PARTY_BUFF_FEATHER_FALL].Apply(
                             GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)),
                             spell_mastery, 0, 0, 0);
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -1161,7 +1148,6 @@ void CastSpellInfoHelpers::CastSpell() {
                         }
                         spell_spray_angle_start += ONE_THIRD_PI / (amount - 1);
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -1176,7 +1162,6 @@ void CastSpellInfoHelpers::CastSpell() {
                     }
                     pParty->uFlags |= PARTY_FLAGS_1_LANDING;
                     pParty->uFallSpeed = 1000;
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -1213,7 +1198,6 @@ void CastSpellInfoHelpers::CastSpell() {
                     pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Apply(
                             GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)),
                             spell_mastery, amount, 0, 0);
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -1239,7 +1223,6 @@ void CastSpellInfoHelpers::CastSpell() {
                             GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(3600 * spell_level)),
                             spell_mastery, amount, spell_overlay_id,
                             pCastSpell->uPlayerID + 1);
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -1299,7 +1282,6 @@ void CastSpellInfoHelpers::CastSpell() {
                         j = grng->Random(1024) - 512;
                         k = grng->Random(1024) - 512;
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -1335,7 +1317,6 @@ void CastSpellInfoHelpers::CastSpell() {
                                 pParty->pPlayers[i].PlaySound(SPEECH_Awaken, 0);
                         }
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -1401,7 +1382,6 @@ void CastSpellInfoHelpers::CastSpell() {
                                     spell_spray_angle_end);
                         }
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -1435,7 +1415,6 @@ void CastSpellInfoHelpers::CastSpell() {
                     if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                         pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uFlags = 1;
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -1447,6 +1426,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         _50C9D4_AfterEnchClickEventSecondParam = 0;
                         _50C9D8_AfterEnchClickEventTimeout = 1;
                         SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        pPlayer->CastSpellModifyMana(uRequiredMana); // decrease mana on failure
                         continue;
                     }
 
@@ -1473,12 +1453,12 @@ void CastSpellInfoHelpers::CastSpell() {
                         _50C9D4_AfterEnchClickEventSecondParam = 0;
                         _50C9D8_AfterEnchClickEventTimeout = 1;
                         SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        pPlayer->CastSpellModifyMana(uRequiredMana); // decrease mana on failure
                         continue;
                     }
 
                     item->uAttributes |= ITEM_AURA_EFFECT_GREEN;
                     _50C9A8_item_enchantment_timer = 256;
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -1487,6 +1467,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     uRequiredMana = 0;
                     amount = 10 * spell_level;
                     bool item_not_broken = true;
+                    bool spell_failed = true;
                     int rnd = grng->Random(100);
                     pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID_2];
                     ItemGen *spell_item_to_enchant = &pPlayer->pInventoryItemList[pCastSpell->spell_target_pid];
@@ -1568,8 +1549,7 @@ void CastSpellInfoHelpers::CastSpell() {
                                     spell_item_to_enchant->m_enchantmentStrength = ench_power;
                                     spell_item_to_enchant->uAttributes |= ITEM_AURA_EFFECT_BLUE;
                                     _50C9A8_item_enchantment_timer = 256;
-                                    spell_sound_flag = true;
-                                    break;
+                                    spell_failed = false;
                                 } else { // weapons or we won the lottery for special enchantment
                                     int ench_found = 0;
                                     int to_item_apply_sum = 0;
@@ -1611,16 +1591,16 @@ void CastSpellInfoHelpers::CastSpell() {
                                     spell_item_to_enchant->special_enchantment = (ITEM_ENCHANTMENT)ench_array[step];
                                     spell_item_to_enchant->uAttributes |= ITEM_AURA_EFFECT_BLUE;
                                     _50C9A8_item_enchantment_timer = 256;
-                                    spell_sound_flag = true;
-                                    break;
+                                    spell_failed = false;
                                 }
                             }
                         }
                     }
 
-                    if (spell_sound_flag == 0) {
+                    if (spell_failed) {
                         SpellFailed(pCastSpell, item_not_broken ? LSTR_SPELL_FAILED : LSTR_ITEM_TOO_LAME);
                         pParty->pPlayers[pCastSpell->uPlayerID_2].PlaySound(SPEECH_SpellFailed, 0);
+                        pPlayer->CastSpellModifyMana(uRequiredMana); // decrease mana on failure
                         continue;
                     }
                     break;
@@ -1646,17 +1626,14 @@ void CastSpellInfoHelpers::CastSpell() {
                     if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Petrified)) {
                         if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                             pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Petrified);
-                            spell_sound_flag = true;
-                            break;
+                        } else {
+                            pParty->pPlayers[pCastSpell->uPlayerID_2]
+                                .DiscardConditionIfLastsLongerThan(
+                                        Condition_Petrified,
+                                        GameTime(pParty->GetPlayingTime() -
+                                            GameTime::FromSeconds(amount)));
                         }
-
-                        pParty->pPlayers[pCastSpell->uPlayerID_2]
-                            .DiscardConditionIfLastsLongerThan(
-                                    Condition_Petrified,
-                                    GameTime(pParty->GetPlayingTime() -
-                                        GameTime::FromSeconds(amount)));
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -1675,7 +1652,6 @@ void CastSpellInfoHelpers::CastSpell() {
                     if (pSpellSprite.Create(pParty->sRotationZ, pParty->sRotationY, spell_speed, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -1701,7 +1677,6 @@ void CastSpellInfoHelpers::CastSpell() {
                     if (pSpellSprite.Create(pParty->sRotationZ, TrigLUT.uIntegerHalfPi / 2, spell_speed, 0) != -1 && pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -1732,7 +1707,6 @@ void CastSpellInfoHelpers::CastSpell() {
                     pParty->pPartyBuffs[PARTY_BUFF_DETECT_LIFE].Apply(
                             GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(amount)),
                             spell_mastery, 0, 0, 0);
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -1763,8 +1737,6 @@ void CastSpellInfoHelpers::CastSpell() {
                             .Apply(
                                     GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(5)),
                                     spell_mastery, amount, 0, 0);
-                        spell_sound_flag = true;
-                        break;
                     } else if (PID_TYPE(pCastSpell->spell_target_pid) == OBJECT_Actor) {
                         monster_id = PID_ID(pCastSpell->spell_target_pid);
                         pActors[monster_id].pActorBuffs[ACTOR_BUFF_FATE].Apply(
@@ -1775,7 +1747,6 @@ void CastSpellInfoHelpers::CastSpell() {
                             ->_4A7E89_sparkles_on_actor_after_it_casts_buff(
                                     &pActors[monster_id], 0);
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -1797,26 +1768,21 @@ void CastSpellInfoHelpers::CastSpell() {
                         default:
                             assert(false);
                     }
-                    if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Cursed)) {
-                        spell_sound_flag = true;
-                        break;
-                    }
-                    if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                        pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Cursed);
-                    } else {
-                        pParty->pPlayers[pCastSpell->uPlayerID_2]
-                            .DiscardConditionIfLastsLongerThan(
-                                    Condition_Cursed,
-                                    GameTime(pParty->GetPlayingTime() -
-                                        GameTime::FromSeconds(amount)));
-                        if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Cursed)) {
-                            spell_sound_flag = true;
-                            break;
+                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Cursed)) {
+                        if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Cursed);
+                        } else {
+                            pParty->pPlayers[pCastSpell->uPlayerID_2]
+                                .DiscardConditionIfLastsLongerThan(
+                                        Condition_Cursed,
+                                        GameTime(pParty->GetPlayingTime() -
+                                            GameTime::FromSeconds(amount)));
+                        }
+                        if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Cursed)) {
+                            spell_fx_renderer->SetPlayerBuffAnim(
+                                    pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                         }
                     }
-                    spell_fx_renderer->SetPlayerBuffAnim(
-                            pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -1835,19 +1801,17 @@ void CastSpellInfoHelpers::CastSpell() {
                             .Apply(GameTime(pParty->GetPlayingTime() +
                                         GameTime::FromSeconds(spellduration)),
                                     spell_mastery, 0, 0, 0);
-                        spell_sound_flag = true;
-                        break;
+                    } else {
+                        for (uint pl_id = 0; pl_id < 4; pl_id++) {
+                            spell_fx_renderer->SetPlayerBuffAnim(
+                                    pCastSpell->uSpellID, pl_id);
+                            pParty->pPlayers[pl_id]
+                                .pPlayerBuffs[PLAYER_BUFF_PRESERVATION]
+                                .Apply(GameTime(pParty->GetPlayingTime() +
+                                            GameTime::FromSeconds(spellduration)),
+                                        spell_mastery, 0, 0, 0);
+                        }
                     }
-                    for (uint pl_id = 0; pl_id < 4; pl_id++) {
-                        spell_fx_renderer->SetPlayerBuffAnim(
-                                pCastSpell->uSpellID, pl_id);
-                        pParty->pPlayers[pl_id]
-                            .pPlayerBuffs[PLAYER_BUFF_PRESERVATION]
-                            .Apply(GameTime(pParty->GetPlayingTime() +
-                                        GameTime::FromSeconds(spellduration)),
-                                    spell_mastery, 0, 0, 0);
-                    }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -1903,7 +1867,6 @@ void CastSpellInfoHelpers::CastSpell() {
                                             spell_mastery, 0, 0, 0);
                         }
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -1915,28 +1878,25 @@ void CastSpellInfoHelpers::CastSpell() {
                         amount = 86400 * spell_level;
                     }
                     pOtherOverlayList->_4418B1(5080, pCastSpell->uPlayerID_2 + 100, 0, 65536);
-                    if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Dead)) {
-                        spell_sound_flag = true;
-                        break;
+                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Dead)) {
+                        pParty->pPlayers[pCastSpell->uPlayerID_2].sHealth = 1;
+                        if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Dead);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Unconscious);
+                        } else {
+                            pParty->pPlayers[pCastSpell->uPlayerID_2]
+                                .DiscardConditionIfLastsLongerThan(
+                                        Condition_Dead, GameTime(pParty->GetPlayingTime() -
+                                            GameTime::FromSeconds(amount)));
+                            pParty->pPlayers[pCastSpell->uPlayerID_2]
+                                .DiscardConditionIfLastsLongerThan(
+                                        Condition_Unconscious,
+                                        GameTime(pParty->GetPlayingTime() -
+                                            GameTime::FromSeconds(amount)));
+                        }
+                        pParty->pPlayers[pCastSpell->uPlayerID_2].SetCondition(
+                                Condition_Weak, 0);
                     }
-                    pParty->pPlayers[pCastSpell->uPlayerID_2].sHealth = 1;
-                    if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                        pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Dead);
-                        pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Unconscious);
-                    } else {
-                        pParty->pPlayers[pCastSpell->uPlayerID_2]
-                            .DiscardConditionIfLastsLongerThan(
-                                    Condition_Dead, GameTime(pParty->GetPlayingTime() -
-                                        GameTime::FromSeconds(amount)));
-                        pParty->pPlayers[pCastSpell->uPlayerID_2]
-                            .DiscardConditionIfLastsLongerThan(
-                                    Condition_Unconscious,
-                                    GameTime(pParty->GetPlayingTime() -
-                                        GameTime::FromSeconds(amount)));
-                    }
-                    pParty->pPlayers[pCastSpell->uPlayerID_2].SetCondition(
-                            Condition_Weak, 0);
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -1972,7 +1932,6 @@ void CastSpellInfoHelpers::CastSpell() {
                         spell_fx_renderer->SetPlayerBuffAnim(
                                 pCastSpell->uSpellID, pl_array[i] - 1);
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -2025,7 +1984,6 @@ void CastSpellInfoHelpers::CastSpell() {
                         spell_fx_renderer->SetPlayerBuffAnim(
                                 pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -2047,24 +2005,17 @@ void CastSpellInfoHelpers::CastSpell() {
                         default:
                             assert(false);
                     }
-                    spell_fx_renderer->SetPlayerBuffAnim(
-                            pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
-                    if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Paralyzed)) {
-                        spell_sound_flag = true;
-                        break;
+                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
+                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Paralyzed)) {
+                        if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Paralyzed);
+                        } else {
+                            pParty->pPlayers[pCastSpell->uPlayerID_2]
+                                .DiscardConditionIfLastsLongerThan(
+                                        Condition_Paralyzed, GameTime(pParty->GetPlayingTime() -
+                                            GameTime::FromSeconds(amount)));
+                        }
                     }
-                    if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                        pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Paralyzed);
-                        spell_sound_flag = true;
-                        break;
-                    }
-
-                    pParty->pPlayers[pCastSpell->uPlayerID_2]
-                        .DiscardConditionIfLastsLongerThan(
-                                Condition_Paralyzed, GameTime(pParty->GetPlayingTime() -
-                                    GameTime::FromSeconds(amount)));
-
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -2086,24 +2037,18 @@ void CastSpellInfoHelpers::CastSpell() {
                         default:
                             assert(false);
                     }
-                    spell_fx_renderer->SetPlayerBuffAnim(
-                            pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
-                    if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Fear)) {
-                        spell_sound_flag = true;
-                        break;
-                    }
-                    if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                        pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Fear);
-                        spell_sound_flag = true;
-                        break;
+                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
+                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Fear)) {
+                        if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Fear);
+                        } else {
+                            pParty->pPlayers[pCastSpell->uPlayerID_2]
+                                .DiscardConditionIfLastsLongerThan(
+                                        Condition_Fear, GameTime(pParty->GetPlayingTime() -
+                                            GameTime::FromSeconds(amount)));
+                        }
                     }
 
-                    pParty->pPlayers[pCastSpell->uPlayerID_2]
-                        .DiscardConditionIfLastsLongerThan(
-                                Condition_Fear, GameTime(pParty->GetPlayingTime() -
-                                    GameTime::FromSeconds(amount)));
-
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -2166,7 +2111,6 @@ void CastSpellInfoHelpers::CastSpell() {
                         pSpellSprite.uAttributes |= SPRITE_ATTACHED_TO_HEAD;
                         pSpellSprite.Create(0, 0, 0, pCastSpell->uPlayerID + 1);
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -2220,7 +2164,6 @@ void CastSpellInfoHelpers::CastSpell() {
                         pSpellSprite.uAttributes |= SPRITE_ATTACHED_TO_HEAD;
                         pSpellSprite.Create(0, 0, 0, pCastSpell->uPlayerID + 1);
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -2261,7 +2204,6 @@ void CastSpellInfoHelpers::CastSpell() {
                         pSpellSprite.uAttributes |= SPRITE_ATTACHED_TO_HEAD;
                         pSpellSprite.Create(0, 0, 0, pCastSpell->uPlayerID + 1);
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -2323,7 +2265,6 @@ void CastSpellInfoHelpers::CastSpell() {
                                             spell_mastery, 0, 0, 0);
                         }
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -2350,7 +2291,6 @@ void CastSpellInfoHelpers::CastSpell() {
                         pParty->pPlayers[pCastSpell->uPlayerID_2].SetCondition(
                                 Condition_Weak, 0);
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -2425,7 +2365,6 @@ void CastSpellInfoHelpers::CastSpell() {
                         }
                         EventProcessor(event, spell_targeted_at, 1);
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -2452,15 +2391,13 @@ void CastSpellInfoHelpers::CastSpell() {
                     if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Weak)) {
                         if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                             pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Weak);
-                            spell_sound_flag = true;
-                            break;
+                        } else {
+                            pParty->pPlayers[pCastSpell->uPlayerID_2]
+                                .DiscardConditionIfLastsLongerThan(
+                                        Condition_Weak, GameTime(pParty->GetPlayingTime() -
+                                            GameTime::FromSeconds(amount)));
                         }
-                        pParty->pPlayers[pCastSpell->uPlayerID_2]
-                            .DiscardConditionIfLastsLongerThan(
-                                    Condition_Weak, GameTime(pParty->GetPlayingTime() -
-                                        GameTime::FromSeconds(amount)));
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -2500,7 +2437,6 @@ void CastSpellInfoHelpers::CastSpell() {
                                     pActors[monster_id].pMonsterInfo.uHP;
                         }
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -2532,27 +2468,24 @@ void CastSpellInfoHelpers::CastSpell() {
                             pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Poison_Weak);
                             pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Poison_Medium);
                             pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Poison_Severe);
-                            spell_sound_flag = true;
-                            break;
+                        } else {
+                            pParty->pPlayers[pCastSpell->uPlayerID_2]
+                                .DiscardConditionIfLastsLongerThan(
+                                        Condition_Poison_Weak,
+                                        GameTime(pParty->GetPlayingTime() -
+                                            GameTime::FromSeconds(amount)));
+                            pParty->pPlayers[pCastSpell->uPlayerID_2]
+                                .DiscardConditionIfLastsLongerThan(
+                                        Condition_Poison_Medium,
+                                        GameTime(pParty->GetPlayingTime() -
+                                            GameTime::FromSeconds(amount)));
+                            pParty->pPlayers[pCastSpell->uPlayerID_2]
+                                .DiscardConditionIfLastsLongerThan(
+                                        Condition_Poison_Severe,
+                                        GameTime(pParty->GetPlayingTime() -
+                                            GameTime::FromSeconds(amount)));
                         }
-
-                        pParty->pPlayers[pCastSpell->uPlayerID_2]
-                            .DiscardConditionIfLastsLongerThan(
-                                    Condition_Poison_Weak,
-                                    GameTime(pParty->GetPlayingTime() -
-                                        GameTime::FromSeconds(amount)));
-                        pParty->pPlayers[pCastSpell->uPlayerID_2]
-                            .DiscardConditionIfLastsLongerThan(
-                                    Condition_Poison_Medium,
-                                    GameTime(pParty->GetPlayingTime() -
-                                        GameTime::FromSeconds(amount)));
-                        pParty->pPlayers[pCastSpell->uPlayerID_2]
-                            .DiscardConditionIfLastsLongerThan(
-                                    Condition_Poison_Severe,
-                                    GameTime(pParty->GetPlayingTime() -
-                                        GameTime::FromSeconds(amount)));
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -2566,7 +2499,6 @@ void CastSpellInfoHelpers::CastSpell() {
                             GameTime(pParty->GetPlayingTime() +
                                 GameTime::FromSeconds(3600 * spell_level)),
                             spell_mastery, spell_level, 0, 0);
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -2593,7 +2525,6 @@ void CastSpellInfoHelpers::CastSpell() {
                                     GameTime::FromSeconds(3600 * spell_level)),
                                 spell_mastery, spell_level, spell_level, 0);
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -2604,7 +2535,6 @@ void CastSpellInfoHelpers::CastSpell() {
                                 pCastSpell->uSpellID, pl_id);
                         pParty->pPlayers[pl_id].Heal(5 * spell_level + 10);
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -2673,7 +2603,6 @@ void CastSpellInfoHelpers::CastSpell() {
                         for (SpellBuff &buff : pActors[_50BF30_actors_in_viewport_ids[spell_targeted_at]].pActorBuffs)
                             buff.Reset();
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -2712,7 +2641,6 @@ void CastSpellInfoHelpers::CastSpell() {
                         continue;
                     }
                     Spawn_Light_Elemental(pCastSpell->uPlayerID, spell_mastery, spellduration);
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -2750,7 +2678,6 @@ void CastSpellInfoHelpers::CastSpell() {
                             GameTime(pParty->GetPlayingTime() +
                                 GameTime::FromSeconds(spellduration)),
                             spell_mastery, amount, 0, 0);
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -2782,7 +2709,6 @@ void CastSpellInfoHelpers::CastSpell() {
                                 _50BF30_actors_in_viewport_ids[monster_id], &spell_velocity);
                     }
                     spell_fx_renderer->_4A8BFC_prismatic_light();
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -2836,7 +2762,6 @@ void CastSpellInfoHelpers::CastSpell() {
                     pParty->pPartyBuffs[PARTY_BUFF_WIZARD_EYE].Apply(
                             GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)),
                             spell_mastery, spell_level + 5, 0, 0);
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -2897,7 +2822,6 @@ void CastSpellInfoHelpers::CastSpell() {
                                         60 * (spell_level * spellduration + 60))),
                                 spell_mastery, spell_level + 5, 0, 0);
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -2920,7 +2844,6 @@ void CastSpellInfoHelpers::CastSpell() {
                     }
                     sRecoveryTime += -5 * spell_level;
                     ++pPlayer->uNumDivineInterventionCastsThisDay;
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -2956,10 +2879,12 @@ void CastSpellInfoHelpers::CastSpell() {
                     monster_id = PID_ID(pCastSpell->spell_target_pid);
                     if (monster_id == -1) {
                         SpellFailed(pCastSpell, LSTR_NO_VALID_SPELL_TARGET);
+                        pPlayer->CastSpellModifyMana(uRequiredMana); // decrease mana on failure
                         continue;
                     }
                     if (pActors[monster_id].sCurrentHP > 0 || pActors[monster_id].uAIState != Dead && pActors[monster_id].uAIState != Dying) {
                         SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        pPlayer->CastSpellModifyMana(uRequiredMana); // decrease mana on failure
                         continue;
                     }
                     // ++pSpellSprite.uType;
@@ -2993,7 +2918,6 @@ void CastSpellInfoHelpers::CastSpell() {
                     if (pActors[monster_id].sCurrentHP > 10 * amount) {
                         pActors[monster_id].sCurrentHP = 10 * amount;
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -3037,7 +2961,6 @@ void CastSpellInfoHelpers::CastSpell() {
                             spell_spray_angle_start += ONE_THIRD_PI / (amount - 1);
                         } while (spell_spray_angle_start <= spell_spray_angle_end);
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -3068,6 +2991,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         }
                         if (!pActors[monster_id].DoesDmgTypeDoDamage(DMGT_DARK)) {
                             SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                            pPlayer->CastSpellModifyMana(uRequiredMana); // decrease mana on failure
                             continue;
                         }
                         pActors[monster_id].pActorBuffs[ACTOR_BUFF_BERSERK].Reset();
@@ -3087,7 +3011,6 @@ void CastSpellInfoHelpers::CastSpell() {
                         pSpellSprite.uAttributes |= SPRITE_ATTACHED_TO_HEAD;
                         pSpellSprite.Create(0, 0, 0, pCastSpell->uPlayerID + 1);
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -3104,6 +3027,7 @@ void CastSpellInfoHelpers::CastSpell() {
                             achieved_awards[pCastSpell->uPlayerID_2 - 4] <= 0 ||
                             achieved_awards[pCastSpell->uPlayerID_2 - 4] >= 3) {
                         SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        pPlayer->CastSpellModifyMana(uRequiredMana); // decrease mana on failure
                         continue;
                     }
                     int hireling_idx = achieved_awards[pCastSpell->uPlayerID_2 - 4] - 1;
@@ -3122,7 +3046,6 @@ void CastSpellInfoHelpers::CastSpell() {
                     if (ddm_dlv->uReputation > 10000) {
                         ddm_dlv->uReputation = 10000;
                     }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -3152,18 +3075,16 @@ void CastSpellInfoHelpers::CastSpell() {
                             .Apply(GameTime(pParty->GetPlayingTime() +
                                         GameTime::FromSeconds(spellduration)),
                                     spell_mastery, amount, 0, 0);
-                        spell_sound_flag = true;
-                        break;
+                    } else {
+                        for (uint pl_id = 0; pl_id < 4; pl_id++) {
+                            spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pl_id);
+                            pParty->pPlayers[pl_id]
+                                .pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION]
+                                .Apply(GameTime(pParty->GetPlayingTime() +
+                                            GameTime::FromSeconds(spellduration)),
+                                        spell_mastery, amount, 0, 0);
+                        }
                     }
-                    for (uint pl_id = 0; pl_id < 4; pl_id++) {
-                        spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pl_id);
-                        pParty->pPlayers[pl_id]
-                            .pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION]
-                            .Apply(GameTime(pParty->GetPlayingTime() +
-                                        GameTime::FromSeconds(spellduration)),
-                                    spell_mastery, amount, 0, 0);
-                    }
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -3221,7 +3142,6 @@ void CastSpellInfoHelpers::CastSpell() {
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pl_array[j]);
                     }
                     spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.Black.C32(), 64);
-                    spell_sound_flag = true;
                     break;
                 }
 
@@ -3260,13 +3180,13 @@ void CastSpellInfoHelpers::CastSpell() {
                                 rand_y + pParty->vPosition.y, terr_height + 16,
                                 grng->Random(500) + 500, 1, 0, 0, 0);
                     }
-                    spell_sound_flag = true;
                     break;
                 }
                 default:
                     break;
             }
 
+            spell_sound_flag = true;
             pPlayer->CastSpellModifyMana(uRequiredMana);
         }
 
