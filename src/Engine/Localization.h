@@ -91,7 +91,7 @@
 #define LSTR_FMT_DO_YOU_WISH_TO_LEAVE_S     126  // "Do you wish to leave %s?"
 #define LSTR_NO_TEXT                        127  // "No Text!"
 #define LSTR_FMT_IT_TAKES_D_DAYS_TO_S       128  // "It will take %d days to travel to %s."
-#define LSTR_FMT_S_THE_LEVEL_D_S            128  // "%s the Level %u %s"
+#define LSTR_FMT_S_THE_LEVEL_D_S            129  // "%s the Level %u %s"
 #define LSTR_LEVEL                          131  // "Level"
 #define LSTR_YEARS                          132  // "Years"
 #define LSTR_STANDARD                       134  // "Standard"

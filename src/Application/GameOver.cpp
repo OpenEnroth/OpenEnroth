@@ -60,8 +60,6 @@ void GameOver_Loop(int v15) {
         render->BeginScene();
         render->DrawTextureNew(0, 0, background);
     }
-    background->Release();
-    background = nullptr;
 
     window_SpeakInHouse = new GUIWindow(WINDOW_Unknown, {0, 0}, render->GetRenderDimensions(), 0);
     pWindow.uFrameX = 75;
@@ -131,10 +129,11 @@ void GameOver_Loop(int v15) {
         localization->FormatString(LSTR_FMT_YOUR_SCORE_D, v23), 3);
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
     render->Present();
-    // if ( render->pRenderD3D )
-    render->pBeforePresentFunction();
     render->SaveWinnersCertificate("MM7_Win.Pcx");
     free(pFont);
+    background->Release();
+    background = nullptr;
+
     window_SpeakInHouse->Release();
     window_SpeakInHouse = 0;
     if (v15 == 2) {
