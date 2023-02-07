@@ -42,62 +42,67 @@ static SpellFxRenderer *spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
 const size_t CastSpellInfoCount = 10;
 std::array<CastSpellInfo, CastSpellInfoCount> pCastSpellInfo;
 
+// Common initialization of SpriteObject for spell casting
+static void
+InitSpellSprite(SpriteObject* spritePtr,
+                PLAYER_SKILL_LEVEL spellLevel,
+                PLAYER_SKILL_MASTERY spellMastery,
+                CastSpellInfo *pCastSpell)
+{
+    spritePtr->containing_item.Reset();
+    spritePtr->spell_level = spellLevel;
+    spritePtr->spell_id = pCastSpell->uSpellID;
+    spritePtr->spell_skill = spellMastery;
+    spritePtr->uAttributes = 0;
+    spritePtr->uSpriteFrameID = 0;
+    spritePtr->uObjectDescID = pObjectList->ObjectIDByItemID(spritePtr->uType);
+    spritePtr->spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
+    spritePtr->uSoundID = pCastSpell->sound_id;
+}
+
+// Notify that spell casting failed
+static void
+SpellFailed(CastSpellInfo *pCastSpell,
+            int error_str_id)
+{
+    GameUI_SetStatusBar(error_str_id);
+    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
+    pCastSpell->uSpellID = 0;
+}
+
 //----- (00427E01) --------------------------------------------------------
 void CastSpellInfoHelpers::CastSpell() {
     CastSpellInfo *pCastSpell;
     signed int spell_pointed_target;
-
     int monster_id;
     int spell_overlay_id;
     int dist_X;
+    int dist_Y;
     int dist_Z;
     int spell_spray_angle_start;
     int spell_spray_angle_end;
-                           //  int v396; // eax@752
-    int16_t v448;          // ax@864
-    DDM_DLV_Header *v613;  // eax@1108
-    int v642;              // edi@1156
-    int v643;              // eax@1156
-    int v659;              // [sp+0h] [bp-E84h]@123
-    // uint64_t v663; // [sp+0h] [bp-E84h]@639
-    int target_undead;              // [sp+4h] [bp-E80h]@12
-    PLAYER_SKILL_TYPE which_skill;  // [sp+4h] [bp-E80h]@25
-
-    uint64_t v685 {};          // [sp+D08h] [bp-17Ch]@416
-    uint64_t v687 {};          // [sp+D24h] [bp-160h]@327
-    Vec3i v688;                 // [sp+D2Ch] [bp-158h]@943
-    Vec3i v691;                 // [sp+D38h] [bp-14Ch]@137
-    Vec3i v694;                 // [sp+D44h] [bp-140h]@982
-    Vec3i v697;                 // [sp+D50h] [bp-134h]@129
-    Vec3i v700;                 // [sp+D5Ch] [bp-128h]@339
-    Vec3i v701;                 // [sp+D68h] [bp-11Ch]@286
-    Vec3i v704;                 // [sp+D74h] [bp-110h]@132
-    Vec3i v707;                 // [sp+D80h] [bp-104h]@1127
-    // int v710;                       // [sp+D8Ch] [bp-F8h]@1156
-
-    AIDirection target_direction;  // [sp+DA4h] [bp-E0h]@21
-
-    int dist_Y;           // [sp+DD8h] [bp-ACh]@163
-    ItemGen *_this = 0;   // [sp+E50h] [bp-34h]@23
-             // [sp+E54h] [bp-30h]@23
-    PARTY_BUFF_INDEX buff_resist;
-    bool spell_sound_flag = false;  // [sp+E5Ch] [bp-28h]@1
-    Player *pPlayer;                // [sp+E64h] [bp-20h]@8
-    int v730_int;
-    int v732_int;
-
+    int spell_speed;
+    int target_undead;
     int spellduration;
-    signed int spell_targeted_at = 0;  // [sp+E7Ch] [bp-8h]@14
-    int amount = 0;                    // [sp+E80h] [bp-4h]@1
-    ObjectType obj_type;
-    // ItemDesc *_item;
+    signed int spell_targeted_at = 0;
 
-    SpriteObject pSpellSprite;  // [sp+DDCh] [bp-A8h]@1
+    PLAYER_SKILL_TYPE which_skill;
+    AIDirection target_direction;
+    PARTY_BUFF_INDEX buff_resist;
+
+    bool spell_sound_flag = false;
+
+    Player *pPlayer;
+    ObjectType obj_type;
+    SpriteObject pSpellSprite;
+
+    static const int ONE_THIRD_PI = TrigLUT.uIntegerPi / 3;
 
     for (int n = 0; n < CastSpellInfoCount; ++n) {  // cycle through spell queue
         pCastSpell = &pCastSpellInfo[n];
-        if (pCastSpell->uSpellID == 0)
+        if (pCastSpell->uSpellID == 0) {
             continue;  // spell item blank skip to next
+        }
 
         if (pParty->Invisible()) {
             // casting a spell breaks invisibility
@@ -119,10 +124,11 @@ void CastSpellInfoHelpers::CastSpell() {
         if (spell_targeted_at == 0) {  // no target ?? test
             if (pCastSpell->uSpellID == SPELL_LIGHT_DESTROY_UNDEAD ||
                 pCastSpell->uSpellID == SPELL_SPIRIT_TURN_UNDEAD ||
-                pCastSpell->uSpellID == SPELL_DARK_CONTROL_UNDEAD)
+                pCastSpell->uSpellID == SPELL_DARK_CONTROL_UNDEAD) {
                 target_undead = 1;
-            else
+            } else {
                 target_undead = 0;
+            }
 
             // find the closest target
             spell_targeted_at = stru_50C198.FindClosestActor(engine->config->gameplay.RangedAttackDepth.Get(), 1, target_undead);
@@ -130,8 +136,9 @@ void CastSpellInfoHelpers::CastSpell() {
 
             if (mouse->uPointingObjectID &&
                 PID_TYPE(spell_pointed_target) == OBJECT_Actor &&
-                pActors[PID_ID(spell_pointed_target)].CanAct())  // check can act
+                pActors[PID_ID(spell_pointed_target)].CanAct()) {  // check can act
                 spell_targeted_at = mouse->uPointingObjectID;
+            }
         }
 
         pSpellSprite.uType = spell_sprite_mapping[pCastSpell->uSpellID].uSpriteType;
@@ -155,31 +162,32 @@ void CastSpellInfoHelpers::CastSpell() {
             spell_level = GetSkillLevel(pCastSpell->forced_spell_skill_level);
             spell_mastery = GetSkillMastery(pCastSpell->forced_spell_skill_level);
         } else {
-            if (pCastSpell->uSpellID < SPELL_AIR_WIZARD_EYE)
+            if (pCastSpell->uSpellID < SPELL_AIR_WIZARD_EYE) {
                 which_skill = PLAYER_SKILL_FIRE;
-            else if (pCastSpell->uSpellID < SPELL_WATER_AWAKEN)
+            } else if (pCastSpell->uSpellID < SPELL_WATER_AWAKEN) {
                 which_skill = PLAYER_SKILL_AIR;
-            else if (pCastSpell->uSpellID < SPELL_EARTH_STUN)
+            } else if (pCastSpell->uSpellID < SPELL_EARTH_STUN) {
                 which_skill = PLAYER_SKILL_WATER;
-            else if (pCastSpell->uSpellID < SPELL_SPIRIT_DETECT_LIFE)
+            } else if (pCastSpell->uSpellID < SPELL_SPIRIT_DETECT_LIFE) {
                 which_skill = PLAYER_SKILL_EARTH;
-            else if (pCastSpell->uSpellID < SPELL_MIND_REMOVE_FEAR)
+            } else if (pCastSpell->uSpellID < SPELL_MIND_REMOVE_FEAR) {
                 which_skill = PLAYER_SKILL_SPIRIT;
-            else if (pCastSpell->uSpellID < SPELL_BODY_CURE_WEAKNESS)
+            } else if (pCastSpell->uSpellID < SPELL_BODY_CURE_WEAKNESS) {
                 which_skill = PLAYER_SKILL_MIND;
-            else if (pCastSpell->uSpellID < SPELL_LIGHT_LIGHT_BOLT)
+            } else if (pCastSpell->uSpellID < SPELL_LIGHT_LIGHT_BOLT) {
                 which_skill = PLAYER_SKILL_BODY;
-            else if (pCastSpell->uSpellID < SPELL_DARK_REANIMATE)
+            } else if (pCastSpell->uSpellID < SPELL_DARK_REANIMATE) {
                 which_skill = PLAYER_SKILL_LIGHT;
-            else if (pCastSpell->uSpellID < SPELL_BOW_ARROW)
+            } else if (pCastSpell->uSpellID < SPELL_BOW_ARROW) {
                 which_skill = PLAYER_SKILL_DARK;
-            else if (pCastSpell->uSpellID == SPELL_BOW_ARROW)
+            } else if (pCastSpell->uSpellID == SPELL_BOW_ARROW) {
                 which_skill = PLAYER_SKILL_BOW;
-            else if (pCastSpell->uSpellID == SPELL_101 ||
-                pCastSpell->uSpellID == SPELL_LASER_PROJECTILE)
+            } else if (pCastSpell->uSpellID == SPELL_101 ||
+                pCastSpell->uSpellID == SPELL_LASER_PROJECTILE) {
                 which_skill = PLAYER_SKILL_BLASTER;
-            else
+            } else {
                 assert(false && "Unknown spell");
+            }
 
             spell_level = pPlayer->GetActualSkillLevel(which_skill);
             spell_mastery = pPlayer->GetActualSkillMastery(which_skill);
@@ -191,20 +199,20 @@ void CastSpellInfoHelpers::CastSpell() {
         }
 
         if (pCastSpell->uSpellID < SPELL_BOW_ARROW) {
-            if (pCastSpell->forced_spell_skill_level || engine->config->debug.AllMagic.Get())
+            if (pCastSpell->forced_spell_skill_level || engine->config->debug.AllMagic.Get()) {
                 uRequiredMana = 0;
-            else
+            } else {
                 uRequiredMana = pSpellDatas[pCastSpell->uSpellID].mana_per_skill[std::to_underlying(spell_mastery) - 1];
+            }
 
             sRecoveryTime = pSpellDatas[pCastSpell->uSpellID].recovery_per_skill[std::to_underlying(spell_mastery) - 1];
         }
 
         if (!pCastSpell->forced_spell_skill_level) {
-            if (which_skill == PLAYER_SKILL_DARK && pParty->uCurrentHour == 0 &&
-                pParty->uCurrentMinute == 0 ||
-                which_skill == PLAYER_SKILL_LIGHT && pParty->uCurrentHour == 12 &&
-                pParty->uCurrentMinute == 0)  // free spells at midnight or midday
+            if (which_skill == PLAYER_SKILL_DARK && pParty->uCurrentHour == 0 && pParty->uCurrentMinute == 0 ||
+                which_skill == PLAYER_SKILL_LIGHT && pParty->uCurrentHour == 12 && pParty->uCurrentMinute == 0) {  // free spells at midnight or midday
                 uRequiredMana = 0;
+            }
         }
 
         if (pCastSpell->uSpellID < SPELL_BOW_ARROW && pPlayer->sMana < uRequiredMana) {
@@ -222,96 +230,82 @@ void CastSpellInfoHelpers::CastSpell() {
                 pTurnEngine->ApplyPlayerAction();
             }
 
-            GameUI_SetStatusBar(LSTR_SPELL_FAILED);
-            pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-            pCastSpellInfo[n].uSpellID = 0;
+            SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
             pPlayer->sMana -= uRequiredMana;
             return;
         }
 
-        // do mana check here?
+        assert(pCastSpell->uSpellID != SPELL_101 && "Unknown spell effect #101 (prolly flaming bow arrow");
 
-        switch (pCastSpell->uSpellID) {
-            case SPELL_101:
-                assert(false && "Unknown spell effect #101 (prolly flaming bow arrow");
-
-            case SPELL_BOW_ARROW:
-            {
-                amount = 1;
-                if (spell_mastery >= PLAYER_SKILL_MASTERY_MASTER)
-                    amount = 2;
-
-                sRecoveryTime = pPlayer->GetAttackRecoveryTime(true);
-                pSpellSprite.containing_item.Reset();
-                pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_id = pCastSpell->uSpellID;
-                pSpellSprite.spell_skill = spell_mastery;
-                pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                if (pPlayer->WearsItem(ITEM_ARTIFACT_ULLYSES, ITEM_SLOT_BOW))
-                    pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(0xBD6u);
-                pSpellSprite.vPosition.x = pParty->vPosition.x;
-                pSpellSprite.vPosition.y = pParty->vPosition.y;
-                pSpellSprite.uAttributes = 0;
-                pSpellSprite.uSpriteFrameID = 0;
-                pSpellSprite.vPosition.z = pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
-                pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
-                pSpellSprite.spell_target_pid = spell_targeted_at;
-                pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
-                pSpellSprite.uFacing = target_direction.uYawAngle;
-                pSpellSprite.uSoundID = pCastSpell->sound_id;
-                pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID];
-                memcpy(&pSpellSprite.containing_item, &pPlayer->pInventoryItemList[pPlayer->pEquipment.uBow - 1], sizeof(pSpellSprite.containing_item));
-                pSpellSprite.uAttributes |= SPRITE_MISSILE;
-                if (pParty->bTurnBasedModeOn) {
-                    pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
-                }
-                for (int i = 0; i < amount; ++i) {
-                    if (i)
-                        pSpellSprite.vPosition.z += 32;
-                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
-                    if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed,
-                        pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
-                        ++pTurnEngine->pending_actions;
-                    }
-                }
-                break;
+        // First process special "pseudo" spells like bow or blaster shots
+        if (pCastSpell->uSpellID == SPELL_BOW_ARROW) {
+            int amount = 1;
+            if (spell_mastery >= PLAYER_SKILL_MASTERY_MASTER) {
+                amount = 2;
             }
 
-            case SPELL_LASER_PROJECTILE:
-            {
-                sRecoveryTime = pPlayer->GetAttackRecoveryTime(false);
-                pSpellSprite.containing_item.Reset();
-                pSpellSprite.spell_id = pCastSpell->uSpellID;
-                pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = spell_mastery;
-                pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                // TODO(pskelton): was pParty->uPartyHeight / 2
-                pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
-                pSpellSprite.uAttributes = 0;
-                pSpellSprite.uSpriteFrameID = 0;
-                pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
-                pSpellSprite.spell_target_pid = spell_targeted_at;
-                pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
-                pSpellSprite.uFacing = target_direction.uYawAngle;
-                pSpellSprite.uSoundID = pCastSpell->sound_id;
-                pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID];
-                memcpy(&pSpellSprite.containing_item, &pPlayer->pInventoryItemList[pPlayer->pEquipment.uMainHand - 1], sizeof(pSpellSprite.containing_item));
-                // &pParty->pPlayers[pCastSpell->uPlayerID].spellbook.pDarkSpellbook.bIsSpellAvailable[36
-                // *
-                // pParty->pPlayers[pCastSpell->uPlayerID].pEquipment.uMainHand +
-                // 5], );
-                pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
-                pSpellSprite.uAttributes |= SPRITE_MISSILE;
-                if (pParty->bTurnBasedModeOn) {
-                    pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
+            sRecoveryTime = pPlayer->GetAttackRecoveryTime(true);
+            InitSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
+            if (pPlayer->WearsItem(ITEM_ARTIFACT_ULLYSES, ITEM_SLOT_BOW)) {
+                pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(0xBD6u);
+            }
+            pSpellSprite.vPosition.x = pParty->vPosition.x;
+            pSpellSprite.vPosition.y = pParty->vPosition.y;
+            pSpellSprite.vPosition.z = pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
+            pSpellSprite.spell_target_pid = spell_targeted_at;
+            pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
+            pSpellSprite.uFacing = target_direction.uYawAngle;
+            pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID];
+            memcpy(&pSpellSprite.containing_item, &pPlayer->pInventoryItemList[pPlayer->pEquipment.uBow - 1], sizeof(pSpellSprite.containing_item));
+            pSpellSprite.uAttributes |= SPRITE_MISSILE;
+            if (pParty->bTurnBasedModeOn) {
+                pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
+            }
+            for (int i = 0; i < amount; ++i) {
+                if (i) {
+                    pSpellSprite.vPosition.z += 32;
                 }
+                pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                 if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed,
-                    pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
+                            pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
                     ++pTurnEngine->pending_actions;
                 }
-                break;
             }
+        } else if (pCastSpell->uSpellID == SPELL_LASER_PROJECTILE) {
+            sRecoveryTime = pPlayer->GetAttackRecoveryTime(false);
+            InitSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
+            // TODO(pskelton): was pParty->uPartyHeight / 2
+            pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
+            pSpellSprite.spell_target_pid = spell_targeted_at;
+            pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
+            pSpellSprite.uFacing = target_direction.uYawAngle;
+            pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID];
+            memcpy(&pSpellSprite.containing_item, &pPlayer->pInventoryItemList[pPlayer->pEquipment.uMainHand - 1], sizeof(pSpellSprite.containing_item));
+            // &pParty->pPlayers[pCastSpell->uPlayerID].spellbook.pDarkSpellbook.bIsSpellAvailable[36
+            // *
+            // pParty->pPlayers[pCastSpell->uPlayerID].pEquipment.uMainHand +
+            // 5], );
+            pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
+            pSpellSprite.uAttributes |= SPRITE_MISSILE;
+            if (pParty->bTurnBasedModeOn) {
+                pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
+            }
+            if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed,
+                        pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
+                ++pTurnEngine->pending_actions;
+            }
+        } else
+        {
+            int amount;
+            Vec3i spell_velocity;
 
+            spell_velocity.x = 0;
+            spell_velocity.y = 0;
+            spell_velocity.z = 0;
+
+            // do mana check here?
+
+        switch (pCastSpell->uSpellID) {
             case SPELL_FIRE_TORCH_LIGHT:
             {
                 switch (spell_mastery) {
@@ -328,10 +322,12 @@ void CastSpellInfoHelpers::CastSpell() {
                     default:
                         assert(false);
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana))
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
                     break;
-
-                pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].Apply(GameTime(pParty->GetPlayingTime() + (GameTime::FromSeconds(3600 * spell_level))), spell_mastery, amount, 0, 0);
+                }
+                pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].Apply(
+                        GameTime(pParty->GetPlayingTime() + (GameTime::FromSeconds(3600 * spell_level))),
+                        spell_mastery, amount, 0, 0);
                 spell_sound_flag = true;
                 break;
             }
@@ -354,39 +350,33 @@ void CastSpellInfoHelpers::CastSpell() {
                     default:
                         assert(false);
                 }
-                int _v733 = 0;
+                int spikes_active = 0;
                 for (uint i = 0; i < pSpriteObjects.size(); ++i) {
                     SpriteObject *object = &pSpriteObjects[i];
-                    if (object->uType && object->spell_id == SPELL_FIRE_FIRE_SPIKE && object->spell_caster_pid == PID(OBJECT_Player, pCastSpell->uPlayerID))
-                        ++_v733;
+                    if (object->uType &&
+                            object->spell_id == SPELL_FIRE_FIRE_SPIKE &&
+                            object->spell_caster_pid == PID(OBJECT_Player, pCastSpell->uPlayerID)) {
+                        ++spikes_active;
+                    }
                 }
-                if (_v733 > amount) {
-                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                    pCastSpell->uSpellID = 0;
+                if (spikes_active > amount) {
+                    SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
                     continue;
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana))
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
                     break;
-                pSpellSprite.containing_item.Reset();
-                pSpellSprite.spell_id = pCastSpell->uSpellID;
-                pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = spell_mastery;
-                pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
+                }
+                InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                 pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
-                pSpellSprite.uAttributes = 0;
                 pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
-                pSpellSprite.uSpriteFrameID = 0;
-                pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
                 pSpellSprite.spell_target_pid = spell_targeted_at;
                 pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                 pSpellSprite.uFacing = (short)target_direction.uYawAngle;
-                pSpellSprite.uSoundID = (short)pCastSpell->sound_id;
                 if (pParty->bTurnBasedModeOn) {
                     pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                 }
-                v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                if (pSpellSprite.Create(pParty->sRotationZ, pParty->sRotationY + 10, v659, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
+                spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
+                if (pSpellSprite.Create(pParty->sRotationZ, pParty->sRotationY + 10, spell_speed, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
                     ++pTurnEngine->pending_actions;
                 }
                 spell_sound_flag = true;
@@ -396,35 +386,23 @@ void CastSpellInfoHelpers::CastSpell() {
             case SPELL_AIR_IMPLOSION:
             {
                 monster_id = PID_ID(spell_targeted_at);
-                if (!pPlayer->CanCastSpell(uRequiredMana))
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
                     break;
+                }
                 if (!spell_targeted_at) {
-                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                    pCastSpell->uSpellID = 0;
+                    SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
                     continue;
                 }
                 if (PID_TYPE(spell_targeted_at) == OBJECT_Actor) {
-                    v697.x = 0;
-                    v697.y = 0;
-                    v697.z = 0;
-                    pSpellSprite.containing_item.Reset();
-                    pSpellSprite.spell_id = pCastSpell->uSpellID;
-                    pSpellSprite.spell_level = spell_level;
-                    pSpellSprite.spell_skill = spell_mastery;
-                    pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                    pSpellSprite.uAttributes = 0;
+                    InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.uSectorID = 0;
-                    pSpellSprite.uSpriteFrameID = 0;
                     pSpellSprite.field_60_distance_related_prolly_lod = 0;
                     pSpellSprite.uFacing = 0;
-                    pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
-                    pSpellSprite.uSoundID = (short)pCastSpell->sound_id;
                     pSpellSprite.vPosition.x = pActors[monster_id].vPosition.x;
                     pSpellSprite.vPosition.z = pActors[monster_id].vPosition.z + pActors[monster_id].uActorHeight / 2;
                     pSpellSprite.vPosition.y = pActors[monster_id].vPosition.y;
                     pSpellSprite.spell_target_pid = PID(OBJECT_Actor, monster_id);
-                    Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, &v697);
+                    Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, &spell_velocity);
                 }
                 spell_sound_flag = true;
                 break;
@@ -433,30 +411,20 @@ void CastSpellInfoHelpers::CastSpell() {
             case SPELL_EARTH_MASS_DISTORTION:
             {
                 monster_id = PID_ID(spell_targeted_at);
-                if (!pPlayer->CanCastSpell(uRequiredMana))
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
                     break;
+                }
                 if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_EARTH)) {
                     pActors[monster_id].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].Apply(GameTime(pMiscTimer->uTotalGameTimeElapsed + 128), PLAYER_SKILL_MASTERY_NONE, 0, 0, 0);
-                    v704.x = 0;
-                    v704.y = 0;
-                    v704.z = 0;
-                    pSpellSprite.containing_item.Reset();
-                    pSpellSprite.spell_id = pCastSpell->uSpellID;
-                    pSpellSprite.spell_level = spell_level;
-                    pSpellSprite.spell_skill = spell_mastery;
-                    pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                    pSpellSprite.uAttributes = 0;
+                    InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.uSectorID = 0;
-                    pSpellSprite.uSpriteFrameID = 0;
                     pSpellSprite.field_60_distance_related_prolly_lod = 0;
                     pSpellSprite.uFacing = 0;
-                    pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
-                    pSpellSprite.uSoundID = (short)pCastSpell->sound_id;
                     pSpellSprite.vPosition.x = pActors[monster_id].vPosition.x;
                     pSpellSprite.vPosition.y = pActors[monster_id].vPosition.y;
                     pSpellSprite.vPosition.z = pActors[monster_id].vPosition.z;
                     pSpellSprite.spell_target_pid = PID(OBJECT_Actor, monster_id);
-                    Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, &v704);
+                    Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, &spell_velocity);
                 }
                 spell_sound_flag = true;
                 break;
@@ -465,40 +433,28 @@ void CastSpellInfoHelpers::CastSpell() {
             case SPELL_LIGHT_DESTROY_UNDEAD:
             {
                 if (!pPlayer->CanCastSpell(uRequiredMana) ||
-                    !spell_targeted_at ||
-                    PID_TYPE(spell_targeted_at) != OBJECT_Actor)
+                        !spell_targeted_at ||
+                        PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
                     break;
+                }
                 // v730 = spell_targeted_at >> 3;
                 // HIDWORD(spellduration) =
                 // (int)&pActors[PID_ID(spell_targeted_at)];
-                v691.x = 0;
-                v691.y = 0;
-                v691.z = 0;
-                pSpellSprite.containing_item.Reset();
-                pSpellSprite.spell_id = pCastSpell->uSpellID;
-                pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = spell_mastery;
-                pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
+                InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                 pSpellSprite.vPosition.x = pActors[PID_ID(spell_targeted_at)].vPosition.x;
                 pSpellSprite.vPosition.y = pActors[PID_ID(spell_targeted_at)].vPosition.y;
                 pSpellSprite.vPosition.z = pActors[PID_ID(spell_targeted_at)].vPosition.z;
-                pSpellSprite.uAttributes = 0;
                 pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
-                pSpellSprite.uSpriteFrameID = 0;
-                pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
                 pSpellSprite.spell_target_pid = spell_targeted_at;
                 pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                 pSpellSprite.uFacing = target_direction.uYawAngle;
                 pSpellSprite.uAttributes |= SPRITE_ATTACHED_TO_HEAD;
-                pSpellSprite.uSoundID = pCastSpell->sound_id;
                 int obj_id = pSpellSprite.Create(0, 0, 0, 0);
                 if (!MonsterStats::BelongsToSupertype(pActors[PID_ID(spell_targeted_at)].pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
-                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                    pCastSpell->uSpellID = 0;
+                    SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
                     continue;
                 }
-                Actor::DamageMonsterFromParty(PID(OBJECT_Item, obj_id), PID_ID(spell_targeted_at), &v691);
+                Actor::DamageMonsterFromParty(PID(OBJECT_Item, obj_id), PID_ID(spell_targeted_at), &spell_velocity);
                 spell_sound_flag = true;
                 break;
             }
@@ -517,32 +473,27 @@ void CastSpellInfoHelpers::CastSpell() {
             case SPELL_LIGHT_LIGHT_BOLT:
             case SPELL_DARK_DRAGON_BREATH:
             {
-                if (!pPlayer->CanCastSpell(uRequiredMana))
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
                     break;
-                pSpellSprite.containing_item.Reset();
-                pSpellSprite.spell_id = pCastSpell->uSpellID;
-                pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = spell_mastery;
-                pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
+                }
+                InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                 pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
-                pSpellSprite.uAttributes = 0;
-                if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+                if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
-                else
+                } else {
                     pSpellSprite.uSectorID = 0;
-                pSpellSprite.uSpriteFrameID = 0;
-                pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
+                }
                 pSpellSprite.spell_target_pid = spell_targeted_at;
                 pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                 pSpellSprite.uFacing = target_direction.uYawAngle;
-                pSpellSprite.uSoundID = pCastSpell->sound_id;
-                if (pCastSpell->uSpellID == SPELL_AIR_LIGHNING_BOLT)
+                if (pCastSpell->uSpellID == SPELL_AIR_LIGHNING_BOLT) {
                     pSpellSprite.uAttributes |= SPRITE_SKIP_A_FRAME;
+                }
                 if (pParty->bTurnBasedModeOn) {
                     pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                 }
-                v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, v659, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
+                spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
+                if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
                     ++pTurnEngine->pending_actions;
                 }
                 spell_sound_flag = true;
@@ -554,62 +505,47 @@ void CastSpellInfoHelpers::CastSpell() {
             case SPELL_BODY_FLYING_FIST:
             case SPELL_DARK_TOXIC_CLOUD:
             {
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                pSpellSprite.containing_item.Reset();
-                pSpellSprite.spell_id = pCastSpell->uSpellID;
-                pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = spell_mastery;
-                pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                pSpellSprite.uAttributes = 0;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
+                InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                 // TODO(pskelton): was pParty->uPartyHeight / 2
                 pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                 pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
-                pSpellSprite.uSpriteFrameID = 0;
-                pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
                 pSpellSprite.spell_target_pid = spell_targeted_at;
                 pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                 pSpellSprite.uFacing = target_direction.uYawAngle;
-                pSpellSprite.uSoundID = pCastSpell->sound_id;
                 if (pParty->bTurnBasedModeOn) {
                     pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                 }
-                v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, v659, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
+                spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
+                if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
                     ++pTurnEngine->pending_actions;
                 }
                 spell_sound_flag = true;
                 break;
             }
 
-            case SPELL_LIGHT_SUNRAY: {
+            case SPELL_LIGHT_SUNRAY:
+            {
                 if (uCurrentlyLoadedLevelType == LEVEL_Indoor ||
-                    uCurrentlyLoadedLevelType == LEVEL_Outdoor &&
+                        uCurrentlyLoadedLevelType == LEVEL_Outdoor &&
                         (pParty->uCurrentHour < 5 || pParty->uCurrentHour >= 21)) {
-                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                    pCastSpell->uSpellID = 0;
+                    SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
                     continue;
                 }
                 if (pPlayer->CanCastSpell(uRequiredMana)) {
-                    pSpellSprite.containing_item.Reset();
-                    pSpellSprite.spell_id = pCastSpell->uSpellID;
-                    pSpellSprite.spell_level = spell_level;
-                    pSpellSprite.spell_skill = spell_mastery;
-                    pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                    pSpellSprite.uAttributes = 0;
+                    InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
-                    pSpellSprite.uSpriteFrameID = 0;
-                    pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                     pSpellSprite.uFacing = target_direction.uYawAngle;
-                    pSpellSprite.uSoundID = pCastSpell->sound_id;
                     if (pParty->bTurnBasedModeOn) {
                         pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
-                    v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                    if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, v659, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
+                    spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
+                    if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
                     }
                     spell_sound_flag = true;
@@ -619,10 +555,12 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_LIGHT_PARALYZE:
             {
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 monster_id = PID_ID(spell_targeted_at);
                 if (PID_TYPE(spell_targeted_at) == OBJECT_Actor &&
-                    pActors[monster_id].DoesDmgTypeDoDamage(DMGT_LIGHT)) {
+                        pActors[monster_id].DoesDmgTypeDoDamage(DMGT_LIGHT)) {
                     Actor::AI_Stand(PID_ID(spell_targeted_at), 4, 0x80, 0);
                     pActors[monster_id].pActorBuffs[ACTOR_BUFF_PARALYZED].Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(3 * 60 * spell_level)), spell_mastery, 0, 0, 0);
                     pActors[monster_id].uAttributes |= ACTOR_AGGRESSOR;
@@ -640,7 +578,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     case PLAYER_SKILL_MASTERY_NOVICE:
                         spellduration = 180 * spell_level;
                         amount = 2;
-                        break;  // LODWORD(spellduration)???не применяется далее
+                        break;
                     case PLAYER_SKILL_MASTERY_EXPERT:
                         spellduration = 300 * spell_level;
                         amount = 2;
@@ -656,8 +594,9 @@ void CastSpellInfoHelpers::CastSpell() {
                     default:
                         assert(false);
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana))
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
                     break;
+                }
                 // v721 = 836 * PID_ID(spell_targeted_at);
                 monster_id = PID_ID(spell_targeted_at);
                 if (PID_TYPE(spell_targeted_at) == OBJECT_Actor && pActors[monster_id].DoesDmgTypeDoDamage(DMGT_EARTH)) {
@@ -671,36 +610,30 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_MIND_CHARM:
             {
-                if (!pPlayer->CanCastSpell(uRequiredMana))
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
                     break;
+                }
                 monster_id = PID_ID(spell_targeted_at);
                 if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_MIND)) {
                     uint power = 300 * spell_level;
-                    if (spell_mastery == PLAYER_SKILL_MASTERY_EXPERT)
+                    if (spell_mastery == PLAYER_SKILL_MASTERY_EXPERT) {
                         power = 600 * spell_level;
-                    else if (spell_mastery == PLAYER_SKILL_MASTERY_MASTER)
+                    } else if (spell_mastery == PLAYER_SKILL_MASTERY_MASTER) {
                         power = 29030400;
+                    }
 
                     pActors[monster_id].pActorBuffs[ACTOR_BUFF_BERSERK].Reset();
                     pActors[monster_id].pActorBuffs[ACTOR_BUFF_ENSLAVED].Reset();
                     pActors[monster_id].pActorBuffs[ACTOR_BUFF_CHARM].Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(power << 7)), spell_mastery, 0, 0, 0);
-                    pSpellSprite.containing_item.Reset();
-                    pSpellSprite.spell_id = pCastSpell->uSpellID;
-                    pSpellSprite.spell_level = spell_level;
-                    pSpellSprite.spell_skill = spell_mastery;
-                    pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
+                    InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition.x = pActors[monster_id].vPosition.x;
                     pSpellSprite.vPosition.y = pActors[monster_id].vPosition.y;
                     pSpellSprite.vPosition.z = pActors[monster_id].vPosition.z + pActors[monster_id].uActorHeight;
-                    pSpellSprite.uAttributes = 0;
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
-                    pSpellSprite.uSpriteFrameID = 0;
-                    pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                     pSpellSprite.uFacing = target_direction.uYawAngle;
                     pSpellSprite.uAttributes |= SPRITE_ATTACHED_TO_HEAD;
-                    pSpellSprite.uSoundID = pCastSpell->sound_id;
                     pSpellSprite.Create(0, 0, 0, pCastSpell->uPlayerID + 1);
                 }
                 spell_sound_flag = true;
@@ -709,27 +642,22 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_DARK_SHRINKING_RAY:
             {
-                if (!pPlayer->CanCastSpell(uRequiredMana))
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
                     break;
-                pSpellSprite.containing_item.Reset();
-                pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
+                }
+                // spell_id different?
+                InitSpellSprite( &pSpellSprite, spell_level * 300, spell_mastery, pCastSpell);
                 pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
-                pSpellSprite.uAttributes = 0;
                 pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
-                pSpellSprite.uSpriteFrameID = 0;
-                pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
                 pSpellSprite.spell_target_pid = spell_targeted_at;
                 pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                 pSpellSprite.uFacing = target_direction.uYawAngle;
-                pSpellSprite.uSoundID = pCastSpell->sound_id;
-                pSpellSprite.spell_skill = spell_mastery;
                 pSpellSprite.spell_id = SPELL_FIRE_PROTECTION_FROM_FIRE;
-                pSpellSprite.spell_level = 300 * spell_level;
                 if (pParty->bTurnBasedModeOn) {
                     pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                 }
-                v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, v659, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
+                spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
+                if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
                     ++pTurnEngine->pending_actions;
                 }
                 spell_sound_flag = true;
@@ -739,20 +667,19 @@ void CastSpellInfoHelpers::CastSpell() {
             case SPELL_DARK_VAMPIRIC_WEAPON:
             case SPELL_FIRE_FIRE_AURA:
             {
-                if (!pPlayer->CanCastSpell(uRequiredMana))
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
                     break;
+                }
 
                 ItemGen *item = &pParty->pPlayers[pCastSpell->uPlayerID_2].pInventoryItemList[pCastSpell->spell_target_pid];
                 item->UpdateTempBonus(pParty->GetPlayingTime());
                 if (item->uItemID == ITEM_BLASTER || item->uItemID == ITEM_BLASTER_RIFLE ||
-                    item->IsBroken() || pItemTable->IsMaterialNonCommon(item) || item->special_enchantment != ITEM_ENCHANTMENT_NULL || item->uEnchantmentType != 0 ||
-                    !IsWeapon(item->GetItemEquipType())) {
+                        item->IsBroken() || pItemTable->IsMaterialNonCommon(item) || item->special_enchantment != ITEM_ENCHANTMENT_NULL || item->uEnchantmentType != 0 ||
+                        !IsWeapon(item->GetItemEquipType())) {
                     _50C9D0_AfterEnchClickEventId = 113;
                     _50C9D4_AfterEnchClickEventSecondParam = 0;
                     _50C9D8_AfterEnchClickEventTimeout = 128; // was 1, increased to make message readable
-                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                    pCastSpell->uSpellID = 0;
+                    SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
                     break;
                 }
 
@@ -783,10 +710,11 @@ void CastSpellInfoHelpers::CastSpell() {
                         __debugbreak();
                 }
 
-                if (spell_mastery < PLAYER_SKILL_MASTERY_GRANDMASTER)
+                if (spell_mastery < PLAYER_SKILL_MASTERY_GRANDMASTER) {
                     spellduration = 3600 * spell_level;
-                else
+                } else {
                     spellduration = 0;
+                }
 
                 if (spellduration > 0) {
                     item->uExpireTime = GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration));
@@ -816,8 +744,9 @@ void CastSpellInfoHelpers::CastSpell() {
                     default:
                         assert(false);
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana))
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
                     break;
+                }
                 spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                 pParty->pPlayers[pCastSpell->uPlayerID_2].pPlayerBuffs[PLAYER_BUFF_REGENERATION]
                     .Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(3600 * spell_level)), spell_mastery, amount, 0, 0);
@@ -865,23 +794,20 @@ void CastSpellInfoHelpers::CastSpell() {
                         assert(false);
                         continue;
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana))
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
                     break;
-                spell_fx_renderer->SetPlayerBuffAnim(
-                    pCastSpell->uSpellID, 0);
-                spell_fx_renderer->SetPlayerBuffAnim(
-                    pCastSpell->uSpellID, 1);
-                spell_fx_renderer->SetPlayerBuffAnim(
-                    pCastSpell->uSpellID, 2);
-                spell_fx_renderer->SetPlayerBuffAnim(
-                    pCastSpell->uSpellID, 3);
+                }
+                spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 0);
+                spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 1);
+                spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 2);
+                spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 3);
 
                 pParty->pPartyBuffs[buff_resist].Apply(GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(3600 * spell_level)), spell_mastery, amount, 0, 0);
                 spell_sound_flag = true;
                 break;
             }
 
-            case SPELL_FIRE_HASTE:  //Спешка
+            case SPELL_FIRE_HASTE:
             {
                 switch (spell_mastery) {
                     case PLAYER_SKILL_MASTERY_NOVICE:
@@ -935,8 +861,9 @@ void CastSpellInfoHelpers::CastSpell() {
                         assert(false);
                 }
                 amount = spell_level + 5;
-                if (!pPlayer->CanCastSpell(uRequiredMana))
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
                     break;
+                }
                 if (spell_mastery == PLAYER_SKILL_MASTERY_NOVICE) {
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                     spell_overlay_id = pOtherOverlayList->_4418B1(10000, pCastSpell->uPlayerID_2 + 310, 0, 65536);
@@ -958,7 +885,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_SPIRIT_SPIRIT_LASH:  //Плеть Духа
+            case SPELL_SPIRIT_SPIRIT_LASH:
             {
                 if (pPlayer->CanCastSpell(uRequiredMana) && spell_targeted_at &&
                     PID_TYPE(spell_targeted_at) == OBJECT_Actor) {
@@ -971,39 +898,26 @@ void CastSpellInfoHelpers::CastSpell() {
                                  pParty->vPosition.z);
                     int count = int_get_vector_length(dist_X, dist_Y, dist_Z);
                     if ((double)count <= 307.2) {
-                        v701.x = 0;
-                        v701.y = 0;
-                        v701.z = 0;
-                        pSpellSprite.containing_item.Reset();
-                        pSpellSprite.spell_id = pCastSpell->uSpellID;
-                        pSpellSprite.spell_level = spell_level;
-                        pSpellSprite.spell_skill = spell_mastery;
-                        pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                        pSpellSprite.uAttributes = 0;
+                        InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.uSectorID = 0;
-                        pSpellSprite.uSpriteFrameID = 0;
                         pSpellSprite.field_60_distance_related_prolly_lod = 0;
-                        pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
                         pSpellSprite.uFacing = 0;
-                        pSpellSprite.uSoundID = (short)pCastSpell->sound_id;
                         pSpellSprite.vPosition.x = pActors[monster_id].vPosition.x;
                         pSpellSprite.vPosition.y = pActors[monster_id].vPosition.y;
                         pSpellSprite.vPosition.z = pActors[monster_id].vPosition.z - (int)((double)pActors[monster_id].uActorHeight * -0.8);
                         pSpellSprite.spell_target_pid = PID(OBJECT_Actor, spell_targeted_at);
-                        Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, &v701);
+                        Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, &spell_velocity);
                         spell_sound_flag = true;
                     } else {
-                        GameUI_SetStatusBar(LSTR_SPELL_FAILED);
-                        pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                        pCastSpell->uSpellID = 0;
+                        SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
                     }
                 }
                 break;
             }
 
-            case SPELL_AIR_SHIELD:       //Щит
-            case SPELL_EARTH_STONESKIN:  //Каменная кожа
-            case SPELL_SPIRIT_HEROISM:   //Героизм
+            case SPELL_AIR_SHIELD:
+            case SPELL_EARTH_STONESKIN:
+            case SPELL_SPIRIT_HEROISM:
             {
                 switch (spell_mastery) {
                     case PLAYER_SKILL_MASTERY_NOVICE:
@@ -1038,7 +952,9 @@ void CastSpellInfoHelpers::CastSpell() {
                         assert(false);
                         continue;
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 0);
                 spell_fx_renderer->SetPlayerBuffAnim(
@@ -1055,13 +971,16 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_FIRE_IMMOLATION:  //Кольцо огня
+            case SPELL_FIRE_IMMOLATION:
             {
-                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
+                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                     spellduration = 600 * spell_level;
-                else
+                } else {
                     spellduration = 60 * spell_level;
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                }
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 0);
                 spell_fx_renderer->SetPlayerBuffAnim(
@@ -1080,22 +999,23 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_FIRE_METEOR_SHOWER:
             {
-                if (spell_mastery < PLAYER_SKILL_MASTERY_MASTER)
+                if (spell_mastery < PLAYER_SKILL_MASTERY_MASTER) {
                     break;
+                }
 
                 int meteor_num;
-                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
+                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                     meteor_num = 20;
-                else
+                } else {
                     meteor_num = 16;
+                }
                 if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-                    GameUI_SetStatusBar(LSTR_CANT_METEOR_SHOWER_INDOORS);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                    pCastSpell->uSpellID = 0;
+                    SpellFailed(pCastSpell, LSTR_CANT_METEOR_SHOWER_INDOORS);
                     continue;
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana))
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
                     break;
+                }
                 obj_type = PID_TYPE(spell_targeted_at);
                 monster_id = PID_ID(spell_targeted_at);
                 if (obj_type == OBJECT_Actor) {  // quick cast can specify target
@@ -1110,41 +1030,32 @@ void CastSpellInfoHelpers::CastSpell() {
                 uint64_t k = 0;
                 int j = 0;
                 if (meteor_num > 0) {
-                    v730_int = obj_type == OBJECT_Actor ? spell_targeted_at : 0;
+                    int target_pid = obj_type == OBJECT_Actor ? spell_targeted_at : 0;
                     for (; meteor_num; meteor_num--) {
+                        uint32_t yaw, pitch;
                         spell_targeted_at = grng->Random(1000);
                         if (sqrt(((double)spell_targeted_at - 2500) *
                                      ((double)spell_targeted_at - 2500) + j * j + k * k) <= 1.0) {
-                            HEXRAYS_LODWORD(v687) = 0;
-                            HEXRAYS_HIDWORD(v687) = 0;
+                            yaw = 0;
+                            pitch = 0;
                         } else {
-                            HEXRAYS_HIDWORD(v687) = TrigLUT.Atan2(
-                                (int64_t)sqrt((float)(j * j + k * k)),
-                                (double)spell_targeted_at - 2500);
-                            HEXRAYS_LODWORD(v687) = TrigLUT.Atan2(j, k);
+                            pitch = TrigLUT.Atan2((int64_t)sqrt((float)(j * j + k * k)),
+                                                  (double)spell_targeted_at - 2500);
+                            yaw = TrigLUT.Atan2(j, k);
                         }
-                        pSpellSprite.containing_item.Reset();
-                        pSpellSprite.spell_id = pCastSpell->uSpellID;
-                        pSpellSprite.spell_level = spell_level;
-                        pSpellSprite.spell_skill = spell_mastery;
-                        pSpellSprite.uObjectDescID =
-                            pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                        pSpellSprite.uAttributes = 0;
+                        InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.vPosition.x = dist_X;
                         pSpellSprite.vPosition.y = dist_Y;
                         pSpellSprite.vPosition.z = spell_targeted_at + dist_Z;
                         pSpellSprite.uSectorID = 0;
-                        pSpellSprite.uSpriteFrameID = 0;
-                        pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
-                        pSpellSprite.spell_target_pid = v730_int;
+                        pSpellSprite.spell_target_pid = target_pid;
                         pSpellSprite.field_60_distance_related_prolly_lod =
                             stru_50C198._427546(spell_targeted_at + 2500);
-                        pSpellSprite.uFacing = v687;
-                        pSpellSprite.uSoundID = (short)pCastSpell->sound_id;
+                        pSpellSprite.uFacing = yaw;
                         if (pParty->bTurnBasedModeOn) {
                             pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                         }
-                        if (pSpellSprite.Create(v687, HEXRAYS_SHIDWORD(v687), pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed, 0) != -1 && pParty->bTurnBasedModeOn) {
+                        if (pSpellSprite.Create(yaw, pitch, pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed, 0) != -1 && pParty->bTurnBasedModeOn) {
                             ++pTurnEngine->pending_actions;
                         }
                         j = grng->Random(1024) - 512;
@@ -1158,30 +1069,17 @@ void CastSpellInfoHelpers::CastSpell() {
             case SPELL_FIRE_INFERNO:
             {
                 if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-                    GameUI_SetStatusBar(LSTR_CANT_INFERNO_OUTDOORS);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                    pCastSpell->uSpellID = 0;
+                    SpellFailed(pCastSpell, LSTR_CANT_INFERNO_OUTDOORS);
                     continue;
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana))
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
                     break;
+                }
                 int mon_num = render->GetActorsInViewport(4096);
-                v700.x = 0;
-                v700.y = 0;
-                v700.z = 0;
-                pSpellSprite.containing_item.Reset();
-                pSpellSprite.spell_id = pCastSpell->uSpellID;
-                pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = spell_mastery;
-                pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                pSpellSprite.uAttributes = 0;
+                InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                 pSpellSprite.uSectorID = 0;
-                pSpellSprite.uSpriteFrameID = 0;
                 pSpellSprite.field_60_distance_related_prolly_lod = 0;
                 pSpellSprite.uFacing = 0;
-                pSpellSprite.spell_caster_pid =
-                    PID(OBJECT_Player, pCastSpell->uPlayerID);
-                pSpellSprite.uSoundID = (short)pCastSpell->sound_id;
                 for (uint i = 0; i < mon_num; i++) {
                     pSpellSprite.vPosition.x = pActors[_50BF30_actors_in_viewport_ids[i]].vPosition.x;
                     pSpellSprite.vPosition.y = pActors[_50BF30_actors_in_viewport_ids[i]].vPosition.y;
@@ -1192,7 +1090,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pSpellSprite.spell_target_pid = PID(OBJECT_Actor, _50BF30_actors_in_viewport_ids[i]);
                     Actor::DamageMonsterFromParty(
                         PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)),
-                        _50BF30_actors_in_viewport_ids[i], &v700);
+                        _50BF30_actors_in_viewport_ids[i], &spell_velocity);
                     spell_fx_renderer->RenderAsSprite(&pSpellSprite);
                     spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.OrangeyRed.C32(), 0x40);
                 }
@@ -1203,10 +1101,13 @@ void CastSpellInfoHelpers::CastSpell() {
             case SPELL_AIR_WIZARD_EYE:
             {
                 spellduration = 3600 * spell_level;
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                for (uint pl_id = 0; pl_id < 4; pl_id++)
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
+                for (uint pl_id = 0; pl_id < 4; pl_id++) {
                     spell_overlay_id =
                         pOtherOverlayList->_4418B1(2000, pl_id + 100, 0, 65536);
+                }
                 pParty->pPartyBuffs[PARTY_BUFF_WIZARD_EYE].Apply(
                     GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)),
                     spell_mastery, 0, spell_overlay_id, 0);
@@ -1214,7 +1115,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_AIR_FEATHER_FALL:  //Падение пера(пёрышком)
+            case SPELL_AIR_FEATHER_FALL:
             {
                 switch (spell_mastery) {
                     case PLAYER_SKILL_MASTERY_NOVICE:
@@ -1232,27 +1133,25 @@ void CastSpellInfoHelpers::CastSpell() {
                     default:
                         assert(false);
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                for (uint pl_id = 0; pl_id < 4; pl_id++)
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
+                for (uint pl_id = 0; pl_id < 4; pl_id++) {
                     pOtherOverlayList->_4418B1(2010, pl_id + 100, 0, 65536);
-                spell_fx_renderer->SetPlayerBuffAnim(
-                    pCastSpell->uSpellID, 0);
-                spell_fx_renderer->SetPlayerBuffAnim(
-                    pCastSpell->uSpellID, 1);
-                spell_fx_renderer->SetPlayerBuffAnim(
-                    pCastSpell->uSpellID, 2);
-                spell_fx_renderer->SetPlayerBuffAnim(
-                    pCastSpell->uSpellID, 3);
+                }
+                spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 0);
+                spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 1);
+                spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 2);
+                spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 3);
 
                 pParty->pPartyBuffs[PARTY_BUFF_FEATHER_FALL].Apply(
-                    GameTime(pParty->GetPlayingTime() +
-                        GameTime::FromSeconds(spellduration)),
+                    GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)),
                     spell_mastery, 0, 0, 0);
                 spell_sound_flag = true;
                 break;
             }
 
-            case SPELL_AIR_SPARKS:  // Искры
+            case SPELL_AIR_SPARKS:
             {
                 switch (spell_mastery) {
                     case PLAYER_SKILL_MASTERY_NOVICE:
@@ -1270,26 +1169,19 @@ void CastSpellInfoHelpers::CastSpell() {
                     default:
                         assert(false);
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                int _v726 = (int)(60 * TrigLUT.uIntegerDoublePi) / 360;
-                pSpellSprite.containing_item.Reset();
-                pSpellSprite.spell_id = pCastSpell->uSpellID;
-                pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = spell_mastery;
-                pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
+                InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                 pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
-                pSpellSprite.uAttributes = 0;
                 pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
-                pSpellSprite.uSpriteFrameID = 0;
-                pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
                 pSpellSprite.spell_target_pid = spell_targeted_at;
                 pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
-                pSpellSprite.uSoundID = pCastSpell->sound_id;
                 if (pParty->bTurnBasedModeOn) {
                     pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                 }
-                spell_spray_angle_start = (int)_v726 / -2;
-                spell_spray_angle_end = (int)_v726 / 2;
+                spell_spray_angle_start = ONE_THIRD_PI / -2;
+                spell_spray_angle_end = ONE_THIRD_PI / 2;
                 while (spell_spray_angle_start <= spell_spray_angle_end) {
                     pSpellSprite.uSpriteFrameID = grng->Random(64); // TODO(captainurist): this doesn't look like a frame id initialization
                     pSpellSprite.uFacing = spell_spray_angle_start + (short)target_direction.uYawAngle;
@@ -1301,7 +1193,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
                     }
-                    spell_spray_angle_start += _v726 / (amount - 1);
+                    spell_spray_angle_start += ONE_THIRD_PI / (amount - 1);
                 }
                 spell_sound_flag = true;
                 break;
@@ -1310,12 +1202,12 @@ void CastSpellInfoHelpers::CastSpell() {
             case SPELL_AIR_JUMP:
             {
                 if (pParty->IsAirborne()) {
-                    GameUI_SetStatusBar(LSTR_CANT_JUMP_AIRBORNE);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
+                    SpellFailed(pCastSpell, LSTR_CANT_JUMP_AIRBORNE);
                     break;
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana))
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
                     break;
+                }
                 for (uint pl_id = 0; pl_id < 4; pl_id++)
                     pOtherOverlayList->_4418B1(2040, pl_id + 100, 0, 65536);
                 pParty->uFlags |= PARTY_FLAGS_1_LANDING;
@@ -1347,9 +1239,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         assert(false);
                 }
                 if (pParty->GetRedOrYellowAlert()) {
-                    GameUI_SetStatusBar(LSTR_HOSTILE_CREATURES_NEARBY);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                    pCastSpell->uSpellID = 0;
+                    SpellFailed(pCastSpell, LSTR_HOSTILE_CREATURES_NEARBY);
                     continue;
                 }
                 if (pPlayer->CanCastSpell(uRequiredMana)) {
@@ -1365,23 +1255,24 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_AIR_FLY:  //Полёт
+            case SPELL_AIR_FLY:
             {
                 if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-                    GameUI_SetStatusBar(LSTR_CANT_FLY_INDOORS);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
+                    SpellFailed(pCastSpell, LSTR_HOSTILE_CREATURES_NEARBY);
                     break;
                 }
                 if (!pPlayers[pCastSpell->uPlayerID + 1]->GetMaxMana() && !engine->config->debug.AllMagic.Get()) {
-                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
+                    SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
                     break;
                 }
-                if (spell_mastery < PLAYER_SKILL_MASTERY_GRANDMASTER)
+                if (spell_mastery < PLAYER_SKILL_MASTERY_GRANDMASTER) {
                     amount = 1;
-                else
+                } else {
                     amount = 0;
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                }
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 for (uint pl_id = 0; pl_id < 4; pl_id++)
                     pOtherOverlayList->_4418B1(2090, pl_id + 100, 0, 65536);
                 spell_overlay_id = pOtherOverlayList->_4418B1(10008, 203, 0, 65536);
@@ -1396,12 +1287,12 @@ void CastSpellInfoHelpers::CastSpell() {
             case SPELL_AIR_STARBURST:
             {
                 if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-                    GameUI_SetStatusBar(LSTR_CANT_STARBURST_INDOORS);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                    pCastSpell->uSpellID = 0;
+                    SpellFailed(pCastSpell, LSTR_CANT_STARBURST_INDOORS);
                     continue;
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 obj_type = PID_TYPE(spell_targeted_at);
                 monster_id = PID_ID(spell_targeted_at);
                 if (obj_type == OBJECT_Actor) {
@@ -1415,7 +1306,8 @@ void CastSpellInfoHelpers::CastSpell() {
                 }
                 uint64_t k = 0;
                 int j = 0;
-                v730_int = obj_type == OBJECT_Actor ? spell_targeted_at : 0;
+                int target_pid = obj_type == OBJECT_Actor ? spell_targeted_at : 0;
+                uint32_t yaw, pitch;
                 for (uint star_num = 20; star_num; star_num--) {
                     spell_targeted_at = grng->Random(1000);
                     if (sqrt(((double)spell_targeted_at + (double)dist_Z -
@@ -1423,39 +1315,29 @@ void CastSpellInfoHelpers::CastSpell() {
                                  ((double)spell_targeted_at + (double)dist_Z -
                                   (double)(dist_Z + 2500)) +
                              j * j + k * k) <= 1.0) {
-                        HEXRAYS_LODWORD(v685) = 0;
-                        HEXRAYS_HIDWORD(v685) = 0;
+                        yaw = 0;
+                        pitch = 0;
                     } else {
-                        HEXRAYS_HIDWORD(v685) = TrigLUT.Atan2(
-                            (int64_t)sqrt((float)(j * j + k * k)),
-                            ((double)spell_targeted_at + (double)dist_Z -
-                             (double)(dist_Z + 2500)));
-                        HEXRAYS_LODWORD(v685) = TrigLUT.Atan2(j, k);
+                        pitch = TrigLUT.Atan2((int64_t)sqrt((float)(j * j + k * k)),
+                                            ((double)spell_targeted_at + (double)dist_Z -
+                                                (double)(dist_Z + 2500)));
+                        yaw = TrigLUT.Atan2(j, k);
                     }
-                    pSpellSprite.containing_item.Reset();
-                    pSpellSprite.spell_id = pCastSpell->uSpellID;
-                    pSpellSprite.spell_level = spell_level;
-                    pSpellSprite.spell_skill = spell_mastery;
-                    pSpellSprite.uObjectDescID =
-                        pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                    pSpellSprite.uAttributes = 0;
+                    InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition.x = dist_X;
                     pSpellSprite.vPosition.y = dist_Y;
                     pSpellSprite.vPosition.z = (int)(spell_targeted_at + (dist_Z + 2500));
                     pSpellSprite.uSectorID = 0;
-                    pSpellSprite.uSpriteFrameID = 0;
-                    pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
-                    pSpellSprite.spell_target_pid = v730_int;
+                    pSpellSprite.spell_target_pid = target_pid;
                     pSpellSprite.field_60_distance_related_prolly_lod =
                         stru_50C198._427546(spell_targeted_at + 2500);
-                    pSpellSprite.uFacing = v685;
-                    pSpellSprite.uSoundID = (short)pCastSpell->sound_id;
+                    pSpellSprite.uFacing = yaw;
                     if (pParty->bTurnBasedModeOn) {
                         pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
-                    if (pSpellSprite.Create(v685, HEXRAYS_SHIDWORD(v685),
+                    if (pSpellSprite.Create(yaw, pitch,
                                             pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed, 0) != -1 &&
-                        pParty->bTurnBasedModeOn) {
+                                                pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
                     }
                     j = grng->Random(1024) - 512;
@@ -1483,7 +1365,9 @@ void CastSpellInfoHelpers::CastSpell() {
                     default:
                         assert(false);
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 for (int i = 0; i < 4; i++) {
                     if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                         if (pParty->pPlayers[i].conditions.Has(Condition_Sleep)) {
@@ -1520,49 +1404,34 @@ void CastSpellInfoHelpers::CastSpell() {
                     default:
                         assert(false);
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                int _v733 = (int)(60 * TrigLUT.uIntegerDoublePi) / 360;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 if (amount == 1) {
-                    pSpellSprite.containing_item.Reset();
-                    pSpellSprite.spell_id = pCastSpell->uSpellID;
-                    pSpellSprite.spell_level = spell_level;
-                    pSpellSprite.spell_skill = spell_mastery;
-                    pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                    pSpellSprite.uAttributes = 0;
+                    InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
-                    pSpellSprite.uSpriteFrameID = 0;
-                    pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                     pSpellSprite.uFacing = target_direction.uYawAngle;
-                    pSpellSprite.uSoundID = pCastSpell->sound_id;
                     if (pParty->bTurnBasedModeOn) {
                         pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
-                    v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                    if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, v659, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
+                    spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
+                    if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
                     }
                 } else {
-                    pSpellSprite.containing_item.Reset();
-                    pSpellSprite.spell_id = pCastSpell->uSpellID;
-                    pSpellSprite.spell_level = spell_level;
-                    pSpellSprite.spell_skill = spell_mastery;
-                    pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
+                    InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
-                    pSpellSprite.uAttributes = 0;
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
-                    pSpellSprite.uSpriteFrameID = 0;
-                    pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
-                    pSpellSprite.uSoundID = pCastSpell->sound_id;
                     if (pParty->bTurnBasedModeOn) {
                         pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
-                    spell_spray_angle_start = _v733 / -2;
-                    spell_spray_angle_end = _v733 / 2;
+                    spell_spray_angle_start = ONE_THIRD_PI / -2;
+                    spell_spray_angle_end = ONE_THIRD_PI / 2;
                     if (spell_spray_angle_start <= spell_spray_angle_end) {
                         do {
                             pSpellSprite.uFacing = spell_spray_angle_start +
@@ -1577,7 +1446,7 @@ void CastSpellInfoHelpers::CastSpell() {
                                 pParty->bTurnBasedModeOn) {
                                 ++pTurnEngine->pending_actions;
                             }
-                            spell_spray_angle_start += _v733 / (amount - 1);
+                            spell_spray_angle_start += ONE_THIRD_PI / (amount - 1);
                         } while (spell_spray_angle_start <=
                                  spell_spray_angle_end);
                     }
@@ -1589,8 +1458,7 @@ void CastSpellInfoHelpers::CastSpell() {
             case SPELL_WATER_WATER_WALK:
             {
                 if (!pPlayers[pCastSpell->uPlayerID + 1]->GetMaxMana()) {
-                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
+                    SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
                     break;
                 }
                 switch (spell_mastery) {
@@ -1605,9 +1473,10 @@ void CastSpellInfoHelpers::CastSpell() {
                     default:
                         assert(false);
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                spell_overlay_id =
-                    pOtherOverlayList->_4418B1(10005, 201, 0, 65536);
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
+                spell_overlay_id = pOtherOverlayList->_4418B1(10005, 201, 0, 65536);
                 spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 0);
                 spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 1);
                 spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 2);
@@ -1624,32 +1493,33 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_WATER_RECHARGE_ITEM:
             {
-                if (!pPlayer->CanCastSpell(uRequiredMana))
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
                     break;
+                }
 
                 ItemGen *item = &pParty->pPlayers[pCastSpell->uPlayerID_2].pInventoryItemList[pCastSpell->spell_target_pid];
                 if (item->GetItemEquipType() != EQUIP_WAND || item->IsBroken()) {
                     _50C9D0_AfterEnchClickEventId = 113;
                     _50C9D4_AfterEnchClickEventSecondParam = 0;
                     _50C9D8_AfterEnchClickEventTimeout = 1;
-                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                    pCastSpell->uSpellID = 0;
+                    SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
                     continue;
                 }
 
                 double spell_recharge_factor;
-                if (spell_mastery == PLAYER_SKILL_MASTERY_NOVICE || spell_mastery == PLAYER_SKILL_MASTERY_EXPERT)
+                if (spell_mastery == PLAYER_SKILL_MASTERY_NOVICE || spell_mastery == PLAYER_SKILL_MASTERY_EXPERT) {
                     spell_recharge_factor = (double)spell_level * 0.0099999998 + 0.5;  // 50 %
-                else if (spell_mastery == PLAYER_SKILL_MASTERY_MASTER)
+                } else if (spell_mastery == PLAYER_SKILL_MASTERY_MASTER) {
                     spell_recharge_factor = (double)spell_level * 0.0099999998 + 0.69999999;  // 30 %
-                else if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
+                } else if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                     spell_recharge_factor = (double)spell_level * 0.0099999998 + 0.80000001;  // 20 %
-                else
+                } else {
                     spell_recharge_factor = 0.0;
+                }
 
-                if (spell_recharge_factor > 1.0)
+                if (spell_recharge_factor > 1.0) {
                     spell_recharge_factor = 1.0;
+                }
 
                 int uNewCharges = item->uMaxCharges * spell_recharge_factor;
                 item->uMaxCharges = uNewCharges;
@@ -1658,9 +1528,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     _50C9D0_AfterEnchClickEventId = 113;
                     _50C9D4_AfterEnchClickEventSecondParam = 0;
                     _50C9D8_AfterEnchClickEventTimeout = 1;
-                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                    pCastSpell->uSpellID = 0;
+                    SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
                     continue;
                 }
 
@@ -1670,9 +1538,11 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_WATER_ENCHANT_ITEM: {
-                if (!pPlayer->CanCastSpell(uRequiredMana))
+            case SPELL_WATER_ENCHANT_ITEM:
+            {
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
                     break;
+                }
 
                 uRequiredMana = 0;
                 amount = 10 * spell_level;
@@ -1680,8 +1550,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 int rnd = grng->Random(100);
                 pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID_2];
                 ItemGen *spell_item_to_enchant = &pPlayer->pInventoryItemList[pCastSpell->spell_target_pid];
-                ItemDesc *_v725 = &pItemTable->pItems[spell_item_to_enchant->uItemID];
-                ITEM_EQUIP_TYPE this_equip_type = _v725->uEquipType;
+                ITEM_EQUIP_TYPE this_equip_type = pItemTable->pItems[spell_item_to_enchant->uItemID].uEquipType;
 
                 // refs
                 // https://www.gog.com/forum/might_and_magic_series/a_little_enchant_item_testing_in_mm7
@@ -1803,29 +1672,23 @@ void CastSpellInfoHelpers::CastSpell() {
                 }
 
                 if (spell_sound_flag == 0) {
-                    if (item_not_broken == false)
-                        GameUI_SetStatusBar(LSTR_ITEM_TOO_LAME);
-                    else
-                        GameUI_SetStatusBar(LSTR_SPELL_FAILED);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                    pCastSpell->uSpellID = 0;
+                    SpellFailed(pCastSpell, item_not_broken ? LSTR_SPELL_FAILED : LSTR_ITEM_TOO_LAME);
                     pParty->pPlayers[pCastSpell->uPlayerID_2].PlaySound(SPEECH_SpellFailed, 0);
                 }
                 break;
             }
 
-            case SPELL_WATER_TOWN_PORTAL:  //Портал города
+            case SPELL_WATER_TOWN_PORTAL:
             {
                 amount = 10 * spell_level;
-                if (pPlayer->sMana < (signed int)uRequiredMana) break;
+                if (pPlayer->sMana < (signed int)uRequiredMana) {
+                    break;
+                }
                 if (pParty->uFlags & (PARTY_FLAGS_1_ALERT_RED |
                                       PARTY_FLAGS_1_ALERT_YELLOW) &&
                         spell_mastery != PLAYER_SKILL_MASTERY_GRANDMASTER ||
                     grng->Random(100) >= amount && spell_mastery != PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1,
-                                            0, 0);
-                    pCastSpell->uSpellID = 0;
+                    SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
                     continue;
                 }
                 town_portal_caster_id = pCastSpell->uPlayerID;
@@ -1835,11 +1698,10 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_WATER_LLOYDS_BEACON: {
+            case SPELL_WATER_LLOYDS_BEACON:
+            {
                 if (pCurrentMapName == "d05.blv") {  // Arena
-                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                    pCastSpell->uSpellID = 0;
+                    SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
                     continue;
                 }
                 if (pPlayer->sMana >= (signed int)uRequiredMana) {
@@ -1856,7 +1718,8 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_EARTH_STONE_TO_FLESH: {
+            case SPELL_EARTH_STONE_TO_FLESH:
+            {
                 switch (spell_mastery) {
                     case PLAYER_SKILL_MASTERY_NOVICE:
                         amount = 3600 * spell_level;
@@ -1872,8 +1735,9 @@ void CastSpellInfoHelpers::CastSpell() {
                     default:
                         assert(false);
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana))
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
                     break;
+                }
                 if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Petrified)) {
                     if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                         pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Petrified);
@@ -1891,71 +1755,58 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_EARTH_ROCK_BLAST: {  // Взрыв камня
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                pSpellSprite.containing_item.Reset();
-                pSpellSprite.spell_id = pCastSpell->uSpellID;
-                pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = spell_mastery;
-                pSpellSprite.uObjectDescID =
-                    pObjectList->ObjectIDByItemID(pSpellSprite.uType);
+            case SPELL_EARTH_ROCK_BLAST:
+            {
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
+                InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                 pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
-                pSpellSprite.uAttributes = 0;
                 pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
-                pSpellSprite.uSpriteFrameID = 0;
-                pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
                 pSpellSprite.spell_target_pid = spell_targeted_at;
                 pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                 pSpellSprite.uFacing = pParty->sRotationZ;
-                pSpellSprite.uSoundID = pCastSpell->sound_id;
                 if (pParty->bTurnBasedModeOn) {
                     pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                 }
-                v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                if (pSpellSprite.Create(pParty->sRotationZ, pParty->sRotationY, v659, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
+                spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
+                if (pSpellSprite.Create(pParty->sRotationZ, pParty->sRotationY, spell_speed, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
                     ++pTurnEngine->pending_actions;
                 }
                 spell_sound_flag = true;
                 break;
             }
 
-            case SPELL_EARTH_DEATH_BLOSSOM: {
+            case SPELL_EARTH_DEATH_BLOSSOM:
+            {
                 if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                    pCastSpell->uSpellID = 0;
+                    SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
                     continue;
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 pSpellSprite.uType = SPRITE_SPELL_EARTH_DEATH_BLOSSOM;
-                pSpellSprite.containing_item.Reset();
-                pSpellSprite.spell_id = pCastSpell->uSpellID;
-                pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = spell_mastery;
-                pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
+                InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                 pSpellSprite.vPosition.x = pParty->vPosition.x;
                 pSpellSprite.vPosition.y = pParty->vPosition.y;
-                pSpellSprite.uAttributes = 0;
                 pSpellSprite.uSectorID = 0;
-                pSpellSprite.uSpriteFrameID = 0;
                 pSpellSprite.vPosition.z = pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
                 pSpellSprite.field_60_distance_related_prolly_lod = 0;
-                pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
                 pSpellSprite.spell_target_pid = spell_targeted_at;
                 pSpellSprite.uFacing = (short)pParty->sRotationZ;
-                pSpellSprite.uSoundID = (short)pCastSpell->sound_id;
                 if (pParty->bTurnBasedModeOn) {
                     pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                 }
-                v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                if (pSpellSprite.Create(pParty->sRotationZ, TrigLUT.uIntegerHalfPi / 2, v659, 0) != -1 && pParty->bTurnBasedModeOn) {
+                spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
+                if (pSpellSprite.Create(pParty->sRotationZ, TrigLUT.uIntegerHalfPi / 2, spell_speed, 0) != -1 && pParty->bTurnBasedModeOn) {
                     ++pTurnEngine->pending_actions;
                 }
                 spell_sound_flag = true;
                 break;
             }
 
-            case SPELL_SPIRIT_DETECT_LIFE:  // Детектор жизни
+            case SPELL_SPIRIT_DETECT_LIFE:
             {
                 switch (spell_mastery) {
                     case PLAYER_SKILL_MASTERY_NOVICE:
@@ -1971,7 +1822,9 @@ void CastSpellInfoHelpers::CastSpell() {
                     default:
                         assert(false);
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 0);
                 spell_fx_renderer->SetPlayerBuffAnim(
@@ -1987,7 +1840,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_SPIRIT_FATE:  // Судьба
+            case SPELL_SPIRIT_FATE:
             {
                 switch (spell_mastery) {
                     case PLAYER_SKILL_MASTERY_NOVICE:
@@ -2006,7 +1859,9 @@ void CastSpellInfoHelpers::CastSpell() {
                         assert(false);
                 }
                 // LODWORD(spellduration) = 300;
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 if (pCastSpell->spell_target_pid == 0) {
                     spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
@@ -2031,7 +1886,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_SPIRIT_REMOVE_CURSE:  // Снятие порчи
+            case SPELL_SPIRIT_REMOVE_CURSE:
             {
                 switch (spell_mastery) {
                     case PLAYER_SKILL_MASTERY_NOVICE:
@@ -2049,7 +1904,9 @@ void CastSpellInfoHelpers::CastSpell() {
                     default:
                         assert(false);
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Cursed)) {
                     spell_sound_flag = true;
                     break;
@@ -2073,13 +1930,15 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_SPIRIT_PRESERVATION:  //Сохранение
+            case SPELL_SPIRIT_PRESERVATION:
             {
                 if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
                     spellduration = 900 * (spell_level + 4);
                 else
                     spellduration = 300 * (spell_level + 12);
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 if (spell_mastery == PLAYER_SKILL_MASTERY_NOVICE || spell_mastery == PLAYER_SKILL_MASTERY_EXPERT) {
                     spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
@@ -2104,33 +1963,26 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_SPIRIT_TURN_UNDEAD:  //Бег мертвецов
+            case SPELL_SPIRIT_TURN_UNDEAD:
             {
-                if (spell_mastery == PLAYER_SKILL_MASTERY_NOVICE || spell_mastery == PLAYER_SKILL_MASTERY_EXPERT)
+                if (spell_mastery == PLAYER_SKILL_MASTERY_NOVICE || spell_mastery == PLAYER_SKILL_MASTERY_EXPERT) {
                     spellduration = 60 * (spell_level + 3);
-                else
+                } else {
                     spellduration = 300 * spell_level + 180;
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                }
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 int mon_num = render->GetActorsInViewport(4096);
                 spell_fx_renderer
                     ->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.White.C32(),
                                                                      192);
                 // ++pSpellSprite.uType;
                 pSpellSprite.uType = SPRITE_SPELL_SPIRIT_TURN_UNDEAD_1;
-                pSpellSprite.containing_item.Reset();
-                pSpellSprite.spell_id = pCastSpell->uSpellID;
-                pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = spell_mastery;
-                pSpellSprite.uObjectDescID =
-                    pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                pSpellSprite.uAttributes = 0;
+                InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                 pSpellSprite.uSectorID = 0;
-                pSpellSprite.uSpriteFrameID = 0;
                 pSpellSprite.field_60_distance_related_prolly_lod = 0;
                 pSpellSprite.uFacing = 0;
-                pSpellSprite.spell_caster_pid =
-                    PID(OBJECT_Player, pCastSpell->uPlayerID);
-                pSpellSprite.uSoundID = (short)pCastSpell->sound_id;
                 for (spell_targeted_at = 0; spell_targeted_at < mon_num;
                      ++spell_targeted_at) {
                     if (MonsterStats::BelongsToSupertype(
@@ -2170,13 +2022,16 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_SPIRIT_RAISE_DEAD:  //Оживление
+            case SPELL_SPIRIT_RAISE_DEAD:
             {
-                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
+                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                     amount = 0;
-                else
+                } else {
                     amount = 86400 * spell_level;
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                }
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 pOtherOverlayList->_4418B1(5080, pCastSpell->uPlayerID_2 + 100,
                                            0, 65536);
                 if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Dead)) {
@@ -2204,13 +2059,16 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_SPIRIT_SHARED_LIFE:  //Общая жизнь
+            case SPELL_SPIRIT_SHARED_LIFE:
             {
-                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
+                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                     amount = 4 * spell_level;
-                else
+                } else {
                     amount = 3 * spell_level;
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                }
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 int active_pl_num = 0;
                 signed int shared_life_count = amount;
                 int mean_life = 0;
@@ -2240,7 +2098,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_SPIRIT_RESSURECTION:  //Воскресение
+            case SPELL_SPIRIT_RESSURECTION:
             {
                 switch (spell_mastery) {
                     case PLAYER_SKILL_MASTERY_NOVICE:
@@ -2258,7 +2116,9 @@ void CastSpellInfoHelpers::CastSpell() {
                     default:
                         assert(false);
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Eradicated) ||
                     pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Dead)) {
                     if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Weak))
@@ -2294,7 +2154,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_MIND_CURE_PARALYSIS:  //лечение паралича
+            case SPELL_MIND_CURE_PARALYSIS:
             {
                 switch (spell_mastery) {
                     case PLAYER_SKILL_MASTERY_NOVICE:
@@ -2312,7 +2172,9 @@ void CastSpellInfoHelpers::CastSpell() {
                     default:
                         assert(false);
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                 if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Paralyzed)) {
@@ -2334,7 +2196,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_MIND_REMOVE_FEAR:  //Снять страх
+            case SPELL_MIND_REMOVE_FEAR:
             {
                 switch (spell_mastery) {
                     case PLAYER_SKILL_MASTERY_NOVICE:
@@ -2352,7 +2214,9 @@ void CastSpellInfoHelpers::CastSpell() {
                     default:
                         assert(false);
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                 if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Fear)) {
@@ -2374,9 +2238,11 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_MIND_TELEPATHY:  //Телепатия
+            case SPELL_MIND_TELEPATHY:
             {
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 if (PID_TYPE(spell_targeted_at) == OBJECT_Actor) {
                     monster_id = PID_ID(spell_targeted_at);
                     if (!pActors[monster_id].ActorHasItem())
@@ -2422,33 +2288,23 @@ void CastSpellInfoHelpers::CastSpell() {
                         }
                     }
 
-                    pSpellSprite.containing_item.Reset();
-                    pSpellSprite.spell_id = pCastSpell->uSpellID;
-                    pSpellSprite.spell_level = spell_level;
-                    pSpellSprite.spell_skill = spell_mastery;
-                    pSpellSprite.uObjectDescID =
-                        pObjectList->ObjectIDByItemID(pSpellSprite.uType);
+                    InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition.x = pActors[monster_id].vPosition.x;
                     pSpellSprite.vPosition.y = pActors[monster_id].vPosition.y;
                     pSpellSprite.vPosition.z = pActors[monster_id].uActorHeight;
-                    pSpellSprite.uAttributes = 0;
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
-                    pSpellSprite.uSpriteFrameID = 0;
-                    pSpellSprite.spell_caster_pid =
-                        PID(OBJECT_Player, pCastSpell->uPlayerID);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod =
                         target_direction.uDistance;
                     pSpellSprite.uFacing = target_direction.uYawAngle;
                     pSpellSprite.uAttributes |= SPRITE_ATTACHED_TO_HEAD;
-                    pSpellSprite.uSoundID = pCastSpell->sound_id;
                     pSpellSprite.Create(0, 0, 0, pCastSpell->uPlayerID + 1);
                 }
                 spell_sound_flag = true;
                 break;
             }
 
-            case SPELL_MIND_BERSERK:  //Берсерк
+            case SPELL_MIND_BERSERK:
             {
                 switch (spell_mastery) {
                     case PLAYER_SKILL_MASTERY_NOVICE:
@@ -2466,7 +2322,9 @@ void CastSpellInfoHelpers::CastSpell() {
                     default:
                         assert(false);
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 monster_id = PID_ID(spell_targeted_at);
                 if (PID_TYPE(spell_targeted_at) == OBJECT_Actor) {
                     // v730 = 836 * monster_id;
@@ -2486,36 +2344,28 @@ void CastSpellInfoHelpers::CastSpell() {
                         pActors[monster_id].pMonsterInfo.uHostilityType =
                             MonsterInfo::Hostility_Long;
                     }
-                    pSpellSprite.containing_item.Reset();
-                    pSpellSprite.spell_id = pCastSpell->uSpellID;
-                    pSpellSprite.spell_level = spell_level;
-                    pSpellSprite.spell_skill = spell_mastery;
-                    pSpellSprite.uObjectDescID =
-                        pObjectList->ObjectIDByItemID(pSpellSprite.uType);
+                    InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition.x = pActors[monster_id].vPosition.x;
                     pSpellSprite.vPosition.y = pActors[monster_id].vPosition.y;
                     pSpellSprite.vPosition.z = pActors[monster_id].vPosition.z +
                                                pActors[monster_id].uActorHeight;
-                    pSpellSprite.uAttributes = 0;
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
-                    pSpellSprite.uSpriteFrameID = 0;
-                    pSpellSprite.spell_caster_pid =
-                        PID(OBJECT_Player, pCastSpell->uPlayerID);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod =
                         target_direction.uDistance;
                     pSpellSprite.uFacing = target_direction.uYawAngle;
                     pSpellSprite.uAttributes |= SPRITE_ATTACHED_TO_HEAD;
-                    pSpellSprite.uSoundID = pCastSpell->sound_id;
                     pSpellSprite.Create(0, 0, 0, pCastSpell->uPlayerID + 1);
                 }
                 spell_sound_flag = true;
                 break;
             }
 
-            case SPELL_MIND_ENSLAVE:  //Порабощение
+            case SPELL_MIND_ENSLAVE:
             {
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 amount = 600 * spell_level;
                 if (PID_TYPE(spell_targeted_at) == OBJECT_Actor) {
                     monster_id = PID_ID(spell_targeted_at);
@@ -2538,58 +2388,42 @@ void CastSpellInfoHelpers::CastSpell() {
                                        GameTime::FromSeconds(amount)),
                                    spell_mastery, 0, 0, 0);
                     }
-                    pSpellSprite.containing_item.Reset();
-                    pSpellSprite.spell_id = pCastSpell->uSpellID;
-                    pSpellSprite.spell_level = spell_level;
-                    pSpellSprite.spell_skill = spell_mastery;
-                    pSpellSprite.uObjectDescID =
-                        pObjectList->ObjectIDByItemID(pSpellSprite.uType);
+                    InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition.x = pActors[monster_id].vPosition.x;
                     pSpellSprite.vPosition.y = pActors[monster_id].vPosition.y;
                     pSpellSprite.vPosition.z = pActors[monster_id].vPosition.z + pActors[monster_id].uActorHeight;
-                    pSpellSprite.uAttributes = 0;
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
-                    pSpellSprite.uSpriteFrameID = 0;
-                    pSpellSprite.spell_caster_pid =
-                        PID(OBJECT_Player, pCastSpell->uPlayerID);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod =
                         target_direction.uDistance;
                     pSpellSprite.uFacing = target_direction.uYawAngle;
                     pSpellSprite.uAttributes |= SPRITE_ATTACHED_TO_HEAD;
-                    pSpellSprite.uSoundID = pCastSpell->sound_id;
                     pSpellSprite.Create(0, 0, 0, pCastSpell->uPlayerID + 1);
                 }
                 spell_sound_flag = true;
                 break;
             }
 
-            case SPELL_MIND_MASS_FEAR: {  // Массовый страх
-                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
+            case SPELL_MIND_MASS_FEAR:
+            {
+                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                     amount = 300 * spell_level;
-                else
+                } else {
                     amount = 180 * spell_level;
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                }
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 int mon_num = render->GetActorsInViewport(4096);
                 spell_fx_renderer
                     ->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.Night.C32(),
                                                                      192);
                 // ++pSpellSprite.uType;
                 pSpellSprite.uType = SPRITE_SPELL_MIND_MASS_FEAR_1;
-                pSpellSprite.containing_item.Reset();
-                pSpellSprite.spell_id = pCastSpell->uSpellID;
-                pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = spell_mastery;
-                pSpellSprite.uObjectDescID =
-                    pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                pSpellSprite.uAttributes = 0;
+                InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                 pSpellSprite.uSectorID = 0;
-                pSpellSprite.uSpriteFrameID = 0;
                 pSpellSprite.field_60_distance_related_prolly_lod = 0;
                 pSpellSprite.uFacing = 0;
-                pSpellSprite.spell_caster_pid =
-                    PID(OBJECT_Player, pCastSpell->uPlayerID);
-                pSpellSprite.uSoundID = (short)pCastSpell->sound_id;
                 for (spell_targeted_at = 0; spell_targeted_at < mon_num;
                      ++spell_targeted_at) {
                     if (MonsterStats::BelongsToSupertype(
@@ -2634,12 +2468,13 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_MIND_CURE_INSANITY:  //Лечение Безумия
+            case SPELL_MIND_CURE_INSANITY:
             {
-                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
+                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                     amount = 0;
-                else
+                } else {
                     amount = 86400 * spell_level;
+                }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
@@ -2661,7 +2496,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_EARTH_TELEKINESIS:  //Телекинез
+            case SPELL_EARTH_TELEKINESIS:
             {
                 switch (spell_mastery) {
                     case PLAYER_SKILL_MASTERY_NOVICE:
@@ -2679,7 +2514,9 @@ void CastSpellInfoHelpers::CastSpell() {
                     default:
                         assert(false);
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 int obj_id = PID_ID(spell_targeted_at);
                 if (PID_TYPE(spell_targeted_at) == OBJECT_Item) {
                     if (pItemTable
@@ -2724,23 +2561,20 @@ void CastSpellInfoHelpers::CastSpell() {
                     }
                 }
                 if (PID_TYPE(spell_targeted_at) == OBJECT_Face) {
+                    int event;
                     OpenedTelekinesis = true;
-                    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-                        v448 = pIndoor
-                                   ->pFaceExtras[pIndoor->pFaces[obj_id]
-                                                     .uFaceExtraID]
-                                   .uEventID;
-                    else
-                        v448 = pOutdoor->pBModels[spell_targeted_at >> 9]
-                                   .pFaces[obj_id & 0x3F]
-                                   .sCogTriggeredID;
-                    EventProcessor(v448, spell_targeted_at, 1);
+                    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+                        event = pIndoor->pFaceExtras[pIndoor->pFaces[obj_id].uFaceExtraID].uEventID;
+                    } else {
+                        event = pOutdoor->pBModels[spell_targeted_at >> 9].pFaces[obj_id & 0x3F].sCogTriggeredID;
+                    }
+                    EventProcessor(event, spell_targeted_at, 1);
                 }
                 spell_sound_flag = true;
                 break;
             }
 
-            case SPELL_BODY_CURE_WEAKNESS:  //Лечить Слабость
+            case SPELL_BODY_CURE_WEAKNESS:
             {
                 switch (spell_mastery) {
                     case PLAYER_SKILL_MASTERY_NOVICE:
@@ -2758,7 +2592,9 @@ void CastSpellInfoHelpers::CastSpell() {
                     default:
                         assert(false);
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                 if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Weak)) {
@@ -2776,7 +2612,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_BODY_FIRST_AID:  //Первая помощь
+            case SPELL_BODY_FIRST_AID:
             {
                 switch (spell_mastery) {
                     case PLAYER_SKILL_MASTERY_NOVICE:
@@ -2794,7 +2630,9 @@ void CastSpellInfoHelpers::CastSpell() {
                     default:
                         assert(false);
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 if (!pCastSpell->spell_target_pid) {
                     pParty->pPlayers[pCastSpell->uPlayerID_2].Heal(amount);
                     spell_fx_renderer->SetPlayerBuffAnim(
@@ -2817,7 +2655,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_BODY_CURE_POISON:  //Лечение Отравления(Противоядие)
+            case SPELL_BODY_CURE_POISON:
             {
                 switch (spell_mastery) {
                     case PLAYER_SKILL_MASTERY_NOVICE:
@@ -2836,7 +2674,9 @@ void CastSpellInfoHelpers::CastSpell() {
                         assert(false);
                 }
 
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
 
                 spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
@@ -2871,9 +2711,11 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_BODY_PROTECTION_FROM_MAGIC:  //Защита от магии
+            case SPELL_BODY_PROTECTION_FROM_MAGIC:
             {
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
 
                 spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 0);
@@ -2891,9 +2733,11 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_BODY_HAMMERHANDS:  //Руки-Молоты
+            case SPELL_BODY_HAMMERHANDS:
             {
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                     spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, 0);
@@ -2925,7 +2769,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_BODY_POWER_CURE:  //Исцеление
+            case SPELL_BODY_POWER_CURE:
             {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 for (uint pl_id = 0; pl_id < 4; ++pl_id) {
@@ -2937,7 +2781,8 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_LIGHT_DISPEL_MAGIC: {  // Снятие чар
+            case SPELL_LIGHT_DISPEL_MAGIC:
+            {
                 sRecoveryTime -= spell_level;
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 spell_fx_renderer
@@ -2946,23 +2791,10 @@ void CastSpellInfoHelpers::CastSpell() {
                 int mon_num = render->GetActorsInViewport(4096);
                 // ++pSpellSprite.uType;
                 pSpellSprite.uType = SPRITE_SPELL_LIGHT_DISPEL_MAGIC_1;
-                v688.x = 0;
-                v688.y = 0;
-                v688.z = 0;
-                pSpellSprite.containing_item.Reset();
-                pSpellSprite.spell_id = pCastSpell->uSpellID;
-                pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = spell_mastery;
-                pSpellSprite.uObjectDescID =
-                    pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                pSpellSprite.uAttributes = 0;
+                InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                 pSpellSprite.uSectorID = 0;
-                pSpellSprite.uSpriteFrameID = 0;
                 pSpellSprite.field_60_distance_related_prolly_lod = 0;
                 pSpellSprite.uFacing = 0;
-                pSpellSprite.spell_caster_pid =
-                    PID(OBJECT_Player, pCastSpell->uPlayerID);
-                pSpellSprite.uSoundID = (short)pCastSpell->sound_id;
                 for (spell_targeted_at = 0; spell_targeted_at < mon_num;
                      ++spell_targeted_at) {
                     pSpellSprite.vPosition.x =
@@ -2987,7 +2819,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     Actor::DamageMonsterFromParty(
                         PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)),
                         _50BF30_actors_in_viewport_ids[spell_targeted_at],
-                        &v688);
+                        &spell_velocity);
                 }
                 for (spell_targeted_at = 0; spell_targeted_at < mon_num;
                      ++spell_targeted_at) {
@@ -3019,7 +2851,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_LIGHT_SUMMON_ELEMENTAL:  //Элементал
+            case SPELL_LIGHT_SUMMON_ELEMENTAL:
             {
                 switch (spell_mastery) {
                     case PLAYER_SKILL_MASTERY_NOVICE:
@@ -3050,9 +2882,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         ++mon_num;
                 }
                 if (mon_num >= amount) {
-                    GameUI_SetStatusBar(LSTR_SUMMONS_LIMIT_REACHED);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                    pCastSpell->uSpellID = 0;
+                    SpellFailed(pCastSpell, LSTR_SUMMONS_LIMIT_REACHED);
                     continue;
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
@@ -3083,7 +2913,9 @@ void CastSpellInfoHelpers::CastSpell() {
                     default:
                         assert(false);
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 0);
                 spell_fx_renderer->SetPlayerBuffAnim(
@@ -3100,33 +2932,22 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
 
-            case SPELL_LIGHT_PRISMATIC_LIGHT: {
+            case SPELL_LIGHT_PRISMATIC_LIGHT:
+            {
                 if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-                    GameUI_SetStatusBar(LSTR_CANT_PRISMATIC_OUTDOORS);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                    pCastSpell->uSpellID = 0;
+                    SpellFailed(pCastSpell, LSTR_CANT_PRISMATIC_OUTDOORS);
                     continue;
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 int mon_num = render->GetActorsInViewport(4096);
                 // ++pSpellSprite.uType;
                 pSpellSprite.uType = SPRITE_SPELL_LIGHT_PRISMATIC_LIGHT_1;
-                v694.x = 0;
-                v694.y = 0;
-                v694.z = 0;
-                pSpellSprite.containing_item.Reset();
-                pSpellSprite.spell_id = pCastSpell->uSpellID;
-                pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = spell_mastery;
-                pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                pSpellSprite.uAttributes = 0;
+                InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                 pSpellSprite.uSectorID = 0;
-                pSpellSprite.uSpriteFrameID = 0;
                 pSpellSprite.field_60_distance_related_prolly_lod = 0;
                 pSpellSprite.uFacing = 0;
-                pSpellSprite.spell_caster_pid =
-                    PID(OBJECT_Player, pCastSpell->uPlayerID);
-                pSpellSprite.uSoundID = (short)pCastSpell->sound_id;
                 for (uint monster_id = 0; monster_id < mon_num; monster_id++) {
                     pSpellSprite.vPosition.x =
                         pActors[_50BF30_actors_in_viewport_ids[monster_id]].vPosition.x;
@@ -3139,8 +2960,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         PID(OBJECT_Actor, _50BF30_actors_in_viewport_ids[monster_id]);
                     Actor::DamageMonsterFromParty(
                         PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)),
-                        _50BF30_actors_in_viewport_ids[monster_id], &v694
-                    );
+                        _50BF30_actors_in_viewport_ids[monster_id], &spell_velocity);
                 }
                 spell_fx_renderer->_4A8BFC_prismatic_light();
                 spell_sound_flag = true;
@@ -3169,7 +2989,9 @@ void CastSpellInfoHelpers::CastSpell() {
                     default:
                         assert(false);
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 0);
                 spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 1);
                 spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 2);
@@ -3224,7 +3046,9 @@ void CastSpellInfoHelpers::CastSpell() {
                     default:
                         assert(false);
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 bool player_weak = false;
                 for (uint pl_id = 0; pl_id < 4; pl_id++) {
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 0);
@@ -3236,8 +3060,9 @@ void CastSpellInfoHelpers::CastSpell() {
                         .Apply(GameTime(pParty->GetPlayingTime() +
                                    GameTime::FromSeconds(300 * amount * spell_level + 60)),
                                spell_mastery, spell_level + 5, 0, 0);
-                    if (pParty->pPlayers[pl_id].conditions.Has(Condition_Weak))
+                    if (pParty->pPlayers[pl_id].conditions.Has(Condition_Weak)) {
                         player_weak = true;
+                    }
                 }
 
                 pParty->pPartyBuffs[PARTY_BUFF_HEROISM].Apply(
@@ -3252,24 +3077,26 @@ void CastSpellInfoHelpers::CastSpell() {
                     GameTime(pParty->GetPlayingTime() +
                         GameTime::FromSeconds(300 * amount * spell_level + 60)),
                     spell_mastery, spell_level + 5, 0, 0);
-                if (!player_weak)
+                if (!player_weak) {
                     pParty->pPartyBuffs[PARTY_BUFF_HASTE].Apply(
                         GameTime(pParty->GetPlayingTime() +
                             GameTime::FromSeconds(
                                 60 * (spell_level * spellduration + 60))),
                         spell_mastery, spell_level + 5, 0, 0);
+                }
                 spell_sound_flag = true;
                 break;
             }
 
-            case SPELL_LIGHT_DIVINE_INTERVENTION: {
+            case SPELL_LIGHT_DIVINE_INTERVENTION:
+            {
                 if (pPlayer->uNumDivineInterventionCastsThisDay >= 3) {
-                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                    pCastSpell->uSpellID = 0;
+                    SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
                     continue;
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 for (uint pl_id = 0; pl_id < 4; pl_id++) {
                     pParty->pPlayers[pl_id].conditions.ResetAll();
                     pParty->pPlayers[pl_id].sHealth = pParty->pPlayers[pl_id].GetMaxHealth();
@@ -3304,7 +3131,9 @@ void CastSpellInfoHelpers::CastSpell() {
                     default:
                         assert(false);
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 if (!pCastSpell->spell_target_pid) {
                     spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
@@ -3318,31 +3147,19 @@ void CastSpellInfoHelpers::CastSpell() {
                 }
                 monster_id = PID_ID(pCastSpell->spell_target_pid);
                 if (monster_id == -1) {
-                    GameUI_SetStatusBar(LSTR_NO_VALID_SPELL_TARGET);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                    pCastSpell->uSpellID = 0;
+                    SpellFailed(pCastSpell, LSTR_NO_VALID_SPELL_TARGET);
                     continue;
                 }
                 if (pActors[monster_id].sCurrentHP > 0 || pActors[monster_id].uAIState != Dead && pActors[monster_id].uAIState != Dying) {
-                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                    pCastSpell->uSpellID = 0;
+                    SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
                     continue;
                 }
                 // ++pSpellSprite.uType;
                 pSpellSprite.uType = SPRITE_SPELL_DARK_REANIMATE_1;
-                pSpellSprite.containing_item.Reset();
-                pSpellSprite.spell_id = pCastSpell->uSpellID;
-                pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = spell_mastery;
-                pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                pSpellSprite.uAttributes = 0;
+                InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                 pSpellSprite.uSectorID = 0;
-                pSpellSprite.uSpriteFrameID = 0;
                 pSpellSprite.field_60_distance_related_prolly_lod = 0;
                 pSpellSprite.uFacing = 0;
-                pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
-                pSpellSprite.uSoundID = (short)pCastSpell->sound_id;
                 pSpellSprite.vPosition.x = pActors[monster_id].vPosition.x;
                 pSpellSprite.vPosition.y = pActors[monster_id].vPosition.y;
                 pSpellSprite.vPosition.z = pActors[monster_id].vPosition.z -
@@ -3363,13 +3180,14 @@ void CastSpellInfoHelpers::CastSpell() {
                 pActors[monster_id].pActorBuffs[ACTOR_BUFF_BERSERK].Reset();
                 pActors[monster_id].pActorBuffs[ACTOR_BUFF_CHARM].Reset();
                 pActors[monster_id].pActorBuffs[ACTOR_BUFF_ENSLAVED].Reset();
-                if (pActors[monster_id].sCurrentHP > 10 * amount)
+                if (pActors[monster_id].sCurrentHP > 10 * amount) {
                     pActors[monster_id].sCurrentHP = 10 * amount;
+                }
                 spell_sound_flag = true;
                 break;
             }
 
-            case SPELL_DARK_SHARPMETAL:  //Шрапнель
+            case SPELL_DARK_SHARPMETAL:
             {
                 switch (spell_mastery) {
                     case PLAYER_SKILL_MASTERY_NOVICE:
@@ -3387,27 +3205,20 @@ void CastSpellInfoHelpers::CastSpell() {
                     default:
                         assert(false);
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                signed int _v726 = ((signed int)(60 * TrigLUT.uIntegerDoublePi) / 360);
-                pSpellSprite.containing_item.Reset();
-                pSpellSprite.spell_id = pCastSpell->uSpellID;
-                pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = spell_mastery;
-                pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
+                InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                 // TODO(pskelton): was pParty->uPartyHeight / 2
                 pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
-                pSpellSprite.uAttributes = 0;
                 pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
-                pSpellSprite.uSpriteFrameID = 0;
-                pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
                 pSpellSprite.spell_target_pid = spell_targeted_at;
                 pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
-                pSpellSprite.uSoundID = pCastSpell->sound_id;
                 if (pParty->bTurnBasedModeOn) {
                     pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                 }
-                spell_spray_angle_start = (signed int)_v726 / -2;
-                spell_spray_angle_end = (signed int)_v726 / 2;
+                spell_spray_angle_start = ONE_THIRD_PI / -2;
+                spell_spray_angle_end = ONE_THIRD_PI / 2;
                 if (spell_spray_angle_start <= spell_spray_angle_end) {
                     do {
                         pSpellSprite.uFacing = spell_spray_angle_start +
@@ -3416,7 +3227,7 @@ void CastSpellInfoHelpers::CastSpell() {
                             pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
                             ++pTurnEngine->pending_actions;
                         }
-                        spell_spray_angle_start += _v726 / (amount - 1);
+                        spell_spray_angle_start += ONE_THIRD_PI / (amount - 1);
                     } while (spell_spray_angle_start <= spell_spray_angle_end);
                 }
                 spell_sound_flag = true;
@@ -3425,7 +3236,9 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_DARK_CONTROL_UNDEAD:
             {
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 switch (spell_mastery) {
                     case PLAYER_SKILL_MASTERY_NOVICE:
                         spellduration = 180 * spell_level;
@@ -3449,9 +3262,7 @@ void CastSpellInfoHelpers::CastSpell() {
                             MONSTER_SUPERTYPE_UNDEAD))
                         break;
                     if (!pActors[monster_id].DoesDmgTypeDoDamage(DMGT_DARK)) {
-                        GameUI_SetStatusBar(LSTR_SPELL_FAILED);
-                        pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                        pCastSpell->uSpellID = 0;
+                        SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         continue;
                     }
                     pActors[monster_id].pActorBuffs[ACTOR_BUFF_BERSERK].Reset();
@@ -3459,26 +3270,16 @@ void CastSpellInfoHelpers::CastSpell() {
                     pActors[monster_id].pActorBuffs[ACTOR_BUFF_ENSLAVED].Apply(
                         GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)),
                         spell_mastery, 0, 0, 0);
-                    pSpellSprite.containing_item.Reset();
-                    pSpellSprite.spell_id = pCastSpell->uSpellID;
-                    pSpellSprite.spell_level = spell_level;
-                    pSpellSprite.spell_skill = spell_mastery;
-                    pSpellSprite.uObjectDescID =
-                        pObjectList->ObjectIDByItemID(pSpellSprite.uType);
+                    InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition.x = pActors[monster_id].vPosition.x;
                     pSpellSprite.vPosition.y = pActors[monster_id].vPosition.y;
                     pSpellSprite.vPosition.z = pActors[monster_id].vPosition.z + pActors[monster_id].uActorHeight;
-                    pSpellSprite.uAttributes = 0;
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
-                    pSpellSprite.uSpriteFrameID = 0;
-                    pSpellSprite.spell_caster_pid =
-                        PID(OBJECT_Player, pCastSpell->uPlayerID);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod =
                         target_direction.uDistance;
                     pSpellSprite.uFacing = target_direction.uYawAngle;
                     pSpellSprite.uAttributes |= SPRITE_ATTACHED_TO_HEAD;
-                    pSpellSprite.uSoundID = pCastSpell->sound_id;
                     pSpellSprite.Create(0, 0, 0, pCastSpell->uPlayerID + 1);
                 }
                 spell_sound_flag = true;
@@ -3487,7 +3288,9 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_DARK_SACRIFICE:
             {
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 int hired_npc = 0;
                 memset(&achieved_awards, 0, 4000);
                 for (uint npc_id = 0; npc_id < 2; npc_id++) {
@@ -3498,9 +3301,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (pCastSpell->uPlayerID_2 != 4 && pCastSpell->uPlayerID_2 != 5 ||
                     achieved_awards[pCastSpell->uPlayerID_2 - 4] <= 0 ||
                     achieved_awards[pCastSpell->uPlayerID_2 - 4] >= 3) {
-                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                    pCastSpell->uSpellID = 0;
+                    SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
                     continue;
                 }
                 int hireling_idx = achieved_awards[pCastSpell->uPlayerID_2 - 4] - 1;
@@ -3511,11 +3312,14 @@ void CastSpellInfoHelpers::CastSpell() {
                     pParty->pPlayers[pl_id].sHealth = pParty->pPlayers[pl_id].GetMaxHealth();
                     pParty->pPlayers[pl_id].sMana = pParty->pPlayers[pl_id].GetMaxMana();
                 }
-                v613 = &pOutdoor->ddm;
-                if (uCurrentlyLoadedLevelType != LEVEL_Outdoor)
-                    v613 = &pIndoor->dlv;
-                v613->uReputation += 15;
-                if (v613->uReputation > 10000) v613->uReputation = 10000;
+                DDM_DLV_Header *ddm_dlv = &pOutdoor->ddm;
+                if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) {
+                    ddm_dlv = &pIndoor->dlv;
+                }
+                ddm_dlv->uReputation += 15;
+                if (ddm_dlv->uReputation > 10000) {
+                    ddm_dlv->uReputation = 10000;
+                }
                 spell_sound_flag = true;
                 break;
             }
@@ -3539,7 +3343,9 @@ void CastSpellInfoHelpers::CastSpell() {
                         assert(false);
                 }
                 amount = spell_level + 5;
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
                 if (spell_mastery != PLAYER_SKILL_MASTERY_MASTER && spell_mastery != PLAYER_SKILL_MASTERY_GRANDMASTER) {
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                     pParty->pPlayers[pCastSpell->uPlayerID_2]
@@ -3564,26 +3370,15 @@ void CastSpellInfoHelpers::CastSpell() {
 
             case SPELL_DARK_SOULDRINKER:
             {
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
+                if (!pPlayer->CanCastSpell(uRequiredMana)) {
+                    break;
+                }
 
                 int mon_num = render->GetActorsInViewport((int64_t)pCamera3D->GetMouseInfoDepth());
-                v707.x = 0;
-                v707.y = 0;
-                v707.z = 0;
-                pSpellSprite.containing_item.Reset();
-                pSpellSprite.spell_id = pCastSpell->uSpellID;
-                pSpellSprite.spell_level = spell_level;
-                pSpellSprite.spell_skill = spell_mastery;
-                pSpellSprite.uObjectDescID =
-                    pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                pSpellSprite.uAttributes = 0;
+                InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
                 pSpellSprite.uSectorID = 0;
-                pSpellSprite.uSpriteFrameID = 0;
                 pSpellSprite.field_60_distance_related_prolly_lod = 0;
                 pSpellSprite.uFacing = 0;
-                pSpellSprite.spell_caster_pid =
-                    PID(OBJECT_Player, pCastSpell->uPlayerID);
-                pSpellSprite.uSoundID = (short)pCastSpell->sound_id;
                 amount = 0;
                 if (mon_num > 0) {
                     amount = (mon_num * (7 * spell_level + 25));
@@ -3607,7 +3402,7 @@ void CastSpellInfoHelpers::CastSpell() {
                                 _50BF30_actors_in_viewport_ids[monster_id]);
                         Actor::DamageMonsterFromParty(
                             PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)),
-                            _50BF30_actors_in_viewport_ids[monster_id], &v707);
+                            _50BF30_actors_in_viewport_ids[monster_id], &spell_velocity);
                     }
                 }
                 int pl_num = 0;
@@ -3638,20 +3433,17 @@ void CastSpellInfoHelpers::CastSpell() {
             case SPELL_DARK_ARMAGEDDON:
             {
                 if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-                    GameUI_SetStatusBar(LSTR_CANT_ARMAGEDDON_INDOORS);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                    pCastSpell->uSpellID = 0;
+                    SpellFailed(pCastSpell, LSTR_CANT_ARMAGEDDON_INDOORS);
                     continue;
                 }
-                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
+                if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                     amount = 4;
-                else
+                } else {
                     amount = 3;
+                }
                 if (pPlayer->uNumArmageddonCasts >= amount ||
                     pParty->armageddon_timer > 0) {
-                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                    pCastSpell->uSpellID = 0;
+                    SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
                     continue;
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
@@ -3662,16 +3454,16 @@ void CastSpellInfoHelpers::CastSpell() {
                     ++pTurnEngine->pending_actions;
                 }
                 for (uint i = 0; i < 50; i++) {
-                    v642 = grng->Random(4096) - 2048;
-                    v643 = grng->Random(4096) - 2048;
+                    int rand_x = grng->Random(4096) - 2048;
+                    int rand_y = grng->Random(4096) - 2048;
                     bool bOnWater = false;
-                    v732_int = GetTerrainHeightsAroundParty2(
-                        v642 + pParty->vPosition.x,
-                        pParty->vPosition.y + v643, &bOnWater, 0);
+                    int terr_height = GetTerrainHeightsAroundParty2(
+                        rand_x + pParty->vPosition.x,
+                        rand_y + pParty->vPosition.y, &bOnWater, 0);
                     SpriteObject::Drop_Item_At(
                         SPRITE_SPELL_EARTH_ROCK_BLAST,
-                        v642 + pParty->vPosition.x,
-                        pParty->vPosition.y + v643, v732_int + 16,
+                        rand_x + pParty->vPosition.x,
+                        rand_y + pParty->vPosition.y, terr_height + 16,
                         grng->Random(500) + 500, 1, 0, 0, 0);
                 }
                 spell_sound_flag = true;
@@ -3679,6 +3471,7 @@ void CastSpellInfoHelpers::CastSpell() {
             }
             default:
                 break;
+        }
         }
 
         if (~pCastSpell->uFlags & ON_CAST_NoRecoverySpell) {
