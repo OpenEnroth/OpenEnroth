@@ -240,13 +240,16 @@ int PlayerCreation_GetUnspentAttributePointCount() {
 bool Player::CanCastSpell(unsigned int uRequiredMana) {
     if (engine->config->debug.AllMagic.Get()) return true;
     if (sMana >= uRequiredMana) {  // enough mana
-        sMana -= uRequiredMana;    // removes mana
         return true;
     }
 
     // not enough mana
     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
     return false;
+}
+
+void Player::CastSpellModifyMana(unsigned int uRequiredMana) {
+    sMana -= uRequiredMana; // remove mana required for spell
 }
 
 //----- (004BE2DD) --------------------------------------------------------
