@@ -335,7 +335,8 @@ void CastSpellInfoHelpers::CastSpell() {
             spell_velocity.z = 0;
 
             if (!pPlayer->CanCastSpell(uRequiredMana)) {
-                break;
+                // Not enough mana for current spell, check the next one
+                continue;
             }
 
             switch (pCastSpell->uSpellID) {
@@ -676,7 +677,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         _50C9D4_AfterEnchClickEventSecondParam = 0;
                         _50C9D8_AfterEnchClickEventTimeout = 128; // was 1, increased to make message readable
                         SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
-                        break;
+                        continue;
                     }
 
                     switch (pCastSpell->uSpellID) {
@@ -895,6 +896,7 @@ void CastSpellInfoHelpers::CastSpell() {
                             spell_sound_flag = true;
                         } else {
                             SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                            continue;
                         }
                     }
                     break;
@@ -979,7 +981,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 case SPELL_FIRE_METEOR_SHOWER:
                 {
                     if (spell_mastery < PLAYER_SKILL_MASTERY_MASTER) {
-                        break;
+                        continue;
                     }
 
                     int meteor_num;
@@ -1167,10 +1169,11 @@ void CastSpellInfoHelpers::CastSpell() {
                 {
                     if (pParty->IsAirborne()) {
                         SpellFailed(pCastSpell, LSTR_CANT_JUMP_AIRBORNE);
-                        break;
+                        continue;
                     }
-                    for (uint pl_id = 0; pl_id < 4; pl_id++)
+                    for (uint pl_id = 0; pl_id < 4; pl_id++) {
                         pOtherOverlayList->_4418B1(2040, pl_id + 100, 0, 65536);
+                    }
                     pParty->uFlags |= PARTY_FLAGS_1_LANDING;
                     pParty->uFallSpeed = 1000;
                     spell_sound_flag = true;
@@ -1218,11 +1221,11 @@ void CastSpellInfoHelpers::CastSpell() {
                 {
                     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
                         SpellFailed(pCastSpell, LSTR_HOSTILE_CREATURES_NEARBY);
-                        break;
+                        continue;
                     }
                     if (!pPlayers[pCastSpell->uPlayerID + 1]->GetMaxMana() && !engine->config->debug.AllMagic.Get()) {
                         SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
-                        break;
+                        continue;
                     }
                     if (spell_mastery < PLAYER_SKILL_MASTERY_GRANDMASTER) {
                         amount = 1;
@@ -1406,7 +1409,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 {
                     if (!pPlayers[pCastSpell->uPlayerID + 1]->GetMaxMana()) {
                         SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
-                        break;
+                        continue;
                     }
                     switch (spell_mastery) {
                         case PLAYER_SKILL_MASTERY_NOVICE:  // break;
@@ -1429,8 +1432,9 @@ void CastSpellInfoHelpers::CastSpell() {
                             GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration)),
                             spell_mastery, amount, spell_overlay_id,
                             pCastSpell->uPlayerID + 1);
-                    if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
+                    if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                         pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uFlags = 1;
+                    }
                     spell_sound_flag = true;
                     break;
                 }
@@ -1513,8 +1517,9 @@ void CastSpellInfoHelpers::CastSpell() {
                         } else {
                             // random item break
                             if (rnd >= 10 * spell_level) {  // 10% chance of success per spell level
-                                if (!(spell_item_to_enchant->uAttributes & ITEM_HARDENED))
+                                if (!(spell_item_to_enchant->uAttributes & ITEM_HARDENED)) {
                                     spell_item_to_enchant->SetBroken();
+                                }
                             } else {
                                 // Weapons are limited to special enchantments, but all other types can have either
                                 if (rnd < 80 && IsPassiveEquipment(this_equip_type)) { // chance to roll standard enchantment on non-weapons
@@ -1546,7 +1551,9 @@ void CastSpellInfoHelpers::CastSpell() {
                                     // step through until we hit that ench
                                     for (step = 0; step < ench_found; step++) {
                                         current_item_apply_sum += pItemTable->pEnchantments[ench_array[step]].to_item[this_equip_type];
-                                        if (current_item_apply_sum >= target_item_apply_rand) break;
+                                        if (current_item_apply_sum >= target_item_apply_rand) {
+                                            break;
+                                        }
                                     }
 
                                     // assign ench and power
@@ -1595,7 +1602,9 @@ void CastSpellInfoHelpers::CastSpell() {
                                     // step through until we hit that ench
                                     for (step = 0; step < ench_found; step++) {
                                         current_item_apply_sum += pItemTable->pSpecialEnchantments[(ITEM_ENCHANTMENT)ench_array[step]].to_item_apply[this_equip_type];
-                                        if (current_item_apply_sum >= target_item_apply_rand) break;
+                                        if (current_item_apply_sum >= target_item_apply_rand) {
+                                            break;
+                                        }
                                     }
 
                                     // set item ench
@@ -1612,6 +1621,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     if (spell_sound_flag == 0) {
                         SpellFailed(pCastSpell, item_not_broken ? LSTR_SPELL_FAILED : LSTR_ITEM_TOO_LAME);
                         pParty->pPlayers[pCastSpell->uPlayerID_2].PlaySound(SPEECH_SpellFailed, 0);
+                        continue;
                     }
                     break;
                 }
@@ -2222,8 +2232,9 @@ void CastSpellInfoHelpers::CastSpell() {
                         // v730 = 836 * monster_id;
                         if (MonsterStats::BelongsToSupertype(
                                     pActors[monster_id].pMonsterInfo.uID,
-                                    MONSTER_SUPERTYPE_UNDEAD))
+                                    MONSTER_SUPERTYPE_UNDEAD)) {
                             break;
+                        }
                         if (pActors[monster_id].DoesDmgTypeDoDamage(
                                     DMGT_MIND)) {
                             pActors[monster_id]
@@ -2277,8 +2288,9 @@ void CastSpellInfoHelpers::CastSpell() {
                                     pActors[_50BF30_actors_in_viewport_ids
                                     [spell_targeted_at]]
                                     .pMonsterInfo.uID,
-                                    MONSTER_SUPERTYPE_UNDEAD))
+                                    MONSTER_SUPERTYPE_UNDEAD)) {
                             break;
+                        }
                         pSpellSprite.vPosition.x =
                             pActors
                             [_50BF30_actors_in_viewport_ids[spell_targeted_at]]
@@ -2561,14 +2573,10 @@ void CastSpellInfoHelpers::CastSpell() {
                 case SPELL_BODY_HAMMERHANDS:
                 {
                     if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                        spell_fx_renderer->SetPlayerBuffAnim(
-                                pCastSpell->uSpellID, 0);
-                        spell_fx_renderer->SetPlayerBuffAnim(
-                                pCastSpell->uSpellID, 1);
-                        spell_fx_renderer->SetPlayerBuffAnim(
-                                pCastSpell->uSpellID, 2);
-                        spell_fx_renderer->SetPlayerBuffAnim(
-                                pCastSpell->uSpellID, 3);
+                        spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 0);
+                        spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 1);
+                        spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 2);
+                        spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 3);
                         for (uint pl_id = 0; pl_id < 4; pl_id++) {
                             pParty->pPlayers[pl_id]
                                 .pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS]
@@ -2577,16 +2585,14 @@ void CastSpellInfoHelpers::CastSpell() {
                                             GameTime::FromSeconds(3600 * spell_level)),
                                         spell_mastery, spell_level, spell_level, 0);
                         }
-                        spell_sound_flag = true;
-                        break;
-                    }
-                    spell_fx_renderer->SetPlayerBuffAnim(
-                            pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
+                    } else {
+                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                     pParty->pPlayers[pCastSpell->uPlayerID_2]
                         .pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS]
                         .Apply(GameTime(pParty->GetPlayingTime() +
                                     GameTime::FromSeconds(3600 * spell_level)),
                                 spell_mastery, spell_level, spell_level, 0);
+                    }
                     spell_sound_flag = true;
                     break;
                 }
@@ -2968,7 +2974,9 @@ void CastSpellInfoHelpers::CastSpell() {
                         (int)((double)pActors[monster_id].uActorHeight * -0.8);
                     pSpellSprite.spell_target_pid = PID(OBJECT_Actor, monster_id);
                     pSpellSprite.Create(0, 0, 0, 0);
-                    if (pActors[monster_id].pMonsterInfo.uLevel > amount) break;
+                    if (pActors[monster_id].pMonsterInfo.uLevel > amount) {
+                        break;
+                    }
                     Actor::Resurrect(monster_id);
                     pActors[monster_id].pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
                     pActors[monster_id].pMonsterInfo.uTreasureDropChance = 0;
@@ -3055,8 +3063,9 @@ void CastSpellInfoHelpers::CastSpell() {
                         monster_id = PID_ID(spell_targeted_at);
                         if (!MonsterStats::BelongsToSupertype(
                                     pActors[monster_id].pMonsterInfo.uID,
-                                    MONSTER_SUPERTYPE_UNDEAD))
+                                    MONSTER_SUPERTYPE_UNDEAD)) {
                             break;
+                        }
                         if (!pActors[monster_id].DoesDmgTypeDoDamage(DMGT_DARK)) {
                             SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
                             continue;
