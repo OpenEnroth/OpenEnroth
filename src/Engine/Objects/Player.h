@@ -298,7 +298,7 @@ struct Player {
                       int _2devent_idx);  // 0x4BE2DD
     bool Recover(GameTime dt);
     bool CanCastSpell(unsigned int uRequiredMana);
-    void CastSpellModifyMana(unsigned int uRequiredMana);
+    void SpendMana(unsigned int uRequiredMana);
     void PlayAwardSound();
     void EquipBody(ITEM_EQUIP_TYPE uEquipType);
     bool HasUnderwaterSuitEquipped();

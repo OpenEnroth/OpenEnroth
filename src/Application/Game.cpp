@@ -1380,7 +1380,7 @@ void Game::EventLoop() {
 
                     _506360_installing_beacon = true;
 
-                    pPlayer9->CastSpellModifyMana(uRequiredMana);
+                    pPlayer9->SpendMana(uRequiredMana);
                     if (pParty->bTurnBasedModeOn) {
                         v60 = sRecoveryTime;
                         pParty->pTurnBasedPlayerRecoveryTimes[_506348_current_lloyd_playerid] = sRecoveryTime;
@@ -1477,7 +1477,7 @@ void Game::EventLoop() {
                         Actor::InitializeActors();
                     }
 
-                    pParty->pPlayers[(uint8_t)TownPortalCasterId].CastSpellModifyMana(0x14u);
+                    pParty->pPlayers[(uint8_t)TownPortalCasterId].SpendMana(0x14u);
                     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
                     continue;
                 case UIMSG_HintTownPortal: {

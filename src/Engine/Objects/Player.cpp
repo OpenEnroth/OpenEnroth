@@ -238,7 +238,9 @@ int PlayerCreation_GetUnspentAttributePointCount() {
 
 //----- (00427730) --------------------------------------------------------
 bool Player::CanCastSpell(unsigned int uRequiredMana) {
-    if (engine->config->debug.AllMagic.Get()) return true;
+    if (engine->config->debug.AllMagic.Get()) {
+        return true;
+    }
     if (sMana >= uRequiredMana) {  // enough mana
         return true;
     }
@@ -248,7 +250,11 @@ bool Player::CanCastSpell(unsigned int uRequiredMana) {
     return false;
 }
 
-void Player::CastSpellModifyMana(unsigned int uRequiredMana) {
+void Player::SpendMana(unsigned int uRequiredMana) {
+    if (engine->config->debug.AllMagic.Get()) {
+        return;
+    }
+    assert(sMana >= uRequiredMana);
     sMana -= uRequiredMana; // remove mana required for spell
 }
 

@@ -42,13 +42,19 @@ static SpellFxRenderer *spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
 const size_t CastSpellInfoCount = 10;
 std::array<CastSpellInfo, CastSpellInfoCount> pCastSpellInfo;
 
-// Common initialization of SpriteObject for spell casting
-static void
-InitSpellSprite(SpriteObject* spritePtr,
-                PLAYER_SKILL_LEVEL spellLevel,
-                PLAYER_SKILL_MASTERY spellMastery,
-                CastSpellInfo *pCastSpell)
-{
+/**
+ * Common initialization of SpriteObject for spell casting
+ *
+ * Correct field uType of spritePtr must be set before calling this function
+ * because initialization depends on it.
+ */
+static void InitSpellSprite(SpriteObject *spritePtr,
+                            PLAYER_SKILL_LEVEL spellLevel,
+                            PLAYER_SKILL_MASTERY spellMastery,
+                            CastSpellInfo *pCastSpell) {
+    assert(spritePtr && spritePtr->uType != SPRITE_NULL);
+    assert(pCastSpell->uSpellID != 0);
+
     spritePtr->containing_item.Reset();
     spritePtr->spell_level = spellLevel;
     spritePtr->spell_id = pCastSpell->uSpellID;
@@ -60,20 +66,23 @@ InitSpellSprite(SpriteObject* spritePtr,
     spritePtr->uSoundID = pCastSpell->sound_id;
 }
 
-// Notify that spell casting failed
-static void
-SpellFailed(CastSpellInfo *pCastSpell,
-            int error_str_id)
-{
+/**
+ * Notify that spell casting failed.
+ */
+static void SpellFailed(CastSpellInfo *pCastSpell,
+                        int error_str_id) {
     GameUI_SetStatusBar(error_str_id);
     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
     pCastSpell->uSpellID = 0;
 }
 
-//----- (00427E01) --------------------------------------------------------
+/**
+ * Cast spell processing.
+ *
+ * @offset 0x00427E01
+ */
 void CastSpellInfoHelpers::CastSpell() {
     CastSpellInfo *pCastSpell;
-    signed int spell_pointed_target;
     int monster_id;
     int spell_overlay_id;
     int dist_X;
@@ -84,7 +93,6 @@ void CastSpellInfoHelpers::CastSpell() {
     int spell_speed;
     int target_undead;
     int spellduration;
-    signed int spell_targeted_at = 0;
 
     PLAYER_SKILL_TYPE which_skill;
     AIDirection target_direction;
@@ -119,7 +127,7 @@ void CastSpellInfoHelpers::CastSpell() {
 
         pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID];
 
-        spell_targeted_at = pCastSpell->spell_target_pid;
+        int spell_targeted_at = pCastSpell->spell_target_pid;
 
         if (spell_targeted_at == 0) {  // no target ?? test
             if (pCastSpell->uSpellID == SPELL_LIGHT_DESTROY_UNDEAD ||
@@ -132,7 +140,8 @@ void CastSpellInfoHelpers::CastSpell() {
 
             // find the closest target
             spell_targeted_at = stru_50C198.FindClosestActor(engine->config->gameplay.RangedAttackDepth.Get(), 1, target_undead);
-            spell_pointed_target = mouse->uPointingObjectID;
+
+            int spell_pointed_target = mouse->uPointingObjectID;
 
             if (mouse->uPointingObjectID &&
                 PID_TYPE(spell_pointed_target) == OBJECT_Actor &&
@@ -231,7 +240,7 @@ void CastSpellInfoHelpers::CastSpell() {
             }
 
             SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
-            pPlayer->sMana -= uRequiredMana;
+            pPlayer->SpendMana(uRequiredMana);
             return;
         }
 
@@ -256,7 +265,6 @@ void CastSpellInfoHelpers::CastSpell() {
             pSpellSprite.spell_target_pid = spell_targeted_at;
             pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
             pSpellSprite.uFacing = target_direction.uYawAngle;
-            pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID];
             memcpy(&pSpellSprite.containing_item, &pPlayer->pInventoryItemList[pPlayer->pEquipment.uBow - 1], sizeof(pSpellSprite.containing_item));
             pSpellSprite.uAttributes |= SPRITE_MISSILE;
             if (pParty->bTurnBasedModeOn) {
@@ -280,7 +288,6 @@ void CastSpellInfoHelpers::CastSpell() {
             pSpellSprite.spell_target_pid = spell_targeted_at;
             pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
             pSpellSprite.uFacing = target_direction.uYawAngle;
-            pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID];
             memcpy(&pSpellSprite.containing_item, &pPlayer->pInventoryItemList[pPlayer->pEquipment.uMainHand - 1], sizeof(pSpellSprite.containing_item));
             // &pParty->pPlayers[pCastSpell->uPlayerID].spellbook.pDarkSpellbook.bIsSpellAvailable[36
             // *
@@ -325,8 +332,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pCastSpell->uFlags |= ON_CAST_NoRecoverySpell;
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_OnCastLloydsBeacon, 0, 0);
             }
-        } else
-        {
+        } else {
         int amount;
         Vec3i spell_velocity;
 
@@ -336,6 +342,7 @@ void CastSpellInfoHelpers::CastSpell() {
 
         if (!pPlayer->CanCastSpell(uRequiredMana)) {
             // Not enough mana for current spell, check the next one
+            pCastSpell->uSpellID = 0;
             continue;
         }
 
@@ -393,7 +400,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
                     continue;
                 }
-                InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
+                InitSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                 pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                 pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                 pSpellSprite.spell_target_pid = spell_targeted_at;
@@ -414,7 +421,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 monster_id = PID_ID(spell_targeted_at);
                 if (!spell_targeted_at) {
                     SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
-                    pPlayer->CastSpellModifyMana(uRequiredMana); // decrease mana on failure
+                    pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                     continue;
                 }
                 if (PID_TYPE(spell_targeted_at) == OBJECT_Actor) {
@@ -470,7 +477,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 int obj_id = pSpellSprite.Create(0, 0, 0, 0);
                 if (!MonsterStats::BelongsToSupertype(pActors[PID_ID(spell_targeted_at)].pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
                     SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
-                    pPlayer->CastSpellModifyMana(uRequiredMana); // decrease mana on failure
+                    pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                     continue;
                 }
                 Actor::DamageMonsterFromParty(PID(OBJECT_Item, obj_id), PID_ID(spell_targeted_at), &spell_velocity);
@@ -667,7 +674,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     _50C9D4_AfterEnchClickEventSecondParam = 0;
                     _50C9D8_AfterEnchClickEventTimeout = 128; // was 1, increased to make message readable
                     SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
-                    pPlayer->CastSpellModifyMana(uRequiredMana); // decrease mana on failure
+                    pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                     continue;
                 }
 
@@ -858,12 +865,9 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (spell_targeted_at &&
                         PID_TYPE(spell_targeted_at) == OBJECT_Actor) {
                     int monster_id = PID_ID(spell_targeted_at);
-                    dist_X = abs(pActors[monster_id].vPosition.x -
-                            pParty->vPosition.x);
-                    dist_Y = abs(pActors[monster_id].vPosition.y -
-                            pParty->vPosition.y);
-                    dist_Z = abs(pActors[monster_id].vPosition.z -
-                            pParty->vPosition.z);
+                    dist_X = abs(pActors[monster_id].vPosition.x - pParty->vPosition.x);
+                    dist_Y = abs(pActors[monster_id].vPosition.y - pParty->vPosition.y);
+                    dist_Z = abs(pActors[monster_id].vPosition.z - pParty->vPosition.z);
                     int count = int_get_vector_length(dist_X, dist_Y, dist_Z);
                     if ((double)count <= 307.2) {
                         InitSpellSprite( &pSpellSprite, spell_level, spell_mastery, pCastSpell);
@@ -877,14 +881,14 @@ void CastSpellInfoHelpers::CastSpell() {
                         Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, &spell_velocity);
                     } else {
                         SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
-                        pPlayer->CastSpellModifyMana(uRequiredMana); // decrease mana on failure
+                        pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         continue;
                     }
-                } else
-                {
-                    // Previous behavoiur - decrease mana but do not play sound even if
+                } else {
+                    // Previous behavoiur - decrease mana but do not play sound if
                     // spell is targeted wrong
-                    pPlayer->CastSpellModifyMana(uRequiredMana);
+                    pPlayer->SpendMana(uRequiredMana);
+                    pCastSpell->uSpellID = 0;
                     continue;
                 }
                 break;
@@ -967,6 +971,7 @@ void CastSpellInfoHelpers::CastSpell() {
             case SPELL_FIRE_METEOR_SHOWER:
             {
                 if (spell_mastery < PLAYER_SKILL_MASTERY_MASTER) {
+                    pCastSpell->uSpellID = 0;
                     continue;
                 }
 
@@ -1421,7 +1426,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     _50C9D4_AfterEnchClickEventSecondParam = 0;
                     _50C9D8_AfterEnchClickEventTimeout = 1;
                     SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
-                    pPlayer->CastSpellModifyMana(uRequiredMana); // decrease mana on failure
+                    pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                     continue;
                 }
 
@@ -1448,7 +1453,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     _50C9D4_AfterEnchClickEventSecondParam = 0;
                     _50C9D8_AfterEnchClickEventTimeout = 1;
                     SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
-                    pPlayer->CastSpellModifyMana(uRequiredMana); // decrease mana on failure
+                    pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                     continue;
                 }
 
@@ -1555,9 +1560,12 @@ void CastSpellInfoHelpers::CastSpell() {
                                     for (ITEM_ENCHANTMENT spec_ench_loop : pItemTable->pSpecialEnchantments.indices()) {
                                         char *this_bon_state = pItemTable->pSpecialEnchantments[spec_ench_loop].pBonusStatement;
                                         if (this_bon_state != NULL && (this_bon_state[0] != '\0')) {
-                                            if (pItemTable->pSpecialEnchantments[spec_ench_loop].iTreasureLevel == 3) continue;
-                                            if (spell_mastery == PLAYER_SKILL_MASTERY_MASTER && (pItemTable->pSpecialEnchantments[spec_ench_loop].iTreasureLevel != 0))
+                                            if (pItemTable->pSpecialEnchantments[spec_ench_loop].iTreasureLevel == 3) {
                                                 continue;
+                                            }
+                                            if (spell_mastery == PLAYER_SKILL_MASTERY_MASTER && (pItemTable->pSpecialEnchantments[spec_ench_loop].iTreasureLevel != 0)) {
+                                                continue;
+                                            }
                                             int this_to_apply = pItemTable->pSpecialEnchantments[spec_ench_loop].to_item_apply[this_equip_type];
                                             to_item_apply_sum += this_to_apply;
                                             if (this_to_apply) {
@@ -1595,7 +1603,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (spell_failed) {
                     SpellFailed(pCastSpell, item_not_broken ? LSTR_SPELL_FAILED : LSTR_ITEM_TOO_LAME);
                     pParty->pPlayers[pCastSpell->uPlayerID_2].PlaySound(SPEECH_SpellFailed, 0);
-                    pPlayer->CastSpellModifyMana(uRequiredMana); // decrease mana on failure
+                    pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                     continue;
                 }
                 break;
@@ -2874,12 +2882,12 @@ void CastSpellInfoHelpers::CastSpell() {
                 monster_id = PID_ID(pCastSpell->spell_target_pid);
                 if (monster_id == -1) {
                     SpellFailed(pCastSpell, LSTR_NO_VALID_SPELL_TARGET);
-                    pPlayer->CastSpellModifyMana(uRequiredMana); // decrease mana on failure
+                    pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                     continue;
                 }
                 if (pActors[monster_id].sCurrentHP > 0 || pActors[monster_id].uAIState != Dead && pActors[monster_id].uAIState != Dying) {
                     SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
-                    pPlayer->CastSpellModifyMana(uRequiredMana); // decrease mana on failure
+                    pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                     continue;
                 }
                 // ++pSpellSprite.uType;
@@ -2947,8 +2955,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 spell_spray_angle_end = ONE_THIRD_PI / 2;
                 if (spell_spray_angle_start <= spell_spray_angle_end) {
                     do {
-                        pSpellSprite.uFacing = spell_spray_angle_start +
-                            target_direction.uYawAngle;
+                        pSpellSprite.uFacing = spell_spray_angle_start + target_direction.uYawAngle;
                         if (pSpellSprite.Create(pSpellSprite.uFacing, target_direction.uPitchAngle, pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed,
                                     pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
                             ++pTurnEngine->pending_actions;
@@ -2986,7 +2993,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     }
                     if (!pActors[monster_id].DoesDmgTypeDoDamage(DMGT_DARK)) {
                         SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
-                        pPlayer->CastSpellModifyMana(uRequiredMana); // decrease mana on failure
+                        pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         continue;
                     }
                     pActors[monster_id].pActorBuffs[ACTOR_BUFF_BERSERK].Reset();
@@ -3014,15 +3021,16 @@ void CastSpellInfoHelpers::CastSpell() {
                 int hired_npc = 0;
                 memset(&achieved_awards, 0, 4000);
                 for (uint npc_id = 0; npc_id < 2; npc_id++) {
-                    if (!pParty->pHirelings[npc_id].pName.empty())
+                    if (!pParty->pHirelings[npc_id].pName.empty()) {
                         achieved_awards[hired_npc++] = (AwardType)(npc_id + 1);
+                    }
                 }
 
                 if (pCastSpell->uPlayerID_2 != 4 && pCastSpell->uPlayerID_2 != 5 ||
                         achieved_awards[pCastSpell->uPlayerID_2 - 4] <= 0 ||
                         achieved_awards[pCastSpell->uPlayerID_2 - 4] >= 3) {
                     SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
-                    pPlayer->CastSpellModifyMana(uRequiredMana); // decrease mana on failure
+                    pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                     continue;
                 }
                 int hireling_idx = achieved_awards[pCastSpell->uPlayerID_2 - 4] - 1;
@@ -3178,15 +3186,18 @@ void CastSpellInfoHelpers::CastSpell() {
                 break;
             }
             default:
+                pCastSpell->uSpellID = 0;
                 continue;
         }
 
         spell_sound_flag = true;
-        pPlayer->CastSpellModifyMana(uRequiredMana);
+        pPlayer->SpendMana(uRequiredMana);
         }
 
         if (~pCastSpell->uFlags & ON_CAST_NoRecoverySpell) {
-            if (sRecoveryTime < 0) sRecoveryTime = 0;
+            if (sRecoveryTime < 0) {
+                sRecoveryTime = 0;
+            }
 
             pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID];  // reset to player who
                                                                  // actually casts spell
@@ -3197,8 +3208,9 @@ void CastSpellInfoHelpers::CastSpell() {
 
                 pPlayer->SetRecoveryTime(sRecoveryTime);
 
-                if (!some_active_character)
+                if (!some_active_character) {
                     pTurnEngine->ApplyPlayerAction();
+                }
             } else {
                 pPlayer->SetRecoveryTime((int64_t)(debug_non_combat_recovery_mul * (double)sRecoveryTime * flt_debugrecmod3));
             }
@@ -3209,11 +3221,12 @@ void CastSpellInfoHelpers::CastSpell() {
         }
 
         pCastSpell->uSpellID = 0;
-        continue;
     }
 }
 
-//----- (00427DA0) --------------------------------------------------------
+/**
+ * @offset 0x00427DA0
+ */
 size_t PushCastSpellInfo(uint16_t uSpellID, uint16_t uPlayerID,
                          int16_t skill_level, SpellCastFlags uFlags,
                          int spell_sound_id) {
@@ -3234,7 +3247,9 @@ size_t PushCastSpellInfo(uint16_t uSpellID, uint16_t uPlayerID,
     return -1;
 }
 
-//----- (00427D48) --------------------------------------------------------
+/**
+ * @offset 0x00427D48
+ */
 void CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress() {  // reset failed/cancelled spell
     for (size_t i = 0; i < CastSpellInfoCount; i++) {
         if (pCastSpellInfo[i].uSpellID &&
@@ -3253,7 +3268,9 @@ void CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress() {  // reset failed/ca
     }
 }
 
-//----- (0042777D) --------------------------------------------------------
+/**
+ * @offset 0x0042777D
+ */
 void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
                                           unsigned int uPlayerID,
                                           PLAYER_SKILL skill_value, SpellCastFlags flags,
