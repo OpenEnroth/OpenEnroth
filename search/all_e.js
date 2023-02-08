@@ -105,8 +105,8 @@ var searchData=
   ['nuklear_5fstage_102',['NUKLEAR_STAGE',['../classNuklear.html#a7254a0bd933c66f285a875fbfa0129fb',1,'Nuklear']]],
   ['nuklear_5fstage_5fpost_103',['NUKLEAR_STAGE_POST',['../classNuklear.html#a7254a0bd933c66f285a875fbfa0129fba88c579f001df139428e1658a4503cebd',1,'Nuklear']]],
   ['nuklear_5fstage_5fpre_104',['NUKLEAR_STAGE_PRE',['../classNuklear.html#a7254a0bd933c66f285a875fbfa0129fba96186d9f96305847ba40b7a03ee3f4cb',1,'Nuklear']]],
-  ['nuklearcreatedevice_105',['NuklearCreateDevice',['../classIRender.html#a5467a526a284b82da6dbd77905324070',1,'IRender::NuklearCreateDevice()'],['../classRenderOpenGL.html#a3d5bd608b68f261edbd26810568071d2',1,'RenderOpenGL::NuklearCreateDevice()']]],
-  ['nukleareventhandler_106',['NuklearEventHandler',['../classNuklearEventHandler.html',1,'NuklearEventHandler'],['../classNuklearEventHandler.html#a97f0003547164885c1d2a39437516313',1,'NuklearEventHandler::NuklearEventHandler()']]],
+  ['nuklearcreatedevice_105',['NuklearCreateDevice',['../classRenderOpenGL.html#a3d5bd608b68f261edbd26810568071d2',1,'RenderOpenGL::NuklearCreateDevice()'],['../classIRender.html#a5467a526a284b82da6dbd77905324070',1,'IRender::NuklearCreateDevice()']]],
+  ['nukleareventhandler_106',['NuklearEventHandler',['../classNuklearEventHandler.html#a97f0003547164885c1d2a39437516313',1,'NuklearEventHandler::NuklearEventHandler()'],['../classNuklearEventHandler.html',1,'NuklearEventHandler']]],
   ['nukleareventhandler_2ecpp_107',['NuklearEventHandler.cpp',['../NuklearEventHandler_8cpp.html',1,'']]],
   ['nukleareventhandler_2eh_108',['NuklearEventHandler.h',['../NuklearEventHandler_8h.html',1,'']]],
   ['nuklearfontfree_109',['NuklearFontFree',['../classIRender.html#a167bc6440d667aef75646c5460733809',1,'IRender::NuklearFontFree()'],['../classRenderOpenGL.html#a5a05b4171d492c119b2577f7007f6ec3',1,'RenderOpenGL::NuklearFontFree()']]],
@@ -145,6 +145,5 @@ var searchData=
   ['numpad7_142',['Numpad7',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca4314bbf1a297c4b03a5246a71c9c93b6',1,'PlatformEnums.h']]],
   ['numpad8_143',['Numpad8',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca8bf3a062ba0e0fa6ef21508d15e7820e',1,'PlatformEnums.h']]],
   ['numpad9_144',['Numpad9',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca15f7ca721fe2b648a34d498084f70919',1,'PlatformEnums.h']]],
-  ['numterraintexloaded_145',['numterraintexloaded',['../classRenderOpenGL.html#a2c79443fe4f2ae353873c47007f027ab',1,'RenderOpenGL']]],
-  ['numvertices_146',['NumVertices',['../structLightmap.html#a6a01d0deb6f394815923c6cb49718d1e',1,'Lightmap']]]
+  ['numterraintexloaded_145',['numterraintexloaded',['../classRenderOpenGL.html#a2c79443fe4f2ae353873c47007f027ab',1,'RenderOpenGL']]]
 ];

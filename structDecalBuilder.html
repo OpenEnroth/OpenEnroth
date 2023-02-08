@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;97a6c8b</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;450e9e2</span>
    </div>
   </td>
  </tr>
@@ -97,8 +97,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ad0e9f1b9e141c341bd78ad61466fb09b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:addfbb7a18569b72ad34eec3607b3a333"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDecalBuilder.html#addfbb7a18569b72ad34eec3607b3a333">ApplyBloodSplat_OutdoorFace</a> (<a class="el" href="structODMFace.html">ODMFace</a> *pFace)</td></tr>
 <tr class="separator:addfbb7a18569b72ad34eec3607b3a333"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a50b1d28b58c41b3464eda44c25c1f70b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDecalBuilder.html#a50b1d28b58c41b3464eda44c25c1f70b">ApplyBloodSplatToTerrain</a> (struct <a class="el" href="structPolygon.html">Polygon</a> *terrpoly, <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> *terrnorm, float *tridotdist, <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *triverts, unsigned int uStripType, char tri_orient, int whichsplat)</td></tr>
-<tr class="separator:a50b1d28b58c41b3464eda44c25c1f70b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d44c0f41ce7fd41992d533b01f338de"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDecalBuilder.html#a2d44c0f41ce7fd41992d533b01f338de">ApplyBloodSplatToTerrain</a> (struct <a class="el" href="structPolygon.html">Polygon</a> *terrpoly, <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> *terrnorm, float *tridotdist, <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *triverts, int whichsplat)</td></tr>
+<tr class="separator:a2d44c0f41ce7fd41992d533b01f338de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8389e8645f87dec6b6cb9a388e31b298"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDecalBuilder.html#a8389e8645f87dec6b6cb9a388e31b298">DrawDecals</a> (float z_bias)</td></tr>
 <tr class="separator:a8389e8645f87dec6b6cb9a388e31b298"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3982759e9876a20204c3470d6ce4bb23"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDecalBuilder.html#a3982759e9876a20204c3470d6ce4bb23">DrawBloodsplats</a> ()</td></tr>
@@ -287,8 +287,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a50b1d28b58c41b3464eda44c25c1f70b" name="a50b1d28b58c41b3464eda44c25c1f70b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a50b1d28b58c41b3464eda44c25c1f70b">&#9670;&#160;</a></span>ApplyBloodSplatToTerrain()</h2>
+<a id="a2d44c0f41ce7fd41992d533b01f338de" name="a2d44c0f41ce7fd41992d533b01f338de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d44c0f41ce7fd41992d533b01f338de">&#9670;&#160;</a></span>ApplyBloodSplatToTerrain()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -320,18 +320,6 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>uStripType</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char&#160;</td>
-          <td class="paramname"><em>tri_orient</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>whichsplat</em>&#160;</td>
         </tr>
@@ -350,8 +338,6 @@ Public Attributes</h2></td></tr>
     <tr><td class="paramdir"></td><td class="paramname">terrnorm</td><td>Normal vector of supplied triangle. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">tridotdist</td><td>Plane dot distance of supplied vertices. </td></tr>
     <tr><td class="paramdir"></td><td class="paramname">triverts</td><td>Vertices of terrain triangle to apply splat onto. </td></tr>
-    <tr><td class="paramdir"></td><td class="paramname">uStripType</td><td>How many vertices are in triverts (3/4) - TODO(pskelton): Drop </td></tr>
-    <tr><td class="paramdir"></td><td class="paramname">tri_orient</td><td>Top (1) or bottom (0) triangle from terrain square - TODO(pskelton): drop. </td></tr>
     <tr><td class="paramdir"></td><td class="paramname">whichsplat</td><td>Index of which bloodsplat in bloodsplat_container-&gt;pBloodsplats_to_apply[index] to use.</td></tr>
   </table>
   </dd>

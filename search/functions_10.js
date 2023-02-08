@@ -102,7 +102,7 @@ var searchData=
   ['preparetoloadrestui_99',['PrepareToLoadRestUI',['../UIRest_8cpp.html#ae7487b5a014b96fdda8d72c6703ffa32',1,'UIRest.cpp']]],
   ['prepareworld_100',['PrepareWorld',['../Engine_8h.html#a287d13406d42b0831d9eb7a64d368202',1,'PrepareWorld(unsigned int _0_box_loading_1_fullscreen):&#160;Engine.cpp'],['../Engine_8cpp.html#a287d13406d42b0831d9eb7a64d368202',1,'PrepareWorld(unsigned int _0_box_loading_1_fullscreen):&#160;Engine.cpp']]],
   ['present_101',['Present',['../classIRender.html#a0a3a3b75e2360f6951f66bd588f659fd',1,'IRender::Present()'],['../classRenderOpenGL.html#a653c5cb3b30e94f47823d8719c2a6791',1,'RenderOpenGL::Present()']]],
-  ['presentblackscreen_102',['PresentBlackScreen',['../classIRender.html#ac3d3a94785d135c00f3e226472deb204',1,'IRender::PresentBlackScreen()'],['../classRenderOpenGL.html#afd72b09b99a69910330703c5290ce520',1,'RenderOpenGL::PresentBlackScreen()']]],
+  ['presentblackscreen_102',['PresentBlackScreen',['../classIRender.html#ac3d3a94785d135c00f3e226472deb204',1,'IRender::PresentBlackScreen()'],['../classRenderBase.html#adc5735a92a98328535c4b90b81451361',1,'RenderBase::PresentBlackScreen()']]],
   ['pressandreleasebutton_103',['pressAndReleaseButton',['../classEngineController.html#ae7aa4b58adeb246bc3e300aa46f69058',1,'EngineController']]],
   ['pressandreleasekey_104',['pressAndReleaseKey',['../classEngineController.html#ae05e10f53acb8479f7728353f27916b0',1,'EngineController']]],
   ['pressbutton_105',['pressButton',['../classEngineController.html#a722e9d4ab3e79cc706801931c65d5577',1,'EngineController']]],

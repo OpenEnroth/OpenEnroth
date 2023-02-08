@@ -29,7 +29,7 @@ var searchData=
   ['alwaysrun_26',['AlwaysRun',['../classApplication_1_1GameConfig_1_1Settings.html#af8ebba0d74e2f890c93ace18589be514',1,'Application::GameConfig::Settings::AlwaysRun()'],['../classApplication_1_1GameConfig_1_1Gamepad.html#afde88d58113d6fa65b7a4f3993f83607',1,'Application::GameConfig::Gamepad::AlwaysRun()'],['../classApplication_1_1GameConfig_1_1Keybindings.html#aada8eef91da8edb6f85b8dfa6aa4881b',1,'Application::GameConfig::Keybindings::AlwaysRun()']]],
   ['am_5feffects_5farray_27',['am_effects_array',['../Arcomage_8cpp.html#a39c1983d8e22883a3b93a52410a3693b',1,'Arcomage.cpp']]],
   ['am_5finput_5fkey_28',['am_input_key',['../structArcomageGame__InputMSG.html#afaf385aef556b8e93e5a1477fa979d70',1,'ArcomageGame_InputMSG']]],
-  ['am_5finput_5ftype_29',['am_input_type',['../structArcomageGame__InputMSG.html#ac53da93512cab85699afc0248ce44931',1,'ArcomageGame_InputMSG']]],
+  ['am_5finput_5ftype_29',['am_input_type',['../structArcomageGame__InputMSG.html#aa714bdc5141b5d01dd233e8f25bb8756',1,'ArcomageGame_InputMSG']]],
   ['am_5fplayers_30',['am_Players',['../Arcomage_8cpp.html#a573cf9451b518b5fec88de9c6354cbfa',1,'Arcomage.cpp']]],
   ['anakiwa_31',['Anakiwa',['../classColorTable.html#a29441dbe04c6583d1f20dea352644aae',1,'ColorTable']]],
   ['angle_32',['angle',['../structParticle.html#a48ab07efb5860c6a58b5fd469440e812',1,'Particle']]],

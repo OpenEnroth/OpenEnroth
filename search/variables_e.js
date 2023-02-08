@@ -44,7 +44,7 @@ var searchData=
   ['npc_5fprofession_5fnames_41',['npc_profession_names',['../classLocalization.html#a2c9a91de9d1d5bcdb24e553ceb95b75d',1,'Localization']]],
   ['npcidtodismissafterdialogue_42',['npcIdToDismissAfterDialogue',['../mm7__data_8cpp.html#a0e85dc697836d609e7088228044261c1',1,'npcIdToDismissAfterDialogue():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a0e85dc697836d609e7088228044261c1',1,'npcIdToDismissAfterDialogue():&#160;mm7_data.cpp']]],
   ['nplanes_43',['nplanes',['../structPCXHeader.html#a572675c585b4118bea678c1468504203',1,'PCXHeader']]],
-  ['nuklear_44',['nuklear',['../classApplication_1_1Game.html#a57b675063ff5bf7d905538853a25ae66',1,'Application::Game::nuklear()'],['../structEngine.html#a6fc70d7e1ad1e8f0ae98e791a699872e',1,'Engine::nuklear()'],['../classEngine___1_1IocContainer.html#aebc3b0615d64ae25b808296e6fc024f6',1,'Engine_::IocContainer::nuklear()'],['../Nuklear_8h.html#a744d8792693c6d41ea3a03b57bb56f82',1,'nuklear():&#160;Nuklear.cpp'],['../Nuklear_8cpp.html#a744d8792693c6d41ea3a03b57bb56f82',1,'nuklear():&#160;Nuklear.cpp']]],
+  ['nuklear_44',['nuklear',['../Nuklear_8h.html#a744d8792693c6d41ea3a03b57bb56f82',1,'nuklear():&#160;Nuklear.cpp'],['../Nuklear_8cpp.html#a744d8792693c6d41ea3a03b57bb56f82',1,'nuklear():&#160;Nuklear.cpp'],['../classEngine___1_1IocContainer.html#aebc3b0615d64ae25b808296e6fc024f6',1,'Engine_::IocContainer::nuklear()'],['../structEngine.html#a6fc70d7e1ad1e8f0ae98e791a699872e',1,'Engine::nuklear()'],['../classApplication_1_1Game.html#a57b675063ff5bf7d905538853a25ae66',1,'Application::Game::nuklear()']]],
   ['nuklearhandler_45',['nuklearHandler',['../classApplication_1_1Game.html#a01c96b2f6a1c22b649fe737da018c90e',1,'Application::Game']]],
   ['nuklearshader_46',['nuklearshader',['../classRenderOpenGL.html#ac9ffc6e6f2e40e6b8f20e109f11f8f2f',1,'RenderOpenGL']]],
   ['null_47',['null',['../structRenderOpenGL_1_1nk__device.html#a2beaae7f98fe3c34c2eccbb25d623322',1,'RenderOpenGL::nk_device']]],
@@ -63,6 +63,5 @@ var searchData=
   ['numitems_60',['numItems',['../structLodFileHeader__Mm6.html#adc012f21f618a0792b46f351ae72c64b',1,'LodFileHeader_Mm6']]],
   ['numoutbuildtexloaded_61',['numoutbuildtexloaded',['../classRenderOpenGL.html#a3da8f4e7d9ae533b60d5fefff2af2040',1,'RenderOpenGL']]],
   ['numoutbuildverts_62',['numoutbuildverts',['../RenderOpenGL_8cpp.html#a499b0c70e74f9bac98059166082b490f',1,'RenderOpenGL.cpp']]],
-  ['numterraintexloaded_63',['numterraintexloaded',['../classRenderOpenGL.html#a2c79443fe4f2ae353873c47007f027ab',1,'RenderOpenGL']]],
-  ['numvertices_64',['NumVertices',['../structLightmap.html#a6a01d0deb6f394815923c6cb49718d1e',1,'Lightmap']]]
+  ['numterraintexloaded_63',['numterraintexloaded',['../classRenderOpenGL.html#a2c79443fe4f2ae353873c47007f027ab',1,'RenderOpenGL']]]
 ];

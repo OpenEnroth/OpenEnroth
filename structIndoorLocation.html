@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;97a6c8b</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;450e9e2</span>
    </div>
   </td>
  </tr>
@@ -100,8 +100,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a4ca94d29b86a6927a057fc56979483dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa6a9f4e9391548d276330aab731ad69"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIndoorLocation.html#afa6a9f4e9391548d276330aab731ad69">DrawIndoorFaces</a> (bool bD3D)</td></tr>
 <tr class="separator:afa6a9f4e9391548d276330aab731ad69"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae4bbb8d9c7bf0ba0363691cf7f54e80a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIndoorLocation.html#ae4bbb8d9c7bf0ba0363691cf7f54e80a">ExecDraw_d3d</a> (unsigned int uFaceID, struct <a class="el" href="structIndoorCameraD3D__Vec4.html">IndoorCameraD3D_Vec4</a> *<a class="el" href="structIndoorLocation.html#a192ce05f094336b4f9903a26f6df6d65">pVertices</a>, unsigned int uNumVertices, struct <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *pPortalBounding)</td></tr>
-<tr class="separator:ae4bbb8d9c7bf0ba0363691cf7f54e80a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43b6b91a65216230bae6262211e277fd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIndoorLocation.html#a43b6b91a65216230bae6262211e277fd">PrepareActorRenderList_BLV</a> ()</td></tr>
 <tr class="separator:a43b6b91a65216230bae6262211e277fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0dda3408664d16931d12f61398b1f69"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIndoorLocation.html#af0dda3408664d16931d12f61398b1f69">PrepareDecorationsRenderList_BLV</a> (unsigned int uDecorationID, unsigned int uSectorID)</td></tr>
@@ -166,8 +164,6 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a7e2d1a379279da25a4cda7cbdc04d1d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7bdf24553224976dac0b84cc636197fb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSpellFxRenderer.html">SpellFxRenderer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIndoorLocation.html#a7bdf24553224976dac0b84cc636197fb">spell_fx_renderer</a> = nullptr</td></tr>
 <tr class="separator:a7bdf24553224976dac0b84cc636197fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26e8c999b73eea39328d46b1eec6454c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLightmapBuilder.html">LightmapBuilder</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIndoorLocation.html#a26e8c999b73eea39328d46b1eec6454c">lightmap_builder</a> = nullptr</td></tr>
-<tr class="separator:a26e8c999b73eea39328d46b1eec6454c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a39e763d38c446b72011c39b8ba4b517b"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classParticleEngine.html">ParticleEngine</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIndoorLocation.html#a39e763d38c446b72011c39b8ba4b517b">particle_engine</a> = nullptr</td></tr>
 <tr class="separator:a39e763d38c446b72011c39b8ba4b517b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -227,46 +223,6 @@ Public Attributes</h2></td></tr>
           <td class="paramtype">bool&#160;</td>
           <td class="paramname"><em>bD3D</em></td><td>)</td>
           <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ae4bbb8d9c7bf0ba0363691cf7f54e80a" name="ae4bbb8d9c7bf0ba0363691cf7f54e80a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae4bbb8d9c7bf0ba0363691cf7f54e80a">&#9670;&#160;</a></span>ExecDraw_d3d()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void IndoorLocation::ExecDraw_d3d </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>uFaceID</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structIndoorCameraD3D__Vec4.html">IndoorCameraD3D_Vec4</a> *&#160;</td>
-          <td class="paramname"><em>pVertices</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>uNumVertices</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *&#160;</td>
-          <td class="paramname"><em>pPortalBounding</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -648,20 +604,6 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::string IndoorLocation::filename</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a26e8c999b73eea39328d46b1eec6454c" name="a26e8c999b73eea39328d46b1eec6454c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a26e8c999b73eea39328d46b1eec6454c">&#9670;&#160;</a></span>lightmap_builder</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classLightmapBuilder.html">LightmapBuilder</a>* IndoorLocation::lightmap_builder = nullptr</td>
         </tr>
       </table>
 </div><div class="memdoc">

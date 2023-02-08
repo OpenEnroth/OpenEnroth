@@ -77,7 +77,7 @@ var searchData=
   ['classifypolygon_74',['ClassifyPolygon',['../structstru154.html#ad42e8696a692b112e451a2d25e75185d',1,'stru154']]],
   ['cleanupbeacons_75',['CleanupBeacons',['../structPlayer.html#a41ba8d2d08919fa4537368acd4bbc928',1,'Player']]],
   ['clear_76',['Clear',['../structexplosion__effect__struct.html#a85c4f8dde7bfa832d8a5f7fcb8dfab62',1,'explosion_effect_struct::Clear()'],['../structGUIMessageQueue.html#aa81574871e535ec6e1fc905ef727c8dc',1,'GUIMessageQueue::Clear()']]],
-  ['clearblack_77',['ClearBlack',['../classIRender.html#a4e64f4b8cb3bc015f27597fc38a5094e',1,'IRender::ClearBlack()'],['../classRenderOpenGL.html#a2fa8d1f495c0c0ddc31e1dcc7323fd65',1,'RenderOpenGL::ClearBlack()']]],
+  ['clearblack_77',['ClearBlack',['../classIRender.html#a4e64f4b8cb3bc015f27597fc38a5094e',1,'IRender::ClearBlack()'],['../classRenderBase.html#a8dbc447df64184f38e44e8b16dd1364e',1,'RenderBase::ClearBlack()']]],
   ['clearcursor_78',['ClearCursor',['../classIo_1_1Mouse.html#a455021707dcb042f6e58821cef234311',1,'Io::Mouse']]],
   ['clearitembonusmaps_79',['ClearItemBonusMaps',['../structItemGen.html#ab8f0f24209045acf9334ffcb2d993258',1,'ItemGen']]],
   ['clearpickeditem_80',['ClearPickedItem',['../classIo_1_1Mouse.html#aaa74086ce98743203f1a0f017f73529c',1,'Io::Mouse']]],
