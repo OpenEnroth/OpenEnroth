@@ -18,7 +18,6 @@ class RenderOpenGL : public RenderBase {
     RenderOpenGL(
         std::shared_ptr<Application::GameConfig> config,
         DecalBuilder* decal_builder,
-        LightmapBuilder* lightmap_builder,
         SpellFxRenderer* spellfx,
         std::shared_ptr<ParticleEngine> particle_engine,
         Vis* vis,
@@ -55,9 +54,6 @@ class RenderOpenGL : public RenderBase {
         const std::string &name, unsigned int palette_id,
         /*refactor*/ unsigned int lod_sprite_id) override;
 
-    virtual void ClearBlack() override;
-    virtual void PresentBlackScreen() override;
-
     virtual uint8_t *ReadScreenPixels();
     virtual void SaveWinnersCertificate(const char *a1) override;
     virtual void ClearTarget(unsigned int uColor) override;
@@ -81,15 +77,10 @@ class RenderOpenGL : public RenderBase {
     virtual void RestoreFrontBuffer() override;
     virtual void RestoreBackBuffer() override;
     virtual void BltBackToFontFast(int a2, int a3, Recti *pSrcRect) override;
-    virtual void BeginSceneD3D() override;
-
-    virtual unsigned int GetActorTintColor(int DimLevel, int tint, float WorldViewX, int a5, RenderBillboard *Billboard) override;
+    virtual void BeginScene3D() override;
 
     virtual void DrawTerrainPolygon(struct Polygon *a4, bool transparent,
                                     bool clampAtTextureBorders) override;
-
-    virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() override;
-    virtual void BillboardSphereSpellFX(struct SpellFX_Billboard *a1, int diffuse) override;
 
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
                                 float dstX, float dstY, float a7, float a8,
@@ -102,7 +93,7 @@ class RenderOpenGL : public RenderBase {
 
     virtual void DeleteTexture(Texture *texture) override;
 
-    virtual void BeginScene() override;
+    virtual void BeginScene2D() override;
     virtual void ScreenFade(unsigned int color, float t) override;
 
     virtual void SetUIClipRect(unsigned int uX, unsigned int uY,
@@ -121,7 +112,6 @@ class RenderOpenGL : public RenderBase {
     virtual void BlendTextures(int a2, int a3, Image *a4, Image *a5, int t,
                                int start_opacity, int end_opacity) override;
     virtual void TexturePixelRotateDraw(float u, float v, Image *img, int time) override;
-    virtual void DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait_Sprite, int Y_Offset) override;
 
     virtual void BeginTextNew(Texture *main, Texture *shadow) override;
     virtual void EndTextNew() override;
@@ -154,8 +144,6 @@ class RenderOpenGL : public RenderBase {
     virtual void EndDecals() override;
     virtual void DrawDecal(struct Decal *pDecal, float z_bias) override;
 
-    virtual void DrawSpecialEffectsQuad(Texture *texture, int palette) override;
-
     virtual void DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, int a3,
                                int blend_mode) override;
 
@@ -173,7 +161,7 @@ class RenderOpenGL : public RenderBase {
     virtual void ReloadShaders() override;
 
  protected:
-    void DoRenderBillboards_D3D();
+    virtual void DoRenderBillboards_D3D() override;
     void SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1);
 
     void DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon);

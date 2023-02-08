@@ -967,7 +967,7 @@ bool Nuklear::Draw(NUKLEAR_STAGE stage, WindowType winType, int id) {
 
         if (stage == NUKLEAR_STAGE_POST) {
             nk_input_end(nuklear->ctx);
-            //render->BeginScene();
+            //render->BeginScene2D();
             if (render->GetPresentDimensions() == render->GetRenderDimensions())
                 render->NuklearRender(NK_ANTI_ALIASING_ON, NUKLEAR_MAX_VERTEX_MEMORY, NUKLEAR_MAX_ELEMENT_MEMORY);
             //render->EndScene();

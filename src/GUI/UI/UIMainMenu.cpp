@@ -25,10 +25,10 @@ GUIWindow_MainMenu::GUIWindow_MainMenu() :
 
     main_menu_background = assets->GetImage_PCXFromIconsLOD("title.pcx");
 
-    ui_mainmenu_new = assets->GetImage_ColorKey("title_new", render->teal_mask_16);
-    ui_mainmenu_load = assets->GetImage_ColorKey("title_load", render->teal_mask_16);
-    ui_mainmenu_credits = assets->GetImage_ColorKey("title_cred", render->teal_mask_16);
-    ui_mainmenu_exit = assets->GetImage_ColorKey("title_exit", render->teal_mask_16);
+    ui_mainmenu_new = assets->GetImage_ColorKey("title_new");
+    ui_mainmenu_load = assets->GetImage_ColorKey("title_load");
+    ui_mainmenu_credits = assets->GetImage_ColorKey("title_cred");
+    ui_mainmenu_exit = assets->GetImage_ColorKey("title_exit");
 
     pBtnNew = CreateButton("MainMenu_NewGame", {495, 172}, {ui_mainmenu_new->GetWidth(), ui_mainmenu_new->GetHeight()}, 1, 0,
         UIMSG_MainMenu_ShowPartyCreationWnd, 0, InputAction::NewGame, "", {ui_mainmenu_new});
@@ -75,19 +75,19 @@ void GUIWindow_MainMenu::Update() {
                 int pY = 0;
                 switch (pControlParam) {  // backlight for buttons
                     case 0:
-                        pTexture = assets->GetImage_ColorKey("title_new", render->teal_mask_16);
+                        pTexture = assets->GetImage_ColorKey("title_new");
                         pY = 172;
                         break;
                     case 1:
-                        pTexture = assets->GetImage_ColorKey("title_load", render->teal_mask_16);
+                        pTexture = assets->GetImage_ColorKey("title_load");
                         pY = 227;
                         break;
                     case 2:
-                        pTexture = assets->GetImage_ColorKey("title_cred", render->teal_mask_16);
+                        pTexture = assets->GetImage_ColorKey("title_cred");
                         pY = 282;
                         break;
                     case 3:
-                        pTexture = assets->GetImage_ColorKey("title_exit", render->teal_mask_16);
+                        pTexture = assets->GetImage_ColorKey("title_exit");
                         pY = 337;
                         break;
                 }
@@ -154,7 +154,7 @@ void GUIWindow_MainMenu::Loop() {
         }
 
         render->ResetUIClipRect();
-        render->BeginScene();
+        render->BeginScene2D();
         {
             nuklear->Draw(nuklear->NUKLEAR_STAGE_PRE, WINDOW_MainMenu_Load, 1);
             if (nuklear->Mode(WINDOW_MainMenu_Load) != nuklear->NUKLEAR_MODE_EXCLUSIVE) {
@@ -186,7 +186,7 @@ void GUIWindow_MainMenu::Loop() {
     while (GetCurrentMenuID() == MENU_MAIN) {
         MessageLoopWithWait();
 
-        render->BeginScene();
+        render->BeginScene2D();
         {
             pWindow_MainMenu->EventLoop();
             GUI_UpdateWindows();

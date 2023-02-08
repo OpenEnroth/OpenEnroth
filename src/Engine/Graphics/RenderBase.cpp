@@ -434,17 +434,12 @@ void RenderBase::TransformBillboardsAndSetPalettesODM() {
     }
 }
 
-// TODO(pskelton): this is wrong now to abgr!
-unsigned int BlendColors(unsigned int a1, unsigned int a2) {
-    uint alpha =
-        (uint)floorf(0.5f + (a1 >> 24) / 255.0f * (a2 >> 24) / 255.0f * 255.0f);
-    uint red = (uint)floorf(0.5f + ((a1 >> 16) & 0xFF) / 255.0f *
-                                       ((a2 >> 16) & 0xFF) / 255.0f * 255.0f);
-    uint green = (uint)floorf(0.5f + ((a1 >> 8) & 0xFF) / 255.0f *
-                                         ((a2 >> 8) & 0xFF) / 255.0f * 255.0f);
-    uint blue = (uint)floorf(0.5f + ((a1 >> 0) & 0xFF) / 255.0f *
-                                        ((a2 >> 0) & 0xFF) / 255.0f * 255.0f);
-    return (alpha << 24) | (red << 16) | (green << 8) | blue;
+uint32_t BlendColors(uint32_t a1, uint32_t a2) {
+    uint alpha = (uint)floorf(0.5f + (a1 >> 24) / 255.0f * (a2 >> 24) / 255.0f * 255.0f);
+    uint blue = (uint)floorf(0.5f + ((a1 >> 16) & 0xFF) / 255.0f * ((a2 >> 16) & 0xFF) / 255.0f * 255.0f);
+    uint green = (uint)floorf(0.5f + ((a1 >> 8) & 0xFF) / 255.0f * ((a2 >> 8) & 0xFF) / 255.0f * 255.0f);
+    uint red = (uint)floorf(0.5f + ((a1 >> 0) & 0xFF) / 255.0f * ((a2 >> 0) & 0xFF) / 255.0f * 255.0f);
+    return (alpha << 24) | (blue << 16) | (green << 8) | red;
 }
 
 void RenderBase::TransformBillboard(SoftwareBillboard *pSoftBillboard, RenderBillboard *pBillboard) {
@@ -481,9 +476,6 @@ void RenderBase::TransformBillboard(SoftwareBillboard *pSoftBillboard, RenderBil
         billboard->opacity = RenderBillboardD3D::Transparent;
 
     unsigned int specular = 0;
-    if (engine->IsSpecular_FogIsOn() && uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-        specular = sub_47C3D7_get_fog_specular(0, 0, pSoftBillboard->screen_space_z);
-    }
 
     float v14 = (float)((int)pSprite->uBufferWidth / 2 - pSprite->uAreaX);
     float v15 = (float)((int)pSprite->uBufferHeight - pSprite->uAreaY);
@@ -707,4 +699,99 @@ void RenderBase::DrawMasked(float u, float v, Image* pTexture, unsigned int colo
 
     DrawTextureNew(u, v, pTexture, mask);
     return;
+}
+
+void RenderBase::ClearBlack() {  // used only at start and in game over win
+    ClearZBuffer();
+    ClearTarget(0);
+}
+
+//----- (004A4CC9) ---------------------------------------
+void RenderBase::BillboardSphereSpellFX(struct SpellFX_Billboard* a1, int diffuse) {
+    // fireball / implosion sphere
+    // TODO(pskelton): could draw in 3d rather than convert to billboard for ogl
+
+    if (a1->uNumVertices < 3) {
+        return;
+    }
+
+    float depth = 1000000.0;
+    for (uint i = 0; i < (unsigned int)a1->uNumVertices; ++i) {
+        if (a1->field_104[i].z < depth) {
+            depth = a1->field_104[i].z;
+        }
+    }
+
+    unsigned int v5 = Billboard_ProbablyAddToListAndSortByZOrder(depth);
+    pBillboardRenderListD3D[v5].field_90 = 0;
+    pBillboardRenderListD3D[v5].sParentBillboardID = -1;
+    pBillboardRenderListD3D[v5].opacity = RenderBillboardD3D::Opaque_2;
+    pBillboardRenderListD3D[v5].texture = 0;
+    pBillboardRenderListD3D[v5].uNumVertices = a1->uNumVertices;
+    pBillboardRenderListD3D[v5].z_order = depth;
+    pBillboardRenderListD3D[v5].PaletteIndex = 0;
+
+    pBillboardRenderListD3D[v5].pQuads[3].pos.x = 0.0f;
+    pBillboardRenderListD3D[v5].pQuads[3].pos.y = 0.0f;
+    pBillboardRenderListD3D[v5].pQuads[3].pos.z = 0.0f;
+
+    for (unsigned int i = 0; i < (unsigned int)a1->uNumVertices; ++i) {
+        pBillboardRenderListD3D[v5].pQuads[i].pos.x = a1->field_104[i].x;
+        pBillboardRenderListD3D[v5].pQuads[i].pos.y = a1->field_104[i].y;
+        pBillboardRenderListD3D[v5].pQuads[i].pos.z = a1->field_104[i].z;
+
+        float rhw = 1.f / a1->field_104[i].z;
+        float z = 1.f - 1.f / (a1->field_104[i].z * 1000.f / pCamera3D->GetFarClip());
+
+        double v10 = a1->field_104[i].z;
+        v10 *= 1000.f / pCamera3D->GetFarClip();
+
+        pBillboardRenderListD3D[v5].pQuads[i].rhw = rhw;
+
+        int v12;
+        if (diffuse & 0xFF000000) {
+            v12 = a1->field_104[i].diffuse;
+        } else {
+            v12 = diffuse;
+        }
+        pBillboardRenderListD3D[v5].pQuads[i].diffuse = v12;
+        pBillboardRenderListD3D[v5].pQuads[i].specular = 0;
+
+        pBillboardRenderListD3D[v5].pQuads[i].texcoord.x = 0.5;
+        pBillboardRenderListD3D[v5].pQuads[i].texcoord.y = 0.5;
+    }
+}
+
+void RenderBase::DrawMonsterPortrait(Recti rc, SpriteFrame* Portrait, int Y_Offset) {
+    Recti rct;
+    rct.x = rc.x + 64 + Portrait->hw_sprites[0]->uAreaX - Portrait->hw_sprites[0]->uBufferWidth / 2;
+    rct.y = rc.y + Y_Offset + Portrait->hw_sprites[0]->uAreaY;
+    rct.w = Portrait->hw_sprites[0]->uAreaWidth;
+    rct.h = Portrait->hw_sprites[0]->uAreaHeight;
+
+    render->SetUIClipRect(rc.x, rc.y, rc.x + rc.w, rc.y + rc.h);
+    render->DrawImage(Portrait->hw_sprites[0]->texture, rct, Portrait->GetPaletteIndex());
+    render->ResetUIClipRect();
+}
+
+void RenderBase::DrawSpecialEffectsQuad(Texture* texture, int palette) {
+    Recti targetrect{};
+    targetrect.x = pViewport->uViewportTL_X;
+    targetrect.y = pViewport->uViewportTL_Y;
+    targetrect.w = pViewport->uViewportBR_X - pViewport->uViewportTL_X;
+    targetrect.h = pViewport->uViewportBR_Y - pViewport->uViewportTL_Y;
+
+    DrawImage(texture, targetrect, palette, colorTable.MediumGrey.C32());
+}
+
+void RenderBase::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {
+    engine->draw_debug_outlines();
+    render->DoRenderBillboards_D3D();
+    spell_fx_renderer->RenderSpecialEffects();
+}
+
+void RenderBase::PresentBlackScreen() {
+    BeginScene2D();
+    ClearBlack();
+    Present();
 }

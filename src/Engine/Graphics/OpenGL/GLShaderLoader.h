@@ -29,7 +29,6 @@ class GLShader {
 
     std::string sFilename{};
 
-    // TODO(pskelton): save paths on construction for on the fly reloading
     // TODO(pskelton): consider map for uniform locations
     // TODO(pskelton): split into .h/.cpp?
 

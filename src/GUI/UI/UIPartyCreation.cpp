@@ -303,7 +303,7 @@ void GUIWindow_PartyCreation::Update() {
     Sizef oldDims = {640.0, 480.0};
 
     // move sky
-    render->BeginScene();
+    render->BeginScene2D();
     render->DrawTextureNew(0, 0, main_menu_background);
     int sky_slider_anim_timer = (platform->tickCount() % ((int)oldDims.w * 20)) / 20;
     render->DrawTextureNew(sky_slider_anim_timer / oldDims.w, 2 / oldDims.h, ui_partycreation_sky_scroller);
@@ -615,27 +615,27 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     uPlayerCreationUI_SelectedCharacter = 0;
     int v0 = pFontCreate->GetHeight() - 2;
 
-    ui_partycreation_class_icons[0] = assets->GetImage_ColorKey("IC_KNIGHT", render->teal_mask_16);
-    ui_partycreation_class_icons[1] = assets->GetImage_ColorKey("IC_THIEF", render->teal_mask_16);
-    ui_partycreation_class_icons[2] = assets->GetImage_ColorKey("IC_MONK", render->teal_mask_16);
-    ui_partycreation_class_icons[3] = assets->GetImage_ColorKey("IC_PALAD", render->teal_mask_16);
-    ui_partycreation_class_icons[4] = assets->GetImage_ColorKey("IC_ARCH", render->teal_mask_16);
-    ui_partycreation_class_icons[5] = assets->GetImage_ColorKey("IC_RANGER", render->teal_mask_16);
-    ui_partycreation_class_icons[6] = assets->GetImage_ColorKey("IC_CLER", render->teal_mask_16);
-    ui_partycreation_class_icons[7] = assets->GetImage_ColorKey("IC_DRUID", render->teal_mask_16);
-    ui_partycreation_class_icons[8] = assets->GetImage_ColorKey("IC_SORC", render->teal_mask_16);
+    ui_partycreation_class_icons[0] = assets->GetImage_ColorKey("IC_KNIGHT");
+    ui_partycreation_class_icons[1] = assets->GetImage_ColorKey("IC_THIEF");
+    ui_partycreation_class_icons[2] = assets->GetImage_ColorKey("IC_MONK");
+    ui_partycreation_class_icons[3] = assets->GetImage_ColorKey("IC_PALAD");
+    ui_partycreation_class_icons[4] = assets->GetImage_ColorKey("IC_ARCH");
+    ui_partycreation_class_icons[5] = assets->GetImage_ColorKey("IC_RANGER");
+    ui_partycreation_class_icons[6] = assets->GetImage_ColorKey("IC_CLER");
+    ui_partycreation_class_icons[7] = assets->GetImage_ColorKey("IC_DRUID");
+    ui_partycreation_class_icons[8] = assets->GetImage_ColorKey("IC_SORC");
 
-    ui_partycreation_top = assets->GetImage_Alpha("MAKETOP");  // , render->teal_mask_16);
+    ui_partycreation_top = assets->GetImage_Alpha("MAKETOP");
     ui_partycreation_sky_scroller = assets->GetImage_Solid("MAKESKY");
 
     for (int uX = 0; uX < 22; ++uX) {
-        ui_partycreation_portraits[uX] = assets->GetImage_ColorKey(StringPrintf("%s01", pPlayerPortraitsNames[uX]), render->teal_mask_16);
+        ui_partycreation_portraits[uX] = assets->GetImage_ColorKey(StringPrintf("%s01", pPlayerPortraitsNames[uX]));
     }
 
-    ui_partycreation_minus = assets->GetImage_ColorKey("buttminu", render->teal_mask_16);
-    ui_partycreation_plus = assets->GetImage_ColorKey("buttplus", render->teal_mask_16);
-    ui_partycreation_right = assets->GetImage_ColorKey("presrigh", render->teal_mask_16);
-    ui_partycreation_left = assets->GetImage_ColorKey("presleft", render->teal_mask_16);
+    ui_partycreation_minus = assets->GetImage_ColorKey("buttminu");
+    ui_partycreation_plus = assets->GetImage_ColorKey("buttplus");
+    ui_partycreation_right = assets->GetImage_ColorKey("presrigh");
+    ui_partycreation_left = assets->GetImage_ColorKey("presleft");
 
     for (int i = 1; i < 20; ++i) {
         ui_partycreation_arrow_l[i] = assets->GetImage_Alpha(StringPrintf("arrowl%d", i));
@@ -766,7 +766,7 @@ bool PartyCreationUI_LoopInternal() {
         // PlayerCreationUI_Draw();
         // MainMenu_EventLoop();
         CreateParty_EventLoop();
-        render->BeginScene();
+        render->BeginScene2D();
         GUI_UpdateWindows();
         render->Present();
         if (uGameState ==

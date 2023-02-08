@@ -15,7 +15,6 @@ std::shared_ptr<IRender> IRenderFactory::Create(std::shared_ptr<Application::Gam
             return std::make_shared<RenderOpenGL>(
                 config,
                 EngineIoc::ResolveDecalBuilder(),
-                EngineIoc::ResolveLightmapBuilder(),
                 EngineIoc::ResolveSpellFxRenderer(),
                 EngineIoc::ResolveParticleEngine(),
                 EngineIoc::ResolveVis(),
@@ -27,7 +26,6 @@ std::shared_ptr<IRender> IRenderFactory::Create(std::shared_ptr<Application::Gam
             return std::make_shared<RenderOpenGL>(
                 config,
                 EngineIoc::ResolveDecalBuilder(),
-                EngineIoc::ResolveLightmapBuilder(),
                 EngineIoc::ResolveSpellFxRenderer(),
                 EngineIoc::ResolveParticleEngine(),
                 EngineIoc::ResolveVis(),

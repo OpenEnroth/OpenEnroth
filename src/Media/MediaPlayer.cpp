@@ -545,7 +545,7 @@ class Movie : public IMovie {
                 video.decode_frame(&packet);
                 std::shared_ptr<Blob> tmp_buf = video.last_frame;
 
-                render->BeginScene();
+                render->BeginScene2D();
                 // update pixels from buffer
                 uint32_t* pix = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_A8B8G8R8);
                 unsigned int num_pixels = tex->GetWidth() * tex->GetHeight();
@@ -797,7 +797,7 @@ void MPlayer::HouseMovieLoop() {
         pMovie_Track->Play(false);
     }
 
-    render->BeginScene();
+    render->BeginScene2D();
 
     static Texture *tex;
     if (!tex) {
@@ -878,7 +878,7 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
             MessageLoopWithWait();
 
             render->ClearBlack();
-            render->BeginScene();
+            render->BeginScene2D();
 
             std::this_thread::sleep_for(2ms);
 

@@ -181,6 +181,6 @@ void SpellBookGenerator() {  // for GuildDialogs
         pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].uItemID = pItemNum;
         pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].SetIdentified();
 
-        shop_ui_items_in_store[i] = assets->GetImage_ColorKey(pItemTable->pItems[pItemNum].pIconName, render->teal_mask_16);
+        shop_ui_items_in_store[i] = assets->GetImage_ColorKey(pItemTable->pItems[pItemNum].pIconName);
     }
 }

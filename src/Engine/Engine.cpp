@@ -122,7 +122,7 @@ void Engine::Draw() {
     if (pMovie_Track) {
         /*if ( !render->pRenderD3D )
         {
-        render->BeginSceneD3D();
+        render->BeginScene3D();
         pMouse->DrawCursorToTarget();
         render->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
         }*/
@@ -143,7 +143,7 @@ void Engine::Draw() {
         pParty->sPrevRotationY = pParty->sRotationY;
 
         pParty->sPrevEyelevel = pParty->sEyelevel;
-        render->BeginSceneD3D();
+        render->BeginScene3D();
 
         // if ( !render->pRenderD3D )
         // pMouse->DrawCursorToTarget();
@@ -165,7 +165,6 @@ void Engine::Draw() {
                 Error("Invalid level type: %u", uCurrentlyLoadedLevelType);
 
              decal_builder->DrawBloodsplats();
-             lightmap_builder->DrawLightmapsType(2);  // mobile lights - sparks ??
         }
         render->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
     }
@@ -174,7 +173,7 @@ void Engine::Draw() {
     // DEBUG: force redraw gui
     viewparams->bRedrawGameUI = true;
 
-    render->BeginScene();
+    render->BeginScene2D();
     nuklear->Draw(nuklear->NUKLEAR_STAGE_PRE, WINDOW_GameUI, 1);
     if (nuklear->Mode(WINDOW_GameUI) == nuklear->NUKLEAR_MODE_EXCLUSIVE) {
         nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_GameUI, 1);
@@ -491,7 +490,7 @@ void Engine::Deinitialize() {
 //----- (0044EE7C) --------------------------------------------------------
 bool Engine::draw_debug_outlines() {
     if (/*uFlags & 0x04*/ engine->config->debug.LightmapDecals.Get()) {
-        lightmap_builder->DrawDebugOutlines(-1);
+        DrawLightsDebugOutlines(-1);
         decal_builder->DrawDecalDebugOutlines();
     }
     return true;
@@ -605,7 +604,6 @@ Engine::Engine(std::shared_ptr<Application::GameConfig> config) {
     this->bloodsplat_container = EngineIoc::ResolveBloodsplatContainer();
     this->decal_builder = EngineIoc::ResolveDecalBuilder();
     this->spell_fx_renedrer = EngineIoc::ResolveSpellFxRenderer();
-    this->lightmap_builder = EngineIoc::ResolveLightmapBuilder();
     this->mouse = EngineIoc::ResolveMouse();
     this->nuklear = EngineIoc::ResolveNuklear();
     this->particle_engine = EngineIoc::ResolveParticleEngine();
@@ -617,7 +615,6 @@ Engine::Engine(std::shared_ptr<Application::GameConfig> config) {
     // pThreadWardInstance = nullptr;
     // pParticleEngine = new ParticleEngine;
     // pMouse = pMouseInstance = new Mouse;
-    // pLightmapBuilder = new LightmapBuilder;
     // pVisInstance = new Vis;
     // spellfx = new SpellFxRenderer;
     pCamera3D = new Camera3D;
@@ -648,7 +645,6 @@ Engine::~Engine() {
     delete pCamera3D;
     // delete spellfx;
     // delete pVisInstance;
-    // delete pLightmapBuilder;
     // delete pMouseInstance;
     // delete pParticleEngine;
     // delete pThreadWardInstance;

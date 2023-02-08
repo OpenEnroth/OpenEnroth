@@ -149,10 +149,6 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
                              WorldPosToGridCellY(pParty->vPosition.y),
                              1);
     engine->SetForceRedraw(false);
-    if (engine->IsSpecular_FogIsOn())
-        lightmap_builder->uFlags |= LIGHTMAP_FLAGS_USE_SPECULAR;
-    else
-        lightmap_builder->uFlags &= ~LIGHTMAP_FLAGS_USE_SPECULAR;
 
     uNumDecorationsDrawnThisFrame = 0;
     uNumSpritesDrawnThisFrame = 0;
@@ -1832,15 +1828,13 @@ void OutdoorLocation::LoadActualSkyFrame() {
     }
 
     rest_ui_sky_frame_current = assets->GetImage_ColorKey(
-        StringPrintf("TERRA%03d", pParty->uCurrentMinute / 6 + 10 * pParty->uCurrentHour),
-        render->teal_mask_16);
+        StringPrintf("TERRA%03d", pParty->uCurrentMinute / 6 + 10 * pParty->uCurrentHour));
 }
 
 OutdoorLocation::OutdoorLocation() {
     this->log = EngineIoc::ResolveLogger();
     this->decal_builder = EngineIoc::ResolveDecalBuilder();
     this->spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
-    this->lightmap_builder = EngineIoc::ResolveLightmapBuilder();
 
     this->sky_texture = nullptr;
 
@@ -3359,6 +3353,7 @@ unsigned int GetLevelFogColor() {
     return 0;
 }
 
+// TODO(pskelton): drop this
 // returns 0xZZ000000
 // basically how much fog should be applied 255-0 (no fog -> max fog)
 int sub_47C3D7_get_fog_specular(int unused, int isSky, float screen_depth) {

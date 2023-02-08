@@ -35,10 +35,10 @@ GUIWindow_Save::GUIWindow_Save() :
     memset(&pSavegameUsedSlots, 0, sizeof(pSavegameUsedSlots));
     memset(&pSavegameThumbnails, 0, sizeof(pSavegameThumbnails));
 
-    saveload_ui_loadsave = assets->GetImage_ColorKey("loadsave", render->teal_mask_16);
-    saveload_ui_save_up = assets->GetImage_ColorKey("save_up", render->teal_mask_16);
-    saveload_ui_saveu = assets->GetImage_ColorKey("LS_saveU", render->teal_mask_16);
-    saveload_ui_x_u = assets->GetImage_ColorKey("x_u", render->teal_mask_16);
+    saveload_ui_loadsave = assets->GetImage_ColorKey("loadsave");
+    saveload_ui_save_up = assets->GetImage_ColorKey("save_up");
+    saveload_ui_saveu = assets->GetImage_ColorKey("LS_saveU");
+    saveload_ui_x_u = assets->GetImage_ColorKey("x_u");
 
     pSavegameList->Initialize();
 
@@ -88,7 +88,7 @@ GUIWindow_Save::GUIWindow_Save() :
     ui_ar_up_dn = assets->GetImage_Alpha("ar_up_dn");
     ui_ar_dn_dn = assets->GetImage_Alpha("ar_dn_dn");
 
-    scrollstop = assets->GetImage_ColorKey("con_x", render->teal_mask_16);
+    scrollstop = assets->GetImage_ColorKey("con_x");
 
     // GUIWindow_Save c-tor --- part
     CreateButton({21, 198}, {191, 18}, 1, 0, UIMSG_SelectLoadSlot, 0);
@@ -127,10 +127,10 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     memset(pSavegameUsedSlots.data(), 0, sizeof(pSavegameUsedSlots));
     memset(pSavegameThumbnails.data(), 0, MAX_SAVE_SLOTS * sizeof(Image *));
 
-    saveload_ui_loadsave = assets->GetImage_ColorKey("loadsave", render->teal_mask_16);
-    saveload_ui_load_up = assets->GetImage_ColorKey("load_up", render->teal_mask_16);
-    saveload_ui_loadu = assets->GetImage_ColorKey("LS_loadU", render->teal_mask_16);
-    saveload_ui_x_u = assets->GetImage_ColorKey("x_u", render->teal_mask_16);
+    saveload_ui_loadsave = assets->GetImage_ColorKey("loadsave");
+    saveload_ui_load_up = assets->GetImage_ColorKey("load_up");
+    saveload_ui_loadu = assets->GetImage_ColorKey("LS_loadU");
+    saveload_ui_x_u = assets->GetImage_ColorKey("x_u");
 
     main_menu_background = nullptr;
     if (!ingame) {
@@ -205,7 +205,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     ui_ar_up_dn = assets->GetImage_Alpha("AR_UP_DN");
     ui_ar_dn_dn = assets->GetImage_Alpha("AR_DN_DN");
 
-    scrollstop = assets->GetImage_ColorKey("con_x", render->teal_mask_16);
+    scrollstop = assets->GetImage_ColorKey("con_x");
 
     CreateButton("LoadMenu_Slot0", {21, 198}, {191, 18}, 1, 0, UIMSG_SelectLoadSlot, 0);
     CreateButton("LoadMenu_Slot1", {21, 219}, {191, 18}, 1, 0, UIMSG_SelectLoadSlot, 1);
@@ -432,7 +432,7 @@ void MainMenuLoad_Loop() {
     while (GetCurrentMenuID() == MENU_SAVELOAD && current_screen_type == CURRENT_SCREEN::SCREEN_LOADGAME) {
         MessageLoopWithWait();
 
-        render->BeginScene();
+        render->BeginScene2D();
         GUI_UpdateWindows();
         MainMenuLoad_EventLoop();
         render->Present();

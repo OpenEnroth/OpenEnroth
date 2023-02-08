@@ -49,7 +49,7 @@ void GameOver_Loop(int v15) {
     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_4000;
     bGameoverLoop = true;
     pAudioPlayer->PauseSounds(-1);
-    render->BeginScene();
+    render->BeginScene2D();
     render->ClearBlack();
     render->Present();
     // pMediaPlayer->pResetflag = 0;
@@ -57,7 +57,7 @@ void GameOver_Loop(int v15) {
 
     Image *background = assets->GetImage_PCXFromIconsLOD("winbg.pcx");
     {
-        render->BeginScene();
+        render->BeginScene2D();
         render->DrawTextureNew(0, 0, background);
     }
 
@@ -85,7 +85,7 @@ void GameOver_Loop(int v15) {
     v18 = play_time.GetMonthsOfYear();
     v17 = play_time.GetDaysOfMonth();
     if (!v19) v19 = 1;
-    render->BeginScene();
+    render->BeginScene2D();
     pWindow.DrawTitleText(
         pFont, 1, 0x23, 1, localization->GetString(LSTR_CONGRATULATIONS), 3
     );

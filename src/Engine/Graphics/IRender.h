@@ -263,9 +263,7 @@ class IRender {
     virtual void RestoreFrontBuffer() = 0;
     virtual void RestoreBackBuffer() = 0;
     virtual void BltBackToFontFast(int a2, int a3, Recti *a4) = 0;
-    virtual void BeginSceneD3D() = 0;
-
-    virtual unsigned int GetActorTintColor(int DimLevel, int tint, float WorldViewX, int a5, RenderBillboard *Billboard) = 0;
+    virtual void BeginScene3D() = 0;
 
     virtual void DrawTerrainPolygon(struct Polygon *a4, bool transparent,
                                     bool clampAtTextureBorders) = 0;
@@ -290,7 +288,7 @@ class IRender {
     virtual void DeleteTexture(Texture *texture) = 0;
 
 
-    virtual void BeginScene() = 0;
+    virtual void BeginScene2D() = 0;
     virtual void ScreenFade(unsigned int color, float t) = 0;
 
     virtual void SetUIClipRect(unsigned int uX, unsigned int uY,
@@ -374,6 +372,7 @@ class IRender {
     virtual Sizei GetPresentDimensions() = 0;
     virtual bool Reinitialize(bool firstInit = false) = 0;
     virtual void ReloadShaders() = 0;
+    virtual void DoRenderBillboards_D3D() = 0;
 
     std::shared_ptr<Application::GameConfig> config = nullptr;
     int *pActiveZBuffer;
@@ -384,10 +383,6 @@ class IRender {
     void (*pBeforePresentFunction)();
     RenderBillboardD3D pBillboardRenderListD3D[1000];
     unsigned int uNumBillboardsToDraw;
-
-    // TODO(pskelton): move to color table
-    const uint16_t teal_mask_16 = 0x7FF;
-    const uint32_t teal_mask_32 = 0xFF00FCF8;
 
     int drawcalls;
 

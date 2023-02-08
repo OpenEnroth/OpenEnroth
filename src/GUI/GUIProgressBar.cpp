@@ -63,7 +63,7 @@ bool GUIProgressBar::Initialize(Type type) {
         Draw();
         return true;
     } else {
-        progressbar_dungeon = assets->GetImage_ColorKey(ProgressBarResourceByAlignment[pParty->alignment], render->teal_mask_16);
+        progressbar_dungeon = assets->GetImage_ColorKey(ProgressBarResourceByAlignment[pParty->alignment]);
     }
 
     uProgressCurrent = 0;
@@ -102,8 +102,8 @@ void GUIProgressBar::Release() {
 }
 
 void GUIProgressBar::Draw() {
-    // render->BeginSceneD3D();
-    render->BeginScene();
+    // render->BeginScene3D();
+    render->BeginScene2D();
     //render->ClearBlack();
 
     if (uType != TYPE_Fullscreen) {

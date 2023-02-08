@@ -87,6 +87,7 @@ class ColorTable {
     Color NeonGreen = Color(30, 255, 30);         // #1EFF1E
     Color Mahogany = Color(192, 64, 0);           // #C04000
     Color Tawny = Color(200, 100, 0);             // #C86400
+    Color TealMask = Color(0, 255, 255);          // #00FCF8;
 };
 
 extern ColorTable colorTable;

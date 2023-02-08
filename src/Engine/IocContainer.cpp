@@ -74,13 +74,6 @@ SpellFxRenderer *IocContainer::ResolveSpellFxRenderer() {
     return spell_fx_renderer;
 }
 
-LightmapBuilder *IocContainer::ResolveLightmapBuilder() {
-    if (!lightmap_builder) {
-        lightmap_builder = new LightmapBuilder();
-    }
-    return lightmap_builder;
-}
-
 std::shared_ptr<Mouse> IocContainer::ResolveMouse() {
     if (!mouse) {
         mouse = std::make_shared<Mouse>();

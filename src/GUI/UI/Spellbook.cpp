@@ -321,8 +321,7 @@ void InitializeSpellBookTextures() {
                                       "SBBB00", "SBLB00", "SBDB00"};
 
     for (unsigned int i = 0; i < 9; ++i) {
-        ui_spellbook_school_backgrounds[i] =
-            assets->GetImage_ColorKey(texNames[i], render->teal_mask_16);
+        ui_spellbook_school_backgrounds[i] = assets->GetImage_ColorKey(texNames[i]);
         ui_spellbook_school_tabs[i][0] =
             assets->GetImage_Alpha(StringPrintf("tab%da", i + 1));
         ui_spellbook_school_tabs[i][1] =
