@@ -246,7 +246,6 @@ bool Player::CanCastSpell(unsigned int uRequiredMana) {
     }
 
     // not enough mana
-    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
     return false;
 }
 
