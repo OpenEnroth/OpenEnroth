@@ -16,7 +16,7 @@ set(GUI_SOURCES GUIButton.cpp
                 UI/UIInventory.cpp
                 UI/UIHouses.cpp
                 UI/UIMainMenu.cpp
-                UI/UIModal.cpp
+                UI/UIGameOver.cpp
                 UI/UIPartyCreation.cpp
                 UI/UIPopup.cpp
                 UI/UIQuickReference.cpp
@@ -51,7 +51,7 @@ set(GUI_HEADERS GUIButton.h
                 UI/UIInventory.h
                 UI/UIHouses.h
                 UI/UIMainMenu.h
-                UI/UIModal.h
+                UI/UIGameOver.h
                 UI/UIPartyCreation.h
                 UI/UIPopup.h
                 UI/UIQuickReference.h

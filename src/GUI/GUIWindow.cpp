@@ -59,7 +59,7 @@ GUIWindow *window_SpeakInHouse;
 GUIWindow_Scroll *pGUIWindow_ScrollWindow; // reading a message scroll
 GUIWindow *ptr_507BC8;  // screen 19 - not used?
 GUIWindow *pGUIWindow_CastTargetedSpell;
-GUIWindow *pModalWindow; // UIMSG_ShowFinalWindow
+GUIWindow *pGameOverWindow; // UIMSG_ShowGameOverWindow
 GUIWindow *pGUIWindow2; // branchless dialougue
 
 typedef struct _RGBColor {
@@ -86,8 +86,8 @@ MENU_STATE sCurrentMenuID;
 enum CURRENT_SCREEN current_screen_type = CURRENT_SCREEN::SCREEN_VIDEO;
 enum CURRENT_SCREEN prev_screen_type;
 
-struct GUIMessageQueue *pMessageQueue_50CBD0 = new GUIMessageQueue;
-struct GUIMessageQueue *pMessageQueue_50C9E8 = new GUIMessageQueue;
+struct GUIMessageQueue *pMessageQueue_50CBD0 = new GUIMessageQueue;  // main message queue
+struct GUIMessageQueue *pMessageQueue_50C9E8 = new GUIMessageQueue;  // swap message queue - for handling message after main queue ??
 
 Image *ui_exit_cancel_button_background = nullptr;
 Image *game_ui_right_panel_frame = nullptr;
@@ -2291,7 +2291,7 @@ void WindowManager::DeleteAllVisibleWindows() {
     pGUIWindow_ScrollWindow = nullptr; // reading a message scroll
     ptr_507BC8 = nullptr;  // screen 19 - not used?
     pGUIWindow_CastTargetedSpell = nullptr;
-    pModalWindow = nullptr; // UIMSG_ShowFinalWindow
+    pGameOverWindow = nullptr; // UIMSG_ShowGameOverWindow
     pGUIWindow2 = nullptr; // branchless dialougue
 
     current_screen_type = CURRENT_SCREEN::SCREEN_GAME;

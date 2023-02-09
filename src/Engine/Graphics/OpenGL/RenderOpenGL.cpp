@@ -42,6 +42,7 @@
 #include "Engine/Party.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Arcomage/Arcomage.h"
+#include "Engine/AssetsManager.h"
 
 #include "Library/Application/PlatformApplication.h"
 #include "Library/Serialization/EnumSerialization.h"
@@ -216,6 +217,19 @@ uint8_t *RenderOpenGL::ReadScreenPixels() {
 void RenderOpenGL::SaveWinnersCertificate(const char *a1) {
     GLubyte *sPixels = ReadScreenPixels();
 
+    // reverse input and save to texture for later
+    int pixsize{ 4 * outputRender.w * outputRender.h };
+    uint8_t* rev = new uint8_t[pixsize];
+    uint8_t* pq = sPixels;
+    for (uint y = 0; y < (unsigned int)outputRender.h; ++y) {
+        int index = 4 * y * outputRender.w;
+        int revindex = 4 * (outputRender.h - y - 1) * outputRender.w;
+        memcpy(rev + index, pq + revindex, 4 * outputRender.w);
+    }
+    assets->WinnerCert = CreateTexture_Blank(outputRender.w, outputRender.h, IMAGE_FORMAT::IMAGE_FORMAT_A8B8G8R8, rev);
+    delete[] rev;
+
+    // save to disk
     uint16_t *pPixels = (uint16_t *)malloc(sizeof(uint16_t) * outputRender.h * outputRender.w);
     memset(pPixels, 0, sizeof(uint16_t) * outputRender.h * outputRender.w);
 

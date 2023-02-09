@@ -69,7 +69,7 @@
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIMainMenu.h"
-#include "GUI/UI/UIModal.h"
+#include "GUI/UI/UIGameOver.h"
 #include "GUI/UI/UIPartyCreation.h"
 #include "GUI/UI/UIQuickReference.h"
 #include "GUI/UI/UIRest.h"
@@ -740,9 +740,9 @@ void Game::EventLoop() {
                         default:
                             break;
                     }
-                    if (pModalWindow) {
-                        pModalWindow->Release();
-                        pModalWindow = nullptr;
+                    if (pGameOverWindow) {
+                        pGameOverWindow->Release();
+                        pGameOverWindow = nullptr;
                         continue;
                     }
                     render->ClearZBuffer();
@@ -1541,23 +1541,12 @@ void Game::EventLoop() {
                         LSTR_TOWN_PORTAL_TO_S, v69.c_str()));
                     continue;
                 }
-                case UIMSG_ShowFinalWindow: {
-                    // static due to GUIWindow_Modal not
-                    // holding a reference and text ptr will
-                    // be destroyed upon exiting scope
-                    static std::string final_message;
-
-                    final_message = StringPrintf(
-                        "%s\n \n%s\n \n%s",
-                        localization->GetString(LSTR_CONGRATULATIONS_ADVENTURER),
-                        localization->GetString(LSTR_WE_HOPE_YOU_ENJOYED_MM7),
-                        localization->GetString(LSTR_THE_MM7_DEV_TEAM));
-
-                    pModalWindow = new GUIWindow_Modal(final_message.c_str(), UIMSG_OnFinalWindowClose);
+                case UIMSG_ShowGameOverWindow: {
+                    pGameOverWindow = new GUIWindow_GameOver();
                     uGameState = GAME_STATE_FINAL_WINDOW;
                     continue;
                 }
-                case UIMSG_OnFinalWindowClose:
+                case UIMSG_OnGameOverWindowClose:
                     uGameState = GAME_STATE_PLAYING;
                     // strcpy((char *)userInputHandler->pPressedKeysBuffer, "2");
                     // __debugbreak();  // missed break/continue?

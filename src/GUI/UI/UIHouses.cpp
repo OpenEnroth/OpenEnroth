@@ -814,7 +814,7 @@ bool EnterHouse(HOUSE_ID uHouseID) {
     keyboardInputHandler->ResetKeys();
 
     if (uHouseID == HOUSE_THRONEROOM_WIN_GOOD || uHouseID == HOUSE_THRONEROOM_WIN_EVIL) {
-        Application::GameOver_Loop(0);
+        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_ShowGameOverWindow, 0, 0);
         return 0;
     }
 
