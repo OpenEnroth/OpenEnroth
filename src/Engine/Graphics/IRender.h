@@ -204,7 +204,6 @@ class IRender {
         uFogColor = 0;
         memset(pHDWaterBitmapIDs, 0, sizeof(pHDWaterBitmapIDs));
         hd_water_current_frame = 0;
-        pBeforePresentFunction = 0;
         memset(pBillboardRenderListD3D, 0, sizeof(pBillboardRenderListD3D));
         uNumBillboardsToDraw = 0;
         drawcalls = 0;
@@ -380,7 +379,6 @@ class IRender {
     unsigned int pHDWaterBitmapIDs[7];
     int hd_water_current_frame;
     Texture *hd_water_tile_anim[7];
-    void (*pBeforePresentFunction)();
     RenderBillboardD3D pBillboardRenderListD3D[1000];
     unsigned int uNumBillboardsToDraw;
 
