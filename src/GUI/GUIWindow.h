@@ -735,6 +735,7 @@ extern GUIWindow *pGUIWindow_CurrentMenu;
 //extern GUIWindow *ptr_507BD0;
 extern GUIWindow *pGUIWindow_CastTargetedSpell;
 extern GUIWindow *pGameOverWindow;
+extern bool bGameOverWindowCheckExit;
 //extern GUIWindow *pGUIWindow_EscMessageWindow;
 extern GUIWindow *pGUIWindow2;
 

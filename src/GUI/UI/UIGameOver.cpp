@@ -19,14 +19,18 @@ GUIWindow_GameOver::GUIWindow_GameOver(UIMessageType on_release_event)
         localization->GetString(LSTR_CONGRATULATIONS_ADVENTURER),
         localization->GetString(LSTR_WE_HOPE_YOU_ENJOYED_MM7),
         localization->GetString(LSTR_THE_MM7_DEV_TEAM));
+    bGameOverWindowCheckExit = false;
 }
 
 void GUIWindow_GameOver::Update() {
     // draw winners certificate background
     assert(assets->WinnerCert);
     render->DrawTextureNew(0, 0, assets->WinnerCert);
+    // check exit timer
+    if (!bGameOverWindowCheckExit)
+        if (platform->tickCount() > _tickcount) bGameOverWindowCheckExit = true;
     // draw pop up box
-    if (platform->tickCount() > _tickcount) {
+    if (bGameOverWindowCheckExit) {
         GUIWindow pWindow;
         pWindow.Init();
         pWindow.sHint = StringPrintf("%s\n \n%s", pGameOverWindow->sHint.c_str(),

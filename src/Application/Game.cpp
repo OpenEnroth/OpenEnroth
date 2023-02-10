@@ -741,9 +741,14 @@ void Game::EventLoop() {
                             break;
                     }
                     if (pGameOverWindow) {
-                        pGameOverWindow->Release();
-                        pGameOverWindow = nullptr;
-                        continue;
+                        if (bGameOverWindowCheckExit) {
+                            pGameOverWindow->Release();
+                            pGameOverWindow = nullptr;
+                            continue;
+                        } else {
+                            bGameOverWindowCheckExit = true;
+                            continue;
+                        }
                     }
                     render->ClearZBuffer();
                     viewparams->bRedrawGameUI = true;
@@ -1547,7 +1552,35 @@ void Game::EventLoop() {
                     continue;
                 }
                 case UIMSG_OnGameOverWindowClose:
+                    pAudioPlayer->PauseSounds(-1);
+                    SaveGame(1, 0);
+
+                    pParty->vPosition.x = -17331;  // respawn in harmondale
+                    pParty->vPosition.y = 12547;
+                    pParty->vPosition.z = 465;
+                    pParty->sRotationZ = 0;
+                    pParty->uFallStartZ = pParty->vPosition.z;
+                    pParty->sRotationY = 0;
+                    pParty->uFallSpeed = 0;
+                    pParty->field_6E4_set0_unused = 0;
+                    pParty->field_6E0_set0_unused = 0;
+
+                    // change map
+                    pCurrentMapName = "out02.odm";
+                    Party_Teleport_X_Pos = pParty->vPosition.x;
+                    Party_Teleport_Y_Pos = pParty->vPosition.y;
+                    Party_Teleport_Z_Pos = pParty->vPosition.z;
+                    Party_Teleport_Cam_Yaw = pParty->sRotationZ;
+                    Party_Teleport_Cam_Pitch = pParty->sRotationY;
+                    Start_Party_Teleport_Flag = 1;
+                    PrepareWorld(1);
+                    Actor::InitializeActors();
+
                     uGameState = GAME_STATE_PLAYING;
+
+                    for (int i = 0; i < 4; ++i)
+                        pParty->pPlayers[i].PlayEmotion(CHARACTER_EXPRESSION_SMILE, 0);
+
                     // strcpy((char *)userInputHandler->pPressedKeysBuffer, "2");
                     // __debugbreak();  // missed break/continue?
                     continue;
