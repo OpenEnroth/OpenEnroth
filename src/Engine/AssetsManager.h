@@ -33,6 +33,7 @@ class AssetsManager {
     Texture *GetSprite(const std::string &name, unsigned int palette_id,
                        unsigned int lod_sprite_id);
 
+    // TODO(pskelton): Contain better
     Texture* WinnerCert{ nullptr };
 
  protected:

@@ -1555,7 +1555,7 @@ void Game::EventLoop() {
                     pAudioPlayer->PauseSounds(-1);
                     SaveGame(1, 0);
 
-                    pParty->vPosition.x = -17331;  // respawn in harmondale
+                    pParty->vPosition.x = -17331;  // respawn point in Harmondale
                     pParty->vPosition.y = 12547;
                     pParty->vPosition.z = 465;
                     pParty->sRotationZ = 0;
@@ -1565,7 +1565,7 @@ void Game::EventLoop() {
                     pParty->field_6E4_set0_unused = 0;
                     pParty->field_6E0_set0_unused = 0;
 
-                    // change map
+                    // change map to Harmondale
                     pCurrentMapName = "out02.odm";
                     Party_Teleport_X_Pos = pParty->vPosition.x;
                     Party_Teleport_Y_Pos = pParty->vPosition.y;
