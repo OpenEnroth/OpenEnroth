@@ -1,6 +1,6 @@
-﻿# Building instructions and guidance
+﻿# Development HOWTO
 
-This document contains information about required dependencies and various guidance about compilation and development processes.
+This document describes the development process we're following. It's required reading for anyone intending to contribute.
 
 Dependencies
 ---------------
@@ -14,7 +14,7 @@ On Windows, the above dependencies are resolved automatically during the cmake p
 
 Additional dependencies:
 * CMake 3.20.4+ (3.20.21032501-MSVC_2 from VS2019 won't work)
-* Python 3.x (optional, for style checker functionality)
+* Python 3.x (optional, for style checks)
 
 Minimum required compiler versions are as follows:
 * Visual Studio 2022
@@ -65,12 +65,12 @@ So when checking out the branch or switching to different branch you may need to
 Project Resources
 ---------------
 The Git repo contains some additional resources required for the engine to run.
-Please copy the entire 'shaders' folder from the subdirectory 'resources' to the location of the game assets.
+Please copy the entire 'shaders' folder from the 'resources' subdirectory to the location of the game assets.
 Please check the logger output for the required path if you are unsure.
 
 Support
 ---------------
-Still having problems? Try to ask for help on our discord. [![](https://img.shields.io/badge/chat-on%20discord-green.svg)](https://discord.gg/jRCyPtq)
+Still having problems? Ask for help on our discord! [![](https://img.shields.io/badge/chat-on%20discord-green.svg)](https://discord.gg/jRCyPtq)
 
 
 Coding style
@@ -107,6 +107,31 @@ Language features:
 * Make your code speak for itself when it comes to ownership. If a function takes ownership of one of its parameters, it should take `std::unique_ptr` by value. If it allocates its result and passes ownership to the caller, then it should return `std::unique_ptr`.
 
 There is a lot of code in the project that doesn't follow these conventions. Please feel free to fix it, preferably not mixing up style and logical changes in the same PR.
+
+Testing
+-------
+We strive for a good test coverage of the project, and while we're not there yet, the current policy is to add tests for all the bugs we fix, as long as the fix is testable. E.g. graphical glitches are generally very hard to test, but we have the infractructure to test game logic and small isolated classes.
+
+Tests in OpenEnroth fall into two categories:
+* Unit tests. These are a standard breed of tests, written using Google Test. You can see some examples in `src/Utility/Tests`.
+* Game tests. If you're familiar with how testing is done these days for complex mobile apps, then you can consider game tests a variation of UI tests that's specific to our project. Game tests need game assets to run, and are currently **not** run in github actions.
+
+Game tests work by instrumenting the engine, and then running test code in between the game frames. This code usually sends events to the engine (e.g. mouse clicks), which are then processed by the engine in the next frame, but it can do pretty much anything else – all of engine's data is accessible and writable from inside the game test.
+
+As typing out all the events to send inside the test code can be pretty tedious, we also have an event recording functionality, so that the test creation workflow usually looks as follows:
+* Load a save that reproduces the bug that you've just fixed.
+* Press `Ctrl+Shift+R` to start recording an event trace. Check logs to make sure that trace recording has started.
+* Perform the steps that used to reproduce the bug.
+* Press `Ctrl+Shift+R` again to stop trace recording. You will get two files generated in the current folder – `trace.json` and `trace.mm7`.
+* Rename them into something more suiting (e.g. `issue_XXX.json` and `issue_XXX.mm7`) and create a PR to the [OpenEnroth_TestData](https://github.com/OpenEnroth/OpenEnroth_TestData) repo. 
+* Once it's merged update the reference tag in the corresponding [CMakeLists.txt](https://github.com/OpenEnroth/OpenEnroth/blob/master/test/Bin/GameTest/CMakeLists.txt#L21) in the main repo.
+* Create a new test case in one of the game test files in [the game tests folder](https://github.com/OpenEnroth/OpenEnroth/tree/master/test/Tests).
+* Use `TestController::playTraceFromTestData` to play back your trace, and add the necessary checks around it. If you're simply testing that the test doesn't crash, then just playing back the trace shall be enough.
+
+To run all unit tests locally, build a `UnitTest` cmake target, or build & run `OpenEnroth_UnitTest`.
+
+To run all game tests locally, set `OPENENROTH_MM7_PATH` environment variable to point to the location of the game assets, then build `GameTest` cmake target. Alternatively, you can build `OpenEnroth_GameTest`, and run it manually, passing the paths to both game assets and the test data via command line.
+
 
 Additional Resources
 --------------------
