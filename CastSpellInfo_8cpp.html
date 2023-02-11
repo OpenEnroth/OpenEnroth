@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0246a18</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;946c46c</span>
    </div>
   </td>
  </tr>
@@ -119,6 +119,10 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a60cdd2f724b239d6a5dc08d075251619"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8cpp.html#a60cdd2f724b239d6a5dc08d075251619">InitSpellSprite</a> (<a class="el" href="structSpriteObject.html">SpriteObject</a> *spritePtr, <a class="el" href="PlayerEnums_8h.html#adb9cb0391b2119e3d28341d2f340964e">PLAYER_SKILL_LEVEL</a> spellLevel, <a class="el" href="PlayerEnums_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942">PLAYER_SKILL_MASTERY</a> spellMastery, <a class="el" href="structCastSpellInfo.html">CastSpellInfo</a> *pCastSpell)</td></tr>
+<tr class="separator:a60cdd2f724b239d6a5dc08d075251619"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afcbd27d2cf3022fa2fba35bb9aa5e825"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8cpp.html#afcbd27d2cf3022fa2fba35bb9aa5e825">SpellFailed</a> (<a class="el" href="structCastSpellInfo.html">CastSpellInfo</a> *pCastSpell, int error_str_id)</td></tr>
+<tr class="separator:afcbd27d2cf3022fa2fba35bb9aa5e825"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ec951727779b4e9c483244499d0f6de"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8cpp.html#a9ec951727779b4e9c483244499d0f6de">PushCastSpellInfo</a> (uint16_t uSpellID, uint16_t uPlayerID, int16_t skill_level, SpellCastFlags uFlags, int spell_sound_id)</td></tr>
 <tr class="separator:a9ec951727779b4e9c483244499d0f6de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d1d8250c33a3995b74e6416eb587919"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8cpp.html#a3d1d8250c33a3995b74e6416eb587919">_42777D_CastSpell_UseWand_ShootArrow</a> (<a class="el" href="Spells_8h.html#a4e71efcf980b83e3205a4079c10bd8d5">SPELL_TYPE</a> spell, unsigned int uPlayerID, <a class="el" href="PlayerEnums_8h.html#a014da852057119cf6298d27ce19c67cd">PLAYER_SKILL</a> skill_value, SpellCastFlags flags, int a6)</td></tr>
@@ -192,6 +196,57 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x0042777D </dd></dl>
+
+</div>
+</div>
+<a id="a60cdd2f724b239d6a5dc08d075251619" name="a60cdd2f724b239d6a5dc08d075251619"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60cdd2f724b239d6a5dc08d075251619">&#9670;&#160;</a></span>InitSpellSprite()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void InitSpellSprite </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structSpriteObject.html">SpriteObject</a> *&#160;</td>
+          <td class="paramname"><em>spritePtr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="PlayerEnums_8h.html#adb9cb0391b2119e3d28341d2f340964e">PLAYER_SKILL_LEVEL</a>&#160;</td>
+          <td class="paramname"><em>spellLevel</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="PlayerEnums_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942">PLAYER_SKILL_MASTERY</a>&#160;</td>
+          <td class="paramname"><em>spellMastery</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structCastSpellInfo.html">CastSpellInfo</a> *&#160;</td>
+          <td class="paramname"><em>pCastSpell</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Common initialization of <a class="el" href="structSpriteObject.html">SpriteObject</a> for spell casting</p>
+<p >Correct field uType of spritePtr must be set before calling this function because initialization depends on it. </p>
 
 </div>
 </div>
@@ -238,6 +293,44 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x00427DA0 </dd></dl>
+
+</div>
+</div>
+<a id="afcbd27d2cf3022fa2fba35bb9aa5e825" name="afcbd27d2cf3022fa2fba35bb9aa5e825"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afcbd27d2cf3022fa2fba35bb9aa5e825">&#9670;&#160;</a></span>SpellFailed()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void SpellFailed </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structCastSpellInfo.html">CastSpellInfo</a> *&#160;</td>
+          <td class="paramname"><em>pCastSpell</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>error_str_id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Notify that spell casting failed. </p>
 
 </div>
 </div>
