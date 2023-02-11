@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: Building instructions and guidance</title>
+<title>OpenEnroth: Development HOWTO</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a7ed551</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;01cde47</span>
    </div>
   </td>
  </tr>
@@ -69,10 +69,10 @@ $(function() {
 
 </div><!-- top -->
 <div><div class="header">
-  <div class="headertitle"><div class="title">Building instructions and guidance </div></div>
+  <div class="headertitle"><div class="title">Development HOWTO </div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p >This document contains information about required dependencies and various guidance about compilation and development processes.</p>
+<div class="textblock"><p >This document describes the development process we're following. It's required reading for anyone intending to contribute.</p>
 <h1><a class="anchor" id="autotoc_md1"></a>
 Dependencies</h1>
 <p >Main dependencies:</p><ul>
@@ -84,7 +84,7 @@ Dependencies</h1>
 <p >On Windows, the above dependencies are resolved automatically during the cmake phase.</p>
 <p >Additional dependencies:</p><ul>
 <li>CMake 3.20.4+ (3.20.21032501-MSVC_2 from VS2019 won't work)</li>
-<li>Python 3.x (optional, for style checker functionality)</li>
+<li>Python 3.x (optional, for style checks)</li>
 </ul>
 <p >Minimum required compiler versions are as follows:</p><ul>
 <li>Visual Studio 2022</li>
@@ -125,10 +125,10 @@ Building on Windows</h1>
 <p ><b>Be aware</b> that Visual Studio has a bug with git submodules not syncing between branches. So when checking out the branch or switching to different branch you may need to run the following command manually: <code>git submodule update --init</code></p>
 <h1><a class="anchor" id="autotoc_md4"></a>
 Project Resources</h1>
-<p >The Git repo contains some additional resources required for the engine to run. Please copy the entire 'shaders' folder from the subdirectory 'resources' to the location of the game assets. Please check the logger output for the required path if you are unsure.</p>
+<p >The Git repo contains some additional resources required for the engine to run. Please copy the entire 'shaders' folder from the 'resources' subdirectory to the location of the game assets. Please check the logger output for the required path if you are unsure.</p>
 <h1><a class="anchor" id="autotoc_md5"></a>
 Support</h1>
-<p >Still having problems? Try to ask for help on our discord. <a href="https://discord.gg/jRCyPtq"><img src="https://img.shields.io/badge/chat-on%20discord-green.svg" alt="" style="pointer-events: none;" class="inline"/></a></p>
+<p >Still having problems? Ask for help on our discord! <a href="https://discord.gg/jRCyPtq"><img src="https://img.shields.io/badge/chat-on%20discord-green.svg" alt="" style="pointer-events: none;" class="inline"/></a></p>
 <h1><a class="anchor" id="autotoc_md6"></a>
 Coding style</h1>
 <p >For the C++ code we are following the <a href="http://google.github.io/styleguide/cppguide.html">Google C++ Style Guide</a>.\ Source code is automatically checked against it and Pull Request will fail if you don't follow it.</p>
@@ -160,6 +160,26 @@ Coding style</h1>
 </ul>
 <p >There is a lot of code in the project that doesn't follow these conventions. Please feel free to fix it, preferably not mixing up style and logical changes in the same PR.</p>
 <h1><a class="anchor" id="autotoc_md7"></a>
+Testing</h1>
+<p >We strive for a good test coverage of the project, and while we're not there yet, the current policy is to add tests for all the bugs we fix, as long as the fix is testable. E.g. graphical glitches are generally very hard to test, but we have the infractructure to test game logic and small isolated classes.</p>
+<p >Tests in OpenEnroth fall into two categories:</p><ul>
+<li>Unit tests. These are a standard breed of tests, written using Google Test. You can see some examples in <code>src/Utility/Tests</code>.</li>
+<li>Game tests. If you're familiar with how testing is done these days for complex mobile apps, then you can consider game tests a variation of UI tests that's specific to our project. Game tests need game assets to run, and are currently <b>not</b> run in github actions.</li>
+</ul>
+<p >Game tests work by instrumenting the engine, and then running test code in between the game frames. This code usually sends events to the engine (e.g. mouse clicks), which are then processed by the engine in the next frame, but it can do pretty much anything else – all of engine's data is accessible and writable from inside the game test.</p>
+<p >As typing out all the events to send inside the test code can be pretty tedious, we also have an event recording functionality, so that the test creation workflow usually looks as follows:</p><ul>
+<li>Load a save that reproduces the bug that you've just fixed.</li>
+<li>Press <code>Ctrl+Shift+R</code> to start recording an event trace. Check logs to make sure that trace recording has started.</li>
+<li>Perform the steps that used to reproduce the bug.</li>
+<li>Press <code>Ctrl+Shift+R</code> again to stop trace recording. You will get two files generated in the current folder – <code>trace.json</code> and <code>trace.mm7</code>.</li>
+<li>Rename them into something more suiting (e.g. <code>issue_XXX.json</code> and <code>issue_XXX.mm7</code>) and create a PR to the <a href="https://github.com/OpenEnroth/OpenEnroth_TestData">OpenEnroth_TestData</a> repo.</li>
+<li>Once it's merged update the reference tag in the corresponding <a href="https://github.com/OpenEnroth/OpenEnroth/blob/master/test/Bin/GameTest/CMakeLists.txt#L21">CMakeLists.txt</a> in the main repo.</li>
+<li>Create a new test case in one of the game test files in <a href="https://github.com/OpenEnroth/OpenEnroth/tree/master/test/Tests">the game tests folder</a>.</li>
+<li>Use <code><a class="el" href="classTestController.html#aa31d74bde5b6bba79801f2f90268bd27">TestController::playTraceFromTestData</a></code> to play back your trace, and add the necessary checks around it. If you're simply testing that the test doesn't crash, then just playing back the trace shall be enough.</li>
+</ul>
+<p >To run all unit tests locally, build a <code>UnitTest</code> cmake target, or build &amp; run <code>OpenEnroth_UnitTest</code>.</p>
+<p >To run all game tests locally, set <code>OPENENROTH_MM7_PATH</code> environment variable to point to the location of the game assets, then build <code><a class="el" href="classGameTest.html">GameTest</a></code> cmake target. Alternatively, you can build <code>OpenEnroth_GameTest</code>, and run it manually, passing the paths to both game assets and the test data via command line.</p>
+<h1><a class="anchor" id="autotoc_md8"></a>
 Additional Resources</h1>
 <p >Old event decompiler and IDB files can be found <a href="https://www.dropbox.com/sh/if4u3lphn633oit/AADUYMxNcrkAU6epJ50RskyXa?dl=0">here</a>. Feel free to ping <code>zipi#6029</code> for more info. </p>
 </div></div><!-- contents -->
