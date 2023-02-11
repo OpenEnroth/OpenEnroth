@@ -117,12 +117,11 @@ extern int dword_4FA9B4[];
 
 // extern std::array<unsigned int, 480> pSRZBufferLineOffsets;
 extern std::array<char, 777> books_num_items_per_page;
-extern int lloyds_beacon_spell_id;  // dword_506338
-extern int lloyds_beacon_sound_id;  // dword_50633C
+extern int LloydsBeaconSpellId;
 extern signed int sRecoveryTime;    // idb
 extern unsigned int uRequiredMana;  // idb
 extern int _506348_current_lloyd_playerid;
-extern int64_t lloyds_beacon_spell_level;  // qword_506350
+extern int LloydsBeaconSpellLevel;
 extern int MapBookOpen;
 // extern Texture_MM7 *dword_50640C[];
 extern int
@@ -173,7 +172,7 @@ extern struct stru367 PortalFace;
 extern std::array<int, 100> dword_50BC10;
 extern std::array<int, 100> dword_50BDA0;
 extern std::array<int, 100> _50BF30_actors_in_viewport_ids;
-extern char town_portal_caster_id;
+extern char TownPortalCasterId;
 extern int some_active_character;
 extern std::array<unsigned int, 5> pIconIDs_Turn;
 extern unsigned int uIconID_TurnStop;
