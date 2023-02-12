@@ -235,7 +235,7 @@ inline void SetSkillMastery(PLAYER_SKILL *skill_value, PLAYER_SKILL_MASTERY mast
 }
 
 #pragma warning(push)
-#pragma warning(disable : 4341) // TODO(captainurist): what is this about?
+#pragma warning(disable : 4341) // TODO(captainurist): msvc mis-warns here, just drop this warning altogether for msvc
 /*  328 */
 enum class PLAYER_SKILL_TYPE : int8_t {
     PLAYER_SKILL_INVALID = -1,
@@ -280,8 +280,8 @@ enum class PLAYER_SKILL_TYPE : int8_t {
     PLAYER_SKILL_MISC = 38, // Hidden skill that's always 1. Used for wetsuits, for example.
     PLAYER_SKILL_COUNT = 39,
 
-    PLAYER_SKILL_FIRST_STORED = PLAYER_SKILL_STAFF,
-    PLAYER_SKILL_LAST_STORED = PLAYER_SKILL_LEARNING,
+    PLAYER_SKILL_FIRST_VISIBLE = PLAYER_SKILL_STAFF,
+    PLAYER_SKILL_LAST_VISIBLE = PLAYER_SKILL_LEARNING,
 
     PLAYER_SKILL_FIRST = PLAYER_SKILL_STAFF,
     PLAYER_SKILL_LAST = PLAYER_SKILL_MISC,
@@ -296,7 +296,7 @@ inline Segment<PLAYER_SKILL_TYPE> AllSkills() {
  * @return                              List of skills that are visible to the player and that are stored in a savegame.
  */
 inline Segment<PLAYER_SKILL_TYPE> VisibleSkills() {
-    return Segment(PLAYER_SKILL_FIRST_STORED, PLAYER_SKILL_LAST_STORED);
+    return Segment(PLAYER_SKILL_FIRST_VISIBLE, PLAYER_SKILL_LAST_VISIBLE);
 }
 
 /**
