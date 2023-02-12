@@ -85,3 +85,17 @@ GAME_TEST(Issues, Issue388) {
     pArcomageGame->_targetFPS = oldfpslimit;
 }
 
+GAME_TEST(Issues, Issue408) {
+    // testing that the gameover loop works
+    CURRENT_SCREEN oldscreen = CURRENT_SCREEN::SCREEN_GAME;
+    // enters throne room - resurecta - final task and exits gameover loop
+    test->playTraceFromTestData("issue_408.mm7", "issue_408.json", [&] {oldscreen = current_screen_type; });
+    // we should return to game screen
+    EXPECT_EQ(oldscreen, current_screen_type);
+    // windowlist size should be 1
+    EXPECT_EQ(lWindowList.size(), 1);
+    // should have save a winner cert tex
+    EXPECT_NE(assets->WinnerCert, nullptr);
+    // we should be teleported to harmondale
+    EXPECT_EQ(pCurrentMapName, "out02.odm");
+}

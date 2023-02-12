@@ -189,8 +189,8 @@ enum UIMessageType : uint32_t {
     UIMSG_C2 = 192,
 
     UIMSG_OnCastTownPortal = 195,
-    UIMSG_OnFinalWindowClose = 196,
-    UIMSG_ShowFinalWindow = 197,
+    UIMSG_OnGameOverWindowClose = 196,
+    UIMSG_ShowGameOverWindow = 197,
     UIMSG_C6 = 198,
     UIMSG_C7 = 199,
     UIMSG_OpenQuestBook = 200,
@@ -321,7 +321,7 @@ enum WindowType {
     WINDOW_CastSpell = 27,  // OnCastTargetedSpell
     WINDOW_Scroll = 0x1E,
     WINDOW_CastSpell_InInventory = 31,
-    WINDOW_ModalWindow = 70,
+    WINDOW_GameOverWindow = 70,
     WINDOW_50 = 80,  // Debug
     WINDOW_59 = 89,  // Debug: Item Generation Window
     WINDOW_PressedButton2 = 90,      // OnButtonClick2?
@@ -577,7 +577,7 @@ enum class CURRENT_SCREEN {
     SCREEN_BRANCHLESS_NPC_DIALOG = 19,
     SCREEN_20 = 20,
     SCREEN_PARTY_CREATION = 21,
-    SCREEN_MODAL_WINDOW = 22,
+    SCREEN_GAMEOVER_WINDOW = 22,
     SCREEN_CASTING = 23,
     SCREEN_24 = 24,
     SCREEN_19 = 25,
@@ -734,7 +734,8 @@ extern GUIWindow *ptr_507BC8;
 extern GUIWindow *pGUIWindow_CurrentMenu;
 //extern GUIWindow *ptr_507BD0;
 extern GUIWindow *pGUIWindow_CastTargetedSpell;
-extern GUIWindow *pModalWindow;
+extern GUIWindow *pGameOverWindow;
+extern bool bGameOverWindowCheckExit;
 //extern GUIWindow *pGUIWindow_EscMessageWindow;
 extern GUIWindow *pGUIWindow2;
 

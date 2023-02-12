@@ -69,7 +69,7 @@
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIMainMenu.h"
-#include "GUI/UI/UIModal.h"
+#include "GUI/UI/UIGameOver.h"
 #include "GUI/UI/UIPartyCreation.h"
 #include "GUI/UI/UIQuickReference.h"
 #include "GUI/UI/UIRest.h"
@@ -740,10 +740,15 @@ void Game::EventLoop() {
                         default:
                             break;
                     }
-                    if (pModalWindow) {
-                        pModalWindow->Release();
-                        pModalWindow = nullptr;
-                        continue;
+                    if (pGameOverWindow) {
+                        if (bGameOverWindowCheckExit) {
+                            pGameOverWindow->Release();
+                            pGameOverWindow = nullptr;
+                            continue;
+                        } else {
+                            bGameOverWindowCheckExit = true;
+                            continue;
+                        }
                     }
                     render->ClearZBuffer();
                     viewparams->bRedrawGameUI = true;
@@ -1541,24 +1546,41 @@ void Game::EventLoop() {
                         LSTR_TOWN_PORTAL_TO_S, v69.c_str()));
                     continue;
                 }
-                case UIMSG_ShowFinalWindow: {
-                    // static due to GUIWindow_Modal not
-                    // holding a reference and text ptr will
-                    // be destroyed upon exiting scope
-                    static std::string final_message;
-
-                    final_message = StringPrintf(
-                        "%s\n \n%s\n \n%s",
-                        localization->GetString(LSTR_CONGRATULATIONS_ADVENTURER),
-                        localization->GetString(LSTR_WE_HOPE_YOU_ENJOYED_MM7),
-                        localization->GetString(LSTR_THE_MM7_DEV_TEAM));
-
-                    pModalWindow = new GUIWindow_Modal(final_message.c_str(), UIMSG_OnFinalWindowClose);
+                case UIMSG_ShowGameOverWindow: {
+                    pGameOverWindow = new GUIWindow_GameOver();
                     uGameState = GAME_STATE_FINAL_WINDOW;
                     continue;
                 }
-                case UIMSG_OnFinalWindowClose:
+                case UIMSG_OnGameOverWindowClose:
+                    pAudioPlayer->PauseSounds(-1);
+                    SaveGame(1, 0);
+
+                    pParty->vPosition.x = -17331;  // respawn point in Harmondale
+                    pParty->vPosition.y = 12547;
+                    pParty->vPosition.z = 465;
+                    pParty->sRotationZ = 0;
+                    pParty->uFallStartZ = pParty->vPosition.z;
+                    pParty->sRotationY = 0;
+                    pParty->uFallSpeed = 0;
+                    pParty->field_6E4_set0_unused = 0;
+                    pParty->field_6E0_set0_unused = 0;
+
+                    // change map to Harmondale
+                    pCurrentMapName = "out02.odm";
+                    Party_Teleport_X_Pos = pParty->vPosition.x;
+                    Party_Teleport_Y_Pos = pParty->vPosition.y;
+                    Party_Teleport_Z_Pos = pParty->vPosition.z;
+                    Party_Teleport_Cam_Yaw = pParty->sRotationZ;
+                    Party_Teleport_Cam_Pitch = pParty->sRotationY;
+                    Start_Party_Teleport_Flag = 1;
+                    PrepareWorld(1);
+                    Actor::InitializeActors();
+
                     uGameState = GAME_STATE_PLAYING;
+
+                    for (int i = 0; i < 4; ++i)
+                        pParty->pPlayers[i].PlayEmotion(CHARACTER_EXPRESSION_SMILE, 0);
+
                     // strcpy((char *)userInputHandler->pPressedKeysBuffer, "2");
                     // __debugbreak();  // missed break/continue?
                     continue;

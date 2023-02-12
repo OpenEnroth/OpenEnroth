@@ -323,7 +323,7 @@ void GameWindowHandler::OnKey(PlatformKey key) {
             || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogUp, key) || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogDown, key)
             || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogSelect, key)) {
             if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME &&
-                current_screen_type != CURRENT_SCREEN::SCREEN_MODAL_WINDOW) {
+                current_screen_type != CURRENT_SCREEN::SCREEN_GAMEOVER_WINDOW) {
                 if (!viewparams->field_4C) {
                     UI_OnKeyDown(key);
                 }

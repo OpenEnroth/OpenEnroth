@@ -793,7 +793,7 @@ void Party::UpdatePlayersAndHirelingsEmotions() {
             } else {
                 v4 = vrng->Random(100);
                 if (v4 < 25)
-                    player->expression = CHARACTER_EXPRESSION_13;
+                    player->expression = CHARACTER_EXPRESSION_BLINK;
                 else if (v4 < 31)
                     player->expression = CHARACTER_EXPRESSION_14;
                 else if (v4 < 37)

@@ -23,7 +23,7 @@
 
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIGame.h"
-#include "GUI/UI/UIModal.h"
+#include "GUI/UI/UIGameOver.h"
 #include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIStatusBar.h"
 
@@ -356,29 +356,6 @@ void Menu::EventLoop() {
                 continue;
 
             case UIMSG_SetGraphicsMode:
-                // if ( !bUseLoResSprites )
-                //{
-                //    byte_6BE388_graphicsmode = uMessageParam;
-                //    MM7Initialization();
-                //    continue;
-                //}
-                // if ( uMessageParam )
-                //{
-                //    if ( uMessageParam == 1 )
-                //    {
-                //    byte_6BE388_graphicsmode = 0;
-                //    }
-                //    else
-                //    {
-                //        if ( uMessageParam != 2 )
-                //            continue;
-                //        byte_6BE388_graphicsmode = 1;
-                //    }
-                //    MM7Initialization();
-                //    continue;
-                //}
-                pModalWindow =
-                    new GUIWindow_Modal(pNPCTopics[453].pText, UIMSG_0);
                 __debugbreak();  // Nomad: graphicsmode as it was now removed
                 continue;
 
@@ -390,9 +367,9 @@ void Menu::EventLoop() {
                 continue;
 
             case UIMSG_Escape:
-                if (pModalWindow) {
-                    pModalWindow->Release();
-                    pModalWindow = nullptr;
+                if (pGameOverWindow) {
+                    pGameOverWindow->Release();
+                    pGameOverWindow = nullptr;
                     continue;
                 }
                 render->ClearZBuffer();

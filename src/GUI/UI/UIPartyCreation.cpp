@@ -225,9 +225,9 @@ void CreateParty_EventLoop() {
             pGUIWindow_CurrentMenu->wData.val = param;
             break;
         case UIMSG_Escape:
-            if (pModalWindow) {
-                pModalWindow->Release();
-                pModalWindow = nullptr;
+            if (pGameOverWindow) {
+                pGameOverWindow->Release();
+                pGameOverWindow = nullptr;
                 break;
             }
             if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_4000)) break;

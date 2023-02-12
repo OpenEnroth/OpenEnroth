@@ -68,7 +68,7 @@ void GUIWindow_MainMenu::Update() {
     GUIWindow *pWindow = this;
 
     Image *pTexture = nullptr;
-    if (!pModalWindow) {  // ???
+    if (!pGameOverWindow) {  // ???
         for (GUIButton *pButton : pWindow->vButtons) {
             if (pButton->Contains(pt.x, pt.y) && pWindow == pWindow_MainMenu) {
                 auto pControlParam = pButton->msg_param;
