@@ -177,7 +177,7 @@ void CreateParty_EventLoop() {
             pAudioPlayer->PlaySound(SOUND_ClickPlus, 0, 0, -1, 0, 0);
             break;
         case UIMSG_PlayerCreationSelectActiveSkill:
-            if (pPlayer[uPlayerCreationUI_SelectedCharacter].GetSkillIdxByOrder(3) == PLAYER_SKILL_MISC)
+            if (pPlayer[uPlayerCreationUI_SelectedCharacter].GetSkillIdxByOrder(3) == PLAYER_SKILL_INVALID)
                 pParty->pPlayers[uPlayerCreationUI_SelectedCharacter].pActiveSkills[pPlayer[uPlayerCreationUI_SelectedCharacter]
                     .GetSkillIdxByOrder(param + 4)] = 1;
             pAudioPlayer->PlaySound(SOUND_ClickSkill, 0, 0, -1, 0, 0);
@@ -205,7 +205,7 @@ void CreateParty_EventLoop() {
             int v4;
             v4 = pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem;
             pGUIWindow_CurrentMenu->pCurrentPosActiveItem = v4 % 7 + pGUIWindow_CurrentMenu->pStartingPosActiveItem + 7 * param;
-            if (pPlayer[param].GetSkillIdxByOrder(2) != PLAYER_SKILL_MISC) {
+            if (pPlayer[param].GetSkillIdxByOrder(2) != PLAYER_SKILL_INVALID) {
                 pParty->pPlayers[param].pActiveSkills[pPlayer[param].GetSkillIdxByOrder(2)] = 0;
             }
             break;
@@ -215,7 +215,7 @@ void CreateParty_EventLoop() {
             int v4;
             v4 = pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem;
             pGUIWindow_CurrentMenu->pCurrentPosActiveItem = v4 % 7 + pGUIWindow_CurrentMenu->pStartingPosActiveItem + 7 * param;
-            if (pPlayer[param].GetSkillIdxByOrder(3) != PLAYER_SKILL_MISC)
+            if (pPlayer[param].GetSkillIdxByOrder(3) != PLAYER_SKILL_INVALID)
                 pParty->pPlayers[param].pActiveSkills[pPlayer[param].GetSkillIdxByOrder(3)] = 0;
         } break;
         case UIMSG_PlayerCreationChangeName:
@@ -445,7 +445,7 @@ void GUIWindow_PartyCreation::Update() {
         pTextCenter = pFontCreate->AlignText_Center(150, localization->GetSkillName(pSkillsType));
         auto str10 = StringPrintf("\t%03u%s", pTextCenter, localization->GetSkillName(pSkillsType));
         pColorText = colorTable.Green.C16();
-        if (pSkillsType >= PLAYER_SKILL_COUNT)
+        if (pSkillsType == PLAYER_SKILL_INVALID)
             pColorText = colorTable.Aqua.C16();
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {uX - 24, 2 * pIntervalY + posY}, pColorText, str10);
 
@@ -453,7 +453,7 @@ void GUIWindow_PartyCreation::Update() {
         pTextCenter = pFontCreate->AlignText_Center(150, localization->GetSkillName(pSkillsType));
         auto str11 = StringPrintf("\t%03u%s", pTextCenter, localization->GetSkillName(pSkillsType));
         pColorText = colorTable.Green.C16();
-        if (pSkillsType >= PLAYER_SKILL_COUNT)
+        if (pSkillsType == PLAYER_SKILL_INVALID)
             pColorText = colorTable.Aqua.C16();
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {uX - 24, 3 * pIntervalY + posY}, pColorText, str11);
 
@@ -935,9 +935,6 @@ bool PartyCreationUI_LoopInternal() {
                     pParty->pPlayers[i].pOwnItems[k].SetIdentified();
             }
         }
-
-        if (!engine->config->gameplay.TreatClubAsMace.Get())
-            pParty->pPlayers[i].pActiveSkills[PLAYER_SKILL_CLUB] = 1;
     }
 
     // pAudioPlayer->PauseSounds(-1);

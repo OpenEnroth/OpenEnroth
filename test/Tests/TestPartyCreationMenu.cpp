@@ -12,20 +12,22 @@ GAME_TEST(Items, GenerateItem) {
         pItemTable->GenerateItem(ITEM_TREASURE_LEVEL_6, 0, &item);
 }
 
-GAME_TEST(Menu, PartyCreation) {
-    EXPECT_EQ(GetCurrentMenuID(), MENU_MAIN);
+GAME_TEST(Prs, Pr314) {
+    // Check that character creating menu works.
+    // Trace pretty much presses all the buttons and opens all the popups possible.
+    test->playTraceFromTestData("pr_314.mm7", "pr_314.json", [] {});
 
-    game->pressGuiButton("MainMenu_NewGame");
-    game->tick(2);
+    for (int i = 0; i < 4; i++)
+        EXPECT_EQ(pParty->pPlayers[i].uLuck, 20);
 
-    EXPECT_EQ(GetCurrentMenuID(), MENU_CREATEPARTY);
-    EXPECT_EQ(pParty->pPlayers[0].uMight, 30);
-
-    game->pressGuiButton("PartyCreation_Clear"); // This shouldn't crash.
-    game->tick();
-
-    EXPECT_EQ(pParty->pPlayers[0].classType, PLAYER_CLASS_KNIGHT);
-    EXPECT_EQ(pParty->pPlayers[0].uMight, 14);
+    EXPECT_EQ(pParty->pPlayers[0].classType, PLAYER_CLASS_MONK);
+    EXPECT_EQ(pParty->pPlayers[1].classType, PLAYER_CLASS_THIEF);
+    EXPECT_EQ(pParty->pPlayers[2].classType, PLAYER_CLASS_RANGER);
+    EXPECT_EQ(pParty->pPlayers[3].classType, PLAYER_CLASS_CLERIC);
+    EXPECT_EQ(pParty->pPlayers[0].GetRace(), CHARACTER_RACE_ELF);
+    EXPECT_EQ(pParty->pPlayers[1].GetRace(), CHARACTER_RACE_ELF);
+    EXPECT_EQ(pParty->pPlayers[2].GetRace(), CHARACTER_RACE_GOBLIN);
+    EXPECT_EQ(pParty->pPlayers[3].GetRace(), CHARACTER_RACE_ELF);
 }
 
 GAME_TEST(Issues, Issue294) {
@@ -85,11 +87,16 @@ GAME_TEST(Issues, Issue388) {
     pArcomageGame->_targetFPS = oldfpslimit;
 }
 
+GAME_TEST(Issues, Issue402) {
+    // Attacking while wearing wetsuits shouldn't assert.
+    test->playTraceFromTestData("issue_402.mm7", "issue_402.json", [] {});
+}
+
 GAME_TEST(Issues, Issue408) {
     // testing that the gameover loop works
     CURRENT_SCREEN oldscreen = CURRENT_SCREEN::SCREEN_GAME;
     // enters throne room - resurecta - final task and exits gameover loop
-    test->playTraceFromTestData("issue_408.mm7", "issue_408.json", [&] {oldscreen = current_screen_type; });
+    test->playTraceFromTestData("issue_408.mm7", "issue_408.json", [&] { oldscreen = current_screen_type; });
     // we should return to game screen
     EXPECT_EQ(oldscreen, current_screen_type);
     // windowlist size should be 1

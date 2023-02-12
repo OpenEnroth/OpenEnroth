@@ -752,7 +752,7 @@ int Player::CreateItemInInventory(unsigned int uSlot, ITEM_TYPE uItemID) {
 
 //----- (00492700) --------------------------------------------------------
 int Player::HasSkill(PLAYER_SKILL_TYPE uSkillType) {
-    if (uSkillType >= PLAYER_SKILL_COUNT || this->pActiveSkills[uSkillType]) {
+    if (this->pActiveSkills[uSkillType]) {
         return 1;
     } else {
         GameUI_SetStatusBar(
@@ -2146,6 +2146,7 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) {
             weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
         }
     } else if (IsUnarmed() && GetActualSkillLevel(PLAYER_SKILL_UNARMED) > 0) {
+        // TODO(captainurist): just set unarmed recovery properly in the table.
         weapon_recovery = base_recovery_times_per_weapon_type[PLAYER_SKILL_DAGGER];
     } else if (HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
         weapon = GetMainHandItem();
@@ -2184,7 +2185,7 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) {
         } else if (armour_skill_type == PLAYER_SKILL_PLATE) {
             multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 0.5f, 0.5f, 0);
         } else {
-            // PLAYER_SKILL_MISC for wetsuit, any others?
+            assert(armour_skill_type == PLAYER_SKILL_MISC && GetArmorItem()->uItemID == ITEM_QUEST_WETSUIT);
             multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 1.0f, 1.0f, 1.0f);
         }
 
@@ -3068,14 +3069,12 @@ PLAYER_SKILL_LEVEL Player::GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType) {
         uSkillType = PLAYER_SKILL_MACE;
     }
 
-    // cap skill and bonus at 60
-    PLAYER_SKILL_LEVEL skill_value = 0;
-    if (uSkillType != PLAYER_SKILL_MISC) {
-        skill_value = GetSkillLevel(uSkillType);
-    }
+    // Vanilla returned 0 for PLAYER_SKILL_MISC here, we return 1.
+    PLAYER_SKILL_LEVEL skill_value = GetSkillLevel(uSkillType);
 
     result = bonus_value + skill_value;
 
+    // cap skill and bonus at 60
     if (result > 60)
         result = 60;
 
@@ -3477,6 +3476,8 @@ void Player::Reset(PLAYER_CLASS_TYPE cls) {
     uSkillPoints = 0;
     uBirthYear = 1147 - grng->Random(6);
     pActiveSkills.fill(0);
+    pActiveSkills[PLAYER_SKILL_CLUB] = 1; // Hidden skills, always at 1.
+    pActiveSkills[PLAYER_SKILL_MISC] = 1;
     memset(_achieved_awards_bits, 0, sizeof(_achieved_awards_bits));
     memset(&spellbook, 0, sizeof(spellbook));
     uQuickSpell = 0;
@@ -3517,10 +3518,10 @@ PLAYER_SKILL_TYPE Player::GetSkillIdxByOrder(signed int order) {
         requiredValue = 1;  // 1 - available
         offset = 4;
     } else {
-        return PLAYER_SKILL_COUNT;
+        return PLAYER_SKILL_INVALID;
     }
     counter = 0;
-    for (PLAYER_SKILL_TYPE i : AllSkills()) {
+    for (PLAYER_SKILL_TYPE i : VisibleSkills()) {
         if ((this->pActiveSkills[i] || canBeInactive) &&
             pSkillAvailabilityPerClass[classType / 4][i] == requiredValue) {
             if (counter == order - offset) return i;
@@ -3528,7 +3529,7 @@ PLAYER_SKILL_TYPE Player::GetSkillIdxByOrder(signed int order) {
         }
     }
 
-    return PLAYER_SKILL_COUNT;
+    return PLAYER_SKILL_INVALID;
 }
 
 //----- (0049048D) --------------------------------------------------------
