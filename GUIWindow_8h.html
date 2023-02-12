@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6134515</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f1583cb</span>
    </div>
   </td>
  </tr>
@@ -317,8 +317,8 @@ Enumerations</h2></td></tr>
 , <a class="el" href="GUIWindow_8h.html#a2519966952faeb9397447ce89e9bcb02ab99471ac7bee65cf7e06fe05e183dd5c">UIMSG_C2</a> = 192
 , <a class="el" href="GUIWindow_8h.html#a2519966952faeb9397447ce89e9bcb02a6c4b6dbae9a4dec50c2c8868e24289d8">UIMSG_OnCastTownPortal</a> = 195
 , <br />
-&#160;&#160;<a class="el" href="GUIWindow_8h.html#a2519966952faeb9397447ce89e9bcb02a58aabcbe498530be1d559a3c47165ec0">UIMSG_OnFinalWindowClose</a> = 196
-, <a class="el" href="GUIWindow_8h.html#a2519966952faeb9397447ce89e9bcb02a3400e2c1219b59e0c5b5fd76ac7b3301">UIMSG_ShowFinalWindow</a> = 197
+&#160;&#160;<a class="el" href="GUIWindow_8h.html#a2519966952faeb9397447ce89e9bcb02afa7fb6b9ebe5c3e82384f58205c8c5ae">UIMSG_OnGameOverWindowClose</a> = 196
+, <a class="el" href="GUIWindow_8h.html#a2519966952faeb9397447ce89e9bcb02ad33eada88f12660387f72d1d1fe7404a">UIMSG_ShowGameOverWindow</a> = 197
 , <a class="el" href="GUIWindow_8h.html#a2519966952faeb9397447ce89e9bcb02a2c7b60a81e62f9657219eefc46c5fd0d">UIMSG_C6</a> = 198
 , <a class="el" href="GUIWindow_8h.html#a2519966952faeb9397447ce89e9bcb02ac1cbb627ed9d38d141338f01f634ee42">UIMSG_C7</a> = 199
 , <br />
@@ -466,7 +466,7 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="GUIWindow_8h.html#a476342970f954b62d70552bcbb5ee509ae160f7387d7b7496a4d219df76b71b2a">WINDOW_CastSpell</a> = 27
 , <a class="el" href="GUIWindow_8h.html#a476342970f954b62d70552bcbb5ee509a34057df7461b7fa8aa36783e99c9ac06">WINDOW_Scroll</a> = 0x1E
 , <a class="el" href="GUIWindow_8h.html#a476342970f954b62d70552bcbb5ee509a9c05e5a474712ae2dec90f5d94e2b7a5">WINDOW_CastSpell_InInventory</a> = 31
-, <a class="el" href="GUIWindow_8h.html#a476342970f954b62d70552bcbb5ee509a9c39db391ad1d14fad726854557534ea">WINDOW_ModalWindow</a> = 70
+, <a class="el" href="GUIWindow_8h.html#a476342970f954b62d70552bcbb5ee509a4f63801752ad97ef33ba759788a2f168">WINDOW_GameOverWindow</a> = 70
 , <br />
 &#160;&#160;<a class="el" href="GUIWindow_8h.html#a476342970f954b62d70552bcbb5ee509a12f5b5e821253f1646f6c0fb2ff86277">WINDOW_50</a> = 80
 , <a class="el" href="GUIWindow_8h.html#a476342970f954b62d70552bcbb5ee509a80d8062d1982d5bf30d2f317aa39437f">WINDOW_59</a> = 89
@@ -542,7 +542,7 @@ Enumerations</h2></td></tr>
 , <br />
 &#160;&#160;<a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7abf5b300ca36edc663db5e48cd78be33a">SCREEN_20</a> = 20
 , <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a938e92c82ac370aa0f5da77167c9bd2f">SCREEN_PARTY_CREATION</a> = 21
-, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a8468760dd885cf954ba58e7ccc7eefbb">SCREEN_MODAL_WINDOW</a> = 22
+, <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a93a5582314bce83357b259093417a830">SCREEN_GAMEOVER_WINDOW</a> = 22
 , <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a470a23fa2afcb1036ecbec032d6e838c">SCREEN_CASTING</a> = 23
 , <br />
 &#160;&#160;<a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7a5d9d4d1d8a5446f96121272645a918d1">SCREEN_24</a> = 24
@@ -728,8 +728,10 @@ Variables</h2></td></tr>
 <tr class="separator:a92046372c9dbad521216a485de9e5731"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af07bd46153a7b735d9862f5769696e8a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGUIWindow.html">GUIWindow</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#af07bd46153a7b735d9862f5769696e8a">pGUIWindow_CastTargetedSpell</a></td></tr>
 <tr class="separator:af07bd46153a7b735d9862f5769696e8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acac1e9e9490f5f2ff0b7a507000f368e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGUIWindow.html">GUIWindow</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#acac1e9e9490f5f2ff0b7a507000f368e">pModalWindow</a></td></tr>
-<tr class="separator:acac1e9e9490f5f2ff0b7a507000f368e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed307e4fed8182194419fe0887ac77ee"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGUIWindow.html">GUIWindow</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#aed307e4fed8182194419fe0887ac77ee">pGameOverWindow</a></td></tr>
+<tr class="separator:aed307e4fed8182194419fe0887ac77ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c62392df57f112c1fb8fc651b7892dc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a9c62392df57f112c1fb8fc651b7892dc">bGameOverWindowCheckExit</a></td></tr>
+<tr class="separator:a9c62392df57f112c1fb8fc651b7892dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd5bd26b78148acea4f290d86b1535cd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGUIWindow.html">GUIWindow</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#acd5bd26b78148acea4f290d86b1535cd">pGUIWindow2</a></td></tr>
 <tr class="separator:acd5bd26b78148acea4f290d86b1535cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a26cd44fd480e54217a1cea1594e21ad4"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a26cd44fd480e54217a1cea1594e21ad4">ui_mainmenu_copyright_color</a></td></tr>
@@ -953,7 +955,7 @@ Variables</h2></td></tr>
 <tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7abd94aea101d02712ba0e9180e4d2aeb8" name="af188298480c77be8835d6760fa6edfd7abd94aea101d02712ba0e9180e4d2aeb8"></a>SCREEN_BRANCHLESS_NPC_DIALOG&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7abf5b300ca36edc663db5e48cd78be33a" name="af188298480c77be8835d6760fa6edfd7abf5b300ca36edc663db5e48cd78be33a"></a>SCREEN_20&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a938e92c82ac370aa0f5da77167c9bd2f" name="af188298480c77be8835d6760fa6edfd7a938e92c82ac370aa0f5da77167c9bd2f"></a>SCREEN_PARTY_CREATION&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a8468760dd885cf954ba58e7ccc7eefbb" name="af188298480c77be8835d6760fa6edfd7a8468760dd885cf954ba58e7ccc7eefbb"></a>SCREEN_MODAL_WINDOW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a93a5582314bce83357b259093417a830" name="af188298480c77be8835d6760fa6edfd7a93a5582314bce83357b259093417a830"></a>SCREEN_GAMEOVER_WINDOW&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a470a23fa2afcb1036ecbec032d6e838c" name="af188298480c77be8835d6760fa6edfd7a470a23fa2afcb1036ecbec032d6e838c"></a>SCREEN_CASTING&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7a5d9d4d1d8a5446f96121272645a918d1" name="af188298480c77be8835d6760fa6edfd7a5d9d4d1d8a5446f96121272645a918d1"></a>SCREEN_24&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="af188298480c77be8835d6760fa6edfd7aa1f8fb67b5aff5c3f8fd4e8e18af60b1" name="af188298480c77be8835d6760fa6edfd7aa1f8fb67b5aff5c3f8fd4e8e18af60b1"></a>SCREEN_19&#160;</td><td class="fielddoc"></td></tr>
@@ -1166,8 +1168,8 @@ Variables</h2></td></tr>
 <tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02ad773a2b6c7a1f992fbfbfff2b4812ec6" name="a2519966952faeb9397447ce89e9bcb02ad773a2b6c7a1f992fbfbfff2b4812ec6"></a>UIMSG_C1&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02ab99471ac7bee65cf7e06fe05e183dd5c" name="a2519966952faeb9397447ce89e9bcb02ab99471ac7bee65cf7e06fe05e183dd5c"></a>UIMSG_C2&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02a6c4b6dbae9a4dec50c2c8868e24289d8" name="a2519966952faeb9397447ce89e9bcb02a6c4b6dbae9a4dec50c2c8868e24289d8"></a>UIMSG_OnCastTownPortal&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02a58aabcbe498530be1d559a3c47165ec0" name="a2519966952faeb9397447ce89e9bcb02a58aabcbe498530be1d559a3c47165ec0"></a>UIMSG_OnFinalWindowClose&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02a3400e2c1219b59e0c5b5fd76ac7b3301" name="a2519966952faeb9397447ce89e9bcb02a3400e2c1219b59e0c5b5fd76ac7b3301"></a>UIMSG_ShowFinalWindow&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02afa7fb6b9ebe5c3e82384f58205c8c5ae" name="a2519966952faeb9397447ce89e9bcb02afa7fb6b9ebe5c3e82384f58205c8c5ae"></a>UIMSG_OnGameOverWindowClose&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02ad33eada88f12660387f72d1d1fe7404a" name="a2519966952faeb9397447ce89e9bcb02ad33eada88f12660387f72d1d1fe7404a"></a>UIMSG_ShowGameOverWindow&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02a2c7b60a81e62f9657219eefc46c5fd0d" name="a2519966952faeb9397447ce89e9bcb02a2c7b60a81e62f9657219eefc46c5fd0d"></a>UIMSG_C6&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02ac1cbb627ed9d38d141338f01f634ee42" name="a2519966952faeb9397447ce89e9bcb02ac1cbb627ed9d38d141338f01f634ee42"></a>UIMSG_C7&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02a942084509fa63b1ab170494cf0e036e0" name="a2519966952faeb9397447ce89e9bcb02a942084509fa63b1ab170494cf0e036e0"></a>UIMSG_OpenQuestBook&#160;</td><td class="fielddoc"></td></tr>
@@ -1282,7 +1284,7 @@ Variables</h2></td></tr>
 <tr><td class="fieldname"><a id="a476342970f954b62d70552bcbb5ee509ae160f7387d7b7496a4d219df76b71b2a" name="a476342970f954b62d70552bcbb5ee509ae160f7387d7b7496a4d219df76b71b2a"></a>WINDOW_CastSpell&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a476342970f954b62d70552bcbb5ee509a34057df7461b7fa8aa36783e99c9ac06" name="a476342970f954b62d70552bcbb5ee509a34057df7461b7fa8aa36783e99c9ac06"></a>WINDOW_Scroll&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a476342970f954b62d70552bcbb5ee509a9c05e5a474712ae2dec90f5d94e2b7a5" name="a476342970f954b62d70552bcbb5ee509a9c05e5a474712ae2dec90f5d94e2b7a5"></a>WINDOW_CastSpell_InInventory&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a476342970f954b62d70552bcbb5ee509a9c39db391ad1d14fad726854557534ea" name="a476342970f954b62d70552bcbb5ee509a9c39db391ad1d14fad726854557534ea"></a>WINDOW_ModalWindow&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a476342970f954b62d70552bcbb5ee509a4f63801752ad97ef33ba759788a2f168" name="a476342970f954b62d70552bcbb5ee509a4f63801752ad97ef33ba759788a2f168"></a>WINDOW_GameOverWindow&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a476342970f954b62d70552bcbb5ee509a12f5b5e821253f1646f6c0fb2ff86277" name="a476342970f954b62d70552bcbb5ee509a12f5b5e821253f1646f6c0fb2ff86277"></a>WINDOW_50&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a476342970f954b62d70552bcbb5ee509a80d8062d1982d5bf30d2f317aa39437f" name="a476342970f954b62d70552bcbb5ee509a80d8062d1982d5bf30d2f317aa39437f"></a>WINDOW_59&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a476342970f954b62d70552bcbb5ee509a896901a9f2993b36a7a85af55f73cc31" name="a476342970f954b62d70552bcbb5ee509a896901a9f2993b36a7a85af55f73cc31"></a>WINDOW_PressedButton2&#160;</td><td class="fielddoc"></td></tr>
@@ -2862,6 +2864,28 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="a9c62392df57f112c1fb8fc651b7892dc" name="a9c62392df57f112c1fb8fc651b7892dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c62392df57f112c1fb8fc651b7892dc">&#9670;&#160;</a></span>bGameOverWindowCheckExit</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool bGameOverWindowCheckExit</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a64f57b4f8081e247d7363918e79f74f5" name="a64f57b4f8081e247d7363918e79f74f5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a64f57b4f8081e247d7363918e79f74f5">&#9670;&#160;</a></span>current_character_screen_window</h2>
 
@@ -3016,6 +3040,28 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="aed307e4fed8182194419fe0887ac77ee" name="aed307e4fed8182194419fe0887ac77ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed307e4fed8182194419fe0887ac77ee">&#9670;&#160;</a></span>pGameOverWindow</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classGUIWindow.html">GUIWindow</a>* pGameOverWindow</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="acd5bd26b78148acea4f290d86b1535cd" name="acd5bd26b78148acea4f290d86b1535cd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acd5bd26b78148acea4f290d86b1535cd">&#9670;&#160;</a></span>pGUIWindow2</h2>
 
@@ -3137,28 +3183,6 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">struct <a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a>* pMessageQueue_50CBD0</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="acac1e9e9490f5f2ff0b7a507000f368e" name="acac1e9e9490f5f2ff0b7a507000f368e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acac1e9e9490f5f2ff0b7a507000f368e">&#9670;&#160;</a></span>pModalWindow</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classGUIWindow.html">GUIWindow</a>* pModalWindow</td>
         </tr>
       </table>
   </td>
