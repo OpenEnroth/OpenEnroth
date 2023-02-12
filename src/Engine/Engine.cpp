@@ -281,13 +281,15 @@ void Engine::DrawGUI() {
 
 
         int debug_info_offset = 0;
-        if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-            int sector_id = pBLVRenderParams->uPartySectorID;
-            pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset + 16}, colorTable.White.C16(),
-                StringPrintf("Party Sector ID:        %u/%zu\n", sector_id, pIndoor->pSectors.size()), 0, 0, 0);
-        }
         pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset + 16}, colorTable.White.C16(),
             StringPrintf("Party position:         % d % d % d", pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z), 0, 0, 0);
+
+        if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+            debug_info_offset += 16;
+            int sector_id = pBLVRenderParams->uPartySectorID;
+            pPrimaryWindow->DrawText(pFontArrus, { 16, debug_info_offset + 16 }, colorTable.White.C16(),
+                StringPrintf("Party Sector ID:        %u/%zu\n", sector_id, pIndoor->pSectors.size()), 0, 0, 0);
+        }
 
         std::string floor_level_str;
 
@@ -297,8 +299,7 @@ void Engine::DrawGUI() {
             uint uFaceID;
             int sector_id = pBLVRenderParams->uPartySectorID;
             int floor_level = BLV_GetFloorLevel(pParty->vPosition/* + Vec3i(0,0,40) */, sector_id, &uFaceID);
-            floor_level_str = StringPrintf(
-                "BLV_GetFloorLevel: %d   face_id %d\n", floor_level, uFaceID);
+            floor_level_str = StringPrintf("BLV_GetFloorLevel: %d   face_id %d\n", floor_level, uFaceID);
         } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
             bool on_water = false;
             int bmodel_pid;
