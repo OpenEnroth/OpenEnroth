@@ -986,7 +986,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         pCastSpell->uSpellID = 0;
                         continue;
                     }
-              
+
                     int meteor_num;
                     if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                         meteor_num = 20;
@@ -1519,7 +1519,7 @@ void CastSpellInfoHelpers::CastSpell() {
                                     int ench_found = 0;
                                     int to_item_apply_sum = 0;
                                     int ench_array[100] = { 0 };
-             
+
                                     // finds how many possible enchaments and adds up to item apply values
                                     // if (pItemTable->pEnchantments_count > 0) {
                                     for (int norm_ench_loop = 0; norm_ench_loop < 24; ++norm_ench_loop) {
