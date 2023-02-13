@@ -6,6 +6,7 @@ set(UTILITY_SOURCES Color.cpp
                     String.cpp
                     Memory/Blob.cpp
                     Math/TrigLut.cpp
+                    Streams/InputStream.cpp
                     Streams/MemoryInputStream.cpp
                     Streams/StringOutputStream.cpp
                     Streams/FileOutputStream.cpp)
