@@ -17,14 +17,11 @@ set(UTILITY_HEADERS Color.h
                     FileSystem.h
                     Flags.h
                     Format.h
-                    FreeDeleter.h
                     IndexedArray.h
                     Reversed.h
                     ScopeGuard.h
                     Segment.h
                     String.h
-                    Memory/Blob.h
-                    Memory/MemSet.h
                     Geometry/BBox.h
                     Geometry/Margins.h
                     Geometry/Plane.h
@@ -33,6 +30,9 @@ set(UTILITY_HEADERS Color.h
                     Geometry/Point.h
                     Math/Float.h
                     Math/TrigLut.h
+                    Memory/Blob.h
+                    Memory/FreeDeleter.h
+                    Memory/MemSet.h
                     Streams/InputStream.h
                     Streams/OutputStream.h
                     Streams/MemoryInputStream.h
