@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2bc3160</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;4fb6447</span>
    </div>
   </td>
  </tr>
@@ -93,6 +93,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a8c49246dd62e559578732f518f159432"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a400604f6e667563e7f930423a51bf16f"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a400604f6e667563e7f930423a51bf16f">Read</a> (void *data, size_t size)=0</td></tr>
 <tr class="separator:a400604f6e667563e7f930423a51bf16f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d7896bd495c1f6f7e7184f6cb6d9294"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a8d7896bd495c1f6f7e7184f6cb6d9294">ReadOrFail</a> (void *data, size_t size)</td></tr>
+<tr class="separator:a8d7896bd495c1f6f7e7184f6cb6d9294"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1f8d53b67229d2418d39aa6d282a369f"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a1f8d53b67229d2418d39aa6d282a369f">Skip</a> (size_t size)=0</td></tr>
 <tr class="separator:a1f8d53b67229d2418d39aa6d282a369f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -182,6 +184,42 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a8d7896bd495c1f6f7e7184f6cb6d9294" name="a8d7896bd495c1f6f7e7184f6cb6d9294"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d7896bd495c1f6f7e7184f6cb6d9294">&#9670;&#160;</a></span>ReadOrFail()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void InputStream::ReadOrFail </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Reads the requested amount of data from the stream, or fails with an exception if unable to do so.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>Output buffer to write read data into. </td></tr>
+    <tr><td class="paramname">size</td><td>Number of bytes to read. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a1f8d53b67229d2418d39aa6d282a369f" name="a1f8d53b67229d2418d39aa6d282a369f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1f8d53b67229d2418d39aa6d282a369f">&#9670;&#160;</a></span>Skip()</h2>
 
@@ -223,8 +261,9 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/Utility/Streams/<a class="el" href="InputStream_8h.html">InputStream.h</a></li>
+<li>src/Utility/Streams/<a class="el" href="InputStream_8cpp.html">InputStream.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
