@@ -150,7 +150,7 @@ void CastSpellInfoHelpers::CastSpell() {
             }
         }
 
-        pSpellSprite.uType = spell_sprite_mapping[pCastSpell->uSpellID].uSpriteType;
+        pSpellSprite.uType = SpellSpriteMapping[pCastSpell->uSpellID];
 
         if (pSpellSprite.uType != SPRITE_NULL) {
             if (PID_TYPE(spell_targeted_at) == OBJECT_Actor) {
