@@ -43,17 +43,21 @@ struct GameTime {
     int GetWeeksOfMonth() const { return this->GetWeeks() % 4; }
     int GetMonthsOfYear() const { return this->GetMonths() % 12; }
 
-    void AddMinutes(int minutes) {
+    GameTime &AddMinutes(int minutes) {
         this->value += SECONDS_TO_GAME_TIME(60ull * minutes);
+        return *this;
     }
-    void SubtractHours(int hours) {
+    GameTime &SubtractHours(int hours) {
         this->value -= SECONDS_TO_GAME_TIME(3600ull * hours);
+        return *this;
     }
-    void AddDays(int days) {
+    GameTime &AddDays(int days) {
         this->value += SECONDS_TO_GAME_TIME(86400ull * days);
+        return *this;
     }
-    void AddYears(int years) {
+    GameTime &AddYears(int years) {
         this->value += SECONDS_TO_GAME_TIME(29030400ull * years);
+        return *this;
     }
 
     void Reset() { this->value = 0; }
