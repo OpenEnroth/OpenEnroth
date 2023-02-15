@@ -3360,28 +3360,28 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
             case SPELL_SPIRIT_BLESS:
                 if (!skill_value)
                     skill_value = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
-                if (GetSkillMastery(skill_value) >= PLAYER_SKILL_MASTERY_EXPERT)
+                if (GetSkillMastery(skill_value) < PLAYER_SKILL_MASTERY_EXPERT)
                     flags |= ON_CAST_WholeParty_BigImprovementAnim;
                 break;
 
             case SPELL_SPIRIT_PRESERVATION:
                 if (!skill_value)
                     skill_value = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
-                if (GetSkillMastery(skill_value) >= PLAYER_SKILL_MASTERY_MASTER)
+                if (GetSkillMastery(skill_value) < PLAYER_SKILL_MASTERY_MASTER)
                     flags |= ON_CAST_WholeParty_BigImprovementAnim;
                 break;
 
             case SPELL_DARK_PAIN_REFLECTION:
                 if (!skill_value)
                     skill_value = player->pActiveSkills[PLAYER_SKILL_DARK];
-                if (GetSkillMastery(skill_value) >= PLAYER_SKILL_MASTERY_MASTER)
+                if (GetSkillMastery(skill_value) < PLAYER_SKILL_MASTERY_MASTER)
                     flags |= ON_CAST_WholeParty_BigImprovementAnim;
                 break;
 
             case SPELL_BODY_HAMMERHANDS:
                 if (!skill_value)
                     skill_value = player->pActiveSkills[PLAYER_SKILL_BODY];
-                if (GetSkillMastery(skill_value) >= PLAYER_SKILL_MASTERY_GRANDMASTER)
+                if (GetSkillMastery(skill_value) < PLAYER_SKILL_MASTERY_GRANDMASTER)
                     flags |= ON_CAST_WholeParty_BigImprovementAnim;
                 break;
 
