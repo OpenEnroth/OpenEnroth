@@ -782,7 +782,7 @@ void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
     pEventTimer->Pause();
     pMiscTimer->Pause();
     pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
-    CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress();
+    CastSpellInfoHelpers::CancelSpellCastInProgress();
     engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     DoPrepareWorld(false, (_0_box_loading_1_fullscreen == 0) + 1);
     pMiscTimer->Resume();

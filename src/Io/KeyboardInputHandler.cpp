@@ -191,7 +191,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
                             debug_non_combat_recovery_mul * (double)pPlayers[uActiveCharacter]->GetAttackRecoveryTime(false) * flt_debugrecmod3
                         );
                     }
-                    CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress();
+                    CastSpellInfoHelpers::CancelSpellCastInProgress();
                     pTurnEngine->ApplyPlayerAction();
                 }
             }

@@ -1102,7 +1102,7 @@ void Game::EventLoop() {
                     } else {
                         pParty->field_6E4_set0_unused = 0;
                         pParty->field_6E0_set0_unused = 0;
-                        CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress();
+                        CastSpellInfoHelpers::CancelSpellCastInProgress();
                         DialogueEnding();
                         pEventTimer->Pause();
                         pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
@@ -1642,9 +1642,8 @@ void Game::EventLoop() {
                         (pPlayer2 = pPlayers[uActiveCharacter],
                          pPlayer2->uTimeToRecovery))
                         continue;
-                    _42777D_CastSpell_UseWand_ShootArrow(
-                        (SPELL_TYPE)pPlayer2->uQuickSpell, uActiveCharacter - 1,
-                        0, 0, uActiveCharacter);
+                    RegisterSpellOrSpellLikeSkill((SPELL_TYPE)pPlayer2->uQuickSpell, uActiveCharacter - 1,
+                                                  0, 0, uActiveCharacter);
                     continue;
                 }
 
@@ -2024,16 +2023,16 @@ void Game::EventLoop() {
                 }
 
                 case UIMSG_CastSpellFromBook:
-                    if (pTurnEngine->turn_stage != TE_MOVEMENT)
-                        _42777D_CastSpell_UseWand_ShootArrow(
-                            (SPELL_TYPE)uMessageParam, v199, 0, 0, 0);
+                    if (pTurnEngine->turn_stage != TE_MOVEMENT) {
+                        RegisterSpellOrSpellLikeSkill((SPELL_TYPE)uMessageParam, v199, 0, 0, 0);
+                    }
                     continue;
 
                 case UIMSG_SpellScrollUse:
                     __debugbreak();
-                    if (pTurnEngine->turn_stage != TE_MOVEMENT)
-                        _42777D_CastSpell_UseWand_ShootArrow(
-                            (SPELL_TYPE)uMessageParam, v199, 133, ON_CAST_CastViaScroll, 0);
+                    if (pTurnEngine->turn_stage != TE_MOVEMENT) {
+                        RegisterScrollSpell((SPELL_TYPE)uMessageParam, v199);
+                    }
                     continue;
                 case UIMSG_SpellBookWindow:
                     if (pTurnEngine->turn_stage == TE_MOVEMENT) continue;

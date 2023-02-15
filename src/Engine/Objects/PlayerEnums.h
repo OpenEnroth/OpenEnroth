@@ -234,6 +234,18 @@ inline void SetSkillMastery(PLAYER_SKILL *skill_value, PLAYER_SKILL_MASTERY mast
     }
 }
 
+/**
+ * Construct player skill value using skill mastery and skill level
+ */
+inline PLAYER_SKILL ConstructSkillValue(PLAYER_SKILL_MASTERY mastery, PLAYER_SKILL_LEVEL level) {
+    PLAYER_SKILL skill = 0;
+
+    SetSkillMastery(&skill, mastery);
+    SetSkillLevel(&skill, level);
+
+    return skill;
+}
+
 #pragma warning(push)
 #pragma warning(disable : 4341) // TODO(captainurist): msvc mis-warns here, just drop this warning altogether for msvc
 /*  328 */

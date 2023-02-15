@@ -39,8 +39,8 @@ using EngineIoc = Engine_::IocContainer;
 
 static SpellFxRenderer *spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
 
-const size_t CastSpellInfoCount = 10;
-std::array<CastSpellInfo, CastSpellInfoCount> pCastSpellInfo;
+static const size_t CastSpellInfoCount = 10;
+static std::array<CastSpellInfo, CastSpellInfoCount> pCastSpellInfo;
 
 /**
  * Common initialization of SpriteObject for spell casting
@@ -120,7 +120,7 @@ void CastSpellInfoHelpers::CastSpell() {
         if (pCastSpell->uFlags & ON_CAST_CastingInProgress) {
             if (!pParty->pPlayers[pCastSpell->uPlayerID].CanAct()) {
                 // this cancels the spell cast if the player can no longer act
-                Cancel_Spell_Cast_In_Progress();
+                CancelSpellCastInProgress();
             }
             continue;
         }
@@ -3237,17 +3237,24 @@ void CastSpellInfoHelpers::CastSpell() {
 }
 
 /**
+ * Add spell or skill into spell queue.
+ * Spells from this queue will be cast in event queue processing.
+ *
  * @offset 0x00427DA0
  */
-size_t PushCastSpellInfo(uint16_t uSpellID, uint16_t uPlayerID,
-                         int16_t skill_level, SpellCastFlags uFlags,
-                         int spell_sound_id) {
+static size_t PushCastSpellInfo(uint16_t uSpellID,
+                                uint16_t uPlayerID,
+                                int16_t skill_level,
+                                SpellCastFlags uFlags,
+                                int spell_sound_id) {
     // uFlags: ON_CAST_*
     for (size_t i = 0; i < CastSpellInfoCount; i++) {
         if (!pCastSpellInfo[i].uSpellID) {
             pCastSpellInfo[i].uSpellID = uSpellID;
             pCastSpellInfo[i].uPlayerID = uPlayerID;
-            if (uFlags & ON_CAST_TargetIsParty) pCastSpellInfo[i].uPlayerID_2 = uPlayerID;
+            if (uFlags & ON_CAST_TargetIsParty) {
+                pCastSpellInfo[i].uPlayerID_2 = uPlayerID;
+            }
             pCastSpellInfo[i].field_6 = 0;
             pCastSpellInfo[i].spell_target_pid = 0;
             pCastSpellInfo[i].uFlags = uFlags;
@@ -3260,15 +3267,24 @@ size_t PushCastSpellInfo(uint16_t uSpellID, uint16_t uPlayerID,
 }
 
 /**
+ * Remove all targeted spells from spell queue.
+ *
  * @offset 0x00427D48
  */
-void CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress() {  // reset failed/cancelled spell
+void CastSpellInfoHelpers::CancelSpellCastInProgress() {
+    bool targeted_spell_canceled = false;
+
     for (size_t i = 0; i < CastSpellInfoCount; i++) {
         if (pCastSpellInfo[i].uSpellID &&
             pCastSpellInfo[i].uFlags & ON_CAST_CastingInProgress) {
+
+            // Only one targeted spell can exist in queue.
+            assert(!targeted_spell_canceled);
+
             pCastSpellInfo[i].uSpellID = 0;
 
             if (pGUIWindow_CastTargetedSpell) {
+                // TODO: where object is deleted?
                 pGUIWindow_CastTargetedSpell->Release();
                 pGUIWindow_CastTargetedSpell = nullptr;
             }
@@ -3276,24 +3292,39 @@ void CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress() {  // reset failed/ca
             GameUI_StatusBar_Update(true);
             _50C9A0_IsEnchantingInProgress = 0;
             back_to_game();
+
+            targeted_spell_canceled = true;
         }
     }
 }
 
 /**
+ * General function that registers spell or skill implemented
+ * through spell casting mechanism to be cast/performed later.
+ *
+ * Actual casting will be performed with event queue processing.
+ *
+ * If spell is targeted then corresponding target mode is entered
+ * and actual casting will be performed after target is picked.
+ * Registered targeted spells will have one of the flags
+ * listed in ON_CAST_CastingInProgress and this flag will be removed
+ * in event queue if correct target is picked.
+ *
  * @offset 0x0042777D
  */
-void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
-                                          unsigned int uPlayerID,
-                                          PLAYER_SKILL skill_value, SpellCastFlags flags,
-                                          int a6) {
+void RegisterSpellOrSpellLikeSkill(SPELL_TYPE spell,
+                                   unsigned int uPlayerID,
+                                   PLAYER_SKILL skill_value,
+                                   SpellCastFlags flags,
+                                   int a6) {
     // if (!pParty->bTurnBasedModeOn
     //  || (result = pTurnEngine->field_4, pTurnEngine->field_4 != 1) &&
     //  pTurnEngine->field_4 != 3 )
     if (pParty->bTurnBasedModeOn) {
         if (pTurnEngine->turn_stage == TE_WAIT ||
-            pTurnEngine->turn_stage == TE_MOVEMENT)
+            pTurnEngine->turn_stage == TE_MOVEMENT) {
             return;
+        }
     }
 
     // spell_pointed_target = a5;
@@ -3343,7 +3374,10 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
             case SPELL_DARK_SHRINKING_RAY:
             case SPELL_DARK_SHARPMETAL:
             case SPELL_DARK_DRAGON_BREATH:
-                if (!a6) flags |= ON_CAST_TargetCrosshair;
+                if (!a6) {
+                    // These spells are targeted unless used from quick spell button
+                    flags |= ON_CAST_TargetCrosshair;
+                }
                 break;
             case SPELL_MIND_TELEPATHY:
             case SPELL_MIND_BERSERK:
@@ -3358,31 +3392,39 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
                 break;
 
             case SPELL_SPIRIT_BLESS:
-                if (!skill_value)
+                if (!skill_value) {
                     skill_value = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
-                if (GetSkillMastery(skill_value) >= PLAYER_SKILL_MASTERY_EXPERT)
+                }
+                if (GetSkillMastery(skill_value) >= PLAYER_SKILL_MASTERY_EXPERT) {
                     flags |= ON_CAST_WholeParty_BigImprovementAnim;
+                }
                 break;
 
             case SPELL_SPIRIT_PRESERVATION:
-                if (!skill_value)
+                if (!skill_value) {
                     skill_value = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
-                if (GetSkillMastery(skill_value) >= PLAYER_SKILL_MASTERY_MASTER)
+                }
+                if (GetSkillMastery(skill_value) >= PLAYER_SKILL_MASTERY_MASTER) {
                     flags |= ON_CAST_WholeParty_BigImprovementAnim;
+                }
                 break;
 
             case SPELL_DARK_PAIN_REFLECTION:
-                if (!skill_value)
+                if (!skill_value) {
                     skill_value = player->pActiveSkills[PLAYER_SKILL_DARK];
-                if (GetSkillMastery(skill_value) >= PLAYER_SKILL_MASTERY_MASTER)
+                }
+                if (GetSkillMastery(skill_value) >= PLAYER_SKILL_MASTERY_MASTER) {
                     flags |= ON_CAST_WholeParty_BigImprovementAnim;
+                }
                 break;
 
             case SPELL_BODY_HAMMERHANDS:
-                if (!skill_value)
+                if (!skill_value) {
                     skill_value = player->pActiveSkills[PLAYER_SKILL_BODY];
-                if (GetSkillMastery(skill_value) >= PLAYER_SKILL_MASTERY_GRANDMASTER)
+                }
+                if (GetSkillMastery(skill_value) >= PLAYER_SKILL_MASTERY_GRANDMASTER) {
                     flags |= ON_CAST_WholeParty_BigImprovementAnim;
+                }
                 break;
 
             case SPELL_EARTH_STONE_TO_FLESH:
@@ -3407,22 +3449,34 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
         }
     }
 
+    // Any active targeted spell will be canceled in CancelSpellCastInProgress function.
+    // But if we set uSpellID for current targeted spell to zero, that function will not release
+    // pGUIWindow_CastTargetedSpell object, which can result in memory leak.
+#if 0
     // clear previous casts
     if (flags & ON_CAST_CastingInProgress) {
-        for (uint i = 0; i < CastSpellInfoCount; ++i)
+        for (uint i = 0; i < CastSpellInfoCount; ++i) {
             if (pCastSpellInfo[i].uFlags & ON_CAST_CastingInProgress) {
                 pCastSpellInfo[i].uSpellID = 0;
                 break;
             }
+        }
     }
+#endif
 
-    CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress();
+    CastSpellInfoHelpers::CancelSpellCastInProgress();
 
     int result = PushCastSpellInfo(spell, uPlayerID, skill_value, flags, a6);
+
+    // TODO: if no more place for spells in queue then spell is just ignored?
+    //       Need assert?
     if (result != -1) {
         Sizei renDims = render->GetRenderDimensions();
         if (flags & ON_CAST_WholeParty_BigImprovementAnim) {
-            if (pGUIWindow_CastTargetedSpell) return;
+            if (pGUIWindow_CastTargetedSpell) {
+                return;
+            }
+
             pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell({0, 0}, renDims, &pCastSpellInfo[result]);
             pGUIWindow_CastTargetedSpell->CreateButton({52, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_Character_Big_Improvement, 0, InputAction::SelectChar1);
             pGUIWindow_CastTargetedSpell->CreateButton({165, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_Character_Big_Improvement, 1, InputAction::SelectChar2);
@@ -3432,7 +3486,9 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
             return;
         }
         if (flags & ON_CAST_TargetCrosshair) {
-            if (pGUIWindow_CastTargetedSpell) return;
+            if (pGUIWindow_CastTargetedSpell) {
+                return;
+            }
 
             pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell({0, 0}, renDims, &pCastSpellInfo[result]);
             pGUIWindow_CastTargetedSpell->CreateButton({game_viewport_x, game_viewport_y}, {game_viewport_width, game_viewport_height}, 1, 0,
@@ -3441,7 +3497,9 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
             return;
         }
         if (flags & ON_CAST_Telekenesis) {
-            if (pGUIWindow_CastTargetedSpell) return;
+            if (pGUIWindow_CastTargetedSpell) {
+                return;
+            }
 
             pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell({0, 0}, renDims, &pCastSpellInfo[result]);
             pGUIWindow_CastTargetedSpell->CreateButton({game_viewport_x, game_viewport_y}, {game_viewport_width, game_viewport_height}, 1, 0,
@@ -3450,7 +3508,9 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
             return;
         }
         if (flags & ON_CAST_Enchantment) {
-            if (pGUIWindow_CastTargetedSpell) return;
+            if (pGUIWindow_CastTargetedSpell) {
+                return;
+            }
 
             pGUIWindow_CastTargetedSpell = pCastSpellInfo[result].GetCastSpellInInventoryWindow();
             _50C9A0_IsEnchantingInProgress = 1;
@@ -3459,7 +3519,10 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
             return;
         }
         if (flags & ON_CAST_MonsterSparkles) {
-            if (pGUIWindow_CastTargetedSpell) return;
+            if (pGUIWindow_CastTargetedSpell) {
+                return;
+            }
+
             pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell({0, 0}, renDims, &pCastSpellInfo[result]);
             pGUIWindow_CastTargetedSpell->CreateButton({0x34u, 0x1A6u}, {0x23u, 0}, 2, 0, UIMSG_CastSpell_Character_Small_Improvement, 0, InputAction::SelectChar1);
             pGUIWindow_CastTargetedSpell->CreateButton({0xA5u, 0x1A6u}, {0x23u, 0}, 2, 0, UIMSG_CastSpell_Character_Small_Improvement, 1, InputAction::SelectChar2);
@@ -3468,7 +3531,11 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
             pGUIWindow_CastTargetedSpell->CreateButton({8, 8}, {game_viewport_width, game_viewport_height}, 1, 0, UIMSG_CastSpell_Monster_Improvement, 0);
             pParty->PickedItem_PlaceInInventory_or_Drop();
         }
-        if (flags & ON_CAST_DarkSacrifice && !pGUIWindow_CastTargetedSpell) {
+        if (flags & ON_CAST_DarkSacrifice) {
+            if (pGUIWindow_CastTargetedSpell) {
+                return;
+            }
+
             pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell({0, 0}, renDims, &pCastSpellInfo[result]);
             pBtn_NPCLeft = pGUIWindow_CastTargetedSpell->CreateButton({469, 178}, {ui_btn_npc_left->GetWidth(), ui_btn_npc_left->GetHeight()}, 1, 0,
                 UIMSG_ScrollNPCPanel, 0, InputAction::Invalid, "", {ui_btn_npc_left});
@@ -3478,4 +3545,29 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
             pGUIWindow_CastTargetedSpell->CreateButton({561, 149}, {64, 74}, 1, 0, UIMSG_HiredNPC_CastSpell, 5, InputAction::SelectNPC2);
         }
     }
+}
+
+/**
+ * Register spell cast on party with temple donation.
+ * Temple spells are cast with MASTER mastery of skill level equal to the day of week.
+ */
+void RegisterTempleSpell(SPELL_TYPE spell) {
+    PLAYER_SKILL skill_value = ConstructSkillValue(PLAYER_SKILL_MASTERY_MASTER, pParty->uCurrentDayOfMonth % 7 + 1);
+
+    RegisterSpellOrSpellLikeSkill(spell, uActiveCharacter - 1, skill_value,
+                                  ON_CAST_TargetIsParty | ON_CAST_NoRecoverySpell, 0);
+}
+
+/**
+ * Register spell cast by NPC companions.
+ */
+void RegisterNPCSpell(SPELL_TYPE spell) {
+    RegisterSpellOrSpellLikeSkill(spell, 0, SCROLL_OR_NPC_SPELL_SKILL_VALUE, 0, 0);
+}
+
+/**
+ * Register spell cast through scroll.
+ */
+void RegisterScrollSpell(SPELL_TYPE spell, unsigned int uPlayerID) {
+    RegisterSpellOrSpellLikeSkill(spell, uPlayerID, SCROLL_OR_NPC_SPELL_SKILL_VALUE, ON_CAST_CastViaScroll, 0);
 }

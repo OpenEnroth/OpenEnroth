@@ -11,8 +11,8 @@
 #include "Spells.h"
 
 namespace CastSpellInfoHelpers {
-void Cancel_Spell_Cast_In_Progress();
-void CastSpell();
+    void CancelSpellCastInProgress();
+    void CastSpell();
 };  // namespace CastSpellInfoHelpers
 
 class GUIWindow;
@@ -21,7 +21,7 @@ class GUIWindow;
 enum class SpellCastFlag : uint16_t {
     ON_CAST_CastViaScroll = 0x0001,
     ON_CAST_WholeParty_BigImprovementAnim = 0x0002,
-    ON_CAST_0x0004 = 0x0004,
+    // 0x0004 unused
     ON_CAST_TargetCrosshair = 0x0008,
     ON_CAST_TargetIsParty = 0x0010,
     ON_CAST_NoRecoverySpell = 0x0020,
@@ -29,14 +29,18 @@ enum class SpellCastFlag : uint16_t {
     ON_CAST_Enchantment = 0x0080,
     ON_CAST_MonsterSparkles = 0x0100,
     ON_CAST_DarkSacrifice = 0x0200,
+
     ON_CAST_CastingInProgress =
         ON_CAST_WholeParty_BigImprovementAnim | ON_CAST_TargetCrosshair |
         ON_CAST_Telekenesis | ON_CAST_Enchantment | ON_CAST_MonsterSparkles |
-        ON_CAST_DarkSacrifice,
+        ON_CAST_DarkSacrifice
 };
 using enum SpellCastFlag;
 MM_DECLARE_FLAGS(SpellCastFlags, SpellCastFlag)
 MM_DECLARE_OPERATORS_FOR_FLAGS(SpellCastFlags)
+
+// Scrolls or NPC spells casted with MASTER mastery of skill level 5
+static const PLAYER_SKILL SCROLL_OR_NPC_SPELL_SKILL_VALUE = ConstructSkillValue(PLAYER_SKILL_MASTERY_MASTER, 5);
 
 /*  271 */
 #pragma pack(push, 1)
@@ -58,7 +62,12 @@ struct CastSpellInfo {
 };
 #pragma pack(pop)
 
-void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
-                                          unsigned int uPlayerID,
-                                          PLAYER_SKILL skill_value, SpellCastFlags flags,
-                                          int a6);
+void RegisterSpellOrSpellLikeSkill(SPELL_TYPE spell,
+                                   unsigned int uPlayerID,
+                                   PLAYER_SKILL skill_value,
+                                   SpellCastFlags flags,
+                                   int a6);
+
+void RegisterTempleSpell(SPELL_TYPE spell);
+void RegisterNPCSpell(SPELL_TYPE spell);
+void RegisterScrollSpell(SPELL_TYPE spell, unsigned int uPlayerID);
