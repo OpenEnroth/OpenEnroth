@@ -17,7 +17,7 @@ Join our discord channel to discuss, track progress or get involved in the devel
 Getting Started
 ---------------
 **1. You will require a GoG or any older version of Might and Magic 7**
-<details><summary>details</summary>
+<details><summary>&ensp;&ensp;details</summary>
 
 * The game on GOG is provided only for windows. Game itself works fine also with linux and winr, but GOG installer (few Kb) wrapper may not
 * To workaround it, you can download the full game offline installer (~600MB)
@@ -26,7 +26,7 @@ Getting Started
 </details>
 
 **2. Build as described: [HACKING.md](HACKING.md#dependencies)**
-<details><summary>verify</summary>
+<details><summary>&ensp;&ensp;verify</summary>
 
 ```
     ...
@@ -44,7 +44,7 @@ Getting Started
 
 **3. Mandatory copy OpenEnroth-specific resources from the 'resources' folder of the repo to the game assets folder.**
   * `cp -rv  resources/shaders ~/.wine/drive_c/GOG\ Games/Might\ and\ Magic\ 7`
-<details><summary>verify</summary>
+<details><summary>&ensp;&ensp;verify</summary>
 
 ```
      # ls -l ~/.wine/drive_c/GOG\ Games/Might\ and\ Magic\ 7 | grep shaders -A1 -B1
