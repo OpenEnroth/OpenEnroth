@@ -53,7 +53,7 @@ static void InitSpellSprite(SpriteObject *spritePtr,
                             PLAYER_SKILL_MASTERY spellMastery,
                             CastSpellInfo *pCastSpell) {
     assert(spritePtr && spritePtr->uType != SPRITE_NULL);
-    assert(pCastSpell->uSpellID != 0);
+    assert(pCastSpell->uSpellID != SPELL_0);
 
     spritePtr->containing_item.Reset();
     spritePtr->spell_level = spellLevel;
@@ -73,7 +73,7 @@ static void SpellFailed(CastSpellInfo *pCastSpell,
                         int error_str_id) {
     GameUI_SetStatusBar(error_str_id);
     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-    pCastSpell->uSpellID = 0;
+    pCastSpell->uSpellID = SPELL_0;
 }
 
 /**
@@ -108,7 +108,7 @@ void CastSpellInfoHelpers::CastSpell() {
 
     for (int n = 0; n < CastSpellInfoCount; ++n) {  // cycle through spell queue
         pCastSpell = &pCastSpellInfo[n];
-        if (pCastSpell->uSpellID == 0) {
+        if (pCastSpell->uSpellID == SPELL_0) {
             continue;  // spell item blank skip to next
         }
 
@@ -150,7 +150,8 @@ void CastSpellInfoHelpers::CastSpell() {
             }
         }
 
-        pSpellSprite.uType = SpellSpriteMapping[pCastSpell->uSpellID];
+        // TODO: uSpellID must be SPELL_TYPE but it changes CastSpellInfo structure size
+        pSpellSprite.uType = SpellSpriteMapping[(SPELL_TYPE)pCastSpell->uSpellID];
 
         if (pSpellSprite.uType != SPRITE_NULL) {
             if (PID_TYPE(spell_targeted_at) == OBJECT_Actor) {
@@ -226,7 +227,7 @@ void CastSpellInfoHelpers::CastSpell() {
 
         if (pCastSpell->uSpellID < SPELL_BOW_ARROW && pPlayer->sMana < uRequiredMana) {
             GameUI_SetStatusBar(LSTR_NOT_ENOUGH_SPELLPOINTS);
-            pCastSpell->uSpellID = 0;
+            pCastSpell->uSpellID = SPELL_0;
             continue;
         }
 
@@ -317,7 +318,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 spell_sound_flag = true;
             } else {
                 pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                pCastSpell->uSpellID = 0;
+                pCastSpell->uSpellID = SPELL_0;
                 continue;
             }
         } else if (pCastSpell->uSpellID == SPELL_WATER_LLOYDS_BEACON) {
@@ -337,7 +338,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_OnCastLloydsBeacon, 0, 0);
             } else {
                 pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                pCastSpell->uSpellID = 0;
+                pCastSpell->uSpellID = SPELL_0;
                 continue;
             }
         } else {
@@ -347,7 +348,7 @@ void CastSpellInfoHelpers::CastSpell() {
             if (!pPlayer->CanCastSpell(uRequiredMana)) {
                 // Not enough mana for current spell, check the next one
                 pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                pCastSpell->uSpellID = 0;
+                pCastSpell->uSpellID = SPELL_0;
                 continue;
             }
 
@@ -900,7 +901,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         // spell is targeted wrong
                         // TODO: revisit, maybe we want to properly play sound and display a message here?
                         pPlayer->SpendMana(uRequiredMana);
-                        pCastSpell->uSpellID = 0;
+                        pCastSpell->uSpellID = SPELL_0;
                         continue;
                     }
                     break;
@@ -983,7 +984,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 case SPELL_FIRE_METEOR_SHOWER:
                 {
                     if (spell_mastery < PLAYER_SKILL_MASTERY_MASTER) {
-                        pCastSpell->uSpellID = 0;
+                        pCastSpell->uSpellID = SPELL_0;
                         continue;
                     }
 
@@ -3198,7 +3199,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     break;
                 }
                 default:
-                    pCastSpell->uSpellID = 0;
+                    pCastSpell->uSpellID = SPELL_0;
                     continue;
             }
 
@@ -3232,19 +3233,19 @@ void CastSpellInfoHelpers::CastSpell() {
             pAudioPlayer->PlaySpellSound(pCastSpell->uSpellID, PID_INVALID);
         }
 
-        pCastSpell->uSpellID = 0;
+        pCastSpell->uSpellID = SPELL_0;
     }
 }
 
 /**
  * @offset 0x00427DA0
  */
-size_t PushCastSpellInfo(uint16_t uSpellID, uint16_t uPlayerID,
+size_t PushCastSpellInfo(SPELL_TYPE uSpellID, uint16_t uPlayerID,
                          int16_t skill_level, SpellCastFlags uFlags,
                          int spell_sound_id) {
     // uFlags: ON_CAST_*
     for (size_t i = 0; i < CastSpellInfoCount; i++) {
-        if (!pCastSpellInfo[i].uSpellID) {
+        if (pCastSpellInfo[i].uSpellID == SPELL_0) {
             pCastSpellInfo[i].uSpellID = uSpellID;
             pCastSpellInfo[i].uPlayerID = uPlayerID;
             if (uFlags & ON_CAST_TargetIsParty) pCastSpellInfo[i].uPlayerID_2 = uPlayerID;
@@ -3264,9 +3265,9 @@ size_t PushCastSpellInfo(uint16_t uSpellID, uint16_t uPlayerID,
  */
 void CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress() {  // reset failed/cancelled spell
     for (size_t i = 0; i < CastSpellInfoCount; i++) {
-        if (pCastSpellInfo[i].uSpellID &&
+        if (pCastSpellInfo[i].uSpellID != SPELL_0 &&
             pCastSpellInfo[i].uFlags & ON_CAST_CastingInProgress) {
-            pCastSpellInfo[i].uSpellID = 0;
+            pCastSpellInfo[i].uSpellID = SPELL_0;
 
             if (pGUIWindow_CastTargetedSpell) {
                 pGUIWindow_CastTargetedSpell->Release();
@@ -3411,7 +3412,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
     if (flags & ON_CAST_CastingInProgress) {
         for (uint i = 0; i < CastSpellInfoCount; ++i)
             if (pCastSpellInfo[i].uFlags & ON_CAST_CastingInProgress) {
-                pCastSpellInfo[i].uSpellID = 0;
+                pCastSpellInfo[i].uSpellID = SPELL_0;
                 break;
             }
     }

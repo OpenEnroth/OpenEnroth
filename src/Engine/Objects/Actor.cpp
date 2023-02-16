@@ -269,7 +269,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         case SPELL_LIGHT_LIGHT_BOLT:
         case SPELL_DARK_TOXIC_CLOUD:
         case SPELL_DARK_DRAGON_BREATH:
-            a1.uType = SpellSpriteMapping[uSpellID];
+            a1.uType = SpellSpriteMapping[(SPELL_TYPE)uSpellID];
             a1.uObjectDescID = GetObjDescId(uSpellID);
             a1.containing_item.Reset();
             a1.spell_id = uSpellID;
@@ -352,7 +352,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     pitch = TrigLUT.Atan2(v31, (int)spellnumc);
                 }
                 a1.containing_item.Reset();
-                a1.uType = SpellSpriteMapping[uSpellID];
+                a1.uType = SpellSpriteMapping[(SPELL_TYPE)uSpellID];
                 a1.uObjectDescID = GetObjDescId(uSpellID);
                 a1.spell_level = uSkillMastery;
                 a1.vPosition.x = pParty->vPosition.x;
@@ -402,7 +402,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             else
                 v10 = 3;
             spellnuma = (signed int)(60 * TrigLUT.uIntegerDoublePi) / 360;
-            a1.uType = SpellSpriteMapping[uSpellID];
+            a1.uType = SpellSpriteMapping[(SPELL_TYPE)uSpellID];
             v118 = (signed int)(60 * TrigLUT.uIntegerDoublePi) / 360 /
                    (v10 - 1);
             a1.uObjectDescID = GetObjDescId(uSpellID);
@@ -637,7 +637,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 v70 = 3;
 
             spellnume = (signed int)(60 * TrigLUT.uIntegerDoublePi) / 360;
-            a1.uType = SpellSpriteMapping[uSpellID];
+            a1.uType = SpellSpriteMapping[(SPELL_TYPE)uSpellID];
             v116 = (signed int)(60 * TrigLUT.uIntegerDoublePi) / 360 /
                    (v70 - 1);
             a1.uObjectDescID = GetObjDescId(uSpellID);
@@ -699,7 +699,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 }
 
 unsigned short Actor::GetObjDescId(int spellId) {
-    return pObjectList->ObjectIDByItemID(SpellSpriteMapping[spellId]);  // crash here
+    return pObjectList->ObjectIDByItemID(SpellSpriteMapping[(SPELL_TYPE)spellId]);  // crash here
 }
 
 bool Actor::ArePeasantsOfSameFaction(Actor *a1, Actor *a2) {
