@@ -1861,12 +1861,13 @@ void CastSpellInfoHelpers::CastSpell() {
                 {
                     GameTime spell_duration;
 
-                    // TODO: durations are looking wrong
-                    // according to this: https://mightandmagic.fandom.com/wiki/Spirit_Magic_(MM7)/Spells
                     switch (spell_mastery) {
                         case PLAYER_SKILL_MASTERY_NOVICE:
-                        case PLAYER_SKILL_MASTERY_EXPERT:
                             spell_duration = GameTime::FromMinutes(3 + 1 * spell_level);
+                            break;
+                        case PLAYER_SKILL_MASTERY_EXPERT:
+                            // Was "3m + 1m * spell_level"
+                            spell_duration = GameTime::FromMinutes(3 + 3 * spell_level);
                             break;
                         case PLAYER_SKILL_MASTERY_MASTER:
                         case PLAYER_SKILL_MASTERY_GRANDMASTER:
@@ -2009,10 +2010,12 @@ void CastSpellInfoHelpers::CastSpell() {
                         case PLAYER_SKILL_MASTERY_NOVICE: // MM6 only
                             spell_duration = GameTime::FromMinutes(3 * spell_level);
                             break;
-                        case PLAYER_SKILL_MASTERY_EXPERT:
+                        case PLAYER_SKILL_MASTERY_EXPERT: // MM6 only
+                            // Was 3 hours per spell level
                             spell_duration = GameTime::FromHours(spell_level);
                             break;
-                        case PLAYER_SKILL_MASTERY_MASTER:
+                        case PLAYER_SKILL_MASTERY_MASTER: // MM6 only
+                            // Was 3 days per spell level
                             spell_duration = GameTime::FromDays(spell_level);
                             break;
                         case PLAYER_SKILL_MASTERY_GRANDMASTER:
@@ -2820,28 +2823,38 @@ void CastSpellInfoHelpers::CastSpell() {
                     pParty->pPartyBuffs[PARTY_BUFF_RESIST_EARTH].Apply(
                             pParty->GetPlayingTime() + spell_duration,
                             spell_mastery, amount, 0, 0);
+                    // Spell power for Feather fall and Wizard eye was "spell_level + 5"
                     pParty->pPartyBuffs[PARTY_BUFF_FEATHER_FALL].Apply(
                             pParty->GetPlayingTime() + spell_duration,
-                            spell_mastery, spell_level + 5, 0, 0);
+                            spell_mastery, 0, 0, 0);
                     pParty->pPartyBuffs[PARTY_BUFF_WIZARD_EYE].Apply(
                             pParty->GetPlayingTime() + spell_duration,
-                            spell_mastery, spell_level + 5, 0, 0);
+                            spell_mastery, 0, 0, 0);
                     break;
                 }
 
                 case SPELL_LIGHT_HOUR_OF_POWER:
                 {
+                    // Spell power for buff was "spell_level + 5", not "spell_level * 5"
                     GameTime haste_duration, other_duration;
+                    PLAYER_SKILL_LEVEL target_skill_level;
 
                     switch (spell_mastery) {
                         case PLAYER_SKILL_MASTERY_MASTER:
-                            haste_duration = GameTime::FromHours(1).AddMinutes(3 * spell_level * 5);
-                            other_duration = GameTime::FromHours(1).AddMinutes(15 * spell_level * 5);
+                            // Was "1h * spell_level + 1m" for other buffs
+                            haste_duration = GameTime::FromHours(1).AddMinutes(3 * spell_level * 4);
+                            other_duration = GameTime::FromHours(1).AddMinutes(15 * spell_level * 4);
+                            target_skill_level = spell_level * 4;
                             break;
                         case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                            // Was "75m * spell_level + 1m" for other buffs
                             haste_duration = GameTime::FromHours(1).AddMinutes(4 * spell_level * 5);
                             other_duration = GameTime::FromHours(1 + spell_level * 5);
+                            target_skill_level = spell_level * 5;
                             break;
+                        // Novice and master durations was
+                        // "1h + 4m * spell_level" for haste
+                        // "1m + 20min * spell_level" for other buffs
                         case PLAYER_SKILL_MASTERY_NOVICE:
                         case PLAYER_SKILL_MASTERY_EXPERT:
                         default:
@@ -2856,21 +2869,21 @@ void CastSpellInfoHelpers::CastSpell() {
                         pParty->pPlayers[pl_id]
                             .pPlayerBuffs[PLAYER_BUFF_BLESS]
                             .Apply(pParty->GetPlayingTime() + other_duration,
-                                   spell_mastery, spell_level + 5, 0, 0);
+                                   spell_mastery, target_skill_level, 0, 0);
                         if (pParty->pPlayers[pl_id].conditions.Has(Condition_Weak)) {
                             player_weak = true;
                         }
                     }
 
                     pParty->pPartyBuffs[PARTY_BUFF_HEROISM].Apply(pParty->GetPlayingTime() + other_duration,
-                                                                  spell_mastery, spell_level + 5, 0, 0);
+                                                                  spell_mastery, target_skill_level, 0, 0);
                     pParty->pPartyBuffs[PARTY_BUFF_SHIELD].Apply(pParty->GetPlayingTime() + other_duration,
                                                                  spell_mastery, 0, 0, 0);
                     pParty->pPartyBuffs[PARTY_BUFF_STONE_SKIN].Apply(pParty->GetPlayingTime() + other_duration,
-                                                                     spell_mastery, spell_level + 5, 0, 0);
+                                                                     spell_mastery, target_skill_level, 0, 0);
                     if (!player_weak) {
                         pParty->pPartyBuffs[PARTY_BUFF_HASTE].Apply(pParty->GetPlayingTime() + haste_duration,
-                                                                    spell_mastery, spell_level + 5, 0, 0);
+                                                                    spell_mastery, target_skill_level, 0, 0);
                     }
                     break;
                 }
