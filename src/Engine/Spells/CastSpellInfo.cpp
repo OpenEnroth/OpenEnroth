@@ -3361,28 +3361,28 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
                 if (!skill_value)
                     skill_value = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
                 if (GetSkillMastery(skill_value) < PLAYER_SKILL_MASTERY_EXPERT)
-                    flags |= ON_CAST_WholeParty_BigImprovementAnim;
+                    flags |= ON_CAST_SinglePlayer_BigImprovementAnim;
                 break;
 
             case SPELL_SPIRIT_PRESERVATION:
                 if (!skill_value)
                     skill_value = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
                 if (GetSkillMastery(skill_value) < PLAYER_SKILL_MASTERY_MASTER)
-                    flags |= ON_CAST_WholeParty_BigImprovementAnim;
+                    flags |= ON_CAST_SinglePlayer_BigImprovementAnim;
                 break;
 
             case SPELL_DARK_PAIN_REFLECTION:
                 if (!skill_value)
                     skill_value = player->pActiveSkills[PLAYER_SKILL_DARK];
                 if (GetSkillMastery(skill_value) < PLAYER_SKILL_MASTERY_MASTER)
-                    flags |= ON_CAST_WholeParty_BigImprovementAnim;
+                    flags |= ON_CAST_SinglePlayer_BigImprovementAnim;
                 break;
 
             case SPELL_BODY_HAMMERHANDS:
                 if (!skill_value)
                     skill_value = player->pActiveSkills[PLAYER_SKILL_BODY];
                 if (GetSkillMastery(skill_value) < PLAYER_SKILL_MASTERY_GRANDMASTER)
-                    flags |= ON_CAST_WholeParty_BigImprovementAnim;
+                    flags |= ON_CAST_SinglePlayer_BigImprovementAnim;
                 break;
 
             case SPELL_EARTH_STONE_TO_FLESH:
@@ -3396,7 +3396,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
             case SPELL_BODY_REGENERATION:
             case SPELL_BODY_CURE_POISON:
             case SPELL_BODY_CURE_DISEASE:
-                flags |= ON_CAST_WholeParty_BigImprovementAnim;
+                flags |= ON_CAST_SinglePlayer_BigImprovementAnim;
                 break;
 
             case SPELL_DARK_SACRIFICE:
@@ -3421,7 +3421,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
     int result = PushCastSpellInfo(spell, uPlayerID, skill_value, flags, a6);
     if (result != -1) {
         Sizei renDims = render->GetRenderDimensions();
-        if (flags & ON_CAST_WholeParty_BigImprovementAnim) {
+        if (flags & ON_CAST_SinglePlayer_BigImprovementAnim) {
             if (pGUIWindow_CastTargetedSpell) return;
             pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell({0, 0}, renDims, &pCastSpellInfo[result]);
             pGUIWindow_CastTargetedSpell->CreateButton({52, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_Character_Big_Improvement, 0, InputAction::SelectChar1);

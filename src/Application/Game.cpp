@@ -1273,7 +1273,7 @@ void Game::EventLoop() {
                             pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
                             switch (uMessage) {
                                 case UIMSG_CastSpell_Character_Big_Improvement:
-                                    pSpellInfo->uFlags &= ~ON_CAST_WholeParty_BigImprovementAnim;
+                                    pSpellInfo->uFlags &= ~ON_CAST_SinglePlayer_BigImprovementAnim;
                                     break;
                                 case UIMSG_CastSpell_Character_Small_Improvement:
                                     pSpellInfo->uFlags &= ~ON_CAST_MonsterSparkles;
