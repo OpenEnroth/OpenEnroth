@@ -13,7 +13,7 @@ Main dependencies:
 On Windows, the above dependencies are resolved automatically during the cmake phase.<br>
 On linux they are usually part of dsitribution and you only need to install the development versions of SDL2, ffmpeg, openal and zlib libraries.
 <details>
-  <summary>eg on Fedora:</summary>
+  <summary>&ensp;&ensp;eg on Fedora:</summary>
  
   ```bash
   sudo dnf install ffmpeg ffmpeg-devel
