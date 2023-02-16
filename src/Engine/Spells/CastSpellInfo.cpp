@@ -3543,6 +3543,8 @@ void RegisterSpellOrSpellLikeSkill(SPELL_TYPE spell,
                 UIMSG_ScrollNPCPanel, 1, InputAction::Invalid, "", {ui_btn_npc_right});
             pGUIWindow_CastTargetedSpell->CreateButton({491, 149}, {64, 74}, 1, 0, UIMSG_HiredNPC_CastSpell, 4, InputAction::SelectNPC1);
             pGUIWindow_CastTargetedSpell->CreateButton({561, 149}, {64, 74}, 1, 0, UIMSG_HiredNPC_CastSpell, 5, InputAction::SelectNPC2);
+            // Next line was added to do something with picked item on Sacrifice cast
+            pParty->PickedItem_PlaceInInventory_or_Drop();
         }
     }
 }
