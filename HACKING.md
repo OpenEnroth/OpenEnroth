@@ -10,7 +10,18 @@ Main dependencies:
 * [OpenAL](https://www.openal.org/downloads/OpenAL11CoreSDK.zip) — audio support;
 * [Zlib](http://gnuwin32.sourceforge.net/packages/zlib.htm) — compression.
 
-On Windows, the above dependencies are resolved automatically during the cmake phase.
+On Windows, the above dependencies are resolved automatically during the cmake phase.<br>
+On linux they are usually part of dsitribution and you only need to install the development versions of SDL2, ffmpeg, openal and zlib libraries.
+<details>
+  <summary>eg on Fedora:</summary>
+ 
+  ```bash
+  sudo dnf install ffmpeg ffmpeg-devel
+  sudo dnf install openal openal-devel
+  sudo dnf install zlib zlib-devel
+  sudo dnf install SDL2 SDL2-devel
+  ```
+</details>
 
 Additional dependencies:
 * CMake 3.20.4+ (3.20.21032501-MSVC_2 from VS2019 won't work)
