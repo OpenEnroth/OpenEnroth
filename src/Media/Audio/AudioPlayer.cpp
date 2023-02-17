@@ -281,7 +281,7 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
         si.sample->Play();
     } else if (pid < 0) {  // exclusive sounds - no override (close chest)
         si.sample->Play();
-    } else if (pid == PID_INVALID) { // initial spell sound, originates from party so must be positionet there
+    } else if (pid == PID_INVALID) { // initial spell sound, originates from party so must be positioned there
         provider->SetListenerPosition(pParty->vPosition.x / 50.f,
                                       pParty->vPosition.y / 50.f,
                                       pParty->vPosition.z / 50.f);
