@@ -281,6 +281,14 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
         si.sample->Play();
     } else if (pid < 0) {  // exclusive sounds - no override (close chest)
         si.sample->Play();
+    } else if (pid == PID_INVALID) { // initial spell sound, originates from party so must be positionet there
+        provider->SetListenerPosition(pParty->vPosition.x / 50.f,
+                                      pParty->vPosition.y / 50.f,
+                                      pParty->vPosition.z / 50.f);
+        si.sample->SetPosition(pParty->vPosition.x / 50.f,
+                               pParty->vPosition.y / 50.f,
+                               pParty->vPosition.z / 50.f, 500.f);
+        si.sample->Play(false, true);
     } else {
         ObjectType object_type = PID_TYPE(pid);
         unsigned int object_id = PID_ID(pid);
@@ -353,11 +361,6 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
                 si.sample->Play();
 
                 break;
-            }
-            case OBJECT_Spell: {
-                assert(object_id < pSpellDatas.size());
-                // Initial spell cast is originated from party so it must not be positional
-                si.sample->Play(false, false);
             }
 
             default: {
