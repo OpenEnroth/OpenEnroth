@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f835487</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;1c1a8d3</span>
    </div>
   </td>
  </tr>
@@ -162,6 +162,7 @@ Coding style</h1>
 <h1><a class="anchor" id="autotoc_md7"></a>
 Testing</h1>
 <p >We strive for a good test coverage of the project, and while we're not there yet, the current policy is to add tests for all the bugs we fix, as long as the fix is testable. E.g. graphical glitches are generally very hard to test, but we have the infractructure to test game logic and small isolated classes.</p>
+<p >Tests are not built by default, and you will need to set <code>ENABLE_TESTS</code> cmake variable to be able to build them. You can either use your IDE for that, or just run <code>cmake</code> with <code>-DENABLE_TESTS=ON</code> from the command line.</p>
 <p >Tests in OpenEnroth fall into two categories:</p><ul>
 <li>Unit tests. These are a standard breed of tests, written using Google Test. You can see some examples in <code>src/Utility/Tests</code>.</li>
 <li>Game tests. If you're familiar with how testing is done these days for complex mobile apps, then you can consider game tests a variation of UI tests that's specific to our project. Game tests need game assets to run, and are currently <b>not</b> run in github actions.</li>
@@ -179,6 +180,7 @@ Testing</h1>
 </ul>
 <p >To run all unit tests locally, build a <code>UnitTest</code> cmake target, or build &amp; run <code>OpenEnroth_UnitTest</code>.</p>
 <p >To run all game tests locally, set <code>OPENENROTH_MM7_PATH</code> environment variable to point to the location of the game assets, then build <code><a class="el" href="classGameTest.html">GameTest</a></code> cmake target. Alternatively, you can build <code>OpenEnroth_GameTest</code>, and run it manually, passing the paths to both game assets and the test data via command line.</p>
+<p >Note that if you can't find either <code>UnitTest</code> or <code><a class="el" href="classGameTest.html">GameTest</a></code> target in the target list of your IDE, this likely means that you haven't set the <code>ENABLE_TESTS</code> cmake variable as described above.</p>
 <h1><a class="anchor" id="autotoc_md8"></a>
 Additional Resources</h1>
 <p >Old event decompiler and IDB files can be found <a href="https://www.dropbox.com/sh/if4u3lphn633oit/AADUYMxNcrkAU6epJ50RskyXa?dl=0">here</a>. Feel free to ping <code>zipi#6029</code> for more info. </p>
