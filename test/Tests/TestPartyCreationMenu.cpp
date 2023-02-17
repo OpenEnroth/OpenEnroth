@@ -106,3 +106,49 @@ GAME_TEST(Issues, Issue408) {
     // we should be teleported to harmondale
     EXPECT_EQ(pCurrentMapName, "out02.odm");
 }
+
+GAME_TEST(Issues, Issue427a) {
+    // Test that some of buff spells that start to affect whole party starting from certain mastery work correctly
+    // In this test mastery is not enough for the whole party
+    test->playTraceFromTestData("issue_427a.mm7", "issue_427a.json", [&] {});
+    // Check that only one character have buffs
+    EXPECT_EQ(pParty->pPlayers[0].pPlayerBuffs[PLAYER_BUFF_BLESS].Active(), true);
+    EXPECT_EQ(pParty->pPlayers[0].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active(), true);
+    EXPECT_EQ(pParty->pPlayers[0].pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active(), true);
+    EXPECT_EQ(pParty->pPlayers[0].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active(), true);
+    EXPECT_EQ(pParty->pPlayers[1].pPlayerBuffs[PLAYER_BUFF_BLESS].Active(), false);
+    EXPECT_EQ(pParty->pPlayers[1].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active(), false);
+    EXPECT_EQ(pParty->pPlayers[1].pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active(), false);
+    EXPECT_EQ(pParty->pPlayers[1].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active(), false);
+    EXPECT_EQ(pParty->pPlayers[2].pPlayerBuffs[PLAYER_BUFF_BLESS].Active(), false);
+    EXPECT_EQ(pParty->pPlayers[2].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active(), false);
+    EXPECT_EQ(pParty->pPlayers[2].pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active(), false);
+    EXPECT_EQ(pParty->pPlayers[2].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active(), false);
+    EXPECT_EQ(pParty->pPlayers[3].pPlayerBuffs[PLAYER_BUFF_BLESS].Active(), false);
+    EXPECT_EQ(pParty->pPlayers[3].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active(), false);
+    EXPECT_EQ(pParty->pPlayers[3].pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active(), false);
+    EXPECT_EQ(pParty->pPlayers[3].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active(), false);
+}
+
+GAME_TEST(Issues, Issue427b) {
+    // Test that some of buff spells that start to affect whole party starting from certain mastery work correctly
+    // In this test mastery is enough for the whole party
+    test->playTraceFromTestData("issue_427b.mm7", "issue_427b.json", [&] {});
+    // Check that all character have buffs
+    EXPECT_EQ(pParty->pPlayers[0].pPlayerBuffs[PLAYER_BUFF_BLESS].Active(), true);
+    EXPECT_EQ(pParty->pPlayers[0].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active(), true);
+    EXPECT_EQ(pParty->pPlayers[0].pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active(), true);
+    EXPECT_EQ(pParty->pPlayers[0].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active(), true);
+    EXPECT_EQ(pParty->pPlayers[1].pPlayerBuffs[PLAYER_BUFF_BLESS].Active(), true);
+    EXPECT_EQ(pParty->pPlayers[1].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active(), true);
+    EXPECT_EQ(pParty->pPlayers[1].pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active(), true);
+    EXPECT_EQ(pParty->pPlayers[1].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active(), true);
+    EXPECT_EQ(pParty->pPlayers[2].pPlayerBuffs[PLAYER_BUFF_BLESS].Active(), true);
+    EXPECT_EQ(pParty->pPlayers[2].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active(), true);
+    EXPECT_EQ(pParty->pPlayers[2].pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active(), true);
+    EXPECT_EQ(pParty->pPlayers[2].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active(), true);
+    EXPECT_EQ(pParty->pPlayers[3].pPlayerBuffs[PLAYER_BUFF_BLESS].Active(), true);
+    EXPECT_EQ(pParty->pPlayers[3].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active(), true);
+    EXPECT_EQ(pParty->pPlayers[3].pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active(), true);
+    EXPECT_EQ(pParty->pPlayers[3].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active(), true);
+}
