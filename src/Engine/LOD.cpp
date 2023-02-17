@@ -110,29 +110,16 @@ int LODFile_Sprites::LoadSpriteFromFile(LODSprite *pSprite, const std::string &p
     LODSpriteLine *pSpriteLines = new LODSpriteLine[pSprite->uHeight];
     fread(pSpriteLines, sizeof(LODSpriteLine), pSprite->uHeight, File);
 
-    uint8_t *pDecompressedBytes = nullptr;
-
-    int Sizea = pSprite->uSpriteSize;
-    if (pSprite->uDecompressedSize) {
-        pDecompressedBytes = (uint8_t*)malloc(pSprite->uDecompressedSize);
-        void *DstBufa = malloc(Sizea);
-        fread(DstBufa, 1, Sizea, File);
-        zlib::Uncompress(pDecompressedBytes,
-                            (unsigned int *)&pSprite->uDecompressedSize,
-                            DstBufa, Sizea);
-        pSprite->uSpriteSize = pSprite->uDecompressedSize;
-        free(DstBufa);
-    } else {
-        pDecompressedBytes = (uint8_t*)malloc(Sizea);
-        fread(pDecompressedBytes, 1, Sizea, File);
-    }
+    Blob bytes = Blob::Read(File, pSprite->uSpriteSize);
+    if (pSprite->uDecompressedSize)
+        bytes = zlib::Uncompress(bytes, pSprite->uDecompressedSize);
 
     pSprite->bitmap = new uint8_t[pSprite->uWidth * pSprite->uHeight];
     memset(pSprite->bitmap, 0, pSprite->uWidth * pSprite->uHeight);
     for (uint i = 0; i < pSprite->uHeight; i++) {
         if (pSpriteLines[i].begin >= 0) {
             memcpy(pSprite->bitmap + (i * pSprite->uWidth) + pSpriteLines[i].begin,
-                pDecompressedBytes + pSpriteLines[i].offset,
+                static_cast<const char *>(bytes.data()) + pSpriteLines[i].offset,
                 pSpriteLines[i].end - pSpriteLines[i].begin);
         }
     }
@@ -938,7 +925,7 @@ Blob LOD::File::LoadCompressedTexture(const std::string &pContainer) {
 }
 
 #pragma pack(push, 1)
-struct CompressedHeader {
+struct CompressedHeader { // TODO(captainurist): merge with ODMHeader? This one is written as ODMHeader, but read as CompressedHeader.
     uint32_t uVersion;
     char pMagic[4];
     uint32_t uCompressedSize;
@@ -962,15 +949,10 @@ Blob LOD::File::LoadCompressed(const std::string &pContainer) {
         return Blob();
     }
 
-    if (header.uDecompressedSize) {
-        Blob result = Blob::Allocate(header.uCompressedSize);
-        fread(result.data(), 1, header.uCompressedSize, File);
-        return zlib::Uncompress(result, header.uDecompressedSize);
-    } else {
-        Blob result = Blob::Allocate(header.uCompressedSize);
-        fread(result.data(), 1, header.uCompressedSize, File);
-        return result;
-    }
+    Blob result = Blob::Read(File, header.uCompressedSize);
+    if (header.uDecompressedSize)
+        result = zlib::Uncompress(result, header.uDecompressedSize);
+    return result;
 }
 
 int LOD::File::GetSubNodeIndex(const std::string &name) const {
@@ -995,33 +977,24 @@ int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst,
     // uint8_t v15;      // [sp+11h] [bp-3h]@13
     // uint8_t v16;      // [sp+12h] [bp-2h]@13
     // uint8_t DstBuf;   // [sp+13h] [bp-1h]@13
-    void *DstBufa;    // [sp+1Ch] [bp+8h]@10
-    void *Sourcea;    // [sp+20h] [bp+Ch]@10
 
     FILE *File = FindContainer(pContainer);
     if (File == nullptr) {
         return -1;
     }
 
-    Texture_MM7 *v6 = pDst;
     if (pDst->paletted_pixels && mode == 2 && pDst->pPalette24 &&
         (v7 = pDst->header.uTextureSize, fread(pDst, 1, 0x30u, File),
          strncpy(pDst->header.pName, pContainer.c_str(), 16),
-         v8 = pDst->header.uTextureSize, (int)v8 <= (int)v7)) {
+         v8 = pDst->header.uTextureSize, (int)v8 <= (int)v7)
+    ) {
         if (!pDst->header.uDecompressedSize ||
             this->_011BA4_debug_paletted_pixels_uncompressed) {
             fread(pDst->paletted_pixels, 1, pDst->header.uTextureSize, File);
         } else {
-            Sourcea = malloc(pDst->header.uDecompressedSize);
-            DstBufa = malloc(pDst->header.uTextureSize);
-            fread(DstBufa, 1, pDst->header.uTextureSize, File);
-            zlib::Uncompress(Sourcea, &v6->header.uDecompressedSize, DstBufa,
-                             v6->header.uTextureSize);
-            v6->header.uTextureSize = pDst->header.uDecompressedSize;
-            free(DstBufa);
-            memcpy(v6->paletted_pixels, Sourcea,
-                   pDst->header.uDecompressedSize);
-            free(Sourcea);
+            Blob bytes = zlib::Uncompress(Blob::Read(File, pDst->header.uTextureSize), pDst->header.uDecompressedSize);
+            pDst->header.uTextureSize = pDst->header.uDecompressedSize;
+            memcpy(pDst->paletted_pixels, bytes.data(), bytes.size());
         }
         fread(pDst->pPalette24, 1, 0x300, File);
         result = 1;

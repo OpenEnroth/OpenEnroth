@@ -8,8 +8,11 @@
 #include "Engine/Plugins/EngineController.h"
 #include "Engine/Plugins/EngineDeterministicPlugin.h"
 #include "Engine/EngineGlobals.h"
+#include "Engine/Engine.h"
 
 #include "Application/GameKeyboardController.h"
+
+#include "TestConfig.h"
 
 TestController::TestController(EngineController *controller, const std::string &testDataPath):
     _controller(controller),
@@ -33,4 +36,6 @@ void TestController::playTraceFromTestData(const std::string &saveName, const st
 void TestController::prepareForNextTest() {
     ::application->get<EngineDeterministicPlugin>()->resetDeterministicState();
     ::application->get<GameKeyboardController>()->reset();
+
+    ResetTestConfig(engine->config.get());
 }

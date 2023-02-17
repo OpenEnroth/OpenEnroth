@@ -134,7 +134,7 @@ void LoadGame(unsigned int uSlot) {
 
     {
         Blob blob = pNew_LOD->LoadRaw("npcgroup.bin");
-        void *npcgroup = blob.data();
+        const void *npcgroup = blob.data();
         if (npcgroup == nullptr) {
             logger->Warning(localization->FormatString(
                 LSTR_FMT_SAVEGAME_CORRUPTED, 105).c_str());
@@ -371,19 +371,6 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
     if (!NotSaveWorld) {  // autosave for change location
         CompactLayingItemsList();
-        char *compressed_buf = (char *)malloc(1000000);
-        if (compressed_buf == nullptr) {
-            logger->Warning("Malloc error");
-            Error("Malloc");  // is this recoverable
-        }
-        ODMHeader *odm_data = (ODMHeader*)compressed_buf;
-        odm_data->uVersion = 91969;
-        odm_data->pMagic[0] = 'm';
-        odm_data->pMagic[1] = 'v';
-        odm_data->pMagic[2] = 'i';
-        odm_data->pMagic[3] = 'i';
-        odm_data->uCompressedSize = 0;
-        odm_data->uDecompressedSize = 0;
 
         char *data_write_pos = uncompressed_buff;
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
@@ -498,26 +485,29 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             data_write_pos += 56;
         }
 
-        unsigned int compressed_block_size = 1000000 - sizeof(ODMHeader);
-        size_t Size = data_write_pos - uncompressed_buff;
-        int res = zlib::Compress(compressed_buf + sizeof(ODMHeader), &compressed_block_size, uncompressed_buff, Size);
-        if (res || (compressed_block_size > Size)) {
-            memcpy((void *)(compressed_buf + sizeof(ODMHeader)), uncompressed_buff, Size);
-            compressed_block_size = Size;
-        }
+        ODMHeader odm_data;
+        odm_data.uVersion = 91969;
+        odm_data.pMagic[0] = 'm';
+        odm_data.pMagic[1] = 'v';
+        odm_data.pMagic[2] = 'i';
+        odm_data.pMagic[3] = 'i';
 
-        odm_data->uCompressedSize = compressed_block_size;
-        odm_data->uDecompressedSize = Size;
+        size_t Size = data_write_pos - uncompressed_buff;
+        Blob bytes = zlib::Compress(Blob::NonOwning(uncompressed_buff, Size));
+
+        odm_data.uCompressedSize = bytes.size();
+        odm_data.uDecompressedSize = Size;
+
+        Blob mapBlob = Blob::Concat(Blob::NonOwning(&odm_data, sizeof(ODMHeader)), bytes);
 
         std::string file_name = pCurrentMapName;
         size_t pos = file_name.find_last_of(".");
         file_name[pos + 1] = 'd';
-        if (pNew_LOD->Write(file_name, compressed_buf, compressed_block_size + sizeof(ODMHeader), 0)) {
+        if (pNew_LOD->Write(file_name, mapBlob.data(), mapBlob.size(), 0)) {
             auto error_message = localization->FormatString(
                 LSTR_FMT_SAVEGAME_CORRUPTED, 208);
             logger->Warning(error_message.c_str());
         }
-        free(compressed_buf);
     }
     free(uncompressed_buff);
 

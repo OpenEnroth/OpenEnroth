@@ -86,6 +86,14 @@ void BspRenderer::AddFaceToRenderList_d3d(unsigned int node_id, unsigned int uFa
         nodes[num_nodes].uSectorID = pTransitionSector;
         nodes[num_nodes].uFaceID = uFaceID;
 
+        // avoid circular loops in portals
+        for (int test = 0; test < num_nodes; test++) {
+            if (nodes[test].uSectorID == nodes[num_nodes].uSectorID &&
+                nodes[test].uFaceID == nodes[num_nodes].uFaceID) {
+                return;
+            }
+        }
+
         // calculates the portal bounding and frustum
         bool bFrustumbuilt = engine->pStru10Instance->CalcPortalShapePoly(
                 pFace, static_subAddFaceToRenderList_d3d_stru_F79E08,

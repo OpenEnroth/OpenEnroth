@@ -47,9 +47,6 @@ GAME_TEST(Issues, Issue294) {
     uint64_t newExperience = partyExperience();
     // EXPECT_GT(newExperience, oldExperience); // Expect the giant rat to be dead after four shrapnel casts from character #4.
     // TODO(captainurist): ^fails now
-
-    engine->config->debug.AllMagic.Set(false); // TODO(captainurist): reset config before each test!
-    engine->config->debug.NoDamage.Set(false);
 }
 
 GAME_TEST(Issues, Issue315) {
@@ -105,6 +102,12 @@ GAME_TEST(Issues, Issue408) {
     EXPECT_NE(assets->WinnerCert, nullptr);
     // we should be teleported to harmondale
     EXPECT_EQ(pCurrentMapName, "out02.odm");
+}
+
+GAME_TEST(Issues, Issue417) {
+    // testing that portal nodes looping doesnt assert
+    test->playTraceFromTestData("issue_417a.mm7", "issue_417a.json", [] {});
+    test->playTraceFromTestData("issue_417b.mm7", "issue_417b.json", [] {});
 }
 
 GAME_TEST(Issues, Issue427a) {
