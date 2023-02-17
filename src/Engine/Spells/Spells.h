@@ -260,6 +260,7 @@ extern std::array<stru324_spell_id_to_sprite_mapping, 103>
     spell_sprite_mapping;  // 4E3ACC
 extern std::array<SpellData, 100> pSpellDatas;
 extern IndexedArray<SPELL_TYPE, ITEM_FIRST_WAND, ITEM_LAST_WAND> wand_spell_ids;
+extern std::array<uint16_t, 101> SpellSoundIds;
 
 int _43AFE3_calc_spell_damage(int spellId, PLAYER_SKILL_LEVEL spellLevel, PLAYER_SKILL_MASTERY skillMastery, int currentHp);
 bool sub_427769_isSpellQuickCastableOnShiftClick(unsigned int uSpellID);

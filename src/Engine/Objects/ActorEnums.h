@@ -50,6 +50,7 @@ enum class ObjectType {
     OBJECT_Decoration = 0x5,    // PID_ID is index in pLevelDecorations array.
     OBJECT_Face = 0x6,          // PID_ID is ((model_id << 6) + face_id) outdoors, face_id indoors.
     OBJECT_Light = 0x7,
+    OBJECT_Spell = 0x8,         // PID_ID is ID of spell
 };
 using enum ObjectType;
 
