@@ -198,6 +198,8 @@ void Party::Zero() {
 
     // hirelings
     pHirelings.fill(NPCData());
+
+    playerAlreadyPicked.fill(false); // TODO(captainurist): belongs in a different place?
 }
 
 // inlined

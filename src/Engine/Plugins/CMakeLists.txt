@@ -11,6 +11,7 @@ set(PLUGINS_HEADERS EngineController.h
                     EngineControlState.h
                     EngineControlStateHandle.h
                     EngineDeterministicPlugin.h
+                    EngineTracePlaybackFlags.h
                     EngineTracePlugin.h
                     EngineTracer.h)
 

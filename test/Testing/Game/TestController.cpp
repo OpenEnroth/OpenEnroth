@@ -23,12 +23,18 @@ void TestController::loadGameFromTestData(const std::string &name) {
 }
 
 void TestController::playTraceFromTestData(const std::string &saveName, const std::string &traceName, std::function<void()> postLoadCallback) {
+    playTraceFromTestData(saveName, traceName, 0, std::move(postLoadCallback));
+}
+
+void TestController::playTraceFromTestData(const std::string &saveName, const std::string &traceName,
+                                           EngineTracePlaybackFlags flags, std::function<void()> postLoadCallback) {
     // TODO(captainurist): we need to overhaul our usage of path::string, path::u8string, path::generic_string,
     // pick one, and spell it out explicitly in HACKING
     ::application->get<EngineTracer>()->playTrace(
         _controller,
         (_testDataPath / saveName).string(),
         (_testDataPath / traceName).string(),
+        flags,
         std::move(postLoadCallback)
     );
 }
