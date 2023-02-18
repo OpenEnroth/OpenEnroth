@@ -8,7 +8,7 @@ var searchData=
   ['walk_5fsound_5ftimer_5',['walk_sound_timer',['../structParty.html#a8ede43e27b99023e4e6b58cfd2d9e8ab',1,'Party::walk_sound_timer()'],['../structParty__MM7.html#abbb9194eec181916bd9007c102072c64',1,'Party_MM7::walk_sound_timer()']]],
   ['walksound_6',['WalkSound',['../classApplication_1_1GameConfig_1_1Settings.html#a4905daedd0e7052217290042b7ba1751',1,'Application::GameConfig::Settings']]],
   ['wall_5fheight_7',['wall_height',['../structArcomageStartConditions.html#a9ddc9f810ab99fd7aee2efa1cf803b28',1,'ArcomageStartConditions::wall_height()'],['../structArcomagePlayer.html#a8d4f2c9409faf133875f8684bf20e87d',1,'ArcomagePlayer::wall_height()']]],
-  ['wand_5fspell_5fids_8',['wand_spell_ids',['../Spells_8h.html#a4aa7b0973f21f5d44b1b3769954a1268',1,'wand_spell_ids():&#160;Spells.cpp'],['../Spells_8cpp.html#a4aa7b0973f21f5d44b1b3769954a1268',1,'wand_spell_ids():&#160;Spells.cpp']]],
+  ['wandspellids_8',['WandSpellIds',['../Spells_8h.html#a09d0b2cdb51c7aaa745ae00e5f2363dc',1,'WandSpellIds():&#160;Spells.cpp'],['../Spells_8cpp.html#a09d0b2cdb51c7aaa745ae00e5f2363dc',1,'WandSpellIds():&#160;Spells.cpp']]],
   ['wdata_9',['wData',['../classGUIWindow.html#abe34e562a32daaae1b9f3d06c6be20f8',1,'GUIWindow']]],
   ['weapons_5fypos_10',['weapons_Ypos',['../mm7__data_8cpp.html#a25c6bbe804be4001aaa2e4e34766ec4c',1,'weapons_Ypos():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a25c6bbe804be4001aaa2e4e34766ec4c',1,'weapons_Ypos():&#160;mm7_data.cpp']]],
   ['week_11',['Week',['../structTimer.html#a461ac0630f6e2079646eaff29fa75943',1,'Timer']]],
