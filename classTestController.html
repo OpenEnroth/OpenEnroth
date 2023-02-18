@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;86bce96</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;eb419e8</span>
    </div>
   </td>
  </tr>
@@ -85,8 +85,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a99052f8ad73bcbefd65b3d52b6c5e2a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9cf2cbb66782c69eedd470e76139429"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestController.html#ab9cf2cbb66782c69eedd470e76139429">loadGameFromTestData</a> (const std::string &amp;name)</td></tr>
 <tr class="separator:ab9cf2cbb66782c69eedd470e76139429"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa31d74bde5b6bba79801f2f90268bd27"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestController.html#aa31d74bde5b6bba79801f2f90268bd27">playTraceFromTestData</a> (const std::string &amp;saveName, const std::string &amp;traceName, std::function&lt; void()&gt; postLoadCallback)</td></tr>
-<tr class="separator:aa31d74bde5b6bba79801f2f90268bd27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa95b8bebe6e4b34a470d20c3ef0688bb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestController.html#aa95b8bebe6e4b34a470d20c3ef0688bb">playTraceFromTestData</a> (const std::string &amp;saveName, const std::string &amp;traceName, std::function&lt; void()&gt; postLoadCallback={})</td></tr>
+<tr class="separator:aa95b8bebe6e4b34a470d20c3ef0688bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af773311013a777785c7935fad91f4bdf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestController.html#af773311013a777785c7935fad91f4bdf">playTraceFromTestData</a> (const std::string &amp;saveName, const std::string &amp;traceName, EngineTracePlaybackFlags flags, std::function&lt; void()&gt; postLoadCallback={})</td></tr>
+<tr class="separator:af773311013a777785c7935fad91f4bdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93aef5be2ca5bf87f4d07b4ea8f37a4b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestController.html#a93aef5be2ca5bf87f4d07b4ea8f37a4b">prepareForNextTest</a> ()</td></tr>
 <tr class="separator:a93aef5be2ca5bf87f4d07b4ea8f37a4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -145,8 +147,48 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aa31d74bde5b6bba79801f2f90268bd27" name="aa31d74bde5b6bba79801f2f90268bd27"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa31d74bde5b6bba79801f2f90268bd27">&#9670;&#160;</a></span>playTraceFromTestData()</h2>
+<a id="af773311013a777785c7935fad91f4bdf" name="af773311013a777785c7935fad91f4bdf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af773311013a777785c7935fad91f4bdf">&#9670;&#160;</a></span>playTraceFromTestData() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TestController::playTraceFromTestData </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>saveName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>traceName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">EngineTracePlaybackFlags&#160;</td>
+          <td class="paramname"><em>flags</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::function&lt; void()&gt;&#160;</td>
+          <td class="paramname"><em>postLoadCallback</em> = <code>{}</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa95b8bebe6e4b34a470d20c3ef0688bb" name="aa95b8bebe6e4b34a470d20c3ef0688bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa95b8bebe6e4b34a470d20c3ef0688bb">&#9670;&#160;</a></span>playTraceFromTestData() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -167,7 +209,7 @@ Private Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::function&lt; void()&gt;&#160;</td>
-          <td class="paramname"><em>postLoadCallback</em>&#160;</td>
+          <td class="paramname"><em>postLoadCallback</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
           <td></td>

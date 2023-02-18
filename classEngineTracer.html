@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;86bce96</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;eb419e8</span>
    </div>
   </td>
  </tr>
@@ -115,8 +115,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:abde9cb8db15863c41897762ae014a18d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4bd4e342300e0524f703d9d88ea2a724"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracer.html#a4bd4e342300e0524f703d9d88ea2a724">finishTraceRecording</a> ()</td></tr>
 <tr class="separator:a4bd4e342300e0524f703d9d88ea2a724"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a30e3679ec553976e64543c9be118b27e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracer.html#a30e3679ec553976e64543c9be118b27e">playTrace</a> (<a class="el" href="classEngineController.html">EngineController</a> *game, const std::string &amp;savePath, const std::string &amp;tracePath, std::function&lt; void()&gt; postLoadCallback)</td></tr>
-<tr class="separator:a30e3679ec553976e64543c9be118b27e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e7e14a8229441f6d32d8423e55c4c10"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracer.html#a2e7e14a8229441f6d32d8423e55c4c10">playTrace</a> (<a class="el" href="classEngineController.html">EngineController</a> *game, const std::string &amp;savePath, const std::string &amp;tracePath, EngineTracePlaybackFlags flags=0, std::function&lt; void()&gt; postLoadCallback={})</td></tr>
+<tr class="separator:a2e7e14a8229441f6d32d8423e55c4c10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
@@ -314,8 +314,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a30e3679ec553976e64543c9be118b27e" name="a30e3679ec553976e64543c9be118b27e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a30e3679ec553976e64543c9be118b27e">&#9670;&#160;</a></span>playTrace()</h2>
+<a id="a2e7e14a8229441f6d32d8423e55c4c10" name="a2e7e14a8229441f6d32d8423e55c4c10"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2e7e14a8229441f6d32d8423e55c4c10">&#9670;&#160;</a></span>playTrace()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -341,8 +341,14 @@ Friends</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">EngineTracePlaybackFlags&#160;</td>
+          <td class="paramname"><em>flags</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">std::function&lt; void()&gt;&#160;</td>
-          <td class="paramname"><em>postLoadCallback</em>&#160;</td>
+          <td class="paramname"><em>postLoadCallback</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -357,6 +363,7 @@ Friends</h2></td></tr>
     <tr><td class="paramname">game</td><td><a class="el" href="structEngine.html">Engine</a> controller. </td></tr>
     <tr><td class="paramname">savePath</td><td>Path to save file. </td></tr>
     <tr><td class="paramname">tracePath</td><td>Path to trace file. </td></tr>
+    <tr><td class="paramname">flags</td><td>Playback flags. </td></tr>
     <tr><td class="paramname">postLoadCallback</td><td>Callback to call once the savegame is loaded. </td></tr>
   </table>
   </dd>
