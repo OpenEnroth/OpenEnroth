@@ -76,7 +76,7 @@ class EngineTracer : private PlatformApplicationAware {
      * @param postLoadCallback          Callback to call once the savegame is loaded.
      * @see EngineControlPlugin
      */
-    void playTrace(EngineController *game, const std::string &savePath, const std::string &tracePath, std::function<void()> postLoadCallback);
+    void playTrace(EngineController *game, const std::string &savePath, const std::string &tracePath, std::function<void()> postLoadCallback = {});
 
  private:
     friend class PlatformIntrospection;

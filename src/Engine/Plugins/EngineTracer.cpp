@@ -107,7 +107,8 @@ void EngineTracer::playTrace(EngineController *game, const std::string &savePath
     _deterministicPlugin->resetDeterministicState();
     _keyboardController->reset(); // Reset all pressed buttons.
 
-    postLoadCallback();
+    if (postLoadCallback)
+        postLoadCallback();
 
     for (std::unique_ptr<PlatformEvent> &event : trace.events) {
         if (event->type == EVENT_PAINT) {
