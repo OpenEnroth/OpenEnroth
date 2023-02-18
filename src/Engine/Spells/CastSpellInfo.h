@@ -20,7 +20,7 @@ class GUIWindow;
 // flags
 enum class SpellCastFlag : uint16_t {
     ON_CAST_CastViaScroll = 0x0001,
-    ON_CAST_WholeParty_BigImprovementAnim = 0x0002,
+    ON_CAST_SinglePlayer_BigImprovementAnim = 0x0002,
     ON_CAST_0x0004 = 0x0004,
     ON_CAST_TargetCrosshair = 0x0008,
     ON_CAST_TargetIsParty = 0x0010,
@@ -30,7 +30,9 @@ enum class SpellCastFlag : uint16_t {
     ON_CAST_MonsterSparkles = 0x0100,
     ON_CAST_DarkSacrifice = 0x0200,
     ON_CAST_CastingInProgress =
-        ON_CAST_WholeParty_BigImprovementAnim | ON_CAST_TargetCrosshair |
+        // TODO: these flags need to be renamed to correctly represent
+        //       spell target pick UI for particular spells
+        ON_CAST_SinglePlayer_BigImprovementAnim | ON_CAST_TargetCrosshair |
         ON_CAST_Telekenesis | ON_CAST_Enchantment | ON_CAST_MonsterSparkles |
         ON_CAST_DarkSacrifice,
 };
