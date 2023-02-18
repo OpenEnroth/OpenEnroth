@@ -141,7 +141,7 @@ var searchData=
   ['ai_5fpursue3_138',['AI_Pursue3',['../classActor.html#af3148a1df5916c9c4fbf7c81bed51415',1,'Actor']]],
   ['ai_5frandommove_139',['AI_RandomMove',['../classActor.html#a76bea9682e1f9d1e6cd2e8f0569f524c',1,'Actor']]],
   ['ai_5frangedattack_140',['AI_RangedAttack',['../classActor.html#a21e41a27011d8e1a88fa6cfc3f993bc6',1,'Actor']]],
-  ['ai_5fspellattack_141',['AI_SpellAttack',['../classActor.html#ae7d81267e8b826ffdf24c2f549bcc25b',1,'Actor']]],
+  ['ai_5fspellattack_141',['AI_SpellAttack',['../classActor.html#a6e385b4ac3ea93cb3c923dae522672e5',1,'Actor']]],
   ['ai_5fspellattack1_142',['AI_SpellAttack1',['../classActor.html#af9f68885bca5ef75d3bb1204caaeecb9',1,'Actor']]],
   ['ai_5fspellattack2_143',['AI_SpellAttack2',['../classActor.html#a8133b0550479410a3ed916102ae79966',1,'Actor']]],
   ['ai_5fstand_144',['AI_Stand',['../classActor.html#a29eeb19ef703b8a1b9b31e5fbaa7b5e3',1,'Actor']]],

@@ -5,7 +5,7 @@ var searchData=
   ['backspace_2',['Backspace',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eeccacd7d13ceea728b08555f7c818cfb13ef',1,'PlatformEnums.h']]],
   ['banker_3',['Banker',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a9c20f2154ddd42475793ee059c1ff50d',1,'NPCEnums.h']]],
   ['bard_4',['Bard',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a51a547788c5ebad8e66b330b9fa747c5',1,'NPCEnums.h']]],
-  ['become_5fmagic_5fguild_5fmember_5',['BECOME_MAGIC_GUILD_MEMBER',['../Spells_8h.html#a4e71efcf980b83e3205a4079c10bd8d5a7b26614b5cae72d067d6b2a2857d8348',1,'Spells.h']]],
+  ['become_5fmagic_5fguild_5fmember_5',['BECOME_MAGIC_GUILD_MEMBER',['../Spells_8h.html#a6ac7ece38acd196bf750bc353e00d088a7b26614b5cae72d067d6b2a2857d8348',1,'Spells.h']]],
   ['broken_5fflag_5f123_6',['BROKEN_FLAG_123',['../Serialization__ut_8cpp.html#a7987e7e08e4d6b79c4ca1f1f0a8a18dca42dbf5e8db61f95e2ecef20c6a6af636',1,'Serialization_ut.cpp']]],
   ['buildingtype_5fadventuresinn_7',['BuildingType_AdventuresInn',['../Events2D_8h.html#a1e6330273dfb88062f9ac99d61322e80adccab7a7874d4055ea421e30d8aff923',1,'Events2D.h']]],
   ['buildingtype_5fairguild_8',['BuildingType_AirGuild',['../Events2D_8h.html#a1e6330273dfb88062f9ac99d61322e80a71a97b6e7e4309bb3a1670d628ba1b53',1,'Events2D.h']]],

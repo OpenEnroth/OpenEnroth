@@ -5,7 +5,7 @@ var searchData=
   ['_5f4065b0_2',['_4065B0',['../structstru262__TurnBased.html#a1dde7742f9c5b02777ab10742a6e7b5e',1,'stru262_TurnBased']]],
   ['_5f41d08f_5fset_5fkeyboard_5fcontrol_5fgroup_3',['_41D08F_set_keyboard_control_group',['../classGUIWindow.html#af1601b14fd14172585c6793565a30e7d',1,'GUIWindow']]],
   ['_5f41d73d_5fdraw_5fbuff_5ftooltip_4',['_41D73D_draw_buff_tooltip',['../classGUIWindow.html#afb1aed077e95deae983b0b005f57f07c',1,'GUIWindow']]],
-  ['_5f427102_5fisoktocastspell_5',['_427102_IsOkToCastSpell',['../classActor.html#ab51e2456c65c2b3796475b42001df776',1,'Actor']]],
+  ['_5f427102_5fisoktocastspell_5',['_427102_IsOkToCastSpell',['../classActor.html#ad229e838cebd1d17c1328468882a1453',1,'Actor']]],
   ['_5f4273bb_5fdoeshitotheractor_6',['_4273BB_DoesHitOtherActor',['../classActor.html#a5318be2551916b68bee9360259fda93e',1,'Actor']]],
   ['_5f427546_7',['_427546',['../structstru319.html#a50d5e3e7c9a0c051896d5714cfe65c74',1,'stru319']]],
   ['_5f42777d_5fcastspell_5fusewand_5fshootarrow_8',['_42777D_CastSpell_UseWand_ShootArrow',['../CastSpellInfo_8cpp.html#a3d1d8250c33a3995b74e6416eb587919',1,'_42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell, unsigned int uPlayerID, PLAYER_SKILL skill_value, SpellCastFlags flags, int a6):&#160;CastSpellInfo.cpp'],['../CastSpellInfo_8h.html#a3d1d8250c33a3995b74e6416eb587919',1,'_42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell, unsigned int uPlayerID, PLAYER_SKILL skill_value, SpellCastFlags flags, int a6):&#160;CastSpellInfo.cpp']]],

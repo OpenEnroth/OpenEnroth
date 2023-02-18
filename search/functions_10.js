@@ -10,7 +10,7 @@ var searchData=
   ['parsemissleattacktype_7',['ParseMissleAttackType',['../Monsters_8cpp.html#a4e4a096de3777b8fe375c4e2e1e618c3',1,'Monsters.cpp']]],
   ['parseoptions_8',['parseOptions',['../GameTestMain_8cpp.html#a563de07718bfbc034ffcc7a44dfbdfab',1,'GameTestMain.cpp']]],
   ['parsespecialattack_9',['ParseSpecialAttack',['../Monsters_8cpp.html#a5aa7a5a15962cdd6dea07f5cd0d8e057',1,'ParseSpecialAttack(char *spec_att_str):&#160;Monsters.cpp'],['../Monsters_8cpp.html#a50b540877b608aba8eb8e278c27f0595',1,'ParseSpecialAttack(const char *spec_att_str):&#160;Monsters.cpp']]],
-  ['parsespelltype_10',['ParseSpellType',['../Monsters_8cpp.html#ade9b7cfbbaa90ca33fa67c49848ad19b',1,'Monsters.cpp']]],
+  ['parsespelltype_10',['ParseSpellType',['../Monsters_8cpp.html#a2e566d6e4ae1229db8ef8d3187c5a480',1,'Monsters.cpp']]],
   ['particleengine_11',['ParticleEngine',['../classParticleEngine.html#a7775dfeb4a6ea9040bb026878894df15',1,'ParticleEngine']]],
   ['party_12',['Party',['../structParty.html#a31d77f763e1dc9549532653a4a0dfde5',1,'Party']]],
   ['partycreationui_5fdeletefont_13',['PartyCreationUI_DeleteFont',['../UIPartyCreation_8cpp.html#a9951a7e7455650600fa6782fb48d5ab0',1,'UIPartyCreation.cpp']]],
