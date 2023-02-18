@@ -103,6 +103,11 @@ void EngineController::goToMainMenu() {
 
     assert(!pArcomageGame->bGameInProgress); // Going from Arcomage to main menu is not implemented yet.
 
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_SPELL_BOOK) {
+        pressAndReleaseKey(PlatformKey::Escape);
+        tick(1);
+    }
+
     if (current_screen_type == CURRENT_SCREEN::SCREEN_CHARACTERS) {
         pressAndReleaseKey(PlatformKey::Escape);
         tick(1);
