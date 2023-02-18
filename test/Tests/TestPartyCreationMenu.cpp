@@ -110,48 +110,31 @@ GAME_TEST(Issues, Issue417) {
     test->playTraceFromTestData("issue_417b.mm7", "issue_417b.json", [] {});
 }
 
-GAME_TEST(Issues, Issue427a) {
-    // Test that some of buff spells that start to affect whole party starting from certain mastery work correctly
-    // In this test mastery is not enough for the whole party
-    test->playTraceFromTestData("issue_427a.mm7", "issue_427a.json", [&] {});
-    // Check that only one character have buffs
-    EXPECT_EQ(pParty->pPlayers[0].pPlayerBuffs[PLAYER_BUFF_BLESS].Active(), true);
-    EXPECT_EQ(pParty->pPlayers[0].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active(), true);
-    EXPECT_EQ(pParty->pPlayers[0].pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active(), true);
-    EXPECT_EQ(pParty->pPlayers[0].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active(), true);
-    EXPECT_EQ(pParty->pPlayers[1].pPlayerBuffs[PLAYER_BUFF_BLESS].Active(), false);
-    EXPECT_EQ(pParty->pPlayers[1].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active(), false);
-    EXPECT_EQ(pParty->pPlayers[1].pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active(), false);
-    EXPECT_EQ(pParty->pPlayers[1].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active(), false);
-    EXPECT_EQ(pParty->pPlayers[2].pPlayerBuffs[PLAYER_BUFF_BLESS].Active(), false);
-    EXPECT_EQ(pParty->pPlayers[2].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active(), false);
-    EXPECT_EQ(pParty->pPlayers[2].pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active(), false);
-    EXPECT_EQ(pParty->pPlayers[2].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active(), false);
-    EXPECT_EQ(pParty->pPlayers[3].pPlayerBuffs[PLAYER_BUFF_BLESS].Active(), false);
-    EXPECT_EQ(pParty->pPlayers[3].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active(), false);
-    EXPECT_EQ(pParty->pPlayers[3].pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active(), false);
-    EXPECT_EQ(pParty->pPlayers[3].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active(), false);
+static void check427Buffs(int player, bool hasBuff) {
+    EXPECT_EQ(pParty->pPlayers[player].pPlayerBuffs[PLAYER_BUFF_BLESS].Active(), hasBuff);
+    EXPECT_EQ(pParty->pPlayers[player].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active(), hasBuff);
+    EXPECT_EQ(pParty->pPlayers[player].pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active(), hasBuff);
+    EXPECT_EQ(pParty->pPlayers[player].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active(), hasBuff);
 }
 
-GAME_TEST(Issues, Issue427b) {
-    // Test that some of buff spells that start to affect whole party starting from certain mastery work correctly
+GAME_TEST(Issues, Issue427) {
+    // Test that some of the buff spells that start to affect whole party starting from certain mastery work correctly.
+
+    // In this test mastery is not enough for the whole party buff
+    test->playTraceFromTestData("issue_427a.mm7", "issue_427a.json", [&] {});
+
+    // Check that spell targeting works correctly - 1st char is getting the buffs.
+    check427Buffs(0, true);
+    check427Buffs(1, false);
+    check427Buffs(2, false);
+    check427Buffs(3, false);
+
     // In this test mastery is enough for the whole party
     test->playTraceFromTestData("issue_427b.mm7", "issue_427b.json", [&] {});
+
     // Check that all character have buffs
-    EXPECT_EQ(pParty->pPlayers[0].pPlayerBuffs[PLAYER_BUFF_BLESS].Active(), true);
-    EXPECT_EQ(pParty->pPlayers[0].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active(), true);
-    EXPECT_EQ(pParty->pPlayers[0].pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active(), true);
-    EXPECT_EQ(pParty->pPlayers[0].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active(), true);
-    EXPECT_EQ(pParty->pPlayers[1].pPlayerBuffs[PLAYER_BUFF_BLESS].Active(), true);
-    EXPECT_EQ(pParty->pPlayers[1].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active(), true);
-    EXPECT_EQ(pParty->pPlayers[1].pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active(), true);
-    EXPECT_EQ(pParty->pPlayers[1].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active(), true);
-    EXPECT_EQ(pParty->pPlayers[2].pPlayerBuffs[PLAYER_BUFF_BLESS].Active(), true);
-    EXPECT_EQ(pParty->pPlayers[2].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active(), true);
-    EXPECT_EQ(pParty->pPlayers[2].pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active(), true);
-    EXPECT_EQ(pParty->pPlayers[2].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active(), true);
-    EXPECT_EQ(pParty->pPlayers[3].pPlayerBuffs[PLAYER_BUFF_BLESS].Active(), true);
-    EXPECT_EQ(pParty->pPlayers[3].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active(), true);
-    EXPECT_EQ(pParty->pPlayers[3].pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active(), true);
-    EXPECT_EQ(pParty->pPlayers[3].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active(), true);
+    check427Buffs(0, true);
+    check427Buffs(1, true);
+    check427Buffs(2, true);
+    check427Buffs(3, true);
 }
