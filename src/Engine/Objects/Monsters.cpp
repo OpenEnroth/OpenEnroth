@@ -16,8 +16,6 @@
 struct MonsterStats *pMonsterStats;
 struct MonsterList *pMonsterList;
 
-unsigned int ParseSpellType(struct FrameTableTxtLine *tbl, int *next_token);
-
 int ParseAttackType(const char *damage_type_str);
 void ParseDamage(char *damage_str, uint8_t *dice_rolls,
                  uint8_t *dice_sides, uint8_t *dmg_bonus);
@@ -25,106 +23,107 @@ int ParseMissleAttackType(const char *missle_attack_str);
 int ParseSpecialAttack(const char *spec_att_str);
 
 //----- (004548E2) --------------------------------------------------------
-unsigned int ParseSpellType(struct FrameTableTxtLine *tbl, int *next_token) {
+SPELL_TYPE ParseSpellType(struct FrameTableTxtLine *tbl, int *next_token) {
     if (!tbl->pProperties[0]) {
         ++*next_token;
-        return 0;
+        return SPELL_NONE;
     }
+    // TODO(captainurist): I bet this parse routine fails now, likely need istarts_with here.
     if (iequals(tbl->pProperties[0], "Dispel")) {  // dispel magic
         ++*next_token;
-        return 80;
+        return SPELL_LIGHT_DISPEL_MAGIC;
     } else if (iequals(tbl->pProperties[0], "Day")) {  // day of protection
         *next_token += 2;
-        return 85;
+        return SPELL_LIGHT_DAY_OF_PROTECTION;
     } else if (iequals(tbl->pProperties[0], "Hour")) {  // hour  of power
         *next_token += 2;
-        return 86;
+        return SPELL_LIGHT_HOUR_OF_POWER;
     } else if (iequals(tbl->pProperties[0], "Shield")) {
-        return 17;
+        return SPELL_AIR_SHIELD;
     } else if (iequals(tbl->pProperties[0], "Spirit")) {
         ++*next_token;
-        return 52;
+        return SPELL_SPIRIT_SPIRIT_LASH;
     } else if (iequals(tbl->pProperties[0], "Power")) {  // power cure
         ++*next_token;
-        return 77;
+        return SPELL_BODY_POWER_CURE;
     } else if (iequals(tbl->pProperties[0], "Meteor")) {  // meteot shower
         ++*next_token;
-        return 9;
+        return SPELL_FIRE_METEOR_SHOWER;
     } else if (iequals(tbl->pProperties[0], "Lightning")) {  // Lightning bolt
         ++*next_token;
-        return 18;
+        return SPELL_AIR_LIGHNING_BOLT;
     } else if (iequals(tbl->pProperties[0], "Implosion")) {
-        return 20;
+        return SPELL_AIR_IMPLOSION;
     } else if (iequals(tbl->pProperties[0], "Stone")) {
         ++*next_token;
-        return 38;
+        return SPELL_EARTH_STONESKIN;
     } else if (iequals(tbl->pProperties[0], "Haste")) {
-        return 5;
+        return SPELL_FIRE_HASTE;
     } else if (iequals(tbl->pProperties[0], "Heroism")) {
-        return 51;
+        return SPELL_SPIRIT_HEROISM;
     } else if (iequals(tbl->pProperties[0], "Pain")) {  // pain reflection
         ++*next_token;
-        return 95;
+        return SPELL_DARK_PAIN_REFLECTION;
     } else if (iequals(tbl->pProperties[0], "Sparks")) {
-        return 15;
+        return SPELL_AIR_SPARKS;
     } else if (iequals(tbl->pProperties[0], "Light")) {
         ++*next_token;
-        return 78;
+        return SPELL_LIGHT_LIGHT_BOLT;
     } else if (iequals(tbl->pProperties[0], "Toxic")) {  // toxic cloud
         ++*next_token;
-        return 90;
+        return SPELL_DARK_TOXIC_CLOUD;
     } else if (iequals(tbl->pProperties[0], "ShrapMetal")) {
-        return 93;
+        return SPELL_DARK_SHARPMETAL;
     } else if (iequals(tbl->pProperties[0], "Paralyze")) {
-        return 81;
+        return SPELL_LIGHT_PARALYZE;
     } else if (iequals(tbl->pProperties[0], "Fireball")) {
-        return 6;
+        return SPELL_FIRE_FIREBALL;
     } else if (iequals(tbl->pProperties[0], "Incinerate")) {
-        return 11;
+        return SPELL_FIRE_INCINERATE;
     } else if (iequals(tbl->pProperties[0], "Fire")) {
         ++*next_token;
-        return 2;
+        return SPELL_FIRE_FIRE_BOLT;
     } else if (iequals(tbl->pProperties[0], "Rock")) {
         ++*next_token;
-        return 41;
+        return SPELL_EARTH_ROCK_BLAST;
     } else if (iequals(tbl->pProperties[0], "Mass")) {
         ++*next_token;
-        return 44;
+        return SPELL_EARTH_MASS_DISTORTION;
     } else if (iequals(tbl->pProperties[0], "Ice")) {
         ++*next_token;
-        return 26;
+        return SPELL_WATER_ICE_BOLT;
     } else if (iequals(tbl->pProperties[0], "Acid")) {
         ++*next_token;
-        return 29;
+        return SPELL_WATER_ACID_BURST;
     } else if (iequals(tbl->pProperties[0], "Bless")) {
-        return 46;
+        return SPELL_SPIRIT_BLESS;
     } else if (iequals(tbl->pProperties[0], "Dragon")) {
         ++*next_token;
-        return 97;
+        return SPELL_DARK_DRAGON_BREATH;
     } else if (iequals(tbl->pProperties[0], "Reanimate")) {
-        return 89;
+        return SPELL_DARK_REANIMATE;
     } else if (iequals(tbl->pProperties[0], "Summon")) {
         ++*next_token;
-        return 82;
+        return SPELL_LIGHT_SUMMON_ELEMENTAL;
     } else if (iequals(tbl->pProperties[0], "Fate")) {
-        return 47;
+        return SPELL_SPIRIT_FATE;
     } else if (iequals(tbl->pProperties[0], "Harm")) {
-        return 70;
+        return SPELL_BODY_HARM;
     } else if (iequals(tbl->pProperties[0], "Mind")) {
         ++*next_token;
-        return 57;
+        return SPELL_MIND_MIND_BLAST;
     } else if (iequals(tbl->pProperties[0], "Blades")) {
-        return 39;
+        return SPELL_EARTH_BLADES;
     } else if (iequals(tbl->pProperties[0], "Psychic")) {
         ++*next_token;
-        return 65;
+        return SPELL_MIND_PSYCHIC_SHOCK;
     } else if (iequals(tbl->pProperties[0], "Hammerhands")) {
-        return 73;
+        return SPELL_BODY_HAMMERHANDS;
     } else {
         logger->Warning(
             "Unknown monster spell %s", tbl->pProperties[0]);
         ++*next_token;
-        return 0;
+        return SPELL_NONE;
     }
 }
 
@@ -910,7 +909,7 @@ void MonsterStats::Initialize() {
                                     break;
                             }
                         } else {
-                            pInfos[curr_rec_num].uSpell1ID = 0;
+                            pInfos[curr_rec_num].uSpell1ID = SPELL_NONE;
                             pInfos[curr_rec_num].uSpellSkillAndMastery1 = 0;
                         }
                     } break;
@@ -948,7 +947,7 @@ void MonsterStats::Initialize() {
                                     break;
                             }
                         } else {
-                            pInfos[curr_rec_num].uSpell2ID = 0;
+                            pInfos[curr_rec_num].uSpell2ID = SPELL_NONE;
                             pInfos[curr_rec_num].uSpellSkillAndMastery2 = 0;
                         }
                     } break;

@@ -36,9 +36,7 @@ struct SpellStats *pSpellStats = nullptr;
 /**
  * @offset 0x4E3ACC
  */
-IndexedArray<SPRITE_OBJECT_TYPE, SPELL_0, SPELL_ANY_WITH_SPRITE_LAST> SpellSpriteMapping = {
-    {SPELL_0, SPRITE_SPELL_0},
-
+IndexedArray<SPRITE_OBJECT_TYPE, SPELL_ANY_WITH_SPRITE_FIRST, SPELL_ANY_WITH_SPRITE_LAST> SpellSpriteMapping = {
     {SPELL_FIRE_TORCH_LIGHT, SPRITE_SPELL_FIRE_TORCH_LIGHT},
     {SPELL_FIRE_FIRE_BOLT, SPRITE_SPELL_FIRE_FIRE_BOLT},
     {SPELL_FIRE_PROTECTION_FROM_FIRE, SPRITE_SPELL_FIRE_PROTECTION_FROM_FIRE},
@@ -462,11 +460,9 @@ void SpellStats::Initialize() {
 }
 
 /**
- * Function for processing spells that originated from external source and not from player
- * casting it via spell book/wand/scroll. Exception is temple spells, they are not considered
- * "external".
+ * Function for processing spells cast from game scripts.
  */
-void EventCastSpell(int uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAYER_SKILL_LEVEL skillLevel, int fromx,
+void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAYER_SKILL_LEVEL skillLevel, int fromx,
                     int fromy, int fromz, int tox, int toy, int toz) {
     // For bug catching
     Assert(skillMastery >= PLAYER_SKILL_MASTERY_NOVICE && skillMastery <= PLAYER_SKILL_MASTERY_GRANDMASTER,
@@ -514,7 +510,7 @@ void EventCastSpell(int uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAYER_SKIL
         case SPELL_WATER_POISON_SPRAY:
         case SPELL_AIR_SPARKS:
         case SPELL_EARTH_DEATH_BLOSSOM:
-            spell_sprites.uType = SpellSpriteMapping[(SPELL_TYPE)uSpellID];
+            spell_sprites.uType = SpellSpriteMapping[uSpellID];
             spell_sprites.containing_item.Reset();
             spell_sprites.spell_id = uSpellID;
             spell_sprites.spell_level = skillLevel;

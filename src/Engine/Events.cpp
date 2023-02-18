@@ -833,7 +833,7 @@ LABEL_47:
                     ++curr_seq_num;
                     break;
                 case EVENT_CastSpell:
-                    EventCastSpell(_evt->v5, static_cast<PLAYER_SKILL_MASTERY>(_evt->v6 + 1), _evt->v7,
+                    EventCastSpell(static_cast<SPELL_TYPE>(_evt->v5), static_cast<PLAYER_SKILL_MASTERY>(_evt->v6 + 1), _evt->v7,
                                    EVT_DWORD(_evt->v8), EVT_DWORD(_evt->v12),
                                    EVT_DWORD(_evt->v16), EVT_DWORD(_evt->v20),
                                    EVT_DWORD(_evt->v24), EVT_DWORD(_evt->v28));
