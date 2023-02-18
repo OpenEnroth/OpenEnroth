@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <algorithm>
 
 #include "Vec.h"
@@ -13,7 +14,9 @@ struct BBox {
     T z1 = 0;
     T z2 = 0;
 
-    static BBox FromPoint(const Vec3<T> &center, T radius) {
+    [[nodiscard]] static BBox fromPoint(const Vec3<T> &center, T radius) {
+        assert(radius >= 0);
+
         BBox result;
         result.x1 = center.x - radius;
         result.x2 = center.x + radius;
@@ -24,23 +27,23 @@ struct BBox {
         return result;
     }
 
-    bool ContainsXY(T x, T y) const {
+    [[nodiscard]] bool containsXY(T x, T y) const {
         return x >= x1 && x <= x2 && y >= y1 && y <= y2;
     }
 
-    bool Contains(const Vec3<T> &pos) const {
+    [[nodiscard]] bool contains(const Vec3<T> &pos) const {
         return x1 <= pos.x && pos.x <= x2 && y1 <= pos.y && pos.y <= y2 && z1 <= pos.z && pos.z <= z2;
     }
 
     template<class U>
-    bool Intersects(const BBox<U> &other) const {
+    [[nodiscard]] bool intersects(const BBox<U> &other) const {
         return
-            this->x1 <= other.x2 && this->x2 >= other.x1 &&
-            this->y1 <= other.y2 && this->y2 >= other.y1 &&
-            this->z1 <= other.z2 && this->z2 >= other.z1;
+            x1 <= other.x2 && x2 >= other.x1 &&
+            y1 <= other.y2 && y2 >= other.y1 &&
+            z1 <= other.z2 && z2 >= other.z1;
     }
 
-    friend BBox operator|(const BBox &l, const BBox &r) {
+    [[nodiscard]] friend BBox operator|(const BBox &l, const BBox &r) {
         BBox result;
         result.x1 = std::min(l.x1, r.x1);
         result.x2 = std::max(l.x2, r.x2);
@@ -51,16 +54,13 @@ struct BBox {
         return result;
     }
 
-    // TODO(captainurist): IsCloseTo(bb, dist)
-    BBox Expanded(T radius) const {
-        BBox result;
-        result.x1 = this->x1 - radius;
-        result.x2 = this->x2 + radius;
-        result.y1 = this->y1 - radius;
-        result.y2 = this->y2 + radius;
-        result.z1 = this->z1 - radius;
-        result.z2 = this->z2 + radius;
-        return result;
+    [[nodiscard]] bool intersectsCube(const Vec3<T> &center, T halfSide) const {
+        assert(halfSide >= 0);
+
+        return
+            x1 <= center.x + halfSide && x2 >= center.x - halfSide &&
+            y1 <= center.y + halfSide && y2 >= center.y - halfSide &&
+            z1 <= center.z + halfSide && z2 >= center.z - halfSide;
     }
 };
 
