@@ -1433,7 +1433,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         default:
                             assert(false);
                     }
-
+                    amount = (spell_mastery == PLAYER_SKILL_MASTERY::PLAYER_SKILL_MASTERY_GRANDMASTER) ? 0 : 1;
                     spell_overlay_id = pOtherOverlayList->_4418B1(10005, 201, 0, 65536);
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 0);
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 1);
