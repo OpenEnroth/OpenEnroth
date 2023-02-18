@@ -110,11 +110,13 @@ GAME_TEST(Issues, Issue417) {
     test->playTraceFromTestData("issue_417b.mm7", "issue_417b.json");
 }
 
-static void check427Buffs(int player, bool hasBuff) {
-    EXPECT_EQ(pParty->pPlayers[player].pPlayerBuffs[PLAYER_BUFF_BLESS].Active(), hasBuff);
-    EXPECT_EQ(pParty->pPlayers[player].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active(), hasBuff);
-    EXPECT_EQ(pParty->pPlayers[player].pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active(), hasBuff);
-    EXPECT_EQ(pParty->pPlayers[player].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active(), hasBuff);
+static void check427Buffs(std::initializer_list<int> players, bool hasBuff) {
+    for (int player : players) {
+        for (PLAYER_BUFFS buff : {PLAYER_BUFF_BLESS, PLAYER_BUFF_PRESERVATION, PLAYER_BUFF_HAMMERHANDS, PLAYER_BUFF_PAIN_REFLECTION}) {
+            EXPECT_EQ(pParty->pPlayers[player].pPlayerBuffs[buff].Active(), hasBuff)
+                << "(with player=" << player << " and buff=" << buff << ")";
+        }
+    }
 }
 
 GAME_TEST(Issues, Issue427) {
@@ -124,17 +126,12 @@ GAME_TEST(Issues, Issue427) {
     test->playTraceFromTestData("issue_427a.mm7", "issue_427a.json");
 
     // Check that spell targeting works correctly - 1st char is getting the buffs.
-    check427Buffs(0, true);
-    check427Buffs(1, false);
-    check427Buffs(2, false);
-    check427Buffs(3, false);
+    check427Buffs({0}, true);
+    check427Buffs({1, 2, 3}, false);
 
     // In this test mastery is enough for the whole party
     test->playTraceFromTestData("issue_427b.mm7", "issue_427b.json");
 
     // Check that all character have buffs
-    check427Buffs(0, true);
-    check427Buffs(1, true);
-    check427Buffs(2, true);
-    check427Buffs(3, true);
+    check427Buffs({0, 1, 2, 3}, true);
 }
