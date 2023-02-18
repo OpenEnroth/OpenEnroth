@@ -2151,7 +2151,7 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) {
     } else if (HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
         weapon = GetMainHandItem();
         if (weapon->GetItemEquipType() == EQUIP_WAND) {
-            weapon_recovery = pSpellDatas[wand_spell_ids[weapon->uItemID]].uExpertLevelRecovery;
+            weapon_recovery = pSpellDatas[WandSpellIds[weapon->uItemID]].uExpertLevelRecovery;
         } else {
             weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
         }
@@ -7020,8 +7020,8 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             int damagetype;
             if (uActorType != OBJECT_Player ||spritefrom->spell_id != SPELL_BOW_ARROW) {
                 int playerMaxHp = playerPtr->GetMaxHealth();
-                damage = _43AFE3_calc_spell_damage(spritefrom->spell_id, spritefrom->spell_level,
-                                                spritefrom->spell_skill, playerMaxHp);
+                damage = CalcSpellDamage(spritefrom->spell_id, spritefrom->spell_level,
+                                         spritefrom->spell_skill, playerMaxHp);
                 damagetype = pSpellStats->pInfos[spritefrom->spell_id].uSchool;
             } else {
                 damage = pParty->pPlayers[uActorID].CalculateRangedDamageTo(0);
@@ -7161,8 +7161,8 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             if (uActorType != OBJECT_Player ||
                 spritefrom->spell_id != SPELL_BOW_ARROW) {
                 int playerMaxHp = playerPtr->GetMaxHealth();
-                damage = _43AFE3_calc_spell_damage(spritefrom->spell_id, spritefrom->spell_level,
-                    spritefrom->spell_skill, playerMaxHp);
+                damage = CalcSpellDamage(spritefrom->spell_id, spritefrom->spell_level,
+                                         spritefrom->spell_skill, playerMaxHp);
                 damagetype = pSpellStats->pInfos[spritefrom->spell_id].uSchool;
             } else {
                 damage = pParty->pPlayers[uActorID].CalculateRangedDamageTo(0);
@@ -7614,7 +7614,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
 
         int main_hand_idx = player->pEquipment.uMainHand;
         _42777D_CastSpell_UseWand_ShootArrow(
-            wand_spell_ids[player->pInventoryItemList[main_hand_idx - 1].uItemID],
+            WandSpellIds[player->pInventoryItemList[main_hand_idx - 1].uItemID],
             uActiveCharacter - 1, 8, 0, uActiveCharacter + 8);
 
         if (!--player->pInventoryItemList[main_hand_idx - 1].uNumCharges)

@@ -1839,7 +1839,7 @@ void RegeneratePartyHealthMana() {
             spellSprite.spell_skill = pParty->ImmolationSkillLevel();
             spellSprite.uType = SPRITE_SPELL_FIRE_IMMOLATION;
             spellSprite.spell_id = SPELL_FIRE_IMMOLATION;
-            spellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(spell_sprite_mapping[8].uSpriteType);
+            spellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(SpellSpriteMapping[SPELL_FIRE_IMMOLATION]);
             spellSprite.field_60_distance_related_prolly_lod = 0;
             spellSprite.uAttributes = 0;
             spellSprite.uSectorID = 0;
