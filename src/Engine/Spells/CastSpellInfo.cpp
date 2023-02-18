@@ -2824,6 +2824,7 @@ void CastSpellInfoHelpers::CastSpell() {
                             pParty->GetPlayingTime() + spell_duration,
                             spell_mastery, amount, 0, 0);
                     // Spell power for Feather fall and Wizard eye was "spell_level + 5"
+                    // Changed it to 0 because spell power isn't used for these spells.
                     pParty->pPartyBuffs[PARTY_BUFF_FEATHER_FALL].Apply(
                             pParty->GetPlayingTime() + spell_duration,
                             spell_mastery, 0, 0, 0);
@@ -2835,22 +2836,27 @@ void CastSpellInfoHelpers::CastSpell() {
 
                 case SPELL_LIGHT_HOUR_OF_POWER:
                 {
-                    // Spell power for buff was "spell_level + 5", not "spell_level * 5"
+                    // Spell power for subsequent buffs is the same as for their single spell versions
+                    // Which somehow contradicts with spell description in-game about power being
+                    // 4 times light skill for Master and 5 times light skill for Grandmaster
+                    PLAYER_SKILL_LEVEL target_skill_level = spell_level + 5;
                     GameTime haste_duration, other_duration;
-                    PLAYER_SKILL_LEVEL target_skill_level;
+                    int target_spell_level;
 
                     switch (spell_mastery) {
                         case PLAYER_SKILL_MASTERY_MASTER:
                             // Was "1h * spell_level + 1m" for other buffs
-                            haste_duration = GameTime::FromHours(1).AddMinutes(3 * spell_level * 4);
-                            other_duration = GameTime::FromHours(1).AddMinutes(15 * spell_level * 4);
-                            target_skill_level = spell_level * 4;
+                            target_spell_level = spell_level * 4;
+                            haste_duration = GameTime::FromHours(1).AddMinutes(3 * target_spell_level);
+                            other_duration = GameTime::FromHours(1).AddMinutes(15 * target_spell_level);
                             break;
                         case PLAYER_SKILL_MASTERY_GRANDMASTER:
                             // Was "75m * spell_level + 1m" for other buffs
-                            haste_duration = GameTime::FromHours(1).AddMinutes(4 * spell_level * 5);
-                            other_duration = GameTime::FromHours(1 + spell_level * 5);
-                            target_skill_level = spell_level * 5;
+                            // Time for non-haste buffs contradict with description in-game
+                            // Instead of using Grandmaster times, Master ones are used
+                            target_spell_level = spell_level * 5;
+                            haste_duration = GameTime::FromHours(1).AddMinutes(4 * target_spell_level);
+                            other_duration = GameTime::FromHours(1).AddMinutes(15 * target_spell_level);
                             break;
                         // Novice and master durations was
                         // "1h + 4m * spell_level" for haste
@@ -2882,8 +2888,9 @@ void CastSpellInfoHelpers::CastSpell() {
                     pParty->pPartyBuffs[PARTY_BUFF_STONE_SKIN].Apply(pParty->GetPlayingTime() + other_duration,
                                                                      spell_mastery, target_skill_level, 0, 0);
                     if (!player_weak) {
+                        // Spell power was changed to 0 because it is not used in Haste buff
                         pParty->pPartyBuffs[PARTY_BUFF_HASTE].Apply(pParty->GetPlayingTime() + haste_duration,
-                                                                    spell_mastery, target_skill_level, 0, 0);
+                                                                    spell_mastery, 0, 0, 0);
                     }
                     break;
                 }
