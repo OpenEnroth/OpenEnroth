@@ -156,6 +156,15 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(BrokenFlag1, CASE_SENSITIVE, {
     {BROKEN_FLAG_3, "LOL|WUT"} // Ye, don't do that
 })
 
+enum class BrokenFlag2 {
+    BROKEN_FLAG_OOOF = 1
+};
+using enum BrokenFlag2;
+
+MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(BrokenFlag2, CASE_SENSITIVE, {
+    {BROKEN_FLAG_OOOF, " S P A C E S "}
+})
+
 enum class NonBrokenFlag1 {
     NON_BROKEN_FLAG_0 = 0
 };
@@ -168,10 +177,12 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(NonBrokenFlag1, CASE_SENSITIVE, {
 UNIT_TEST(Serialization, BrokenFlags) {
     BrokenFlag0 b0;
     BrokenFlag1 b1;
+    BrokenFlag2 b2;
     NonBrokenFlag1 nb1;
 
     EXPECT_FALSE(serializer(&b0)->isUsableWithFlags());
     EXPECT_FALSE(serializer(&b1)->isUsableWithFlags());
+    EXPECT_FALSE(serializer(&b2)->isUsableWithFlags());
     EXPECT_TRUE(serializer(&nb1)->isUsableWithFlags());
 }
 
