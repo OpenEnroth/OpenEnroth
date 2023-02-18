@@ -3480,7 +3480,7 @@ void Player::Reset(PLAYER_CLASS_TYPE cls) {
     pActiveSkills[PLAYER_SKILL_MISC] = 1;
     memset(_achieved_awards_bits, 0, sizeof(_achieved_awards_bits));
     memset(&spellbook, 0, sizeof(spellbook));
-    uQuickSpell = 0;
+    uQuickSpell = SPELL_NONE;
 
     for (PLAYER_SKILL_TYPE i : AllSkills()) {
         if (pSkillAvailabilityPerClass[classType / 4][i] != 2)
@@ -8019,7 +8019,7 @@ Player::Player() {
     uFullManaBonus = 0;
     _mana_related = 0;
 
-    uQuickSpell = 0;
+    uQuickSpell = SPELL_NONE;
 
     _some_attack_bonus = 0;
     field_1A91 = 0;

@@ -532,7 +532,7 @@ struct Player {
     char field_1A4C;
     char field_1A4D;
     char lastOpenedSpellbookPage;
-    uint8_t uQuickSpell;
+    SPELL_TYPE uQuickSpell;
     char playerEventBits[64];
     char _some_attack_bonus;
     char field_1A91;

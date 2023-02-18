@@ -41,7 +41,6 @@ MM_DECLARE_FLAGS(SpellCastFlags, SpellCastFlag)
 MM_DECLARE_OPERATORS_FOR_FLAGS(SpellCastFlags)
 
 /*  271 */
-#pragma pack(push, 1)
 struct CastSpellInfo {
     inline CastSpellInfo() {
         memset(this, 0, sizeof(*this));
@@ -49,7 +48,7 @@ struct CastSpellInfo {
 
     GUIWindow *GetCastSpellInInventoryWindow();
 
-    uint16_t uSpellID;
+    SPELL_TYPE uSpellID;
     uint16_t uPlayerID;
     uint16_t uPlayerID_2;
     int16_t field_6; // ITEM_EQUIP_TYPE when enchanting.
@@ -58,7 +57,6 @@ struct CastSpellInfo {
     int spell_target_pid;
     int sound_id;
 };
-#pragma pack(pop)
 
 void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
                                           unsigned int uPlayerID,
