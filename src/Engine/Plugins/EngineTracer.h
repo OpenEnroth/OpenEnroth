@@ -8,6 +8,8 @@
 
 #include "Utility/Flags.h"
 
+#include "EngineTracePlaybackFlags.h"
+
 class EngineController;
 class EngineTracePlugin;
 class EngineDeterministicPlugin;
@@ -73,10 +75,12 @@ class EngineTracer : private PlatformApplicationAware {
      * @param game                      Engine controller.
      * @param savePath                  Path to save file.
      * @param tracePath                 Path to trace file.
+     * @param flags                     Playback flags.
      * @param postLoadCallback          Callback to call once the savegame is loaded.
      * @see EngineControlPlugin
      */
-    void playTrace(EngineController *game, const std::string &savePath, const std::string &tracePath, std::function<void()> postLoadCallback = {});
+    void playTrace(EngineController *game, const std::string &savePath, const std::string &tracePath,
+                   EngineTracePlaybackFlags flags = 0, std::function<void()> postLoadCallback = {});
 
  private:
     friend class PlatformIntrospection;

@@ -79,7 +79,8 @@ void EngineTracer::finishTraceRecording() {
     _saveFilePath.clear();
 }
 
-void EngineTracer::playTrace(EngineController *game, const std::string &savePath, const std::string &tracePath, std::function<void()> postLoadCallback) {
+void EngineTracer::playTrace(EngineController *game, const std::string &savePath, const std::string &tracePath,
+                             EngineTracePlaybackFlags flags, std::function<void()> postLoadCallback) {
     assert(_options & ENABLE_PLAYBACK);
     assert(_state == CHILLING);
 
@@ -95,7 +96,6 @@ void EngineTracer::playTrace(EngineController *game, const std::string &savePath
             tracePath, trace.header.saveFileSize, savePath, saveFileSize
         ));
     }
-    // TODO(captainurist): add an option to skip all checks
 
     game->resizeWindow(640, 480);
     game->tick();
@@ -117,7 +117,7 @@ void EngineTracer::playTrace(EngineController *game, const std::string &savePath
             const PaintEvent *paintEvent = static_cast<const PaintEvent *>(event.get());
 
             int64_t tickCount = application()->platform()->tickCount();
-            if (tickCount != paintEvent->tickCount) {
+            if (!(flags & TRACE_PLAYBACK_SKIP_TIME_CHECKS) && tickCount != paintEvent->tickCount) {
                 throw std::runtime_error(fmt::format(
                     "Tick count desynchronized when playing back trace '{}': expected {}, got {}",
                     tracePath, paintEvent->tickCount, tickCount
@@ -125,7 +125,7 @@ void EngineTracer::playTrace(EngineController *game, const std::string &savePath
             }
 
             int randomState = grng->Random(1024);
-            if (randomState != paintEvent->randomState) {
+            if (!(flags & TRACE_PLAYBACK_SKIP_RANDOM_CHECKS) && randomState != paintEvent->randomState) {
                 throw std::runtime_error(fmt::format(
                     "Random state desynchronized when playing back trace '{}' at {}ms: expected {}, got {}",
                     tracePath, tickCount, paintEvent->randomState, randomState

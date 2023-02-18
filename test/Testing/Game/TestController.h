@@ -4,6 +4,8 @@
 #include <string>
 #include <functional>
 
+#include "Engine/Plugins/EngineTracePlaybackFlags.h"
+
 class EngineController;
 class EngineTracer;
 
@@ -13,6 +15,7 @@ class TestController {
 
     void loadGameFromTestData(const std::string &name);
     void playTraceFromTestData(const std::string &saveName, const std::string &traceName, std::function<void()> postLoadCallback = {});
+    void playTraceFromTestData(const std::string &saveName, const std::string &traceName, EngineTracePlaybackFlags flags, std::function<void()> postLoadCallback = {});
 
     void prepareForNextTest();
 
