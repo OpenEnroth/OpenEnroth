@@ -1347,7 +1347,7 @@ var searchData=
   ['sub_5f4be571_5fadditemtoset_1344',['sub_4BE571_AddItemToSet',['../UIHouses_8cpp.html#ad9cebb1eb4097b5c5a8c0de0c6afb2a8',1,'UIHouses.cpp']]],
   ['subconstuctor_1345',['subconstuctor',['../structOutdoorLocation.html#a343af52a51b0505fc228dfe0c73f9c92',1,'OutdoorLocation']]],
   ['subtract_1346',['Subtract',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca1d9baf077ee87921f57a8fe42d510b65',1,'PlatformEnums.h']]],
-  ['subtracthours_1347',['SubtractHours',['../structGameTime.html#a34c27e8f594abff5ac40b859536a1b9b',1,'GameTime']]],
+  ['subtracthours_1347',['SubtractHours',['../structGameTime.html#ac49be031ccf299a82c6160f002a25676',1,'GameTime']]],
   ['subtractvariable_1348',['SubtractVariable',['../structPlayer.html#a0c6b48064406d1b110768097dc549fc3',1,'Player']]],
   ['summoned_1349',['Summoned',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395feda046bfcaf387649f3c78b193d321d4dd6',1,'ActorEnums.h']]],
   ['summoneditem_1350',['SummonedItem',['../structSummonedItem.html',1,'']]],
