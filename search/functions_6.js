@@ -54,7 +54,7 @@ var searchData=
   ['fromhours_51',['FromHours',['../structGameTime.html#a5038a8342841cf37dbf3857427fe4cf0',1,'GameTime']]],
   ['fromminutes_52',['FromMinutes',['../structGameTime.html#a06d361d87d87ee254e6c14ce035e6f58',1,'GameTime']]],
   ['fromodm_53',['FromODM',['../structBLVFace.html#ae4ff9cc8b3facb6b57845e28ca725468',1,'BLVFace']]],
-  ['frompoint_54',['FromPoint',['../structBBox.html#a7bca8c60995c3645b6484131d73a28ac',1,'BBox']]],
+  ['frompoint_54',['fromPoint',['../structBBox.html#a95cba703d29fe55be25a2d51ddcdb569',1,'BBox']]],
   ['fromseconds_55',['FromSeconds',['../structGameTime.html#a988d4e6b372bedab06913239264fd54c',1,'GameTime']]],
   ['fromyears_56',['FromYears',['../structGameTime.html#a4614fa6237061060135892717d0fc1de',1,'GameTime']]],
   ['fuzzyequals_57',['FuzzyEquals',['../Float_8h.html#a5fb9b31d7b0e8f1fbe847277a079b1ad',1,'FuzzyEquals(float l, float r):&#160;Float.h'],['../Float_8h.html#a1c841e1cf5b6eaa3cc8d49b737e85975',1,'FuzzyEquals(double l, double r):&#160;Float.h']]],
