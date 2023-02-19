@@ -9,10 +9,6 @@
 
 #include "PlatformEnums.h"
 
-#ifdef CreateWindow
-#   undef CreateWindow
-#endif
-
 class PlatformEvent;
 class PlatformWindow;
 class PlatformEventLoop;
@@ -92,14 +88,15 @@ class Platform {
      */
     virtual std::unique_ptr<PlatformEventLoop> createEventLoop() = 0;
 
-    // TODO(captainurist): virtual PlatformGamepadInfo gamepadInfo(uint32_t id) const = 0;
     /**
-     * Creates a new gamepad.
+     * This function lists the gamepads currently connected to the system. The gamepad objects themselves are owned
+     * by the platform and are destroyed automatically when disconnected. If you're caching them in your code, then
+     * make sure to subscribe to `EVENT_GAMEPAD_DISCONNECTED`, it is guaranteed to fire before the gamepad object
+     * is destroyed.
      *
-     * @param id                        Gamepad identifier from event.
-     * @return                          Newly created gamepad, or `nullptr` on error.
+     * @return                          All gamepads connected to the system.
      */
-    virtual std::unique_ptr<PlatformGamepad> createGamepad(uint32_t id) = 0;
+    virtual std::vector<PlatformGamepad *> gamepads() = 0;
 
     /**
      * Shows / hides system cursor (on top of all windows created by this platform).

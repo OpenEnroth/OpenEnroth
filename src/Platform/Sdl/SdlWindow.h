@@ -47,12 +47,8 @@ class SdlWindow : public PlatformWindow {
 
     virtual std::unique_ptr<PlatformOpenGLContext> createOpenGLContext(const PlatformOpenGLOptions &options) override;
 
-    uint32_t Id() const {
+    uint32_t id() const {
         return _id;
-    }
-
-    SDL_Window *SdlHandle() const {
-        return _window;
     }
 
  private:

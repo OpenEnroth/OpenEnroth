@@ -17,7 +17,6 @@ using Io::Mouse;
 namespace Application {
 class GameConfig;
 
-// Handles events from game window (OSWindow)
 class GameWindowHandler : public PlatformEventFilter {
  public:
     GameWindowHandler();
@@ -56,6 +55,9 @@ class GameWindowHandler : public PlatformEventFilter {
     void OnActivated();
     void OnDeactivated();
 
+    void handleKeyPress(PlatformKey key, PlatformModifiers mods, bool isAutoRepeat);
+    void handleKeyRelease(PlatformKey key);
+
     virtual bool keyPressEvent(const PlatformKeyEvent *event) override;
     virtual bool keyReleaseEvent(const PlatformKeyEvent *event) override;
     virtual bool mouseMoveEvent(const PlatformMouseEvent *event) override;
@@ -66,12 +68,14 @@ class GameWindowHandler : public PlatformEventFilter {
     virtual bool resizeEvent(const PlatformResizeEvent *event) override;
     virtual bool activationEvent(const PlatformWindowEvent *event) override;
     virtual bool closeEvent(const PlatformWindowEvent *event) override;
-    virtual bool gamepadDeviceEvent(const PlatformGamepadDeviceEvent *event) override;
+    virtual bool gamepadConnectionEvent(const PlatformGamepadEvent *event) override;
+    virtual bool gamepadKeyPressEvent(const PlatformGamepadKeyEvent *event) override;
+    virtual bool gamepadKeyReleaseEvent(const PlatformGamepadKeyEvent *event) override;
+    virtual bool gamepadAxisEvent(const PlatformGamepadAxisEvent *event) override;
 
  private:
     std::shared_ptr<Mouse> mouse = nullptr;
     std::unique_ptr<GameKeyboardController> keyboardController_;
-    std::unordered_map<uint32_t, std::unique_ptr<PlatformGamepad>> gamepads_;
 };
 
 }  // namespace Application

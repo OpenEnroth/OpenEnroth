@@ -8,8 +8,6 @@
 
 #include "Io/IKeyboardController.h"
 
-class PlatformKeyEvent;
-
 // TODO(captainurist): deriving from PlatformApplicationAware is a temporary (and ugly!) measure.
 // We need it so that `EngineTracer` can call reset. Just turn this one into an event filter!
 class GameKeyboardController: public Io::IKeyboardController, public PlatformApplicationAware {
@@ -19,8 +17,8 @@ class GameKeyboardController: public Io::IKeyboardController, public PlatformApp
     virtual bool ConsumeKeyPress(PlatformKey key) override;
     virtual bool IsKeyDown(PlatformKey key) const override;
 
-    void ProcessKeyPressEvent(const PlatformKeyEvent *event);
-    void ProcessKeyReleaseEvent(const PlatformKeyEvent *event);
+    void ProcessKeyPressEvent(PlatformKey key);
+    void ProcessKeyReleaseEvent(PlatformKey key);
 
     void reset();
 

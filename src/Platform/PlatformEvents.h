@@ -7,10 +7,8 @@
 
 #include "PlatformEnums.h"
 
-#undef KeyPress
-#undef KeyRelease
-
 class PlatformWindow;
+class PlatformGamepad;
 
 class PlatformEvent {
  public:
@@ -24,22 +22,13 @@ class PlatformWindowEvent: public PlatformEvent {
     PlatformWindow *window = nullptr;
 };
 
-/**
- * `KeyPress` or `KeyRelease` event.
- */
 class PlatformKeyEvent: public PlatformWindowEvent {
  public:
-    uint32_t id; // TODO(captainurist): move into a separate PlatformGamepadEvent
     PlatformKey key;
-    PlatformKeyType keyType;
-    PlatformKeyValue keyValue;
     PlatformModifiers mods;
     bool isAutoRepeat = false;
 };
 
-/**
- * `MouseButtonPress`, `MouseButtonRelease` or `MouseMove` event.
- */
 class PlatformMouseEvent: public PlatformWindowEvent {
  public:
     PlatformMouseButton button; // Button that caused this event, or BUTTON_NONE for move events.
@@ -48,39 +37,40 @@ class PlatformMouseEvent: public PlatformWindowEvent {
     bool isDoubleClick = false;
 };
 
-/**
- * `MouseWheel`
- */
 class PlatformWheelEvent: public PlatformWindowEvent {
  public:
     Pointi angleDelta; // 1 unit = 1/8 degree.
-    bool inverted; // Whether delta values delivered with the event are inverted.
+
+    // TODO(captainurist): why are we even exposing this? drop!
+    bool inverted = false; // Whether delta values delivered with the event are inverted.
 };
 
-/**
- * `WindowMove`
- */
 class PlatformMoveEvent: public PlatformWindowEvent {
  public:
     Pointi pos; // New position of the window.
 };
 
-/**
- * `WindowResize`
- */
 class PlatformResizeEvent: public PlatformWindowEvent {
  public:
     Sizei size; // New size of the window.
 };
 
-class PlatformGamepadDeviceEvent: public PlatformEvent {
+class PlatformGamepadEvent: public PlatformEvent {
  public:
-    uint32_t id;
+    PlatformGamepad *gamepad = nullptr;
 };
 
-/**
- * `NativeEvent`, sent only when platform is built with `MM_PLATFORM_SEND_NATIVE_EVENTS` defined.
- */
+class PlatformGamepadKeyEvent: public PlatformGamepadEvent {
+ public:
+    PlatformKey key; // TODO(captainurist): PlatformGamepadKey
+};
+
+class PlatformGamepadAxisEvent: public PlatformGamepadEvent {
+ public:
+    PlatformKey axis; // TODO(captainurist): PlatformGamepadAxis
+    float value = 0.0; // In [-1, 1] range.
+};
+
 class PlatformNativeEvent: public PlatformEvent {
  public:
     const void *nativeEvent = nullptr; // Pointer to a native event, in our case this is `SDL_Event`. Never `nullptr`.

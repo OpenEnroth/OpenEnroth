@@ -29,14 +29,6 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformEventType, CASE_SENSITIVE, {
 })
 MM_DEFINE_JSON_LEXICAL_SERIALIZATION_FUNCTIONS(PlatformEventType)
 
-MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformKeyType, CASE_SENSITIVE, {
-    {KEY_TYPE_KEYBOARD_BUTTON, "keyboard"},
-    {KEY_TYPE_GAMEPAD_BUTTON, "gamepadButton"},
-    {KEY_TYPE_GAMEPAD_AXIS, "gamepadAxis"},
-    {KEY_TYPE_GAMEPAD_TRIGGER, "gamepadTrigger"}
-})
-MM_DEFINE_JSON_LEXICAL_SERIALIZATION_FUNCTIONS(PlatformKeyType)
-
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformMouseButton, CASE_SENSITIVE, {
     {BUTTON_NONE, "none"},
     {BUTTON_LEFT, "left"},
@@ -75,10 +67,7 @@ MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(PlatformEvent, (
 
 MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(PlatformKeyEvent, (
     (type, "type"),
-    (id, "id"),
     (key, "key"),
-    (keyType, "keyType"),
-    (keyValue, "keyValue"),
     (mods, "mods"),
     (isAutoRepeat, "isAutoRepeat")
 ))
@@ -107,11 +96,6 @@ MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(PlatformResizeEvent, (
     (size, "size")
 ))
 
-MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(PlatformGamepadDeviceEvent, (
-    (type, "type"),
-    (id, "id")
-))
-
 MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(PaintEvent, (
     (type, "type"),
     (tickCount, "tickCount"),
@@ -124,10 +108,6 @@ inline void DispatchByEventType(PlatformEventType type, Callable &&callable) {
     case EVENT_KEY_PRESS:
     case EVENT_KEY_RELEASE:
         callable(static_cast<PlatformKeyEvent *>(nullptr));
-        break;
-    case EVENT_GAMEPAD_CONNECTED:
-    case EVENT_GAMEPAD_DISCONNECTED:
-        callable(static_cast<PlatformGamepadDeviceEvent *>(nullptr));
         break;
     case EVENT_MOUSE_BUTTON_PRESS:
     case EVENT_MOUSE_BUTTON_RELEASE:
@@ -151,7 +131,7 @@ inline void DispatchByEventType(PlatformEventType type, Callable &&callable) {
         callable(static_cast<PaintEvent *>(nullptr));
         break;
     default:
-        return;
+        return; // No gamepad events.
     }
 }
 

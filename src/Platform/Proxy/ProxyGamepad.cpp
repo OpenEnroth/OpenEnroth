@@ -9,7 +9,3 @@ std::string ProxyGamepad::model() const {
 std::string ProxyGamepad::serial() const {
     return nonNullBase()->serial();
 }
-
-uint32_t ProxyGamepad::id() const {
-    return nonNullBase()->id();
-}

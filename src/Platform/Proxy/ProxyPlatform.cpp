@@ -2,7 +2,6 @@
 
 #include <cassert>
 
-#include "Platform/PlatformGamepad.h"
 #include "Platform/PlatformWindow.h"
 #include "Platform/PlatformEventLoop.h"
 
@@ -16,8 +15,8 @@ std::unique_ptr<PlatformEventLoop> ProxyPlatform::createEventLoop() {
     return nonNullBase()->createEventLoop();
 }
 
-std::unique_ptr<PlatformGamepad> ProxyPlatform::createGamepad(uint32_t id) {
-    return nonNullBase()->createGamepad(id);
+std::vector<PlatformGamepad *> ProxyPlatform::gamepads() {
+    return nonNullBase()->gamepads();
 }
 
 void ProxyPlatform::setCursorShown(bool cursorShown) {

@@ -25,6 +25,9 @@ class PlatformEventHandler {
     virtual void resizeEvent(const PlatformResizeEvent *event);
     virtual void activationEvent(const PlatformWindowEvent *event);
     virtual void closeEvent(const PlatformWindowEvent *event);
-    virtual void gamepadDeviceEvent(const PlatformGamepadDeviceEvent *event);
+    virtual void gamepadConnectionEvent(const PlatformGamepadEvent *event);
+    virtual void gamepadKeyPressEvent(const PlatformGamepadKeyEvent *event);
+    virtual void gamepadKeyReleaseEvent(const PlatformGamepadKeyEvent *event);
+    virtual void gamepadAxisEvent(const PlatformGamepadAxisEvent *event);
     virtual void nativeEvent(const PlatformNativeEvent *event);
 };

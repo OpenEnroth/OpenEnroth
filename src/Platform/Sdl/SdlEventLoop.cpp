@@ -12,6 +12,7 @@
 #include "Platform/PlatformEnums.h"
 
 #include "Utility/Segment.h"
+#include "Utility/ScopeGuard.h"
 
 #include "SdlPlatformSharedState.h"
 #include "SdlEnumTranslation.h"
@@ -90,9 +91,10 @@ void SdlEventLoop::dispatchEvent(PlatformEventHandler *eventHandler, const SDL_E
         dispatchWindowEvent(eventHandler, &event->window);
         break;
     case SDL_CONTROLLERDEVICEADDED:
+        dispatchGamepadConnectedEvent(eventHandler, &event->cdevice);
+        break;
     case SDL_CONTROLLERDEVICEREMOVED:
-    case SDL_CONTROLLERDEVICEREMAPPED:
-        dispatchGamepadDeviceEvent(eventHandler, &event->cdevice);
+        dispatchGamepadDisconnectedEvent(eventHandler, &event->cdevice);
         break;
     case SDL_CONTROLLERBUTTONDOWN:
     case SDL_CONTROLLERBUTTONUP:
@@ -142,12 +144,9 @@ void SdlEventLoop::dispatchKeyEvent(PlatformEventHandler *eventHandler, const SD
 
     PlatformKeyEvent e;
     e.window = _state->window(event->windowID);
-    e.id = UINT32_MAX; // SDL doesn't discern between multiple keyboards
     e.type = event->type == SDL_KEYUP ? EVENT_KEY_RELEASE : EVENT_KEY_PRESS;
     e.isAutoRepeat = event->repeat;
     e.key = translateSdlKey(event->keysym.scancode);
-    e.keyType = KEY_TYPE_KEYBOARD_BUTTON;
-    e.keyValue = 0.0f;
     e.mods = translateSdlMods(event->keysym.mod);
 
     if (e.key != PlatformKey::None)
@@ -266,78 +265,49 @@ void SdlEventLoop::dispatchWindowResizeEvent(PlatformEventHandler *eventHandler,
     dispatchEvent(eventHandler, &e);
 }
 
-void SdlEventLoop::dispatchGamepadDeviceEvent(PlatformEventHandler *eventHandler, const SDL_ControllerDeviceEvent *event) {
-    PlatformGamepadDeviceEvent e;
-    int32_t id = -1;
-    if (event->type == SDL_CONTROLLERDEVICEADDED) {
-        e.type = EVENT_GAMEPAD_CONNECTED;
-        id = _state->nextFreeGamepadId();
-    } else if (event->type == SDL_CONTROLLERDEVICEREMOVED) {
-        e.type = EVENT_GAMEPAD_DISCONNECTED;
-        id = _state->getGamepadIdBySdlId(event->which);
-    } else {
+void SdlEventLoop::dispatchGamepadConnectedEvent(PlatformEventHandler *eventHandler, const SDL_ControllerDeviceEvent *event) {
+    PlatformGamepadEvent e;
+    e.type = EVENT_GAMEPAD_CONNECTED;
+    e.gamepad = _state->initializeGamepad(event->which);
+    if (!e.gamepad)
         return;
-    }
 
-    assert(id >= 0);
-    e.id = id;
+    dispatchEvent(eventHandler, &e);
+}
+
+void SdlEventLoop::dispatchGamepadDisconnectedEvent(PlatformEventHandler *eventHandler, const SDL_ControllerDeviceEvent *event) {
+    PlatformGamepadEvent e;
+    e.type = EVENT_GAMEPAD_DISCONNECTED;
+    e.gamepad = _state->gamepad(event->which);
+    if (!e.gamepad)
+        return;
+
+    MM_AT_SCOPE_EXIT(_state->deinitializeGamepad(event->which));
 
     dispatchEvent(eventHandler, &e);
 }
 
 void SdlEventLoop::dispatchGamepadButtonEvent(PlatformEventHandler *eventHandler, const SDL_ControllerButtonEvent *event) {
-    PlatformKeyEvent e;
-    e.id = _state->getGamepadIdBySdlId(event->which);
-    e.type = event->type == SDL_CONTROLLERBUTTONUP ? EVENT_KEY_RELEASE : EVENT_KEY_PRESS;
+    PlatformGamepadKeyEvent e;
+    e.gamepad = _state->gamepad(event->which);
+    e.type = event->type == SDL_CONTROLLERBUTTONUP ? EVENT_GAMEPAD_KEY_RELEASE : EVENT_GAMEPAD_KEY_PRESS;
     e.key = translateSdlGamepadButton(static_cast<SDL_GameControllerButton>(event->button));
-    e.keyType = KEY_TYPE_GAMEPAD_BUTTON;
-    e.keyValue = 0.0f;
-    e.isAutoRepeat = false;
-    e.mods = 0;
 
-    if (e.key == PlatformKey::None)
+    if (!e.gamepad || e.key == PlatformKey::None)
         return;
 
-    // TODO(captainurist): separate event type for gamepad events
-    std::vector<uint32_t> windowIds = _state->allWindowIds();
-    for (uint32_t id : windowIds) {
-        if (PlatformWindow *window = _state->window(id)) {
-            e.window = window;
-            dispatchEvent(eventHandler, &e);
-        }
-    }
+    dispatchEvent(eventHandler, &e);
 }
 
 void SdlEventLoop::dispatchGamepadAxisEvent(PlatformEventHandler *eventHandler, const SDL_ControllerAxisEvent *event) {
-    PlatformKeyEvent e;
-    e.id = _state->getGamepadIdBySdlId(event->which);
+    PlatformGamepadAxisEvent e;
+    e.gamepad = _state->gamepad(event->which);
+    e.type = EVENT_GAMEPAD_AXIS;
+    e.axis = translateSdlGamepadAxis(static_cast<SDL_GameControllerAxis>(event->axis));
+    e.value = std::clamp(event->value / 31767.0f, -1.0f, 1.0f);
 
-    // TODO: deadzone should be configurable and default should be lowered once we implement PlatformKeyValue processing.
-    int deadzone = 16384;
+    if (!e.gamepad || e.axis == PlatformKey::None)
+        return;
 
-    /* SDL returns values in range -32768:32767 for axis, and 0:32767 for triggers.
-     * Convert that to -1.0:1.0 float fox axis, 0.0:1.0 for triggers and return 0.0 when value is within deadzone. */
-    float value = abs(event->value) > deadzone ? std::clamp(event->value / 31767.0f, -1.0f, 1.0f) : 0.0f;
-
-    if (value == 0.0f)
-        e.type = EVENT_KEY_RELEASE;
-    else
-        e.type = EVENT_KEY_PRESS;
-
-    std::pair<PlatformKey, PlatformKeyType> key = translateSdlGamepadAxis(
-        static_cast<SDL_GameControllerAxis>(event->axis), event->value);
-    e.key = key.first;
-    e.keyType = key.second;
-    e.keyValue = value;
-    e.isAutoRepeat = false;
-    e.mods = 0;
-
-    // TODO(captainurist): separate event type for gamepad events
-    std::vector<uint32_t> windowIds = _state->allWindowIds();
-    for (uint32_t id : windowIds) {
-        if (PlatformWindow *window = _state->window(id)) {
-            e.window = window;
-            dispatchEvent(eventHandler, &e);
-        }
-    }
+    dispatchEvent(eventHandler, &e);
 }
