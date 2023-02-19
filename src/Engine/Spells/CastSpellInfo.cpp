@@ -2851,9 +2851,13 @@ void CastSpellInfoHelpers::CastSpell() {
                             other_duration = GameTime::FromHours(1).AddMinutes(15 * target_spell_level);
                             break;
                         case PLAYER_SKILL_MASTERY_GRANDMASTER:
-                            // Was "75m * spell_level + 1m" for other buffs
-                            // Time for non-haste buffs contradict with description in-game
-                            // Instead of using Grandmaster times, Master ones are used
+                            // In-game description says that the duration for non-haste buffs is "1h + (1h * spell_level) * 5",
+                            // but what we have here is "1h + (15m * spell_level) * 5".
+                            // And in the original decompiled code it was "1m + (15m * spell_level) * 5".
+                            // Note that durations that are used for non-haste buffs here are actually durations that are used
+                            // when casting individual spells on master, even when the hour of power itself is cast on GM. E.g.
+                            // stone skin on GM lasts "1h + 1h * earth_spell_level", but when cast as part of a GM hour of power
+                            // it only lasts "1h + (1h + 15m) * light_spell_level".
                             target_spell_level = spell_level * 5;
                             haste_duration = GameTime::FromHours(1).AddMinutes(4 * target_spell_level);
                             other_duration = GameTime::FromHours(1).AddMinutes(15 * target_spell_level);
