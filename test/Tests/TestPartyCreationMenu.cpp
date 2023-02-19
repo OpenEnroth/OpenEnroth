@@ -157,3 +157,8 @@ GAME_TEST(Issues, Issue125) {
     uint64_t newHealth = partyHealth();
     EXPECT_LT(newHealth, oldHealth);
 }
+
+GAME_TEST(Issues, Issue159) {
+    // Exception when entering Tidewater Caverns
+    test->playTraceFromTestData("issue_159.mm7", "issue_159.json");
+}
