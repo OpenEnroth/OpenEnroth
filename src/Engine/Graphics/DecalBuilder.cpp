@@ -200,7 +200,7 @@ bool DecalBuilder::ApplyBloodsplatDecals_IndoorFace(unsigned int uFaceID) {
     if (pFace->Indoor_sky() || pFace->Fluid()) return true;
     for (uint i = 0; i < bloodsplat_container->uNumBloodsplats; ++i) {
         Bloodsplat* pBloodsplat = &bloodsplat_container->pBloodsplats_to_apply[i];
-        if (pFace->pBounding.Expanded(pBloodsplat->radius).Contains(pBloodsplat->pos.ToShort())) {
+        if (pFace->pBounding.intersectsCube(pBloodsplat->pos.ToShort(), pBloodsplat->radius)) {
             double dotdist = Dot(pFace->pFacePlane.vNormal, pBloodsplat->pos) + pFace->pFacePlane.dist;
             if (dotdist <= pBloodsplat->radius) {
                 // store splat
@@ -222,7 +222,7 @@ bool DecalBuilder::ApplyBloodSplat_OutdoorFace(ODMFace* pFace) {
     if (!pFace->Indoor_sky() && !pFace->Fluid()) {
         for (int i = 0; i < bloodsplat_container->uNumBloodsplats; i++) {
             Bloodsplat* pBloodsplat = &bloodsplat_container->pBloodsplats_to_apply[i];
-            if (pFace->pBoundingBox.Expanded(pBloodsplat->radius).Contains(pBloodsplat->pos.ToShort())) {
+            if (pFace->pBoundingBox.intersectsCube(pBloodsplat->pos.ToShort(), pBloodsplat->radius)) {
                 double dotdist = pFace->pFacePlaneOLD.SignedDistanceTo(
                     round_to_int(pBloodsplat->pos.x), round_to_int(pBloodsplat->pos.y), round_to_int(pBloodsplat->pos.z));
                 if (dotdist <= pBloodsplat->radius) {

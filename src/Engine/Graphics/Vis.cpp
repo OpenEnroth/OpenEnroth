@@ -595,7 +595,7 @@ bool Vis::Intersect_Ray_Face(RenderVertexSoft *pRayStart,
 
 //----- (004C1D2B) --------------------------------------------------------
 bool Vis::CheckIntersectBModel(BLVFace *pFace, Vec3s IntersectPoint, signed int sModelID) {
-    if (!pFace->pBounding.Contains(IntersectPoint))
+    if (!pFace->pBounding.contains(IntersectPoint))
         return false;
 
     // sModelID == -1 means we're indoor, and -1 == MODEL_INDOOR, so this call just works.

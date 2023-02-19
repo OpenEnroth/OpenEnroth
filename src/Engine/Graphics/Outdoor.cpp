@@ -1669,7 +1669,7 @@ int ODM_GetFloorLevel(const Vec3i &pos, int unused, bool *pIsOnWater,
     int surface_count = 1;
 
     for (BSPModel &model : pOutdoor->pBModels) {
-        if (!model.pBoundingBox.ContainsXY(pos.x, pos.y))
+        if (!model.pBoundingBox.containsXY(pos.x, pos.y))
             continue;
 
         if (model.pFaces.empty())
@@ -1685,7 +1685,7 @@ int ODM_GetFloorLevel(const Vec3i &pos, int unused, bool *pIsOnWater,
             if (face.uPolygonType != POLYGON_Floor && face.uPolygonType != POLYGON_InBetweenFloorAndWall)
                 continue;
 
-            if (!face.pBoundingBox.ContainsXY(pos.x, pos.y))
+            if (!face.pBoundingBox.containsXY(pos.x, pos.y))
                 continue;
 
             int slack = engine->config->gameplay.FloorChecksEps.Get();
@@ -2792,7 +2792,7 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pF
     int ceiling_count = 1;
 
     for (BSPModel &model : pOutdoor->pBModels) {
-        if (!model.pBoundingBox.ContainsXY(Party_X, Party_Y))
+        if (!model.pBoundingBox.containsXY(Party_X, Party_Y))
             continue;
 
         for (ODMFace &face : model.pFaces) {
@@ -2802,7 +2802,7 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pF
             if (face.uPolygonType != POLYGON_Ceiling && face.uPolygonType != POLYGON_InBetweenCeilingAndWall)
                 continue;
 
-            if (!face.pBoundingBox.ContainsXY(Party_X, Party_Y))
+            if (!face.pBoundingBox.containsXY(Party_X, Party_Y))
                 continue;
 
             int slack = engine->config->gameplay.FloorChecksEps.Get();
