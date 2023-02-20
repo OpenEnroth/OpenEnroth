@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;bea6717</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6d61da0</span>
    </div>
   </td>
  </tr>
@@ -82,12 +82,42 @@ Discord</h1>
 <p ><a href="https://discord.gg/jRCyPtq"><img src="https://img.shields.io/badge/chat-on%20discord-green.svg" alt="Discord channel invite" style="pointer-events: none;" class="inline"/></a></p>
 <h1><a class="anchor" id="autotoc_md11"></a>
 Getting Started</h1>
-<ol type="1">
-<li>You will require a GoG or any older version of Might and Magic 7 installed for engine to guess game assets folder. You can override assets/game path by using <code>OPENENROTH_MM7_PATH</code> env variable.</li>
-<li>Copy OpenEnroth-specific resources from the 'resources' folder of the repo to the game assets folder.</li>
-<li>Use any IDE with CMake integration.</li>
-<li>Build &amp; run the OpenEnroth cmake target.</li>
-</ol>
+<p ><b>1. You will require a GoG or any older version of Might and Magic 7</b> </p><details >
+<p ><summary>&ensp;&ensp;details</summary></p>
+<ul>
+<li>The game on GOG is provided only for windows. Game itself works fine also with linux and winr, but GOG installer (few Kb) wrapper may not</li>
+<li>To workaround it, you can download the full game offline installer (~600MB)</li>
+<li><code>wine ~/Downloads/setup_might_and_magic_7_1.1_\(hotfix\)_\(10933\).exe</code> then works</li>
+<li>default installation points to <code>~/.wine/drive_c/GOG\ Games/Might\ and\ Magic\ 7</code> </li>
+</ul>
+</details>
+<p ><b>2. Build as described: <a href="HACKING.md#dependencies">HACKING.md</a></b> </p><details >
+<p ><summary>&ensp;&ensp;verify</summary></p>
+<div class="fragment"><div class="line">...</div>
+<div class="line">[ 99%] Built target OpenEnroth</div>
+<div class="line">[ 99%] Built target lj_gen_vm_s</div>
+<div class="line">[100%] Building C object thirdparty/luajit/luajit/src/CMakeFiles/luajit.dir/luajit.c.o</div>
+<div class="line">[100%] Linking C executable luajit</div>
+<div class="line">[100%] Built target luajit</div>
+<div class="line"># ls -l build/ | grep OpenEnroth -A1 -B1</div>
+<div class="line">-rw-r--r--.  1 you you   41831 Feb 16 10:12 Makefile</div>
+<div class="line">-rwxr-xr-x.  1 you you 5547552 Feb 16 10:18 OpenEnroth</div>
+<div class="line">drwxr-xr-x. 12 you you    4096 Feb 16 10:12 src</div>
+</div><!-- fragment --> </details>
+<p ><b>3. Mandatory copy OpenEnroth-specific resources from the 'resources' folder of the repo to the game assets folder.</b></p><ul>
+<li><code>cp -rv resources/shaders ~/.wine/drive_c/GOG\ Games/Might\ and\ Magic\ 7</code> <details >
+<p ><summary>&ensp;&ensp;verify</summary></p>
+<div class="fragment"><div class="line"># ls -l ~/.wine/drive_c/GOG\ Games/Might\ and\ Magic\ 7 | grep shaders -A1 -B1</div>
+<div class="line">drwxr-xr-x. 2 you you     4096 Feb 16 09:52 Saves</div>
+<div class="line">drwxr-xr-x. 2 you you     4096 Feb 16 10:03 shaders</div>
+<div class="line">-rw-r--r--. 1 you you   138752 Jul  5  2017 Smackw32.dll</div>
+</div><!-- fragment --> </details>
+</li>
+</ul>
+<p ><b>4. You <em>have to</em> set path to the game by using <code>OPENENROTH_MM7_PATH</code> env variable.</b> <b>5. Run freshly built binary</b></p><ul>
+<li><code>OPENENROTH_MM7_PATH=~/.wine/drive_c/GOG\ Games/Might\ and\ Magic\ 7 build/OpenEnroth</code></li>
+<li>If you forget to copy content of resources or point to wrong directory, game complains identically in console</li>
+</ul>
 <h1><a class="anchor" id="autotoc_md12"></a>
 Development</h1>
 <p >See the <a class="el" href="md_HACKING.html">HACKING</a> document for information on how to compile or if you intend to contribute.</p>
