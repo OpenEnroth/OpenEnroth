@@ -1,4 +1,6 @@
 #pragma once
+
+#include <cstdint>
 #include <array>
 
 #include "Engine/Objects/ItemEnums.h"
@@ -10,8 +12,8 @@
 #include "Utility/Geometry/Vec.h"
 
 /*  360 */
-enum SPELL_TYPE {
-    SPELL_0 = 0,
+enum SPELL_TYPE : uint8_t {
+    SPELL_NONE = 0,
 
     SPELL_FIRE_TORCH_LIGHT = 1,
     SPELL_FIRE_FIRE_BOLT = 2,
@@ -121,9 +123,16 @@ enum SPELL_TYPE {
     SPELL_DARK_ARMAGEDDON = 98,
     SPELL_DARK_SOULDRINKER = 99,
 
+    // TODO(captainurist): use IndexedArray where this one is referenced
+    SPELL_REGULAR_LAST = SPELL_DARK_SOULDRINKER,
+    SPELL_REGULAR_COUNT = SPELL_REGULAR_LAST + 1,
+
     SPELL_BOW_ARROW = 100,
     SPELL_101 = 101,
     SPELL_LASER_PROJECTILE = 102,
+
+    SPELL_ANY_WITH_SPRITE_FIRST = SPELL_FIRE_TORCH_LIGHT,
+    SPELL_ANY_WITH_SPRITE_LAST = SPELL_LASER_PROJECTILE,
 
     BECOME_MAGIC_GUILD_MEMBER = 150,
     SPELL_QUEST_COMPLETED = 151,
@@ -184,15 +193,7 @@ struct SpellInfo {
 struct SpellStats {
     void Initialize();
 
-    SpellInfo pInfos[100];
-};
-#pragma pack(pop)
-
-/*  364 */
-#pragma pack(push, 1)
-struct stru324_spell_id_to_sprite_mapping {  // stru324_spell
-    SPRITE_OBJECT_TYPE uSpriteType;
-    int16_t field_2;
+    SpellInfo pInfos[SPELL_REGULAR_COUNT];
 };
 #pragma pack(pop)
 
@@ -200,11 +201,11 @@ struct stru324_spell_id_to_sprite_mapping {  // stru324_spell
 #pragma pack(push, 1)
 class SpellData {
  public:
-    SpellData(int16_t innormalMana, int16_t inExpertLevelMana,
+    SpellData(int16_t inNormalMana, int16_t inExpertLevelMana,
               int16_t inMasterLevelMana, int16_t inMagisterLevelMana,
               int16_t inNormalLevelRecovery, int16_t inExpertLevelRecovery,
               int16_t inMasterLevelRecovery, int16_t inMagisterLevelRecovery,
-              int8_t inbaseDamage, int8_t inbonusSkillDamage, int16_t instats);
+              int8_t inBaseDamage, int8_t inBonusSkillDamage, int16_t inStats);
     union {
         uint16_t mana_per_skill[4];
         struct {
@@ -237,7 +238,6 @@ struct SpellBookIconPos {
     int32_t Xpos;
     int32_t Ypos;
 };
-
 #pragma pack(pop)
 
 /*  154 */
@@ -250,20 +250,20 @@ struct TownPortalData {
     int16_t field_12;
 };
 #pragma pack(pop)
+
 extern std::array<TownPortalData, 6> TownPortalList;  // 4ECBB8
 
 extern struct SpellStats *pSpellStats;
 
 extern std::array<std::array<struct SpellBookIconPos, 12>, 9> pIconPos;
 
-extern std::array<stru324_spell_id_to_sprite_mapping, 103>
-    spell_sprite_mapping;  // 4E3ACC
-extern std::array<SpellData, 100> pSpellDatas;
-extern IndexedArray<SPELL_TYPE, ITEM_FIRST_WAND, ITEM_LAST_WAND> wand_spell_ids;
+extern IndexedArray<SPRITE_OBJECT_TYPE, SPELL_ANY_WITH_SPRITE_FIRST, SPELL_ANY_WITH_SPRITE_LAST> SpellSpriteMapping;  // 4E3ACC
+extern std::array<SpellData, SPELL_REGULAR_COUNT> pSpellDatas;
+extern IndexedArray<SPELL_TYPE, ITEM_FIRST_WAND, ITEM_LAST_WAND> WandSpellIds;
 
-int _43AFE3_calc_spell_damage(int spellId, PLAYER_SKILL_LEVEL spellLevel, PLAYER_SKILL_MASTERY skillMastery, int currentHp);
-bool sub_427769_isSpellQuickCastableOnShiftClick(unsigned int uSpellID);
-void EventCastSpell(int uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAYER_SKILL_LEVEL skillLevel, int fromx,
+int CalcSpellDamage(int spellId, PLAYER_SKILL_LEVEL spellLevel, PLAYER_SKILL_MASTERY skillMastery, int currentHp);
+bool IsSpellQuickCastableOnShiftClick(unsigned int uSpellID);
+void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAYER_SKILL_LEVEL skillLevel, int fromx,
                     int fromy, int fromz, int tox, int toy, int toz);  // sub_448DF8
 
 void armageddonProgress();

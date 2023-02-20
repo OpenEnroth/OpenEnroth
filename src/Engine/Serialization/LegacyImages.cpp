@@ -978,7 +978,7 @@ void Deserialize(const Player_MM7 &src, Player* dst) {
     dst->field_1A4C = src.field_1A4C;
     dst->field_1A4D = src.field_1A4D;
     dst->lastOpenedSpellbookPage = src.lastOpenedSpellbookPage;
-    dst->uQuickSpell = src.uQuickSpell;
+    dst->uQuickSpell = static_cast<SPELL_TYPE>(src.uQuickSpell);
 
     for (unsigned int i = 0; i < 49; ++i)
         dst->playerEventBits[i] = src.playerEventBits[i];
@@ -1262,9 +1262,9 @@ void Deserialize(const Actor_MM7 &src, Actor *dst) {
     dst->pMonsterInfo.uAttack2DamageBonus = src.pMonsterInfo.uAttack2DamageBonus;
     dst->pMonsterInfo.uMissleAttack2Type = src.pMonsterInfo.uMissleAttack2Type;
     dst->pMonsterInfo.uSpell1UseChance = src.pMonsterInfo.uSpell1UseChance;
-    dst->pMonsterInfo.uSpell1ID = src.pMonsterInfo.uSpell1ID;
+    dst->pMonsterInfo.uSpell1ID = static_cast<SPELL_TYPE>(src.pMonsterInfo.uSpell1ID);
     dst->pMonsterInfo.uSpell2UseChance = src.pMonsterInfo.uSpell2UseChance;
-    dst->pMonsterInfo.uSpell2ID = src.pMonsterInfo.uSpell2ID;
+    dst->pMonsterInfo.uSpell2ID = static_cast<SPELL_TYPE>(src.pMonsterInfo.uSpell2ID);
     dst->pMonsterInfo.uResFire = src.pMonsterInfo.uResFire;
     dst->pMonsterInfo.uResAir = src.pMonsterInfo.uResAir;
     dst->pMonsterInfo.uResWater = src.pMonsterInfo.uResWater;

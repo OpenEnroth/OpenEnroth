@@ -3,16 +3,15 @@
 #include "Application/Game.h"
 #include "Application/GameFactory.h"
 
-#include "Engine/Plugins/EngineTracer.h"
 #include "Engine/Plugins/EngineControlPlugin.h"
 #include "Engine/Plugins/EngineController.h"
 #include "Engine/Plugins/EngineDeterministicPlugin.h"
 
 #include "Testing/Game/GameTest.h"
+#include "Testing/Game/TestConfig.h"
+#include "Testing/Game/TestController.h"
 
 #include "Library/Application/PlatformApplication.h"
-
-#include "Utility/ScopeGuard.h"
 
 #include "GameTestOptions.h"
 
@@ -34,11 +33,7 @@ class GameThread {
         }
 
         _config = std::make_shared<Application::GameConfig>();
-        _config->LoadConfiguration(); // TODO(captainurist): Reads from openenroth.ini, not good for tests
-        _config->debug.NoVideo.Set(true);
-        _config->window.MouseGrab.Set(false);
-        _config->graphics.FPSLimit.Set(0); // Unlimited
-
+        ResetTestConfig(_config.get());
         _game = Application::GameFactory().CreateGame(_application.get(), _config);
     }
 
@@ -95,10 +90,6 @@ int platformMain(int argc, char **argv) {
         GameTest::init(game, &test);
         gameThread.app()->get<EngineDeterministicPlugin>()->enterDeterministicMode(); // And never leave it.
         game->tick(10); // Let the game thread initialize everything.
-
-        // TODO(captainurist): just remap the events properly and drop resize calls here and in EngineTracer
-        game->resizeWindow(640, 480);
-        game->tick();
 
         exitCode = RUN_ALL_TESTS();
 

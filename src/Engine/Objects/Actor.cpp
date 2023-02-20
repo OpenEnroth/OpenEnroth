@@ -206,7 +206,7 @@ void Actor::SetRandomGoldIfTheresNoItem() {
 
 //----- (00404AC7) --------------------------------------------------------
 void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
-                           int uSpellID, ABILITY_INDEX a4, PLAYER_SKILL uSkillMastery) {
+                           SPELL_TYPE uSpellID, ABILITY_INDEX a4, PLAYER_SKILL uSkillMastery) {
     Actor *actorPtr;            // esi@1
     int v8;                     // edi@16
     signed int v10;             // ecx@22
@@ -269,7 +269,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         case SPELL_LIGHT_LIGHT_BOLT:
         case SPELL_DARK_TOXIC_CLOUD:
         case SPELL_DARK_DRAGON_BREATH:
-            a1.uType = spell_sprite_mapping[uSpellID].uSpriteType;
+            a1.uType = SpellSpriteMapping[uSpellID];
             a1.uObjectDescID = GetObjDescId(uSpellID);
             a1.containing_item.Reset();
             a1.spell_id = uSpellID;
@@ -352,7 +352,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     pitch = TrigLUT.Atan2(v31, (int)spellnumc);
                 }
                 a1.containing_item.Reset();
-                a1.uType = spell_sprite_mapping[uSpellID].uSpriteType;
+                a1.uType = SpellSpriteMapping[uSpellID];
                 a1.uObjectDescID = GetObjDescId(uSpellID);
                 a1.spell_level = uSkillMastery;
                 a1.vPosition.x = pParty->vPosition.x;
@@ -402,7 +402,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             else
                 v10 = 3;
             spellnuma = (signed int)(60 * TrigLUT.uIntegerDoublePi) / 360;
-            a1.uType = spell_sprite_mapping[uSpellID].uSpriteType;
+            a1.uType = SpellSpriteMapping[uSpellID];
             v118 = (signed int)(60 * TrigLUT.uIntegerDoublePi) / 360 /
                    (v10 - 1);
             a1.uObjectDescID = GetObjDescId(uSpellID);
@@ -637,7 +637,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 v70 = 3;
 
             spellnume = (signed int)(60 * TrigLUT.uIntegerDoublePi) / 360;
-            a1.uType = spell_sprite_mapping[uSpellID].uSpriteType;
+            a1.uType = SpellSpriteMapping[uSpellID];
             v116 = (signed int)(60 * TrigLUT.uIntegerDoublePi) / 360 /
                    (v70 - 1);
             a1.uObjectDescID = GetObjDescId(uSpellID);
@@ -698,8 +698,8 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
     }
 }
 
-unsigned short Actor::GetObjDescId(int spellId) {
-    return pObjectList->ObjectIDByItemID(spell_sprite_mapping[spellId].uSpriteType);  // crash here
+unsigned short Actor::GetObjDescId(SPELL_TYPE spellId) {
+    return pObjectList->ObjectIDByItemID(SpellSpriteMapping[spellId]);  // crash here
 }
 
 bool Actor::ArePeasantsOfSameFaction(Actor *a1, Actor *a2) {
@@ -1346,14 +1346,14 @@ int Actor::_43B3E0_CalcDamage(ABILITY_INDEX dmgSource) {
             skill = this->pMonsterInfo.uSpellSkillAndMastery2;
             skillLevel = GetSkillLevel(skill);
             skillMastery = GetSkillMastery(skill);
-            return _43AFE3_calc_spell_damage(spellID, skillLevel, skillMastery, 0);
+            return CalcSpellDamage(spellID, skillLevel, skillMastery, 0);
             break;
         case ABILITY_SPELL2:
             spellID = this->pMonsterInfo.uSpell2ID;
             skill = this->pMonsterInfo.uSpellSkillAndMastery2;
             skillLevel = GetSkillLevel(skill);
             skillMastery = GetSkillMastery(skill);
-            return _43AFE3_calc_spell_damage(spellID, skillLevel, skillMastery, 0);
+            return CalcSpellDamage(spellID, skillLevel, skillMastery, 0);
             break;
         case ABILITY_SPECIAL:
             damageDiceRolls = this->pMonsterInfo.uSpecialAbilityDamageDiceRolls;
@@ -3271,7 +3271,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 skillLevel = 5 * projectileSprite->spell_level;
                 attackElement =
                     (DAMAGE_TYPE)player->GetSpellSchool(SPELL_EARTH_BLADES);
-                uDamageAmount = _43AFE3_calc_spell_damage(
+                uDamageAmount = CalcSpellDamage(
                     39, projectileSprite->spell_level,
                     projectileSprite->spell_skill, pMonster->sCurrentHP);
                 if (pMonster->pActorBuffs[ACTOR_BUFF_SHIELD].Active())
@@ -3311,7 +3311,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 attackElement = (DAMAGE_TYPE)player->GetSpellSchool(
                     projectileSprite->spell_id);
                 IsAdditionalDamagePossible = false;
-                uDamageAmount = _43AFE3_calc_spell_damage(
+                uDamageAmount = CalcSpellDamage(
                     projectileSprite->spell_id, projectileSprite->spell_level,
                     projectileSprite->spell_skill, pMonster->sCurrentHP);
                 break;
@@ -3932,7 +3932,7 @@ void Actor::LootActor() {
 }
 
 //----- (00427102) --------------------------------------------------------
-bool Actor::_427102_IsOkToCastSpell(enum SPELL_TYPE spell) {
+bool Actor::_427102_IsOkToCastSpell(SPELL_TYPE spell) {
     switch (spell) {
         case SPELL_BODY_POWER_CURE: {
             if (this->sCurrentHP >= this->pMonsterInfo.uHP) return false;
@@ -3982,8 +3982,8 @@ ABILITY_INDEX Actor::special_ability_use_check(int a2) {
         grng->Random(100) < 5)
         this->SummonMinion(a2);
 
-    bool okToCastSpell1 = this->_427102_IsOkToCastSpell((SPELL_TYPE)this->pMonsterInfo.uSpell1ID);
-    bool okToCastSpell2 = this->_427102_IsOkToCastSpell((SPELL_TYPE)this->pMonsterInfo.uSpell2ID);
+    bool okToCastSpell1 = this->_427102_IsOkToCastSpell(this->pMonsterInfo.uSpell1ID);
+    bool okToCastSpell2 = this->_427102_IsOkToCastSpell(this->pMonsterInfo.uSpell2ID);
     if (okToCastSpell1 && this->pMonsterInfo.uSpell1UseChance && grng->Random(100) < this->pMonsterInfo.uSpell1UseChance)
         return ABILITY_SPELL1;
     if (okToCastSpell2 && this->pMonsterInfo.uSpell2UseChance && grng->Random(100) < this->pMonsterInfo.uSpell2UseChance)
@@ -5166,7 +5166,7 @@ void ItemDamageFromActor(unsigned int uObjID, unsigned int uActorID,
     if (!pActors[uActorID].IsNotAlive()) {
         if (PID_TYPE(uObjID) == OBJECT_Item) {
             if (pSpriteObjects[PID_ID(uObjID)].spell_id) {
-                v6 = _43AFE3_calc_spell_damage(
+                v6 = CalcSpellDamage(
                     pSpriteObjects[PID_ID(uObjID)].spell_id,
                     pSpriteObjects[PID_ID(uObjID)].spell_level,
                     pSpriteObjects[PID_ID(uObjID)].spell_skill,

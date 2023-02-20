@@ -5,7 +5,7 @@
 #include <cstring>
 #include <memory>
 
-#include "Utility/FreeDeleter.h"
+#include "Utility/Memory/FreeDeleter.h"
 
 namespace zlib {
 

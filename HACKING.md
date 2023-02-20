@@ -112,6 +112,8 @@ Testing
 -------
 We strive for a good test coverage of the project, and while we're not there yet, the current policy is to add tests for all the bugs we fix, as long as the fix is testable. E.g. graphical glitches are generally very hard to test, but we have the infractructure to test game logic and small isolated classes.
 
+Tests are not built by default, and you will need to set `ENABLE_TESTS` cmake variable to be able to build them. You can either use your IDE for that, or just run `cmake` with `-DENABLE_TESTS=ON` from the command line.
+
 Tests in OpenEnroth fall into two categories:
 * Unit tests. These are a standard breed of tests, written using Google Test. You can see some examples in `src/Utility/Tests`.
 * Game tests. If you're familiar with how testing is done these days for complex mobile apps, then you can consider game tests a variation of UI tests that's specific to our project. Game tests need game assets to run, and are currently **not** run in github actions.
@@ -131,6 +133,8 @@ As typing out all the events to send inside the test code can be pretty tedious,
 To run all unit tests locally, build a `UnitTest` cmake target, or build & run `OpenEnroth_UnitTest`.
 
 To run all game tests locally, set `OPENENROTH_MM7_PATH` environment variable to point to the location of the game assets, then build `GameTest` cmake target. Alternatively, you can build `OpenEnroth_GameTest`, and run it manually, passing the paths to both game assets and the test data via command line.
+
+Note that if you can't find either `UnitTest` or `GameTest` target in the target list of your IDE, this likely means that you haven't set the `ENABLE_TESTS` cmake variable as described above.
 
 
 Additional Resources

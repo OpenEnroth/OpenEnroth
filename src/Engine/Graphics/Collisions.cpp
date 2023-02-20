@@ -198,7 +198,7 @@ static bool CollideWithCylinder(const Vec3f &center_lo, float radius, float heig
     bbox.y2 = center_lo.y + radius;
     bbox.z1 = center_lo.z;
     bbox.z2 = center_lo.z + height;
-    if (!collision_state.bbox.Intersects(bbox))
+    if (!collision_state.bbox.intersects(bbox))
         return false;
 
     // dist vector points from position center into cylinder center.
@@ -276,10 +276,10 @@ bool CollisionState::PrepareAndCheckIfStationary(int dt_fp) {
     this->new_position_lo = this->position_lo + this->move_distance * this->direction;
 
     this->bbox =
-        BBoxf::FromPoint(this->position_lo, this->radius_lo) |
-        BBoxf::FromPoint(this->new_position_lo, this->radius_lo) |
-        BBoxf::FromPoint(this->position_hi, this->radius_hi) |
-        BBoxf::FromPoint(this->new_position_hi, this->radius_hi);
+        BBoxf::fromPoint(this->position_lo, this->radius_lo) |
+        BBoxf::fromPoint(this->new_position_lo, this->radius_lo) |
+        BBoxf::fromPoint(this->position_hi, this->radius_hi) |
+        BBoxf::fromPoint(this->new_position_hi, this->radius_hi);
 
     this->pid = 0;
     this->adjusted_move_distance = this->move_distance;
@@ -296,7 +296,7 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
     BLVSector *pSector = &pIndoor->pSectors[collision_state.uSectorID];
     for (int j = 0; j < pSector->uNumPortals; ++j) {
         BLVFace *pFace = &pIndoor->pFaces[pSector->pPortals[j]];
-        if (!collision_state.bbox.Intersects(pFace->pBounding))
+        if (!collision_state.bbox.intersects(pFace->pBounding))
             continue;
 
         float distance = abs(pFace->pFacePlane.SignedDistanceTo(collision_state.position_lo));
@@ -314,7 +314,7 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
         int totalFaces = pSector->uNumFloors + pSector->uNumWalls + pSector->uNumCeilings;
         for (int j = 0; j < totalFaces; j++) {
             BLVFace *face = &pIndoor->pFaces[pSector->pFloors[j]];
-            if (face->Portal() || !collision_state.bbox.Intersects(face->pBounding))
+            if (face->Portal() || !collision_state.bbox.intersects(face->pBounding))
                 continue;
 
             int face_id = pSector->pFloors[j];
@@ -328,11 +328,11 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
 
 void CollideOutdoorWithModels(bool ignore_ethereal) {
     for (BSPModel &model : pOutdoor->pBModels) {
-        if (!collision_state.bbox.Intersects(model.pBoundingBox))
+        if (!collision_state.bbox.intersects(model.pBoundingBox))
             continue;
 
         for (ODMFace &mface : model.pFaces) {
-            if (!collision_state.bbox.Intersects(mface.pBoundingBox))
+            if (!collision_state.bbox.intersects(mface.pBoundingBox))
                 continue;
 
             // TODO: we should really either merge two face classes, or template the functions down the chain call here.
@@ -386,7 +386,7 @@ bool CollideIndoorWithPortals() {
     float min_move_distance = std::numeric_limits<float>::max();
     for (unsigned int i = 0; i < pIndoor->pSectors[collision_state.uSectorID].uNumPortals; ++i) {
         BLVFace *face = &pIndoor->pFaces[pIndoor->pSectors[collision_state.uSectorID].pPortals[i]];
-        if (!collision_state.bbox.Intersects(face->pBounding))
+        if (!collision_state.bbox.intersects(face->pBounding))
             continue;
 
         float distance_lo_old = face->pFacePlane.SignedDistanceTo(collision_state.position_lo);
@@ -448,7 +448,7 @@ void _46ED8A_collide_against_sprite_objects(unsigned int pid) {
         bbox.y2 = pSpriteObjects[i].vPosition.y + object->uRadius;
         bbox.z1 = pSpriteObjects[i].vPosition.z;
         bbox.z2 = pSpriteObjects[i].vPosition.z + object->uHeight;
-        if (!collision_state.bbox.Intersects(bbox))
+        if (!collision_state.bbox.intersects(bbox))
             continue;
 
         float dist_x = pSpriteObjects[i].vPosition.x - collision_state.position_lo.x;
