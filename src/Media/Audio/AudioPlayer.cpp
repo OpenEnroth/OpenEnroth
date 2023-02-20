@@ -281,14 +281,12 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
         si.sample->Play();
     } else if (pid < 0) {  // exclusive sounds - no override (close chest)
         si.sample->Play();
-    } else if (pid == PID_INVALID) { // initial spell sound, originates from party so must be positioned there
-        provider->SetListenerPosition(pParty->vPosition.x / 50.f,
-                                      pParty->vPosition.y / 50.f,
-                                      pParty->vPosition.z / 50.f);
-        si.sample->SetPosition(pParty->vPosition.x / 50.f,
-                               pParty->vPosition.y / 50.f,
-                               pParty->vPosition.z / 50.f, 500.f);
-        si.sample->Play(false, true);
+    } else if (pid == PID_INVALID) { // the same as -1, but must not be used as of now
+        si.sample->Stop();
+        si.sample->Play();
+        if (engine->config->debug.VerboseLogging.Get()) {
+            logger->Warning("PID_INVALID used in PlaySound");
+        }
     } else {
         ObjectType object_type = PID_TYPE(pid);
         unsigned int object_id = PID_ID(pid);
@@ -297,9 +295,6 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
                 assert(uCurrentlyLoadedLevelType == LEVEL_Indoor);
                 assert((int)object_id < pIndoor->pDoors.size());
 
-                provider->SetListenerPosition(pParty->vPosition.x / 50.f,
-                                              pParty->vPosition.y / 50.f,
-                                              pParty->vPosition.z / 50.f);
                 si.sample->SetPosition(pIndoor->pDoors[object_id].pXOffsets[0] / 50.f,
                                        pIndoor->pDoors[object_id].pYOffsets[0] / 50.f,
                                        pIndoor->pDoors[object_id].pZOffsets[0] / 50.f, 500.f);
@@ -310,7 +305,9 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
             }
             case OBJECT_Player: {
                 si.sample->SetVolume(uVoiceVolume);
-                if (object_id == 5) si.sample->Stop();
+                if (object_id == 5) {
+                    si.sample->Stop();
+                }
                 si.sample->Play();
 
                 break;
@@ -318,9 +315,6 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
             case OBJECT_Actor: {
                 assert(object_id < pActors.size());
 
-                provider->SetListenerPosition(pParty->vPosition.x / 50.f,
-                                              pParty->vPosition.y / 50.f,
-                                              pParty->vPosition.z / 50.f);
                 si.sample->SetPosition(pActors[object_id].vPosition.x / 50.f,
                                        pActors[object_id].vPosition.y / 50.f,
                                        pActors[object_id].vPosition.z / 50.f, 500.f);
@@ -332,9 +326,6 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
             case OBJECT_Decoration: {
                 assert(object_id < pLevelDecorations.size());
 
-                provider->SetListenerPosition((float)pParty->vPosition.x / 50.f,
-                                              (float)pParty->vPosition.y / 50.f,
-                                              (float)pParty->vPosition.z / 50.f);
                 si.sample->SetPosition((float)pLevelDecorations[object_id].vPosition.x / 50.f,
                                        (float)pLevelDecorations[object_id].vPosition.y / 50.f,
                                        (float)pLevelDecorations[object_id].vPosition.z / 50.f, 2000.f);
@@ -346,9 +337,6 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
             case OBJECT_Item: {
                 assert(object_id < pSpriteObjects.size());
 
-                provider->SetListenerPosition(pParty->vPosition.x / 50.f,
-                                              pParty->vPosition.y / 50.f,
-                                              pParty->vPosition.z / 50.f);
                 si.sample->SetPosition(pSpriteObjects[object_id].vPosition.x / 50.f,
                                        pSpriteObjects[object_id].vPosition.y / 50.f,
                                        pSpriteObjects[object_id].vPosition.z / 50.f, 500.f);
@@ -567,7 +555,7 @@ std::shared_ptr<Blob> AudioPlayer::LoadSound(const std::string &pSoundName) {
     return buffer;
 }
 
-void AudioPlayer::PlaySpellSound(unsigned int spell, unsigned int pid) {
-    PlaySound((SoundID)SpellSoundIds[spell], pid, 0, -1, 0, 0);
+void AudioPlayer::PlaySpellSound(unsigned int spell, unsigned int pid, bool is_impact) {
+    PlaySound(static_cast<SoundID>(SpellSoundIds[spell] + is_impact), pid, 0, -1, 0, 0);
 }
 
