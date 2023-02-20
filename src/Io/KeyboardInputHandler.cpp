@@ -226,8 +226,8 @@ void KeyboardInputHandler::GenerateGameplayActions() {
                 break;
             }
 
-            uint8_t quickSpellNumber = pPlayers[uActiveCharacter]->uQuickSpell;
-            PLAYER_SKILL_MASTERY skill_mastery = pPlayers[uActiveCharacter]->GetActualSkillMastery(static_cast<PLAYER_SKILL_TYPE>(quickSpellNumber / 11 + 12));
+            SPELL_TYPE quickSpellNumber = pPlayers[uActiveCharacter]->uQuickSpell;
+            PLAYER_SKILL_MASTERY skill_mastery = pPlayers[uActiveCharacter]->GetActualSkillMastery(GetSkillTypeForSpell(quickSpellNumber));
 
             int uRequiredMana = 0;
             if (!engine->config->debug.AllMagic.Get()) {

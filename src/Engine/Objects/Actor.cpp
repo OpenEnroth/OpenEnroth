@@ -1318,7 +1318,7 @@ int Actor::_43B3E0_CalcDamage(ABILITY_INDEX dmgSource) {
     int damageDiceRolls;
     int damageDiceSides;
     int damageBonus;
-    uint8_t spellID;
+    SPELL_TYPE spellID;
     int spellPower = 0;
     PLAYER_SKILL skill;
     PLAYER_SKILL_LEVEL skillLevel = 0;
@@ -3272,7 +3272,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 attackElement =
                     (DAMAGE_TYPE)player->GetSpellSchool(SPELL_EARTH_BLADES);
                 uDamageAmount = CalcSpellDamage(
-                    39, projectileSprite->spell_level,
+                    SPELL_EARTH_BLADES, projectileSprite->spell_level,
                     projectileSprite->spell_skill, pMonster->sCurrentHP);
                 if (pMonster->pActorBuffs[ACTOR_BUFF_SHIELD].Active())
                     uDamageAmount >>= 1;
@@ -3309,10 +3309,11 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
 
             default:
                 attackElement = (DAMAGE_TYPE)player->GetSpellSchool(
-                    projectileSprite->spell_id);
+                    static_cast<SPELL_TYPE>(projectileSprite->spell_id));
                 IsAdditionalDamagePossible = false;
                 uDamageAmount = CalcSpellDamage(
-                    projectileSprite->spell_id, projectileSprite->spell_level,
+                    static_cast<SPELL_TYPE>(projectileSprite->spell_id),
+                    projectileSprite->spell_level,
                     projectileSprite->spell_skill, pMonster->sCurrentHP);
                 break;
         }
@@ -5167,7 +5168,7 @@ void ItemDamageFromActor(unsigned int uObjID, unsigned int uActorID,
         if (PID_TYPE(uObjID) == OBJECT_Item) {
             if (pSpriteObjects[PID_ID(uObjID)].spell_id) {
                 v6 = CalcSpellDamage(
-                    pSpriteObjects[PID_ID(uObjID)].spell_id,
+                    static_cast<SPELL_TYPE>(pSpriteObjects[PID_ID(uObjID)].spell_id),
                     pSpriteObjects[PID_ID(uObjID)].spell_level,
                     pSpriteObjects[PID_ID(uObjID)].spell_skill,
                     pActors[uActorID].sCurrentHP);

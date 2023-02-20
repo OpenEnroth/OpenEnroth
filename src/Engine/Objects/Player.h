@@ -215,7 +215,7 @@ struct Player {
     void Heal(int amount);
     int ReceiveDamage(signed int amount, DAMAGE_TYPE dmg_type);
     int ReceiveSpecialAttackEffect(int attType, Actor* pActor);
-    unsigned int GetSpellSchool(unsigned int uSpellID);
+    unsigned int GetSpellSchool(SPELL_TYPE uSpellID);
     int GetAttackRecoveryTime(bool bRangedAttack);
 
     int GetHealth() const { return this->sHealth; }

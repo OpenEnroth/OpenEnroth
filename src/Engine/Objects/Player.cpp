@@ -2132,7 +2132,7 @@ int Player::ReceiveSpecialAttackEffect(
 // 48DCF6: using guessed type char var_94[140];
 
 //----- (0048E1A3) --------------------------------------------------------
-unsigned int Player::GetSpellSchool(unsigned int uSpellID) {
+unsigned int Player::GetSpellSchool(SPELL_TYPE uSpellID) {
     return pSpellStats->pInfos[uSpellID].uSchool;
 }
 
@@ -4239,10 +4239,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
 
         // TODO(captainurist): deal away with casts.
         SPELL_TYPE scroll_id = (SPELL_TYPE)(std::to_underlying(pParty->pPickedItem.uItemID) - 299);
-        if (scroll_id == SPELL_WATER_ENCHANT_ITEM ||
-            scroll_id == SPELL_FIRE_FIRE_AURA ||
-            scroll_id == SPELL_DARK_VAMPIRIC_WEAPON ||
-            scroll_id == SPELL_WATER_RECHARGE_ITEM) {
+        if (IsSpellTargetsItem(scroll_id)) {
             mouse->RemoveHoldingItem();
             pGUIWindow_CurrentMenu->Release();
             current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
@@ -7021,7 +7018,8 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             int damagetype;
             if (uActorType != OBJECT_Player ||spritefrom->spell_id != SPELL_BOW_ARROW) {
                 int playerMaxHp = playerPtr->GetMaxHealth();
-                damage = CalcSpellDamage(spritefrom->spell_id, spritefrom->spell_level,
+                damage = CalcSpellDamage(static_cast<SPELL_TYPE>(spritefrom->spell_id),
+                                         spritefrom->spell_level,
                                          spritefrom->spell_skill, playerMaxHp);
                 damagetype = pSpellStats->pInfos[spritefrom->spell_id].uSchool;
             } else {
@@ -7162,7 +7160,8 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             if (uActorType != OBJECT_Player ||
                 spritefrom->spell_id != SPELL_BOW_ARROW) {
                 int playerMaxHp = playerPtr->GetMaxHealth();
-                damage = CalcSpellDamage(spritefrom->spell_id, spritefrom->spell_level,
+                damage = CalcSpellDamage(static_cast<SPELL_TYPE>(spritefrom->spell_id),
+                                         spritefrom->spell_level,
                                          spritefrom->spell_skill, playerMaxHp);
                 damagetype = pSpellStats->pInfos[spritefrom->spell_id].uSchool;
             } else {

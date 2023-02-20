@@ -1290,19 +1290,16 @@ void CharacterUI_StatsTab_ShowHint() {
 }
 
 //----- (00410B28) --------------------------------------------------------
-void DrawSpellDescriptionPopup(int spell_index) {
+void DrawSpellDescriptionPopup(int spell_index_in_book) {
     SpellInfo *spell;             // esi@1
     unsigned int v3;              // eax@2
     long v5;                      // ecx@4
     GUIWindow spell_info_window;  // [sp+Ch] [bp-68h]@4
 
     Pointi pt = mouse->GetCursorPos();
+    SPELL_TYPE spell_id = static_cast<SPELL_TYPE>(spell_index_in_book + 11 * pPlayers[uActiveCharacter]->lastOpenedSpellbookPage + 1);
 
-    spell =
-        &pSpellStats
-             ->pInfos[spell_index +
-                      11 * pPlayers[uActiveCharacter]->lastOpenedSpellbookPage +
-                      1];
+    spell = &pSpellStats->pInfos[spell_id];
     if (pt.y <= 250)
         v3 = pt.y + 30;
     else
@@ -1353,9 +1350,7 @@ void DrawSpellDescriptionPopup(int spell_index) {
 
     auto str2 = StringPrintf(
         "%s\n%d", localization->GetString(LSTR_SP_COST),
-        pSpellDatas[spell_index +
-                    11 * pPlayers[uActiveCharacter]->lastOpenedSpellbookPage + 1]
-            .mana_per_skill[std::to_underlying(skill_mastery) - 1]);
+        pSpellDatas[spell_id].mana_per_skill[std::to_underlying(skill_mastery) - 1]);
     spell_info_window.DrawTitleText(
         pFontComic, 12,
         spell_info_window.uFrameHeight - pFontComic->GetHeight() - 16, 0, str2,

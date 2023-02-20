@@ -1495,7 +1495,7 @@ void sub_4B1523_showSpellbookInfo(ITEM_TYPE spellItemId) {
     int v14;              // [sp+70h] [bp-4h]@4
 
     // TODO(captainurist): deal away with casts.
-    int spellId = std::to_underlying(spellItemId) - 399;
+    SPELL_TYPE spellId = static_cast<SPELL_TYPE>(std::to_underlying(spellItemId) - 399);
     int spellLevel = (std::to_underlying(spellItemId) - 400) % 11 + 1;
     unsigned int spellSchool = 4 * (std::to_underlying(spellItemId) - 400) / 11;
 

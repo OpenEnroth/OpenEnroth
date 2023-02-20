@@ -171,32 +171,7 @@ void CastSpellInfoHelpers::CastSpell() {
             spell_level = GetSkillLevel(pCastSpell->forced_spell_skill_level);
             spell_mastery = GetSkillMastery(pCastSpell->forced_spell_skill_level);
         } else {
-            if (pCastSpell->uSpellID < SPELL_AIR_WIZARD_EYE) {
-                which_skill = PLAYER_SKILL_FIRE;
-            } else if (pCastSpell->uSpellID < SPELL_WATER_AWAKEN) {
-                which_skill = PLAYER_SKILL_AIR;
-            } else if (pCastSpell->uSpellID < SPELL_EARTH_STUN) {
-                which_skill = PLAYER_SKILL_WATER;
-            } else if (pCastSpell->uSpellID < SPELL_SPIRIT_DETECT_LIFE) {
-                which_skill = PLAYER_SKILL_EARTH;
-            } else if (pCastSpell->uSpellID < SPELL_MIND_REMOVE_FEAR) {
-                which_skill = PLAYER_SKILL_SPIRIT;
-            } else if (pCastSpell->uSpellID < SPELL_BODY_CURE_WEAKNESS) {
-                which_skill = PLAYER_SKILL_MIND;
-            } else if (pCastSpell->uSpellID < SPELL_LIGHT_LIGHT_BOLT) {
-                which_skill = PLAYER_SKILL_BODY;
-            } else if (pCastSpell->uSpellID < SPELL_DARK_REANIMATE) {
-                which_skill = PLAYER_SKILL_LIGHT;
-            } else if (pCastSpell->uSpellID < SPELL_BOW_ARROW) {
-                which_skill = PLAYER_SKILL_DARK;
-            } else if (pCastSpell->uSpellID == SPELL_BOW_ARROW) {
-                which_skill = PLAYER_SKILL_BOW;
-            } else if (pCastSpell->uSpellID == SPELL_101 ||
-                pCastSpell->uSpellID == SPELL_LASER_PROJECTILE) {
-                which_skill = PLAYER_SKILL_BLASTER;
-            } else {
-                assert(false && "Unknown spell");
-            }
+            which_skill = GetSkillTypeForSpell(pCastSpell->uSpellID);
 
             spell_level = pPlayer->GetActualSkillLevel(which_skill);
             spell_mastery = pPlayer->GetActualSkillMastery(which_skill);
@@ -3330,7 +3305,6 @@ void CastSpellInfoHelpers::CancelSpellCastInProgress() {
     for (size_t i = 0; i < CastSpellInfoCount; i++) {
         if (pCastSpellInfo[i].uSpellID != SPELL_NONE &&
             pCastSpellInfo[i].uFlags & ON_CAST_CastingInProgress) {
-
             // Only one targeted spell can exist in queue.
             assert(!targeted_spell_canceled);
 
