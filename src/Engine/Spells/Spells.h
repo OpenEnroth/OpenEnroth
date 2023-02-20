@@ -157,6 +157,8 @@ inline bool IsSpellTargetsItem(SPELL_TYPE uSpellID) {
 inline PLAYER_SKILL_TYPE GetSkillTypeForSpell(SPELL_TYPE uSpellID) {
     PLAYER_SKILL_TYPE result_skill;
 
+    assert(uSpellID != SPELL_NONE);
+
     if (uSpellID < SPELL_AIR_WIZARD_EYE) {
         result_skill = PLAYER_SKILL_FIRE;
     } else if (uSpellID < SPELL_WATER_AWAKEN) {
