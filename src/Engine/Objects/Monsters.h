@@ -8,6 +8,8 @@
 #include "Utility/Memory/Blob.h"
 #include "Utility/IndexedArray.h"
 
+#include "Engine/Spells/Spells.h" // TODO(captainurist): SpellEnums.h
+
 #include "ActorEnums.h"
 #include "ItemEnums.h"
 
@@ -151,9 +153,9 @@ struct MonsterInfo {
     uint8_t uAttack2DamageBonus = 0;
     uint8_t uMissleAttack2Type = 0;
     uint8_t uSpell1UseChance = 0;
-    uint8_t uSpell1ID = 0;
+    SPELL_TYPE uSpell1ID = SPELL_NONE;
     uint8_t uSpell2UseChance = 0;
-    uint8_t uSpell2ID = 0;
+    SPELL_TYPE uSpell2ID = SPELL_NONE;
     uint8_t uResFire = 0;
     uint8_t uResAir = 0;
     uint8_t uResWater = 0;

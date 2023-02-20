@@ -2,8 +2,10 @@ cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 if(ENABLE_TESTS)
     set(GAME_TEST_SOURCES GameTest.cpp
+                          TestConfig.cpp
                           TestController.cpp)
     set(GAME_TEST_HEADERS GameTest.h
+                          TestConfig.h
                           TestController.h)
 
     add_library(game_test ${GAME_TEST_SOURCES} ${GAME_TEST_HEADERS})

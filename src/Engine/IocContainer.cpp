@@ -170,7 +170,7 @@ void IntegrityTest() {
     static_assert(sizeof(SavegameHeader) == 0x64, "Wrong type size");
     static_assert(sizeof(FactionTable) == 0x1EF1, "Wrong type size");
     static_assert(sizeof(PartyTimeStruct) == 0x678, "Wrong type size");
-    static_assert(sizeof(CastSpellInfo) == 0x14, "Wrong type size");
+    //static_assert(sizeof(CastSpellInfo) == 0x14, "Wrong type size");
     static_assert(sizeof(ArcomageCard) == 0x6C, "Wrong type size");
     static_assert(sizeof(LightsData) == 0x3FC, "Wrong type size");
     static_assert(sizeof(Vec3s) == 6, "Wrong type size");

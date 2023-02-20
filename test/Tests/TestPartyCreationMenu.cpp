@@ -15,7 +15,7 @@ GAME_TEST(Items, GenerateItem) {
 GAME_TEST(Prs, Pr314) {
     // Check that character creating menu works.
     // Trace pretty much presses all the buttons and opens all the popups possible.
-    test->playTraceFromTestData("pr_314.mm7", "pr_314.json", [] {});
+    test->playTraceFromTestData("pr_314.mm7", "pr_314.json");
 
     for (int i = 0; i < 4; i++)
         EXPECT_EQ(pParty->pPlayers[i].uLuck, 20);
@@ -47,9 +47,6 @@ GAME_TEST(Issues, Issue294) {
     uint64_t newExperience = partyExperience();
     // EXPECT_GT(newExperience, oldExperience); // Expect the giant rat to be dead after four shrapnel casts from character #4.
     // TODO(captainurist): ^fails now
-
-    engine->config->debug.AllMagic.Set(false); // TODO(captainurist): reset config before each test!
-    engine->config->debug.NoDamage.Set(false);
 }
 
 GAME_TEST(Issues, Issue315) {
@@ -63,7 +60,7 @@ GAME_TEST(Issues, Issue315) {
 
 GAME_TEST(Issues, Issue403) {
     // Entering Lincoln shouldn't crash.
-    test->playTraceFromTestData("issue_403.mm7", "issue_403.json", [] {});
+    test->playTraceFromTestData("issue_403.mm7", "issue_403.json");
 }
 
 GAME_TEST(Prs, Pr347) {
@@ -79,7 +76,7 @@ GAME_TEST(Issues, Issue388) {
     pArcomageGame->_targetFPS = 500;
     // Trace enters tavern, plays arcomage, plays a couple of cards then exits and leaves tavern
     CURRENT_SCREEN oldscreen = CURRENT_SCREEN::SCREEN_GAME;
-    test->playTraceFromTestData("issue_388.mm7", "issue_388.json", [&] {oldscreen = current_screen_type; });
+    test->playTraceFromTestData("issue_388.mm7", "issue_388.json", [&] { oldscreen = current_screen_type; });
     // we should return to game screen
     EXPECT_EQ(oldscreen, current_screen_type);
     // with arcomage exit flag
@@ -89,7 +86,7 @@ GAME_TEST(Issues, Issue388) {
 
 GAME_TEST(Issues, Issue402) {
     // Attacking while wearing wetsuits shouldn't assert.
-    test->playTraceFromTestData("issue_402.mm7", "issue_402.json", [] {});
+    test->playTraceFromTestData("issue_402.mm7", "issue_402.json");
 }
 
 GAME_TEST(Issues, Issue408) {
@@ -105,4 +102,36 @@ GAME_TEST(Issues, Issue408) {
     EXPECT_NE(assets->WinnerCert, nullptr);
     // we should be teleported to harmondale
     EXPECT_EQ(pCurrentMapName, "out02.odm");
+}
+
+GAME_TEST(Issues, Issue417) {
+    // testing that portal nodes looping doesnt assert
+    test->playTraceFromTestData("issue_417a.mm7", "issue_417a.json");
+    test->playTraceFromTestData("issue_417b.mm7", "issue_417b.json");
+}
+
+static void check427Buffs(const char *ctx, std::initializer_list<int> players, bool hasBuff) {
+    for (int player : players) {
+        for (PLAYER_BUFFS buff : {PLAYER_BUFF_BLESS, PLAYER_BUFF_PRESERVATION, PLAYER_BUFF_HAMMERHANDS, PLAYER_BUFF_PAIN_REFLECTION}) {
+            EXPECT_EQ(pParty->pPlayers[player].pPlayerBuffs[buff].Active(), hasBuff)
+                << "(with ctx=" << ctx << ", player=" << player << ", buff=" << buff << ")";
+        }
+    }
+}
+
+GAME_TEST(Issues, Issue427) {
+    // Test that some of the buff spells that start to affect whole party starting from certain mastery work correctly.
+
+    // In this test mastery is not enough for the whole party buff
+    test->playTraceFromTestData("issue_427a.mm7", "issue_427a.json");
+
+    // Check that spell targeting works correctly - 1st char is getting the buffs.
+    check427Buffs("a", {0}, true);
+    check427Buffs("a", {1, 2, 3}, false);
+
+    // In this test mastery is enough for the whole party
+    test->playTraceFromTestData("issue_427b.mm7", "issue_427b.json");
+
+    // Check that all character have buffs
+    check427Buffs("b", {0, 1, 2, 3}, true);
 }

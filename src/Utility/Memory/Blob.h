@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <cstdlib>
 #include <utility>
 #include <memory>
 #include <string_view>
@@ -49,6 +50,9 @@ class Blob final {
     }
 
     static Blob Allocate(size_t size);
+    static Blob Read(FILE *file, size_t size);
+    static Blob NonOwning(void *data, size_t size);
+    static Blob Concat(const Blob &l, const Blob &r);
     static std::shared_ptr<Blob> AllocateShared(size_t size);
 
     friend void swap(Blob &l, Blob &r) {

@@ -35,7 +35,7 @@ bool detail::EnumSerializationTable::isUsableWithFlags() const {
         return false;
 
     for (const auto &[_, string] : _sortedEnumStrings)
-        if (string.find('|') != std::string::npos)
+        if (string.find_first_of("| ") != std::string::npos)
             return false;
 
     return true;

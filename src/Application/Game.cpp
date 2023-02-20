@@ -1274,7 +1274,7 @@ void Game::EventLoop() {
                             pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
                             switch (uMessage) {
                                 case UIMSG_CastSpell_Character_Big_Improvement:
-                                    pSpellInfo->uFlags &= ~ON_CAST_WholeParty_BigImprovementAnim;
+                                    pSpellInfo->uFlags &= ~ON_CAST_SinglePlayer_BigImprovementAnim;
                                     break;
                                 case UIMSG_CastSpell_Character_Small_Improvement:
                                     pSpellInfo->uFlags &= ~ON_CAST_MonsterSparkles;
@@ -1644,7 +1644,7 @@ void Game::EventLoop() {
                          pPlayer2->uTimeToRecovery))
                         continue;
                     _42777D_CastSpell_UseWand_ShootArrow(
-                        (SPELL_TYPE)pPlayer2->uQuickSpell, uActiveCharacter - 1,
+                        pPlayer2->uQuickSpell, uActiveCharacter - 1,
                         0, 0, uActiveCharacter);
                     continue;
                 }
@@ -1936,13 +1936,14 @@ void Game::EventLoop() {
                     if (!uActiveCharacter) continue;
                     pPlayer10 = pPlayers[uActiveCharacter];
                     if (!byte_506550 || !quick_spell_at_page) {
-                        pPlayer10->uQuickSpell = 0;
+                        pPlayer10->uQuickSpell = SPELL_NONE;
                         quick_spell_at_page = 0;
                         pAudioPlayer->PlaySound(SOUND_fizzle, 0, 0, -1, 0, 0);
                         continue;
                     }
-                    pPlayers[uActiveCharacter]->uQuickSpell =
-                        quick_spell_at_page + 11 * pPlayers[uActiveCharacter]->lastOpenedSpellbookPage;
+                    // TODO(captainurist): encapsulate the arithmetic below
+                    pPlayers[uActiveCharacter]->uQuickSpell = static_cast<SPELL_TYPE>(
+                        quick_spell_at_page + 11 * pPlayers[uActiveCharacter]->lastOpenedSpellbookPage);
                     if (uActiveCharacter) pPlayer10->PlaySound(SPEECH_SetQuickSpell, 0);
                     byte_506550 = 0;
                     continue;
@@ -2026,15 +2027,13 @@ void Game::EventLoop() {
 
                 case UIMSG_CastSpellFromBook:
                     if (pTurnEngine->turn_stage != TE_MOVEMENT)
-                        _42777D_CastSpell_UseWand_ShootArrow(
-                            (SPELL_TYPE)uMessageParam, v199, 0, 0, 0);
+                        _42777D_CastSpell_UseWand_ShootArrow(static_cast<SPELL_TYPE>(uMessageParam), v199, 0, 0, 0);
                     continue;
 
                 case UIMSG_SpellScrollUse:
                     __debugbreak();
                     if (pTurnEngine->turn_stage != TE_MOVEMENT)
-                        _42777D_CastSpell_UseWand_ShootArrow(
-                            (SPELL_TYPE)uMessageParam, v199, 133, ON_CAST_CastViaScroll, 0);
+                        _42777D_CastSpell_UseWand_ShootArrow(static_cast<SPELL_TYPE>(uMessageParam), v199, 133, ON_CAST_CastViaScroll, 0);
                     continue;
                 case UIMSG_SpellBookWindow:
                     if (pTurnEngine->turn_stage == TE_MOVEMENT) continue;

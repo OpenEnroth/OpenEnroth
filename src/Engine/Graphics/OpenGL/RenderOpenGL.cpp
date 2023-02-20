@@ -2267,7 +2267,8 @@ void RenderOpenGL::DrawOutdoorTerrain() {
                                   WorldMaxZ };
 
                 // skip this square if no splat over lap
-                if (!thissquare.Expanded(decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].radius).Contains(decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].pos)) continue;
+                if (!thissquare.intersectsCube(decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].pos, decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].radius))
+                    continue;
 
                 // splat hits this square of terrain
                 struct Polygon *pTilePolygon = &array_77EC08[pODMRenderParams->uNumPolygons];
@@ -4204,7 +4205,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
         bool found{ false };
         for (int splat = 0; splat < decal_builder->bloodsplat_container->uNumBloodsplats; ++splat) {
             Bloodsplat* thissplat = &decal_builder->bloodsplat_container->pBloodsplats_to_apply[splat];
-            if (model.pBoundingBox.Expanded(thissplat->radius).Contains(thissplat->pos.ToInt())) {
+            if (model.pBoundingBox.intersectsCube(thissplat->pos.ToInt(), thissplat->radius)) {
                 found = true;
                 break;
             }
@@ -4789,8 +4790,7 @@ void RenderOpenGL::DrawIndoorFaces() {
             // does light sphere collide with current sector
             // expanded current sector
             bool fromexpanded{ false };
-            BBoxs cursectorexpand = pIndoor->pSectors[pBLVRenderParams->uPartySectorID].pBounding.Expanded(test.uRadius);
-            if (cursectorexpand.Contains(test.vPosition.ToShort())) {
+            if (pIndoor->pSectors[pBLVRenderParams->uPartySectorID].pBounding.intersectsCube(test.vPosition.ToShort(), test.uRadius)) {
                 onlist = true;
                 fromexpanded = true;
             }
