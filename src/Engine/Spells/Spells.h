@@ -248,7 +248,7 @@ struct SpellStats {
 #pragma pack(push, 1)
 class SpellData {
  public:
-    SpellData() {SpellData(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);}
+    SpellData():SpellData(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) {}
     SpellData(int16_t inNormalMana, int16_t inExpertLevelMana,
               int16_t inMasterLevelMana, int16_t inMagisterLevelMana,
               int16_t inNormalLevelRecovery, int16_t inExpertLevelRecovery,
