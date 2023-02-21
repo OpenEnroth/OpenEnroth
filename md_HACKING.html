@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6d61da0</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2e5c282</span>
    </div>
   </td>
  </tr>
@@ -81,14 +81,12 @@ Dependencies</h1>
 <li><a href="https://www.openal.org/downloads/OpenAL11CoreSDK.zip">OpenAL</a> — audio support;</li>
 <li><a href="http://gnuwin32.sourceforge.net/packages/zlib.htm">Zlib</a> — compression.</li>
 </ul>
-<p >On Windows, the above dependencies are resolved automatically during the cmake phase.<br  />
- On linux they are usually part of dsitribution and you only need to install the development versions of SDL2, ffmpeg, openal and zlib libraries. </p><details >
-<p ><summary>&ensp;&ensp;eg on Fedora:</summary></p>
-<div class="fragment"><div class="line">sudo dnf install ffmpeg ffmpeg-devel</div>
-<div class="line">sudo dnf install openal openal-devel</div>
-<div class="line">sudo dnf install zlib zlib-devel</div>
-<div class="line">sudo dnf install SDL2 SDL2-devel</div>
-</div><!-- fragment --> </details>
+<p >On Windows, the above dependencies are resolved automatically during the cmake phase.</p>
+<p >On Linux they are usually part of distribution and you only need to install the development versions of SDL2, ffmpeg, openal and zlib libraries. E.g. on Ubuntu: </p><div class="fragment"><div class="line">sudo apt-get install ffmpeg ffmpeg-devel</div>
+<div class="line">sudo apt-get install openal openal-devel</div>
+<div class="line">sudo apt-get install zlib zlib-devel</div>
+<div class="line">sudo apt-get install SDL2 SDL2-devel</div>
+</div><!-- fragment --><p >On Mac you can install the dependencies from homebrew.</p>
 <p >Additional dependencies:</p><ul>
 <li>CMake 3.20.4+ (3.20.21032501-MSVC_2 from VS2019 won't work)</li>
 <li>Python 3.x (optional, for style checks)</li>
