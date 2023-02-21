@@ -286,12 +286,6 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
         si.sample->Play();
     } else if (pid < 0) {  // exclusive sounds - no override (close chest)
         si.sample->Play();
-    } else if (pid == PID_INVALID) { // the same as -1, but must not be used as of now
-        si.sample->Stop();
-        si.sample->Play();
-        if (engine->config->debug.VerboseLogging.Get()) {
-            logger->Warning("PID_INVALID used in PlaySound");
-        }
     } else {
         ObjectType object_type = PID_TYPE(pid);
         unsigned int object_id = PID_ID(pid);
