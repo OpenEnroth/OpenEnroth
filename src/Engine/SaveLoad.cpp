@@ -418,7 +418,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
                 memcpy(data_write_pos + i * sizeof(SpriteObject_MM7), tmp_sprite, sizeof(SpriteObject_MM7));
             }
             free(tmp_sprite);
-            data_write_pos += uNumActors * sizeof(SpriteObject_MM7);
+            data_write_pos += uNumSpriteObjects * sizeof(SpriteObject_MM7);
 
             data_write_pos += ChestsSerialize(data_write_pos);
 
@@ -491,7 +491,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
                 memcpy(data_write_pos + i * sizeof(SpriteObject_MM7), tmp_sprite, sizeof(SpriteObject_MM7));
             }
             free(tmp_sprite);
-            data_write_pos += uNumActors * sizeof(SpriteObject_MM7);
+            data_write_pos += uNumSpriteObjects * sizeof(SpriteObject_MM7);
 
             data_write_pos += ChestsSerialize(data_write_pos);
 
