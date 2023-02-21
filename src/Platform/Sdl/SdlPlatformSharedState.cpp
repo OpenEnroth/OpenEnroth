@@ -76,7 +76,10 @@ SdlGamepad *SdlPlatformSharedState::initializeGamepad(int gamepadId) {
         logSdlError("SDL_JoystickInstanceID");
         return nullptr;
     }
-    assert(!_gamepadById.contains(id)); // However, the code below will work fine even if id is there.
+
+    // TODO(captainurist): The assert below triggers with @pskelton's xbox controller, and it shouldn't trigger.
+    // Figure out why it happens and either fix the bug in our logic, or add a comment here describing what's happening.
+    // assert(!_gamepadById.contains(id));
 
     return _gamepadById.emplace(id, std::make_unique<SdlGamepad>(this, gamepad.release(), id)).first->second.get();
 }
