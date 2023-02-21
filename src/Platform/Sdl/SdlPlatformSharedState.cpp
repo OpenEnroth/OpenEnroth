@@ -26,13 +26,13 @@ void SdlPlatformSharedState::logSdlError(const char *sdlFunctionName) {
 }
 
 void SdlPlatformSharedState::registerWindow(SdlWindow *window) {
-    assert(!_windowById.contains(window->Id()));
-    _windowById[window->Id()] = window;
+    assert(!_windowById.contains(window->id()));
+    _windowById[window->id()] = window;
 }
 
 void SdlPlatformSharedState::unregisterWindow(SdlWindow *window) {
-    assert(_windowById.contains(window->Id()));
-    _windowById.erase(window->Id());
+    assert(_windowById.contains(window->id()));
+    _windowById.erase(window->id());
 }
 
 std::vector<uint32_t> SdlPlatformSharedState::allWindowIds() const {
@@ -47,49 +47,57 @@ SdlWindow *SdlPlatformSharedState::window(uint32_t id) const {
     return ValueOr(_windowById, id, nullptr);
 }
 
-void SdlPlatformSharedState::registerGamepad(SdlGamepad *gamepad) {
-    int32_t id = nextFreeGamepadId();
-    assert(id >= 0);
-
-    _gamepadById[id] = gamepad;
-}
-
-void SdlPlatformSharedState::unregisterGamepad(SdlGamepad *gamepad) {
-    for (auto it = _gamepadById.begin(); it != _gamepadById.end(); it++) {
-        if (gamepad == it->second) {
-            _gamepadById.erase(it);
-            return;
-        }
-    }
-
-    assert(0); //shouldn't happen
-}
-
-int32_t SdlPlatformSharedState::getGamepadIdBySdlId(uint32_t id) {
-    int32_t ret = -1;
-
-    for (auto it = _gamepadById.begin(); it != _gamepadById.end(); it++) {
-        SdlGamepad *gamepad = it->second;
-        if (gamepad->gamepadSdlId() == id)
-            return gamepad->id();
-    }
-
-    return ret;
-}
-
-SdlGamepad *SdlPlatformSharedState::gamepad(uint32_t id) const {
-    assert(_gamepadById.contains(id));
-    return ValueOr(_gamepadById, id, nullptr);
-}
-
-int32_t SdlPlatformSharedState::nextFreeGamepadId() {
-    int32_t ret = -1;
+void SdlPlatformSharedState::initializeGamepads() {
     for (int i = 0; i < SDL_NumJoysticks(); i++) {
-        if (!_gamepadById.contains(i)) {
-            ret = i;
-            break;
-        }
+        if (!SDL_IsGameController(i))
+            continue;
+
+        initializeGamepad(i);
+    }
+}
+
+SdlGamepad *SdlPlatformSharedState::initializeGamepad(int gamepadId) {
+    assert(SDL_IsGameController(gamepadId));
+
+    std::unique_ptr<SDL_GameController, void(*)(SDL_GameController *)> gamepad(SDL_GameControllerOpen(gamepadId), &SDL_GameControllerClose);
+    if (!gamepad) {
+        logSdlError("SDL_GameControllerOpen");
+        return nullptr;
     }
 
-    return ret;
+    SDL_Joystick *joystick = SDL_GameControllerGetJoystick(gamepad.get());
+    if (!joystick) {
+        logSdlError("SDL_GameControllerGetJoystick");
+        return nullptr;
+    }
+
+    SDL_JoystickID id = SDL_JoystickInstanceID(joystick);
+    if (id < 0) {
+        logSdlError("SDL_JoystickInstanceID");
+        return nullptr;
+    }
+
+    // TODO(captainurist): The assert below triggers with @pskelton's xbox controller, and it shouldn't trigger.
+    // Figure out why it happens and either fix the bug in our logic, or add a comment here describing what's happening.
+    // assert(!_gamepadById.contains(id));
+
+    return _gamepadById.emplace(id, std::make_unique<SdlGamepad>(this, gamepad.release(), id)).first->second.get();
+}
+
+void SdlPlatformSharedState::deinitializeGamepad(SDL_JoystickID id) {
+    assert(_gamepadById.contains(id));
+
+    _gamepadById.erase(id);
+}
+
+std::vector<PlatformGamepad *> SdlPlatformSharedState::allGamepads() const {
+    std::vector<PlatformGamepad *> result;
+    for (const auto &[_, gamepad] : _gamepadById)
+        result.push_back(gamepad.get());
+    return result;
+}
+
+SdlGamepad *SdlPlatformSharedState::gamepad(SDL_JoystickID id) const {
+    auto pos = _gamepadById.find(id);
+    return pos == _gamepadById.end() ? nullptr : pos->second.get();
 }

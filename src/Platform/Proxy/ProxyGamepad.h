@@ -13,5 +13,4 @@ class ProxyGamepad: public ProxyBase<PlatformGamepad> {
 
     virtual std::string model() const override;
     virtual std::string serial() const override;
-    virtual uint32_t id() const override;
 };

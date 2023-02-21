@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SDL.h>
+
 #include <cstdint>
 #include <vector>
 #include <unordered_map>
@@ -22,22 +24,17 @@ class SdlPlatformSharedState {
 
     void registerWindow(SdlWindow *window);
     void unregisterWindow(SdlWindow *window);
-
-    void registerGamepad(SdlGamepad *gamepad);
-    void unregisterGamepad(SdlGamepad *gamepad);
-
-    /* We are using our own id numbering to prevent id jumping and also we can't rely on cdevice.which as SDL doesn't guarantee that it won't change.
-     * In another words connection event can be received with one cdevice.which and disconnect event with completely different cdevice.which.
-     * So these two functions and additionally SdlGamepad::JoystickId implements that. */
-    int32_t getGamepadIdBySdlId(uint32_t id);
-    int32_t nextFreeGamepadId();
-
     std::vector<uint32_t> allWindowIds() const;
     SdlWindow *window(uint32_t id) const;
-    SdlGamepad *gamepad(uint32_t id) const;
+
+    void initializeGamepads();
+    SdlGamepad *initializeGamepad(int gamepadId); // Note: it's gamepad id, not joystick id.
+    void deinitializeGamepad(SDL_JoystickID id); // And here it's joystick id, which is a different from a gamepad id!
+    std::vector<PlatformGamepad *> allGamepads() const;
+    SdlGamepad *gamepad(SDL_JoystickID id) const;
 
  private:
     PlatformLogger *_logger = nullptr;
     std::unordered_map<uint32_t, SdlWindow *> _windowById;
-    std::unordered_map<uint32_t, SdlGamepad *> _gamepadById;
+    std::unordered_map<SDL_JoystickID, std::unique_ptr<SdlGamepad>> _gamepadById;
 };

@@ -22,16 +22,16 @@ bool GameKeyboardController::IsKeyDown(PlatformKey key) const {
     return isKeyDown_[key];
 }
 
-void GameKeyboardController::ProcessKeyPressEvent(const PlatformKeyEvent *event) {
-    if (isKeyDown_[event->key])
+void GameKeyboardController::ProcessKeyPressEvent(PlatformKey key) {
+    if (isKeyDown_[key])
         return; // Auto repeat
 
-    isKeyDown_[event->key] = true;
-    isKeyDownReported_[event->key] = false;
+    isKeyDown_[key] = true;
+    isKeyDownReported_[key] = false;
 }
 
-void GameKeyboardController::ProcessKeyReleaseEvent(const PlatformKeyEvent *event) {
-    isKeyDown_[event->key] = false;
+void GameKeyboardController::ProcessKeyReleaseEvent(PlatformKey key) {
+    isKeyDown_[key] = false;
 }
 
 void GameKeyboardController::reset() {

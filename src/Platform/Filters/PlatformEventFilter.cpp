@@ -15,9 +15,6 @@ PlatformEventFilter::PlatformEventFilter(PlatformEventWildcard eventTypes) {
 
 bool PlatformEventFilter::event(const PlatformEvent *event) {
     switch (event->type) {
-    case EVENT_GAMEPAD_CONNECTED:
-    case EVENT_GAMEPAD_DISCONNECTED:
-        return gamepadDeviceEvent(static_cast<const PlatformGamepadDeviceEvent *>(event));
     case EVENT_KEY_PRESS:
         return keyPressEvent(static_cast<const PlatformKeyEvent *>(event));
     case EVENT_KEY_RELEASE:
@@ -39,6 +36,15 @@ bool PlatformEventFilter::event(const PlatformEvent *event) {
         return activationEvent(static_cast<const PlatformWindowEvent *>(event));
     case EVENT_WINDOW_CLOSE_REQUEST:
         return closeEvent(static_cast<const PlatformWindowEvent *>(event));
+    case EVENT_GAMEPAD_CONNECTED:
+    case EVENT_GAMEPAD_DISCONNECTED:
+        return gamepadConnectionEvent(static_cast<const PlatformGamepadEvent *>(event));
+    case EVENT_GAMEPAD_KEY_PRESS:
+        return gamepadKeyPressEvent(static_cast<const PlatformGamepadKeyEvent *>(event));
+    case EVENT_GAMEPAD_KEY_RELEASE:
+        return gamepadKeyReleaseEvent(static_cast<const PlatformGamepadKeyEvent *>(event));
+    case EVENT_GAMEPAD_AXIS:
+        return gamepadAxisEvent(static_cast<const PlatformGamepadAxisEvent *>(event));
     case EVENT_NATIVE:
         return nativeEvent(static_cast<const PlatformNativeEvent *>(event));
     default:
@@ -86,7 +92,19 @@ bool PlatformEventFilter::closeEvent(const PlatformWindowEvent *) {
     return false;
 }
 
-bool PlatformEventFilter::gamepadDeviceEvent(const PlatformGamepadDeviceEvent *) {
+bool PlatformEventFilter::gamepadConnectionEvent(const PlatformGamepadEvent *) {
+    return false;
+}
+
+bool PlatformEventFilter::gamepadKeyPressEvent(const PlatformGamepadKeyEvent *) {
+    return false;
+}
+
+bool PlatformEventFilter::gamepadKeyReleaseEvent(const PlatformGamepadKeyEvent *) {
+    return false;
+}
+
+bool PlatformEventFilter::gamepadAxisEvent(const PlatformGamepadAxisEvent *) {
     return false;
 }
 

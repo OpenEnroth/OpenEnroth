@@ -143,53 +143,17 @@ PlatformKey translateSdlGamepadButton(SDL_GameControllerButton button) {
     }
 }
 
-std::pair<PlatformKey, PlatformKeyType> translateSdlGamepadAxis(SDL_GameControllerAxis axis, float value) {
-    PlatformKey key = PlatformKey::None;
-    PlatformKeyType keyType = KEY_TYPE_GAMEPAD_AXIS;
-
+PlatformKey translateSdlGamepadAxis(SDL_GameControllerAxis axis) {
     switch (axis) {
-    case SDL_CONTROLLER_AXIS_LEFTX:
-        if (value > 0.0f)
-            key = PlatformKey::Gamepad_LeftStick_Right;
-        else if (value < 0.0f)
-            key = PlatformKey::Gamepad_LeftStick_Left;
-
-        break;
-    case SDL_CONTROLLER_AXIS_LEFTY:
-        if (value > 0.0f)
-            key = PlatformKey::Gamepad_LeftStick_Down;
-        else if (value < 0.0f)
-            key = PlatformKey::Gamepad_LeftStick_Up;
-
-        break;
-    case SDL_CONTROLLER_AXIS_RIGHTX:
-        if (value > 0.0f)
-            key = PlatformKey::Gamepad_RightStick_Right;
-        else if (value < 0.0f)
-            key = PlatformKey::Gamepad_RightStick_Left;
-
-        break;
-    case SDL_CONTROLLER_AXIS_RIGHTY:
-        if (value > 0.0f)
-            key = PlatformKey::Gamepad_RightStick_Down;
-        else if (value < 0.0f)
-            key = PlatformKey::Gamepad_RightStick_Up;
-
-        break;
-    case SDL_CONTROLLER_AXIS_TRIGGERLEFT:
-        key = PlatformKey::Gamepad_L2;
-        keyType = KEY_TYPE_GAMEPAD_TRIGGER;
-        break;
-    case SDL_CONTROLLER_AXIS_TRIGGERRIGHT:
-        key = PlatformKey::Gamepad_R2;
-        keyType = KEY_TYPE_GAMEPAD_TRIGGER;
-        break;
-
+    case SDL_CONTROLLER_AXIS_LEFTX:         return PlatformKey::Gamepad_LeftStick_Right;
+    case SDL_CONTROLLER_AXIS_LEFTY:         return PlatformKey::Gamepad_LeftStick_Down;
+    case SDL_CONTROLLER_AXIS_RIGHTX:        return PlatformKey::Gamepad_RightStick_Right;
+    case SDL_CONTROLLER_AXIS_RIGHTY:        return PlatformKey::Gamepad_RightStick_Down;
+    case SDL_CONTROLLER_AXIS_TRIGGERLEFT:   return PlatformKey::Gamepad_L2;
+    case SDL_CONTROLLER_AXIS_TRIGGERRIGHT:  return PlatformKey::Gamepad_R2;
     default:
-        break;
+        return PlatformKey::None;
     }
-
-    return {key, keyType};
 }
 
 PlatformModifiers translateSdlMods(uint16_t mods) {

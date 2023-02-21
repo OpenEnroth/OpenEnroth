@@ -14,8 +14,7 @@
 #include "SdlEnumTranslation.h"
 #include "SdlOpenGLContext.h"
 
-SdlWindow::SdlWindow(SdlPlatformSharedState *state, SDL_Window *window, uint32_t id):
-    _state(state), _window(window), _id(id) {
+SdlWindow::SdlWindow(SdlPlatformSharedState *state, SDL_Window *window, uint32_t id): _state(state), _window(window), _id(id) {
     assert(state);
     assert(window);
     assert(id);
