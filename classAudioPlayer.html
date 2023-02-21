@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9cd2d2c</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e61f76c</span>
    </div>
   </td>
  </tr>
@@ -130,8 +130,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac1c12928dc51aa4bfff8af2a7b3eb548"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaeac9dfff324f1cde42353bddf2d40c8"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classBlob.html">Blob</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#aaeac9dfff324f1cde42353bddf2d40c8">LoadSound</a> (int uSoundID)</td></tr>
 <tr class="separator:aaeac9dfff324f1cde42353bddf2d40c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad938453bac4a71f0b6e6de615460e957"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#ad938453bac4a71f0b6e6de615460e957">PlaySpellSound</a> (unsigned int spell, unsigned int pid)</td></tr>
-<tr class="separator:ad938453bac4a71f0b6e6de615460e957"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0589f37cb27f4af69a141015cf932c0b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a0589f37cb27f4af69a141015cf932c0b">PlaySpellSound</a> (unsigned int spell, unsigned int pid, bool is_impact=false)</td></tr>
+<tr class="separator:a0589f37cb27f4af69a141015cf932c0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-types" name="pro-types"></a>
 Protected Types</h2></td></tr>
@@ -501,8 +501,8 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ad938453bac4a71f0b6e6de615460e957" name="ad938453bac4a71f0b6e6de615460e957"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad938453bac4a71f0b6e6de615460e957">&#9670;&#160;</a></span>PlaySpellSound()</h2>
+<a id="a0589f37cb27f4af69a141015cf932c0b" name="a0589f37cb27f4af69a141015cf932c0b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0589f37cb27f4af69a141015cf932c0b">&#9670;&#160;</a></span>PlaySpellSound()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -517,7 +517,13 @@ Protected Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>pid</em>&#160;</td>
+          <td class="paramname"><em>pid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>is_impact</em> = <code>false</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -528,8 +534,9 @@ Protected Attributes</h2></td></tr>
 </div><div class="memdoc">
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">spell</td><td>Spell ID of spell. Indexes into word_4EE088_sound_ids. </td></tr>
+    <tr><td class="paramname">spell</td><td>Spell ID of spell. Indexes into SpellSoundIds. </td></tr>
     <tr><td class="paramname">pid</td><td>PID of sound originator or, 0 for generic ui sound, -1(PID_INVALID) for resetable (playing this sound again whilst its playing will stop it and start from beginning) exclusive (sound should not be stopped by system on ui events) sound and other &lt; 0 for non resetable sounds (will not restart if played again whilst already playing). NB system use of exclusive sounds is inconsistent. </td></tr>
+    <tr><td class="paramname">is_impact</td><td>Indicates sound of spell impact, if true sound ID will be SpellSoundIds[spell] + 1. </td></tr>
   </table>
   </dd>
 </dl>
