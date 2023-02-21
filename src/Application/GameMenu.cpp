@@ -295,7 +295,7 @@ void Menu::EventLoop() {
                 engine->config->settings.MusicLevel.Set(new_level);
                 pAudioPlayer->SetMusicVolume(engine->config->settings.MusicLevel.Get());
                 // if (engine->config->music_level > 0)
-                //    pAudioPlayer->PlaySound(SOUND_hurp, -1, 0, -1, 0, 0);
+                //    pAudioPlayer->PlaySound(SOUND_hurp, PID_INVALID, 0, -1, 0, 0);
                 continue;
             }
 
@@ -315,7 +315,7 @@ void Menu::EventLoop() {
                 engine->config->settings.SoundLevel.Set(new_level);
 
                 pAudioPlayer->SetMasterVolume(engine->config->settings.SoundLevel.Get());
-                pAudioPlayer->PlaySound(SOUND_church, -1, 0, -1, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_church, PID_INVALID, 0, -1, 0, 0);
                 continue;
             }
             case UIMSG_ToggleFlipOnExit:

@@ -147,15 +147,17 @@ class AudioPlayer {
     std::shared_ptr<Blob> LoadSound(int uSoundID);
 
     /**
-     * @param spell                     Spell ID of spell. Indexes into word_4EE088_sound_ids.
+     * @param spell                     Spell ID of spell. Indexes into SpellSoundIds.
      * @param pid                       PID of sound originator or, 0 for generic ui sound, -1(PID_INVALID)
      *                                  for resetable (playing this sound again whilst its playing will stop
      *                                  it and start from beginning) exclusive (sound should not be stopped
      *                                  by system on ui events) sound and other < 0 for non resetable sounds
      *                                  (will not restart if played again whilst already playing). NB
      *                                  system use of exclusive sounds is inconsistent.
+     * @param is_impact                 Indicates sound of spell impact, if true sound ID
+     *                                  will be SpellSoundIds[spell] + 1.
      */
-    void PlaySpellSound(unsigned int spell, unsigned int pid);
+    void PlaySpellSound(unsigned int spell, unsigned int pid, bool is_impact = false);
 
  protected:
     bool bPlayerReady;
