@@ -3,7 +3,8 @@
 #include "Engine/Spells/Spells.h"
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/Actor.h"
-
+#include "Engine/Objects/Actor.h"
+#include "Engine/Objects/SpriteObject.h"
 #include "GUI/GUIFont.h"
 
 #include "Utility/Geometry/Plane.h"
@@ -670,7 +671,7 @@ struct Actor_MM7 {
     std::array<uint16_t, 8> pSpriteIDs;
     std::array<uint16_t, 4> pSoundSampleIDs;  // 1 die     3 bored
     std::array<SpellBuff_MM7, 22> pActorBuffs;
-    std::array<ItemGen, 4> ActorHasItems;
+    std::array<ItemGen_MM7, 4> ActorHasItems;
     uint32_t uGroup;
     uint32_t uAlly;
     std::array<ActorJob, 8> pScheduledJobs;
@@ -840,5 +841,36 @@ struct SpawnPoint_MM7 {
 static_assert(sizeof(SpawnPoint_MM7) == 24);
 
 void Deserialize(const SpawnPoint_MM7 &src, SpawnPoint *dst);
+
+
+struct SpriteObject_MM7 {
+    uint16_t uType;
+    uint16_t uObjectDescID;
+    Vec3i vPosition;
+    Vec3s vVelocity;
+    uint16_t uFacing;
+    uint16_t uSoundID;
+    uint16_t uAttributes;
+    int16_t uSectorID;
+    uint16_t uSpriteFrameID;
+    int16_t field_20;
+    int16_t field_22_glow_radius_multiplier;
+    ItemGen_MM7 containing_item;
+    int spell_id;
+    int spell_level;
+    int32_t spell_skill;
+    int field_54;
+    int spell_caster_pid;
+    int spell_target_pid;
+    char field_60_distance_related_prolly_lod;
+    char field_61;
+    char field_62[2];
+    Vec3i field_64;
+};
+
+static_assert(sizeof(SpriteObject_MM7) == 0x70);
+
+void Serialize(const SpriteObject &src, SpriteObject_MM7 *dst);
+void Deserialize(const SpriteObject_MM7 &src, SpriteObject *dst);
 
 #pragma pack(pop)

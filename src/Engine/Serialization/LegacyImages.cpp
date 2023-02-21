@@ -1211,7 +1211,7 @@ void Serialize(const Actor &src, Actor_MM7 *dst) {
         Serialize(src.pActorBuffs[ACTOR_BUFF_INDEX(i)], &dst->pActorBuffs[i]);
 
     for (unsigned int i = 0; i < 4; ++i)
-        dst->ActorHasItems[i] = src.ActorHasItems[i];
+        Serialize(src.ActorHasItems[i], &dst->ActorHasItems[i]);
 
     dst->uGroup = src.uGroup;
     dst->uAlly = src.uAlly;
@@ -1324,7 +1324,7 @@ void Deserialize(const Actor_MM7 &src, Actor *dst) {
         Deserialize(src.pActorBuffs[i], &dst->pActorBuffs[ACTOR_BUFF_INDEX(i)]);
 
     for (unsigned int i = 0; i < 4; ++i)
-        dst->ActorHasItems[i] = src.ActorHasItems[i];
+        Deserialize(src.ActorHasItems[i], &dst->ActorHasItems[i]);
 
     dst->uGroup = src.uGroup;
     dst->uAlly = src.uAlly;
@@ -1534,4 +1534,56 @@ void Deserialize(const SpawnPoint_MM7 &src, SpawnPoint *dst) {
     }
     dst->uAttributes = src.uAttributes;
     dst->uGroup = src.uGroup;
+}
+
+void Serialize(const SpriteObject &src, SpriteObject_MM7 *dst) {
+    dst->uType = src.uType;
+    dst->uObjectDescID = src.uObjectDescID;
+    dst->vPosition = src.vPosition;
+    dst->vVelocity = src.vVelocity;
+    dst->uFacing = src.uFacing;
+    dst->uSoundID = src.uSoundID;
+    dst->uAttributes = std::to_underlying(src.uAttributes);
+    dst->uSectorID = src.uSectorID;
+    dst->uSpriteFrameID = src.uSpriteFrameID;
+    dst->field_20 = src.field_20;
+    dst->field_22_glow_radius_multiplier = src.field_22_glow_radius_multiplier;
+    Serialize(src.containing_item, &dst->containing_item);
+    dst->spell_id = src.spell_id;
+    dst->spell_level = src.spell_level;
+    dst->spell_skill = std::to_underlying(src.spell_skill);
+    dst->field_54 = src.field_54;
+    dst->spell_caster_pid = src.spell_caster_pid;
+    dst->spell_target_pid = src.spell_target_pid;
+    dst->field_60_distance_related_prolly_lod = src.field_60_distance_related_prolly_lod;
+    dst->field_61 = std::to_underlying(src.field_61);
+    dst->field_62[0] = src.field_62[0];
+    dst->field_62[1] = src.field_62[1];
+    dst->field_64 = src.field_64;
+}
+
+void Deserialize(const SpriteObject_MM7 &src, SpriteObject *dst) {
+    dst->uType = SPRITE_OBJECT_TYPE(src.uType);
+    dst->uObjectDescID = src.uObjectDescID;
+    dst->vPosition = src.vPosition;
+    dst->vVelocity = src.vVelocity;
+    dst->uFacing = src.uFacing;
+    dst->uSoundID = src.uSoundID;
+    dst->uAttributes = SPRITE_ATTRIBUTES(src.uAttributes);
+    dst->uSectorID = src.uSectorID;
+    dst->uSpriteFrameID = src.uSpriteFrameID;
+    dst->field_20 = src.field_20;
+    dst->field_22_glow_radius_multiplier = src.field_22_glow_radius_multiplier;
+    Deserialize(src.containing_item, &dst->containing_item);
+    dst->spell_id = src.spell_id;
+    dst->spell_level = src.spell_level;
+    dst->spell_skill = PLAYER_SKILL_MASTERY(src.spell_skill);
+    dst->field_54 = src.field_54;
+    dst->spell_caster_pid = src.spell_caster_pid;
+    dst->spell_target_pid = src.spell_target_pid;
+    dst->field_60_distance_related_prolly_lod = src.field_60_distance_related_prolly_lod;
+    dst->field_61 = ABILITY_INDEX(src.field_61);
+    dst->field_62[0] = src.field_62[0];
+    dst->field_62[1] = src.field_62[1];
+    dst->field_64 = src.field_64;
 }

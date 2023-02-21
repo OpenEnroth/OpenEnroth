@@ -409,8 +409,16 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             uint32_t uNumSpriteObjects = pSpriteObjects.size();
             memcpy(data_write_pos, &uNumSpriteObjects, 4);
             data_write_pos += 4;
-            memcpy(data_write_pos, pSpriteObjects.data(), 112 * uNumSpriteObjects);
-            data_write_pos += 112 * uNumSpriteObjects;
+            // memcpy(data_write_pos, pSpriteObjects.data(), 112 * uNumSpriteObjects);
+            // data_write_pos += 112 * uNumSpriteObjects;
+            SpriteObject_MM7 *tmp_sprite = (SpriteObject_MM7*)malloc(sizeof(SpriteObject_MM7));
+
+            for (int i = 0; i < uNumSpriteObjects; ++i) {
+                Serialize(pSpriteObjects[i], tmp_sprite);
+                memcpy(data_write_pos + i * sizeof(SpriteObject_MM7), tmp_sprite, sizeof(SpriteObject_MM7));
+            }
+            free(tmp_sprite);
+            data_write_pos += uNumActors * sizeof(SpriteObject_MM7);
 
             data_write_pos += ChestsSerialize(data_write_pos);
 
@@ -461,7 +469,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
             // memcpy(data_write_pos, &pActors, uNumActors * sizeof(Actor));
             // data_write_pos += uNumActors * sizeof(Actor);
-            Actor_MM7* tmp_actor = (Actor_MM7*)malloc(sizeof(Actor_MM7));
+            Actor_MM7 *tmp_actor = (Actor_MM7*)malloc(sizeof(Actor_MM7));
 
             for (int i = 0; i < uNumActors; ++i) {
                 Serialize(pActors[i], tmp_actor);
@@ -473,9 +481,17 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             uint32_t uNumSpriteObjects = pSpriteObjects.size();
             memcpy(data_write_pos, &uNumSpriteObjects, 4);
             data_write_pos += 4;
-            memcpy(data_write_pos, pSpriteObjects.data(),
-                   uNumSpriteObjects * sizeof(SpriteObject));
-            data_write_pos += uNumSpriteObjects * sizeof(SpriteObject);
+
+            // memcpy(data_write_pos, pSpriteObjects.data(), uNumSpriteObjects * sizeof(SpriteObject));
+            // data_write_pos += uNumSpriteObjects * sizeof(SpriteObject);
+            SpriteObject_MM7 *tmp_sprite = (SpriteObject_MM7*)malloc(sizeof(SpriteObject_MM7));
+
+            for (int i = 0; i < uNumSpriteObjects; ++i) {
+                Serialize(pSpriteObjects[i], tmp_sprite);
+                memcpy(data_write_pos + i * sizeof(SpriteObject_MM7), tmp_sprite, sizeof(SpriteObject_MM7));
+            }
+            free(tmp_sprite);
+            data_write_pos += uNumActors * sizeof(SpriteObject_MM7);
 
             data_write_pos += ChestsSerialize(data_write_pos);
 
