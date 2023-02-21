@@ -1,15 +1,50 @@
 #include "Testing/Game/GameTest.h"
 
-#include "GUI/GUIWindow.h"
 #include "Arcomage/Arcomage.h"
 
+#include "GUI/GUIWindow.h"
+#include "GUI/GUIProgressBar.h"
+
 #include "Engine/Objects/ItemTable.h"
+#include "Engine/SaveLoad.h"
+
+#include "Utility/DataPath.h"
+#include "Utility/ScopeGuard.h"
 
 GAME_TEST(Items, GenerateItem) {
     // Calling GenerateItem 100 times shouldn't assert.
     ItemGen item;
     for (int i = 0; i < 100; i++)
         pItemTable->GenerateItem(ITEM_TREASURE_LEVEL_6, 0, &item);
+}
+
+GAME_TEST(Issues, Issue163) {
+    // Testing that pressing the Load Game button doesn't crash even if the 'saves' folder doesn't exist.
+    std::string savesDir = MakeDataPath("saves");
+    std::string savesDirMoved;
+
+    MM_AT_SCOPE_EXIT({
+        if (!savesDirMoved.empty()) {
+            std::error_code ec;
+            std::filesystem::rename(savesDirMoved, savesDir, ec); // Using std::error_code here, so can't throw.
+        }
+    });
+
+    if (std::filesystem::exists(savesDir)) {
+        savesDirMoved = savesDir + "_moved_for_testing";
+        ASSERT_FALSE(std::filesystem::exists(savesDirMoved)); // Throws on failure.
+        std::filesystem::rename(savesDir, savesDirMoved);
+    }
+
+    game->pressGuiButton("MainMenu_LoadGame"); // Shouldn't crash.
+    game->tick(10);
+    for (bool used : pSavegameUsedSlots)
+        EXPECT_FALSE(used); // All slots unused.
+
+    game->pressGuiButton("LoadMenu_Load");
+    game->tick(10);
+    EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_LOADGAME);
+    EXPECT_FALSE(pGameLoadingUI_ProgressBar->IsActive()); // Load button shouldn't do anything.
 }
 
 GAME_TEST(Issues, Issue203) {
