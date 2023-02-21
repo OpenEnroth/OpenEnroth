@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2e5c282</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9cd2d2c</span>
    </div>
   </td>
  </tr>
@@ -90,7 +90,7 @@ Inheritance diagram for SdlWindow:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a8a8abe55d4da6417ddf8884427b2f749"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlWindow.html#a8a8abe55d4da6417ddf8884427b2f749">SdlWindow</a> (<a class="el" href="classSdlPlatformSharedState.html">SdlPlatformSharedState</a> *state, SDL_Window *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, uint32_t id)</td></tr>
+<tr class="memitem:a8a8abe55d4da6417ddf8884427b2f749"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlWindow.html#a8a8abe55d4da6417ddf8884427b2f749">SdlWindow</a> (<a class="el" href="classSdlPlatformSharedState.html">SdlPlatformSharedState</a> *state, SDL_Window *<a class="el" href="EngineGlobals_8cpp.html#a88500cd1785fee2e88c7a54241cb6a4e">window</a>, uint32_t <a class="el" href="classSdlWindow.html#a50c994d4ad5ae651fc0027c94596e2c9">id</a>)</td></tr>
 <tr class="separator:a8a8abe55d4da6417ddf8884427b2f749"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d165b038a44aa75acf09c042d49253d"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlWindow.html#a1d165b038a44aa75acf09c042d49253d">~SdlWindow</a> ()</td></tr>
 <tr class="separator:a1d165b038a44aa75acf09c042d49253d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -134,10 +134,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a33434fd7e269e9e411d551563bed2197"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43785e15b3c1ade51311eb1dcce7f969"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="classPlatformOpenGLContext.html">PlatformOpenGLContext</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlWindow.html#a43785e15b3c1ade51311eb1dcce7f969">createOpenGLContext</a> (const <a class="el" href="structPlatformOpenGLOptions.html">PlatformOpenGLOptions</a> &amp;options) override</td></tr>
 <tr class="separator:a43785e15b3c1ade51311eb1dcce7f969"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac7a9f304b1cf2f7eb68af4a37c0dc8ce"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlWindow.html#ac7a9f304b1cf2f7eb68af4a37c0dc8ce">Id</a> () const</td></tr>
-<tr class="separator:ac7a9f304b1cf2f7eb68af4a37c0dc8ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6639e5dc4560f9ed0018eba8d66262a5"><td class="memItemLeft" align="right" valign="top">SDL_Window *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlWindow.html#a6639e5dc4560f9ed0018eba8d66262a5">SdlHandle</a> () const</td></tr>
-<tr class="separator:a6639e5dc4560f9ed0018eba8d66262a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50c994d4ad5ae651fc0027c94596e2c9"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlWindow.html#a50c994d4ad5ae651fc0027c94596e2c9">id</a> () const</td></tr>
+<tr class="separator:a50c994d4ad5ae651fc0027c94596e2c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPlatformWindow"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPlatformWindow')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPlatformWindow.html">PlatformWindow</a></td></tr>
 <tr class="memitem:a60a48880e59dbc15fdc799e27811f36a inherit pub_methods_classPlatformWindow"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#a60a48880e59dbc15fdc799e27811f36a">~PlatformWindow</a> ()=default</td></tr>
 <tr class="separator:a60a48880e59dbc15fdc799e27811f36a inherit pub_methods_classPlatformWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -361,8 +359,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ac7a9f304b1cf2f7eb68af4a37c0dc8ce" name="ac7a9f304b1cf2f7eb68af4a37c0dc8ce"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac7a9f304b1cf2f7eb68af4a37c0dc8ce">&#9670;&#160;</a></span>Id()</h2>
+<a id="a50c994d4ad5ae651fc0027c94596e2c9" name="a50c994d4ad5ae651fc0027c94596e2c9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a50c994d4ad5ae651fc0027c94596e2c9">&#9670;&#160;</a></span>id()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -371,7 +369,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">uint32_t SdlWindow::Id </td>
+          <td class="memname">uint32_t SdlWindow::id </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -519,31 +517,6 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Implements <a class="el" href="classPlatformWindow.html#ab480dcddff7a11ca6b98d02107746cd2">PlatformWindow</a>.</p>
-
-</div>
-</div>
-<a id="a6639e5dc4560f9ed0018eba8d66262a5" name="a6639e5dc4560f9ed0018eba8d66262a5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6639e5dc4560f9ed0018eba8d66262a5">&#9670;&#160;</a></span>SdlHandle()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">SDL_Window * SdlWindow::SdlHandle </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
 
 </div>
 </div>

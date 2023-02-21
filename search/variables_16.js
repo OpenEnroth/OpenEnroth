@@ -36,7 +36,7 @@ var searchData=
   ['val_33',['val',['../structWindowData.html#aa8cb43d4f4bc03a9bcd205ed1189127c',1,'WindowData']]],
   ['validatelist_34',['validateList',['../DataPath_8cpp.html#a1112f2b1d201080e4c7728b994530fc5',1,'DataPath.cpp']]],
   ['validator_5f_35',['validator_',['../classConfigValue.html#a8101a0a558d4c57bda876a26ec808c35',1,'ConfigValue']]],
-  ['value_36',['value',['../structGameTime.html#a19529c76d49c92dc7e664297b1d51244',1,'GameTime']]],
+  ['value_36',['value',['../structGameTime.html#a19529c76d49c92dc7e664297b1d51244',1,'GameTime::value()'],['../classPlatformGamepadAxisEvent.html#a1fcda63b8faadbb81e5077ce5e3334cb',1,'PlatformGamepadAxisEvent::value()']]],
   ['value_5f_37',['value_',['../classFlags.html#a90bcd4b3c625d2aaea67f3a4297ed784',1,'Flags::value_()'],['../classConfigValue.html#a15e47a8eca1a47c3922bd59c424e7c83',1,'ConfigValue::value_()']]],
   ['valuebyname_5f_38',['valueByName_',['../classConfigSection.html#a8a79af8db79a5fcc6bd93441699801bc',1,'ConfigSection']]],
   ['vao_39',['vao',['../structRenderOpenGL_1_1nk__device.html#a493e29c5125f57f9584774125ccace30',1,'RenderOpenGL::nk_device']]],

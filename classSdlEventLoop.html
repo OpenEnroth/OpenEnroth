@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2e5c282</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9cd2d2c</span>
    </div>
   </td>
  </tr>
@@ -139,8 +139,10 @@ Private Member Functions</h2></td></tr>
 <tr class="separator:a49e0ef66e0f1119b3fec8ea9bc29f11d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa0d6ded521f89258757b87771778517c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlEventLoop.html#aa0d6ded521f89258757b87771778517c">dispatchWindowResizeEvent</a> (<a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *<a class="el" href="EngineGlobals_8cpp.html#a902aed380990e0d902240438707b6d10">eventHandler</a>, const SDL_WindowEvent *event)</td></tr>
 <tr class="separator:aa0d6ded521f89258757b87771778517c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a573d22e6815ebbd163e0c68028a5e5a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlEventLoop.html#a573d22e6815ebbd163e0c68028a5e5a4">dispatchGamepadDeviceEvent</a> (<a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *<a class="el" href="EngineGlobals_8cpp.html#a902aed380990e0d902240438707b6d10">eventHandler</a>, const SDL_ControllerDeviceEvent *event)</td></tr>
-<tr class="separator:a573d22e6815ebbd163e0c68028a5e5a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67a133b5623a45a7d72d1d6beafb6f73"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlEventLoop.html#a67a133b5623a45a7d72d1d6beafb6f73">dispatchGamepadConnectedEvent</a> (<a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *<a class="el" href="EngineGlobals_8cpp.html#a902aed380990e0d902240438707b6d10">eventHandler</a>, const SDL_ControllerDeviceEvent *event)</td></tr>
+<tr class="separator:a67a133b5623a45a7d72d1d6beafb6f73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8484b15fa8d1866c4c7b6c078fa61f47"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlEventLoop.html#a8484b15fa8d1866c4c7b6c078fa61f47">dispatchGamepadDisconnectedEvent</a> (<a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *<a class="el" href="EngineGlobals_8cpp.html#a902aed380990e0d902240438707b6d10">eventHandler</a>, const SDL_ControllerDeviceEvent *event)</td></tr>
+<tr class="separator:a8484b15fa8d1866c4c7b6c078fa61f47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb3bda91a0ad606cae4c1db834b12765"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlEventLoop.html#aeb3bda91a0ad606cae4c1db834b12765">dispatchGamepadButtonEvent</a> (<a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *<a class="el" href="EngineGlobals_8cpp.html#a902aed380990e0d902240438707b6d10">eventHandler</a>, const SDL_ControllerButtonEvent *event)</td></tr>
 <tr class="separator:aeb3bda91a0ad606cae4c1db834b12765"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c7f2e9f97cb11acb0f09ee6505cf573"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlEventLoop.html#a3c7f2e9f97cb11acb0f09ee6505cf573">dispatchGamepadAxisEvent</a> (<a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *<a class="el" href="EngineGlobals_8cpp.html#a902aed380990e0d902240438707b6d10">eventHandler</a>, const SDL_ControllerAxisEvent *event)</td></tr>
@@ -350,8 +352,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a573d22e6815ebbd163e0c68028a5e5a4" name="a573d22e6815ebbd163e0c68028a5e5a4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a573d22e6815ebbd163e0c68028a5e5a4">&#9670;&#160;</a></span>dispatchGamepadDeviceEvent()</h2>
+<a id="a67a133b5623a45a7d72d1d6beafb6f73" name="a67a133b5623a45a7d72d1d6beafb6f73"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a67a133b5623a45a7d72d1d6beafb6f73">&#9670;&#160;</a></span>dispatchGamepadConnectedEvent()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -360,7 +362,43 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void SdlEventLoop::dispatchGamepadDeviceEvent </td>
+          <td class="memname">void SdlEventLoop::dispatchGamepadConnectedEvent </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *&#160;</td>
+          <td class="paramname"><em>eventHandler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const SDL_ControllerDeviceEvent *&#160;</td>
+          <td class="paramname"><em>event</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8484b15fa8d1866c4c7b6c078fa61f47" name="a8484b15fa8d1866c4c7b6c078fa61f47"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8484b15fa8d1866c4c7b6c078fa61f47">&#9670;&#160;</a></span>dispatchGamepadDisconnectedEvent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SdlEventLoop::dispatchGamepadDisconnectedEvent </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *&#160;</td>
           <td class="paramname"><em>eventHandler</em>, </td>

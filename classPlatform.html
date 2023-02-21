@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2e5c282</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9cd2d2c</span>
    </div>
   </td>
  </tr>
@@ -101,8 +101,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:abc5b521f45dbed87b0be6742ee20f712"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a63bf6bce715e6c257b8f8b2325dfd43b"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="classPlatformEventLoop.html">PlatformEventLoop</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#a63bf6bce715e6c257b8f8b2325dfd43b">createEventLoop</a> ()=0</td></tr>
 <tr class="separator:a63bf6bce715e6c257b8f8b2325dfd43b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af30d86b07993ec2adbd8248459af0dd6"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="classPlatformGamepad.html">PlatformGamepad</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#af30d86b07993ec2adbd8248459af0dd6">createGamepad</a> (uint32_t id)=0</td></tr>
-<tr class="separator:af30d86b07993ec2adbd8248459af0dd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a749df0cb020b736db9054ace3bda0220"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="classPlatformGamepad.html">PlatformGamepad</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#a749df0cb020b736db9054ace3bda0220">gamepads</a> ()=0</td></tr>
+<tr class="separator:a749df0cb020b736db9054ace3bda0220"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27eb9af9ffb8cd8926f846d2bd8dccec"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#a27eb9af9ffb8cd8926f846d2bd8dccec">setCursorShown</a> (bool cursorShown)=0</td></tr>
 <tr class="separator:a27eb9af9ffb8cd8926f846d2bd8dccec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a83d0a698d370a1b7f7e4afac8a2a8436"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#a83d0a698d370a1b7f7e4afac8a2a8436">isCursorShown</a> () const =0</td></tr>
@@ -210,42 +210,6 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="af30d86b07993ec2adbd8248459af0dd6" name="af30d86b07993ec2adbd8248459af0dd6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af30d86b07993ec2adbd8248459af0dd6">&#9670;&#160;</a></span>createGamepad()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual std::unique_ptr&lt; <a class="el" href="classPlatformGamepad.html">PlatformGamepad</a> &gt; Platform::createGamepad </td>
-          <td>(</td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>id</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p >Creates a new gamepad.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>Gamepad identifier from event. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Newly created gamepad, or <code>nullptr</code> on error. </dd></dl>
-
-<p>Implemented in <a class="el" href="classProxyPlatform.html#a5a60e6d25838355e2e8681cd383fe1c9">ProxyPlatform</a>, and <a class="el" href="classSdlPlatform.html#a470eccba90199afaf66fcc9bb3ea8b25">SdlPlatform</a>.</p>
-
-</div>
-</div>
 <a id="a0d717a2134ddee8cd84d37d40afd4711" name="a0d717a2134ddee8cd84d37d40afd4711"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0d717a2134ddee8cd84d37d40afd4711">&#9670;&#160;</a></span>createStandardPlatform()</h2>
 
@@ -334,6 +298,35 @@ Static Public Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Geometries of all monitors on current system, or an empty vector in case of an error. </dd></dl>
 
 <p>Implemented in <a class="el" href="classProxyPlatform.html#aa532b31168a6b3c881b39edaafeb31c7">ProxyPlatform</a>, and <a class="el" href="classSdlPlatform.html#adae47daec0ff204a252d124ec5deebaa">SdlPlatform</a>.</p>
+
+</div>
+</div>
+<a id="a749df0cb020b736db9054ace3bda0220" name="a749df0cb020b736db9054ace3bda0220"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a749df0cb020b736db9054ace3bda0220">&#9670;&#160;</a></span>gamepads()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::vector&lt; <a class="el" href="classPlatformGamepad.html">PlatformGamepad</a> * &gt; Platform::gamepads </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >This function lists the gamepads currently connected to the system. The gamepad objects themselves are owned by the platform and are destroyed automatically when disconnected. If you're caching them in your code, then make sure to subscribe to <code>EVENT_GAMEPAD_DISCONNECTED</code>, it is guaranteed to fire before the gamepad object is destroyed.</p>
+<dl class="section return"><dt>Returns</dt><dd>All gamepads connected to the system. </dd></dl>
+
+<p>Implemented in <a class="el" href="classProxyPlatform.html#ae4eafd0db04b5c888fb743827761c84e">ProxyPlatform</a>, and <a class="el" href="classSdlPlatform.html#a9ec234a11f0de33a9cb432f6c4a3211b">SdlPlatform</a>.</p>
 
 </div>
 </div>
