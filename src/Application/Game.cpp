@@ -1005,8 +1005,7 @@ void Game::EventLoop() {
                 case UIMSG_TransitionUI_Confirm:
                     pMessageQueue_50CBD0->Flush();
                     dword_50CDC8 = 1;
-                    // PID was PID_INVALID
-                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, -1, 0, -1, 0, 0);
+                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, PID_INVALID, 0, -1, 0, 0);
 
                     // PlayHouseSound(  // this is wrong - what is it meant to do??
                     //    uCurrentHouse_Animation,

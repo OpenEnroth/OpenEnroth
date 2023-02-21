@@ -274,9 +274,14 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
 
     si.sample->SetVolume(uMasterVolume);
 
+    // TODO(Nik-RE-dev): all non-object PIDs must be named constants that convey semantics of sound played.
     if (pid == 0) {  // generic sound like from UI
         si.sample->Play();
-    } else if (pid == -1) {  // exclusive sounds - can override
+    } else if (pid == PID_INVALID) { // exclusive sounds - can override
+        si.sample->Stop();
+        si.sample->Play();
+    } else if (pid == -1) { // all instances must be changed to PID_INVALID
+        assert(false && "AudioPlayer::PlaySound - pid == -1 is encountered.");
         si.sample->Stop();
         si.sample->Play();
     } else if (pid < 0) {  // exclusive sounds - no override (close chest)

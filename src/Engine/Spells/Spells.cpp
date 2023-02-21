@@ -656,7 +656,7 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);  // звук алтаря
             //    PID was 0
-            pAudioPlayer->PlaySpellSound(uSpellID, -1);
+            pAudioPlayer->PlaySpellSound(uSpellID, PID_INVALID);
             return;
         case SPELL_AIR_SHIELD:
         case SPELL_EARTH_STONESKIN:
@@ -701,7 +701,7 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
             //    PID was 0
-            pAudioPlayer->PlaySpellSound(uSpellID, -1);
+            pAudioPlayer->PlaySpellSound(uSpellID, PID_INVALID);
             return;
         case SPELL_FIRE_IMMOLATION:
             if (skillMastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
@@ -720,7 +720,7 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
             //    PID was 0
-            pAudioPlayer->PlaySpellSound(uSpellID, -1);
+            pAudioPlayer->PlaySpellSound(uSpellID, PID_INVALID);
             return;
         case SPELL_FIRE_PROTECTION_FROM_FIRE:
         case SPELL_AIR_PROTECTION_FROM_AIR:
@@ -761,7 +761,7 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
             //    PID was 0
-            pAudioPlayer->PlaySpellSound(uSpellID, -1);
+            pAudioPlayer->PlaySpellSound(uSpellID, PID_INVALID);
             return;
         case SPELL_LIGHT_DAY_OF_THE_GODS:
             switch (skillMastery) {
@@ -792,7 +792,7 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
             //    PID was 0
-            pAudioPlayer->PlaySpellSound(uSpellID, -1);
+            pAudioPlayer->PlaySpellSound(uSpellID, PID_INVALID);
             return;
         default:
             return;

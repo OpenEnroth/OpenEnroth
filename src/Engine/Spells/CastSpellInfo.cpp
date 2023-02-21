@@ -3282,8 +3282,7 @@ void CastSpellInfoHelpers::CastSpell() {
             pPlayer->PlaySound(SPEECH_CastSpell, 0);
         }
         if (spell_sound_flag) {
-            // PID was PID_INVALID
-            pAudioPlayer->PlaySpellSound(pCastSpell->uSpellID, -1);
+            pAudioPlayer->PlaySpellSound(pCastSpell->uSpellID, PID_INVALID);
         }
 
         pCastSpell->uSpellID = SPELL_NONE;
