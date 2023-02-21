@@ -47,6 +47,44 @@ GAME_TEST(Issues, Issue163) {
     EXPECT_FALSE(pGameLoadingUI_ProgressBar->IsActive()); // Load button shouldn't do anything.
 }
 
+GAME_TEST(Issues, Issue198) {
+    // Check that items can't end up out of bounds of player's inventory.
+    test->playTraceFromTestData("issue_198.mm7", "issue_198.json");
+
+    auto forEachInventoryItem = [](auto &&callback) {
+        for (const Player &player : pParty->pPlayers) {
+            for (int inventorySlot = 0; inventorySlot < Player::INVENTORY_SLOT_COUNT; inventorySlot++) {
+                int itemIndex = player.pInventoryMatrix[inventorySlot];
+                if (itemIndex <= 0)
+                    continue; // Empty or non-primary cell.
+
+                int x = inventorySlot % Player::INVENTORY_SLOTS_WIDTH;
+                int y = inventorySlot / Player::INVENTORY_SLOTS_WIDTH;
+
+                callback(player.pInventoryItemList[itemIndex - 1], x, y);
+            }
+        }
+    };
+
+    // Preload item images in the main thread first.
+    game->runGameRoutine([&] {
+        forEachInventoryItem([] (const ItemGen &item, int /*x*/, int /*y*/) {
+            // Calling GetWidth forces the texture to be created.
+            assets->GetImage_ColorKey(pItemTable->pItems[item.uItemID].pIconName)->GetWidth();
+        });
+    });
+
+    // Then can safely check everything.
+    forEachInventoryItem([] (const ItemGen &item, int x, int y) {
+        Texture *image = assets->GetImage_ColorKey(pItemTable->pItems[item.uItemID].pIconName);
+        int width = GetSizeInInventorySlots(image->GetWidth());
+        int height = GetSizeInInventorySlots(image->GetHeight());
+
+        EXPECT_LE(x + width, Player::INVENTORY_SLOTS_WIDTH);
+        EXPECT_LE(y + height, Player::INVENTORY_SLOTS_HEIGHT);
+    });
+}
+
 GAME_TEST(Issues, Issue203) {
     // Judge's "I lost it" shouldn't crash.
     test->playTraceFromTestData("issue_203.mm7", "issue_203.json");
