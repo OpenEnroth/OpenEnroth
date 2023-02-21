@@ -191,7 +191,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
                             debug_non_combat_recovery_mul * (double)pPlayers[uActiveCharacter]->GetAttackRecoveryTime(false) * flt_debugrecmod3
                         );
                     }
-                    CastSpellInfoHelpers::CancelSpellCastInProgress();
+                    CastSpellInfoHelpers::cancelSpellCastInProgress();
                     pTurnEngine->ApplyPlayerAction();
                 }
             }
@@ -227,7 +227,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
             }
 
             SPELL_TYPE quickSpellNumber = pPlayers[uActiveCharacter]->uQuickSpell;
-            PLAYER_SKILL_MASTERY skill_mastery = pPlayers[uActiveCharacter]->GetActualSkillMastery(GetSkillTypeForSpell(quickSpellNumber));
+            PLAYER_SKILL_MASTERY skill_mastery = pPlayers[uActiveCharacter]->GetActualSkillMastery(getSkillTypeForSpell(quickSpellNumber));
 
             int uRequiredMana = 0;
             if (!engine->config->debug.AllMagic.Get()) {

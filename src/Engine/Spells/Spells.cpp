@@ -529,7 +529,7 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
         case SPELL_EARTH_DEATH_BLOSSOM:
             spell_sprites.uType = SpellSpriteMapping[uSpellID];
             spell_sprites.containing_item.Reset();
-            spell_sprites.spell_id = uSpellID;
+            spell_sprites.uSpellID = uSpellID;
             spell_sprites.spell_level = skillLevel;
             spell_sprites.spell_skill = skillMastery;
             spell_sprites.uObjectDescID = pObjectList->ObjectIDByItemID(spell_sprites.uType);

@@ -144,7 +144,7 @@ enum SPELL_TYPE : uint8_t {
 /**
  * Is spell target is item in inventory?
  */
-inline bool IsSpellTargetsItem(SPELL_TYPE uSpellID) {
+inline bool isSpellTargetsItem(SPELL_TYPE uSpellID) {
     return uSpellID == SPELL_WATER_ENCHANT_ITEM ||
            uSpellID == SPELL_FIRE_FIRE_AURA ||
            uSpellID == SPELL_DARK_VAMPIRIC_WEAPON ||
@@ -154,39 +154,37 @@ inline bool IsSpellTargetsItem(SPELL_TYPE uSpellID) {
 /**
  * Get skill used for casting given spell.
  */
-inline PLAYER_SKILL_TYPE GetSkillTypeForSpell(SPELL_TYPE uSpellID) {
-    PLAYER_SKILL_TYPE result_skill;
-
+inline PLAYER_SKILL_TYPE getSkillTypeForSpell(SPELL_TYPE uSpellID) {
     assert(uSpellID != SPELL_NONE);
 
     if (uSpellID < SPELL_AIR_WIZARD_EYE) {
-        result_skill = PLAYER_SKILL_FIRE;
+        return PLAYER_SKILL_FIRE;
     } else if (uSpellID < SPELL_WATER_AWAKEN) {
-        result_skill = PLAYER_SKILL_AIR;
+        return PLAYER_SKILL_AIR;
     } else if (uSpellID < SPELL_EARTH_STUN) {
-        result_skill = PLAYER_SKILL_WATER;
+        return PLAYER_SKILL_WATER;
     } else if (uSpellID < SPELL_SPIRIT_DETECT_LIFE) {
-        result_skill = PLAYER_SKILL_EARTH;
+        return PLAYER_SKILL_EARTH;
     } else if (uSpellID < SPELL_MIND_REMOVE_FEAR) {
-        result_skill = PLAYER_SKILL_SPIRIT;
+        return PLAYER_SKILL_SPIRIT;
     } else if (uSpellID < SPELL_BODY_CURE_WEAKNESS) {
-        result_skill = PLAYER_SKILL_MIND;
+        return PLAYER_SKILL_MIND;
     } else if (uSpellID < SPELL_LIGHT_LIGHT_BOLT) {
-        result_skill = PLAYER_SKILL_BODY;
+        return PLAYER_SKILL_BODY;
     } else if (uSpellID < SPELL_DARK_REANIMATE) {
-        result_skill = PLAYER_SKILL_LIGHT;
+        return PLAYER_SKILL_LIGHT;
     } else if (uSpellID < SPELL_BOW_ARROW) {
-        result_skill = PLAYER_SKILL_DARK;
+        return PLAYER_SKILL_DARK;
     } else if (uSpellID == SPELL_BOW_ARROW) {
-        result_skill = PLAYER_SKILL_BOW;
+        return PLAYER_SKILL_BOW;
     } else if (uSpellID == SPELL_101 ||
                uSpellID == SPELL_LASER_PROJECTILE) {
-        result_skill = PLAYER_SKILL_BLASTER;
+        return PLAYER_SKILL_BLASTER;
     } else {
         assert(false && "Unknown spell");
     }
 
-    return result_skill;
+    return PLAYER_SKILL_INVALID;
 }
 
 enum SPELL_SCHOOL : int {

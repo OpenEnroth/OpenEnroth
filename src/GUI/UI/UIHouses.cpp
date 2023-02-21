@@ -2341,19 +2341,19 @@ void TempleDialog() {
             }
             if ((uint8_t)byte_F8B1EF[uActiveCharacter] == pParty->uCurrentDayOfMonth % 7) {
                 if (ddm->uReputation <= -5) {
-                    RegisterTempleSpell(SPELL_AIR_WIZARD_EYE);
+                    pushTempleSpell(SPELL_AIR_WIZARD_EYE);
                 }
                 if (ddm->uReputation <= -10) {
-                    RegisterTempleSpell(SPELL_SPIRIT_PRESERVATION);
+                    pushTempleSpell(SPELL_SPIRIT_PRESERVATION);
                 }
                 if (ddm->uReputation <= -15) {
-                    RegisterTempleSpell(SPELL_BODY_PROTECTION_FROM_MAGIC);
+                    pushTempleSpell(SPELL_BODY_PROTECTION_FROM_MAGIC);
                 }
                 if (ddm->uReputation <= -20) {
-                    RegisterTempleSpell(SPELL_LIGHT_HOUR_OF_POWER);
+                    pushTempleSpell(SPELL_LIGHT_HOUR_OF_POWER);
                 }
                 if (ddm->uReputation <= -25) {
-                    RegisterTempleSpell(SPELL_LIGHT_DAY_OF_PROTECTION);
+                    pushTempleSpell(SPELL_LIGHT_DAY_OF_PROTECTION);
                 }
             }
             ++byte_F8B1EF[uActiveCharacter];

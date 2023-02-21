@@ -1286,13 +1286,13 @@ int UseNPCSkill(NPCProf profession) {
         } break;
 
         case Acolyte:
-            RegisterNPCSpell(SPELL_SPIRIT_BLESS);
+            pushNPCSpell(SPELL_SPIRIT_BLESS);
             break;
         case Piper:
-            RegisterNPCSpell(SPELL_SPIRIT_HEROISM);
+            pushNPCSpell(SPELL_SPIRIT_HEROISM);
             break;
         case FallenWizard:
-            RegisterNPCSpell(SPELL_LIGHT_HOUR_OF_POWER);
+            pushNPCSpell(SPELL_LIGHT_HOUR_OF_POWER);
             break;
 
         case Teacher:

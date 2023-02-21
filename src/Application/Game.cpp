@@ -1102,7 +1102,7 @@ void Game::EventLoop() {
                     } else {
                         pParty->field_6E4_set0_unused = 0;
                         pParty->field_6E0_set0_unused = 0;
-                        CastSpellInfoHelpers::CancelSpellCastInProgress();
+                        CastSpellInfoHelpers::cancelSpellCastInProgress();
                         DialogueEnding();
                         pEventTimer->Pause();
                         pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
@@ -1642,8 +1642,8 @@ void Game::EventLoop() {
                         (pPlayer2 = pPlayers[uActiveCharacter],
                          pPlayer2->uTimeToRecovery))
                         continue;
-                    RegisterSpellOrSpellLikeSkill(pPlayer2->uQuickSpell, uActiveCharacter - 1,
-                                                  0, 0, uActiveCharacter);
+                    pushSpellOrRangedAttack(pPlayer2->uQuickSpell, uActiveCharacter - 1,
+                                            0, 0, uActiveCharacter);
                     continue;
                 }
 
@@ -2025,14 +2025,14 @@ void Game::EventLoop() {
 
                 case UIMSG_CastSpellFromBook:
                     if (pTurnEngine->turn_stage != TE_MOVEMENT) {
-                        RegisterSpellOrSpellLikeSkill(static_cast<SPELL_TYPE>(uMessageParam), v199, 0, 0, 0);
+                        pushSpellOrRangedAttack(static_cast<SPELL_TYPE>(uMessageParam), v199, 0, 0, 0);
                     }
                     continue;
 
                 case UIMSG_SpellScrollUse:
                     __debugbreak();
                     if (pTurnEngine->turn_stage != TE_MOVEMENT) {
-                        RegisterScrollSpell(static_cast<SPELL_TYPE>(uMessageParam), v199);
+                        pushScrollSpell(static_cast<SPELL_TYPE>(uMessageParam), v199);
                     }
                     continue;
                 case UIMSG_SpellBookWindow:
@@ -2548,7 +2548,7 @@ void Game::EventLoop() {
             }
         }
     }
-    CastSpellInfoHelpers::CastSpell();
+    CastSpellInfoHelpers::castSpell();
 }
 
 //----- (0046A14B) --------------------------------------------------------

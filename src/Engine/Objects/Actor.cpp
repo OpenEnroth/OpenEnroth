@@ -272,7 +272,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             a1.uType = SpellSpriteMapping[uSpellID];
             a1.uObjectDescID = GetObjDescId(uSpellID);
             a1.containing_item.Reset();
-            a1.spell_id = uSpellID;
+            a1.uSpellID = uSpellID;
             a1.spell_level = uSkillMastery;
             a1.vPosition.x = actorPtr->vPosition.x;
             a1.spell_skill = PLAYER_SKILL_MASTERY_NONE;
@@ -358,7 +358,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 a1.vPosition.x = pParty->vPosition.x;
                 a1.vPosition.y = pParty->vPosition.y;
                 a1.vPosition.z = v30 + v114;
-                a1.spell_id = SPELL_FIRE_METEOR_SHOWER;
+                a1.uSpellID = SPELL_FIRE_METEOR_SHOWER;
                 a1.spell_skill = PLAYER_SKILL_MASTERY_NONE;
                 a1.uAttributes = 0;
                 a1.uSectorID = 0;
@@ -408,7 +408,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             a1.uObjectDescID = GetObjDescId(uSpellID);
 
             a1.containing_item.Reset();
-            a1.spell_id = SPELL_AIR_SPARKS;
+            a1.uSpellID = SPELL_AIR_SPARKS;
             a1.spell_level = uSkillMastery;
             a1.vPosition.x = actorPtr->vPosition.x;
             a1.spell_skill = PLAYER_SKILL_MASTERY_NONE;
@@ -642,7 +642,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                    (v70 - 1);
             a1.uObjectDescID = GetObjDescId(uSpellID);
             a1.containing_item.Reset();
-            a1.spell_id = uSpellID;
+            a1.uSpellID = uSpellID;
             a1.spell_level = uSkillMastery;
             a1.vPosition.x = actorPtr->vPosition.x;
             a1.spell_skill = PLAYER_SKILL_MASTERY_NONE;
@@ -803,7 +803,7 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
         return;
     }
     a1.containing_item.Reset();
-    a1.spell_id = 0;
+    a1.uSpellID = SPELL_NONE;
     a1.vPosition.x = pActors[uActorID].vPosition.x;
     a1.vPosition.y = pActors[uActorID].vPosition.y;
     a1.vPosition.z = pActors[uActorID].vPosition.z + (pActors[uActorID].uActorHeight * 0.75);
@@ -855,7 +855,7 @@ void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors
     a1.uType = SPRITE_OBJECT_EXPLODE;
     a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.uType);
     a1.containing_item.Reset();
-    a1.spell_id = 0;
+    a1.uSpellID = SPELL_NONE;
     a1.spell_level = 0;
     a1.spell_skill = PLAYER_SKILL_MASTERY_NONE;
     a1.vPosition.x = pActors[uActorID].vPosition.x;
@@ -1396,7 +1396,7 @@ void Actor::StealFrom(unsigned int uActorID) {
 
     pPlayer = &pParty->pPlayers[uActiveCharacter - 1];
     if (pPlayer->CanAct()) {
-        CastSpellInfoHelpers::CancelSpellCastInProgress();
+        CastSpellInfoHelpers::cancelSpellCastInProgress();
         v4 = 0;
         v5 = pMapStats->GetMapInfo(pCurrentMapName);
         if (v5) v4 = pMapStats->pInfos[v5]._steal_perm;
@@ -3229,7 +3229,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         }
     } else {
         v61 = projectileSprite->field_60_distance_related_prolly_lod;
-        if (projectileSprite->spell_id != SPELL_DARK_SOULDRINKER) {
+        if (projectileSprite->uSpellID != SPELL_DARK_SOULDRINKER) {
             int d1 = abs(pParty->vPosition.x - projectileSprite->vPosition.x);
             int d2 = abs(pParty->vPosition.y - projectileSprite->vPosition.y);
             int d3 = abs(pParty->vPosition.z - projectileSprite->vPosition.z);
@@ -3243,7 +3243,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 v61 = 1;
         }
 
-        switch (projectileSprite->spell_id) {
+        switch (projectileSprite->uSpellID) {
             case SPELL_LASER_PROJECTILE:
                 // TODO: should be changed to GetActual* equivalents?
                 v61 = 1;
@@ -3309,10 +3309,10 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
 
             default:
                 attackElement = (DAMAGE_TYPE)player->GetSpellSchool(
-                    static_cast<SPELL_TYPE>(projectileSprite->spell_id));
+                    projectileSprite->uSpellID);
                 IsAdditionalDamagePossible = false;
                 uDamageAmount = CalcSpellDamage(
-                    static_cast<SPELL_TYPE>(projectileSprite->spell_id),
+                    projectileSprite->uSpellID,
                     projectileSprite->spell_level,
                     projectileSprite->spell_skill, pMonster->sCurrentHP);
                 break;
@@ -5166,9 +5166,9 @@ void ItemDamageFromActor(unsigned int uObjID, unsigned int uActorID,
 
     if (!pActors[uActorID].IsNotAlive()) {
         if (PID_TYPE(uObjID) == OBJECT_Item) {
-            if (pSpriteObjects[PID_ID(uObjID)].spell_id) {
+            if (pSpriteObjects[PID_ID(uObjID)].uSpellID) {
                 v6 = CalcSpellDamage(
-                    static_cast<SPELL_TYPE>(pSpriteObjects[PID_ID(uObjID)].spell_id),
+                    pSpriteObjects[PID_ID(uObjID)].uSpellID,
                     pSpriteObjects[PID_ID(uObjID)].spell_level,
                     pSpriteObjects[PID_ID(uObjID)].spell_skill,
                     pActors[uActorID].sCurrentHP);
