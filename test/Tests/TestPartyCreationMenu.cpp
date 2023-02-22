@@ -162,3 +162,10 @@ GAME_TEST(Issues, Issue159) {
     // Exception when entering Tidewater Caverns
     test->playTraceFromTestData("issue_159.mm7", "issue_159.json");
 }
+
+GAME_TEST(Issue, Issue123) {
+    // Party falls when flying
+    test->playTraceFromTestData("issue_123.mm7", "issue_123.json");
+    // check party is still in the air
+    EXPECT_GT(pParty->vPosition.z, 512);
+}
