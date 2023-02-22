@@ -22,12 +22,6 @@ static const IndexedArray<const char *, PartyAlignment_Good, PartyAlignment_Evil
 
 GUIProgressBar *pGameLoadingUI_ProgressBar = new GUIProgressBar();
 
-GUIProgressBar::GUIProgressBar() {
-    progressbar_dungeon = nullptr;
-    progressbar_loading = nullptr;
-    loading_bg = nullptr;
-}
-
 bool GUIProgressBar::Initialize(Type type) {
     if (loading_bg) {
         return false;
