@@ -12,6 +12,11 @@ GAME_TEST(Items, GenerateItem) {
         pItemTable->GenerateItem(ITEM_TREASURE_LEVEL_6, 0, &item);
 }
 
+GAME_TEST(Issues, Issue203) {
+    // Judge's "I lost it" shouldn't crash.
+    test->playTraceFromTestData("issue_203.mm7", "issue_203.json");
+}
+
 GAME_TEST(Prs, Pr314) {
     // Check that character creating menu works.
     // Trace pretty much presses all the buttons and opens all the popups possible.
