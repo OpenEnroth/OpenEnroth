@@ -294,7 +294,7 @@ void CastSpellInfoHelpers::CastSpell() {
             if (pPlayer->CanCastSpell(uRequiredMana)) {
                 int success_chance_percent = 10 * spell_level;
                 if (spell_mastery != PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                    if (pParty->uFlags & (PARTY_FLAGS_1_ALERT_RED | PARTY_FLAGS_1_ALERT_YELLOW) ||
+                    if (pParty->GetRedOrYellowAlert() ||
                             grng->Random(100) >= success_chance_percent) {
                         SpellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         continue;
@@ -1197,7 +1197,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 case SPELL_AIR_FLY:
                 {
                     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-                        SpellFailed(pCastSpell, LSTR_HOSTILE_CREATURES_NEARBY);
+                        SpellFailed(pCastSpell, LSTR_CANT_FLY_INDOORS);
                         continue;
                     }
                     if (!pPlayers[pCastSpell->uPlayerID + 1]->GetMaxMana() &&
@@ -1390,7 +1390,7 @@ void CastSpellInfoHelpers::CastSpell() {
                             assert(false);
                     }
 
-                    // Mana drain was flag was not initialized here previously
+                    // Mana drain was was not initialized here previously
                     int mana_drain = (spell_mastery < PLAYER_SKILL_MASTERY_GRANDMASTER) ? 1 : 0;
                     int spell_overlay_id = pOtherOverlayList->_4418B1(10005, 201, 0, 65536);
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 0);
