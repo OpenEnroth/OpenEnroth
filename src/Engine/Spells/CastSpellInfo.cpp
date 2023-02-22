@@ -329,8 +329,6 @@ void CastSpellInfoHelpers::CastSpell() {
                 continue;
             }
         } else {
-            Vec3i spell_velocity = Vec3i(0, 0, 0);
-
             if (!pPlayer->CanCastSpell(uRequiredMana)) {
                 // Not enough mana for current spell, check the next one
                 pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
@@ -419,6 +417,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         continue;
                     }
                     if (PID_TYPE(spell_targeted_at) == OBJECT_Actor) {
+                        Vec3i spell_velocity = Vec3i(0, 0, 0);
                         InitSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.uSectorID = 0;
                         pSpellSprite.field_60_distance_related_prolly_lod = 0;
@@ -434,6 +433,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 {
                     int monster_id = PID_ID(spell_targeted_at);
                     if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_EARTH)) {
+                        Vec3i spell_velocity = Vec3i(0, 0, 0);
                         pActors[monster_id].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION]
                             .Apply(GameTime(pMiscTimer->uTotalGameTimeElapsed + 128), PLAYER_SKILL_MASTERY_NONE, 0, 0, 0);
                         InitSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
@@ -456,6 +456,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     // v730 = spell_targeted_at >> 3;
                     // HIDWORD(spellduration) =
                     // (int)&pActors[PID_ID(spell_targeted_at)];
+                    Vec3i spell_velocity = Vec3i(0, 0, 0);
                     InitSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pActors[PID_ID(spell_targeted_at)].vPosition;
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
@@ -876,6 +877,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         Vec3i dist = (pActors[monster_id].vPosition - pParty->vPosition).Abs();
                         int count = int_get_vector_length(dist.x, dist.y, dist.z);
                         if ((double)count <= 307.2) {
+                            Vec3i spell_velocity = Vec3i(0, 0, 0);
                             InitSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                             pSpellSprite.uSectorID = 0;
                             pSpellSprite.field_60_distance_related_prolly_lod = 0;
@@ -1048,6 +1050,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pSpellSprite.field_60_distance_related_prolly_lod = 0;
                     pSpellSprite.uFacing = 0;
                     for (uint i = 0; i < mon_num; i++) {
+                        Vec3i spell_velocity = Vec3i(0, 0, 0);
                         Actor *target_actor = &pActors[_50BF30_actors_in_viewport_ids[i]];
                         unsigned int height_offset = (unsigned int)(int64_t)((double)target_actor->uActorHeight * -0.8);
                         pSpellSprite.vPosition = target_actor->vPosition - Vec3i(0, 0, height_offset);
@@ -2420,6 +2423,7 @@ void CastSpellInfoHelpers::CastSpell() {
 
                 case SPELL_LIGHT_DISPEL_MAGIC:
                 {
+                    Vec3i spell_velocity = Vec3i(0, 0, 0);
                     sRecoveryTime -= spell_level;
                     spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.VibrantGreen.C32(), 192);
                     int mon_num = render->GetActorsInViewport(4096);
@@ -2526,6 +2530,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         SpellFailed(pCastSpell, LSTR_CANT_PRISMATIC_OUTDOORS);
                         continue;
                     }
+                    Vec3i spell_velocity = Vec3i(0, 0, 0);
                     int mon_num = render->GetActorsInViewport(4096);
                     // ++pSpellSprite.uType;
                     pSpellSprite.uType = SPRITE_SPELL_LIGHT_PRISMATIC_LIGHT_1;
@@ -2901,6 +2906,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pSpellSprite.uFacing = 0;
                     int drained_halth = 0;
                     if (mon_num > 0) {
+                        Vec3i spell_velocity = Vec3i(0, 0, 0);
                         drained_halth = (mon_num * (7 * spell_level + 25));
                         for (int monster_id = 0; monster_id < mon_num; monster_id++) {
                             Actor *target_actor = &pActors[_50BF30_actors_in_viewport_ids[monster_id]];
