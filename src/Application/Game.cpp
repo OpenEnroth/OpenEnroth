@@ -1423,7 +1423,7 @@ void Game::EventLoop() {
                         pGUIWindow_CurrentMenu->Release();
                         pGUIWindow_CurrentMenu = 0;
                     } else {
-                        pPlayer9->SetBeacon(uMessageParam, LloydsBeaconSpellLevel);
+                        pPlayer9->SetBeacon(uMessageParam, LloydsBeaconSpellDuration);
                     }
                     continue;
                 case UIMSG_ClickTownInTP:

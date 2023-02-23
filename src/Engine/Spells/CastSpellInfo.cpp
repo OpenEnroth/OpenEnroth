@@ -216,7 +216,7 @@ void CastSpellInfoHelpers::castSpell() {
             sRecoveryTime = pPlayer->GetAttackRecoveryTime(true);
             initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
             if (pPlayer->WearsItem(ITEM_ARTIFACT_ULLYSES, ITEM_SLOT_BOW)) {
-                pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(0xBD6u);
+                pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_SPELL_WATER_ICE_BOLT);
             }
             pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, (signed int)pParty->uPartyHeight / 3);
             pSpellSprite.spell_target_pid = spell_targeted_at;
@@ -290,7 +290,7 @@ void CastSpellInfoHelpers::castSpell() {
                 _506348_current_lloyd_playerid = pCastSpell->uPlayerID;
                 ::uRequiredMana = uRequiredMana;
                 ::sRecoveryTime = sRecoveryTime;
-                LloydsBeaconSpellLevel = (int)(604800 * spell_level);
+                LloydsBeaconSpellDuration = GameTime::FromDays(7 * spell_level).GetSeconds();
                 LloydsBeaconSpellId = pCastSpell->uSpellID;
                 pCastSpell->uFlags |= ON_CAST_NoRecoverySpell;
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_OnCastLloydsBeacon, 0, 0);
