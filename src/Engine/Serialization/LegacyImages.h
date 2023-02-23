@@ -3,7 +3,6 @@
 #include "Engine/Spells/Spells.h"
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/Actor.h"
-#include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "GUI/GUIFont.h"
 
