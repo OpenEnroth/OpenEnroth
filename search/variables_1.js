@@ -10,7 +10,7 @@ var searchData=
   ['actorhasitems_7',['ActorHasItems',['../structActor__MM7.html#ad2afcfd92bb8f39d7c7ef9a5dca273fe',1,'Actor_MM7::ActorHasItems()'],['../classActor.html#affe877106b9df2d98395bba293c92d21',1,'Actor::ActorHasItems()']]],
   ['actualfirstindex_8',['ActualFirstIndex',['../classIndexedArray.html#ad483d4958eb140b4b3ecb5b15301b83d',1,'IndexedArray']]],
   ['actuallastindex_9',['ActualLastIndex',['../classIndexedArray.html#aa030946750e8681c365d3eaf0d311791',1,'IndexedArray']]],
-  ['additional_5fslot_5fcount_10',['ADDITIONAL_SLOT_COUNT',['../structPlayer.html#ab58feecb53b383334b99040b943d1663',1,'Player']]],
+  ['additional_5fslot_5fcount_10',['ADDITIONAL_SLOT_COUNT',['../structPlayer.html#ae3affb4132e035a9737384e808848547',1,'Player']]],
   ['adjusted_5fmove_5fdistance_11',['adjusted_move_distance',['../structCollisionState.html#a28b8469f6c4da9223674b7ad9cf09df3',1,'CollisionState']]],
   ['ai_5faction_5ftype_12',['AI_action_type',['../structTurnBased__QueueElem.html#a09e852bf233fd097ed63da9768bc0028',1,'TurnBased_QueueElem']]],
   ['ai_5farray_5fdetected_5factor_5fdist_13',['ai_array_detected_actor_dist',['../mm7__data_8h.html#a20e52b88f699397eb1e933b331a00181',1,'ai_array_detected_actor_dist():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#a20e52b88f699397eb1e933b331a00181',1,'ai_array_detected_actor_dist():&#160;mm7_data.cpp']]],

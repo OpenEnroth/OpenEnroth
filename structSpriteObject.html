@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b2d5e26</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2c66c90</span>
    </div>
   </td>
  </tr>
@@ -146,8 +146,10 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a94d4601de482f5e3521229eaa54a0ad9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a844bc20d22ab2eb31b0639b88569e8c8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structItemGen.html">ItemGen</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpriteObject.html#a844bc20d22ab2eb31b0639b88569e8c8">containing_item</a></td></tr>
 <tr class="separator:a844bc20d22ab2eb31b0639b88569e8c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2a37b8b7b081e50f0bc57e8398a3427e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpriteObject.html#a2a37b8b7b081e50f0bc57e8398a3427e">spell_id</a> = 0</td></tr>
-<tr class="separator:a2a37b8b7b081e50f0bc57e8398a3427e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad17c5942f0c8381e55b7f52fd836569d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Spells_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpriteObject.html#ad17c5942f0c8381e55b7f52fd836569d">uSpellID</a> = <a class="el" href="Spells_8h.html#a6ac7ece38acd196bf750bc353e00d088a94618af48732f72c7c6c03156794339c">SPELL_NONE</a></td></tr>
+<tr class="separator:ad17c5942f0c8381e55b7f52fd836569d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10600513f5662927b7eb1f3187bd1820"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpriteObject.html#a10600513f5662927b7eb1f3187bd1820">pad</a> [3] = {0, 0, 0}</td></tr>
+<tr class="separator:a10600513f5662927b7eb1f3187bd1820"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a068ed23baa9a3349add10c17e5e08ffe"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpriteObject.html#a068ed23baa9a3349add10c17e5e08ffe">spell_level</a> = 0</td></tr>
 <tr class="separator:a068ed23baa9a3349add10c17e5e08ffe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad799831eda4b6a557cfe85e9cd5f1e6c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="PlayerEnums_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942">PLAYER_SKILL_MASTERY</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpriteObject.html#ad799831eda4b6a557cfe85e9cd5f1e6c">spell_skill</a> = <a class="el" href="PlayerEnums_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942a6f3821fb98b55732e07a3fe35c53bd7d">PLAYER_SKILL_MASTERY_NONE</a></td></tr>
@@ -722,6 +724,20 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a10600513f5662927b7eb1f3187bd1820" name="a10600513f5662927b7eb1f3187bd1820"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10600513f5662927b7eb1f3187bd1820">&#9670;&#160;</a></span>pad</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char SpriteObject::pad[3] = {0, 0, 0}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a36dfc0ae5604d14f26411bb700cd2b5a" name="a36dfc0ae5604d14f26411bb700cd2b5a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a36dfc0ae5604d14f26411bb700cd2b5a">&#9670;&#160;</a></span>spell_caster_pid</h2>
 
@@ -730,20 +746,6 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">int SpriteObject::spell_caster_pid = 0</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a2a37b8b7b081e50f0bc57e8398a3427e" name="a2a37b8b7b081e50f0bc57e8398a3427e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2a37b8b7b081e50f0bc57e8398a3427e">&#9670;&#160;</a></span>spell_id</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int SpriteObject::spell_id = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -856,6 +858,20 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">uint16_t SpriteObject::uSoundID = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad17c5942f0c8381e55b7f52fd836569d" name="ad17c5942f0c8381e55b7f52fd836569d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad17c5942f0c8381e55b7f52fd836569d">&#9670;&#160;</a></span>uSpellID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Spells_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a> SpriteObject::uSpellID = <a class="el" href="Spells_8h.html#a6ac7ece38acd196bf750bc353e00d088a94618af48732f72c7c6c03156794339c">SPELL_NONE</a></td>
         </tr>
       </table>
 </div><div class="memdoc">

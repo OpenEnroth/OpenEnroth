@@ -103,7 +103,7 @@ var searchData=
   ['additem_100',['AddItem',['../structPlayer.html#a23213493f5372b675ec5fc5ceec8a8ed',1,'Player::AddItem(ItemGen *pItem)'],['../structPlayer.html#a9ba851dc649305aee42afb4babe6a197',1,'Player::AddItem(int uSlot, ITEM_TYPE uItemID)']]],
   ['additem2_101',['AddItem2',['../structPlayer.html#a0e276155d815037f3b3551f12feed21c',1,'Player']]],
   ['additemtoparty_102',['AddItemToParty',['../structParty.html#a15aa57610c7dbb86e541329683ab9334',1,'Party']]],
-  ['additional_5fslot_5fcount_103',['ADDITIONAL_SLOT_COUNT',['../structPlayer.html#ab58feecb53b383334b99040b943d1663',1,'Player']]],
+  ['additional_5fslot_5fcount_103',['ADDITIONAL_SLOT_COUNT',['../structPlayer.html#ae3affb4132e035a9737384e808848547',1,'Player']]],
   ['addlight_104',['AddLight',['../structLightsStack__MobileLight__.html#a147eb24c116f205e042508b78ca780c8',1,'LightsStack_MobileLight_::AddLight()'],['../structLightsStack__StationaryLight__.html#aefad8cef4cfe5e87b648ae01a2a8727b',1,'LightsStack_StationaryLight_::AddLight()']]],
   ['addmessageimpl_105',['AddMessageImpl',['../structGUIMessageQueue.html#a5c65deea8dfc5ca5c071556fe154c7d4',1,'GUIMessageQueue']]],
   ['addminutes_106',['AddMinutes',['../structGameTime.html#a235747877ace658128dd8682f44072dd',1,'GameTime']]],
