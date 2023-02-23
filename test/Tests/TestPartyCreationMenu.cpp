@@ -140,3 +140,32 @@ GAME_TEST(Issues, Issue427) {
     // Check that all character have buffs
     check427Buffs("b", {0, 1, 2, 3}, true);
 }
+
+GAME_TEST(Issues, Issue125) {
+    // check that fireballs hurt party
+    auto partyHealth = [&] {
+        uint64_t result = 0;
+        for (const Player& player : pParty->pPlayers)
+            result += player.sHealth;
+        return result;
+    };
+
+    engine->config->debug.AllMagic.Set(true);
+
+    uint64_t oldHealth = 0;
+    test->playTraceFromTestData("issue_125.mm7", "issue_125.json", [&] { oldHealth = partyHealth(); });
+    uint64_t newHealth = partyHealth();
+    EXPECT_LT(newHealth, oldHealth);
+}
+
+GAME_TEST(Issues, Issue159) {
+    // Exception when entering Tidewater Caverns
+    test->playTraceFromTestData("issue_159.mm7", "issue_159.json");
+}
+
+GAME_TEST(Issue, Issue123) {
+    // Party falls when flying
+    test->playTraceFromTestData("issue_123.mm7", "issue_123.json");
+    // check party is still in the air
+    EXPECT_GT(pParty->vPosition.z, 512);
+}

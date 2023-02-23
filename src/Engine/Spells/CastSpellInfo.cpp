@@ -1433,7 +1433,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         default:
                             assert(false);
                     }
-
+                    amount = (spell_mastery == PLAYER_SKILL_MASTERY::PLAYER_SKILL_MASTERY_GRANDMASTER) ? 0 : 1;
                     spell_overlay_id = pOtherOverlayList->_4418B1(10005, 201, 0, 65536);
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 0);
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 1);
@@ -3192,22 +3192,16 @@ void CastSpellInfoHelpers::CastSpell() {
                     int pl_num = 0;
                     int pl_array[4] {};
                     for (uint pl_id = 1; pl_id <= 4; ++pl_id) {
-                        if (!pPlayers[pl_id]->conditions.Has(Condition_Sleep) &&
-                                !pPlayers[pl_id]->conditions.Has(Condition_Paralyzed) &&
-                                !pPlayers[pl_id]->conditions.Has(Condition_Unconscious) &&
-                                !pPlayers[pl_id]->conditions.Has(Condition_Dead) &&
-                                !pPlayers[pl_id]->conditions.Has(Condition_Petrified) &&
-                                !pPlayers[pl_id]->conditions.Has(Condition_Eradicated)) {
+                        if (pPlayers[pl_id]->CanAct()) {
                             pl_array[pl_num++] = pl_id;
                         }
                     }
                     for (uint j = 0; j < pl_num; j++) {
-                        pPlayers[pl_array[j]]->sHealth +=
-                            (int64_t)((double)(signed int)amount /
-                                    (double)pl_num);
+                        pPlayers[pl_array[j]]->sHealth += static_cast<int>(amount / static_cast<float>(pl_num));
                         if (pPlayers[pl_array[j]]->sHealth > pPlayers[pl_array[j]]->GetMaxHealth())
                             pPlayers[pl_array[j]]->sHealth = pPlayers[pl_array[j]]->GetMaxHealth();
-                        spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pl_array[j]);
+                        // spell buff anim expects player indexes in range 0-3 NOT 1-4 as above
+                        spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pl_array[j] - 1);
                     }
                     spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.Black.C32(), 64);
                     break;
