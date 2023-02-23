@@ -715,7 +715,6 @@ void GUIWindow_CharacterRecord::ToggleRingsOverlay() {
     pCharacterScreen_DetalizBtn = pGUIWindow_CurrentMenu->CreateButton({x, y}, {w, h}, 1, 0,
         UIMSG_ChangeDetaliz, 0, InputAction::Invalid, localization->GetString(LSTR_DETAIL_TOGGLE));
     pCharacterScreen_DollBtn = pGUIWindow_CurrentMenu->CreateButton({476, 0}, {164, 345}, 1, 0, UIMSG_ClickPaperdoll, 0);
-    viewparams->bRedrawGameUI = true;
 }
 
 GUIWindow *CastSpellInfo::GetCastSpellInInventoryWindow() {

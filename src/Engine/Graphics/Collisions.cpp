@@ -612,7 +612,6 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                     pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
                 }
 
-                viewparams->bRedrawGameUI = 1;
                 actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
                 actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
                 actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);

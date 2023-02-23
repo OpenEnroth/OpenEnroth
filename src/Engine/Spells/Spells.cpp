@@ -397,7 +397,6 @@ void SpellBuff::Reset() {
     uFlags = 0;
     if (uOverlayID) {
         pOtherOverlayList->pOverlays[uOverlayID - 1].Reset();
-        pOtherOverlayList->bRedraw = true;
         uOverlayID = 0;
     }
 }
@@ -435,7 +434,6 @@ bool SpellBuff::Apply(GameTime expire_time, PLAYER_SKILL_MASTERY uSkillMastery,
     this->expire_time = expire_time;
     if (this->uOverlayID && this->uOverlayID != uOverlayID) {
         pOtherOverlayList->pOverlays[this->uOverlayID - 1].Reset();
-        pOtherOverlayList->bRedraw = true;
         this->uOverlayID = 0;
     }
     this->uOverlayID = uOverlayID;

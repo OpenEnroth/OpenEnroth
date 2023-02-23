@@ -47,7 +47,6 @@ void Game_StartNewGameWhilePlaying(bool force_start) {
         // pGUIWindow_CurrentMenu->Release();
         uGameState = GAME_STATE_NEWGAME_OUT_GAMEMENU;
         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-        viewparams->bRedrawGameUI = 1;
     } else {
         GameUI_SetStatusBar(LSTR_START_NEW_GAME_PROMPT);
         pAudioPlayer->PlaySound(SOUND_quest, 0, 0, -1, 0, 0);
@@ -60,7 +59,6 @@ void Game_QuitGameWhilePlaying(bool force_quit) {
         pMessageQueue_50CBD0->Flush();
         // pGUIWindow_CurrentMenu->Release();
         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-        viewparams->bRedrawGameUI = 1;
         pAudioPlayer->PlaySound(SOUND_WoodDoorClosing, 0, 0, -1, 0, 0);
         uGameState = GAME_STATE_GAME_QUITTING_TO_MAIN_MENU;
     } else {
@@ -180,7 +178,6 @@ void Menu::EventLoop() {
                 pGUIWindow_CurrentMenu->Release();
                 pGUIWindow_CurrentMenu = new GUIWindow_GameOptions();  // GameMenuUI_Options_Load();
 
-                viewparams->field_48 = 1;
                 current_screen_type = CURRENT_SCREEN::SCREEN_OPTIONS;
 
                 continue;
@@ -193,7 +190,6 @@ void Menu::EventLoop() {
                 pGUIWindow_CurrentMenu->Release();
                 pGUIWindow_CurrentMenu = new GUIWindow_GameKeyBindings();  // GameMenuUI_OptionsKeymapping_Load();
 
-                viewparams->field_48 = 1;
                 current_screen_type = CURRENT_SCREEN::SCREEN_KEYBOARD_OPTIONS;
 
                 continue;
@@ -236,7 +232,6 @@ void Menu::EventLoop() {
 
                 pGUIWindow_CurrentMenu->Release();
                 pGUIWindow_CurrentMenu = new GUIWindow_GameVideoOptions();
-                viewparams->field_48 = 1;
                 current_screen_type = CURRENT_SCREEN::SCREEN_VIDEO_OPTIONS;
 
                 continue;
@@ -363,7 +358,6 @@ void Menu::EventLoop() {
                 // pGUIWindow_CurrentMenu->Release();
                 pEventTimer->Resume();
                 current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-                viewparams->bRedrawGameUI = true;
                 continue;
 
             case UIMSG_Escape:
@@ -373,13 +367,10 @@ void Menu::EventLoop() {
                     continue;
                 }
                 render->ClearZBuffer();
-                viewparams->bRedrawGameUI = true;
-                viewparams->field_48 = 1;
 
                 if (current_screen_type == CURRENT_SCREEN::SCREEN_MENU) {
                     pEventTimer->Resume();
                     current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-                    viewparams->bRedrawGameUI = true;
                 } else if (current_screen_type == CURRENT_SCREEN::SCREEN_SAVEGAME ||
                            current_screen_type == CURRENT_SCREEN::SCREEN_LOADGAME) {
                     // crt_deconstruct_ptr_6A0118();
@@ -442,8 +433,6 @@ void Menu::MenuLoop() {
     current_screen_type = CURRENT_SCREEN::SCREEN_MENU;
 
     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
-
-    viewparams->field_48 = 1;
 
     if (gamma_preview_image) {
         gamma_preview_image->Release();

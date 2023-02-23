@@ -62,7 +62,6 @@ GUIWindow_Spellbook::GUIWindow_Spellbook()
     OpenSpellbook();
 
     pAudioPlayer->PlaySound(SOUND_48, 0, 0, -1, 0, 0);
-    viewparams->field_48 = 1;
 }
 
 void GUIWindow_Spellbook::OpenSpellbookPage(int page) {

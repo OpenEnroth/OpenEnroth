@@ -2505,7 +2505,6 @@ bool Player::Recover(GameTime dt) {
         return true;
     } else {
         uTimeToRecovery = 0;  // recovered
-        viewparams->bRedrawGameUI = true;
 
         if (!uActiveCharacter)  // set recoverd char as active
             uActiveCharacter = pParty->GetNextActiveCharacter();
@@ -2523,8 +2522,6 @@ void Player::SetRecoveryTime(signed int rec) {
     if (uActiveCharacter != 0 && pPlayers[uActiveCharacter] == this &&
         !some_active_character)
         uActiveCharacter = pParty->GetNextActiveCharacter();
-
-    viewparams->bRedrawGameUI = true;
 }
 
 //----- (0048E9B7) --------------------------------------------------------
@@ -4243,7 +4240,6 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             mouse->RemoveHoldingItem();
             pGUIWindow_CurrentMenu->Release();
             current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-            viewparams->bRedrawGameUI = 1;
             pushScrollSpell(scroll_id, player_num - 1);
         } else {
             mouse->RemoveHoldingItem();
@@ -5345,7 +5341,6 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             pParty->hirelingScrollPosition = 0;
             pNPCStats->pNewNPCData[var_value].uFlags |= 0x80u;
             pParty->CountHirelings();
-            viewparams->bRedrawGameUI = true;
             return;
         case VAR_NumSkillPoints:
             this->uSkillPoints = var_value;
@@ -5920,7 +5915,6 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             pParty->hirelingScrollPosition = 0;
             pNPCStats->pNewNPCData[val].uFlags |= 0x80;
             pParty->CountHirelings();
-            viewparams->bRedrawGameUI = true;
             return;
         case VAR_NumSkillPoints:
             this->uSkillPoints += val;
@@ -6584,7 +6578,6 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
                 pParty->hirelingScrollPosition = 0;
                 pNPCStats->pNewNPCData[(int)pValue].uFlags &= 0xFFFFFF7F;
                 pParty->CountHirelings();
-                viewparams->bRedrawGameUI = true;
             }
             return;
         case VAR_HiredNPCHasSpeciality:
@@ -6983,8 +6976,6 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             playerPtr->sHealth > 0) {
             playerPtr->PlaySound(SPEECH_BadlyHurt, 0);
         }
-
-        viewparams->bRedrawGameUI = 1;
         return;
     } else {  // is an item
         int spriteId = PID_ID(uObjID);
@@ -7831,7 +7822,6 @@ void Player::PlayEmotion(CHARACTER_EXPRESSION_ID new_expression, int duration) {
     }
 
     expression = new_expression;
-    viewparams->bRedrawGameUI = 1;
 }
 
 //----- (0049327B) --------------------------------------------------------

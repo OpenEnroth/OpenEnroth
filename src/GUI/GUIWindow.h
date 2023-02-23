@@ -647,7 +647,7 @@ void GameUI_DrawRightPanelItems();
 void GameUI_DrawFoodAndGold();
 void GameUI_DrawLifeManaBars();
 void GameUI_DrawHiredNPCs();
-void GameUI_DrawPortraits(unsigned int _this);
+void GameUI_DrawPortraits();
 void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                         unsigned int uW, unsigned int uZoom,
                         unsigned int bRedrawOdmMinimap);

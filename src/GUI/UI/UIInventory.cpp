@@ -29,7 +29,6 @@ void GUIWindow_Inventory::Update() {
     //    Release();
     //    pEventTimer->Resume();
     //    current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-    //    viewparams->bRedrawGameUI = 1;
     //    int v39 = atoi(userInputHandler->GetTextInput().c_str());
     //    if (v39 > 0 && v39 < 800) {
     //        SpawnActor(v39);

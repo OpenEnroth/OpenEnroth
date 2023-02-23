@@ -223,7 +223,6 @@ void ItemInteraction(unsigned int item_id) {
             .uEquipType == EQUIP_GOLD) {
         pParty->PartyFindsGold(
             pSpriteObjects[item_id].containing_item.special_enchantment, 0);
-        viewparams->bRedrawGameUI = 1;
     } else {
         if (pParty->pPickedItem.uItemID != ITEM_NULL)
             return;

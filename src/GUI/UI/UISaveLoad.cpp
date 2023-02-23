@@ -391,7 +391,6 @@ void MainMenuLoad_EventLoop() {
             break;
         }
         case UIMSG_Escape: {
-            viewparams->field_48 = 1;
             // if (current_screen_type == SCREEN_LOADGAME)
             {
                 // crt_deconstruct_ptr_6A0118();
@@ -399,7 +398,6 @@ void MainMenuLoad_EventLoop() {
                 SetCurrentMenuID(MENU_MAIN);
                 current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                 pEventTimer->Resume();
-                viewparams->bRedrawGameUI = true;
                 break;
             }
             break;

@@ -147,7 +147,7 @@ void Engine::Draw() {
 
         // if ( !render->pRenderD3D )
         // pMouse->DrawCursorToTarget();
-        if (!PauseGameDrawing() || viewparams->field_48 == 1) {
+        if (!PauseGameDrawing()) {
             // if ( render->pRenderD3D )
             {
                 float v2 =
@@ -170,16 +170,12 @@ void Engine::Draw() {
     }
 
     // 2d from now on
-    // DEBUG: force redraw gui
-    viewparams->bRedrawGameUI = true;
-
     render->BeginScene2D();
     nuklear->Draw(nuklear->NUKLEAR_STAGE_PRE, WINDOW_GameUI, 1);
     if (nuklear->Mode(WINDOW_GameUI) == nuklear->NUKLEAR_MODE_EXCLUSIVE) {
         nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_GameUI, 1);
     } else {
         DrawGUI();
-        int v4 = viewparams->bRedrawGameUI;
         GUI_UpdateWindows();
         pParty->UpdatePlayersAndHirelingsEmotions();
         _unused_5B5924_is_travel_ui_drawn = false;
@@ -202,48 +198,29 @@ void Engine::Draw() {
 void Engine::DrawGUI() {
     render->ResetUIClipRect();
 
-    // force always redraw
-    viewparams->bRedrawGameUI = true;
-
     // if (render->pRenderD3D)
     mouse->DrawCursorToTarget();
-    if (pOtherOverlayList->bRedraw)
-        viewparams->bRedrawGameUI = true;
-    int v4 = viewparams->bRedrawGameUI;
     GameUI_StatusBar_DrawForced();
-    if (!viewparams->bRedrawGameUI) {
-        GameUI_DrawRightPanelItems();
-    } else {
-        GameUI_DrawRightPanelFrames();
-        GameUI_StatusBar_Draw();
-        viewparams->bRedrawGameUI = false;
-    }
+    GameUI_DrawRightPanelFrames();
+    GameUI_StatusBar_Draw();
 
 
     if (!pMovie_Track && uGameState != GAME_STATE_CHANGE_LOCATION) {  // ! pVideoPlayer->pSmackerMovie)
         GameUI_DrawMinimap(488, 16, 625, 133, viewparams->uMinimapZoom, true);  // redraw = pParty->uFlags & 2);
-        if (v4) {
-            if (!PauseGameDrawing() /*&& render->pRenderD3D*/) {
-                viewparams->field_48 = 0;
-            }
-        }
     }
 
-    viewparams->bRedrawGameUI = pOtherOverlayList->bRedraw;
-    pOtherOverlayList->bRedraw = 0;
-
     GameUI_DrawPartySpells();
-    if (v4 || pParty->pHirelings[0].dialogue_3_evt_id || pParty->pHirelings[1].dialogue_3_evt_id)
+    if (pParty->pHirelings[0].dialogue_3_evt_id || pParty->pHirelings[1].dialogue_3_evt_id)
         GameUI_DrawHiredNPCs();
 
-    GameUI_DrawPortraits(v4);
+    GameUI_DrawPortraits();
     GameUI_DrawLifeManaBars();
     GameUI_DrawCharacterSelectionFrame();
     if (_44100D_should_alter_right_panel()) GameUI_DrawRightPanel();
 
     if (!pMovie_Track) {
         spell_fx_renedrer->DrawPlayerBuffAnims();
-        pOtherOverlayList->DrawTurnBasedIcon(v4);
+        pOtherOverlayList->DrawTurnBasedIcon();
         GameUI_DrawTorchlightAndWizardEye();
     }
 
@@ -1320,7 +1297,6 @@ void Engine::_461103_load_level_sub() {
     pCamera3D->vCameraPos.z = 100;
     pCamera3D->sRotationY = 0;
     pCamera3D->sRotationZ = 0;
-    viewparams->bRedrawGameUI = true;
     uLevel_StartingPointType = MapStartPoint_Party;
     pSprites_LOD->_461397();
     if (pParty->pPickedItem.uItemID != ITEM_NULL)
@@ -1466,7 +1442,6 @@ void back_to_game() {
     if (pGUIWindow_ScrollWindow) free_book_subwindow();
     if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME && !pGUIWindow_CastTargetedSpell)
         pEventTimer->Resume();
-    viewparams->bRedrawGameUI = 1;
 }
 
 //----- (00494035) --------------------------------------------------------
@@ -1549,7 +1524,6 @@ void _494035_timed_effects__water_walking_damage__etc() {
     if (pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE &&
         pParty->_6FC_water_lava_timer < pParty->GetPlayingTime().value) {
         pParty->_6FC_water_lava_timer = pParty->GetPlayingTime().value + 128;
-        viewparams->bRedrawGameUI = true;
         for (Player &player : pParty->pPlayers) {
             if (player.WearsItem(ITEM_RELIC_HARECKS_LEATHER, ITEM_SLOT_ARMOUR) ||
                 player.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
@@ -1571,7 +1545,6 @@ void _494035_timed_effects__water_walking_damage__etc() {
     // lava damage
     if (pParty->uFlags & PARTY_FLAGS_1_BURNING &&
         pParty->_6FC_water_lava_timer < pParty->GetPlayingTime().value) {
-        viewparams->bRedrawGameUI = true;
         pParty->_6FC_water_lava_timer = pParty->GetPlayingTime().value + 128;
 
         for (uint pl = 1; pl <= 4; pl++) {
@@ -1609,7 +1582,6 @@ void _494035_timed_effects__water_walking_damage__etc() {
                 pPlayers[pl]->field_E0 = v24;
             } else {
                 pPlayers[pl]->field_E0 = 0;
-                viewparams->bRedrawGameUI = true;
             }
         }
         if (pPlayers[pl]->field_E4) {
@@ -1618,7 +1590,6 @@ void _494035_timed_effects__water_walking_damage__etc() {
                 pPlayers[pl]->field_E4 = v26;
             } else {
                 pPlayers[pl]->field_E4 = 0;
-                viewparams->bRedrawGameUI = true;
             }
         }
         if (pPlayers[pl]->field_E8) {
@@ -1627,7 +1598,6 @@ void _494035_timed_effects__water_walking_damage__etc() {
                 pPlayers[pl]->field_E8 = v28;
             } else {
                 pPlayers[pl]->field_E8 = 0;
-                viewparams->bRedrawGameUI = true;
             }
         }
         if (pPlayers[pl]->field_EC) {
@@ -1636,7 +1606,6 @@ void _494035_timed_effects__water_walking_damage__etc() {
                 pPlayers[pl]->field_EC = v30;
             } else {
                 pPlayers[pl]->field_EC = 0;
-                viewparams->bRedrawGameUI = true;
             }
         }
         if (pPlayers[pl]->field_F0) {
@@ -1645,7 +1614,6 @@ void _494035_timed_effects__water_walking_damage__etc() {
                 pPlayers[pl]->field_F0 = v32;
             } else {
                 pPlayers[pl]->field_F0 = 0;
-                viewparams->bRedrawGameUI = true;
             }
         }
         if (pPlayers[pl]->field_F4) {
@@ -1654,7 +1622,6 @@ void _494035_timed_effects__water_walking_damage__etc() {
                 pPlayers[pl]->field_F4 = v34;
             } else {
                 pPlayers[pl]->field_F4 = 0;
-                viewparams->bRedrawGameUI = true;
             }
         }
         if (pPlayers[pl]->field_F8) {
@@ -1663,7 +1630,6 @@ void _494035_timed_effects__water_walking_damage__etc() {
                 pPlayers[pl]->field_F8 = v36;
             } else {
                 pPlayers[pl]->field_F8 = 0;
-                viewparams->bRedrawGameUI = true;
             }
         }
         if (pPlayers[pl]->field_FC) {
@@ -1672,7 +1638,6 @@ void _494035_timed_effects__water_walking_damage__etc() {
                 pPlayers[pl]->field_FC = v38;
             } else {
                 pPlayers[pl]->field_FC = 0;
-                viewparams->bRedrawGameUI = true;
             }
         }
         if (pPlayers[pl]->field_100) {
@@ -1681,7 +1646,6 @@ void _494035_timed_effects__water_walking_damage__etc() {
                 pPlayers[pl]->field_100 = v40;
             } else {
                 pPlayers[pl]->field_100 = 0;
-                viewparams->bRedrawGameUI = true;
             }
         }
         if (pPlayers[pl]->field_104) {
@@ -1690,7 +1654,6 @@ void _494035_timed_effects__water_walking_damage__etc() {
                 pPlayers[pl]->field_104 = v42;
             } else {
                 pPlayers[pl]->field_104 = 0;
-                viewparams->bRedrawGameUI = true;
             }
         }
         if (pPlayers[pl]->conditions.Has(Condition_Sleep) ||
@@ -1713,9 +1676,9 @@ void _494035_timed_effects__water_walking_damage__etc() {
     }
 
     for (uint i = 0; i < 20; ++i) {
-        if (pParty->pPartyBuffs[i].IsBuffExpiredToTime(
-                pParty->GetPlayingTime()) == 1)
-            viewparams->bRedrawGameUI = true;
+        if (pParty->pPartyBuffs[i].IsBuffExpiredToTime(pParty->GetPlayingTime()) == 1) {
+            /* Do nothing, check above has side effects. */
+        }
     }
 
     if (pParty->pPartyBuffs[PARTY_BUFF_HASTE].Expired()) {
@@ -1759,7 +1722,6 @@ void _494035_timed_effects__water_walking_damage__etc() {
                 pPlayers[uActiveCharacter]->conditions.Has(Condition_Dead) ||
                 pPlayers[uActiveCharacter]->conditions.Has(Condition_Petrified) ||
                 pPlayers[uActiveCharacter]->conditions.Has(Condition_Eradicated)) {
-                viewparams->bRedrawGameUI = true;
                 uActiveCharacter = pParty->GetNextActiveCharacter();
             }
         }
@@ -1768,8 +1730,6 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
 //----- (00493938) --------------------------------------------------------
 void RegeneratePartyHealthMana() {
-    bool redraw_flag;
-
     int current_time = pParty->GetPlayingTime().GetMinutesFraction();
     int last_reg_time = pParty->last_regenerated.GetMinutesFraction();
 
@@ -1783,7 +1743,6 @@ void RegeneratePartyHealthMana() {
     }
 
     if (current_time >= testmin) {
-        redraw_flag = false;
         int times_triggered = (current_time - last_reg_time) / 5;
 
         // TODO: actually this looks like it never triggers.
@@ -1804,7 +1763,6 @@ void RegeneratePartyHealthMana() {
                         // was this meant to cancel the curse?
                         pParty->uFlags &= 0xFFFFFFBF;
                         pParty->bFlying = false;
-                        redraw_flag = true;
                     }
                 }
             }
@@ -1820,7 +1778,6 @@ void RegeneratePartyHealthMana() {
                     if (cursed_times.value <= 0) {
                         cursed_times.value = 0;
                         pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;
-                        redraw_flag = true;
                     }
                     pParty->pPlayers[caster].conditions.Set(Condition_Cursed, cursed_times);
                 }
@@ -1912,7 +1869,6 @@ void RegeneratePartyHealthMana() {
                             pParty->pPlayers[playerID].sHealth > 0) {
                             pParty->pPlayers[playerID].conditions.Reset(Condition_Unconscious);
                         }
-                        redraw_flag = true;
                     }
 
                     if (recovery_SP &&
@@ -1921,7 +1877,6 @@ void RegeneratePartyHealthMana() {
                         if (pParty->pPlayers[playerID].sMana <
                             pParty->pPlayers[playerID].GetMaxMana())
                             ++pParty->pPlayers[playerID].sMana;
-                        redraw_flag = true;
                     }
 
                     if (decrease_HP &&
@@ -1942,7 +1897,6 @@ void RegeneratePartyHealthMana() {
                                 pParty->pPlayers[playerID].conditions.Set(Condition_Dead, pParty->GetPlayingTime());
                             }
                         }
-                        redraw_flag = true;
                     }
                 }
             }
@@ -1960,7 +1914,6 @@ void RegeneratePartyHealthMana() {
                     pParty->pPlayers[playerID].sHealth > 0) {
                     pParty->pPlayers[playerID].conditions.Reset(Condition_Unconscious);
                 }
-                redraw_flag = true;
             }
 
             // for warlock
@@ -1970,7 +1923,6 @@ void RegeneratePartyHealthMana() {
                     pParty->pPlayers[playerID].GetMaxMana()) {
                     ++pParty->pPlayers[playerID].sMana;
                 }
-                redraw_flag = true;
             }
 
             // for lich
@@ -2016,9 +1968,6 @@ void RegeneratePartyHealthMana() {
         }
 
         pParty->last_regenerated = pParty->GetPlayingTime();
-
-        if (!viewparams->bRedrawGameUI)
-            viewparams->bRedrawGameUI = redraw_flag;
     }
 }
 

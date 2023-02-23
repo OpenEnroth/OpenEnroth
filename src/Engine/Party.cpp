@@ -902,7 +902,6 @@ void Party::UpdatePlayersAndHirelingsEmotions() {
 
             pParty->hirelingScrollPosition = 0;
             pParty->CountHirelings();
-            viewparams->bRedrawGameUI = true;
         }
     }
 }
@@ -1026,7 +1025,6 @@ void Party::Sleep8Hours() {
         _506F18_num_minutes_to_sleep -= 6;
         OutdoorLocation::LoadActualSkyFrame();
     }
-    viewparams->bRedrawGameUI = 1;
 }
 
 bool TestPartyQuestBit(PARTY_QUEST_BITS bit) {

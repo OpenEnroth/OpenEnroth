@@ -375,8 +375,6 @@ Image *gamma_preview_image = nullptr;  // 506E40
 
 void Game_StartDialogue(unsigned int actor_id) {
     if (uActiveCharacter) {
-        viewparams->field_48 = 1;
-
         pMessageQueue_50CBD0->Flush();
 
         dword_5B65D0_dialogue_actor_npc_id = pActors[actor_id].sNPC_ID;
@@ -433,7 +431,6 @@ void Game::OnEscape() {
     }
     pEventTimer->Resume();
     current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-    viewparams->bRedrawGameUI = true;
 }
 
 extern bool _506360_installing_beacon;
@@ -751,8 +748,6 @@ void Game::EventLoop() {
                         }
                     }
                     render->ClearZBuffer();
-                    viewparams->bRedrawGameUI = true;
-                    viewparams->field_48 = 1;
                     if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
                         if (!pGUIWindow_CastTargetedSpell) {  // Draw Menu
                             dword_6BE138 = -1;
@@ -826,7 +821,6 @@ void Game::EventLoop() {
                                         pWindow2 = pGUIWindow_CurrentMenu;
                                         pWindow2->Release();
                                         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-                                        viewparams->bRedrawGameUI = 1;
                                         pEventTimer->Resume();
                                         continue;
                                     case CURRENT_SCREEN::SCREEN_19:
@@ -834,7 +828,6 @@ void Game::EventLoop() {
                                         pWindow2 = ptr_507BC8;
                                         pWindow2->Release();
                                         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-                                        viewparams->bRedrawGameUI = 1;
                                         pEventTimer->Resume();
                                         continue;
                                     case CURRENT_SCREEN::SCREEN_REST:  // close rest screen
@@ -904,12 +897,10 @@ void Game::EventLoop() {
                                                 ->pNewNPCData[npcIdToDismissAfterDialogue]
                                                 .uFlags &= 0xFFFFFF7F;
                                             pParty->CountHirelings();
-                                            viewparams->bRedrawGameUI = true;
                                             npcIdToDismissAfterDialogue = 0;
                                         }
                                         DialogueEnding();
                                         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-                                        viewparams->bRedrawGameUI = true;
                                         continue;
                                     case CURRENT_SCREEN::SCREEN_NPC_DIALOGUE:  // click escape
                                         if (npcIdToDismissAfterDialogue) {
@@ -918,13 +909,11 @@ void Game::EventLoop() {
                                                 ->pNewNPCData[npcIdToDismissAfterDialogue]
                                                 .uFlags &= 0xFFFFFF7F;
                                             pParty->CountHirelings();
-                                            viewparams->bRedrawGameUI = true;
                                             npcIdToDismissAfterDialogue = 0;
                                         }
                                         // goto LABEL_317;
                                         DialogueEnding();
                                         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-                                        viewparams->bRedrawGameUI = true;
                                         continue;
                                     case CURRENT_SCREEN::SCREEN_BRANCHLESS_NPC_DIALOG:  // click
                                                                         // escape
@@ -933,7 +922,6 @@ void Game::EventLoop() {
                                         ReleaseBranchlessDialogue();
                                         DialogueEnding();
                                         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-                                        viewparams->bRedrawGameUI = true;
                                         continue;
                                     case CURRENT_SCREEN::SCREEN_CHANGE_LOCATION:  // click
                                                                   // escape
@@ -948,7 +936,6 @@ void Game::EventLoop() {
                                         ReleaseBranchlessDialogue();
                                         DialogueEnding();
                                         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-                                        viewparams->bRedrawGameUI = true;
                                         continue;
                                     case CURRENT_SCREEN::SCREEN_VIDEO:
                                         pMediaPlayer->Unload();
@@ -1013,7 +1000,6 @@ void Game::EventLoop() {
 
                     if (pMovie_Track) pMediaPlayer->Unload();
                     DialogueEnding();
-                    viewparams->bRedrawGameUI = true;
 
                     if (Party_Teleport_X_Pos | Party_Teleport_Y_Pos |
                         Party_Teleport_Z_Pos |
@@ -1068,13 +1054,11 @@ void Game::EventLoop() {
                     PlayButtonClickSound();
                     pMediaPlayer->Unload();
                     DialogueEnding();
-                    viewparams->bRedrawGameUI = true;
                     back_to_game();
                     OnEscape();
                     continue;
                 case UIMSG_CycleCharacters:
                     uActiveCharacter = CycleCharacter(keyboardInputHandler->IsAdventurerBackcycleToggled());
-                    viewparams->bRedrawGameUI = true;
                     continue;
                 case UIMSG_OnTravelByFoot:
                     pMessageQueue_50CBD0->Flush();
@@ -1087,7 +1071,6 @@ void Game::EventLoop() {
                         pOutdoor->GetTravelDestination(pParty->vPosition.x,
                                                        pParty->vPosition.y,
                                                        pOut, 20) != 1) {
-                        viewparams->bRedrawGameUI = 1;
                         PlayButtonClickSound();
                         if (pParty->vPosition.x < -22528)
                             pParty->vPosition.x = -22528;
@@ -1149,11 +1132,9 @@ void Game::EventLoop() {
                         pParty->uFallStartZ = pParty->vPosition.z;
                         engine->_461103_load_level_sub();
                         pEventTimer->Resume();
-                        viewparams->bRedrawGameUI = 1;
                         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                         pGameLoadingUI_ProgressBar->Release();
                     }
-                    viewparams->bRedrawGameUI = 1;
                     continue;
                 case UIMSG_CHANGE_LOCATION_ClickCancelBtn:
                     PlayButtonClickSound();
@@ -1167,7 +1148,6 @@ void Game::EventLoop() {
                         pParty->vPosition.y = 22528;
                     DialogueEnding();
                     current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-                    viewparams->bRedrawGameUI = true;
                     continue;
                 case UIMSG_CastSpell_Telekinesis:
                     HEXRAYS_LOWORD(v42) = vis->get_picked_object_zbuf_val().object_pid;
@@ -1267,7 +1247,6 @@ void Game::EventLoop() {
                     pMessageQueue_50CBD0->Flush();
                     if (_50C9A0_IsEnchantingInProgress) {
                         uActiveCharacter = uMessageParam;
-                        viewparams->bRedrawGameUI = 1;
                     } else {
                         if (pGUIWindow_CastTargetedSpell) {
                             pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
@@ -1999,7 +1978,6 @@ void Game::EventLoop() {
                         if (quick_spell_at_page - 1 == uMessageParam) {
                             pGUIWindow_CurrentMenu->Release();  // spellbook close
                             pEventTimer->Resume();
-                            viewparams->bRedrawGameUI = 1;
                             current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                             v103 = quick_spell_at_page + 11 * player->lastOpenedSpellbookPage;
                             /*if ( dword_50C9E8 < 40 )
@@ -2082,7 +2060,6 @@ void Game::EventLoop() {
                     }
                     // open window
                     new OnButtonClick2({560, 450}, {0, 0}, pBtn_QuickReference);
-                    viewparams->bRedrawGameUI = true;
                     pGUIWindow_CurrentMenu = new GUIWindow_QuickReference();
                     continue;
                 case UIMSG_GameMenuButton:
@@ -2090,7 +2067,6 @@ void Game::EventLoop() {
                         pGUIWindow_CurrentMenu->Release();
                         pEventTimer->Resume();
                         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-                        viewparams->bRedrawGameUI = 1;
                     }
 
                     if (gamma_preview_image) {
@@ -2571,7 +2547,6 @@ void Game::OnPressSpace() {
 void Game::GameLoop() {
     const char *pLocationName;  // [sp-4h] [bp-68h]@74
     bool bLoading;              // [sp+10h] [bp-54h]@1
-    signed int v16;             // [sp+14h] [bp-50h]@8
     char Source[64];            // [sp+44h] [bp-20h]@76
 
     bLoading = sCurrentMenuID == MENU_LoadingProcInMainMenu;
@@ -2588,7 +2563,6 @@ void Game::GameLoop() {
     // pAudioPlayer->SetMusicVolume(engine->config->music_level);
 
     while (2) {
-        v16 = 1;
         pMessageQueue_50CBD0->Flush();
 
         pPartyActionQueue->uNumActions = 0;
@@ -2643,10 +2617,6 @@ void Game::GameLoop() {
                     Actor::UpdateActorAI();
                     UpdateUserInput_and_MapSpecificStuff();
                 }
-            }
-            if (v16) {
-                v16 = 0;
-                viewparams->bRedrawGameUI = true;
             }
             pAudioPlayer->UpdateSounds();
             // expire timed status messages

@@ -371,7 +371,6 @@ void GameWindowHandler::OnActivated() {
             else
                 pMiscTimer->Resume();
 
-            viewparams->bRedrawGameUI = true;
             if (pMovie_Track) {  // pVideoPlayer->pSmackerMovie )
                 render->RestoreFrontBuffer();
                 render->RestoreBackBuffer();

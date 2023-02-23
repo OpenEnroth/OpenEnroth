@@ -26,19 +26,13 @@ struct OtherOverlay {
 /*   63 */
 #pragma pack(push, 1)
 struct OtherOverlayList {
-    inline OtherOverlayList()
-        :  //----- (0045848D)
-          field_3E8(0),
-          bRedraw(false) {}
-
     void Reset();
     int _4418B1(int a2, int a3, int a4, int a5);
     int _4418B6(int uOverlayID, int16_t a3, int a4, int a5, int16_t a6);
-    void DrawTurnBasedIcon(int a2);
+    void DrawTurnBasedIcon();
 
     std::array<OtherOverlay, 50> pOverlays;
-    int field_3E8;
-    int bRedraw;
+    int field_3E8 = 0;
 };
 #pragma pack(pop)
 

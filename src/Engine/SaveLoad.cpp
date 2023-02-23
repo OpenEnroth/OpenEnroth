@@ -179,8 +179,6 @@ void LoadGame(unsigned int uSlot) {
 */
     current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
 
-    viewparams->bRedrawGameUI = true;
-
     SetUserInterface(pParty->alignment, true);
 
     pEventTimer->Resume();
@@ -215,7 +213,6 @@ void LoadGame(unsigned int uSlot) {
     bFlashQuestBook = false;
     bFlashAutonotesBook = false;
     bFlashHistoryBook = false;
-    viewparams->bRedrawGameUI = true;
 }
 
 void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
@@ -559,7 +556,6 @@ void DoSavegame(unsigned int uSlot) {
     pGUIWindow_CurrentMenu->Release();
     current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
 
-    viewparams->bRedrawGameUI = true;
     for (uint i = 0; i < MAX_SAVE_SLOTS; i++) {
         if (pSavegameThumbnails[i] != nullptr) {
             pSavegameThumbnails[i]->Release();
@@ -574,7 +570,6 @@ void DoSavegame(unsigned int uSlot) {
 
     pEventTimer->Resume();
     GameUI_SetStatusBar(LSTR_GAME_SAVED);
-    viewparams->bRedrawGameUI = true;
 }
 
 void SavegameList::Initialize() {

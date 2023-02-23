@@ -868,7 +868,6 @@ void UIShop_Buy_Identify_Repair() {
                                     bought_item, 0x24u);
                                 dword_F8B1E4 = 1;
                                 pParty->TakeGold(uPriceItemService);
-                                viewparams->bRedrawGameUI = 1;
                                 bought_item->Reset();
                                 render->ClearZBuffer();
                                 pPlayers[uActiveCharacter]->PlaySound(
@@ -901,7 +900,6 @@ void UIShop_Buy_Identify_Repair() {
                 dword_F8B1E4 = 1;
                 pPlayers[uActiveCharacter]->SalesProcess(
                     invindex, pItemID - 1, window_SpeakInHouse->wData.val);
-                viewparams->bRedrawGameUI = 1;
                 render->ClearZBuffer();
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_ItemSold, 0);
                 return;
@@ -1192,7 +1190,6 @@ void UIShop_Buy_Identify_Repair() {
                     dword_F8B1E4 = 1;
                     pParty->TakeGold(uPriceItemService);
                 }
-                viewparams->bRedrawGameUI = 1;
                 bought_item->Reset();
                 render->ClearZBuffer();
                 pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_ItemBuy, 0);

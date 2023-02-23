@@ -231,8 +231,6 @@ void CreateParty_EventLoop() {
                 break;
             }
             if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_4000)) break;
-            viewparams->bRedrawGameUI = true;
-            viewparams->field_48 = 1;
             if (GetCurrentMenuID() == MENU_MAIN ||
                 GetCurrentMenuID() == MENU_MMT_MAIN_MENU ||
                 GetCurrentMenuID() == MENU_CREATEPARTY ||
