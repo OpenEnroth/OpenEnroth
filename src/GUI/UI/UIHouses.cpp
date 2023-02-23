@@ -2173,7 +2173,6 @@ void TempleDialog() {
     int pTextHeight;              // eax@11
     uint16_t pTextColor;  // ax@21
     DDM_DLV_Header *ddm;          // edi@29
-    unsigned int v30;             // edx@36
     GUIButton *pButton;           // edi@64
     uint8_t index;        // [sp+1B7h] [bp-Dh]@64
     int v64;                      // [sp+1B8h] [bp-Ch]@6
@@ -2282,7 +2281,7 @@ void TempleDialog() {
                     uActiveCharacter - 1,
                     pPlayers[uActiveCharacter]->uPrevFace);
             }
-            pAudioPlayer->PlaySound((SoundID)SOUND_heal, -1, 0, -1, 0, 0);
+            pAudioPlayer->PlaySound((SoundID)SOUND_heal, PID_INVALID, 0, -1, 0, 0);
             pPlayers[uActiveCharacter]->PlaySound(SPEECH_TempleHeal, 0);
             pOtherOverlayList->_4418B1(20, uActiveCharacter + 99, 0, 65536);
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -2296,7 +2295,7 @@ void TempleDialog() {
             if (!pPlayers[uActiveCharacter]->conditions.Has(Condition_Eradicated) &&
                 !pPlayers[uActiveCharacter]->conditions.Has(Condition_Petrified) &&
                 !pPlayers[uActiveCharacter]->conditions.Has(Condition_Dead)) {
-                pAudioPlayer->PlaySound((SoundID)SOUND_heal, -1, 0, -1, 0, 0);
+                pAudioPlayer->PlaySound((SoundID)SOUND_heal, PID_INVALID, 0, -1, 0, 0);
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_TempleHeal, 0);
                 pOtherOverlayList->_4418B1(20, uActiveCharacter + 99, 0, 65536);
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -2320,7 +2319,7 @@ void TempleDialog() {
         // HIDWORD(pPlayers[uActiveCharacter]->pConditions[Condition_Zombie]) =
         // (int)v39;
         pPlayers[uActiveCharacter]->conditions.Set(Condition_Zombie, pParty->GetPlayingTime());
-        pAudioPlayer->PlaySound((SoundID)SOUND_heal, -1, 0, -1, 0, 0);
+        pAudioPlayer->PlaySound((SoundID)SOUND_heal, PID_INVALID, 0, -1, 0, 0);
         pPlayers[uActiveCharacter]->PlaySound(SPEECH_TempleHeal, 0);
         pOtherOverlayList->_4418B1(20, uActiveCharacter + 99, 0, 65536);
         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -2342,38 +2341,19 @@ void TempleDialog() {
             }
             if ((uint8_t)byte_F8B1EF[uActiveCharacter] == pParty->uCurrentDayOfMonth % 7) {
                 if (ddm->uReputation <= -5) {
-                    v30 = pParty->uCurrentDayOfMonth % 7 + 1;
-                    v30 |= 0x80;
-                    _42777D_CastSpell_UseWand_ShootArrow(
-                        SPELL_AIR_WIZARD_EYE, uActiveCharacter - 1, v30, ON_CAST_TargetIsParty | ON_CAST_NoRecoverySpell, 0);
+                    pushTempleSpell(SPELL_AIR_WIZARD_EYE);
                 }
                 if (ddm->uReputation <= -10) {
-                    v30 = pParty->uCurrentDayOfMonth % 7 + 1;
-                    v30 |= 0x80;
-                    _42777D_CastSpell_UseWand_ShootArrow(
-                        SPELL_SPIRIT_PRESERVATION, uActiveCharacter - 1, v30,
-                        ON_CAST_TargetIsParty | ON_CAST_NoRecoverySpell, 0);
+                    pushTempleSpell(SPELL_SPIRIT_PRESERVATION);
                 }
                 if (ddm->uReputation <= -15) {
-                    v30 = pParty->uCurrentDayOfMonth % 7 + 1;
-                    v30 |= 0x80;
-                    _42777D_CastSpell_UseWand_ShootArrow(
-                        SPELL_BODY_PROTECTION_FROM_MAGIC, uActiveCharacter - 1,
-                        v30, ON_CAST_TargetIsParty | ON_CAST_NoRecoverySpell, 0);
+                    pushTempleSpell(SPELL_BODY_PROTECTION_FROM_MAGIC);
                 }
                 if (ddm->uReputation <= -20) {
-                    v30 = pParty->uCurrentDayOfMonth % 7 + 1;
-                    v30 |= 0x80;
-                    _42777D_CastSpell_UseWand_ShootArrow(
-                        SPELL_LIGHT_HOUR_OF_POWER, uActiveCharacter - 1, v30,
-                        ON_CAST_TargetIsParty | ON_CAST_NoRecoverySpell, 0);
+                    pushTempleSpell(SPELL_LIGHT_HOUR_OF_POWER);
                 }
                 if (ddm->uReputation <= -25) {
-                    v30 = pParty->uCurrentDayOfMonth % 7 + 1;
-                    v30 |= 0x80;
-                    _42777D_CastSpell_UseWand_ShootArrow(
-                        SPELL_LIGHT_DAY_OF_PROTECTION, uActiveCharacter - 1,
-                        v30, ON_CAST_TargetIsParty | ON_CAST_NoRecoverySpell, 0);
+                    pushTempleSpell(SPELL_LIGHT_DAY_OF_PROTECTION);
                 }
             }
             ++byte_F8B1EF[uActiveCharacter];

@@ -172,118 +172,132 @@ SpellData::SpellData(int16_t inNormalMana,
       bonusSkillDamage(inBonusSkillDamage),
       stats(inStats) {}
 
-// 9 spellbook pages  11 spells per page 9*11 =99 +1 zero struct at 0. It
-// counted from 1!
-std::array<SpellData, SPELL_REGULAR_COUNT> pSpellDatas = {{
-    SpellData(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+/**
+ * Description of spells.
+ *
+ *                                                 Mana Novice
+ *                                                 |   Mana Expert
+ *                                                 |   |   Mana Master
+ *                                                 |   |   |   Mana Grandmaster
+ *                                                 |   |   |   |     Recovery Novice
+ *                                                 |   |   |   |     |     Recovery Expert
+ *                                                 |   |   |   |     |     |     Recovery Master
+ *                                                 |   |   |   |     |     |     |     Recovery Grandmaster
+ *                                                 |   |   |   |     |     |     |     |   Base Damage
+ *                                                 |   |   |   |     |     |     |     |   |   Bonus Skill Damage
+ *                                                 |   |   |   |     |     |     |     |   |   |  Stats
+ *                                                 |   |   |   |     |     |     |     |   |   |  |
+ *                                                 |   |   |   |     |     |     |     |   |   |  |
+ */
+IndexedArray<SpellData, SPELL_REGULAR_FIRST, SPELL_REGULAR_LAST> pSpellDatas = {
+    {SPELL_FIRE_TORCH_LIGHT,            SpellData( 1,  1,  1,  1,   60,   60,   60,   40,  0,  0, 0)},
+    {SPELL_FIRE_FIRE_BOLT,              SpellData( 2,  2,  2,  2,  110,  110,  100,   90,  0,  3, 0)},
+    {SPELL_FIRE_PROTECTION_FROM_FIRE,   SpellData( 3,  3,  3,  3,  120,  120,  120,  120,  0,  0, 0)},
+    {SPELL_FIRE_FIRE_AURA,              SpellData( 4,  4,  4,  4,  120,  120,  120,  120,  0,  0, 0)},
+    {SPELL_FIRE_HASTE,                  SpellData( 5,  5,  5,  5,  120,  120,  120,  120,  0,  0, 0)},
+    {SPELL_FIRE_FIREBALL,               SpellData( 8 , 8,  8,  8,  100,  100,   90,   80,  0,  6, 0)},
+    {SPELL_FIRE_FIRE_SPIKE,             SpellData(10, 10, 10, 10,  150,  150,  150,  150,  0,  6, 0)},
+    {SPELL_FIRE_IMMOLATION,             SpellData(15, 15, 15, 15,  120,  120,  120,  120,  0,  6, 0)},
+    {SPELL_FIRE_METEOR_SHOWER,          SpellData(20, 20, 20, 20,  100,  100,  100,   90,  8,  1, 0)},
+    {SPELL_FIRE_INFERNO,                SpellData(25, 25, 25, 25,  100,  100,  100,   90, 12,  1, 0)},
+    {SPELL_FIRE_INCINERATE,             SpellData(30, 30, 30, 30,   90,   90,   90,   90, 15, 15, 0)},
 
-    SpellData(1, 1, 1, 1, 60, 60, 60, 40, 0, 0, 0),  // 0 fire
-    SpellData(2, 2, 2, 2, 110, 110, 100, 90, 0, 3, 0),
-    SpellData(3, 3, 3, 3, 120, 120, 120, 120, 0, 0, 0),
-    SpellData(4, 4, 4, 4, 120, 120, 120, 120, 0, 0, 0),
-    SpellData(5, 5, 5, 5, 120, 120, 120, 120, 0, 0, 0),
-    SpellData(8, 8, 8, 8, 100, 100, 90, 80, 0, 6, 0),
-    SpellData(10, 10, 10, 10, 150, 150, 150, 150, 0, 6, 0),
-    SpellData(15, 15, 15, 15, 120, 120, 120, 120, 0, 6, 0),
-    SpellData(20, 20, 20, 20, 100, 100, 100, 90, 8, 1, 0),
-    SpellData(25, 25, 25, 25, 100, 100, 100, 90, 12, 1, 0),
-    SpellData(30, 30, 30, 30, 90, 90, 90, 90, 15, 15, 0),
+    {SPELL_AIR_WIZARD_EYE,              SpellData( 1,  1,  1,  0,   60,   60,   60,   60,  0,  0, 0)},
+    {SPELL_AIR_FEATHER_FALL,            SpellData( 2,  2,  2,  2,  120,  120,  120,  100,  0,  0, 0)},
+    {SPELL_AIR_PROTECTION_FROM_AIR,     SpellData( 3,  3,  3,  3,  120,  120,  120,  120,  0,  0, 0)},
+    {SPELL_AIR_SPARKS,                  SpellData( 4,  4,  4,  4,  110,  100,   90,   80,  2,  1, 0)},
+    {SPELL_AIR_JUMP,                    SpellData( 5,  5,  5,  5,   90,   90,   70,   50,  0,  0, 0)},
+    {SPELL_AIR_SHIELD,                  SpellData( 8,  8,  8,  8,  120,  120,  120,  120,  0,  0, 0)},
+    {SPELL_AIR_LIGHNING_BOLT,           SpellData(10, 10, 10, 10,  100,  100,   90,   70,  0,  8, 0)},
+    {SPELL_AIR_INVISIBILITY,            SpellData(15, 15, 15, 15,  200,  200,  200,  200,  0,  0, 0)},
+    {SPELL_AIR_IMPLOSION,               SpellData(20, 20, 20, 20,  100,  100,  100,   90, 10, 10, 0)},
+    {SPELL_AIR_FLY,                     SpellData(25, 25, 25, 25,  250,  250,  250,  250,  0,  0, 0)},
+    {SPELL_AIR_STARBURST,               SpellData(30, 30, 30, 30,   90,   90,   90,   90, 20,  1, 0)},
 
-    SpellData(1, 1, 1, 0, 60, 60, 60, 60, 0, 0, 0),  // 1 air
-    SpellData(2, 2, 2, 2, 120, 120, 120, 100, 0, 0, 0),
-    SpellData(3, 3, 3, 3, 120, 120, 120, 120, 0, 0, 0),
-    SpellData(4, 4, 4, 4, 110, 100, 90, 80, 2, 1, 0),
-    SpellData(5, 5, 5, 5, 90, 90, 70, 50, 0, 0, 0),
-    SpellData(8, 8, 8, 8, 120, 120, 120, 120, 0, 0, 0),
-    SpellData(10, 10, 10, 10, 100, 100, 90, 70, 0, 8, 0),
-    SpellData(15, 15, 15, 15, 200, 200, 200, 200, 0, 0, 0),
-    SpellData(20, 20, 20, 20, 100, 100, 100, 90, 10, 10, 0),
-    SpellData(25, 25, 25, 25, 250, 250, 250, 250, 0, 0, 0),
-    SpellData(30, 30, 30, 30, 90, 90, 90, 90, 20, 1, 0),
+    {SPELL_WATER_AWAKEN,                SpellData( 1,  1,  1,  1,   60,   60,   60,   20,  0,  0, 0)},
+    {SPELL_WATER_POISON_SPRAY,          SpellData( 2,  2,  2,  2,  110,  100,   90,   70,  2,  2, 0)},
+    {SPELL_WATER_PROTECTION_FROM_WATER, SpellData( 3,  3,  3,  3,  120,  120,  120,  120,  0,  0, 0)},
+    {SPELL_WATER_ICE_BOLT,              SpellData( 4,  4,  4,  4,  110,  100,   90,   80,  0,  4, 0)},
+    {SPELL_WATER_WATER_WALK,            SpellData( 5,  5,  5,  5,  150,  150,  150,  150,  0,  0, 0)},
+    {SPELL_WATER_RECHARGE_ITEM,         SpellData( 8,  8,  8,  8,  200,  200,  200,  200,  0,  0, 0)},
+    {SPELL_WATER_ACID_BURST,            SpellData(10, 10, 10, 10,  100,  100,   90,   80,  9,  9, 0)},
+    {SPELL_WATER_ENCHANT_ITEM,          SpellData(15, 15, 15, 15,  140,  140,  140,  140,  0,  0, 0)},
+    {SPELL_WATER_TOWN_PORTAL,           SpellData(20, 20, 20, 20,  200,  200,  200,  200,  0,  0, 0)},
+    {SPELL_WATER_ICE_BLAST,             SpellData(25, 25, 25, 25,   80,   80,   80,   80, 12,  3, 0)},
+    {SPELL_WATER_LLOYDS_BEACON,         SpellData(30, 30, 30, 30,  250,  250,  250,  250,  0,  0, 0)},
 
-    SpellData(1, 1, 1, 1, 60, 60, 60, 20, 0, 0, 0),  // 2 water
-    SpellData(2, 2, 2, 2, 110, 100, 90, 70, 2, 2, 0),
-    SpellData(3, 3, 3, 3, 120, 120, 120, 120, 0, 0, 0),
-    SpellData(4, 4, 4, 4, 110, 100, 90, 80, 0, 4, 0),
-    SpellData(5, 5, 5, 5, 150, 150, 150, 150, 0, 0, 0),
-    SpellData(8, 8, 8, 8, 200, 200, 200, 200, 0, 0, 0),
-    SpellData(10, 10, 10, 10, 100, 100, 90, 80, 9, 9, 0),
-    SpellData(15, 15, 15, 15, 140, 140, 140, 140, 0, 0, 0),
-    SpellData(20, 20, 20, 20, 200, 200, 200, 200, 0, 0, 0),
-    SpellData(25, 25, 25, 25, 80, 80, 80, 80, 12, 3, 0),
-    SpellData(30, 30, 30, 30, 250, 250, 250, 250, 0, 0, 0),
+    {SPELL_EARTH_STUN,                  SpellData( 1,  1,  1,  1,   80,   80,   80,   80,  0,  0, 0)},
+    {SPELL_EARTH_SLOW,                  SpellData( 2,  2,  2,  2,  100,  100,  100,  100,  0,  0, 0)},
+    {SPELL_EARTH_PROTECTION_FROM_EARTH, SpellData( 3,  3,  3,  3,  120,  120,  120,  120,  0,  0, 0)},
+    {SPELL_EARTH_DEADLY_SWARM,          SpellData( 4,  4,  4,  4,  110,  100,   90,   80,  5,  3, 0)},
+    {SPELL_EARTH_STONESKIN,             SpellData( 5,  5,  5,  5,  120,  120,  120,  120,  0,  0, 0)},
+    {SPELL_EARTH_BLADES,                SpellData( 8,  8,  8,  8,  100,  100,   90,   80,  0,  9, 0)},
+    {SPELL_EARTH_STONE_TO_FLESH,        SpellData(10, 10, 10, 10,  140,  140,  140,  140,  0,  0, 0)},
+    {SPELL_EARTH_ROCK_BLAST,            SpellData(15, 15, 15, 15,   90,   90,   90,   80,  0,  8, 0)},
+    {SPELL_EARTH_TELEKINESIS,           SpellData(20, 20, 20, 20,  150,  150,  150,  150,  0,  0, 0)},
+    {SPELL_EARTH_DEATH_BLOSSOM,         SpellData(25, 25, 25, 25,  100,  100,  100,   90, 20,  1, 0)},
+    {SPELL_EARTH_MASS_DISTORTION,       SpellData(30, 30, 30, 30,   90,   90,   90,   90, 25,  0, 0)},
 
-    SpellData(1, 1, 1, 1, 80, 80, 80, 80, 0, 0, 0),  // 3 earth
-    SpellData(2, 2, 2, 2, 100, 100, 100, 100, 0, 0, 0),
-    SpellData(3, 3, 3, 3, 120, 120, 120, 120, 0, 0, 0),
-    SpellData(4, 4, 4, 4, 110, 100, 90, 80, 5, 3, 0),
-    SpellData(5, 5, 5, 5, 120, 120, 120, 120, 0, 0, 0),
-    SpellData(8, 8, 8, 8, 100, 100, 90, 80, 0, 9, 0),
-    SpellData(10, 10, 10, 10, 140, 140, 140, 140, 0, 0, 0),
-    SpellData(15, 15, 15, 15, 90, 90, 90, 80, 0, 8, 0),
-    SpellData(20, 20, 20, 20, 150, 150, 150, 150, 0, 0, 0),
-    SpellData(25, 25, 25, 25, 100, 100, 100, 90, 20, 1, 0),
-    SpellData(30, 30, 30, 30, 90, 90, 90, 90, 25, 0, 0),
+    {SPELL_SPIRIT_DETECT_LIFE,          SpellData( 1,  1,  1,  1,  100,  100,  100,  100,  0,  0, 0)},
+    {SPELL_SPIRIT_BLESS,                SpellData( 2,  2,  2,  2,  100,  100,  100,  100,  0,  0, 0)},
+    {SPELL_SPIRIT_FATE,                 SpellData( 3,  3,  3,  3,   90,   90,   90,   90,  0,  0, 0)},
+    {SPELL_SPIRIT_TURN_UNDEAD,          SpellData( 4,  4,  4,  4,  120,  120,  120,  120,  0,  0, 0)},
+    {SPELL_SPIRIT_REMOVE_CURSE,         SpellData( 5,  5,  5,  5,  120,  120,  120,  120,  0,  0, 0)},
+    {SPELL_SPIRIT_PRESERVATION,         SpellData( 8,  8,  8,  8,  120,  120,  120,  120,  0,  0, 0)},
+    {SPELL_SPIRIT_HEROISM,              SpellData(10, 10, 10, 10,  120,  120,  120,  120,  0,  0, 0)},
+    {SPELL_SPIRIT_SPIRIT_LASH,          SpellData(15, 15, 15, 15,  100,  100,  100,  100, 10,  8, 0)},
+    {SPELL_SPIRIT_RAISE_DEAD,           SpellData(20, 20, 20, 20,  240,  240,  240,  240,  0,  0, 0)},
+    {SPELL_SPIRIT_SHARED_LIFE,          SpellData(25, 25, 25, 25,  150,  150,  150,  150,  0,  0, 0)},
+    {SPELL_SPIRIT_RESSURECTION,         SpellData(30, 30, 30, 30, 1000, 1000, 1000, 1000,  0,  0, 0)},
 
-    SpellData(1, 1, 1, 1, 100, 100, 100, 100, 0, 0, 0),  // 4 spirit
-    SpellData(2, 2, 2, 2, 100, 100, 100, 100, 0, 0, 0),
-    SpellData(3, 3, 3, 3, 90, 90, 90, 90, 0, 0, 0),
-    SpellData(4, 4, 4, 4, 120, 120, 120, 120, 0, 0, 0),
-    SpellData(5, 5, 5, 5, 120, 120, 120, 120, 0, 0, 0),
-    SpellData(8, 8, 8, 8, 120, 120, 120, 120, 0, 0, 0),
-    SpellData(10, 10, 10, 10, 120, 120, 120, 120, 0, 0, 0),
-    SpellData(15, 15, 15, 15, 100, 100, 100, 100, 10, 8, 0),
-    SpellData(20, 20, 20, 20, 240, 240, 240, 240, 0, 0, 0),
-    SpellData(25, 25, 25, 25, 150, 150, 150, 150, 0, 0, 0),
-    SpellData(30, 30, 30, 30, 1000, 1000, 1000, 1000, 0, 0, 0),
+    {SPELL_MIND_REMOVE_FEAR,            SpellData( 1,  1,  1,  1,  120,  120,  120,  120,  0,  0, 0)},
+    {SPELL_MIND_MIND_BLAST,             SpellData( 2,  2,  2,  2,  110,  110,  110,  110,  3,  3, 0)},
+    {SPELL_MIND_PROTECTION_FROM_MIND,   SpellData( 3,  3,  3,  3,  120,  120,  120,  120,  0,  0, 0)},
+    {SPELL_MIND_TELEPATHY,              SpellData( 4,  4,  4,  4,  110,  100,   90,   80,  0,  0, 0)},
+    {SPELL_MIND_CHARM,                  SpellData( 5,  5,  5,  5,  100,  100,  100,  100,  0,  0, 0)},
+    {SPELL_MIND_CURE_PARALYSIS,         SpellData( 8,  8,  8,  8,  120,  120,  120,  120,  0,  0, 0)},
+    {SPELL_MIND_BERSERK,                SpellData(10, 10, 10, 10,  120,  120,  120,  120,  0,  0, 0)},
+    {SPELL_MIND_MASS_FEAR,              SpellData(15, 15, 15, 15,   80,   80,   80,   80,  0,  0, 0)},
+    {SPELL_MIND_CURE_INSANITY,          SpellData(20, 20, 20, 20,  120,  120,  120,  120,  0,  0, 0)},
+    {SPELL_MIND_PSYCHIC_SHOCK,          SpellData(25, 25, 25, 25,  110,  110,  110,  100, 12,  1, 0)},
+    {SPELL_MIND_ENSLAVE,                SpellData(30, 30, 30, 30,  120,  120,  120,  120,  0,  0, 0)},
 
-    SpellData(1, 1, 1, 1, 120, 120, 120, 120, 0, 0, 0),  // 5 mind
-    SpellData(2, 2, 2, 2, 110, 110, 110, 110, 3, 3, 0),
-    SpellData(3, 3, 3, 3, 120, 120, 120, 120, 0, 0, 0),
-    SpellData(4, 4, 4, 4, 110, 100, 90, 80, 0, 0, 0),
-    SpellData(5, 5, 5, 5, 100, 100, 100, 100, 0, 0, 0),
-    SpellData(8, 8, 8, 8, 120, 120, 120, 120, 0, 0, 0),
-    SpellData(10, 10, 10, 10, 120, 120, 120, 120, 0, 0, 0),
-    SpellData(15, 15, 15, 15, 80, 80, 80, 80, 0, 0, 0),
-    SpellData(20, 20, 20, 20, 120, 120, 120, 120, 0, 0, 0),
-    SpellData(25, 25, 25, 25, 110, 110, 110, 100, 12, 1, 0),
-    SpellData(30, 30, 30, 30, 120, 120, 120, 120, 0, 0, 0),
+    {SPELL_BODY_CURE_WEAKNESS,          SpellData( 1,  1,  1,  1,  120,  120,  120,  120,  0,  0, 0)},
+    {SPELL_BODY_FIRST_AID,              SpellData( 2,  2,  2,  2,  100,  100,  100,  100,  0,  0, 0)},
+    {SPELL_BODY_PROTECTION_FROM_BODY,   SpellData( 3,  3,  3,  3,  120,  120,  120,  120,  0,  0, 0)},
+    {SPELL_BODY_HARM,                   SpellData( 4,  4,  4,  4,  110,  100,   90,   80,  8,  2, 0)},
+    {SPELL_BODY_REGENERATION,           SpellData( 5,  5,  5,  5,  110,  110,  110,  110,  0,  0, 0)},
+    {SPELL_BODY_CURE_POISON,            SpellData( 8,  8,  8,  8,  120,  120,  120,  120,  0,  0, 0)},
+    {SPELL_BODY_HAMMERHANDS,            SpellData(10, 10, 10, 10,  120,  120,  120,  120,  0,  0, 0)},
+    {SPELL_BODY_CURE_DISEASE,           SpellData(15, 15, 15, 15,  120,  120,  120,  120,  0,  0, 0)},
+    {SPELL_BODY_PROTECTION_FROM_MAGIC,  SpellData(20, 20, 20, 20,  120,  120,  120,  120,  0,  0, 0)},
+    {SPELL_BODY_FLYING_FIST,            SpellData(25, 25, 25, 25,  110,  110,  110,  100, 30,  5, 0)},
+    {SPELL_BODY_POWER_CURE,             SpellData(30, 30, 30, 30,  100,  100,  100,  100,  0,  0, 0)},
 
-    SpellData(1, 1, 1, 1, 120, 120, 120, 120, 0, 0, 0),  // 6 body
-    SpellData(2, 2, 2, 2, 100, 100, 100, 100, 0, 0, 0),
-    SpellData(3, 3, 3, 3, 120, 120, 120, 120, 0, 0, 0),
-    SpellData(4, 4, 4, 4, 110, 100, 90, 80, 8, 2, 0),
-    SpellData(5, 5, 5, 5, 110, 110, 110, 110, 0, 0, 0),
-    SpellData(8, 8, 8, 8, 120, 120, 120, 120, 0, 0, 0),
-    SpellData(10, 10, 10, 10, 120, 120, 120, 120, 0, 0, 0),
-    SpellData(15, 15, 15, 15, 120, 120, 120, 120, 0, 0, 0),
-    SpellData(20, 20, 20, 20, 120, 120, 120, 120, 0, 0, 0),
-    SpellData(25, 25, 25, 25, 110, 110, 110, 100, 30, 5, 0),
-    SpellData(30, 30, 30, 30, 100, 100, 100, 100, 0, 0, 0),
+    {SPELL_LIGHT_LIGHT_BOLT,            SpellData( 5,  5,  5,  5,  110,  100,   90,   80,  0,  4, 0)},
+    {SPELL_LIGHT_DESTROY_UNDEAD,        SpellData(10, 10, 10, 10,  120,  110,  100,   90, 16, 16, 0)},
+    {SPELL_LIGHT_DISPEL_MAGIC,          SpellData(15, 15, 15, 15,  120,  110,  100,   90,  0,  0, 0)},
+    {SPELL_LIGHT_PARALYZE,              SpellData(20, 20, 20, 20,  160,  140,  120,  100,  0,  0, 0)},
+    {SPELL_LIGHT_SUMMON_ELEMENTAL,      SpellData(25, 25, 25, 25,  140,  140,  140,  140,  0,  0, 0)},
+    {SPELL_LIGHT_DAY_OF_THE_GODS,       SpellData(30, 30, 30, 30,  500,  500,  500,  500,  0,  0, 0)},
+    {SPELL_LIGHT_PRISMATIC_LIGHT,       SpellData(35, 35, 35, 35,  135,  135,  120,  100, 25,  1, 0)},
+    {SPELL_LIGHT_DAY_OF_PROTECTION,     SpellData(40, 40, 40, 40,  500,  500,  500,  500,  0,  0, 0)},
+    {SPELL_LIGHT_HOUR_OF_POWER,         SpellData(45, 45, 45, 45,  250,  250,  250,  250,  0,  0, 0)},
+    {SPELL_LIGHT_SUNRAY,                SpellData(50, 50, 50, 50,  150,  150,  150,  135, 20, 20, 0)},
+    {SPELL_LIGHT_DIVINE_INTERVENTION,   SpellData(55, 55, 55, 55,  300,  300,  300,  300,  0,  0, 0)},
 
-    SpellData(5, 5, 5, 5, 110, 100, 90, 80, 0, 4, 0),  // 7 light
-    SpellData(10, 10, 10, 10, 120, 110, 100, 90, 16, 16, 0),
-    SpellData(15, 15, 15, 15, 120, 110, 100, 90, 0, 0, 0),
-    SpellData(20, 20, 20, 20, 160, 140, 120, 100, 0, 0, 0),
-    SpellData(25, 25, 25, 25, 140, 140, 140, 140, 0, 0, 0),
-    SpellData(30, 30, 30, 30, 500, 500, 500, 500, 0, 0, 0),
-    SpellData(35, 35, 35, 35, 135, 135, 120, 100, 25, 1, 0),
-    SpellData(40, 40, 40, 40, 500, 500, 500, 500, 0, 0, 0),
-    SpellData(45, 45, 45, 45, 250, 250, 250, 250, 0, 0, 0),
-    SpellData(50, 50, 50, 50, 150, 150, 150, 135, 20, 20, 0),
-    SpellData(55, 55, 55, 55, 300, 300, 300, 300, 0, 0, 0),
-
-    SpellData(10, 10, 10, 10, 140, 140, 140, 140, 0, 0, 0),  // 8 dark
-    SpellData(15, 15, 15, 15, 120, 110, 100, 90, 25, 10, 0),
-    SpellData(20, 20, 20, 20, 120, 100, 90, 120, 0, 0, 0),
-    SpellData(25, 25, 25, 25, 120, 120, 120, 120, 0, 0, 0),
-    SpellData(30, 30, 30, 30, 90, 90, 80, 70, 6, 6, 0),
-    SpellData(35, 35, 35, 35, 120, 120, 100, 80, 0, 0, 0),
-    SpellData(40, 40, 40, 40, 110, 110, 110, 110, 0, 0, 0),
-    SpellData(45, 45, 45, 45, 200, 200, 200, 150, 0, 0, 0),
-    SpellData(50, 50, 50, 50, 120, 120, 120, 100, 0, 25, 0),
-    SpellData(55, 55, 55, 55, 250, 250, 250, 250, 50, 1, 0),
-    SpellData(60, 60, 60, 60, 300, 300, 300, 300, 25, 8, 0)}};
+    {SPELL_DARK_REANIMATE,              SpellData(10, 10, 10, 10,  140,  140,  140,  140,  0,  0, 0)},
+    {SPELL_DARK_TOXIC_CLOUD,            SpellData(15, 15, 15, 15,  120,  110,  100,   90, 25, 10, 0)},
+    {SPELL_DARK_VAMPIRIC_WEAPON,        SpellData(20, 20, 20, 20,  120,  100,   90,  120,  0,  0, 0)},
+    {SPELL_DARK_SHRINKING_RAY,          SpellData(25, 25, 25, 25,  120,  120,  120,  120,  0,  0, 0)},
+    {SPELL_DARK_SHARPMETAL,             SpellData(30, 30, 30, 30,   90,   90,   80,   70,  6,  6, 0)},
+    {SPELL_DARK_CONTROL_UNDEAD,         SpellData(35, 35, 35, 35,  120,  120,  100,   80,  0,  0, 0)},
+    {SPELL_DARK_PAIN_REFLECTION,        SpellData(40, 40, 40, 40,  110,  110,  110,  110,  0,  0, 0)},
+    {SPELL_DARK_SACRIFICE,              SpellData(45, 45, 45, 45,  200,  200,  200,  150,  0,  0, 0)},
+    {SPELL_DARK_DRAGON_BREATH,          SpellData(50, 50, 50, 50,  120,  120,  120,  100,  0, 25, 0)},
+    {SPELL_DARK_ARMAGEDDON,             SpellData(55, 55, 55, 55,  250,  250,  250,  250, 50,  1, 0)},
+    {SPELL_DARK_SOULDRINKER,            SpellData(60, 60, 60, 60,  300,  300,  300,  300, 25,  8, 0)}
+};
 
 IndexedArray<SPELL_TYPE, ITEM_FIRST_WAND, ITEM_LAST_WAND> WandSpellIds = {
     // 135 Wand of Fire               136 Wand of Sparks             137 Wand of
@@ -355,6 +369,22 @@ std::array<std::array<struct SpellBookIconPos, 12>, 9> pIconPos = {{
     {{{0,   0},   {18,  17},  {110, 16},  {201, 15},  {307, 15},  {18,  148},
       {125, 166}, {201, 123}, {275, 120}, {28,  235}, {217, 222}, {324, 216}}}
 }};
+
+// TODO: use SoundID not uint16_t
+std::array<uint16_t, SPELL_REGULAR_COUNT + 1> SpellSoundIds = {{
+    00000,
+    10000, 10010, 10020, 10030, 10040, 10050, 10060, 10070, 10080,
+    10090, 10100, 11000, 11010, 11020, 11030, 11040, 11050, 11060,
+    11070, 11080, 11090, 11100, 12000, 12010, 12020, 12030, 12040,
+    12050, 12060, 12070, 12080, 12090, 12100, 13000, 13010, 13020,
+    13030, 13040, 13050, 13060, 13070, 13080, 13090, 13100, 14000,
+    14010, 14020, 14030, 14040, 14050, 14060, 14070, 14080, 14090,
+    14100, 15000, 15010, 15020, 15030, 15040, 15050, 15060, 15070,
+    15080, 15090, 15100, 16000, 16010, 16020, 16030, 16040, 16050,
+    16060, 16070, 16080, 16090, 16100, 17000, 17010, 17020, 17030,
+    17040, 17050, 17060, 17070, 17080, 17090, 17100, 18000, 18010,
+    18020, 18030, 18040, 18050, 18060, 18070, 18080, 18090, 18100,
+    00001}};
 
 /**
  * @offset 0x458585
@@ -435,27 +465,30 @@ void SpellStats::Initialize() {
     pSpellsTXT_Raw = pEvents_LOD->LoadCompressedTexture("spells.txt").string_view();
 
     strtok(pSpellsTXT_Raw.data(), "\r");
-    for (int i = 1; i < SPELL_REGULAR_COUNT; ++i) {
-        if (((i % 11) - 1) == 0) strtok(NULL, "\r");
+    for (int i = SPELL_REGULAR_FIRST; i < SPELL_REGULAR_COUNT; ++i) {
+        SPELL_TYPE uSpellID = static_cast<SPELL_TYPE>(i);
+        if (((i % 11) - 1) == 0) {
+            strtok(NULL, "\r");
+        }
         test_string = strtok(NULL, "\r") + 1;
 
         auto tokens = Tokenize(test_string, '\t');
 
-        pInfos[i].pName = RemoveQuotes(tokens[2]);
+        pInfos[uSpellID].pName = RemoveQuotes(tokens[2]);
         auto findResult = spellSchoolMaps.find(tokens[3]);
-        pInfos[i].uSchool = findResult == spellSchoolMaps.end()
+        pInfos[uSpellID].uSchool = findResult == spellSchoolMaps.end()
                                 ? SPELL_SCHOOL_NONE
                                 : findResult->second;
-        pInfos[i].pShortName = RemoveQuotes(tokens[4]);
-        pInfos[i].pDescription = RemoveQuotes(tokens[5]);
-        pInfos[i].pBasicSkillDesc = RemoveQuotes(tokens[6]);
-        pInfos[i].pExpertSkillDesc = RemoveQuotes(tokens[7]);
-        pInfos[i].pMasterSkillDesc = RemoveQuotes(tokens[8]);
-        pInfos[i].pGrandmasterSkillDesc = RemoveQuotes(tokens[9]);
-        pSpellDatas[i].stats |= strchr(tokens[10], 'm') || strchr(tokens[10], 'M') ? 1 : 0;
-        pSpellDatas[i].stats |= strchr(tokens[10], 'e') || strchr(tokens[10], 'E') ? 2 : 0;
-        pSpellDatas[i].stats |= strchr(tokens[10], 'c') || strchr(tokens[10], 'C') ? 4 : 0;
-        pSpellDatas[i].stats |= strchr(tokens[10], 'x') || strchr(tokens[10], 'X') ? 8 : 0;
+        pInfos[uSpellID].pShortName = RemoveQuotes(tokens[4]);
+        pInfos[uSpellID].pDescription = RemoveQuotes(tokens[5]);
+        pInfos[uSpellID].pBasicSkillDesc = RemoveQuotes(tokens[6]);
+        pInfos[uSpellID].pExpertSkillDesc = RemoveQuotes(tokens[7]);
+        pInfos[uSpellID].pMasterSkillDesc = RemoveQuotes(tokens[8]);
+        pInfos[uSpellID].pGrandmasterSkillDesc = RemoveQuotes(tokens[9]);
+        pSpellDatas[uSpellID].stats |= strchr(tokens[10], 'm') || strchr(tokens[10], 'M') ? 1 : 0;
+        pSpellDatas[uSpellID].stats |= strchr(tokens[10], 'e') || strchr(tokens[10], 'E') ? 2 : 0;
+        pSpellDatas[uSpellID].stats |= strchr(tokens[10], 'c') || strchr(tokens[10], 'C') ? 4 : 0;
+        pSpellDatas[uSpellID].stats |= strchr(tokens[10], 'x') || strchr(tokens[10], 'X') ? 8 : 0;
     }
 }
 
@@ -512,7 +545,7 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
         case SPELL_EARTH_DEATH_BLOSSOM:
             spell_sprites.uType = SpellSpriteMapping[uSpellID];
             spell_sprites.containing_item.Reset();
-            spell_sprites.spell_id = uSpellID;
+            spell_sprites.uSpellID = uSpellID;
             spell_sprites.spell_level = skillLevel;
             spell_sprites.spell_skill = skillMastery;
             spell_sprites.uObjectDescID = pObjectList->ObjectIDByItemID(spell_sprites.uType);
@@ -639,7 +672,8 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
             spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 3);
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);  // звук алтаря
-            pAudioPlayer->PlaySpellSound(uSpellID, 0);
+            //    PID was 0
+            pAudioPlayer->PlaySpellSound(uSpellID, PID_INVALID);
             return;
         case SPELL_AIR_SHIELD:
         case SPELL_EARTH_STONESKIN:
@@ -683,7 +717,8 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
                                               spell_num_objects, 0, 0);
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
-            pAudioPlayer->PlaySpellSound(uSpellID, 0);
+            //    PID was 0
+            pAudioPlayer->PlaySpellSound(uSpellID, PID_INVALID);
             return;
         case SPELL_FIRE_IMMOLATION:
             if (skillMastery == PLAYER_SKILL_MASTERY_GRANDMASTER)
@@ -701,7 +736,8 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
                 spell_expire_time, skillMastery, skillLevel, 0, 0);
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
-            pAudioPlayer->PlaySpellSound(uSpellID, 0);
+            //    PID was 0
+            pAudioPlayer->PlaySpellSound(uSpellID, PID_INVALID);
             return;
         case SPELL_FIRE_PROTECTION_FROM_FIRE:
         case SPELL_AIR_PROTECTION_FROM_AIR:
@@ -741,7 +777,8 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
                 skillMastery, spell_num_objects, 0, 0);
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
-            pAudioPlayer->PlaySpellSound(uSpellID, 0);
+            //    PID was 0
+            pAudioPlayer->PlaySpellSound(uSpellID, PID_INVALID);
             return;
         case SPELL_LIGHT_DAY_OF_THE_GODS:
             switch (skillMastery) {
@@ -771,7 +808,8 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
                 spell_expire_time, skillMastery, spell_power, 0, 0);
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
-            pAudioPlayer->PlaySpellSound(uSpellID, 0);
+            //    PID was 0
+            pAudioPlayer->PlaySpellSound(uSpellID, PID_INVALID);
             return;
         default:
             return;
@@ -781,18 +819,18 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
 /**
  * @offset 0x427769
  */
-bool IsSpellQuickCastableOnShiftClick(unsigned int uSpellID) {
+bool IsSpellQuickCastableOnShiftClick(SPELL_TYPE uSpellID) {
     return (pSpellDatas[uSpellID].stats & 0xC) != 0;
 }
 /**
  * @offset 0x43AFE3
  */
-int CalcSpellDamage(int spellId, PLAYER_SKILL_LEVEL spellLevel, PLAYER_SKILL_MASTERY skillMastery, int currentHp) {
+int CalcSpellDamage(SPELL_TYPE uSpellID, PLAYER_SKILL_LEVEL spellLevel, PLAYER_SKILL_MASTERY skillMastery, int currentHp) {
     int result;       // eax@1
     unsigned int diceSides;  // [sp-4h] [bp-8h]@9
 
     result = 0;
-    if (spellId == SPELL_FIRE_FIRE_SPIKE) {
+    if (uSpellID == SPELL_FIRE_FIRE_SPIKE) {
         switch (skillMastery) {
             case PLAYER_SKILL_MASTERY_NOVICE:
             case PLAYER_SKILL_MASTERY_EXPERT:
@@ -808,10 +846,10 @@ int CalcSpellDamage(int spellId, PLAYER_SKILL_LEVEL spellLevel, PLAYER_SKILL_MAS
                 return 0;
         }
         result = grng->RandomDice(spellLevel, diceSides);
-    } else if (spellId == SPELL_EARTH_MASS_DISTORTION) {
+    } else if (uSpellID == SPELL_EARTH_MASS_DISTORTION) {
         result = currentHp * (pSpellDatas[SPELL_EARTH_MASS_DISTORTION].baseDamage + 2 * spellLevel) / 100;
     } else {
-        result = pSpellDatas[spellId].baseDamage + grng->RandomDice(spellLevel, pSpellDatas[spellId].bonusSkillDamage);
+        result = pSpellDatas[uSpellID].baseDamage + grng->RandomDice(spellLevel, pSpellDatas[uSpellID].bonusSkillDamage);
     }
 
     return result;

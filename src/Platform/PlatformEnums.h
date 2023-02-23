@@ -11,19 +11,57 @@
 
 enum class PlatformEventType {
     EVENT_INVALID = -1,
+
+    /** Key pressed, sent as `PlatformKeyEvent`. */
     EVENT_KEY_PRESS = 0,
+
+    /** Key released, sent as `PlatformKeyEvent`. */
     EVENT_KEY_RELEASE,
-    EVENT_GAMEPAD_CONNECTED,
-    EVENT_GAMEPAD_DISCONNECTED,
+
+    /** Mouse button pressed, sent as `PlatformMouseEvent`. */
     EVENT_MOUSE_BUTTON_PRESS,
+
+    /** Mouse button released, sent as `PlatformMouseEvent`. */
     EVENT_MOUSE_BUTTON_RELEASE,
+
+    /** Mouse pointer moved, sent as `PlatformMouseEvent`. */
     EVENT_MOUSE_MOVE,
+
+    /** Mouse wheel rotated, sent as `PlatformWheelEvent`. */
     EVENT_MOUSE_WHEEL,
+
+    /** Window moved, sent as `PlatformMoveEvent`. */
     EVENT_WINDOW_MOVE,
+
+    /** Window resized, sent as `PlatformResizeEvent`. */
     EVENT_WINDOW_RESIZE,
+
+    /** Window activated (gained focus), sent as `PlatformWindowEvent`. */
     EVENT_WINDOW_ACTIVATE,
+
+    /** Window deactivated (lost focus), sent as `PlatformWindowEvent`. */
     EVENT_WINDOW_DEACTIVATE,
+
+    /** Window close was requested (e.g. by pressing the window close button), sent as `PlatformWindowEvent`. */
     EVENT_WINDOW_CLOSE_REQUEST,
+
+    /** Gamepad was added to the system, sent as `PlatformGamepadEvent`. */
+    EVENT_GAMEPAD_CONNECTED,
+
+    /** Gamepad was removed from the system, sent as `PlatformGamepadEvent`. */
+    EVENT_GAMEPAD_DISCONNECTED,
+
+    /** Gamepad key pressed, sent as `PlatformGamepadKeyEvent`. */
+    EVENT_GAMEPAD_KEY_PRESS,
+
+    /** Gamepad key released, sent as `PlatformGamepadKeyEvent`. */
+    EVENT_GAMEPAD_KEY_RELEASE,
+
+    /** Gamepad axis event, sent as `PlatformGamepadAxisEvent`. */
+    EVENT_GAMEPAD_AXIS,
+
+    /** Native event, sent as `PlatformNativeEvent` only when platform was built with
+     * `MM_PLATFORM_SEND_NATIVE_EVENTS` defined. */
     EVENT_NATIVE,
 
     EVENT_FIRST = EVENT_KEY_PRESS,
@@ -167,16 +205,6 @@ enum class PlatformKey : int {
 
     None = Count
 };
-
-enum class PlatformKeyType : int {
-    KEY_TYPE_KEYBOARD_BUTTON,
-    KEY_TYPE_GAMEPAD_BUTTON,
-    KEY_TYPE_GAMEPAD_AXIS,
-    KEY_TYPE_GAMEPAD_TRIGGER
-};
-using enum PlatformKeyType;
-
-typedef float PlatformKeyValue;
 
 enum class PlatformModifier : uint32_t {
     MOD_SHIFT   = 0x00000001,

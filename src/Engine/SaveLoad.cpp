@@ -595,7 +595,7 @@ void SavegameList::Initialize() {
     }
 
     if (uNumSavegameFiles)
-        std::sort(&pSavegameList->pFileList[0], &pSavegameList->pFileList[uNumSavegameFiles - 1]);
+        std::sort(pSavegameList->pFileList.begin(), pSavegameList->pFileList.begin() + uNumSavegameFiles);
 }
 
 SavegameList::SavegameList() { Reset(); }

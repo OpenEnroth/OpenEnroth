@@ -2132,7 +2132,7 @@ int Player::ReceiveSpecialAttackEffect(
 // 48DCF6: using guessed type char var_94[140];
 
 //----- (0048E1A3) --------------------------------------------------------
-unsigned int Player::GetSpellSchool(unsigned int uSpellID) {
+unsigned int Player::GetSpellSchool(SPELL_TYPE uSpellID) {
     return pSpellStats->pInfos[uSpellID].uSchool;
 }
 
@@ -4239,14 +4239,12 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
 
         // TODO(captainurist): deal away with casts.
         SPELL_TYPE scroll_id = (SPELL_TYPE)(std::to_underlying(pParty->pPickedItem.uItemID) - 299);
-        if (scroll_id == 30 || scroll_id == 4 || scroll_id == 91 ||
-            scroll_id == 28) {  // Enchant Item scroll, Vampiric Weapon scroll
-                                // ,Recharge Item ,Fire Aura
+        if (isSpellTargetsItem(scroll_id)) {
             mouse->RemoveHoldingItem();
             pGUIWindow_CurrentMenu->Release();
             current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
             viewparams->bRedrawGameUI = 1;
-            _42777D_CastSpell_UseWand_ShootArrow(scroll_id, player_num - 1, 0x85u, ON_CAST_CastViaScroll, 0);
+            pushScrollSpell(scroll_id, player_num - 1);
         } else {
             mouse->RemoveHoldingItem();
             pMessageQueue_50C9E8->AddGUIMessage(UIMSG_SpellScrollUse, scroll_id, player_num - 1);
@@ -7018,11 +7016,12 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
 
             int damage;
             int damagetype;
-            if (uActorType != OBJECT_Player ||spritefrom->spell_id != SPELL_BOW_ARROW) {
+            if (uActorType != OBJECT_Player ||spritefrom->uSpellID != SPELL_BOW_ARROW) {
                 int playerMaxHp = playerPtr->GetMaxHealth();
-                damage = CalcSpellDamage(spritefrom->spell_id, spritefrom->spell_level,
+                damage = CalcSpellDamage(spritefrom->uSpellID,
+                                         spritefrom->spell_level,
                                          spritefrom->spell_skill, playerMaxHp);
-                damagetype = pSpellStats->pInfos[spritefrom->spell_id].uSchool;
+                damagetype = pSpellStats->pInfos[spritefrom->uSpellID].uSchool;
             } else {
                 damage = pParty->pPlayers[uActorID].CalculateRangedDamageTo(0);
                 damagetype = 0;
@@ -7159,11 +7158,12 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             int damage;
             int damagetype;
             if (uActorType != OBJECT_Player ||
-                spritefrom->spell_id != SPELL_BOW_ARROW) {
+                spritefrom->uSpellID != SPELL_BOW_ARROW) {
                 int playerMaxHp = playerPtr->GetMaxHealth();
-                damage = CalcSpellDamage(spritefrom->spell_id, spritefrom->spell_level,
+                damage = CalcSpellDamage(spritefrom->uSpellID,
+                                         spritefrom->spell_level,
                                          spritefrom->spell_skill, playerMaxHp);
-                damagetype = pSpellStats->pInfos[spritefrom->spell_id].uSchool;
+                damagetype = pSpellStats->pInfos[spritefrom->uSpellID].uSchool;
             } else {
                 damage = pParty->pPlayers[uActorID].CalculateRangedDamageTo(0);
                 damagetype = 0;
@@ -7535,7 +7535,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
     Player* player = &pParty->pPlayers[uActiveCharacter - 1];
     if (!player->CanAct()) return;
 
-    CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress();
+    CastSpellInfoHelpers::cancelSpellCastInProgress();
     // v3 = 0;
     if (pParty->Invisible())
         pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
@@ -7606,16 +7606,15 @@ void Player::_42ECB5_PlayerAttacksActor() {
          melee_attack = false;
     if (laser_weapon_item_id != ITEM_NULL) {
         shotting_laser = true;
-        _42777D_CastSpell_UseWand_ShootArrow(SPELL_LASER_PROJECTILE,
-                                             uActiveCharacter - 1, 0, 0,
-                                             uActiveCharacter + 8);
+        pushSpellOrRangedAttack(SPELL_LASER_PROJECTILE,
+                                uActiveCharacter - 1, 0, 0,
+                                uActiveCharacter + 8);
     } else if (wand_item_id != ITEM_NULL) {
         shooting_wand = true;
 
         int main_hand_idx = player->pEquipment.uMainHand;
-        _42777D_CastSpell_UseWand_ShootArrow(
-            WandSpellIds[player->pInventoryItemList[main_hand_idx - 1].uItemID],
-            uActiveCharacter - 1, 8, 0, uActiveCharacter + 8);
+        pushSpellOrRangedAttack(WandSpellIds[player->pInventoryItemList[main_hand_idx - 1].uItemID],
+                                uActiveCharacter - 1, 8, 0, uActiveCharacter + 8);
 
         if (!--player->pInventoryItemList[main_hand_idx - 1].uNumCharges)
             player->pEquipment.uMainHand = 0;
@@ -7635,7 +7634,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
                 uActiveCharacter);
     } else if (bow_idx) {
         shooting_bow = true;
-        _42777D_CastSpell_UseWand_ShootArrow(SPELL_BOW_ARROW, uActiveCharacter - 1, 0, 0, 0);
+        pushSpellOrRangedAttack(SPELL_BOW_ARROW, uActiveCharacter - 1, 0, 0, 0);
     } else {
         melee_attack = true;
         // ; // actor out of range or no actor; no ranged weapon so melee
@@ -7704,7 +7703,7 @@ void Player::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4,
     SpriteObject a1a;
     a1a.uType = SPRITE_OBJECT_EXPLODE;
     a1a.containing_item.Reset();
-    a1a.spell_id = SPELL_FIRE_FIREBALL;
+    a1a.uSpellID = SPELL_FIRE_FIREBALL;
     a1a.spell_level = 8;
     a1a.spell_skill = PLAYER_SKILL_MASTERY_MASTER;
     a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);

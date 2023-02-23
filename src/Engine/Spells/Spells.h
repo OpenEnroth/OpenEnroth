@@ -124,6 +124,7 @@ enum SPELL_TYPE : uint8_t {
     SPELL_DARK_SOULDRINKER = 99,
 
     // TODO(captainurist): use IndexedArray where this one is referenced
+    SPELL_REGULAR_FIRST = SPELL_FIRE_TORCH_LIGHT,
     SPELL_REGULAR_LAST = SPELL_DARK_SOULDRINKER,
     SPELL_REGULAR_COUNT = SPELL_REGULAR_LAST + 1,
 
@@ -139,6 +140,52 @@ enum SPELL_TYPE : uint8_t {
     SPELL_152 = 152,
     SPELL_DISEASE = 153
 };
+
+/**
+ * Is spell target is item in inventory?
+ */
+inline bool isSpellTargetsItem(SPELL_TYPE uSpellID) {
+    return uSpellID == SPELL_WATER_ENCHANT_ITEM ||
+           uSpellID == SPELL_FIRE_FIRE_AURA ||
+           uSpellID == SPELL_DARK_VAMPIRIC_WEAPON ||
+           uSpellID == SPELL_WATER_RECHARGE_ITEM;
+}
+
+/**
+ * Get skill used for casting given spell.
+ */
+inline PLAYER_SKILL_TYPE getSkillTypeForSpell(SPELL_TYPE uSpellID) {
+    assert(uSpellID != SPELL_NONE);
+
+    if (uSpellID < SPELL_AIR_WIZARD_EYE) {
+        return PLAYER_SKILL_FIRE;
+    } else if (uSpellID < SPELL_WATER_AWAKEN) {
+        return PLAYER_SKILL_AIR;
+    } else if (uSpellID < SPELL_EARTH_STUN) {
+        return PLAYER_SKILL_WATER;
+    } else if (uSpellID < SPELL_SPIRIT_DETECT_LIFE) {
+        return PLAYER_SKILL_EARTH;
+    } else if (uSpellID < SPELL_MIND_REMOVE_FEAR) {
+        return PLAYER_SKILL_SPIRIT;
+    } else if (uSpellID < SPELL_BODY_CURE_WEAKNESS) {
+        return PLAYER_SKILL_MIND;
+    } else if (uSpellID < SPELL_LIGHT_LIGHT_BOLT) {
+        return PLAYER_SKILL_BODY;
+    } else if (uSpellID < SPELL_DARK_REANIMATE) {
+        return PLAYER_SKILL_LIGHT;
+    } else if (uSpellID < SPELL_BOW_ARROW) {
+        return PLAYER_SKILL_DARK;
+    } else if (uSpellID == SPELL_BOW_ARROW) {
+        return PLAYER_SKILL_BOW;
+    } else if (uSpellID == SPELL_101 ||
+               uSpellID == SPELL_LASER_PROJECTILE) {
+        return PLAYER_SKILL_BLASTER;
+    } else {
+        assert(false && "Unknown spell");
+    }
+
+    return PLAYER_SKILL_INVALID;
+}
 
 enum SPELL_SCHOOL : int {
     SPELL_SCHOOL_FIRE = 0,
@@ -201,6 +248,7 @@ struct SpellStats {
 #pragma pack(push, 1)
 class SpellData {
  public:
+    SpellData():SpellData(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) {}
     SpellData(int16_t inNormalMana, int16_t inExpertLevelMana,
               int16_t inMasterLevelMana, int16_t inMagisterLevelMana,
               int16_t inNormalLevelRecovery, int16_t inExpertLevelRecovery,
@@ -258,11 +306,12 @@ extern struct SpellStats *pSpellStats;
 extern std::array<std::array<struct SpellBookIconPos, 12>, 9> pIconPos;
 
 extern IndexedArray<SPRITE_OBJECT_TYPE, SPELL_ANY_WITH_SPRITE_FIRST, SPELL_ANY_WITH_SPRITE_LAST> SpellSpriteMapping;  // 4E3ACC
-extern std::array<SpellData, SPELL_REGULAR_COUNT> pSpellDatas;
+extern IndexedArray<SpellData, SPELL_REGULAR_FIRST, SPELL_REGULAR_LAST> pSpellDatas;
 extern IndexedArray<SPELL_TYPE, ITEM_FIRST_WAND, ITEM_LAST_WAND> WandSpellIds;
+extern std::array<uint16_t, SPELL_REGULAR_COUNT + 1> SpellSoundIds;
 
-int CalcSpellDamage(int spellId, PLAYER_SKILL_LEVEL spellLevel, PLAYER_SKILL_MASTERY skillMastery, int currentHp);
-bool IsSpellQuickCastableOnShiftClick(unsigned int uSpellID);
+int CalcSpellDamage(SPELL_TYPE uSpellID, PLAYER_SKILL_LEVEL spellLevel, PLAYER_SKILL_MASTERY skillMastery, int currentHp);
+bool IsSpellQuickCastableOnShiftClick(SPELL_TYPE uSpellID);
 void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAYER_SKILL_LEVEL skillLevel, int fromx,
                     int fromy, int fromz, int tox, int toy, int toz);  // sub_448DF8
 

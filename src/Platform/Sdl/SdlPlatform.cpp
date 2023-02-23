@@ -20,8 +20,12 @@ SdlPlatform::SdlPlatform(PlatformLogger *logger) {
     _state = std::make_unique<SdlPlatformSharedState>(logger);
 
     _initialized = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) == 0;
-    if (!_initialized)
+    if (!_initialized) {
         _state->logSdlError("SDL_Init");
+        return;
+    }
+
+    _state->initializeGamepads();
 }
 
 SdlPlatform::~SdlPlatform() {
@@ -59,6 +63,10 @@ std::unique_ptr<PlatformEventLoop> SdlPlatform::createEventLoop() {
         return nullptr;
 
     return std::make_unique<SdlEventLoop>(_state.get());
+}
+
+std::vector<PlatformGamepad *> SdlPlatform::gamepads() {
+    return _state->allGamepads();
 }
 
 void SdlPlatform::setCursorShown(bool cursorShown) {
@@ -130,35 +138,20 @@ std::string SdlPlatform::storagePath(const PlatformStorage type) const {
 
     switch (type) {
 #if __ANDROID__
-        case (ANDROID_STORAGE_INTERNAL):
-            path = SDL_AndroidGetInternalStoragePath();
-            if (path)
-                result = path;
-            break;
-        case (ANDROID_STORAGE_EXTERNAL):
-            path = SDL_AndroidGetExternalStoragePath();
-            if (path)
-                result = path;
-            break;
+    case (ANDROID_STORAGE_INTERNAL):
+        path = SDL_AndroidGetInternalStoragePath();
+        if (path)
+            result = path;
+        break;
+    case (ANDROID_STORAGE_EXTERNAL):
+        path = SDL_AndroidGetExternalStoragePath();
+        if (path)
+            result = path;
+        break;
 #endif
-        default:
-            break;
+    default:
+        break;
     }
 
-    return result;
-}
-
-std::unique_ptr<PlatformGamepad> SdlPlatform::createGamepad(uint32_t id) {
-    if (!_initialized)
-        return nullptr;
-
-    SDL_GameController *gamepad = SDL_GameControllerOpen(id);
-    if (!gamepad) {
-        _state->logSdlError("SDL_GameControllerOpen");
-        return nullptr;
-    }
-
-    std::unique_ptr<SdlGamepad> result = std::make_unique<SdlGamepad>(_state.get(), gamepad, id);
-    _state->registerGamepad(result.get());
     return result;
 }
