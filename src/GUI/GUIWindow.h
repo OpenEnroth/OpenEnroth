@@ -670,7 +670,7 @@ void CharacterUI_ReleaseButtons();
 
 unsigned int GetSkillColor(unsigned int uPlayerClass, PLAYER_SKILL_TYPE uPlayerSkillType, PLAYER_SKILL_MASTERY skill_mastery);
 
-void DrawSpellDescriptionPopup(int spell_index);
+void DrawSpellDescriptionPopup(int spell_index_in_book);
 
 void UI_OnMouseRightClick(int mouse_x, int mouse_y);
 

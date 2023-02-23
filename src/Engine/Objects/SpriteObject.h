@@ -48,7 +48,8 @@ struct SpriteObject {
     int16_t field_20 = 0;
     int16_t field_22_glow_radius_multiplier = 1;
     ItemGen containing_item;
-    int spell_id = 0;
+    SPELL_TYPE uSpellID = SPELL_NONE;
+    char pad[3] = {0, 0, 0}; // TODO(Nik-RE-dev): add SpriteObject_MM7 to LegacyImages and redo this properly.
     int spell_level = 0;
     PLAYER_SKILL_MASTERY spell_skill = PLAYER_SKILL_MASTERY_NONE;
     int field_54 = 0;
