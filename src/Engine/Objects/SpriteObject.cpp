@@ -1468,7 +1468,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
                     //                v125 = v143 + 1;
                     //                pAudioPlayer->PlaySound((SoundID)v125,
                     //                v115, 0, -1, 0, v114, 0, 0);
-                    pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].spell_id,
+                    pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].uSpellID,
                                                  PID(OBJECT_Item, uLayingItemID), true);
                 } else {
                     SpriteObject::OnInteraction(uLayingItemID);
@@ -1544,7 +1544,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
                 //            v125 = v143 + 1;
                 //            pAudioPlayer->PlaySound((SoundID)v125, v115, 0,
                 //            -1, 0, v114, 0, 0);
-                pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].spell_id,
+                pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].uSpellID,
                                              PID(OBJECT_Item, uLayingItemID), true);
             } else {
                 SpriteObject::OnInteraction(uLayingItemID);
