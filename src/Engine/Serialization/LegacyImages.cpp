@@ -1549,7 +1549,7 @@ void Serialize(const SpriteObject &src, SpriteObject_MM7 *dst) {
     dst->field_20 = src.field_20;
     dst->field_22_glow_radius_multiplier = src.field_22_glow_radius_multiplier;
     Serialize(src.containing_item, &dst->containing_item);
-    dst->spell_id = src.spell_id;
+    dst->uSpellID = src.uSpellID;
     dst->spell_level = src.spell_level;
     dst->spell_skill = std::to_underlying(src.spell_skill);
     dst->field_54 = src.field_54;
@@ -1575,7 +1575,7 @@ void Deserialize(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->field_20 = src.field_20;
     dst->field_22_glow_radius_multiplier = src.field_22_glow_radius_multiplier;
     Deserialize(src.containing_item, &dst->containing_item);
-    dst->spell_id = src.spell_id;
+    dst->uSpellID = SPELL_TYPE(src.uSpellID);
     dst->spell_level = src.spell_level;
     dst->spell_skill = PLAYER_SKILL_MASTERY(src.spell_skill);
     dst->field_54 = src.field_54;

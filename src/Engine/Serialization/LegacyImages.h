@@ -856,7 +856,7 @@ struct SpriteObject_MM7 {
     int16_t field_20;
     int16_t field_22_glow_radius_multiplier;
     ItemGen_MM7 containing_item;
-    int spell_id;
+    int uSpellID;
     int spell_level;
     int32_t spell_skill;
     int field_54;
