@@ -841,7 +841,9 @@ bool AudioSample16::Play(bool loop_, bool positioned_) {
     positioned = positioned_;
 
     alSourcei(al_source, AL_SOURCE_RELATIVE, positioned ? AL_FALSE : AL_TRUE);
-    // alSource3f(al_source, AL_POSITION, 0.f, 0.f, 0.f);
+    if (!positioned) {
+        alSource3f(al_source, AL_POSITION, 0.f, 0.f, 0.f);
+    }
     alSource3f(al_source, AL_VELOCITY, 0.f, 0.f, 0.f);
 
     alSourcei(al_source, AL_LOOPING, loop ? AL_TRUE : AL_FALSE);

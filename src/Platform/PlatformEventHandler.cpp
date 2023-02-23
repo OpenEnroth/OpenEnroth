@@ -2,10 +2,6 @@
 
 void PlatformEventHandler::event(const PlatformEvent *event) {
     switch (event->type) {
-    case EVENT_GAMEPAD_CONNECTED:
-    case EVENT_GAMEPAD_DISCONNECTED:
-        gamepadDeviceEvent(static_cast<const PlatformGamepadDeviceEvent *>(event));
-        return;
     case EVENT_KEY_PRESS:
         keyPressEvent(static_cast<const PlatformKeyEvent *>(event));
         return;
@@ -37,6 +33,19 @@ void PlatformEventHandler::event(const PlatformEvent *event) {
     case EVENT_WINDOW_CLOSE_REQUEST:
         closeEvent(static_cast<const PlatformWindowEvent *>(event));
         return;
+    case EVENT_GAMEPAD_CONNECTED:
+    case EVENT_GAMEPAD_DISCONNECTED:
+        gamepadConnectionEvent(static_cast<const PlatformGamepadEvent *>(event));
+        return;
+    case EVENT_GAMEPAD_KEY_PRESS:
+        gamepadKeyPressEvent(static_cast<const PlatformGamepadKeyEvent *>(event));
+        return;
+    case EVENT_GAMEPAD_KEY_RELEASE:
+        gamepadKeyReleaseEvent(static_cast<const PlatformGamepadKeyEvent *>(event));
+        return;
+    case EVENT_GAMEPAD_AXIS:
+        gamepadAxisEvent(static_cast<const PlatformGamepadAxisEvent *>(event));
+        return;
     case EVENT_NATIVE:
         nativeEvent(static_cast<const PlatformNativeEvent *>(event));
         return;
@@ -55,5 +64,8 @@ void PlatformEventHandler::moveEvent(const PlatformMoveEvent *) {}
 void PlatformEventHandler::resizeEvent(const PlatformResizeEvent *) {}
 void PlatformEventHandler::activationEvent(const PlatformWindowEvent *) {}
 void PlatformEventHandler::closeEvent(const PlatformWindowEvent *) {}
-void PlatformEventHandler::gamepadDeviceEvent(const PlatformGamepadDeviceEvent *) {}
+void PlatformEventHandler::gamepadConnectionEvent(const PlatformGamepadEvent *) {}
+void PlatformEventHandler::gamepadKeyPressEvent(const PlatformGamepadKeyEvent *) {}
+void PlatformEventHandler::gamepadKeyReleaseEvent(const PlatformGamepadKeyEvent *) {}
+void PlatformEventHandler::gamepadAxisEvent(const PlatformGamepadAxisEvent *) {}
 void PlatformEventHandler::nativeEvent(const PlatformNativeEvent *) {}

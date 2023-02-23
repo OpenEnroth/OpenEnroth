@@ -9,7 +9,7 @@
 
 PlatformKey translateSdlKey(SDL_Scancode key);
 PlatformKey translateSdlGamepadButton(SDL_GameControllerButton button);
-std::pair<PlatformKey, PlatformKeyType> translateSdlGamepadAxis(SDL_GameControllerAxis axis, float value);
+PlatformKey translateSdlGamepadAxis(SDL_GameControllerAxis axis);
 PlatformModifiers translateSdlMods(uint16_t mods);
 PlatformMouseButton translateSdlMouseButton(uint8_t mouseButton);
 PlatformMouseButtons translateSdlMouseButtons(uint32_t mouseButtons);

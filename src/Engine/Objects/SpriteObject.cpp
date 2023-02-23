@@ -1038,11 +1038,11 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
                     v97 = (int16_t)pSpriteObjects[uLayingItemID].uSoundID + 4;
                 }
                 //            v125 =
-                //            word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].
+                //            word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
                 //            - 1] + 1; pAudioPlayer->PlaySound((SoundID)v125,
                 //            v124, 0, -1, 0, v97, 0, 0);
-                pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].uSpellID - 1,
-                                             PID(OBJECT_Item, uLayingItemID));
+                pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].uSpellID,
+                                             PID(OBJECT_Item, uLayingItemID), true);
                 return 0;
             }
             pSpriteObjects[uLayingItemID].uType = (SPRITE_OBJECT_TYPE)(pSpriteObjects[uLayingItemID].uType + 1);
@@ -1106,7 +1106,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
                 //            + 1; pAudioPlayer->PlaySound((SoundID)v125, v124,
                 //            0, -1, 0, v16, 0, 0);
                 pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].uSpellID,
-                                             PID(OBJECT_Item, uLayingItemID));
+                                             PID(OBJECT_Item, uLayingItemID), true);
                 return 0;
             }
             pSpriteObjects[uLayingItemID].uType = SPRITE_OBJECT_EXPLODE;
@@ -1190,8 +1190,8 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
             //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
             //        - 1] + 1; pAudioPlayer->PlaySound((SoundID)v125, v124, 0,
             //        -1, 0, v97, 0, 0);
-            pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].uSpellID,
-                                         PID(OBJECT_Item, uLayingItemID));
+            pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].master,
+                                         PID(OBJECT_Item, uLayingItemID), true);
             return 0;
         }
 
@@ -1239,7 +1239,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
             //        - 1] + 1; pAudioPlayer->PlaySound((SoundID)v125, v124, 0,
             //        -1, 0, v16, 0, 0);
             pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].uSpellID,
-                                         PID(OBJECT_Item, uLayingItemID));
+                                         PID(OBJECT_Item, uLayingItemID), true);
             return 0;
         }
 
@@ -1265,7 +1265,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
             //        - 1] + 1; pAudioPlayer->PlaySound((SoundID)v125, v124, 0,
             //        -1, 0, v16, 0, 0);
             pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].uSpellID,
-                                         PID(OBJECT_Item, uLayingItemID));
+                                         PID(OBJECT_Item, uLayingItemID), true);
             return 0;
         }
 
@@ -1297,7 +1297,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
             //        pSpriteObjects[uLayingItemID].vPosition.x, 0, -1, 0, v78,
             //        0, 0);
             pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].uSpellID,
-                                         PID(OBJECT_Item, uLayingItemID));
+                                         PID(OBJECT_Item, uLayingItemID), true);
             return 0;
         }
 
@@ -1329,7 +1329,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
             //        - 1] + 1; pAudioPlayer->PlaySound((SoundID)v125, v124, 0,
             //        -1, 0, v16, 0, 0);
             pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].uSpellID,
-                                         PID(OBJECT_Item, uLayingItemID));
+                                         PID(OBJECT_Item, uLayingItemID), true);
             return 0;
         }
 
@@ -1359,7 +1359,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
             //        pSpriteObjects[uLayingItemID].vPosition.x, 0, -1, 0, v78,
             //        0, 0);
             pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].uSpellID,
-                                         PID(OBJECT_Item, uLayingItemID));
+                                         PID(OBJECT_Item, uLayingItemID), true);
             return 0;
         }
 
@@ -1390,7 +1390,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
             //        - 1] + 1; pAudioPlayer->PlaySound((SoundID)v125, v124, 0,
             //        -1, 0, v97, 0, 0);
             pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].uSpellID,
-                                         PID(OBJECT_Item, uLayingItemID));
+                                         PID(OBJECT_Item, uLayingItemID), true);
             return 0;
         }
 
@@ -1419,27 +1419,27 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
             //        - 1] + 1; pAudioPlayer->PlaySound((SoundID)v125, v124, 0,
             //        -1, 0, v97, 0, 0);
             pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].uSpellID,
-                                         PID(OBJECT_Item, uLayingItemID));
+                                         PID(OBJECT_Item, uLayingItemID), true);
             return 0;
         }
 
         case SPRITE_SPELL_MIND_CHARM:
         case SPRITE_SPELL_LIGHT_PARALYZE:
-        case SPRITE_SPELL_DARK_SHRINKING_RAY: {
-            int v143 = 17030;
-            switch (pSpriteObjects[uLayingItemID].uType) {
-                case SPRITE_SPELL_MIND_CHARM:
-                    v143 = 15040;
-                    break;
-                case SPRITE_SPELL_EARTH_SLOW:
-                    v143 = 13010;
-                    break;
-                case SPRITE_SPELL_DARK_SHRINKING_RAY:
-                    v143 = 18030;
-                    break;
-                default:
-                    break;
-            }
+        case SPRITE_SPELL_DARK_SHRINKING_RAY:  {
+            // int v143 = 17030;
+            // switch (pSpriteObjects[uLayingItemID].uType) {
+            //     case SPRITE_SPELL_MIND_CHARM:
+            //         v143 = 15040;
+            //         break;
+            //     case SPRITE_SPELL_EARTH_SLOW:
+            //         v143 = 13010;
+            //         break;
+            //     case SPRITE_SPELL_DARK_SHRINKING_RAY:
+            //         v143 = 18030;
+            //         break;
+            //     default:
+            //         break;
+            // }
             v138 = 1;
             if (PID_TYPE(pid) != OBJECT_Actor) {
                 if (pSpriteObjects[uLayingItemID].uType != SPRITE_SPELL_DARK_SHRINKING_RAY ||
@@ -1468,8 +1468,8 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
                     //                v125 = v143 + 1;
                     //                pAudioPlayer->PlaySound((SoundID)v125,
                     //                v115, 0, -1, 0, v114, 0, 0);
-                    pAudioPlayer->PlaySpellSound(v143 + 1,
-                                                 PID(OBJECT_Item, uLayingItemID));
+                    pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].spell_id,
+                                                 PID(OBJECT_Item, uLayingItemID), true);
                 } else {
                     SpriteObject::OnInteraction(uLayingItemID);
                 }
@@ -1544,8 +1544,8 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
                 //            v125 = v143 + 1;
                 //            pAudioPlayer->PlaySound((SoundID)v125, v115, 0,
                 //            -1, 0, v114, 0, 0);
-                pAudioPlayer->PlaySpellSound(v143 + 1,
-                                             PID(OBJECT_Item, uLayingItemID));
+                pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].spell_id,
+                                             PID(OBJECT_Item, uLayingItemID), true);
             } else {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
@@ -1574,7 +1574,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
             //        - 1] + 1; pAudioPlayer->PlaySound((SoundID)v125, v124, 0,
             //        -1, 0, v97, 0, 0);
             pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].uSpellID,
-                                         PID(OBJECT_Item, uLayingItemID));
+                                         PID(OBJECT_Item, uLayingItemID), true);
             return 0;
         }
 
@@ -1657,7 +1657,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
             //        - 1] + 1; pAudioPlayer->PlaySound((SoundID)v125, v102, 0,
             //        -1, 0, v47, 0, 0);
             pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].uSpellID,
-                                         PID(OBJECT_Item, uLayingItemID));
+                                         PID(OBJECT_Item, uLayingItemID), true);
             return 0;
         }
 

@@ -31,7 +31,10 @@ class PlatformEventFilter {
     virtual bool resizeEvent(const PlatformResizeEvent *event);
     virtual bool activationEvent(const PlatformWindowEvent *event);
     virtual bool closeEvent(const PlatformWindowEvent *event);
-    virtual bool gamepadDeviceEvent(const PlatformGamepadDeviceEvent *event);
+    virtual bool gamepadConnectionEvent(const PlatformGamepadEvent *event);
+    virtual bool gamepadKeyPressEvent(const PlatformGamepadKeyEvent *event);
+    virtual bool gamepadKeyReleaseEvent(const PlatformGamepadKeyEvent *event);
+    virtual bool gamepadAxisEvent(const PlatformGamepadAxisEvent *event);
     virtual bool nativeEvent(const PlatformNativeEvent *event);
 
  private:

@@ -1,15 +1,93 @@
 #include "Testing/Game/GameTest.h"
 
-#include "GUI/GUIWindow.h"
 #include "Arcomage/Arcomage.h"
 
+#include "GUI/GUIWindow.h"
+#include "GUI/GUIProgressBar.h"
+
 #include "Engine/Objects/ItemTable.h"
+#include "Engine/SaveLoad.h"
+
+#include "Utility/DataPath.h"
+#include "Utility/ScopeGuard.h"
 
 GAME_TEST(Items, GenerateItem) {
     // Calling GenerateItem 100 times shouldn't assert.
     ItemGen item;
     for (int i = 0; i < 100; i++)
         pItemTable->GenerateItem(ITEM_TREASURE_LEVEL_6, 0, &item);
+}
+
+GAME_TEST(Issues, Issue163) {
+    // Testing that pressing the Load Game button doesn't crash even if the 'saves' folder doesn't exist.
+    std::string savesDir = MakeDataPath("saves");
+    std::string savesDirMoved;
+
+    MM_AT_SCOPE_EXIT({
+        if (!savesDirMoved.empty()) {
+            std::error_code ec;
+            std::filesystem::rename(savesDirMoved, savesDir, ec); // Using std::error_code here, so can't throw.
+        }
+    });
+
+    if (std::filesystem::exists(savesDir)) {
+        savesDirMoved = savesDir + "_moved_for_testing";
+        ASSERT_FALSE(std::filesystem::exists(savesDirMoved)); // Throws on failure.
+        std::filesystem::rename(savesDir, savesDirMoved);
+    }
+
+    game->pressGuiButton("MainMenu_LoadGame"); // Shouldn't crash.
+    game->tick(10);
+    for (bool used : pSavegameUsedSlots)
+        EXPECT_FALSE(used); // All slots unused.
+
+    game->pressGuiButton("LoadMenu_Load");
+    game->tick(10);
+    EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_LOADGAME);
+    EXPECT_FALSE(pGameLoadingUI_ProgressBar->IsActive()); // Load button shouldn't do anything.
+}
+
+GAME_TEST(Issues, Issue198) {
+    // Check that items can't end up out of bounds of player's inventory.
+    test->playTraceFromTestData("issue_198.mm7", "issue_198.json");
+
+    auto forEachInventoryItem = [](auto &&callback) {
+        for (const Player &player : pParty->pPlayers) {
+            for (int inventorySlot = 0; inventorySlot < Player::INVENTORY_SLOT_COUNT; inventorySlot++) {
+                int itemIndex = player.pInventoryMatrix[inventorySlot];
+                if (itemIndex <= 0)
+                    continue; // Empty or non-primary cell.
+
+                int x = inventorySlot % Player::INVENTORY_SLOTS_WIDTH;
+                int y = inventorySlot / Player::INVENTORY_SLOTS_WIDTH;
+
+                callback(player.pInventoryItemList[itemIndex - 1], x, y);
+            }
+        }
+    };
+
+    // Preload item images in the main thread first.
+    game->runGameRoutine([&] {
+        forEachInventoryItem([] (const ItemGen &item, int /*x*/, int /*y*/) {
+            // Calling GetWidth forces the texture to be created.
+            assets->GetImage_ColorKey(pItemTable->pItems[item.uItemID].pIconName)->GetWidth();
+        });
+    });
+
+    // Then can safely check everything.
+    forEachInventoryItem([] (const ItemGen &item, int x, int y) {
+        Texture *image = assets->GetImage_ColorKey(pItemTable->pItems[item.uItemID].pIconName);
+        int width = GetSizeInInventorySlots(image->GetWidth());
+        int height = GetSizeInInventorySlots(image->GetHeight());
+
+        EXPECT_LE(x + width, Player::INVENTORY_SLOTS_WIDTH);
+        EXPECT_LE(y + height, Player::INVENTORY_SLOTS_HEIGHT);
+    });
+}
+
+GAME_TEST(Issues, Issue203) {
+    // Judge's "I lost it" shouldn't crash.
+    test->playTraceFromTestData("issue_203.mm7", "issue_203.json");
 }
 
 GAME_TEST(Prs, Pr314) {
@@ -134,4 +212,33 @@ GAME_TEST(Issues, Issue427) {
 
     // Check that all character have buffs
     check427Buffs("b", {0, 1, 2, 3}, true);
+}
+
+GAME_TEST(Issues, Issue125) {
+    // check that fireballs hurt party
+    auto partyHealth = [&] {
+        uint64_t result = 0;
+        for (const Player& player : pParty->pPlayers)
+            result += player.sHealth;
+        return result;
+    };
+
+    engine->config->debug.AllMagic.Set(true);
+
+    uint64_t oldHealth = 0;
+    test->playTraceFromTestData("issue_125.mm7", "issue_125.json", [&] { oldHealth = partyHealth(); });
+    uint64_t newHealth = partyHealth();
+    EXPECT_LT(newHealth, oldHealth);
+}
+
+GAME_TEST(Issues, Issue159) {
+    // Exception when entering Tidewater Caverns
+    test->playTraceFromTestData("issue_159.mm7", "issue_159.json");
+}
+
+GAME_TEST(Issue, Issue123) {
+    // Party falls when flying
+    test->playTraceFromTestData("issue_123.mm7", "issue_123.json");
+    // check party is still in the air
+    EXPECT_GT(pParty->vPosition.z, 512);
 }

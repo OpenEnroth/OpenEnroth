@@ -308,6 +308,7 @@ extern std::array<std::array<struct SpellBookIconPos, 12>, 9> pIconPos;
 extern IndexedArray<SPRITE_OBJECT_TYPE, SPELL_ANY_WITH_SPRITE_FIRST, SPELL_ANY_WITH_SPRITE_LAST> SpellSpriteMapping;  // 4E3ACC
 extern IndexedArray<SpellData, SPELL_REGULAR_FIRST, SPELL_REGULAR_LAST> pSpellDatas;
 extern IndexedArray<SPELL_TYPE, ITEM_FIRST_WAND, ITEM_LAST_WAND> WandSpellIds;
+extern std::array<uint16_t, SPELL_REGULAR_COUNT + 1> SpellSoundIds;
 
 int CalcSpellDamage(SPELL_TYPE uSpellID, PLAYER_SKILL_LEVEL spellLevel, PLAYER_SKILL_MASTERY skillMastery, int currentHp);
 bool IsSpellQuickCastableOnShiftClick(SPELL_TYPE uSpellID);

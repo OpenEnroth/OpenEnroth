@@ -46,6 +46,7 @@ class PlatformApplication {
     PlatformOpenGLContext *openGLContext();
     PlatformEventHandler *eventHandler();
 
+    // TODO(captainurist): rename plugin->component? the functionality here pretty much matches the ecs
     template<class T>
     void install(T *plugin) {
         installInternal(typeid(T), plugin);

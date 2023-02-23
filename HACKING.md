@@ -2,8 +2,10 @@
 
 This document describes the development process we're following. It's required reading for anyone intending to contribute.
 
+
 Dependencies
----------------
+------------
+
 Main dependencies:
 * [SDL2](https://www.libsdl.org/download-2.0.php) — crossplatform media framework;
 * [FFmpeg](https://ffmpeg.zeranoe.com/builds/) — video support;
@@ -12,22 +14,34 @@ Main dependencies:
 
 On Windows, the above dependencies are resolved automatically during the cmake phase.
 
+On Linux they are usually part of distribution and you only need to install the development versions of SDL2, ffmpeg, openal and zlib libraries. E.g. on Ubuntu:
+```bash
+sudo apt-get install ffmpeg ffmpeg-devel
+sudo apt-get install openal openal-devel
+sudo apt-get install zlib zlib-devel
+sudo apt-get install SDL2 SDL2-devel
+```
+
+On Mac you can install the dependencies from homebrew.
+
 Additional dependencies:
-* CMake 3.20.4+ (3.20.21032501-MSVC_2 from VS2019 won't work)
-* Python 3.x (optional, for style checks)
+* CMake 3.20.4+ (3.20.21032501-MSVC_2 from VS2019 won't work);
+* Python 3.x (optional, for style checks).
 
 Minimum required compiler versions are as follows:
-* Visual Studio 2022
-* GCC 11
-* Clang 13
+* Visual Studio 2022;
+* GCC 11;
+* Clang 13.
 
 The following IDEs have been tested and should work fine:
-* Visual Studio (2022 or later)
-* Visual Studio Code (2022 or later)
-* CLion (2022 or later)
+* Visual Studio (2022 or later);
+* Visual Studio Code (2022 or later);
+* CLion (2022 or later).
+
 
 Building on \*nix platforms
----------------
+---------------------------
+
 This project uses the [CMake](https://cmake.org) build system.
 Use the following commands to clone repository and build (it is recommended to build in a separate directory as shown here):
 
@@ -43,18 +57,19 @@ For example instead of just `cmake ..` above execute `CFLAGS="-m32" CXXFLAGS="-m
 
 You can also select platform dependent [generator](https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html) for your favorite IDE.
 
-Building on Windows
----------------
 
-* Get git (`https://git-scm.com/download/win`) and Visual Studio 2022
-* Make sure you have Windows SDK v10.0.20348.0 or higher
-* Clone, fork or download the repo `https://github.com/OpenEnroth/OpenEnroth`
+Building on Windows
+-------------------
+
+* Get git (`https://git-scm.com/download/win`) and Visual Studio 2022.
+* Make sure you have Windows SDK v10.0.20348.0 or higher.
+* Clone, fork or download the repo `https://github.com/OpenEnroth/OpenEnroth`.
 * Setup Cmake:
   * either install standalone cmake from the official website,
-  * or add Microsoft one (that's coming with the VS installation) to your PATH environment variable (e.g `c:\Program Files\Microsoft Visual Studio\2022\<edition>\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin`) 
-* Open the folder in Visual Studio
-* Select build configuration (x32 or x64) and wait for CMake configuration to complete
-* Select startup item as `OpenEnroth.exe`
+  * or add Microsoft one (that's coming with the VS installation) to your PATH environment variable (e.g `c:\Program Files\Microsoft Visual Studio\2022\<edition>\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin`). 
+* Open the folder in Visual Studio.
+* Select build configuration (x32 or x64) and wait for CMake configuration to complete.
+* Select startup item as `OpenEnroth.exe`.
 * Run!
 
 If you wish you can also disable autoresolving main dependencies by turning off `PREBUILT_DEPENDENCIES` cmake option and pass your own dependencies source, e.g. via [vcpkg](https://github.com/microsoft/vcpkg) integration.
@@ -62,19 +77,10 @@ If you wish you can also disable autoresolving main dependencies by turning off 
 __Be aware__ that Visual Studio has a bug with git submodules not syncing between branches.
 So when checking out the branch or switching to different branch you may need to run the following command manually: `git submodule update --init`
 
-Project Resources
----------------
-The Git repo contains some additional resources required for the engine to run.
-Please copy the entire 'shaders' folder from the 'resources' subdirectory to the location of the game assets.
-Please check the logger output for the required path if you are unsure.
-
-Support
----------------
-Still having problems? Ask for help on our discord! [![](https://img.shields.io/badge/chat-on%20discord-green.svg)](https://discord.gg/jRCyPtq)
-
 
 Coding style
----------------
+------------
+
 For the C++ code we are following the [Google C++ Style Guide](http://google.github.io/styleguide/cppguide.html).\
 Source code is automatically checked against it and Pull Request will fail if you don't follow it.
 
@@ -108,6 +114,18 @@ Language features:
 
 There is a lot of code in the project that doesn't follow these conventions. Please feel free to fix it, preferably not mixing up style and logical changes in the same PR.
 
+
+Code Organization
+-----------------
+
+OpenEnroth code is broken up as follows:
+* `thirdparty` – this is where all external libraries go.
+* `Utility` – generic utility classes and functions go here. Utility classes should be domain-independent (e.g. should make sense in a context of some other project) and should depend only on `thirdparty` libraries.
+* `Platform` – our platform abstraction layer on top of SDL. Platform classes should also be reasonably domain-independent and should depend only on `Utility`.
+* `Library` – collection of independent libraries that the engine is built on top of. Code here can depend on `Utility`, `Platform`, and other libraries in `Library`.
+* The rest of the code is currently pretty tangled with each part depending on each other. This document will be updated once we have some progress there.
+
+
 Testing
 -------
 We strive for a good test coverage of the project, and while we're not there yet, the current policy is to add tests for all the bugs we fix, as long as the fix is testable. E.g. graphical glitches are generally very hard to test, but we have the infractructure to test game logic and small isolated classes.
@@ -140,4 +158,10 @@ Note that if you can't find either `UnitTest` or `GameTest` target in the target
 Additional Resources
 --------------------
 
-Old event decompiler and IDB files can be found [here](https://www.dropbox.com/sh/if4u3lphn633oit/AADUYMxNcrkAU6epJ50RskyXa?dl=0). Feel free to ping `zipi#6029` for more info.
+Old event decompiler and IDB files can be found [here](https://www.dropbox.com/sh/if4u3lphn633oit/AADUYMxNcrkAU6epJ50RskyXa?dl=0). Feel free to ping `zipi#6029` on Discord for more info.
+
+
+Support
+-------
+
+Still having problems? Ask for help on our discord! [![](https://img.shields.io/badge/chat-on%20discord-green.svg)](https://discord.gg/jRCyPtq)

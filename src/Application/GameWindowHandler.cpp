@@ -26,6 +26,8 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
+#include "Utility/Format.h"
+
 #include "IocContainer.h"
 
 
@@ -310,7 +312,8 @@ void GameWindowHandler::OnKey(PlatformKey key) {
     } else {
         pMediaPlayer->StopMovie();
         if (keyboardActionMapping->IsKeyMatchAction(InputAction::Return, key)) {
-            if (!viewparams->field_4C) UI_OnKeyDown(key);
+            if (!viewparams->field_4C)
+                UI_OnKeyDown(key);
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::Escape, key)) {
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, window_SpeakInHouse != 0, 0);
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleFullscreen, key) && !pMovie_Track) {
@@ -474,25 +477,32 @@ void GameWindowHandler::OnMouseGrabToggle() {
     window->setGrabsMouse(engine->config->window.MouseGrab.Toggle());
 }
 
-bool GameWindowHandler::keyPressEvent(const PlatformKeyEvent *event) {
-    keyboardController_->ProcessKeyPressEvent(event);
+void GameWindowHandler::handleKeyPress(PlatformKey key, PlatformModifiers mods, bool isAutoRepeat) {
+    keyboardController_->ProcessKeyPressEvent(key);
 
-    if (event->isAutoRepeat)
-        return false;
+    if (isAutoRepeat)
+        return;
 
-    PlatformKey key = event->key;
-    char c = PlatformKeyToChar(key, event->mods);
+    char c = PlatformKeyToChar(key, mods);
 
     OnChar(key, -1);
     OnKey(key);
 
     if (c != 0)
         OnChar(key, c);
+}
+
+void GameWindowHandler::handleKeyRelease(PlatformKey key) {
+    keyboardController_->ProcessKeyReleaseEvent(key);
+}
+
+bool GameWindowHandler::keyPressEvent(const PlatformKeyEvent *event) {
+    handleKeyPress(event->key, event->mods, event->isAutoRepeat);
     return false;
 }
 
 bool GameWindowHandler::keyReleaseEvent(const PlatformKeyEvent *event) {
-    keyboardController_->ProcessKeyReleaseEvent(event);
+    handleKeyRelease(event->key);
     return false;
 }
 
@@ -566,38 +576,48 @@ bool GameWindowHandler::closeEvent(const PlatformWindowEvent *event) {
     return false;
 }
 
-bool GameWindowHandler::gamepadDeviceEvent(const PlatformGamepadDeviceEvent *event) {
-    if (event->type == EVENT_GAMEPAD_CONNECTED) {
-        gamepads_[event->id] = platform->createGamepad(event->id);
-        if (gamepads_[event->id]) {
-            PlatformGamepad *gamepad = gamepads_[event->id].get();
-            std::string message = "gamepad #" + std::to_string(event->id) + " connected";
+bool GameWindowHandler::gamepadConnectionEvent(const PlatformGamepadEvent *event) {
+    std::string message = fmt::format("Gamepad {}, model='{}', serial='{}'",
+                                      event->type == EVENT_GAMEPAD_CONNECTED ? "connected" : "disconnected",
+                                      event->gamepad->model(), event->gamepad->serial());
+    logger->Info("%s", message.c_str());
+    return false;
+}
 
-            std::string model = gamepad->model();
-            if (!model.empty())
-                message += ", model: " + model;
+bool GameWindowHandler::gamepadKeyPressEvent(const PlatformGamepadKeyEvent *event) {
+    handleKeyPress(event->key, 0, false);
+    return false;
+}
 
-            std::string serial = gamepad->serial();
-            if (!serial.empty())
-                message += ", serial: " + serial;
+bool GameWindowHandler::gamepadKeyReleaseEvent(const PlatformGamepadKeyEvent *event) {
+    handleKeyRelease(event->key);
+    return false;
+}
 
-            logger->Info(message.c_str());
-            return false;
+bool GameWindowHandler::gamepadAxisEvent(const PlatformGamepadAxisEvent *event) {
+    PlatformKey key = event->axis;
+    float value = event->value;
+
+    // TODO(captainurist): this is temporary, we need separate axis enum and proper axis handling
+    if (value < 0) {
+        if (key == PlatformKey::Gamepad_LeftStick_Right) {
+            key = PlatformKey::Gamepad_LeftStick_Left;
+        } else if (key == PlatformKey::Gamepad_RightStick_Right) {
+            key = PlatformKey::Gamepad_RightStick_Left;
+        } else if (key == PlatformKey::Gamepad_LeftStick_Down) {
+            key = PlatformKey::Gamepad_LeftStick_Up;
+        } else if (key == PlatformKey::Gamepad_RightStick_Down) {
+            key = PlatformKey::Gamepad_RightStick_Up;
         }
 
-        logger->Warning("gamepad #%d initialization failed", event->id);
-    } else if (event->type == EVENT_GAMEPAD_DISCONNECTED) {
-        for (auto it = gamepads_.begin(); it != gamepads_.end(); it++) {
-            PlatformGamepad *gamepad = it->second.get();
+        value = -value;
+    }
 
-            if (gamepad->id() == event->id) {
-                gamepads_.erase(it);
-                logger->Info("gamepad #%d disconnected", event->id);
-                return false;
-            }
-        }
-
-        logger->Warning("gamepad #%d disconnection failed", event->id);
+    // TODO: deadzone should be configurable and default should be lowered once we implement proper axis event processing.
+    if (value >= 0.5) {
+        handleKeyPress(key, 0, false);
+    } else {
+        handleKeyRelease(key);
     }
 
     return false;

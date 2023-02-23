@@ -3,13 +3,19 @@
 #include <string>
 #include <memory>
 
-// TODO(captainurist): this should be just a POD
 class PlatformGamepad {
  public:
     virtual ~PlatformGamepad() = default;
 
-    virtual std::string model() const = 0;
-    virtual std::string serial() const = 0;
+    // TODO(captainurist): add rumble methods here!
 
-    virtual uint32_t id() const = 0;
+    /**
+     * @return                          Model of this gamepad.
+     */
+    virtual std::string model() const = 0;
+
+    /**
+     * @return                          Serial number of this gamepad.
+     */
+    virtual std::string serial() const = 0;
 };

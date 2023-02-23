@@ -8,25 +8,63 @@ Currently only MM7 is playable. You can check out the [milestones](https://githu
 
 ![screenshot_main](https://user-images.githubusercontent.com/24377109/79051217-491a7800-7c2f-11ea-85c7-f9120b7d79dd.png)
 
+
 Discord
----------------
+-------
+
 Join our discord channel to discuss, track progress or get involved in the development of this project.
 
 [![Discord channel invite](https://img.shields.io/badge/chat-on%20discord-green.svg)](https://discord.gg/jRCyPtq) 
 
-Getting Started
----------------
-1. You will require a GoG or any older version of Might and Magic 7 installed for engine to guess game assets folder. You can override assets/game path by using `OPENENROTH_MM7_PATH` env variable.
-2. Copy OpenEnroth-specific resources from the 'resources' folder of the repo to the game assets folder.
-3. Use any IDE with CMake integration.
-4. Build & run the OpenEnroth cmake target.
+
+Getting Started on Windows
+--------------------------
+
+1. You will need a GoG or any other version of Might and Magic VII. Just run the installer and install the game into default location.
+
+2. Build OpenEnroth as described in [HACKING.md](HACKING.md). Alternatively, you can ask for a prebuilt binary on Discord.
+
+3. Copy OpenEnroth-specific resources from the `resources` folder of the repo to the folder where the game was installed:
+
+    `xcopy "resources\shaders" "C:\Program Files (x86)\GOG Galaxy\Games\Might and Magic 7"`
+
+   Or just use your mouse like a good Windows user.
+
+4. It is recommended to set `OPENENROTH_MM7_PATH` env variable to point to the game installation folder. OpenEnroth might work by reading the paths from registry, but this is not guaranteed.
+
+5. Run the freshly built `OpenEnroth.exe` binary. If you forget to copy content of `resources` subfolder, or if `OPENENROTH_MM7_PATH` points into the wrong folder, you will see errors in the console.
+
+
+Getting Started on Linux or Mac
+-------------------------------
+
+1. You will need a GoG or any other version of Might and Magic VII. If you have an offline GoG installer, then follow these steps:
+   * Install `innoextract`. If you're on Ubuntu, `sudo apt-get install innoextract` should work. If you're on Mac then you'll need homebrew, and `brew install innoextract` should do the job.
+   * Run `innoextract -e -d <target-folder> <mm7-gog-folder>/setup_mm_7.exe`, where `<target-folder>` is the folder where you want to have game data extracted from the mm7 installer.
+   * Check the files in `<target-folder>`, it should now contain the `app` subfolder. This is where game assets were extracted into.
+
+2. Build OpenEnroth as described in [HACKING.md](HACKING.md).
+
+3. Copy OpenEnroth-specific resources from the `resources` folder of the repo to the folder where the game assets were extracted to:
+
+    `cp -rv resources/shaders <target-folder>/app`
+
+4. Set `OPENENROTH_MM7_PATH` env variable to point to the location of the game assets. You might also want to add the following line to your bash profile (e.g. `~/.profile` on Ubuntu or `~/.zshrc` on Mac):
+
+    `export OPENENROTH_MM7_PATH="<target-folder>/app"`
+
+5. Run the freshly built `OpenEnroth` binary.
+
 
 Development
----------------
+-----------
+
 See the [HACKING](HACKING.md) document for information on how to compile or if you intend to contribute.
 
+
 Screenshots
----------------
+-----------
+
 ![screenshot_1](https://user-images.githubusercontent.com/24377109/79051879-f04cde80-7c32-11ea-939d-1dcc97b46f5d.png)
 
 ![screenshot_2](https://user-images.githubusercontent.com/24377109/79051881-f17e0b80-7c32-11ea-82cd-5e4993a1c071.png)
