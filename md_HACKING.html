@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;51a0f83</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6be2729</span>
    </div>
   </td>
  </tr>
@@ -88,18 +88,18 @@ Dependencies</h1>
 <div class="line">sudo apt-get install SDL2 SDL2-devel</div>
 </div><!-- fragment --><p >On Mac you can install the dependencies from homebrew.</p>
 <p >Additional dependencies:</p><ul>
-<li>CMake 3.20.4+ (3.20.21032501-MSVC_2 from VS2019 won't work)</li>
-<li>Python 3.x (optional, for style checks)</li>
+<li>CMake 3.20.4+ (3.20.21032501-MSVC_2 from VS2019 won't work);</li>
+<li>Python 3.x (optional, for style checks).</li>
 </ul>
 <p >Minimum required compiler versions are as follows:</p><ul>
-<li>Visual Studio 2022</li>
-<li>GCC 11</li>
-<li>Clang 13</li>
+<li>Visual Studio 2022;</li>
+<li>GCC 11;</li>
+<li>Clang 13.</li>
 </ul>
 <p >The following IDEs have been tested and should work fine:</p><ul>
-<li>Visual Studio (2022 or later)</li>
-<li>Visual Studio Code (2022 or later)</li>
-<li>CLion (2022 or later)</li>
+<li>Visual Studio (2022 or later);</li>
+<li>Visual Studio Code (2022 or later);</li>
+<li>CLion (2022 or later).</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md2"></a>
 Building on *nix platforms</h1>
@@ -113,28 +113,22 @@ Building on *nix platforms</h1>
 <h1><a class="anchor" id="autotoc_md3"></a>
 Building on Windows</h1>
 <ul>
-<li>Get git (<code><a href="https://git-scm.com/download/win">https://git-scm.com/download/win</a></code>) and Visual Studio 2022</li>
-<li>Make sure you have Windows SDK v10.0.20348.0 or higher</li>
-<li>Clone, fork or download the repo <code><a href="https://github.com/OpenEnroth/OpenEnroth">https://github.com/OpenEnroth/OpenEnroth</a></code></li>
+<li>Get git (<code><a href="https://git-scm.com/download/win">https://git-scm.com/download/win</a></code>) and Visual Studio 2022.</li>
+<li>Make sure you have Windows SDK v10.0.20348.0 or higher.</li>
+<li>Clone, fork or download the repo <code><a href="https://github.com/OpenEnroth/OpenEnroth">https://github.com/OpenEnroth/OpenEnroth</a></code>.</li>
 <li>Setup Cmake:<ul>
 <li>either install standalone cmake from the official website,</li>
-<li>or add Microsoft one (that's coming with the VS installation) to your PATH environment variable (e.g <code>c:\Program Files\Microsoft Visual Studio\2022\&lt;edition&gt;\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin</code>)</li>
+<li>or add Microsoft one (that's coming with the VS installation) to your PATH environment variable (e.g <code>c:\Program Files\Microsoft Visual Studio\2022\&lt;edition&gt;\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin</code>).</li>
 </ul>
 </li>
-<li>Open the folder in Visual Studio</li>
-<li>Select build configuration (x32 or x64) and wait for CMake configuration to complete</li>
-<li>Select startup item as <code>OpenEnroth.exe</code></li>
+<li>Open the folder in Visual Studio.</li>
+<li>Select build configuration (x32 or x64) and wait for CMake configuration to complete.</li>
+<li>Select startup item as <code>OpenEnroth.exe</code>.</li>
 <li>Run!</li>
 </ul>
 <p >If you wish you can also disable autoresolving main dependencies by turning off <code>PREBUILT_DEPENDENCIES</code> cmake option and pass your own dependencies source, e.g. via <a href="https://github.com/microsoft/vcpkg">vcpkg</a> integration.</p>
 <p ><b>Be aware</b> that Visual Studio has a bug with git submodules not syncing between branches. So when checking out the branch or switching to different branch you may need to run the following command manually: <code>git submodule update --init</code></p>
 <h1><a class="anchor" id="autotoc_md4"></a>
-Project Resources</h1>
-<p >The Git repo contains some additional resources required for the engine to run. Please copy the entire 'shaders' folder from the 'resources' subdirectory to the location of the game assets. Please check the logger output for the required path if you are unsure.</p>
-<h1><a class="anchor" id="autotoc_md5"></a>
-Support</h1>
-<p >Still having problems? Ask for help on our discord! <a href="https://discord.gg/jRCyPtq"><img src="https://img.shields.io/badge/chat-on%20discord-green.svg" alt="" style="pointer-events: none;" class="inline"/></a></p>
-<h1><a class="anchor" id="autotoc_md6"></a>
 Coding style</h1>
 <p >For the C++ code we are following the <a href="http://google.github.io/styleguide/cppguide.html">Google C++ Style Guide</a>.\ Source code is automatically checked against it and Pull Request will fail if you don't follow it.</p>
 <p >To perform style check before pushing anything you can build <code>check_style</code> target. In Visual Studio you can do that by going to <em><b>Solution Explorer → Change Views → CMake targets</b></em>. Right click and build <code>check_style</code>, errors will be listed in output.</p>
@@ -164,7 +158,16 @@ Coding style</h1>
 <li>Make your code speak for itself when it comes to ownership. If a function takes ownership of one of its parameters, it should take <code>std::unique_ptr</code> by value. If it allocates its result and passes ownership to the caller, then it should return <code>std::unique_ptr</code>.</li>
 </ul>
 <p >There is a lot of code in the project that doesn't follow these conventions. Please feel free to fix it, preferably not mixing up style and logical changes in the same PR.</p>
-<h1><a class="anchor" id="autotoc_md7"></a>
+<h1><a class="anchor" id="autotoc_md5"></a>
+Code Organization</h1>
+<p >OpenEnroth code is broken up as follows:</p><ul>
+<li><code>thirdparty</code> – this is where all external libraries go.</li>
+<li><code>Utility</code> – generic utility classes and functions go here. Utility classes should be domain-independent (e.g. should make sense in a context of some other project) and should depend only on <code>thirdparty</code> libraries.</li>
+<li><code><a class="el" href="classPlatform.html">Platform</a></code> – our platform abstraction layer on top of SDL. <a class="el" href="classPlatform.html">Platform</a> classes should also be reasonably domain-independent and should depend only on <code>Utility</code>.</li>
+<li><code>Library</code> – collection of independent libraries that the engine is built on top of. Code here can depend on <code>Utility</code>, <code><a class="el" href="classPlatform.html">Platform</a></code>, and other libraries in <code>Library</code>.</li>
+<li>The rest of the code is currently pretty tangled with each part depending on each other. This document will be updated once we have some progress there.</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md6"></a>
 Testing</h1>
 <p >We strive for a good test coverage of the project, and while we're not there yet, the current policy is to add tests for all the bugs we fix, as long as the fix is testable. E.g. graphical glitches are generally very hard to test, but we have the infractructure to test game logic and small isolated classes.</p>
 <p >Tests are not built by default, and you will need to set <code>ENABLE_TESTS</code> cmake variable to be able to build them. You can either use your IDE for that, or just run <code>cmake</code> with <code>-DENABLE_TESTS=ON</code> from the command line.</p>
@@ -186,9 +189,12 @@ Testing</h1>
 <p >To run all unit tests locally, build a <code>UnitTest</code> cmake target, or build &amp; run <code>OpenEnroth_UnitTest</code>.</p>
 <p >To run all game tests locally, set <code>OPENENROTH_MM7_PATH</code> environment variable to point to the location of the game assets, then build <code><a class="el" href="classGameTest.html">GameTest</a></code> cmake target. Alternatively, you can build <code>OpenEnroth_GameTest</code>, and run it manually, passing the paths to both game assets and the test data via command line.</p>
 <p >Note that if you can't find either <code>UnitTest</code> or <code><a class="el" href="classGameTest.html">GameTest</a></code> target in the target list of your IDE, this likely means that you haven't set the <code>ENABLE_TESTS</code> cmake variable as described above.</p>
-<h1><a class="anchor" id="autotoc_md8"></a>
+<h1><a class="anchor" id="autotoc_md7"></a>
 Additional Resources</h1>
-<p >Old event decompiler and IDB files can be found <a href="https://www.dropbox.com/sh/if4u3lphn633oit/AADUYMxNcrkAU6epJ50RskyXa?dl=0">here</a>. Feel free to ping <code>zipi#6029</code> for more info. </p>
+<p >Old event decompiler and IDB files can be found <a href="https://www.dropbox.com/sh/if4u3lphn633oit/AADUYMxNcrkAU6epJ50RskyXa?dl=0">here</a>. Feel free to ping <code>zipi#6029</code> on Discord for more info.</p>
+<h1><a class="anchor" id="autotoc_md8"></a>
+Support</h1>
+<p >Still having problems? Ask for help on our discord! <a href="https://discord.gg/jRCyPtq"><img src="https://img.shields.io/badge/chat-on%20discord-green.svg" alt="" style="pointer-events: none;" class="inline"/></a> </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 <!-- start footer part -->
