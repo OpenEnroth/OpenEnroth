@@ -1190,7 +1190,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
             //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
             //        - 1] + 1; pAudioPlayer->PlaySound((SoundID)v125, v124, 0,
             //        -1, 0, v97, 0, 0);
-            pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].master,
+            pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].uSpellID,
                                          PID(OBJECT_Item, uLayingItemID), true);
             return 0;
         }
