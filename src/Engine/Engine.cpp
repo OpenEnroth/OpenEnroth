@@ -281,13 +281,15 @@ void Engine::DrawGUI() {
 
 
         int debug_info_offset = 0;
-        if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-            int sector_id = pBLVRenderParams->uPartySectorID;
-            pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset + 16}, colorTable.White.C16(),
-                StringPrintf("Party Sector ID:        %u/%zu\n", sector_id, pIndoor->pSectors.size()), 0, 0, 0);
-        }
         pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset + 16}, colorTable.White.C16(),
             StringPrintf("Party position:         % d % d % d", pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z), 0, 0, 0);
+
+        if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+            debug_info_offset += 16;
+            int sector_id = pBLVRenderParams->uPartySectorID;
+            pPrimaryWindow->DrawText(pFontArrus, { 16, debug_info_offset + 16 }, colorTable.White.C16(),
+                StringPrintf("Party Sector ID:        %u/%zu\n", sector_id, pIndoor->pSectors.size()), 0, 0, 0);
+        }
 
         std::string floor_level_str;
 
@@ -297,8 +299,7 @@ void Engine::DrawGUI() {
             uint uFaceID;
             int sector_id = pBLVRenderParams->uPartySectorID;
             int floor_level = BLV_GetFloorLevel(pParty->vPosition/* + Vec3i(0,0,40) */, sector_id, &uFaceID);
-            floor_level_str = StringPrintf(
-                "BLV_GetFloorLevel: %d   face_id %d\n", floor_level, uFaceID);
+            floor_level_str = StringPrintf("BLV_GetFloorLevel: %d   face_id %d\n", floor_level, uFaceID);
         } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
             bool on_water = false;
             int bmodel_pid;
@@ -782,7 +783,7 @@ void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
     pEventTimer->Pause();
     pMiscTimer->Pause();
     pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
-    CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress();
+    CastSpellInfoHelpers::cancelSpellCastInProgress();
     engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     DoPrepareWorld(false, (_0_box_loading_1_fullscreen == 0) + 1);
     pMiscTimer->Resume();
@@ -1838,7 +1839,7 @@ void RegeneratePartyHealthMana() {
             spellSprite.spell_level = pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].uPower;
             spellSprite.spell_skill = pParty->ImmolationSkillLevel();
             spellSprite.uType = SPRITE_SPELL_FIRE_IMMOLATION;
-            spellSprite.spell_id = SPELL_FIRE_IMMOLATION;
+            spellSprite.uSpellID = SPELL_FIRE_IMMOLATION;
             spellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(SpellSpriteMapping[SPELL_FIRE_IMMOLATION]);
             spellSprite.field_60_distance_related_prolly_lod = 0;
             spellSprite.uAttributes = 0;

@@ -128,7 +128,7 @@ bool Chest::Open(int uChestID) {
             pSpellObject.containing_item.Reset();
             pSpellObject.spell_skill = PLAYER_SKILL_MASTERY_NONE;
             pSpellObject.spell_level = 0;
-            pSpellObject.spell_id = 0;
+            pSpellObject.uSpellID = SPELL_NONE;
             pSpellObject.field_54 = 0;
             pSpellObject.uType = pSpriteID[pRandom];
             pSpellObject.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellObject.uType);

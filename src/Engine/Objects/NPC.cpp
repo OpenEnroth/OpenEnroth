@@ -1286,13 +1286,13 @@ int UseNPCSkill(NPCProf profession) {
         } break;
 
         case Acolyte:
-            _42777D_CastSpell_UseWand_ShootArrow(SPELL_SPIRIT_BLESS, 0, 133, 0, 0);
+            pushNPCSpell(SPELL_SPIRIT_BLESS);
             break;
         case Piper:
-            _42777D_CastSpell_UseWand_ShootArrow(SPELL_SPIRIT_HEROISM, 0, 133, 0, 0);
+            pushNPCSpell(SPELL_SPIRIT_HEROISM);
             break;
         case FallenWizard:
-            _42777D_CastSpell_UseWand_ShootArrow(SPELL_LIGHT_HOUR_OF_POWER, 0, 133, 0, 0);
+            pushNPCSpell(SPELL_LIGHT_HOUR_OF_POWER);
             break;
 
         case Teacher:

@@ -98,9 +98,6 @@ void EngineController::pressGuiButton(std::string_view buttonId) {
 }
 
 void EngineController::goToMainMenu() {
-    if (GetCurrentMenuID() == MENU_MAIN)
-        return;
-
     assert(!pArcomageGame->bGameInProgress); // Going from Arcomage to main menu is not implemented yet.
 
     if (current_screen_type == CURRENT_SCREEN::SCREEN_SPELL_BOOK) {
@@ -117,6 +114,14 @@ void EngineController::goToMainMenu() {
         pressAndReleaseKey(PlatformKey::Escape);
         tick(1);
     }
+
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_LOADGAME) {
+        pressAndReleaseKey(PlatformKey::Escape);
+        tick(1);
+    }
+
+    if (GetCurrentMenuID() == MENU_MAIN)
+        return;
 
     if (GetCurrentMenuID() == MENU_CREATEPARTY) {
         pressAndReleaseKey(PlatformKey::Escape);

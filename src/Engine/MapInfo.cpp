@@ -304,7 +304,7 @@ void MapInfo::SpawnRandomTreasure(SpawnPoint *a2) {
     a1a.vPosition.x = a2->vPosition.x;
     a1a.spell_skill = PLAYER_SKILL_MASTERY_NONE;
     a1a.spell_level = 0;
-    a1a.spell_id = 0;
+    a1a.uSpellID = SPELL_NONE;
     a1a.spell_target_pid = 0;
     a1a.spell_caster_pid = 0;
     a1a.uSpriteFrameID = 0;
