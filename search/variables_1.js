@@ -7,7 +7,7 @@ var searchData=
   ['actionmapping_4',['actionMapping',['../classIo_1_1KeyboardInputHandler.html#ab62e8fbc7452e3b03d72196bccfcb8e4',1,'Io::KeyboardInputHandler']]],
   ['activeleveldecoration_5',['activeLevelDecoration',['../Decoration_8cpp.html#ad0fa06b8c2179a9134b5d63f3949a141',1,'activeLevelDecoration():&#160;Decoration.cpp'],['../Decoration_8h.html#ad0fa06b8c2179a9134b5d63f3949a141',1,'activeLevelDecoration():&#160;Decoration.cpp']]],
   ['actor_5finitiative_6',['actor_initiative',['../structTurnBased__QueueElem.html#a6e6c47a75445b3ca4e283507b2607802',1,'TurnBased_QueueElem']]],
-  ['actorhasitems_7',['ActorHasItems',['../structActor__MM7.html#ad2afcfd92bb8f39d7c7ef9a5dca273fe',1,'Actor_MM7::ActorHasItems()'],['../classActor.html#affe877106b9df2d98395bba293c92d21',1,'Actor::ActorHasItems()']]],
+  ['actorhasitems_7',['ActorHasItems',['../structActor__MM7.html#a7f020b9795d819b88a0c259e52334567',1,'Actor_MM7::ActorHasItems()'],['../classActor.html#affe877106b9df2d98395bba293c92d21',1,'Actor::ActorHasItems()']]],
   ['actualfirstindex_8',['ActualFirstIndex',['../classIndexedArray.html#ad483d4958eb140b4b3ecb5b15301b83d',1,'IndexedArray']]],
   ['actuallastindex_9',['ActualLastIndex',['../classIndexedArray.html#aa030946750e8681c365d3eaf0d311791',1,'IndexedArray']]],
   ['additional_5fslot_5fcount_10',['ADDITIONAL_SLOT_COUNT',['../structPlayer.html#ae3affb4132e035a9737384e808848547',1,'Player']]],

@@ -83,7 +83,7 @@ var searchData=
   ['actorenums_2eh_80',['ActorEnums.h',['../ActorEnums_8h.html',1,'']]],
   ['actorfriend_81',['ActorFriend',['../classActor.html#ae8407cb4f5c805dd5fae0f3714c1623a',1,'Actor']]],
   ['actorhasitem_82',['ActorHasItem',['../classActor.html#a8728f732ddeb90cafdee337e46eae9e9',1,'Actor']]],
-  ['actorhasitems_83',['ActorHasItems',['../classActor.html#affe877106b9df2d98395bba293c92d21',1,'Actor::ActorHasItems()'],['../structActor__MM7.html#ad2afcfd92bb8f39d7c7ef9a5dca273fe',1,'Actor_MM7::ActorHasItems()']]],
+  ['actorhasitems_83',['ActorHasItems',['../classActor.html#affe877106b9df2d98395bba293c92d21',1,'Actor::ActorHasItems()'],['../structActor__MM7.html#a7f020b9795d819b88a0c259e52334567',1,'Actor_MM7::ActorHasItems()']]],
   ['actorhitormiss_84',['ActorHitOrMiss',['../classActor.html#a4e8ca50d4c762e12f1eba63194201a1d',1,'Actor']]],
   ['actorjob_85',['ActorJob',['../structActorJob.html',1,'']]],
   ['actormove_86',['ActorMove',['../structstru262__TurnBased.html#a915c1f0111549a1f19ef5ec995dafea0',1,'stru262_TurnBased']]],
