@@ -93,10 +93,6 @@ struct Vec3 {
         z *= denom;
     }
 
-    Vec3<T> Abs() const requires std::is_integral_v<T> {
-        return Vec3<T>(abs(x), abs(y), abs(z));
-    }
-
     Vec3<short> ToShort() const requires std::is_floating_point_v<T> {
         return Vec3<short>(std::round(x), std::round(y), std::round(z));
     }

@@ -112,13 +112,13 @@ void CastSpellInfoHelpers::castSpell() {
         int spell_targeted_at = pCastSpell->spell_target_pid;
 
         if (spell_targeted_at == 0) {  // no target ?? test
-            int target_undead;
+            bool target_undead;
             if (pCastSpell->uSpellID == SPELL_LIGHT_DESTROY_UNDEAD ||
                 pCastSpell->uSpellID == SPELL_SPIRIT_TURN_UNDEAD ||
                 pCastSpell->uSpellID == SPELL_DARK_CONTROL_UNDEAD) {
-                target_undead = 1;
+                target_undead = true;
             } else {
-                target_undead = 0;
+                target_undead = false;
             }
 
             // find the closest target
@@ -218,7 +218,7 @@ void CastSpellInfoHelpers::castSpell() {
             if (pPlayer->WearsItem(ITEM_ARTIFACT_ULLYSES, ITEM_SLOT_BOW)) {
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_SPELL_WATER_ICE_BOLT);
             }
-            pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, (signed int)pParty->uPartyHeight / 3);
+            pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
             pSpellSprite.spell_target_pid = spell_targeted_at;
             pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
             pSpellSprite.uFacing = target_direction.uYawAngle;
@@ -844,15 +844,14 @@ void CastSpellInfoHelpers::castSpell() {
                     if (spell_targeted_at &&
                             PID_TYPE(spell_targeted_at) == OBJECT_Actor) {
                         int monster_id = PID_ID(spell_targeted_at);
-                        Vec3i dist = (pActors[monster_id].vPosition - pParty->vPosition).Abs();
-                        int count = int_get_vector_length(dist.x, dist.y, dist.z);
-                        if ((double)count <= 307.2) {
+                        float dist = (pActors[monster_id].vPosition - pParty->vPosition).ToFloat().Length();
+                        if (dist <= 307.2) {
                             Vec3i spell_velocity = Vec3i(0, 0, 0);
                             initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                             pSpellSprite.uSectorID = 0;
                             pSpellSprite.field_60_distance_related_prolly_lod = 0;
                             pSpellSprite.uFacing = 0;
-                            pSpellSprite.vPosition = pActors[monster_id].vPosition - Vec3i(0, 0, (int)((double)pActors[monster_id].uActorHeight * -0.8));
+                            pSpellSprite.vPosition = pActors[monster_id].vPosition - Vec3i(0, 0, pActors[monster_id].uActorHeight * -0.8);
                             pSpellSprite.spell_target_pid = PID(OBJECT_Actor, spell_targeted_at);
                             Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, &spell_velocity);
                         } else {
@@ -1022,8 +1021,7 @@ void CastSpellInfoHelpers::castSpell() {
                     for (uint i = 0; i < mon_num; i++) {
                         Vec3i spell_velocity = Vec3i(0, 0, 0);
                         Actor *target_actor = &pActors[_50BF30_actors_in_viewport_ids[i]];
-                        unsigned int height_offset = (unsigned int)(int64_t)((double)target_actor->uActorHeight * -0.8);
-                        pSpellSprite.vPosition = target_actor->vPosition - Vec3i(0, 0, height_offset);
+                        pSpellSprite.vPosition = target_actor->vPosition - Vec3i(0, 0, target_actor->uActorHeight * -0.8);
                         pSpellSprite.spell_target_pid = PID(OBJECT_Actor, _50BF30_actors_in_viewport_ids[i]);
                         Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), _50BF30_actors_in_viewport_ids[i], &spell_velocity);
                         spell_fx_renderer->RenderAsSprite(&pSpellSprite);
@@ -1108,7 +1106,7 @@ void CastSpellInfoHelpers::castSpell() {
                         pSpellSprite.uSpriteFrameID = grng->Random(64); // TODO(captainurist): this doesn't look like a frame id initialization
                         pSpellSprite.uFacing = spell_spray_angle_start + (short)target_direction.uYawAngle;
                         int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                        int yaw = (int16_t)(spell_spray_angle_start + (short)target_direction.uYawAngle);
+                        int yaw = spell_spray_angle_start + target_direction.uYawAngle;
                         if (pSpellSprite.Create(yaw, target_direction.uPitchAngle, spell_speed, pCastSpell->uPlayerID + 1) != -1 &&
                                 pParty->bTurnBasedModeOn) {
                             ++pTurnEngine->pending_actions;
@@ -1609,7 +1607,8 @@ void CastSpellInfoHelpers::castSpell() {
                         pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
                     int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                    if (pSpellSprite.Create(pParty->sRotationZ, pParty->sRotationY, spell_speed, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
+                    if (pSpellSprite.Create(pParty->sRotationZ, pParty->sRotationY, spell_speed, pCastSpell->uPlayerID + 1) != -1 &&
+                            pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
                     }
                     break;
@@ -1623,7 +1622,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     pSpellSprite.uType = SPRITE_SPELL_EARTH_DEATH_BLOSSOM;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, (signed int)pParty->uPartyHeight / 3);
+                    pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                     pSpellSprite.uSectorID = 0;
                     pSpellSprite.field_60_distance_related_prolly_lod = 0;
                     pSpellSprite.spell_target_pid = spell_targeted_at;
@@ -1632,7 +1631,8 @@ void CastSpellInfoHelpers::castSpell() {
                         pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
                     int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                    if (pSpellSprite.Create(pParty->sRotationZ, TrigLUT.uIntegerHalfPi / 2, spell_speed, 0) != -1 && pParty->bTurnBasedModeOn) {
+                    if (pSpellSprite.Create(pParty->sRotationZ, TrigLUT.uIntegerHalfPi / 2, spell_speed, 0) != -1 &&
+                            pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
                     }
                     break;
@@ -1752,8 +1752,7 @@ void CastSpellInfoHelpers::castSpell() {
                             assert(false);
                     }
 
-                    if (spell_mastery == PLAYER_SKILL_MASTERY_NOVICE ||
-                            spell_mastery == PLAYER_SKILL_MASTERY_EXPERT) {
+                    if (spell_mastery == PLAYER_SKILL_MASTERY_NOVICE || spell_mastery == PLAYER_SKILL_MASTERY_EXPERT) {
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                         pParty->pPlayers[pCastSpell->uPlayerID_2].pPlayerBuffs[PLAYER_BUFF_PRESERVATION]
                             .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
@@ -1865,7 +1864,7 @@ void CastSpellInfoHelpers::castSpell() {
                     for (uint i = 0; i < active_pl_num; i++) {
                         shared_life_count += pPlayers[pl_array[i]]->sHealth;
                     }
-                    int mean_life = (int64_t)((double)shared_life_count / (double)active_pl_num);
+                    int mean_life = shared_life_count / active_pl_num;
                     for (uint i = 0; i < active_pl_num; i++) {
                         pPlayers[pl_array[i]]->sHealth = mean_life;
                         if (pPlayers[pl_array[i]]->sHealth > pPlayers[pl_array[i]]->GetMaxHealth()) {
@@ -2036,6 +2035,7 @@ void CastSpellInfoHelpers::castSpell() {
                         }
 
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
+                        // TODO(Nik-RE-dev): using just monster height for Z coord looks like a bug
                         pSpellSprite.vPosition = Vec3i(pActors[monster_id].vPosition.x, pActors[monster_id].vPosition.y, pActors[monster_id].uActorHeight);
                         pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                         pSpellSprite.spell_target_pid = spell_targeted_at;
@@ -2147,13 +2147,11 @@ void CastSpellInfoHelpers::castSpell() {
                         if (MonsterStats::BelongsToSupertype(target_actor->pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
                             break;
                         }
-                        unsigned int height_offset = (unsigned int)(int64_t)((double)target_actor->uActorHeight * -0.8);
-                        pSpellSprite.vPosition = target_actor->vPosition - Vec3i(0, 0, height_offset);
+                        pSpellSprite.vPosition = target_actor->vPosition - Vec3i(0, 0, target_actor->uActorHeight * -0.8);
                         pSpellSprite.spell_target_pid = PID(OBJECT_Actor, _50BF30_actors_in_viewport_ids[spell_targeted_at]);
                         pSpellSprite.Create(0, 0, 0, 0);
-                        if (pActors[_50BF30_actors_in_viewport_ids[spell_targeted_at]].DoesDmgTypeDoDamage(DMGT_MIND)) {
-                            pActors[_50BF30_actors_in_viewport_ids[spell_targeted_at]].pActorBuffs[ACTOR_BUFF_AFRAID]
-                                    .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
+                        if (target_actor->DoesDmgTypeDoDamage(DMGT_MIND)) {
+                            target_actor->pActorBuffs[ACTOR_BUFF_AFRAID].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
                         }
                     }
                     break;
@@ -2404,16 +2402,14 @@ void CastSpellInfoHelpers::castSpell() {
                     pSpellSprite.uFacing = 0;
                     for (spell_targeted_at = 0; spell_targeted_at < mon_num; ++spell_targeted_at) {
                         Actor *target_actor = &pActors[_50BF30_actors_in_viewport_ids[spell_targeted_at]];
-                        int height_offset = (int)((double)target_actor->uActorHeight * -0.8);
-                        pSpellSprite.vPosition = target_actor->vPosition - Vec3i(0, 0, height_offset);
+                        pSpellSprite.vPosition = target_actor->vPosition - Vec3i(0, 0, target_actor->uActorHeight * -0.8);
                         pSpellSprite.spell_target_pid = PID(OBJECT_Actor, _50BF30_actors_in_viewport_ids[spell_targeted_at]);
                         Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)),
                                 _50BF30_actors_in_viewport_ids[spell_targeted_at], &spell_velocity);
                     }
                     for (spell_targeted_at = 0; spell_targeted_at < mon_num; ++spell_targeted_at) {
                         Actor *target_actor = &pActors[_50BF30_actors_in_viewport_ids[spell_targeted_at]];
-                        unsigned int height_offset = (unsigned int)(int64_t)((double)target_actor->uActorHeight * -0.8);
-                        pSpellSprite.vPosition = target_actor->vPosition - Vec3i(0, 0, height_offset);
+                        pSpellSprite.vPosition = target_actor->vPosition - Vec3i(0, 0, target_actor->uActorHeight * -0.8);
                         pSpellSprite.spell_target_pid = PID(OBJECT_Actor, _50BF30_actors_in_viewport_ids[spell_targeted_at]);
                         pSpellSprite.Create(0, 0, 0, 0);
                         for (SpellBuff &buff : pActors[_50BF30_actors_in_viewport_ids[spell_targeted_at]].pActorBuffs) {
@@ -2686,7 +2682,7 @@ void CastSpellInfoHelpers::castSpell() {
                     pSpellSprite.uSectorID = 0;
                     pSpellSprite.field_60_distance_related_prolly_lod = 0;
                     pSpellSprite.uFacing = 0;
-                    pSpellSprite.vPosition = pActors[monster_id].vPosition - Vec3i(0, 0, (int)((double)pActors[monster_id].uActorHeight * -0.8));
+                    pSpellSprite.vPosition = pActors[monster_id].vPosition - Vec3i(0, 0, pActors[monster_id].uActorHeight * -0.8);
                     pSpellSprite.spell_target_pid = PID(OBJECT_Actor, monster_id);
                     pSpellSprite.Create(0, 0, 0, 0);
                     if (pActors[monster_id].pMonsterInfo.uLevel > target_monster_level) {
@@ -2873,14 +2869,13 @@ void CastSpellInfoHelpers::castSpell() {
                     pSpellSprite.uSectorID = 0;
                     pSpellSprite.field_60_distance_related_prolly_lod = 0;
                     pSpellSprite.uFacing = 0;
-                    int drained_halth = 0;
+                    int drained_health = 0;
                     if (mon_num > 0) {
                         Vec3i spell_velocity = Vec3i(0, 0, 0);
-                        drained_halth = (mon_num * (7 * spell_level + 25));
+                        drained_health = (mon_num * (7 * spell_level + 25));
                         for (int monster_id = 0; monster_id < mon_num; monster_id++) {
                             Actor *target_actor = &pActors[_50BF30_actors_in_viewport_ids[monster_id]];
-                            int height_offset = (int)((double)target_actor->uActorHeight * -0.8);
-                            pSpellSprite.vPosition = target_actor->vPosition - Vec3i(0, 0, height_offset);
+                            pSpellSprite.vPosition = target_actor->vPosition - Vec3i(0, 0, target_actor->uActorHeight * -0.8);
                             pSpellSprite.spell_target_pid = PID(OBJECT_Actor, _50BF30_actors_in_viewport_ids[monster_id]);
                             Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)),
                                     _50BF30_actors_in_viewport_ids[monster_id], &spell_velocity);
@@ -2894,7 +2889,7 @@ void CastSpellInfoHelpers::castSpell() {
                         }
                     }
                     for (uint j = 0; j < pl_num; j++) {
-                        pPlayers[pl_array[j]]->sHealth += static_cast<int>(drained_halth / static_cast<float>(pl_num));
+                        pPlayers[pl_array[j]]->sHealth += drained_health / pl_num;
                         if (pPlayers[pl_array[j]]->sHealth > pPlayers[pl_array[j]]->GetMaxHealth()) {
                             pPlayers[pl_array[j]]->sHealth = pPlayers[pl_array[j]]->GetMaxHealth();
                         }
