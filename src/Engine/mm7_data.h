@@ -121,7 +121,7 @@ extern int LloydsBeaconSpellId;
 extern signed int sRecoveryTime;    // idb
 extern unsigned int uRequiredMana;  // idb
 extern int _506348_current_lloyd_playerid;
-extern int LloydsBeaconSpellLevel;
+extern int LloydsBeaconSpellDuration;
 extern int MapBookOpen;
 // extern Texture_MM7 *dword_50640C[];
 extern int

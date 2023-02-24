@@ -2357,7 +2357,7 @@ int LloydsBeaconSpellId;
 signed int sRecoveryTime;    // idb
 unsigned int uRequiredMana;  // idb
 int _506348_current_lloyd_playerid;
-int LloydsBeaconSpellLevel;  // 604800 * spell level
+int LloydsBeaconSpellDuration;  // 604800 * spell level
 int MapBookOpen;
 int books_page_number;
 int books_primary_item_per_page;
