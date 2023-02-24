@@ -62,8 +62,6 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     field_64.y = vPosition.y;
     field_64.z = vPosition.z;
 
-    static_assert(sizeof(SpriteObject) == 0x70);
-
     // move sprite so it looks like it originates from char portrait
     switch (which_char) {
         case 0:
@@ -102,7 +100,7 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     if (sprite_slot >= (int)pSpriteObjects.size()) {
         pSpriteObjects.resize(sprite_slot + 1);
     }
-    memcpy(&pSpriteObjects[sprite_slot], this, sizeof(*this));
+    pSpriteObjects[sprite_slot] = *this;
     return sprite_slot;
 }
 
@@ -849,8 +847,7 @@ void CompactLayingItemsList() {
     for (int i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].uObjectDescID) {
             if (i != new_obj_pos) {
-                memcpy(&pSpriteObjects[new_obj_pos], &pSpriteObjects[i],
-                       sizeof(SpriteObject));
+                pSpriteObjects[new_obj_pos] = pSpriteObjects[i];
                 pSpriteObjects[i].uObjectDescID = 0;
             }
             new_obj_pos++;

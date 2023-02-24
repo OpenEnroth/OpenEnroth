@@ -536,7 +536,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
 
-    stream.ReadVector(&pSpriteObjects);
+    stream.ReadLegacyVector<SpriteObject_MM7>(&pSpriteObjects);
 
     pGameLoadingUI_ProgressBar->Progress();
 
