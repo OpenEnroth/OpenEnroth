@@ -242,3 +242,8 @@ GAME_TEST(Issue, Issue123) {
     // check party is still in the air
     EXPECT_GT(pParty->vPosition.z, 512);
 }
+
+GAME_TEST(Prs, Pr469) {
+    // Assert when using Quick Spell button when spell is not set
+    test->playTraceFromTestData("pr_469.mm7", "pr_469.json");
+}
