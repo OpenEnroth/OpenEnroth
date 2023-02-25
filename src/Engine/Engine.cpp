@@ -210,8 +210,7 @@ void Engine::DrawGUI() {
     }
 
     GameUI_DrawPartySpells();
-    if (pParty->pHirelings[0].dialogue_3_evt_id || pParty->pHirelings[1].dialogue_3_evt_id)
-        GameUI_DrawHiredNPCs();
+    GameUI_DrawHiredNPCs();
 
     GameUI_DrawPortraits();
     GameUI_DrawLifeManaBars();
