@@ -41,7 +41,6 @@ void GUIWindow_RestWindow::Update() {
     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f,
                                 *(static_cast<Image **>(wData.ptr) + 15));
-    viewparams->bRedrawGameUI = 1;
     GUIButton2.DrawLabel(
         localization->GetString(LSTR_REST_AND_HEAL_8_HOURS), pFontCreate, 0, 0);
     GUIButton2.pParent = 0;
@@ -55,7 +54,6 @@ void PrepareToLoadRestUI() {
             pGUIWindow_CurrentMenu->Release();
         }
         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-        viewparams->bRedrawGameUI = true;
     }
     pEventTimer->Pause();
     if (_506F14_resting_stage != 2)

@@ -2476,7 +2476,6 @@ void ODM_ProcessPartyActions() {
         if (PID_TYPE(collision_state.pid) == OBJECT_Actor) {
             if (pParty->Invisible())
                 pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
-            viewparams->bRedrawGameUI = true;
         }
 
         if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) {
@@ -3086,7 +3085,6 @@ void UpdateActors_ODM() {
                     if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active()) {
                         pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
                     }
-                    viewparams->bRedrawGameUI = 1;
                     break;
                 case OBJECT_Decoration:
                     Coll_Speed = integer_sqrt(pActors[Actor_ITR].vVelocity.x * pActors[Actor_ITR].vVelocity.x +

@@ -2200,7 +2200,6 @@ void CastSpellInfoHelpers::castSpell() {
                     if (PID_TYPE(spell_targeted_at) == OBJECT_Item) {
                         if (pItemTable->pItems[pSpriteObjects[obj_id].containing_item.uItemID].uEquipType == EQUIP_GOLD) {
                             pParty->PartyFindsGold(pSpriteObjects[obj_id].containing_item.special_enchantment, 0);
-                            viewparams->bRedrawGameUI = true;
                         } else {
                             GameUI_SetStatusBar(LSTR_FMT_YOU_FOUND_ITEM,
                                     pItemTable->pItems[pSpriteObjects[obj_id].containing_item.uItemID].pUnidentifiedName);

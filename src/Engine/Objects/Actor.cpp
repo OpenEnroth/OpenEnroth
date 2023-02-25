@@ -3836,7 +3836,6 @@ void Actor::LootActor() {
         v14 = grng->RandomDice(this->pMonsterInfo.uTreasureDiceRolls, this->pMonsterInfo.uTreasureDiceSides);
         if (v14) {
             pParty->PartyFindsGold(v14, 0);
-            viewparams->bRedrawGameUI = 1;
         }
     } else {
         if (this->ActorHasItems[3].uItemID != ITEM_NULL &&
@@ -3845,7 +3844,6 @@ void Actor::LootActor() {
             this->ActorHasItems[3].Reset();
             if (v14) {
                 pParty->PartyFindsGold(v14, 0);
-                viewparams->bRedrawGameUI = 1;
             }
         }
     }

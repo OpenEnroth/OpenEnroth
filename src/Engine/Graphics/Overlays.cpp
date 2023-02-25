@@ -58,7 +58,6 @@ int OtherOverlayList::_4418B6(int uOverlayID, int16_t a3, int a4, int a5,
             this->pOverlays[i].field_6 = v11;
             this->pOverlays[i].field_10 = a5;
             this->pOverlays[i].field_E = a6;
-            bRedraw = true;
             return true;
         }
     }
@@ -66,7 +65,7 @@ int OtherOverlayList::_4418B6(int uOverlayID, int16_t a3, int a4, int a5,
 }
 
 //----- (00441964) --------------------------------------------------------
-void OtherOverlayList::DrawTurnBasedIcon(int a2) {
+void OtherOverlayList::DrawTurnBasedIcon() {
     Icon *frame = nullptr;      // eax@12
     unsigned int v5;  // [sp-8h] [bp-Ch]@4
 

@@ -1006,7 +1006,6 @@ void ArcomageGame::Loop() {
     pArcomageGame->pSprites = nullptr;
 
     pArcomageGame->bGameInProgress = false;
-    viewparams->bRedrawGameUI = true;
 
     if (pMovie_Track) BackToHouseMenu();
 }

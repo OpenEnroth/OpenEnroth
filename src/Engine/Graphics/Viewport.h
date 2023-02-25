@@ -37,7 +37,6 @@ struct Viewport {
 extern struct Viewport *pViewport;
 
 /*  201 */
-#pragma pack(push, 1)
 struct ViewingParams {
     inline ViewingParams() {
         draw_sw_outlines = false;
@@ -76,8 +75,6 @@ struct ViewingParams {
     int16_t indoor_center_y = 0;
     int field_3C = 0;
     class Image *location_minimap = nullptr;  // unsigned int uTextureID_LocationMap; ::40
-    int bRedrawGameUI = 1;
-    int field_48 = 0;
     int field_4C = 0;
     int draw_sw_outlines = 0;
     int draw_d3d_outlines = 0;
@@ -88,6 +85,5 @@ struct ViewingParams {
     int field_68 = 0;
     uint32_t pPalette[256] {};
 };
-#pragma pack(pop)
 
 extern struct ViewingParams *viewparams;

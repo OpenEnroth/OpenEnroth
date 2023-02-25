@@ -153,7 +153,7 @@ void Deserialize(const NPCData_MM7 &src, NPCData *dst) {
 void Serialize(const OtherOverlayList &src, OtherOverlayList_MM7 *dst) {
     memzero(dst);
 
-    dst->bRedraw = src.bRedraw;
+    dst->bRedraw = true;
     dst->field_3E8 = src.field_3E8;
 
     for (unsigned int i = 0; i < 50; ++i) {
@@ -173,7 +173,6 @@ void Serialize(const OtherOverlayList &src, OtherOverlayList_MM7 *dst) {
 }
 
 void Deserialize(const OtherOverlayList_MM7 &src, OtherOverlayList *dst) {
-    dst->bRedraw = src.bRedraw;
     dst->field_3E8 = src.field_3E8;
 
     for (unsigned int i = 0; i < 50; ++i) {

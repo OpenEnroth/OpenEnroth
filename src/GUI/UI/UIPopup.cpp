@@ -1704,7 +1704,6 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
             break;
     }
     dword_507BF0_is_there_popup_onscreen = 1;
-    viewparams->bRedrawGameUI = 1;
 }
 
 int no_rightlick_in_inventory = false;  // 0050CDCC

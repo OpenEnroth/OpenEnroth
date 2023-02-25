@@ -1265,8 +1265,6 @@ void SpellFxRenderer::DrawPlayerBuffAnims() {
         render->DrawTextureNew(
             pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f,
             385 / 480.0f, icon->GetTexture());
-
-        pOtherOverlayList->bRedraw = true;
     }
 }
 

@@ -157,8 +157,6 @@ void GUIWindow_GameMenu::Update() {
     render->DrawTextureNew(pViewport->uViewportTL_X / 640.0f,
                                 pViewport->uViewportTL_Y / 480.0f,
                                 game_ui_menu_options);
-
-    viewparams->bRedrawGameUI = true;
 }
 
 //----- (00491CB5) --------------------------------------------------------
@@ -573,7 +571,6 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
         if (int slot = player->AddItem(-1, pParty->pPickedItem.uItemID)) {
             memcpy(&player->pInventoryItemList[slot - 1], &pParty->pPickedItem,
                    0x24u);
-            viewparams->bRedrawGameUI = true;
             mouse->RemoveHoldingItem();
             return;
         }
@@ -587,7 +584,6 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
     }
 
     if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
-        viewparams->bRedrawGameUI = true;
         if (uActiveCharacter != uPlayerID) {
             if (pPlayers[uPlayerID]->uTimeToRecovery || !pPlayers[uPlayerID]->CanAct()) {
                 return;
@@ -603,7 +599,6 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
     }
     if (current_screen_type == CURRENT_SCREEN::SCREEN_SPELL_BOOK) return;
     if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST) {
-        viewparams->bRedrawGameUI = true;
         if (uActiveCharacter == uPlayerID) {
             current_character_screen_window = WINDOW_CharacterWindow_Inventory;
             current_screen_type = CURRENT_SCREEN::SCREEN_CHEST_INVENTORY;
@@ -622,7 +617,6 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
             return;
         }
         if (current_screen_type != CURRENT_SCREEN::SCREEN_CHEST_INVENTORY) {
-            viewparams->bRedrawGameUI = true;
             uActiveCharacter = uPlayerID;
             if (current_character_screen_window ==
                 WINDOW_CharacterWindow_Awards) {
@@ -630,7 +624,6 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
             }
             return;
         }
-        viewparams->bRedrawGameUI = true;
         if (uActiveCharacter == uPlayerID) {
             current_character_screen_window = WINDOW_CharacterWindow_Inventory;
             current_screen_type = CURRENT_SCREEN::SCREEN_CHEST_INVENTORY;
@@ -646,7 +639,6 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
     if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
         return;
     }
-    viewparams->bRedrawGameUI = true;
     if (uActiveCharacter != uPlayerID) {
         uActiveCharacter = uPlayerID;
         return;
@@ -1444,7 +1436,7 @@ void GameUI_DrawPartySpells() {
 }
 
 //----- (004921C1) --------------------------------------------------------
-void GameUI_DrawPortraits(unsigned int _this) {
+void GameUI_DrawPortraits() {
     unsigned int face_expression_ID;  // eax@17
     PlayerFrame *pFrame;              // eax@21
     Image *pPortrait;                 // [sp-4h] [bp-1Ch]@27
@@ -1519,7 +1511,7 @@ void GameUI_DrawPortraits(unsigned int _this) {
         else
             pFrame = pPlayerFrameTable->GetFrameBy_x(
                 face_expression_ID, pPlayer->uExpressionTimePassed);
-        if (pPlayer->uExpressionImageIndex != pFrame->uTextureID - 1 || _this) {
+        if (true /* || pPlayer->uExpressionImageIndex != pFrame->uTextureID - 1*/) {
             pPlayer->uExpressionImageIndex = pFrame->uTextureID - 1;
             pPortrait = game_ui_player_faces
                 [i]
@@ -2232,8 +2224,6 @@ void GUIWindow_DebugMenu::Update() {
 
     //render->DrawTwodVerts();
     //render->EndLines2D();
-
-    viewparams->bRedrawGameUI = true;
 }
 
 void buttonbox(int x, int y, const char* text, int col) {

@@ -401,7 +401,6 @@ void stru262_TurnBased::NextTurn() {
         uActiveCharacter = PID_ID(pQueue[0].uPackedID) + 1;
     else
         uActiveCharacter = 0;
-    viewparams->bRedrawGameUI = true;
 
     if (pending_actions) {
         pTurnEngine->flags |= TE_HAVE_PENDING_ACTIONS;
@@ -479,7 +478,6 @@ bool stru262_TurnBased::StepTurnQueue() {
     int j;
 
     SortTurnQueue();
-    viewparams->bRedrawGameUI = 1;
     if (pQueue[0].actor_initiative != 0) {
         if (PID_TYPE(pQueue[0].uPackedID) == OBJECT_Player) {
             do {
@@ -537,7 +535,6 @@ void stru262_TurnBased::_406457(int a2) {
         uActiveCharacter = PID_ID(pQueue[0].uPackedID) + 1;
     else
         uActiveCharacter = 0;
-    viewparams->bRedrawGameUI = 1;
     while ((pQueue[0].actor_initiative > 0) && (turn_initiative > 0)) {
         for (i = 0; i < uActorQueueSize; ++i) {
             --pQueue[i].actor_initiative;
@@ -590,7 +587,6 @@ void stru262_TurnBased::_4065B0() {
             uActiveCharacter = PID_ID(pQueue[0].uPackedID) + 1;
         else
             uActiveCharacter = 0;
-        viewparams->bRedrawGameUI = 1;
     }
     for (i = 0; i < uActorQueueSize; ++i) AIAttacks(i);
 }

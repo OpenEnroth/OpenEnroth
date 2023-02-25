@@ -712,8 +712,8 @@ LABEL_47:
                     v83 = EVT_WORD(_evt->v5);
                     if (v83 == 21 ||  // gold well on emerald isle
                         v83 == 22 || v83 == 23 || v83 == 24) {
+                        // TODO(captainurist): drop this if altogether? It used to just set bRedrawGameUI = true.
                         // __debugbreak(); // bonfire
-                        viewparams->bRedrawGameUI = true;
                     }
                     ++curr_seq_num;
                     break;
@@ -943,7 +943,6 @@ LABEL_47:
                                 window_SpeakInHouse = 0;
                                 pMessageQueue_50CBD0->Flush();
                                 current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-                                viewparams->bRedrawGameUI = 1;
                                 pDialogueNPCCount = 0;
                                 if (pDialogueWindow) {
                                     pDialogueWindow->Release();

@@ -799,7 +799,6 @@ void DialogueEnding() {
 void GUIWindow_BooksButtonOverlay::Update() {
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameY / 640.0f, uFrameX / 480.0f, pButton->vTextures[0]);
-    viewparams->bRedrawGameUI = true;
 }
 
 void GUIWindow_Scroll::Update() {
@@ -812,7 +811,6 @@ void OnButtonClick::Update() {
     }
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
-    viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
         pButton->DrawLabel(sHint, pFontCreate, 0, 0);
     }
@@ -830,7 +828,6 @@ void OnButtonClick2::Update() {
             render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
         }
     }
-    viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
         pButton->DrawLabel(sHint, pFontCreate, 0, 0);
     }
@@ -843,7 +840,6 @@ void OnButtonClick3::Update() {
     }
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
-    viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
         pButton->DrawLabel(sHint, pFontCreate, 0, 0);
     }
@@ -856,7 +852,6 @@ void OnButtonClick4::Update() {
     }
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
-    viewparams->bRedrawGameUI = true;
 
     Release();
 }
@@ -867,7 +862,6 @@ void OnSaveLoad::Update() {
     }
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
-    viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
         pButton->DrawLabel(sHint, pFontCreate, 0, 0);
     }
@@ -886,7 +880,6 @@ void OnCancel::Update() {
     }
     GUIButton *pGUIButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pGUIButton->vTextures[0]);
-    viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
         pGUIButton->DrawLabel(sHint, pFontCreate, 0, 0);
     }
@@ -901,7 +894,6 @@ void OnCancel2::Update() {
     }
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
-    viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
         pButton->DrawLabel(sHint, pFontCreate, 0, 0);
     }
@@ -917,7 +909,6 @@ void OnCancel3::Update() {
 
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
-    viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
         pButton->DrawLabel(sHint, pFontCreate, 0, 0);
     }

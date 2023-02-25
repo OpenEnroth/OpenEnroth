@@ -2221,7 +2221,6 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         if (PID_TYPE(collision_state.pid) == OBJECT_Actor) {
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
                 pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset(); // Break invisibility when running into a monster.
-            viewparams->bRedrawGameUI = true;
         } else if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) {
             // Bounce back from a decoration & do another round of collision checks.
             // This way the party can "slide" along & past a decoration.
