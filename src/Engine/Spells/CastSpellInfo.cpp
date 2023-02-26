@@ -77,7 +77,6 @@ static void spellFailed(CastSpellInfo *pCastSpell,
 }
 
 void CastSpellInfoHelpers::castSpell() {
-    CastSpellInfo *pCastSpell;
     Player *pPlayer;
     PLAYER_SKILL_TYPE which_skill;
     SpriteObject pSpellSprite;
@@ -347,10 +346,10 @@ void CastSpellInfoHelpers::castSpell() {
                             assert(false);
                     }
                     int spikes_active = 0;
-                    for (SpriteObject &CurrentObject : pSpriteObjects) {
-                        if (CurrentObject.uType &&
-                                CurrentObject.uSpellID == SPELL_FIRE_FIRE_SPIKE &&
-                                CurrentObject.spell_caster_pid == PID(OBJECT_Player, pCastSpell->uPlayerID)) {
+                    for (SpriteObject &ObjectRef : pSpriteObjects) {
+                        if (ObjectRef.uType &&
+                                ObjectRef.uSpellID == SPELL_FIRE_FIRE_SPIKE &&
+                                ObjectRef.spell_caster_pid == PID(OBJECT_Player, pCastSpell->uPlayerID)) {
                             ++spikes_active;
                         }
                     }
@@ -775,8 +774,8 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     bool has_weak = false;
-                    for (Player &CurrentPlayer : pParty->pPlayers) {
-                        if (CurrentPlayer.conditions.Has(Condition_Weak)) {
+                    for (Player &PlayerRef : pParty->pPlayers) {
+                        if (PlayerRef.conditions.Has(Condition_Weak)) {
                             has_weak = true;
                         }
                     }
@@ -818,10 +817,10 @@ void CastSpellInfoHelpers::castSpell() {
                         pParty->pPlayers[pCastSpell->uPlayerID_2].pPlayerBuffs[PLAYER_BUFF_BLESS]
                             .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, spell_overlay_id, 0);
                     } else {
-                        for (size_t i = 0; Player &CurrentPlayer : pParty->pPlayers) {
+                        for (size_t i = 0; Player &PlayerRef : pParty->pPlayers) {
                             spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, i);
                             int spell_overlay_id = pOtherOverlayList->_4418B1(10000, i + 310, 0, 65536);
-                            CurrentPlayer.pPlayerBuffs[PLAYER_BUFF_BLESS]
+                            PlayerRef.pPlayerBuffs[PLAYER_BUFF_BLESS]
                                 .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, spell_overlay_id, 0);
                             i++;
                         }
@@ -1236,15 +1235,15 @@ void CastSpellInfoHelpers::castSpell() {
                             assert(false);
                     }
 
-                    for (Player &CurrentPlayer : pParty->pPlayers) {
+                    for (Player &PlayerRef : pParty->pPlayers) {
                         if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                            if (CurrentPlayer.conditions.Has(Condition_Sleep)) {
-                                CurrentPlayer.conditions.Reset(Condition_Sleep);
-                                CurrentPlayer.PlaySound(SPEECH_Awaken, 0);
+                            if (PlayerRef.conditions.Has(Condition_Sleep)) {
+                                PlayerRef.conditions.Reset(Condition_Sleep);
+                                PlayerRef.PlaySound(SPEECH_Awaken, 0);
                             }
                         } else {
-                            if (CurrentPlayer.DiscardConditionIfLastsLongerThan(Condition_Sleep, pParty->GetPlayingTime() - spell_duration)) {
-                                CurrentPlayer.PlaySound(SPEECH_Awaken, 0);
+                            if (PlayerRef.DiscardConditionIfLastsLongerThan(Condition_Sleep, pParty->GetPlayingTime() - spell_duration)) {
+                                PlayerRef.PlaySound(SPEECH_Awaken, 0);
                             }
                         }
                     }
@@ -1727,8 +1726,8 @@ void CastSpellInfoHelpers::castSpell() {
                         pParty->pPlayers[pCastSpell->uPlayerID_2].pPlayerBuffs[PLAYER_BUFF_PRESERVATION]
                             .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
                     } else {
-                        for (Player &CurrentPlayer : pParty->pPlayers) {
-                            CurrentPlayer.pPlayerBuffs[PLAYER_BUFF_PRESERVATION]
+                        for (Player &PlayerRef : pParty->pPlayers) {
+                            PlayerRef.pPlayerBuffs[PLAYER_BUFF_PRESERVATION]
                                 .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
                         }
                         spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
@@ -2333,8 +2332,8 @@ void CastSpellInfoHelpers::castSpell() {
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 1);
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 2);
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 3);
-                        for (Player &CurrentPlayer : pParty->pPlayers) {
-                            CurrentPlayer.pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS]
+                        for (Player &PlayerRef : pParty->pPlayers) {
+                            PlayerRef.pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS]
                                 .Apply(pParty->GetPlayingTime() + GameTime::FromHours(spell_level), spell_mastery, spell_level, spell_level, 0);
                         }
                     } else {
@@ -2347,11 +2346,10 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_BODY_POWER_CURE:
                 {
-                    for (int i = 0; Player &CurrentPlayer : pParty->pPlayers) {
-                        spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, i);
-                        CurrentPlayer.Heal(5 * spell_level + 10);
-                        i++;
+                    for (Player &PlayerRef : pParty->pPlayers) {
+                        PlayerRef.Heal(5 * spell_level + 10);
                     }
+                    spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     break;
                 }
 
@@ -2409,11 +2407,11 @@ void CastSpellInfoHelpers::castSpell() {
                             assert(false);
                     }
                     int mon_num = 0;
-                    for (Actor &CurrentActor : pActors) {
-                        if (CurrentActor.uAIState != Dead &&
-                                CurrentActor.uAIState != Removed &&
-                                CurrentActor.uAIState != Disabled &&
-                                PID(OBJECT_Player, pCastSpell->uPlayerID) == CurrentActor.uSummonerID) {
+                    for (Actor &ActorRef : pActors) {
+                        if (ActorRef.uAIState != Dead &&
+                                ActorRef.uAIState != Removed &&
+                                ActorRef.uAIState != Disabled &&
+                                PID(OBJECT_Player, pCastSpell->uPlayerID) == ActorRef.uSummonerID) {
                             ++mon_num;
                         }
                     }
@@ -2554,10 +2552,10 @@ void CastSpellInfoHelpers::castSpell() {
                             assert(false);
                     }
                     bool player_weak = false;
-                    for (Player &CurrentPlayer : pParty->pPlayers) {
-                        CurrentPlayer.pPlayerBuffs[PLAYER_BUFF_BLESS]
+                    for (Player &PlayerRef : pParty->pPlayers) {
+                       PlayerRef .pPlayerBuffs[PLAYER_BUFF_BLESS]
                             .Apply(pParty->GetPlayingTime() + other_duration, spell_mastery, target_skill_level, 0, 0);
-                        if (CurrentPlayer.conditions.Has(Condition_Weak)) {
+                        if (PlayerRef.conditions.Has(Condition_Weak)) {
                             player_weak = true;
                         }
                     }
@@ -2583,10 +2581,10 @@ void CastSpellInfoHelpers::castSpell() {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         continue;
                     }
-                    for (Player &CurrentPlayer : pParty->pPlayers) {
-                        CurrentPlayer.conditions.ResetAll();
-                        CurrentPlayer.sHealth = CurrentPlayer.GetMaxHealth();
-                        CurrentPlayer.sMana = CurrentPlayer.GetMaxMana();
+                    for (Player &PlayerRef : pParty->pPlayers) {
+                        PlayerRef.conditions.ResetAll();
+                        PlayerRef.sHealth = PlayerRef.GetMaxHealth();
+                        PlayerRef.sMana = PlayerRef.GetMaxMana();
                     }
                     spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     if (pPlayer->sAgeModifier + 10 >= 120) {
@@ -2781,9 +2779,9 @@ void CastSpellInfoHelpers::castSpell() {
                     pParty->pHirelings[hireling_idx].dialogue_1_evt_id = 1;
                     pParty->pHirelings[hireling_idx].dialogue_2_evt_id = 0;
                     pParty->pHirelings[hireling_idx].dialogue_3_evt_id = pIconsFrameTable->GetIcon("spell96")->GetAnimLength();
-                    for (Player &CurrentPlayer : pParty->pPlayers) {
-                        CurrentPlayer.sHealth = CurrentPlayer.GetMaxHealth();
-                        CurrentPlayer.sMana = CurrentPlayer.GetMaxMana();
+                    for (Player &PlayerRef : pParty->pPlayers) {
+                        PlayerRef.sHealth = PlayerRef.GetMaxHealth();
+                        PlayerRef.sMana = PlayerRef.GetMaxMana();
                     }
                     DDM_DLV_Header *ddm_dlv = &pOutdoor->ddm;
                     if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) {
@@ -2817,8 +2815,8 @@ void CastSpellInfoHelpers::castSpell() {
                         pParty->pPlayers[pCastSpell->uPlayerID_2].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION]
                             .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
                     } else {
-                        for (Player &CurrentPlayer : pParty->pPlayers) {
-                            CurrentPlayer.pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION]
+                        for (Player &PlayerRef : pParty->pPlayers) {
+                            PlayerRef.pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION]
                                 .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
                         }
                         spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);

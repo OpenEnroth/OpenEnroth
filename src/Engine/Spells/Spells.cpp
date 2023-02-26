@@ -510,7 +510,7 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
 
     int yaw = 0;
     int pitch = 0;
-    double distance_to_target = coord_delta.ToFloat().Length();
+    float distance_to_target = coord_delta.ToFloat().Length();
     if (distance_to_target <= 1.0) {
         distance_to_target = 1;
     } else {
@@ -592,7 +592,7 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
                 spell_spray_angles = spell_spray_arc / (spell_num_objects - 1);
                 for (int i = spell_spray_arc / -2; i <= spell_spray_arc / 2; i += spell_spray_angles) {
                     spell_sprites.uFacing = i + yaw;
-                    spriteid = spell_sprites.Create(i + yaw, pitch,pObjectList->pObjects[spell_sprites.uObjectDescID].uSpeed, 0);
+                    spriteid = spell_sprites.Create(i + yaw, pitch, pObjectList->pObjects[spell_sprites.uObjectDescID].uSpeed, 0);
                 }
             }
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
