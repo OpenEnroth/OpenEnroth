@@ -274,6 +274,21 @@ GAME_TEST(Issue, Issue211) {
     test->playTraceFromTestData("issue_211.mm7", "issue_211.json");
 }
 
+
+static void check223res( CHARACTER_ATTRIBUTE_TYPE res, std::initializer_list<std::pair<int, int>> playerrespairs) {
+    for (auto pair : playerrespairs) {
+        EXPECT_EQ(pParty->pPlayers[pair.first].GetActualResistance(res), pair.second);
+    }
+}
+
+GAME_TEST(Issue, Issue223) {
+    // Fire and air resistance not resetting between games
+    test->playTraceFromTestData("issue_223.mm7", "issue_223.json");
+    // expect normal resistances 55-00-00-00
+    check223res(CHARACTER_ATTRIBUTE_RESIST_FIRE, { {0, 5}, {1, 0}, {2, 0}, {3, 0} });
+    check223res(CHARACTER_ATTRIBUTE_RESIST_AIR, { {0, 5}, {1, 0}, {2, 0}, {3, 0} });
+}
+
 GAME_TEST(Prs, Pr469) {
     // Assert when using Quick Spell button when spell is not set
     test->playTraceFromTestData("pr_469.mm7", "pr_469.json");
