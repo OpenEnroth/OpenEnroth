@@ -259,6 +259,16 @@ GAME_TEST(Issue, Issue201) {
     EXPECT_EQ((oldgametime + GameTime(0, 0, 0, 0, 1).GetDays()), newtime);
 }
 
+GAME_TEST(Issue, Issue202) {
+    //Judge doesn't move to house and stays with the party
+    int oldhirecount{};
+    test->playTraceFromTestData("issue_202.mm7", "issue_202.json", [&]() {oldhirecount = pParty->CountHirelings(); });
+    // judge shouldnt be with party anymore
+    EXPECT_EQ(oldhirecount - 1, pParty->CountHirelings());
+    // party align evil
+    EXPECT_EQ(pParty->alignment, PartyAlignment_Evil);
+}
+
 GAME_TEST(Prs, Pr469) {
     // Assert when using Quick Spell button when spell is not set
     test->playTraceFromTestData("pr_469.mm7", "pr_469.json");

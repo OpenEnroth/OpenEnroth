@@ -178,7 +178,7 @@ struct Party {
     bool _497FC5_check_party_perception_against_level();
     bool AddItemToParty(ItemGen *pItem);
     void Yell();
-    void CountHirelings();
+    int CountHirelings();
 
     void GivePartyExp(unsigned int pEXPNum);
     int GetPartyReputation();
