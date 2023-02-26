@@ -227,16 +227,17 @@ void KeyboardInputHandler::GenerateGameplayActions() {
             }
 
             SPELL_TYPE quickSpellNumber = pPlayers[uActiveCharacter]->uQuickSpell;
-            PLAYER_SKILL_MASTERY skill_mastery = pPlayers[uActiveCharacter]->GetActualSkillMastery(getSkillTypeForSpell(quickSpellNumber));
 
             int uRequiredMana = 0;
-            if (!engine->config->debug.AllMagic.Get()) {
+            if (quickSpellNumber != SPELL_NONE && !engine->config->debug.AllMagic.Get()) {
+                PLAYER_SKILL_MASTERY skill_mastery = pPlayers[uActiveCharacter]->GetActualSkillMastery(getSkillTypeForSpell(quickSpellNumber));
+
                 uRequiredMana = pSpellDatas[quickSpellNumber].mana_per_skill[std::to_underlying(skill_mastery) - 1];
             }
 
             bool enoughMana = pPlayers[uActiveCharacter]->sMana >= uRequiredMana;
 
-            if (pPlayers[uActiveCharacter]->uQuickSpell == 0 || engine->IsUnderwater() || !enoughMana) {
+            if (quickSpellNumber == SPELL_NONE || engine->IsUnderwater() || !enoughMana) {
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Attack, 0, 0);
             } else {
                 pMessageQueue_50C9E8->AddGUIMessage(UIMSG_CastQuickSpell, 0, 0);
