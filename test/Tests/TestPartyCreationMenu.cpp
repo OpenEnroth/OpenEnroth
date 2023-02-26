@@ -269,6 +269,11 @@ GAME_TEST(Issue, Issue202) {
     EXPECT_EQ(pParty->alignment, PartyAlignment_Evil);
 }
 
+GAME_TEST(Issue, Issue211) {
+    // Crash during accidental ok double click
+    test->playTraceFromTestData("issue_211.mm7", "issue_211.json");
+}
+
 GAME_TEST(Prs, Pr469) {
     // Assert when using Quick Spell button when spell is not set
     test->playTraceFromTestData("pr_469.mm7", "pr_469.json");
