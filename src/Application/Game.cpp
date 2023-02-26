@@ -406,7 +406,7 @@ void Game::CloseTargetedSpellWindow() {
             pGUIWindow_CastTargetedSpell = nullptr;  // test to fix enchanting issue
             mouse->SetCursorImage("MICON1");
             game_ui_status_bar_event_string_time_left = 0;
-            _50C9A0_IsEnchantingInProgress = 0;
+            IsEnchantingInProgress = false;
             back_to_game();
         }
     }
@@ -760,7 +760,7 @@ void Game::EventLoop() {
                             pGUIWindow_CastTargetedSpell = 0;
                             mouse->SetCursorImage("MICON1");
                             game_ui_status_bar_event_string_time_left = 0;
-                            _50C9A0_IsEnchantingInProgress = 0;
+                            IsEnchantingInProgress = false;
                             back_to_game();
                         }
                         continue;
@@ -796,16 +796,14 @@ void Game::EventLoop() {
                                             if (pParty->bTurnBasedModeOn)
                                                 pTurnEngine
                                                     ->ApplyPlayerAction();
-                                            _50C9D0_AfterEnchClickEventId = 0;
-                                            _50C9D4_AfterEnchClickEventSecondParam =
-                                                0;
-                                            _50C9D8_AfterEnchClickEventTimeout =
-                                                0;
+                                            AfterEnchClickEventId = UIMSG_0;
+                                            AfterEnchClickEventSecondParam = 0;
+                                            AfterEnchClickEventTimeout.Reset();
                                         }
                                         if (ptr_50C9A4_ItemToEnchant &&
                                             ptr_50C9A4_ItemToEnchant->uItemID != ITEM_NULL) {
                                             ptr_50C9A4_ItemToEnchant->uAttributes &= ~ITEM_ENCHANT_ANIMATION_MASK;
-                                            _50C9A8_item_enchantment_timer = 0;
+                                            ItemEnchantmentTimer.Reset();
                                             ptr_50C9A4_ItemToEnchant = nullptr;
                                         }
                                         OnEscape();
@@ -1168,7 +1166,7 @@ void Game::EventLoop() {
                         pGUIWindow_CastTargetedSpell = 0;
                         mouse->SetCursorImage("MICON1");
                         game_ui_status_bar_event_string_time_left = 0;
-                        _50C9A0_IsEnchantingInProgress = 0;
+                        IsEnchantingInProgress = false;
                         back_to_game();
                         continue;
                     }
@@ -1188,7 +1186,7 @@ void Game::EventLoop() {
                         pGUIWindow_CastTargetedSpell = 0;
                         mouse->SetCursorImage("MICON1");
                         game_ui_status_bar_event_string_time_left = 0;
-                        _50C9A0_IsEnchantingInProgress = 0;
+                        IsEnchantingInProgress = false;
                         back_to_game();
                         continue;
                     }
@@ -1211,7 +1209,7 @@ void Game::EventLoop() {
                             pGUIWindow_CastTargetedSpell = 0;
                             mouse->SetCursorImage("MICON1");
                             game_ui_status_bar_event_string_time_left = 0;
-                            _50C9A0_IsEnchantingInProgress = 0;
+                            IsEnchantingInProgress = false;
                             back_to_game();
                             continue;
                         }
@@ -1232,7 +1230,7 @@ void Game::EventLoop() {
                     pGUIWindow_CastTargetedSpell = 0;
                     mouse->SetCursorImage("MICON1");
                     game_ui_status_bar_event_string_time_left = 0;
-                    _50C9A0_IsEnchantingInProgress = 0;
+                    IsEnchantingInProgress = false;
                     back_to_game();
                     continue;
                 case UIMSG_CastSpell_Character_Big_Improvement:  // Preservation
@@ -1245,7 +1243,7 @@ void Game::EventLoop() {
                 case UIMSG_CastSpell_Character_Small_Improvement:  // Fate, cure
                 case UIMSG_HiredNPC_CastSpell:
                     pMessageQueue_50CBD0->Flush();
-                    if (_50C9A0_IsEnchantingInProgress) {
+                    if (IsEnchantingInProgress) {
                         uActiveCharacter = uMessageParam;
                     } else {
                         if (pGUIWindow_CastTargetedSpell) {
@@ -1271,7 +1269,7 @@ void Game::EventLoop() {
                             pEventTimer->Resume();
                             mouse->SetCursorImage("MICON1");
                             game_ui_status_bar_event_string_time_left = 0;
-                            _50C9A0_IsEnchantingInProgress = 0;
+                            IsEnchantingInProgress = false;
                         }
                     }
                     continue;
@@ -1323,7 +1321,7 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_HintBeaconSlot: {
                     if (!pGUIWindow_CurrentMenu) continue;
-                    pPlayer = pPlayers[_506348_current_lloyd_playerid + 1];
+                    pPlayer = pPlayers[CurrentLloydPlayerID + 1];
                     if (uMessageParam >= pPlayer->vBeacons.size()) {
                         continue;
                     }
@@ -1359,7 +1357,7 @@ void Game::EventLoop() {
                     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
                     continue;
                 case UIMSG_InstallBeacon:
-                    pPlayer9 = pPlayers[_506348_current_lloyd_playerid + 1];
+                    pPlayer9 = pPlayers[CurrentLloydPlayerID + 1];
                     if ((pPlayer9->vBeacons.size() <= uMessageParam) && bRecallingBeacon) continue;
 
                     _506360_installing_beacon = true;
@@ -1367,7 +1365,7 @@ void Game::EventLoop() {
                     pPlayer9->SpendMana(uRequiredMana);
                     if (pParty->bTurnBasedModeOn) {
                         v60 = sRecoveryTime;
-                        pParty->pTurnBasedPlayerRecoveryTimes[_506348_current_lloyd_playerid] = sRecoveryTime;
+                        pParty->pTurnBasedPlayerRecoveryTimes[CurrentLloydPlayerID] = sRecoveryTime;
                         pPlayer9->SetRecoveryTime(v60);
                         pTurnEngine->ApplyPlayerAction();
                     } else {
@@ -1650,7 +1648,7 @@ void Game::EventLoop() {
                     pGUIWindow_CastTargetedSpell = 0;
                     mouse->SetCursorImage("MICON1");
                     game_ui_status_bar_event_string_time_left = 0;
-                    _50C9A0_IsEnchantingInProgress = 0;
+                    IsEnchantingInProgress = false;
                     back_to_game();
                     continue;
                 case UIMSG_1C:
@@ -2507,20 +2505,17 @@ void Game::EventLoop() {
     pMessageQueue_50CBD0 = pMessageQueue_50C9E8;
     pMessageQueue_50C9E8->Clear();
 
-    if (dword_50C9DC) {
-        pMessageQueue_50CBD0->AddGUIMessage((UIMessageType)dword_50C9DC,
-                                            (int64_t)ptr_50C9E0, 0);
-        dword_50C9DC = 0;
+    if (GateMasterEventId != UIMSG_0) {
+        pMessageQueue_50CBD0->AddGUIMessage(GateMasterEventId, (int64_t)GateMasterNPCData, 0);
+        GateMasterEventId = UIMSG_0;
     } else {
-        if (_50C9D0_AfterEnchClickEventId > 0) {
-            _50C9D8_AfterEnchClickEventTimeout -= pEventTimer->uTimeElapsed;
-            if (_50C9D8_AfterEnchClickEventTimeout <= 0) {
-                pMessageQueue_50CBD0->AddGUIMessage(
-                    (UIMessageType)_50C9D0_AfterEnchClickEventId,
-                    _50C9D4_AfterEnchClickEventSecondParam, 0);
-                _50C9D0_AfterEnchClickEventId = 0;
-                _50C9D4_AfterEnchClickEventSecondParam = 0;
-                _50C9D8_AfterEnchClickEventTimeout = 0;
+        if (AfterEnchClickEventId != UIMSG_0) {
+            AfterEnchClickEventTimeout = AfterEnchClickEventTimeout - GameTime(pEventTimer->uTimeElapsed);
+            if (!AfterEnchClickEventTimeout.Valid()) {
+                pMessageQueue_50CBD0->AddGUIMessage(AfterEnchClickEventId, AfterEnchClickEventSecondParam, 0);
+                AfterEnchClickEventId = UIMSG_0;
+                AfterEnchClickEventSecondParam = 0;
+                AfterEnchClickEventTimeout.Reset();
             }
         }
     }

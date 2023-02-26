@@ -13,6 +13,7 @@
 #include "Engine/Objects/PlayerEnums.h"
 #include "Engine/MapInfo.h"
 
+#include "GUI/GUIEnums.h"
 #include "GUI/GUIDialogues.h"
 
 #include "Utility/IndexedArray.h"
@@ -120,7 +121,7 @@ extern std::array<char, 777> books_num_items_per_page;
 extern int LloydsBeaconSpellId;
 extern signed int sRecoveryTime;    // idb
 extern unsigned int uRequiredMana;  // idb
-extern int _506348_current_lloyd_playerid;
+extern int CurrentLloydPlayerID;
 extern int LloydsBeaconSpellDuration;
 extern int MapBookOpen;
 // extern Texture_MM7 *dword_50640C[];
@@ -182,13 +183,13 @@ extern unsigned int uIconID_TurnStart;
 extern int dword_50C994;
 extern int dword_50C998_turnbased_icon_1A;
 extern int uSpriteID_Spell11;  // idb
-extern bool _50C9A0_IsEnchantingInProgress;
-extern int _50C9A8_item_enchantment_timer;
-extern int _50C9D0_AfterEnchClickEventId;
-extern int _50C9D4_AfterEnchClickEventSecondParam;
-extern int _50C9D8_AfterEnchClickEventTimeout;
-extern int dword_50C9DC;
-extern struct NPCData *ptr_50C9E0;
+extern bool IsEnchantingInProgress;
+extern GameTime ItemEnchantmentTimer;
+extern UIMessageType AfterEnchClickEventId;
+extern int AfterEnchClickEventSecondParam;
+extern GameTime AfterEnchClickEventTimeout;
+extern UIMessageType GateMasterEventId;
+extern struct NPCData *GateMasterNPCData;
 // extern int dword_50C9E8; // idb
 // extern int dword_50C9EC[]; // 50C9EC
 extern int dword_50CDC8;

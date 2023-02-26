@@ -1318,9 +1318,9 @@ static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, Texture *i
         else
             __debugbreak();
 
-        _50C9A8_item_enchantment_timer -= pEventTimer->uTimeElapsed;
-        if (_50C9A8_item_enchantment_timer <= 0) {
-            _50C9A8_item_enchantment_timer = 0;
+        ItemEnchantmentTimer = ItemEnchantmentTimer - GameTime(pEventTimer->uTimeElapsed);
+        if (!ItemEnchantmentTimer.Valid()) {
+            ItemEnchantmentTimer.Reset();
             item->ResetEnchantAnimation();
             ptr_50C9A4_ItemToEnchant = nullptr;
         }
@@ -2503,7 +2503,7 @@ void OnPaperdollLeftClick() {
         // pPlayers[uActiveCharacter]->get
 
         // enchant / recharge item
-        if (_50C9A0_IsEnchantingInProgress) {
+        if (IsEnchantingInProgress) {
             /* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &=
              *0x7Fu;//CastSpellInfo
              *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 2) =
@@ -2518,12 +2518,12 @@ void OnPaperdollLeftClick() {
             pSpellInfo->field_6 = std::to_underlying(pitem->GetItemEquipType());
 
             ptr_50C9A4_ItemToEnchant = pitem;
-            _50C9A0_IsEnchantingInProgress = 0;
+            IsEnchantingInProgress = false;
             pMessageQueue_50CBD0->Flush();
             mouse->SetCursorImage("MICON1");
-            _50C9D4_AfterEnchClickEventSecondParam = 0;
-            _50C9D0_AfterEnchClickEventId = 113;
-            _50C9D8_AfterEnchClickEventTimeout = 256;
+            AfterEnchClickEventId = UIMSG_Escape;
+            AfterEnchClickEventSecondParam = 0;
+            AfterEnchClickEventTimeout = GameTime::FromSeconds(2);
         } else {
             if (!ptr_50C9A4_ItemToEnchant) {  // снять вещь
                 pParty->SetHoldingItem(pitem);
@@ -2577,7 +2577,7 @@ void OnPaperdollLeftClick() {
                 WetsuitOff(uActiveCharacter);
             }
 
-            if (_50C9A0_IsEnchantingInProgress) {  // наложить закл на экипировку
+            if (IsEnchantingInProgress) {  // наложить закл на экипировку
                 /* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &=
                  *0x7Fu;//CastSpellInfo
                  *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 2) =
@@ -2585,8 +2585,7 @@ void OnPaperdollLeftClick() {
                  *((int *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) = v36;
                  *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
                  *pEquipType;*/
-                pSpellInfo =
-                    static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
+                pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
                 pSpellInfo->uFlags &= ~ON_CAST_Enchantment;
                 pSpellInfo->uPlayerID_2 = uActiveCharacter - 1;
                 pSpellInfo->spell_target_pid = v34 - 1;
@@ -2594,12 +2593,12 @@ void OnPaperdollLeftClick() {
 
                 ptr_50C9A4_ItemToEnchant =
                     &pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1];
-                _50C9A0_IsEnchantingInProgress = 0;
+                IsEnchantingInProgress = false;
                 pMessageQueue_50CBD0->Flush();
                 mouse->SetCursorImage("MICON1");
-                _50C9D4_AfterEnchClickEventSecondParam = 0;
-                _50C9D0_AfterEnchClickEventId = 113;
-                _50C9D8_AfterEnchClickEventTimeout = 256;
+                AfterEnchClickEventId = UIMSG_Escape;
+                AfterEnchClickEventSecondParam = 0;
+                AfterEnchClickEventTimeout = GameTime::FromSeconds(2);
             } else {
                 if (!ptr_50C9A4_ItemToEnchant) {  // снять вещь
                     pParty->SetHoldingItem(&pPlayers[uActiveCharacter]

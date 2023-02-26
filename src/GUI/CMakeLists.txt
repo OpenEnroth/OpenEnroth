@@ -39,6 +39,7 @@ set(GUI_HEADERS GUIButton.h
                 GUIFont.h
                 GUIProgressBar.h
                 GUIWindow.h
+                GUIEnums.h
                 UI/Spellbook.h
                 UI/UIArena.h
                 UI/UIBooks.h
