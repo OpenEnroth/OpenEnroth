@@ -4,6 +4,7 @@ set(GUI_SOURCES GUIButton.cpp
                 GUIFont.cpp
                 GUIProgressBar.cpp
                 GUIWindow.cpp
+                GUIEnums.cpp
                 UI/Spellbook.cpp
                 UI/UIArena.cpp
                 UI/UIBooks.cpp

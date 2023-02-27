@@ -524,7 +524,7 @@ void Player::ItemsPotionDmgBreak(int enchant_count) {
 }
 
 //----- (00492C0B) --------------------------------------------------------
-bool Player::CanAct() {
+bool Player::CanAct() const {
     if (this->IsAsleep() || this->IsParalyzed() || this->IsUnconcious() ||
         this->IsDead() || this->IsPertified() || this->IsEradicated())
 

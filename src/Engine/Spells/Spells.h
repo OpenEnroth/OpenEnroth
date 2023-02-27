@@ -152,6 +152,13 @@ inline bool isSpellTargetsItem(SPELL_TYPE uSpellID) {
 }
 
 /**
+ * Is spell ID references any regular spell?
+ */
+inline bool isRegularSpell(SPELL_TYPE uSpellID) {
+    return uSpellID >= SPELL_REGULAR_FIRST && uSpellID <= SPELL_REGULAR_LAST;
+}
+
+/**
  * Get skill used for casting given spell.
  */
 inline PLAYER_SKILL_TYPE getSkillTypeForSpell(SPELL_TYPE uSpellID) {

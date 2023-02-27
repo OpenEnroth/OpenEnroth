@@ -183,13 +183,13 @@ extern unsigned int uIconID_TurnStart;
 extern int dword_50C994;
 extern int dword_50C998_turnbased_icon_1A;
 extern int uSpriteID_Spell11;  // idb
-extern bool IsEnchantingInProgress;
-extern int ItemEnchantmentTimer;
-extern UIMessageType AfterEnchClickEventId;
-extern int AfterEnchClickEventSecondParam;
-extern int AfterEnchClickEventTimeout;
-extern UIMessageType GateMasterEventId;
-extern struct NPCData *GateMasterNPCData;
+extern bool IsEnchantingInProgress; // 50C9A0 Indicates that inventory window is opened for enchant-like spell
+extern int ItemEnchantmentTimer; // 50C9A8 Timer for enchanting animation for item in inventory
+extern UIMessageType AfterEnchClickEventId; // 50C9D0 Event id that is pushed in queue after enchant item has been clicked
+extern int AfterEnchClickEventSecondParam; // 50C9D4 Parameter passed for event "AfterEnchClickEventId"
+extern int AfterEnchClickEventTimeout; // 50C9D8 Timer before event "AfterEnchClickEventId" is pushed in queue
+extern UIMessageType GateMasterEventId; // 50C9D8 Event id that is pushed in queue after Gate Master NPC skill is used
+extern struct NPCData *GateMasterNPCData; // 50C9E0 NPC Data used as parameter for event "GateMasterEventId"
 // extern int dword_50C9E8; // idb
 // extern int dword_50C9EC[]; // 50C9EC
 extern int dword_50CDC8;
