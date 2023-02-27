@@ -798,12 +798,12 @@ void Game::EventLoop() {
                                                     ->ApplyPlayerAction();
                                             AfterEnchClickEventId = UIMSG_0;
                                             AfterEnchClickEventSecondParam = 0;
-                                            AfterEnchClickEventTimeout.Reset();
+                                            AfterEnchClickEventTimeout = 0;
                                         }
                                         if (ptr_50C9A4_ItemToEnchant &&
                                             ptr_50C9A4_ItemToEnchant->uItemID != ITEM_NULL) {
                                             ptr_50C9A4_ItemToEnchant->uAttributes &= ~ITEM_ENCHANT_ANIMATION_MASK;
-                                            ItemEnchantmentTimer.Reset();
+                                            ItemEnchantmentTimer = 0;
                                             ptr_50C9A4_ItemToEnchant = nullptr;
                                         }
                                         OnEscape();
@@ -2510,12 +2510,12 @@ void Game::EventLoop() {
         GateMasterEventId = UIMSG_0;
     } else {
         if (AfterEnchClickEventId != UIMSG_0) {
-            AfterEnchClickEventTimeout = AfterEnchClickEventTimeout - GameTime(pEventTimer->uTimeElapsed);
-            if (!AfterEnchClickEventTimeout.Valid()) {
+            AfterEnchClickEventTimeout -= pEventTimer->uTimeElapsed;
+            if (AfterEnchClickEventTimeout <= 0) {
                 pMessageQueue_50CBD0->AddGUIMessage(AfterEnchClickEventId, AfterEnchClickEventSecondParam, 0);
                 AfterEnchClickEventId = UIMSG_0;
                 AfterEnchClickEventSecondParam = 0;
-                AfterEnchClickEventTimeout.Reset();
+                AfterEnchClickEventTimeout = 0;
             }
         }
     }

@@ -2416,10 +2416,10 @@ int dword_50C994 = 0;
 int dword_50C998_turnbased_icon_1A = 0;
 int uSpriteID_Spell11;  // idb
 bool IsEnchantingInProgress;
-GameTime ItemEnchantmentTimer;
+int ItemEnchantmentTimer;
 UIMessageType AfterEnchClickEventId;
 int AfterEnchClickEventSecondParam;
-GameTime AfterEnchClickEventTimeout;
+int AfterEnchClickEventTimeout;
 UIMessageType GateMasterEventId;
 struct NPCData *GateMasterNPCData;
 // int dword_50C9E8; // idb

@@ -144,7 +144,9 @@ struct Timer {
     int dt_fixpoint; // dt in seconds in fixpoint format
     unsigned int uTotalGameTimeElapsed;
 
-    static const unsigned int Minute = 2 * TIME_QUANT;
+    // Real-world time intervals in timer quants
+    static const unsigned int Second = 128;
+    static const unsigned int Minute = 60 * Second;
     static const unsigned int Hour = 60 * Minute;
     static const unsigned int Day = 24 * Hour;
     static const unsigned int Week = 7 * Day;

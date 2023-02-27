@@ -649,7 +649,7 @@ void CastSpellInfoHelpers::castSpell() {
                             !IsWeapon(item->GetItemEquipType())) {
                         AfterEnchClickEventId = UIMSG_Escape;
                         AfterEnchClickEventSecondParam = 0;
-                        AfterEnchClickEventTimeout = GameTime::FromSeconds(1);
+                        AfterEnchClickEventTimeout = Timer::Second; // was 1, increased to make message readable
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         continue;
@@ -687,7 +687,7 @@ void CastSpellInfoHelpers::castSpell() {
                         item->uAttributes |= ITEM_TEMP_BONUS;
                     }
 
-                    ItemEnchantmentTimer = GameTime::FromSeconds(2);
+                    ItemEnchantmentTimer = Timer::Second * 2;
                     break;
                 }
 
@@ -1350,7 +1350,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (item->GetItemEquipType() != EQUIP_WAND || item->IsBroken()) {
                         AfterEnchClickEventId = UIMSG_Escape;
                         AfterEnchClickEventSecondParam = 0;
-                        AfterEnchClickEventTimeout = GameTime::FromSeconds(1);
+                        AfterEnchClickEventTimeout = Timer::Second; // was 1, increased to make message readable
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         continue;
@@ -1377,14 +1377,14 @@ void CastSpellInfoHelpers::castSpell() {
                     if (uNewCharges <= 0) {
                         AfterEnchClickEventId = UIMSG_Escape;
                         AfterEnchClickEventSecondParam = 0;
-                        AfterEnchClickEventTimeout = GameTime::FromSeconds(1);
+                        AfterEnchClickEventTimeout = Timer::Second; // was 1, increased to make message readable
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         continue;
                     }
 
                     item->uAttributes |= ITEM_AURA_EFFECT_GREEN;
-                    ItemEnchantmentTimer = GameTime::FromSeconds(2);
+                    ItemEnchantmentTimer = Timer::Second * 2;
                     break;
                 }
 
@@ -1474,7 +1474,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                                     spell_item_to_enchant->m_enchantmentStrength = ench_power;
                                     spell_item_to_enchant->uAttributes |= ITEM_AURA_EFFECT_BLUE;
-                                    ItemEnchantmentTimer = GameTime::FromSeconds(2);
+                                    ItemEnchantmentTimer = Timer::Second * 2;
                                     spell_failed = false;
                                 } else { // weapons or we won the lottery for special enchantment
                                     int ench_found = 0;
@@ -1519,7 +1519,7 @@ void CastSpellInfoHelpers::castSpell() {
                                     // set item ench
                                     spell_item_to_enchant->special_enchantment = (ITEM_ENCHANTMENT)ench_array[step];
                                     spell_item_to_enchant->uAttributes |= ITEM_AURA_EFFECT_BLUE;
-                                    ItemEnchantmentTimer = GameTime::FromSeconds(2);
+                                    ItemEnchantmentTimer = Timer::Second * 2;
                                     spell_failed = false;
                                 }
                             }

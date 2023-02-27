@@ -184,10 +184,10 @@ extern int dword_50C994;
 extern int dword_50C998_turnbased_icon_1A;
 extern int uSpriteID_Spell11;  // idb
 extern bool IsEnchantingInProgress;
-extern GameTime ItemEnchantmentTimer;
+extern int ItemEnchantmentTimer;
 extern UIMessageType AfterEnchClickEventId;
 extern int AfterEnchClickEventSecondParam;
-extern GameTime AfterEnchClickEventTimeout;
+extern int AfterEnchClickEventTimeout;
 extern UIMessageType GateMasterEventId;
 extern struct NPCData *GateMasterNPCData;
 // extern int dword_50C9E8; // idb

@@ -1882,7 +1882,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
 
             item->uAttributes |= ITEM_AURA_EFFECT_RED | ITEM_HARDENED;
 
-            ItemEnchantmentTimer = GameTime::FromSeconds(2);
+            ItemEnchantmentTimer = Timer::Second * 2;
             mouse->RemoveHoldingItem();
             no_rightlick_in_inventory = true;
             return;
@@ -1924,7 +1924,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             item->uExpireTime = GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(v31));
             item->uAttributes |= ITEM_TEMP_BONUS | ITEM_AURA_EFFECT_RED;
 
-            ItemEnchantmentTimer = GameTime::FromSeconds(2);
+            ItemEnchantmentTimer = Timer::Second * 2;
             mouse->RemoveHoldingItem();
             no_rightlick_in_inventory = true;
             return;

@@ -7216,7 +7216,7 @@ void Player::OnInventoryLeftClick() {
                     mouse->SetCursorImage("MICON1");
                     AfterEnchClickEventId = UIMSG_Escape;
                     AfterEnchClickEventSecondParam = 0;
-                    AfterEnchClickEventTimeout = GameTime::FromSeconds(2);
+                    AfterEnchClickEventTimeout = Timer::Second * 2;
                 }
 
                 return;
