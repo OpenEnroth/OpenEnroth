@@ -137,9 +137,9 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
 
     prev_screen_type = current_screen_type;
     current_screen_type = CURRENT_SCREEN::SCREEN_INPUT_BLV;
-    pBtn_ExitCancel = CreateButton({0x236u, 0x1BDu}, {0x4Bu, 0x21u}, 1, 0,
+    pBtn_ExitCancel = CreateButton({556, 0x1BDu}, {0x4Bu, 0x21u}, 1, 0,
         UIMSG_TransitionWindowCloseBtn, 0, InputAction::No, localization->GetString(LSTR_CANCEL), {ui_buttdesc2});
-    pBtn_YES = CreateButton({0x1E6u, 0x1BDu}, {0x4Bu, 0x21u}, 1, 0, UIMSG_TransitionUI_Confirm, 0, InputAction::Yes, hint, {ui_buttyes2});
+    pBtn_YES = CreateButton({476, 0x1BDu}, {0x4Bu, 0x21u}, 1, 0, UIMSG_TransitionUI_Confirm, 0, InputAction::Yes, hint, {ui_buttyes2});
     CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {0x3Fu, 0x49u}, 1, 0, UIMSG_TransitionUI_Confirm, 1, InputAction::EventTrigger, hint);
     CreateButton({8, 8}, {0x1CCu, 0x158u}, 1, 0, UIMSG_TransitionUI_Confirm, 1u, InputAction::Invalid, hint);
 }

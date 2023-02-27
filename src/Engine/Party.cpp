@@ -58,7 +58,7 @@ std::array<class UIAnimation *, 4>
      &_uianim._pUIAnum_Torchlight, &_uianim._pUIAnim_WizardEye};
 
 //----- (0044A56A) --------------------------------------------------------
-void Party::CountHirelings() {  // non hired followers
+int Party::CountHirelings() {  // non hired followers
     cNonHireFollowers = 0;
 
     for (unsigned int i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
@@ -66,6 +66,8 @@ void Party::CountHirelings() {  // non hired followers
         if (npc->Hired() && npc->pName != pHirelings[0].pName && npc->pName != pHirelings[1].pName)
             ++cNonHireFollowers;
     }
+
+    return cNonHireFollowers;
 }
 
 // inlined

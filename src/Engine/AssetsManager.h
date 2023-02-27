@@ -34,6 +34,7 @@ class AssetsManager {
                        unsigned int lod_sprite_id);
 
     // TODO(pskelton): Contain better
+    // TODO(pskelton): Manager should have a ref to all loose textures created throuh CreateTexture_Blank also
     Texture* WinnerCert{ nullptr };
 
  protected:

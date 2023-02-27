@@ -214,20 +214,20 @@ GAME_TEST(Issues, Issue427) {
     check427Buffs("b", {0, 1, 2, 3}, true);
 }
 
+uint64_t GetPartyHealth() {
+    uint64_t result = 0;
+    for (const Player& player : pParty->pPlayers)
+        result += player.sHealth;
+    return result;
+}
+
 GAME_TEST(Issues, Issue125) {
     // check that fireballs hurt party
-    auto partyHealth = [&] {
-        uint64_t result = 0;
-        for (const Player& player : pParty->pPlayers)
-            result += player.sHealth;
-        return result;
-    };
-
     engine->config->debug.AllMagic.Set(true);
 
     uint64_t oldHealth = 0;
-    test->playTraceFromTestData("issue_125.mm7", "issue_125.json", [&] { oldHealth = partyHealth(); });
-    uint64_t newHealth = partyHealth();
+    test->playTraceFromTestData("issue_125.mm7", "issue_125.json", [&] { oldHealth = GetPartyHealth(); });
+    uint64_t newHealth = GetPartyHealth();
     EXPECT_LT(newHealth, oldHealth);
 }
 
@@ -241,6 +241,52 @@ GAME_TEST(Issue, Issue123) {
     test->playTraceFromTestData("issue_123.mm7", "issue_123.json");
     // check party is still in the air
     EXPECT_GT(pParty->vPosition.z, 512);
+}
+
+GAME_TEST(Issue, Issue201) {
+    // Unhandled EVENT_ShowMovie in Event Processor
+    uint64_t oldHealth = 0;
+    uint64_t oldgametime{};
+    test->playTraceFromTestData("issue_201.mm7", "issue_201.json", [&] { oldHealth = GetPartyHealth(); oldgametime = pParty->GetPlayingTime().GetDays(); });
+
+    // party should heal
+    uint64_t newHealth = GetPartyHealth();
+    EXPECT_GT(newHealth, oldHealth);
+    // we should be teleported to harmondale
+    EXPECT_EQ(pCurrentMapName, "Out02.odm");
+    // time should advance by a week
+    uint64_t newtime = pParty->GetPlayingTime().GetDays();
+    EXPECT_EQ((oldgametime + GameTime(0, 0, 0, 0, 1).GetDays()), newtime);
+}
+
+GAME_TEST(Issue, Issue202) {
+    //Judge doesn't move to house and stays with the party
+    int oldhirecount{};
+    test->playTraceFromTestData("issue_202.mm7", "issue_202.json", [&]() {oldhirecount = pParty->CountHirelings(); });
+    // judge shouldnt be with party anymore
+    EXPECT_EQ(oldhirecount - 1, pParty->CountHirelings());
+    // party align evil
+    EXPECT_EQ(pParty->alignment, PartyAlignment_Evil);
+}
+
+GAME_TEST(Issue, Issue211) {
+    // Crash during accidental ok double click
+    test->playTraceFromTestData("issue_211.mm7", "issue_211.json");
+}
+
+
+static void check223res( CHARACTER_ATTRIBUTE_TYPE res, std::initializer_list<std::pair<int, int>> playerrespairs) {
+    for (auto pair : playerrespairs) {
+        EXPECT_EQ(pParty->pPlayers[pair.first].GetActualResistance(res), pair.second);
+    }
+}
+
+GAME_TEST(Issue, Issue223) {
+    // Fire and air resistance not resetting between games
+    test->playTraceFromTestData("issue_223.mm7", "issue_223.json");
+    // expect normal resistances 55-00-00-00
+    check223res(CHARACTER_ATTRIBUTE_RESIST_FIRE, { {0, 5}, {1, 0}, {2, 0}, {3, 0} });
+    check223res(CHARACTER_ATTRIBUTE_RESIST_AIR, { {0, 5}, {1, 0}, {2, 0}, {3, 0} });
 }
 
 GAME_TEST(Prs, Pr469) {
