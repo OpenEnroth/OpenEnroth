@@ -1456,7 +1456,6 @@ void _494035_timed_effects__water_walking_damage__etc() {
     int v38;             // ecx@88
     int v40;             // ecx@92
     int v42;             // ecx@96
-    signed int a2a;      // [sp+18h] [bp-18h]@47
     signed int old_day;  // [sp+1Ch] [bp-14h]@47
     signed int old_hour;
 
@@ -1554,18 +1553,24 @@ void _494035_timed_effects__water_walking_damage__etc() {
             }
         }
     }
+
     RegeneratePartyHealthMana();
-    uint party_condition_flag = 4;
-    a2a = pEventTimer->uTimeElapsed;
-    if (pParty->uFlags2 &
-        PARTY_FLAGS_2_RUNNING) {  //замедление восстановления при беге
-        a2a *= 0.5f;
-        if (a2a < 1) a2a = 1;
+
+    uint recoveryTimeDt = pEventTimer->uTimeElapsed;
+    // static int to keep track of rounding remainder
+    static uint roundingdt{ 0 };
+    recoveryTimeDt += roundingdt;
+    roundingdt = 0;
+    if (pParty->uFlags2 & PARTY_FLAGS_2_RUNNING && recoveryTimeDt > 0) {  // half recovery speed if party is running
+        roundingdt = recoveryTimeDt % 2;
+        recoveryTimeDt /= 2;
     }
 
+    uint party_condition_flag = 4;
     for (uint pl = 1; pl <= 4; pl++) {
-        if (pPlayers[pl]->uTimeToRecovery)
-            pPlayers[pl]->Recover(GameTime(a2a));  //восстановление активности
+        if (pPlayers[pl]->uTimeToRecovery && recoveryTimeDt > 0)
+            pPlayers[pl]->Recover(GameTime(recoveryTimeDt));  //восстановление активности
+
         if (pPlayers[pl]->GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) +
                     pPlayers[pl]->sHealth + pPlayers[pl]->uEndurance >=
                 1 ||
@@ -1575,6 +1580,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
         } else {
             pPlayers[pl]->SetCondition(Condition_Dead, 0);
         }
+
         if (pPlayers[pl]->field_E0) {
             v24 = pPlayers[pl]->field_E0 - pEventTimer->uTimeElapsed;
             if (v24 > 0) {

@@ -416,3 +416,21 @@ GAME_TEST(Issue, Issue506) {
     test->playTraceFromTestData("issue_506.mm7", "issue_506.json");
 }
 
+
+GAME_TEST(Issues, Issue405) {
+    // FPS affects effective recovery time
+    // play trace at 60fps
+    engine->config->debug.AllMagic.Set(true);
+    engine->config->graphics.FPSLimit.Set(63);
+    test->playTraceFromTestData("issue_405.mm7", "issue_405.json");
+    int remainingtime60{ pPlayers[1]->uTimeToRecovery };
+
+    // play trace at max fps
+    engine->config->debug.AllMagic.Set(true);
+    engine->config->graphics.FPSLimit.Set(0);
+    test->playTraceFromTestData("issue_405.mm7", "issue_405.json");
+    int remainingtimemax{ pPlayers[1]->uTimeToRecovery };
+
+    // recovered amount should match
+    EXPECT_EQ(remainingtime60, remainingtimemax);
+}
