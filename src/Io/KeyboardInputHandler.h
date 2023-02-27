@@ -7,6 +7,10 @@
 #include "Io/IKeyboardController.h"
 #include "Io/KeyboardActionMapping.h"
 
+// key delay times in 1 / 128th of second
+constexpr int DELAY_TOGGLE_TIME_FIRST = 64;
+constexpr int DELAY_TOGGLE_TIME_AFTER = 5;
+
 enum class WindowInputStatus : int32_t {
     WINDOW_INPUT_NONE = 0,
     WINDOW_INPUT_IN_PROGRESS = 1,
