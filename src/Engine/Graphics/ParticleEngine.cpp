@@ -56,7 +56,7 @@ void ParticleEngine::ResetParticles() {
     uTimeElapsed = 0;
 }
 
-void ParticleEngine::AddParticle(Particle_sw *patricle) {
+void ParticleEngine::AddParticle(Particle_sw *particle) {
     if (!pMiscTimer->bPaused) {
         Particle *freeParticle = nullptr;
 
@@ -74,23 +74,23 @@ void ParticleEngine::AddParticle(Particle_sw *patricle) {
         }
 
         if (freeParticle) {
-            freeParticle->type = patricle->type;
-            freeParticle->x = patricle->x;
-            freeParticle->y = patricle->y;
-            freeParticle->z = patricle->z;
-            freeParticle->_x = patricle->x;
-            freeParticle->_y = patricle->y;
-            freeParticle->_z = patricle->z;
-            freeParticle->shift_x = patricle->r; // TODO: seems Particle_sw struct fields are mixed up here
-            freeParticle->shift_y = patricle->g;
-            freeParticle->shift_z = patricle->b;
-            freeParticle->uParticleColor = patricle->uDiffuse;
-            freeParticle->uLightColor_bgr = patricle->uDiffuse;
+            freeParticle->type = particle->type;
+            freeParticle->x = particle->x;
+            freeParticle->y = particle->y;
+            freeParticle->z = particle->z;
+            freeParticle->_x = particle->x;
+            freeParticle->_y = particle->y;
+            freeParticle->_z = particle->z;
+            freeParticle->shift_x = particle->r; // TODO: seems Particle_sw struct fields are mixed up here
+            freeParticle->shift_y = particle->g;
+            freeParticle->shift_z = particle->b;
+            freeParticle->uParticleColor = particle->uDiffuse;
+            freeParticle->uLightColor_bgr = particle->uDiffuse;
             // v6 = (v4->uType & 4) == 0;
-            freeParticle->timeToLive = patricle->timeToLive;
-            freeParticle->texture = patricle->texture;
-            freeParticle->paletteID = patricle->paletteID;
-            freeParticle->particle_size = patricle->particle_size;
+            freeParticle->timeToLive = particle->timeToLive;
+            freeParticle->texture = particle->texture;
+            freeParticle->paletteID = particle->paletteID;
+            freeParticle->particle_size = particle->particle_size;
             if (freeParticle->type & ParticleType_Rotating) {
                 freeParticle->rotation_speed = vrng->Random(256) - 128;
                 freeParticle->angle = vrng->Random(TrigLUT.uIntegerDoublePi);
@@ -175,6 +175,7 @@ void ParticleEngine::UpdateParticles() {
         }
         float dissipate_factor = dissipate_value / 255.0f;
         // v10 = (double)v22 * 0.0039215689;
+        // TODO(Nik-RE-dev): check colour format use in particles
         p->uLightColor_bgr = ((uint)floorf(p->b * dissipate_factor + 0.5) << 16) |
                              ((uint)floorf(p->g * dissipate_factor + 0.5) << 8) |
                              ((uint)floorf(p->r * dissipate_factor + 0.5) << 0);

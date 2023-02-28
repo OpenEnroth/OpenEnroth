@@ -142,7 +142,7 @@ struct SpellFxRenderer {
     /**
      * @offset 0x4A7E89
      */
-    void sparklesOnActorAfterItCastsBuff(Actor *pActor, unsigned int uDiffuse);
+    void sparklesOnActorAfterItCastsBuff(Actor *pActor, uint32_t uDiffuse);
     void _4A7F74(int x, int y, int z);
     float _4A806F_get_mass_distortion_value(Actor *pActor);
     // void _4A80DC_implosion_particle_sw(struct SpriteObject *a2);

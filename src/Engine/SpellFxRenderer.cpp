@@ -556,7 +556,7 @@ void SpellFxRenderer::AddProjectile(SpriteObject *a2, int a3,
     }
 }
 
-void SpellFxRenderer::sparklesOnActorAfterItCastsBuff(Actor *pActor, unsigned int uDiffuse) {
+void SpellFxRenderer::sparklesOnActorAfterItCastsBuff(Actor *pActor, uint32_t uDiffuse) {
     Particle_sw particle;
 
     memset(&particle, 0, sizeof(Particle_sw));
@@ -575,6 +575,7 @@ void SpellFxRenderer::sparklesOnActorAfterItCastsBuff(Actor *pActor, unsigned in
         if (uDiffuse) {
             particle.uDiffuse = uDiffuse;
         } else {
+            // TODO(Nik-RE-dev): check colour format
             particle.uDiffuse = vrng->Random(0x10000) | (vrng->Random(0x10000) << 16);
         }
         particle_engine->AddParticle(&particle);

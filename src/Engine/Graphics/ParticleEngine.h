@@ -124,7 +124,7 @@ class ParticleEngine {
      *
      * @offset 0x48AB23
      */
-    void AddParticle(Particle_sw *patricle);
+    void AddParticle(Particle_sw *particle);
 
     /**
      * Draw all active particles.
