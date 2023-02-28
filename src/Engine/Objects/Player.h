@@ -130,6 +130,10 @@ class PlayerConditions {
         return false;
     }
 
+    [[nodiscard]] bool HasNone(std::initializer_list<Condition> conditions) const {
+        return !HasAny(conditions);
+    }
+
     void Reset(Condition condition) {
         this->times_[std::to_underlying(condition)].Reset();
     }
@@ -271,7 +275,7 @@ struct Player {
     int CreateItemInInventory2(unsigned int index, ItemGen* Src);
     void PutItemArInventoryIndex(ITEM_TYPE uItemID, int itemListPos, int uSlot);
     void RemoveItemAtInventoryIndex(unsigned int uSlot);
-    bool CanAct();
+    bool CanAct() const;
     bool CanSteal();
     bool CanEquip_RaceAndAlignmentCheck(ITEM_TYPE uItemID);
     void SetCondition(Condition uConditionIdx, int blockable);

@@ -5,6 +5,8 @@
 #include <memory>
 #include <cstdint>
 
+#include "Engine/Spells/Spells.h"
+
 class Actor;
 class Texture;
 class ParticleEngine;
@@ -139,7 +141,8 @@ struct SpellFxRenderer {
     float _4A806F_get_mass_distortion_value(Actor *pActor);
     // void _4A80DC_implosion_particle_sw(struct SpriteObject *a2);
     bool RenderAsSprite(struct SpriteObject *a2);
-    void SetPlayerBuffAnim(uint16_t uSpellID, uint16_t uPlayerID);
+    void SetPlayerBuffAnim(SPELL_TYPE uSpellID, uint16_t uPlayerID);
+    void SetPartyBuffAnim(SPELL_TYPE uSpellID);
     void FadeScreen__like_Turn_Undead_and_mb_Armageddon(
         unsigned int uDiffuseColor, unsigned int uFadeTime);
     int _4A8BFC_prismatic_light();

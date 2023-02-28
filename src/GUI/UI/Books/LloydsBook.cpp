@@ -40,30 +40,31 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() : GUIWindow_Book() {
     pBtn_Book_2 = CreateButton({415, 48}, {39, 36}, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 1, InputAction::Invalid, localization->GetString(LSTR_RECALL_BEACON));
 
     int max_beacons = 1;
-    int water_skill = pParty->pPlayers[_506348_current_lloyd_playerid]
-                  .pActiveSkills[PLAYER_SKILL_WATER];
+    PLAYER_SKILL_MASTERY water_mastery = pParty->pPlayers[CurrentLloydPlayerID].GetActualSkillMastery(PLAYER_SKILL_WATER);
 
-    if (water_skill & 0x100 || (water_skill & 0x80))
+    if (water_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER || water_mastery == PLAYER_SKILL_MASTERY_MASTER) {
         max_beacons = 5;
-    else if (water_skill & 0x40)
+    } else if (water_mastery == PLAYER_SKILL_MASTERY_EXPERT) {
         max_beacons = 3;
+    }
 
-    if (engine->config->debug.AllMagic.Get())
+    if (engine->config->debug.AllMagic.Get()) {
         max_beacons = 5;
+    }
 
     for (int i = 0; i < max_beacons; ++i) {
         CreateButton({pLloydsBeaconsPreviewXs[i], pLloydsBeaconsPreviewYs[i]}, {92, 68}, 1, UIMSG_HintBeaconSlot, UIMSG_InstallBeacon, i);
     }
 
     // purges expired beacons
-    pParty->pPlayers[_506348_current_lloyd_playerid].CleanupBeacons();
+    pParty->pPlayers[CurrentLloydPlayerID].CleanupBeacons();
 }
 
 void GUIWindow_LloydsBook::Update() {
     render->DrawTextureNew(
         471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
 
-    Player *pPlayer = &pParty->pPlayers[_506348_current_lloyd_playerid];
+    Player *pPlayer = &pParty->pPlayers[CurrentLloydPlayerID];
     render->DrawTextureNew(
         8 / 640.0f, 8 / 480.0f, ui_book_lloyds_backgrounds[bRecallingBeacon ? 1 : 0]);
     std::string pText = localization->GetString(LSTR_RECALL_BEACON);

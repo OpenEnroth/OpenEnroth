@@ -4,6 +4,7 @@ set(GUI_SOURCES GUIButton.cpp
                 GUIFont.cpp
                 GUIProgressBar.cpp
                 GUIWindow.cpp
+                GUIEnums.cpp
                 UI/Spellbook.cpp
                 UI/UIArena.cpp
                 UI/UIBooks.cpp
@@ -39,6 +40,7 @@ set(GUI_HEADERS GUIButton.h
                 GUIFont.h
                 GUIProgressBar.h
                 GUIWindow.h
+                GUIEnums.h
                 UI/Spellbook.h
                 UI/UIArena.h
                 UI/UIBooks.h

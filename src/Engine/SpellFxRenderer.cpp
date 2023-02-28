@@ -1076,7 +1076,7 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
 }
 
 //----- (004A89BD) --------------------------------------------------------
-void SpellFxRenderer::SetPlayerBuffAnim(uint16_t uSpellID,
+void SpellFxRenderer::SetPlayerBuffAnim(SPELL_TYPE uSpellID,
                                         uint16_t uPlayerID) {
     // SpellFxRenderer *v3; // edi@1
     PlayerBuffAnim *v4;  // esi@1
@@ -1084,7 +1084,7 @@ void SpellFxRenderer::SetPlayerBuffAnim(uint16_t uSpellID,
 
     v4 = &pPlayerBuffs[uPlayerID];
     v4->uSpellAnimTimeElapsed = 0;
-    v4->bRender = uSpellID != 0;
+    v4->bRender = uSpellID != SPELL_NONE;
 
     switch (uSpellID) {
         case SPELL_DISEASE:
@@ -1192,6 +1192,12 @@ void SpellFxRenderer::SetPlayerBuffAnim(uint16_t uSpellID,
     if (v4->bRender)
         v4->uSpellAnimTime =
             pIconsFrameTable->GetIcon(v4->uSpellIconID)->GetAnimLength();
+}
+
+void SpellFxRenderer::SetPartyBuffAnim(SPELL_TYPE uSpellID) {
+    for (int i = 0; i < pParty->pPlayers.size(); i++) {
+        SetPlayerBuffAnim(uSpellID, i);
+    }
 }
 
 //----- (004A8BDF) --------------------------------------------------------

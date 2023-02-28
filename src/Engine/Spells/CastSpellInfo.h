@@ -55,6 +55,9 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(SpellCastFlags)
 // Scrolls or NPC spells casted with MASTER mastery of skill level 5
 static const PLAYER_SKILL SCROLL_OR_NPC_SPELL_SKILL_VALUE = ConstructSkillValue(PLAYER_SKILL_MASTERY_MASTER, 5);
 
+// Recovery time when spell failed because of curse
+static const uint16_t SPELL_FAILURE_RECOVERY_TIME_ON_CURSE = 100;
+
 /*  271 */
 struct CastSpellInfo {
     inline CastSpellInfo() {

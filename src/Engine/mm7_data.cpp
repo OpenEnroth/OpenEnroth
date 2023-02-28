@@ -2356,7 +2356,7 @@ std::array<char, 777> books_num_items_per_page;
 int LloydsBeaconSpellId;
 signed int sRecoveryTime;    // idb
 unsigned int uRequiredMana;  // idb
-int _506348_current_lloyd_playerid;
+int CurrentLloydPlayerID;
 int LloydsBeaconSpellDuration;  // 604800 * spell level
 int MapBookOpen;
 int books_page_number;
@@ -2415,13 +2415,13 @@ unsigned int uIconID_TurnStart;
 int dword_50C994 = 0;
 int dword_50C998_turnbased_icon_1A = 0;
 int uSpriteID_Spell11;  // idb
-bool _50C9A0_IsEnchantingInProgress;
-int _50C9A8_item_enchantment_timer = 0;
-int _50C9D0_AfterEnchClickEventId;
-int _50C9D4_AfterEnchClickEventSecondParam;
-int _50C9D8_AfterEnchClickEventTimeout;
-int dword_50C9DC;
-struct NPCData *ptr_50C9E0;
+bool IsEnchantingInProgress;
+int ItemEnchantmentTimer;
+UIMessageType AfterEnchClickEventId;
+int AfterEnchClickEventSecondParam;
+int AfterEnchClickEventTimeout;
+UIMessageType GateMasterEventId;
+struct NPCData *GateMasterNPCData;
 // int dword_50C9E8; // idb
 // int dword_50C9EC[120];
 int dword_50CDC8;

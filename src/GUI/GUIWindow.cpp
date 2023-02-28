@@ -113,9 +113,6 @@ DIALOGUE_TYPE _dword_F8B1D8_last_npc_topic_menu;
 AwardType dword_F8B1AC_award_bit_number;
 PLAYER_SKILL_TYPE dword_F8B1AC_skill_being_taught; // Address the same as above --- splitting a union into two variables.
 
-MM_DEFINE_ENUM_MAGIC_SERIALIZATION_FUNCTIONS(MENU_STATE)
-MM_DEFINE_ENUM_MAGIC_SERIALIZATION_FUNCTIONS(WindowType)
-
 void SetCurrentMenuID(MENU_STATE uMenu) {
     sCurrentMenuID = uMenu;
     logger->Warning("CurrentMenu = %s \n", toString(uMenu).c_str());
