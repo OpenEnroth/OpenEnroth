@@ -2,7 +2,7 @@ var searchData=
 [
   ['r5g6b5_5fto_5fa8b8g8r8_0',['R5G6B5_to_A8B8G8R8',['../ImageFormatConverter_8h.html#a44672af772738a7245c30c8a712bc057',1,'ImageFormatConverter.h']]],
   ['r8g8b8_5fto_5fa8b8g8r8_1',['R8G8B8_to_A8B8G8R8',['../ImageFormatConverter_8h.html#a53f9479b47d7a92f21225c11cebfb2ec',1,'ImageFormatConverter.h']]],
-  ['random_2',['Random',['../classNonRandomEngine.html#a20cf6b5469c4127dd6cc0fa4f899e347',1,'NonRandomEngine::Random()'],['../classMersenneTwisterRandomEngine.html#ade09fc55e9a2e702df809c3825f35213',1,'MersenneTwisterRandomEngine::Random()'],['../classRandomEngine.html#a1f0b4168d7d00cfcd844b96fdcab32aa',1,'RandomEngine::Random(uint32_t hi)=0']]],
+  ['random_2',['Random',['../classNonRandomEngine.html#a138dddf8d6ac22b73a1ed2f598b50d60',1,'NonRandomEngine::Random()'],['../classMersenneTwisterRandomEngine.html#a56211afc6f752953abaf93897c858c9c',1,'MersenneTwisterRandomEngine::Random()'],['../classRandomEngine.html#a7d97ef8990a0e13285def92eca800a57',1,'RandomEngine::Random(int hi)=0']]],
   ['randomdice_3',['RandomDice',['../classRandomEngine.html#a57c22b517b59618a9d006ae83644349e',1,'RandomEngine']]],
   ['randomfloat_4',['RandomFloat',['../classNonRandomEngine.html#a7ed1f21dc6d5083e5919db1cf5c14e7c',1,'NonRandomEngine::RandomFloat()'],['../classRandomEngine.html#a1642255e5adffcdfee3b47aff2aa4701',1,'RandomEngine::RandomFloat()'],['../classMersenneTwisterRandomEngine.html#a36ed37f3853d92a96e82ad29ec35e3ea',1,'MersenneTwisterRandomEngine::RandomFloat()']]],
   ['randominsegment_5',['RandomInSegment',['../classRandomEngine.html#ad7893bfe206cfb6ac2ced7c0d3816b7c',1,'RandomEngine']]],

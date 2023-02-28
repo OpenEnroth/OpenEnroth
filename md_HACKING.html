@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;713e64a</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3e420ee</span>
    </div>
   </td>
  </tr>
@@ -156,6 +156,7 @@ Coding style</h1>
 <li>Use <code>enum class</code>es followed by <code>using enum</code> statements instead of ordinary <code>enum</code>s. This provides type safety without changing the syntax. For flags, use <code><a class="el" href="classFlags.html">Flags</a></code> class.</li>
 <li>It's OK to use plain <code>enum</code>s if you really need to have implicit casts to integer types, but this is a very rare use case. If you're using <code>enum</code> values to index into some array, consider using <code>enum class</code> coupled with <code><a class="el" href="classIndexedArray.html">IndexedArray</a></code>.</li>
 <li>Make your code speak for itself when it comes to ownership. If a function takes ownership of one of its parameters, it should take <code>std::unique_ptr</code> by value. If it allocates its result and passes ownership to the caller, then it should return <code>std::unique_ptr</code>.</li>
+<li>Use an <code>int</code> unless you need something else. Don’t try to avoid negative values by using <code>unsigned</code>, this implies many changes to the usual behavior of integers and can be a source of bugs. See a section in <a href="https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#arithmetic">core guidelines</a> for more info. However, don't overdo it, use <code>size_t</code> for indexing into STL containers.</li>
 </ul>
 <p >There is a lot of code in the project that doesn't follow these conventions. Please feel free to fix it, preferably not mixing up style and logical changes in the same PR.</p>
 <h1><a class="anchor" id="autotoc_md5"></a>
