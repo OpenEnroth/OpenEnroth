@@ -99,7 +99,7 @@ var searchData=
   ['indoorlocation_96',['IndoorLocation',['../structIndoorLocation.html',1,'IndoorLocation'],['../structIndoorLocation.html#a0918a0973677bd471ef963b614a2e5af',1,'IndoorLocation::IndoorLocation()']]],
   ['infinitefood_97',['InfiniteFood',['../classApplication_1_1GameConfig_1_1Debug.html#a476b1d08aa6706228c6be4b883187f49',1,'Application::GameConfig::Debug']]],
   ['infinitegold_98',['InfiniteGold',['../classApplication_1_1GameConfig_1_1Debug.html#a3b5440a6ea15e09935a1c49bfb3558dd',1,'Application::GameConfig::Debug']]],
-  ['info_99',['Info',['../classLogger.html#a6aed5fb80e41f6af8ad07e3705605fc9',1,'Logger']]],
+  ['info_99',['Info',['../classLogger.html#a57ad3eb98baae438f0fc49fe59519d05',1,'Logger']]],
   ['init_100',['Init',['../classGUIWindow.html#a2b1d4de6cf7d5d5d70c46c4c915ec25a',1,'GUIWindow::Init()'],['../structPlaneZCalcll.html#a2ed7ed592992322169f739842cf25bec',1,'PlaneZCalcll::Init()']]],
   ['init_101',['init',['../classGameTest.html#abdd3ea2e6c4c3ff20165302e5903aee1',1,'GameTest']]],
   ['init_5fevent_5ftriggers_102',['init_event_triggers',['../Events_8h.html#a404e5cc2dec59031c781baf3f5977458',1,'init_event_triggers():&#160;Events.cpp'],['../Events_8cpp.html#a404e5cc2dec59031c781baf3f5977458',1,'init_event_triggers():&#160;Events.cpp']]],

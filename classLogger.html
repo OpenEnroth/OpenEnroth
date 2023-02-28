@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;418a9e7</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2f97025</span>
    </div>
   </td>
  </tr>
@@ -86,17 +86,20 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a1f01c55d35325261dfb4c8749bf77d3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac4bc78b227b731a6596ea62f8f6fabbf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#ac4bc78b227b731a6596ea62f8f6fabbf">SetBaseLogger</a> (<a class="el" href="classPlatformLogger.html">PlatformLogger</a> *baseLogger)</td></tr>
 <tr class="separator:ac4bc78b227b731a6596ea62f8f6fabbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0fb3ee15c673262e78b0a8d482a4d6bc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#a0fb3ee15c673262e78b0a8d482a4d6bc">Log</a> (<a class="el" href="PlatformEnums_8h.html#aadaf937443899628d663afc0e3f95f7b">PlatformLogLevel</a> logLevel, const char *format,...)</td></tr>
-<tr class="separator:a0fb3ee15c673262e78b0a8d482a4d6bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6aed5fb80e41f6af8ad07e3705605fc9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#a6aed5fb80e41f6af8ad07e3705605fc9">Info</a> (const char *pFormat,...)</td></tr>
-<tr class="separator:a6aed5fb80e41f6af8ad07e3705605fc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae685cefc5e40eea4bb461739168ec10f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#ae685cefc5e40eea4bb461739168ec10f">Warning</a> (const char *pFormat,...)</td></tr>
-<tr class="separator:ae685cefc5e40eea4bb461739168ec10f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99c050ebbf204d896d30016b78f63f34"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
+<tr class="memitem:a99c050ebbf204d896d30016b78f63f34"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classLogger.html#a99c050ebbf204d896d30016b78f63f34">Log</a> (<a class="el" href="PlatformEnums_8h.html#aadaf937443899628d663afc0e3f95f7b">PlatformLogLevel</a> logLevel, fmt::format_string&lt; Args... &gt; fmt, Args &amp;&amp;... args)</td></tr>
+<tr class="separator:a99c050ebbf204d896d30016b78f63f34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57ad3eb98baae438f0fc49fe59519d05"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
+<tr class="memitem:a57ad3eb98baae438f0fc49fe59519d05"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classLogger.html#a57ad3eb98baae438f0fc49fe59519d05">Info</a> (fmt::format_string&lt; Args... &gt; fmt, Args &amp;&amp;... args)</td></tr>
+<tr class="separator:a57ad3eb98baae438f0fc49fe59519d05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae1d007b925301dafb5840928b554e008"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
+<tr class="memitem:ae1d007b925301dafb5840928b554e008"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classLogger.html#ae1d007b925301dafb5840928b554e008">Warning</a> (fmt::format_string&lt; Args... &gt; fmt, Args &amp;&amp;... args)</td></tr>
+<tr class="separator:ae1d007b925301dafb5840928b554e008"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:a1e0dc7813bf73737da3e83ed22a3af14"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#a1e0dc7813bf73737da3e83ed22a3af14">LogV</a> (<a class="el" href="PlatformEnums_8h.html#aadaf937443899628d663afc0e3f95f7b">PlatformLogLevel</a> logLevel, const char *pFormat, va_list args)</td></tr>
-<tr class="separator:a1e0dc7813bf73737da3e83ed22a3af14"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e639cd279199fa6050f71c0db3fa6af"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogger.html#a8e639cd279199fa6050f71c0db3fa6af">LogV</a> (<a class="el" href="PlatformEnums_8h.html#aadaf937443899628d663afc0e3f95f7b">PlatformLogLevel</a> logLevel, fmt::string_view fmt, fmt::format_args args)</td></tr>
+<tr class="separator:a8e639cd279199fa6050f71c0db3fa6af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -121,23 +124,28 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a6aed5fb80e41f6af8ad07e3705605fc9" name="a6aed5fb80e41f6af8ad07e3705605fc9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6aed5fb80e41f6af8ad07e3705605fc9">&#9670;&#160;</a></span>Info()</h2>
+<a id="a57ad3eb98baae438f0fc49fe59519d05" name="a57ad3eb98baae438f0fc49fe59519d05"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57ad3eb98baae438f0fc49fe59519d05">&#9670;&#160;</a></span>Info()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;class... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void Logger::Info </td>
           <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>pFormat</em>, </td>
+          <td class="paramtype">fmt::format_string&lt; Args... &gt;&#160;</td>
+          <td class="paramname"><em>fmt</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>...</em>&#160;</td>
+          <td class="paramtype">Args &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>args</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -145,15 +153,25 @@ Private Attributes</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a0fb3ee15c673262e78b0a8d482a4d6bc" name="a0fb3ee15c673262e78b0a8d482a4d6bc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0fb3ee15c673262e78b0a8d482a4d6bc">&#9670;&#160;</a></span>Log()</h2>
+<a id="a99c050ebbf204d896d30016b78f63f34" name="a99c050ebbf204d896d30016b78f63f34"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a99c050ebbf204d896d30016b78f63f34">&#9670;&#160;</a></span>Log()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;class... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void Logger::Log </td>
@@ -164,14 +182,14 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>format</em>, </td>
+          <td class="paramtype">fmt::format_string&lt; Args... &gt;&#160;</td>
+          <td class="paramname"><em>fmt</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>...</em>&#160;</td>
+          <td class="paramtype">Args &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>args</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -179,12 +197,17 @@ Private Attributes</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a1e0dc7813bf73737da3e83ed22a3af14" name="a1e0dc7813bf73737da3e83ed22a3af14"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1e0dc7813bf73737da3e83ed22a3af14">&#9670;&#160;</a></span>LogV()</h2>
+<a id="a8e639cd279199fa6050f71c0db3fa6af" name="a8e639cd279199fa6050f71c0db3fa6af"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e639cd279199fa6050f71c0db3fa6af">&#9670;&#160;</a></span>LogV()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -201,13 +224,13 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>pFormat</em>, </td>
+          <td class="paramtype">fmt::string_view&#160;</td>
+          <td class="paramname"><em>fmt</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">va_list&#160;</td>
+          <td class="paramtype">fmt::format_args&#160;</td>
           <td class="paramname"><em>args</em>&#160;</td>
         </tr>
         <tr>
@@ -243,23 +266,28 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ae685cefc5e40eea4bb461739168ec10f" name="ae685cefc5e40eea4bb461739168ec10f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae685cefc5e40eea4bb461739168ec10f">&#9670;&#160;</a></span>Warning()</h2>
+<a id="ae1d007b925301dafb5840928b554e008" name="ae1d007b925301dafb5840928b554e008"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae1d007b925301dafb5840928b554e008">&#9670;&#160;</a></span>Warning()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;class... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void Logger::Warning </td>
           <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>pFormat</em>, </td>
+          <td class="paramtype">fmt::format_string&lt; Args... &gt;&#160;</td>
+          <td class="paramname"><em>fmt</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>...</em>&#160;</td>
+          <td class="paramtype">Args &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>args</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -267,6 +295,11 @@ Private Attributes</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>

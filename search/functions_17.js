@@ -1,7 +1,7 @@
 var searchData=
 [
   ['waitformessages_0',['waitForMessages',['../classPlatformApplication.html#abe7e2d86d4c6a0cffaeed95d773a479b',1,'PlatformApplication::waitForMessages()'],['../classPlatformEventLoop.html#a4037638cdbd173edc78112afcc64f33a',1,'PlatformEventLoop::waitForMessages()'],['../classProxyEventLoop.html#a63ef4c77720e1b330d1a84decaf081ab',1,'ProxyEventLoop::waitForMessages()'],['../classSdlEventLoop.html#a8cc91323e5c274ea9471a9d7f8192856',1,'SdlEventLoop::waitForMessages()'],['../classEngineControlPlugin.html#abbaecfa799e79b279854ead756969b7b',1,'EngineControlPlugin::waitForMessages()']]],
-  ['warning_1',['Warning',['../classLogger.html#ae685cefc5e40eea4bb461739168ec10f',1,'Logger']]],
+  ['warning_1',['Warning',['../classLogger.html#ae1d007b925301dafb5840928b554e008',1,'Logger']]],
   ['waterwalkactive_2',['WaterWalkActive',['../structParty.html#af73cfe796a0b14bb518a63ad56c8837b',1,'Party']]],
   ['weaponshopdialog_3',['WeaponShopDialog',['../UIHouses_8h.html#af61c121dc37dbb99e2b840b538ec6f1e',1,'WeaponShopDialog():&#160;UIShops.cpp'],['../UIShops_8cpp.html#af61c121dc37dbb99e2b840b538ec6f1e',1,'WeaponShopDialog():&#160;UIShops.cpp']]],
   ['weaponshopwares_4',['WeaponShopWares',['../UIShops_8h.html#a31553fdddae423f12250a5b2638d5a30',1,'WeaponShopWares(GUIWindow dialogwin, bool special=0):&#160;UIShops.cpp'],['../UIShops_8cpp.html#a8353cbf45ed20454c60b0b8a0ad12df4',1,'WeaponShopWares(GUIWindow dialogwin, bool special):&#160;UIShops.cpp']]],
