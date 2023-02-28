@@ -217,8 +217,7 @@ void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID) {
             Dst.g = 0.0;
             Dst.b = 0.0;
             if (object->uFlags & OBJECT_DESC_TRIAL_FIRE) {
-                Dst.type = ParticleType_Bitmap | ParticleType_Rotating |
-                           ParticleType_8;
+                Dst.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
                 Dst.uDiffuse = colorTable.OrangeyRed.C32();
                 Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
                 Dst.texture = spell_fx_renderer->effpar01;
@@ -232,7 +231,7 @@ void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID) {
                 Dst.particle_size = 1.0f;
                 particle_engine->AddParticle(&Dst);
             } else if (object->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
-                Dst.type = ParticleType_Bitmap | ParticleType_8;
+                Dst.type = ParticleType_Bitmap | ParticleType_Ascending;
                 Dst.uDiffuse = vrng->Random(RAND_MAX);
                 Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
                 Dst.texture = spell_fx_renderer->effpar03;
@@ -331,8 +330,7 @@ LABEL_13:
                 Dst.g = 0.0;
                 Dst.b = 0.0;
                 if (object->uFlags & OBJECT_DESC_TRIAL_FIRE) {
-                    Dst.type = ParticleType_Bitmap | ParticleType_Rotating |
-                               ParticleType_8;
+                    Dst.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
                     Dst.uDiffuse = colorTable.OrangeyRed.C32();
                     Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
                     Dst.texture = spell_fx_renderer->effpar01;
@@ -348,7 +346,7 @@ LABEL_13:
                     particle_engine->AddParticle(&Dst);
                     return;
                 } else if (object->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
-                    Dst.type = ParticleType_Bitmap | ParticleType_8;
+                    Dst.type = ParticleType_Bitmap | ParticleType_Ascending;
                     Dst.uDiffuse = vrng->Random(RAND_MAX);
                     Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
                     Dst.texture = spell_fx_renderer->effpar03;
@@ -533,8 +531,7 @@ LABEL_25:
                 Dst.g = 0.0;
                 Dst.b = 0.0;
                 if (pObject->uFlags & OBJECT_DESC_TRIAL_FIRE) {
-                    Dst.type = ParticleType_Bitmap | ParticleType_Rotating |
-                               ParticleType_8;
+                    Dst.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
                     Dst.uDiffuse = colorTable.OrangeyRed.C32();
                     Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
                     Dst.texture = spell_fx_renderer->effpar01;
@@ -550,7 +547,7 @@ LABEL_25:
                     particle_engine->AddParticle(&Dst);
                     return;
                 } else if (pObject->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
-                    Dst.type = ParticleType_Bitmap | ParticleType_8;
+                    Dst.type = ParticleType_Bitmap | ParticleType_Ascending;
                     Dst.uDiffuse = vrng->Random(RAND_MAX);
                     Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
                     Dst.texture = spell_fx_renderer->effpar03;
@@ -720,8 +717,7 @@ LABEL_25:
             Dst.g = 0.0;
             Dst.b = 0.0;
             if (pObject->uFlags & OBJECT_DESC_TRIAL_FIRE) {
-                Dst.type = ParticleType_Bitmap | ParticleType_Rotating |
-                           ParticleType_8;
+                Dst.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
                 Dst.uDiffuse = colorTable.OrangeyRed.C32();
                 Dst.particle_size = 1.0f;
                 Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
@@ -737,7 +733,7 @@ LABEL_25:
                 particle_engine->AddParticle(&Dst);
                 return;
             } else if (pObject->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
-                Dst.type = ParticleType_Bitmap | ParticleType_8;
+                Dst.type = ParticleType_Bitmap | ParticleType_Ascending;
                 Dst.uDiffuse = vrng->Random(RAND_MAX);
                 Dst.particle_size = 1.0f;
                 Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80

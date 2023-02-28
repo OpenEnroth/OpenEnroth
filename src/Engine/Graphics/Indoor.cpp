@@ -1533,8 +1533,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
 
     if (decoration->uFlags & DECORATION_DESC_EMITS_FIRE) {
         memset(&particle, 0, sizeof(Particle_sw));  // fire,  like at the Pit's tavern
-        particle.type =
-            ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
+        particle.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
         particle.uDiffuse = colorTable.OrangeyRed.C32();
         particle.x = (double)pLevelDecorations[uDecorationID].vPosition.x;
         particle.y = (double)pLevelDecorations[uDecorationID].vPosition.y;

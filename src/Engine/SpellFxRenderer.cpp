@@ -274,8 +274,7 @@ void SpellFxRenderer::
         x = ((float)a2->vPosition.x - v7->flt_0_x) * 0.5f + v7->flt_0_x;
         y = ((float)v5->vPosition.y - v7->flt_4_y) * 0.5f + v7->flt_4_y;
         z = ((float)v5->vPosition.z - v7->flt_8_z) * 0.5f + v7->flt_8_z;
-        local_0.type =
-            ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
+        local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
         local_0.uDiffuse = uDiffuse;
         local_0.x = x + 4.0;
         local_0.y = y;
@@ -304,8 +303,7 @@ void SpellFxRenderer::
         thisspellfxrend->array_4[a2->field_54 & 0x1F].flt_4_y = (float)a2->vPosition.y;
         thisspellfxrend->array_4[a2->field_54 & 0x1F].flt_8_z = (float)a2->vPosition.z;
         v10 = (float)a2->vPosition.x;
-        local_0.type =
-            ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
+        local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
         local_0.uDiffuse = uDiffuse;
         local_0.x = v10 + 4.0f;
         local_0.y = (float)a2->vPosition.y;
@@ -330,7 +328,7 @@ void SpellFxRenderer::_4A75CC_single_spell_collision_particle(
     Particle_sw local_0;  // [sp+8h] [bp-68h]@1
 
     memset(&local_0, 0, sizeof(Particle_sw));
-    local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_1;
+    local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Dropping;
     local_0.x = (float)a1->vPosition.x;
     local_0.y = (float)a1->vPosition.y;
     v4 = (float)a1->vPosition.z;
@@ -358,7 +356,7 @@ void SpellFxRenderer::_4A7688_fireball_collision_particle(SpriteObject *a2) {
         v4 = v3 * 1.333333333333333;
 
     Particle_sw local_0 = { 0 };
-    local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_1;
+    local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Dropping;
     local_0.uDiffuse = colorTable.OrangeyRed.C32();
     local_0.x = (float)a2->vPosition.x;
     local_0.y = (float)a2->vPosition.y;
@@ -401,7 +399,7 @@ void SpellFxRenderer::_4A77FD_implosion_particle_d3d(SpriteObject *a1) {
 //----- (004A7948) --------------------------------------------------------
 void SpellFxRenderer::_4A7948_mind_blast_after_effect(SpriteObject *a1) {
     Particle_sw Dst = { 0 };
-    Dst.type = ParticleType_Sprite | ParticleType_Rotating | ParticleType_1;
+    Dst.type = ParticleType_Sprite | ParticleType_Rotating | ParticleType_Dropping;
     Dst.uDiffuse = colorTable.MediumGrey.C32();
     Dst.x = (float)a1->vPosition.x;
     Dst.y = (float)a1->vPosition.y;
@@ -442,7 +440,7 @@ void SpellFxRenderer::
     float uTextureIDa;    // [sp+7Ch] [bp+10h]@1
 
     memset(&local_0, 0, sizeof(Particle_sw));
-    local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_1;
+    local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Dropping;
     local_0.x = (float)a1->vPosition.x;
     v5 = a1->vPosition.z;
     local_0.y = (float)a1->vPosition.y;
@@ -558,39 +556,32 @@ void SpellFxRenderer::AddProjectile(SpriteObject *a2, int a3,
     }
 }
 
-//----- (004A7E89) --------------------------------------------------------
-void SpellFxRenderer::_4A7E89_sparkles_on_actor_after_it_casts_buff(
-    Actor *pActor, unsigned int uDiffuse) {
-    Actor *v3;  // edi@1
-    int v4;     // ebx@3
-    // int result; // eax@5
-    Particle_sw Dst;     // [sp+Ch] [bp-6Ch]@1
-    int v7;              // [sp+74h] [bp-4h]@2
-    signed int pActora;  // [sp+80h] [bp+8h]@1
+/**
+ * @offet 0x4A7E89
+ */
+void SpellFxRenderer::sparklesOnActorAfterItCastsBuff(Actor *pActor, unsigned int uDiffuse) {
+    Particle_sw particle;
 
-    memset(&Dst, 0, sizeof(Particle_sw));
-    Dst.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
-    Dst.timeToLive = vrng->Random(0x80) + 128;
-    v3 = pActor;
-    Dst.texture = this->effpar02;
-    pActora = 50;
-    Dst.particle_size = 1.0;
-    do {
-        v7 = vrng->Random(256) + v3->vPosition.x - 127;
-        Dst.x = (float)v7;
-        v7 = vrng->Random(256) + v3->vPosition.y - 127;
-        Dst.y = (float)v7;
-        v7 = v3->vPosition.z + vrng->Random(256);
-        Dst.z = (float)v7;
+    memset(&particle, 0, sizeof(Particle_sw));
+    particle.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
+    particle.timeToLive = vrng->Random(128) + 128;
+    particle.texture = this->effpar02;
+    particle.particle_size = 1.0;
+
+    for (int i = 0; i < 50; i++) {
+        int random_x = vrng->Random(256);
+        int random_y = vrng->Random(256);
+        int random_z = vrng->Random(256);
+        particle.x = random_x + pActor->vPosition.x - 127;
+        particle.y = random_y + pActor->vPosition.y - 127;
+        particle.z = random_z + pActor->vPosition.z;
         if (uDiffuse) {
-            Dst.uDiffuse = uDiffuse;
+            particle.uDiffuse = uDiffuse;
         } else {
-            v4 = vrng->Random(65536) << 16;
-            Dst.uDiffuse = vrng->Random(65536) | v4;
+            particle.uDiffuse = vrng->Random(0x10000) | (vrng->Random(0x10000) << 16);
         }
-        particle_engine->AddParticle(&Dst);
-        --pActora;
-    } while (pActora);
+        particle_engine->AddParticle(&particle);
+    }
 }
 
 //----- (004A7F74) --------------------------------------------------------
@@ -602,7 +593,7 @@ void SpellFxRenderer::_4A7F74(int x, int y, int z) {
     float z1;             // [sp+88h] [bp+8h]@2
 
     memset(&local_0, 0, sizeof(local_0));
-    local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_1;
+    local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Dropping;
     local_0.uDiffuse = colorTable.MediumGrey.C32();
     local_0.particle_size = 1.0;
     v6 = 8;

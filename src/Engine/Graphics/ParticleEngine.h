@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 #include "Utility/Flags.h"
 
 #include "Engine/Graphics/IRender.h"
@@ -7,12 +9,12 @@
 
 enum class ParticleFlag : uint32_t {
     ParticleType_Invalid = 0,
-    ParticleType_1 = 0x0001,
-    ParticleType_Rotating = 0x0004,
-    ParticleType_8 = 0x0008,
-    ParticleType_Diffuse = 0x0100,  // colored plane
-    ParticleType_Line = 0x0200,     // line
-    ParticleType_Bitmap = 0x0400,   // textured planed
+    ParticleType_Dropping = 0x0001,  // particle drops with time
+    ParticleType_Rotating = 0x0004,  // particle rotates with time
+    ParticleType_Ascending = 0x0008, // particle ascends with time
+    ParticleType_Diffuse = 0x0100,   // colored plane
+    ParticleType_Line = 0x0200,      // line
+    ParticleType_Bitmap = 0x0400,    // textured planed
     ParticleType_Sprite = 0x0800
 };
 using enum ParticleFlag;
@@ -50,9 +52,9 @@ struct Particle {
     float x = 0;
     float y = 0;
     float z = 0;
-    float flt_10 = 0;
-    float flt_14 = 0;
-    float flt_18 = 0;
+    float shift_x = 0;
+    float shift_y = 0;
+    float shift_z = 0;
     union {
         struct {
             unsigned char r, g, b, a;
@@ -103,17 +105,19 @@ class ParticleEngine {
  public:
     ParticleEngine();
 
+    static const int PARTICLES_ARRAY_SIZE = 500;
+
     void ResetParticles();
-    void AddParticle(Particle_sw *a2);
+    void AddParticle(Particle_sw *patricle);
     void Draw();
     void UpdateParticles();
     bool ViewProject_TrueIfStillVisible_BLV(unsigned int uParticleID);
     void DrawParticles_BLV();
 
-    Particle pParticles[500];
+    std::array<Particle, PARTICLES_ARRAY_SIZE> pParticles;
     stru2_LineList pLines;
-    char field_D160[4800];
-    float field_E420;
+    char field_D160[4800]; // unused
+    float field_E420; // unused
     int uStartParticle;
     int uEndParticle;
     int uTimeElapsed;
