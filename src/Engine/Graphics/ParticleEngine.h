@@ -103,15 +103,52 @@ struct stru2_LineList {
 #pragma pack(push, 1)
 class ParticleEngine {
  public:
-    ParticleEngine();
-
     static const int PARTICLES_ARRAY_SIZE = 500;
 
+    /**
+     * Particle engine constructor.
+     *
+     * @offset 0x48AAC5
+     */
+    ParticleEngine();
+
+    /**
+     * Remove all active particles if any and initialize/reinitialize then particles engine.
+     *
+     * @offset 0x48AAF6
+     */
     void ResetParticles();
+
+    /**
+     * Add particle to engine.
+     *
+     * @offset 0x48AB23
+     */
     void AddParticle(Particle_sw *patricle);
+
+    /**
+     * Draw all active particles.
+     *
+     * @offset 0x48ABF3
+     */
     void Draw();
+
+    /**
+     * Update all active particles based on time elapsed since previous tick.
+     * Transform particles if needed and remove them if particle live time expired.
+     *
+     * @offset 0x48AC65
+     */
     void UpdateParticles();
+
+    /**
+     * @offset 0x48AE74
+     */
     bool ViewProject_TrueIfStillVisible_BLV(unsigned int uParticleID);
+
+    /**
+     * @offset 0x48BBA6
+     */
     void DrawParticles_BLV();
 
     std::array<Particle, PARTICLES_ARRAY_SIZE> pParticles;

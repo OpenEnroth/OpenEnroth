@@ -45,16 +45,10 @@ void TrailParticleGenerator::UpdateParticles() {
     }
 }
 
-/**
- * @offset 0x48AAC5
- */
 ParticleEngine::ParticleEngine() {
     ResetParticles();
 }
 
-/**
- * @offset 0x48AAF6
- */
 void ParticleEngine::ResetParticles() {
     pParticles.fill({});
     uStartParticle = PARTICLES_ARRAY_SIZE;
@@ -62,9 +56,6 @@ void ParticleEngine::ResetParticles() {
     uTimeElapsed = 0;
 }
 
-/**
- * @offset 0x48AB23
- */
 void ParticleEngine::AddParticle(Particle_sw *patricle) {
     if (!pMiscTimer->bPaused) {
         Particle *freeParticle = nullptr;
@@ -111,9 +102,6 @@ void ParticleEngine::AddParticle(Particle_sw *patricle) {
     }
 }
 
-/**
- * @offset 0x48ABF3
- */
 void ParticleEngine::Draw() {
     uTimeElapsed += pEventTimer->uTimeElapsed;
     pLines.uNumLines = 0;
@@ -124,9 +112,6 @@ void ParticleEngine::Draw() {
     }
 }
 
-/**
- * @offset 0x48AC65
- */
 void ParticleEngine::UpdateParticles() {
     unsigned uCurrentEnd = 0;
     unsigned uCurrentBegin = PARTICLES_ARRAY_SIZE;
@@ -206,11 +191,7 @@ void ParticleEngine::UpdateParticles() {
     uStartParticle = uCurrentBegin;
 }
 
-/**
- * @offset 0x48AE74
- */
-bool ParticleEngine::ViewProject_TrueIfStillVisible_BLV(
-    unsigned int uParticleID) {
+bool ParticleEngine::ViewProject_TrueIfStillVisible_BLV(unsigned int uParticleID) {
     Particle *pParticle;  // esi@1
     int y_int_;           // [sp+10h] [bp-40h]@2
     int x_int;            // [sp+20h] [bp-30h]@2
@@ -249,9 +230,6 @@ bool ParticleEngine::ViewProject_TrueIfStillVisible_BLV(
     return true;
 }
 
-/**
- * @offset 0x48BBA6
- */
 void ParticleEngine::DrawParticles_BLV() {
     SoftwareBillboard v15 {};  // [sp+Ch] [bp-58h]@1
 

@@ -62,13 +62,11 @@ struct SpellFX_Billboard {
 /*  122 */
 #pragma pack(push, 1)
 struct PlayerBuffAnim {
-    inline PlayerBuffAnim() : bRender(false), field_2(0), uSpellAnimTimeElapsed(0), uSpellAnimTime(0), uSpellIconID(0) {}
-
-    int16_t bRender;
-    int16_t field_2;
-    int uSpellAnimTimeElapsed;
-    int uSpellAnimTime;
-    int uSpellIconID;
+    int16_t bRender = false;
+    int16_t field_2 = 0;
+    int uSpellAnimTimeElapsed = 0;
+    int uSpellAnimTime = 0;
+    int uSpellIconID = 0;
 };
 #pragma pack(pop)
 
@@ -141,6 +139,9 @@ struct SpellFxRenderer {
         SpriteObject *a1, unsigned int uDiffuse, Texture *texture, float a4);
     void _4A7C07_stun_spell_fx(struct SpriteObject *a2);
     void AddProjectile(struct SpriteObject *a2, int a3, Texture *);
+    /**
+     * @offset 0x4A7E89
+     */
     void sparklesOnActorAfterItCastsBuff(Actor *pActor, unsigned int uDiffuse);
     void _4A7F74(int x, int y, int z);
     float _4A806F_get_mass_distortion_value(Actor *pActor);
