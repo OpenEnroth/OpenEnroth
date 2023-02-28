@@ -11,13 +11,13 @@ class MersenneTwisterRandomEngine: public RandomEngine {
         return std::uniform_real_distribution<float>(0.0f, 1.0f)(base_);
     }
 
-    virtual uint32_t Random(uint32_t hi) override {
+    virtual int Random(int hi) override {
         assert(hi > 0);
 
-        return (static_cast<uint64_t>(base_()) * hi) >> 32;
+        return static_cast<int>((static_cast<uint64_t>(base_()) * static_cast<uint64_t>(hi)) >> 32);
     }
 
-    virtual void Seed(uint32_t seed) override {
+    virtual void Seed(int seed) override {
         base_.seed(seed);
     }
 

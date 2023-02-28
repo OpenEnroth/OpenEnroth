@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cassert>
+
 #include "RandomEngine.h"
 
 class NonRandomEngine : public RandomEngine {
@@ -8,14 +10,16 @@ class NonRandomEngine : public RandomEngine {
         return Random(256) / 256.0f;
     }
 
-    virtual uint32_t Random(uint32_t hi) override {
+    virtual int Random(int hi) override {
+        assert(hi > 0);
+
         return ++state_ % hi;
     }
 
-    virtual void Seed(uint32_t seed) override {
+    virtual void Seed(int seed) override {
         state_ = seed;
     }
 
  private:
-    uint32_t state_ = 0;
+    unsigned state_ = 0; // Using unsigned here so that it wraps around safely.
 };

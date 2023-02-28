@@ -23,14 +23,14 @@ class RandomEngine {
      * @param hi                        Upper bound for the result. Must be greater than zero.
      * @return                          Random number in range `[0, hi)`.
      */
-    virtual uint32_t Random(uint32_t hi) = 0;
+    virtual int Random(int hi) = 0;
 
     /**
      * Reinitializes this random engine with the provided seed value.
      *
      * @param seed                      Random seed.
      */
-    virtual void Seed(uint32_t seed) = 0;
+    virtual void Seed(int seed) = 0;
 
     /**
      * @param min                       Minimal result value.
