@@ -220,7 +220,7 @@ int TileTable::FromFileTxt(const char *pFilename) {
                 } else if (iequals(v9, "TTtype_RoadCityStone")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadCityStone;
                 } else {
-                    logger->Warning("%s", StringPrintf("Unknown tile type %s", v9).c_str());
+                    logger->Warning("Unknown tile type {}", v9);
                 }
 
                 v35 = v84.pProperties[4];
@@ -386,7 +386,7 @@ int TileTable::FromFileTxt(const char *pFilename) {
                     } else if (iequals(v72, "TTattr_Transition")) {
                         v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
                     } else {
-                        logger->Warning("%s", StringPrintf("Unknown tile attribute %s", v72).c_str());
+                        logger->Warning("Unknown tile attribute {}", v72);
                     }
                 }
                 ++v2->sNumTiles;

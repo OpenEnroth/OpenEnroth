@@ -115,7 +115,7 @@ PLAYER_SKILL_TYPE dword_F8B1AC_skill_being_taught; // Address the same as above 
 
 void SetCurrentMenuID(MENU_STATE uMenu) {
     sCurrentMenuID = uMenu;
-    logger->Warning("CurrentMenu = %s \n", toString(uMenu).c_str());
+    logger->Warning("CurrentMenu = {} \n", toString(uMenu));
 }
 
 MENU_STATE GetCurrentMenuID() {
@@ -1256,7 +1256,7 @@ void DrawBuff_remaining_time_string(int uY, GUIWindow *window, GameTime remainin
 void GUIMessageQueue::AddMessageImpl(UIMessageType msg, int param,
     unsigned int a4, const char *file,
     int line) {
-    // logger->Warning("%s @ (%S %u)", UIMessage2String(msg), file, line);
+    // logger->Warning("{} @ ({} {})", UIMessage2String(msg), file, line);
     GUIMessage message;
     message.eType = msg;
     message.param = param;

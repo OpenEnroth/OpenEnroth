@@ -120,8 +120,7 @@ SPELL_TYPE ParseSpellType(struct FrameTableTxtLine *tbl, int *next_token) {
     } else if (iequals(tbl->pProperties[0], "Hammerhands")) {
         return SPELL_BODY_HAMMERHANDS;
     } else {
-        logger->Warning(
-            "Unknown monster spell %s", tbl->pProperties[0]);
+        logger->Warning("Unknown monster spell {}", tbl->pProperties[0]);
         ++*next_token;
         return SPELL_NONE;
     }
@@ -1094,11 +1093,7 @@ void MonsterStats::Initialize() {
                                             if (pInfos[curr_rec_num]
                                                     .field_3C_some_special_attack ==
                                                 -1) {
-                                                logger->Warning(
-                                                        "Can't create random "
-                                                        "monster: '%s' See "
-                                                        "MapStats!",
-                                                        str.c_str());
+                                                logger->Warning("Can't create random monster: '{}'. See MapStats!", str);
                                             }
                                         }
                                         pInfos[curr_rec_num]

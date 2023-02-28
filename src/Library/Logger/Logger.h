@@ -1,8 +1,10 @@
 #pragma once
 
-#include <cstdio>
+#include <string_view>
+#include <utility>
 
 #include "Platform/PlatformLogger.h"
+#include "Utility/Format.h"
 
 class Logger {
  public:
@@ -11,13 +13,23 @@ class Logger {
     PlatformLogger *BaseLogger() const;
     void SetBaseLogger(PlatformLogger *baseLogger);
 
-    void Log(PlatformLogLevel logLevel, const char *format, ...);
+    template<class... Args>
+    void Log(PlatformLogLevel logLevel, fmt::format_string<Args...> fmt, Args&&... args) {
+        LogV(logLevel, fmt, fmt::make_format_args(std::forward<Args>(args)...));
+    }
 
-    void Info(const char *pFormat, ...);
-    void Warning(const char *pFormat, ...);
+    template<class... Args>
+    void Info(fmt::format_string<Args...> fmt, Args&&... args) {
+        Log(LOG_INFO, fmt, std::forward<Args>(args)...);
+    }
+
+    template<class... Args>
+    void Warning(fmt::format_string<Args...> fmt, Args&&... args) {
+        Log(LOG_WARNING, fmt, std::forward<Args>(args)...);
+    }
 
  private:
-    void LogV(PlatformLogLevel logLevel, const char *pFormat, va_list args);
+    void LogV(PlatformLogLevel logLevel, fmt::string_view fmt, fmt::format_args args);
 
  private:
     PlatformLogger *baseLogger_ = nullptr;

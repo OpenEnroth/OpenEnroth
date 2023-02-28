@@ -554,7 +554,7 @@ struct GenderTableEntry {
       {"шляпа", 1},     {"элементал", 0}};
 
 int GetGender(char *ansi_name, int name_len) {
-    auto name = (unsigned char *)ansi_name;
+    auto name = (char *)ansi_name;
 
     GenderTableEntry *table = nullptr;
     unsigned int table_size = 0;
@@ -573,7 +573,7 @@ int GetGender(char *ansi_name, int name_len) {
     int left = 0, right = table_size - 1, match = 0;
     while (left < right - 1) {
         match = left + (right - left) / 2;
-        int rval = _mbsncmp(name, (unsigned char *)table[match].name, name_len);
+        int rval = _mbsncmp(reinterpret_cast<const unsigned char *>(name), (unsigned char *)table[match].name, name_len);
         if (rval < 0)
             right = match;
         else if (!rval)
@@ -582,7 +582,7 @@ int GetGender(char *ansi_name, int name_len) {
             left = match;
     }
 
-    logger->Warning("sprintfex: unknown gender: %s", name);
+    logger->Warning("sprintfex: unknown gender: {}", name);
     return 0;
 }
 

@@ -133,7 +133,7 @@ void Application::AutoInitDataPath(Platform *platform) {
             "resources directory from our repository there as well!",
             !mm7dir.empty() ? mm7dir : "current directory"
         );
-        EngineIoc::ResolveLogger()->Warning(message.c_str());
+        EngineIoc::ResolveLogger()->Warning("{}", message);
         platform->showMessageBox("CRITICAL ERROR: missing resources", message);
     }
 }
@@ -1773,8 +1773,10 @@ void Game::EventLoop() {
                         continue;
                     } else {
                         if (engine->config->debug.VerboseLogging.Get()) {
-                            if (pParty->uFlags & PARTY_FLAGS_1_AIRBORNE) logger->Info("Party is airborne");
-                            if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER) logger->Info("Party on water");
+                            if (pParty->uFlags & PARTY_FLAGS_1_AIRBORNE)
+                                logger->Info("Party is airborne");
+                            if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER)
+                                logger->Info("Party on water");
                         }
                     }
 

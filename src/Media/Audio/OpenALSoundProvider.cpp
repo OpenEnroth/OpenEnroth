@@ -34,7 +34,7 @@ bool CheckError() {
     }
 
     const char *message = alGetString(code1);
-    logger->Warning("OpenAL: error #%d \"%s\"", code1, message);
+    logger->Warning("OpenAL: error #{} \"{}\"", code1, message);
 
     return true;
 }
@@ -55,7 +55,7 @@ bool OpenALSoundProvider::Initialize() {
     if (device_names) {
         for (const char *device_name = device_names; device_name[0];
              device_name += strlen(device_name) + 1) {
-            logger->Info("OpenAL: device found \"%s\"", device_name);
+            logger->Info("OpenAL: device found \"{}\"", device_name);
         }
     }
 
@@ -380,7 +380,7 @@ void OpenALSoundProvider::PlayTrack16(TrackBuffer *buffer, bool loop,
         do {
             float track_offset = 0;
             alGetSourcef(buffer->source_id, AL_SEC_OFFSET, &track_offset);
-            logger->Info("OpenAL: playing %.4f/%.4f\n", track_offset, track_length);
+            logger->Info("OpenAL: playing {:.4f}/{:.4f}\n", track_offset, track_length);
 
             alGetSourcei(buffer->source_id, AL_SOURCE_STATE, (int *)&status);
         } while (status == AL_PLAYING);

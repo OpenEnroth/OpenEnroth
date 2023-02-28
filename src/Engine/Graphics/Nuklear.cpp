@@ -756,7 +756,7 @@ int lua_handle_error(lua_State *L) {
 
 bool lua_error_check(WindowType winType, lua_State *L, int err) {
     if (err != 0) {
-        logger->Warning("Nuklear: [%s] LUA error: %s\n", wins[winType].tmpl, lua_tostring(L, -1));
+        logger->Warning("Nuklear: [{}] LUA error: {}\n", wins[winType].tmpl, lua_tostring(L, -1));
         lua_pop(L, 1);
         return true;
     }
@@ -785,9 +785,9 @@ void Nuklear::Release(WindowType winType, bool is_reload) {
             if ((*it)->asset) {
                 render->NuklearImageFree((*it)->asset);
                 if ((*it)->asset->Release())
-                    logger->Info("Nuklear: [%s] asset %d unloaded", wins[winType].tmpl, i);
+                    logger->Info("Nuklear: [{}] asset {} unloaded", wins[winType].tmpl, i);
                 else
-                    logger->Warning("Nuklear: [%s] asset %d unloading failed!", wins[winType].tmpl, i);
+                    logger->Warning("Nuklear: [{}] asset {} unloading failed!", wins[winType].tmpl, i);
 
                 delete *it;
             }
@@ -813,9 +813,9 @@ void Nuklear::Release(WindowType winType, bool is_reload) {
         if (!is_reload && (wins[winType].state == WINDOW_INITIALIZED || wins[winType].state == WINDOW_TEMPLATE_ERROR))
             wins[winType].state = WINDOW_NOT_LOADED;
 
-        logger->Info("Nuklear: [%s] template unloaded", wins[winType].tmpl);
+        logger->Info("Nuklear: [{}] template unloaded", wins[winType].tmpl);
     } else {
-        logger->Warning("Nuklear: [%s] template is not loaded", wins[winType].tmpl);
+        logger->Warning("Nuklear: [{}] template is not loaded", wins[winType].tmpl);
     }
 }
 
@@ -835,7 +835,7 @@ bool Nuklear::Reload() {
     for (auto itk = hotkeys.begin(); itk < hotkeys.end(); itk++) {
         struct hotkey hk = *itk;
         luaL_unref(lua, LUA_REGISTRYINDEX, hk.callback);
-        logger->Info("Nuklear: hotkey '%s' is unset", GetDisplayName(hk.key).c_str());
+        logger->Info("Nuklear: hotkey '{}' is unset", GetDisplayName(hk.key));
     }
     hotkeys.clear();
     hotkeys.swap(hotkeys);
@@ -866,7 +866,7 @@ void Nuklear::Destroy() {
     for (auto itk = hotkeys.begin(); itk < hotkeys.end(); itk++) {
         struct hotkey hk = *itk;
         luaL_unref(lua, LUA_REGISTRYINDEX, hk.callback);
-        logger->Info("Nuklear: hotkey '%s' is unset", GetDisplayName(hk.key).c_str());
+        logger->Info("Nuklear: hotkey '{}' is unset", GetDisplayName(hk.key));
     }
     hotkeys.clear();
     lua_nk_styles.clear();
@@ -996,7 +996,7 @@ bool Nuklear::LuaLoadTemplate(WindowType winType) {
     std::string name;
 
     if (!wins[winType].tmpl) {
-        logger->Warning("Nuklear: [%s] unknown template", toString(winType).c_str());
+        logger->Warning("Nuklear: [{}] unknown template", toString(winType).c_str());
         return false;
     }
 
@@ -1004,7 +1004,7 @@ bool Nuklear::LuaLoadTemplate(WindowType winType) {
     int status = luaL_loadfile(lua, MakeDataPath("ui", name + ".lua").c_str());
     if (status) {
         wins[winType].state = WINDOW_TEMPLATE_ERROR;
-        logger->Warning("Nuklear: [%s] couldn't load lua template: %s", wins[winType].tmpl, lua_tostring(lua, -1));
+        logger->Warning("Nuklear: [{}] couldn't load lua template: {}", wins[winType].tmpl, lua_tostring(lua, -1));
         lua_pop(lua, 1);
         return false;
     }
@@ -1013,7 +1013,7 @@ bool Nuklear::LuaLoadTemplate(WindowType winType) {
     int err = lua_pcall(lua, 1, 0, 0);
     if (lua_error_check(winType, lua, err)) {
         wins[winType].state = WINDOW_TEMPLATE_ERROR;
-        logger->Warning("Nuklear: [%s] error loading template: %s", wins[winType].tmpl, lua_tostring(lua, -1));
+        logger->Warning("Nuklear: [{}] error loading template: {}", wins[winType].tmpl, lua_tostring(lua, -1));
         return false;
     }
 
@@ -1022,7 +1022,7 @@ bool Nuklear::LuaLoadTemplate(WindowType winType) {
     err = lua_pcall(lua, 1, 1, 0);
     if (lua_error_check(winType, lua, err)) {
         wins[winType].state = WINDOW_TEMPLATE_ERROR;
-        logger->Warning("Nuklear: [%s] error executing template: %s", wins[winType].tmpl, lua_tostring(lua, -1));
+        logger->Warning("Nuklear: [{}] error executing template: {}", wins[winType].tmpl, lua_tostring(lua, -1));
         return false;
     }
 
@@ -1050,14 +1050,14 @@ bool Nuklear::LuaLoadTemplate(WindowType winType) {
 
     if (wins[winType].ui_draw < 0 || wins[winType].ui_release < 0) {
         wins[winType].state = WINDOW_TEMPLATE_ERROR;
-        logger->Warning("Nuklear: [%s] error executing template: %s", wins[winType].tmpl, lua_tostring(lua, -1));
+        logger->Warning("Nuklear: [{}] error executing template: {}", wins[winType].tmpl, lua_tostring(lua, -1));
         return false;
     }
 
     assert(lua_gettop(lua) == 0);
     wins[winType].state = WINDOW_INITIALIZED;
 
-    logger->Info("Nuklear: lua template '%s' loaded", name.c_str());
+    logger->Info("Nuklear: lua template '{}' loaded", name);
 
     return true;
 }
@@ -1066,7 +1066,7 @@ static int lua_log_info(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) >= 2));
 
     const char *str = lua_tostring(lua, 2);
-    logger->Info("Nuklear LUA: %s", str);
+    logger->Info("Nuklear LUA: {}", str);
 
     return 0;
 }
@@ -1075,7 +1075,7 @@ static int lua_log_warning(lua_State *L) {
     lua_check_ret(lua_check_args(L, lua_gettop(L) >= 2));
 
     const char *str = lua_tostring(lua, 2);
-    logger->Warning("Nuklear LUA: %s", str);
+    logger->Warning("Nuklear LUA: {}", str);
 
     return 0;
 }
@@ -1464,11 +1464,11 @@ static int lua_nk_parse_style(lua_State *L, int cidx, int pidx, lua_nk_style_typ
 
     for (auto it = lua_nk_styles.begin(); it < lua_nk_styles.end(); it++) {
         struct lua_nk_style style = *it;
-        // logger->Info("component: %s", style.component);
+        // logger->Info("component: {}", style.component);
         if (!strcmp(component, style.component)) {
             for (auto itp = style.props.begin(); itp < style.props.end(); itp++) {
                 struct lua_nk_property prop = *itp;
-                // logger->Info("property: %s", prop.property);
+                // logger->Info("property: {}", prop.property);
                 if (!strcmp(property, prop.property)) {
                     *type = &prop.type;
                     *ptr = prop.ptr;
@@ -3167,7 +3167,7 @@ static int lua_nk_load_image(lua_State *L) {
     slot = w->imgs.size();
     w->imgs.push_back(im);
 
-    logger->Info("Nuklear: [%s] asset %d: '%s', type '%s' loaded!", w->tmpl, slot, name, type);
+    logger->Info("Nuklear: [{}] asset {}: '{}', type '{}' loaded!", w->tmpl, slot, name, type);
 
     lua_pushnumber(L, slot);
 
@@ -3175,7 +3175,7 @@ static int lua_nk_load_image(lua_State *L) {
 
 finish:
     delete im;
-    logger->Warning("Nuklear: [%s] asset '%s', type '%s' loading failed!", w->tmpl, name, type);
+    logger->Warning("Nuklear: [{}] asset '{}', type '{}' loading failed!", w->tmpl, name, type);
 
     lua_pushnil(L);
 
@@ -3233,14 +3233,14 @@ static int lua_set_hotkey(lua_State *L) {
             if (ithk.key == hk.key) {
                 luaL_unref(L, LUA_REGISTRYINDEX, ithk.callback);
                 ithk.callback = hk.callback;
-                logger->Info("Nuklear: hotkey '%s' is reset", key);
+                logger->Info("Nuklear: hotkey '{}' is reset", key);
 
                 return 0;
             }
         }
 
         hotkeys.push_back(hk);
-        logger->Info("Nuklear: hotkey '%s' is set", key);
+        logger->Info("Nuklear: hotkey '{}' is set", key);
 
         return 0;
     }
@@ -3262,7 +3262,7 @@ static int lua_unset_hotkey(lua_State *L) {
         struct hotkey hk = *itk;
         if (hk.winType == w->winType && gameKey == hk.key) {
             luaL_unref(lua, LUA_REGISTRYINDEX, hk.callback);
-            logger->Info("Nuklear: hotkey '%s' is unset", key);
+            logger->Info("Nuklear: hotkey '{}' is unset", key);
             hotkeys.erase(itk);
             return 0;
         }
@@ -3279,7 +3279,7 @@ static int lua_unset_hotkeys(lua_State *L) {
         struct hotkey hk = *itk;
         if (hk.winType == w->winType) {
             luaL_unref(lua, LUA_REGISTRYINDEX, hk.callback);
-            logger->Info("Nuklear: hotkey '%s' is unset", GetDisplayName(hk.key).c_str());
+            logger->Info("Nuklear: hotkey '{}' is unset", GetDisplayName(hk.key));
             itk = hotkeys.erase(itk);
         } else {
             ++itk;
@@ -3433,14 +3433,14 @@ static int lua_load_raw_from_lod(lua_State *L) {
 static bool lua_load_init() {
     int status = luaL_loadfile(lua, MakeDataPath("ui", "init.lua").c_str());
     if (status) {
-        logger->Warning("Nuklear: couldn't load init template: %s", lua_tostring(lua, -1));
+        logger->Warning("Nuklear: couldn't load init template: {}", lua_tostring(lua, -1));
         lua_pop(lua, 1);
         return false;
     }
 
     int err = lua_pcall(lua, 0, 0, 0);
     if (lua_error_check(WINDOW_null, lua, err)) {
-        logger->Warning("Nuklear: error loading init template: %s", lua_tostring(lua, -1));
+        logger->Warning("Nuklear: error loading init template: {}", lua_tostring(lua, -1));
         return false;
     }
 
@@ -3448,7 +3448,7 @@ static bool lua_load_init() {
     lua_pushlightuserdata(lua, (void *)&wins[WINDOW_null]);
     err = lua_pcall(lua, 1, 0, 0);
     if (lua_error_check(WINDOW_null, lua, err)) {
-        logger->Warning("Nuklear: error executing init template: %s", lua_tostring(lua, -1));
+        logger->Warning("Nuklear: error executing init template: {}", lua_tostring(lua, -1));
         return false;
     }
 

@@ -70,7 +70,7 @@ class GLShader {
             return tempID;
         }
 
-        logger->Warning("shader compilation failure: %s", filename.c_str());
+        logger->Warning("shader compilation failure: {}", filename);
         return 0;
     }
 
@@ -104,16 +104,16 @@ class GLShader {
             glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
             if (!success) {
                 glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-                logger->Warning("%s %s shader compilation error:", name.c_str(), type.c_str());
-                logger->Warning(infoLog);
+                logger->Warning("{} {} shader compilation error:", name, type);
+                logger->Warning("{}", infoLog);
                 return false;
             }
         } else {
             glGetProgramiv(shader, GL_LINK_STATUS, &success);
             if (!success) {
                 glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-                logger->Warning("%s %s linking error:", name.c_str(), type.c_str());
-                logger->Warning(infoLog);
+                logger->Warning("{} {} linking error:", name, type);
+                logger->Warning("{}", infoLog);
                 return false;
             }
         }
@@ -129,7 +129,7 @@ class GLShader {
             // open files
             if (!std::filesystem::exists(path)) {
                 if (!nonFatal)
-                    logger->Warning("cannot find %s %s shader file at path %s", name.c_str(), typeName.c_str(), path.c_str());
+                    logger->Warning("cannot find {} {} shader file at path {}", name, typeName, path);
 
                 return 0;
             }
@@ -161,7 +161,7 @@ class GLShader {
             return shaderHandler;
         }
         catch (std::ifstream::failure &e) {
-            logger->Warning("error occured during reading %s %s shader file at path %s: %s", name.c_str(), typeName.c_str(), path.c_str(), e.what());
+            logger->Warning("error occured during reading {} {} shader file at path {}: {}", name, typeName, path, e.what());
             return 0;
         }
     }

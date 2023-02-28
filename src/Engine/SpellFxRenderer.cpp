@@ -1070,7 +1070,7 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             return true;
 
         default:
-            //logger->Info("sprite spell %u", a2->uType);
+            //logger->Info("sprite spell {}", a2->uType);
             return false;
     }
 }

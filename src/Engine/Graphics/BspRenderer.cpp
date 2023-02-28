@@ -211,9 +211,6 @@ void AddNodeBSPFaces(unsigned int node_id, unsigned int uFirstNode) {
         v7 = pNode->uBSPFaceIDOffset;
         v8 = v7 + pNode->uNumBSPFaces;
 
-        // logger->Warning(L"Node %u: %X to %X (%hX)", uFirstNode, v7, v8,
-        // v2->pFaceIDs[v7]);
-
         while (v7 < v8) {
             pBspRenderer->AddFaceToRenderList_d3d(node_id, pSector->pFaceIDs[v7++]);
         }

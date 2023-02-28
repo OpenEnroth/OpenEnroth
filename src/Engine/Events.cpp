@@ -318,7 +318,7 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
     EvtTargetObj = targetObj;
     dword_5B65C4_cancelEventProcessing = 0;
     if (engine->config->debug.VerboseLogging.Get())
-        logger->Warning("Processing EventID: %d", uEventID);
+        logger->Info("Processing EventID: {}", uEventID);
 
     if (!uEventID) {
         if (!game_ui_status_bar_event_string_time_left)

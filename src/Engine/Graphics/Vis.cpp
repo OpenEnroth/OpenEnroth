@@ -781,9 +781,7 @@ void Vis_SelectionList::create_object_pointers(PointerCreationType type) {
         } break;
 
         default:
-            logger->Warning(
-                "Unknown pointer creation flag passed to "
-                "::create_object_pointers()");
+            logger->Warning("Unknown pointer creation flag passed to ::create_object_pointers()");
     }
 }
 

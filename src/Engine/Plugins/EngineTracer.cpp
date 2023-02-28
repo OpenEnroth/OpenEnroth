@@ -69,9 +69,9 @@ void EngineTracer::finishTraceRecording() {
         trace.header.saveFileSize = std::filesystem::file_size(savePath); // This function can throw.
         EventTrace::saveToFile(tracePath, trace);
 
-        logger->Info("Trace saved to %s and %s",
-                     absolute(std::filesystem::path(tracePath)).generic_string().c_str(),
-                     absolute(std::filesystem::path(savePath)).generic_string().c_str());
+        logger->Info("Trace saved to {} and {}",
+                     absolute(std::filesystem::path(tracePath)).generic_string(),
+                     absolute(std::filesystem::path(savePath)).generic_string());
     });
 
     _state = CHILLING;
