@@ -30,10 +30,12 @@ var searchData=
   ['guibutton_2ecpp_27',['GUIButton.cpp',['../GUIButton_8cpp.html',1,'']]],
   ['guibutton_2eh_28',['GUIButton.h',['../GUIButton_8h.html',1,'']]],
   ['guidialogues_2eh_29',['GUIDialogues.h',['../GUIDialogues_8h.html',1,'']]],
-  ['guifont_2ecpp_30',['GUIFont.cpp',['../GUIFont_8cpp.html',1,'']]],
-  ['guifont_2eh_31',['GUIFont.h',['../GUIFont_8h.html',1,'']]],
-  ['guiprogressbar_2ecpp_32',['GUIProgressBar.cpp',['../GUIProgressBar_8cpp.html',1,'']]],
-  ['guiprogressbar_2eh_33',['GUIProgressBar.h',['../GUIProgressBar_8h.html',1,'']]],
-  ['guiwindow_2ecpp_34',['GUIWindow.cpp',['../GUIWindow_8cpp.html',1,'']]],
-  ['guiwindow_2eh_35',['GUIWindow.h',['../GUIWindow_8h.html',1,'']]]
+  ['guienums_2ecpp_30',['GUIEnums.cpp',['../GUIEnums_8cpp.html',1,'']]],
+  ['guienums_2eh_31',['GUIEnums.h',['../GUIEnums_8h.html',1,'']]],
+  ['guifont_2ecpp_32',['GUIFont.cpp',['../GUIFont_8cpp.html',1,'']]],
+  ['guifont_2eh_33',['GUIFont.h',['../GUIFont_8h.html',1,'']]],
+  ['guiprogressbar_2ecpp_34',['GUIProgressBar.cpp',['../GUIProgressBar_8cpp.html',1,'']]],
+  ['guiprogressbar_2eh_35',['GUIProgressBar.h',['../GUIProgressBar_8h.html',1,'']]],
+  ['guiwindow_2ecpp_36',['GUIWindow.cpp',['../GUIWindow_8cpp.html',1,'']]],
+  ['guiwindow_2eh_37',['GUIWindow.h',['../GUIWindow_8h.html',1,'']]]
 ];
