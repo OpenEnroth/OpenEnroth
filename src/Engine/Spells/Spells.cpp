@@ -386,9 +386,6 @@ std::array<uint16_t, SPELL_REGULAR_COUNT + 1> SpellSoundIds = {{
     18020, 18030, 18040, 18050, 18060, 18070, 18080, 18090, 18100,
     00001}};
 
-/**
- * @offset 0x458585
- */
 void SpellBuff::Reset() {
     uSkillMastery = PLAYER_SKILL_MASTERY_NONE;
     uPower = 0;
@@ -401,9 +398,6 @@ void SpellBuff::Reset() {
     }
 }
 
-/**
- * @offset 0x4585CA
- */
 bool SpellBuff::IsBuffExpiredToTime(GameTime time) {
     if (this->expire_time && (this->expire_time < time)) {
         expire_time.Reset();
@@ -415,9 +409,6 @@ bool SpellBuff::IsBuffExpiredToTime(GameTime time) {
     return false;
 }
 
-/**
- * @offset 0x4584E0
- */
 bool SpellBuff::Apply(GameTime expire_time, PLAYER_SKILL_MASTERY uSkillMastery,
                       PLAYER_SKILL_LEVEL uPower, int uOverlayID,
                       uint8_t caster) {
@@ -442,9 +433,6 @@ bool SpellBuff::Apply(GameTime expire_time, PLAYER_SKILL_MASTERY uSkillMastery,
     return true;
 }
 
-/**
- * @offset 0x45384A
- */
 void SpellStats::Initialize() {
     std::map<std::string, SPELL_SCHOOL, ILess> spellSchoolMaps;
     spellSchoolMaps["fire"] = SPELL_SCHOOL_FIRE;
@@ -490,9 +478,6 @@ void SpellStats::Initialize() {
     }
 }
 
-/**
- * Function for processing spells cast from game scripts.
- */
 void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAYER_SKILL_LEVEL skillLevel, int fromx,
                     int fromy, int fromz, int tox, int toy, int toz) {
     // For bug catching
@@ -635,8 +620,8 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
                     spell_length = GameTime::FromHours(1).AddMinutes(4 * skillLevel);
                 }
             }
-            for (Player &CurrentPlayer : pParty->pPlayers) {
-                if (CurrentPlayer.IsWeak()) {
+            for (Player &player : pParty->pPlayers) {
+                if (player.IsWeak()) {
                     return;
                 }
             }
@@ -765,15 +750,10 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
     }
 }
 
-/**
- * @offset 0x427769
- */
 bool IsSpellQuickCastableOnShiftClick(SPELL_TYPE uSpellID) {
     return (pSpellDatas[uSpellID].stats & 0xC) != 0;
 }
-/**
- * @offset 0x43AFE3
- */
+
 int CalcSpellDamage(SPELL_TYPE uSpellID, PLAYER_SKILL_LEVEL spellLevel, PLAYER_SKILL_MASTERY skillMastery, int currentHp) {
     int result;       // eax@1
     unsigned int diceSides;  // [sp-4h] [bp-8h]@9

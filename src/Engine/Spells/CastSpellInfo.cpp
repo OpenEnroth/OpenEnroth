@@ -86,8 +86,8 @@ void CastSpellInfoHelpers::castSpell() {
 
     static const int ONE_THIRD_PI = TrigLUT.uIntegerPi / 3;
 
-    for (CastSpellInfo &CurrentSpellInfo : pCastSpellInfo) {  // cycle through spell queue
-        CastSpellInfo *pCastSpell = &CurrentSpellInfo;
+    for (CastSpellInfo &spellInfo : pCastSpellInfo) {  // cycle through spell queue
+        CastSpellInfo *pCastSpell = &spellInfo;
         if (pCastSpell->uSpellID == SPELL_NONE) {
             continue;  // spell item blank skip to next
         }
@@ -2949,21 +2949,20 @@ static size_t pushCastSpellInfo(SPELL_TYPE uSpellID,
                                 SpellCastFlags uFlags,
                                 int spell_sound_id) {
     // uFlags: ON_CAST_*
-    for (size_t i = 0; CastSpellInfo &CurrentSpellInfo : pCastSpellInfo) {
-        if (CurrentSpellInfo.uSpellID == SPELL_NONE) {
-            CurrentSpellInfo.uSpellID = uSpellID;
-            CurrentSpellInfo.uPlayerID = uPlayerID;
+    for (size_t i = 0; i < pCastSpellInfo.size(); i++) {
+        if (pCastSpellInfo[i].uSpellID == SPELL_NONE) {
+            pCastSpellInfo[i].uSpellID = uSpellID;
+            pCastSpellInfo[i].uPlayerID = uPlayerID;
             if (uFlags & ON_CAST_TargetIsParty) {
-                CurrentSpellInfo.uPlayerID_2 = uPlayerID;
+                pCastSpellInfo[i].uPlayerID_2 = uPlayerID;
             }
-            CurrentSpellInfo.field_6 = 0;
-            CurrentSpellInfo.spell_target_pid = 0;
-            CurrentSpellInfo.uFlags = uFlags;
-            CurrentSpellInfo.forced_spell_skill_level = skill_level;
-            CurrentSpellInfo.sound_id = spell_sound_id;
+            pCastSpellInfo[i].field_6 = 0;
+            pCastSpellInfo[i].spell_target_pid = 0;
+            pCastSpellInfo[i].uFlags = uFlags;
+            pCastSpellInfo[i].forced_spell_skill_level = skill_level;
+            pCastSpellInfo[i].sound_id = spell_sound_id;
             return i;
         }
-        i++;
     }
     return -1;
 }
@@ -2971,13 +2970,13 @@ static size_t pushCastSpellInfo(SPELL_TYPE uSpellID,
 void CastSpellInfoHelpers::cancelSpellCastInProgress() {
     bool targeted_spell_canceled = false;
 
-    for (CastSpellInfo &CurrentSpellInfo : pCastSpellInfo) {
-        if (CurrentSpellInfo.uSpellID != SPELL_NONE &&
-            CurrentSpellInfo.uFlags & ON_CAST_CastingInProgress) {
+    for (CastSpellInfo &spellInfo : pCastSpellInfo) {
+        if (spellInfo.uSpellID != SPELL_NONE &&
+            spellInfo.uFlags & ON_CAST_CastingInProgress) {
             // Only one targeted spell can exist in queue.
             assert(!targeted_spell_canceled);
 
-            CurrentSpellInfo.uSpellID = SPELL_NONE;
+            spellInfo.uSpellID = SPELL_NONE;
 
             if (pGUIWindow_CastTargetedSpell) {
                 // TODO: where object is deleted?

@@ -211,12 +211,25 @@ enum SPELL_SCHOOL : int {
 /*   68 */
 #pragma pack(push, 1)
 struct SpellBuff {
+    /**
+     * @offset 0x4584E0
+     */
     bool Apply(GameTime time, PLAYER_SKILL_MASTERY uSkillMastery,
-                      PLAYER_SKILL_LEVEL uPower, int uOverlayID, uint8_t caster);
+               PLAYER_SKILL_LEVEL uPower, int uOverlayID, uint8_t caster);
+
+    /**
+     * @offset 0x458585
+     */
     void Reset();
+
+    /**
+     * @offset 0x4585CA
+     */
     bool IsBuffExpiredToTime(GameTime time);
 
-    //----- (0042EB31) --------------------------------------------------------
+    /**
+     * @offset 0x42EB31
+     */
     bool Active() const { return this->expire_time.value > 0; }
     bool Expired() const { return this->expire_time.value < 0; }
 
@@ -245,6 +258,9 @@ struct SpellInfo {
 
 #pragma pack(push, 1)
 struct SpellStats {
+    /**
+     * @offset 0x45384A
+     */
     void Initialize();
 
     SpellInfo pInfos[SPELL_REGULAR_COUNT];
@@ -317,8 +333,19 @@ extern IndexedArray<SpellData, SPELL_REGULAR_FIRST, SPELL_REGULAR_LAST> pSpellDa
 extern IndexedArray<SPELL_TYPE, ITEM_FIRST_WAND, ITEM_LAST_WAND> WandSpellIds;
 extern std::array<uint16_t, SPELL_REGULAR_COUNT + 1> SpellSoundIds;
 
+/**
+ * @offset 0x43AFE3
+ */
 int CalcSpellDamage(SPELL_TYPE uSpellID, PLAYER_SKILL_LEVEL spellLevel, PLAYER_SKILL_MASTERY skillMastery, int currentHp);
+
+/**
+ * @offset 0x427769
+ */
 bool IsSpellQuickCastableOnShiftClick(SPELL_TYPE uSpellID);
+
+/**
+ * Function for processing spells cast from game scripts.
+ */
 void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAYER_SKILL_LEVEL skillLevel, int fromx,
                     int fromy, int fromz, int tox, int toy, int toz);  // sub_448DF8
 
