@@ -557,7 +557,7 @@ void SpellFxRenderer::AddProjectile(SpriteObject *a2, int a3,
 }
 
 /**
- * @offet 0x4A7E89
+ * @offset 0x4A7E89
  */
 void SpellFxRenderer::sparklesOnActorAfterItCastsBuff(Actor *pActor, unsigned int uDiffuse) {
     Particle_sw particle;
