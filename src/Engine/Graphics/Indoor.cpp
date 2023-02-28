@@ -645,7 +645,6 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
 
         if (!backupboundingsector) backupboundingsector = i;
 
-        // logger->Warning("Sector[%u]", i);
         int FloorsAndPortals = pSector->uNumFloors + pSector->uNumPortals;
 
         // nothing in secotr to check against so skip
@@ -679,7 +678,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
     // No face found - outside of level
     if (!NumFoundFaceStore) {
         if (!backupboundingsector) {
-            logger->Warning("GetSector fail: %i, %i, %i", sX, sY, sZ);
+            logger->Warning("GetSector fail: {}, {}, {}", sX, sY, sZ);
             return 0;
         } else {
             logger->Warning("GetSector: Returning backup sector bounding!");
@@ -1493,7 +1492,7 @@ int BLV_GetFloorLevel(const Vec3i &pos, unsigned int uSectorID, unsigned int *pF
     // no face found - probably wrong sector supplied
     if (!FacesFound) {
         if (engine->config->debug.VerboseLogging.Get())
-            logger->Warning("Floorlvl fail: %i %i %i", pos.x, pos.y, pos.z);
+            logger->Warning("Floorlvl fail: {} {} {}", pos.x, pos.y, pos.z);
 
         *pFaceID = -1;
         return -30000;

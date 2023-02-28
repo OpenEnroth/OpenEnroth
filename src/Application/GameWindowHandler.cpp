@@ -576,10 +576,9 @@ bool GameWindowHandler::closeEvent(const PlatformWindowEvent *event) {
 }
 
 bool GameWindowHandler::gamepadConnectionEvent(const PlatformGamepadEvent *event) {
-    std::string message = fmt::format("Gamepad {}, model='{}', serial='{}'",
-                                      event->type == EVENT_GAMEPAD_CONNECTED ? "connected" : "disconnected",
-                                      event->gamepad->model(), event->gamepad->serial());
-    logger->Info("%s", message.c_str());
+    logger->Info("Gamepad {}, model='{}', serial='{}'",
+                 event->type == EVENT_GAMEPAD_CONNECTED ? "connected" : "disconnected",
+                 event->gamepad->model(), event->gamepad->serial());
     return false;
 }
 

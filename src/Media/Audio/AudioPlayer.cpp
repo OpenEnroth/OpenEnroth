@@ -124,7 +124,7 @@ void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
         std::string file_path = StringPrintf("%d.mp3", eTrack);
         file_path = MakeDataPath("music", file_path);
         if (!std::filesystem::exists(file_path)) {
-            logger->Warning("AudioPlayer: %s not found", file_path.c_str());
+            logger->Warning("AudioPlayer: {} not found", file_path);
             return;
         }
 
@@ -236,38 +236,38 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
     if (!bPlayerReady)
         return;
 
-    //logger->Info("AudioPlayer: trying to load sound id %u", eSoundID);
+    //logger->Info("AudioPlayer: trying to load sound id {}", eSoundID);
 
     if (engine->config->settings.SoundLevel.Get() < 1 || (eSoundID == SOUND_Invalid)) {
         return;
     }
 
     if (mapSounds.find(eSoundID) == mapSounds.end()) {
-        logger->Warning("AudioPlayer: sound id %u not found", eSoundID);
+        logger->Warning("AudioPlayer: sound id {} not found", eSoundID);
         return;
     }
 
     SoundInfo &si = mapSounds[eSoundID];
-    //logger->Info("AudioPlayer: sound id %u found as '%s'", eSoundID, si.sName.c_str());
+    //logger->Info("AudioPlayer: sound id {} found as '{}'", eSoundID, si.sName);
 
     if (!si.sample) {
         std::shared_ptr<Blob> buffer;
 
         if (si.sName == "") {  // enable this for bonus sound effects
-            //logger->Info("AudioPlayer: trying to load bonus sound %u", eSoundID);
+            //logger->Info("AudioPlayer: trying to load bonus sound {}", eSoundID);
             //buffer = LoadSound(int(eSoundID));
         } else {
             buffer = LoadSound(si.sName);
         }
 
         if (!buffer) {
-            logger->Warning("AudioPlayer: failed to load sound %u (%s)", eSoundID, si.sName.c_str());
+            logger->Warning("AudioPlayer: failed to load sound {} ({})", eSoundID, si.sName);
             return;
         }
 
         si.sample = CreateAudioSample(buffer);
         if (!si.sample) {
-            logger->Warning("AudioPlayer: failed to sample sound %u (%s)", eSoundID, si.sName.c_str());
+            logger->Warning("AudioPlayer: failed to sample sound {} ({})", eSoundID, si.sName);
             return;
         }
     }
@@ -364,9 +364,9 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
 
     if (engine->config->debug.VerboseLogging.Get()) {
         if (si.sName == "")
-            logger->Info("AudioPlayer: playing sound %u", eSoundID);
+            logger->Info("AudioPlayer: playing sound {}", eSoundID);
         else
-            logger->Info("AudioPlayer: playing sound %u with name '%s'", eSoundID, si.sName.c_str());
+            logger->Info("AudioPlayer: playing sound {} with name '{}'", eSoundID, si.sName);
     }
 
     return;
@@ -378,7 +378,7 @@ void AudioPlayer::ResumeSounds() {
         SoundInfo &si = iter->second;
         if (si.sample) {
             if (si.sample->Resume() && engine->config->debug.VerboseLogging.Get())
-                logger->Info("sound resumed: %s", si.sName.c_str());
+                logger->Info("sound resumed: {}", si.sName);
         }
         ++iter;
     }
@@ -401,7 +401,7 @@ void AudioPlayer::PauseSounds(int uType) {
             SoundInfo &si = iter->second;
             if (si.sample) {
                 if (si.sample->Pause() && engine->config->debug.VerboseLogging.Get())
-                    logger->Info("sound paused: %s", si.sName.c_str());
+                    logger->Info("sound paused: {}", si.sName);
             }
             ++iter;
         }
@@ -413,7 +413,7 @@ void AudioPlayer::PauseSounds(int uType) {
             if (si.sample) {
                 if (si.last_pid <= 0) {
                     if (si.sample->Pause() && engine->config->debug.VerboseLogging.Get())
-                        logger->Info("sound paused: %s", si.sName.c_str());
+                        logger->Info("sound paused: {}", si.sName);
                 }
             }
             ++iter;
@@ -436,7 +436,7 @@ void AudioPlayer::LoadAudioSnd() {
     std::string file_path = MakeDataPath("sounds", "audio.snd");
     fAudioSnd.open(MakeDataPath("sounds", "audio.snd"), std::ios_base::binary);
     if (!fAudioSnd.good()) {
-        logger->Warning("Can't open file: %s", file_path.c_str());
+        logger->Warning("Can't open file: {}", file_path);
         return;
     }
 
@@ -531,7 +531,7 @@ std::shared_ptr<Blob> AudioPlayer::LoadSound(int uSoundID) {  // bit of a kludge
 std::shared_ptr<Blob> AudioPlayer::LoadSound(const std::string &pSoundName) {
     SoundHeader header = { 0 };
     if (!FindSound(pSoundName, &header)) {
-        logger->Warning("AudioPlayer: %s can't load sound header!", pSoundName.c_str());
+        logger->Warning("AudioPlayer: {} can't load sound header!", pSoundName);
         return nullptr;
     }
 
@@ -543,7 +543,7 @@ std::shared_ptr<Blob> AudioPlayer::LoadSound(const std::string &pSoundName) {
         if (header.uDecompressedSize) {
             fAudioSnd.read((char*)buffer->data(), header.uDecompressedSize);
         } else {
-            logger->Warning("AudioPlayer: %s can't load sound file!", pSoundName.c_str());
+            logger->Warning("AudioPlayer: {} can't load sound file!", pSoundName);
         }
     } else {
         std::shared_ptr<Blob> compressed = Blob::AllocateShared(header.uCompressedSize);

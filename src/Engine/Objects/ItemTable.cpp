@@ -351,8 +351,7 @@ void ItemTable::LoadPotions() {
 
     for (uRow = 0; uRow < 50; ++uRow) {
         if (tokens.size() < 50) {
-            logger->Warning("Error Parsing Potion Table at Row: %d Column: %d",
-                            uRow, tokens.size());
+            logger->Warning("Error Parsing Potion Table at Row: {} Column: {}", uRow, tokens.size());
             return;
         }
         for (uColumn = 0; uColumn < 50; ++uColumn) {
@@ -366,8 +365,7 @@ void ItemTable::LoadPotions() {
 
         test_string = strtok(NULL, "\r") + 1;
         if (!test_string) {
-            logger->Warning("Error Parsing Potion Table at Row: %d Column: %d",
-                            uRow, 0);
+            logger->Warning("Error Parsing Potion Table at Row: {} Column: {}", uRow, 0);
             return;
         }
         tokens = Tokenize(test_string, '\t');
@@ -398,8 +396,7 @@ void ItemTable::LoadPotionNotes() {
 
     for (uRow = 0; uRow < 50; ++uRow) {
         if (tokens.size() < 50) {
-            logger->Warning("Error Parsing Potion Table at Row: %d Column: %d",
-                            uRow, tokens.size());
+            logger->Warning("Error Parsing Potion Table at Row: {} Column: {}", uRow, tokens.size());
             return;
         }
         for (uColumn = 0; uColumn < 50; ++uColumn) {
@@ -413,8 +410,7 @@ void ItemTable::LoadPotionNotes() {
 
         test_string = strtok(NULL, "\r") + 1;
         if (!test_string) {
-            logger->Warning("Error Parsing Potion Table at Row: %d Column: %d",
-                            uRow, 0);
+            logger->Warning("Error Parsing Potion Table at Row: {} Column: {}", uRow, 0);
             return;
         }
         tokens = Tokenize(test_string, '\t');

@@ -699,7 +699,7 @@ class VideoList {
 
         file = fopen(file_path.c_str(), "rb");
         if (file == nullptr) {
-            logger->Warning("Can't open video file: %s", file_path.c_str());
+            logger->Warning("Can't open video file: {}", file_path);
             return;
         }
         fseek(file, 0, SEEK_END);
@@ -996,7 +996,7 @@ MPlayer::MPlayer() {
 
     if (!provider) {
         provider = new OpenALSoundProvider;
-        // logger->Warning("allocation dynamic memory for provider\n");
+        // logger->Warning("allocation dynamic memory for provider");
         provider->Initialize();
     }
 }

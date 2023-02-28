@@ -238,7 +238,7 @@ int PaletteManager::GetPaletteIndex(int uPaletteID) {
     int ind = LoadPalette(uPaletteID);
     if (ind) return ind;
 
-    logger->Warning("Palette %u not loaded. Returning Index to greyscale!", uPaletteID);
+    logger->Warning("Palette {} not loaded. Returning Index to greyscale!", uPaletteID);
     return 0;
 }
 

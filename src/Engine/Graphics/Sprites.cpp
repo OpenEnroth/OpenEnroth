@@ -77,7 +77,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                         auto v8 = pSprites_LOD->LoadSprite(pSpriteSFrames[iter_uSpriteID].texture_name.c_str(), pSpriteSFrames[iter_uSpriteID].uPaletteID);
 
                         if (v8 == -1) {
-                            logger->Warning("Sprite %s not loaded!", pSpriteSFrames[iter_uSpriteID].texture_name.c_str());
+                            logger->Warning("Sprite {} not loaded!", pSpriteSFrames[iter_uSpriteID].texture_name);
                             for (uint i = 0; i < 8; ++i) {
                                 pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = nullptr;
                             }

@@ -93,7 +93,7 @@ void GL_Check_Errors(void *ret, const char *name, GLADapiproc apiproc, int len_a
         if (!detail_gl_error::trySerialize(err, &error))
             error = "Unknown Error";
 
-        logger->Warning("OpenGL error (%u): %s from function %s", err, error.c_str(), name);
+        logger->Warning("OpenGL error ({}): {} from function {}", err, error, name);
 
         err = glad_glGetError();
     }
@@ -117,7 +117,7 @@ void GL_Check_Framebuffer(const char *name) {
     if (!detail_fb_error::trySerialize(status, &error))
         return;
 
-    logger->Warning("OpenGL Framebuffer error (%u): %s from function %s", status, error.c_str(), name);
+    logger->Warning("OpenGL Framebuffer error ({}): {} from function {}", status, error, name);
 }
 
 // sky billboard stuff
@@ -4300,7 +4300,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                 if (pStationaryLightsStack->pLights[lightscnt].uSectorID == 0) cntnosect++;
             }
             if (cntnosect)
-                logger->Warning("%i lights - sector not found", cntnosect);
+                logger->Warning("{} lights - sector not found", cntnosect);
 
             for (int i = 0; i < 16; i++) {
                 numBSPverts[i] = 0;
@@ -5039,9 +5039,9 @@ bool RenderOpenGL::Initialize() {
         if (!version)
             log->Warning("GLAD: Failed to initialize the OpenGL loader");
 
-        log->Info("SDL2: supported OpenGL: %s", glGetString(GL_VERSION));
-        log->Info("SDL2: supported GLSL: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
-        log->Info("SDL2: OpenGL version: %d.%d", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
+        log->Info("SDL2: supported OpenGL: {}", reinterpret_cast<const char *>(glGetString(GL_VERSION)));
+        log->Info("SDL2: supported GLSL: {}", reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION)));
+        log->Info("SDL2: OpenGL version: {}.{}", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
 
         gladSetGLPostCallback(GL_Check_Errors);
 
@@ -5376,20 +5376,20 @@ void RenderOpenGL::ReloadShaders() {
     std::string name = "Terrain";
     std::string message = "shader failed to reload!\nPlease consult the log and issue a bug report!";
     if (!terrainshader.reload(name, OpenGLES))
-        logger->Warning(fmt::format("{} {}", name, message).c_str());
+        logger->Warning("{} {}", name, message);
     name = "Outdoor buildings";
     if (!outbuildshader.reload(name, OpenGLES))
-        logger->Warning(fmt::format("{} {}", name, message).c_str());
+        logger->Warning("{} {}", name, message);
     ReleaseTerrain();
 
     name = "Indoor BSP";
     if (!bspshader.reload(name, OpenGLES))
-        logger->Warning(fmt::format("{} {}", name, message).c_str());
+        logger->Warning("{} {}", name, message);
     ReleaseBSP();
 
     name = "Text";
     if (!textshader.reload(name, OpenGLES))
-        logger->Warning(fmt::format("{} {}", name, message).c_str());
+        logger->Warning("{} {}", name, message);
     glDeleteVertexArrays(1, &textVAO);
     glDeleteBuffers(1, &textVBO);
     textVAO = textVBO = 0;
@@ -5397,7 +5397,7 @@ void RenderOpenGL::ReloadShaders() {
 
     name = "Lines";
     if (!lineshader.reload(name, OpenGLES))
-        logger->Warning(fmt::format("{} {}", name, message).c_str());
+        logger->Warning("{} {}", name, message);
     glDeleteVertexArrays(1, &lineVAO);
     glDeleteBuffers(1, &lineVBO);
     lineVAO = lineVBO = 0;
@@ -5405,7 +5405,7 @@ void RenderOpenGL::ReloadShaders() {
 
     name = "2D";
     if (!twodshader.reload(name, OpenGLES))
-        logger->Warning(fmt::format("{} {}", name, message).c_str());
+        logger->Warning("{} {}", name, message);
     glDeleteVertexArrays(1, &twodVAO);
     glDeleteBuffers(1, &twodVBO);
     twodVAO = twodVBO = 0;
@@ -5413,7 +5413,7 @@ void RenderOpenGL::ReloadShaders() {
 
     name = "Billboards";
     if (!billbshader.reload(name, OpenGLES))
-        logger->Warning(fmt::format("{} {}", name, message).c_str());
+        logger->Warning("{} {}", name, message);
     glDeleteVertexArrays(1, &billbVAO);
     glDeleteBuffers(1, &billbVBO);
     billbVAO = billbVBO = 0;
@@ -5424,7 +5424,7 @@ void RenderOpenGL::ReloadShaders() {
 
     name = "Decals";
     if (!decalshader.reload(name, OpenGLES))
-        logger->Warning(fmt::format("{} {}", name, message).c_str());
+        logger->Warning("{} {}", name, message);
     glDeleteVertexArrays(1, &decalVAO);
     glDeleteBuffers(1, &decalVBO);
     decalVAO = decalVBO = 0;
@@ -5432,7 +5432,7 @@ void RenderOpenGL::ReloadShaders() {
 
     name = "Forced perspective";
     if (!forcepershader.reload(name, OpenGLES))
-        logger->Warning(fmt::format("{} {}", name, message).c_str());
+        logger->Warning("{} {}", name, message);
     glDeleteVertexArrays(1, &forceperVAO);
     glDeleteBuffers(1, &forceperVBO);
     forceperVAO = forceperVBO = 0;
@@ -5441,7 +5441,7 @@ void RenderOpenGL::ReloadShaders() {
     if (nuklearshader.ID != 0) {
         name = "Nuklear";
         if (!nuklearshader.reload(name, OpenGLES)) {
-            logger->Warning(fmt::format("{} {}", name, message).c_str());
+            logger->Warning("{} {}", name, message);
         } else {
             nk_dev.uniform_tex = glGetUniformLocation(nuklearshader.ID, "Texture");
             nk_dev.uniform_proj = glGetUniformLocation(nuklearshader.ID, "ProjMtx");

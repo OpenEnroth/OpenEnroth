@@ -45,7 +45,7 @@ void LoadGame(unsigned int uSlot) {
     MapsLongTimers_count = 0;
     if (!pSavegameUsedSlots[uSlot]) {
         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
-        logger->Warning("LoadGame: slot %u is empty", uSlot);
+        logger->Warning("LoadGame: slot {} is empty", uSlot);
         return;
     }
 
@@ -65,16 +65,14 @@ void LoadGame(unsigned int uSlot) {
     Blob headerBlob = pNew_LOD->LoadRaw("header.bin");
     SavegameHeader *header = (SavegameHeader*)headerBlob.data();
     if (header == nullptr) {
-        logger->Warning(localization->FormatString(
-            LSTR_FMT_SAVEGAME_CORRUPTED, 100).c_str());
+        logger->Warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 100));
     }
 
     {
         Blob partyBlob = pNew_LOD->LoadRaw("party.bin");
         Party_MM7 *serialization = (Party_MM7*)partyBlob.data();
         if (serialization == nullptr) {
-            logger->Warning(localization->FormatString(
-                LSTR_FMT_SAVEGAME_CORRUPTED, 101).c_str());
+            logger->Warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 101));
         } else {
             Deserialize(*serialization, pParty);
 
@@ -100,8 +98,7 @@ void LoadGame(unsigned int uSlot) {
         Blob timerBlob = pNew_LOD->LoadRaw("clock.bin");
         Timer_MM7 *serialization = (Timer_MM7*)timerBlob.data();
         if (serialization == nullptr) {
-            logger->Warning(localization->FormatString(
-                LSTR_FMT_SAVEGAME_CORRUPTED, 102).c_str());
+            logger->Warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 102));
         } else {
             Deserialize(*serialization, pEventTimer);
         }
@@ -111,8 +108,7 @@ void LoadGame(unsigned int uSlot) {
         Blob blob = pNew_LOD->LoadRaw("overlay.bin");
         OtherOverlayList_MM7 *serialization = (OtherOverlayList_MM7*)blob.data();
         if (serialization == nullptr) {
-            logger->Warning(localization->FormatString(
-                LSTR_FMT_SAVEGAME_CORRUPTED, 103).c_str());
+            logger->Warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 103));
         } else {
             Deserialize(*serialization, pOtherOverlayList);
         }
@@ -122,8 +118,7 @@ void LoadGame(unsigned int uSlot) {
         Blob blob = pNew_LOD->LoadRaw("npcdata.bin");
         NPCData_MM7 *serialization = (NPCData_MM7*)blob.data();
         if (serialization == nullptr) {
-            logger->Warning(localization->FormatString(
-                LSTR_FMT_SAVEGAME_CORRUPTED, 104).c_str());
+            logger->Warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 104));
         } else {
             for (unsigned int i = 0; i < 501; ++i) {
                 Deserialize(serialization[i], &pNPCStats->pNewNPCData[i]);
@@ -136,8 +131,7 @@ void LoadGame(unsigned int uSlot) {
         Blob blob = pNew_LOD->LoadRaw("npcgroup.bin");
         const void *npcgroup = blob.data();
         if (npcgroup == nullptr) {
-            logger->Warning(localization->FormatString(
-                LSTR_FMT_SAVEGAME_CORRUPTED, 105).c_str());
+            logger->Warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 105));
             __debugbreak();
         } else if (sizeof(pNPCStats->pGroups_copy) != 102) {
             logger->Warning("NPCStats: deserialization warning");
@@ -269,9 +263,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     //}
 
     if (pNew_LOD->Write("image.pcx", uncompressed_buff, buf_size, 0)) {
-        auto error_message = localization->FormatString(
-            LSTR_FMT_SAVEGAME_CORRUPTED, 200);
-        logger->Warning(error_message.c_str());
+        logger->Warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 200));
     }
 
     static_assert(sizeof(SavegameHeader) == 100, "Wrong type size");
@@ -282,9 +274,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     strcpy(save_header.pLocationName, pCurrentMapName.c_str());
     save_header.playing_time = pParty->GetPlayingTime();
     if (pNew_LOD->Write("header.bin", &save_header, sizeof(SavegameHeader), 0)) {
-        auto error_message = localization->FormatString(
-            LSTR_FMT_SAVEGAME_CORRUPTED, 201);
-        logger->Warning(error_message.c_str());
+        logger->Warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 201));
     }
 
     {
@@ -292,9 +282,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         Serialize(*pParty, &serialization);
 
         if (pNew_LOD->Write("party.bin", &serialization, sizeof(serialization), 0)) {
-            auto error_message = localization->FormatString(
-                LSTR_FMT_SAVEGAME_CORRUPTED, 202);
-            logger->Warning(error_message.c_str());
+            logger->Warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 202));
         }
     }
 
@@ -303,9 +291,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         Serialize(*pEventTimer, &serialization);
 
         if (pNew_LOD->Write("clock.bin", &serialization, sizeof(serialization), 0)) {
-            auto error_message = localization->FormatString(
-                LSTR_FMT_SAVEGAME_CORRUPTED, 203);
-            logger->Warning(error_message.c_str());
+            logger->Warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 203));
         }
     }
 
@@ -314,9 +300,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         Serialize(*pOtherOverlayList, &serialization);
 
         if (pNew_LOD->Write("overlay.bin", &serialization, sizeof(serialization), 0)) {
-            auto error_message = localization->FormatString(
-                LSTR_FMT_SAVEGAME_CORRUPTED, 204);
-            logger->Warning(error_message.c_str());
+            logger->Warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 204));
         }
     }
 
@@ -327,16 +311,12 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         }
 
         if (pNew_LOD->Write("npcdata.bin", serialization, sizeof(serialization), 0)) {
-            auto error_message = localization->FormatString(
-                LSTR_FMT_SAVEGAME_CORRUPTED, 205);
-            logger->Warning(error_message.c_str());
+            logger->Warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 205));
         }
     }
 
     if (pNew_LOD->Write("npcgroup.bin", pNPCStats->pGroups_copy, sizeof(pNPCStats->pGroups_copy), 0)) {
-        auto error_message = localization->FormatString(
-            LSTR_FMT_SAVEGAME_CORRUPTED, 206);
-        logger->Warning(error_message.c_str());
+        logger->Warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 206));
     }
 
     for (size_t i = 0; i < 4; ++i) {  // 4 - players
@@ -357,9 +337,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
                               pcx_data, pcx_data_size, &pcx_data_size);
                 std::string str = StringPrintf("lloyd%d%d.pcx", i + 1, j + 1);
                 if (pNew_LOD->Write(str, pcx_data, pcx_data_size, 0)) {
-                    auto error_message = localization->FormatString(
-                        LSTR_FMT_SAVEGAME_CORRUPTED, 207);
-                    logger->Warning(error_message.c_str());
+                    logger->Warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 207));
                 }
                 free(pcx_data);
             }
@@ -517,9 +495,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         size_t pos = file_name.find_last_of(".");
         file_name[pos + 1] = 'd';
         if (pNew_LOD->Write(file_name, mapBlob.data(), mapBlob.size(), 0)) {
-            auto error_message = localization->FormatString(
-                LSTR_FMT_SAVEGAME_CORRUPTED, 208);
-            logger->Warning(error_message.c_str());
+            logger->Warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 208));
         }
     }
     free(uncompressed_buff);

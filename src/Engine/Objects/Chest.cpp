@@ -421,7 +421,7 @@ void Chest::PlaceItems(int uChestID) {  // only sued for setup
                     vChests[uChestID].igChestItems[items_counter].SetIdentified();
                 }
             } else if (engine->config->debug.VerboseLogging.Get()) {
-                logger->Warning("Cannot place item with id %d in the chest!", chest_item_id);
+                logger->Warning("Cannot place item with id {} in the chest!", std::to_underlying(chest_item_id));
             }
         }
     }
