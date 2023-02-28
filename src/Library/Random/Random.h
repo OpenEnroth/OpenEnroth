@@ -7,6 +7,8 @@
 // TODO(captaiurist): actually these static vars belong to Engine/
 
 /*
+ * @file
+ *
  * Some notes on what is happening here.
  *
  * We want to be able to record play traces, and for this we need deterministic random number generation. Unfortunately,
