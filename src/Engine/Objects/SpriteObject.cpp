@@ -856,8 +856,8 @@ void CompactLayingItemsList() {
 void SpriteObject::InitializeSpriteObjects() {
     for (size_t i = 0; i < pSpriteObjects.size(); ++i) {
         SpriteObject *item = &pSpriteObjects[i];
-        if (item->uType &&
-            (item->uSoundID & 8 || pObjectList->pObjects[item->uType].uFlags &
+        if (item->uObjectDescID &&
+            (item->uSoundID & 8 || pObjectList->pObjects[item->uObjectDescID].uFlags &
                                        OBJECT_DESC_UNPICKABLE)) {
             SpriteObject::OnInteraction(i);
         }

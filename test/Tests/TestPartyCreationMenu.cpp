@@ -331,3 +331,8 @@ GAME_TEST(Prs, Pr469) {
     // Assert when using Quick Spell button when spell is not set
     test->playTraceFromTestData("pr_469.mm7", "pr_469.json");
 }
+
+GAME_TEST(Issue, Issue331) {
+    // Assert when traveling by horse caused by out of bound access to pObjectList->pObjects
+    test->playTraceFromTestData("issue_331.mm7", "issue_331.json");
+}
