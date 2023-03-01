@@ -1068,10 +1068,7 @@ void Party::GivePartyExp(unsigned int pEXPNum) {
         if (pActivePlayerCount) {
             pEXPNum = pEXPNum / pActivePlayerCount;
             for (uint i = 0; i < 4; ++i) {
-                if (!pParty->pPlayers[i].conditions.Has(Condition_Unconscious) &&
-                    !pParty->pPlayers[i].conditions.Has(Condition_Dead) &&
-                    !pParty->pPlayers[i].conditions.Has(Condition_Petrified) &&
-                    !pParty->pPlayers[i].conditions.Has(Condition_Eradicated)) {
+                if (pParty->pPlayers[i].conditions.HasNone({Condition_Unconscious, Condition_Dead, Condition_Petrified, Condition_Eradicated})) {
                     pLearningPercent = pParty->pPlayers[i].GetLearningPercent();
                     playermodexp = pEXPNum + pEXPNum * pLearningPercent / 100;
                     pParty->pPlayers[i].uExperience += playermodexp;
