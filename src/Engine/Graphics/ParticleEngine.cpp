@@ -45,163 +45,154 @@ void TrailParticleGenerator::UpdateParticles() {
     }
 }
 
-//----- (0048AAC5) --------------------------------------------------------
 ParticleEngine::ParticleEngine() {
-    for (uint i = 0; i < 500; ++i)
-        memset(&pParticles[i], 0, sizeof(pParticles[i]));
-
     ResetParticles();
 }
 
-//----- (0048AAF6) --------------------------------------------------------
 void ParticleEngine::ResetParticles() {
-    memset(pParticles, 0, 500 * sizeof(*pParticles));
-    uStartParticle = 500;
+    pParticles.fill({});
+    uStartParticle = PARTICLES_ARRAY_SIZE;
     uEndParticle = 0;
     uTimeElapsed = 0;
 }
 
-//----- (0048AB23) --------------------------------------------------------
-void ParticleEngine::AddParticle(Particle_sw *a2) {
-    signed int v2;  // eax@2
-    Particle *v3;   // edx@2
-    Particle *v4;   // esi@10
-    int v5;         // ecx@10
-    // char v6; // zf@10
-
+void ParticleEngine::AddParticle(Particle_sw *particle) {
     if (!pMiscTimer->bPaused) {
-        v2 = 0;
-        v3 = this->pParticles;
-        do {
-            if (v3->type == ParticleType_Invalid) break;
-            ++v2;
-            ++v3;
-        } while (v2 < 500);
-        if (v2 < 500) {
-            if (v2 < this->uStartParticle) this->uStartParticle = v2;
-            if (v2 > this->uEndParticle) this->uEndParticle = v2;
-            v4 = &this->pParticles[v2];
-            v4->type = a2->type;
-            v4->x = a2->x;
-            v4->y = a2->y;
-            v4->z = a2->z;
-            v4->_x = a2->x;
-            v4->_y = a2->y;
-            v4->_z = a2->z;
-            v4->flt_10 = a2->r;
-            v4->flt_14 = a2->g;
-            v4->flt_18 = a2->b;
-            v5 = a2->uDiffuse;
-            v4->uParticleColor = v5;
-            v4->uLightColor_bgr = v5;
+        Particle *freeParticle = nullptr;
+
+        for (int i = 0; i < pParticles.size(); i++) {
+            if (pParticles[i].type == ParticleType_Invalid) {
+                if (i < this->uStartParticle) {
+                    this->uStartParticle = i;
+                }
+                if (i > this->uEndParticle) {
+                    this->uEndParticle = i;
+                }
+                freeParticle = &pParticles[i];
+                break;
+            }
+        }
+
+        if (freeParticle) {
+            freeParticle->type = particle->type;
+            freeParticle->x = particle->x;
+            freeParticle->y = particle->y;
+            freeParticle->z = particle->z;
+            freeParticle->_x = particle->x;
+            freeParticle->_y = particle->y;
+            freeParticle->_z = particle->z;
+            freeParticle->shift_x = particle->r; // TODO: seems Particle_sw struct fields are mixed up here
+            freeParticle->shift_y = particle->g;
+            freeParticle->shift_z = particle->b;
+            freeParticle->uParticleColor = particle->uDiffuse;
+            freeParticle->uLightColor_bgr = particle->uDiffuse;
             // v6 = (v4->uType & 4) == 0;
-            v4->timeToLive = a2->timeToLive;
-            v4->texture = a2->texture;
-            v4->paletteID = a2->paletteID;
-            v4->particle_size = a2->particle_size;
-            if (v4->type & ParticleType_Rotating) {
-                v4->rotation_speed = vrng->Random(256) - 128;
-                v4->angle = vrng->Random(TrigLUT.uIntegerDoublePi);
+            freeParticle->timeToLive = particle->timeToLive;
+            freeParticle->texture = particle->texture;
+            freeParticle->paletteID = particle->paletteID;
+            freeParticle->particle_size = particle->particle_size;
+            if (freeParticle->type & ParticleType_Rotating) {
+                freeParticle->rotation_speed = vrng->Random(256) - 128;
+                freeParticle->angle = vrng->Random(TrigLUT.uIntegerDoublePi);
             } else {
-                v4->rotation_speed = 0;
-                v4->angle = 0;
+                freeParticle->rotation_speed = 0;
+                freeParticle->angle = 0;
             }
         }
     }
 }
 
-//----- (0048ABF3) --------------------------------------------------------
 void ParticleEngine::Draw() {
     uTimeElapsed += pEventTimer->uTimeElapsed;
     pLines.uNumLines = 0;
 
     DrawParticles_BLV();
-    // if (render->pRenderD3D)
-    {
-        if (pLines.uNumLines) {
-            render->DrawLines(pLines.pLineVertices, pLines.uNumLines);
-            /*render->pRenderD3D->pDevice->SetTexture(0, 0);
-            render->pRenderD3D->pDevice->DrawPrimitive(
-              D3DPT_LINELIST,
-              D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
-              pLines.pLineVertices,
-              pLines.uNumLines,
-              D3DDP_DONOTLIGHT);*/
-        }
+    if (pLines.uNumLines) {
+        render->DrawLines(pLines.pLineVertices, pLines.uNumLines);
     }
 }
 
-//----- (0048AC65) --------------------------------------------------------
 void ParticleEngine::UpdateParticles() {
-    unsigned int time;  // edi@1
-    // int v5; // eax@3
-    // char v6; // sf@4
-    float v7;   // ST4C_4@11
-    double v8;  // st7@12
-    // int v9; // eax@12
-    // double v10; // st7@14
-    signed int v19;      // [sp+38h] [bp-14h]@1
-    int v20;             // [sp+3Ch] [bp-10h]@1
-    unsigned int time_;  // [sp+40h] [bp-Ch]@1
-    int v22;             // [sp+44h] [bp-8h]@12
+    unsigned uCurrentEnd = 0;
+    unsigned uCurrentBegin = PARTICLES_ARRAY_SIZE;
+    int time = pMiscTimer->bPaused == 0 ? pEventTimer->uTimeElapsed : 0;
 
-    v20 = 0;
-    time = pMiscTimer->bPaused == 0 ? pEventTimer->uTimeElapsed : 0;
-    v19 = 500;
-    time_ = pMiscTimer->bPaused == 0 ? pEventTimer->uTimeElapsed : 0;
+    if (time == 0) {
+        return;
+    }
 
     for (uint i = uStartParticle; i <= uEndParticle; ++i) {
         Particle *p = &pParticles[i];
 
-        if (p->type == ParticleType_Invalid) continue;
+        if (p->type == ParticleType_Invalid) {
+            continue;
+        }
 
         if (p->timeToLive <= time) {
             p->timeToLive = 0;
             p->type = ParticleType_Invalid;
             continue;
         }
+
         p->timeToLive -= time;
 
+        // Line particle type appear unused
         if (p->type & ParticleType_Line) {
             p->_x = p->x;
             p->_y = p->y;
             p->_z = p->z;
         }
 
-        if (p->type & ParticleType_1)
-            p->flt_18 = p->flt_18 - (double)(signed int)time_ * 5.0;
-
-        if (p->type & ParticleType_8) {
-            v7 = (double)(signed int)time_;
-            *(float *)&p->x += (double)(vrng->Random(5) - 2) * v7 / 16.0f;
-            *(float *)&p->y += (double)(vrng->Random(5) - 2) * v7 / 16.0f;
-            *(float *)&p->z += (double)(vrng->Random(5) + 4) * v7 / 16.0f;
+        // Dropping particles drop downward with acceleration
+        if (p->type & ParticleType_Dropping) {
+            p->shift_z -= time * 5.0;
         }
-        v8 = (double)(signed int)time_ / 128.0f;
+
+        // Ascending particles slowly float upward
+        if (p->type & ParticleType_Ascending) {
+            int random_x = vrng->Random(5);
+            int random_y = vrng->Random(5);
+            int random_z = vrng->Random(5);
+            p->x += (random_x - 2) * time / 16.0;
+            p->y += (random_y - 2) * time / 16.0;
+            p->z += (random_z + 4) * time / 16.0;
+        }
+
         // v9 = (signed int)(time * p->rotation_speed) / 16;
 
-        p->x += v8 * p->flt_10;
-        p->y += v8 * p->flt_14;
-        p->z += v8 * p->flt_18;
+        // Particle shift with time
+        double shift = time / 128.0f;
+        p->x += shift * p->shift_x;
+        p->y += shift * p->shift_y;
+        p->z += shift * p->shift_z;
 
         p->angle += time * p->rotation_speed / 16;
-        v22 = 2 * p->timeToLive;
-        if (v22 >= 255) v22 = 255;
+
+        // With time particles become more transparent
+        int dissipate_value = 2 * p->timeToLive;
+        if (dissipate_value >= 255) {
+            dissipate_value = 255;
+        }
+        float dissipate_factor = dissipate_value / 255.0f;
         // v10 = (double)v22 * 0.0039215689;
-        p->uLightColor_bgr = ((uint)floorf(p->b * (v22 / 255.0f) + 0.5) << 16) |
-                             ((uint)floorf(p->g * (v22 / 255.0f) + 0.5) << 8) |
-                             ((uint)floorf(p->r * (v22 / 255.0f) + 0.5) << 0);
-        if (i < v19) v19 = i;
-        if (i > v20) v20 = i;
+        // TODO(Nik-RE-dev): check colour format use in particles
+        p->uLightColor_bgr = ((uint)floorf(p->b * dissipate_factor + 0.5) << 16) |
+                             ((uint)floorf(p->g * dissipate_factor + 0.5) << 8) |
+                             ((uint)floorf(p->r * dissipate_factor + 0.5) << 0);
+
+        if (i < uCurrentBegin) {
+           uCurrentBegin = i;
+        }
+        if (i > uCurrentEnd) {
+           uCurrentEnd = i;
+        }
     }
 
-    uEndParticle = v20;
-    uStartParticle = v19;
+    uEndParticle = uCurrentEnd;
+    uStartParticle = uCurrentBegin;
 }
 
-//----- (0048AE74) --------------------------------------------------------
-bool ParticleEngine::ViewProject_TrueIfStillVisible_BLV(
-    unsigned int uParticleID) {
+bool ParticleEngine::ViewProject_TrueIfStillVisible_BLV(unsigned int uParticleID) {
     Particle *pParticle;  // esi@1
     int y_int_;           // [sp+10h] [bp-40h]@2
     int x_int;            // [sp+20h] [bp-30h]@2
@@ -240,9 +231,6 @@ bool ParticleEngine::ViewProject_TrueIfStillVisible_BLV(
     return true;
 }
 
-
-
-//----- (0048BBA6) --------------------------------------------------------
 void ParticleEngine::DrawParticles_BLV() {
     SoftwareBillboard v15 {};  // [sp+Ch] [bp-58h]@1
 
@@ -256,7 +244,7 @@ void ParticleEngine::DrawParticles_BLV() {
         if (!ViewProject_TrueIfStillVisible_BLV(i)) continue;
 
         // TODO(pskelton): reinstate this guard check
-
+        // TODO(Nik-RE-dev): all types except for Line appear to behave identically
         if (true) {
             /*p->uScreenSpaceX >= pBLVRenderParams->uViewportX &&
             p->uScreenSpaceX < pBLVRenderParams->uViewportZ &&

@@ -383,8 +383,7 @@ void RenderBase::PrepareDecorationsRenderList_ODM() {
             } else {
                 // Emit fire particles.
                 memset(&local_0, 0, sizeof(Particle_sw));
-                local_0.type = ParticleType_Bitmap | ParticleType_Rotating |
-                    ParticleType_8;
+                local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
                 local_0.uDiffuse = colorTable.OrangeyRed.C32();
                 local_0.x = static_cast<float>(pLevelDecorations[i].vPosition.x);
                 local_0.y = static_cast<float>(pLevelDecorations[i].vPosition.y);
