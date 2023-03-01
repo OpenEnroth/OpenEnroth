@@ -5,33 +5,28 @@
 struct ObjectList *pObjectList;
 
 unsigned int ObjectList::ObjectIDByItemID(unsigned int uItemID) {
-    unsigned int res = 0;
-
-    for (unsigned int i = 0; i < uNumObjects; i++) {
-        if (uItemID == pObjects[i].uObjectID) {
-            res = i;
-            break;
-        }
-    }
-
-    return res;
+    for (size_t i = 0; i < pObjects.size(); i++)
+        if (uItemID == pObjects[i].uObjectID)
+            return i;
+    return 0;
 }
 
 void ObjectList::InitializeSprites() {
-    for (unsigned int i = 0; i < uNumObjects; ++i) {
-        pSpriteFrameTable->InitializeSprite(pObjects[i].uSpriteID);
+    for (const ObjectDesc& object : pObjects) {
+        pSpriteFrameTable->InitializeSprite(object.uSpriteID);
     }
 }
 
 void ObjectList::InitializeColors() {
-    for (unsigned int i = 0; i < pObjectList->uNumObjects; ++i) {
-        pObjectList->pObjects[i].uParticleTrailColor =
-            ((unsigned int)pObjectList->pObjects[i].uParticleTrailColorB << 16) |
-            ((unsigned int)pObjectList->pObjects[i].uParticleTrailColorG << 8) |
-            ((unsigned int)pObjectList->pObjects[i].uParticleTrailColorR);
+    for (ObjectDesc& object : pObjects) {
+        object.uParticleTrailColor =
+            ((unsigned int)object.uParticleTrailColorB << 16) |
+            ((unsigned int)object.uParticleTrailColorG << 8) |
+            ((unsigned int)object.uParticleTrailColorR);
     }
 }
 
+// TODO(caprainurist): this belongs to LegacyImages.h
 #pragma pack(push, 1)
 struct ObjectDesc_mm6 {
     inline bool NoSprite() const { return uFlags & OBJECT_DESC_NO_SPRITE; }
@@ -60,12 +55,12 @@ void ObjectList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob
     unsigned int num_mm7_objs = data_mm7 ? *(uint32_t*)data_mm7.data() : 0;
     unsigned int num_mm8_objs = data_mm8 ? *(uint32_t*)data_mm8.data() : 0;
 
-    uNumObjects = num_mm6_objs + num_mm7_objs + num_mm8_objs;
+    size_t uNumObjects = num_mm6_objs + num_mm7_objs + num_mm8_objs;
     assert(uNumObjects != 0);
     assert(num_mm8_objs == 0);
 
-    pObjects = (ObjectDesc*)malloc(uNumObjects * sizeof(ObjectDesc));
-    memcpy(pObjects, (char*)data_mm7.data() + 4, num_mm7_objs * sizeof(ObjectDesc));
+    pObjects.resize(uNumObjects);
+    memcpy(pObjects.data(), (char*)data_mm7.data() + 4, num_mm7_objs * sizeof(ObjectDesc));
     for (unsigned int i = 0; i < num_mm6_objs; ++i) {
         auto src = (ObjectDesc_mm6 *)((char *)data_mm6.data() + 4) + i;
         ObjectDesc *dst = &pObjects[num_mm7_objs + i];
