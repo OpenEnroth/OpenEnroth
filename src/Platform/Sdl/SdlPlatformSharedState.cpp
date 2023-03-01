@@ -44,7 +44,7 @@ std::vector<uint32_t> SdlPlatformSharedState::allWindowIds() const {
 
 SdlWindow *SdlPlatformSharedState::window(uint32_t id) const {
     assert(_windowById.contains(id));
-    return ValueOr(_windowById, id, nullptr);
+    return valueOr(_windowById, id, nullptr);
 }
 
 void SdlPlatformSharedState::initializeGamepads() {

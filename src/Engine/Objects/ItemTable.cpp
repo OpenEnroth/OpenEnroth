@@ -185,8 +185,8 @@ void ItemTable::Initialize() {
         pItems[item_counter].pIconName = RemoveQuotes(tokens[1]);
         pItems[item_counter].pName = RemoveQuotes(tokens[2]);
         pItems[item_counter].uValue = atoi(tokens[3]);
-        pItems[item_counter].uEquipType = ValueOr(equipStatMap, tokens[4], EQUIP_NONE);
-        pItems[item_counter].uSkillType = ValueOr(equipSkillMap, tokens[5], PLAYER_SKILL_MISC);
+        pItems[item_counter].uEquipType = valueOr(equipStatMap, tokens[4], EQUIP_NONE);
+        pItems[item_counter].uSkillType = valueOr(equipSkillMap, tokens[5], PLAYER_SKILL_MISC);
         auto tokens2 = Tokenize(tokens[6], 'd');
         if (tokens2.size() == 2) {
             pItems[item_counter].uDamageDice = atoi(tokens2[0]);
@@ -199,7 +199,7 @@ void ItemTable::Initialize() {
             pItems[item_counter].uDamageRoll = 0;
         }
         pItems[item_counter].uDamageMod = atoi(tokens[7]);
-        pItems[item_counter].uMaterial = ValueOr(materialMap, tokens[8], MATERIAL_COMMON);
+        pItems[item_counter].uMaterial = valueOr(materialMap, tokens[8], MATERIAL_COMMON);
         pItems[item_counter].uItemID_Rep_St = atoi(tokens[9]);
         pItems[item_counter].pUnidentifiedName = RemoveQuotes(tokens[10]);
         pItems[item_counter].uSpriteID = atoi(tokens[11]);

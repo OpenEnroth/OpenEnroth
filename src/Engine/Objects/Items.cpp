@@ -725,7 +725,7 @@ uint8_t ItemGen::GetDamageMod() {
 std::string GetItemTextureFilename(ITEM_TYPE item_id, int index, int shoulder) {
     // For some reason artifact textures are stored using different ids,
     // and textures under original ids simply don't exist.
-    int texture_id = std::to_underlying(ValueOr(itemTextureIdByItemId, item_id, item_id));
+    int texture_id = std::to_underlying(valueOr(itemTextureIdByItemId, item_id, item_id));
 
     switch (pItemTable->pItems[item_id].uEquipType) {
         case EQUIP_ARMOUR:
@@ -801,5 +801,5 @@ Segment<ITEM_TREASURE_LEVEL> RemapTreasureLevel(ITEM_TREASURE_LEVEL itemTreasure
     int itemIdx = std::to_underlying(itemTreasureLevel) - std::to_underlying(ITEM_FIRST_VALID_TREASURE_LEVEL);
     int mapIdx = std::to_underlying(mapTreasureLevel) - std::to_underlying(MAP_FIRST_TREASURE_LEVEL);
     Segment<int> result = mapping[itemIdx][mapIdx];
-    return {ITEM_TREASURE_LEVEL(result.First()), ITEM_TREASURE_LEVEL(result.Last())};
+    return {ITEM_TREASURE_LEVEL(result.front()), ITEM_TREASURE_LEVEL(result.back())};
 }

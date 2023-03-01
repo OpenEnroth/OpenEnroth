@@ -21,7 +21,7 @@ void ConfigSection::RegisterValue(AbstractConfigValue *value) {
 }
 
 AbstractConfigValue *ConfigSection::Value(const std::string &name) const {
-    return ValueOr(valueByName_, name, nullptr);
+    return valueOr(valueByName_, name, nullptr);
 }
 
 std::vector<AbstractConfigValue *> ConfigSection::Values() const {

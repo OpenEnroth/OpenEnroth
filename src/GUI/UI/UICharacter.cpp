@@ -310,7 +310,7 @@ const std::unordered_map<ITEM_TYPE, int> paperdoll_boots_indexByType = {
     {ITEM_ARTIFACT_SEVEN_LEAGUE_BOOTS, 5},
     {ITEM_ARTIFACT_HERMES_SANDALS, 6},
 };
-const std::unordered_map<int, ITEM_TYPE> paperdoll_boots_typeByIndex = Inverted(paperdoll_boots_indexByType);
+const std::unordered_map<int, ITEM_TYPE> paperdoll_boots_typeByIndex = inverted(paperdoll_boots_indexByType);
 
 const int paperdoll_Cloak[4][10][2] = {  // 4E5570
     0x11, 0x68, 0x0F, 0x68, 0x14, 0x71, 0x19, 0x6B, 0x21, 0x6F, 0x05, 0x68,
@@ -337,7 +337,7 @@ const std::unordered_map<ITEM_TYPE, int> paperdoll_cloak_indexByType = {
     {ITEM_RARE_MOON_CLOAK, 8},
     {ITEM_RARE_VAMPIRES_CAPE, 9}
 };
-const std::unordered_map<int, ITEM_TYPE> paperdoll_cloak_typeByIndex = Inverted(paperdoll_cloak_indexByType);
+const std::unordered_map<int, ITEM_TYPE> paperdoll_cloak_typeByIndex = inverted(paperdoll_cloak_indexByType);
 
 const int paperdoll_CloakCollar[4][10][2] = {  // 4E56B0
     0,    0,    0x34, 0x64, 0x21, 0x69, 0x1D, 0x67, 0x20, 0x67, 0x21, 0x68,
@@ -375,7 +375,7 @@ const std::unordered_map<ITEM_TYPE, int> paperdoll_belt_indexByType = {
     {ITEM_RELIC_TITANS_BELT, 5},
     {ITEM_ARTIFACT_HEROS_BELT, 6}
 };
-const std::unordered_map<int, ITEM_TYPE> paperdoll_belt_typeByIndex = Inverted(paperdoll_belt_indexByType);
+const std::unordered_map<int, ITEM_TYPE> paperdoll_belt_typeByIndex = inverted(paperdoll_belt_indexByType);
 
 const int paperdoll_Helm[4][16][2] = {  // 4E58D0
     0x3E, 0x1F, 0x41, 0x2C, 0x37, 0x2F, 0x31, 0x32, 0x37, 0x2A, 0x39, 0x28,
@@ -412,7 +412,7 @@ const std::unordered_map<ITEM_TYPE, int> paperdoll_helm_indexByType = {
     {ITEM_ARTIFACT_MINDS_EYE, 14},
     {ITEM_RARE_SHADOWS_MASK, 15}
 };
-const std::unordered_map<int, ITEM_TYPE> paperdoll_helm_typeByIndex = Inverted(paperdoll_helm_indexByType);
+const std::unordered_map<int, ITEM_TYPE> paperdoll_helm_typeByIndex = inverted(paperdoll_helm_indexByType);
 
 const int pPaperdoll_Beards[4] = {  // 4E5AD0
     52,
@@ -471,7 +471,7 @@ const std::unordered_map<ITEM_TYPE, int> paperdoll_armor_indexByType = {
     {ITEM_ARTIFACT_GOVERNORS_ARMOR, 15},
     {ITEM_ARTIFACT_ELVEN_CHAINMAIL, 16}
 };
-const std::unordered_map<int, ITEM_TYPE> paperdoll_armor_typeByIndex = Inverted(paperdoll_armor_indexByType);
+const std::unordered_map<int, ITEM_TYPE> paperdoll_armor_typeByIndex = inverted(paperdoll_armor_indexByType);
 
 const int paperdoll_shoulder_coord[4][17][2] = {  // 4E5050
     0x64, 0x67, 0x61, 0x67, 0x65, 0x68, 0x6E, 0x74, 0x6C, 0x68, 0x61, 0x67,
@@ -1050,7 +1050,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         // cloak
         item = player->GetCloakItem();
         if (item) {
-            index = ValueOr(paperdoll_cloak_indexByType, item->uItemID, -1);
+            index = valueOr(paperdoll_cloak_indexByType, item->uItemID, -1);
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Cloak[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Cloak[pBodyComplection][index][1];
@@ -1066,7 +1066,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         // armor
         item = player->GetArmorItem();
         if (item) {
-            index = ValueOr(paperdoll_armor_indexByType, item->uItemID, -1);
+            index = valueOr(paperdoll_armor_indexByType, item->uItemID, -1);
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Armor_Coord[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Armor_Coord[pBodyComplection][index][1];
@@ -1079,7 +1079,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         // boots
         item = player->GetBootItem();
         if (item) {
-            index = ValueOr(paperdoll_boots_indexByType, item->uItemID, -1);
+            index = valueOr(paperdoll_boots_indexByType, item->uItemID, -1);
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Boot[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Boot[pBodyComplection][index][1];
@@ -1109,7 +1109,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         // belt
         item = player->GetBeltItem();
         if (item) {
-            index = ValueOr(paperdoll_belt_indexByType, item->uItemID, -1);
+            index = valueOr(paperdoll_belt_indexByType, item->uItemID, -1);
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Belt[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Belt[pBodyComplection][index][1];
@@ -1126,7 +1126,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         // armor's shoulders
         item = player->GetArmorItem();
         if (item) {
-            index = ValueOr(paperdoll_armor_indexByType, item->uItemID, -1);
+            index = valueOr(paperdoll_armor_indexByType, item->uItemID, -1);
             if (index != -1) {
                 Texture *texture = nullptr;
                 // Some armors doesn't have sleeves so use normal one for two-handed or none if it also unavailable
@@ -1150,7 +1150,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         // cloak's collar
         item = player->GetCloakItem();
         if (item) {
-            index = ValueOr(paperdoll_cloak_indexByType, item->uItemID, -1);
+            index = valueOr(paperdoll_cloak_indexByType, item->uItemID, -1);
             if (index != -1) {
                 // leather cloak has no collar
                 if (paperdoll_CloakCollar[pBodyComplection][index][0]) {
@@ -1174,7 +1174,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         // helm
         item = player->GetHelmItem();
         if (item) {
-            index = ValueOr(paperdoll_helm_indexByType, item->uItemID, -1);
+            index = valueOr(paperdoll_helm_indexByType, item->uItemID, -1);
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Helm[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Helm[pBodyComplection][index][1];
@@ -1470,7 +1470,7 @@ void CharacterUI_LoadPaperdollTextures() {
 #endif
 
     auto loadTexture = [&](const auto &map, int itemIndex, int bodyIndex, int shoulderIndex) {
-        std::string name = GetItemTextureFilename(*ValuePtr(map, itemIndex), bodyIndex + 1, shoulderIndex);
+        std::string name = GetItemTextureFilename(*valuePtr(map, itemIndex), bodyIndex + 1, shoulderIndex);
         return assets->GetImage_Alpha(name);
     };
 

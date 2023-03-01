@@ -9,7 +9,7 @@ void FilteringEventHandler::event(const PlatformEvent *event) {
     _insideEvent = true;
     MM_AT_SCOPE_EXIT(_insideEvent = false);
 
-    for (PlatformEventFilter *filter : Reversed(_filters[event->type]))
+    for (PlatformEventFilter *filter : reversed(_filters[event->type]))
         if (filter->event(event))
             return;
 }
