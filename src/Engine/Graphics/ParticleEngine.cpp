@@ -150,12 +150,9 @@ void ParticleEngine::UpdateParticles() {
 
         // Ascending particles slowly float upward
         if (p->type & ParticleType_Ascending) {
-            int random_x = vrng->Random(5);
-            int random_y = vrng->Random(5);
-            int random_z = vrng->Random(5);
-            p->x += (random_x - 2) * time / 16.0;
-            p->y += (random_y - 2) * time / 16.0;
-            p->z += (random_z + 4) * time / 16.0;
+            p->x += (vrng->Random(5) - 2) * time / 16.0;
+            p->y += (vrng->Random(5) - 2) * time / 16.0;
+            p->z += (vrng->Random(5) + 4) * time / 16.0;
         }
 
         // v9 = (signed int)(time * p->rotation_speed) / 16;
