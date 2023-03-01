@@ -1671,7 +1671,7 @@ bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
         gl_format = GL_RGBA;
     } else {
         if (engine->config->debug.VerboseLogging.Get())
-            log->Warning("Image %s not loaded!", t->GetName()->c_str());
+            log->Warning("Image {} not loaded!", *t->GetName());
     }
 
     if (pixels) {

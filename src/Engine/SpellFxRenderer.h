@@ -14,7 +14,9 @@ class ParticleEngine;
 /*  120 */
 #pragma pack(push, 1)
 struct SpellFX_Billboard {
-    //----- (004775B1) --------------------------------------------------------
+    /**
+     * @offset 0x4775B1
+     */
     inline SpellFX_Billboard() {
         uNumVertices = 0;
         uNumVec4sInArray1 = 0;
@@ -23,7 +25,9 @@ struct SpellFX_Billboard {
         pArray2 = nullptr;
     }
 
-    //----- (004775C4) --------------------------------------------------------
+    /**
+     * @offset 0x4775C4
+     */
     virtual ~SpellFX_Billboard();
 
     int SpellFXNearClipAdjust(float a2);
@@ -60,10 +64,7 @@ struct SpellFX_Billboard {
 /*  122 */
 #pragma pack(push, 1)
 struct PlayerBuffAnim {
-    inline PlayerBuffAnim()
-        : bRender(false), uSpellAnimTime(0), uSpellIconID(0) {}
-
-    int16_t bRender = 0;
+    int16_t bRender = false;
     int16_t field_2 = 0;
     int uSpellAnimTimeElapsed = 0;
     int uSpellAnimTime = 0;
@@ -98,7 +99,9 @@ struct stru6_stru2 {
 /* stru6 121 */
 #pragma pack(push, 1)
 struct SpellFxRenderer {
-    //----- (004A7155) --------------------------------------------------------
+    /**
+     * @offset 0x4A7155
+     */
     explicit inline SpellFxRenderer(std::shared_ptr<ParticleEngine> particle_engine) {
         this->particle_engine = particle_engine;
 
@@ -111,7 +114,10 @@ struct SpellFxRenderer {
         pStru1 = new SpellFX_Billboard();
         pStru1->Initialize(colorTable.OrangeyRed.C32());
     }
-    //----- (004A71DC) --------------------------------------------------------
+
+    /**
+     * @offset 0x4A71DC
+     */
     ~SpellFxRenderer() {
         delete pStru1;
         pStru1 = nullptr;
@@ -135,8 +141,10 @@ struct SpellFxRenderer {
         SpriteObject *a1, unsigned int uDiffuse, Texture *texture, float a4);
     void _4A7C07_stun_spell_fx(struct SpriteObject *a2);
     void AddProjectile(struct SpriteObject *a2, int a3, Texture *);
-    void _4A7E89_sparkles_on_actor_after_it_casts_buff(Actor *pActor,
-                                                       unsigned int uDiffuse);
+    /**
+     * @offset 0x4A7E89
+     */
+    void sparklesOnActorAfterItCastsBuff(Actor *pActor, uint32_t uDiffuse);
     void _4A7F74(int x, int y, int z);
     float _4A806F_get_mass_distortion_value(Actor *pActor);
     // void _4A80DC_implosion_particle_sw(struct SpriteObject *a2);

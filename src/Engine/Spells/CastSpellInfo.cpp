@@ -536,7 +536,7 @@ void CastSpellInfoHelpers::castSpell() {
                         pActors[monster_id].uAttributes |= ACTOR_AGGRESSOR;
                         pActors[monster_id].vVelocity.x = 0;
                         pActors[monster_id].vVelocity.y = 0;
-                        spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(&pActors[monster_id], 0);
+                        spell_fx_renderer->sparklesOnActorAfterItCastsBuff(&pActors[monster_id], 0);
                     }
                     break;
                 }
@@ -571,7 +571,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (PID_TYPE(spell_targeted_at) == OBJECT_Actor && pActors[monster_id].DoesDmgTypeDoDamage(DMGT_EARTH)) {
                         pActors[monster_id].pActorBuffs[ACTOR_BUFF_SLOWED].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
                         pActors[monster_id].uAttributes |= ACTOR_AGGRESSOR;
-                        spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(&pActors[monster_id], 0);
+                        spell_fx_renderer->sparklesOnActorAfterItCastsBuff(&pActors[monster_id], 0);
                     }
                     break;
                 }
@@ -1663,7 +1663,7 @@ void CastSpellInfoHelpers::castSpell() {
                         pActors[monster_id].pActorBuffs[ACTOR_BUFF_FATE]
                             .Apply(pParty->GetPlayingTime() + GameTime::FromMinutes(5), spell_mastery, spell_power, 0, 0);
                         pActors[monster_id].uAttributes |= ACTOR_AGGRESSOR;
-                        spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(&pActors[monster_id], 0);
+                        spell_fx_renderer->sparklesOnActorAfterItCastsBuff(&pActors[monster_id], 0);
                     }
                     break;
                 }

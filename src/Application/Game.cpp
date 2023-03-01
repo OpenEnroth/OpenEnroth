@@ -124,7 +124,7 @@ void Application::AutoInitDataPath(Platform *platform) {
             std::filesystem::create_directory(savesPath);
         }
 
-        EngineIoc::ResolveLogger()->Info("Using MM7 directory: %s", mm7dir.c_str());
+        EngineIoc::ResolveLogger()->Info("Using MM7 directory: {}", mm7dir);
     } else {
         std::string message = fmt::format(
             "Required resources aren't found!\n"
