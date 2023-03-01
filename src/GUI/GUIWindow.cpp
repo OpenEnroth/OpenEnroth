@@ -283,7 +283,7 @@ void GUIWindow::Release() {
     if (this->eWindowType == WINDOW_GameUI)
         nuklear->Release(WINDOW_GameUI);
 
-    log->Info("Release window: %s", toString(eWindowType).c_str());
+    log->Info("Release window: {}", toString(eWindowType));
     pAudioPlayer->ResumeSounds();
 }
 
@@ -750,7 +750,7 @@ GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, W
     this->mouse = EngineIoc::ResolveMouse();
     this->log = EngineIoc::ResolveLogger();
 
-    log->Info("New window: %s", toString(windowType).c_str());
+    log->Info("New window: {}", toString(windowType));
     lWindowList.push_front(this);
     this->uFrameWidth = dimensions.w;
     this->uFrameHeight = dimensions.h;

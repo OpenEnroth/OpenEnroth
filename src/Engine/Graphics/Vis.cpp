@@ -714,7 +714,7 @@ void Vis::CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY, floa
     pRotY = pCamera3D->sRotationZ + UnprojectX(fMouseX);
     pRotX = -pCamera3D->sRotationY + UnprojectY(fMouseY);
 
-    // log->Info("Roty: %d, Rotx: %d", pRotY, pRotX);
+    // log->Info("Roty: {}, Rotx: {}", pRotY, pRotX);
 
     pStartR.z = pCamera3D->vCameraPos.z;
     pStartR.x = pCamera3D->vCameraPos.x;
@@ -887,7 +887,8 @@ bool Vis::PickMouse(float fDepth, float fMouseX, float fMouseY,
     default_list.uSize = 0;
     CastPickRay(pMouseRay, fMouseX, fMouseY, fDepth);
 
-    // log->Info("Sx: %f, Sy: %f, Sz: %f \n Fx: %f, Fy: %f, Fz: %f", pMouseRay->vWorldPosition.x, pMouseRay->vWorldPosition.y, pMouseRay->vWorldPosition.z,
+    // log->Info("Sx: {}, Sy: {}, Sz: {} \n Fx: {}, Fy: {}, Fz: {}",
+    //     pMouseRay->vWorldPosition.x, pMouseRay->vWorldPosition.y, pMouseRay->vWorldPosition.z,
     //     (pMouseRay+1)->vWorldPosition.x, (pMouseRay + 1)->vWorldPosition.y, (pMouseRay + 1)->vWorldPosition.z);
 
     PickBillboards_Mouse(fDepth, fMouseX, fMouseY, &default_list, sprite_filter);
