@@ -1983,16 +1983,12 @@ void CastSpellInfoHelpers::castSpell() {
                         }
                         if (gold_num > 0) {
                             if (item.uItemID != ITEM_NULL)
-                                GameUI_SetStatusBar(StringPrintf(
-                                            "(%s), and %d gold",
-                                            item.GetDisplayName().c_str(), gold_num));
+                                GameUI_SetStatusBar(fmt::format("({}), and {} gold", item.GetDisplayName(), gold_num));
                             else
-                                GameUI_SetStatusBar(StringPrintf(
-                                            "%d gold", gold_num));
+                                GameUI_SetStatusBar(fmt::format("{} gold", gold_num));
                         } else {
                             if (item.uItemID != ITEM_NULL) {
-                                GameUI_SetStatusBar(StringPrintf(
-                                            "(%s)", item.GetDisplayName().c_str()));
+                                GameUI_SetStatusBar(fmt::format("({})", item.GetDisplayName()));
                             } else {
                                 GameUI_SetStatusBar("nothing");
                             }

@@ -399,31 +399,31 @@ void GUIWindow_PartyCreation::Update() {
 
         int posY = 169;
 
-        auto str1 = StringPrintf("%s\r%03d%d", localization->GetString(LSTR_MIGHT), pX_Numbers, pParty->pPlayers[i].GetActualMight());
+        auto str1 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_MIGHT), pX_Numbers, pParty->pPlayers[i].GetActualMight());
         pStatColor = pParty->pPlayers[i].GetStatColor(0);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {uX, posY}, pStatColor, str1);
 
-        auto str2 = StringPrintf("%s\r%03d%d", localization->GetString(LSTR_INTELLECT), pX_Numbers, pParty->pPlayers[i].GetActualIntelligence());
+        auto str2 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_INTELLECT), pX_Numbers, pParty->pPlayers[i].GetActualIntelligence());
         pStatColor = pParty->pPlayers[i].GetStatColor(1);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {uX, pIntervalY + posY}, pStatColor, str2);
 
-        auto str3 = StringPrintf("%s\r%03d%d", localization->GetString(LSTR_PERSONALITY), pX_Numbers, pParty->pPlayers[i].GetActualWillpower());
+        auto str3 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_PERSONALITY), pX_Numbers, pParty->pPlayers[i].GetActualWillpower());
         pStatColor = pParty->pPlayers[i].GetStatColor(2);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {uX, 2 * pIntervalY + posY}, pStatColor, str3);
 
-        auto str4 = StringPrintf("%s\r%03d%d", localization->GetString(LSTR_ENDURANCE), pX_Numbers, pParty->pPlayers[i].GetActualEndurance());
+        auto str4 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_ENDURANCE), pX_Numbers, pParty->pPlayers[i].GetActualEndurance());
         pStatColor = pParty->pPlayers[i].GetStatColor(3);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {uX, 3 * pIntervalY + posY}, pStatColor, str4);
 
-        auto str5 = StringPrintf("%s\r%03d%d", localization->GetString(LSTR_ACCURACY), pX_Numbers, pParty->pPlayers[i].GetActualAccuracy());
+        auto str5 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_ACCURACY), pX_Numbers, pParty->pPlayers[i].GetActualAccuracy());
         pStatColor = pParty->pPlayers[i].GetStatColor(4);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {uX, 4 * pIntervalY + posY}, pStatColor, str5);
 
-        auto str6 = StringPrintf("%s\r%03d%d", localization->GetString(LSTR_SPEED), pX_Numbers, pParty->pPlayers[i].GetActualSpeed());
+        auto str6 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_SPEED), pX_Numbers, pParty->pPlayers[i].GetActualSpeed());
         pStatColor = pParty->pPlayers[i].GetStatColor(5);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {uX, 5 * pIntervalY + posY}, pStatColor, str6);
 
-        auto str7 = StringPrintf("%s\r%03d%d", localization->GetString(LSTR_LUCK), pX_Numbers, pParty->pPlayers[i].GetActualLuck());
+        auto str7 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_LUCK), pX_Numbers, pParty->pPlayers[i].GetActualLuck());
         pStatColor = pParty->pPlayers[i].GetStatColor(6);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {uX, 6 * pIntervalY + posY}, pStatColor, str7);
 
@@ -431,17 +431,17 @@ void GUIWindow_PartyCreation::Update() {
 
         pSkillsType = pParty->pPlayers[i].GetSkillIdxByOrder(0);
         pTextCenter = pFontCreate->AlignText_Center(150, localization->GetSkillName(pSkillsType));
-        auto str8 = StringPrintf("\t%03u%s", pTextCenter, localization->GetSkillName(pSkillsType));
+        auto str8 = fmt::format("\t{:03}{}", pTextCenter, localization->GetSkillName(pSkillsType));
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {uX - 24, posY}, colorTable.White.C16(), str8);
 
         pSkillsType = pParty->pPlayers[i].GetSkillIdxByOrder(1);
         pTextCenter = pFontCreate->AlignText_Center(150, localization->GetSkillName(pSkillsType));
-        auto str9 = StringPrintf("\t%03u%s", pTextCenter, localization->GetSkillName(pSkillsType));
+        auto str9 = fmt::format("\t{:03}{}", pTextCenter, localization->GetSkillName(pSkillsType));
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {uX - 24, pIntervalY + posY}, colorTable.White.C16(), str9);
 
         pSkillsType = pParty->pPlayers[i].GetSkillIdxByOrder(2);
         pTextCenter = pFontCreate->AlignText_Center(150, localization->GetSkillName(pSkillsType));
-        auto str10 = StringPrintf("\t%03u%s", pTextCenter, localization->GetSkillName(pSkillsType));
+        auto str10 = fmt::format("\t{:03}{}", pTextCenter, localization->GetSkillName(pSkillsType));
         pColorText = colorTable.Green.C16();
         if (pSkillsType == PLAYER_SKILL_INVALID)
             pColorText = colorTable.Aqua.C16();
@@ -449,7 +449,7 @@ void GUIWindow_PartyCreation::Update() {
 
         pSkillsType = pParty->pPlayers[i].GetSkillIdxByOrder(3);
         pTextCenter = pFontCreate->AlignText_Center(150, localization->GetSkillName(pSkillsType));
-        auto str11 = StringPrintf("\t%03u%s", pTextCenter, localization->GetSkillName(pSkillsType));
+        auto str11 = fmt::format("\t{:03}{}", pTextCenter, localization->GetSkillName(pSkillsType));
         pColorText = colorTable.Green.C16();
         if (pSkillsType == PLAYER_SKILL_INVALID)
             pColorText = colorTable.Aqua.C16();
@@ -578,7 +578,7 @@ void GUIWindow_PartyCreation::Update() {
 
     pBonusNum = PlayerCreation_GetUnspentAttributePointCount();
 
-    auto unspent_attribute_bonus_label = StringPrintf("%d", pBonusNum);
+    auto unspent_attribute_bonus_label = fmt::format("{}", pBonusNum);
     pTextCenter =
         pFontCreate->AlignText_Center(84, unspent_attribute_bonus_label);
     pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 530, 410}, colorTable.White.C16(), unspent_attribute_bonus_label);
@@ -627,7 +627,7 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     ui_partycreation_sky_scroller = assets->GetImage_Solid("MAKESKY");
 
     for (int uX = 0; uX < 22; ++uX) {
-        ui_partycreation_portraits[uX] = assets->GetImage_ColorKey(StringPrintf("%s01", pPlayerPortraitsNames[uX]));
+        ui_partycreation_portraits[uX] = assets->GetImage_ColorKey(fmt::format("{}01", pPlayerPortraitsNames[uX]));
     }
 
     ui_partycreation_minus = assets->GetImage_ColorKey("buttminu");
@@ -636,8 +636,8 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     ui_partycreation_left = assets->GetImage_ColorKey("presleft");
 
     for (int i = 1; i < 20; ++i) {
-        ui_partycreation_arrow_l[i] = assets->GetImage_Alpha(StringPrintf("arrowl%d", i));
-        ui_partycreation_arrow_r[i] = assets->GetImage_Alpha(StringPrintf("arrowr%d", i));
+        ui_partycreation_arrow_l[i] = assets->GetImage_Alpha(fmt::format("arrowl{}", i));
+        ui_partycreation_arrow_r[i] = assets->GetImage_Alpha(fmt::format("arrowr{}", i));
     }
 
     // pGUIWindow_CurrentMenu = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0);

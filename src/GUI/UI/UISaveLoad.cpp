@@ -48,7 +48,7 @@ GUIWindow_Save::GUIWindow_Save() :
     LOD::File pLODFile;
     for (uint i = 0; i < MAX_SAVE_SLOTS; ++i) {
         // std::string file_name = pSavegameList->pFileList[i];
-        std::string file_name = StringPrintf("save%03d.mm7", i);
+        std::string file_name = fmt::format("save{:03}.mm7", i);
         if (file_name.empty()) {
             file_name = "1.mm7";
         }
@@ -269,8 +269,8 @@ static void UI_DrawSaveLoad(bool save) {
             am = 0;
         }
 
-        auto str = StringPrintf(
-            "%s %d:%02d %s\n%d %s %d",
+        auto str = fmt::format(
+            "{} {}:{:02} {}\n{} {} {}",
             localization->GetDayName(savegame_time.GetDaysOfWeek()),
             savegame_hour,
             savegame_time.GetMinutesFraction(),

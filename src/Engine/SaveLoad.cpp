@@ -85,7 +85,7 @@ void LoadGame(unsigned int uSlot) {
                         continue;
                     }
                     LloydBeacon &beacon = player->vBeacons[j];
-                    std::string str = StringPrintf("lloyd%d%d.pcx", i + 1, j + 1);
+                    std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
                     //beacon.image = Image::Create(new PCX_LOD_Raw_Loader(pNew_LOD, str));
                     beacon.image = render->CreateTexture_PCXFromLOD(pNew_LOD, str);
                     beacon.image->GetWidth();
@@ -335,7 +335,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
                 void *pcx_data = malloc(pcx_data_size);
                 PCX::Encode32(pixels, image->GetWidth(), image->GetHeight(),
                               pcx_data, pcx_data_size, &pcx_data_size);
-                std::string str = StringPrintf("lloyd%d%d.pcx", i + 1, j + 1);
+                std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
                 if (pNew_LOD->Write(str, pcx_data, pcx_data_size, 0)) {
                     logger->Warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 207));
                 }
@@ -523,7 +523,7 @@ void DoSavegame(unsigned int uSlot) {
         pNew_LOD->Write("header.bin", &pSavegameHeader[uSlot], sizeof(SavegameHeader), 0);
         pNew_LOD->CloseWriteFile();  //закрыть
         std::string src = MakeDataPath("data", "new.lod");
-        std::string dst = MakeDataPath("saves", StringPrintf("save%03d.mm7", uSlot));
+        std::string dst = MakeDataPath("saves", fmt::format("save{:03}.mm7", uSlot));
         std::error_code ec;
         if (!std::filesystem::copy_file(src, dst, std::filesystem::copy_options::overwrite_existing, ec))
             Error("Failed to copy: %s", src.c_str());

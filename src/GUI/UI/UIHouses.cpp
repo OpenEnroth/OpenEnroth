@@ -949,7 +949,7 @@ void PrepareHouse(HOUSE_ID house) {
 
     for (int i = 0; i < uNumDialogueNPCPortraits; ++i) {
         pDialogueNPCPortraits[i] = assets->GetImage_ColorKey(
-            StringPrintf("npc%03u", npc_id_arr[i]));
+            fmt::format("npc{:03}", npc_id_arr[i]));
     }
 
     if (uHouse_ExitPic) {
@@ -1517,7 +1517,7 @@ void TravelByTransport() {
                     else
                         color = colorTable.White.C16();
 
-                    pTopicArray[index] = StringPrintf("\f%05d", color);
+                    pTopicArray[index] = fmt::format("\f{:05}", color);
 
                     int travel_time = GetTravelTimeTransportDays(schedule_id);
 
@@ -1543,7 +1543,7 @@ void TravelByTransport() {
             if (pRealTextHeight != pPrimaryTextHeight) {
                 // height differences means we have travel options
                 travel_window.DrawTitleText(pFontArrus, 0, 146, 0,
-                    StringPrintf("%s\n \n%s%s%s%s%s", travelcost.c_str(), pTopicArray[0].c_str(), pTopicArray[1].c_str(), pTopicArray[2].c_str(), pTopicArray[3].c_str(), pTopicArray[4].c_str()), 3);
+                    fmt::format("{}\n \n{}{}{}{}{}", travelcost, pTopicArray[0], pTopicArray[1], pTopicArray[2], pTopicArray[3], pTopicArray[4]), 3);
             } else {
                 travel_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), travel_window.uFrameWidth, 0)) / 2 + 138,
                     colorTable.White.C16(), localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), 3);
@@ -1655,7 +1655,7 @@ void TownHallDialog() {
     townHall_window.uFrameWidth = 143;
     townHall_window.uFrameZ = 334;
 
-    std::string fine_str = StringPrintf("%s: %d", localization->GetString(LSTR_CURRENT_FINE), pParty->uFine);
+    std::string fine_str = fmt::format("{}: {}", localization->GetString(LSTR_CURRENT_FINE), pParty->uFine);
     townHall_window.DrawTitleText(pFontArrus, 0, 260, colorTable.PaleCanary.C16(), fine_str, 3);
 
     switch (dialog_menu_id) {
@@ -1701,7 +1701,7 @@ void TownHallDialog() {
     case DIALOGUE_TOWNHALL_MESSAGE:
     {
         current_npc_text = StringPrintf(bountyHunting_text,
-            StringPrintf("\f%05d%s\f%05d", colorTable.PaleCanary.C16(), pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting].pName, colorTable.White.C16()).c_str(),
+                fmt::format("\f{:05}{}\f{:05}", colorTable.PaleCanary.C16(), pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting].pName, colorTable.White.C16()).c_str(),
                 100 * pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting].uLevel);
         GUIWindow window = *pDialogueWindow;
         window.uFrameWidth = 458;
@@ -1722,7 +1722,7 @@ void TownHallDialog() {
     {
         if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
             townHall_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary.C16(),
-                StringPrintf("%s\n%s", localization->GetString(LSTR_PAY), localization->GetString(LSTR_HOW_MUCH)), 3);
+                                          fmt::format("{}\n{}", localization->GetString(LSTR_PAY), localization->GetString(LSTR_HOW_MUCH)), 3);
             townHall_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White.C16(), keyboardInputHandler->GetTextInput().c_str(), 3);
             townHall_window.DrawFlashingInputCursor(pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput().c_str()) / 2 + 80, 185, pFontArrus);
             return;
@@ -1764,8 +1764,7 @@ void BankDialog() {
     bank_window.uFrameZ = 334;
     bank_window.DrawTitleText(
         pFontArrus, 0, 220, colorTable.PaleCanary.C16(),
-        StringPrintf(
-            "%s: %d", localization->GetString(LSTR_BALANCE), pParty->uNumGoldInBank),
+        fmt::format("{}: {}", localization->GetString(LSTR_BALANCE), pParty->uNumGoldInBank),
         3);
     switch (dialog_menu_id) {
     case DIALOGUE_MAIN:
@@ -1788,7 +1787,7 @@ void BankDialog() {
     {
         if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
             bank_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary.C16(),
-                StringPrintf("%s\n%s", localization->GetString(LSTR_DEPOSIT), localization->GetString(LSTR_HOW_MUCH)), 3);
+                                      fmt::format("{}\n{}", localization->GetString(LSTR_DEPOSIT), localization->GetString(LSTR_HOW_MUCH)), 3);
             bank_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White.C16(), keyboardInputHandler->GetTextInput().c_str(), 3);
             bank_window.DrawFlashingInputCursor(pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput().c_str()) / 2 + 80, 185, pFontArrus);
             return;
@@ -1822,7 +1821,7 @@ void BankDialog() {
     {
         if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
             bank_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary.C16(),
-                StringPrintf("%s\n%s", localization->GetString(LSTR_WITHDRAW), localization->GetString(LSTR_HOW_MUCH)), 3);
+                                      fmt::format("{}\n{}", localization->GetString(LSTR_WITHDRAW), localization->GetString(LSTR_HOW_MUCH)), 3);
             bank_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White.C16(), keyboardInputHandler->GetTextInput().c_str(), 3);
             bank_window.DrawFlashingInputCursor(pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput().c_str()) / 2 + 80, 185, pFontArrus);
             return;
@@ -1903,16 +1902,15 @@ void TavernDialog() {
     {
         if (!HouseUI_CheckIfPlayerCanInteract()) return;
 
-        std::string topic1 = StringPrintf("\f%05d",
+        std::string topic1 = fmt::format("\f{:05}",
                 pDialogueWindow->pCurrentPosActiveItem == 2
                 ? colorTable.PaleCanary.C16()
                 : colorTable.White.C16()) +
-            localization->FormatString(
-                LSTR_FMT_RENT_ROOM_FOR_D_GOLD, pPriceRoom);
+            localization->FormatString(LSTR_FMT_RENT_ROOM_FOR_D_GOLD, pPriceRoom);
         pTopic1Height = pFontArrus->CalcTextHeight(
             topic1, dialog_window.uFrameWidth, 0);
 
-        std::string topic2 = StringPrintf("\f%05d",
+        std::string topic2 = fmt::format("\f{:05}",
                 pDialogueWindow->pCurrentPosActiveItem == 3
                 ? colorTable.PaleCanary.C16()
                 : colorTable.White.C16())
@@ -1923,7 +1921,7 @@ void TavernDialog() {
                 pPriceFood);
         pTopic2Height = pFontArrus->CalcTextHeight(topic2, dialog_window.uFrameWidth, 0);
 
-        std::string topic3 = StringPrintf("\f%05d",
+        std::string topic3 = fmt::format("\f{:05}",
                 pDialogueWindow->pCurrentPosActiveItem == 4
                 ? colorTable.PaleCanary.C16()
                 : colorTable.White.C16()) +
@@ -1934,7 +1932,7 @@ void TavernDialog() {
         if (window_SpeakInHouse->wData.val >= 108 &&
             window_SpeakInHouse->wData.val <= 120) {
             topic4 =
-                StringPrintf("\f%05d",
+                fmt::format("\f{:05}",
                     pDialogueWindow->pCurrentPosActiveItem == 5
                     ? colorTable.PaleCanary.C16()
                     : colorTable.White.C16()) +
@@ -1982,9 +1980,7 @@ void TavernDialog() {
             }
             dialog_window.DrawTitleText(
                 pFontArrus, 0, 146, 0,
-                StringPrintf("%s\n \n%s\n \n%s\n \n%s", topic1.c_str(),
-                    topic2.c_str(), topic3.c_str(),
-                    topic4.c_str()),
+                fmt::format("{}\n \n{}\n \n{}\n \n{}", topic1, topic2, topic3, topic4),
                 3);
         }
         break;
@@ -2198,7 +2194,7 @@ void TempleDialog() {
         if (pPlayers[uActiveCharacter]->IsPlayerHealableByTemple()) {
             static std::string shop_option_container;
             shop_option_container =
-                StringPrintf("%s %d %s",
+                fmt::format("{} {} {}",
                     localization->GetString(LSTR_HEAL), pPrice,
                     localization->GetString(LSTR_GOLD));
             pShopOptions[0] = shop_option_container.c_str();
@@ -2472,8 +2468,8 @@ void TrainingDialog(const char *s) {
                                 pMaxLevelPerTrainingHallType
                                 [window_SpeakInHouse->wData.val -
                                 HOUSE_TRAINING_HALL_EMERALD_ISLE]) {
-                                shop_option_str_container = StringPrintf(
-                                    "%s\n \n%s",
+                                shop_option_str_container = fmt::format(
+                                    "{}\n \n{}",
                                     localization->GetString(LSTR_TEACHER_LEVEL_TOO_LOW),
                                     localization->GetString(LSTR_CANT_TRAIN_FURTHER));
                                 pShopOptions[index] = shop_option_str_container.c_str();
@@ -2605,8 +2601,8 @@ void TrainingDialog(const char *s) {
                 v36 = (212 - pFontArrus->CalcTextHeight(
                         label, training_dialog_window.uFrameWidth, 0)) / 2 + 88;
             } else {
-                label = StringPrintf(
-                    "%s\n \n%s",
+                label = fmt::format(
+                    "{}\n \n{}",
                     localization->GetString(LSTR_TEACHER_LEVEL_TOO_LOW),
                     localization->GetString(LSTR_CANT_TRAIN_FURTHER));
                 v36 = (212 - pFontArrus->CalcTextHeight(
@@ -2904,8 +2900,7 @@ void SimpleHouseDialog() {
 
             current_npc_text = StringPrintf(
                 bountyHunting_text,
-                StringPrintf("\f%05d%s\f%05d", colorTable.PaleCanary.C16(),
-                    v31, colorTable.White.C16())
+                fmt::format("\f{:05}{}\f{:05}", colorTable.PaleCanary.C16(), v31, colorTable.White.C16())
                 .c_str(),
                 100 * (uint8_t)v29[8]);
 

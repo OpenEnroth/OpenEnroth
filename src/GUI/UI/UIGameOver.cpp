@@ -14,8 +14,8 @@ GUIWindow_GameOver::GUIWindow_GameOver(UIMessageType on_release_event)
     current_screen_type = CURRENT_SCREEN::SCREEN_GAMEOVER_WINDOW;
     _tickcount = platform->tickCount() + 5000;
     Application::GameOver_Loop(0);
-    this->sHint = StringPrintf(
-        "%s\n \n%s\n \n%s",
+    this->sHint = fmt::format(
+        "{}\n \n{}\n \n{}",
         localization->GetString(LSTR_CONGRATULATIONS_ADVENTURER),
         localization->GetString(LSTR_WE_HOPE_YOU_ENJOYED_MM7),
         localization->GetString(LSTR_THE_MM7_DEV_TEAM));
@@ -33,8 +33,7 @@ void GUIWindow_GameOver::Update() {
     if (bGameOverWindowCheckExit) {
         GUIWindow pWindow;
         pWindow.Init();
-        pWindow.sHint = StringPrintf("%s\n \n%s", pGameOverWindow->sHint.c_str(),
-            localization->GetString(LSTR_PRESS_ESCAPE));
+        pWindow.sHint = fmt::format("{}\n \n{}", pGameOverWindow->sHint, localization->GetString(LSTR_PRESS_ESCAPE));
         pWindow.uFrameWidth = 400;
         pWindow.uFrameHeight = 100;
         pWindow.uFrameX = 120;

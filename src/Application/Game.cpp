@@ -1580,7 +1580,7 @@ void Game::EventLoop() {
                             OnMapLeave();
                             continue;
                         }
-                        status_string = StringPrintf("No map found for %s", pMapStats->pInfos[map_index].pName.c_str());
+                        status_string = fmt::format("No map found for {}", pMapStats->pInfos[map_index].pName);
                     } else {
                         if (frameTableTxtLine.uPropCount != 3) continue;
                         int x = atoi(frameTableTxtLine.pProperties[0]);
@@ -2217,14 +2217,12 @@ void Game::EventLoop() {
                             uNumSeconds = 0;
                         if (pParty->uCurrentHour == 0) currHour = 12;
                     }
-                    GameUI_StatusBar_Set(StringPrintf(
-                        "%d:%02d%s %s %d %s %d", currHour,
+                    GameUI_StatusBar_Set(fmt::format(
+                        "{}:{:02}{} {} {} {} {}", currHour,
                         pParty->uCurrentMinute,
                         localization->GetAmPm(uNumSeconds),
-                        localization->GetDayName(pParty->uCurrentDayOfMonth %
-                                                 7),
-                        7 * pParty->uCurrentMonthWeek +
-                            pParty->uCurrentDayOfMonth % 7 + 1,
+                        localization->GetDayName(pParty->uCurrentDayOfMonth % 7),
+                        7 * pParty->uCurrentMonthWeek + pParty->uCurrentDayOfMonth % 7 + 1,
                         localization->GetMonthName(pParty->uCurrentMonth),
                         pParty->uCurrentYear));
                     continue;
@@ -2251,7 +2249,7 @@ void Game::EventLoop() {
 
                 case UIMSG_ShowStatus_ManaHP: {
                     GameUI_StatusBar_Set(
-                        StringPrintf("%d / %d %s    %d / %d %s",
+                        fmt::format("{} / %d %s    %d / %d %s",
                                      pPlayers[uMessageParam]->GetHealth(),
                                      pPlayers[uMessageParam]->GetMaxHealth(),
                                      localization->GetString(LSTR_HIT_POINTS),

@@ -249,22 +249,22 @@ void Engine::DrawGUI() {
 
     if (engine->config->debug.ShowFPS.Get()) {
         if (render_framerate) {
-            pPrimaryWindow->DrawText(pFontArrus, {494, 0}, colorTable.White.C16(), StringPrintf("FPS: % .4f", framerate), 0, 0, 0);
+            pPrimaryWindow->DrawText(pFontArrus, {494, 0}, colorTable.White.C16(), fmt::format("FPS: {: .4f}", framerate), 0, 0, 0);
         }
 
-        pPrimaryWindow->DrawText(pFontArrus, {300, 0}, colorTable.White.C16(), StringPrintf("DrawCalls: %d", render->drawcalls), 0, 0, 0);
+        pPrimaryWindow->DrawText(pFontArrus, {300, 0}, colorTable.White.C16(), fmt::format("DrawCalls: {}", render->drawcalls), 0, 0, 0);
         render->drawcalls = 0;
 
 
         int debug_info_offset = 0;
         pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset + 16}, colorTable.White.C16(),
-            StringPrintf("Party position:         % d % d % d", pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z), 0, 0, 0);
+                                 fmt::format("Party position:         {} {} {}", pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z), 0, 0, 0);
 
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
             debug_info_offset += 16;
             int sector_id = pBLVRenderParams->uPartySectorID;
             pPrimaryWindow->DrawText(pFontArrus, { 16, debug_info_offset + 16 }, colorTable.White.C16(),
-                StringPrintf("Party Sector ID:        %u/%zu\n", sector_id, pIndoor->pSectors.size()), 0, 0, 0);
+                                     fmt::format("Party Sector ID:        {}/{}\n", sector_id, pIndoor->pSectors.size()), 0, 0, 0);
         }
 
         std::string floor_level_str;
@@ -275,17 +275,17 @@ void Engine::DrawGUI() {
             uint uFaceID;
             int sector_id = pBLVRenderParams->uPartySectorID;
             int floor_level = BLV_GetFloorLevel(pParty->vPosition/* + Vec3i(0,0,40) */, sector_id, &uFaceID);
-            floor_level_str = StringPrintf("BLV_GetFloorLevel: %d   face_id %d\n", floor_level, uFaceID);
+            floor_level_str = fmt::format("BLV_GetFloorLevel: {}   face_id {}\n", floor_level, uFaceID);
         } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
             bool on_water = false;
             int bmodel_pid;
             int floor_level = ODM_GetFloorLevel(pParty->vPosition, 0, &on_water, &bmodel_pid, false);
-            floor_level_str = StringPrintf(
-                "ODM_GetFloorLevel: %d   on_water: %s  on: %s\n",
+            floor_level_str = fmt::format(
+                "ODM_GetFloorLevel: {}   on_water: {}  on: {}\n",
                 floor_level, on_water ? "true" : "false",
                 bmodel_pid == 0
                     ? "---"
-                    : StringPrintf("BModel=%d Face=%d", bmodel_pid >> 6, bmodel_pid & 0x3F).c_str()
+                    : fmt::format("BModel={} Face={}", bmodel_pid >> 6, bmodel_pid & 0x3F)
             );
         }
 

@@ -72,7 +72,7 @@ void GUIWindow_QuickReference::Update() {
             pTextColor = player->GetExperienceDisplayColor();
         else
             pTextColor = ui_character_bonus_text_color;
-        pTempString = StringPrintf("%lu", player->GetActualLevel());
+        pTempString = fmt::format("{}", player->GetActualLevel());
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, 47}, pTextColor, pTempString, 84, 0);
 
         pY = pFontHeight + 47;
@@ -85,7 +85,7 @@ void GUIWindow_QuickReference::Update() {
             pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, pY}, 0, localization->GetString(LSTR_HP), 60, 0);
         pTextColor = UI_GetHealthManaAndOtherQualitiesStringColor(
             player->sHealth, player->GetMaxHealth());
-        pTempString = StringPrintf("%d", player->sHealth);
+        pTempString = fmt::format("{}", player->sHealth);
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, pY}, pTextColor, pTempString, 84, 0);
         pY = pFontHeight + pY;
 
@@ -93,7 +93,7 @@ void GUIWindow_QuickReference::Update() {
             pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, pY}, 0, localization->GetString(LSTR_SP), 60, 0);
         pTextColor = UI_GetHealthManaAndOtherQualitiesStringColor(
             player->sMana, player->GetMaxMana());
-        pTempString = StringPrintf("%d", player->sMana);
+        pTempString = fmt::format("{}", player->sMana);
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, pY}, pTextColor, pTempString, 84, 0);
         pY = pFontHeight + pY;
 
@@ -101,13 +101,13 @@ void GUIWindow_QuickReference::Update() {
             pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, pY}, 0, localization->GetString(LSTR_AC), 60, 0);
         pTextColor = UI_GetHealthManaAndOtherQualitiesStringColor(
             player->GetActualAC(), player->GetBaseAC());
-        pTempString = StringPrintf("%d", player->GetActualAC());
+        pTempString = fmt::format("{}", player->GetActualAC());
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, pY}, pTextColor, pTempString, 84, 0);
         pY = pFontHeight + pY;
 
         if (!i)
             pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, pY}, 0, localization->GetString(LSTR_ATTACK), 60, 0);
-        pTempString = StringPrintf("%+d", player->GetActualAttack(false));
+        pTempString = fmt::format("{:+}", player->GetActualAttack(false));
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, pY}, 0, pTempString, 84, 0);
         pY = pFontHeight + pY;
 
@@ -119,7 +119,7 @@ void GUIWindow_QuickReference::Update() {
 
         if (!i)
             pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, pY}, 0, localization->GetString(LSTR_SHOOT), 60, 0);
-        pTempString = StringPrintf("%+d", player->GetRangedAttack());
+        pTempString = fmt::format("{:+}", player->GetRangedAttack());
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, pY}, 0, pTempString, 84, 0);
         pY = pFontHeight + pY;
 
@@ -136,13 +136,13 @@ void GUIWindow_QuickReference::Update() {
             if (player->pActiveSkills[j])
                 ++pSkillsCount;
         }
-        pTempString = StringPrintf("%lu", pSkillsCount);
+        pTempString = fmt::format("{}", pSkillsCount);
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, pY}, 0, pTempString, 84, 0);
         pY = pFontHeight + pY;
 
         if (!i)
             pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, pY}, 0, localization->GetString(LSTR_POINTS), 60, 0);
-        pTempString = StringPrintf("%lu", player->uSkillPoints);
+        pTempString = fmt::format("{}", player->uSkillPoints);
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {pX, pY},
             player->uSkillPoints ? ui_character_bonus_text_color : ui_character_default_text_color, pTempString, 84, 0);
         pY = pFontHeight + pY;
@@ -170,12 +170,12 @@ void GUIWindow_QuickReference::Update() {
         pTextColor = ui_character_bonus_text_color;
     }
 
-    auto rep = StringPrintf(
-        "%s: \f%05d%s\f00000",
+    auto rep = fmt::format(
+        "{}: \f{:05}{}\f00000",
         localization->GetString(LSTR_REPUTATION), pTextColor,
-        GetReputationString(pParty->GetPartyReputation()).c_str()
+        GetReputationString(pParty->GetPartyReputation())
     );
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {22, 323}, 0, rep, 0, 0, 0);
-    auto fame = StringPrintf("\r261%s: %d", localization->GetString(LSTR_FAME), pParty->GetPartyFame());
+    auto fame = fmt::format("\r261{}: {}", localization->GetString(LSTR_FAME), pParty->GetPartyFame());
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {0, 323}, 0, fame, 0, 0, 0);
 }

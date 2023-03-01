@@ -1826,7 +1826,7 @@ void OutdoorLocation::LoadActualSkyFrame() {
     }
 
     rest_ui_sky_frame_current = assets->GetImage_ColorKey(
-        StringPrintf("TERRA%03d", pParty->uCurrentMinute / 6 + 10 * pParty->uCurrentHour));
+        fmt::format("TERRA{:03}", pParty->uCurrentMinute / 6 + 10 * pParty->uCurrentHour));
 }
 
 OutdoorLocation::OutdoorLocation() {
