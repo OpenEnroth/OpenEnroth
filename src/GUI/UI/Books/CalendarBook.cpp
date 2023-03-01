@@ -137,7 +137,7 @@ void GUIWindow_CalendarBook::Update() {
         pMapName = "Unknown";
 
     str = fmt::format(
-        "{}\t100:\t110{}", localization->GetString(LSTR_LOCATION), pMapName.c_str()
+        "{}\t100:\t110{}", localization->GetString(LSTR_LOCATION), pMapName
     );
     calendar_window.DrawText(pBookFont, {70, 10 * (unsigned char)pBookFont->GetHeight() + 25}, ui_book_calendar_location_color, str, 0, 0, 0);
 }

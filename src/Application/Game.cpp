@@ -2249,7 +2249,7 @@ void Game::EventLoop() {
 
                 case UIMSG_ShowStatus_ManaHP: {
                     GameUI_StatusBar_Set(
-                        fmt::format("{} / %d %s    %d / %d %s",
+                        fmt::format("{} / {} {}    {} / {} {}",
                                      pPlayers[uMessageParam]->GetHealth(),
                                      pPlayers[uMessageParam]->GetMaxHealth(),
                                      localization->GetString(LSTR_HIT_POINTS),
