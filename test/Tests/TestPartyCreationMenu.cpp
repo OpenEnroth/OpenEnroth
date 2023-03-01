@@ -434,3 +434,8 @@ GAME_TEST(Issues, Issue405) {
     // recovered amount should match
     EXPECT_EQ(remainingtime60, remainingtimemax);
 }
+
+GAME_TEST(Issues, Issue268) {
+    // Crash in ODM_GetFloorLevel
+    test->playTraceFromTestData("issue_268.mm7", "issue_268.json");
+}
