@@ -108,6 +108,44 @@ GAME_TEST(Prs, Pr314) {
     EXPECT_EQ(pParty->pPlayers[3].GetRace(), CHARACTER_RACE_ELF);
 }
 
+static int partyItemCount() {
+    int result = 0;
+    for (int i = 0; i < 4; i++)
+        for (const ItemGen& item : pParty->pPlayers[i].pOwnItems)
+            result += item.uItemID != ITEM_NULL;
+    return result;
+}
+
+GAME_TEST(Issues, Issue293) {
+    // Test that barrels in castle Harmondale work and can be triggered only once, and that trash piles work,
+    // give an item once, but give disease indefinitely.
+    test->playTraceFromTestData("issue_293.mm7", "issue_293.json", [] {
+        EXPECT_EQ(pParty->pPlayers[0].uMight, 30);
+        EXPECT_EQ(pParty->pPlayers[0].uIntelligence, 5);
+        EXPECT_EQ(pParty->pPlayers[0].uWillpower, 5);
+        EXPECT_EQ(pParty->pPlayers[0].uEndurance, 13);
+        EXPECT_EQ(pParty->pPlayers[0].uSpeed, 14);
+        EXPECT_EQ(pParty->pPlayers[0].uAccuracy, 13);
+        EXPECT_EQ(pParty->pPlayers[0].uLuck, 7);
+        EXPECT_EQ(partyItemCount(), 18);
+        EXPECT_FALSE(pParty->pPlayers[0].HasItem(ITEM_LEATHER_ARMOR, false));
+        for (int i = 0; i < 4; i++)
+            EXPECT_EQ(pParty->pPlayers[i].GetMajorConditionIdx(), Condition_Good);
+    });
+
+    EXPECT_EQ(pParty->pPlayers[0].uMight, 30);
+    EXPECT_EQ(pParty->pPlayers[0].uIntelligence, 7); // +2
+    EXPECT_EQ(pParty->pPlayers[0].uWillpower, 5);
+    EXPECT_EQ(pParty->pPlayers[0].uEndurance, 13);
+    EXPECT_EQ(pParty->pPlayers[0].uSpeed, 14);
+    EXPECT_EQ(pParty->pPlayers[0].uAccuracy, 15); // +2
+    EXPECT_EQ(pParty->pPlayers[0].uLuck, 7);
+    EXPECT_EQ(partyItemCount(), 19); // +1
+    EXPECT_TRUE(pParty->pPlayers[0].HasItem(ITEM_LEATHER_ARMOR, false)); // That's the item from the trash pile
+    for (int i = 0; i < 4; i++)
+        EXPECT_EQ(pParty->pPlayers[i].GetMajorConditionIdx(), Condition_Disease_Weak);
+}
+
 GAME_TEST(Issues, Issue294) {
     auto partyExperience = [&] {
         uint64_t result = 0;
