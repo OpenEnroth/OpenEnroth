@@ -4,8 +4,7 @@
 #include <string>
 #include <vector>
 
-std::string StringPrintf(const char *fmt, ...);
-std::string StringFromInt(int value);
+std::string StringPrintf(const char *fmt, ...); // TODO(captainurist): drop!
 std::string ToLower(std::string_view text);
 std::string ToUpper(std::string_view text);
 std::vector<char*> Tokenize(char* input, const char separator);

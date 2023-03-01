@@ -29,10 +29,6 @@ static std::string_view ToCharStringView(std::u8string_view s) {
     return std::string_view(reinterpret_cast<const char *>(s.data()), s.size());
 }
 
-std::string StringFromInt(int value) {
-    return fmt::format("{}", value);
-}
-
 std::string StringPrintf(const char *fmt, ...) {
     int size = 1024;
     char *buffer = new char[size];

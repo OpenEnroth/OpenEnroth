@@ -1457,23 +1457,23 @@ void DrawPlayersText() {
     am_DrawText(text_buff, &text_position);
 
     // tower heights
-    text_buff = StringFromInt(am_Players[0].tower_height);
+    text_buff = toString(am_Players[0].tower_height);
     text_position.x = 123 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
     text_position.y = 305;
     am_DrawText(text_buff, &text_position);
 
-    text_buff = StringFromInt(am_Players[1].tower_height);
+    text_buff = toString(am_Players[1].tower_height);
     text_position.x = 515 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
     text_position.y = 305;
     am_DrawText(text_buff, &text_position);
 
     // wall heights
-    text_buff = StringFromInt(am_Players[0].wall_height);
+    text_buff = toString(am_Players[0].wall_height);
     text_position.x = 188 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
     text_position.y = 305;
     am_DrawText(text_buff, &text_position);
 
-    text_buff = StringFromInt(am_Players[1].wall_height);
+    text_buff = toString(am_Players[1].wall_height);
     text_position.x = 451 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
     text_position.y = 305;
     am_DrawText(text_buff, &text_position);
@@ -1483,66 +1483,66 @@ void DrawPlayersText() {
     if (use_start_bonus) res_value = am_Players[0].quarry_level + quarry_bonus;
     text_position.x = 14;
     text_position.y = 92;
-    DrawPlayerLevels(StringFromInt(res_value), &text_position);
+    DrawPlayerLevels(toString(res_value), &text_position);
 
     res_value = am_Players[1].quarry_level;
     if (use_start_bonus) res_value = am_Players[1].quarry_level + quarry_bonus;
     text_position.y = 92;
     text_position.x = 561;
-    DrawPlayerLevels(StringFromInt(res_value), &text_position);
+    DrawPlayerLevels(toString(res_value), &text_position);
 
     // magic levels
     res_value = am_Players[0].magic_level;
     if (use_start_bonus) res_value = am_Players[0].magic_level + magic_bonus;
     text_position.y = 164;
     text_position.x = 14;
-    DrawPlayerLevels(StringFromInt(res_value), &text_position);
+    DrawPlayerLevels(toString(res_value), &text_position);
 
     res_value = am_Players[1].magic_level;
     if (use_start_bonus) res_value = am_Players[1].magic_level + magic_bonus;
     text_position.y = 164;
     text_position.x = 561;
-    DrawPlayerLevels(StringFromInt(res_value), &text_position);
+    DrawPlayerLevels(toString(res_value), &text_position);
 
     // zoo levels
     res_value = am_Players[0].zoo_level;
     if (use_start_bonus) res_value = am_Players[0].zoo_level + zoo_bonus;
     text_position.y = 236;
     text_position.x = 14;
-    DrawPlayerLevels(StringFromInt(res_value), &text_position);
+    DrawPlayerLevels(toString(res_value), &text_position);
 
     res_value = am_Players[1].zoo_level;
     if (use_start_bonus) res_value = am_Players[1].zoo_level + zoo_bonus;
     text_position.y = 236;
     text_position.x = 561;
-    DrawPlayerLevels(StringFromInt(res_value), &text_position);
+    DrawPlayerLevels(toString(res_value), &text_position);
 
     // bricks
     text_position.y = 114;
     text_position.x = 10;
-    DrawBricksCount(StringFromInt(am_Players[0].resource_bricks), &text_position);
+    DrawBricksCount(toString(am_Players[0].resource_bricks), &text_position);
 
     text_position.x = 557;
     text_position.y = 114;
-    DrawBricksCount(StringFromInt(am_Players[1].resource_bricks), &text_position);
+    DrawBricksCount(toString(am_Players[1].resource_bricks), &text_position);
 
     // gems
     text_position.x = 10;
     text_position.y = 186;
-    DrawGemsCount(StringFromInt(am_Players[0].resource_gems), &text_position);
+    DrawGemsCount(toString(am_Players[0].resource_gems), &text_position);
 
     text_position.x = 557;
     text_position.y = 186;
-    DrawGemsCount(StringFromInt(am_Players[1].resource_gems), &text_position);
+    DrawGemsCount(toString(am_Players[1].resource_gems), &text_position);
 
     // beasts
     text_position.x = 10;
     text_position.y = 258;
-    DrawBeastsCount(StringFromInt(am_Players[0].resource_beasts), &text_position);
+    DrawBeastsCount(toString(am_Players[0].resource_beasts), &text_position);
 
     text_position.x = 557;
     text_position.y = 258;
-    DrawBeastsCount(StringFromInt(am_Players[1].resource_beasts), &text_position);
+    DrawBeastsCount(toString(am_Players[1].resource_beasts), &text_position);
 }
 
 void DrawPlayerLevels(const std::string &str, Pointi *pXY) {
