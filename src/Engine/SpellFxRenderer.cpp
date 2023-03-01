@@ -566,12 +566,9 @@ void SpellFxRenderer::sparklesOnActorAfterItCastsBuff(Actor *pActor, uint32_t uD
     particle.particle_size = 1.0;
 
     for (int i = 0; i < 50; i++) {
-        int random_x = vrng->Random(256);
-        int random_y = vrng->Random(256);
-        int random_z = vrng->Random(256);
-        particle.x = random_x + pActor->vPosition.x - 127;
-        particle.y = random_y + pActor->vPosition.y - 127;
-        particle.z = random_z + pActor->vPosition.z;
+        particle.x = vrng->Random(256) + pActor->vPosition.x - 127;
+        particle.y = vrng->Random(256) + pActor->vPosition.y - 127;
+        particle.z = vrng->Random(256) + pActor->vPosition.z;
         if (uDiffuse) {
             particle.uDiffuse = uDiffuse;
         } else {
