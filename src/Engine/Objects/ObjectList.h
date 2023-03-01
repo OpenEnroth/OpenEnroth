@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <vector>
 
 #include "Utility/Memory/Blob.h"
 
@@ -42,18 +43,13 @@ struct ObjectDesc {
 
 class ObjectList {
  public:
-    inline ObjectList() : uNumObjects(0), pObjects(nullptr) {}
-
     void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     void InitializeSprites();
     void InitializeColors();
     unsigned int ObjectIDByItemID(unsigned int uItemID);
 
- protected:
-    unsigned int uNumObjects;
-
  public:
-    struct ObjectDesc *pObjects;
+    std::vector<ObjectDesc> pObjects;
 };
 
 extern ObjectList *pObjectList;
