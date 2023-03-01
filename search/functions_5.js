@@ -1,8 +1,8 @@
 var searchData=
 [
   ['embedded_0',['Embedded',['../classEmbedded.html#a2e9b0e98f38c0e35df943ce77d972680',1,'Embedded']]],
-  ['empty_1',['Empty',['../structGUIMessageQueue.html#a7c71ce717335eeb08baed38ddaf6f049',1,'GUIMessageQueue']]],
-  ['empty_2',['empty',['../classBlob.html#aaf67d6a801da2bf0faf119b112f206cd',1,'Blob']]],
+  ['empty_1',['empty',['../classBlob.html#aaf67d6a801da2bf0faf119b112f206cd',1,'Blob']]],
+  ['empty_2',['Empty',['../structGUIMessageQueue.html#a7c71ce717335eeb08baed38ddaf6f049',1,'GUIMessageQueue']]],
   ['encode_3',['Encode',['../PCX_8cpp.html#ab84a8b5d1e1f1f8d839442901a868391',1,'PCX.cpp']]],
   ['encode16_4',['Encode16',['../namespacePCX.html#a151713aa9441a236085d884ecbb4d9be',1,'PCX']]],
   ['encode32_5',['Encode32',['../namespacePCX.html#abd7bffd17367adb0c17dbd0a5ecf64c8',1,'PCX']]],

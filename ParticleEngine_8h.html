@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2f97025</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6a76972</span>
    </div>
   </td>
  </tr>
@@ -80,7 +80,8 @@ $(function() {
   <div class="headertitle"><div class="title">ParticleEngine.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="Flags_8h.html">Utility/Flags.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &lt;array&gt;</code><br />
+<code>#include &quot;<a class="el" href="Flags_8h.html">Utility/Flags.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="IRender_8h.html">Engine/Graphics/IRender.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="OurMath_8h.html">Engine/OurMath.h</a>&quot;</code><br />
 </div><table class="memberdecls">
@@ -103,9 +104,9 @@ Classes</h2></td></tr>
 Enumerations</h2></td></tr>
 <tr class="memitem:a7b352370d86b5775e02f698569088034"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ParticleEngine_8h.html#a7b352370d86b5775e02f698569088034">ParticleFlag</a> : uint32_t { <br />
 &#160;&#160;<a class="el" href="ParticleEngine_8h.html#a7b352370d86b5775e02f698569088034a8f9e41fa23cadbf1140257ba2b57b4aa">ParticleType_Invalid</a> = 0
-, <a class="el" href="ParticleEngine_8h.html#a7b352370d86b5775e02f698569088034ab7c4e55d45f2694d0dc4ba7a80c6eafb">ParticleType_1</a> = 0x0001
+, <a class="el" href="ParticleEngine_8h.html#a7b352370d86b5775e02f698569088034ad83e038396464293b7e160ef0cbbca67">ParticleType_Dropping</a> = 0x0001
 , <a class="el" href="ParticleEngine_8h.html#a7b352370d86b5775e02f698569088034a5ecdfd21cd741096ab4a1addb1d87a35">ParticleType_Rotating</a> = 0x0004
-, <a class="el" href="ParticleEngine_8h.html#a7b352370d86b5775e02f698569088034a9c7ba2b5528f9ca5d6c4d0fb89b6ac43">ParticleType_8</a> = 0x0008
+, <a class="el" href="ParticleEngine_8h.html#a7b352370d86b5775e02f698569088034a79c28b01a1868e17b5d7ae67088bf69a">ParticleType_Ascending</a> = 0x0008
 , <br />
 &#160;&#160;<a class="el" href="ParticleEngine_8h.html#a7b352370d86b5775e02f698569088034a3384200e3e8b353d1159055a8985ad72">ParticleType_Diffuse</a> = 0x0100
 , <a class="el" href="ParticleEngine_8h.html#a7b352370d86b5775e02f698569088034adb1840e592ecba8bd1a2ab127cf94a15">ParticleType_Line</a> = 0x0200
@@ -142,9 +143,9 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a7b352370d86b5775e02f698569088034a8f9e41fa23cadbf1140257ba2b57b4aa" name="a7b352370d86b5775e02f698569088034a8f9e41fa23cadbf1140257ba2b57b4aa"></a>ParticleType_Invalid&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7b352370d86b5775e02f698569088034ab7c4e55d45f2694d0dc4ba7a80c6eafb" name="a7b352370d86b5775e02f698569088034ab7c4e55d45f2694d0dc4ba7a80c6eafb"></a>ParticleType_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a7b352370d86b5775e02f698569088034ad83e038396464293b7e160ef0cbbca67" name="a7b352370d86b5775e02f698569088034ad83e038396464293b7e160ef0cbbca67"></a>ParticleType_Dropping&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a7b352370d86b5775e02f698569088034a5ecdfd21cd741096ab4a1addb1d87a35" name="a7b352370d86b5775e02f698569088034a5ecdfd21cd741096ab4a1addb1d87a35"></a>ParticleType_Rotating&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7b352370d86b5775e02f698569088034a9c7ba2b5528f9ca5d6c4d0fb89b6ac43" name="a7b352370d86b5775e02f698569088034a9c7ba2b5528f9ca5d6c4d0fb89b6ac43"></a>ParticleType_8&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a7b352370d86b5775e02f698569088034a79c28b01a1868e17b5d7ae67088bf69a" name="a7b352370d86b5775e02f698569088034a79c28b01a1868e17b5d7ae67088bf69a"></a>ParticleType_Ascending&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a7b352370d86b5775e02f698569088034a3384200e3e8b353d1159055a8985ad72" name="a7b352370d86b5775e02f698569088034a3384200e3e8b353d1159055a8985ad72"></a>ParticleType_Diffuse&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a7b352370d86b5775e02f698569088034adb1840e592ecba8bd1a2ab127cf94a15" name="a7b352370d86b5775e02f698569088034adb1840e592ecba8bd1a2ab127cf94a15"></a>ParticleType_Line&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a7b352370d86b5775e02f698569088034a728bac9bf47ddd4c2cdd6b311ace5536" name="a7b352370d86b5775e02f698569088034a728bac9bf47ddd4c2cdd6b311ace5536"></a>ParticleType_Bitmap&#160;</td><td class="fielddoc"></td></tr>

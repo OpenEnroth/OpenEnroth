@@ -42,7 +42,7 @@ var searchData=
   ['addmobilelight_39',['AddMobileLight',['../structSpellFxRenderer.html#a7bddf5a98d826d6232db55e2cd716e89',1,'SpellFxRenderer']]],
   ['addnodebspfaces_40',['AddNodeBSPFaces',['../BspRenderer_8cpp.html#a9bf86faaeabb31e6e5dab6f65f438bf6',1,'AddNodeBSPFaces(unsigned int node_id, unsigned int uFirstNode):&#160;BspRenderer.cpp'],['../BspRenderer_8h.html#a9bf86faaeabb31e6e5dab6f65f438bf6',1,'AddNodeBSPFaces(unsigned int node_id, unsigned int uFirstNode):&#160;BspRenderer.cpp']]],
   ['addobject_41',['AddObject',['../structVis__SelectionList.html#a8d81e5c7bda72ed9d602408240f92efe',1,'Vis_SelectionList']]],
-  ['addparticle_42',['AddParticle',['../structTrailParticleGenerator.html#a12d89f09cb2d818f87b77d3db8364884',1,'TrailParticleGenerator::AddParticle()'],['../classParticleEngine.html#aa0699c216edc3b210955899c8df6cb05',1,'ParticleEngine::AddParticle()']]],
+  ['addparticle_42',['AddParticle',['../structTrailParticleGenerator.html#a12d89f09cb2d818f87b77d3db8364884',1,'TrailParticleGenerator::AddParticle()'],['../classParticleEngine.html#ac0cd319609c160ac2ea8fc0392cfcff2',1,'ParticleEngine::AddParticle()']]],
   ['addprojectile_43',['AddProjectile',['../structSpellFxRenderer.html#afac1129a98a1f48dbdd0d8d2aea2363b',1,'SpellFxRenderer']]],
   ['addskillbyevent_44',['AddSkillByEvent',['../structPlayer.html#aaf128f0aaf3ee124d4c3b92a343c57f7',1,'Player']]],
   ['addtomap_45',['AddToMap',['../Items_8cpp.html#afdcf5a77988f85cbc574aa41936f264f',1,'Items.cpp']]],

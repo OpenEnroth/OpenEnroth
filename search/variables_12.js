@@ -49,8 +49,9 @@ var searchData=
   ['right_46',['right',['../structMargins.html#ae968561a502e7a0d35a1a2cd29e0a83d',1,'Margins']]],
   ['rightclickportraitxmax_47',['RightClickPortraitXmax',['../mm7__data_8cpp.html#a1e0bb2e5df8caceb874ccbac8afb592b',1,'RightClickPortraitXmax():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a1e0bb2e5df8caceb874ccbac8afb592b',1,'RightClickPortraitXmax():&#160;mm7_data.cpp']]],
   ['rightclickportraitxmin_48',['RightClickPortraitXmin',['../mm7__data_8cpp.html#a271bcf3fdc5ff14473042faddbd0cfa3',1,'RightClickPortraitXmin():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a271bcf3fdc5ff14473042faddbd0cfa3',1,'RightClickPortraitXmin():&#160;mm7_data.cpp']]],
-  ['rot_5fx_49',['rot_x',['../structTownPortalData.html#a4e82ac9655728eaeaecabc8eca40b71a',1,'TownPortalData']]],
-  ['rot_5fy_50',['rot_y',['../structTownPortalData.html#ac1f4f99e78574e664ce01b4ca5c72a27',1,'TownPortalData']]],
-  ['rotated_5fnormal_51',['rotated_normal',['../structLightsData.html#a0f92fde30cff4753d4cfadb6ab41fcd4',1,'LightsData']]],
-  ['rotation_5fspeed_52',['rotation_speed',['../structParticle.html#afc3be85262f36cb5f78cf3a51d8e61b3',1,'Particle']]]
+  ['riogrande_49',['RioGrande',['../classColorTable.html#a81f2d91c73ff2c302ee544bfa2b43c0f',1,'ColorTable']]],
+  ['rot_5fx_50',['rot_x',['../structTownPortalData.html#a4e82ac9655728eaeaecabc8eca40b71a',1,'TownPortalData']]],
+  ['rot_5fy_51',['rot_y',['../structTownPortalData.html#ac1f4f99e78574e664ce01b4ca5c72a27',1,'TownPortalData']]],
+  ['rotated_5fnormal_52',['rotated_normal',['../structLightsData.html#a0f92fde30cff4753d4cfadb6ab41fcd4',1,'LightsData']]],
+  ['rotation_5fspeed_53',['rotation_speed',['../structParticle.html#afc3be85262f36cb5f78cf3a51d8e61b3',1,'Particle']]]
 ];
