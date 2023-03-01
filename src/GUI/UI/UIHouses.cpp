@@ -1596,7 +1596,7 @@ void TravelByTransport() {
                 int traveltimedays = GetTravelTimeTransportDays(transport_routes[route_id][choice_id]);
 
                 PlayerSpeech pSpeech;
-                int speechlength{};
+                int speechlength = 0;
                 if (route_id >= HOUSE_BOATS_EMERALD_ISLE - HOUSE_STABLES_HARMONDALE) {
                     pSpeech = SPEECH_TravelBoat;
                     speechlength = 2500;
@@ -1607,11 +1607,10 @@ void TravelByTransport() {
 
                 RestAndHeal(24 * 60 * traveltimedays);
                 pPlayers[uActiveCharacter]->PlaySound(pSpeech, 0);
-                int currenttime = platform->tickCount();
-                int pauselength = currenttime + speechlength;
-                if (pauselength < currenttime) pauselength = currenttime;
-                while (platform->tickCount() < pauselength)
+                auto timeLimit = std::chrono::system_clock::now() + std::chrono::milliseconds(speechlength);
+                while (std::chrono::system_clock::now() < timeLimit) {
                     std::this_thread::sleep_for(1ms);
+                }
                 while (HouseDialogPressCloseBtn()) {}
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
             } else {
