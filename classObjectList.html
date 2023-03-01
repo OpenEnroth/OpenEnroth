@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9a2a943</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;1a46f06</span>
    </div>
   </td>
  </tr>
@@ -72,7 +72,6 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classObjectList-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">ObjectList Class Reference</div></div>
 </div><!--header-->
@@ -82,8 +81,6 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ac22dc46c3b92c27106561eeb030329a2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classObjectList.html#ac22dc46c3b92c27106561eeb030329a2">ObjectList</a> ()</td></tr>
-<tr class="separator:ac22dc46c3b92c27106561eeb030329a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab5c87654f182a291248c42f75983825e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classObjectList.html#ab5c87654f182a291248c42f75983825e">FromFile</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;data_mm6, const <a class="el" href="classBlob.html">Blob</a> &amp;data_mm7, const <a class="el" href="classBlob.html">Blob</a> &amp;data_mm8)</td></tr>
 <tr class="separator:ab5c87654f182a291248c42f75983825e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad470358f54e8c5bd77cc2d2c644cf4c3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classObjectList.html#ad470358f54e8c5bd77cc2d2c644cf4c3">InitializeSprites</a> ()</td></tr>
@@ -95,40 +92,9 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:af04d1d3f616aaf9a2ceb87ca6299f1e9"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structObjectDesc.html">ObjectDesc</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classObjectList.html#af04d1d3f616aaf9a2ceb87ca6299f1e9">pObjects</a></td></tr>
-<tr class="separator:af04d1d3f616aaf9a2ceb87ca6299f1e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
-Protected Attributes</h2></td></tr>
-<tr class="memitem:aec92e323af0feebe4d58b91ad0065653"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classObjectList.html#aec92e323af0feebe4d58b91ad0065653">uNumObjects</a></td></tr>
-<tr class="separator:aec92e323af0feebe4d58b91ad0065653"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ef08f4c14170a6e9c4bc30b145adddf"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structObjectDesc.html">ObjectDesc</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classObjectList.html#a5ef08f4c14170a6e9c4bc30b145adddf">pObjects</a></td></tr>
+<tr class="separator:a5ef08f4c14170a6e9c4bc30b145adddf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="ac22dc46c3b92c27106561eeb030329a2" name="ac22dc46c3b92c27106561eeb030329a2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac22dc46c3b92c27106561eeb030329a2">&#9670;&#160;</a></span>ObjectList()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">ObjectList::ObjectList </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="ab5c87654f182a291248c42f75983825e" name="ab5c87654f182a291248c42f75983825e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab5c87654f182a291248c42f75983825e">&#9670;&#160;</a></span>FromFile()</h2>
@@ -217,38 +183,16 @@ Protected Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="af04d1d3f616aaf9a2ceb87ca6299f1e9" name="af04d1d3f616aaf9a2ceb87ca6299f1e9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af04d1d3f616aaf9a2ceb87ca6299f1e9">&#9670;&#160;</a></span>pObjects</h2>
+<a id="a5ef08f4c14170a6e9c4bc30b145adddf" name="a5ef08f4c14170a6e9c4bc30b145adddf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ef08f4c14170a6e9c4bc30b145adddf">&#9670;&#160;</a></span>pObjects</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">struct <a class="el" href="structObjectDesc.html">ObjectDesc</a>* ObjectList::pObjects</td>
+          <td class="memname">std::vector&lt;<a class="el" href="structObjectDesc.html">ObjectDesc</a>&gt; ObjectList::pObjects</td>
         </tr>
       </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aec92e323af0feebe4d58b91ad0065653" name="aec92e323af0feebe4d58b91ad0065653"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aec92e323af0feebe4d58b91ad0065653">&#9670;&#160;</a></span>uNumObjects</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">unsigned int ObjectList::uNumObjects</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 </div>
