@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b215400</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;d1aeb86</span>
    </div>
   </td>
  </tr>
@@ -130,7 +130,7 @@ Static Private Attributes</h2></td></tr>
 <tr class="separator:aa030946750e8681c365d3eaf0d311791"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><div class="compoundTemplParams">template&lt;class T, auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLastIndex, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt;<br />
+<div class="textblock"><div class="compoundTemplParams">template&lt;class T, auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt;<br />
 class IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt;</div><p >An <code>std::array</code>-like class that supports some additional features:</p><ul>
 <li>Can be indexed with an enum (type is inferred from the <code><a class="el" href="structSize.html">Size</a></code> parameter).</li>
 <li>Supports an <code>std::map</code>-like initialization, so that the user doesn't have to manually double check that the order of the values in the initializer matches the order of the values of the enum that's used for indexing.</li>
@@ -189,7 +189,7 @@ class IndexedArray&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, Size &gt;</d
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLastIndex, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -213,7 +213,7 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLas
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLastIndex, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -237,7 +237,7 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLas
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLastIndex, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">using <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; T, SizeOrFirstIndex, LastIndex, IsZeroBased, <a class="el" href="structSize.html">Size</a> &gt;::key_type =  <a class="el" href="classIndexedArray.html#a43b19570c7cc05e0cffd8d34bf725cdc">index_type</a></td>
@@ -254,7 +254,7 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLas
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLastIndex, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -284,7 +284,7 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLas
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLastIndex, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -333,7 +333,7 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLas
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLastIndex, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -361,7 +361,7 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLas
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLastIndex, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -389,7 +389,7 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLas
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLastIndex, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -420,7 +420,7 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLas
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLastIndex, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -448,7 +448,7 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLas
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLastIndex, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -476,7 +476,7 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLas
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLastIndex, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -505,7 +505,7 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLas
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLastIndex, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -532,7 +532,7 @@ template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLas
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::InvalidLastIndex, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
+template&lt;class T , auto SizeOrFirstIndex, auto LastIndex = detail::INVALID_LAST_INDEX, bool IsZeroBased = std::is_same_v&lt;decltype(LastIndex), detail::LastIndex&gt;, ptrdiff_t Size = IsZeroBased ? static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) : static_cast&lt;ptrdiff_t&gt;(LastIndex) - static_cast&lt;ptrdiff_t&gt;(SizeOrFirstIndex) + 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
