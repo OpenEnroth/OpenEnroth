@@ -310,7 +310,7 @@ const std::unordered_map<ITEM_TYPE, int> paperdoll_boots_indexByType = {
     {ITEM_ARTIFACT_SEVEN_LEAGUE_BOOTS, 5},
     {ITEM_ARTIFACT_HERMES_SANDALS, 6},
 };
-const std::unordered_map<int, ITEM_TYPE> paperdoll_boots_typeByIndex = Inverted(paperdoll_boots_indexByType);
+const std::unordered_map<int, ITEM_TYPE> paperdoll_boots_typeByIndex = inverted(paperdoll_boots_indexByType);
 
 const int paperdoll_Cloak[4][10][2] = {  // 4E5570
     0x11, 0x68, 0x0F, 0x68, 0x14, 0x71, 0x19, 0x6B, 0x21, 0x6F, 0x05, 0x68,
@@ -337,7 +337,7 @@ const std::unordered_map<ITEM_TYPE, int> paperdoll_cloak_indexByType = {
     {ITEM_RARE_MOON_CLOAK, 8},
     {ITEM_RARE_VAMPIRES_CAPE, 9}
 };
-const std::unordered_map<int, ITEM_TYPE> paperdoll_cloak_typeByIndex = Inverted(paperdoll_cloak_indexByType);
+const std::unordered_map<int, ITEM_TYPE> paperdoll_cloak_typeByIndex = inverted(paperdoll_cloak_indexByType);
 
 const int paperdoll_CloakCollar[4][10][2] = {  // 4E56B0
     0,    0,    0x34, 0x64, 0x21, 0x69, 0x1D, 0x67, 0x20, 0x67, 0x21, 0x68,
@@ -375,7 +375,7 @@ const std::unordered_map<ITEM_TYPE, int> paperdoll_belt_indexByType = {
     {ITEM_RELIC_TITANS_BELT, 5},
     {ITEM_ARTIFACT_HEROS_BELT, 6}
 };
-const std::unordered_map<int, ITEM_TYPE> paperdoll_belt_typeByIndex = Inverted(paperdoll_belt_indexByType);
+const std::unordered_map<int, ITEM_TYPE> paperdoll_belt_typeByIndex = inverted(paperdoll_belt_indexByType);
 
 const int paperdoll_Helm[4][16][2] = {  // 4E58D0
     0x3E, 0x1F, 0x41, 0x2C, 0x37, 0x2F, 0x31, 0x32, 0x37, 0x2A, 0x39, 0x28,
@@ -412,7 +412,7 @@ const std::unordered_map<ITEM_TYPE, int> paperdoll_helm_indexByType = {
     {ITEM_ARTIFACT_MINDS_EYE, 14},
     {ITEM_RARE_SHADOWS_MASK, 15}
 };
-const std::unordered_map<int, ITEM_TYPE> paperdoll_helm_typeByIndex = Inverted(paperdoll_helm_indexByType);
+const std::unordered_map<int, ITEM_TYPE> paperdoll_helm_typeByIndex = inverted(paperdoll_helm_indexByType);
 
 const int pPaperdoll_Beards[4] = {  // 4E5AD0
     52,
@@ -471,7 +471,7 @@ const std::unordered_map<ITEM_TYPE, int> paperdoll_armor_indexByType = {
     {ITEM_ARTIFACT_GOVERNORS_ARMOR, 15},
     {ITEM_ARTIFACT_ELVEN_CHAINMAIL, 16}
 };
-const std::unordered_map<int, ITEM_TYPE> paperdoll_armor_typeByIndex = Inverted(paperdoll_armor_indexByType);
+const std::unordered_map<int, ITEM_TYPE> paperdoll_armor_typeByIndex = inverted(paperdoll_armor_indexByType);
 
 const int paperdoll_shoulder_coord[4][17][2] = {  // 4E5050
     0x64, 0x67, 0x61, 0x67, 0x65, 0x68, 0x6E, 0x74, 0x6C, 0x68, 0x61, 0x67,
@@ -744,7 +744,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
     int y_offset = y;
     Pointi pt = mouse->GetCursorPos();
 
-    auto str = StringPrintf("%s\r%03d%s", skill_group_name, right_margin,
+    auto str = fmt::format("{}\r{:03}{}", skill_group_name, right_margin,
                             localization->GetString(LSTR_LEVEL));
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {x, y}, ui_character_header_text_color, str, 0, 0, 0);
 
@@ -781,9 +781,9 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
             if (skill_mastery == PLAYER_SKILL_MASTERY_NOVICE) {
                 std::string Strsk;
                 if (skills_max_level[skill] == 1) { // Non-investable skill
-                    Strsk = StringPrintf("%s\r%03d-", localization->GetSkillName(skill), right_margin);
+                    Strsk = fmt::format("{}\r{:03}-", localization->GetSkillName(skill), right_margin);
                 } else {
-                    Strsk = StringPrintf("%s\r%03d%d", localization->GetSkillName(skill), right_margin, skill_level);
+                    Strsk = fmt::format("{}\r{:03}{}", localization->GetSkillName(skill), right_margin, skill_level);
                 }
                 pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, v8->uY}, skill_color, Strsk, 0, 0, 0);
             } else {
@@ -804,8 +804,8 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
                 if (!skill_mastery_color)
                     skill_mastery_color = ui_character_header_text_color;
 
-                auto Strsk = StringPrintf(
-                    "%s \f%05d%s\f%05d\r%03d%d",
+                auto Strsk = fmt::format(
+                    "{} \f{:05}{}\f{:05}\r{:03}{}",
                     localization->GetSkillName(skill), skill_mastery_color,
                     skill_level_str, skill_color, right_margin, skill_level
                 );
@@ -827,8 +827,8 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Player *player) {
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f,
                                 ui_character_skills_background);
 
-    auto str = StringPrintf(
-        "%s \f%05d%s\f00000\r177%s: \f%05d%d\f00000",  // ^Pv[]
+    auto str = fmt::format(
+        "{} \f{:05}{}\f00000\r177{}: \f{:05}{}\f00000",  // ^Pv[]
                      localization->GetString(LSTR_SKILLS_FOR),
                      ui_character_header_text_color, player->pName.c_str(),
                      localization->GetString(LSTR_SKILL_POINTS),
@@ -867,11 +867,10 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f,
                                 ui_character_awards_background);
 
-    std::string str = StringPrintf(
-        "%s \f%05d",
-        localization->GetString(LSTR_AWARDS_FOR), ui_character_header_text_color)
-        + NameAndTitle(player->pName, player->classType)
-        + "\f00000";
+    std::string str = fmt::format(
+        "{} \f{:05}{}\f00000",
+        localization->GetString(LSTR_AWARDS_FOR), ui_character_header_text_color,
+        NameAndTitle(player->pName, player->classType));
 
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {24, 18}, 0, str, 0, 0, 0);
     items_per_page = books_primary_item_per_page;
@@ -1050,7 +1049,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         // cloak
         item = player->GetCloakItem();
         if (item) {
-            index = ValueOr(paperdoll_cloak_indexByType, item->uItemID, -1);
+            index = valueOr(paperdoll_cloak_indexByType, item->uItemID, -1);
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Cloak[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Cloak[pBodyComplection][index][1];
@@ -1066,7 +1065,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         // armor
         item = player->GetArmorItem();
         if (item) {
-            index = ValueOr(paperdoll_armor_indexByType, item->uItemID, -1);
+            index = valueOr(paperdoll_armor_indexByType, item->uItemID, -1);
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Armor_Coord[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Armor_Coord[pBodyComplection][index][1];
@@ -1079,7 +1078,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         // boots
         item = player->GetBootItem();
         if (item) {
-            index = ValueOr(paperdoll_boots_indexByType, item->uItemID, -1);
+            index = valueOr(paperdoll_boots_indexByType, item->uItemID, -1);
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Boot[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Boot[pBodyComplection][index][1];
@@ -1109,7 +1108,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         // belt
         item = player->GetBeltItem();
         if (item) {
-            index = ValueOr(paperdoll_belt_indexByType, item->uItemID, -1);
+            index = valueOr(paperdoll_belt_indexByType, item->uItemID, -1);
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Belt[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Belt[pBodyComplection][index][1];
@@ -1126,7 +1125,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         // armor's shoulders
         item = player->GetArmorItem();
         if (item) {
-            index = ValueOr(paperdoll_armor_indexByType, item->uItemID, -1);
+            index = valueOr(paperdoll_armor_indexByType, item->uItemID, -1);
             if (index != -1) {
                 Texture *texture = nullptr;
                 // Some armors doesn't have sleeves so use normal one for two-handed or none if it also unavailable
@@ -1150,7 +1149,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         // cloak's collar
         item = player->GetCloakItem();
         if (item) {
-            index = ValueOr(paperdoll_cloak_indexByType, item->uItemID, -1);
+            index = valueOr(paperdoll_cloak_indexByType, item->uItemID, -1);
             if (index != -1) {
                 // leather cloak has no collar
                 if (paperdoll_CloakCollar[pBodyComplection][index][0]) {
@@ -1174,7 +1173,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         // helm
         item = player->GetHelmItem();
         if (item) {
-            index = ValueOr(paperdoll_helm_indexByType, item->uItemID, -1);
+            index = valueOr(paperdoll_helm_indexByType, item->uItemID, -1);
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Helm[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Helm[pBodyComplection][index][1];
@@ -1399,17 +1398,17 @@ void CharacterUI_LoadPaperdollTextures() {
             else
                 v3 = (pPlayers[i + 1]->GetSexByVoice() != 0) + 1;
             paperdoll_dbods[i] =
-                assets->GetImage_Alpha(StringPrintf("pc23v%dBod", v3));  // Body texture
+                assets->GetImage_Alpha(fmt::format("pc23v{}Bod", v3));  // Body texture
             paperdoll_dlads[i] =
-                assets->GetImage_Alpha(StringPrintf("pc23v%dlad", v3));  // Left Hand
+                assets->GetImage_Alpha(fmt::format("pc23v{}lad", v3));  // Left Hand
             paperdoll_dlaus[i] =
-                assets->GetImage_Alpha(StringPrintf("pc23v%dlau", v3));  // Left Hand2
+                assets->GetImage_Alpha(fmt::format("pc23v{}lau", v3));  // Left Hand2
             paperdoll_drhs[i] =
-                assets->GetImage_Alpha(StringPrintf("pc23v%drh", v3));  // Right Hand
+                assets->GetImage_Alpha(fmt::format("pc23v{}rh", v3));  // Right Hand
             paperdoll_dlhs[i] =
-                assets->GetImage_Alpha(StringPrintf("pc23v%dlh", v3));  // Left Palm
+                assets->GetImage_Alpha(fmt::format("pc23v{}lh", v3));  // Left Palm
             paperdoll_dlhus[i] =
-                assets->GetImage_Alpha(StringPrintf("pc23v%dlhu", v3));  // Left Fist
+                assets->GetImage_Alpha(fmt::format("pc23v{}lhu", v3));  // Left Fist
             pPlayer = pPlayers[i + 1];
 
             if (pPlayer->uCurrentFace == 12 || pPlayer->uCurrentFace == 13)
@@ -1434,13 +1433,13 @@ void CharacterUI_LoadPaperdollTextures() {
             if (pPlayers[i + 1]->uCurrentFace == 12 ||
                 pPlayers[i + 1]->uCurrentFace == 13) {
                 paperdoll_dbrds[pPlayers[i + 1]->uCurrentFace] =
-                    assets->GetImage_Alpha(StringPrintf(
-                        "pc%02dbrd", pPlayers[i + 1]->uCurrentFace + 1));
+                    assets->GetImage_Alpha(fmt::format(
+                        "pc{:02}brd", pPlayers[i + 1]->uCurrentFace + 1));
             }
 
             paperdoll_flying_feet[pPlayers[i + 1]->uCurrentFace] =
-                assets->GetImage_Alpha(StringPrintf(
-                    "item281pc%02d", pPlayers[i + 1]->uCurrentFace + 1));
+                assets->GetImage_Alpha(fmt::format(
+                    "item281pc{:02}", pPlayers[i + 1]->uCurrentFace + 1));
             IsPlayerWearingWatersuit[i + 1] = 0;
         }
     }
@@ -1470,7 +1469,7 @@ void CharacterUI_LoadPaperdollTextures() {
 #endif
 
     auto loadTexture = [&](const auto &map, int itemIndex, int bodyIndex, int shoulderIndex) {
-        std::string name = GetItemTextureFilename(*ValuePtr(map, itemIndex), bodyIndex + 1, shoulderIndex);
+        std::string name = GetItemTextureFilename(*valuePtr(map, itemIndex), bodyIndex + 1, shoulderIndex);
         return assets->GetImage_Alpha(name);
     };
 
@@ -1593,27 +1592,25 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
                                 ui_character_stats_background);
 
     auto str1 =
-        StringPrintf("\f%05d", ui_character_header_text_color)
-        + NameAndTitle(player->pName, player->classType)
-        + StringPrintf("\f00000\r180%s: \f%05d%d\f00000\n\n\n",
-                       localization->GetString(LSTR_SKILL_POINTS),
-                       player->uSkillPoints ? ui_character_bonus_text_color
-                                            : ui_character_default_text_color,
-                       player->uSkillPoints);
+        fmt::format("\f{:05}{}\f00000\r180{}: \f{:05}{}\f00000\n\n\n",
+                    ui_character_header_text_color,
+                    NameAndTitle(player->pName, player->classType),
+                    localization->GetString(LSTR_SKILL_POINTS),
+                    player->uSkillPoints ? ui_character_bonus_text_color : ui_character_default_text_color,
+                    player->uSkillPoints);
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, 18}, 0, str1);
 
     // First column(Первая колонка)
     pY = 53;
-    auto str2 = StringPrintf(
-        "%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(LSTR_MIGHT),
-        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualMight(),
-                                                     player->GetBaseStrength()),
+    auto str2 = fmt::format(
+        "{}\f{:05}\r424{}\f00000 /\t185{}\n", localization->GetString(LSTR_MIGHT),
+        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualMight(), player->GetBaseStrength()),
         player->GetActualMight(), player->GetBaseStrength());
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0, str2);
 
     pY += pFontArrus->GetHeight() - 2;
-    auto str3 = StringPrintf(
-        "%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(LSTR_INTELLECT),
+    auto str3 = fmt::format(
+        "{}\f{:05}\r424{}\f00000 /\t185{}\n", localization->GetString(LSTR_INTELLECT),
         UI_GetHealthManaAndOtherQualitiesStringColor(
             player->GetActualIntelligence(), player->GetBaseIntelligence()),
         player->GetActualIntelligence(),
@@ -1621,40 +1618,40 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0, str3);
 
     pY += pFontArrus->GetHeight() - 2;
-    auto str4 = StringPrintf(
-        "%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(LSTR_PERSONALITY),
+    auto str4 = fmt::format(
+        "{}\f{:05}\r424{}\f00000 /\t185{}\n", localization->GetString(LSTR_PERSONALITY),
         UI_GetHealthManaAndOtherQualitiesStringColor(
             player->GetActualWillpower(), player->GetBaseWillpower()),
         player->GetActualWillpower(), player->GetBaseWillpower());
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0, str4);
 
     pY += pFontArrus->GetHeight() - 2;
-    auto str5 = StringPrintf(
-        "%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(LSTR_ENDURANCE),
+    auto str5 = fmt::format(
+        "{}\f{:05}\r424{}\f00000 /\t185{}\n", localization->GetString(LSTR_ENDURANCE),
         UI_GetHealthManaAndOtherQualitiesStringColor(
             player->GetActualEndurance(), player->GetBaseEndurance()),
         player->GetActualEndurance(), player->GetBaseEndurance());
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0, str5);
 
     pY += pFontArrus->GetHeight() - 2;
-    auto str6 = StringPrintf(
-        "%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(LSTR_ACCURACY),
+    auto str6 = fmt::format(
+        "{}\f{:05}\r424{}\f00000 /\t185{}\n", localization->GetString(LSTR_ACCURACY),
         UI_GetHealthManaAndOtherQualitiesStringColor(
             player->GetActualAccuracy(), player->GetBaseAccuracy()),
         player->GetActualAccuracy(), player->GetBaseAccuracy());
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0, str6);
 
     pY += pFontArrus->GetHeight() - 2;
-    auto str7 = StringPrintf(
-        "%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(LSTR_SPEED),
+    auto str7 = fmt::format(
+        "{}\f{:05}\r424{}\f00000 /\t185{}\n", localization->GetString(LSTR_SPEED),
         UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualSpeed(),
                                                      player->GetBaseSpeed()),
         player->GetActualSpeed(), player->GetBaseSpeed());
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0, str7);
 
     pY += pFontArrus->GetHeight() - 2;
-    auto str8 = StringPrintf(
-        "%s\f%05u\r424%d\f00000 /\t185%d\n\n", localization->GetString(LSTR_LUCK),
+    auto str8 = fmt::format(
+        "{}\f{:05}\r424{}\f00000 /\t185{}\n\n", localization->GetString(LSTR_LUCK),
         UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualLuck(),
                                                      player->GetBaseLuck()),
         player->GetActualLuck(), player->GetBaseLuck());
@@ -1675,22 +1672,20 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
         text_format = "%s\f%05u\r388%d\f00000 / %d\n";
     pY += pFontArrus->GetHeight() - 2;
     auto str10 = StringPrintf(text_format, localization->GetString(LSTR_SPELL_POINTS),
-                              UI_GetHealthManaAndOtherQualitiesStringColor(
-                                  player->sMana, player->GetMaxMana()),
+                              UI_GetHealthManaAndOtherQualitiesStringColor(player->sMana, player->GetMaxMana()),
                               player->sMana, player->GetMaxMana());
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0, str10);
 
     pY += pFontArrus->GetHeight() - 2;
-    auto str11 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n\n",
+    auto str11 = fmt::format("{}\f{:05}\r424{}\f00000 /\t185{}\n\n",
                               localization->GetString(LSTR_ARMOR_CLASS),
-                              UI_GetHealthManaAndOtherQualitiesStringColor(
-                                  player->GetActualAC(), player->GetBaseAC()),
+                              UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualAC(), player->GetBaseAC()),
                               player->GetActualAC(), player->GetBaseAC());
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0, str11);
 
     pY += 2 * pFontArrus->GetHeight() - 2;
     auto str12 =
-        StringPrintf("%s: \f%05d%s\n",
+        fmt::format("{}: \f{:05}{}\n",
                      localization->GetString(LSTR_CONDITION),
                      GetConditionDrawColor(player->GetMajorConditionIdx()),
                      localization->GetCharacterConditionName(player->GetMajorConditionIdx()));
@@ -1700,7 +1695,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
     pText = localization->GetString(LSTR_NONE);
     if (player->uQuickSpell)
         pText = pSpellStats->pInfos[player->uQuickSpell].pShortName;
-    auto str13 = StringPrintf("%s: %s", localization->GetString(LSTR_QUICK_SPELL), pText);
+    auto str13 = fmt::format("{}: {}", localization->GetString(LSTR_QUICK_SPELL), pText);
     pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {26, pY}, 0, str13, 226, 0);
 
     // Second column (Вторая колонка)
@@ -1731,29 +1726,29 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
     if (player->uExperience <= 9999999)
         pText = localization->GetString(LSTR_EXPERIENCE);
     auto str16 =
-        StringPrintf("%s\r180\f%05d%lu\f00000\n\n", pText,
+        fmt::format("{}\r180\f{:05}{}\f00000\n\n", pText,
                      player->GetExperienceDisplayColor(), player->uExperience);
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0, str16);
 
     pY += 2 * pFontArrus->GetHeight();
-    auto str17 = StringPrintf("%s\t100%+d\n", localization->GetString(LSTR_ATTACK),
+    auto str17 = fmt::format("{}\t100{:+}\n", localization->GetString(LSTR_ATTACK),
                               player->GetActualAttack(false));
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0, str17);
 
     pY += pFontArrus->GetHeight() - 2;
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
-        StringPrintf("%s\t100 %s\n", localization->GetString(LSTR_DAMAGE),
-                     player->GetMeleeDamageString().c_str()));
+                                     fmt::format("{}\t100 {}\n", localization->GetString(LSTR_DAMAGE),
+                     player->GetMeleeDamageString()));
 
     pY += pFontArrus->GetHeight() - 2;
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
-        StringPrintf("%s\t100%+d\n", localization->GetString(LSTR_SHOOT),
+                                     fmt::format("{}\t100{:+}\n", localization->GetString(LSTR_SHOOT),
                      player->GetRangedAttack()));
 
     pY += pFontArrus->GetHeight() - 2;
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
-        StringPrintf(
-            "%s\t100 %s\n\n", localization->GetString(LSTR_DAMAGE),
+                                     fmt::format(
+            "{}\t100 {}\n\n", localization->GetString(LSTR_DAMAGE),
             player->GetRangedDamageString().c_str())
     );
 
@@ -1980,13 +1975,11 @@ void WetsuitOff(unsigned int uPlayerID) {
         if (pPlayers[uPlayerID]->uCurrentFace == 12 ||
             pPlayers[uPlayerID]->uCurrentFace == 13) {
             paperdoll_dbrds[pPlayers[uPlayerID]->uCurrentFace] =
-                assets->GetImage_Alpha(StringPrintf(
-                    "pc%02dbrd", pPlayers[uPlayerID]->uCurrentFace + 1));
+                assets->GetImage_Alpha(fmt::format("pc{:02}brd", pPlayers[uPlayerID]->uCurrentFace + 1));
         }
 
         paperdoll_flying_feet[pPlayers[uPlayerID]->uCurrentFace] =
-            assets->GetImage_Alpha(StringPrintf(
-                "item281pc%02d", pPlayers[uPlayerID]->uCurrentFace + 1));
+            assets->GetImage_Alpha(fmt::format("item281pc{:02}", pPlayers[uPlayerID]->uCurrentFace + 1));
 
         IsPlayerWearingWatersuit[uPlayerID] = false;
     }

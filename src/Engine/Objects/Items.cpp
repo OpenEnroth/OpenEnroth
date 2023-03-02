@@ -229,8 +229,8 @@ std::string ItemGen::GetIdentifiedName() {
                 || special_enchantment == ITEM_ENCHANTMENT_ASSASINS
                 || special_enchantment == ITEM_ENCHANTMENT_BARBARIANS
             ) {            // enchantment and name positions inverted!
-                return StringPrintf(
-                    "%s %s",
+                return fmt::format(
+                    "{} {}",
                     pItemTable->pSpecialEnchantments[special_enchantment].pNameAdd,
                     pItemTable->pItems[uItemID].pName
                 );
@@ -725,23 +725,23 @@ uint8_t ItemGen::GetDamageMod() {
 std::string GetItemTextureFilename(ITEM_TYPE item_id, int index, int shoulder) {
     // For some reason artifact textures are stored using different ids,
     // and textures under original ids simply don't exist.
-    int texture_id = std::to_underlying(ValueOr(itemTextureIdByItemId, item_id, item_id));
+    int texture_id = std::to_underlying(valueOr(itemTextureIdByItemId, item_id, item_id));
 
     switch (pItemTable->pItems[item_id].uEquipType) {
         case EQUIP_ARMOUR:
             if (shoulder == 0)
-                return StringPrintf("item%3.3dv%d", texture_id, index);
+                return fmt::format("item{:03}v{}", texture_id, index);
             else if (shoulder == 1)
-                return StringPrintf("item%3.3dv%da1", texture_id, index);
+                return fmt::format("item{:03}v{}a1", texture_id, index);
             else // shoulder == 2
-                return StringPrintf("item%3.3dv%da2", texture_id, index);
+                return fmt::format("item{:03}v{}a2", texture_id, index);
         case EQUIP_CLOAK:
             if (shoulder == 0)
-                return StringPrintf("item%3.3dv%d", texture_id, index);
+                return fmt::format("item{:03}v{}", texture_id, index);
             else // shoulder == 1
-                return StringPrintf("item%3.3dv%da1", texture_id, index);
+                return fmt::format("item{:03}v{}a1", texture_id, index);
         default:
-            return StringPrintf("item%3.3dv%d", texture_id, index);
+            return fmt::format("item{:03}v{}", texture_id, index);
     }
 }
 
@@ -801,5 +801,5 @@ Segment<ITEM_TREASURE_LEVEL> RemapTreasureLevel(ITEM_TREASURE_LEVEL itemTreasure
     int itemIdx = std::to_underlying(itemTreasureLevel) - std::to_underlying(ITEM_FIRST_VALID_TREASURE_LEVEL);
     int mapIdx = std::to_underlying(mapTreasureLevel) - std::to_underlying(MAP_FIRST_TREASURE_LEVEL);
     Segment<int> result = mapping[itemIdx][mapIdx];
-    return {ITEM_TREASURE_LEVEL(result.First()), ITEM_TREASURE_LEVEL(result.Last())};
+    return {ITEM_TREASURE_LEVEL(result.front()), ITEM_TREASURE_LEVEL(result.back())};
 }

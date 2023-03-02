@@ -53,7 +53,7 @@ void Config::RegisterSection(ConfigSection *section) {
 }
 
 ConfigSection *Config::Section(const std::string &name) const {
-    return ValueOr(sectionByName_, name, nullptr);
+    return valueOr(sectionByName_, name, nullptr);
 }
 
 std::vector<ConfigSection *> Config::Sections() const {

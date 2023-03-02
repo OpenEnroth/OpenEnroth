@@ -164,8 +164,8 @@ void GameUI_LoadPlayerPortraintsAndVoices() {
     for (uint i = 0; i < 4; ++i) {
         for (uint j = 0; j < 56; ++j) {
             game_ui_player_faces[i][j] = assets->GetImage_ColorKey(
-                StringPrintf(
-                    "%s%02d",
+                fmt::format(
+                    "{}{:02}",
                     pPlayerPortraitsNames[pParty->pPlayers[i].uCurrentFace],
                     j + 1));
         }
@@ -193,7 +193,7 @@ void GameUI_ReloadPlayerPortraits(
     int face_id) {  // the transition from the zombies to the normal state
     for (uint i = 0; i <= 55; ++i) {
         auto filename =
-            StringPrintf("%s%02d", pPlayerPortraitsNames[face_id], i + 1);
+            fmt::format("{}{:02}", pPlayerPortraitsNames[face_id], i + 1);
         game_ui_player_faces[player_id][i] =
             assets->GetImage_ColorKey(filename);
     }
@@ -693,7 +693,7 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
                 popup_window.uFrameZ = popup_window.uFrameX + 399;
                 popup_window.DrawMessageBox(0);
 
-                auto tex_name = StringPrintf("NPC%03d", pNPC->uPortraitID);
+                auto tex_name = fmt::format("NPC{:03}", pNPC->uPortraitID);
                 render->DrawTextureNew(
                     (popup_window.uFrameX + 22) / 640.0f,
                     (popup_window.uFrameY + 36) / 480.0f,
@@ -804,32 +804,30 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
     render->DrawTextureNew((window->uFrameX + 24) / 640.0f,
                                 (window->uFrameY + 24) / 480.0f, v13);
 
+    // TODO(captainurist): do a 2nd rewrite here
     auto str =
-        StringPrintf("\f%05d", ui_character_header_text_color)
+        fmt::format("\f{:05}", ui_character_header_text_color)
         + NameAndTitle(player->pName, player->classType)
         + "\f00000\n"
-        + StringPrintf("%s : \f%05u%d\f00000 / %d\n",
+        + fmt::format("{} : \f{:05}{}\f00000 / {}\n",
                      localization->GetString(LSTR_HIT_POINTS),
-                     UI_GetHealthManaAndOtherQualitiesStringColor(
-                         player->sHealth, player->GetMaxHealth()),
+                     UI_GetHealthManaAndOtherQualitiesStringColor(player->sHealth, player->GetMaxHealth()),
                      player->sHealth, player->GetMaxHealth())
-        + StringPrintf("%s : \f%05u%d\f00000 / %d\n",
+        + fmt::format("{} : \f{:05}{}\f00000 / {}\n",
                      localization->GetString(LSTR_SPELL_POINTS),
-                     UI_GetHealthManaAndOtherQualitiesStringColor(
-                         player->sMana, player->GetMaxMana()),
+                     UI_GetHealthManaAndOtherQualitiesStringColor(player->sMana, player->GetMaxMana()),
                      player->sMana, player->GetMaxMana())
-        + StringPrintf("%s: \f%05d%s\f00000\n",
+        + fmt::format("{}: \f{:05}{}\f00000\n",
                      localization->GetString(LSTR_CONDITION),
                      GetConditionDrawColor(player->GetMajorConditionIdx()),
-                     localization->GetCharacterConditionName(
-                         player->GetMajorConditionIdx()));
+                     localization->GetCharacterConditionName(player->GetMajorConditionIdx()));
 
     if (player->uQuickSpell)
         v29 = pSpellStats->pInfos[player->uQuickSpell].pShortName;
     else
         v29 = localization->GetString(LSTR_NONE);
 
-    str += StringPrintf("%s: %s", localization->GetString(LSTR_QUICK_SPELL), v29);
+    str += fmt::format("{}: {}", localization->GetString(LSTR_QUICK_SPELL), v29);
 
     window->DrawText(pFontArrus, {120, 22}, 0, str, 0, 0, 0);
 
@@ -885,8 +883,8 @@ void GameUI_DrawFoodAndGold() {
     if (uGameState != GAME_STATE_FINAL_WINDOW) {
         text_y = _44100D_should_alter_right_panel() != 0 ? 381 : 322;
 
-        pPrimaryWindow->DrawText(pFontSmallnum, {0, text_y}, uGameUIFontMain, StringPrintf("\r087%d", pParty->GetFood()), 0, 0, uGameUIFontShadow);
-        pPrimaryWindow->DrawText(pFontSmallnum, {0, text_y}, uGameUIFontMain, StringPrintf("\r028%d", pParty->GetGold()), 0, 0, uGameUIFontShadow);
+        pPrimaryWindow->DrawText(pFontSmallnum, {0, text_y}, uGameUIFontMain, fmt::format("\r087{}", pParty->GetFood()), 0, 0, uGameUIFontShadow);
+        pPrimaryWindow->DrawText(pFontSmallnum, {0, text_y}, uGameUIFontMain, fmt::format("\r028{}", pParty->GetGold()), 0, 0, uGameUIFontShadow);
         // force to render all queued text now so it wont be delayed and drawn over things it isn't supposed to, like item in hand or nuklear
         render->EndTextNew();
     }

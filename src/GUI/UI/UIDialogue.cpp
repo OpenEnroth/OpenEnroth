@@ -50,7 +50,7 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
     pDialogueNPCCount = 0;
     uNumDialogueNPCPortraits = 1;
 
-    filename = StringPrintf("npc%03u", pNPCInfo->uPortraitID);
+    filename = fmt::format("npc{:03}", pNPCInfo->uPortraitID);
     pDialogueNPCPortraits[0] = assets->GetImage_ColorKey(filename);
 
     int pNumberContacts = 0;
@@ -514,7 +514,7 @@ void GUIWindow_GenericDialogue::Update() {
     }
 
     if (pGUIWindow2->wData.val == 26) { // EVENT_InputString
-        auto str = StringPrintf("%s %s", GameUI_StatusBar_GetInput().c_str(), keyboardInputHandler->GetTextInput().c_str());
+        auto str = fmt::format("{} {}", GameUI_StatusBar_GetInput(), keyboardInputHandler->GetTextInput());
         pGUIWindow2->DrawText(pFontLucida, {13, 357}, 0, str, 0, 0, 0);
         pGUIWindow2->DrawFlashingInputCursor(pFontLucida->GetLineWidth(str) + 13, 357, pFontLucida);
         return;

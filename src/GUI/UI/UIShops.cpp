@@ -1522,9 +1522,8 @@ void sub_4B1523_showSpellbookInfo(ITEM_TYPE spellItemId) {
     if (v13 > v5) v5 = v13;
     if (v4 > v5) v5 = v4;
 
-    auto str = StringPrintf(
-        "%s\n\n%s\t%03d:\t%03d%s\t000\n%s\t%03d:\t%03d%s\t000\n%s\t%03d:\t%03d%"
-        "s\t000\n%s\t%03d:\t%03d%s",
+    auto str = fmt::format(
+        "{}\n\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}",
         pSpellStats->pInfos[spellId].pDescription,
         localization->GetString(LSTR_NORMAL), v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pBasicSkillDesc,
         localization->GetString(LSTR_EXPERT), v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pExpertSkillDesc,
@@ -1551,7 +1550,7 @@ void sub_4B1523_showSpellbookInfo(ITEM_TYPE spellItemId) {
     a1.DrawTitleText(pFontComic, 0xCu, 0x4Bu, 0,
                      localization->GetSkillName(static_cast<PLAYER_SKILL_TYPE>(spellSchool / 4 + 12)), 3u);
 
-    str = StringPrintf("%s\n%d", localization->GetString(LSTR_SP_COST), pSpellDatas[spellId].uNormalLevelMana);
+    str = fmt::format("{}\n{}", localization->GetString(LSTR_SP_COST), pSpellDatas[spellId].uNormalLevelMana);
     a1.DrawTitleText(pFontComic, 0xCu, a1.uFrameHeight - pFontComic->GetHeight() - 16, 0, str, 3);
 }
 

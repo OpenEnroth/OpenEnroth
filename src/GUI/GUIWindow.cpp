@@ -596,28 +596,28 @@ std::string MakeDateTimeString(GameTime time) {
         auto day_str = localization->GetString(LSTR_DAYS);
         if (days <= 1) day_str = localization->GetString(LSTR_DAY_CAPITALIZED);
 
-        str += StringPrintf("%d %s ", days, day_str);
+        str += fmt::format("{} {} ", days, day_str);
     }
 
     if (hours) {
         auto hour_str = localization->GetString(LSTR_HOURS);
         if (hours <= 1) hour_str = localization->GetString(LSTR_HOUR);
 
-        str += StringPrintf("%d %s ", hours, hour_str);
+        str += fmt::format("{} {} ", hours, hour_str);
     }
 
     if (minutes && !days) {
         auto minute_str = localization->GetString(LSTR_MINUTES);
         if (minutes <= 1) minute_str = localization->GetString(LSTR_MINUTE);
 
-        str += StringPrintf("%d %s ", minutes, minute_str);
+        str += fmt::format("{} {} ", minutes, minute_str);
     }
 
     if (seconds && !hours) {
         auto seconds_str = localization->GetString(LSTR_SECONDS);
         if (seconds <= 1) seconds_str = localization->GetString(LSTR_SECOND);
 
-        str += StringPrintf("%d %s ", seconds, seconds_str);
+        str += fmt::format("{} {} ", seconds, seconds_str);
     }
 
     return str;
@@ -2312,7 +2312,7 @@ static void LoadPartyBuffIcons() {
         //auto temp = assets->GetImage_Paletted(StringPrintf("isn-%02d", i + 1));
         //int booty = temp->GetHeight();
         //party_buff_icons[i] = assets->GetImage_ColorKey(StringPrintf("isn-%02d", i + 1), colorTable.TealMask.C16());
-        party_buff_icons[i] = assets->GetImage_Paletted(StringPrintf("isn-%02d", i + 1));
+        party_buff_icons[i] = assets->GetImage_Paletted(fmt::format("isn-{:02}", i + 1));
     }
 
     uIconIdx_FlySpell = pIconsFrameTable->FindIcon("spell21");

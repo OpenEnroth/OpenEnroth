@@ -110,10 +110,7 @@ void CreateWinnerCertificate() {
 
     pWindow.DrawTitleText(
         pFont, 1, pWindow.uFrameHeight - 2 * pFont->GetHeight() - 5, 1,
-        localization->GetString(LSTR_TOTAL_TIME) + StringPrintf(
-            " %lu %s, %lu %s, %lu %s ", v14, v9, v18, v8, v17, v7),
-        3
-    );
+        fmt::format("{} {} {}, {} {}, {} {} ", localization->GetString(LSTR_TOTAL_TIME), v14, v9, v18, v8, v17, v7), 3);
 
     pWindow.DrawTitleText(pFont, 1, pWindow.uFrameHeight, 1,
         localization->FormatString(LSTR_FMT_YOUR_SCORE_D, v23), 3);

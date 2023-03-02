@@ -4,6 +4,8 @@
 #include <vector>
 #include <algorithm>
 
+#include "Format.h"
+
 static inline unsigned char AsciiToLower(unsigned char c) {
     return ((((c) >= 'A') && ((c) <= 'Z')) ? ((c) - 'A' + 'a') : (c));
 }
@@ -25,10 +27,6 @@ static int AsciiCaseInsensitiveCompare(const char *l, const char *r, size_t size
 
 static std::string_view ToCharStringView(std::u8string_view s) {
     return std::string_view(reinterpret_cast<const char *>(s.data()), s.size());
-}
-
-std::string StringFromInt(int value) {
-    return StringPrintf("%d", value);
 }
 
 std::string StringPrintf(const char *fmt, ...) {

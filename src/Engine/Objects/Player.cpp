@@ -1396,9 +1396,9 @@ std::string Player::GetMeleeDamageString() {
     }
 
     if (min_damage == max_damage) {
-        return StringPrintf("%d", min_damage);  // build string
+        return fmt::format("{}", min_damage);
     } else {
-        return StringPrintf("%d - %d", min_damage, max_damage);  // build string
+        return fmt::format("{} - {}", min_damage, max_damage);
     }
 }
 
@@ -1423,10 +1423,9 @@ std::string Player::GetRangedDamageString() {
 
     if (max_damage > 0) {
         if (min_damage == max_damage) {
-            return StringPrintf("%d", min_damage);  // build string
+            return fmt::format("{}", min_damage);
         } else {
-            return StringPrintf("%d - %d", min_damage,
-                                max_damage);  // build string
+            return fmt::format("{} - {}", min_damage, max_damage);
         }
     } else {
         return std::string("N/A");  // no bow equipped
@@ -4367,76 +4366,76 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             switch (pParty->uCurrentMonth) {
                 case 0:
                     playerAffected->uMight += thisa;
-                    status = StringPrintf(
-                        "+%u %s %s", thisa, v74,
+                    status = fmt::format(
+                        "+{} {} {}", thisa, v74,
                         localization->GetString(LSTR_PERMANENT)
                     );
                     break;
                 case 1:
                     playerAffected->uIntelligence += thisa;
-                    status = StringPrintf(
-                        "+%u %s %s", thisa, v74,
+                    status = fmt::format(
+                        "+{} {} {}", thisa, v74,
                         localization->GetString(LSTR_PERMANENT)
                     );
                     break;
                 case 2:
                     playerAffected->uWillpower += thisa;
-                    status = StringPrintf(
-                        "+%u %s %s", thisa, v74,
+                    status = fmt::format(
+                        "+{} {} {}", thisa, v74,
                         localization->GetString(LSTR_PERMANENT)
                     );
                     break;
                 case 3:
                     playerAffected->uEndurance += thisa;
-                    status = StringPrintf(
-                        "+%u %s %s", thisa, v74,
+                    status = fmt::format(
+                        "+{} {} {}", thisa, v74,
                         localization->GetString(LSTR_PERMANENT)
                     );
                     break;
                 case 4:
                     playerAffected->uAccuracy += thisa;
-                    status = StringPrintf(
-                        "+%u %s %s", thisa, v74,
+                    status = fmt::format(
+                        "+{} {} {}", thisa, v74,
                         localization->GetString(LSTR_PERMANENT)
                     );
                     break;
                 case 5:
                     playerAffected->uSpeed += thisa;
-                    status = StringPrintf(
-                        "+%u %s %s", thisa, v74,
+                    status = fmt::format(
+                        "+{} {} {}", thisa, v74,
                         localization->GetString(LSTR_PERMANENT)
                     );
                     break;
                 case 6:
                     playerAffected->uLuck += thisa;
-                    status = StringPrintf(
-                        "+%u %s %s", thisa, v74,
+                    status = fmt::format(
+                        "+{} {} {}", thisa, v74,
                         localization->GetString(LSTR_PERMANENT)
                     );
                     break;
                 case 7:
                     pParty->PartyFindsGold(1000 * thisa, 0);
-                    status = StringPrintf(
-                        "+%u %s", 1000 * thisa, localization->GetString(LSTR_GOLD)
+                    status = fmt::format(
+                        "+{} {}", 1000 * thisa, localization->GetString(LSTR_GOLD)
                     );
                     break;
                 case 8:
                     pParty->GiveFood(5 * thisa);
-                    status = StringPrintf(
-                        "+%u %s", 5 * thisa, localization->GetString(LSTR_FOOD)
+                    status = fmt::format(
+                        "+{} {}", 5 * thisa, localization->GetString(LSTR_FOOD)
                     );
                     break;
                 case 9u:
                     playerAffected->uSkillPoints += 2 * thisa;
-                    status = StringPrintf(
-                        "+%u %s", 2 * thisa,
+                    status = fmt::format(
+                        "+{} {}", 2 * thisa,
                         localization->GetString(LSTR_SKILL_POINTS)
                     );
                     break;
                 case 10:
                     playerAffected->uExperience += 2500ll * thisa;
-                    status = StringPrintf(
-                        "+%u %s", 2500 * thisa,
+                    status = fmt::format(
+                        "+{} {}", 2500 * thisa,
                         localization->GetString(LSTR_EXPERIENCE)
                     );
                     break;
@@ -4469,8 +4468,8 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                             // ("Unexpected attribute");
                             return;
                     }
-                    status = StringPrintf(
-                        "+%u %s %s", thisa, spell_school_name,
+                    status = fmt::format(
+                        "+{} {} {}", thisa, spell_school_name,
                         localization->GetString(LSTR_PERMANENT)
                     );
                     break;

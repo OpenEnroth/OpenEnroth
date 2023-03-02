@@ -96,11 +96,11 @@ class Segment {
         return iterator(last_) + 1;
     }
 
-    constexpr T First() const {
+    constexpr T front() const {
         return first_;
     }
 
-    constexpr T Last() const {
+    constexpr T back() const {
         return last_;
     }
 

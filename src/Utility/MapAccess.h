@@ -13,7 +13,7 @@
  * @return                              Value for the provided key, or `def` if the key was not found in the map.
  */
 template<class Map, class Key, class Value = typename Map::mapped_type>
-Value ValueOr(const Map &map, const Key &key, const std::type_identity_t<Value> &def = Value()) {
+Value valueOr(const Map &map, const Key &key, const std::type_identity_t<Value> &def = Value()) {
     auto pos = map.find(key);
     return pos == map.end() ? def : pos->second;
 }
@@ -28,7 +28,7 @@ Value ValueOr(const Map &map, const Key &key, const std::type_identity_t<Value> 
  *                                      found in the map.
  */
 template<class Map, class Key, class Value = typename Map::mapped_type>
-const Value *ValuePtr(const Map &map, const Key &key) {
+const Value *valuePtr(const Map &map, const Key &key) {
     auto pos = map.find(key);
     return pos == map.end() ? nullptr : &pos->second;
 }
@@ -42,7 +42,7 @@ const Value *ValuePtr(const Map &map, const Key &key) {
  * @return                              Inverted map.
  */
 template<class Key, class Value>
-std::unordered_map<Value, Key> Inverted(const std::unordered_map<Key, Value> &map) {
+std::unordered_map<Value, Key> inverted(const std::unordered_map<Key, Value> &map) {
     std::unordered_map<Value, Key> result;
 
     for (const auto &pair : map) {

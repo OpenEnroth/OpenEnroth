@@ -322,9 +322,9 @@ void InitializeSpellBookTextures() {
     for (unsigned int i = 0; i < 9; ++i) {
         ui_spellbook_school_backgrounds[i] = assets->GetImage_ColorKey(texNames[i]);
         ui_spellbook_school_tabs[i][0] =
-            assets->GetImage_Alpha(StringPrintf("tab%da", i + 1));
+            assets->GetImage_Alpha(fmt::format("tab{}a", i + 1));
         ui_spellbook_school_tabs[i][1] =
-            assets->GetImage_Alpha(StringPrintf("tab%db", i + 1));
+            assets->GetImage_Alpha(fmt::format("tab{}b", i + 1));
     }
 }
 

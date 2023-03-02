@@ -187,7 +187,7 @@ void PlatformApplication::installInternal(std::type_index pluginType, void *plug
 
 void PlatformApplication::removeInternal(std::type_index pluginType, void *plugin) {
     assert(plugin);
-    assert(!_pluginByType.contains(pluginType) || ValueOr(_pluginByType, pluginType, nullptr) == plugin);
+    assert(!_pluginByType.contains(pluginType) || valueOr(_pluginByType, pluginType, nullptr) == plugin);
     _pluginByType.erase(pluginType);
 }
 
@@ -196,6 +196,6 @@ bool PlatformApplication::hasInternal(std::type_index pluginType) const {
 }
 
 void *PlatformApplication::getInternal(std::type_index pluginType) const {
-    return ValueOr(_pluginByType, pluginType, nullptr);
+    return valueOr(_pluginByType, pluginType, nullptr);
 }
 

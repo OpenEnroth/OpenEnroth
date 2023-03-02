@@ -608,9 +608,7 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
     }
 
     if (grabcount > 1 || goldcount > 1) {  // found items
-        GameUI_SetStatusBar(
-            StringPrintf("You found %d item(s) and %d Gold!", grabcount, goldamount)
-        );
+        GameUI_SetStatusBar(fmt::format("You found {} item(s) and {} Gold!", grabcount, goldamount));
     }
     if (grabcount == 0 && goldcount == 0) {
         GameUI_SetStatusBar(LSTR_NOTHING_HERE);

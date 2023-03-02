@@ -145,7 +145,7 @@ void GUIWindow_Rest::Update() {
 
         {
             rest_ui_hourglass_frame_current = assets->GetImage_ColorKey(
-                StringPrintf("hglas%03d", hourglass_icon_idx));
+                fmt::format("hglas{:03}", hourglass_icon_idx));
             render->DrawTextureNew(267 / 640.0f, 159 / 480.0f,
                                         rest_ui_hourglass_frame_current);
         }
@@ -160,7 +160,7 @@ void GUIWindow_Rest::Update() {
         tmp_button.DrawLabel(localization->GetString(LSTR_REST_AND_HEAL_8_HOURS), pFontCreate, colorTable.Diesel.C16(), colorTable.StarkWhite.C16());
         tmp_button.pParent = 0;
 
-        auto str1 = StringPrintf("\r408%d", uRestUI_FoodRequiredToRest);
+        auto str1 = fmt::format("\r408{}", uRestUI_FoodRequiredToRest);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {0, 164}, colorTable.Diesel.C16(), str1, 0, 0, colorTable.StarkWhite.C16());
 
         pButton_RestUI_WaitUntilDawn->DrawLabel(localization->GetString(LSTR_WAIT_UNTIL_DAWN), pFontCreate, colorTable.Diesel.C16(), colorTable.StarkWhite.C16());
@@ -181,13 +181,13 @@ void GUIWindow_Rest::Update() {
             localization->GetString(LSTR_WAIT_WITHOUT_HEALING), pFontCreate,
            colorTable.Diesel.C16(), colorTable.StarkWhite.C16());
         tmp_button.pParent = 0;
-        std::string str2 = StringPrintf("%d:%02d %s", am_pm_hours, pParty->uCurrentMinute, localization->GetAmPm((pParty->uCurrentHour >= 12 && pParty->uCurrentHour < 24) ? 1 : 0));
+        std::string str2 = fmt::format("{}:{:02} {}", am_pm_hours, pParty->uCurrentMinute, localization->GetAmPm((pParty->uCurrentHour >= 12 && pParty->uCurrentHour < 24) ? 1 : 0));
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {368, 168}, colorTable.Diesel.C16(), str2, 0, 0, colorTable.StarkWhite.C16());
-        std::string str3 = StringPrintf("%s\r190%d", localization->GetString(LSTR_DAY_CAPITALIZED), pParty->uCurrentDayOfMonth + 1);
+        std::string str3 = fmt::format("{}\r190{}", localization->GetString(LSTR_DAY_CAPITALIZED), pParty->uCurrentDayOfMonth + 1);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {350, 190}, colorTable.Diesel.C16(), str3, 0, 0, colorTable.StarkWhite.C16());
-        std::string str4 = StringPrintf("%s\r190%d", localization->GetString(LSTR_MONTH), pParty->uCurrentMonth + 1);
+        std::string str4 = fmt::format("{}\r190{}", localization->GetString(LSTR_MONTH), pParty->uCurrentMonth + 1);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {350, 222}, colorTable.Diesel.C16(), str4, 0, 0, colorTable.StarkWhite.C16());
-        std::string str5 = StringPrintf("%s\r190%d", localization->GetString(LSTR_YEAR), pParty->uCurrentYear);
+        std::string str5 = fmt::format("{}\r190{}", localization->GetString(LSTR_YEAR), pParty->uCurrentYear);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {350, 254}, colorTable.Diesel.C16(), str5, 0, 0, colorTable.StarkWhite.C16());
         if (_506F14_resting_stage) Party::Sleep8Hours();
     } else {
