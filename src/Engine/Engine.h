@@ -235,6 +235,8 @@ void SetDecorationSprite(uint16_t uCog, bool bHide,
 void _494035_timed_effects__water_walking_damage__etc();
 
 /**
+ * Modify party health of mana based on party or players conditions/buffs.
+ *
  * @offset 0x00493938.
  */
 void RegeneratePartyHealthMana();

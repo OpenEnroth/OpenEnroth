@@ -1685,16 +1685,19 @@ void _494035_timed_effects__water_walking_damage__etc() {
             pParty->pPlayers[i].SetCondition(Condition_Weak, 0);
     }
 
-    for (uint i = 0; i < 2; ++i) {  // Проверка в сознании ли перс сделавший закл
-                                    // на полёт и хождение по воде
-        SpellBuff *pBuf = &pParty->pPartyBuffs[Party_Spec_Motion_status_ids[i]];
-        if (!pBuf->expire_time) continue;
+    // Check if Fly/Water Walk caster can act
+    for (PARTY_BUFF_INDEX buffIdx : {PARTY_BUFF_WATER_WALK, PARTY_BUFF_FLY}) {
+        SpellBuff *pBuff = &pParty->pPartyBuffs[buffIdx];
+        if (!pBuff->expire_time.Valid()) {
+            continue;
+        }
 
-        if (!(pBuf->uFlags & 1)) {
-            if (!pPlayers[pBuf->uCaster]->CanAct()) {
-                pBuf->Reset();
-                if (Party_Spec_Motion_status_ids[i] == PARTY_BUFF_FLY)
+        if (!pBuff->isGMBuff) {
+            if (!pPlayers[pBuff->uCaster]->CanAct()) {
+                pBuff->Reset();
+                if (buffIdx == PARTY_BUFF_FLY) {
                     pParty->bFlying = false;
+                }
             }
         }
     }
@@ -1727,27 +1730,26 @@ void _494035_timed_effects__water_walking_damage__etc() {
     }
 }
 
-//----- (00493938) --------------------------------------------------------
 void RegeneratePartyHealthMana() {
-    int current_time = pParty->GetPlayingTime().GetMinutesFraction();
-    int last_reg_time = pParty->last_regenerated.GetMinutesFraction();
+    int cur_minutes = pParty->GetPlayingTime().GetMinutes();
+    int last_minutes = pParty->last_regenerated.GetMinutes();
 
-    if (current_time == last_reg_time)
+    if (cur_minutes == last_minutes) {
         return;
-
-    int testmin = last_reg_time + 5;
-    if (testmin >= 60) {  // hour tickover boundaries
-        testmin -= 60;
-        if (current_time >= 55) current_time -= 60;
     }
 
-    if (current_time >= testmin) {
-        int times_triggered = (current_time - last_reg_time) / 5;
+    bool is_5min_boundary = (cur_minutes % 5) == 0;
+
+    if (is_5min_boundary) {
+        //int times_triggered = (current_time - last_reg_time) / 5;
 
         // TODO: actually this looks like it never triggers.
         // we get cursed_times, which is a time the player was cursed since the start of the game (a very large number),
         // and compare it with times_triggered, which is a small number
 
+        // See #123 for discussion about this logic.
+        // Curse processing seems to be broken here.
+#if 0
         // chance to flight break due to a curse
         if (pParty->FlyActive()) {
             if (pParty->bFlying) {
@@ -1766,7 +1768,11 @@ void RegeneratePartyHealthMana() {
                 }
             }
         }
+#endif
 
+        // See #123 for discussion about this logic.
+        // And also current code seems to be broken because it plainly curses Water Walk caster.
+#if 0
         // chance to waterwalk drowning due to a curse
         if (pParty->WaterWalkActive()) {
             if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER) {
@@ -1779,6 +1785,36 @@ void RegeneratePartyHealthMana() {
                         pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;
                     }
                     pParty->pPlayers[caster].conditions.Set(Condition_Cursed, cursed_times);
+                }
+            }
+        }
+#endif
+
+        // Mana drain from flying
+        // GM does not drain
+        if (pParty->FlyActive() && !pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff) {
+            if (pParty->bFlying) {
+                int caster = pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1;
+                assert(caster >= 0);
+                if (pParty->pPlayers[caster].sMana > 0 && !engine->config->debug.AllMagic.Get()) {
+                    pParty->pPlayers[caster].sMana -= 1;
+                }
+            }
+        }
+
+        // Mana drain from water walk
+        // GM does not drain
+        if (pParty->WaterWalkActive() && !pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGMBuff) {
+            if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER) {
+                int caster = pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uCaster - 1;
+                int mana_drain = 1;
+                assert(caster >= 0);
+                // Vanilla bug: Water Walk drains mana with the same speed as Fly
+                if (engine->config->gameplay.FixWaterWalkManaDrain.Get() && ((cur_minutes % 20) != 0)) {
+                    mana_drain = 0;
+                }
+                if (pParty->pPlayers[caster].sMana > 0 && !engine->config->debug.AllMagic.Get()) {
+                    pParty->pPlayers[caster].sMana -= mana_drain;
                 }
             }
         }

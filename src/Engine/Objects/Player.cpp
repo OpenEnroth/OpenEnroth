@@ -7954,7 +7954,7 @@ Player::Player() {
         pPlayerBuffs[i].uPower = 0;
         pPlayerBuffs[i].expire_time.Reset();
         pPlayerBuffs[i].uCaster = 0;
-        pPlayerBuffs[i].uFlags = 0;
+        pPlayerBuffs[i].isGMBuff = 0;
     }
 
     pName[0] = 0;

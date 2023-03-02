@@ -1262,20 +1262,19 @@ int UseNPCSkill(NPCProf profession) {
                 pAudioPlayer->PlaySound(SOUND_fizzle, 0, 0, -1, 0, 0);
             } else {
                 int v19 = pOtherOverlayList->_4418B1(10008, 203, 0, 65536);
-                pParty->pPartyBuffs[PARTY_BUFF_FLY].Apply(
-                    GameTime(pParty->GetPlayingTime() + GameTime::FromHours(2)), PLAYER_SKILL_MASTERY_MASTER, 1,
-                    v19, 0);
-                pParty->pPartyBuffs[PARTY_BUFF_FLY].uFlags |= 1;
+                // Spell power was changed to 0 because it does not have meaning for this buff
+                pParty->pPartyBuffs[PARTY_BUFF_FLY]
+                    .Apply(pParty->GetPlayingTime() + GameTime::FromHours(2), PLAYER_SKILL_MASTERY_MASTER, 0, v19, 0);
+                pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff = true;
                 pAudioPlayer->PlaySound(SOUND_21fly03, 0, 0, -1, 0, 0);
             }
         } break;
 
         case WaterMaster: {
             int v20 = pOtherOverlayList->_4418B1(10005, 201, 0, 65536);
-            pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].Apply(
-                GameTime(pParty->GetPlayingTime() + GameTime::FromHours(3)), PLAYER_SKILL_MASTERY_MASTER, 0, v20,
-                0);
-            pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uFlags |= 1;
+            pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK]
+                .Apply(pParty->GetPlayingTime() + GameTime::FromHours(3), PLAYER_SKILL_MASTERY_MASTER, 0, v20, 0);
+            pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGMBuff = true;
             pAudioPlayer->PlaySound(SOUND_WaterWalk, 0, 0, -1, 0, 0);
         } break;
 

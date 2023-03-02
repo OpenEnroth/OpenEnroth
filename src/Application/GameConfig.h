@@ -157,6 +157,10 @@ namespace Application {
                                     "Treat clubs as maces. "
                                     "In vanilla clubs are using a separate hidden skill and can be equipped without learning the mace skill."};
 
+            Bool FixWaterWalkManaDrain = {this, "fix_water_walk_mana_drain", true,
+                                          "Fix water walk mana drain interval. "
+                                          "In vanilla water walk drains mana every 5 minutes but spell description says that mana drains every 20 minutes."};
+
          private:
             static int ValidateMaxFlightHeight(int max_flight_height) {
                 if (max_flight_height <= 0 || max_flight_height > 16192)

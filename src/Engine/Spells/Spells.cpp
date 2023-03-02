@@ -391,7 +391,7 @@ void SpellBuff::Reset() {
     uPower = 0;
     expire_time.Reset();
     uCaster = 0;
-    uFlags = 0;
+    isGMBuff = false;
     if (uOverlayID) {
         pOtherOverlayList->pOverlays[uOverlayID - 1].Reset();
         uOverlayID = 0;

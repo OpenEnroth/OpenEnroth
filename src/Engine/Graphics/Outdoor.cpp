@@ -1929,7 +1929,7 @@ void ODM_ProcessPartyActions() {
         bWaterWalk = true;
         *(short *)&stru_5E4C90_MapPersistVars._decor_events
              [20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uOverlayID + 119] |= 1;
-        if (!(pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uFlags & 1) &&
+        if (!pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGMBuff &&
             pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uCaster - 1].sMana <= 0)
             bWaterWalk = false;
     }
@@ -2032,7 +2032,7 @@ void ODM_ProcessPartyActions() {
 
                 pParty->bFlying = false;
                 if (engine->IsUnderwater() ||
-                    pParty->pPartyBuffs[PARTY_BUFF_FLY].uFlags & 1 ||
+                    pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff ||
                     (pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1].sMana > 0 ||
                     engine->config->debug.AllMagic.Get())) {
                     if (pParty->vPosition.z < engine->config->gameplay.MaxFlightHeight.Get() || hovering) {
@@ -2070,7 +2070,7 @@ void ODM_ProcessPartyActions() {
                 if (pParty->FlyActive() || engine->IsUnderwater()) {
                     pParty->bFlying = false;
                     if (engine->IsUnderwater() ||
-                        pParty->pPartyBuffs[PARTY_BUFF_FLY].uFlags & 1 ||
+                        pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff ||
                         (pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1].sMana > 0 ||
                         engine->config->debug.AllMagic.Get())) {
                         // *(int *)&pParty->pArtifactsFound[6972 *
