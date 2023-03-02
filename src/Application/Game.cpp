@@ -2587,6 +2587,7 @@ void Game::GameLoop() {
             }
             pAudioPlayer->UpdateSounds();
             // expire timed status messages
+            // TODO(pskelton): check tickcount usage here
             if (game_ui_status_bar_event_string_time_left != 0 && game_ui_status_bar_event_string_time_left < platform->tickCount()) {
                  GameUI_StatusBar_Clear();
             }

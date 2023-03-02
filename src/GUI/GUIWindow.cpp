@@ -734,6 +734,7 @@ void GUIWindow::InitializeGUI() {
 }
 
 void GUIWindow::DrawFlashingInputCursor(int uX, int uY, GUIFont *a2) {
+    // TODO(pskelton): check tickcount usage here
     if (platform->tickCount() % 1000 > 500) {
         DrawText(a2, {uX, uY}, 0, "_", 0, 0, 0);
     }

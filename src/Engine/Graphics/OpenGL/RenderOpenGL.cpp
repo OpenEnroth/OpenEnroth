@@ -4024,6 +4024,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
     glUniformMatrix4fv(glGetUniformLocation(outbuildshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
 
     glUniform1i(glGetUniformLocation(outbuildshader.ID, "waterframe"), GLint(this->hd_water_current_frame));
+    // TODO(pskelton): check tickcount usage here
     glUniform1i(glGetUniformLocation(outbuildshader.ID, "flowtimer"), GLint(platform->tickCount() >> 4));
 
     glUniform1f(glGetUniformLocation(outbuildshader.ID, "gamma"), gamma);
@@ -4553,6 +4554,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                             DrawIndoorSky(face->uNumVertices, uFaceID);
                             continue;
                         } else {
+                            // TODO(pskelton): check tickcount usage here
                             skymodtimex = (platform->tickCount() / 32.0f) - pCamera3D->vCameraPos.x;
                             skymodtimey = (platform->tickCount() / 32.0f) + pCamera3D->vCameraPos.y;
                         }
@@ -4701,6 +4703,7 @@ void RenderOpenGL::DrawIndoorFaces() {
 
         glUniform1f(glGetUniformLocation(bspshader.ID, "gamma"), gamma);
         glUniform1i(glGetUniformLocation(bspshader.ID, "waterframe"), GLint(this->hd_water_current_frame));
+        // TODO(pskelton): check tickcount usage here
         glUniform1i(glGetUniformLocation(bspshader.ID, "flowtimer"), GLint(platform->tickCount() >> 4));
 
         // set texture unit location

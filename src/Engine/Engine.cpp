@@ -1332,6 +1332,7 @@ unsigned int GetGravityStrength() {
 void GameUI_StatusBar_Update(bool force_hide) {
     if (force_hide ||
         game_ui_status_bar_event_string_time_left &&
+        // TODO(pskelton): check tickcount usage here
             platform->tickCount() >= game_ui_status_bar_event_string_time_left && !pEventTimer->bPaused) {
         game_ui_status_bar_event_string_time_left = 0;
     }

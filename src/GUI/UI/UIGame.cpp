@@ -203,6 +203,7 @@ extern std::map<InputAction, bool> key_map_conflicted;  // 506E6C
 //----- (00414D24) --------------------------------------------------------
 static unsigned int GameMenuUI_GetKeyBindingColor(InputAction action) {
     if (currently_selected_action_for_binding == action) {
+        // TODO(pskelton): check tickcount usage here
         if (platform->tickCount() % 1000 < 500)
             return ui_gamemenu_keys_key_selection_blink_color_1;
         else
@@ -1370,6 +1371,7 @@ void GameUI_DrawCharacterSelectionFrame() {
 
 //----- (0044162D) --------------------------------------------------------
 void GameUI_DrawPartySpells() {
+    // TODO(pskelton): check tickcount usage here
     unsigned int v0 = platform->tickCount() / 20;
     Image *spell_texture;  // [sp-4h] [bp-1Ch]@12
 

@@ -178,6 +178,7 @@ unsigned int FaceFlowTextureOffset(unsigned int uFaceID) {  // time texture offs
     Lights.pDeltaUV[0] = pIndoor->pFaceExtras[pIndoor->pFaces[uFaceID].uFaceExtraID].sTextureDeltaU;
     Lights.pDeltaUV[1] = pIndoor->pFaceExtras[pIndoor->pFaces[uFaceID].uFaceExtraID].sTextureDeltaV;
 
+    // TODO(pskelton): check tickcount usage here
     unsigned int offset = platform->tickCount() >> 3;
 
     if (pIndoor->pFaces[uFaceID].uAttributes & FACE_FlowDown) {
