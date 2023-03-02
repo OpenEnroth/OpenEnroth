@@ -996,9 +996,10 @@ int Player::GetDisarmTrap() {
 
 char Player::GetLearningPercent() {
     PLAYER_SKILL_LEVEL skill = GetActualSkillLevel(PLAYER_SKILL_LEARNING);
-    int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_LEARNING, 1, 2, 3, 5);
 
     if (skill) {
+        int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_LEARNING, 1, 2, 3, 5);
+
         return multiplier * skill + 9;
     } else {
         return 0;
