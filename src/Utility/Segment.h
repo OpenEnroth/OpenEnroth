@@ -86,29 +86,29 @@ class Segment {
     using reference = typename iterator::reference;
 
     constexpr Segment() {}
-    constexpr Segment(T first, T last) : first_(first), last_(last) {}
+    constexpr Segment(T first, T last) : _first(first), _last(last) {}
 
     constexpr iterator begin() const {
-        return iterator(first_);
+        return iterator(_first);
     }
 
     constexpr iterator end() const {
-        return iterator(last_) + 1;
+        return iterator(_last) + 1;
     }
 
     constexpr T front() const {
-        return first_;
+        return _first;
     }
 
     constexpr T back() const {
-        return last_;
+        return _last;
     }
 
     constexpr bool contains(T value) const {
-        return first_ <= value && value <= last_;
+        return _first <= value && value <= _last;
     }
 
  private:
-    T first_ = T();
-    T last_ = T();
+    T _first = T();
+    T _last = T();
 };

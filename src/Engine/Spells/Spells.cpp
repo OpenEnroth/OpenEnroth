@@ -458,19 +458,19 @@ void SpellStats::Initialize() {
         }
         test_string = strtok(NULL, "\r") + 1;
 
-        auto tokens = Tokenize(test_string, '\t');
+        auto tokens = tokenize(test_string, '\t');
 
-        pInfos[uSpellID].pName = RemoveQuotes(tokens[2]);
+        pInfos[uSpellID].pName = removeQuotes(tokens[2]);
         auto findResult = spellSchoolMaps.find(tokens[3]);
         pInfos[uSpellID].uSchool = findResult == spellSchoolMaps.end()
                                 ? SPELL_SCHOOL_NONE
                                 : findResult->second;
-        pInfos[uSpellID].pShortName = RemoveQuotes(tokens[4]);
-        pInfos[uSpellID].pDescription = RemoveQuotes(tokens[5]);
-        pInfos[uSpellID].pBasicSkillDesc = RemoveQuotes(tokens[6]);
-        pInfos[uSpellID].pExpertSkillDesc = RemoveQuotes(tokens[7]);
-        pInfos[uSpellID].pMasterSkillDesc = RemoveQuotes(tokens[8]);
-        pInfos[uSpellID].pGrandmasterSkillDesc = RemoveQuotes(tokens[9]);
+        pInfos[uSpellID].pShortName = removeQuotes(tokens[4]);
+        pInfos[uSpellID].pDescription = removeQuotes(tokens[5]);
+        pInfos[uSpellID].pBasicSkillDesc = removeQuotes(tokens[6]);
+        pInfos[uSpellID].pExpertSkillDesc = removeQuotes(tokens[7]);
+        pInfos[uSpellID].pMasterSkillDesc = removeQuotes(tokens[8]);
+        pInfos[uSpellID].pGrandmasterSkillDesc = removeQuotes(tokens[9]);
         pSpellDatas[uSpellID].stats |= strchr(tokens[10], 'm') || strchr(tokens[10], 'M') ? 1 : 0;
         pSpellDatas[uSpellID].stats |= strchr(tokens[10], 'e') || strchr(tokens[10], 'E') ? 2 : 0;
         pSpellDatas[uSpellID].stats |= strchr(tokens[10], 'c') || strchr(tokens[10], 'C') ? 4 : 0;

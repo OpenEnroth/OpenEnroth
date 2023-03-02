@@ -67,7 +67,7 @@ bool Localization::Initialize() {
                 string_end = true;
             } else {
                 if (step == 1)
-                    this->localization_strings[i] = RemoveQuotes(test_string);
+                    this->localization_strings[i] = removeQuotes(test_string);
             }
             ++step;
             test_string = tmp_pos + 1;
@@ -301,14 +301,14 @@ void Localization::InitializeSkillNames() {
         char *test_string = strtok(NULL, "\r") + 1;
 
         if (test_string != NULL && strlen(test_string) > 0) {
-            auto tokens = Tokenize(test_string, '\t');
+            auto tokens = tokenize(test_string, '\t');
             Assert(tokens.size() >= 6, "Invalid number of tokens");
 
-            this->skill_descriptions[i] = RemoveQuotes(tokens[1]);
-            this->skill_descriptions_normal[i] = RemoveQuotes(tokens[2]);
-            this->skill_descriptions_expert[i] = RemoveQuotes(tokens[3]);
-            this->skill_descriptions_master[i] = RemoveQuotes(tokens[4]);
-            this->skill_descriptions_grand[i] = RemoveQuotes(tokens[5]);
+            this->skill_descriptions[i] = removeQuotes(tokens[1]);
+            this->skill_descriptions_normal[i] = removeQuotes(tokens[2]);
+            this->skill_descriptions_expert[i] = removeQuotes(tokens[3]);
+            this->skill_descriptions_master[i] = removeQuotes(tokens[4]);
+            this->skill_descriptions_grand[i] = removeQuotes(tokens[5]);
         }
     }
 }
@@ -363,9 +363,9 @@ void Localization::InitializeClassNames() {
     strtok(this->class_desc_raw.data(), "\r");
     for (int i = 0; i < 36; ++i) {
         char *test_string = strtok(NULL, "\r") + 1;
-        auto tokens = Tokenize(test_string, '\t');
+        auto tokens = tokenize(test_string, '\t');
         Assert(tokens.size() == 3, "Invalid number of tokens");
-        class_desciptions[i] = RemoveQuotes(tokens[1]);
+        class_desciptions[i] = removeQuotes(tokens[1]);
     }
 }
 
@@ -441,7 +441,7 @@ void Localization::InitializeAttributeNames() {
     strtok(this->attribute_desc_raw.data(), "\r");
     for (int i = 0; i < 26; ++i) {
         char *test_string = strtok(NULL, "\r") + 1;
-        auto tokens = Tokenize(test_string, '\t');
+        auto tokens = tokenize(test_string, '\t');
         Assert(tokens.size() == 2, "Invalid number of tokens");
         switch (i) {
             case 0:
@@ -451,64 +451,64 @@ void Localization::InitializeAttributeNames() {
             case 4:
             case 5:
             case 6:
-                this->attribute_descriptions[i] = RemoveQuotes(tokens[1]);
+                this->attribute_descriptions[i] = removeQuotes(tokens[1]);
                 break;
             case 7:
-                pHealthPointsAttributeDescription = RemoveQuotes(tokens[1]);
+                pHealthPointsAttributeDescription = removeQuotes(tokens[1]);
                 break;
             case 8:
-                pArmourClassAttributeDescription = RemoveQuotes(tokens[1]);
+                pArmourClassAttributeDescription = removeQuotes(tokens[1]);
                 break;
             case 9:
-                pSpellPointsAttributeDescription = RemoveQuotes(tokens[1]);
+                pSpellPointsAttributeDescription = removeQuotes(tokens[1]);
                 break;
             case 10:
-                pPlayerConditionAttributeDescription = RemoveQuotes(tokens[1]);
+                pPlayerConditionAttributeDescription = removeQuotes(tokens[1]);
                 break;
             case 11:
-                pFastSpellAttributeDescription = RemoveQuotes(tokens[1]);
+                pFastSpellAttributeDescription = removeQuotes(tokens[1]);
                 break;
             case 12:
-                pPlayerAgeAttributeDescription = RemoveQuotes(tokens[1]);
+                pPlayerAgeAttributeDescription = removeQuotes(tokens[1]);
                 break;
             case 13:
-                pPlayerLevelAttributeDescription = RemoveQuotes(tokens[1]);
+                pPlayerLevelAttributeDescription = removeQuotes(tokens[1]);
                 break;
             case 14:
-                pPlayerExperienceAttributeDescription = RemoveQuotes(tokens[1]);
+                pPlayerExperienceAttributeDescription = removeQuotes(tokens[1]);
                 break;
             case 15:
-                pAttackBonusAttributeDescription = RemoveQuotes(tokens[1]);
+                pAttackBonusAttributeDescription = removeQuotes(tokens[1]);
                 break;
             case 16:
-                pAttackDamageAttributeDescription = RemoveQuotes(tokens[1]);
+                pAttackDamageAttributeDescription = removeQuotes(tokens[1]);
                 break;
             case 17:
-                pMissleBonusAttributeDescription = RemoveQuotes(tokens[1]);
+                pMissleBonusAttributeDescription = removeQuotes(tokens[1]);
                 break;
             case 18:
-                pMissleDamageAttributeDescription = RemoveQuotes(tokens[1]);
+                pMissleDamageAttributeDescription = removeQuotes(tokens[1]);
                 break;
             case 19:
-                pFireResistanceAttributeDescription = RemoveQuotes(tokens[1]);
+                pFireResistanceAttributeDescription = removeQuotes(tokens[1]);
                 break;
             case 20:
-                pAirResistanceAttributeDescription = RemoveQuotes(tokens[1]);
+                pAirResistanceAttributeDescription = removeQuotes(tokens[1]);
                 break;
             case 21:
-                pWaterResistanceAttributeDescription = RemoveQuotes(tokens[1]);
+                pWaterResistanceAttributeDescription = removeQuotes(tokens[1]);
                 break;
             case 22:
-                pEarthResistanceAttributeDescription = RemoveQuotes(tokens[1]);
+                pEarthResistanceAttributeDescription = removeQuotes(tokens[1]);
                 break;
             case 23:
-                pMindResistanceAttributeDescription = RemoveQuotes(tokens[1]);
+                pMindResistanceAttributeDescription = removeQuotes(tokens[1]);
                 break;
             case 24:
-                pBodyResistanceAttributeDescription = RemoveQuotes(tokens[1]);
+                pBodyResistanceAttributeDescription = removeQuotes(tokens[1]);
                 break;
             case 25:
-                pSkillPointsAttributeDescription = RemoveQuotes(tokens[1]);
+                pSkillPointsAttributeDescription = removeQuotes(tokens[1]);
                 break;
         }
     }

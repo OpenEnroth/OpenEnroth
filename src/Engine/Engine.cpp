@@ -2012,7 +2012,7 @@ void LoadLevel_InitializeLevelStr() {
 
     if (uLevelStrNumStrings > 0) {
         for (uint i = 0; i < uLevelStrNumStrings; ++i) {
-            if (RemoveQuotes(&pLevelStr[pLevelStrOffsets[i]]) !=
+            if (removeQuotes(&pLevelStr[pLevelStrOffsets[i]]) !=
                 &pLevelStr[pLevelStrOffsets[i]])
                 ++pLevelStrOffsets[i];
         }

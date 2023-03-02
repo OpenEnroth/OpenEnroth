@@ -112,9 +112,9 @@ void ItemTable::Initialize() {
     // Standard Bonuses by Group
     for (int i = 0; i < 24; ++i) {
         test_string = strtok(NULL, "\r") + 1;
-        auto tokens = Tokenize(test_string, '\t');
-        pEnchantments[i].pBonusStat = RemoveQuotes(tokens[0]);
-        pEnchantments[i].pOfName = RemoveQuotes(tokens[1]);
+        auto tokens = tokenize(test_string, '\t');
+        pEnchantments[i].pBonusStat = removeQuotes(tokens[0]);
+        pEnchantments[i].pOfName = removeQuotes(tokens[1]);
 
         int k = 2;
         for (ITEM_EQUIP_TYPE j : pEnchantments[i].to_item.indices())
@@ -134,7 +134,7 @@ void ItemTable::Initialize() {
     strtok(NULL, "\r");
     for (ITEM_TREASURE_LEVEL i : bonus_ranges.indices()) {  // counted from 1
         test_string = strtok(NULL, "\r") + 1;
-        auto tokens = Tokenize(test_string, '\t');
+        auto tokens = tokenize(test_string, '\t');
         Assert(tokens.size() == 4, "Invalid number of tokens");
         bonus_ranges[i].minR = atoi(tokens[2]);
         bonus_ranges[i].maxR = atoi(tokens[3]);
@@ -147,10 +147,10 @@ void ItemTable::Initialize() {
     strtok(NULL, "\r");
     for (ITEM_ENCHANTMENT i : pSpecialEnchantments.indices()) {
         test_string = strtok(NULL, "\r") + 1;
-        auto tokens = Tokenize(test_string, '\t');
+        auto tokens = tokenize(test_string, '\t');
         Assert(tokens.size() >= 17, "Invalid number of tokens");
-        pSpecialEnchantments[i].pBonusStatement = RemoveQuotes(tokens[0]);
-        pSpecialEnchantments[i].pNameAdd = RemoveQuotes(tokens[1]);
+        pSpecialEnchantments[i].pBonusStatement = removeQuotes(tokens[0]);
+        pSpecialEnchantments[i].pNameAdd = removeQuotes(tokens[1]);
 
         int k = 2;
         for (ITEM_EQUIP_TYPE j : pSpecialEnchantments[i].to_item_apply.indices())
@@ -179,15 +179,15 @@ void ItemTable::Initialize() {
     strtok(NULL, "\r");
     for (size_t line = 0; line < 799; line++) {
         test_string = strtok(NULL, "\r") + 1;
-        auto tokens = Tokenize(test_string, '\t');
+        auto tokens = tokenize(test_string, '\t');
 
         ITEM_TYPE item_counter = ITEM_TYPE(atoi(tokens[0]));
-        pItems[item_counter].pIconName = RemoveQuotes(tokens[1]);
-        pItems[item_counter].pName = RemoveQuotes(tokens[2]);
+        pItems[item_counter].pIconName = removeQuotes(tokens[1]);
+        pItems[item_counter].pName = removeQuotes(tokens[2]);
         pItems[item_counter].uValue = atoi(tokens[3]);
         pItems[item_counter].uEquipType = valueOr(equipStatMap, tokens[4], EQUIP_NONE);
         pItems[item_counter].uSkillType = valueOr(equipSkillMap, tokens[5], PLAYER_SKILL_MISC);
-        auto tokens2 = Tokenize(tokens[6], 'd');
+        auto tokens2 = tokenize(tokens[6], 'd');
         if (tokens2.size() == 2) {
             pItems[item_counter].uDamageDice = atoi(tokens2[0]);
             pItems[item_counter].uDamageRoll = atoi(tokens2[1]);
@@ -201,7 +201,7 @@ void ItemTable::Initialize() {
         pItems[item_counter].uDamageMod = atoi(tokens[7]);
         pItems[item_counter].uMaterial = valueOr(materialMap, tokens[8], MATERIAL_COMMON);
         pItems[item_counter].uItemID_Rep_St = atoi(tokens[9]);
-        pItems[item_counter].pUnidentifiedName = RemoveQuotes(tokens[10]);
+        pItems[item_counter].pUnidentifiedName = removeQuotes(tokens[10]);
         pItems[item_counter].uSpriteID = atoi(tokens[11]);
 
         pItems[item_counter]._additional_value = 0;
@@ -234,7 +234,7 @@ void ItemTable::Initialize() {
         }
         pItems[item_counter].uEquipX = atoi(tokens[14]);
         pItems[item_counter].uEquipY = atoi(tokens[15]);
-        pItems[item_counter].pDescription = RemoveQuotes(tokens[16]);
+        pItems[item_counter].pDescription = removeQuotes(tokens[16]);
     }
 
     pRndItemsTXT_Raw = pEvents_LOD->LoadCompressedTexture("rnditems.txt").string_view();
@@ -244,7 +244,7 @@ void ItemTable::Initialize() {
     strtok(NULL, "\r");
     for(size_t line = 0; line < 618; line++) {
         test_string = strtok(NULL, "\r") + 1;
-        auto tokens = Tokenize(test_string, '\t');
+        auto tokens = tokenize(test_string, '\t');
         Assert(tokens.size() > 7, "Invalid number of tokens");
 
         ITEM_TYPE item_counter = ITEM_TYPE(atoi(tokens[0]));
@@ -269,7 +269,7 @@ void ItemTable::Initialize() {
     strtok(NULL, "\r");
     for (int i = 0; i < 3; ++i) {
         test_string = strtok(NULL, "\r") + 1;
-        auto tokens = Tokenize(test_string, '\t');
+        auto tokens = tokenize(test_string, '\t');
         Assert(tokens.size() > 7, "Invalid number of tokens");
         switch (i) {
             case 0:
@@ -340,7 +340,7 @@ void ItemTable::LoadPotions() {
     std::string pPotionsTXT_Raw = std::string(pEvents_LOD->LoadCompressedTexture("potion.txt").string_view());
     test_string = strtok(pPotionsTXT_Raw.data(), "\r") + 1;
     while (test_string) {
-        tokens = Tokenize(test_string, '\t');
+        tokens = tokenize(test_string, '\t');
         if (!strcmp(tokens[0], "222")) break;
         test_string = strtok(NULL, "\r") + 1;
     }
@@ -368,7 +368,7 @@ void ItemTable::LoadPotions() {
             logger->Warning("Error Parsing Potion Table at Row: {} Column: {}", uRow, 0);
             return;
         }
-        tokens = Tokenize(test_string, '\t');
+        tokens = tokenize(test_string, '\t');
     }
 }
 
@@ -385,7 +385,7 @@ void ItemTable::LoadPotionNotes() {
     std::string pPotionNotesTXT_Raw = std::string(pEvents_LOD->LoadCompressedTexture("potnotes.txt").string_view());
     test_string = strtok(pPotionNotesTXT_Raw.data(), "\r") + 1;
     while (test_string) {
-        tokens = Tokenize(test_string, '\t');
+        tokens = tokenize(test_string, '\t');
         if (!strcmp(tokens[0], "222")) break;
         test_string = strtok(NULL, "\r") + 1;
     }
@@ -413,7 +413,7 @@ void ItemTable::LoadPotionNotes() {
             logger->Warning("Error Parsing Potion Table at Row: {} Column: {}", uRow, 0);
             return;
         }
-        tokens = Tokenize(test_string, '\t');
+        tokens = tokenize(test_string, '\t');
     }
 }
 

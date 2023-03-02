@@ -10,7 +10,7 @@
  * @param path                          Path as a string.
  * @return                              Path as `std::filesystem::path`.
  */
-std::filesystem::path ExpandUserPath(std::string path);
+std::filesystem::path expandUserPath(std::string path);
 
 /**
  * This function emulates the behavior of a case-insensitive filesystem. You pass in a path, this function traverses
@@ -24,4 +24,4 @@ std::filesystem::path ExpandUserPath(std::string path);
  * @param path                          Requested path.
  * @return                              Case-corrected path if it exists, original path otherwise.
  */
-std::filesystem::path MakeCaseInsensitivePath(std::filesystem::path path);
+std::filesystem::path makeCaseInsensitivePath(std::filesystem::path path);

@@ -72,10 +72,10 @@ void MapStats::Initialize() {
             strncpy(test_string, tmpString.c_str(), sizeof(test_string) - 1);
             switch (decode_step) {
                 case 1:
-                    pInfos[i].pName = RemoveQuotes(test_string);  // randoms crashes here  // got 1 too
+                    pInfos[i].pName = removeQuotes(test_string);  // randoms crashes here  // got 1 too
                     break;
                 case 2:
-                    pInfos[i].pFilename = ToLower(RemoveQuotes(test_string));
+                    pInfos[i].pFilename = toLower(removeQuotes(test_string));
                     break;
                 case 3:
                     pInfos[i].uNumResets = atoi(test_string);
@@ -117,7 +117,7 @@ void MapStats::Initialize() {
                     pInfos[i].EncM3percent = atoi(test_string);
                     break;
                 case 16:
-                    pInfos[i].pEncounterMonster1Texture = RemoveQuotes(test_string);
+                    pInfos[i].pEncounterMonster1Texture = removeQuotes(test_string);
                     break;
                 case 18:
                     pInfos[i].Dif_M1 = atoi(test_string);
@@ -142,7 +142,7 @@ void MapStats::Initialize() {
                     }
                     break;
                 case 20:
-                    pInfos[i].pEncounterMonster2Texture = RemoveQuotes(test_string);
+                    pInfos[i].pEncounterMonster2Texture = removeQuotes(test_string);
                     break;
                 case 22:
                     pInfos[i].Dif_M2 = atoi(test_string);
@@ -167,7 +167,7 @@ void MapStats::Initialize() {
                     }
                     break;
                 case 24:
-                    pInfos[i].pEncounterMonster3Texture = RemoveQuotes(test_string);
+                    pInfos[i].pEncounterMonster3Texture = removeQuotes(test_string);
                     break;
                 case 26:
                     pInfos[i].Dif_M3 = atoi(test_string);
@@ -230,7 +230,7 @@ int MapStats::sub_410D99_get_map_index(int a1) {
 MAP_TYPE MapStats::GetMapInfo(const std::string &Str2) {
     Assert(uNumMaps >= 2);
 
-    std::string map_name = ToLower(Str2);
+    std::string map_name = toLower(Str2);
 
     for (uint i = 1; i < uNumMaps; ++i) {
         if (pInfos[i].pFilename == map_name) {

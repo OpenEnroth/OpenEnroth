@@ -1699,9 +1699,11 @@ void TownHallDialog() {
     }
     case DIALOGUE_TOWNHALL_MESSAGE:
     {
-        current_npc_text = StringPrintf(bountyHunting_text,
-                fmt::format("\f{:05}{}\f{:05}", colorTable.PaleCanary.C16(), pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting].pName, colorTable.White.C16()).c_str(),
-                100 * pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting].uLevel);
+        current_npc_text = stringPrintf(bountyHunting_text,
+                                        fmt::format("\f{:05}{}\f{:05}", colorTable.PaleCanary.C16(),
+                                                    pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting].pName,
+                                                    colorTable.White.C16()).c_str(),
+                                        100 * pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting].uLevel);
         GUIWindow window = *pDialogueWindow;
         window.uFrameWidth = 458;
         window.uFrameZ = 457;
@@ -2897,11 +2899,10 @@ void SimpleHouseDialog() {
             v29 = pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting].pName;
             v31 = *(int *)v29;
 
-            current_npc_text = StringPrintf(
+            current_npc_text = stringPrintf(
                 bountyHunting_text,
-                fmt::format("\f{:05}{}\f{:05}", colorTable.PaleCanary.C16(), v31, colorTable.White.C16())
-                .c_str(),
-                100 * (uint8_t)v29[8]);
+                fmt::format("\f{:05}{}\f{:05}", colorTable.PaleCanary.C16(), v31, colorTable.White.C16()).c_str(),
+                100 * (uint8_t) v29[8]);
 
             pButton->sLabel.clear();
             continue;
@@ -3122,15 +3123,15 @@ void InitializeBuildingResidents() {
                     p2DEvents[i].uAnimationID = atoi(test_string);
                     break;
                 case 5:
-                    p2DEvents[i].pName = RemoveQuotes(test_string);
+                    p2DEvents[i].pName = removeQuotes(test_string);
                     break;
                 case 6:
                     p2DEvents[i].pProprieterName =
-                        RemoveQuotes(test_string);
+                        removeQuotes(test_string);
                     break;
                 case 7:
                     p2DEvents[i].pProprieterTitle =
-                        RemoveQuotes(test_string);
+                        removeQuotes(test_string);
                     break;
                 case 8:
                     p2DEvents[i].field_14 = atoi(test_string);
@@ -3170,7 +3171,7 @@ void InitializeBuildingResidents() {
                     p2DEvents[i]._quest_bit = atoi(test_string);
                     break;
                 case 23:
-                    p2DEvents[i].pEnterText = RemoveQuotes(test_string);
+                    p2DEvents[i].pEnterText = removeQuotes(test_string);
                     break;
                 }
             }

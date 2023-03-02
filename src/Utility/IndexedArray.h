@@ -11,7 +11,7 @@
 namespace detail {
 
 enum class LastIndex {
-    InvalidLastIndex
+    INVALID_LAST_INDEX
 };
 using enum LastIndex;
 
@@ -75,7 +75,7 @@ using enum LastIndex;
 template<
     class T,
     auto SizeOrFirstIndex,
-    auto LastIndex = detail::InvalidLastIndex,
+    auto LastIndex = detail::INVALID_LAST_INDEX,
     bool IsZeroBased = std::is_same_v<decltype(LastIndex), detail::LastIndex>,
     ptrdiff_t Size =
         IsZeroBased ?

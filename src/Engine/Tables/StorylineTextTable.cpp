@@ -24,11 +24,11 @@ void StorylineText::Initialize() {
 
     for (int i = 0; i < 28; ++i) {
         test_string = strtok(NULL, "\r") + 1;
-        auto tokens = Tokenize(test_string, '\t');
+        auto tokens = tokenize(test_string, '\t');
 
-        StoreLine[i + 1].pText = RemoveQuotes(tokens[1]);
+        StoreLine[i + 1].pText = removeQuotes(tokens[1]);
         StoreLine[i + 1].uTime =
             atoi(tokens[2]);  // strange but in text here string not digit
-        StoreLine[i + 1].pPageTitle = RemoveQuotes(tokens[3]);
+        StoreLine[i + 1].pPageTitle = removeQuotes(tokens[3]);
     }
 }

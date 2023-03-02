@@ -40,7 +40,7 @@ static std::vector<std::vector<std::string_view>> validateList = {
 };
 
 void SetDataPath(const std::string &data_path) {
-    s_data_path = ExpandUserPath(data_path);
+    s_data_path = expandUserPath(data_path);
 }
 
 std::string MakeDataPath(std::initializer_list<std::string_view> paths) {
@@ -50,7 +50,7 @@ std::string MakeDataPath(std::initializer_list<std::string_view> paths) {
         if (!p.empty())
             result /= p;
 
-    return MakeCaseInsensitivePath(result).string();
+    return makeCaseInsensitivePath(result).string();
 }
 
 bool validateDataPath(const std::string &data_path) {
@@ -62,7 +62,7 @@ bool validateDataPath(const std::string &data_path) {
                 path /= p;
         }
 
-        if (!std::filesystem::exists(MakeCaseInsensitivePath(path))) {
+        if (!std::filesystem::exists(makeCaseInsensitivePath(path))) {
             isGood = false;
             break;
         }

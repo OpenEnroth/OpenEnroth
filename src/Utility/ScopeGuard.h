@@ -16,14 +16,14 @@
 template<class T>
 class ScopeGuard {
  public:
-    explicit ScopeGuard(T &&callable): callable_(std::move(callable)) {}
+    explicit ScopeGuard(T &&callable): _callable(std::move(callable)) {}
 
     ~ScopeGuard() {
-        callable_();
+        _callable();
     }
 
  private:
-    T callable_;
+    T _callable;
 };
 
 /**
