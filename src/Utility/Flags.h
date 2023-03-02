@@ -35,51 +35,51 @@ class Flags {
     using underlying_type = std::underlying_type_t<Enum>;
 
     constexpr Flags(std::nullptr_t = 0) : // NOLINT: constructor is intentionally implicit
-        value_(0)
+        _value(0)
     {}
 
     constexpr Flags(enumeration_type value) : // NOLINT: constructor is intentionally implicit
-        value_(static_cast<underlying_type>(value))
+        _value(static_cast<underlying_type>(value))
     {}
 
     constexpr explicit Flags(underlying_type value) :
-        value_(value)
+        _value(value)
     {}
 
     constexpr explicit operator underlying_type() const {
-        return value_;
+        return _value;
     }
 
     constexpr friend Flags operator|(Flags l, Flags r) {
-        return Flags(l.value_ | r.value_);
+        return Flags(l._value | r._value);
     }
 
     constexpr friend Flags operator|(enumeration_type l, Flags r) {
-        return Flags(static_cast<underlying_type>(l) | r.value_);
+        return Flags(static_cast<underlying_type>(l) | r._value);
     }
 
     constexpr friend Flags operator|(Flags l, enumeration_type r) {
-        return Flags(l.value_ | static_cast<underlying_type>(r));
+        return Flags(l._value | static_cast<underlying_type>(r));
     }
 
     constexpr friend Flags operator&(Flags l, Flags r) {
-        return Flags(l.value_ & r.value_);
+        return Flags(l._value & r._value);
     }
 
     constexpr friend Flags operator&(enumeration_type l, Flags r) {
-        return Flags(static_cast<underlying_type>(l) & r.value_);
+        return Flags(static_cast<underlying_type>(l) & r._value);
     }
 
     constexpr friend Flags operator&(Flags l, enumeration_type r) {
-        return Flags(l.value_ & static_cast<underlying_type>(r));
+        return Flags(l._value & static_cast<underlying_type>(r));
     }
 
     constexpr friend bool operator==(Flags l, Flags r) {
-        return l.value_ == r.value_;
+        return l._value == r._value;
     }
 
     constexpr friend bool operator==(enumeration_type l, Flags r) {
-        return static_cast<underlying_type>(l) == r.value_;
+        return static_cast<underlying_type>(l) == r._value;
     }
 
     constexpr Flags& operator&=(Flags mask) {
@@ -103,11 +103,11 @@ class Flags {
     }
 
     constexpr Flags operator~() const {
-        return Flags(~value_);
+        return Flags(~_value);
     }
 
     constexpr bool operator!() const {
-        return !value_;
+        return !_value;
     }
 
     /**
@@ -125,11 +125,11 @@ class Flags {
      * @returns                         Whether there are no flags set.
      */
     constexpr operator fake_bool() const {
-        return value_ ? &fake_true : nullptr;
+        return _value ? &fake_true : nullptr;
     }
 
  private:
-    underlying_type value_;
+    underlying_type _value;
 };
 
 

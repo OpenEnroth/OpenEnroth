@@ -449,7 +449,7 @@ void AudioPlayer::LoadAudioSnd() {
         header.uFileOffset = header_mm7.uFileOffset;
         header.uCompressedSize = header_mm7.uCompressedSize;
         header.uDecompressedSize = header_mm7.uDecompressedSize;
-        mSoundHeaders[ToLower(header_mm7.pSoundName)] = header;
+        mSoundHeaders[toLower(header_mm7.pSoundName)] = header;
     }
 }
 
@@ -480,7 +480,7 @@ bool AudioPlayer::FindSound(const std::string &pName, AudioPlayer::SoundHeader *
         return false;
     }
 
-    std::map<std::string, SoundHeader>::iterator it = mSoundHeaders.find(ToLower(pName));
+    std::map<std::string, SoundHeader>::iterator it = mSoundHeaders.find(toLower(pName));
     if (it == mSoundHeaders.end()) {
         return false;
     }

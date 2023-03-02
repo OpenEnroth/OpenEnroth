@@ -215,7 +215,7 @@ int ParseMissleAttackType(const char *missle_attack_str) {
 }
 
 int ParseSpecialAttack(char *spec_att_str) {
-    std::string tmp = ToLower(spec_att_str);
+    std::string tmp = toLower(spec_att_str);
 
     // TODO(captainurist): we're getting strings like "Disease1" here, and they are not handled by the code below.
 
@@ -439,7 +439,7 @@ void MonsterStats::InitializePlacements() {
             *tmp_pos = 0;
             if (temp_str_len) {
                 if (decode_step == 1)
-                    pPlaceStrings[i] = RemoveQuotes(test_string);
+                    pPlaceStrings[i] = removeQuotes(test_string);
             } else {
                 break_loop = true;
             }
@@ -494,11 +494,11 @@ void MonsterStats::Initialize() {
                         pInfos[curr_rec_num].uID = curr_rec_num;
                         break;
                     case 1:
-                        pInfos[curr_rec_num].pName = RemoveQuotes(test_string);
+                        pInfos[curr_rec_num].pName = removeQuotes(test_string);
                         break;
                     case 2:
                         pInfos[curr_rec_num].pPictureName =
-                            RemoveQuotes(test_string);
+                            removeQuotes(test_string);
                         break;
                     case 3:
                         pInfos[curr_rec_num].uLevel = atoi(test_string);

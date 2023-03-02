@@ -916,34 +916,34 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
 
         switch (achieved_awards[i]) {
             case Award_Arena_PageWins:
-                str = StringPrintf(v6, pParty->uNumArenaPageWins);
+                str = stringPrintf(v6, pParty->uNumArenaPageWins);
                 break;
             case Award_Arena_SquireWins:
-                str = StringPrintf(v6, pParty->uNumArenaSquireWins);
+                str = stringPrintf(v6, pParty->uNumArenaSquireWins);
                 break;
             case Award_Arena_KnightWins:
-                str = StringPrintf(v6, pParty->uNumArenaKnightWins);
+                str = stringPrintf(v6, pParty->uNumArenaKnightWins);
                 break;
             case Award_Arena_LordWins:
-                str = StringPrintf(v6, pParty->uNumArenaLordWins);
+                str = stringPrintf(v6, pParty->uNumArenaLordWins);
                 break;
             case Award_ArcomageWins:
-                str = StringPrintf(v6, pParty->uNumArcomageWins);
+                str = stringPrintf(v6, pParty->uNumArcomageWins);
                 break;
             case Award_ArcomageLoses:
-                str = StringPrintf(v6, pParty->uNumArcomageLoses);
+                str = stringPrintf(v6, pParty->uNumArcomageLoses);
                 break;
             case Award_Deaths:
-                str = StringPrintf(v6, pParty->uNumDeaths);
+                str = stringPrintf(v6, pParty->uNumDeaths);
                 break;
             case Award_BountiesCollected:
-                str = StringPrintf(v6, pParty->uNumBountiesCollected);
+                str = stringPrintf(v6, pParty->uNumBountiesCollected);
                 break;
             case Award_Fine:
-                str = StringPrintf(v6, pParty->uFine);
+                str = stringPrintf(v6, pParty->uFine);
                 break;
             case Award_PrisonTerms:
-                str = StringPrintf(v6, pParty->uNumPrisonTerms);
+                str = stringPrintf(v6, pParty->uNumPrisonTerms);
                 break;
             default:
                 break;
@@ -1661,7 +1661,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
     if (player->GetMaxHealth() >= 1000)
         text_format = "%s\f%05u\r388%d\f00000 / %d\n";
     pY += 2 * pFontArrus->GetHeight() + 5;
-    auto str9 = StringPrintf(text_format, localization->GetString(LSTR_HIT_POINTS),
+    auto str9 = stringPrintf(text_format, localization->GetString(LSTR_HIT_POINTS),
                              UI_GetHealthManaAndOtherQualitiesStringColor(
                                  player->sHealth, player->GetMaxHealth()),
                              player->sHealth, player->GetMaxHealth());
@@ -1671,7 +1671,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
     if (player->GetMaxMana() >= 1000)
         text_format = "%s\f%05u\r388%d\f00000 / %d\n";
     pY += pFontArrus->GetHeight() - 2;
-    auto str10 = StringPrintf(text_format, localization->GetString(LSTR_SPELL_POINTS),
+    auto str10 = stringPrintf(text_format, localization->GetString(LSTR_SPELL_POINTS),
                               UI_GetHealthManaAndOtherQualitiesStringColor(player->sMana, player->GetMaxMana()),
                               player->sMana, player->GetMaxMana());
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0, str10);
@@ -1703,7 +1703,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
     text_format = Stat_string_format_2_column_less_100;
     if (player->GetActualAge() > 99)
         text_format = Stat_string_format_2_column_over_100;
-    auto str14 = StringPrintf(text_format, localization->GetString(LSTR_AGE),
+    auto str14 = stringPrintf(text_format, localization->GetString(LSTR_AGE),
                               UI_GetHealthManaAndOtherQualitiesStringColor(
                                   player->GetActualAge(), player->GetBaseAge()),
                               player->GetActualAge(), player->GetBaseAge());
@@ -1715,7 +1715,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
 
     pY += pFontArrus->GetHeight() - 2;
     auto str15 =
-        StringPrintf(text_format, localization->GetString(LSTR_LEVEL),
+        stringPrintf(text_format, localization->GetString(LSTR_LEVEL),
                      UI_GetHealthManaAndOtherQualitiesStringColor(
                          player->GetActualLevel(), player->GetBaseLevel()),
                      player->GetActualLevel(), player->GetBaseLevel());
@@ -1757,7 +1757,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
         player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE) > 99)
         text_format = Stat_string_format_2_column_over_100;
     pY += 2 * pFontArrus->GetHeight() - 4;
-    auto str18 = StringPrintf(
+    auto str18 = stringPrintf(
         text_format, localization->GetSpellSchoolName(0),
         UI_GetHealthManaAndOtherQualitiesStringColor(
             player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE),
@@ -1771,7 +1771,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
         player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_AIR) > 99)
         text_format = Stat_string_format_2_column_over_100;
     pY += pFontArrus->GetHeight() - 2;
-    auto str19 = StringPrintf(
+    auto str19 = stringPrintf(
         text_format, localization->GetSpellSchoolName(1),
         UI_GetHealthManaAndOtherQualitiesStringColor(
             player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR),
@@ -1785,7 +1785,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
         player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_WATER) > 99)
         text_format = Stat_string_format_2_column_over_100;
     pY += pFontArrus->GetHeight() - 2;
-    auto str20 = StringPrintf(
+    auto str20 = stringPrintf(
         text_format, localization->GetSpellSchoolName(2),
         UI_GetHealthManaAndOtherQualitiesStringColor(
             player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER),
@@ -1798,7 +1798,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
     if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH) > 99)
         text_format = Stat_string_format_2_column_over_100;
     pY += pFontArrus->GetHeight() - 2;
-    auto str21 = StringPrintf(
+    auto str21 = stringPrintf(
         text_format, localization->GetSpellSchoolName(3),
         UI_GetHealthManaAndOtherQualitiesStringColor(
             player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH),
@@ -1812,7 +1812,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
         player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) > 99)
         text_format = Stat_string_format_2_column_over_100;
     pY += pFontArrus->GetHeight() - 2;
-    auto str22 = StringPrintf(
+    auto str22 = stringPrintf(
         text_format, localization->GetSpellSchoolName(4),
         UI_GetHealthManaAndOtherQualitiesStringColor(
             player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND),
@@ -1821,7 +1821,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
         player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND));
     if (player->classType == PLAYER_CLASS_LICH &&
         player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) == 200) {
-        str22 = StringPrintf(
+        str22 = stringPrintf(
             Stat_string_format_2_column_text, localization->GetString(LSTR_MIND),
             UI_GetHealthManaAndOtherQualitiesStringColor(
                 player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND),
@@ -1836,7 +1836,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
         text_format = Stat_string_format_2_column_over_100;
     pY += pFontArrus->GetHeight() - 2;
     int it = player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY);
-    auto str23 = StringPrintf(
+    auto str23 = stringPrintf(
         text_format, localization->GetSpellSchoolName(6),
         UI_GetHealthManaAndOtherQualitiesStringColor(
             player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY),
@@ -1845,7 +1845,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
         player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY));
     if (player->classType == PLAYER_CLASS_LICH &&
         player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) == 200) {
-        str23 = StringPrintf(
+        str23 = stringPrintf(
             Stat_string_format_2_column_text, localization->GetString(LSTR_BODY),
             UI_GetHealthManaAndOtherQualitiesStringColor(
                 player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY),

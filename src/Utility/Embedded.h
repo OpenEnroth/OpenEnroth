@@ -11,16 +11,16 @@ template<class T>
 class Embedded {
  public:
     template<class... Args>
-    explicit Embedded(Args &&...args): data_(std::forward<Args>(args)...) {}
+    explicit Embedded(Args &&...args): _data(std::forward<Args>(args)...) {}
 
     T &get() {
-        return data_;
+        return _data;
     }
 
     const T &get() const {
-        return data_;
+        return _data;
     }
 
  private:
-    T data_;
+    T _data;
 };

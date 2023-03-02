@@ -15,13 +15,13 @@ static std::string HomePath() {
     return std::string();
 }
 
-std::filesystem::path ExpandUserPath(std::string path) {
+std::filesystem::path expandUserPath(std::string path) {
     if (path.starts_with("~/"))
         return std::filesystem::path(HomePath()) / path.substr(2);
     return path;
 }
 
-std::filesystem::path MakeCaseInsensitivePath(std::filesystem::path path) {
+std::filesystem::path makeCaseInsensitivePath(std::filesystem::path path) {
     if (path.empty())
         return path;
 

@@ -4,13 +4,13 @@
 #include <string>
 #include <vector>
 
-std::string StringPrintf(const char *fmt, ...); // TODO(captainurist): drop!
-std::string ToLower(std::string_view text);
-std::string ToUpper(std::string_view text);
-std::vector<char*> Tokenize(char* input, const char separator);
+std::string stringPrintf(const char *fmt, ...); // TODO(captainurist): drop!
+std::string toLower(std::string_view text);
+std::string toUpper(std::string_view text);
+std::vector<char*> tokenize(char* input, const char separator);
 
 //----- (00452C30) --------------------------------------------------------
-inline char *RemoveQuotes(char *str) {
+inline char *removeQuotes(char *str) {
     if (*str == '"') {
         str[strlen(str) - 1] = 0;
         return str + 1;
@@ -18,7 +18,7 @@ inline char *RemoveQuotes(char *str) {
     return str;
 }
 
-inline std::string TrimRemoveQuotes(std::string str) {
+inline std::string trimRemoveQuotes(std::string str) {
     while (str.length() > 0 && (str.at(0) == ' ' || str.at(0) == '"')) {
         str.erase(0, 1);
     }

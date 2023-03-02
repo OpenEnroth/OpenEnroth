@@ -998,7 +998,7 @@ LABEL_47:
                     if (v133 == 1) OnMapLeave();
                     return;
                 case EVENT_ShowMovie:
-                    movieName = TrimRemoveQuotes((char *)&_evt->v7);
+                    movieName = trimRemoveQuotes((char *) &_evt->v7);
                     if (movieName.length() == 0) {
                         ++curr_seq_num;
                         break;

@@ -23,7 +23,7 @@ bool detail::EnumSerializationTable::tryDeserialize(std::string_view src, uint64
     };
 
     if (_caseSensitivity == CASE_INSENSITIVE) {
-        return DoTryDeserialize(ToLower(src), dst);
+        return DoTryDeserialize(toLower(src), dst);
     } else {
         return DoTryDeserialize(src, dst);
     }
@@ -109,7 +109,7 @@ void detail::EnumSerializationTable::insert(uint64_t value, std::string_view nam
 
     std::string storedName;
     if (_caseSensitivity == CASE_INSENSITIVE) {
-        storedName = ToLower(name);
+        storedName = toLower(name);
     } else {
         storedName = name;
     }

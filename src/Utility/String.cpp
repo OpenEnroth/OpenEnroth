@@ -29,7 +29,7 @@ static std::string_view ToCharStringView(std::u8string_view s) {
     return std::string_view(reinterpret_cast<const char *>(s.data()), s.size());
 }
 
-std::string StringPrintf(const char *fmt, ...) {
+std::string stringPrintf(const char *fmt, ...) {
     int size = 1024;
     char *buffer = new char[size];
 
@@ -50,7 +50,7 @@ std::string StringPrintf(const char *fmt, ...) {
     return ret;
 }
 
-std::vector<char *> Tokenize(char *input, const char separator) {
+std::vector<char *> tokenize(char *input, const char separator) {
     std::vector<char *> retVect;
     retVect.push_back(input);
     while (*input) {
@@ -63,13 +63,13 @@ std::vector<char *> Tokenize(char *input, const char separator) {
     return retVect;
 }
 
-std::string ToLower(std::string_view text) {
+std::string toLower(std::string_view text) {
     std::string result(text);
     std::transform(result.begin(), result.end(), result.begin(), ::tolower);
     return result;
 }
 
-std::string ToUpper(std::string_view text) {
+std::string toUpper(std::string_view text) {
     std::string result(text);
     std::transform(result.begin(), result.end(), result.begin(), ::toupper);
     return result;

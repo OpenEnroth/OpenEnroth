@@ -137,7 +137,7 @@ void NPCStats::InitializeNPCText() {
             *tmp_pos = 0;
             if (temp_str_len) {
                 if (decode_step == 1)
-                    pNPCTopics[i].pText = RemoveQuotes(test_string);
+                    pNPCTopics[i].pText = removeQuotes(test_string);
             } else {
                 break_loop = true;
             }
@@ -164,7 +164,7 @@ void NPCStats::InitializeNPCText() {
             *tmp_pos = 0;
             if (temp_str_len) {
                 if (decode_step == 1)
-                    pNPCTopics[i].pTopic = RemoveQuotes(test_string);
+                    pNPCTopics[i].pTopic = removeQuotes(test_string);
             } else {
                 break_loop = true;
             }
@@ -261,7 +261,7 @@ void NPCStats::InitializeNPCData() {
             if (temp_str_len) {  // i+1
                 switch (decode_step) {
                     case 1:
-                        pNPCUnicNames[i] = RemoveQuotes(test_string);
+                        pNPCUnicNames[i] = removeQuotes(test_string);
                         pNPCData[i + 1].pName = pNPCUnicNames[i];
                         break;
                     case 2:
@@ -324,11 +324,11 @@ void NPCStats::InitializeNPCData() {
                 switch (decode_step) {
                     case 1:
                         pNPCGreetings[i].pGreetings[0] =
-                            RemoveQuotes(test_string);
+                            removeQuotes(test_string);
                         break;
                     case 2:
                         pNPCGreetings[i].pGreetings[1] =
-                            RemoveQuotes(test_string);
+                            removeQuotes(test_string);
                         break;
                 }
             }
@@ -383,7 +383,7 @@ void NPCStats::InitializeNPCData() {
             *tmp_pos = 0;
             if (temp_str_len) {  // i+1
                 if (decode_step == 1)
-                    pCatchPhrases[i] = RemoveQuotes(test_string);
+                    pCatchPhrases[i] = removeQuotes(test_string);
             }
             ++decode_step;
             test_string = tmp_pos + 1;
@@ -436,9 +436,9 @@ void NPCStats::Initialize() {
                 if (temp_str_len) {
                     *tmp_pos = 0;
                     if (decode_step == 0)
-                        pNPCNames[i][0] = RemoveQuotes(test_string);
+                        pNPCNames[i][0] = removeQuotes(test_string);
                     else if (decode_step == 1)
-                        pNPCNames[i][1] = RemoveQuotes(test_string);
+                        pNPCNames[i][1] = removeQuotes(test_string);
                 } else {
                     if ((decode_step == 1) && (!uNumNPCNames[1]))
                         uNumNPCNames[1] = i;
@@ -480,17 +480,17 @@ void NPCStats::Initialize() {
                         pProfessions[i].uHirePrice = atoi(test_string);
                         break;
                     case 3:
-                        pProfessions[i].pActionText = RemoveQuotes(test_string);
+                        pProfessions[i].pActionText = removeQuotes(test_string);
                         break;
                     case 4:
-                        pProfessions[i].pBenefits = RemoveQuotes(test_string);
+                        pProfessions[i].pBenefits = removeQuotes(test_string);
                         break;
                     case 5:
-                        pProfessions[i].pJoinText = RemoveQuotes(test_string);
+                        pProfessions[i].pJoinText = removeQuotes(test_string);
                         break;
                     case 6:
                         pProfessions[i].pDismissText =
-                            RemoveQuotes(test_string);
+                            removeQuotes(test_string);
                 }
             } else {
                 if (!decode_step) break_loop = true;
@@ -732,7 +732,7 @@ void InitializeAwards() {
             *tmp_pos = 0;
             if (temp_str_len) {
                 if (decode_step == 1)
-                    pAwards[i].pText = RemoveQuotes(test_string);
+                    pAwards[i].pText = removeQuotes(test_string);
                 else if (decode_step == 2)
                     pAwards[i].uPriority = atoi(test_string);
             } else {
@@ -771,7 +771,7 @@ void InitializeScrolls() {
             if (*tmp_pos == 0) break_loop = true;
             *tmp_pos = 0;
             if (temp_str_len) {
-                if (decode_step == 1) pScrolls[i] = RemoveQuotes(test_string);
+                if (decode_step == 1) pScrolls[i] = removeQuotes(test_string);
             } else {
                 break_loop = true;
             }
@@ -810,16 +810,16 @@ void InitializeMerchants() {
             if (temp_str_len) {
                 switch (decode_step) {
                     case 1:
-                        pMerchantsBuyPhrases[i] = RemoveQuotes(test_string);
+                        pMerchantsBuyPhrases[i] = removeQuotes(test_string);
                         break;
                     case 2:
-                        pMerchantsSellPhrases[i] = RemoveQuotes(test_string);
+                        pMerchantsSellPhrases[i] = removeQuotes(test_string);
                         break;
                     case 3:
-                        pMerchantsRepairPhrases[i] = RemoveQuotes(test_string);
+                        pMerchantsRepairPhrases[i] = removeQuotes(test_string);
                         break;
                     case 4:
-                        pMerchantsIdentifyPhrases[i] = RemoveQuotes(test_string);
+                        pMerchantsIdentifyPhrases[i] = removeQuotes(test_string);
                         break;
                 }
             } else {
@@ -860,7 +860,7 @@ void InitializeTransitions() {
             *tmp_pos = 0;
             if (temp_str_len) {
                 if (decode_step == 1)
-                    pTransitionStrings[i + 1] = RemoveQuotes(test_string);
+                    pTransitionStrings[i + 1] = removeQuotes(test_string);
             } else {
                 break_loop = true;
             }
@@ -900,7 +900,7 @@ void InitializeAutonotes() {
             if (temp_str_len) {
                 switch (decode_step) {
                     case 1:
-                        pAutonoteTxt[i + 1].pText = RemoveQuotes(test_string);
+                        pAutonoteTxt[i + 1].pText = removeQuotes(test_string);
                         break;
                     case 2: {
                         if (iequals(test_string, "potion")) {
@@ -965,7 +965,7 @@ void InitializeQuests() {
             *tmp_pos = 0;
             if (temp_str_len) {
                 if (decode_step == 1)
-                    pQuestTable[i + 1] = RemoveQuotes(test_string);
+                    pQuestTable[i + 1] = removeQuotes(test_string);
             } else {
                 break_loop = true;
             }

@@ -966,7 +966,7 @@ void CreateScrollWindow() {
 
     char *v1 = pItemTable->pItems[pGUIWindow_ScrollWindow->scroll_type].pName;
 
-    a1.DrawTitleText(pFontCreate, 0, 0, 0, StringPrintf(format_4E2D80, colorTable.PaleCanary.C16(), v1), 3);
+    a1.DrawTitleText(pFontCreate, 0, 0, 0, stringPrintf(format_4E2D80, colorTable.PaleCanary.C16(), v1), 3);
     a1.DrawText(pFontSmallnum, {1, pFontCreate->GetHeight() - 3}, 0, pScrolls[pGUIWindow_ScrollWindow->scroll_type], 0, 0, 0);
 }
 
@@ -1563,8 +1563,9 @@ void OracleDialogue() {
     if (item_id != ITEM_NULL) {
         pParty->pPlayers[0].AddVariable(VAR_PlayerItemInHands, std::to_underlying(item_id));
         // display "Here's %s that you lost. Be careful"
-        current_npc_text = StringPrintf(pNPCTopics[666].pText,
-            StringPrintf("\f%05d%s\f00000", colorTable.Jonquil.C16(), pItemTable->pItems[item_id].pUnidentifiedName).c_str());
+        current_npc_text = stringPrintf(pNPCTopics[666].pText,
+                                        stringPrintf("\f%05d%s\f00000", colorTable.Jonquil.C16(),
+                                                     pItemTable->pItems[item_id].pUnidentifiedName).c_str());
     }
 
     // missing item is lich jar and we need to bind soul vessel to lich class character

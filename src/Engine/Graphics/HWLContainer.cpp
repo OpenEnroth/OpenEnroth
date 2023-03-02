@@ -55,7 +55,7 @@ bool HWLContainer::Open(const std::string &pFilename) {
         fread(tmpName, 20, 1, pFile);
         tmpName[20] = 0;
         HWLNode node;
-        node.sName = ToLower(std::string(tmpName));
+        node.sName = toLower(std::string(tmpName));
         node.uOffset = 0;
         vNodes.push_back(node);
     }
@@ -92,7 +92,7 @@ HWLTexture *HWLContainer::LoadTexture(const std::string &pName) {
         return nullptr;
     }
 
-    std::map<std::string, size_t>::iterator it = mNodes.find(ToLower(pName));
+    std::map<std::string, size_t>::iterator it = mNodes.find(toLower(pName));
     if (it == mNodes.end()) {
         return nullptr;
     }

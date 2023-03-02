@@ -329,7 +329,7 @@ void GUIWindow_Dialogue::Update() {
             pButton->sLabel = localization->GetString(LSTR_MORE_INFORMATION);
         } else if (pButton->msg_param == DIALOGUE_HIRE_FIRE) {
             if (pNPC->Hired()) {
-                pButton->sLabel = StringPrintf(
+                pButton->sLabel = stringPrintf(
                     localization->GetString(LSTR_HIRE_RELEASE), pNPC->pName.c_str()
                 );
             } else {
