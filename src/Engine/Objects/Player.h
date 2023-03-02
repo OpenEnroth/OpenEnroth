@@ -264,6 +264,12 @@ struct Player {
     int GetMerchant();
     int GetPerception();
     int GetDisarmTrap();
+
+    /**
+     * Get percentage bonus for character EXP received.
+     *
+     * @offset 0x491317
+     */
     char GetLearningPercent();
     bool CanFitItem(unsigned int uSlot, ITEM_TYPE uItemID);
     int FindFreeInventoryListSlot();

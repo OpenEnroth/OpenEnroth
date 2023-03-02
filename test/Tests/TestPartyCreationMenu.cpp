@@ -336,3 +336,15 @@ GAME_TEST(Issue, Issue331) {
     // Assert when traveling by horse caused by out of bound access to pObjectList->pObjects
     test->playTraceFromTestData("issue_331.mm7", "issue_331.json");
 }
+
+static void check395exp( std::initializer_list<std::pair<int, int>> playerexppairs) {
+    for (auto pair : playerexppairs) {
+        EXPECT_EQ(pParty->pPlayers[pair.first].uExperience, pair.second);
+    }
+}
+
+GAME_TEST(Issue, Issue395) {
+    // Check that learning skill works as intended
+    test->playTraceFromTestData("issue_395.mm7", "issue_395.json", []() { check395exp({ {0, 100}, {1, 100}, {2, 100}, {3, 100} }); });
+    check395exp({ {0, 214}, {1, 228}, {2, 237}, {3, 258} });
+}
