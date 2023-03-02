@@ -2673,7 +2673,7 @@ void Game::GameLoop() {
                 } else {
                     pParty->vPosition.x = 12552;  // respawn on emerald isle
                     pParty->vPosition.y = 1816;
-                    pParty->vPosition.z = 0;
+                    pParty->vPosition.z = 193;
                     pParty->sRotationZ = 512;
                     pLocationName = config->gameplay.StartingMap.Get().c_str();
                 }

@@ -100,7 +100,7 @@ void Party::Zero() {
     field_6E4_set0_unused = 0;
     uFallSpeed = 0;
     field_6EC_set0_unused = 0;
-    sPartyPrevZ = 0;
+    sPartySavedFlightZ = 0;
     floor_face_pid = 0;
     walk_sound_timer = 0;
     _6FC_water_lava_timer = 0;
