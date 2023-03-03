@@ -1,7 +1,6 @@
 #include "EngineController.h"
 
 #include <cassert>
-#include <stdexcept>
 #include <filesystem>
 #include <utility>
 #include <thread>
@@ -19,7 +18,7 @@
 
 #include "Platform/PlatformEvents.h"
 
-#include "Utility/Format.h"
+#include "Utility/Exception.h"
 
 EngineController::EngineController(EngineControlStateHandle state): _state(std::move(state)) {}
 
@@ -150,7 +149,7 @@ void EngineController::skipLoadingScreen() {
         tick(1);
         steps++;
         if (steps >= 128)
-            throw std::runtime_error("Can't skip a non-existent loading screen");
+            throw Exception("Can't skip a non-existent loading screen");
     }
     while (pGameLoadingUI_ProgressBar->IsActive())
         tick(1);
@@ -216,7 +215,7 @@ GUIButton *EngineController::existingButton(std::string_view buttonId) {
 
     GUIButton *result = findButton(buttonId);
     if (!result)
-        throw std::runtime_error(fmt::format("GUI button '{}' not found", buttonId));
+        throw Exception("GUI button '{}' not found", buttonId);
 
     auto checkButton = [](GUIButton *button) {
         Pointi point = Pointi(button->uX + button->uWidth / 2, button->uY + button->uHeight / 2);
@@ -225,7 +224,7 @@ GUIButton *EngineController::existingButton(std::string_view buttonId) {
             for (GUIButton *otherButton : window->vButtons) {
                 if (otherButton->Contains(point.x, point.y)) {
                     if (button != otherButton)
-                        throw std::runtime_error(fmt::format("Coundn't press GUI button '{}' because it's overlapping with another GUI button", button->id));
+                        throw Exception("Coundn't press GUI button '{}' because it's overlapping with another GUI button", button->id);
                     return;
                 }
             }

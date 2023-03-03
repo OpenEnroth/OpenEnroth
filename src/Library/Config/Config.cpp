@@ -4,21 +4,20 @@
 #include <mini/ini.h>
 
 #include <cassert>
-#include <stdexcept>
 #include <filesystem>
 #include <string>
 
 #include "Utility/MapAccess.h"
-#include "Utility/Format.h"
+#include "Utility/Exception.h"
 
 void Config::Load(const std::string &path) {
     if (!std::filesystem::exists(path))
-        throw std::runtime_error(fmt::format("Config file '{}' doesn't exist"_cf, path));
+        throw Exception("Config file '{}' doesn't exist", path);
 
     mINI::INIFile file(path);
     mINI::INIStructure ini;
     if (!file.read(ini))
-        throw std::runtime_error(fmt::format("Couldn't read config file '{}'"_cf, path));
+        throw Exception("Couldn't read config file '{}'", path);
 
     for (const auto &[sectionName, iniSection] : ini)
         if (ConfigSection *section = Section(sectionName))
@@ -36,7 +35,7 @@ void Config::Save(const std::string &path) const {
             ini[section->Name()][value->Name()] = value->GetString();
 
     if (!file.write(ini, true))
-        throw std::runtime_error(fmt::format("Couldn't save config file '{}'"_cf, path));
+        throw Exception("Couldn't save config file '{}'", path);
 }
 
 void Config::Reset() {
