@@ -1268,30 +1268,22 @@ void CastSpellInfoHelpers::castSpell() {
                         default:
                             assert(false);
                     }
+                    initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
+                    pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
+                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
+                    pSpellSprite.spell_target_pid = spell_targeted_at;
+                    pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
+                    if (pParty->bTurnBasedModeOn) {
+                        pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
+                    }
                     int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                     if (shots_num == 1) {
-                        initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                        pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
-                        pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
-                        pSpellSprite.spell_target_pid = spell_targeted_at;
-                        pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                         pSpellSprite.uFacing = target_direction.uYawAngle;
-                        if (pParty->bTurnBasedModeOn) {
-                            pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
-                        }
                         if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->uPlayerID + 1) != -1 &&
                                 pParty->bTurnBasedModeOn) {
                             ++pTurnEngine->pending_actions;
                         }
                     } else {
-                        initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                        pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
-                        pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
-                        pSpellSprite.spell_target_pid = spell_targeted_at;
-                        pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
-                        if (pParty->bTurnBasedModeOn) {
-                            pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
-                        }
                         int spell_spray_angle_start = ONE_THIRD_PI / -2;
                         int spell_spray_angle_end = ONE_THIRD_PI / 2;
                         if (spell_spray_angle_start <= spell_spray_angle_end) {
