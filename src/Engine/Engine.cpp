@@ -1738,9 +1738,7 @@ void RegeneratePartyHealthMana() {
         return;
     }
 
-    bool is_5min_boundary = (cur_minutes % 5) == 0;
-
-    if (is_5min_boundary) {
+    if ((cur_minutes % 5) == 0) {
         //int times_triggered = (current_time - last_reg_time) / 5;
 
         // TODO: actually this looks like it never triggers.

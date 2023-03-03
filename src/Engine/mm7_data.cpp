@@ -2294,7 +2294,6 @@ std::array<IndexedArray<PLAYER_SKILL_MASTERY, PLAYER_SKILL_FIRST, PLAYER_SKILL_L
 }};
 std::array<unsigned int, 2> pHiredNPCsIconsOffsetsX = {{489, 559}};
 std::array<unsigned int, 2> pHiredNPCsIconsOffsetsY = {{152, 152}};
-//std::array<int, 2> Party_Spec_Motion_status_ids = {{7, 18}};  // dword_4EE07C
 std::array<short, 28> word_4EE150 = {{1,  2,  3,  4,  5,  7,  32, 33, 36, 37,
                                       38, 40, 41, 42, 43, 45, 46, 47, 48, 49,
                                       50, 51, 52, 53, 54, 55, 56, 60}};
