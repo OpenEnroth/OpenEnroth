@@ -29,5 +29,7 @@ var searchData=
   ['events_2eh_26',['Events.h',['../Events_8h.html',1,'']]],
   ['events2d_2eh_27',['Events2D.h',['../Events2D_8h.html',1,'']]],
   ['eventtrace_2ecpp_28',['EventTrace.cpp',['../EventTrace_8cpp.html',1,'']]],
-  ['eventtrace_2eh_29',['EventTrace.h',['../EventTrace_8h.html',1,'']]]
+  ['eventtrace_2eh_29',['EventTrace.h',['../EventTrace_8h.html',1,'']]],
+  ['exception_2ecpp_30',['Exception.cpp',['../Exception_8cpp.html',1,'']]],
+  ['exception_2eh_31',['Exception.h',['../Exception_8h.html',1,'']]]
 ];
