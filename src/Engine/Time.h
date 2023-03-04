@@ -36,8 +36,8 @@ struct GameTime {
     int GetYears() const { return this->GetMonths() / 12; }
 
     int GetSecondsFraction() const { return this->GetSeconds() % 60; }
-    int GetMinutesFraction() const { return (this->GetSeconds() / 60) % 60; }
-    int GetHoursOfDay() const { return (this->GetSeconds() / 3600) % 24; }
+    int GetMinutesFraction() const { return this->GetMinutes() % 60; }
+    int GetHoursOfDay() const { return this->GetHours() % 24; }
     int GetDaysOfWeek() const { return this->GetDays() % 7; }
     int GetDaysOfMonth() const { return this->GetDays() % 28; }
     int GetWeeksOfMonth() const { return this->GetWeeks() % 4; }
@@ -71,6 +71,10 @@ struct GameTime {
     }
     GameTime &operator+=(GameTime &rhs) {
         this->value += rhs.value;
+        return *this;
+    }
+    GameTime &operator-=(GameTime &rhs) {
+        this->value -= rhs.value;
         return *this;
     }
 
