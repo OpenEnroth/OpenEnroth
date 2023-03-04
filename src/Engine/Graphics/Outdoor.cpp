@@ -2979,7 +2979,7 @@ void UpdateActors_ODM() {
         }
 
         // COLLISIONS
-        ProcessActorCollisionsODM(pActors[Actor_ITR], Floor_Level, uIsOnWater, uIsFlying);
+        ProcessActorCollisionsODM(pActors[Actor_ITR], uIsFlying);
 
         // WATER TILE CHECKING
         if (!Water_Walk) {

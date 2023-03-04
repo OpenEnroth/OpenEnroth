@@ -113,4 +113,4 @@ void CollideWithParty(bool jagged_top);
  */
 void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying); // TODO(captainurist): isFlying => canFly
 
-void ProcessActorCollisionsODM(Actor &actor, int floorLevel, bool isOnWater, bool isFlying);
+void ProcessActorCollisionsODM(Actor &actor, bool isFlying);
