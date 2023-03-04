@@ -109,6 +109,8 @@ void CollideWithParty(bool jagged_top);
  *
  * @param actor                     Actor to move.
  * @param isAboveGround             Whether the actor is currently above ground (stands on air, basically).
- * @param isFlying                  Whether the actor is a flying creature that can fly (e.g. not paralyzed).
+ * @param canFly                    Whether the actor is a flying creature that can fly (e.g. not paralyzed).
  */
-void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying);
+void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool canFly);
+
+void ProcessActorCollisionsODM(Actor &actor, bool canFly);
