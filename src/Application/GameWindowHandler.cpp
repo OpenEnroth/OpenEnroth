@@ -26,8 +26,6 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-#include "Utility/Format.h"
-
 #include "IocContainer.h"
 
 

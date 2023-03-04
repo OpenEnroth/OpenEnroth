@@ -199,7 +199,7 @@ void Serialize(const SpellBuff &src, SpellBuff_MM7 *dst) {
     dst->uSkillMastery = std::to_underlying(src.uSkillMastery);
     dst->uOverlayID = src.uOverlayID;
     dst->uCaster = src.uCaster;
-    dst->uFlags = src.uFlags;
+    dst->uFlags = src.isGMBuff;
 }
 
 void Deserialize(const SpellBuff_MM7 &src, SpellBuff *dst) {
@@ -208,7 +208,7 @@ void Deserialize(const SpellBuff_MM7 &src, SpellBuff *dst) {
     dst->uSkillMastery = PLAYER_SKILL_MASTERY(src.uSkillMastery);
     dst->uOverlayID = src.uOverlayID;
     dst->uCaster = src.uCaster;
-    dst->uFlags = src.uFlags;
+    dst->isGMBuff = src.uFlags;
 }
 
 void Serialize(const ItemGen &src, ItemGen_MM7 *dst) {

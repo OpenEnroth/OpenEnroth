@@ -15,7 +15,6 @@ class FileOutputStream : public OutputStream {
 
  private:
     void CloseInternal(bool canThrow);
-    [[noreturn]] void ThrowFromErrno();
 
  private:
     std::string path_;

@@ -1148,15 +1148,15 @@ void CastSpellInfoHelpers::castSpell() {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         continue;
                     }
-                    int mana_drain = (spell_mastery < PLAYER_SKILL_MASTERY_GRANDMASTER) ? 1 : 0;
                     for (size_t i = 0; i < pParty->pPlayers.size(); i++) {
                         pOtherOverlayList->_4418B1(2090, i + 100, 0, 65536);
                     }
                     int spell_overlay_id = pOtherOverlayList->_4418B1(10008, 203, 0, 65536);
                     pParty->pPartyBuffs[PARTY_BUFF_FLY].Apply(
                             pParty->GetPlayingTime() + GameTime::FromHours(spell_level),
-                            spell_mastery, mana_drain, spell_overlay_id,
+                            spell_mastery, 0, spell_overlay_id,
                             pCastSpell->uPlayerID + 1);
+                    pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff = (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER);
                     break;
                 }
 
@@ -1324,14 +1324,11 @@ void CastSpellInfoHelpers::castSpell() {
                             assert(false);
                     }
 
-                    int mana_drain = (spell_mastery < PLAYER_SKILL_MASTERY::PLAYER_SKILL_MASTERY_GRANDMASTER) ? 1 : 0;
                     int spell_overlay_id = pOtherOverlayList->_4418B1(10005, 201, 0, 65536);
                     spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK]
-                        .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, mana_drain, spell_overlay_id, pCastSpell->uPlayerID + 1);
-                    if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                        pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uFlags = 1;
-                    }
+                        .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, spell_overlay_id, pCastSpell->uPlayerID + 1);
+                    pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGMBuff = (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER);
                     break;
                 }
 

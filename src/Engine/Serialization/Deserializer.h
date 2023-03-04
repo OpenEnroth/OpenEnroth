@@ -2,16 +2,16 @@
 
 #include <cassert>
 #include <memory>
-#include <stdexcept>
 #include <string>
 #include <type_traits>
 #include <utility>
 #include <vector>
 
 #include "Utility/Memory/Blob.h"
-#include "Utility/Embedded.h"
 #include "Utility/Streams/InputStream.h"
 #include "Utility/Streams/MemoryInputStream.h"
+#include "Utility/Embedded.h"
+#include "Utility/Exception.h"
 
 class Deserializer {
  public:
@@ -34,13 +34,13 @@ class Deserializer {
     void ReadBytes(void* dst, size_t size) {
         size_t bytesRead = inputStream_->Read(dst, size);
         if (bytesRead < size)
-            throw std::runtime_error("Deserialization failed, no more data in stream.");
+            throw Exception("Deserialization failed, no more data in stream.");
     }
 
     void SkipBytes(size_t size) {
         size_t skippedBytes = inputStream_->Skip(size);
         if (skippedBytes != size)
-            throw std::runtime_error("Deserialization failed, no more data in stream.");
+            throw Exception("Deserialization failed, no more data in stream.");
     }
 
     template<class T>
