@@ -2311,7 +2311,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     else
         pParty->SetAirborne(true);
 
-    pParty->uFlags &= ~PARTY_FLAGS_1_BURNING;
+    pParty->uFlags &= ~(PARTY_FLAGS_1_BURNING | PARTY_FLAGS_1_WATER_DAMAGE);
     pParty->vPosition.x = new_party_x;
     pParty->vPosition.y = new_party_y;
     pParty->vPosition.z = new_party_z;

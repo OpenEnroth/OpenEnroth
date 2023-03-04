@@ -1880,15 +1880,8 @@ void ODM_ProcessPartyActions() {
         pParty->uFallStartZ = curent_floor_level;
     else
         curent_floor_level = pParty->uFallStartZ;
-    //*************************************
-    // land on 3D Model
-    if (curent_floor_level - pParty->vPosition.z > 512 && !bFeatherFall && pParty->vPosition.z <= ground_level) {
-        if (pParty->uFlags & PARTY_FLAGS_1_LANDING) {
-            pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
-        } else {
-            pParty->GiveFallDamage(pParty->uFallStartZ - pParty->vPosition.z);
-        }
-    }
+
+
     //*********************************
     // определение высоты потолка
     int faceID_ceiling = 0;
@@ -2544,15 +2537,15 @@ void ODM_ProcessPartyActions() {
 
 
     // -(update party co-ords)---------------------------------------
-    bool allow_movement{ false };
-    if (new_party_x_grid == current_party_x_grid && new_party_y_grid == current_party_y_grid && currently_not_water/*new_x_not_water && new_y_not_water*/) allow_movement = true;
+    bool notWater{ false };
+    if (new_party_x_grid == current_party_x_grid && new_party_y_grid == current_party_y_grid && currently_not_water/*new_x_not_water && new_y_not_water*/) notWater = true;
 
     if (!is_not_on_bmodel)  // on bmodel
-        allow_movement = true;
+        notWater = true;
 
     //logger->Info("Px {}, Py {}, Pz{}, Pfall {}", party_new_x, party_new_Y, party_new_Z, party_z_speed);
 
-    if (allow_movement) {
+    if (notWater) {
        // logger->Info("fly {}", pParty->bFlying);
 
         pParty->vPosition.x = party_new_x;
@@ -2573,121 +2566,96 @@ void ODM_ProcessPartyActions() {
             pParty->vPosition.z = 8160;
         }
 
-        ///////////////////////////////////////////////////////////////////////
-        if (!trigger_id  // падение на землю
-            || (EventProcessor(trigger_id, 0, 1), pParty->vPosition.x == party_new_x) &&
-                   pParty->vPosition.y == party_new_Y &&
-                   pParty->vPosition.z == party_new_Z) {
-            if (pParty->vPosition.z < ground_level) {
-                pParty->uFallSpeed = 0;
-                // v73 = v105;
-                pParty->vPosition.z = ground_level;
-                if (pParty->uFallStartZ - party_new_Z > 512 && !bFeatherFall &&
-                    party_new_Z <= ground_level &&
-                    !engine->IsUnderwater()) {  // Fall to the ground(падение на землю с
-                                     // высоты)
-                    if (pParty->uFlags & PARTY_FLAGS_1_LANDING) {
-                        pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
-                    } else {
-                        pParty->GiveFallDamage(pParty->uFallStartZ - pParty->vPosition.z);
-                    }
-                }
-                pParty->uFallStartZ = party_new_Z;
-            }
-            if (faceID_ceiling && pParty->vPosition.z < ceiling_height) {
-                if ((signed int)(pParty->uPartyHeight + pParty->vPosition.z) >= ceiling_height) {
-                    pParty->vPosition.z = ceiling_height - pParty->uPartyHeight - 1;
-                    pParty->sPartySavedFlightZ = pParty->vPosition.z;
-                }
-            }
-            ////////////////////////////////////////
-
             // not burning not drowning??
             pParty->uFlags &= ~0x204;
+        //}
+        //return;
+    } else {
+        //-----------------------------------------------------------------
+
+        // we are on water tile
+
+        bool second_move_x;            // edx@297
+        bool second_move_y;            // ecx@303
+
+        if (pParty->bFlying || !not_high_fall || bWaterWalk || !currently_not_water)
+            second_move_x = 1;
+        else
+            second_move_x = new_x_not_water != 0;
+
+        bool party_drowning_flag = false;
+
+        if (!pParty->bFlying && not_high_fall && !bWaterWalk) {
+            if (currently_not_water) {
+                second_move_y = new_y_not_water != 0;
+            }
+            else {
+                party_drowning_flag = true;  // утопление
+                second_move_y = true;
+            }
         }
-        return;
-    }
-    //-----------------------------------------------------------------
-
-    logger->Info("not updating coords");
-    bool second_move_x;            // edx@297
-    bool second_move_y;            // ecx@303
-
-    if (pParty->bFlying || !not_high_fall || bWaterWalk || !currently_not_water)
-        second_move_x = 1;
-    else
-        second_move_x = new_x_not_water != 0;
-
-    bool party_drowning_flag = false;
-
-    if (!pParty->bFlying && not_high_fall && !bWaterWalk) {
-        if (currently_not_water) {
-            second_move_y = new_y_not_water != 0;
-        } else {
-            party_drowning_flag = true;  // утопление
+        else {
             second_move_y = true;
         }
-    } else {
-      second_move_y = true;
-    }
 
-    if (second_move_x) pParty->vPosition.x = party_new_x;
-    if (second_move_y) pParty->vPosition.y = party_new_Y;
+        if (second_move_x) pParty->vPosition.x = party_new_x;
+        if (second_move_y) pParty->vPosition.y = party_new_Y;
 
-    if (second_move_y || second_move_x) {
-        if (bWaterWalk) {
-            pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;
-            // v79 = 20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uOverlayID
-            // + 6180178;
-            // *(short *)&stru_5E4C90._decor_events[20 *
-            // pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uOverlayID + 119] |=
-            // 1u;
-            short* v79;             // ecx@314
-            v79 =
-                (short *)&stru_5E4C90_MapPersistVars._decor_events
-                [20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uOverlayID + 119];
-            *(short *)v79 |= 1;
-            if (!new_x_not_water || !new_y_not_water) {
-                if (!pParty->bFlying) {
-                    int16_t v80;         // dx@317
-                    v80 = *(short *)v79;
-                    pParty->uFlags |= PARTY_FLAGS_1_STANDING_ON_WATER;
-                    *(short *)v79 = v80 & 0xFFFE;
+        if (second_move_y || second_move_x) {
+            if (bWaterWalk) {
+                pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;
+                // v79 = 20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uOverlayID
+                // + 6180178;
+                // *(short *)&stru_5E4C90._decor_events[20 *
+                // pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uOverlayID + 119] |=
+                // 1u;
+                short* v79;             // ecx@314
+                v79 =
+                    (short*)&stru_5E4C90_MapPersistVars._decor_events
+                    [20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uOverlayID + 119];
+                *(short*)v79 |= 1;
+                if (!new_x_not_water || !new_y_not_water) {
+                    if (!pParty->bFlying) {
+                        int16_t v80;         // dx@317
+                        v80 = *(short*)v79;
+                        pParty->uFlags |= PARTY_FLAGS_1_STANDING_ON_WATER;
+                        *(short*)v79 = v80 & 0xFFFE;
+                    }
                 }
             }
         }
-    } else if (engine->config->settings.WalkSound.Get() && pParty->walk_sound_timer <= 0) {
-        pAudioPlayer->StopAll(804);
-        pParty->walk_sound_timer = 64;
-    }
+        else if (engine->config->settings.WalkSound.Get() && pParty->walk_sound_timer <= 0) {
+            pAudioPlayer->StopAll(804);
+            pParty->walk_sound_timer = 64;
+        }
 
-    pParty->vPosition.z = party_new_Z;
-    if (party_new_Z > 8160) {  // опять ограничение высоты
-        pParty->uFallStartZ = 8160;
-        pParty->vPosition.z = 8160;
-    }
-    HEXRAYS_LOWORD(pParty->uFlags) &= 0xFDFBu;
-    pParty->uFallSpeed = party_z_speed;
-    pParty->sPartySavedFlightZ = save_old_flight_height;
-    if (party_drowning_flag) {  // группа тонет
-        bool onWater = false;
-        int pTerrainHeight = GetTerrainHeightsAroundParty2(pParty->vPosition.x, pParty->vPosition.y, &onWater, 1);
-        if (pParty->vPosition.z <= pTerrainHeight + 1) {  // положение группы всегда +1
-            pParty->uFlags |= PARTY_FLAGS_1_WATER_DAMAGE;
+        pParty->vPosition.z = party_new_Z;
+        if (party_new_Z > 8160) {  // опять ограничение высоты
+            pParty->uFallStartZ = 8160;
+            pParty->vPosition.z = 8160;
+        }
+        HEXRAYS_LOWORD(pParty->uFlags) &= 0xFDFBu;
+        pParty->uFallSpeed = party_z_speed;
+        pParty->sPartySavedFlightZ = save_old_flight_height;
+        if (party_drowning_flag) {  // группа тонет
+            bool onWater = false;
+            int pTerrainHeight = GetTerrainHeightsAroundParty2(pParty->vPosition.x, pParty->vPosition.y, &onWater, 1);
+            if (pParty->vPosition.z <= pTerrainHeight + 1) {  // положение группы всегда +1
+                pParty->uFlags |= PARTY_FLAGS_1_WATER_DAMAGE;
+            }
         }
     }
 
-    // Falling onto water
+    // Falling damage
     if (!trigger_id ||
         (EventProcessor(trigger_id, 0, 1), pParty->vPosition.x == party_new_x) &&
             pParty->vPosition.y == party_new_Y && pParty->vPosition.z == party_new_Z) {
-        if (pParty->vPosition.z < ground_level) {
-            // v82 = ground_level;
+        if (pParty->vPosition.z <= ground_level) {
             pParty->uFallSpeed = 0;
             pParty->vPosition.z = ground_level;
             if (pParty->uFallStartZ - party_new_Z > 512 && !bFeatherFall &&
                 party_new_Z <= ground_level &&
-                !engine->IsUnderwater()) {  // Fall to the water(from height)
+                !engine->IsUnderwater()) {
                 if (pParty->uFlags & PARTY_FLAGS_1_LANDING) {
                     pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
                 } else {
@@ -2696,7 +2664,7 @@ void ODM_ProcessPartyActions() {
             }
             pParty->uFallStartZ = party_new_Z;
         }
-        if (faceID_ceiling && pParty->vPosition.z < ceiling_height && (signed int)(pParty->uPartyHeight + pParty->vPosition.z) >= ceiling_height) {
+        if (faceID_ceiling && pParty->vPosition.z < ceiling_height && (pParty->uPartyHeight + pParty->vPosition.z) >= ceiling_height) {
             pParty->vPosition.z = ceiling_height - pParty->uPartyHeight - 1;
             pParty->sPartySavedFlightZ = pParty->vPosition.z;
         }
