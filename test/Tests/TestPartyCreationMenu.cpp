@@ -116,10 +116,10 @@ static int partyItemCount() {
     return result;
 }
 
-GAME_TEST(Issues, Issue293) {
+GAME_TEST(Issues, Issue293a) {
     // Test that barrels in castle Harmondale work and can be triggered only once, and that trash piles work,
     // give an item once, but give disease indefinitely.
-    test->playTraceFromTestData("issue_293.mm7", "issue_293.json", [] {
+    test->playTraceFromTestData("issue_293a.mm7", "issue_293a.json", [] {
         EXPECT_EQ(pParty->pPlayers[0].uMight, 30);
         EXPECT_EQ(pParty->pPlayers[0].uIntelligence, 5);
         EXPECT_EQ(pParty->pPlayers[0].uWillpower, 5);
@@ -141,9 +141,37 @@ GAME_TEST(Issues, Issue293) {
     EXPECT_EQ(pParty->pPlayers[0].uAccuracy, 15); // +2
     EXPECT_EQ(pParty->pPlayers[0].uLuck, 7);
     EXPECT_EQ(partyItemCount(), 19); // +1
-    EXPECT_TRUE(pParty->pPlayers[0].HasItem(ITEM_LEATHER_ARMOR, false)); // That's the item from the trash pile
+    EXPECT_TRUE(pParty->pPlayers[0].HasItem(ITEM_LEATHER_ARMOR, false)); // That's the item from the trash pile.
     for (int i = 0; i < 4; i++)
         EXPECT_EQ(pParty->pPlayers[i].GetMajorConditionIdx(), Condition_Disease_Weak);
+}
+
+GAME_TEST(Issues, Issue293b) {
+    // Test that table food in castle Harmondale is pickable only once and gives apples.
+    test->playTraceFromTestData("issue_293b.mm7", "issue_293b.json", [] {
+        EXPECT_EQ(pParty->uNumFoodRations, 7);
+        EXPECT_EQ(partyItemCount(), 18);
+        EXPECT_FALSE(pParty->HasItem(ITEM_RED_APPLE));
+    });
+
+    EXPECT_EQ(pParty->uNumFoodRations, 7); // No change.
+    EXPECT_EQ(partyItemCount(), 19); // +1
+    EXPECT_TRUE(pParty->HasItem(ITEM_RED_APPLE)); // That's the table food item.
+}
+
+GAME_TEST(Issues, Issue293c) {
+    // Test that cauldrons work, and work only once. The cauldron tested is in the Barrow Downs.
+    test->playTraceFromTestData("issue_293c.mm7", "issue_293c.json", [] {
+        EXPECT_EQ(pParty->pPlayers[0].sResAirBase, 230); // An interesting save we have here.
+        EXPECT_EQ(pParty->pPlayers[1].sResAirBase, 50);
+        EXPECT_EQ(pParty->pPlayers[2].sResAirBase, 24);
+        EXPECT_EQ(pParty->pPlayers[3].sResAirBase, 18);
+    });
+
+    EXPECT_EQ(pParty->pPlayers[0].sResAirBase, 230);
+    EXPECT_EQ(pParty->pPlayers[1].sResAirBase, 52); // +2
+    EXPECT_EQ(pParty->pPlayers[2].sResAirBase, 24);
+    EXPECT_EQ(pParty->pPlayers[3].sResAirBase, 18);
 }
 
 GAME_TEST(Issues, Issue294) {
