@@ -1881,22 +1881,12 @@ void ODM_ProcessPartyActions() {
     else
         curent_floor_level = pParty->uFallStartZ;
     //*************************************
-    // падение на 3D Model
+    // land on 3D Model
     if (curent_floor_level - pParty->vPosition.z > 512 && !bFeatherFall && pParty->vPosition.z <= ground_level) {
         if (pParty->uFlags & PARTY_FLAGS_1_LANDING) {
             pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
         } else {
-            for (int i = 0; i < 4; ++i) {  // receive falling damage
-                if (!pParty->pPlayers[i].HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
-                    !pParty->pPlayers[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS)) {
-                    pParty->pPlayers[i].ReceiveDamage(
-                        (int)((pParty->uFallStartZ - pParty->vPosition.z) *
-                        (uint64_t)(pParty->pPlayers[i].GetMaxHealth() / 10)) / 256,
-                        DMGT_PHISYCAL);
-                    int bonus = 20 - pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualEndurance());
-                    pParty->pPlayers[i].SetRecoveryTime(bonus * debug_non_combat_recovery_mul * flt_debugrecmod3);
-                }
-            }
+            pParty->GiveFallDamage(pParty->uFallStartZ - pParty->vPosition.z);
         }
     }
     //*********************************
@@ -2599,16 +2589,7 @@ void ODM_ProcessPartyActions() {
                     if (pParty->uFlags & PARTY_FLAGS_1_LANDING) {
                         pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
                     } else {
-                        for (uint i = 1; i <= 4; ++i) {
-                            pPlayers[i]->ReceiveDamage(
-                                (int)((pParty->uFallStartZ - party_new_Z) *
-                                             (uint64_t)((double)pPlayers[i]->GetMaxHealth() * 0.1)) / 256,
-                                DMGT_PHISYCAL);
-                            int anotherv110 = 20 - pPlayers[i]->GetParameterBonus(pPlayers[i]->GetActualEndurance());
-                            pPlayers[i]->SetRecoveryTime(
-                                (int64_t)((double)anotherv110 * debug_non_combat_recovery_mul * flt_debugrecmod3));
-                        }
-                        // v73 = pParty->vPosition.z;
+                        pParty->GiveFallDamage(pParty->uFallStartZ - pParty->vPosition.z);
                     }
                 }
                 pParty->uFallStartZ = party_new_Z;
@@ -2710,15 +2691,7 @@ void ODM_ProcessPartyActions() {
                 if (pParty->uFlags & PARTY_FLAGS_1_LANDING) {
                     pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
                 } else {
-                    for (uint i = 1; i <= 4; ++i) {
-                        int v110health = pPlayers[i]->GetMaxHealth();
-                        pPlayers[i]->ReceiveDamage(
-                            (int)((pParty->uFallStartZ - party_new_Z) * (uint64_t)((double)v110health * 0.1)) / 256,
-                            DMGT_PHISYCAL);
-                        int v110end = 20 - pPlayers[i]->GetParameterBonus(pPlayers[i]->GetActualEndurance());
-                        pPlayers[i]->SetRecoveryTime(
-                            (int64_t)((double)v110end * debug_non_combat_recovery_mul * flt_debugrecmod3));
-                    }
+                    pParty->GiveFallDamage(pParty->uFallStartZ - pParty->vPosition.z);
                 }
             }
             pParty->uFallStartZ = party_new_Z;

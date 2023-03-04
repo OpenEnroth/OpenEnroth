@@ -210,6 +210,11 @@ struct Party {
 
     static void Sleep8Hours();
 
+    /**
+     * New function - applies fall damage with modifiers to all party members 
+     * @param distance                    Fall distance
+     */
+    void GiveFallDamage(int distance);
 
     inline bool WizardEyeActive() const {
         return pPartyBuffs[PARTY_BUFF_WIZARD_EYE].expire_time.value > 0;

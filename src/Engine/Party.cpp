@@ -1301,3 +1301,17 @@ PartyAction ActionQueue::Next() {
 
     return result;
 }
+
+void Party::GiveFallDamage(int distance) {
+    for (int i = 0; i < 4; ++i) {  // receive falling damage
+        if (!pParty->pPlayers[i].HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
+            !pParty->pPlayers[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS)) {
+            pParty->pPlayers[i].ReceiveDamage(
+                (int)((distance) *
+                    (uint64_t)(pParty->pPlayers[i].GetMaxHealth() / 10)) / 256,
+                DMGT_PHISYCAL);
+            int bonus = 20 - pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualEndurance());
+            pParty->pPlayers[i].SetRecoveryTime(bonus * debug_non_combat_recovery_mul * flt_debugrecmod3);
+        }
+    }
+}
