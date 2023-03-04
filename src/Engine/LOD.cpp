@@ -1,6 +1,7 @@
 #include "Engine/LOD.h"
 
 #include <filesystem>
+#include <memory>
 
 #include "Library/Compression/Compression.h"
 
@@ -10,6 +11,7 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Sprites.h"
 
+#include "Utility/Memory/FreeDeleter.h"
 
 LODFile_IconsBitmaps *pEvents_LOD = nullptr;
 
@@ -30,6 +32,13 @@ LOD::File *pGames_LOD = nullptr;
 
 int _6A0CA4_lod_binary_search;
 int _6A0CA8_lod_unused;
+
+struct FileCloser {
+    void operator()(FILE* file) {
+        if (file)
+            fclose(file);
+    }
+};
 
 inline int LODFile_IconsBitmaps::LoadDummyTexture() {
     for (unsigned int i = 0; i < uNumLoadedFiles; ++i)
@@ -105,10 +114,13 @@ int LODFile_Sprites::LoadSpriteFromFile(LODSprite *pSprite, const std::string &p
         return -1;
     }
 
-    fread(pSprite, sizeof(LODSpriteHeader), 1, File);
+    if (fread(pSprite, sizeof(LODSpriteHeader), 1, File) != 1)
+        return -1;
+
     strcpy(pSprite->pName, pContainer.c_str());
-    LODSpriteLine *pSpriteLines = new LODSpriteLine[pSprite->uHeight];
-    fread(pSpriteLines, sizeof(LODSpriteLine), pSprite->uHeight, File);
+    std::unique_ptr<LODSpriteLine[]> pSpriteLines(new LODSpriteLine[pSprite->uHeight]);
+    if (fread(pSpriteLines.get(), sizeof(LODSpriteLine) * pSprite->uHeight, 1, File) != 1)
+        return -1;
 
     Blob bytes = Blob::Read(File, pSprite->uSpriteSize);
     if (pSprite->uDecompressedSize)
@@ -123,8 +135,6 @@ int LODFile_Sprites::LoadSpriteFromFile(LODSprite *pSprite, const std::string &p
                 pSpriteLines[i].end - pSpriteLines[i].begin);
         }
     }
-
-    delete[] pSpriteLines;
 
     return 1;
 }
@@ -457,12 +467,12 @@ bool LOD::WriteableFile::FixDirectoryOffsets() {
     }
 
     std::string tempPath = pLODPath + ".tmp";
-    FILE *tmp_file = fopen(tempPath.c_str(), "wb+");
+    std::unique_ptr<FILE, FileCloser> tmp_file(fopen(tempPath.c_str(), "wb+"));
     if (tmp_file == nullptr) {
         return 5;
     }
 
-    fwrite((const void *)&header, sizeof(LOD::FileHeader), 1, tmp_file);
+    fwrite((const void *)&header, sizeof(LOD::FileHeader), 1, tmp_file.get());
 
     LOD::Directory Lindx;
     strcpy(Lindx.pFilename, "chapter");
@@ -472,20 +482,21 @@ bool LOD::WriteableFile::FixDirectoryOffsets() {
     Lindx.dword_000018 = 0;                                 // 18h 24
     Lindx.uNumSubIndices = uNumSubDirs;                     // 1ch 28
     Lindx.priority = 0;                                  // 1Eh 30
-    fwrite(&Lindx, sizeof(LOD::Directory), 1, tmp_file);
-    fwrite(pSubIndices, sizeof(LOD::Directory), uNumSubDirs, tmp_file);
+    fwrite(&Lindx, sizeof(LOD::Directory), 1, tmp_file.get());
+    fwrite(pSubIndices, sizeof(LOD::Directory), uNumSubDirs, tmp_file.get());
     fseek(pOutputFileHandle, 0, 0);
     while (total_size > 0) {
         int write_size = uIOBufferSize;
         if (total_size <= uIOBufferSize) {
             write_size = total_size;
         }
-        fread(pIOBuffer, 1, write_size, pOutputFileHandle);
-        fwrite(pIOBuffer, 1, write_size, tmp_file);
+        if (fread(pIOBuffer, write_size, 1, pOutputFileHandle) != 1)
+            return false;
+        fwrite(pIOBuffer, write_size, 1, tmp_file.get());
         total_size -= write_size;
     }
 
-    fclose(tmp_file);
+    tmp_file.reset();
     fclose(pOutputFileHandle);
     pOutputFileHandle = nullptr;
     CloseWriteFile();
@@ -582,7 +593,7 @@ unsigned int LOD::WriteableFile::Write(const std::string &file_name, const void 
 
     int size_correction = 0;
     std::string tempPath = pLODPath + ".tmp";
-    FILE *tmp_file = fopen(tempPath.c_str(), "wb+");
+    std::unique_ptr<FILE, FileCloser> tmp_file(fopen(tempPath.c_str(), "wb+"));
     if (!tmp_file) return 5;
     if (!bRewrite_data)
         size_correction = 0;
@@ -624,10 +635,10 @@ unsigned int LOD::WriteableFile::Write(const std::string &file_name, const void 
     }
 
     // construct lod file with added data
-    fwrite(&header, sizeof(LOD::FileHeader), 1, tmp_file);
-    fwrite(&Lindx, sizeof(LOD::Directory), 1, tmp_file);
+    fwrite(&header, sizeof(LOD::FileHeader), 1, tmp_file.get());
+    fwrite(&Lindx, sizeof(LOD::Directory), 1, tmp_file.get());
     fseek(pFile, Lindx.uOfsetFromSubindicesStart, SEEK_SET);
-    fwrite(pSubIndices, sizeof(LOD::Directory), uNumSubDirs, tmp_file);
+    fwrite(pSubIndices, sizeof(LOD::Directory), uNumSubDirs, tmp_file.get());
 
     size_t offset_to_data = sizeof(LOD::Directory) * uNumSubDirs;
     if (!bRewrite_data) offset_to_data -= sizeof(LOD::Directory);
@@ -639,12 +650,13 @@ unsigned int LOD::WriteableFile::Write(const std::string &file_name, const void 
     while (to_copy_size > 0) {
         int read_size = uIOBufferSize;
         if (to_copy_size <= uIOBufferSize) read_size = to_copy_size;
-        fread(pIOBuffer, 1, read_size, pFile);
-        fwrite(pIOBuffer, 1, read_size, tmp_file);
+        if (fread(pIOBuffer, read_size, 1, pFile) != 1)
+            return 1;
+        fwrite(pIOBuffer, 1, read_size, tmp_file.get());
         to_copy_size -= read_size;
     }
     // add container data
-    fwrite(pDirData, 1, dir.uDataSize, tmp_file);  // Uninitialized memory access(tmp_file)
+    fwrite(pDirData, 1, dir.uDataSize, tmp_file.get());  // Uninitialized memory access(tmp_file)
     if (bRewrite_data) fseek(pFile, size_correction, SEEK_CUR);
 
     // add remainng data  last half
@@ -655,13 +667,14 @@ unsigned int LOD::WriteableFile::Write(const std::string &file_name, const void 
     while (to_copy_size > 0) {
         int read_size = uIOBufferSize;
         if (to_copy_size <= uIOBufferSize) read_size = to_copy_size;
-        fread(pIOBuffer, 1, read_size, pFile);
-        fwrite(pIOBuffer, 1, read_size, tmp_file);
+        if (fread(pIOBuffer, read_size, 1, pFile) != 1)
+            return 1;
+        fwrite(pIOBuffer, 1, read_size, tmp_file.get());
         to_copy_size -= read_size;
     }
 
     // replace old file by new with added data
-    fclose(tmp_file);
+    tmp_file.reset();
     CloseWriteFile();
     std::filesystem::remove(pLODPath);
     std::filesystem::rename(tempPath, pLODPath);
@@ -686,10 +699,12 @@ bool LOD::WriteableFile::LoadFile(const std::string &filePath, bool bWriting) {
     }
 
     pLODPath = filePath;
-    fread(&header, sizeof(LOD::FileHeader), 1, pFile);
+    if (fread(&header, sizeof(LOD::FileHeader), 1, pFile) != 1)
+        return false;
 
     LOD::Directory lod_indx;
-    fread(&lod_indx, sizeof(LOD::Directory), 1, pFile);
+    if (fread(&lod_indx, sizeof(LOD::Directory), 1, pFile) != 1)
+        return false;
 
     fseek(pFile, 0, SEEK_SET);
     isFileOpened = true;
@@ -701,7 +716,8 @@ bool LOD::WriteableFile::LoadFile(const std::string &filePath, bool bWriting) {
     uOffsetToSubIndex = lod_indx.uOfsetFromSubindicesStart;
     fseek(pFile, uOffsetToSubIndex, SEEK_SET);
 
-    fread(pSubIndices, sizeof(LOD::Directory), uNumSubDirs, pFile);
+    if (uNumSubDirs && fread(pSubIndices, sizeof(LOD::Directory) * uNumSubDirs, 1, pFile) != 1)
+        return false;
     return true;
 }
 
@@ -809,7 +825,8 @@ bool LOD::File::LoadSubIndices(const std::string &pContainer) {
             pSubIndices = (LOD::Directory *)malloc(sizeof(LOD::Directory) * uNumSubDirs);
 
             if (pSubIndices) {
-                fread(pSubIndices, sizeof(LOD::Directory), uNumSubDirs, pFile);
+                if (fread(pSubIndices, sizeof(LOD::Directory) * uNumSubDirs, 1, pFile) != 1)
+                    return false;
             }
             return true;
         }
@@ -879,9 +896,11 @@ void LODFile_IconsBitmaps::SetupPalettes(unsigned int uTargetRBits,
                 FILE *File = FindContainer(this->pTextures[i].header.pName);
                 if (File) {
                     TextureHeader DstBuf;
-                    fread(&DstBuf, 1, sizeof(TextureHeader), File);
+                    if (fread(&DstBuf, sizeof(TextureHeader), 1, File) != 1)
+                        continue;
                     fseek(File, DstBuf.uTextureSize, 1);
-                    fread(this->pTextures[i].pPalette24, 1, 0x300, File);
+                    if (fread(this->pTextures[i].pPalette24, 0x300, 1, File) != 1)
+                        continue;
                 }
             }
         }
@@ -911,16 +930,13 @@ Blob LOD::File::LoadCompressedTexture(const std::string &pContainer) {
     }
 
     TextureHeader DstBuf;
-    fread(&DstBuf, 1, sizeof(TextureHeader), File);
+    if (fread(&DstBuf, sizeof(TextureHeader), 1, File) != 1)
+        return Blob();
 
     if (DstBuf.uDecompressedSize) {
-        Blob result = Blob::Allocate(DstBuf.uTextureSize);
-        fread(result.data(), 1, DstBuf.uTextureSize, File);
-        return zlib::Uncompress(result, DstBuf.uDecompressedSize);
+        return zlib::Uncompress(Blob::Read(File, DstBuf.uTextureSize), DstBuf.uDecompressedSize);
     } else {
-        Blob result = Blob::Allocate(DstBuf.uTextureSize);
-        fread(result.data(), 1, DstBuf.uTextureSize, File);
-        return result;
+        return Blob::Read(File, DstBuf.uTextureSize);
     }
 }
 
@@ -943,7 +959,9 @@ Blob LOD::File::LoadCompressed(const std::string &pContainer) {
     }
 
     CompressedHeader header;
-    fread(&header, 1, sizeof(CompressedHeader), File);
+    if (fread(&header, sizeof(CompressedHeader), 1, File) != 1)
+        return Blob();
+
     if (header.uVersion != 91969 || (memcmp(&header.pMagic, "mvii", 4) != 0)) {
         Error("Unable to load %s", pContainer.c_str());
         return Blob();
@@ -973,7 +991,6 @@ int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst,
                                         const std::string &pContainer, int mode) {
     unsigned int v7;  // ebx@6
     unsigned int v8;  // ecx@6
-    int result;       // eax@7
     // uint8_t v15;      // [sp+11h] [bp-3h]@13
     // uint8_t v16;      // [sp+12h] [bp-2h]@13
     // uint8_t DstBuf;   // [sp+13h] [bp-1h]@13
@@ -983,25 +1000,31 @@ int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst,
         return -1;
     }
 
-    if (pDst->paletted_pixels && mode == 2 && pDst->pPalette24 &&
-        (v7 = pDst->header.uTextureSize, fread(pDst, 1, 0x30u, File),
-         strncpy(pDst->header.pName, pContainer.c_str(), 16),
-         v8 = pDst->header.uTextureSize, (int)v8 <= (int)v7)
-    ) {
-        if (!pDst->header.uDecompressedSize ||
-            this->_011BA4_debug_paletted_pixels_uncompressed) {
-            fread(pDst->paletted_pixels, 1, pDst->header.uTextureSize, File);
+    if (!pDst->paletted_pixels || mode != 2 || !pDst->pPalette24)
+        return -1;
+
+    v7 = pDst->header.uTextureSize;
+    if (fread(pDst, 0x30u, 1, File) != 1)
+        return -1;
+
+    strncpy(pDst->header.pName, pContainer.c_str(), 16);
+    v8 = pDst->header.uTextureSize;
+
+    if ((int)v8 <= (int)v7) {
+        if (!pDst->header.uDecompressedSize || this->_011BA4_debug_paletted_pixels_uncompressed) {
+            if (fread(pDst->paletted_pixels, pDst->header.uTextureSize, 1, File) != 1)
+                return -1;
         } else {
             Blob bytes = zlib::Uncompress(Blob::Read(File, pDst->header.uTextureSize), pDst->header.uDecompressedSize);
             pDst->header.uTextureSize = pDst->header.uDecompressedSize;
             memcpy(pDst->paletted_pixels, bytes.data(), bytes.size());
         }
-        fread(pDst->pPalette24, 1, 0x300, File);
-        result = 1;
+        if (fread(pDst->pPalette24, 0x300, 1, File) != 1)
+            return -1;
+        return 1;
     } else {
-        result = -1;
+        return -1;
     }
-    return result;
 }
 
 int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const std::string &pContainer,
@@ -1013,7 +1036,8 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const std::st
     }
 
     TextureHeader *header = &pOutTex->header;
-    fread(header, 1, sizeof(TextureHeader), pFile);
+    if (fread(header, sizeof(TextureHeader), 1, pFile) != 1)
+        return -1;
     strncpy(header->pName, pContainer.c_str(), 16);
     data_size -= sizeof(TextureHeader);
 
@@ -1037,20 +1061,21 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const std::st
             assert(false);
         }
         pOutTex->paletted_pixels = (uint8_t *)malloc(header->uTextureSize);
-        fread(pOutTex->paletted_pixels, 1, header->uTextureSize, pFile);
+        if (header->uTextureSize && fread(pOutTex->paletted_pixels, header->uTextureSize, 1, pFile) != 1)
+            return -1;
         data_size -= header->uTextureSize;
     } else {
         if (header->uTextureSize > data_size) {
             assert(false);
         }
         pOutTex->paletted_pixels = (uint8_t *)malloc(header->uDecompressedSize);
-        void *tmp_buf = malloc(header->uTextureSize);
-        fread(tmp_buf, 1, (size_t)header->uTextureSize, pFile);
+        std::unique_ptr<void, FreeDeleter> tmp_buf(malloc(header->uTextureSize));
+        if (fread(tmp_buf.get(), header->uTextureSize, 1, pFile) != 1)
+            return -1;
         data_size -= header->uTextureSize;
         zlib::Uncompress(pOutTex->paletted_pixels, &header->uDecompressedSize,
-                         tmp_buf, header->uTextureSize);
+                         tmp_buf.get(), header->uTextureSize);
         header->uTextureSize = header->uDecompressedSize;
-        free(tmp_buf);
     }
 
     pOutTex->pPalette24 = nullptr;
@@ -1059,7 +1084,8 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const std::st
         assert(false);
     }
     pOutTex->pPalette24 = (uint8_t *)malloc(0x300);
-    fread(pOutTex->pPalette24, 1, 0x300, pFile);
+    if (fread(pOutTex->pPalette24, 0x300, 1, pFile) != 1)
+        return -1;
     data_size -= 0x300;
 
     assert(data_size == 0);
