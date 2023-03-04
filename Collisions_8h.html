@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7e1c9c1</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ea8350e</span>
    </div>
   </td>
  </tr>
@@ -106,8 +106,10 @@ Functions</h2></td></tr>
 <tr class="separator:a4bebac6f421accf5342fd1a688be271e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8cdd9e6db8e019634d19bd556b187a7d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Collisions_8h.html#a8cdd9e6db8e019634d19bd556b187a7d">CollideWithParty</a> (bool jagged_top)</td></tr>
 <tr class="separator:a8cdd9e6db8e019634d19bd556b187a7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53c86328c9b208ab454cff1b44c7601e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Collisions_8h.html#a53c86328c9b208ab454cff1b44c7601e">ProcessActorCollisionsBLV</a> (<a class="el" href="classActor.html">Actor</a> &amp;actor, bool isAboveGround, bool isFlying)</td></tr>
-<tr class="separator:a53c86328c9b208ab454cff1b44c7601e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25ab5e5a904ec1b23153d6f5eed0e6c8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Collisions_8h.html#a25ab5e5a904ec1b23153d6f5eed0e6c8">ProcessActorCollisionsBLV</a> (<a class="el" href="classActor.html">Actor</a> &amp;actor, bool isAboveGround, bool canFly)</td></tr>
+<tr class="separator:a25ab5e5a904ec1b23153d6f5eed0e6c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc059a1a3a64cae53a7ee40cfd31e2da"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Collisions_8h.html#abc059a1a3a64cae53a7ee40cfd31e2da">ProcessActorCollisionsODM</a> (<a class="el" href="classActor.html">Actor</a> &amp;actor, bool canFly)</td></tr>
+<tr class="separator:abc059a1a3a64cae53a7ee40cfd31e2da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -321,8 +323,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a53c86328c9b208ab454cff1b44c7601e" name="a53c86328c9b208ab454cff1b44c7601e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a53c86328c9b208ab454cff1b44c7601e">&#9670;&#160;</a></span>ProcessActorCollisionsBLV()</h2>
+<a id="a25ab5e5a904ec1b23153d6f5eed0e6c8" name="a25ab5e5a904ec1b23153d6f5eed0e6c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25ab5e5a904ec1b23153d6f5eed0e6c8">&#9670;&#160;</a></span>ProcessActorCollisionsBLV()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -343,7 +345,7 @@ Variables</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>isFlying</em>&#160;</td>
+          <td class="paramname"><em>canFly</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -357,10 +359,38 @@ Variables</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">actor</td><td><a class="el" href="classActor.html">Actor</a> to move. </td></tr>
     <tr><td class="paramname">isAboveGround</td><td>Whether the actor is currently above ground (stands on air, basically). </td></tr>
-    <tr><td class="paramname">isFlying</td><td>Whether the actor is a flying creature that can fly (e.g. not paralyzed). </td></tr>
+    <tr><td class="paramname">canFly</td><td>Whether the actor is a flying creature that can fly (e.g. not paralyzed). </td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="abc059a1a3a64cae53a7ee40cfd31e2da" name="abc059a1a3a64cae53a7ee40cfd31e2da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc059a1a3a64cae53a7ee40cfd31e2da">&#9670;&#160;</a></span>ProcessActorCollisionsODM()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ProcessActorCollisionsODM </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classActor.html">Actor</a> &amp;&#160;</td>
+          <td class="paramname"><em>actor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>canFly</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
