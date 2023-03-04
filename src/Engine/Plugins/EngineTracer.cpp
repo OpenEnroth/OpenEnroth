@@ -5,7 +5,7 @@
 #include <filesystem>
 
 #include "Utility/ScopeGuard.h"
-#include "Utility/Format.h"
+#include "Utility/Exception.h"
 
 #include "Library/Trace/PaintEvent.h"
 #include "Library/Application/PlatformApplication.h"
@@ -91,10 +91,8 @@ void EngineTracer::playTrace(EngineController *game, const std::string &savePath
 
     int saveFileSize = std::filesystem::file_size(savePath);
     if (trace.header.saveFileSize != -1 && trace.header.saveFileSize != saveFileSize) {
-        throw std::runtime_error(fmt::format(
-            "Trace '{}' expected a savegame of size {} bytes, but the size of '{}' is {} bytes",
-            tracePath, trace.header.saveFileSize, savePath, saveFileSize
-        ));
+        throw Exception("Trace '{}' expected a savegame of size {} bytes, but the size of '{}' is {} bytes",
+                        tracePath, trace.header.saveFileSize, savePath, saveFileSize);
     }
 
     game->resizeWindow(640, 480);
@@ -118,18 +116,14 @@ void EngineTracer::playTrace(EngineController *game, const std::string &savePath
 
             int64_t tickCount = application()->platform()->tickCount();
             if (!(flags & TRACE_PLAYBACK_SKIP_TIME_CHECKS) && tickCount != paintEvent->tickCount) {
-                throw std::runtime_error(fmt::format(
-                    "Tick count desynchronized when playing back trace '{}': expected {}, got {}",
-                    tracePath, paintEvent->tickCount, tickCount
-                ));
+                throw Exception("Tick count desynchronized when playing back trace '{}': expected {}, got {}",
+                                tracePath, paintEvent->tickCount, tickCount);
             }
 
             int randomState = grng->Random(1024);
             if (!(flags & TRACE_PLAYBACK_SKIP_RANDOM_CHECKS) && randomState != paintEvent->randomState) {
-                throw std::runtime_error(fmt::format(
-                    "Random state desynchronized when playing back trace '{}' at {}ms: expected {}, got {}",
-                    tracePath, tickCount, paintEvent->randomState, randomState
-                ));
+                throw Exception("Random state desynchronized when playing back trace '{}' at {}ms: expected {}, got {}",
+                                tracePath, tickCount, paintEvent->randomState, randomState);
             }
         } else {
             game->postEvent(std::move(event));

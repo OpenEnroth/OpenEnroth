@@ -1,12 +1,13 @@
 #include "FileOutputStream.h"
 
 #include <cassert>
-#include <system_error>
+
+#include "Utility/Exception.h"
 
 FileOutputStream::FileOutputStream(const std::string &path) : path_(path) {
     file_ = fopen(path_.c_str(), "wb");
     if (!file_)
-        ThrowFromErrno();
+        Exception::throwFromErrno(path_);
 }
 
 FileOutputStream::~FileOutputStream() {
@@ -17,14 +18,14 @@ void FileOutputStream::Write(const void *data, size_t size) {
     assert(file_); // Writing into a closed stream is UB.
 
     if (fwrite(data, size, 1, file_) != 1)
-        ThrowFromErrno();
+        Exception::throwFromErrno(path_);
 }
 
 void FileOutputStream::Flush() {
     assert(file_); // Flushing a closed stream is UB.
 
     if (fflush(file_) != 0)
-        ThrowFromErrno();
+        Exception::throwFromErrno(path_);
 }
 
 void FileOutputStream::Close() {
@@ -38,11 +39,6 @@ void FileOutputStream::CloseInternal(bool canThrow) {
     int status = fclose(file_);
     file_ = nullptr;
     if (status != 0 && canThrow)
-        ThrowFromErrno();
-}
-
-void FileOutputStream::ThrowFromErrno() {
-    assert(errno != 0);
-
-    throw std::system_error(errno, std::generic_category(), path_);
+        Exception::throwFromErrno(path_);
+    // TODO(captainurist): !canThrow => log OR attach
 }
