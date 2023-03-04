@@ -6,10 +6,10 @@
 #include "Platform/PlatformEnums.h"
 #include "Io/IKeyboardController.h"
 #include "Io/KeyboardActionMapping.h"
+#include "Engine/Time.h"
 
-// key delay times in 1 / 128th of second
-constexpr int DELAY_TOGGLE_TIME_FIRST = 64;
-constexpr int DELAY_TOGGLE_TIME_AFTER = 5;
+constexpr int DELAY_TOGGLE_TIME_FIRST = Timer::Second / 2;
+constexpr int DELAY_TOGGLE_TIME_AFTER = Timer::Second / 15;
 
 enum class WindowInputStatus : int32_t {
     WINDOW_INPUT_NONE = 0,

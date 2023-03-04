@@ -1866,7 +1866,7 @@ void ODM_ProcessPartyActions() {
     int bmodel_standing_on_pid;
     bool is_on_water = false;
 
-    int curent_floor_level = ODM_GetFloorLevel(Vec3i(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z), pParty->uPartyHeight,
+    int curent_floor_level = ODM_GetFloorLevel(pParty->vPosition, pParty->uPartyHeight,
                                     &is_on_water, &bmodel_standing_on_pid, bWaterWalk);
     int is_not_on_bmodel = bmodel_standing_on_pid == 0;
     int ground_level = curent_floor_level + 1;
@@ -2251,6 +2251,7 @@ void ODM_ProcessPartyActions() {
     collision_state.radius_lo = pParty->radius;
     collision_state.radius_hi = pParty->radius / 2.0f;
     collision_state.check_hi = true;
+    // make 100 attempts to satisfy collisions
     for (uint i = 0; i < 100; i++) {
         collision_state.position_hi.x = party_new_x;
         collision_state.position_hi.y = party_new_Y;
