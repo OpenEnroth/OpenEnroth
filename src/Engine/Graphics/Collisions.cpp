@@ -476,7 +476,7 @@ void CollideWithParty(bool jagged_top) {
     CollideWithCylinder(pParty->vPosition.ToFloat(), 2 * pParty->radius, pParty->uPartyHeight, 4, jagged_top);
 }
 
-void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) {
+void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool canFly) {
     collision_state.ignored_face_id = -1;
     collision_state.total_move_distance = 0;
     collision_state.check_hi = true;
@@ -530,7 +530,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                 break; // Actor removed, no point in running more iterations.
             }
 
-            if (!isAboveGround && !isFlying) {
+            if (!isAboveGround && !canFly) {
                 if (actor.pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly || isInCrowd)
                     Actor::AI_StandOrBored(actor.id, PID(OBJECT_Player, 0), 0, nullptr);
 
@@ -539,7 +539,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
         }
 
         // Prevent actors from falling off ledges.
-        if (actor.uCurrentActionAnimation == ANIM_Walking && newFloorZ < actor.vPosition.z - 100 && !isAboveGround && !isFlying) {
+        if (actor.uCurrentActionAnimation == ANIM_Walking && newFloorZ < actor.vPosition.z - 100 && !isAboveGround && !canFly) {
             if (actor.vPosition.x & 1) {
                 actor.uYawAngle += 100;
             } else {
@@ -558,43 +558,21 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
         ObjectType type = PID_TYPE(collision_state.pid);
 
         if (type == OBJECT_Actor) {
-            if (pParty->bTurnBasedModeOn &&
-                (pTurnEngine->turn_stage == TE_ATTACK || pTurnEngine->turn_stage == TE_MOVEMENT)) {
-                actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
-                actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
-                actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
-                continue;
-            }
-            if (actor.pMonsterInfo.uHostilityType != MonsterInfo::Hostility_Friendly) {
-                if (!isInCrowd) {
-                    Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
-                    actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
-                    actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
-                    actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
-                    continue;
-                }
-            } else {
-                if (!isInCrowd) {
-                    if (pActors[id].pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly) {
-                        Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
-                        actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
-                        actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
-                        actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
-                        continue;
-                    } else {
+            if (!pParty->bTurnBasedModeOn || (pTurnEngine->turn_stage != TE_ATTACK && pTurnEngine->turn_stage != TE_MOVEMENT)) {
+                if (actor.pMonsterInfo.uHostilityType != MonsterInfo::Hostility_Friendly) {
+                    if (!isInCrowd) {
                         Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
-                        actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
-                        actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
-                        actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
-                        continue;
+                    } else {
+                        Actor::AI_StandOrBored(actor.id, PID(OBJECT_Player, 0), 0, nullptr);
                     }
+                } else if (isInCrowd) {
+                    Actor::AI_StandOrBored(actor.id, PID(OBJECT_Player, 0), 0, nullptr);
+                } else if (pActors[id].pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly) {
+                    Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
+                } else {
+                    Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
                 }
             }
-            Actor::AI_StandOrBored(actor.id, PID(OBJECT_Player, 0), 0, nullptr);
-            actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
-            actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
-            actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
-            continue;
         }
 
         if (type == OBJECT_Player) {
@@ -611,17 +589,9 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                 if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active()) {
                     pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
                 }
-
-                actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
-                actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
-                actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
             } else {
                 Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
-                actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
-                actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
-                actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
             }
-            continue;
         }
 
         if (type == OBJECT_Decoration) {
@@ -633,10 +603,6 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                     actor.vPosition.y - pLevelDecorations[id].vPosition.y); // Face away from the decoration.
             actor.vVelocity.x = TrigLUT.Cos(angle) * speed;
             actor.vVelocity.y = TrigLUT.Sin(angle) * speed;
-            actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
-            actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
-            actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
-            continue;
         }
 
         if (type == OBJECT_Face) {
@@ -673,8 +639,8 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
     }
 }
 
-void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
-    int actorRadius = !isFlying ? 40 : actor.uActorRadius;
+void ProcessActorCollisionsODM(Actor &actor, bool canFly) {
+    int actorRadius = !canFly ? 40 : actor.uActorRadius;
 
     collision_state.ignored_face_id = -1;
     collision_state.total_move_distance = 0;
@@ -737,15 +703,15 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         ObjectType type = PID_TYPE(collision_state.pid);
 
         if (type == OBJECT_Actor) {
-            if (pTurnEngine->turn_stage != TE_ATTACK && pTurnEngine->turn_stage != TE_MOVEMENT ||
-                !pParty->bTurnBasedModeOn) {
+            if (!pParty->bTurnBasedModeOn || (pTurnEngine->turn_stage != TE_ATTACK && pTurnEngine->turn_stage != TE_MOVEMENT)) {
                 if (actor.pMonsterInfo.uHostilityType != MonsterInfo::Hostility_Friendly) {
-                    if (!isInCrowd)
+                    if (!isInCrowd) {
                         Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
-                    else
-                        Actor::AI_StandOrBored(actor.id, 4, 0, nullptr);
+                    } else {
+                        Actor::AI_StandOrBored(actor.id, PID(OBJECT_Player, 0), 0, nullptr);
+                    }
                 } else if (isInCrowd) {
-                    Actor::AI_StandOrBored(actor.id, 4, 0, nullptr);
+                    Actor::AI_StandOrBored(actor.id, PID(OBJECT_Player, 0), 0, nullptr);
                 } else if (pActors[id].pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly) {
                     Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
                 } else {
@@ -779,13 +745,12 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         }
 
         if (type == OBJECT_Face) {
-            ODMFace * face = &pOutdoor->pBModels[collision_state.pid >> 9].pFaces[id & 0x3F];
+            ODMFace *face = &pOutdoor->pBModels[collision_state.pid >> 9].pFaces[id & 0x3F];
             if (!face->Ethereal()) {
                 if (face->uPolygonType == POLYGON_Floor) {
                     actor.vVelocity.z = 0;
                     actor.vPosition.z = pOutdoor->pBModels[collision_state.pid >> 9].pVertices[face->pVertexIDs[0]].z + 1;
-                    if (actor.vVelocity.x * actor.vVelocity.x +
-                        actor.vVelocity.y * actor.vVelocity.y < 400) {
+                    if (actor.vVelocity.LengthSqr() < 400) {
                         actor.vVelocity.y = 0;
                         actor.vVelocity.x = 0;
                     }
