@@ -289,7 +289,6 @@ void CastSpellInfoHelpers::castSpell() {
                 LloydsBeaconSpellDuration = GameTime::FromDays(7 * spell_level).GetSeconds();
                 LloydsBeaconSpellId = pCastSpell->uSpellID;
                 pCastSpell->uFlags |= ON_CAST_NoRecoverySpell;
-                pMessageQueue_50CBD0->AddGUIMessage(UIMSG_OnCastLloydsBeacon, 0, 0);
             } else {
                 pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                 pCastSpell->uSpellID = SPELL_NONE;
