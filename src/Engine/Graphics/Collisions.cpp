@@ -11,16 +11,15 @@
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/TurnEngine/TurnEngine.h"
-#include "Engine/Graphics/Viewport.h"
 
 #include "Utility/Math/Float.h"
 #include "Utility/Math/TrigLut.h"
 
 CollisionState collision_state;
 
-/* =================
- * Helper functions.
- */
+//
+// Helper functions.
+//
 
 /**
  * @offset 0x0047531C, 0x004754BF.
@@ -251,10 +250,10 @@ static void CollideWithDecoration(int id) {
 }
 
 
+//
+// Public API.
+//
 
-/* =============================
- * Implementation of public API.
- */
 bool CollisionState::PrepareAndCheckIfStationary(int dt_fp) {
     if (!dt_fp)
         dt_fp = pEventTimer->dt_fixpoint;
@@ -670,5 +669,168 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
         actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
         actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
         actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
+    }
+}
+
+void ProcessActorCollisionsODM(Actor &actor, int floorLevel, bool isOnWater, bool isFlying) {
+    signed int Act_Radius = actor.uActorRadius;
+    if (!isFlying)
+        Act_Radius = 40;
+
+    collision_state.check_hi = true;
+    collision_state.ignored_face_id = -1;
+    collision_state.radius_hi = Act_Radius;
+    collision_state.radius_lo = Act_Radius;
+    collision_state.total_move_distance = 0;
+
+    for (int attempt = 0; attempt < 100; ++attempt) {
+        collision_state.position_hi.x = actor.vPosition.x;
+        collision_state.position_lo.x = collision_state.position_hi.x;
+        collision_state.position_hi.y = actor.vPosition.y;
+        collision_state.position_lo.y = collision_state.position_hi.y;
+        int Act_Z_Pos = actor.vPosition.z;
+        collision_state.position_lo.z = Act_Z_Pos + Act_Radius + 1;
+        collision_state.position_hi.z = Act_Z_Pos - Act_Radius + actor.uActorHeight - 1;
+        if (collision_state.position_hi.z < collision_state.position_lo.z)
+            collision_state.position_hi.z = Act_Z_Pos + Act_Radius + 1;
+        collision_state.velocity.x = actor.vVelocity.x;
+        collision_state.uSectorID = 0;
+        collision_state.velocity.y = actor.vVelocity.y;
+        collision_state.velocity.z = actor.vVelocity.z;
+        if (collision_state.PrepareAndCheckIfStationary(0)) break;
+        CollideOutdoorWithModels(true);
+        CollideOutdoorWithDecorations(WorldPosToGridCellX(actor.vPosition.x), WorldPosToGridCellY(actor.vPosition.y));
+        CollideWithParty(false);
+        _46ED8A_collide_against_sprite_objects(PID(OBJECT_Actor, actor.id));
+        int v31 = 0;
+        signed int i;
+        for (i = 0; v31 < ai_arrays_size; ++v31) {
+            unsigned int v33 = ai_near_actors_ids[v31];
+            if (v33 != actor.id && CollideWithActor(v33, 40))
+                ++i;
+        }
+        int v71 = i > 1;
+        //if (collision_state.adjusted_move_distance < collision_state.move_distance)
+            //Slope_High = collision_state.adjusted_move_distance * collision_state.direction.z;
+        // v34 = 0;
+        int v35 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
+        bool bOnWater = false;
+        int Splash_Model_On;
+        int Splash_Floor = ODM_GetFloorLevel(
+            collision_state.new_position_lo.ToInt() - Vec3i(0, 0, collision_state.radius_lo + 1),
+            actor.uActorHeight, &bOnWater, &Splash_Model_On, 0);
+        if (isOnWater) {
+            if (v35 < Splash_Floor + 60) {
+                if (actor.uAIState == Dead || actor.uAIState == Dying ||
+                    actor.uAIState == Removed || actor.uAIState == Disabled) {
+                    int Splash_Z = floorLevel + 60;
+                    if (Splash_Model_On)
+                        Splash_Z = Splash_Floor + 30;
+
+                    SpriteObject::Create_Splash_Object(actor.vPosition.x, actor.vPosition.y, Splash_Z);
+                    actor.uAIState = Removed;
+                    return;
+                }
+            }
+        }
+
+        if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
+            actor.vPosition.x = collision_state.new_position_lo.x;
+            actor.vPosition.y = collision_state.new_position_lo.y;
+            actor.vPosition.z = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
+            break;
+        }
+
+        actor.vPosition.x += collision_state.adjusted_move_distance * collision_state.direction.x;
+        actor.vPosition.y += collision_state.adjusted_move_distance * collision_state.direction.y;
+        actor.vPosition.z += collision_state.adjusted_move_distance * collision_state.direction.z;
+        collision_state.total_move_distance += collision_state.adjusted_move_distance;
+        unsigned int v39 = PID_ID(collision_state.pid);
+        int Angle_To_Decor;
+        signed int Coll_Speed;
+        switch (PID_TYPE(collision_state.pid)) {
+        case OBJECT_Actor:
+            if (pTurnEngine->turn_stage != TE_ATTACK && pTurnEngine->turn_stage != TE_MOVEMENT || !pParty->bTurnBasedModeOn) {
+                // if(pParty->bTurnBasedModeOn)
+                // v34 = 0;
+                if (actor.pMonsterInfo.uHostilityType) {
+                    if (v71 == 0)
+                        Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
+                    else
+                        Actor::AI_StandOrBored(actor.id, 4, 0, nullptr);
+                } else if (v71) {
+                    Actor::AI_StandOrBored(actor.id, 4, 0, nullptr);
+                } else if (pActors[v39].pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly) {
+                    Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
+                } else {
+                    Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
+                }
+            }
+            break;
+        case OBJECT_Player:
+            if (!actor.GetActorsRelation(0)) {
+                Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
+                break;
+            }
+
+            actor.vVelocity.y = 0;
+            actor.vVelocity.x = 0;
+
+            if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active()) {
+                pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
+            }
+            break;
+        case OBJECT_Decoration:
+            Coll_Speed = integer_sqrt(actor.vVelocity.x * actor.vVelocity.x +
+                                      actor.vVelocity.y * actor.vVelocity.y);
+            Angle_To_Decor = TrigLUT.Atan2(actor.vPosition.x - pLevelDecorations[v39].vPosition.x,
+                                           actor.vPosition.y - pLevelDecorations[v39].vPosition.y);
+
+            actor.vVelocity.x = TrigLUT.Cos(Angle_To_Decor) * Coll_Speed;
+            actor.vVelocity.y = TrigLUT.Sin(Angle_To_Decor) * Coll_Speed;
+            break;
+        case OBJECT_Face: {
+            ODMFace * face = &pOutdoor->pBModels[collision_state.pid >> 9].pFaces[v39 & 0x3F];
+            if (!face->Ethereal()) {
+                if (face->uPolygonType == POLYGON_Floor) {
+                    actor.vVelocity.z = 0;
+                    actor.vPosition.z = pOutdoor->pBModels[collision_state.pid >> 9].pVertices[face->pVertexIDs[0]].z + 1;
+                    if (actor.vVelocity.x * actor.vVelocity.x +
+                        actor.vVelocity.y * actor.vVelocity.y < 400) {
+                        actor.vVelocity.y = 0;
+                        actor.vVelocity.x = 0;
+                    }
+                } else {
+                    int v72b = abs(face->pFacePlaneOLD.vNormal.y * actor.vVelocity.y +
+                                   face->pFacePlaneOLD.vNormal.z * actor.vVelocity.z +
+                                   face->pFacePlaneOLD.vNormal.x * actor.vVelocity.x) >> 16;
+                    if ((collision_state.speed / 8) > v72b)
+                        v72b = collision_state.speed / 8;
+
+                    actor.vVelocity.x += fixpoint_mul(v72b, face->pFacePlaneOLD.vNormal.x);
+                    actor.vVelocity.y += fixpoint_mul(v72b, face->pFacePlaneOLD.vNormal.y);
+                    actor.vVelocity.z += fixpoint_mul(v72b, face->pFacePlaneOLD.vNormal.z);
+                    if (face->uPolygonType != POLYGON_InBetweenFloorAndWall) {
+                        int v46 = collision_state.radius_lo - face->pFacePlaneOLD.SignedDistanceTo(actor.vPosition);
+                        if (v46 > 0) {
+                            actor.vPosition.x += fixpoint_mul(v46, face->pFacePlaneOLD.vNormal.x);
+                            actor.vPosition.y += fixpoint_mul(v46, face->pFacePlaneOLD.vNormal.y);
+                            actor.vPosition.z += fixpoint_mul(v46, face->pFacePlaneOLD.vNormal.z);
+                        }
+                        actor.uYawAngle = TrigLUT.Atan2(actor.vVelocity.x, actor.vVelocity.y);
+                    }
+                }
+            }
+        }
+            break;
+        default:
+            break;
+        }
+
+        actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
+        actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
+        actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
+
+        Act_Radius = collision_state.radius_lo;
     }
 }
