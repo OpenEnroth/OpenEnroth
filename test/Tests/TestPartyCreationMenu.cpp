@@ -376,3 +376,9 @@ GAME_TEST(Issue, Issue395) {
     test->playTraceFromTestData("issue_395.mm7", "issue_395.json", []() { check395exp({ {0, 100}, {1, 100}, {2, 100}, {3, 100} }); });
     check395exp({ {0, 214}, {1, 228}, {2, 237}, {3, 258} });
 }
+
+GAME_TEST(Issue, Issue490) {
+    // Check that Poison Spray sprites are moving and doing damage
+    test->playTraceFromTestData("issue_490.mm7", "issue_490.json", []() { EXPECT_EQ(pParty->pPlayers[0].uExperience, 279); });
+    EXPECT_EQ(pParty->pPlayers[0].uExperience, 285);
+}
