@@ -40,7 +40,8 @@ elseif(BUILD_PLATFORM STREQUAL "darwin")
 endif()
 
 if(UNIX)
-  add_compile_options(-Werror=return-type) # Control reaches the end of non-void function, this is an error on MSVC
+    add_compile_options(-Werror=return-type) # Control reaches the end of non-void function, this is an error on MSVC
+    add_compile_options(-Werror=unused-result) # Ignoring return value of function declared with 'nodiscard' attribute
 endif()
 
 add_compile_definitions(FMT_USE_NONTYPE_TEMPLATE_ARGS) # Enable _cf literals

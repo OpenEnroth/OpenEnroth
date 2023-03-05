@@ -1,5 +1,7 @@
 #include "Blob.h"
 
+#include <string>
+
 #include "Utility/Exception.h"
 
 class NonOwningBlobHandler : public BlobHandler {
@@ -35,6 +37,24 @@ Blob Blob::Read(FILE *file, size_t size) {
     if (read != 1)
         throw Exception("Failed to read {} bytes from file", size);
 
+    return result;
+}
+
+Blob Blob::FromFile(std::string_view path) {
+    FILE *file = fopen(std::string(path).c_str(), "rb");
+    if (!file)
+        throw Exception("Could not open file '{}' for reading", path);
+
+    fseek(file, 0, SEEK_END);
+    size_t size = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    Blob result = Allocate(size);
+
+    size_t read = fread(result.data_, result.size_, 1, file);
+    assert(read == 1);
+
+    fclose(file);
     return result;
 }
 
