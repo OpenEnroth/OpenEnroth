@@ -1,5 +1,6 @@
 #include "Engine/Graphics/HWLContainer.h"
 
+#include <cassert>
 #include <cstring>
 #include <vector>
 
@@ -7,7 +8,6 @@
 #include "Library/Compression/Compression.h"
 #include "Library/Logger/Logger.h"
 #include "Utility/String.h"
-
 
 #pragma pack(push, 1)
 struct HWLHeader {
@@ -17,7 +17,6 @@ struct HWLHeader {
 #pragma pack(pop)
 
 HWLContainer::HWLContainer() {
-    pFile = nullptr;
     log = Engine_::IocContainer::ResolveLogger();
 }
 
@@ -28,6 +27,8 @@ HWLContainer::~HWLContainer() {
 }
 
 bool HWLContainer::Open(const std::string &pFilename) {
+    assert(!pFile);
+
     pFile = fopen(pFilename.c_str(), "rb");
     if (!pFile) {
         log->Warning("Failed to open file: {}", pFilename);
@@ -35,7 +36,9 @@ bool HWLContainer::Open(const std::string &pFilename) {
     }
 
     HWLHeader header;
-    fread(&header, sizeof(HWLHeader), 1, pFile);
+    if (fread(&header, sizeof(HWLHeader), 1, pFile) != 1)
+        return false;
+
     if (memcmp(&header.uSignature, "D3DT", 4) != 0) {
         log->Warning("Invalid format: {}", pFilename);
         return false;
@@ -49,10 +52,13 @@ bool HWLContainer::Open(const std::string &pFilename) {
     std::vector<HWLNode> vNodes;
 
     uint32_t uNumItems = 0;
-    fread(&uNumItems, 4, 1, pFile);
+    if (fread(&uNumItems, 4, 1, pFile) != 1)
+        return false;
+
     char tmpName[21];
     for (unsigned int i = 0; i < uNumItems; ++i) {
-        fread(tmpName, 20, 1, pFile);
+        if (fread(tmpName, 20, 1, pFile) != 1)
+            return false;
         tmpName[20] = 0;
         HWLNode node;
         node.sName = toLower(std::string(tmpName));
@@ -62,7 +68,8 @@ bool HWLContainer::Open(const std::string &pFilename) {
 
     for (unsigned int i = 0; i < uNumItems; ++i) {
         uint32_t uOffset = 0;
-        fread(&uOffset, 4, 1, pFile);
+        if (fread(&uOffset, 4, 1, pFile) != 1)
+            return false;
         vNodes[i].uOffset = uOffset;
     }
 
@@ -101,7 +108,8 @@ HWLTexture *HWLContainer::LoadTexture(const std::string &pName) {
     fseek(pFile, uOffset, SEEK_SET);
 
     HWLTextureHeader textureHeader;
-    fread(&textureHeader, sizeof(HWLTextureHeader), 1, pFile);
+    if (fread(&textureHeader, sizeof(HWLTextureHeader), 1, pFile) != 1)
+        return nullptr;
 
     HWLTexture *pTex = new HWLTexture;
     pTex->uBufferWidth = textureHeader.uBufferWidth;
@@ -115,12 +123,11 @@ HWLTexture *HWLContainer::LoadTexture(const std::string &pName) {
 
     pTex->pPixels = new uint16_t[pTex->uWidth * pTex->uHeight];
     if (textureHeader.uCompressedSize) {
-        Blob buffer = Blob::Allocate(textureHeader.uCompressedSize);
-        fread(buffer.data(), buffer.size(), 1, pFile);
-        buffer = zlib::Uncompress(buffer);
+        Blob buffer = zlib::Uncompress(Blob::Read(pFile, textureHeader.uCompressedSize));
         memcpy(pTex->pPixels, buffer.data(), buffer.size()); // TODO: gotta check size here.
     } else {
-        fread(pTex->pPixels, 2, pTex->uWidth * pTex->uHeight, pFile);
+        if (fread(pTex->pPixels, 2 * pTex->uWidth * pTex->uHeight, 1, pFile) != 1)
+            return nullptr;
     }
 
     return pTex;

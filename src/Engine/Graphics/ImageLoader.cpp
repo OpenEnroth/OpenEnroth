@@ -260,27 +260,8 @@ bool PCX_File_Loader::Load(unsigned int *width, unsigned int *height,
     *format = IMAGE_INVALID_FORMAT;
     *out_palette = nullptr;
 
-    FILE *file = fopen(MakeDataPath(this->resource_name).c_str(), "rb");
-    if (!file) {
-        log->Warning("Unable to load {}", this->resource_name);
-        return false;
-    }
-
-    fseek(file, 0, SEEK_END);
-    size_t filesize = ftell(file);
-    fseek(file, 0, SEEK_SET);
-
-    uint8_t *buffer = (uint8_t *)malloc(filesize);
-
-    fread(buffer, filesize, 1, file);
-
-    bool res = InternalLoad(buffer, filesize, width, height, pixels, format);
-
-    free(buffer);
-
-    fclose(file);
-
-    return res;
+    Blob buffer = Blob::FromFile(MakeDataPath(this->resource_name));
+    return InternalLoad(buffer.data(), buffer.size(), width, height, pixels, format);
 }
 
 bool PCX_LOD_Raw_Loader::Load(unsigned int *width, unsigned int *height,

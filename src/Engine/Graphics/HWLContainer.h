@@ -32,7 +32,7 @@ class HWLContainer {
     HWLTexture *LoadTexture(const std::string &pName);
 
  protected:
-    FILE *pFile;
-    Logger *log;
+    FILE *pFile = nullptr;
+    Logger *log = nullptr;
     std::map<std::string, size_t> mNodes;
 };

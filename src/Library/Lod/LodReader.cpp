@@ -200,7 +200,7 @@ Blob LodReader::read(const std::string &filename) {
 
         if (0 != header.decompressedSize) {
             Blob result = Blob::Allocate(header.compressedSize);
-            fread(result.data(), 1, header.compressedSize, _fp);
+            assert(1 == fread(result.data(), header.compressedSize, 1, _fp));
             return zlib::Uncompress(result, header.decompressedSize);
         } else {
             Blob res = Blob::Allocate(header.compressedSize);

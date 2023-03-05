@@ -293,7 +293,7 @@ struct Party {
     int jump_strength; // jump strength, higher value => higher jumps, default 5.
     int field_28_set0_unused;
     GameTime playing_time;  // uint64_t uTimePlayed;
-    GameTime last_regenerated;
+    GameTime last_regenerated; // Timestamp when HP/MP regeneration was checked last time (using 5 minutes granularity)
     PartyTimeStruct PartyTimes;
     Vec3i vPosition;
     int sRotationZ;

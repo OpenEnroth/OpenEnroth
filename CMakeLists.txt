@@ -31,6 +31,7 @@ elseif(BUILD_COMPILER STREQUAL "msvc")
   add_compile_definitions(_CRT_SECURE_NO_WARNINGS) # STL security warnings are just noise
   add_compile_definitions(_CRT_NONSTDC_NO_DEPRECATE) # POSIX deprecation warnings are also just noise
   add_compile_definitions(_USE_MATH_DEFINES) # Pull in M_PI and other <cmath> defines
+  add_compile_definitions(FMT_CONSTEVAL=) # MSVC chokes on fmt consteval formatting, so we define FMT_CONSTEVAL=<empty>
   add_compile_options(/Zc:preprocessor) # Use standard compliant preprocessor
   set(CMAKE_CXX_FLAGS "/MP ${CMAKE_CXX_FLAGS}")
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
@@ -39,7 +40,8 @@ elseif(BUILD_PLATFORM STREQUAL "darwin")
 endif()
 
 if(UNIX)
-  add_compile_options(-Werror=return-type) # Control reaches the end of non-void function, this is an error on MSVC
+    add_compile_options(-Werror=return-type) # Control reaches the end of non-void function, this is an error on MSVC
+    add_compile_options(-Werror=unused-result) # Ignoring return value of function declared with 'nodiscard' attribute
 endif()
 
 add_compile_definitions(FMT_USE_NONTYPE_TEMPLATE_ARGS) # Enable _cf literals

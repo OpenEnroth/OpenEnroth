@@ -238,7 +238,7 @@ struct SpellBuff {
     PLAYER_SKILL_MASTERY uSkillMastery = PLAYER_SKILL_MASTERY_NONE; // 1-4, normal to grandmaster.
     uint16_t uOverlayID = 0;
     uint8_t uCaster = 0;
-    uint8_t uFlags = 0; // 0x1 => cast at grandmaster.
+    bool isGMBuff = false; // Buff was casted at grandmaster mastery
 };
 #pragma pack(pop)
 

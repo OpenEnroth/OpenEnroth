@@ -707,12 +707,14 @@ class VideoList {
         fseek(file, 0, SEEK_SET);
 
         uint32_t uNumVideoHeaders = 0;
-        fread(&uNumVideoHeaders, 1, 4, file);
+        if (fread(&uNumVideoHeaders, 4, 1, file) != 1) {
+            logger->Warning("Invalid video file format: {}", file_path);
+            return;
+        }
 
         std::vector<MovieHeader> headers;
         headers.resize(uNumVideoHeaders);
-        if (fread(&headers[0], sizeof(MovieHeader), uNumVideoHeaders, file) !=
-            uNumVideoHeaders) {
+        if (fread(&headers[0], sizeof(MovieHeader), uNumVideoHeaders, file) != uNumVideoHeaders) {
             return;
         }
         std::sort(headers.begin(), headers.end(),
