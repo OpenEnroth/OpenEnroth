@@ -941,7 +941,7 @@ LABEL_47:
                                 pMediaPlayer->Unload();
                                 window_SpeakInHouse->Release();
                                 window_SpeakInHouse = 0;
-                                pMessageQueue_50CBD0->Flush();
+                                pCurrentFrameMessageQueue->Flush();
                                 current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                                 pDialogueNPCCount = 0;
                                 if (pDialogueWindow) {
