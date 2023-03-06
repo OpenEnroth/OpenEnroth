@@ -794,3 +794,33 @@ void RenderBase::PresentBlackScreen() {
     ClearBlack();
     Present();
 }
+
+int RenderBase::getActorInViewport(int pDepth, int startId) {
+    if (startId == -1) {
+        return -1;
+    }
+
+    for (int i = startId; i < uNumBillboardsToDraw; i++) {
+        int render_id = pBillboardRenderListD3D[i].sParentBillboardID;
+        if (render_id == -1) {
+            continue; // E.g. spell particle.
+        }
+
+        int pid = (uint16_t)pBillboardRenderList[render_id].object_pid;
+        if (PID_TYPE(pid) == OBJECT_Actor) {
+            if (pBillboardRenderList[render_id].screen_space_z <= pDepth) {
+                int actor_id = PID_ID(pid);
+                if (pActors[actor_id].uAIState != Dead &&
+                        pActors[actor_id].uAIState != Dying &&
+                        pActors[actor_id].uAIState != Removed &&
+                        pActors[actor_id].uAIState != Disabled &&
+                        pActors[actor_id].uAIState != Summoned) {
+                    if (vis->DoesRayIntersectBillboard(static_cast<float>(pDepth), i)) {
+                        return actor_id;
+                    }
+                }
+            }
+        }
+    }
+    return -1;
+}

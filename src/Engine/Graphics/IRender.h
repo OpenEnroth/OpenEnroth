@@ -341,7 +341,7 @@ class IRender {
     virtual void SavePCXScreenshot() = 0;
     virtual unsigned short* MakeScreenshot16(int width, int height) = 0;
 
-    virtual int GetActorsInViewport(int pDepth) = 0;
+    virtual int getActorInViewport(int pDepth, int startId) = 0;
 
     virtual void BeginLightmaps() = 0;
     virtual void EndLightmaps() = 0;
@@ -430,6 +430,29 @@ struct SkyBillboardStruct {
 };
 #pragma pack(pop)
 extern SkyBillboardStruct SkyBillboard;
+
+/**
+ * Accessor for iteration through Actor objects currently visible to the player.
+ */
+class ActorsInViewport {
+  public:
+    class Iter {
+      public:
+        explicit Iter(int depth, int curId = -1):depth_(depth),curId_(curId) {}
+        Iter& operator++() {curId_ = render->getActorInViewport(depth_, curId_ + 1); return *this;}
+        bool operator!=(Iter &other) const {return curId_ != other.curId_;}
+        Actor& operator*() {return pActors[curId_];}
+      private:
+        int depth_;
+        int curId_;
+    };
+  public:
+    ActorsInViewport(int depth):depth_(depth) {}
+    Iter begin() { return Iter(depth_, render->getActorInViewport(depth_, 0)); }
+    Iter end() { return Iter(depth_); }
+  private:
+    int depth_;
+};
 
 unsigned int _452442_color_cvt(uint16_t a1, uint16_t a2, int a3, int a4);
 

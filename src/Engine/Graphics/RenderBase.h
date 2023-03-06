@@ -51,6 +51,9 @@ class RenderBase : public IRender {
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() override;
     virtual void PresentBlackScreen() override;
 
+    virtual int getActorInViewport(int pDepth, int startId) override;
+
+
  protected:
     unsigned int Billboard_ProbablyAddToListAndSortByZOrder(float z);
     void TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pBillboard);

@@ -1207,48 +1207,6 @@ unsigned short *RenderOpenGL::MakeScreenshot16(int width, int height) {
     return pPixels;
 }
 
-// TODO: should this be combined / moved out of render
-int RenderOpenGL::GetActorsInViewport(int pDepth) {
-    int
-        v3;  // eax@2 применяется в закле Жар печи для подсчёта кол-ва монстров
-             // видимых группе и заполнения массива id видимых монстров
-    unsigned int v5;   // eax@2
-    unsigned int v6;   // eax@4
-    unsigned int v12;  // [sp+10h] [bp-14h]@1
-    int mon_num;       // [sp+1Ch] [bp-8h]@1
-    unsigned int a1a;  // [sp+20h] [bp-4h]@1
-
-    mon_num = 0;
-    v12 = render->uNumBillboardsToDraw;
-    if ((signed int)render->uNumBillboardsToDraw > 0) {
-        for (a1a = 0; (signed int)a1a < (signed int)v12; ++a1a) {
-            v3 = render->pBillboardRenderListD3D[a1a].sParentBillboardID;
-            if(v3 == -1)
-                continue; // E.g. spell particle.
-
-            v5 = (uint16_t)pBillboardRenderList[v3].object_pid;
-            if (PID_TYPE(v5) == OBJECT_Actor) {
-                if (pBillboardRenderList[v3].screen_space_z <= pDepth) {
-                    v6 = PID_ID(v5);
-                    if (pActors[v6].uAIState != Dead &&
-                        pActors[v6].uAIState != Dying &&
-                        pActors[v6].uAIState != Removed &&
-                        pActors[v6].uAIState != Disabled &&
-                        pActors[v6].uAIState != Summoned) {
-                        if (vis->DoesRayIntersectBillboard(static_cast<float>(pDepth), a1a)) {
-                            if (mon_num < 100) {
-                                _50BF30_actors_in_viewport_ids[mon_num] = v6;
-                                mon_num++;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return mon_num;
-}
-
 // TODO(pskelton): drop - not required in gl renderer now
 void RenderOpenGL::BeginLightmaps() { return; }
 void RenderOpenGL::EndLightmaps() { return; }
