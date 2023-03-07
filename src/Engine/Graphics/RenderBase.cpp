@@ -816,7 +816,7 @@ int RenderBase::getActorInViewport(int pDepth, int startId) {
                         pActors[actor_id].uAIState != Disabled &&
                         pActors[actor_id].uAIState != Summoned) {
                     if (vis->DoesRayIntersectBillboard(static_cast<float>(pDepth), i)) {
-                        return actor_id;
+                        return i;
                     }
                 }
             }

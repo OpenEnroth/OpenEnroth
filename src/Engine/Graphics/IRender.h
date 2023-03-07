@@ -441,7 +441,9 @@ class ActorsInViewport {
         explicit Iter(int depth, int curId = -1):depth_(depth),curId_(curId) {}
         Iter& operator++() {curId_ = render->getActorInViewport(depth_, curId_ + 1); return *this;}
         bool operator!=(Iter &other) const {return curId_ != other.curId_;}
-        Actor& operator*() {return pActors[curId_];}
+        Actor& operator*() {
+            return pActors[PID_ID(pBillboardRenderList[render->pBillboardRenderListD3D[curId_].sParentBillboardID].object_pid)];
+        }
       private:
         int depth_;
         int curId_;
