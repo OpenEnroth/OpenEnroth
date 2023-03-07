@@ -142,7 +142,7 @@ void GuildDialog() {
         return;
     }
 
-    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
 }
 
 //----- (004BC8D5) --------------------------------------------------------

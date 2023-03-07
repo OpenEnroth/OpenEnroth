@@ -141,17 +141,17 @@ void ArenaFight() {
     pParty->sRotationZ = 512;
     pParty->sRotationY = 0;
     pParty->uFallSpeed = 0;
-    /*if ( (signed int)pMessageQueue_50CBD0->uNumMessages < 40 )
+    /*if ( (signed int)pCurrentFrameMessageQueue->uNumMessages < 40 )
     {
-    pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].eType =
+    pCurrentFrameMessageQueue->pMessages[pCurrentFrameMessageQueue->uNumMessages].eType =
     UIMSG_Escape;
-    pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].param =
+    pCurrentFrameMessageQueue->pMessages[pCurrentFrameMessageQueue->uNumMessages].param =
     1;
-    *(&pMessageQueue_50CBD0->uNumMessages + 3 *
-    pMessageQueue_50CBD0->uNumMessages + 3) = 0;
-    ++pMessageQueue_50CBD0->uNumMessages;
+    *(&pCurrentFrameMessageQueue->uNumMessages + 3 *
+    pCurrentFrameMessageQueue->uNumMessages + 3) = 0;
+    ++pCurrentFrameMessageQueue->uNumMessages;
     }*/
-    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
     // v2 = pParty->pPlayers.data();
     for (uint i = 0; i < 4; i++) {
         v3 = pParty->pPlayers[i].GetActualLevel();

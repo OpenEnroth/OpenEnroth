@@ -87,8 +87,8 @@ MENU_STATE sCurrentMenuID;
 enum CURRENT_SCREEN current_screen_type = CURRENT_SCREEN::SCREEN_VIDEO;
 enum CURRENT_SCREEN prev_screen_type;
 
-struct GUIMessageQueue *pMessageQueue_50CBD0 = new GUIMessageQueue;  // main message queue
-struct GUIMessageQueue *pMessageQueue_50C9E8 = new GUIMessageQueue;  // swap message queue - for handling message after main queue ??
+struct GUIMessageQueue *pCurrentFrameMessageQueue = new GUIMessageQueue;
+struct GUIMessageQueue *pNextFrameMessageQueue = new GUIMessageQueue;
 
 Image *ui_exit_cancel_button_background = nullptr;
 Image *game_ui_right_panel_frame = nullptr;
@@ -177,7 +177,7 @@ GUIButton *GUI_HandleHotkey(PlatformKey hotkey) {
     for (GUIWindow *pWindow : lWindowList) {
         for (GUIButton *result : pWindow->vButtons) {
             if (result->action != InputAction::Invalid && keyboardActionMapping->IsKeyMatchAction(result->action, hotkey)) {
-                pMessageQueue_50CBD0->AddGUIMessage(result->msg, result->msg_param, 0);
+                pCurrentFrameMessageQueue->AddGUIMessage(result->msg, result->msg_param, 0);
                 return result;
             }
         }
@@ -865,9 +865,9 @@ void OnSaveLoad::Update() {
     Release();
 
     if (current_screen_type == CURRENT_SCREEN::SCREEN_SAVEGAME) {
-        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_SaveGame, 0, 0);
+        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_SaveGame, 0, 0);
     } else {
-        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_LoadGame, 0, 0);
+        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_LoadGame, 0, 0);
     }
 }
 
@@ -882,7 +882,7 @@ void OnCancel::Update() {
     }
     Release();
 
-    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
 }
 
 void OnCancel2::Update() {
@@ -896,7 +896,7 @@ void OnCancel2::Update() {
     }
     Release();
 
-    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
 }
 
 void OnCancel3::Update() {
@@ -911,7 +911,7 @@ void OnCancel3::Update() {
     }
     Release();
 
-    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
 }
 
 void GUI_UpdateWindows() {
@@ -1410,7 +1410,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
                         pPlayers[uActiveCharacter]->SetSkillMastery(dword_F8B1AC_skill_being_taught, dword_F8B1B0_MasteryBeingTaught);
                         pPlayers[uActiveCharacter]->PlaySound(SPEECH_SkillMasteryInc, 0);
                     }
-                    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+                    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
                 }
             } else {
                 if (topic == DIALOGUE_82_join_guild && guild_membership_approved) {
@@ -1453,7 +1453,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
                     default:
                         break;
                     }
-                    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+                    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
                     if (uActiveCharacter) {
                         pPlayers[uActiveCharacter]->PlaySound(SPEECH_JoinedGuild, 0);
                         BackToHouseMenu();
@@ -1511,7 +1511,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
     PrepareHouse(static_cast<HOUSE_ID>(window_SpeakInHouse->wData.val));
     dialog_menu_id = DIALOGUE_MAIN;
 
-    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
     if (uActiveCharacter)
         pPlayers[uActiveCharacter]->PlaySound(SPEECH_HireNPC, 0);
 
@@ -2285,8 +2285,8 @@ void WindowManager::DeleteAllVisibleWindows() {
     pGUIWindow2 = nullptr; // branchless dialougue
 
     current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-    pMessageQueue_50C9E8->Clear();
-    pMessageQueue_50CBD0->Clear();
+    pNextFrameMessageQueue->Clear();
+    pCurrentFrameMessageQueue->Clear();
     pMediaPlayer->Unload();
 }
 

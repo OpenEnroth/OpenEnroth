@@ -807,13 +807,13 @@ bool HouseUI_CheckIfPlayerCanInteract() {
 bool EnterHouse(HOUSE_ID uHouseID) {
     GameUI_StatusBar_Clear();
     GameUI_SetStatusBar("");
-    pMessageQueue_50CBD0->Flush();
+    pCurrentFrameMessageQueue->Flush();
     uDialogueType = DIALOGUE_NULL;
     keyboardInputHandler->SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_CANCELLED);
     keyboardInputHandler->ResetKeys();
 
     if (uHouseID == HOUSE_THRONEROOM_WIN_GOOD || uHouseID == HOUSE_THRONEROOM_WIN_EVIL) {
-        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_ShowGameOverWindow, 0, 0);
+        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_ShowGameOverWindow, 0, 0);
         return 0;
     }
 
@@ -1328,7 +1328,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     }
     case DIALOGUE_TAVERN_ARCOMAGE_RESULT:
     {
-        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_PlayArcomage, 0, 0);
+        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_PlayArcomage, 0, 0);
         dialog_menu_id = DIALOGUE_TAVERN_ARCOMAGE_RESULT;
         break;
     }
@@ -1556,7 +1556,7 @@ void TravelByTransport() {
             if (pParty->GetGold() < pPrice) {
                 GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
                 PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_Greeting_2);
-                pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
                 return;
             }
 
@@ -1612,7 +1612,7 @@ void TravelByTransport() {
                     std::this_thread::sleep_for(1ms);
                 }
                 while (HouseDialogPressCloseBtn()) {}
-                pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
             } else {
                 dialog_menu_id = DIALOGUE_MAIN;
                 pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
@@ -1749,7 +1749,7 @@ void TownHallDialog() {
             }
         }
         window_SpeakInHouse->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
-        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
         break;
     }
     default:
@@ -1796,7 +1796,7 @@ void BankDialog() {
         if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CONFIRMED) {
             int sum = atoi(keyboardInputHandler->GetTextInput().c_str());
             if (sum <= 0) {
-                pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
                 return;
             }
 
@@ -1815,7 +1815,7 @@ void BankDialog() {
             }
         }
         window_SpeakInHouse->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
-        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
         break;
     }
     case DIALOGUE_BANK_GET_GOLD:
@@ -1830,7 +1830,7 @@ void BankDialog() {
             window_SpeakInHouse->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
             int sum = atoi(keyboardInputHandler->GetTextInput().c_str());
             if (sum <= 0) {
-                pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
                 return;
             }
 
@@ -1846,7 +1846,7 @@ void BankDialog() {
             }
         }
         window_SpeakInHouse->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
-        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
         break;
     }
     default:
@@ -2055,14 +2055,14 @@ void TavernDialog() {
             GetHouseGoodbyeSpeech();
             pMediaPlayer->Unload();
 
-            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_RentRoom, window_SpeakInHouse->wData.val, 1);
+            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_RentRoom, window_SpeakInHouse->wData.val, 1);
             window_SpeakInHouse->Release();
             window_SpeakInHouse = 0;
             return;
         }
         GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
         PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_Goodbye);
-        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
         break;
     }
 
@@ -2101,19 +2101,19 @@ void TavernDialog() {
             GameUI_SetStatusBar(LSTR_RATIONS_FULL);
             if (uActiveCharacter)
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_PacksFull, 0);
-            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
         if (pParty->GetGold() >= pPriceFood) {
             pParty->TakeGold(pPriceFood);
             pParty->SetFood(p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
             PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_Greeting_2);
-            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
         GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
         PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_Goodbye);
-        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
         break;
     }
 
@@ -2253,7 +2253,7 @@ void TempleDialog() {
         if (pParty->GetGold() < pPrice) {
             GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
             PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_NotEnoughMoney);
-            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
         pParty->TakeGold(pPrice);
@@ -2280,7 +2280,7 @@ void TempleDialog() {
             pAudioPlayer->PlaySound((SoundID)SOUND_heal, PID_INVALID, 0, -1, 0, 0);
             pPlayers[uActiveCharacter]->PlaySound(SPEECH_TempleHeal, 0);
             pOtherOverlayList->_4418B1(20, uActiveCharacter + 99, 0, 65536);
-            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
         if (pPlayers[uActiveCharacter]->conditions.Has(Condition_Zombie)) {
@@ -2294,7 +2294,7 @@ void TempleDialog() {
                 pAudioPlayer->PlaySound((SoundID)SOUND_heal, PID_INVALID, 0, -1, 0, 0);
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_TempleHeal, 0);
                 pOtherOverlayList->_4418B1(20, uActiveCharacter + 99, 0, 65536);
-                pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
                 return;
             }
             pPlayers[uActiveCharacter]->uPrevFace =
@@ -2318,7 +2318,7 @@ void TempleDialog() {
         pAudioPlayer->PlaySound((SoundID)SOUND_heal, PID_INVALID, 0, -1, 0, 0);
         pPlayers[uActiveCharacter]->PlaySound(SPEECH_TempleHeal, 0);
         pOtherOverlayList->_4418B1(20, uActiveCharacter + 99, 0, 65536);
-        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
         return;
     }
     //---------------------------------------------------
@@ -2355,13 +2355,13 @@ void TempleDialog() {
             ++byte_F8B1EF[uActiveCharacter];
             pPlayers[uActiveCharacter]->PlaySound(SPEECH_TempleDonate, 0);
             GameUI_SetStatusBar(LSTR_THANK_YOU);
-            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
         GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
         PlayHouseSound(window_SpeakInHouse->wData.val,
             HouseSound_NotEnoughMoney);
-        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
         return;
     }
     //------------------------------------------------
@@ -2586,13 +2586,13 @@ void TrainingDialog(const char *s) {
                             pPlayers[uActiveCharacter]->uLevel / 10 + 5
                         );
 
-                        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+                        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
                         return;
                     }
 
                     GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
                     PlayHouseSound(window_SpeakInHouse->wData.val, (HouseSoundID)4);
-                    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+                    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
                     return;
                 }
                 label = localization->FormatString(
@@ -2613,7 +2613,7 @@ void TrainingDialog(const char *s) {
                 pFontArrus, 0, v36, colorTable.Jonquil.C16(), label, 3);
 
             PlayHouseSound(window_SpeakInHouse->wData.val, (HouseSoundID)3);
-            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
     }
@@ -2738,7 +2738,7 @@ void MercenaryGuildDialog() {
     } else {
         v5 = 0;
     }
-    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, v5);
+    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, v5);
 }
 
 void SimpleHouseDialog() {
@@ -3182,7 +3182,7 @@ void InitializeBuildingResidents() {
 }
 
 int HouseDialogPressCloseBtn() {
-    pMessageQueue_50CBD0->Flush();
+    pCurrentFrameMessageQueue->Flush();
     keyboardInputHandler->SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_CANCELLED);
     keyboardInputHandler->ResetKeys();
     activeLevelDecoration = nullptr;
@@ -3622,7 +3622,7 @@ void GUIWindow_House::Update() {
         return;
     }
     // dialog_menu_id = DIALOGUE_MAIN;
-    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);  // banned from shop so leaving
+    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);  // banned from shop so leaving
 }
 
 void GUIWindow_House::Release() {
