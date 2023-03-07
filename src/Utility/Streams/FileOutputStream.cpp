@@ -4,7 +4,7 @@
 
 #include "Utility/Exception.h"
 
-FileOutputStream::FileOutputStream(const std::string &path) : path_(path) {
+FileOutputStream::FileOutputStream(std::string_view path) : path_(path) {
     file_ = fopen(path_.c_str(), "wb");
     if (!file_)
         Exception::throwFromErrno(path_);

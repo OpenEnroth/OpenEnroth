@@ -19,14 +19,14 @@ class OutputStream {
      *
      * @param data                      Pointer to the data to write.
      * @param size                      Data size.
-     * @throws std::runtime_error       On error.
+     * @throws Exception                On error.
      */
     virtual void Write(const void *data, size_t size) = 0;
 
     /**
      * Flushes this output stream if it provides any kind of buffering.
      *
-     * @throws std::runtime_error       On error.
+     * @throws Exception                On error.
      */
     virtual void Flush() = 0;
 
@@ -35,7 +35,7 @@ class OutputStream {
      *
      * Does nothing if the stream is already closed.
      *
-     * @throws std::runtime_error       On error.
+     * @throws Exception                On error.
      */
     virtual void Close() = 0;
 };
