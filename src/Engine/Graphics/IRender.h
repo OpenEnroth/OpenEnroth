@@ -341,6 +341,13 @@ class IRender {
     virtual void SavePCXScreenshot() = 0;
     virtual unsigned short* MakeScreenshot16(int width, int height) = 0;
 
+    /**
+     * Get next actor currently visible to the player.
+     *
+     * @param  pDepth      Search depth for actors.
+     * @param  startId     Drawing billboard index from which search for the next actor.
+     * @return             Drawing billboard index of next found actor or -1 if no more actors found.
+     */
     virtual int getActorInViewport(int pDepth, int startId) = 0;
 
     virtual void BeginLightmaps() = 0;
