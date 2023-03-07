@@ -2135,12 +2135,15 @@ void ODM_ProcessPartyActions() {
 
             case PARTY_Jump:
                 if ((!partyAtHighSlope || bmodel_standing_on_pid) &&
-                    !hovering &&
+                    // to avoid jump hesitancy when moving downhill
+                    (!hovering || (pParty->vPosition.z <= ground_level + 20 && party_z_speed <= 0)) &&
                     pParty->jump_strength &&
                     !(pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE) &&
                     !(pParty->uFlags & PARTY_FLAGS_1_BURNING)) {
                     hovering = true;
                     party_z_speed += pParty->jump_strength * 96;
+                    // boost party upwards slightly so we dont "land" straight away
+                    pParty->vPosition.z += 1;
                 }
                 break;
 
