@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;1365cb6</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;de894d5</span>
    </div>
   </td>
  </tr>
@@ -241,10 +241,10 @@ Variables</h2></td></tr>
 <tr class="separator:a9cf585dbf96fdd1acbe15981837ebdb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5023a0cbd3467c1ea375ffcfc7ef690e"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="GUIWindow_8h.html#af188298480c77be8835d6760fa6edfd7">CURRENT_SCREEN</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8cpp.html#a5023a0cbd3467c1ea375ffcfc7ef690e">prev_screen_type</a></td></tr>
 <tr class="separator:a5023a0cbd3467c1ea375ffcfc7ef690e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a67ca5f2a4757601de2f69711ee287539"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8cpp.html#a67ca5f2a4757601de2f69711ee287539">pMessageQueue_50CBD0</a> = new <a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a></td></tr>
-<tr class="separator:a67ca5f2a4757601de2f69711ee287539"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4182363357d8d3e2a1a21cda6ea92644"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8cpp.html#a4182363357d8d3e2a1a21cda6ea92644">pMessageQueue_50C9E8</a> = new <a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a></td></tr>
-<tr class="separator:a4182363357d8d3e2a1a21cda6ea92644"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a61cdbb275c8cc0ab21cfa9d6191b03f0"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8cpp.html#a61cdbb275c8cc0ab21cfa9d6191b03f0">pCurrentFrameMessageQueue</a> = new <a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a></td></tr>
+<tr class="separator:a61cdbb275c8cc0ab21cfa9d6191b03f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada5db3e64fea1b6658282b08e5b71094"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8cpp.html#ada5db3e64fea1b6658282b08e5b71094">pNextFrameMessageQueue</a> = new <a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a></td></tr>
+<tr class="separator:ada5db3e64fea1b6658282b08e5b71094"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e472c58d7bd43b8ff411561d7506e4d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classImage.html">Image</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8cpp.html#a8e472c58d7bd43b8ff411561d7506e4d">ui_exit_cancel_button_background</a> = nullptr</td></tr>
 <tr class="separator:a8e472c58d7bd43b8ff411561d7506e4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ebd6fe26b30ca1b1459b07d35cefc08"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classImage.html">Image</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8cpp.html#a8ebd6fe26b30ca1b1459b07d35cefc08">game_ui_right_panel_frame</a> = nullptr</td></tr>
@@ -1250,6 +1250,22 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="a61cdbb275c8cc0ab21cfa9d6191b03f0" name="a61cdbb275c8cc0ab21cfa9d6191b03f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61cdbb275c8cc0ab21cfa9d6191b03f0">&#9670;&#160;</a></span>pCurrentFrameMessageQueue</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct <a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a>* pCurrentFrameMessageQueue = new <a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Message queue for current frame.</p>
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x50CBD0 </dd></dl>
+
+</div>
+</div>
 <a id="a4b874ab8ae0f632bb61c5cf097f5f708" name="a4b874ab8ae0f632bb61c5cf097f5f708"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4b874ab8ae0f632bb61c5cf097f5f708">&#9670;&#160;</a></span>pDialogueWindow</h2>
 
@@ -1334,31 +1350,18 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a4182363357d8d3e2a1a21cda6ea92644" name="a4182363357d8d3e2a1a21cda6ea92644"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4182363357d8d3e2a1a21cda6ea92644">&#9670;&#160;</a></span>pMessageQueue_50C9E8</h2>
+<a id="ada5db3e64fea1b6658282b08e5b71094" name="ada5db3e64fea1b6658282b08e5b71094"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada5db3e64fea1b6658282b08e5b71094">&#9670;&#160;</a></span>pNextFrameMessageQueue</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">struct <a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a>* pMessageQueue_50C9E8 = new <a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a></td>
+          <td class="memname">struct <a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a>* pNextFrameMessageQueue = new <a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="a67ca5f2a4757601de2f69711ee287539" name="a67ca5f2a4757601de2f69711ee287539"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a67ca5f2a4757601de2f69711ee287539">&#9670;&#160;</a></span>pMessageQueue_50CBD0</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">struct <a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a>* pMessageQueue_50CBD0 = new <a class="el" href="structGUIMessageQueue.html">GUIMessageQueue</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
+<p >Message queue that will be processed on next frame. </p><dl class="section user"><dt>Original binary offset:</dt><dd>0x50C9E8 </dd></dl>
 
 </div>
 </div>
