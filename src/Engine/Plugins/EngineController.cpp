@@ -130,6 +130,10 @@ void EngineController::goToMainMenu() {
     }
 
     if (GetCurrentMenuID() == MENU_NONE) {
+        if (pGUIWindow_CastTargetedSpell) {
+            pressAndReleaseKey(PlatformKey::Escape);
+            tick(1);
+        }
         pressAndReleaseKey(PlatformKey::Escape);
         tick(1);
         pressGuiButton("GameMenu_Quit");
