@@ -53,7 +53,6 @@ class RenderBase : public IRender {
 
     virtual int getActorInViewport(int pDepth, int startId) override;
 
-
  protected:
     unsigned int Billboard_ProbablyAddToListAndSortByZOrder(float z);
     void TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pBillboard);
