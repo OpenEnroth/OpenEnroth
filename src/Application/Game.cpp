@@ -2503,6 +2503,7 @@ void Game::EventLoop() {
     }
 
     std::swap(pCurrentFrameMessageQueue, pNextFrameMessageQueue);
+    assert(pNextFrameMessageQueue->Empty());
 
     if (GateMasterEventId != UIMSG_0) {
         pCurrentFrameMessageQueue->AddGUIMessage(GateMasterEventId, (int64_t)GateMasterNPCData, 0);
