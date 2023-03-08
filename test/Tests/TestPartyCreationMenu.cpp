@@ -341,7 +341,7 @@ GAME_TEST(Issue, Issue211) {
 }
 
 
-static void check223res( CHARACTER_ATTRIBUTE_TYPE res, std::initializer_list<std::pair<int, int>> playerrespairs) {
+static void check223res(CHARACTER_ATTRIBUTE_TYPE res, std::initializer_list<std::pair<int, int>> playerrespairs) {
     for (auto pair : playerrespairs) {
         EXPECT_EQ(pParty->pPlayers[pair.first].GetActualResistance(res), pair.second);
     }
@@ -365,7 +365,7 @@ GAME_TEST(Issue, Issue331) {
     test->playTraceFromTestData("issue_331.mm7", "issue_331.json");
 }
 
-static void check395exp( std::initializer_list<std::pair<int, int>> playerexppairs) {
+static void check395exp(std::initializer_list<std::pair<int, int>> playerexppairs) {
     for (auto pair : playerexppairs) {
         EXPECT_EQ(pParty->pPlayers[pair.first].uExperience, pair.second);
     }
@@ -394,7 +394,12 @@ GAME_TEST(Issue, Issue492) {
     EXPECT_EQ(pParty->pPlayers[0].uExperience, 287);
 }
 
-static void check503health( std::initializer_list<std::pair<int, int>> playerhealthpairs) {
+GAME_TEST(Issue, Issue502) {
+    // Check that script face animation and voice indexes right characters
+    test->playTraceFromTestData("issue_502.mm7", "issue_502.json");
+}
+
+static void check503health(std::initializer_list<std::pair<int, int>> playerhealthpairs) {
     for (auto pair : playerhealthpairs) {
         EXPECT_EQ(pParty->pPlayers[pair.first].sHealth, pair.second);
     }
