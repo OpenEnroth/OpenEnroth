@@ -47,7 +47,7 @@ class EngineController {
      * Presses a GUI button identified by the provided id by sending a mouse press and release event.
      *
      * @param buttonId                  Button id.
-     * @throws std::runtime_error       If the button with the provided id doesn't exist.
+     * @throws Exception                If the button with the provided id doesn't exist.
      */
     void pressGuiButton(std::string_view buttonId);
 
@@ -59,7 +59,7 @@ class EngineController {
     /**
      * Waits for the loading screen to complete.
      *
-     * @throws std::runtime_error       If there is no loading screen.
+     * @throws Exception                If there is no loading screen.
      */
     void skipLoadingScreen();
 

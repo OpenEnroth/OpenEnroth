@@ -915,11 +915,7 @@ Blob LOD::File::LoadRaw(const std::string &pContainer) {
         return Blob();
     }
 
-    Blob result = Blob::Allocate(size);
-    if (fread(result.data(), size, 1, File) != 1)
-        return Blob();
-
-    return result;
+    return Blob::Read(File, size);
 }
 
 Blob LOD::File::LoadCompressedTexture(const std::string &pContainer) {
