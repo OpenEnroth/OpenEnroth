@@ -393,3 +393,9 @@ GAME_TEST(Issue, Issue492) {
     test->playTraceFromTestData("issue_492.mm7", "issue_492.json", []() { EXPECT_EQ(pParty->pPlayers[0].uExperience, 279); });
     EXPECT_EQ(pParty->pPlayers[0].uExperience, 287);
 }
+
+GAME_TEST(Issue, Issue502) {
+    // Check that script face animation and voice indexes right characters
+    test->playTraceFromTestData("issue_502.mm7", "issue_502.json");
+}
+

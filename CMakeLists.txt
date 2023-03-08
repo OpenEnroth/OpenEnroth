@@ -25,6 +25,7 @@ if(ENABLE_TESTS)
 endif()
 
 if(BUILD_COMPILER STREQUAL "gcc")
+  add_compile_definitions($<$<CONFIG:Debug>:_GLIBCXX_ASSERTIONS>)
   set(CMAKE_EXE_LINKER_FLAGS "-fuse-ld=gold -pthread")
 elseif(BUILD_COMPILER STREQUAL "msvc")
   add_compile_definitions(NOMINMAX) # please don't pull in these macros from <Windows.h>
