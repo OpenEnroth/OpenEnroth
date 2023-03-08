@@ -462,24 +462,12 @@ void Game::EventLoop() {
     int v55;                    // ecx@432
     int v56;                    // edx@432
     int v57;                    // eax@432
-    //Player *pPlayer;            // edx@442
     unsigned int pMapNum;       // eax@445
     int16_t v63;                // dx@479
     unsigned int v64;           // eax@486
     int v65;                    // ecx@486
     int v66;                    // eax@488
-    // char *v67;                  // eax@489
-    //int16_t v68;                // dx@498
-    // int v70;                    // eax@525
-    // int v71;                    // edi@527
-    // NPCData *pNPCData3;         // esi@527
-    // char *v73;                  // ecx@533
-    // signed int v74;             // edi@535
-    // int v75;                    // eax@535
-    // int v76;                    // esi@535
-    // int v77;                    // eax@537
     Player *pPlayer2;           // ecx@549
-                                // signed int v81; // eax@552
     Vis_PIDAndDepth v83;             // ecx@554
     signed int v84;             // ecx@554
     GUIButton *pButton;         // eax@578
@@ -497,34 +485,17 @@ void Game::EventLoop() {
     Player *pPlayer4;           // ecx@718
     short *v105;                   // eax@718
     Player *pPlayer5;           // ST78_4@758
-    // unsigned int v115;          // eax@764
-    // unsigned int v118;          // eax@785
-    // unsigned int v119;          // ecx@786
-                        //    unsigned int v121; // [sp-28h] [bp-624h]@711
-                        //    unsigned int v123; // [sp-24h] [bp-620h]@711
-                        //    unsigned int v125; // [sp-20h] [bp-61Ch]@711
-    //int v127;  // [sp-1Ch] [bp-618h]@107
-               //    unsigned int v128; // [sp-1Ch] [bp-618h]@711
-    // GUIButton *pButton2;  // [sp-4h] [bp-600h]@59
-                    //    KeyToggleType pKeyToggleType; // [sp+0h] [bp-5FCh]@287
-    //Player *pPlayer9;             // [sp+14h] [bp-5E8h]@455
-    // int thisg;                    // [sp+14h] [bp-5E8h]@467
-    // int thish;                    // [sp+14h] [bp-5E8h]@528
-    // signed int thisi;             // [sp+14h] [bp-5E8h]@535
     MapInfo *pMapInfo;            // [sp+14h] [bp-5E8h]@604
     Player *pPlayer10;            // [sp+14h] [bp-5E8h]@641
     int uMessageParam;            // [sp+18h] [bp-5E4h]@7
     int uAction;                  // [sp+1Ch] [bp-5E0h]@18
     int encounter_index;           // [sp+20h] [bp-5DCh]@23
     unsigned int uNumSeconds;     // [sp+24h] [bp-5D8h]@18
-                                  //    char v197; // [sp+2Bh] [bp-5D1h]@101
     UIMessageType uMessage;  // [sp+2Ch] [bp-5D0h]@7
     unsigned int v199 {};            // [sp+30h] [bp-5CCh]@7
     char *v200 = nullptr;                   // [sp+34h] [bp-5C8h]@518
-    // int v213;                     // [sp+98h] [bp-564h]@385
     char pOut[32];                // [sp+BCh] [bp-540h]@370
     int spellbookPages[9] {};                  // [sp+158h] [bp-4A4h]@652
-    // char Str2[128];               // [sp+238h] [bp-3C4h]@527
     Actor actor;                  // [sp+2B8h] [bp-344h]@4
     int currHour;
     PLAYER_SKILL_TYPE skill;
@@ -1427,7 +1398,7 @@ void Game::EventLoop() {
                             fountainBit = QBIT_FOUNTAIN_IN_THE_PIT_ACTIVATED;
                             break;
                         default:
-                            Assert(true && "Bad TP param");
+                            Assert(false && "Bad TP param");
                             break;
                     }
 
@@ -1490,7 +1461,7 @@ void Game::EventLoop() {
                             fountainBit = QBIT_FOUNTAIN_IN_THE_PIT_ACTIVATED;
                             break;
                         default:
-                            Assert(true && "Bad TP param");
+                            Assert(false && "Bad TP param");
                             break;
                     }
 
@@ -1520,7 +1491,7 @@ void Game::EventLoop() {
                             townName = pMapStats->pInfos[8].pName;
                             break;
                         default:
-                            Assert(true && "Bad TP param");
+                            Assert(false && "Bad TP param");
                             break;
                     }
                     GameUI_StatusBar_Set(localization->FormatString(LSTR_TOWN_PORTAL_TO_S, townName.c_str()));

@@ -117,8 +117,6 @@ extern int dword_4FA9B4[];
 
 // extern std::array<unsigned int, 480> pSRZBufferLineOffsets;
 extern std::array<char, 777> books_num_items_per_page;
-//extern signed int sRecoveryTime;    // idb
-//extern unsigned int uRequiredMana;  // idb
 extern int CurrentLloydPlayerID;
 extern int LloydsBeaconSpellDuration;
 extern int MapBookOpen;

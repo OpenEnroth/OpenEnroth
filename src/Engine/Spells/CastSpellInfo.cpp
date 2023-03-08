@@ -77,7 +77,6 @@ static void spellFailed(CastSpellInfo *pCastSpell,
 }
 
 void CastSpellInfoHelpers::castSpell() {
-    Player *pPlayer;
     PLAYER_SKILL_TYPE which_skill;
     SpriteObject pSpellSprite;
     AIDirection target_direction;
@@ -88,8 +87,8 @@ void CastSpellInfoHelpers::castSpell() {
 
     for (CastSpellInfo &spellInfo : pCastSpellInfo) {  // cycle through spell queue
         CastSpellInfo *pCastSpell = &spellInfo;
-        unsigned int uRequiredMana;
-        signed int sRecoveryTime;
+        int uRequiredMana, sRecoveryTime;
+
         if (pCastSpell->uSpellID == SPELL_NONE) {
             continue;  // spell item blank skip to next
         }
@@ -107,7 +106,7 @@ void CastSpellInfoHelpers::castSpell() {
             continue;
         }
 
-        pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID];
+        Player *pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID];
 
         int spell_targeted_at = pCastSpell->spell_target_pid;
 
