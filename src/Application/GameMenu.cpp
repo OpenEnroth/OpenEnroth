@@ -43,7 +43,7 @@ std::map<InputAction, PlatformKey> curr_key_map;
 
 void Game_StartNewGameWhilePlaying(bool force_start) {
     if (dword_6BE138 == 124 || force_start) {
-        pMessageQueue_50CBD0->Flush();
+        pCurrentFrameMessageQueue->Flush();
         // pGUIWindow_CurrentMenu->Release();
         uGameState = GAME_STATE_NEWGAME_OUT_GAMEMENU;
         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
@@ -56,7 +56,7 @@ void Game_StartNewGameWhilePlaying(bool force_start) {
 
 void Game_QuitGameWhilePlaying(bool force_quit) {
     if (dword_6BE138 == 132 || force_quit) {
-        pMessageQueue_50CBD0->Flush();
+        pCurrentFrameMessageQueue->Flush();
         // pGUIWindow_CurrentMenu->Release();
         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
         pAudioPlayer->PlaySound(SOUND_WoodDoorClosing, 0, 0, -1, 0, 0);
@@ -69,7 +69,7 @@ void Game_QuitGameWhilePlaying(bool force_quit) {
 }
 
 void Game_OpenLoadGameDialog() {
-    pMessageQueue_50CBD0->Flush();
+    pCurrentFrameMessageQueue->Flush();
     pGUIWindow_CurrentMenu->Release();
     pGUIWindow_CurrentMenu = nullptr;
     game_ui_status_bar_event_string_time_left = 0;
@@ -79,10 +79,10 @@ void Game_OpenLoadGameDialog() {
 }
 
 void Menu::EventLoop() {
-    while (!pMessageQueue_50CBD0->Empty()) {
+    while (!pCurrentFrameMessageQueue->Empty()) {
         UIMessageType msg;
         int param, param2;
-        pMessageQueue_50CBD0->PopMessage(&msg, &param, &param2);
+        pCurrentFrameMessageQueue->PopMessage(&msg, &param, &param2);
 
         switch (msg) {
             case UIMSG_StartNewGame:
@@ -122,8 +122,8 @@ void Menu::EventLoop() {
                 if (current_screen_type != CURRENT_SCREEN::SCREEN_SAVEGAME ||
                     uLoadGameUI_SelectedSlot != v10) {
                     if (dword_6BE138 == pSaveListPosition + param) {
-                        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_SaveLoadBtn, 0, 0);
-                        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_LoadGame, 0, 0);
+                        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_SaveLoadBtn, 0, 0);
+                        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_LoadGame, 0, 0);
                     }
                     uLoadGameUI_SelectedSlot = v10;
                     dword_6BE138 = v10;
@@ -173,7 +173,7 @@ void Menu::EventLoop() {
             }
             case UIMSG_Game_OpenOptionsDialog:  // Open
             {
-                pMessageQueue_50CBD0->Flush();
+                pCurrentFrameMessageQueue->Flush();
 
                 pGUIWindow_CurrentMenu->Release();
                 pGUIWindow_CurrentMenu = new GUIWindow_GameOptions();  // GameMenuUI_Options_Load();
@@ -185,7 +185,7 @@ void Menu::EventLoop() {
 
             case UIMSG_OpenKeyMappingOptions:  // Open
             {
-                pMessageQueue_50CBD0->Flush();
+                pCurrentFrameMessageQueue->Flush();
 
                 pGUIWindow_CurrentMenu->Release();
                 pGUIWindow_CurrentMenu = new GUIWindow_GameKeyBindings();  // GameMenuUI_OptionsKeymapping_Load();
@@ -228,7 +228,7 @@ void Menu::EventLoop() {
                 continue;
 
             case UIMSG_OpenVideoOptions: {
-                pMessageQueue_50CBD0->Flush();
+                pCurrentFrameMessageQueue->Flush();
 
                 pGUIWindow_CurrentMenu->Release();
                 pGUIWindow_CurrentMenu = new GUIWindow_GameVideoOptions();

@@ -271,7 +271,7 @@ void CastSpellInfoHelpers::castSpell() {
                 }
                 pEventTimer->Pause();
                 TownPortalCasterId = pCastSpell->uPlayerID;
-                pMessageQueue_50CBD0->AddGUIMessage(UIMSG_OnCastTownPortal, 0, 0);
+                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_OnCastTownPortal, 0, 0);
                 spell_sound_flag = true;
             } else {
                 pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
@@ -285,7 +285,7 @@ void CastSpellInfoHelpers::castSpell() {
             }
             if (pPlayer->CanCastSpell(uRequiredMana)) {
                 pEventTimer->Pause();
-                pMessageQueue_50CBD0->AddGUIMessage(UIMSG_OnCastLloydsBeacon, 0, 0);
+                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_OnCastLloydsBeacon, 0, 0);
                 CurrentLloydPlayerID = pCastSpell->uPlayerID;
                 LloydsBeaconSpellDuration = GameTime::FromDays(7 * spell_level).GetSeconds();
                 pCastSpell->uFlags |= ON_CAST_NoRecoverySpell;

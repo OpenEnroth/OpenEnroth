@@ -279,9 +279,18 @@ struct GUIMessageQueue {
     std::queue<GUIMessage> qMessages;
 };
 
-extern struct GUIMessageQueue *pMessageQueue_50CBD0;  // idb
+/**
+ * Message queue for current frame.
+ *
+ * @offset 0x50CBD0
+ */
+extern struct GUIMessageQueue *pCurrentFrameMessageQueue;
 
-extern struct GUIMessageQueue *pMessageQueue_50C9E8;  // idb
+/**
+ * Message queue that will be processed on next frame.
+ * @offset 0x50C9E8
+ */
+extern struct GUIMessageQueue *pNextFrameMessageQueue;
 
 extern enum WindowType current_character_screen_window;
 extern std::list<GUIWindow*> lWindowList;

@@ -388,6 +388,12 @@ GAME_TEST(Issue, Issue491) {
     test->playTraceFromTestData("issue_491.mm7", "issue_491.json");
 }
 
+GAME_TEST(Issue, Issue492) {
+    // Check that spells that target all visible actors work
+    test->playTraceFromTestData("issue_492.mm7", "issue_492.json", []() { EXPECT_EQ(pParty->pPlayers[0].uExperience, 279); });
+    EXPECT_EQ(pParty->pPlayers[0].uExperience, 287);
+}
+
 static void check503health( std::initializer_list<std::pair<int, int>> playerhealthpairs) {
     for (auto pair : playerhealthpairs) {
         EXPECT_EQ(pParty->pPlayers[pair.first].sHealth, pair.second);

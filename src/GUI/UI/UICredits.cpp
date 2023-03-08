@@ -68,11 +68,11 @@ void GUICredits::Update() {
 }
 
 void GUICredits::EventLoop() {
-    while (!pMessageQueue_50CBD0->Empty()) {
+    while (!pCurrentFrameMessageQueue->Empty()) {
         UIMessageType pUIMessageType;
         int pParam;
         int param2;
-        pMessageQueue_50CBD0->PopMessage(&pUIMessageType, &pParam, &param2);
+        pCurrentFrameMessageQueue->PopMessage(&pUIMessageType, &pParam, &param2);
 
         switch (pUIMessageType) {  // For buttons of window MainMenu
             case UIMSG_Escape:
@@ -85,7 +85,7 @@ void GUICredits::EventLoop() {
 }
 
 void GUICredits::ExecuteCredits() {
-    pMessageQueue_50CBD0->Flush();
+    pCurrentFrameMessageQueue->Flush();
 
     pAudioPlayer->MusicPlayTrack(MUSIC_Credits);
 

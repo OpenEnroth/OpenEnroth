@@ -2512,7 +2512,7 @@ void OnPaperdollLeftClick() {
 
             ptr_50C9A4_ItemToEnchant = pitem;
             IsEnchantingInProgress = false;
-            pMessageQueue_50CBD0->Flush();
+            pCurrentFrameMessageQueue->Flush();
             mouse->SetCursorImage("MICON1");
             AfterEnchClickEventId = UIMSG_Escape;
             AfterEnchClickEventSecondParam = 0;
@@ -2587,7 +2587,7 @@ void OnPaperdollLeftClick() {
                 ptr_50C9A4_ItemToEnchant =
                     &pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1];
                 IsEnchantingInProgress = false;
-                pMessageQueue_50CBD0->Flush();
+                pCurrentFrameMessageQueue->Flush();
                 mouse->SetCursorImage("MICON1");
                 AfterEnchClickEventId = UIMSG_Escape;
                 AfterEnchClickEventSecondParam = 0;

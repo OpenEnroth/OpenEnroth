@@ -1020,7 +1020,7 @@ void Party::Sleep8Hours() {
             OutdoorLocation::LoadActualSkyFrame();
         }
         if (_506F14_resting_stage == 2) {
-            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
         }
     } else {
         Rest(6u);

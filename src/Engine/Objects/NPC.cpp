@@ -1281,7 +1281,7 @@ int UseNPCSkill(NPCProf profession) {
         } break;
 
         case GateMaster: {
-            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
             GateMasterEventId = UIMSG_OnCastTownPortal;
             GateMasterNPCData = GetNPCData(sDialogue_SpeakingActorNPC_ID);
         } break;
