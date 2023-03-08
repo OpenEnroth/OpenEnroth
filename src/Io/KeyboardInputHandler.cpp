@@ -61,26 +61,26 @@ void KeyboardInputHandler::GeneratePausedActions() {
 
         if (action == InputAction::EventTrigger) {
             if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME || current_screen_type == CURRENT_SCREEN::SCREEN_CHEST) {
-                pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Game_Action, 0, 0);
+                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Game_Action, 0, 0);
                 continue;
             }
             if (current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE || current_screen_type == CURRENT_SCREEN::SCREEN_BRANCHLESS_NPC_DIALOG) {
-                /*v15 = pMessageQueue_50CBD0->uNumMessages;
-                if (pMessageQueue_50CBD0->uNumMessages) {
+                /*v15 = pCurrentFrameMessageQueue->uNumMessages;
+                if (pCurrentFrameMessageQueue->uNumMessages) {
                     v15 = 0;
-                    if (pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].field_8) {
+                    if (pCurrentFrameMessageQueue->pMessages[pCurrentFrameMessageQueue->uNumMessages].field_8) {
                         v15 = 1;
-                        pMessageQueue_50CBD0->uNumMessages = 0;
-                        pMessageQueue_50CBD0->pMessages[v15].eType = UIMSG_Escape;
-                        pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].param = 0;
-                        *(&pMessageQueue_50CBD0->uNumMessages + 3 * pMessageQueue_50CBD0->uNumMessages + 3) = 0;
-                        ++pMessageQueue_50CBD0->uNumMessages;
+                        pCurrentFrameMessageQueue->uNumMessages = 0;
+                        pCurrentFrameMessageQueue->pMessages[v15].eType = UIMSG_Escape;
+                        pCurrentFrameMessageQueue->pMessages[pCurrentFrameMessageQueue->uNumMessages].param = 0;
+                        *(&pCurrentFrameMessageQueue->uNumMessages + 3 * pCurrentFrameMessageQueue->uNumMessages + 3) = 0;
+                        ++pCurrentFrameMessageQueue->uNumMessages;
                         continue;
                     }
-                    pMessageQueue_50CBD0->uNumMessages = 0;
+                    pCurrentFrameMessageQueue->uNumMessages = 0;
 
                 }*/
-                // pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+                // pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
             }
         }
     }
@@ -238,9 +238,10 @@ void KeyboardInputHandler::GenerateGameplayActions() {
             bool enoughMana = pPlayers[uActiveCharacter]->sMana >= uRequiredMana;
 
             if (quickSpellNumber == SPELL_NONE || engine->IsUnderwater() || !enoughMana) {
-                pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Attack, 0, 0);
+                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Attack, 0, 0);
             } else {
-                pMessageQueue_50C9E8->AddGUIMessage(UIMSG_CastQuickSpell, 0, 0);
+                // TODO(Nik-RE-dev): why next frame?
+                pNextFrameMessageQueue->AddGUIMessage(UIMSG_CastQuickSpell, 0, 0);
             }
 
             break;
@@ -254,26 +255,27 @@ void KeyboardInputHandler::GenerateGameplayActions() {
             if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
                 pTurnEngine->flags |= TE_FLAG_8_finished;
             } else {
-                pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Attack, 0, 0);
+                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Attack, 0, 0);
             }
 
             break;
 
         case InputAction::EventTrigger:
             if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
-                pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Game_Action, 0, 0);
+                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Game_Action, 0, 0);
                 break;
             }
 
             if (current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE) {
-                pMessageQueue_50CBD0->Clear();
-                pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+                pCurrentFrameMessageQueue->Clear();
+                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
             }
             break;
 
         case InputAction::CharCycle:
             if (current_screen_type != CURRENT_SCREEN::SCREEN_SPELL_BOOK) {
-                pMessageQueue_50C9E8->AddGUIMessage(UIMSG_CycleCharacters, 0, 0);
+                // TODO(Nik-RE-dev): why next frame?
+                pNextFrameMessageQueue->AddGUIMessage(UIMSG_CycleCharacters, 0, 0);
             }
             break;
 
@@ -308,11 +310,11 @@ void KeyboardInputHandler::GenerateGameplayActions() {
             break;
 
         case InputAction::ZoomIn:
-            // pMessageQueue_50C9E8->AddGUIMessage(UIMSG_ClickZoomInBtn, 0, 0);
+            // pNextFrameMessageQueue->AddGUIMessage(UIMSG_ClickZoomInBtn, 0, 0);
             break;
 
         case InputAction::ZoomOut:
-            // pMessageQueue_50C9E8->AddGUIMessage(UIMSG_ClickZoomOutBtn, 0, 0);
+            // pNextFrameMessageQueue->AddGUIMessage(UIMSG_ClickZoomOutBtn, 0, 0);
             break;
 
         case InputAction::AlwaysRun:
@@ -320,7 +322,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
             break;
 
         case InputAction::Escape:
-            // pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, window_SpeakInHouse != 0, 0);
+            // pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, window_SpeakInHouse != 0, 0);
             break;
 
         default:

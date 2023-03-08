@@ -2063,7 +2063,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             }
 
             pAudioPlayer->PlaySound(SOUND_fireBall, 0, 0, -1, 0, 0);
-            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
             v39.z = pParty->vPosition.z + pParty->sEyelevel;
             v39.x = pParty->vPosition.x;
             v39.y = pParty->vPosition.y;

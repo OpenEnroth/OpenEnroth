@@ -285,7 +285,7 @@ static void UI_DrawSaveLoad(bool save) {
     if (pGUIWindow_CurrentMenu->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CONFIRMED) {
         pGUIWindow_CurrentMenu->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
         strcpy(pSavegameHeader[uLoadGameUI_SelectedSlot].pName, keyboardInputHandler->GetTextInput().c_str());
-        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_SaveGame, 0, 0);
+        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_SaveGame, 0, 0);
     } else {
         if (pGUIWindow_CurrentMenu->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CANCELLED)
             pGUIWindow_CurrentMenu->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
@@ -333,10 +333,10 @@ static void UI_DrawSaveLoad(bool save) {
 }
 
 void MainMenuLoad_EventLoop() {
-    while (!pMessageQueue_50CBD0->Empty()) {
+    while (!pCurrentFrameMessageQueue->Empty()) {
         UIMessageType msg;
         int param, param2;
-        pMessageQueue_50CBD0->PopMessage(&msg, &param, &param2);
+        pCurrentFrameMessageQueue->PopMessage(&msg, &param, &param2);
 
         switch (msg) {
         case UIMSG_LoadGame: {
@@ -353,9 +353,9 @@ void MainMenuLoad_EventLoop() {
                 // load clicked line
                 int v26 = param + pSaveListPosition;
                 if (dword_6BE138 == v26) {
-                    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_SaveLoadBtn, 0, 0);
+                    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_SaveLoadBtn, 0, 0);
                     // Breaks UI interaction after save load
-                    // pMessageQueue_50CBD0->AddGUIMessage(UIMSG_LoadGame, 0, 0);
+                    // pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_LoadGame, 0, 0);
                 }
                 uLoadGameUI_SelectedSlot = v26;
                 dword_6BE138 = v26;

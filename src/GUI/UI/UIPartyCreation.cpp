@@ -71,10 +71,10 @@ bool PlayerCreation_Choose4Skills() {
 
 void CreateParty_EventLoop() {
     auto pPlayer = pParty->pPlayers.data();
-    while (!pMessageQueue_50CBD0->Empty()) {
+    while (!pCurrentFrameMessageQueue->Empty()) {
         UIMessageType msg;
         int param, param2;
-        pMessageQueue_50CBD0->PopMessage(&msg, &param, &param2);
+        pCurrentFrameMessageQueue->PopMessage(&msg, &param, &param2);
 
         switch (msg) {
         case UIMSG_PlayerCreation_SelectAttribute:
@@ -237,7 +237,7 @@ void CreateParty_EventLoop() {
                 GetCurrentMenuID() == MENU_NAMEPANELESC) {
                 // if ( current_screen_type == SCREEN_VIDEO )
                 // pVideoPlayer->FastForwardToFrame(pVideoPlayer->pResetflag);
-                pMessageQueue_50CBD0->AddGUIMessage(UIMSG_ChangeGameState,
+                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_ChangeGameState,
                     0, 0);
             }
             break;
@@ -604,7 +604,7 @@ void GUIWindow_PartyCreation::Update() {
 //----- (0049695A) --------------------------------------------------------
 GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     GUIWindow(WINDOW_CharacterCreation, {0, 0}, render->GetRenderDimensions(), 0) {
-    pMessageQueue_50CBD0->Flush();
+    pCurrentFrameMessageQueue->Flush();
 
     main_menu_background = assets->GetImage_PCXFromIconsLOD("makeme.pcx");
 

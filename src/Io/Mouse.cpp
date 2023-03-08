@@ -280,8 +280,8 @@ void Mouse::UI_OnMouseLeftClick() {
                     if (control->uButtonType == 1) {
                         if (control->Contains(x, y)) {
                             control->field_2C_is_pushed = true;
-                            pMessageQueue_50CBD0->Flush();
-                            pMessageQueue_50CBD0->AddGUIMessage(
+                            pCurrentFrameMessageQueue->Flush();
+                            pCurrentFrameMessageQueue->AddGUIMessage(
                                 control->msg, control->msg_param, 0);
                             return;
                         }
@@ -292,8 +292,8 @@ void Mouse::UI_OnMouseLeftClick() {
                                 (double)((x - control->uX) * (x - control->uX) +
                                          (y - control->uY) * (y - control->uY))) < (double)control->uWidth) {
                             control->field_2C_is_pushed = true;
-                            pMessageQueue_50CBD0->Flush();
-                            pMessageQueue_50CBD0->AddGUIMessage(control->msg, control->msg_param, 0);
+                            pCurrentFrameMessageQueue->Flush();
+                            pCurrentFrameMessageQueue->AddGUIMessage(control->msg, control->msg_param, 0);
                             return;
                         }
                         continue;
@@ -301,8 +301,8 @@ void Mouse::UI_OnMouseLeftClick() {
                     if (control->uButtonType == 3) {  // clicking skills
                         if (control->Contains(x, y)) {
                             control->field_2C_is_pushed = true;
-                            pMessageQueue_50CBD0->Flush();
-                            pMessageQueue_50CBD0->AddGUIMessage(control->msg, control->msg_param, 0);
+                            pCurrentFrameMessageQueue->Flush();
+                            pCurrentFrameMessageQueue->AddGUIMessage(control->msg, control->msg_param, 0);
                             return;
                         }
                         continue;
@@ -319,7 +319,7 @@ void Mouse::UI_OnMouseLeftClick() {
     if (type == OBJECT_Actor && uActiveCharacter && picked_object.depth < 0x200 &&
         pPlayers[uActiveCharacter]->CanAct() &&
         pPlayers[uActiveCharacter]->CanSteal()) {
-        pMessageQueue_50CBD0->AddGUIMessage(
+        pCurrentFrameMessageQueue->AddGUIMessage(
             UIMSG_STEALFROMACTOR,
             PID_ID(picked_object.object_pid),
             0
@@ -351,7 +351,7 @@ bool UI_OnKeyDown(PlatformKey key) {
                 break;
             }
             GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
-            pMessageQueue_50CBD0->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
+            pCurrentFrameMessageQueue->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
             break;
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::DialogRight, key)) {
             int v7 = win->pCurrentPosActiveItem + win->field_34;
@@ -365,7 +365,7 @@ bool UI_OnKeyDown(PlatformKey key) {
                 break;
             }
             GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
-            pMessageQueue_50CBD0->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
+            pCurrentFrameMessageQueue->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
             break;
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::DialogDown, key)) {
             int v17 = win->pStartingPosActiveItem;
@@ -376,7 +376,7 @@ bool UI_OnKeyDown(PlatformKey key) {
                 win->pCurrentPosActiveItem = v18 + 1;
             if (win->field_30 != 0) return true;
             GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
-            pMessageQueue_50CBD0->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
+            pCurrentFrameMessageQueue->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
             return true;
         } else if (key == PlatformKey::Select) {
             int uClickX;
@@ -395,7 +395,7 @@ bool UI_OnKeyDown(PlatformKey key) {
                     ++v4;
                     if (v4 >= v28) {
                         // v1 = 0;
-                        // v2 = pMessageQueue_50CBD0->uNumMessages;
+                        // v2 = pCurrentFrameMessageQueue->uNumMessages;
                         // --i;
                         // if ( i < 0 )
                         return false;
@@ -416,11 +416,11 @@ bool UI_OnKeyDown(PlatformKey key) {
                 win->pCurrentPosActiveItem = v22 - 1;
             if (win->field_30 != 0) return true;
             GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
-            pMessageQueue_50CBD0->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
+            pCurrentFrameMessageQueue->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
             return true;
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::DialogSelect, key)) {
             GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
-            pMessageQueue_50CBD0->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
+            pCurrentFrameMessageQueue->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
         } else if (key == PlatformKey::PageDown) { // not button event from user, but a call from GUI_UpdateWindows to track mouse
             if (win->field_30 != 0) {
                 int uClickX;

@@ -3778,7 +3778,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
 
         if (pGUIWindow_CurrentMenu &&
             pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {
-            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
         }
         if (v73) {
             if (pParty->bTurnBasedModeOn) {
@@ -4202,7 +4202,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             //           pMouse->RemoveHoldingItem();
             //           return;
             //         }
-            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
         }
         if (v73) {
             if (pParty->bTurnBasedModeOn) {
@@ -4245,10 +4245,12 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             pushScrollSpell(scroll_id, player_num - 1);
         } else {
             mouse->RemoveHoldingItem();
-            pMessageQueue_50C9E8->AddGUIMessage(UIMSG_SpellScrollUse, scroll_id, player_num - 1);
-            if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME && pGUIWindow_CurrentMenu &&
+            // Process spell on next frame after game exits inventory window.
+            pNextFrameMessageQueue->AddGUIMessage(UIMSG_SpellScrollUse, scroll_id, player_num - 1);
+            if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME &&
+                pGUIWindow_CurrentMenu &&
                 (pGUIWindow_CurrentMenu->eWindowType != WINDOW_null)) {
-                pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
             }
         }
         return;
@@ -4321,7 +4323,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 mouse->RemoveHoldingItem();
                 return;
             }
-            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
         }
         //       if ( v73 )                                                v73
         //       is always 0 at this point
@@ -7213,7 +7215,7 @@ void Player::OnInventoryLeftClick() {
                     ptr_50C9A4_ItemToEnchant = &this->pInventoryItemList[enchantedItemPos - 1];
                     IsEnchantingInProgress = false;
 
-                    pMessageQueue_50CBD0->Flush();
+                    pCurrentFrameMessageQueue->Flush();
 
                     mouse->SetCursorImage("MICON1");
                     AfterEnchClickEventId = UIMSG_Escape;
