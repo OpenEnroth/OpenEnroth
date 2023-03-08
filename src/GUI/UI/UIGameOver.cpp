@@ -45,7 +45,7 @@ void GUIWindow_GameOver::Update() {
 }
 
 void GUIWindow_GameOver::Release() {
-    pMessageQueue_50CBD0->AddGUIMessage(static_cast<UIMessageType>(wData.val), 0, 0);
+    pCurrentFrameMessageQueue->AddGUIMessage(static_cast<UIMessageType>(wData.val), 0, 0);
 
     current_screen_type = prev_screen_type;
     bGameoverLoop = false;

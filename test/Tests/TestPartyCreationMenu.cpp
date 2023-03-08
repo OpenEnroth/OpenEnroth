@@ -387,3 +387,15 @@ GAME_TEST(Issue, Issue491) {
     // Check that opening and closing Lloyd book does not cause Segmentation Fault
     test->playTraceFromTestData("issue_491.mm7", "issue_491.json");
 }
+
+GAME_TEST(Issue, Issue492) {
+    // Check that spells that target all visible actors work
+    test->playTraceFromTestData("issue_492.mm7", "issue_492.json", []() { EXPECT_EQ(pParty->pPlayers[0].uExperience, 279); });
+    EXPECT_EQ(pParty->pPlayers[0].uExperience, 287);
+}
+
+GAME_TEST(Issue, Issue502) {
+    // Check that script face animation and voice indexes right characters
+    test->playTraceFromTestData("issue_502.mm7", "issue_502.json");
+}
+

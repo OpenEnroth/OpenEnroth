@@ -548,7 +548,7 @@ LABEL_47:
                         pParty->pPlayers[_evt->v5].PlayEmotion(
                             (CHARACTER_EXPRESSION_ID)_evt->v6, 0);
                     } else if (_evt->v5 == 4) {  // active
-                        pParty->pPlayers[uActiveCharacter].PlayEmotion(
+                        pPlayers[uActiveCharacter]->PlayEmotion(
                             (CHARACTER_EXPRESSION_ID)_evt->v6, 0);
                     } else if (_evt->v5 == 5) {  // all players
                         for (int i = 0; i < 4; ++i)
@@ -565,7 +565,7 @@ LABEL_47:
                         pParty->pPlayers[_evt->v5].PlaySound(
                             (PlayerSpeech)_evt->v6, 0);
                     } else if (_evt->v5 == 4) {  // active
-                        pParty->pPlayers[uActiveCharacter].PlaySound(
+                        pPlayers[uActiveCharacter]->PlaySound(
                             (PlayerSpeech)_evt->v6, 0);
                     } else if (_evt->v5 == 5) {  // all
                         for (int i = 0; i < 4; ++i)
@@ -941,7 +941,7 @@ LABEL_47:
                                 pMediaPlayer->Unload();
                                 window_SpeakInHouse->Release();
                                 window_SpeakInHouse = 0;
-                                pMessageQueue_50CBD0->Flush();
+                                pCurrentFrameMessageQueue->Flush();
                                 current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                                 pDialogueNPCCount = 0;
                                 if (pDialogueWindow) {

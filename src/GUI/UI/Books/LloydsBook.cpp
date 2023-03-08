@@ -161,6 +161,6 @@ void GUIWindow_LloydsBook::Update() {
     }
 
     if (_506360_installing_beacon) {
-        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_CloseAfterInstallBeacon, 0, 0);
+        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_CloseAfterInstallBeacon, 0, 0);
     }
 }

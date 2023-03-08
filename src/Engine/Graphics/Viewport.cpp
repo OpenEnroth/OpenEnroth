@@ -252,7 +252,7 @@ void InteractWithActor(unsigned int id) {
 
     Actor::AI_FaceObject(id, 4, 0, 0);
     if (pActors[id].sNPC_ID) {
-        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_StartNPCDialogue, id, 0);
+        pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_StartNPCDialogue, id, 0);
     } else {
         if (pNPCStats->pGroups_copy[pActors[id].uGroup]) {
             if (pNPCStats->pCatchPhrases
@@ -362,13 +362,13 @@ void Engine::OnGameViewportClick() {
                 if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
                     pTurnEngine->flags |= TE_FLAG_8_finished;
                 } else {
-                    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Attack, 0, 0);
+                    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Attack, 0, 0);
                 }
             }
         } else if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
             pParty->SetAirborne(true);
         } else if (uActiveCharacter != 0 && IsSpellQuickCastableOnShiftClick(pPlayers[uActiveCharacter]->uQuickSpell)) {
-            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_CastQuickSpell, 0, 0);
+            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_CastQuickSpell, 0, 0);
         }
     } else if (PID_TYPE(pid) == OBJECT_Decoration) {
         int id = PID_ID(pid);
