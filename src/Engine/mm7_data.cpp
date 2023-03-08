@@ -2352,9 +2352,6 @@ char byte_4FAA24;  // turn over break??
 
 // std::array<unsigned int, 480> pSRZBufferLineOffsets;
 std::array<char, 777> books_num_items_per_page;
-int LloydsBeaconSpellId;
-signed int sRecoveryTime;    // idb
-unsigned int uRequiredMana;  // idb
 int CurrentLloydPlayerID;
 int LloydsBeaconSpellDuration;  // 604800 * spell level
 int MapBookOpen;
