@@ -32,6 +32,18 @@ Blob Blob::Allocate(size_t size) {
     return result;
 }
 
+Blob Blob::Copy(const void *data, size_t size) {
+    Blob result;
+
+    result.data_ = malloc(size); // We don't handle allocation failures.
+    result.size_ = size;
+    result.handler_ = &staticFreeBlobHandler;
+
+    memcpy(result.data_, data, size);
+
+    return result;
+}
+
 Blob Blob::Read(FILE *file, size_t size) {
     Blob result = Allocate(size);
 

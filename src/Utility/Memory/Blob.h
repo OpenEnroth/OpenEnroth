@@ -50,6 +50,7 @@ class Blob final {
     }
 
     static Blob Allocate(size_t size);
+    static Blob Copy(const void *data, size_t size);
     static Blob Read(FILE *file, size_t size);
     static Blob FromFile(std::string_view path);
     static Blob NonOwning(void *data, size_t size);
