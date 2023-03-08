@@ -2451,18 +2451,16 @@ void ODM_ProcessPartyActions() {
     }
 
     // save up distance deltas so walks sounds play at high fps with small delta
-    static uint pX_{};
-    static uint pY_{};
-    static uint pZ_{};
+    int pX_ = pParty->vPosition.x - party_new_x;
+    int pY_ = pParty->vPosition.y - party_new_Y;
+    int pZ_ = pParty->vPosition.z - party_new_Z;
+    pParty->_movementTallySQ += pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_;
 
-    pX_ += abs(pParty->vPosition.x - party_new_x);
-    pY_ += abs(pParty->vPosition.y - party_new_Y);
-    pZ_ += abs(pParty->vPosition.z - party_new_Z);
     if (engine->config->settings.WalkSound.Get() && pParty->walk_sound_timer <= 0) {
         pAudioPlayer->StopAll(804);  // stop sound
         if (party_running_flag && (!hovering || not_high_fall)) {
-            if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) >= 16) {
-                pX_ = pY_ = pZ_ = 0;
+            if (pParty->_movementTallySQ >= 256) {
+                pParty->_movementTallySQ = 0;
                 if (!is_not_on_bmodel &&
                     pOutdoor->pBModels[pParty->floor_face_pid >> 9]
                     .pFaces[(pParty->floor_face_pid >> 3) & 0x3F].Visible()) {
@@ -2475,7 +2473,8 @@ void ODM_ProcessPartyActions() {
                 pParty->walk_sound_timer = 96;  // таймер для бега
             }
         } else if (party_walking_flag && (!hovering || not_high_fall)) {
-            if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) >= 8) {
+            if (pParty->_movementTallySQ >= 64) {
+                pParty->_movementTallySQ = 0;
                 if (!is_not_on_bmodel &&
                     pOutdoor->pBModels[pParty->floor_face_pid >> 9]
                     .pFaces[(pParty->floor_face_pid >> 3) & 0x3F].Visible()) {
@@ -2491,7 +2490,7 @@ void ODM_ProcessPartyActions() {
     }
 
     // mute the walking sound when stopping
-    if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) < 8)
+    if (pParty->_movementTallySQ < 64)
         pAudioPlayer->StopAll(804);
     //------------------------------------------------------------------------
 

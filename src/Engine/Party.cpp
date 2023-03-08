@@ -178,6 +178,7 @@ void Party::Zero() {
     TorchLightLastIntensity = 0.0f;
 
     _roundingDt = 0;
+    _movementTallySQ = 0;
 
     // players
     for (Player &player : pPlayers) {

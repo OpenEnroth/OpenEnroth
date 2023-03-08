@@ -381,6 +381,7 @@ struct Party {
     float TorchLightLastIntensity;
 
     uint _roundingDt{ 0 };  // keeps track of rounding remainder for recovery
+    int _movementTallySQ{ 0 };  // keeps track of party movement for footsteps
 };
 
 extern Party *pParty;  // idb
