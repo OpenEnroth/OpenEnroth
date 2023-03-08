@@ -177,6 +177,8 @@ void Party::Zero() {
     flt_TorchlightColorB = 0.0f;
     TorchLightLastIntensity = 0.0f;
 
+    _roundingDt = 0;
+
     // players
     for (Player &player : pPlayers) {
         player.Zero();

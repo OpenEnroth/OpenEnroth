@@ -1536,12 +1536,10 @@ void _494035_timed_effects__water_walking_damage__etc() {
     RegeneratePartyHealthMana();
 
     uint recoveryTimeDt = pEventTimer->uTimeElapsed;
-    // static int to keep track of rounding remainder
-    static uint roundingdt{ 0 };
-    recoveryTimeDt += roundingdt;
-    roundingdt = 0;
+    recoveryTimeDt += pParty->_roundingDt;
+    pParty->_roundingDt = 0;
     if (pParty->uFlags2 & PARTY_FLAGS_2_RUNNING && recoveryTimeDt > 0) {  // half recovery speed if party is running
-        roundingdt = recoveryTimeDt % 2;
+        pParty->_roundingDt = recoveryTimeDt % 2;
         recoveryTimeDt /= 2;
     }
 

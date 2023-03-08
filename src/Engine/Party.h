@@ -379,6 +379,8 @@ struct Party {
     float flt_TorchlightColorG;
     float flt_TorchlightColorB;
     float TorchLightLastIntensity;
+
+    uint _roundingDt{ 0 };  // keeps track of rounding remainder for recovery
 };
 
 extern Party *pParty;  // idb
