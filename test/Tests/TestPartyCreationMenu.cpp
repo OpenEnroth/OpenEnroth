@@ -410,3 +410,4 @@ GAME_TEST(Issue, Issue506) {
     // Check that scroll use does not assert
     test->playTraceFromTestData("issue_506.mm7", "issue_506.json");
 }
+
