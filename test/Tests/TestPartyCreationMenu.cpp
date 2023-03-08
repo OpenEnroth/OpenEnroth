@@ -387,3 +387,20 @@ GAME_TEST(Issue, Issue491) {
     // Check that opening and closing Lloyd book does not cause Segmentation Fault
     test->playTraceFromTestData("issue_491.mm7", "issue_491.json");
 }
+
+static void check503health( std::initializer_list<std::pair<int, int>> playerhealthpairs) {
+    for (auto pair : playerhealthpairs) {
+        EXPECT_EQ(pParty->pPlayers[pair.first].sHealth, pair.second);
+    }
+}
+
+GAME_TEST(Issue, Issue503) {
+    // Check that town portal book actually pauses game
+    test->playTraceFromTestData("issue_503.mm7", "issue_503.json", []() { check503health({ {0, 1147}, {1, 699}, {2, 350}, {3, 242} }); });
+    check503health({ {0, 1147}, {1, 699}, {2, 350}, {3, 242} });
+}
+
+GAME_TEST(Issue, Issue506) {
+    // Check that scroll use does not assert
+    test->playTraceFromTestData("issue_506.mm7", "issue_506.json");
+}
