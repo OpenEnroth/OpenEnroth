@@ -398,3 +398,4 @@ GAME_TEST(Issue, Issue502) {
     // Check that script face animation and voice indexes right characters
     test->playTraceFromTestData("issue_502.mm7", "issue_502.json");
 }
+
