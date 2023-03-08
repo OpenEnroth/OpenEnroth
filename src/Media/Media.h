@@ -21,7 +21,7 @@ class IAudioDataSource {
 typedef std::shared_ptr<IAudioDataSource> PAudioDataSource;
 
 PAudioDataSource CreateAudioFileDataSource(const std::string &file_name);
-PAudioDataSource CreateAudioBufferDataSource(std::shared_ptr<Blob> buffer);
+PAudioDataSource CreateAudioBufferDataSource(Blob buffer);
 
 class IAudioTrack {
  public:
@@ -59,7 +59,7 @@ class IAudioSample {
 };
 typedef std::shared_ptr<IAudioSample> PAudioSample;
 
-PAudioSample CreateAudioSample(std::shared_ptr<Blob> buffer);
+PAudioSample CreateAudioSample(Blob buffer);
 
 class IVideoDataSource {
  public:

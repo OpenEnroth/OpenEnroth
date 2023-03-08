@@ -1,12 +1,12 @@
 #pragma once
 
-#include <fstream>
 #include <map>
 #include <string>
 #include <memory>
 
 #include "Utility/String.h"
 #include "Utility/Memory/Blob.h"
+#include "Utility/Streams/FileInputStream.h"
 #include "Media/Media.h"
 
 enum SoundID {
@@ -143,8 +143,8 @@ class AudioPlayer {
     void LoadAudioSnd();
     void ResumeSounds();
     bool FindSound(const std::string &pName, struct AudioPlayer::SoundHeader *header);
-    std::shared_ptr<Blob> LoadSound(const std::string &pSoundName);
-    std::shared_ptr<Blob> LoadSound(int uSoundID);
+    Blob LoadSound(const std::string &pSoundName);
+    Blob LoadSound(int uSoundID);
 
     /**
      * @param spell                     Spell ID of spell. Indexes into SpellSoundIds.
@@ -165,7 +165,7 @@ class AudioPlayer {
     float uMasterVolume;
     float uVoiceVolume;
     PAudioTrack pCurrentMusicTrack;
-    std::ifstream fAudioSnd;
+    FileInputStream fAudioSnd;
     std::map<std::string, SoundHeader> mSoundHeaders;
 };
 
