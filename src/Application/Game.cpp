@@ -459,25 +459,12 @@ void Game::EventLoop() {
     int v55;                    // ecx@432
     int v56;                    // edx@432
     int v57;                    // eax@432
-    Player *pPlayer;            // edx@442
     unsigned int pMapNum;       // eax@445
-    signed int v60;             // ST64_4@459
     int16_t v63;                // dx@479
     unsigned int v64;           // eax@486
     int v65;                    // ecx@486
     int v66;                    // eax@488
-    // char *v67;                  // eax@489
-    int16_t v68;                // dx@498
-    // int v70;                    // eax@525
-    // int v71;                    // edi@527
-    // NPCData *pNPCData3;         // esi@527
-    // char *v73;                  // ecx@533
-    // signed int v74;             // edi@535
-    // int v75;                    // eax@535
-    // int v76;                    // esi@535
-    // int v77;                    // eax@537
     Player *pPlayer2;           // ecx@549
-                                // signed int v81; // eax@552
     GUIButton *pButton;         // eax@578
     unsigned int v86;           // eax@583
     const char *v87;            // ecx@595
@@ -493,34 +480,17 @@ void Game::EventLoop() {
     Player *pPlayer4;           // ecx@718
     short *v105;                   // eax@718
     Player *pPlayer5;           // ST78_4@758
-    // unsigned int v115;          // eax@764
-    // unsigned int v118;          // eax@785
-    // unsigned int v119;          // ecx@786
-                        //    unsigned int v121; // [sp-28h] [bp-624h]@711
-                        //    unsigned int v123; // [sp-24h] [bp-620h]@711
-                        //    unsigned int v125; // [sp-20h] [bp-61Ch]@711
-    int v127;  // [sp-1Ch] [bp-618h]@107
-               //    unsigned int v128; // [sp-1Ch] [bp-618h]@711
-    // GUIButton *pButton2;  // [sp-4h] [bp-600h]@59
-                    //    KeyToggleType pKeyToggleType; // [sp+0h] [bp-5FCh]@287
-    Player *pPlayer9;             // [sp+14h] [bp-5E8h]@455
-    // int thisg;                    // [sp+14h] [bp-5E8h]@467
-    // int thish;                    // [sp+14h] [bp-5E8h]@528
-    // signed int thisi;             // [sp+14h] [bp-5E8h]@535
     MapInfo *pMapInfo;            // [sp+14h] [bp-5E8h]@604
     Player *pPlayer10;            // [sp+14h] [bp-5E8h]@641
     int uMessageParam;            // [sp+18h] [bp-5E4h]@7
     int uAction;                  // [sp+1Ch] [bp-5E0h]@18
     int encounter_index;           // [sp+20h] [bp-5DCh]@23
     unsigned int uNumSeconds;     // [sp+24h] [bp-5D8h]@18
-                                  //    char v197; // [sp+2Bh] [bp-5D1h]@101
     UIMessageType uMessage;  // [sp+2Ch] [bp-5D0h]@7
     unsigned int v199 {};            // [sp+30h] [bp-5CCh]@7
     char *v200 = nullptr;                   // [sp+34h] [bp-5C8h]@518
-    // int v213;                     // [sp+98h] [bp-564h]@385
     char pOut[32];                // [sp+BCh] [bp-540h]@370
     int spellbookPages[9] {};                  // [sp+158h] [bp-4A4h]@652
-    // char Str2[128];               // [sp+238h] [bp-3C4h]@527
     Actor actor;                  // [sp+2B8h] [bp-344h]@4
     int currHour;
     PLAYER_SKILL_TYPE skill;
@@ -1219,8 +1189,7 @@ void Game::EventLoop() {
 
                 case UIMSG_OnCastTownPortal:
                     pAudioPlayer->PauseSounds(-1);
-                    pGUIWindow_CurrentMenu =
-                        new GUIWindow_TownPortalBook();  // (char *)uMessageParam);
+                    pGUIWindow_CurrentMenu = new GUIWindow_TownPortalBook();  // (char *)uMessageParam);
                     continue;
 
                 case UIMSG_OnCastLloydsBeacon:
@@ -1230,21 +1199,21 @@ void Game::EventLoop() {
 
                 case UIMSG_LloydsBeacon_FlippingBtn:
                     bRecallingBeacon = uMessageParam;
-                    v127 = uMessageParam + 204;
-                    pAudioPlayer->PlaySound((SoundID)v127, 0, 0, -1, 0, 0);
+                    pAudioPlayer->PlaySound(bRecallingBeacon ? SOUND_TurnPage2 : SOUND_TurnPage1, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_HintBeaconSlot: {
-                    if (!pGUIWindow_CurrentMenu) continue;
-                    pPlayer = pPlayers[CurrentLloydPlayerID + 1];
-                    if (uMessageParam >= pPlayer->vBeacons.size()) {
+                    if (!pGUIWindow_CurrentMenu) {
                         continue;
                     }
-                    LloydBeacon *beacon = &pPlayer->vBeacons[uMessageParam];
+                    Player &player = pParty->pPlayers[CurrentLloydPlayerID];
+                    if (uMessageParam >= player.vBeacons.size()) {
+                        continue;
+                    }
+                    LloydBeacon &beacon = player.vBeacons[uMessageParam];
                     if (bRecallingBeacon) {
-                        if (beacon->uBeaconTime) {
-                            std::string v173 = pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(beacon->SaveFileID)].pName;
-                            GameUI_StatusBar_Set(localization->FormatString(
-                                LSTR_FMT_RECALL_TO_S, v173.c_str()));
+                        if (beacon.uBeaconTime) {
+                            std::string pMapName = pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(beacon.SaveFileID)].pName;
+                            GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_RECALL_TO_S, pMapName.c_str()));
                         }
                         continue;
                     }
@@ -1254,15 +1223,11 @@ void Game::EventLoop() {
                         pMapName = pMapStats->pInfos[pMapNum].pName;
                     }
 
-                    if (beacon->uBeaconTime) {
-                        GameUI_StatusBar_Set(localization->FormatString(
-                            LSTR_FMT_SET_S_OVER_S,
-                            pMapName.c_str(),
-                            pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(
-                                beacon->SaveFileID)].pName.c_str()));
+                    if (beacon.uBeaconTime) {
+                        std::string pMapName2 = pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(beacon.SaveFileID)].pName;
+                        GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_SET_S_OVER_S, pMapName.c_str(), pMapName2.c_str()));
                     } else {
-                        GameUI_StatusBar_Set(localization->FormatString(
-                            LSTR_FMT_SET_S_TO_S, pMapName.c_str()));
+                        GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_SET_S_TO_S, pMapName.c_str()));
                     }
                     continue;
                 }
@@ -1270,81 +1235,89 @@ void Game::EventLoop() {
                     dword_50CDC8 = 1;
                     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
                     continue;
-                case UIMSG_InstallBeacon:
-                    pPlayer9 = pPlayers[CurrentLloydPlayerID + 1];
-                    if ((pPlayer9->vBeacons.size() <= uMessageParam) && bRecallingBeacon) continue;
+                case UIMSG_InstallBeacon: {
+                    Player &player = pParty->pPlayers[CurrentLloydPlayerID];
+                    if ((player.vBeacons.size() <= uMessageParam) && bRecallingBeacon) {
+                        continue;
+                    }
 
                     _506360_installing_beacon = true;
 
-                    pPlayer9->SpendMana(uRequiredMana);
+                    assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelMana == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uExpertLevelMana);
+                    assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelMana == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uMasterLevelMana);
+                    assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelMana == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uMagisterLevelMana);
+                    player.SpendMana(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelMana);
+
+                    assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uExpertLevelRecovery);
+                    assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uMasterLevelRecovery);
+                    assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uMagisterLevelRecovery);
+                    signed int sRecoveryTime = pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelRecovery;
                     if (pParty->bTurnBasedModeOn) {
-                        v60 = sRecoveryTime;
                         pParty->pTurnBasedPlayerRecoveryTimes[CurrentLloydPlayerID] = sRecoveryTime;
-                        pPlayer9->SetRecoveryTime(v60);
+                        player.SetRecoveryTime(sRecoveryTime);
                         pTurnEngine->ApplyPlayerAction();
                     } else {
-                        pPlayer9->SetRecoveryTime(
-                            (int64_t)(debug_non_combat_recovery_mul *
-                                             (double)sRecoveryTime *
-                                             flt_debugrecmod3));
+                        player.SetRecoveryTime(debug_non_combat_recovery_mul * sRecoveryTime * flt_debugrecmod3);
                     }
-                    pAudioPlayer->PlaySpellSound(LloydsBeaconSpellId, 0);
+                    pAudioPlayer->PlaySpellSound(SPELL_WATER_LLOYDS_BEACON, 0);
                     if (bRecallingBeacon) {
-                        if (pCurrentMapName != pGames_LOD->GetSubNodeName(pPlayer9->vBeacons[uMessageParam].SaveFileID)) {
+                        if (pCurrentMapName != pGames_LOD->GetSubNodeName(player.vBeacons[uMessageParam].SaveFileID)) {
                             SaveGame(1, 0);
                             OnMapLeave();
-                            pCurrentMapName = pGames_LOD->GetSubNodeName(pPlayer9->vBeacons[uMessageParam].SaveFileID);
+                            pCurrentMapName = pGames_LOD->GetSubNodeName(player.vBeacons[uMessageParam].SaveFileID);
                             dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
                             uGameState = GAME_STATE_CHANGE_LOCATION;
-                            Party_Teleport_X_Pos = pPlayer9->vBeacons[uMessageParam].PartyPos_X;
-                            Party_Teleport_Y_Pos = pPlayer9->vBeacons[uMessageParam].PartyPos_Y;
-                            Party_Teleport_Z_Pos = pPlayer9->vBeacons[uMessageParam].PartyPos_Z;
-                            Party_Teleport_Cam_Yaw = pPlayer9->vBeacons[uMessageParam].PartyRot_X;
-                            Party_Teleport_Cam_Pitch = pPlayer9->vBeacons[uMessageParam].PartyRot_Y;
+                            Party_Teleport_X_Pos = player.vBeacons[uMessageParam].PartyPos_X;
+                            Party_Teleport_Y_Pos = player.vBeacons[uMessageParam].PartyPos_Y;
+                            Party_Teleport_Z_Pos = player.vBeacons[uMessageParam].PartyPos_Z;
+                            Party_Teleport_Cam_Yaw = player.vBeacons[uMessageParam].PartyRot_X;
+                            Party_Teleport_Cam_Pitch = player.vBeacons[uMessageParam].PartyRot_Y;
                             Start_Party_Teleport_Flag = 1;
                         } else {
-                            pParty->vPosition.x = pPlayer9->vBeacons[uMessageParam].PartyPos_X;
-                            pParty->vPosition.y = pPlayer9->vBeacons[uMessageParam].PartyPos_Y;
-                            pParty->vPosition.z = pPlayer9->vBeacons[uMessageParam].PartyPos_Z;
+                            pParty->vPosition.x = player.vBeacons[uMessageParam].PartyPos_X;
+                            pParty->vPosition.y = player.vBeacons[uMessageParam].PartyPos_Y;
+                            pParty->vPosition.z = player.vBeacons[uMessageParam].PartyPos_Z;
                             pParty->uFallStartZ = pParty->vPosition.z;
-                            pParty->sRotationZ = pPlayer9->vBeacons[uMessageParam].PartyRot_X;
-                            pParty->sRotationY = pPlayer9->vBeacons[uMessageParam].PartyRot_Y;
+                            pParty->sRotationZ = player.vBeacons[uMessageParam].PartyRot_X;
+                            pParty->sRotationY = player.vBeacons[uMessageParam].PartyRot_Y;
                         }
                         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
                         pGUIWindow_CurrentMenu->Release();
                         pGUIWindow_CurrentMenu = 0;
                     } else {
-                        pPlayer9->SetBeacon(uMessageParam, LloydsBeaconSpellDuration);
+                        player.SetBeacon(uMessageParam, LloydsBeaconSpellDuration);
                     }
                     continue;
-                case UIMSG_ClickTownInTP:
+                }
+                case UIMSG_ClickTownInTP: {
                     //if (uGameState == GAME_STATE_CHANGE_LOCATION) continue;
+                    int16_t fountainBit;
                     switch (uMessageParam) {
                         case 0:
-                            v63 = 206;
+                            fountainBit = QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED;
                             break;
                         case 1:
-                            v63 = 208;
+                            fountainBit = QBIT_FOUNTAIN_IN_PIERPONT_ACTIVATED;
                             break;
                         case 2:
-                            v63 = 207;
+                            fountainBit = QBIT_FOUNTAIN_IN_MOUNT_NIGHON_ACTIVATED;
                             break;
                         case 3:
-                            v63 = 211;
+                            fountainBit = QBIT_FOUNTAIN_IN_EVENMORN_ISLE_ACTIVATED;
                             break;
                         case 4:
-                            v63 = 209;
+                            fountainBit = QBIT_FOUNTAIN_IN_CELESTIA_ACTIVATED;
                             break;
                         case 5:
-                            v63 = 210;
+                            fountainBit = QBIT_FOUNTAIN_IN_THE_PIT_ACTIVATED;
                             break;
                         default:
-                            Assert(true && "Bad TP param");
+                            Assert(false && "Bad TP param");
                             break;
                     }
 
                     // check if tp location is unlocked
-                    if (!_449B57_test_bit(pParty->_quest_bits, v63) && !engine->config->debug.TownPortal.Get())
+                    if (!_449B57_test_bit(pParty->_quest_bits, fountainBit) && !engine->config->debug.TownPortal.Get())
                         continue;
 
                     // begin TP
@@ -1373,68 +1346,69 @@ void Game::EventLoop() {
                         Actor::InitializeActors();
                     }
 
-                    pParty->pPlayers[(uint8_t)TownPortalCasterId].SpendMana(0x14u);
+                    assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uExpertLevelMana);
+                    assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMasterLevelMana);
+                    assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMagisterLevelMana);
+                    pParty->pPlayers[TownPortalCasterId].SpendMana(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana);
                     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
                     continue;
+                }
                 case UIMSG_HintTownPortal: {
-                    std::string v69;
-                    if (uMessageParam) {
-                        switch (uMessageParam) {
+                    int16_t fountainBit;
+                    switch (uMessageParam) {
+                        case 0:
+                            fountainBit = QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED;
+                            break;
                         case 1:
-                            v68 = 208;
+                            fountainBit = QBIT_FOUNTAIN_IN_PIERPONT_ACTIVATED;
                             break;
                         case 2:
-                            v68 = 207;
+                            fountainBit = QBIT_FOUNTAIN_IN_MOUNT_NIGHON_ACTIVATED;
                             break;
                         case 3:
-                            v68 = 211;
+                            fountainBit = QBIT_FOUNTAIN_IN_EVENMORN_ISLE_ACTIVATED;
                             break;
                         case 4:
-                            v68 = 209;
+                            fountainBit = QBIT_FOUNTAIN_IN_CELESTIA_ACTIVATED;
+                            break;
+                        case 5:
+                            fountainBit = QBIT_FOUNTAIN_IN_THE_PIT_ACTIVATED;
                             break;
                         default:
-                            v68 = 210;
+                            Assert(false && "Bad TP param");
                             break;
-                        }
-                    } else {
-                        v68 = 206;
                     }
 
-                    if (!_449B57_test_bit(pParty->_quest_bits, v68)
-                        && !engine->config->debug.TownPortal.Get()) {
+                    if (!_449B57_test_bit(pParty->_quest_bits, fountainBit) && !engine->config->debug.TownPortal.Get()) {
                         render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
                         continue;
                     }
                     // LABEL_506:
-                    if (uMessageParam) {
-                        switch (uMessageParam) {
+                    std::string townName = "";
+                    switch (uMessageParam) {
+                        case 0:
+                            townName = pMapStats->pInfos[21].pName;
+                            break;
                         case 1:
-                            v69 = pMapStats->pInfos[4].pName;
+                            townName = pMapStats->pInfos[4].pName;
                             break;
                         case 2:
-                            v69 = pMapStats->pInfos[3].pName;
+                            townName = pMapStats->pInfos[3].pName;
                             break;
                         case 3:
-                            v69 = pMapStats->pInfos[10].pName;
+                            townName = pMapStats->pInfos[10].pName;
                             break;
                         case 4:
-                            v69 = pMapStats->pInfos[7].pName;
+                            townName = pMapStats->pInfos[7].pName;
+                            break;
+                        case 5:
+                            townName = pMapStats->pInfos[8].pName;
                             break;
                         default:
-                            if (uMessageParam != 5) {
-                                GameUI_StatusBar_Set(
-                                    localization->FormatString(
-                                        LSTR_TOWN_PORTAL_TO_S, v200));
-                                continue;
-                            }
-                            v69 = pMapStats->pInfos[8].pName;
+                            Assert(false && "Bad TP param");
                             break;
-                        }
-                    } else {
-                        v69 = pMapStats->pInfos[21].pName;
                     }
-                    GameUI_StatusBar_Set(localization->FormatString(
-                        LSTR_TOWN_PORTAL_TO_S, v69.c_str()));
+                    GameUI_StatusBar_Set(localization->FormatString(LSTR_TOWN_PORTAL_TO_S, townName.c_str()));
                     continue;
                 }
                 case UIMSG_ShowGameOverWindow: {
@@ -1840,8 +1814,7 @@ void Game::EventLoop() {
                         page++;
                     }
                     if (!skill_count) {  //нет скиллов
-                        pAudioPlayer->PlaySound(
-                            (SoundID)(vrng->Random(2) + SOUND_TurnPageU), 0, 0, -1, 0, 0);
+                        pAudioPlayer->PlaySound(vrng->RandomBool() ? SOUND_TurnPage2 : SOUND_TurnPage1, 0, 0, -1, 0, 0);
                     } else {
                         if (keyboardInputHandler->IsSpellBackcycleToggled()) {
                             --uAction;
@@ -1905,7 +1878,6 @@ void Game::EventLoop() {
                     continue;
 
                 case UIMSG_SpellScrollUse:
-                    __debugbreak();
                     if (pTurnEngine->turn_stage != TE_MOVEMENT) {
                         pushScrollSpell(static_cast<SPELL_TYPE>(uMessageParam), v199);
                     }

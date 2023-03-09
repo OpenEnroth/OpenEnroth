@@ -50,6 +50,13 @@ class RandomEngine {
     int RandomDice(int count, int faces);
 
     /**
+     * Create random binary value.
+     */
+    bool RandomBool() {
+        return Random(2) != 0;
+    }
+
+    /**
      * @param range                     Random access range.
      * @return                          Random element from the provided range.
      */
