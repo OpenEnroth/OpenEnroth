@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <array>
+#include <vector>
 #include <string>
 
 #include "Engine/Objects/Items.h"
