@@ -273,22 +273,21 @@ void Mouse::UI_OnMouseLeftClick() {
     GetClickPos(&x, &y);
 
     if (GetCurrentMenuID() != -1 || current_screen_type != CURRENT_SCREEN::SCREEN_GAME ||
-        !keyboardInputHandler->IsStealingToggled() || !pViewport->Contains(x, y)) {
+        !keyboardInputHandler->IsStealingToggled() || !pViewport->Contains(x, y) || pGUIWindow_CastTargetedSpell) {
         std::list<GUIWindow*> targetedSpellUI = {pGUIWindow_CastTargetedSpell};
-        std::list<GUIWindow*> &checkWindowList = lWindowList;
-        if (!pGUIWindow_CastTargetedSpell) {
+        std::list<GUIWindow*> *checkWindowList = &lWindowList;
+        if (pGUIWindow_CastTargetedSpell) {
             // Block regular UI if targeted spell casting is active
-            checkWindowList = targetedSpellUI;
+            checkWindowList = &targetedSpellUI;
         }
-        for (GUIWindow *win : checkWindowList) {
+        for (GUIWindow *win : *checkWindowList) {
             if (win->Contains(x, y)) {
                 for (GUIButton *control : win->vButtons) {
                     if (control->uButtonType == 1) {
                         if (control->Contains(x, y)) {
                             control->field_2C_is_pushed = true;
                             pCurrentFrameMessageQueue->Flush();
-                            pCurrentFrameMessageQueue->AddGUIMessage(
-                                control->msg, control->msg_param, 0);
+                            pCurrentFrameMessageQueue->AddGUIMessage(control->msg, control->msg_param, 0);
                             return;
                         }
                         continue;
