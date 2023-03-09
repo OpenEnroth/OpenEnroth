@@ -2190,10 +2190,12 @@ void ODM_ProcessPartyActions() {
         save_old_flight_height = party_new_Z;
         if (pParty->FlyActive())
             stru_5E4C90_MapPersistVars._decor_events[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].uOverlayID + 119] |= 1;
+        pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
     } else {
         save_old_flight_height = party_new_Z;
         if (pParty->FlyActive())
             stru_5E4C90_MapPersistVars._decor_events[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].uOverlayID + 119] |= 1;
+        pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
     }
     //------------------------------------------
 
