@@ -1,4 +1,6 @@
 #pragma once
+#include <string>
+
 #include "GUI/GUIWindow.h"
 
 class TargetedSpellUI : public GUIWindow {

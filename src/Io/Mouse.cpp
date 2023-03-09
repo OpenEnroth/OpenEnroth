@@ -1,6 +1,7 @@
 #include "Io/Mouse.h"
 
 #include <cstdlib>
+#include <list>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
