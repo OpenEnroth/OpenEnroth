@@ -3135,40 +3135,24 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
 
     // TODO: if no more place for spells in queue then spell is just ignored?
     //       Need assert?
-    if (result != -1) {
+    if (result != -1 && pGUIWindow_CastTargetedSpell == nullptr) {
         Sizei renDims = render->GetRenderDimensions();
         if (flags & ON_CAST_TargetedCharacter) {
-            if (pGUIWindow_CastTargetedSpell) {
-                return;
-            }
-
             pGUIWindow_CastTargetedSpell = new TargetedSpellUI_Character({0, 0}, renDims, &pCastSpellInfo[result]);
             pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
         if (flags & ON_CAST_TargetedActor) {
-            if (pGUIWindow_CastTargetedSpell) {
-                return;
-            }
-
             pGUIWindow_CastTargetedSpell = new TargetedSpellUI_Actor({0, 0}, renDims, &pCastSpellInfo[result]);
             pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
         if (flags & ON_CAST_TargetedTelekinesis) {
-            if (pGUIWindow_CastTargetedSpell) {
-                return;
-            }
-
             pGUIWindow_CastTargetedSpell = new TargetedSpellUI_Telekinesis({0, 0}, renDims, &pCastSpellInfo[result]);
             pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
         if (flags & ON_CAST_TargetedEnchantment) {
-            if (pGUIWindow_CastTargetedSpell) {
-                return;
-            }
-
             pGUIWindow_CastTargetedSpell = pCastSpellInfo[result].GetCastSpellInInventoryWindow();
             IsEnchantingInProgress = true;
             some_active_character = uActiveCharacter;
@@ -3176,19 +3160,11 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
             return;
         }
         if (flags & ON_CAST_TargetedActorOrCharacter) {
-            if (pGUIWindow_CastTargetedSpell) {
-                return;
-            }
-
             pGUIWindow_CastTargetedSpell = new TargetedSpellUI_ActorOrCharacter({0, 0}, renDims, &pCastSpellInfo[result]);
             pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
         if (flags & ON_CAST_TargetedHireling) {
-            if (pGUIWindow_CastTargetedSpell) {
-                return;
-            }
-
             pGUIWindow_CastTargetedSpell = new TargetedSpellUI_Hirelings({0, 0}, renDims, &pCastSpellInfo[result]);
             // Next line was added to do something with picked item on Sacrifice cast
             pParty->PickedItem_PlaceInInventory_or_Drop();
