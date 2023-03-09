@@ -131,7 +131,7 @@ class RenderOpenGL : public RenderBase {
 
     virtual unsigned short *MakeScreenshot16(int width, int height) override;
 
-    virtual int GetActorsInViewport(int pDepth) override;
+    virtual int forEachActorInViewport(int pDepth, std::function<void(Actor&)> callback) override;
 
     virtual void BeginLightmaps() override;
     virtual void EndLightmaps() override;

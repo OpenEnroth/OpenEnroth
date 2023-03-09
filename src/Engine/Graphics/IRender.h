@@ -341,7 +341,14 @@ class IRender {
     virtual void SavePCXScreenshot() = 0;
     virtual unsigned short* MakeScreenshot16(int width, int height) = 0;
 
-    virtual int GetActorsInViewport(int pDepth) = 0;
+    /**
+     * Find all visible actors (excluding dead ones or summoned by player)
+     * and call callback function for each actor found.
+     *
+     * @param pDepth    Depth of actors search.
+     * @patam callback  Callback function.
+     */
+    virtual int forEachActorInViewport(int pDepth, std::function<void(Actor&)> callback) = 0;
 
     virtual void BeginLightmaps() = 0;
     virtual void EndLightmaps() = 0;
