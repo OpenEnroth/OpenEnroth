@@ -452,7 +452,6 @@ void Game::EventLoop() {
     signed int v46;             // ecx@398
     char v47;                   // zf@399
     char v48;                   // zf@405
-    BLVFace *pBLVFace;          // ecx@410
     ODMFace *pODMFace;          // ecx@412
     CastSpellInfo *pSpellInfo;  // ecx@415
     int16_t v53;                // ax@431
@@ -479,8 +478,6 @@ void Game::EventLoop() {
     // int v77;                    // eax@537
     Player *pPlayer2;           // ecx@549
                                 // signed int v81; // eax@552
-    Vis_PIDAndDepth v83;             // ecx@554
-    signed int v84;             // ecx@554
     GUIButton *pButton;         // eax@578
     unsigned int v86;           // eax@583
     const char *v87;            // ecx@595
@@ -1149,86 +1146,45 @@ void Game::EventLoop() {
                     int pid = vis->get_picked_object_zbuf_val().object_pid;
                     ObjectType type = PID_TYPE(pid);
                     int id = PID_ID(pid);
+                    bool interactionPossible = false;
                     if (type == OBJECT_Actor) {
-                        if (pActors[id].uAIState != Dead) {
-                            continue;
-                        }
-                        telekinesisTargetPicked(pid);
-                        CloseTargetedSpellWindow();
-                        continue;
+                        interactionPossible = pActors[id].uAIState == Dead;
                     }
                     if (type == OBJECT_Item) {
-                        if (pObjectList->pObjects[pSpriteObjects[id].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
-                            continue;
-                        }
-                        telekinesisTargetPicked(pid);
-                        CloseTargetedSpellWindow();
-                        continue;
+                        int flags = pObjectList->pObjects[pSpriteObjects[id].uObjectDescID].uFlags;
+                        interactionPossible = !!(flags & OBJECT_DESC_UNPICKABLE);
                     }
-                    bool isEvent = false;
                     if (type == OBJECT_Decoration) {
-                        isEvent = pLevelDecorations[id].uEventID != 0;
-                    } else if (type == OBJECT_Face) {
-                        if (uCurrentlyLoadedLevelType != LEVEL_Indoor) {
-                            pODMFace = &pOutdoor->pBModels[pid >> 9].pFaces[id];
-                            if (!pODMFace->Clickable() || !pODMFace->sCogTriggeredID) {
-                                continue;
+                        interactionPossible = pLevelDecorations[id].uEventID != 0;
+                    }
+                    if (type == OBJECT_Face) {
+                        if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+                            ODMFace *pODMFace = &pOutdoor->pBModels[pid >> 9].pFaces[id];
+                            interactionPossible = (pODMFace->Clickable() && pODMFace->sCogTriggeredID);
+                        } else { // Indoor
+                            BLVFace *pBLVFace = &pIndoor->pFaces[id];
+                            if (pBLVFace->Clickable()) {
+                                interactionPossible = pIndoor->pFaceExtras[pBLVFace->uFaceExtraID].uEventID != 0;
                             }
-                            telekinesisTargetPicked(pid);
-                            CloseTargetedSpellWindow();
-                            continue;
                         }
-                        pBLVFace = &pIndoor->pFaces[id];
-                        if (!pBLVFace->Clickable()) {
-                            continue;
-                        }
-                        isEvent = pIndoor->pFaceExtras[pBLVFace->uFaceExtraID].uEventID != 0;
                     }
-                    if (isEvent) {
-                        continue;
+                    if (interactionPossible) {
+                        spellTargetPicked(pid, uMessageParam);
+                        CloseTargetedSpellWindow();
                     }
-                    telekinesisTargetPicked(pid);
-                    CloseTargetedSpellWindow();
                     continue;
                 }
-                case UIMSG_CastSpell_Character_Big_Improvement:  // Preservation
-                                                                 // and blessing,
-                                                                 // treatment
-                                                                 // paralysis,
-                                                                 // hand
-                                                                 // hammers(individual
-                                                                 // upgrade)
-                case UIMSG_CastSpell_Character_Small_Improvement:  // Fate, cure
-                case UIMSG_HiredNPC_CastSpell:
+                case UIMSG_CastSpell_TargetCharacter1:
+                case UIMSG_CastSpell_TargetCharacter2:
+                case UIMSG_CastSpell_Hireling:
                     pCurrentFrameMessageQueue->Flush();
                     if (IsEnchantingInProgress) {
+                        // Change character while enchanting is active
+                        // TODO(Nik-RE-dev): need separate message type
                         uActiveCharacter = uMessageParam;
                     } else {
-                        if (pGUIWindow_CastTargetedSpell) {
-                            pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
-                            switch (uMessage) {
-                                case UIMSG_CastSpell_Character_Big_Improvement:
-                                    pSpellInfo->uFlags &= ~ON_CAST_SinglePlayer_BigImprovementAnim;
-                                    break;
-                                case UIMSG_CastSpell_Character_Small_Improvement:
-                                    pSpellInfo->uFlags &= ~ON_CAST_MonsterSparkles;
-                                    break;
-                                case UIMSG_HiredNPC_CastSpell:
-                                    pSpellInfo->uFlags &= ~ON_CAST_DarkSacrifice;
-                                    break;
-                                default:
-                                    break;
-                            }
-                            pSpellInfo->uPlayerID_2 = uMessageParam;
-                            pParty->pPlayers[pSpellInfo->uPlayerID]
-                                .SetRecoveryTime(300);
-                            pGUIWindow_CastTargetedSpell->Release();
-                            pGUIWindow_CastTargetedSpell = 0;
-                            pEventTimer->Resume();
-                            mouse->SetCursorImage("MICON1");
-                            game_ui_status_bar_event_string_time_left = 0;
-                            IsEnchantingInProgress = false;
-                        }
+                        spellTargetPicked(PID_INVALID, uMessageParam);
+                        CloseTargetedSpellWindow();
                     }
                     continue;
 
@@ -1582,33 +1538,16 @@ void Game::EventLoop() {
                     continue;
                 }
 
-                case UIMSG_CastSpell_Monster_Improvement:
-                case UIMSG_CastSpell_Shoot_Monster:  // FireBlow, Lightning, Ice
-                                                     // Lightning, Swarm,
-                    v83 = vis->get_picked_object_zbuf_val();
-                    v44 = v83.object_pid;
-                    v84 = v83.depth;
-                    if (PID_TYPE(v44) != OBJECT_Actor || v84 >= engine->config->gameplay.RangedAttackDepth.Get())
-                        continue;
-                    pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
-                    if (uMessage == UIMSG_CastSpell_Shoot_Monster) {
-                        pSpellInfo->uFlags &= ~ON_CAST_TargetCrosshair;
-                    } else {
-                        if (uMessage == UIMSG_CastSpell_Monster_Improvement)
-                            pSpellInfo->uFlags &= ~ON_CAST_MonsterSparkles;
-                        else
-                            pSpellInfo->uFlags &= ~ON_CAST_DarkSacrifice;
+                case UIMSG_CastSpell_TargetActorBuff:
+                case UIMSG_CastSpell_TargetActor: {
+                    int pid = vis->get_picked_object_zbuf_val().object_pid;
+                    int depth = vis->get_picked_object_zbuf_val().depth;
+                    if (PID_TYPE(pid) == OBJECT_Actor && depth < engine->config->gameplay.RangedAttackDepth.Get()) {
+                        spellTargetPicked(pid, uMessageParam);
+                        CloseTargetedSpellWindow();
                     }
-                    pSpellInfo->uPlayerID_2 = uMessageParam;
-                    pSpellInfo->spell_target_pid = v44;
-                    pParty->pPlayers[pSpellInfo->uPlayerID].SetRecoveryTime(300);
-                    pGUIWindow_CastTargetedSpell->Release();
-                    pGUIWindow_CastTargetedSpell = 0;
-                    mouse->SetCursorImage("MICON1");
-                    game_ui_status_bar_event_string_time_left = 0;
-                    IsEnchantingInProgress = false;
-                    back_to_game();
                     continue;
+                }
                 case UIMSG_1C:
                     __debugbreak();
                     if (!uActiveCharacter || current_screen_type != CURRENT_SCREEN::SCREEN_GAME)

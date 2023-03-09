@@ -3003,14 +3003,14 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
             case SPELL_BODY_FIRST_AID:
             case SPELL_DARK_REANIMATE:
                 // HIBYTE(spell_pointed_target) = HIBYTE(a5) | 1;
-                flags |= ON_CAST_MonsterSparkles;
+                flags |= ON_CAST_TargetedActorOrCharacter;
                 break;
 
             case SPELL_FIRE_FIRE_AURA:
             case SPELL_WATER_RECHARGE_ITEM:
             case SPELL_WATER_ENCHANT_ITEM:
             case SPELL_DARK_VAMPIRIC_WEAPON:
-                flags |= ON_CAST_Enchantment;
+                flags |= ON_CAST_TargetedEnchantment;
                 break;
 
             case SPELL_FIRE_FIRE_BOLT:
@@ -3042,7 +3042,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
             case SPELL_DARK_DRAGON_BREATH:
                 if (!a6) {
                     // These spells are targeted unless used from quick spell button
-                    flags |= ON_CAST_TargetCrosshair;
+                    flags |= ON_CAST_TargetedActor;
                 }
                 break;
             case SPELL_MIND_TELEPATHY:
@@ -3050,7 +3050,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
             case SPELL_MIND_ENSLAVE:
             case SPELL_LIGHT_PARALYZE:
             case SPELL_DARK_CONTROL_UNDEAD:
-                flags |= ON_CAST_TargetCrosshair;
+                flags |= ON_CAST_TargetedActor;
                 break;
 
             case SPELL_EARTH_TELEKINESIS:
@@ -3062,7 +3062,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
                     skill_value = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
                 }
                 if (GetSkillMastery(skill_value) < PLAYER_SKILL_MASTERY_EXPERT && !engine->config->debug.AllMagic.Get()) {
-                    flags |= ON_CAST_SinglePlayer_BigImprovementAnim;
+                    flags |= ON_CAST_TargetedCharacter;
                 }
                 break;
 
@@ -3071,7 +3071,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
                     skill_value = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
                 }
                 if (GetSkillMastery(skill_value) < PLAYER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.Get()) {
-                    flags |= ON_CAST_SinglePlayer_BigImprovementAnim;
+                    flags |= ON_CAST_TargetedCharacter;
                 }
                 break;
 
@@ -3080,7 +3080,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
                     skill_value = player->pActiveSkills[PLAYER_SKILL_DARK];
                 }
                 if (GetSkillMastery(skill_value) < PLAYER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.Get()) {
-                    flags |= ON_CAST_SinglePlayer_BigImprovementAnim;
+                    flags |= ON_CAST_TargetedCharacter;
                 }
                 break;
 
@@ -3089,7 +3089,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
                     skill_value = player->pActiveSkills[PLAYER_SKILL_BODY];
                 }
                 if (GetSkillMastery(skill_value) < PLAYER_SKILL_MASTERY_GRANDMASTER && !engine->config->debug.AllMagic.Get()) {
-                    flags |= ON_CAST_SinglePlayer_BigImprovementAnim;
+                    flags |= ON_CAST_TargetedCharacter;
                 }
                 break;
 
@@ -3104,11 +3104,11 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
             case SPELL_BODY_REGENERATION:
             case SPELL_BODY_CURE_POISON:
             case SPELL_BODY_CURE_DISEASE:
-                flags |= ON_CAST_SinglePlayer_BigImprovementAnim;
+                flags |= ON_CAST_TargetedCharacter;
                 break;
 
             case SPELL_DARK_SACRIFICE:
-                flags |= ON_CAST_DarkSacrifice;
+                flags |= ON_CAST_TargetedHireling;
                 break;
             default:
                 break;
@@ -3138,7 +3138,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
     //       Need assert?
     if (result != -1) {
         Sizei renDims = render->GetRenderDimensions();
-        if (flags & ON_CAST_SinglePlayer_BigImprovementAnim) {
+        if (flags & ON_CAST_TargetedCharacter) {
             if (pGUIWindow_CastTargetedSpell) {
                 return;
             }
@@ -3147,7 +3147,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
             pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
-        if (flags & ON_CAST_TargetCrosshair) {
+        if (flags & ON_CAST_TargetedActor) {
             if (pGUIWindow_CastTargetedSpell) {
                 return;
             }
@@ -3165,7 +3165,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
             pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
-        if (flags & ON_CAST_Enchantment) {
+        if (flags & ON_CAST_TargetedEnchantment) {
             if (pGUIWindow_CastTargetedSpell) {
                 return;
             }
@@ -3176,15 +3176,16 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
             pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
-        if (flags & ON_CAST_MonsterSparkles) {
+        if (flags & ON_CAST_TargetedActorOrCharacter) {
             if (pGUIWindow_CastTargetedSpell) {
                 return;
             }
 
             pGUIWindow_CastTargetedSpell = new TargetedSpellUI_ActorOrCharacter({0, 0}, renDims, &pCastSpellInfo[result]);
             pParty->PickedItem_PlaceInInventory_or_Drop();
+            return;
         }
-        if (flags & ON_CAST_DarkSacrifice) {
+        if (flags & ON_CAST_TargetedHireling) {
             if (pGUIWindow_CastTargetedSpell) {
                 return;
             }
@@ -3192,6 +3193,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
             pGUIWindow_CastTargetedSpell = new TargetedSpellUI_Hirelings({0, 0}, renDims, &pCastSpellInfo[result]);
             // Next line was added to do something with picked item on Sacrifice cast
             pParty->PickedItem_PlaceInInventory_or_Drop();
+            return;
         }
     }
 }
@@ -3211,10 +3213,11 @@ void pushScrollSpell(SPELL_TYPE spell, unsigned int uPlayerID) {
     pushSpellOrRangedAttack(spell, uPlayerID, SCROLL_OR_NPC_SPELL_SKILL_VALUE, ON_CAST_CastViaScroll, 0);
 }
 
-void telekinesisTargetPicked(int pid) {
+void spellTargetPicked(int pid, int playerTarget) {
     CastSpellInfo *pCastSpell = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
-    pCastSpell->uFlags &= ~ON_CAST_TargetedTelekinesis;
+    pCastSpell->uFlags &= ~ON_CAST_CastingInProgress;
     pCastSpell->spell_target_pid = pid;
+    pCastSpell->uPlayerID_2 = playerTarget;
     // TODO(Nik-RE-dev): why recovery time is set here?
     pParty->pPlayers[pCastSpell->uPlayerID].SetRecoveryTime(300);
 }
