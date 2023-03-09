@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <string>
+#include <functional>
 
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Nuklear.h"
