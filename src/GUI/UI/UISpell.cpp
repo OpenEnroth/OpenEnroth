@@ -48,7 +48,7 @@ TargetedSpellUI_ActorOrCharacter::TargetedSpellUI_ActorOrCharacter(Pointi positi
     CreateButton({8, 8}, {game_viewport_width, game_viewport_height}, 1, 0, UIMSG_CastSpell_Monster_Improvement, 0);
 }
 
-TargetedSpellUI_Telekenesis::TargetedSpellUI_Telekenesis(Pointi position, Sizei dimensions, WindowData data, const std::string &hint)
+TargetedSpellUI_Telekinesis::TargetedSpellUI_Telekinesis(Pointi position, Sizei dimensions, WindowData data, const std::string &hint)
     : TargetedSpellUI(position, dimensions, data, hint) {
     CreateButton({game_viewport_x, game_viewport_y}, {game_viewport_width, game_viewport_height}, 1, 0, UIMSG_CastSpell_Telekinesis, 0);
 }

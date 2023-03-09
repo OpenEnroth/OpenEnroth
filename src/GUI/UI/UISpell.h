@@ -31,8 +31,8 @@ class TargetedSpellUI_ActorOrCharacter : public TargetedSpellUI {
     virtual ~TargetedSpellUI_ActorOrCharacter() {}
 };
 
-class TargetedSpellUI_Telekenesis : public TargetedSpellUI {
+class TargetedSpellUI_Telekinesis : public TargetedSpellUI {
  public:
-    TargetedSpellUI_Telekenesis(Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string());
-    virtual ~TargetedSpellUI_Telekenesis() {}
+    TargetedSpellUI_Telekinesis(Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string());
+    virtual ~TargetedSpellUI_Telekinesis() {}
 };

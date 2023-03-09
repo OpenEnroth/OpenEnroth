@@ -36,7 +36,7 @@ enum class SpellCastFlag : uint16_t {
     ON_CAST_TargetCrosshair = 0x0008,
     ON_CAST_TargetIsParty = 0x0010,
     ON_CAST_NoRecoverySpell = 0x0020,
-    ON_CAST_Telekenesis = 0x0040,
+    ON_CAST_TargetedTelekinesis = 0x0040,
     ON_CAST_Enchantment = 0x0080,
     ON_CAST_MonsterSparkles = 0x0100,
     ON_CAST_DarkSacrifice = 0x0200,
@@ -45,7 +45,7 @@ enum class SpellCastFlag : uint16_t {
         // TODO: these flags need to be renamed to correctly represent
         //       spell target pick UI for particular spells
         ON_CAST_SinglePlayer_BigImprovementAnim | ON_CAST_TargetCrosshair |
-        ON_CAST_Telekenesis | ON_CAST_Enchantment | ON_CAST_MonsterSparkles |
+        ON_CAST_TargetedTelekinesis | ON_CAST_Enchantment | ON_CAST_MonsterSparkles |
         ON_CAST_DarkSacrifice
 };
 using enum SpellCastFlag;
@@ -124,3 +124,8 @@ void pushNPCSpell(SPELL_TYPE spell);
  * @param uPlayerID    ID of player casting spell.
  */
 void pushScrollSpell(SPELL_TYPE spell, unsigned int uPlayerID);
+
+/**
+ * Process successfull picking target for telekinesis spell.
+ */
+void telekinesisTargetPicked(int pid);

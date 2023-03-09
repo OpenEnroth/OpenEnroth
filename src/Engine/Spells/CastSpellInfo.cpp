@@ -3054,7 +3054,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
                 break;
 
             case SPELL_EARTH_TELEKINESIS:
-                flags |= ON_CAST_Telekenesis;
+                flags |= ON_CAST_TargetedTelekinesis;
                 break;
 
             case SPELL_SPIRIT_BLESS:
@@ -3156,12 +3156,12 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
             pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
-        if (flags & ON_CAST_Telekenesis) {
+        if (flags & ON_CAST_TargetedTelekinesis) {
             if (pGUIWindow_CastTargetedSpell) {
                 return;
             }
 
-            pGUIWindow_CastTargetedSpell = new TargetedSpellUI_Telekenesis({0, 0}, renDims, &pCastSpellInfo[result]);
+            pGUIWindow_CastTargetedSpell = new TargetedSpellUI_Telekinesis({0, 0}, renDims, &pCastSpellInfo[result]);
             pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
@@ -3209,4 +3209,12 @@ void pushNPCSpell(SPELL_TYPE spell) {
 
 void pushScrollSpell(SPELL_TYPE spell, unsigned int uPlayerID) {
     pushSpellOrRangedAttack(spell, uPlayerID, SCROLL_OR_NPC_SPELL_SKILL_VALUE, ON_CAST_CastViaScroll, 0);
+}
+
+void telekinesisTargetPicked(int pid) {
+    CastSpellInfo *pCastSpell = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
+    pCastSpell->uFlags &= ~ON_CAST_TargetedTelekinesis;
+    pCastSpell->spell_target_pid = pid;
+    // TODO(Nik-RE-dev): why recovery time is set here?
+    pParty->pPlayers[pCastSpell->uPlayerID].SetRecoveryTime(300);
 }
