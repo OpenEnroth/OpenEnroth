@@ -762,32 +762,35 @@ void SpriteObject::ExplosionTraps() {
     }
     unsigned int v10 = ((unsigned int)(11 * dir_y) >> 5) + (dir_z / 4) + dir_x;
     if (v10 <= 768) {
-        int v11 = 5;
-        if (pMapInfo->Trap_D20)
-            v11 += grng->RandomDice(pMapInfo->Trap_D20, 20);
+        int trapDamage = 5;
+        if (pMapInfo->Trap_D20) {
+            trapDamage += grng->RandomDice(pMapInfo->Trap_D20, 20);
+        }
         DAMAGE_TYPE pDamageType;
         switch (this->uType) {
-            case 811:
+            case SPRITE_TRAP_FIRE:
                 pDamageType = DMGT_FIRE;
                 break;
-            case 812:
+            case SPRITE_TRAP_LIGHTNING:
                 pDamageType = DMGT_ELECTR;
                 break;
-            case 813:
+            case SPRITE_TRAP_COLD:
                 pDamageType = DMGT_COLD;
                 break;
-            case 814:
+            case SPRITE_TRAP_BODY:
                 pDamageType = DMGT_BODY;
                 break;
             default:
                 return;
         }
-        for (unsigned int i = 1; i <= 4; ++i) {
-            int v13 = pPlayers[i]->GetPerception() + 20;
-            if (pPlayers[i]->CanAct() && (grng->Random(v13) > 20))
-                pPlayers[i]->PlaySound(SPEECH_AvoidDamage, 0);
-            else
-                pPlayers[i]->ReceiveDamage(v11, pDamageType);
+        for (Player &player : pParty->pPlayers) {
+            int perceptionCheckValue = player.GetPerception() + 20;
+            // TODO(Nik-RE-dev): character that is asleep will not receive damage?
+            if (player.CanAct() && (grng->Random(perceptionCheckValue) > 20)) {
+                player.PlaySound(SPEECH_AvoidDamage, 0);
+            } else {
+                player.ReceiveDamage(trapDamage, pDamageType);
+            }
         }
     }
 }
@@ -1154,7 +1157,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
 
         case SPRITE_SPELL_FIRE_FIRE_BOLT:
         case SPRITE_SPELL_FIRE_INCINERATE:
-        case SPRITE_SPELL_AIR_LIGHNING_BOLT:
+        case SPRITE_SPELL_AIR_LIGHTNING_BOLT:
         case SPRITE_SPELL_WATER_POISON_SPRAY:
         case SPRITE_SPELL_WATER_ICE_BOLT:
         case SPRITE_SPELL_WATER_ACID_BURST:

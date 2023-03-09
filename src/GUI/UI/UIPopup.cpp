@@ -1463,7 +1463,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                     popup_window.uFrameY = 60;
                     pAudioPlayer->PauseSounds(-1);
                     GameUI_CharacterQuickRecord_Draw(
-                        &popup_window, pPlayers[popup_window.wData.val + 1]);
+                        &popup_window, &pParty->pPlayers[popup_window.wData.val]);
                 }
             } else if ((int)pX > pViewport->uViewportBR_X) {
                 if (pY >= 130) {
@@ -1608,15 +1608,13 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                                                                      // button
                                                                      // info
                             pStr = localization->GetSkillName(
-                                pParty
-                                    ->pPlayers
+                                pParty->pPlayers
                                         [uPlayerCreationUI_SelectedCharacter]
                                     .GetSkillIdxByOrder(pButton->msg_param +
                                                         4));
                             popup_window
                                 .sHint = localization->GetSkillDescription(
-                                pParty
-                                    ->pPlayers
+                                pParty->pPlayers
                                         [uPlayerCreationUI_SelectedCharacter]
                                     .GetSkillIdxByOrder(pButton->msg_param +
                                                         4));
@@ -1658,8 +1656,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                             static std::string hint_reference;
                             hint_reference = CharacterUI_GetSkillDescText(
                                 pButton->msg_param,
-                                pParty
-                                    ->pPlayers[pButton->msg_param]
+                                pParty->pPlayers[pButton->msg_param]
                                     .GetSkillIdxByOrder(pButton->msg -
                                                         UIMSG_48));
 

@@ -1556,8 +1556,6 @@ void sub_4B1523_showSpellbookInfo(ITEM_TYPE spellItemId) {
 
 //----- (004B1D27) --------------------------------------------------------
 void GetHouseGoodbyeSpeech() {
-    signed int v2;  // edi@10
-    signed int v5;  // edi@20
     int v7[4];      // [sp+Ch] [bp-10h]@12
 
     if (in_current_building_type != BuildingType_Invalid) {
@@ -1579,27 +1577,23 @@ void GetHouseGoodbyeSpeech() {
             PlayHouseSound(window_SpeakInHouse->wData.val,
                            (HouseSoundID)(dword_F8B1E4 + 3));
             if (!dword_F8B1E4 && !_A750D8_player_speech_timer) {
-                v5 = 0;
-                for (uint i = 1; i <= 4; ++i) {
-                    if (pPlayers[i]->CanAct()) v7[v5++] = i;
-                }
-                if (v5) {
+                int id = pParty->getRandomActiveCharacterId();
+
+                if (id != -1) {
                     _A750D8_player_speech_timer = 256;
                     PlayerSpeechID = SPEECH_ShopRude;
-                    uSpeakingCharacter = v7[vrng->Random(v5)];
+                    uSpeakingCharacter = id;
                     return;
                 }
             }
         } else {  // caught stealing
             if (!_A750D8_player_speech_timer) {
-                v2 = 0;
-                for (uint i = 1; i <= 4; ++i) {
-                    if (pPlayers[i]->CanAct()) v7[v2++] = i;
-                }
-                if (v2) {
+                int id = pParty->getRandomActiveCharacterId();
+
+                if (id != -1) {
                     _A750D8_player_speech_timer = 256;
                     PlayerSpeechID = SPEECH_ShopRude;
-                    uSpeakingCharacter = v7[vrng->Random(v2)];
+                    uSpeakingCharacter = id;
                     return;
                 }
             }
@@ -1623,9 +1617,9 @@ void sub_4B1447_party_fine(int shopId, int stealingResult,
                 pParty->uFine += fineToAdd;
         }
         if (pParty->uFine) {
-            for (uint i = 1; i <= 4; ++i) {
-                if (!_449B57_test_bit(pPlayers[i]->_achieved_awards_bits, Award_Fine))
-                    _449B7E_toggle_bit(pPlayers[i]->_achieved_awards_bits, Award_Fine, 1);
+            for (Player &player : pParty->pPlayers) {
+                if (!_449B57_test_bit(player._achieved_awards_bits, Award_Fine))
+                    _449B7E_toggle_bit(player._achieved_awards_bits, Award_Fine, 1);
             }
         }
         if (stealingResult == 1)
