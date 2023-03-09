@@ -427,6 +427,13 @@ GAME_TEST(Issues, Issue271) {
     EXPECT_NE(pParty->pPlayers[1].expression, CHARACTER_EXPRESSION_FEAR);
 }
 
+GAME_TEST(Issues, Issue520) {
+    // Party should take fall damage
+    uint64_t oldHealth = 0;
+    test->playTraceFromTestData("issue_520.mm7", "issue_520.json", [&] { oldHealth = GetPartyHealth(); });
+    EXPECT_LT(GetPartyHealth(), oldHealth);
+}
+
 // This cant be tested properly using the current framework
 //GAME_TEST(Issues, Issue405) {
 //    // FPS affects effective recovery time
