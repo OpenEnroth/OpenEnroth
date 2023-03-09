@@ -346,7 +346,7 @@ class IRender {
      * and call callback function for each actor found.
      *
      * @param pDepth    Depth of actors search.
-     * @patam callback  Callback function.
+     * @param callback  Callback function.
      */
     virtual int forEachActorInViewport(int pDepth, std::function<void(Actor&)> callback) = 0;
 
