@@ -8,7 +8,7 @@
  * Compared to `std::ostream` it is:
  * - Non-buffered.
  * - Uses exceptions for error handling.
- * - Has an extremely simple and intuitive interface consisting of exactly three methods.
+ * - Has a very simple and intuitive interface consisting of exactly three methods.
  */
 class OutputStream {
  public:

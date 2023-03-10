@@ -523,8 +523,6 @@ Blob AudioPlayer::LoadSound(const std::string &pSoundName) {
         return Blob();
     }
 
-    //std::shared_ptr<Blob> buffer = Blob::AllocateShared(header.uDecompressedSize);
-
     fAudioSnd.Seek(header.uFileOffset);
     if (header.uCompressedSize >= header.uDecompressedSize) {
         header.uCompressedSize = header.uDecompressedSize;

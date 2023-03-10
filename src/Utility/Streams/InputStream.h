@@ -8,7 +8,7 @@
  * Compared to `std::istream` it is:
  * - Non-buffered.
  * - Uses exceptions for error handling.
- * - Has an extremely simple and intuitive interface.
+ * - Has a very simple and intuitive interface.
  */
 class InputStream {
  public:
