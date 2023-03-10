@@ -998,8 +998,7 @@ void CastSpellInfoHelpers::castSpell() {
                     pSpellSprite.uSectorID = 0;
                     pSpellSprite.field_60_distance_related_prolly_lod = 0;
                     pSpellSprite.uFacing = 0;
-                    std::vector<Actor*> actorsInViewport = render->getActorsInViewport(4096);
-                    for (Actor* actor : actorsInViewport) {
+                    for (Actor* actor : render->getActorsInViewport(4096)) {
                         Vec3i spell_velocity = Vec3i(0, 0, 0);
                         pSpellSprite.vPosition = actor->vPosition - Vec3i(0, 0, actor->uActorHeight * -0.8);
                         pSpellSprite.spell_target_pid = PID(OBJECT_Actor, actor->id);
@@ -1747,8 +1746,7 @@ void CastSpellInfoHelpers::castSpell() {
                     pSpellSprite.uSectorID = 0;
                     pSpellSprite.field_60_distance_related_prolly_lod = 0;
                     pSpellSprite.uFacing = 0;
-                    std::vector<Actor*> actorsInViewport = render->getActorsInViewport(4096);
-                    for (Actor* actor : actorsInViewport) {
+                    for (Actor* actor : render->getActorsInViewport(4096)) {
                         if (MonsterStats::BelongsToSupertype(actor->pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
                             pSpellSprite.vPosition = actor->vPosition - Vec3i(0, 0, actor->uActorHeight * -0.8);
                             pSpellSprite.spell_target_pid = PID(OBJECT_Actor, actor->id);
@@ -2086,8 +2084,7 @@ void CastSpellInfoHelpers::castSpell() {
                     pSpellSprite.uSectorID = 0;
                     pSpellSprite.field_60_distance_related_prolly_lod = 0;
                     pSpellSprite.uFacing = 0;
-                    std::vector<Actor*> actorsInViewport = render->getActorsInViewport(4096);
-                    for (Actor* actor : actorsInViewport) {
+                    for (Actor* actor : render->getActorsInViewport(4096)) {
                         // Change: do not exit loop when first undead monster is found
                         if (!MonsterStats::BelongsToSupertype(actor->pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
                             pSpellSprite.vPosition = actor->vPosition - Vec3i(0, 0, actor->uActorHeight * -0.8);
@@ -2342,9 +2339,8 @@ void CastSpellInfoHelpers::castSpell() {
                     pSpellSprite.field_60_distance_related_prolly_lod = 0;
                     pSpellSprite.uFacing = 0;
                     Vec3i spell_velocity = Vec3i(0, 0, 0);
-                    std::vector<Actor*> actorsInViewport = render->getActorsInViewport(4096);
                     // Spell damage processing was removed because Dispel Magic does not do damage
-                    for (Actor *actor : actorsInViewport) {
+                    for (Actor *actor : render->getActorsInViewport(4096)) {
                         pSpellSprite.vPosition = actor->vPosition - Vec3i(0, 0, actor->uActorHeight * -0.8);
                         pSpellSprite.spell_target_pid = PID(OBJECT_Actor, actor->id);
                         pSpellSprite.Create(0, 0, 0, 0);
@@ -2439,8 +2435,7 @@ void CastSpellInfoHelpers::castSpell() {
                     pSpellSprite.field_60_distance_related_prolly_lod = 0;
                     pSpellSprite.uFacing = 0;
                     Vec3i spell_velocity = Vec3i(0, 0, 0);
-                    std::vector<Actor*> actorsInViewport = render->getActorsInViewport(4096);
-                    for (Actor *actor : actorsInViewport) {
+                    for (Actor *actor : render->getActorsInViewport(4096)) {
                         pSpellSprite.vPosition = actor->vPosition - Vec3i(0, 0, actor->uActorHeight * -0.8);
                         pSpellSprite.spell_target_pid = PID(OBJECT_Actor, actor->id);
                         Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), actor->id, &spell_velocity);
