@@ -178,7 +178,7 @@ void Party::Zero() {
     TorchLightLastIntensity = 0.0f;
 
     // players
-    for (Player &player : pPlayers) {
+    for (Player &player : this->pPlayers) {
         player.Zero();
         player.sResFireBase = 0;
         player.sResAirBase = 0;
@@ -220,9 +220,9 @@ bool Party::_497FC5_check_party_perception_against_level() {
     bool result;         // eax@7
 
     uMaxPerception = 0;
-    for (int i = 0; i < 4; i++) {
-        if (this->pPlayers[i].CanAct()) {
-            v5 = this->pPlayers[i].GetPerception();
+    for (Player &player : this->pPlayers) {
+        if (player.CanAct()) {
+            v5 = player.GetPerception();
             if (v5 > uMaxPerception) uMaxPerception = v5;
         }
     }
@@ -241,7 +241,7 @@ void Party::SetHoldingItem(ItemGen *pItem) {
 }
 
 int Party::GetFirstCanAct() {  // added to fix some nzi problems entering shops
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < this->pPlayers.size(); ++i) {
         if (this->pPlayers[i].CanAct()) return i + 1;
     }
 
@@ -256,8 +256,7 @@ int Party::GetNextActiveCharacter() {
     int v12;        // [sp+Ch] [bp-4h]@1
 
     if (uActiveCharacter > 0 && this->pPlayers[uActiveCharacter - 1].CanAct() &&
-        this->pPlayers[uActiveCharacter - 1].uTimeToRecovery <
-            1)  // avoid switching away from char that can act
+        this->pPlayers[uActiveCharacter - 1].uTimeToRecovery < 1)  // avoid switching away from char that can act
         return uActiveCharacter;
 
     v12 = 0;
@@ -273,21 +272,20 @@ int Party::GetNextActiveCharacter() {
         playerAlreadyPicked[2] && playerAlreadyPicked[3])
         playerAlreadyPicked.fill(false);
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < this->pPlayers.size(); i++) {
         if (!this->pPlayers[i].CanAct() ||
             this->pPlayers[i].uTimeToRecovery > 0) {
             playerAlreadyPicked[i] = true;
         } else if (!playerAlreadyPicked[i]) {
             playerAlreadyPicked[i] = true;
-            if (i >
-                0)  // TODO(_) check if this condition really should be here. it is
-                    // equal to the original source but still seems kind of weird
+            if (i > 0)  // TODO(_) check if this condition really should be here. it is
+                        // equal to the original source but still seems kind of weird
                 return i + 1;
             break;
         }
     }
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < this->pPlayers.size(); i++) {
         if (this->pPlayers[i].CanAct() &&
             this->pPlayers[i].uTimeToRecovery == 0) {
             if (v12 == 0 || this->pPlayers[i].uSpeedBonus > v8) {
@@ -301,9 +299,9 @@ int Party::GetNextActiveCharacter() {
 
 //----- (00493244) --------------------------------------------------------
 bool Party::HasItem(ITEM_TYPE uItemID) {
-    for (int player = 0; player < 4; player++) {
-        for (int itemPos = 0; itemPos < 138; itemPos++) {
-            if (pParty->pPlayers[player].pOwnItems[itemPos].uItemID == uItemID)
+    for (Player &player : this->pPlayers) {
+        for (ItemGen &item : player.pOwnItems) {
+            if (item.uItemID == uItemID)
                 return true;
         }
     }
@@ -420,7 +418,9 @@ void Party::TakeFine(int amount) {
 //----- (0049135E) --------------------------------------------------------
 unsigned int Party::GetPartyFame() {
     uint64_t total_exp = 0;
-    for (uint i = 0; i < 4; ++i) total_exp += pPlayers[i].uExperience;
+    for (Player &player : this->pPlayers) {
+        total_exp += player.uExperience;
+    }
     return std::min(
         (unsigned int)(total_exp / 1000),
         UINT_MAX);  // min wasn't present, but could be incorrect without it
@@ -684,21 +684,24 @@ void Party::Reset() {
     pPlayers[3].uSex = pPlayers[3].GetSexByVoice();
     pPlayers[3].pName = localization->GetString(LSTR_PC_NAME_ALEXIS);
 
-    for (uint i = 0; i < 4; ++i) {
-        pPlayers[i].uTimeToRecovery = 0;
-        pPlayers[i].conditions.ResetAll();
+    for (Player &player : this->pPlayers) {
+        player.uTimeToRecovery = 0;
+        player.conditions.ResetAll();
 
-        for (uint j = 0; j < 24; ++j) pPlayers[i].pPlayerBuffs[j].Reset();
+        for (SpellBuff &buff : player.pPlayerBuffs) {
+            buff.Reset();
+        }
 
-        pPlayers[i].expression = CHARACTER_EXPRESSION_1;
-        pPlayers[i].uExpressionTimePassed = 0;
-        pPlayers[i].uExpressionTimeLength = vrng->Random(256) + 128;
+        player.expression = CHARACTER_EXPRESSION_1;
+        player.uExpressionTimePassed = 0;
+        player.uExpressionTimeLength = vrng->Random(256) + 128;
     }
 
-    for (uint i = 0; i < 20; ++i) pPartyBuffs[i].Reset();
+    for (SpellBuff &buff : this->pPartyBuffs) {
+        buff.Reset();
+    }
 
-    current_character_screen_window =
-        WINDOW_CharacterWindow_Stats;  // default character ui - stats
+    current_character_screen_window = WINDOW_CharacterWindow_Stats;  // default character ui - stats
     uFlags = 0;
     memset(_autonote_bits, 0, sizeof(_autonote_bits));
     memset(_quest_bits, 0, sizeof(_quest_bits));
@@ -764,13 +767,13 @@ void Party::ResetPosMiscAndSpellBuffs() {
     this->field_708_set15_unused = 15;
     this->field_0_set25_unused = 25;
 
-    for (int playerId = 0; playerId < 4; playerId++) {
-        for (int buffId = 0; buffId < 24; buffId++) {
-            this->pPlayers[playerId].pPlayerBuffs[buffId].Reset();
+    for (Player &player : this->pPlayers) {
+        for (SpellBuff &buff : player.pPlayerBuffs) {
+            buff.Reset();
         }
     }
-    for (int buffId = 0; buffId < 20; buffId++) {
-        this->pPartyBuffs[buffId].Reset();
+    for (SpellBuff &buff : this->pPartyBuffs) {
+        buff.Reset();
     }
 }
 
@@ -778,111 +781,111 @@ void Party::ResetPosMiscAndSpellBuffs() {
 void Party::UpdatePlayersAndHirelingsEmotions() {
     int v4;  // edx@27
 
-    if (pParty->cNonHireFollowers < 0) pParty->CountHirelings();
+    if (pParty->cNonHireFollowers < 0) {
+        pParty->CountHirelings();
+    }
 
-    for (int i = 0; i < 4; ++i) {
-        Player *player = &pPlayers[i];
-        player->uExpressionTimePassed +=
-            (unsigned short)pMiscTimer->uTimeElapsed;
+    for (Player &player : this->pPlayers) {
+        player.uExpressionTimePassed += (unsigned short)pMiscTimer->uTimeElapsed;
 
-        Condition condition = player->GetMajorConditionIdx();
+        Condition condition = player.GetMajorConditionIdx();
         if (condition == Condition_Good || condition == Condition_Zombie) {
-            if (player->uExpressionTimePassed < player->uExpressionTimeLength)
+            if (player.uExpressionTimePassed < player.uExpressionTimeLength)
                 continue;
 
-            player->uExpressionTimePassed = 0;
-            if (player->expression != 1 || vrng->Random(5)) {
-                player->expression = CHARACTER_EXPRESSION_1;
-                player->uExpressionTimeLength = vrng->Random(256) + 32;
+            player.uExpressionTimePassed = 0;
+            if (player.expression != 1 || vrng->Random(5)) {
+                player.expression = CHARACTER_EXPRESSION_1;
+                player.uExpressionTimeLength = vrng->Random(256) + 32;
             } else {
                 v4 = vrng->Random(100);
                 if (v4 < 25)
-                    player->expression = CHARACTER_EXPRESSION_BLINK;
+                    player.expression = CHARACTER_EXPRESSION_BLINK;
                 else if (v4 < 31)
-                    player->expression = CHARACTER_EXPRESSION_14;
+                    player.expression = CHARACTER_EXPRESSION_14;
                 else if (v4 < 37)
-                    player->expression = CHARACTER_EXPRESSION_15;
+                    player.expression = CHARACTER_EXPRESSION_15;
                 else if (v4 < 43)
-                    player->expression = CHARACTER_EXPRESSION_16;
+                    player.expression = CHARACTER_EXPRESSION_16;
                 else if (v4 < 46)
-                    player->expression = CHARACTER_EXPRESSION_17;
+                    player.expression = CHARACTER_EXPRESSION_17;
                 else if (v4 < 52)
-                    player->expression = CHARACTER_EXPRESSION_18;
+                    player.expression = CHARACTER_EXPRESSION_18;
                 else if (v4 < 58)
-                    player->expression = CHARACTER_EXPRESSION_19;
+                    player.expression = CHARACTER_EXPRESSION_19;
                 else if (v4 < 64)
-                    player->expression = CHARACTER_EXPRESSION_20;
+                    player.expression = CHARACTER_EXPRESSION_20;
                 else if (v4 < 70)
-                    player->expression = CHARACTER_EXPRESSION_54;
+                    player.expression = CHARACTER_EXPRESSION_54;
                 else if (v4 < 76)
-                    player->expression = CHARACTER_EXPRESSION_55;
+                    player.expression = CHARACTER_EXPRESSION_55;
                 else if (v4 < 82)
-                    player->expression = CHARACTER_EXPRESSION_56;
+                    player.expression = CHARACTER_EXPRESSION_56;
                 else if (v4 < 88)
-                    player->expression = CHARACTER_EXPRESSION_57;
+                    player.expression = CHARACTER_EXPRESSION_57;
                 else if (v4 < 94)
-                    player->expression = CHARACTER_EXPRESSION_29;
+                    player.expression = CHARACTER_EXPRESSION_29;
                 else
-                    player->expression = CHARACTER_EXPRESSION_30;
+                    player.expression = CHARACTER_EXPRESSION_30;
             }
 
             for (unsigned int j = 0; j < pPlayerFrameTable->uNumFrames; ++j) {
                 PlayerFrame *frame = &pPlayerFrameTable->pFrames[j];
-                if (frame->expression == player->expression) {
-                    player->uExpressionTimeLength = 8 * frame->uAnimLength;
+                if (frame->expression == player.expression) {
+                    player.uExpressionTimeLength = 8 * frame->uAnimLength;
                     break;
                 }
             }
-        } else if (player->expression != CHARACTER_EXPRESSION_DMGRECVD_MINOR &&
-                   player->expression != CHARACTER_EXPRESSION_DMGRECVD_MODERATE &&
-                   player->expression != CHARACTER_EXPRESSION_DMGRECVD_MAJOR ||
-                   player->uExpressionTimePassed >= player->uExpressionTimeLength) {
-            player->uExpressionTimeLength = 0;
-            player->uExpressionTimePassed = 0;
+        } else if (player.expression != CHARACTER_EXPRESSION_DMGRECVD_MINOR &&
+                   player.expression != CHARACTER_EXPRESSION_DMGRECVD_MODERATE &&
+                   player.expression != CHARACTER_EXPRESSION_DMGRECVD_MAJOR ||
+                   player.uExpressionTimePassed >= player.uExpressionTimeLength) {
+            player.uExpressionTimeLength = 0;
+            player.uExpressionTimePassed = 0;
 
             switch (condition) {
                 case Condition_Dead:
-                    player->expression = CHARACTER_EXPRESSION_DEAD;
+                    player.expression = CHARACTER_EXPRESSION_DEAD;
                     break;
                 case Condition_Petrified:
-                    player->expression = CHARACTER_EXPRESSION_PERTIFIED;
+                    player.expression = CHARACTER_EXPRESSION_PERTIFIED;
                     break;
                 case Condition_Eradicated:
-                    player->expression = CHARACTER_EXPRESSION_ERADICATED;
+                    player.expression = CHARACTER_EXPRESSION_ERADICATED;
                     break;
                 case Condition_Cursed:
-                    player->expression = CHARACTER_EXPRESSION_CURSED;
+                    player.expression = CHARACTER_EXPRESSION_CURSED;
                     break;
                 case Condition_Weak:
-                    player->expression = CHARACTER_EXPRESSION_WEAK;
+                    player.expression = CHARACTER_EXPRESSION_WEAK;
                     break;
                 case Condition_Sleep:
-                    player->expression = CHARACTER_EXPRESSION_SLEEP;
+                    player.expression = CHARACTER_EXPRESSION_SLEEP;
                     break;
                 case Condition_Fear:
-                    player->expression = CHARACTER_EXPRESSION_FEAR;
+                    player.expression = CHARACTER_EXPRESSION_FEAR;
                     break;
                 case Condition_Drunk:
-                    player->expression = CHARACTER_EXPRESSION_DRUNK;
+                    player.expression = CHARACTER_EXPRESSION_DRUNK;
                     break;
                 case Condition_Insane:
-                    player->expression = CHARACTER_EXPRESSION_INSANE;
+                    player.expression = CHARACTER_EXPRESSION_INSANE;
                     break;
                 case Condition_Poison_Weak:
                 case Condition_Poison_Medium:
                 case Condition_Poison_Severe:
-                    player->expression = CHARACTER_EXPRESSION_POISONED;
+                    player.expression = CHARACTER_EXPRESSION_POISONED;
                     break;
                 case Condition_Disease_Weak:
                 case Condition_Disease_Medium:
                 case Condition_Disease_Severe:
-                    player->expression = CHARACTER_EXPRESSION_DISEASED;
+                    player.expression = CHARACTER_EXPRESSION_DISEASED;
                     break;
                 case Condition_Paralyzed:
-                    player->expression = CHARACTER_EXPRESSION_PARALYZED;
+                    player.expression = CHARACTER_EXPRESSION_PARALYZED;
                     break;
                 case Condition_Unconscious:
-                    player->expression = CHARACTER_EXPRESSION_UNCONCIOUS;
+                    player.expression = CHARACTER_EXPRESSION_UNCONCIOUS;
                     break;
                 default:
                     Error("Invalid condition: %u", condition);
@@ -913,9 +916,11 @@ void Party::RestAndHeal() {
     Player *pPlayer;         // esi@4
     bool have_vessels_soul;  // [sp+10h] [bp-8h]@10
 
-    for (uint i = 0; i < 20; ++i) pParty->pPartyBuffs[i].Reset();
+    for (SpellBuff &buff : pParty->pPartyBuffs) {
+        buff.Reset();
+    }
 
-    for (int pPlayerID = 0; pPlayerID < 4; ++pPlayerID) {
+    for (int pPlayerID = 0; pPlayerID < this->pPlayers.size(); ++pPlayerID) {
         pPlayer = &pParty->pPlayers[pPlayerID];
         for (uint i = 0; i < 20; ++i) pPlayer->pPlayerBuffs[i].Reset();
 
@@ -938,7 +943,7 @@ void Party::RestAndHeal() {
         if (pPlayer->classType == PLAYER_CLASS_LICH) {
             have_vessels_soul = false;
             for (uint i = 0; i < Player::INVENTORY_SLOT_COUNT; i++) {
-                if (pPlayer->pInventoryItemList[i].uItemID == ITEM_QUEST_LICH_JAR_FULL && pPlayer->pInventoryItemList[i].uHolderPlayer == pPlayerID + 1)
+                if (pPlayer->pInventoryItemList[i].uItemID == ITEM_QUEST_LICH_JAR_FULL && pPlayer->pInventoryItemList[i].uHolderPlayer == pPlayerID)
                     have_vessels_soul = true;
             }
             if (!have_vessels_soul) {
@@ -978,8 +983,8 @@ void Rest(unsigned int uMinsToRest) {  // this is passed mins not hours
 
     pParty->GetPlayingTime() += rest_time;
 
-    for (int i = 1; i <= 4; i++) {
-        pPlayers[i]->Recover(rest_time);  // ??
+    for (Player &player : pParty->pPlayers) {
+        player.Recover(rest_time);  // ??
     }
 
     _494035_timed_effects__water_walking_damage__etc();
@@ -1001,12 +1006,12 @@ void RestAndHeal(int minutes) {
     pParty->uCurrentYear = pParty->GetPlayingTime().GetYears() + game_starting_year;
     pParty->RestAndHeal();
 
-    for (int i = 0; i < 4; i++) {
-        pParty->pPlayers[i].uTimeToRecovery = 0;
-        pParty->pPlayers[i].uNumDivineInterventionCastsThisDay = 0;
-        pParty->pPlayers[i].uNumArmageddonCasts = 0;
-        pParty->pPlayers[i].uNumFireSpikeCasts = 0;
-        pParty->pPlayers[i].field_1B3B_set0_unused = 0;
+    for (Player &player : pParty->pPlayers) {
+        player.uTimeToRecovery = 0;
+        player.uNumDivineInterventionCastsThisDay = 0;
+        player.uNumArmageddonCasts = 0;
+        player.uNumFireSpikeCasts = 0;
+        player.field_1B3B_set0_unused = 0;
     }
 
     pParty->UpdatePlayersAndHirelingsEmotions();
@@ -1057,23 +1062,20 @@ void Party::GivePartyExp(unsigned int pEXPNum) {
 
     if (pEXPNum > 0) {
         pActivePlayerCount = 0;
-        for (uint i = 0; i < 4; ++i) {
-            if (!pParty->pPlayers[i].conditions.Has(Condition_Unconscious) &&
-                !pParty->pPlayers[i].conditions.Has(Condition_Dead) &&
-                !pParty->pPlayers[i].conditions.Has(Condition_Petrified) &&
-                !pParty->pPlayers[i].conditions.Has(Condition_Eradicated)) {
+        for (Player &player : this->pPlayers) {
+            if (player.conditions.HasNone({Condition_Unconscious, Condition_Dead, Condition_Petrified, Condition_Eradicated})) {
                 pActivePlayerCount++;
             }
         }
         if (pActivePlayerCount) {
             pEXPNum = pEXPNum / pActivePlayerCount;
-            for (uint i = 0; i < 4; ++i) {
-                if (pParty->pPlayers[i].conditions.HasNone({Condition_Unconscious, Condition_Dead, Condition_Petrified, Condition_Eradicated})) {
-                    pLearningPercent = pParty->pPlayers[i].GetLearningPercent();
+            for (Player &player : this->pPlayers) {
+                if (player.conditions.HasNone({Condition_Unconscious, Condition_Dead, Condition_Petrified, Condition_Eradicated})) {
+                    pLearningPercent = player.GetLearningPercent();
                     playermodexp = pEXPNum + pEXPNum * pLearningPercent / 100;
-                    pParty->pPlayers[i].uExperience += playermodexp;
-                    if (pParty->pPlayers[i].uExperience > 4000000000) {
-                        pParty->pPlayers[i].uExperience = 0;
+                    player.uExperience += playermodexp;
+                    if (player.uExperience > 4000000000) {
+                        player.uExperience = 0;
                     }
                 }
             }

@@ -5007,7 +5007,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
                 for (int i = 0; i < TOTAL_ITEM_SLOT_COUNT; i++) {
                     if (this->pOwnItems[i].uItemID == ITEM_QUEST_LICH_JAR_EMPTY) {
                         this->pOwnItems[i].uItemID = ITEM_QUEST_LICH_JAR_FULL;
-                        this->pOwnItems[i].uHolderPlayer = GetPlayerIndex() + 1;
+                        this->pOwnItems[i].uHolderPlayer = GetPlayerIndex();
                     }
                 }
                 if (this->sResFireBase < 20) this->sResFireBase = 20;
