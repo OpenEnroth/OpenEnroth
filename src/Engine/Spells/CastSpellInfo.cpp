@@ -2294,12 +2294,50 @@ void CastSpellInfoHelpers::castSpell() {
                     break;
                 }
 
+                case SPELL_BODY_CURE_DISEASE:
+                {
+                    GameTime spell_duration;
+
+                    switch (spell_mastery) {
+                        case PLAYER_SKILL_MASTERY_NOVICE: // MM6 only
+                            spell_duration = GameTime::FromMinutes(3 * spell_level);
+                            break;
+                        case PLAYER_SKILL_MASTERY_EXPERT: // MM6 only
+                            spell_duration = GameTime::FromHours(spell_level);
+                            break;
+                        case PLAYER_SKILL_MASTERY_MASTER:
+                            spell_duration = GameTime::FromDays(spell_level);
+                            break;
+                        case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                            spell_duration = GameTime(0);
+                            break;
+                        default:
+                            assert(false);
+                    }
+
+                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
+                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Disease_Weak) ||
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Disease_Medium) ||
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Disease_Severe)) {
+                        if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Disease_Weak);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Disease_Medium);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Disease_Severe);
+                        } else {
+                            pParty->pPlayers[pCastSpell->uPlayerID_2]
+                                .DiscardConditionIfLastsLongerThan(Condition_Disease_Weak, pParty->GetPlayingTime() - spell_duration);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2]
+                                .DiscardConditionIfLastsLongerThan(Condition_Disease_Medium, pParty->GetPlayingTime() - spell_duration);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2]
+                                .DiscardConditionIfLastsLongerThan(Condition_Disease_Severe, pParty->GetPlayingTime() - spell_duration);
+                        }
+                    }
+                    break;
+                }
+
                 case SPELL_BODY_PROTECTION_FROM_MAGIC:
                 {
-                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 0);
-                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 1);
-                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 2);
-                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 3);
+                    spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC]
                         .Apply(pParty->GetPlayingTime() + GameTime::FromHours(spell_level), spell_mastery, spell_level, 0, 0);
                     break;
@@ -2308,10 +2346,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_BODY_HAMMERHANDS:
                 {
                     if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                        spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 0);
-                        spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 1);
-                        spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 2);
-                        spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 3);
+                        spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                         for (Player &player : pParty->pPlayers) {
                             player.pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS]
                                 .Apply(pParty->GetPlayingTime() + GameTime::FromHours(spell_level), spell_mastery, spell_level, spell_level, 0);
@@ -2425,10 +2460,7 @@ void CastSpellInfoHelpers::castSpell() {
                         default:
                             assert(false);
                     }
-                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 0);
-                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 1);
-                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 2);
-                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 3);
+                    spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS]
                         .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
                     break;
@@ -2478,10 +2510,7 @@ void CastSpellInfoHelpers::castSpell() {
                         default:
                             assert(false);
                     }
-                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 0);
-                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 1);
-                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 2);
-                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 3);
+                    spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     pParty->pPartyBuffs[PARTY_BUFF_RESIST_BODY].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
                     pParty->pPartyBuffs[PARTY_BUFF_RESIST_MIND].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
                     pParty->pPartyBuffs[PARTY_BUFF_RESIST_FIRE].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
@@ -2990,6 +3019,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
         }
     }
 
+    PLAYER_SKILL checkSkill = skill_value;
     // spell_pointed_target = a5;
     // v7 = &pParty->pPlayers[uPlayerID];
     assert(uPlayerID < 4);
@@ -3055,37 +3085,37 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
                 break;
 
             case SPELL_SPIRIT_BLESS:
-                if (!skill_value) {
-                    skill_value = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
+                if (!checkSkill) {
+                    checkSkill = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
                 }
-                if (GetSkillMastery(skill_value) < PLAYER_SKILL_MASTERY_EXPERT && !engine->config->debug.AllMagic.Get()) {
+                if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_EXPERT && !engine->config->debug.AllMagic.Get()) {
                     flags |= ON_CAST_SinglePlayer_BigImprovementAnim;
                 }
                 break;
 
             case SPELL_SPIRIT_PRESERVATION:
-                if (!skill_value) {
-                    skill_value = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
+                if (!checkSkill) {
+                    checkSkill = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
                 }
-                if (GetSkillMastery(skill_value) < PLAYER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.Get()) {
+                if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.Get()) {
                     flags |= ON_CAST_SinglePlayer_BigImprovementAnim;
                 }
                 break;
 
             case SPELL_DARK_PAIN_REFLECTION:
-                if (!skill_value) {
-                    skill_value = player->pActiveSkills[PLAYER_SKILL_DARK];
+                if (!checkSkill) {
+                    checkSkill = player->pActiveSkills[PLAYER_SKILL_DARK];
                 }
-                if (GetSkillMastery(skill_value) < PLAYER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.Get()) {
+                if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.Get()) {
                     flags |= ON_CAST_SinglePlayer_BigImprovementAnim;
                 }
                 break;
 
             case SPELL_BODY_HAMMERHANDS:
-                if (!skill_value) {
-                    skill_value = player->pActiveSkills[PLAYER_SKILL_BODY];
+                if (!checkSkill) {
+                    checkSkill = player->pActiveSkills[PLAYER_SKILL_BODY];
                 }
-                if (GetSkillMastery(skill_value) < PLAYER_SKILL_MASTERY_GRANDMASTER && !engine->config->debug.AllMagic.Get()) {
+                if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_GRANDMASTER && !engine->config->debug.AllMagic.Get()) {
                     flags |= ON_CAST_SinglePlayer_BigImprovementAnim;
                 }
                 break;
