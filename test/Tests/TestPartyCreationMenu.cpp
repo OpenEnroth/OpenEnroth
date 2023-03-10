@@ -416,3 +416,16 @@ GAME_TEST(Issue, Issue506) {
     test->playTraceFromTestData("issue_506.mm7", "issue_506.json");
 }
 
+GAME_TEST(Issue, Issue527) {
+    // Check Cure Disease spell works
+    test->playTraceFromTestData("issue_527.mm7", "issue_527.json", []() { EXPECT_EQ(pParty->pPlayers[0].conditions.Has(Condition_Disease_Weak), true); });
+    EXPECT_EQ(pParty->pPlayers[0].conditions.Has(Condition_Disease_Weak), false);
+}
+
+GAME_TEST(Issue, Issue528) {
+    // Check that spells target single player or entire party depending on mastery drain mana
+    // Use test for issue 427 which test the same spells
+    test->playTraceFromTestData("issue_427b.mm7", "issue_427b.json", []() { EXPECT_EQ(pParty->pPlayers[2].sMana, 100); });
+    EXPECT_EQ(pParty->pPlayers[2].sMana, 40);
+}
+
