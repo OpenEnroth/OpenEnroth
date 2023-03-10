@@ -311,7 +311,7 @@ struct Party {
     int field_6E4_set0_unused; // party old x/y ?
     int uFallSpeed; // party vertical speed, negative => falling, positive => jumping
     int field_6EC_set0_unused;
-    int sPartySavedFlightZ;
+    int sPartySavedFlightZ;  // this saves the Z position when flying without bob mods
     int floor_face_pid;  // face we are standing at
     int walk_sound_timer;
     int _6FC_water_lava_timer;
@@ -381,7 +381,7 @@ struct Party {
     float TorchLightLastIntensity;
 
     uint _roundingDt{ 0 };  // keeps track of rounding remainder for recovery
-    int _movementTallySQ{ 0 };  // keeps track of party movement for footsteps
+    int _movementTally{ 0 };  // keeps track of party movement for footsteps
 };
 
 extern Party *pParty;  // idb

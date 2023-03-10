@@ -1456,8 +1456,9 @@ void _494035_timed_effects__water_walking_damage__etc() {
     pParty->uCurrentMonthWeek = pParty->GetPlayingTime().GetDays() / 7 & 3;
     pParty->uCurrentDayOfMonth = pParty->GetPlayingTime().GetDays() % 28;
     pParty->uCurrentMonth = pParty->GetPlayingTime().GetMonthsOfYear();
-    pParty->uCurrentYear = pParty->GetPlayingTime().GetMonths() / 12 + game_starting_year;
+    pParty->uCurrentYear = pParty->GetPlayingTime().GetYears() + game_starting_year;
 
+    // TODO(pskelton): Condition looks wierd, investigate, possible cause of #504
     if (pParty->uCurrentHour >= 3 && (old_hour < 3 || pParty->uCurrentDayOfMonth > old_day)) {  // new day dawns
         pParty->pHirelings[0].bHasUsedTheAbility = false;
         pParty->pHirelings[1].bHasUsedTheAbility = false;
@@ -1482,6 +1483,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
             // players go insane without rest
             if (pParty->days_played_without_rest > 3) {
                 for (Player &player : pParty->pPlayers) {
+                    // TODO(pskelton): rename Zero to ResetBonuses
                     player.Zero();
                     if (!player.IsPertified() && !player.IsEradicated() && !player.IsDead()) {
                         if (grng->Random(100) < 5 * pParty->days_played_without_rest)

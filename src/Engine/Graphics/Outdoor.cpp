@@ -2169,6 +2169,7 @@ void ODM_ProcessPartyActions() {
     int party_new_Y = pParty->vPosition.y;
     int party_new_Z = pParty->vPosition.z;
 
+    // TODO(pskelton): this is only a partial fix for #520
     if (!pParty->FlyActive())
         pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
     //-------------------------------------------
@@ -2456,13 +2457,13 @@ void ODM_ProcessPartyActions() {
     int pX_ = pParty->vPosition.x - party_new_x;
     int pY_ = pParty->vPosition.y - party_new_Y;
     int pZ_ = pParty->vPosition.z - party_new_Z;
-    pParty->_movementTallySQ += pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_;
+    pParty->_movementTally += integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_);
 
     if (engine->config->settings.WalkSound.Get() && pParty->walk_sound_timer <= 0) {
         pAudioPlayer->StopAll(804);  // stop sound
         if (party_running_flag && (!hovering || not_high_fall)) {
-            if (pParty->_movementTallySQ >= 256) {
-                pParty->_movementTallySQ = 0;
+            if (pParty->_movementTally >= 16) {
+                pParty->_movementTally = 0;
                 if (!is_not_on_bmodel &&
                     pOutdoor->pBModels[pParty->floor_face_pid >> 9]
                     .pFaces[(pParty->floor_face_pid >> 3) & 0x3F].Visible()) {
@@ -2475,8 +2476,8 @@ void ODM_ProcessPartyActions() {
                 pParty->walk_sound_timer = 96;  // таймер для бега
             }
         } else if (party_walking_flag && (!hovering || not_high_fall)) {
-            if (pParty->_movementTallySQ >= 64) {
-                pParty->_movementTallySQ = 0;
+            if (pParty->_movementTally >= 8) {
+                pParty->_movementTally = 0;
                 if (!is_not_on_bmodel &&
                     pOutdoor->pBModels[pParty->floor_face_pid >> 9]
                     .pFaces[(pParty->floor_face_pid >> 3) & 0x3F].Visible()) {
@@ -2491,8 +2492,9 @@ void ODM_ProcessPartyActions() {
         }
     }
 
+    // TODO(pskelton): this will trigger during accumulation - and StopAll doesnt work
     // mute the walking sound when stopping
-    if (pParty->_movementTallySQ < 64)
+    if (pParty->_movementTally < 8)
         pAudioPlayer->StopAll(804);
     //------------------------------------------------------------------------
 
