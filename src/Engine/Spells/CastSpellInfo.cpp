@@ -3189,9 +3189,12 @@ void pushScrollSpell(SPELL_TYPE spell, unsigned int uPlayerID) {
 }
 
 void spellTargetPicked(int pid, int playerTarget) {
+    assert(pid != PID_INVALID || playerTarget != -1);
+
     CastSpellInfo *pCastSpell = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
     pCastSpell->uFlags &= ~ON_CAST_CastingInProgress;
     pCastSpell->spell_target_pid = pid;
+    // TODO(Nik-RE-dev): need to get rid of uPlayerID_2 and use pid with OBJECT_Player and something else for hirelings.
     pCastSpell->uPlayerID_2 = playerTarget;
     // TODO(Nik-RE-dev): why recovery time is set here?
     pParty->pPlayers[pCastSpell->uPlayerID].SetRecoveryTime(300);

@@ -28,10 +28,10 @@ TargetedSpellUI_Hirelings::TargetedSpellUI_Hirelings(Pointi position, Sizei dime
 
 TargetedSpellUI_Character::TargetedSpellUI_Character(Pointi position, Sizei dimensions, WindowData data, const std::string &hint)
     : TargetedSpellUI(position, dimensions, data, hint) {
-    CreateButton({52, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter1, 0, InputAction::SelectChar1);
-    CreateButton({165, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter1, 1, InputAction::SelectChar2);
-    CreateButton({280, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter1, 2, InputAction::SelectChar3);
-    CreateButton({390, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter1, 3, InputAction::SelectChar4);
+    CreateButton({52, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter, 0, InputAction::SelectChar1);
+    CreateButton({165, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter, 1, InputAction::SelectChar2);
+    CreateButton({280, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter, 2, InputAction::SelectChar3);
+    CreateButton({390, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter, 3, InputAction::SelectChar4);
 }
 
 TargetedSpellUI_Actor::TargetedSpellUI_Actor(Pointi position, Sizei dimensions, WindowData data, const std::string &hint)
@@ -41,10 +41,10 @@ TargetedSpellUI_Actor::TargetedSpellUI_Actor(Pointi position, Sizei dimensions, 
 
 TargetedSpellUI_ActorOrCharacter::TargetedSpellUI_ActorOrCharacter(Pointi position, Sizei dimensions, WindowData data, const std::string &hint)
     : TargetedSpellUI(position, dimensions, data, hint) {
-    CreateButton({52, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter2, 0, InputAction::SelectChar1);
-    CreateButton({165, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter2, 1, InputAction::SelectChar2);
-    CreateButton({280, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter2, 2, InputAction::SelectChar3);
-    CreateButton({390, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter2, 3, InputAction::SelectChar4);
+    CreateButton({52, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter, 0, InputAction::SelectChar1);
+    CreateButton({165, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter, 1, InputAction::SelectChar2);
+    CreateButton({280, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter, 2, InputAction::SelectChar3);
+    CreateButton({390, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter, 3, InputAction::SelectChar4);
     CreateButton({8, 8}, {game_viewport_width, game_viewport_height}, 1, 0, UIMSG_CastSpell_TargetActorBuff, 0);
 }
 

@@ -60,7 +60,7 @@ enum UIMessageType : uint32_t {
     UIMSG_PlayerCreationClickOK = 66,
     UIMSG_PlayerCreationClickReset = 67,
     UIMSG_44 = 68,
-    UIMSG_CastSpell_TargetCharacter1 = 69,
+    UIMSG_CastSpell_TargetCharacter = 69,
     UIMSG_CastSpell_TargetActor = 70,
     UIMSG_ClickBooksBtn = 71,
     UIMSG_48 = 72,  // fixed skill 1
@@ -126,7 +126,7 @@ enum UIMessageType : uint32_t {
     UIMSG_SelectNPCDialogueOption = 136,
 
     UIMSG_CastSpell_TargetActorBuff = 140,
-    UIMSG_CastSpell_TargetCharacter2 = 141,
+    //UIMSG_CastSpell_TargetCharacter = 141, // semantics duplicates UIMSG 69
     UIMSG_CastSpellFromBook = 142,
     UIMSG_CastSpell_Hireling = 143,
     UIMSG_PlayerCreation_VoicePrev = 144,

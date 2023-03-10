@@ -1122,7 +1122,7 @@ void Game::EventLoop() {
                     }
                     if (type == OBJECT_Item) {
                         int flags = pObjectList->pObjects[pSpriteObjects[id].uObjectDescID].uFlags;
-                        interactionPossible = !!(flags & OBJECT_DESC_UNPICKABLE);
+                        interactionPossible = (flags & OBJECT_DESC_UNPICKABLE) != OBJECT_DESC_UNPICKABLE;
                     }
                     if (type == OBJECT_Decoration) {
                         interactionPossible = pLevelDecorations[id].uEventID != 0;
@@ -1139,13 +1139,12 @@ void Game::EventLoop() {
                         }
                     }
                     if (interactionPossible) {
-                        spellTargetPicked(pid, uMessageParam);
+                        spellTargetPicked(pid, -1);
                         CloseTargetedSpellWindow();
                     }
                     continue;
                 }
-                case UIMSG_CastSpell_TargetCharacter1:
-                case UIMSG_CastSpell_TargetCharacter2:
+                case UIMSG_CastSpell_TargetCharacter:
                 case UIMSG_CastSpell_Hireling:
                     pCurrentFrameMessageQueue->Flush();
                     if (IsEnchantingInProgress) {
@@ -1517,7 +1516,7 @@ void Game::EventLoop() {
                     int pid = vis->get_picked_object_zbuf_val().object_pid;
                     int depth = vis->get_picked_object_zbuf_val().depth;
                     if (PID_TYPE(pid) == OBJECT_Actor && depth < engine->config->gameplay.RangedAttackDepth.Get()) {
-                        spellTargetPicked(pid, uMessageParam);
+                        spellTargetPicked(pid, -1);
                         CloseTargetedSpellWindow();
                     }
                     continue;
