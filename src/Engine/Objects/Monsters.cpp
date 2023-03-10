@@ -51,7 +51,7 @@ SPELL_TYPE ParseSpellType(struct FrameTableTxtLine *tbl, int *next_token) {
         return SPELL_FIRE_METEOR_SHOWER;
     } else if (iequals(tbl->pProperties[0], "Lightning")) {  // Lightning bolt
         ++*next_token;
-        return SPELL_AIR_LIGHNING_BOLT;
+        return SPELL_AIR_LIGHTNING_BOLT;
     } else if (iequals(tbl->pProperties[0], "Implosion")) {
         return SPELL_AIR_IMPLOSION;
     } else if (iequals(tbl->pProperties[0], "Stone")) {

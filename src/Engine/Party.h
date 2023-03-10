@@ -2,12 +2,15 @@
 
 #include <cstdint>
 #include <array>
+#include <vector>
 #include <string>
 
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/Player.h"
 #include "Engine/Time.h"
+#include "Library/Random/Random.h"
+
 
 #define PARTY_AUTONOTES_BIT__EMERALD_FIRE_FOUNTAIN 2
 
@@ -269,11 +272,30 @@ struct Party {
      * @return                          Whether the provided item is worn by at least one member of the party.
      */
     bool WearsItemAnywhere(ITEM_TYPE item_id) const {
-        return
-            pPlayers[0].WearsItemAnywhere(item_id) ||
-            pPlayers[1].WearsItemAnywhere(item_id) ||
-            pPlayers[2].WearsItemAnywhere(item_id) ||
-            pPlayers[3].WearsItemAnywhere(item_id);
+        for (const Player &player : pPlayers) {
+            if (player.WearsItemAnywhere(item_id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Return id of random character that can still act.
+     *
+     * @return        ID of character or -1 if none of the character cat act.
+     */
+    int getRandomActiveCharacterId() const {
+        std::vector<int> activeCharacters = {};
+        for (int i = 0; i < pPlayers.size(); i++) {
+            if (pPlayers[i].CanAct()) {
+                activeCharacters.push_back(i);
+            }
+        }
+        if (!activeCharacters.empty()) {
+            return activeCharacters[vrng->Random(activeCharacters.size())];
+        }
+        return -1;
     }
 
     GameTime &GetPlayingTime() { return this->playing_time; }

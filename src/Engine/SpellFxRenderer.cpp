@@ -795,10 +795,10 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             _4A75CC_single_spell_collision_particle(a2, colorTable.OrangeyRed.C32(), effpar01);
             return false;
 
-        case SPRITE_811:
-        case SPRITE_812:
-        case SPRITE_813:
-        case SPRITE_814:
+        case SPRITE_TRAP_FIRE:
+        case SPRITE_TRAP_LIGHTNING:
+        case SPRITE_TRAP_COLD:
+        case SPRITE_TRAP_BODY:
             return true;
 
         case SPRITE_SPELL_FIRE_FIRE_BOLT:
@@ -880,14 +880,14 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, colorTable.MustardYellow.C32(), effpar02, 200.0);
             return false;
 
-        case SPRITE_SPELL_AIR_LIGHNING_BOLT:
+        case SPRITE_SPELL_AIR_LIGHTNING_BOLT:
             // if ( !render->pRenderD3D )
             //  return true;
             memcpy(pContainer, "sp18h1", 7);
             pContainer[5] = vrng->RandomInSegment(1, 6) + '0';
             AddProjectile(a2, 100, assets->GetBitmap(pContainer));
             return false;
-        case SPRITE_SPELL_AIR_LIGHNING_BOLT_IMPACT:
+        case SPRITE_SPELL_AIR_LIGHTNING_BOLT_IMPACT:
             _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, colorTable.MustardYellow.C32(), effpar02, 200.0);
             AddMobileLight(a2, colorTable.MustardYellow.C32(), 256);
             return false;

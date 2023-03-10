@@ -1410,16 +1410,12 @@ void PrepareToLoadBLV(bool bLoading) {
 
     // Active character speaks.
     if (!bLoading && pDest) {
-        std::vector<int> active;
+        int id = pParty->getRandomActiveCharacterId();
 
-        for (int i = 1; i <= 4; i++)
-            if (pPlayers[i]->CanAct())
-                active.push_back(i);
-
-        if (!active.empty()) {
+        if (id != -1) {
             _A750D8_player_speech_timer = 256;
             PlayerSpeechID = SPEECH_EnterDungeon;
-            uSpeakingCharacter = active[vrng->Random(active.size())];
+            uSpeakingCharacter = id;
         }
     }
 }

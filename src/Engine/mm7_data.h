@@ -156,7 +156,7 @@ extern GUIButton *pBtn_ZoomIn;  // idb
 extern unsigned int uGameUIFontShadow;
 extern unsigned int uGameUIFontMain;
 extern int dword_507B00_spell_info_to_draw_in_popup;
-extern unsigned int uActiveCharacter;
+extern unsigned int uActiveCharacter; // 1-based
 extern int dword_507BF0_is_there_popup_onscreen;
 extern int awards_scroll_bar_created;
 extern int dword_507CC0_activ_ch;
@@ -377,7 +377,7 @@ extern int uPlayerCreationUI_ArrowAnim;
 extern unsigned int uPlayerCreationUI_SelectedCharacter;
 extern int dword_A74CDC;
 extern int64_t _A750D8_player_speech_timer;  // qword_A750D8
-extern int uSpeakingCharacter;
+extern int uSpeakingCharacter; // 0-based
 extern char byte_AE5B91;
 extern std::array<int, 32> dword_F1B430;
 extern std::array<int, 4> player_levels;

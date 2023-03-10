@@ -440,7 +440,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_FIRE_FIRE_BOLT:
                 case SPELL_FIRE_FIREBALL:
                 case SPELL_FIRE_INCINERATE:
-                case SPELL_AIR_LIGHNING_BOLT:
+                case SPELL_AIR_LIGHTNING_BOLT:
                 case SPELL_WATER_ICE_BOLT:
                 case SPELL_WATER_ICE_BLAST:
                 case SPELL_EARTH_STUN:
@@ -461,7 +461,7 @@ void CastSpellInfoHelpers::castSpell() {
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                     pSpellSprite.uFacing = target_direction.uYawAngle;
-                    if (pCastSpell->uSpellID == SPELL_AIR_LIGHNING_BOLT) {
+                    if (pCastSpell->uSpellID == SPELL_AIR_LIGHTNING_BOLT) {
                         pSpellSprite.uAttributes |= SPRITE_SKIP_A_FRAME;
                     }
                     if (pParty->bTurnBasedModeOn) {
@@ -1141,8 +1141,7 @@ void CastSpellInfoHelpers::castSpell() {
                         spellFailed(pCastSpell, LSTR_CANT_FLY_INDOORS);
                         continue;
                     }
-                    if (!pPlayers[pCastSpell->uPlayerID + 1]->GetMaxMana() &&
-                            !engine->config->debug.AllMagic.Get()) {
+                    if (!pParty->pPlayers[pCastSpell->uPlayerID].GetMaxMana() && !engine->config->debug.AllMagic.Get()) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         continue;
                     }
@@ -1300,7 +1299,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_WATER_WATER_WALK:
                 {
-                    if (!pPlayers[pCastSpell->uPlayerID + 1]->GetMaxMana()) {
+                    if (!pParty->pPlayers[pCastSpell->uPlayerID].GetMaxMana()) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         continue;
                     }
@@ -3014,7 +3013,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
             case SPELL_FIRE_FIRE_BOLT:
             case SPELL_FIRE_FIREBALL:
             case SPELL_FIRE_INCINERATE:
-            case SPELL_AIR_LIGHNING_BOLT:
+            case SPELL_AIR_LIGHTNING_BOLT:
             case SPELL_AIR_IMPLOSION:
             case SPELL_WATER_POISON_SPRAY:
             case SPELL_WATER_ICE_BOLT:

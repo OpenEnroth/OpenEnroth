@@ -7025,7 +7025,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             if (uActorType == OBJECT_Player && !_A750D8_player_speech_timer) {
                 _A750D8_player_speech_timer = 256;
                 PlayerSpeechID = SPEECH_DamagedParty;
-                uSpeakingCharacter = uActorID + 1;
+                uSpeakingCharacter = uActorID;
             }
             return;
         } else if (uActorType == OBJECT_Actor) {  // missile fired by actor
@@ -7168,7 +7168,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             if (uActorType == OBJECT_Player && !_A750D8_player_speech_timer) {
                 _A750D8_player_speech_timer = 256;
                 PlayerSpeechID = SPEECH_DamagedParty;
-                uSpeakingCharacter = uActorID + 1;
+                uSpeakingCharacter = uActorID;
             }
 
             return;

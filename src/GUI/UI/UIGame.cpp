@@ -1442,8 +1442,9 @@ void GameUI_DrawPortraits() {
     if (_A750D8_player_speech_timer) {
         _A750D8_player_speech_timer -= (signed int)pMiscTimer->uTimeElapsed;
         if (_A750D8_player_speech_timer <= 0) {
-            if (pPlayers[uSpeakingCharacter]->CanAct())
-                pPlayers[uSpeakingCharacter]->PlaySound(PlayerSpeechID, 0);
+            if (pParty->pPlayers[uSpeakingCharacter].CanAct()) {
+                pParty->pPlayers[uSpeakingCharacter].PlaySound(PlayerSpeechID, 0);
+            }
             _A750D8_player_speech_timer = 0;
         }
     }
