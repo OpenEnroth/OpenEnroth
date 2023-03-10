@@ -3575,7 +3575,7 @@ int stru319::which_player_to_attack(Actor *pActor) {
                               pParty->pPlayers[j].conditions.Has(Condition_Dead) ||
                               pParty->pPlayers[j].conditions.Has(Condition_Petrified) ||
                               pParty->pPlayers[j].conditions.Has(Condition_Eradicated))) {
-                            Victims_list[v2++] = j + 1;
+                            Victims_list[v2++] = j;
                         }
                     }
                 }
@@ -3589,7 +3589,7 @@ int stru319::which_player_to_attack(Actor *pActor) {
               pParty->pPlayers[i].conditions.Has(Condition_Dead) ||
               pParty->pPlayers[i].conditions.Has(Condition_Petrified) ||
               pParty->pPlayers[i].conditions.Has(Condition_Eradicated)))
-            Victims_list[v2++] = i + 1;
+            Victims_list[v2++] = i;
     }
     if (v2)
         return Victims_list[grng->Random(v2)];
