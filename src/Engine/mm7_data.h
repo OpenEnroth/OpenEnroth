@@ -168,7 +168,6 @@ extern std::array<int, 50> dword_50B638;
 extern struct stru367 PortalFace;
 extern std::array<int, 100> dword_50BC10;
 extern std::array<int, 100> dword_50BDA0;
-extern std::array<int, 100> _50BF30_actors_in_viewport_ids;
 extern char TownPortalCasterId;
 extern int some_active_character;
 extern std::array<unsigned int, 5> pIconIDs_Turn;

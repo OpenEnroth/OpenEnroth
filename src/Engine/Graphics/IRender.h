@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Nuklear.h"
@@ -341,7 +342,7 @@ class IRender {
     virtual void SavePCXScreenshot() = 0;
     virtual unsigned short* MakeScreenshot16(int width, int height) = 0;
 
-    virtual int GetActorsInViewport(int pDepth) = 0;
+    virtual std::vector<Actor*> getActorsInViewport(int pDepth) = 0;
 
     virtual void BeginLightmaps() = 0;
     virtual void EndLightmaps() = 0;

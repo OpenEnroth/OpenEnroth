@@ -1,3 +1,5 @@
+#include <vector>
+
 #include "Engine/Spells/CastSpellInfo.h"
 
 #include "Engine/Awards.h"
@@ -992,20 +994,18 @@ void CastSpellInfoHelpers::castSpell() {
                         spellFailed(pCastSpell, LSTR_CANT_INFERNO_OUTDOORS);
                         continue;
                     }
-                    int mon_num = render->GetActorsInViewport(4096);
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.uSectorID = 0;
                     pSpellSprite.field_60_distance_related_prolly_lod = 0;
                     pSpellSprite.uFacing = 0;
-                    for (uint i = 0; i < mon_num; i++) {
+                    for (Actor* actor : render->getActorsInViewport(4096)) {
                         Vec3i spell_velocity = Vec3i(0, 0, 0);
-                        Actor *target_actor = &pActors[_50BF30_actors_in_viewport_ids[i]];
-                        pSpellSprite.vPosition = target_actor->vPosition - Vec3i(0, 0, target_actor->uActorHeight * -0.8);
-                        pSpellSprite.spell_target_pid = PID(OBJECT_Actor, _50BF30_actors_in_viewport_ids[i]);
-                        Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), _50BF30_actors_in_viewport_ids[i], &spell_velocity);
+                        pSpellSprite.vPosition = actor->vPosition - Vec3i(0, 0, actor->uActorHeight * -0.8);
+                        pSpellSprite.spell_target_pid = PID(OBJECT_Actor, actor->id);
+                        Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), actor->id, &spell_velocity);
                         spell_fx_renderer->RenderAsSprite(&pSpellSprite);
-                        spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.OrangeyRed.C32(), 0x40);
                     }
+                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.OrangeyRed.C32(), 0x40);
                     break;
                 }
 
@@ -1740,23 +1740,21 @@ void CastSpellInfoHelpers::castSpell() {
                             assert(false);
                     }
 
-                    int mon_num = render->GetActorsInViewport(4096);
-                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.White.C32(), 192);
                     // ++pSpellSprite.uType;
                     pSpellSprite.uType = SPRITE_SPELL_SPIRIT_TURN_UNDEAD_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.uSectorID = 0;
                     pSpellSprite.field_60_distance_related_prolly_lod = 0;
                     pSpellSprite.uFacing = 0;
-                    for (int i = 0; i < mon_num; ++i) {
-                        Actor *target_actor = &pActors[_50BF30_actors_in_viewport_ids[i]];
-                        if (MonsterStats::BelongsToSupertype(target_actor->pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
-                            pSpellSprite.vPosition = target_actor->vPosition - Vec3i(0, 0, target_actor->uActorHeight * -0.8);
-                            pSpellSprite.spell_target_pid = PID(OBJECT_Actor, _50BF30_actors_in_viewport_ids[i]);
+                    for (Actor* actor : render->getActorsInViewport(4096)) {
+                        if (MonsterStats::BelongsToSupertype(actor->pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
+                            pSpellSprite.vPosition = actor->vPosition - Vec3i(0, 0, actor->uActorHeight * -0.8);
+                            pSpellSprite.spell_target_pid = PID(OBJECT_Actor, actor->id);
                             pSpellSprite.Create(0, 0, 0, 0);
-                            target_actor->pActorBuffs[ACTOR_BUFF_AFRAID].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
+                            actor->pActorBuffs[ACTOR_BUFF_AFRAID].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
                         }
                     }
+                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.White.C32(), 192);
                     break;
                 }
 
@@ -2080,26 +2078,24 @@ void CastSpellInfoHelpers::castSpell() {
                             assert(false);
                     }
 
-                    int mon_num = render->GetActorsInViewport(4096);
-                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.Night.C32(), 192);
                     // ++pSpellSprite.uType;
                     pSpellSprite.uType = SPRITE_SPELL_MIND_MASS_FEAR_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.uSectorID = 0;
                     pSpellSprite.field_60_distance_related_prolly_lod = 0;
                     pSpellSprite.uFacing = 0;
-                    for (int i = 0; i < mon_num; ++i) {
-                        Actor *target_actor = &pActors[_50BF30_actors_in_viewport_ids[i]];
-                        if (MonsterStats::BelongsToSupertype(target_actor->pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
-                            break;
-                        }
-                        pSpellSprite.vPosition = target_actor->vPosition - Vec3i(0, 0, target_actor->uActorHeight * -0.8);
-                        pSpellSprite.spell_target_pid = PID(OBJECT_Actor, _50BF30_actors_in_viewport_ids[i]);
-                        pSpellSprite.Create(0, 0, 0, 0);
-                        if (target_actor->DoesDmgTypeDoDamage(DMGT_MIND)) {
-                            target_actor->pActorBuffs[ACTOR_BUFF_AFRAID].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
+                    for (Actor* actor : render->getActorsInViewport(4096)) {
+                        // Change: do not exit loop when first undead monster is found
+                        if (!MonsterStats::BelongsToSupertype(actor->pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
+                            pSpellSprite.vPosition = actor->vPosition - Vec3i(0, 0, actor->uActorHeight * -0.8);
+                            pSpellSprite.spell_target_pid = PID(OBJECT_Actor, actor->id);
+                            pSpellSprite.Create(0, 0, 0, 0);
+                            if (actor->DoesDmgTypeDoDamage(DMGT_MIND)) {
+                                actor->pActorBuffs[ACTOR_BUFF_AFRAID].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
+                            }
                         }
                     }
+                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.Night.C32(), 192);
                     break;
                 }
 
@@ -2335,32 +2331,24 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_LIGHT_DISPEL_MAGIC:
                 {
-                    Vec3i spell_velocity = Vec3i(0, 0, 0);
                     sRecoveryTime -= spell_level;
-                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.VibrantGreen.C32(), 192);
-                    int mon_num = render->GetActorsInViewport(4096);
                     // ++pSpellSprite.uType;
                     pSpellSprite.uType = SPRITE_SPELL_LIGHT_DISPEL_MAGIC_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.uSectorID = 0;
                     pSpellSprite.field_60_distance_related_prolly_lod = 0;
                     pSpellSprite.uFacing = 0;
-                    for (int i = 0; i < mon_num; ++i) {
-                        Actor *target_actor = &pActors[_50BF30_actors_in_viewport_ids[i]];
-                        pSpellSprite.vPosition = target_actor->vPosition - Vec3i(0, 0, target_actor->uActorHeight * -0.8);
-                        pSpellSprite.spell_target_pid = PID(OBJECT_Actor, _50BF30_actors_in_viewport_ids[i]);
-                        Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)),
-                                _50BF30_actors_in_viewport_ids[i], &spell_velocity);
-                    }
-                    for (int i = 0; i < mon_num; ++i) {
-                        Actor *target_actor = &pActors[_50BF30_actors_in_viewport_ids[i]];
-                        pSpellSprite.vPosition = target_actor->vPosition - Vec3i(0, 0, target_actor->uActorHeight * -0.8);
-                        pSpellSprite.spell_target_pid = PID(OBJECT_Actor, _50BF30_actors_in_viewport_ids[i]);
+                    Vec3i spell_velocity = Vec3i(0, 0, 0);
+                    // Spell damage processing was removed because Dispel Magic does not do damage
+                    for (Actor *actor : render->getActorsInViewport(4096)) {
+                        pSpellSprite.vPosition = actor->vPosition - Vec3i(0, 0, actor->uActorHeight * -0.8);
+                        pSpellSprite.spell_target_pid = PID(OBJECT_Actor, actor->id);
                         pSpellSprite.Create(0, 0, 0, 0);
-                        for (SpellBuff &buff : pActors[_50BF30_actors_in_viewport_ids[i]].pActorBuffs) {
+                        for (SpellBuff &buff : actor->pActorBuffs) {
                             buff.Reset();
                         }
                     }
+                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.VibrantGreen.C32(), 192);
                     break;
                 }
 
@@ -2440,20 +2428,17 @@ void CastSpellInfoHelpers::castSpell() {
                         spellFailed(pCastSpell, LSTR_CANT_PRISMATIC_OUTDOORS);
                         continue;
                     }
-                    Vec3i spell_velocity = Vec3i(0, 0, 0);
-                    int mon_num = render->GetActorsInViewport(4096);
                     // ++pSpellSprite.uType;
                     pSpellSprite.uType = SPRITE_SPELL_LIGHT_PRISMATIC_LIGHT_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.uSectorID = 0;
                     pSpellSprite.field_60_distance_related_prolly_lod = 0;
                     pSpellSprite.uFacing = 0;
-                    for (int monster_id = 0; monster_id < mon_num; monster_id++) {
-                        Actor *target_actor = &pActors[_50BF30_actors_in_viewport_ids[monster_id]];
-                        pSpellSprite.vPosition = target_actor->vPosition - Vec3i(0, 0, target_actor->uActorHeight * -0.8);
-                        pSpellSprite.spell_target_pid = PID(OBJECT_Actor, _50BF30_actors_in_viewport_ids[monster_id]);
-                        Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)),
-                                _50BF30_actors_in_viewport_ids[monster_id], &spell_velocity);
+                    Vec3i spell_velocity = Vec3i(0, 0, 0);
+                    for (Actor *actor : render->getActorsInViewport(4096)) {
+                        pSpellSprite.vPosition = actor->vPosition - Vec3i(0, 0, actor->uActorHeight * -0.8);
+                        pSpellSprite.spell_target_pid = PID(OBJECT_Actor, actor->id);
+                        Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), actor->id, &spell_velocity);
                     }
                     spell_fx_renderer->_4A8BFC_prismatic_light();
                     break;
@@ -2806,23 +2791,18 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_DARK_SOULDRINKER:
                 {
-                    int mon_num = render->GetActorsInViewport((int64_t)pCamera3D->GetMouseInfoDepth());
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.uSectorID = 0;
                     pSpellSprite.field_60_distance_related_prolly_lod = 0;
                     pSpellSprite.uFacing = 0;
-                    int drained_health = 0;
-                    if (mon_num > 0) {
-                        Vec3i spell_velocity = Vec3i(0, 0, 0);
-                        drained_health = (mon_num * (7 * spell_level + 25));
-                        for (int monster_id = 0; monster_id < mon_num; monster_id++) {
-                            Actor *target_actor = &pActors[_50BF30_actors_in_viewport_ids[monster_id]];
-                            pSpellSprite.vPosition = target_actor->vPosition - Vec3i(0, 0, target_actor->uActorHeight * -0.8);
-                            pSpellSprite.spell_target_pid = PID(OBJECT_Actor, _50BF30_actors_in_viewport_ids[monster_id]);
-                            Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)),
-                                    _50BF30_actors_in_viewport_ids[monster_id], &spell_velocity);
-                        }
+                    Vec3i spell_velocity = Vec3i(0, 0, 0);
+                    std::vector<Actor*> actorsInViewport = render->getActorsInViewport(pCamera3D->GetMouseInfoDepth());
+                    for (Actor *actor : actorsInViewport) {
+                        pSpellSprite.vPosition = actor->vPosition - Vec3i(0, 0, actor->uActorHeight * -0.8);
+                        pSpellSprite.spell_target_pid = PID(OBJECT_Actor, actor->id);
+                        Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), actor->id, &spell_velocity);
                     }
+                    int drained_health = (actorsInViewport.size() * (7 * spell_level + 25));
                     int active_pl_num = 0;
                     for (const Player &player : pParty->pPlayers) {
                         if (player.CanAct()) {
