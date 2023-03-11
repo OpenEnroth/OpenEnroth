@@ -12,6 +12,7 @@ class MemoryInputStream: public InputStream {
 
     virtual size_t Read(void *data, size_t size) override;
     virtual size_t Skip(size_t size) override;
+    virtual void Close() override;
 
  private:
     const char *pos_ = nullptr;

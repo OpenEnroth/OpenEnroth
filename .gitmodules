@@ -26,3 +26,6 @@
 [submodule "thirdparty/fast_float"]
 	path = thirdparty/fast_float
 	url = https://github.com/fastfloat/fast_float.git
+[submodule "thirdparty/mio"]
+	path = thirdparty/mio
+	url = https://github.com/mandreyel/mio

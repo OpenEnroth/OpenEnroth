@@ -6,9 +6,12 @@
 #include <memory>
 #include <string_view>
 
+class FileInputStream;
+
+
 class BlobHandler {
  public:
-    virtual void destroy(void *data, size_t size) = 0;
+    virtual void destroy(const void *data, size_t size) = 0;
 };
 
 
@@ -22,7 +25,7 @@ class Blob final {
  public:
     Blob() {}
 
-    Blob(void *data, size_t size, BlobHandler *handler) {
+    Blob(const void *data, size_t size, BlobHandler *handler) {
         assert(data ? size > 0 && handler : true);
         assert(!data ? size == 0 && !handler : true);
 
@@ -49,12 +52,13 @@ class Blob final {
         return *this;
     }
 
-    static Blob Allocate(size_t size);
+    static Blob FromMalloc(const void *data, size_t size);
+    static Blob Copy(const void *data, size_t size);
     static Blob Read(FILE *file, size_t size);
+    static Blob Read(FileInputStream& file, size_t size);
     static Blob FromFile(std::string_view path);
-    static Blob NonOwning(void *data, size_t size);
+    static Blob NonOwning(const void *data, size_t size);
     static Blob Concat(const Blob &l, const Blob &r);
-    static std::shared_ptr<Blob> AllocateShared(size_t size);
 
     friend void swap(Blob &l, Blob &r) {
         std::swap(l.data_, r.data_);
@@ -68,10 +72,6 @@ class Blob final {
 
     bool empty() const {
         return size_ == 0;
-    }
-
-    void *data() {
-        return data_;
     }
 
     const void *data() const {
@@ -91,7 +91,7 @@ class Blob final {
     }
 
  private:
-    void *data_ = nullptr;
+    const void *data_ = nullptr;
     size_t size_ = 0;
     BlobHandler *handler_ = nullptr;
 };
