@@ -914,6 +914,10 @@ Blob LOD::File::LoadRaw(const std::string &pContainer) {
         Error("Unable to load %s", pContainer.c_str());
         return Blob();
     }
+    if (!size) {
+        logger->Info("Empty file {}", pContainer.c_str());
+        return Blob();
+    }
 
     return Blob::Read(File, size);
 }
