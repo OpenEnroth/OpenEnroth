@@ -253,7 +253,7 @@ var searchData=
   ['get_250',['Get',['../classFlatHirelings.html#a65647cd69a37850c8e7a1ea32cf2837f',1,'FlatHirelings::Get()'],['../classPlayerConditions.html#a5d542ede24d8758de24ad95cbdf1a107',1,'PlayerConditions::Get()']]],
   ['get_5fobject_5fzbuf_5fval_251',['get_object_zbuf_val',['../classVis.html#a01e0d6915be61ec847bf37e2bad3a1ef',1,'Vis']]],
   ['get_5fpicked_5fobject_5fzbuf_5fval_252',['get_picked_object_zbuf_val',['../classVis.html#acc37e703c92ab52a8bd759dc50f9e872',1,'Vis']]],
-  ['getactorsinviewport_253',['GetActorsInViewport',['../classIRender.html#a4280bc8bf39453cf3166bb22ca314612',1,'IRender::GetActorsInViewport()'],['../classRenderOpenGL.html#a277afcbffeedf229a0b63e21ffe0afb9',1,'RenderOpenGL::GetActorsInViewport()']]],
+  ['getactorsinviewport_253',['getActorsInViewport',['../classIRender.html#a9835daaf3634a074492d72f7b5aeff8a',1,'IRender::getActorsInViewport()'],['../classRenderOpenGL.html#ac9f5b1cf927ae9c461d0b4073ce38b44',1,'RenderOpenGL::getActorsInViewport()']]],
   ['getactorsrelation_254',['GetActorsRelation',['../classActor.html#a78b581fc4547721206d858d3681aa8de',1,'Actor']]],
   ['getactortintcolor_255',['GetActorTintColor',['../IRender_8h.html#a8ad09cf5d07ced414fcbb37e37e843ba',1,'GetActorTintColor(int max_dim, int min_dim, float distance, int a4, struct RenderBillboard *a5):&#160;LightmapBuilder.cpp'],['../LightmapBuilder_8cpp.html#aa44d18b00c339414a07e67dda0512a32',1,'GetActorTintColor(int max_dimm, int min_dimm, float distance, int bNoLight, RenderBillboard *pBillboard):&#160;LightmapBuilder.cpp']]],
   ['getactualac_256',['GetActualAC',['../structPlayer.html#a487fbc093440015c99795de36f0ba610',1,'Player']]],

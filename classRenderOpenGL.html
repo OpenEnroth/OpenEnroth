@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;1bf1644</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9815f33</span>
    </div>
   </td>
  </tr>
@@ -232,8 +232,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a7d5ace14c0cecaee45536c6340314fa2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1f80ed50a7677250ddd9baf7815fdcd1"><td class="memItemLeft" align="right" valign="top">virtual unsigned short *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a1f80ed50a7677250ddd9baf7815fdcd1">MakeScreenshot16</a> (int width, int height) override</td></tr>
 <tr class="separator:a1f80ed50a7677250ddd9baf7815fdcd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a277afcbffeedf229a0b63e21ffe0afb9"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a277afcbffeedf229a0b63e21ffe0afb9">GetActorsInViewport</a> (int pDepth) override</td></tr>
-<tr class="separator:a277afcbffeedf229a0b63e21ffe0afb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9f5b1cf927ae9c461d0b4073ce38b44"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="classActor.html">Actor</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#ac9f5b1cf927ae9c461d0b4073ce38b44">getActorsInViewport</a> (int pDepth) override</td></tr>
+<tr class="separator:ac9f5b1cf927ae9c461d0b4073ce38b44"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a974b07f39c656c4c14b306423ad92b24"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a974b07f39c656c4c14b306423ad92b24">BeginLightmaps</a> () override</td></tr>
 <tr class="separator:a974b07f39c656c4c14b306423ad92b24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a61dabc0162dc41f4006e1f0d7848a66c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderOpenGL.html#a61dabc0162dc41f4006e1f0d7848a66c">EndLightmaps</a> () override</td></tr>
@@ -488,8 +488,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ae2ddff8d7a64a69ca3d6289956d57815 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4caca6860f7b0dfe94d7621151ee94e8 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual unsigned short *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a4caca6860f7b0dfe94d7621151ee94e8">MakeScreenshot16</a> (int width, int height)=0</td></tr>
 <tr class="separator:a4caca6860f7b0dfe94d7621151ee94e8 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4280bc8bf39453cf3166bb22ca314612 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a4280bc8bf39453cf3166bb22ca314612">GetActorsInViewport</a> (int pDepth)=0</td></tr>
-<tr class="separator:a4280bc8bf39453cf3166bb22ca314612 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9835daaf3634a074492d72f7b5aeff8a inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="classActor.html">Actor</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a9835daaf3634a074492d72f7b5aeff8a">getActorsInViewport</a> (int pDepth)=0</td></tr>
+<tr class="separator:a9835daaf3634a074492d72f7b5aeff8a inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c595d7bcc11babf0ccbac408e90fe74 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a5c595d7bcc11babf0ccbac408e90fe74">BeginLightmaps</a> ()=0</td></tr>
 <tr class="separator:a5c595d7bcc11babf0ccbac408e90fe74 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c3a97a8ca7dd1f8779aaa04b56855bd inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a1c3a97a8ca7dd1f8779aaa04b56855bd">EndLightmaps</a> ()=0</td></tr>
@@ -2817,8 +2817,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a277afcbffeedf229a0b63e21ffe0afb9" name="a277afcbffeedf229a0b63e21ffe0afb9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a277afcbffeedf229a0b63e21ffe0afb9">&#9670;&#160;</a></span>GetActorsInViewport()</h2>
+<a id="ac9f5b1cf927ae9c461d0b4073ce38b44" name="ac9f5b1cf927ae9c461d0b4073ce38b44"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9f5b1cf927ae9c461d0b4073ce38b44">&#9670;&#160;</a></span>getActorsInViewport()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2827,7 +2827,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int RenderOpenGL::GetActorsInViewport </td>
+          <td class="memname">std::vector&lt; <a class="el" href="classActor.html">Actor</a> * &gt; RenderOpenGL::getActorsInViewport </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>pDepth</em></td><td>)</td>
@@ -2841,7 +2841,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implements <a class="el" href="classIRender.html#a4280bc8bf39453cf3166bb22ca314612">IRender</a>.</p>
+<p>Implements <a class="el" href="classIRender.html#a9835daaf3634a074492d72f7b5aeff8a">IRender</a>.</p>
 
 </div>
 </div>
