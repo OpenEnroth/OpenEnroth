@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f1a26d7</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;631d4b5</span>
    </div>
   </td>
  </tr>
@@ -83,7 +83,8 @@ Inheritance diagram for InputStream:</div>
  <div class="center">
   <img src="classInputStream.png" usemap="#InputStream_map" alt=""/>
   <map id="InputStream_map" name="InputStream_map">
-<area href="classMemoryInputStream.html" alt="MemoryInputStream" shape="rect" coords="0,56,124,80"/>
+<area href="classFileInputStream.html" alt="FileInputStream" shape="rect" coords="0,56,124,80"/>
+<area href="classMemoryInputStream.html" alt="MemoryInputStream" shape="rect" coords="134,56,258,80"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -97,13 +98,15 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a8d7896bd495c1f6f7e7184f6cb6d9294"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1f8d53b67229d2418d39aa6d282a369f"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a1f8d53b67229d2418d39aa6d282a369f">Skip</a> (size_t size)=0</td></tr>
 <tr class="separator:a1f8d53b67229d2418d39aa6d282a369f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ca8037a777e1300da805a7542e2be01"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a6ca8037a777e1300da805a7542e2be01">Close</a> ()=0</td></tr>
+<tr class="separator:a6ca8037a777e1300da805a7542e2be01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Abstract base class for all data input streams.</p>
 <p >Compared to <code>std::istream</code> it is:</p><ul>
 <li>Non-buffered.</li>
 <li>Uses exceptions for error handling.</li>
-<li>Has an extremely simple and intuitive interface consisting of exactly two methods. </li>
+<li>Has a very simple and intuitive interface. </li>
 </ul>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a8c49246dd62e559578732f518f159432" name="a8c49246dd62e559578732f518f159432"></a>
@@ -132,6 +135,41 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a6ca8037a777e1300da805a7542e2be01" name="a6ca8037a777e1300da805a7542e2be01"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ca8037a777e1300da805a7542e2be01">&#9670;&#160;</a></span>Close()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void InputStream::Close </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Closes this input stream. Reading from a closed stream will result in undefined behavior.</p>
+<p >Does nothing if the stream is already closed.</p>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classException.html">Exception</a></td><td>On error. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classFileInputStream.html#a36b3b3b655de186d7ea09bf4ea33b5a6">FileInputStream</a>, and <a class="el" href="classMemoryInputStream.html#ae365c79ae3a83afcac2e2b93ed803d98">MemoryInputStream</a>.</p>
+
+</div>
+</div>
 <a id="a400604f6e667563e7f930423a51bf16f" name="a400604f6e667563e7f930423a51bf16f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a400604f6e667563e7f930423a51bf16f">&#9670;&#160;</a></span>Read()</h2>
 
@@ -175,12 +213,12 @@ Public Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Number of bytes actually read. A return value that's less than <code>size</code> signals end of stream. </dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname">std::runtime_error</td><td>On error. </td></tr>
+    <tr><td class="paramname"><a class="el" href="classException.html">Exception</a></td><td>On error. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classMemoryInputStream.html#adefffa9f2a498d30942641b2d924963e">MemoryInputStream</a>.</p>
+<p>Implemented in <a class="el" href="classFileInputStream.html#a446c005ec6b169c9af9e12f59a03bafa">FileInputStream</a>, and <a class="el" href="classMemoryInputStream.html#adefffa9f2a498d30942641b2d924963e">MemoryInputStream</a>.</p>
 
 </div>
 </div>
@@ -214,6 +252,12 @@ Public Member Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">data</td><td>Output buffer to write read data into. </td></tr>
     <tr><td class="paramname">size</td><td>Number of bytes to read. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classException.html">Exception</a></td><td>On error. </td></tr>
   </table>
   </dd>
 </dl>
@@ -252,12 +296,12 @@ Public Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Number of bytes actually skipped. A return value that's less than <code>size</code> signals end of stream. </dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname">std::runtime_error</td><td>On error. </td></tr>
+    <tr><td class="paramname"><a class="el" href="classException.html">Exception</a></td><td>On error. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classMemoryInputStream.html#a0ae18729cd058e1ac60f5b19c08d2339">MemoryInputStream</a>.</p>
+<p>Implemented in <a class="el" href="classFileInputStream.html#a936a945f93faeceeecb2ebc7a62d8c58">FileInputStream</a>, and <a class="el" href="classMemoryInputStream.html#a0ae18729cd058e1ac60f5b19c08d2339">MemoryInputStream</a>.</p>
 
 </div>
 </div>

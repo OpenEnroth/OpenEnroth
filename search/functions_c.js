@@ -48,7 +48,7 @@ var searchData=
   ['loadpotions_45',['LoadPotions',['../structItemTable.html#a9e3dbb5087eefff90897f753330dbea8',1,'ItemTable']]],
   ['loadraw_46',['LoadRaw',['../classLOD_1_1File.html#aca0e9249446ea29c8755f81ef12a7399',1,'LOD::File']]],
   ['loadroadtileset_47',['LoadRoadTileset',['../structOutdoorLocation.html#adf4599c0a38473eab693b1dd45ca1958',1,'OutdoorLocation']]],
-  ['loadsound_48',['LoadSound',['../classAudioPlayer.html#ac1c12928dc51aa4bfff8af2a7b3eb548',1,'AudioPlayer::LoadSound(const std::string &amp;pSoundName)'],['../classAudioPlayer.html#aaeac9dfff324f1cde42353bddf2d40c8',1,'AudioPlayer::LoadSound(int uSoundID)']]],
+  ['loadsound_48',['LoadSound',['../classAudioPlayer.html#a404da987053467a8a59a72dd66874199',1,'AudioPlayer::LoadSound(const std::string &amp;pSoundName)'],['../classAudioPlayer.html#a7d67b37579b1bf98c9c413633e9e9816',1,'AudioPlayer::LoadSound(int uSoundID)']]],
   ['loadspellbook_49',['LoadSpellbook',['../Spellbook_8cpp.html#ac21c7ca83294e474af86d54fc4c01775',1,'Spellbook.cpp']]],
   ['loadsprite_50',['LoadSprite',['../classLODFile__Sprites.html#a9196ad3e3bbbfe3a18751a754aff5661',1,'LODFile_Sprites']]],
   ['loadspritefromfile_51',['LoadSpriteFromFile',['../classLODFile__Sprites.html#a658d6ecee3095a2d8afcf43ca3fe739e',1,'LODFile_Sprites']]],

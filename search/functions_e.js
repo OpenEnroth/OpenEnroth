@@ -8,7 +8,7 @@ var searchData=
   ['next_5',['Next',['../structActionQueue.html#a6d583ff6c52c9c1e0d671332b4373a89',1,'ActionQueue']]],
   ['nextturn_6',['NextTurn',['../structstru262__TurnBased.html#a3d510c1516767374020392bb323a3c06',1,'stru262_TurnBased']]],
   ['nonnullbase_7',['nonNullBase',['../classProxyBase.html#abbee091669ee56ededcffd3bd6ccf01c',1,'ProxyBase']]],
-  ['nonowning_8',['NonOwning',['../classBlob.html#a46a811e41370208e7e79111a3115e553',1,'Blob']]],
+  ['nonowning_8',['NonOwning',['../classBlob.html#aaa2c74a08a41c7712e80f9e73cd99902',1,'Blob']]],
   ['normalize_9',['Normalize',['../structVec3.html#a6ff4f55fba67eae1e002f991cf048551',1,'Vec3']]],
   ['normalize_5fto_5ffixpoint_10',['normalize_to_fixpoint',['../FixPoint_8h.html#a8f838fe0aefa3fbd3985207608846e9d',1,'FixPoint.h']]],
   ['nosprite_11',['NoSprite',['../structObjectDesc.html#ac6e8fa8fc9ad62582f1213a242735b36',1,'ObjectDesc::NoSprite()'],['../structObjectDesc__mm6.html#abfb6288b5a86db3105ada1f7fb87dd61',1,'ObjectDesc_mm6::NoSprite()']]],

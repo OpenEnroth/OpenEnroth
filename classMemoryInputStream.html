@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f1a26d7</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;631d4b5</span>
    </div>
   </td>
  </tr>
@@ -102,6 +102,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:adefffa9f2a498d30942641b2d924963e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ae18729cd058e1ac60f5b19c08d2339"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMemoryInputStream.html#a0ae18729cd058e1ac60f5b19c08d2339">Skip</a> (size_t size) override</td></tr>
 <tr class="separator:a0ae18729cd058e1ac60f5b19c08d2339"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae365c79ae3a83afcac2e2b93ed803d98"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMemoryInputStream.html#ae365c79ae3a83afcac2e2b93ed803d98">Close</a> () override</td></tr>
+<tr class="separator:ae365c79ae3a83afcac2e2b93ed803d98"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classInputStream"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classInputStream')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classInputStream.html">InputStream</a></td></tr>
 <tr class="memitem:a8c49246dd62e559578732f518f159432 inherit pub_methods_classInputStream"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a8c49246dd62e559578732f518f159432">~InputStream</a> ()</td></tr>
 <tr class="separator:a8c49246dd62e559578732f518f159432 inherit pub_methods_classInputStream"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -111,6 +113,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a8d7896bd495c1f6f7e7184f6cb6d9294 inherit pub_methods_classInputStream"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1f8d53b67229d2418d39aa6d282a369f inherit pub_methods_classInputStream"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a1f8d53b67229d2418d39aa6d282a369f">Skip</a> (size_t size)=0</td></tr>
 <tr class="separator:a1f8d53b67229d2418d39aa6d282a369f inherit pub_methods_classInputStream"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ca8037a777e1300da805a7542e2be01 inherit pub_methods_classInputStream"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a6ca8037a777e1300da805a7542e2be01">Close</a> ()=0</td></tr>
+<tr class="separator:a6ca8037a777e1300da805a7542e2be01 inherit pub_methods_classInputStream"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -191,6 +195,41 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="ae365c79ae3a83afcac2e2b93ed803d98" name="ae365c79ae3a83afcac2e2b93ed803d98"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae365c79ae3a83afcac2e2b93ed803d98">&#9670;&#160;</a></span>Close()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MemoryInputStream::Close </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Closes this input stream. Reading from a closed stream will result in undefined behavior.</p>
+<p >Does nothing if the stream is already closed.</p>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classException.html">Exception</a></td><td>On error. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classInputStream.html#a6ca8037a777e1300da805a7542e2be01">InputStream</a>.</p>
+
+</div>
+</div>
 <a id="adefffa9f2a498d30942641b2d924963e" name="adefffa9f2a498d30942641b2d924963e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adefffa9f2a498d30942641b2d924963e">&#9670;&#160;</a></span>Read()</h2>
 
@@ -234,7 +273,7 @@ Private Attributes</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Number of bytes actually read. A return value that's less than <code>size</code> signals end of stream. </dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname">std::runtime_error</td><td>On error. </td></tr>
+    <tr><td class="paramname"><a class="el" href="classException.html">Exception</a></td><td>On error. </td></tr>
   </table>
   </dd>
 </dl>
@@ -303,7 +342,7 @@ Private Attributes</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Number of bytes actually skipped. A return value that's less than <code>size</code> signals end of stream. </dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname">std::runtime_error</td><td>On error. </td></tr>
+    <tr><td class="paramname"><a class="el" href="classException.html">Exception</a></td><td>On error. </td></tr>
   </table>
   </dd>
 </dl>

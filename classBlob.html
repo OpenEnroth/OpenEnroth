@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f1a26d7</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;631d4b5</span>
    </div>
   </td>
  </tr>
@@ -85,8 +85,8 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a6a0d29e3183e1458d1b9e6a5ca584826"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#a6a0d29e3183e1458d1b9e6a5ca584826">Blob</a> ()</td></tr>
 <tr class="separator:a6a0d29e3183e1458d1b9e6a5ca584826"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4e000704cbad48d30a0ed9c9272e44aa"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#a4e000704cbad48d30a0ed9c9272e44aa">Blob</a> (void *<a class="el" href="classBlob.html#abe6f599a3a28ff6988b010e267896c83">data</a>, size_t <a class="el" href="classBlob.html#a5a1c073c88e0aa47eb45f46d30e53de8">size</a>, <a class="el" href="classBlobHandler.html">BlobHandler</a> *handler)</td></tr>
-<tr class="separator:a4e000704cbad48d30a0ed9c9272e44aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ff078453619d57fec26e35ff1e59ce0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#a8ff078453619d57fec26e35ff1e59ce0">Blob</a> (const void *<a class="el" href="classBlob.html#a177116f40a530c74dbfd7db661ecbe4b">data</a>, size_t <a class="el" href="classBlob.html#a5a1c073c88e0aa47eb45f46d30e53de8">size</a>, <a class="el" href="classBlobHandler.html">BlobHandler</a> *handler)</td></tr>
+<tr class="separator:a8ff078453619d57fec26e35ff1e59ce0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac6aa6cc91070d2b633247f2db4a75981"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#ac6aa6cc91070d2b633247f2db4a75981">Blob</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;)=delete</td></tr>
 <tr class="separator:ac6aa6cc91070d2b633247f2db4a75981"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad22686b374be22a9e5651c726fc683c9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#ad22686b374be22a9e5651c726fc683c9">Blob</a> (<a class="el" href="classBlob.html">Blob</a> &amp;&amp;other)</td></tr>
@@ -101,8 +101,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a5a1c073c88e0aa47eb45f46d30e53de8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf67d6a801da2bf0faf119b112f206cd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#aaf67d6a801da2bf0faf119b112f206cd">empty</a> () const</td></tr>
 <tr class="separator:aaf67d6a801da2bf0faf119b112f206cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe6f599a3a28ff6988b010e267896c83"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#abe6f599a3a28ff6988b010e267896c83">data</a> ()</td></tr>
-<tr class="separator:abe6f599a3a28ff6988b010e267896c83"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a177116f40a530c74dbfd7db661ecbe4b"><td class="memItemLeft" align="right" valign="top">const void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#a177116f40a530c74dbfd7db661ecbe4b">data</a> () const</td></tr>
 <tr class="separator:a177116f40a530c74dbfd7db661ecbe4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae078d303a2bb9effa4cf1deefa405ee1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#ae078d303a2bb9effa4cf1deefa405ee1">operator!</a> () const</td></tr>
@@ -114,23 +112,25 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a060c02708d8487603e414bbc93f28156"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#a060c02708d8487603e414bbc93f28156">Allocate</a> (size_t <a class="el" href="classBlob.html#a5a1c073c88e0aa47eb45f46d30e53de8">size</a>)</td></tr>
-<tr class="separator:a060c02708d8487603e414bbc93f28156"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a721dc41e88a4fb54f6d2dd8f7d18dfdc"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#a721dc41e88a4fb54f6d2dd8f7d18dfdc">FromMalloc</a> (const void *<a class="el" href="classBlob.html#a177116f40a530c74dbfd7db661ecbe4b">data</a>, size_t <a class="el" href="classBlob.html#a5a1c073c88e0aa47eb45f46d30e53de8">size</a>)</td></tr>
+<tr class="separator:a721dc41e88a4fb54f6d2dd8f7d18dfdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81bddd545cbc517b49cb2c59b59c7d3c"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#a81bddd545cbc517b49cb2c59b59c7d3c">Copy</a> (const void *<a class="el" href="classBlob.html#a177116f40a530c74dbfd7db661ecbe4b">data</a>, size_t <a class="el" href="classBlob.html#a5a1c073c88e0aa47eb45f46d30e53de8">size</a>)</td></tr>
+<tr class="separator:a81bddd545cbc517b49cb2c59b59c7d3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab04417a4612f5e491959a39916d36d8a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#ab04417a4612f5e491959a39916d36d8a">Read</a> (FILE *file, size_t <a class="el" href="classBlob.html#a5a1c073c88e0aa47eb45f46d30e53de8">size</a>)</td></tr>
 <tr class="separator:ab04417a4612f5e491959a39916d36d8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19fde6b0e3fb9d9907ceeae96932b616"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#a19fde6b0e3fb9d9907ceeae96932b616">Read</a> (<a class="el" href="classFileInputStream.html">FileInputStream</a> &amp;file, size_t <a class="el" href="classBlob.html#a5a1c073c88e0aa47eb45f46d30e53de8">size</a>)</td></tr>
+<tr class="separator:a19fde6b0e3fb9d9907ceeae96932b616"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a725c5027eeced4281cd0a11fa6cf3ee1"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#a725c5027eeced4281cd0a11fa6cf3ee1">FromFile</a> (std::string_view path)</td></tr>
 <tr class="separator:a725c5027eeced4281cd0a11fa6cf3ee1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a46a811e41370208e7e79111a3115e553"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#a46a811e41370208e7e79111a3115e553">NonOwning</a> (void *<a class="el" href="classBlob.html#abe6f599a3a28ff6988b010e267896c83">data</a>, size_t <a class="el" href="classBlob.html#a5a1c073c88e0aa47eb45f46d30e53de8">size</a>)</td></tr>
-<tr class="separator:a46a811e41370208e7e79111a3115e553"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa2c74a08a41c7712e80f9e73cd99902"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#aaa2c74a08a41c7712e80f9e73cd99902">NonOwning</a> (const void *<a class="el" href="classBlob.html#a177116f40a530c74dbfd7db661ecbe4b">data</a>, size_t <a class="el" href="classBlob.html#a5a1c073c88e0aa47eb45f46d30e53de8">size</a>)</td></tr>
+<tr class="separator:aaa2c74a08a41c7712e80f9e73cd99902"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebcefb8f07ea5ce09013622ed8110cea"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#aebcefb8f07ea5ce09013622ed8110cea">Concat</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;l, const <a class="el" href="classBlob.html">Blob</a> &amp;r)</td></tr>
 <tr class="separator:aebcefb8f07ea5ce09013622ed8110cea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a939cc050fb1a1341f779b5ce36c4f435"><td class="memItemLeft" align="right" valign="top">static std::shared_ptr&lt; <a class="el" href="classBlob.html">Blob</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#a939cc050fb1a1341f779b5ce36c4f435">AllocateShared</a> (size_t <a class="el" href="classBlob.html#a5a1c073c88e0aa47eb45f46d30e53de8">size</a>)</td></tr>
-<tr class="separator:a939cc050fb1a1341f779b5ce36c4f435"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:ab9d06e74971ee35d8efb92fe73c7d75f"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#ab9d06e74971ee35d8efb92fe73c7d75f">data_</a> = nullptr</td></tr>
-<tr class="separator:ab9d06e74971ee35d8efb92fe73c7d75f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a525811cd7316e92b79ae2ffd16aaa220"><td class="memItemLeft" align="right" valign="top">const void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#a525811cd7316e92b79ae2ffd16aaa220">data_</a> = nullptr</td></tr>
+<tr class="separator:a525811cd7316e92b79ae2ffd16aaa220"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a82f362cf8f6c934eba8a029fd289dcc6"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#a82f362cf8f6c934eba8a029fd289dcc6">size_</a> = 0</td></tr>
 <tr class="separator:a82f362cf8f6c934eba8a029fd289dcc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a48bb32597d835048ccc8a7e5cfccbfd5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlobHandler.html">BlobHandler</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlob.html#a48bb32597d835048ccc8a7e5cfccbfd5">handler_</a> = nullptr</td></tr>
@@ -170,8 +170,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a4e000704cbad48d30a0ed9c9272e44aa" name="a4e000704cbad48d30a0ed9c9272e44aa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4e000704cbad48d30a0ed9c9272e44aa">&#9670;&#160;</a></span>Blob() <span class="overload">[2/4]</span></h2>
+<a id="a8ff078453619d57fec26e35ff1e59ce0" name="a8ff078453619d57fec26e35ff1e59ce0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8ff078453619d57fec26e35ff1e59ce0">&#9670;&#160;</a></span>Blob() <span class="overload">[2/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -182,7 +182,7 @@ Friends</h2></td></tr>
         <tr>
           <td class="memname">Blob::Blob </td>
           <td>(</td>
-          <td class="paramtype">void *&#160;</td>
+          <td class="paramtype">const void *&#160;</td>
           <td class="paramname"><em>data</em>, </td>
         </tr>
         <tr>
@@ -290,58 +290,6 @@ Friends</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a060c02708d8487603e414bbc93f28156" name="a060c02708d8487603e414bbc93f28156"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a060c02708d8487603e414bbc93f28156">&#9670;&#160;</a></span>Allocate()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classBlob.html">Blob</a> Blob::Allocate </td>
-          <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>size</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a939cc050fb1a1341f779b5ce36c4f435" name="a939cc050fb1a1341f779b5ce36c4f435"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a939cc050fb1a1341f779b5ce36c4f435">&#9670;&#160;</a></span>AllocateShared()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::shared_ptr&lt; <a class="el" href="classBlob.html">Blob</a> &gt; Blob::AllocateShared </td>
-          <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>size</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="aebcefb8f07ea5ce09013622ed8110cea" name="aebcefb8f07ea5ce09013622ed8110cea"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aebcefb8f07ea5ce09013622ed8110cea">&#9670;&#160;</a></span>Concat()</h2>
 
@@ -378,8 +326,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="abe6f599a3a28ff6988b010e267896c83" name="abe6f599a3a28ff6988b010e267896c83"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abe6f599a3a28ff6988b010e267896c83">&#9670;&#160;</a></span>data() <span class="overload">[1/2]</span></h2>
+<a id="a81bddd545cbc517b49cb2c59b59c7d3c" name="a81bddd545cbc517b49cb2c59b59c7d3c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81bddd545cbc517b49cb2c59b59c7d3c">&#9670;&#160;</a></span>Copy()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -388,15 +336,26 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void * Blob::data </td>
+          <td class="memname"><a class="el" href="classBlob.html">Blob</a> Blob::Copy </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">const void *&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -404,7 +363,7 @@ Friends</h2></td></tr>
 </div>
 </div>
 <a id="a177116f40a530c74dbfd7db661ecbe4b" name="a177116f40a530c74dbfd7db661ecbe4b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a177116f40a530c74dbfd7db661ecbe4b">&#9670;&#160;</a></span>data() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a177116f40a530c74dbfd7db661ecbe4b">&#9670;&#160;</a></span>data()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -479,8 +438,44 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a46a811e41370208e7e79111a3115e553" name="a46a811e41370208e7e79111a3115e553"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a46a811e41370208e7e79111a3115e553">&#9670;&#160;</a></span>NonOwning()</h2>
+<a id="a721dc41e88a4fb54f6d2dd8f7d18dfdc" name="a721dc41e88a4fb54f6d2dd8f7d18dfdc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a721dc41e88a4fb54f6d2dd8f7d18dfdc">&#9670;&#160;</a></span>FromMalloc()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classBlob.html">Blob</a> Blob::FromMalloc </td>
+          <td>(</td>
+          <td class="paramtype">const void *&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aaa2c74a08a41c7712e80f9e73cd99902" name="aaa2c74a08a41c7712e80f9e73cd99902"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaa2c74a08a41c7712e80f9e73cd99902">&#9670;&#160;</a></span>NonOwning()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -491,7 +486,7 @@ Friends</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="classBlob.html">Blob</a> Blob::NonOwning </td>
           <td>(</td>
-          <td class="paramtype">void *&#160;</td>
+          <td class="paramtype">const void *&#160;</td>
           <td class="paramname"><em>data</em>, </td>
         </tr>
         <tr>
@@ -618,7 +613,7 @@ Friends</h2></td></tr>
 </div>
 </div>
 <a id="ab04417a4612f5e491959a39916d36d8a" name="ab04417a4612f5e491959a39916d36d8a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab04417a4612f5e491959a39916d36d8a">&#9670;&#160;</a></span>Read()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab04417a4612f5e491959a39916d36d8a">&#9670;&#160;</a></span>Read() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -630,6 +625,42 @@ Friends</h2></td></tr>
           <td class="memname"><a class="el" href="classBlob.html">Blob</a> Blob::Read </td>
           <td>(</td>
           <td class="paramtype">FILE *&#160;</td>
+          <td class="paramname"><em>file</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a19fde6b0e3fb9d9907ceeae96932b616" name="a19fde6b0e3fb9d9907ceeae96932b616"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a19fde6b0e3fb9d9907ceeae96932b616">&#9670;&#160;</a></span>Read() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classBlob.html">Blob</a> Blob::Read </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classFileInputStream.html">FileInputStream</a> &amp;&#160;</td>
           <td class="paramname"><em>file</em>, </td>
         </tr>
         <tr>
@@ -741,8 +772,8 @@ Friends</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="ab9d06e74971ee35d8efb92fe73c7d75f" name="ab9d06e74971ee35d8efb92fe73c7d75f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab9d06e74971ee35d8efb92fe73c7d75f">&#9670;&#160;</a></span>data_</h2>
+<a id="a525811cd7316e92b79ae2ffd16aaa220" name="a525811cd7316e92b79ae2ffd16aaa220"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a525811cd7316e92b79ae2ffd16aaa220">&#9670;&#160;</a></span>data_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -751,7 +782,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void* Blob::data_ = nullptr</td>
+          <td class="memname">const void* Blob::data_ = nullptr</td>
         </tr>
       </table>
   </td>
