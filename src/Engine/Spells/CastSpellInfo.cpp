@@ -2911,6 +2911,7 @@ void CastSpellInfoHelpers::castSpell() {
                 }
                 default:
                     pCastSpell->uSpellID = SPELL_NONE;
+                    assert(false && "All spells casted by player must be processed.");
                     continue;
             }
 
