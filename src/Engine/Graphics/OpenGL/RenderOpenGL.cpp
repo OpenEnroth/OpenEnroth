@@ -2077,7 +2077,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
     glUniform3fv(glGetUniformLocation(terrainshader.ID, "sun.direction"), 1, &pOutdoor->vSunlight[0]);
     glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.ambient"), ambient, ambient, ambient);
     glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.diffuse"), diffuseon * (ambient + 0.3), diffuseon * (ambient + 0.3), diffuseon * (ambient + 0.3));
-    glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.specular"), diffuseon * 0.35f * ambient, diffuseon * 0.28f * ambient, 0.0f);
+    glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.specular"), /*diffuseon * 0.35f * ambient*/ 0.0f, /*diffuseon * 0.28f * ambient*/ 0.0f, 0.0f);
 
     // red colouring
     if (pParty->armageddon_timer) {
@@ -4024,6 +4024,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
     glUniformMatrix4fv(glGetUniformLocation(outbuildshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
 
     glUniform1i(glGetUniformLocation(outbuildshader.ID, "waterframe"), GLint(this->hd_water_current_frame));
+    // TODO(pskelton): check tickcount usage here
     glUniform1i(glGetUniformLocation(outbuildshader.ID, "flowtimer"), GLint(platform->tickCount() >> 4));
 
     glUniform1f(glGetUniformLocation(outbuildshader.ID, "gamma"), gamma);
@@ -4553,6 +4554,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                             DrawIndoorSky(face->uNumVertices, uFaceID);
                             continue;
                         } else {
+                            // TODO(pskelton): check tickcount usage here
                             skymodtimex = (platform->tickCount() / 32.0f) - pCamera3D->vCameraPos.x;
                             skymodtimey = (platform->tickCount() / 32.0f) + pCamera3D->vCameraPos.y;
                         }
@@ -4701,6 +4703,7 @@ void RenderOpenGL::DrawIndoorFaces() {
 
         glUniform1f(glGetUniformLocation(bspshader.ID, "gamma"), gamma);
         glUniform1i(glGetUniformLocation(bspshader.ID, "waterframe"), GLint(this->hd_water_current_frame));
+        // TODO(pskelton): check tickcount usage here
         glUniform1i(glGetUniformLocation(bspshader.ID, "flowtimer"), GLint(platform->tickCount() >> 4));
 
         // set texture unit location

@@ -101,8 +101,15 @@ void KeyboardInputHandler::GenerateGameplayActions() {
             // delay press
             if (controller->IsKeyDown(key) || controller->IsKeyDown(gamepadkey)) {
                 resettimer = false;
-                if (this->keydelaytimer == 0 || this->keydelaytimer >= 15)
+                if (this->keydelaytimer == 0) {
                     isTriggered = true;
+                    this->keydelaytimer++;
+                }
+                // big delay after first press then small delay
+                if (this->keydelaytimer >= DELAY_TOGGLE_TIME_FIRST) {
+                    isTriggered = true;
+                    this->keydelaytimer -= DELAY_TOGGLE_TIME_AFTER;
+                }
             }
         }
 
@@ -333,7 +340,8 @@ void KeyboardInputHandler::GenerateGameplayActions() {
     if (resettimer == true) {
         this->keydelaytimer = 0;
     } else {
-        if (this->keydelaytimer < 16) this->keydelaytimer++;
+        // use timer so pacing is consistent across framerates
+        if (this->keydelaytimer < DELAY_TOGGLE_TIME_FIRST) this->keydelaytimer += pEventTimer->uTimeElapsed;
     }
 }
 

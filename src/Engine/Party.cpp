@@ -100,7 +100,7 @@ void Party::Zero() {
     field_6E4_set0_unused = 0;
     uFallSpeed = 0;
     field_6EC_set0_unused = 0;
-    sPartyPrevZ = 0;
+    sPartySavedFlightZ = 0;
     floor_face_pid = 0;
     walk_sound_timer = 0;
     _6FC_water_lava_timer = 0;
@@ -176,6 +176,9 @@ void Party::Zero() {
     flt_TorchlightColorG = 0.0f;
     flt_TorchlightColorB = 0.0f;
     TorchLightLastIntensity = 0.0f;
+
+    _roundingDt = 0;
+    _movementTally = 0;
 
     // players
     for (Player &player : pPlayers) {
@@ -1300,4 +1303,16 @@ PartyAction ActionQueue::Next() {
     --uNumActions;
 
     return result;
+}
+
+void Party::GiveFallDamage(int distance) {
+    for (Player& player : pParty->pPlayers) {  // receive falling damage
+        if (!player.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
+            !player.WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS)) {
+            player.ReceiveDamage((int)((distance) *
+                    (uint64_t)(player.GetMaxHealth() / 10)) / 256, DMGT_PHISYCAL);
+            int bonus = 20 - player.GetParameterBonus(player.GetActualEndurance());
+            player.SetRecoveryTime(bonus * debug_non_combat_recovery_mul * flt_debugrecmod3);
+        }
+    }
 }

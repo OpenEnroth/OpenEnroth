@@ -28,6 +28,7 @@ void GameUI_StatusBar_Clear() {
 
 void GameUI_StatusBar_OnEvent_Internal(const std::string &str, unsigned int ms) {
     game_ui_status_bar_event_string = str;
+    // TODO(pskelton): check tickcount usage here
     game_ui_status_bar_event_string_time_left = platform->tickCount() + ms;
 }
 

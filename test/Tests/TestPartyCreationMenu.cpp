@@ -416,3 +416,39 @@ GAME_TEST(Issue, Issue506) {
     test->playTraceFromTestData("issue_506.mm7", "issue_506.json");
 }
 
+GAME_TEST(Issues, Issue268) {
+    // Crash in ODM_GetFloorLevel
+    test->playTraceFromTestData("issue_268.mm7", "issue_268.json");
+}
+
+GAME_TEST(Issues, Issue271) {
+    // Party shouldnt yell when landing from flight
+    test->playTraceFromTestData("issue_271.mm7", "issue_271.json");
+    EXPECT_NE(pParty->pPlayers[1].expression, CHARACTER_EXPRESSION_FEAR);
+}
+
+GAME_TEST(Issues, Issue520) {
+    // Party should take fall damage
+    uint64_t oldHealth = 0;
+    test->playTraceFromTestData("issue_520.mm7", "issue_520.json", [&] { oldHealth = GetPartyHealth(); });
+    EXPECT_LT(GetPartyHealth(), oldHealth);
+}
+
+// This cant be tested properly using the current framework
+//GAME_TEST(Issues, Issue405) {
+//    // FPS affects effective recovery time
+//    // play trace at 60fps
+//    engine->config->debug.AllMagic.Set(true);
+//    engine->config->graphics.FPSLimit.Set(63);
+//    test->playTraceFromTestData("issue_405.mm7", "issue_405.json");
+//    int remainingtime60{ pPlayers[1]->uTimeToRecovery };
+//
+//    // play trace at max fps
+//    engine->config->debug.AllMagic.Set(true);
+//    engine->config->graphics.FPSLimit.Set(0);
+//    test->playTraceFromTestData("issue_405.mm7", "issue_405.json");
+//    int remainingtimemax{ pPlayers[1]->uTimeToRecovery };
+//
+//    // recovered amount should match
+//    EXPECT_EQ(remainingtime60, remainingtimemax);
+//}

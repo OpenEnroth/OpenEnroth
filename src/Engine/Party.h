@@ -213,6 +213,11 @@ struct Party {
 
     static void Sleep8Hours();
 
+    /**
+     * New function - applies fall damage with modifiers to all party members 
+     * @param distance                    Fall distance
+     */
+    void GiveFallDamage(int distance);
 
     inline bool WizardEyeActive() const {
         return pPartyBuffs[PARTY_BUFF_WIZARD_EYE].expire_time.value > 0;
@@ -328,7 +333,7 @@ struct Party {
     int field_6E4_set0_unused; // party old x/y ?
     int uFallSpeed; // party vertical speed, negative => falling, positive => jumping
     int field_6EC_set0_unused;
-    int sPartyPrevZ;  // party old z??
+    int sPartySavedFlightZ;  // this saves the Z position when flying without bob mods
     int floor_face_pid;  // face we are standing at
     int walk_sound_timer;
     int _6FC_water_lava_timer;
@@ -396,6 +401,9 @@ struct Party {
     float flt_TorchlightColorG;
     float flt_TorchlightColorB;
     float TorchLightLastIntensity;
+
+    uint _roundingDt{ 0 };  // keeps track of rounding remainder for recovery
+    int _movementTally{ 0 };  // keeps track of party movement for footsteps
 };
 
 extern Party *pParty;  // idb

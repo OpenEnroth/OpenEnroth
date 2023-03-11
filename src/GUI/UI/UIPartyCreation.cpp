@@ -303,6 +303,7 @@ void GUIWindow_PartyCreation::Update() {
     // move sky
     render->BeginScene2D();
     render->DrawTextureNew(0, 0, main_menu_background);
+    // TODO(pskelton): check tickcount usage here
     int sky_slider_anim_timer = (platform->tickCount() % ((int)oldDims.w * 20)) / 20;
     render->DrawTextureNew(sky_slider_anim_timer / oldDims.w, 2 / oldDims.h, ui_partycreation_sky_scroller);
     render->DrawTextureNew((sky_slider_anim_timer - (int)oldDims.w) / oldDims.w, 2 / oldDims.h, ui_partycreation_sky_scroller);
@@ -340,6 +341,7 @@ void GUIWindow_PartyCreation::Update() {
     pFrame = pIconsFrameTable->GetFrame(uIconID_CharacterFrame, pEventTimer->uStartTime);
     render->DrawTextureNew(pX / oldDims.w, 29 / oldDims.h, pFrame->GetTexture());
     uPosActiveItem = pGUIWindow_CurrentMenu->GetControl(pGUIWindow_CurrentMenu->pCurrentPosActiveItem);
+    // TODO(pskelton): check tickcount usage here
     uPlayerCreationUI_ArrowAnim = 18 - (platform->tickCount() % 450) / 25;
     render->DrawTextureNew((uPosActiveItem->uZ - 4) / oldDims.w, uPosActiveItem->uY / oldDims.h, ui_partycreation_arrow_l[uPlayerCreationUI_ArrowAnim + 1]);
     render->DrawTextureNew((uPosActiveItem->uX - 12) / oldDims.w, uPosActiveItem->uY / oldDims.h, ui_partycreation_arrow_r[uPlayerCreationUI_ArrowAnim + 1]);
@@ -582,6 +584,7 @@ void GUIWindow_PartyCreation::Update() {
     pTextCenter =
         pFontCreate->AlignText_Center(84, unspent_attribute_bonus_label);
     pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 530, 410}, colorTable.White.C16(), unspent_attribute_bonus_label);
+    // TODO(pskelton): check tickcount usage here
     if (game_ui_status_bar_event_string_time_left > platform->tickCount()) {
         message_window.Init();
         message_window.sHint = localization->GetString(LSTR_PARTY_UNASSIGNED_POINTS);
