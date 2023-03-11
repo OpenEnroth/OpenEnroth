@@ -1881,23 +1881,26 @@ void ODM_ProcessPartyActions() {
     if (pParty->bFlying)
         ceiling_height = GetCeilingHeight(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z + pParty->uPartyHeight, &faceID_ceiling);
 
-    bool hovering = false;
+    // is the party in the air - NB not accurate when on slopes of models
+    bool bAboveGroundLevel = false;
     if (pParty->vPosition.z <= ground_level) {  // landing from flight
         ceiling_height = -1;
         pParty->bFlying = false;
         pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
     } else {
-        hovering = true;
+        bAboveGroundLevel = true;
     }
     bool not_high_fall = pParty->vPosition.z - ground_level <= 32;
 
     // check if we should be flying
-    if (!engine->IsUnderwater() && !pParty->pPartyBuffs[PARTY_BUFF_FLY].Active())
+    if (!engine->IsUnderwater() && !pParty->FlyActive()) {
         pParty->bFlying = false;
+        pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
+    }
 
-    // is party standing on any trigger faces
+     // is party standing on any trigger faces
     int trigger_id{ 0 };
-    if (!hovering) {
+    if (!bAboveGroundLevel) {
         if (pParty->floor_face_pid != PID(OBJECT_Face, bmodel_standing_on_pid) && bmodel_standing_on_pid) {
             int BModel_id = bmodel_standing_on_pid >> 6;
             if (BModel_id < pOutdoor->pBModels.size()) {
@@ -1939,7 +1942,7 @@ void ODM_ProcessPartyActions() {
                     pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff ||
                     (pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1].sMana > 0 ||
                     engine->config->debug.AllMagic.Get())) {
-                    if (pParty->sPartySavedFlightZ < engine->config->gameplay.MaxFlightHeight.Get() || hovering) {
+                    if (pParty->sPartySavedFlightZ < engine->config->gameplay.MaxFlightHeight.Get() || bAboveGroundLevel) {
                         pParty->bFlying = true;
                         pParty->uFallSpeed = 0;
                         bNoFlightBob = true;
@@ -2134,11 +2137,11 @@ void ODM_ProcessPartyActions() {
             case PARTY_Jump:
                 if ((!partyAtHighSlope || bmodel_standing_on_pid) &&
                     // to avoid jump hesitancy when moving downhill
-                    (!hovering || (pParty->vPosition.z <= ground_level + 20 && party_z_speed <= 0)) &&
+                    (!bAboveGroundLevel || (pParty->vPosition.z <= ground_level + 20 && party_z_speed <= 0)) &&
                     pParty->jump_strength &&
                     !(pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE) &&
                     !(pParty->uFlags & PARTY_FLAGS_1_BURNING)) {
-                    hovering = true;
+                    bAboveGroundLevel = true;
                     party_z_speed += pParty->jump_strength * 96;
                     // boost party upwards slightly so we dont "land" straight away
                     pParty->vPosition.z += 1;
@@ -2167,9 +2170,6 @@ void ODM_ProcessPartyActions() {
     int party_new_Y = pParty->vPosition.y;
     int party_new_Z = pParty->vPosition.z;
 
-    // TODO(pskelton): this is only a partial fix for #520
-    if (!pParty->FlyActive())
-        pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
     //-------------------------------------------
     if (pParty->bFlying) {
         // TODO(pskelton): check tickcount usage here - bob up and down in the air
@@ -2198,14 +2198,11 @@ void ODM_ProcessPartyActions() {
     }
     //------------------------------------------
 
+    // has a modifiction been made to party position to push it away from a slope
     bool bpartyslope{ false };
-    int another_z_speed;
-    if (hovering && !pParty->bFlying) {  // add gravity
-        another_z_speed = party_z_speed + (-(pEventTimer->uTimeElapsed * GetGravityStrength()) << 1);
+    if (bAboveGroundLevel && !pParty->bFlying) {  // add gravity
         party_z_speed += (-(pEventTimer->uTimeElapsed * GetGravityStrength()) << 1);
-    } else if (!partyAtHighSlope) {
-        another_z_speed = party_z_speed;
-    } else if (!hovering) {
+    } else if (!bAboveGroundLevel) {
         if (!bmodel_standing_on_pid) {
             // rolling down the hill
             // how it's done: you get a little bit pushed in the air along
@@ -2218,17 +2215,14 @@ void ODM_ProcessPartyActions() {
             int dot = abs(party_x_speed * v98.x + party_y_speed * v98.y + v35 * v98.z) >> 16;
             party_x_speed += fixpoint_mul(dot, v98.x);
             party_y_speed += fixpoint_mul(dot, v98.y);
-            another_z_speed = v35 + fixpoint_mul(dot, v98.z);
-            party_z_speed = another_z_speed;
+            party_z_speed = v35 + fixpoint_mul(dot, v98.z);
             bpartyslope = true;
         }
-    } else {
-        another_z_speed = party_z_speed;
     }
 
-    if (hovering) {
-        if (!engine->IsUnderwater() && another_z_speed <= 0) {
-            if (another_z_speed < -500 && !pParty->bFlying &&
+    if (bAboveGroundLevel) {
+        if (!engine->IsUnderwater() && party_z_speed <= 0) {
+            if (party_z_speed < -500 && !pParty->bFlying &&
                 pParty->vPosition.z - ground_level > 1000 &&
                 !pParty->FeatherFallActive() &&
                 !(pParty->uFlags & PARTY_FLAGS_1_LANDING)) {  // falling scream
@@ -2248,6 +2242,8 @@ void ODM_ProcessPartyActions() {
         party_y_speed = 0;
         party_x_speed = 0;
     }
+
+    bool bHitModel{ false };
 
     // --(Collisions)-------------------------------------------------------------------
     collision_state.ignored_face_id = -1;
@@ -2359,7 +2355,7 @@ void ODM_ProcessPartyActions() {
         }
 
         if (PID_TYPE(collision_state.pid) == OBJECT_Face) {
-            pParty->bFlying = false;
+            bHitModel = true;
             BSPModel *pModel = &pOutdoor->pBModels[(signed int)collision_state.pid >> 9];
             ODMFace *pODMFace = &pModel->pFaces[((signed int)collision_state.pid >> 3) & 0x3F];
             int bSmallZDelta = (pODMFace->pBoundingBox.z2 - pODMFace->pBoundingBox.z1) <= 32;
@@ -2368,22 +2364,28 @@ void ODM_ProcessPartyActions() {
             if (engine->IsUnderwater())
                 bFaceSlopeTooSteep = false;
 
+            if (party_x_speed * party_x_speed + party_y_speed * party_y_speed < 400) {
+                party_x_speed = 0;
+                party_y_speed = 0;
+            }
+
+            if (pParty->floor_face_pid != collisionPID && pODMFace->Pressure_Plate()) {
+                pParty->floor_face_pid = collisionPID;
+                trigger_id = pODMFace->sCogTriggeredID;  // this one triggers tour events / traps
+            }
+
+            // TODO(pskelton): these should probably be if else for polygon types
             if (pODMFace->uPolygonType == POLYGON_Floor) {
+                pParty->bFlying = false;
+                pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
                 if (party_z_speed < 0) party_z_speed = 0;
                 party_new_Z = pModel->pVertices[pODMFace->pVertexIDs[0]].z + 1;
-                if (party_x_speed * party_x_speed + party_y_speed * party_y_speed < 400) {
-                    party_x_speed = 0;
-                    party_y_speed = 0;
-                }
-                if (pParty->floor_face_pid != collisionPID &&
-                    pODMFace->Pressure_Plate()) {
-                    pParty->floor_face_pid = collisionPID;
-                    trigger_id = pODMFace->sCogTriggeredID;  // this one triggers tour
-                                                             // events??
-                }
             }
 
             if (!bSmallZDelta && (pODMFace->uPolygonType != POLYGON_InBetweenFloorAndWall || bFaceSlopeTooSteep)) {  // упёрся в столб
+                bpartyslope = true;
+
+                // push party away from the surface
                 int dot = abs(party_y_speed * pODMFace->pFacePlaneOLD.vNormal.y +
                            party_z_speed * pODMFace->pFacePlaneOLD.vNormal.z +
                            party_x_speed * pODMFace->pFacePlaneOLD.vNormal.x) >> 16;
@@ -2402,34 +2404,21 @@ void ODM_ProcessPartyActions() {
                     if (!bFaceSlopeTooSteep)
                         party_new_Z = new_pos_low_z + fixpoint_mul(pODMFace->pFacePlaneOLD.vNormal.z, v55);
                 }
-                if (pParty->floor_face_pid != collision_state.pid &&
-                    pODMFace->Pressure_Plate()) {
-                    pParty->floor_face_pid = collision_state.pid;
-                    trigger_id = pODMFace->sCogTriggeredID;  //
-                }
             }
 
             if (pODMFace->uPolygonType == POLYGON_InBetweenFloorAndWall) {
+                pParty->bFlying = false;
+                pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
+
+                // this pushes party slightly up away from the surface so you can climb it
                 int dot = abs(party_y_speed * pODMFace->pFacePlaneOLD.vNormal.y +
                            party_z_speed * pODMFace->pFacePlaneOLD.vNormal.z +
                            party_x_speed * pODMFace->pFacePlaneOLD.vNormal.x) >> 16;
                 if ((collision_state.speed / 8) > dot)
                     dot = collision_state.speed / 8;
-                party_x_speed += fixpoint_mul(dot, pODMFace->pFacePlaneOLD.vNormal.x);
-                party_y_speed += fixpoint_mul(dot, pODMFace->pFacePlaneOLD.vNormal.y);
                 party_z_speed += fixpoint_mul(dot, pODMFace->pFacePlaneOLD.vNormal.z);
+
                 bpartyslope = true;
-                if (party_x_speed * party_x_speed + party_y_speed * party_y_speed >= 400) {
-                    if (pParty->floor_face_pid != collision_state.pid &&
-                        pODMFace->Pressure_Plate()) {
-                        pParty->floor_face_pid = collision_state.pid;
-                        trigger_id = pODMFace->sCogTriggeredID;  //
-                    }
-                } else {
-                    party_x_speed = 0;
-                    party_z_speed = 0;
-                    party_y_speed = 0;
-                }
             }
         }
 
@@ -2438,8 +2427,6 @@ void ODM_ProcessPartyActions() {
         party_y_speed = fixpoint_mul(58500, party_y_speed);
         party_z_speed = fixpoint_mul(58500, party_z_speed);
     }
-    if (bpartyslope)
-        pParty->uFallStartZ = party_new_Z;
 
     // walking / running sounds ------------------------
     if (engine->config->settings.WalkSound.Get() && pParty->walk_sound_timer) {
@@ -2457,7 +2444,7 @@ void ODM_ProcessPartyActions() {
 
     if (engine->config->settings.WalkSound.Get() && pParty->walk_sound_timer <= 0) {
         pAudioPlayer->StopAll(804);  // stop sound
-        if (party_running_flag && (!hovering || not_high_fall)) {
+        if (party_running_flag && (!bAboveGroundLevel || not_high_fall)) {
             if (pParty->_movementTally >= 16) {
                 pParty->_movementTally = 0;
                 if (!is_not_on_bmodel &&
@@ -2471,7 +2458,7 @@ void ODM_ProcessPartyActions() {
                 }
                 pParty->walk_sound_timer = 96;  // таймер для бега
             }
-        } else if (party_walking_flag && (!hovering || not_high_fall)) {
+        } else if (party_walking_flag && (!bAboveGroundLevel || not_high_fall)) {
             if (pParty->_movementTally >= 8) {
                 pParty->_movementTally = 0;
                 if (!is_not_on_bmodel &&
@@ -2494,7 +2481,10 @@ void ODM_ProcessPartyActions() {
         pAudioPlayer->StopAll(804);
     //------------------------------------------------------------------------
 
-    if (!hovering || not_high_fall)
+
+
+
+    if (!bAboveGroundLevel || not_high_fall)
         pParty->SetAirborne(false);
     else
         pParty->SetAirborne(true);
@@ -2593,15 +2583,22 @@ void ODM_ProcessPartyActions() {
         pParty->vPosition.z = 8160;
     }
 
+    // new ground level
+
+    int new_floor_level = ODM_GetFloorLevel(Vec3i(party_new_x, party_new_Y, party_new_Z), pParty->uPartyHeight,
+        &is_on_water, &bmodel_standing_on_pid, bWaterWalk);
+    int new_ground_level = new_floor_level + 1;
+
     // Falling damage
     if (!trigger_id ||
         (EventProcessor(trigger_id, 0, 1), pParty->vPosition.x == party_new_x) &&
-            pParty->vPosition.y == party_new_Y && pParty->vPosition.z == party_new_Z) {
-        if (pParty->vPosition.z <= ground_level) {
+        pParty->vPosition.y == party_new_Y && pParty->vPosition.z == party_new_Z) {
+        if (((pParty->vPosition.z <= new_ground_level || bHitModel) && party_z_speed <= 0)) {
             pParty->uFallSpeed = 0;
-            pParty->vPosition.z = ground_level;
+            if (!bHitModel)
+                pParty->vPosition.z = new_ground_level;
             if (pParty->uFallStartZ - party_new_Z > 512 && !bFeatherFall &&
-                party_new_Z <= ground_level &&
+                (party_new_Z <= new_ground_level || bHitModel) &&
                 !engine->IsUnderwater()) {
                 if (pParty->uFlags & PARTY_FLAGS_1_LANDING) {
                     pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
@@ -2616,6 +2613,9 @@ void ODM_ProcessPartyActions() {
             pParty->sPartySavedFlightZ = pParty->vPosition.z;
         }
     }
+
+    if (bpartyslope)
+        pParty->uFallStartZ = party_new_Z;
 }
 
 int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pFaceID) {
