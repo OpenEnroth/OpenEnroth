@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;631d4b5</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;87b7746</span>
    </div>
   </td>
  </tr>
@@ -103,16 +103,16 @@ Namespaces</h2></td></tr>
 Enumerations</h2></td></tr>
 <tr class="memitem:a889063f13dc96df1a7636304713a022f"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022f">SpellCastFlag</a> : uint16_t { <br />
 &#160;&#160;<a class="el" href="CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022faa23a967ab05e51bb5202900c27f79d43">ON_CAST_CastViaScroll</a> = 0x0001
-, <a class="el" href="CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022fa10e17f81bab9204b2258edc5bcd55c4d">ON_CAST_SinglePlayer_BigImprovementAnim</a> = 0x0002
-, <a class="el" href="CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022fae697ece5f1e5635b748b0898857f4fe7">ON_CAST_TargetCrosshair</a> = 0x0008
+, <a class="el" href="CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022fa8b5f0909975e854a0633d69a0175d688">ON_CAST_TargetedCharacter</a> = 0x0002
+, <a class="el" href="CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022fae3105b4c4cbc80cf830e2936c2a82941">ON_CAST_TargetedActor</a> = 0x0008
 , <a class="el" href="CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022fa5796f3b43ac02a5adc1f47f5e42877c8">ON_CAST_TargetIsParty</a> = 0x0010
 , <br />
 &#160;&#160;<a class="el" href="CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022fa11ccffebe8328732f49b0d1af5da3b49">ON_CAST_NoRecoverySpell</a> = 0x0020
-, <a class="el" href="CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022fa43827abab12a73cede51efe5d1095299">ON_CAST_Telekenesis</a> = 0x0040
-, <a class="el" href="CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022fa5b156a45d24923b7a82765cd48da8f55">ON_CAST_Enchantment</a> = 0x0080
-, <a class="el" href="CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022fa377e9a7b2ce0b3f0306af07d54d6fb15">ON_CAST_MonsterSparkles</a> = 0x0100
+, <a class="el" href="CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022fab0c9257ed6c793a846fdb25e03c1d01a">ON_CAST_TargetedTelekinesis</a> = 0x0040
+, <a class="el" href="CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022fa40e5720fc77f3e44579f4a8a2ade2157">ON_CAST_TargetedEnchantment</a> = 0x0080
+, <a class="el" href="CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022fa97fb9bbce601f405d6c0193075e9b5ec">ON_CAST_TargetedActorOrCharacter</a> = 0x0100
 , <br />
-&#160;&#160;<a class="el" href="CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022fa5075a7cb949171ed1564412bea68c5ee">ON_CAST_DarkSacrifice</a> = 0x0200
+&#160;&#160;<a class="el" href="CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022fa13b851023ec847ef0cb83460bd6497c2">ON_CAST_TargetedHireling</a> = 0x0200
 , <a class="el" href="CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022fa034bd3f73980fbe3e1d98c9a6b9fc9ef">ON_CAST_CastingInProgress</a>
 <br />
  }</td></tr>
@@ -132,6 +132,8 @@ Functions</h2></td></tr>
 <tr class="separator:ad2a37c8f6083b3093dfd91d9cde36f29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84a25e23597447c56fdb7a6f860eeaca"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8h.html#a84a25e23597447c56fdb7a6f860eeaca">pushScrollSpell</a> (<a class="el" href="Spells_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a> spell, unsigned int uPlayerID)</td></tr>
 <tr class="separator:a84a25e23597447c56fdb7a6f860eeaca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6677c8c657bcc352b1019fbc756f5342"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8h.html#a6677c8c657bcc352b1019fbc756f5342">spellTargetPicked</a> (int pid, int playerTarget)</td></tr>
+<tr class="separator:a6677c8c657bcc352b1019fbc756f5342"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -162,14 +164,14 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a889063f13dc96df1a7636304713a022faa23a967ab05e51bb5202900c27f79d43" name="a889063f13dc96df1a7636304713a022faa23a967ab05e51bb5202900c27f79d43"></a>ON_CAST_CastViaScroll&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a889063f13dc96df1a7636304713a022fa10e17f81bab9204b2258edc5bcd55c4d" name="a889063f13dc96df1a7636304713a022fa10e17f81bab9204b2258edc5bcd55c4d"></a>ON_CAST_SinglePlayer_BigImprovementAnim&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a889063f13dc96df1a7636304713a022fae697ece5f1e5635b748b0898857f4fe7" name="a889063f13dc96df1a7636304713a022fae697ece5f1e5635b748b0898857f4fe7"></a>ON_CAST_TargetCrosshair&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a889063f13dc96df1a7636304713a022fa8b5f0909975e854a0633d69a0175d688" name="a889063f13dc96df1a7636304713a022fa8b5f0909975e854a0633d69a0175d688"></a>ON_CAST_TargetedCharacter&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a889063f13dc96df1a7636304713a022fae3105b4c4cbc80cf830e2936c2a82941" name="a889063f13dc96df1a7636304713a022fae3105b4c4cbc80cf830e2936c2a82941"></a>ON_CAST_TargetedActor&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a889063f13dc96df1a7636304713a022fa5796f3b43ac02a5adc1f47f5e42877c8" name="a889063f13dc96df1a7636304713a022fa5796f3b43ac02a5adc1f47f5e42877c8"></a>ON_CAST_TargetIsParty&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a889063f13dc96df1a7636304713a022fa11ccffebe8328732f49b0d1af5da3b49" name="a889063f13dc96df1a7636304713a022fa11ccffebe8328732f49b0d1af5da3b49"></a>ON_CAST_NoRecoverySpell&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a889063f13dc96df1a7636304713a022fa43827abab12a73cede51efe5d1095299" name="a889063f13dc96df1a7636304713a022fa43827abab12a73cede51efe5d1095299"></a>ON_CAST_Telekenesis&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a889063f13dc96df1a7636304713a022fa5b156a45d24923b7a82765cd48da8f55" name="a889063f13dc96df1a7636304713a022fa5b156a45d24923b7a82765cd48da8f55"></a>ON_CAST_Enchantment&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a889063f13dc96df1a7636304713a022fa377e9a7b2ce0b3f0306af07d54d6fb15" name="a889063f13dc96df1a7636304713a022fa377e9a7b2ce0b3f0306af07d54d6fb15"></a>ON_CAST_MonsterSparkles&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a889063f13dc96df1a7636304713a022fa5075a7cb949171ed1564412bea68c5ee" name="a889063f13dc96df1a7636304713a022fa5075a7cb949171ed1564412bea68c5ee"></a>ON_CAST_DarkSacrifice&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a889063f13dc96df1a7636304713a022fab0c9257ed6c793a846fdb25e03c1d01a" name="a889063f13dc96df1a7636304713a022fab0c9257ed6c793a846fdb25e03c1d01a"></a>ON_CAST_TargetedTelekinesis&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a889063f13dc96df1a7636304713a022fa40e5720fc77f3e44579f4a8a2ade2157" name="a889063f13dc96df1a7636304713a022fa40e5720fc77f3e44579f4a8a2ade2157"></a>ON_CAST_TargetedEnchantment&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a889063f13dc96df1a7636304713a022fa97fb9bbce601f405d6c0193075e9b5ec" name="a889063f13dc96df1a7636304713a022fa97fb9bbce601f405d6c0193075e9b5ec"></a>ON_CAST_TargetedActorOrCharacter&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a889063f13dc96df1a7636304713a022fa13b851023ec847ef0cb83460bd6497c2" name="a889063f13dc96df1a7636304713a022fa13b851023ec847ef0cb83460bd6497c2"></a>ON_CAST_TargetedHireling&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a889063f13dc96df1a7636304713a022fa034bd3f73980fbe3e1d98c9a6b9fc9ef" name="a889063f13dc96df1a7636304713a022fa034bd3f73980fbe3e1d98c9a6b9fc9ef"></a>ON_CAST_CastingInProgress&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
@@ -316,6 +318,42 @@ Variables</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">spell</td><td>ID of spell. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a6677c8c657bcc352b1019fbc756f5342" name="a6677c8c657bcc352b1019fbc756f5342"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6677c8c657bcc352b1019fbc756f5342">&#9670;&#160;</a></span>spellTargetPicked()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void spellTargetPicked </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>pid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>playerTarget</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Process successfull picking target for spell.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pid</td><td>PID of target </td></tr>
+    <tr><td class="paramname">playerTarget</td><td>Target player index </td></tr>
   </table>
   </dd>
 </dl>

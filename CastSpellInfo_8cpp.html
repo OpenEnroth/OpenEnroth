@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;631d4b5</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;87b7746</span>
    </div>
   </td>
  </tr>
@@ -108,6 +108,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="GUIWindow_8h.html">GUI/GUIWindow.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIGame_8h.html">GUI/UI/UIGame.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIStatusBar_8h.html">GUI/UI/UIStatusBar.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="UISpell_8h.html">GUI/UI/UISpell.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Mouse_8h.html">Io/Mouse.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AudioPlayer_8h.html">Media/Audio/AudioPlayer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TrigLut_8h.html">Utility/Math/TrigLut.h</a>&quot;</code><br />
@@ -134,6 +135,8 @@ Functions</h2></td></tr>
 <tr class="separator:ad2a37c8f6083b3093dfd91d9cde36f29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84a25e23597447c56fdb7a6f860eeaca"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8cpp.html#a84a25e23597447c56fdb7a6f860eeaca">pushScrollSpell</a> (<a class="el" href="Spells_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a> spell, unsigned int uPlayerID)</td></tr>
 <tr class="separator:a84a25e23597447c56fdb7a6f860eeaca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6677c8c657bcc352b1019fbc756f5342"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CastSpellInfo_8cpp.html#a6677c8c657bcc352b1019fbc756f5342">spellTargetPicked</a> (int pid, int playerTarget)</td></tr>
+<tr class="separator:a6677c8c657bcc352b1019fbc756f5342"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -446,6 +449,42 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p >Notify that spell casting failed. </p>
+
+</div>
+</div>
+<a id="a6677c8c657bcc352b1019fbc756f5342" name="a6677c8c657bcc352b1019fbc756f5342"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6677c8c657bcc352b1019fbc756f5342">&#9670;&#160;</a></span>spellTargetPicked()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void spellTargetPicked </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>pid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>playerTarget</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Process successfull picking target for spell.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pid</td><td>PID of target </td></tr>
+    <tr><td class="paramname">playerTarget</td><td>Target player index </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
