@@ -49,6 +49,8 @@ void LoadGame(unsigned int uSlot) {
         return;
     }
 
+    pParty->Reset();
+
     pNew_LOD->CloseWriteFile();
     // uCurrentlyLoadedLevelType = LEVEL_null;
 

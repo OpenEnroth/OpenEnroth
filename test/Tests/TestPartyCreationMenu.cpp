@@ -411,6 +411,12 @@ GAME_TEST(Issue, Issue503) {
     check503health({ {0, 1147}, {1, 699}, {2, 350}, {3, 242} });
 }
 
+GAME_TEST(Issue, Issue504) {
+    // Going to prison doesn't recharge hirelings
+    test->playTraceFromTestData("issue_504.mm7", "issue_504.json");
+    EXPECT_TRUE(pParty->pPartyBuffs[PARTY_BUFF_HEROISM].Active());
+}
+
 GAME_TEST(Issue, Issue506) {
     // Check that scroll use does not assert
     test->playTraceFromTestData("issue_506.mm7", "issue_506.json");
