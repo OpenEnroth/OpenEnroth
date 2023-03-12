@@ -785,7 +785,6 @@ void SpriteObject::ExplosionTraps() {
         }
         for (Player &player : pParty->pPlayers) {
             int perceptionCheckValue = player.GetPerception() + 20;
-            // TODO(Nik-RE-dev): character that is asleep will not receive damage?
             if (player.CanAct() && (grng->Random(perceptionCheckValue) > 20)) {
                 player.PlaySound(SPEECH_AvoidDamage, 0);
             } else {
@@ -868,8 +867,6 @@ void SpriteObject::InitializeSpriteObjects() {
 }
 
 void SpriteObject::_46BEF1_apply_spells_aoe() {
-    __debugbreak();  // Ritor1
-
     for (size_t i = 0; i < pActors.size(); ++i) {
         if (pActors[i].CanAct()) {
             int v7 = pActors[i].vPosition.x - this->vPosition.x;
