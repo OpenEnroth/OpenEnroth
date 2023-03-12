@@ -416,6 +416,12 @@ GAME_TEST(Issue, Issue506) {
     test->playTraceFromTestData("issue_506.mm7", "issue_506.json");
 }
 
+GAME_TEST(Issue, Issue442) {
+    // Test that regular UI is blocked on spell cast
+    test->playTraceFromTestData("issue_442.mm7", "issue_442.json");
+    EXPECT_EQ(pParty->pPlayers[1].pPlayerBuffs[PLAYER_BUFF_BLESS].Active(), true);
+}
+
 GAME_TEST(Issues, Issue268) {
     // Crash in ODM_GetFloorLevel
     test->playTraceFromTestData("issue_268.mm7", "issue_268.json");

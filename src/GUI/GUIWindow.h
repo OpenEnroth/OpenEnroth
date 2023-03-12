@@ -210,12 +210,6 @@ class OnCancel3 : public GUIWindow {
     virtual void Update() override;
 };
 
-class OnCastTargetedSpell : public GUIWindow {
- public:
-    OnCastTargetedSpell(Pointi position, Sizei dimensions, WindowData data, const std::string &hint = std::string());
-    virtual ~OnCastTargetedSpell() {}
-};
-
 enum class CURRENT_SCREEN {
     SCREEN_GAME = 0,
     SCREEN_MENU = 1,

@@ -1,6 +1,7 @@
 #include "Io/Mouse.h"
 
 #include <cstdlib>
+#include <list>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -274,15 +275,20 @@ void Mouse::UI_OnMouseLeftClick() {
 
     if (GetCurrentMenuID() != -1 || current_screen_type != CURRENT_SCREEN::SCREEN_GAME ||
         !keyboardInputHandler->IsStealingToggled() || !pViewport->Contains(x, y)) {
-        for (GUIWindow *win : lWindowList) {
+        std::list<GUIWindow*> targetedSpellUI = {pGUIWindow_CastTargetedSpell};
+        std::list<GUIWindow*> *checkWindowList = &lWindowList;
+        if (pGUIWindow_CastTargetedSpell) {
+            // Block regular UI if targeted spell casting is active
+            checkWindowList = &targetedSpellUI;
+        }
+        for (GUIWindow *win : *checkWindowList) {
             if (win->Contains(x, y)) {
                 for (GUIButton *control : win->vButtons) {
                     if (control->uButtonType == 1) {
                         if (control->Contains(x, y)) {
                             control->field_2C_is_pushed = true;
                             pCurrentFrameMessageQueue->Flush();
-                            pCurrentFrameMessageQueue->AddGUIMessage(
-                                control->msg, control->msg_param, 0);
+                            pCurrentFrameMessageQueue->AddGUIMessage(control->msg, control->msg_param, 0);
                             return;
                         }
                         continue;
