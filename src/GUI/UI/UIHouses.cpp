@@ -776,11 +776,11 @@ void InitializaDialogueOptions(BuildingType type) {
 
 
 bool HouseUI_CheckIfPlayerCanInteract() {
-    if (uActiveCharacter == 0) {  // to avoid access zeroeleement
+    if (pParty->_uActiveCharacter == 0) {  // to avoid access zeroeleement
         return false;
     }
 
-    if (pPlayers[uActiveCharacter]->CanAct()) {
+    if (pPlayers[pParty->_uActiveCharacter]->CanAct()) {
         pDialogueWindow->pNumPresenceButton = dword_F8B1E0;
         return true;
     } else {
@@ -792,7 +792,7 @@ bool HouseUI_CheckIfPlayerCanInteract() {
 
         std::string str = localization->FormatString(
             LSTR_FMT_S_IS_IN_NO_CODITION_TO_S,
-            pPlayers[uActiveCharacter]->pName.c_str(),
+            pPlayers[pParty->_uActiveCharacter]->pName.c_str(),
             localization->GetString(LSTR_DO_ANYTHING));
         window.DrawTitleText(
             pFontArrus, 0,
@@ -839,8 +839,8 @@ bool EnterHouse(HOUSE_ID uHouseID) {
         }
 
         GameUI_SetStatusBar(LSTR_FMT_OPEN_TIME, uOpenTime, localization->GetAmPm(am_pm_flag_open), uCloseTime, localization->GetAmPm(am_pm_flag_close));
-        if (uActiveCharacter)
-            pPlayers[uActiveCharacter]->PlaySound(SPEECH_StoreClosed, 0);
+        if (pParty->_uActiveCharacter)
+            pPlayers[pParty->_uActiveCharacter]->PlaySound(SPEECH_StoreClosed, 0);
 
         return 0;
     } else {
@@ -889,10 +889,10 @@ bool EnterHouse(HOUSE_ID uHouseID) {
         } else {  // guilds
             int membership = guild_membership_flags[uHouseID - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE];
 
-            if (uActiveCharacter == 0)  // avoid nzi
-                uActiveCharacter = pParty->GetFirstCanAct();
+            if (pParty->_uActiveCharacter == 0)  // avoid nzi
+                pParty->_uActiveCharacter = pParty->GetFirstCanAct();
 
-            if (!_449B57_test_bit(pPlayers[uActiveCharacter]->_achieved_awards_bits, membership)) {
+            if (!_449B57_test_bit(pPlayers[pParty->_uActiveCharacter]->_achieved_awards_bits, membership)) {
                 PlayHouseSound(uHouseID, HouseSound_Greeting_2);
                 return 1;
             }
@@ -989,15 +989,15 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
         if (in_current_building_type == BuildingType_Training) {
             if (option == DIALOGUE_TRAINING_HALL_TRAIN) {
                 experience_for_next_level = 0;
-                if (pPlayers[uActiveCharacter]->uLevel > 0) {
-                    for (uint i = 0; i < pPlayers[uActiveCharacter]->uLevel;
+                if (pPlayers[pParty->_uActiveCharacter]->uLevel > 0) {
+                    for (uint i = 0; i < pPlayers[pParty->_uActiveCharacter]->uLevel;
                         i++)
                         experience_for_next_level += i + 1;
                 }
-                if (pPlayers[uActiveCharacter]->uLevel <
+                if (pPlayers[pParty->_uActiveCharacter]->uLevel <
                     pMaxLevelPerTrainingHallType
                     [window_SpeakInHouse->wData.val - 89] &&
-                    (int64_t)pPlayers[uActiveCharacter]->uExperience <
+                    (int64_t)pPlayers[pParty->_uActiveCharacter]->uExperience <
                     1000 * experience_for_next_level)  // test experience
                     return;
             }
@@ -1021,8 +1021,8 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                 pBtn_ExitCancel = pDialogueWindow->CreateButton({526, 445}, {75, 33}, 1, 0,
                     UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_END_CONVERSATION), {ui_buttdesc2});
                 pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
-            } else if (uActiveCharacter) {
-                if (!pPlayers[uActiveCharacter]->IsPlayerHealableByTemple())
+            } else if (pParty->_uActiveCharacter) {
+                if (!pPlayers[pParty->_uActiveCharacter]->IsPlayerHealableByTemple())
                     return;
             }
         }
@@ -1422,11 +1422,11 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                     window_SpeakInHouse->wData.val - 1].fPriceMultiplier * 500.0);
             }
 
-            pPrice = v36 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
+            pPrice = v36 * (100 - pPlayers[pParty->_uActiveCharacter]->GetMerchant()) / 100;
             if (pPrice < v36 / 3) pPrice = v36 / 3;
             auto skill = GetLearningDialogueSkill(option);
-            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][skill] != PLAYER_SKILL_MASTERY_NONE) {
-                if (!pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
+            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[pParty->_uActiveCharacter]->classType][skill] != PLAYER_SKILL_MASTERY_NONE) {
+                if (!pPlayers[pParty->_uActiveCharacter]->pActiveSkills[skill]) {
                     if (pParty->GetGold() < pPrice) {
                         GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
                         if (in_current_building_type == BuildingType_Training
@@ -1440,8 +1440,8 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                     } else {
                         pParty->TakeGold(pPrice);
                         dword_F8B1E4 = 1;
-                        pPlayers[uActiveCharacter]->pActiveSkills[skill] = 1;
-                        pPlayers[uActiveCharacter]->PlayAwardSound_Anim97_Face(SPEECH_SkillLearned);
+                        pPlayers[pParty->_uActiveCharacter]->pActiveSkills[skill] = 1;
+                        pPlayers[pParty->_uActiveCharacter]->PlayAwardSound_Anim97_Face(SPEECH_SkillLearned);
                     }
                 }
             }
@@ -1471,11 +1471,11 @@ void TravelByTransport() {
     travel_window.uFrameWidth = 143;
     travel_window.uFrameZ = 334;
 
-    assert(uActiveCharacter > 0); // code in this function couldn't handle uActiveCharacter = 0 and crash
+    assert(pParty->_uActiveCharacter > 0); // code in this function couldn't handle pParty->_uActiveCharacter = 0 and crash
 
     int base_price = p2DEvents[window_SpeakInHouse->wData.val - 1].uType == BuildingType_Stables ? 25 : 50;
     base_price *= p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
-    int pPrice = base_price * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
+    int pPrice = base_price * (100 - pPlayers[pParty->_uActiveCharacter]->GetMerchant()) / 100;
     if (pPrice < base_price / 3) pPrice = base_price / 3;
     int route_id = window_SpeakInHouse->wData.val - HOUSE_STABLES_HARMONDALE;
 
@@ -1606,7 +1606,7 @@ void TravelByTransport() {
                 }
 
                 RestAndHeal(24 * 60 * traveltimedays);
-                pPlayers[uActiveCharacter]->PlaySound(pSpeech, 0);
+                pPlayers[pParty->_uActiveCharacter]->PlaySound(pSpeech, 0);
                 auto timeLimit = std::chrono::system_clock::now() + std::chrono::milliseconds(speechlength);
                 while (std::chrono::system_clock::now() < timeLimit) {
                     std::this_thread::sleep_for(1ms);
@@ -1743,8 +1743,8 @@ void TownHallDialog() {
 
                     pParty->TakeGold(sum);
                     pParty->TakeFine(sum);
-                    if (uActiveCharacter)
-                        pPlayers[uActiveCharacter]->PlaySound(SPEECH_BankDeposit, 0);
+                    if (pParty->_uActiveCharacter)
+                        pPlayers[pParty->_uActiveCharacter]->PlaySound(SPEECH_BankDeposit, 0);
                 }
             }
         }
@@ -1809,8 +1809,8 @@ void BankDialog() {
             if (sum > 0) {
                 pParty->TakeGold(sum);
                 pParty->AddBankGold(sum);
-                if (uActiveCharacter) {
-                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_BankDeposit, 0);
+                if (pParty->_uActiveCharacter) {
+                    pPlayers[pParty->_uActiveCharacter]->PlaySound(SPEECH_BankDeposit, 0);
                 }
             }
         }
@@ -1883,17 +1883,17 @@ void TavernDialog() {
     dialog_window.uFrameZ = 334;
     v2 = p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
 
-    if (uActiveCharacter == 0)  // avoid nzi
-        uActiveCharacter = pParty->GetFirstCanAct();
+    if (pParty->_uActiveCharacter == 0)  // avoid nzi
+        pParty->_uActiveCharacter = pParty->GetFirstCanAct();
 
     pPriceRoom = ((v2 * v2) / 10) *
-        (100 - pPlayers[uActiveCharacter]->GetMerchant()) /
+        (100 - pPlayers[pParty->_uActiveCharacter]->GetMerchant()) /
         100;  // nzi
     if (pPriceRoom < ((v2 * v2) / 10) / 3) pPriceRoom = ((v2 * v2) / 10) / 3;
     if (pPriceRoom <= 0) pPriceRoom = 1;
 
     pPriceFood = ((v2 * v2) * v2 / 100) *
-        (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
+        (100 - pPlayers[pParty->_uActiveCharacter]->GetMerchant()) / 100;
     if (pPriceFood < ((v2 * v2) * v2 / 100) / 3)
         pPriceFood = ((v2 * v2) * v2 / 100) / 3;
     if (pPriceFood <= 0) pPriceFood = 1;
@@ -2072,7 +2072,7 @@ void TavernDialog() {
         pSkillCount = 0;
         v9 = (int64_t)(p2DEvents[
             window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
-        pPriceSkill = v9 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
+        pPriceSkill = v9 * (100 - pPlayers[pParty->_uActiveCharacter]->GetMerchant()) / 100;
         if (pPriceSkill < v9 / 3) pPriceSkill = v9 / 3;
         all_text_height = 0;
         for (int i = pDialogueWindow->pStartingPosActiveItem;
@@ -2082,8 +2082,8 @@ void TavernDialog() {
             auto skill = GetLearningDialogueSkill(
                 (DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param
             );
-            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
-                && !pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
+            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[pParty->_uActiveCharacter]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
+                && !pPlayers[pParty->_uActiveCharacter]->pActiveSkills[skill]) {
                 all_text_height = pFontArrus->CalcTextHeight(
                     localization->GetSkillName(skill),
                     dialog_window.uFrameWidth, 0);
@@ -2099,8 +2099,8 @@ void TavernDialog() {
         if ((double)pParty->GetFood() >=
             p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier) {
             GameUI_SetStatusBar(LSTR_RATIONS_FULL);
-            if (uActiveCharacter)
-                pPlayers[uActiveCharacter]->PlaySound(SPEECH_PacksFull, 0);
+            if (pParty->_uActiveCharacter)
+                pPlayers[pParty->_uActiveCharacter]->PlaySound(SPEECH_PacksFull, 0);
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
@@ -2180,11 +2180,11 @@ void TempleDialog() {
     tample_window.uFrameWidth = 143;
     tample_window.uFrameZ = 334;
 
-    if (uActiveCharacter == 0) {  // avoid nzi
-        uActiveCharacter = pParty->GetFirstCanAct();
+    if (pParty->_uActiveCharacter == 0) {  // avoid nzi
+        pParty->_uActiveCharacter = pParty->GetFirstCanAct();
     }
 
-    pPrice = pPlayers[uActiveCharacter]->GetTempleHealCostModifier(
+    pPrice = pPlayers[pParty->_uActiveCharacter]->GetTempleHealCostModifier(
         p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
     if (dialog_menu_id == DIALOGUE_MAIN) {
         index = 1;
@@ -2192,7 +2192,7 @@ void TempleDialog() {
             pDialogueWindow->pStartingPosActiveItem);
         pButton->uHeight = 0;
         pButton->uY = 0;
-        if (pPlayers[uActiveCharacter]->IsPlayerHealableByTemple()) {
+        if (pPlayers[pParty->_uActiveCharacter]->IsPlayerHealableByTemple()) {
             static std::string shop_option_container;
             shop_option_container =
                 fmt::format("{} {} {}",
@@ -2249,7 +2249,7 @@ void TempleDialog() {
     }
     //-------------------------------------------------
     if (dialog_menu_id == DIALOGUE_TEMPLE_HEAL) {
-        if (!pPlayers[uActiveCharacter]->IsPlayerHealableByTemple()) return;
+        if (!pPlayers[pParty->_uActiveCharacter]->IsPlayerHealableByTemple()) return;
         if (pParty->GetGold() < pPrice) {
             GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
             PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_NotEnoughMoney);
@@ -2258,66 +2258,66 @@ void TempleDialog() {
         }
         pParty->TakeGold(pPrice);
 
-        pPlayers[uActiveCharacter]->conditions.ResetAll();
-        pPlayers[uActiveCharacter]->sHealth =
-            pPlayers[uActiveCharacter]->GetMaxHealth();
-        pPlayers[uActiveCharacter]->sMana =
-            pPlayers[uActiveCharacter]->GetMaxMana();
+        pPlayers[pParty->_uActiveCharacter]->conditions.ResetAll();
+        pPlayers[pParty->_uActiveCharacter]->sHealth =
+            pPlayers[pParty->_uActiveCharacter]->GetMaxHealth();
+        pPlayers[pParty->_uActiveCharacter]->sMana =
+            pPlayers[pParty->_uActiveCharacter]->GetMaxMana();
 
         if (window_SpeakInHouse->wData.val != 78 &&
             (window_SpeakInHouse->wData.val <= 80 ||
             window_SpeakInHouse->wData.val > 82)) {
-            if (pPlayers[uActiveCharacter]->conditions.Has(Condition_Zombie)) {
+            if (pPlayers[pParty->_uActiveCharacter]->conditions.Has(Condition_Zombie)) {
                 // если состояние зомби
-                pPlayers[uActiveCharacter]->uCurrentFace =
-                    pPlayers[uActiveCharacter]->uPrevFace;
-                pPlayers[uActiveCharacter]->uVoiceID =
-                    pPlayers[uActiveCharacter]->uPrevVoiceID;
+                pPlayers[pParty->_uActiveCharacter]->uCurrentFace =
+                    pPlayers[pParty->_uActiveCharacter]->uPrevFace;
+                pPlayers[pParty->_uActiveCharacter]->uVoiceID =
+                    pPlayers[pParty->_uActiveCharacter]->uPrevVoiceID;
                 GameUI_ReloadPlayerPortraits(
-                    uActiveCharacter - 1,
-                    pPlayers[uActiveCharacter]->uPrevFace);
+                    pParty->_uActiveCharacter - 1,
+                    pPlayers[pParty->_uActiveCharacter]->uPrevFace);
             }
             pAudioPlayer->PlaySound((SoundID)SOUND_heal, PID_INVALID, 0, -1, 0, 0);
-            pPlayers[uActiveCharacter]->PlaySound(SPEECH_TempleHeal, 0);
-            pOtherOverlayList->_4418B1(20, uActiveCharacter + 99, 0, 65536);
+            pPlayers[pParty->_uActiveCharacter]->PlaySound(SPEECH_TempleHeal, 0);
+            pOtherOverlayList->_4418B1(20, pParty->_uActiveCharacter + 99, 0, 65536);
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
-        if (pPlayers[uActiveCharacter]->conditions.Has(Condition_Zombie)) {
-            // LODWORD(pPlayers[uActiveCharacter]->pConditions[Condition_Zombie])
+        if (pPlayers[pParty->_uActiveCharacter]->conditions.Has(Condition_Zombie)) {
+            // LODWORD(pPlayers[pParty->_uActiveCharacter]->pConditions[Condition_Zombie])
             // =
-            // LODWORD(pPlayers[uActiveCharacter]->pConditions[Condition_Zombie]);
+            // LODWORD(pPlayers[pParty->_uActiveCharacter]->pConditions[Condition_Zombie]);
         } else {
-            if (!pPlayers[uActiveCharacter]->conditions.Has(Condition_Eradicated) &&
-                !pPlayers[uActiveCharacter]->conditions.Has(Condition_Petrified) &&
-                !pPlayers[uActiveCharacter]->conditions.Has(Condition_Dead)) {
+            if (!pPlayers[pParty->_uActiveCharacter]->conditions.Has(Condition_Eradicated) &&
+                !pPlayers[pParty->_uActiveCharacter]->conditions.Has(Condition_Petrified) &&
+                !pPlayers[pParty->_uActiveCharacter]->conditions.Has(Condition_Dead)) {
                 pAudioPlayer->PlaySound((SoundID)SOUND_heal, PID_INVALID, 0, -1, 0, 0);
-                pPlayers[uActiveCharacter]->PlaySound(SPEECH_TempleHeal, 0);
-                pOtherOverlayList->_4418B1(20, uActiveCharacter + 99, 0, 65536);
+                pPlayers[pParty->_uActiveCharacter]->PlaySound(SPEECH_TempleHeal, 0);
+                pOtherOverlayList->_4418B1(20, pParty->_uActiveCharacter + 99, 0, 65536);
                 pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
                 return;
             }
-            pPlayers[uActiveCharacter]->uPrevFace =
-                pPlayers[uActiveCharacter]->uCurrentFace;
-            pPlayers[uActiveCharacter]->uPrevVoiceID =
-                pPlayers[uActiveCharacter]->uVoiceID;
-            pPlayers[uActiveCharacter]->SetCondition(Condition_Zombie, 1);
-            pPlayers[uActiveCharacter]->uVoiceID =
-                (pPlayers[uActiveCharacter]->GetSexByVoice() != 0) + 23;
-            pPlayers[uActiveCharacter]->uCurrentFace =
-                (pPlayers[uActiveCharacter]->GetSexByVoice() != 0) + 23;
+            pPlayers[pParty->_uActiveCharacter]->uPrevFace =
+                pPlayers[pParty->_uActiveCharacter]->uCurrentFace;
+            pPlayers[pParty->_uActiveCharacter]->uPrevVoiceID =
+                pPlayers[pParty->_uActiveCharacter]->uVoiceID;
+            pPlayers[pParty->_uActiveCharacter]->SetCondition(Condition_Zombie, 1);
+            pPlayers[pParty->_uActiveCharacter]->uVoiceID =
+                (pPlayers[pParty->_uActiveCharacter]->GetSexByVoice() != 0) + 23;
+            pPlayers[pParty->_uActiveCharacter]->uCurrentFace =
+                (pPlayers[pParty->_uActiveCharacter]->GetSexByVoice() != 0) + 23;
             GameUI_ReloadPlayerPortraits(
-                uActiveCharacter - 1,
-                (pPlayers[uActiveCharacter]->GetSexByVoice() != 0) + 23);
-            pPlayers[uActiveCharacter]->conditions.Set(Condition_Zombie, pParty->GetPlayingTime());
+                pParty->_uActiveCharacter - 1,
+                (pPlayers[pParty->_uActiveCharacter]->GetSexByVoice() != 0) + 23);
+            pPlayers[pParty->_uActiveCharacter]->conditions.Set(Condition_Zombie, pParty->GetPlayingTime());
             // v39 = (GUIWindow *)HIDWORD(pParty->uTimePlayed);
         }
-        // HIDWORD(pPlayers[uActiveCharacter]->pConditions[Condition_Zombie]) =
+        // HIDWORD(pPlayers[pParty->_uActiveCharacter]->pConditions[Condition_Zombie]) =
         // (int)v39;
-        pPlayers[uActiveCharacter]->conditions.Set(Condition_Zombie, pParty->GetPlayingTime());
+        pPlayers[pParty->_uActiveCharacter]->conditions.Set(Condition_Zombie, pParty->GetPlayingTime());
         pAudioPlayer->PlaySound((SoundID)SOUND_heal, PID_INVALID, 0, -1, 0, 0);
-        pPlayers[uActiveCharacter]->PlaySound(SPEECH_TempleHeal, 0);
-        pOtherOverlayList->_4418B1(20, uActiveCharacter + 99, 0, 65536);
+        pPlayers[pParty->_uActiveCharacter]->PlaySound(SPEECH_TempleHeal, 0);
+        pOtherOverlayList->_4418B1(20, pParty->_uActiveCharacter + 99, 0, 65536);
         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
         return;
     }
@@ -2335,7 +2335,7 @@ void TempleDialog() {
                 ddm->uReputation = ddm->uReputation - 1;
                 if (ddm->uReputation - 1 < -5) ddm->uReputation = -5;
             }
-            if ((uint8_t)byte_F8B1EF[uActiveCharacter] == pParty->uCurrentDayOfMonth % 7) {
+            if ((uint8_t)byte_F8B1EF[pParty->_uActiveCharacter] == pParty->uCurrentDayOfMonth % 7) {
                 if (ddm->uReputation <= -5) {
                     pushTempleSpell(SPELL_AIR_WIZARD_EYE);
                 }
@@ -2352,8 +2352,8 @@ void TempleDialog() {
                     pushTempleSpell(SPELL_LIGHT_DAY_OF_PROTECTION);
                 }
             }
-            ++byte_F8B1EF[uActiveCharacter];
-            pPlayers[uActiveCharacter]->PlaySound(SPEECH_TempleDonate, 0);
+            ++byte_F8B1EF[pParty->_uActiveCharacter];
+            pPlayers[pParty->_uActiveCharacter]->PlaySound(SPEECH_TempleDonate, 0);
             GameUI_SetStatusBar(LSTR_THANK_YOU);
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
@@ -2376,7 +2376,7 @@ void TempleDialog() {
                     500.0);
             v64 = (signed int)(pCurrentItem *
                 (100 -
-                    pPlayers[uActiveCharacter]->GetMerchant())) /
+                    pPlayers[pParty->_uActiveCharacter]->GetMerchant())) /
                 100;
             if (v64 < (signed int)pCurrentItem / 3)
                 v64 = (signed int)pCurrentItem / 3;
@@ -2388,8 +2388,8 @@ void TempleDialog() {
                 auto skill = GetLearningDialogueSkill(
                     (DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param
                 );
-                if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
-                    && !pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
+                if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[pParty->_uActiveCharacter]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
+                    && !pPlayers[pParty->_uActiveCharacter]->pActiveSkills[skill]) {
                     all_text_height += pFontArrus->CalcTextHeight(
                         localization->GetSkillName(skill),
                         tample_window.uFrameWidth, 0);
@@ -2424,25 +2424,25 @@ void TrainingDialog(const char *s) {
     training_dialog_window.uFrameWidth = 143;
     training_dialog_window.uFrameZ = 334;
 
-    if (uActiveCharacter == 0)  // avoid nzi
-        uActiveCharacter = pParty->GetFirstCanAct();
+    if (pParty->_uActiveCharacter == 0)  // avoid nzi
+        pParty->_uActiveCharacter = pParty->GetFirstCanAct();
 
-    v5 = 1000ull * pPlayers[uActiveCharacter]->uLevel *
-        (pPlayers[uActiveCharacter]->uLevel + 1) /
+    v5 = 1000ull * pPlayers[pParty->_uActiveCharacter]->uLevel *
+        (pPlayers[pParty->_uActiveCharacter]->uLevel + 1) /
         2;  // E n = n(n + 1) / 2
             // v68 = pMaxLevelPerTrainingHallType[(unsigned
             // int)window_SpeakInHouse->ptr_1C -
             // HOUSE_TRAINING_HALL_EMERALD_ISLE];
-    if (pPlayers[uActiveCharacter]->uExperience >= v5) {
-        v8 = pPlayers[uActiveCharacter]->classType % 4 + 1;
+    if (pPlayers[pParty->_uActiveCharacter]->uExperience >= v5) {
+        v8 = pPlayers[pParty->_uActiveCharacter]->classType % 4 + 1;
         if (v8 == 4) v8 = 3;
-        v9 = (double)pPlayers[uActiveCharacter]->uLevel;
+        v9 = (double)pPlayers[pParty->_uActiveCharacter]->uLevel;
         v69 = v8;
         v10 = (int64_t)(v9 *
             p2DEvents[window_SpeakInHouse->wData.val - 1]
             .fPriceMultiplier *
             (double)v8);
-        pPrice = v10 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
+        pPrice = v10 * (100 - pPlayers[pParty->_uActiveCharacter]->GetMerchant()) / 100;
         if (pPrice < v10 / 3) pPrice = v10 / 3;
     }
     //-------------------------------------------------------
@@ -2465,7 +2465,7 @@ void TrainingDialog(const char *s) {
                         if (pDialogueWindow->GetControl(i)->msg_param ==
                             DIALOGUE_TRAINING_HALL_TRAIN) {
                             static std::string shop_option_str_container;
-                            if (pPlayers[uActiveCharacter]->uLevel >=
+                            if (pPlayers[pParty->_uActiveCharacter]->uLevel >=
                                 pMaxLevelPerTrainingHallType
                                 [window_SpeakInHouse->wData.val -
                                 HOUSE_TRAINING_HALL_EMERALD_ISLE]) {
@@ -2476,15 +2476,15 @@ void TrainingDialog(const char *s) {
                                 pShopOptions[index] = shop_option_str_container.c_str();
 
                             } else {
-                                if (pPlayers[uActiveCharacter]->uExperience < v5)
+                                if (pPlayers[pParty->_uActiveCharacter]->uExperience < v5)
                                     shop_option_str_container = localization->FormatString(
                                         LSTR_XP_UNTIL_NEXT_LEVEL,
-                                        (uint)(v5 - pPlayers[uActiveCharacter]->uExperience),
-                                        pPlayers[uActiveCharacter]->uLevel + 1);
+                                        (uint)(v5 - pPlayers[pParty->_uActiveCharacter]->uExperience),
+                                        pPlayers[pParty->_uActiveCharacter]->uLevel + 1);
                                 else
                                     shop_option_str_container = localization->FormatString(
                                         LSTR_FMT_TRAIN_LEVEL_D_FOR_D_GOLD,
-                                        pPlayers[uActiveCharacter]->uLevel + 1,
+                                        pPlayers[pParty->_uActiveCharacter]->uLevel + 1,
                                         pPrice);
                                 pShopOptions[index] = shop_option_str_container.c_str();
                             }
@@ -2540,31 +2540,31 @@ void TrainingDialog(const char *s) {
                 pDialogueWindow->pNumPresenceButton = 0;
                 return;
             }
-            if (pPlayers[uActiveCharacter]->uLevel <
+            if (pPlayers[pParty->_uActiveCharacter]->uLevel <
                 pMaxLevelPerTrainingHallType
                 [window_SpeakInHouse->wData.val -
                 HOUSE_TRAINING_HALL_EMERALD_ISLE]) {
-                if ((int64_t)pPlayers[uActiveCharacter]->uExperience >=
+                if ((int64_t)pPlayers[pParty->_uActiveCharacter]->uExperience >=
                     v5) {
                     if (pParty->GetGold() >= pPrice) {
                         pParty->TakeGold(pPrice);
                         PlayHouseSound(
                             window_SpeakInHouse->wData.val,
                             HouseSound_NotEnoughMoney);
-                        ++pPlayers[uActiveCharacter]->uLevel;
-                        pPlayers[uActiveCharacter]->uSkillPoints +=
-                            pPlayers[uActiveCharacter]->uLevel / 10 + 5;
-                        pPlayers[uActiveCharacter]->sHealth =
-                            pPlayers[uActiveCharacter]->GetMaxHealth();
-                        pPlayers[uActiveCharacter]->sMana =
-                            pPlayers[uActiveCharacter]->GetMaxMana();
+                        ++pPlayers[pParty->_uActiveCharacter]->uLevel;
+                        pPlayers[pParty->_uActiveCharacter]->uSkillPoints +=
+                            pPlayers[pParty->_uActiveCharacter]->uLevel / 10 + 5;
+                        pPlayers[pParty->_uActiveCharacter]->sHealth =
+                            pPlayers[pParty->_uActiveCharacter]->GetMaxHealth();
+                        pPlayers[pParty->_uActiveCharacter]->sMana =
+                            pPlayers[pParty->_uActiveCharacter]->GetMaxMana();
                         uint max_level_in_party = player_levels[0];
                         for (uint _it = 1; _it < 4; ++_it) {
                             if (player_levels[_it] > max_level_in_party)
                                 max_level_in_party = player_levels[_it];
                         }
-                        ++player_levels[uActiveCharacter - 1];
-                        if (player_levels[uActiveCharacter - 1] >
+                        ++player_levels[pParty->_uActiveCharacter - 1];
+                        if (player_levels[pParty->_uActiveCharacter - 1] >
                             max_level_in_party) {  // if we reach new maximum
                                                    // party level feature is
                                                    // broken thou, since this
@@ -2577,13 +2577,13 @@ void TrainingDialog(const char *s) {
                             if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
                                 pOutdoor->SetFog();
                         }
-                        pPlayers[uActiveCharacter]->PlaySound(SPEECH_LevelUp, 0);
+                        pPlayers[pParty->_uActiveCharacter]->PlaySound(SPEECH_LevelUp, 0);
 
                         GameUI_SetStatusBar(
                             LSTR_FMT_S_NOW_LEVEL_D,
-                            pPlayers[uActiveCharacter]->pName.c_str(),
-                            pPlayers[uActiveCharacter]->uLevel,
-                            pPlayers[uActiveCharacter]->uLevel / 10 + 5
+                            pPlayers[pParty->_uActiveCharacter]->pName.c_str(),
+                            pPlayers[pParty->_uActiveCharacter]->uLevel,
+                            pPlayers[pParty->_uActiveCharacter]->uLevel / 10 + 5
                         );
 
                         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -2597,8 +2597,8 @@ void TrainingDialog(const char *s) {
                 }
                 label = localization->FormatString(
                     LSTR_XP_UNTIL_NEXT_LEVEL,
-                    (unsigned int)(v5 - pPlayers[uActiveCharacter]->uExperience),
-                    pPlayers[uActiveCharacter]->uLevel + 1);
+                    (unsigned int)(v5 - pPlayers[pParty->_uActiveCharacter]->uExperience),
+                    pPlayers[pParty->_uActiveCharacter]->uLevel + 1);
                 v36 = (212 - pFontArrus->CalcTextHeight(
                         label, training_dialog_window.uFrameWidth, 0)) / 2 + 88;
             } else {
@@ -2623,7 +2623,7 @@ void TrainingDialog(const char *s) {
         if (HouseUI_CheckIfPlayerCanInteract()) {
             v14 = (int64_t)(p2DEvents[
                 window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
-            pPrice = v14 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
+            pPrice = v14 * (100 - pPlayers[pParty->_uActiveCharacter]->GetMerchant()) / 100;
 
             if (pPrice < v14 / 3) pPrice = v14 / 3;
             index = 0;
@@ -2634,8 +2634,8 @@ void TrainingDialog(const char *s) {
                 auto skill = GetLearningDialogueSkill(
                     (DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param
                 );
-                if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
-                    && !pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
+                if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[pParty->_uActiveCharacter]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
+                    && !pPlayers[pParty->_uActiveCharacter]->pActiveSkills[skill]) {
                     all_text_height += pFontArrus->CalcTextHeight(
                         localization->GetSkillName(skill),
                         training_dialog_window.uFrameWidth, 0);
@@ -2674,10 +2674,10 @@ void MercenaryGuildDialog() {
             (((p2DEvents[window_SpeakInHouse->wData.val - 1].uType != BuildingType_MercenaryGuild) - 1) & 0x96) + 100;
     v3 = (int64_t)((double)v32 *
         p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
-    pPrice = v3 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
+    pPrice = v3 * (100 - pPlayers[pParty->_uActiveCharacter]->GetMerchant()) / 100;
     if (pPrice < v3 / 3) pPrice = v3 / 3;
     if (dialog_menu_id == DIALOGUE_MAIN) {
-        if (!_449B57_test_bit((uint8_t *)pPlayers[uActiveCharacter]->_achieved_awards_bits, word_4F0754[2 * window_SpeakInHouse->wData.val])) {
+        if (!_449B57_test_bit((uint8_t *)pPlayers[pParty->_uActiveCharacter]->_achieved_awards_bits, word_4F0754[2 * window_SpeakInHouse->wData.val])) {
             // 171 looks like Mercenary Stronghold message from NPCNews.txt in MM6
             pTextHeight = pFontArrus->CalcTextHeight(pNPCTopics[171].pText, dialog_window.uFrameWidth, 0);
             dialog_window.DrawTitleText(pFontArrus, 0, (212 - pTextHeight) / 2 + 101, colorTable.PaleCanary.C16(), pNPCTopics[171].pText, 3);
@@ -2694,8 +2694,8 @@ void MercenaryGuildDialog() {
             auto skill = GetLearningDialogueSkill(
                 (DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param
             );
-            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType / 3][skill] != PLAYER_SKILL_MASTERY_NONE
-                && !pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
+            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[pParty->_uActiveCharacter]->classType / 3][skill] != PLAYER_SKILL_MASTERY_NONE
+                && !pPlayers[pParty->_uActiveCharacter]->pActiveSkills[skill]) {
                 all_text_height += pFontArrus->CalcTextHeight(
                     localization->GetSkillName(skill),
                     dialog_window.uFrameWidth, 0);
@@ -2720,7 +2720,7 @@ void MercenaryGuildDialog() {
         __debugbreak();  // whacky condition - fix
         if (false
             // if ( !*(&byte_4ED94C[37 * v1->uClass / 3] + dword_F8B19C)
-            || (v6 = (short *)(&pPlayers[uActiveCharacter]->uIntelligence +
+            || (v6 = (short *)(&pPlayers[pParty->_uActiveCharacter]->uIntelligence +
                 dialog_menu_id),
                 *(short *)v6)) {
             pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);

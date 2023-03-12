@@ -258,9 +258,9 @@ int Party::GetNextActiveCharacter() {
     signed int v8 {};  // esi@23
     int v12;        // [sp+Ch] [bp-4h]@1
 
-    if (uActiveCharacter > 0 && this->pPlayers[uActiveCharacter - 1].CanAct() &&
-        this->pPlayers[uActiveCharacter - 1].uTimeToRecovery < 1)  // avoid switching away from char that can act
-        return uActiveCharacter;
+    if (pParty->_uActiveCharacter > 0 && this->pPlayers[pParty->_uActiveCharacter - 1].CanAct() &&
+        this->pPlayers[pParty->_uActiveCharacter - 1].uTimeToRecovery < 1)  // avoid switching away from char that can act
+        return pParty->_uActiveCharacter;
 
     v12 = 0;
     if (pParty->bTurnBasedModeOn) {
@@ -651,7 +651,7 @@ void Party::Reset() {
 
     bTurnBasedModeOn = false;
 
-    uActiveCharacter = 1;
+    pParty->_uActiveCharacter = 1;
     for (uint i = 0; i < 4; ++i)
         ::pPlayers[i + 1] = &pPlayers[i];
 
@@ -1143,9 +1143,9 @@ void Party::PickedItem_PlaceInInventory_or_Drop() {
     auto texture = assets->GetImage_ColorKey(pParty->pPickedItem.GetIconName());
 
     // check if active player has room in inventory
-    int InventIndex = ::pPlayers[uActiveCharacter]->AddItem(-1, pParty->pPickedItem.uItemID);
-    if (uActiveCharacter && InventIndex != 0) {
-        memcpy(&::pPlayers[uActiveCharacter]->pInventoryItemList[InventIndex - 1], &pParty->pPickedItem, 0x24u);
+    int InventIndex = ::pPlayers[pParty->_uActiveCharacter]->AddItem(-1, pParty->pPickedItem.uItemID);
+    if (pParty->_uActiveCharacter && InventIndex != 0) {
+        memcpy(&::pPlayers[pParty->_uActiveCharacter]->pInventoryItemList[InventIndex - 1], &pParty->pPickedItem, 0x24u);
         mouse->RemoveHoldingItem();
     } else {
         // see if any other char has room
@@ -1196,7 +1196,7 @@ bool Party::AddItemToParty(ItemGen *pItem) {
     int v10;        // eax@11
     // int v21; // [sp+24h] [bp-4h]@10
 
-    assert(uActiveCharacter > 0); // code in this function couldn't handle uActiveCharacter = 0 and crash
+    assert(pParty->_uActiveCharacter > 0); // code in this function couldn't handle pParty->_uActiveCharacter = 0 and crash
 
     ITEM_TYPE v2 = pItem->uItemID;
     if (!pItemTable->pItems[v2].uItemID_Rep_St) pItem->SetIdentified();
@@ -1205,7 +1205,7 @@ bool Party::AddItemToParty(ItemGen *pItem) {
     if (v5) {
         auto texture = assets->GetImage_ColorKey(v5);
         v8 = 0;
-        uint current_player = std::max(1u, uActiveCharacter);
+        uint current_player = std::max(1u, pParty->_uActiveCharacter);
         for (int i = 0; i < 4; i++) {
             current_player = current_player + i;
             if (current_player > 4) current_player = current_player - 4;

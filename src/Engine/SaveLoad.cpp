@@ -140,10 +140,10 @@ void LoadGame(unsigned int uSlot) {
         }
     }
 
-    uActiveCharacter = 0;
+    pParty->_uActiveCharacter = 0;
     for (uint i = 0; i < 4; ++i) {
         if (pParty->pPlayers[i].CanAct()) {
-            uActiveCharacter = i + 1;
+            pParty->_uActiveCharacter = i + 1;
             break;
         }
     }

@@ -2122,15 +2122,15 @@ void ODM_ProcessPartyActions() {
             case PARTY_LookUp:
                 party_new_rot_y += engine->config->settings.VerticalTurnSpeed.Get();
                 if (party_new_rot_y > 128) party_new_rot_y = 128;
-                if (uActiveCharacter)
-                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_LookUp, 0);
+                if (pParty->_uActiveCharacter)
+                    pPlayers[pParty->_uActiveCharacter]->PlaySound(SPEECH_LookUp, 0);
                 break;
 
             case PARTY_LookDown:
                 party_new_rot_y -= engine->config->settings.VerticalTurnSpeed.Get();
                 if (party_new_rot_y < -128) party_new_rot_y = -128;
-                if (uActiveCharacter)
-                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_LookDown, 0);
+                if (pParty->_uActiveCharacter)
+                    pPlayers[pParty->_uActiveCharacter]->PlaySound(SPEECH_LookDown, 0);
                 break;
 
             case PARTY_Jump:

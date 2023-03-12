@@ -322,9 +322,9 @@ void Mouse::UI_OnMouseLeftClick() {
     Vis_PIDAndDepth picked_object = EngineIoc::ResolveVis()->get_picked_object_zbuf_val();
 
     ObjectType type = PID_TYPE(picked_object.object_pid);
-    if (type == OBJECT_Actor && uActiveCharacter && picked_object.depth < 0x200 &&
-        pPlayers[uActiveCharacter]->CanAct() &&
-        pPlayers[uActiveCharacter]->CanSteal()) {
+    if (type == OBJECT_Actor && pParty->_uActiveCharacter && picked_object.depth < 0x200 &&
+        pPlayers[pParty->_uActiveCharacter]->CanAct() &&
+        pPlayers[pParty->_uActiveCharacter]->CanSteal()) {
         pCurrentFrameMessageQueue->AddGUIMessage(
             UIMSG_STEALFROMACTOR,
             PID_ID(picked_object.object_pid),

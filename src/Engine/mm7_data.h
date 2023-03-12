@@ -156,7 +156,6 @@ extern GUIButton *pBtn_ZoomIn;  // idb
 extern unsigned int uGameUIFontShadow;
 extern unsigned int uGameUIFontMain;
 extern int dword_507B00_spell_info_to_draw_in_popup;
-extern unsigned int uActiveCharacter; // 1-based
 extern int dword_507BF0_is_there_popup_onscreen;
 extern int awards_scroll_bar_created;
 extern int dword_507CC0_activ_ch;
