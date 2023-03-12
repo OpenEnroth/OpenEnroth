@@ -5007,7 +5007,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
                 for (int i = 0; i < TOTAL_ITEM_SLOT_COUNT; i++) {
                     if (this->pOwnItems[i].uItemID == ITEM_QUEST_LICH_JAR_EMPTY) {
                         this->pOwnItems[i].uItemID = ITEM_QUEST_LICH_JAR_FULL;
-                        this->pOwnItems[i].uHolderPlayer = GetPlayerIndex() + 1;
+                        this->pOwnItems[i].uHolderPlayer = GetPlayerIndex();
                     }
                 }
                 if (this->sResFireBase < 20) this->sResFireBase = 20;
@@ -7025,7 +7025,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             if (uActorType == OBJECT_Player && !_A750D8_player_speech_timer) {
                 _A750D8_player_speech_timer = 256;
                 PlayerSpeechID = SPEECH_DamagedParty;
-                uSpeakingCharacter = uActorID + 1;
+                uSpeakingCharacter = uActorID;
             }
             return;
         } else if (uActorType == OBJECT_Actor) {  // missile fired by actor
@@ -7168,7 +7168,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             if (uActorType == OBJECT_Player && !_A750D8_player_speech_timer) {
                 _A750D8_player_speech_timer = 256;
                 PlayerSpeechID = SPEECH_DamagedParty;
-                uSpeakingCharacter = uActorID + 1;
+                uSpeakingCharacter = uActorID;
             }
 
             return;

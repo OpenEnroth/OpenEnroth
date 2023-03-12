@@ -258,7 +258,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         case SPELL_FIRE_FIRE_BOLT:
         case SPELL_FIRE_FIREBALL:
         case SPELL_FIRE_INCINERATE:
-        case SPELL_AIR_LIGHNING_BOLT:
+        case SPELL_AIR_LIGHTNING_BOLT:
         case SPELL_WATER_ICE_BOLT:
         case SPELL_WATER_ACID_BURST:
         case SPELL_EARTH_BLADES:
@@ -563,22 +563,18 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             return;
 
         case SPELL_LIGHT_DISPEL_MAGIC:
-            for (int i = 0; i < 20; i++) pParty->pPartyBuffs[i].Reset();
-            for (int i = 1; i <= 4; i++) {
-                v59 = pPlayers[i]->GetParameterBonus(
-                    pPlayers[i]->GetActualWillpower());
-                v61 = (pPlayers[i]->GetParameterBonus(
-                           pPlayers[i]->GetActualIntelligence()) +
-                       v59) /
-                      2;
-                v63 = v61 +
-                      pPlayers[i]->GetParameterBonus(
-                          pPlayers[i]->GetActualLuck()) +
-                      30;
+            for (SpellBuff &buff : pParty->pPartyBuffs) {
+                buff.Reset();
+            }
+            for (int i = 0; i < pParty->pPlayers.size(); i++) {
+                v59 = pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualWillpower());
+                v61 = (pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualIntelligence()) + v59) / 2;
+                v63 = v61 + pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualLuck()) + 30;
                 if (grng->Random(v63) < 30) {
-                    for (uint k = 0; k < pPlayers[i]->pPlayerBuffs.size(); k++)
-                        pPlayers[i]->pPlayerBuffs[k].Reset();
-                    pOtherOverlayList->_4418B1(11210, i + 99, 0, 65536);
+                    for (SpellBuff &buff : pParty->pPlayers[i].pPlayerBuffs) {
+                        buff.Reset();
+                    }
+                    pOtherOverlayList->_4418B1(11210, i + 100, 0, 65536);
                 }
             }
             pAudioPlayer->PlaySpellSound(80, PID(OBJECT_Actor, uActorID));
@@ -1249,9 +1245,9 @@ void Actor::ApplyFineForKillingPeasant(unsigned int uActorID) {
     }
 
     if (pParty->uFine) {
-        for (int i = 1; i <= 4; i++) {
-            if (!_449B57_test_bit(pPlayers[i]->_achieved_awards_bits, Award_Fine))
-                _449B7E_toggle_bit(pPlayers[i]->_achieved_awards_bits, Award_Fine, 1);
+        for (Player &player : pParty->pPlayers) {
+            if (!_449B57_test_bit(player._achieved_awards_bits, Award_Fine))
+                _449B7E_toggle_bit(player._achieved_awards_bits, Award_Fine, 1);
         }
     }
 }
@@ -3500,7 +3496,6 @@ void Actor::Arena_summon_actor(int monster_id, int x, int y, int z) {
 //----- (00426E10) --------------------------------------------------------
 int stru319::which_player_to_attack(Actor *pActor) {
     signed int v2;         // ebx@1
-    bool flag;             // edi@37
     int v22;               // [sp+8h] [bp-140h]@3
     int Victims_list[60] {};  // [sp+48h] [bp-100h]@48
     int for_sex;           // [sp+13Ch] [bp-Ch]@1
@@ -3563,35 +3558,37 @@ int stru319::which_player_to_attack(Actor *pActor) {
                         break;
                 }
                 v2 = 0;
-                for (uint j = 0; j < 4; ++j) {
-                    flag = 0;
-                    if (for_class != -1 &&
-                        for_class == pPlayers[j + 1]->classType)
+                for (int j = 0; j < pParty->pPlayers.size(); ++j) {
+                    bool flag = 0;
+                    if (for_class != -1 && for_class == pParty->pPlayers[j].classType) {
                         flag = true;
-                    if (for_sex != -1 && for_sex == pPlayers[j + 1]->uSex)
+                    }
+                    if (for_sex != -1 && for_sex == pParty->pPlayers[j].uSex) {
                         flag = true;
-                    if (for_race != -1 &&
-                        for_race == pPlayers[j + 1]->GetRace())
+                    }
+                    if (for_race != -1 && for_race == pParty->pPlayers[j].GetRace()) {
                         flag = true;
+                    }
                     if (flag == true) {
-                        if (!(pPlayers[j + 1]->conditions.Has(Condition_Paralyzed) ||
-                              pPlayers[j + 1]->conditions.Has(Condition_Unconscious) ||
-                              pPlayers[j + 1]->conditions.Has(Condition_Dead) ||
-                              pPlayers[j + 1]->conditions.Has(Condition_Petrified) ||
-                              pPlayers[j + 1]->conditions.Has(Condition_Eradicated)))
+                        if (!(pParty->pPlayers[j].conditions.Has(Condition_Paralyzed) ||
+                              pParty->pPlayers[j].conditions.Has(Condition_Unconscious) ||
+                              pParty->pPlayers[j].conditions.Has(Condition_Dead) ||
+                              pParty->pPlayers[j].conditions.Has(Condition_Petrified) ||
+                              pParty->pPlayers[j].conditions.Has(Condition_Eradicated))) {
                             Victims_list[v2++] = j;
+                        }
                     }
                 }
             }
         }
         if (v2) return Victims_list[grng->Random(v2)];
     }
-    for (uint i = 0; i < 4; ++i) {
-        if (!(pPlayers[i + 1]->conditions.Has(Condition_Paralyzed) ||
-              pPlayers[i + 1]->conditions.Has(Condition_Unconscious) ||
-              pPlayers[i + 1]->conditions.Has(Condition_Dead) ||
-              pPlayers[i + 1]->conditions.Has(Condition_Petrified) ||
-              pPlayers[i + 1]->conditions.Has(Condition_Eradicated)))
+    for (int i = 0; i < pParty->pPlayers.size(); ++i) {
+        if (!(pParty->pPlayers[i].conditions.Has(Condition_Paralyzed) ||
+              pParty->pPlayers[i].conditions.Has(Condition_Unconscious) ||
+              pParty->pPlayers[i].conditions.Has(Condition_Dead) ||
+              pParty->pPlayers[i].conditions.Has(Condition_Petrified) ||
+              pParty->pPlayers[i].conditions.Has(Condition_Eradicated)))
             Victims_list[v2++] = i;
     }
     if (v2)
@@ -3937,12 +3934,16 @@ bool Actor::_427102_IsOkToCastSpell(SPELL_TYPE spell) {
         }
 
         case SPELL_LIGHT_DISPEL_MAGIC: {
-            for (int i = 0; i < 20; i++) {
-                if (pParty->pPartyBuffs[i].Active()) return true;
+            for (SpellBuff &buff : pParty->pPartyBuffs) {
+                if (buff.Active()) {
+                    return true;
+                }
             }
-            for (int i = 1; i <= 4; i++) {
-                for (int j = 0; j < 22; j++) {
-                    if (pPlayers[i]->pPlayerBuffs[j].Active()) return true;
+            for (Player &player : pParty->pPlayers) {
+                for (SpellBuff &buff : player.pPlayerBuffs) {
+                    if (buff.Active()) {
+                        return true;
+                    }
                 }
             }
             return false;
@@ -5065,10 +5066,8 @@ void area_of_effect__damage_evaluate() {
                 if (Check_LineOfSight(Vec3i(pParty->vPosition.x, pParty->vPosition.y,
                                pParty->vPosition.z + pParty->sEyelevel),
                                attacker_coord)) {
-                    for (uint i = 0; i < 4; ++i) {
-                        if (!pParty->pPlayers[i].conditions.Has(Condition_Dead) &&
-                            !pParty->pPlayers[i].conditions.Has(Condition_Petrified) &&
-                            !pParty->pPlayers[i].conditions.Has(Condition_Eradicated)) {
+                    for (int i = 0; i < pParty->pPlayers.size(); i++) {
+                        if (pParty->pPlayers[i].conditions.HasNone({Condition_Dead, Condition_Petrified, Condition_Eradicated})) {
                             DamagePlayerFromMonster(
                                 AttackerInfo.pIDs[attack_index],
                                 AttackerInfo.attack_special[attack_index],

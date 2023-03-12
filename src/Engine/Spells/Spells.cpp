@@ -55,7 +55,7 @@ IndexedArray<SPRITE_OBJECT_TYPE, SPELL_ANY_WITH_SPRITE_FIRST, SPELL_ANY_WITH_SPR
     {SPELL_AIR_SPARKS, SPRITE_SPELL_AIR_SPARKS},
     {SPELL_AIR_JUMP, SPRITE_SPELL_AIR_JUMP},
     {SPELL_AIR_SHIELD, SPRITE_SPELL_AIR_SHIELD},
-    {SPELL_AIR_LIGHNING_BOLT, SPRITE_SPELL_AIR_LIGHNING_BOLT},
+    {SPELL_AIR_LIGHTNING_BOLT, SPRITE_SPELL_AIR_LIGHTNING_BOLT},
     {SPELL_AIR_INVISIBILITY, SPRITE_SPELL_AIR_INVISIBILITY},
     {SPELL_AIR_IMPLOSION, SPRITE_SPELL_AIR_IMPLOSION},
     {SPELL_AIR_FLY, SPRITE_SPELL_AIR_FLY},
@@ -208,7 +208,7 @@ IndexedArray<SpellData, SPELL_REGULAR_FIRST, SPELL_REGULAR_LAST> pSpellDatas = {
     {SPELL_AIR_SPARKS,                  SpellData( 4,  4,  4,  4,  110,  100,   90,   80,  2,  1, 0)},
     {SPELL_AIR_JUMP,                    SpellData( 5,  5,  5,  5,   90,   90,   70,   50,  0,  0, 0)},
     {SPELL_AIR_SHIELD,                  SpellData( 8,  8,  8,  8,  120,  120,  120,  120,  0,  0, 0)},
-    {SPELL_AIR_LIGHNING_BOLT,           SpellData(10, 10, 10, 10,  100,  100,   90,   70,  0,  8, 0)},
+    {SPELL_AIR_LIGHTNING_BOLT,          SpellData(10, 10, 10, 10,  100,  100,   90,   70,  0,  8, 0)},
     {SPELL_AIR_INVISIBILITY,            SpellData(15, 15, 15, 15,  200,  200,  200,  200,  0,  0, 0)},
     {SPELL_AIR_IMPLOSION,               SpellData(20, 20, 20, 20,  100,  100,  100,   90, 10, 10, 0)},
     {SPELL_AIR_FLY,                     SpellData(25, 25, 25, 25,  250,  250,  250,  250,  0,  0, 0)},
@@ -320,7 +320,7 @@ IndexedArray<SPELL_TYPE, ITEM_FIRST_WAND, ITEM_LAST_WAND> WandSpellIds = {
     // Charms
     {ITEM_ALACORN_WAND_OF_FIREBALLS, SPELL_FIRE_FIREBALL},
     {ITEM_ALACORN_WAND_OF_ACID, SPELL_WATER_ACID_BURST},
-    {ITEM_ALACORN_WAND_OF_LIGHTNING, SPELL_AIR_LIGHNING_BOLT},
+    {ITEM_ALACORN_WAND_OF_LIGHTNING, SPELL_AIR_LIGHTNING_BOLT},
     {ITEM_ALACORN_WAND_OF_BLADES, SPELL_EARTH_BLADES},
     {ITEM_ALACORN_WAND_OF_CHARMS, SPELL_MIND_CHARM},
     // 150 Arcane Wand of Blasting    151 Arcane Wand of The Fist    152 Arcane
@@ -511,7 +511,7 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
     switch (uSpellID) {
         case SPELL_FIRE_FIRE_BOLT:
         case SPELL_FIRE_FIREBALL:
-        case SPELL_AIR_LIGHNING_BOLT:
+        case SPELL_AIR_LIGHTNING_BOLT:
         case SPELL_WATER_ICE_BOLT:
         case SPELL_WATER_ACID_BURST:
         case SPELL_WATER_ICE_BLAST:
@@ -549,7 +549,7 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
     switch (uSpellID) {
         case SPELL_FIRE_FIRE_BOLT:
         case SPELL_FIRE_FIREBALL:
-        case SPELL_AIR_LIGHNING_BOLT:
+        case SPELL_AIR_LIGHTNING_BOLT:
         case SPELL_WATER_ICE_BOLT:
         case SPELL_WATER_ACID_BURST:
         case SPELL_WATER_ICE_BLAST:

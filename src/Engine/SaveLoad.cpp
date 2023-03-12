@@ -609,13 +609,13 @@ void SaveNewGame() {
 
         pParty->vPrevPosition.x = 12552;
         pParty->vPrevPosition.y = 1816;
-        pParty->vPrevPosition.z = 0;
+        pParty->vPrevPosition.z = 193;
 
         pParty->vPosition.x = 12552;
         pParty->vPosition.y = 1816;
-        pParty->vPosition.z = 0;
+        pParty->vPosition.z = 193;
 
-        pParty->uFallStartZ = 0;
+        pParty->uFallStartZ = 193;
 
         pParty->sPrevRotationY = 0;
         pParty->sPrevRotationZ = 512;

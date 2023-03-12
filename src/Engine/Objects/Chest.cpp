@@ -65,10 +65,10 @@ bool Chest::Open(int uChestID) {
     if (chest->Trapped() && pMapID) {
         if (pPlayers[uActiveCharacter]->GetDisarmTrap() <
             2 * pMapStats->pInfos[pMapID].LockX5) {
-            pSpriteID[0] = SPRITE_811;
-            pSpriteID[1] = SPRITE_812;
-            pSpriteID[2] = SPRITE_813;
-            pSpriteID[3] = SPRITE_814;
+            pSpriteID[0] = SPRITE_TRAP_FIRE;
+            pSpriteID[1] = SPRITE_TRAP_LIGHTNING;
+            pSpriteID[2] = SPRITE_TRAP_COLD;
+            pSpriteID[3] = SPRITE_TRAP_BODY;
             int pRandom = grng->Random(4); // Not sure if this should be grng or vrng, so we'd rather err on the side of safety.
             int v6 = PID_ID(EvtTargetObj);
             if (PID_TYPE(EvtTargetObj) == OBJECT_Decoration) {
@@ -150,7 +150,7 @@ bool Chest::Open(int uChestID) {
                 !OpenedTelekinesis) {
                 _A750D8_player_speech_timer = 256;
                 PlayerSpeechID = SPEECH_TrapExploded;
-                uSpeakingCharacter = uActiveCharacter;
+                uSpeakingCharacter = uActiveCharacter - 1;
             }
             OpenedTelekinesis = false;
             return false;

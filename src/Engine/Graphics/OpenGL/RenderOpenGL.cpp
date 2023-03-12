@@ -1208,45 +1208,33 @@ unsigned short *RenderOpenGL::MakeScreenshot16(int width, int height) {
 }
 
 // TODO: should this be combined / moved out of render
-int RenderOpenGL::GetActorsInViewport(int pDepth) {
-    int
-        v3;  // eax@2 применяется в закле Жар печи для подсчёта кол-ва монстров
-             // видимых группе и заполнения массива id видимых монстров
-    unsigned int v5;   // eax@2
-    unsigned int v6;   // eax@4
-    unsigned int v12;  // [sp+10h] [bp-14h]@1
-    int mon_num;       // [sp+1Ch] [bp-8h]@1
-    unsigned int a1a;  // [sp+20h] [bp-4h]@1
+std::vector<Actor*> RenderOpenGL::getActorsInViewport(int pDepth) {
+    std::vector<Actor*> foundActors;
 
-    mon_num = 0;
-    v12 = render->uNumBillboardsToDraw;
-    if ((signed int)render->uNumBillboardsToDraw > 0) {
-        for (a1a = 0; (signed int)a1a < (signed int)v12; ++a1a) {
-            v3 = render->pBillboardRenderListD3D[a1a].sParentBillboardID;
-            if(v3 == -1)
-                continue; // E.g. spell particle.
+    for (int i = 0; i < render->uNumBillboardsToDraw; i++) {
+        int renderId = render->pBillboardRenderListD3D[i].sParentBillboardID;
+        if(renderId == -1) {
+            continue; // E.g. spell particle.
+        }
 
-            v5 = (uint16_t)pBillboardRenderList[v3].object_pid;
-            if (PID_TYPE(v5) == OBJECT_Actor) {
-                if (pBillboardRenderList[v3].screen_space_z <= pDepth) {
-                    v6 = PID_ID(v5);
-                    if (pActors[v6].uAIState != Dead &&
-                        pActors[v6].uAIState != Dying &&
-                        pActors[v6].uAIState != Removed &&
-                        pActors[v6].uAIState != Disabled &&
-                        pActors[v6].uAIState != Summoned) {
-                        if (vis->DoesRayIntersectBillboard(static_cast<float>(pDepth), a1a)) {
-                            if (mon_num < 100) {
-                                _50BF30_actors_in_viewport_ids[mon_num] = v6;
-                                mon_num++;
-                            }
-                        }
+        int pid = pBillboardRenderList[renderId].object_pid;
+        if (PID_TYPE(pid) == OBJECT_Actor) {
+            if (pBillboardRenderList[renderId].screen_space_z <= pDepth) {
+                int id = PID_ID(pid);
+                if (pActors[id].uAIState != Dead &&
+                    pActors[id].uAIState != Dying &&
+                    pActors[id].uAIState != Removed &&
+                    pActors[id].uAIState != Disabled &&
+                    pActors[id].uAIState != Summoned) {
+                    if (vis->DoesRayIntersectBillboard(static_cast<float>(pDepth), i)) {
+                        // Limit for 100 actors was removed
+                        foundActors.push_back(&pActors[id]);
                     }
                 }
             }
         }
     }
-    return mon_num;
+    return foundActors;
 }
 
 // TODO(pskelton): drop - not required in gl renderer now
@@ -2077,7 +2065,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
     glUniform3fv(glGetUniformLocation(terrainshader.ID, "sun.direction"), 1, &pOutdoor->vSunlight[0]);
     glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.ambient"), ambient, ambient, ambient);
     glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.diffuse"), diffuseon * (ambient + 0.3), diffuseon * (ambient + 0.3), diffuseon * (ambient + 0.3));
-    glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.specular"), diffuseon * 0.35f * ambient, diffuseon * 0.28f * ambient, 0.0f);
+    glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.specular"), /*diffuseon * 0.35f * ambient*/ 0.0f, /*diffuseon * 0.28f * ambient*/ 0.0f, 0.0f);
 
     // red colouring
     if (pParty->armageddon_timer) {
@@ -4024,6 +4012,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
     glUniformMatrix4fv(glGetUniformLocation(outbuildshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
 
     glUniform1i(glGetUniformLocation(outbuildshader.ID, "waterframe"), GLint(this->hd_water_current_frame));
+    // TODO(pskelton): check tickcount usage here
     glUniform1i(glGetUniformLocation(outbuildshader.ID, "flowtimer"), GLint(platform->tickCount() >> 4));
 
     glUniform1f(glGetUniformLocation(outbuildshader.ID, "gamma"), gamma);
@@ -4553,6 +4542,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                             DrawIndoorSky(face->uNumVertices, uFaceID);
                             continue;
                         } else {
+                            // TODO(pskelton): check tickcount usage here
                             skymodtimex = (platform->tickCount() / 32.0f) - pCamera3D->vCameraPos.x;
                             skymodtimey = (platform->tickCount() / 32.0f) + pCamera3D->vCameraPos.y;
                         }
@@ -4701,6 +4691,7 @@ void RenderOpenGL::DrawIndoorFaces() {
 
         glUniform1f(glGetUniformLocation(bspshader.ID, "gamma"), gamma);
         glUniform1i(glGetUniformLocation(bspshader.ID, "waterframe"), GLint(this->hd_water_current_frame));
+        // TODO(pskelton): check tickcount usage here
         glUniform1i(glGetUniformLocation(bspshader.ID, "flowtimer"), GLint(platform->tickCount() >> 4));
 
         // set texture unit location

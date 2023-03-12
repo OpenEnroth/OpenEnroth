@@ -2483,6 +2483,7 @@ void Game::GameLoop() {
             }
             pAudioPlayer->UpdateSounds();
             // expire timed status messages
+            // TODO(pskelton): check tickcount usage here
             if (game_ui_status_bar_event_string_time_left != 0 && game_ui_status_bar_event_string_time_left < platform->tickCount()) {
                  GameUI_StatusBar_Clear();
             }
@@ -2548,15 +2549,15 @@ void Game::GameLoop() {
                     pTurnEngine->End(true);
                     pParty->bTurnBasedModeOn = false;
                 }
-                for (int i = 1; i < 5; ++i) {
-                    pPlayers[i]->conditions.ResetAll();
-                    pPlayers[i]->pPlayerBuffs.fill(
+                for (Player &player : pParty->pPlayers) {
+                    player.conditions.ResetAll();
+                    player.pPlayerBuffs.fill(
                         SpellBuff());  // ???
                                        // memset(pParty->pPlayers[i].conditions_times.data(),
                                        // 0, 0xA0u);//(pConditions, 0, 160)
                                        // memset(pParty->pPlayers[i].pPlayerBuffs.data(),
                                        // 0, 0x180u);//(pPlayerBuffs[0], 0, 384)
-                    pPlayers[i]->sHealth = 1;
+                    player.sHealth = 1;
                     uActiveCharacter = 1;
                 }
                 if (_449B57_test_bit(pParty->_quest_bits, QBIT_ESCAPED_EMERALD_ISLE)) {
@@ -2568,7 +2569,7 @@ void Game::GameLoop() {
                 } else {
                     pParty->vPosition.x = 12552;  // respawn on emerald isle
                     pParty->vPosition.y = 1816;
-                    pParty->vPosition.z = 0;
+                    pParty->vPosition.z = 193;
                     pParty->sRotationZ = 512;
                     pLocationName = config->gameplay.StartingMap.Get().c_str();
                 }

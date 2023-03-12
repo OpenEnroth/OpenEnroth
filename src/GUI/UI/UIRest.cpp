@@ -112,10 +112,11 @@ void GUIWindow_Rest::Update() {
     unsigned int am_pm_hours;  // [sp+D8h] [bp-Ch]@9
 
     live_characters = 0;
-    for (int i = 1; i < 5; ++i)
-        if (!pPlayers[i]->IsDead() && !pPlayers[i]->IsEradicated() &&
-            pPlayers[i]->sHealth > 0)
+    for (Player &player : pParty->pPlayers) {
+        if (!player.IsDead() && !player.IsEradicated() && player.sHealth > 0) {
             ++live_characters;
+        }
+    }
 
     if (live_characters) {
         render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, rest_ui_restmain);

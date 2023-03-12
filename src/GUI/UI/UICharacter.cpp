@@ -1324,6 +1324,7 @@ static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, Texture *i
             ptr_50C9A4_ItemToEnchant = nullptr;
         }
 
+        // TODO(pskelton): check tickcount usage here
         render->BlendTextures(x, y, item_texture, enchantment_texture, platform->tickCount() / 10, 0, 255);
     } else if (item->IsBroken()) {
         render->DrawTransparentRedShade(x / 640.0f, y / 480.0f, item_texture);
