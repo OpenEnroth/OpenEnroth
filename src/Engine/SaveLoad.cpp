@@ -484,12 +484,12 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         odm_data.pMagic[3] = 'i';
 
         size_t Size = data_write_pos - uncompressed_buff;
-        Blob bytes = zlib::Compress(Blob::NonOwning(uncompressed_buff, Size));
+        Blob bytes = zlib::Compress(Blob::view(uncompressed_buff, Size));
 
         odm_data.uCompressedSize = bytes.size();
         odm_data.uDecompressedSize = Size;
 
-        Blob mapBlob = Blob::Concat(Blob::NonOwning(&odm_data, sizeof(ODMHeader)), bytes);
+        Blob mapBlob = Blob::concat(Blob::view(&odm_data, sizeof(ODMHeader)), bytes);
 
         std::string file_name = pCurrentMapName;
         size_t pos = file_name.find_last_of(".");

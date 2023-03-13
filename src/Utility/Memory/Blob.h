@@ -29,9 +29,9 @@ class Blob final {
         assert(data ? size > 0 && handler : true);
         assert(!data ? size == 0 && !handler : true);
 
-        data_ = data;
-        size_ = size;
-        handler_ = handler;
+        _data = data;
+        _size = size;
+        _handler = handler;
     }
 
     Blob(const Blob &) = delete; // Blobs are non-copyable.
@@ -41,8 +41,8 @@ class Blob final {
     }
 
     ~Blob() {
-        if (handler_)
-            handler_->destroy(data_, size_);
+        if (_handler)
+            _handler->destroy(_data, _size);
     }
 
     Blob &operator=(const Blob &) = delete; // Blobs are non-copyable.
@@ -52,30 +52,74 @@ class Blob final {
         return *this;
     }
 
-    static Blob FromMalloc(const void *data, size_t size);
-    static Blob Copy(const void *data, size_t size);
-    static Blob Read(FILE *file, size_t size);
-    static Blob Read(FileInputStream& file, size_t size);
-    static Blob FromFile(std::string_view path);
-    static Blob NonOwning(const void *data, size_t size);
-    static Blob Concat(const Blob &l, const Blob &r);
+    /**
+     * @param data                      Pointer to a `malloc`-allocated memory region.
+     * @param size                      Size of the memory region.
+     * @return                          Blob that takes ownership of the provided memory region.
+     */
+    static Blob fromMalloc(const void *data, size_t size);
+
+    /**
+     * @param path                      Path to a file.
+     * @return                          Blob that wraps the memory mapping of the provided file.
+     * @throws std::runtime_error       On error.
+     */
+    static Blob fromFile(std::string_view path);
+
+    /**
+     * @param data                      Memory region pointer.
+     * @param size                      Memory region size.
+     * @return                          Blob that owns a copy of the provided memory region.
+     */
+    static Blob copy(const void *data, size_t size); // NOLINT: this is not std::copy
+
+    /**
+     * @param data                      Memory region pointer.
+     * @param size                      Memory region size.
+     * @return                          Non-owning blob view into the provided memory region.
+     */
+    static Blob view(const void *data, size_t size);
+
+    /**
+     * @param file                      File to read from.
+     * @param size                      Number of bytes to read.
+     * @return                          Blob that owns the data that was read from the provided file.
+     * @throws Exception                If the provided number of bytes couldn't be read.
+     */
+    static Blob read(FILE *file, size_t size);
+
+    /**
+     * @param file                      File to read from.
+     * @param size                      Number of bytes to read.
+     * @return                          Blob that owns the data that was read from the provided file.
+     * @throws Exception                If the provided number of bytes couldn't be read.
+     */
+    static Blob read(FileInputStream& file, size_t size);
+
+    /**
+     * @param l                         First blob.
+     * @param r                         Second blob.
+     * @return                          Newly allocated blob that contains a concatenation of the data of the two
+     *                                  provided blobs.
+     */
+    static Blob concat(const Blob &l, const Blob &r);
 
     friend void swap(Blob &l, Blob &r) {
-        std::swap(l.data_, r.data_);
-        std::swap(l.size_, r.size_);
-        std::swap(l.handler_, r.handler_);
+        std::swap(l._data, r._data);
+        std::swap(l._size, r._size);
+        std::swap(l._handler, r._handler);
     }
 
     size_t size() const {
-        return size_;
+        return _size;
     }
 
     bool empty() const {
-        return size_ == 0;
+        return _size == 0;
     }
 
     const void *data() const {
-        return data_;
+        return _data;
     }
 
     bool operator!() const {
@@ -87,11 +131,11 @@ class Blob final {
     }
 
     std::string_view string_view() const {
-        return std::string_view(static_cast<const char *>(data_), size_);
+        return std::string_view(static_cast<const char *>(_data), _size);
     }
 
  private:
-    const void *data_ = nullptr;
-    size_t size_ = 0;
-    BlobHandler *handler_ = nullptr;
+    const void *_data = nullptr;
+    size_t _size = 0;
+    BlobHandler *_handler = nullptr;
 };

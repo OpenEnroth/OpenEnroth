@@ -505,13 +505,13 @@ Blob AudioPlayer::LoadSound(int uSoundID) {  // bit of a kludge (load sound by I
     if (header.uCompressedSize >= header.uDecompressedSize) {
         header.uCompressedSize = header.uDecompressedSize;
         if (header.uDecompressedSize) {
-            return Blob::Read(fAudioSnd, header.uDecompressedSize);
+            return Blob::read(fAudioSnd, header.uDecompressedSize);
         } else {
             logger->Warning("Can't load sound file!");
             return Blob();
         }
     } else {
-        return zlib::Uncompress(Blob::Read(fAudioSnd, header.uCompressedSize), header.uDecompressedSize);
+        return zlib::Uncompress(Blob::read(fAudioSnd, header.uCompressedSize), header.uDecompressedSize);
     }
 }
 
@@ -527,13 +527,13 @@ Blob AudioPlayer::LoadSound(const std::string &pSoundName) {
     if (header.uCompressedSize >= header.uDecompressedSize) {
         header.uCompressedSize = header.uDecompressedSize;
         if (header.uDecompressedSize) {
-            return Blob::Read(fAudioSnd, header.uDecompressedSize);
+            return Blob::read(fAudioSnd, header.uDecompressedSize);
         } else {
             logger->Warning("AudioPlayer: {} can't load sound file!", pSoundName);
             return Blob();
         }
     } else {
-        return zlib::Uncompress(Blob::Read(fAudioSnd, header.uCompressedSize), header.uDecompressedSize);
+        return zlib::Uncompress(Blob::read(fAudioSnd, header.uCompressedSize), header.uDecompressedSize);
     }
 }
 
