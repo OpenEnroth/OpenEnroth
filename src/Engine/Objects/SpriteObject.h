@@ -16,7 +16,11 @@ struct SpriteObject {
     }
 
     int Create(int yaw, int pitch, int a4, int a5);
-    void _46BEF1_apply_spells_aoe();
+
+    /**
+     * @offset 0x46BEF1
+     */
+    bool applyShrinkRayAoe();
     void ExplosionTraps();
     unsigned int GetLifetime();
     SpriteFrame *GetSpriteFrame();
@@ -25,6 +29,11 @@ struct SpriteObject {
     uint8_t GetParticleTrailColorR();
     uint8_t GetParticleTrailColorG();
     uint8_t GetParticleTrailColorB();
+
+    inline void spellSpriteStop() {
+        uSpriteFrameID = 0;
+        vVelocity = Vec3s(0.0, 0.0, 0.0);
+    }
 
     static void UpdateObject_fn0_BLV(unsigned int uLayingItemID);
     static void UpdateObject_fn0_ODM(unsigned int uLayingItemID);
@@ -65,6 +74,13 @@ void CompactLayingItemsList();
 
 extern std::vector<SpriteObject> pSpriteObjects;
 
-bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int pid);
-void Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, signed int pid);  // idb
+/**
+ * @offset 0x46BFFA
+ */
+bool processSpellImpact(unsigned int uLayingItemID, signed int pid);
+
+/**
+ * @offset 0x43A97E
+ */
+void applySpellSpriteDamage(unsigned int uLayingItemID, signed int pid);  // idb
 unsigned int sub_46DEF2(signed int pid, unsigned int uLayingItemID);

@@ -7043,11 +7043,16 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                     playerPtr->PlaySound(SPEECH_AvoidDamage, 0);
                     return;
                 }
-            } else if (spriteType == SPRITE_BLASTER_PROJECTILE || spriteType == 510 ||  // dragonflies firebolt
-                       spriteType == 500 || spriteType == 515 ||
-                       spriteType == 505 || spriteType == 530 ||  // TODO(pskelton): Use enums here
-                       spriteType == 525 || spriteType == 520 ||
-                       spriteType == 535 || spriteType == 540) {
+            } else if (spriteType == SPRITE_BLASTER_PROJECTILE ||
+                       spriteType == SPRITE_PROJECTILE_AIRBOLT ||  // dragonflies firebolt
+                       spriteType == SPRITE_PROJECTILE_EARTHBOLT ||
+                       spriteType == SPRITE_PROJECTILE_FIREBOLT ||
+                       spriteType == SPRITE_PROJECTILE_WATERBOLT ||
+                       spriteType == SPRITE_PROJECTILE_520 ||
+                       spriteType == SPRITE_PROJECTILE_525 ||
+                       spriteType == SPRITE_PROJECTILE_530 ||
+                       spriteType == SPRITE_PROJECTILE_LIGHTBOLT ||
+                       spriteType == SPRITE_PROJECTILE_DARKBOLT) {
                 // reduce missle damage with skills / armour
                 if (!actorPtr->ActorHitOrMiss(playerPtr)) return;
                 if (playerPtr->pPlayerBuffs[PLAYER_BUFF_SHIELD].Active()) dmgToReceive >>= 1;
