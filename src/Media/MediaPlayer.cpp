@@ -20,6 +20,7 @@ extern "C" {
 #include <queue>
 #include <vector>
 #include <thread>
+#include <utility>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -33,6 +34,8 @@ extern "C" {
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/Audio/OpenALSoundProvider.h"
+
+#include "Utility/Memory/FreeDeleter.h"
 
 #include "MediaLogger.h"
 
@@ -114,7 +117,7 @@ class AVStreamWrapper {
     AVCodec *dec;
 #endif
     AVCodecContext *dec_ctx;
-    std::queue<std::shared_ptr<Blob>, std::deque<std::shared_ptr<Blob>>> queue;
+    std::queue<std::shared_ptr<Blob>> queue;
 };
 
 class AVAudioStream : public AVStreamWrapper {
@@ -160,17 +163,18 @@ class AVAudioStream : public AVStreamWrapper {
                     av_frame_free(&frame);
                     return result;
                 }
-                std::shared_ptr<Blob> tmp_buf = Blob::AllocateShared(frame->nb_samples * 2 * 2);
-                uint8_t *dst_channels[8] = { 0 };
-                dst_channels[0] = (uint8_t*)tmp_buf->data();
+                size_t tmp_size = frame->nb_samples * 2 * 2;
+                std::unique_ptr<void, FreeDeleter> tmp_buf(malloc(tmp_size));
+                uint8_t *dst_channels[8] = { static_cast<uint8_t *>(tmp_buf.get()) };
                 int got_samples = swr_convert(
                     converter, dst_channels, frame->nb_samples,
                     (const uint8_t**)frame->data, frame->nb_samples);
+                std::shared_ptr<Blob> tmp_blob = std::make_shared<Blob>(Blob::FromMalloc(tmp_buf.release(), tmp_size));
                 if (got_samples > 0) {
                     if (!result) {
-                        result = tmp_buf;
+                        result = tmp_blob;
                     } else {
-                        queue.push(tmp_buf);
+                        queue.push(tmp_blob);
                     }
                 }
             }
@@ -237,19 +241,20 @@ class AVVideoStream : public AVStreamWrapper {
                 if (av_image_fill_linesizes(linesizes, AV_PIX_FMT_RGB32, width) < 0) {
                     assert(false);
                 }
-                uint8_t *data[4] = { nullptr, nullptr, nullptr, nullptr };
-                std::shared_ptr<Blob> tmp_buf = Blob::AllocateShared(frame->height * linesizes[0] * 2);
-                data[0] = (uint8_t*)tmp_buf->data();
+                size_t tmp_size = frame->height * linesizes[0] * 2;
+                std::unique_ptr<void, FreeDeleter> tmp_buf(malloc(tmp_size));
+                uint8_t *data[4] = { static_cast<uint8_t *>(tmp_buf.get()), nullptr, nullptr, nullptr };
 
-                if (sws_scale(converter, frame->data, frame->linesize, 0, frame->height,
-                    data, linesizes) < 0) {
+                if (sws_scale(converter, frame->data, frame->linesize, 0, frame->height, data, linesizes) < 0) {
                     assert(false);
                 }
 
+                std::shared_ptr<Blob> tmp_blob = std::make_shared<Blob>(Blob::FromMalloc(tmp_buf.release(), tmp_size));
+
                 if (!result) {
-                    result = tmp_buf;
+                    result = tmp_blob;
                 } else {
-                    queue.push(tmp_buf);
+                    queue.push(tmp_blob);
                 }
             }
         }
@@ -1178,17 +1183,20 @@ std::shared_ptr<Blob> AudioBaseDataSource::GetNextBuffer() {
                 if (res < 0) {
                     return buffer;
                 }
-                std::shared_ptr<Blob> tmp_buf = Blob::AllocateShared(frame->nb_samples * pCodecContext->channels * 2);
-                uint8_t *dst_channels[8] = {0};
-                dst_channels[0] = (uint8_t *)tmp_buf->data();
+                size_t tmp_size = frame->nb_samples * pCodecContext->channels * 2;
+                std::unique_ptr<void, FreeDeleter> tmp_buf(malloc(tmp_size));
+                uint8_t *dst_channels[8] = { static_cast<uint8_t *>(tmp_buf.get()) };
                 int got_samples = swr_convert(
                     pConverter, dst_channels, frame->nb_samples,
                     (const uint8_t **)frame->data, frame->nb_samples);
+
+                std::shared_ptr<Blob> tmp_blob = std::make_shared<Blob>(Blob::FromMalloc(tmp_buf.release(), tmp_size));
+
                 if (got_samples > 0) {
                     if (!buffer) {
-                        buffer = tmp_buf;
+                        buffer = tmp_blob;
                     } else {
-                        queue.push(tmp_buf);
+                        queue.push(tmp_blob);
                     }
                 }
             }
@@ -1240,15 +1248,15 @@ bool AudioFileDataSource::Open() {
 
 class AudioBufferDataSource : public AudioBaseDataSource {
  public:
-    explicit AudioBufferDataSource(std::shared_ptr<Blob> buffer);
+    explicit AudioBufferDataSource(Blob buffer);
     virtual ~AudioBufferDataSource() {}
 
     bool Open();
 
  protected:
-    std::shared_ptr<Blob> buffer;
-    uint8_t *buf_pos;
-    uint8_t *buf_end;
+    Blob buffer;
+    const uint8_t *buf_pos;
+    const uint8_t *buf_end;
     uint8_t *avio_ctx_buffer;
     size_t avio_ctx_buffer_size;
     AVIOContext *avio_ctx;
@@ -1260,8 +1268,7 @@ class AudioBufferDataSource : public AudioBaseDataSource {
     int64_t Seek(void *opaque, int64_t offset, int whence);
 };
 
-AudioBufferDataSource::AudioBufferDataSource(std::shared_ptr<Blob> buffer)
-    : buffer(buffer) {
+AudioBufferDataSource::AudioBufferDataSource(Blob buffer) : buffer(std::move(buffer)) {
     buf_pos = nullptr;
     buf_end = nullptr;
     avio_ctx_buffer = nullptr;
@@ -1294,8 +1301,8 @@ bool AudioBufferDataSource::Open() {
 
     pFormatContext->pb = avio_ctx;
 
-    buf_pos = (uint8_t*)buffer->data();
-    buf_end = buf_pos + buffer->size();
+    buf_pos = static_cast<const uint8_t *>(buffer.data());
+    buf_end = buf_pos + buffer.size();
 
     // Open audio file
     if (avformat_open_input(&pFormatContext, nullptr, nullptr, nullptr) < 0) {
@@ -1333,12 +1340,12 @@ int64_t AudioBufferDataSource::seek(void *opaque, int64_t offset, int whence) {
 
 int64_t AudioBufferDataSource::Seek(void *opaque, int64_t offset, int whence) {
     if ((whence & AVSEEK_SIZE) == AVSEEK_SIZE) {
-        return buffer->size();
+        return buffer.size();
     }
     int force = whence & AVSEEK_FORCE;
     whence &= ~AVSEEK_FORCE;
     whence &= ~AVSEEK_SIZE;
-    uint8_t *buf_start = (uint8_t*)buffer->data();
+    const uint8_t *buf_start = static_cast<const uint8_t *>(buffer.data());
     if (whence == SEEK_SET) {
         buf_pos = std::clamp(buf_start + offset, buf_start, buf_end);
         return buf_pos - buf_start;
@@ -1359,8 +1366,6 @@ PAudioDataSource CreateAudioFileDataSource(const std::string &file_name) {
         source);
 }
 
-PAudioDataSource CreateAudioBufferDataSource(std::shared_ptr<Blob> buffer) {
-    std::shared_ptr<AudioBufferDataSource> source =
-        std::make_shared<AudioBufferDataSource>(buffer);
-    return std::dynamic_pointer_cast<IAudioDataSource, AudioBufferDataSource>(source);
+PAudioDataSource CreateAudioBufferDataSource(Blob buffer) {
+    return std::make_shared<AudioBufferDataSource>(std::move(buffer));
 }

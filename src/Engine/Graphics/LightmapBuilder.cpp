@@ -57,7 +57,7 @@ int GetActorTintColor(int max_dimm, int min_dimm, float distance, int bNoLight, 
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
         return 8 * (31 - max_dimm) | ((8 * (31 - max_dimm) | ((31 - max_dimm) << 11)) << 8);
 
-    if (pParty->armageddon_timer) return 0xFFFF0000;
+    if (pParty->armageddon_timer) return 0xFF0000FF;
 
     bool isNight = pWeather->bNight;
     if (engine->IsUnderwater())

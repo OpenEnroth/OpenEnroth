@@ -4,13 +4,13 @@
 #include <string>
 #include <string_view>
 
-#include "OutputStream.h"
+#include "InputStream.h"
 
-class FileOutputStream : public OutputStream {
+class FileInputStream : public InputStream {
  public:
-    FileOutputStream() = default;
-    explicit FileOutputStream(std::string_view path);
-    virtual ~FileOutputStream();
+    FileInputStream() = default;
+    explicit FileInputStream(std::string_view path);
+    virtual ~FileInputStream();
 
     void Open(std::string_view path);
 
@@ -18,9 +18,10 @@ class FileOutputStream : public OutputStream {
         return _file != nullptr;
     }
 
-    virtual void Write(const void *data, size_t size) override;
-    virtual void Flush() override;
+    virtual size_t Read(void *data, size_t size) override;
+    virtual size_t Skip(size_t size) override;
     virtual void Close() override;
+    void Seek(size_t pos);
 
  private:
     void CloseInternal(bool canThrow);

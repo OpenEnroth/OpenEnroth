@@ -24,6 +24,7 @@ set(GUI_SOURCES GUIButton.cpp
                 UI/UIRest.cpp
                 UI/UISaveLoad.cpp
                 UI/UIShops.cpp
+                UI/UISpell.cpp
                 UI/UIStatusBar.cpp
                 UI/UITransition.cpp
                 UI/Books/AutonotesBook.cpp
@@ -60,6 +61,7 @@ set(GUI_HEADERS GUIButton.h
                 UI/UIRest.h
                 UI/UISaveLoad.h
                 UI/UIShops.h
+                UI/UISpell.h
                 UI/UIStatusBar.h
                 UI/UITransition.h
                 UI/Books/AutonotesBook.h

@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include <map>
+#include <vector>
 
 #include "Engine/Graphics/FrameLimiter.h"
 #include "Engine/Graphics/Nuklear.h"
@@ -131,7 +132,7 @@ class RenderOpenGL : public RenderBase {
 
     virtual unsigned short *MakeScreenshot16(int width, int height) override;
 
-    virtual int GetActorsInViewport(int pDepth) override;
+    virtual std::vector<Actor*> getActorsInViewport(int pDepth) override;
 
     virtual void BeginLightmaps() override;
     virtual void EndLightmaps() override;

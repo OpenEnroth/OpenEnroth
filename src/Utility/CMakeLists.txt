@@ -10,6 +10,7 @@ set(UTILITY_SOURCES Color.cpp
                     Streams/InputStream.cpp
                     Streams/MemoryInputStream.cpp
                     Streams/StringOutputStream.cpp
+                    Streams/FileInputStream.cpp
                     Streams/FileOutputStream.cpp)
 
 set(UTILITY_HEADERS Color.h
@@ -39,10 +40,11 @@ set(UTILITY_HEADERS Color.h
                     Streams/OutputStream.h
                     Streams/MemoryInputStream.h
                     Streams/StringOutputStream.h
+                    Streams/FileInputStream.h
                     Streams/FileOutputStream.h)
 
 add_library(utility STATIC ${UTILITY_SOURCES} ${UTILITY_HEADERS})
-target_link_libraries(utility fmt::fmt)
+target_link_libraries(utility fmt::fmt mio::mio)
 target_check_style(utility)
 
 if(ENABLE_TESTS)

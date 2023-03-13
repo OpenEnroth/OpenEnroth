@@ -14,6 +14,7 @@
 #include <string>
 #include <thread>
 #include <functional>
+#include <utility>
 
 #include <cassert>
 #include <cmath>
@@ -928,10 +929,10 @@ bool AudioSample16::SetVolume(float volume) {
     return true;
 }
 
-PAudioSample CreateAudioSample(std::shared_ptr<Blob> buffer) {
+PAudioSample CreateAudioSample(Blob buffer) {
     std::shared_ptr<AudioSample16> sample = std::make_shared<AudioSample16>();
 
-    PAudioDataSource source = CreateAudioBufferDataSource(buffer);
+    PAudioDataSource source = CreateAudioBufferDataSource(std::move(buffer));
     if (!sample->Open(source)) {
         sample = nullptr;
     }

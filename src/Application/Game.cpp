@@ -448,13 +448,10 @@ void Game::EventLoop() {
     GUIWindow *pWindow2;        // ecx@248
     int v37;                    // eax@341
     int v38;                    // eax@358
-    int v42 {};                    // eax@396
     signed int v44;             // eax@398
-    ObjectType v45;                    // edx@398
     signed int v46;             // ecx@398
     char v47;                   // zf@399
     char v48;                   // zf@405
-    BLVFace *pBLVFace;          // ecx@410
     ODMFace *pODMFace;          // ecx@412
     CastSpellInfo *pSpellInfo;  // ecx@415
     int16_t v53;                // ax@431
@@ -468,8 +465,6 @@ void Game::EventLoop() {
     int v65;                    // ecx@486
     int v66;                    // eax@488
     Player *pPlayer2;           // ecx@549
-    Vis_PIDAndDepth v83;             // ecx@554
-    signed int v84;             // ecx@554
     GUIButton *pButton;         // eax@578
     unsigned int v86;           // eax@583
     const char *v87;            // ecx@595
@@ -1117,130 +1112,48 @@ void Game::EventLoop() {
                     DialogueEnding();
                     current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                     continue;
-                case UIMSG_CastSpell_Telekinesis:
-                    HEXRAYS_LOWORD(v42) = vis->get_picked_object_zbuf_val().object_pid;
-                    v44 = (uint16_t)v42;
-                    v45 = PID_TYPE(v44);
-                    uNumSeconds = v44;
-                    v46 = PID_ID(v44);
-                    if (v45 == OBJECT_Actor) {
-                        v47 = pActors[v46].uAIState == Dead;
-                        if (!v47) continue;
-                        pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
-                        pSpellInfo->uFlags &= ~ON_CAST_Telekenesis;
-                        pSpellInfo->uPlayerID_2 = uMessageParam;
-                        pSpellInfo->spell_target_pid = v44;
-                        pParty->pPlayers[pSpellInfo->uPlayerID].SetRecoveryTime(
-                            300);
-                        pGUIWindow_CastTargetedSpell->Release();
-                        pGUIWindow_CastTargetedSpell = 0;
-                        mouse->SetCursorImage("MICON1");
-                        game_ui_status_bar_event_string_time_left = 0;
-                        IsEnchantingInProgress = false;
-                        back_to_game();
-                        continue;
+                case UIMSG_CastSpell_Telekinesis: {
+                    int pid = vis->get_picked_object_zbuf_val().object_pid;
+                    ObjectType type = PID_TYPE(pid);
+                    int id = PID_ID(pid);
+                    bool interactionPossible = false;
+                    if (type == OBJECT_Actor) {
+                        interactionPossible = pActors[id].uAIState == Dead;
                     }
-                    if (v45 == OBJECT_Item) {
-                        v47 = (pObjectList
-                                   ->pObjects[pSpriteObjects[v46].uObjectDescID]
-                                   .uFlags &
-                               0x10) == 0;
-                        if (!v47) continue;
-                        pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
-                        pSpellInfo->uFlags &= ~ON_CAST_Telekenesis;
-                        pSpellInfo->uPlayerID_2 = uMessageParam;
-                        pSpellInfo->spell_target_pid = v44;
-                        pParty->pPlayers[pSpellInfo->uPlayerID].SetRecoveryTime(
-                            300);
-                        pGUIWindow_CastTargetedSpell->Release();
-                        pGUIWindow_CastTargetedSpell = 0;
-                        mouse->SetCursorImage("MICON1");
-                        game_ui_status_bar_event_string_time_left = 0;
-                        IsEnchantingInProgress = false;
-                        back_to_game();
-                        continue;
+                    if (type == OBJECT_Item) {
+                        int flags = pObjectList->pObjects[pSpriteObjects[id].uObjectDescID].uFlags;
+                        interactionPossible = (flags & OBJECT_DESC_UNPICKABLE) != OBJECT_DESC_UNPICKABLE;
                     }
-                    if (v45 == OBJECT_Decoration) {
-                        v48 = pLevelDecorations[v46].uEventID == 0;
-                    } else {
-                        if (v45 != OBJECT_Face) continue;
-                        if (uCurrentlyLoadedLevelType != LEVEL_Indoor) {
-                            pODMFace = &pOutdoor->pBModels[v44 >> 9].pFaces[v46 & 0x3F];
-                            if (!pODMFace->Clickable() ||
-                                !pODMFace->sCogTriggeredID)
-                                continue;
-                            v44 = uNumSeconds;
-                            pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
-                            pSpellInfo->uFlags &= ~ON_CAST_Telekenesis;
-                            pSpellInfo->uPlayerID_2 = uMessageParam;
-                            pSpellInfo->spell_target_pid = v44;
-                            pParty->pPlayers[pSpellInfo->uPlayerID].SetRecoveryTime(300);
-                            pGUIWindow_CastTargetedSpell->Release();
-                            pGUIWindow_CastTargetedSpell = 0;
-                            mouse->SetCursorImage("MICON1");
-                            game_ui_status_bar_event_string_time_left = 0;
-                            IsEnchantingInProgress = false;
-                            back_to_game();
-                            continue;
+                    if (type == OBJECT_Decoration) {
+                        interactionPossible = pLevelDecorations[id].uEventID != 0;
+                    }
+                    if (type == OBJECT_Face) {
+                        if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+                            ODMFace *pODMFace = &pOutdoor->pBModels[pid >> 9].pFaces[id];
+                            interactionPossible = (pODMFace->Clickable() && pODMFace->sCogTriggeredID);
+                        } else { // Indoor
+                            BLVFace *pBLVFace = &pIndoor->pFaces[id];
+                            if (pBLVFace->Clickable()) {
+                                interactionPossible = pIndoor->pFaceExtras[pBLVFace->uFaceExtraID].uEventID != 0;
+                            }
                         }
-                        pBLVFace = &pIndoor->pFaces[v46];
-                        if (!pBLVFace->Clickable())
-                            continue;
-                        v48 = pIndoor->pFaceExtras[pBLVFace->uFaceExtraID]
-                                  .uEventID == 0;
                     }
-                    if (v48) continue;
-                    pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
-                    pSpellInfo->uFlags &= ~ON_CAST_Telekenesis;
-                    pSpellInfo->uPlayerID_2 = uMessageParam;
-                    pSpellInfo->spell_target_pid = v44;
-                    pParty->pPlayers[pSpellInfo->uPlayerID].SetRecoveryTime(
-                        300);
-                    pGUIWindow_CastTargetedSpell->Release();
-                    pGUIWindow_CastTargetedSpell = 0;
-                    mouse->SetCursorImage("MICON1");
-                    game_ui_status_bar_event_string_time_left = 0;
-                    IsEnchantingInProgress = false;
-                    back_to_game();
+                    if (interactionPossible) {
+                        spellTargetPicked(pid, -1);
+                        CloseTargetedSpellWindow();
+                    }
                     continue;
-                case UIMSG_CastSpell_Character_Big_Improvement:  // Preservation
-                                                                 // and blessing,
-                                                                 // treatment
-                                                                 // paralysis,
-                                                                 // hand
-                                                                 // hammers(individual
-                                                                 // upgrade)
-                case UIMSG_CastSpell_Character_Small_Improvement:  // Fate, cure
-                case UIMSG_HiredNPC_CastSpell:
+                }
+                case UIMSG_CastSpell_TargetCharacter:
+                case UIMSG_CastSpell_Hireling:
                     pCurrentFrameMessageQueue->Flush();
                     if (IsEnchantingInProgress) {
+                        // Change character while enchanting is active
+                        // TODO(Nik-RE-dev): need separate message type
                         uActiveCharacter = uMessageParam;
                     } else {
-                        if (pGUIWindow_CastTargetedSpell) {
-                            pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
-                            switch (uMessage) {
-                                case UIMSG_CastSpell_Character_Big_Improvement:
-                                    pSpellInfo->uFlags &= ~ON_CAST_SinglePlayer_BigImprovementAnim;
-                                    break;
-                                case UIMSG_CastSpell_Character_Small_Improvement:
-                                    pSpellInfo->uFlags &= ~ON_CAST_MonsterSparkles;
-                                    break;
-                                case UIMSG_HiredNPC_CastSpell:
-                                    pSpellInfo->uFlags &= ~ON_CAST_DarkSacrifice;
-                                    break;
-                                default:
-                                    break;
-                            }
-                            pSpellInfo->uPlayerID_2 = uMessageParam;
-                            pParty->pPlayers[pSpellInfo->uPlayerID]
-                                .SetRecoveryTime(300);
-                            pGUIWindow_CastTargetedSpell->Release();
-                            pGUIWindow_CastTargetedSpell = 0;
-                            pEventTimer->Resume();
-                            mouse->SetCursorImage("MICON1");
-                            game_ui_status_bar_event_string_time_left = 0;
-                            IsEnchantingInProgress = false;
-                        }
+                        spellTargetPicked(PID_INVALID, uMessageParam);
+                        CloseTargetedSpellWindow();
                     }
                     continue;
 
@@ -1598,33 +1511,16 @@ void Game::EventLoop() {
                     continue;
                 }
 
-                case UIMSG_CastSpell_Monster_Improvement:
-                case UIMSG_CastSpell_Shoot_Monster:  // FireBlow, Lightning, Ice
-                                                     // Lightning, Swarm,
-                    v83 = vis->get_picked_object_zbuf_val();
-                    v44 = v83.object_pid;
-                    v84 = v83.depth;
-                    if (PID_TYPE(v44) != OBJECT_Actor || v84 >= engine->config->gameplay.RangedAttackDepth.Get())
-                        continue;
-                    pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
-                    if (uMessage == UIMSG_CastSpell_Shoot_Monster) {
-                        pSpellInfo->uFlags &= ~ON_CAST_TargetCrosshair;
-                    } else {
-                        if (uMessage == UIMSG_CastSpell_Monster_Improvement)
-                            pSpellInfo->uFlags &= ~ON_CAST_MonsterSparkles;
-                        else
-                            pSpellInfo->uFlags &= ~ON_CAST_DarkSacrifice;
+                case UIMSG_CastSpell_TargetActorBuff:
+                case UIMSG_CastSpell_TargetActor: {
+                    int pid = vis->get_picked_object_zbuf_val().object_pid;
+                    int depth = vis->get_picked_object_zbuf_val().depth;
+                    if (PID_TYPE(pid) == OBJECT_Actor && depth < engine->config->gameplay.RangedAttackDepth.Get()) {
+                        spellTargetPicked(pid, -1);
+                        CloseTargetedSpellWindow();
                     }
-                    pSpellInfo->uPlayerID_2 = uMessageParam;
-                    pSpellInfo->spell_target_pid = v44;
-                    pParty->pPlayers[pSpellInfo->uPlayerID].SetRecoveryTime(300);
-                    pGUIWindow_CastTargetedSpell->Release();
-                    pGUIWindow_CastTargetedSpell = 0;
-                    mouse->SetCursorImage("MICON1");
-                    game_ui_status_bar_event_string_time_left = 0;
-                    IsEnchantingInProgress = false;
-                    back_to_game();
                     continue;
+                }
                 case UIMSG_1C:
                     __debugbreak();
                     if (!uActiveCharacter || current_screen_type != CURRENT_SCREEN::SCREEN_GAME)
@@ -2587,6 +2483,7 @@ void Game::GameLoop() {
             }
             pAudioPlayer->UpdateSounds();
             // expire timed status messages
+            // TODO(pskelton): check tickcount usage here
             if (game_ui_status_bar_event_string_time_left != 0 && game_ui_status_bar_event_string_time_left < platform->tickCount()) {
                  GameUI_StatusBar_Clear();
             }
@@ -2672,7 +2569,7 @@ void Game::GameLoop() {
                 } else {
                     pParty->vPosition.x = 12552;  // respawn on emerald isle
                     pParty->vPosition.y = 1816;
-                    pParty->vPosition.z = 0;
+                    pParty->vPosition.z = 193;
                     pParty->sRotationZ = 512;
                     pLocationName = config->gameplay.StartingMap.Get().c_str();
                 }

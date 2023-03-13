@@ -240,7 +240,7 @@ bool Alpha_LOD_Loader::Load(unsigned int *out_width, unsigned int *out_height,
     return true;
 }
 
-bool PCX_Loader::InternalLoad(void *file, size_t filesize,
+bool PCX_Loader::InternalLoad(const void *file, size_t filesize,
                                    unsigned int *width, unsigned int *height,
                                    void **pixels, IMAGE_FORMAT *format) {
     IMAGE_FORMAT request_format = IMAGE_FORMAT_A8B8G8R8;

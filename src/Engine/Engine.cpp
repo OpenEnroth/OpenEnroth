@@ -1332,6 +1332,7 @@ unsigned int GetGravityStrength() {
 void GameUI_StatusBar_Update(bool force_hide) {
     if (force_hide ||
         game_ui_status_bar_event_string_time_left &&
+        // TODO(pskelton): check tickcount usage here
             platform->tickCount() >= game_ui_status_bar_event_string_time_left && !pEventTimer->bPaused) {
         game_ui_status_bar_event_string_time_left = 0;
     }
@@ -1445,37 +1446,20 @@ void back_to_game() {
 
 //----- (00494035) --------------------------------------------------------
 void _494035_timed_effects__water_walking_damage__etc() {
-    //    unsigned int v4; // edi@1
-    int v24;             // ecx@60
-    int v26;             // ecx@64
-    int v28;             // ecx@68
-    int v30;             // ecx@72
-    int v32;             // ecx@76
-    int v34;             // ecx@80
-    int v36;             // ecx@84
-    int v38;             // ecx@88
-    int v40;             // ecx@92
-    int v42;             // ecx@96
-    signed int a2a;      // [sp+18h] [bp-18h]@47
-    signed int old_day;  // [sp+1Ch] [bp-14h]@47
-    signed int old_hour;
-
-    old_day = pParty->uCurrentDayOfMonth;
-    old_hour = pParty->uCurrentHour;
+    int old_day = pParty->uCurrentDayOfMonth;
+    int old_hour = pParty->uCurrentHour;
 
     pParty->GetPlayingTime().value += pEventTimer->uTimeElapsed;
-
     pParty->uCurrentTimeSecond = pParty->GetPlayingTime().GetSecondsFraction();
     pParty->uCurrentMinute = pParty->GetPlayingTime().GetMinutesFraction();
     pParty->uCurrentHour = pParty->GetPlayingTime().GetHoursOfDay();
     pParty->uCurrentMonthWeek = pParty->GetPlayingTime().GetDays() / 7 & 3;
     pParty->uCurrentDayOfMonth = pParty->GetPlayingTime().GetDays() % 28;
     pParty->uCurrentMonth = pParty->GetPlayingTime().GetMonthsOfYear();
-    pParty->uCurrentYear =
-        pParty->GetPlayingTime().GetMonths() / 12 + game_starting_year;
-    if (pParty->uCurrentHour >= 3 &&
-        (old_hour < 3 ||
-         pParty->uCurrentDayOfMonth > old_day)) {  // new day dawns
+    pParty->uCurrentYear = pParty->GetPlayingTime().GetYears() + game_starting_year;
+
+    // TODO(pskelton): Condition looks wierd, investigate, possible cause of #504
+    if (pParty->uCurrentHour >= 3 && (old_hour < 3 || pParty->uCurrentDayOfMonth > old_day)) {  // new day dawns
         pParty->pHirelings[0].bHasUsedTheAbility = false;
         pParty->pHirelings[1].bHasUsedTheAbility = false;
 
@@ -1484,39 +1468,36 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
         ++pParty->days_played_without_rest;
         if (pParty->days_played_without_rest > 1) {
-            for (uint i = 0; i < 4; ++i)
-                pParty->pPlayers[i].SetCondWeakWithBlockCheck(0);
+            for (Player& player : pParty->pPlayers)
+                player.SetCondWeakWithBlockCheck(0);
 
+            // starving
             if (pParty->GetFood() > 0) {
                 pParty->TakeFood(1);
             } else {
-                for (uint i = 0; i < 4; ++i) {
-                    pParty->pPlayers[i].sHealth =
-                        pParty->pPlayers[i].sHealth /
-                        (pParty->days_played_without_rest + 1) +
-                        1;
+                for (Player &player : pParty->pPlayers) {
+                    player.sHealth = player.sHealth / (pParty->days_played_without_rest + 1) + 1;
                 }
             }
 
+            // players go insane without rest
             if (pParty->days_played_without_rest > 3) {
-                for (uint i = 0; i < 4; ++i) {
-                    pParty->pPlayers[i].Zero();
-                    if (!pParty->pPlayers[i].IsPertified() &&
-                        !pParty->pPlayers[i].IsEradicated() &&
-                        !pParty->pPlayers[i].IsDead()) {
+                for (Player &player : pParty->pPlayers) {
+                    // TODO(pskelton): rename Zero to ResetBonuses
+                    player.Zero();
+                    if (!player.IsPertified() && !player.IsEradicated() && !player.IsDead()) {
                         if (grng->Random(100) < 5 * pParty->days_played_without_rest)
-                            pParty->pPlayers[i].SetCondDeadWithBlockCheck(0);
-                        if (grng->Random(100) <
-                            10 * pParty->days_played_without_rest)
-                            pParty->pPlayers[i].SetCondInsaneWithBlockCheck(0);
+                            player.SetCondDeadWithBlockCheck(0);
+                        if (grng->Random(100) < 10 * pParty->days_played_without_rest)
+                            player.SetCondInsaneWithBlockCheck(0);
                     }
                 }
             }
         }
         if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) pOutdoor->SetFog();
 
-        for (uint i = 0; i < 4; ++i)
-            pParty->pPlayers[i].uNumDivineInterventionCastsThisDay = 0;
+        for (Player &player : pParty->pPlayers)
+            player.uNumDivineInterventionCastsThisDay = 0;
     }
 
     // water damage
@@ -1546,131 +1527,130 @@ void _494035_timed_effects__water_walking_damage__etc() {
         pParty->_6FC_water_lava_timer < pParty->GetPlayingTime().value) {
         pParty->_6FC_water_lava_timer = pParty->GetPlayingTime().value + 128;
 
-        for (uint pl = 1; pl <= 4; pl++) {
-            pPlayers[pl]->ReceiveDamage(
-                (int64_t)pPlayers[pl]->GetMaxHealth() * 0.1, DMGT_FIRE);
+        for (Player &player : pParty->pPlayers) {
+            player.ReceiveDamage((int64_t)player.GetMaxHealth() * 0.1, DMGT_FIRE);
             if (pParty->uFlags & PARTY_FLAGS_1_BURNING) {
                 GameUI_SetStatusBarShortNotification(localization->GetString(LSTR_ON_FIRE));
             }
         }
     }
+
     RegeneratePartyHealthMana();
-    uint party_condition_flag = 4;
-    a2a = pEventTimer->uTimeElapsed;
-    if (pParty->uFlags2 &
-        PARTY_FLAGS_2_RUNNING) {  //замедление восстановления при беге
-        a2a *= 0.5f;
-        if (a2a < 1) a2a = 1;
+
+    uint recoveryTimeDt = pEventTimer->uTimeElapsed;
+    recoveryTimeDt += pParty->_roundingDt;
+    pParty->_roundingDt = 0;
+    if (pParty->uFlags2 & PARTY_FLAGS_2_RUNNING && recoveryTimeDt > 0) {  // half recovery speed if party is running
+        pParty->_roundingDt = recoveryTimeDt % 2;
+        recoveryTimeDt /= 2;
     }
 
-    for (uint pl = 1; pl <= 4; pl++) {
-        if (pPlayers[pl]->uTimeToRecovery)
-            pPlayers[pl]->Recover(GameTime(a2a));  //восстановление активности
-        if (pPlayers[pl]->GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) +
-                    pPlayers[pl]->sHealth + pPlayers[pl]->uEndurance >=
-                1 ||
-            pPlayers[pl]->pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active()) {
-            if (pPlayers[pl]->sHealth < 1)
-                pPlayers[pl]->SetCondition(Condition_Unconscious, 0);
+    uint numPlayersCouldAct = pParty->pPlayers.size();
+    for (Player &player : pParty->pPlayers) {
+        if (player.uTimeToRecovery && recoveryTimeDt > 0)
+            player.Recover(GameTime(recoveryTimeDt));
+
+        if (player.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) +
+            player.sHealth + player.uEndurance >= 1 ||
+            player.pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active()) {
+            if (player.sHealth < 1)
+                player.SetCondition(Condition_Unconscious, 0);
         } else {
-            pPlayers[pl]->SetCondition(Condition_Dead, 0);
+            player.SetCondition(Condition_Dead, 0);
         }
-        if (pPlayers[pl]->field_E0) {
-            v24 = pPlayers[pl]->field_E0 - pEventTimer->uTimeElapsed;
+
+        if (player.field_E0) {
+            int v24 = player.field_E0 - pEventTimer->uTimeElapsed;
             if (v24 > 0) {
-                pPlayers[pl]->field_E0 = v24;
+                player.field_E0 = v24;
             } else {
-                pPlayers[pl]->field_E0 = 0;
+                player.field_E0 = 0;
             }
         }
-        if (pPlayers[pl]->field_E4) {
-            v26 = pPlayers[pl]->field_E4 - pEventTimer->uTimeElapsed;
+        if (player.field_E4) {
+            int v26 = player.field_E4 - pEventTimer->uTimeElapsed;
             if (v26 > 0) {
-                pPlayers[pl]->field_E4 = v26;
+                player.field_E4 = v26;
             } else {
-                pPlayers[pl]->field_E4 = 0;
+                player.field_E4 = 0;
             }
         }
-        if (pPlayers[pl]->field_E8) {
-            v28 = pPlayers[pl]->field_E8 - pEventTimer->uTimeElapsed;
+        if (player.field_E8) {
+            int v28 = player.field_E8 - pEventTimer->uTimeElapsed;
             if (v28 > 0) {
-                pPlayers[pl]->field_E8 = v28;
+                player.field_E8 = v28;
             } else {
-                pPlayers[pl]->field_E8 = 0;
+                player.field_E8 = 0;
             }
         }
-        if (pPlayers[pl]->field_EC) {
-            v30 = pPlayers[pl]->field_EC - pEventTimer->uTimeElapsed;
+        if (player.field_EC) {
+            int v30 = player.field_EC - pEventTimer->uTimeElapsed;
             if (v30 > 0) {
-                pPlayers[pl]->field_EC = v30;
+                player.field_EC = v30;
             } else {
-                pPlayers[pl]->field_EC = 0;
+                player.field_EC = 0;
             }
         }
-        if (pPlayers[pl]->field_F0) {
-            v32 = pPlayers[pl]->field_F0 - pEventTimer->uTimeElapsed;
+        if (player.field_F0) {
+            int v32 = player.field_F0 - pEventTimer->uTimeElapsed;
             if (v32 > 0) {
-                pPlayers[pl]->field_F0 = v32;
+                player.field_F0 = v32;
             } else {
-                pPlayers[pl]->field_F0 = 0;
+                player.field_F0 = 0;
             }
         }
-        if (pPlayers[pl]->field_F4) {
-            v34 = pPlayers[pl]->field_F4 - pEventTimer->uTimeElapsed;
+        if (player.field_F4) {
+            int v34 = player.field_F4 - pEventTimer->uTimeElapsed;
             if (v34 > 0) {
-                pPlayers[pl]->field_F4 = v34;
+                player.field_F4 = v34;
             } else {
-                pPlayers[pl]->field_F4 = 0;
+                player.field_F4 = 0;
             }
         }
-        if (pPlayers[pl]->field_F8) {
-            v36 = pPlayers[pl]->field_F8 - pEventTimer->uTimeElapsed;
+        if (player.field_F8) {
+            int v36 = player.field_F8 - pEventTimer->uTimeElapsed;
             if (v36 > 0) {
-                pPlayers[pl]->field_F8 = v36;
+                player.field_F8 = v36;
             } else {
-                pPlayers[pl]->field_F8 = 0;
+                player.field_F8 = 0;
             }
         }
-        if (pPlayers[pl]->field_FC) {
-            v38 = pPlayers[pl]->field_FC - pEventTimer->uTimeElapsed;
+        if (player.field_FC) {
+            int v38 = player.field_FC - pEventTimer->uTimeElapsed;
             if (v38 > 0) {
-                pPlayers[pl]->field_FC = v38;
+                player.field_FC = v38;
             } else {
-                pPlayers[pl]->field_FC = 0;
+                player.field_FC = 0;
             }
         }
-        if (pPlayers[pl]->field_100) {
-            v40 = pPlayers[pl]->field_100 - pEventTimer->uTimeElapsed;
+        if (player.field_100) {
+            int v40 = player.field_100 - pEventTimer->uTimeElapsed;
             if (v40 > 0) {
-                pPlayers[pl]->field_100 = v40;
+                player.field_100 = v40;
             } else {
-                pPlayers[pl]->field_100 = 0;
+                player.field_100 = 0;
             }
         }
-        if (pPlayers[pl]->field_104) {
-            v42 = pPlayers[pl]->field_104 - pEventTimer->uTimeElapsed;
+        if (player.field_104) {
+            int v42 = player.field_104 - pEventTimer->uTimeElapsed;
             if (v42 > 0) {
-                pPlayers[pl]->field_104 = v42;
+                player.field_104 = v42;
             } else {
-                pPlayers[pl]->field_104 = 0;
+                player.field_104 = 0;
             }
         }
-        if (pPlayers[pl]->conditions.Has(Condition_Sleep) ||
-            pPlayers[pl]->conditions.Has(Condition_Paralyzed) ||
-            pPlayers[pl]->conditions.Has(Condition_Unconscious) ||
-            pPlayers[pl]->conditions.Has(Condition_Dead) ||
-            pPlayers[pl]->conditions.Has(Condition_Petrified) ||
-            pPlayers[pl]->conditions.Has(Condition_Eradicated)) {
-            --party_condition_flag;
+
+        if (!player.CanAct()) {
+            --numPlayersCouldAct;
         }
 
         for (uint k = 0; k < 24; ++k) {
-            pPlayers[pl]->pPlayerBuffs[k].IsBuffExpiredToTime(
+            player.pPlayerBuffs[k].IsBuffExpiredToTime(
                 pParty->GetPlayingTime());
         }
 
-        if (pPlayers[pl]->pPlayerBuffs[PLAYER_BUFF_HASTE].Expired()) {
-            pPlayers[pl]->SetCondition(Condition_Weak, 0);
+        if (player.pPlayerBuffs[PLAYER_BUFF_HASTE].Expired()) {
+            player.SetCondition(Condition_Weak, 0);
         }
     }
 
@@ -1681,8 +1661,8 @@ void _494035_timed_effects__water_walking_damage__etc() {
     }
 
     if (pParty->pPartyBuffs[PARTY_BUFF_HASTE].Expired()) {
-        for (uint i = 0; i < 4; ++i)
-            pParty->pPlayers[i].SetCondition(Condition_Weak, 0);
+        for (Player &player : pParty->pPlayers)
+            player.SetCondition(Condition_Weak, 0);
     }
 
     // Check if Fly/Water Walk caster can act
@@ -1702,28 +1682,24 @@ void _494035_timed_effects__water_walking_damage__etc() {
         }
     }
 
-    if (!party_condition_flag) {
+    if (!numPlayersCouldAct) {
         if (current_screen_type != CURRENT_SCREEN::SCREEN_REST) {
-            for (uint pl = 1; pl <= 4; pl++) {
-                if (pPlayers[pl]->conditions.Has(Condition_Sleep)) {
-                    pPlayers[pl]->conditions.Reset(Condition_Sleep);
-                    party_condition_flag = 1;
+            for (Player &player : pParty->pPlayers) {
+                // if someone is sleeping - wake them up
+                if (player.conditions.Has(Condition_Sleep)) {
+                    player.conditions.Reset(Condition_Sleep);
+                    numPlayersCouldAct = 1;
                     break;
                 }
             }
-            if (!party_condition_flag || _5C35C0_force_party_death)
+            if (!numPlayersCouldAct || _5C35C0_force_party_death)
                 uGameState = GAME_STATE_PARTY_DIED;
         }
     }
 
-    if (uActiveCharacter) {  // выбор следующего после пропускающего ход
+    if (uActiveCharacter) {
         if (current_screen_type != CURRENT_SCREEN::SCREEN_REST) {
-            if (pPlayers[uActiveCharacter]->conditions.Has(Condition_Sleep) ||
-                pPlayers[uActiveCharacter]->conditions.Has(Condition_Paralyzed) ||
-                pPlayers[uActiveCharacter]->conditions.Has(Condition_Unconscious) ||
-                pPlayers[uActiveCharacter]->conditions.Has(Condition_Dead) ||
-                pPlayers[uActiveCharacter]->conditions.Has(Condition_Petrified) ||
-                pPlayers[uActiveCharacter]->conditions.Has(Condition_Eradicated)) {
+            if (!pPlayers[uActiveCharacter]->CanAct()) {
                 uActiveCharacter = pParty->GetNextActiveCharacter();
             }
         }

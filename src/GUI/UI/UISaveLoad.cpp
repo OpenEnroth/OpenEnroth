@@ -238,7 +238,7 @@ void GUIWindow_Load::Update() {
 
 static void UI_DrawSaveLoad(bool save) {
     GUIWindow save_load_window;
-    unsigned int pSaveFiles;
+    int pSaveFiles;
 
     if (pSavegameUsedSlots[uLoadGameUI_SelectedSlot]) {
         save_load_window.Init();
@@ -306,13 +306,19 @@ static void UI_DrawSaveLoad(bool save) {
             pSaveFiles = MAX_SAVE_SLOTS;
 
             // ingame save scroll bar
-            float ypos3 = (float(pSaveListPosition) / (pSaveFiles - 7)) * 89.f;
-            render->DrawTextureNew(216 / 640.f, (217 + ypos3) / 480.f, scrollstop);
+            int ypos{ 0 };
+            if (pSaveFiles > 7)
+                ypos = (float(pSaveListPosition) / (pSaveFiles - 7)) * 89.0f;
+            if (pSaveListPosition > pSaveFiles - 7) ypos = 89;
+            render->DrawTextureNew(216 / 640.f, (217 + ypos) / 480.f, scrollstop);
         } else {
             pSaveFiles = uNumSavegameFiles;
 
             // load scroll bar
-            float ypos = (float(pSaveListPosition) / (pSaveFiles - 7)) * 89.f;
+            int ypos{ 0 };
+            if (pSaveFiles > 7)
+                ypos = (float(pSaveListPosition) / (pSaveFiles - 7)) * 89.0f;
+            if (pSaveListPosition > pSaveFiles - 7) ypos = 89;
             render->DrawTextureNew((216+ pGUIWindow_CurrentMenu->uFrameX) / 640.f, (217 + pGUIWindow_CurrentMenu->uFrameY + ypos) / 480.f, scrollstop);
         }
 
@@ -405,6 +411,7 @@ void MainMenuLoad_EventLoop() {
         case UIMSG_SaveLoadScroll: {
             // pskelton add for scroll click
             int pSaveFiles{ static_cast<int>(uNumSavegameFiles) };
+            if (!pSaveFiles) break;
             int mx{}, my{};
             mouse->GetClickPos(&mx, &my);
             // 276 is offset down from top (216 + 60 frame)

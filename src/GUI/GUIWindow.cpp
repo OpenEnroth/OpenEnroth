@@ -132,14 +132,6 @@ bool PauseGameDrawing() {
     return false;
 }
 
-OnCastTargetedSpell::OnCastTargetedSpell(Pointi position, Sizei dimensions, WindowData data, const std::string &hint)
-    : GUIWindow(WINDOW_CastSpell, position, dimensions, data, hint) {
-    pEventTimer->Pause();
-    pAudioPlayer->PauseSounds(-1);
-    mouse->SetCursorImage("MICON2");
-    GameUI_SetStatusBar(LSTR_CHOOSE_TARGET);
-}
-
 void GUIMessageQueue::Flush() {
     if (qMessages.size()) {
         GUIMessage message = qMessages.front();
@@ -734,6 +726,7 @@ void GUIWindow::InitializeGUI() {
 }
 
 void GUIWindow::DrawFlashingInputCursor(int uX, int uY, GUIFont *a2) {
+    // TODO(pskelton): check tickcount usage here
     if (platform->tickCount() % 1000 > 500) {
         DrawText(a2, {uX, uY}, 0, "_", 0, 0, 0);
     }
@@ -1570,22 +1563,24 @@ void OracleDialogue() {
 
     // missing item is lich jar and we need to bind soul vessel to lich class character
     if (item_id == ITEM_QUEST_LICH_JAR_FULL) {
-        for (uint i = 0; i < 4; i++) {
+        for (int i = 0; i < pParty->pPlayers.size(); i++) {
             if (pParty->pPlayers[i].classType == PLAYER_CLASS_LICH) {
                 bool have_vessels_soul = false;
-                for (uint pl = 0; pl < 4; pl++) {
-                    for (int idx = 0; idx < 126; idx++) {
-                        if (pParty->pPlayers[pl].pInventoryItemList[idx].uItemID == ITEM_QUEST_LICH_JAR_FULL) {
-                            if (!pParty->pPlayers[pl].pInventoryItemList[idx].uHolderPlayer)
-                                item = &pParty->pPlayers[pl].pInventoryItemList[idx];
-                            if (pParty->pPlayers[pl].pInventoryItemList[idx].uHolderPlayer == i + 1)
+                for (Player &player : pParty->pPlayers) {
+                    for (int idx = 0; idx < Player::INVENTORY_SLOT_COUNT; idx++) {
+                        if (player.pInventoryItemList[idx].uItemID == ITEM_QUEST_LICH_JAR_FULL) {
+                            if (!player.pInventoryItemList[idx].uHolderPlayer) {
+                                item = &player.pInventoryItemList[idx];
+                            }
+                            if (player.pInventoryItemList[idx].uHolderPlayer == i) {
                                 have_vessels_soul = true;
+                            }
                         }
                     }
                 }
 
                 if (item && !have_vessels_soul) {
-                    item->uHolderPlayer = i + 1;
+                    item->uHolderPlayer = i;
                     break;
                 }
             }

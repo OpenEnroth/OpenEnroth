@@ -1,3 +1,5 @@
+#include <vector>
+
 #include "Engine/Spells/CastSpellInfo.h"
 
 #include "Engine/Awards.h"
@@ -27,6 +29,7 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
+#include "GUI/UI/UISpell.h"
 
 #include "Io/Mouse.h"
 
@@ -992,20 +995,18 @@ void CastSpellInfoHelpers::castSpell() {
                         spellFailed(pCastSpell, LSTR_CANT_INFERNO_OUTDOORS);
                         continue;
                     }
-                    int mon_num = render->GetActorsInViewport(4096);
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.uSectorID = 0;
                     pSpellSprite.field_60_distance_related_prolly_lod = 0;
                     pSpellSprite.uFacing = 0;
-                    for (uint i = 0; i < mon_num; i++) {
+                    for (Actor* actor : render->getActorsInViewport(4096)) {
                         Vec3i spell_velocity = Vec3i(0, 0, 0);
-                        Actor *target_actor = &pActors[_50BF30_actors_in_viewport_ids[i]];
-                        pSpellSprite.vPosition = target_actor->vPosition - Vec3i(0, 0, target_actor->uActorHeight * -0.8);
-                        pSpellSprite.spell_target_pid = PID(OBJECT_Actor, _50BF30_actors_in_viewport_ids[i]);
-                        Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), _50BF30_actors_in_viewport_ids[i], &spell_velocity);
+                        pSpellSprite.vPosition = actor->vPosition - Vec3i(0, 0, actor->uActorHeight * -0.8);
+                        pSpellSprite.spell_target_pid = PID(OBJECT_Actor, actor->id);
+                        Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), actor->id, &spell_velocity);
                         spell_fx_renderer->RenderAsSprite(&pSpellSprite);
-                        spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.OrangeyRed.C32(), 0x40);
                     }
+                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.OrangeyRed.C32(), 0x40);
                     break;
                 }
 
@@ -1740,23 +1741,21 @@ void CastSpellInfoHelpers::castSpell() {
                             assert(false);
                     }
 
-                    int mon_num = render->GetActorsInViewport(4096);
-                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.White.C32(), 192);
                     // ++pSpellSprite.uType;
                     pSpellSprite.uType = SPRITE_SPELL_SPIRIT_TURN_UNDEAD_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.uSectorID = 0;
                     pSpellSprite.field_60_distance_related_prolly_lod = 0;
                     pSpellSprite.uFacing = 0;
-                    for (int i = 0; i < mon_num; ++i) {
-                        Actor *target_actor = &pActors[_50BF30_actors_in_viewport_ids[i]];
-                        if (MonsterStats::BelongsToSupertype(target_actor->pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
-                            pSpellSprite.vPosition = target_actor->vPosition - Vec3i(0, 0, target_actor->uActorHeight * -0.8);
-                            pSpellSprite.spell_target_pid = PID(OBJECT_Actor, _50BF30_actors_in_viewport_ids[i]);
+                    for (Actor* actor : render->getActorsInViewport(4096)) {
+                        if (MonsterStats::BelongsToSupertype(actor->pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
+                            pSpellSprite.vPosition = actor->vPosition - Vec3i(0, 0, actor->uActorHeight * -0.8);
+                            pSpellSprite.spell_target_pid = PID(OBJECT_Actor, actor->id);
                             pSpellSprite.Create(0, 0, 0, 0);
-                            target_actor->pActorBuffs[ACTOR_BUFF_AFRAID].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
+                            actor->pActorBuffs[ACTOR_BUFF_AFRAID].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
                         }
                     }
+                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.White.C32(), 192);
                     break;
                 }
 
@@ -2080,26 +2079,24 @@ void CastSpellInfoHelpers::castSpell() {
                             assert(false);
                     }
 
-                    int mon_num = render->GetActorsInViewport(4096);
-                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.Night.C32(), 192);
                     // ++pSpellSprite.uType;
                     pSpellSprite.uType = SPRITE_SPELL_MIND_MASS_FEAR_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.uSectorID = 0;
                     pSpellSprite.field_60_distance_related_prolly_lod = 0;
                     pSpellSprite.uFacing = 0;
-                    for (int i = 0; i < mon_num; ++i) {
-                        Actor *target_actor = &pActors[_50BF30_actors_in_viewport_ids[i]];
-                        if (MonsterStats::BelongsToSupertype(target_actor->pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
-                            break;
-                        }
-                        pSpellSprite.vPosition = target_actor->vPosition - Vec3i(0, 0, target_actor->uActorHeight * -0.8);
-                        pSpellSprite.spell_target_pid = PID(OBJECT_Actor, _50BF30_actors_in_viewport_ids[i]);
-                        pSpellSprite.Create(0, 0, 0, 0);
-                        if (target_actor->DoesDmgTypeDoDamage(DMGT_MIND)) {
-                            target_actor->pActorBuffs[ACTOR_BUFF_AFRAID].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
+                    for (Actor* actor : render->getActorsInViewport(4096)) {
+                        // Change: do not exit loop when first undead monster is found
+                        if (!MonsterStats::BelongsToSupertype(actor->pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
+                            pSpellSprite.vPosition = actor->vPosition - Vec3i(0, 0, actor->uActorHeight * -0.8);
+                            pSpellSprite.spell_target_pid = PID(OBJECT_Actor, actor->id);
+                            pSpellSprite.Create(0, 0, 0, 0);
+                            if (actor->DoesDmgTypeDoDamage(DMGT_MIND)) {
+                                actor->pActorBuffs[ACTOR_BUFF_AFRAID].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
+                            }
                         }
                     }
+                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.Night.C32(), 192);
                     break;
                 }
 
@@ -2366,32 +2363,24 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_LIGHT_DISPEL_MAGIC:
                 {
-                    Vec3i spell_velocity = Vec3i(0, 0, 0);
                     sRecoveryTime -= spell_level;
-                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.VibrantGreen.C32(), 192);
-                    int mon_num = render->GetActorsInViewport(4096);
                     // ++pSpellSprite.uType;
                     pSpellSprite.uType = SPRITE_SPELL_LIGHT_DISPEL_MAGIC_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.uSectorID = 0;
                     pSpellSprite.field_60_distance_related_prolly_lod = 0;
                     pSpellSprite.uFacing = 0;
-                    for (int i = 0; i < mon_num; ++i) {
-                        Actor *target_actor = &pActors[_50BF30_actors_in_viewport_ids[i]];
-                        pSpellSprite.vPosition = target_actor->vPosition - Vec3i(0, 0, target_actor->uActorHeight * -0.8);
-                        pSpellSprite.spell_target_pid = PID(OBJECT_Actor, _50BF30_actors_in_viewport_ids[i]);
-                        Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)),
-                                _50BF30_actors_in_viewport_ids[i], &spell_velocity);
-                    }
-                    for (int i = 0; i < mon_num; ++i) {
-                        Actor *target_actor = &pActors[_50BF30_actors_in_viewport_ids[i]];
-                        pSpellSprite.vPosition = target_actor->vPosition - Vec3i(0, 0, target_actor->uActorHeight * -0.8);
-                        pSpellSprite.spell_target_pid = PID(OBJECT_Actor, _50BF30_actors_in_viewport_ids[i]);
+                    Vec3i spell_velocity = Vec3i(0, 0, 0);
+                    // Spell damage processing was removed because Dispel Magic does not do damage
+                    for (Actor *actor : render->getActorsInViewport(4096)) {
+                        pSpellSprite.vPosition = actor->vPosition - Vec3i(0, 0, actor->uActorHeight * -0.8);
+                        pSpellSprite.spell_target_pid = PID(OBJECT_Actor, actor->id);
                         pSpellSprite.Create(0, 0, 0, 0);
-                        for (SpellBuff &buff : pActors[_50BF30_actors_in_viewport_ids[i]].pActorBuffs) {
+                        for (SpellBuff &buff : actor->pActorBuffs) {
                             buff.Reset();
                         }
                     }
+                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.VibrantGreen.C32(), 192);
                     break;
                 }
 
@@ -2468,20 +2457,17 @@ void CastSpellInfoHelpers::castSpell() {
                         spellFailed(pCastSpell, LSTR_CANT_PRISMATIC_OUTDOORS);
                         continue;
                     }
-                    Vec3i spell_velocity = Vec3i(0, 0, 0);
-                    int mon_num = render->GetActorsInViewport(4096);
                     // ++pSpellSprite.uType;
                     pSpellSprite.uType = SPRITE_SPELL_LIGHT_PRISMATIC_LIGHT_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.uSectorID = 0;
                     pSpellSprite.field_60_distance_related_prolly_lod = 0;
                     pSpellSprite.uFacing = 0;
-                    for (int monster_id = 0; monster_id < mon_num; monster_id++) {
-                        Actor *target_actor = &pActors[_50BF30_actors_in_viewport_ids[monster_id]];
-                        pSpellSprite.vPosition = target_actor->vPosition - Vec3i(0, 0, target_actor->uActorHeight * -0.8);
-                        pSpellSprite.spell_target_pid = PID(OBJECT_Actor, _50BF30_actors_in_viewport_ids[monster_id]);
-                        Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)),
-                                _50BF30_actors_in_viewport_ids[monster_id], &spell_velocity);
+                    Vec3i spell_velocity = Vec3i(0, 0, 0);
+                    for (Actor *actor : render->getActorsInViewport(4096)) {
+                        pSpellSprite.vPosition = actor->vPosition - Vec3i(0, 0, actor->uActorHeight * -0.8);
+                        pSpellSprite.spell_target_pid = PID(OBJECT_Actor, actor->id);
+                        Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), actor->id, &spell_velocity);
                     }
                     spell_fx_renderer->_4A8BFC_prismatic_light();
                     break;
@@ -2831,23 +2817,18 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_DARK_SOULDRINKER:
                 {
-                    int mon_num = render->GetActorsInViewport((int64_t)pCamera3D->GetMouseInfoDepth());
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.uSectorID = 0;
                     pSpellSprite.field_60_distance_related_prolly_lod = 0;
                     pSpellSprite.uFacing = 0;
-                    int drained_health = 0;
-                    if (mon_num > 0) {
-                        Vec3i spell_velocity = Vec3i(0, 0, 0);
-                        drained_health = (mon_num * (7 * spell_level + 25));
-                        for (int monster_id = 0; monster_id < mon_num; monster_id++) {
-                            Actor *target_actor = &pActors[_50BF30_actors_in_viewport_ids[monster_id]];
-                            pSpellSprite.vPosition = target_actor->vPosition - Vec3i(0, 0, target_actor->uActorHeight * -0.8);
-                            pSpellSprite.spell_target_pid = PID(OBJECT_Actor, _50BF30_actors_in_viewport_ids[monster_id]);
-                            Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)),
-                                    _50BF30_actors_in_viewport_ids[monster_id], &spell_velocity);
-                        }
+                    Vec3i spell_velocity = Vec3i(0, 0, 0);
+                    std::vector<Actor*> actorsInViewport = render->getActorsInViewport(pCamera3D->GetMouseInfoDepth());
+                    for (Actor *actor : actorsInViewport) {
+                        pSpellSprite.vPosition = actor->vPosition - Vec3i(0, 0, actor->uActorHeight * -0.8);
+                        pSpellSprite.spell_target_pid = PID(OBJECT_Actor, actor->id);
+                        Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), actor->id, &spell_velocity);
                     }
+                    int drained_health = (actorsInViewport.size() * (7 * spell_level + 25));
                     int active_pl_num = 0;
                     for (const Player &player : pParty->pPlayers) {
                         if (player.CanAct()) {
@@ -3027,14 +3008,14 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
             case SPELL_BODY_FIRST_AID:
             case SPELL_DARK_REANIMATE:
                 // HIBYTE(spell_pointed_target) = HIBYTE(a5) | 1;
-                flags |= ON_CAST_MonsterSparkles;
+                flags |= ON_CAST_TargetedActorOrCharacter;
                 break;
 
             case SPELL_FIRE_FIRE_AURA:
             case SPELL_WATER_RECHARGE_ITEM:
             case SPELL_WATER_ENCHANT_ITEM:
             case SPELL_DARK_VAMPIRIC_WEAPON:
-                flags |= ON_CAST_Enchantment;
+                flags |= ON_CAST_TargetedEnchantment;
                 break;
 
             case SPELL_FIRE_FIRE_BOLT:
@@ -3066,7 +3047,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
             case SPELL_DARK_DRAGON_BREATH:
                 if (!a6) {
                     // These spells are targeted unless used from quick spell button
-                    flags |= ON_CAST_TargetCrosshair;
+                    flags |= ON_CAST_TargetedActor;
                 }
                 break;
             case SPELL_MIND_TELEPATHY:
@@ -3074,11 +3055,11 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
             case SPELL_MIND_ENSLAVE:
             case SPELL_LIGHT_PARALYZE:
             case SPELL_DARK_CONTROL_UNDEAD:
-                flags |= ON_CAST_TargetCrosshair;
+                flags |= ON_CAST_TargetedActor;
                 break;
 
             case SPELL_EARTH_TELEKINESIS:
-                flags |= ON_CAST_Telekenesis;
+                flags |= ON_CAST_TargetedTelekinesis;
                 break;
 
             case SPELL_SPIRIT_BLESS:
@@ -3086,7 +3067,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
                     checkSkill = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
                 }
                 if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_EXPERT && !engine->config->debug.AllMagic.Get()) {
-                    flags |= ON_CAST_SinglePlayer_BigImprovementAnim;
+                    flags |= ON_CAST_TargetedCharacter;
                 }
                 break;
 
@@ -3095,7 +3076,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
                     checkSkill = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
                 }
                 if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.Get()) {
-                    flags |= ON_CAST_SinglePlayer_BigImprovementAnim;
+                    flags |= ON_CAST_TargetedCharacter;
                 }
                 break;
 
@@ -3104,7 +3085,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
                     checkSkill = player->pActiveSkills[PLAYER_SKILL_DARK];
                 }
                 if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.Get()) {
-                    flags |= ON_CAST_SinglePlayer_BigImprovementAnim;
+                    flags |= ON_CAST_TargetedCharacter;
                 }
                 break;
 
@@ -3113,7 +3094,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
                     checkSkill = player->pActiveSkills[PLAYER_SKILL_BODY];
                 }
                 if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_GRANDMASTER && !engine->config->debug.AllMagic.Get()) {
-                    flags |= ON_CAST_SinglePlayer_BigImprovementAnim;
+                    flags |= ON_CAST_TargetedCharacter;
                 }
                 break;
 
@@ -3128,11 +3109,11 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
             case SPELL_BODY_REGENERATION:
             case SPELL_BODY_CURE_POISON:
             case SPELL_BODY_CURE_DISEASE:
-                flags |= ON_CAST_SinglePlayer_BigImprovementAnim;
+                flags |= ON_CAST_TargetedCharacter;
                 break;
 
             case SPELL_DARK_SACRIFICE:
-                flags |= ON_CAST_DarkSacrifice;
+                flags |= ON_CAST_TargetedHireling;
                 break;
             default:
                 break;
@@ -3160,81 +3141,40 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
 
     // TODO: if no more place for spells in queue then spell is just ignored?
     //       Need assert?
-    if (result != -1) {
+    if (result != -1 && pGUIWindow_CastTargetedSpell == nullptr) {
         Sizei renDims = render->GetRenderDimensions();
-        if (flags & ON_CAST_SinglePlayer_BigImprovementAnim) {
-            if (pGUIWindow_CastTargetedSpell) {
-                return;
-            }
-
-            pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell({0, 0}, renDims, &pCastSpellInfo[result]);
-            pGUIWindow_CastTargetedSpell->CreateButton({52, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_Character_Big_Improvement, 0, InputAction::SelectChar1);
-            pGUIWindow_CastTargetedSpell->CreateButton({165, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_Character_Big_Improvement, 1, InputAction::SelectChar2);
-            pGUIWindow_CastTargetedSpell->CreateButton({280, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_Character_Big_Improvement, 2, InputAction::SelectChar3);
-            pGUIWindow_CastTargetedSpell->CreateButton({390, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_Character_Big_Improvement, 3, InputAction::SelectChar4);
+        if (flags & ON_CAST_TargetedCharacter) {
+            pGUIWindow_CastTargetedSpell = new TargetedSpellUI_Character({0, 0}, renDims, &pCastSpellInfo[result]);
             pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
-        if (flags & ON_CAST_TargetCrosshair) {
-            if (pGUIWindow_CastTargetedSpell) {
-                return;
-            }
-
-            pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell({0, 0}, renDims, &pCastSpellInfo[result]);
-            pGUIWindow_CastTargetedSpell->CreateButton({game_viewport_x, game_viewport_y}, {game_viewport_width, game_viewport_height}, 1, 0,
-                UIMSG_CastSpell_Shoot_Monster, 0);
+        if (flags & ON_CAST_TargetedActor) {
+            pGUIWindow_CastTargetedSpell = new TargetedSpellUI_Actor({0, 0}, renDims, &pCastSpellInfo[result]);
             pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
-        if (flags & ON_CAST_Telekenesis) {
-            if (pGUIWindow_CastTargetedSpell) {
-                return;
-            }
-
-            pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell({0, 0}, renDims, &pCastSpellInfo[result]);
-            pGUIWindow_CastTargetedSpell->CreateButton({game_viewport_x, game_viewport_y}, {game_viewport_width, game_viewport_height}, 1, 0,
-                UIMSG_CastSpell_Telekinesis, 0);
+        if (flags & ON_CAST_TargetedTelekinesis) {
+            pGUIWindow_CastTargetedSpell = new TargetedSpellUI_Telekinesis({0, 0}, renDims, &pCastSpellInfo[result]);
             pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
-        if (flags & ON_CAST_Enchantment) {
-            if (pGUIWindow_CastTargetedSpell) {
-                return;
-            }
-
+        if (flags & ON_CAST_TargetedEnchantment) {
             pGUIWindow_CastTargetedSpell = pCastSpellInfo[result].GetCastSpellInInventoryWindow();
             IsEnchantingInProgress = true;
             some_active_character = uActiveCharacter;
             pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
-        if (flags & ON_CAST_MonsterSparkles) {
-            if (pGUIWindow_CastTargetedSpell) {
-                return;
-            }
-
-            pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell({0, 0}, renDims, &pCastSpellInfo[result]);
-            pGUIWindow_CastTargetedSpell->CreateButton({0x34u, 0x1A6u}, {0x23u, 0}, 2, 0, UIMSG_CastSpell_Character_Small_Improvement, 0, InputAction::SelectChar1);
-            pGUIWindow_CastTargetedSpell->CreateButton({0xA5u, 0x1A6u}, {0x23u, 0}, 2, 0, UIMSG_CastSpell_Character_Small_Improvement, 1, InputAction::SelectChar2);
-            pGUIWindow_CastTargetedSpell->CreateButton({0x118u, 0x1A6u}, {0x23u, 0}, 2, 0, UIMSG_CastSpell_Character_Small_Improvement, 2, InputAction::SelectChar3);
-            pGUIWindow_CastTargetedSpell->CreateButton({0x186u, 0x1A6u}, {0x23u, 0}, 2, 0, UIMSG_CastSpell_Character_Small_Improvement, 3, InputAction::SelectChar4);
-            pGUIWindow_CastTargetedSpell->CreateButton({8, 8}, {game_viewport_width, game_viewport_height}, 1, 0, UIMSG_CastSpell_Monster_Improvement, 0);
+        if (flags & ON_CAST_TargetedActorOrCharacter) {
+            pGUIWindow_CastTargetedSpell = new TargetedSpellUI_ActorOrCharacter({0, 0}, renDims, &pCastSpellInfo[result]);
             pParty->PickedItem_PlaceInInventory_or_Drop();
+            return;
         }
-        if (flags & ON_CAST_DarkSacrifice) {
-            if (pGUIWindow_CastTargetedSpell) {
-                return;
-            }
-
-            pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell({0, 0}, renDims, &pCastSpellInfo[result]);
-            pBtn_NPCLeft = pGUIWindow_CastTargetedSpell->CreateButton({469, 178}, {ui_btn_npc_left->GetWidth(), ui_btn_npc_left->GetHeight()}, 1, 0,
-                UIMSG_ScrollNPCPanel, 0, InputAction::Invalid, "", {ui_btn_npc_left});
-            pBtn_NPCRight = pGUIWindow_CastTargetedSpell->CreateButton({626, 178}, {ui_btn_npc_right->GetWidth(), ui_btn_npc_right->GetHeight()}, 1, 0,
-                UIMSG_ScrollNPCPanel, 1, InputAction::Invalid, "", {ui_btn_npc_right});
-            pGUIWindow_CastTargetedSpell->CreateButton({491, 149}, {64, 74}, 1, 0, UIMSG_HiredNPC_CastSpell, 4, InputAction::SelectNPC1);
-            pGUIWindow_CastTargetedSpell->CreateButton({561, 149}, {64, 74}, 1, 0, UIMSG_HiredNPC_CastSpell, 5, InputAction::SelectNPC2);
+        if (flags & ON_CAST_TargetedHireling) {
+            pGUIWindow_CastTargetedSpell = new TargetedSpellUI_Hirelings({0, 0}, renDims, &pCastSpellInfo[result]);
             // Next line was added to do something with picked item on Sacrifice cast
             pParty->PickedItem_PlaceInInventory_or_Drop();
+            return;
         }
     }
 }
@@ -3252,4 +3192,16 @@ void pushNPCSpell(SPELL_TYPE spell) {
 
 void pushScrollSpell(SPELL_TYPE spell, unsigned int uPlayerID) {
     pushSpellOrRangedAttack(spell, uPlayerID, SCROLL_OR_NPC_SPELL_SKILL_VALUE, ON_CAST_CastViaScroll, 0);
+}
+
+void spellTargetPicked(int pid, int playerTarget) {
+    assert((pid != PID_INVALID) ^ (playerTarget != -1));
+
+    CastSpellInfo *pCastSpell = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
+    pCastSpell->uFlags &= ~ON_CAST_CastingInProgress;
+    pCastSpell->spell_target_pid = pid;
+    // TODO(Nik-RE-dev): need to get rid of uPlayerID_2 and use pid with OBJECT_Player and something else for hirelings.
+    pCastSpell->uPlayerID_2 = playerTarget;
+    // TODO(Nik-RE-dev): why recovery time is set here?
+    pParty->pPlayers[pCastSpell->uPlayerID].SetRecoveryTime(300);
 }

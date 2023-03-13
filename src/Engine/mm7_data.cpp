@@ -2400,7 +2400,6 @@ std::array<int, 50> dword_50B638;
 stru367 PortalFace;
 std::array<int, 100> dword_50BC10;
 std::array<int, 100> dword_50BDA0;
-std::array<int, 100> _50BF30_actors_in_viewport_ids;
 char TownPortalCasterId;
 int some_active_character;
 std::array<unsigned int, 5> pIconIDs_Turn;
