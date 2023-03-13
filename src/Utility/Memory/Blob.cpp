@@ -51,6 +51,9 @@ Blob Blob::Copy(const void *data, size_t size) {
 }
 
 Blob Blob::Read(FILE* file, size_t size) {
+    if (size == 0)
+        return Blob();
+
     std::unique_ptr<void, FreeDeleter> memory(malloc(size));
 
     size_t read = fread(memory.get(), size, 1, file);
@@ -61,6 +64,9 @@ Blob Blob::Read(FILE* file, size_t size) {
 }
 
 Blob Blob::Read(FileInputStream& file, size_t size) {
+    if (size == 0)
+        return Blob();
+
     std::unique_ptr<void, FreeDeleter> memory(malloc(size));
     file.ReadOrFail(memory.get(), size);
     return Blob(memory.release(), size, &staticFreeBlobHandler);
