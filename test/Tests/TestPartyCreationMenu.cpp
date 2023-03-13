@@ -418,8 +418,8 @@ GAME_TEST(Issue, Issue506) {
 
 GAME_TEST(Issue, Issue527) {
     // Check Cure Disease spell works
-    test->playTraceFromTestData("issue_527.mm7", "issue_527.json", []() { EXPECT_EQ(pParty->pPlayers[0].conditions.Has(Condition_Disease_Weak), true); });
-    EXPECT_EQ(pParty->pPlayers[0].conditions.Has(Condition_Disease_Weak), false);
+    test->playTraceFromTestData("issue_527.mm7", "issue_527.json", []() { EXPECT_TRUE(pParty->pPlayers[0].conditions.Has(Condition_Disease_Weak)); });
+    EXPECT_FALSE(pParty->pPlayers[0].conditions.Has(Condition_Disease_Weak));
 }
 
 GAME_TEST(Issue, Issue528) {

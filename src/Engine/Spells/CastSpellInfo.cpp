@@ -2275,9 +2275,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
-                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Poison_Weak) ||
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Poison_Medium) ||
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Poison_Severe)) {
+                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.HasAny({Condition_Poison_Weak, Condition_Poison_Medium, Condition_Poison_Severe})) {
                         if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                             pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Poison_Weak);
                             pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Poison_Medium);
@@ -2316,9 +2314,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
-                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Disease_Weak) ||
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Disease_Medium) ||
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Disease_Severe)) {
+                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.HasAny({Condition_Disease_Weak, Condition_Disease_Medium, Condition_Disease_Severe})) {
                         if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                             pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Disease_Weak);
                             pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Disease_Medium);
