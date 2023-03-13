@@ -617,7 +617,9 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_DARK_SHRINKING_RAY:
                 {
                     // TODO: spell_id different?
-                    initSpellSprite(&pSpellSprite, spell_level * 300, spell_mastery, pCastSpell);
+                    // Spell level was multiplied by 300 (which number of seconds in 5 minutes)
+                    // This calculation was moved to spell impact processing function
+                    initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;

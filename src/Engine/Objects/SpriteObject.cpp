@@ -868,22 +868,19 @@ void SpriteObject::InitializeSpriteObjects() {
 
 bool SpriteObject::applyShrinkRayAoe() {
     bool isApplied = false;
-    for (size_t i = 0; i < pActors.size(); ++i) {
-        if (pActors[i].CanAct()) {
-            int v7 = pActors[i].vPosition.x - this->vPosition.x;
-            int v9 = pActors[i].vPosition.y - this->vPosition.y;
-            int v10 = pActors[i].uActorHeight / 2 + pActors[i].vPosition.z -
-                      this->vVelocity.y;
+    // Calculation was moved from initial sprite creation processing
+    GameTime duration = GameTime::FromMinutes(this->spell_level * 5);
+    static const int shrinkPower = 4;
 
-            int v11 = this->vVelocity.x * this->vVelocity.x;
+    for (Actor &actor : pActors) {
+        // TODO(Nik-RE-dev): paralyzed actor will not be affected?
+        if (actor.CanAct()) {
+            int distance = (actor.vPosition - this->vPosition + Vec3i(0, 0, actor.uActorHeight / 2)).ToFloat().Length();
 
-            if (v11 >= v7 * v7 + v9 * v9 + v10 * v10) {
-                if (pActors[i].DoesDmgTypeDoDamage(DMGT_DARK)) {
-                    pActors[i].pActorBuffs[ACTOR_BUFF_INDEX(this->uSpellID)].Apply(
-                        GameTime(pParty->GetPlayingTime() +
-                            GameTime::FromSeconds(this->spell_level)),
-                        this->spell_skill, 4, 0, 0);
-                    pActors[i].uAttributes |= ACTOR_AGGRESSOR;
+            if (distance <= (256 + actor.uActorRadius)) {
+                if (actor.DoesDmgTypeDoDamage(DMGT_DARK)) {
+                    actor.pActorBuffs[ACTOR_BUFF_SHRINK].Apply(pParty->GetPlayingTime() + duration, this->spell_skill, shrinkPower, 0, 0);
+                    actor.uAttributes |= ACTOR_AGGRESSOR;
                     isApplied = true;
                 }
             }
@@ -1338,7 +1335,7 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
             //         break;
             // }
             bool isDamaged = false;
-            bool isShrinkingRayAoe = (object->uType == SPRITE_SPELL_DARK_SHRINKING_RAY) && (object->spell_skill != PLAYER_SKILL_MASTERY_GRANDMASTER);
+            bool isShrinkingRayAoe = (object->uType == SPRITE_SPELL_DARK_SHRINKING_RAY) && (object->spell_skill == PLAYER_SKILL_MASTERY_GRANDMASTER);
             if (PID_TYPE(pid) != OBJECT_Actor) {
                 if (!isShrinkingRayAoe) {
                     SpriteObject::OnInteraction(uLayingItemID);
@@ -1368,7 +1365,8 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
                 return 0;
             }
             int shrinkPower = 0;
-            int buffSeconds = object->spell_level; // TODO(Nik-RE-dev): time seems wrong.
+            // Calculation was moved from initial sprite creation processing
+            GameTime duration = GameTime::FromMinutes(object->spell_level * 5);
             PLAYER_SKILL_MASTERY skillMastery = object->spell_skill;
             DAMAGE_TYPE dmgType;
             ACTOR_BUFF_INDEX buffIdx;
@@ -1410,8 +1408,7 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
                         pActors[actorId].uAIState = Standing;
                         pActors[actorId].UpdateAnimation();
                     }
-                    pActors[actorId].pActorBuffs[buffIdx]
-                        .Apply(pParty->GetPlayingTime() + GameTime::FromSeconds(buffSeconds), skillMastery, shrinkPower, 0, 0);
+                    pActors[actorId].pActorBuffs[buffIdx].Apply(pParty->GetPlayingTime() + duration, skillMastery, shrinkPower, 0, 0);
                 }
             } else {
                 isDamaged = object->applyShrinkRayAoe();
