@@ -866,6 +866,7 @@ void SpriteObject::InitializeSpriteObjects() {
     }
 }
 
+// Process GM Shrink Ray spell that affect group of actors
 bool SpriteObject::applyShrinkRayAoe() {
     bool isApplied = false;
     // Calculation was moved from initial sprite creation processing
