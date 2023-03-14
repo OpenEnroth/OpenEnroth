@@ -460,7 +460,7 @@ GAME_TEST(Issues, Issue488) {
 }
 
 GAME_TEST(Issues, Issue489) {
-    // Test that Mass Distortion spell works
+    // Test that AOE version of Shrinking Ray spell works
     test->playTraceFromTestData("issue_489.mm7", "issue_489.json", [] { EXPECT_FALSE(pActors[24].pActorBuffs[ACTOR_BUFF_SHRINK].Active()); });
     EXPECT_TRUE(pActors[24].pActorBuffs[ACTOR_BUFF_SHRINK].Active());
 }
