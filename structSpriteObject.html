@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c336368</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7be1f14</span>
    </div>
   </td>
  </tr>
@@ -86,8 +86,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a62138959f071449683ca86119f2e43d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc34bdc1ca30537412a1509a39f98168"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpriteObject.html#acc34bdc1ca30537412a1509a39f98168">Create</a> (int yaw, int pitch, int a4, int a5)</td></tr>
 <tr class="separator:acc34bdc1ca30537412a1509a39f98168"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adacc3f6d101e1ca9369b5ed2d33a8fa4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpriteObject.html#adacc3f6d101e1ca9369b5ed2d33a8fa4">_46BEF1_apply_spells_aoe</a> ()</td></tr>
-<tr class="separator:adacc3f6d101e1ca9369b5ed2d33a8fa4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa880a1d5d3f10b856ea880ec337e389b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpriteObject.html#aa880a1d5d3f10b856ea880ec337e389b">applyShrinkRayAoe</a> ()</td></tr>
+<tr class="separator:aa880a1d5d3f10b856ea880ec337e389b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3696129b81f11c45e8c1ba7c1c53327e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpriteObject.html#a3696129b81f11c45e8c1ba7c1c53327e">ExplosionTraps</a> ()</td></tr>
 <tr class="separator:a3696129b81f11c45e8c1ba7c1c53327e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad532b4986fb8b77ef0b67bb05913ef50"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpriteObject.html#ad532b4986fb8b77ef0b67bb05913ef50">GetLifetime</a> ()</td></tr>
@@ -104,6 +104,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a2355c7c4afd3502ae8185b601732c1dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6555add15e6b9465ed89c6b8f27a5dce"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpriteObject.html#a6555add15e6b9465ed89c6b8f27a5dce">GetParticleTrailColorB</a> ()</td></tr>
 <tr class="separator:a6555add15e6b9465ed89c6b8f27a5dce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a707f50ad35fc0bf1ad190b91fbb64b23"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpriteObject.html#a707f50ad35fc0bf1ad190b91fbb64b23">spellSpriteStop</a> ()</td></tr>
+<tr class="separator:a707f50ad35fc0bf1ad190b91fbb64b23"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -168,20 +170,21 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a8c65e42c69a4b72c13b28f0f3bcbc1bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="adacc3f6d101e1ca9369b5ed2d33a8fa4" name="adacc3f6d101e1ca9369b5ed2d33a8fa4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adacc3f6d101e1ca9369b5ed2d33a8fa4">&#9670;&#160;</a></span>_46BEF1_apply_spells_aoe()</h2>
+<a id="aa880a1d5d3f10b856ea880ec337e389b" name="aa880a1d5d3f10b856ea880ec337e389b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa880a1d5d3f10b856ea880ec337e389b">&#9670;&#160;</a></span>applyShrinkRayAoe()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void SpriteObject::_46BEF1_apply_spells_aoe </td>
+          <td class="memname">bool SpriteObject::applyShrinkRayAoe </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x46BEF1 </dd></dl>
 
 </div>
 </div>
@@ -551,6 +554,31 @@ Public Attributes</h2></td></tr>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a707f50ad35fc0bf1ad190b91fbb64b23" name="a707f50ad35fc0bf1ad190b91fbb64b23"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a707f50ad35fc0bf1ad190b91fbb64b23">&#9670;&#160;</a></span>spellSpriteStop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SpriteObject::spellSpriteStop </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">

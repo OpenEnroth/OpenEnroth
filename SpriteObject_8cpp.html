@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c336368</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7be1f14</span>
    </div>
   </td>
  </tr>
@@ -114,10 +114,12 @@ Typedefs</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:aaba2939e1540dd4a568dbcdb4591117b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SpriteObject_8cpp.html#aaba2939e1540dd4a568dbcdb4591117b">CompactLayingItemsList</a> ()</td></tr>
 <tr class="separator:aaba2939e1540dd4a568dbcdb4591117b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a704e8fbd6f7fb4df2522db228de58070"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SpriteObject_8cpp.html#a704e8fbd6f7fb4df2522db228de58070">_46BFFA_update_spell_fx</a> (unsigned int uLayingItemID, int pid)</td></tr>
-<tr class="separator:a704e8fbd6f7fb4df2522db228de58070"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae4c7423dffd40822499d31df253173cd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SpriteObject_8cpp.html#ae4c7423dffd40822499d31df253173cd">Apply_Spell_Sprite_Damage</a> (unsigned int uLayingItemID, int pid)</td></tr>
-<tr class="separator:ae4c7423dffd40822499d31df253173cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8a03e10e16b41f2710550dc779fe9e6"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SpriteObject_8cpp.html#ab8a03e10e16b41f2710550dc779fe9e6">updateSpriteOnImpact</a> (<a class="el" href="structSpriteObject.html">SpriteObject</a> *object)</td></tr>
+<tr class="separator:ab8a03e10e16b41f2710550dc779fe9e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f59e69db23d5a9bcb0b3b01ce260416"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SpriteObject_8cpp.html#a6f59e69db23d5a9bcb0b3b01ce260416">processSpellImpact</a> (unsigned int uLayingItemID, int pid)</td></tr>
+<tr class="separator:a6f59e69db23d5a9bcb0b3b01ce260416"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59895911da7656f35d488dafcaa950c6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SpriteObject_8cpp.html#a59895911da7656f35d488dafcaa950c6">applySpellSpriteDamage</a> (unsigned int uLayingItemID, int pid)</td></tr>
+<tr class="separator:a59895911da7656f35d488dafcaa950c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a522912d67446895b0a03d01837b75a99"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SpriteObject_8cpp.html#a522912d67446895b0a03d01837b75a99">UpdateObjects</a> ()</td></tr>
 <tr class="separator:a522912d67446895b0a03d01837b75a99"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15a65ec19265009a1699566111bb60a5"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SpriteObject_8cpp.html#a15a65ec19265009a1699566111bb60a5">sub_46DEF2</a> (signed int pid, unsigned int uLayingItemID)</td></tr>
@@ -148,42 +150,14 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a704e8fbd6f7fb4df2522db228de58070" name="a704e8fbd6f7fb4df2522db228de58070"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a704e8fbd6f7fb4df2522db228de58070">&#9670;&#160;</a></span>_46BFFA_update_spell_fx()</h2>
+<a id="a59895911da7656f35d488dafcaa950c6" name="a59895911da7656f35d488dafcaa950c6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a59895911da7656f35d488dafcaa950c6">&#9670;&#160;</a></span>applySpellSpriteDamage()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool _46BFFA_update_spell_fx </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>uLayingItemID</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>pid</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ae4c7423dffd40822499d31df253173cd" name="ae4c7423dffd40822499d31df253173cd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae4c7423dffd40822499d31df253173cd">&#9670;&#160;</a></span>Apply_Spell_Sprite_Damage()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Apply_Spell_Sprite_Damage </td>
+          <td class="memname">void applySpellSpriteDamage </td>
           <td>(</td>
           <td class="paramtype">unsigned int&#160;</td>
           <td class="paramname"><em>uLayingItemID</em>, </td>
@@ -215,6 +189,34 @@ Variables</h2></td></tr>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6f59e69db23d5a9bcb0b3b01ce260416" name="a6f59e69db23d5a9bcb0b3b01ce260416"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f59e69db23d5a9bcb0b3b01ce260416">&#9670;&#160;</a></span>processSpellImpact()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool processSpellImpact </td>
+          <td>(</td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>uLayingItemID</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>pid</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -262,6 +264,32 @@ Variables</h2></td></tr>
           <td></td>
         </tr>
       </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab8a03e10e16b41f2710550dc779fe9e6" name="ab8a03e10e16b41f2710550dc779fe9e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab8a03e10e16b41f2710550dc779fe9e6">&#9670;&#160;</a></span>updateSpriteOnImpact()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void updateSpriteOnImpact </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structSpriteObject.html">SpriteObject</a> *&#160;</td>
+          <td class="paramname"><em>object</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>

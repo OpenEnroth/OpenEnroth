@@ -590,7 +590,7 @@ var searchData=
   ['sprite_5fspell_5flight_5fday_5fof_5fprotection_587',['SPRITE_SPELL_LIGHT_DAY_OF_PROTECTION',['../SpriteObjectType_8h.html#adf728ba73bf3ba5ece5de3e673fedde9a6fee5fe4445f0ec9225c7a40de5b6d3f',1,'SpriteObjectType.h']]],
   ['sprite_5fspell_5flight_5fday_5fof_5fthe_5fgods_588',['SPRITE_SPELL_LIGHT_DAY_OF_THE_GODS',['../SpriteObjectType_8h.html#adf728ba73bf3ba5ece5de3e673fedde9a73c0dab96cf260954fd757c322a440d0',1,'SpriteObjectType.h']]],
   ['sprite_5fspell_5flight_5fdestroy_5fundead_589',['SPRITE_SPELL_LIGHT_DESTROY_UNDEAD',['../SpriteObjectType_8h.html#adf728ba73bf3ba5ece5de3e673fedde9a80ab36ca3e130ecfaf945eb40197fa80',1,'SpriteObjectType.h']]],
-  ['sprite_5fspell_5flight_5fdestroy_5fundead_5f1_590',['SPRITE_SPELL_LIGHT_DESTROY_UNDEAD_1',['../SpriteObjectType_8h.html#adf728ba73bf3ba5ece5de3e673fedde9a6fd134ab64d4a481253c6d0b1683b354',1,'SpriteObjectType.h']]],
+  ['sprite_5fspell_5flight_5fdestroy_5fundead_5fimpact_590',['SPRITE_SPELL_LIGHT_DESTROY_UNDEAD_IMPACT',['../SpriteObjectType_8h.html#adf728ba73bf3ba5ece5de3e673fedde9a934d05e1177d8d52b065a260c49e8d77',1,'SpriteObjectType.h']]],
   ['sprite_5fspell_5flight_5fdispel_5fmagic_591',['SPRITE_SPELL_LIGHT_DISPEL_MAGIC',['../SpriteObjectType_8h.html#adf728ba73bf3ba5ece5de3e673fedde9a199d046e593bb46e4e18e0a2b4795c66',1,'SpriteObjectType.h']]],
   ['sprite_5fspell_5flight_5fdispel_5fmagic_5f1_592',['SPRITE_SPELL_LIGHT_DISPEL_MAGIC_1',['../SpriteObjectType_8h.html#adf728ba73bf3ba5ece5de3e673fedde9a5e410b2a7d51c689831839d509d692fa',1,'SpriteObjectType.h']]],
   ['sprite_5fspell_5flight_5fdivine_5fintervention_593',['SPRITE_SPELL_LIGHT_DIVINE_INTERVENTION',['../SpriteObjectType_8h.html#adf728ba73bf3ba5ece5de3e673fedde9a531f72d5274a0281a128de68deb78371',1,'SpriteObjectType.h']]],

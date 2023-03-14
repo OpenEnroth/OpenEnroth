@@ -33,11 +33,12 @@ var searchData=
   ['updateparticles_30',['UpdateParticles',['../structTrailParticleGenerator.html#aa8ede04bca9cbc38c4c0880f6645d6fc',1,'TrailParticleGenerator::UpdateParticles()'],['../classParticleEngine.html#a82017d932a3aac0e05acf6ed95783672',1,'ParticleEngine::UpdateParticles()']]],
   ['updateplayersandhirelingsemotions_31',['UpdatePlayersAndHirelingsEmotions',['../structParty.html#ae0e2e8cbee9642f7a915e2d43a86e8c4',1,'Party']]],
   ['updatesounds_32',['UpdateSounds',['../classAudioPlayer.html#ad7f77ef8ad0ba30e82dc34dc88156cb5',1,'AudioPlayer']]],
-  ['updatesunlightvectors_33',['UpdateSunlightVectors',['../structOutdoorLocation.html#ad1464d7a2aad592f0aff9786e636496e',1,'OutdoorLocation']]],
-  ['updatetempbonus_34',['UpdateTempBonus',['../structItemGen.html#aefa35d382ba0ce6367cff85f7a81c8c8',1,'ItemGen']]],
-  ['updateuserinput_5fand_5fmapspecificstuff_35',['UpdateUserInput_and_MapSpecificStuff',['../Engine_8cpp.html#a73fe5e8d7dc6ec78e5cc180d1915341b',1,'UpdateUserInput_and_MapSpecificStuff():&#160;Engine.cpp'],['../Engine_8h.html#a73fe5e8d7dc6ec78e5cc180d1915341b',1,'UpdateUserInput_and_MapSpecificStuff():&#160;Engine.cpp']]],
-  ['updatewindowfromconfig_36',['UpdateWindowFromConfig',['../classApplication_1_1GameWindowHandler.html#ab477fb7c84910c2c3b4fda658dc0c9ac',1,'Application::GameWindowHandler']]],
-  ['use_37',['use',['../classGLShader.html#af765a2607d1d4cc056aabd9295702e09',1,'GLShader']]],
-  ['useitem_5fdrinkpotion_5fetc_38',['UseItem_DrinkPotion_etc',['../structPlayer.html#a3de138c2c484a5eced6fade1b560fd87',1,'Player']]],
-  ['usenpcskill_39',['UseNPCSkill',['../NPC_8cpp.html#acfce0b79ca64a3c666c5bc7781622842',1,'UseNPCSkill(NPCProf profession):&#160;NPC.cpp'],['../NPC_8h.html#acfce0b79ca64a3c666c5bc7781622842',1,'UseNPCSkill(NPCProf profession):&#160;NPC.cpp']]]
+  ['updatespriteonimpact_33',['updateSpriteOnImpact',['../SpriteObject_8cpp.html#ab8a03e10e16b41f2710550dc779fe9e6',1,'SpriteObject.cpp']]],
+  ['updatesunlightvectors_34',['UpdateSunlightVectors',['../structOutdoorLocation.html#ad1464d7a2aad592f0aff9786e636496e',1,'OutdoorLocation']]],
+  ['updatetempbonus_35',['UpdateTempBonus',['../structItemGen.html#aefa35d382ba0ce6367cff85f7a81c8c8',1,'ItemGen']]],
+  ['updateuserinput_5fand_5fmapspecificstuff_36',['UpdateUserInput_and_MapSpecificStuff',['../Engine_8h.html#a73fe5e8d7dc6ec78e5cc180d1915341b',1,'UpdateUserInput_and_MapSpecificStuff():&#160;Engine.cpp'],['../Engine_8cpp.html#a73fe5e8d7dc6ec78e5cc180d1915341b',1,'UpdateUserInput_and_MapSpecificStuff():&#160;Engine.cpp']]],
+  ['updatewindowfromconfig_37',['UpdateWindowFromConfig',['../classApplication_1_1GameWindowHandler.html#ab477fb7c84910c2c3b4fda658dc0c9ac',1,'Application::GameWindowHandler']]],
+  ['use_38',['use',['../classGLShader.html#af765a2607d1d4cc056aabd9295702e09',1,'GLShader']]],
+  ['useitem_5fdrinkpotion_5fetc_39',['UseItem_DrinkPotion_etc',['../structPlayer.html#a3de138c2c484a5eced6fade1b560fd87',1,'Player']]],
+  ['usenpcskill_40',['UseNPCSkill',['../NPC_8cpp.html#acfce0b79ca64a3c666c5bc7781622842',1,'UseNPCSkill(NPCProf profession):&#160;NPC.cpp'],['../NPC_8h.html#acfce0b79ca64a3c666c5bc7781622842',1,'UseNPCSkill(NPCProf profession):&#160;NPC.cpp']]]
 ];
