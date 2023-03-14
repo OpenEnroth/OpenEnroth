@@ -111,28 +111,29 @@ void CastSpellInfoHelpers::castSpell() {
 
         Player *pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID];
 
+        // Pid of target or 0 if spell was quick casted
         int spell_targeted_at = pCastSpell->spell_target_pid;
 
-        if (spell_targeted_at == 0) {  // no target ?? test
+        // First try to pick live actor mouse is pointing at
+        if (spell_targeted_at == 0 &&
+                mouse->uPointingObjectID &&
+                PID_TYPE(mouse->uPointingObjectID) == OBJECT_Actor &&
+                pActors[PID_ID(mouse->uPointingObjectID)].CanAct()) {
+            spell_targeted_at = mouse->uPointingObjectID;
+        }
+
+        // Otherwise pick closest live actor
+        if (spell_targeted_at == 0) {
             bool target_undead;
             if (pCastSpell->uSpellID == SPELL_LIGHT_DESTROY_UNDEAD ||
-                pCastSpell->uSpellID == SPELL_SPIRIT_TURN_UNDEAD ||
-                pCastSpell->uSpellID == SPELL_DARK_CONTROL_UNDEAD) {
+                    pCastSpell->uSpellID == SPELL_SPIRIT_TURN_UNDEAD ||
+                    pCastSpell->uSpellID == SPELL_DARK_CONTROL_UNDEAD) {
                 target_undead = true;
             } else {
                 target_undead = false;
             }
 
-            // find the closest target
             spell_targeted_at = stru_50C198.FindClosestActor(engine->config->gameplay.RangedAttackDepth.Get(), 1, target_undead);
-
-            int spell_pointed_target = mouse->uPointingObjectID;
-
-            if (mouse->uPointingObjectID &&
-                PID_TYPE(spell_pointed_target) == OBJECT_Actor &&
-                pActors[PID_ID(spell_pointed_target)].CanAct()) {  // check can act
-                spell_targeted_at = mouse->uPointingObjectID;
-            }
         }
 
         pSpellSprite.uType = SpellSpriteMapping[pCastSpell->uSpellID];
@@ -529,8 +530,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_LIGHT_PARALYZE:
                 {
                     int monster_id = PID_ID(spell_targeted_at);
-                    if (PID_TYPE(spell_targeted_at) == OBJECT_Actor &&
-                            pActors[monster_id].DoesDmgTypeDoDamage(DMGT_LIGHT)) {
+                    if (PID_TYPE(spell_targeted_at) == OBJECT_Actor && pActors[monster_id].DoesDmgTypeDoDamage(DMGT_LIGHT)) {
                         Actor::AI_Stand(PID_ID(spell_targeted_at), 4, 0x80, 0);
                         pActors[monster_id].pActorBuffs[ACTOR_BUFF_PARALYZED]
                             .Apply(pParty->GetPlayingTime() + GameTime::FromMinutes(3 * spell_level), spell_mastery, 0, 0, 0);
@@ -929,60 +929,48 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_FIRE_METEOR_SHOWER:
                 {
-                    if (spell_mastery < PLAYER_SKILL_MASTERY_MASTER) {
-                        pCastSpell->uSpellID = SPELL_NONE;
-                        continue;
-                    }
+                    assert(spell_mastery >= PLAYER_SKILL_MASTERY_MASTER);
 
-                    int meteor_num;
-                    if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                        meteor_num = 20;
-                    } else {
-                        meteor_num = 16;
-                    }
                     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
                         spellFailed(pCastSpell, LSTR_CANT_METEOR_SHOWER_INDOORS);
                         continue;
                     }
+
                     ObjectType obj_type = PID_TYPE(spell_targeted_at);
-                    int monster_id = PID_ID(spell_targeted_at);
                     Vec3i dist;
                     if (obj_type == OBJECT_Actor) {  // quick cast can specify target
-                        dist = pActors[monster_id].vPosition;
+                        dist = pActors[PID_ID(spell_targeted_at)].vPosition;
                     } else {
                         dist = pParty->vPosition + Vec3i(2048 * pCamera3D->fRotationZCosine, 2048 * pCamera3D->fRotationZSine, 0);
                     }
-                    uint64_t k = 0;
-                    int j = 0;
-                    if (meteor_num > 0) {
-                        int target_pid = obj_type == OBJECT_Actor ? spell_targeted_at : 0;
-                        for (; meteor_num; meteor_num--) {
-                            uint32_t yaw, pitch;
-                            int originHeight = grng->Random(1000);
-                            if (Vec3s(j, k, originHeight - 2500).Length() <= 1.0) {
-                                yaw = 0;
-                                pitch = 0;
-                            } else {
-                                pitch = TrigLUT.Atan2(sqrt(j * j + k * k), originHeight - 2500);
-                                yaw = TrigLUT.Atan2(j, k);
-                            }
-                            initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                            pSpellSprite.vPosition = dist + Vec3i(0, 0, originHeight + 2500);
-                            pSpellSprite.uSectorID = 0;
-                            pSpellSprite.spell_target_pid = target_pid;
-                            pSpellSprite.field_60_distance_related_prolly_lod = stru_50C198._427546(originHeight + 2500);
-                            pSpellSprite.uFacing = yaw;
-                            if (pParty->bTurnBasedModeOn) {
-                                pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
-                            }
-                            int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                            if (pSpellSprite.Create(yaw, pitch, spell_speed, 0) != -1 &&
-                                    pParty->bTurnBasedModeOn) {
-                                ++pTurnEngine->pending_actions;
-                            }
-                            j = grng->Random(1024) - 512;
-                            k = grng->Random(1024) - 512;
+                    int j = 0, k = 0;
+                    int yaw, pitch;
+                    int meteor_num = (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) ? 20 : 16;
+                    for (; meteor_num; meteor_num--) {
+                        int originHeight = grng->Random(1000);
+                        if (Vec3s(j, k, originHeight - 2500).Length() <= 1.0) {
+                            pitch = 0;
+                            yaw = 0;
+                        } else {
+                            pitch = TrigLUT.Atan2(sqrt(j * j + k * k), originHeight - 2500);
+                            yaw = TrigLUT.Atan2(j, k);
                         }
+                        initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
+                        pSpellSprite.vPosition = dist + Vec3i(0, 0, originHeight + 2500);
+                        pSpellSprite.uSectorID = 0;
+                        pSpellSprite.spell_target_pid = (obj_type == OBJECT_Actor) ? spell_targeted_at : 0;
+                        pSpellSprite.field_60_distance_related_prolly_lod = stru_50C198._427546(originHeight + 2500);
+                        pSpellSprite.uFacing = yaw;
+                        if (pParty->bTurnBasedModeOn) {
+                            pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
+                        }
+                        int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
+                        if (pSpellSprite.Create(yaw, pitch, spell_speed, 0) != -1 &&
+                                pParty->bTurnBasedModeOn) {
+                            ++pTurnEngine->pending_actions;
+                        }
+                        j = grng->Random(1024) - 512;
+                        k = grng->Random(1024) - 512;
                     }
                     break;
                 }
@@ -1162,23 +1150,21 @@ void CastSpellInfoHelpers::castSpell() {
                         spellFailed(pCastSpell, LSTR_CANT_STARBURST_INDOORS);
                         continue;
                     }
+
                     ObjectType obj_type = PID_TYPE(spell_targeted_at);
-                    int monster_id = PID_ID(spell_targeted_at);
                     Vec3i dist;
                     if (obj_type == OBJECT_Actor) {  // quick cast can specify target
-                        dist = pActors[monster_id].vPosition;
+                        dist = pActors[PID_ID(spell_targeted_at)].vPosition;
                     } else {
                         dist = pParty->vPosition + Vec3i(2048 * pCamera3D->fRotationZCosine, 2048 * pCamera3D->fRotationZSine, 0);
                     }
-                    uint64_t k = 0;
-                    int j = 0;
-                    int target_pid = obj_type == OBJECT_Actor ? spell_targeted_at : 0;
-                    uint32_t yaw, pitch;
-                    for (uint star_num = 20; star_num; star_num--) {
+                    int j = 0, k = 0;
+                    int yaw, pitch;
+                    for (int star_num = 20; star_num; star_num--) {
                         int originHeight = grng->Random(1000);
                         if (Vec3s(j, k, originHeight - 2500).Length() <= 1.0) {
-                            yaw = 0;
                             pitch = 0;
+                            yaw = 0;
                         } else {
                             pitch = TrigLUT.Atan2(sqrt(j * j + k * k), originHeight - 2500);
                             yaw = TrigLUT.Atan2(j, k);
@@ -1186,7 +1172,7 @@ void CastSpellInfoHelpers::castSpell() {
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.vPosition = dist + Vec3i(0, 0, originHeight + 2500);
                         pSpellSprite.uSectorID = 0;
-                        pSpellSprite.spell_target_pid = target_pid;
+                        pSpellSprite.spell_target_pid = (obj_type == OBJECT_Actor) ? spell_targeted_at : 0;
                         pSpellSprite.field_60_distance_related_prolly_lod = stru_50C198._427546(originHeight + 2500);
                         pSpellSprite.uFacing = yaw;
                         if (pParty->bTurnBasedModeOn) {
