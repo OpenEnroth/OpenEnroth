@@ -2821,8 +2821,7 @@ void Actor::UpdateActorAI() {
             if (pActor->uCurrentActionTime < pActor->uCurrentActionLength) {
                 continue;
             } else if (pActor->uAIState == AttackingMelee) {
-                AttackerInfo.Add(actorPid, 5120, pActor->vPosition.x, pActor->vPosition.y,
-                                 pActor->vPosition.z + pActor->uActorHeight / 2, pActor->special_ability_use_check(actor_id), 1);
+                pushMeleeAttack(actorPid, pActor->vPosition + Vec3i(0, 0, pActor->uActorHeight / 2), pActor->special_ability_use_check(actor_id));
             } else if (pActor->uAIState == AttackingRanged1) {
                 Actor::AI_RangedAttack(actor_id, pDir, pActor->pMonsterInfo.uMissleAttack1Type, ABILITY_ATTACK1);  // light missile
             } else if (pActor->uAIState == AttackingRanged2) {
@@ -4971,107 +4970,68 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
     // while ( (signed int)v53 < NumToSpawn );
 }
 
-//----- (00438F8F) --------------------------------------------------------
-void area_of_effect__damage_evaluate() {
-    Vec3i attacker_coord;
-    SpriteObject *sprite_obj_ptr = nullptr;
+void evaluateAoeDamage() {
+    SpriteObject *pSpriteObj = nullptr;
 
-    for (int attack_index = 0; attack_index < AttackerInfo.count; ++attack_index) {
-        ObjectType attacker_PID_type = PID_TYPE(AttackerInfo.pIDs[attack_index]);
-        int attacker_PID_id = PID_ID(AttackerInfo.pIDs[attack_index]);
+    for (AttackDescription &attack : attackList) {
+        ObjectType attackerType = PID_TYPE(attack.id);
+        int attackerId = PID_ID(attack.id);
+        Vec3i attackVector = Vec3i(0, 0, 0);
 
         // attacker is an item (sprite)
-        if (attacker_PID_type == OBJECT_Item) {
-            sprite_obj_ptr = &pSpriteObjects[attacker_PID_id];
-            attacker_PID_type = PID_TYPE(pSpriteObjects[attacker_PID_id].spell_caster_pid);
-            attacker_PID_id = PID_ID(pSpriteObjects[attacker_PID_id].spell_caster_pid);
+        if (attackerType == OBJECT_Item) {
+            pSpriteObj = &pSpriteObjects[attackerId];
+            attackerType = PID_TYPE(pSpriteObjects[attackerId].spell_caster_pid);
+            attackerId = PID_ID(pSpriteObjects[attackerId].spell_caster_pid);
         }
 
-        if (AttackerInfo.attack_type[attack_index] & 1) {  // melee attack
-            unsigned int target_id = PID_ID(ai_near_actors_targets_pid[attacker_PID_id]);
-            ObjectType target_type = PID_TYPE(ai_near_actors_targets_pid[attacker_PID_id]);
+        if (attack.attackType) {  // melee attack
+            unsigned int targetId = PID_ID(ai_near_actors_targets_pid[attackerId]);
+            ObjectType targetType = PID_TYPE(ai_near_actors_targets_pid[attackerId]);
+            Actor *actor = &pActors[targetId];
 
-            if (target_type != OBJECT_Actor) {
-                if (target_type == OBJECT_Player) {  // party damage from monsters(повреждения группе от монстров)
-                    int xdiff = pParty->vPosition.x - AttackerInfo.pXs[attack_index];
-                    int xsq = xdiff * xdiff;
-                    int ydiff = pParty->vPosition.y - AttackerInfo.pYs[attack_index];
-                    int ysq = ydiff * ydiff;
-                    int zdiff = ((pParty->uPartyHeight / 2) + pParty->vPosition.z) - AttackerInfo.pZs[attack_index];
-                    int zsq = zdiff * zdiff;
-                    unsigned int rangesq = (AttackerInfo.attack_range[attack_index] + 32) * (AttackerInfo.attack_range[attack_index] + 32);
+            if (targetType != OBJECT_Actor) {
+                if (targetType == OBJECT_Player) {  // party damage from monsters
+                    int distanceSq = (pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 2) - attack.pos).LengthSqr();
+                    int attackRangeSq = (attack.attackRange + 32) * (attack.attackRange + 32);
 
                     // check range
-                    if (xsq + ysq + zsq < rangesq) {
-                        attacker_coord.x = AttackerInfo.pXs[attack_index];
-                        attacker_coord.y = AttackerInfo.pYs[attack_index];
-                        attacker_coord.z = AttackerInfo.pZs[attack_index];
-
+                    if (distanceSq < attackRangeSq) {
                         // check line of sight
-                        if (Check_LineOfSight(Vec3i(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z + pParty->sEyelevel), attacker_coord))
-                            DamagePlayerFromMonster(
-                                AttackerInfo.pIDs[attack_index],
-                                AttackerInfo.attack_special[attack_index],
-                                &AttackerInfo.vec_4B4[attack_index],
-                                stru_50C198.which_player_to_attack(&pActors[attacker_PID_id]));
+                        if (Check_LineOfSight(pParty->vPosition + Vec3i(0, 0, pParty->sEyelevel), attack.pos)) {
+                            DamagePlayerFromMonster(attack.id, attack.attackSpecial, &attackVector, stru_50C198.which_player_to_attack(&pActors[attackerId]));
+                        }
                     }
                 }
-            } else {  // Actor damage from monsters(повреждение местного жителя)
-                if (pActors[target_id].pActorBuffs[ACTOR_BUFF_PARALYZED].Active() || pActors[target_id].CanAct()) {
-                    int xdiff = pActors[target_id].vPosition.x - AttackerInfo.pXs[attack_index];
-                    int xsq = xdiff * xdiff;
-                    int ydiff = pActors[target_id].vPosition.y - AttackerInfo.pYs[attack_index];
-                    int ysq = ydiff * ydiff;
-                    int zdiff = ((pActors[target_id].uActorHeight / 2) + pActors[target_id].vPosition.z) - AttackerInfo.pZs[attack_index];
-                    int zsq = zdiff * zdiff;
-                    unsigned int rangesq = (AttackerInfo.attack_range[attack_index] + pActors[target_id].uActorRadius) * (AttackerInfo.attack_range[attack_index] + pActors[target_id].uActorRadius);
-                    int zvec = pActors[target_id].vPosition.z;
+            } else {  // Actor (peasant) damage from monsters
+                if (actor->pActorBuffs[ACTOR_BUFF_PARALYZED].Active() || actor->CanAct()) {
+                    Vec3i distanceVec = actor->vPosition + Vec3i(0, 0, actor->uActorHeight / 2) - attack.pos;
+                    int distanceSq = distanceVec.LengthSqr();
+                    int attackRange = attack.attackRange + actor->uActorRadius;
+                    int attackRangeSq = attackRange * attackRange;
+                    attackVector = Vec3i(distanceVec.x, distanceVec.y, actor->vPosition.z);
 
                     // check range
-                    if (xsq + ysq + zsq < rangesq) {
-                        attacker_coord.x = AttackerInfo.pXs[attack_index];
-                        attacker_coord.y = AttackerInfo.pYs[attack_index];
-                        attacker_coord.z = AttackerInfo.pZs[attack_index];
-
+                    if (distanceSq < attackRangeSq) {
                         // check line of sight
-                        if (Check_LineOfSight(Vec3i(pActors[target_id].vPosition.x, pActors[target_id].vPosition.y, pActors[target_id].vPosition.z + 50), attacker_coord)) {
-                            normalize_to_fixpoint(&xdiff, &ydiff, &zvec);
-                            AttackerInfo.vec_4B4[attack_index].x = xdiff;
-                            AttackerInfo.vec_4B4[attack_index].y = ydiff;
-                            AttackerInfo.vec_4B4[attack_index].z = zvec;
-                            Actor::ActorDamageFromMonster(
-                                AttackerInfo.pIDs[attack_index], target_id,
-                                &AttackerInfo.vec_4B4[attack_index],
-                                AttackerInfo.attack_special[attack_index]);
+                        if (Check_LineOfSight(actor->vPosition + Vec3i(0, 0, 50), attack.pos)) {
+                            normalize_to_fixpoint(&attackVector.x, &attackVector.y, &attackVector.z);
+                            Actor::ActorDamageFromMonster(attack.id, targetId, &attackVector, attack.attackSpecial);
                         }
                     }
                 }
             }
-        } else {  // damage from spells(повреждения от заклов(метеоритный дождь))
-            int xdiff = pParty->vPosition.x - AttackerInfo.pXs[attack_index];
-            int xsq = xdiff * xdiff;
-            int ydiff = pParty->vPosition.y - AttackerInfo.pYs[attack_index];
-            int ysq = ydiff * ydiff;
-            int zdiff = ((pParty->uPartyHeight / 2) + pParty->vPosition.z) - AttackerInfo.pZs[attack_index];
-            int zsq = zdiff * zdiff;
-            unsigned int rangesq = (AttackerInfo.attack_range[attack_index] + 32) * (AttackerInfo.attack_range[attack_index] + 32);
+        } else {  // damage from AOE spells
+            int distanceSq = (pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 2) - attack.pos).LengthSqr();
+            int attackRangeSq = (attack.attackRange + 32) * (attack.attackRange + 32);
 
             // check spell in range of party
-            if (xsq + ysq + zsq < rangesq) {  // party damage (повреждения группе)
-                attacker_coord.x = AttackerInfo.pXs[attack_index];
-                attacker_coord.y = AttackerInfo.pYs[attack_index];
-                attacker_coord.z = AttackerInfo.pZs[attack_index];
-
+            if (distanceSq < attackRangeSq) {  // party damage
                 // check line of sight to party
-                if (Check_LineOfSight(Vec3i(pParty->vPosition.x, pParty->vPosition.y,
-                               pParty->vPosition.z + pParty->sEyelevel),
-                               attacker_coord)) {
+                if (Check_LineOfSight(pParty->vPosition + Vec3i(0, 0, pParty->sEyelevel), attack.pos)) {
                     for (int i = 0; i < pParty->pPlayers.size(); i++) {
                         if (pParty->pPlayers[i].conditions.HasNone({Condition_Dead, Condition_Petrified, Condition_Eradicated})) {
-                            DamagePlayerFromMonster(
-                                AttackerInfo.pIDs[attack_index],
-                                AttackerInfo.attack_special[attack_index],
-                                &AttackerInfo.vec_4B4[attack_index], i);
+                            DamagePlayerFromMonster(attack.id, attack.attackSpecial, &attackVector, i);
                         }
                     }
                 }
@@ -5079,40 +5039,28 @@ void area_of_effect__damage_evaluate() {
 
             for (int actorID = 0; actorID < pActors.size(); ++actorID) {
                 if (pActors[actorID].CanAct()) {
-                    int xdiff = pActors[actorID].vPosition.x - AttackerInfo.pXs[attack_index];
-                    int xsq = xdiff * xdiff;
-                    int ydiff = pActors[actorID].vPosition.y - AttackerInfo.pYs[attack_index];
-                    int ysq = ydiff * ydiff;
-                    int zdiff = ((pActors[actorID].uActorHeight / 2) + pActors[actorID].vPosition.z) - AttackerInfo.pZs[attack_index];
-                    int zsq = zdiff * zdiff;
-                    unsigned int rangesq = (AttackerInfo.attack_range[attack_index] + pActors[actorID].uActorRadius) * (AttackerInfo.attack_range[attack_index] + pActors[actorID].uActorRadius);
-                    int zvec = pActors[actorID].vPosition.z;
+                    Vec3i distanceVec = pActors[actorID].vPosition + Vec3i(0, 0, pActors[actorID].uActorHeight / 2) - attack.pos;
+                    int distanceSq = distanceVec.LengthSqr();
+                    int attackRange = attack.attackRange + pActors[actorID].uActorRadius;
+                    int attackRangeSq = attackRange * attackRange;
+                    attackVector = Vec3i(distanceVec.x, distanceVec.y, pActors[actorID].vPosition.z);
 
                     // check range
-                    if (xsq + ysq + zsq < rangesq) {
-                        attacker_coord.x = AttackerInfo.pXs[attack_index];
-                        attacker_coord.y = AttackerInfo.pYs[attack_index];
-                        attacker_coord.z = AttackerInfo.pZs[attack_index];
-
+                    if (distanceSq < attackRangeSq) {
                         // check line of sight
-                        if (Check_LineOfSight(Vec3i(pActors[actorID].vPosition.x,
-                                       pActors[actorID].vPosition.y,
-                                       pActors[actorID].vPosition.z + 50),
-                                       attacker_coord)) {
-                            normalize_to_fixpoint(&xdiff, &ydiff, &zvec);
-                            AttackerInfo.vec_4B4[attack_index].x = xdiff;
-                            AttackerInfo.vec_4B4[attack_index].y = ydiff;
-                            AttackerInfo.vec_4B4[attack_index].z = zvec;
-                            switch (attacker_PID_type) {
+                        if (Check_LineOfSight(pActors[actorID].vPosition + Vec3i(0, 0, 50), attack.pos)) {
+                            normalize_to_fixpoint(&attackVector.x, &attackVector.y, &attackVector.z);
+                            switch (attackerType) {
                                 case OBJECT_Player:
-                                    Actor::DamageMonsterFromParty(AttackerInfo.pIDs[attack_index], actorID, &AttackerInfo.vec_4B4[attack_index]);
+                                    Actor::DamageMonsterFromParty(attack.id, actorID, &attackVector);
                                     break;
                                 case OBJECT_Actor:
-                                    if (sprite_obj_ptr && pActors[attacker_PID_id].GetActorsRelation(&pActors[actorID]))
-                                        Actor::ActorDamageFromMonster(AttackerInfo.pIDs[attack_index], actorID, &AttackerInfo.vec_4B4[attack_index], sprite_obj_ptr->field_61);
+                                    if (pSpriteObj && pActors[attackerId].GetActorsRelation(&pActors[actorID])) {
+                                        Actor::ActorDamageFromMonster(attack.id, actorID, &attackVector, pSpriteObj->field_61);
+                                    }
                                     break;
                                 case OBJECT_Item:
-                                    ItemDamageFromActor(AttackerInfo.pIDs[attack_index], actorID, &AttackerInfo.vec_4B4[attack_index]);
+                                    ItemDamageFromActor(attack.id, actorID, &attackVector);
                                     break;
                             }
                         }
@@ -5121,7 +5069,7 @@ void area_of_effect__damage_evaluate() {
             }
         }
     }
-    AttackerInfo.count = 0;
+    attackList.clear();
 }
 
 //----- (0043AE12) --------------------------------------------------------

@@ -618,32 +618,16 @@ void stru262_TurnBased::AIAttacks(unsigned int queue_index) {
             (pActors[actor_id].uAIState != Disabled) &&
             (pActors[actor_id].uAIState != Removed)) {
             pActors[actor_id].uCurrentActionTime += pEventTimer->uTimeElapsed;
-            if ((signed int)pActors[actor_id].uCurrentActionTime >=
-                pActors[actor_id].uCurrentActionLength) {
+            if ((signed int)pActors[actor_id].uCurrentActionTime >= pActors[actor_id].uCurrentActionLength) {
                 switch (pActors[actor_id].uAIState) {
                     case AttackingMelee:
-                        v19 = pActors[actor_id].special_ability_use_check(
-                            actor_id);
-                        AttackerInfo.Add(
-                            pQueue[queue_index].uPackedID, 5120,
-                            pActors[actor_id].vPosition.x,
-                            pActors[actor_id].vPosition.y,
-                            pActors[actor_id].vPosition.z +
-                                ((signed int)pActors[actor_id].uActorHeight >>
-                                 1),
-                            v19, 1);
-                        Actor::AI_Stand(actor_id,
-                                        ai_near_actors_targets_pid[actor_id], 0,
-                                        &a4);
+                        v19 = pActors[actor_id].special_ability_use_check(actor_id);
+                        pushMeleeAttack(pQueue[queue_index].uPackedID, pActors[actor_id].vPosition + Vec3i(0, 0, pActors[actor_id].uActorHeight / 2), v19);
+                        Actor::AI_Stand(actor_id, ai_near_actors_targets_pid[actor_id], 0, &a4);
                         break;
                     case AttackingRanged1:
-                        Actor::AI_RangedAttack(
-                            actor_id, &a4,
-                            pActors[actor_id].pMonsterInfo.uMissleAttack1Type,
-                            ABILITY_ATTACK1);
-                        Actor::AI_Stand(actor_id,
-                                        ai_near_actors_targets_pid[actor_id], 0,
-                                        &a4);
+                        Actor::AI_RangedAttack(actor_id, &a4, pActors[actor_id].pMonsterInfo.uMissleAttack1Type, ABILITY_ATTACK1);
+                        Actor::AI_Stand(actor_id, ai_near_actors_targets_pid[actor_id], 0, &a4);
                         break;
                     case Dying:
                         pActors[actor_id].uCurrentActionTime = 0;
@@ -652,54 +636,32 @@ void stru262_TurnBased::AIAttacks(unsigned int queue_index) {
                         pActors[actor_id].UpdateAnimation();
                         break;
                     case Stunned:
-                        Actor::AI_Stand(actor_id,
-                                        ai_near_actors_targets_pid[actor_id], 0,
-                                        &a4);
+                        Actor::AI_Stand(actor_id, ai_near_actors_targets_pid[actor_id], 0, &a4);
                         break;
                     case AttackingRanged2:
-                        Actor::AI_RangedAttack(
-                            actor_id, &a4,
-                            pActors[actor_id].pMonsterInfo.uMissleAttack2Type,
-                            ABILITY_ATTACK2);
-                        Actor::AI_Stand(actor_id,
-                                        ai_near_actors_targets_pid[actor_id], 0,
-                                        &a4);
+                        Actor::AI_RangedAttack(actor_id, &a4, pActors[actor_id].pMonsterInfo.uMissleAttack2Type, ABILITY_ATTACK2);
+                        Actor::AI_Stand(actor_id, ai_near_actors_targets_pid[actor_id], 0, &a4);
                         break;
                     case AttackingRanged3:
-                        Actor::AI_SpellAttack(
-                            actor_id, &a4,
-                            pActors[actor_id].pMonsterInfo.uSpell1ID, ABILITY_SPELL1,
-                            pActors[actor_id]
-                                .pMonsterInfo.uSpellSkillAndMastery1);
-                        Actor::AI_Stand(actor_id,
-                                        ai_near_actors_targets_pid[actor_id], 0,
-                                        &a4);
+                        Actor::AI_SpellAttack(actor_id, &a4, pActors[actor_id].pMonsterInfo.uSpell1ID,
+                                              ABILITY_SPELL1, pActors[actor_id].pMonsterInfo.uSpellSkillAndMastery1);
+                        Actor::AI_Stand(actor_id, ai_near_actors_targets_pid[actor_id], 0, &a4);
                         break;
                     case AttackingRanged4:
-                        Actor::AI_SpellAttack(
-                            actor_id, &a4,
-                            pActors[actor_id].pMonsterInfo.uSpell2ID, ABILITY_SPELL2,
-                            pActors[actor_id]
-                                .pMonsterInfo.uSpellSkillAndMastery2);
-                        Actor::AI_Stand(actor_id,
-                                        ai_near_actors_targets_pid[actor_id], 0,
-                                        &a4);
+                        Actor::AI_SpellAttack(actor_id, &a4, pActors[actor_id].pMonsterInfo.uSpell2ID,
+                                              ABILITY_SPELL2, pActors[actor_id].pMonsterInfo.uSpellSkillAndMastery2);
+                        Actor::AI_Stand(actor_id, ai_near_actors_targets_pid[actor_id], 0, &a4);
                         break;
                     default:
                         if (!grng->Random(2))
-                            Actor::AI_Bored(
-                                actor_id, ai_near_actors_targets_pid[actor_id],
-                                &a4);
+                            Actor::AI_Bored(actor_id, ai_near_actors_targets_pid[actor_id], &a4);
                         else
-                            Actor::AI_Stand(
-                                actor_id, ai_near_actors_targets_pid[actor_id],
-                                64, &a4);
+                            Actor::AI_Stand( actor_id, ai_near_actors_targets_pid[actor_id], 64, &a4);
                 }
             }
         }
     }
 }
-// 50FE08: using guessed type stru298 AttackerInfo;
 
 //----- (0040680F) --------------------------------------------------------
 void stru262_TurnBased::AI_Action_(int queue_index) {
