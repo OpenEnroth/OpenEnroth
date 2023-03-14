@@ -875,9 +875,10 @@ bool SpriteObject::applyShrinkRayAoe() {
     for (Actor &actor : pActors) {
         // TODO(Nik-RE-dev): paralyzed actor will not be affected?
         if (actor.CanAct()) {
-            int distance = (actor.vPosition - this->vPosition + Vec3i(0, 0, actor.uActorHeight / 2)).ToFloat().Length();
+            int distanceSq = (actor.vPosition - this->vPosition + Vec3i(0, 0, actor.uActorHeight / 2)).LengthSqr();
+            int checkDistanceSq = (256 + actor.uActorRadius) * (256 + actor.uActorRadius);
 
-            if (distance <= (256 + actor.uActorRadius)) {
+            if (distanceSq <= checkDistanceSq) {
                 if (actor.DoesDmgTypeDoDamage(DMGT_DARK)) {
                     actor.pActorBuffs[ACTOR_BUFF_SHRINK].Apply(pParty->GetPlayingTime() + duration, this->spell_skill, shrinkPower, 0, 0);
                     actor.uAttributes |= ACTOR_AGGRESSOR;
@@ -1343,7 +1344,6 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
                 }
                 isDamaged = object->applyShrinkRayAoe();
                 if (isDamaged) {
-                    // TODO(Nik-RE-dev): unreachable
                     updateSpriteOnImpact(object);
                     if (object->uObjectDescID == 0) {
                         SpriteObject::OnInteraction(uLayingItemID);
@@ -1498,10 +1498,11 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
             AttackerInfo.Add(PID(OBJECT_Item, uLayingItemID), 512,
                              object->vPosition.x, object->vPosition.y, object->vPosition.z,
                              object->field_61, 0);
-            if (objectDesc->uFlags & OBJECT_DESC_TRIAL_PARTICLE)
+            if (objectDesc->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                 trail_particle_generator.GenerateTrailParticles(
                     object->vPosition.x, object->vPosition.y, object->vPosition.z,
                     objectDesc->uParticleTrailColor);
+            }
             // int v47 = 0;
             // if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
             //     v47 = pSpriteObjects[uLayingItemID].uSoundID + 4;
