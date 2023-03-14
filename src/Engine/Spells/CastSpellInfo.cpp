@@ -402,7 +402,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_EARTH)) {
                         Vec3i spell_velocity = Vec3i(0, 0, 0);
                         pActors[monster_id].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION]
-                            .Apply(GameTime(pMiscTimer->uTotalGameTimeElapsed + 128), PLAYER_SKILL_MASTERY_NONE, 0, 0, 0);
+                            .Apply(GameTime(pMiscTimer->uTotalGameTimeElapsed + 128), spell_mastery, 0, 0, 0);
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.uSectorID = 0;
                         pSpellSprite.field_60_distance_related_prolly_lod = 0;
@@ -618,7 +618,9 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_DARK_SHRINKING_RAY:
                 {
                     // TODO: spell_id different?
-                    initSpellSprite(&pSpellSprite, spell_level * 300, spell_mastery, pCastSpell);
+                    // Spell level was multiplied by 300 (which number of seconds in 5 minutes)
+                    // This calculation was moved to spell impact processing function
+                    initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
