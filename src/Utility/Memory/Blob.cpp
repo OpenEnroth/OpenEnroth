@@ -38,11 +38,19 @@ class MemoryMapBlobHandler : public BlobHandler {
 constinit FreeBlobHandler staticFreeBlobHandler = {};
 constinit NonOwningBlobHandler staticNonOwningBlobHandler = {};
 
-Blob Blob::FromMalloc(const void *data, size_t size) {
+Blob Blob::fromMalloc(const void *data, size_t size) {
     return Blob(data, size, &staticFreeBlobHandler);
 }
 
-Blob Blob::Copy(const void *data, size_t size) {
+Blob Blob::fromFile(std::string_view path) {
+    std::string cpath(path);
+    mio::mmap_source mmap(cpath); // Throws std::system_error.
+    const void* data = mmap.data();
+    size_t size = mmap.size();
+    return Blob(data, size, new MemoryMapBlobHandler(std::move(mmap)));
+}
+
+Blob Blob::copy(const void *data, size_t size) { // NOLINT: this is not std::copy
     std::unique_ptr<void, FreeDeleter> memory(malloc(size)); // We don't handle allocation failures.
 
     memcpy(memory.get(), data, size);
@@ -50,7 +58,14 @@ Blob Blob::Copy(const void *data, size_t size) {
     return Blob(memory.release(), size, &staticFreeBlobHandler);
 }
 
-Blob Blob::Read(FILE* file, size_t size) {
+Blob Blob::view(const void *data, size_t size) {
+    return Blob(data, size, &staticNonOwningBlobHandler);
+}
+
+Blob Blob::read(FILE* file, size_t size) {
+    if (size == 0)
+        return Blob();
+
     std::unique_ptr<void, FreeDeleter> memory(malloc(size));
 
     size_t read = fread(memory.get(), size, 1, file);
@@ -60,25 +75,16 @@ Blob Blob::Read(FILE* file, size_t size) {
     return Blob(memory.release(), size, &staticFreeBlobHandler);
 }
 
-Blob Blob::Read(FileInputStream& file, size_t size) {
+Blob Blob::read(FileInputStream& file, size_t size) {
+    if (size == 0)
+        return Blob();
+
     std::unique_ptr<void, FreeDeleter> memory(malloc(size));
     file.ReadOrFail(memory.get(), size);
     return Blob(memory.release(), size, &staticFreeBlobHandler);
 }
 
-Blob Blob::FromFile(std::string_view path) {
-    std::string cpath(path);
-    mio::mmap_source mmap(cpath);
-    const void* data = mmap.data();
-    size_t size = mmap.size();
-    return Blob(data, size, new MemoryMapBlobHandler(std::move(mmap)));
-}
-
-Blob Blob::NonOwning(const void *data, size_t size) {
-    return Blob(data, size, &staticNonOwningBlobHandler);
-}
-
-Blob Blob::Concat(const Blob &l, const Blob &r) {
+Blob Blob::concat(const Blob &l, const Blob &r) {
     std::unique_ptr<void, FreeDeleter> memory(malloc(l.size() + r.size()));
 
     memcpy(memory.get(), l.data(), l.size());

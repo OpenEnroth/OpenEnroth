@@ -60,8 +60,8 @@ enum UIMessageType : uint32_t {
     UIMSG_PlayerCreationClickOK = 66,
     UIMSG_PlayerCreationClickReset = 67,
     UIMSG_44 = 68,
-    UIMSG_CastSpell_Character_Big_Improvement = 69,
-    UIMSG_CastSpell_Shoot_Monster = 70,
+    UIMSG_CastSpell_TargetCharacter = 69,
+    UIMSG_CastSpell_TargetActor = 70,
     UIMSG_ClickBooksBtn = 71,
     UIMSG_48 = 72,  // fixed skill 1
     UIMSG_49 = 73,  // fixed skill 2
@@ -125,10 +125,10 @@ enum UIMessageType : uint32_t {
     UIMSG_StartHireling2Dialogue = 135,
     UIMSG_SelectNPCDialogueOption = 136,
 
-    UIMSG_CastSpell_Monster_Improvement = 140,
-    UIMSG_CastSpell_Character_Small_Improvement = 141,
+    UIMSG_CastSpell_TargetActorBuff = 140,
+    //UIMSG_CastSpell_TargetCharacter = 141, // semantics duplicates UIMSG 69
     UIMSG_CastSpellFromBook = 142,
-    UIMSG_HiredNPC_CastSpell = 143,
+    UIMSG_CastSpell_Hireling = 143,
     UIMSG_PlayerCreation_VoicePrev = 144,
     UIMSG_PlayerCreation_VoiceNext = 145,
     UIMSG_SpellScrollUse = 146,

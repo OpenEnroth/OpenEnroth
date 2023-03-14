@@ -30,23 +30,22 @@ class GUIWindow;
 
 // flags
 enum class SpellCastFlag : uint16_t {
-    ON_CAST_CastViaScroll = 0x0001,
-    ON_CAST_SinglePlayer_BigImprovementAnim = 0x0002,
+    ON_CAST_CastViaScroll = 0x0001,            // Spell is cast via scroll
+    ON_CAST_TargetedCharacter = 0x0002,        // Targeted spell, target is character
     // 0x0004 unused
-    ON_CAST_TargetCrosshair = 0x0008,
-    ON_CAST_TargetIsParty = 0x0010,
-    ON_CAST_NoRecoverySpell = 0x0020,
-    ON_CAST_Telekenesis = 0x0040,
-    ON_CAST_Enchantment = 0x0080,
-    ON_CAST_MonsterSparkles = 0x0100,
-    ON_CAST_DarkSacrifice = 0x0200,
+    ON_CAST_TargetedActor = 0x0008,            // Targeted spell, target is actor
+    ON_CAST_TargetIsParty = 0x0010,            // Spell target is whole party
+    ON_CAST_NoRecoverySpell = 0x0020,          // No recovery time after spell cast
+    ON_CAST_TargetedTelekinesis = 0x0040,      // Targeted spell, telekinesis
+    ON_CAST_TargetedEnchantment = 0x0080,      // Targeted spell, target is item in inventory
+    ON_CAST_TargetedActorOrCharacter = 0x0100, // Targeted spell, target either actor or character
+    ON_CAST_TargetedHireling = 0x0200,         // Targeted spell, target is hireling
 
+    // Cumulative flags indicating that spell is targeted
     ON_CAST_CastingInProgress =
-        // TODO: these flags need to be renamed to correctly represent
-        //       spell target pick UI for particular spells
-        ON_CAST_SinglePlayer_BigImprovementAnim | ON_CAST_TargetCrosshair |
-        ON_CAST_Telekenesis | ON_CAST_Enchantment | ON_CAST_MonsterSparkles |
-        ON_CAST_DarkSacrifice
+        ON_CAST_TargetedCharacter | ON_CAST_TargetedActor |
+        ON_CAST_TargetedTelekinesis | ON_CAST_TargetedEnchantment |
+        ON_CAST_TargetedActorOrCharacter | ON_CAST_TargetedHireling
 };
 using enum SpellCastFlag;
 MM_DECLARE_FLAGS(SpellCastFlags, SpellCastFlag)
@@ -124,3 +123,11 @@ void pushNPCSpell(SPELL_TYPE spell);
  * @param uPlayerID    ID of player casting spell.
  */
 void pushScrollSpell(SPELL_TYPE spell, unsigned int uPlayerID);
+
+/**
+ * Process successfull picking target for spell.
+ *
+ * @param pid            PID of target
+ * @param playerTarget   Target player index
+ */
+void spellTargetPicked(int pid, int playerTarget);

@@ -199,13 +199,13 @@ Blob LodReader::read(const std::string &filename) {
         assert(1 == fread(&header, sizeof(header), 1, _fp));
 
         if (0 != header.decompressedSize) {
-            return zlib::Uncompress(Blob::Read(_fp, header.compressedSize), header.decompressedSize);
+            return zlib::Uncompress(Blob::read(_fp, header.compressedSize), header.decompressedSize);
         } else {
-            return Blob::Read(_fp, header.compressedSize);
+            return Blob::read(_fp, header.compressedSize);
         }
     }
 
-    return Blob::Read(_fp, file->dataSize);
+    return Blob::read(_fp, file->dataSize);
 }
 
 

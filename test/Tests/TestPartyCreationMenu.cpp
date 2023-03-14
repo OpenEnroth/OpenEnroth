@@ -416,6 +416,25 @@ GAME_TEST(Issue, Issue506) {
     test->playTraceFromTestData("issue_506.mm7", "issue_506.json");
 }
 
+GAME_TEST(Issue, Issue527) {
+    // Check Cure Disease spell works
+    test->playTraceFromTestData("issue_527.mm7", "issue_527.json", []() { EXPECT_TRUE(pParty->pPlayers[0].conditions.Has(Condition_Disease_Weak)); });
+    EXPECT_FALSE(pParty->pPlayers[0].conditions.Has(Condition_Disease_Weak));
+}
+
+GAME_TEST(Issue, Issue528) {
+    // Check that spells target single player or entire party depending on mastery drain mana
+    // Use test for issue 427 which test the same spells
+    test->playTraceFromTestData("issue_427b.mm7", "issue_427b.json", []() { EXPECT_EQ(pParty->pPlayers[2].sMana, 100); });
+    EXPECT_EQ(pParty->pPlayers[2].sMana, 40);
+}
+
+GAME_TEST(Issue, Issue442) {
+    // Test that regular UI is blocked on spell cast
+    test->playTraceFromTestData("issue_442.mm7", "issue_442.json");
+    EXPECT_EQ(pParty->pPlayers[1].pPlayerBuffs[PLAYER_BUFF_BLESS].Active(), true);
+}
+
 GAME_TEST(Issues, Issue268) {
     // Crash in ODM_GetFloorLevel
     test->playTraceFromTestData("issue_268.mm7", "issue_268.json");

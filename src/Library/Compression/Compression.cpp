@@ -3,6 +3,7 @@
 #include <zlib.h>
 
 #include <cstring>
+#include <algorithm>
 #include <memory>
 
 #include "Utility/Memory/FreeDeleter.h"
@@ -36,7 +37,7 @@ Blob Compress(const Blob &source) {
         res = compress(static_cast<Bytef *>(dest.get()), &destLen, static_cast<const Bytef *>(source.data()), source.size());
     }
 
-    return res == Z_OK ? Blob::Copy(dest.get(), destLen) : Blob();
+    return res == Z_OK ? Blob::copy(dest.get(), destLen) : Blob();
 }
 
 Blob Uncompress(const Blob &source, size_t sizeHint) {
@@ -52,7 +53,7 @@ Blob Uncompress(const Blob &source, size_t sizeHint) {
         res = uncompress(static_cast<Bytef *>(dest.get()), &destLen, static_cast<const Bytef *>(source.data()), source.size());
     }
 
-    return res == Z_OK ? Blob::Copy(dest.get(), destLen) : Blob();
+    return res == Z_OK ? Blob::copy(dest.get(), destLen) : Blob();
 }
 
 };  // namespace zlib

@@ -1,6 +1,6 @@
 find_package(PythonInterp)
 
-set(CPPLINT_VERSION "1.5.5")
+set(CPPLINT_VERSION "1.6.1")
 
 if(PYTHONINTERP_FOUND AND NOT CPPLINT_FOUND)
   file(DOWNLOAD "https://github.com/cpplint/cpplint/archive/refs/tags/${CPPLINT_VERSION}.tar.gz" "${CMAKE_CURRENT_BINARY_DIR}/cpplint.tar.gz")

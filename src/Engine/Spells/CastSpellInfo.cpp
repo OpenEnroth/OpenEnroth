@@ -29,6 +29,7 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
+#include "GUI/UI/UISpell.h"
 
 #include "Io/Mouse.h"
 
@@ -2273,9 +2274,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
-                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Poison_Weak) ||
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Poison_Medium) ||
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Poison_Severe)) {
+                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.HasAny({Condition_Poison_Weak, Condition_Poison_Medium, Condition_Poison_Severe})) {
                         if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                             pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Poison_Weak);
                             pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Poison_Medium);
@@ -2292,12 +2291,48 @@ void CastSpellInfoHelpers::castSpell() {
                     break;
                 }
 
+                case SPELL_BODY_CURE_DISEASE:
+                {
+                    GameTime spell_duration;
+
+                    switch (spell_mastery) {
+                        case PLAYER_SKILL_MASTERY_NOVICE: // MM6 only
+                            spell_duration = GameTime::FromMinutes(3 * spell_level);
+                            break;
+                        case PLAYER_SKILL_MASTERY_EXPERT: // MM6 only
+                            spell_duration = GameTime::FromHours(spell_level);
+                            break;
+                        case PLAYER_SKILL_MASTERY_MASTER:
+                            spell_duration = GameTime::FromDays(spell_level);
+                            break;
+                        case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                            spell_duration = GameTime(0);
+                            break;
+                        default:
+                            assert(false);
+                    }
+
+                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
+                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.HasAny({Condition_Disease_Weak, Condition_Disease_Medium, Condition_Disease_Severe})) {
+                        if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Disease_Weak);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Disease_Medium);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Disease_Severe);
+                        } else {
+                            pParty->pPlayers[pCastSpell->uPlayerID_2]
+                                .DiscardConditionIfLastsLongerThan(Condition_Disease_Weak, pParty->GetPlayingTime() - spell_duration);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2]
+                                .DiscardConditionIfLastsLongerThan(Condition_Disease_Medium, pParty->GetPlayingTime() - spell_duration);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2]
+                                .DiscardConditionIfLastsLongerThan(Condition_Disease_Severe, pParty->GetPlayingTime() - spell_duration);
+                        }
+                    }
+                    break;
+                }
+
                 case SPELL_BODY_PROTECTION_FROM_MAGIC:
                 {
-                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 0);
-                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 1);
-                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 2);
-                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 3);
+                    spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC]
                         .Apply(pParty->GetPlayingTime() + GameTime::FromHours(spell_level), spell_mastery, spell_level, 0, 0);
                     break;
@@ -2306,10 +2341,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_BODY_HAMMERHANDS:
                 {
                     if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                        spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 0);
-                        spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 1);
-                        spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 2);
-                        spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 3);
+                        spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                         for (Player &player : pParty->pPlayers) {
                             player.pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS]
                                 .Apply(pParty->GetPlayingTime() + GameTime::FromHours(spell_level), spell_mastery, spell_level, spell_level, 0);
@@ -2415,10 +2447,7 @@ void CastSpellInfoHelpers::castSpell() {
                         default:
                             assert(false);
                     }
-                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 0);
-                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 1);
-                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 2);
-                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 3);
+                    spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS]
                         .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
                     break;
@@ -2465,10 +2494,7 @@ void CastSpellInfoHelpers::castSpell() {
                         default:
                             assert(false);
                     }
-                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 0);
-                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 1);
-                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 2);
-                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 3);
+                    spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     pParty->pPartyBuffs[PARTY_BUFF_RESIST_BODY].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
                     pParty->pPartyBuffs[PARTY_BUFF_RESIST_MIND].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
                     pParty->pPartyBuffs[PARTY_BUFF_RESIST_FIRE].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
@@ -2864,6 +2890,7 @@ void CastSpellInfoHelpers::castSpell() {
                 }
                 default:
                     pCastSpell->uSpellID = SPELL_NONE;
+                    assert(false && "All spells casted by player must be processed.");
                     continue;
             }
 
@@ -2972,6 +2999,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
         }
     }
 
+    PLAYER_SKILL checkSkill = skill_value;
     // spell_pointed_target = a5;
     // v7 = &pParty->pPlayers[uPlayerID];
     assert(uPlayerID < 4);
@@ -2982,14 +3010,14 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
             case SPELL_BODY_FIRST_AID:
             case SPELL_DARK_REANIMATE:
                 // HIBYTE(spell_pointed_target) = HIBYTE(a5) | 1;
-                flags |= ON_CAST_MonsterSparkles;
+                flags |= ON_CAST_TargetedActorOrCharacter;
                 break;
 
             case SPELL_FIRE_FIRE_AURA:
             case SPELL_WATER_RECHARGE_ITEM:
             case SPELL_WATER_ENCHANT_ITEM:
             case SPELL_DARK_VAMPIRIC_WEAPON:
-                flags |= ON_CAST_Enchantment;
+                flags |= ON_CAST_TargetedEnchantment;
                 break;
 
             case SPELL_FIRE_FIRE_BOLT:
@@ -3021,7 +3049,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
             case SPELL_DARK_DRAGON_BREATH:
                 if (!a6) {
                     // These spells are targeted unless used from quick spell button
-                    flags |= ON_CAST_TargetCrosshair;
+                    flags |= ON_CAST_TargetedActor;
                 }
                 break;
             case SPELL_MIND_TELEPATHY:
@@ -3029,46 +3057,46 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
             case SPELL_MIND_ENSLAVE:
             case SPELL_LIGHT_PARALYZE:
             case SPELL_DARK_CONTROL_UNDEAD:
-                flags |= ON_CAST_TargetCrosshair;
+                flags |= ON_CAST_TargetedActor;
                 break;
 
             case SPELL_EARTH_TELEKINESIS:
-                flags |= ON_CAST_Telekenesis;
+                flags |= ON_CAST_TargetedTelekinesis;
                 break;
 
             case SPELL_SPIRIT_BLESS:
-                if (!skill_value) {
-                    skill_value = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
+                if (!checkSkill) {
+                    checkSkill = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
                 }
-                if (GetSkillMastery(skill_value) < PLAYER_SKILL_MASTERY_EXPERT && !engine->config->debug.AllMagic.Get()) {
-                    flags |= ON_CAST_SinglePlayer_BigImprovementAnim;
+                if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_EXPERT && !engine->config->debug.AllMagic.Get()) {
+                    flags |= ON_CAST_TargetedCharacter;
                 }
                 break;
 
             case SPELL_SPIRIT_PRESERVATION:
-                if (!skill_value) {
-                    skill_value = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
+                if (!checkSkill) {
+                    checkSkill = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
                 }
-                if (GetSkillMastery(skill_value) < PLAYER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.Get()) {
-                    flags |= ON_CAST_SinglePlayer_BigImprovementAnim;
+                if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.Get()) {
+                    flags |= ON_CAST_TargetedCharacter;
                 }
                 break;
 
             case SPELL_DARK_PAIN_REFLECTION:
-                if (!skill_value) {
-                    skill_value = player->pActiveSkills[PLAYER_SKILL_DARK];
+                if (!checkSkill) {
+                    checkSkill = player->pActiveSkills[PLAYER_SKILL_DARK];
                 }
-                if (GetSkillMastery(skill_value) < PLAYER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.Get()) {
-                    flags |= ON_CAST_SinglePlayer_BigImprovementAnim;
+                if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.Get()) {
+                    flags |= ON_CAST_TargetedCharacter;
                 }
                 break;
 
             case SPELL_BODY_HAMMERHANDS:
-                if (!skill_value) {
-                    skill_value = player->pActiveSkills[PLAYER_SKILL_BODY];
+                if (!checkSkill) {
+                    checkSkill = player->pActiveSkills[PLAYER_SKILL_BODY];
                 }
-                if (GetSkillMastery(skill_value) < PLAYER_SKILL_MASTERY_GRANDMASTER && !engine->config->debug.AllMagic.Get()) {
-                    flags |= ON_CAST_SinglePlayer_BigImprovementAnim;
+                if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_GRANDMASTER && !engine->config->debug.AllMagic.Get()) {
+                    flags |= ON_CAST_TargetedCharacter;
                 }
                 break;
 
@@ -3083,11 +3111,11 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
             case SPELL_BODY_REGENERATION:
             case SPELL_BODY_CURE_POISON:
             case SPELL_BODY_CURE_DISEASE:
-                flags |= ON_CAST_SinglePlayer_BigImprovementAnim;
+                flags |= ON_CAST_TargetedCharacter;
                 break;
 
             case SPELL_DARK_SACRIFICE:
-                flags |= ON_CAST_DarkSacrifice;
+                flags |= ON_CAST_TargetedHireling;
                 break;
             default:
                 break;
@@ -3115,81 +3143,40 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
 
     // TODO: if no more place for spells in queue then spell is just ignored?
     //       Need assert?
-    if (result != -1) {
+    if (result != -1 && pGUIWindow_CastTargetedSpell == nullptr) {
         Sizei renDims = render->GetRenderDimensions();
-        if (flags & ON_CAST_SinglePlayer_BigImprovementAnim) {
-            if (pGUIWindow_CastTargetedSpell) {
-                return;
-            }
-
-            pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell({0, 0}, renDims, &pCastSpellInfo[result]);
-            pGUIWindow_CastTargetedSpell->CreateButton({52, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_Character_Big_Improvement, 0, InputAction::SelectChar1);
-            pGUIWindow_CastTargetedSpell->CreateButton({165, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_Character_Big_Improvement, 1, InputAction::SelectChar2);
-            pGUIWindow_CastTargetedSpell->CreateButton({280, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_Character_Big_Improvement, 2, InputAction::SelectChar3);
-            pGUIWindow_CastTargetedSpell->CreateButton({390, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_Character_Big_Improvement, 3, InputAction::SelectChar4);
+        if (flags & ON_CAST_TargetedCharacter) {
+            pGUIWindow_CastTargetedSpell = new TargetedSpellUI_Character({0, 0}, renDims, &pCastSpellInfo[result]);
             pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
-        if (flags & ON_CAST_TargetCrosshair) {
-            if (pGUIWindow_CastTargetedSpell) {
-                return;
-            }
-
-            pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell({0, 0}, renDims, &pCastSpellInfo[result]);
-            pGUIWindow_CastTargetedSpell->CreateButton({game_viewport_x, game_viewport_y}, {game_viewport_width, game_viewport_height}, 1, 0,
-                UIMSG_CastSpell_Shoot_Monster, 0);
+        if (flags & ON_CAST_TargetedActor) {
+            pGUIWindow_CastTargetedSpell = new TargetedSpellUI_Actor({0, 0}, renDims, &pCastSpellInfo[result]);
             pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
-        if (flags & ON_CAST_Telekenesis) {
-            if (pGUIWindow_CastTargetedSpell) {
-                return;
-            }
-
-            pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell({0, 0}, renDims, &pCastSpellInfo[result]);
-            pGUIWindow_CastTargetedSpell->CreateButton({game_viewport_x, game_viewport_y}, {game_viewport_width, game_viewport_height}, 1, 0,
-                UIMSG_CastSpell_Telekinesis, 0);
+        if (flags & ON_CAST_TargetedTelekinesis) {
+            pGUIWindow_CastTargetedSpell = new TargetedSpellUI_Telekinesis({0, 0}, renDims, &pCastSpellInfo[result]);
             pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
-        if (flags & ON_CAST_Enchantment) {
-            if (pGUIWindow_CastTargetedSpell) {
-                return;
-            }
-
+        if (flags & ON_CAST_TargetedEnchantment) {
             pGUIWindow_CastTargetedSpell = pCastSpellInfo[result].GetCastSpellInInventoryWindow();
             IsEnchantingInProgress = true;
             some_active_character = uActiveCharacter;
             pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
-        if (flags & ON_CAST_MonsterSparkles) {
-            if (pGUIWindow_CastTargetedSpell) {
-                return;
-            }
-
-            pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell({0, 0}, renDims, &pCastSpellInfo[result]);
-            pGUIWindow_CastTargetedSpell->CreateButton({0x34u, 0x1A6u}, {0x23u, 0}, 2, 0, UIMSG_CastSpell_Character_Small_Improvement, 0, InputAction::SelectChar1);
-            pGUIWindow_CastTargetedSpell->CreateButton({0xA5u, 0x1A6u}, {0x23u, 0}, 2, 0, UIMSG_CastSpell_Character_Small_Improvement, 1, InputAction::SelectChar2);
-            pGUIWindow_CastTargetedSpell->CreateButton({0x118u, 0x1A6u}, {0x23u, 0}, 2, 0, UIMSG_CastSpell_Character_Small_Improvement, 2, InputAction::SelectChar3);
-            pGUIWindow_CastTargetedSpell->CreateButton({0x186u, 0x1A6u}, {0x23u, 0}, 2, 0, UIMSG_CastSpell_Character_Small_Improvement, 3, InputAction::SelectChar4);
-            pGUIWindow_CastTargetedSpell->CreateButton({8, 8}, {game_viewport_width, game_viewport_height}, 1, 0, UIMSG_CastSpell_Monster_Improvement, 0);
+        if (flags & ON_CAST_TargetedActorOrCharacter) {
+            pGUIWindow_CastTargetedSpell = new TargetedSpellUI_ActorOrCharacter({0, 0}, renDims, &pCastSpellInfo[result]);
             pParty->PickedItem_PlaceInInventory_or_Drop();
+            return;
         }
-        if (flags & ON_CAST_DarkSacrifice) {
-            if (pGUIWindow_CastTargetedSpell) {
-                return;
-            }
-
-            pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell({0, 0}, renDims, &pCastSpellInfo[result]);
-            pBtn_NPCLeft = pGUIWindow_CastTargetedSpell->CreateButton({469, 178}, {ui_btn_npc_left->GetWidth(), ui_btn_npc_left->GetHeight()}, 1, 0,
-                UIMSG_ScrollNPCPanel, 0, InputAction::Invalid, "", {ui_btn_npc_left});
-            pBtn_NPCRight = pGUIWindow_CastTargetedSpell->CreateButton({626, 178}, {ui_btn_npc_right->GetWidth(), ui_btn_npc_right->GetHeight()}, 1, 0,
-                UIMSG_ScrollNPCPanel, 1, InputAction::Invalid, "", {ui_btn_npc_right});
-            pGUIWindow_CastTargetedSpell->CreateButton({491, 149}, {64, 74}, 1, 0, UIMSG_HiredNPC_CastSpell, 4, InputAction::SelectNPC1);
-            pGUIWindow_CastTargetedSpell->CreateButton({561, 149}, {64, 74}, 1, 0, UIMSG_HiredNPC_CastSpell, 5, InputAction::SelectNPC2);
+        if (flags & ON_CAST_TargetedHireling) {
+            pGUIWindow_CastTargetedSpell = new TargetedSpellUI_Hirelings({0, 0}, renDims, &pCastSpellInfo[result]);
             // Next line was added to do something with picked item on Sacrifice cast
             pParty->PickedItem_PlaceInInventory_or_Drop();
+            return;
         }
     }
 }
@@ -3207,4 +3194,16 @@ void pushNPCSpell(SPELL_TYPE spell) {
 
 void pushScrollSpell(SPELL_TYPE spell, unsigned int uPlayerID) {
     pushSpellOrRangedAttack(spell, uPlayerID, SCROLL_OR_NPC_SPELL_SKILL_VALUE, ON_CAST_CastViaScroll, 0);
+}
+
+void spellTargetPicked(int pid, int playerTarget) {
+    assert((pid != PID_INVALID) ^ (playerTarget != -1));
+
+    CastSpellInfo *pCastSpell = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
+    pCastSpell->uFlags &= ~ON_CAST_CastingInProgress;
+    pCastSpell->spell_target_pid = pid;
+    // TODO(Nik-RE-dev): need to get rid of uPlayerID_2 and use pid with OBJECT_Player and something else for hirelings.
+    pCastSpell->uPlayerID_2 = playerTarget;
+    // TODO(Nik-RE-dev): why recovery time is set here?
+    pParty->pPlayers[pCastSpell->uPlayerID].SetRecoveryTime(300);
 }
