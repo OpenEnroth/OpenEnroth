@@ -260,7 +260,7 @@ bool PCX_File_Loader::Load(unsigned int *width, unsigned int *height,
     *format = IMAGE_INVALID_FORMAT;
     *out_palette = nullptr;
 
-    Blob buffer = Blob::FromFile(MakeDataPath(this->resource_name));
+    Blob buffer = Blob::fromFile(MakeDataPath(this->resource_name));
     return InternalLoad(buffer.data(), buffer.size(), width, height, pixels, format);
 }
 

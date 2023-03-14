@@ -169,7 +169,7 @@ class AVAudioStream : public AVStreamWrapper {
                 int got_samples = swr_convert(
                     converter, dst_channels, frame->nb_samples,
                     (const uint8_t**)frame->data, frame->nb_samples);
-                std::shared_ptr<Blob> tmp_blob = std::make_shared<Blob>(Blob::FromMalloc(tmp_buf.release(), tmp_size));
+                std::shared_ptr<Blob> tmp_blob = std::make_shared<Blob>(Blob::fromMalloc(tmp_buf.release(), tmp_size));
                 if (got_samples > 0) {
                     if (!result) {
                         result = tmp_blob;
@@ -249,7 +249,7 @@ class AVVideoStream : public AVStreamWrapper {
                     assert(false);
                 }
 
-                std::shared_ptr<Blob> tmp_blob = std::make_shared<Blob>(Blob::FromMalloc(tmp_buf.release(), tmp_size));
+                std::shared_ptr<Blob> tmp_blob = std::make_shared<Blob>(Blob::fromMalloc(tmp_buf.release(), tmp_size));
 
                 if (!result) {
                     result = tmp_blob;
@@ -1190,7 +1190,7 @@ std::shared_ptr<Blob> AudioBaseDataSource::GetNextBuffer() {
                     pConverter, dst_channels, frame->nb_samples,
                     (const uint8_t **)frame->data, frame->nb_samples);
 
-                std::shared_ptr<Blob> tmp_blob = std::make_shared<Blob>(Blob::FromMalloc(tmp_buf.release(), tmp_size));
+                std::shared_ptr<Blob> tmp_blob = std::make_shared<Blob>(Blob::fromMalloc(tmp_buf.release(), tmp_size));
 
                 if (got_samples > 0) {
                     if (!buffer) {

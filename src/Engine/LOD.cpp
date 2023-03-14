@@ -122,7 +122,7 @@ int LODFile_Sprites::LoadSpriteFromFile(LODSprite *pSprite, const std::string &p
     if (fread(pSpriteLines.get(), sizeof(LODSpriteLine) * pSprite->uHeight, 1, File) != 1)
         return -1;
 
-    Blob bytes = Blob::Read(File, pSprite->uSpriteSize);
+    Blob bytes = Blob::read(File, pSprite->uSpriteSize);
     if (pSprite->uDecompressedSize)
         bytes = zlib::Uncompress(bytes, pSprite->uDecompressedSize);
 
@@ -915,7 +915,7 @@ Blob LOD::File::LoadRaw(const std::string &pContainer) {
         return Blob();
     }
 
-    return Blob::Read(File, size);
+    return Blob::read(File, size);
 }
 
 Blob LOD::File::LoadCompressedTexture(const std::string &pContainer) {
@@ -930,9 +930,9 @@ Blob LOD::File::LoadCompressedTexture(const std::string &pContainer) {
         return Blob();
 
     if (DstBuf.uDecompressedSize) {
-        return zlib::Uncompress(Blob::Read(File, DstBuf.uTextureSize), DstBuf.uDecompressedSize);
+        return zlib::Uncompress(Blob::read(File, DstBuf.uTextureSize), DstBuf.uDecompressedSize);
     } else {
-        return Blob::Read(File, DstBuf.uTextureSize);
+        return Blob::read(File, DstBuf.uTextureSize);
     }
 }
 
@@ -963,7 +963,7 @@ Blob LOD::File::LoadCompressed(const std::string &pContainer) {
         return Blob();
     }
 
-    Blob result = Blob::Read(File, header.uCompressedSize);
+    Blob result = Blob::read(File, header.uCompressedSize);
     if (header.uDecompressedSize)
         result = zlib::Uncompress(result, header.uDecompressedSize);
     return result;
@@ -1011,7 +1011,7 @@ int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst,
             if (fread(pDst->paletted_pixels, pDst->header.uTextureSize, 1, File) != 1)
                 return -1;
         } else {
-            Blob bytes = zlib::Uncompress(Blob::Read(File, pDst->header.uTextureSize), pDst->header.uDecompressedSize);
+            Blob bytes = zlib::Uncompress(Blob::read(File, pDst->header.uTextureSize), pDst->header.uDecompressedSize);
             pDst->header.uTextureSize = pDst->header.uDecompressedSize;
             memcpy(pDst->paletted_pixels, bytes.data(), bytes.size());
         }
