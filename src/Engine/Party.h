@@ -405,7 +405,7 @@ struct Party {
     uint _roundingDt{ 0 };  // keeps track of rounding remainder for recovery
     int _movementTally{ 0 };  // keeps track of party movement for footsteps
 
-    unsigned int _uActiveCharacter;  // move to party to begin containment - 1 based
+    unsigned int _activeCharacter;  // move to party to begin containment - 1 based
 };
 
 extern Party *pParty;  // idb

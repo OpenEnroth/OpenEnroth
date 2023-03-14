@@ -1390,7 +1390,7 @@ void Actor::StealFrom(unsigned int uActorID) {
     DDM_DLV_Header *v6;  // esi@4
     int v8;              // [sp+8h] [bp-4h]@6
 
-    pPlayer = &pParty->pPlayers[pParty->_uActiveCharacter - 1];
+    pPlayer = &pParty->pPlayers[pParty->_activeCharacter - 1];
     if (pPlayer->CanAct()) {
         CastSpellInfoHelpers::cancelSpellCastInProgress();
         v4 = 0;

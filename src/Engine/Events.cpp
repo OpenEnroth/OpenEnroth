@@ -325,7 +325,7 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
             GameUI_SetStatusBar(LSTR_NOTHING_HERE);
         return;
     }
-    player_choose = (pParty->_uActiveCharacter == 0)
+    player_choose = (pParty->_activeCharacter == 0)
                         ? 6
                         : 4;  // 4 - active or  6 - random player if active =0
     curr_seq_num = entry_line;
@@ -369,7 +369,7 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
                         v24 = pParty->pPlayers[player_choose].pActiveSkills[static_cast<PLAYER_SKILL_TYPE>(_evt->v5)];
                     } else {
                         if (player_choose == 4) {
-                            v24 = pPlayers[pParty->_uActiveCharacter]->pActiveSkills[static_cast<PLAYER_SKILL_TYPE>(_evt->v5)];
+                            v24 = pPlayers[pParty->_activeCharacter]->pActiveSkills[static_cast<PLAYER_SKILL_TYPE>(_evt->v5)];
                         } else {
                             if (player_choose == 5) {
                                 v20 = 0;
@@ -547,7 +547,7 @@ LABEL_47:
                     if (_evt->v5 <= 3u) {  // someone
                         pParty->pPlayers[_evt->v5].PlayEmotion((CHARACTER_EXPRESSION_ID)_evt->v6, 0);
                     } else if (_evt->v5 == 4) {  // active
-                        pPlayers[pParty->_uActiveCharacter]->PlayEmotion((CHARACTER_EXPRESSION_ID)_evt->v6, 0);
+                        pPlayers[pParty->_activeCharacter]->PlayEmotion((CHARACTER_EXPRESSION_ID)_evt->v6, 0);
                     } else if (_evt->v5 == 5) {  // all players
                         for (Player &player : pParty->pPlayers) {
                             player.PlayEmotion((CHARACTER_EXPRESSION_ID)_evt->v6, 0);
@@ -561,7 +561,7 @@ LABEL_47:
                     if (_evt->v5 <= 3) {  // someone
                         pParty->pPlayers[_evt->v5].PlaySound((PlayerSpeech)_evt->v6, 0);
                     } else if (_evt->v5 == 4) {  // active
-                        pPlayers[pParty->_uActiveCharacter]->PlaySound((PlayerSpeech)_evt->v6, 0);
+                        pPlayers[pParty->_activeCharacter]->PlaySound((PlayerSpeech)_evt->v6, 0);
                     } else if (_evt->v5 == 5) {  // all
                         for (Player &player : pParty->pPlayers) {
                             player.PlaySound((PlayerSpeech)_evt->v6, 0);
@@ -593,8 +593,8 @@ LABEL_47:
                             curr_seq_num = _evt->v11 - 1;
                         }
                     } else if (player_choose == 4) {  // active
-                        if (pParty->_uActiveCharacter) {
-                            if (pPlayers[pParty->_uActiveCharacter]->CompareVariable((enum VariableType)EVT_WORD(_evt->v5), pValue)) {
+                        if (pParty->_activeCharacter) {
+                            if (pPlayers[pParty->_activeCharacter]->CompareVariable((enum VariableType)EVT_WORD(_evt->v5), pValue)) {
                                 // v124 = -1;
                                 curr_seq_num = _evt->v11 - 1;
                             }
@@ -632,8 +632,8 @@ LABEL_47:
                     if (player_choose <= 3) {
                         pParty->pPlayers[player_choose].SubtractVariable((enum VariableType)EVT_WORD(_evt->v5), pValue);
                     } else if (player_choose == 4) {  // active
-                        if (pParty->_uActiveCharacter) {
-                            pPlayers[pParty->_uActiveCharacter]->SubtractVariable((enum VariableType)EVT_WORD(_evt->v5), pValue);
+                        if (pParty->_activeCharacter) {
+                            pPlayers[pParty->_activeCharacter]->SubtractVariable((enum VariableType)EVT_WORD(_evt->v5), pValue);
                         }
                     } else if (player_choose == 5) {  // all
                         if (EVT_WORD(_evt->v5) == VAR_PlayerItemInHands) {
@@ -658,8 +658,8 @@ LABEL_47:
                     if (player_choose <= 3) {
                         pParty->pPlayers[player_choose].SetVariable((enum VariableType)EVT_WORD(_evt->v5), pValue);
                     } else if (player_choose == 4) {  // active
-                        if (pParty->_uActiveCharacter) {
-                            pPlayers[pParty->_uActiveCharacter]->SetVariable((enum VariableType)EVT_WORD(_evt->v5), pValue);
+                        if (pParty->_activeCharacter) {
+                            pPlayers[pParty->_activeCharacter]->SetVariable((enum VariableType)EVT_WORD(_evt->v5), pValue);
                         }
                     } else if (player_choose == 5) {  // all
                         // recheck v130
@@ -677,8 +677,8 @@ LABEL_47:
                         pPlayer = &pParty->pPlayers[player_choose];
                         pPlayer->AddVariable((enum VariableType)EVT_WORD(_evt->v5), pValue);
                     } else if (player_choose == 4) {  // active
-                        if (pParty->_uActiveCharacter) {
-                            pPlayers[pParty->_uActiveCharacter]->AddVariable((enum VariableType)EVT_WORD(_evt->v5), pValue);
+                        if (pParty->_activeCharacter) {
+                            pPlayers[pParty->_activeCharacter]->AddVariable((enum VariableType)EVT_WORD(_evt->v5), pValue);
                         }
                     } else if (player_choose == 5) {  // all
                         for (Player &player : pParty->pPlayers) {
@@ -734,11 +734,11 @@ LABEL_47:
                         break;
                     }
                     if (_evt->v5 == 4) {
-                        if (!pParty->_uActiveCharacter) {
+                        if (!pParty->_activeCharacter) {
                             ++curr_seq_num;
                             break;
                         }
-                        pPlayers[pParty->_uActiveCharacter]->ReceiveDamage(EVT_DWORD(_evt->v7), (DAMAGE_TYPE)_evt->v6);
+                        pPlayers[pParty->_activeCharacter]->ReceiveDamage(EVT_DWORD(_evt->v7), (DAMAGE_TYPE)_evt->v6);
                         ++curr_seq_num;
                         break;
                     }
