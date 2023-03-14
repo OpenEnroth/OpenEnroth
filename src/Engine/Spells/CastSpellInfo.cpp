@@ -958,21 +958,19 @@ void CastSpellInfoHelpers::castSpell() {
                         int target_pid = obj_type == OBJECT_Actor ? spell_targeted_at : 0;
                         for (; meteor_num; meteor_num--) {
                             uint32_t yaw, pitch;
-                            spell_targeted_at = grng->Random(1000);
-                            if (sqrt(((double)spell_targeted_at - 2500) *
-                                        ((double)spell_targeted_at - 2500) + j * j + k * k) <= 1.0) {
+                            int originHeight = grng->Random(1000);
+                            if (Vec3s(j, k, originHeight - 2500).Length() <= 1.0) {
                                 yaw = 0;
                                 pitch = 0;
                             } else {
-                                pitch = TrigLUT.Atan2((int64_t)sqrt((float)(j * j + k * k)),
-                                        (double)spell_targeted_at - 2500);
+                                pitch = TrigLUT.Atan2(sqrt(j * j + k * k), originHeight - 2500);
                                 yaw = TrigLUT.Atan2(j, k);
                             }
                             initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                            pSpellSprite.vPosition = dist + Vec3i(0, 0, spell_targeted_at);
+                            pSpellSprite.vPosition = dist + Vec3i(0, 0, originHeight + 2500);
                             pSpellSprite.uSectorID = 0;
                             pSpellSprite.spell_target_pid = target_pid;
-                            pSpellSprite.field_60_distance_related_prolly_lod = stru_50C198._427546(spell_targeted_at + 2500);
+                            pSpellSprite.field_60_distance_related_prolly_lod = stru_50C198._427546(originHeight + 2500);
                             pSpellSprite.uFacing = yaw;
                             if (pParty->bTurnBasedModeOn) {
                                 pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
@@ -1177,25 +1175,19 @@ void CastSpellInfoHelpers::castSpell() {
                     int target_pid = obj_type == OBJECT_Actor ? spell_targeted_at : 0;
                     uint32_t yaw, pitch;
                     for (uint star_num = 20; star_num; star_num--) {
-                        spell_targeted_at = grng->Random(1000);
-                        if (sqrt(((double)spell_targeted_at + (double)dist.z -
-                                        (double)(dist.z + 2500)) *
-                                    ((double)spell_targeted_at + (double)dist.z -
-                                     (double)(dist.z + 2500)) +
-                                    j * j + k * k) <= 1.0) {
+                        int originHeight = grng->Random(1000);
+                        if (Vec3s(j, k, originHeight - 2500).Length() <= 1.0) {
                             yaw = 0;
                             pitch = 0;
                         } else {
-                            pitch = TrigLUT.Atan2((int64_t)sqrt((float)(j * j + k * k)),
-                                    ((double)spell_targeted_at + (double)dist.z -
-                                     (double)(dist.z + 2500)));
+                            pitch = TrigLUT.Atan2(sqrt(j * j + k * k), originHeight - 2500);
                             yaw = TrigLUT.Atan2(j, k);
                         }
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                        pSpellSprite.vPosition = dist + Vec3i(0, 0, spell_targeted_at + 2500);
+                        pSpellSprite.vPosition = dist + Vec3i(0, 0, originHeight + 2500);
                         pSpellSprite.uSectorID = 0;
                         pSpellSprite.spell_target_pid = target_pid;
-                        pSpellSprite.field_60_distance_related_prolly_lod = stru_50C198._427546(spell_targeted_at + 2500);
+                        pSpellSprite.field_60_distance_related_prolly_lod = stru_50C198._427546(originHeight + 2500);
                         pSpellSprite.uFacing = yaw;
                         if (pParty->bTurnBasedModeOn) {
                             pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
