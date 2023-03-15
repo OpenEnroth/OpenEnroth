@@ -7,7 +7,6 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/stru123.h"
 #include "Engine/stru160.h"
-#include "Engine/stru298.h"
 #include "Engine/stru367.h"
 #include "MapInfo.h"
 #include "OurMath.h"

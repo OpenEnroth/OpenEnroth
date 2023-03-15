@@ -11,7 +11,7 @@
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/TurnEngine/TurnEngine.h"
-#include "Engine/stru298.h"
+#include "Engine/AttackList.h"
 
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ItemTable.h"

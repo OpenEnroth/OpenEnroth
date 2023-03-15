@@ -21,7 +21,7 @@
 #include "Engine/Party.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/stru123.h"
-#include "Engine/stru298.h"
+#include "Engine/AttackList.h"
 #include "Engine/Tables/PlayerFrameTable.h"
 #include "Engine/Tables/StorylineTextTable.h"
 #include "Engine/TurnEngine/TurnEngine.h"

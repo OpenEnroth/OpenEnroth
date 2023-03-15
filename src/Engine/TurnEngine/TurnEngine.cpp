@@ -17,8 +17,8 @@
 
 #include "Library/Random/Random.h"
 
-#include "../Party.h"
-#include "../stru298.h"
+#include "Engine/Party.h"
+#include "Engine/AttackList.h"
 
 struct stru262_TurnBased *pTurnEngine = new stru262_TurnBased;
 
