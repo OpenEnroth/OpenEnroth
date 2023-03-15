@@ -1458,7 +1458,8 @@ void _494035_timed_effects__water_walking_damage__etc() {
     pParty->uCurrentMonth = pParty->GetPlayingTime().GetMonthsOfYear();
     pParty->uCurrentYear = pParty->GetPlayingTime().GetYears() + game_starting_year;
 
-    // new day dawns - ticks over at 3 in the morning
+    // New day dawns
+    // TODO(pskelton): ticks over at 3 in the morning?? check
     if ((pParty->uCurrentYear > old_year) || pParty->uCurrentHour >= 3 && (old_hour < 3 || pParty->uCurrentDayOfMonth > old_day)) {
         pParty->pHirelings[0].bHasUsedTheAbility = false;
         pParty->pHirelings[1].bHasUsedTheAbility = false;

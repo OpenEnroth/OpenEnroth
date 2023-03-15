@@ -343,6 +343,25 @@ GAME_TEST(Issues, Issue403) {
     test->playTraceFromTestData("issue_403.mm7", "issue_403.json");
 }
 
+// This cant be tested properly using the current framework
+//GAME_TEST(Issues, Issue405) {
+//    // FPS affects effective recovery time
+//    // play trace at 60fps
+//    engine->config->debug.AllMagic.Set(true);
+//    engine->config->graphics.FPSLimit.Set(63);
+//    test->playTraceFromTestData("issue_405.mm7", "issue_405.json");
+//    int remainingtime60{ pPlayers[1]->uTimeToRecovery };
+//
+//    // play trace at max fps
+//    engine->config->debug.AllMagic.Set(true);
+//    engine->config->graphics.FPSLimit.Set(0);
+//    test->playTraceFromTestData("issue_405.mm7", "issue_405.json");
+//    int remainingtimemax{ pPlayers[1]->uTimeToRecovery };
+//
+//    // recovered amount should match
+//    EXPECT_EQ(remainingtime60, remainingtimemax);
+//}
+
 GAME_TEST(Issues, Issue408) {
     // testing that the gameover loop works
     CURRENT_SCREEN oldscreen = CURRENT_SCREEN::SCREEN_GAME;
@@ -399,6 +418,18 @@ GAME_TEST(Issue, Issue442) {
 GAME_TEST(Prs, Pr469) {
     // Assert when using Quick Spell button when spell is not set
     test->playTraceFromTestData("pr_469.mm7", "pr_469.json");
+}
+
+GAME_TEST(Issues, Issue488) {
+    // Test that Mass Distortion spell works
+    test->playTraceFromTestData("issue_488.mm7", "issue_488.json", [] { EXPECT_EQ(pActors[24].sCurrentHP, 3); });
+    EXPECT_EQ(pActors[24].sCurrentHP, 2);
+}
+
+GAME_TEST(Issues, Issue489) {
+    // Test that AOE version of Shrinking Ray spell works
+    test->playTraceFromTestData("issue_489.mm7", "issue_489.json", [] { EXPECT_FALSE(pActors[24].pActorBuffs[ACTOR_BUFF_SHRINK].Active()); });
+    EXPECT_TRUE(pActors[24].pActorBuffs[ACTOR_BUFF_SHRINK].Active());
 }
 
 GAME_TEST(Issue, Issue490) {
@@ -473,39 +504,8 @@ GAME_TEST(Issue, Issue528) {
     EXPECT_EQ(pParty->pPlayers[2].sMana, 40);
 }
 
-
-// This cant be tested properly using the current framework
-//GAME_TEST(Issues, Issue405) {
-//    // FPS affects effective recovery time
-//    // play trace at 60fps
-//    engine->config->debug.AllMagic.Set(true);
-//    engine->config->graphics.FPSLimit.Set(63);
-//    test->playTraceFromTestData("issue_405.mm7", "issue_405.json");
-//    int remainingtime60{ pPlayers[1]->uTimeToRecovery };
-//
-//    // play trace at max fps
-//    engine->config->debug.AllMagic.Set(true);
-//    engine->config->graphics.FPSLimit.Set(0);
-//    test->playTraceFromTestData("issue_405.mm7", "issue_405.json");
-//    int remainingtimemax{ pPlayers[1]->uTimeToRecovery };
-//
-//    // recovered amount should match
-//    EXPECT_EQ(remainingtime60, remainingtimemax);
-//}
-
-GAME_TEST(Issues, Issue488) {
-    // Test that Mass Distortion spell works
-    test->playTraceFromTestData("issue_488.mm7", "issue_488.json", [] { EXPECT_EQ(pActors[24].sCurrentHP, 3); });
-    EXPECT_EQ(pActors[24].sCurrentHP, 2);
-}
-
-GAME_TEST(Issues, Issue489) {
-    // Test that AOE version of Shrinking Ray spell works
-    test->playTraceFromTestData("issue_489.mm7", "issue_489.json", [] { EXPECT_FALSE(pActors[24].pActorBuffs[ACTOR_BUFF_SHRINK].Active()); });
-    EXPECT_TRUE(pActors[24].pActorBuffs[ACTOR_BUFF_SHRINK].Active());
-}
-
 GAME_TEST(Issue, Issue540) {
     // Check that Mass Distortion and Charm without target does not assert
     test->playTraceFromTestData("issue_540.mm7", "issue_540.json");
 }
+
