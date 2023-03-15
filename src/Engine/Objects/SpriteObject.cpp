@@ -872,12 +872,13 @@ bool SpriteObject::applyShrinkRayAoe() {
     // Calculation was moved from initial sprite creation processing
     GameTime duration = GameTime::FromMinutes(this->spell_level * 5);
     static const int shrinkPower = 4;
+    int effectDistance = engine->config->gameplay.ShrinkRayAoeDistance.Get();
 
     for (Actor &actor : pActors) {
         // TODO(Nik-RE-dev): paralyzed actor will not be affected?
         if (actor.CanAct()) {
             int distanceSq = (actor.vPosition - this->vPosition + Vec3i(0, 0, actor.uActorHeight / 2)).LengthSqr();
-            int checkDistanceSq = (256 + actor.uActorRadius) * (256 + actor.uActorRadius);
+            int checkDistanceSq = (effectDistance + actor.uActorRadius) * (effectDistance + actor.uActorRadius);
 
             if (distanceSq <= checkDistanceSq) {
                 if (actor.DoesDmgTypeDoDamage(DMGT_DARK)) {
@@ -1107,9 +1108,8 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
             object->spellSpriteStop();
-            AttackerInfo.Add(PID(OBJECT_Item, uLayingItemID), 512,
-                             object->vPosition.x, object->vPosition.y, object->vPosition.z,
-                             ABILITY_ATTACK1, 0);
+            pushAoeAttack(PID(OBJECT_Item, uLayingItemID), engine->config->gameplay.AoeDamageDistance.Get(),
+                    pSpriteObjects[uLayingItemID].vPosition, ABILITY_ATTACK1);
             if (objectDesc->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                 trail_particle_generator.GenerateTrailParticles(object->vPosition.x, object->vPosition.y, object->vPosition.z,
                                                                 objectDesc->uParticleTrailColor);
@@ -1224,9 +1224,8 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
             object->spellSpriteStop();
-            AttackerInfo.Add(PID(OBJECT_Item, uLayingItemID), 512,
-                             object->vPosition.x, object->vPosition.y, object->vPosition.z,
-                             ABILITY_ATTACK1, 0);
+            pushAoeAttack(PID(OBJECT_Item, uLayingItemID), engine->config->gameplay.AoeDamageDistance.Get(),
+                    pSpriteObjects[uLayingItemID].vPosition, ABILITY_ATTACK1);
             // int v78 = 0;
             // if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
             //     v78 = pSpriteObjects[uLayingItemID].uSoundID + 4;
@@ -1276,10 +1275,8 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
             object->spellSpriteStop();
-            AttackerInfo.Add(PID(OBJECT_Item, uLayingItemID), 512,
-                             object->vPosition.x, object->vPosition.y, object->vPosition.z,
-                             object->field_61,
-                             0);
+            pushAoeAttack(PID(OBJECT_Item, uLayingItemID), engine->config->gameplay.AoeDamageDistance.Get(),
+                    pSpriteObjects[uLayingItemID].vPosition, object->field_61);
             // int v78 = 0;
             // if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
             //     v78 = pSpriteObjects[uLayingItemID].uSoundID + 4;
@@ -1495,9 +1492,8 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
             object->spellSpriteStop();
-            AttackerInfo.Add(PID(OBJECT_Item, uLayingItemID), 512,
-                             object->vPosition.x, object->vPosition.y, object->vPosition.z,
-                             object->field_61, 0);
+            pushAoeAttack(PID(OBJECT_Item, uLayingItemID), engine->config->gameplay.AoeDamageDistance.Get(),
+                    pSpriteObjects[uLayingItemID].vPosition, object->field_61);
             if (objectDesc->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                 trail_particle_generator.GenerateTrailParticles(
                     object->vPosition.x, object->vPosition.y, object->vPosition.z,
