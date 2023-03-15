@@ -167,7 +167,7 @@ void ViewingParams::AdjustPosition() {
 
 //----- (00443343) --------------------------------------------------------
 void ViewingParams::InitGrayPalette() {
-    for (unsigned short i = 0; i < 256; ++i) pPalette[i] = Color32(i, i, i);
+    for (unsigned short i = 0; i < 256; ++i) pPalette[i] = color32(i, i, i);
 }
 
 //----- (00443365) --------------------------------------------------------

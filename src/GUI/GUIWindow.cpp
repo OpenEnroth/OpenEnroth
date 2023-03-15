@@ -209,9 +209,7 @@ void GUIWindow::_41D73D_draw_buff_tooltip() {
             auto remaing_time =
                 pParty->pPartyBuffs[i].expire_time - pParty->GetPlayingTime();
             Y_pos = string_count * pFontComic->GetHeight() + 40;
-            text_color =
-                Color16(spell_tooltip_colors[i].R, spell_tooltip_colors[i].G,
-                    spell_tooltip_colors[i].B);
+            text_color = color16(spell_tooltip_colors[i].R, spell_tooltip_colors[i].G, spell_tooltip_colors[i].B);
             DrawText(pFontComic, {52, Y_pos}, text_color,
                 localization->GetSpellName(i), 0, 0, 0);
             DrawBuff_remaining_time_string(Y_pos, this, remaing_time,
@@ -387,7 +385,7 @@ void GUIWindow::HouseDialogManager() {
             int v3 = 2 * pFontCreate->GetHeight() - 6 -
                 pFontCreate->CalcTextHeight(pHouseName, 130, 0);
             if (v3 < 0) v3 = 0;
-            pWindow.DrawTitleText(pFontCreate, 0x1EAu, v3 / 2 + 4, colorTable.White.C16(),
+            pWindow.DrawTitleText(pFontCreate, 0x1EAu, v3 / 2 + 4, colorTable.White.c16(),
                                   p2DEvents[window_SpeakInHouse->wData.val - 1].pName, 3);
         }
     }
@@ -457,14 +455,14 @@ void GUIWindow::HouseDialogManager() {
                 } else {
                     if (!v8 && dword_591080) {
                         pTitleText = (char*)p2DEvents[window_SpeakInHouse->wData.val - 1].pProprieterTitle;
-                        pWindow.DrawTitleText(pFontCreate, 0x1E3u, 113, colorTable.EasternBlue.C16(), pTitleText, 3);
+                        pWindow.DrawTitleText(pFontCreate, 0x1E3u, 113, colorTable.EasternBlue.c16(), pTitleText, 3);
                         continue;
                     }
                     pTitleText = HouseNPCData[v8 + 1 - (dword_591080 != 0)]->pName;
                     v9 = pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v8] + pDialogueNPCPortraits[v8]->GetHeight() + 2;
                 }
                 v10 = v9;
-                pWindow.DrawTitleText(pFontCreate, 483, v10, colorTable.EasternBlue.C16(), pTitleText, 3);
+                pWindow.DrawTitleText(pFontCreate, 483, v10, colorTable.EasternBlue.c16(), pTitleText, 3);
             }
         }
         if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
@@ -505,7 +503,7 @@ void GUIWindow::HouseDialogManager() {
         SimpleHouseDialog();
     } else {
         pWindow.DrawTitleText(
-            pFontCreate, 483, 113, colorTable.EasternBlue.C16(), NameAndTitle(
+            pFontCreate, 483, 113, colorTable.EasternBlue.c16(), NameAndTitle(
                 p2DEvents[window_SpeakInHouse->wData.val - 1].pProprieterName,
                 p2DEvents[window_SpeakInHouse->wData.val - 1].pProprieterTitle
             ), 3);
@@ -618,7 +616,7 @@ std::string MakeDateTimeString(GameTime time) {
 //----- (004B1854) --------------------------------------------------------
 void GUIWindow::DrawShops_next_generation_time_string(GameTime time) {
     auto str = MakeDateTimeString(time);
-    this->DrawTitleText(pFontArrus, 0, (212 - pFontArrus->CalcTextHeight(str, this->uFrameWidth, 0)) / 2 + 101, colorTable.PaleCanary.C16(), localization->GetString(LSTR_PLEASE_TRY_BACK_IN) + str, 3);
+    this->DrawTitleText(pFontArrus, 0, (212 - pFontArrus->CalcTextHeight(str, this->uFrameWidth, 0)) / 2 + 101, colorTable.PaleCanary.c16(), localization->GetString(LSTR_PLEASE_TRY_BACK_IN) + str, 3);
 }
 
 void GUIWindow::DrawTitleText(GUIFont *font, int horizontal_margin,
@@ -959,7 +957,7 @@ void CreateScrollWindow() {
 
     char *v1 = pItemTable->pItems[pGUIWindow_ScrollWindow->scroll_type].pName;
 
-    a1.DrawTitleText(pFontCreate, 0, 0, 0, stringPrintf(format_4E2D80, colorTable.PaleCanary.C16(), v1), 3);
+    a1.DrawTitleText(pFontCreate, 0, 0, 0, stringPrintf(format_4E2D80, colorTable.PaleCanary.c16(), v1), 3);
     a1.DrawText(pFontSmallnum, {1, pFontCreate->GetHeight() - 3}, 0, pScrolls[pGUIWindow_ScrollWindow->scroll_type], 0, 0, 0);
 }
 
@@ -1081,8 +1079,8 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
             pUIAnum_Torchlight->icon = pIconsFrameTable->GetIcon("torchC");
             pIconsFrameTable->InitializeAnimation(pUIAnum_Torchlight->icon->id);
         }
-        uGameUIFontMain = Color16(0xC8u, 0, 0);
-        uGameUIFontShadow = colorTable.Diesel.C16();
+        uGameUIFontMain = color16(0xC8u, 0, 0);
+        uGameUIFontShadow = colorTable.Diesel.c16();
     } else if (align == PartyAlignment::PartyAlignment_Neutral) {
         if (bReplace) {
             game_ui_rightframe = assets->GetImage_PCXFromIconsLOD("ib-r-a.pcx");
@@ -1183,8 +1181,8 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
             messagebox_border_top = assets->GetImage_Alpha("edge_top");
             _591428_endcap = assets->GetImage_ColorKey("endcap");
         }
-        uGameUIFontMain = Color16(0xAu, 0, 0);
-        uGameUIFontShadow = colorTable.StarkWhite.C16();
+        uGameUIFontMain = color16(0xAu, 0, 0);
+        uGameUIFontShadow = colorTable.StarkWhite.c16();
     } else if (align == PartyAlignment::PartyAlignment_Good) {
         if (bReplace) {
             game_ui_rightframe = assets->GetImage_PCXFromIconsLOD("ib-r-B.pcx");
@@ -1235,8 +1233,8 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
             messagebox_border_top = assets->GetImage_Alpha("edge_top-b");
             _591428_endcap = assets->GetImage_ColorKey("endcap-b");
         }
-        uGameUIFontMain = Color16(0, 0, 0xC8u);
-        uGameUIFontShadow = colorTable.White.C16();
+        uGameUIFontMain = color16(0, 0, 0xC8u);
+        uGameUIFontShadow = colorTable.White.c16();
     } else {
         Error("Invalid alignment type: %u", align);
     }
@@ -1557,7 +1555,7 @@ void OracleDialogue() {
         pParty->pPlayers[0].AddVariable(VAR_PlayerItemInHands, std::to_underlying(item_id));
         // display "Here's %s that you lost. Be careful"
         current_npc_text = stringPrintf(pNPCTopics[666].pText,
-                                        stringPrintf("\f%05d%s\f00000", colorTable.Jonquil.C16(),
+                                        stringPrintf("\f%05d%s\f00000", colorTable.Jonquil.c16(),
                                                      pItemTable->pItems[item_id].pUnidentifiedName).c_str());
     }
 
@@ -2115,7 +2113,7 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                 break;
 
             case 24:  // item name
-                sprintf(v1, format_4E2D80, colorTable.PaleCanary.C16(), a3->GetDisplayName().c_str());
+                sprintf(v1, format_4E2D80, colorTable.PaleCanary.c16(), a3->GetDisplayName().c_str());
                 result += v1;
                 break;
 
@@ -2493,7 +2491,7 @@ void SeekKnowledgeElswhereDialogueOption(GUIWindow* dialogue, Player* player) {
     std::string str = SeekKnowledgeElswhereString(pPlayers[pParty->_activeCharacter]);
     int text_height = pFontArrus->CalcTextHeight(str, dialogue->uFrameWidth, 0);
 
-    dialogue->DrawTitleText(pFontArrus, 0, (174 - text_height) / 2 + 138, colorTable.PaleCanary.C16(), str, 3);
+    dialogue->DrawTitleText(pFontArrus, 0, (174 - text_height) / 2 + 138, colorTable.PaleCanary.c16(), str, 3);
 }
 
 
@@ -2536,9 +2534,9 @@ void SkillTrainingDialogue(
             pButton->uHeight = line_height;
             textoffset = pButton->uY + line_height - 1;
             pButton->uW = textoffset + 6;
-            int text_color = colorTable.PaleCanary.C16();
+            int text_color = colorTable.PaleCanary.c16();
             if (pDialogueWindow->pCurrentPosActiveItem != i) {
-                text_color = colorTable.White.C16();
+                text_color = colorTable.White.c16();
             }
             dialogue->DrawTitleText(
                 pFontArrus, 0, pButton->uY, text_color,
@@ -2566,9 +2564,9 @@ void SkillTrainingDialogue(
                 pButton->uHeight = line_height;
                 pButton->uW = pButton->uY + line_height + 6 - 1;
                 textoffset += textspacings + line_height - 1;
-                int text_color = colorTable.Sunflower.C16();
+                int text_color = colorTable.Sunflower.c16();
                 if (pDialogueWindow->pCurrentPosActiveItem != i)
-                    text_color = colorTable.White.C16();
+                    text_color = colorTable.White.c16();
                 dialogue->DrawTitleText(
                     pFontArrus, 0, pButton->uY, text_color,
                     skill_name_label,

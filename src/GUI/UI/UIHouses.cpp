@@ -1513,9 +1513,9 @@ void TravelByTransport() {
                         _449B57_test_bit(pParty->_quest_bits, transport_schedule[schedule_id].uQuestBit))) {
                     uint16_t color{};
                     if (pDialogueWindow->pCurrentPosActiveItem == pCurrentButton)
-                        color = colorTable.PaleCanary.C16();
+                        color = colorTable.PaleCanary.c16();
                     else
-                        color = colorTable.White.C16();
+                        color = colorTable.White.c16();
 
                     pTopicArray[index] = fmt::format("\f{:05}", color);
 
@@ -1546,7 +1546,7 @@ void TravelByTransport() {
                     fmt::format("{}\n \n{}{}{}{}{}", travelcost, pTopicArray[0], pTopicArray[1], pTopicArray[2], pTopicArray[3], pTopicArray[4]), 3);
             } else {
                 travel_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), travel_window.uFrameWidth, 0)) / 2 + 138,
-                    colorTable.White.C16(), localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), 3);
+                                            colorTable.White.c16(), localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), 3);
                 pAudioPlayer->PauseSounds(-1);
             }
         }
@@ -1655,7 +1655,7 @@ void TownHallDialog() {
     townHall_window.uFrameZ = 334;
 
     std::string fine_str = fmt::format("{}: {}", localization->GetString(LSTR_CURRENT_FINE), pParty->uFine);
-    townHall_window.DrawTitleText(pFontArrus, 0, 260, colorTable.PaleCanary.C16(), fine_str, 3);
+    townHall_window.DrawTitleText(pFontArrus, 0, 260, colorTable.PaleCanary.c16(), fine_str, 3);
 
     switch (dialog_menu_id) {
     case DIALOGUE_MAIN:
@@ -1687,9 +1687,9 @@ void TownHallDialog() {
                 pButton->uHeight = pTextHeight;
                 v17 = pButton->uY + pTextHeight - 1;
                 pButton->uW = v17 + 6;
-                pTextColor = colorTable.PaleCanary.C16();
+                pTextColor = colorTable.PaleCanary.c16();
                 if (pDialogueWindow->pCurrentPosActiveItem != v31)
-                    pTextColor = colorTable.White.C16();
+                    pTextColor = colorTable.White.c16();
                 townHall_window.DrawTitleText(pFontArrus, 0, pButton->uY, pTextColor, pShopOptions[j], 3);
                 ++v31;
                 ++j;
@@ -1700,9 +1700,8 @@ void TownHallDialog() {
     case DIALOGUE_TOWNHALL_MESSAGE:
     {
         current_npc_text = stringPrintf(bountyHunting_text,
-                                        fmt::format("\f{:05}{}\f{:05}", colorTable.PaleCanary.C16(),
-                                                    pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting].pName,
-                                                    colorTable.White.C16()).c_str(),
+                                        fmt::format("\f{:05}{}\f{:05}", colorTable.PaleCanary.c16(),
+                                                    pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting].pName, colorTable.White.c16()).c_str(),
                                         100 * pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting].uLevel);
         GUIWindow window = *pDialogueWindow;
         window.uFrameWidth = 458;
@@ -1722,9 +1721,9 @@ void TownHallDialog() {
     case DIALOGUE_TOWNHALL_PAY_FINE:
     {
         if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
-            townHall_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary.C16(),
+            townHall_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary.c16(),
                                           fmt::format("{}\n{}", localization->GetString(LSTR_PAY), localization->GetString(LSTR_HOW_MUCH)), 3);
-            townHall_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White.C16(), keyboardInputHandler->GetTextInput().c_str(), 3);
+            townHall_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White.c16(), keyboardInputHandler->GetTextInput().c_str(), 3);
             townHall_window.DrawFlashingInputCursor(pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput().c_str()) / 2 + 80, 185, pFontArrus);
             return;
         } else if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CONFIRMED) {
@@ -1764,21 +1763,21 @@ void BankDialog() {
     bank_window.uFrameWidth = 143;
     bank_window.uFrameZ = 334;
     bank_window.DrawTitleText(
-        pFontArrus, 0, 220, colorTable.PaleCanary.C16(),
+        pFontArrus, 0, 220, colorTable.PaleCanary.c16(),
         fmt::format("{}: {}", localization->GetString(LSTR_BALANCE), pParty->uNumGoldInBank),
         3);
     switch (dialog_menu_id) {
     case DIALOGUE_MAIN:
     {
-        uint16_t pColorText = colorTable.PaleCanary.C16();
+        uint16_t pColorText = colorTable.PaleCanary.c16();
         if (pDialogueWindow->pCurrentPosActiveItem != 2) {
-            pColorText = colorTable.White.C16();
+            pColorText = colorTable.White.c16();
         }
         bank_window.DrawTitleText(pFontArrus, 0, 146, pColorText,
             localization->GetString(LSTR_DEPOSIT), 3);
-        pColorText = colorTable.PaleCanary.C16();
+        pColorText = colorTable.PaleCanary.c16();
         if (pDialogueWindow->pCurrentPosActiveItem != 3) {
-            pColorText = colorTable.White.C16();
+            pColorText = colorTable.White.c16();
         }
         bank_window.DrawTitleText(pFontArrus, 0, 176, pColorText,
             localization->GetString(LSTR_WITHDRAW), 3);
@@ -1787,9 +1786,9 @@ void BankDialog() {
     case DIALOGUE_BANK_PUT_GOLD:
     {
         if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
-            bank_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary.C16(),
+            bank_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary.c16(),
                                       fmt::format("{}\n{}", localization->GetString(LSTR_DEPOSIT), localization->GetString(LSTR_HOW_MUCH)), 3);
-            bank_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White.C16(), keyboardInputHandler->GetTextInput().c_str(), 3);
+            bank_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White.c16(), keyboardInputHandler->GetTextInput().c_str(), 3);
             bank_window.DrawFlashingInputCursor(pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput().c_str()) / 2 + 80, 185, pFontArrus);
             return;
         }
@@ -1821,9 +1820,9 @@ void BankDialog() {
     case DIALOGUE_BANK_GET_GOLD:
     {
         if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
-            bank_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary.C16(),
+            bank_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary.c16(),
                                       fmt::format("{}\n{}", localization->GetString(LSTR_WITHDRAW), localization->GetString(LSTR_HOW_MUCH)), 3);
-            bank_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White.C16(), keyboardInputHandler->GetTextInput().c_str(), 3);
+            bank_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White.c16(), keyboardInputHandler->GetTextInput().c_str(), 3);
             bank_window.DrawFlashingInputCursor(pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput().c_str()) / 2 + 80, 185, pFontArrus);
             return;
         } else if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CONFIRMED) {
@@ -1905,16 +1904,16 @@ void TavernDialog() {
 
         std::string topic1 = fmt::format("\f{:05}",
                 pDialogueWindow->pCurrentPosActiveItem == 2
-                ? colorTable.PaleCanary.C16()
-                : colorTable.White.C16()) +
-            localization->FormatString(LSTR_FMT_RENT_ROOM_FOR_D_GOLD, pPriceRoom);
+                ? colorTable.PaleCanary.c16()
+                : colorTable.White.c16()) +
+                             localization->FormatString(LSTR_FMT_RENT_ROOM_FOR_D_GOLD, pPriceRoom);
         pTopic1Height = pFontArrus->CalcTextHeight(
             topic1, dialog_window.uFrameWidth, 0);
 
         std::string topic2 = fmt::format("\f{:05}",
                 pDialogueWindow->pCurrentPosActiveItem == 3
-                ? colorTable.PaleCanary.C16()
-                : colorTable.White.C16())
+                ? colorTable.PaleCanary.c16()
+                : colorTable.White.c16())
             + localization->FormatString(
                 LSTR_FMT_BUY_D_FOOD_FOR_D_GOLD,
                 (unsigned int)
@@ -1924,9 +1923,9 @@ void TavernDialog() {
 
         std::string topic3 = fmt::format("\f{:05}",
                 pDialogueWindow->pCurrentPosActiveItem == 4
-                ? colorTable.PaleCanary.C16()
-                : colorTable.White.C16()) +
-            localization->GetString(LSTR_LEARN_SKILLS);
+                ? colorTable.PaleCanary.c16()
+                : colorTable.White.c16()) +
+                             localization->GetString(LSTR_LEARN_SKILLS);
         pTopic3Height = pFontArrus->CalcTextHeight(topic3, dialog_window.uFrameWidth, 0);
 
         std::string topic4;
@@ -1935,8 +1934,8 @@ void TavernDialog() {
             topic4 =
                 fmt::format("\f{:05}",
                     pDialogueWindow->pCurrentPosActiveItem == 5
-                    ? colorTable.PaleCanary.C16()
-                    : colorTable.White.C16()) +
+                    ? colorTable.PaleCanary.c16()
+                    : colorTable.White.c16()) +
                 localization->GetString(LSTR_PLAY_ARCOMAGE);
             pTopic4Height = pFontArrus->CalcTextHeight(
                 topic4, dialog_window.uFrameWidth, 0);
@@ -2000,7 +1999,7 @@ void TavernDialog() {
         }
         render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
         render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-        window_SpeakInHouse->DrawText(pOutString, {12, 354 - pTextHeight}, colorTable.Black.C16(),
+        window_SpeakInHouse->DrawText(pOutString, {12, 354 - pTextHeight}, colorTable.Black.c16(),
             pOutString->FitTextInAWindow(str, dialog_window.uFrameWidth, 12), 0, 0, 0);
         break;
     }
@@ -2019,7 +2018,7 @@ void TavernDialog() {
             ui_leather_mm7, pTextHeight);
         render->DrawTextureNew(
             8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-        window_SpeakInHouse->DrawText(pFontArrus, {12, 354 - pTextHeight}, colorTable.Black.C16(),
+        window_SpeakInHouse->DrawText(pFontArrus, {12, 354 - pTextHeight}, colorTable.Black.c16(),
             pFontArrus->FitTextInAWindow(label, dialog_window.uFrameWidth, 12));
         break;
     }
@@ -2040,8 +2039,7 @@ void TavernDialog() {
             (174 - pFontArrus->CalcTextHeight(
                 pText, dialog_window.uFrameWidth, 0)) /
             2 +
-            138,
-            colorTable.PaleCanary.C16(), pText, 3);
+            138, colorTable.PaleCanary.c16(), pText, 3);
         break;
     }
     case DIALOGUE_TAVERN_REST:
@@ -2149,9 +2147,9 @@ void TavernDialog() {
                 pButton->uHeight = pTextHeight;
                 v54 = pButton->uY + pTextHeight - 1;
                 pButton->uW = v54 + 6;
-                int pColorText = colorTable.PaleCanary.C16();
+                int pColorText = colorTable.PaleCanary.c16();
                 if (pDialogueWindow->pCurrentPosActiveItem != pItemNum)
-                    pColorText = colorTable.White.C16();
+                    pColorText = colorTable.White.c16();
                 dialog_window.DrawTitleText(pFontArrus, 0, pButton->uY,
                     pColorText,
                     pShopOptions[pNumString], 3);
@@ -2236,9 +2234,9 @@ void TempleDialog() {
                 pButton->uHeight = pTextHeight;
                 pButton->uW = pButton->uY + pTextHeight - 1 + 6;
                 all_text_height = pButton->uW;
-                pTextColor = colorTable.PaleCanary.C16();
+                pTextColor = colorTable.PaleCanary.c16();
                 if (pDialogueWindow->pCurrentPosActiveItem != index + 2)
-                    pTextColor = colorTable.White.C16();
+                    pTextColor = colorTable.White.c16();
                 tample_window.DrawTitleText(pFontArrus, 0, pButton->uY,
                     pTextColor, pShopOptions[1 * i], 3);
                 i++;
@@ -2515,9 +2513,9 @@ void TrainingDialog(const char *s) {
                         pButton->uHeight = pTextHeight;
                         pButton->uW = pTextHeight + pButton->uY - 1 + 6;
                         v49 = pButton->uW;
-                        int pTextColor = colorTable.Jonquil.C16();
+                        int pTextColor = colorTable.Jonquil.c16();
                         if (pDialogueWindow->pCurrentPosActiveItem != i)
-                            pTextColor = colorTable.White.C16();
+                            pTextColor = colorTable.White.c16();
                         training_dialog_window.DrawTitleText(
                             pFontArrus, 0, pButton->uY, pTextColor,
                             pShopOptions[index], 3);
@@ -2535,8 +2533,7 @@ void TrainingDialog(const char *s) {
                     pNPCTopics[122].pText, training_dialog_window.uFrameWidth,
                     0);
                 training_dialog_window.DrawTitleText(
-                    pFontArrus, 0, (212 - v33) / 2 + 101,
-                    colorTable.Jonquil.C16(), pNPCTopics[122].pText, 3);
+                    pFontArrus, 0, (212 - v33) / 2 + 101, colorTable.Jonquil.c16(), pNPCTopics[122].pText, 3);
                 pDialogueWindow->pNumPresenceButton = 0;
                 return;
             }
@@ -2610,7 +2607,7 @@ void TrainingDialog(const char *s) {
                         label, training_dialog_window.uFrameWidth, 0)) / 2 + 101;
             }
             training_dialog_window.DrawTitleText(
-                pFontArrus, 0, v36, colorTable.Jonquil.C16(), label, 3);
+                pFontArrus, 0, v36, colorTable.Jonquil.c16(), label, 3);
 
             PlayHouseSound(window_SpeakInHouse->wData.val, (HouseSoundID)3);
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -2680,7 +2677,7 @@ void MercenaryGuildDialog() {
         if (!_449B57_test_bit((uint8_t *)pPlayers[pParty->_activeCharacter]->_achieved_awards_bits, word_4F0754[2 * window_SpeakInHouse->wData.val])) {
             // 171 looks like Mercenary Stronghold message from NPCNews.txt in MM6
             pTextHeight = pFontArrus->CalcTextHeight(pNPCTopics[171].pText, dialog_window.uFrameWidth, 0);
-            dialog_window.DrawTitleText(pFontArrus, 0, (212 - pTextHeight) / 2 + 101, colorTable.PaleCanary.C16(), pNPCTopics[171].pText, 3);
+            dialog_window.DrawTitleText(pFontArrus, 0, (212 - pTextHeight) / 2 + 101, colorTable.PaleCanary.c16(), pNPCTopics[171].pText, 3);
             pDialogueWindow->pNumPresenceButton = 0;
             return;
         }
@@ -2796,7 +2793,7 @@ void SimpleHouseDialog() {
     house_window.uFrameZ -= 10;
     pNPC = HouseNPCData[pDialogueNPCCount + -(dword_591080 != 0)];  //- 1
 
-    house_window.DrawTitleText(pFontCreate, 483, 113, colorTable.EasternBlue.C16(), NameAndTitle(pNPC), 3);
+    house_window.DrawTitleText(pFontCreate, 483, 113, colorTable.EasternBlue.c16(), NameAndTitle(pNPC), 3);
 
     if (!dword_591080) {
         if (uDialogueType == DIALOGUE_NULL) {
@@ -2817,7 +2814,7 @@ void SimpleHouseDialog() {
 
                 int h = (pFontArrus->CalcTextHeight(pInString, house_window.uFrameWidth, 13) + 7);
                 render->DrawTextureNew(8 / 640.0f, (347 - h) / 480.0f, _591428_endcap);
-                pDialogueWindow->DrawText(pFontArrus, {13, 354 - h}, colorTable.Black.C16(),
+                pDialogueWindow->DrawText(pFontArrus, {13, 354 - h}, colorTable.Black.c16(),
                     pFontArrus->FitTextInAWindow(pInString, house_window.uFrameWidth, 13), 0, 0, 0);
             }
         }
@@ -2901,7 +2898,7 @@ void SimpleHouseDialog() {
 
             current_npc_text = stringPrintf(
                 bountyHunting_text,
-                fmt::format("\f{:05}{}\f{:05}", colorTable.PaleCanary.C16(), v31, colorTable.White.C16()).c_str(),
+                fmt::format("\f{:05}{}\f{:05}", colorTable.PaleCanary.c16(), v31, colorTable.White.c16()).c_str(),
                 100 * (uint8_t) v29[8]);
 
             pButton->sLabel.clear();
@@ -2947,9 +2944,9 @@ void SimpleHouseDialog() {
             pButton->uHeight = pTextHeight;
             v40 = pButton->uY + pTextHeight - 1;
             pButton->uW = v40 + 6;
-            pTextColor = colorTable.Jonquil.C16();
+            pTextColor = colorTable.Jonquil.c16();
             if (pDialogueWindow->pCurrentPosActiveItem != i)
-                pTextColor = colorTable.White.C16();
+                pTextColor = colorTable.White.c16();
             right_panel_window.DrawTitleText(pFontArrus, 0, pButton->uY,
                 pTextColor, pButton->sLabel, 3);
         }
@@ -2971,7 +2968,7 @@ void SimpleHouseDialog() {
             ui_leather_mm7, pTextHeight);
         render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f,
             _591428_endcap);
-        house_window.DrawText(pTextFont, {13, 354 - pTextHeight}, colorTable.Black.C16(), pTextFont->FitTextInAWindow(current_npc_text, w.uFrameWidth, 13), 0, 0, 0);
+        house_window.DrawText(pTextFont, {13, 354 - pTextHeight}, colorTable.Black.c16(), pTextFont->FitTextInAWindow(current_npc_text, w.uFrameWidth, 13), 0, 0, 0);
     }
 }
 
@@ -2984,8 +2981,7 @@ void JailDialog() {
         pFontArrus, 0,
         (310 - pFontArrus->CalcTextHeight(localization->GetString(LSTR_ONE_YEAR_SENTENCE),
             jail_dialogue_window.uFrameWidth,
-            0)) / 2 + 18,
-        colorTable.PaleCanary.C16(), localization->GetString(LSTR_ONE_YEAR_SENTENCE), 3);
+            0)) / 2 + 18, colorTable.PaleCanary.c16(), localization->GetString(LSTR_ONE_YEAR_SENTENCE), 3);
 }
 
 void InitializeBuildingResidents() {

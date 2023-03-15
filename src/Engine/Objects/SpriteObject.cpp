@@ -218,7 +218,7 @@ void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID) {
             Dst.b = 0.0;
             if (object->uFlags & OBJECT_DESC_TRIAL_FIRE) {
                 Dst.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
-                Dst.uDiffuse = colorTable.OrangeyRed.C32();
+                Dst.uDiffuse = colorTable.OrangeyRed.c32();
                 Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
                 Dst.texture = spell_fx_renderer->effpar01;
                 Dst.particle_size = 1.0f;
@@ -331,7 +331,7 @@ LABEL_13:
                 Dst.b = 0.0;
                 if (object->uFlags & OBJECT_DESC_TRIAL_FIRE) {
                     Dst.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
-                    Dst.uDiffuse = colorTable.OrangeyRed.C32();
+                    Dst.uDiffuse = colorTable.OrangeyRed.c32();
                     Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
                     Dst.texture = spell_fx_renderer->effpar01;
                     Dst.particle_size = 1.0f;
@@ -532,7 +532,7 @@ LABEL_25:
                 Dst.b = 0.0;
                 if (pObject->uFlags & OBJECT_DESC_TRIAL_FIRE) {
                     Dst.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
-                    Dst.uDiffuse = colorTable.OrangeyRed.C32();
+                    Dst.uDiffuse = colorTable.OrangeyRed.c32();
                     Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
                     Dst.texture = spell_fx_renderer->effpar01;
                     Dst.particle_size = 1.0f;
@@ -718,7 +718,7 @@ LABEL_25:
             Dst.b = 0.0;
             if (pObject->uFlags & OBJECT_DESC_TRIAL_FIRE) {
                 Dst.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
-                Dst.uDiffuse = colorTable.OrangeyRed.C32();
+                Dst.uDiffuse = colorTable.OrangeyRed.c32();
                 Dst.particle_size = 1.0f;
                 Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
                 Dst.texture = spell_fx_renderer->effpar01;

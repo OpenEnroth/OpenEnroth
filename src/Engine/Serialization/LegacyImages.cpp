@@ -1075,7 +1075,7 @@ void Deserialize(const MonsterDesc_MM6 &src, MonsterDesc *dst) {
     dst->uMonsterRadius = src.uMonsterRadius;
     dst->uMovementSpeed = src.uMovementSpeed;
     dst->uToHitRadius = src.uToHitRadius;
-    dst->sTintColor = colorTable.White.C32();
+    dst->sTintColor = colorTable.White.c32();
     dst->pSoundSampleIDs = src.pSoundSampleIDs;
     Deserialize(src.pMonsterName, &dst->pMonsterName);
     for(ActorAnimation i : dst->pSpriteNames.indices())

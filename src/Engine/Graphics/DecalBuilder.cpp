@@ -295,7 +295,7 @@ void DecalBuilder::DrawBloodsplats() {
 //----- (0049C550) --------------------------------------------------------
 void DecalBuilder::DrawDecalDebugOutlines() {
     for (int i = 0; i < DecalsCount; i++)
-        pCamera3D->debug_outline_sw(Decals[i].pVertices, Decals[i].uNumVertices, colorTable.Tawny.C32(), 0.0f);
+        pCamera3D->debug_outline_sw(Decals[i].pVertices, Decals[i].uNumVertices, colorTable.Tawny.c32(), 0.0f);
 }
 
 //----- (0040E4C2) --------------------------------------------------------

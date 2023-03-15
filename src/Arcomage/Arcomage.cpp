@@ -444,8 +444,8 @@ void DrawSparks() {
     for (int i = 0; i < 10; ++i) {
         if (am_effects_array[i].have_effect && (am_effects_array[i].explosion_eff->IsEffectActive() == 2)) {
             // set the pixel color
-            rgb_pixel_color = colorTable.Green.C32();
-            if (!am_effects_array[i].effect_sign) rgb_pixel_color = colorTable.Red.C32();
+            rgb_pixel_color = colorTable.Green.c32();
+            if (!am_effects_array[i].effect_sign) rgb_pixel_color = colorTable.Red.c32();
 
             // draw sparks
             for (int j = 0; j < 150; ++j) {
@@ -564,12 +564,12 @@ bool ArcomageGame::LoadSprites() {
     // mask out blue
     uint32_t *pix = (uint32_t *)pArcomageGame->pSprites->GetPixels(IMAGE_FORMAT_A8B8G8R8);
     int width = pArcomageGame->pSprites->GetWidth();
-    uint32_t mask = colorTable.Blue.C32();
+    uint32_t mask = colorTable.Blue.c32();
     for (int x = 0; x < width; ++x) {
         for (int y = 0; y < pArcomageGame->pSprites->GetHeight(); ++y) {
             int index{ x + y * width };
             if (pix[index] == mask)
-                pix[index] = colorTable.Black.C32(0);
+                pix[index] = colorTable.Black.c32(0);
         }
     }
     render->Update_Texture(pArcomageGame->pSprites);
@@ -2050,9 +2050,9 @@ signed int DrawCardsRectangles(int player_num) {
                     // see if mouse is hovering
                     if (get_mouse.Inside(&pRect)) {
                         if (CanCardBePlayed(player_num, hand_index))
-                            color = colorTable.White.C32();  //белый цвет - white frame
+                            color = colorTable.White.c32();  //белый цвет - white frame
                         else
-                            color = colorTable.Red.C32();  //красный цвет - red frame
+                            color = colorTable.Red.c32();  //красный цвет - red frame
 
                         // draw outline and return
                         DrawRect(&pRect, color, 0);
@@ -2060,7 +2060,7 @@ signed int DrawCardsRectangles(int player_num) {
                     }
 
                     //рамка чёрного цвета - black frame
-                    DrawRect(&pRect, colorTable.Black.C32(), 0);
+                    DrawRect(&pRect, colorTable.Black.c32(), 0);
 
                     // unshift rectangle co ords
                     if (Player_Cards_Shift) {

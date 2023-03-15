@@ -103,101 +103,101 @@ unsigned int ui_game_dialogue_option_normal_color;
 unsigned int ui_house_player_cant_interact_color;
 
 void set_default_ui_skin() {
-    ui_mainmenu_copyright_color = colorTable.White.C16();
+    ui_mainmenu_copyright_color = colorTable.White.c16();
 
-    ui_character_tooltip_header_default_color = colorTable.PaleCanary.C16();
-    ui_character_default_text_color = colorTable.White.C16();
-    ui_character_header_text_color = colorTable.PaleCanary.C16();
-    ui_character_bonus_text_color = colorTable.Green.C16();
-    ui_character_bonus_text_color_neg = colorTable.Red.C16();
+    ui_character_tooltip_header_default_color = colorTable.PaleCanary.c16();
+    ui_character_default_text_color = colorTable.White.c16();
+    ui_character_header_text_color = colorTable.PaleCanary.c16();
+    ui_character_bonus_text_color = colorTable.Green.c16();
+    ui_character_bonus_text_color_neg = colorTable.Red.c16();
 
-    ui_character_skill_upgradeable_color = Color16(0, 175, 255);
-    ui_character_skill_default_color = colorTable.Red.C16();
-    ui_character_skill_highlight_color = colorTable.Red.C16();
+    ui_character_skill_upgradeable_color = color16(0, 175, 255);
+    ui_character_skill_default_color = colorTable.Red.c16();
+    ui_character_skill_highlight_color = colorTable.Red.c16();
 
-    ui_character_stat_default_color = colorTable.White.C16();
-    ui_character_stat_buffed_color = colorTable.Green.C16();
-    ui_character_stat_debuffed_color = colorTable.Scarlet.C16();
+    ui_character_stat_default_color = colorTable.White.c16();
+    ui_character_stat_buffed_color = colorTable.Green.c16();
+    ui_character_stat_debuffed_color = colorTable.Scarlet.c16();
 
-    ui_character_skillinfo_can_learn = colorTable.White.C16();
-    ui_character_skillinfo_can_learn_gm = colorTable.Yellow.C16();
-    ui_character_skillinfo_cant_learn = colorTable.Red.C16();
+    ui_character_skillinfo_can_learn = colorTable.White.c16();
+    ui_character_skillinfo_can_learn_gm = colorTable.Yellow.c16();
+    ui_character_skillinfo_cant_learn = colorTable.Red.c16();
 
-    ui_character_condition_normal_color = colorTable.White.C16();
-    ui_character_condition_light_color = colorTable.Green.C16();
-    ui_character_condition_moderate_color = colorTable.Sunflower.C16();
-    ui_character_condition_severe_color = colorTable.Scarlet.C16();
+    ui_character_condition_normal_color = colorTable.White.c16();
+    ui_character_condition_light_color = colorTable.Green.c16();
+    ui_character_condition_moderate_color = colorTable.Sunflower.c16();
+    ui_character_condition_severe_color = colorTable.Scarlet.c16();
 
-    ui_character_award_color[0] = Color16(248, 108, 160);
-    ui_character_award_color[1] = Color16(112, 220, 248);
-    ui_character_award_color[2] = colorTable.MoonRaker.C16();
-    ui_character_award_color[3] = Color16(64, 244, 96);
-    ui_character_award_color[4] = Color16(232, 244, 96);
-    ui_character_award_color[5] = Color16(240, 252, 192);
+    ui_character_award_color[0] = color16(248, 108, 160);
+    ui_character_award_color[1] = color16(112, 220, 248);
+    ui_character_award_color[2] = colorTable.MoonRaker.c16();
+    ui_character_award_color[3] = color16(64, 244, 96);
+    ui_character_award_color[4] = color16(232, 244, 96);
+    ui_character_award_color[5] = color16(240, 252, 192);
 
-    ui_game_minimap_outline_color = colorTable.Blue.C16();
-    ui_game_minimap_actor_friendly_color = colorTable.Green.C16();
-    ui_game_minimap_actor_hostile_color = colorTable.Red.C16();
-    ui_game_minimap_actor_corpse_color = colorTable.Yellow.C16();
-    ui_game_minimap_decoration_color_1 = colorTable.White.C16();
-    ui_game_minimap_projectile_color = colorTable.Red.C16();
-    ui_game_minimap_treasure_color = colorTable.Blue.C16();
+    ui_game_minimap_outline_color = colorTable.Blue.c16();
+    ui_game_minimap_actor_friendly_color = colorTable.Green.c16();
+    ui_game_minimap_actor_hostile_color = colorTable.Red.c16();
+    ui_game_minimap_actor_corpse_color = colorTable.Yellow.c16();
+    ui_game_minimap_decoration_color_1 = colorTable.White.c16();
+    ui_game_minimap_projectile_color = colorTable.Red.c16();
+    ui_game_minimap_treasure_color = colorTable.Blue.c16();
 
-    ui_game_character_record_playerbuff_colors[0] = colorTable.Anakiwa.C16();
-    ui_game_character_record_playerbuff_colors[1] = colorTable.Mercury.C16();
-    ui_game_character_record_playerbuff_colors[2] = colorTable.FlushOrange.C16();
-    ui_game_character_record_playerbuff_colors[3] = colorTable.Gray.C16();
-    ui_game_character_record_playerbuff_colors[4] = colorTable.Mercury.C16();
-    ui_game_character_record_playerbuff_colors[5] = colorTable.DarkOrange.C16();
-    ui_game_character_record_playerbuff_colors[6] = colorTable.FlushOrange.C16();
-    ui_game_character_record_playerbuff_colors[7] = colorTable.DarkOrange.C16();
-    ui_game_character_record_playerbuff_colors[8] = colorTable.Mercury.C16();
-    ui_game_character_record_playerbuff_colors[9] = colorTable.PurplePink.C16();
-    ui_game_character_record_playerbuff_colors[10] = colorTable.MoonRaker.C16();
-    ui_game_character_record_playerbuff_colors[11] = colorTable.Mercury.C16();
-    ui_game_character_record_playerbuff_colors[12] = colorTable.FlushOrange.C16();
-    ui_game_character_record_playerbuff_colors[13] = colorTable.Anakiwa.C16();
-    ui_game_character_record_playerbuff_colors[14] = colorTable.Gray.C16();
-    ui_game_character_record_playerbuff_colors[15] = colorTable.PaleCanary.C16();
-    ui_game_character_record_playerbuff_colors[16] = colorTable.PaleCanary.C16();
-    ui_game_character_record_playerbuff_colors[17] = colorTable.PaleCanary.C16();
-    ui_game_character_record_playerbuff_colors[18] = colorTable.PaleCanary.C16();
-    ui_game_character_record_playerbuff_colors[19] = colorTable.PaleCanary.C16();
-    ui_game_character_record_playerbuff_colors[20] = colorTable.PaleCanary.C16();
-    ui_game_character_record_playerbuff_colors[21] = colorTable.PaleCanary.C16();
-    ui_game_character_record_playerbuff_colors[22] = colorTable.AzureRadiance.C16();
-    ui_game_character_record_playerbuff_colors[23] = colorTable.AzureRadiance.C16();
+    ui_game_character_record_playerbuff_colors[0] = colorTable.Anakiwa.c16();
+    ui_game_character_record_playerbuff_colors[1] = colorTable.Mercury.c16();
+    ui_game_character_record_playerbuff_colors[2] = colorTable.FlushOrange.c16();
+    ui_game_character_record_playerbuff_colors[3] = colorTable.Gray.c16();
+    ui_game_character_record_playerbuff_colors[4] = colorTable.Mercury.c16();
+    ui_game_character_record_playerbuff_colors[5] = colorTable.DarkOrange.c16();
+    ui_game_character_record_playerbuff_colors[6] = colorTable.FlushOrange.c16();
+    ui_game_character_record_playerbuff_colors[7] = colorTable.DarkOrange.c16();
+    ui_game_character_record_playerbuff_colors[8] = colorTable.Mercury.c16();
+    ui_game_character_record_playerbuff_colors[9] = colorTable.PurplePink.c16();
+    ui_game_character_record_playerbuff_colors[10] = colorTable.MoonRaker.c16();
+    ui_game_character_record_playerbuff_colors[11] = colorTable.Mercury.c16();
+    ui_game_character_record_playerbuff_colors[12] = colorTable.FlushOrange.c16();
+    ui_game_character_record_playerbuff_colors[13] = colorTable.Anakiwa.c16();
+    ui_game_character_record_playerbuff_colors[14] = colorTable.Gray.c16();
+    ui_game_character_record_playerbuff_colors[15] = colorTable.PaleCanary.c16();
+    ui_game_character_record_playerbuff_colors[16] = colorTable.PaleCanary.c16();
+    ui_game_character_record_playerbuff_colors[17] = colorTable.PaleCanary.c16();
+    ui_game_character_record_playerbuff_colors[18] = colorTable.PaleCanary.c16();
+    ui_game_character_record_playerbuff_colors[19] = colorTable.PaleCanary.c16();
+    ui_game_character_record_playerbuff_colors[20] = colorTable.PaleCanary.c16();
+    ui_game_character_record_playerbuff_colors[21] = colorTable.PaleCanary.c16();
+    ui_game_character_record_playerbuff_colors[22] = colorTable.AzureRadiance.c16();
+    ui_game_character_record_playerbuff_colors[23] = colorTable.AzureRadiance.c16();
 
-    ui_gamemenu_video_gamma_title_color = colorTable.PaleCanary.C16();
-    ui_gamemenu_keys_action_name_color = colorTable.White.C16();
-    ui_gamemenu_keys_key_selection_blink_color_1 = colorTable.Temptress.C16();
-    ui_gamemenu_keys_key_selection_blink_color_2 = colorTable.Sunflower.C16();
-    ui_gamemenu_keys_key_default_color = colorTable.White.C16();
+    ui_gamemenu_video_gamma_title_color = colorTable.PaleCanary.c16();
+    ui_gamemenu_keys_action_name_color = colorTable.White.c16();
+    ui_gamemenu_keys_key_selection_blink_color_1 = colorTable.Temptress.c16();
+    ui_gamemenu_keys_key_selection_blink_color_2 = colorTable.Sunflower.c16();
+    ui_gamemenu_keys_key_default_color = colorTable.White.c16();
 
-    ui_book_quests_title_color = colorTable.White.C16();
-    ui_book_quests_text_color = colorTable.White.C16();
-    ui_book_autonotes_title_color = colorTable.White.C16();
-    ui_book_autonotes_text_color = colorTable.White.C16();
-    ui_book_map_title_color = colorTable.White.C16();
-    ui_book_map_coordinates_color = colorTable.White.C16();
+    ui_book_quests_title_color = colorTable.White.c16();
+    ui_book_quests_text_color = colorTable.White.c16();
+    ui_book_autonotes_title_color = colorTable.White.c16();
+    ui_book_autonotes_text_color = colorTable.White.c16();
+    ui_book_map_title_color = colorTable.White.c16();
+    ui_book_map_coordinates_color = colorTable.White.c16();
 
-    ui_book_calendar_title_color = colorTable.White.C16();
-    ui_book_calendar_time_color = colorTable.Tundora.C16();
-    ui_book_calendar_day_color = colorTable.Tundora.C16();
-    ui_book_calendar_month_color = colorTable.Tundora.C16();
-    ui_book_calendar_year_color = colorTable.Tundora.C16();
-    ui_book_calendar_moon_color = colorTable.Tundora.C16();
-    ui_book_calendar_location_color = colorTable.Tundora.C16();
+    ui_book_calendar_title_color = colorTable.White.c16();
+    ui_book_calendar_time_color = colorTable.Tundora.c16();
+    ui_book_calendar_day_color = colorTable.Tundora.c16();
+    ui_book_calendar_month_color = colorTable.Tundora.c16();
+    ui_book_calendar_year_color = colorTable.Tundora.c16();
+    ui_book_calendar_moon_color = colorTable.Tundora.c16();
+    ui_book_calendar_location_color = colorTable.Tundora.c16();
 
-    ui_book_journal_title_color = colorTable.White.C16();
-    ui_book_journal_text_color = colorTable.White.C16();
-    ui_book_journal_text_shadow = colorTable.Black.C16();
+    ui_book_journal_title_color = colorTable.White.c16();
+    ui_book_journal_text_color = colorTable.White.c16();
+    ui_book_journal_text_shadow = colorTable.Black.c16();
 
-    ui_game_dialogue_npc_name_color = colorTable.EasternBlue.C16();
-    ui_game_dialogue_option_highlight_color = colorTable.Sunflower.C16();
-    ui_game_dialogue_option_normal_color = colorTable.White.C16();
+    ui_game_dialogue_npc_name_color = colorTable.EasternBlue.c16();
+    ui_game_dialogue_option_highlight_color = colorTable.Sunflower.c16();
+    ui_game_dialogue_option_normal_color = colorTable.White.c16();
 
-    ui_house_player_cant_interact_color = colorTable.PaleCanary.C16();
+    ui_house_player_cant_interact_color = colorTable.PaleCanary.c16();
 }
 
 Image *paperdoll_drhs[4];

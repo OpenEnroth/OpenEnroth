@@ -71,9 +71,9 @@ void ShopDialogMain(GUIWindow dialogwin) {
                          1;
             pButton->uW = textoffset + 6;
 
-            pColorText = colorTable.Jonquil.C16();
+            pColorText = colorTable.Jonquil.c16();
             if (pDialogueWindow->pCurrentPosActiveItem != i)
-                pColorText = colorTable.White.C16();
+                pColorText = colorTable.White.c16();
 
             dialogwin.DrawTitleText(pFontArrus, 0, pButton->uY, pColorText,
                                     pShopOptions[pNumString], 3);
@@ -124,9 +124,9 @@ void ShopDialogDisplayEquip(GUIWindow dialogwin,
                      1;
         pButton->uW = textoffset + 6;
 
-        pColorText = colorTable.Jonquil.C16();
+        pColorText = colorTable.Jonquil.c16();
         if (pDialogueWindow->pCurrentPosActiveItem != i)
-            pColorText = colorTable.White.C16();
+            pColorText = colorTable.White.c16();
         dialogwin.DrawTitleText(pFontArrus, 0, pButton->uY, pColorText,
                                 pShopOptions[pNumString], 3);
         ++pNumString;
@@ -160,8 +160,7 @@ void ShopDialogSellEquip(GUIWindow dialogwin, BuildingType building) {
                                     (174 - pFontArrus->CalcTextHeight(
                                                str, dialogwin.uFrameWidth, 0)) /
                                             2 +
-                                        138,
-                                    colorTable.White.C16(), str, 3);
+                                        138, colorTable.White.c16(), str, 3);
         }
     }
 }
@@ -196,8 +195,7 @@ void ShopDialogIdentify(GUIWindow dialogwin, BuildingType building) {
             }
 
             dialogwin.DrawTitleText(pFontArrus, 0,
-                (174 - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + 138,
-                colorTable.White.C16(), str, 3);
+                (174 - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + 138, colorTable.White.c16(), str, 3);
         }
     }
 }
@@ -228,8 +226,7 @@ void ShopDialogRepair(GUIWindow dialogwin, BuildingType building) {
                 pMerchantsRepairPhrases[phrases_id], pParty->_activeCharacter - 1, item,
                 window_SpeakInHouse->wData.val, 5);
             dialogwin.DrawTitleText(pFontArrus, 0,
-                (174 - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + 138,
-                colorTable.White.C16(), str, 3);
+                (174 - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + 138, colorTable.White.c16(), str, 3);
         }
     }
 }
@@ -352,8 +349,7 @@ void WeaponShopWares(GUIWindow dialogwin, bool special) {
                                 (174 - pFontArrus->CalcTextHeight(
                                            str, dialogwin.uFrameWidth, 0)) /
                                         2 +
-                                    138,
-                                colorTable.White.C16(), str, 3);
+                                    138, colorTable.White.c16(), str, 3);
                         }
                     }
                 }
@@ -515,8 +511,7 @@ void ArmorShopWares(GUIWindow dialogwin, bool special) {
                             }
                             dialogwin.DrawTitleText(
                                 pFontArrus, 0,
-                                (174 - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + 138,
-                                colorTable.White.C16(), str, 3);
+                                (174 - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + 138, colorTable.White.c16(), str, 3);
                         }
                     }
                 }
@@ -689,8 +684,7 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
                                 (174 - pFontArrus->CalcTextHeight(
                                            str, dialogwin.uFrameWidth, 0)) /
                                         2 +
-                                    138,
-                                colorTable.White.C16(), str, 3);
+                                    138, colorTable.White.c16(), str, 3);
                         }
                     }
                 }
@@ -1542,9 +1536,9 @@ void sub_4B1523_showSpellbookInfo(ITEM_TYPE spellItemId) {
     v7 = pSpellStats->pInfos[spellId].pName;
     a1.uFrameZ = a1.uFrameX + a1.uFrameWidth - 1;
     a1.uFrameW = a1.uFrameHeight + a1.uFrameY - 1;
-    v8 = colorTable.PaleCanary.C16();
+    v8 = colorTable.PaleCanary.c16();
     a1.DrawTitleText(pFontArrus, 0x78u, 0xCu, v8, v7, 3u);
-    a1.DrawText(pFontSmallnum, {120, 44}, colorTable.Black.C16(), str, 0, 0, 0);
+    a1.DrawText(pFontSmallnum, {120, 44}, colorTable.Black.c16(), str, 0, 0, 0);
     a1.uFrameZ = a1.uFrameX + 107;
     a1.uFrameWidth = 108;
     a1.DrawTitleText(pFontComic, 0xCu, 0x4Bu, 0,
