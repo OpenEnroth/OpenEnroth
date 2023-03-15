@@ -378,27 +378,32 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_AIR_IMPLOSION:
                 {
-                    int monster_id = PID_ID(spell_targeted_at);
-                    if (!spell_targeted_at) {
+                    // Vanilla behaviour changed:
+                    // before if spell was targeted wrong, mana was spend on spell failure
+                    if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
-                        pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         continue;
                     }
-                    if (PID_TYPE(spell_targeted_at) == OBJECT_Actor) {
-                        Vec3i spell_velocity = Vec3i(0, 0, 0);
-                        initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                        pSpellSprite.uSectorID = 0;
-                        pSpellSprite.field_60_distance_related_prolly_lod = 0;
-                        pSpellSprite.uFacing = 0;
-                        pSpellSprite.vPosition = pActors[monster_id].vPosition + Vec3i(0, 0, pActors[monster_id].uActorHeight / 2);
-                        pSpellSprite.spell_target_pid = PID(OBJECT_Actor, monster_id);
-                        Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, &spell_velocity);
-                    }
+                    int monster_id = PID_ID(spell_targeted_at);
+                    Vec3i spell_velocity = Vec3i(0, 0, 0);
+                    initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
+                    pSpellSprite.uSectorID = 0;
+                    pSpellSprite.field_60_distance_related_prolly_lod = 0;
+                    pSpellSprite.uFacing = 0;
+                    pSpellSprite.vPosition = pActors[monster_id].vPosition + Vec3i(0, 0, pActors[monster_id].uActorHeight / 2);
+                    pSpellSprite.spell_target_pid = PID(OBJECT_Actor, monster_id);
+                    Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, &spell_velocity);
                     break;
                 }
 
                 case SPELL_EARTH_MASS_DISTORTION:
                 {
+                    // Vanilla behaviour changed:
+                    // before if spell was targeted wrong, mana was spend on spell failure
+                    if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
+                        spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        continue;
+                    }
                     int monster_id = PID_ID(spell_targeted_at);
                     if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_EARTH)) {
                         Vec3i spell_velocity = Vec3i(0, 0, 0);
@@ -417,27 +422,31 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_LIGHT_DESTROY_UNDEAD:
                 {
+                    // Vanilla behaviour changed:
+                    // before if spell was targeted wrong, mana was spend on spell failure
                     if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
-                        break;
+                        spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        continue;
                     }
                     // v730 = spell_targeted_at >> 3;
                     // HIDWORD(spellduration) =
                     // (int)&pActors[PID_ID(spell_targeted_at)];
+                    int monster_id = PID_ID(spell_targeted_at);
                     Vec3i spell_velocity = Vec3i(0, 0, 0);
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    pSpellSprite.vPosition = pActors[PID_ID(spell_targeted_at)].vPosition;
+                    pSpellSprite.vPosition = pActors[monster_id].vPosition;
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                     pSpellSprite.uFacing = target_direction.uYawAngle;
                     pSpellSprite.uAttributes |= SPRITE_ATTACHED_TO_HEAD;
                     int obj_id = pSpellSprite.Create(0, 0, 0, 0);
-                    if (!MonsterStats::BelongsToSupertype(pActors[PID_ID(spell_targeted_at)].pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
+                    if (!MonsterStats::BelongsToSupertype(pActors[monster_id].pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         continue;
                     }
-                    Actor::DamageMonsterFromParty(PID(OBJECT_Item, obj_id), PID_ID(spell_targeted_at), &spell_velocity);
+                    Actor::DamageMonsterFromParty(PID(OBJECT_Item, obj_id), monster_id, &spell_velocity);
                     break;
                 }
 
@@ -529,9 +538,15 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_LIGHT_PARALYZE:
                 {
+                    // Vanilla behaviour changed:
+                    // before if spell was targeted wrong, mana was spend on spell failure
+                    if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
+                        spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        continue;
+                    }
                     int monster_id = PID_ID(spell_targeted_at);
-                    if (PID_TYPE(spell_targeted_at) == OBJECT_Actor && pActors[monster_id].DoesDmgTypeDoDamage(DMGT_LIGHT)) {
-                        Actor::AI_Stand(PID_ID(spell_targeted_at), 4, 0x80, 0);
+                    if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_LIGHT)) {
+                        Actor::AI_Stand(monster_id, 4, 0x80, 0);
                         pActors[monster_id].pActorBuffs[ACTOR_BUFF_PARALYZED]
                             .Apply(pParty->GetPlayingTime() + GameTime::FromMinutes(3 * spell_level), spell_mastery, 0, 0, 0);
                         pActors[monster_id].uAttributes |= ACTOR_AGGRESSOR;
@@ -544,6 +559,13 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_EARTH_SLOW:
                 {
+                    // Vanilla behaviour changed:
+                    // before if spell was targeted wrong, mana was spend on spell failure
+                    if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
+                        spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        continue;
+                    }
+
                     GameTime spell_duration;
                     int spell_power;
 
@@ -569,7 +591,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     // v721 = 836 * PID_ID(spell_targeted_at);
                     int monster_id = PID_ID(spell_targeted_at);
-                    if (PID_TYPE(spell_targeted_at) == OBJECT_Actor && pActors[monster_id].DoesDmgTypeDoDamage(DMGT_EARTH)) {
+                    if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_EARTH)) {
                         pActors[monster_id].pActorBuffs[ACTOR_BUFF_SLOWED].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
                         pActors[monster_id].uAttributes |= ACTOR_AGGRESSOR;
                         spell_fx_renderer->sparklesOnActorAfterItCastsBuff(&pActors[monster_id], 0);
@@ -579,6 +601,12 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_MIND_CHARM:
                 {
+                    // Vanilla behaviour changed:
+                    // before if spell was targeted wrong, mana was spend on spell failure
+                    if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
+                        spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        continue;
+                    }
                     int monster_id = PID_ID(spell_targeted_at);
                     if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_MIND)) {
                         // Wrong durations from vanilla fixed
@@ -830,29 +858,26 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_SPIRIT_SPIRIT_LASH:
                 {
-                    if (spell_targeted_at && PID_TYPE(spell_targeted_at) == OBJECT_Actor) {
-                        int monster_id = PID_ID(spell_targeted_at);
-                        float dist = (pActors[monster_id].vPosition - pParty->vPosition).ToFloat().Length();
-                        if (dist <= 307.2) {
-                            Vec3i spell_velocity = Vec3i(0, 0, 0);
-                            initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                            pSpellSprite.uSectorID = 0;
-                            pSpellSprite.field_60_distance_related_prolly_lod = 0;
-                            pSpellSprite.uFacing = 0;
-                            pSpellSprite.vPosition = pActors[monster_id].vPosition - Vec3i(0, 0, pActors[monster_id].uActorHeight * -0.8);
-                            pSpellSprite.spell_target_pid = PID(OBJECT_Actor, spell_targeted_at);
-                            Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, &spell_velocity);
-                        } else {
-                            spellFailed(pCastSpell, LSTR_SPELL_FAILED);
-                            pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
-                            continue;
-                        }
+                    // Vanilla behaviour changed:
+                    // before if spell was targeted wrong, mana was spend on spell failure
+                    if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
+                        spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        continue;
+                    }
+                    int monster_id = PID_ID(spell_targeted_at);
+                    float dist = (pActors[monster_id].vPosition - pParty->vPosition).ToFloat().Length();
+                    if (dist <= 307.2) {
+                        Vec3i spell_velocity = Vec3i(0, 0, 0);
+                        initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
+                        pSpellSprite.uSectorID = 0;
+                        pSpellSprite.field_60_distance_related_prolly_lod = 0;
+                        pSpellSprite.uFacing = 0;
+                        pSpellSprite.vPosition = pActors[monster_id].vPosition - Vec3i(0, 0, pActors[monster_id].uActorHeight * -0.8);
+                        pSpellSprite.spell_target_pid = PID(OBJECT_Actor, spell_targeted_at);
+                        Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, &spell_velocity);
                     } else {
-                        // Previous behavoiur - decrease mana but do not play sound if
-                        // spell is targeted wrong
-                        // TODO: revisit, maybe we want to properly play sound and display a message here?
-                        pPlayer->SpendMana(uRequiredMana);
-                        pCastSpell->uSpellID = SPELL_NONE;
+                        spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         continue;
                     }
                     break;
@@ -1921,7 +1946,13 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_MIND_TELEPATHY:
                 {
-                    if (PID_TYPE(spell_targeted_at) == OBJECT_Actor) {
+                    // Vanilla behaviour changed:
+                    // before if spell was targeted wrong, mana was spend on spell failure
+                    if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
+                        spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        continue;
+                    }
+                    {
                         int monster_id = PID_ID(spell_targeted_at);
                         if (!pActors[monster_id].ActorHasItem()) {
                             pActors[monster_id].SetRandomGoldIfTheresNoItem();
@@ -1958,8 +1989,7 @@ void CastSpellInfoHelpers::castSpell() {
                         }
 
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                        // TODO(Nik-RE-dev): using just monster height for Z coord looks like a bug
-                        pSpellSprite.vPosition = Vec3i(pActors[monster_id].vPosition.x, pActors[monster_id].vPosition.y, pActors[monster_id].uActorHeight);
+                        pSpellSprite.vPosition = pActors[monster_id].vPosition + Vec3i(0, 0, pActors[monster_id].uActorHeight);
                         pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                         pSpellSprite.spell_target_pid = spell_targeted_at;
                         pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
@@ -1972,6 +2002,13 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_MIND_BERSERK:
                 {
+                    // Vanilla behaviour changed:
+                    // before if spell was targeted wrong, mana was spend on spell failure
+                    if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
+                        spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        continue;
+                    }
+
                     GameTime spell_duration;
 
                     switch (spell_mastery) {
@@ -1991,52 +2028,54 @@ void CastSpellInfoHelpers::castSpell() {
                             assert(false);
                     }
                     int monster_id = PID_ID(spell_targeted_at);
-                    if (PID_TYPE(spell_targeted_at) == OBJECT_Actor) {
-                        // v730 = 836 * monster_id;
-                        if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_MIND)) {
-                            pActors[monster_id].pActorBuffs[ACTOR_BUFF_CHARM].Reset();
-                            pActors[monster_id].pActorBuffs[ACTOR_BUFF_ENSLAVED].Reset();
-                            pActors[monster_id].pActorBuffs[ACTOR_BUFF_BERSERK]
-                                .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
-                            pActors[monster_id].pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Long;
-                        }
-                        initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                        pSpellSprite.vPosition = pActors[monster_id].vPosition + Vec3i(0, 0, pActors[monster_id].uActorHeight);
-                        pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
-                        pSpellSprite.spell_target_pid = spell_targeted_at;
-                        pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
-                        pSpellSprite.uFacing = target_direction.uYawAngle;
-                        pSpellSprite.uAttributes |= SPRITE_ATTACHED_TO_HEAD;
-                        pSpellSprite.Create(0, 0, 0, pCastSpell->uPlayerID + 1);
+                    // v730 = 836 * monster_id;
+                    if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_MIND)) {
+                        pActors[monster_id].pActorBuffs[ACTOR_BUFF_CHARM].Reset();
+                        pActors[monster_id].pActorBuffs[ACTOR_BUFF_ENSLAVED].Reset();
+                        pActors[monster_id].pActorBuffs[ACTOR_BUFF_BERSERK]
+                            .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
+                        pActors[monster_id].pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Long;
                     }
+                    initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
+                    pSpellSprite.vPosition = pActors[monster_id].vPosition + Vec3i(0, 0, pActors[monster_id].uActorHeight);
+                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
+                    pSpellSprite.spell_target_pid = spell_targeted_at;
+                    pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
+                    pSpellSprite.uFacing = target_direction.uYawAngle;
+                    pSpellSprite.uAttributes |= SPRITE_ATTACHED_TO_HEAD;
+                    pSpellSprite.Create(0, 0, 0, pCastSpell->uPlayerID + 1);
                     break;
                 }
 
                 case SPELL_MIND_ENSLAVE:
                 {
-                    GameTime spell_duration = GameTime::FromMinutes(10 * spell_level);
-
-                    if (PID_TYPE(spell_targeted_at) == OBJECT_Actor) {
-                        int monster_id = PID_ID(spell_targeted_at);
-                        // v730 = 836 * monster_id;
-                        if (MonsterStats::BelongsToSupertype(pActors[monster_id].pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
-                            break;
-                        }
-                        if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_MIND)) {
-                            pActors[monster_id].pActorBuffs[ACTOR_BUFF_BERSERK].Reset();
-                            pActors[monster_id].pActorBuffs[ACTOR_BUFF_CHARM].Reset();
-                            pActors[monster_id].pActorBuffs[ACTOR_BUFF_ENSLAVED]
-                                .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
-                        }
-                        initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                        pSpellSprite.vPosition = pActors[monster_id].vPosition + Vec3i(0, 0, pActors[monster_id].uActorHeight);
-                        pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
-                        pSpellSprite.spell_target_pid = spell_targeted_at;
-                        pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
-                        pSpellSprite.uFacing = target_direction.uYawAngle;
-                        pSpellSprite.uAttributes |= SPRITE_ATTACHED_TO_HEAD;
-                        pSpellSprite.Create(0, 0, 0, pCastSpell->uPlayerID + 1);
+                    // Vanilla behaviour changed:
+                    // before if spell was targeted wrong, mana was spend on spell failure
+                    if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
+                        spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        continue;
                     }
+
+                    GameTime spell_duration = GameTime::FromMinutes(10 * spell_level);
+                    int monster_id = PID_ID(spell_targeted_at);
+                    // v730 = 836 * monster_id;
+                    if (MonsterStats::BelongsToSupertype(pActors[monster_id].pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
+                        break;
+                    }
+                    if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_MIND)) {
+                        pActors[monster_id].pActorBuffs[ACTOR_BUFF_BERSERK].Reset();
+                        pActors[monster_id].pActorBuffs[ACTOR_BUFF_CHARM].Reset();
+                        pActors[monster_id].pActorBuffs[ACTOR_BUFF_ENSLAVED]
+                            .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
+                    }
+                    initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
+                    pSpellSprite.vPosition = pActors[monster_id].vPosition + Vec3i(0, 0, pActors[monster_id].uActorHeight);
+                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
+                    pSpellSprite.spell_target_pid = spell_targeted_at;
+                    pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
+                    pSpellSprite.uFacing = target_direction.uYawAngle;
+                    pSpellSprite.uAttributes |= SPRITE_ATTACHED_TO_HEAD;
+                    pSpellSprite.Create(0, 0, 0, pCastSpell->uPlayerID + 1);
                     break;
                 }
 
@@ -2117,6 +2156,13 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_EARTH_TELEKINESIS:
                 {
+                    // Vanilla behaviour changed:
+                    // before if spell was targeted wrong, mana was spend on spell failure
+                    if (!spell_targeted_at) {
+                        spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        continue;
+                    }
+
                     int obj_id = PID_ID(spell_targeted_at);
                     if (PID_TYPE(spell_targeted_at) == OBJECT_Item) {
                         if (pItemTable->pItems[pSpriteObjects[obj_id].containing_item.uItemID].uEquipType == EQUIP_GOLD) {
@@ -2684,6 +2730,13 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_DARK_CONTROL_UNDEAD:
                 {
+                    // Vanilla behaviour changed:
+                    // before if spell was targeted wrong, mana was spend on spell failure
+                    if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
+                        spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        continue;
+                    }
+
                     GameTime spell_duration;
 
                     switch (spell_mastery) {
@@ -2701,29 +2754,27 @@ void CastSpellInfoHelpers::castSpell() {
                         default:
                             assert(false);
                     }
-                    if (PID_TYPE(spell_targeted_at) == OBJECT_Actor) {
-                        int monster_id = PID_ID(spell_targeted_at);
-                        if (!MonsterStats::BelongsToSupertype(pActors[monster_id].pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
-                            break;
-                        }
-                        if (!pActors[monster_id].DoesDmgTypeDoDamage(DMGT_DARK)) {
-                            spellFailed(pCastSpell, LSTR_SPELL_FAILED);
-                            pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
-                            continue;
-                        }
-                        pActors[monster_id].pActorBuffs[ACTOR_BUFF_BERSERK].Reset();
-                        pActors[monster_id].pActorBuffs[ACTOR_BUFF_CHARM].Reset();
-                        pActors[monster_id].pActorBuffs[ACTOR_BUFF_ENSLAVED]
-                            .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
-                        initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                        pSpellSprite.vPosition = pActors[monster_id].vPosition + Vec3i(0, 0, pActors[monster_id].uActorHeight);
-                        pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
-                        pSpellSprite.spell_target_pid = spell_targeted_at;
-                        pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
-                        pSpellSprite.uFacing = target_direction.uYawAngle;
-                        pSpellSprite.uAttributes |= SPRITE_ATTACHED_TO_HEAD;
-                        pSpellSprite.Create(0, 0, 0, pCastSpell->uPlayerID + 1);
+                    int monster_id = PID_ID(spell_targeted_at);
+                    if (!MonsterStats::BelongsToSupertype(pActors[monster_id].pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
+                        break;
                     }
+                    if (!pActors[monster_id].DoesDmgTypeDoDamage(DMGT_DARK)) {
+                        spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
+                        continue;
+                    }
+                    pActors[monster_id].pActorBuffs[ACTOR_BUFF_BERSERK].Reset();
+                    pActors[monster_id].pActorBuffs[ACTOR_BUFF_CHARM].Reset();
+                    pActors[monster_id].pActorBuffs[ACTOR_BUFF_ENSLAVED]
+                        .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
+                    initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
+                    pSpellSprite.vPosition = pActors[monster_id].vPosition + Vec3i(0, 0, pActors[monster_id].uActorHeight);
+                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
+                    pSpellSprite.spell_target_pid = spell_targeted_at;
+                    pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
+                    pSpellSprite.uFacing = target_direction.uYawAngle;
+                    pSpellSprite.uAttributes |= SPRITE_ATTACHED_TO_HEAD;
+                    pSpellSprite.Create(0, 0, 0, pCastSpell->uPlayerID + 1);
                     break;
                 }
 
