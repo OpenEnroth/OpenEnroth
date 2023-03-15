@@ -872,7 +872,7 @@ bool SpriteObject::applyShrinkRayAoe() {
     // Calculation was moved from initial sprite creation processing
     GameTime duration = GameTime::FromMinutes(this->spell_level * 5);
     static const int shrinkPower = 4;
-    int effectDistance = engine->config->gameplay.ShrinkRayAoeDistance.Get();
+    int effectDistance = (int)engine->config->gameplay.ShrinkRayAoeDistance.Get();
 
     for (Actor &actor : pActors) {
         // TODO(Nik-RE-dev): paralyzed actor will not be affected?
@@ -1108,7 +1108,7 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
             object->spellSpriteStop();
-            pushAoeAttack(PID(OBJECT_Item, uLayingItemID), engine->config->gameplay.AoeDamageDistance.Get(),
+            pushAoeAttack(PID(OBJECT_Item, uLayingItemID), (int)engine->config->gameplay.AoeDamageDistance.Get(),
                     pSpriteObjects[uLayingItemID].vPosition, ABILITY_ATTACK1);
             if (objectDesc->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                 trail_particle_generator.GenerateTrailParticles(object->vPosition.x, object->vPosition.y, object->vPosition.z,
@@ -1224,7 +1224,7 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
             object->spellSpriteStop();
-            pushAoeAttack(PID(OBJECT_Item, uLayingItemID), engine->config->gameplay.AoeDamageDistance.Get(),
+            pushAoeAttack(PID(OBJECT_Item, uLayingItemID), (int)engine->config->gameplay.AoeDamageDistance.Get(),
                     pSpriteObjects[uLayingItemID].vPosition, ABILITY_ATTACK1);
             // int v78 = 0;
             // if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
@@ -1275,7 +1275,7 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
             object->spellSpriteStop();
-            pushAoeAttack(PID(OBJECT_Item, uLayingItemID), engine->config->gameplay.AoeDamageDistance.Get(),
+            pushAoeAttack(PID(OBJECT_Item, uLayingItemID), (int)engine->config->gameplay.AoeDamageDistance.Get(),
                     pSpriteObjects[uLayingItemID].vPosition, object->field_61);
             // int v78 = 0;
             // if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
@@ -1492,7 +1492,7 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
             object->spellSpriteStop();
-            pushAoeAttack(PID(OBJECT_Item, uLayingItemID), engine->config->gameplay.AoeDamageDistance.Get(),
+            pushAoeAttack(PID(OBJECT_Item, uLayingItemID), (int)engine->config->gameplay.AoeDamageDistance.Get(),
                     pSpriteObjects[uLayingItemID].vPosition, object->field_61);
             if (objectDesc->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                 trail_particle_generator.GenerateTrailParticles(

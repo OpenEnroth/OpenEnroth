@@ -151,11 +151,11 @@ namespace Application {
 
             Float AoeDamageDistance = {this, "aoe_damage_distance", 512.0f, &ValidateAoeDistance,
                                        "Distance from point of impact of harmful AOE spell. "
-                                       "Player and monsters will suffer damage if they are close to point of impact by ths value."};
+                                       "Player and monsters will suffer damage if they are close to point of impact by this value."};
 
             Float ShrinkRayAoeDistance = {this, "shrink_ray_aoe_distance", 256.0f, &ValidateAoeDistance,
-                                          "Distance from point of impact of Shrinking Ray spell caster with Grandmaster mastery. "
-                                          "Monsters will be affected by this spell if they are close to point of impact by ths value."};
+                                          "Distance from point of impact of Shrinking Ray cast at GM mastery. "
+                                          "Monsters will be affected by this spell if they are close to point of impact by this value."};
 
             Bool ShowUndentifiedItem = {this, "show_unidentified_item", true,
                                         "Show unidentified items with a green tint in inventory. "

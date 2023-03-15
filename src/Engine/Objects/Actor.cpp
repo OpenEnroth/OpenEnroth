@@ -4974,8 +4974,8 @@ void evaluateAoeDamage() {
     SpriteObject *pSpriteObj = nullptr;
 
     for (AttackDescription &attack : attackList) {
-        ObjectType attackerType = PID_TYPE(attack.id);
-        int attackerId = PID_ID(attack.id);
+        ObjectType attackerType = PID_TYPE(attack.pid);
+        int attackerId = PID_ID(attack.pid);
         Vec3i attackVector = Vec3i(0, 0, 0);
 
         // attacker is an item (sprite)
@@ -4985,7 +4985,7 @@ void evaluateAoeDamage() {
             attackerId = PID_ID(pSpriteObjects[attackerId].spell_caster_pid);
         }
 
-        if (attack.attackType) {  // melee attack
+        if (attack.isMelee) {
             unsigned int targetId = PID_ID(ai_near_actors_targets_pid[attackerId]);
             ObjectType targetType = PID_TYPE(ai_near_actors_targets_pid[attackerId]);
             Actor *actor = &pActors[targetId];
@@ -4999,7 +4999,7 @@ void evaluateAoeDamage() {
                     if (distanceSq < attackRangeSq) {
                         // check line of sight
                         if (Check_LineOfSight(pParty->vPosition + Vec3i(0, 0, pParty->sEyelevel), attack.pos)) {
-                            DamagePlayerFromMonster(attack.id, attack.attackSpecial, &attackVector, stru_50C198.which_player_to_attack(&pActors[attackerId]));
+                            DamagePlayerFromMonster(attack.pid, attack.attackSpecial, &attackVector, stru_50C198.which_player_to_attack(&pActors[attackerId]));
                         }
                     }
                 }
@@ -5016,7 +5016,7 @@ void evaluateAoeDamage() {
                         // check line of sight
                         if (Check_LineOfSight(actor->vPosition + Vec3i(0, 0, 50), attack.pos)) {
                             normalize_to_fixpoint(&attackVector.x, &attackVector.y, &attackVector.z);
-                            Actor::ActorDamageFromMonster(attack.id, targetId, &attackVector, attack.attackSpecial);
+                            Actor::ActorDamageFromMonster(attack.pid, targetId, &attackVector, attack.attackSpecial);
                         }
                     }
                 }
@@ -5031,7 +5031,7 @@ void evaluateAoeDamage() {
                 if (Check_LineOfSight(pParty->vPosition + Vec3i(0, 0, pParty->sEyelevel), attack.pos)) {
                     for (int i = 0; i < pParty->pPlayers.size(); i++) {
                         if (pParty->pPlayers[i].conditions.HasNone({Condition_Dead, Condition_Petrified, Condition_Eradicated})) {
-                            DamagePlayerFromMonster(attack.id, attack.attackSpecial, &attackVector, i);
+                            DamagePlayerFromMonster(attack.pid, attack.attackSpecial, &attackVector, i);
                         }
                     }
                 }
@@ -5043,6 +5043,7 @@ void evaluateAoeDamage() {
                     int distanceSq = distanceVec.LengthSqr();
                     int attackRange = attack.attackRange + pActors[actorID].uActorRadius;
                     int attackRangeSq = attackRange * attackRange;
+                    // TODO: using absolute Z here is BS, it's used as speed in ItemDamageFromActor
                     attackVector = Vec3i(distanceVec.x, distanceVec.y, pActors[actorID].vPosition.z);
 
                     // check range
@@ -5052,15 +5053,15 @@ void evaluateAoeDamage() {
                             normalize_to_fixpoint(&attackVector.x, &attackVector.y, &attackVector.z);
                             switch (attackerType) {
                                 case OBJECT_Player:
-                                    Actor::DamageMonsterFromParty(attack.id, actorID, &attackVector);
+                                    Actor::DamageMonsterFromParty(attack.pid, actorID, &attackVector);
                                     break;
                                 case OBJECT_Actor:
                                     if (pSpriteObj && pActors[attackerId].GetActorsRelation(&pActors[actorID])) {
-                                        Actor::ActorDamageFromMonster(attack.id, actorID, &attackVector, pSpriteObj->field_61);
+                                        Actor::ActorDamageFromMonster(attack.pid, actorID, &attackVector, pSpriteObj->field_61);
                                     }
                                     break;
                                 case OBJECT_Item:
-                                    ItemDamageFromActor(attack.id, actorID, &attackVector);
+                                    ItemDamageFromActor(attack.pid, actorID, &attackVector);
                                     break;
                             }
                         }
