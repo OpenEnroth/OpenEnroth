@@ -9,7 +9,8 @@ std::vector<AttackDescription> attackList;
 
 void pushMeleeAttack(int16_t pid, Vec3i pos, ABILITY_INDEX ability) {
     // Registered melee attack use the same distance as ranged attacks
-    attackList.push_back({pid, pos, (int)engine->config->gameplay.RangedAttackDepth.Get(), true, ability});
+    int effectDistance = engine->config->gameplay.RangedAttackDepth.Get();
+    attackList.push_back({pid, pos, effectDistance, true, ability});
 }
 
 void pushAoeAttack(int16_t pid, int aoeDistance, Vec3i pos, ABILITY_INDEX ability) {
