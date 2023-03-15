@@ -9,6 +9,7 @@ class TrigTableLookup {
  public:
     static const int uIntegerPi = 1024;
     static const int uIntegerHalfPi = 512;
+    static const int uIntegerQuarterPi = 256;
     static const int uIntegerDoublePi = 2048;
     static const int uDoublePiMask = 2047;
     static const int uPiMask = 1023;

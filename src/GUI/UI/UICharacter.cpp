@@ -602,7 +602,7 @@ GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(
 }
 
 void GUIWindow_CharacterRecord::Update() {
-    auto player = pPlayers[uActiveCharacter];
+    auto player = pPlayers[pParty->_activeCharacter];
 
     render->ClearZBuffer();
     switch (current_character_screen_window) {
@@ -617,7 +617,7 @@ void GUIWindow_CharacterRecord::Update() {
             break;
         }
         case WINDOW_CharacterWindow_Skills: {
-            if (dword_507CC0_activ_ch != uActiveCharacter) {
+            if (dword_507CC0_activ_ch != pParty->_activeCharacter) {
                 CharacterUI_ReleaseButtons();
                 CharacterUI_SkillsTab_CreateButtons();
             }
@@ -1517,7 +1517,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
 
     int buttons_count = 0;
     if (dword_507CC0_activ_ch) CharacterUI_ReleaseButtons();
-    dword_507CC0_activ_ch = uActiveCharacter;
+    dword_507CC0_activ_ch = pParty->_activeCharacter;
     for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
         if (pButton->msg == UIMSG_InventoryLeftClick) {
             dword_50698C_uX = pButton->uX;
@@ -1532,7 +1532,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
         buttons_count++;
     }
     int first_rows = 0;
-    Player *curr_player = &pParty->pPlayers[uActiveCharacter - 1];
+    Player *curr_player = &pParty->pPlayers[pParty->_activeCharacter - 1];
 
     int uCurrFontHeght = pFontLucida->GetHeight();
     int current_Y = 2 * uCurrFontHeght + 13;
@@ -1875,7 +1875,7 @@ bool awardSort(int i, int j) {
 
 //----- (00419100) --------------------------------------------------------
 void FillAwardsData() {
-    Player *pPlayer = pPlayers[uActiveCharacter];
+    Player *pPlayer = pPlayers[pParty->_activeCharacter];
 
     memset(achieved_awards.data(), 0, 4000);
     num_achieved_awards = 0;
@@ -2026,10 +2026,10 @@ void OnPaperdollLeftClick() {
     int twohandedequip = 0;
     ItemGen _this;  // [sp+Ch] [bp-40h]@1
     _this.Reset();
-    int mainhandequip = pPlayers[uActiveCharacter]->pEquipment.uMainHand;
-    unsigned int shieldequip = pPlayers[uActiveCharacter]->pEquipment.uOffHand;
+    int mainhandequip = pPlayers[pParty->_activeCharacter]->pEquipment.uMainHand;
+    unsigned int shieldequip = pPlayers[pParty->_activeCharacter]->pEquipment.uOffHand;
 
-    if (mainhandequip && pPlayers[uActiveCharacter]
+    if (mainhandequip && pPlayers[pParty->_activeCharacter]
                                  ->pInventoryItemList[mainhandequip - 1]
                                  .GetItemEquipType() == EQUIP_TWO_HANDED)
         twohandedequip = mainhandequip;
@@ -2043,8 +2043,8 @@ void OnPaperdollLeftClick() {
         if (pSkillType == PLAYER_SKILL_SPEAR) {
             if (shieldequip) {
                 // cant use spear in one hand till master
-                if (pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_SPEAR) < PLAYER_SKILL_MASTERY_MASTER) {
-                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantEquip, 0);
+                if (pPlayers[pParty->_activeCharacter]->GetActualSkillMastery(PLAYER_SKILL_SPEAR) < PLAYER_SKILL_MASTERY_MASTER) {
+                    pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_CantEquip, 0);
 
                     return;
                 }
@@ -2053,23 +2053,23 @@ void OnPaperdollLeftClick() {
             }
         } else {
             if ((pSkillType == PLAYER_SKILL_SHIELD || pSkillType == PLAYER_SKILL_SWORD || pSkillType == PLAYER_SKILL_DAGGER) && mainhandequip &&
-                pPlayers[uActiveCharacter]->pInventoryItemList[mainhandequip - 1].GetPlayerSkillType() == PLAYER_SKILL_SPEAR) {
+                pPlayers[pParty->_activeCharacter]->pInventoryItemList[mainhandequip - 1].GetPlayerSkillType() == PLAYER_SKILL_SPEAR) {
                 // cant use spear in one hand till master
-                if (pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_SPEAR) < PLAYER_SKILL_MASTERY_MASTER) {
-                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantEquip, 0);
+                if (pPlayers[pParty->_activeCharacter]->GetActualSkillMastery(PLAYER_SKILL_SPEAR) < PLAYER_SKILL_MASTERY_MASTER) {
+                    pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_CantEquip, 0);
                     return;
                 }
             }
         }
 
-        if (!pPlayers[uActiveCharacter]->CanEquip_RaceAndAlignmentCheck(pickeditem)) {  // special item checks
-            pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantEquip, 0);
+        if (!pPlayers[pParty->_activeCharacter]->CanEquip_RaceAndAlignmentCheck(pickeditem)) {  // special item checks
+            pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_CantEquip, 0);
             return;
         }
 
         if (pParty->pPickedItem.uItemID == ITEM_QUEST_WETSUIT) {  // wetsuit check is done above
-            pPlayers[uActiveCharacter]->EquipBody(EQUIP_ARMOUR);
-            WetsuitOn(uActiveCharacter);
+            pPlayers[pParty->_activeCharacter]->EquipBody(EQUIP_ARMOUR);
+            WetsuitOn(pParty->_activeCharacter);
             return;
         }
 
@@ -2083,23 +2083,23 @@ void OnPaperdollLeftClick() {
             case EQUIP_BOOTS:
             case EQUIP_AMULET:
 
-                if (!pPlayers[uActiveCharacter]->HasSkill(pSkillType)) {  // hasnt got the skill to use that
-                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantEquip, 0);
+                if (!pPlayers[pParty->_activeCharacter]->HasSkill(pSkillType)) {  // hasnt got the skill to use that
+                    pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_CantEquip, 0);
                     return;
                 }
 
-                if (pPlayers[uActiveCharacter]->HasUnderwaterSuitEquipped() &&
+                if (pPlayers[pParty->_activeCharacter]->HasUnderwaterSuitEquipped() &&
                     (pEquipType != EQUIP_ARMOUR || engine->IsUnderwater())) {  // cant put anything on wearing wetsuit
                     pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                     return;
                 }
 
-                pPlayers[uActiveCharacter]->EquipBody(
+                pPlayers[pParty->_activeCharacter]->EquipBody(
                     pEquipType);  // equips item
 
                 if (pParty->pPickedItem.uItemID ==
                     ITEM_QUEST_WETSUIT)  // just taken wetsuit off
-                    WetsuitOff(uActiveCharacter);
+                    WetsuitOff(pParty->_activeCharacter);
 
                 return;
 
@@ -2107,7 +2107,7 @@ void OnPaperdollLeftClick() {
                 // колец)----------------------------------
             case EQUIP_RING:
 
-                if (pPlayers[uActiveCharacter]
+                if (pPlayers[pParty->_activeCharacter]
                         ->HasUnderwaterSuitEquipped()) {  // cant put anything
                                                           // on wearing wetsuit
                     pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
@@ -2119,17 +2119,17 @@ void OnPaperdollLeftClick() {
                     // equippos = 0;
 
                     for (ITEM_SLOT equippos : RingSlots()) {
-                        if (!pPlayers[uActiveCharacter]->pEquipment.pIndices[equippos]) {
-                            freeslot = pPlayers[uActiveCharacter]->FindFreeInventoryListSlot();
+                        if (!pPlayers[pParty->_activeCharacter]->pEquipment.pIndices[equippos]) {
+                            freeslot = pPlayers[pParty->_activeCharacter]->FindFreeInventoryListSlot();
                             if (freeslot >= 0) {  // drop ring into free space
                                 pParty->pPickedItem.uBodyAnchor = equippos;
                                 memcpy(
-                                    &pPlayers[uActiveCharacter]
+                                    &pPlayers[pParty->_activeCharacter]
                                          ->pInventoryItemList[freeslot],
                                     &pParty->pPickedItem,
-                                    sizeof(pPlayers[uActiveCharacter]
+                                    sizeof(pPlayers[pParty->_activeCharacter]
                                                ->pInventoryItemList[freeslot]));
-                                pPlayers[uActiveCharacter]
+                                pPlayers[pParty->_activeCharacter]
                                     ->pEquipment.pIndices[equippos] = freeslot + 1;
                                 mouse->RemoveHoldingItem();
                                 return;
@@ -2139,24 +2139,24 @@ void OnPaperdollLeftClick() {
 
                     // cant fit rings so swap out
                     freeslot =
-                        pPlayers[uActiveCharacter]->pEquipment.uRings[5] -
+                        pPlayers[pParty->_activeCharacter]->pEquipment.uRings[5] -
                         1;  // slot of last ring
                     memcpy(&_this, &pParty->pPickedItem,
                            sizeof(_this));  // copy hold item to this
-                    pPlayers[uActiveCharacter]
+                    pPlayers[pParty->_activeCharacter]
                         ->pInventoryItemList[freeslot]
                         .uBodyAnchor = ITEM_SLOT_INVALID;
                     pParty->pPickedItem.Reset();  // drop holding item
                     pParty->SetHoldingItem(
-                        &pPlayers[uActiveCharacter]
+                        &pPlayers[pParty->_activeCharacter]
                              ->pInventoryItemList[freeslot]);  // set holding
                                                                // item to ring
                                                                // to swap out
                     _this.uBodyAnchor = ITEM_SLOT_RING6;
-                    memcpy(&pPlayers[uActiveCharacter]
+                    memcpy(&pPlayers[pParty->_activeCharacter]
                                 ->pInventoryItemList[freeslot],
                            &_this, 0x24u);  // swap from this in
-                    pPlayers[uActiveCharacter]->pEquipment.uRings[5] =
+                    pPlayers[pParty->_activeCharacter]->pEquipment.uRings[5] =
                         freeslot + 1;  // anchor
                     return;
 
@@ -2174,42 +2174,42 @@ void OnPaperdollLeftClick() {
 
                     if (pos != ITEM_SLOT_INVALID) {  // we have a position to aim for
                         pitem =
-                            pPlayers[uActiveCharacter]->GetNthEquippedIndexItem(pos);
+                            pPlayers[pParty->_activeCharacter]->GetNthEquippedIndexItem(pos);
                         if (!pitem) {  // no item in slot so just drop
-                            freeslot = pPlayers[uActiveCharacter]
+                            freeslot = pPlayers[pParty->_activeCharacter]
                                            ->FindFreeInventoryListSlot();
                             if (freeslot >= 0) {  // drop ring into free space
                                 pParty->pPickedItem.uBodyAnchor = pos;
                                 memcpy(
-                                    &pPlayers[uActiveCharacter]
+                                    &pPlayers[pParty->_activeCharacter]
                                          ->pInventoryItemList[freeslot],
                                     &pParty->pPickedItem,
-                                    sizeof(pPlayers[uActiveCharacter]
+                                    sizeof(pPlayers[pParty->_activeCharacter]
                                                ->pInventoryItemList[freeslot]));
-                                pPlayers[uActiveCharacter]
+                                pPlayers[pParty->_activeCharacter]
                                     ->pEquipment.pIndices[pos] = freeslot + 1;
                                 mouse->RemoveHoldingItem();
                                 return;
                             }
                         } else {  // item so swap out
-                            freeslot = pPlayers[uActiveCharacter]
+                            freeslot = pPlayers[pParty->_activeCharacter]
                                            ->pEquipment.pIndices[pos] -
                                        1;  // slot of ring selected
                             memcpy(&_this, &pParty->pPickedItem,
                                    sizeof(_this));  // copy hold item to this
-                            pPlayers[uActiveCharacter]
+                            pPlayers[pParty->_activeCharacter]
                                 ->pInventoryItemList[freeslot]
                                 .uBodyAnchor = ITEM_SLOT_INVALID;
                             pParty->pPickedItem.Reset();  // drop holding item
                             pParty->SetHoldingItem(
-                                &pPlayers[uActiveCharacter]->pInventoryItemList
+                                &pPlayers[pParty->_activeCharacter]->pInventoryItemList
                                      [freeslot]);  // set holding item to ring
                                                    // to swap out
                             _this.uBodyAnchor = pos;
-                            memcpy(&pPlayers[uActiveCharacter]
+                            memcpy(&pPlayers[pParty->_activeCharacter]
                                         ->pInventoryItemList[freeslot],
                                    &_this, 0x24u);  // swap from this in
-                            pPlayers[uActiveCharacter]->pEquipment.pIndices[pos] =
+                            pPlayers[pParty->_activeCharacter]->pEquipment.pIndices[pos] =
                                 freeslot + 1;  // anchor
                             return;
                         }
@@ -2224,170 +2224,170 @@ void OnPaperdollLeftClick() {
                 // ------------------dress shield(одеть
                 // щит)------------------------------------------------------
             case EQUIP_SHIELD:  //Щит
-                if (pPlayers[uActiveCharacter]
+                if (pPlayers[pParty->_activeCharacter]
                         ->HasUnderwaterSuitEquipped()) {  // в акваланге
                     pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                     return;
                 }
-                if (!pPlayers[uActiveCharacter]->HasSkill(pSkillType)) {  // нет навыка
-                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantEquip, 0);
+                if (!pPlayers[pParty->_activeCharacter]->HasSkill(pSkillType)) {  // нет навыка
+                    pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_CantEquip, 0);
                     return;
                 }
                 if (shieldequip) {  // смена щита щитом
                     --shieldequip;
                     memcpy(&_this, &pParty->pPickedItem, sizeof(_this));
-                    pPlayers[uActiveCharacter]
+                    pPlayers[pParty->_activeCharacter]
                         ->pInventoryItemList[shieldequip]
                         .uBodyAnchor = ITEM_SLOT_INVALID;
                     pParty->pPickedItem.Reset();
                     pParty->SetHoldingItem(
-                        &pPlayers[uActiveCharacter]
+                        &pPlayers[pParty->_activeCharacter]
                              ->pInventoryItemList[shieldequip]);
                     _this.uBodyAnchor = ITEM_SLOT_OFF_HAND;
-                    memcpy(&pPlayers[uActiveCharacter]
+                    memcpy(&pPlayers[pParty->_activeCharacter]
                                 ->pInventoryItemList[shieldequip],
                            &_this, 0x24u);
-                    pPlayers[uActiveCharacter]->pEquipment.uOffHand =
+                    pPlayers[pParty->_activeCharacter]->pEquipment.uOffHand =
                         shieldequip + 1;
                     if (twohandedequip == 0) return;
                 } else {
                     freeslot =
-                        pPlayers[uActiveCharacter]->FindFreeInventoryListSlot();
+                        pPlayers[pParty->_activeCharacter]->FindFreeInventoryListSlot();
                     if (freeslot < 0) return;
                     if (!twohandedequip) {  // обычная установка щита на пустую
                                             // руку
                         pParty->pPickedItem.uBodyAnchor = ITEM_SLOT_OFF_HAND;
                         v17 = freeslot + 1;
-                        memcpy(&pPlayers[uActiveCharacter]
+                        memcpy(&pPlayers[pParty->_activeCharacter]
                                     ->pInventoryItemList[freeslot],
                                &pParty->pPickedItem,
-                               sizeof(pPlayers[uActiveCharacter]
+                               sizeof(pPlayers[pParty->_activeCharacter]
                                           ->pInventoryItemList[freeslot]));
-                        pPlayers[uActiveCharacter]->pEquipment.uOffHand = v17;
+                        pPlayers[pParty->_activeCharacter]->pEquipment.uOffHand = v17;
                         mouse->RemoveHoldingItem();
                         return;
                     }
                     mainhandequip--;  //ставим щит когда держит двуручный меч
                     memcpy(&_this, &pParty->pPickedItem, sizeof(_this));
-                    pPlayers[uActiveCharacter]
+                    pPlayers[pParty->_activeCharacter]
                         ->pInventoryItemList[mainhandequip]
                         .uBodyAnchor = ITEM_SLOT_INVALID;
                     pParty->pPickedItem.Reset();
                     pParty->SetHoldingItem(
-                        &pPlayers[uActiveCharacter]
+                        &pPlayers[pParty->_activeCharacter]
                              ->pInventoryItemList[mainhandequip]);
                     _this.uBodyAnchor = ITEM_SLOT_OFF_HAND;
-                    memcpy(&pPlayers[uActiveCharacter]
+                    memcpy(&pPlayers[pParty->_activeCharacter]
                                 ->pInventoryItemList[freeslot],
                            &_this,
-                           sizeof(pPlayers[uActiveCharacter]
+                           sizeof(pPlayers[pParty->_activeCharacter]
                                       ->pInventoryItemList[freeslot]));
-                    pPlayers[uActiveCharacter]->pEquipment.uOffHand =
+                    pPlayers[pParty->_activeCharacter]->pEquipment.uOffHand =
                         freeslot + 1;
                 }
-                pPlayers[uActiveCharacter]->pEquipment.uMainHand = 0;
+                pPlayers[pParty->_activeCharacter]->pEquipment.uMainHand = 0;
                 return;
                 // -------------------------taken in hand(взять в
                 // руку)-------------------------------------------
             case EQUIP_SINGLE_HANDED:
             case EQUIP_WAND:
-                if (pPlayers[uActiveCharacter]->HasUnderwaterSuitEquipped() &&
+                if (pPlayers[pParty->_activeCharacter]->HasUnderwaterSuitEquipped() &&
                     pParty->pPickedItem.uItemID != ITEM_BLASTER &&
                     pParty->pPickedItem.uItemID != ITEM_BLASTER_RIFLE) {
                     pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                     return;
                 }
-                if (!pPlayers[uActiveCharacter]->HasSkill(pSkillType)) {
-                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantEquip, 0);
+                if (!pPlayers[pParty->_activeCharacter]->HasSkill(pSkillType)) {
+                    pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_CantEquip, 0);
                     return;
                 }
                 v50 = ITEM_NULL;
                 // dagger at expert or sword at master in left hand
-                if (pSkillType == PLAYER_SKILL_DAGGER && (pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_DAGGER) >= PLAYER_SKILL_MASTERY_EXPERT)
-                    || pSkillType == PLAYER_SKILL_SWORD && (pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_SWORD) >= PLAYER_SKILL_MASTERY_MASTER)) {
+                if (pSkillType == PLAYER_SKILL_DAGGER && (pPlayers[pParty->_activeCharacter]->GetActualSkillMastery(PLAYER_SKILL_DAGGER) >= PLAYER_SKILL_MASTERY_EXPERT)
+                    || pSkillType == PLAYER_SKILL_SWORD && (pPlayers[pParty->_activeCharacter]->GetActualSkillMastery(PLAYER_SKILL_SWORD) >= PLAYER_SKILL_MASTERY_MASTER)) {
                     if ((signed int)mouse->uMouseX >= 560) {
                         if (!twohandedequip) {
                             if (shieldequip) {
                                 --shieldequip;
                                 memcpy(&_this, &pParty->pPickedItem,
                                        sizeof(_this));
-                                pPlayers[uActiveCharacter]
+                                pPlayers[pParty->_activeCharacter]
                                     ->pInventoryItemList[shieldequip]
                                     .uBodyAnchor = ITEM_SLOT_INVALID;
                                 pParty->pPickedItem.Reset();
                                 pParty->SetHoldingItem(
-                                    &pPlayers[uActiveCharacter]
+                                    &pPlayers[pParty->_activeCharacter]
                                          ->pInventoryItemList[shieldequip]);
                                 _this.uBodyAnchor = ITEM_SLOT_OFF_HAND;
-                                memcpy(&pPlayers[uActiveCharacter]
+                                memcpy(&pPlayers[pParty->_activeCharacter]
                                             ->pInventoryItemList[shieldequip],
                                        &_this, 0x24u);
-                                pPlayers[uActiveCharacter]->pEquipment.uOffHand =
+                                pPlayers[pParty->_activeCharacter]->pEquipment.uOffHand =
                                     shieldequip + 1;
                                 if (pEquipType != EQUIP_WAND) return;
                                 v50 = _this.uItemID;
                                 break;
                             }
-                            v23 = pPlayers[uActiveCharacter]
+                            v23 = pPlayers[pParty->_activeCharacter]
                                       ->FindFreeInventoryListSlot();
                             if (v23 < 0) return;
                             pParty->pPickedItem.uBodyAnchor = ITEM_SLOT_OFF_HAND;
-                            memcpy(&pPlayers[uActiveCharacter]
+                            memcpy(&pPlayers[pParty->_activeCharacter]
                                         ->pInventoryItemList[v23],
                                    &pParty->pPickedItem,
-                                   sizeof(pPlayers[uActiveCharacter]
+                                   sizeof(pPlayers[pParty->_activeCharacter]
                                               ->pInventoryItemList[v23]));
-                            pPlayers[uActiveCharacter]->pEquipment.uOffHand =
+                            pPlayers[pParty->_activeCharacter]->pEquipment.uOffHand =
                                 v23 + 1;
                             mouse->RemoveHoldingItem();
                             if (pEquipType != EQUIP_WAND) return;
-                            v50 = pPlayers[uActiveCharacter]->pInventoryItemList[v23].uItemID;
+                            v50 = pPlayers[pParty->_activeCharacter]->pInventoryItemList[v23].uItemID;
                             break;
                         }
                     }
                 }
                 if (!mainhandequip) {
                     v26 =
-                        pPlayers[uActiveCharacter]->FindFreeInventoryListSlot();
+                        pPlayers[pParty->_activeCharacter]->FindFreeInventoryListSlot();
                     if (v26 < 0) return;
                     pParty->pPickedItem.uBodyAnchor = ITEM_SLOT_MAIN_HAND;
-                    memcpy(&pPlayers[uActiveCharacter]->pInventoryItemList[v26],
+                    memcpy(&pPlayers[pParty->_activeCharacter]->pInventoryItemList[v26],
                            &pParty->pPickedItem,
-                           sizeof(pPlayers[uActiveCharacter]
+                           sizeof(pPlayers[pParty->_activeCharacter]
                                       ->pInventoryItemList[v26]));
-                    pPlayers[uActiveCharacter]->pEquipment.uMainHand = v26 + 1;
+                    pPlayers[pParty->_activeCharacter]->pEquipment.uMainHand = v26 + 1;
                     mouse->RemoveHoldingItem();
                     if (pEquipType != EQUIP_WAND) return;
                     break;
                 }
                 --mainhandequip;
                 memcpy(&_this, &pParty->pPickedItem, sizeof(_this));
-                pPlayers[uActiveCharacter]
+                pPlayers[pParty->_activeCharacter]
                     ->pInventoryItemList[mainhandequip]
                     .uBodyAnchor = ITEM_SLOT_INVALID;
                 pParty->pPickedItem.Reset();
                 pParty->SetHoldingItem(
-                    &pPlayers[uActiveCharacter]
+                    &pPlayers[pParty->_activeCharacter]
                          ->pInventoryItemList[mainhandequip]);
                 _this.uBodyAnchor = ITEM_SLOT_MAIN_HAND;
-                memcpy(&pPlayers[uActiveCharacter]
+                memcpy(&pPlayers[pParty->_activeCharacter]
                             ->pInventoryItemList[mainhandequip],
                        &_this, 0x24);
-                pPlayers[uActiveCharacter]->pEquipment.uMainHand =
+                pPlayers[pParty->_activeCharacter]->pEquipment.uMainHand =
                     mainhandequip + 1;
                 if (pEquipType == EQUIP_WAND) v50 = _this.uItemID;
                 if (twohandedequip)
-                    pPlayers[uActiveCharacter]->pEquipment.uOffHand = 0;
+                    pPlayers[pParty->_activeCharacter]->pEquipment.uOffHand = 0;
                 break;
                 // ---------------------------take two hands(взять двумя
                 // руками)---------------------------------
             case EQUIP_TWO_HANDED:
-                if (pPlayers[uActiveCharacter]->HasUnderwaterSuitEquipped()) {
+                if (pPlayers[pParty->_activeCharacter]->HasUnderwaterSuitEquipped()) {
                     pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                     return;
                 }
-                if (!pPlayers[uActiveCharacter]->HasSkill(pSkillType)) {
-                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantEquip, 0);
+                if (!pPlayers[pParty->_activeCharacter]->HasSkill(pSkillType)) {
+                    pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_CantEquip, 0);
                     return;
                 }
                 if (mainhandequip) {  // взять двуручный меч когда нет
@@ -2398,51 +2398,51 @@ void OnPaperdollLeftClick() {
                     }
                     --mainhandequip;
                     memcpy(&_this, &pParty->pPickedItem, sizeof(_this));
-                    pPlayers[uActiveCharacter]
+                    pPlayers[pParty->_activeCharacter]
                         ->pInventoryItemList[mainhandequip]
                         .uBodyAnchor = ITEM_SLOT_INVALID;
                     pParty->pPickedItem.Reset();
                     pParty->SetHoldingItem(
-                        &pPlayers[uActiveCharacter]
+                        &pPlayers[pParty->_activeCharacter]
                              ->pInventoryItemList[mainhandequip]);
                     _this.uBodyAnchor = ITEM_SLOT_MAIN_HAND;
-                    memcpy(&pPlayers[uActiveCharacter]
+                    memcpy(&pPlayers[pParty->_activeCharacter]
                                 ->pInventoryItemList[mainhandequip],
                            &_this, 0x24u);
-                    pPlayers[uActiveCharacter]->pEquipment.uMainHand =
+                    pPlayers[pParty->_activeCharacter]->pEquipment.uMainHand =
                         mainhandequip + 1;
                 } else {
                     freeslot =
-                        pPlayers[uActiveCharacter]->FindFreeInventoryListSlot();
+                        pPlayers[pParty->_activeCharacter]->FindFreeInventoryListSlot();
                     if (freeslot >= 0) {
                         if (shieldequip) {  // взять двуручный меч когда есть
                                             // щит(замещение щитом)
                             shieldequip--;
                             memcpy(&_this, &pParty->pPickedItem, sizeof(_this));
-                            pPlayers[uActiveCharacter]
+                            pPlayers[pParty->_activeCharacter]
                                 ->pInventoryItemList[shieldequip]
                                 .uBodyAnchor = ITEM_SLOT_INVALID;
                             pParty->pPickedItem.Reset();
                             pParty->SetHoldingItem(
-                                &pPlayers[uActiveCharacter]
+                                &pPlayers[pParty->_activeCharacter]
                                      ->pInventoryItemList[shieldequip]);
                             _this.uBodyAnchor = ITEM_SLOT_MAIN_HAND;
-                            memcpy(&pPlayers[uActiveCharacter]
+                            memcpy(&pPlayers[pParty->_activeCharacter]
                                         ->pInventoryItemList[freeslot],
                                    &_this,
-                                   sizeof(pPlayers[uActiveCharacter]
+                                   sizeof(pPlayers[pParty->_activeCharacter]
                                               ->pInventoryItemList[freeslot]));
-                            pPlayers[uActiveCharacter]->pEquipment.uOffHand = 0;
-                            pPlayers[uActiveCharacter]->pEquipment.uMainHand =
+                            pPlayers[pParty->_activeCharacter]->pEquipment.uOffHand = 0;
+                            pPlayers[pParty->_activeCharacter]->pEquipment.uMainHand =
                                 freeslot + 1;
                         } else {
                             pParty->pPickedItem.uBodyAnchor = ITEM_SLOT_MAIN_HAND;
-                            memcpy(&pPlayers[uActiveCharacter]
+                            memcpy(&pPlayers[pParty->_activeCharacter]
                                         ->pInventoryItemList[freeslot],
                                    &pParty->pPickedItem,
-                                   sizeof(pPlayers[uActiveCharacter]
+                                   sizeof(pPlayers[pParty->_activeCharacter]
                                               ->pInventoryItemList[freeslot]));
-                            pPlayers[uActiveCharacter]->pEquipment.uMainHand =
+                            pPlayers[pParty->_activeCharacter]->pEquipment.uMainHand =
                                 freeslot + 1;
                             mouse->RemoveHoldingItem();
                         }
@@ -2451,8 +2451,8 @@ void OnPaperdollLeftClick() {
                 return;
                 //-------------------------------------------------------------------------------
             default:
-                pPlayers[uActiveCharacter]->UseItem_DrinkPotion_etc(
-                    uActiveCharacter, 0);  //выпить напиток и др.
+                pPlayers[pParty->_activeCharacter]->UseItem_DrinkPotion_etc(
+                    pParty->_activeCharacter, 0);  //выпить напиток и др.
                 return;
         }
         return;
@@ -2470,14 +2470,14 @@ void OnPaperdollLeftClick() {
         if (mousex >= amuletx && mousex <= (amuletx + slot) &&
             mousey >= amulety && mousey <= (amulety + 2 * slot)) {
             // amulet
-            // pitem = pPlayers[uActiveCharacter]->GetAmuletItem(); //9
+            // pitem = pPlayers[pParty->_activeCharacter]->GetAmuletItem(); //9
             pos = ITEM_SLOT_AMULET;
         }
 
         if (mousex >= glovex && mousex <= (glovex + slot) && mousey >= glovey &&
             mousey <= (glovey + 2 * slot)) {
             // glove
-            // pitem = pPlayers[uActiveCharacter]->GetGloveItem(); //7
+            // pitem = pPlayers[pParty->_activeCharacter]->GetGloveItem(); //7
             pos = ITEM_SLOT_GAUTNLETS;
         }
 
@@ -2485,30 +2485,30 @@ void OnPaperdollLeftClick() {
             if (mousex >= RingsX[i] && mousex <= (RingsX[i] + slot) &&
                 mousey >= RingsY[i] && mousey <= (RingsY[i] + slot)) {
                 // ring
-                // pitem = pPlayers[uActiveCharacter]->GetNthRingItem(i); //10+i
+                // pitem = pPlayers[pParty->_activeCharacter]->GetNthRingItem(i); //10+i
                 pos = RingSlot(i);
             }
         }
 
         if (pos != ITEM_SLOT_INVALID)
-            pitem = pPlayers[uActiveCharacter]->GetNthEquippedIndexItem(pos);
+            pitem = pPlayers[pParty->_activeCharacter]->GetNthEquippedIndexItem(pos);
 
         if (!pitem) return;
-        // pPlayers[uActiveCharacter]->get
+        // pPlayers[pParty->_activeCharacter]->get
 
         // enchant / recharge item
         if (IsEnchantingInProgress) {
             /* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &=
              *0x7Fu;//CastSpellInfo
              *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 2) =
-             *uActiveCharacter - 1;
+             *pParty->_activeCharacter - 1;
              *((int *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) = v36;
              *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
              *pEquipType;*/
             pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
             pSpellInfo->uFlags &= ~ON_CAST_TargetedEnchantment;
-            pSpellInfo->uPlayerID_2 = uActiveCharacter - 1;
-            pSpellInfo->spell_target_pid = pPlayers[uActiveCharacter]->pEquipment.pIndices[pos];
+            pSpellInfo->uPlayerID_2 = pParty->_activeCharacter - 1;
+            pSpellInfo->spell_target_pid = pPlayers[pParty->_activeCharacter]->pEquipment.pIndices[pos];
             pSpellInfo->field_6 = std::to_underlying(pitem->GetItemEquipType());
 
             ptr_50C9A4_ItemToEnchant = pitem;
@@ -2521,14 +2521,14 @@ void OnPaperdollLeftClick() {
         } else {
             if (!ptr_50C9A4_ItemToEnchant) {  // снять вещь
                 pParty->SetHoldingItem(pitem);
-                pPlayers[uActiveCharacter]->pEquipment.pIndices[pitem->uBodyAnchor] = 0;
+                pPlayers[pParty->_activeCharacter]->pEquipment.pIndices[pitem->uBodyAnchor] = 0;
                 pitem->Reset();
 
-                // pParty->SetHoldingItem(&pPlayers[uActiveCharacter]->pInventoryItemList[v34
+                // pParty->SetHoldingItem(&pPlayers[pParty->_activeCharacter]->pInventoryItemList[v34
                 // - 1]);
-                //  pPlayers[uActiveCharacter]->pEquipment.pIndices[pPlayers[uActiveCharacter]->pInventoryItemList[v34
+                //  pPlayers[pParty->_activeCharacter]->pEquipment.pIndices[pPlayers[pParty->_activeCharacter]->pInventoryItemList[v34
                 //  - 1].uBodyAnchor - 1] = 0;
-                //  pPlayers[uActiveCharacter]->pInventoryItemList[v34 -
+                //  pPlayers[pParty->_activeCharacter]->pInventoryItemList[v34 -
                 //  1].Reset();
 
                 // return
@@ -2559,34 +2559,34 @@ void OnPaperdollLeftClick() {
                 ->pActiveZBuffer[mouse->uMouseX + mouse->uMouseY * render->GetRenderDimensions().w] & 0xFFFF;
         if (v34) {
             // v36 = v34 - 1;
-            // v38 = &pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1];
-            pEquipType = pPlayers[uActiveCharacter]
+            // v38 = &pPlayers[pParty->_activeCharacter]->pInventoryItemList[v34 - 1];
+            pEquipType = pPlayers[pParty->_activeCharacter]
                              ->pInventoryItemList[v34 - 1]
                              .GetItemEquipType();
-            if (pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1].uItemID == ITEM_QUEST_WETSUIT) {
+            if (pPlayers[pParty->_activeCharacter]->pInventoryItemList[v34 - 1].uItemID == ITEM_QUEST_WETSUIT) {
                 if (engine->IsUnderwater()) {
                     pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                     return;
                 }
-                WetsuitOff(uActiveCharacter);
+                WetsuitOff(pParty->_activeCharacter);
             }
 
             if (IsEnchantingInProgress) {  // наложить закл на экипировку
                 /* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &=
                  *0x7Fu;//CastSpellInfo
                  *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 2) =
-                 *uActiveCharacter - 1;
+                 *pParty->_activeCharacter - 1;
                  *((int *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) = v36;
                  *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
                  *pEquipType;*/
                 pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
                 pSpellInfo->uFlags &= ~ON_CAST_TargetedEnchantment;
-                pSpellInfo->uPlayerID_2 = uActiveCharacter - 1;
+                pSpellInfo->uPlayerID_2 = pParty->_activeCharacter - 1;
                 pSpellInfo->spell_target_pid = v34 - 1;
                 pSpellInfo->field_6 = std::to_underlying(pEquipType);
 
                 ptr_50C9A4_ItemToEnchant =
-                    &pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1];
+                    &pPlayers[pParty->_activeCharacter]->pInventoryItemList[v34 - 1];
                 IsEnchantingInProgress = false;
                 pCurrentFrameMessageQueue->Flush();
                 mouse->SetCursorImage("MICON1");
@@ -2595,24 +2595,24 @@ void OnPaperdollLeftClick() {
                 AfterEnchClickEventTimeout = Timer::Second * 2;
             } else {
                 if (!ptr_50C9A4_ItemToEnchant) {  // снять вещь
-                    pParty->SetHoldingItem(&pPlayers[uActiveCharacter]
+                    pParty->SetHoldingItem(&pPlayers[pParty->_activeCharacter]
                                                 ->pInventoryItemList[v34 - 1]);
-                    pPlayers[uActiveCharacter]
-                        ->pEquipment.pIndices[pPlayers[uActiveCharacter]
+                    pPlayers[pParty->_activeCharacter]
+                        ->pEquipment.pIndices[pPlayers[pParty->_activeCharacter]
                                                   ->pInventoryItemList[v34 - 1]
                                                   .uBodyAnchor] = 0;
-                    pPlayers[uActiveCharacter]
+                    pPlayers[pParty->_activeCharacter]
                         ->pInventoryItemList[v34 - 1]
                         .Reset();
                 }
             }
         } else {  // снять лук
-            if (pPlayers[uActiveCharacter]->pEquipment.uBow) {
-                _this = pPlayers[uActiveCharacter]->pInventoryItemList
-                            [pPlayers[uActiveCharacter]->pEquipment.uBow - 1];
+            if (pPlayers[pParty->_activeCharacter]->pEquipment.uBow) {
+                _this = pPlayers[pParty->_activeCharacter]->pInventoryItemList
+                            [pPlayers[pParty->_activeCharacter]->pEquipment.uBow - 1];
                 pParty->SetHoldingItem(&_this);
                 _this.Reset();
-                pPlayers[uActiveCharacter]->pEquipment.uBow = 0;
+                pPlayers[pParty->_activeCharacter]->pEquipment.uBow = 0;
             }
         }
     }

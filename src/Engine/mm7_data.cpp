@@ -2386,7 +2386,6 @@ GUIButton *pBtn_ZoomIn;  // idb
 unsigned int uGameUIFontShadow;
 unsigned int uGameUIFontMain;
 int dword_507B00_spell_info_to_draw_in_popup;
-unsigned int uActiveCharacter;
 int dword_507BF0_is_there_popup_onscreen;
 int awards_scroll_bar_created;
 int dword_507CC0_activ_ch;

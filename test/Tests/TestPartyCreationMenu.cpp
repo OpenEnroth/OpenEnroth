@@ -471,3 +471,15 @@ GAME_TEST(Issues, Issue520) {
 //    // recovered amount should match
 //    EXPECT_EQ(remainingtime60, remainingtimemax);
 //}
+
+GAME_TEST(Issues, Issue488) {
+    // Test that Mass Distortion spell works
+    test->playTraceFromTestData("issue_488.mm7", "issue_488.json", [] { EXPECT_EQ(pActors[24].sCurrentHP, 3); });
+    EXPECT_EQ(pActors[24].sCurrentHP, 2);
+}
+
+GAME_TEST(Issues, Issue489) {
+    // Test that AOE version of Shrinking Ray spell works
+    test->playTraceFromTestData("issue_489.mm7", "issue_489.json", [] { EXPECT_FALSE(pActors[24].pActorBuffs[ACTOR_BUFF_SHRINK].Active()); });
+    EXPECT_TRUE(pActors[24].pActorBuffs[ACTOR_BUFF_SHRINK].Active());
+}
