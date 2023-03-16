@@ -103,6 +103,10 @@ static void setSpellRecovery(CastSpellInfo *pCastSpell,
         } else {
             pPlayer->SetRecoveryTime((int64_t)(debug_combat_recovery_mul * (double)recoveryTime * flt_debugrecmod3));
         }
+
+        // It's here to set character portrain emotion on spell cast.
+        // There's no actual spell speech.
+        pPlayer->PlaySound(SPEECH_CastSpell, 0);
     }
 }
 
@@ -2984,7 +2988,6 @@ void CastSpellInfoHelpers::castSpell() {
 
             pPlayer->SpendMana(uRequiredMana);
             setSpellRecovery(pCastSpell, recoveryTime);
-            pPlayer->PlaySound(SPEECH_CastSpell, 0);
             pAudioPlayer->PlaySpellSound(pCastSpell->uSpellID, PID_INVALID);
         }
 
