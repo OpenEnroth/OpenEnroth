@@ -79,18 +79,43 @@ static void spellFailed(CastSpellInfo *pCastSpell,
     pCastSpell->uSpellID = SPELL_NONE;
 }
 
+/**
+ * Set recovery time for spell casting
+ */
+static void setSpellRecovery(CastSpellInfo *pCastSpell,
+                             int recoveryTime) {
+    if (~pCastSpell->uFlags & ON_CAST_NoRecoverySpell) {
+        if (recoveryTime < 0) {
+            recoveryTime = 0;
+        }
+
+        Player *pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID];
+
+        if (pParty->bTurnBasedModeOn) {
+            // v645 = sRecoveryTime;
+            pParty->pTurnBasedPlayerRecoveryTimes[pCastSpell->uPlayerID] = recoveryTime;
+
+            pPlayer->SetRecoveryTime(recoveryTime);
+
+            if (!some_active_character) {
+                pTurnEngine->ApplyPlayerAction();
+            }
+        } else {
+            pPlayer->SetRecoveryTime((int64_t)(debug_combat_recovery_mul * (double)recoveryTime * flt_debugrecmod3));
+        }
+    }
+}
+
 void CastSpellInfoHelpers::castSpell() {
     PLAYER_SKILL_TYPE which_skill;
     SpriteObject pSpellSprite;
     AIDirection target_direction;
 
-    bool spell_sound_flag = false;
-
     static const int ONE_THIRD_PI = TrigLUT.uIntegerPi / 3;
 
     for (CastSpellInfo &spellInfo : pCastSpellInfo) {  // cycle through spell queue
         CastSpellInfo *pCastSpell = &spellInfo;
-        int uRequiredMana, sRecoveryTime;
+        int uRequiredMana, recoveryTime, failureRecoveryTime;
 
         if (pCastSpell->uSpellID == SPELL_NONE) {
             continue;  // spell item blank skip to next
@@ -173,8 +198,10 @@ void CastSpellInfoHelpers::castSpell() {
                 uRequiredMana = pSpellDatas[pCastSpell->uSpellID].mana_per_skill[std::to_underlying(spell_mastery) - 1];
             }
 
-            sRecoveryTime = pSpellDatas[pCastSpell->uSpellID].recovery_per_skill[std::to_underlying(spell_mastery) - 1];
+            recoveryTime = pSpellDatas[pCastSpell->uSpellID].recovery_per_skill[std::to_underlying(spell_mastery) - 1];
         }
+
+        failureRecoveryTime = recoveryTime * engine->config->gameplay.SpellFailureRecoveryMod.Get();
 
         if (!pCastSpell->forced_spell_skill_level) {
             if (which_skill == PLAYER_SKILL_DARK && pParty->uCurrentHour == 0 && pParty->uCurrentMinute == 0 ||
@@ -183,9 +210,8 @@ void CastSpellInfoHelpers::castSpell() {
             }
         }
 
-        if (isRegularSpell(pCastSpell->uSpellID) && pPlayer->sMana < uRequiredMana) {
-            GameUI_SetStatusBar(LSTR_NOT_ENOUGH_SPELLPOINTS);
-            pCastSpell->uSpellID = SPELL_NONE;
+        if (isRegularSpell(pCastSpell->uSpellID) && !pPlayer->CanCastSpell(uRequiredMana)) {
+            spellFailed(pCastSpell, LSTR_NOT_ENOUGH_SPELLPOINTS);
             continue;
         }
 
@@ -194,7 +220,7 @@ void CastSpellInfoHelpers::castSpell() {
                 pPlayer->SetRecoveryTime((int64_t)(debug_non_combat_recovery_mul * flt_debugrecmod3 * SPELL_FAILURE_RECOVERY_TIME_ON_CURSE));
             } else {
                 pParty->pTurnBasedPlayerRecoveryTimes[pCastSpell->uPlayerID] = SPELL_FAILURE_RECOVERY_TIME_ON_CURSE;
-                pPlayer->SetRecoveryTime(sRecoveryTime);
+                pPlayer->SetRecoveryTime(SPELL_FAILURE_RECOVERY_TIME_ON_CURSE);
                 pTurnEngine->ApplyPlayerAction();
             }
 
@@ -213,7 +239,6 @@ void CastSpellInfoHelpers::castSpell() {
                 arrows = 2;
             }
 
-            sRecoveryTime = pPlayer->GetAttackRecoveryTime(true);
             initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
             if (pPlayer->WearsItem(ITEM_ARTIFACT_ULLYSES, ITEM_SLOT_BOW)) {
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_SPELL_WATER_ICE_BOLT);
@@ -238,9 +263,8 @@ void CastSpellInfoHelpers::castSpell() {
                     ++pTurnEngine->pending_actions;
                 }
             }
+            setSpellRecovery(pCastSpell, pPlayer->GetAttackRecoveryTime(true));
         } else if (pCastSpell->uSpellID == SPELL_LASER_PROJECTILE) {
-            // TODO(Nik-RE-dev): recovery time for melee used?
-            sRecoveryTime = pPlayer->GetAttackRecoveryTime(false);
             initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
             // TODO(pskelton): was pParty->uPartyHeight / 2
             pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
@@ -262,49 +286,38 @@ void CastSpellInfoHelpers::castSpell() {
                     pParty->bTurnBasedModeOn) {
                 ++pTurnEngine->pending_actions;
             }
+            // TODO(Nik-RE-dev): recovery time for melee used?
+            setSpellRecovery(pCastSpell, pPlayer->GetAttackRecoveryTime(false));
         } else if (pCastSpell->uSpellID == SPELL_WATER_TOWN_PORTAL) {
-            if (pPlayer->CanCastSpell(uRequiredMana)) {
-                int success_chance_percent = 10 * spell_level;
-                if (spell_mastery != PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                    if (pParty->GetRedOrYellowAlert() ||
-                            grng->Random(100) >= success_chance_percent) {
-                        spellFailed(pCastSpell, LSTR_SPELL_FAILED);
-                        continue;
-                    }
+            int success_chance_percent = 10 * spell_level;
+            bool castSuccessful = true;
+            if (spell_mastery != PLAYER_SKILL_MASTERY_GRANDMASTER) {
+                if (pParty->GetRedOrYellowAlert()) {
+                    spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                    castSuccessful = false;
+                } else if (grng->Random(100) >= success_chance_percent) {
+                    spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                    // Mana was not spend before on failure.
+                    pPlayer->SpendMana(uRequiredMana);
+                    castSuccessful = false;
                 }
-                pEventTimer->Pause();
-                TownPortalCasterId = pCastSpell->uPlayerID;
-                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_OnCastTownPortal, 0, 0);
-                spell_sound_flag = true;
-            } else {
-                pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                pCastSpell->uSpellID = SPELL_NONE;
-                continue;
             }
+            pEventTimer->Pause();
+            TownPortalCasterId = pCastSpell->uPlayerID;
+            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_OnCastTownPortal, 0, 0);
+            pAudioPlayer->PlaySpellSound(pCastSpell->uSpellID, PID_INVALID);
+            setSpellRecovery(pCastSpell, recoveryTime);
         } else if (pCastSpell->uSpellID == SPELL_WATER_LLOYDS_BEACON) {
             if (pCurrentMapName == "d05.blv") {  // Arena
                 spellFailed(pCastSpell, LSTR_SPELL_FAILED);
-                continue;
-            }
-            if (pPlayer->CanCastSpell(uRequiredMana)) {
+            } else {
                 pEventTimer->Pause();
                 pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_OnCastLloydsBeacon, 0, 0);
                 CurrentLloydPlayerID = pCastSpell->uPlayerID;
                 LloydsBeaconSpellDuration = GameTime::FromDays(7 * spell_level).GetSeconds();
                 pCastSpell->uFlags |= ON_CAST_NoRecoverySpell;
-            } else {
-                pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                pCastSpell->uSpellID = SPELL_NONE;
-                continue;
             }
         } else {
-            if (!pPlayer->CanCastSpell(uRequiredMana)) {
-                // Not enough mana for current spell, check the next one
-                pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                pCastSpell->uSpellID = SPELL_NONE;
-                continue;
-            }
-
             switch (pCastSpell->uSpellID) {
                 case SPELL_FIRE_TORCH_LIGHT:
                 {
@@ -382,6 +395,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // before if spell was targeted wrong, mana was spend on spell failure
                     if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
                     int monster_id = PID_ID(spell_targeted_at);
@@ -402,6 +416,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // before if spell was targeted wrong, mana was spend on spell failure
                     if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
                     int monster_id = PID_ID(spell_targeted_at);
@@ -426,6 +441,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // before if spell was targeted wrong, mana was spend on spell failure
                     if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
                     // v730 = spell_targeted_at >> 3;
@@ -444,6 +460,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (!MonsterStats::BelongsToSupertype(pActors[monster_id].pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
+                        setSpellRecovery(pCastSpell, recoveryTime);
                         continue;
                     }
                     Actor::DamageMonsterFromParty(PID(OBJECT_Item, obj_id), monster_id, &spell_velocity);
@@ -517,6 +534,7 @@ void CastSpellInfoHelpers::castSpell() {
                             uCurrentlyLoadedLevelType == LEVEL_Outdoor &&
                             (pParty->uCurrentHour < 5 || pParty->uCurrentHour >= 21)) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
@@ -542,6 +560,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // before if spell was targeted wrong, mana was spend on spell failure
                     if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
                     int monster_id = PID_ID(spell_targeted_at);
@@ -563,6 +582,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // before if spell was targeted wrong, mana was spend on spell failure
                     if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
 
@@ -605,6 +625,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // before if spell was targeted wrong, mana was spend on spell failure
                     if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
                     int monster_id = PID_ID(spell_targeted_at);
@@ -683,6 +704,7 @@ void CastSpellInfoHelpers::castSpell() {
                         AfterEnchClickEventTimeout = Timer::Second; // was 1, increased to make message readable
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
+                        setSpellRecovery(pCastSpell, recoveryTime);
                         continue;
                     }
 
@@ -815,6 +837,7 @@ void CastSpellInfoHelpers::castSpell() {
                         // spent
                         // TODO: Vanilla bug here? See: https://www.celestialheavens.com/forum/10/7196
                         pPlayer->SpendMana(uRequiredMana);
+                        setSpellRecovery(pCastSpell, recoveryTime);
                         continue;
                     }
                     pParty->pPartyBuffs[PARTY_BUFF_HASTE].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
@@ -864,6 +887,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // before if spell was targeted wrong, mana was spend on spell failure
                     if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
                     int monster_id = PID_ID(spell_targeted_at);
@@ -880,6 +904,7 @@ void CastSpellInfoHelpers::castSpell() {
                     } else {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
+                        setSpellRecovery(pCastSpell, recoveryTime);
                         continue;
                     }
                     break;
@@ -960,6 +985,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
                         spellFailed(pCastSpell, LSTR_CANT_METEOR_SHOWER_INDOORS);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
 
@@ -1006,6 +1032,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
                         spellFailed(pCastSpell, LSTR_CANT_INFERNO_OUTDOORS);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
@@ -1110,6 +1137,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     if (pParty->IsAirborne()) {
                         spellFailed(pCastSpell, LSTR_CANT_JUMP_AIRBORNE);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
                     for (size_t i = 0; i < pParty->pPlayers.size(); i++) {
@@ -1141,6 +1169,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     if (pParty->GetRedOrYellowAlert()) {
                         spellFailed(pCastSpell, LSTR_HOSTILE_CREATURES_NEARBY);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
                     spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
@@ -1153,10 +1182,12 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
                         spellFailed(pCastSpell, LSTR_CANT_FLY_INDOORS);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
                     if (!pParty->pPlayers[pCastSpell->uPlayerID].GetMaxMana() && !engine->config->debug.AllMagic.Get()) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
                     for (size_t i = 0; i < pParty->pPlayers.size(); i++) {
@@ -1175,6 +1206,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
                         spellFailed(pCastSpell, LSTR_CANT_STARBURST_INDOORS);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
 
@@ -1305,8 +1337,9 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_WATER_WATER_WALK:
                 {
-                    if (!pParty->pPlayers[pCastSpell->uPlayerID].GetMaxMana()) {
+                    if (!pParty->pPlayers[pCastSpell->uPlayerID].GetMaxMana() && !engine->config->debug.AllMagic.Get()) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
 
@@ -1344,6 +1377,7 @@ void CastSpellInfoHelpers::castSpell() {
                         AfterEnchClickEventTimeout = Timer::Second; // was 1, increased to make message readable
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
+                        setSpellRecovery(pCastSpell, recoveryTime);
                         continue;
                     }
 
@@ -1371,6 +1405,7 @@ void CastSpellInfoHelpers::castSpell() {
                         AfterEnchClickEventTimeout = Timer::Second; // was 1, increased to make message readable
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
+                        setSpellRecovery(pCastSpell, recoveryTime);
                         continue;
                     }
 
@@ -1521,6 +1556,7 @@ void CastSpellInfoHelpers::castSpell() {
                         spellFailed(pCastSpell, item_not_broken ? LSTR_SPELL_FAILED : LSTR_ITEM_TOO_LAME);
                         pParty->pPlayers[pCastSpell->uPlayerID_2].PlaySound(SPEECH_SpellFailed, 0);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
+                        setSpellRecovery(pCastSpell, recoveryTime);
                         continue;
                     }
                     break;
@@ -1581,6 +1617,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
                     pSpellSprite.uType = SPRITE_SPELL_EARTH_DEATH_BLOSSOM;
@@ -1952,6 +1989,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // before if spell was targeted wrong, mana was spend on spell failure
                     if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
                     {
@@ -2008,6 +2046,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // before if spell was targeted wrong, mana was spend on spell failure
                     if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
 
@@ -2055,6 +2094,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // before if spell was targeted wrong, mana was spend on spell failure
                     if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
 
@@ -2062,7 +2102,10 @@ void CastSpellInfoHelpers::castSpell() {
                     int monster_id = PID_ID(spell_targeted_at);
                     // v730 = 836 * monster_id;
                     if (MonsterStats::BelongsToSupertype(pActors[monster_id].pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
-                        break;
+                        spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
+                        setSpellRecovery(pCastSpell, recoveryTime);
+                        continue;
                     }
                     if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_MIND)) {
                         pActors[monster_id].pActorBuffs[ACTOR_BUFF_BERSERK].Reset();
@@ -2162,6 +2205,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // before if spell was targeted wrong, mana was spend on spell failure
                     if (!spell_targeted_at) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
 
@@ -2389,7 +2433,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_LIGHT_DISPEL_MAGIC:
                 {
-                    sRecoveryTime -= spell_level;
+                    recoveryTime -= spell_level;
                     // ++pSpellSprite.uType;
                     pSpellSprite.uType = SPRITE_SPELL_LIGHT_DISPEL_MAGIC_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
@@ -2443,6 +2487,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     if (mon_num >= max_summoned) {
                         spellFailed(pCastSpell, LSTR_SUMMONS_LIMIT_REACHED);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
                     Spawn_Light_Elemental(pCastSpell->uPlayerID, spell_mastery, spell_duration.GetSeconds());
@@ -2481,6 +2526,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
                         spellFailed(pCastSpell, LSTR_CANT_PRISMATIC_OUTDOORS);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
                     // ++pSpellSprite.uType;
@@ -2596,6 +2642,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     if (pPlayer->uNumDivineInterventionCastsThisDay >= 3) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
                     for (Player &player : pParty->pPlayers) {
@@ -2609,7 +2656,7 @@ void CastSpellInfoHelpers::castSpell() {
                     } else {
                         pPlayer->sAgeModifier = pPlayer->sAgeModifier + 10;
                     }
-                    sRecoveryTime += -5 * spell_level;
+                    recoveryTime = 5 * spell_level;
                     ++pPlayer->uNumDivineInterventionCastsThisDay;
                     break;
                 }
@@ -2648,11 +2695,13 @@ void CastSpellInfoHelpers::castSpell() {
                     if (monster_id == -1) {
                         spellFailed(pCastSpell, LSTR_NO_VALID_SPELL_TARGET);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
+                        setSpellRecovery(pCastSpell, recoveryTime);
                         continue;
                     }
                     if (pActors[monster_id].sCurrentHP > 0 || pActors[monster_id].uAIState != Dead && pActors[monster_id].uAIState != Dying) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
+                        setSpellRecovery(pCastSpell, recoveryTime);
                         continue;
                     }
                     // ++pSpellSprite.uType;
@@ -2665,6 +2714,8 @@ void CastSpellInfoHelpers::castSpell() {
                     pSpellSprite.spell_target_pid = PID(OBJECT_Actor, monster_id);
                     pSpellSprite.Create(0, 0, 0, 0);
                     if (pActors[monster_id].pMonsterInfo.uLevel > target_monster_level) {
+                        // Spell is still considered casted successfully, only monster level
+                        // is too high to actually ressurect it.
                         break;
                     }
                     Actor::Resurrect(monster_id);
@@ -2736,6 +2787,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // before if spell was targeted wrong, mana was spend on spell failure
                     if (!spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
 
@@ -2758,11 +2810,15 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     int monster_id = PID_ID(spell_targeted_at);
                     if (!MonsterStats::BelongsToSupertype(pActors[monster_id].pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
-                        break;
+                        spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
+                        setSpellRecovery(pCastSpell, recoveryTime);
+                        continue;
                     }
                     if (!pActors[monster_id].DoesDmgTypeDoDamage(DMGT_DARK)) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
+                        setSpellRecovery(pCastSpell, recoveryTime);
                         continue;
                     }
                     pActors[monster_id].pActorBuffs[ACTOR_BUFF_BERSERK].Reset();
@@ -2795,6 +2851,7 @@ void CastSpellInfoHelpers::castSpell() {
                             achieved_awards[pCastSpell->uPlayerID_2 - 4] >= 3) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
+                        setSpellRecovery(pCastSpell, recoveryTime);
                         continue;
                     }
                     int hireling_idx = achieved_awards[pCastSpell->uPlayerID_2 - 4] - 1;
@@ -2883,6 +2940,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
                         spellFailed(pCastSpell, LSTR_CANT_ARMAGEDDON_INDOORS);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
                     int max_casts_a_day;
@@ -2894,6 +2952,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (pPlayer->uNumArmageddonCasts >= max_casts_a_day ||
                             pParty->armageddon_timer > 0) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
                     pParty->armageddon_timer = 256;
@@ -2923,33 +2982,9 @@ void CastSpellInfoHelpers::castSpell() {
                     continue;
             }
 
-            spell_sound_flag = true;
             pPlayer->SpendMana(uRequiredMana);
-        }
-
-        if (~pCastSpell->uFlags & ON_CAST_NoRecoverySpell) {
-            if (sRecoveryTime < 0) {
-                sRecoveryTime = 0;
-            }
-
-            pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID];  // reset to player who
-                                                                 // actually casts spell
-
-            if (pParty->bTurnBasedModeOn) {
-                // v645 = sRecoveryTime;
-                pParty->pTurnBasedPlayerRecoveryTimes[pCastSpell->uPlayerID] = sRecoveryTime;
-
-                pPlayer->SetRecoveryTime(sRecoveryTime);
-
-                if (!some_active_character) {
-                    pTurnEngine->ApplyPlayerAction();
-                }
-            } else {
-                pPlayer->SetRecoveryTime((int64_t)(debug_combat_recovery_mul * (double)sRecoveryTime * flt_debugrecmod3));
-            }
+            setSpellRecovery(pCastSpell, recoveryTime);
             pPlayer->PlaySound(SPEECH_CastSpell, 0);
-        }
-        if (spell_sound_flag) {
             pAudioPlayer->PlaySpellSound(pCastSpell->uSpellID, PID_INVALID);
         }
 

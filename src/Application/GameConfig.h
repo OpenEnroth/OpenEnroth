@@ -169,6 +169,10 @@ namespace Application {
                                           "Change water walk mana drain interval to 20 minutes. "
                                           "Spell description says that mana is drained every 20 minutes, but in vanilla, it was every 5 minutes."};
 
+            Float SpellFailureRecoveryMod = {this, "spell_failure_recovery_mod", 0.5f, &ValidateSpellFailureRecoveryMod,
+                                             "Recovery time modifier when spell casting ended in failure for the reason where spell cannot be cast at all in current context. "
+                                             "Context include situation where outdoor spell is casted indoor or targeted spell is casted with no characters on screen."};
+
          private:
             static int ValidateMaxFlightHeight(int max_flight_height) {
                 if (max_flight_height <= 0 || max_flight_height > 16192)
@@ -190,6 +194,9 @@ namespace Application {
             }
             static float ValidateAoeDistance(float depth) {
                 return std::clamp(depth, 64.0f, 16192.0f);
+            }
+            static float ValidateSpellFailureRecoveryMod(float mod) {
+                return std::clamp(mod, 0.0f, 1.0f);
             }
             static int ValidateFloorChecksEps(int eps) {
                 return std::clamp(eps, 0, 10);
