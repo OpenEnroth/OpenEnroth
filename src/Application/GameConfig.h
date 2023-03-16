@@ -149,6 +149,14 @@ namespace Application {
                                        "It's impossible to target monsters that are further away than this value. "
                                        "This is also the depth at which status bar tips are displayed on mouse over."};
 
+            Float AoeDamageDistance = {this, "aoe_damage_distance", 512.0f, &ValidateAoeDistance,
+                                       "Distance from point of impact of harmful AOE spell. "
+                                       "Player and monsters will suffer damage if they are close to point of impact by this value."};
+
+            Float ShrinkRayAoeDistance = {this, "shrink_ray_aoe_distance", 256.0f, &ValidateAoeDistance,
+                                          "Distance from point of impact of Shrinking Ray cast at GM mastery. "
+                                          "Monsters will be affected by this spell if they are close to point of impact by this value."};
+
             Bool ShowUndentifiedItem = {this, "show_unidentified_item", true,
                                         "Show unidentified items with a green tint in inventory. "
                                         "If not set, vanilla behavior will be used with green tint applied in shops only."};
@@ -178,6 +186,9 @@ namespace Application {
                 return std::clamp(depth, 64.0f, 16192.0f);
             }
             static float ValidateRangedAttackDepth(float depth) {
+                return std::clamp(depth, 64.0f, 16192.0f);
+            }
+            static float ValidateAoeDistance(float depth) {
                 return std::clamp(depth, 64.0f, 16192.0f);
             }
             static int ValidateFloorChecksEps(int eps) {

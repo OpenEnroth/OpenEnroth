@@ -7,7 +7,6 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/stru123.h"
 #include "Engine/stru160.h"
-#include "Engine/stru298.h"
 #include "Engine/stru367.h"
 #include "MapInfo.h"
 #include "OurMath.h"
@@ -16,7 +15,6 @@ MapStats *pMapStats;
 Viewport *pViewport = new Viewport;
 ViewingParams *viewparams = new ViewingParams;
 stru123 stru_5E4C90_MapPersistVars;
-stru298 AttackerInfo;
 std::array<Autonote, 196> pAutonoteTxt;
 std::array<Award, 105> pAwards;
 std::array<AwardType, 1000> achieved_awards;

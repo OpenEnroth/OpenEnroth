@@ -36,7 +36,7 @@
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/PlayerFrameTable.h"
 #include "Engine/Time.h"
-#include "Engine/stru298.h"
+#include "Engine/AttackList.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
@@ -748,7 +748,7 @@ void UpdateUserInput_and_MapSpecificStuff() {
     else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
         ODM_UpdateUserInputAndOther();
 
-    area_of_effect__damage_evaluate();
+    evaluateAoeDamage();
 }
 
 //----- (004646F0) --------------------------------------------------------
@@ -789,7 +789,7 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     uLevelMapStatsID = v5;
 
     // TODO(captainurist): need to zero this one out when loading a save, but is this a proper place to do that?
-    AttackerInfo.count = 0;
+    attackList.clear();
 
     engine->SetUnderwater(Is_out15odm_underwater());
 

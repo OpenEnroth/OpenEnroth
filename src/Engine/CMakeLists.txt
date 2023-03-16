@@ -15,7 +15,7 @@ set(ENGINE_SOURCES AssetsManager.cpp
                    Party.cpp
                    SaveLoad.cpp
                    SpellFxRenderer.cpp
-                   stru298.cpp
+                   AttackList.cpp
                    Time.cpp
                    IocContainer.cpp
                    EngineFactory.cpp)
@@ -42,7 +42,7 @@ set(ENGINE_HEADERS AssetsManager.h
                    stru123.h
                    stru159.h
                    stru160.h
-                   stru298.h
+                   AttackList.h
                    stru314.h
                    stru367.h
                    Time.h

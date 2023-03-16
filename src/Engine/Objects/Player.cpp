@@ -21,7 +21,7 @@
 #include "Engine/Party.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/stru123.h"
-#include "Engine/stru298.h"
+#include "Engine/AttackList.h"
 #include "Engine/Tables/PlayerFrameTable.h"
 #include "Engine/Tables/StorylineTextTable.h"
 #include "Engine/TurnEngine/TurnEngine.h"
@@ -7718,15 +7718,16 @@ void Player::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4,
     a1a.uFacing = 0;
     a1a.uSoundID = 0;
 
-    if (actchar >= 1 || actchar <= 4)
+    if (actchar >= 1 || actchar <= 4) {
         a1a.spell_caster_pid = PID(OBJECT_Player, actchar - 1);
-    else
+    } else {
         a1a.spell_caster_pid = 0;
+    }
 
     int id = a1a.Create(0, 0, 0, 0);
-    if (id != -1)
-        AttackerInfo.Add(PID(OBJECT_Item, id), a5, (short)a1a.vPosition.x,
-                         (short)a1a.vPosition.y, (short)a1a.vPosition.z, ABILITY_ATTACK1, 0);
+    if (id != -1) {
+        pushAoeAttack(PID(OBJECT_Item, id), a5, a1a.vPosition, ABILITY_ATTACK1);
+    }
 }
 
 PLAYER_SKILL_LEVEL Player::GetSkillLevel(PLAYER_SKILL_TYPE skill) {
