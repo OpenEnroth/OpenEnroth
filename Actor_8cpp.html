@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b4e2673</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e25bb34</span>
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="LegacyImages_8h.html">Engine/Serialization/LegacyImages.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SpellFxRenderer_8h.html">Engine/SpellFxRenderer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CastSpellInfo_8h.html">Engine/Spells/CastSpellInfo.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="AttackList_8h.html">Engine/AttackList.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="stru298_8h.html">Engine/stru298.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="FactionTable_8h.html">Engine/Tables/FactionTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Time_8h.html">Engine/Time.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TurnEngine_8h.html">Engine/TurnEngine/TurnEngine.h</a>&quot;</code><br />
@@ -144,8 +144,8 @@ Functions</h2></td></tr>
 <tr class="separator:a722b2ecccd947cc76c8a7fa1151bd41d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1fc426036d1f21ce2be74ada5511f840"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Actor_8cpp.html#a1fc426036d1f21ce2be74ada5511f840">SpawnEncounter</a> (<a class="el" href="structMapInfo.html">MapInfo</a> *pMapInfo, <a class="el" href="structSpawnPoint.html">SpawnPoint</a> *spawn, int a3, int a4, int a5)</td></tr>
 <tr class="separator:a1fc426036d1f21ce2be74ada5511f840"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a522877adf494c0d2e73b4c4c0f100028"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Actor_8cpp.html#a522877adf494c0d2e73b4c4c0f100028">evaluateAoeDamage</a> ()</td></tr>
-<tr class="separator:a522877adf494c0d2e73b4c4c0f100028"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9d9c1bc5e3c38f0827c69299622b850"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Actor_8cpp.html#aa9d9c1bc5e3c38f0827c69299622b850">area_of_effect__damage_evaluate</a> ()</td></tr>
+<tr class="separator:aa9d9c1bc5e3c38f0827c69299622b850"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56a1c5009cf33ef6363ecf94804686c4"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Actor_8cpp.html#a56a1c5009cf33ef6363ecf94804686c4">sub_43AE12</a> (signed int a1)</td></tr>
 <tr class="separator:a56a1c5009cf33ef6363ecf94804686c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a812345669ace3abe38c75ec103db7ab5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Actor_8cpp.html#a812345669ace3abe38c75ec103db7ab5">ItemDamageFromActor</a> (unsigned int uObjID, unsigned int uActorID, <a class="el" href="Vec_8h.html#adf6e1d7d066bb09da957cc89f2b3ceb2">Vec3i</a> *pVelocity)</td></tr>
@@ -208,6 +208,23 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="aa9d9c1bc5e3c38f0827c69299622b850" name="aa9d9c1bc5e3c38f0827c69299622b850"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9d9c1bc5e3c38f0827c69299622b850">&#9670;&#160;</a></span>area_of_effect__damage_evaluate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void area_of_effect__damage_evaluate </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a82db211ce9edf640d79405a96c1a191f" name="a82db211ce9edf640d79405a96c1a191f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a82db211ce9edf640d79405a96c1a191f">&#9670;&#160;</a></span>CheckActors_proximity()</h2>
 
@@ -250,24 +267,6 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="a522877adf494c0d2e73b4c4c0f100028" name="a522877adf494c0d2e73b4c4c0f100028"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a522877adf494c0d2e73b4c4c0f100028">&#9670;&#160;</a></span>evaluateAoeDamage()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void evaluateAoeDamage </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<dl class="section user"><dt>Original binary offset:</dt><dd>0x438F8F </dd></dl>
 
 </div>
 </div>
