@@ -348,8 +348,8 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     pitch = 0;
                 } else {
                     v31 = (int64_t)sqrt((float)(v119 + v120));
-                    v32 = TrigLUT.Atan2(spellnumb, (int)v28);
-                    pitch = TrigLUT.Atan2(v31, (int)spellnumc);
+                    v32 = TrigLUT.atan2(spellnumb, (int) v28);
+                    pitch = TrigLUT.atan2(v31, (int) spellnumc);
                 }
                 a1.containing_item.Reset();
                 a1.uType = SpellSpriteMapping[uSpellID];
@@ -933,7 +933,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                     pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
                 v37.x = pParty->vPosition.x;
                 v37.y = pParty->vPosition.y;
-                Vec3i::Rotate(24, v18, 0, v37, &outx, &outy, &outz);
+                Vec3i::rotate(24, v18, 0, v37, &outx, &outy, &outz);
                 break;
             }
             if (v4 == 3) {
@@ -942,7 +942,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                     pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
                 v37.x = pParty->vPosition.x;
                 v37.y = pParty->vPosition.y;
-                Vec3i::Rotate(8, v18, 0, v37, &outx, &outy, &outz);
+                Vec3i::rotate(8, v18, 0, v37, &outx, &outy, &outz);
                 break;
             }
             if (v4 == 2) {
@@ -951,7 +951,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                 v18 = TrigLUT.uIntegerHalfPi + pParty->sRotationZ;
                 v37.x = pParty->vPosition.x;
                 v37.y = pParty->vPosition.y;
-                Vec3i::Rotate(8, v18, 0, v37, &outx, &outy, &outz);
+                Vec3i::rotate(8, v18, 0, v37, &outx, &outy, &outz);
                 break;
             }
             if (v4 == 1) {
@@ -960,7 +960,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                 v18 = TrigLUT.uIntegerHalfPi + pParty->sRotationZ;
                 v37.x = pParty->vPosition.x;
                 v37.y = pParty->vPosition.y;
-                Vec3i::Rotate(24, v18, 0, v37, &outx, &outy, &outz);
+                Vec3i::rotate(24, v18, 0, v37, &outx, &outy, &outz);
                 break;
             }
         }
@@ -1060,10 +1060,8 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
         pOut->vDirection.z = (int32_t)(1.0 / v33 * a4a * 65536.0);
         pOut->uDistance = (uint)v33;
         pOut->uDistanceXZ = (uint)sqrt(outy2 + outx2);
-        pOut->uYawAngle =
-            TrigLUT.Atan2(v31, v32);
-        pOut->uPitchAngle =
-            TrigLUT.Atan2(pOut->uDistanceXZ, a4a);
+        pOut->uYawAngle = TrigLUT.atan2(v31, v32);
+        pOut->uPitchAngle = TrigLUT.atan2(pOut->uDistanceXZ, a4a);
     }
 }
 
@@ -1729,7 +1727,7 @@ void Actor::AI_RandomMove(unsigned int uActor_id, unsigned int uTarget_id,
         return;
     }
     absx += (grng->Random(0x10) * radius) / 16;
-    v9 = (TrigLUT.uIntegerDoublePi - 1) & TrigLUT.Atan2(x, y);
+    v9 = (TrigLUT.uIntegerDoublePi - 1) & TrigLUT.atan2(x, y);
     if (grng->Random(100) < 25) {
         Actor::StandAwhile(uActor_id);
         return;
@@ -1869,8 +1867,7 @@ void Actor::AI_Bored(unsigned int uActorID, unsigned int uObjID,
         8 * pSpriteFrameTable->pSpriteSFrames[actor->pSpriteIDs[ANIM_Bored]]
                 .uAnimLength;
 
-    v7 = TrigLUT.Atan2(actor->vPosition.x - pCamera3D->vCameraPos.x,
-                            actor->vPosition.y - pCamera3D->vCameraPos.y);
+    v7 = TrigLUT.atan2(actor->vPosition.x - pCamera3D->vCameraPos.x, actor->vPosition.y - pCamera3D->vCameraPos.y);
     v9 = TrigLUT.uIntegerPi + actor->uYawAngle +
          ((signed int)TrigLUT.uIntegerPi >> 3) - v7;
 
@@ -2047,9 +2044,8 @@ void Actor::AI_Pursue1(unsigned int uActorID, unsigned int a2, signed int arg0,
     else
         v18 = 16;
 
-    v7->uYawAngle = TrigLUT.Atan2(
-        pParty->vPosition.x + TrigLUT.Cos(v18 + TrigLUT.uIntegerPi + v10->uYawAngle) * v10->uDistanceXZ - v7->vPosition.x,
-        pParty->vPosition.y + TrigLUT.Sin(v18 + TrigLUT.uIntegerPi + v10->uYawAngle) * v10->uDistanceXZ - v7->vPosition.y);
+    v7->uYawAngle = TrigLUT.atan2(pParty->vPosition.x + TrigLUT.cos(v18 + TrigLUT.uIntegerPi + v10->uYawAngle) * v10->uDistanceXZ - v7->vPosition.x,
+                                  pParty->vPosition.y + TrigLUT.sin(v18 + TrigLUT.uIntegerPi + v10->uYawAngle) * v10->uDistanceXZ - v7->vPosition.y);
     if (uActionLength)
         v7->uCurrentActionLength = uActionLength;
     else
@@ -2592,8 +2588,8 @@ void Actor::SummonMinion(int summonerId) {
     }
     v27 = uCurrentlyLoadedLevelType == LEVEL_Outdoor ? 128 : 64;
     v13 = grng->Random(2048);
-    v15 = TrigLUT.Cos(v13) * v27 + this->vPosition.x;
-    v17 = TrigLUT.Sin(v13) * v27 + this->vPosition.y;
+    v15 = TrigLUT.cos(v13) * v27 + this->vPosition.x;
+    v17 = TrigLUT.sin(v13) * v27 + this->vPosition.y;
 
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         result = pIndoor->GetSector(v15, v17, this->vPosition.z);
@@ -4613,7 +4609,7 @@ bool SpawnActor(unsigned int uMonsterID) {
         v1 = 0;
 
     Vec3i pOut;
-    Vec3i::Rotate(200, pParty->sRotationZ, 0, pParty->vPosition, &pOut.x, &pOut.y, &pOut.z);
+    Vec3i::rotate(200, pParty->sRotationZ, 0, pParty->vPosition, &pOut.x, &pOut.y, &pOut.z);
 
     actor->pActorName = pMonsterStats->pInfos[v1 + 1].pName;
     actor->sCurrentHP = pMonsterStats->pInfos[v1 + 1].uHP;
@@ -4673,8 +4669,8 @@ void Spawn_Light_Elemental(int spell_power, PLAYER_SKILL_MASTERY caster_skill_ma
     actor->pMonsterInfo.uTreasureType = 0;
     actor->pMonsterInfo.uExp = 0;
     actor->uMovementSpeed = pMonsterList->pMonsters[uMonsterID].uMovementSpeed;
-    actor->vInitialPosition.x = pParty->vPosition.x + TrigLUT.Cos(angle) * radius;
-    actor->vInitialPosition.y = pParty->vPosition.y + TrigLUT.Sin(angle) * radius;
+    actor->vInitialPosition.x = pParty->vPosition.x + TrigLUT.cos(angle) * radius;
+    actor->vInitialPosition.y = pParty->vPosition.y + TrigLUT.sin(angle) * radius;
     actor->vInitialPosition.z = pParty->vPosition.z;
     actor->vPosition = actor->vInitialPosition;
     actor->uTetherDistance = 256;
@@ -4937,9 +4933,9 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
         pMonster->PrepareSprites(0);
         pMonster->pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
         v32 = grng->Random(2048);
-        a3 = TrigLUT.Cos(v32) * v52;
+        a3 = TrigLUT.cos(v32) * v52;
         pPosX = a3 + spawn->vPosition.x;
-        a3 = TrigLUT.Sin(v32) * v52;
+        a3 = TrigLUT.sin(v32) * v52;
         a4 = a3 + spawn->vPosition.y;
         a3 = spawn->vPosition.z;
         if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
@@ -4992,7 +4988,7 @@ void evaluateAoeDamage() {
 
             if (targetType != OBJECT_Actor) {
                 if (targetType == OBJECT_Player) {  // party damage from monsters
-                    int distanceSq = (pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 2) - attack.pos).LengthSqr();
+                    int distanceSq = (pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 2) - attack.pos).lengthSqr();
                     int attackRangeSq = (attack.attackRange + 32) * (attack.attackRange + 32);
 
                     // check range
@@ -5006,7 +5002,7 @@ void evaluateAoeDamage() {
             } else {  // Actor (peasant) damage from monsters
                 if (actor->pActorBuffs[ACTOR_BUFF_PARALYZED].Active() || actor->CanAct()) {
                     Vec3i distanceVec = actor->vPosition + Vec3i(0, 0, actor->uActorHeight / 2) - attack.pos;
-                    int distanceSq = distanceVec.LengthSqr();
+                    int distanceSq = distanceVec.lengthSqr();
                     int attackRange = attack.attackRange + actor->uActorRadius;
                     int attackRangeSq = attackRange * attackRange;
                     attackVector = Vec3i(distanceVec.x, distanceVec.y, actor->vPosition.z);
@@ -5022,7 +5018,7 @@ void evaluateAoeDamage() {
                 }
             }
         } else {  // damage from AOE spells
-            int distanceSq = (pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 2) - attack.pos).LengthSqr();
+            int distanceSq = (pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 2) - attack.pos).lengthSqr();
             int attackRangeSq = (attack.attackRange + 32) * (attack.attackRange + 32);
 
             // check spell in range of party
@@ -5040,7 +5036,7 @@ void evaluateAoeDamage() {
             for (int actorID = 0; actorID < pActors.size(); ++actorID) {
                 if (pActors[actorID].CanAct()) {
                     Vec3i distanceVec = pActors[actorID].vPosition + Vec3i(0, 0, pActors[actorID].uActorHeight / 2) - attack.pos;
-                    int distanceSq = distanceVec.LengthSqr();
+                    int distanceSq = distanceVec.lengthSqr();
                     int attackRange = attack.attackRange + pActors[actorID].uActorRadius;
                     int attackRangeSq = attackRange * attackRange;
                     // TODO: using absolute Z here is BS, it's used as speed in ItemDamageFromActor

@@ -1091,19 +1091,19 @@ void check_event_triggers() {
         const LevelDecoration &decoration = pLevelDecorations[event_triggers[i]];
 
         if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_TOUCH)
-            if ((decoration.vPosition - pParty->vPosition).Length() < decoration.uTriggerRange)
+            if ((decoration.vPosition - pParty->vPosition).length() < decoration.uTriggerRange)
                 EventProcessor(decoration.uEventID, PID(OBJECT_Decoration, i), 1);
 
         if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_MONSTER) {
             for (size_t j = 0; j < pActors.size(); j++) {
-                if ((decoration.vPosition - pActors[j].vPosition).Length() < decoration.uTriggerRange)
+                if ((decoration.vPosition - pActors[j].vPosition).length() < decoration.uTriggerRange)
                     EventProcessor(decoration.uEventID, 0, 1);
             }
         }
 
         if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_OBJECT) {
             for (size_t j = 0; j < pSpriteObjects.size(); j++) {
-                if ((decoration.vPosition - pSpriteObjects[j].vPosition).Length() < decoration.uTriggerRange)
+                if ((decoration.vPosition - pSpriteObjects[j].vPosition).length() < decoration.uTriggerRange)
                     EventProcessor(decoration.uEventID, 0, 1);
             }
         }

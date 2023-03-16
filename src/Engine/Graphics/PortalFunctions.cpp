@@ -168,7 +168,7 @@ bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
             a1.x = -pFace->pFacePlane.vNormal.y;  // направление полигона
             a1.y = pFace->pFacePlane.vNormal.x;
             a1.z = 0.0f;
-            a1.Normalize();
+            a1.normalize();
 
             var_28 = 0;
             var_24 = 1;
@@ -405,7 +405,7 @@ bool stru10::CalcPortalFrustumPlane(RenderVertexSoft *pFaceBounding1,
                                     Vec3f *pRayStart,
                                     IndoorCameraD3D_Vec4 *pPortalDataFrustum) {
     Vec3f ray_dir = pFaceBounding1->vWorldPosition - *pRayStart; // get ray for cmera to bounding1
-    Vec3f pRay2 = Cross(ray_dir, pFaceBounding2->vWorldPosition - pFaceBounding1->vWorldPosition);
+    Vec3f pRay2 = cross(ray_dir, pFaceBounding2->vWorldPosition - pFaceBounding1->vWorldPosition);
 
     float sqr_mag = pRay2.x * pRay2.x + pRay2.y * pRay2.y + pRay2.z * pRay2.z;
     if (fabsf(sqr_mag) > 1e-6f) {
@@ -413,7 +413,7 @@ bool stru10::CalcPortalFrustumPlane(RenderVertexSoft *pFaceBounding1,
         pRay2.x *= inv_mag;
         pRay2.y *= inv_mag;
         pRay2.z *= inv_mag;
-        pRay2.Normalize();
+        pRay2.normalize();
 
         pPortalDataFrustum->x = pRay2.x;
         pPortalDataFrustum->y = pRay2.y;

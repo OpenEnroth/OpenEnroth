@@ -2601,9 +2601,7 @@ void OnPaperdollLeftClick() {
                         ->pEquipment.pIndices[pPlayers[pParty->_activeCharacter]
                                                   ->pInventoryItemList[v34 - 1]
                                                   .uBodyAnchor] = 0;
-                    pPlayers[pParty->_activeCharacter]
-                        ->pInventoryItemList[v34 - 1]
-                        .Reset();
+                    pPlayers[pParty->_activeCharacter]->pInventoryItemList[v34 - 1].Reset();
                 }
             }
         } else {  // снять лук

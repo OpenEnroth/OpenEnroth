@@ -132,7 +132,7 @@ bool Camera3D::GetFacetOrientation(PolygonType polyType, Vec3f *a2,
                 a4->x = -a2->y;
                 a4->y = a2->x;
                 a4->z = 0.0;
-                a4->Normalize();
+                a4->normalize();
 
                 a3->x = 0.0;
                 a3->y = 0.0;

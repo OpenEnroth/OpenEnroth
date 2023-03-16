@@ -9,19 +9,19 @@ StringOutputStream::StringOutputStream(std::string *target) : target_(target) {
 
 StringOutputStream::~StringOutputStream() {}
 
-void StringOutputStream::Write(const void *data, size_t size) {
+void StringOutputStream::write(const void *data, size_t size) {
     assert(target_);
 
     target_->resize(target_->size() + size);
     memcpy(target_->data() + target_->size() - size, data, size);
 }
 
-void StringOutputStream::Flush() {
+void StringOutputStream::flush() {
     assert(target_);
 
     // Nothing else to do here.
 }
 
-void StringOutputStream::Close() {
+void StringOutputStream::close() {
     target_ = nullptr;
 }

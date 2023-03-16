@@ -2064,8 +2064,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             v39.y = pParty->vPosition.y;
 
             int rot_x, rot_y, rot_z;
-            Vec3i::Rotate(64, pParty->sRotationZ, pParty->sRotationY, v39,
-                              &rot_x, &rot_y, &rot_z);
+            Vec3i::rotate(64, pParty->sRotationZ, pParty->sRotationY, v39, &rot_x, &rot_y, &rot_z);
             SpriteObject::Drop_Item_At(
                 SPRITE_SPELL_FIRE_FIREBALL_IMPACT, rot_x, rot_y, rot_z, 0, 1, 0,
                 0, 0);

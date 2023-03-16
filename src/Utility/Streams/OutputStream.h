@@ -21,14 +21,14 @@ class OutputStream {
      * @param size                      Data size.
      * @throws Exception                On error.
      */
-    virtual void Write(const void *data, size_t size) = 0;
+    virtual void write(const void *data, size_t size) = 0;
 
     /**
      * Flushes this output stream if it provides any kind of buffering.
      *
      * @throws Exception                On error.
      */
-    virtual void Flush() = 0;
+    virtual void flush() = 0;
 
     /**
      * Closes this output stream. Writing into or flushing a closed stream will result in undefined behavior.
@@ -37,5 +37,5 @@ class OutputStream {
      *
      * @throws Exception                On error.
      */
-    virtual void Close() = 0;
+    virtual void close() = 0;
 };

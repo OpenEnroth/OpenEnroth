@@ -418,8 +418,7 @@ void SpellFxRenderer::_4A7948_mind_blast_after_effect(SpriteObject *a1) {
 //----- (004A7A27) --------------------------------------------------------
 bool SpellFxRenderer::AddMobileLight(SpriteObject *a1, unsigned int uDiffuse,
                                      int uRadius) {
-    return pMobileLightsStack->AddLight(
-        a1->vPosition.ToFloat(), a1->uSectorID,
+    return pMobileLightsStack->AddLight(a1->vPosition.toFloat(), a1->uSectorID,
         uRadius, uDiffuse & 0x000000FF, (uDiffuse & 0x0000FF00) >> 8,
         (uDiffuse & 0x00FF0000) >> 16, _4E94D3_light_type);
 }

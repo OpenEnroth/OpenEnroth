@@ -21,7 +21,7 @@ class Serializer {
     }
 
     void WriteBytes(const void *src, size_t size) {
-        outputStream_->Write(src, size);
+        outputStream_->write(src, size);
     }
 
     template<class T>
@@ -88,6 +88,6 @@ class FileSerializer : private Embedded<FileOutputStream>, public Serializer {
     {}
 
     void Close() {
-        StreamBase::get().Close();
+        StreamBase::get().close();
     }
 };

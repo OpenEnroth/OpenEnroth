@@ -117,7 +117,7 @@ void Application::AutoInitDataPath(Platform *platform) {
 #endif
 
     if (validateDataPath(mm7dir)) {
-        SetDataPath(mm7dir);
+        setDataPath(mm7dir);
 
         std::string savesPath = MakeDataPath("saves");
         if (!std::filesystem::exists(savesPath)) {

@@ -67,16 +67,16 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
         case 0:
             break;  // do nothing
         case 1:
-            Vec3i::Rotate((24/*<<16*/), 2048 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
+            Vec3i::rotate((24/*<<16*/), 2048 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
             break;
         case 2:
-            Vec3i::Rotate((8/*<<16*/), 2048 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
+            Vec3i::rotate((8/*<<16*/), 2048 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
             break;
         case 3:
-            Vec3i::Rotate((8/*<<16*/), 1024 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
+            Vec3i::rotate((8/*<<16*/), 1024 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
             break;
         case 4:
-            Vec3i::Rotate((24/*<<16*/), 1024 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
+            Vec3i::rotate((24/*<<16*/), 1024 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
             break;
         default:
             assert(false);
@@ -91,9 +91,9 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
 
     // calcualte angle velocity - could use rotate func here as above
     if (speed) {
-        vVelocity.x = TrigLUT.Cos(yaw) * TrigLUT.Cos(pitch) * speed;
-        vVelocity.y = TrigLUT.Sin(yaw) * TrigLUT.Cos(pitch) * speed;
-        vVelocity.z = TrigLUT.Sin(pitch) * speed;
+        vVelocity.x = TrigLUT.cos(yaw) * TrigLUT.cos(pitch) * speed;
+        vVelocity.y = TrigLUT.sin(yaw) * TrigLUT.cos(pitch) * speed;
+        vVelocity.z = TrigLUT.sin(pitch) * speed;
     }
 
     // copy sprite object into slot
@@ -299,8 +299,7 @@ LABEL_13:
             }
             v26 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
             v49 = false;
-            v27 = ODM_GetFloorLevel(
-                collision_state.new_position_lo.ToInt() - Vec3i(0, 0, collision_state.radius_lo + 1),
+            v27 = ODM_GetFloorLevel(collision_state.new_position_lo.toInt() - Vec3i(0, 0, collision_state.radius_lo + 1),
                 object->uHeight, &v49, &v50, 0);
             if (on_water && v26 < v27 + 60) {
                 if (v50)
@@ -422,11 +421,10 @@ LABEL_13:
         }
         v57 = integer_sqrt(pSpriteObjects[uLayingItemID].vVelocity.x * pSpriteObjects[uLayingItemID].vVelocity.x +
                            pSpriteObjects[uLayingItemID].vVelocity.y * pSpriteObjects[uLayingItemID].vVelocity.y);
-        v38 = TrigLUT.Atan2(
-            pSpriteObjects[uLayingItemID].vPosition.x - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.x,
-            pSpriteObjects[uLayingItemID].vPosition.y - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.y);
-        pSpriteObjects[uLayingItemID].vVelocity.x = TrigLUT.Cos(v38) * v57;
-        pSpriteObjects[uLayingItemID].vVelocity.y = TrigLUT.Sin(v38 - TrigLUT.uIntegerHalfPi) * v57;
+        v38 = TrigLUT.atan2(pSpriteObjects[uLayingItemID].vPosition.x - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.x,
+                            pSpriteObjects[uLayingItemID].vPosition.y - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.y);
+        pSpriteObjects[uLayingItemID].vVelocity.x = TrigLUT.cos(v38) * v57;
+        pSpriteObjects[uLayingItemID].vVelocity.y = TrigLUT.sin(v38 - TrigLUT.uIntegerHalfPi) * v57;
         //goto LABEL_74; // This goto results in an infinite loop, commented out.
     }
 }
@@ -587,13 +585,10 @@ LABEL_25:
                 v40 = integer_sqrt(
                     pSpriteObject->vVelocity.x * pSpriteObject->vVelocity.x +
                     pSpriteObject->vVelocity.y * pSpriteObject->vVelocity.y);
-                v23 =
-                    TrigLUT.Atan2(pSpriteObject->vPosition.x -
-                                           pLevelDecorations[v15].vPosition.x,
-                                       pSpriteObject->vPosition.y -
-                                           pLevelDecorations[v15].vPosition.y);
-                pSpriteObject->vVelocity.x = TrigLUT.Cos(v23) * v40;
-                pSpriteObject->vVelocity.y = TrigLUT.Sin(v23) * v40;
+                v23 = TrigLUT.atan2(pSpriteObject->vPosition.x - pLevelDecorations[v15].vPosition.x,
+                                    pSpriteObject->vPosition.y - pLevelDecorations[v15].vPosition.y);
+                pSpriteObject->vVelocity.x = TrigLUT.cos(v23) * v40;
+                pSpriteObject->vVelocity.y = TrigLUT.sin(v23) * v40;
             }
             if (PID_TYPE(collision_state.pid) == OBJECT_Face) {
                 collision_state.ignored_face_id = PID_ID(collision_state.pid);
@@ -877,7 +872,7 @@ bool SpriteObject::applyShrinkRayAoe() {
     for (Actor &actor : pActors) {
         // TODO(Nik-RE-dev): paralyzed actor will not be affected?
         if (actor.CanAct()) {
-            int distanceSq = (actor.vPosition - this->vPosition + Vec3i(0, 0, actor.uActorHeight / 2)).LengthSqr();
+            int distanceSq = (actor.vPosition - this->vPosition + Vec3i(0, 0, actor.uActorHeight / 2)).lengthSqr();
             int checkDistanceSq = (effectDistance + actor.uActorRadius) * (effectDistance + actor.uActorRadius);
 
             if (distanceSq <= checkDistanceSq) {

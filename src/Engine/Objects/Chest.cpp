@@ -109,9 +109,8 @@ bool Chest::Open(int uChestID) {
                 *(float*)&sRotY = 0.0;
             } else {
                 sRotY = (int64_t)sqrt(dir_x * dir_x + dir_y * dir_y);
-                sRotX = TrigLUT.Atan2((int64_t)dir_x, (int64_t)dir_y);
-                sRotY =
-                    TrigLUT.Atan2(dir_y * dir_y, (int64_t)dir_z);
+                sRotX = TrigLUT.atan2((int64_t) dir_x, (int64_t) dir_y);
+                sRotY = TrigLUT.atan2(dir_y * dir_y, (int64_t) dir_z);
             }
             pDepth = 256;
             if (length_vector < 256.0)
@@ -119,8 +118,7 @@ bool Chest::Open(int uChestID) {
             v.x = pObjectX;
             v.y = pObjectY;
             v.z = pObjectZ;
-            Vec3i::Rotate(pDepth, sRotX, sRotY, v, &pOut.x, &pOut.z,
-                              &pOut.y);
+            Vec3i::rotate(pDepth, sRotX, sRotY, v, &pOut.x, &pOut.z, &pOut.y);
             SpriteObject::Drop_Item_At(
                 pSpriteID[pRandom], pOut.x, pOut.z, pOut.y, 0, 1, 0,
                 SPRITE_IGNORE_RANGE | SPRITE_NO_Z_BUFFER, 0);

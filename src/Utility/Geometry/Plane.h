@@ -14,38 +14,38 @@ struct Planei {
      *                                  means that `point` is in the half-space that the normal is pointing to,
      *                                  and this usually is "outside" the model that the face belongs to.
      */
-    int SignedDistanceTo(const Vec3i &point) {
-        return SignedDistanceTo(point.x, point.y, point.z);
+    int signedDistanceTo(const Vec3i &point) {
+        return signedDistanceTo(point.x, point.y, point.z);
     }
 
     /**
-     * Same as `SignedDistanceTo`, but returns the distance as a fixpoint number. To get the distance in original
+     * Same as `signedDistanceTo`, but returns the distance as a fixpoint number. To get the distance in original
      * coordinates, divide by 2^16.
      *
-     * @see SignedDistanceTo(const Vec3i &)
+     * @see signedDistanceTo(const Vec3i &)
      */
-    int SignedDistanceToAsFixpoint(const Vec3i &point) {
-        return SignedDistanceToAsFixpoint(point.x, point.y, point.z);
+    int signedDistanceToAsFixpoint(const Vec3i &point) {
+        return signedDistanceToAsFixpoint(point.x, point.y, point.z);
     }
 
     /**
-     * @see SignedDistanceTo(const Vec3i &)
+     * @see signedDistanceTo(const Vec3i &)
      */
-    int SignedDistanceTo(const Vec3s &point) {
-        return SignedDistanceTo(point.x, point.y, point.z);
+    int signedDistanceTo(const Vec3s &point) {
+        return signedDistanceTo(point.x, point.y, point.z);
     }
 
     /**
-     * @see SignedDistanceTo(const Vec3i &)
+     * @see signedDistanceTo(const Vec3i &)
      */
-    int SignedDistanceTo(int x, int y, int z) {
-        return SignedDistanceToAsFixpoint(x, y, z) >> 16;
+    int signedDistanceTo(int x, int y, int z) {
+        return signedDistanceToAsFixpoint(x, y, z) >> 16;
     }
 
     /**
-     * @see SignedDistanceToAsFixpoint(const Vec3i &)
+     * @see signedDistanceToAsFixpoint(const Vec3i &)
      */
-    int SignedDistanceToAsFixpoint(int x, int y, int z) {
+    int signedDistanceToAsFixpoint(int x, int y, int z) {
         return this->dist + this->vNormal.x * x + this->vNormal.y * y + this->vNormal.z * z;
     }
 };
@@ -63,7 +63,7 @@ struct Planef {
      *                                  means that `point` is in the half-space that the normal is pointing to,
      *                                  and this usually is "outside" the model that the face belongs to.
      */
-    float SignedDistanceTo(const Vec3f &point) {
+    float signedDistanceTo(const Vec3f &point) {
         return this->dist + this->vNormal.x * point.x + this->vNormal.y * point.y + this->vNormal.z * point.z;
     }
 };
@@ -83,11 +83,11 @@ struct PlaneZCalcll {
     int64_t b = 0;
     int64_t c = 0;
 
-    int32_t Calculate(int32_t x, int32_t y) const {
+    int32_t calculate(int32_t x, int32_t y) const {
         return static_cast<int32_t>((a * x + b * y + c + 0x8000) >> 16);
     }
 
-    void Init(const Planei &plane) {
+    void init(const Planei &plane) {
         if (plane.vNormal.z == 0) {
             this->a = this->b = this->c = 0;
         } else {

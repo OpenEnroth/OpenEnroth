@@ -3901,7 +3901,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
                 if (!model.pFaces.empty()) {
                     for (ODMFace &face : model.pFaces) {
                         if (!face.Invisible()) {
-                            array_73D150[0].vWorldPosition = model.pVertices[face.pVertexIDs[0]].ToFloat();
+                            array_73D150[0].vWorldPosition = model.pVertices[face.pVertexIDs[0]].toFloat();
 
                             if (pCamera3D->is_face_faced_to_cameraODM(&face, &array_73D150[0])) {
                                 int texunit = face.texunit;
@@ -4194,7 +4194,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
         bool found{ false };
         for (int splat = 0; splat < decal_builder->bloodsplat_container->uNumBloodsplats; ++splat) {
             Bloodsplat* thissplat = &decal_builder->bloodsplat_container->pBloodsplats_to_apply[splat];
-            if (model.pBoundingBox.intersectsCube(thissplat->pos.ToInt(), thissplat->radius)) {
+            if (model.pBoundingBox.intersectsCube(thissplat->pos.toInt(), thissplat->radius)) {
                 found = true;
                 break;
             }
@@ -4284,7 +4284,7 @@ void RenderOpenGL::DrawIndoorFaces() {
 
 
                 // kludge for getting lights in  visible sectors
-                pStationaryLightsStack->pLights[lightscnt].uSectorID = pIndoor->GetSector(test.vPosition.ToInt());
+                pStationaryLightsStack->pLights[lightscnt].uSectorID = pIndoor->GetSector(test.vPosition.toInt());
 
                 if (pStationaryLightsStack->pLights[lightscnt].uSectorID == 0) cntnosect++;
             }
@@ -4781,7 +4781,7 @@ void RenderOpenGL::DrawIndoorFaces() {
             // does light sphere collide with current sector
             // expanded current sector
             bool fromexpanded{ false };
-            if (pIndoor->pSectors[pBLVRenderParams->uPartySectorID].pBounding.intersectsCube(test.vPosition.ToShort(), test.uRadius)) {
+            if (pIndoor->pSectors[pBLVRenderParams->uPartySectorID].pBounding.intersectsCube(test.vPosition.toShort(), test.uRadius)) {
                 onlist = true;
                 fromexpanded = true;
             }

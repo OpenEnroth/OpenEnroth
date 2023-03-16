@@ -834,7 +834,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     if (spell_targeted_at && PID_TYPE(spell_targeted_at) == OBJECT_Actor) {
                         int monster_id = PID_ID(spell_targeted_at);
-                        float dist = (pActors[monster_id].vPosition - pParty->vPosition).ToFloat().Length();
+                        float dist = (pActors[monster_id].vPosition - pParty->vPosition).toFloat().length();
                         if (dist <= 307.2) {
                             Vec3i spell_velocity = Vec3i(0, 0, 0);
                             initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
@@ -966,9 +966,8 @@ void CastSpellInfoHelpers::castSpell() {
                                 yaw = 0;
                                 pitch = 0;
                             } else {
-                                pitch = TrigLUT.Atan2((int64_t)sqrt((float)(j * j + k * k)),
-                                        (double)spell_targeted_at - 2500);
-                                yaw = TrigLUT.Atan2(j, k);
+                                pitch = TrigLUT.atan2((int64_t) sqrt((float) (j * j + k * k)), (double) spell_targeted_at - 2500);
+                                yaw = TrigLUT.atan2(j, k);
                             }
                             initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                             pSpellSprite.vPosition = dist + Vec3i(0, 0, spell_targeted_at);
@@ -1188,10 +1187,9 @@ void CastSpellInfoHelpers::castSpell() {
                             yaw = 0;
                             pitch = 0;
                         } else {
-                            pitch = TrigLUT.Atan2((int64_t)sqrt((float)(j * j + k * k)),
-                                    ((double)spell_targeted_at + (double)dist.z -
-                                     (double)(dist.z + 2500)));
-                            yaw = TrigLUT.Atan2(j, k);
+                            pitch = TrigLUT.atan2((int64_t) sqrt((float) (j * j + k * k)),
+                                                  ((double) spell_targeted_at + (double) dist.z - (double) (dist.z + 2500)));
+                            yaw = TrigLUT.atan2(j, k);
                         }
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.vPosition = dist + Vec3i(0, 0, spell_targeted_at + 2500);

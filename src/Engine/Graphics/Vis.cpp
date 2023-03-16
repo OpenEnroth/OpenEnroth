@@ -72,7 +72,7 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, unsigned int pid,
         uint bmodel_id = pid >> 9;
         const std::vector<Vec3i> &v = pOutdoor->pBModels[bmodel_id].pVertices;
         for (uint i = 0; i < face->uNumVertices; ++i)
-            static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition = v[face->pVertexIDs[i]].ToFloat();
+            static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition = v[face->pVertexIDs[i]].toFloat();
     } else {
         assert(false);
     }
@@ -350,7 +350,7 @@ bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
     float radius{ static_cast<float>(model->sBoundingRadius) };
     if (radius < 512.0f) radius = 512.0f;
 
-    return IsSphereInFrustum(model->vBoundingCenter.ToFloat(), radius);
+    return IsSphereInFrustum(model->vBoundingCenter.toFloat(), radius);
 }
 
 // TODO(pskelton): consider use of vec4f or glm::vec4 instead of IndoorCameraD3D_Vec4s
@@ -371,7 +371,7 @@ bool IsSphereInFrustum(Vec3f center, float radius, IndoorCameraD3D_Vec4* frustum
             planedist = pCamera3D->FrustumPlanes[i].w;
         }
 
-        if ((Dot(center, planenormal) - planedist) < -radius) {
+        if ((dot(center, planenormal) - planedist) < -radius) {
             return false;
         }
     }
@@ -384,7 +384,7 @@ bool IsCylinderInFrustum(Vec3f center, float radius) {
     for (int i = 0; i < 2; i++) {
         Vec3f planenormal{ pCamera3D->FrustumPlanes[i].x, pCamera3D->FrustumPlanes[i].y, pCamera3D->FrustumPlanes[i].z };
         float planedist{ pCamera3D->FrustumPlanes[i].w };
-        if ((Dot(center, planenormal) - planedist) < -radius) {
+        if ((dot(center, planenormal) - planedist) < -radius) {
             return false;
         }
     }
@@ -689,7 +689,7 @@ bool Vis::CheckIntersectBModel(BLVFace *pFace, Vec3s IntersectPoint, signed int 
 int UnprojectX(int x) {
     int v3 = pCamera3D->ViewPlaneDist_X;
 
-    return TrigLUT.Atan2(x - pViewport->uScreenCenterX, v3) -
+    return TrigLUT.atan2(x - pViewport->uScreenCenterX, v3) -
            TrigLUT.uIntegerHalfPi;
 }
 
@@ -697,7 +697,7 @@ int UnprojectX(int x) {
 int UnprojectY(int y) {
     int v3 = pCamera3D->ViewPlaneDist_X;
 
-    return TrigLUT.Atan2(y - pViewport->uScreenCenterY, v3) -
+    return TrigLUT.atan2(y - pViewport->uScreenCenterY, v3) -
            TrigLUT.uIntegerHalfPi;
 }
 
@@ -725,7 +725,7 @@ void Vis::CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY, floa
     v11[1].vWorldPosition.z = (double)pCamera3D->vCameraPos.z;
 
     int depth = /*fixpoint_from_float*/(fPickDepth);
-    Vec3i::Rotate(depth, pRotY, pRotX, pStartR, &outx, &outy, &outz);
+    Vec3i::rotate(depth, pRotY, pRotX, pStartR, &outx, &outy, &outz);
 
     v11[0].vWorldPosition.x = (double)outx;
     v11[0].vWorldPosition.y = (double)outy;
