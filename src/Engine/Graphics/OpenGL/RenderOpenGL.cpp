@@ -240,7 +240,7 @@ void RenderOpenGL::SaveWinnersCertificate(const char *a1) {
         for (uint x = 0; x < (unsigned int)outputRender.w; ++x) {
             p = sPixels + 4 * (int)(x) + 4 * (int)(outputRender.h -1 - y) * outputRender.w;
 
-            *for_pixels = Color16(*p & 255, *(p + 1) & 255, *(p + 2) & 255);
+            *for_pixels = color16(*p & 255, *(p + 1) & 255, *(p + 2) & 255);
             ++for_pixels;
         }
     }
@@ -951,7 +951,7 @@ void RenderOpenGL::BlendTextures(int x, int y, Image* imgin, Image* imgblend, in
                     if (gcur < gmin) gcur = gmin;
                     if (rcur < rmin) rcur = rmin;
 
-                    temppix[xdraw + ydraw * Width] = Color32(rcur, gcur, bcur);
+                    temppix[xdraw + ydraw * Width] = color32(rcur, gcur, bcur);
                 }
 
                 pixelpoint++;
@@ -1004,7 +1004,7 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time
                         palindex = (time + thispix) % (2 * 63);
                         if (palindex >= 63)
                             palindex = (2 * 63) - palindex;
-                        temppix[dx + dy * width] = Color32(palpoint24[palindex * 3], palpoint24[palindex * 3 + 1], palpoint24[palindex * 3 + 2]);
+                        temppix[dx + dy * width] = color32(palpoint24[palindex * 3], palpoint24[palindex * 3 + 1], palpoint24[palindex * 3 + 2]);
                     }
                     ++texpix24;
                 }
@@ -1197,7 +1197,7 @@ unsigned short *RenderOpenGL::MakeScreenshot16(int width, int height) {
 
                 p = sPixels + 4 * (int)(x * interval_x + 8.0) + 4 * (int)(outputRender.h - (y * interval_y) - 8.0) * outputRender.w;
 
-                *for_pixels = Color16(*p & 255, *(p + 1) & 255, *(p + 2) & 255);
+                *for_pixels = color16(*p & 255, *(p + 1) & 255, *(p + 2) & 255);
                 ++for_pixels;
             }
         }

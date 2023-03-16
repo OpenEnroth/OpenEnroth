@@ -38,7 +38,7 @@ uint32_t *MakeImageSolid(unsigned int width, unsigned int height,
             auto r = palette[(index * 3) + 0];
             auto g = palette[(index * 3) + 1];
             auto b = palette[(index * 3) + 2];
-            res[y * width + x] = Color32(r, g, b);
+            res[y * width + x] = color32(r, g, b);
         }
     }
 
@@ -56,9 +56,9 @@ uint32_t *MakeImageAlpha(unsigned int width, unsigned int height,
             auto g = palette[(index * 3) + 1];
             auto b = palette[(index * 3) + 2];
             if (index == 0) {
-                res[y * width + x] = Color32(0, 0, 0, 0);
+                res[y * width + x] = color32(0, 0, 0, 0);
             } else {
-                res[y * width + x] = Color32(r, g, b);
+                res[y * width + x] = color32(r, g, b);
             }
         }
     }
@@ -77,10 +77,10 @@ uint32_t *MakeImageColorKey(unsigned int width, unsigned int height,
             auto r = palette[(index * 3) + 0];
             auto g = palette[(index * 3) + 1];
             auto b = palette[(index * 3) + 2];
-            if (Color16(r, g, b) == color_key) {
-                res[y * width + x] = Color32(0, 0, 0, 0);
+            if (color16(r, g, b) == color_key) {
+                res[y * width + x] = color32(0, 0, 0, 0);
             } else {
-                res[y * width + x] = Color32(r, g, b);
+                res[y * width + x] = color32(r, g, b);
             }
         }
     }
@@ -225,7 +225,7 @@ bool Alpha_LOD_Loader::Load(unsigned int *out_width, unsigned int *out_height,
     } else {
         *out_pixels = MakeImageColorKey(
             tex->header.uTextureWidth, tex->header.uTextureHeight,
-            tex->paletted_pixels, tex->pPalette24, colorTable.TealMask.C16());
+            tex->paletted_pixels, tex->pPalette24, colorTable.TealMask.c16());
     }
 
     if (*out_pixels == nullptr) {

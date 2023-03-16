@@ -249,21 +249,21 @@ void Engine::DrawGUI() {
 
     if (engine->config->debug.ShowFPS.Get()) {
         if (render_framerate) {
-            pPrimaryWindow->DrawText(pFontArrus, {494, 0}, colorTable.White.C16(), fmt::format("FPS: {: .4f}", framerate), 0, 0, 0);
+            pPrimaryWindow->DrawText(pFontArrus, {494, 0}, colorTable.White.c16(), fmt::format("FPS: {: .4f}", framerate), 0, 0, 0);
         }
 
-        pPrimaryWindow->DrawText(pFontArrus, {300, 0}, colorTable.White.C16(), fmt::format("DrawCalls: {}", render->drawcalls), 0, 0, 0);
+        pPrimaryWindow->DrawText(pFontArrus, {300, 0}, colorTable.White.c16(), fmt::format("DrawCalls: {}", render->drawcalls), 0, 0, 0);
         render->drawcalls = 0;
 
 
         int debug_info_offset = 0;
-        pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset + 16}, colorTable.White.C16(),
+        pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset + 16}, colorTable.White.c16(),
                                  fmt::format("Party position:         {} {} {}", pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z), 0, 0, 0);
 
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
             debug_info_offset += 16;
             int sector_id = pBLVRenderParams->uPartySectorID;
-            pPrimaryWindow->DrawText(pFontArrus, { 16, debug_info_offset + 16 }, colorTable.White.C16(),
+            pPrimaryWindow->DrawText(pFontArrus, { 16, debug_info_offset + 16 }, colorTable.White.c16(),
                                      fmt::format("Party Sector ID:        {}/{}\n", sector_id, pIndoor->pSectors.size()), 0, 0, 0);
         }
 
@@ -289,7 +289,7 @@ void Engine::DrawGUI() {
             );
         }
 
-        pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset + 16 + 16}, colorTable.White.C16(), floor_level_str, 0, 0, 0);
+        pPrimaryWindow->DrawText(pFontArrus, {16, debug_info_offset + 16 + 16}, colorTable.White.c16(), floor_level_str, 0, 0, 0);
     }
 }
 
@@ -408,7 +408,7 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
     decal_builder->bloodsplat_container->uNumBloodsplats = 0;
 
     if (/*render->pRenderD3D &&*/ uCurrentlyLoadedLevelType == LEVEL_Outdoor)
-        render->uFogColor = GetLevelFogColor() & colorTable.White.C32();
+        render->uFogColor = GetLevelFogColor() & colorTable.White.c32();
     // if (uFlags & GAME_FLAGS_1_400)
     //    engine->config->SetForceRedraw(true);
     /*if ( !render->pRenderD3D && uCurrentlyLoadedLevelType == LEVEL_Outdoor &&

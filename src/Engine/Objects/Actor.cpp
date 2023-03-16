@@ -320,7 +320,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
             actorPtr->pActorBuffs[ACTOR_BUFF_HASTE].Apply((pParty->GetPlayingTime() + spell_length),
                 masteryLevel, 0, 0, 0);
-            spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.OrangeyRed.C32());
+            spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.OrangeyRed.c32());
             pAudioPlayer->PlaySound((SoundID)SOUND_Haste,
                                     PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
@@ -473,7 +473,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             actorPtr->pActorBuffs[ACTOR_BUFF_STONESKIN].Apply(
                 (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, realPoints + 5, 0, 0);
-            spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.Cioccolato.C32());
+            spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.Cioccolato.c32());
             pAudioPlayer->PlaySound((SoundID)SOUND_Stoneskin,
                                     PID(OBJECT_Actor, uActorID), 0, -1, 0, 0);
             return;
@@ -492,7 +492,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, realPoints + 5, 0, 0);
 
-            spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.RioGrande.C32());
+            spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.RioGrande.c32());
             pAudioPlayer->PlaySound((SoundID)SOUND_Bless,
                                     PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
@@ -511,7 +511,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             actorPtr->pActorBuffs[ACTOR_BUFF_FATE].Apply(
                 (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, v48, 0, 0);
-            spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.RioGrande.C32());
+            spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.RioGrande.c32());
             pAudioPlayer->PlaySound((SoundID)SOUND_Fate,
                                     PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
@@ -530,7 +530,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             actorPtr->pActorBuffs[ACTOR_BUFF_HEROISM].Apply(
                 (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, realPoints + 5, 0, 0);
-            spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.RioGrande.C32());
+            spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.RioGrande.c32());
             pAudioPlayer->PlaySound((SoundID)SOUND_51heroism03,
                                     PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
@@ -546,7 +546,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             actorPtr->pActorBuffs[ACTOR_BUFF_PAIN_HAMMERHANDS].Apply(
                 (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, realPoints, 0, 0);
-            spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.JazzberryJam.C32());
+            spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.JazzberryJam.c32());
             pAudioPlayer->PlaySound((SoundID)SOUND_51heroism03,
                                     PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
@@ -556,7 +556,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             actorPtr->sCurrentHP += 5 * realPoints + 10;
             if (actorPtr->sCurrentHP >= (signed int)actorPtr->pMonsterInfo.uHP)
                 actorPtr->sCurrentHP = (short)actorPtr->pMonsterInfo.uHP;
-            spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.JazzberryJam.C32());
+            spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.JazzberryJam.c32());
             pAudioPlayer->PlaySound((SoundID)SOUND_Fate,
                                     PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
@@ -597,7 +597,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             actorPtr->pActorBuffs[ACTOR_BUFF_DAY_OF_PROTECTION].Apply(
                 (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, realPoints, 0, 0);
-            spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.White.C32());
+            spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.White.c32());
             pAudioPlayer->PlaySound((SoundID)SOUND_94dayofprotection03,
                                     PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
@@ -616,7 +616,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             actorPtr->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Apply(
                 (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, realPoints + 5, 0, 0);
-            spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.White.C32());
+            spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.White.c32());
             pAudioPlayer->PlaySound((SoundID)SOUND_9armageddon01,
                                     PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
@@ -686,7 +686,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             actorPtr->pActorBuffs[ACTOR_BUFF_PAIN_REFLECTION].Apply(
                 (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, 0, 0, 0);
-            spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.MediumGrey.C32());
+            spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.MediumGrey.c32());
             pAudioPlayer->PlaySound((SoundID)SOUND_Sacrifice2,
                                     PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);

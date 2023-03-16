@@ -112,7 +112,7 @@ struct SpellFxRenderer {
         this->uAnimLength = 0;
 
         pStru1 = new SpellFX_Billboard();
-        pStru1->Initialize(colorTable.OrangeyRed.C32());
+        pStru1->Initialize(colorTable.OrangeyRed.c32());
     }
 
     /**

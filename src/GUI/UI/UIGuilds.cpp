@@ -49,7 +49,7 @@ void GuildDialog() {
             // you must be a member
             pTextHeight = pFontArrus->CalcTextHeight(
                 pNPCTopics[121].pText, working_window.uFrameWidth, 0);
-            working_window.DrawTitleText(pFontArrus, 0, (212 - pTextHeight) / 2 + 101, colorTable.PaleCanary.C16(), pNPCTopics[121].pText, 3);
+            working_window.DrawTitleText(pFontArrus, 0, (212 - pTextHeight) / 2 + 101, colorTable.PaleCanary.c16(), pNPCTopics[121].pText, 3);
             pDialogueWindow->pNumPresenceButton = 0;
             return;
         }
@@ -132,7 +132,7 @@ void GuildDialog() {
                                              item, BuildingType_MagicShop, window_SpeakInHouse->wData.val, 2)],
                                 pParty->_activeCharacter - 1, item, window_SpeakInHouse->wData.val, 2);
                             pTextHeight = pFontArrus->CalcTextHeight(str, working_window.uFrameWidth, 0);
-                            working_window.DrawTitleText(pFontArrus, 0, (174 - pTextHeight) / 2 + 138, colorTable.White.C16(), str, 3);
+                            working_window.DrawTitleText(pFontArrus, 0, (174 - pTextHeight) / 2 + 138, colorTable.White.c16(), str, 3);
                             return;
                         }
                     }

@@ -1008,7 +1008,7 @@ void CastSpellInfoHelpers::castSpell() {
                         Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), actor->id, &spell_velocity);
                         spell_fx_renderer->RenderAsSprite(&pSpellSprite);
                     }
-                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.OrangeyRed.C32(), 0x40);
+                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.OrangeyRed.c32(), 0x40);
                     break;
                 }
 
@@ -1757,7 +1757,7 @@ void CastSpellInfoHelpers::castSpell() {
                             actor->pActorBuffs[ACTOR_BUFF_AFRAID].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
                         }
                     }
-                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.White.C32(), 192);
+                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.White.c32(), 192);
                     break;
                 }
 
@@ -2098,7 +2098,7 @@ void CastSpellInfoHelpers::castSpell() {
                             }
                         }
                     }
-                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.Night.C32(), 192);
+                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.Night.c32(), 192);
                     break;
                 }
 
@@ -2382,7 +2382,7 @@ void CastSpellInfoHelpers::castSpell() {
                             buff.Reset();
                         }
                     }
-                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.VibrantGreen.C32(), 192);
+                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.VibrantGreen.c32(), 192);
                     break;
                 }
 
@@ -2846,7 +2846,7 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, i);
                         }
                     }
-                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.Black.C32(), 64);
+                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.Black.c32(), 64);
                     break;
                 }
 

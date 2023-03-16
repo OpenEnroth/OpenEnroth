@@ -384,7 +384,7 @@ void RenderBase::PrepareDecorationsRenderList_ODM() {
                 // Emit fire particles.
                 memset(&local_0, 0, sizeof(Particle_sw));
                 local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
-                local_0.uDiffuse = colorTable.OrangeyRed.C32();
+                local_0.uDiffuse = colorTable.OrangeyRed.c32();
                 local_0.x = static_cast<float>(pLevelDecorations[i].vPosition.x);
                 local_0.y = static_cast<float>(pLevelDecorations[i].vPosition.y);
                 local_0.z = static_cast<float>(pLevelDecorations[i].vPosition.z);
@@ -679,22 +679,22 @@ Image* RenderBase::TakeScreenshot(unsigned int width, unsigned int height) {
 }
 
 void RenderBase::DrawTextureGrayShade(float a2, float a3, Image* a4) {
-    DrawMasked(a2, a3, a4, 1, colorTable.MediumGrey.C32());
+    DrawMasked(a2, a3, a4, 1, colorTable.MediumGrey.c32());
 }
 
 void RenderBase::DrawTransparentRedShade(float u, float v, Image* a4) {
-    DrawMasked(u, v, a4, 0, colorTable.Red.C32());
+    DrawMasked(u, v, a4, 0, colorTable.Red.c32());
 }
 
 void RenderBase::DrawTransparentGreenShade(float u, float v, Image* pTexture) {
-    DrawMasked(u, v, pTexture, 0, colorTable.Green.C32());
+    DrawMasked(u, v, pTexture, 0, colorTable.Green.c32());
 }
 
 void RenderBase::DrawMasked(float u, float v, Image* pTexture, unsigned int color_dimming_level, uint32_t mask) {
     int b = ((mask >> 16) & 0xFF) & (0xFF >> color_dimming_level);
     int g = ((mask >> 8) & 0xFF) & (0xFF >> color_dimming_level);
     int r = ((mask) & 0xFF) & (0xFF >> color_dimming_level);
-    mask = Color32(r, g, b);
+    mask = color32(r, g, b);
 
     DrawTextureNew(u, v, pTexture, mask);
     return;
@@ -780,7 +780,7 @@ void RenderBase::DrawSpecialEffectsQuad(Texture* texture, int palette) {
     targetrect.w = pViewport->uViewportBR_X - pViewport->uViewportTL_X;
     targetrect.h = pViewport->uViewportBR_Y - pViewport->uViewportTL_Y;
 
-    DrawImage(texture, targetrect, palette, colorTable.MediumGrey.C32());
+    DrawImage(texture, targetrect, palette, colorTable.MediumGrey.c32());
 }
 
 void RenderBase::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {

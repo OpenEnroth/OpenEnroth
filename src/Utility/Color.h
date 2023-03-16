@@ -2,21 +2,21 @@
 
 #include <cstdint>
 
-static uint16_t Color16(uint8_t r, uint8_t g, uint8_t b) {
+static uint16_t color16(uint8_t r, uint8_t g, uint8_t b) {
     return (b >> (8 - 5)) | 0x7E0 & (g << (6 + 5 - 8)) | 0xF800 & (r << (6 + 5 + 5 - 8));
 }
 
-static uint32_t Color32(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) {
+static uint32_t color32(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) {
     return (a << 24) | (b << 16) | (g << 8) | r;
 }
 
-static uint32_t Color32(uint16_t color16) {
+static uint32_t color32(uint16_t color16) {
     uint16_t c = color16;
     uint8_t b = (c & 31) * 8;
     uint8_t g = ((c >> 5) & 63) * 4;
     uint8_t r = ((c >> 11) & 31) * 8;
 
-    return Color32(r, g, b);
+    return color32(r, g, b);
 }
 
 class ColorTable {
@@ -24,12 +24,12 @@ class ColorTable {
      public:
         Color(uint8_t r, uint8_t g, uint8_t b) : r(r), g(g), b(b) {}
 
-        uint16_t C16() {
-            return Color16(r, g, b);
+        uint16_t c16() {
+            return color16(r, g, b);
         }
 
-        uint32_t C32(uint8_t a = 255) {
-            return Color32(r, g, b, a);
+        uint32_t c32(uint8_t a = 255) {
+            return color32(r, g, b, a);
         }
 
      private:
