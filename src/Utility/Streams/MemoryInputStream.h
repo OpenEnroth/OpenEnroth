@@ -8,11 +8,11 @@ class MemoryInputStream: public InputStream {
     MemoryInputStream(const void *data, size_t size);
     virtual ~MemoryInputStream();
 
-    void Reset(const void *data, size_t size);
+    void reset(const void *data, size_t size);
 
-    virtual size_t Read(void *data, size_t size) override;
-    virtual size_t Skip(size_t size) override;
-    virtual void Close() override;
+    virtual size_t read(void *data, size_t size) override;
+    virtual size_t skip(size_t size) override;
+    virtual void close() override;
 
  private:
     const char *pos_ = nullptr;

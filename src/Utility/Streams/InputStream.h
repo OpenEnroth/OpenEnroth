@@ -21,7 +21,7 @@ class InputStream {
      *                                  end of stream.
      * @throws Exception                On error.
      */
-    [[nodiscard]] virtual size_t Read(void *data, size_t size) = 0;
+    [[nodiscard]] virtual size_t read(void *data, size_t size) = 0;
 
     /**
      * Reads the requested amount of data from the stream, or fails with an exception if unable to do so.
@@ -30,7 +30,7 @@ class InputStream {
      * @param size                      Number of bytes to read.
      * @throws Exception                On error.
      */
-    void ReadOrFail(void *data, size_t size);
+    void readOrFail(void *data, size_t size);
 
     /**
      * @param size                      Number of bytes to skip.
@@ -38,7 +38,7 @@ class InputStream {
      *                                  end of stream.
      * @throws Exception                On error.
      */
-    [[nodiscard]] virtual size_t Skip(size_t size) = 0;
+    [[nodiscard]] virtual size_t skip(size_t size) = 0;
 
     /**
      * Closes this input stream. Reading from a closed stream will result in undefined behavior.
@@ -47,5 +47,5 @@ class InputStream {
      *
      * @throws Exception                On error.
      */
-    virtual void Close() = 0;
+    virtual void close() = 0;
 };

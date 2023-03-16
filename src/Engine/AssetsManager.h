@@ -20,7 +20,7 @@ class AssetsManager {
     bool ReleaseImage(const std::string &name);
     bool ReleaseSprite(const std::string& name);
 
-    Texture *GetImage_ColorKey(const std::string &name, uint16_t colorkey = colorTable.TealMask.C16());
+    Texture *GetImage_ColorKey(const std::string &name, uint16_t colorkey = colorTable.TealMask.c16());
     Texture *GetImage_Paletted(const std::string &name);
     Texture *GetImage_Solid(const std::string &name);
     Texture *GetImage_Alpha(const std::string &name);

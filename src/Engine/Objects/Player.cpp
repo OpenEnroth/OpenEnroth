@@ -21,7 +21,7 @@
 #include "Engine/Party.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/stru123.h"
-#include "Engine/stru298.h"
+#include "Engine/AttackList.h"
 #include "Engine/Tables/PlayerFrameTable.h"
 #include "Engine/Tables/StorylineTextTable.h"
 #include "Engine/TurnEngine/TurnEngine.h"
@@ -738,8 +738,8 @@ int Player::CreateItemInInventory(unsigned int uSlot, ITEM_TYPE uItemID) {
     signed int freeSlot = FindFreeInventoryListSlot();
 
     if (freeSlot == -1) {  // no room
-        if (uActiveCharacter)
-            pPlayers[uActiveCharacter]->PlaySound(SPEECH_NoRoom, 0);
+        if (pParty->_activeCharacter)
+            pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_NoRoom, 0);
 
         return 0;
     } else {  // place items
@@ -2508,8 +2508,8 @@ bool Player::Recover(GameTime dt) {
     } else {
         uTimeToRecovery = 0;  // recovered
 
-        if (!uActiveCharacter)  // set recoverd char as active
-            uActiveCharacter = pParty->GetNextActiveCharacter();
+        if (!pParty->_activeCharacter)  // set recoverd char as active
+            pParty->_activeCharacter = pParty->GetNextActiveCharacter();
 
         return false;
     }
@@ -2521,9 +2521,9 @@ void Player::SetRecoveryTime(signed int rec) {
 
     if (rec > uTimeToRecovery) uTimeToRecovery = rec;
 
-    if (uActiveCharacter != 0 && pPlayers[uActiveCharacter] == this &&
+    if (pParty->_activeCharacter != 0 && pPlayers[pParty->_activeCharacter] == this &&
         !some_active_character)
-        uActiveCharacter = pParty->GetNextActiveCharacter();
+        pParty->_activeCharacter = pParty->GetNextActiveCharacter();
 }
 
 //----- (0048E9B7) --------------------------------------------------------
@@ -6670,28 +6670,28 @@ void Player::EquipBody(ITEM_EQUIP_TYPE uEquipType) {
     tempPickedItem.Reset();
     itemAnchor = pEquipTypeToBodyAnchor[uEquipType];
     itemInvLocation =
-        pPlayers[uActiveCharacter]->pEquipment.pIndices[itemAnchor];
+        pPlayers[pParty->_activeCharacter]->pEquipment.pIndices[itemAnchor];
     if (itemInvLocation) {  //переодеться в другую вещь
         memcpy(&tempPickedItem, &pParty->pPickedItem, sizeof(tempPickedItem));
-        pPlayers[uActiveCharacter]
+        pPlayers[pParty->_activeCharacter]
             ->pInventoryItemList[itemInvLocation - 1]
             .uBodyAnchor = ITEM_SLOT_INVALID;
         pParty->pPickedItem.Reset();
-        pParty->SetHoldingItem(&pPlayers[uActiveCharacter]
+        pParty->SetHoldingItem(&pPlayers[pParty->_activeCharacter]
                                     ->pInventoryItemList[itemInvLocation - 1]);
         tempPickedItem.uBodyAnchor = itemAnchor;
-        memcpy(&pPlayers[uActiveCharacter]
+        memcpy(&pPlayers[pParty->_activeCharacter]
                     ->pInventoryItemList[itemInvLocation - 1],
                &tempPickedItem, sizeof(ItemGen));
-        pPlayers[uActiveCharacter]->pEquipment.pIndices[itemAnchor] =
+        pPlayers[pParty->_activeCharacter]->pEquipment.pIndices[itemAnchor] =
             itemInvLocation;
     } else {  // одеть вещь
-        freeSlot = pPlayers[uActiveCharacter]->FindFreeInventoryListSlot();
+        freeSlot = pPlayers[pParty->_activeCharacter]->FindFreeInventoryListSlot();
         if (freeSlot >= 0) {
             pParty->pPickedItem.uBodyAnchor = itemAnchor;
-            memcpy(&pPlayers[uActiveCharacter]->pInventoryItemList[freeSlot],
+            memcpy(&pPlayers[pParty->_activeCharacter]->pInventoryItemList[freeSlot],
                    &pParty->pPickedItem, sizeof(ItemGen));
-            pPlayers[uActiveCharacter]->pEquipment.pIndices[itemAnchor] =
+            pPlayers[pParty->_activeCharacter]->pEquipment.pIndices[itemAnchor] =
                 freeSlot + 1;
             mouse->RemoveHoldingItem();
         }
@@ -6706,12 +6706,12 @@ int CycleCharacter(bool backwards) {
 
     for (int i = 0; i < (PARTYSIZE - 1); i++) {
         int currCharId =
-            ((uActiveCharacter + mult * i + valToAdd) % PARTYSIZE) + 1;
+            ((pParty->_activeCharacter + mult * i + valToAdd) % PARTYSIZE) + 1;
         if (pPlayers[currCharId]->uTimeToRecovery == 0) {
             return currCharId;
         }
     }
-    return uActiveCharacter;
+    return pParty->_activeCharacter;
 }
 
 //----- (0043EE77) --------------------------------------------------------
@@ -7043,11 +7043,16 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                     playerPtr->PlaySound(SPEECH_AvoidDamage, 0);
                     return;
                 }
-            } else if (spriteType == SPRITE_BLASTER_PROJECTILE || spriteType == 510 ||  // dragonflies firebolt
-                       spriteType == 500 || spriteType == 515 ||
-                       spriteType == 505 || spriteType == 530 ||  // TODO(pskelton): Use enums here
-                       spriteType == 525 || spriteType == 520 ||
-                       spriteType == 535 || spriteType == 540) {
+            } else if (spriteType == SPRITE_BLASTER_PROJECTILE ||
+                       spriteType == SPRITE_PROJECTILE_AIRBOLT ||  // dragonflies firebolt
+                       spriteType == SPRITE_PROJECTILE_EARTHBOLT ||
+                       spriteType == SPRITE_PROJECTILE_FIREBOLT ||
+                       spriteType == SPRITE_PROJECTILE_WATERBOLT ||
+                       spriteType == SPRITE_PROJECTILE_520 ||
+                       spriteType == SPRITE_PROJECTILE_525 ||
+                       spriteType == SPRITE_PROJECTILE_530 ||
+                       spriteType == SPRITE_PROJECTILE_LIGHTBOLT ||
+                       spriteType == SPRITE_PROJECTILE_DARKBOLT) {
                 // reduce missle damage with skills / armour
                 if (!actorPtr->ActorHitOrMiss(playerPtr)) return;
                 if (playerPtr->pPlayerBuffs[PLAYER_BUFF_SHIELD].Active()) dmgToReceive >>= 1;
@@ -7202,14 +7207,14 @@ void Player::OnInventoryLeftClick() {
                     /* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &=
                      *0x7Fu;
                      *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 2) =
-                     *uActiveCharacter - 1;
+                     *pParty->_activeCharacter - 1;
                      *((int *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
                      *enchantedItemPos - 1;
                      *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
                      *invMatrixIndex;*/
                     pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
                     pSpellInfo->uFlags &= ~ON_CAST_TargetedEnchantment;
-                    pSpellInfo->uPlayerID_2 = uActiveCharacter - 1;
+                    pSpellInfo->uPlayerID_2 = pParty->_activeCharacter - 1;
                     pSpellInfo->spell_target_pid = enchantedItemPos - 1;
                     pSpellInfo->field_6 = this->GetItemMainInventoryIndex(invMatrixIndex);
                     ptr_50C9A4_ItemToEnchant = &this->pInventoryItemList[enchantedItemPos - 1];
@@ -7526,8 +7531,8 @@ void Player::_42ECB5_PlayerAttacksActor() {
     //  unsigned int v12; // eax@47
     //  SoundID v24; // [sp-4h] [bp-40h]@58
 
-    // result = pParty->pPlayers[uActiveCharacter-1].CanAct();
-    Player* player = &pParty->pPlayers[uActiveCharacter - 1];
+    // result = pParty->pPlayers[pParty->_activeCharacter-1].CanAct();
+    Player* player = &pParty->pPlayers[pParty->_activeCharacter - 1];
     if (!player->CanAct()) return;
 
     CastSpellInfoHelpers::cancelSpellCastInProgress();
@@ -7602,14 +7607,14 @@ void Player::_42ECB5_PlayerAttacksActor() {
     if (laser_weapon_item_id != ITEM_NULL) {
         shotting_laser = true;
         pushSpellOrRangedAttack(SPELL_LASER_PROJECTILE,
-                                uActiveCharacter - 1, 0, 0,
-                                uActiveCharacter + 8);
+                                pParty->_activeCharacter - 1, 0, 0,
+                                pParty->_activeCharacter + 8);
     } else if (wand_item_id != ITEM_NULL) {
         shooting_wand = true;
 
         int main_hand_idx = player->pEquipment.uMainHand;
         pushSpellOrRangedAttack(WandSpellIds[player->pInventoryItemList[main_hand_idx - 1].uItemID],
-                                uActiveCharacter - 1, 8, 0, uActiveCharacter + 8);
+                                pParty->_activeCharacter - 1, 8, 0, pParty->_activeCharacter + 8);
 
         if (!--player->pInventoryItemList[main_hand_idx - 1].uNumCharges)
             player->pEquipment.uMainHand = 0;
@@ -7619,17 +7624,17 @@ void Player::_42ECB5_PlayerAttacksActor() {
         Vec3i a3 = actor->vPosition - pParty->vPosition;
         normalize_to_fixpoint(&a3.x, &a3.y, &a3.z);
 
-        Actor::DamageMonsterFromParty(PID(OBJECT_Player, uActiveCharacter - 1),
+        Actor::DamageMonsterFromParty(PID(OBJECT_Player, pParty->_activeCharacter - 1),
                                       target_id, &a3);
         if (player->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_MAIN_HAND) ||
             player->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_OFF_HAND))
             _42FA66_do_explosive_impact(
                 actor->vPosition.x, actor->vPosition.y,
                 actor->vPosition.z + actor->uActorHeight / 2, 0, 512,
-                uActiveCharacter);
+                pParty->_activeCharacter);
     } else if (bow_idx) {
         shooting_bow = true;
-        pushSpellOrRangedAttack(SPELL_BOW_ARROW, uActiveCharacter - 1, 0, 0, 0);
+        pushSpellOrRangedAttack(SPELL_BOW_ARROW, pParty->_activeCharacter - 1, 0, 0, 0);
     } else {
         melee_attack = true;
         // ; // actor out of range or no actor; no ranged weapon so melee
@@ -7713,15 +7718,16 @@ void Player::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4,
     a1a.uFacing = 0;
     a1a.uSoundID = 0;
 
-    if (actchar >= 1 || actchar <= 4)
+    if (actchar >= 1 || actchar <= 4) {
         a1a.spell_caster_pid = PID(OBJECT_Player, actchar - 1);
-    else
+    } else {
         a1a.spell_caster_pid = 0;
+    }
 
     int id = a1a.Create(0, 0, 0, 0);
-    if (id != -1)
-        AttackerInfo.Add(PID(OBJECT_Item, id), a5, (short)a1a.vPosition.x,
-                         (short)a1a.vPosition.y, (short)a1a.vPosition.z, ABILITY_ATTACK1, 0);
+    if (id != -1) {
+        pushAoeAttack(PID(OBJECT_Item, id), a5, a1a.vPosition, ABILITY_ATTACK1);
+    }
 }
 
 PLAYER_SKILL_LEVEL Player::GetSkillLevel(PLAYER_SKILL_TYPE skill) {
@@ -7767,7 +7773,7 @@ void Player::PlaySound(PlayerSpeech speech, int a3) {
                                 2 * (pickedVariant + 50 * uVoiceID) + 4998;
                 pAudioPlayer->PlaySound(
                     (SoundID)pickedSoundID,
-                    PID(OBJECT_Player, uActiveCharacter + 39), 0, -1, 0, 0);
+                    PID(OBJECT_Player, pParty->_activeCharacter + 39), 0, -1, 0, 0);
             }
         }
     }

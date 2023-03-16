@@ -328,10 +328,10 @@ static void UI_DrawSaveLoad(bool save) {
                 break;
             }
             if (pGUIWindow_CurrentMenu->keyboard_input_status != WindowInputStatus::WINDOW_INPUT_IN_PROGRESS || i != uLoadGameUI_SelectedSlot) {
-                pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, {27, slot_Y}, i == uLoadGameUI_SelectedSlot ? colorTable.LaserLemon.C16() : 0, pSavegameHeader[i].pName, 185, 0);
+                pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, {27, slot_Y}, i == uLoadGameUI_SelectedSlot ? colorTable.LaserLemon.c16() : 0, pSavegameHeader[i].pName, 185, 0);
             } else {
                 pGUIWindow_CurrentMenu->DrawFlashingInputCursor(pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, {27, slot_Y},
-                    i == uLoadGameUI_SelectedSlot ? colorTable.LaserLemon.C16() : 0, keyboardInputHandler->GetTextInput().c_str(), 175, 1) + 27, slot_Y, pFontSmallnum);
+                    i == uLoadGameUI_SelectedSlot ? colorTable.LaserLemon.c16() : 0, keyboardInputHandler->GetTextInput().c_str(), 175, 1) + 27, slot_Y, pFontSmallnum);
             }
             slot_Y += 21;
         }

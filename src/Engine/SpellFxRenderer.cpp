@@ -357,7 +357,7 @@ void SpellFxRenderer::_4A7688_fireball_collision_particle(SpriteObject *a2) {
 
     Particle_sw local_0 = { 0 };
     local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Dropping;
-    local_0.uDiffuse = colorTable.OrangeyRed.C32();
+    local_0.uDiffuse = colorTable.OrangeyRed.c32();
     local_0.x = (float)a2->vPosition.x;
     local_0.y = (float)a2->vPosition.y;
     local_0.z = (float)a2->vPosition.z;
@@ -377,7 +377,7 @@ void SpellFxRenderer::_4A7688_fireball_collision_particle(SpriteObject *a2) {
                                     (float)a2->vPosition.y,
                                     (float)a2->vPosition.z,
                                     floorf(0.5f + (512.0 * v3)),
-                                    ModulateColor(colorTable.OrangeyRed.C32(), v4));
+                                    ModulateColor(colorTable.OrangeyRed.c32(), v4));
 }
 
 void SpellFxRenderer::_4A77FD_implosion_particle_d3d(SpriteObject *a1) {
@@ -393,14 +393,14 @@ void SpellFxRenderer::_4A77FD_implosion_particle_d3d(SpriteObject *a1) {
                                     a1->vPosition.y,
                                     a1->vPosition.z,
                                     floorf(0.5f + (512.f - v4 * 512.f)),
-                                    ModulateColor(colorTable.MediumGrey.C32(), v5));
+                                    ModulateColor(colorTable.MediumGrey.c32(), v5));
 }
 
 //----- (004A7948) --------------------------------------------------------
 void SpellFxRenderer::_4A7948_mind_blast_after_effect(SpriteObject *a1) {
     Particle_sw Dst = { 0 };
     Dst.type = ParticleType_Sprite | ParticleType_Rotating | ParticleType_Dropping;
-    Dst.uDiffuse = colorTable.MediumGrey.C32();
+    Dst.uDiffuse = colorTable.MediumGrey.c32();
     Dst.x = (float)a1->vPosition.x;
     Dst.y = (float)a1->vPosition.y;
     Dst.z = (float)a1->vPosition.z;
@@ -418,8 +418,7 @@ void SpellFxRenderer::_4A7948_mind_blast_after_effect(SpriteObject *a1) {
 //----- (004A7A27) --------------------------------------------------------
 bool SpellFxRenderer::AddMobileLight(SpriteObject *a1, unsigned int uDiffuse,
                                      int uRadius) {
-    return pMobileLightsStack->AddLight(
-        a1->vPosition.ToFloat(), a1->uSectorID,
+    return pMobileLightsStack->AddLight(a1->vPosition.toFloat(), a1->uSectorID,
         uRadius, uDiffuse & 0x000000FF, (uDiffuse & 0x0000FF00) >> 8,
         (uDiffuse & 0x00FF0000) >> 16, _4E94D3_light_type);
 }
@@ -497,7 +496,7 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
     if (a2->field_54 != 0) {
         stru6_stru2 *v6 = &array_4[a2->field_54 & 0x1F];
         local_0.type = ParticleType_Sprite;
-        local_0.uDiffuse = colorTable.White.C32();
+        local_0.uDiffuse = colorTable.White.c32();
         local_0.x = ((float)a2->vPosition.x - v6->flt_0_x) * 0.5f + v6->flt_0_x;
         local_0.y = ((float)a2->vPosition.y - v6->flt_4_y) * 0.5f + v6->flt_4_y;
         local_0.z = ((float)a2->vPosition.z - v6->flt_8_z) * 0.5f + v6->flt_8_z;
@@ -525,7 +524,7 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
         array_4[a2->field_54 & 0x1F].flt_4_y = (float)a2->vPosition.y;
         array_4[a2->field_54 & 0x1F].flt_8_z = (float)a2->vPosition.z;
         local_0.type = ParticleType_Sprite;
-        local_0.uDiffuse = colorTable.White.C32();
+        local_0.uDiffuse = colorTable.White.c32();
         local_0.particle_size = 1.0;  // was 2.0 - reduce size of stun ring;
         local_0.x = (float)a2->vPosition.x;
         local_0.y = (float)a2->vPosition.y;
@@ -589,7 +588,7 @@ void SpellFxRenderer::_4A7F74(int x, int y, int z) {
 
     memset(&local_0, 0, sizeof(local_0));
     local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Dropping;
-    local_0.uDiffuse = colorTable.MediumGrey.C32();
+    local_0.uDiffuse = colorTable.MediumGrey.c32();
     local_0.particle_size = 1.0;
     v6 = 8;
     local_0.timeToLive = vrng->Random(0x80) + 128;
@@ -664,67 +663,67 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
         case SPRITE_PROJECTILE_AIRBOLT:
         case SPRITE_PROJECTILE_530:
             _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
-                a2, colorTable.Azure.C32(), effpar01);
+                a2, colorTable.Azure.c32(), effpar01);
             return false;
         case SPRITE_PROJECTILE_AIRBOLT_IMPACT:
         case SPRITE_PROJECTILE_530_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, colorTable.Azure.C32(), effpar01);
+            _4A75CC_single_spell_collision_particle(a2, colorTable.Azure.c32(), effpar01);
             return true;
 
         case SPRITE_PROJECTILE_EARTHBOLT:
             _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
-                a2, colorTable.CarnabyTan.C32(), effpar01);
+                a2, colorTable.CarnabyTan.c32(), effpar01);
             return false;
         case SPRITE_PROJECTILE_EARTHBOLT_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, colorTable.CarnabyTan.C32(), effpar01);
+            _4A75CC_single_spell_collision_particle(a2, colorTable.CarnabyTan.c32(), effpar01);
             return false;
 
         case SPRITE_PROJECTILE_FIREBOLT:
             _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
-                a2, colorTable.OrangeyRed.C32(), effpar01);
+                a2, colorTable.OrangeyRed.c32(), effpar01);
             return false;
         case SPRITE_PROJECTILE_FIREBOLT_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, colorTable.OrangeyRed.C32(), effpar01);
+            _4A75CC_single_spell_collision_particle(a2, colorTable.OrangeyRed.c32(), effpar01);
             return false;
 
         case SPRITE_PROJECTILE_WATERBOLT:
             _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
-                a2, colorTable.ScienceBlue.C32(), effpar01);
+                a2, colorTable.ScienceBlue.c32(), effpar01);
             return false;
         case SPRITE_PROJECTILE_WATERBOLT_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, colorTable.ScienceBlue.C32(), effpar01);
+            _4A75CC_single_spell_collision_particle(a2, colorTable.ScienceBlue.c32(), effpar01);
             return false;
 
         case SPRITE_PROJECTILE_520:
             _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
-                a2, colorTable.GreenTeal.C32(), effpar01);
+                a2, colorTable.GreenTeal.c32(), effpar01);
             return false;
         case SPRITE_PROJECTILE_520_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, colorTable.GreenTeal.C32(), effpar01);
+            _4A75CC_single_spell_collision_particle(a2, colorTable.GreenTeal.c32(), effpar01);
             return false;
 
         case SPRITE_PROJECTILE_525:
             _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
-                a2, colorTable.DirtyYellow.C32(), effpar01);
+                a2, colorTable.DirtyYellow.c32(), effpar01);
             return false;
         case SPRITE_PROJECTILE_525_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, colorTable.DirtyYellow.C32(), effpar01);
+            _4A75CC_single_spell_collision_particle(a2, colorTable.DirtyYellow.c32(), effpar01);
             return false;
 
         case SPRITE_PROJECTILE_LIGHTBOLT:
             _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
-                a2, colorTable.White.C32(), effpar01);
+                a2, colorTable.White.c32(), effpar01);
             return false;
         case SPRITE_PROJECTILE_LIGHTBOLT_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, colorTable.White.C32(), effpar01);
+            _4A75CC_single_spell_collision_particle(a2, colorTable.White.c32(), effpar01);
             return false;
 
         case SPRITE_PROJECTILE_DARKBOLT:
             _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
-                a2, colorTable.MediumGrey.C32(), effpar01);
+                a2, colorTable.MediumGrey.c32(), effpar01);
             return false;
         case SPRITE_PROJECTILE_DARKBOLT_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, colorTable.MediumGrey.C32(), effpar01);
+            _4A75CC_single_spell_collision_particle(a2, colorTable.MediumGrey.c32(), effpar01);
             return false;
 
         case SPRITE_ARROW_PROJECTILE:
@@ -733,12 +732,12 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             return true;
 
         case SPRITE_BLASTER_IMPACT:
-            AddMobileLight(a2, colorTable.Red.C32(), 256);
+            AddMobileLight(a2, colorTable.Red.c32(), 256);
             return false;
 
         case SPRITE_OBJECT_EXPLODE_IMPACT:
             // __debugbreak();  // what kind of effect is this?
-            AddMobileLight(a2, colorTable.OrangeyRed.C32(), 256);
+            AddMobileLight(a2, colorTable.OrangeyRed.c32(), 256);
             return true;
 
         case SPRITE_546:
@@ -792,7 +791,7 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
         case SPRITE_597:
         case SPRITE_598:
         case SPRITE_599:
-            _4A75CC_single_spell_collision_particle(a2, colorTable.OrangeyRed.C32(), effpar01);
+            _4A75CC_single_spell_collision_particle(a2, colorTable.OrangeyRed.c32(), effpar01);
             return false;
 
         case SPRITE_TRAP_FIRE:
@@ -803,23 +802,23 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
 
         case SPRITE_SPELL_FIRE_FIRE_BOLT:
             _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
-                a2, colorTable.OrangeyRed.C32(), effpar01);
-            AddMobileLight(a2, colorTable.OrangeyRed.C32(), 256);
+                a2, colorTable.OrangeyRed.c32(), effpar01);
+            AddMobileLight(a2, colorTable.OrangeyRed.c32(), 256);
             return false;
 
         case SPRITE_SPELL_FIRE_FIRE_BOLT_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, colorTable.OrangeyRed.C32(), effpar01);
-            AddMobileLight(a2, colorTable.OrangeyRed.C32(), 256);
+            _4A75CC_single_spell_collision_particle(a2, colorTable.OrangeyRed.c32(), effpar01);
+            AddMobileLight(a2, colorTable.OrangeyRed.c32(), 256);
             return false;
 
         case SPRITE_SPELL_FIRE_FIREBALL:
             _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
-                a2, colorTable.OrangeyRed.C32(), effpar01);
-            AddMobileLight(a2, colorTable.OrangeyRed.C32(), 256);
+                a2, colorTable.OrangeyRed.c32(), effpar01);
+            AddMobileLight(a2, colorTable.OrangeyRed.c32(), 256);
             return false;
 
         case SPRITE_SPELL_FIRE_FIREBALL_IMPACT:
-            AddMobileLight(a2, colorTable.OrangeyRed.C32(), 256);
+            AddMobileLight(a2, colorTable.OrangeyRed.c32(), 256);
             // if (render->pRenderD3D)
             {
                 if (/*PID_TYPE(a2->spell_caster_pid) != OBJECT_Actor &&*/
@@ -837,37 +836,37 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             return true;
         case SPRITE_SPELL_FIRE_FIRE_SPIKE_IMPACT:
             _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(
-                a2, colorTable.OrangeyRed.C32(), effpar01, 250.0);
-            AddMobileLight(a2, colorTable.OrangeyRed.C32(), 256);
+                a2, colorTable.OrangeyRed.c32(), effpar01, 250.0);
+            AddMobileLight(a2, colorTable.OrangeyRed.c32(), 256);
             return false;
 
         case SPRITE_SPELL_FIRE_IMMOLATION:
-            _4A75CC_single_spell_collision_particle(a2, colorTable.OrangeyRed.C32(), effpar01);
+            _4A75CC_single_spell_collision_particle(a2, colorTable.OrangeyRed.c32(), effpar01);
             return false;
 
         case SPRITE_SPELL_FIRE_METEOR_SHOWER:
             return true;
         case SPRITE_SPELL_FIRE_METEOR_SHOWER_1:
             _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(
-                a2, colorTable.OrangeyRed.C32(), effpar01, 300.0);
+                a2, colorTable.OrangeyRed.c32(), effpar01, 300.0);
             _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(
-                a2, colorTable.OrangeyRed.C32(), effpar01, 250.0);
+                a2, colorTable.OrangeyRed.c32(), effpar01, 250.0);
             _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(
-                a2, colorTable.OrangeyRed.C32(), effpar01, 200.0);
-            AddMobileLight(a2, colorTable.OrangeyRed.C32(), 256);
+                a2, colorTable.OrangeyRed.c32(), effpar01, 200.0);
+            AddMobileLight(a2, colorTable.OrangeyRed.c32(), 256);
             return false;
 
         case SPRITE_SPELL_FIRE_INFERNO:
             _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(
-                a2, colorTable.OrangeyRed.C32(), effpar01, 250.0);
+                a2, colorTable.OrangeyRed.c32(), effpar01, 250.0);
             return false;
 
         case SPRITE_SPELL_FIRE_INCINERATE:
             return true;
         case SPRITE_SPELL_FIRE_INCINERATE_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, colorTable.OrangeyRed.C32(), effpar01);
-            _4A75CC_single_spell_collision_particle(a2, colorTable.OrangeyRed.C32(), effpar01);
-            AddMobileLight(a2, colorTable.OrangeyRed.C32(), 256);
+            _4A75CC_single_spell_collision_particle(a2, colorTable.OrangeyRed.c32(), effpar01);
+            _4A75CC_single_spell_collision_particle(a2, colorTable.OrangeyRed.c32(), effpar01);
+            AddMobileLight(a2, colorTable.OrangeyRed.c32(), 256);
             return false;
 
         case SPRITE_SPELL_AIR_SPARKS:
@@ -877,7 +876,7 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             //return false;
 
         case SPRITE_SPELL_AIR_SPARKS_POP:
-            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, colorTable.MustardYellow.C32(), effpar02, 200.0);
+            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, colorTable.MustardYellow.c32(), effpar02, 200.0);
             return false;
 
         case SPRITE_SPELL_AIR_LIGHTNING_BOLT:
@@ -888,8 +887,8 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             AddProjectile(a2, 100, assets->GetBitmap(pContainer));
             return false;
         case SPRITE_SPELL_AIR_LIGHTNING_BOLT_IMPACT:
-            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, colorTable.MustardYellow.C32(), effpar02, 200.0);
-            AddMobileLight(a2, colorTable.MustardYellow.C32(), 256);
+            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, colorTable.MustardYellow.c32(), effpar02, 200.0);
+            AddMobileLight(a2, colorTable.MustardYellow.c32(), 256);
             return false;
 
         case SPRITE_SPELL_AIR_IMPLOSION:
@@ -900,29 +899,29 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
         case SPRITE_SPELL_AIR_STARBURST:
             return true;
         case SPRITE_SPELL_AIR_STARBURST_1:
-            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, colorTable.MustardYellow.C32(), effpar01, 200.0);
-            AddMobileLight(a2, colorTable.MustardYellow.C32(), 256);
+            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, colorTable.MustardYellow.c32(), effpar01, 200.0);
+            AddMobileLight(a2, colorTable.MustardYellow.c32(), 256);
             return false;
 
         case SPRITE_SPELL_WATER_POISON_SPRAY:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, colorTable.GreenTeal.C32(), effpar01);
-            AddMobileLight(a2, colorTable.GreenTeal.C32(), 256);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, colorTable.GreenTeal.c32(), effpar01);
+            AddMobileLight(a2, colorTable.GreenTeal.c32(), 256);
             return false;
         case SPRITE_SPELL_WATER_POISON_SPRAY_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, colorTable.GreenTeal.C32(), effpar01);
-            AddMobileLight(a2, colorTable.GreenTeal.C32(), 256);
+            _4A75CC_single_spell_collision_particle(a2, colorTable.GreenTeal.c32(), effpar01);
+            AddMobileLight(a2, colorTable.GreenTeal.c32(), 256);
             return false;
 
         case SPRITE_SPELL_WATER_ICE_BOLT:
             return true;
         case SPRITE_SPELL_WATER_ICE_BOLT_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, colorTable.CarolinaBlue.C32(), effpar01);
-            AddMobileLight(a2, colorTable.CarolinaBlue.C32(), 256);
+            _4A75CC_single_spell_collision_particle(a2, colorTable.CarolinaBlue.c32(), effpar01);
+            AddMobileLight(a2, colorTable.CarolinaBlue.c32(), 256);
             return false;
 
         case SPRITE_SPELL_WATER_ACID_BURST:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, colorTable.GreenTeal.C32(), effpar01);
-            AddMobileLight(a2, colorTable.GreenTeal.C32(), 256);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, colorTable.GreenTeal.c32(), effpar01);
+            AddMobileLight(a2, colorTable.GreenTeal.c32(), 256);
             return false;
         case SPRITE_SPELL_WATER_ACID_BURST_IMPACT:
             return true;
@@ -930,11 +929,11 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
         case SPRITE_SPELL_WATER_ICE_BLAST:
             return true;
         case SPRITE_SPELL_WATER_ICE_BLAST_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, colorTable.CarolinaBlue.C32(), effpar01);
-            AddMobileLight(a2, colorTable.CarolinaBlue.C32(), 256);
+            _4A75CC_single_spell_collision_particle(a2, colorTable.CarolinaBlue.c32(), effpar01);
+            AddMobileLight(a2, colorTable.CarolinaBlue.c32(), 256);
             return false;
         case SPRITE_SPELL_WATER_ICE_BLAST_FALLOUT:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, colorTable.CarolinaBlue.C32(), effpar01);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, colorTable.CarolinaBlue.c32(), effpar01);
             return false;
 
         case SPRITE_SPELL_EARTH_STUN:
@@ -950,7 +949,7 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
         case SPRITE_SPELL_EARTH_ROCK_BLAST:
             return true;
         case SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, colorTable.CarnabyTan.C32(), effpar01);
+            _4A75CC_single_spell_collision_particle(a2, colorTable.CarnabyTan.c32(), effpar01);
             return false;
 
         case SPRITE_SPELL_EARTH_TELEKINESIS:
@@ -963,13 +962,13 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             return false;
 
         case SPRITE_SPELL_EARTH_DEATH_BLOSSOM:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, colorTable.MediumGrey.C32(), effpar01);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, colorTable.MediumGrey.c32(), effpar01);
             return true;
         case SPRITE_SPELL_EARTH_DEATH_BLOSSOM_IMPACT:
-            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, colorTable.MediumGrey.C32(), effpar01, 200.0);
+            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, colorTable.MediumGrey.c32(), effpar01, 200.0);
             return false;
         case SPRITE_SPELL_EARTH_DEATH_BLOSSOM_FALLOUT:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, colorTable.MediumGrey.C32(), effpar01);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, colorTable.MediumGrey.c32(), effpar01);
             return false;
 
         case SPRITE_SPELL_EARTH_MASS_DISTORTION:
@@ -992,31 +991,31 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             // if ( !render->pRenderD3D )
             //  return true;
             //_4A78AE_sparks_spell(a2);
-            AddMobileLight(a2, colorTable.GreenishBrown.C32(), 128);
+            AddMobileLight(a2, colorTable.GreenishBrown.c32(), 128);
             return true;
             //return false;
         case SPRITE_SPELL_BODY_HARM_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, colorTable.BloodRed.C32(), effpar01);
+            _4A75CC_single_spell_collision_particle(a2, colorTable.BloodRed.c32(), effpar01);
             return false;
 
         case SPRITE_SPELL_BODY_FLYING_FIST:
             return true;
         case SPRITE_SPELL_BODY_FLYING_FIST_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, colorTable.BloodRed.C32(), effpar01);
-            AddMobileLight(a2, colorTable.BloodRed.C32(), 256);
+            _4A75CC_single_spell_collision_particle(a2, colorTable.BloodRed.c32(), effpar01);
+            AddMobileLight(a2, colorTable.BloodRed.c32(), 256);
             return false;
 
         case SPRITE_SPELL_LIGHT_LIGHT_BOLT:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, colorTable.White.C32(), effpar03);
-            AddMobileLight(a2, colorTable.White.C32(), 128);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, colorTable.White.c32(), effpar03);
+            AddMobileLight(a2, colorTable.White.c32(), 128);
             return false;
         case SPRITE_SPELL_LIGHT_LIGHT_BOLT_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, colorTable.White.C32(), effpar02);
-            AddMobileLight(a2, colorTable.White.C32(), 256);
+            _4A75CC_single_spell_collision_particle(a2, colorTable.White.c32(), effpar02);
+            AddMobileLight(a2, colorTable.White.c32(), 256);
             return false;
 
         case SPRITE_SPELL_LIGHT_DESTROY_UNDEAD:
-            AddMobileLight(a2, colorTable.White.C32(), 64);
+            AddMobileLight(a2, colorTable.White.c32(), 64);
             return false;
 
         case SPRITE_SPELL_LIGHT_PARALYZE:
@@ -1027,13 +1026,13 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             return true;
 
         case SPRITE_SPELL_LIGHT_SUNRAY:
-            AddMobileLight(a2, colorTable.White.C32(), 128);
+            AddMobileLight(a2, colorTable.White.c32(), 128);
             // if ( !render->pRenderD3D )
             //  return true;
             AddProjectile(a2, 100, nullptr);
             return false;
         case SPRITE_SPELL_LIGHT_SUNRAY_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, colorTable.White.C32(), effpar03);
+            _4A75CC_single_spell_collision_particle(a2, colorTable.White.c32(), effpar03);
             return false;
 
         case SPRITE_SPELL_DARK_REANIMATE:
@@ -1047,7 +1046,7 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
         case SPRITE_SPELL_DARK_SHARPMETAL:
             return true;
         case SPRITE_SPELL_DARK_SHARPMETAL_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, colorTable.MediumGrey.C32(), effpar01);
+            _4A75CC_single_spell_collision_particle(a2, colorTable.MediumGrey.c32(), effpar01);
             return false;
 
         case SPRITE_SPELL_DARK_SACRIFICE:

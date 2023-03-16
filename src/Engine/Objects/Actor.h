@@ -241,9 +241,11 @@ void ToggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag,
 bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID);
 bool SpawnActor(unsigned int uMonsterID);
 void Spawn_Light_Elemental(int spell_power, PLAYER_SKILL_MASTERY caster_skill_mastery, int duration_game_seconds);
-void SpawnEncounter(struct MapInfo *pMapInfo, SpawnPoint *spawn,
-                    int a3, int a4, int a5);
-void area_of_effect__damage_evaluate();
+void SpawnEncounter(struct MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5);
+/**
+ * @offset 0x438F8F
+ */
+void evaluateAoeDamage();
 double sub_43AE12(signed int a1);
 void ItemDamageFromActor(unsigned int uObjID, unsigned int uActorID,
                          Vec3i *pVelocity);

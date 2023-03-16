@@ -6,18 +6,18 @@
 
 #include "Format.h"
 
-static inline unsigned char AsciiToLower(unsigned char c) {
+static inline unsigned char asciiToLower(unsigned char c) {
     return ((((c) >= 'A') && ((c) <= 'Z')) ? ((c) - 'A' + 'a') : (c));
 }
 
-static int AsciiCaseInsensitiveCompare(const char *l, const char *r, size_t size) {
+static int asciiCaseInsensitiveCompare(const char *l, const char *r, size_t size) {
     // There is no C api for ascii-only strnicmp, so we have to roll out our own.
     // The difference from the original strnicmp is that we don't check for null terminators.
     const unsigned char *ul = reinterpret_cast<const unsigned char *>(l);
     const unsigned char *ur = reinterpret_cast<const unsigned char *>(r);
 
     for (; size > 0; size--) {
-        int result = static_cast<int>(AsciiToLower(*ul++)) - static_cast<int>(AsciiToLower(*ur++));
+        int result = static_cast<int>(asciiToLower(*ul++)) - static_cast<int>(asciiToLower(*ur++));
         if (result != 0)
             return result;
     }
@@ -25,7 +25,7 @@ static int AsciiCaseInsensitiveCompare(const char *l, const char *r, size_t size
     return 0;
 }
 
-static std::string_view ToCharStringView(std::u8string_view s) {
+static std::string_view toCharStringView(std::u8string_view s) {
     return std::string_view(reinterpret_cast<const char *>(s.data()), s.size());
 }
 
@@ -79,18 +79,18 @@ bool istarts_with(std::string_view s, std::string_view prefix) {
     if (s.size() < prefix.size())
         return false;
 
-    return AsciiCaseInsensitiveCompare(s.data(), prefix.data(), prefix.size()) == 0;
+    return asciiCaseInsensitiveCompare(s.data(), prefix.data(), prefix.size()) == 0;
 }
 
 bool iequals(std::string_view a, std::string_view b) {
     if (a.size() != b.size())
         return false;
 
-    return AsciiCaseInsensitiveCompare(a.data(), b.data(), a.size()) == 0;
+    return asciiCaseInsensitiveCompare(a.data(), b.data(), a.size()) == 0;
 }
 
 bool iless(std::string_view a, std::string_view b) {
-    int result = AsciiCaseInsensitiveCompare(a.data(), b.data(), std::min(a.size(), b.size()));
+    int result = asciiCaseInsensitiveCompare(a.data(), b.data(), std::min(a.size(), b.size()));
     if (result < 0)
         return true;
     if (result > 0)
@@ -99,9 +99,9 @@ bool iless(std::string_view a, std::string_view b) {
 }
 
 bool iequalsAscii(std::u8string_view a, std::u8string_view b) {
-    return iequals(ToCharStringView(a), ToCharStringView(b));
+    return iequals(toCharStringView(a), toCharStringView(b));
 }
 
 bool ilessAscii(std::u8string_view a, std::u8string_view b) {
-    return iless(ToCharStringView(a), ToCharStringView(b));
+    return iless(toCharStringView(a), toCharStringView(b));
 }

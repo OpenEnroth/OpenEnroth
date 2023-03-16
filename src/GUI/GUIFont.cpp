@@ -103,11 +103,11 @@ void GUIFont::CreateFontTex() {
                 if (*pCharPixels) {
                     if (*pCharPixels != 1) {
                         // add to normal
-                        pPixelsfont[offset + x + y * 512] = colorTable.White.C32();
+                        pPixelsfont[offset + x + y * 512] = colorTable.White.c32();
                     }
                     if (*pCharPixels == 1) {
                         // add to shadow
-                        pPixelsshadow[offset + x + y * 512] = colorTable.White.C32();
+                        pPixelsshadow[offset + x + y * 512] = colorTable.White.c32();
                     }
                 }
                 ++pCharPixels;
@@ -171,7 +171,7 @@ void GUIFont::DrawTextLine(const std::string &text, uint16_t uDefaultColor, Poin
                     uint16_t draw_color = text_color;
                     uint8_t *pCharPixels = &pData->pFontData[pData->font_pixels_offset[c]];
                     if (!text_color) {
-                        draw_color = colorTable.White.C16();
+                        draw_color = colorTable.White.c16();
                     }
 
                     int xsq = c % 16;
@@ -206,9 +206,9 @@ void DrawCharToBuff(uint32_t *draw_buff, uint8_t *pCharPixels, int uCharWidth, i
                     uint8_t r = pFontPalette[3];
                     uint8_t g = pFontPalette[4];
                     uint8_t b = pFontPalette[5];
-                    *draw_buff = Color32(r, g, b);
+                    *draw_buff = color32(r, g, b);
                 } else {
-                    *draw_buff = Color32(draw_color);
+                    *draw_buff = color32(draw_color);
                 }
             }
             ++draw_buff;
@@ -571,8 +571,8 @@ void GUIFont::DrawText(GUIWindow *pWindow, Pointi position, uint16_t uFontColor,
                         float v1 = (ysq * 32.0f) / 512.0f;
                         float v2 = (ysq * 32.0f + pData->uFontHeight) / 512.0f;
 
-                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, Color16(r, g, b));
-                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, colorTable.Black.C16());
+                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, color16(r, g, b));
+                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, colorTable.Black.c16());
                     }
 
                     out_x += pData->pMetrics[c].uWidth;
@@ -720,8 +720,8 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, Pointi position, uint16_t uColor
                     float v1 = (ysq * 32.0f) / 512.0f;
                     float v2 = (ysq * 32.0f + pData->uFontHeight) / 512.0f;
 
-                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, Color16(r, g, b));
-                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, colorTable.Black.C16());
+                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, color16(r, g, b));
+                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, colorTable.Black.c16());
                 }
                 text_pos_x += char_width;
                 if (i < (int)pNumLen) {

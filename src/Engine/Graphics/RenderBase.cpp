@@ -138,7 +138,7 @@ void RenderBase::DrawSpriteObjects() {
             }
             if (!onlist) continue;
         } else {
-            if (!IsCylinderInFrustum(object->vPosition.ToFloat(), 512.0f)) continue;
+            if (!IsCylinderInFrustum(object->vPosition.toFloat(), 512.0f)) continue;
         }
 
         // render as sprte 500 - 9081
@@ -154,7 +154,7 @@ void RenderBase::DrawSpriteObjects() {
             }
 
             // sprite angle to camera
-            unsigned int angle = TrigLUT.Atan2(x - pCamera3D->vCameraPos.x, y - pCamera3D->vCameraPos.y);
+            unsigned int angle = TrigLUT.atan2(x - pCamera3D->vCameraPos.x, y - pCamera3D->vCameraPos.y);
             int octant = ((TrigLUT.uIntegerPi + (TrigLUT.uIntegerPi >> 3) + object->uFacing - angle) >> 8) & 7;
 
             pBillboardRenderList[::uNumBillboardsToDraw].hwsprite = frame->hw_sprites[octant];
@@ -185,7 +185,7 @@ void RenderBase::DrawSpriteObjects() {
             int blue = pSpriteObjects[i].GetParticleTrailColorB();
             if (blue == 0) blue = 0xFF;
             if (lightradius) {
-                pMobileLightsStack->AddLight(object->vPosition.ToFloat(),
+                pMobileLightsStack->AddLight(object->vPosition.toFloat(),
                                              object->uSectorID, lightradius, red, green, blue, _4E94D3_light_type);
             }
 
@@ -259,7 +259,7 @@ void RenderBase::PrepareDecorationsRenderList_ODM() {
         }
 
         // view cull
-        if (!IsCylinderInFrustum(pLevelDecorations[i].vPosition.ToFloat(), 512.0f)) continue;
+        if (!IsCylinderInFrustum(pLevelDecorations[i].vPosition.toFloat(), 512.0f)) continue;
 
         // LevelDecoration* decor = &pLevelDecorations[i];
         if ((!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_OBELISK_CHEST) ||
@@ -286,11 +286,8 @@ void RenderBase::PrepareDecorationsRenderList_ODM() {
                     // v8 = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID,
                     // v6 + v7);
 
-                    int v10 = TrigLUT.Atan2(
-                        pLevelDecorations[i].vPosition.x -
-                        pCamera3D->vCameraPos.x,
-                        pLevelDecorations[i].vPosition.y -
-                        pCamera3D->vCameraPos.y);
+                    int v10 = TrigLUT.atan2(pLevelDecorations[i].vPosition.x - pCamera3D->vCameraPos.x,
+                                            pLevelDecorations[i].vPosition.y - pCamera3D->vCameraPos.y);
                     v38 = 0;
                     v13 = ((signed int)(TrigLUT.uIntegerPi +
                         ((signed int)TrigLUT.uIntegerPi >>
@@ -319,8 +316,7 @@ void RenderBase::PrepareDecorationsRenderList_ODM() {
                                 r = g = b_ = 255;
                             }
                         }
-                        pStationaryLightsStack->AddLight(
-                            pLevelDecorations[i].vPosition.ToFloat() +
+                        pStationaryLightsStack->AddLight(pLevelDecorations[i].vPosition.toFloat() +
                             Vec3f(0, 0, decor_desc->uDecorationHeight / 2),
                             frame->uGlowRadius, r, g, b_, _4E94D0_light_type);
                     }  // for light
@@ -384,7 +380,7 @@ void RenderBase::PrepareDecorationsRenderList_ODM() {
                 // Emit fire particles.
                 memset(&local_0, 0, sizeof(Particle_sw));
                 local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
-                local_0.uDiffuse = colorTable.OrangeyRed.C32();
+                local_0.uDiffuse = colorTable.OrangeyRed.c32();
                 local_0.x = static_cast<float>(pLevelDecorations[i].vPosition.x);
                 local_0.y = static_cast<float>(pLevelDecorations[i].vPosition.y);
                 local_0.z = static_cast<float>(pLevelDecorations[i].vPosition.z);
@@ -679,22 +675,22 @@ Image* RenderBase::TakeScreenshot(unsigned int width, unsigned int height) {
 }
 
 void RenderBase::DrawTextureGrayShade(float a2, float a3, Image* a4) {
-    DrawMasked(a2, a3, a4, 1, colorTable.MediumGrey.C32());
+    DrawMasked(a2, a3, a4, 1, colorTable.MediumGrey.c32());
 }
 
 void RenderBase::DrawTransparentRedShade(float u, float v, Image* a4) {
-    DrawMasked(u, v, a4, 0, colorTable.Red.C32());
+    DrawMasked(u, v, a4, 0, colorTable.Red.c32());
 }
 
 void RenderBase::DrawTransparentGreenShade(float u, float v, Image* pTexture) {
-    DrawMasked(u, v, pTexture, 0, colorTable.Green.C32());
+    DrawMasked(u, v, pTexture, 0, colorTable.Green.c32());
 }
 
 void RenderBase::DrawMasked(float u, float v, Image* pTexture, unsigned int color_dimming_level, uint32_t mask) {
     int b = ((mask >> 16) & 0xFF) & (0xFF >> color_dimming_level);
     int g = ((mask >> 8) & 0xFF) & (0xFF >> color_dimming_level);
     int r = ((mask) & 0xFF) & (0xFF >> color_dimming_level);
-    mask = Color32(r, g, b);
+    mask = color32(r, g, b);
 
     DrawTextureNew(u, v, pTexture, mask);
     return;
@@ -780,7 +776,7 @@ void RenderBase::DrawSpecialEffectsQuad(Texture* texture, int palette) {
     targetrect.w = pViewport->uViewportBR_X - pViewport->uViewportTL_X;
     targetrect.h = pViewport->uViewportBR_Y - pViewport->uViewportTL_Y;
 
-    DrawImage(texture, targetrect, palette, colorTable.MediumGrey.C32());
+    DrawImage(texture, targetrect, palette, colorTable.MediumGrey.c32());
 }
 
 void RenderBase::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {

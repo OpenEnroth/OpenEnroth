@@ -59,11 +59,11 @@ bool Chest::Open(int uChestID) {
     if (!chest->Initialized() || engine->config->gameplay.ChestTryPlaceItems.Get() == 1)
         Chest::PlaceItems(uChestID);
 
-    if (!uActiveCharacter) return false;
+    if (!pParty->_activeCharacter) return false;
     flag_shout = false;
     unsigned int pMapID = pMapStats->GetMapInfo(pCurrentMapName);
     if (chest->Trapped() && pMapID) {
-        if (pPlayers[uActiveCharacter]->GetDisarmTrap() <
+        if (pPlayers[pParty->_activeCharacter]->GetDisarmTrap() <
             2 * pMapStats->pInfos[pMapID].LockX5) {
             pSpriteID[0] = SPRITE_TRAP_FIRE;
             pSpriteID[1] = SPRITE_TRAP_LIGHTNING;
@@ -109,9 +109,8 @@ bool Chest::Open(int uChestID) {
                 *(float*)&sRotY = 0.0;
             } else {
                 sRotY = (int64_t)sqrt(dir_x * dir_x + dir_y * dir_y);
-                sRotX = TrigLUT.Atan2((int64_t)dir_x, (int64_t)dir_y);
-                sRotY =
-                    TrigLUT.Atan2(dir_y * dir_y, (int64_t)dir_z);
+                sRotX = TrigLUT.atan2((int64_t) dir_x, (int64_t) dir_y);
+                sRotY = TrigLUT.atan2(dir_y * dir_y, (int64_t) dir_z);
             }
             pDepth = 256;
             if (length_vector < 256.0)
@@ -119,8 +118,7 @@ bool Chest::Open(int uChestID) {
             v.x = pObjectX;
             v.y = pObjectY;
             v.z = pObjectZ;
-            Vec3i::Rotate(pDepth, sRotX, sRotY, v, &pOut.x, &pOut.z,
-                              &pOut.y);
+            Vec3i::rotate(pDepth, sRotX, sRotY, v, &pOut.x, &pOut.z, &pOut.y);
             SpriteObject::Drop_Item_At(
                 pSpriteID[pRandom], pOut.x, pOut.z, pOut.y, 0, 1, 0,
                 SPRITE_IGNORE_RANGE | SPRITE_NO_Z_BUFFER, 0);
@@ -146,11 +144,11 @@ bool Chest::Open(int uChestID) {
             pAudioPlayer->PlaySound(SOUND_fireBall, 0, 0, -1, 0, 0);
             pSpellObject.ExplosionTraps();
             chest->uFlags &= ~CHEST_TRAPPED;
-            if (uActiveCharacter && !_A750D8_player_speech_timer &&
+            if (pParty->_activeCharacter && !_A750D8_player_speech_timer &&
                 !OpenedTelekinesis) {
                 _A750D8_player_speech_timer = 256;
                 PlayerSpeechID = SPEECH_TrapExploded;
-                uSpeakingCharacter = uActiveCharacter - 1;
+                uSpeakingCharacter = pParty->_activeCharacter - 1;
             }
             OpenedTelekinesis = false;
             return false;
@@ -162,7 +160,7 @@ bool Chest::Open(int uChestID) {
     pAudioPlayer->PlaySound(SOUND_openchest0101, 0, 0, -1, 0, 0);
     if (flag_shout == true) {
         if (!OpenedTelekinesis)
-            pPlayers[uActiveCharacter]->PlaySound(SPEECH_TrapDisarmed, 0);
+            pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_TrapDisarmed, 0);
     }
     OpenedTelekinesis = false;
     /*pChestWindow =*/ pGUIWindow_CurrentMenu = new GUIWindow_Chest(uChestID);
@@ -330,8 +328,8 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
         }
 
         if (test_pos == max_size) {  // limits check no room
-            if (uActiveCharacter) {
-                pPlayers[uActiveCharacter]->PlaySound(SPEECH_NoRoom, 0);
+            if (pParty->_activeCharacter) {
+                pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_NoRoom, 0);
             }
             return 0;
         }
@@ -565,7 +563,7 @@ void Chest::OnChestLeftClick() {
 }
 
 void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using spacebar
-    if (pParty->pPickedItem.uItemID != ITEM_NULL || !uActiveCharacter) {
+    if (pParty->pPickedItem.uItemID != ITEM_NULL || !pParty->_activeCharacter) {
         return;
     }
 
@@ -588,8 +586,8 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
             goldamount += chestitem.special_enchantment;
             goldcount++;
         } else {  // this should add item to invetory of active char - if that fails set as holding item and break
-            if (uActiveCharacter && (InventSlot = pPlayers[uActiveCharacter]->AddItem(-1, chestitem.uItemID)) != 0) {  // can place
-                memcpy(&pPlayers[uActiveCharacter]->pInventoryItemList[InventSlot - 1], &chestitem, 0x24u);
+            if (pParty->_activeCharacter && (InventSlot = pPlayers[pParty->_activeCharacter]->AddItem(-1, chestitem.uItemID)) != 0) {  // can place
+                memcpy(&pPlayers[pParty->_activeCharacter]->pInventoryItemList[InventSlot - 1], &chestitem, 0x24u);
                 grabcount++;
                 GameUI_SetStatusBar(
                     LSTR_FMT_YOU_FOUND_ITEM,
@@ -598,7 +596,7 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
             } else {  // no room so set as holding item
                 pParty->SetHoldingItem(&chestitem);
                 RemoveItemAtChestIndex(loop);
-                pPlayers[uActiveCharacter]->PlaySound(SPEECH_NoRoom, 0);
+                pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_NoRoom, 0);
                 break;
             }
         }

@@ -80,7 +80,7 @@ Blob Blob::read(FileInputStream& file, size_t size) {
         return Blob();
 
     std::unique_ptr<void, FreeDeleter> memory(malloc(size));
-    file.ReadOrFail(memory.get(), size);
+    file.readOrFail(memory.get(), size);
     return Blob(memory.release(), size, &staticFreeBlobHandler);
 }
 

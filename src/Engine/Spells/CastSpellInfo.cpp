@@ -408,7 +408,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (pActors[monster_id].DoesDmgTypeDoDamage(DMGT_EARTH)) {
                         Vec3i spell_velocity = Vec3i(0, 0, 0);
                         pActors[monster_id].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION]
-                            .Apply(GameTime(pMiscTimer->uTotalGameTimeElapsed + 128), PLAYER_SKILL_MASTERY_NONE, 0, 0, 0);
+                            .Apply(GameTime(pMiscTimer->uTotalGameTimeElapsed + 128), spell_mastery, 0, 0, 0);
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.uSectorID = 0;
                         pSpellSprite.field_60_distance_related_prolly_lod = 0;
@@ -646,7 +646,9 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_DARK_SHRINKING_RAY:
                 {
                     // TODO: spell_id different?
-                    initSpellSprite(&pSpellSprite, spell_level * 300, spell_mastery, pCastSpell);
+                    // Spell level was multiplied by 300 (which number of seconds in 5 minutes)
+                    // This calculation was moved to spell impact processing function
+                    initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
@@ -865,7 +867,7 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
                     int monster_id = PID_ID(spell_targeted_at);
-                    float dist = (pActors[monster_id].vPosition - pParty->vPosition).ToFloat().Length();
+                    float dist = (pActors[monster_id].vPosition - pParty->vPosition).toFloat().length();
                     if (dist <= 307.2) {
                         Vec3i spell_velocity = Vec3i(0, 0, 0);
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
@@ -973,12 +975,12 @@ void CastSpellInfoHelpers::castSpell() {
                     int meteor_num = (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) ? 20 : 16;
                     for (; meteor_num; meteor_num--) {
                         int originHeight = grng->Random(1000);
-                        if (Vec3s(j, k, originHeight - 2500).Length() <= 1.0) {
+                        if (Vec3s(j, k, originHeight - 2500).length() <= 1.0) {
                             pitch = 0;
                             yaw = 0;
                         } else {
-                            pitch = TrigLUT.Atan2(sqrt(j * j + k * k), originHeight - 2500);
-                            yaw = TrigLUT.Atan2(j, k);
+                            pitch = TrigLUT.atan2(sqrt(j * j + k * k), originHeight - 2500);
+                            yaw = TrigLUT.atan2(j, k);
                         }
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.vPosition = dist + Vec3i(0, 0, originHeight + 2500);
@@ -1017,7 +1019,7 @@ void CastSpellInfoHelpers::castSpell() {
                         Actor::DamageMonsterFromParty(PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), actor->id, &spell_velocity);
                         spell_fx_renderer->RenderAsSprite(&pSpellSprite);
                     }
-                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.OrangeyRed.C32(), 0x40);
+                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.OrangeyRed.c32(), 0x40);
                     break;
                 }
 
@@ -1187,12 +1189,12 @@ void CastSpellInfoHelpers::castSpell() {
                     int yaw, pitch;
                     for (int star_num = 20; star_num; star_num--) {
                         int originHeight = grng->Random(1000);
-                        if (Vec3s(j, k, originHeight - 2500).Length() <= 1.0) {
+                        if (Vec3s(j, k, originHeight - 2500).length() <= 1.0) {
                             pitch = 0;
                             yaw = 0;
                         } else {
-                            pitch = TrigLUT.Atan2(sqrt(j * j + k * k), originHeight - 2500);
-                            yaw = TrigLUT.Atan2(j, k);
+                            pitch = TrigLUT.atan2(sqrt(j * j + k * k), originHeight - 2500);
+                            yaw = TrigLUT.atan2(j, k);
                         }
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.vPosition = dist + Vec3i(0, 0, originHeight + 2500);
@@ -1758,7 +1760,7 @@ void CastSpellInfoHelpers::castSpell() {
                             actor->pActorBuffs[ACTOR_BUFF_AFRAID].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
                         }
                     }
-                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.White.C32(), 192);
+                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.White.c32(), 192);
                     break;
                 }
 
@@ -2113,7 +2115,7 @@ void CastSpellInfoHelpers::castSpell() {
                             }
                         }
                     }
-                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.Night.C32(), 192);
+                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.Night.c32(), 192);
                     break;
                 }
 
@@ -2404,7 +2406,7 @@ void CastSpellInfoHelpers::castSpell() {
                             buff.Reset();
                         }
                     }
-                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.VibrantGreen.C32(), 192);
+                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.VibrantGreen.c32(), 192);
                     break;
                 }
 
@@ -2873,7 +2875,7 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, i);
                         }
                     }
-                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.Black.C32(), 64);
+                    spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.Black.c32(), 64);
                     break;
                 }
 
@@ -3190,7 +3192,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
         if (flags & ON_CAST_TargetedEnchantment) {
             pGUIWindow_CastTargetedSpell = pCastSpellInfo[result].GetCastSpellInInventoryWindow();
             IsEnchantingInProgress = true;
-            some_active_character = uActiveCharacter;
+            some_active_character = pParty->_activeCharacter;
             pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
@@ -3211,7 +3213,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
 void pushTempleSpell(SPELL_TYPE spell) {
     PLAYER_SKILL skill_value = ConstructSkillValue(PLAYER_SKILL_MASTERY_MASTER, pParty->uCurrentDayOfMonth % 7 + 1);
 
-    pushSpellOrRangedAttack(spell, uActiveCharacter - 1, skill_value,
+    pushSpellOrRangedAttack(spell, pParty->_activeCharacter - 1, skill_value,
                             ON_CAST_TargetIsParty | ON_CAST_NoRecoverySpell, 0);
 }
 

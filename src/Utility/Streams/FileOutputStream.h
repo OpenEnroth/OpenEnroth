@@ -12,18 +12,18 @@ class FileOutputStream : public OutputStream {
     explicit FileOutputStream(std::string_view path);
     virtual ~FileOutputStream();
 
-    void Open(std::string_view path);
+    void open(std::string_view path);
 
-    bool IsOpen() const {
+    bool isOpen() const {
         return _file != nullptr;
     }
 
-    virtual void Write(const void *data, size_t size) override;
-    virtual void Flush() override;
-    virtual void Close() override;
+    virtual void write(const void *data, size_t size) override;
+    virtual void flush() override;
+    virtual void close() override;
 
  private:
-    void CloseInternal(bool canThrow);
+    void closeInternal(bool canThrow);
 
  private:
     std::string _path;

@@ -433,13 +433,13 @@ void AudioPlayer::LoadAudioSnd() {
     static_assert(sizeof(SoundHeader_mm7) == 52, "Wrong type size");
 
     std::string file_path = MakeDataPath("sounds", "audio.snd");
-    fAudioSnd.Open(MakeDataPath("sounds", "audio.snd"));
+    fAudioSnd.open(MakeDataPath("sounds", "audio.snd"));
 
     uint32_t uNumSoundHeaders {};
-    fAudioSnd.ReadOrFail(&uNumSoundHeaders, sizeof(uNumSoundHeaders));
+    fAudioSnd.readOrFail(&uNumSoundHeaders, sizeof(uNumSoundHeaders));
     for (uint32_t i = 0; i < uNumSoundHeaders; i++) {
         SoundHeader_mm7 header_mm7;
-        fAudioSnd.ReadOrFail(&header_mm7, sizeof(header_mm7));
+        fAudioSnd.readOrFail(&header_mm7, sizeof(header_mm7));
         SoundHeader header;
         header.uFileOffset = header_mm7.uFileOffset;
         header.uCompressedSize = header_mm7.uCompressedSize;
@@ -501,7 +501,7 @@ Blob AudioPlayer::LoadSound(int uSoundID) {  // bit of a kludge (load sound by I
 
     header = it->second;
 
-    fAudioSnd.Seek(header.uFileOffset);
+    fAudioSnd.seek(header.uFileOffset);
     if (header.uCompressedSize >= header.uDecompressedSize) {
         header.uCompressedSize = header.uDecompressedSize;
         if (header.uDecompressedSize) {
@@ -523,7 +523,7 @@ Blob AudioPlayer::LoadSound(const std::string &pSoundName) {
         return Blob();
     }
 
-    fAudioSnd.Seek(header.uFileOffset);
+    fAudioSnd.seek(header.uFileOffset);
     if (header.uCompressedSize >= header.uDecompressedSize) {
         header.uCompressedSize = header.uDecompressedSize;
         if (header.uDecompressedSize) {

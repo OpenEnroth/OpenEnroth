@@ -7,7 +7,6 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/stru123.h"
 #include "Engine/stru160.h"
-#include "Engine/stru298.h"
 #include "Engine/stru367.h"
 #include "MapInfo.h"
 #include "OurMath.h"
@@ -16,7 +15,6 @@ MapStats *pMapStats;
 Viewport *pViewport = new Viewport;
 ViewingParams *viewparams = new ViewingParams;
 stru123 stru_5E4C90_MapPersistVars;
-stru298 AttackerInfo;
 std::array<Autonote, 196> pAutonoteTxt;
 std::array<Award, 105> pAwards;
 std::array<AwardType, 1000> achieved_awards;
@@ -2388,7 +2386,6 @@ GUIButton *pBtn_ZoomIn;  // idb
 unsigned int uGameUIFontShadow;
 unsigned int uGameUIFontMain;
 int dword_507B00_spell_info_to_draw_in_popup;
-unsigned int uActiveCharacter;
 int dword_507BF0_is_there_popup_onscreen;
 int awards_scroll_bar_created;
 int dword_507CC0_activ_ch;

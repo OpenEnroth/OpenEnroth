@@ -217,7 +217,7 @@ static unsigned int GameMenuUI_GetKeyBindingColor(InputAction action) {
         else
             intensity = +70 - 70 * time / 800;
 
-        return Color16(185 + intensity, 40 + intensity / 4, 40 + intensity / 4);
+        return color16(185 + intensity, 40 + intensity / 4, 40 + intensity / 4);
     }
 
     return ui_gamemenu_keys_key_default_color;
@@ -577,71 +577,71 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
         }
 
         if (!player->CanAct()) {
-            player = pPlayers[uActiveCharacter];
+            player = pPlayers[pParty->_activeCharacter];
         }
-        if (player->CanAct() || !pPlayers[uActiveCharacter]->CanAct()) {
+        if (player->CanAct() || !pPlayers[pParty->_activeCharacter]->CanAct()) {
             player->PlaySound(SPEECH_NoRoom, 0);
         }
     }
 
     if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
-        if (uActiveCharacter != uPlayerID) {
+        if (pParty->_activeCharacter != uPlayerID) {
             if (pPlayers[uPlayerID]->uTimeToRecovery || !pPlayers[uPlayerID]->CanAct()) {
                 return;
             }
 
-            uActiveCharacter = uPlayerID;
+            pParty->_activeCharacter = uPlayerID;
             return;
         }
         pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(
-            uActiveCharacter,
+            pParty->_activeCharacter,
             CURRENT_SCREEN::SCREEN_CHARACTERS);  // CharacterUI_Initialize(SCREEN_CHARACTERS);
         return;
     }
     if (current_screen_type == CURRENT_SCREEN::SCREEN_SPELL_BOOK) return;
     if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST) {
-        if (uActiveCharacter == uPlayerID) {
+        if (pParty->_activeCharacter == uPlayerID) {
             current_character_screen_window = WINDOW_CharacterWindow_Inventory;
             current_screen_type = CURRENT_SCREEN::SCREEN_CHEST_INVENTORY;
-            uActiveCharacter = uPlayerID;
+            pParty->_activeCharacter = uPlayerID;
             return;
         }
         if (pPlayers[uPlayerID]->uTimeToRecovery) {
             return;
         }
-        uActiveCharacter = uPlayerID;
+        pParty->_activeCharacter = uPlayerID;
         return;
     }
     if (current_screen_type != CURRENT_SCREEN::SCREEN_HOUSE) {
         if (current_screen_type == CURRENT_SCREEN::SCREEN_E) {
-            uActiveCharacter = uPlayerID;
+            pParty->_activeCharacter = uPlayerID;
             return;
         }
         if (current_screen_type != CURRENT_SCREEN::SCREEN_CHEST_INVENTORY) {
-            uActiveCharacter = uPlayerID;
+            pParty->_activeCharacter = uPlayerID;
             if (current_character_screen_window ==
                 WINDOW_CharacterWindow_Awards) {
                 FillAwardsData();
             }
             return;
         }
-        if (uActiveCharacter == uPlayerID) {
+        if (pParty->_activeCharacter == uPlayerID) {
             current_character_screen_window = WINDOW_CharacterWindow_Inventory;
             current_screen_type = CURRENT_SCREEN::SCREEN_CHEST_INVENTORY;
-            uActiveCharacter = uPlayerID;
+            pParty->_activeCharacter = uPlayerID;
             return;
         }
         if (pPlayers[uPlayerID]->uTimeToRecovery) {
             return;
         }
-        uActiveCharacter = uPlayerID;
+        pParty->_activeCharacter = uPlayerID;
         return;
     }
     if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
         return;
     }
-    if (uActiveCharacter != uPlayerID) {
-        uActiveCharacter = uPlayerID;
+    if (pParty->_activeCharacter != uPlayerID) {
+        pParty->_activeCharacter = uPlayerID;
         return;
     }
     if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD ||
@@ -649,7 +649,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
         __debugbreak();  // fix indexing
         current_character_screen_window = WINDOW_CharacterWindow_Inventory;
         pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(
-            uActiveCharacter, CURRENT_SCREEN::SCREEN_E);  // CharacterUI_Initialize(SCREEN_E);
+            pParty->_activeCharacter, CURRENT_SCREEN::SCREEN_E);  // CharacterUI_Initialize(SCREEN_E);
         return;
     }
 }
@@ -700,10 +700,10 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
                     (popup_window.uFrameY + 36) / 480.0f,
                     assets->GetImage_ColorKey(tex_name));
 
-                popup_window.DrawTitleText(pFontArrus, 0, 12, colorTable.PaleCanary.C16(), NameAndTitle(pNPC), 3);
+                popup_window.DrawTitleText(pFontArrus, 0, 12, colorTable.PaleCanary.c16(), NameAndTitle(pNPC), 3);
                 popup_window.uFrameWidth -= 24;
                 popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
-                popup_window.DrawText(pFontArrus, {100, 36}, 0, BuildDialogueString((char *)lpsz, uActiveCharacter - 1, 0, 0, 0));
+                popup_window.DrawText(pFontArrus, {100, 36}, 0, BuildDialogueString((char *)lpsz, pParty->_activeCharacter - 1, 0, 0, 0));
             }
         }
     }
@@ -1124,11 +1124,11 @@ void GameUI_WritePointedObjectStatusString() {
                     // if (mouse.x <= 13 || mouse.x >= 462)
                     // return;
                     // testing =
-                    // pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(invmatrixindex);
+                    // pPlayers[pParty->_activeCharacter]->GetItemIDAtInventoryIndex(invmatrixindex);
                     pItemGen =
-                        pPlayers[uActiveCharacter]->GetItemAtInventoryIndex(
+                        pPlayers[pParty->_activeCharacter]->GetItemAtInventoryIndex(
                             invmatrixindex);  // (ItemGen
-                                              // *)&pPlayers[uActiveCharacter]->pInventoryItemList[testing
+                                              // *)&pPlayers[pParty->_activeCharacter]->pInventoryItemList[testing
                                               // - 1];
 
                     // TODO(captainurist): get rid of this std::to_underlying cast.
@@ -1136,7 +1136,7 @@ void GameUI_WritePointedObjectStatusString() {
                     // if (!pItemID)
                     // return;
                     // item =
-                    // &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID -
+                    // &pPlayers[pParty->_activeCharacter]->pInventoryItemList[pItemID -
                     // 1];
 
                     // v14 = render->pActiveZBuffer[pX +
@@ -1207,13 +1207,13 @@ void GameUI_WritePointedObjectStatusString() {
                         case 3:  // hovering over buttons
                             if (pButton->Contains(pX, pY)) {
                                 PLAYER_SKILL_TYPE skill = static_cast<PLAYER_SKILL_TYPE>(pButton->msg_param);
-                                PLAYER_SKILL_LEVEL skillLevel = pPlayers[uActiveCharacter]->GetSkillLevel(skill);
+                                PLAYER_SKILL_LEVEL skillLevel = pPlayers[pParty->_activeCharacter]->GetSkillLevel(skill);
                                 requiredSkillpoints = skillLevel + 1;
 
                                 if (skills_max_level[skill] <= skillLevel)
                                     GameUI_StatusBar_Set(localization->GetString(LSTR_SKILL_ALREADY_MASTERED));
-                                else if (pPlayers[uActiveCharacter]->uSkillPoints < requiredSkillpoints)
-                                    GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_NEED_MORE_SKILL_POINTS, requiredSkillpoints - pPlayers[uActiveCharacter]->uSkillPoints));
+                                else if (pPlayers[pParty->_activeCharacter]->uSkillPoints < requiredSkillpoints)
+                                    GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_NEED_MORE_SKILL_POINTS, requiredSkillpoints - pPlayers[pParty->_activeCharacter]->uSkillPoints));
                                 else
                                     GameUI_StatusBar_Set(localization->FormatString(LSTR_FMT_CLICKING_WILL_SPEND_POINTS, requiredSkillpoints));
 
@@ -1327,15 +1327,15 @@ void GameUI_WritePointedObjectStatusString() {
                              && pY >= pButton->uY && pY <= pButton->uW)
                              {
                              requiredSkillpoints =
-                             (pPlayers[uActiveCharacter]->pActiveSkills[pButton->msg_param]
+                             (pPlayers[pParty->_activeCharacter]->pActiveSkills[pButton->msg_param]
                              & 0x3F) + 1;
 
                              std::string str;
-                             if (pPlayers[uActiveCharacter]->uSkillPoints <
+                             if (pPlayers[pParty->_activeCharacter]->uSkillPoints <
                              requiredSkillpoints)      str =
                              localization->FormatString(
                              LSTR_FMT_NEED_MORE_SKILL_POINTS, requiredSkillpoints -
-                             pPlayers[uActiveCharacter]->uSkillPoints);
+                             pPlayers[pParty->_activeCharacter]->uSkillPoints);
                              else      str =
                              localization->FormatString(
                              LSTR_FMT_CLICKING_WILL_SPEND_POINTS, requiredSkillpoints);
@@ -1360,10 +1360,10 @@ void GameUI_WritePointedObjectStatusString() {
 
 //----- (0044158F) --------------------------------------------------------
 void GameUI_DrawCharacterSelectionFrame() {
-    if (uActiveCharacter)
+    if (pParty->_activeCharacter)
         render->DrawTextureNew(
             (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing
-                 [uActiveCharacter - 1] -
+                 [pParty->_activeCharacter - 1] -
              9) /
                 640.0f,
             380 / 480.0f, game_ui_player_selection_frame);
@@ -1695,7 +1695,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
         }
         render->BeginLines2D();
     } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-        render->FillRectFast(uX, uY, uZ - uX, uHeight, colorTable.NavyBlue.C32());
+        render->FillRectFast(uX, uY, uZ - uX, uHeight, colorTable.NavyBlue.c32());
         uNumBlueFacesInBLVMinimap = 0;
         render->BeginLines2D();
         for (uint i = 0; i < (uint)pIndoor->pMapOutlines.size(); ++i) {
@@ -1742,7 +1742,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
             int pY = uCenterY - ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex1ID].y)) << 16) - uZoom * pParty->vPosition.y) >> 16);
             int pZ = uCenterX + ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex2ID].x)) << 16) - uZoom * pParty->vPosition.x) >> 16);
             int pW = uCenterY - ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex2ID].y)) << 16) - uZoom * pParty->vPosition.y) >> 16);
-            render->RasterLine2D(pX, pY, pZ, pW, Color32(ui_game_minimap_outline_color));
+            render->RasterLine2D(pX, pY, pZ, pW, color32(ui_game_minimap_outline_color));
         }
     }
 
@@ -1774,31 +1774,23 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                             .uFlags &
                         OBJECT_DESC_UNPICKABLE) {
                         render->RasterLine2D(pPoint_X, pPoint_Y, pPoint_X + 1,
-                                             pPoint_Y + 1,
-                                            Color32(ui_game_minimap_projectile_color));
+                                             pPoint_Y + 1, color32(ui_game_minimap_projectile_color));
                     } else if (uZoom > 512) {
                         render->RasterLine2D(pPoint_X - 2, pPoint_Y,
-                                             pPoint_X - 2, pPoint_Y + 1 + lineadj,
-                                            Color32(ui_game_minimap_treasure_color));
+                                             pPoint_X - 2, pPoint_Y + 1 + lineadj, color32(ui_game_minimap_treasure_color));
                         render->RasterLine2D(pPoint_X - 1, pPoint_Y - 1,
-                                             pPoint_X - 1, pPoint_Y + 1 + lineadj,
-                                            Color32(ui_game_minimap_treasure_color));
+                                             pPoint_X - 1, pPoint_Y + 1 + lineadj, color32(ui_game_minimap_treasure_color));
                         render->RasterLine2D(pPoint_X, pPoint_Y - 2, pPoint_X,
-                                             pPoint_Y + 1 + lineadj,
-                                            Color32(ui_game_minimap_treasure_color));
+                                             pPoint_Y + 1 + lineadj, color32(ui_game_minimap_treasure_color));
                         render->RasterLine2D(pPoint_X + 1, pPoint_Y - 1,
-                                             pPoint_X + 1, pPoint_Y + 1 + lineadj,
-                                            Color32(ui_game_minimap_treasure_color));
+                                             pPoint_X + 1, pPoint_Y + 1 + lineadj, color32(ui_game_minimap_treasure_color));
                         render->RasterLine2D(pPoint_X + 2, pPoint_Y,
-                                             pPoint_X + 2, pPoint_Y + 1 + lineadj,
-                                            Color32(ui_game_minimap_treasure_color));
+                                             pPoint_X + 2, pPoint_Y + 1 + lineadj, color32(ui_game_minimap_treasure_color));
                     } else {
                         render->RasterLine2D(pPoint_X - 1, pPoint_Y - 1,
-                                             pPoint_X - 1, pPoint_Y + lineadj,
-                                            Color32(ui_game_minimap_treasure_color));
+                                             pPoint_X - 1, pPoint_Y + lineadj, color32(ui_game_minimap_treasure_color));
                         render->RasterLine2D(pPoint_X, pPoint_Y - 1, pPoint_X,
-                                             pPoint_Y + lineadj,
-                                            Color32(ui_game_minimap_treasure_color));
+                                             pPoint_Y + lineadj, color32(ui_game_minimap_treasure_color));
                     }
                 }
             }
@@ -1820,11 +1812,11 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 //  && pPoint_Y >= render->raster_clip_y && pPoint_Y <=
                 //  render->raster_clip_w )
                 {
-                    pColor = Color32(ui_game_minimap_actor_friendly_color);
+                    pColor = color32(ui_game_minimap_actor_friendly_color);
                     if (pActors[i].uAttributes & ACTOR_HOSTILE)
-                        pColor = Color32(ui_game_minimap_actor_hostile_color);
+                        pColor = color32(ui_game_minimap_actor_hostile_color);
                     if (pActors[i].uAIState == Dead)
-                        pColor = Color32(ui_game_minimap_actor_corpse_color);
+                        pColor = color32(ui_game_minimap_actor_corpse_color);
                     if (uZoom > 1024) {
                         render->RasterLine2D(pPoint_X - 2, pPoint_Y - 1,
                                              pPoint_X - 2, pPoint_Y + 1 + lineadj,
@@ -1864,11 +1856,11 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 //  render->raster_clip_w )
                 {
                     if ((signed int)uZoom > 512) {
-                        render->RasterLine2D(pPoint_X - 1, pPoint_Y - 1, pPoint_X - 1, pPoint_Y + 1, Color32(ui_game_minimap_decoration_color_1));
-                        render->RasterLine2D(pPoint_X, pPoint_Y - 1, pPoint_X, pPoint_Y + 1, Color32(ui_game_minimap_decoration_color_1));
-                        render->RasterLine2D(pPoint_X + 1, pPoint_Y - 1, pPoint_X + 1, pPoint_Y + 1, Color32(ui_game_minimap_decoration_color_1));
+                        render->RasterLine2D(pPoint_X - 1, pPoint_Y - 1, pPoint_X - 1, pPoint_Y + 1, color32(ui_game_minimap_decoration_color_1));
+                        render->RasterLine2D(pPoint_X, pPoint_Y - 1, pPoint_X, pPoint_Y + 1, color32(ui_game_minimap_decoration_color_1));
+                        render->RasterLine2D(pPoint_X + 1, pPoint_Y - 1, pPoint_X + 1, pPoint_Y + 1, color32(ui_game_minimap_decoration_color_1));
                     } else {
-                        render->RasterLine2D(pPoint_X, pPoint_Y, pPoint_X, pPoint_Y, Color32(ui_game_minimap_decoration_color_1));
+                        render->RasterLine2D(pPoint_X, pPoint_Y, pPoint_X, pPoint_Y, color32(ui_game_minimap_decoration_color_1));
                     }
                 }
             }
@@ -1985,7 +1977,7 @@ unsigned int UI_GetHealthManaAndOtherQualitiesStringColor(int actual_value,
         R = 0, G = 255, B = 0;
     }
 
-    return Color16(R, G, B);
+    return color16(R, G, B);
 }
 
 //----- (00417939) --------------------------------------------------------
@@ -2230,13 +2222,13 @@ void GUIWindow_DebugMenu::Update() {
 void buttonbox(int x, int y, const char* text, int col) {
     int width = 108;
     int height = 20;
-    render->FillRectFast(x, y, width+1, height+1, Color32(50, 50, 50));
+    render->FillRectFast(x, y, width+1, height+1, color32(50, 50, 50));
 
     //render->BeginLines2D();
-    render->RasterLine2D(x-1, y-1, x+width+1, y-1, colorTable.Jonquil.C32());
-    render->RasterLine2D(x-1, y-1, x-1, y+height+1, colorTable.Jonquil.C32());
-    render->RasterLine2D(x-1, y+height+1, x+width+1, y+height+1, colorTable.Jonquil.C32());
-    render->RasterLine2D(x+width+1, y-1, x+width+1, y+height+1, colorTable.Jonquil.C32());
+    render->RasterLine2D(x-1, y-1, x+width+1, y-1, colorTable.Jonquil.c32());
+    render->RasterLine2D(x-1, y-1, x-1, y+height+1, colorTable.Jonquil.c32());
+    render->RasterLine2D(x-1, y+height+1, x+width+1, y+height+1, colorTable.Jonquil.c32());
+    render->RasterLine2D(x+width+1, y-1, x+width+1, y+height+1, colorTable.Jonquil.c32());
     //render->EndLines2D();
 
     uint16_t colour = ui_character_condition_severe_color;

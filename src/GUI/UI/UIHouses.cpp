@@ -776,11 +776,11 @@ void InitializaDialogueOptions(BuildingType type) {
 
 
 bool HouseUI_CheckIfPlayerCanInteract() {
-    if (uActiveCharacter == 0) {  // to avoid access zeroeleement
+    if (pParty->_activeCharacter == 0) {  // to avoid access zeroeleement
         return false;
     }
 
-    if (pPlayers[uActiveCharacter]->CanAct()) {
+    if (pPlayers[pParty->_activeCharacter]->CanAct()) {
         pDialogueWindow->pNumPresenceButton = dword_F8B1E0;
         return true;
     } else {
@@ -792,7 +792,7 @@ bool HouseUI_CheckIfPlayerCanInteract() {
 
         std::string str = localization->FormatString(
             LSTR_FMT_S_IS_IN_NO_CODITION_TO_S,
-            pPlayers[uActiveCharacter]->pName.c_str(),
+            pPlayers[pParty->_activeCharacter]->pName.c_str(),
             localization->GetString(LSTR_DO_ANYTHING));
         window.DrawTitleText(
             pFontArrus, 0,
@@ -839,8 +839,8 @@ bool EnterHouse(HOUSE_ID uHouseID) {
         }
 
         GameUI_SetStatusBar(LSTR_FMT_OPEN_TIME, uOpenTime, localization->GetAmPm(am_pm_flag_open), uCloseTime, localization->GetAmPm(am_pm_flag_close));
-        if (uActiveCharacter)
-            pPlayers[uActiveCharacter]->PlaySound(SPEECH_StoreClosed, 0);
+        if (pParty->_activeCharacter)
+            pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_StoreClosed, 0);
 
         return 0;
     } else {
@@ -889,10 +889,10 @@ bool EnterHouse(HOUSE_ID uHouseID) {
         } else {  // guilds
             int membership = guild_membership_flags[uHouseID - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE];
 
-            if (uActiveCharacter == 0)  // avoid nzi
-                uActiveCharacter = pParty->GetFirstCanAct();
+            if (pParty->_activeCharacter == 0)  // avoid nzi
+                pParty->_activeCharacter = pParty->GetFirstCanAct();
 
-            if (!_449B57_test_bit(pPlayers[uActiveCharacter]->_achieved_awards_bits, membership)) {
+            if (!_449B57_test_bit(pPlayers[pParty->_activeCharacter]->_achieved_awards_bits, membership)) {
                 PlayHouseSound(uHouseID, HouseSound_Greeting_2);
                 return 1;
             }
@@ -989,15 +989,15 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
         if (in_current_building_type == BuildingType_Training) {
             if (option == DIALOGUE_TRAINING_HALL_TRAIN) {
                 experience_for_next_level = 0;
-                if (pPlayers[uActiveCharacter]->uLevel > 0) {
-                    for (uint i = 0; i < pPlayers[uActiveCharacter]->uLevel;
+                if (pPlayers[pParty->_activeCharacter]->uLevel > 0) {
+                    for (uint i = 0; i < pPlayers[pParty->_activeCharacter]->uLevel;
                         i++)
                         experience_for_next_level += i + 1;
                 }
-                if (pPlayers[uActiveCharacter]->uLevel <
+                if (pPlayers[pParty->_activeCharacter]->uLevel <
                     pMaxLevelPerTrainingHallType
                     [window_SpeakInHouse->wData.val - 89] &&
-                    (int64_t)pPlayers[uActiveCharacter]->uExperience <
+                    (int64_t)pPlayers[pParty->_activeCharacter]->uExperience <
                     1000 * experience_for_next_level)  // test experience
                     return;
             }
@@ -1021,8 +1021,8 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                 pBtn_ExitCancel = pDialogueWindow->CreateButton({526, 445}, {75, 33}, 1, 0,
                     UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_END_CONVERSATION), {ui_buttdesc2});
                 pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
-            } else if (uActiveCharacter) {
-                if (!pPlayers[uActiveCharacter]->IsPlayerHealableByTemple())
+            } else if (pParty->_activeCharacter) {
+                if (!pPlayers[pParty->_activeCharacter]->IsPlayerHealableByTemple())
                     return;
             }
         }
@@ -1422,11 +1422,11 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                     window_SpeakInHouse->wData.val - 1].fPriceMultiplier * 500.0);
             }
 
-            pPrice = v36 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
+            pPrice = v36 * (100 - pPlayers[pParty->_activeCharacter]->GetMerchant()) / 100;
             if (pPrice < v36 / 3) pPrice = v36 / 3;
             auto skill = GetLearningDialogueSkill(option);
-            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][skill] != PLAYER_SKILL_MASTERY_NONE) {
-                if (!pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
+            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[pParty->_activeCharacter]->classType][skill] != PLAYER_SKILL_MASTERY_NONE) {
+                if (!pPlayers[pParty->_activeCharacter]->pActiveSkills[skill]) {
                     if (pParty->GetGold() < pPrice) {
                         GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
                         if (in_current_building_type == BuildingType_Training
@@ -1440,8 +1440,8 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                     } else {
                         pParty->TakeGold(pPrice);
                         dword_F8B1E4 = 1;
-                        pPlayers[uActiveCharacter]->pActiveSkills[skill] = 1;
-                        pPlayers[uActiveCharacter]->PlayAwardSound_Anim97_Face(SPEECH_SkillLearned);
+                        pPlayers[pParty->_activeCharacter]->pActiveSkills[skill] = 1;
+                        pPlayers[pParty->_activeCharacter]->PlayAwardSound_Anim97_Face(SPEECH_SkillLearned);
                     }
                 }
             }
@@ -1471,11 +1471,11 @@ void TravelByTransport() {
     travel_window.uFrameWidth = 143;
     travel_window.uFrameZ = 334;
 
-    assert(uActiveCharacter > 0); // code in this function couldn't handle uActiveCharacter = 0 and crash
+    assert(pParty->_activeCharacter > 0); // code in this function couldn't handle pParty->_activeCharacter = 0 and crash
 
     int base_price = p2DEvents[window_SpeakInHouse->wData.val - 1].uType == BuildingType_Stables ? 25 : 50;
     base_price *= p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
-    int pPrice = base_price * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
+    int pPrice = base_price * (100 - pPlayers[pParty->_activeCharacter]->GetMerchant()) / 100;
     if (pPrice < base_price / 3) pPrice = base_price / 3;
     int route_id = window_SpeakInHouse->wData.val - HOUSE_STABLES_HARMONDALE;
 
@@ -1513,9 +1513,9 @@ void TravelByTransport() {
                         _449B57_test_bit(pParty->_quest_bits, transport_schedule[schedule_id].uQuestBit))) {
                     uint16_t color{};
                     if (pDialogueWindow->pCurrentPosActiveItem == pCurrentButton)
-                        color = colorTable.PaleCanary.C16();
+                        color = colorTable.PaleCanary.c16();
                     else
-                        color = colorTable.White.C16();
+                        color = colorTable.White.c16();
 
                     pTopicArray[index] = fmt::format("\f{:05}", color);
 
@@ -1546,7 +1546,7 @@ void TravelByTransport() {
                     fmt::format("{}\n \n{}{}{}{}{}", travelcost, pTopicArray[0], pTopicArray[1], pTopicArray[2], pTopicArray[3], pTopicArray[4]), 3);
             } else {
                 travel_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), travel_window.uFrameWidth, 0)) / 2 + 138,
-                    colorTable.White.C16(), localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), 3);
+                                            colorTable.White.c16(), localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), 3);
                 pAudioPlayer->PauseSounds(-1);
             }
         }
@@ -1606,7 +1606,7 @@ void TravelByTransport() {
                 }
 
                 RestAndHeal(24 * 60 * traveltimedays);
-                pPlayers[uActiveCharacter]->PlaySound(pSpeech, 0);
+                pPlayers[pParty->_activeCharacter]->PlaySound(pSpeech, 0);
                 auto timeLimit = std::chrono::system_clock::now() + std::chrono::milliseconds(speechlength);
                 while (std::chrono::system_clock::now() < timeLimit) {
                     std::this_thread::sleep_for(1ms);
@@ -1655,7 +1655,7 @@ void TownHallDialog() {
     townHall_window.uFrameZ = 334;
 
     std::string fine_str = fmt::format("{}: {}", localization->GetString(LSTR_CURRENT_FINE), pParty->uFine);
-    townHall_window.DrawTitleText(pFontArrus, 0, 260, colorTable.PaleCanary.C16(), fine_str, 3);
+    townHall_window.DrawTitleText(pFontArrus, 0, 260, colorTable.PaleCanary.c16(), fine_str, 3);
 
     switch (dialog_menu_id) {
     case DIALOGUE_MAIN:
@@ -1687,9 +1687,9 @@ void TownHallDialog() {
                 pButton->uHeight = pTextHeight;
                 v17 = pButton->uY + pTextHeight - 1;
                 pButton->uW = v17 + 6;
-                pTextColor = colorTable.PaleCanary.C16();
+                pTextColor = colorTable.PaleCanary.c16();
                 if (pDialogueWindow->pCurrentPosActiveItem != v31)
-                    pTextColor = colorTable.White.C16();
+                    pTextColor = colorTable.White.c16();
                 townHall_window.DrawTitleText(pFontArrus, 0, pButton->uY, pTextColor, pShopOptions[j], 3);
                 ++v31;
                 ++j;
@@ -1700,9 +1700,8 @@ void TownHallDialog() {
     case DIALOGUE_TOWNHALL_MESSAGE:
     {
         current_npc_text = stringPrintf(bountyHunting_text,
-                                        fmt::format("\f{:05}{}\f{:05}", colorTable.PaleCanary.C16(),
-                                                    pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting].pName,
-                                                    colorTable.White.C16()).c_str(),
+                                        fmt::format("\f{:05}{}\f{:05}", colorTable.PaleCanary.c16(),
+                                                    pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting].pName, colorTable.White.c16()).c_str(),
                                         100 * pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting].uLevel);
         GUIWindow window = *pDialogueWindow;
         window.uFrameWidth = 458;
@@ -1722,9 +1721,9 @@ void TownHallDialog() {
     case DIALOGUE_TOWNHALL_PAY_FINE:
     {
         if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
-            townHall_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary.C16(),
+            townHall_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary.c16(),
                                           fmt::format("{}\n{}", localization->GetString(LSTR_PAY), localization->GetString(LSTR_HOW_MUCH)), 3);
-            townHall_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White.C16(), keyboardInputHandler->GetTextInput().c_str(), 3);
+            townHall_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White.c16(), keyboardInputHandler->GetTextInput().c_str(), 3);
             townHall_window.DrawFlashingInputCursor(pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput().c_str()) / 2 + 80, 185, pFontArrus);
             return;
         } else if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CONFIRMED) {
@@ -1743,8 +1742,8 @@ void TownHallDialog() {
 
                     pParty->TakeGold(sum);
                     pParty->TakeFine(sum);
-                    if (uActiveCharacter)
-                        pPlayers[uActiveCharacter]->PlaySound(SPEECH_BankDeposit, 0);
+                    if (pParty->_activeCharacter)
+                        pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_BankDeposit, 0);
                 }
             }
         }
@@ -1764,21 +1763,21 @@ void BankDialog() {
     bank_window.uFrameWidth = 143;
     bank_window.uFrameZ = 334;
     bank_window.DrawTitleText(
-        pFontArrus, 0, 220, colorTable.PaleCanary.C16(),
+        pFontArrus, 0, 220, colorTable.PaleCanary.c16(),
         fmt::format("{}: {}", localization->GetString(LSTR_BALANCE), pParty->uNumGoldInBank),
         3);
     switch (dialog_menu_id) {
     case DIALOGUE_MAIN:
     {
-        uint16_t pColorText = colorTable.PaleCanary.C16();
+        uint16_t pColorText = colorTable.PaleCanary.c16();
         if (pDialogueWindow->pCurrentPosActiveItem != 2) {
-            pColorText = colorTable.White.C16();
+            pColorText = colorTable.White.c16();
         }
         bank_window.DrawTitleText(pFontArrus, 0, 146, pColorText,
             localization->GetString(LSTR_DEPOSIT), 3);
-        pColorText = colorTable.PaleCanary.C16();
+        pColorText = colorTable.PaleCanary.c16();
         if (pDialogueWindow->pCurrentPosActiveItem != 3) {
-            pColorText = colorTable.White.C16();
+            pColorText = colorTable.White.c16();
         }
         bank_window.DrawTitleText(pFontArrus, 0, 176, pColorText,
             localization->GetString(LSTR_WITHDRAW), 3);
@@ -1787,9 +1786,9 @@ void BankDialog() {
     case DIALOGUE_BANK_PUT_GOLD:
     {
         if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
-            bank_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary.C16(),
+            bank_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary.c16(),
                                       fmt::format("{}\n{}", localization->GetString(LSTR_DEPOSIT), localization->GetString(LSTR_HOW_MUCH)), 3);
-            bank_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White.C16(), keyboardInputHandler->GetTextInput().c_str(), 3);
+            bank_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White.c16(), keyboardInputHandler->GetTextInput().c_str(), 3);
             bank_window.DrawFlashingInputCursor(pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput().c_str()) / 2 + 80, 185, pFontArrus);
             return;
         }
@@ -1809,8 +1808,8 @@ void BankDialog() {
             if (sum > 0) {
                 pParty->TakeGold(sum);
                 pParty->AddBankGold(sum);
-                if (uActiveCharacter) {
-                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_BankDeposit, 0);
+                if (pParty->_activeCharacter) {
+                    pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_BankDeposit, 0);
                 }
             }
         }
@@ -1821,9 +1820,9 @@ void BankDialog() {
     case DIALOGUE_BANK_GET_GOLD:
     {
         if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
-            bank_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary.C16(),
+            bank_window.DrawTitleText(pFontArrus, 0, 146, colorTable.PaleCanary.c16(),
                                       fmt::format("{}\n{}", localization->GetString(LSTR_WITHDRAW), localization->GetString(LSTR_HOW_MUCH)), 3);
-            bank_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White.C16(), keyboardInputHandler->GetTextInput().c_str(), 3);
+            bank_window.DrawTitleText(pFontArrus, 0, 186, colorTable.White.c16(), keyboardInputHandler->GetTextInput().c_str(), 3);
             bank_window.DrawFlashingInputCursor(pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput().c_str()) / 2 + 80, 185, pFontArrus);
             return;
         } else if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CONFIRMED) {
@@ -1883,17 +1882,17 @@ void TavernDialog() {
     dialog_window.uFrameZ = 334;
     v2 = p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
 
-    if (uActiveCharacter == 0)  // avoid nzi
-        uActiveCharacter = pParty->GetFirstCanAct();
+    if (pParty->_activeCharacter == 0)  // avoid nzi
+        pParty->_activeCharacter = pParty->GetFirstCanAct();
 
     pPriceRoom = ((v2 * v2) / 10) *
-        (100 - pPlayers[uActiveCharacter]->GetMerchant()) /
+        (100 - pPlayers[pParty->_activeCharacter]->GetMerchant()) /
         100;  // nzi
     if (pPriceRoom < ((v2 * v2) / 10) / 3) pPriceRoom = ((v2 * v2) / 10) / 3;
     if (pPriceRoom <= 0) pPriceRoom = 1;
 
     pPriceFood = ((v2 * v2) * v2 / 100) *
-        (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
+        (100 - pPlayers[pParty->_activeCharacter]->GetMerchant()) / 100;
     if (pPriceFood < ((v2 * v2) * v2 / 100) / 3)
         pPriceFood = ((v2 * v2) * v2 / 100) / 3;
     if (pPriceFood <= 0) pPriceFood = 1;
@@ -1905,16 +1904,16 @@ void TavernDialog() {
 
         std::string topic1 = fmt::format("\f{:05}",
                 pDialogueWindow->pCurrentPosActiveItem == 2
-                ? colorTable.PaleCanary.C16()
-                : colorTable.White.C16()) +
-            localization->FormatString(LSTR_FMT_RENT_ROOM_FOR_D_GOLD, pPriceRoom);
+                ? colorTable.PaleCanary.c16()
+                : colorTable.White.c16()) +
+                             localization->FormatString(LSTR_FMT_RENT_ROOM_FOR_D_GOLD, pPriceRoom);
         pTopic1Height = pFontArrus->CalcTextHeight(
             topic1, dialog_window.uFrameWidth, 0);
 
         std::string topic2 = fmt::format("\f{:05}",
                 pDialogueWindow->pCurrentPosActiveItem == 3
-                ? colorTable.PaleCanary.C16()
-                : colorTable.White.C16())
+                ? colorTable.PaleCanary.c16()
+                : colorTable.White.c16())
             + localization->FormatString(
                 LSTR_FMT_BUY_D_FOOD_FOR_D_GOLD,
                 (unsigned int)
@@ -1924,9 +1923,9 @@ void TavernDialog() {
 
         std::string topic3 = fmt::format("\f{:05}",
                 pDialogueWindow->pCurrentPosActiveItem == 4
-                ? colorTable.PaleCanary.C16()
-                : colorTable.White.C16()) +
-            localization->GetString(LSTR_LEARN_SKILLS);
+                ? colorTable.PaleCanary.c16()
+                : colorTable.White.c16()) +
+                             localization->GetString(LSTR_LEARN_SKILLS);
         pTopic3Height = pFontArrus->CalcTextHeight(topic3, dialog_window.uFrameWidth, 0);
 
         std::string topic4;
@@ -1935,8 +1934,8 @@ void TavernDialog() {
             topic4 =
                 fmt::format("\f{:05}",
                     pDialogueWindow->pCurrentPosActiveItem == 5
-                    ? colorTable.PaleCanary.C16()
-                    : colorTable.White.C16()) +
+                    ? colorTable.PaleCanary.c16()
+                    : colorTable.White.c16()) +
                 localization->GetString(LSTR_PLAY_ARCOMAGE);
             pTopic4Height = pFontArrus->CalcTextHeight(
                 topic4, dialog_window.uFrameWidth, 0);
@@ -2000,7 +1999,7 @@ void TavernDialog() {
         }
         render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
         render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-        window_SpeakInHouse->DrawText(pOutString, {12, 354 - pTextHeight}, colorTable.Black.C16(),
+        window_SpeakInHouse->DrawText(pOutString, {12, 354 - pTextHeight}, colorTable.Black.c16(),
             pOutString->FitTextInAWindow(str, dialog_window.uFrameWidth, 12), 0, 0, 0);
         break;
     }
@@ -2019,7 +2018,7 @@ void TavernDialog() {
             ui_leather_mm7, pTextHeight);
         render->DrawTextureNew(
             8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-        window_SpeakInHouse->DrawText(pFontArrus, {12, 354 - pTextHeight}, colorTable.Black.C16(),
+        window_SpeakInHouse->DrawText(pFontArrus, {12, 354 - pTextHeight}, colorTable.Black.c16(),
             pFontArrus->FitTextInAWindow(label, dialog_window.uFrameWidth, 12));
         break;
     }
@@ -2040,8 +2039,7 @@ void TavernDialog() {
             (174 - pFontArrus->CalcTextHeight(
                 pText, dialog_window.uFrameWidth, 0)) /
             2 +
-            138,
-            colorTable.PaleCanary.C16(), pText, 3);
+            138, colorTable.PaleCanary.c16(), pText, 3);
         break;
     }
     case DIALOGUE_TAVERN_REST:
@@ -2072,7 +2070,7 @@ void TavernDialog() {
         pSkillCount = 0;
         v9 = (int64_t)(p2DEvents[
             window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
-        pPriceSkill = v9 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
+        pPriceSkill = v9 * (100 - pPlayers[pParty->_activeCharacter]->GetMerchant()) / 100;
         if (pPriceSkill < v9 / 3) pPriceSkill = v9 / 3;
         all_text_height = 0;
         for (int i = pDialogueWindow->pStartingPosActiveItem;
@@ -2082,8 +2080,8 @@ void TavernDialog() {
             auto skill = GetLearningDialogueSkill(
                 (DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param
             );
-            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
-                && !pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
+            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[pParty->_activeCharacter]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
+                && !pPlayers[pParty->_activeCharacter]->pActiveSkills[skill]) {
                 all_text_height = pFontArrus->CalcTextHeight(
                     localization->GetSkillName(skill),
                     dialog_window.uFrameWidth, 0);
@@ -2099,8 +2097,8 @@ void TavernDialog() {
         if ((double)pParty->GetFood() >=
             p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier) {
             GameUI_SetStatusBar(LSTR_RATIONS_FULL);
-            if (uActiveCharacter)
-                pPlayers[uActiveCharacter]->PlaySound(SPEECH_PacksFull, 0);
+            if (pParty->_activeCharacter)
+                pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_PacksFull, 0);
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
@@ -2149,9 +2147,9 @@ void TavernDialog() {
                 pButton->uHeight = pTextHeight;
                 v54 = pButton->uY + pTextHeight - 1;
                 pButton->uW = v54 + 6;
-                int pColorText = colorTable.PaleCanary.C16();
+                int pColorText = colorTable.PaleCanary.c16();
                 if (pDialogueWindow->pCurrentPosActiveItem != pItemNum)
-                    pColorText = colorTable.White.C16();
+                    pColorText = colorTable.White.c16();
                 dialog_window.DrawTitleText(pFontArrus, 0, pButton->uY,
                     pColorText,
                     pShopOptions[pNumString], 3);
@@ -2180,11 +2178,11 @@ void TempleDialog() {
     tample_window.uFrameWidth = 143;
     tample_window.uFrameZ = 334;
 
-    if (uActiveCharacter == 0) {  // avoid nzi
-        uActiveCharacter = pParty->GetFirstCanAct();
+    if (pParty->_activeCharacter == 0) {  // avoid nzi
+        pParty->_activeCharacter = pParty->GetFirstCanAct();
     }
 
-    pPrice = pPlayers[uActiveCharacter]->GetTempleHealCostModifier(
+    pPrice = pPlayers[pParty->_activeCharacter]->GetTempleHealCostModifier(
         p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
     if (dialog_menu_id == DIALOGUE_MAIN) {
         index = 1;
@@ -2192,7 +2190,7 @@ void TempleDialog() {
             pDialogueWindow->pStartingPosActiveItem);
         pButton->uHeight = 0;
         pButton->uY = 0;
-        if (pPlayers[uActiveCharacter]->IsPlayerHealableByTemple()) {
+        if (pPlayers[pParty->_activeCharacter]->IsPlayerHealableByTemple()) {
             static std::string shop_option_container;
             shop_option_container =
                 fmt::format("{} {} {}",
@@ -2236,9 +2234,9 @@ void TempleDialog() {
                 pButton->uHeight = pTextHeight;
                 pButton->uW = pButton->uY + pTextHeight - 1 + 6;
                 all_text_height = pButton->uW;
-                pTextColor = colorTable.PaleCanary.C16();
+                pTextColor = colorTable.PaleCanary.c16();
                 if (pDialogueWindow->pCurrentPosActiveItem != index + 2)
-                    pTextColor = colorTable.White.C16();
+                    pTextColor = colorTable.White.c16();
                 tample_window.DrawTitleText(pFontArrus, 0, pButton->uY,
                     pTextColor, pShopOptions[1 * i], 3);
                 i++;
@@ -2249,7 +2247,7 @@ void TempleDialog() {
     }
     //-------------------------------------------------
     if (dialog_menu_id == DIALOGUE_TEMPLE_HEAL) {
-        if (!pPlayers[uActiveCharacter]->IsPlayerHealableByTemple()) return;
+        if (!pPlayers[pParty->_activeCharacter]->IsPlayerHealableByTemple()) return;
         if (pParty->GetGold() < pPrice) {
             GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
             PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_NotEnoughMoney);
@@ -2258,66 +2256,66 @@ void TempleDialog() {
         }
         pParty->TakeGold(pPrice);
 
-        pPlayers[uActiveCharacter]->conditions.ResetAll();
-        pPlayers[uActiveCharacter]->sHealth =
-            pPlayers[uActiveCharacter]->GetMaxHealth();
-        pPlayers[uActiveCharacter]->sMana =
-            pPlayers[uActiveCharacter]->GetMaxMana();
+        pPlayers[pParty->_activeCharacter]->conditions.ResetAll();
+        pPlayers[pParty->_activeCharacter]->sHealth =
+            pPlayers[pParty->_activeCharacter]->GetMaxHealth();
+        pPlayers[pParty->_activeCharacter]->sMana =
+            pPlayers[pParty->_activeCharacter]->GetMaxMana();
 
         if (window_SpeakInHouse->wData.val != 78 &&
             (window_SpeakInHouse->wData.val <= 80 ||
             window_SpeakInHouse->wData.val > 82)) {
-            if (pPlayers[uActiveCharacter]->conditions.Has(Condition_Zombie)) {
+            if (pPlayers[pParty->_activeCharacter]->conditions.Has(Condition_Zombie)) {
                 // если состояние зомби
-                pPlayers[uActiveCharacter]->uCurrentFace =
-                    pPlayers[uActiveCharacter]->uPrevFace;
-                pPlayers[uActiveCharacter]->uVoiceID =
-                    pPlayers[uActiveCharacter]->uPrevVoiceID;
+                pPlayers[pParty->_activeCharacter]->uCurrentFace =
+                    pPlayers[pParty->_activeCharacter]->uPrevFace;
+                pPlayers[pParty->_activeCharacter]->uVoiceID =
+                    pPlayers[pParty->_activeCharacter]->uPrevVoiceID;
                 GameUI_ReloadPlayerPortraits(
-                    uActiveCharacter - 1,
-                    pPlayers[uActiveCharacter]->uPrevFace);
+                    pParty->_activeCharacter - 1,
+                    pPlayers[pParty->_activeCharacter]->uPrevFace);
             }
             pAudioPlayer->PlaySound((SoundID)SOUND_heal, PID_INVALID, 0, -1, 0, 0);
-            pPlayers[uActiveCharacter]->PlaySound(SPEECH_TempleHeal, 0);
-            pOtherOverlayList->_4418B1(20, uActiveCharacter + 99, 0, 65536);
+            pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_TempleHeal, 0);
+            pOtherOverlayList->_4418B1(20, pParty->_activeCharacter + 99, 0, 65536);
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
-        if (pPlayers[uActiveCharacter]->conditions.Has(Condition_Zombie)) {
-            // LODWORD(pPlayers[uActiveCharacter]->pConditions[Condition_Zombie])
+        if (pPlayers[pParty->_activeCharacter]->conditions.Has(Condition_Zombie)) {
+            // LODWORD(pPlayers[pParty->_activeCharacter]->pConditions[Condition_Zombie])
             // =
-            // LODWORD(pPlayers[uActiveCharacter]->pConditions[Condition_Zombie]);
+            // LODWORD(pPlayers[pParty->_activeCharacter]->pConditions[Condition_Zombie]);
         } else {
-            if (!pPlayers[uActiveCharacter]->conditions.Has(Condition_Eradicated) &&
-                !pPlayers[uActiveCharacter]->conditions.Has(Condition_Petrified) &&
-                !pPlayers[uActiveCharacter]->conditions.Has(Condition_Dead)) {
+            if (!pPlayers[pParty->_activeCharacter]->conditions.Has(Condition_Eradicated) &&
+                !pPlayers[pParty->_activeCharacter]->conditions.Has(Condition_Petrified) &&
+                !pPlayers[pParty->_activeCharacter]->conditions.Has(Condition_Dead)) {
                 pAudioPlayer->PlaySound((SoundID)SOUND_heal, PID_INVALID, 0, -1, 0, 0);
-                pPlayers[uActiveCharacter]->PlaySound(SPEECH_TempleHeal, 0);
-                pOtherOverlayList->_4418B1(20, uActiveCharacter + 99, 0, 65536);
+                pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_TempleHeal, 0);
+                pOtherOverlayList->_4418B1(20, pParty->_activeCharacter + 99, 0, 65536);
                 pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
                 return;
             }
-            pPlayers[uActiveCharacter]->uPrevFace =
-                pPlayers[uActiveCharacter]->uCurrentFace;
-            pPlayers[uActiveCharacter]->uPrevVoiceID =
-                pPlayers[uActiveCharacter]->uVoiceID;
-            pPlayers[uActiveCharacter]->SetCondition(Condition_Zombie, 1);
-            pPlayers[uActiveCharacter]->uVoiceID =
-                (pPlayers[uActiveCharacter]->GetSexByVoice() != 0) + 23;
-            pPlayers[uActiveCharacter]->uCurrentFace =
-                (pPlayers[uActiveCharacter]->GetSexByVoice() != 0) + 23;
+            pPlayers[pParty->_activeCharacter]->uPrevFace =
+                pPlayers[pParty->_activeCharacter]->uCurrentFace;
+            pPlayers[pParty->_activeCharacter]->uPrevVoiceID =
+                pPlayers[pParty->_activeCharacter]->uVoiceID;
+            pPlayers[pParty->_activeCharacter]->SetCondition(Condition_Zombie, 1);
+            pPlayers[pParty->_activeCharacter]->uVoiceID =
+                (pPlayers[pParty->_activeCharacter]->GetSexByVoice() != 0) + 23;
+            pPlayers[pParty->_activeCharacter]->uCurrentFace =
+                (pPlayers[pParty->_activeCharacter]->GetSexByVoice() != 0) + 23;
             GameUI_ReloadPlayerPortraits(
-                uActiveCharacter - 1,
-                (pPlayers[uActiveCharacter]->GetSexByVoice() != 0) + 23);
-            pPlayers[uActiveCharacter]->conditions.Set(Condition_Zombie, pParty->GetPlayingTime());
+                pParty->_activeCharacter - 1,
+                (pPlayers[pParty->_activeCharacter]->GetSexByVoice() != 0) + 23);
+            pPlayers[pParty->_activeCharacter]->conditions.Set(Condition_Zombie, pParty->GetPlayingTime());
             // v39 = (GUIWindow *)HIDWORD(pParty->uTimePlayed);
         }
-        // HIDWORD(pPlayers[uActiveCharacter]->pConditions[Condition_Zombie]) =
+        // HIDWORD(pPlayers[pParty->_activeCharacter]->pConditions[Condition_Zombie]) =
         // (int)v39;
-        pPlayers[uActiveCharacter]->conditions.Set(Condition_Zombie, pParty->GetPlayingTime());
+        pPlayers[pParty->_activeCharacter]->conditions.Set(Condition_Zombie, pParty->GetPlayingTime());
         pAudioPlayer->PlaySound((SoundID)SOUND_heal, PID_INVALID, 0, -1, 0, 0);
-        pPlayers[uActiveCharacter]->PlaySound(SPEECH_TempleHeal, 0);
-        pOtherOverlayList->_4418B1(20, uActiveCharacter + 99, 0, 65536);
+        pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_TempleHeal, 0);
+        pOtherOverlayList->_4418B1(20, pParty->_activeCharacter + 99, 0, 65536);
         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
         return;
     }
@@ -2335,7 +2333,7 @@ void TempleDialog() {
                 ddm->uReputation = ddm->uReputation - 1;
                 if (ddm->uReputation - 1 < -5) ddm->uReputation = -5;
             }
-            if ((uint8_t)byte_F8B1EF[uActiveCharacter] == pParty->uCurrentDayOfMonth % 7) {
+            if ((uint8_t)byte_F8B1EF[pParty->_activeCharacter] == pParty->uCurrentDayOfMonth % 7) {
                 if (ddm->uReputation <= -5) {
                     pushTempleSpell(SPELL_AIR_WIZARD_EYE);
                 }
@@ -2352,8 +2350,8 @@ void TempleDialog() {
                     pushTempleSpell(SPELL_LIGHT_DAY_OF_PROTECTION);
                 }
             }
-            ++byte_F8B1EF[uActiveCharacter];
-            pPlayers[uActiveCharacter]->PlaySound(SPEECH_TempleDonate, 0);
+            ++byte_F8B1EF[pParty->_activeCharacter];
+            pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_TempleDonate, 0);
             GameUI_SetStatusBar(LSTR_THANK_YOU);
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
@@ -2376,7 +2374,7 @@ void TempleDialog() {
                     500.0);
             v64 = (signed int)(pCurrentItem *
                 (100 -
-                    pPlayers[uActiveCharacter]->GetMerchant())) /
+                    pPlayers[pParty->_activeCharacter]->GetMerchant())) /
                 100;
             if (v64 < (signed int)pCurrentItem / 3)
                 v64 = (signed int)pCurrentItem / 3;
@@ -2388,8 +2386,8 @@ void TempleDialog() {
                 auto skill = GetLearningDialogueSkill(
                     (DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param
                 );
-                if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
-                    && !pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
+                if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[pParty->_activeCharacter]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
+                    && !pPlayers[pParty->_activeCharacter]->pActiveSkills[skill]) {
                     all_text_height += pFontArrus->CalcTextHeight(
                         localization->GetSkillName(skill),
                         tample_window.uFrameWidth, 0);
@@ -2424,25 +2422,25 @@ void TrainingDialog(const char *s) {
     training_dialog_window.uFrameWidth = 143;
     training_dialog_window.uFrameZ = 334;
 
-    if (uActiveCharacter == 0)  // avoid nzi
-        uActiveCharacter = pParty->GetFirstCanAct();
+    if (pParty->_activeCharacter == 0)  // avoid nzi
+        pParty->_activeCharacter = pParty->GetFirstCanAct();
 
-    v5 = 1000ull * pPlayers[uActiveCharacter]->uLevel *
-        (pPlayers[uActiveCharacter]->uLevel + 1) /
+    v5 = 1000ull * pPlayers[pParty->_activeCharacter]->uLevel *
+        (pPlayers[pParty->_activeCharacter]->uLevel + 1) /
         2;  // E n = n(n + 1) / 2
             // v68 = pMaxLevelPerTrainingHallType[(unsigned
             // int)window_SpeakInHouse->ptr_1C -
             // HOUSE_TRAINING_HALL_EMERALD_ISLE];
-    if (pPlayers[uActiveCharacter]->uExperience >= v5) {
-        v8 = pPlayers[uActiveCharacter]->classType % 4 + 1;
+    if (pPlayers[pParty->_activeCharacter]->uExperience >= v5) {
+        v8 = pPlayers[pParty->_activeCharacter]->classType % 4 + 1;
         if (v8 == 4) v8 = 3;
-        v9 = (double)pPlayers[uActiveCharacter]->uLevel;
+        v9 = (double)pPlayers[pParty->_activeCharacter]->uLevel;
         v69 = v8;
         v10 = (int64_t)(v9 *
             p2DEvents[window_SpeakInHouse->wData.val - 1]
             .fPriceMultiplier *
             (double)v8);
-        pPrice = v10 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
+        pPrice = v10 * (100 - pPlayers[pParty->_activeCharacter]->GetMerchant()) / 100;
         if (pPrice < v10 / 3) pPrice = v10 / 3;
     }
     //-------------------------------------------------------
@@ -2465,7 +2463,7 @@ void TrainingDialog(const char *s) {
                         if (pDialogueWindow->GetControl(i)->msg_param ==
                             DIALOGUE_TRAINING_HALL_TRAIN) {
                             static std::string shop_option_str_container;
-                            if (pPlayers[uActiveCharacter]->uLevel >=
+                            if (pPlayers[pParty->_activeCharacter]->uLevel >=
                                 pMaxLevelPerTrainingHallType
                                 [window_SpeakInHouse->wData.val -
                                 HOUSE_TRAINING_HALL_EMERALD_ISLE]) {
@@ -2476,15 +2474,15 @@ void TrainingDialog(const char *s) {
                                 pShopOptions[index] = shop_option_str_container.c_str();
 
                             } else {
-                                if (pPlayers[uActiveCharacter]->uExperience < v5)
+                                if (pPlayers[pParty->_activeCharacter]->uExperience < v5)
                                     shop_option_str_container = localization->FormatString(
                                         LSTR_XP_UNTIL_NEXT_LEVEL,
-                                        (uint)(v5 - pPlayers[uActiveCharacter]->uExperience),
-                                        pPlayers[uActiveCharacter]->uLevel + 1);
+                                        (uint)(v5 - pPlayers[pParty->_activeCharacter]->uExperience),
+                                        pPlayers[pParty->_activeCharacter]->uLevel + 1);
                                 else
                                     shop_option_str_container = localization->FormatString(
                                         LSTR_FMT_TRAIN_LEVEL_D_FOR_D_GOLD,
-                                        pPlayers[uActiveCharacter]->uLevel + 1,
+                                        pPlayers[pParty->_activeCharacter]->uLevel + 1,
                                         pPrice);
                                 pShopOptions[index] = shop_option_str_container.c_str();
                             }
@@ -2515,9 +2513,9 @@ void TrainingDialog(const char *s) {
                         pButton->uHeight = pTextHeight;
                         pButton->uW = pTextHeight + pButton->uY - 1 + 6;
                         v49 = pButton->uW;
-                        int pTextColor = colorTable.Jonquil.C16();
+                        int pTextColor = colorTable.Jonquil.c16();
                         if (pDialogueWindow->pCurrentPosActiveItem != i)
-                            pTextColor = colorTable.White.C16();
+                            pTextColor = colorTable.White.c16();
                         training_dialog_window.DrawTitleText(
                             pFontArrus, 0, pButton->uY, pTextColor,
                             pShopOptions[index], 3);
@@ -2535,36 +2533,35 @@ void TrainingDialog(const char *s) {
                     pNPCTopics[122].pText, training_dialog_window.uFrameWidth,
                     0);
                 training_dialog_window.DrawTitleText(
-                    pFontArrus, 0, (212 - v33) / 2 + 101,
-                    colorTable.Jonquil.C16(), pNPCTopics[122].pText, 3);
+                    pFontArrus, 0, (212 - v33) / 2 + 101, colorTable.Jonquil.c16(), pNPCTopics[122].pText, 3);
                 pDialogueWindow->pNumPresenceButton = 0;
                 return;
             }
-            if (pPlayers[uActiveCharacter]->uLevel <
+            if (pPlayers[pParty->_activeCharacter]->uLevel <
                 pMaxLevelPerTrainingHallType
                 [window_SpeakInHouse->wData.val -
                 HOUSE_TRAINING_HALL_EMERALD_ISLE]) {
-                if ((int64_t)pPlayers[uActiveCharacter]->uExperience >=
+                if ((int64_t)pPlayers[pParty->_activeCharacter]->uExperience >=
                     v5) {
                     if (pParty->GetGold() >= pPrice) {
                         pParty->TakeGold(pPrice);
                         PlayHouseSound(
                             window_SpeakInHouse->wData.val,
                             HouseSound_NotEnoughMoney);
-                        ++pPlayers[uActiveCharacter]->uLevel;
-                        pPlayers[uActiveCharacter]->uSkillPoints +=
-                            pPlayers[uActiveCharacter]->uLevel / 10 + 5;
-                        pPlayers[uActiveCharacter]->sHealth =
-                            pPlayers[uActiveCharacter]->GetMaxHealth();
-                        pPlayers[uActiveCharacter]->sMana =
-                            pPlayers[uActiveCharacter]->GetMaxMana();
+                        ++pPlayers[pParty->_activeCharacter]->uLevel;
+                        pPlayers[pParty->_activeCharacter]->uSkillPoints +=
+                            pPlayers[pParty->_activeCharacter]->uLevel / 10 + 5;
+                        pPlayers[pParty->_activeCharacter]->sHealth =
+                            pPlayers[pParty->_activeCharacter]->GetMaxHealth();
+                        pPlayers[pParty->_activeCharacter]->sMana =
+                            pPlayers[pParty->_activeCharacter]->GetMaxMana();
                         uint max_level_in_party = player_levels[0];
                         for (uint _it = 1; _it < 4; ++_it) {
                             if (player_levels[_it] > max_level_in_party)
                                 max_level_in_party = player_levels[_it];
                         }
-                        ++player_levels[uActiveCharacter - 1];
-                        if (player_levels[uActiveCharacter - 1] >
+                        ++player_levels[pParty->_activeCharacter - 1];
+                        if (player_levels[pParty->_activeCharacter - 1] >
                             max_level_in_party) {  // if we reach new maximum
                                                    // party level feature is
                                                    // broken thou, since this
@@ -2577,13 +2574,13 @@ void TrainingDialog(const char *s) {
                             if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
                                 pOutdoor->SetFog();
                         }
-                        pPlayers[uActiveCharacter]->PlaySound(SPEECH_LevelUp, 0);
+                        pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_LevelUp, 0);
 
                         GameUI_SetStatusBar(
                             LSTR_FMT_S_NOW_LEVEL_D,
-                            pPlayers[uActiveCharacter]->pName.c_str(),
-                            pPlayers[uActiveCharacter]->uLevel,
-                            pPlayers[uActiveCharacter]->uLevel / 10 + 5
+                            pPlayers[pParty->_activeCharacter]->pName.c_str(),
+                            pPlayers[pParty->_activeCharacter]->uLevel,
+                            pPlayers[pParty->_activeCharacter]->uLevel / 10 + 5
                         );
 
                         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -2597,8 +2594,8 @@ void TrainingDialog(const char *s) {
                 }
                 label = localization->FormatString(
                     LSTR_XP_UNTIL_NEXT_LEVEL,
-                    (unsigned int)(v5 - pPlayers[uActiveCharacter]->uExperience),
-                    pPlayers[uActiveCharacter]->uLevel + 1);
+                    (unsigned int)(v5 - pPlayers[pParty->_activeCharacter]->uExperience),
+                    pPlayers[pParty->_activeCharacter]->uLevel + 1);
                 v36 = (212 - pFontArrus->CalcTextHeight(
                         label, training_dialog_window.uFrameWidth, 0)) / 2 + 88;
             } else {
@@ -2610,7 +2607,7 @@ void TrainingDialog(const char *s) {
                         label, training_dialog_window.uFrameWidth, 0)) / 2 + 101;
             }
             training_dialog_window.DrawTitleText(
-                pFontArrus, 0, v36, colorTable.Jonquil.C16(), label, 3);
+                pFontArrus, 0, v36, colorTable.Jonquil.c16(), label, 3);
 
             PlayHouseSound(window_SpeakInHouse->wData.val, (HouseSoundID)3);
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -2623,7 +2620,7 @@ void TrainingDialog(const char *s) {
         if (HouseUI_CheckIfPlayerCanInteract()) {
             v14 = (int64_t)(p2DEvents[
                 window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
-            pPrice = v14 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
+            pPrice = v14 * (100 - pPlayers[pParty->_activeCharacter]->GetMerchant()) / 100;
 
             if (pPrice < v14 / 3) pPrice = v14 / 3;
             index = 0;
@@ -2634,8 +2631,8 @@ void TrainingDialog(const char *s) {
                 auto skill = GetLearningDialogueSkill(
                     (DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param
                 );
-                if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
-                    && !pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
+                if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[pParty->_activeCharacter]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
+                    && !pPlayers[pParty->_activeCharacter]->pActiveSkills[skill]) {
                     all_text_height += pFontArrus->CalcTextHeight(
                         localization->GetSkillName(skill),
                         training_dialog_window.uFrameWidth, 0);
@@ -2674,13 +2671,13 @@ void MercenaryGuildDialog() {
             (((p2DEvents[window_SpeakInHouse->wData.val - 1].uType != BuildingType_MercenaryGuild) - 1) & 0x96) + 100;
     v3 = (int64_t)((double)v32 *
         p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
-    pPrice = v3 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
+    pPrice = v3 * (100 - pPlayers[pParty->_activeCharacter]->GetMerchant()) / 100;
     if (pPrice < v3 / 3) pPrice = v3 / 3;
     if (dialog_menu_id == DIALOGUE_MAIN) {
-        if (!_449B57_test_bit((uint8_t *)pPlayers[uActiveCharacter]->_achieved_awards_bits, word_4F0754[2 * window_SpeakInHouse->wData.val])) {
+        if (!_449B57_test_bit((uint8_t *)pPlayers[pParty->_activeCharacter]->_achieved_awards_bits, word_4F0754[2 * window_SpeakInHouse->wData.val])) {
             // 171 looks like Mercenary Stronghold message from NPCNews.txt in MM6
             pTextHeight = pFontArrus->CalcTextHeight(pNPCTopics[171].pText, dialog_window.uFrameWidth, 0);
-            dialog_window.DrawTitleText(pFontArrus, 0, (212 - pTextHeight) / 2 + 101, colorTable.PaleCanary.C16(), pNPCTopics[171].pText, 3);
+            dialog_window.DrawTitleText(pFontArrus, 0, (212 - pTextHeight) / 2 + 101, colorTable.PaleCanary.c16(), pNPCTopics[171].pText, 3);
             pDialogueWindow->pNumPresenceButton = 0;
             return;
         }
@@ -2694,8 +2691,8 @@ void MercenaryGuildDialog() {
             auto skill = GetLearningDialogueSkill(
                 (DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param
             );
-            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType / 3][skill] != PLAYER_SKILL_MASTERY_NONE
-                && !pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
+            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[pParty->_activeCharacter]->classType / 3][skill] != PLAYER_SKILL_MASTERY_NONE
+                && !pPlayers[pParty->_activeCharacter]->pActiveSkills[skill]) {
                 all_text_height += pFontArrus->CalcTextHeight(
                     localization->GetSkillName(skill),
                     dialog_window.uFrameWidth, 0);
@@ -2720,7 +2717,7 @@ void MercenaryGuildDialog() {
         __debugbreak();  // whacky condition - fix
         if (false
             // if ( !*(&byte_4ED94C[37 * v1->uClass / 3] + dword_F8B19C)
-            || (v6 = (short *)(&pPlayers[uActiveCharacter]->uIntelligence +
+            || (v6 = (short *)(&pPlayers[pParty->_activeCharacter]->uIntelligence +
                 dialog_menu_id),
                 *(short *)v6)) {
             pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
@@ -2796,7 +2793,7 @@ void SimpleHouseDialog() {
     house_window.uFrameZ -= 10;
     pNPC = HouseNPCData[pDialogueNPCCount + -(dword_591080 != 0)];  //- 1
 
-    house_window.DrawTitleText(pFontCreate, 483, 113, colorTable.EasternBlue.C16(), NameAndTitle(pNPC), 3);
+    house_window.DrawTitleText(pFontCreate, 483, 113, colorTable.EasternBlue.c16(), NameAndTitle(pNPC), 3);
 
     if (!dword_591080) {
         if (uDialogueType == DIALOGUE_NULL) {
@@ -2817,7 +2814,7 @@ void SimpleHouseDialog() {
 
                 int h = (pFontArrus->CalcTextHeight(pInString, house_window.uFrameWidth, 13) + 7);
                 render->DrawTextureNew(8 / 640.0f, (347 - h) / 480.0f, _591428_endcap);
-                pDialogueWindow->DrawText(pFontArrus, {13, 354 - h}, colorTable.Black.C16(),
+                pDialogueWindow->DrawText(pFontArrus, {13, 354 - h}, colorTable.Black.c16(),
                     pFontArrus->FitTextInAWindow(pInString, house_window.uFrameWidth, 13), 0, 0, 0);
             }
         }
@@ -2901,7 +2898,7 @@ void SimpleHouseDialog() {
 
             current_npc_text = stringPrintf(
                 bountyHunting_text,
-                fmt::format("\f{:05}{}\f{:05}", colorTable.PaleCanary.C16(), v31, colorTable.White.C16()).c_str(),
+                fmt::format("\f{:05}{}\f{:05}", colorTable.PaleCanary.c16(), v31, colorTable.White.c16()).c_str(),
                 100 * (uint8_t) v29[8]);
 
             pButton->sLabel.clear();
@@ -2947,9 +2944,9 @@ void SimpleHouseDialog() {
             pButton->uHeight = pTextHeight;
             v40 = pButton->uY + pTextHeight - 1;
             pButton->uW = v40 + 6;
-            pTextColor = colorTable.Jonquil.C16();
+            pTextColor = colorTable.Jonquil.c16();
             if (pDialogueWindow->pCurrentPosActiveItem != i)
-                pTextColor = colorTable.White.C16();
+                pTextColor = colorTable.White.c16();
             right_panel_window.DrawTitleText(pFontArrus, 0, pButton->uY,
                 pTextColor, pButton->sLabel, 3);
         }
@@ -2971,7 +2968,7 @@ void SimpleHouseDialog() {
             ui_leather_mm7, pTextHeight);
         render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f,
             _591428_endcap);
-        house_window.DrawText(pTextFont, {13, 354 - pTextHeight}, colorTable.Black.C16(), pTextFont->FitTextInAWindow(current_npc_text, w.uFrameWidth, 13), 0, 0, 0);
+        house_window.DrawText(pTextFont, {13, 354 - pTextHeight}, colorTable.Black.c16(), pTextFont->FitTextInAWindow(current_npc_text, w.uFrameWidth, 13), 0, 0, 0);
     }
 }
 
@@ -2984,8 +2981,7 @@ void JailDialog() {
         pFontArrus, 0,
         (310 - pFontArrus->CalcTextHeight(localization->GetString(LSTR_ONE_YEAR_SENTENCE),
             jail_dialogue_window.uFrameWidth,
-            0)) / 2 + 18,
-        colorTable.PaleCanary.C16(), localization->GetString(LSTR_ONE_YEAR_SENTENCE), 3);
+            0)) / 2 + 18, colorTable.PaleCanary.c16(), localization->GetString(LSTR_ONE_YEAR_SENTENCE), 3);
 }
 
 void InitializeBuildingResidents() {

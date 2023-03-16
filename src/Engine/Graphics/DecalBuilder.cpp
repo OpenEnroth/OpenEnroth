@@ -200,8 +200,8 @@ bool DecalBuilder::ApplyBloodsplatDecals_IndoorFace(unsigned int uFaceID) {
     if (pFace->Indoor_sky() || pFace->Fluid()) return true;
     for (uint i = 0; i < bloodsplat_container->uNumBloodsplats; ++i) {
         Bloodsplat* pBloodsplat = &bloodsplat_container->pBloodsplats_to_apply[i];
-        if (pFace->pBounding.intersectsCube(pBloodsplat->pos.ToShort(), pBloodsplat->radius)) {
-            double dotdist = Dot(pFace->pFacePlane.vNormal, pBloodsplat->pos) + pFace->pFacePlane.dist;
+        if (pFace->pBounding.intersectsCube(pBloodsplat->pos.toShort(), pBloodsplat->radius)) {
+            double dotdist = dot(pFace->pFacePlane.vNormal, pBloodsplat->pos) + pFace->pFacePlane.dist;
             if (dotdist <= pBloodsplat->radius) {
                 // store splat
                 pBloodsplat->dot_dist = dotdist;
@@ -222,9 +222,9 @@ bool DecalBuilder::ApplyBloodSplat_OutdoorFace(ODMFace* pFace) {
     if (!pFace->Indoor_sky() && !pFace->Fluid()) {
         for (int i = 0; i < bloodsplat_container->uNumBloodsplats; i++) {
             Bloodsplat* pBloodsplat = &bloodsplat_container->pBloodsplats_to_apply[i];
-            if (pFace->pBoundingBox.intersectsCube(pBloodsplat->pos.ToShort(), pBloodsplat->radius)) {
-                double dotdist = pFace->pFacePlaneOLD.SignedDistanceTo(
-                    round_to_int(pBloodsplat->pos.x), round_to_int(pBloodsplat->pos.y), round_to_int(pBloodsplat->pos.z));
+            if (pFace->pBoundingBox.intersectsCube(pBloodsplat->pos.toShort(), pBloodsplat->radius)) {
+                double dotdist = pFace->pFacePlaneOLD.signedDistanceTo(round_to_int(pBloodsplat->pos.x), round_to_int(pBloodsplat->pos.y),
+                                                                       round_to_int(pBloodsplat->pos.z));
                 if (dotdist <= pBloodsplat->radius) {
                     // store splat
                     pBloodsplat->dot_dist = dotdist;
@@ -249,8 +249,8 @@ bool DecalBuilder::ApplyBloodSplatToTerrain(struct Polygon *terrpoly, Vec3f *ter
 
     if (NumBloodsplats > 0) {
        // check plane distance
-       *tridotdist = -Dot(triverts->vWorldPosition, *terrnorm);
-       float planedist = Dot(*terrnorm, bloodsplat_container->pBloodsplats_to_apply[whichsplat].pos) + *tridotdist + 0.5f;
+       *tridotdist = -dot(triverts->vWorldPosition, *terrnorm);
+       float planedist = dot(*terrnorm, bloodsplat_container->pBloodsplats_to_apply[whichsplat].pos) + *tridotdist + 0.5f;
 
         if (planedist <= bloodsplat_container->pBloodsplats_to_apply[whichsplat].radius) {
             // blood splat hits this terrain tri
@@ -295,7 +295,7 @@ void DecalBuilder::DrawBloodsplats() {
 //----- (0049C550) --------------------------------------------------------
 void DecalBuilder::DrawDecalDebugOutlines() {
     for (int i = 0; i < DecalsCount; i++)
-        pCamera3D->debug_outline_sw(Decals[i].pVertices, Decals[i].uNumVertices, colorTable.Tawny.C32(), 0.0f);
+        pCamera3D->debug_outline_sw(Decals[i].pVertices, Decals[i].uNumVertices, colorTable.Tawny.c32(), 0.0f);
 }
 
 //----- (0040E4C2) --------------------------------------------------------

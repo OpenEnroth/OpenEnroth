@@ -14,23 +14,23 @@ struct Rect {
     Rect(T x, T y, T w, T h): x(x), y(y), w(w), h(h) {}
     Rect(Point<T> topLeft, Size<T> size): x(topLeft.x), y(topLeft.y), w(size.w), h(size.h) {}
 
-    bool Contains(const Point<T> &point) {
+    bool contains(const Point<T> &point) {
         return x <= point.x && point.x < x + w && y <= point.y && point.y < y + h;
     }
 
-    Point<T> TopLeft() const {
+    Point<T> topLeft() const {
         return {x, y};
     }
 
-    Point<T> BottomRight() const {
+    Point<T> bottomRight() const {
         return {x + w, y + h};
     }
 
-    Point<T> Center() const {
+    Point<T> center() const {
         return {x + w / 2, y + h / 2};
     }
 
-    ::Size<T> Size() const {
+    Size<T> size() const {
         return {w, h};
     }
 

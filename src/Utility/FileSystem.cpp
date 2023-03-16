@@ -2,7 +2,7 @@
 
 #include "String.h"
 
-static std::string HomePath() {
+static std::string homePath() {
     const char *result = getenv("HOME");
     if (result)
         return result;
@@ -17,7 +17,7 @@ static std::string HomePath() {
 
 std::filesystem::path expandUserPath(std::string path) {
     if (path.starts_with("~/"))
-        return std::filesystem::path(HomePath()) / path.substr(2);
+        return std::filesystem::path(homePath()) / path.substr(2);
     return path;
 }
 

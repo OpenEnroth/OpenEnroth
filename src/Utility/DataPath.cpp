@@ -5,8 +5,8 @@
 
 #include "FileSystem.h"
 
-static std::filesystem::path s_data_path;
-static std::vector<std::vector<std::string_view>> validateList = {
+static std::filesystem::path globalDataPath;
+static const std::vector<std::vector<std::string_view>> globalValidateList = {
     {"anims", "magic7.vid" },
     {"anims", "might7.vid" },
     {"data", "bitmaps.lod" },
@@ -36,15 +36,15 @@ static std::vector<std::vector<std::string_view>> validateList = {
     {"shaders", "gltextshader.frag"},
     {"shaders", "gltextshader.vert"},
     {"shaders", "gltwodshader.frag"},
-    {"shaders", "gltwodshader.vert"},
+    {"shaders", "gltwodshader.vert"}
 };
 
-void SetDataPath(const std::string &data_path) {
-    s_data_path = expandUserPath(data_path);
+void setDataPath(const std::string &data_path) {
+    globalDataPath = expandUserPath(data_path);
 }
 
-std::string MakeDataPath(std::initializer_list<std::string_view> paths) {
-    std::filesystem::path result = s_data_path;
+std::string makeDataPath(std::initializer_list<std::string_view> paths) {
+    std::filesystem::path result = globalDataPath;
 
     for (auto p : paths)
         if (!p.empty())
@@ -55,7 +55,7 @@ std::string MakeDataPath(std::initializer_list<std::string_view> paths) {
 
 bool validateDataPath(const std::string &data_path) {
     bool isGood = true;
-    for (auto v : validateList) {
+    for (auto v : globalValidateList) {
         std::filesystem::path path = data_path;
         for (auto p : v) {
             if (!p.empty())
@@ -71,6 +71,6 @@ bool validateDataPath(const std::string &data_path) {
     return isGood;
 }
 
-std::string MakeTempPath(const char *file_rel_path) {
+std::string makeTempPath(const char *file_rel_path) {
     return (std::filesystem::temp_directory_path() / file_rel_path).string();
 }

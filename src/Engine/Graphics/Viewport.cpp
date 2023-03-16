@@ -167,7 +167,7 @@ void ViewingParams::AdjustPosition() {
 
 //----- (00443343) --------------------------------------------------------
 void ViewingParams::InitGrayPalette() {
-    for (unsigned short i = 0; i < 256; ++i) pPalette[i] = Color32(i, i, i);
+    for (unsigned short i = 0; i < 256; ++i) pPalette[i] = color32(i, i, i);
 }
 
 //----- (00443365) --------------------------------------------------------
@@ -320,7 +320,7 @@ void Engine::OnGameViewportClick() {
         return;
 
     // wasn't there, but we decided to deny interactions where there are no active character
-    if (uActiveCharacter == 0) {
+    if (pParty->_activeCharacter == 0) {
         GameUI_SetStatusBar(localization->GetString(LSTR_NOBODY_IS_IN_CONDITION));
         return;
     }
@@ -367,7 +367,7 @@ void Engine::OnGameViewportClick() {
             }
         } else if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
             pParty->SetAirborne(true);
-        } else if (uActiveCharacter != 0 && IsSpellQuickCastableOnShiftClick(pPlayers[uActiveCharacter]->uQuickSpell)) {
+        } else if (pParty->_activeCharacter != 0 && IsSpellQuickCastableOnShiftClick(pPlayers[pParty->_activeCharacter]->uQuickSpell)) {
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_CastQuickSpell, 0, 0);
         }
     } else if (PID_TYPE(pid) == OBJECT_Decoration) {
