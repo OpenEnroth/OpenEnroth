@@ -2,8 +2,8 @@ var searchData=
 [
   ['handlekeypress_0',['handleKeyPress',['../classApplication_1_1GameWindowHandler.html#ab9d73c683893346ac74dc63f5f377f5f',1,'Application::GameWindowHandler']]],
   ['handlekeyrelease_1',['handleKeyRelease',['../classApplication_1_1GameWindowHandler.html#ae5ad79967bc910b013c64b06b84ece33',1,'Application::GameWindowHandler']]],
-  ['has_2',['has',['../classPlatformApplication.html#ac32241998a863bb01d954d2cabc73d55',1,'PlatformApplication']]],
-  ['has_3',['Has',['../classPlayerConditions.html#a975bd4575245d9c6084d929baed41155',1,'PlayerConditions']]],
+  ['has_2',['Has',['../classPlayerConditions.html#a975bd4575245d9c6084d929baed41155',1,'PlayerConditions']]],
+  ['has_3',['has',['../classPlatformApplication.html#ac32241998a863bb01d954d2cabc73d55',1,'PlatformApplication']]],
   ['hasany_4',['HasAny',['../classPlayerConditions.html#af3f611e57d7a62c241d64821f789a033',1,'PlayerConditions']]],
   ['hascontrolroutine_5',['hasControlRoutine',['../classEngineControlPlugin.html#a56056772e46a5b5ca4700e95b2e55768',1,'EngineControlPlugin']]],
   ['hasenchanteditemequipped_6',['HasEnchantedItemEquipped',['../structPlayer.html#ad1457d0afb7d7ecfd97452b6e8baaf79',1,'Player']]],
