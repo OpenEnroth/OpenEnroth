@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e25bb34</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fefb8e4</span>
    </div>
   </td>
  </tr>
@@ -92,14 +92,14 @@ Inheritance diagram for InputStream:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a8c49246dd62e559578732f518f159432"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a8c49246dd62e559578732f518f159432">~InputStream</a> ()</td></tr>
 <tr class="separator:a8c49246dd62e559578732f518f159432"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a400604f6e667563e7f930423a51bf16f"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a400604f6e667563e7f930423a51bf16f">Read</a> (void *data, size_t size)=0</td></tr>
-<tr class="separator:a400604f6e667563e7f930423a51bf16f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8d7896bd495c1f6f7e7184f6cb6d9294"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a8d7896bd495c1f6f7e7184f6cb6d9294">ReadOrFail</a> (void *data, size_t size)</td></tr>
-<tr class="separator:a8d7896bd495c1f6f7e7184f6cb6d9294"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f8d53b67229d2418d39aa6d282a369f"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a1f8d53b67229d2418d39aa6d282a369f">Skip</a> (size_t size)=0</td></tr>
-<tr class="separator:a1f8d53b67229d2418d39aa6d282a369f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ca8037a777e1300da805a7542e2be01"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a6ca8037a777e1300da805a7542e2be01">Close</a> ()=0</td></tr>
-<tr class="separator:a6ca8037a777e1300da805a7542e2be01"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39ae65ea1ecb89c53f31aa0206d901c3"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a39ae65ea1ecb89c53f31aa0206d901c3">read</a> (void *data, size_t size)=0</td></tr>
+<tr class="separator:a39ae65ea1ecb89c53f31aa0206d901c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07805609a6bab85285c492845c4ceaf5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a07805609a6bab85285c492845c4ceaf5">readOrFail</a> (void *data, size_t size)</td></tr>
+<tr class="separator:a07805609a6bab85285c492845c4ceaf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb53adf30be18bfecda9cd4a42c03394"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#afb53adf30be18bfecda9cd4a42c03394">skip</a> (size_t size)=0</td></tr>
+<tr class="separator:afb53adf30be18bfecda9cd4a42c03394"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0148f63b4e9e39a214362403a474a61c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a0148f63b4e9e39a214362403a474a61c">close</a> ()=0</td></tr>
+<tr class="separator:a0148f63b4e9e39a214362403a474a61c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Abstract base class for all data input streams.</p>
@@ -135,8 +135,8 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a6ca8037a777e1300da805a7542e2be01" name="a6ca8037a777e1300da805a7542e2be01"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6ca8037a777e1300da805a7542e2be01">&#9670;&#160;</a></span>Close()</h2>
+<a id="a0148f63b4e9e39a214362403a474a61c" name="a0148f63b4e9e39a214362403a474a61c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0148f63b4e9e39a214362403a474a61c">&#9670;&#160;</a></span>close()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -145,7 +145,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void InputStream::Close </td>
+          <td class="memname">virtual void InputStream::close </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -166,12 +166,12 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classFileInputStream.html#a36b3b3b655de186d7ea09bf4ea33b5a6">FileInputStream</a>, and <a class="el" href="classMemoryInputStream.html#ae365c79ae3a83afcac2e2b93ed803d98">MemoryInputStream</a>.</p>
+<p>Implemented in <a class="el" href="classFileInputStream.html#af945368142d438059e88f8a5eb23f6a4">FileInputStream</a>, and <a class="el" href="classMemoryInputStream.html#ade3b3c9a4a35fcf89fb8c6109047cba2">MemoryInputStream</a>.</p>
 
 </div>
 </div>
-<a id="a400604f6e667563e7f930423a51bf16f" name="a400604f6e667563e7f930423a51bf16f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a400604f6e667563e7f930423a51bf16f">&#9670;&#160;</a></span>Read()</h2>
+<a id="a39ae65ea1ecb89c53f31aa0206d901c3" name="a39ae65ea1ecb89c53f31aa0206d901c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a39ae65ea1ecb89c53f31aa0206d901c3">&#9670;&#160;</a></span>read()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -180,7 +180,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual size_t InputStream::Read </td>
+          <td class="memname">virtual size_t InputStream::read </td>
           <td>(</td>
           <td class="paramtype">void *&#160;</td>
           <td class="paramname"><em>data</em>, </td>
@@ -218,18 +218,18 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classFileInputStream.html#a446c005ec6b169c9af9e12f59a03bafa">FileInputStream</a>, and <a class="el" href="classMemoryInputStream.html#adefffa9f2a498d30942641b2d924963e">MemoryInputStream</a>.</p>
+<p>Implemented in <a class="el" href="classFileInputStream.html#a1908e3816662bda1bb2393af8959c91d">FileInputStream</a>, and <a class="el" href="classMemoryInputStream.html#a4986d3872a3360ff338987ce3980d963">MemoryInputStream</a>.</p>
 
 </div>
 </div>
-<a id="a8d7896bd495c1f6f7e7184f6cb6d9294" name="a8d7896bd495c1f6f7e7184f6cb6d9294"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8d7896bd495c1f6f7e7184f6cb6d9294">&#9670;&#160;</a></span>ReadOrFail()</h2>
+<a id="a07805609a6bab85285c492845c4ceaf5" name="a07805609a6bab85285c492845c4ceaf5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07805609a6bab85285c492845c4ceaf5">&#9670;&#160;</a></span>readOrFail()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void InputStream::ReadOrFail </td>
+          <td class="memname">void InputStream::readOrFail </td>
           <td>(</td>
           <td class="paramtype">void *&#160;</td>
           <td class="paramname"><em>data</em>, </td>
@@ -264,8 +264,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a1f8d53b67229d2418d39aa6d282a369f" name="a1f8d53b67229d2418d39aa6d282a369f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1f8d53b67229d2418d39aa6d282a369f">&#9670;&#160;</a></span>Skip()</h2>
+<a id="afb53adf30be18bfecda9cd4a42c03394" name="afb53adf30be18bfecda9cd4a42c03394"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb53adf30be18bfecda9cd4a42c03394">&#9670;&#160;</a></span>skip()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -274,7 +274,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual size_t InputStream::Skip </td>
+          <td class="memname">virtual size_t InputStream::skip </td>
           <td>(</td>
           <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>size</em></td><td>)</td>
@@ -301,7 +301,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classFileInputStream.html#a936a945f93faeceeecb2ebc7a62d8c58">FileInputStream</a>, and <a class="el" href="classMemoryInputStream.html#a0ae18729cd058e1ac60f5b19c08d2339">MemoryInputStream</a>.</p>
+<p>Implemented in <a class="el" href="classFileInputStream.html#a0de32c076c2c1f5629fd9d9792a49590">FileInputStream</a>, and <a class="el" href="classMemoryInputStream.html#a24bd1affb3a8203c65d69aad51b3d55d">MemoryInputStream</a>.</p>
 
 </div>
 </div>

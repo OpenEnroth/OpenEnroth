@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['dot_0',['Dot',['../structVec3.html#af1801bf93198773c9cad96cfd0bbd1c6',1,'Vec3']]]
+  ['dot_0',['dot',['../structVec3.html#a0470e4aca8f9a51f6879a7437c3ac2d3',1,'Vec3']]]
 ];

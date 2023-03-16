@@ -56,7 +56,7 @@ var searchData=
   ['nonrandomengine_2eh_53',['NonRandomEngine.h',['../NonRandomEngine_8h.html',1,'']]],
   ['noprofession_54',['NoProfession',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4aeaabdb4712894a57fce18470cea5f75b',1,'NPCEnums.h']]],
   ['normal_55',['Normal',['../structstru314.html#a10f36ff95c66013fb51d658f68dedd38',1,'stru314']]],
-  ['normalize_56',['Normalize',['../structVec3.html#a6ff4f55fba67eae1e002f991cf048551',1,'Vec3']]],
+  ['normalize_56',['normalize',['../structVec3.html#a4e0b64da632764dff526787fe3a4a3ac',1,'Vec3']]],
   ['normalize_5fto_5ffixpoint_57',['normalize_to_fixpoint',['../FixPoint_8h.html#a8f838fe0aefa3fbd3985207608846e9d',1,'FixPoint.h']]],
   ['normx_58',['normx',['../structGLshaderverts.html#a9ae8348af782015be9e8844414ba0390',1,'GLshaderverts']]],
   ['normy_59',['normy',['../structGLshaderverts.html#a5e441ebcd3dd65b2403c1ab9568ff693',1,'GLshaderverts']]],

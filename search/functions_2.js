@@ -37,7 +37,7 @@ var searchData=
   ['blvface_34',['BLVFace',['../structBLVFace.html#a46c1e3d9c5dc4b8c98cd5e5ad77a41ad',1,'BLVFace']]],
   ['blvrenderparams_35',['BLVRenderParams',['../structBLVRenderParams.html#a23e356cc354be1cbb0e5ee9d8f3b5b38',1,'BLVRenderParams']]],
   ['bookui_5fspellbook_5fdrawcurrentschoolbackground_36',['BookUI_Spellbook_DrawCurrentSchoolBackground',['../Spellbook_8cpp.html#ae852e53996098821077c2d9722b1f471',1,'Spellbook.cpp']]],
-  ['bottomright_37',['BottomRight',['../structRect.html#a610cd35764d8b7cea7010fb4b5b6f416',1,'Rect']]],
+  ['bottomright_37',['bottomRight',['../structRect.html#ad2524c389fb660c3a21541171bfa8cea',1,'Rect']]],
   ['bs_5fget_5fbuffer_38',['bs_get_buffer',['../PCX_8cpp.html#a84332e8cfe678afb584536b1ba120146',1,'PCX.cpp']]],
   ['bs_5fget_5fbyte_39',['bs_get_byte',['../PCX_8cpp.html#aa395c0fc990a9d8298139a3ffe4a3eef',1,'PCX.cpp']]],
   ['bs_5fget_5fbytes_5fleft_40',['bs_get_bytes_left',['../PCX_8cpp.html#a76bcefa1c68c148388913330ed505ce7',1,'PCX.cpp']]],

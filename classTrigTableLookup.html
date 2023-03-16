@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e25bb34</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fefb8e4</span>
    </div>
   </td>
  </tr>
@@ -84,12 +84,12 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a3ebe65603a7ddf61f62d2ccf6d359d7b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTrigTableLookup.html#a3ebe65603a7ddf61f62d2ccf6d359d7b">TrigTableLookup</a> ()</td></tr>
 <tr class="separator:a3ebe65603a7ddf61f62d2ccf6d359d7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a217c5c37e44b23e65fc2332470d955c2"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTrigTableLookup.html#a217c5c37e44b23e65fc2332470d955c2">Cos</a> (int angle) const</td></tr>
-<tr class="separator:a217c5c37e44b23e65fc2332470d955c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a830c5c3dddbcd7796193bd370d47d517"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTrigTableLookup.html#a830c5c3dddbcd7796193bd370d47d517">Sin</a> (int angle) const</td></tr>
-<tr class="separator:a830c5c3dddbcd7796193bd370d47d517"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad9a6f57eb1dd7fb77e36ee37e3a44ba6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTrigTableLookup.html#ad9a6f57eb1dd7fb77e36ee37e3a44ba6">Atan2</a> (int x, int y) const</td></tr>
-<tr class="separator:ad9a6f57eb1dd7fb77e36ee37e3a44ba6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abcfbb14747c08d6c2d56d9e484c7479f"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTrigTableLookup.html#abcfbb14747c08d6c2d56d9e484c7479f">cos</a> (int angle) const</td></tr>
+<tr class="separator:abcfbb14747c08d6c2d56d9e484c7479f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77c8e2651f22831c42c538f5140fe9d8"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTrigTableLookup.html#a77c8e2651f22831c42c538f5140fe9d8">sin</a> (int angle) const</td></tr>
+<tr class="separator:a77c8e2651f22831c42c538f5140fe9d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8325b3a4432821cce2458a6521d242dc"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTrigTableLookup.html#a8325b3a4432821cce2458a6521d242dc">atan2</a> (int x, int y) const</td></tr>
+<tr class="separator:a8325b3a4432821cce2458a6521d242dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -110,8 +110,8 @@ Static Public Attributes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a930311c2e56551e1f0aeb34cd6e18e07"><td class="memItemLeft" align="right" valign="top">std::array&lt; float, <a class="el" href="classTrigTableLookup.html#a4b82449527b491c4338f47bbd14fd1b4">uIntegerHalfPi</a>+1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTrigTableLookup.html#a930311c2e56551e1f0aeb34cd6e18e07">pCosTable</a></td></tr>
-<tr class="separator:a930311c2e56551e1f0aeb34cd6e18e07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a45e9f07c0fdf4c65e4dcb1c5e862eb2b"><td class="memItemLeft" align="right" valign="top">std::array&lt; float, <a class="el" href="classTrigTableLookup.html#a4b82449527b491c4338f47bbd14fd1b4">uIntegerHalfPi</a>+1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTrigTableLookup.html#a45e9f07c0fdf4c65e4dcb1c5e862eb2b">_cosTable</a></td></tr>
+<tr class="separator:a45e9f07c0fdf4c65e4dcb1c5e862eb2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Lookup table for trigonometric functions. </p>
@@ -135,14 +135,14 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ad9a6f57eb1dd7fb77e36ee37e3a44ba6" name="ad9a6f57eb1dd7fb77e36ee37e3a44ba6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad9a6f57eb1dd7fb77e36ee37e3a44ba6">&#9670;&#160;</a></span>Atan2()</h2>
+<a id="a8325b3a4432821cce2458a6521d242dc" name="a8325b3a4432821cce2458a6521d242dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8325b3a4432821cce2458a6521d242dc">&#9670;&#160;</a></span>atan2()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int TrigTableLookup::Atan2 </td>
+          <td class="memname">int TrigTableLookup::atan2 </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>x</em>, </td>
@@ -165,14 +165,14 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a217c5c37e44b23e65fc2332470d955c2" name="a217c5c37e44b23e65fc2332470d955c2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a217c5c37e44b23e65fc2332470d955c2">&#9670;&#160;</a></span>Cos()</h2>
+<a id="abcfbb14747c08d6c2d56d9e484c7479f" name="abcfbb14747c08d6c2d56d9e484c7479f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abcfbb14747c08d6c2d56d9e484c7479f">&#9670;&#160;</a></span>cos()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">float TrigTableLookup::Cos </td>
+          <td class="memname">float TrigTableLookup::cos </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>angle</em></td><td>)</td>
@@ -191,14 +191,14 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a830c5c3dddbcd7796193bd370d47d517" name="a830c5c3dddbcd7796193bd370d47d517"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a830c5c3dddbcd7796193bd370d47d517">&#9670;&#160;</a></span>Sin()</h2>
+<a id="a77c8e2651f22831c42c538f5140fe9d8" name="a77c8e2651f22831c42c538f5140fe9d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a77c8e2651f22831c42c538f5140fe9d8">&#9670;&#160;</a></span>sin()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">float TrigTableLookup::Sin </td>
+          <td class="memname">float TrigTableLookup::sin </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>angle</em></td><td>)</td>
@@ -218,8 +218,8 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a930311c2e56551e1f0aeb34cd6e18e07" name="a930311c2e56551e1f0aeb34cd6e18e07"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a930311c2e56551e1f0aeb34cd6e18e07">&#9670;&#160;</a></span>pCosTable</h2>
+<a id="a45e9f07c0fdf4c65e4dcb1c5e862eb2b" name="a45e9f07c0fdf4c65e4dcb1c5e862eb2b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a45e9f07c0fdf4c65e4dcb1c5e862eb2b">&#9670;&#160;</a></span>_cosTable</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -228,7 +228,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;float, <a class="el" href="classTrigTableLookup.html#a4b82449527b491c4338f47bbd14fd1b4">uIntegerHalfPi</a> + 1&gt; TrigTableLookup::pCosTable</td>
+          <td class="memname">std::array&lt;float, <a class="el" href="classTrigTableLookup.html#a4b82449527b491c4338f47bbd14fd1b4">uIntegerHalfPi</a> + 1&gt; TrigTableLookup::_cosTable</td>
         </tr>
       </table>
   </td>

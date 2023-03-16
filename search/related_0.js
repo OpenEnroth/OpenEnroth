@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['cross_0',['Cross',['../structVec3.html#af44483f562c593b554c19fa310cf6838',1,'Vec3']]]
+  ['cross_0',['cross',['../structVec3.html#ab2216380454078e0ad808b78dbdbcb81',1,'Vec3']]]
 ];
