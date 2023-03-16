@@ -207,52 +207,24 @@ void Actor::SetRandomGoldIfTheresNoItem() {
 //----- (00404AC7) --------------------------------------------------------
 void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                            SPELL_TYPE uSpellID, ABILITY_INDEX a4, PLAYER_SKILL uSkillMastery) {
-    Actor *actorPtr;            // esi@1
-    int v8;                     // edi@16
-    signed int v10;             // ecx@22
-    int v19;                    // edi@34
-    int v20;                    // eax@35
-    signed int v23;             // eax@41
-    int v28;                    // st6@50
-    int v30;                    // esi@50
-    int v31;                    // ST3C_4@51
-    unsigned int v32;           // edi@51
-    signed int v36;             // eax@67
-    int v39;                    // ecx@75
-    int v42;                    // ecx@91
-    int v44;                    // ecx@100
-    int v48;                    // ecx@110
-    int v51;                    // ecx@130
-    int v54;                    // ecx@138
-    int v59;                    // edi@146
-    int v61;                    // edi@146
-    signed int v63;             // edi@146
-    int v68;                    // edi@168
-    signed int v70;             // ecx@172
-    int v79;                    // edx@185
-    int v80;                    // eax@185
-    signed int v91;             // eax@200
-    int v94;                    // ecx@208
-    int v96;                    // ecx@217
-    int pitch;                  // [sp+2Ch] [bp-A4h]@51
-    int v114;                   // [sp+48h] [bp-88h]@41
-    SpriteObject a1;            // [sp+4Ch] [bp-84h]@1
-    int v116;                   // [sp+BCh] [bp-14h]@49
-    int v118;                   // [sp+C4h] [bp-Ch]@29
-    int v119;                   // [sp+C8h] [bp-8h]@48
-    int v120;                   // [sp+CCh] [bp-4h]@1
-    int spellnuma;              // [sp+D8h] [bp+8h]@29
-    int spellnumb;              // [sp+D8h] [bp+8h]@48
-    int spellnumc;              // [sp+D8h] [bp+8h]@50
-    int spellnume;              // [sp+D8h] [bp+8h]@179
-    int a1a;                    // [sp+E0h] [bp+10h]@34
-    int a1c;                    // [sp+E0h] [bp+10h]@184
+    GameTime spellLength = GameTime(0);
 
-    GameTime spell_length = GameTime(0);
-
-    actorPtr = &pActors[uActorID];
+    SpriteObject sprite;
+    Actor *actorPtr = &pActors[uActorID];
     PLAYER_SKILL_LEVEL realPoints = GetSkillLevel(uSkillMastery);
     PLAYER_SKILL_MASTERY masteryLevel = GetSkillMastery(uSkillMastery);
+    int distancemod = 3;
+    int spriteId;
+
+    static const int ONE_THIRD_PI = TrigLUT.uIntegerPi / 3;
+
+    if (pDir->uDistance < 307.2) {
+        distancemod = 0;
+    } else if (pDir->uDistance < 1024) {
+        distancemod = 1;
+    } else if (pDir->uDistance < 2560) {
+        distancemod = 2;
+    }
 
     switch (uSpellID) {
         case SPELL_FIRE_FIRE_BOLT:
@@ -269,428 +241,442 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         case SPELL_LIGHT_LIGHT_BOLT:
         case SPELL_DARK_TOXIC_CLOUD:
         case SPELL_DARK_DRAGON_BREATH:
-            a1.uType = SpellSpriteMapping[uSpellID];
-            a1.uObjectDescID = GetObjDescId(uSpellID);
-            a1.containing_item.Reset();
-            a1.uSpellID = uSpellID;
-            a1.spell_level = uSkillMastery;
-            a1.vPosition.x = actorPtr->vPosition.x;
-            a1.spell_skill = PLAYER_SKILL_MASTERY_NONE;
-            a1.vPosition.y = actorPtr->vPosition.y;
-            a1.vPosition.z = actorPtr->vPosition.z +
-                             ((signed int)actorPtr->uActorHeight >> 1);
-            a1.uFacing = (short)pDir->uYawAngle;
-            a1.uSoundID = 0;
-            a1.uAttributes = 0;
-            a1.uSectorID = pIndoor->GetSector(a1.vPosition);
-            a1.uSpriteFrameID = 0;
-            a1.spell_caster_pid = PID(OBJECT_Actor, uActorID);
-            a1.spell_target_pid = 0;
-            if ((double)pDir->uDistance < 307.2)
-                a1.field_60_distance_related_prolly_lod = 0;
-            else if (pDir->uDistance < 1024)
-                a1.field_60_distance_related_prolly_lod = 1;
-            else if (pDir->uDistance < 2560)
-                a1.field_60_distance_related_prolly_lod = 2;
-            else
-                a1.field_60_distance_related_prolly_lod = 3;
+            sprite.uType = SpellSpriteMapping[uSpellID];
+            sprite.uObjectDescID = GetObjDescId(uSpellID);
+            sprite.containing_item.Reset();
+            sprite.uSpellID = uSpellID;
+            sprite.spell_level = uSkillMastery;
+            sprite.spell_skill = PLAYER_SKILL_MASTERY_NONE;
+            sprite.vPosition = actorPtr->vPosition + Vec3i(0, 0, actorPtr->uActorHeight / 2);
+            sprite.uFacing = (short)pDir->uYawAngle;
+            sprite.uSoundID = 0;
+            sprite.uAttributes = 0;
+            sprite.uSectorID = pIndoor->GetSector(sprite.vPosition);
+            sprite.uSpriteFrameID = 0;
+            sprite.spell_caster_pid = PID(OBJECT_Actor, uActorID);
+            sprite.spell_target_pid = 0;
+            sprite.field_60_distance_related_prolly_lod = distancemod;
+            sprite.field_61 = ABILITY_SPELL1;
 
-            a1.field_61 = ABILITY_SPELL1;
-            v91 = a1.Create(
-                pDir->uYawAngle, pDir->uPitchAngle,
-                pObjectList->pObjects[(int16_t)a1.uObjectDescID].uSpeed, 0);
-            if (v91 != -1) {
-                pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Item, v91));
-                return;
+            spriteId = sprite.Create(pDir->uYawAngle, pDir->uPitchAngle, pObjectList->pObjects[sprite.uObjectDescID].uSpeed, 0);
+            if (spriteId != -1) {
+                pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Item, spriteId));
             }
-            return;
             break;
 
         case SPELL_FIRE_HASTE:
-            if (masteryLevel == PLAYER_SKILL_MASTERY_NOVICE || masteryLevel == PLAYER_SKILL_MASTERY_EXPERT)
-                v39 = 60 * (realPoints + 60);
-            else if (masteryLevel == PLAYER_SKILL_MASTERY_MASTER)
-                v39 = 2 * 60 * (realPoints + 20);
-            else if (masteryLevel == PLAYER_SKILL_MASTERY_GRANDMASTER)
-                v39 = 3 * 60 * (realPoints + 15);
-            else
-                v39 = 0;
+            // TODO(Nik-RE-dev): calculation of duration is strange
+            switch (masteryLevel) {
+                case PLAYER_SKILL_MASTERY_NOVICE:
+                case PLAYER_SKILL_MASTERY_EXPERT:
+                    spellLength = GameTime::FromHours(1).AddMinutes(realPoints);
+                    break;
+                case PLAYER_SKILL_MASTERY_MASTER:
+                    spellLength = GameTime::FromMinutes(40 + 2 * realPoints);
+                    break;
+                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                    spellLength = GameTime::FromMinutes(45 + 3 * realPoints);
+                    break;
+                default:
+                    assert(false);
+                    break;
+            }
 
-            spell_length = GameTime::FromMinutes(v39 / 60);
-
-            actorPtr->pActorBuffs[ACTOR_BUFF_HASTE].Apply((pParty->GetPlayingTime() + spell_length),
-                masteryLevel, 0, 0, 0);
+            actorPtr->pActorBuffs[ACTOR_BUFF_HASTE].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, 0, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.OrangeyRed.c32());
-            pAudioPlayer->PlaySound((SoundID)SOUND_Haste,
-                                    PID(OBJECT_Actor, uActorID), 0, -1, 0,
-                                    0);
-            return;
+            pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
+            break;
 
         case SPELL_FIRE_METEOR_SHOWER:
-            if (uCurrentlyLoadedLevelType == LEVEL_Indoor) return;
-            v114 = pParty->vPosition.z + 2500;
-            v23 = 8;
-            if (masteryLevel == PLAYER_SKILL_MASTERY_EXPERT)
-                v23 = 10;
-            else if (masteryLevel == PLAYER_SKILL_MASTERY_MASTER)
-                v23 = 12;
-            else if (masteryLevel == PLAYER_SKILL_MASTERY_GRANDMASTER)
-                v23 = 14;
-            spellnumb = 0;
-            v28 = 0;
-            for (int i = 0; i < v23; i++) {
-                v30 = grng->Random(1000);
-                spellnumc = v30 - 2500;
-                v120 = v28 * v28;
-                v119 = spellnumb * spellnumb;
-                if (sqrt((float)(spellnumc * spellnumc + v119 + v120)) <= 1.0) {
-                    v32 = 0;
-                    pitch = 0;
-                } else {
-                    v31 = (int64_t)sqrt((float)(v119 + v120));
-                    v32 = TrigLUT.atan2(spellnumb, (int) v28);
-                    pitch = TrigLUT.atan2(v31, (int) spellnumc);
-                }
-                a1.containing_item.Reset();
-                a1.uType = SpellSpriteMapping[uSpellID];
-                a1.uObjectDescID = GetObjDescId(uSpellID);
-                a1.spell_level = uSkillMastery;
-                a1.vPosition.x = pParty->vPosition.x;
-                a1.vPosition.y = pParty->vPosition.y;
-                a1.vPosition.z = v30 + v114;
-                a1.uSpellID = SPELL_FIRE_METEOR_SHOWER;
-                a1.spell_skill = PLAYER_SKILL_MASTERY_NONE;
-                a1.uAttributes = 0;
-                a1.uSectorID = 0;
-                a1.uSpriteFrameID = 0;
-                a1.spell_caster_pid = PID(OBJECT_Actor, uActorID);
-                a1.spell_target_pid = 0;
-                a1.field_60_distance_related_prolly_lod =
-                    stru_50C198._427546(v30 + 2500);
-                a1.uFacing = v32;
-                a1.uSoundID = 0;
-                if (pDir->uDistance < 307.2)
-                    a1.field_60_distance_related_prolly_lod = 0;
-                else if (pDir->uDistance < 1024)
-                    a1.field_60_distance_related_prolly_lod = 1;
-                else if (pDir->uDistance < 2560)
-                    a1.field_60_distance_related_prolly_lod = 2;
-                else
-                    a1.field_60_distance_related_prolly_lod = 3;
-                a1.field_61 = ABILITY_SPELL1;
-                v36 = a1.Create(
-                    v32, pitch,
-                    pObjectList->pObjects[(int16_t)a1.uObjectDescID]
-                        .uSpeed,
-                    0);
-                if (v36 != -1) {
-                    pAudioPlayer->PlaySpellSound(9, PID(OBJECT_Item, v36));
-                }
-                spellnumb = grng->Random(1024) - 512;
-                v28 = grng->Random(1024) - 512;
+        {
+            if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+                break;
             }
-            return;
+
+            int meteors;
+            switch (masteryLevel) {
+                case PLAYER_SKILL_MASTERY_NOVICE:
+                    meteors = 8;
+                    break;
+                case PLAYER_SKILL_MASTERY_EXPERT:
+                    meteors = 10;
+                    break;
+                case PLAYER_SKILL_MASTERY_MASTER:
+                    meteors = 12;
+                    break;
+                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                    meteors = 14;
+                    break;
+                default:
+                    assert(false);
+                    break;
+            }
+
+            int j = 0, k = 0;
+            int yaw, pitch;
+            for (int i = 0; i < meteors; i++) {
+                int originHeight = grng->Random(1000);
+                if (Vec3s(j, k, originHeight - 2500).length() <= 1.0) {
+                    pitch = 0;
+                    yaw = 0;
+                } else {
+                    pitch = TrigLUT.atan2(sqrt(j * j + k * k), originHeight - 2500);
+                    yaw = TrigLUT.atan2(j, k);
+                }
+                sprite.containing_item.Reset();
+                sprite.uType = SpellSpriteMapping[uSpellID];
+                sprite.uObjectDescID = GetObjDescId(uSpellID);
+                sprite.spell_level = uSkillMastery;
+                sprite.vPosition = pParty->vPosition + Vec3i(0, 0, originHeight + 2500);
+                sprite.uSpellID = SPELL_FIRE_METEOR_SHOWER;
+                sprite.spell_skill = PLAYER_SKILL_MASTERY_NONE;
+                sprite.uAttributes = 0;
+                sprite.uSectorID = 0;
+                sprite.uSpriteFrameID = 0;
+                sprite.spell_caster_pid = PID(OBJECT_Actor, uActorID);
+                sprite.spell_target_pid = 0;
+                sprite.uFacing = yaw;
+                sprite.uSoundID = 0;
+                sprite.field_60_distance_related_prolly_lod = distancemod;
+                sprite.field_61 = ABILITY_SPELL1;
+
+                spriteId = sprite.Create(yaw, pitch, pObjectList->pObjects[sprite.uObjectDescID].uSpeed, 0);
+                i = grng->Random(1024) - 512;
+                k = grng->Random(1024) - 512;
+            }
+            if (spriteId != -1) {
+                pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Item, spriteId));
+            }
             break;
+        }
 
         case SPELL_AIR_SPARKS:
-            if (masteryLevel == PLAYER_SKILL_MASTERY_EXPERT)
-                v10 = 5;
-            else if (masteryLevel == PLAYER_SKILL_MASTERY_MASTER)
-                v10 = 7;
-            else if (masteryLevel == PLAYER_SKILL_MASTERY_GRANDMASTER)
-                v10 = 9;
-            else
-                v10 = 3;
-            spellnuma = (signed int)(60 * TrigLUT.uIntegerDoublePi) / 360;
-            a1.uType = SpellSpriteMapping[uSpellID];
-            v118 = (signed int)(60 * TrigLUT.uIntegerDoublePi) / 360 /
-                   (v10 - 1);
-            a1.uObjectDescID = GetObjDescId(uSpellID);
+        {
+            int sparks;
+            switch (masteryLevel) {
+                case PLAYER_SKILL_MASTERY_NOVICE:
+                    sparks = 3;
+                    break;
+                case PLAYER_SKILL_MASTERY_EXPERT:
+                    sparks = 5;
+                    break;
+                case PLAYER_SKILL_MASTERY_MASTER:
+                    sparks = 7;
+                    break;
+                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                    sparks = 9;
+                    break;
+                default:
+                    assert(false);
+                    break;
+            }
 
-            a1.containing_item.Reset();
-            a1.uSpellID = SPELL_AIR_SPARKS;
-            a1.spell_level = uSkillMastery;
-            a1.vPosition.x = actorPtr->vPosition.x;
-            a1.spell_skill = PLAYER_SKILL_MASTERY_NONE;
-            a1.vPosition.y = actorPtr->vPosition.y;
-            a1.vPosition.z = actorPtr->vPosition.z +
-                             ((signed int)actorPtr->uActorHeight >> 1);
-            a1.uFacing = pDir->uYawAngle;
-            a1.uSoundID = 0;
-            a1.uAttributes = 0;
-            a1.uSectorID = pIndoor->GetSector(a1.vPosition);
-            a1.spell_caster_pid = PID(OBJECT_Actor, uActorID);
-            a1.uSpriteFrameID = 0;
-            a1.spell_target_pid = 0;
-            a1.field_60_distance_related_prolly_lod = 3;
-            v19 = spellnuma / -2;
-            a1a = spellnuma / 2;
-            if (spellnuma / -2 > spellnuma / 2) {
-                v20 = spellnuma / 2;
-            } else {
+            sprite.uType = SpellSpriteMapping[uSpellID];
+            sprite.uObjectDescID = GetObjDescId(uSpellID);
+            sprite.containing_item.Reset();
+            sprite.uSpellID = SPELL_AIR_SPARKS;
+            sprite.spell_level = uSkillMastery;
+            sprite.spell_skill = PLAYER_SKILL_MASTERY_NONE;
+            sprite.vPosition = actorPtr->vPosition + Vec3i(0, 0, actorPtr->uActorHeight / 2);
+            sprite.uFacing = pDir->uYawAngle;
+            sprite.uSoundID = 0;
+            sprite.uAttributes = 0;
+            sprite.uSectorID = pIndoor->GetSector(sprite.vPosition);
+            sprite.spell_caster_pid = PID(OBJECT_Actor, uActorID);
+            sprite.uSpriteFrameID = 0;
+            sprite.spell_target_pid = 0;
+            sprite.field_60_distance_related_prolly_lod = 3;
+
+            int spell_spray_angle_start = ONE_THIRD_PI / -2;
+            int spell_spray_angle_end = ONE_THIRD_PI / 2;
+            if (spell_spray_angle_start <= spell_spray_angle_end) {
                 do {
-                    a1.uFacing = v19 + (short)pDir->uYawAngle;
-                    v20 = a1.Create(
-                        (int16_t)a1.uFacing, pDir->uPitchAngle,
-                        pObjectList->pObjects[(int16_t)a1.uObjectDescID]
-                            .uSpeed,
-                        0);
-                    v19 += v118;
-                } while (v19 <= a1a);
+                    sprite.uFacing = spell_spray_angle_start + pDir->uYawAngle;
+                    spriteId = sprite.Create(sprite.uFacing, pDir->uPitchAngle, pObjectList->pObjects[sprite.uObjectDescID].uSpeed, 0);
+                    spell_spray_angle_start += ONE_THIRD_PI / (sparks - 1);
+                } while (spell_spray_angle_start <= spell_spray_angle_end);
             }
-            if (v20 != -1) {
-                pAudioPlayer->PlaySpellSound(15, PID(OBJECT_Item, v20));
-                return;
+            if (spriteId != -1) {
+                pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Item, spriteId));
             }
-            return;
             break;
+        }
 
         case SPELL_AIR_SHIELD:
-            if (masteryLevel == PLAYER_SKILL_MASTERY_NOVICE || masteryLevel == PLAYER_SKILL_MASTERY_EXPERT)
-                v8 = 5 * 60 * realPoints + 3840;
-            else if (masteryLevel == PLAYER_SKILL_MASTERY_MASTER)
-                v8 = 15 * 60 * realPoints + 3840;
-            else if (masteryLevel == PLAYER_SKILL_MASTERY_GRANDMASTER)
-                v8 = 60 * 60 * (realPoints + 64);
-            else
-                v8 = 0;
-            spell_length = GameTime::FromMinutes(v8 / 60);
-            actorPtr->pActorBuffs[ACTOR_BUFF_SHIELD].Apply(
-                (pParty->GetPlayingTime() + spell_length),
-                masteryLevel, 0, 0, 0);
-            return;
+            // TODO(Nik-RE-dev): calculation of duration is strange
+            switch (masteryLevel) {
+                case PLAYER_SKILL_MASTERY_NOVICE:
+                case PLAYER_SKILL_MASTERY_EXPERT:
+                    spellLength = GameTime::FromHours(1).AddMinutes(4 + 5 * realPoints);
+                    break;
+                case PLAYER_SKILL_MASTERY_MASTER:
+                    spellLength = GameTime::FromHours(1).AddMinutes(4 + 15 * realPoints);
+                    break;
+                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                    spellLength = GameTime::FromHours(64 + realPoints);
+                    break;
+                default:
+                    assert(false);
+                    break;
+            }
+
+            actorPtr->pActorBuffs[ACTOR_BUFF_SHIELD].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, 0, 0, 0);
+            // Spell sound was missing from before
+            pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
+            break;
 
         case SPELL_EARTH_STONESKIN:
-            if (masteryLevel == PLAYER_SKILL_MASTERY_NOVICE || masteryLevel == PLAYER_SKILL_MASTERY_EXPERT)
-                v44 = 5 * 60 * realPoints + 3840;
-            else if (masteryLevel == PLAYER_SKILL_MASTERY_MASTER)
-                v44 = 15 * 60 * realPoints + 3840;
-            else if (masteryLevel == PLAYER_SKILL_MASTERY_GRANDMASTER)
-                v44 = 60 * 60 * (realPoints + 64);
-            else
-                v44 = 0;
-            spell_length = GameTime::FromMinutes(v44 / 60);
-            actorPtr->pActorBuffs[ACTOR_BUFF_STONESKIN].Apply(
-                (pParty->GetPlayingTime() + spell_length),
-                masteryLevel, realPoints + 5, 0, 0);
+            // TODO(Nik-RE-dev): calculation of duration is strange
+            switch (masteryLevel) {
+                case PLAYER_SKILL_MASTERY_NOVICE:
+                case PLAYER_SKILL_MASTERY_EXPERT:
+                    spellLength = GameTime::FromHours(1).AddMinutes(4 + 5 * realPoints);
+                    break;
+                case PLAYER_SKILL_MASTERY_MASTER:
+                    spellLength = GameTime::FromHours(1).AddMinutes(4 + 15 * realPoints);
+                    break;
+                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                    spellLength = GameTime::FromHours(64 + realPoints);
+                    break;
+                default:
+                    assert(false);
+                    break;
+            }
+
+            actorPtr->pActorBuffs[ACTOR_BUFF_STONESKIN].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, realPoints + 5, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.Cioccolato.c32());
-            pAudioPlayer->PlaySound((SoundID)SOUND_Stoneskin,
-                                    PID(OBJECT_Actor, uActorID), 0, -1, 0, 0);
-            return;
+            pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
+            break;
 
         case SPELL_SPIRIT_BLESS:
-            if (masteryLevel == PLAYER_SKILL_MASTERY_NOVICE || masteryLevel == PLAYER_SKILL_MASTERY_EXPERT)
-                v42 = 5 * 60 * realPoints + 3840;
-            else if (masteryLevel == PLAYER_SKILL_MASTERY_MASTER)
-                v42 = 15 * 60 * realPoints + 3840;
-            else if (masteryLevel == PLAYER_SKILL_MASTERY_GRANDMASTER)
-                v42 = 20 * 60 * realPoints + 3840;
-            else
-                v42 = 0;
-            spell_length = GameTime::FromMinutes(v42 / 60);
-            actorPtr->pActorBuffs[ACTOR_BUFF_BLESS].Apply(
-               (pParty->GetPlayingTime() + spell_length),
-                masteryLevel, realPoints + 5, 0, 0);
+            // TODO(Nik-RE-dev): calculation of duration is strange
+            switch (masteryLevel) {
+                case PLAYER_SKILL_MASTERY_NOVICE:
+                case PLAYER_SKILL_MASTERY_EXPERT:
+                    spellLength = GameTime::FromHours(1).AddMinutes(4 + 5 * realPoints);
+                    break;
+                case PLAYER_SKILL_MASTERY_MASTER:
+                    spellLength = GameTime::FromHours(1).AddMinutes(4 + 15 * realPoints);
+                    break;
+                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                    spellLength = GameTime::FromHours(1).AddMinutes(4 + 20 * realPoints);
+                    break;
+                default:
+                    assert(false);
+                    break;
+            }
 
+            actorPtr->pActorBuffs[ACTOR_BUFF_STONESKIN].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, realPoints + 5, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.RioGrande.c32());
-            pAudioPlayer->PlaySound((SoundID)SOUND_Bless,
-                                    PID(OBJECT_Actor, uActorID), 0, -1, 0,
-                                    0);
-            return;
+            pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
+            break;
 
         case SPELL_SPIRIT_FATE:
-            if (masteryLevel == PLAYER_SKILL_MASTERY_NOVICE || masteryLevel == PLAYER_SKILL_MASTERY_EXPERT)
-                v48 = 2 * realPoints + 40;
-            else if (masteryLevel == PLAYER_SKILL_MASTERY_MASTER)
-                v48 = 3 * realPoints + 60;
-            else if (masteryLevel == PLAYER_SKILL_MASTERY_GRANDMASTER)
-                v48 = 2 * (3 * realPoints + 60);
-            else
-                v48 = 0;
-            spell_length = GameTime::FromMinutes(5);
-            actorPtr->pActorBuffs[ACTOR_BUFF_FATE].Apply(
-                (pParty->GetPlayingTime() + spell_length),
-                masteryLevel, v48, 0, 0);
+        {
+            int spellPower;
+            switch (masteryLevel) {
+                case PLAYER_SKILL_MASTERY_NOVICE:
+                case PLAYER_SKILL_MASTERY_EXPERT:
+                    spellPower = 2 * realPoints + 40;
+                    break;
+                case PLAYER_SKILL_MASTERY_MASTER:
+                    spellPower = 3 * realPoints + 60;
+                    break;
+                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                    spellPower = 6 * realPoints + 120;
+                    break;
+                default:
+                    assert(false);
+                    break;
+            }
+
+            actorPtr->pActorBuffs[ACTOR_BUFF_FATE].Apply(pParty->GetPlayingTime() + GameTime::FromMinutes(5), masteryLevel, spellPower, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.RioGrande.c32());
-            pAudioPlayer->PlaySound((SoundID)SOUND_Fate,
-                                    PID(OBJECT_Actor, uActorID), 0, -1, 0,
-                                    0);
-            return;
+            pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
+            break;
+        }
 
         case SPELL_SPIRIT_HEROISM:
-            if (masteryLevel == PLAYER_SKILL_MASTERY_NOVICE || masteryLevel == PLAYER_SKILL_MASTERY_EXPERT)
-                v54 = 5 * 60 * realPoints + 3840;
-            else if (masteryLevel == PLAYER_SKILL_MASTERY_MASTER)
-                v54 = 15 * 60 * realPoints + 3840;
-            else if (masteryLevel == PLAYER_SKILL_MASTERY_GRANDMASTER)
-                v54 = 20 * 60 * realPoints + 3840;
-            else
-                v54 = 0;
-            spell_length = GameTime::FromMinutes(v54 / 60);
-            actorPtr->pActorBuffs[ACTOR_BUFF_HEROISM].Apply(
-                (pParty->GetPlayingTime() + spell_length),
-                masteryLevel, realPoints + 5, 0, 0);
+            // TODO(Nik-RE-dev): calculation of duration is strange
+            switch (masteryLevel) {
+                case PLAYER_SKILL_MASTERY_NOVICE:
+                case PLAYER_SKILL_MASTERY_EXPERT:
+                    spellLength = GameTime::FromHours(1).AddMinutes(4 + 5 * realPoints);
+                    break;
+                case PLAYER_SKILL_MASTERY_MASTER:
+                    spellLength = GameTime::FromHours(1).AddMinutes(4 + 15 * realPoints);
+                    break;
+                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                    spellLength = GameTime::FromHours(1).AddMinutes(4 + 20 * realPoints);
+                    break;
+                default:
+                    assert(false);
+                    break;
+            }
+
+            actorPtr->pActorBuffs[ACTOR_BUFF_HEROISM].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, realPoints + 5, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.RioGrande.c32());
-            pAudioPlayer->PlaySound((SoundID)SOUND_51heroism03,
-                                    PID(OBJECT_Actor, uActorID), 0, -1, 0,
-                                    0);
-            return;
+            pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
+            break;
 
         case SPELL_BODY_HAMMERHANDS:
-            // TODO: wtf?
-            if ((signed int)masteryLevel <= 0 || (signed int)masteryLevel > 4)
-                v51 = 0;
-            else
-                v51 = 60 * 60 * realPoints;
-            spell_length = GameTime::FromMinutes(v51 / 60);
-            actorPtr->pActorBuffs[ACTOR_BUFF_PAIN_HAMMERHANDS].Apply(
-                (pParty->GetPlayingTime() + spell_length),
-                masteryLevel, realPoints, 0, 0);
+            // TODO(Nik-RE-dev): calculation of duration is strange
+            actorPtr->pActorBuffs[ACTOR_BUFF_PAIN_HAMMERHANDS]
+                .Apply(pParty->GetPlayingTime() + GameTime::FromHours(realPoints), masteryLevel, realPoints, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.JazzberryJam.c32());
-            pAudioPlayer->PlaySound((SoundID)SOUND_51heroism03,
-                                    PID(OBJECT_Actor, uActorID), 0, -1, 0,
-                                    0);
-            return;
+            pAudioPlayer->PlaySound(SOUND_51heroism03, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0);
+            break;
 
         case SPELL_BODY_POWER_CURE:
             actorPtr->sCurrentHP += 5 * realPoints + 10;
-            if (actorPtr->sCurrentHP >= (signed int)actorPtr->pMonsterInfo.uHP)
-                actorPtr->sCurrentHP = (short)actorPtr->pMonsterInfo.uHP;
+            if (actorPtr->sCurrentHP >= actorPtr->pMonsterInfo.uHP) {
+                actorPtr->sCurrentHP = actorPtr->pMonsterInfo.uHP;
+            }
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.JazzberryJam.c32());
-            pAudioPlayer->PlaySound((SoundID)SOUND_Fate,
-                                    PID(OBJECT_Actor, uActorID), 0, -1, 0,
-                                    0);
-            return;
+            pAudioPlayer->PlaySound(SOUND_Fate, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0);
+            break;
 
         case SPELL_LIGHT_DISPEL_MAGIC:
             for (SpellBuff &buff : pParty->pPartyBuffs) {
                 buff.Reset();
             }
             for (int i = 0; i < pParty->pPlayers.size(); i++) {
-                v59 = pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualWillpower());
-                v61 = (pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualIntelligence()) + v59) / 2;
-                v63 = v61 + pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualLuck()) + 30;
-                if (grng->Random(v63) < 30) {
+                int willCheck = pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualWillpower()) / 2;
+                int intCheck = pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualIntelligence()) / 2;
+                int luckCheck = pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualLuck()) + 30;
+                if (grng->Random(willCheck + intCheck + luckCheck) < 30) {
                     for (SpellBuff &buff : pParty->pPlayers[i].pPlayerBuffs) {
                         buff.Reset();
                     }
                     pOtherOverlayList->_4418B1(11210, i + 100, 0, 65536);
                 }
             }
-            pAudioPlayer->PlaySpellSound(80, PID(OBJECT_Actor, uActorID));
-            return;
+            pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
+            break;
 
         case SPELL_LIGHT_DAY_OF_PROTECTION:
-            if (masteryLevel == PLAYER_SKILL_MASTERY_NOVICE || masteryLevel == PLAYER_SKILL_MASTERY_EXPERT) {
-                v96 = 5 * 60 * realPoints + 128 * 30;
-            } else if (masteryLevel == PLAYER_SKILL_MASTERY_MASTER) {
-                HEXRAYS_LOWORD(realPoints) = 3 * realPoints;
-                v96 = 15 * 60 * (uSkillMastery & 0x3F) + 128 * 30;
-            } else if (masteryLevel == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-                v96 = 20 * 60 * realPoints + 128 * 30;
-                HEXRAYS_LOWORD(realPoints) = 4 * realPoints;
-            } else {
-                HEXRAYS_LOWORD(realPoints) = uSkillMastery;
-                v96 = 0;
+        {
+            // TODO(Nik-RE-dev): calculation of duration is strange
+            int spellPower;
+            switch (masteryLevel) {
+                case PLAYER_SKILL_MASTERY_NOVICE:
+                case PLAYER_SKILL_MASTERY_EXPERT:
+                    spellLength = GameTime::FromMinutes(64 + 5 * realPoints);
+                    spellPower = realPoints;
+                    break;
+                case PLAYER_SKILL_MASTERY_MASTER:
+                    spellLength = GameTime::FromMinutes(64 + 15 * realPoints);
+                    spellPower = 3 * realPoints;
+                    break;
+                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                    spellLength = GameTime::FromMinutes(64 + 20 * realPoints);
+                    spellPower = 4 * realPoints;
+                    break;
+                default:
+                    assert(false);
+                    break;
             }
-            spell_length = GameTime::FromMinutes(v96 / 60);
-            actorPtr->pActorBuffs[ACTOR_BUFF_DAY_OF_PROTECTION].Apply(
-                (pParty->GetPlayingTime() + spell_length),
-                masteryLevel, realPoints, 0, 0);
+
+            actorPtr->pActorBuffs[ACTOR_BUFF_DAY_OF_PROTECTION].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, spellPower, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.White.c32());
-            pAudioPlayer->PlaySound((SoundID)SOUND_94dayofprotection03,
-                                    PID(OBJECT_Actor, uActorID), 0, -1, 0,
-                                    0);
-            return;
+            pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
+            break;
+        }
 
         case SPELL_LIGHT_HOUR_OF_POWER:
-            if (masteryLevel == PLAYER_SKILL_MASTERY_NOVICE || masteryLevel == PLAYER_SKILL_MASTERY_EXPERT)
-                v94 = 5 * 60 * realPoints + 30 * 128;
-            else if (masteryLevel == PLAYER_SKILL_MASTERY_MASTER)
-                v94 = 15 * 60 * realPoints + 30 * 128;
-            else if (masteryLevel == PLAYER_SKILL_MASTERY_GRANDMASTER)
-                v94 = 20 * 60 * realPoints + 30 * 128;
-            else
-                v94 = 0;
-            spell_length = GameTime::FromMinutes(v94 / 60);
-            actorPtr->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Apply(
-                (pParty->GetPlayingTime() + spell_length),
-                masteryLevel, realPoints + 5, 0, 0);
+            // TODO(Nik-RE-dev): calculation of duration is strange
+            switch (masteryLevel) {
+                case PLAYER_SKILL_MASTERY_NOVICE:
+                case PLAYER_SKILL_MASTERY_EXPERT:
+                    spellLength = GameTime::FromMinutes(64 + 5 * realPoints);
+                    break;
+                case PLAYER_SKILL_MASTERY_MASTER:
+                    spellLength = GameTime::FromMinutes(64 + 15 * realPoints);
+                    break;
+                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                    spellLength = GameTime::FromMinutes(64 + 20 * realPoints);
+                    break;
+                default:
+                    assert(false);
+                    break;
+            }
+
+            actorPtr->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, realPoints + 5, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.White.c32());
-            pAudioPlayer->PlaySound((SoundID)SOUND_9armageddon01,
-                                    PID(OBJECT_Actor, uActorID), 0, -1, 0,
-                                    0);
-            return;
+            pAudioPlayer->PlaySound((SoundID)SOUND_9armageddon01, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0);
+            break;
 
         case SPELL_DARK_SHARPMETAL:
-            if (masteryLevel == PLAYER_SKILL_MASTERY_EXPERT)
-                v70 = 5;
-            else if (masteryLevel == PLAYER_SKILL_MASTERY_MASTER)
-                v70 = 7;
-            else if (masteryLevel == PLAYER_SKILL_MASTERY_GRANDMASTER)
-                v70 = 9;
-            else
-                v70 = 3;
+        {
+            int pieces;
+            switch (masteryLevel) {
+                case PLAYER_SKILL_MASTERY_NOVICE:
+                    pieces = 3;
+                    break;
+                case PLAYER_SKILL_MASTERY_EXPERT:
+                    pieces = 5;
+                    break;
+                case PLAYER_SKILL_MASTERY_MASTER:
+                    pieces = 7;
+                    break;
+                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                    pieces = 9;
+                    break;
+                default:
+                    assert(false);
+                    break;
+            }
 
-            spellnume = (signed int)(60 * TrigLUT.uIntegerDoublePi) / 360;
-            a1.uType = SpellSpriteMapping[uSpellID];
-            v116 = (signed int)(60 * TrigLUT.uIntegerDoublePi) / 360 /
-                   (v70 - 1);
-            a1.uObjectDescID = GetObjDescId(uSpellID);
-            a1.containing_item.Reset();
-            a1.uSpellID = uSpellID;
-            a1.spell_level = uSkillMastery;
-            a1.vPosition.x = actorPtr->vPosition.x;
-            a1.spell_skill = PLAYER_SKILL_MASTERY_NONE;
-            a1.vPosition.y = actorPtr->vPosition.y;
-            a1.vPosition.z = actorPtr->vPosition.z +
-                             ((signed int)actorPtr->uActorHeight >> 1);
-            a1.uFacing = pDir->uYawAngle;
-            a1.uSoundID = 0;
-            a1.uAttributes = 0;
-            a1.uSectorID = pIndoor->GetSector(a1.vPosition);
-            a1.spell_caster_pid = PID(OBJECT_Actor, uActorID);
-            a1.uSpriteFrameID = 0;
-            a1.spell_target_pid = 0;
-            a1.field_60_distance_related_prolly_lod = 3;
-            a1c = spellnume / -2;
-            if (spellnume / -2 > spellnume / 2) {
-                v80 = spellnume / -2;
-            } else {
+            sprite.uType = SpellSpriteMapping[uSpellID];
+            sprite.uObjectDescID = GetObjDescId(uSpellID);
+            sprite.containing_item.Reset();
+            sprite.uSpellID = uSpellID;
+            sprite.spell_level = uSkillMastery;
+            sprite.spell_skill = PLAYER_SKILL_MASTERY_NONE;
+            sprite.vPosition = actorPtr->vPosition + Vec3i(0, 0, actorPtr->uActorHeight / 2);
+            sprite.uFacing = pDir->uYawAngle;
+            sprite.uSoundID = 0;
+            sprite.uAttributes = 0;
+            sprite.uSectorID = pIndoor->GetSector(sprite.vPosition);
+            sprite.spell_caster_pid = PID(OBJECT_Actor, uActorID);
+            sprite.uSpriteFrameID = 0;
+            sprite.spell_target_pid = 0;
+            sprite.field_60_distance_related_prolly_lod = 3;
+
+            int spell_spray_angle_start = ONE_THIRD_PI / -2;
+            int spell_spray_angle_end = ONE_THIRD_PI / 2;
+            if (spell_spray_angle_start <= spell_spray_angle_end) {
                 do {
-                    v79 = pDir->uYawAngle;
-                    a1.uFacing = a1c + (short)pDir->uYawAngle;
-                    v80 = a1.Create(
-                        v79, pDir->uPitchAngle,
-                        pObjectList->pObjects[(int16_t)a1.uObjectDescID]
-                            .uSpeed,
-                        0);
-                    a1c += v116;
-                } while (a1c <= spellnume / 2);
+                    sprite.uFacing = spell_spray_angle_start + pDir->uYawAngle;
+                    spriteId = sprite.Create(sprite.uFacing, pDir->uPitchAngle, pObjectList->pObjects[sprite.uObjectDescID].uSpeed, 0);
+                    spell_spray_angle_start += ONE_THIRD_PI / (pieces - 1);
+                } while (spell_spray_angle_start <= spell_spray_angle_end);
             }
-            if (v80 != -1) {
-                pAudioPlayer->PlaySpellSound(93, PID(OBJECT_Item, v80));
-                return;
+            if (spriteId != -1) {
+                pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Item, spriteId));
             }
-            return;
+            break;
+        }
 
         case SPELL_DARK_PAIN_REFLECTION:
-            if (masteryLevel == PLAYER_SKILL_MASTERY_NONE)
-                v68 = 0;
-            else if (masteryLevel == PLAYER_SKILL_MASTERY_NOVICE || (masteryLevel == PLAYER_SKILL_MASTERY_EXPERT) ||
-                     (masteryLevel == PLAYER_SKILL_MASTERY_MASTER))
-                v68 = 5 * 30 * realPoints + 30 * 128;
-            else
-                v68 = 15 * 30 * realPoints + 30 * 128;
-            spell_length = GameTime::FromMinutes(v68 / 60);
-            actorPtr->pActorBuffs[ACTOR_BUFF_PAIN_REFLECTION].Apply(
-                (pParty->GetPlayingTime() + spell_length),
-                masteryLevel, 0, 0, 0);
+            // TODO(Nik-RE-dev): calculation of duration is strange
+            switch (masteryLevel) {
+                case PLAYER_SKILL_MASTERY_NOVICE:
+                case PLAYER_SKILL_MASTERY_EXPERT:
+                case PLAYER_SKILL_MASTERY_MASTER:
+                    spellLength = GameTime::FromMinutes(64).AddSeconds(5 * 30 * realPoints);
+                    break;
+                case PLAYER_SKILL_MASTERY_GRANDMASTER:
+                    spellLength = GameTime::FromMinutes(64).AddSeconds(15 * 30 * realPoints);
+                    break;
+                default:
+                    assert(false);
+                    break;
+            }
+            actorPtr->pActorBuffs[ACTOR_BUFF_PAIN_REFLECTION].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, 0, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.MediumGrey.c32());
-            pAudioPlayer->PlaySound((SoundID)SOUND_Sacrifice2,
-                                    PID(OBJECT_Actor, uActorID), 0, -1, 0,
-                                    0);
-            return;
+            pAudioPlayer->PlaySound(SOUND_Sacrifice2, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0);
+            break;
     }
 }
 
