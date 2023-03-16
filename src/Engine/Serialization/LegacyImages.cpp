@@ -55,7 +55,7 @@ void Deserialize(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
 void Deserialize(const BLVFace_MM7 &src, BLVFace *dst) {
     dst->pFacePlane = src.pFacePlane;
     dst->pFacePlane_old = src.pFacePlane_old;
-    dst->zCalc.Init(dst->pFacePlane_old);
+    dst->zCalc.init(dst->pFacePlane_old);
     dst->uAttributes = FaceAttributes(src.uAttributes);
     dst->pVertexIDs = nullptr;
     dst->pXInterceptDisplacements = nullptr;
@@ -1490,7 +1490,7 @@ void Deserialize(const ODMFace_MM7 &src, ODMFace *dst) {
     dst->pFacePlane.vNormal.z = dst->pFacePlaneOLD.vNormal.z / 65536.0;
     dst->pFacePlane.dist = dst->pFacePlaneOLD.dist / 65536.0;
 
-    dst->zCalc.Init(dst->pFacePlaneOLD);
+    dst->zCalc.init(dst->pFacePlaneOLD);
     dst->uAttributes = FaceAttributes(src.uAttributes);
     dst->pVertexIDs = src.pVertexIDs;
     dst->pTextureUIDs = src.pTextureUIDs;

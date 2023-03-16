@@ -12,19 +12,19 @@ class FileInputStream : public InputStream {
     explicit FileInputStream(std::string_view path);
     virtual ~FileInputStream();
 
-    void Open(std::string_view path);
+    void open(std::string_view path);
 
-    bool IsOpen() const {
+    bool isOpen() const {
         return _file != nullptr;
     }
 
-    virtual size_t Read(void *data, size_t size) override;
-    virtual size_t Skip(size_t size) override;
-    virtual void Close() override;
-    void Seek(size_t pos);
+    virtual size_t read(void *data, size_t size) override;
+    virtual size_t skip(size_t size) override;
+    virtual void close() override;
+    void seek(size_t pos);
 
  private:
-    void CloseInternal(bool canThrow);
+    void closeInternal(bool canThrow);
 
  private:
     std::string _path;

@@ -72,11 +72,11 @@ std::tuple<int, Pointi, Sizei> GameWindowHandler::GetWindowConfigPosition(const 
     }
 
     if (mode == WINDOW_MODE_FULLSCREEN || mode == WINDOW_MODE_FULLSCREEN_BORDERLESS) {
-        pos = displayRect.TopLeft();
-    } else if (Recti(Pointi(), displayRect.Size()).Contains(pos)) {
-        pos += displayRect.TopLeft();
+        pos = displayRect.topLeft();
+    } else if (Recti(Pointi(), displayRect.size()).contains(pos)) {
+        pos += displayRect.topLeft();
     } else if (displayRect != Recti()) {
-        pos = displayRect.Center() - Pointi(size.w, size.h) / 2;
+        pos = displayRect.center() - Pointi(size.w, size.h) / 2;
     } else {
         pos = Pointi(0, 0); // DisplayGeometries() failed so we just give up.
     }
@@ -99,9 +99,9 @@ std::tuple<int, Pointi, Sizei> GameWindowHandler::GetWindowRelativePosition(Poin
     int display = 0;
 
     for (size_t i = 0; i < displays.size(); i++) {
-        if (displays[i].Contains(pos)) {
+        if (displays[i].contains(pos)) {
             display = i;
-            relativePos = pos - displays[i].TopLeft();
+            relativePos = pos - displays[i].topLeft();
             break;
         }
     }

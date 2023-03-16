@@ -32,13 +32,13 @@ class Deserializer {
     }
 
     void ReadBytes(void* dst, size_t size) {
-        size_t bytesRead = inputStream_->Read(dst, size);
+        size_t bytesRead = inputStream_->read(dst, size);
         if (bytesRead < size)
             throw Exception("Deserialization failed, no more data in stream.");
     }
 
     void SkipBytes(size_t size) {
-        size_t skippedBytes = inputStream_->Skip(size);
+        size_t skippedBytes = inputStream_->skip(size);
         if (skippedBytes != size)
             throw Exception("Deserialization failed, no more data in stream.");
     }
@@ -122,7 +122,7 @@ class BlobDeserializer: private Embedded<MemoryInputStream>, public Deserializer
     }
 
     void Reset(const Blob &blob) {
-        StreamBase::get().Reset(blob.data(), blob.size());
+        StreamBase::get().reset(blob.data(), blob.size());
     }
 
     void Reset(Blob &&blob) {

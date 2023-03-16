@@ -29,7 +29,7 @@ class GameThread {
         if (options.gameDataDir.empty()) {
             Application::AutoInitDataPath(_application->platform());
         } else {
-            SetDataPath(options.gameDataDir);
+            setDataPath(options.gameDataDir);
         }
 
         _config = std::make_shared<Application::GameConfig>();

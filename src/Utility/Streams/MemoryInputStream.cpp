@@ -5,21 +5,21 @@
 #include <algorithm>
 
 MemoryInputStream::MemoryInputStream() {
-    Reset(nullptr, 0);
+    reset(nullptr, 0);
 }
 
 MemoryInputStream::MemoryInputStream(const void *data, size_t size) {
-    Reset(data, size);
+    reset(data, size);
 }
 
 MemoryInputStream::~MemoryInputStream() {}
 
-void MemoryInputStream::Reset(const void *data, size_t size) {
+void MemoryInputStream::reset(const void *data, size_t size) {
     pos_ = static_cast<const char *>(data);
     end_ = pos_ + size;
 }
 
-size_t MemoryInputStream::Read(void *data, size_t size) {
+size_t MemoryInputStream::read(void *data, size_t size) {
     assert(pos_);
 
     size_t result = std::min(size, static_cast<size_t>(end_ - pos_));
@@ -29,7 +29,7 @@ size_t MemoryInputStream::Read(void *data, size_t size) {
     return result;
 }
 
-size_t MemoryInputStream::Skip(size_t size) {
+size_t MemoryInputStream::skip(size_t size) {
     assert(pos_);
 
     size_t result = std::min(size, static_cast<size_t>(end_ - pos_));
@@ -37,6 +37,6 @@ size_t MemoryInputStream::Skip(size_t size) {
     return result;
 }
 
-void MemoryInputStream::Close() {
-    Reset(nullptr, 0);
+void MemoryInputStream::close() {
+    reset(nullptr, 0);
 }

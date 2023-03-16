@@ -11,22 +11,22 @@
 #endif
 
 FileInputStream::FileInputStream(std::string_view path) {
-    Open(path);
+    open(path);
 }
 
 FileInputStream::~FileInputStream() {
-    CloseInternal(false);
+    closeInternal(false);
 }
 
-void FileInputStream::Open(std::string_view path) {
+void FileInputStream::open(std::string_view path) {
     _path = std::string(path);
     _file = fopen(_path.c_str(), "rb");
     if (!_file)
         Exception::throwFromErrno(_path);
 }
 
-size_t FileInputStream::Read(void *data, size_t size) {
-    assert(IsOpen()); // Reading from a closed stream is UB.
+size_t FileInputStream::read(void *data, size_t size) {
+    assert(isOpen()); // Reading from a closed stream is UB.
 
     size_t result = fread(data, 1, size, _file);
     if (result == size)
@@ -38,12 +38,12 @@ size_t FileInputStream::Read(void *data, size_t size) {
     Exception::throwFromErrno(_path);
 }
 
-size_t FileInputStream::Skip(size_t size) {
-    assert(IsOpen());
+size_t FileInputStream::skip(size_t size) {
+    assert(isOpen());
 
     if (size < 1024) {
         char buf[1024];
-        return Read(buf, size);
+        return read(buf, size);
     }
 
     int64_t pos = ftello(_file);
@@ -64,12 +64,12 @@ size_t FileInputStream::Skip(size_t size) {
     return newPos - pos;
 }
 
-void FileInputStream::Close() {
-    CloseInternal(true);
+void FileInputStream::close() {
+    closeInternal(true);
 }
 
-void FileInputStream::Seek(size_t pos) {
-    assert(IsOpen());
+void FileInputStream::seek(size_t pos) {
+    assert(isOpen());
 
     if (fseeko(_file, 0, SEEK_END) != 0)
         Exception::throwFromErrno(_path);
@@ -85,8 +85,8 @@ void FileInputStream::Seek(size_t pos) {
         Exception::throwFromErrno(_path);
 }
 
-void FileInputStream::CloseInternal(bool canThrow) {
-    if (!IsOpen())
+void FileInputStream::closeInternal(bool canThrow) {
+    if (!isOpen())
         return;
 
     int status = fclose(_file);

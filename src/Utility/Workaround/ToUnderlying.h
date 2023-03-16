@@ -8,9 +8,9 @@
 #ifndef __cpp_lib_to_underlying
 
 namespace std {
-    template <class T>
-    [[nodiscard]] inline constexpr underlying_type_t<T> to_underlying(T value) noexcept {
-        return static_cast<underlying_type_t<T>>(value);
-    }
+template <class T>
+[[nodiscard]] inline constexpr underlying_type_t<T> to_underlying(T value) noexcept {
+    return static_cast<underlying_type_t<T>>(value);
 }
+} // namespace std
 #endif

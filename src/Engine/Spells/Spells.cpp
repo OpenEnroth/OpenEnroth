@@ -495,15 +495,15 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
 
     int yaw = 0;
     int pitch = 0;
-    float distance_to_target = coord_delta.ToFloat().Length();
+    float distance_to_target = coord_delta.toFloat().length();
     if (distance_to_target <= 1.0) {
         distance_to_target = 1;
     } else {
         int64_t ySquared = coord_delta.y * coord_delta.y;
         int64_t xSquared = coord_delta.x * coord_delta.x;
         int xy_distance = (int)sqrt((double)(xSquared + ySquared));
-        yaw = TrigLUT.Atan2(coord_delta.x, coord_delta.y);
-        pitch = TrigLUT.Atan2(xy_distance, coord_delta.z);
+        yaw = TrigLUT.atan2(coord_delta.x, coord_delta.y);
+        pitch = TrigLUT.atan2(xy_distance, coord_delta.z);
     }
 
     SpriteObject spell_sprites;

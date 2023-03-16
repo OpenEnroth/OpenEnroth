@@ -14,7 +14,4 @@ class Exception : public std::runtime_error {
 
     [[noreturn]] static void throwFromErrno(std::string_view arg);
     [[noreturn]] static void throwFromErrc(std::errc error, std::string_view arg);
-
- private:
-    std::string _message;
 };
