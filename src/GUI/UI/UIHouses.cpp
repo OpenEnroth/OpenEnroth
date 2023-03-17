@@ -1065,15 +1065,15 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     case BuildingType_TownHall:
     {
         if (option == DIALOGUE_TOWNHALL_MESSAGE) {
-            if (pParty->PartyTimes.bountyHunting_next_generation_time[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] < pParty->GetPlayingTime()) {  // new generation
-                pParty->monster_for_hunting_killed[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = false;
-                pParty->PartyTimes.bountyHunting_next_generation_time[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = GameTime((int64_t)((double)(309657600 *
+            if (pParty->PartyTimes.bountyHunting_next_generation_time[window_SpeakInHouse->houseId()] < pParty->GetPlayingTime()) {  // new generation
+                pParty->monster_for_hunting_killed[window_SpeakInHouse->houseId()] = false;
+                pParty->PartyTimes.bountyHunting_next_generation_time[window_SpeakInHouse->houseId()] = GameTime((int64_t)((double)(309657600 *
                     (pParty->uCurrentMonth + 12ll * pParty->uCurrentYear - 14015)) * 0.033333335));
-                pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = grng->Random(258) + 1;
+                pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()] = grng->Random(258) + 1;
                 v16 = window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE;
                 if (!v16) {
                     while (1) {
-                        v24 = pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE];
+                        v24 = pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()];
                         if ((uint16_t)v24 < 115 ||
                             (uint16_t)v24 > 132) {
                             if (((uint16_t)v24 < 235 ||
@@ -1100,12 +1100,12 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                                 (uint16_t)v24 > 0x63u))
                                 break;
                         }
-                        pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = grng->Random(258) + 1;
+                        pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()] = grng->Random(258) + 1;
                     }
                 }
                 if (v16 == 1) {
                     while (1) {
-                        v24 = pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE];
+                        v24 = pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()];
                         if ((uint16_t)v24 < 115 ||
                             (uint16_t)v24 > 132) {
                             if (((uint16_t)v24 < 0xE8u ||
@@ -1138,12 +1138,12 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                                 (uint16_t)v24 > 0xCFu))
                                 break;
                         }
-                        pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = grng->Random(258) + 1;
+                        pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()] = grng->Random(258) + 1;
                     }
                 }
                 if (v16 == 2) {
                     while (1) {
-                        v24 = pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE];
+                        v24 = pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()];
                         if ((uint16_t)v24 < 0x73u ||
                             (uint16_t)v24 > 0x84u) {
                             if (((uint16_t)v24 < 0xE8u ||
@@ -1170,12 +1170,12 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                                 (uint16_t)v24 > 0x1Eu))
                                 break;
                         }
-                        pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = grng->Random(258) + 1;
+                        pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()] = grng->Random(258) + 1;
                     }
                 }
                 if (v16 == 3) {
                     while (1) {
-                        v24 = pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE];
+                        v24 = pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()];
                         if ((uint16_t)v24 < 0x73u ||
                             (uint16_t)v24 > 0x84u) {
                             if (((uint16_t)v24 < 0xE8u ||
@@ -1208,12 +1208,12 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                                 (uint16_t)v24 > 0x6Cu))
                                 break;
                         }
-                        pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = grng->Random(258) + 1;
+                        pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()] = grng->Random(258) + 1;
                     }
                 }
                 if (v16 == 4) {
                     while (1) {
-                        v24 = pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE];
+                        v24 = pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()];
                         if ((uint16_t)v24 < 0x73u ||
                             (uint16_t)v24 > 0x84u) {
                             if (((uint16_t)v24 < 0xE8u ||
@@ -1254,24 +1254,24 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                                 (uint16_t)v24 > 0x12u))
                                 break;
                         }
-                        pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = grng->Random(258) + 1;
+                        pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()] = grng->Random(258) + 1;
                     }
                 }
             }
-            bountyHunting_monster_id_for_hunting = pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE];
-            if (!pParty->monster_for_hunting_killed[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE]) {
+            bountyHunting_monster_id_for_hunting = pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()];
+            if (!pParty->monster_for_hunting_killed[window_SpeakInHouse->houseId()]) {
                 bountyHunting_text = pNPCTopics[351].pText;  // "В этом месяцу назначена награда за голову %s..."
-                if (!pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE])
+                if (!pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()])
                     bountyHunting_text = pNPCTopics[353].pText; // "Кое кто уже приходил в этом месяце за наградой"
             } else {
-                if (pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] > 0) {  // get prize
+                if (pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()] > 0) {  // get prize
                     pParty->PartyFindsGold(
-                        100 * pMonsterStats->pInfos[(uint16_t)pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE]].uLevel, 0);
+                        100 * pMonsterStats->pInfos[(uint16_t)pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()]].uLevel, 0);
                     for (uint i = 0; i < 4; ++i)
                         pParty->pPlayers[i].SetVariable(VAR_Award, Award_BountiesCollected);
-                    pParty->uNumBountiesCollected += 100 * pMonsterStats->pInfos[pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE]].uLevel;
-                    pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = 0;
-                    pParty->monster_for_hunting_killed[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = false;
+                    pParty->uNumBountiesCollected += 100 * pMonsterStats->pInfos[pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()]].uLevel;
+                    pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()] = 0;
+                    pParty->monster_for_hunting_killed[window_SpeakInHouse->houseId()] = false;
                 }
                 bountyHunting_text = pNPCTopics[352].pText;  //"Поздравляю! Вы успешно..."
             }

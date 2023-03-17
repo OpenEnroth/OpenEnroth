@@ -53,6 +53,7 @@ set(GUI_HEADERS GUIButton.h
                 UI/UIGuilds.h
                 UI/UIInventory.h
                 UI/UIHouses.h
+                UI/UIHouseEnums.h
                 UI/UIMainMenu.h
                 UI/UIGameOver.h
                 UI/UIPartyCreation.h

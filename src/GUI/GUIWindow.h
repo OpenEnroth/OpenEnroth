@@ -29,6 +29,7 @@ struct Texture_MM7;
 
 class GUIFont;
 class GUIButton;
+class GUIWindow_House;
 
 struct WindowData {
     WindowData() {}
@@ -393,7 +394,7 @@ void SkillTrainingDialogue(GUIWindow* dialogue, int num_skills_avaiable, int all
 extern GUIWindow *pPrimaryWindow;
 //extern GUIWindow *pChestWindow;
 extern GUIWindow *pDialogueWindow;
-extern GUIWindow *window_SpeakInHouse;
+extern GUIWindow_House *window_SpeakInHouse;
 extern GUIWindow_Scroll *pGUIWindow_ScrollWindow;
 extern GUIWindow *ptr_507BC8;
 extern GUIWindow *pGUIWindow_CurrentMenu;

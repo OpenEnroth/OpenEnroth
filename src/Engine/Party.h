@@ -9,8 +9,8 @@
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/Player.h"
 #include "Engine/Time.h"
+#include "GUI/UI/UIHouseEnums.h"
 #include "Library/Random/Random.h"
-
 
 #define PARTY_AUTONOTES_BIT__EMERALD_FIRE_FOUNTAIN 2
 
@@ -151,16 +151,14 @@ enum class PartyAlignment: int32_t {
 using enum PartyAlignment;
 
 /*  208 */
-#pragma pack(push, 1)
 struct PartyTimeStruct {
-    std::array<GameTime, 10> bountyHunting_next_generation_time;
+    IndexedArray<GameTime, HOUSE_TOWNHALL_FIRST, HOUSE_TOWNHALL_LAST> bountyHunting_next_generation_time;
     std::array<GameTime, 85> Shops_next_generation_time;  // field_50
     std::array<GameTime, 53> _shop_ban_times;
     std::array<GameTime, 10> CounterEventValues;  // (0xACD314h in Silvo's binary)
     std::array<GameTime, 29> HistoryEventTimes;  // (0xACD364h in Silvo's binary)
     std::array<GameTime, 20> _s_times;  // 5d8 440h+8*51     //(0xACD44Ch in Silvo's binary)
 };
-#pragma pack(pop)
 
 struct Party {
     Party() : playing_time(), last_regenerated() {
@@ -360,8 +358,8 @@ struct Party {
     int uNumPrisonTerms;
     unsigned int uNumBountiesCollected;
     int field_74C_set0_unused;
-    std::array<int16_t, 5> monster_id_for_hunting;
-    std::array<int16_t, 5> monster_for_hunting_killed;
+    IndexedArray<int16_t, HOUSE_TOWNHALL_FIRST, HOUSE_TOWNHALL_LAST> monster_id_for_hunting;
+    IndexedArray<int16_t, HOUSE_TOWNHALL_FIRST, HOUSE_TOWNHALL_LAST> monster_for_hunting_killed;
     unsigned char days_played_without_rest;
     uint8_t _quest_bits[64];
     std::array<uint8_t, 16> pArcomageWins;

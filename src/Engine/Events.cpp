@@ -954,8 +954,7 @@ LABEL_47:
                         HOUSE_ID houseId = HOUSE_JAIL;
                         if (uCurrentHouse_Animation != 167)
                             houseId = static_cast<HOUSE_ID>(EVT_DWORD(_evt->v5));
-                        window_SpeakInHouse =
-                            new GUIWindow_House({0, 0}, render->GetRenderDimensions(), houseId);
+                        window_SpeakInHouse = new GUIWindow_House({0, 0}, render->GetRenderDimensions(), houseId);
                         window_SpeakInHouse->CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1, "");
                         window_SpeakInHouse->CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, InputAction::SelectChar2, "");
                         window_SpeakInHouse->CreateButton({292, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 3, InputAction::SelectChar3, "");

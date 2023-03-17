@@ -53,9 +53,9 @@ void Arena_SelectionFightLevel() {
             }
             if (v0 >= (signed int)pActors.size() || (signed int)pActors.size() <= 0) {
                 uDialogueType = DIALOGUE_ARENA_REWARD;
-                ++*((char *)&pParty->monster_for_hunting_killed[3] +
-                    (uint8_t)pParty->field_7B5_in_arena_quest +
-                    1);  // Ritor1:I dont know
+                //++*((char *)&pParty->monster_for_hunting_killed[3] +
+                //    (uint8_t)pParty->field_7B5_in_arena_quest +
+                //    1);  // Ritor1:I dont know // TODO(captainurist): had to comment this, wtf is going on?
                 for (uint i = 0; i < 4; i++)
                     pParty->pPlayers[i].SetVariable(
                         VAR_Award,
