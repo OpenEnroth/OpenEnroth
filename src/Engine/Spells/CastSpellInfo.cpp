@@ -277,8 +277,7 @@ void CastSpellInfoHelpers::castSpell() {
             pSpellSprite.containing_item = pPlayer->pInventoryItemList[pPlayer->pEquipment.uMainHand - 1];
             // &pParty->pPlayers[pCastSpell->uPlayerID].spellbook.pDarkSpellbook.bIsSpellAvailable[36
             // *
-            // pParty->pPlayers[pCastSpell->uPlayerID].pEquipment.uMainHand +
-            // 5], );
+            // pParty->pPlayers[pCastSpell->uPlayerID].pEquipment.uMainHand + 5], );
             pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
             pSpellSprite.uAttributes |= SPRITE_MISSILE;
             if (pParty->bTurnBasedModeOn) {
@@ -447,8 +446,7 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
                     // v730 = spell_targeted_at >> 3;
-                    // HIDWORD(spellduration) =
-                    // (int)&pActors[PID_ID(spell_targeted_at)];
+                    // HIDWORD(spellduration) = (int)&pActors[PID_ID(spell_targeted_at)];
                     int monster_id = PID_ID(spell_targeted_at);
                     Vec3i spell_velocity = Vec3i(0, 0, 0);
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
@@ -3006,7 +3004,6 @@ static size_t pushCastSpellInfo(SPELL_TYPE uSpellID,
                                 int16_t skill_level,
                                 SpellCastFlags uFlags,
                                 int spell_sound_id) {
-    // uFlags: ON_CAST_*
     for (size_t i = 0; i < pCastSpellInfo.size(); i++) {
         if (pCastSpellInfo[i].uSpellID == SPELL_NONE) {
             pCastSpellInfo[i].uSpellID = uSpellID;
@@ -3056,9 +3053,6 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
                              PLAYER_SKILL skill_value,
                              SpellCastFlags flags,
                              int a6) {
-    // if (!pParty->bTurnBasedModeOn
-    //  || (result = pTurnEngine->field_4, pTurnEngine->field_4 != 1) &&
-    //  pTurnEngine->field_4 != 3 )
     if (pParty->bTurnBasedModeOn) {
         if (pTurnEngine->turn_stage == TE_WAIT ||
             pTurnEngine->turn_stage == TE_MOVEMENT) {
@@ -3067,8 +3061,6 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
     }
 
     PLAYER_SKILL checkSkill = skill_value;
-    // spell_pointed_target = a5;
-    // v7 = &pParty->pPlayers[uPlayerID];
     assert(uPlayerID < 4);
     Player *player = &pParty->pPlayers[uPlayerID];
     if (!(flags & ON_CAST_TargetIsParty)) {
@@ -3076,7 +3068,6 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
             case SPELL_SPIRIT_FATE:
             case SPELL_BODY_FIRST_AID:
             case SPELL_DARK_REANIMATE:
-                // HIBYTE(spell_pointed_target) = HIBYTE(a5) | 1;
                 flags |= ON_CAST_TargetedActorOrCharacter;
                 break;
 

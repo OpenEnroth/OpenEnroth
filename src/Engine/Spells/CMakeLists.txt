@@ -4,6 +4,7 @@ set(SPELLS_SOURCES CastSpellInfo.cpp
                    Spells.cpp)
 
 set(SPELLS_HEADERS CastSpellInfo.h
+                   SpellEnums.h
                    Spells.h)
 
 add_library(spells STATIC ${SPELLS_SOURCES} ${SPELLS_HEADERS})
