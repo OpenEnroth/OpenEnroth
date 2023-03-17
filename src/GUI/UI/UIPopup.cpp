@@ -2065,9 +2065,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
 
             int rot_x, rot_y, rot_z;
             Vec3i::rotate(64, pParty->sRotationZ, pParty->sRotationY, v39, &rot_x, &rot_y, &rot_z);
-            SpriteObject::Drop_Item_At(
-                SPRITE_SPELL_FIRE_FIREBALL_IMPACT, rot_x, rot_y, rot_z, 0, 1, 0,
-                0, 0);
+            SpriteObject::dropItemAt(SPRITE_SPELL_FIRE_FIREBALL_IMPACT, {rot_x, rot_y, rot_z}, 0);
             if (dword_4E455C) {
                 if (pPlayers[pParty->_activeCharacter]->CanAct())
                     pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_PotionExplode, 0);

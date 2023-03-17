@@ -118,11 +118,9 @@ bool Chest::Open(int uChestID) {
             v.x = pObjectX;
             v.y = pObjectY;
             v.z = pObjectZ;
+            // TODO(Nik-RE-dev): y and z usage seems backwards
             Vec3i::rotate(pDepth, sRotX, sRotY, v, &pOut.x, &pOut.z, &pOut.y);
-            SpriteObject::Drop_Item_At(
-                pSpriteID[pRandom], pOut.x, pOut.z, pOut.y, 0, 1, 0,
-                SPRITE_IGNORE_RANGE | SPRITE_NO_Z_BUFFER, 0);
-
+            SpriteObject::dropItemAt(pSpriteID[pRandom], {pOut.x, pOut.z, pOut.y}, 0, 1, false, SPRITE_IGNORE_RANGE | SPRITE_NO_Z_BUFFER);
             pSpellObject.containing_item.Reset();
             pSpellObject.spell_skill = PLAYER_SKILL_MASTERY_NONE;
             pSpellObject.spell_level = 0;

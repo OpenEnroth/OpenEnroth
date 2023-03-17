@@ -38,10 +38,21 @@ struct SpriteObject {
     static void UpdateObject_fn0_BLV(unsigned int uLayingItemID);
     static void UpdateObject_fn0_ODM(unsigned int uLayingItemID);
     static void OnInteraction(unsigned int uLayingItemID);
-    static bool Drop_Item_At(SPRITE_OBJECT_TYPE sprite, int x, int y,
-                                      int z, int a4, int count, int a7,
-                                      SPRITE_ATTRIBUTES attributes, ItemGen *a9);
-    static void Create_Splash_Object(int x, int y, int z);
+    /**
+     * Create sprite(s).
+     *
+     * @param spriteType     Type of sprite to drop.
+     * @param pos            Position of sprite.
+     * @param speed          Speed of sprite.
+     * @param count          Number of sprites to drop.
+     * @param randomRotate   Randomize direction vector of sprite (if false drop will be vertical).
+     * @param attributes     Sprite attributes.
+     * @param item           Containing item of sprite (may be null).
+     * @offset 0x42F7EB
+     */
+    static bool dropItemAt(SPRITE_OBJECT_TYPE spriteType, Vec3i pos, int speed, int count = 1,
+                           bool randomRotate = false, SPRITE_ATTRIBUTES attributes = 0, ItemGen *item = nullptr);
+    static void createSplashObject(Vec3i pos);
     static void InitializeSpriteObjects();
 
     SPRITE_OBJECT_TYPE uType = SPRITE_NULL;
@@ -51,7 +62,7 @@ struct SpriteObject {
     Vec3s vVelocity;
     uint16_t uFacing = 0;
     uint16_t uSoundID = 0;
-    SPRITE_ATTRIBUTES uAttributes;
+    SPRITE_ATTRIBUTES uAttributes = 0;
     int16_t uSectorID = 0;
     uint16_t uSpriteFrameID = 0;
     int16_t field_20 = 0;
