@@ -9,7 +9,8 @@
 #include "GUIWindow.h"
 #include "GUIButton.h"
 
-const char *bountyHunting_text = nullptr;                // word_F8B1A4
+static const char *bountyHunting_text = nullptr;                // word_F8B1A4
+static int16_t bountyHunting_monsterId = 0;
 
 int RandomMonsterForHunting(HOUSE_ID townhall) {
     while (true) {
@@ -107,16 +108,6 @@ int RandomMonsterForHunting(HOUSE_ID townhall) {
                 (result < 0x10u || result > 0x12u))
                 return result;
             break;
-            
-        case HOUSE_INVALID:
-            // TODO(captainurist): this one is called from CheckBountyRespawnAndAward and uses a different table, but for what purpose?
-            if ((result < 0x73u || result > 0x84u) &&
-                (result < 0x85u || result > 0x96u) &&
-                (result < 0xEBu || result > 0xFCu) &&
-                (result < 0x97u || result > 0xBAu) &&
-                (result < 0xC4u || result > 0xC6u))
-                return result;
-            break;
 
         default:
             assert(false);
@@ -130,60 +121,42 @@ void CheckBountyRespawnAndAward() {
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 350}, 0);
     pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid,
-                                                    localization->GetString(LSTR_CANCEL), { ui_exit_cancel_button_background }
-    );
+                                                    localization->GetString(LSTR_CANCEL), { ui_exit_cancel_button_background });
     pDialogueWindow->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, InputAction::Invalid, "");
     pDialogueWindow->CreateButton({480, 160}, {140, 30}, 1, 0, UIMSG_0, DIALOGUE_83_bounty_hunting, InputAction::Invalid, "");
     pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
     dialog_menu_id = DIALOGUE_OTHER;
 
-    // get new monster for hunting
-    if (pParty->PartyTimes.bountyHunting_next_generation_time[window_SpeakInHouse->houseId()] < pParty->GetPlayingTime()) {
-        pParty->monster_for_hunting_killed[window_SpeakInHouse->houseId()] = false;
-        pParty->PartyTimes.bountyHunting_next_generation_time[window_SpeakInHouse->houseId()] =
-            GameTime((int64_t)((double)(0x12750000 * (pParty->uCurrentMonth + 12 * pParty->uCurrentYear - 14015)) * 0.033333335));
-        pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()] = RandomMonsterForHunting(HOUSE_INVALID);
-    }
-
-    bountyHunting_monster_id_for_hunting = pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()];
-    if (!pParty->monster_for_hunting_killed[window_SpeakInHouse->houseId()]) {
-        bountyHunting_text = pNPCTopics[351].pText;
-        if (!pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()])
-            bountyHunting_text = pNPCTopics[353].pText;
-    } else {  // get prize
-        if (pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()]) {
-            pParty->PartyFindsGold(100 * pMonsterStats->pInfos[(uint16_t)pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()]].uLevel, 0);
-            for (uint i = 0; i < 4; ++i)
-                pParty->pPlayers[i].SetVariable(VAR_Award, Award_BountiesCollected);
-            pParty->uNumBountiesCollected += 100 * pMonsterStats->pInfos[pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()]].uLevel;
-            pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()] = 0;
-            pParty->monster_for_hunting_killed[window_SpeakInHouse->houseId()] = false;
-        }
-        bountyHunting_text = pNPCTopics[352].pText;
-    }
+    DiscussBountyInTownhall();
 }
 
 void DiscussBountyInTownhall() {
-    if (pParty->PartyTimes.bountyHunting_next_generation_time[window_SpeakInHouse->houseId()] < pParty->GetPlayingTime()) {  // new generation
-        pParty->monster_for_hunting_killed[window_SpeakInHouse->houseId()] = false;
-        pParty->PartyTimes.bountyHunting_next_generation_time[window_SpeakInHouse->houseId()] = GameTime((int64_t)((double)(309657600 *
-                                                                                                                            (pParty->uCurrentMonth + 12ll * pParty->uCurrentYear - 14015)) * 0.033333335));
-        pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()] = RandomMonsterForHunting(window_SpeakInHouse->houseId());
+    HOUSE_ID house = window_SpeakInHouse->houseId();
+
+    // Generate new bounty
+    if (pParty->PartyTimes.bountyHunting_next_generation_time[house] < pParty->GetPlayingTime()) {
+        pParty->monster_for_hunting_killed[house] = false;
+        pParty->PartyTimes.bountyHunting_next_generation_time[house] =
+            GameTime(0x12750000ll * (pParty->uCurrentMonth + 12ll * pParty->uCurrentYear - 14015ll) / 30ll);
+        pParty->monster_id_for_hunting[house] = RandomMonsterForHunting(house);
     }
-    bountyHunting_monster_id_for_hunting = pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()];
-    if (!pParty->monster_for_hunting_killed[window_SpeakInHouse->houseId()]) {
+
+    bountyHunting_monsterId = pParty->monster_id_for_hunting[house];
+
+    if (!pParty->monster_for_hunting_killed[house]) {
         bountyHunting_text = pNPCTopics[351].pText;  // "В этом месяцу назначена награда за голову %s..."
-        if (!pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()])
+        if (!pParty->monster_id_for_hunting[house])
             bountyHunting_text = pNPCTopics[353].pText; // "Кое кто уже приходил в этом месяце за наградой"
     } else {
-        if (pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()] > 0) {  // get prize
-            pParty->PartyFindsGold(
-                100 * pMonsterStats->pInfos[(uint16_t)pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()]].uLevel, 0);
+        if (pParty->monster_id_for_hunting[house] > 0) {  // get prize
+            int bounty = 100 * pMonsterStats->pInfos[pParty->monster_id_for_hunting[house]].uLevel;
+
+            pParty->PartyFindsGold(bounty, 0);
             for (uint i = 0; i < 4; ++i)
                 pParty->pPlayers[i].SetVariable(VAR_Award, Award_BountiesCollected);
-            pParty->uNumBountiesCollected += 100 * pMonsterStats->pInfos[pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()]].uLevel;
-            pParty->monster_id_for_hunting[window_SpeakInHouse->houseId()] = 0;
-            pParty->monster_for_hunting_killed[window_SpeakInHouse->houseId()] = false;
+            pParty->uNumBountiesCollected += bounty;
+            pParty->monster_id_for_hunting[house] = 0;
+            pParty->monster_for_hunting_killed[house] = false;
         }
         bountyHunting_text = pNPCTopics[352].pText;  //"Поздравляю! Вы успешно..."
     }
@@ -192,6 +165,6 @@ void DiscussBountyInTownhall() {
 std::string BountyHuntingText() {
     return stringPrintf(bountyHunting_text,
                         fmt::format("\f{:05}{}\f{:05}", colorTable.PaleCanary.c16(),
-                                    pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting].pName, colorTable.White.c16()).c_str(),
-                        100 * pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting].uLevel);
+                                    pMonsterStats->pInfos[bountyHunting_monsterId].pName, colorTable.White.c16()).c_str(),
+                        100 * pMonsterStats->pInfos[bountyHunting_monsterId].uLevel);
 }
