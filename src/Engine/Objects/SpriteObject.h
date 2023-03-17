@@ -77,7 +77,7 @@ struct SpriteObject {
     char field_60_distance_related_prolly_lod = 0;
     ABILITY_INDEX field_61 = ABILITY_ATTACK1;
     char field_62[2] = {};
-    Vec3i field_64;  // starting position
+    Vec3i initialPosition;
 };
 #pragma pack(pop)
 

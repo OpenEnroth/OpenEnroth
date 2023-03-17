@@ -58,7 +58,7 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     }
 
     // set initial position
-    field_64 = vPosition;
+    initialPosition = vPosition;
 
     // move sprite so it looks like it originates from char portrait
     switch (which_char) {
@@ -83,7 +83,7 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     }
 
     // set blank velocity
-    vVelocity = Vec3i(0, 0, 0);
+    vVelocity = Vec3s(0, 0, 0);
 
     // calcualte angle velocity - could use rotate func here as above
     if (speed) {

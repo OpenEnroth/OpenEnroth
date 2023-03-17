@@ -864,7 +864,7 @@ struct SpriteObject_MM7 {
     char field_60_distance_related_prolly_lod;
     char field_61;
     char field_62[2];
-    Vec3i field_64;
+    Vec3i initialPosition;
 };
 
 static_assert(sizeof(SpriteObject_MM7) == 0x70);

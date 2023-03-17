@@ -1558,7 +1558,7 @@ void Serialize(const SpriteObject &src, SpriteObject_MM7 *dst) {
     dst->field_61 = std::to_underlying(src.field_61);
     dst->field_62[0] = src.field_62[0];
     dst->field_62[1] = src.field_62[1];
-    dst->field_64 = src.field_64;
+    dst->initialPosition = src.initialPosition;
 }
 
 void Deserialize(const SpriteObject_MM7 &src, SpriteObject *dst) {
@@ -1584,5 +1584,5 @@ void Deserialize(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->field_61 = ABILITY_INDEX(src.field_61);
     dst->field_62[0] = src.field_62[0];
     dst->field_62[1] = src.field_62[1];
-    dst->field_64 = src.field_64;
+    dst->initialPosition = src.initialPosition;
 }
