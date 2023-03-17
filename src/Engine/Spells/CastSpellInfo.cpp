@@ -120,7 +120,7 @@ void CastSpellInfoHelpers::castSpell() {
 
     for (CastSpellInfo &spellInfo : pCastSpellInfo) {  // cycle through spell queue
         CastSpellInfo *pCastSpell = &spellInfo;
-        int uRequiredMana, recoveryTime, failureRecoveryTime;
+        int uRequiredMana{}, recoveryTime{}, failureRecoveryTime{};
 
         if (pCastSpell->uSpellID == SPELL_NONE) {
             continue;  // spell item blank skip to next
