@@ -53,8 +53,8 @@ var searchData=
   ['rect_2eh_50',['Rect.h',['../Rect_8h.html',1,'']]],
   ['rect_3c_20int_20_3e_51',['Rect&lt; int &gt;',['../structRect.html',1,'']]],
   ['recti_52',['Recti',['../Rect_8h.html#a32073cc1967b01302be5d39e09079649',1,'Rect.h']]],
-  ['red_53',['Red',['../classColorTable.html#a68b9a56fa9c09baa7f92b311e87c2a87',1,'ColorTable']]],
-  ['red_54',['red',['../structGLdecalverts.html#aaf45c445abb8d8eb45335455bba1ad00',1,'GLdecalverts']]],
+  ['red_53',['red',['../structGLdecalverts.html#aaf45c445abb8d8eb45335455bba1ad00',1,'GLdecalverts']]],
+  ['red_54',['Red',['../classColorTable.html#a68b9a56fa9c09baa7f92b311e87c2a87',1,'ColorTable']]],
   ['reef_55',['Reef',['../classColorTable.html#a467d4d2feb2dc7c538438242498eaf3d',1,'ColorTable']]],
   ['reference_56',['reference',['../classdetail_1_1RangeIterator.html#ae8c8fbfa4ba36b2ce4382fa136b792db',1,'detail::RangeIterator::reference()'],['../classSegment.html#af0ff246cdf8ecd8984307446636ea09c',1,'Segment::reference()']]],
   ['regeneratepartyhealthmana_57',['RegeneratePartyHealthMana',['../Engine_8h.html#a4658b592373a5425bedc65fe7647cc93',1,'RegeneratePartyHealthMana():&#160;Engine.cpp'],['../Engine_8cpp.html#a4658b592373a5425bedc65fe7647cc93',1,'RegeneratePartyHealthMana():&#160;Engine.cpp']]],
@@ -218,8 +218,8 @@ var searchData=
   ['rotated_5fnormal_215',['rotated_normal',['../structLightsData.html#a0f92fde30cff4753d4cfadb6ab41fcd4',1,'LightsData']]],
   ['rotation_5fspeed_216',['rotation_speed',['../structParticle.html#afc3be85262f36cb5f78cf3a51d8e61b3',1,'Particle']]],
   ['round_5fto_5fint_217',['round_to_int',['../OurMath_8h.html#a50ee4d4946888926bdf5a920129a322a',1,'OurMath.h']]],
-  ['run_218',['Run',['../classApplication_1_1Game.html#a1880d9816a978b82bb91e4679743173d',1,'Application::Game']]],
-  ['run_219',['run',['../classGameThread.html#a5d4531cb04b18f0f50a7ec71c05a41cd',1,'GameThread']]],
+  ['run_218',['run',['../classGameThread.html#a5d4531cb04b18f0f50a7ec71c05a41cd',1,'GameThread']]],
+  ['run_219',['Run',['../classApplication_1_1Game.html#a1880d9816a978b82bb91e4679743173d',1,'Application::Game']]],
   ['runcontrolroutine_220',['runControlRoutine',['../classEngineControlPlugin.html#ac496c546ef0e78dc971b43fc902c9f22',1,'EngineControlPlugin']]],
   ['rungameroutine_221',['runGameRoutine',['../classEngineController.html#a6c5f0921fa661e54726b268508a3271b',1,'EngineController']]]
 ];

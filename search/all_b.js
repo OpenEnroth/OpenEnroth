@@ -1,8 +1,8 @@
 var searchData=
 [
   ['k_0',['K',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eeccaa5f3c6a11b03839d46af9fb43c97c188',1,'PlatformEnums.h']]],
-  ['key_1',['key',['../structhotkey.html#ad4f9fda682e5faab90e374c6786d7b20',1,'hotkey::key()'],['../classPlatformKeyEvent.html#a47843d2ef4759e9938f79913f8999f54',1,'PlatformKeyEvent::key()'],['../classPlatformGamepadKeyEvent.html#a58f0340dfaa5b641a40cedd625b2eb20',1,'PlatformGamepadKeyEvent::key()']]],
-  ['key_2',['Key',['../classApplication_1_1GameConfig.html#acd89e3396451f4162bac9d07f738986d',1,'Application::GameConfig']]],
+  ['key_1',['Key',['../classApplication_1_1GameConfig.html#acd89e3396451f4162bac9d07f738986d',1,'Application::GameConfig']]],
+  ['key_2',['key',['../structhotkey.html#ad4f9fda682e5faab90e374c6786d7b20',1,'hotkey::key()'],['../classPlatformKeyEvent.html#a47843d2ef4759e9938f79913f8999f54',1,'PlatformKeyEvent::key()'],['../classPlatformGamepadKeyEvent.html#a58f0340dfaa5b641a40cedd625b2eb20',1,'PlatformGamepadKeyEvent::key()']]],
   ['key_2ecpp_3',['Key.cpp',['../Key_8cpp.html',1,'']]],
   ['key_2eh_4',['Key.h',['../Key_8h.html',1,'']]],
   ['key_5fmap_5fconflicted_5',['key_map_conflicted',['../GameMenu_8cpp.html#a979368a7f3588cd9e91fcd2c0784a810',1,'key_map_conflicted():&#160;GameMenu.cpp'],['../UIGame_8cpp.html#ac779193a7bd296fbdcabc8799a780aa0',1,'key_map_conflicted():&#160;UIGame.cpp'],['../KeyboardActionMapping_8cpp.html#ac779193a7bd296fbdcabc8799a780aa0',1,'key_map_conflicted():&#160;GameMenu.cpp']]],
