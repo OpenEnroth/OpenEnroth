@@ -43,6 +43,10 @@ struct GameTime {
     int GetWeeksOfMonth() const { return this->GetWeeks() % 4; }
     int GetMonthsOfYear() const { return this->GetMonths() % 12; }
 
+    GameTime &AddSeconds(int seconds) {
+        this->value += SECONDS_TO_GAME_TIME(seconds);
+        return *this;
+    }
     GameTime &AddMinutes(int minutes) {
         this->value += SECONDS_TO_GAME_TIME(60ull * minutes);
         return *this;
