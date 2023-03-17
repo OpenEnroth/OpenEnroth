@@ -133,8 +133,8 @@ void checkBountyRespawnAndAward() {
 void discussBountyInTownhall() {
     HOUSE_ID house = window_SpeakInHouse->houseId();
 
-    // Generate new bounty
     if (pParty->PartyTimes.bountyHunting_next_generation_time[house] < pParty->GetPlayingTime()) {
+        // Generate new bounty
         pParty->monster_for_hunting_killed[house] = false;
         pParty->PartyTimes.bountyHunting_next_generation_time[house] =
             GameTime(0x12750000ll * (pParty->uCurrentMonth + 12ll * pParty->uCurrentYear - 14015ll) / 30ll);
@@ -144,11 +144,12 @@ void discussBountyInTownhall() {
     bountyHunting_monsterId = pParty->monster_id_for_hunting[house];
 
     if (!pParty->monster_for_hunting_killed[house]) {
-        bountyHunting_text = pNPCTopics[351].pText;  // "В этом месяцу назначена награда за голову %s..."
+        bountyHunting_text = pNPCTopics[351].pText; // "This month's bounty is on a %s..."
         if (!pParty->monster_id_for_hunting[house])
-            bountyHunting_text = pNPCTopics[353].pText; // "Кое кто уже приходил в этом месяце за наградой"
+            bountyHunting_text = pNPCTopics[353].pText; // "Someone has already claimed the bounty this month..."
     } else {
-        if (pParty->monster_id_for_hunting[house] > 0) {  // get prize
+        if (pParty->monster_id_for_hunting[house] > 0) {
+            // Get prize
             int bounty = 100 * pMonsterStats->pInfos[pParty->monster_id_for_hunting[house]].uLevel;
 
             pParty->PartyFindsGold(bounty, 0);
@@ -158,7 +159,7 @@ void discussBountyInTownhall() {
             pParty->monster_id_for_hunting[house] = 0;
             pParty->monster_for_hunting_killed[house] = false;
         }
-        bountyHunting_text = pNPCTopics[352].pText;  //"Поздравляю! Вы успешно..."
+        bountyHunting_text = pNPCTopics[352].pText; // "Congratulations on defeating the %s! Here is the %lu gold reward..."
     }
 }
 
