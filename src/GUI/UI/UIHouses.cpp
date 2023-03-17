@@ -1064,7 +1064,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     case BuildingType_TownHall:
     {
         if (option == DIALOGUE_TOWNHALL_MESSAGE) {
-            DiscussBountyInTownhall();
+            discussBountyInTownhall();
         } else if (option == DIALOGUE_TOWNHALL_PAY_FINE) {
             keyboardInputHandler->StartTextInput(TextInputType::Number, 10, window_SpeakInHouse);
             return;
@@ -1489,7 +1489,7 @@ void TownHallDialog() {
     }
     case DIALOGUE_TOWNHALL_MESSAGE:
     {
-        current_npc_text = BountyHuntingText();
+        current_npc_text = bountyHuntingText();
         GUIWindow window = *pDialogueWindow;
         window.uFrameWidth = 458;
         window.uFrameZ = 457;
@@ -2680,7 +2680,7 @@ void SimpleHouseDialog() {
             pButton->sLabel = GetJoinGuildDialogueOption(static_cast<GUILD_ID>(right_panel_window.wData.val));
             continue;
         case DIALOGUE_83_bounty_hunting:
-            current_npc_text = BountyHuntingText();
+            current_npc_text = bountyHuntingText();
             pButton->sLabel.clear();
             continue;
         }

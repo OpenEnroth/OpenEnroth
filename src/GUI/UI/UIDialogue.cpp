@@ -694,7 +694,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
                     OracleDialogue();
                     break;
                 case 311:
-                    CheckBountyRespawnAndAward();
+                    checkBountyRespawnAndAward();
                     break;
                 case 399:
                     Arena_SelectionFightLevel();

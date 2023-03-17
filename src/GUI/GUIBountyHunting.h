@@ -2,7 +2,7 @@
 
 #include <string>
 
-void CheckBountyRespawnAndAward();
-void DiscussBountyInTownhall();
+void checkBountyRespawnAndAward();
+void discussBountyInTownhall();
 
-std::string BountyHuntingText();
+std::string bountyHuntingText();

@@ -50,7 +50,7 @@ int RandomMonsterForHunting(HOUSE_ID townhall) {
                 (result < 0xCDu || result > 0xCFu))
                 return result;
             break;
-                    
+
         case HOUSE_TOWNHALL_TULAREAN_FOREST:
             if ((result < 0x73u || result > 0x84u) &&
                 (result < 0xE8u || result > 0xF9u) &&
@@ -85,7 +85,7 @@ int RandomMonsterForHunting(HOUSE_ID townhall) {
                 (result < 0x6Au || result > 0x6Cu))
                 return result;
             break;
-                
+
         case HOUSE_TOWNHALL_THE_PIT:
             if ((result < 0x73u || result > 0x84u) &&
                 (result < 0xE8u || result > 0xF9u) &&
@@ -116,7 +116,7 @@ int RandomMonsterForHunting(HOUSE_ID townhall) {
     }
 }
 
-void CheckBountyRespawnAndAward() {
+void checkBountyRespawnAndAward() {
     uDialogueType = DIALOGUE_83_bounty_hunting;
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 350}, 0);
@@ -127,10 +127,10 @@ void CheckBountyRespawnAndAward() {
     pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
     dialog_menu_id = DIALOGUE_OTHER;
 
-    DiscussBountyInTownhall();
+    discussBountyInTownhall();
 }
 
-void DiscussBountyInTownhall() {
+void discussBountyInTownhall() {
     HOUSE_ID house = window_SpeakInHouse->houseId();
 
     // Generate new bounty
@@ -162,7 +162,7 @@ void DiscussBountyInTownhall() {
     }
 }
 
-std::string BountyHuntingText() {
+std::string bountyHuntingText() {
     // TODO(captainurist): what do we do with exceptions inside fmt?
     return fmt::sprintf(bountyHunting_text,
                         fmt::format("\f{:05}{}\f{:05}", colorTable.PaleCanary.c16(),
