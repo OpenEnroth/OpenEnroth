@@ -163,7 +163,8 @@ void DiscussBountyInTownhall() {
 }
 
 std::string BountyHuntingText() {
-    return stringPrintf(bountyHunting_text,
+    // TODO(captainurist): what do we do with exceptions inside fmt?
+    return fmt::sprintf(bountyHunting_text,
                         fmt::format("\f{:05}{}\f{:05}", colorTable.PaleCanary.c16(),
                                     pMonsterStats->pInfos[bountyHunting_monsterId].pName, colorTable.White.c16()).c_str(),
                         100 * pMonsterStats->pInfos[bountyHunting_monsterId].uLevel);
