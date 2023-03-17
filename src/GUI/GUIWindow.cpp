@@ -957,7 +957,7 @@ void CreateScrollWindow() {
 
     char *v1 = pItemTable->pItems[pGUIWindow_ScrollWindow->scroll_type].pName;
 
-    a1.DrawTitleText(pFontCreate, 0, 0, 0, stringPrintf(format_4E2D80, colorTable.PaleCanary.c16(), v1), 3);
+    a1.DrawTitleText(pFontCreate, 0, 0, 0, fmt::format("\f{:05}{}\f00000\n", colorTable.PaleCanary.c16(), v1), 3);
     a1.DrawText(pFontSmallnum, {1, pFontCreate->GetHeight() - 3}, 0, pScrolls[pGUIWindow_ScrollWindow->scroll_type], 0, 0, 0);
 }
 
@@ -1536,7 +1536,7 @@ void OracleDialogue() {
     ITEM_TYPE item_id = ITEM_NULL;
 
     // display "You never had it" if nothing missing will be found
-    current_npc_text = (char *)pNPCTopics[667].pText;
+    current_npc_text = pNPCTopics[667].pText;
 
     // only items with special subquest in range 212-237 and also 241 are recoverable
     for (auto pair : _4F0882_evt_VAR_PlayerItemInHands_vals) {
@@ -1555,8 +1555,8 @@ void OracleDialogue() {
         pParty->pPlayers[0].AddVariable(VAR_PlayerItemInHands, std::to_underlying(item_id));
         // display "Here's %s that you lost. Be careful"
         current_npc_text = stringPrintf(pNPCTopics[666].pText,
-                                        stringPrintf("\f%05d%s\f00000", colorTable.Jonquil.c16(),
-                                                     pItemTable->pItems[item_id].pUnidentifiedName).c_str());
+                                        fmt::format("\f{:05}{}\f00000", colorTable.Jonquil.c16(),
+                                                    pItemTable->pItems[item_id].pUnidentifiedName).c_str());
     }
 
     // missing item is lich jar and we need to bind soul vessel to lich class character
@@ -2113,7 +2113,7 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                 break;
 
             case 24:  // item name
-                sprintf(v1, format_4E2D80, colorTable.PaleCanary.c16(), a3->GetDisplayName().c_str());
+                sprintf(v1, "\f%05d%s\f00000\n", colorTable.PaleCanary.c16(), a3->GetDisplayName().c_str());
                 result += v1;
                 break;
 

@@ -213,12 +213,6 @@ std::array<int8_t, 88> monster_popup_y_offsets = {
      -20, 10, 0,   0,   0,   0,   0,   0,   -60, 0,   0,   0,   0}};
 unsigned char hourglass_icon_idx = 12;
 
-const char *format_4E2D80 = "\f%05d%s\f00000\n";
-// const char *format_4E2DC8 = "\f%05d";
-const char *format_4E2DE8 = "\f%05d%s\f00000 - ";
-const char *Stat_string_format_2_column_text = "%s\f%05u\r180%s\n";
-const char *Stat_string_format_2_column_less_100 = "%s\f%05u\t110%d\f00000 / %d\n";
-const char *Stat_string_format_2_column_over_100 = "%s\f%05u\r180%d\f00000 / %d\n";
 int dword_4E455C;
 std::array<int, 6> dword_4E4560;
 std::array<int, 6> dword_4E4578;

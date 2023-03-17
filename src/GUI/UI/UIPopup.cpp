@@ -1141,7 +1141,7 @@ void CharacterUI_StatsTab_ShowHint() {
                     pHour = condition_time.GetHoursOfDay();
                     pDay = condition_time.GetDays();
                     pTextColor = GetConditionDrawColor(condition);
-                    str += stringPrintf(format_4E2DE8, pTextColor, localization->GetCharacterConditionName(condition));
+                    str += fmt::format("\f{:05}{}\f00000 - ", pTextColor, localization->GetCharacterConditionName(condition));
                     if (pHour && pHour <= 1)
                         pHourWord = localization->GetString(LSTR_HOUR);
                     else

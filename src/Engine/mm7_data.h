@@ -50,14 +50,6 @@ extern std::array<unsigned int, 4> pManaBarPos;
 extern std::array<int8_t, 88> monster_popup_y_offsets;
 extern unsigned char hourglass_icon_idx;
 
-extern const char *format_4E2D80;
-extern char format_4E2D90[8];
-extern const char *format_4E2DE8;  // idb
-extern const char *Stat_string_format_2_column_text;
-extern const char
-    *Stat_string_format_2_column_less_100;  // format text of resistance in
-                                            // Stats screen
-extern const char *Stat_string_format_2_column_over_100;
 extern int dword_4E455C;
 extern std::array<int, 6> dword_4E4560;
 extern std::array<int, 6> dword_4E4578;
