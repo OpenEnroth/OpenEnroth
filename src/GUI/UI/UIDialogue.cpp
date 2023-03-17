@@ -10,6 +10,7 @@
 #include "Engine/Objects/NPC.h"
 #include "Engine/Party.h"
 
+#include "GUI/GUIBountyHunting.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIGame.h"
