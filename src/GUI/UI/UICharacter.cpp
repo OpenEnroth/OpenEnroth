@@ -904,16 +904,16 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
         // TODO(captainurist): fmt can throw
         switch (achieved_awards[i]) {
             case Award_Arena_PageWins:
-                str = fmt::sprintf(v6, pParty->uNumArenaPageWins);
+                str = fmt::sprintf(v6, pParty->uNumArenaWins[0]);
                 break;
             case Award_Arena_SquireWins:
-                str = fmt::sprintf(v6, pParty->uNumArenaSquireWins);
+                str = fmt::sprintf(v6, pParty->uNumArenaWins[1]);
                 break;
             case Award_Arena_KnightWins:
-                str = fmt::sprintf(v6, pParty->uNumArenaKnightWins);
+                str = fmt::sprintf(v6, pParty->uNumArenaWins[2]);
                 break;
             case Award_Arena_LordWins:
-                str = fmt::sprintf(v6, pParty->uNumArenaLordWins);
+                str = fmt::sprintf(v6, pParty->uNumArenaWins[3]);
                 break;
             case Award_ArcomageWins:
                 str = fmt::sprintf(v6, pParty->uNumArcomageWins);

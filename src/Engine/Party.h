@@ -363,11 +363,8 @@ struct Party {
     unsigned char days_played_without_rest;
     uint8_t _quest_bits[64];
     std::array<uint8_t, 16> pArcomageWins;
-    char field_7B5_in_arena_quest;
-    char uNumArenaPageWins;
-    char uNumArenaSquireWins;
-    char uNumArenaKnightWins;
-    char uNumArenaLordWins;
+    char field_7B5_in_arena_quest; // 0, DIALOGUE_ARENA_SELECT_PAGE..DIALOGUE_ARENA_SELECT_CHAMPION, or -1 for win
+    std::array<char, 4> uNumArenaWins; // 0=page, 1=squire, 2=knight, 3=lord
     IndexedArray<bool, ITEM_FIRST_SPAWNABLE_ARTIFACT, ITEM_LAST_SPAWNABLE_ARTIFACT> pIsArtifactFound;  // 7ba
     std::array<char, 39> field_7d7_set0_unused;
     unsigned char _autonote_bits[26];

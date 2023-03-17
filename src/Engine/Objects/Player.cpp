@@ -4941,13 +4941,13 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_PrisonTerms:
             return pParty->uNumPrisonTerms >= pValue;
         case VAR_ArenaWinsPage:
-            return (uint8_t)pParty->uNumArenaPageWins >= pValue;
+            return (uint8_t)pParty->uNumArenaWins[0] >= pValue;
         case VAR_ArenaWinsSquire:
-            return (uint8_t)pParty->uNumArenaSquireWins >= pValue;
+            return (uint8_t)pParty->uNumArenaWins[1] >= pValue;
         case VAR_ArenaWinsKnight:
-            return (uint8_t)pParty->uNumArenaKnightWins >= pValue;
+            return (uint8_t)pParty->uNumArenaWins[2] >= pValue;
         case VAR_ArenaWinsLord:
-            return pParty->uNumArenaLordWins >= pValue;
+            return pParty->uNumArenaWins[3] >= pValue;
         case VAR_Invisible:
             return pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active();
         case VAR_ItemEquipped:
@@ -5388,16 +5388,16 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             pParty->uNumPrisonTerms = var_value;
             return;
         case VAR_ArenaWinsPage:
-            pParty->uNumArenaPageWins = var_value;
+            pParty->uNumArenaWins[0] = var_value;
             return;
         case VAR_ArenaWinsSquire:
-            pParty->uNumArenaSquireWins = var_value;
+            pParty->uNumArenaWins[1] = var_value;
             return;
         case VAR_ArenaWinsKnight:
-            pParty->uNumArenaKnightWins = var_value;
+            pParty->uNumArenaWins[2] = var_value;
             return;
         case VAR_ArenaWinsLord:
-            pParty->uNumArenaLordWins = var_value;
+            pParty->uNumArenaWins[3] = var_value;
             return;
         case VAR_StaffSkill:
             SetSkillByEvent(&Player::skillStaff, var_value);
@@ -5947,16 +5947,16 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             pParty->uNumPrisonTerms += val;
             return;
         case VAR_ArenaWinsPage:
-            pParty->uNumArenaPageWins += val;
+            pParty->uNumArenaWins[0] += val;
             return;
         case VAR_ArenaWinsSquire:
-            pParty->uNumArenaSquireWins += val;
+            pParty->uNumArenaWins[1] += val;
             return;
         case VAR_ArenaWinsKnight:
-            pParty->uNumArenaKnightWins += val;
+            pParty->uNumArenaWins[2] += val;
             return;
         case VAR_ArenaWinsLord:
-            pParty->uNumArenaLordWins += val;
+            pParty->uNumArenaWins[3] += val;
             return;
         case VAR_StaffSkill:
             AddSkillByEvent(&Player::skillStaff, val);
@@ -6632,16 +6632,16 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
             pParty->uNumPrisonTerms -= (int)pValue;
             return;
         case VAR_ArenaWinsPage:
-            pParty->uNumArenaPageWins -= (char)pValue;
+            pParty->uNumArenaWins[0] -= (char)pValue;
             return;
         case VAR_ArenaWinsSquire:
-            pParty->uNumArenaSquireWins -= (char)pValue;
+            pParty->uNumArenaWins[1] -= (char)pValue;
             return;
         case VAR_ArenaWinsKnight:
-            pParty->uNumArenaKnightWins -= (char)pValue;
+            pParty->uNumArenaWins[2] -= (char)pValue;
             return;
         case VAR_ArenaWinsLord:
-            pParty->uNumArenaLordWins -= (char)pValue;
+            pParty->uNumArenaWins[4] -= (char)pValue;
             return;
         default:
             return;

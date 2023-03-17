@@ -430,10 +430,7 @@ struct Party_MM7 {
     /* 00765 */ std::array<uint8_t, 64> _quest_bits;
     /* 007A5 */ std::array<uint8_t, 16> pArcomageWins;
     /* 007B5 */ char field_7B5_in_arena_quest;
-    /* 007B6 */ char uNumArenaPageWins;
-    /* 007B7 */ char uNumArenaSquireWins;
-    /* 007B8 */ char uNumArenaKnightWins;
-    /* 007B9 */ char uNumArenaLordWins;
+    /* 007B6 */ std::array<char, 4> uNumArenaWins;
     /* 007BA */ std::array<char, 29> pIsArtifactFound;  // 7ba
     /* 007D7 */ std::array<char, 39> field_7d7;
     /* 007FE */ std::array<uint8_t, 26> _autonote_bits;

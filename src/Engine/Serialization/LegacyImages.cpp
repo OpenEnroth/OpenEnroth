@@ -335,10 +335,7 @@ void Serialize(const Party &src, Party_MM7 *dst) {
         dst->pArcomageWins[i] = src.pArcomageWins[i];
 
     dst->field_7B5_in_arena_quest = src.field_7B5_in_arena_quest;
-    dst->uNumArenaPageWins = src.uNumArenaPageWins;
-    dst->uNumArenaSquireWins = src.uNumArenaSquireWins;
-    dst->uNumArenaKnightWins = src.uNumArenaKnightWins;
-    dst->uNumArenaLordWins = src.uNumArenaLordWins;
+    dst->uNumArenaWins = src.uNumArenaWins;
 
     for (ITEM_TYPE i : src.pIsArtifactFound.indices())
         dst->pIsArtifactFound[std::to_underlying(i) - std::to_underlying(ITEM_FIRST_SPAWNABLE_ARTIFACT)] = src.pIsArtifactFound[i];
@@ -496,10 +493,7 @@ void Deserialize(const Party_MM7 &src, Party *dst) {
         dst->pArcomageWins[i] = src.pArcomageWins[i];
 
     dst->field_7B5_in_arena_quest = src.field_7B5_in_arena_quest;
-    dst->uNumArenaPageWins = src.uNumArenaPageWins;
-    dst->uNumArenaSquireWins = src.uNumArenaSquireWins;
-    dst->uNumArenaKnightWins = src.uNumArenaKnightWins;
-    dst->uNumArenaLordWins = src.uNumArenaLordWins;
+    dst->uNumArenaWins = src.uNumArenaWins;
 
     for (ITEM_TYPE i : dst->pIsArtifactFound.indices())
         dst->pIsArtifactFound[i] = src.pIsArtifactFound[std::to_underlying(i) - std::to_underlying(ITEM_FIRST_SPAWNABLE_ARTIFACT)];
