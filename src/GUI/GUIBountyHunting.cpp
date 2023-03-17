@@ -1,5 +1,7 @@
 #include "GUIBountyHunting.h"
 
+#include <cassert>
+
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Localization.h"
 #include "Engine/Awards.h"
@@ -164,6 +166,9 @@ void discussBountyInTownhall() {
 }
 
 std::string bountyHuntingText() {
+    assert(bountyHunting_text);
+    assert(bountyHunting_monsterId != 0);
+
     // TODO(captainurist): what do we do with exceptions inside fmt?
     return fmt::sprintf(bountyHunting_text,
                         fmt::format("\f{:05}{}\f{:05}", colorTable.PaleCanary.c16(),

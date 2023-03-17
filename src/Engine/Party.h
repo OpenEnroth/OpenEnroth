@@ -359,7 +359,7 @@ struct Party {
     unsigned int uNumBountiesCollected;
     int field_74C_set0_unused;
     IndexedArray<int16_t, HOUSE_TOWNHALL_FIRST, HOUSE_TOWNHALL_LAST> monster_id_for_hunting;
-    IndexedArray<int16_t, HOUSE_TOWNHALL_FIRST, HOUSE_TOWNHALL_LAST> monster_for_hunting_killed;
+    IndexedArray<int16_t, HOUSE_TOWNHALL_FIRST, HOUSE_TOWNHALL_LAST> monster_for_hunting_killed; // TODO(captainurist): bool
     unsigned char days_played_without_rest;
     uint8_t _quest_bits[64];
     std::array<uint8_t, 16> pArcomageWins;
