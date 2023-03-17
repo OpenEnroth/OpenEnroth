@@ -1592,9 +1592,9 @@ void UpdateObjects() {
     }
 }
 
-unsigned int sub_46DEF2(signed int pid, unsigned int uLayingItemID) {
+unsigned int collideWithActor(unsigned int uLayingItemID, signed int pid) {
     unsigned int result = uLayingItemID;
-    if (pObjectList->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID].uFlags & 0x10) {
+    if (pObjectList->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
         result = processSpellImpact(uLayingItemID, pid);
     }
     return result;

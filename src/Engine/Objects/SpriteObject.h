@@ -94,4 +94,8 @@ bool processSpellImpact(unsigned int uLayingItemID, signed int pid);
  * @offset 0x43A97E
  */
 void applySpellSpriteDamage(unsigned int uLayingItemID, signed int pid);  // idb
-unsigned int sub_46DEF2(signed int pid, unsigned int uLayingItemID);
+
+/**
+ * @offset 0x46DEF2
+ */
+unsigned int collideWithActor(unsigned int uLayingItemID, signed int pid);

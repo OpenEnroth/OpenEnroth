@@ -467,7 +467,7 @@ void _46ED8A_collide_against_sprite_objects(unsigned int pid) {
             continue;
 
         if (dist_dot_dir < collision_state.adjusted_move_distance)
-            sub_46DEF2(pid, i);
+            collideWithActor(i, pid);
     }
 }
 
