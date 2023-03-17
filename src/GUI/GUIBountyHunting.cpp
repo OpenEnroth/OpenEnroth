@@ -12,7 +12,7 @@
 static const char *bountyHunting_text = nullptr;                // word_F8B1A4
 static int16_t bountyHunting_monsterId = 0;
 
-int RandomMonsterForHunting(HOUSE_ID townhall) {
+static int RandomMonsterForHunting(HOUSE_ID townhall) {
     while (true) {
         int result = grng->Random(258) + 1;
         switch (townhall) {
