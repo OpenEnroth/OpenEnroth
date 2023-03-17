@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <array>
+#include <algorithm>
 #include <string>
 
 #include "Engine/Engine.h"

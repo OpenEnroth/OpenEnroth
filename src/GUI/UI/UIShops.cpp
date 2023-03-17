@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <algorithm>
 #include <string>
 
 #include "Engine/Awards.h"
