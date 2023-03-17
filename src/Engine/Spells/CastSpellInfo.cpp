@@ -84,30 +84,31 @@ static void spellFailed(CastSpellInfo *pCastSpell,
  */
 static void setSpellRecovery(CastSpellInfo *pCastSpell,
                              int recoveryTime) {
-    if (~pCastSpell->uFlags & ON_CAST_NoRecoverySpell) {
-        if (recoveryTime < 0) {
-            recoveryTime = 0;
-        }
-
-        Player *pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID];
-
-        if (pParty->bTurnBasedModeOn) {
-            // v645 = sRecoveryTime;
-            pParty->pTurnBasedPlayerRecoveryTimes[pCastSpell->uPlayerID] = recoveryTime;
-
-            pPlayer->SetRecoveryTime(recoveryTime);
-
-            if (!some_active_character) {
-                pTurnEngine->ApplyPlayerAction();
-            }
-        } else {
-            pPlayer->SetRecoveryTime((int64_t)(debug_combat_recovery_mul * (double)recoveryTime * flt_debugrecmod3));
-        }
-
-        // It's here to set character portrain emotion on spell cast.
-        // There's no actual spell speech.
-        pPlayer->PlaySound(SPEECH_CastSpell, 0);
+    if (pCastSpell->uFlags & ON_CAST_NoRecoverySpell) {
+        return;
     }
+
+    if (recoveryTime < 0) {
+        recoveryTime = 0;
+    }
+
+    Player *pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID];
+
+    if (pParty->bTurnBasedModeOn) {
+        pParty->pTurnBasedPlayerRecoveryTimes[pCastSpell->uPlayerID] = recoveryTime;
+
+        pPlayer->SetRecoveryTime(recoveryTime);
+
+        if (!some_active_character) {
+            pTurnEngine->ApplyPlayerAction();
+        }
+    } else {
+        pPlayer->SetRecoveryTime((int64_t)(debug_combat_recovery_mul * (double)recoveryTime * flt_debugrecmod3));
+    }
+
+    // It's here to set character portrain emotion on spell cast.
+    // There's no actual spell speech.
+    pPlayer->PlaySound(SPEECH_CastSpell, 0);
 }
 
 void CastSpellInfoHelpers::castSpell() {
@@ -205,6 +206,7 @@ void CastSpellInfoHelpers::castSpell() {
             recoveryTime = pSpellDatas[pCastSpell->uSpellID].recovery_per_skill[std::to_underlying(spell_mastery) - 1];
         }
 
+        // Recovery time for spell failure if it cannot be cast at all in current context
         failureRecoveryTime = recoveryTime * engine->config->gameplay.SpellFailureRecoveryMod.Get();
 
         if (!pCastSpell->forced_spell_skill_level) {
@@ -219,15 +221,12 @@ void CastSpellInfoHelpers::castSpell() {
             continue;
         }
 
-        if (pPlayer->IsCursed() && isRegularSpell(pCastSpell->uSpellID) && grng->Random(100) < 50) {  // player is cursed and have a chance to fail spell casting
-            if (!pParty->bTurnBasedModeOn) {
-                pPlayer->SetRecoveryTime((int64_t)(debug_non_combat_recovery_mul * flt_debugrecmod3 * SPELL_FAILURE_RECOVERY_TIME_ON_CURSE));
-            } else {
-                pParty->pTurnBasedPlayerRecoveryTimes[pCastSpell->uPlayerID] = SPELL_FAILURE_RECOVERY_TIME_ON_CURSE;
-                pPlayer->SetRecoveryTime(SPELL_FAILURE_RECOVERY_TIME_ON_CURSE);
-                pTurnEngine->ApplyPlayerAction();
-            }
-
+        if (!pCastSpell->forced_spell_skill_level // temple or NPC spells must not fail because of curse
+                                                  // TODO(Nik-RE-dev): does scrolls must fail?
+                && pPlayer->IsCursed()
+                && isRegularSpell(pCastSpell->uSpellID)
+                && grng->Random(100) < 50) {  // player is cursed and have a chance to fail spell casting
+            setSpellRecovery(pCastSpell, SPELL_FAILURE_RECOVERY_TIME_ON_CURSE);
             spellFailed(pCastSpell, LSTR_SPELL_FAILED);
             pPlayer->SpendMana(uRequiredMana);
             return;
@@ -310,7 +309,6 @@ void CastSpellInfoHelpers::castSpell() {
             TownPortalCasterId = pCastSpell->uPlayerID;
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_OnCastTownPortal, 0, 0);
             pAudioPlayer->PlaySpellSound(pCastSpell->uSpellID, PID_INVALID);
-            setSpellRecovery(pCastSpell, recoveryTime);
         } else if (pCastSpell->uSpellID == SPELL_WATER_LLOYDS_BEACON) {
             if (pCurrentMapName == "d05.blv") {  // Arena
                 spellFailed(pCastSpell, LSTR_SPELL_FAILED);
@@ -1005,6 +1003,7 @@ void CastSpellInfoHelpers::castSpell() {
                     int meteor_num = (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) ? 20 : 16;
                     for (; meteor_num; meteor_num--) {
                         int originHeight = grng->Random(1000);
+                        // TODO(Nik-RE-dev): condition is always false
                         if (Vec3s(j, k, originHeight - 2500).length() <= 1.0) {
                             pitch = 0;
                             yaw = 0;
@@ -1225,6 +1224,7 @@ void CastSpellInfoHelpers::castSpell() {
                     int yaw, pitch;
                     for (int star_num = 20; star_num; star_num--) {
                         int originHeight = grng->Random(1000);
+                        // TODO(Nik-RE-dev): condition is always false
                         if (Vec3s(j, k, originHeight - 2500).length() <= 1.0) {
                             pitch = 0;
                             yaw = 0;
