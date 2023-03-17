@@ -1460,6 +1460,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
     // New day dawns
     // TODO(pskelton): ticks over at 3 in the morning?? check
+    // TODO(pskelton): store GetDays() somewhere for a neater check here
     if ((pParty->uCurrentYear > old_year) || pParty->uCurrentHour >= 3 && (old_hour < 3 || pParty->uCurrentDayOfMonth > old_day)) {
         pParty->pHirelings[0].bHasUsedTheAbility = false;
         pParty->pHirelings[1].bHasUsedTheAbility = false;

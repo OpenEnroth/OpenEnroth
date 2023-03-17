@@ -2401,7 +2401,7 @@ void ODM_ProcessPartyActions() {
                 int v54 = 0;
                 if (!bFaceSlopeTooSteep)
                     v54 = fixpoint_mul(dot, pODMFace->pFacePlaneOLD.vNormal.z);
-                pParty->uFallSpeed += v54;
+                partyInputZSpeed += v54;
                 int v55 = collision_state.radius_lo - pODMFace->pFacePlaneOLD.signedDistanceTo(new_pos_low_x, new_pos_low_y, new_pos_low_z);
                 if (v55 > 0) {
                     partyNewX = new_pos_low_x + fixpoint_mul(pODMFace->pFacePlaneOLD.vNormal.x, v55);
@@ -2422,6 +2422,8 @@ void ODM_ProcessPartyActions() {
                 if ((collision_state.speed / 8) > dot)
                     dot = collision_state.speed / 8;
                 partyInputZSpeed += fixpoint_mul(dot, pODMFace->pFacePlaneOLD.vNormal.z);
+                partyInputXSpeed += fixpoint_mul(dot, pODMFace->pFacePlaneOLD.vNormal.x);
+                partyInputYSpeed += fixpoint_mul(dot, pODMFace->pFacePlaneOLD.vNormal.y);
 
                 partySlopeMod = true;
             }

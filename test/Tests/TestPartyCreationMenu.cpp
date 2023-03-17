@@ -59,7 +59,7 @@ GAME_TEST(Issues, Issue163) {
             std::error_code ec;
             std::filesystem::rename(savesDirMoved, savesDir, ec); // Using std::error_code here, so can't throw.
         }
-        });
+    });
 
     if (std::filesystem::exists(savesDir)) {
         savesDirMoved = savesDir + "_moved_for_testing";
@@ -102,8 +102,8 @@ GAME_TEST(Issues, Issue198) {
         forEachInventoryItem([](const ItemGen &item, int /*x*/, int /*y*/) {
             // Calling GetWidth forces the texture to be created.
             assets->GetImage_ColorKey(pItemTable->pItems[item.uItemID].pIconName)->GetWidth();
-            });
         });
+    });
 
     // Then can safely check everything.
     forEachInventoryItem([](const ItemGen &item, int x, int y) {
@@ -113,7 +113,7 @@ GAME_TEST(Issues, Issue198) {
 
         EXPECT_LE(x + width, Player::INVENTORY_SLOTS_WIDTH);
         EXPECT_LE(y + height, Player::INVENTORY_SLOTS_HEIGHT);
-        });
+    });
 }
 
 // 200
@@ -488,7 +488,9 @@ GAME_TEST(Issues, Issue520) {
 
 GAME_TEST(Issues, Issue521) {
     // 500 endurance leads to asserts in Player::SetRecoveryTime
-    test->playTraceFromTestData("issue_521.mm7", "issue_521.json");
+    int oldActive{};
+    test->playTraceFromTestData("issue_521.mm7", "issue_521.json", [&] { oldActive = pParty->_activeCharacter; });
+    EXPECT_EQ(oldActive, pParty->_activeCharacter);
 }
 
 GAME_TEST(Issue, Issue527) {
@@ -508,4 +510,3 @@ GAME_TEST(Issue, Issue540) {
     // Check that Mass Distortion and Charm without target does not assert
     test->playTraceFromTestData("issue_540.mm7", "issue_540.json");
 }
-
