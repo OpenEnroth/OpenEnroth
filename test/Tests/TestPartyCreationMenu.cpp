@@ -483,3 +483,8 @@ GAME_TEST(Issues, Issue489) {
     test->playTraceFromTestData("issue_489.mm7", "issue_489.json", [] { EXPECT_FALSE(pActors[24].pActorBuffs[ACTOR_BUFF_SHRINK].Active()); });
     EXPECT_TRUE(pActors[24].pActorBuffs[ACTOR_BUFF_SHRINK].Active());
 }
+
+GAME_TEST(Issue, Issue540) {
+    // Check that Mass Distortion and Charm without target does not assert
+    test->playTraceFromTestData("issue_540.mm7", "issue_540.json");
+}
