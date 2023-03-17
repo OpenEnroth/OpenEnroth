@@ -5,6 +5,7 @@
 #include "Utility/Segment.h"
 
 enum HOUSE_ID {
+    HOUSE_INVALID = 0,
     HOUSE_SMITH_EMERALD_ISLE = 1,
     HOUSE_ARMOURER_EMERALD_ISLE = 15,
     HOUSE_MAGE_EMERALD_ISLE = 29,
