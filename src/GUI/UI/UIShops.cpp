@@ -1478,7 +1478,6 @@ void ShowPopupShopItem() {
 
 void sub_4B1523_showSpellbookInfo(ITEM_TYPE spellItemId) {
     int v4;               // eax@4
-    long v5;              // ecx@4
     int v6;               // eax@10
     char *v7;             // ST44_4@12
     uint16_t v8;  // ax@12
@@ -1507,14 +1506,13 @@ void sub_4B1523_showSpellbookInfo(ITEM_TYPE spellItemId) {
     a1.uFrameX = 90;
     a1.uFrameZ = 417;
     a1.uFrameW = v3 + 67;
-    a2.y = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL));
-    v14 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT));
-    v13 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER));
-    v4 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND));
-    v5 = a2.y;
-    if (v14 > a2.y) v5 = v14;
-    if (v13 > v5) v5 = v13;
-    if (v4 > v5) v5 = v4;
+
+    int v5 = std::max({
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL)),
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT)),
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER)),
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND))
+    });
 
     auto str = fmt::format(
         "{}\n\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}",

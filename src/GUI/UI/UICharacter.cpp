@@ -787,19 +787,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
                 }
                 pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, v8->uY}, skill_color, Strsk, 0, 0, 0);
             } else {
-                const char *skill_level_str = nullptr;
-
-                switch (skill_mastery) {
-                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
-                        skill_level_str = localization->GetString(LSTR_GRAND);
-                        break;
-                    case PLAYER_SKILL_MASTERY_MASTER:
-                        skill_level_str = localization->GetString(LSTR_MASTER);
-                        break;
-                    case PLAYER_SKILL_MASTERY_EXPERT:
-                        skill_level_str = localization->GetString(LSTR_EXPERT);
-                        break;
-                }
+                const char *skill_level_str = skill_mastery == PLAYER_SKILL_MASTERY_NOVICE ? "" : localization->MasteryName(skill_mastery);
 
                 if (!skill_mastery_color)
                     skill_mastery_color = ui_character_header_text_color;

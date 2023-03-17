@@ -1876,27 +1876,13 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
         return std::string(pNPCTopics[124].pText);  // You don't have enough gold!
 
     guild_membership_approved = true;
-    if (masteryLevelBeingTaught == PLAYER_SKILL_MASTERY_EXPERT) {
-        return localization->FormatString(
-            LSTR_FMT_BECOME_S_IN_S_FOR_D_GOLD,
-            localization->GetString(LSTR_EXPERT),
-            localization->GetSkillName(dword_F8B1AC_skill_being_taught),
-            gold_transaction_amount);
-    } else if (masteryLevelBeingTaught == PLAYER_SKILL_MASTERY_MASTER) {
-        return localization->FormatString(
-            LSTR_FMT_BECOME_S_IN_S_FOR_D_GOLD,
-            localization->GetString(LSTR_MASTER),
-            localization->GetSkillName(dword_F8B1AC_skill_being_taught),
-            gold_transaction_amount);
-    } else if (masteryLevelBeingTaught == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-        return localization->FormatString(
-            LSTR_FMT_BECOME_S_IN_S_FOR_D_GOLD,
-            localization->GetString(LSTR_GRANDMASTER),
-            localization->GetSkillName(dword_F8B1AC_skill_being_taught),
-            gold_transaction_amount);
-    }
 
-    return std::string("");
+    return localization->FormatString(
+        LSTR_FMT_BECOME_S_IN_S_FOR_D_GOLD,
+        localization->MasteryNameLong(masteryLevelBeingTaught),
+        localization->GetSkillName(dword_F8B1AC_skill_being_taught),
+        gold_transaction_amount
+    );
 }
 
 std::string BuildDialogueString(const char *lpsz, uint8_t uPlayerID, ItemGen *a3, int eventId, int a5, GameTime *a6) {

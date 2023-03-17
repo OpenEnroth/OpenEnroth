@@ -1012,22 +1012,13 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
   * @param uPlayerSkillType              Skill type identifier.
   */
 std::string CharacterUI_GetSkillDescText(unsigned int uPlayerID, PLAYER_SKILL_TYPE uPlayerSkillType) {
-    size_t line_width = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL));
-    size_t new_width = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT));
-    if (line_width < new_width)
-        line_width = new_width;
-
-    new_width = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER));
-    if (line_width < new_width)
-        line_width = new_width;
-
-    new_width = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND));
-    if (line_width < new_width)
-        line_width = new_width;
-
-    new_width = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_BONUS_2));
-    if (line_width < new_width)
-        line_width = new_width;
+    size_t line_width = std::max({
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL)),
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT)),
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER)),
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND)),
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_BONUS_2))
+    });
 
     int base_skill = pParty->pPlayers[uPlayerID].pActiveSkills[uPlayerSkillType] & 0x3F;
     int actual_skill = pParty->pPlayers[uPlayerID].GetActualSkillLevel(uPlayerSkillType) & 0x3F;
@@ -1294,7 +1285,6 @@ void CharacterUI_StatsTab_ShowHint() {
 void DrawSpellDescriptionPopup(int spell_index_in_book) {
     SpellInfo *spell;             // esi@1
     unsigned int v3;              // eax@2
-    long v5;                      // ecx@4
     GUIWindow spell_info_window;  // [sp+Ch] [bp-68h]@4
 
     Pointi pt = mouse->GetCursorPos();
@@ -1312,13 +1302,13 @@ void DrawSpellDescriptionPopup(int spell_index_in_book) {
     spell_info_window.uFrameZ = 417;
     spell_info_window.uFrameW = v3 + 67;
     spell_info_window.sHint.clear();
-    v5 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL));
-    if (pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT)) > v5)
-        v5 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT));
-    if (pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER)) > v5)
-        v5 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER));
-    if (pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND)) > v5)
-        v5 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND));
+
+    int v5 = std::max({
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL)),
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT)),
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER)),
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND))
+    });
 
     std::string str = fmt::format(
         "{}\n\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}",
