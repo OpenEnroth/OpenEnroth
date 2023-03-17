@@ -1029,27 +1029,24 @@ std::string CharacterUI_GetSkillDescText(unsigned int uPlayerID, PLAYER_SKILL_TY
     if (line_width < new_width)
         line_width = new_width;
 
-    std::string Format("%s\n\n");
-    for (PLAYER_SKILL_MASTERY i : SkillMasteries()) {
-        Format += stringPrintf("\f%05d", GetSkillColor(pParty->pPlayers[uPlayerID].classType, uPlayerSkillType, i)) + "%s\t%03d:\t%03d%s\t000\n";
-    }
-
     int base_skill = pParty->pPlayers[uPlayerID].pActiveSkills[uPlayerSkillType] & 0x3F;
     int actual_skill = pParty->pPlayers[uPlayerID].GetActualSkillLevel(uPlayerSkillType) & 0x3F;
 
     const char *desc = localization->GetSkillDescription(uPlayerSkillType);
     std::string Description = desc ? desc : "";
     if (localization->GetSkillDescriptionNormal(uPlayerSkillType)) {
-        Description = stringPrintf(Format.c_str(),
-                                   Description.c_str(),
-                                   localization->GetString(LSTR_NORMAL), line_width + 3, line_width + 10,
-                                   localization->GetSkillDescriptionNormal(uPlayerSkillType),
-                                   localization->GetString(LSTR_EXPERT), line_width + 3, line_width + 10,
-                                   localization->GetSkillDescriptionExpert(uPlayerSkillType),
-                                   localization->GetString(LSTR_MASTER), line_width + 3, line_width + 10,
-                                   localization->GetSkillDescriptionMaster(uPlayerSkillType),
-                                   localization->GetString(LSTR_GRAND), line_width + 3, line_width + 10,
-                                   localization->GetSkillDescriptionGrand(uPlayerSkillType));
+        Description = fmt::format("{}\n\n", Description);
+
+        for (PLAYER_SKILL_MASTERY mastery : SkillMasteries()) {
+            Description += fmt::format(
+                "\f{:05}{}\t{:03}:\t{:03}{}\t000\n",
+                GetSkillColor(pParty->pPlayers[uPlayerID].classType, uPlayerSkillType, PLAYER_SKILL_MASTERY_NOVICE),
+                localization->MasteryName(mastery),
+                line_width + 3,
+                line_width + 10,
+                localization->GetSkillDescription(uPlayerSkillType, mastery)
+            );
+        }
     }
 
     if (base_skill != actual_skill)
@@ -1207,7 +1204,8 @@ void CharacterUI_StatsTab_ShowHint() {
         case 15:  // Attack Bonus
             if (pAttackBonusAttributeDescription) {
                 int meleerecov = pPlayers[pParty->_activeCharacter]->GetAttackRecoveryTime(false);
-                std::string description = stringPrintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), meleerecov);
+                // TODO(captainurist): fmt can throw
+                std::string description = fmt::sprintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), meleerecov);
                 description = fmt::format("{}\n\n{}", pAttackBonusAttributeDescription, description.c_str());
                 CharacterUI_DrawTooltip(localization->GetString(LSTR_ATTACK_BONUS), description);
             }
@@ -1224,8 +1222,9 @@ void CharacterUI_StatsTab_ShowHint() {
         case 17:  // Missle Bonus
             if (pMissleBonusAttributeDescription) {
                 int missrecov = pPlayers[pParty->_activeCharacter]->GetAttackRecoveryTime(true);
-                std::string description = stringPrintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), missrecov);
-                description = fmt::format("{}\n\n{}", pAttackBonusAttributeDescription, description.c_str());
+                // TODO(captainurist): fmt can throw
+                std::string description = fmt::sprintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), missrecov);
+                description = fmt::format("{}\n\n{}", pAttackBonusAttributeDescription, description);
                 CharacterUI_DrawTooltip(localization->GetString(LSTR_SHOOT_BONUS), description);
             }
             break;

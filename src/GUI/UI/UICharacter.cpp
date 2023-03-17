@@ -911,38 +911,39 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
 
     for (int i = items_per_page; i < full_num_items_in_book; ++i) {
         std::string str;
-        auto v6 = pAwards[achieved_awards[i]].pText;
+        const char *v6 = pAwards[achieved_awards[i]].pText;
 
+        // TODO(captainurist): fmt can throw
         switch (achieved_awards[i]) {
             case Award_Arena_PageWins:
-                str = stringPrintf(v6, pParty->uNumArenaPageWins);
+                str = fmt::sprintf(v6, pParty->uNumArenaPageWins);
                 break;
             case Award_Arena_SquireWins:
-                str = stringPrintf(v6, pParty->uNumArenaSquireWins);
+                str = fmt::sprintf(v6, pParty->uNumArenaSquireWins);
                 break;
             case Award_Arena_KnightWins:
-                str = stringPrintf(v6, pParty->uNumArenaKnightWins);
+                str = fmt::sprintf(v6, pParty->uNumArenaKnightWins);
                 break;
             case Award_Arena_LordWins:
-                str = stringPrintf(v6, pParty->uNumArenaLordWins);
+                str = fmt::sprintf(v6, pParty->uNumArenaLordWins);
                 break;
             case Award_ArcomageWins:
-                str = stringPrintf(v6, pParty->uNumArcomageWins);
+                str = fmt::sprintf(v6, pParty->uNumArcomageWins);
                 break;
             case Award_ArcomageLoses:
-                str = stringPrintf(v6, pParty->uNumArcomageLoses);
+                str = fmt::sprintf(v6, pParty->uNumArcomageLoses);
                 break;
             case Award_Deaths:
-                str = stringPrintf(v6, pParty->uNumDeaths);
+                str = fmt::sprintf(v6, pParty->uNumDeaths);
                 break;
             case Award_BountiesCollected:
-                str = stringPrintf(v6, pParty->uNumBountiesCollected);
+                str = fmt::sprintf(v6, pParty->uNumBountiesCollected);
                 break;
             case Award_Fine:
-                str = stringPrintf(v6, pParty->uFine);
+                str = fmt::sprintf(v6, pParty->uFine);
                 break;
             case Award_PrisonTerms:
-                str = stringPrintf(v6, pParty->uNumPrisonTerms);
+                str = fmt::sprintf(v6, pParty->uNumPrisonTerms);
                 break;
             default:
                 break;

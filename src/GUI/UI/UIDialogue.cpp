@@ -330,9 +330,8 @@ void GUIWindow_Dialogue::Update() {
             pButton->sLabel = localization->GetString(LSTR_MORE_INFORMATION);
         } else if (pButton->msg_param == DIALOGUE_HIRE_FIRE) {
             if (pNPC->Hired()) {
-                pButton->sLabel = stringPrintf(
-                    localization->GetString(LSTR_HIRE_RELEASE), pNPC->pName.c_str()
-                );
+                // TODO(captainurist): what if fmt throws?
+                pButton->sLabel = fmt::sprintf(localization->GetString(LSTR_HIRE_RELEASE), pNPC->pName.c_str());
             } else {
                 pButton->sLabel = localization->GetString(LSTR_HIRE);
             }

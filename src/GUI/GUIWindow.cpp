@@ -1554,8 +1554,8 @@ void OracleDialogue() {
     // missing item found
     if (item_id != ITEM_NULL) {
         pParty->pPlayers[0].AddVariable(VAR_PlayerItemInHands, std::to_underlying(item_id));
-        // display "Here's %s that you lost. Be careful"
-        current_npc_text = stringPrintf(pNPCTopics[666].pText,
+        // TODO(captainurist): what if fmt throws?
+        current_npc_text = fmt::sprintf(pNPCTopics[666].pText, // "Here's %s that you lost. Be careful"
                                         fmt::format("\f{:05}{}\f00000", colorTable.Jonquil.c16(),
                                                     pItemTable->pItems[item_id].pUnidentifiedName).c_str());
     }
