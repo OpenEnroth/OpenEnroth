@@ -1064,7 +1064,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     case BuildingType_TownHall:
     {
         if (option == DIALOGUE_TOWNHALL_MESSAGE) {
-            discussBountyInTownhall();
+            bountyHuntingDialogueOptionClicked();
         } else if (option == DIALOGUE_TOWNHALL_PAY_FINE) {
             keyboardInputHandler->StartTextInput(TextInputType::Number, 10, window_SpeakInHouse);
             return;

@@ -1358,7 +1358,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
                     OracleDialogue();
                 } else {
                     if (pEventNumber == 311) {
-                        checkBountyRespawnAndAward(); // TODO(captainurist): how to trigger this?
+                        openBountyHuntingDialogue();
                     } else {
                         current_npc_text.clear();
                         activeLevelDecoration = (LevelDecoration *)1;
