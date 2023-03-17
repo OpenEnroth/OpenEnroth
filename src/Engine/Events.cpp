@@ -576,7 +576,7 @@ LABEL_47:
                     ++curr_seq_num;
                     break;
                 case EVENT_SummonItem: {
-                    Vec3i pos = Vec3i(EVT_DWORD(_evt->v9), EVT_DWORD(_evt->v13),EVT_DWORD(_evt->v17));
+                    Vec3i pos = Vec3i(EVT_DWORD(_evt->v9), EVT_DWORD(_evt->v13), EVT_DWORD(_evt->v17));
                     SpriteObject::dropItemAt((SPRITE_OBJECT_TYPE)(EVT_DWORD(_evt->v5)), pos, EVT_DWORD(_evt->v21), _evt->v25, (bool)_evt->v26);
                     ++curr_seq_num;
                     break;

@@ -2417,7 +2417,6 @@ struct NPCData *GateMasterNPCData;
 // int dword_50C9E8; // idb
 // int dword_50C9EC[120];
 int dword_50CDC8;
-Vec3i layingitem_vel_50FDFC;
 std::array<uint8_t, 5> IsPlayerWearingWatersuit;
 std::array<char, 54> party_has_equipment;
 

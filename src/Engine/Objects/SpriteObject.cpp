@@ -58,9 +58,7 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     }
 
     // set initial position
-    field_64.x = vPosition.x;
-    field_64.y = vPosition.y;
-    field_64.z = vPosition.z;
+    field_64 = vPosition;
 
     // move sprite so it looks like it originates from char portrait
     switch (which_char) {
@@ -85,9 +83,7 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     }
 
     // set blank velocity
-    vVelocity.y = 0;
-    vVelocity.x = 0;
-    vVelocity.z = 0;
+    vVelocity = Vec3i(0, 0, 0);
 
     // calcualte angle velocity - could use rotate func here as above
     if (speed) {
@@ -849,9 +845,7 @@ void CompactLayingItemsList() {
 void SpriteObject::InitializeSpriteObjects() {
     for (size_t i = 0; i < pSpriteObjects.size(); ++i) {
         SpriteObject *item = &pSpriteObjects[i];
-        if (item->uObjectDescID &&
-            (item->uSoundID & 8 || pObjectList->pObjects[item->uObjectDescID].uFlags &
-                                       OBJECT_DESC_UNPICKABLE)) {
+        if (item->uObjectDescID && (item->uSoundID & 8 || pObjectList->pObjects[item->uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE)) {
             SpriteObject::OnInteraction(i);
         }
     }
@@ -1480,38 +1474,24 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
 }
 
 void applySpellSpriteDamage(unsigned int uLayingItemID, int pid) {
+    Vec3i velocity;
+
     if (PID_TYPE(pid) == OBJECT_Player) {
-        layingitem_vel_50FDFC.x = pSpriteObjects[uLayingItemID].vVelocity.x;
-        layingitem_vel_50FDFC.y = pSpriteObjects[uLayingItemID].vVelocity.y;
-        layingitem_vel_50FDFC.z = pSpriteObjects[uLayingItemID].vVelocity.z;
-
-        normalize_to_fixpoint(&layingitem_vel_50FDFC.x, &layingitem_vel_50FDFC.y,
-                             &layingitem_vel_50FDFC.z);
-        DamagePlayerFromMonster(PID(OBJECT_Item, uLayingItemID),
-                                pSpriteObjects[uLayingItemID].field_61,
-                                &layingitem_vel_50FDFC, -1);
+        velocity = pSpriteObjects[uLayingItemID].vVelocity;
+        normalize_to_fixpoint(&velocity.x, &velocity.y, &velocity.z);
+        DamagePlayerFromMonster(PID(OBJECT_Item, uLayingItemID), pSpriteObjects[uLayingItemID].field_61, &velocity, -1);
     } else if (PID_TYPE(pid) == OBJECT_Actor) {
-        layingitem_vel_50FDFC.x = pSpriteObjects[uLayingItemID].vVelocity.x;
-        layingitem_vel_50FDFC.y = pSpriteObjects[uLayingItemID].vVelocity.y;
-        layingitem_vel_50FDFC.z = pSpriteObjects[uLayingItemID].vVelocity.z;
-
-        normalize_to_fixpoint(&layingitem_vel_50FDFC.x, &layingitem_vel_50FDFC.y,
-                             &layingitem_vel_50FDFC.z);
+        velocity = pSpriteObjects[uLayingItemID].vVelocity;
+        normalize_to_fixpoint(&velocity.x, &velocity.y, &velocity.z);
         switch (PID_TYPE(pSpriteObjects[uLayingItemID].spell_caster_pid)) {
             case OBJECT_Actor:
-                Actor::ActorDamageFromMonster(
-                    PID(OBJECT_Item, uLayingItemID), PID_ID(pid),
-                    &layingitem_vel_50FDFC,
-                    pSpriteObjects[uLayingItemID].field_61);
+                Actor::ActorDamageFromMonster(PID(OBJECT_Item, uLayingItemID), PID_ID(pid), &velocity, pSpriteObjects[uLayingItemID].field_61);
                 break;
             case OBJECT_Player:
-                Actor::DamageMonsterFromParty(PID(OBJECT_Item, uLayingItemID),
-                                              PID_ID(pid),
-                                              &layingitem_vel_50FDFC);
+                Actor::DamageMonsterFromParty(PID(OBJECT_Item, uLayingItemID), PID_ID(pid), &velocity);
                 break;
             case OBJECT_Item:
-                ItemDamageFromActor(PID(OBJECT_Item, uLayingItemID), PID_ID(pid),
-                                    &layingitem_vel_50FDFC);
+                ItemDamageFromActor(PID(OBJECT_Item, uLayingItemID), PID_ID(pid), &velocity);
                 break;
             default:
                 break;
@@ -1520,65 +1500,62 @@ void applySpellSpriteDamage(unsigned int uLayingItemID, int pid) {
 }
 
 void UpdateObjects() {
-    int v5;   // ecx@6
-    int v7;   // eax@9
-    int v11;  // eax@17
-    int v12;  // edi@27
-    int v18;  // [sp+4h] [bp-10h]@27
-    int v19;  // [sp+8h] [bp-Ch]@27
-
     for (uint i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].uAttributes & SPRITE_SKIP_A_FRAME) {
             pSpriteObjects[i].uAttributes &= ~SPRITE_SKIP_A_FRAME;
         } else {
-            ObjectDesc *object =
-                &pObjectList->pObjects[pSpriteObjects[i].uObjectDescID];
+            ObjectDesc *object = &pObjectList->pObjects[pSpriteObjects[i].uObjectDescID];
             if (pSpriteObjects[i].AttachedToActor()) {
-                v5 = PID_ID(pSpriteObjects[i].spell_target_pid);
-                if (v5 > pActors.size()) continue;
-                pSpriteObjects[i].vPosition.x = pActors[v5].vPosition.x;
-                pSpriteObjects[i].vPosition.y = pActors[v5].vPosition.y;
-                pSpriteObjects[i].vPosition.z =
-                    pActors[v5].vPosition.z + pActors[v5].uActorHeight;
-                if (!pSpriteObjects[i].uObjectDescID) continue;
+                int actorId = PID_ID(pSpriteObjects[i].spell_target_pid);
+                if (actorId > pActors.size()) {
+                    continue;
+                }
+                pSpriteObjects[i].vPosition = pActors[actorId].vPosition + Vec3i(0, 0, pActors[actorId].uActorHeight);
+                if (!pSpriteObjects[i].uObjectDescID) {
+                    continue;
+                }
                 pSpriteObjects[i].uSpriteFrameID += pEventTimer->uTimeElapsed;
-                if (!(object->uFlags & OBJECT_DESC_TEMPORARY)) continue;
+                if (!(object->uFlags & OBJECT_DESC_TEMPORARY)) {
+                    continue;
+                }
                 if (pSpriteObjects[i].uSpriteFrameID >= 0) {
-                    v7 = object->uLifetime;
-                    if (pSpriteObjects[i].uAttributes & SPRITE_TEMPORARY)
-                        v7 = pSpriteObjects[i].field_20;
-                    if (pSpriteObjects[i].uSpriteFrameID < v7) continue;
+                    int lifetime = object->uLifetime;
+                    if (pSpriteObjects[i].uAttributes & SPRITE_TEMPORARY) {
+                        lifetime = pSpriteObjects[i].tempLifetime;
+                    }
+                    if (pSpriteObjects[i].uSpriteFrameID < lifetime) {
+                        continue;
+                    }
                 }
                 SpriteObject::OnInteraction(i);
                 continue;
             }
             if (pSpriteObjects[i].uObjectDescID) {
+                int lifetime = 0;
                 pSpriteObjects[i].uSpriteFrameID += pEventTimer->uTimeElapsed;
                 if (object->uFlags & OBJECT_DESC_TEMPORARY) {
                     if (pSpriteObjects[i].uSpriteFrameID < 0) {
                         SpriteObject::OnInteraction(i);
                         continue;
                     }
-                    v11 = object->uLifetime;
-                    if (pSpriteObjects[i].uAttributes & SPRITE_TEMPORARY)
-                        v11 = pSpriteObjects[i].field_20;
+                    lifetime = object->uLifetime;
+                    if (pSpriteObjects[i].uAttributes & SPRITE_TEMPORARY) {
+                        lifetime = pSpriteObjects[i].tempLifetime;
+                    }
                 }
                 if (!(object->uFlags & OBJECT_DESC_TEMPORARY) ||
-                    pSpriteObjects[i].uSpriteFrameID < v11) {
-                    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+                    pSpriteObjects[i].uSpriteFrameID < lifetime) {
+                    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
                         SpriteObject::UpdateObject_fn0_BLV(i);
-                    else
+                    } else {
                         SpriteObject::UpdateObject_fn0_ODM(i);
+                    }
                     if (!pParty->bTurnBasedModeOn || !(pSpriteObjects[i].uSectorID & 4)) {
                         continue;
                     }
-                    v12 = abs(pParty->vPosition.x -
-                        pSpriteObjects[i].vPosition.x);
-                    v18 = abs(pParty->vPosition.y -
-                        pSpriteObjects[i].vPosition.y);
-                    v19 = abs(pParty->vPosition.z -
-                        pSpriteObjects[i].vPosition.z);
-                    if (int_get_vector_length(v12, v18, v19) <= 5120) continue;
+                    if ((pParty->vPosition - pSpriteObjects[i].vPosition).length() <= 5120) {
+                        continue;
+                    }
                     SpriteObject::OnInteraction(i);
                     continue;
                 }

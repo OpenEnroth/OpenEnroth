@@ -65,7 +65,7 @@ struct SpriteObject {
     SPRITE_ATTRIBUTES uAttributes = 0;
     int16_t uSectorID = 0;
     uint16_t uSpriteFrameID = 0;
-    int16_t field_20 = 0;
+    int16_t tempLifetime = 0;
     int16_t field_22_glow_radius_multiplier = 1;
     ItemGen containing_item;
     SPELL_TYPE uSpellID = SPELL_NONE;

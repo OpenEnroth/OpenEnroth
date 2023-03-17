@@ -1545,7 +1545,7 @@ void Serialize(const SpriteObject &src, SpriteObject_MM7 *dst) {
     dst->uAttributes = std::to_underlying(src.uAttributes);
     dst->uSectorID = src.uSectorID;
     dst->uSpriteFrameID = src.uSpriteFrameID;
-    dst->field_20 = src.field_20;
+    dst->tempLifetime = src.tempLifetime;
     dst->field_22_glow_radius_multiplier = src.field_22_glow_radius_multiplier;
     Serialize(src.containing_item, &dst->containing_item);
     dst->uSpellID = src.uSpellID;
@@ -1571,7 +1571,7 @@ void Deserialize(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->uAttributes = SPRITE_ATTRIBUTES(src.uAttributes);
     dst->uSectorID = src.uSectorID;
     dst->uSpriteFrameID = src.uSpriteFrameID;
-    dst->field_20 = src.field_20;
+    dst->tempLifetime = src.tempLifetime;
     dst->field_22_glow_radius_multiplier = src.field_22_glow_radius_multiplier;
     Deserialize(src.containing_item, &dst->containing_item);
     dst->uSpellID = SPELL_TYPE(src.uSpellID);
