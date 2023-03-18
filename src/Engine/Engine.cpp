@@ -1332,7 +1332,6 @@ unsigned int GetGravityStrength() {
 void GameUI_StatusBar_Update(bool force_hide) {
     if (force_hide ||
         game_ui_status_bar_event_string_time_left &&
-        // TODO(pskelton): check tickcount usage here
             platform->tickCount() >= game_ui_status_bar_event_string_time_left && !pEventTimer->bPaused) {
         game_ui_status_bar_event_string_time_left = 0;
     }
@@ -1448,6 +1447,7 @@ void back_to_game() {
 void _494035_timed_effects__water_walking_damage__etc() {
     int old_day = pParty->uCurrentDayOfMonth;
     int old_hour = pParty->uCurrentHour;
+    int old_year = pParty->uCurrentYear;
 
     pParty->GetPlayingTime().value += pEventTimer->uTimeElapsed;
     pParty->uCurrentTimeSecond = pParty->GetPlayingTime().GetSecondsFraction();
@@ -1458,8 +1458,10 @@ void _494035_timed_effects__water_walking_damage__etc() {
     pParty->uCurrentMonth = pParty->GetPlayingTime().GetMonthsOfYear();
     pParty->uCurrentYear = pParty->GetPlayingTime().GetYears() + game_starting_year;
 
-    // TODO(pskelton): Condition looks wierd, investigate, possible cause of #504
-    if (pParty->uCurrentHour >= 3 && (old_hour < 3 || pParty->uCurrentDayOfMonth > old_day)) {  // new day dawns
+    // New day dawns
+    // TODO(pskelton): ticks over at 3 in the morning?? check
+    // TODO(pskelton): store GetDays() somewhere for a neater check here
+    if ((pParty->uCurrentYear > old_year) || pParty->uCurrentHour >= 3 && (old_hour < 3 || pParty->uCurrentDayOfMonth > old_day)) {
         pParty->pHirelings[0].bHasUsedTheAbility = false;
         pParty->pHirelings[1].bHasUsedTheAbility = false;
 

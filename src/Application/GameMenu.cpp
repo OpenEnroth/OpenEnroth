@@ -137,8 +137,6 @@ void Menu::EventLoop() {
                 continue;
             case UIMSG_LoadGame:
                 if (pSavegameUsedSlots[uLoadGameUI_SelectedSlot]) {
-                    // TODO(pskelton): Move Reset() inside LoadGame at all call sites
-                    pParty->Reset();
                     LoadGame(uLoadGameUI_SelectedSlot);
                     uGameState = GAME_STATE_LOADING_GAME;
                 }

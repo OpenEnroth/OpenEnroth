@@ -311,12 +311,6 @@ namespace Application {
 
             Bool ColoredLights = {this, "colored_lights", true, "Enable colored lights."};
 
-            // TODO(captainurist): drop
-            Int D3DDevice = {this, "d3d_device", 0, "D3D device number which was set by setup program in vanilla for hardware mode."};
-
-            // TODO(captainurist): drop? lightmap builder option for old drawing system, need to be eventually deleted and replaced with gamma?
-            Bool DynamicBrightness = {this, "dynamic_brightness", true, ""};
-
             Bool Fog = {this, "fog", true, "Enable fog effect. Used at far clip and in foggy weather."};
 
             Int FogHorizon = {this, "fog_horizon", 39, "Fog height for bottom sky horizon."};

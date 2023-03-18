@@ -584,7 +584,6 @@ void GUIWindow_PartyCreation::Update() {
     pTextCenter =
         pFontCreate->AlignText_Center(84, unspent_attribute_bonus_label);
     pGUIWindow_CurrentMenu->DrawText(pFontCreate, {pTextCenter + 530, 410}, colorTable.White.c16(), unspent_attribute_bonus_label);
-    // TODO(pskelton): check tickcount usage here
     if (game_ui_status_bar_event_string_time_left > platform->tickCount()) {
         message_window.Init();
         message_window.sHint = localization->GetString(LSTR_PARTY_UNASSIGNED_POINTS);

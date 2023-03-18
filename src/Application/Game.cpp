@@ -2428,7 +2428,6 @@ void Game::GameLoop() {
     bLoading = sCurrentMenuID == MENU_LoadingProcInMainMenu;
     SetCurrentMenuID((MENU_STATE)-1);
     if (bLoading) {
-        pParty->Reset();
         uGameState = GAME_STATE_PLAYING;
         LoadGame(uLoadGameUI_SelectedSlot);
     }
@@ -2496,7 +2495,6 @@ void Game::GameLoop() {
             }
             pAudioPlayer->UpdateSounds();
             // expire timed status messages
-            // TODO(pskelton): check tickcount usage here
             if (game_ui_status_bar_event_string_time_left != 0 && game_ui_status_bar_event_string_time_left < platform->tickCount()) {
                  GameUI_StatusBar_Clear();
             }
