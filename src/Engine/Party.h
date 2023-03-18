@@ -152,7 +152,7 @@ using enum PartyAlignment;
 
 /*  208 */
 struct PartyTimeStruct {
-    IndexedArray<GameTime, HOUSE_TOWNHALL_FIRST, HOUSE_TOWNHALL_LAST> bountyHunting_next_generation_time;
+    IndexedArray<GameTime, HOUSE_TOWNHALL_FIRST, HOUSE_TOWNHALL_LAST> bountyHunting_next_generation_time; // Size was 10 originally.
     std::array<GameTime, 85> Shops_next_generation_time;  // field_50
     std::array<GameTime, 53> _shop_ban_times;
     std::array<GameTime, 10> CounterEventValues;  // (0xACD314h in Silvo's binary)

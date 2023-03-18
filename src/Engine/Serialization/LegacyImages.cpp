@@ -258,11 +258,12 @@ void Serialize(const Party &src, Party_MM7 *dst) {
     dst->uTimePlayed = src.playing_time.value;
     dst->uLastRegenerationTime = src.last_regenerated.value;
 
-    for (unsigned int i = 0; i < 10; ++i)
-        dst->PartyTimes.bountyHunting_next_generation_time[i] = 0;
+    // MM7 uses an array of size 10 here, but we only store 5 elements. So zero it first.
+    dst->PartyTimes.bountyHunting_next_generation_time.fill(0);
     for (HOUSE_ID i : src.PartyTimes.bountyHunting_next_generation_time.indices())
         dst->PartyTimes.bountyHunting_next_generation_time[std::to_underlying(i) - std::to_underlying(HOUSE_TOWNHALL_FIRST)] =
             src.PartyTimes.bountyHunting_next_generation_time[i].value;
+
     for (unsigned int i = 0; i < 85; ++i)
         dst->PartyTimes.Shops_next_generation_time[i] =
             src.PartyTimes.Shops_next_generation_time[i].value;
