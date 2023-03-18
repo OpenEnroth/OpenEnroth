@@ -2461,9 +2461,12 @@ signed int dword_5B65D0_dialogue_actor_npc_id;
 int dword_5C3418; //  eventid store for branchless dialogue
 int dword_5C341C; // entry line store for branchless dialogue
 // std::array<char, 777> byte_5C3427;
+
+// TODO(pskelton): GameStatusBar class
 std::string game_ui_status_bar_event_string;
 std::string game_ui_status_bar_string;
-unsigned int game_ui_status_bar_event_string_time_left;
+unsigned int game_ui_status_bar_event_string_time_left; // this is platform->tickcount till elapsed
+
 int bForceDrawFooter;
 int _5C35C0_force_party_death = false;
 int bDialogueUI_InitializeActor_NPC_ID;

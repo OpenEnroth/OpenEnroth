@@ -2517,7 +2517,8 @@ bool Player::Recover(GameTime dt) {
 
 //----- (0048E96A) --------------------------------------------------------
 void Player::SetRecoveryTime(signed int rec) {
-    Assert(rec >= 0);
+    // to avoid switching characters if endurance eliminates hit recovery
+    if (rec < 1) return;
 
     if (rec > uTimeToRecovery) uTimeToRecovery = rec;
 
