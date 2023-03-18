@@ -1903,9 +1903,9 @@ void Actor::Die(unsigned int uActorID) {
     Actor::PlaySound(uActorID, 1);
     actor->UpdateAnimation();
 
-    for (uint i = 0; i < 5; ++i)
-        if (pParty->monster_id_for_hunting[i] == actor->pMonsterInfo.uID)
-            pParty->monster_for_hunting_killed[i] = true;
+    for (HOUSE_ID house : townhallHouses())
+        if (pParty->monster_id_for_hunting[house] == actor->pMonsterInfo.uID)
+            pParty->monster_for_hunting_killed[house] = true;
 
     for (SpellBuff &buff : actor->pActorBuffs)
         buff.Reset();

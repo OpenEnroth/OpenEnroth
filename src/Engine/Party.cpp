@@ -133,10 +133,7 @@ void Party::Zero() {
     memset(_quest_bits, 0, sizeof(_quest_bits));
     pArcomageWins.fill(0);
     field_7B5_in_arena_quest = 0;
-    uNumArenaPageWins = 0;
-    uNumArenaSquireWins = 0;
-    uNumArenaKnightWins = 0;
-    uNumArenaLordWins = 0;
+    uNumArenaWins.fill(0);
     pIsArtifactFound.fill(0);
     field_7d7_set0_unused.fill(0);
     memset(_autonote_bits, 0, sizeof(_autonote_bits));

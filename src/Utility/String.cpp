@@ -29,27 +29,6 @@ static std::string_view toCharStringView(std::u8string_view s) {
     return std::string_view(reinterpret_cast<const char *>(s.data()), s.size());
 }
 
-std::string stringPrintf(const char *fmt, ...) {
-    int size = 1024;
-    char *buffer = new char[size];
-
-    va_list va;
-    va_start(va, fmt);
-    {
-        int nsize = vsnprintf(buffer, size, fmt, va);
-        if (size <= nsize) {  // fail delete buffer and try again
-            delete[] buffer;
-            buffer = new char[nsize + 1];  // +1 for \0
-            nsize = vsnprintf(buffer, size, fmt, va);
-        }
-    }
-    va_end(va);
-
-    std::string ret(buffer);
-    delete[] buffer;
-    return ret;
-}
-
 std::vector<char *> tokenize(char *input, const char separator) {
     std::vector<char *> retVect;
     retVect.push_back(input);

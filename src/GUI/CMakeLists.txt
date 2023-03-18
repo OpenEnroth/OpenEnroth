@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
-set(GUI_SOURCES GUIButton.cpp
+set(GUI_SOURCES GUIBountyHunting.cpp
+                GUIButton.cpp
                 GUIFont.cpp
                 GUIProgressBar.cpp
                 GUIWindow.cpp
@@ -36,7 +37,8 @@ set(GUI_SOURCES GUIButton.cpp
                 UI/Books/TownPortalBook.cpp
 )
 
-set(GUI_HEADERS GUIButton.h
+set(GUI_HEADERS GUIBountyHunting.h
+                GUIButton.h
                 GUIDialogues.h
                 GUIFont.h
                 GUIProgressBar.h
@@ -53,6 +55,7 @@ set(GUI_HEADERS GUIButton.h
                 UI/UIGuilds.h
                 UI/UIInventory.h
                 UI/UIHouses.h
+                UI/UIHouseEnums.h
                 UI/UIMainMenu.h
                 UI/UIGameOver.h
                 UI/UIPartyCreation.h

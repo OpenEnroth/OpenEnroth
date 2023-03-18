@@ -258,9 +258,12 @@ void Serialize(const Party &src, Party_MM7 *dst) {
     dst->uTimePlayed = src.playing_time.value;
     dst->uLastRegenerationTime = src.last_regenerated.value;
 
-    for (unsigned int i = 0; i < 10; ++i)
-        dst->PartyTimes.bountyHunting_next_generation_time[i] =
+    // MM7 uses an array of size 10 here, but we only store 5 elements. So zero it first.
+    dst->PartyTimes.bountyHunting_next_generation_time.fill(0);
+    for (HOUSE_ID i : src.PartyTimes.bountyHunting_next_generation_time.indices())
+        dst->PartyTimes.bountyHunting_next_generation_time[std::to_underlying(i) - std::to_underlying(HOUSE_TOWNHALL_FIRST)] =
             src.PartyTimes.bountyHunting_next_generation_time[i].value;
+
     for (unsigned int i = 0; i < 85; ++i)
         dst->PartyTimes.Shops_next_generation_time[i] =
             src.PartyTimes.Shops_next_generation_time[i].value;
@@ -319,11 +322,11 @@ void Serialize(const Party &src, Party_MM7 *dst) {
     dst->uNumBountiesCollected = src.uNumBountiesCollected;
     dst->field_74C = src.field_74C_set0_unused;
 
-    for (unsigned int i = 0; i < 5; ++i)
-        dst->monster_id_for_hunting[i] = src.monster_id_for_hunting[i];
-    for (unsigned int i = 0; i < 5; ++i)
-        dst->monster_for_hunting_killed[i] =
-            src.monster_for_hunting_killed[i];
+    // TODO(captainurist): just hide these behind Serialize/Deserialize calls properly.
+    for (HOUSE_ID i : src.monster_id_for_hunting.indices())
+        dst->monster_id_for_hunting[std::to_underlying(i) - std::to_underlying(HOUSE_TOWNHALL_FIRST)] = src.monster_id_for_hunting[i];
+    for (HOUSE_ID i : src.monster_for_hunting_killed.indices())
+        dst->monster_for_hunting_killed[std::to_underlying(i) - std::to_underlying(HOUSE_TOWNHALL_FIRST)] = src.monster_for_hunting_killed[i];
 
     dst->days_played_without_rest = src.days_played_without_rest;
 
@@ -333,10 +336,7 @@ void Serialize(const Party &src, Party_MM7 *dst) {
         dst->pArcomageWins[i] = src.pArcomageWins[i];
 
     dst->field_7B5_in_arena_quest = src.field_7B5_in_arena_quest;
-    dst->uNumArenaPageWins = src.uNumArenaPageWins;
-    dst->uNumArenaSquireWins = src.uNumArenaSquireWins;
-    dst->uNumArenaKnightWins = src.uNumArenaKnightWins;
-    dst->uNumArenaLordWins = src.uNumArenaLordWins;
+    dst->uNumArenaWins = src.uNumArenaWins;
 
     for (ITEM_TYPE i : src.pIsArtifactFound.indices())
         dst->pIsArtifactFound[std::to_underlying(i) - std::to_underlying(ITEM_FIRST_SPAWNABLE_ARTIFACT)] = src.pIsArtifactFound[i];
@@ -420,9 +420,9 @@ void Deserialize(const Party_MM7 &src, Party *dst) {
     dst->playing_time.value = src.uTimePlayed;
     dst->last_regenerated.value = src.uLastRegenerationTime;
 
-    for (unsigned int i = 0; i < 10; ++i)
+    for (HOUSE_ID i : dst->PartyTimes.bountyHunting_next_generation_time.indices())
         dst->PartyTimes.bountyHunting_next_generation_time[i] =
-        GameTime(src.PartyTimes.bountyHunting_next_generation_time[i]);
+            GameTime(src.PartyTimes.bountyHunting_next_generation_time[std::to_underlying(i) - std::to_underlying(HOUSE_TOWNHALL_FIRST)]);
     for (unsigned int i = 0; i < 85; ++i)
         dst->PartyTimes.Shops_next_generation_time[i] =
         GameTime(src.PartyTimes.Shops_next_generation_time[i]);
@@ -481,11 +481,10 @@ void Deserialize(const Party_MM7 &src, Party *dst) {
     dst->uNumBountiesCollected = src.uNumBountiesCollected;
     dst->field_74C_set0_unused = src.field_74C;
 
-    for (unsigned int i = 0; i < 5; ++i)
-        dst->monster_id_for_hunting[i] = src.monster_id_for_hunting[i];
-    for (unsigned int i = 0; i < 5; ++i)
-        dst->monster_for_hunting_killed[i] =
-            src.monster_for_hunting_killed[i];
+    for (HOUSE_ID i : dst->monster_id_for_hunting.indices())
+        dst->monster_id_for_hunting[i] = src.monster_id_for_hunting[std::to_underlying(i) - std::to_underlying(HOUSE_TOWNHALL_FIRST)];
+    for (HOUSE_ID i : dst->monster_for_hunting_killed.indices())
+        dst->monster_for_hunting_killed[i] = src.monster_for_hunting_killed[std::to_underlying(i) - std::to_underlying(HOUSE_TOWNHALL_FIRST)];
 
     dst->days_played_without_rest = src.days_played_without_rest;
 
@@ -495,10 +494,7 @@ void Deserialize(const Party_MM7 &src, Party *dst) {
         dst->pArcomageWins[i] = src.pArcomageWins[i];
 
     dst->field_7B5_in_arena_quest = src.field_7B5_in_arena_quest;
-    dst->uNumArenaPageWins = src.uNumArenaPageWins;
-    dst->uNumArenaSquireWins = src.uNumArenaSquireWins;
-    dst->uNumArenaKnightWins = src.uNumArenaKnightWins;
-    dst->uNumArenaLordWins = src.uNumArenaLordWins;
+    dst->uNumArenaWins = src.uNumArenaWins;
 
     for (ITEM_TYPE i : dst->pIsArtifactFound.indices())
         dst->pIsArtifactFound[i] = src.pIsArtifactFound[std::to_underlying(i) - std::to_underlying(ITEM_FIRST_SPAWNABLE_ARTIFACT)];

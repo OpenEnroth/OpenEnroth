@@ -47,6 +47,7 @@
 
 #include "Library/Random/Random.h"
 
+#include "GUIBountyHunting.h"
 
 using EngineIoc = Engine_::IocContainer;
 using Io::InputAction;
@@ -55,7 +56,7 @@ GUIWindow *pPrimaryWindow;
 
 GUIWindow *pGUIWindow_CurrentMenu;
 GUIWindow *pDialogueWindow;
-GUIWindow *window_SpeakInHouse;
+GUIWindow_House *window_SpeakInHouse;
 GUIWindow_Scroll *pGUIWindow_ScrollWindow; // reading a message scroll
 GUIWindow *ptr_507BC8;  // screen 19 - not used?
 GUIWindow *pGUIWindow_CastTargetedSpell;
@@ -957,7 +958,7 @@ void CreateScrollWindow() {
 
     char *v1 = pItemTable->pItems[pGUIWindow_ScrollWindow->scroll_type].pName;
 
-    a1.DrawTitleText(pFontCreate, 0, 0, 0, stringPrintf(format_4E2D80, colorTable.PaleCanary.c16(), v1), 3);
+    a1.DrawTitleText(pFontCreate, 0, 0, 0, fmt::format("\f{:05}{}\f00000\n", colorTable.PaleCanary.c16(), v1), 3);
     a1.DrawText(pFontSmallnum, {1, pFontCreate->GetHeight() - 3}, 0, pScrolls[pGUIWindow_ScrollWindow->scroll_type], 0, 0, 0);
 }
 
@@ -1357,7 +1358,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
                     OracleDialogue();
                 } else {
                     if (pEventNumber == 311) {
-                        CheckBountyRespawnAndAward();
+                        openBountyHuntingDialogue();
                     } else {
                         current_npc_text.clear();
                         activeLevelDecoration = (LevelDecoration *)1;
@@ -1536,7 +1537,7 @@ void OracleDialogue() {
     ITEM_TYPE item_id = ITEM_NULL;
 
     // display "You never had it" if nothing missing will be found
-    current_npc_text = (char *)pNPCTopics[667].pText;
+    current_npc_text = pNPCTopics[667].pText;
 
     // only items with special subquest in range 212-237 and also 241 are recoverable
     for (auto pair : _4F0882_evt_VAR_PlayerItemInHands_vals) {
@@ -1553,10 +1554,10 @@ void OracleDialogue() {
     // missing item found
     if (item_id != ITEM_NULL) {
         pParty->pPlayers[0].AddVariable(VAR_PlayerItemInHands, std::to_underlying(item_id));
-        // display "Here's %s that you lost. Be careful"
-        current_npc_text = stringPrintf(pNPCTopics[666].pText,
-                                        stringPrintf("\f%05d%s\f00000", colorTable.Jonquil.c16(),
-                                                     pItemTable->pItems[item_id].pUnidentifiedName).c_str());
+        // TODO(captainurist): what if fmt throws?
+        current_npc_text = fmt::sprintf(pNPCTopics[666].pText, // "Here's %s that you lost. Be careful"
+                                        fmt::format("\f{:05}{}\f00000", colorTable.Jonquil.c16(),
+                                                    pItemTable->pItems[item_id].pUnidentifiedName).c_str());
     }
 
     // missing item is lich jar and we need to bind soul vessel to lich class character
@@ -1583,57 +1584,6 @@ void OracleDialogue() {
                 }
             }
         }
-    }
-}
-
-void CheckBountyRespawnAndAward() {
-    int i;                // eax@2
-    int rand_monster_id;  // edx@3
-
-    uDialogueType = DIALOGUE_83_bounty_hunting;
-    pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 350}, 0);
-    pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid,
-        localization->GetString(LSTR_CANCEL), { ui_exit_cancel_button_background }
-    );
-    pDialogueWindow->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, InputAction::Invalid, "");
-    pDialogueWindow->CreateButton({480, 160}, {140, 30}, 1, 0, UIMSG_0, DIALOGUE_83_bounty_hunting, InputAction::Invalid, "");
-    pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
-    dialog_menu_id = DIALOGUE_OTHER;
-    // get new monster for hunting
-    if (pParty->PartyTimes.bountyHunting_next_generation_time[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] <
-        pParty->GetPlayingTime()) {
-        pParty->monster_for_hunting_killed[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = false;
-        pParty->PartyTimes.bountyHunting_next_generation_time[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] =
-            GameTime((int64_t)((double)(0x12750000 * (pParty->uCurrentMonth + 12 * pParty->uCurrentYear - 14015)) * 0.033333335));
-        for (;;) {
-            rand_monster_id = grng->Random(258) + 1;
-            pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = rand_monster_id;
-            if ((uint16_t)rand_monster_id < 0x73u || (uint16_t)rand_monster_id > 0x84u) {
-                if (((uint16_t)rand_monster_id < 0xEBu ||
-                    (uint16_t)rand_monster_id > 0xFCu) && ((uint16_t)rand_monster_id < 0x85u ||
-                    (uint16_t)rand_monster_id > 0x96u) && ((uint16_t)rand_monster_id < 0x97u ||
-                    (uint16_t)rand_monster_id > 0xBAu) && ((uint16_t)rand_monster_id < 0xC4u ||
-                    (uint16_t)rand_monster_id > 0xC6u))
-                    break;
-            }
-        }
-    }
-    bountyHunting_monster_id_for_hunting = pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE];
-    if (!pParty->monster_for_hunting_killed[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE]) {
-        bountyHunting_text = pNPCTopics[351].pText;
-        if (!pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE])
-            bountyHunting_text = pNPCTopics[353].pText;
-    } else {  // get prize
-        if (pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE]) {
-            pParty->PartyFindsGold(100 * pMonsterStats->pInfos[(uint16_t)pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE]].uLevel, 0);
-            for (uint i = 0; i < 4; ++i)
-                pParty->pPlayers[i].SetVariable(VAR_Award, Award_BountiesCollected);
-            pParty->uNumBountiesCollected += 100 * pMonsterStats->pInfos[pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE]].uLevel;
-            pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = 0;
-            pParty->monster_for_hunting_killed[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = false;
-        }
-        bountyHunting_text = pNPCTopics[352].pText;
     }
 }
 
@@ -1926,27 +1876,13 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
         return std::string(pNPCTopics[124].pText);  // You don't have enough gold!
 
     guild_membership_approved = true;
-    if (masteryLevelBeingTaught == PLAYER_SKILL_MASTERY_EXPERT) {
-        return localization->FormatString(
-            LSTR_FMT_BECOME_S_IN_S_FOR_D_GOLD,
-            localization->GetString(LSTR_EXPERT),
-            localization->GetSkillName(dword_F8B1AC_skill_being_taught),
-            gold_transaction_amount);
-    } else if (masteryLevelBeingTaught == PLAYER_SKILL_MASTERY_MASTER) {
-        return localization->FormatString(
-            LSTR_FMT_BECOME_S_IN_S_FOR_D_GOLD,
-            localization->GetString(LSTR_MASTER),
-            localization->GetSkillName(dword_F8B1AC_skill_being_taught),
-            gold_transaction_amount);
-    } else if (masteryLevelBeingTaught == PLAYER_SKILL_MASTERY_GRANDMASTER) {
-        return localization->FormatString(
-            LSTR_FMT_BECOME_S_IN_S_FOR_D_GOLD,
-            localization->GetString(LSTR_GRANDMASTER),
-            localization->GetSkillName(dword_F8B1AC_skill_being_taught),
-            gold_transaction_amount);
-    }
 
-    return std::string("");
+    return localization->FormatString(
+        LSTR_FMT_BECOME_S_IN_S_FOR_D_GOLD,
+        localization->MasteryNameLong(masteryLevelBeingTaught),
+        localization->GetSkillName(dword_F8B1AC_skill_being_taught),
+        gold_transaction_amount
+    );
 }
 
 std::string BuildDialogueString(const char *lpsz, uint8_t uPlayerID, ItemGen *a3, int eventId, int a5, GameTime *a6) {
@@ -2113,7 +2049,7 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                 break;
 
             case 24:  // item name
-                sprintf(v1, format_4E2D80, colorTable.PaleCanary.c16(), a3->GetDisplayName().c_str());
+                sprintf(v1, "\f%05d%s\f00000\n", colorTable.PaleCanary.c16(), a3->GetDisplayName().c_str());
                 result += v1;
                 break;
 

@@ -18,6 +18,7 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIPartyCreation.h"
 #include "GUI/UI/UIStatusBar.h"
+#include "GUI/UI/UIHouses.h"
 
 #include "Io/KeyboardInputHandler.h"
 #include "Io/Mouse.h"

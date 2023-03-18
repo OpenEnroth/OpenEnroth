@@ -10,6 +10,7 @@
 #include "Engine/Objects/NPC.h"
 #include "Engine/Party.h"
 
+#include "GUI/GUIBountyHunting.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIGame.h"
@@ -329,9 +330,8 @@ void GUIWindow_Dialogue::Update() {
             pButton->sLabel = localization->GetString(LSTR_MORE_INFORMATION);
         } else if (pButton->msg_param == DIALOGUE_HIRE_FIRE) {
             if (pNPC->Hired()) {
-                pButton->sLabel = stringPrintf(
-                    localization->GetString(LSTR_HIRE_RELEASE), pNPC->pName.c_str()
-                );
+                // TODO(captainurist): what if fmt throws?
+                pButton->sLabel = fmt::sprintf(localization->GetString(LSTR_HIRE_RELEASE), pNPC->pName.c_str());
             } else {
                 pButton->sLabel = localization->GetString(LSTR_HIRE);
             }
@@ -693,7 +693,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
                     OracleDialogue();
                     break;
                 case 311:
-                    CheckBountyRespawnAndAward();
+                    openBountyHuntingDialogue();
                     break;
                 case 399:
                     Arena_SelectionFightLevel();

@@ -787,19 +787,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
                 }
                 pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, v8->uY}, skill_color, Strsk, 0, 0, 0);
             } else {
-                const char *skill_level_str = nullptr;
-
-                switch (skill_mastery) {
-                    case PLAYER_SKILL_MASTERY_GRANDMASTER:
-                        skill_level_str = localization->GetString(LSTR_GRAND);
-                        break;
-                    case PLAYER_SKILL_MASTERY_MASTER:
-                        skill_level_str = localization->GetString(LSTR_MASTER);
-                        break;
-                    case PLAYER_SKILL_MASTERY_EXPERT:
-                        skill_level_str = localization->GetString(LSTR_EXPERT);
-                        break;
-                }
+                const char *skill_level_str = skill_mastery == PLAYER_SKILL_MASTERY_NOVICE ? "" : localization->MasteryName(skill_mastery);
 
                 if (!skill_mastery_color)
                     skill_mastery_color = ui_character_header_text_color;
@@ -911,39 +899,39 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
 
     for (int i = items_per_page; i < full_num_items_in_book; ++i) {
         std::string str;
-        auto v6 = pAwards[achieved_awards[i]]
-                      .pText;  // (char *)dword_723E80_award_related[v20 / 4];
+        const char *v6 = pAwards[achieved_awards[i]].pText;
 
+        // TODO(captainurist): fmt can throw
         switch (achieved_awards[i]) {
             case Award_Arena_PageWins:
-                str = stringPrintf(v6, pParty->uNumArenaPageWins);
+                str = fmt::sprintf(v6, pParty->uNumArenaWins[0]);
                 break;
             case Award_Arena_SquireWins:
-                str = stringPrintf(v6, pParty->uNumArenaSquireWins);
+                str = fmt::sprintf(v6, pParty->uNumArenaWins[1]);
                 break;
             case Award_Arena_KnightWins:
-                str = stringPrintf(v6, pParty->uNumArenaKnightWins);
+                str = fmt::sprintf(v6, pParty->uNumArenaWins[2]);
                 break;
             case Award_Arena_LordWins:
-                str = stringPrintf(v6, pParty->uNumArenaLordWins);
+                str = fmt::sprintf(v6, pParty->uNumArenaWins[3]);
                 break;
             case Award_ArcomageWins:
-                str = stringPrintf(v6, pParty->uNumArcomageWins);
+                str = fmt::sprintf(v6, pParty->uNumArcomageWins);
                 break;
             case Award_ArcomageLoses:
-                str = stringPrintf(v6, pParty->uNumArcomageLoses);
+                str = fmt::sprintf(v6, pParty->uNumArcomageLoses);
                 break;
             case Award_Deaths:
-                str = stringPrintf(v6, pParty->uNumDeaths);
+                str = fmt::sprintf(v6, pParty->uNumDeaths);
                 break;
             case Award_BountiesCollected:
-                str = stringPrintf(v6, pParty->uNumBountiesCollected);
+                str = fmt::sprintf(v6, pParty->uNumBountiesCollected);
                 break;
             case Award_Fine:
-                str = stringPrintf(v6, pParty->uFine);
+                str = fmt::sprintf(v6, pParty->uFine);
                 break;
             case Award_PrisonTerms:
-                str = stringPrintf(v6, pParty->uNumPrisonTerms);
+                str = fmt::sprintf(v6, pParty->uNumPrisonTerms);
                 break;
             default:
                 break;
@@ -1585,8 +1573,6 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
 }
 
 void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
-    int pY;                   // ST34_4@4
-    const char *pText;        // eax@9
     const char *text_format;  // [sp+14h] [bp-Ch]@4
 
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f,
@@ -1601,88 +1587,58 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
                     player->uSkillPoints);
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, 18}, 0, str1);
 
-    // First column(Первая колонка)
-    pY = 53;
-    auto str2 = fmt::format(
-        "{}\f{:05}\r424{}\f00000 /\t185{}\n", localization->GetString(LSTR_MIGHT),
-        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualMight(), player->GetBaseStrength()),
-        player->GetActualMight(), player->GetBaseStrength());
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0, str2);
+    // Left column
+    auto formatLeftCol = [] (int lstr, int current, int max) {
+        const char* str = localization->GetString(lstr);
+        int color16 = UI_GetHealthManaAndOtherQualitiesStringColor(current, max);
+        if (max < 1000) {
+            return fmt::format("{}\f{:05}\r424{}\f00000 /\t185{}\n", str, color16, current, max);
+        } else {
+            return fmt::format("{}\f{:05}\r388{}\f00000 / {}\n", str, color16, current, max);
+        }
+    };
+
+    int pY = 53;
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0,
+                                     formatLeftCol(LSTR_MIGHT, player->GetActualMight(), player->GetBaseStrength()));
+    // TODO(captainurist): GetActualMight vs GetBaseStrength, we need consistent naming
 
     pY += pFontArrus->GetHeight() - 2;
-    auto str3 = fmt::format(
-        "{}\f{:05}\r424{}\f00000 /\t185{}\n", localization->GetString(LSTR_INTELLECT),
-        UI_GetHealthManaAndOtherQualitiesStringColor(
-            player->GetActualIntelligence(), player->GetBaseIntelligence()),
-        player->GetActualIntelligence(),
-        player->GetBaseIntelligence());
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0, str3);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0,
+                                     formatLeftCol(LSTR_INTELLECT, player->GetActualIntelligence(), player->GetBaseIntelligence()));
 
     pY += pFontArrus->GetHeight() - 2;
-    auto str4 = fmt::format(
-        "{}\f{:05}\r424{}\f00000 /\t185{}\n", localization->GetString(LSTR_PERSONALITY),
-        UI_GetHealthManaAndOtherQualitiesStringColor(
-            player->GetActualWillpower(), player->GetBaseWillpower()),
-        player->GetActualWillpower(), player->GetBaseWillpower());
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0, str4);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0,
+                                     formatLeftCol(LSTR_PERSONALITY, player->GetActualWillpower(), player->GetBaseWillpower()));
+    // TODO(captainurist): LSTR_PERSONALITY vs GetActualWillpower, we need consistent naming
 
     pY += pFontArrus->GetHeight() - 2;
-    auto str5 = fmt::format(
-        "{}\f{:05}\r424{}\f00000 /\t185{}\n", localization->GetString(LSTR_ENDURANCE),
-        UI_GetHealthManaAndOtherQualitiesStringColor(
-            player->GetActualEndurance(), player->GetBaseEndurance()),
-        player->GetActualEndurance(), player->GetBaseEndurance());
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0, str5);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0,
+                                     formatLeftCol(LSTR_ENDURANCE, player->GetActualEndurance(), player->GetBaseEndurance()));
 
     pY += pFontArrus->GetHeight() - 2;
-    auto str6 = fmt::format(
-        "{}\f{:05}\r424{}\f00000 /\t185{}\n", localization->GetString(LSTR_ACCURACY),
-        UI_GetHealthManaAndOtherQualitiesStringColor(
-            player->GetActualAccuracy(), player->GetBaseAccuracy()),
-        player->GetActualAccuracy(), player->GetBaseAccuracy());
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0, str6);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0,
+                                     formatLeftCol(LSTR_ACCURACY, player->GetActualAccuracy(), player->GetBaseAccuracy()));
 
     pY += pFontArrus->GetHeight() - 2;
-    auto str7 = fmt::format(
-        "{}\f{:05}\r424{}\f00000 /\t185{}\n", localization->GetString(LSTR_SPEED),
-        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualSpeed(),
-                                                     player->GetBaseSpeed()),
-        player->GetActualSpeed(), player->GetBaseSpeed());
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0, str7);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0,
+                                     formatLeftCol(LSTR_SPEED, player->GetActualSpeed(), player->GetBaseSpeed()));
 
     pY += pFontArrus->GetHeight() - 2;
-    auto str8 = fmt::format(
-        "{}\f{:05}\r424{}\f00000 /\t185{}\n\n", localization->GetString(LSTR_LUCK),
-        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualLuck(),
-                                                     player->GetBaseLuck()),
-        player->GetActualLuck(), player->GetBaseLuck());
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0, str8);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0,
+                                     formatLeftCol(LSTR_LUCK, player->GetActualLuck(), player->GetBaseLuck()));
 
-    text_format = "%s\f%05u\r424%d\f00000 /\t185%d\n";
-    if (player->GetMaxHealth() >= 1000)
-        text_format = "%s\f%05u\r388%d\f00000 / %d\n";
     pY += 2 * pFontArrus->GetHeight() + 5;
-    auto str9 = stringPrintf(text_format, localization->GetString(LSTR_HIT_POINTS),
-                             UI_GetHealthManaAndOtherQualitiesStringColor(
-                                 player->sHealth, player->GetMaxHealth()),
-                             player->sHealth, player->GetMaxHealth());
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0, str9);
-
-    text_format = "%s\f%05u\r424%d\f00000 /\t185%d\n";
-    if (player->GetMaxMana() >= 1000)
-        text_format = "%s\f%05u\r388%d\f00000 / %d\n";
-    pY += pFontArrus->GetHeight() - 2;
-    auto str10 = stringPrintf(text_format, localization->GetString(LSTR_SPELL_POINTS),
-                              UI_GetHealthManaAndOtherQualitiesStringColor(player->sMana, player->GetMaxMana()),
-                              player->sMana, player->GetMaxMana());
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0, str10);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0,
+                                     formatLeftCol(LSTR_HIT_POINTS, player->sHealth, player->GetMaxHealth()));
 
     pY += pFontArrus->GetHeight() - 2;
-    auto str11 = fmt::format("{}\f{:05}\r424{}\f00000 /\t185{}\n\n",
-                              localization->GetString(LSTR_ARMOR_CLASS),
-                              UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualAC(), player->GetBaseAC()),
-                              player->GetActualAC(), player->GetBaseAC());
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0, str11);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0,
+                                     formatLeftCol(LSTR_SPELL_POINTS, player->sMana, player->GetMaxMana()));
+
+    pY += pFontArrus->GetHeight() - 2;
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {26, pY}, 0,
+                                     formatLeftCol(LSTR_ARMOR_CLASS, player->GetActualAC(), player->GetBaseAC()));
 
     pY += 2 * pFontArrus->GetHeight() - 2;
     auto str12 =
@@ -1693,167 +1649,89 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
     pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {26, pY}, 0, str12, 226, 0);
 
     pY += pFontArrus->GetHeight() + -1;
-    pText = localization->GetString(LSTR_NONE);
+    const char* spellName = localization->GetString(LSTR_NONE);
     if (player->uQuickSpell)
-        pText = pSpellStats->pInfos[player->uQuickSpell].pShortName;
-    auto str13 = fmt::format("{}: {}", localization->GetString(LSTR_QUICK_SPELL), pText);
+        spellName = pSpellStats->pInfos[player->uQuickSpell].pShortName;
+    auto str13 = fmt::format("{}: {}", localization->GetString(LSTR_QUICK_SPELL), spellName);
     pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {26, pY}, 0, str13, 226, 0);
 
-    // Second column (Вторая колонка)
+    // Right column
+    auto formatRightCol = [] (int lstr, int current, int max, bool immune = false) {
+        const char* str = localization->GetString(lstr);
+        int color16 = UI_GetHealthManaAndOtherQualitiesStringColor(current, max);
+        if (immune) {
+            return fmt::format("{}\f{:05}\r180{}\n", str, color16, localization->GetString(LSTR_IMMUNE));
+        } else {
+            if (current < 100 && max < 100) {
+                return fmt::format("{}\f{:05}\t110{}\f00000 / {}\n", str, color16, current, max);
+            } else {
+                return fmt::format("{}\f{:05}\r180{}\f00000 / {}\n", str, color16, current, max);
+            }
+        }
+    };
+
     pY = 50;
-    text_format = Stat_string_format_2_column_less_100;
-    if (player->GetActualAge() > 99)
-        text_format = Stat_string_format_2_column_over_100;
-    auto str14 = stringPrintf(text_format, localization->GetString(LSTR_AGE),
-                              UI_GetHealthManaAndOtherQualitiesStringColor(
-                                  player->GetActualAge(), player->GetBaseAge()),
-                              player->GetActualAge(), player->GetBaseAge());
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0, str14);
-
-    text_format = Stat_string_format_2_column_less_100;
-    if (player->GetBaseLevel() > 99)
-        text_format = Stat_string_format_2_column_over_100;
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
+                                     formatRightCol(LSTR_AGE, player->GetActualAge(), player->GetBaseAge()));
 
     pY += pFontArrus->GetHeight() - 2;
-    auto str15 =
-        stringPrintf(text_format, localization->GetString(LSTR_LEVEL),
-                     UI_GetHealthManaAndOtherQualitiesStringColor(
-                         player->GetActualLevel(), player->GetBaseLevel()),
-                     player->GetActualLevel(), player->GetBaseLevel());
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0, str15);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
+                                     formatRightCol(LSTR_LEVEL, player->GetActualLevel(), player->GetBaseLevel()));
 
     pY += pFontArrus->GetHeight() - 2;
-    pText = localization->GetString(LSTR_EXP);
-    if (player->uExperience <= 9999999)
-        pText = localization->GetString(LSTR_EXPERIENCE);
     auto str16 =
-        fmt::format("{}\r180\f{:05}{}\f00000\n\n", pText,
-                     player->GetExperienceDisplayColor(), player->uExperience);
+        fmt::format("{}\r180\f{:05}{}\f00000\n\n",
+                    localization->GetString(player->uExperience <= 9999999 ? LSTR_EXPERIENCE : LSTR_EXP),
+                    player->GetExperienceDisplayColor(), player->uExperience);
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0, str16);
 
     pY += 2 * pFontArrus->GetHeight();
-    auto str17 = fmt::format("{}\t100{:+}\n", localization->GetString(LSTR_ATTACK),
-                              player->GetActualAttack(false));
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0, str17);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
+                                     fmt::format("{}\t100{:+}\n", localization->GetString(LSTR_ATTACK), player->GetActualAttack(false)));
 
     pY += pFontArrus->GetHeight() - 2;
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
-                                     fmt::format("{}\t100 {}\n", localization->GetString(LSTR_DAMAGE),
-                     player->GetMeleeDamageString()));
+                                     fmt::format("{}\t100 {}\n", localization->GetString(LSTR_DAMAGE), player->GetMeleeDamageString()));
 
     pY += pFontArrus->GetHeight() - 2;
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
-                                     fmt::format("{}\t100{:+}\n", localization->GetString(LSTR_SHOOT),
-                     player->GetRangedAttack()));
+                                     fmt::format("{}\t100{:+}\n", localization->GetString(LSTR_SHOOT), player->GetRangedAttack()));
 
     pY += pFontArrus->GetHeight() - 2;
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
-                                     fmt::format(
-            "{}\t100 {}\n\n", localization->GetString(LSTR_DAMAGE),
-            player->GetRangedDamageString().c_str())
-    );
+                                     fmt::format("{}\t100 {}\n\n", localization->GetString(LSTR_DAMAGE), player->GetRangedDamageString()));
 
-    text_format = Stat_string_format_2_column_less_100;
-    if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE) > 99 ||
-        player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE) > 99)
-        text_format = Stat_string_format_2_column_over_100;
     pY += 2 * pFontArrus->GetHeight() - 4;
-    auto str18 = stringPrintf(
-        text_format, localization->GetSpellSchoolName(0),
-        UI_GetHealthManaAndOtherQualitiesStringColor(
-            player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE),
-            player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE)),
-        player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE),
-        player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE));
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0, str18);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
+                                     formatRightCol(LSTR_FIRE, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE),
+                                                    player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE)));
 
-    text_format = Stat_string_format_2_column_less_100;
-    if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR) > 99 ||
-        player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_AIR) > 99)
-        text_format = Stat_string_format_2_column_over_100;
     pY += pFontArrus->GetHeight() - 2;
-    auto str19 = stringPrintf(
-        text_format, localization->GetSpellSchoolName(1),
-        UI_GetHealthManaAndOtherQualitiesStringColor(
-            player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR),
-            player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_AIR)),
-        player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR),
-        player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_AIR));
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0, str19);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
+                                     formatRightCol(LSTR_AIR, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR),
+                                                    player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_AIR)));
 
-    text_format = Stat_string_format_2_column_less_100;
-    if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER) > 99 ||
-        player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_WATER) > 99)
-        text_format = Stat_string_format_2_column_over_100;
     pY += pFontArrus->GetHeight() - 2;
-    auto str20 = stringPrintf(
-        text_format, localization->GetSpellSchoolName(2),
-        UI_GetHealthManaAndOtherQualitiesStringColor(
-            player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER),
-            player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_WATER)),
-        player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER),
-        player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_WATER));
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0, str20);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
+                                     formatRightCol(LSTR_WATER, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER),
+                                                    player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_WATER)));
 
-    text_format = Stat_string_format_2_column_less_100;
-    if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH) > 99)
-        text_format = Stat_string_format_2_column_over_100;
     pY += pFontArrus->GetHeight() - 2;
-    auto str21 = stringPrintf(
-        text_format, localization->GetSpellSchoolName(3),
-        UI_GetHealthManaAndOtherQualitiesStringColor(
-            player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH),
-            player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH)),
-        player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH),
-        player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH));
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0, str21);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
+                                     formatRightCol(LSTR_EARTH, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH),
+                                                    player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH)));
 
-    text_format = Stat_string_format_2_column_less_100;
-    if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) > 99 ||
-        player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) > 99)
-        text_format = Stat_string_format_2_column_over_100;
     pY += pFontArrus->GetHeight() - 2;
-    auto str22 = stringPrintf(
-        text_format, localization->GetSpellSchoolName(4),
-        UI_GetHealthManaAndOtherQualitiesStringColor(
-            player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND),
-            player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND)),
-        player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND),
-        player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND));
-    if (player->classType == PLAYER_CLASS_LICH &&
-        player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) == 200) {
-        str22 = stringPrintf(
-            Stat_string_format_2_column_text, localization->GetString(LSTR_MIND),
-            UI_GetHealthManaAndOtherQualitiesStringColor(
-                player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND),
-                200),
-            localization->GetString(LSTR_IMMUNE));
-    }
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0, str22);
+    bool immuneToMind = player->classType == PLAYER_CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) == 200;
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
+                                     formatRightCol(LSTR_MIND, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND),
+                                                    player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND), immuneToMind));
 
-    text_format = Stat_string_format_2_column_less_100;
-    if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) > 99 ||
-        player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) > 99)
-        text_format = Stat_string_format_2_column_over_100;
     pY += pFontArrus->GetHeight() - 2;
-    int it = player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY);
-    auto str23 = stringPrintf(
-        text_format, localization->GetSpellSchoolName(6),
-        UI_GetHealthManaAndOtherQualitiesStringColor(
-            player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY),
-            player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY)),
-        player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY),
-        player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY));
-    if (player->classType == PLAYER_CLASS_LICH &&
-        player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) == 200) {
-        str23 = stringPrintf(
-            Stat_string_format_2_column_text, localization->GetString(LSTR_BODY),
-            UI_GetHealthManaAndOtherQualitiesStringColor(
-                player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY),
-                200),
-            localization->GetString(LSTR_IMMUNE));
-    }
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0, str23);
+    bool immuneToBody = player->classType == PLAYER_CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) == 200;
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, {266, pY}, 0,
+                                     formatRightCol(LSTR_BODY, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY),
+                                                    player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY), immuneToBody));
 }
 
 bool awardSort(int i, int j) {

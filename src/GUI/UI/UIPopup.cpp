@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <array>
+#include <algorithm>
 #include <string>
 
 #include "Engine/Engine.h"
@@ -1012,27 +1013,13 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
   * @param uPlayerSkillType              Skill type identifier.
   */
 std::string CharacterUI_GetSkillDescText(unsigned int uPlayerID, PLAYER_SKILL_TYPE uPlayerSkillType) {
-    size_t line_width = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL));
-    size_t new_width = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT));
-    if (line_width < new_width)
-        line_width = new_width;
-
-    new_width = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER));
-    if (line_width < new_width)
-        line_width = new_width;
-
-    new_width = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND));
-    if (line_width < new_width)
-        line_width = new_width;
-
-    new_width = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_BONUS_2));
-    if (line_width < new_width)
-        line_width = new_width;
-
-    std::string Format("%s\n\n");
-    for (PLAYER_SKILL_MASTERY i : SkillMasteries()) {
-        Format += stringPrintf("\f%05d", GetSkillColor(pParty->pPlayers[uPlayerID].classType, uPlayerSkillType, i)) + "%s\t%03d:\t%03d%s\t000\n";
-    }
+    size_t line_width = std::max({
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL)),
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT)),
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER)),
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND)),
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_BONUS_2))
+    });
 
     int base_skill = pParty->pPlayers[uPlayerID].pActiveSkills[uPlayerSkillType] & 0x3F;
     int actual_skill = pParty->pPlayers[uPlayerID].GetActualSkillLevel(uPlayerSkillType) & 0x3F;
@@ -1040,16 +1027,18 @@ std::string CharacterUI_GetSkillDescText(unsigned int uPlayerID, PLAYER_SKILL_TY
     const char *desc = localization->GetSkillDescription(uPlayerSkillType);
     std::string Description = desc ? desc : "";
     if (localization->GetSkillDescriptionNormal(uPlayerSkillType)) {
-        Description = stringPrintf(Format.c_str(),
-                                   Description.c_str(),
-                                   localization->GetString(LSTR_NORMAL), line_width + 3, line_width + 10,
-                                   localization->GetSkillDescriptionNormal(uPlayerSkillType),
-                                   localization->GetString(LSTR_EXPERT), line_width + 3, line_width + 10,
-                                   localization->GetSkillDescriptionExpert(uPlayerSkillType),
-                                   localization->GetString(LSTR_MASTER), line_width + 3, line_width + 10,
-                                   localization->GetSkillDescriptionMaster(uPlayerSkillType),
-                                   localization->GetString(LSTR_GRAND), line_width + 3, line_width + 10,
-                                   localization->GetSkillDescriptionGrand(uPlayerSkillType));
+        Description = fmt::format("{}\n\n", Description);
+
+        for (PLAYER_SKILL_MASTERY mastery : SkillMasteries()) {
+            Description += fmt::format(
+                "\f{:05}{}\t{:03}:\t{:03}{}\t000\n",
+                GetSkillColor(pParty->pPlayers[uPlayerID].classType, uPlayerSkillType, PLAYER_SKILL_MASTERY_NOVICE),
+                localization->MasteryName(mastery),
+                line_width + 3,
+                line_width + 10,
+                localization->GetSkillDescription(uPlayerSkillType, mastery)
+            );
+        }
     }
 
     if (base_skill != actual_skill)
@@ -1141,7 +1130,7 @@ void CharacterUI_StatsTab_ShowHint() {
                     pHour = condition_time.GetHoursOfDay();
                     pDay = condition_time.GetDays();
                     pTextColor = GetConditionDrawColor(condition);
-                    str += stringPrintf(format_4E2DE8, pTextColor, localization->GetCharacterConditionName(condition));
+                    str += fmt::format("\f{:05}{}\f00000 - ", pTextColor, localization->GetCharacterConditionName(condition));
                     if (pHour && pHour <= 1)
                         pHourWord = localization->GetString(LSTR_HOUR);
                     else
@@ -1207,7 +1196,8 @@ void CharacterUI_StatsTab_ShowHint() {
         case 15:  // Attack Bonus
             if (pAttackBonusAttributeDescription) {
                 int meleerecov = pPlayers[pParty->_activeCharacter]->GetAttackRecoveryTime(false);
-                std::string description = stringPrintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), meleerecov);
+                // TODO(captainurist): fmt can throw
+                std::string description = fmt::sprintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), meleerecov);
                 description = fmt::format("{}\n\n{}", pAttackBonusAttributeDescription, description.c_str());
                 CharacterUI_DrawTooltip(localization->GetString(LSTR_ATTACK_BONUS), description);
             }
@@ -1224,8 +1214,9 @@ void CharacterUI_StatsTab_ShowHint() {
         case 17:  // Missle Bonus
             if (pMissleBonusAttributeDescription) {
                 int missrecov = pPlayers[pParty->_activeCharacter]->GetAttackRecoveryTime(true);
-                std::string description = stringPrintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), missrecov);
-                description = fmt::format("{}\n\n{}", pAttackBonusAttributeDescription, description.c_str());
+                // TODO(captainurist): fmt can throw
+                std::string description = fmt::sprintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), missrecov);
+                description = fmt::format("{}\n\n{}", pAttackBonusAttributeDescription, description);
                 CharacterUI_DrawTooltip(localization->GetString(LSTR_SHOOT_BONUS), description);
             }
             break;
@@ -1295,7 +1286,6 @@ void CharacterUI_StatsTab_ShowHint() {
 void DrawSpellDescriptionPopup(int spell_index_in_book) {
     SpellInfo *spell;             // esi@1
     unsigned int v3;              // eax@2
-    long v5;                      // ecx@4
     GUIWindow spell_info_window;  // [sp+Ch] [bp-68h]@4
 
     Pointi pt = mouse->GetCursorPos();
@@ -1313,13 +1303,13 @@ void DrawSpellDescriptionPopup(int spell_index_in_book) {
     spell_info_window.uFrameZ = 417;
     spell_info_window.uFrameW = v3 + 67;
     spell_info_window.sHint.clear();
-    v5 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL));
-    if (pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT)) > v5)
-        v5 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT));
-    if (pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER)) > v5)
-        v5 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER));
-    if (pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND)) > v5)
-        v5 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND));
+
+    int v5 = std::max({
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL)),
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT)),
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER)),
+        pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND))
+    });
 
     std::string str = fmt::format(
         "{}\n\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}",
