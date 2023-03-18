@@ -5,6 +5,7 @@
 
 #include "Utility/Memory/Blob.h"
 
+// TODO: Use enum class & class Flags.
 enum OBJECT_DESC_FLAGS : int16_t {
     OBJECT_DESC_NO_SPRITE = 0x1,
     OBJECT_DESC_NO_COLLISION = 0x2,
