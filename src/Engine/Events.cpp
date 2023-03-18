@@ -575,16 +575,12 @@ LABEL_47:
                     player_choose = _evt->v5;
                     ++curr_seq_num;
                     break;
-                case EVENT_SummonItem:
-                    SpriteObject::Drop_Item_At(
-                        (SPRITE_OBJECT_TYPE)(EVT_DWORD(_evt->v5)),
-                        EVT_DWORD(_evt->v9),
-                        EVT_DWORD(_evt->v13),
-                        EVT_DWORD(_evt->v17),
-                        EVT_DWORD(_evt->v21),
-                        _evt->v25, _evt->v26, 0, 0);
+                case EVENT_SummonItem: {
+                    Vec3i pos = Vec3i(EVT_DWORD(_evt->v9), EVT_DWORD(_evt->v13), EVT_DWORD(_evt->v17));
+                    SpriteObject::dropItemAt((SPRITE_OBJECT_TYPE)(EVT_DWORD(_evt->v5)), pos, EVT_DWORD(_evt->v21), _evt->v25, (bool)_evt->v26);
                     ++curr_seq_num;
                     break;
+                }
                 case EVENT_Compare:
                     pValue = EVT_DWORD(_evt->v7);
                     if (player_choose <= 3) {

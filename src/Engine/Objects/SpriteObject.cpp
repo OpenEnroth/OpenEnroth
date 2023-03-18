@@ -58,9 +58,7 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     }
 
     // set initial position
-    field_64.x = vPosition.x;
-    field_64.y = vPosition.y;
-    field_64.z = vPosition.z;
+    initialPosition = vPosition;
 
     // move sprite so it looks like it originates from char portrait
     switch (which_char) {
@@ -85,9 +83,7 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     }
 
     // set blank velocity
-    vVelocity.y = 0;
-    vVelocity.x = 0;
-    vVelocity.z = 0;
+    vVelocity = Vec3s(0, 0, 0);
 
     // calcualte angle velocity - could use rotate func here as above
     if (speed) {
@@ -148,9 +144,7 @@ void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID) {
         if (on_water) {
             v9 = v6 + 60;
             if (v55) v9 = v6 + 30;
-            Create_Splash_Object(pSpriteObjects[uLayingItemID].vPosition.x,
-                                     pSpriteObjects[uLayingItemID].vPosition.y,
-                                     v9);
+            createSplashObject({pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, v9});
             SpriteObject::OnInteraction(uLayingItemID);
         }
     } else {
@@ -306,9 +300,7 @@ LABEL_13:
                     v44 = v27 + 30;
                 else
                     v44 = v54 + 60;
-                Create_Splash_Object(  // splash
-                    pSpriteObjects[uLayingItemID].vPosition.x,
-                    pSpriteObjects[uLayingItemID].vPosition.y, v44);
+                createSplashObject({pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, v44});
                 SpriteObject::OnInteraction(uLayingItemID);
                 return;
             }
@@ -853,9 +845,7 @@ void CompactLayingItemsList() {
 void SpriteObject::InitializeSpriteObjects() {
     for (size_t i = 0; i < pSpriteObjects.size(); ++i) {
         SpriteObject *item = &pSpriteObjects[i];
-        if (item->uObjectDescID &&
-            (item->uSoundID & 8 || pObjectList->pObjects[item->uObjectDescID].uFlags &
-                                       OBJECT_DESC_UNPICKABLE)) {
+        if (item->uObjectDescID && (item->uSoundID & 8 || pObjectList->pObjects[item->uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE)) {
             SpriteObject::OnInteraction(i);
         }
     }
@@ -887,81 +877,53 @@ bool SpriteObject::applyShrinkRayAoe() {
     return isApplied;
 }
 
-//----- (0042F7EB) --------------------------------------------------------
-bool SpriteObject::Drop_Item_At(SPRITE_OBJECT_TYPE sprite, int x,
-                                         int y, int z, int a4, int count,
-                                         int a7, SPRITE_ATTRIBUTES attributes,
-                                         ItemGen *a9) {
-    SpriteObject pSpellObject;       // [sp+Ch] [bp-78h]@1
+bool SpriteObject::dropItemAt(SPRITE_OBJECT_TYPE sprite, Vec3i pos, int speed, int count,
+                              bool randomRotate, SPRITE_ATTRIBUTES attributes, ItemGen *item) {
+    SpriteObject pSpellObject;
 
-    pSpellObject.containing_item.Reset();
-    if (a9)
-        memcpy(&pSpellObject.containing_item, a9,
-               sizeof(pSpellObject.containing_item));
-    pSpellObject.spell_skill = PLAYER_SKILL_MASTERY_NONE;
-    pSpellObject.spell_level = 0;
-    pSpellObject.uSpellID = SPELL_NONE;
-    pSpellObject.field_54 = 0;
     pSpellObject.uType = sprite;
     pSpellObject.uObjectDescID = pObjectList->ObjectIDByItemID(sprite);
-    pSpellObject.vPosition.x = x;
-    pSpellObject.vPosition.y = y;
-    pSpellObject.vPosition.z = z;
-    pSpellObject.uSoundID = 0;
+    pSpellObject.vPosition = pos;
     pSpellObject.uAttributes = attributes;
-    pSpellObject.uSectorID = pIndoor->GetSector(x, y, z);
-    pSpellObject.uSpriteFrameID = 0;
-    pSpellObject.spell_caster_pid = 0;
-    pSpellObject.spell_target_pid = 0;
+    pSpellObject.uSectorID = pIndoor->GetSector(pos);
+    pSpellObject.containing_item.Reset();
+    if (item) {
+        pSpellObject.containing_item = *item;
+    }
+
     if (!(pSpellObject.uAttributes & SPRITE_IGNORE_RANGE)) {
         for (ITEM_TYPE i : pItemTable->pItems.indices()) {
-            if (pItemTable->pItems[i].uSpriteID == sprite)
+            if (pItemTable->pItems[i].uSpriteID == sprite) {
                 pSpellObject.containing_item.uItemID = i;
+            }
         }
     }
-    if (a7) {
-        if (count > 0) {
-            for (uint i = count; i; --i) {
-                // Not sure if using grng is right here, but would rather err on the side of safety.
-                pSpellObject.uFacing = grng->Random(TrigLUT.uIntegerDoublePi);
-                pSpellObject.Create(
-                    (int16_t)pSpellObject.uFacing,
-                    ((int)TrigLUT.uIntegerHalfPi / 2) +
-                        (grng->Random((signed int)TrigLUT.uIntegerHalfPi / 2)),
-                    a4, 0);
-            }
+
+    if (randomRotate) {
+        for (int i = 0; i < count; i++) {
+            // Not sure if using grng is right here, but would rather err on the side of safety.
+            pSpellObject.uFacing = grng->Random(TrigLUT.uIntegerDoublePi);
+            int pitch = TrigLUT.uIntegerQuarterPi + grng->Random(TrigLUT.uIntegerQuarterPi);
+            pSpellObject.Create(pSpellObject.uFacing, pitch, speed, 0);
         }
     } else {
         pSpellObject.uFacing = 0;
-        if (count > 0) {
-            for (uint i = count; i; --i) {
-                pSpellObject.Create((int16_t)pSpellObject.uFacing,
-                                    TrigLUT.uIntegerHalfPi, a4, 0);
-            }
+        for (int i = 0; i < count; i++) {
+            pSpellObject.Create(pSpellObject.uFacing, TrigLUT.uIntegerHalfPi, speed, 0);
         }
     }
     return true;
 }
 
-void SpriteObject::Create_Splash_Object(int x, int y, int z) {  // splash on water
-    SpriteObject a1;
-    a1.containing_item.Reset();
-    a1.spell_skill = PLAYER_SKILL_MASTERY_NONE;
-    a1.spell_level = 0;
-    a1.uSpellID = SPELL_NONE;
-    a1.field_54 = 0;
-    a1.uType = SPRITE_WATER_SPLASH;
-    a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.uType);
-    a1.vPosition.x = x;
-    a1.vPosition.y = y;
-    a1.vPosition.z = z;
-    a1.uSoundID = 0;
-    a1.uAttributes = 0;
-    a1.uSectorID = pIndoor->GetSector(x, y, z);
-    a1.uSpriteFrameID = 0;
-    a1.spell_caster_pid = 0;
-    a1.spell_target_pid = 0;
-    int objID = a1.Create(0, 0, 0, 0);
+// splash on water
+void SpriteObject::createSplashObject(Vec3i pos) {
+    SpriteObject sprite;
+    sprite.containing_item.Reset();
+    sprite.uType = SPRITE_WATER_SPLASH;
+    sprite.uObjectDescID = pObjectList->ObjectIDByItemID(sprite.uType);
+    sprite.vPosition = pos;
+    sprite.uSectorID = pIndoor->GetSector(pos);
+    int objID = sprite.Create(0, 0, 0, 0);
     if (objID != -1) {
         pAudioPlayer->PlaySound((SoundID)SOUND_splash, PID(OBJECT_Item, objID), 0, 0, 0, 0);
     }
@@ -1512,38 +1474,24 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
 }
 
 void applySpellSpriteDamage(unsigned int uLayingItemID, int pid) {
+    Vec3i velocity;
+
     if (PID_TYPE(pid) == OBJECT_Player) {
-        layingitem_vel_50FDFC.x = pSpriteObjects[uLayingItemID].vVelocity.x;
-        layingitem_vel_50FDFC.y = pSpriteObjects[uLayingItemID].vVelocity.y;
-        layingitem_vel_50FDFC.z = pSpriteObjects[uLayingItemID].vVelocity.z;
-
-        normalize_to_fixpoint(&layingitem_vel_50FDFC.x, &layingitem_vel_50FDFC.y,
-                             &layingitem_vel_50FDFC.z);
-        DamagePlayerFromMonster(PID(OBJECT_Item, uLayingItemID),
-                                pSpriteObjects[uLayingItemID].field_61,
-                                &layingitem_vel_50FDFC, -1);
+        velocity = pSpriteObjects[uLayingItemID].vVelocity;
+        normalize_to_fixpoint(&velocity.x, &velocity.y, &velocity.z);
+        DamagePlayerFromMonster(PID(OBJECT_Item, uLayingItemID), pSpriteObjects[uLayingItemID].field_61, &velocity, -1);
     } else if (PID_TYPE(pid) == OBJECT_Actor) {
-        layingitem_vel_50FDFC.x = pSpriteObjects[uLayingItemID].vVelocity.x;
-        layingitem_vel_50FDFC.y = pSpriteObjects[uLayingItemID].vVelocity.y;
-        layingitem_vel_50FDFC.z = pSpriteObjects[uLayingItemID].vVelocity.z;
-
-        normalize_to_fixpoint(&layingitem_vel_50FDFC.x, &layingitem_vel_50FDFC.y,
-                             &layingitem_vel_50FDFC.z);
+        velocity = pSpriteObjects[uLayingItemID].vVelocity;
+        normalize_to_fixpoint(&velocity.x, &velocity.y, &velocity.z);
         switch (PID_TYPE(pSpriteObjects[uLayingItemID].spell_caster_pid)) {
             case OBJECT_Actor:
-                Actor::ActorDamageFromMonster(
-                    PID(OBJECT_Item, uLayingItemID), PID_ID(pid),
-                    &layingitem_vel_50FDFC,
-                    pSpriteObjects[uLayingItemID].field_61);
+                Actor::ActorDamageFromMonster(PID(OBJECT_Item, uLayingItemID), PID_ID(pid), &velocity, pSpriteObjects[uLayingItemID].field_61);
                 break;
             case OBJECT_Player:
-                Actor::DamageMonsterFromParty(PID(OBJECT_Item, uLayingItemID),
-                                              PID_ID(pid),
-                                              &layingitem_vel_50FDFC);
+                Actor::DamageMonsterFromParty(PID(OBJECT_Item, uLayingItemID), PID_ID(pid), &velocity);
                 break;
             case OBJECT_Item:
-                ItemDamageFromActor(PID(OBJECT_Item, uLayingItemID), PID_ID(pid),
-                                    &layingitem_vel_50FDFC);
+                ItemDamageFromActor(PID(OBJECT_Item, uLayingItemID), PID_ID(pid), &velocity);
                 break;
             default:
                 break;
@@ -1552,65 +1500,62 @@ void applySpellSpriteDamage(unsigned int uLayingItemID, int pid) {
 }
 
 void UpdateObjects() {
-    int v5;   // ecx@6
-    int v7;   // eax@9
-    int v11;  // eax@17
-    int v12;  // edi@27
-    int v18;  // [sp+4h] [bp-10h]@27
-    int v19;  // [sp+8h] [bp-Ch]@27
-
     for (uint i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].uAttributes & SPRITE_SKIP_A_FRAME) {
             pSpriteObjects[i].uAttributes &= ~SPRITE_SKIP_A_FRAME;
         } else {
-            ObjectDesc *object =
-                &pObjectList->pObjects[pSpriteObjects[i].uObjectDescID];
+            ObjectDesc *object = &pObjectList->pObjects[pSpriteObjects[i].uObjectDescID];
             if (pSpriteObjects[i].AttachedToActor()) {
-                v5 = PID_ID(pSpriteObjects[i].spell_target_pid);
-                if (v5 > pActors.size()) continue;
-                pSpriteObjects[i].vPosition.x = pActors[v5].vPosition.x;
-                pSpriteObjects[i].vPosition.y = pActors[v5].vPosition.y;
-                pSpriteObjects[i].vPosition.z =
-                    pActors[v5].vPosition.z + pActors[v5].uActorHeight;
-                if (!pSpriteObjects[i].uObjectDescID) continue;
+                int actorId = PID_ID(pSpriteObjects[i].spell_target_pid);
+                if (actorId > pActors.size()) {
+                    continue;
+                }
+                pSpriteObjects[i].vPosition = pActors[actorId].vPosition + Vec3i(0, 0, pActors[actorId].uActorHeight);
+                if (!pSpriteObjects[i].uObjectDescID) {
+                    continue;
+                }
                 pSpriteObjects[i].uSpriteFrameID += pEventTimer->uTimeElapsed;
-                if (!(object->uFlags & OBJECT_DESC_TEMPORARY)) continue;
+                if (!(object->uFlags & OBJECT_DESC_TEMPORARY)) {
+                    continue;
+                }
                 if (pSpriteObjects[i].uSpriteFrameID >= 0) {
-                    v7 = object->uLifetime;
-                    if (pSpriteObjects[i].uAttributes & SPRITE_TEMPORARY)
-                        v7 = pSpriteObjects[i].field_20;
-                    if (pSpriteObjects[i].uSpriteFrameID < v7) continue;
+                    int lifetime = object->uLifetime;
+                    if (pSpriteObjects[i].uAttributes & SPRITE_TEMPORARY) {
+                        lifetime = pSpriteObjects[i].tempLifetime;
+                    }
+                    if (pSpriteObjects[i].uSpriteFrameID < lifetime) {
+                        continue;
+                    }
                 }
                 SpriteObject::OnInteraction(i);
                 continue;
             }
             if (pSpriteObjects[i].uObjectDescID) {
+                int lifetime = 0;
                 pSpriteObjects[i].uSpriteFrameID += pEventTimer->uTimeElapsed;
                 if (object->uFlags & OBJECT_DESC_TEMPORARY) {
                     if (pSpriteObjects[i].uSpriteFrameID < 0) {
                         SpriteObject::OnInteraction(i);
                         continue;
                     }
-                    v11 = object->uLifetime;
-                    if (pSpriteObjects[i].uAttributes & SPRITE_TEMPORARY)
-                        v11 = pSpriteObjects[i].field_20;
+                    lifetime = object->uLifetime;
+                    if (pSpriteObjects[i].uAttributes & SPRITE_TEMPORARY) {
+                        lifetime = pSpriteObjects[i].tempLifetime;
+                    }
                 }
                 if (!(object->uFlags & OBJECT_DESC_TEMPORARY) ||
-                    pSpriteObjects[i].uSpriteFrameID < v11) {
-                    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+                    pSpriteObjects[i].uSpriteFrameID < lifetime) {
+                    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
                         SpriteObject::UpdateObject_fn0_BLV(i);
-                    else
+                    } else {
                         SpriteObject::UpdateObject_fn0_ODM(i);
+                    }
                     if (!pParty->bTurnBasedModeOn || !(pSpriteObjects[i].uSectorID & 4)) {
                         continue;
                     }
-                    v12 = abs(pParty->vPosition.x -
-                        pSpriteObjects[i].vPosition.x);
-                    v18 = abs(pParty->vPosition.y -
-                        pSpriteObjects[i].vPosition.y);
-                    v19 = abs(pParty->vPosition.z -
-                        pSpriteObjects[i].vPosition.z);
-                    if (int_get_vector_length(v12, v18, v19) <= 5120) continue;
+                    if ((pParty->vPosition - pSpriteObjects[i].vPosition).length() <= 5120) {
+                        continue;
+                    }
                     SpriteObject::OnInteraction(i);
                     continue;
                 }
@@ -1624,9 +1569,9 @@ void UpdateObjects() {
     }
 }
 
-unsigned int sub_46DEF2(signed int pid, unsigned int uLayingItemID) {
+unsigned int collideWithActor(unsigned int uLayingItemID, signed int pid) {
     unsigned int result = uLayingItemID;
-    if (pObjectList->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID].uFlags & 0x10) {
+    if (pObjectList->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
         result = processSpellImpact(uLayingItemID, pid);
     }
     return result;

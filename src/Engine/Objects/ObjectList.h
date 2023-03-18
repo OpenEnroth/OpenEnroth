@@ -5,7 +5,8 @@
 
 #include "Utility/Memory/Blob.h"
 
-enum OBJECT_DESC_FLAGS {
+// TODO: Use enum class & class Flags.
+enum OBJECT_DESC_FLAGS : int16_t {
     OBJECT_DESC_NO_SPRITE = 0x1,
     OBJECT_DESC_NO_COLLISION = 0x2,
     OBJECT_DESC_TEMPORARY = 0x4,
@@ -27,7 +28,7 @@ struct ObjectDesc {
     int16_t uObjectID;
     int16_t uRadius;
     int16_t uHeight;
-    int16_t uFlags; // TODO: OBJECT_DESC_FLAGS
+    OBJECT_DESC_FLAGS uFlags;
     uint16_t uSpriteID;
     int16_t uLifetime;
     uint32_t uParticleTrailColor;

@@ -2187,7 +2187,7 @@ void ODM_ProcessPartyActions() {
         pParty->uFallStartZ = partyNewZ;
     } else if (partyNewZ < currentGroundLevel) {
         if (partyIsOnWater && partyInputZSpeed)
-            SpriteObject::Create_Splash_Object(partyNewX, partyNewY, currentGroundLevel);
+            SpriteObject::createSplashObject({partyNewX, partyNewY, currentGroundLevel});
         partyInputZSpeed = 0;
         partyNewZ = currentGroundLevel;
         pParty->uFallStartZ = currentGroundLevel;
@@ -2876,7 +2876,7 @@ void UpdateActors_ODM() {
                         if (Splash_Model_On)
                             Splash_Z = Splash_Floor + 30;
 
-                        SpriteObject::Create_Splash_Object(pActors[Actor_ITR].vPosition.x, pActors[Actor_ITR].vPosition.y, Splash_Z);
+                        SpriteObject::createSplashObject({pActors[Actor_ITR].vPosition.x, pActors[Actor_ITR].vPosition.y, Splash_Z});
                         pActors[Actor_ITR].uAIState = Removed;
                         return;
                     }

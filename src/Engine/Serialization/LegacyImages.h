@@ -852,7 +852,7 @@ struct SpriteObject_MM7 {
     uint16_t uAttributes;
     int16_t uSectorID;
     uint16_t uSpriteFrameID;
-    int16_t field_20;
+    int16_t tempLifetime;
     int16_t field_22_glow_radius_multiplier;
     ItemGen_MM7 containing_item;
     int uSpellID;
@@ -864,7 +864,7 @@ struct SpriteObject_MM7 {
     char field_60_distance_related_prolly_lod;
     char field_61;
     char field_62[2];
-    Vec3i field_64;
+    Vec3i initialPosition;
 };
 
 static_assert(sizeof(SpriteObject_MM7) == 0x70);

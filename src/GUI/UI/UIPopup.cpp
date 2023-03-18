@@ -1513,10 +1513,8 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                     MonsterPopup_Draw(PID_ID(v5), &popup_window);
                 }
                 if (PID_TYPE(v5) == OBJECT_Item) {
-                    if (!(pObjectList
-                              ->pObjects[pSpriteObjects[PID_ID(v5)].uObjectDescID].uFlags & 0x10)) {
-                        GameUI_DrawItemInfo(
-                            &pSpriteObjects[PID_ID(v5)].containing_item);
+                    if (!(pObjectList->pObjects[pSpriteObjects[PID_ID(v5)].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE)) {
+                        GameUI_DrawItemInfo(&pSpriteObjects[PID_ID(v5)].containing_item);
                     }
                 }
             }
@@ -2065,9 +2063,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
 
             int rot_x, rot_y, rot_z;
             Vec3i::rotate(64, pParty->sRotationZ, pParty->sRotationY, v39, &rot_x, &rot_y, &rot_z);
-            SpriteObject::Drop_Item_At(
-                SPRITE_SPELL_FIRE_FIREBALL_IMPACT, rot_x, rot_y, rot_z, 0, 1, 0,
-                0, 0);
+            SpriteObject::dropItemAt(SPRITE_SPELL_FIRE_FIREBALL_IMPACT, {rot_x, rot_y, rot_z}, 0);
             if (dword_4E455C) {
                 if (pPlayers[pParty->_activeCharacter]->CanAct())
                     pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_PotionExplode, 0);

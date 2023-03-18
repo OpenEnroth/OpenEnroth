@@ -1945,15 +1945,13 @@ void Actor::Die(unsigned int uActorID) {
     }
 
     if (grng->Random(100) < 20 && drop.uItemID != ITEM_NULL) {
-        SpriteObject::Drop_Item_At(
-            (SPRITE_OBJECT_TYPE)pItemTable->pItems[drop.uItemID].uSpriteID,
-            actor->vPosition.x, actor->vPosition.y, actor->vPosition.z + 16,
-            grng->Random(200) + 200, 1, 1, 0, &drop);
+        SpriteObject::dropItemAt((SPRITE_OBJECT_TYPE)pItemTable->pItems[drop.uItemID].uSpriteID,
+            actor->vPosition + Vec3i(0, 0, 16), grng->Random(200) + 200, 1, true, 0, &drop);
     }
 
-    if (actor->pMonsterInfo.uSpecialAbilityType ==
-        MONSTER_SPECIAL_ABILITY_EXPLODE)
+    if (actor->pMonsterInfo.uSpecialAbilityType == MONSTER_SPECIAL_ABILITY_EXPLODE) {
         Actor::Explode(uActorID);
+    }
 }
 
 //----- (00402CED) --------------------------------------------------------

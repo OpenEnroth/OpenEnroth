@@ -8,7 +8,7 @@
 #include "Utility/Memory/Blob.h"
 #include "Utility/IndexedArray.h"
 
-#include "Engine/Spells/Spells.h" // TODO(captainurist): SpellEnums.h
+#include "Engine/Spells/SpellEnums.h"
 
 #include "ActorEnums.h"
 #include "ItemEnums.h"

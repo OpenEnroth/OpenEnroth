@@ -68,7 +68,7 @@ void ObjectList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob
         dst->uObjectID = src->uObjectID;
         dst->uRadius = src->uRadius;
         dst->uHeight = src->uHeight;
-        dst->uFlags = src->uFlags;
+        dst->uFlags = OBJECT_DESC_FLAGS(src->uFlags);
         dst->uSpriteID = src->uSpriteID;
         dst->uLifetime = src->uLifetime;
         dst->uParticleTrailColor = src->uParticleTrailColor;
