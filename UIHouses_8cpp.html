@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;24acd30</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5ae23cb</span>
    </div>
   </td>
  </tr>
@@ -106,6 +106,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="SaveLoad_8h.html">Engine/SaveLoad.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CastSpellInfo_8h.html">Engine/Spells/CastSpellInfo.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="stru159_8h.html">Engine/stru159.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GUIBountyHunting_8h.html">GUI/GUIBountyHunting.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIButton_8h.html">GUI/GUIButton.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIFont_8h.html">GUI/GUIFont.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIWindow_8h.html">GUI/GUIWindow.h</a>&quot;</code><br />
@@ -153,11 +154,11 @@ Functions</h2></td></tr>
 <tr class="separator:a9526e72e0e7c2cd241371b27129c4cdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaef68534ab4d38fece496837509e8dd7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#aaef68534ab4d38fece496837509e8dd7">HouseUI_CheckIfPlayerCanInteract</a> ()</td></tr>
 <tr class="separator:aaef68534ab4d38fece496837509e8dd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a29eb100de9b441858b5e1289dd0d958e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#a29eb100de9b441858b5e1289dd0d958e">EnterHouse</a> (<a class="el" href="UIHouses_8h.html#aaee3335261c70d04921051c52287405f">HOUSE_ID</a> uHouseID)</td></tr>
+<tr class="memitem:a29eb100de9b441858b5e1289dd0d958e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#a29eb100de9b441858b5e1289dd0d958e">EnterHouse</a> (<a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405f">HOUSE_ID</a> uHouseID)</td></tr>
 <tr class="separator:a29eb100de9b441858b5e1289dd0d958e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad5340de19eef94b2e764511479a8e612"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#ad5340de19eef94b2e764511479a8e612">PrepareHouse</a> (<a class="el" href="UIHouses_8h.html#aaee3335261c70d04921051c52287405f">HOUSE_ID</a> house)</td></tr>
+<tr class="memitem:ad5340de19eef94b2e764511479a8e612"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#ad5340de19eef94b2e764511479a8e612">PrepareHouse</a> (<a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405f">HOUSE_ID</a> house)</td></tr>
 <tr class="separator:ad5340de19eef94b2e764511479a8e612"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af131a9157367a2d529da9174e1319534"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#af131a9157367a2d529da9174e1319534">PlayHouseSound</a> (unsigned int uHouseID, <a class="el" href="UIHouses_8h.html#a6e9b41a32161066fa074c8e5b1e15b69">HouseSoundID</a> sound)</td></tr>
+<tr class="memitem:af131a9157367a2d529da9174e1319534"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#af131a9157367a2d529da9174e1319534">PlayHouseSound</a> (unsigned int uHouseID, <a class="el" href="UIHouseEnums_8h.html#a6e9b41a32161066fa074c8e5b1e15b69">HouseSoundID</a> sound)</td></tr>
 <tr class="separator:af131a9157367a2d529da9174e1319534"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a50274f38af972747404b73f4c835a51d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#a50274f38af972747404b73f4c835a51d">OnSelectShopDialogueOption</a> (<a class="el" href="GUIDialogues_8h.html#afcd7885d9ec6583fa04d9e8f0f641d00">DIALOGUE_TYPE</a> option)</td></tr>
 <tr class="separator:a50274f38af972747404b73f4c835a51d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -292,7 +293,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">bool EnterHouse </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="UIHouses_8h.html#aaee3335261c70d04921051c52287405f">HOUSE_ID</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405f">HOUSE_ID</a>&#160;</td>
           <td class="paramname"><em>uHouseID</em></td><td>)</td>
           <td></td>
         </tr>
@@ -591,7 +592,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="UIHouses_8h.html#a6e9b41a32161066fa074c8e5b1e15b69">HouseSoundID</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="UIHouseEnums_8h.html#a6e9b41a32161066fa074c8e5b1e15b69">HouseSoundID</a>&#160;</td>
           <td class="paramname"><em>sound</em>&#160;</td>
         </tr>
         <tr>
@@ -613,7 +614,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">void PrepareHouse </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="UIHouses_8h.html#aaee3335261c70d04921051c52287405f">HOUSE_ID</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="UIHouseEnums_8h.html#aaee3335261c70d04921051c52287405f">HOUSE_ID</a>&#160;</td>
           <td class="paramname"><em>house</em></td><td>)</td>
           <td></td>
         </tr>
