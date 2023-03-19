@@ -312,9 +312,9 @@ struct Party {
     int sEyelevel;
     int uDefaultEyelevel;
     int radius; // party radius, 37 by default.
-    int y_rotation_granularity;
+    int _yawGranularity;
     int uWalkSpeed;
-    int y_rotation_speed;  // deg/s
+    int _yawRotationSpeed;  // deg/s
     int jump_strength; // jump strength, higher value => higher jumps, default 5.
     int field_28_set0_unused;
     GameTime playing_time;  // uint64_t uTimePlayed;

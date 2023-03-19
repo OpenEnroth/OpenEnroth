@@ -1547,7 +1547,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
         return;
     }
 
-    v8 = pLevelDecorations[uDecorationID].field_10_y_rot +
+    v8 = pLevelDecorations[uDecorationID]._yawAngle +
          ((signed int)TrigLUT.uIntegerPi >> 3) - TrigLUT.atan2(pLevelDecorations[uDecorationID].vPosition.x - pCamera3D->vCameraPos.x,
                                                                pLevelDecorations[uDecorationID].vPosition.y - pCamera3D->vCameraPos.y);
     v9 = ((signed int)(TrigLUT.uIntegerPi + v8) >> 8) & 7;
@@ -1993,7 +1993,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     // Calculate rotation in ticks (1024 ticks per 180 degree).
     int rotation =
-        (static_cast<int64_t>(pEventTimer->dt_fixpoint) * pParty->y_rotation_speed * TrigLUT.uIntegerPi / 180) >> 16;
+        (static_cast<int64_t>(pEventTimer->dt_fixpoint) * pParty->_yawRotationSpeed * TrigLUT.uIntegerPi / 180) >> 16;
 
     // If party movement delta is lower then this number then the party remains stationary.
     int64_t elapsed_time_bounded = std::min(pEventTimer->uTimeElapsed, 10000);

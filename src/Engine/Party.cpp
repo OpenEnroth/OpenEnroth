@@ -77,9 +77,9 @@ void Party::Zero() {
     uPartyHeight = uDefaultPartyHeight = engine->config->gameplay.PartyHeight.Get();
     sEyelevel = uDefaultEyelevel = engine->config->gameplay.PartyEyeLevel.Get();
     radius = 37;
-    y_rotation_granularity = 25;
+    _yawGranularity = 25;
     uWalkSpeed = engine->config->gameplay.PartyWalkSpeed.Get();
-    y_rotation_speed = 90;
+    _yawRotationSpeed = 90;
     jump_strength = 5;
     field_28_set0_unused = 0;
     playing_time = GameTime(0, 0, 0);
@@ -759,9 +759,9 @@ void Party::ResetPosMiscAndSpellBuffs() {
     this->field_28_set0_unused = 0;
     this->uDefaultPartyHeight = engine->config->gameplay.PartyHeight.Get(); // was 120?
     this->radius = 37;
-    this->y_rotation_granularity = 25;
+    this->_yawGranularity = 25;
     this->uWalkSpeed = engine->config->gameplay.PartyWalkSpeed.Get();
-    this->y_rotation_speed = 90;
+    this->_yawRotationSpeed = 90;
     this->jump_strength = 5;
     this->_6FC_water_lava_timer = 0;
     this->field_708_set15_unused = 15;

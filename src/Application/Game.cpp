@@ -1269,16 +1269,16 @@ void Game::EventLoop() {
                             Party_Teleport_X_Pos = player.vBeacons[uMessageParam].PartyPos_X;
                             Party_Teleport_Y_Pos = player.vBeacons[uMessageParam].PartyPos_Y;
                             Party_Teleport_Z_Pos = player.vBeacons[uMessageParam].PartyPos_Z;
-                            Party_Teleport_Cam_Yaw = player.vBeacons[uMessageParam]._PartyViewYaw;
-                            Party_Teleport_Cam_Pitch = player.vBeacons[uMessageParam]._PartyViewPitch;
+                            Party_Teleport_Cam_Yaw = player.vBeacons[uMessageParam]._partyViewYaw;
+                            Party_Teleport_Cam_Pitch = player.vBeacons[uMessageParam]._partyViewPitch;
                             Start_Party_Teleport_Flag = 1;
                         } else {
                             pParty->vPosition.x = player.vBeacons[uMessageParam].PartyPos_X;
                             pParty->vPosition.y = player.vBeacons[uMessageParam].PartyPos_Y;
                             pParty->vPosition.z = player.vBeacons[uMessageParam].PartyPos_Z;
                             pParty->uFallStartZ = pParty->vPosition.z;
-                            pParty->_viewYaw = player.vBeacons[uMessageParam]._PartyViewYaw;
-                            pParty->_viewPitch = player.vBeacons[uMessageParam]._PartyViewPitch;
+                            pParty->_viewYaw = player.vBeacons[uMessageParam]._partyViewYaw;
+                            pParty->_viewPitch = player.vBeacons[uMessageParam]._partyViewPitch;
                         }
                         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
                         pGUIWindow_CurrentMenu->Release();

@@ -334,9 +334,8 @@ void TeleportToStartingPoint(MapStartPoint point) {
                     pParty->_viewYaw = (int)(TrigLUT.uIntegerHalfPi *
                                      pLevelDecorations[i].field_1A) /
                         90;
-                    if (pLevelDecorations[i].field_10_y_rot)
-                        pParty->_viewYaw =
-                            pLevelDecorations[i].field_10_y_rot;
+                    if (pLevelDecorations[i]._yawAngle)
+                        pParty->_viewYaw = pLevelDecorations[i]._yawAngle;
                     pParty->_viewPitch = 0;
                     pParty->uFallSpeed = 0;
                 }

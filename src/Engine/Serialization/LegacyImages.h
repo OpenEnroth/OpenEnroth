@@ -220,8 +220,8 @@ struct LloydBeacon_MM7 {
     /* 08 */ int32_t PartyPos_X;
     /* 0C */ int32_t PartyPos_Y;
     /* 10 */ int32_t PartyPos_Z;
-    /* 14 */ int16_t _PartyViewYaw;
-    /* 16 */ int16_t _PartyViewPitch;
+    /* 14 */ int16_t _partyViewYaw;
+    /* 16 */ int16_t _partyViewPitch;
     /* 18 */ uint16_t unknown;
     /* 1A */ uint16_t SaveFileID;
     /* 1C */
@@ -378,9 +378,9 @@ struct Party_MM7 {
     /* 0000C */ int32_t sEyelevel;
     /* 00010 */ uint32_t uDefaultEyelevel;
     /* 00014 */ int32_t radius;
-    /* 00018 */ int32_t y_rotation_granularity;
+    /* 00018 */ int32_t _yawGranularity;
     /* 0001C */ uint32_t uWalkSpeed;
-    /* 00020 */ int32_t y_rotation_speed;  // deg/s
+    /* 00020 */ int32_t _yawRotationSpeed;  // deg/s
     /* 00024 */ int32_t jump_strength;
     /* 00028 */ int32_t field_28;
     /* 0002C */ uint64_t uTimePlayed;

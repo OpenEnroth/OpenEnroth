@@ -75,11 +75,11 @@ struct Vec3 {
 
     Vec3(T a, T b, T c) : x(a), y(b), z(c) {}
 
-    static void rotate(T sDepth, T sRotY, T sRotX, Vec3<T> v, T *outx, T *outy, T *outz) {
-        float cosf_x = cos(M_PI * sRotX / 1024.0f);
-        float sinf_x = sin(M_PI * sRotX / 1024.0f);
-        float cosf_y = cos(M_PI * sRotY / 1024.0f);
-        float sinf_y = sin(M_PI * sRotY / 1024.0f);
+    static void rotate(T sDepth, T yaw, T pitch, Vec3<T> v, T *outx, T *outy, T *outz) {
+        float cosf_x = cos(M_PI * pitch / 1024.0f);
+        float sinf_x = sin(M_PI * pitch / 1024.0f);
+        float cosf_y = cos(M_PI * yaw / 1024.0f);
+        float sinf_y = sin(M_PI * yaw / 1024.0f);
 
         *outx = v.x + (int)(sinf_y * cosf_x * (float)(sDepth /*>> 16*/));
         *outy = v.y + (int)(cosf_y * cosf_x * (float)(sDepth /*>> 16*/));

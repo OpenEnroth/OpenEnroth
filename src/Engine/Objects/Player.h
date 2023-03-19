@@ -23,8 +23,8 @@ struct LloydBeacon {
         PartyPos_X = 0;
         PartyPos_Y = 0;
         PartyPos_Z = 0;
-        _PartyViewYaw = 0;
-        _PartyViewPitch = 0;
+        _partyViewYaw = 0;
+        _partyViewPitch = 0;
         unknown = 0;
         SaveFileID = 0;
         image = nullptr;
@@ -42,8 +42,8 @@ struct LloydBeacon {
     int32_t PartyPos_X;
     int32_t PartyPos_Y;
     int32_t PartyPos_Z;
-    int16_t _PartyViewYaw;
-    int16_t _PartyViewPitch;
+    int16_t _partyViewYaw;
+    int16_t _partyViewPitch;
     uint16_t unknown;
     uint16_t SaveFileID;
     Image *image;

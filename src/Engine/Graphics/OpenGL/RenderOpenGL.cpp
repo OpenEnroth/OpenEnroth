@@ -127,10 +127,10 @@ void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y
 
     // TODO(pskelton): clean up and move out of here
 
-    float cosz = pCamera3D->fRotationZCosine;
-    float cosx = pCamera3D->fRotationYCosine;
-    float sinz = pCamera3D->fRotationZSine;
-    float sinx = pCamera3D->fRotationYSine;
+    float cosz = pCamera3D->_yawRotationCosine;
+    float cosx = pCamera3D->_pitchRotationCosine;
+    float sinz = pCamera3D->_yawRotationSine;
+    float sinx = pCamera3D->_pitchRotationSine;
 
     // positions all minus ?
     float v11 = cosz * -pCamera3D->vCameraPos.x + sinz * -pCamera3D->vCameraPos.y;
@@ -2051,8 +2051,8 @@ void RenderOpenGL::DrawOutdoorTerrain() {
     glUniform1f(glGetUniformLocation(terrainshader.ID, "fog.fogend"), GLfloat(fogend));
 
     GLfloat camera[3] {};
-    camera[0] = (float)(pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0));
-    camera[1] = (float)(pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0));
+    camera[0] = (float)(pParty->vPosition.x - pParty->_yawGranularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0));
+    camera[1] = (float)(pParty->vPosition.y - pParty->_yawGranularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0));
     camera[2] = (float)(pParty->vPosition.z + pParty->sEyelevel);
     glUniform3fv(glGetUniformLocation(terrainshader.ID, "CameraPos"), 1, &camera[0]);
 
@@ -4027,8 +4027,8 @@ void RenderOpenGL::DrawOutdoorBuildings() {
     glUniform1f(glGetUniformLocation(outbuildshader.ID, "fog.fogend"), GLfloat(fogend));
 
     GLfloat camera[3] {};
-    camera[0] = (float)(pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0f));
-    camera[1] = (float)(pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0f));
+    camera[0] = (float)(pParty->vPosition.x - pParty->_yawGranularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0f));
+    camera[1] = (float)(pParty->vPosition.y - pParty->_yawGranularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0f));
     camera[2] = (float)(pParty->vPosition.z + pParty->sEyelevel);
     glUniform3fv(glGetUniformLocation(outbuildshader.ID, "CameraPos"), 1, &camera[0]);
 
@@ -4701,8 +4701,8 @@ void RenderOpenGL::DrawIndoorFaces() {
 
 
         GLfloat camera[3] {};
-        camera[0] = (float)(pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0f));
-        camera[1] = (float)(pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0f));
+        camera[0] = (float)(pParty->vPosition.x - pParty->_yawGranularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0f));
+        camera[1] = (float)(pParty->vPosition.y - pParty->_yawGranularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0f));
         camera[2] = (float)(pParty->vPosition.z + pParty->sEyelevel);
         glUniform3fv(glGetUniformLocation(bspshader.ID, "CameraPos"), 1, &camera[0]);
 

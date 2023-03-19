@@ -250,9 +250,9 @@ void Serialize(const Party &src, Party_MM7 *dst) {
     dst->sEyelevel = src.sEyelevel;
     dst->uDefaultEyelevel = src.uDefaultEyelevel;
     dst->radius = src.radius;
-    dst->y_rotation_granularity = src.y_rotation_granularity;
+    dst->_yawGranularity = src._yawGranularity;
     dst->uWalkSpeed = src.uWalkSpeed;
-    dst->y_rotation_speed = src.y_rotation_speed;
+    dst->_yawRotationSpeed = src._yawRotationSpeed;
     dst->jump_strength = src.jump_strength;
     dst->field_28 = src.field_28_set0_unused;
     dst->uTimePlayed = src.playing_time.value;
@@ -412,9 +412,9 @@ void Deserialize(const Party_MM7 &src, Party *dst) {
     dst->sEyelevel = src.sEyelevel;
     dst->uDefaultEyelevel = src.uDefaultEyelevel;
     dst->radius = src.radius;
-    dst->y_rotation_granularity = src.y_rotation_granularity;
+    dst->_yawGranularity = src._yawGranularity;
     dst->uWalkSpeed = src.uWalkSpeed;
-    dst->y_rotation_speed = src.y_rotation_speed;
+    dst->_yawRotationSpeed = src._yawRotationSpeed;
     dst->jump_strength = src.jump_strength;
     dst->field_28_set0_unused = src.field_28;
     dst->playing_time.value = src.uTimePlayed;
@@ -724,10 +724,10 @@ void Serialize(const Player &src, Player_MM7 *dst) {
             src.vBeacons[i].PartyPos_Y;
         dst->pInstalledBeacons[i].PartyPos_Z =
             src.vBeacons[i].PartyPos_Z;
-        dst->pInstalledBeacons[i]._PartyViewYaw =
-            src.vBeacons[i]._PartyViewYaw;
-        dst->pInstalledBeacons[i]._PartyViewPitch =
-            src.vBeacons[i]._PartyViewPitch;
+        dst->pInstalledBeacons[i]._partyViewYaw =
+            src.vBeacons[i]._partyViewYaw;
+        dst->pInstalledBeacons[i]._partyViewPitch =
+            src.vBeacons[i]._partyViewPitch;
         dst->pInstalledBeacons[i].SaveFileID =
             src.vBeacons[i].SaveFileID;
     }
@@ -1009,8 +1009,8 @@ void Deserialize(const Player_MM7 &src, Player* dst) {
             beacon.PartyPos_X = src.pInstalledBeacons[i].PartyPos_X;
             beacon.PartyPos_Y = src.pInstalledBeacons[i].PartyPos_Y;
             beacon.PartyPos_Z = src.pInstalledBeacons[i].PartyPos_Z;
-            beacon._PartyViewYaw = src.pInstalledBeacons[i]._PartyViewYaw;
-            beacon._PartyViewPitch = src.pInstalledBeacons[i]._PartyViewPitch;
+            beacon._partyViewYaw = src.pInstalledBeacons[i]._partyViewYaw;
+            beacon._partyViewPitch = src.pInstalledBeacons[i]._partyViewPitch;
             beacon.SaveFileID = src.pInstalledBeacons[i].SaveFileID;
             dst->vBeacons.push_back(beacon);
         }

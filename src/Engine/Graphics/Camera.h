@@ -152,13 +152,13 @@ struct Camera3D {
     float aspect = 0;
 
     // camera cos + sin values in both forms to avoid repeated calculation
-    void CalculateRotations(int camera_rot_y, int camera_rot_z);
+    void CalculateRotations(int cameraYaw, int cameraPitch);
     int _viewYaw = 0;
     int _viewPitch = 0;
-    float fRotationZSine = 0;
-    float fRotationZCosine = 0;
-    float fRotationYSine = 0;
-    float fRotationYCosine = 0;
+    float _yawRotationSine = 0;
+    float _yawRotationCosine = 0;
+    float _pitchRotationSine = 0;
+    float _pitchRotationCosine = 0;
 
     glm::vec3 vCameraPos {};
 

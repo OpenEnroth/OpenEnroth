@@ -979,7 +979,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (obj_type == OBJECT_Actor) {  // quick cast can specify target
                         dist = pActors[PID_ID(spell_targeted_at)].vPosition;
                     } else {
-                        dist = pParty->vPosition + Vec3i(2048 * pCamera3D->fRotationZCosine, 2048 * pCamera3D->fRotationZSine, 0);
+                        dist = pParty->vPosition + Vec3i(2048 * pCamera3D->_yawRotationCosine, 2048 * pCamera3D->_yawRotationSine, 0);
                     }
                     int j = 0, k = 0;
                     int yaw, pitch;
@@ -1197,7 +1197,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (obj_type == OBJECT_Actor) {  // quick cast can specify target
                         dist = pActors[PID_ID(spell_targeted_at)].vPosition;
                     } else {
-                        dist = pParty->vPosition + Vec3i(2048 * pCamera3D->fRotationZCosine, 2048 * pCamera3D->fRotationZSine, 0);
+                        dist = pParty->vPosition + Vec3i(2048 * pCamera3D->_yawRotationCosine, 2048 * pCamera3D->_yawRotationSine, 0);
                     }
                     int j = 0, k = 0;
                     int yaw, pitch;

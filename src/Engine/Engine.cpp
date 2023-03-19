@@ -110,12 +110,12 @@ void Engine::Draw() {
 
     pCamera3D->_viewPitch = pParty->_viewPitch;
     pCamera3D->_viewYaw = pParty->_viewYaw;
-    pCamera3D->vCameraPos.x = pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0);
-    pCamera3D->vCameraPos.y = pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0);
+    pCamera3D->vCameraPos.x = pParty->vPosition.x - pParty->_yawGranularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0);
+    pCamera3D->vCameraPos.y = pParty->vPosition.y - pParty->_yawGranularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0);
     pCamera3D->vCameraPos.z = pParty->vPosition.z + pParty->sEyelevel;  // 193, but real 353
 
     // pIndoorCamera->Initialize2();
-    pCamera3D->CalculateRotations(pParty->_viewPitch, pParty->_viewYaw);
+    pCamera3D->CalculateRotations(pParty->_viewYaw, pParty->_viewPitch);
     pCamera3D->CreateViewMatrixAndProjectionScale();
     pCamera3D->BuildViewFrustum();
 

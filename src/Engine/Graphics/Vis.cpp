@@ -703,18 +703,14 @@ int UnprojectY(int y) {
 
 //----- (004C248E) --------------------------------------------------------
 void Vis::CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY, float fPickDepth) {
-    int pRotY;                // esi@1
     Vec3i pStartR;        // ST08_12@1
-    int pRotX;                // ST04_4@1
     RenderVertexSoft v11[2];  // [sp+2Ch] [bp-74h]@1
     int outx;
     int outz;  // [sp+94h] [bp-Ch]@1
     int outy;  // [sp+98h] [bp-8h]@1
 
-    pRotY = pCamera3D->_viewYaw + UnprojectX(fMouseX);
-    pRotX = -pCamera3D->_viewPitch + UnprojectY(fMouseY);
-
-    // log->Info("Roty: {}, Rotx: {}", pRotY, pRotX);
+    int yawAngle = pCamera3D->_viewYaw + UnprojectX(fMouseX);
+    int pitchAngle = -pCamera3D->_viewPitch + UnprojectY(fMouseY);
 
     pStartR.z = pCamera3D->vCameraPos.z;
     pStartR.x = pCamera3D->vCameraPos.x;
@@ -725,7 +721,7 @@ void Vis::CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY, floa
     v11[1].vWorldPosition.z = (double)pCamera3D->vCameraPos.z;
 
     int depth = /*fixpoint_from_float*/(fPickDepth);
-    Vec3i::rotate(depth, pRotY, pRotX, pStartR, &outx, &outy, &outz);
+    Vec3i::rotate(depth, yawAngle, pitchAngle, pStartR, &outx, &outy, &outz);
 
     v11[0].vWorldPosition.x = (double)outx;
     v11[0].vWorldPosition.y = (double)outy;

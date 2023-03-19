@@ -292,7 +292,7 @@ void RenderBase::PrepareDecorationsRenderList_ODM() {
                     v13 = ((signed int)(TrigLUT.uIntegerPi +
                         ((signed int)TrigLUT.uIntegerPi >>
                             3) +
-                        pLevelDecorations[i].field_10_y_rot -
+                        pLevelDecorations[i]._yawAngle -
                         (int64_t)v10) >>
                         8) &
                         7;

@@ -14,10 +14,10 @@ Camera3D *pCamera3D = new Camera3D;
 //----- (004361EF) --------------------------------------------------------
 Camera3D::Camera3D() {
     // debug_flags = 0;
-    fRotationYCosine = 0;
-    fRotationYSine = 0;
-    fRotationZCosine = 0;
-    fRotationZSine = 0;
+    _pitchRotationCosine = 0;
+    _pitchRotationSine = 0;
+    _yawRotationCosine = 0;
+    _yawRotationSine = 0;
 }
 
 //----- (0043643E) --------------------------------------------------------
@@ -281,8 +281,8 @@ void Camera3D::debug_outline_sw(RenderVertexSoft *a2,
 //----- (004376E7) --------------------------------------------------------
 void Camera3D::CreateViewMatrixAndProjectionScale() {
     // set up view transform matrix (NB orig game has y rotation direction reversed)
-    float cos_y1 = fRotationYCosine, sin_y1 = fRotationYSine;
-    float cos_z1 = fRotationZCosine, sin_z1 = fRotationZSine;
+    float cos_y1 = _pitchRotationCosine, sin_y1 = _pitchRotationSine;
+    float cos_z1 = _yawRotationCosine, sin_z1 = _yawRotationSine;
 
     // right handed co-ord system
     // world +ve x east, +ve y north, +ve z up
@@ -637,16 +637,16 @@ void Camera3D::Project(int x, int y, int z, int *screenspace_x, int *screenspace
     }
 }
 
-void Camera3D::CalculateRotations(int camera_rot_y, int camera_rot_z) {
+void Camera3D::CalculateRotations(int cameraYaw, int cameraPitch) {
     // NB original game inverts rotation direction of y axis
-    _viewPitch = -camera_rot_y;  // pitch
-    _viewYaw = camera_rot_z;  // yaw
+    _viewPitch = -cameraPitch;  // pitch
+    _viewYaw = cameraYaw;  // yaw
 
-    fRotationZSine = sin((pi_double + pi_double) * (double)_viewYaw / 2048.0);
-    fRotationZCosine = cos((pi_double + pi_double) * (double)_viewYaw / 2048.0);
+    _yawRotationSine = sin((pi_double + pi_double) * (double)_viewYaw / 2048.0);
+    _yawRotationCosine = cos((pi_double + pi_double) * (double)_viewYaw / 2048.0);
 
-    fRotationYSine = sin((pi_double + pi_double) * (double)_viewPitch / 2048.0);
-    fRotationYCosine = cos((pi_double + pi_double) * (double)_viewPitch / 2048.0);
+    _pitchRotationSine = sin((pi_double + pi_double) * (double)_viewPitch / 2048.0);
+    _pitchRotationCosine = cos((pi_double + pi_double) * (double)_viewPitch / 2048.0);
 }
 
 //----- (00436A6D) --------------------------------------------------------

@@ -1933,7 +1933,7 @@ void ODM_ProcessPartyActions() {
     int partyViewNewYaw = pParty->_viewYaw;
     int partyViewNewPitch = pParty->_viewPitch;
 
-    int64_t dturn = ((int64_t) pEventTimer->dt_fixpoint * pParty->y_rotation_speed * TrigLUT.uIntegerPi / 180) >> 16;
+    int64_t dturn = ((int64_t) pEventTimer->dt_fixpoint * pParty->_yawRotationSpeed * TrigLUT.uIntegerPi / 180) >> 16;
     while (pPartyActionQueue->uNumActions) {
         switch (pPartyActionQueue->Next()) {
             case PARTY_FlyUp:
