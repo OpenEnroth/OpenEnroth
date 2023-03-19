@@ -222,8 +222,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     int pPositionX = pParty->vPosition.x;
     int pPositionY = pParty->vPosition.y;
     int pPositionZ = pParty->vPosition.z;
-    int sPRotationY = pParty->_viewYaw;
-    int sPRotationX = pParty->_viewPitch;
+    int partyViewYaw = pParty->_viewYaw;
+    int partyViewPitch = pParty->_viewPitch;
     pParty->vPosition.x = pParty->vPrevPosition.x;
     pParty->vPosition.z = pParty->vPrevPosition.z;
     pParty->vPosition.y = pParty->vPrevPosition.y;
@@ -513,8 +513,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     pParty->vPosition.y = pPositionY;
     pParty->vPosition.z = pPositionZ;
     pParty->uFallStartZ = pPositionZ;
-    pParty->_viewYaw = sPRotationY;
-    pParty->_viewPitch = sPRotationX;
+    pParty->_viewYaw = partyViewYaw;
+    pParty->_viewPitch = partyViewPitch;
 }
 
 void DoSavegame(unsigned int uSlot) {

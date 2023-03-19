@@ -8087,8 +8087,8 @@ bool Player::SetBeacon(size_t index, size_t power) {
     beacon.PartyPos_X = pParty->vPosition.x;
     beacon.PartyPos_Y = pParty->vPosition.y;
     beacon.PartyPos_Z = pParty->vPosition.z;
-    beacon.PartyRot_X = pParty->_viewYaw;
-    beacon.PartyRot_Y = pParty->_viewPitch;
+    beacon._PartyViewYaw = pParty->_viewYaw;
+    beacon._PartyViewPitch = pParty->_viewPitch;
     beacon.SaveFileID = file_index;
 
     if (index < vBeacons.size()) {

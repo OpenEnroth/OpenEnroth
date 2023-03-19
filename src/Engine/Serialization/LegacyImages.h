@@ -220,8 +220,8 @@ struct LloydBeacon_MM7 {
     /* 08 */ int32_t PartyPos_X;
     /* 0C */ int32_t PartyPos_Y;
     /* 10 */ int32_t PartyPos_Z;
-    /* 14 */ int16_t PartyRot_X;
-    /* 16 */ int16_t PartyRot_Y;
+    /* 14 */ int16_t _PartyViewYaw;
+    /* 16 */ int16_t _PartyViewPitch;
     /* 18 */ uint16_t unknown;
     /* 1A */ uint16_t SaveFileID;
     /* 1C */
