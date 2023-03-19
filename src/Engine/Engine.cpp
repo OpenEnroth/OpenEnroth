@@ -108,14 +108,14 @@ void Engine_DeinitializeAndTerminate(int exitCode) {
 void Engine::Draw() {
     engine->SetSaturateFaces(pParty->_497FC5_check_party_perception_against_level());
 
-    pCamera3D->sRotationY = pParty->sRotationY;
-    pCamera3D->sRotationZ = pParty->sRotationZ;
-    pCamera3D->vCameraPos.x = pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationZ / 2048.0);
-    pCamera3D->vCameraPos.y = pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationZ / 2048.0);
+    pCamera3D->_viewPitch = pParty->_viewPitch;
+    pCamera3D->_viewYaw = pParty->_viewYaw;
+    pCamera3D->vCameraPos.x = pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0);
+    pCamera3D->vCameraPos.y = pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0);
     pCamera3D->vCameraPos.z = pParty->vPosition.z + pParty->sEyelevel;  // 193, but real 353
 
     // pIndoorCamera->Initialize2();
-    pCamera3D->CalculateRotations(pParty->sRotationY, pParty->sRotationZ);
+    pCamera3D->CalculateRotations(pParty->_viewPitch, pParty->_viewYaw);
     pCamera3D->CreateViewMatrixAndProjectionScale();
     pCamera3D->BuildViewFrustum();
 
@@ -128,9 +128,9 @@ void Engine::Draw() {
         }*/
     } else {
         if (pParty->vPosition.x != pParty->vPrevPosition.x ||
-            pParty->sRotationZ != pParty->sPrevRotationZ ||
+            pParty->_viewYaw != pParty->_viewPrevYaw ||
             pParty->vPosition.y != pParty->vPrevPosition.y ||
-            pParty->sRotationY != pParty->sPrevRotationY ||
+            pParty->_viewPitch != pParty->_viewPrevPitch ||
             pParty->vPosition.z != pParty->vPrevPosition.z ||
             pParty->sEyelevel != pParty->sPrevEyelevel)
             pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
@@ -139,8 +139,8 @@ void Engine::Draw() {
         pParty->vPrevPosition.y = pParty->vPosition.y;
         pParty->vPrevPosition.z = pParty->vPosition.z;
         // v0 = &render;
-        pParty->sPrevRotationZ = pParty->sRotationZ;
-        pParty->sPrevRotationY = pParty->sRotationY;
+        pParty->_viewPrevYaw = pParty->_viewYaw;
+        pParty->_viewPrevPitch = pParty->_viewPitch;
 
         pParty->sPrevEyelevel = pParty->sEyelevel;
         render->BeginScene3D();
@@ -1294,8 +1294,8 @@ void Engine::_461103_load_level_sub() {
     pCamera3D->vCameraPos.x = 0;
     pCamera3D->vCameraPos.y = 0;
     pCamera3D->vCameraPos.z = 100;
-    pCamera3D->sRotationY = 0;
-    pCamera3D->sRotationZ = 0;
+    pCamera3D->_viewPitch = 0;
+    pCamera3D->_viewYaw = 0;
     uLevel_StartingPointType = MapStartPoint_Party;
     pSprites_LOD->_461397();
     if (pParty->pPickedItem.uItemID != ITEM_NULL)

@@ -1395,8 +1395,8 @@ void PrepareToLoadBLV(bool bLoading) {
     this_.pMonsterInfo.uID = 45;
     this_.PrepareSprites(0);
     if (!bLoading) {
-        pParty->sRotationY = 0;
-        pParty->sRotationZ = 0;
+        pParty->_viewPitch = 0;
+        pParty->_viewYaw = 0;
         pParty->vPosition.z = 0;
         pParty->vPosition.y = 0;
         pParty->vPosition.x = 0;
@@ -1986,10 +1986,10 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         on_water = true;
 
     // Party angle in XY plane.
-    int angle = pParty->sRotationZ;
+    int angle = pParty->_viewYaw;
 
     // Vertical party angle (basically azimuthal angle in polar coordinates).
-    int vertical_angle = pParty->sRotationY;
+    int vertical_angle = pParty->_viewPitch;
 
     // Calculate rotation in ticks (1024 ticks per 180 degree).
     int rotation =
@@ -2102,8 +2102,8 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         party_dx = 0;
     }
 
-    pParty->sRotationZ = angle;
-    pParty->sRotationY = vertical_angle;
+    pParty->_viewYaw = angle;
+    pParty->_viewPitch = vertical_angle;
 
     if (hovering) {
         pParty->uFallSpeed += -2 * pEventTimer->uTimeElapsed * GetGravityStrength();

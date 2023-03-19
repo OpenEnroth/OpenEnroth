@@ -711,8 +711,8 @@ void Vis::CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY, floa
     int outz;  // [sp+94h] [bp-Ch]@1
     int outy;  // [sp+98h] [bp-8h]@1
 
-    pRotY = pCamera3D->sRotationZ + UnprojectX(fMouseX);
-    pRotX = -pCamera3D->sRotationY + UnprojectY(fMouseY);
+    pRotY = pCamera3D->_viewYaw + UnprojectX(fMouseX);
+    pRotX = -pCamera3D->_viewPitch + UnprojectY(fMouseY);
 
     // log->Info("Roty: {}, Rotx: {}", pRotY, pRotX);
 

@@ -153,8 +153,8 @@ struct Camera3D {
 
     // camera cos + sin values in both forms to avoid repeated calculation
     void CalculateRotations(int camera_rot_y, int camera_rot_z);
-    int sRotationZ = 0;
-    int sRotationY = 0;
+    int _viewYaw = 0;
+    int _viewPitch = 0;
     float fRotationZSine = 0;
     float fRotationZCosine = 0;
     float fRotationYSine = 0;

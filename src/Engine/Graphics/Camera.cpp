@@ -639,14 +639,14 @@ void Camera3D::Project(int x, int y, int z, int *screenspace_x, int *screenspace
 
 void Camera3D::CalculateRotations(int camera_rot_y, int camera_rot_z) {
     // NB original game inverts rotation direction of y axis
-    sRotationY = -camera_rot_y;  // pitch
-    sRotationZ = camera_rot_z;  // yaw
+    _viewPitch = -camera_rot_y;  // pitch
+    _viewYaw = camera_rot_z;  // yaw
 
-    fRotationZSine = sin((pi_double + pi_double) * (double)sRotationZ / 2048.0);
-    fRotationZCosine = cos((pi_double + pi_double) * (double)sRotationZ / 2048.0);
+    fRotationZSine = sin((pi_double + pi_double) * (double)_viewYaw / 2048.0);
+    fRotationZCosine = cos((pi_double + pi_double) * (double)_viewYaw / 2048.0);
 
-    fRotationYSine = sin((pi_double + pi_double) * (double)sRotationY / 2048.0);
-    fRotationYCosine = cos((pi_double + pi_double) * (double)sRotationY / 2048.0);
+    fRotationYSine = sin((pi_double + pi_double) * (double)_viewPitch / 2048.0);
+    fRotationYCosine = cos((pi_double + pi_double) * (double)_viewPitch / 2048.0);
 }
 
 //----- (00436A6D) --------------------------------------------------------

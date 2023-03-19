@@ -93,8 +93,8 @@ void Party::Zero() {
     vPosition.x = vPrevPosition.x = 0;
     vPosition.y = vPrevPosition.y = 0;
     vPosition.z = vPrevPosition.z = 0;
-    sRotationZ = sPrevRotationZ = 0;
-    sRotationY = sPrevRotationY = 0;
+    _viewYaw = _viewPrevYaw = 0;
+    _viewPitch = _viewPrevPitch = 0;
     sPrevEyelevel = 0;
     field_6E0_set0_unused = 0;
     field_6E4_set0_unused = 0;
@@ -753,8 +753,8 @@ void Party::ResetPosMiscAndSpellBuffs() {
     this->vPosition.z = 0;
     this->vPosition.x = 0;
     this->uFallStartZ = 0;
-    this->sRotationZ = 0;
-    this->sRotationY = 0;
+    this->_viewYaw = 0;
+    this->_viewPitch = 0;
     this->uFallSpeed = 0;
     this->field_28_set0_unused = 0;
     this->uDefaultPartyHeight = engine->config->gameplay.PartyHeight.Get(); // was 120?
@@ -1173,7 +1173,7 @@ void Party::PickedItem_PlaceInInventory_or_Drop() {
             object.uSectorID = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y,
                                                   pParty->sEyelevel + pParty->vPosition.z);
             memcpy(&object.containing_item, &pParty->pPickedItem, sizeof(object.containing_item));
-            object.Create(pParty->sRotationZ, 184, 200, 0);
+            object.Create(pParty->_viewYaw, 184, 200, 0);
             mouse->RemoveHoldingItem();
         }
     }

@@ -321,11 +321,11 @@ struct Party {
     GameTime last_regenerated; // Timestamp when HP/MP regeneration was checked last time (using 5 minutes granularity)
     PartyTimeStruct PartyTimes;
     Vec3i vPosition;
-    int sRotationZ;
-    int sRotationY;
+    int _viewYaw;
+    int _viewPitch;
     Vec3i vPrevPosition;
-    int sPrevRotationZ;
-    int sPrevRotationY;
+    int _viewPrevYaw;
+    int _viewPrevPitch;
     int sPrevEyelevel;
     int field_6E0_set0_unused; // party old x/y ?
     int field_6E4_set0_unused; // party old x/y ?

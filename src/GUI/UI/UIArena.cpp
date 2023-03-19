@@ -67,8 +67,8 @@ void Arena_SelectionFightLevel() {
                 pParty->vPosition.y = 5770;
                 pParty->vPosition.z = 1;
                 pParty->uFallStartZ = 1;
-                pParty->sRotationZ = 512;
-                pParty->sRotationY = 0;
+                pParty->_viewYaw = 512;
+                pParty->_viewPitch = 0;
                 pParty->uFallSpeed = 0;
                 pAudioPlayer->PlaySound(SOUND_51heroism03, 0, 0, -1, 0, 0);
             }
@@ -136,8 +136,8 @@ void ArenaFight() {
     pParty->vPosition.y = 5770;
     pParty->vPosition.z = 1;
     pParty->uFallStartZ = 1;
-    pParty->sRotationZ = 512;
-    pParty->sRotationY = 0;
+    pParty->_viewYaw = 512;
+    pParty->_viewPitch = 0;
     pParty->uFallSpeed = 0;
     /*if ( (signed int)pCurrentFrameMessageQueue->uNumMessages < 40 )
     {

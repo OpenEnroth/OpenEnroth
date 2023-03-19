@@ -914,7 +914,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                 break;
             }
             if (v4 == 4) {
-                v18 = pParty->sRotationZ - TrigLUT.uIntegerHalfPi;
+                v18 = pParty->_viewYaw - TrigLUT.uIntegerHalfPi;
                 v37.z =
                     pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
                 v37.x = pParty->vPosition.x;
@@ -923,7 +923,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                 break;
             }
             if (v4 == 3) {
-                v18 = pParty->sRotationZ - TrigLUT.uIntegerHalfPi;
+                v18 = pParty->_viewYaw - TrigLUT.uIntegerHalfPi;
                 v37.z =
                     pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
                 v37.x = pParty->vPosition.x;
@@ -934,7 +934,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
             if (v4 == 2) {
                 v37.z =
                     pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
-                v18 = TrigLUT.uIntegerHalfPi + pParty->sRotationZ;
+                v18 = TrigLUT.uIntegerHalfPi + pParty->_viewYaw;
                 v37.x = pParty->vPosition.x;
                 v37.y = pParty->vPosition.y;
                 Vec3i::rotate(8, v18, 0, v37, &outx, &outy, &outz);
@@ -943,7 +943,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
             if (v4 == 1) {
                 v37.z =
                     pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
-                v18 = TrigLUT.uIntegerHalfPi + pParty->sRotationZ;
+                v18 = TrigLUT.uIntegerHalfPi + pParty->_viewYaw;
                 v37.x = pParty->vPosition.x;
                 v37.y = pParty->vPosition.y;
                 Vec3i::rotate(24, v18, 0, v37, &outx, &outy, &outz);
@@ -4593,7 +4593,7 @@ bool SpawnActor(unsigned int uMonsterID) {
         v1 = 0;
 
     Vec3i pOut;
-    Vec3i::rotate(200, pParty->sRotationZ, 0, pParty->vPosition, &pOut.x, &pOut.y, &pOut.z);
+    Vec3i::rotate(200, pParty->_viewYaw, 0, pParty->vPosition, &pOut.x, &pOut.y, &pOut.z);
 
     actor->pActorName = pMonsterStats->pInfos[v1 + 1].pName;
     actor->sCurrentHP = pMonsterStats->pInfos[v1 + 1].uHP;

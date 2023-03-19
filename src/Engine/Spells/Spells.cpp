@@ -796,8 +796,8 @@ void armageddonProgress() {
         --pTurnEngine->pending_actions;
     }
 
-    pParty->sRotationZ = TrigLUT.uDoublePiMask & (pParty->sRotationZ + grng->RandomInSegment(-8, 8)); // Was RandomInSegment(-8, 7)
-    pParty->sRotationY = std::clamp(pParty->sRotationY + grng->RandomInSegment(-8, 8), -128, 128); // Was RandomInSegment(-8, 7)
+    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw + grng->RandomInSegment(-8, 8)); // Was RandomInSegment(-8, 7)
+    pParty->_viewPitch = std::clamp(pParty->_viewPitch + grng->RandomInSegment(-8, 8), -128, 128); // Was RandomInSegment(-8, 7)
     pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
     pParty->armageddon_timer -= pEventTimer->uTimeElapsed; // Was pMiscTimer
 

@@ -1371,15 +1371,15 @@ void TravelByTransport() {
                     Start_Party_Teleport_Flag = pTravel->arrival_x | pTravel->arrival_y | pTravel->arrival_z | pTravel->arrival_rot_y;
                 } else {
                     // travelling to map we are already in
-                    pCamera3D->sRotationZ = 0;
+                    pCamera3D->_viewYaw = 0;
 
                     pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
                     pParty->vPosition.x = pTravel->arrival_x;
                     pParty->vPosition.y = pTravel->arrival_y;
                     pParty->vPosition.z = pTravel->arrival_z;
                     pParty->uFallStartZ = pParty->vPosition.z;
-                    pParty->sRotationY = 0;
-                    pParty->sRotationZ = pTravel->arrival_rot_y;
+                    pParty->_viewPitch = 0;
+                    pParty->_viewYaw = pTravel->arrival_rot_y;
                 }
 
                 PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_NotEnoughMoney);
@@ -3417,8 +3417,8 @@ void GUIWindow_House::Release() {
 
     dword_5C35D4 = 0;
     if (engine->config->settings.FlipOnExit.Get()) {
-        pParty->sRotationZ = (TrigLUT.uIntegerDoublePi - 1) & (TrigLUT.uIntegerPi + pParty->sRotationZ);
-        pCamera3D->sRotationZ = pParty->sRotationZ;
+        pParty->_viewYaw = (TrigLUT.uIntegerDoublePi - 1) & (TrigLUT.uIntegerPi + pParty->_viewYaw);
+        pCamera3D->_viewYaw = pParty->_viewYaw;
     }
     pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
 

@@ -1871,7 +1871,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
 
     // draw arrow on the minimap(include. Ritor1)
     uint arrow_idx;
-    unsigned int rotate = pParty->sRotationZ & TrigLUT.uDoublePiMask;
+    unsigned int rotate = pParty->_viewYaw & TrigLUT.uDoublePiMask;
     if ((signed int)rotate <= 1920) arrow_idx = 6;
     if ((signed int)rotate < 1664) arrow_idx = 5;
     if ((signed int)rotate <= 1408) arrow_idx = 4;
@@ -1883,7 +1883,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     render->DrawTextureNew((uCenterX - 3) / 640.0f, (uCenterY - 3) / 480.0f, game_ui_minimap_dirs[arrow_idx]);
 
     render->SetUIClipRect(541, 0, 567, 480);
-    render->DrawTextureNew((floorf(((double)pParty->sRotationZ * 0.1171875) + 0.5f) + 285) / 640.0f,
+    render->DrawTextureNew((floorf(((double)pParty->_viewYaw * 0.1171875) + 0.5f) + 285) / 640.0f,
         136 / 480.0f, game_ui_minimap_compass);
     render->ResetUIClipRect();
     render->DrawTextureNew(468 / 640.0f, 0, game_ui_minimap_frame);

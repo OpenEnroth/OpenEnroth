@@ -1930,8 +1930,8 @@ void ODM_ProcessPartyActions() {
     bool partyIsWalking = false;
     bool noFlightBob = false;
 
-    int partyNewRotZ = pParty->sRotationZ;
-    int partyNewRotY = pParty->sRotationY;
+    int partyNewRotZ = pParty->_viewYaw;
+    int partyNewRotY = pParty->_viewPitch;
 
     int64_t dturn = ((int64_t) pEventTimer->dt_fixpoint * pParty->y_rotation_speed * TrigLUT.uIntegerPi / 180) >> 16;
     while (pPartyActionQueue->uNumActions) {
@@ -2166,8 +2166,8 @@ void ODM_ProcessPartyActions() {
     }
 
     // set party look angles
-    pParty->sRotationZ = partyNewRotZ;
-    pParty->sRotationY = partyNewRotY;
+    pParty->_viewYaw = partyNewRotZ;
+    pParty->_viewPitch = partyNewRotY;
 
     int partyNewX = pParty->vPosition.x;
     int partyNewY = pParty->vPosition.y;
@@ -3086,8 +3086,8 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
     pOutdoor->MessWithLUN();
     pOutdoor->level_filename = pFilename;
     pWeather->Initialize();
-    pCamera3D->sRotationZ = pParty->sRotationZ;
-    pCamera3D->sRotationY = pParty->sRotationY;
+    pCamera3D->_viewYaw = pParty->_viewYaw;
+    pCamera3D->_viewPitch = pParty->_viewPitch;
     // pODMRenderParams->RotationToInts();
     pOutdoor->UpdateSunlightVectors();
 

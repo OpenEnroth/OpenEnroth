@@ -387,11 +387,11 @@ struct Party_MM7 {
     /* 00034 */ int64_t uLastRegenerationTime;
     /* 0003C */ PartyTimeStruct_MM7 PartyTimes;
     /* 006B4 */ Vec3i vPosition;
-    /* 006C0 */ int32_t sRotationZ;
-    /* 006C4 */ int32_t sRotationY;
+    /* 006C0 */ int32_t _viewYaw;
+    /* 006C4 */ int32_t _viewPitch;
     /* 006C8 */ Vec3i vPrevPosition;
-    /* 006D4 */ int32_t sPrevRotationZ;
-    /* 006D8 */ int32_t sPrevRotationY;
+    /* 006D4 */ int32_t _viewPrevYaw;
+    /* 006D8 */ int32_t _viewPrevPitch;
     /* 006DC */ int32_t sPrevEyelevel;
     /* 006E0 */ int32_t field_6E0;
     /* 006E4 */ int32_t field_6E4;

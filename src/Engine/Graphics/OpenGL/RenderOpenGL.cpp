@@ -137,7 +137,7 @@ void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y
     float v24 = cosz * -pCamera3D->vCameraPos.y - sinz * -pCamera3D->vCameraPos.x;
 
     // cam position transform
-    if (pCamera3D->sRotationY) {
+    if (pCamera3D->_viewPitch) {
         this->field_0_party_dir_x = (v11 * cosx) + (-pCamera3D->vCameraPos.z * sinx);
         this->field_4_party_dir_y = v24;
         this->field_8_party_dir_z = (-pCamera3D->vCameraPos.z * cosx) /*-*/ + (v11 * sinx);
@@ -148,7 +148,7 @@ void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y
     }
 
     // set 1 position transfrom (6 0 0) looks like cam left vector
-    if (pCamera3D->sRotationY) {
+    if (pCamera3D->_viewPitch) {
         float v17 = (x1 * cosz) + (y1 * sinz);
 
         this->CamVecLeft_Y = (v17 * cosx) + (z1 * sinx);  // dz
@@ -161,7 +161,7 @@ void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y
     }
 
     // set 2 position transfrom (0 1 0) looks like cam front vector
-    if (pCamera3D->sRotationY) {
+    if (pCamera3D->_viewPitch) {
         float v19 = (x2 * cosz) + (y2 * sinz);
 
         this->CamVecFront_Y = (v19 * cosx) + (z2 * sinx);  // dz
@@ -1040,10 +1040,10 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID
         / (pCamera3D->ViewPlaneDist_X + pCamera3D->GetFarClip())
         + (pBLVRenderParams->uViewportCenterY));
 
-    double cam_y_rot_rad = (double)pCamera3D->sRotationY * rot_to_rads;
+    double cam_y_rot_rad = (double)pCamera3D->_viewPitch * rot_to_rads;
 
-    float depth_to_far_clip = static_cast<float>(cos(pCamera3D->sRotationY * rot_to_rads) * pCamera3D->GetFarClip());
-    float height_to_far_clip = static_cast<float>(sin(pCamera3D->sRotationY * rot_to_rads) * pCamera3D->GetFarClip());
+    float depth_to_far_clip = static_cast<float>(cos(pCamera3D->_viewPitch * rot_to_rads) * pCamera3D->GetFarClip());
+    float height_to_far_clip = static_cast<float>(sin(pCamera3D->_viewPitch * rot_to_rads) * pCamera3D->GetFarClip());
 
     float blv_bottom_y_proj = ((pBLVRenderParams->uViewportCenterY) -
         pCamera3D->ViewPlaneDist_X /
@@ -1051,9 +1051,9 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID
         (height_to_far_clip - pCamera3D->vCameraPos.z));
 
     // rotation vec for sky plane - pitch
-    float v_18x = static_cast<float>(-sin((-pCamera3D->sRotationY + 16) * rot_to_rads));
+    float v_18x = static_cast<float>(-sin((-pCamera3D->_viewPitch + 16) * rot_to_rads));
     float v_18y = 0.0f;
-    float v_18z = static_cast<float>(-cos((pCamera3D->sRotationY + 16) * rot_to_rads));
+    float v_18z = static_cast<float>(-cos((pCamera3D->_viewPitch + 16) * rot_to_rads));
 
     float inv_viewplanedist = 1.0f / pCamera3D->ViewPlaneDist_X;
 
@@ -1697,9 +1697,9 @@ void RenderOpenGL::_set_3d_modelview_matrix() {
 
     // build view matrix with glm
     glm::vec3 campos = glm::vec3(camera_x, camera_y, camera_z);
-    glm::vec3 eyepos = glm::vec3(camera_x - cosf(2.0f * pi_double * pCamera3D->sRotationZ / 2048.0f),
-        camera_y - sinf(2.0f * pi_double * pCamera3D->sRotationZ / 2048.0f),
-        camera_z - tanf(2.0f * pi_double * -pCamera3D->sRotationY / 2048.0f));
+    glm::vec3 eyepos = glm::vec3(camera_x - cosf(2.0f * pi_double * pCamera3D->_viewYaw / 2048.0f),
+        camera_y - sinf(2.0f * pi_double * pCamera3D->_viewYaw / 2048.0f),
+        camera_z - tanf(2.0f * pi_double * -pCamera3D->_viewPitch / 2048.0f));
     glm::vec3 upvec = glm::vec3(0.0f, 0.0f, 1.0f);
 
     viewmat = glm::lookAtLH(campos, eyepos, upvec);
@@ -2051,8 +2051,8 @@ void RenderOpenGL::DrawOutdoorTerrain() {
     glUniform1f(glGetUniformLocation(terrainshader.ID, "fog.fogend"), GLfloat(fogend));
 
     GLfloat camera[3] {};
-    camera[0] = (float)(pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationZ / 2048.0));
-    camera[1] = (float)(pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationZ / 2048.0));
+    camera[0] = (float)(pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0));
+    camera[1] = (float)(pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0));
     camera[2] = (float)(pParty->vPosition.z + pParty->sEyelevel);
     glUniform3fv(glGetUniformLocation(terrainshader.ID, "CameraPos"), 1, &camera[0]);
 
@@ -2313,8 +2313,8 @@ void RenderOpenGL::DrawOutdoorSky() {
         / ((double)pCamera3D->ViewPlaneDist_X + pCamera3D->GetFarClip())
         + (double)(pViewport->uScreenCenterY));
 
-    float depth_to_far_clip = cos((double)pCamera3D->sRotationY * rot_to_rads) * pCamera3D->GetFarClip();
-    float height_to_far_clip = sin((double)pCamera3D->sRotationY * rot_to_rads) * pCamera3D->GetFarClip();
+    float depth_to_far_clip = cos((double)pCamera3D->_viewPitch * rot_to_rads) * pCamera3D->GetFarClip();
+    float height_to_far_clip = sin((double)pCamera3D->_viewPitch * rot_to_rads) * pCamera3D->GetFarClip();
 
     float bot_y_proj = ((double)(pViewport->uScreenCenterY) -
         (double)pCamera3D->ViewPlaneDist_X /
@@ -2343,9 +2343,9 @@ void RenderOpenGL::DrawOutdoorSky() {
 
         // centering(центруем)-----------------------------------------------------------------
         // plane of sky polygon rotation vector - pitch rotation around y
-        float v18x = -sin((-pCamera3D->sRotationY + 16) * rot_to_rads);
+        float v18x = -sin((-pCamera3D->_viewPitch + 16) * rot_to_rads);
         float v18y = 0;
-        float v18z = -cos((pCamera3D->sRotationY + 16) * rot_to_rads);
+        float v18z = -cos((pCamera3D->_viewPitch + 16) * rot_to_rads);
 
         // sky wiew position(положение неба на
         // экране)------------------------------------------
@@ -4027,8 +4027,8 @@ void RenderOpenGL::DrawOutdoorBuildings() {
     glUniform1f(glGetUniformLocation(outbuildshader.ID, "fog.fogend"), GLfloat(fogend));
 
     GLfloat camera[3] {};
-    camera[0] = (float)(pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationZ / 2048.0f));
-    camera[1] = (float)(pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationZ / 2048.0f));
+    camera[0] = (float)(pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0f));
+    camera[1] = (float)(pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0f));
     camera[2] = (float)(pParty->vPosition.z + pParty->sEyelevel);
     glUniform3fv(glGetUniformLocation(outbuildshader.ID, "CameraPos"), 1, &camera[0]);
 
@@ -4701,8 +4701,8 @@ void RenderOpenGL::DrawIndoorFaces() {
 
 
         GLfloat camera[3] {};
-        camera[0] = (float)(pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationZ / 2048.0f));
-        camera[1] = (float)(pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationZ / 2048.0f));
+        camera[0] = (float)(pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0f));
+        camera[1] = (float)(pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0f));
         camera[2] = (float)(pParty->vPosition.z + pParty->sEyelevel);
         glUniform3fv(glGetUniformLocation(bspshader.ID, "CameraPos"), 1, &camera[0]);
 
