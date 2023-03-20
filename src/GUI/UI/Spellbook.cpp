@@ -68,7 +68,7 @@ void GUIWindow_Spellbook::OpenSpellbookPage(int page) {
     OnCloseSpellBookPage();
     pPlayers[pParty->_activeCharacter]->lastOpenedSpellbookPage = page;
     OpenSpellbook();
-    pAudioPlayer->PlaySound(vrng->RandomBool() ? SOUND_TurnPage2 : SOUND_TurnPage1, 0, 0, -1, 0, 0);
+    pAudioPlayer->playUISound(vrng->RandomBool() ? SOUND_TurnPage2 : SOUND_TurnPage1);
 }
 
 void GUIWindow_Spellbook::OpenSpellbook() {
@@ -308,7 +308,7 @@ static void BookUI_Spellbook_DrawCurrentSchoolBackground() {
 
 void InitializeSpellBookTextures() {
     pAudioPlayer->PauseSounds(-1);
-    pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0);
+    pAudioPlayer->playUISound(SOUND_openbook);
 
     ui_spellbook_btn_close = assets->GetImage_Solid("ib-m5-u");
     ui_spellbook_btn_close_click = assets->GetImage_Solid("ib-m5-d");
@@ -363,7 +363,7 @@ void OnCloseSpellBook() {
         }
     }
 
-    pAudioPlayer->PlaySound(SOUND_closebook, 0, 0, -1, 0, 0);
+    pAudioPlayer->playUISound(SOUND_closebook);
 }
 
 void OnCloseSpellBookPage() {

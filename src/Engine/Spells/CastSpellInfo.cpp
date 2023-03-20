@@ -305,7 +305,7 @@ void CastSpellInfoHelpers::castSpell() {
             pEventTimer->Pause();
             TownPortalCasterId = pCastSpell->uPlayerID;
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_OnCastTownPortal, 0, 0);
-            pAudioPlayer->PlaySpellSound(pCastSpell->uSpellID, PID_INVALID);
+            pAudioPlayer->playSpellSound(pCastSpell->uSpellID, PID_INVALID);
         } else if (pCastSpell->uSpellID == SPELL_WATER_LLOYDS_BEACON) {
             if (pCurrentMapName == "d05.blv") {  // Arena
                 spellFailed(pCastSpell, LSTR_SPELL_FAILED);
@@ -2942,7 +2942,7 @@ void CastSpellInfoHelpers::castSpell() {
 
             pPlayer->SpendMana(uRequiredMana);
             setSpellRecovery(pCastSpell, recoveryTime);
-            pAudioPlayer->PlaySpellSound(pCastSpell->uSpellID, PID_INVALID);
+            pAudioPlayer->playSpellSound(pCastSpell->uSpellID, PID_INVALID);
         }
 
         pCastSpell->uSpellID = SPELL_NONE;

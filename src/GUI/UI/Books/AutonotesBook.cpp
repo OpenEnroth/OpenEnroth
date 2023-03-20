@@ -136,8 +136,7 @@ void GUIWindow_AutonotesBook::Update() {
                 (pViewport->uViewportTL_Y + 113) / 480.0f, ui_book_button3_on);
         } else {  // press(нажатие)
             change_flag = true;
-            pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0,
-                                    0);
+            pAudioPlayer->playUISound(SOUND_StartMainChoice02);
             _506568_autonote_type = AUTONOTE_POTION_RECEPIE;
             render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 398) / 640.0f,
@@ -162,8 +161,7 @@ void GUIWindow_AutonotesBook::Update() {
                 (pViewport->uViewportTL_Y + 150) / 480.0f, ui_book_button4_on);
         } else {
             change_flag = true;
-            pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0,
-                                    0);
+            pAudioPlayer->playUISound(SOUND_StartMainChoice02);
             _506568_autonote_type = AUTONOTE_STAT_HINT;
             render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 399) / 640.0f,
@@ -187,8 +185,7 @@ void GUIWindow_AutonotesBook::Update() {
                 (pViewport->uViewportTL_Y + 188) / 480.0f, ui_book_button5_on);
         } else {
             change_flag = true;
-            pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0,
-                                    0);
+            pAudioPlayer->playUISound(SOUND_StartMainChoice02);
             _506568_autonote_type = AUTONOTE_OBELISK;
             render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 397) / 640.0f,
@@ -212,8 +209,7 @@ void GUIWindow_AutonotesBook::Update() {
                 (pViewport->uViewportTL_Y + 226) / 480.0f, ui_book_button6_on);
         } else {
             change_flag = true;
-            pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0,
-                                    0);
+            pAudioPlayer->playUISound(SOUND_StartMainChoice02);
             _506568_autonote_type = AUTONOTE_SEER;
             render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 397) / 640.0f,
@@ -237,8 +233,7 @@ void GUIWindow_AutonotesBook::Update() {
                 (pViewport->uViewportTL_Y + 264) / 480.0f, ui_book_button7_on);
         } else {
             change_flag = true;
-            pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0,
-                                    0);
+            pAudioPlayer->playUISound(SOUND_StartMainChoice02);
             _506568_autonote_type = AUTONOTE_MISC;
             render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 397) / 640.0f,
@@ -262,8 +257,7 @@ void GUIWindow_AutonotesBook::Update() {
                 (pViewport->uViewportTL_Y + 302) / 480.0f, ui_book_button8_on);
         } else {
             change_flag = true;
-            pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0,
-                                    0);
+            pAudioPlayer->playUISound(SOUND_StartMainChoice02;
             _506568_autonote_type = AUTONOTE_TEACHER;
             render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 397) / 640.0f,
@@ -317,7 +311,7 @@ void GUIWindow_AutonotesBook::Update() {
             if (num_achieved_awards + books_primary_item_per_page < full_num_items_in_book) {
                 books_num_items_per_page[books_page_number++] = num_achieved_awards;
                 books_primary_item_per_page = num_achieved_awards + books_primary_item_per_page;
-                pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_openbook);
             }
         }
         if (BtnUp_flag && books_page_number) {  // press Up bookmark(нажатие
@@ -325,7 +319,7 @@ void GUIWindow_AutonotesBook::Update() {
             --books_page_number;
             books_primary_item_per_page -=
                 (uint8_t)books_num_items_per_page[books_page_number];
-            pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_openbook);
         }
         if (!num_achieved_awards ||
             !books_primary_item_per_page) {  // количество записей 0 или номер

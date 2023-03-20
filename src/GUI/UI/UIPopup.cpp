@@ -1836,7 +1836,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         if (item->uItemID < ITEM_POTION_BOTTLE ||
             item->uItemID > ITEM_POTION_REJUVENATION) {  // all potions
             if (item->GetItemEquipType() != EQUIP_WAND) {  // can recharge only wands
-                pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_error);
                 return;
             }
 
@@ -2045,7 +2045,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                     0);  // break everything
             }
 
-            pAudioPlayer->PlaySound(SOUND_fireBall, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_fireBall);
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
             v39.z = pParty->vPosition.z + pParty->sEyelevel;
             v39.x = pParty->vPosition.x;

@@ -158,7 +158,11 @@ class AudioPlayer {
      * @param is_impact                 Indicates sound of spell impact, if true sound ID
      *                                  will be SpellSoundIds[spell] + 1.
      */
-    void PlaySpellSound(unsigned int spell, unsigned int pid, bool is_impact = false);
+    void playSpellSound(unsigned int spell, unsigned int pid, bool is_impact = false);
+
+    void playUISound(SoundID id) {
+        PlaySound(id, 0, 0, -1, 0, 0);
+    }
 
  protected:
     bool bPlayerReady;

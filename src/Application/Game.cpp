@@ -1258,7 +1258,7 @@ void Game::EventLoop() {
                     } else {
                         player.SetRecoveryTime(debug_non_combat_recovery_mul * sRecoveryTime * flt_debugrecmod3);
                     }
-                    pAudioPlayer->PlaySpellSound(SPELL_WATER_LLOYDS_BEACON, 0);
+                    pAudioPlayer->playSpellSound(SPELL_WATER_LLOYDS_BEACON, 0);
                     if (bRecallingBeacon) {
                         if (pCurrentMapName != pGames_LOD->GetSubNodeName(player.vBeacons[uMessageParam].SaveFileID)) {
                             SaveGame(1, 0);
