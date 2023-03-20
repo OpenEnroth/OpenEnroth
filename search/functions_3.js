@@ -18,7 +18,7 @@ var searchData=
   ['calculatemeleedamageto_15',['CalculateMeleeDamageTo',['../structPlayer.html#af44ac4a94daa5ad990a716dbbd886b8c',1,'Player']]],
   ['calculatemeleedmgtoenemywithweapon_16',['CalculateMeleeDmgToEnemyWithWeapon',['../structPlayer.html#af805c2d89e269bc668e9147474af9a6c',1,'Player']]],
   ['calculaterangeddamageto_17',['CalculateRangedDamageTo',['../structPlayer.html#a6cddd22e1296b2ee505f3fdf4d8fd285',1,'Player']]],
-  ['calculaterotations_18',['CalculateRotations',['../structCamera3D.html#a34495cc8d93ffc992e8264a79788c788',1,'Camera3D']]],
+  ['calculaterotations_18',['CalculateRotations',['../structCamera3D.html#a51c0331c5c77c981636387beb1e8bee2',1,'Camera3D']]],
   ['calculatevideorectangle_19',['calculateVideoRectangle',['../MediaPlayer_8cpp.html#a3b5ffb14d2a8046e44d36670f804a912',1,'MediaPlayer.cpp']]],
   ['callbacktimer_20',['CallBackTimer',['../classCallBackTimer.html#a99c057fcca98dea3ce685e83b0114716',1,'CallBackTimer']]],
   ['camera3d_21',['Camera3D',['../structCamera3D.html#aafc650fff7f122da37572e08a00a614c',1,'Camera3D']]],

@@ -58,7 +58,7 @@ var searchData=
   ['array_5f507d30_55',['array_507D30',['../IRender_8h.html#a7722562f00abbc88c6d6dfc91e713986',1,'array_507D30():&#160;RenderOpenGL.cpp'],['../RenderOpenGL_8cpp.html#a7722562f00abbc88c6d6dfc91e713986',1,'array_507D30():&#160;RenderOpenGL.cpp']]],
   ['array_5f73d150_56',['array_73D150',['../IRender_8h.html#ae0e8b846813ddc7739d09740605152ee',1,'array_73D150():&#160;RenderOpenGL.cpp'],['../RenderOpenGL_8cpp.html#ae0e8b846813ddc7739d09740605152ee',1,'array_73D150():&#160;RenderOpenGL.cpp']]],
   ['array_5f77ec08_57',['array_77EC08',['../Outdoor_8cpp.html#a3dd60995d0c0ab4f7ff3b8064535c4fa',1,'array_77EC08():&#160;Outdoor.cpp'],['../Polygon_8h.html#a3dd60995d0c0ab4f7ff3b8064535c4fa',1,'array_77EC08():&#160;Outdoor.cpp']]],
-  ['arrival_5frot_5fy_58',['arrival_rot_y',['../structstru365__travel__info.html#ac6bd975cfbc3460246b530925af00a45',1,'stru365_travel_info']]],
+  ['arrival_5fview_5fyaw_58',['arrival_view_yaw',['../structstru365__travel__info.html#a44b8f2319f4547fa16085562c40633f5',1,'stru365_travel_info']]],
   ['arrival_5fx_59',['arrival_x',['../structstru365__travel__info.html#a76ef434c73cccace75b6e4108d16014c',1,'stru365_travel_info']]],
   ['arrival_5fy_60',['arrival_y',['../structstru365__travel__info.html#abd6a1cfb1270b51fa1e2c62aa08bd4c2',1,'stru365_travel_info']]],
   ['arrival_5fz_61',['arrival_z',['../structstru365__travel__info.html#abc6ef3400af90c569d16bf7641537f07',1,'stru365_travel_info']]],

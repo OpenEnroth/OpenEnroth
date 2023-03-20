@@ -140,7 +140,7 @@ var searchData=
   ['ringscreenactive_137',['ringscreenactive',['../UICharacter_8cpp.html#a87572e537eb2ef7888bc4362e535d58b',1,'ringscreenactive():&#160;UICharacter.cpp'],['../UICharacter_8h.html#a87572e537eb2ef7888bc4362e535d58b',1,'ringscreenactive():&#160;UICharacter.cpp']]],
   ['ringslot_138',['RingSlot',['../ItemEnums_8h.html#a07cdb10f484a6d1b62c66f7a06656d8c',1,'ItemEnums.h']]],
   ['ringslots_139',['RingSlots',['../ItemEnums_8h.html#a5d59af3eaebaba842ba302895beb7868',1,'ItemEnums.h']]],
-  ['rotate_140',['rotate',['../structVec3.html#af0507bf6fa1194789cb887dc94f14089',1,'Vec3']]],
+  ['rotate_140',['rotate',['../structVec3.html#abcc21cd759cf22ac25d7bf10b69800e2',1,'Vec3']]],
   ['round_5fto_5fint_141',['round_to_int',['../OurMath_8h.html#a50ee4d4946888926bdf5a920129a322a',1,'OurMath.h']]],
   ['run_142',['Run',['../classApplication_1_1Game.html#a1880d9816a978b82bb91e4679743173d',1,'Application::Game']]],
   ['run_143',['run',['../classGameThread.html#a5d4531cb04b18f0f50a7ec71c05a41cd',1,'GameThread']]],

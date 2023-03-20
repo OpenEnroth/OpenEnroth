@@ -20,7 +20,7 @@ var searchData=
   ['calculatemeleedamageto_17',['CalculateMeleeDamageTo',['../structPlayer.html#af44ac4a94daa5ad990a716dbbd886b8c',1,'Player']]],
   ['calculatemeleedmgtoenemywithweapon_18',['CalculateMeleeDmgToEnemyWithWeapon',['../structPlayer.html#af805c2d89e269bc668e9147474af9a6c',1,'Player']]],
   ['calculaterangeddamageto_19',['CalculateRangedDamageTo',['../structPlayer.html#a6cddd22e1296b2ee505f3fdf4d8fd285',1,'Player']]],
-  ['calculaterotations_20',['CalculateRotations',['../structCamera3D.html#a34495cc8d93ffc992e8264a79788c788',1,'Camera3D']]],
+  ['calculaterotations_20',['CalculateRotations',['../structCamera3D.html#a51c0331c5c77c981636387beb1e8bee2',1,'Camera3D']]],
   ['calculatevideorectangle_21',['calculateVideoRectangle',['../MediaPlayer_8cpp.html#a3b5ffb14d2a8046e44d36670f804a912',1,'MediaPlayer.cpp']]],
   ['calendarbook_2ecpp_22',['CalendarBook.cpp',['../CalendarBook_8cpp.html',1,'']]],
   ['calendarbook_2eh_23',['CalendarBook.h',['../CalendarBook_8h.html',1,'']]],
