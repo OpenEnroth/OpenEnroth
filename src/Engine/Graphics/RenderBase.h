@@ -36,7 +36,7 @@ class RenderBase : public IRender {
     virtual void SavePCXImage16(const std::string& filename, uint16_t* picture_data, int width, int height);
     virtual void SaveScreenshot(const std::string& filename, unsigned int width, unsigned int height) override;
     virtual void PackScreenshot(unsigned int width, unsigned int height,
-        void* out_data, unsigned int data_size, unsigned int* screenshot_size) override;
+        uint8_t *&out_data, unsigned int &screenshot_size) override;
     virtual Image* TakeScreenshot(unsigned int width, unsigned int height) override;
 
     virtual void DrawMasked(float u, float v, class Image* img,

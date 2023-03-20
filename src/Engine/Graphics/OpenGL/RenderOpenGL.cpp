@@ -1169,6 +1169,7 @@ bool RenderOpenGL::AreRenderSurfacesOk() {
     return true;
 }
 
+// TODO(pskelton): drop this one - use 32
 unsigned short *RenderOpenGL::MakeScreenshot16(int width, int height) {
     BeginScene3D();
 

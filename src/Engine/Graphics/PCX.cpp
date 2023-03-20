@@ -286,14 +286,20 @@ struct Format {
 };
 
 void Encode(Format f, const void *picture_data, unsigned int width,
-            unsigned int height, void *pcx_data, int max_buff_size,
-            unsigned int *packed_size) {
-    uint8_t *output = (uint8_t *)WritePCXHeader(pcx_data, width, height);
-
+            unsigned int height, uint8_t *&pcx_data, unsigned int &packed_size) {
+    // pcx lines are padded to next even byte boundary
     int pitch = width;
     if (width & 1) {
         pitch = width + 1;
     }
+    // pcx file can be larger than uncompressed
+    // pcx header and no compression @24bit worst case doubles in size
+    size_t worstCase = sizeof(PCXHeader) + 3 * pitch * height * 2;
+
+    assert(pcx_data == nullptr && packed_size == 0);
+    pcx_data = new uint8_t[worstCase];
+
+    uint8_t *output = (uint8_t *)WritePCXHeader(pcx_data, width, height);
 
     uint8_t *lineRGB = new uint8_t[3 * pitch];
     uint8_t *lineR = (uint8_t *)lineRGB;
@@ -319,23 +325,18 @@ void Encode(Format f, const void *picture_data, unsigned int width,
 
     delete[] lineRGB;
 
-    if (packed_size != nullptr) {
-        *packed_size = output - (uint8_t*)pcx_data;
-    }
+    packed_size = output - (uint8_t*)pcx_data;
+    assert(packed_size <= worstCase);
 }
 
 void PCX::Encode16(const void *picture_data, unsigned int width, unsigned int height,
-                   void *pcx_data, int max_buff_size,
-                   unsigned int *packed_size) {
+    uint8_t *&pcx_data, unsigned int &packed_size) {
     Format f(16, 0xF800, 0x07E0, 0x001F);
-    Encode(f, picture_data, width, height, pcx_data, max_buff_size,
-           packed_size);
+    Encode(f, picture_data, width, height, pcx_data, packed_size);
 }
 
 void PCX::Encode32(const void *picture_data, unsigned int width, unsigned int height,
-                   void *pcx_data, int max_buff_size,
-                   unsigned int *packed_size) {
+    uint8_t *&pcx_data, unsigned int &packed_size) {
     Format f(32, 0x000000FF, 0x0000FF00, 0x00FF0000);
-    Encode(f, picture_data, width, height, pcx_data, max_buff_size,
-           packed_size);
+    Encode(f, picture_data, width, height, pcx_data, packed_size);
 }

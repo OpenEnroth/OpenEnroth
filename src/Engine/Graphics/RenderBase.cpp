@@ -644,10 +644,9 @@ void RenderBase::SavePCXImage16(const std::string& filename, uint16_t* picture_d
         return;
     }
 
-    unsigned int pcx_data_size = width * height * 5;
-    uint8_t* pcx_data = new uint8_t[pcx_data_size];
+    uint8_t *pcx_data = nullptr;
     unsigned int pcx_data_real_size = 0;
-    PCX::Encode16(picture_data, width, height, pcx_data, pcx_data_size, &pcx_data_real_size);
+    PCX::Encode16(picture_data, width, height, pcx_data, pcx_data_real_size);
     fwrite(pcx_data, pcx_data_real_size, 1, result);
     delete[] pcx_data;
     fclose(result);
@@ -660,10 +659,9 @@ void RenderBase::SaveScreenshot(const std::string& filename, unsigned int width,
 }
 
 void RenderBase::PackScreenshot(unsigned int width, unsigned int height,
-    void* out_data, unsigned int data_size,
-    unsigned int* screenshot_size) {
+    uint8_t *&out_data, unsigned int &screenshot_size) {
     auto pixels = render->MakeScreenshot16(width, height);
-    PCX::Encode16(pixels, 150, 112, out_data, data_size, screenshot_size);
+    PCX::Encode16(pixels, 150, 112, out_data, screenshot_size);
     free(pixels);
 }
 

@@ -217,8 +217,6 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         return;
     }
 
-    char *uncompressed_buff = (char *)malloc(1000000);
-
     int pPositionX = pParty->vPosition.x;
     int pPositionY = pParty->vPosition.y;
     int pPositionZ = pParty->vPosition.z;
@@ -236,9 +234,6 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         pIndoor->stru1.last_visit = pParty->GetPlayingTime();
     else
         pOutdoor->loc_time.last_visit = pParty->GetPlayingTime();
-
-    unsigned int buf_size = 0;
-    render->PackScreenshot(150, 112, uncompressed_buff, 1000000, &buf_size);  // создание скриншота
 
     // saving - please wait
 
@@ -264,9 +259,14 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     //    render->Present();
     //}
 
-    if (pNew_LOD->Write("image.pcx", uncompressed_buff, buf_size, 0)) {
+    uint8_t *screenshotBuffer = nullptr;
+    unsigned int screenshotBufferSize = 0;
+    render->PackScreenshot(150, 112, screenshotBuffer, screenshotBufferSize);  // создание скриншота
+
+    if (pNew_LOD->Write("image.pcx", screenshotBuffer, screenshotBufferSize, 0)) {
         logger->Warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 200));
     }
+    delete[] screenshotBuffer;
 
     static_assert(sizeof(SavegameHeader) == 100, "Wrong type size");
     SavegameHeader save_header;
@@ -333,19 +333,20 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
                 const void *pixels = image->GetPixels(IMAGE_FORMAT_A8B8G8R8);
                 if (!pixels)
                     __debugbreak();
-                unsigned int pcx_data_size = 30000;
-                void *pcx_data = malloc(pcx_data_size);
+                unsigned int pcx_data_size = 0;
+                uint8_t *pcx_data = nullptr;
                 PCX::Encode32(pixels, image->GetWidth(), image->GetHeight(),
-                              pcx_data, pcx_data_size, &pcx_data_size);
+                              pcx_data, pcx_data_size);
                 std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
                 if (pNew_LOD->Write(str, pcx_data, pcx_data_size, 0)) {
                     logger->Warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 207));
                 }
-                free(pcx_data);
+                delete [] pcx_data;
             }
         }
     }
 
+    char *uncompressed_buff = (char *)malloc(1000000);
     if (!NotSaveWorld) {  // autosave for change location
         CompactLayingItemsList();
 
