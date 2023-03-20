@@ -130,7 +130,7 @@ class RenderOpenGL : public RenderBase {
 
     virtual bool AreRenderSurfacesOk() override;
 
-    virtual unsigned short *MakeScreenshot16(int width, int height) override;
+    virtual uint32_t *MakeScreenshot32(const int width, const int height) override;
 
     virtual std::vector<Actor*> getActorsInViewport(int pDepth) override;
 

@@ -33,7 +33,7 @@ class RenderBase : public IRender {
     virtual HWLTexture *LoadHwlSprite(const std::string &name) override;
 
     virtual void SavePCXScreenshot() override;
-    virtual void SavePCXImage16(const std::string& filename, uint16_t* picture_data, int width, int height);
+    virtual void SavePCXImage32(const std::string& filename, const uint32_t* picture_data, const int width, const int height);
     virtual void SaveScreenshot(const std::string& filename, unsigned int width, unsigned int height) override;
     virtual void PackScreenshot(unsigned int width, unsigned int height,
         uint8_t *&out_data, unsigned int &screenshot_size) override;

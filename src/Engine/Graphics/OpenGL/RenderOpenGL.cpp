@@ -227,28 +227,12 @@ void RenderOpenGL::SaveWinnersCertificate(const char *a1) {
         memcpy(rev + index, pq + revindex, 4 * outputRender.w);
     }
     assets->WinnerCert = CreateTexture_Blank(outputRender.w, outputRender.h, IMAGE_FORMAT::IMAGE_FORMAT_A8B8G8R8, rev);
-    delete[] rev;
 
     // save to disk
-    uint16_t *pPixels = (uint16_t *)malloc(sizeof(uint16_t) * outputRender.h * outputRender.w);
-    memset(pPixels, 0, sizeof(uint16_t) * outputRender.h * outputRender.w);
+    SavePCXImage32(a1, (uint32_t *)rev, outputRender.w, outputRender.h);
 
-    // reverse pixels from ogl (uses BL as 0,0)
-    uint16_t *for_pixels = pPixels;
-    uint8_t *p = sPixels;
-    for (uint y = 0; y < (unsigned int)outputRender.h; ++y) {
-        for (uint x = 0; x < (unsigned int)outputRender.w; ++x) {
-            p = sPixels + 4 * (int)(x) + 4 * (int)(outputRender.h -1 - y) * outputRender.w;
-
-            *for_pixels = color16(*p & 255, *(p + 1) & 255, *(p + 2) & 255);
-            ++for_pixels;
-        }
-    }
-
+    delete[] rev;
     delete[] sPixels;
-
-    SavePCXImage16(a1, (uint16_t *)pPixels, outputRender.w, outputRender.h);
-    free(pPixels);
 }
 
 bool RenderOpenGL::InitializeFullscreen() {
@@ -1169,8 +1153,7 @@ bool RenderOpenGL::AreRenderSurfacesOk() {
     return true;
 }
 
-// TODO(pskelton): drop this one - use 32
-unsigned short *RenderOpenGL::MakeScreenshot16(int width, int height) {
+uint32_t *RenderOpenGL::MakeScreenshot32(const int width, const int height) {
     BeginScene3D();
 
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
@@ -1181,24 +1164,22 @@ unsigned short *RenderOpenGL::MakeScreenshot16(int width, int height) {
 
     DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
 
-    GLubyte *sPixels = ReadScreenPixels();
+    uint32_t *sPixels = (uint32_t*)ReadScreenPixels();
     int interval_x = static_cast<int>(game_viewport_width / (double)width);
     int interval_y = static_cast<int>(game_viewport_height / (double)height);
 
-    uint16_t *pPixels = (uint16_t *)malloc(sizeof(uint16_t) * height * width);
-    memset(pPixels, 0, sizeof(uint16_t) * height * width);
+    uint32_t *pPixels = (uint32_t *)malloc(sizeof(uint32_t) * height * width);
+    assert(pPixels);
+    memset(pPixels, 0, sizeof(uint32_t) * height * width);
 
-    uint16_t *for_pixels = pPixels;
+    uint32_t *for_pixels = pPixels;
     if (uCurrentlyLoadedLevelType == LEVEL_null) {
         memset(&for_pixels, 0, sizeof(for_pixels));
     } else {
         for (uint y = 0; y < (unsigned int)height; ++y) {
             for (uint x = 0; x < (unsigned int)width; ++x) {
-                uint8_t *p;
-
-                p = sPixels + 4 * (int)(x * interval_x + 8.0) + 4 * (int)(outputRender.h - (y * interval_y) - 8.0) * outputRender.w;
-
-                *for_pixels = color16(*p & 255, *(p + 1) & 255, *(p + 2) & 255);
+                uint32_t *p = sPixels + (x * interval_x + pViewport->uViewportTL_X) + (outputRender.h - (y * interval_y) - pViewport->uViewportTL_Y) * outputRender.w;
+                *for_pixels = *p;
                 ++for_pixels;
             }
         }

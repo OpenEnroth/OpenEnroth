@@ -285,8 +285,8 @@ struct Format {
     ColorFormat b;
 };
 
-void Encode(Format f, const void *picture_data, unsigned int width,
-            unsigned int height, uint8_t *&pcx_data, unsigned int &packed_size) {
+void Encode(const Format f, const void *picture_data, const unsigned int width,
+            const unsigned int height, uint8_t *&pcx_data, unsigned int &packed_size) {
     // pcx lines are padded to next even byte boundary
     int pitch = width;
     if (width & 1) {
@@ -329,13 +329,7 @@ void Encode(Format f, const void *picture_data, unsigned int width,
     assert(packed_size <= worstCase);
 }
 
-void PCX::Encode16(const void *picture_data, unsigned int width, unsigned int height,
-    uint8_t *&pcx_data, unsigned int &packed_size) {
-    Format f(16, 0xF800, 0x07E0, 0x001F);
-    Encode(f, picture_data, width, height, pcx_data, packed_size);
-}
-
-void PCX::Encode32(const void *picture_data, unsigned int width, unsigned int height,
+void PCX::Encode32(const void *picture_data, const unsigned int width, const unsigned int height,
     uint8_t *&pcx_data, unsigned int &packed_size) {
     Format f(32, 0x000000FF, 0x0000FF00, 0x00FF0000);
     Encode(f, picture_data, width, height, pcx_data, packed_size);

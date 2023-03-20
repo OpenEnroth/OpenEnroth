@@ -636,7 +636,7 @@ void RenderBase::SavePCXScreenshot() {
     SaveWinnersCertificate(file_name.c_str());
 }
 
-void RenderBase::SavePCXImage16(const std::string& filename, uint16_t* picture_data, int width, int height) {
+void RenderBase::SavePCXImage32(const std::string& filename, const uint32_t* picture_data, const int width, const int height) {
     // TODO(pskelton): add "Screenshots" folder?
     std::string thispath = MakeDataPath(filename);
     FILE* result = fopen(thispath.c_str(), "wb");
@@ -646,28 +646,28 @@ void RenderBase::SavePCXImage16(const std::string& filename, uint16_t* picture_d
 
     uint8_t *pcx_data = nullptr;
     unsigned int pcx_data_real_size = 0;
-    PCX::Encode16(picture_data, width, height, pcx_data, pcx_data_real_size);
+    PCX::Encode32(picture_data, width, height, pcx_data, pcx_data_real_size);
     fwrite(pcx_data, pcx_data_real_size, 1, result);
     delete[] pcx_data;
     fclose(result);
 }
 
-void RenderBase::SaveScreenshot(const std::string& filename, unsigned int width, unsigned int height) {
-    auto pixels = render->MakeScreenshot16(width, height);
-    SavePCXImage16(filename, pixels, width, height);
+void RenderBase::SaveScreenshot(const std::string& filename, const unsigned int width, const unsigned int height) {
+    auto pixels = render->MakeScreenshot32(width, height);
+    SavePCXImage32(filename, pixels, width, height);
     free(pixels);
 }
 
-void RenderBase::PackScreenshot(unsigned int width, unsigned int height,
+void RenderBase::PackScreenshot(const unsigned int width, const unsigned int height,
     uint8_t *&out_data, unsigned int &screenshot_size) {
-    auto pixels = render->MakeScreenshot16(width, height);
-    PCX::Encode16(pixels, 150, 112, out_data, screenshot_size);
+    auto pixels = render->MakeScreenshot32(width, height);
+    PCX::Encode32(pixels, width, height, out_data, screenshot_size);
     free(pixels);
 }
 
-Image* RenderBase::TakeScreenshot(unsigned int width, unsigned int height) {
-    auto pixels = MakeScreenshot16(width, height);
-    Image* image = Image::Create(width, height, IMAGE_FORMAT_R5G6B5, pixels);
+Image* RenderBase::TakeScreenshot(const unsigned int width, const unsigned int height) {
+    auto pixels = MakeScreenshot32(width, height);
+    Image* image = Image::Create(width, height, IMAGE_FORMAT_A8B8G8R8, pixels);
     free(pixels);
     return image;
 }
