@@ -257,7 +257,7 @@ void GUIWindow_AutonotesBook::Update() {
                 (pViewport->uViewportTL_Y + 302) / 480.0f, ui_book_button8_on);
         } else {
             change_flag = true;
-            pAudioPlayer->playUISound(SOUND_StartMainChoice02;
+            pAudioPlayer->playUISound(SOUND_StartMainChoice02);
             _506568_autonote_type = AUTONOTE_TEACHER;
             render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 397) / 640.0f,
