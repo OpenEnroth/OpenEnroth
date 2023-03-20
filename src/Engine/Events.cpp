@@ -885,10 +885,10 @@ LABEL_47:
                             pParty->vPosition.z = trans_partyz;
                             pParty->uFallStartZ = trans_partyz;
                             if (Party_Teleport_Cam_Yaw != -1)
-                                pParty->sRotationZ =
+                                pParty->_viewYaw =
                                     Party_Teleport_Cam_Yaw;
                             Party_Teleport_Cam_Yaw = -1;
-                            pParty->sRotationY = trans_directionpitch;
+                            pParty->_viewPitch = trans_directionpitch;
                             pParty->uFallSpeed = trans_partyzspeed;
                             Start_Party_Teleport_Flag = 0;
                             Party_Teleport_Z_Speed = 0;

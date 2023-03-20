@@ -303,7 +303,7 @@ void Engine::DropHeldItem() {
 
     // extern int UnprojectX(int);
     // v9 = UnprojectX(v1->x);
-    a1.Create(pParty->sRotationZ, 184, 200, 0);  //+ UnprojectX(v1->x), 184, 200, 0);
+    a1.Create(pParty->_viewYaw, 184, 200, 0);  //+ UnprojectX(v1->x), 184, 200, 0);
 
     mouse->RemoveHoldingItem();
 }

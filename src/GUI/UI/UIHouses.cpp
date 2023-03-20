@@ -74,7 +74,7 @@ struct stru365_travel_info {
     int arrival_x;
     int arrival_y;
     int arrival_z;
-    int arrival_rot_y;
+    int arrival_view_yaw;
     unsigned int uQuestBit;  // quest bit required to set for this travel option
                              // to be enabled; otherwise 0
 };
@@ -1363,23 +1363,23 @@ void TravelByTransport() {
                     dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
                     Party_Teleport_Cam_Pitch = 0;
                     Party_Teleport_Z_Speed = 0;
-                    Party_Teleport_Cam_Yaw = pTravel->arrival_rot_y;
+                    Party_Teleport_Cam_Yaw = pTravel->arrival_view_yaw;
                     uGameState = GAME_STATE_CHANGE_LOCATION;
                     Party_Teleport_X_Pos = pTravel->arrival_x;
                     Party_Teleport_Y_Pos = pTravel->arrival_y;
                     Party_Teleport_Z_Pos = pTravel->arrival_z;
-                    Start_Party_Teleport_Flag = pTravel->arrival_x | pTravel->arrival_y | pTravel->arrival_z | pTravel->arrival_rot_y;
+                    Start_Party_Teleport_Flag = pTravel->arrival_x | pTravel->arrival_y | pTravel->arrival_z | pTravel->arrival_view_yaw;
                 } else {
                     // travelling to map we are already in
-                    pCamera3D->sRotationZ = 0;
+                    pCamera3D->_viewYaw = 0;
 
                     pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
                     pParty->vPosition.x = pTravel->arrival_x;
                     pParty->vPosition.y = pTravel->arrival_y;
                     pParty->vPosition.z = pTravel->arrival_z;
                     pParty->uFallStartZ = pParty->vPosition.z;
-                    pParty->sRotationY = 0;
-                    pParty->sRotationZ = pTravel->arrival_rot_y;
+                    pParty->_viewPitch = 0;
+                    pParty->_viewYaw = pTravel->arrival_view_yaw;
                 }
 
                 PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_NotEnoughMoney);
@@ -3417,8 +3417,8 @@ void GUIWindow_House::Release() {
 
     dword_5C35D4 = 0;
     if (engine->config->settings.FlipOnExit.Get()) {
-        pParty->sRotationZ = (TrigLUT.uIntegerDoublePi - 1) & (TrigLUT.uIntegerPi + pParty->sRotationZ);
-        pCamera3D->sRotationZ = pParty->sRotationZ;
+        pParty->_viewYaw = (TrigLUT.uIntegerDoublePi - 1) & (TrigLUT.uIntegerPi + pParty->_viewYaw);
+        pCamera3D->_viewYaw = pParty->_viewYaw;
     }
     pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
 

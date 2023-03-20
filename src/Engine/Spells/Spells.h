@@ -120,8 +120,8 @@ struct SpellBookIconPos {
 #pragma pack(push, 1)
 struct TownPortalData {
     Vec3i pos;
-    int16_t rot_y;
-    int16_t rot_x;
+    int16_t _viewYaw;
+    int16_t _viewPitch;
     uint16_t uMapInfoID;
     int16_t field_12;
 };

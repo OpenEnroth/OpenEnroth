@@ -220,8 +220,8 @@ struct LloydBeacon_MM7 {
     /* 08 */ int32_t PartyPos_X;
     /* 0C */ int32_t PartyPos_Y;
     /* 10 */ int32_t PartyPos_Z;
-    /* 14 */ int16_t PartyRot_X;
-    /* 16 */ int16_t PartyRot_Y;
+    /* 14 */ int16_t _partyViewYaw;
+    /* 16 */ int16_t _partyViewPitch;
     /* 18 */ uint16_t unknown;
     /* 1A */ uint16_t SaveFileID;
     /* 1C */
@@ -378,20 +378,20 @@ struct Party_MM7 {
     /* 0000C */ int32_t sEyelevel;
     /* 00010 */ uint32_t uDefaultEyelevel;
     /* 00014 */ int32_t radius;
-    /* 00018 */ int32_t y_rotation_granularity;
+    /* 00018 */ int32_t _yawGranularity;
     /* 0001C */ uint32_t uWalkSpeed;
-    /* 00020 */ int32_t y_rotation_speed;  // deg/s
+    /* 00020 */ int32_t _yawRotationSpeed;  // deg/s
     /* 00024 */ int32_t jump_strength;
     /* 00028 */ int32_t field_28;
     /* 0002C */ uint64_t uTimePlayed;
     /* 00034 */ int64_t uLastRegenerationTime;
     /* 0003C */ PartyTimeStruct_MM7 PartyTimes;
     /* 006B4 */ Vec3i vPosition;
-    /* 006C0 */ int32_t sRotationZ;
-    /* 006C4 */ int32_t sRotationY;
+    /* 006C0 */ int32_t _viewYaw;
+    /* 006C4 */ int32_t _viewPitch;
     /* 006C8 */ Vec3i vPrevPosition;
-    /* 006D4 */ int32_t sPrevRotationZ;
-    /* 006D8 */ int32_t sPrevRotationY;
+    /* 006D4 */ int32_t _viewPrevYaw;
+    /* 006D8 */ int32_t _viewPrevPitch;
     /* 006DC */ int32_t sPrevEyelevel;
     /* 006E0 */ int32_t field_6E0;
     /* 006E4 */ int32_t field_6E4;
