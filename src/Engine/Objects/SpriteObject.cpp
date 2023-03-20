@@ -100,325 +100,236 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     return sprite_slot;
 }
 
-//----- (00471C03) --------------------------------------------------------
-void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID) {
-    int v6;              // eax@1
-    int v7;              // ecx@1
-    int v8;              // edi@1
-    int v9;              // eax@4
-    int v21;       // eax@41
-    int i;  // edi@50
-    int v26;       // edi@52
-    int v27;       // eax@52
-    int16_t v28;   // cx@55
-    int v29;       // eax@55
-    // signed int v30; // edi@59
-    BSPModel *bmodel;  // ecx@61
-    ODMFace *face;     // edi@61
-    int v36;           // ecx@67
-    int16_t v37;       // ax@67
-    int v38;           // eax@72
-    int v44;           // eax@77
-    int v50;           // [sp+10h] [bp-98h]@52
-    Vec3i v51;     // [sp+14h] [bp-94h]@11
-    Particle_sw Dst;   // [sp+20h] [bp-88h]@45
-    int v54;           // [sp+8Ch] [bp-1Ch]@1
-    int v55;           // [sp+90h] [bp-18h]@1
-    int v56;           // [sp+94h] [bp-14h]@11
-    int v57;           // [sp+98h] [bp-10h]@1
-    int v58;           // [sp+9Ch] [bp-Ch]@1
-    int v60;           // [sp+A4h] [bp-4h]@11
-    bool v49;
+static void createSpriteTrailParticle(Vec3i pos, OBJECT_DESC_FLAGS flags) {
+    Particle_sw particle;
+    memset(&particle, 0, sizeof(Particle_sw));
+    particle.x = pos.x;
+    particle.y = pos.y;
+    particle.z = pos.z;
+    if (flags & OBJECT_DESC_TRIAL_FIRE) {
+        particle.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
+        particle.uDiffuse = colorTable.OrangeyRed.c32();
+        particle.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
+        particle.texture = spell_fx_renderer->effpar01;
+        particle.particle_size = 1.0f;
+        particle_engine->AddParticle(&particle);
+    } else if (flags & OBJECT_DESC_TRIAL_LINE) {
+        particle.type = ParticleType_Line;
+        particle.uDiffuse = vrng->Random(RAND_MAX); // TODO(captainurist): TBH this makes no sense, investigate
+        particle.timeToLive = 64;
+        particle.texture = nullptr;
+        particle.particle_size = 1.0f;
+        particle_engine->AddParticle(&particle);
+    } else if (flags & OBJECT_DESC_TRIAL_PARTICLE) {
+        particle.type = ParticleType_Bitmap | ParticleType_Ascending;
+        particle.uDiffuse = vrng->Random(RAND_MAX);
+        particle.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
+        particle.texture = spell_fx_renderer->effpar03;
+        particle.particle_size = 1.0f;
+        particle_engine->AddParticle(&particle);
+    }
+}
 
-    v58 = 0;
+void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
     ObjectDesc *object = &pObjectList->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID];
-    v57 = IsTerrainSlopeTooHigh(pSpriteObjects[uLayingItemID].vPosition.x,
-                                pSpriteObjects[uLayingItemID].vPosition.y);
-    v55 = 0;
-    bool on_water = false;
-    v6 = ODM_GetFloorLevel(pSpriteObjects[uLayingItemID].vPosition, object->uHeight, &on_water, &v55, 0);
-    v7 = v6;
-    v54 = v6;
-    v8 = v6 + 1;
-    if (pSpriteObjects[uLayingItemID].vPosition.z <= v6 + 1) {
-        if (on_water) {
-            v9 = v6 + 60;
-            if (v55) v9 = v6 + 30;
-            createSplashObject({pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, v9});
-            SpriteObject::OnInteraction(uLayingItemID);
+    bool isHighSlope = IsTerrainSlopeTooHigh(pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y);
+    int bmodelPid = 0;
+    bool onWater = false;
+    int level = ODM_GetFloorLevel(pSpriteObjects[uLayingItemID].vPosition, object->uHeight, &onWater, &bmodelPid, 0);
+    bool isAboveGround = pSpriteObjects[uLayingItemID].vPosition.z > level + 1;
+    if (!isAboveGround && onWater) {
+        int newZ = level + 60;
+        if (bmodelPid) {
+            newZ = level + 30;
         }
-    } else {
-        v58 = 1;
+        createSplashObject({pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, newZ});
+        SpriteObject::OnInteraction(uLayingItemID);
     }
+
     if (!(object->uFlags & OBJECT_DESC_NO_GRAVITY)) {
-        if (v58) {
-            pSpriteObjects[uLayingItemID].vVelocity.z -=
-                (short)pEventTimer->uTimeElapsed * GetGravityStrength();
-            goto LABEL_13;
-        }
-        if (v57) {
-            pSpriteObjects[uLayingItemID].vPosition.z = v8;
-            ODM_GetTerrainNormalAt(pSpriteObjects[uLayingItemID].vPosition.x,
-                                   pSpriteObjects[uLayingItemID].vPosition.y,
-                                   &v51);
-            pSpriteObjects[uLayingItemID].vVelocity.z -=
-                (short)pEventTimer->uTimeElapsed * GetGravityStrength();
-            v56 = abs(v51.y * pSpriteObjects[uLayingItemID].vVelocity.y +
-                      v51.z * pSpriteObjects[uLayingItemID].vVelocity.z +
-                      v51.x * pSpriteObjects[uLayingItemID].vVelocity.x) >>
-                  16;
+        if (isAboveGround) {
+            pSpriteObjects[uLayingItemID].vVelocity.z -= pEventTimer->uTimeElapsed * GetGravityStrength();
+        } else if (isHighSlope) {
+            Vec3i norm;
+            ODM_GetTerrainNormalAt(pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, &norm);
+            pSpriteObjects[uLayingItemID].vVelocity.z = level + 1 - (pEventTimer->uTimeElapsed * GetGravityStrength());
+
+            int dotFix = abs(dot(norm, pSpriteObjects[uLayingItemID].vVelocity)) >> 16;
             // v60 = ((uint64_t)(v56 * (int64_t)v51.x) >> 16);
-            pSpriteObjects[uLayingItemID].vVelocity.x +=
-                fixpoint_mul(v56, v51.x);
             // v60 = ((uint64_t)(v56 * (int64_t)v51.y) >> 16);
-            pSpriteObjects[uLayingItemID].vVelocity.y +=
-                fixpoint_mul(v56, v51.y);
             // v60 = ((uint64_t)(v56 * (int64_t)v51.z) >> 16);
-            pSpriteObjects[uLayingItemID].vVelocity.z +=
-                fixpoint_mul(v56, v51.z);
-            v7 = v54;
-            goto LABEL_13;
-        }
-        if (object->uFlags & OBJECT_DESC_INTERACTABLE) {
-            if (pSpriteObjects[uLayingItemID].vPosition.z < v7)
-                pSpriteObjects[uLayingItemID].vPosition.z = v8;
-            if (!processSpellImpact(uLayingItemID, 0)) return;
-        }
-        pSpriteObjects[uLayingItemID].vPosition.z = v8;
-        if (!(object->uFlags & OBJECT_DESC_BOUNCE) ||
-            (v21 = -pSpriteObjects[uLayingItemID].vVelocity.z >> 1,
-             pSpriteObjects[uLayingItemID].vVelocity.z = v21,
-             (int16_t)v21 < 10))
-            pSpriteObjects[uLayingItemID].vVelocity.z = 0;
-
-        pSpriteObjects[uLayingItemID].vVelocity.x =
-            fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.x);
-        pSpriteObjects[uLayingItemID].vVelocity.y =
-            fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.y);
-        pSpriteObjects[uLayingItemID].vVelocity.z =
-            fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.z);
-        if ((pSpriteObjects[uLayingItemID].vVelocity.y *
-                 pSpriteObjects[uLayingItemID].vVelocity.y +
-             pSpriteObjects[uLayingItemID].vVelocity.x *
-                 pSpriteObjects[uLayingItemID].vVelocity.x) < 400) {
-            pSpriteObjects[uLayingItemID].vVelocity.y = 0;
-            pSpriteObjects[uLayingItemID].vVelocity.x = 0;
-            memset(&Dst, 0, sizeof(Particle_sw));
-            Dst.x = (double)pSpriteObjects[uLayingItemID].vPosition.x;
-            Dst.y = (double)pSpriteObjects[uLayingItemID].vPosition.y;
-            Dst.z = (double)pSpriteObjects[uLayingItemID].vPosition.z;
-            Dst.r = 0.0;
-            Dst.g = 0.0;
-            Dst.b = 0.0;
-            if (object->uFlags & OBJECT_DESC_TRIAL_FIRE) {
-                Dst.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
-                Dst.uDiffuse = colorTable.OrangeyRed.c32();
-                Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
-                Dst.texture = spell_fx_renderer->effpar01;
-                Dst.particle_size = 1.0f;
-                particle_engine->AddParticle(&Dst);
-            } else if (object->uFlags & OBJECT_DESC_TRIAL_LINE) {
-                Dst.type = ParticleType_Line;
-                Dst.uDiffuse = vrng->Random(RAND_MAX); // TODO(captainurist): TBH this makes no sense, investigate
-                Dst.timeToLive = 64;
-                Dst.texture = nullptr;
-                Dst.particle_size = 1.0f;
-                particle_engine->AddParticle(&Dst);
-            } else if (object->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
-                Dst.type = ParticleType_Bitmap | ParticleType_Ascending;
-                Dst.uDiffuse = vrng->Random(RAND_MAX);
-                Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
-                Dst.texture = spell_fx_renderer->effpar03;
-                Dst.particle_size = 1.0f;
-                particle_engine->AddParticle(&Dst);
+            pSpriteObjects[uLayingItemID].vVelocity.x += fixpoint_mul(dotFix, norm.x);
+            pSpriteObjects[uLayingItemID].vVelocity.y += fixpoint_mul(dotFix, norm.y);
+            pSpriteObjects[uLayingItemID].vVelocity.z += fixpoint_mul(dotFix, norm.z);
+        } else {
+            if (object->uFlags & OBJECT_DESC_INTERACTABLE) {
+                if (pSpriteObjects[uLayingItemID].vPosition.z < level) {
+                    pSpriteObjects[uLayingItemID].vPosition.z = level + 1;
+                }
+                if (!processSpellImpact(uLayingItemID, 0)) {
+                    return;
+                }
             }
-            return;
-        }
-    }
-LABEL_13:
-    if (pSpriteObjects[uLayingItemID].vPosition.x >= -0x8000 &&
-            pSpriteObjects[uLayingItemID].vPosition.x <= 0x8000 &&
-            pSpriteObjects[uLayingItemID].vPosition.y >= -0x8000 &&
-            pSpriteObjects[uLayingItemID].vPosition.y <= 0x8000 &&
-            pSpriteObjects[uLayingItemID].vPosition.z > v7 &&
-            pSpriteObjects[uLayingItemID].vPosition.z <= 13000 ||
-        !(object->uFlags & OBJECT_DESC_INTERACTABLE))
-        goto LABEL_92;
-    if (pSpriteObjects[uLayingItemID].vPosition.z < v7)
-        pSpriteObjects[uLayingItemID].vPosition.z = v8;
-    if (processSpellImpact(uLayingItemID, 0)) {
-    LABEL_92:
-        collision_state.check_hi = false;
-        collision_state.radius_lo = object->uRadius;
-        collision_state.radius_hi = 0;
-        collision_state.total_move_distance = 0;
-        for (v55 = 0; v55 < 100; ++v55) {
-            collision_state.position_hi.x = pSpriteObjects[uLayingItemID].vPosition.x;
-            collision_state.position_lo.x = collision_state.position_hi.x;
-            collision_state.uSectorID = 0;
-            collision_state.position_hi.y = pSpriteObjects[uLayingItemID].vPosition.y;
-            collision_state.position_lo.y = pSpriteObjects[uLayingItemID].vPosition.y;
-            collision_state.position_hi.z = pSpriteObjects[uLayingItemID].vPosition.z +
-                                     collision_state.radius_lo + 1;
-            collision_state.position_lo.z = collision_state.position_hi.z;
-            collision_state.velocity.x = pSpriteObjects[uLayingItemID].vVelocity.x;
-            collision_state.velocity.y = pSpriteObjects[uLayingItemID].vVelocity.y;
-            collision_state.velocity.z = pSpriteObjects[uLayingItemID].vVelocity.z;
-            if (collision_state.PrepareAndCheckIfStationary(0))
-                return;
-
-            CollideOutdoorWithModels(false);
-            CollideOutdoorWithDecorations(
-                WorldPosToGridCellX(pSpriteObjects[uLayingItemID].vPosition.x),
-                WorldPosToGridCellY(pSpriteObjects[uLayingItemID].vPosition.y));
-            if (PID_TYPE(pSpriteObjects[uLayingItemID].spell_caster_pid) !=
-                OBJECT_Player)
-                CollideWithParty(false);
-            if (PID_TYPE(pSpriteObjects[uLayingItemID].spell_caster_pid) ==
-                OBJECT_Actor) {
-                if ((PID_ID(pSpriteObjects[uLayingItemID].spell_caster_pid) >=
-                     0) &&
-                    (PID_ID(pSpriteObjects[uLayingItemID].spell_caster_pid) <
-                     (signed int)(pActors.size() - 1))) {
-                    for (v56 = 0; v56 < pActors.size(); ++v56) {
-                        if (pActors[PID_ID(pSpriteObjects[uLayingItemID]
-                                               .spell_caster_pid)]
-                                .GetActorsRelation(&pActors[v56]))
-                            CollideWithActor(v56, 0);
-                    }
+            pSpriteObjects[uLayingItemID].vPosition.z = level + 1;
+            if (object->uFlags & OBJECT_DESC_BOUNCE) {
+                int bounceZVel = -(pSpriteObjects[uLayingItemID].vVelocity.z / 2);
+                pSpriteObjects[uLayingItemID].vVelocity.z = bounceZVel;
+                if (bounceZVel < 10) {
+                    pSpriteObjects[uLayingItemID].vVelocity.z = 0;
                 }
             } else {
-                for (i = 0; i < (signed int)pActors.size(); ++i)
-                    CollideWithActor(i, 0);
+                pSpriteObjects[uLayingItemID].vVelocity.z = 0;
             }
-            v26 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
-            v49 = false;
-            v27 = ODM_GetFloorLevel(collision_state.new_position_lo.toInt() - Vec3i(0, 0, collision_state.radius_lo + 1),
-                object->uHeight, &v49, &v50, 0);
-            if (on_water && v26 < v27 + 60) {
-                if (v50)
-                    v44 = v27 + 30;
-                else
-                    v44 = v54 + 60;
-                createSplashObject({pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, v44});
-                SpriteObject::OnInteraction(uLayingItemID);
-                return;
-            }
-            if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
-                pSpriteObjects[uLayingItemID].vPosition.x =
-                    collision_state.new_position_lo.x;
-                pSpriteObjects[uLayingItemID].vPosition.y =
-                    collision_state.new_position_lo.y;
-                pSpriteObjects[uLayingItemID].vPosition.z =
-                    collision_state.new_position_lo.z - collision_state.radius_lo - 1;
-                pSpriteObjects[uLayingItemID].uSectorID =
-                    (short)collision_state.uSectorID;
-                memset(&Dst, 0, sizeof(Particle_sw));
-                Dst.x = (double)pSpriteObjects[uLayingItemID].vPosition.x;
-                Dst.y = (double)pSpriteObjects[uLayingItemID].vPosition.y;
-                Dst.z = (double)pSpriteObjects[uLayingItemID].vPosition.z;
-                Dst.r = 0.0;
-                Dst.g = 0.0;
-                Dst.b = 0.0;
-                if (object->uFlags & OBJECT_DESC_TRIAL_FIRE) {
-                    Dst.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
-                    Dst.uDiffuse = colorTable.OrangeyRed.c32();
-                    Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
-                    Dst.texture = spell_fx_renderer->effpar01;
-                    Dst.particle_size = 1.0f;
-                    particle_engine->AddParticle(&Dst);
-                    return;
-                } else if (object->uFlags & OBJECT_DESC_TRIAL_LINE) {
-                    Dst.type = ParticleType_Line;
-                    Dst.texture = nullptr;
-                    Dst.uDiffuse = vrng->Random(RAND_MAX);
-                    Dst.timeToLive = 64;
-                    Dst.particle_size = 1.0f;
-                    particle_engine->AddParticle(&Dst);
-                    return;
-                } else if (object->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
-                    Dst.type = ParticleType_Bitmap | ParticleType_Ascending;
-                    Dst.uDiffuse = vrng->Random(RAND_MAX);
-                    Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
-                    Dst.texture = spell_fx_renderer->effpar03;
-                    Dst.particle_size = 1.0f;
-                    particle_engine->AddParticle(&Dst);
-                }
-                return;
-            }
-            // v60 = ((uint64_t)(collision_state.adjusted_move_distance * (signed
-            // int64_t)collision_state.direction.x) >> 16);
-            pSpriteObjects[uLayingItemID].vPosition.x += collision_state.adjusted_move_distance * collision_state.direction.x;
-            // v60 = ((uint64_t)(collision_state.adjusted_move_distance * (signed
-            // int64_t)collision_state.direction.y) >> 16);
-            pSpriteObjects[uLayingItemID].vPosition.y += collision_state.adjusted_move_distance * collision_state.direction.y;
-            // v60 = ((uint64_t)(collision_state.adjusted_move_distance * (signed
-            // int64_t)collision_state.direction.z) >> 16);
-            v28 = (short)collision_state.uSectorID;
-            pSpriteObjects[uLayingItemID].vPosition.z += collision_state.adjusted_move_distance * collision_state.direction.z;
-            v29 = pSpriteObjects[uLayingItemID].vPosition.z;
-            pSpriteObjects[uLayingItemID].uSectorID = v28;
-            collision_state.total_move_distance += collision_state.adjusted_move_distance;
-            if (object->uFlags & OBJECT_DESC_INTERACTABLE) {
-                if (v29 < v54)
-                    pSpriteObjects[uLayingItemID].vPosition.z = v54 + 1;
-                if (!processSpellImpact(uLayingItemID, collision_state.pid))
-                    return;
-            }
-            if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) break;
-            if (PID_TYPE(collision_state.pid) == OBJECT_Face) {
-                bmodel = &pOutdoor->pBModels[(signed int)collision_state.pid >> 9];
-                face = &bmodel->pFaces[PID_ID(collision_state.pid) & 0x3F];
-                if (face->uPolygonType == POLYGON_Floor) {
-                    pSpriteObjects[uLayingItemID].vPosition.z =
-                        bmodel->pVertices[face->pVertexIDs[0]].z + 1;
-                    if (pSpriteObjects[uLayingItemID].vVelocity.x * pSpriteObjects[uLayingItemID].vVelocity.x +
-                            pSpriteObjects[uLayingItemID].vVelocity.y * pSpriteObjects[uLayingItemID].vVelocity.y >= 400) {
-                        if (face->uAttributes & FACE_TriggerByObject)
-                            EventProcessor(face->sCogTriggeredID, 0, 1);
-                    } else {
-                        pSpriteObjects[uLayingItemID].vVelocity.z = 0;
-                        pSpriteObjects[uLayingItemID].vVelocity.x = 0;
-                        pSpriteObjects[uLayingItemID].vVelocity.y = 0;
-                    }
-                } else {
-                    v56 = abs(face->pFacePlaneOLD.vNormal.x * pSpriteObjects[uLayingItemID].vVelocity.x +
-                              face->pFacePlaneOLD.vNormal.y * pSpriteObjects[uLayingItemID].vVelocity.y +
-                              face->pFacePlaneOLD.vNormal.z * pSpriteObjects[uLayingItemID].vVelocity.z) >>
-                          16;
-                    if ((collision_state.speed / 8) > v56)
-                        v56 = collision_state.speed / 8;
-                    // v57 = fixpoint_mul(v56, face->pFacePlane.vNormal.x);
-                    // v58 = fixpoint_mul(v56, face->pFacePlane.vNormal.y);
-                    v60 = fixpoint_mul(v56, face->pFacePlaneOLD.vNormal.z);
-                    pSpriteObjects[uLayingItemID].vVelocity.x += 2 * fixpoint_mul(v56, face->pFacePlaneOLD.vNormal.x);
-                    pSpriteObjects[uLayingItemID].vVelocity.y += 2 * fixpoint_mul(v56, face->pFacePlaneOLD.vNormal.y);
-                    if (face->pFacePlaneOLD.vNormal.z <= 32000) {
-                        v37 = 2 * (short)v60;
-                    } else {
-                        v36 = v60;
-                        pSpriteObjects[uLayingItemID].vVelocity.z += (int16_t)v60;
-                        v58 = fixpoint_mul(0x7D00, v36);
-                        v37 = fixpoint_mul(32000, v36);
-                    }
-                    pSpriteObjects[uLayingItemID].vVelocity.z += v37;
-                    if (face->uAttributes & FACE_TriggerByObject)
-                        EventProcessor(face->sCogTriggeredID, 0, 1);
-                }
-            }
-        //LABEL_74:
+
             pSpriteObjects[uLayingItemID].vVelocity.x = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.x);
             pSpriteObjects[uLayingItemID].vVelocity.y = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.y);
             pSpriteObjects[uLayingItemID].vVelocity.z = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.z);
+            if (pSpriteObjects[uLayingItemID].vVelocity.getXY().lengthSqr() < 400) {
+                pSpriteObjects[uLayingItemID].vVelocity.x = 0;
+                pSpriteObjects[uLayingItemID].vVelocity.y = 0;
+                createSpriteTrailParticle(pSpriteObjects[uLayingItemID].vPosition, object->uFlags);
+                return;
+            }
         }
-        v57 = integer_sqrt(pSpriteObjects[uLayingItemID].vVelocity.x * pSpriteObjects[uLayingItemID].vVelocity.x +
-                           pSpriteObjects[uLayingItemID].vVelocity.y * pSpriteObjects[uLayingItemID].vVelocity.y);
-        v38 = TrigLUT.atan2(pSpriteObjects[uLayingItemID].vPosition.x - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.x,
-                            pSpriteObjects[uLayingItemID].vPosition.y - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.y);
-        pSpriteObjects[uLayingItemID].vVelocity.x = TrigLUT.cos(v38) * v57;
-        pSpriteObjects[uLayingItemID].vVelocity.y = TrigLUT.sin(v38 - TrigLUT.uIntegerHalfPi) * v57;
-        //goto LABEL_74; // This goto results in an infinite loop, commented out.
     }
+    if (object->uFlags & OBJECT_DESC_INTERACTABLE) {
+        if (abs(pSpriteObjects[uLayingItemID].vPosition.x) > 32768 ||
+                abs(pSpriteObjects[uLayingItemID].vPosition.y) > 32768 ||
+                pSpriteObjects[uLayingItemID].vPosition.z <= level ||
+                pSpriteObjects[uLayingItemID].vPosition.z > 13000) {
+            if (pSpriteObjects[uLayingItemID].vPosition.z < level) {
+                pSpriteObjects[uLayingItemID].vPosition.z = level + 1;
+            }
+            if (!processSpellImpact(uLayingItemID, 0)) {
+                return;
+            }
+        }
+    }
+
+    collision_state.check_hi = false;
+    collision_state.radius_lo = object->uRadius;
+    collision_state.radius_hi = 0;
+    collision_state.total_move_distance = 0;
+    for (int i = 0; i < 100; i++) {
+        collision_state.uSectorID = 0;
+        collision_state.position_lo = pSpriteObjects[uLayingItemID].vPosition.toFloat() + Vec3f(0, 0, collision_state.radius_lo + 1);
+        collision_state.position_hi = collision_state.position_lo;
+        collision_state.velocity = pSpriteObjects[uLayingItemID].vVelocity.toFloat();
+        if (collision_state.PrepareAndCheckIfStationary(0)) {
+            return;
+        }
+
+        CollideOutdoorWithModels(false);
+        int gridX = WorldPosToGridCellX(pSpriteObjects[uLayingItemID].vPosition.x);
+        int gridY = WorldPosToGridCellY(pSpriteObjects[uLayingItemID].vPosition.y);
+        CollideOutdoorWithDecorations(gridX, gridY);
+        ObjectType casterType = PID_TYPE(pSpriteObjects[uLayingItemID].spell_caster_pid);
+        int casterId = PID_ID(pSpriteObjects[uLayingItemID].spell_caster_pid);
+        if (casterType != OBJECT_Player) {
+            CollideWithParty(false);
+        }
+        if (casterType == OBJECT_Actor) {
+            int actorId = PID_ID(pSpriteObjects[uLayingItemID].spell_caster_pid);
+            if ((actorId >= 0) && (actorId < (pActors.size() - 1))) {
+                for (int j = 0; j < pActors.size(); ++j) {
+                    if (pActors[actorId].GetActorsRelation(&pActors[j])) {
+                        CollideWithActor(j, 0);
+                    }
+                }
+            }
+        } else {
+            for (int j = 0; j < pActors.size(); ++j) {
+                CollideWithActor(j, 0);
+            }
+        }
+        int collisionZ = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
+        bool collisionOnWater = false;
+        int collisionBmodelPid = 0;
+        Vec3i collisionPos = collision_state.new_position_lo.toInt() - Vec3i(0, 0, collision_state.radius_lo + 1);
+        int collisionLevel = ODM_GetFloorLevel(collisionPos, object->uHeight, &collisionOnWater, &collisionBmodelPid, 0);
+        // TOOD(Nik-RE-dev): why initail "onWater" is used?
+        if (onWater && collisionZ < (collisionLevel + 60)) {
+            int newZ = level + 60;
+            if (collisionBmodelPid) {
+                newZ = collisionLevel + 30;
+            }
+            createSplashObject({pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, newZ});
+            SpriteObject::OnInteraction(uLayingItemID);
+            return;
+        }
+        if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
+            pSpriteObjects[uLayingItemID].vPosition = (collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo + 1)).toIntTrunc();
+            //pSpriteObjects[uLayingItemID].vPosition.x = collision_state.new_position_lo.x;
+            //pSpriteObjects[uLayingItemID].vPosition.y = collision_state.new_position_lo.y;
+            //pSpriteObjects[uLayingItemID].vPosition.z = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
+            pSpriteObjects[uLayingItemID].uSectorID = collision_state.uSectorID;
+            createSpriteTrailParticle(pSpriteObjects[uLayingItemID].vPosition, object->uFlags);
+            return;
+        }
+        // v60 = ((uint64_t)(collision_state.adjusted_move_distance * (signed int64_t)collision_state.direction.x) >> 16);
+        // v60 = ((uint64_t)(collision_state.adjusted_move_distance * (signed int64_t)collision_state.direction.y) >> 16);
+        // v60 = ((uint64_t)(collision_state.adjusted_move_distance * (signed int64_t)collision_state.direction.z) >> 16);
+        Vec3f delta = collision_state.direction * collision_state.adjusted_move_distance;
+        pSpriteObjects[uLayingItemID].vPosition += delta.toInt();
+        pSpriteObjects[uLayingItemID].uSectorID = collision_state.uSectorID;
+        collision_state.total_move_distance += collision_state.adjusted_move_distance;
+        if (object->uFlags & OBJECT_DESC_INTERACTABLE) {
+            if (pSpriteObjects[uLayingItemID].vPosition.z < level) {
+                pSpriteObjects[uLayingItemID].vPosition.z = level + 1;
+            }
+            if (!processSpellImpact(uLayingItemID, collision_state.pid)) {
+                return;
+            }
+        }
+        if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) {
+            break;
+        }
+        if (PID_TYPE(collision_state.pid) == OBJECT_Face) {
+            BSPModel *bmodel = &pOutdoor->pBModels[(signed int)collision_state.pid >> 9];
+            ODMFace *face = &bmodel->pFaces[PID_ID(collision_state.pid) & 0x3F];
+            if (face->uPolygonType == POLYGON_Floor) {
+                pSpriteObjects[uLayingItemID].vPosition.z = bmodel->pVertices[face->pVertexIDs[0]].z + 1;
+                if (pSpriteObjects[uLayingItemID].vVelocity.getXY().lengthSqr() >= 400) {
+                    if (face->uAttributes & FACE_TriggerByObject) {
+                        EventProcessor(face->sCogTriggeredID, 0, 1);
+                    }
+                } else {
+                    pSpriteObjects[uLayingItemID].vVelocity = Vec3s(0, 0, 0);
+                }
+            } else {
+                int dotFix = abs(dot(face->pFacePlaneOLD.vNormal, pSpriteObjects[uLayingItemID].vVelocity)) >> 16;
+                if ((collision_state.speed / 8) > dotFix) {
+                    dotFix = collision_state.speed / 8;
+                }
+                // v57 = fixpoint_mul(v56, face->pFacePlane.vNormal.x);
+                // v58 = fixpoint_mul(v56, face->pFacePlane.vNormal.y);
+                int newZVel = fixpoint_mul(dotFix, face->pFacePlaneOLD.vNormal.z);
+                pSpriteObjects[uLayingItemID].vVelocity.x += 2 * fixpoint_mul(dotFix, face->pFacePlaneOLD.vNormal.x);
+                pSpriteObjects[uLayingItemID].vVelocity.y += 2 * fixpoint_mul(dotFix, face->pFacePlaneOLD.vNormal.y);
+                if (face->pFacePlaneOLD.vNormal.z <= 32000) {
+                    newZVel = 2 * newZVel;
+                } else {
+                    pSpriteObjects[uLayingItemID].vVelocity.z += newZVel;
+                    newZVel = fixpoint_mul(32000, newZVel);
+                }
+                pSpriteObjects[uLayingItemID].vVelocity.z += newZVel;
+                if (face->uAttributes & FACE_TriggerByObject) {
+                    EventProcessor(face->sCogTriggeredID, 0, 1);
+                }
+            }
+        }
+        //LABEL_74:
+        pSpriteObjects[uLayingItemID].vVelocity.x = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.x);
+        pSpriteObjects[uLayingItemID].vVelocity.y = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.y);
+        pSpriteObjects[uLayingItemID].vVelocity.z = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.z);
+    }
+    Vec2i velDeltaXY = pSpriteObjects[uLayingItemID].vPosition.getXY() - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.getXY();
+    int velLenXY = integer_sqrt(pSpriteObjects[uLayingItemID].vVelocity.getXY().lengthSqr());
+    int velRotXY = TrigLUT.atan2(velDeltaXY.x, velDeltaXY.y);
+
+    pSpriteObjects[uLayingItemID].vVelocity.x = TrigLUT.cos(velRotXY) * velLenXY;
+    pSpriteObjects[uLayingItemID].vVelocity.y = TrigLUT.sin(velRotXY - TrigLUT.uIntegerHalfPi) * velLenXY;
+    //goto LABEL_74; // This goto results in an infinite loop, commented out.
 }
 
 //----- (0047136C) --------------------------------------------------------
@@ -1548,7 +1459,7 @@ void UpdateObjects() {
                     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
                         SpriteObject::UpdateObject_fn0_BLV(i);
                     } else {
-                        SpriteObject::UpdateObject_fn0_ODM(i);
+                        SpriteObject::updateObjectODM(i);
                     }
                     if (!pParty->bTurnBasedModeOn || !(pSpriteObjects[i].uSectorID & 4)) {
                         continue;
