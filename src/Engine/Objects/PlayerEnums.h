@@ -34,6 +34,8 @@ enum PLAYER_BUFFS {
 
 /*  301 */
 enum PlayerSpeech {
+    SPEECH_FIRST = 0,
+    SPEECH_None = SPEECH_FIRST,
     SPEECH_KillWeakEnemy = 1,
     SPEECH_KillStrongEnemy = 2,
     SPEECH_StoreClosed = 3,
@@ -144,6 +146,7 @@ enum PlayerSpeech {
     SPEECH_NotEnoughFood = 108,
     SPEECH_DeathBlow = 109,
     SPEECH_110 = 110,  // unknown
+    SPEECH_LAST = SPEECH_110
 };
 
 /*  339 */
