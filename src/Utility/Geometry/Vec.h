@@ -23,6 +23,11 @@ struct Vec2 {
     Vec2() = default;
     Vec2(T a, T b) : x(a), y(b) {}
 
+    [[nodiscard]] auto lengthSqr() const {
+        // Note that auto return type is important because this way Vec2s::LengthSqr returns int.
+        return x * x + y * y;
+    }
+
     friend Vec2 operator+(const Vec2 &l, const Vec2 &r) {
         return Vec2(l.x + r.x, l.y + r.y);
     }
@@ -52,6 +57,10 @@ struct Vec2 {
         *this = *this - v;
         return *this;
     }
+
+    friend T dot(const Vec2 &l, const Vec2 &r) {
+        return l.x * r.x + l.y * r.y;
+    }
 };
 
 using Vec2i = Vec2<int32_t>;
@@ -74,6 +83,10 @@ struct Vec3 {
     Vec3(const Vec3<OtherT> &other) : x(other.x), y(other.y), z(other.z) {}
 
     Vec3(T a, T b, T c) : x(a), y(b), z(c) {}
+
+    Vec2<T> getXY() {
+        return Vec2<T>(x, y);
+    }
 
     static void rotate(T sDepth, T yaw, T pitch, Vec3<T> v, T *outx, T *outy, T *outz) {
         float cosf_x = cos(M_PI * pitch / 1024.0f);
@@ -99,6 +112,10 @@ struct Vec3 {
 
     [[nodiscard]] Vec3<int> toInt() const requires std::is_floating_point_v<T> {
         return Vec3<int>(std::round(x), std::round(y), std::round(z));
+    }
+
+    [[nodiscard]] Vec3<int> toIntTrunc() const requires std::is_floating_point_v<T> {
+        return Vec3<int>(std::trunc(x), std::trunc(y), std::trunc(z));
     }
 
     [[nodiscard]] Vec3<int> toFixpoint() const requires std::is_floating_point_v<T> {

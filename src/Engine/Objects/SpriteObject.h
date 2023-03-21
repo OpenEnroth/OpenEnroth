@@ -36,7 +36,11 @@ struct SpriteObject {
     }
 
     static void UpdateObject_fn0_BLV(unsigned int uLayingItemID);
-    static void UpdateObject_fn0_ODM(unsigned int uLayingItemID);
+
+    /**
+     * @offset 0x471C03
+     */
+    static void updateObjectODM(unsigned int uLayingItemID);
     static void OnInteraction(unsigned int uLayingItemID);
     /**
      * Create sprite(s).
