@@ -7794,12 +7794,11 @@ void Player::PlaySound(PlayerSpeech speech, int a3) {
                 expressionDuration = (sLastTrackLengthMS << 7) / 1000;
             }
         }
-        PlayEmotion(expression, expressionDuration);
+        setEmotion(expression, expressionDuration);
     }
 }
 
-//----- (00494A25) --------------------------------------------------------
-void Player::PlayEmotion(CHARACTER_EXPRESSION_ID new_expression, int duration) {
+void Player::setEmotion(CHARACTER_EXPRESSION_ID new_expression, int duration) {
     // 38 - sparkles 1 player?
 
     unsigned int currexpr = expression;
