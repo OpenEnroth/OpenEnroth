@@ -168,6 +168,11 @@ GAME_TEST(Issue, Issue223) {
     check223res(CHARACTER_ATTRIBUTE_RESIST_AIR, { {0, 5}, {1, 0}, {2, 0}, {3, 0} });
 }
 
+GAME_TEST(Issue, Issue248) {
+    // Crash in NPC dialog
+    test->playTraceFromTestData("issue_248.mm7", "issue_248.json");
+}
+
 GAME_TEST(Issues, Issue268) {
     // Crash in ODM_GetFloorLevel
     test->playTraceFromTestData("issue_268.mm7", "issue_268.json");
