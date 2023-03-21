@@ -47,9 +47,9 @@ bool Chest::Open(int uChestID) {
     SPRITE_OBJECT_TYPE pSpriteID[4];  // [sp+84h] [bp-40h]@16
     Vec3i pOut;                   // [sp+A0h] [bp-24h]@28
     int pObjectY = 0;                     // [sp+B0h] [bp-14h]@21
-    int sRotX;                        // [sp+B4h] [bp-10h]@23
+    int yawAngle{};                        // [sp+B4h] [bp-10h]@23
     float dir_z;                      // [sp+BCh] [bp-8h]@23
-    int sRotY;                        // [sp+C0h] [bp-4h]@8
+    int pitchAngle{};                        // [sp+C0h] [bp-4h]@8
     SpriteObject pSpellObject;        // [sp+14h] [bp-B0h]@28
 
     assert(uChestID < 20);
@@ -105,12 +105,12 @@ bool Chest::Open(int uChestID) {
             dir_z = ((double)pParty->sEyelevel + (double)pParty->vPosition.z) - (double)pObjectZ;
             length_vector = sqrt((dir_x * dir_x) + (dir_y * dir_y) + (dir_z * dir_z));
             if (length_vector <= 1.0) {
-                *(float*)&sRotX = 0.0;
-                *(float*)&sRotY = 0.0;
+                *(float*)&yawAngle = 0.0;
+                *(float*)&pitchAngle = 0.0;
             } else {
-                sRotY = (int64_t)sqrt(dir_x * dir_x + dir_y * dir_y);
-                sRotX = TrigLUT.atan2((int64_t) dir_x, (int64_t) dir_y);
-                sRotY = TrigLUT.atan2(dir_y * dir_y, (int64_t) dir_z);
+                pitchAngle = (int64_t)sqrt(dir_x * dir_x + dir_y * dir_y);
+                yawAngle = TrigLUT.atan2((int64_t) dir_x, (int64_t) dir_y);
+                pitchAngle = TrigLUT.atan2(dir_y * dir_y, (int64_t) dir_z);
             }
             pDepth = 256;
             if (length_vector < 256.0)
@@ -119,7 +119,7 @@ bool Chest::Open(int uChestID) {
             v.y = pObjectY;
             v.z = pObjectZ;
             // TODO(Nik-RE-dev): y and z usage seems backwards
-            Vec3i::rotate(pDepth, sRotX, sRotY, v, &pOut.x, &pOut.z, &pOut.y);
+            Vec3i::rotate(pDepth, yawAngle, pitchAngle, v, &pOut.x, &pOut.z, &pOut.y);
             SpriteObject::dropItemAt(pSpriteID[pRandom], {pOut.x, pOut.z, pOut.y}, 0, 1, false, SPRITE_IGNORE_RANGE | SPRITE_NO_Z_BUFFER);
             pSpellObject.containing_item.Reset();
             pSpellObject.spell_skill = PLAYER_SKILL_MASTERY_NONE;

@@ -32,7 +32,7 @@ struct LevelDecoration {
     uint16_t uDecorationDescID;
     LevelDecorationFlags uFlags;
     Vec3i vPosition;
-    int32_t field_10_y_rot;
+    int32_t _yawAngle;
     uint16_t uCog;
     uint16_t uEventID;
     uint16_t uTriggerRange;

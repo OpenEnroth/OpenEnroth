@@ -28,6 +28,7 @@
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/stru159.h"
 
+#include "GUI/GUIBountyHunting.h"
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
@@ -73,7 +74,7 @@ struct stru365_travel_info {
     int arrival_x;
     int arrival_y;
     int arrival_z;
-    int arrival_rot_y;
+    int arrival_view_yaw;
     unsigned int uQuestBit;  // quest bit required to set for this travel option
                              // to be enabled; otherwise 0
 };
@@ -976,8 +977,6 @@ void PlayHouseSound(unsigned int uHouseID, HouseSoundID sound) {
 //----- (004BCACC) --------------------------------------------------------
 void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     int experience_for_next_level;  // eax@5
-    int v16;                        // eax@32
-    int16_t v24;                    // ax@163
     signed int v36;                 // esi@227
     int pPrice;                     // ecx@227
 
@@ -1065,216 +1064,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     case BuildingType_TownHall:
     {
         if (option == DIALOGUE_TOWNHALL_MESSAGE) {
-            if (pParty->PartyTimes.bountyHunting_next_generation_time[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] < pParty->GetPlayingTime()) {  // new generation
-                pParty->monster_for_hunting_killed[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = false;
-                pParty->PartyTimes.bountyHunting_next_generation_time[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = GameTime((int64_t)((double)(309657600 *
-                    (pParty->uCurrentMonth + 12ll * pParty->uCurrentYear - 14015)) * 0.033333335));
-                pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = grng->Random(258) + 1;
-                v16 = window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE;
-                if (!v16) {
-                    while (1) {
-                        v24 = pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE];
-                        if ((uint16_t)v24 < 115 ||
-                            (uint16_t)v24 > 132) {
-                            if (((uint16_t)v24 < 235 ||
-                                (uint16_t)v24 > 252) &&
-                                ((uint16_t)v24 < 133 ||
-                                (uint16_t)v24 > 150) &&
-                                    ((uint16_t)v24 < 0x97u ||
-                                (uint16_t)v24 > 0xBAu) &&
-                                        ((uint16_t)v24 < 0xBEu ||
-                                (uint16_t)v24 > 0xC0u) &&
-                                            ((uint16_t)v24 < 0xC4u ||
-                                (uint16_t)v24 > 0xC6u) &&
-                                                ((uint16_t)v24 < 0x2Bu ||
-                                (uint16_t)v24 > 0x2Du) &&
-                                                    ((uint16_t)v24 < 0xCDu ||
-                                (uint16_t)v24 > 0xCFu) &&
-                                                        ((uint16_t)v24 < 0x5Eu ||
-                                (uint16_t)v24 > 0x60u) &&
-                                                            ((uint16_t)v24 < 0xFDu ||
-                                (uint16_t)v24 > 0xFFu) &&
-                                                                ((uint16_t)v24 < 0x6Du ||
-                                (uint16_t)v24 > 0x6Fu) &&
-                                                                    ((uint16_t)v24 < 0x61u ||
-                                (uint16_t)v24 > 0x63u))
-                                break;
-                        }
-                        pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = grng->Random(258) + 1;
-                    }
-                }
-                if (v16 == 1) {
-                    while (1) {
-                        v24 = pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE];
-                        if ((uint16_t)v24 < 115 ||
-                            (uint16_t)v24 > 132) {
-                            if (((uint16_t)v24 < 0xE8u ||
-                                (uint16_t)v24 > 0xF9u) &&
-                                ((uint16_t)v24 < 0x85u ||
-                                (uint16_t)v24 > 0x96u) &&
-                                    ((uint16_t)v24 < 0x97u ||
-                                (uint16_t)v24 > 0xBAu) &&
-                                        ((uint16_t)v24 < 0xBEu ||
-                                (uint16_t)v24 > 0xC0u) &&
-                                            ((uint16_t)v24 < 0xC4u ||
-                                (uint16_t)v24 > 0xC6u) &&
-                                                ((uint16_t)v24 < 0x2Bu ||
-                                (uint16_t)v24 > 0x2Du) &&
-                                                    ((uint16_t)v24 < 0x52u ||
-                                (uint16_t)v24 > 0x54u) &&
-                                                        ((uint16_t)v24 < 4 ||
-                                (uint16_t)v24 > 6) &&
-                                                            ((uint16_t)v24 < 0x37u ||
-                                (uint16_t)v24 > 0x39u) &&
-                                                                ((uint16_t)v24 < 0x3Au ||
-                                (uint16_t)v24 > 0x3Cu) &&
-                                                                    ((uint16_t)v24 < 0x3Du ||
-                                (uint16_t)v24 > 0x3Fu) &&
-                                                                        ((uint16_t)v24 < 0xFDu ||
-                                (uint16_t)v24 > 0xFFu) &&
-                                                                            ((uint16_t)v24 < 0x61u ||
-                                (uint16_t)v24 > 0x63u) &&
-                                                                                ((uint16_t)v24 < 0xCDu ||
-                                (uint16_t)v24 > 0xCFu))
-                                break;
-                        }
-                        pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = grng->Random(258) + 1;
-                    }
-                }
-                if (v16 == 2) {
-                    while (1) {
-                        v24 = pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE];
-                        if ((uint16_t)v24 < 0x73u ||
-                            (uint16_t)v24 > 0x84u) {
-                            if (((uint16_t)v24 < 0xE8u ||
-                                (uint16_t)v24 > 0xF9u) &&
-                                ((uint16_t)v24 < 0x85u ||
-                                (uint16_t)v24 > 0x96u) &&
-                                    ((uint16_t)v24 < 0x97u ||
-                                (uint16_t)v24 > 0xBAu) &&
-                                        ((uint16_t)v24 < 0xBEu ||
-                                (uint16_t)v24 > 0xC0u) &&
-                                            ((uint16_t)v24 < 0xC4u ||
-                                (uint16_t)v24 > 0xC6u) &&
-                                                ((uint16_t)v24 < 0x2Bu ||
-                                (uint16_t)v24 > 0x2Du) &&
-                                                    ((uint16_t)v24 < 0x31u ||
-                                (uint16_t)v24 > 0x33u) &&
-                                                        ((uint16_t)v24 < 0x34u ||
-                                (uint16_t)v24 > 0x36u) &&
-                                                            ((uint16_t)v24 < 0xFDu ||
-                                (uint16_t)v24 > 0xFFu) &&
-                                                                ((uint16_t)v24 < 0x61u ||
-                                (uint16_t)v24 > 0x63u) &&
-                                                                    ((uint16_t)v24 < 0x1Cu ||
-                                (uint16_t)v24 > 0x1Eu))
-                                break;
-                        }
-                        pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = grng->Random(258) + 1;
-                    }
-                }
-                if (v16 == 3) {
-                    while (1) {
-                        v24 = pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE];
-                        if ((uint16_t)v24 < 0x73u ||
-                            (uint16_t)v24 > 0x84u) {
-                            if (((uint16_t)v24 < 0xE8u ||
-                                (uint16_t)v24 > 0xF9u) &&
-                                ((uint16_t)v24 < 0x85u ||
-                                (uint16_t)v24 > 0x96u) &&
-                                    ((uint16_t)v24 < 0x97u ||
-                                (uint16_t)v24 > 0xBAu) &&
-                                        ((uint16_t)v24 < 0xBEu ||
-                                (uint16_t)v24 > 0xC0u) &&
-                                            ((uint16_t)v24 < 0xC4u ||
-                                (uint16_t)v24 > 0xC6u) &&
-                                                ((uint16_t)v24 < 0x2Bu ||
-                                (uint16_t)v24 > 0x2Du) &&
-                                                    ((uint16_t)v24 < 0x5Eu ||
-                                (uint16_t)v24 > 0x60u) &&
-                                                        ((uint16_t)v24 < 0x43u ||
-                                (uint16_t)v24 > 0x45u) &&
-                                                            ((uint16_t)v24 < 0x4Fu ||
-                                (uint16_t)v24 > 0x51u) &&
-                                                                ((uint16_t)v24 < 0xC1u ||
-                                (uint16_t)v24 > 0xC3u) &&
-                                                                    ((uint16_t)v24 < 0x13u ||
-                                (uint16_t)v24 > 0x15u) &&
-                                                                        ((uint16_t)v24 < 0xFDu ||
-                                (uint16_t)v24 > 0xFFu) &&
-                                                                            ((uint16_t)v24 < 0x61u ||
-                                (uint16_t)v24 > 0x63u) &&
-                                                                                ((uint16_t)v24 < 0x6Au ||
-                                (uint16_t)v24 > 0x6Cu))
-                                break;
-                        }
-                        pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = grng->Random(258) + 1;
-                    }
-                }
-                if (v16 == 4) {
-                    while (1) {
-                        v24 = pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE];
-                        if ((uint16_t)v24 < 0x73u ||
-                            (uint16_t)v24 > 0x84u) {
-                            if (((uint16_t)v24 < 0xE8u ||
-                                (uint16_t)v24 > 0xF9u) &&
-                                ((uint16_t)v24 < 0x85u ||
-                                (uint16_t)v24 > 0x96u) &&
-                                    ((uint16_t)v24 < 0x97u ||
-                                (uint16_t)v24 > 0xBAu) &&
-                                        ((uint16_t)v24 < 0xBEu ||
-                                (uint16_t)v24 > 0xC0u) &&
-                                            ((uint16_t)v24 < 0xC4u ||
-                                (uint16_t)v24 > 0xC6u) &&
-                                                ((uint16_t)v24 < 0x2Bu ||
-                                (uint16_t)v24 > 0x2Du) &&
-                                                    ((uint16_t)v24 < 0x6Du ||
-                                (uint16_t)v24 > 0x6Fu) &&
-                                                        ((uint16_t)v24 < 0x46u ||
-                                (uint16_t)v24 > 0x48u) &&
-                                                            ((uint16_t)v24 < 0x100u ||
-                                (uint16_t)v24 > 0x102u) &&
-                                                                ((uint16_t)v24 < 0xD9u ||
-                                (uint16_t)v24 > 0xDBu) &&
-                                                                    ((uint16_t)v24 < 0xC7u ||
-                                (uint16_t)v24 > 0xC9u) &&
-                                                                        ((uint16_t)v24 < 0xE5u ||
-                                (uint16_t)v24 > 0xE7u) &&
-                                                                            ((uint16_t)v24 < 0xDFu ||
-                                (uint16_t)v24 > 0xE1u) &&
-                                                                                ((uint16_t)v24 < 0x5Bu ||
-                                (uint16_t)v24 > 0x5Du) &&
-                                                                                    ((uint16_t)v24 < 0x49u ||
-                                (uint16_t)v24 > 0x4Bu) &&
-                                                                                        ((uint16_t)v24 < 0xFDu ||
-                                (uint16_t)v24 > 0xFFu) &&
-                                                                                            ((uint16_t)v24 < 0x61u ||
-                                (uint16_t)v24 > 0x63u) &&
-                                                                                                ((uint16_t)v24 < 0x10u ||
-                                (uint16_t)v24 > 0x12u))
-                                break;
-                        }
-                        pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = grng->Random(258) + 1;
-                    }
-                }
-            }
-            bountyHunting_monster_id_for_hunting = pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE];
-            if (!pParty->monster_for_hunting_killed[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE]) {
-                bountyHunting_text = pNPCTopics[351].pText;  // "В этом месяцу назначена награда за голову %s..."
-                if (!pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE])
-                    bountyHunting_text = pNPCTopics[353].pText; // "Кое кто уже приходил в этом месяце за наградой"
-            } else {
-                if (pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] > 0) {  // get prize
-                    pParty->PartyFindsGold(
-                        100 * pMonsterStats->pInfos[(uint16_t)pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE]].uLevel, 0);
-                    for (uint i = 0; i < 4; ++i)
-                        pParty->pPlayers[i].SetVariable(VAR_Award, Award_BountiesCollected);
-                    pParty->uNumBountiesCollected += 100 * pMonsterStats->pInfos[pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE]].uLevel;
-                    pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = 0;
-                    pParty->monster_for_hunting_killed[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = false;
-                }
-                bountyHunting_text = pNPCTopics[352].pText;  //"Поздравляю! Вы успешно..."
-            }
+            bountyHuntingDialogueOptionClicked();
         } else if (option == DIALOGUE_TOWNHALL_PAY_FINE) {
             keyboardInputHandler->StartTextInput(TextInputType::Number, 10, window_SpeakInHouse);
             return;
@@ -1573,23 +1363,23 @@ void TravelByTransport() {
                     dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
                     Party_Teleport_Cam_Pitch = 0;
                     Party_Teleport_Z_Speed = 0;
-                    Party_Teleport_Cam_Yaw = pTravel->arrival_rot_y;
+                    Party_Teleport_Cam_Yaw = pTravel->arrival_view_yaw;
                     uGameState = GAME_STATE_CHANGE_LOCATION;
                     Party_Teleport_X_Pos = pTravel->arrival_x;
                     Party_Teleport_Y_Pos = pTravel->arrival_y;
                     Party_Teleport_Z_Pos = pTravel->arrival_z;
-                    Start_Party_Teleport_Flag = pTravel->arrival_x | pTravel->arrival_y | pTravel->arrival_z | pTravel->arrival_rot_y;
+                    Start_Party_Teleport_Flag = pTravel->arrival_x | pTravel->arrival_y | pTravel->arrival_z | pTravel->arrival_view_yaw;
                 } else {
                     // travelling to map we are already in
-                    pCamera3D->sRotationZ = 0;
+                    pCamera3D->_viewYaw = 0;
 
                     pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
                     pParty->vPosition.x = pTravel->arrival_x;
                     pParty->vPosition.y = pTravel->arrival_y;
                     pParty->vPosition.z = pTravel->arrival_z;
                     pParty->uFallStartZ = pParty->vPosition.z;
-                    pParty->sRotationY = 0;
-                    pParty->sRotationZ = pTravel->arrival_rot_y;
+                    pParty->_viewPitch = 0;
+                    pParty->_viewYaw = pTravel->arrival_view_yaw;
                 }
 
                 PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_NotEnoughMoney);
@@ -1699,10 +1489,7 @@ void TownHallDialog() {
     }
     case DIALOGUE_TOWNHALL_MESSAGE:
     {
-        current_npc_text = stringPrintf(bountyHunting_text,
-                                        fmt::format("\f{:05}{}\f{:05}", colorTable.PaleCanary.c16(),
-                                                    pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting].pName, colorTable.White.c16()).c_str(),
-                                        100 * pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting].uLevel);
+        current_npc_text = bountyHuntingText();
         GUIWindow window = *pDialogueWindow;
         window.uFrameWidth = 458;
         window.uFrameZ = 457;
@@ -2893,14 +2680,7 @@ void SimpleHouseDialog() {
             pButton->sLabel = GetJoinGuildDialogueOption(static_cast<GUILD_ID>(right_panel_window.wData.val));
             continue;
         case DIALOGUE_83_bounty_hunting:
-            v29 = pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting].pName;
-            v31 = *(int *)v29;
-
-            current_npc_text = stringPrintf(
-                bountyHunting_text,
-                fmt::format("\f{:05}{}\f{:05}", colorTable.PaleCanary.c16(), v31, colorTable.White.c16()).c_str(),
-                100 * (uint8_t) v29[8]);
-
+            current_npc_text = bountyHuntingText();
             pButton->sLabel.clear();
             continue;
         }
@@ -3637,8 +3417,8 @@ void GUIWindow_House::Release() {
 
     dword_5C35D4 = 0;
     if (engine->config->settings.FlipOnExit.Get()) {
-        pParty->sRotationZ = (TrigLUT.uIntegerDoublePi - 1) & (TrigLUT.uIntegerPi + pParty->sRotationZ);
-        pCamera3D->sRotationZ = pParty->sRotationZ;
+        pParty->_viewYaw = (TrigLUT.uIntegerDoublePi - 1) & (TrigLUT.uIntegerPi + pParty->_viewYaw);
+        pCamera3D->_viewYaw = pParty->_viewYaw;
     }
     pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
 

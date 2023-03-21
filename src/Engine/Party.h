@@ -9,8 +9,8 @@
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/Player.h"
 #include "Engine/Time.h"
+#include "GUI/UI/UIHouseEnums.h"
 #include "Library/Random/Random.h"
-
 
 #define PARTY_AUTONOTES_BIT__EMERALD_FIRE_FOUNTAIN 2
 
@@ -151,16 +151,14 @@ enum class PartyAlignment: int32_t {
 using enum PartyAlignment;
 
 /*  208 */
-#pragma pack(push, 1)
 struct PartyTimeStruct {
-    std::array<GameTime, 10> bountyHunting_next_generation_time;
+    IndexedArray<GameTime, HOUSE_TOWNHALL_FIRST, HOUSE_TOWNHALL_LAST> bountyHunting_next_generation_time; // Size was 10 originally.
     std::array<GameTime, 85> Shops_next_generation_time;  // field_50
     std::array<GameTime, 53> _shop_ban_times;
     std::array<GameTime, 10> CounterEventValues;  // (0xACD314h in Silvo's binary)
     std::array<GameTime, 29> HistoryEventTimes;  // (0xACD364h in Silvo's binary)
     std::array<GameTime, 20> _s_times;  // 5d8 440h+8*51     //(0xACD44Ch in Silvo's binary)
 };
-#pragma pack(pop)
 
 struct Party {
     Party() : playing_time(), last_regenerated() {
@@ -314,20 +312,20 @@ struct Party {
     int sEyelevel;
     int uDefaultEyelevel;
     int radius; // party radius, 37 by default.
-    int y_rotation_granularity;
+    int _yawGranularity;
     int uWalkSpeed;
-    int y_rotation_speed;  // deg/s
+    int _yawRotationSpeed;  // deg/s
     int jump_strength; // jump strength, higher value => higher jumps, default 5.
     int field_28_set0_unused;
     GameTime playing_time;  // uint64_t uTimePlayed;
     GameTime last_regenerated; // Timestamp when HP/MP regeneration was checked last time (using 5 minutes granularity)
     PartyTimeStruct PartyTimes;
     Vec3i vPosition;
-    int sRotationZ;
-    int sRotationY;
+    int _viewYaw;
+    int _viewPitch;
     Vec3i vPrevPosition;
-    int sPrevRotationZ;
-    int sPrevRotationY;
+    int _viewPrevYaw;
+    int _viewPrevPitch;
     int sPrevEyelevel;
     int field_6E0_set0_unused; // party old x/y ?
     int field_6E4_set0_unused; // party old x/y ?
@@ -360,16 +358,13 @@ struct Party {
     int uNumPrisonTerms;
     unsigned int uNumBountiesCollected;
     int field_74C_set0_unused;
-    std::array<int16_t, 5> monster_id_for_hunting;
-    std::array<int16_t, 5> monster_for_hunting_killed;
+    IndexedArray<int16_t, HOUSE_TOWNHALL_FIRST, HOUSE_TOWNHALL_LAST> monster_id_for_hunting;
+    IndexedArray<int16_t, HOUSE_TOWNHALL_FIRST, HOUSE_TOWNHALL_LAST> monster_for_hunting_killed; // TODO(captainurist): bool
     unsigned char days_played_without_rest;
     uint8_t _quest_bits[64];
     std::array<uint8_t, 16> pArcomageWins;
-    char field_7B5_in_arena_quest;
-    char uNumArenaPageWins;
-    char uNumArenaSquireWins;
-    char uNumArenaKnightWins;
-    char uNumArenaLordWins;
+    char field_7B5_in_arena_quest; // 0, DIALOGUE_ARENA_SELECT_PAGE..DIALOGUE_ARENA_SELECT_CHAMPION, or -1 for win
+    std::array<char, 4> uNumArenaWins; // 0=page, 1=squire, 2=knight, 3=lord
     IndexedArray<bool, ITEM_FIRST_SPAWNABLE_ARTIFACT, ITEM_LAST_SPAWNABLE_ARTIFACT> pIsArtifactFound;  // 7ba
     std::array<char, 39> field_7d7_set0_unused;
     unsigned char _autonote_bits[26];

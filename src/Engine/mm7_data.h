@@ -50,14 +50,6 @@ extern std::array<unsigned int, 4> pManaBarPos;
 extern std::array<int8_t, 88> monster_popup_y_offsets;
 extern unsigned char hourglass_icon_idx;
 
-extern const char *format_4E2D80;
-extern char format_4E2D90[8];
-extern const char *format_4E2DE8;  // idb
-extern const char *Stat_string_format_2_column_text;
-extern const char
-    *Stat_string_format_2_column_less_100;  // format text of resistance in
-                                            // Stats screen
-extern const char *Stat_string_format_2_column_over_100;
 extern int dword_4E455C;
 extern std::array<int, 6> dword_4E4560;
 extern std::array<int, 6> dword_4E4578;
@@ -379,8 +371,6 @@ extern char byte_AE5B91;
 extern std::array<int, 32> dword_F1B430;
 extern std::array<int, 4> player_levels;
 extern std::array<int16_t, 6> weapons_Ypos;  // word_F8B158
-extern int16_t bountyHunting_monster_id_for_hunting;
-extern const char *bountyHunting_text;  // idb
 extern int guild_membership_approved;
 extern PLAYER_SKILL_MASTERY dword_F8B1B0_MasteryBeingTaught;
 extern int gold_transaction_amount;  // F8B1B4

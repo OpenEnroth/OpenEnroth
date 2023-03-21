@@ -53,9 +53,7 @@ void Arena_SelectionFightLevel() {
             }
             if (v0 >= (signed int)pActors.size() || (signed int)pActors.size() <= 0) {
                 uDialogueType = DIALOGUE_ARENA_REWARD;
-                ++*((char *)&pParty->monster_for_hunting_killed[3] +
-                    (uint8_t)pParty->field_7B5_in_arena_quest +
-                    1);  // Ritor1:I dont know
+                pParty->uNumArenaWins[pParty->field_7B5_in_arena_quest - DIALOGUE_ARENA_SELECT_PAGE]++;
                 for (uint i = 0; i < 4; i++)
                     pParty->pPlayers[i].SetVariable(
                         VAR_Award,
@@ -69,8 +67,8 @@ void Arena_SelectionFightLevel() {
                 pParty->vPosition.y = 5770;
                 pParty->vPosition.z = 1;
                 pParty->uFallStartZ = 1;
-                pParty->sRotationZ = 512;
-                pParty->sRotationY = 0;
+                pParty->_viewYaw = 512;
+                pParty->_viewPitch = 0;
                 pParty->uFallSpeed = 0;
                 pAudioPlayer->PlaySound(SOUND_51heroism03, 0, 0, -1, 0, 0);
             }
@@ -138,8 +136,8 @@ void ArenaFight() {
     pParty->vPosition.y = 5770;
     pParty->vPosition.z = 1;
     pParty->uFallStartZ = 1;
-    pParty->sRotationZ = 512;
-    pParty->sRotationY = 0;
+    pParty->_viewYaw = 512;
+    pParty->_viewPitch = 0;
     pParty->uFallSpeed = 0;
     /*if ( (signed int)pCurrentFrameMessageQueue->uNumMessages < 40 )
     {

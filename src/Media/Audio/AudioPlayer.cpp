@@ -384,8 +384,8 @@ void AudioPlayer::ResumeSounds() {
 }
 
 void AudioPlayer::UpdateSounds() {
-    float pitch = pi * (float)pParty->sRotationY / 1024.f;
-    float yaw = pi * (float)pParty->sRotationZ / 1024.f;
+    float pitch = pi * (float)pParty->_viewPitch / 1024.f;
+    float yaw = pi * (float)pParty->_viewYaw / 1024.f;
     provider->SetOrientation(yaw, pitch);
     provider->SetListenerPosition(pParty->vPosition.x / 50.f,
                                   pParty->vPosition.y / 50.f,

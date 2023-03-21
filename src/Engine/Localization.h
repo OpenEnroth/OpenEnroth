@@ -480,8 +480,36 @@ class Localization {
         return this->skill_names[index];
     }
 
+    const char *MasteryName(PLAYER_SKILL_MASTERY mastery) const {
+        switch (mastery) {
+        case PLAYER_SKILL_MASTERY_NOVICE: return GetString(LSTR_NORMAL);
+        case PLAYER_SKILL_MASTERY_EXPERT: return GetString(LSTR_EXPERT);
+        case PLAYER_SKILL_MASTERY_MASTER: return GetString(LSTR_MASTER);
+        case PLAYER_SKILL_MASTERY_GRANDMASTER: return GetString(LSTR_GRAND);
+        default:
+            assert(false);
+            return nullptr;
+        }
+    }
+
+    const char *MasteryNameLong(PLAYER_SKILL_MASTERY mastery) const {
+        return mastery == PLAYER_SKILL_MASTERY_GRANDMASTER ? GetString(LSTR_GRANDMASTER) : MasteryName(mastery);
+    }
+
     const char *GetSkillDescription(PLAYER_SKILL_TYPE index) const {
         return this->skill_descriptions[index];
+    }
+
+    const char *GetSkillDescription(PLAYER_SKILL_TYPE index, PLAYER_SKILL_MASTERY mastery) const {
+        switch(mastery) {
+        case PLAYER_SKILL_MASTERY_NOVICE: return GetSkillDescriptionNormal(index);
+        case PLAYER_SKILL_MASTERY_EXPERT: return GetSkillDescriptionExpert(index);
+        case PLAYER_SKILL_MASTERY_MASTER: return GetSkillDescriptionMaster(index);
+        case PLAYER_SKILL_MASTERY_GRANDMASTER: return GetSkillDescriptionGrand(index);
+        default:
+            assert(false);
+            return nullptr;
+        }
     }
 
     const char *GetSkillDescriptionNormal(PLAYER_SKILL_TYPE index) const {

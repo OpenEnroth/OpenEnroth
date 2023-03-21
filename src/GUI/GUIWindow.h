@@ -29,6 +29,7 @@ struct Texture_MM7;
 
 class GUIFont;
 class GUIButton;
+class GUIWindow_House;
 
 struct WindowData {
     WindowData() {}
@@ -369,7 +370,6 @@ char sub_4637E0_is_there_popup_onscreen();
 void ClickNPCTopic(DIALOGUE_TYPE topic);
 void _4B3FE5_training_dialogue(int a4);
 void OracleDialogue();
-void CheckBountyRespawnAndAward();
 std::string _4B254D_SkillMasteryTeacher(int trainerInfo);
 std::string BuildDialogueString(const char *lpsz, uint8_t uPlayerID,
                            struct ItemGen *a3, int eventId, int a5,
@@ -393,7 +393,7 @@ void SkillTrainingDialogue(GUIWindow* dialogue, int num_skills_avaiable, int all
 extern GUIWindow *pPrimaryWindow;
 //extern GUIWindow *pChestWindow;
 extern GUIWindow *pDialogueWindow;
-extern GUIWindow *window_SpeakInHouse;
+extern GUIWindow_House *window_SpeakInHouse;
 extern GUIWindow_Scroll *pGUIWindow_ScrollWindow;
 extern GUIWindow *ptr_507BC8;
 extern GUIWindow *pGUIWindow_CurrentMenu;

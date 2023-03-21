@@ -201,7 +201,7 @@ void LoadGame(unsigned int uSlot) {
     // TODO: what is this magic? old party position correction with current angle settings?
     // TODO(captainurist): might be a source of non-determinism, just drop this.
     if (engine->config->settings.TurnSpeed.Get() > 0) {
-        pParty->sRotationZ = engine->config->settings.TurnSpeed.Get() * pParty->sRotationZ / engine->config->settings.TurnSpeed.Get();
+        pParty->_viewYaw = engine->config->settings.TurnSpeed.Get() * pParty->_viewYaw / engine->config->settings.TurnSpeed.Get();
     }
     MM7Initialization();
 
@@ -222,16 +222,16 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     int pPositionX = pParty->vPosition.x;
     int pPositionY = pParty->vPosition.y;
     int pPositionZ = pParty->vPosition.z;
-    int sPRotationY = pParty->sRotationZ;
-    int sPRotationX = pParty->sRotationY;
+    int partyViewYaw = pParty->_viewYaw;
+    int partyViewPitch = pParty->_viewPitch;
     pParty->vPosition.x = pParty->vPrevPosition.x;
     pParty->vPosition.z = pParty->vPrevPosition.z;
     pParty->vPosition.y = pParty->vPrevPosition.y;
 
     pParty->uFallStartZ = pParty->vPrevPosition.z;
 
-    pParty->sRotationZ = pParty->sPrevRotationZ;
-    pParty->sRotationY = pParty->sPrevRotationY;
+    pParty->_viewYaw = pParty->_viewPrevYaw;
+    pParty->_viewPitch = pParty->_viewPrevPitch;
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
         pIndoor->stru1.last_visit = pParty->GetPlayingTime();
     else
@@ -513,8 +513,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     pParty->vPosition.y = pPositionY;
     pParty->vPosition.z = pPositionZ;
     pParty->uFallStartZ = pPositionZ;
-    pParty->sRotationZ = sPRotationY;
-    pParty->sRotationY = sPRotationX;
+    pParty->_viewYaw = partyViewYaw;
+    pParty->_viewPitch = partyViewPitch;
 }
 
 void DoSavegame(unsigned int uSlot) {
@@ -619,11 +619,11 @@ void SaveNewGame() {
 
         pParty->uFallStartZ = 193;
 
-        pParty->sPrevRotationY = 0;
-        pParty->sPrevRotationZ = 512;
+        pParty->_viewPrevPitch = 0;
+        pParty->_viewPrevYaw = 512;
 
-        pParty->sRotationY = 0;
-        pParty->sRotationZ = 512;
+        pParty->_viewPitch = 0;
+        pParty->_viewYaw = 512;
 
         SaveGame(1, 1);
     }

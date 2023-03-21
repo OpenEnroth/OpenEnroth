@@ -118,7 +118,7 @@ void CastSpellInfoHelpers::castSpell() {
     for (CastSpellInfo &spellInfo : pCastSpellInfo) {  // cycle through spell queue
         SpriteObject pSpellSprite;
         CastSpellInfo *pCastSpell = &spellInfo;
-        int uRequiredMana, recoveryTime, failureRecoveryTime;
+        int uRequiredMana{}, recoveryTime{}, failureRecoveryTime{};
 
         if (pCastSpell->uSpellID == SPELL_NONE) {
             continue;  // spell item blank skip to next
@@ -171,8 +171,8 @@ void CastSpellInfoHelpers::castSpell() {
                 int player_pid = PID(OBJECT_Player, pCastSpell->uPlayerID + 1);
                 Actor::GetDirectionInfo(player_pid, spell_targeted_at, &target_direction, 0);  // target direciton
             } else {
-                target_direction.uYawAngle = pParty->sRotationZ;  // spray infront of party
-                target_direction.uPitchAngle = pParty->sRotationY;
+                target_direction.uYawAngle = pParty->_viewYaw;  // spray infront of party
+                target_direction.uPitchAngle = pParty->_viewPitch;
             }
         }
 
@@ -381,7 +381,7 @@ void CastSpellInfoHelpers::castSpell() {
                         pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
                     int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                    if (pSpellSprite.Create(pParty->sRotationZ, pParty->sRotationY + 10, spell_speed, pCastSpell->uPlayerID + 1) != -1 &&
+                    if (pSpellSprite.Create(pParty->_viewYaw, pParty->_viewPitch + 10, spell_speed, pCastSpell->uPlayerID + 1) != -1 &&
                             pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
                     }
@@ -979,7 +979,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (obj_type == OBJECT_Actor) {  // quick cast can specify target
                         dist = pActors[PID_ID(spell_targeted_at)].vPosition;
                     } else {
-                        dist = pParty->vPosition + Vec3i(2048 * pCamera3D->fRotationZCosine, 2048 * pCamera3D->fRotationZSine, 0);
+                        dist = pParty->vPosition + Vec3i(2048 * pCamera3D->_yawRotationCosine, 2048 * pCamera3D->_yawRotationSine, 0);
                     }
                     int j = 0, k = 0;
                     int yaw, pitch;
@@ -1197,7 +1197,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (obj_type == OBJECT_Actor) {  // quick cast can specify target
                         dist = pActors[PID_ID(spell_targeted_at)].vPosition;
                     } else {
-                        dist = pParty->vPosition + Vec3i(2048 * pCamera3D->fRotationZCosine, 2048 * pCamera3D->fRotationZSine, 0);
+                        dist = pParty->vPosition + Vec3i(2048 * pCamera3D->_yawRotationCosine, 2048 * pCamera3D->_yawRotationSine, 0);
                     }
                     int j = 0, k = 0;
                     int yaw, pitch;
@@ -1583,12 +1583,12 @@ void CastSpellInfoHelpers::castSpell() {
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
-                    pSpellSprite.uFacing = pParty->sRotationZ;
+                    pSpellSprite.uFacing = pParty->_viewYaw;
                     if (pParty->bTurnBasedModeOn) {
                         pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
                     int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                    if (pSpellSprite.Create(pParty->sRotationZ, pParty->sRotationY, spell_speed, pCastSpell->uPlayerID + 1) != -1 &&
+                    if (pSpellSprite.Create(pParty->_viewYaw, pParty->_viewPitch, spell_speed, pCastSpell->uPlayerID + 1) != -1 &&
                             pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
                     }
@@ -1606,12 +1606,12 @@ void CastSpellInfoHelpers::castSpell() {
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
-                    pSpellSprite.uFacing = (short)pParty->sRotationZ;
+                    pSpellSprite.uFacing = (short)pParty->_viewYaw;
                     if (pParty->bTurnBasedModeOn) {
                         pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
                     int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                    if (pSpellSprite.Create(pParty->sRotationZ, TrigLUT.uIntegerHalfPi / 2, spell_speed, 0) != -1 &&
+                    if (pSpellSprite.Create(pParty->_viewYaw, TrigLUT.uIntegerHalfPi / 2, spell_speed, 0) != -1 &&
                             pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
                     }
