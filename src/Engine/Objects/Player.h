@@ -287,7 +287,7 @@ struct Player {
     void SetCondition(Condition uConditionIdx, int blockable);
     bool IsClass(PLAYER_CLASS_TYPE class_type, bool check_honorary = true);
     void PlaySound(PlayerSpeech speech, int a3);
-    
+
     /**
      * @offset 0x494A25
      */
