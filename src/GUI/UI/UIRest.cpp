@@ -38,7 +38,7 @@ void GUIWindow_RestWindow::Update() {
     GUIButton2.uWidth = 171;
     GUIButton2.uHeight = 37;
     GUIButton2.pParent = pButton_RestUI_WaitUntilDawn->pParent;
-    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f,
                                 *(static_cast<Image **>(wData.ptr) + 15));
     GUIButton2.DrawLabel(

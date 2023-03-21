@@ -563,8 +563,8 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
             spriteid = spell_sprites.Create(yaw, pitch, launch_speed, 0);
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
-            pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Item, spriteid));
-            return;
+            pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Item, spriteid));
+            break;
         case SPELL_WATER_POISON_SPRAY:
             spell_num_objects = (std::to_underlying(skillMastery) * 2) - 1;
             spell_sprites.spell_target_pid = 0;
@@ -582,8 +582,8 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
             }
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
-            pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Item, spriteid));
-            return;
+            pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Item, spriteid));
+            break;
         case SPELL_AIR_SPARKS:
             spell_num_objects = (std::to_underlying(skillMastery) * 2) + 1;
             spell_spray_arc = (signed int)(60 * TrigLUT.uIntegerDoublePi) / 360;
@@ -595,8 +595,8 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
             }
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
-            pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Item, spriteid));
-            return;
+            pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Item, spriteid));
+            break;
         case SPELL_EARTH_DEATH_BLOSSOM:
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
                 return;
@@ -607,8 +607,8 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
             spriteid = spell_sprites.Create(yaw, launch_angle, launch_speed, 0);
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
-            pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Item, spriteid));
-            return;
+            pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Item, spriteid));
+            break;
 
         case SPELL_FIRE_HASTE:
             if (skillMastery >= PLAYER_SKILL_MASTERY_NOVICE) {
@@ -630,8 +630,8 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);  // звук алтаря
             //    PID was 0
-            pAudioPlayer->PlaySpellSound(uSpellID, PID_INVALID);
-            return;
+            pAudioPlayer->playSpellSound(uSpellID, PID_INVALID);
+            break;
         case SPELL_AIR_SHIELD:
         case SPELL_EARTH_STONESKIN:
         case SPELL_SPIRIT_HEROISM:
@@ -668,8 +668,8 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
             //    PID was 0
-            pAudioPlayer->PlaySpellSound(uSpellID, PID_INVALID);
-            return;
+            pAudioPlayer->playSpellSound(uSpellID, PID_INVALID);
+            break;
         case SPELL_FIRE_IMMOLATION:
             if (skillMastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                 spell_length = GameTime::FromMinutes(10 * skillLevel);
@@ -681,8 +681,8 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
             //    PID was 0
-            pAudioPlayer->PlaySpellSound(uSpellID, PID_INVALID);
-            return;
+            pAudioPlayer->playSpellSound(uSpellID, PID_INVALID);
+            break;
         case SPELL_FIRE_PROTECTION_FROM_FIRE:
         case SPELL_AIR_PROTECTION_FROM_AIR:
         case SPELL_WATER_PROTECTION_FROM_WATER:
@@ -717,8 +717,8 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
             //    PID was 0
-            pAudioPlayer->PlaySpellSound(uSpellID, PID_INVALID);
-            return;
+            pAudioPlayer->playSpellSound(uSpellID, PID_INVALID);
+            break;
         case SPELL_LIGHT_DAY_OF_THE_GODS:
             // Spell lengths for master and grandmaster were mixed up
             switch (skillMastery) {
@@ -743,10 +743,10 @@ void EventCastSpell(SPELL_TYPE uSpellID, PLAYER_SKILL_MASTERY skillMastery, PLAY
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
             //    PID was 0
-            pAudioPlayer->PlaySpellSound(uSpellID, PID_INVALID);
-            return;
+            pAudioPlayer->playSpellSound(uSpellID, PID_INVALID);
+            break;
         default:
-            return;
+            break;
     }
 }
 

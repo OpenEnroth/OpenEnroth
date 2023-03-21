@@ -121,13 +121,13 @@ void GUIWindow_QuestBook::Update() {
         books_primary_item_per_page + num_achieved_awards <
             full_num_items_in_book) {  // Click Bookmark Down(нажатие закладки
                                        // вниз)
-        pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_openbook);
         books_primary_item_per_page += num_achieved_awards;
         books_num_items_per_page[books_page_number++] = num_achieved_awards;
     }
     if (BtnUp_flag &&
         books_page_number) {  // Click Bookmark Up(Нажатие закладки вверх)
-        pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_openbook);
         --books_page_number;
         books_primary_item_per_page -=
             (uint8_t)books_num_items_per_page[books_page_number];

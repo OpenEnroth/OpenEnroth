@@ -1405,7 +1405,7 @@ void TravelByTransport() {
                 pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
             } else {
                 dialog_menu_id = DIALOGUE_MAIN;
-                pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_error);
             }
         }
     }
@@ -2507,7 +2507,7 @@ void MercenaryGuildDialog() {
             || (v6 = (short *)(&pPlayers[pParty->_activeCharacter]->uIntelligence +
                 dialog_menu_id),
                 *(short *)v6)) {
-            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_error);
         } else {
             if (pParty->GetGold() < pPrice) {
                 GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
@@ -3043,7 +3043,7 @@ void BackToHouseMenu() {
         window_SpeakInHouse->Release();
         pParty->uFlags &= 0xFFFFFFFD;
         if (EnterHouse(HOUSE_BODY_GUILD_ERATHIA)) {
-            pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_Invalid);
             window_SpeakInHouse = new GUIWindow_House({0, 0}, render->GetRenderDimensions(), HOUSE_BODY_GUILD_ERATHIA, "");
             window_SpeakInHouse->CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1);
             window_SpeakInHouse->CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, InputAction::SelectChar2);

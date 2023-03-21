@@ -260,7 +260,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
             spriteId = sprite.Create(pDir->uYawAngle, pDir->uPitchAngle, pObjectList->pObjects[sprite.uObjectDescID].uSpeed, 0);
             if (spriteId != -1) {
-                pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Item, spriteId));
+                pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Item, spriteId));
             }
             break;
 
@@ -284,7 +284,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
             actorPtr->pActorBuffs[ACTOR_BUFF_HASTE].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, 0, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.OrangeyRed.c32());
-            pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
+            pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
             break;
 
         case SPELL_FIRE_METEOR_SHOWER:
@@ -345,7 +345,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 k = grng->Random(1024) - 512;
             }
             if (spriteId != -1) {
-                pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Item, spriteId));
+                pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Item, spriteId));
             }
             break;
         }
@@ -397,7 +397,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 } while (spell_spray_angle_start <= spell_spray_angle_end);
             }
             if (spriteId != -1) {
-                pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Item, spriteId));
+                pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Item, spriteId));
             }
             break;
         }
@@ -422,7 +422,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
             actorPtr->pActorBuffs[ACTOR_BUFF_SHIELD].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, 0, 0, 0);
             // Spell sound was missing from before
-            pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
+            pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
             break;
 
         case SPELL_EARTH_STONESKIN:
@@ -445,7 +445,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
             actorPtr->pActorBuffs[ACTOR_BUFF_STONESKIN].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, realPoints + 5, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.Cioccolato.c32());
-            pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
+            pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
             break;
 
         case SPELL_SPIRIT_BLESS:
@@ -468,7 +468,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
             actorPtr->pActorBuffs[ACTOR_BUFF_STONESKIN].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, realPoints + 5, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.RioGrande.c32());
-            pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
+            pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
             break;
 
         case SPELL_SPIRIT_FATE:
@@ -492,7 +492,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
             actorPtr->pActorBuffs[ACTOR_BUFF_FATE].Apply(pParty->GetPlayingTime() + GameTime::FromMinutes(5), masteryLevel, spellPower, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.RioGrande.c32());
-            pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
+            pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
             break;
         }
 
@@ -516,7 +516,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
             actorPtr->pActorBuffs[ACTOR_BUFF_HEROISM].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, realPoints + 5, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.RioGrande.c32());
-            pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
+            pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
             break;
 
         case SPELL_BODY_HAMMERHANDS:
@@ -551,7 +551,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     pOtherOverlayList->_4418B1(11210, i + 100, 0, 65536);
                 }
             }
-            pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
+            pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
             break;
 
         case SPELL_LIGHT_DAY_OF_PROTECTION:
@@ -579,7 +579,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
             actorPtr->pActorBuffs[ACTOR_BUFF_DAY_OF_PROTECTION].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, spellPower, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.White.c32());
-            pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
+            pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Actor, uActorID));
             break;
         }
 
@@ -653,7 +653,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 } while (spell_spray_angle_start <= spell_spray_angle_end);
             }
             if (spriteId != -1) {
-                pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Item, spriteId));
+                pAudioPlayer->playSpellSound(uSpellID, PID(OBJECT_Item, spriteId));
             }
             break;
         }

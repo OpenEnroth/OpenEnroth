@@ -136,7 +136,7 @@ void GUIWindow_MapBook::Update() {
 
     if (BtnUp_flag | BtnDown_flag | Book_PageBtn3_flag | Book_PageBtn4_flag |
         Book_PageBtn5_flag | Book_PageBtn6_flag)
-        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_StartMainChoice02);
 
     BtnUp_flag = 0;
     BtnDown_flag = 0;
