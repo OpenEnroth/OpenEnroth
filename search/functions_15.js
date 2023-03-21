@@ -28,7 +28,7 @@ var searchData=
   ['updateeffect_25',['UpdateEffect',['../structexplosion__effect__struct.html#a436b1857a90644e9fe7e388415492944',1,'explosion_effect_struct']]],
   ['updatefog_26',['UpdateFog',['../structOutdoorLocation.html#a0a6da39ca4fa6c668663e87a51d706a2',1,'OutdoorLocation']]],
   ['updateobject_5ffn0_5fblv_27',['UpdateObject_fn0_BLV',['../structSpriteObject.html#a9e0d2e0c49fb02c2bf900de59aecff85',1,'SpriteObject']]],
-  ['updateobject_5ffn0_5fodm_28',['UpdateObject_fn0_ODM',['../structSpriteObject.html#a950e5cedc1e8cfc98d77ba9b3f91071f',1,'SpriteObject']]],
+  ['updateobjectodm_28',['updateObjectODM',['../structSpriteObject.html#a7b880a5e537090039de57ab8f724a226',1,'SpriteObject']]],
   ['updateobjects_29',['UpdateObjects',['../IRender_8h.html#a522912d67446895b0a03d01837b75a99',1,'UpdateObjects():&#160;SpriteObject.cpp'],['../SpriteObject_8cpp.html#a522912d67446895b0a03d01837b75a99',1,'UpdateObjects():&#160;SpriteObject.cpp']]],
   ['updateparticles_30',['UpdateParticles',['../structTrailParticleGenerator.html#aa8ede04bca9cbc38c4c0880f6645d6fc',1,'TrailParticleGenerator::UpdateParticles()'],['../classParticleEngine.html#a82017d932a3aac0e05acf6ed95783672',1,'ParticleEngine::UpdateParticles()']]],
   ['updateplayersandhirelingsemotions_31',['UpdatePlayersAndHirelingsEmotions',['../structParty.html#ae0e2e8cbee9642f7a915e2d43a86e8c4',1,'Party']]],
