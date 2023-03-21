@@ -138,11 +138,11 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
     int level = ODM_GetFloorLevel(pSpriteObjects[uLayingItemID].vPosition, object->uHeight, &onWater, &bmodelPid, 0);
     bool isAboveGround = pSpriteObjects[uLayingItemID].vPosition.z > level + 1;
     if (!isAboveGround && onWater) {
-        int newZ = level + 60;
+        int splashZ = level + 60;
         if (bmodelPid) {
-            newZ = level + 30;
+            splashZ = level + 30;
         }
-        createSplashObject({pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, newZ});
+        createSplashObject({pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, splashZ});
         SpriteObject::OnInteraction(uLayingItemID);
     }
 
@@ -152,7 +152,8 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         } else if (isHighSlope) {
             Vec3i norm;
             ODM_GetTerrainNormalAt(pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, &norm);
-            pSpriteObjects[uLayingItemID].vVelocity.z = level + 1 - (pEventTimer->uTimeElapsed * GetGravityStrength());
+            pSpriteObjects[uLayingItemID].vPosition.z = level + 1;
+            pSpriteObjects[uLayingItemID].vVelocity.z -= (pEventTimer->uTimeElapsed * GetGravityStrength());
 
             int dotFix = abs(dot(norm, pSpriteObjects[uLayingItemID].vVelocity)) >> 16;
             // v60 = ((uint64_t)(v56 * (int64_t)v51.x) >> 16);
@@ -224,12 +225,12 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         int gridY = WorldPosToGridCellY(pSpriteObjects[uLayingItemID].vPosition.y);
         CollideOutdoorWithDecorations(gridX, gridY);
         ObjectType casterType = PID_TYPE(pSpriteObjects[uLayingItemID].spell_caster_pid);
-        int casterId = PID_ID(pSpriteObjects[uLayingItemID].spell_caster_pid);
         if (casterType != OBJECT_Player) {
             CollideWithParty(false);
         }
         if (casterType == OBJECT_Actor) {
             int actorId = PID_ID(pSpriteObjects[uLayingItemID].spell_caster_pid);
+            // TODO: why pActors.size() - 1? Should just check for .size()
             if ((actorId >= 0) && (actorId < (pActors.size() - 1))) {
                 for (int j = 0; j < pActors.size(); ++j) {
                     if (pActors[actorId].GetActorsRelation(&pActors[j])) {
@@ -249,11 +250,11 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         int collisionLevel = ODM_GetFloorLevel(collisionPos, object->uHeight, &collisionOnWater, &collisionBmodelPid, 0);
         // TOOD(Nik-RE-dev): why initail "onWater" is used?
         if (onWater && collisionZ < (collisionLevel + 60)) {
-            int newZ = level + 60;
+            int splashZ = level + 60;
             if (collisionBmodelPid) {
-                newZ = collisionLevel + 30;
+                splashZ = collisionLevel + 30;
             }
-            createSplashObject({pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, newZ});
+            createSplashObject({pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, splashZ});
             SpriteObject::OnInteraction(uLayingItemID);
             return;
         }
