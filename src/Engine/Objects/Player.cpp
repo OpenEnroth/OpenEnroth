@@ -7788,7 +7788,7 @@ void Player::PlaySound(PlayerSpeech speech, int a3) {
     }
     if (expressionCount) {
         expression = (CHARACTER_EXPRESSION_ID)expressionVariantArray[vrng->Random(expressionCount)];
-        if (expression == CHARACTER_EXPRESSION_21 && pickedSoundID) {
+        if (expression == CHARACTER_EXPRESSION_TALK && pickedSoundID) {
             pSoundID = pickedSoundID;
             if (pSoundID >= 0) {
                 expressionDuration = (sLastTrackLengthMS << 7) / 1000;
