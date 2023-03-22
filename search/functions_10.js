@@ -58,7 +58,7 @@ var searchData=
   ['playbink_55',['PlayBink',['../classIMovie.html#ac297aff4eeb3da93bb997624c61e1876',1,'IMovie::PlayBink()'],['../classMovie.html#a1a13f576c5b9fb53f64e224b2c15c0e4',1,'Movie::PlayBink()']]],
   ['playbuttonclicksound_56',['PlayButtonClickSound',['../Engine_8h.html#a46472657a76c2669922d1d101c859cdd',1,'PlayButtonClickSound():&#160;Engine.cpp'],['../Engine_8cpp.html#a46472657a76c2669922d1d101c859cdd',1,'PlayButtonClickSound():&#160;Engine.cpp']]],
   ['playcard_57',['PlayCard',['../Arcomage_8cpp.html#a31f70031a5f442244757cb4dcae54d0e',1,'Arcomage.cpp']]],
-  ['playemotion_58',['PlayEmotion',['../structPlayer.html#a5a20396fe5ed3910a5078f861c58f10d',1,'Player']]],
+  ['playemotion_58',['playEmotion',['../structPlayer.html#a5189166e0f9f58e5b20f85b731408112',1,'Player']]],
   ['player_59',['Player',['../structPlayer.html#affe0cc3cb714f6deb4e62f0c0d3f1fd8',1,'Player']]],
   ['playercreation_5fchoose4skills_60',['PlayerCreation_Choose4Skills',['../UIPartyCreation_8cpp.html#acc14ff169434b925abd90f1ae0eeee79',1,'UIPartyCreation.cpp']]],
   ['playercreation_5fgetunspentattributepointcount_61',['PlayerCreation_GetUnspentAttributePointCount',['../Player_8cpp.html#a4f8f745d8a5e19a2f27c5ae1196a3967',1,'PlayerCreation_GetUnspentAttributePointCount():&#160;Player.cpp'],['../Player_8h.html#a4f8f745d8a5e19a2f27c5ae1196a3967',1,'PlayerCreation_GetUnspentAttributePointCount():&#160;Player.cpp']]],

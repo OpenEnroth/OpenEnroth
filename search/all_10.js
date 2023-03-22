@@ -590,7 +590,7 @@ var searchData=
   ['playdeck_587',['playDeck',['../Arcomage_8cpp.html#a583456923713786a8695917e4a59a6ac',1,'Arcomage.cpp']]],
   ['playdiscard_5fanim_5fstart_588',['playdiscard_anim_start',['../Arcomage_8cpp.html#ae6239355dfa92a45af6640983dc85757',1,'Arcomage.cpp']]],
   ['played_5fcard_5fid_589',['played_card_id',['../Arcomage_8cpp.html#af35bfe1e6d4c0bcad737893975eaf78b',1,'Arcomage.cpp']]],
-  ['playemotion_590',['PlayEmotion',['../structPlayer.html#a5a20396fe5ed3910a5078f861c58f10d',1,'Player']]],
+  ['playemotion_590',['playEmotion',['../structPlayer.html#a5189166e0f9f58e5b20f85b731408112',1,'Player']]],
   ['player_591',['Player',['../structPlayer.html',1,'Player'],['../structPlayer.html#affe0cc3cb714f6deb4e62f0c0d3f1fd8',1,'Player::Player()']]],
   ['player_2ecpp_592',['Player.cpp',['../Player_8cpp.html',1,'']]],
   ['player_2eh_593',['Player.h',['../Player_8h.html',1,'']]],
