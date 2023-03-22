@@ -1189,14 +1189,15 @@ bool Party::AddItemToParty(ItemGen *pItem) {
     char *v5;         // eax@8
     // Texture_MM7 *v7; // ebx@10
     signed int v8;  // esi@10
-    Player *v9;     // edi@11
     int v10;        // eax@11
     // int v21; // [sp+24h] [bp-4h]@10
 
     assert(pParty->_activeCharacter > 0); // code in this function couldn't handle pParty->_activeCharacter = 0 and crash
 
     ITEM_TYPE v2 = pItem->uItemID;
-    if (!pItemTable->pItems[v2].uItemID_Rep_St) pItem->SetIdentified();
+    if (!pItemTable->pItems[v2].uItemID_Rep_St) {
+        pItem->SetIdentified();
+    }
 
     v5 = pItemTable->pItems[v2].pIconName;
     if (v5) {
@@ -1206,13 +1207,13 @@ bool Party::AddItemToParty(ItemGen *pItem) {
         for (int i = 0; i < 4; i++) {
             current_player = current_player + i;
             if (current_player > 4) current_player = current_player - 4;
-            v9 = ::pPlayers[current_player];
-            v10 = v9->AddItem(-1, pItem->uItemID);
+            Player *player = ::pPlayers[current_player];
+            v10 = player->AddItem(-1, pItem->uItemID);
             if (v10) {
-                memcpy(&v9->pInventoryItemList[v10 - 1], pItem, 0x24u);
+                memcpy(&player->pInventoryItemList[v10 - 1], pItem, 0x24u);
                 pItem->Reset();
                 pAudioPlayer->PlaySound(SOUND_gold01, 0, 0, -1, 0, 0);
-                v9->PlaySound(SPEECH_FoundItem, 0);
+                player->playReaction(SPEECH_FoundItem);
 
                 if (texture) {
                     texture->Release();

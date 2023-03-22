@@ -101,7 +101,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
         if (pMapStats->GetMapInfo(v15)) {
             transition_button_label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[pMapStats->GetMapInfo(v15)].pName.c_str());
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor && pParty->_activeCharacter && pParty->GetRedOrYellowAlert())
-                pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_LeaveDungeon, 0);
+                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_LeaveDungeon);
             if (IndoorLocation::GetLocationIndex(pLocationName))
                 uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(pLocationName);
         } else {
@@ -109,7 +109,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
             if (pAnimatedRooms[p2DEvents[anim_id].uAnimationID].uRoomSoundId)
                 PlayHouseSound(anim_id, HouseSound_Greeting);
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor && pParty->_activeCharacter && pParty->GetRedOrYellowAlert())
-                pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_LeaveDungeon, 0);
+                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_LeaveDungeon);
             if (IndoorLocation::GetLocationIndex(pLocationName))
                 uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(pLocationName);
         }
@@ -119,7 +119,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
             if (pAnimatedRooms[p2DEvents[anim_id].uAnimationID].uRoomSoundId)
                 PlayHouseSound(anim_id, HouseSound_Greeting);
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor && pParty->_activeCharacter && pParty->GetRedOrYellowAlert())
-                pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_LeaveDungeon, 0);
+                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_LeaveDungeon);
             if (IndoorLocation::GetLocationIndex(pLocationName))
                 uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(pLocationName);
         } else {
@@ -127,7 +127,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
             if ( pAnimatedRooms[p2DEvents[anim_id].uAnimationID].uRoomSoundId)
                 PlayHouseSound(anim_id, HouseSound_Greeting);
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor && pParty->_activeCharacter && pParty->GetRedOrYellowAlert())
-                pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_LeaveDungeon, 0);
+                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_LeaveDungeon);
             if (IndoorLocation::GetLocationIndex(pLocationName))
                 uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(pLocationName);
         }

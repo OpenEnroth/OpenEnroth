@@ -559,15 +559,15 @@ LABEL_47:
                     break;
                 case EVENT_CharacterAnimation:
                     if (_evt->v5 <= 3) {  // someone
-                        pParty->pPlayers[_evt->v5].PlaySound((PlayerSpeech)_evt->v6, 0);
+                        pParty->pPlayers[_evt->v5].playReaction((PlayerSpeech)_evt->v6);
                     } else if (_evt->v5 == 4) {  // active
-                        pPlayers[pParty->_activeCharacter]->PlaySound((PlayerSpeech)_evt->v6, 0);
+                        pPlayers[pParty->_activeCharacter]->playReaction((PlayerSpeech)_evt->v6);
                     } else if (_evt->v5 == 5) {  // all
                         for (Player &player : pParty->pPlayers) {
-                            player.PlaySound((PlayerSpeech)_evt->v6, 0);
+                            player.playReaction((PlayerSpeech)_evt->v6);
                         }
                     } else {  // random
-                        pParty->pPlayers[vrng->Random(4)].PlaySound((PlayerSpeech)_evt->v6, 0);
+                        pParty->pPlayers[vrng->Random(4)].playReaction((PlayerSpeech)_evt->v6);
                     }
                     ++curr_seq_num;
                     break;

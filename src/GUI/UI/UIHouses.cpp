@@ -840,8 +840,9 @@ bool EnterHouse(HOUSE_ID uHouseID) {
         }
 
         GameUI_SetStatusBar(LSTR_FMT_OPEN_TIME, uOpenTime, localization->GetAmPm(am_pm_flag_open), uCloseTime, localization->GetAmPm(am_pm_flag_close));
-        if (pParty->_activeCharacter)
-            pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_StoreClosed, 0);
+        if (pParty->_activeCharacter) {
+            pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_StoreClosed);
+        }
 
         return 0;
     } else {
@@ -1396,7 +1397,7 @@ void TravelByTransport() {
                 }
 
                 RestAndHeal(24 * 60 * traveltimedays);
-                pPlayers[pParty->_activeCharacter]->PlaySound(pSpeech, 0);
+                pPlayers[pParty->_activeCharacter]->playReaction(pSpeech);
                 auto timeLimit = std::chrono::system_clock::now() + std::chrono::milliseconds(speechlength);
                 while (std::chrono::system_clock::now() < timeLimit) {
                     std::this_thread::sleep_for(1ms);
@@ -1530,7 +1531,7 @@ void TownHallDialog() {
                     pParty->TakeGold(sum);
                     pParty->TakeFine(sum);
                     if (pParty->_activeCharacter)
-                        pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_BankDeposit, 0);
+                        pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_BankDeposit);
                 }
             }
         }
@@ -1596,7 +1597,7 @@ void BankDialog() {
                 pParty->TakeGold(sum);
                 pParty->AddBankGold(sum);
                 if (pParty->_activeCharacter) {
-                    pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_BankDeposit, 0);
+                    pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_BankDeposit);
                 }
             }
         }
@@ -1885,7 +1886,7 @@ void TavernDialog() {
             p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier) {
             GameUI_SetStatusBar(LSTR_RATIONS_FULL);
             if (pParty->_activeCharacter)
-                pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_PacksFull, 0);
+                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_PacksFull);
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
@@ -2062,8 +2063,8 @@ void TempleDialog() {
                     pParty->_activeCharacter - 1,
                     pPlayers[pParty->_activeCharacter]->uPrevFace);
             }
-            pAudioPlayer->PlaySound((SoundID)SOUND_heal, PID_INVALID, 0, -1, 0, 0);
-            pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_TempleHeal, 0);
+            pAudioPlayer->PlaySound(SOUND_heal, PID_INVALID, 0, -1, 0, 0);
+            pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_TempleHeal);
             pOtherOverlayList->_4418B1(20, pParty->_activeCharacter + 99, 0, 65536);
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
@@ -2076,8 +2077,8 @@ void TempleDialog() {
             if (!pPlayers[pParty->_activeCharacter]->conditions.Has(Condition_Eradicated) &&
                 !pPlayers[pParty->_activeCharacter]->conditions.Has(Condition_Petrified) &&
                 !pPlayers[pParty->_activeCharacter]->conditions.Has(Condition_Dead)) {
-                pAudioPlayer->PlaySound((SoundID)SOUND_heal, PID_INVALID, 0, -1, 0, 0);
-                pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_TempleHeal, 0);
+                pAudioPlayer->PlaySound(SOUND_heal, PID_INVALID, 0, -1, 0, 0);
+                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_TempleHeal);
                 pOtherOverlayList->_4418B1(20, pParty->_activeCharacter + 99, 0, 65536);
                 pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
                 return;
@@ -2100,8 +2101,8 @@ void TempleDialog() {
         // HIDWORD(pPlayers[pParty->_activeCharacter]->pConditions[Condition_Zombie]) =
         // (int)v39;
         pPlayers[pParty->_activeCharacter]->conditions.Set(Condition_Zombie, pParty->GetPlayingTime());
-        pAudioPlayer->PlaySound((SoundID)SOUND_heal, PID_INVALID, 0, -1, 0, 0);
-        pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_TempleHeal, 0);
+        pAudioPlayer->PlaySound(SOUND_heal, PID_INVALID, 0, -1, 0, 0);
+        pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_TempleHeal);
         pOtherOverlayList->_4418B1(20, pParty->_activeCharacter + 99, 0, 65536);
         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
         return;
@@ -2138,7 +2139,7 @@ void TempleDialog() {
                 }
             }
             ++byte_F8B1EF[pParty->_activeCharacter];
-            pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_TempleDonate, 0);
+            pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_TempleDonate);
             GameUI_SetStatusBar(LSTR_THANK_YOU);
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
@@ -2361,7 +2362,7 @@ void TrainingDialog(const char *s) {
                             if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
                                 pOutdoor->SetFog();
                         }
-                        pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_LevelUp, 0);
+                        pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_LevelUp);
 
                         GameUI_SetStatusBar(
                             LSTR_FMT_S_NOW_LEVEL_D,
