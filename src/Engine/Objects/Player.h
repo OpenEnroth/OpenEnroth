@@ -291,7 +291,7 @@ struct Player {
     /**
      * @offset 0x494A25
      */
-    void setEmotion(CHARACTER_EXPRESSION_ID expression, int duration);
+    void playEmotion(CHARACTER_EXPRESSION_ID expression, int duration);
     void ItemsPotionDmgBreak(int enchant_count);
     unsigned int GetItemListAtInventoryIndex(int inout_item_cell);
     unsigned int GetItemMainInventoryIndex(int inout_item_cell);

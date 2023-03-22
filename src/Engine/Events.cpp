@@ -545,15 +545,15 @@ LABEL_47:
                     break;
                 case EVENT_ShowFace:
                     if (_evt->v5 <= 3u) {  // someone
-                        pParty->pPlayers[_evt->v5].setEmotion((CHARACTER_EXPRESSION_ID)_evt->v6, 0);
+                        pParty->pPlayers[_evt->v5].playEmotion((CHARACTER_EXPRESSION_ID)_evt->v6, 0);
                     } else if (_evt->v5 == 4) {  // active
-                        pPlayers[pParty->_activeCharacter]->setEmotion((CHARACTER_EXPRESSION_ID)_evt->v6, 0);
+                        pPlayers[pParty->_activeCharacter]->playEmotion((CHARACTER_EXPRESSION_ID)_evt->v6, 0);
                     } else if (_evt->v5 == 5) {  // all players
                         for (Player &player : pParty->pPlayers) {
-                            player.setEmotion((CHARACTER_EXPRESSION_ID)_evt->v6, 0);
+                            player.playEmotion((CHARACTER_EXPRESSION_ID)_evt->v6, 0);
                         }
                     } else {  // random player
-                        pParty->pPlayers[vrng->Random(4)].setEmotion((CHARACTER_EXPRESSION_ID)_evt->v6, 0);
+                        pParty->pPlayers[vrng->Random(4)].playEmotion((CHARACTER_EXPRESSION_ID)_evt->v6, 0);
                     }
                     ++curr_seq_num;
                     break;

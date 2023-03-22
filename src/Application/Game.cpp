@@ -1456,7 +1456,7 @@ void Game::EventLoop() {
                     uGameState = GAME_STATE_PLAYING;
 
                     for (Player &player : pParty->pPlayers) {
-                        player.setEmotion(CHARACTER_EXPRESSION_WIDE_SMILE, 0);
+                        player.playEmotion(CHARACTER_EXPRESSION_WIDE_SMILE, 0);
                     }
 
                     // strcpy((char *)userInputHandler->pPressedKeysBuffer, "2");
