@@ -287,7 +287,11 @@ struct Player {
     void SetCondition(Condition uConditionIdx, int blockable);
     bool IsClass(PLAYER_CLASS_TYPE class_type, bool check_honorary = true);
     void PlaySound(PlayerSpeech speech, int a3);
-    void PlayEmotion(CHARACTER_EXPRESSION_ID expression, int duration);
+
+    /**
+     * @offset 0x494A25
+     */
+    void playEmotion(CHARACTER_EXPRESSION_ID expression, int duration);
     void ItemsPotionDmgBreak(int enchant_count);
     unsigned int GetItemListAtInventoryIndex(int inout_item_cell);
     unsigned int GetItemMainInventoryIndex(int inout_item_cell);

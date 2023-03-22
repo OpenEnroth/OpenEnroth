@@ -1455,8 +1455,9 @@ void Game::EventLoop() {
 
                     uGameState = GAME_STATE_PLAYING;
 
-                    for (int i = 0; i < 4; ++i)
-                        pParty->pPlayers[i].PlayEmotion(CHARACTER_EXPRESSION_SMILE, 0);
+                    for (Player &player : pParty->pPlayers) {
+                        player.playEmotion(CHARACTER_EXPRESSION_WIDE_SMILE, 0);
+                    }
 
                     // strcpy((char *)userInputHandler->pPressedKeysBuffer, "2");
                     // __debugbreak();  // missed break/continue?

@@ -2112,7 +2112,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 for (Player &player : pParty->pPlayers) {
                     if (!player.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
                         !player.WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS)) {  // was 8
-                        player.PlayEmotion(CHARACTER_EXPRESSION_SCARED, 0);
+                        player.playEmotion(CHARACTER_EXPRESSION_SCARED, 0);
                     }
                 }
             }

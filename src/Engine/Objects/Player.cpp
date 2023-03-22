@@ -7761,9 +7761,9 @@ void Player::PlaySound(PlayerSpeech speech, int a3) {
 
     unsigned int pickedSoundID = 0;
     if (engine->config->settings.VoiceLevel.Get() > 0) {
-        for (int i = 0; i < 2; i++) {
-            if (SoundSetAction[speech][i]) {
-                speechVariantArray[speechCount] = SoundSetAction[speech][i];
+        for (int i = 0; i < speechVariants[speech].size(); i++) {
+            if (speechVariants[speech][i]) {
+                speechVariantArray[speechCount] = speechVariants[speech][i];
                 speechCount++;
             }
         }
@@ -7780,28 +7780,25 @@ void Player::PlaySound(PlayerSpeech speech, int a3) {
         }
     }
 
-    for (int i = 0; i < 5; i++) {
-        if (SoundSetAction[speech][i + 3]) {
-            expressionVariantArray[expressionCount] =
-                SoundSetAction[speech][i + 3];
+    for (int i = 0; i < expressionVariants[speech].size(); i++) {
+        if (expressionVariants[speech][i]) {
+            expressionVariantArray[expressionCount] = expressionVariants[speech][i];
             expressionCount++;
         }
     }
     if (expressionCount) {
-        expression = (CHARACTER_EXPRESSION_ID)
-            expressionVariantArray[vrng->Random(expressionCount)];
-        if (expression == CHARACTER_EXPRESSION_21 && pickedSoundID) {
+        expression = (CHARACTER_EXPRESSION_ID)expressionVariantArray[vrng->Random(expressionCount)];
+        if (expression == CHARACTER_EXPRESSION_TALK && pickedSoundID) {
             pSoundID = pickedSoundID;
             if (pSoundID >= 0) {
                 expressionDuration = (sLastTrackLengthMS << 7) / 1000;
             }
         }
-        PlayEmotion(expression, expressionDuration);
+        playEmotion(expression, expressionDuration);
     }
 }
 
-//----- (00494A25) --------------------------------------------------------
-void Player::PlayEmotion(CHARACTER_EXPRESSION_ID new_expression, int duration) {
+void Player::playEmotion(CHARACTER_EXPRESSION_ID new_expression, int duration) {
     // 38 - sparkles 1 player?
 
     unsigned int currexpr = expression;

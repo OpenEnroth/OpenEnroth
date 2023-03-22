@@ -791,7 +791,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
         uFramesetID =
             pPlayerFrameTable->GetFrameIdByExpression(player->expression);
         if (!uFramesetID) uFramesetID = 1;
-        if (player->expression == CHARACTER_EXPRESSION_21)
+        if (player->expression == CHARACTER_EXPRESSION_TALK)
             v15 = pPlayerFrameTable->GetFrameBy_y(
                 &player->_expression21_frameset,
                 &player->_expression21_animtime, pMiscTimer->uTimeElapsed);
@@ -1505,7 +1505,7 @@ void GameUI_DrawPortraits() {
                 break;
             }
         if (face_expression_ID == 0) face_expression_ID = 1;
-        if (pPlayer->expression == CHARACTER_EXPRESSION_21)
+        if (pPlayer->expression == CHARACTER_EXPRESSION_TALK)
             pFrame = pPlayerFrameTable->GetFrameBy_y(
                 &pPlayer->_expression21_frameset,
                 &pPlayer->_expression21_animtime, pMiscTimer->uTimeElapsed);

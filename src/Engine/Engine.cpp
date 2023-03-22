@@ -1510,7 +1510,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
             if (player.WearsItem(ITEM_RELIC_HARECKS_LEATHER, ITEM_SLOT_ARMOUR) ||
                 player.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
                 player.pPlayerBuffs[PLAYER_BUFF_WATER_WALK].expire_time) {
-                player.PlayEmotion(CHARACTER_EXPRESSION_37, 0);
+                player.playEmotion(CHARACTER_EXPRESSION_SMILE, 0);
             } else {
                 if (!player.HasUnderwaterSuitEquipped()) {
                     player.ReceiveDamage((int64_t)player.GetMaxHealth() * 0.1, DMGT_FIRE);
@@ -1518,7 +1518,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
                         GameUI_SetStatusBarShortNotification(localization->GetString(LSTR_YOURE_DROWNING));
                     }
                 } else {
-                    player.PlayEmotion(CHARACTER_EXPRESSION_37, 0);
+                    player.playEmotion(CHARACTER_EXPRESSION_SMILE, 0);
                 }
             }
         }

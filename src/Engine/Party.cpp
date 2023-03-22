@@ -802,19 +802,19 @@ void Party::UpdatePlayersAndHirelingsEmotions() {
                 if (v4 < 25)
                     player.expression = CHARACTER_EXPRESSION_BLINK;
                 else if (v4 < 31)
-                    player.expression = CHARACTER_EXPRESSION_14;
+                    player.expression = CHARACTER_EXPRESSION_WINK;
                 else if (v4 < 37)
-                    player.expression = CHARACTER_EXPRESSION_15;
+                    player.expression = CHARACTER_EXPRESSION_MOUTH_OPEN_RANDOM;
                 else if (v4 < 43)
-                    player.expression = CHARACTER_EXPRESSION_16;
+                    player.expression = CHARACTER_EXPRESSION_PURSE_LIPS_RANDOM;
                 else if (v4 < 46)
-                    player.expression = CHARACTER_EXPRESSION_17;
+                    player.expression = CHARACTER_EXPRESSION_LOOK_UP;
                 else if (v4 < 52)
-                    player.expression = CHARACTER_EXPRESSION_18;
+                    player.expression = CHARACTER_EXPRESSION_LOOK_RIGHT;
                 else if (v4 < 58)
-                    player.expression = CHARACTER_EXPRESSION_19;
+                    player.expression = CHARACTER_EXPRESSION_LOOK_LEFT;
                 else if (v4 < 64)
-                    player.expression = CHARACTER_EXPRESSION_20;
+                    player.expression = CHARACTER_EXPRESSION_LOOK_DOWN;
                 else if (v4 < 70)
                     player.expression = CHARACTER_EXPRESSION_54;
                 else if (v4 < 76)
@@ -824,9 +824,9 @@ void Party::UpdatePlayersAndHirelingsEmotions() {
                 else if (v4 < 88)
                     player.expression = CHARACTER_EXPRESSION_57;
                 else if (v4 < 94)
-                    player.expression = CHARACTER_EXPRESSION_29;
+                    player.expression = CHARACTER_EXPRESSION_PURSE_LIPS_1;
                 else
-                    player.expression = CHARACTER_EXPRESSION_30;
+                    player.expression = CHARACTER_EXPRESSION_PURSE_LIPS_2;
             }
 
             for (unsigned int j = 0; j < pPlayerFrameTable->uNumFrames; ++j) {
