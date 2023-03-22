@@ -790,12 +790,12 @@ int Player::AddItem(int index, ITEM_TYPE uItemID) {
             }
         }
 
-        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_error);
         return 0;  // no space cant add item
     }
 
     if (!CanFitItem(index, uItemID)) {
-        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_error);
         return 0;  // cant fit item
     }
 
@@ -3773,7 +3773,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 pParty->pPickedItem.GetDisplayName().c_str()
             );
 
-            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_error);
             return;
         }
         pAudioPlayer->PlaySound(SOUND_eat, 0, 0, -1, 0, 0);
@@ -4193,7 +4193,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     pParty->pPickedItem.GetDisplayName().c_str()
                 );
 
-                pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_error);
                 return;
         }
         pAudioPlayer->PlaySound(SOUND_drink, 0, 0, -1, 0, 0);
@@ -4229,12 +4229,12 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 )
             );
 
-            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_error);
             return;
         }
         if (engine->IsUnderwater()) {
             GameUI_SetStatusBar(LSTR_CANT_DO_UNDERWATER);
-            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_error);
             return;
         }
 
@@ -4268,7 +4268,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 pParty->pPickedItem.GetDisplayName().c_str()
             );
 
-            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_error);
             return;
         }
         if (!playerAffected->CanAct()) {
@@ -4279,7 +4279,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 )
             );
 
-            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_error);
             return;
         }
         // TODO: get rid of this messy cast
@@ -4359,7 +4359,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             )
         );
 
-        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_error);
         return;
     } else {
         if (pParty->pPickedItem.uItemID == ITEM_GENIE_LAMP) {
@@ -4528,7 +4528,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 pParty->pPickedItem.GetDisplayName().c_str()
             );
 
-            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_error);
             return;
         }
 

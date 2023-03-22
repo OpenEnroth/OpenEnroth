@@ -796,7 +796,7 @@ void GUIWindow_Scroll::Update() {
 
 void OnButtonClick::Update() {
     if (bPlaySound) {
-        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
@@ -808,7 +808,7 @@ void OnButtonClick::Update() {
 
 void OnButtonClick2::Update() {
     if (bPlaySound) {
-        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     Sizei renDims = render->GetRenderDimensions();
@@ -825,7 +825,7 @@ void OnButtonClick2::Update() {
 
 void OnButtonClick3::Update() {
     if (!sHint.empty()) {
-        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
@@ -837,7 +837,7 @@ void OnButtonClick3::Update() {
 
 void OnButtonClick4::Update() {
     if (!sHint.empty()) {
-        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
@@ -847,7 +847,7 @@ void OnButtonClick4::Update() {
 
 void OnSaveLoad::Update() {
     if (!sHint.empty()) {
-        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
@@ -865,7 +865,7 @@ void OnSaveLoad::Update() {
 
 void OnCancel::Update() {
     if (sHint.empty()) {
-        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
     GUIButton *pGUIButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pGUIButton->vTextures[0]);
@@ -879,7 +879,7 @@ void OnCancel::Update() {
 
 void OnCancel2::Update() {
     if (!sHint.empty()) {
-        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
@@ -893,7 +893,7 @@ void OnCancel2::Update() {
 
 void OnCancel3::Update() {
     if (!sHint.empty()) {
-        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
 
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);

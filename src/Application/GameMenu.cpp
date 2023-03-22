@@ -197,7 +197,7 @@ void Menu::EventLoop() {
 
             case UIMSG_ChangeKeyButton: {
                 if (currently_selected_action_for_binding != InputAction::Invalid) {
-                    pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_error);
                 } else {
                     currently_selected_action_for_binding = (InputAction)param;
                     if (KeyboardPageNum != 1)
@@ -399,7 +399,7 @@ void Menu::EventLoop() {
                         }
                     }
                     if (anyBindingErrors) {
-                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+                        pAudioPlayer->playUISound(SOUND_error);
                         break; // deny to exit options until all key conflicts are solved
                     } else {
                         for (uint i = 0; i < 5; i++) {

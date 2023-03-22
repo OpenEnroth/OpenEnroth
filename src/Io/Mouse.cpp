@@ -350,7 +350,7 @@ bool UI_OnKeyDown(PlatformKey key) {
             if (win->pCurrentPosActiveItem - win->pStartingPosActiveItem - v12 >= 0) {
                 win->pCurrentPosActiveItem -= v12;
                 if (current_screen_type == CURRENT_SCREEN::SCREEN_PARTY_CREATION) {
-                    pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
                 }
             }
             if (win->field_30 != 0) {
@@ -364,7 +364,7 @@ bool UI_OnKeyDown(PlatformKey key) {
             if (v7 < win->pNumPresenceButton + win->pStartingPosActiveItem) {
                 win->pCurrentPosActiveItem = v7;
                 if (current_screen_type == CURRENT_SCREEN::SCREEN_PARTY_CREATION) {
-                    pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
                 }
             }
             if (win->field_30 != 0) {

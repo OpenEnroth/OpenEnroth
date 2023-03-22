@@ -1027,7 +1027,7 @@ void Game::EventLoop() {
                     pCurrentFrameMessageQueue->Flush();
                     dword_50CDC8 = 1;
 
-                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     // encounter_index = (NPCData *)GetTravelTime();
                     pOutdoor->level_filename = pCurrentMapName;
                     if (!engine->IsUnderwater() && pParty->bFlying ||
@@ -1160,7 +1160,7 @@ void Game::EventLoop() {
                 case UIMSG_BF:
                     __debugbreak();
                     dword_50CDC8 = 1;
-                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     SaveGame(1, 0);
                     pCurrentMapName = pMapStats->pInfos[uHouse_ExitPic].pFilename;
                     dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
@@ -1198,7 +1198,7 @@ void Game::EventLoop() {
 
                 case UIMSG_LloydsBeacon_FlippingBtn:
                     bRecallingBeacon = uMessageParam;
-                    pAudioPlayer->PlaySound(bRecallingBeacon ? SOUND_TurnPage2 : SOUND_TurnPage1, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(bRecallingBeacon ? SOUND_TurnPage2 : SOUND_TurnPage1);
                     continue;
                 case UIMSG_HintBeaconSlot: {
                     if (!pGUIWindow_CurrentMenu) {
@@ -1504,7 +1504,7 @@ void Game::EventLoop() {
                                 continue;
                             }
                         }
-                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+                        pAudioPlayer->playUISound(SOUND_error);
                         status_string = "Can't jump to that location!";
                     }
                     GameUI_SetStatusBar(status_string);
@@ -1513,7 +1513,7 @@ void Game::EventLoop() {
                 case UIMSG_CastQuickSpell: {
                     if (engine->IsUnderwater()) {
                         GameUI_SetStatusBar(LSTR_CANT_DO_UNDERWATER);
-                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+                        pAudioPlayer->playUISound(SOUND_error);
                         continue;
                     }
                     if (!pParty->_activeCharacter ||
@@ -1583,7 +1583,7 @@ void Game::EventLoop() {
                 case UIMSG_Wait5Minutes:
                     if (_506F14_resting_stage == 2) {
                         GameUI_SetStatusBar(LSTR_ALREADY_RESTING);
-                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+                        pAudioPlayer->playUISound(SOUND_error);
                         continue;
                     }
                     new OnButtonClick2({pButton_RestUI_Wait5Minutes->uX, pButton_RestUI_Wait5Minutes->uY}, {0, 0}, pButton_RestUI_Wait5Minutes,
@@ -1594,7 +1594,7 @@ void Game::EventLoop() {
                 case UIMSG_Wait1Hour:
                     if (_506F14_resting_stage == 2) {
                         GameUI_SetStatusBar(LSTR_ALREADY_RESTING);
-                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+                        pAudioPlayer->playUISound(SOUND_error);
                         continue;
                     }
                     new OnButtonClick2({pButton_RestUI_Wait1Hour->uX, pButton_RestUI_Wait1Hour->uY}, {0, 0}, pButton_RestUI_Wait1Hour,
@@ -1681,7 +1681,7 @@ void Game::EventLoop() {
                     pCurrentFrameMessageQueue->Clear(); // TODO: sometimes it is called twice, prevent that for now and investigate why later
                     if (_506F14_resting_stage != 0) {
                         GameUI_SetStatusBar(LSTR_ALREADY_RESTING);
-                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+                        pAudioPlayer->playUISound(SOUND_error);
                         continue;
                     }
                     if (pParty->GetFood() < uRestUI_FoodRequiredToRest) {
@@ -1720,7 +1720,7 @@ void Game::EventLoop() {
 
                                 pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
                                 GameUI_SetStatusBar(LSTR_ENCOUNTER);
-                                pAudioPlayer->PlaySound(SOUND_encounter, 0, 0, -1, 0, 0);
+                                pAudioPlayer->playUISound(SOUND_encounter);
                                 continue;
                             }
                         }
@@ -1738,7 +1738,7 @@ void Game::EventLoop() {
                 case UIMSG_WaitTillDawn:
                     if (_506F14_resting_stage == 2) {
                         GameUI_SetStatusBar(LSTR_ALREADY_RESTING);
-                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+                        pAudioPlayer->playUISound(SOUND_error);
                         continue;
                     }
                     new OnButtonClick2({pButton_RestUI_WaitUntilDawn->uX, pButton_RestUI_WaitUntilDawn->uY}, {0, 0}, pButton_RestUI_WaitUntilDawn,
@@ -1799,7 +1799,7 @@ void Game::EventLoop() {
                     if (!byte_506550 || !quick_spell_at_page) {
                         pPlayer10->uQuickSpell = SPELL_NONE;
                         quick_spell_at_page = 0;
-                        pAudioPlayer->PlaySound(SOUND_fizzle, 0, 0, -1, 0, 0);
+                        pAudioPlayer->playUISound(SOUND_fizzle);
                         continue;
                     }
                     // TODO(captainurist): encapsulate the arithmetic below
@@ -1827,7 +1827,7 @@ void Game::EventLoop() {
                         page++;
                     }
                     if (!skill_count) {  //нет скиллов
-                        pAudioPlayer->PlaySound(vrng->RandomBool() ? SOUND_TurnPage2 : SOUND_TurnPage1, 0, 0, -1, 0, 0);
+                        pAudioPlayer->playUISound(vrng->RandomBool() ? SOUND_TurnPage2 : SOUND_TurnPage1);
                     } else {
                         if (keyboardInputHandler->IsSpellBackcycleToggled()) {
                             --uAction;
@@ -1899,7 +1899,7 @@ void Game::EventLoop() {
                     if (pTurnEngine->turn_stage == TE_MOVEMENT) continue;
                     if (engine->IsUnderwater()) {
                         GameUI_SetStatusBar(LSTR_CANT_DO_UNDERWATER);
-                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+                        pAudioPlayer->playUISound(SOUND_error);
                     } else {
                         pCurrentFrameMessageQueue->Flush();
                         if (pParty->_activeCharacter && !pPlayers[pParty->_activeCharacter]->uTimeToRecovery) {
@@ -2237,7 +2237,7 @@ void Game::EventLoop() {
                         }
                     }
 
-                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 }
                 case UIMSG_DebugGenItem: {
@@ -2253,7 +2253,7 @@ void Game::EventLoop() {
                         //}
                     }
 
-                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 }
                 case UIMSG_DebugKillChar:
@@ -2274,7 +2274,7 @@ void Game::EventLoop() {
                         pPlayers[pParty->_activeCharacter]->GetMaxHealth();
                     pPlayers[pParty->_activeCharacter]->sMana =
                         pPlayers[pParty->_activeCharacter]->GetMaxMana();
-                    pAudioPlayer->PlaySound(SOUND_heal, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_heal);
                     continue;
                 case UIMSG_DebugCycleAlign:
                     if (pParty->alignment == PartyAlignment::PartyAlignment_Good) pParty->alignment = PartyAlignment::PartyAlignment_Neutral;
@@ -2316,67 +2316,67 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_DebugTownPortal:
                     engine->config->debug.TownPortal.Toggle();
-                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugWizardEye:
                     engine->config->debug.WizardEye.Toggle();
-                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugAllMagic:
                     engine->config->debug.AllMagic.Toggle();
-                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugTerrain:
                     engine->config->debug.Terrain.Toggle();
-                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugLightmap:
                     engine->config->debug.LightmapDecals.Toggle();
-                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugTurboSpeed:
                     engine->config->debug.TurboSpeed.Toggle();
-                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugNoActors:
                     engine->config->debug.NoActors.Toggle();
-                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugFog:
                     engine->config->graphics.Fog.Toggle();
-                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugSnow:
                     engine->config->graphics.Snow.Toggle();
-                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugNoDamage:
                     engine->config->debug.NoDamage.Toggle();
-                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugPortalLines:
                     engine->config->debug.PortalOutlines.Toggle();
-                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugPickedFace:
                     engine->config->debug.ShowPickedFace.Toggle();
-                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugShowFPS:
                     engine->config->debug.ShowFPS.Toggle();
-                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugSeasonsChange:
                     engine->config->graphics.SeasonsChange.Toggle();
-                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugVerboseLogging:
                     engine->config->debug.VerboseLogging.Toggle();
-                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugReloadShader:
                     render->ReloadShaders();
-                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 default:
                     continue;
