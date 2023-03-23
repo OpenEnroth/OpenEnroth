@@ -831,7 +831,7 @@ var searchData=
   ['updatediscoveredarea_828',['UpdateDiscoveredArea',['../structOutdoorLocation.html#a282d75e700f03ca87e719cd74c8a0ebf',1,'OutdoorLocation']]],
   ['updateeffect_829',['UpdateEffect',['../structexplosion__effect__struct.html#a436b1857a90644e9fe7e388415492944',1,'explosion_effect_struct']]],
   ['updatefog_830',['UpdateFog',['../structOutdoorLocation.html#a0a6da39ca4fa6c668663e87a51d706a2',1,'OutdoorLocation']]],
-  ['updateobject_5ffn0_5fblv_831',['UpdateObject_fn0_BLV',['../structSpriteObject.html#a9e0d2e0c49fb02c2bf900de59aecff85',1,'SpriteObject']]],
+  ['updateobjectblv_831',['updateObjectBLV',['../structSpriteObject.html#a93d360fb17d97ab9ee195483f2bf439c',1,'SpriteObject']]],
   ['updateobjectodm_832',['updateObjectODM',['../structSpriteObject.html#a7b880a5e537090039de57ab8f724a226',1,'SpriteObject']]],
   ['updateobjects_833',['UpdateObjects',['../SpriteObject_8cpp.html#a522912d67446895b0a03d01837b75a99',1,'UpdateObjects():&#160;SpriteObject.cpp'],['../IRender_8h.html#a522912d67446895b0a03d01837b75a99',1,'UpdateObjects():&#160;SpriteObject.cpp']]],
   ['updateparticles_834',['UpdateParticles',['../classParticleEngine.html#a82017d932a3aac0e05acf6ed95783672',1,'ParticleEngine::UpdateParticles()'],['../structTrailParticleGenerator.html#aa8ede04bca9cbc38c4c0880f6645d6fc',1,'TrailParticleGenerator::UpdateParticles()']]],
