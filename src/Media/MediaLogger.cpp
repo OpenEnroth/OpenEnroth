@@ -33,11 +33,11 @@ void MediaLogger::Log(void *ptr, int logLevel, const char *format, va_list args)
     char buffer[2048];
     int status = av_log_format_line2(ptr, logLevel, format, args, buffer, sizeof(buffer), &state.prefixFlag);
     if (status < 0) {
-        logger_->Log(LOG_INFO, "av_log_format_line2 failed with error code %d", status);
+        logger_->Info("av_log_format_line2 failed with error code {}", status);
     } else {
         state.message += buffer;
         if (state.message.ends_with('\n')) {
-            logger_->Log(LOG_INFO, "%s", state.message.c_str());
+            logger_->Info("{}", state.message.c_str());
             state.message.clear();
         }
     }
