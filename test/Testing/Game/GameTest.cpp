@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-#include "Engine/Plugins/EngineController.h"
+#include "Engine/Components/EngineController.h"
 
 static EngineController *globalEngineController = nullptr;
 static TestController *globalTestController = nullptr;

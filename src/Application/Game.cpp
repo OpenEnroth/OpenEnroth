@@ -33,10 +33,10 @@
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
-#include "Engine/Plugins/EngineTracer.h"
-#include "Engine/Plugins/EngineControlPlugin.h"
-#include "Engine/Plugins/EngineDeterministicPlugin.h"
-#include "Engine/Plugins/EngineTracePlugin.h"
+#include "Engine/Components/EngineTracer.h"
+#include "Engine/Components/EngineControlComponent.h"
+#include "Engine/Components/EngineDeterministicComponent.h"
+#include "Engine/Components/EngineTraceComponent.h"
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
@@ -152,15 +152,15 @@ Game::Game(PlatformApplication *app) {
     ::eventHandler = app->eventHandler();
     ::openGLContext = app->openGLContext(); // OK to store into a global even if not yet initialized
 
-    // It doesn't matter where to put control plugin as it's running the control routine after a call to `SwapBuffers`.
-    // But the trace plugin should go after the deterministic plugin - deterministic plugin updates tick count, and then
-    // trace plugin stores the updated value in a recorded `PaintEvent`.
+    // It doesn't matter where to put control component as it's running the control routine after a call to `SwapBuffers`.
+    // But the trace component should go after the deterministic component - deterministic component updates tick count,
+    // and then trace component stores the updated value in a recorded `PaintEvent`.
     windowHandler.reset(Application::IocContainer::ResolveGameWindowHandler());
     app->install(windowHandler.get()); // TODO(captainurist): actually move ownership into PlatformApplication?
     app->install(windowHandler->KeyboardController()); // TODO(captainurist): do this properly
-    app->install(std::make_unique<EngineControlPlugin>());
-    app->install(std::make_unique<EngineTracePlugin>());
-    app->install(std::make_unique<EngineDeterministicPlugin>());
+    app->install(std::make_unique<EngineControlComponent>());
+    app->install(std::make_unique<EngineTraceComponent>());
+    app->install(std::make_unique<EngineDeterministicComponent>());
     app->install(std::make_unique<EngineTracer>(EngineTracer::ENABLE_RECORDING | EngineTracer::ENABLE_PLAYBACK)); // TODO(captainurist): make configurable
     app->install(std::make_unique<GameTraceHandler>(app->get<EngineTracer>())); // TODO(captainurist): get() call not needed.
 }

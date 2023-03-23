@@ -4,9 +4,9 @@
 
 #include "Library/Application/PlatformApplication.h"
 
-#include "Engine/Plugins/EngineTracer.h"
-#include "Engine/Plugins/EngineController.h"
-#include "Engine/Plugins/EngineDeterministicPlugin.h"
+#include "Engine/Components/EngineTracer.h"
+#include "Engine/Components/EngineController.h"
+#include "Engine/Components/EngineDeterministicComponent.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Engine.h"
 
@@ -40,7 +40,7 @@ void TestController::playTraceFromTestData(const std::string &saveName, const st
 }
 
 void TestController::prepareForNextTest() {
-    ::application->get<EngineDeterministicPlugin>()->resetDeterministicState();
+    ::application->get<EngineDeterministicComponent>()->resetDeterministicState();
     ::application->get<GameKeyboardController>()->reset();
 
     ResetTestConfig(engine->config.get());

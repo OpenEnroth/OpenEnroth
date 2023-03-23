@@ -81,7 +81,7 @@ PlatformApplication::PlatformApplication(PlatformLogger *logger) : _logger(logge
 PlatformApplication::~PlatformApplication() {
     while (!_cleanupRoutines.empty()) {
         _cleanupRoutines.back()();
-        _cleanupRoutines.pop_back(); // This also destroys the stored plugin.
+        _cleanupRoutines.pop_back(); // This also destroys the stored component.
     }
 }
 
@@ -179,23 +179,23 @@ void PlatformApplication::removeInternal(PlatformApplicationAware *aware) {
     aware->setApplication(nullptr);
 }
 
-void PlatformApplication::installInternal(std::type_index pluginType, void *plugin) {
-    assert(plugin);
-    assert(!_pluginByType.contains(pluginType));
-    _pluginByType.emplace(pluginType, plugin);
+void PlatformApplication::installInternal(std::type_index componentType, void *component) {
+    assert(component);
+    assert(!_componentByType.contains(componentType));
+    _componentByType.emplace(componentType, component);
 }
 
-void PlatformApplication::removeInternal(std::type_index pluginType, void *plugin) {
-    assert(plugin);
-    assert(!_pluginByType.contains(pluginType) || valueOr(_pluginByType, pluginType, nullptr) == plugin);
-    _pluginByType.erase(pluginType);
+void PlatformApplication::removeInternal(std::type_index componentType, void *component) {
+    assert(component);
+    assert(!_componentByType.contains(componentType) || valueOr(_componentByType, componentType, nullptr) == component);
+    _componentByType.erase(componentType);
 }
 
-bool PlatformApplication::hasInternal(std::type_index pluginType) const {
-    return _pluginByType.contains(pluginType);
+bool PlatformApplication::hasInternal(std::type_index componentType) const {
+    return _componentByType.contains(componentType);
 }
 
-void *PlatformApplication::getInternal(std::type_index pluginType) const {
-    return valueOr(_pluginByType, pluginType, nullptr);
+void *PlatformApplication::getInternal(std::type_index componentType) const {
+    return valueOr(_componentByType, componentType, nullptr);
 }
 

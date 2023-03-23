@@ -3,9 +3,9 @@
 #include "Application/Game.h"
 #include "Application/GameFactory.h"
 
-#include "Engine/Plugins/EngineControlPlugin.h"
-#include "Engine/Plugins/EngineController.h"
-#include "Engine/Plugins/EngineDeterministicPlugin.h"
+#include "Engine/Components/EngineControlComponent.h"
+#include "Engine/Components/EngineController.h"
+#include "Engine/Components/EngineDeterministicComponent.h"
 
 #include "Testing/Game/GameTest.h"
 #include "Testing/Game/TestConfig.h"
@@ -84,11 +84,11 @@ int platformMain(int argc, char **argv) {
 
     GameThread gameThread(opts);
 
-    gameThread.app()->get<EngineControlPlugin>()->runControlRoutine([&] (EngineController *game) {
+    gameThread.app()->get<EngineControlComponent>()->runControlRoutine([&] (EngineController *game) {
         TestController test(game, opts.testDataDir);
 
         GameTest::init(game, &test);
-        gameThread.app()->get<EngineDeterministicPlugin>()->enterDeterministicMode(); // And never leave it.
+        gameThread.app()->get<EngineDeterministicComponent>()->enterDeterministicMode(); // And never leave it.
         game->tick(10); // Let the game thread initialize everything.
 
         exitCode = RUN_ALL_TESTS();
