@@ -8,17 +8,17 @@
 class RandomEngine;
 
 /**
- * This plugin can be used to make the engine more deterministic. It replaces the system timer with a fake one that
+ * This component can be used to make the engine more deterministic. It replaces the system timer with a fake one that
  * advances by 16ms on each frame, and also resets the global random number generator.
  *
- * Note that this plugin is intentionally very dumb. All the methods just do exactly what you would expect right away,
- * so where you're calling them from becomes very important. E.g. calling `enterDeterministicMode` from an event
+ * Note that this component is intentionally very dumb. All the methods just do exactly what you would expect right
+ * away, so where you're calling them from becomes very important. E.g. calling `enterDeterministicMode` from an event
  * handler would probably make little sense.
  */
-class EngineDeterministicPlugin : private ProxyPlatform, private ProxyOpenGLContext {
+class EngineDeterministicComponent : private ProxyPlatform, private ProxyOpenGLContext {
  public:
-    EngineDeterministicPlugin();
-    virtual ~EngineDeterministicPlugin();
+    EngineDeterministicComponent();
+    virtual ~EngineDeterministicComponent();
 
     /**
      * 16ms translates to 62.5fps.

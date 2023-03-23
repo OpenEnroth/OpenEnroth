@@ -1,4 +1,4 @@
-#include "EngineTracePlugin.h"
+#include "EngineTraceComponent.h"
 
 #include <cassert>
 #include <utility>
@@ -8,21 +8,21 @@
 #include "Library/Random/Random.h"
 #include "Library/Trace/PaintEvent.h"
 
-EngineTracePlugin::EngineTracePlugin(): PlatformEventFilter(EVENTS_ALL) {}
-EngineTracePlugin::~EngineTracePlugin() = default;
+EngineTraceComponent::EngineTraceComponent(): PlatformEventFilter(EVENTS_ALL) {}
+EngineTraceComponent::~EngineTraceComponent() = default;
 
-void EngineTracePlugin::start() {
+void EngineTraceComponent::start() {
     assert(!_tracing);
     _tracing = true;
 }
 
-EventTrace EngineTracePlugin::finish() {
+EventTrace EngineTraceComponent::finish() {
     assert(_tracing);
     _tracing = false;
     return std::move(_trace);
 }
 
-void EngineTracePlugin::swapBuffers() {
+void EngineTraceComponent::swapBuffers() {
     if (_tracing) {
         std::unique_ptr<PaintEvent> e = std::make_unique<PaintEvent>();
         e->type = EVENT_PAINT;
@@ -35,7 +35,7 @@ void EngineTracePlugin::swapBuffers() {
     ProxyOpenGLContext::swapBuffers();
 }
 
-bool EngineTracePlugin::event(const PlatformEvent *event) {
+bool EngineTraceComponent::event(const PlatformEvent *event) {
     if (_tracing && EventTrace::isTraceable(event))
         _trace.events.push_back(EventTrace::cloneEvent(event));
     return false;

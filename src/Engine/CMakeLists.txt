@@ -63,6 +63,6 @@ add_subdirectory(Objects)
 add_subdirectory(Serialization)
 add_subdirectory(Spells)
 add_subdirectory(Tables)
-add_subdirectory(Plugins)
+add_subdirectory(Components)
 add_subdirectory(TurnEngine)
 

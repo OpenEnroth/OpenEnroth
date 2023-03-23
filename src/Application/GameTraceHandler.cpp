@@ -3,7 +3,7 @@
 #include <cassert>
 
 #include "Engine/IocContainer.h"
-#include "Engine/Plugins/EngineTracer.h"
+#include "Engine/Components/EngineTracer.h"
 
 #include "Library/Logger/Logger.h"
 

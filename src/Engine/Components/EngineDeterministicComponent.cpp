@@ -1,4 +1,4 @@
-#include "EngineDeterministicPlugin.h"
+#include "EngineDeterministicComponent.h"
 
 #include <cassert>
 #include <utility>
@@ -6,10 +6,10 @@
 #include "Library/Random/Random.h"
 #include "Library/Random/NonRandomEngine.h"
 
-EngineDeterministicPlugin::EngineDeterministicPlugin() = default;
-EngineDeterministicPlugin::~EngineDeterministicPlugin() = default;
+EngineDeterministicComponent::EngineDeterministicComponent() = default;
+EngineDeterministicComponent::~EngineDeterministicComponent() = default;
 
-void EngineDeterministicPlugin::enterDeterministicMode() {
+void EngineDeterministicComponent::enterDeterministicMode() {
     _deterministicCounter++;
 
     if (_deterministicCounter == 1) {
@@ -21,14 +21,14 @@ void EngineDeterministicPlugin::enterDeterministicMode() {
     }
 }
 
-void EngineDeterministicPlugin::resetDeterministicState() {
+void EngineDeterministicComponent::resetDeterministicState() {
     assert(_deterministicCounter > 0);
 
     _tickCount = 0;
     grng->Seed(0); // Equivalent to just recreating a NonRandomEngine.
 }
 
-void EngineDeterministicPlugin::leaveDeterministicMode() {
+void EngineDeterministicComponent::leaveDeterministicMode() {
     assert(_deterministicCounter > 0);
 
     _deterministicCounter--;
@@ -37,7 +37,7 @@ void EngineDeterministicPlugin::leaveDeterministicMode() {
         grng = std::move(_oldRandomEngine);
 }
 
-int64_t EngineDeterministicPlugin::tickCount() const {
+int64_t EngineDeterministicComponent::tickCount() const {
     if (_deterministicCounter > 0) {
         return _tickCount;
     } else {
@@ -45,7 +45,7 @@ int64_t EngineDeterministicPlugin::tickCount() const {
     }
 }
 
-void EngineDeterministicPlugin::swapBuffers() {
+void EngineDeterministicComponent::swapBuffers() {
     if (_deterministicCounter > 0)
         _tickCount += FRAME_TIME_MS;
 
