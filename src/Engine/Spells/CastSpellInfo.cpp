@@ -106,7 +106,7 @@ static void setSpellRecovery(CastSpellInfo *pCastSpell,
 
     // It's here to set character portrain emotion on spell cast.
     // There's no actual spell speech.
-    pPlayer->PlaySound(SPEECH_CastSpell, 0);
+    pPlayer->playReaction(SPEECH_CastSpell);
 }
 
 void CastSpellInfoHelpers::castSpell() {
@@ -1255,11 +1255,11 @@ void CastSpellInfoHelpers::castSpell() {
                         if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                             if (player.conditions.Has(Condition_Sleep)) {
                                 player.conditions.Reset(Condition_Sleep);
-                                player.PlaySound(SPEECH_Awaken, 0);
+                                player.playReaction(SPEECH_Awaken);
                             }
                         } else {
                             if (player.DiscardConditionIfLastsLongerThan(Condition_Sleep, pParty->GetPlayingTime() - spell_duration)) {
-                                player.PlaySound(SPEECH_Awaken, 0);
+                                player.playReaction(SPEECH_Awaken);
                             }
                         }
                     }
@@ -1536,7 +1536,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                     if (spell_failed) {
                         spellFailed(pCastSpell, item_not_broken ? LSTR_SPELL_FAILED : LSTR_ITEM_TOO_LAME);
-                        pParty->pPlayers[pCastSpell->uPlayerID_2].PlaySound(SPEECH_SpellFailed, 0);
+                        pParty->pPlayers[pCastSpell->uPlayerID_2].playReaction(SPEECH_SpellFailed);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         setSpellRecovery(pCastSpell, recoveryTime);
                         continue;
@@ -1872,7 +1872,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                     if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.HasAny({Condition_Eradicated, Condition_Dead})) {
                         if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Weak)) {
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].PlaySound(SPEECH_Weak, 0);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].playReaction(SPEECH_Weak);
                         }
                         if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                             pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Eradicated);
@@ -2160,7 +2160,7 @@ void CastSpellInfoHelpers::castSpell() {
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                     if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Insane)) {
                         if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Weak)) {
-                            pParty->pPlayers[pCastSpell->uPlayerID_2].PlaySound(SPEECH_Weak, 0);
+                            pParty->pPlayers[pCastSpell->uPlayerID_2].playReaction(SPEECH_Weak);
                         }
                         if (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) {
                             pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Insane);

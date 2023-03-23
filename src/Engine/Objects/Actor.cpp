@@ -603,7 +603,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
             actorPtr->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, realPoints + 5, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.White.c32());
-            pAudioPlayer->PlaySound((SoundID)SOUND_9armageddon01, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_9armageddon01, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0);
             break;
 
         case SPELL_DARK_SHARPMETAL:
@@ -1960,9 +1960,7 @@ void Actor::PlaySound(unsigned int uActorID, unsigned int uSoundID) {
         (SoundID)pActors[uActorID].pSoundSampleIDs[uSoundID];
     if (sound_sample_id) {
         if (!pActors[uActorID].pActorBuffs[ACTOR_BUFF_SHRINK].Active()) {
-            pAudioPlayer->PlaySound(sound_sample_id,
-                PID(OBJECT_Actor, uActorID), 0, -1, 0,
-                0);
+            pAudioPlayer->PlaySound(sound_sample_id, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0);
         } else {
             switch (pActors[uActorID].pActorBuffs[ACTOR_BUFF_SHRINK].uPower) {
                 case 1:
@@ -3135,7 +3133,6 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                                    Vec3i *pVelocity) {
     SpriteObject *projectileSprite;  // ebx@1
     Actor *pMonster;                 // esi@7
-    int v40;                         // ebx@107
     int extraRecoveryTime;           // qax@125
     uint16_t v43;            // ax@132
     uint16_t v45;            // ax@132
@@ -3194,10 +3191,9 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
             }
         }
         attackElement = DMGT_PHISYCAL;
-        uDamageAmount = player->CalculateMeleeDamageTo(
-            false, false, pMonster->pMonsterInfo.uID);
+        uDamageAmount = player->CalculateMeleeDamageTo(false, false, pMonster->pMonsterInfo.uID);
         if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
-            player->PlaySound(SPEECH_AttackMiss, 0);
+            player->playReaction(SPEECH_AttackMiss);
             return;
         }
     } else {
@@ -3225,7 +3221,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 attackElement = DMGT_PHISYCAL;
                 uDamageAmount = player->CalculateMeleeDamageTo(true, true, 0);
                 if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
-                    player->PlaySound(SPEECH_AttackMiss, 0);
+                    player->playReaction(SPEECH_AttackMiss);
                     return;
                 }
                 break;
@@ -3236,7 +3232,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                     uDamageAmount >>= 1;
                 IsAdditionalDamagePossible = true;
                 if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
-                    player->PlaySound(SPEECH_AttackMiss, 0);
+                    player->playReaction(SPEECH_AttackMiss);
                     return;
                 }
                 break;
@@ -3251,7 +3247,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                     uDamageAmount >>= 1;
                 IsAdditionalDamagePossible = false;
                 if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
-                    player->PlaySound(SPEECH_AttackMiss, 0);
+                    player->playReaction(SPEECH_AttackMiss);
                     return;
                 }
                 break;
@@ -3260,7 +3256,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 attackElement = DMGT_PHISYCAL;
                 hit_will_stun = 1;
                 if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
-                    player->PlaySound(SPEECH_AttackMiss, 0);
+                    player->playReaction(SPEECH_AttackMiss);
                     return;
                 }
                 break;
@@ -3275,7 +3271,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                     projectileSprite->containing_item.special_enchantment == ITEM_ENCHANTMENT_OF_CARNAGE) {
                     attackElement = DMGT_FIRE;
                 } else if (!player->PlayerHitOrMiss(pMonster, v61, skillLevel)) {
-                    player->PlaySound(SPEECH_AttackMiss, 0);
+                    player->playReaction(SPEECH_AttackMiss);
                     return;
                 }
                 break;
@@ -3337,7 +3333,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     }
     pMonster->sCurrentHP -= uDamageAmount;
     if (uDamageAmount == 0 && !hit_will_stun) {
-        player->PlaySound(SPEECH_AttackMiss, 0);
+        player->playReaction(SPEECH_AttackMiss);
         return;
     }
     if (pMonster->sCurrentHP > 0) {
@@ -3366,10 +3362,11 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         if (pMonster->pMonsterInfo.uExp)
             pParty->GivePartyExp(
                 pMonsterStats->pInfos[pMonster->pMonsterInfo.uID].uExp);
-        v40 = SPEECH_AttackHit;
-        if (vrng->Random(100) < 20)
-            v40 = ((signed int)pMonster->pMonsterInfo.uHP >= 100) + 1;
-        player->PlaySound((PlayerSpeech)v40, 0);
+        PlayerSpeech speech = SPEECH_AttackHit;
+        if (vrng->Random(100) < 20) {
+            speech = pMonster->pMonsterInfo.uHP >= 100 ? SPEECH_KillStrongEnemy : SPEECH_KillWeakEnemy;
+        }
+        player->playReaction(speech);
         if (engine->config->settings.ShowHits.Get()) {
             GameUI_SetStatusBar(
                 LSTR_FMT_S_INFLICTS_U_KILLING_S,

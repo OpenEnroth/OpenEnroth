@@ -2126,15 +2126,17 @@ void ODM_ProcessPartyActions() {
             case PARTY_LookUp:
                 partyViewNewPitch += engine->config->settings.VerticalTurnSpeed.Get();
                 if (partyViewNewPitch > 128) partyViewNewPitch = 128;
-                if (pParty->_activeCharacter)
-                    pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_LookUp, 0);
+                if (pParty->_activeCharacter) {
+                    pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_LookUp);
+                }
                 break;
 
             case PARTY_LookDown:
                 partyViewNewPitch -= engine->config->settings.VerticalTurnSpeed.Get();
                 if (partyViewNewPitch < -128) partyViewNewPitch = -128;
-                if (pParty->_activeCharacter)
-                    pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_LookDown, 0);
+                if (pParty->_activeCharacter) {
+                    pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_LookDown);
+                }
                 break;
 
             case PARTY_Jump:
@@ -2233,7 +2235,7 @@ void ODM_ProcessPartyActions() {
                     if (!pParty->pPlayers[i].HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
                         !pParty->pPlayers[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS) &&
                         pParty->pPlayers[i].CanAct())
-                        pParty->pPlayers[i].PlaySound(SPEECH_Falling, 0);
+                        pParty->pPlayers[i].playReaction(SPEECH_Falling);
                 }
             }
         }

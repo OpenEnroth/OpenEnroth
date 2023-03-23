@@ -865,12 +865,11 @@ void UIShop_Buy_Identify_Repair() {
                                 pParty->TakeGold(uPriceItemService);
                                 bought_item->Reset();
                                 render->ClearZBuffer();
-                                pPlayers[pParty->_activeCharacter]->PlaySound(
-                                    (PlayerSpeech)SPEECH_ItemBuy, 0);
+                                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_ItemBuy);
                                 return;
                             }
 
-                            pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_NoRoom, 0);
+                            pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_NoRoom);
                             GameUI_SetStatusBar(LSTR_INVENTORY_IS_FULL);
                             break;
                         }
@@ -896,11 +895,11 @@ void UIShop_Buy_Identify_Repair() {
                 pPlayers[pParty->_activeCharacter]->SalesProcess(
                     invindex, pItemID - 1, window_SpeakInHouse->wData.val);
                 render->ClearZBuffer();
-                pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_ItemSold, 0);
+                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_ItemSold);
                 return;
             }
 
-            pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_WrongShop, 0);
+            pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_WrongShop);
             pAudioPlayer->playUISound(SOUND_error);
             break;
         }
@@ -923,7 +922,7 @@ void UIShop_Buy_Identify_Repair() {
                         dword_F8B1E4 = 1;
                         pParty->TakeGold(uPriceItemService);
                         item->uAttributes |= ITEM_IDENTIFIED;
-                        pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_ShopIdentify, 0);
+                        pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_ShopIdentify);
                         GameUI_SetStatusBar(LSTR_DONE);
                         return;
                     }
@@ -934,11 +933,11 @@ void UIShop_Buy_Identify_Repair() {
                 }
 
                 pAudioPlayer->playUISound(SOUND_error);
-                pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_WrongShop, 0);
+                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_WrongShop);
                 return;
             }
 
-            pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_AlreadyIdentified, 0);
+            pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_AlreadyIdentified);
             break;
         }
 
@@ -964,7 +963,7 @@ void UIShop_Buy_Identify_Repair() {
                         pParty->TakeGold(uPriceItemService);
                         item->uAttributes =
                             (item->uAttributes & ~ITEM_BROKEN) | ITEM_IDENTIFIED;
-                        pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_ShopRepair, 0);
+                        pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_ShopRepair);
                         GameUI_SetStatusBar(LSTR_GOOD_AS_NEW);
                         return;
                     }
@@ -975,11 +974,11 @@ void UIShop_Buy_Identify_Repair() {
                 }
 
                 pAudioPlayer->playUISound(SOUND_error);
-                pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_WrongShop, 0);
+                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_WrongShop);
                 return;
             }
 
-            pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_AlreadyIdentified, 0);
+            pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_AlreadyIdentified);
             break;
         }
 
@@ -1187,10 +1186,10 @@ void UIShop_Buy_Identify_Repair() {
                 }
                 bought_item->Reset();
                 render->ClearZBuffer();
-                pPlayers[pParty->_activeCharacter]->PlaySound((PlayerSpeech)SPEECH_ItemBuy, 0);
+                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_ItemBuy);
                 return;
             } else {
-                pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_NoRoom, 0);
+                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_NoRoom);
                 GameUI_SetStatusBar(LSTR_INVENTORY_IS_FULL);
                 return;
             }
@@ -1222,7 +1221,7 @@ void UIShop_Buy_Identify_Repair() {
                         pParty->TakeGold(uPriceItemService);
                         dword_F8B1E4 = 1;
                         *pSkill = 1;
-                        pPlayers[pParty->_activeCharacter]->PlaySound((PlayerSpeech)78, 0);
+                        pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_SkillLearned);
                         return;
                     }
                 }

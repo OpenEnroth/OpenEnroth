@@ -592,70 +592,79 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
     if (conditions.Has(uConditionIdx))  // cant get the same condition twice
         return;
 
-    if (!ConditionProcessor::IsPlayerAffected(this, uConditionIdx,
-                                              blockable)) {  // block check
+    if (!ConditionProcessor::IsPlayerAffected(this, uConditionIdx, blockable)) {  // block check
         return;
     }
 
     switch (uConditionIdx) {  // conditions noises
         case Condition_Cursed:
-            PlaySound(SPEECH_Cursed, 0);
+            playReaction(SPEECH_Cursed);
             break;
         case Condition_Weak:
-            PlaySound(SPEECH_Weak, 0);
+            playReaction(SPEECH_Weak);
             break;
         case Condition_Sleep:
             break;  // nosound
         case Condition_Fear:
-            PlaySound(SPEECH_Fear, 0);
+            playReaction(SPEECH_Fear);
             break;
         case Condition_Drunk:
-            PlaySound(SPEECH_Drunk, 0);
+            playReaction(SPEECH_Drunk);
             break;
         case Condition_Insane:
-            PlaySound(SPEECH_Insane, 0);
+            playReaction(SPEECH_Insane);
             break;
 
         case Condition_Poison_Weak:
         case Condition_Poison_Medium:
         case Condition_Poison_Severe:
-            PlaySound(SPEECH_Poisoned, 0);
+            playReaction(SPEECH_Poisoned);
             break;
 
         case Condition_Disease_Weak:
         case Condition_Disease_Medium:
         case Condition_Disease_Severe:
-            PlaySound(SPEECH_Diseased, 0);
+            playReaction(SPEECH_Diseased);
             break;
 
         case Condition_Paralyzed:
             break;  // nosound
 
         case Condition_Unconscious:
-            PlaySound(SPEECH_Unconscious, 0);
-            if (sHealth > 0) sHealth = 0;
+            playReaction(SPEECH_Unconscious);
+            if (sHealth > 0) {
+                sHealth = 0;
+            }
             break;
 
         case Condition_Dead:
-            PlaySound(SPEECH_Dead, 0);
-            if (sHealth > 0) sHealth = 0;
-            if (sMana > 0) sMana = 0;
+            playReaction(SPEECH_Dead);
+            if (sHealth > 0) {
+                sHealth = 0;
+            }
+            if (sMana > 0) {
+                sMana = 0;
+            }
             break;
 
         case Condition_Petrified:
-            PlaySound(SPEECH_Petrified, 0);
+            playReaction(SPEECH_Petrified);
             break;
 
         case Condition_Eradicated:
-            PlaySound(SPEECH_Eradicated, 0);
-            if (sHealth > 0) sHealth = 0;
-            if (sMana > 0) sMana = 0;
+            playReaction(SPEECH_Eradicated);
+            if (sHealth > 0) {
+                sHealth = 0;
+            }
+            if (sMana > 0) {
+                sMana = 0;
+            }
             break;
 
         case Condition_Zombie:
-            if (classType == PLAYER_CLASS_LICH || IsEradicated() ||
-                IsZombie() || !IsDead())  // cant zombified
+            if (classType == PLAYER_CLASS_LICH || IsEradicated() || IsZombie() || !IsDead()) { // cant zombified
                 return;
+            }
 
             conditions.ResetAll();
             sHealth = GetMaxHealth();
@@ -671,7 +680,7 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
                 uVoiceID = 24;
             }
 
-            PlaySound(SPEECH_CheatedDeath, 0);
+            playReaction(SPEECH_CheatedDeath);
             break;
 
         default:
@@ -694,8 +703,9 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
         }
     }
 
-    if ((players_before == 2) && (players_after == 1))  // if was 2 and now down to 1 - "its just you and me now"
-        pPlayers[remainig_player]->PlaySound(SPEECH_LastManStanding, 0);
+    if ((players_before == 2) && (players_after == 1)) { // if was 2 and now down to 1 - "its just you and me now"
+        pPlayers[remainig_player]->playReaction(SPEECH_LastManStanding);
+    }
     // ^ скорее всего обнадёжывающий возглас последнего
 
     return;
@@ -739,8 +749,9 @@ int Player::CreateItemInInventory(unsigned int uSlot, ITEM_TYPE uItemID) {
     signed int freeSlot = FindFreeInventoryListSlot();
 
     if (freeSlot == -1) {  // no room
-        if (pParty->_activeCharacter)
-            pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_NoRoom, 0);
+        if (pParty->_activeCharacter) {
+            pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_NoRoom);
+        }
 
         return 0;
     } else {  // place items
@@ -1780,7 +1791,9 @@ int Player::ReceiveDamage(signed int amount, DAMAGE_TYPE dmg_type) {
         }
     }
 
-    if (recieved_dmg && CanAct()) PlaySound(SPEECH_Damaged, 0);  // oww
+    if (recieved_dmg && CanAct()) {
+        playReaction(SPEECH_Damaged);  // oww
+    }
 
     return recieved_dmg;
 }
@@ -2073,7 +2086,7 @@ int Player::ReceiveSpecialAttackEffect(
             case SPECIAL_ATTACK_BREAK_ARMOR:
             case SPECIAL_ATTACK_BREAK_WEAPON:
                 if (!(itemtobreak->uAttributes & ITEM_HARDENED)) {
-                    PlaySound(SPEECH_ItemBroken, 0);
+                    playReaction(SPEECH_ItemBroken);
                     itemtobreak->SetBroken();
                     pAudioPlayer->PlaySound(SOUND_metal_vs_metal03h, 0, 0, -1, 0, 0);
                 }
@@ -2082,7 +2095,7 @@ int Player::ReceiveSpecialAttackEffect(
                 break;
 
             case SPECIAL_ATTACK_STEAL: {
-                PlaySound(SPEECH_ItemBroken, 0);
+                playReaction(SPEECH_ItemBroken);
                 void *actoritems = &pActor->ActorHasItems[0];
                 if (pActor->ActorHasItems[0].uItemID != ITEM_NULL) {
                     actoritems = &pActor->ActorHasItems[1];
@@ -2096,15 +2109,14 @@ int Player::ReceiveSpecialAttackEffect(
                        &this->pInventoryItemList[this->pInventoryMatrix[itemtostealinvindex] - 1],
                        0x24u);
                 RemoveItemAtInventoryIndex(itemtostealinvindex);
-                pAudioPlayer->PlaySound(SOUND_metal_vs_metal03h, 0, 0, -1,
-                                        0, 0);
+                pAudioPlayer->PlaySound(SOUND_metal_vs_metal03h, 0, 0, -1, 0, 0);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
             }
 
             case SPECIAL_ATTACK_AGING:
-                PlaySound(SPEECH_Aging, 0);
+                playReaction(SPEECH_Aging);
                 ++this->sAgeModifier;
                 pAudioPlayer->PlaySound(SOUND_eleccircle, 0, 0, -1, 0, 0);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
@@ -2112,7 +2124,7 @@ int Player::ReceiveSpecialAttackEffect(
                 break;
 
             case SPECIAL_ATTACK_MANA_DRAIN:
-                PlaySound(SPEECH_SPDrained, 0);
+                playReaction(SPEECH_SPDrained);
                 this->sMana = 0;
                 pAudioPlayer->PlaySound(SOUND_eleccircle, 0, 0, -1, 0, 0);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
@@ -3756,23 +3768,22 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
          pTurnEngine->turn_stage == TE_MOVEMENT))
         return;
     if (pParty->pPickedItem.GetItemEquipType() == EQUIP_REAGENT) {
+        // TODO(Nik-RE-dev): this looks like some artifact from MM6 (where you can eat reagents)
+        // In MM7 these item IDs are invalid (plus index 161 used twice which is wrong)
         if (pParty->pPickedItem.uItemID == ITEM_161) {
             playerAffected->SetCondition(Condition_Poison_Weak, 1);
         } else if (pParty->pPickedItem.uItemID == ITEM_161) {
             new_mana_val = playerAffected->sMana;
             new_mana_val += 2;
-            if (new_mana_val > playerAffected->GetMaxMana())
+            if (new_mana_val > playerAffected->GetMaxMana()) {
                 new_mana_val = playerAffected->GetMaxMana();
-            playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+            }
+            playerAffected->playReaction(SPEECH_DrinkPotion);
         } else if (pParty->pPickedItem.uItemID == ITEM_162) {
             playerAffected->Heal(2);
-            playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+            playerAffected->playReaction(SPEECH_DrinkPotion);
         } else {
-            GameUI_SetStatusBar(
-                LSTR_FMT_S_CANT_BE_USED_THIS_WAY,
-                pParty->pPickedItem.GetDisplayName().c_str()
-            );
-
+            GameUI_SetStatusBar(LSTR_FMT_S_CANT_BE_USED_THIS_WAY, pParty->pPickedItem.GetDisplayName().c_str());
             pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
             return;
         }
@@ -3804,7 +3815,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             case ITEM_POTION_CURE_WOUNDS:
                 v25 = pParty->pPickedItem.uEnchantmentType + 10;
                 playerAffected->Heal(v25);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_MAGIC:
@@ -3813,32 +3824,32 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 new_mana_val += v26;
                 if (new_mana_val > playerAffected->GetMaxMana())
                     new_mana_val = playerAffected->GetMaxMana();
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 playerAffected->sMana = new_mana_val;
                 break;
 
             case ITEM_POTION_CURE_WEAKNESS:
                 playerAffected->conditions.Reset(Condition_Weak);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_CURE_DISEASE:
                 playerAffected->conditions.Reset(Condition_Disease_Severe);
                 playerAffected->conditions.Reset(Condition_Disease_Medium);
                 playerAffected->conditions.Reset(Condition_Disease_Weak);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_CURE_POISON:
                 playerAffected->conditions.Reset(Condition_Poison_Severe);
                 playerAffected->conditions.Reset(Condition_Poison_Medium);
                 playerAffected->conditions.Reset(Condition_Poison_Weak);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_AWAKEN:
                 playerAffected->conditions.Reset(Condition_Sleep);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_HASTE:
@@ -3848,7 +3859,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                                         pParty->pPickedItem.uEnchantmentType);
                     playerAffected->pPlayerBuffs[PLAYER_BUFF_HASTE].Apply(
                         pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
-                    playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                    playerAffected->playReaction(SPEECH_DrinkPotion);
                 }
                 break;
 
@@ -3859,7 +3870,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                                     pParty->pPickedItem.uEnchantmentType);
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_HEROISM].Apply(
                     pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
             }
 
@@ -3870,7 +3881,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                                     pParty->pPickedItem.uEnchantmentType);
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_BLESS].Apply(
                     pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
             }
 
@@ -3882,7 +3893,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                                     pParty->pPickedItem.uEnchantmentType);
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Apply(
                     pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
             }
 
@@ -3894,7 +3905,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                                     pParty->pPickedItem.uEnchantmentType);
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_SHIELD].Apply(
                     pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
             }
 
@@ -3905,7 +3916,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                                     pParty->pPickedItem.uEnchantmentType);
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_STONESKIN].Apply(
                     pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
             }
 
@@ -3921,17 +3932,17 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
 
             case ITEM_POTION_REMOVE_FEAR:
                 playerAffected->conditions.Reset(Condition_Fear);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_REMOVE_CURSE:
                 playerAffected->conditions.Reset(Condition_Cursed);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_CURE_INSANITY:
                 playerAffected->conditions.Reset(Condition_Insane);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_MIGHT_BOOST:
@@ -3942,7 +3953,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                                     pParty->pPickedItem.uEnchantmentType);
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_STRENGTH].Apply(
                     pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
             }
 
@@ -3954,7 +3965,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_INTELLIGENCE].Apply(
                     pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
             }
 
@@ -3966,7 +3977,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_WILLPOWER].Apply(
                     pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
             }
 
@@ -3978,7 +3989,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_ENDURANCE].Apply(
                     pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
             }
 
@@ -3990,7 +4001,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_SPEED].Apply(
                     pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
             }
 
@@ -4002,13 +4013,13 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_ACCURACY].Apply(
                     pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
             }
 
             case ITEM_POTION_CURE_PARALYSIS:
                 playerAffected->conditions.Reset(Condition_Paralyzed);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_DIVINE_RESTORATION:
@@ -4019,13 +4030,13 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 playerAffected->conditions.Set(Condition_Dead, GameTime(v30));
                 playerAffected->conditions.Set(Condition_Petrified, GameTime(v32));
                 playerAffected->conditions.Set(Condition_Eradicated, GameTime(v34));
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_DIVINE_CURE:
                 v25 = 5 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->Heal(v25);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_DIVINE_POWER:
@@ -4034,7 +4045,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 new_mana_val += v26;
                 if (new_mana_val > playerAffected->GetMaxMana())
                     new_mana_val = playerAffected->GetMaxMana();
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_LUCK_BOOST:
@@ -4045,7 +4056,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_LUCK].Apply(
                     pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
             }
 
@@ -4057,7 +4068,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_FIRE].Apply(
                     pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
             }
 
@@ -4069,7 +4080,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_AIR].Apply(
                     pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
             }
 
@@ -4081,7 +4092,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_WATER].Apply(
                     pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
             }
 
@@ -4093,7 +4104,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_EARTH].Apply(
                     pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
             }
 
@@ -4105,7 +4116,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_MIND].Apply(
                     pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
             }
 
@@ -4117,13 +4128,13 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_BODY].Apply(
                     pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
             }
 
             case ITEM_POTION_STONE_TO_FLESH:
                 playerAffected->conditions.Reset(Condition_Petrified);
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_PURE_LUCK:
@@ -4131,7 +4142,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     playerAffected->uLuck += 50;
                     playerAffected->pure_luck_used = 1;
                 }
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_PURE_SPEED:
@@ -4139,7 +4150,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     playerAffected->uSpeed += 50;
                     playerAffected->pure_speed_used = 1;
                 }
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_PURE_INTELLECT:
@@ -4147,7 +4158,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     playerAffected->uIntelligence += 50;
                     playerAffected->pure_intellect_used = 1;
                 }
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_PURE_ENDURANCE:
@@ -4155,7 +4166,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     playerAffected->uEndurance += 50;
                     playerAffected->pure_endurance_used = 1;
                 }
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_PURE_PERSONALITY:
@@ -4163,7 +4174,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     playerAffected->uWillpower += 50;
                     playerAffected->pure_willpower_used = 1;
                 }
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_PURE_ACCURACY:
@@ -4171,7 +4182,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     playerAffected->uAccuracy += 50;
                     playerAffected->pure_accuracy_used = 1;
                 }
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_PURE_MIGHT:
@@ -4179,12 +4190,12 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     playerAffected->uMight += 50;
                     playerAffected->pure_might_used = 1;
                 }
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_REJUVENATION:
                 playerAffected->sAgeModifier = 0;
-                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
+                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             default:
@@ -4311,12 +4322,12 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 pParty->pPickedItem.GetDisplayName().c_str()
             );
 
-            playerAffected->PlaySound(SPEECH_CantLearnSpell, 0);
+            playerAffected->playReaction(SPEECH_CantLearnSpell);
             return;
         }
         // TODO(captainurist): and here too
         playerAffected->spellbook.bHaveSpell[std::to_underlying(pParty->pPickedItem.uItemID) - 400] = 1;
-        playerAffected->PlaySound(SPEECH_LearnSpell, 0);
+        playerAffected->playReaction(SPEECH_LearnSpell);
         v73 = 0;
 
         if (pGUIWindow_CurrentMenu &&
@@ -4348,7 +4359,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
     if (pParty->pPickedItem.GetItemEquipType() == EQUIP_MESSAGE_SCROLL) {
         if (playerAffected->CanAct()) {
             CreateMsgScrollWindow(pParty->pPickedItem.uItemID);
-            playerAffected->PlaySound(SPEECH_ReadScroll, 0);
+            playerAffected->playReaction(SPEECH_ReadScroll);
             return;
         }
 
@@ -4486,7 +4497,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
 
             mouse->RemoveHoldingItem();
             spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, player_num - 1);
-            playerAffected->PlaySound(SPEECH_QuestGot, 0);
+            playerAffected->playReaction(SPEECH_QuestGot);
             pAudioPlayer->PlaySound(SOUND_chimes, 0, 0, -1, 0, 0);
             if (pParty->uCurrentDayOfMonth == 6 ||
                 pParty->uCurrentDayOfMonth == 20) {
@@ -5066,7 +5077,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             if (!_449B57_test_bit(this->_achieved_awards_bits, var_value) &&
                 pAwards[var_value].pText) {
                 PlayAwardSound_Anim();
-                this->PlaySound(SPEECH_AwardGot, 0);
+                this->playReaction(SPEECH_AwardGot);
             }
             _449B7E_toggle_bit(this->_achieved_awards_bits, var_value, 1u);
             return;
@@ -5079,7 +5090,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
                 bFlashQuestBook = 1;
                 spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, GetPlayerIndex());
                 PlayAwardSound();
-                this->PlaySound(SPEECH_QuestGot, 0);
+                this->playReaction(SPEECH_QuestGot);
             }
             _449B7E_toggle_bit(pParty->_quest_bits, var_value, 1u);
             return;
@@ -5333,7 +5344,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             if (!_449B57_test_bit(pParty->_autonote_bits, var_value) &&
                 pAutonoteTxt[var_value - 1].pText) {
                 spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, GetPlayerIndex());
-                this->PlaySound(SPEECH_AwardGot, 0);
+                this->playReaction(SPEECH_AwardGot);
                 bFlashAutonotesBook = 1;
                 _506568_autonote_type = pAutonoteTxt[var_value - 1].eType;  // dword_72371C[2 * a3];
             }
@@ -5532,7 +5543,7 @@ void Player::PlayAwardSound_Anim() {
 
 //----- (new function) --------------------------------------------------------
 void Player::PlayAwardSound_Anim_Face(PlayerSpeech speech) {
-    this->PlaySound(speech, 0);
+    this->playReaction(speech);
     PlayAwardSound_Anim();
 }
 
@@ -5906,7 +5917,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
         case VAR_AutoNotes:
             if (!_449B57_test_bit(pParty->_autonote_bits, val) &&
                 pAutonoteTxt[val].pText) {
-                this->PlaySound(SPEECH_AwardGot, 0);
+                this->playReaction(SPEECH_AwardGot);
                 bFlashAutonotesBook = 1;
                 _506568_autonote_type = pAutonoteTxt[val].eType;
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, GetPlayerIndex());
@@ -6084,7 +6095,7 @@ void Player::PlayAwardSound_Anim97() {
 
 //----- (new function) --------------------------------------------------------
 void Player::PlayAwardSound_Anim97_Face(PlayerSpeech speech) {
-    this->PlaySound(speech, 0);
+    this->playReaction(speech);
     PlayAwardSound_Anim97();
 }
 
@@ -6158,7 +6169,7 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
             return;
         case VAR_QBits_QuestsDone:
             _449B7E_toggle_bit(pParty->_quest_bits, (int16_t)pValue, 0);
-            this->PlaySound(SPEECH_AwardGot, 0);
+            this->playReaction(SPEECH_AwardGot);
             return;
         case VAR_PlayerItemInHands:
             for (ITEM_SLOT i : AllItemSlots()) {
@@ -6658,7 +6669,7 @@ void Player::PlayAwardSound_Anim98() {
 
 //----- (new function) --------------------------------------------------------
 void Player::PlayAwardSound_Anim98_Face(PlayerSpeech speech) {
-    this->PlaySound(speech, 0);
+    this->playReaction(speech);
     PlayAwardSound_Anim98();
 }
 
@@ -6847,7 +6858,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
         if (playerPtr->GetActualSkillMastery(PLAYER_SKILL_UNARMED) >= PLAYER_SKILL_MASTERY_GRANDMASTER &&
             grng->Random(100) < playerPtr->GetActualSkillLevel(PLAYER_SKILL_UNARMED)) {
             GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->pName.c_str());
-            playerPtr->PlaySound(SPEECH_AvoidDamage, 0);
+            playerPtr->playReaction(SPEECH_AvoidDamage);
             return;
         }
 
@@ -6951,10 +6962,11 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                             pParty->GivePartyExp(pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].uExp);
 
                         // kill speech
-                        int speechToPlay = SPEECH_AttackHit;
-                        if (vrng->Random(100) < 20)
-                            speechToPlay = actorPtr->pMonsterInfo.uHP >= 100 ? 2 : 1;
-                        playerPtr->PlaySound((PlayerSpeech)speechToPlay, 0);
+                        PlayerSpeech speechToPlay = SPEECH_AttackHit;
+                        if (vrng->Random(100) < 20) {
+                            speechToPlay = actorPtr->pMonsterInfo.uHP >= 100 ? SPEECH_KillStrongEnemy : SPEECH_KillWeakEnemy;
+                        }
+                        playerPtr->playReaction(speechToPlay);
                     }
                 }
             }
@@ -6980,7 +6992,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
         if (yellThreshold > playerPtr->sHealth &&
             yellThreshold <= healthBeforeRecvdDamage &&
             playerPtr->sHealth > 0) {
-            playerPtr->PlaySound(SPEECH_BadlyHurt, 0);
+            playerPtr->playReaction(SPEECH_BadlyHurt);
         }
         return;
     } else {  // is an item
@@ -7042,7 +7054,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                 if (playerPtr->GetActualSkillMastery(PLAYER_SKILL_UNARMED) >= PLAYER_SKILL_MASTERY_GRANDMASTER &&
                     grng->Random(100) < playerPtr->GetActualSkillLevel(PLAYER_SKILL_UNARMED)) {
                     GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->pName.c_str());
-                    playerPtr->PlaySound(SPEECH_AvoidDamage, 0);
+                    playerPtr->playReaction(SPEECH_AvoidDamage);
                     return;
                 }
             } else if (spriteType == SPRITE_BLASTER_PROJECTILE ||
@@ -7128,10 +7140,11 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                             if (actorPtr->pMonsterInfo.uExp)
                                 pParty->GivePartyExp(pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].uExp);
 
-                            int speechToPlay = SPEECH_AttackHit;
-                            if (vrng->Random(100) < 20)
-                                speechToPlay = actorPtr->pMonsterInfo.uHP >= 100 ? 2 : 1;
-                            playerPtr->PlaySound((PlayerSpeech)speechToPlay, 0);
+                            PlayerSpeech speechToPlay = SPEECH_AttackHit;
+                            if (vrng->Random(100) < 20) {
+                                speechToPlay = actorPtr->pMonsterInfo.uHP >= 100 ? SPEECH_KillStrongEnemy : SPEECH_KillWeakEnemy;
+                            }
+                            playerPtr->playReaction(speechToPlay);
                         }
                     }
                 }
@@ -7654,7 +7667,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
         return;
     } else if (shooting_bow) {
         skill = PLAYER_SKILL_BOW;
-        player->PlaySound(SPEECH_Shoot, 0);
+        player->playReaction(SPEECH_Shoot);
     } else if (shotting_laser) {
         skill = PLAYER_SKILL_BLASTER;
     } else {
@@ -7748,49 +7761,37 @@ void Player::SetSkillMastery(PLAYER_SKILL_TYPE skill, PLAYER_SKILL_MASTERY maste
     ::SetSkillMastery(&pActiveSkills[skill], mastery);
 }
 
-//----- (004948B1) --------------------------------------------------------
-void Player::PlaySound(PlayerSpeech speech, int a3) {
-    int speechCount = 0;                 // esi@4
-    int expressionCount = 0;             // esi@4
-    int pickedVariant;                   // esi@10
-    CHARACTER_EXPRESSION_ID expression;  // ebx@17
-    int pSoundID;                        // ecx@19
-    int speechVariantArray[5] {};           // [sp+Ch] [bp-1Ch]@7
-    int expressionVariantArray[5] {};
-    unsigned int expressionDuration = 0;
+void Player::playReaction(PlayerSpeech speech, int a3) {
+    int speechCount = 0;
+    int expressionCount = 0;
+    int pickedSoundID = 0;
 
-    unsigned int pickedSoundID = 0;
     if (engine->config->settings.VoiceLevel.Get() > 0) {
         for (int i = 0; i < speechVariants[speech].size(); i++) {
             if (speechVariants[speech][i]) {
-                speechVariantArray[speechCount] = speechVariants[speech][i];
                 speechCount++;
             }
         }
         if (speechCount) {
-            pickedVariant = speechVariantArray[vrng->Random(speechCount)];
+            int pickedVariant = speechVariants[speech][vrng->Random(speechCount)];
             int numberOfSubvariants = byte_4ECF08[pickedVariant - 1][uVoiceID];
             if (numberOfSubvariants > 0) {
-                pickedSoundID = vrng->Random(numberOfSubvariants) +
-                                2 * (pickedVariant + 50 * uVoiceID) + 4998;
-                pAudioPlayer->PlaySound(
-                    (SoundID)pickedSoundID,
-                    PID(OBJECT_Player, pParty->_activeCharacter + 39), 0, -1, 0, 0);
+                pickedSoundID = vrng->Random(numberOfSubvariants) + 2 * (pickedVariant + 50 * uVoiceID) + 4998;
+                pAudioPlayer->PlaySound((SoundID)pickedSoundID, PID(OBJECT_Player, pParty->_activeCharacter + 39), 0, -1, 0, 0);
             }
         }
     }
 
     for (int i = 0; i < expressionVariants[speech].size(); i++) {
         if (expressionVariants[speech][i]) {
-            expressionVariantArray[expressionCount] = expressionVariants[speech][i];
             expressionCount++;
         }
     }
     if (expressionCount) {
-        expression = (CHARACTER_EXPRESSION_ID)expressionVariantArray[vrng->Random(expressionCount)];
+        CHARACTER_EXPRESSION_ID expression = (CHARACTER_EXPRESSION_ID)expressionVariants[speech][vrng->Random(expressionCount)];
+        int expressionDuration = 0;
         if (expression == CHARACTER_EXPRESSION_TALK && pickedSoundID) {
-            pSoundID = pickedSoundID;
-            if (pSoundID >= 0) {
+            if (pickedSoundID >= 0) {
                 expressionDuration = (sLastTrackLengthMS << 7) / 1000;
             }
         }

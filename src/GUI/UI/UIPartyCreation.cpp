@@ -101,7 +101,7 @@ void CreateParty_EventLoop() {
 
             new OnButtonClick({pButton->uX, pButton->uY}, {0, 0}, pButton, std::string(), false);
             pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
-            pParty->pPlayers[param].PlaySound(SPEECH_PickMe, 0);
+            pParty->pPlayers[param].playReaction(SPEECH_PickMe);
             break;
         }
         case UIMSG_PlayerCreation_VoiceNext:
@@ -114,7 +114,7 @@ void CreateParty_EventLoop() {
             auto pButton = pCreationUI_BtnPressRight2[param];
             new OnButtonClick({pButton->uX, pButton->uY}, {0, 0}, pButton, std::string(), false);
             pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
-            pParty->pPlayers[param].PlaySound(SPEECH_PickMe, 0);
+            pParty->pPlayers[param].playReaction(SPEECH_PickMe);
             break;
         }
         case UIMSG_PlayerCreation_FacePrev:
@@ -137,7 +137,7 @@ void CreateParty_EventLoop() {
             new OnButtonClick({pCreationUI_BtnPressLeft[param]->uX, pCreationUI_BtnPressLeft[param]->uY}, {0, 0},
                 pCreationUI_BtnPressLeft[param], std::string(), false);
             pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
-            pParty->pPlayers[param].PlaySound(SPEECH_PickMe, 0);
+            pParty->pPlayers[param].playReaction(SPEECH_PickMe);
             break;
         case UIMSG_PlayerCreation_FaceNext:
             // pPlayer = &pParty->pPlayers[pParam];
@@ -158,7 +158,7 @@ void CreateParty_EventLoop() {
             new OnButtonClick({pCreationUI_BtnPressRight[param]->uX, pCreationUI_BtnPressRight[param]->uY}, {0, 0},
                 pCreationUI_BtnPressRight[param], std::string(), false);
             pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
-            pParty->pPlayers[param].PlaySound(SPEECH_PickMe, 0);
+            pParty->pPlayers[param].playReaction(SPEECH_PickMe);
             break;
         case UIMSG_PlayerCreationClickPlus:
             new OnButtonClick2({613, 393}, {0, 0}, pPlayerCreationUI_BtnPlus, std::string(), false);

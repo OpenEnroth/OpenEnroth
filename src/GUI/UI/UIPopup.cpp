@@ -199,7 +199,6 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     char out_text[300];  // [sp+8h] [bp-270h]@40
     SummonedItem v67;
     GUIWindow iteminfo_window;  // [sp+208h] [bp-70h]@2
-    PlayerSpeech v83;           // [sp+26Ch] [bp-Ch]@18
     char *v84;
     int v85;
     char *Str;  // [sp+270h] [bp-8h]@65
@@ -248,17 +247,17 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         if (!inspect_item->IsIdentified()) {
             if (pPlayers[pParty->_activeCharacter]->CanIdentify(inspect_item) == 1)
                 inspect_item->SetIdentified();
-            v83 = SPEECH_IndentifyItemFail;
+            PlayerSpeech speech = SPEECH_IndentifyItemFail;
             if (!inspect_item->IsIdentified()) {
                 GameUI_SetStatusBar(LSTR_IDENTIFY_FAILED);
             } else {
-                v83 = SPEECH_IndentifyItemStrong;
-                if (inspect_item->GetValue() <
-                    100 * (pPlayers[pParty->_activeCharacter]->uLevel + 5))
-                    v83 = SPEECH_IndentifyItemWeak;
+                speech = SPEECH_IndentifyItemStrong;
+                if (inspect_item->GetValue() < 100 * (pPlayers[pParty->_activeCharacter]->uLevel + 5)) {
+                    speech = SPEECH_IndentifyItemWeak;
+                }
             }
             if (dword_4E455C) {
-                pPlayers[pParty->_activeCharacter]->PlaySound((PlayerSpeech)(int)v83, 0);
+                pPlayers[pParty->_activeCharacter]->playReaction(speech);
                 dword_4E455C = 0;
             }
         }
@@ -267,13 +266,13 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             if (pPlayers[pParty->_activeCharacter]->CanRepair(inspect_item) == 1)
                 inspect_item->uAttributes =
                     inspect_item->uAttributes & ~ITEM_BROKEN | ITEM_IDENTIFIED;
-            v83 = SPEECH_RepairFail;
+            PlayerSpeech speech = SPEECH_RepairFail;
             if (!inspect_item->IsBroken())
-                v83 = SPEECH_RepairSuccess;
+                speech = SPEECH_RepairSuccess;
             else
                 GameUI_SetStatusBar(LSTR_REPAIR_FAILED);
             if (dword_4E455C) {
-                pPlayers[pParty->_activeCharacter]->PlaySound(v83, 0);
+                pPlayers[pParty->_activeCharacter]->playReaction(speech);
                 dword_4E455C = 0;
             }
         }
@@ -705,7 +704,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         } else {
             speech = SPEECH_IDMonsterFail;
         }
-        pPlayers[pParty->_activeCharacter]->PlaySound(speech, 0);
+        pPlayers[pParty->_activeCharacter]->playReaction(speech);
     }
 
     if ((signed int)(pParty->pPlayers[pParty->_activeCharacter - 1]
@@ -1963,7 +1962,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         mouse->RemoveHoldingItem();
         no_rightlick_in_inventory = 1;
         if (dword_4E455C) {
-            pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_PotionSuccess, 0);
+            pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_PotionSuccess);
             dword_4E455C = 0;
         }
         return;
@@ -2056,7 +2055,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             SpriteObject::dropItemAt(SPRITE_SPELL_FIRE_FIREBALL_IMPACT, {_viewPitch, _viewYaw, rot_z}, 0);
             if (dword_4E455C) {
                 if (pPlayers[pParty->_activeCharacter]->CanAct())
-                    pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_PotionExplode, 0);
+                    pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_PotionExplode);
                 GameUI_SetStatusBar(LSTR_OOPS);
                 dword_4E455C = 0;
             }
@@ -2095,7 +2094,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                     no_rightlick_in_inventory = 1;
                     return;
                 }
-                pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_PotionSuccess, 0);
+                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_PotionSuccess);
                 dword_4E455C = 0;
                 mouse->RemoveHoldingItem();
                 no_rightlick_in_inventory = 1;

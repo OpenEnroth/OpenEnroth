@@ -580,7 +580,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
             player = pPlayers[pParty->_activeCharacter];
         }
         if (player->CanAct() || !pPlayers[pParty->_activeCharacter]->CanAct()) {
-            player->PlaySound(SPEECH_NoRoom, 0);
+            player->playReaction(SPEECH_NoRoom);
         }
     }
 
@@ -1445,7 +1445,7 @@ void GameUI_DrawPortraits() {
         _A750D8_player_speech_timer -= (signed int)pMiscTimer->uTimeElapsed;
         if (_A750D8_player_speech_timer <= 0) {
             if (pParty->pPlayers[uSpeakingCharacter].CanAct()) {
-                pParty->pPlayers[uSpeakingCharacter].PlaySound(PlayerSpeechID, 0);
+                pParty->pPlayers[uSpeakingCharacter].playReaction(PlayerSpeechID);
             }
             _A750D8_player_speech_timer = 0;
         }
