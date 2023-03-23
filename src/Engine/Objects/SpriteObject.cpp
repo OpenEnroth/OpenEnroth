@@ -356,14 +356,14 @@ void SpriteObject::updateObjectBLV(unsigned int uLayingItemID) {
 
     pSpriteObject->uSectorID = uSectorID;
 
-    if (!(pObject->uFlags & OBJECT_DESC_NO_GRAVITY)) {
-        if (floor_lvl <= pSpriteObject->vPosition.z - 3) {
-            pSpriteObject->vVelocity.z -= (short)pEventTimer->uTimeElapsed * GetGravityStrength();
-        }
+    if (pObject->uFlags & OBJECT_DESC_NO_GRAVITY) {
+        goto LABEL_25;
     }
 
     // flying objects / projectiles
     if (floor_lvl <= pSpriteObject->vPosition.z - 3) {
+        pSpriteObject->vVelocity.z -= pEventTimer->uTimeElapsed * GetGravityStrength();
+        // TODO(Nik-RE-dev): get rid of goto here
 LABEL_25:
         collision_state.check_hi = false;
         collision_state.radius_lo = pObject->uRadius;
@@ -379,6 +379,7 @@ LABEL_25:
                 return;
             }
 
+            // TODO(Nik-RE-dev): check purpose of inner loop
             for (int loop2 = 0; loop2 < 100; ++loop2) {
                 CollideIndoorWithGeometry(false);
                 CollideIndoorWithDecorations();
