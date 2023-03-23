@@ -33,10 +33,10 @@
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
-#include "Engine/Plugins/EngineTracer.h"
-#include "Engine/Plugins/EngineControlPlugin.h"
-#include "Engine/Plugins/EngineDeterministicPlugin.h"
-#include "Engine/Plugins/EngineTracePlugin.h"
+#include "Engine/Components/EngineTracer.h"
+#include "Engine/Components/EngineControlComponent.h"
+#include "Engine/Components/EngineDeterministicComponent.h"
+#include "Engine/Components/EngineTraceComponent.h"
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
@@ -152,15 +152,15 @@ Game::Game(PlatformApplication *app) {
     ::eventHandler = app->eventHandler();
     ::openGLContext = app->openGLContext(); // OK to store into a global even if not yet initialized
 
-    // It doesn't matter where to put control plugin as it's running the control routine after a call to `SwapBuffers`.
-    // But the trace plugin should go after the deterministic plugin - deterministic plugin updates tick count, and then
-    // trace plugin stores the updated value in a recorded `PaintEvent`.
+    // It doesn't matter where to put control component as it's running the control routine after a call to `SwapBuffers`.
+    // But the trace component should go after the deterministic component - deterministic component updates tick count,
+    // and then trace component stores the updated value in a recorded `PaintEvent`.
     windowHandler.reset(Application::IocContainer::ResolveGameWindowHandler());
     app->install(windowHandler.get()); // TODO(captainurist): actually move ownership into PlatformApplication?
     app->install(windowHandler->KeyboardController()); // TODO(captainurist): do this properly
-    app->install(std::make_unique<EngineControlPlugin>());
-    app->install(std::make_unique<EngineTracePlugin>());
-    app->install(std::make_unique<EngineDeterministicPlugin>());
+    app->install(std::make_unique<EngineControlComponent>());
+    app->install(std::make_unique<EngineTraceComponent>());
+    app->install(std::make_unique<EngineDeterministicComponent>());
     app->install(std::make_unique<EngineTracer>(EngineTracer::ENABLE_RECORDING | EngineTracer::ENABLE_PLAYBACK)); // TODO(captainurist): make configurable
     app->install(std::make_unique<GameTraceHandler>(app->get<EngineTracer>())); // TODO(captainurist): get() call not needed.
 }
@@ -843,8 +843,7 @@ void Game::EventLoop() {
                                                 continue;
                                         }
                                         GetHouseGoodbyeSpeech();
-                                        pAudioPlayer->PlaySound(
-                                            SOUND_WoodDoorClosing, 814, 0, -1, 0, 0);
+                                        pAudioPlayer->PlaySound(SOUND_WoodDoorClosing, 814, 0, -1, 0, 0);
                                         pMediaPlayer->Unload();
                                         pGUIWindow_CurrentMenu = window_SpeakInHouse;
 
@@ -1644,7 +1643,7 @@ void Game::EventLoop() {
                             GameUI_SetStatusBar(LSTR_HOSTILE_ENEMIES_NEARBY);
 
                         if (!pParty->_activeCharacter) continue;
-                        pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_CantRestHere, 0);
+                        pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_CantRestHere);
                         continue;
                     }
                     if (pParty->bTurnBasedModeOn) {
@@ -1675,7 +1674,7 @@ void Game::EventLoop() {
                         GameUI_SetStatusBar(LSTR_HOSTILE_ENEMIES_NEARBY);
 
                     if (!pParty->_activeCharacter) continue;
-                    pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_CantRestHere, 0);
+                    pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_CantRestHere);
                     continue;
                 case UIMSG_Rest8Hour:
                     pCurrentFrameMessageQueue->Clear(); // TODO: sometimes it is called twice, prevent that for now and investigate why later
@@ -1686,9 +1685,9 @@ void Game::EventLoop() {
                     }
                     if (pParty->GetFood() < uRestUI_FoodRequiredToRest) {
                         GameUI_SetStatusBar(LSTR_NOT_ENOUGH_FOOD);
-                        if (pParty->_activeCharacter &&
-                            pPlayers[pParty->_activeCharacter]->CanAct())
-                            pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_NotEnoughFood, 0);
+                        if (pParty->_activeCharacter && pPlayers[pParty->_activeCharacter]->CanAct()) {
+                            pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_NotEnoughFood);
+                        }
                     } else {
                         pParty->pPlayers[3].conditions.Set(Condition_Sleep, pParty->GetPlayingTime());
                         pParty->pPlayers[2].conditions.Set(Condition_Sleep, pParty->GetPlayingTime());
@@ -1805,7 +1804,9 @@ void Game::EventLoop() {
                     // TODO(captainurist): encapsulate the arithmetic below
                     pPlayers[pParty->_activeCharacter]->uQuickSpell = static_cast<SPELL_TYPE>(
                         quick_spell_at_page + 11 * pPlayers[pParty->_activeCharacter]->lastOpenedSpellbookPage);
-                    if (pParty->_activeCharacter) pPlayer10->PlaySound(SPEECH_SetQuickSpell, 0);
+                    if (pParty->_activeCharacter) {
+                        pPlayer10->playReaction(SPEECH_SetQuickSpell);
+                    }
                     byte_506550 = 0;
                     continue;
                 }
@@ -2002,7 +2003,7 @@ void Game::EventLoop() {
                         if (skill_level < skills_max_level[skill]) {
                             pPlayer4->SetSkillLevel(skill, skill_level + 1);
                             pPlayer4->uSkillPoints -= skill_level + 1;
-                            pPlayer4->PlaySound(SPEECH_SkillIncrease, 0);
+                            pPlayer4->playReaction(SPEECH_SkillIncrease);
                             pAudioPlayer->PlaySound((SoundID)SOUND_quest, 0, 0, -1, 0, 0);
                             continue;
                         }
@@ -2611,10 +2612,9 @@ void Game::GameLoop() {
                         conscious_players_ids[num_conscious_players++] = i;
                 }
                 if (num_conscious_players) {
-                    int idx =
-                        conscious_players_ids[vrng->Random(num_conscious_players)];
+                    int idx = conscious_players_ids[vrng->Random(num_conscious_players)];
                     Assert(idx >= 0);
-                    pParty->pPlayers[idx].PlaySound(SPEECH_CheatedDeath, 0);
+                    pParty->pPlayers[idx].playReaction(SPEECH_CheatedDeath);
                 }
 
                 GameUI_SetStatusBar(LSTR_CHEATED_THE_DEATH);

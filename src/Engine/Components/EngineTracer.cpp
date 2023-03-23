@@ -16,9 +16,9 @@
 #include "Application/GameKeyboardController.h" // TODO(captainurist): Engine -> Application dependency
 
 #include "EngineController.h"
-#include "EngineControlPlugin.h"
-#include "EngineTracePlugin.h"
-#include "EngineDeterministicPlugin.h"
+#include "EngineControlComponent.h"
+#include "EngineTraceComponent.h"
+#include "EngineDeterministicComponent.h"
 
 EngineTracer::EngineTracer(Options options): _options(options) {}
 
@@ -35,20 +35,20 @@ void EngineTracer::startTraceRecording(const std::string &savePath, const std::s
     _traceFilePath = tracePath;
 
     // TODO(captainurist): this is actually unsafe, we need to cancel running routines in dtor if there are any.
-    _controlPlugin->runControlRoutine([this, savePath] (EngineController *game) {
+    _controlComponent->runControlRoutine([this, savePath] (EngineController *game) {
         game->resizeWindow(640, 480);
         game->tick();
 
         _oldFpsLimit = engine->config->graphics.FPSLimit.Get();
         engine->config->graphics.FPSLimit.Set(1000); // Load game real quick!
         game->saveGame(savePath);
-        _deterministicPlugin->enterDeterministicMode();
+        _deterministicComponent->enterDeterministicMode();
         game->loadGame(savePath);
-        _deterministicPlugin->resetDeterministicState();
+        _deterministicComponent->resetDeterministicState();
         _keyboardController->reset(); // Reset all pressed buttons.
 
-        _tracePlugin->start();
-        engine->config->graphics.FPSLimit.Set(EngineDeterministicPlugin::TARGET_FPS); // But don't turn the party into a wall-running doomguy.
+        _traceComponent->start();
+        engine->config->graphics.FPSLimit.Set(EngineDeterministicComponent::TARGET_FPS); // But don't turn the party into a wall-running doomguy.
 
         logger->Info("Tracing started.");
     });
@@ -60,12 +60,12 @@ void EngineTracer::finishTraceRecording() {
 
     // The code below needs to go into a control routine because it should be run AFTER the previous control routine
     // is finished, and it could take a while for it to finish.
-    _controlPlugin->runControlRoutine([this, tracePath = _traceFilePath, savePath = _saveFilePath] (EngineController *game) {
-        assert(_tracePlugin->isTracing()); // Just a sanity check.
-        _deterministicPlugin->leaveDeterministicMode();
+    _controlComponent->runControlRoutine([this, tracePath = _traceFilePath, savePath = _saveFilePath] (EngineController *game) {
+        assert(_traceComponent->isTracing()); // Just a sanity check.
+        _deterministicComponent->leaveDeterministicMode();
         engine->config->graphics.FPSLimit.Set(_oldFpsLimit);
 
-        EventTrace trace = _tracePlugin->finish();
+        EventTrace trace = _traceComponent->finish();
         trace.header.saveFileSize = std::filesystem::file_size(savePath); // This function can throw.
         EventTrace::saveToFile(tracePath, trace);
 
@@ -98,11 +98,11 @@ void EngineTracer::playTrace(EngineController *game, const std::string &savePath
     game->resizeWindow(640, 480);
     game->tick();
 
-    _deterministicPlugin->enterDeterministicMode();
-    MM_AT_SCOPE_EXIT(_deterministicPlugin->leaveDeterministicMode());
+    _deterministicComponent->enterDeterministicMode();
+    MM_AT_SCOPE_EXIT(_deterministicComponent->leaveDeterministicMode());
 
     game->loadGame(savePath);
-    _deterministicPlugin->resetDeterministicState();
+    _deterministicComponent->resetDeterministicState();
     _keyboardController->reset(); // Reset all pressed buttons.
 
     if (postLoadCallback)
@@ -132,18 +132,18 @@ void EngineTracer::playTrace(EngineController *game, const std::string &savePath
 }
 
 void EngineTracer::installNotify() {
-    _controlPlugin = application()->get<EngineControlPlugin>();
-    _tracePlugin = application()->get<EngineTracePlugin>();
-    _deterministicPlugin = application()->get<EngineDeterministicPlugin>();
+    _controlComponent = application()->get<EngineControlComponent>();
+    _traceComponent = application()->get<EngineTraceComponent>();
+    _deterministicComponent = application()->get<EngineDeterministicComponent>();
     _keyboardController = application()->get<GameKeyboardController>();
-    assert((_options & ENABLE_RECORDING) ? _controlPlugin && _deterministicPlugin && _tracePlugin && _keyboardController : true);
-    assert((_options & ENABLE_PLAYBACK) ? _controlPlugin && _deterministicPlugin && _keyboardController : true);
+    assert((_options & ENABLE_RECORDING) ? _controlComponent && _deterministicComponent && _traceComponent && _keyboardController : true);
+    assert((_options & ENABLE_PLAYBACK) ? _controlComponent && _deterministicComponent && _keyboardController : true);
 }
 
 void EngineTracer::removeNotify() {
-    _controlPlugin = nullptr;
-    _tracePlugin = nullptr;
-    _deterministicPlugin = nullptr;
+    _controlComponent = nullptr;
+    _traceComponent = nullptr;
+    _deterministicComponent = nullptr;
     _keyboardController = nullptr;
 }
 

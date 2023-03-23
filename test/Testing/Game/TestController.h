@@ -4,7 +4,7 @@
 #include <string>
 #include <functional>
 
-#include "Engine/Plugins/EngineTracePlaybackFlags.h"
+#include "Engine/Components/EngineTracePlaybackFlags.h"
 
 class EngineController;
 class EngineTracer;

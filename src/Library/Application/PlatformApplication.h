@@ -16,21 +16,21 @@ class ApplicationProxy;
 /**
  * This class ties together everything in platform for a particular use case of an application with a single window.
  *
- * The proper way to use it is by creating plugins that implement the pieces of functionality that you need, and then
- * installing them into the `PlatformApplication`.
+ * The proper way to use it is by creating components that implement the pieces of functionality that you need,
+ * and then installing them into the `PlatformApplication`.
  *
- * Supported base classes for plugins are:
+ * Supported base classes for components are:
  * - All kinds of platform proxies;
  * - `PlatformEventFilter`;
  * - `PlatformApplicationAware`.
  *
- * Plugins can have multiple bases, this is handled automatically. If you want to use private bases, befriend
+ * Components can have multiple bases, this is handled automatically. If you want to use private bases, befriend
  * `PlatformIntrospection`.
  *
- * The plugins you install are inserted into the proxy and event filter chains exactly in the order of installation.
+ * The components you install are inserted into the proxy and event filter chains exactly in the order of installation.
  * The ordering is usually important, so it makes sense to install everything in a single place. If this model doesn't
- * work for you (e.g. you have two plugins that implement several proxies that need to be ordered differently w.r.t.
- * each other), then you'll have to split your plugin into several parts.
+ * work for you (e.g. you have two components that implement several proxies that need to be ordered differently w.r.t.
+ * each other), then you'll have to split your component into several parts.
  */
 class PlatformApplication {
  public:
@@ -46,31 +46,30 @@ class PlatformApplication {
     PlatformOpenGLContext *openGLContext();
     PlatformEventHandler *eventHandler();
 
-    // TODO(captainurist): rename plugin->component? the functionality here pretty much matches the ecs
     template<class T>
-    void install(T *plugin) {
-        installInternal(typeid(T), plugin);
-        PlatformIntrospection::visit(plugin, [this] (auto *specificPlugin) {
-            installInternal(specificPlugin);
+    void install(T *component) {
+        installInternal(typeid(T), component);
+        PlatformIntrospection::visit(component, [this] (auto *specificComponent) {
+            installInternal(specificComponent);
         });
     }
 
     template<class T>
-    void install(std::unique_ptr<T> plugin) {
-        install(plugin.get());
+    void install(std::unique_ptr<T> component) {
+        install(component.get());
 
         // TODO(captainurist): drop shared_ptr here once we have std::move_only_function
-        _cleanupRoutines.push_back([this, plugin = std::shared_ptr<T>(plugin.release())] {
-            remove(plugin.get());
+        _cleanupRoutines.push_back([this, component = std::shared_ptr<T>(component.release())] {
+            remove(component.get());
         });
     }
 
     template<class T>
-    void remove(T *plugin) {
-        PlatformIntrospection::visit(plugin, [this] (auto *specificPlugin) {
-            removeInternal(specificPlugin);
+    void remove(T *component) {
+        PlatformIntrospection::visit(component, [this] (auto *specificComponent) {
+            removeInternal(specificComponent);
         });
-        removeInternal(typeid(plugin), plugin);
+        removeInternal(typeid(component), component);
     }
 
     template<class T>
@@ -99,11 +98,11 @@ class PlatformApplication {
     void removeInternal(PlatformEventFilter *eventFilter);
     void installInternal(PlatformApplicationAware *aware);
     void removeInternal(PlatformApplicationAware *aware);
-    void installInternal(std::type_index pluginType, void *plugin);
-    void removeInternal(std::type_index pluginType, void *plugin);
+    void installInternal(std::type_index componentType, void *component);
+    void removeInternal(std::type_index componentType, void *component);
 
-    bool hasInternal(std::type_index pluginType) const;
-    void *getInternal(std::type_index pluginType) const;
+    bool hasInternal(std::type_index componentType) const;
+    void *getInternal(std::type_index componentType) const;
 
  private:
     PlatformLogger *_logger;
@@ -114,6 +113,6 @@ class PlatformApplication {
     std::unique_ptr<FilteringEventHandler> _eventHandler;
     std::unique_ptr<ApplicationProxy> _rootProxy;
 
-    std::unordered_map<std::type_index, void *> _pluginByType;
+    std::unordered_map<std::type_index, void *> _componentByType;
     std::vector<std::function<void()>> _cleanupRoutines;
 };

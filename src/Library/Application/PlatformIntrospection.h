@@ -15,24 +15,24 @@
 class PlatformIntrospection {
  public:
     template<class T, class Callable>
-    static void visit(T *plugin, Callable &&callable) {
+    static void visit(T *component, Callable &&callable) {
         int count = 0;
         // Using += instead of one big expression to get deterministic call order.
-        count += visitInternal<ProxyPlatform>(plugin, std::forward<Callable>(callable));
-        count += visitInternal<ProxyEventLoop>(plugin, std::forward<Callable>(callable));
-        count += visitInternal<ProxyWindow>(plugin, std::forward<Callable>(callable));
-        count += visitInternal<ProxyOpenGLContext>(plugin, std::forward<Callable>(callable));
-        count += visitInternal<PlatformEventFilter>(plugin, std::forward<Callable>(callable));
-        count += visitInternal<PlatformApplicationAware>(plugin, std::forward<Callable>(callable));
-        assert(count > 0);
+        count += visitInternal<ProxyPlatform>(component, std::forward<Callable>(callable));
+        count += visitInternal<ProxyEventLoop>(component, std::forward<Callable>(callable));
+        count += visitInternal<ProxyWindow>(component, std::forward<Callable>(callable));
+        count += visitInternal<ProxyOpenGLContext>(component, std::forward<Callable>(callable));
+        count += visitInternal<PlatformEventFilter>(component, std::forward<Callable>(callable));
+        count += visitInternal<PlatformApplicationAware>(component, std::forward<Callable>(callable));
+        assert(count > 0); // Must derive from at least one of the supported types.
         (void) count;
     }
 
  private:
     template<class Installable, class T, class Callable>
-    static bool visitInternal(T *plugin, Callable &&callable) {
+    static bool visitInternal(T *component, Callable &&callable) {
         if constexpr (std::is_base_of_v<Installable, T>) {
-            callable(static_cast<Installable *>(plugin));
+            callable(static_cast<Installable *>(component));
             return true;
         } else {
             return false;

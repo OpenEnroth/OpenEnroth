@@ -157,8 +157,9 @@ bool Chest::Open(int uChestID) {
     pAudioPlayer->PauseSounds(-1);
     pAudioPlayer->PlaySound(SOUND_openchest0101, 0, 0, -1, 0, 0);
     if (flag_shout == true) {
-        if (!OpenedTelekinesis)
-            pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_TrapDisarmed, 0);
+        if (!OpenedTelekinesis) {
+            pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_TrapDisarmed);
+        }
     }
     OpenedTelekinesis = false;
     /*pChestWindow =*/ pGUIWindow_CurrentMenu = new GUIWindow_Chest(uChestID);
@@ -327,7 +328,7 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
 
         if (test_pos == max_size) {  // limits check no room
             if (pParty->_activeCharacter) {
-                pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_NoRoom, 0);
+                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_NoRoom);
             }
             return 0;
         }
@@ -594,7 +595,7 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
             } else {  // no room so set as holding item
                 pParty->SetHoldingItem(&chestitem);
                 RemoveItemAtChestIndex(loop);
-                pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_NoRoom, 0);
+                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_NoRoom);
                 break;
             }
         }

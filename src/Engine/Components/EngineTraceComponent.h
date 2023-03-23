@@ -7,15 +7,15 @@
 #include "Library/Trace/EventTrace.h"
 
 /**
- * Plugin that can be used to record events.
+ * Component that can be used to record events.
  *
- * Note that this plugin is intentionally very dumb. Calling `start` starts recording events right away, and
+ * Note that this component is intentionally very dumb. Calling `start` starts recording events right away, and
  * calling `finish` just returns everything that was recorded.
  */
-class EngineTracePlugin : private ProxyOpenGLContext, private PlatformEventFilter, private PlatformApplicationAware {
+class EngineTraceComponent : private ProxyOpenGLContext, private PlatformEventFilter, private PlatformApplicationAware {
  public:
-    EngineTracePlugin();
-    virtual ~EngineTracePlugin();
+    EngineTraceComponent();
+    virtual ~EngineTraceComponent();
 
     void start();
     EventTrace finish();

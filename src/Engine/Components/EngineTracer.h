@@ -11,21 +11,21 @@
 #include "EngineTracePlaybackFlags.h"
 
 class EngineController;
-class EngineTracePlugin;
-class EngineDeterministicPlugin;
-class EngineControlPlugin;
+class EngineTraceComponent;
+class EngineDeterministicComponent;
+class EngineControlComponent;
 class GameKeyboardController;
 
 // TODO(captainurist): It would make more sense to split this class in two. And move both into a separate
 // folder in Engine.
 /**
- * Plugin that exposes a trace playback and trace recording interface.
+ * Component that exposes a trace playback and trace recording interface.
  *
- * Depends on `EngineControlPlugin`, `EngineDeterministicPlugin` and (if you use `ENABLE_RECORDING`)
- * `EngineTracePlugin`, install them into `PlatformApplication` first.
+ * Depends on `EngineControlComponent`, `EngineDeterministicComponent` and (if you use `ENABLE_RECORDING`)
+ * `EngineTraceComponent`, install them into `PlatformApplication` first.
  *
- * Note that the difference from `EngineTracePlugin` is that this plugin isn't dumb and offers a complete solution to
- * trace recording and playback. Traces that were recorded with `startTraceRecording` / `finishTraceRecording` can
+ * Note that the difference from `EngineTraceComponent` is that this component isn't dumb and offers a complete solution
+ * to trace recording and playback. Traces that were recorded with `startTraceRecording` / `finishTraceRecording` can
  * then be played back via `playTrace`.
  *
  * Some notes on how this works. When starting trace recording:
@@ -70,14 +70,14 @@ class EngineTracer : private PlatformApplicationAware {
     void finishTraceRecording();
 
     /**
-     * Plays a previously recorded trace. Can be called only from a control thread of `EngineControlPlugin`.
+     * Plays a previously recorded trace. Can be called only from a control thread of `EngineControlComponent`.
      *
      * @param game                      Engine controller.
      * @param savePath                  Path to save file.
      * @param tracePath                 Path to trace file.
      * @param flags                     Playback flags.
      * @param postLoadCallback          Callback to call once the savegame is loaded.
-     * @see EngineControlPlugin
+     * @see EngineControlComponent
      */
     void playTrace(EngineController *game, const std::string &savePath, const std::string &tracePath,
                    EngineTracePlaybackFlags flags = 0, std::function<void()> postLoadCallback = {});
@@ -94,9 +94,9 @@ class EngineTracer : private PlatformApplicationAware {
     std::string _saveFilePath;
     std::string _traceFilePath;
     int _oldFpsLimit = 0;
-    EngineControlPlugin *_controlPlugin = nullptr;
-    EngineDeterministicPlugin *_deterministicPlugin = nullptr;
-    EngineTracePlugin *_tracePlugin = nullptr;
+    EngineControlComponent *_controlComponent = nullptr;
+    EngineDeterministicComponent *_deterministicComponent = nullptr;
+    EngineTraceComponent *_traceComponent = nullptr;
     GameKeyboardController *_keyboardController = nullptr;
 };
 

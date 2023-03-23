@@ -105,10 +105,11 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
     pDialogueWindow->CreateButton({407, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 4, InputAction::SelectChar4);
 
     if (bPlayerSaysHello && pParty->_activeCharacter && !pNPCInfo->Hired()) {
-        if (pParty->uCurrentHour < 5 || pParty->uCurrentHour > 21)
-            pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_GoodEvening, 0);
-        else
-            pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_GoodDay, 0);
+        if (pParty->uCurrentHour < 5 || pParty->uCurrentHour > 21) {
+            pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_GoodEvening);
+        } else {
+            pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_GoodDay);
+        }
     }
 }
 
@@ -603,9 +604,12 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
                     GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
                     dialogue_show_profession_details = false;
                     uDialogueType = DIALOGUE_13_hiring_related;
-                    if (pParty->_activeCharacter)
-                        pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_NotEnoughGold, 0);
-                    if (!dword_7241C8) engine->Draw();
+                    if (pParty->_activeCharacter) {
+                        pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_NotEnoughGold);
+                    }
+                    if (!dword_7241C8) {
+                        engine->Draw();
+                    }
                     dword_7241C8 = 0;
                     return;
                 }
@@ -624,8 +628,9 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
             if (sDialogue_SpeakingActorNPC_ID >= 0)
                 pDialogue_SpeakingActor->uAIState = Removed;
-            if (pParty->_activeCharacter)
-                pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_HireNPC, 0);
+            if (pParty->_activeCharacter) {
+                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_HireNPC);
+            }
         }
     } else if (option >= DIALOGUE_ARENA_SELECT_PAGE && option <= DIALOGUE_ARENA_SELECT_CHAMPION) {
         ArenaFight();

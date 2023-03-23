@@ -15,25 +15,25 @@ class EngineControlState;
 class PlatformEvent;
 
 /**
- * This plugin exposes a coroutine-like API that makes it possible to control the game by passing in synthetic
+ * This component exposes a coroutine-like API that makes it possible to control the game by passing in synthetic
  * platform events.
  *
  * The implementation just uses a separate thread that runs a control routine, and the execution can switch between
  * threads from inside the `swapBuffers` call. This effectively means that the control routine runs in between game
  * frames.
  *
- * If the control plugin is destroyed while the control routine is still running, the control routine will be terminated
- * by throwing an exception from inside `EngineController`. If you use `catch(...)` inside the control routine then
- * this won't work (e.g. google test does this).
+ * If the control component is destroyed while the control routine is still running, the control routine will be
+ * terminated by throwing an exception from inside `EngineController`. If you use `catch(...)` inside the control
+ * routine then this won't work (e.g. google test does this).
  *
  * @see EngineController
  */
-class EngineControlPlugin : private ProxyOpenGLContext, private ProxyEventLoop {
+class EngineControlComponent : private ProxyOpenGLContext, private ProxyEventLoop {
  public:
     using ControlRoutine = std::function<void(EngineController *)>;
 
-    EngineControlPlugin();
-    virtual ~EngineControlPlugin();
+    EngineControlComponent();
+    virtual ~EngineControlComponent();
 
     /**
      * Schedules a control routine for execution. It will be started in a control thread from inside the next

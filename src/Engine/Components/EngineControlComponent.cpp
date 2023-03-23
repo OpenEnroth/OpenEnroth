@@ -1,4 +1,4 @@
-#include "EngineControlPlugin.h"
+#include "EngineControlComponent.h"
 
 #include <utility>
 
@@ -39,28 +39,28 @@ static void controlThread(EngineControlState *unsafeState) {
     }
 }
 
-EngineControlPlugin::EngineControlPlugin(): _unsafeState(std::make_unique<EngineControlState>()), _state(SIDE_GAME, _unsafeState.get()) {
+EngineControlComponent::EngineControlComponent(): _unsafeState(std::make_unique<EngineControlState>()), _state(SIDE_GAME, _unsafeState.get()) {
     _emptyHandler = std::make_unique<PlatformEventHandler>();
     _controlThread = std::thread(&controlThread, _unsafeState.get());
 }
 
-EngineControlPlugin::~EngineControlPlugin() {
+EngineControlComponent::~EngineControlComponent() {
     _state->terminating = true;
     _state.yieldExecution();
     _controlThread.join();
 }
 
-void EngineControlPlugin::runControlRoutine(ControlRoutine routine) {
+void EngineControlComponent::runControlRoutine(ControlRoutine routine) {
     assert(std::this_thread::get_id() != _controlThread.get_id());
 
     _state->controlRoutineQueue.push(std::move(routine));
 }
 
-bool EngineControlPlugin::hasControlRoutine() const {
+bool EngineControlComponent::hasControlRoutine() const {
     return !_state->controlRoutineQueue.empty();
 }
 
-void EngineControlPlugin::processSyntheticEvents(PlatformEventHandler *eventHandler, int count) {
+void EngineControlComponent::processSyntheticEvents(PlatformEventHandler *eventHandler, int count) {
     while (!_state->postedEvents.empty() && count != 0) {
         std::unique_ptr<PlatformEvent> event = std::move(_state->postedEvents.front());
         _state->postedEvents.pop();
@@ -69,7 +69,7 @@ void EngineControlPlugin::processSyntheticEvents(PlatformEventHandler *eventHand
     }
 }
 
-void EngineControlPlugin::exec(PlatformEventHandler *eventHandler) {
+void EngineControlComponent::exec(PlatformEventHandler *eventHandler) {
     if (!hasControlRoutine()) {
         assert(_state->postedEvents.empty());
         ProxyEventLoop::exec(eventHandler);
@@ -79,7 +79,7 @@ void EngineControlPlugin::exec(PlatformEventHandler *eventHandler) {
     }
 }
 
-void EngineControlPlugin::processMessages(PlatformEventHandler *eventHandler, int count) {
+void EngineControlComponent::processMessages(PlatformEventHandler *eventHandler, int count) {
     if (!hasControlRoutine()) {
         assert(_state->postedEvents.empty());
         ProxyEventLoop::processMessages(eventHandler, count);
@@ -89,7 +89,7 @@ void EngineControlPlugin::processMessages(PlatformEventHandler *eventHandler, in
     }
 }
 
-void EngineControlPlugin::waitForMessages() {
+void EngineControlComponent::waitForMessages() {
     if (!hasControlRoutine()) {
         assert(_state->postedEvents.empty());
         ProxyEventLoop::waitForMessages();
@@ -98,7 +98,7 @@ void EngineControlPlugin::waitForMessages() {
     }
 }
 
-void EngineControlPlugin::swapBuffers() {
+void EngineControlComponent::swapBuffers() {
     // Not tail calling here for a reason - the control routine should run AFTER all the proxies are done.
     ProxyOpenGLContext::swapBuffers();
 

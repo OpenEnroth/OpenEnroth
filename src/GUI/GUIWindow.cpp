@@ -1400,7 +1400,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
                     pParty->TakeGold(gold_transaction_amount);
                     if (pParty->_activeCharacter) {
                         pPlayers[pParty->_activeCharacter]->SetSkillMastery(dword_F8B1AC_skill_being_taught, dword_F8B1B0_MasteryBeingTaught);
-                        pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_SkillMasteryInc, 0);
+                        pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_SkillMasteryInc);
                     }
                     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
                 }
@@ -1447,7 +1447,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
                     }
                     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
                     if (pParty->_activeCharacter) {
-                        pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_JoinedGuild, 0);
+                        pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_JoinedGuild);
                         BackToHouseMenu();
                         return;
                     }
@@ -1478,8 +1478,9 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
             current_npc_text = BuildDialogueString(
                 pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
                 pParty->_activeCharacter - 1, 0, 0, 0);
-            if (pParty->_activeCharacter)
-                pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_NotEnoughGold, 0);
+            if (pParty->_activeCharacter) {
+                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_NotEnoughGold);
+            }
             GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
             BackToHouseMenu();
             return;
@@ -1504,8 +1505,9 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
     dialog_menu_id = DIALOGUE_MAIN;
 
     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
-    if (pParty->_activeCharacter)
-        pPlayers[pParty->_activeCharacter]->PlaySound(SPEECH_HireNPC, 0);
+    if (pParty->_activeCharacter) {
+        pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_HireNPC);
+    }
 
     BackToHouseMenu();
 }

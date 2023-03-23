@@ -3,7 +3,7 @@
 class PlatformApplication;
 
 /**
- * Derive your plugin from `PlatformApplicationAware` to get access to an application instance that it was
+ * Derive your component from `PlatformApplicationAware` to get access to an application instance that it was
  * installed into.
  */
 class PlatformApplicationAware {

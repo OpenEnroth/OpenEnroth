@@ -685,7 +685,7 @@ void SpriteObject::ExplosionTraps() {
         for (Player &player : pParty->pPlayers) {
             int perceptionCheckValue = player.GetPerception() + 20;
             if (player.CanAct() && (grng->Random(perceptionCheckValue) > 20)) {
-                player.PlaySound(SPEECH_AvoidDamage, 0);
+                player.playReaction(SPEECH_AvoidDamage);
             } else {
                 player.ReceiveDamage(trapDamage, pDamageType);
             }

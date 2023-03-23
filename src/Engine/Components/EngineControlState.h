@@ -28,7 +28,7 @@ class EngineControlState {
      * Routines are removed from the queue only once they're finished. */
     std::queue<ControlRoutine> controlRoutineQueue;
 
-    /** Flag denoting that `EngineControlPlugin` is being destroyed and it's time to terminate the control thread.
+    /** Flag denoting that `EngineControlComponent` is being destroyed and it's time to terminate the control thread.
      * It is set from the main thread. */
     bool terminating = false;
 
