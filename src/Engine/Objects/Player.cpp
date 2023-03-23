@@ -1972,112 +1972,112 @@ int Player::ReceiveSpecialAttackEffect(
         switch (attTypeCast) {
             case SPECIAL_ATTACK_CURSE:
                 SetCondition(Condition_Cursed, 1);
-                pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star1);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_WEAK:
                 SetCondition(Condition_Weak, 1);
-                pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star1);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_SLEEP:
                 SetCondition(Condition_Sleep, 1);
-                pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star1);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_DRUNK:
                 SetCondition(Condition_Drunk, 1);
-                pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star1);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_INSANE:
                 SetCondition(Condition_Insane, 1);
-                pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star4);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_POISON_WEAK:
                 SetCondition(Condition_Poison_Weak, 1);
-                pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star2);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_POISON_MEDIUM:
                 SetCondition(Condition_Poison_Medium, 1);
-                pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star2);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_POISON_SEVERE:
                 SetCondition(Condition_Poison_Severe, 1);
-                pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star2);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_DISEASE_WEAK:
                 SetCondition(Condition_Disease_Weak, 1);
-                pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star2);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_DISEASE_MEDIUM:
                 SetCondition(Condition_Disease_Medium, 1);
-                pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star2);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_DISEASE_SEVERE:
                 SetCondition(Condition_Disease_Severe, 1);
-                pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star2);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_PARALYZED:
                 SetCondition(Condition_Paralyzed, 1);
-                pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star4);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_UNCONSCIOUS:
                 SetCondition(Condition_Unconscious, 1);
-                pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star4);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_DEAD:
                 SetCondition(Condition_Dead, 1);
-                pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_eradicate);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_PETRIFIED:
                 SetCondition(Condition_Petrified, 1);
-                pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_eradicate);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_ERADICATED:
                 SetCondition(Condition_Eradicated, 1);
-                pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_eradicate);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
@@ -2088,7 +2088,7 @@ int Player::ReceiveSpecialAttackEffect(
                 if (!(itemtobreak->uAttributes & ITEM_HARDENED)) {
                     playReaction(SPEECH_ItemBroken);
                     itemtobreak->SetBroken();
-                    pAudioPlayer->PlaySound(SOUND_metal_vs_metal03h, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_metal_vs_metal03h);
                 }
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
@@ -2109,7 +2109,7 @@ int Player::ReceiveSpecialAttackEffect(
                        &this->pInventoryItemList[this->pInventoryMatrix[itemtostealinvindex] - 1],
                        0x24u);
                 RemoveItemAtInventoryIndex(itemtostealinvindex);
-                pAudioPlayer->PlaySound(SOUND_metal_vs_metal03h, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_metal_vs_metal03h);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
@@ -2118,7 +2118,7 @@ int Player::ReceiveSpecialAttackEffect(
             case SPECIAL_ATTACK_AGING:
                 playReaction(SPEECH_Aging);
                 ++this->sAgeModifier;
-                pAudioPlayer->PlaySound(SOUND_eleccircle, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_eleccircle);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
@@ -2126,14 +2126,14 @@ int Player::ReceiveSpecialAttackEffect(
             case SPECIAL_ATTACK_MANA_DRAIN:
                 playReaction(SPEECH_SPDrained);
                 this->sMana = 0;
-                pAudioPlayer->PlaySound(SOUND_eleccircle, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_eleccircle);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_FEAR:
                 SetCondition(Condition_Fear, 1);
-                pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star1);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
@@ -3787,7 +3787,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             pAudioPlayer->playUISound(SOUND_error);
             return;
         }
-        pAudioPlayer->PlaySound(SOUND_eat, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_eat);
 
         if (pGUIWindow_CurrentMenu &&
             pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {
@@ -4207,7 +4207,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 pAudioPlayer->playUISound(SOUND_error);
                 return;
         }
-        pAudioPlayer->PlaySound(SOUND_drink, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_drink);
         if (pGUIWindow_CurrentMenu &&
             pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {
             //         if ( !v73 ) v73 is always 1 at this point
@@ -4498,37 +4498,38 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             mouse->RemoveHoldingItem();
             spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, player_num - 1);
             playerAffected->playReaction(SPEECH_QuestGot);
-            pAudioPlayer->PlaySound(SOUND_chimes, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_chimes);
             if (pParty->uCurrentDayOfMonth == 6 ||
                 pParty->uCurrentDayOfMonth == 20) {
                 playerAffected->SetCondition(Condition_Eradicated, 0);
-                pAudioPlayer->PlaySound(SOUND_gong, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_gong);
             } else if (pParty->uCurrentDayOfMonth == 12 ||
                        pParty->uCurrentDayOfMonth == 26) {
                 playerAffected->SetCondition(Condition_Dead, 0);
-                pAudioPlayer->PlaySound(SOUND_gong, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_gong);
             } else if (pParty->uCurrentDayOfMonth == 4 ||
                        pParty->uCurrentDayOfMonth == 25) {
                 playerAffected->SetCondition(Condition_Petrified, 0);
-                pAudioPlayer->PlaySound(SOUND_gong, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_gong);
             }
             return;
         } else if (pParty->pPickedItem.uItemID == ITEM_RED_APPLE) {
             pParty->GiveFood(1);
-            pAudioPlayer->PlaySound(SOUND_eat, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_eat);
         } else if (pParty->pPickedItem.uItemID == ITEM_QUEST_LUTE) {
-            pAudioPlayer->PlaySound(SOUND_luteguitar, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_luteguitar);
             return;
         } else if (pParty->pPickedItem.uItemID == ITEM_QUEST_FAERIE_PIPES) {
-            pAudioPlayer->PlaySound(SOUND_panflute, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_panflute);
             return;
         } else if (pParty->pPickedItem.uItemID == ITEM_QUEST_GRYPHONHEARTS_TRUMPET) {
-            pAudioPlayer->PlaySound(SOUND_trumpet, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_trumpet);
             return;
         } else if (pParty->pPickedItem.uItemID == ITEM_HORSESHOE) {
             spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, player_num - 1);
-            v5 = PID(OBJECT_Player, player_num + 49);
-            pAudioPlayer->PlaySound(SOUND_quest, v5, 0, -1, 0, 0);
+            //v5 = PID(OBJECT_Player, player_num + 49);
+            //pAudioPlayer->PlaySound(SOUND_quest, v5, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_quest);
             playerAffected->AddVariable(VAR_NumSkillPoints, 2);
         } else if (pParty->pPickedItem.uItemID == ITEM_TEMPLE_IN_A_BOTTLE) {
             TeleportToNWCDungeon();
@@ -5530,8 +5531,9 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
 //----- (new function) --------------------------------------------------------
 void Player::PlayAwardSound() {
     int playerIndex = GetPlayerIndex();
-    int v25 = PID(OBJECT_Player, playerIndex + 48);
-    pAudioPlayer->PlaySound(SOUND_quest, v25, 0, -1, 0, 0);
+    //int v25 = PID(OBJECT_Player, playerIndex + 48);
+    //pAudioPlayer->PlaySound(SOUND_quest, v25, 0, -1, 0, 0);
+    pAudioPlayer->playUISound(SOUND_quest);
 }
 
 //----- (new function) --------------------------------------------------------
@@ -7680,28 +7682,28 @@ void Player::_42ECB5_PlayerAttacksActor() {
 
     switch (skill) {
         case PLAYER_SKILL_STAFF:
-            pAudioPlayer->PlaySound(SOUND_swing_with_blunt_weapon01, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_swing_with_blunt_weapon01);
             break;
         case PLAYER_SKILL_SWORD:
-            pAudioPlayer->PlaySound(SOUND_swing_with_sword01, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_swing_with_sword01);
             break;
         case PLAYER_SKILL_DAGGER:
-            pAudioPlayer->PlaySound(SOUND_swing_with_sword02, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_swing_with_sword02);
             break;
         case PLAYER_SKILL_AXE:
-            pAudioPlayer->PlaySound(SOUND_swing_with_axe01, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_swing_with_axe01);
             break;
         case PLAYER_SKILL_SPEAR:
-            pAudioPlayer->PlaySound(SOUND_swing_with_axe03, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_swing_with_axe03);
             break;
         case PLAYER_SKILL_BOW:
-            pAudioPlayer->PlaySound(SOUND_shoot_bow01, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_shoot_bow01);
             break;
         case PLAYER_SKILL_MACE:
-            pAudioPlayer->PlaySound(SOUND_swing_with_blunt_weapon03, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_swing_with_blunt_weapon03);
             break;
         case PLAYER_SKILL_BLASTER:
-            pAudioPlayer->PlaySound(SOUND_shoot_blaster01, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_shoot_blaster01);
             break;
         default:
             break;

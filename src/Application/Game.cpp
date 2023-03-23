@@ -843,7 +843,8 @@ void Game::EventLoop() {
                                                 continue;
                                         }
                                         GetHouseGoodbyeSpeech();
-                                        pAudioPlayer->PlaySound(SOUND_WoodDoorClosing, 814, 0, -1, 0, 0);
+                                        // PID 814 was used which is PID(OBJECT_Face, 101)
+                                        pAudioPlayer->playUISound(SOUND_WoodDoorClosing);
                                         pMediaPlayer->Unload();
                                         pGUIWindow_CurrentMenu = window_SpeakInHouse;
 
@@ -954,7 +955,8 @@ void Game::EventLoop() {
                 case UIMSG_TransitionUI_Confirm:
                     pCurrentFrameMessageQueue->Flush();
                     dword_50CDC8 = 1;
-                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, PID_INVALID, 0, -1, 0, 0);
+                    // PID_INVALID was used (exclusive sound)
+                    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
 
                     // PlayHouseSound(  // this is wrong - what is it meant to do??
                     //    uCurrentHouse_Animation,
@@ -2004,7 +2006,7 @@ void Game::EventLoop() {
                             pPlayer4->SetSkillLevel(skill, skill_level + 1);
                             pPlayer4->uSkillPoints -= skill_level + 1;
                             pPlayer4->playReaction(SPEECH_SkillIncrease);
-                            pAudioPlayer->PlaySound((SoundID)SOUND_quest, 0, 0, -1, 0, 0);
+                            pAudioPlayer->playUISound(SOUND_quest);
                             continue;
                         }
                         v87 = localization->GetString(LSTR_SKILL_ALREADY_MASTERED);

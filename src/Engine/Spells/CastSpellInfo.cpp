@@ -73,7 +73,7 @@ static void initSpellSprite(SpriteObject *spritePtr,
 static void spellFailed(CastSpellInfo *pCastSpell,
                         int error_str_id) {
     GameUI_SetStatusBar(error_str_id);
-    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
+    pAudioPlayer->playUISound(SOUND_spellfail0201);
     pCastSpell->uSpellID = SPELL_NONE;
 }
 

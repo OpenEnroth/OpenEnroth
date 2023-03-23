@@ -8,6 +8,7 @@
 #include "Utility/Memory/Blob.h"
 #include "Utility/Streams/FileInputStream.h"
 #include "Media/Media.h"
+#include "Engine/MM7.h"
 
 enum SoundID {
     SOUND_Invalid = 0,
@@ -162,6 +163,15 @@ class AudioPlayer {
 
     void playUISound(SoundID id) {
         PlaySound(id, 0, 0, -1, 0, 0);
+    }
+
+    void playExclusiveSound(SoundID id) {
+        PlaySound(id, PID_INVALID, 0, -1, 0, 0);
+    }
+
+    void playWalkSound(SoundID id) {
+        // All walk sounds originally used PID 804 which is PID(Object_Player, 100)
+        PlaySound(id, PID_INVALID, 1, -1, 0, 0);
     }
 
  protected:

@@ -522,7 +522,7 @@ LABEL_47:
                             pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
                             activeLevelDecoration = (LevelDecoration *)1;
                             if (EnterHouse(HOUSE_BODY_GUILD_ERATHIA)) {
-                                pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0);
+                                pAudioPlayer->playUISound(SOUND_Invalid);
                                 window_SpeakInHouse = new GUIWindow_House({0, 0}, render->GetRenderDimensions(), HOUSE_BODY_GUILD_ERATHIA, "");
                                 window_SpeakInHouse->DeleteButtons();
                             }
@@ -945,8 +945,9 @@ LABEL_47:
                 }
                 case EVENT_SpeakInHouse:
                     if (EnterHouse((enum HOUSE_ID)EVT_DWORD(_evt->v5))) {
-                        pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0);
-                        pAudioPlayer->PlaySound(SOUND_enter, 814, 0, -1, 0, 0);
+                        //pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0);
+                        // PID 814 was used which is PID(OBJECT_Face, 101)
+                        pAudioPlayer->playUISound(SOUND_enter);
                         HOUSE_ID houseId = HOUSE_JAIL;
                         if (uCurrentHouse_Animation != 167)
                             houseId = static_cast<HOUSE_ID>(EVT_DWORD(_evt->v5));

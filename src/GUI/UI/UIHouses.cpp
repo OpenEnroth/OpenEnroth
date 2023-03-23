@@ -965,13 +965,10 @@ void PrepareHouse(HOUSE_ID house) {
 //----- (004B1E92) --------------------------------------------------------
 void PlayHouseSound(unsigned int uHouseID, HouseSoundID sound) {
     if (uHouseID > 0) {
-        if (pAnimatedRooms[p2DEvents[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uAnimationID].uRoomSoundId)
-            pAudioPlayer->PlaySound(
-                (SoundID)(sound +
-                    100 * (pAnimatedRooms[p2DEvents[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uAnimationID]
-                        .uRoomSoundId +
-                        300)),
-                806, 0, -1, 0, 0);
+        if (pAnimatedRooms[p2DEvents[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uAnimationID].uRoomSoundId) {
+            int roomSoundId = pAnimatedRooms[p2DEvents[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uAnimationID].uRoomSoundId;
+            pAudioPlayer->PlaySound((SoundID)(sound + 100 * (roomSoundId + 300)), 806, 0, -1, 0, 0);
+        }
     }
 }
 
@@ -2063,7 +2060,7 @@ void TempleDialog() {
                     pParty->_activeCharacter - 1,
                     pPlayers[pParty->_activeCharacter]->uPrevFace);
             }
-            pAudioPlayer->PlaySound(SOUND_heal, PID_INVALID, 0, -1, 0, 0);
+            pAudioPlayer->playExclusiveSound(SOUND_heal);
             pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_TempleHeal);
             pOtherOverlayList->_4418B1(20, pParty->_activeCharacter + 99, 0, 65536);
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -2077,7 +2074,7 @@ void TempleDialog() {
             if (!pPlayers[pParty->_activeCharacter]->conditions.Has(Condition_Eradicated) &&
                 !pPlayers[pParty->_activeCharacter]->conditions.Has(Condition_Petrified) &&
                 !pPlayers[pParty->_activeCharacter]->conditions.Has(Condition_Dead)) {
-                pAudioPlayer->PlaySound(SOUND_heal, PID_INVALID, 0, -1, 0, 0);
+                pAudioPlayer->playExclusiveSound(SOUND_heal);
                 pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_TempleHeal);
                 pOtherOverlayList->_4418B1(20, pParty->_activeCharacter + 99, 0, 65536);
                 pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -2101,7 +2098,7 @@ void TempleDialog() {
         // HIDWORD(pPlayers[pParty->_activeCharacter]->pConditions[Condition_Zombie]) =
         // (int)v39;
         pPlayers[pParty->_activeCharacter]->conditions.Set(Condition_Zombie, pParty->GetPlayingTime());
-        pAudioPlayer->PlaySound(SOUND_heal, PID_INVALID, 0, -1, 0, 0);
+        pAudioPlayer->playExclusiveSound(SOUND_heal);
         pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_TempleHeal);
         pOtherOverlayList->_4418B1(20, pParty->_activeCharacter + 99, 0, 65536);
         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
