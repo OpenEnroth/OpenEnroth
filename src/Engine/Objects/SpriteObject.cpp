@@ -324,9 +324,9 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         pSpriteObjects[uLayingItemID].vVelocity.y = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.y);
         pSpriteObjects[uLayingItemID].vVelocity.z = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.z);
     }
-    Vec2i velDeltaXY = pSpriteObjects[uLayingItemID].vPosition.getXY() - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.getXY();
+    Vec2i deltaXY = pSpriteObjects[uLayingItemID].vPosition.getXY() - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.getXY();
     int velLenXY = integer_sqrt(pSpriteObjects[uLayingItemID].vVelocity.getXY().lengthSqr());
-    int velRotXY = TrigLUT.atan2(velDeltaXY.x, velDeltaXY.y);
+    int velRotXY = TrigLUT.atan2(deltaXY.x, deltaXY.y);
 
     pSpriteObjects[uLayingItemID].vVelocity.x = TrigLUT.cos(velRotXY) * velLenXY;
     pSpriteObjects[uLayingItemID].vVelocity.y = TrigLUT.sin(velRotXY - TrigLUT.uIntegerHalfPi) * velLenXY;
@@ -334,12 +334,14 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
 }
 
 //----- (0047136C) --------------------------------------------------------
-void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID) {
+void SpriteObject::updateObjectBLV(unsigned int uLayingItemID) {
     SpriteObject *pSpriteObject = &pSpriteObjects[uLayingItemID];
     ObjectDesc *pObject = &pObjectList->pObjects[pSpriteObject->uObjectDescID];
 
     // Break early if we're out of bounds.
-    if (abs(pSpriteObject->vPosition.x) > 32767 || abs(pSpriteObject->vPosition.y) > 32767 || abs(pSpriteObject->vPosition.z) > 20000) {
+    if (abs(pSpriteObject->vPosition.x) > 32767 ||
+            abs(pSpriteObject->vPosition.y) > 32767 ||
+            abs(pSpriteObject->vPosition.z) > 20000) {
         SpriteObject::OnInteraction(uLayingItemID);
         return;
     }
@@ -351,17 +353,8 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID) {
         SpriteObject::OnInteraction(uLayingItemID);
         return;
     }
+
     pSpriteObject->uSectorID = uSectorID;
-
-    int v15;               // ebx@46
-    int v17;                      // eax@50
-    int16_t v22;                  // ax@57
-    int v23;                      // edi@62
-    Particle_sw Dst;              // [sp+Ch] [bp-84h]@18
-
-    int v39;                      // [sp+80h] [bp-10h]@33
-    int v40;                      // [sp+84h] [bp-Ch]@28
-
 
     if (pObject->uFlags & OBJECT_DESC_NO_GRAVITY) {
         goto LABEL_25;
@@ -369,7 +362,8 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID) {
 
     // flying objects / projectiles
     if (floor_lvl <= pSpriteObject->vPosition.z - 3) {
-        pSpriteObject->vVelocity.z -= (short)pEventTimer->uTimeElapsed * GetGravityStrength();
+        pSpriteObject->vVelocity.z -= pEventTimer->uTimeElapsed * GetGravityStrength();
+        // TODO(Nik-RE-dev): get rid of goto here
 LABEL_25:
         collision_state.check_hi = false;
         collision_state.radius_lo = pObject->uRadius;
@@ -377,209 +371,129 @@ LABEL_25:
         collision_state.radius_hi = 0;
         collision_state.total_move_distance = 0;
         for (int loop = 0; loop < 100; loop++) {
-            collision_state.position_hi.x = pSpriteObject->vPosition.x;
-            collision_state.position_hi.y = pSpriteObject->vPosition.y;
-            collision_state.position_hi.z = collision_state.radius_lo + pSpriteObject->vPosition.z + 1;
-
-            collision_state.position_lo.x = collision_state.position_hi.x;
-            collision_state.position_lo.y = collision_state.position_hi.y;
-            collision_state.position_lo.z = collision_state.position_hi.z;
-
-            collision_state.velocity.x = pSpriteObject->vVelocity.x;
-            collision_state.velocity.y = pSpriteObject->vVelocity.y;
-            collision_state.velocity.z = pSpriteObject->vVelocity.z;
-
+            collision_state.position_hi = pSpriteObject->vPosition.toFloat() + Vec3f(0, 0, collision_state.radius_lo + 1);
+            collision_state.position_lo = collision_state.position_hi;
+            collision_state.velocity = pSpriteObject->vVelocity.toFloat();
             collision_state.uSectorID = pSpriteObject->uSectorID;
-            if (collision_state.PrepareAndCheckIfStationary(0)) return;
+            if (collision_state.PrepareAndCheckIfStationary(0)) {
+                return;
+            }
 
+            // TODO(Nik-RE-dev): check purpose of inner loop
             for (int loop2 = 0; loop2 < 100; ++loop2) {
                 CollideIndoorWithGeometry(false);
                 CollideIndoorWithDecorations();
 
-                if (PID_TYPE(pSpriteObject->spell_caster_pid) != OBJECT_Player)
+                if (PID_TYPE(pSpriteObject->spell_caster_pid) != OBJECT_Player) {
                     CollideWithParty(true);
+                }
 
                 for (int actloop = 0; actloop < (signed int)pActors.size(); ++actloop) {
                     // dont collide against self monster type
                     if (PID_TYPE(pSpriteObject->spell_caster_pid) == OBJECT_Actor) {
-                        if (pActors[PID_ID(pSpriteObject->spell_caster_pid)].pMonsterInfo.uID == pActors[actloop].pMonsterInfo.uID) continue;
+                        if (pActors[PID_ID(pSpriteObject->spell_caster_pid)].pMonsterInfo.uID == pActors[actloop].pMonsterInfo.uID) {
+                            continue;
+                        }
                     }
 
-                        // not sure:
-                        // pMonsterList->pMonsters[v39b->word_000086_some_monster_id-1].uToHitRadius
-                        int radius = 0;
-                        if (pActors[actloop].word_000086_some_monster_id) {  // not always filled in from scripted monsters
-                            radius = pMonsterList->pMonsters[pActors[actloop].word_000086_some_monster_id - 1].uToHitRadius;
-                        }
-                        CollideWithActor(actloop, radius);
+                    // not sure:
+                    // pMonsterList->pMonsters[v39b->word_000086_some_monster_id-1].uToHitRadius
+                    int radius = 0;
+                    if (pActors[actloop].word_000086_some_monster_id) {  // not always filled in from scripted monsters
+                        radius = pMonsterList->pMonsters[pActors[actloop].word_000086_some_monster_id - 1].uToHitRadius;
+                    }
+                    CollideWithActor(actloop, radius);
                 }
 
-                if (CollideIndoorWithPortals()) break;
+                if (CollideIndoorWithPortals()) {
+                    break;
+                }
             }
             // end loop2
 
             if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
-                pSpriteObject->vPosition.x = collision_state.new_position_lo.x;
-                pSpriteObject->vPosition.y = collision_state.new_position_lo.y;
-                pSpriteObject->vPosition.z =
-                    collision_state.new_position_lo.z - collision_state.radius_lo - 1;
-                pSpriteObject->uSectorID = (short)collision_state.uSectorID;
-                if (!(pObject->uFlags & 0x100)) return;
-                memset(&Dst, 0, sizeof(Particle_sw));
-                Dst.x = (double)pSpriteObject->vPosition.x;
-                Dst.y = (double)pSpriteObject->vPosition.y;
-                Dst.z = (double)pSpriteObject->vPosition.z;
-                Dst.r = 0.0;
-                Dst.g = 0.0;
-                Dst.b = 0.0;
-                if (pObject->uFlags & OBJECT_DESC_TRIAL_FIRE) {
-                    Dst.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
-                    Dst.uDiffuse = colorTable.OrangeyRed.c32();
-                    Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
-                    Dst.texture = spell_fx_renderer->effpar01;
-                    Dst.particle_size = 1.0f;
-                    particle_engine->AddParticle(&Dst);
+                pSpriteObject->vPosition = (collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo - 1)).toIntTrunc();
+                pSpriteObject->uSectorID = collision_state.uSectorID;
+                if (!(pObject->uFlags & OBJECT_DESC_TRIAL_PARTICLE)) {
                     return;
-                } else if (pObject->uFlags & OBJECT_DESC_TRIAL_LINE) {
-                    Dst.type = ParticleType_Line;
-                    Dst.uDiffuse = vrng->Random(RAND_MAX);
-                    Dst.timeToLive = 64;
-                    Dst.texture = 0;
-                    Dst.particle_size = 1.0f;
-                    particle_engine->AddParticle(&Dst);
-                    return;
-                } else if (pObject->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
-                    Dst.type = ParticleType_Bitmap | ParticleType_Ascending;
-                    Dst.uDiffuse = vrng->Random(RAND_MAX);
-                    Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
-                    Dst.texture = spell_fx_renderer->effpar03;
-                    Dst.particle_size = 1.0f;
-                    particle_engine->AddParticle(&Dst);
                 }
+                createSpriteTrailParticle(pSpriteObject->vPosition, pObject->uFlags);
                 return;
             }
-            // v40 = (uint64_t)(collision_state.adjusted_move_distance * (signed
-            // int64_t)collision_state.direction.x) >> 16;
+            // v40 = (uint64_t)(collision_state.adjusted_move_distance * (signed int64_t)collision_state.direction.x) >> 16;
+            // v40 = (uint64_t)(collision_state.adjusted_move_distance * (signed int64_t)collision_state.direction.y) >> 16;
+            // v40 = (uint64_t)(collision_state.adjusted_move_distance * (signed int64_t)collision_state.direction.z) >> 16;
 
-            pSpriteObject->vPosition.x +=
-                collision_state.adjusted_move_distance * collision_state.direction.x;
-
-            // v40 = (uint64_t)(collision_state.adjusted_move_distance * (signed
-            // int64_t)collision_state.direction.y) >> 16;
-
-            pSpriteObject->vPosition.y +=
-                collision_state.adjusted_move_distance * collision_state.direction.y;
-
-            // v40 = (uint64_t)(collision_state.adjusted_move_distance * (signed
-            // int64_t)collision_state.direction.z) >> 16;
-
-            pSpriteObject->vPosition.z +=
-                collision_state.adjusted_move_distance * collision_state.direction.z;
-
+            Vec3f delta = collision_state.direction * collision_state.adjusted_move_distance;
+            pSpriteObject->vPosition += delta.toInt();
             pSpriteObject->uSectorID = collision_state.uSectorID;
             collision_state.total_move_distance += collision_state.adjusted_move_distance;
 
             // if weve collided but dont need to react return
-            if (pObject->uFlags & OBJECT_DESC_INTERACTABLE &&
-                !processSpellImpact(uLayingItemID, collision_state.pid))
+            if ((pObject->uFlags & OBJECT_DESC_INTERACTABLE) &&
+                !processSpellImpact(uLayingItemID, collision_state.pid)) {
                 return;
+            }
 
-            v15 = (signed int)collision_state.pid >> 3;
+            int pidId = PID_ID(collision_state.pid);
             if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) {
-                v40 = integer_sqrt(
-                    pSpriteObject->vVelocity.x * pSpriteObject->vVelocity.x +
-                    pSpriteObject->vVelocity.y * pSpriteObject->vVelocity.y);
-                v23 = TrigLUT.atan2(pSpriteObject->vPosition.x - pLevelDecorations[v15].vPosition.x,
-                                    pSpriteObject->vPosition.y - pLevelDecorations[v15].vPosition.y);
-                pSpriteObject->vVelocity.x = TrigLUT.cos(v23) * v40;
-                pSpriteObject->vVelocity.y = TrigLUT.sin(v23) * v40;
+                Vec2i deltaXY = pSpriteObject->vPosition.getXY() - pLevelDecorations[pidId].vPosition.getXY();
+                int velXYLen = integer_sqrt(pSpriteObject->vVelocity.getXY().lengthSqr());
+                int velXYRot = TrigLUT.atan2(deltaXY.x, deltaXY.y);
+                pSpriteObject->vVelocity.x = TrigLUT.cos(velXYRot) * velXYLen;
+                pSpriteObject->vVelocity.y = TrigLUT.sin(velXYRot) * velXYLen;
             }
             if (PID_TYPE(collision_state.pid) == OBJECT_Face) {
                 collision_state.ignored_face_id = PID_ID(collision_state.pid);
-                if (pIndoor->pFaces[v15].uPolygonType != POLYGON_Floor) {
-                    floor_lvl = abs(pIndoor->pFaces[v15].pFacePlane_old.vNormal.x *
-                                  pSpriteObject->vVelocity.x +
-                              pIndoor->pFaces[v15].pFacePlane_old.vNormal.y *
-                                  pSpriteObject->vVelocity.y +
-                              pIndoor->pFaces[v15].pFacePlane_old.vNormal.z *
-                                  pSpriteObject->vVelocity.z) >>
-                          16;
-                    if ((collision_state.speed / 8) > floor_lvl)
-                        floor_lvl = collision_state.speed / 8;
-                    pSpriteObject->vVelocity.x +=
-                        2 *
-                        fixpoint_mul(
-                            floor_lvl, pIndoor->pFaces[v15].pFacePlane_old.vNormal.x);
-                    pSpriteObject->vVelocity.y +=
-                        2 *
-                        fixpoint_mul(
-                            floor_lvl, pIndoor->pFaces[v15].pFacePlane_old.vNormal.y);
-                    v39 = fixpoint_mul(
-                        floor_lvl, pIndoor->pFaces[v15].pFacePlane_old.vNormal.z);
-                    if (pIndoor->pFaces[v15].pFacePlane_old.vNormal.z <= 32000) {
-                        v22 = 2 * v39;
-                    } else {
-                        pSpriteObject->vVelocity.z += v39;
-                        v22 = fixpoint_mul(32000, v39);
+                if (pIndoor->pFaces[pidId].uPolygonType != POLYGON_Floor) {
+                    // Before this variable changed floor_lvl variable which is obviously invalid.
+                    int dotFix = abs(dot(pIndoor->pFaces[pidId].pFacePlane_old.vNormal, pSpriteObject->vVelocity)) >> 16;
+                    if ((collision_state.speed / 8) > dotFix) {
+                        dotFix = collision_state.speed / 8;
                     }
-                    pSpriteObject->vVelocity.z += v22;
-                    if (pIndoor->pFaces[v15].uAttributes & FACE_TriggerByObject)
-                        EventProcessor(
-                            pIndoor
-                                ->pFaceExtras[pIndoor->pFaces[v15].uFaceExtraID]
-                                .uEventID,
-                            0, 1);
-                    pSpriteObject->vVelocity.x =
-                        fixpoint_mul(58500, pSpriteObject->vVelocity.x);
-                    pSpriteObject->vVelocity.y =
-                        fixpoint_mul(58500, pSpriteObject->vVelocity.y);
-                    pSpriteObject->vVelocity.z =
-                        fixpoint_mul(58500, pSpriteObject->vVelocity.z);
+                    pSpriteObject->vVelocity.x += 2 * fixpoint_mul(dotFix, pIndoor->pFaces[pidId].pFacePlane_old.vNormal.x);
+                    pSpriteObject->vVelocity.y += 2 * fixpoint_mul(dotFix, pIndoor->pFaces[pidId].pFacePlane_old.vNormal.y);
+                    int newZVel = fixpoint_mul(dotFix, pIndoor->pFaces[pidId].pFacePlane_old.vNormal.z);
+                    if (pIndoor->pFaces[pidId].pFacePlane_old.vNormal.z <= 32000) {
+                        newZVel = 2 * newZVel;
+                    } else {
+                        pSpriteObject->vVelocity.z += newZVel;
+                        newZVel = fixpoint_mul(32000, newZVel);
+                    }
+                    pSpriteObject->vVelocity.z += newZVel;
+                    if (pIndoor->pFaces[pidId].uAttributes & FACE_TriggerByObject) {
+                        EventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[pidId].uFaceExtraID].uEventID, 0, 1);
+                    }
+                    pSpriteObject->vVelocity.x = fixpoint_mul(58500, pSpriteObject->vVelocity.x);
+                    pSpriteObject->vVelocity.y = fixpoint_mul(58500, pSpriteObject->vVelocity.y);
+                    pSpriteObject->vVelocity.z = fixpoint_mul(58500, pSpriteObject->vVelocity.z);
                     continue;
                 }
                 if (pObject->uFlags & OBJECT_DESC_BOUNCE) {
-                    v17 = -pSpriteObject->vVelocity.z / 2;
-                    pSpriteObject->vVelocity.z = v17;
-                    if ((int16_t)v17 < 10)
+                    pSpriteObject->vVelocity.z = -pSpriteObject->vVelocity.z / 2;
+                    if (pSpriteObject->vVelocity.z < 10) {
                         pSpriteObject->vVelocity.z = 0;
-                    if (pIndoor->pFaces[v15].uAttributes & FACE_TriggerByObject)
-                        EventProcessor(
-                            pIndoor
-                                ->pFaceExtras[pIndoor->pFaces[v15].uFaceExtraID]
-                                .uEventID,
-                            0, 1);
-                    pSpriteObject->vVelocity.x =
-                        fixpoint_mul(58500, pSpriteObject->vVelocity.x);
-                    pSpriteObject->vVelocity.y =
-                        fixpoint_mul(58500, pSpriteObject->vVelocity.y);
-                    pSpriteObject->vVelocity.z =
-                        fixpoint_mul(58500, pSpriteObject->vVelocity.z);
+                    }
+                    if (pIndoor->pFaces[pidId].uAttributes & FACE_TriggerByObject) {
+                        EventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[pidId].uFaceExtraID].uEventID, 0, 1);
+                    }
+                    pSpriteObject->vVelocity.x = fixpoint_mul(58500, pSpriteObject->vVelocity.x);
+                    pSpriteObject->vVelocity.y = fixpoint_mul(58500, pSpriteObject->vVelocity.y);
+                    pSpriteObject->vVelocity.z = fixpoint_mul(58500, pSpriteObject->vVelocity.z);
                     continue;
                 }
                 pSpriteObject->vVelocity.z = 0;
-                if (pSpriteObject->vVelocity.x * pSpriteObject->vVelocity.x +
-                        pSpriteObject->vVelocity.y *
-                            pSpriteObject->vVelocity.y >=
-                    400) {
-                    if (pIndoor->pFaces[v15].uAttributes & FACE_TriggerByObject)
-                        EventProcessor(
-                            pIndoor
-                                ->pFaceExtras[pIndoor->pFaces[v15].uFaceExtraID]
-                                .uEventID,
-                            0, 1);
-                    pSpriteObject->vVelocity.x =
-                        fixpoint_mul(58500, pSpriteObject->vVelocity.x);
-                    pSpriteObject->vVelocity.y =
-                        fixpoint_mul(58500, pSpriteObject->vVelocity.y);
-                    pSpriteObject->vVelocity.z =
-                        fixpoint_mul(58500, pSpriteObject->vVelocity.z);
+                if (pSpriteObject->vVelocity.getXY().lengthSqr() >= 400) {
+                    if (pIndoor->pFaces[pidId].uAttributes & FACE_TriggerByObject) {
+                        EventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[pidId].uFaceExtraID].uEventID, 0, 1);
+                    }
+                    pSpriteObject->vVelocity.x = fixpoint_mul(58500, pSpriteObject->vVelocity.x);
+                    pSpriteObject->vVelocity.y = fixpoint_mul(58500, pSpriteObject->vVelocity.y);
+                    pSpriteObject->vVelocity.z = fixpoint_mul(58500, pSpriteObject->vVelocity.z);
                     continue;
                 }
-                pSpriteObject->vVelocity.z = 0;
-                pSpriteObject->vVelocity.y = 0;
-                pSpriteObject->vVelocity.x = 0;
-                pSpriteObject->vPosition.z =
-                    pIndoor->pVertices[*pIndoor->pFaces[v15].pVertexIDs].z + 1;
+                pSpriteObject->vVelocity = Vec3s(0, 0, 0);
+                pSpriteObject->vPosition.z = pIndoor->pVertices[*pIndoor->pFaces[pidId].pVertexIDs].z + 1;
             }
             pSpriteObject->vVelocity.x = fixpoint_mul(58500, pSpriteObject->vVelocity.x);
             pSpriteObject->vVelocity.y = fixpoint_mul(58500, pSpriteObject->vVelocity.y);
@@ -588,59 +502,27 @@ LABEL_25:
         // end loop
     }
 
-    if (!(pObject->uFlags & OBJECT_DESC_INTERACTABLE) ||
-        processSpellImpact(uLayingItemID, 0)) {
+    if (!(pObject->uFlags & OBJECT_DESC_INTERACTABLE) || processSpellImpact(uLayingItemID, 0)) {
         pSpriteObject->vPosition.z = floor_lvl + 1;
         if (pIndoor->pFaces[uFaceID].uPolygonType == POLYGON_Floor) {
             pSpriteObject->vVelocity.z = 0;
         } else {
-            if (pIndoor->pFaces[uFaceID].pFacePlane_old.vNormal.z < 45000)
-                pSpriteObject->vVelocity.z -=
-                    (short)pEventTimer->uTimeElapsed * GetGravityStrength();
+            if (pIndoor->pFaces[uFaceID].pFacePlane_old.vNormal.z < 45000) {
+                pSpriteObject->vVelocity.z -= pEventTimer->uTimeElapsed * GetGravityStrength();
+            }
         }
         pSpriteObject->vVelocity.x = fixpoint_mul(58500, pSpriteObject->vVelocity.x);
         pSpriteObject->vVelocity.y = fixpoint_mul(58500, pSpriteObject->vVelocity.y);
         pSpriteObject->vVelocity.z = fixpoint_mul(58500, pSpriteObject->vVelocity.z);
-        if (pSpriteObject->vVelocity.x * pSpriteObject->vVelocity.x +
-                pSpriteObject->vVelocity.y * pSpriteObject->vVelocity.y <
-            400) {
-            pSpriteObject->vVelocity.x = 0;
-            pSpriteObject->vVelocity.y = 0;
-            pSpriteObject->vVelocity.z = 0;
-            if (!(pObject->uFlags & OBJECT_DESC_NO_SPRITE)) return;
-            memset(&Dst, 0, sizeof(Particle_sw));
-            Dst.x = (double)pSpriteObject->vPosition.x;
-            Dst.y = (double)pSpriteObject->vPosition.y;
-            Dst.z = (double)pSpriteObject->vPosition.z;
-            Dst.r = 0.0;
-            Dst.g = 0.0;
-            Dst.b = 0.0;
-            if (pObject->uFlags & OBJECT_DESC_TRIAL_FIRE) {
-                Dst.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
-                Dst.uDiffuse = colorTable.OrangeyRed.c32();
-                Dst.particle_size = 1.0f;
-                Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
-                Dst.texture = spell_fx_renderer->effpar01;
-                particle_engine->AddParticle(&Dst);
+        if (pSpriteObject->vVelocity.getXY().lengthSqr() < 400) {
+            pSpriteObject->vVelocity = Vec3s(0, 0, 0);
+            if (!(pObject->uFlags & OBJECT_DESC_NO_SPRITE)) {
                 return;
-            } else if (pObject->uFlags & OBJECT_DESC_TRIAL_LINE) {
-                Dst.type = ParticleType_Line;
-                Dst.uDiffuse = vrng->Random(RAND_MAX);
-                Dst.timeToLive = 64;
-                Dst.texture = nullptr;
-                Dst.particle_size = 1.0f;
-                particle_engine->AddParticle(&Dst);
-                return;
-            } else if (pObject->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
-                Dst.type = ParticleType_Bitmap | ParticleType_Ascending;
-                Dst.uDiffuse = vrng->Random(RAND_MAX);
-                Dst.particle_size = 1.0f;
-                Dst.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
-                Dst.texture = spell_fx_renderer->effpar03;
-                particle_engine->AddParticle(&Dst);
             }
+            createSpriteTrailParticle(pSpriteObject->vPosition, pObject->uFlags);
             return;
         }
+        // TODO(Nik-RE-dev): is this correct?
         goto LABEL_25;
     }
 }
@@ -1458,7 +1340,7 @@ void UpdateObjects() {
                 if (!(object->uFlags & OBJECT_DESC_TEMPORARY) ||
                     pSpriteObjects[i].uSpriteFrameID < lifetime) {
                     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-                        SpriteObject::UpdateObject_fn0_BLV(i);
+                        SpriteObject::updateObjectBLV(i);
                     } else {
                         SpriteObject::updateObjectODM(i);
                     }

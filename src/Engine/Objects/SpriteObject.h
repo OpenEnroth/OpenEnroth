@@ -35,7 +35,10 @@ struct SpriteObject {
         vVelocity = Vec3s(0.0, 0.0, 0.0);
     }
 
-    static void UpdateObject_fn0_BLV(unsigned int uLayingItemID);
+    /**
+     * @offset 0x47136C
+     */
+    static void updateObjectBLV(unsigned int uLayingItemID);
 
     /**
      * @offset 0x471C03
