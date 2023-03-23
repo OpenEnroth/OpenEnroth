@@ -239,8 +239,9 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         inspect_item->SetIdentified();
 
     int GoldAmount = 0;
-    if (inspect_item->GetItemEquipType() == EQUIP_GOLD)
+    if (inspect_item->isGold()) {
         GoldAmount = inspect_item->special_enchantment;
+    }
 
     if (pParty->_activeCharacter) {
         // try to identify
@@ -402,13 +403,13 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
 
     if (!GoldAmount) {
         // this is CORRECT! do not move to switch!
-        if (inspect_item->GetItemEquipType() == EQUIP_POTION) {
+        if (inspect_item->isPotion()) {
             if (inspect_item->uEnchantmentType)
                 sprintf(
                     out_text + 200, "%s: %d", localization->GetString(LSTR_POWER),
                     inspect_item->uEnchantmentType
                 );
-        } else if (inspect_item->GetItemEquipType() == EQUIP_REAGENT) {
+        } else if (inspect_item->isReagent()) {
             sprintf(
                 out_text + 200, "%s: %d", localization->GetString(LSTR_POWER),
                 inspect_item->GetDamageDice()
@@ -422,7 +423,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             sprintf(
                 out_text + 200, "%s: %s", localization->GetString(LSTR_SPECIAL_2),
                 pItemTable->pSpecialEnchantments[inspect_item->special_enchantment].pBonusStatement);
-        } else if (inspect_item->GetItemEquipType() == EQUIP_WAND) {
+        } else if (inspect_item->isWand()) {
             sprintf(
                 out_text + 200, localization->GetString(LSTR_FMT_S_U_OUT_OF_U), localization->GetString(LSTR_CHARGES),
                 inspect_item->uNumCharges, inspect_item->uMaxCharges
@@ -1834,7 +1835,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
     if (pParty->pPickedItem.uItemID == ITEM_POTION_RECHARGE_ITEM) {
         if (item->uItemID < ITEM_POTION_BOTTLE ||
             item->uItemID > ITEM_POTION_REJUVENATION) {  // all potions
-            if (item->GetItemEquipType() != EQUIP_WAND) {  // can recharge only wands
+            if (!item->isWand()) {  // can recharge only wands
                 pAudioPlayer->playUISound(SOUND_error);
                 return;
             }
@@ -1858,8 +1859,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             item->uItemID > ITEM_POTION_REJUVENATION) {  // bottle and all potions
             if (item->IsBroken() ||  // cant harden broken items
                 item->uItemID >= ITEM_ARTIFACT_PUCK ||  // cant harden artifacts
-                item->GetItemEquipType() < EQUIP_SINGLE_HANDED ||
-                item->GetItemEquipType() > EQUIP_WAND) {
+                (!item->isWeapon() && !item->isPassiveEquipment() && !item->isWand())) {
                 mouse->RemoveHoldingItem();
                 no_rightlick_in_inventory = true;
                 return;
@@ -1884,7 +1884,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 item->uItemID <= ITEM_BLASTER_RIFLE ||
                 item->uItemID >= ITEM_ARTIFACT_PUCK || item->IsBroken() ||
                 item->special_enchantment || item->uEnchantmentType ||
-                !IsWeapon(item->GetItemEquipType())) {
+                !item->isWeapon()) {
                 mouse->RemoveHoldingItem();
                 no_rightlick_in_inventory = true;
                 return;

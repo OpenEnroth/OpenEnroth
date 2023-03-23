@@ -594,11 +594,11 @@ void ItemTable::GenerateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
             v57 += pItems[out_item->uItemID].uChanceByTreasureLvl[treasure_level];
         }
     }
-    if (out_item->GetItemEquipType() == EQUIP_POTION &&
-        out_item->uItemID != ITEM_POTION_BOTTLE) {  // if it potion set potion spec
+    if (out_item->isPotion() && out_item->uItemID != ITEM_POTION_BOTTLE) {  // if it potion set potion spec
         out_item->uEnchantmentType = 0;
-        for (int i = 0; i < 2; ++i)
+        for (int i = 0; i < 2; ++i) {
             out_item->uEnchantmentType += grng->Random(4) + 1;
+        }
         out_item->uEnchantmentType = out_item->uEnchantmentType * std::to_underlying(treasure_level);
     }
 
@@ -610,7 +610,7 @@ void ItemTable::GenerateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
     else
         out_item->uAttributes = ITEM_IDENTIFIED;
 
-    if (out_item->GetItemEquipType() != EQUIP_POTION) {
+    if (!out_item->isPotion()) {
         out_item->special_enchantment = ITEM_ENCHANTMENT_NULL;
         out_item->uEnchantmentType = 0;
     }
@@ -639,8 +639,7 @@ void ItemTable::GenerateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
                 v27 = 0;
                 while (v27 < v26) {
                     ++out_item->uEnchantmentType;
-                    v27 += pEnchantments[out_item->uEnchantmentType]
-                            .to_item[out_item->GetItemEquipType()];
+                    v27 += pEnchantments[out_item->uEnchantmentType].to_item[out_item->GetItemEquipType()];
                 }
 
                 v33 = grng->Random(bonus_ranges[treasure_level].maxR -

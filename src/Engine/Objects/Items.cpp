@@ -757,23 +757,21 @@ bool ItemGen::MerchandiseTest(int _2da_idx) {
 
     switch (p2DEvents[_2da_idx - 1].uType) {
         case BuildingType_WeaponShop: {
-            test = this->GetItemEquipType() <= EQUIP_BOW;
+            test = this->isWeapon();
             break;
         }
         case BuildingType_ArmorShop: {
-            test = this->GetItemEquipType() >= EQUIP_ARMOUR &&
-                   this->GetItemEquipType() <= EQUIP_BOOTS;
+            test = this->isArmor();
             break;
         }
         case BuildingType_MagicShop: {
-            test = this->GetPlayerSkillType() == PLAYER_SKILL_MISC ||
-                   this->GetItemEquipType() == EQUIP_BOOK;
+            test = this->GetPlayerSkillType() == PLAYER_SKILL_MISC || this->isBook();
             break;
         }
         case BuildingType_AlchemistShop: {
-            test = this->GetItemEquipType() == EQUIP_REAGENT ||
-                   this->GetItemEquipType() == EQUIP_POTION ||
-                   (this->GetItemEquipType() == EQUIP_MESSAGE_SCROLL && IsRecipe(this->uItemID));
+            test = this->isReagent() ||
+                   this->isPotion() ||
+                   (this->isMessageScroll() && IsRecipe(this->uItemID));
             break;
         }
         default: {

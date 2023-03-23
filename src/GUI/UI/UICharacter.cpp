@@ -1240,7 +1240,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         item_Y = pPaperdoll_BodyY + pPaperdoll_SecondLeftHand[pBodyComplection][1];
 
         render->DrawTextureNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlhus[uPlayerID - 1]);
-    } else if (!itemOffHand || itemOffHand && itemOffHand->GetItemEquipType() != EQUIP_SHIELD) {
+    } else if (!itemOffHand || itemOffHand && !itemOffHand->isShield()) {
         item_X = pPaperdoll_BodyX + pPaperdollLeftEmptyHand[pBodyComplection][0];
         item_Y = pPaperdoll_BodyY + pPaperdollLeftEmptyHand[pBodyComplection][1];
         render->DrawTextureNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlhs[uPlayerID - 1]);
@@ -1907,10 +1907,9 @@ void OnPaperdollLeftClick() {
     int mainhandequip = pPlayers[pParty->_activeCharacter]->pEquipment.uMainHand;
     unsigned int shieldequip = pPlayers[pParty->_activeCharacter]->pEquipment.uOffHand;
 
-    if (mainhandequip && pPlayers[pParty->_activeCharacter]
-                                 ->pInventoryItemList[mainhandequip - 1]
-                                 .GetItemEquipType() == EQUIP_TWO_HANDED)
+    if (mainhandequip && pPlayers[pParty->_activeCharacter]->pInventoryItemList[mainhandequip - 1].GetItemEquipType() == EQUIP_TWO_HANDED) {
         twohandedequip = mainhandequip;
+    }
 
     ITEM_TYPE pickeditem = pParty->pPickedItem.uItemID;
 
@@ -2438,9 +2437,7 @@ void OnPaperdollLeftClick() {
         if (v34) {
             // v36 = v34 - 1;
             // v38 = &pPlayers[pParty->_activeCharacter]->pInventoryItemList[v34 - 1];
-            pEquipType = pPlayers[pParty->_activeCharacter]
-                             ->pInventoryItemList[v34 - 1]
-                             .GetItemEquipType();
+            pEquipType = pPlayers[pParty->_activeCharacter]->pInventoryItemList[v34 - 1].GetItemEquipType();
             if (pPlayers[pParty->_activeCharacter]->pInventoryItemList[v34 - 1].uItemID == ITEM_QUEST_WETSUIT) {
                 if (engine->IsUnderwater()) {
                     pAudioPlayer->playUISound(SOUND_error);
