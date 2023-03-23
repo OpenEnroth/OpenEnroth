@@ -42,6 +42,6 @@ var searchData=
   ['vis_39',['Vis',['../classVis.html#abf7e70e0019fe93122ce8b53f5eedc50',1,'Vis']]],
   ['visible_40',['Visible',['../structBLVFace.html#ab0f27bf592ba9ca357dde5deef3459b4',1,'BLVFace::Visible()'],['../structODMFace.html#a8113cb0afb1f45cc292fd22959459daa',1,'ODMFace::Visible()']]],
   ['visibleskills_41',['VisibleSkills',['../PlayerEnums_8h.html#a3d75864681b86d2ee25a6449cce0ce9d',1,'PlayerEnums.h']]],
-  ['visit_42',['visit',['../classPlatformIntrospection.html#aef153109800e003b98d448d4a167300d',1,'PlatformIntrospection']]],
-  ['visitinternal_43',['visitInternal',['../classPlatformIntrospection.html#a116720f64583f5e4eb51c13cf09b4f8d',1,'PlatformIntrospection']]]
+  ['visit_42',['visit',['../classPlatformIntrospection.html#a83040febef70b51af271589ae4c1f532',1,'PlatformIntrospection']]],
+  ['visitinternal_43',['visitInternal',['../classPlatformIntrospection.html#a1a984691e737325e8abf75d978b6b574',1,'PlatformIntrospection']]]
 ];

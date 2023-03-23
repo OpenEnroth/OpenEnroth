@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: EngineControlPlugin Class Reference</title>
+<title>OpenEnroth: EngineControlComponent Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8d1f6a1</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;192c2eb</span>
    </div>
   </td>
  </tr>
@@ -75,51 +75,51 @@ $(function() {
 <a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="#friends">Friends</a> &#124;
-<a href="classEngineControlPlugin-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">EngineControlPlugin Class Reference</div></div>
+<a href="classEngineControlComponent-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">EngineControlComponent Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;EngineControlPlugin.h&gt;</code></p>
+<p><code>#include &lt;EngineControlComponent.h&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for EngineControlPlugin:</div>
+Inheritance diagram for EngineControlComponent:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="classEngineControlPlugin.png" usemap="#EngineControlPlugin_map" alt=""/>
-  <map id="EngineControlPlugin_map" name="EngineControlPlugin_map">
-<area href="classProxyOpenGLContext.html" alt="ProxyOpenGLContext" shape="rect" coords="0,0,134,24"/>
-<area href="classProxyEventLoop.html" alt="ProxyEventLoop" shape="rect" coords="144,0,278,24"/>
+  <img src="classEngineControlComponent.png" usemap="#EngineControlComponent_map" alt=""/>
+  <map id="EngineControlComponent_map" name="EngineControlComponent_map">
+<area href="classProxyOpenGLContext.html" alt="ProxyOpenGLContext" shape="rect" coords="0,0,155,24"/>
+<area href="classProxyEventLoop.html" alt="ProxyEventLoop" shape="rect" coords="165,0,320,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a5908e60c86016495f35710971db39b24"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlPlugin.html#a5908e60c86016495f35710971db39b24">ControlRoutine</a> = std::function&lt; void(<a class="el" href="classEngineController.html">EngineController</a> *)&gt;</td></tr>
-<tr class="separator:a5908e60c86016495f35710971db39b24"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af16ded1a0b755f630a6b1a3bb711bdc9"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlComponent.html#af16ded1a0b755f630a6b1a3bb711bdc9">ControlRoutine</a> = std::function&lt; void(<a class="el" href="classEngineController.html">EngineController</a> *)&gt;</td></tr>
+<tr class="separator:af16ded1a0b755f630a6b1a3bb711bdc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a6c21b0bd2b8576b4d6f5131b23c64022"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlPlugin.html#a6c21b0bd2b8576b4d6f5131b23c64022">EngineControlPlugin</a> ()</td></tr>
-<tr class="separator:a6c21b0bd2b8576b4d6f5131b23c64022"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6aab66e20355dd1d0b89569c443be333"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlPlugin.html#a6aab66e20355dd1d0b89569c443be333">~EngineControlPlugin</a> ()</td></tr>
-<tr class="separator:a6aab66e20355dd1d0b89569c443be333"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac496c546ef0e78dc971b43fc902c9f22"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlPlugin.html#ac496c546ef0e78dc971b43fc902c9f22">runControlRoutine</a> (<a class="el" href="classEngineControlPlugin.html#a5908e60c86016495f35710971db39b24">ControlRoutine</a> routine)</td></tr>
-<tr class="separator:ac496c546ef0e78dc971b43fc902c9f22"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56056772e46a5b5ca4700e95b2e55768"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlPlugin.html#a56056772e46a5b5ca4700e95b2e55768">hasControlRoutine</a> () const</td></tr>
-<tr class="separator:a56056772e46a5b5ca4700e95b2e55768"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf18cca6837f1d11e8d50b4e4962e4c3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlComponent.html#abf18cca6837f1d11e8d50b4e4962e4c3">EngineControlComponent</a> ()</td></tr>
+<tr class="separator:abf18cca6837f1d11e8d50b4e4962e4c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a208edf80642cf180ec1eb3f30425102e"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlComponent.html#a208edf80642cf180ec1eb3f30425102e">~EngineControlComponent</a> ()</td></tr>
+<tr class="separator:a208edf80642cf180ec1eb3f30425102e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98a51aa38c317d187c476d1dd4e59b8a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlComponent.html#a98a51aa38c317d187c476d1dd4e59b8a">runControlRoutine</a> (<a class="el" href="classEngineControlComponent.html#af16ded1a0b755f630a6b1a3bb711bdc9">ControlRoutine</a> routine)</td></tr>
+<tr class="separator:a98a51aa38c317d187c476d1dd4e59b8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a880c5671c72fdf1f950f75c9339c71fb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlComponent.html#a880c5671c72fdf1f950f75c9339c71fb">hasControlRoutine</a> () const</td></tr>
+<tr class="separator:a880c5671c72fdf1f950f75c9339c71fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:a72e87eddcff2f526e29995e902191450"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlPlugin.html#a72e87eddcff2f526e29995e902191450">processSyntheticEvents</a> (<a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *<a class="el" href="EngineGlobals_8cpp.html#a902aed380990e0d902240438707b6d10">eventHandler</a>, int count=-1)</td></tr>
-<tr class="separator:a72e87eddcff2f526e29995e902191450"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa823e1e1bae3363ec458807260e35c86"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlPlugin.html#aa823e1e1bae3363ec458807260e35c86">exec</a> (<a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *<a class="el" href="EngineGlobals_8cpp.html#a902aed380990e0d902240438707b6d10">eventHandler</a>) override</td></tr>
-<tr class="separator:aa823e1e1bae3363ec458807260e35c86"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba19549a2a862a84e2968862d29ef0bb"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlPlugin.html#aba19549a2a862a84e2968862d29ef0bb">processMessages</a> (<a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *<a class="el" href="EngineGlobals_8cpp.html#a902aed380990e0d902240438707b6d10">eventHandler</a>, int count) override</td></tr>
-<tr class="separator:aba19549a2a862a84e2968862d29ef0bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abbaecfa799e79b279854ead756969b7b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlPlugin.html#abbaecfa799e79b279854ead756969b7b">waitForMessages</a> () override</td></tr>
-<tr class="separator:abbaecfa799e79b279854ead756969b7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a720e57dc52c956def62c889e68cca8e0"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlPlugin.html#a720e57dc52c956def62c889e68cca8e0">swapBuffers</a> () override</td></tr>
-<tr class="separator:a720e57dc52c956def62c889e68cca8e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd88883d43b7c63473802bc029ffcd7d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlComponent.html#abd88883d43b7c63473802bc029ffcd7d">processSyntheticEvents</a> (<a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *<a class="el" href="EngineGlobals_8cpp.html#a902aed380990e0d902240438707b6d10">eventHandler</a>, int count=-1)</td></tr>
+<tr class="separator:abd88883d43b7c63473802bc029ffcd7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94944b47943d152e806e3974e9440290"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlComponent.html#a94944b47943d152e806e3974e9440290">exec</a> (<a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *<a class="el" href="EngineGlobals_8cpp.html#a902aed380990e0d902240438707b6d10">eventHandler</a>) override</td></tr>
+<tr class="separator:a94944b47943d152e806e3974e9440290"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2dd7bedf4532dbdbc138cddd337c9bab"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlComponent.html#a2dd7bedf4532dbdbc138cddd337c9bab">processMessages</a> (<a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *<a class="el" href="EngineGlobals_8cpp.html#a902aed380990e0d902240438707b6d10">eventHandler</a>, int count) override</td></tr>
+<tr class="separator:a2dd7bedf4532dbdbc138cddd337c9bab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55a60f5be57e1c3b28b51a86e36a0ca9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlComponent.html#a55a60f5be57e1c3b28b51a86e36a0ca9">waitForMessages</a> () override</td></tr>
+<tr class="separator:a55a60f5be57e1c3b28b51a86e36a0ca9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55d9f8019bf158a313180824101fcd76"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlComponent.html#a55d9f8019bf158a313180824101fcd76">swapBuffers</a> () override</td></tr>
+<tr class="separator:a55d9f8019bf158a313180824101fcd76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classProxyOpenGLContext"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classProxyOpenGLContext')"><img src="closed.png" alt="-"/>&#160;Private Member Functions inherited from <a class="el" href="classProxyOpenGLContext.html">ProxyOpenGLContext</a></td></tr>
 <tr class="memitem:a8989d8f7d75573b6f72647f84b98b061 inherit pub_methods_classProxyOpenGLContext"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProxyOpenGLContext.html#a8989d8f7d75573b6f72647f84b98b061">ProxyOpenGLContext</a> (<a class="el" href="classPlatformOpenGLContext.html">PlatformOpenGLContext</a> *<a class="el" href="classProxyBase.html#a597c0e1dff33350cfff9b02a61ee9b63">base</a>=nullptr)</td></tr>
 <tr class="separator:a8989d8f7d75573b6f72647f84b98b061 inherit pub_methods_classProxyOpenGLContext"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -189,34 +189,34 @@ Private Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a1d030d4a82d6b9d78ebd69256d281181"><td class="memItemLeft" align="right" valign="top">std::thread&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlPlugin.html#a1d030d4a82d6b9d78ebd69256d281181">_controlThread</a></td></tr>
-<tr class="separator:a1d030d4a82d6b9d78ebd69256d281181"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a80b2d4e3525bc10279bd5154c362e8ac"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classEngineControlState.html">EngineControlState</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlPlugin.html#a80b2d4e3525bc10279bd5154c362e8ac">_unsafeState</a></td></tr>
-<tr class="separator:a80b2d4e3525bc10279bd5154c362e8ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abf3e23084a5bf1c75f56337466320255"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEngineControlStateHandle.html">EngineControlStateHandle</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlPlugin.html#abf3e23084a5bf1c75f56337466320255">_state</a></td></tr>
-<tr class="separator:abf3e23084a5bf1c75f56337466320255"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98f8d80e18a15f1daa713543b264ca43"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlPlugin.html#a98f8d80e18a15f1daa713543b264ca43">_emptyHandler</a></td></tr>
-<tr class="separator:a98f8d80e18a15f1daa713543b264ca43"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c4d4fc9d533595fd32eaa49a54fb5b5"><td class="memItemLeft" align="right" valign="top">std::thread&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlComponent.html#a4c4d4fc9d533595fd32eaa49a54fb5b5">_controlThread</a></td></tr>
+<tr class="separator:a4c4d4fc9d533595fd32eaa49a54fb5b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43e017342c69ad6a3a2026fc19f15349"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classEngineControlState.html">EngineControlState</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlComponent.html#a43e017342c69ad6a3a2026fc19f15349">_unsafeState</a></td></tr>
+<tr class="separator:a43e017342c69ad6a3a2026fc19f15349"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4f77c2a3c04cd97263cd7fabfb44d88"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEngineControlStateHandle.html">EngineControlStateHandle</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlComponent.html#ae4f77c2a3c04cd97263cd7fabfb44d88">_state</a></td></tr>
+<tr class="separator:ae4f77c2a3c04cd97263cd7fabfb44d88"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9bbe476a3abf2d2ced4e54b4699146da"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlComponent.html#a9bbe476a3abf2d2ced4e54b4699146da">_emptyHandler</a></td></tr>
+<tr class="separator:a9bbe476a3abf2d2ced4e54b4699146da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
 Friends</h2></td></tr>
-<tr class="memitem:ab885b56275df91cf58aedeb374cdea9c"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlPlugin.html#ab885b56275df91cf58aedeb374cdea9c">PlatformIntrospection</a></td></tr>
+<tr class="memitem:ab885b56275df91cf58aedeb374cdea9c"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlComponent.html#ab885b56275df91cf58aedeb374cdea9c">PlatformIntrospection</a></td></tr>
 <tr class="separator:ab885b56275df91cf58aedeb374cdea9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p >This plugin exposes a coroutine-like API that makes it possible to control the game by passing in synthetic platform events.</p>
+<div class="textblock"><p >This component exposes a coroutine-like API that makes it possible to control the game by passing in synthetic platform events.</p>
 <p >The implementation just uses a separate thread that runs a control routine, and the execution can switch between threads from inside the <code>swapBuffers</code> call. This effectively means that the control routine runs in between game frames.</p>
-<p >If the control plugin is destroyed while the control routine is still running, the control routine will be terminated by throwing an exception from inside <code><a class="el" href="classEngineController.html">EngineController</a></code>. If you use <code>catch(...)</code> inside the control routine then this won't work (e.g. google test does this).</p>
+<p >If the control component is destroyed while the control routine is still running, the control routine will be terminated by throwing an exception from inside <code><a class="el" href="classEngineController.html">EngineController</a></code>. If you use <code>catch(...)</code> inside the control routine then this won't work (e.g. google test does this).</p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classEngineController.html">EngineController</a> </dd></dl>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
-<a id="a5908e60c86016495f35710971db39b24" name="a5908e60c86016495f35710971db39b24"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5908e60c86016495f35710971db39b24">&#9670;&#160;</a></span>ControlRoutine</h2>
+<a id="af16ded1a0b755f630a6b1a3bb711bdc9" name="af16ded1a0b755f630a6b1a3bb711bdc9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af16ded1a0b755f630a6b1a3bb711bdc9">&#9670;&#160;</a></span>ControlRoutine</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classEngineControlPlugin.html#a5908e60c86016495f35710971db39b24">EngineControlPlugin::ControlRoutine</a> =  std::function&lt;void(<a class="el" href="classEngineController.html">EngineController</a> *)&gt;</td>
+          <td class="memname">using <a class="el" href="classEngineControlComponent.html#af16ded1a0b755f630a6b1a3bb711bdc9">EngineControlComponent::ControlRoutine</a> =  std::function&lt;void(<a class="el" href="classEngineController.html">EngineController</a> *)&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -224,14 +224,14 @@ Friends</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a6c21b0bd2b8576b4d6f5131b23c64022" name="a6c21b0bd2b8576b4d6f5131b23c64022"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6c21b0bd2b8576b4d6f5131b23c64022">&#9670;&#160;</a></span>EngineControlPlugin()</h2>
+<a id="abf18cca6837f1d11e8d50b4e4962e4c3" name="abf18cca6837f1d11e8d50b4e4962e4c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abf18cca6837f1d11e8d50b4e4962e4c3">&#9670;&#160;</a></span>EngineControlComponent()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">EngineControlPlugin::EngineControlPlugin </td>
+          <td class="memname">EngineControlComponent::EngineControlComponent </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -241,8 +241,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a6aab66e20355dd1d0b89569c443be333" name="a6aab66e20355dd1d0b89569c443be333"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6aab66e20355dd1d0b89569c443be333">&#9670;&#160;</a></span>~EngineControlPlugin()</h2>
+<a id="a208edf80642cf180ec1eb3f30425102e" name="a208edf80642cf180ec1eb3f30425102e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a208edf80642cf180ec1eb3f30425102e">&#9670;&#160;</a></span>~EngineControlComponent()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -251,7 +251,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">EngineControlPlugin::~EngineControlPlugin </td>
+          <td class="memname">EngineControlComponent::~EngineControlComponent </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -267,8 +267,8 @@ Friends</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="aa823e1e1bae3363ec458807260e35c86" name="aa823e1e1bae3363ec458807260e35c86"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa823e1e1bae3363ec458807260e35c86">&#9670;&#160;</a></span>exec()</h2>
+<a id="a94944b47943d152e806e3974e9440290" name="a94944b47943d152e806e3974e9440290"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a94944b47943d152e806e3974e9440290">&#9670;&#160;</a></span>exec()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -277,7 +277,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void EngineControlPlugin::exec </td>
+          <td class="memname">void EngineControlComponent::exec </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *&#160;</td>
           <td class="paramname"><em>eventHandler</em></td><td>)</td>
@@ -303,14 +303,14 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a56056772e46a5b5ca4700e95b2e55768" name="a56056772e46a5b5ca4700e95b2e55768"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a56056772e46a5b5ca4700e95b2e55768">&#9670;&#160;</a></span>hasControlRoutine()</h2>
+<a id="a880c5671c72fdf1f950f75c9339c71fb" name="a880c5671c72fdf1f950f75c9339c71fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a880c5671c72fdf1f950f75c9339c71fb">&#9670;&#160;</a></span>hasControlRoutine()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool EngineControlPlugin::hasControlRoutine </td>
+          <td class="memname">bool EngineControlComponent::hasControlRoutine </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -321,8 +321,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="aba19549a2a862a84e2968862d29ef0bb" name="aba19549a2a862a84e2968862d29ef0bb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aba19549a2a862a84e2968862d29ef0bb">&#9670;&#160;</a></span>processMessages()</h2>
+<a id="a2dd7bedf4532dbdbc138cddd337c9bab" name="a2dd7bedf4532dbdbc138cddd337c9bab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2dd7bedf4532dbdbc138cddd337c9bab">&#9670;&#160;</a></span>processMessages()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -331,7 +331,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void EngineControlPlugin::processMessages </td>
+          <td class="memname">void EngineControlComponent::processMessages </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *&#160;</td>
           <td class="paramname"><em>eventHandler</em>, </td>
@@ -367,8 +367,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a72e87eddcff2f526e29995e902191450" name="a72e87eddcff2f526e29995e902191450"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a72e87eddcff2f526e29995e902191450">&#9670;&#160;</a></span>processSyntheticEvents()</h2>
+<a id="abd88883d43b7c63473802bc029ffcd7d" name="abd88883d43b7c63473802bc029ffcd7d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abd88883d43b7c63473802bc029ffcd7d">&#9670;&#160;</a></span>processSyntheticEvents()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -377,7 +377,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void EngineControlPlugin::processSyntheticEvents </td>
+          <td class="memname">void EngineControlComponent::processSyntheticEvents </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a> *&#160;</td>
           <td class="paramname"><em>eventHandler</em>, </td>
@@ -403,16 +403,16 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="ac496c546ef0e78dc971b43fc902c9f22" name="ac496c546ef0e78dc971b43fc902c9f22"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac496c546ef0e78dc971b43fc902c9f22">&#9670;&#160;</a></span>runControlRoutine()</h2>
+<a id="a98a51aa38c317d187c476d1dd4e59b8a" name="a98a51aa38c317d187c476d1dd4e59b8a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98a51aa38c317d187c476d1dd4e59b8a">&#9670;&#160;</a></span>runControlRoutine()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void EngineControlPlugin::runControlRoutine </td>
+          <td class="memname">void EngineControlComponent::runControlRoutine </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classEngineControlPlugin.html#a5908e60c86016495f35710971db39b24">ControlRoutine</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="classEngineControlComponent.html#af16ded1a0b755f630a6b1a3bb711bdc9">ControlRoutine</a>&#160;</td>
           <td class="paramname"><em>routine</em></td><td>)</td>
           <td></td>
         </tr>
@@ -431,8 +431,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a720e57dc52c956def62c889e68cca8e0" name="a720e57dc52c956def62c889e68cca8e0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a720e57dc52c956def62c889e68cca8e0">&#9670;&#160;</a></span>swapBuffers()</h2>
+<a id="a55d9f8019bf158a313180824101fcd76" name="a55d9f8019bf158a313180824101fcd76"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55d9f8019bf158a313180824101fcd76">&#9670;&#160;</a></span>swapBuffers()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -441,7 +441,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void EngineControlPlugin::swapBuffers </td>
+          <td class="memname">void EngineControlComponent::swapBuffers </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -458,8 +458,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="abbaecfa799e79b279854ead756969b7b" name="abbaecfa799e79b279854ead756969b7b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abbaecfa799e79b279854ead756969b7b">&#9670;&#160;</a></span>waitForMessages()</h2>
+<a id="a55a60f5be57e1c3b28b51a86e36a0ca9" name="a55a60f5be57e1c3b28b51a86e36a0ca9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55a60f5be57e1c3b28b51a86e36a0ca9">&#9670;&#160;</a></span>waitForMessages()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -468,7 +468,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void EngineControlPlugin::waitForMessages </td>
+          <td class="memname">void EngineControlComponent::waitForMessages </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -510,8 +510,8 @@ Friends</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a1d030d4a82d6b9d78ebd69256d281181" name="a1d030d4a82d6b9d78ebd69256d281181"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1d030d4a82d6b9d78ebd69256d281181">&#9670;&#160;</a></span>_controlThread</h2>
+<a id="a4c4d4fc9d533595fd32eaa49a54fb5b5" name="a4c4d4fc9d533595fd32eaa49a54fb5b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c4d4fc9d533595fd32eaa49a54fb5b5">&#9670;&#160;</a></span>_controlThread</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -520,7 +520,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::thread EngineControlPlugin::_controlThread</td>
+          <td class="memname">std::thread EngineControlComponent::_controlThread</td>
         </tr>
       </table>
   </td>
@@ -532,8 +532,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a98f8d80e18a15f1daa713543b264ca43" name="a98f8d80e18a15f1daa713543b264ca43"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a98f8d80e18a15f1daa713543b264ca43">&#9670;&#160;</a></span>_emptyHandler</h2>
+<a id="a9bbe476a3abf2d2ced4e54b4699146da" name="a9bbe476a3abf2d2ced4e54b4699146da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9bbe476a3abf2d2ced4e54b4699146da">&#9670;&#160;</a></span>_emptyHandler</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -542,7 +542,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a>&gt; EngineControlPlugin::_emptyHandler</td>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classPlatformEventHandler.html">PlatformEventHandler</a>&gt; EngineControlComponent::_emptyHandler</td>
         </tr>
       </table>
   </td>
@@ -554,8 +554,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="abf3e23084a5bf1c75f56337466320255" name="abf3e23084a5bf1c75f56337466320255"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abf3e23084a5bf1c75f56337466320255">&#9670;&#160;</a></span>_state</h2>
+<a id="ae4f77c2a3c04cd97263cd7fabfb44d88" name="ae4f77c2a3c04cd97263cd7fabfb44d88"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4f77c2a3c04cd97263cd7fabfb44d88">&#9670;&#160;</a></span>_state</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -564,7 +564,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classEngineControlStateHandle.html">EngineControlStateHandle</a> EngineControlPlugin::_state</td>
+          <td class="memname"><a class="el" href="classEngineControlStateHandle.html">EngineControlStateHandle</a> EngineControlComponent::_state</td>
         </tr>
       </table>
   </td>
@@ -576,8 +576,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a80b2d4e3525bc10279bd5154c362e8ac" name="a80b2d4e3525bc10279bd5154c362e8ac"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a80b2d4e3525bc10279bd5154c362e8ac">&#9670;&#160;</a></span>_unsafeState</h2>
+<a id="a43e017342c69ad6a3a2026fc19f15349" name="a43e017342c69ad6a3a2026fc19f15349"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43e017342c69ad6a3a2026fc19f15349">&#9670;&#160;</a></span>_unsafeState</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -586,7 +586,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="classEngineControlState.html">EngineControlState</a>&gt; EngineControlPlugin::_unsafeState</td>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classEngineControlState.html">EngineControlState</a>&gt; EngineControlComponent::_unsafeState</td>
         </tr>
       </table>
   </td>
@@ -599,8 +599,8 @@ Friends</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>src/Engine/Plugins/<a class="el" href="EngineControlPlugin_8h.html">EngineControlPlugin.h</a></li>
-<li>src/Engine/Plugins/<a class="el" href="EngineControlPlugin_8cpp.html">EngineControlPlugin.cpp</a></li>
+<li>src/Engine/Components/<a class="el" href="EngineControlComponent_8h.html">EngineControlComponent.h</a></li>
+<li>src/Engine/Components/<a class="el" href="EngineControlComponent_8cpp.html">EngineControlComponent.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8d1f6a1</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;192c2eb</span>
    </div>
   </td>
  </tr>
@@ -146,12 +146,12 @@ Private Attributes</h2></td></tr>
 <tr class="separator:acd10f8f25a65c1d245a29e7d7a9cc72d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a32c42e82d038e6ed24df4fd94a86bcac"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracer.html#a32c42e82d038e6ed24df4fd94a86bcac">_oldFpsLimit</a> = 0</td></tr>
 <tr class="separator:a32c42e82d038e6ed24df4fd94a86bcac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a52d5b678e4ee58c3857f89552456433b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEngineControlPlugin.html">EngineControlPlugin</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracer.html#a52d5b678e4ee58c3857f89552456433b">_controlPlugin</a> = nullptr</td></tr>
-<tr class="separator:a52d5b678e4ee58c3857f89552456433b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a788a9b2de68466e0e02c3e9865634e84"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEngineDeterministicPlugin.html">EngineDeterministicPlugin</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracer.html#a788a9b2de68466e0e02c3e9865634e84">_deterministicPlugin</a> = nullptr</td></tr>
-<tr class="separator:a788a9b2de68466e0e02c3e9865634e84"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a341f8c7b7534f7b6ab27b37b4afe34ad"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEngineTracePlugin.html">EngineTracePlugin</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracer.html#a341f8c7b7534f7b6ab27b37b4afe34ad">_tracePlugin</a> = nullptr</td></tr>
-<tr class="separator:a341f8c7b7534f7b6ab27b37b4afe34ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56e9afc46e8004b6fde595ea8c91c7eb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEngineControlComponent.html">EngineControlComponent</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracer.html#a56e9afc46e8004b6fde595ea8c91c7eb">_controlComponent</a> = nullptr</td></tr>
+<tr class="separator:a56e9afc46e8004b6fde595ea8c91c7eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02b944e6419a875fc042e15676b71f83"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEngineDeterministicComponent.html">EngineDeterministicComponent</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracer.html#a02b944e6419a875fc042e15676b71f83">_deterministicComponent</a> = nullptr</td></tr>
+<tr class="separator:a02b944e6419a875fc042e15676b71f83"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8575fa329bae330772722fd24bac1d88"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEngineTraceComponent.html">EngineTraceComponent</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracer.html#a8575fa329bae330772722fd24bac1d88">_traceComponent</a> = nullptr</td></tr>
+<tr class="separator:a8575fa329bae330772722fd24bac1d88"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a51980954f59ddfadd1f5ba7444e5dbbe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGameKeyboardController.html">GameKeyboardController</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTracer.html#a51980954f59ddfadd1f5ba7444e5dbbe">_keyboardController</a> = nullptr</td></tr>
 <tr class="separator:a51980954f59ddfadd1f5ba7444e5dbbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -161,9 +161,9 @@ Friends</h2></td></tr>
 <tr class="separator:ab885b56275df91cf58aedeb374cdea9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p >Plugin that exposes a trace playback and trace recording interface.</p>
-<p >Depends on <code><a class="el" href="classEngineControlPlugin.html">EngineControlPlugin</a></code>, <code><a class="el" href="classEngineDeterministicPlugin.html">EngineDeterministicPlugin</a></code> and (if you use <code>ENABLE_RECORDING</code>) <code><a class="el" href="classEngineTracePlugin.html">EngineTracePlugin</a></code>, install them into <code><a class="el" href="classPlatformApplication.html">PlatformApplication</a></code> first.</p>
-<p >Note that the difference from <code><a class="el" href="classEngineTracePlugin.html">EngineTracePlugin</a></code> is that this plugin isn't dumb and offers a complete solution to trace recording and playback. Traces that were recorded with <code>startTraceRecording</code> / <code>finishTraceRecording</code> can then be played back via <code>playTrace</code>.</p>
+<div class="textblock"><p >Component that exposes a trace playback and trace recording interface.</p>
+<p >Depends on <code><a class="el" href="classEngineControlComponent.html">EngineControlComponent</a></code>, <code><a class="el" href="classEngineDeterministicComponent.html">EngineDeterministicComponent</a></code> and (if you use <code>ENABLE_RECORDING</code>) <code><a class="el" href="classEngineTraceComponent.html">EngineTraceComponent</a></code>, install them into <code><a class="el" href="classPlatformApplication.html">PlatformApplication</a></code> first.</p>
+<p >Note that the difference from <code><a class="el" href="classEngineTraceComponent.html">EngineTraceComponent</a></code> is that this component isn't dumb and offers a complete solution to trace recording and playback. Traces that were recorded with <code>startTraceRecording</code> / <code>finishTraceRecording</code> can then be played back via <code>playTrace</code>.</p>
 <p >Some notes on how this works. When starting trace recording:</p><ul>
 <li>The game is saved.</li>
 <li>Then it is loaded right away. Loading is managed from the control thread.</li>
@@ -357,7 +357,7 @@ Friends</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Plays a previously recorded trace. Can be called only from a control thread of <code><a class="el" href="classEngineControlPlugin.html">EngineControlPlugin</a></code>.</p>
+<p >Plays a previously recorded trace. Can be called only from a control thread of <code><a class="el" href="classEngineControlComponent.html">EngineControlComponent</a></code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">game</td><td><a class="el" href="structEngine.html">Engine</a> controller. </td></tr>
@@ -368,7 +368,7 @@ Friends</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="classEngineControlPlugin.html">EngineControlPlugin</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classEngineControlComponent.html">EngineControlComponent</a> </dd></dl>
 
 </div>
 </div>
@@ -485,8 +485,8 @@ Friends</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a52d5b678e4ee58c3857f89552456433b" name="a52d5b678e4ee58c3857f89552456433b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a52d5b678e4ee58c3857f89552456433b">&#9670;&#160;</a></span>_controlPlugin</h2>
+<a id="a56e9afc46e8004b6fde595ea8c91c7eb" name="a56e9afc46e8004b6fde595ea8c91c7eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a56e9afc46e8004b6fde595ea8c91c7eb">&#9670;&#160;</a></span>_controlComponent</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -495,7 +495,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classEngineControlPlugin.html">EngineControlPlugin</a>* EngineTracer::_controlPlugin = nullptr</td>
+          <td class="memname"><a class="el" href="classEngineControlComponent.html">EngineControlComponent</a>* EngineTracer::_controlComponent = nullptr</td>
         </tr>
       </table>
   </td>
@@ -507,8 +507,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a788a9b2de68466e0e02c3e9865634e84" name="a788a9b2de68466e0e02c3e9865634e84"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a788a9b2de68466e0e02c3e9865634e84">&#9670;&#160;</a></span>_deterministicPlugin</h2>
+<a id="a02b944e6419a875fc042e15676b71f83" name="a02b944e6419a875fc042e15676b71f83"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a02b944e6419a875fc042e15676b71f83">&#9670;&#160;</a></span>_deterministicComponent</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -517,7 +517,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classEngineDeterministicPlugin.html">EngineDeterministicPlugin</a>* EngineTracer::_deterministicPlugin = nullptr</td>
+          <td class="memname"><a class="el" href="classEngineDeterministicComponent.html">EngineDeterministicComponent</a>* EngineTracer::_deterministicComponent = nullptr</td>
         </tr>
       </table>
   </td>
@@ -639,6 +639,28 @@ Friends</h2></td></tr>
 
 </div>
 </div>
+<a id="a8575fa329bae330772722fd24bac1d88" name="a8575fa329bae330772722fd24bac1d88"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8575fa329bae330772722fd24bac1d88">&#9670;&#160;</a></span>_traceComponent</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classEngineTraceComponent.html">EngineTraceComponent</a>* EngineTracer::_traceComponent = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="acd10f8f25a65c1d245a29e7d7a9cc72d" name="acd10f8f25a65c1d245a29e7d7a9cc72d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acd10f8f25a65c1d245a29e7d7a9cc72d">&#9670;&#160;</a></span>_traceFilePath</h2>
 
@@ -661,31 +683,9 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a341f8c7b7534f7b6ab27b37b4afe34ad" name="a341f8c7b7534f7b6ab27b37b4afe34ad"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a341f8c7b7534f7b6ab27b37b4afe34ad">&#9670;&#160;</a></span>_tracePlugin</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classEngineTracePlugin.html">EngineTracePlugin</a>* EngineTracer::_tracePlugin = nullptr</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>src/Engine/Plugins/<a class="el" href="EngineTracer_8h.html">EngineTracer.h</a></li>
-<li>src/Engine/Plugins/<a class="el" href="EngineTracer_8cpp.html">EngineTracer.cpp</a></li>
+<li>src/Engine/Components/<a class="el" href="EngineTracer_8h.html">EngineTracer.h</a></li>
+<li>src/Engine/Components/<a class="el" href="EngineTracer_8cpp.html">EngineTracer.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

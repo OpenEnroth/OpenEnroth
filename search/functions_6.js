@@ -26,7 +26,7 @@ var searchData=
   ['findmonsterbytexturename_23',['FindMonsterByTextureName',['../structMonsterStats.html#a8d977d7a1cdf09210ab5f45c17688f8b',1,'MonsterStats']]],
   ['findsound_24',['FindSound',['../classAudioPlayer.html#aac82d03b250711ed0ce64fa22dfe3a59',1,'AudioPlayer']]],
   ['findtexturebyname_25',['FindTextureByName',['../structTextureFrameTable.html#ac58201b44361d82a1e977c1448754c24',1,'TextureFrameTable::FindTextureByName()'],['../classLODFile__IconsBitmaps.html#a8b1765aaa0911f5b66a1938f47b38aca',1,'LODFile_IconsBitmaps::FindTextureByName()']]],
-  ['finish_26',['finish',['../classEngineTracePlugin.html#af7965b265f03763802569c1ae2655a58',1,'EngineTracePlugin']]],
+  ['finish_26',['finish',['../classEngineTraceComponent.html#a7440ee3e3a62e9aa62d803e9b0990374',1,'EngineTraceComponent']]],
   ['finishtracerecording_27',['finishTraceRecording',['../classEngineTracer.html#a4bd4e342300e0524f703d9d88ea2a724',1,'EngineTracer']]],
   ['fittextinawindow_28',['FitTextInAWindow',['../classGUIFont.html#ac14d94f0de9621b2f8b054e38a4eaaf5',1,'GUIFont']]],
   ['fittwofontstringinwindow_29',['FitTwoFontStringINWindow',['../classGUIFont.html#a36dc3aa452a09fb72bef43d629b9216e',1,'GUIFont']]],
