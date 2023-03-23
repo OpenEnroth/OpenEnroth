@@ -336,8 +336,7 @@ class IRender {
     virtual Image *TakeScreenshot(unsigned int width, unsigned int height) = 0;
     virtual void SaveScreenshot(const std::string &filename, unsigned int width,
                                 unsigned int height) = 0;
-    virtual void PackScreenshot(unsigned int width, unsigned int height,
-        uint8_t *&out_data, unsigned int &screenshot_size) = 0;
+    virtual Blob PackScreenshot(const unsigned int width, const unsigned int height) = 0;
     virtual void SavePCXScreenshot() = 0;
     virtual uint32_t *MakeScreenshot32(const int width, const int height) = 0;
 

@@ -36,14 +36,11 @@ class RenderBase : public IRender {
     virtual void SavePCXImage32(const std::string& filename, const uint32_t* picture_data, const int width, const int height);
     virtual void SaveScreenshot(const std::string& filename, unsigned int width, unsigned int height) override;
     /**
-    * @param width                         Size of image width to store.
-    * @param height                        Size of image height to store.
-    * @param[in,out] out_data              Reference to pointer - must be nullptr before call.
-    *                                      Buffer is created in function and packed pcx file stored within.
-    *                                      Must be freed by delete[] after use. 
-    * @param[out] screenshot_size          Size of the packed PCX image - must be 0 before call.
+    * @param width                         Final width of image to create.
+    * @param height                        Final height of image to create.
+    * @return                              Returns Blob containing packed pcx data and its size.
     */
-    virtual void PackScreenshot(const unsigned int width, const unsigned int height, uint8_t *&out_data, unsigned int &screenshot_size) override;
+    virtual Blob PackScreenshot(const unsigned int width, const unsigned int height) override;
     virtual Image* TakeScreenshot(unsigned int width, unsigned int height) override;
 
     virtual void DrawMasked(float u, float v, class Image* img,

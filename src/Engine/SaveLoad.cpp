@@ -259,14 +259,10 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     //    render->Present();
     //}
 
-    uint8_t *screenshotBuffer = nullptr;
-    unsigned int screenshotBufferSize = 0;
-    render->PackScreenshot(150, 112, screenshotBuffer, screenshotBufferSize);  // создание скриншота
-
-    if (pNew_LOD->Write("image.pcx", screenshotBuffer, screenshotBufferSize, 0)) {
+    Blob packedScreenshot{ render->PackScreenshot(150, 112) };  // создание скриншота
+    if (pNew_LOD->Write("image.pcx", packedScreenshot.data(), packedScreenshot.size(), 0)) {
         logger->Warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 200));
     }
-    delete[] screenshotBuffer;
 
     static_assert(sizeof(SavegameHeader) == 100, "Wrong type size");
     SavegameHeader save_header;
@@ -333,15 +329,12 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
                 const void *pixels = image->GetPixels(IMAGE_FORMAT_A8B8G8R8);
                 if (!pixels)
                     __debugbreak();
-                unsigned int pcx_data_size = 0;
-                uint8_t *pcx_data = nullptr;
-                PCX::Encode32(pixels, image->GetWidth(), image->GetHeight(),
-                              pcx_data, pcx_data_size);
+
+                Blob packedPCX{ PCX::Encode(pixels, image->GetWidth(), image->GetHeight()) };
                 std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
-                if (pNew_LOD->Write(str, pcx_data, pcx_data_size, 0)) {
+                if (pNew_LOD->Write(str, packedPCX.data(), packedPCX.size(), 0)) {
                     logger->Warning("{}", localization->FormatString(LSTR_FMT_SAVEGAME_CORRUPTED, 207));
                 }
-                delete [] pcx_data;
             }
         }
     }

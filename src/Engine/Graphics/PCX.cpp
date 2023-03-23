@@ -285,19 +285,20 @@ struct Format {
     ColorFormat b;
 };
 
-void Encode(const Format f, const void *picture_data, const unsigned int width,
-            const unsigned int height, uint8_t *&pcx_data, unsigned int &packed_size) {
+Blob PCX::Encode(const void *picture_data, const unsigned int width, const unsigned int height) {
+    assert(picture_data != nullptr && width != 0 & height != 0);
+    Format f(32, 0x000000FF, 0x0000FF00, 0x00FF0000);
+
     // pcx lines are padded to next even byte boundary
     int pitch = width;
     if (width & 1) {
         pitch = width + 1;
     }
+
     // pcx file can be larger than uncompressed
     // pcx header and no compression @24bit worst case doubles in size
     size_t worstCase = sizeof(PCXHeader) + 3 * pitch * height * 2;
-
-    assert(pcx_data == nullptr && packed_size == 0);
-    pcx_data = new uint8_t[worstCase];
+    uint8_t *pcx_data = (uint8_t*)malloc(worstCase);
 
     uint8_t *output = (uint8_t *)WritePCXHeader(pcx_data, width, height);
 
@@ -325,12 +326,7 @@ void Encode(const Format f, const void *picture_data, const unsigned int width,
 
     delete[] lineRGB;
 
-    packed_size = output - (uint8_t*)pcx_data;
+    size_t packed_size = output - (uint8_t*)pcx_data;
     assert(packed_size <= worstCase);
-}
-
-void PCX::Encode32(const void *picture_data, const unsigned int width, const unsigned int height,
-    uint8_t *&pcx_data, unsigned int &packed_size) {
-    Format f(32, 0x000000FF, 0x0000FF00, 0x00FF0000);
-    Encode(f, picture_data, width, height, pcx_data, packed_size);
+    return Blob::fromMalloc(pcx_data, packed_size);
 }

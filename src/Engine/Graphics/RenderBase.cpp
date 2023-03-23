@@ -644,11 +644,8 @@ void RenderBase::SavePCXImage32(const std::string& filename, const uint32_t* pic
         return;
     }
 
-    uint8_t *pcx_data = nullptr;
-    unsigned int pcx_data_real_size = 0;
-    PCX::Encode32(picture_data, width, height, pcx_data, pcx_data_real_size);
-    fwrite(pcx_data, pcx_data_real_size, 1, result);
-    delete[] pcx_data;
+    Blob packedPCX{ PCX::Encode(picture_data, width, height) };
+    fwrite(packedPCX.data(), packedPCX.size(), 1, result);
     fclose(result);
 }
 
@@ -658,11 +655,11 @@ void RenderBase::SaveScreenshot(const std::string& filename, const unsigned int 
     free(pixels);
 }
 
-void RenderBase::PackScreenshot(const unsigned int width, const unsigned int height,
-    uint8_t *&out_data, unsigned int &screenshot_size) {
+Blob RenderBase::PackScreenshot(const unsigned int width, const unsigned int height) {
     auto pixels = render->MakeScreenshot32(width, height);
-    PCX::Encode32(pixels, width, height, out_data, screenshot_size);
+    Blob packedPCX{ PCX::Encode(pixels, width, height) };
     free(pixels);
+    return packedPCX;
 }
 
 Image* RenderBase::TakeScreenshot(const unsigned int width, const unsigned int height) {
