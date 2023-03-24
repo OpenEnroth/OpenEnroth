@@ -1,11 +1,14 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 if(ENABLE_TESTS)
-    set(TEST_EXTENSIONS_SOURCES ThrowingAssertions.cpp)
-    set(TEST_EXTENSIONS_HEADERS ThrowingAssertions.h)
+    set(TESTING_EXTENSIONS_SOURCES
+            ThrowingAssertions.cpp)
 
-    add_library(test_extensions ${TEST_EXTENSIONS_SOURCES} ${TEST_EXTENSIONS_HEADERS})
-    target_link_libraries(test_extensions GTest::gtest)
+    set(TESTING_EXTENSIONS_HEADERS
+            ThrowingAssertions.h)
 
-    target_check_style(test_extensions)
+    add_library(testing_extensions ${TESTING_EXTENSIONS_SOURCES} ${TESTING_EXTENSIONS_HEADERS})
+    target_link_libraries(testing_extensions GTest::gtest)
+
+    target_check_style(testing_extensions)
 endif()

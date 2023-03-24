@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
-set(TURNENGINE_SOURCES TurnEngine.cpp)
+set(ENGINE_TURNENGINE_SOURCES
+        TurnEngine.cpp)
 
-set(TURNENGINE_HEADERS TurnEngine.h)
+set(ENGINE_TURNENGINE_HEADERS
+        TurnEngine.h)
 
-add_library(turnengine STATIC ${TURNENGINE_SOURCES} ${TURNENGINE_HEADERS})
-target_link_libraries(turnengine engine)
-target_check_style(turnengine)
+add_library(engine_turnengine STATIC ${ENGINE_TURNENGINE_SOURCES} ${ENGINE_TURNENGINE_HEADERS})
+target_link_libraries(engine_turnengine engine)
+target_check_style(engine_turnengine)

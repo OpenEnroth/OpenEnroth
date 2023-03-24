@@ -1,19 +1,21 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
-set(MEDIA_SOURCES Media.cpp
-                  MediaPlayer.cpp
-                  MediaLogger.cpp
-                  Audio/AudioPlayer.cpp
-                  Audio/OpenALSoundProvider.cpp)
+set(MEDIA_SOURCES
+        Audio/AudioPlayer.cpp
+        Audio/OpenALSoundProvider.cpp
+        Media.cpp
+        MediaLogger.cpp
+        MediaPlayer.cpp)
 
-set(MEDIA_HEADERS Media.h
-                  MediaPlayer.h
-                  MediaLogger.h
-                  Audio/AudioPlayer.h
-                  Audio/OpenALSoundProvider.h)
+set(MEDIA_HEADERS
+        Audio/AudioPlayer.h
+        Audio/OpenALSoundProvider.h
+        Media.h
+        MediaLogger.h
+        MediaPlayer.h)
 
 add_library(media STATIC ${MEDIA_SOURCES} ${MEDIA_HEADERS})
-target_link_libraries(media utility game)
+target_link_libraries(media utility application)
 target_compile_definitions(media PRIVATE FF_API_NEXT)
 
 include_directories(${INCLUDE_DIRECTORIES} ${OPENAL_INCLUDE_DIRS} ${FFMPEG_INCLUDE_DIRS})
