@@ -181,7 +181,6 @@ extern struct NPCData *GateMasterNPCData; // 50C9E0 NPC Data used as parameter f
 // extern int dword_50C9EC[]; // 50C9EC
 extern int dword_50CDC8;
 extern char pStartingMapName[32];  // idb
-extern std::array<uint8_t, 5> IsPlayerWearingWatersuit;
 extern std::array<char, 54> party_has_equipment;
 
 extern unsigned int uNumBlueFacesInBLVMinimap;

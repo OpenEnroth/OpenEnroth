@@ -1410,7 +1410,7 @@ void PrepareToLoadBLV(bool bLoading) {
 
     // Active character speaks.
     if (!bLoading && pDest) {
-        int id = pParty->getRandomActiveCharacterId();
+        int id = pParty->getRandomActiveCharacterId(false);
 
         if (id != -1) {
             _A750D8_player_speech_timer = 256;

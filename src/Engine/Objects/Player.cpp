@@ -190,31 +190,31 @@ int PlayerCreation_GetUnspentAttributePointCount() {
     int PenaltyMult;
     int BonusMult;
 
-    for (int playerNum = 0; playerNum < 4; playerNum++) {
-        raceId = pParty->pPlayers[playerNum].GetRace();
+    for (Player &player : pParty->pPlayers) {
+        raceId = player.GetRace();
 
         for (int statNum = 0; statNum <= 6; statNum++) {
             switch (statNum) {
                 case 0:
-                    CurrentStatValue = pParty->pPlayers[playerNum].uMight;
+                    CurrentStatValue = player.uMight;
                     break;
                 case 1:
-                    CurrentStatValue = pParty->pPlayers[playerNum].uIntelligence;
+                    CurrentStatValue = player.uIntelligence;
                     break;
                 case 2:
-                    CurrentStatValue = pParty->pPlayers[playerNum].uWillpower;
+                    CurrentStatValue = player.uWillpower;
                     break;
                 case 3:
-                    CurrentStatValue = pParty->pPlayers[playerNum].uEndurance;
+                    CurrentStatValue = player.uEndurance;
                     break;
                 case 4:
-                    CurrentStatValue = pParty->pPlayers[playerNum].uAccuracy;
+                    CurrentStatValue = player.uAccuracy;
                     break;
                 case 5:
-                    CurrentStatValue = pParty->pPlayers[playerNum].uSpeed;
+                    CurrentStatValue = player.uSpeed;
                     break;
                 case 6:
-                    CurrentStatValue = pParty->pPlayers[playerNum].uLuck;
+                    CurrentStatValue = player.uLuck;
                     break;
             }
 
@@ -1955,14 +1955,11 @@ int Player::ReceiveSpecialAttackEffect(
     }
 
     signed int savecheck = GetParameterBonus(luckstat) + statcheckbonus + 30;
-    signed int whichplayer;
 
     if (grng->Random(savecheck) >= 30) {  // saving throw if attacke is avoided
         return 0;
     } else {
-        for (whichplayer = 0; whichplayer < 4; whichplayer++) {
-            if (this == pPlayers[whichplayer + 1]) break;
-        }
+        int whichplayer = pParty->getCharacterIdInParty(this);
 
         // pass this to new fucntion??
         // atttypecast - whichplayer - itemtobreak - itemtostealinvindex
@@ -4872,14 +4869,14 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_CircusPrises:  // isn't used in MM6 since 0x1D6u is a book of
                                 // regeneration
             v4 = 0;
-            for (int playerNum = 0; playerNum < 4; playerNum++) {
+            for (Player &player : pParty->pPlayers) {
                 for (int invPos = 0; invPos < TOTAL_ITEM_SLOT_COUNT; invPos++) {
                     ITEM_TYPE itemId;
 
                     if (invPos < INVENTORY_SLOT_COUNT) {
-                        itemId = pParty->pPlayers[playerNum].pInventoryItemList[invPos].uItemID;
+                        itemId = player.pInventoryItemList[invPos].uItemID;
                     } else {
-                        itemId = pParty->pPlayers[playerNum].pEquippedItems[invPos - INVENTORY_SLOT_COUNT].uItemID;
+                        itemId = player.pEquippedItems[invPos - INVENTORY_SLOT_COUNT].uItemID;
                     }
                     switch (itemId) {
                         case ITEM_SPELLBOOK_REGENERATION:
@@ -6759,9 +6756,9 @@ bool ShouldLoadTexturesForRaceAndGender(unsigned int _this) {
     CHARACTER_RACE race;  // edi@2
     PLAYER_SEX sex;       // eax@2
 
-    for (int i = 1; i <= 4; i++) {
-        race = pPlayers[i]->GetRace();
-        sex = pPlayers[i]->GetSexByVoice();
+    for (Player &player : pParty->pPlayers) {
+        race = player.GetRace();
+        sex = player.GetSexByVoice();
         switch (_this) {
             case 0:
                 if ((race == CHARACTER_RACE_HUMAN ||
@@ -6792,8 +6789,8 @@ bool ShouldLoadTexturesForRaceAndGender(unsigned int _this) {
 
 //----- (0043ED6F) --------------------------------------------------------
 bool IsDwarfPresentInParty(bool a1) {
-    for (uint i = 0; i < 4; ++i) {
-        CHARACTER_RACE race = pParty->pPlayers[i].GetRace();
+    for (Player &player : pParty->pPlayers) {
+        CHARACTER_RACE race = player.GetRace();
 
         if (race == CHARACTER_RACE_DWARF && a1)
             return true;
@@ -6809,7 +6806,6 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
 
     int spellId;                  // eax@38
     signed int recvdMagicDmg;     // eax@139
-    int v72[4] {};                   // [sp+30h] [bp-24h]@164
     int healthBeforeRecvdDamage;  // [sp+48h] [bp-Ch]@3
 
     ObjectType pidtype = PID_TYPE(uObjID);
@@ -6997,15 +6993,10 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             if (targetchar != -1) {
                 playerPtr = &pParty->pPlayers[targetchar];
             } else {
-                int activePlayerCounter = 0;
-                for (int i = 1; i <= 4; i++) {
-                    if (pPlayers[i]->CanAct()) {
-                        v72[activePlayerCounter] = i;
-                        activePlayerCounter++;
-                    }
-                }
-                if (activePlayerCounter) {
-                    playerPtr = &pParty->pPlayers[v72[grng->Random(activePlayerCounter)] - 1];
+                int id = pParty->getRandomActiveCharacterId(true);
+
+                if (id != -1) {
+                    playerPtr = &pParty->pPlayers[id];
                 } else {
                     // for rare instances where party is "dead" at this point but still being damaged
                     playerPtr = &pParty->pPlayers[grng->Random(3)];
