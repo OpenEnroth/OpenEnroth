@@ -686,7 +686,7 @@ void CastSpellInfoHelpers::castSpell() {
                             pItemTable->IsMaterialNonCommon(item) ||
                             item->special_enchantment != ITEM_ENCHANTMENT_NULL ||
                             item->uEnchantmentType != 0 ||
-                            !IsWeapon(item->GetItemEquipType())) {
+                            !item->isWeapon()) {
                         AfterEnchClickEventId = UIMSG_Escape;
                         AfterEnchClickEventSecondParam = 0;
                         AfterEnchClickEventTimeout = Timer::Second; // was 1, increased to make message readable
@@ -1353,7 +1353,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_WATER_RECHARGE_ITEM:
                 {
                     ItemGen *item = &pParty->pPlayers[pCastSpell->uPlayerID_2].pInventoryItemList[pCastSpell->spell_target_pid];
-                    if (item->GetItemEquipType() != EQUIP_WAND || item->IsBroken()) {
+                    if (!item->isWand() || item->IsBroken()) {
                         AfterEnchClickEventId = UIMSG_Escape;
                         AfterEnchClickEventSecondParam = 0;
                         AfterEnchClickEventTimeout = Timer::Second; // was 1, increased to make message readable

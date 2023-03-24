@@ -547,7 +547,7 @@ void Chest::OnChestLeftClick() {
             if (chestindex > 0) {
                 int itemindex = chestindex - 1;
 
-                if (chest->igChestItems[itemindex].GetItemEquipType() == EQUIP_GOLD) {
+                if (chest->igChestItems[itemindex].isGold()) {
                     pParty->PartyFindsGold(chest->igChestItems[itemindex].special_enchantment, 0);
                 } else {
                     pParty->SetHoldingItem(&chest->igChestItems[itemindex]);
@@ -580,7 +580,7 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
 
         int itemindex = chestindex - 1;
         ItemGen chestitem = chest->igChestItems[itemindex];
-        if (chestitem.GetItemEquipType() == EQUIP_GOLD) {
+        if (chestitem.isGold()) {
             pParty->PartyFindsGold(chestitem.special_enchantment, 0);
             goldamount += chestitem.special_enchantment;
             goldcount++;

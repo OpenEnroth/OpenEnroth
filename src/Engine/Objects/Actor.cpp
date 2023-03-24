@@ -3809,8 +3809,7 @@ void Actor::LootActor() {
             pParty->PartyFindsGold(v14, 0);
         }
     } else {
-        if (this->ActorHasItems[3].uItemID != ITEM_NULL &&
-            this->ActorHasItems[3].GetItemEquipType() == EQUIP_GOLD) {
+        if (this->ActorHasItems[3].isGold()) {
             v14 = this->ActorHasItems[3].special_enchantment;
             this->ActorHasItems[3].Reset();
             if (v14) {
@@ -3827,12 +3826,13 @@ void Actor::LootActor() {
             pItemTable->pItems[Dst.uItemID].pUnidentifiedName
         );
 
-        if (Dst.GetItemEquipType() == EQUIP_WAND) {
+        if (Dst.isWand()) {
             Dst.uNumCharges = grng->Random(6) + Dst.GetDamageMod() + 1;
             Dst.uMaxCharges = Dst.uNumCharges;
         }
-        if (pItemTable->pItems[Dst.uItemID].uEquipType == EQUIP_POTION && Dst.uItemID != ITEM_POTION_BOTTLE)
+        if (Dst.isPotion() && Dst.uItemID != ITEM_POTION_BOTTLE) {
             Dst.uEnchantmentType = 2 * grng->Random(4) + 2;
+        }
         pItemTable->SetSpecialBonus(&Dst);
         if (!pParty->AddItemToParty(&Dst)) pParty->SetHoldingItem(&Dst);
         this->uCarriedItemID = ITEM_NULL;

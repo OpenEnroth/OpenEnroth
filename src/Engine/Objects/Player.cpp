@@ -939,13 +939,12 @@ bool Player::CanIdentify(ItemGen* pItem) {
 bool Player::CanRepair(ItemGen* pItem) {
     PLAYER_SKILL_LEVEL skill = GetActualSkillLevel(PLAYER_SKILL_REPAIR);
     PLAYER_SKILL_MASTERY skillmaster = GetActualSkillMastery(PLAYER_SKILL_REPAIR);
-    int multiplier =
-        GetMultiplierForSkillLevel(PLAYER_SKILL_REPAIR, 1, 2, 3, 5);
-    ITEM_EQUIP_TYPE equipType = pItem->GetItemEquipType();
+    int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_REPAIR, 1, 2, 3, 5);
 
-    if (CheckHiredNPCSpeciality(Smith) && equipType <= EQUIP_BOW ||
-        CheckHiredNPCSpeciality(Armorer) && equipType >= EQUIP_ARMOUR && equipType <= EQUIP_BOOTS ||
-        CheckHiredNPCSpeciality(Alchemist) && equipType >= EQUIP_BOOTS)
+    // TODO(Nik-RE-dev): is check for boots correct?
+    if (CheckHiredNPCSpeciality(Smith) && pItem->isWeapon() ||
+        CheckHiredNPCSpeciality(Armorer) && pItem->isArmor() ||
+        CheckHiredNPCSpeciality(Alchemist) && pItem->GetItemEquipType() >= EQUIP_BOOTS)
         return true;  // check against hired help
 
     if (skillmaster == PLAYER_SKILL_MASTERY_GRANDMASTER)  // gm repair
@@ -1217,7 +1216,7 @@ int Player::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
                     (ItemGen*)&this
                         ->pInventoryItemList[this->pEquipment.uOffHand - 1];
 
-                if (offHandItemGen->GetItemEquipType() != EQUIP_SHIELD) {
+                if (!offHandItemGen->isShield()) {
                     offHndWpnDmg = CalculateMeleeDmgToEnemyWithWeapon(
                         offHandItemGen, uTargetActorID, false);
                 }
@@ -1550,7 +1549,7 @@ PLAYER_SKILL_TYPE Player::GetEquippedItemSkillType(ITEM_SLOT uEquipSlot) {
 bool Player::IsUnarmed() {
     return !HasItemEquipped(ITEM_SLOT_MAIN_HAND) &&
            (!HasItemEquipped(ITEM_SLOT_OFF_HAND) ||
-            GetOffHandItem()->GetItemEquipType() == EQUIP_SHIELD);
+            GetOffHandItem()->isShield());
 }
 
 //----- (0048D6AA) --------------------------------------------------------
@@ -1601,9 +1600,8 @@ int Player::StealFromShop(
         PLAYER_SKILL_LEVEL stealskill = this->GetActualSkillLevel(PLAYER_SKILL_STEALING);
         PLAYER_SKILL_MASTERY stealmaster = this->GetActualSkillMastery(PLAYER_SKILL_STEALING);
         unsigned int itemvalue = itemToSteal->GetValue();
-        ITEM_EQUIP_TYPE equiptype = itemToSteal->GetItemEquipType();
 
-        if (IsWeapon(equiptype))
+        if (itemToSteal->isWeapon())
             itemvalue *= 3;
 
         int currMaxItemValue = StealingRandomBonuses[grng->Random(5)] + stealskill * StealingMasteryBonuses[stealmaster];
@@ -1661,7 +1659,7 @@ int Player::StealFromActor(
         int random = grng->Random(100);
 
         if (random >= 70) {  // stealing gold
-            if (actroPtr->ActorHasItems[3].GetItemEquipType() != EQUIP_GOLD) {
+            if (!actroPtr->ActorHasItems[3].isGold()) {
                 // no gold to steal - fail
                 GameUI_SetStatusBar(
                     LSTR_FMT_S_FAILED_TO_STEAL,
@@ -1704,7 +1702,7 @@ int Player::StealFromActor(
             ITEM_TYPE carriedItemId = actroPtr->uCarriedItemID;
 
             // check if we have an item to steal
-            if (carriedItemId != ITEM_NULL || actroPtr->ActorHasItems[randslot].uItemID != ITEM_NULL && actroPtr->ActorHasItems[randslot].GetItemEquipType() != EQUIP_GOLD) {
+            if (carriedItemId != ITEM_NULL || actroPtr->ActorHasItems[randslot].uItemID != ITEM_NULL && !actroPtr->ActorHasItems[randslot].isGold()) {
                 if (carriedItemId != ITEM_NULL) {  // load item into tempitem
                     actroPtr->uCarriedItemID = ITEM_NULL;
                     tempItem.uItemID = carriedItemId;
@@ -2165,7 +2163,7 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) {
         weapon_recovery = base_recovery_times_per_weapon_type[PLAYER_SKILL_DAGGER];
     } else if (HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
         weapon = GetMainHandItem();
-        if (weapon->GetItemEquipType() == EQUIP_WAND) {
+        if (weapon->isWand()) {
             weapon_recovery = pSpellDatas[WandSpellIds[weapon->uItemID]].uExpertLevelRecovery;
         } else {
             weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
@@ -3222,27 +3220,18 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) {
             for (ITEM_SLOT i : AllItemSlots()) {  // ?? what eh check behaviour
                 if (this->HasItemEquipped(i)) {
                     ItemGen* currItem = GetNthEquippedIndexItem(i);
-                    if (currItem->GetItemEquipType() <= EQUIP_TWO_HANDED) {
+                    if (currItem->isMeleeWeapon()) {
                         PLAYER_SKILL_TYPE currItemSkillType = currItem->GetPlayerSkillType();
-                        int currentItemSkillLevel =
-                            this->GetActualSkillLevel(currItemSkillType);
+                        int currentItemSkillLevel = this->GetActualSkillLevel(currItemSkillType);
                         if (currItemSkillType == PLAYER_SKILL_BLASTER) {
-                            int multiplier = GetMultiplierForSkillLevel(
-                                currItemSkillType, 1, 2, 3, 5);
+                            int multiplier = GetMultiplierForSkillLevel(currItemSkillType, 1, 2, 3, 5);
                             return multiplier * (currentItemSkillLevel & 0x3F);
-                        } else if (currItemSkillType == PLAYER_SKILL_STAFF &&
-                                   this->GetActualSkillLevel(
-                                       PLAYER_SKILL_UNARMED) > 0) {
-                            int unarmedSkillLevel =
-                                this->GetActualSkillLevel(PLAYER_SKILL_UNARMED);
-                            int multiplier = GetMultiplierForSkillLevel(
-                                PLAYER_SKILL_UNARMED, 1, 1, 2, 2);
-                            return multiplier * (unarmedSkillLevel & 0x3F) +
-                                   armsMasterBonus +
-                                   (currentItemSkillLevel & 0x3F);
+                        } else if (currItemSkillType == PLAYER_SKILL_STAFF && this->GetActualSkillLevel(PLAYER_SKILL_UNARMED) > 0) {
+                            int unarmedSkillLevel = this->GetActualSkillLevel(PLAYER_SKILL_UNARMED);
+                            int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_UNARMED, 1, 1, 2, 2);
+                            return multiplier * (unarmedSkillLevel & 0x3F) + armsMasterBonus + (currentItemSkillLevel & 0x3F);
                         } else {
-                            return armsMasterBonus +
-                                   (currentItemSkillLevel & 0x3F);
+                            return armsMasterBonus + (currentItemSkillLevel & 0x3F);
                         }
                     }
                 }
@@ -3254,7 +3243,8 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) {
             for (ITEM_SLOT i : AllItemSlots()) {
                 if (this->HasItemEquipped(i)) {
                     ItemGen* currItemPtr = GetNthEquippedIndexItem(i);
-                    if (currItemPtr->GetItemEquipType() == EQUIP_TWO_HANDED || currItemPtr->GetItemEquipType() == EQUIP_SINGLE_HANDED) {
+                    // TODO(Nik-RE-dev): melee?
+                    if (currItemPtr->isMeleeWeapon()) {
                         PLAYER_SKILL_TYPE currentItemSkillType = GetNthEquippedIndexItem(i)->GetPlayerSkillType();
                         PLAYER_SKILL_LEVEL currentItemSkillLevel = this->GetActualSkillLevel(currentItemSkillType);
                         if (currentItemSkillType == PLAYER_SKILL_BOW) {
@@ -3282,8 +3272,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) {
             for (ITEM_SLOT i : AllItemSlots()) {
                 if (this->HasItemEquipped(i)) {
                     ItemGen* currItemPtr = GetNthEquippedIndexItem(i);
-                    if (currItemPtr->GetItemEquipType() == EQUIP_TWO_HANDED ||
-                        currItemPtr->GetItemEquipType() == EQUIP_SINGLE_HANDED) {
+                    if (currItemPtr->isMeleeWeapon()) {
                         PLAYER_SKILL_TYPE currItemSkillType = currItemPtr->GetPlayerSkillType();
                         PLAYER_SKILL_LEVEL currItemSkillLevel = this->GetActualSkillLevel(currItemSkillType);
                         int baseSkillBonus;
@@ -3767,7 +3756,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
         (pTurnEngine->turn_stage == TE_WAIT ||
          pTurnEngine->turn_stage == TE_MOVEMENT))
         return;
-    if (pParty->pPickedItem.GetItemEquipType() == EQUIP_REAGENT) {
+    if (pParty->pPickedItem.isReagent()) {
         // TODO(Nik-RE-dev): this looks like some artifact from MM6 (where you can eat reagents)
         // In MM7 these item IDs are invalid (plus index 161 used twice which is wrong)
         if (pParty->pPickedItem.uItemID == ITEM_161) {
@@ -3806,7 +3795,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
         return;
     }
 
-    if (pParty->pPickedItem.GetItemEquipType() == EQUIP_POTION) {
+    if (pParty->pPickedItem.isPotion()) {
         switch (pParty->pPickedItem.uItemID) {
             case ITEM_POTION_CATALYST:
                 playerAffected->SetCondition(Condition_Poison_Weak, 1);
@@ -4230,7 +4219,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
         return;
     }
 
-    if (pParty->pPickedItem.GetItemEquipType() == EQUIP_SPELL_SCROLL) {
+    if (pParty->pPickedItem.isSpellScroll()) {
         if (current_screen_type == CURRENT_SCREEN::SCREEN_CASTING) return;
         if (!playerAffected->CanAct()) {
             GameUI_SetStatusBar(
@@ -4269,7 +4258,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
         return;
     }
 
-    if (pParty->pPickedItem.GetItemEquipType() == EQUIP_BOOK) {
+    if (pParty->pPickedItem.isBook()) {
         // TODO(captainurist): another terrible mess, get rid of these casts.
         v15 = std::to_underlying(pParty->pPickedItem.uItemID) - 400;
         v72 = playerAffected->spellbook.bHaveSpell[std::to_underlying(pParty->pPickedItem.uItemID) - 400];
@@ -4356,7 +4345,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
         return;
     }
 
-    if (pParty->pPickedItem.GetItemEquipType() == EQUIP_MESSAGE_SCROLL) {
+    if (pParty->pPickedItem.isMessageScroll()) {
         if (playerAffected->CanAct()) {
             CreateMsgScrollWindow(pParty->pPickedItem.uItemID);
             playerAffected->playReaction(SPEECH_ReadScroll);
@@ -7079,15 +7068,14 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                     ItemGen* mainHandItem = playerPtr->GetMainHandItem();
                     if (mainHandItem->uItemID == ITEM_RELIC_KELEBRIM ||
                         mainHandItem->uItemID == ITEM_ARTIFACT_ELFBANE ||
-                        (mainHandItem->GetItemEquipType() == EQUIP_SHIELD &&
-                         playerPtr->GetActualSkillMastery(PLAYER_SKILL_SHIELD) == PLAYER_SKILL_MASTERY_GRANDMASTER))
+                        (mainHandItem->isShield() && playerPtr->GetActualSkillMastery(PLAYER_SKILL_SHIELD) == PLAYER_SKILL_MASTERY_GRANDMASTER))
                         dmgToReceive >>= 1;
                 }
                 if (playerPtr->HasItemEquipped(ITEM_SLOT_OFF_HAND)) {
                     ItemGen* offHandItem = playerPtr->GetOffHandItem();
                     if (offHandItem->uItemID == ITEM_RELIC_KELEBRIM ||
                         offHandItem->uItemID == ITEM_ARTIFACT_ELFBANE ||
-                        (offHandItem->GetItemEquipType() == EQUIP_SHIELD && playerPtr->GetActualSkillMastery(PLAYER_SKILL_SHIELD) == PLAYER_SKILL_MASTERY_GRANDMASTER))
+                        (offHandItem->isShield() && playerPtr->GetActualSkillMastery(PLAYER_SKILL_SHIELD) == PLAYER_SKILL_MASTERY_GRANDMASTER))
                         dmgToReceive >>= 1;
                 }
             }
@@ -7573,7 +7561,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
         if (!item->IsBroken()) {
             // v28b = &v1->pInventoryItems[v4].uItemID;
             // v6 = v1->pInventoryItems[v4].uItemID;//*((int *)v5 + 124);
-            if (item->GetItemEquipType() == EQUIP_WAND) {
+            if (item->isWand()) {
                 if (item->uNumCharges <= 0)
                     player->pEquipment.uMainHand =
                         0;  // wand discharged - unequip

@@ -66,6 +66,44 @@ struct ItemGen {  // 0x24
     uint8_t GetDamageMod();
     bool MerchandiseTest(int _2da_idx);
 
+    bool isGold() {
+        return GetItemEquipType() == EQUIP_GOLD;
+    }
+    bool isShield() {
+        return GetItemEquipType() == EQUIP_SHIELD;
+    }
+    bool isWand() {
+        return GetItemEquipType() == EQUIP_WAND;
+    }
+    bool isPotion() {
+        return GetItemEquipType() == EQUIP_POTION;
+    }
+    bool isBook() {
+        return GetItemEquipType() == EQUIP_BOOK;
+    }
+    bool isReagent() {
+        return GetItemEquipType() == EQUIP_REAGENT;
+    }
+    bool isSpellScroll() {
+        return GetItemEquipType() == EQUIP_SPELL_SCROLL;
+    }
+    bool isMessageScroll() {
+        return GetItemEquipType() == EQUIP_MESSAGE_SCROLL;
+    }
+
+    bool isMeleeWeapon() {
+        return GetItemEquipType() == EQUIP_SINGLE_HANDED || GetItemEquipType() == EQUIP_TWO_HANDED;
+    }
+    bool isWeapon() {
+        return IsWeapon(GetItemEquipType());
+    }
+    bool isArmor() {
+        return IsArmor(GetItemEquipType());
+    }
+    bool isPassiveEquipment() {
+        return IsPassiveEquipment(GetItemEquipType());
+    }
+
     ITEM_TYPE uItemID = ITEM_NULL;        // 0
     int32_t uEnchantmentType = ITEM_ENCHANTMENT_NULL;       // 4 // For potion it's potion strength.
     int32_t m_enchantmentStrength = 0;  // 8
