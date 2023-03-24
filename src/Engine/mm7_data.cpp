@@ -211,7 +211,6 @@ std::array<int8_t, 88> monster_popup_y_offsets = {
      0,   0,  0,   0,   0,   -20, -20, -20, 20,  20,  20,  10,  10,  10,  10,
      10,  10, -90, -60, -40, -20, -20, -80, -10, 0,   0,   -40, 0,   0,   0,
      -20, 10, 0,   0,   0,   0,   0,   0,   -60, 0,   0,   0,   0}};
-unsigned char hourglass_icon_idx = 12;
 
 int dword_4E455C;
 std::array<int, 6> dword_4E4560;
@@ -2540,10 +2539,9 @@ int dword_506984_uZ;
 int dword_506988_uY;
 int dword_50698C_uX;
 int KeyboardPageNum;
-int uRestUI_FoodRequiredToRest;
 int _506F14_resting_stage;
 int _506F18_num_minutes_to_sleep;
-int dword_506F1C;
+//int dword_506F1C;
 char bFlashHistoryBook;
 char bFlashAutonotesBook;
 char bFlashQuestBook;
@@ -2556,7 +2554,6 @@ int dword_507BF0_is_there_popup_onscreen;
 int awards_scroll_bar_created;
 int dword_507CC0_activ_ch;
 GameTime GameUI_RightPanel_BookFlashTimer;
-int _507CD4_RestUI_hourglass_anim_controller;
 bool OpenedTelekinesis;
 std::array<int, 50> dword_50B570;
 std::array<int, 50> dword_50B638;

@@ -4,12 +4,22 @@
 
 class GUIWindow_Rest : public GUIWindow {
  public:
+    /**
+     * @offset 0x41F6C1
+     */
     GUIWindow_Rest();
     virtual ~GUIWindow_Rest() {}
 
+    /**
+     * @offset 0x41FA01
+     */
     virtual void Update();
+
+ private:
+    int hourglassLoopTimer;
 };
 
+#if 0
 class GUIWindow_RestWindow : public GUIWindow {
  public:
     GUIWindow_RestWindow(Pointi position, Sizei dimensions, WindowData data, const char *hint) :
@@ -19,6 +29,9 @@ class GUIWindow_RestWindow : public GUIWindow {
 
     virtual void Update();
 };
+#endif
 
 extern class Image *rest_ui_sky_frame_current;
 extern class Image *rest_ui_hourglass_frame_current;
+
+extern int foodRequiredToRest;

@@ -1683,7 +1683,7 @@ void Game::EventLoop() {
                         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                         continue;
                     }
-                    if (pParty->GetFood() < uRestUI_FoodRequiredToRest) {
+                    if (pParty->GetFood() < foodRequiredToRest) {
                         GameUI_SetStatusBar(LSTR_NOT_ENOUGH_FOOD);
                         if (pParty->_activeCharacter && pPlayers[pParty->_activeCharacter]->CanAct()) {
                             pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_NotEnoughFood);
@@ -1723,7 +1723,7 @@ void Game::EventLoop() {
                                 continue;
                             }
                         }
-                        pParty->TakeFood(uRestUI_FoodRequiredToRest);
+                        pParty->TakeFood(foodRequiredToRest);
                         _506F18_num_minutes_to_sleep = 480;
                         _506F14_resting_stage = 2;
                         pParty->RestAndHeal();
