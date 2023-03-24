@@ -587,6 +587,9 @@ bool IsDwarfPresentInParty(bool b);
 bool ShouldLoadTexturesForRaceAndGender(unsigned int _this);
 int PlayerCreation_GetUnspentAttributePointCount();
 int CycleCharacter(bool backwards);
+
+// Players indexed array
+// TODO(pskelton): drop this
 extern IndexedArray<Player *, 1, 4> pPlayers;
 
 extern enum PlayerSpeech PlayerSpeechID;

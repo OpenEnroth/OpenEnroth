@@ -489,8 +489,8 @@ GAME_TEST(Issues, Issue520) {
 GAME_TEST(Issues, Issue521) {
     // 500 endurance leads to asserts in Player::SetRecoveryTime
     int oldActive{};
-    test->playTraceFromTestData("issue_521.mm7", "issue_521.json", [&] { oldActive = pParty->_activeCharacter; });
-    EXPECT_EQ(oldActive, pParty->_activeCharacter);
+    test->playTraceFromTestData("issue_521.mm7", "issue_521.json", [&] { oldActive = pParty->getActiveCharacter(); });
+    EXPECT_EQ(oldActive, pParty->getActiveCharacter());
 }
 
 GAME_TEST(Issues, Issue527) {

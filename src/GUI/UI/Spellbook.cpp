@@ -66,7 +66,7 @@ GUIWindow_Spellbook::GUIWindow_Spellbook()
 
 void GUIWindow_Spellbook::OpenSpellbookPage(int page) {
     OnCloseSpellBookPage();
-    pPlayers[pParty->_activeCharacter]->lastOpenedSpellbookPage = page;
+    pPlayers[pParty->getActiveCharacter()]->lastOpenedSpellbookPage = page;
     OpenSpellbook();
     pAudioPlayer->playUISound(vrng->RandomBool() ? SOUND_TurnPage2 : SOUND_TurnPage1);
 }
@@ -80,7 +80,7 @@ void GUIWindow_Spellbook::OpenSpellbook() {
     int a2;  // [sp+10h] [bp-8h]@1
     // int v7; // [sp+14h] [bp-4h]@1
 
-    pPlayer = pPlayers[pParty->_activeCharacter];
+    pPlayer = pPlayers[pParty->getActiveCharacter()];
     // pWindow = this;
     LoadSpellbook(pPlayer->lastOpenedSpellbookPage);
     // v3 = 0;
@@ -136,7 +136,7 @@ void GUIWindow_Spellbook::OpenSpellbook() {
 }
 
 void GUIWindow_Spellbook::Update() {
-    auto player = pPlayers[pParty->_activeCharacter];
+    auto player = pPlayers[pParty->getActiveCharacter()];
 
     Image *pTexture;        // edx@5
     int v10;                // eax@13
@@ -268,15 +268,15 @@ void LoadSpellbook(unsigned int spell_school) {
     byte_506550 = 0;
 
     // TODO(captainurist): encapsulate this enum arithmetic properly
-    if (pPlayers[pParty->_activeCharacter]->uQuickSpell != SPELL_NONE &&
-        (uint8_t)pPlayers[pParty->_activeCharacter]->uQuickSpell / 11 == spell_school)
+    if (pPlayers[pParty->getActiveCharacter()]->uQuickSpell != SPELL_NONE &&
+        (uint8_t)pPlayers[pParty->getActiveCharacter()]->uQuickSpell / 11 == spell_school)
         quick_spell_at_page =
-            (uint8_t)pPlayers[pParty->_activeCharacter]->uQuickSpell - 11 * spell_school;
+            (uint8_t)pPlayers[pParty->getActiveCharacter()]->uQuickSpell - 11 * spell_school;
     else
         quick_spell_at_page = 0;
 
     for (unsigned int i = 1; i <= 11; ++i) {
-        if (pPlayers[pParty->_activeCharacter]->spellbook.pChapters[spell_school].bIsSpellAvailable[i - 1] ||
+        if (pPlayers[pParty->getActiveCharacter()]->spellbook.pChapters[spell_school].bIsSpellAvailable[i - 1] ||
             engine->config->debug.AllMagic.Get()) {
             char pContainer[20];
             sprintf(pContainer, "SB%sS%02d",
@@ -294,8 +294,8 @@ void LoadSpellbook(unsigned int spell_school) {
 
 static void BookUI_Spellbook_DrawCurrentSchoolBackground() {
     int pTexID = 0;
-    if (pParty->_activeCharacter) {
-        pTexID = pParty->pPlayers[pParty->_activeCharacter - 1].lastOpenedSpellbookPage;
+    if (pParty->hasActiveCharacter()) {
+        pTexID = pParty->pPlayers[pParty->getActiveCharacter() - 1].lastOpenedSpellbookPage;
     }
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f,
                                 ui_spellbook_school_backgrounds[pTexID]);

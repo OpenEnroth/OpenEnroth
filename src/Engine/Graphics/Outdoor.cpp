@@ -2126,16 +2126,16 @@ void ODM_ProcessPartyActions() {
             case PARTY_LookUp:
                 partyViewNewPitch += engine->config->settings.VerticalTurnSpeed.Get();
                 if (partyViewNewPitch > 128) partyViewNewPitch = 128;
-                if (pParty->_activeCharacter) {
-                    pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_LookUp);
+                if (pParty->hasActiveCharacter()) {
+                    pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_LookUp);
                 }
                 break;
 
             case PARTY_LookDown:
                 partyViewNewPitch -= engine->config->settings.VerticalTurnSpeed.Get();
                 if (partyViewNewPitch < -128) partyViewNewPitch = -128;
-                if (pParty->_activeCharacter) {
-                    pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_LookDown);
+                if (pParty->hasActiveCharacter()) {
+                    pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_LookDown);
                 }
                 break;
 
