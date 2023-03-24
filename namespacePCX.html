@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;1043984</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a09a9ae</span>
    </div>
   </td>
  </tr>
@@ -79,10 +79,8 @@ $(function() {
 Functions</h2></td></tr>
 <tr class="memitem:af936c6b5be7bf44b68e869081f00d1e9"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePCX.html#af936c6b5be7bf44b68e869081f00d1e9">Decode</a> (const void *pcx_data, size_t filesize, unsigned int *width, unsigned int *height, <a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5">IMAGE_FORMAT</a> *format, <a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5">IMAGE_FORMAT</a> requested_format)</td></tr>
 <tr class="separator:af936c6b5be7bf44b68e869081f00d1e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a151713aa9441a236085d884ecbb4d9be"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePCX.html#a151713aa9441a236085d884ecbb4d9be">Encode16</a> (const void *picture_data, unsigned int width, unsigned int height, void *pcx_data, int max_buff_size, unsigned int *packed_size)</td></tr>
-<tr class="separator:a151713aa9441a236085d884ecbb4d9be"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abd7bffd17367adb0c17dbd0a5ecf64c8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePCX.html#abd7bffd17367adb0c17dbd0a5ecf64c8">Encode32</a> (const void *picture_data, unsigned int width, unsigned int height, void *pcx_data, int max_buff_size, unsigned int *packed_size)</td></tr>
-<tr class="separator:abd7bffd17367adb0c17dbd0a5ecf64c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af512f20aee50cd1de2ab85ea0fcd96e3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePCX.html#af512f20aee50cd1de2ab85ea0fcd96e3">Encode</a> (const void *picture_data, const unsigned int width, const unsigned int height)</td></tr>
+<tr class="separator:af512f20aee50cd1de2ab85ea0fcd96e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="af936c6b5be7bf44b68e869081f00d1e9" name="af936c6b5be7bf44b68e869081f00d1e9"></a>
@@ -137,14 +135,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a151713aa9441a236085d884ecbb4d9be" name="a151713aa9441a236085d884ecbb4d9be"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a151713aa9441a236085d884ecbb4d9be">&#9670;&#160;</a></span>Encode16()</h2>
+<a id="af512f20aee50cd1de2ab85ea0fcd96e3" name="af512f20aee50cd1de2ab85ea0fcd96e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af512f20aee50cd1de2ab85ea0fcd96e3">&#9670;&#160;</a></span>Encode()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void PCX::Encode16 </td>
+          <td class="memname"><a class="el" href="classBlob.html">Blob</a> PCX::Encode </td>
           <td>(</td>
           <td class="paramtype">const void *&#160;</td>
           <td class="paramname"><em>picture_data</em>, </td>
@@ -152,32 +150,14 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramtype">const unsigned int&#160;</td>
           <td class="paramname"><em>width</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>height</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">void *&#160;</td>
-          <td class="paramname"><em>pcx_data</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>max_buff_size</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int *&#160;</td>
-          <td class="paramname"><em>packed_size</em>&#160;</td>
+          <td class="paramtype">const unsigned int&#160;</td>
+          <td class="paramname"><em>height</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -186,58 +166,15 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="abd7bffd17367adb0c17dbd0a5ecf64c8" name="abd7bffd17367adb0c17dbd0a5ecf64c8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abd7bffd17367adb0c17dbd0a5ecf64c8">&#9670;&#160;</a></span>Encode32()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void PCX::Encode32 </td>
-          <td>(</td>
-          <td class="paramtype">const void *&#160;</td>
-          <td class="paramname"><em>picture_data</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>width</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>height</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">void *&#160;</td>
-          <td class="paramname"><em>pcx_data</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>max_buff_size</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int *&#160;</td>
-          <td class="paramname"><em>packed_size</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">picture_data</td><td>Pointer to the image data to encode. </td></tr>
+    <tr><td class="paramname">width</td><td>Final width of image to create. </td></tr>
+    <tr><td class="paramname">height</td><td>Final height of image to create. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Returns <a class="el" href="classBlob.html">Blob</a> containing packed pcx data and its size. </dd></dl>
 
 </div>
 </div>

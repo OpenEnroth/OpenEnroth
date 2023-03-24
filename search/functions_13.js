@@ -9,7 +9,7 @@ var searchData=
   ['savegame_6',['saveGame',['../classEngineController.html#a467c57dbccf4e431322e8df28bd25679',1,'EngineController']]],
   ['savegamelist_7',['SavegameList',['../structSavegameList.html#aae508c1b56dd1083c75f2ba6a731667a',1,'SavegameList']]],
   ['savenewgame_8',['SaveNewGame',['../SaveLoad_8h.html#ab496492a832e3fe2f04f9a23bdf3dd2a',1,'SaveNewGame():&#160;SaveLoad.cpp'],['../SaveLoad_8cpp.html#ab496492a832e3fe2f04f9a23bdf3dd2a',1,'SaveNewGame():&#160;SaveLoad.cpp']]],
-  ['savepcximage16_9',['SavePCXImage16',['../classRenderBase.html#a960ccc6db3bc7c9969b39421c01db59e',1,'RenderBase']]],
+  ['savepcximage32_9',['SavePCXImage32',['../classRenderBase.html#a752e90e1b166ade4d238bde406784742',1,'RenderBase']]],
   ['savepcxscreenshot_10',['SavePCXScreenshot',['../classIRender.html#ae2ddff8d7a64a69ca3d6289956d57815',1,'IRender::SavePCXScreenshot()'],['../classRenderBase.html#a638f09bfa829cb8a6f1ade279015b9c3',1,'RenderBase::SavePCXScreenshot() override']]],
   ['savescreenshot_11',['SaveScreenshot',['../classRenderBase.html#a38fd40ce7a1a795cd060df0fd4265f7b',1,'RenderBase::SaveScreenshot()'],['../classIRender.html#a3072463b6a2d7e8103e46bed4c20630c',1,'IRender::SaveScreenshot()']]],
   ['savetofile_12',['saveToFile',['../structEventTrace.html#a15654673ac724fdb61edfab5b630c0eb',1,'EventTrace']]],

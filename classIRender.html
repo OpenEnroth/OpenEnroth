@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;1043984</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a09a9ae</span>
    </div>
   </td>
  </tr>
@@ -253,12 +253,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a0ff389743c969dd73e3f4a1bec2297d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3072463b6a2d7e8103e46bed4c20630c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a3072463b6a2d7e8103e46bed4c20630c">SaveScreenshot</a> (const std::string &amp;filename, unsigned int width, unsigned int height)=0</td></tr>
 <tr class="separator:a3072463b6a2d7e8103e46bed4c20630c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a02781770f1f725d45913a8223a12699f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a02781770f1f725d45913a8223a12699f">PackScreenshot</a> (unsigned int width, unsigned int height, void *out_data, unsigned int data_size, unsigned int *screenshot_size)=0</td></tr>
-<tr class="separator:a02781770f1f725d45913a8223a12699f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9955c94744d4fa0ced641f3175ef5bf3"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a9955c94744d4fa0ced641f3175ef5bf3">PackScreenshot</a> (const unsigned int width, const unsigned int height)=0</td></tr>
+<tr class="separator:a9955c94744d4fa0ced641f3175ef5bf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2ddff8d7a64a69ca3d6289956d57815"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#ae2ddff8d7a64a69ca3d6289956d57815">SavePCXScreenshot</a> ()=0</td></tr>
 <tr class="separator:ae2ddff8d7a64a69ca3d6289956d57815"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4caca6860f7b0dfe94d7621151ee94e8"><td class="memItemLeft" align="right" valign="top">virtual unsigned short *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a4caca6860f7b0dfe94d7621151ee94e8">MakeScreenshot16</a> (int width, int height)=0</td></tr>
-<tr class="separator:a4caca6860f7b0dfe94d7621151ee94e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa71c8cc4cb7fdafe115fa345fa86cca6"><td class="memItemLeft" align="right" valign="top">virtual uint32_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#aa71c8cc4cb7fdafe115fa345fa86cca6">MakeScreenshot32</a> (const int width, const int height)=0</td></tr>
+<tr class="separator:aa71c8cc4cb7fdafe115fa345fa86cca6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9835daaf3634a074492d72f7b5aeff8a"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="classActor.html">Actor</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a9835daaf3634a074492d72f7b5aeff8a">getActorsInViewport</a> (int pDepth)=0</td></tr>
 <tr class="separator:a9835daaf3634a074492d72f7b5aeff8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c595d7bcc11babf0ccbac408e90fe74"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a5c595d7bcc11babf0ccbac408e90fe74">BeginLightmaps</a> ()=0</td></tr>
@@ -2880,8 +2880,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a4caca6860f7b0dfe94d7621151ee94e8" name="a4caca6860f7b0dfe94d7621151ee94e8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4caca6860f7b0dfe94d7621151ee94e8">&#9670;&#160;</a></span>MakeScreenshot16()</h2>
+<a id="aa71c8cc4cb7fdafe115fa345fa86cca6" name="aa71c8cc4cb7fdafe115fa345fa86cca6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa71c8cc4cb7fdafe115fa345fa86cca6">&#9670;&#160;</a></span>MakeScreenshot32()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2890,15 +2890,15 @@ Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual unsigned short * IRender::MakeScreenshot16 </td>
+          <td class="memname">virtual uint32_t * IRender::MakeScreenshot32 </td>
           <td>(</td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype">const int&#160;</td>
           <td class="paramname"><em>width</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype">const int&#160;</td>
           <td class="paramname"><em>height</em>&#160;</td>
         </tr>
         <tr>
@@ -2914,7 +2914,7 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classRenderOpenGL.html#a1f80ed50a7677250ddd9baf7815fdcd1">RenderOpenGL</a>.</p>
+<p>Implemented in <a class="el" href="classRenderOpenGL.html#a2b97e25aa37e0e1ca3c378b2786dd9de">RenderOpenGL</a>.</p>
 
 </div>
 </div>
@@ -3194,8 +3194,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a02781770f1f725d45913a8223a12699f" name="a02781770f1f725d45913a8223a12699f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a02781770f1f725d45913a8223a12699f">&#9670;&#160;</a></span>PackScreenshot()</h2>
+<a id="a9955c94744d4fa0ced641f3175ef5bf3" name="a9955c94744d4fa0ced641f3175ef5bf3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9955c94744d4fa0ced641f3175ef5bf3">&#9670;&#160;</a></span>PackScreenshot()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3204,34 +3204,16 @@ Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void IRender::PackScreenshot </td>
+          <td class="memname">virtual <a class="el" href="classBlob.html">Blob</a> IRender::PackScreenshot </td>
           <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramtype">const unsigned int&#160;</td>
           <td class="paramname"><em>width</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>height</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">void *&#160;</td>
-          <td class="paramname"><em>out_data</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>data_size</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int *&#160;</td>
-          <td class="paramname"><em>screenshot_size</em>&#160;</td>
+          <td class="paramtype">const unsigned int&#160;</td>
+          <td class="paramname"><em>height</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -3246,7 +3228,7 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classRenderBase.html#ad8ae971540bc9f7e893505ad692ee493">RenderBase</a>.</p>
+<p>Implemented in <a class="el" href="classRenderBase.html#a5317603b974103261a13301f26f80fc2">RenderBase</a>.</p>
 
 </div>
 </div>
