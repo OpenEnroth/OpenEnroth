@@ -5530,7 +5530,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
 
 //----- (new function) --------------------------------------------------------
 void Player::PlayAwardSound() {
-    int playerIndex = GetPlayerIndex();
+    //int playerIndex = GetPlayerIndex();
     //int v25 = PID(OBJECT_Player, playerIndex + 48);
     //pAudioPlayer->PlaySound(SOUND_quest, v25, 0, -1, 0, 0);
     pAudioPlayer->playUISound(SOUND_quest);

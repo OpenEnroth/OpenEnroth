@@ -139,6 +139,22 @@ class AudioPlayer {
     float MusicGetVolume();
 
     void StopAll(int sample_id);
+
+    /**
+     * Play sound.
+     *
+     * @param eSoundID                  ID of sound.
+     * @param pid                       PID of sound originator or, 0 for generic ui sound, -1(PID_INVALID)
+     *                                  for resetable (playing this sound again whilst its playing will stop
+     *                                  it and start from beginning) exclusive (sound should not be stopped
+     *                                  by system on ui events) sound and other < 0 for non resetable sounds
+     *                                  (will not restart if played again whilst already playing).
+     *                                  NB: system use of exclusive sounds is inconsistent.
+     * @param uNumRepeats               unused but presumably must be number of repeats before stopping
+     * @param x                         ???, unused
+     * @param y                         ???, unused
+     * @param a7                        ???, unused
+     */
     void PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats, int x, int y, int a7);
     void UpdateSounds();
     void PauseSounds(int uType);
@@ -149,26 +165,43 @@ class AudioPlayer {
     Blob LoadSound(int uSoundID);
 
     /**
+     * Play sound of spell casting or spell sprite impact.
+     *
      * @param spell                     Spell ID of spell. Indexes into SpellSoundIds.
-     * @param pid                       PID of sound originator or, 0 for generic ui sound, -1(PID_INVALID)
-     *                                  for resetable (playing this sound again whilst its playing will stop
-     *                                  it and start from beginning) exclusive (sound should not be stopped
-     *                                  by system on ui events) sound and other < 0 for non resetable sounds
-     *                                  (will not restart if played again whilst already playing). NB
-     *                                  system use of exclusive sounds is inconsistent.
+     * @param pid                       PID of sound originator. See PlaySound description.
      * @param is_impact                 Indicates sound of spell impact, if true sound ID
      *                                  will be SpellSoundIds[spell] + 1.
      */
     void playSpellSound(unsigned int spell, unsigned int pid, bool is_impact = false);
 
+    /**
+     * Play generic UI sound.
+     * Generic sounds are played in non-exclusive mode - it meand that each call to this function
+     * will play sound even if sound with the same ID has not funished playing.
+     *
+     * @param id                        ID of sound.
+     */
     void playUISound(SoundID id) {
         PlaySound(id, 0, 0, -1, 0, 0);
     }
 
+    /**
+     * Play sound in exclusive mode.
+     * It means that if sound with the same ID has not finished playing it's playing be stopped
+     * and then restarted from beginning.
+     *
+     * @param id                        ID of sound.
+     */
     void playExclusiveSound(SoundID id) {
         PlaySound(id, PID_INVALID, 0, -1, 0, 0);
     }
 
+    /**
+     * Play sound of party walking.
+     * Semantics generally is the same as for exclusive sounds.
+     *
+     * @param id                        ID of sound.
+     */
     void playWalkSound(SoundID id) {
         // All walk sounds originally used PID 804 which is PID(Object_Player, 100)
         PlaySound(id, PID_INVALID, 1, -1, 0, 0);
