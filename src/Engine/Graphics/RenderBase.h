@@ -33,10 +33,14 @@ class RenderBase : public IRender {
     virtual HWLTexture *LoadHwlSprite(const std::string &name) override;
 
     virtual void SavePCXScreenshot() override;
-    virtual void SavePCXImage16(const std::string& filename, uint16_t* picture_data, int width, int height);
+    virtual void SavePCXImage32(const std::string& filename, const uint32_t* picture_data, const int width, const int height);
     virtual void SaveScreenshot(const std::string& filename, unsigned int width, unsigned int height) override;
-    virtual void PackScreenshot(unsigned int width, unsigned int height,
-        void* out_data, unsigned int data_size, unsigned int* screenshot_size) override;
+    /**
+    * @param width                         Final width of image to create.
+    * @param height                        Final height of image to create.
+    * @return                              Returns Blob containing packed pcx data and its size.
+    */
+    virtual Blob PackScreenshot(const unsigned int width, const unsigned int height) override;
     virtual Image* TakeScreenshot(unsigned int width, unsigned int height) override;
 
     virtual void DrawMasked(float u, float v, class Image* img,

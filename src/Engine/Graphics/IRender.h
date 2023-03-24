@@ -336,11 +336,9 @@ class IRender {
     virtual Image *TakeScreenshot(unsigned int width, unsigned int height) = 0;
     virtual void SaveScreenshot(const std::string &filename, unsigned int width,
                                 unsigned int height) = 0;
-    virtual void PackScreenshot(unsigned int width, unsigned int height,
-                                void *out_data, unsigned int data_size,
-                                unsigned int *screenshot_size) = 0;
+    virtual Blob PackScreenshot(const unsigned int width, const unsigned int height) = 0;
     virtual void SavePCXScreenshot() = 0;
-    virtual unsigned short* MakeScreenshot16(int width, int height) = 0;
+    virtual uint32_t *MakeScreenshot32(const int width, const int height) = 0;
 
     virtual std::vector<Actor*> getActorsInViewport(int pDepth) = 0;
 

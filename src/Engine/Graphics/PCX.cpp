@@ -285,15 +285,22 @@ struct Format {
     ColorFormat b;
 };
 
-void Encode(Format f, const void *picture_data, unsigned int width,
-            unsigned int height, void *pcx_data, int max_buff_size,
-            unsigned int *packed_size) {
-    uint8_t *output = (uint8_t *)WritePCXHeader(pcx_data, width, height);
+Blob PCX::Encode(const void *picture_data, const unsigned int width, const unsigned int height) {
+    assert(picture_data != nullptr && width != 0 & height != 0);
+    Format f(32, 0x000000FF, 0x0000FF00, 0x00FF0000);
 
+    // pcx lines are padded to next even byte boundary
     int pitch = width;
     if (width & 1) {
         pitch = width + 1;
     }
+
+    // pcx file can be larger than uncompressed
+    // pcx header and no compression @24bit worst case doubles in size
+    size_t worstCase = sizeof(PCXHeader) + 3 * pitch * height * 2;
+    uint8_t *pcx_data = (uint8_t*)malloc(worstCase);
+
+    uint8_t *output = (uint8_t *)WritePCXHeader(pcx_data, width, height);
 
     uint8_t *lineRGB = new uint8_t[3 * pitch];
     uint8_t *lineR = (uint8_t *)lineRGB;
@@ -319,23 +326,7 @@ void Encode(Format f, const void *picture_data, unsigned int width,
 
     delete[] lineRGB;
 
-    if (packed_size != nullptr) {
-        *packed_size = output - (uint8_t*)pcx_data;
-    }
-}
-
-void PCX::Encode16(const void *picture_data, unsigned int width, unsigned int height,
-                   void *pcx_data, int max_buff_size,
-                   unsigned int *packed_size) {
-    Format f(16, 0xF800, 0x07E0, 0x001F);
-    Encode(f, picture_data, width, height, pcx_data, max_buff_size,
-           packed_size);
-}
-
-void PCX::Encode32(const void *picture_data, unsigned int width, unsigned int height,
-                   void *pcx_data, int max_buff_size,
-                   unsigned int *packed_size) {
-    Format f(32, 0x000000FF, 0x0000FF00, 0x00FF0000);
-    Encode(f, picture_data, width, height, pcx_data, max_buff_size,
-           packed_size);
+    size_t packed_size = output - (uint8_t*)pcx_data;
+    assert(packed_size <= worstCase);
+    return Blob::fromMalloc(pcx_data, packed_size);
 }

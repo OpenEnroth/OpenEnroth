@@ -636,7 +636,7 @@ void RenderBase::SavePCXScreenshot() {
     SaveWinnersCertificate(file_name.c_str());
 }
 
-void RenderBase::SavePCXImage16(const std::string& filename, uint16_t* picture_data, int width, int height) {
+void RenderBase::SavePCXImage32(const std::string& filename, const uint32_t* picture_data, const int width, const int height) {
     // TODO(pskelton): add "Screenshots" folder?
     std::string thispath = MakeDataPath(filename);
     FILE* result = fopen(thispath.c_str(), "wb");
@@ -644,32 +644,27 @@ void RenderBase::SavePCXImage16(const std::string& filename, uint16_t* picture_d
         return;
     }
 
-    unsigned int pcx_data_size = width * height * 5;
-    uint8_t* pcx_data = new uint8_t[pcx_data_size];
-    unsigned int pcx_data_real_size = 0;
-    PCX::Encode16(picture_data, width, height, pcx_data, pcx_data_size, &pcx_data_real_size);
-    fwrite(pcx_data, pcx_data_real_size, 1, result);
-    delete[] pcx_data;
+    Blob packedPCX{ PCX::Encode(picture_data, width, height) };
+    fwrite(packedPCX.data(), packedPCX.size(), 1, result);
     fclose(result);
 }
 
-void RenderBase::SaveScreenshot(const std::string& filename, unsigned int width, unsigned int height) {
-    auto pixels = render->MakeScreenshot16(width, height);
-    SavePCXImage16(filename, pixels, width, height);
+void RenderBase::SaveScreenshot(const std::string& filename, const unsigned int width, const unsigned int height) {
+    auto pixels = render->MakeScreenshot32(width, height);
+    SavePCXImage32(filename, pixels, width, height);
     free(pixels);
 }
 
-void RenderBase::PackScreenshot(unsigned int width, unsigned int height,
-    void* out_data, unsigned int data_size,
-    unsigned int* screenshot_size) {
-    auto pixels = render->MakeScreenshot16(width, height);
-    PCX::Encode16(pixels, 150, 112, out_data, data_size, screenshot_size);
+Blob RenderBase::PackScreenshot(const unsigned int width, const unsigned int height) {
+    auto pixels = render->MakeScreenshot32(width, height);
+    Blob packedPCX{ PCX::Encode(pixels, width, height) };
     free(pixels);
+    return packedPCX;
 }
 
-Image* RenderBase::TakeScreenshot(unsigned int width, unsigned int height) {
-    auto pixels = MakeScreenshot16(width, height);
-    Image* image = Image::Create(width, height, IMAGE_FORMAT_R5G6B5, pixels);
+Image* RenderBase::TakeScreenshot(const unsigned int width, const unsigned int height) {
+    auto pixels = MakeScreenshot32(width, height);
+    Image* image = Image::Create(width, height, IMAGE_FORMAT_A8B8G8R8, pixels);
     free(pixels);
     return image;
 }
