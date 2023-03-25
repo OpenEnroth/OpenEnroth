@@ -470,8 +470,8 @@ void DrawSparks() {
     }
 }
 
-void ArcomageGame::PlaySound(unsigned int event_id) {
-    SoundID play_sound_id;  // eax@10
+void ArcomageGame::playSound(unsigned int event_id) {
+    SoundID play_sound_id;
 
     switch (event_id) {
         case 40:
@@ -1086,7 +1086,7 @@ void FillPlayerDeck() {
     char card_taken_flags[DECK_SIZE];
     int i, j;
 
-    ArcomageGame::PlaySound(20);
+    ArcomageGame::playSound(20);
     memset(deckMaster.cardsInUse, 0, DECK_SIZE);
     memset(card_taken_flags, 0, DECK_SIZE);
 
@@ -1148,7 +1148,7 @@ void GetNextCardFromDeck(int player_num) {
         deck_walk_index = deck_index;
     }
 
-    ArcomageGame::PlaySound(21);
+    ArcomageGame::playSound(21);
     card_slot_indx = GetEmptyCardSlotIndex(player_num);
     if (card_slot_indx != -1) {
         drawn_card_slot_index = card_slot_indx;
@@ -2103,7 +2103,7 @@ bool DiscardCard(int player_num, int card_slot_index) {
         anim_card_spd_playdiscard.y = ((int)shown_cards[table_slot].table_pos.y - (int)anim_card_pos_playdiscard.y) / 10;
 
         // play sound - set anim card and remove from player
-        ArcomageGame::PlaySound(22);
+        ArcomageGame::playSound(22);
         discarded_card_id = am_Players[player_num].cards_at_hand[card_slot_index];
         am_Players[player_num].cards_at_hand[card_slot_index] = -1;
         need_to_discard_card = 0;
@@ -2133,7 +2133,7 @@ bool PlayCard(int player_num, int card_slot_num) {
 
         // play sound and take resource cost
         ArcomageCard* pCard = &pCards[am_Players[player_num].cards_at_hand[card_slot_num]];
-        ArcomageGame::PlaySound(23);
+        ArcomageGame::playSound(23);
         am_Players[player_num].resource_bricks -= pCard->needed_bricks;
         am_Players[player_num].resource_beasts -= pCard->needed_beasts;
         am_Players[player_num].resource_gems -= pCard->needed_gems;
@@ -2463,23 +2463,23 @@ void ApplyCardToPlayer(int player_num, unsigned int uCardID) {
 
 
     // call sound if required
-    if (quarry_p > 0 || quarry_e > 0) pArcomageGame->PlaySound(30);
-    if (quarry_p < 0 || quarry_e < 0) pArcomageGame->PlaySound(31);
-    if (magic_p > 0 || magic_e > 0) pArcomageGame->PlaySound(33);
-    if (magic_p < 0 || magic_e < 0) pArcomageGame->PlaySound(34);
-    if (zoo_p > 0 || zoo_e > 0) pArcomageGame->PlaySound(36);
-    if (zoo_p < 0 || zoo_e < 0) pArcomageGame->PlaySound(37);
-    if (bricks_p > 0 || bricks_e > 0) pArcomageGame->PlaySound(39);
-    if (bricks_p < 0 || bricks_e < 0) pArcomageGame->PlaySound(40);
-    if (gems_p > 0 || gems_e > 0) pArcomageGame->PlaySound(42);
-    if (gems_p < 0 || gems_e < 0) pArcomageGame->PlaySound(43);
-    if (beasts_p > 0 || beasts_e > 0) pArcomageGame->PlaySound(45u);
-    if (beasts_p < 0 || beasts_e < 0) pArcomageGame->PlaySound(46);
-    if (buildings_p || buildings_e || dmg_p || dmg_e) pArcomageGame->PlaySound(48);
-    if (wall_p > 0 || wall_e > 0) pArcomageGame->PlaySound(49);
-    if (wall_p < 0 || wall_e < 0) pArcomageGame->PlaySound(50);
-    if (tower_p > 0 || tower_e > 0) pArcomageGame->PlaySound(52);
-    if (tower_p < 0 || tower_e < 0) pArcomageGame->PlaySound(53);
+    if (quarry_p > 0 || quarry_e > 0) pArcomageGame->playSound(30);
+    if (quarry_p < 0 || quarry_e < 0) pArcomageGame->playSound(31);
+    if (magic_p > 0 || magic_e > 0) pArcomageGame->playSound(33);
+    if (magic_p < 0 || magic_e < 0) pArcomageGame->playSound(34);
+    if (zoo_p > 0 || zoo_e > 0) pArcomageGame->playSound(36);
+    if (zoo_p < 0 || zoo_e < 0) pArcomageGame->playSound(37);
+    if (bricks_p > 0 || bricks_e > 0) pArcomageGame->playSound(39);
+    if (bricks_p < 0 || bricks_e < 0) pArcomageGame->playSound(40);
+    if (gems_p > 0 || gems_e > 0) pArcomageGame->playSound(42);
+    if (gems_p < 0 || gems_e < 0) pArcomageGame->playSound(43);
+    if (beasts_p > 0 || beasts_e > 0) pArcomageGame->playSound(45u);
+    if (beasts_p < 0 || beasts_e < 0) pArcomageGame->playSound(46);
+    if (buildings_p || buildings_e || dmg_p || dmg_e) pArcomageGame->playSound(48);
+    if (wall_p > 0 || wall_e > 0) pArcomageGame->playSound(49);
+    if (wall_p < 0 || wall_e < 0) pArcomageGame->playSound(50);
+    if (tower_p > 0 || tower_e > 0) pArcomageGame->playSound(52);
+    if (tower_p < 0 || tower_e < 0) pArcomageGame->playSound(53);
 
 
     // call spark effect if required
