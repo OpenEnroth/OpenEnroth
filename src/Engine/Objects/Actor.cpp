@@ -54,7 +54,7 @@ std::array<uint, 5> _4DF380_hostilityRanges = {0, 1024, 2560, 5120, 10240};
 
 //----- (0042FB5C) --------------------------------------------------------
 // True if monster should play attack animation when casting this spell.
-bool ShouldMonsterPlayAttackAnim(signed int spell_id) {
+bool ShouldMonsterPlayAttackAnim(SPELL_TYPE spell_id) {
     switch (spell_id) {
         case SPELL_FIRE_HASTE:
         case SPELL_AIR_SHIELD:
@@ -1476,7 +1476,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid,
     Vec3i v7;        // ST04_12@6
     AIDirection *v9;     // eax@8
     int16_t v13;         // ax@10
-    signed int v16;      // ecx@17
+    SPELL_TYPE v16;      // ecx@17
     AIDirection a3;      // [sp+Ch] [bp-48h]@9
     AIDirection v18;     // [sp+28h] [bp-2Ch]@9
     int v19;             // [sp+44h] [bp-10h]@6
@@ -2449,7 +2449,7 @@ void Actor::ActorDamageFromMonster(signed int attacker_id,
                                    ABILITY_INDEX a4) {
     int v4;            // ebx@1
     int dmgToRecv;     // qax@8
-    signed int v12;    // ecx@20
+    int v12;    // ecx@20
     int finalDmg;      // edi@30
     int pushDistance;  // [sp+20h] [bp+Ch]@34
 

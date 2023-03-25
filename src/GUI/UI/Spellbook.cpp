@@ -23,7 +23,7 @@
 void InitializeSpellBookTextures();
 void OnCloseSpellBookPage();
 void OnCloseSpellBook();
-void LoadSpellbook(unsigned int spell_school);
+void LoadSpellbook(unsigned int spell_school); // TODO(captainurist): turn parameter into an enum
 static void BookUI_Spellbook_DrawCurrentSchoolBackground();
 
 std::array<const char *, 9> spellbook_texture_filename_suffices = {
@@ -266,12 +266,12 @@ void GUIWindow_Spellbook::Release() {
 
 void LoadSpellbook(unsigned int spell_school) {
     byte_506550 = 0;
-    if (pPlayers[pParty->_activeCharacter]->uQuickSpell &&
-        (uint8_t)pPlayers[pParty->_activeCharacter]->uQuickSpell / 11 ==
-            spell_school)
+
+    // TODO(captainurist): encapsulate this enum arithmetic properly
+    if (pPlayers[pParty->_activeCharacter]->uQuickSpell != SPELL_NONE &&
+        (uint8_t)pPlayers[pParty->_activeCharacter]->uQuickSpell / 11 == spell_school)
         quick_spell_at_page =
-            (uint8_t)pPlayers[pParty->_activeCharacter]->uQuickSpell -
-            11 * spell_school;
+            (uint8_t)pPlayers[pParty->_activeCharacter]->uQuickSpell - 11 * spell_school;
     else
         quick_spell_at_page = 0;
 

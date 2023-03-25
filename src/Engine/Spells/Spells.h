@@ -61,16 +61,14 @@ struct SpellInfo {
 };
 #pragma pack(pop)
 
-#pragma pack(push, 1)
 struct SpellStats {
     /**
      * @offset 0x45384A
      */
     void Initialize();
 
-    SpellInfo pInfos[SPELL_REGULAR_COUNT];
+    IndexedArray<SpellInfo, SPELL_REGULAR_FIRST, SPELL_REGULAR_LAST> pInfos;
 };
-#pragma pack(pop)
 
 /*  151 */
 #pragma pack(push, 1)
@@ -136,7 +134,7 @@ extern std::array<std::array<struct SpellBookIconPos, 12>, 9> pIconPos;
 extern IndexedArray<SPRITE_OBJECT_TYPE, SPELL_ANY_WITH_SPRITE_FIRST, SPELL_ANY_WITH_SPRITE_LAST> SpellSpriteMapping;  // 4E3ACC
 extern IndexedArray<SpellData, SPELL_REGULAR_FIRST, SPELL_REGULAR_LAST> pSpellDatas;
 extern IndexedArray<SPELL_TYPE, ITEM_FIRST_WAND, ITEM_LAST_WAND> WandSpellIds;
-extern std::array<uint16_t, SPELL_REGULAR_COUNT + 1> SpellSoundIds;
+extern IndexedArray<uint16_t, SPELL_ANY_WITH_SPRITE_FIRST, SPELL_ANY_WITH_SPRITE_LAST> SpellSoundIds;
 
 /**
  * @offset 0x43AFE3

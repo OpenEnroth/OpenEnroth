@@ -688,7 +688,7 @@ void Serialize(const Player &src, Player_MM7 *dst) {
     dst->field_1A4C = src.field_1A4C;
     dst->field_1A4D = src.field_1A4D;
     dst->lastOpenedSpellbookPage = src.lastOpenedSpellbookPage;
-    dst->uQuickSpell = src.uQuickSpell;
+    dst->uQuickSpell = std::to_underlying(src.uQuickSpell);
 
     for (unsigned int i = 0; i < 49; ++i)
         dst->playerEventBits[i] = src.playerEventBits[i];
@@ -1144,9 +1144,9 @@ void Serialize(const Actor &src, Actor_MM7 *dst) {
     dst->pMonsterInfo.uAttack2DamageBonus = src.pMonsterInfo.uAttack2DamageBonus;
     dst->pMonsterInfo.uMissleAttack2Type = src.pMonsterInfo.uMissleAttack2Type;
     dst->pMonsterInfo.uSpell1UseChance = src.pMonsterInfo.uSpell1UseChance;
-    dst->pMonsterInfo.uSpell1ID = src.pMonsterInfo.uSpell1ID;
+    dst->pMonsterInfo.uSpell1ID = std::to_underlying(src.pMonsterInfo.uSpell1ID);
     dst->pMonsterInfo.uSpell2UseChance = src.pMonsterInfo.uSpell2UseChance;
-    dst->pMonsterInfo.uSpell2ID = src.pMonsterInfo.uSpell2ID;
+    dst->pMonsterInfo.uSpell2ID = std::to_underlying(src.pMonsterInfo.uSpell2ID);
     dst->pMonsterInfo.uResFire = src.pMonsterInfo.uResFire;
     dst->pMonsterInfo.uResAir = src.pMonsterInfo.uResAir;
     dst->pMonsterInfo.uResWater = src.pMonsterInfo.uResWater;
@@ -1544,7 +1544,7 @@ void Serialize(const SpriteObject &src, SpriteObject_MM7 *dst) {
     dst->tempLifetime = src.tempLifetime;
     dst->field_22_glow_radius_multiplier = src.field_22_glow_radius_multiplier;
     Serialize(src.containing_item, &dst->containing_item);
-    dst->uSpellID = src.uSpellID;
+    dst->uSpellID = std::to_underlying(src.uSpellID);
     dst->spell_level = src.spell_level;
     dst->spell_skill = std::to_underlying(src.spell_skill);
     dst->field_54 = src.field_54;

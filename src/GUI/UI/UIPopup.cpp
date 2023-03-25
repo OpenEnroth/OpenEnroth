@@ -911,10 +911,9 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
     } else {
         pText = localization->GetString(LSTR_SPELL);
-        if (pActors[uActorID].pMonsterInfo.uSpell1ID &&
-            pActors[uActorID].pMonsterInfo.uSpell2ID)
+        if (pActors[uActorID].pMonsterInfo.uSpell1ID != SPELL_NONE && pActors[uActorID].pMonsterInfo.uSpell2ID != SPELL_NONE)
             pText = localization->GetString(LSTR_SPELLS);
-        if (pActors[uActorID].pMonsterInfo.uSpell1ID) {
+        if (pActors[uActorID].pMonsterInfo.uSpell1ID != SPELL_NONE) {
             auto txt6 = fmt::format(
                 "{}\f{:05}\t070{}\n", pText, 0,
                 pSpellStats->pInfos[pActors[uActorID].pMonsterInfo.uSpell1ID].pShortName
@@ -922,7 +921,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
             pWindow->DrawText(pFontSmallnum, {150, pTextHeight}, colorTable.Jonquil.c16(), txt6, 0, 0, 0);
             pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
         }
-        if (pActors[uActorID].pMonsterInfo.uSpell2ID) {
+        if (pActors[uActorID].pMonsterInfo.uSpell2ID != SPELL_NONE) {
             auto txt6 = fmt::format(
                 "\f{:05}\t070{}\n", 0,
                 pSpellStats->pInfos[pActors[uActorID].pMonsterInfo.uSpell2ID]

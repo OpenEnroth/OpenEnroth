@@ -154,7 +154,7 @@ void GUIWindow_QuickReference::Update() {
 
         if (!i)
             pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {22, pY}, 0, localization->GetString(LSTR_QSPELL), 60, 0);
-        if (player->uQuickSpell)
+        if (player->uQuickSpell != SPELL_NONE)
             pText = pSpellStats->pInfos[player->uQuickSpell].pShortName;
         else
             pText = localization->GetString(LSTR_NONE);
