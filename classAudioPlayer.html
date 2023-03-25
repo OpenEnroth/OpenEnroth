@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;56f3df1</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5aae899</span>
    </div>
   </td>
  </tr>
@@ -134,6 +134,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a8a1a8aa216900138f3e65cbb773eed48"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3d54489da8e26ec85979ff1c348c66d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#ad3d54489da8e26ec85979ff1c348c66d">playUISound</a> (<a class="el" href="AudioPlayer_8h.html#aa4689ee7c9a692044aebd36cb0915e61">SoundID</a> id)</td></tr>
 <tr class="separator:ad3d54489da8e26ec85979ff1c348c66d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70be9431da1db6b9221ebccf9cd44b3a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a70be9431da1db6b9221ebccf9cd44b3a">playExclusiveSound</a> (<a class="el" href="AudioPlayer_8h.html#aa4689ee7c9a692044aebd36cb0915e61">SoundID</a> id)</td></tr>
+<tr class="separator:a70be9431da1db6b9221ebccf9cd44b3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a481ff77c7cce2855f3f16bf8a5336c25"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a481ff77c7cce2855f3f16bf8a5336c25">playWalkSound</a> (<a class="el" href="AudioPlayer_8h.html#aa4689ee7c9a692044aebd36cb0915e61">SoundID</a> id)</td></tr>
+<tr class="separator:a481ff77c7cce2855f3f16bf8a5336c25"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-types" name="pro-types"></a>
 Protected Types</h2></td></tr>
@@ -451,6 +455,39 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a70be9431da1db6b9221ebccf9cd44b3a" name="a70be9431da1db6b9221ebccf9cd44b3a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a70be9431da1db6b9221ebccf9cd44b3a">&#9670;&#160;</a></span>playExclusiveSound()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AudioPlayer::playExclusiveSound </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="AudioPlayer_8h.html#aa4689ee7c9a692044aebd36cb0915e61">SoundID</a>&#160;</td>
+          <td class="paramname"><em>id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Play sound in exclusive mode. It means that if sound with the same ID has not finished playing it's playing be stopped and then restarted from beginning.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>ID of sound. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="afa0c135f321bd87b4d4ad2dcad3833e3" name="afa0c135f321bd87b4d4ad2dcad3833e3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afa0c135f321bd87b4d4ad2dcad3833e3">&#9670;&#160;</a></span>PlaySound()</h2>
 
@@ -500,6 +537,18 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >Play sound.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">eSoundID</td><td>ID of sound. </td></tr>
+    <tr><td class="paramname">pid</td><td>PID of sound originator or, 0 for generic ui sound, -1(PID_INVALID) for resetable (playing this sound again whilst its playing will stop it and start from beginning) exclusive (sound should not be stopped by system on ui events) sound and other &lt; 0 for non resetable sounds (will not restart if played again whilst already playing). NB: system use of exclusive sounds is inconsistent. </td></tr>
+    <tr><td class="paramname">uNumRepeats</td><td>unused but presumably must be number of repeats before stopping </td></tr>
+    <tr><td class="paramname">x</td><td>???, unused </td></tr>
+    <tr><td class="paramname">y</td><td>???, unused </td></tr>
+    <tr><td class="paramname">a7</td><td>???, unused </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -534,10 +583,11 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >Play sound of spell casting or spell sprite impact.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">spell</td><td>Spell ID of spell. Indexes into SpellSoundIds. </td></tr>
-    <tr><td class="paramname">pid</td><td>PID of sound originator or, 0 for generic ui sound, -1(PID_INVALID) for resetable (playing this sound again whilst its playing will stop it and start from beginning) exclusive (sound should not be stopped by system on ui events) sound and other &lt; 0 for non resetable sounds (will not restart if played again whilst already playing). NB system use of exclusive sounds is inconsistent. </td></tr>
+    <tr><td class="paramname">pid</td><td>PID of sound originator. See PlaySound description. </td></tr>
     <tr><td class="paramname">is_impact</td><td>Indicates sound of spell impact, if true sound ID will be SpellSoundIds[spell] + 1. </td></tr>
   </table>
   </dd>
@@ -568,6 +618,46 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p >Play generic UI sound. Generic sounds are played in non-exclusive mode - it meand that each call to this function will play sound even if sound with the same ID has not funished playing.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>ID of sound. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a481ff77c7cce2855f3f16bf8a5336c25" name="a481ff77c7cce2855f3f16bf8a5336c25"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a481ff77c7cce2855f3f16bf8a5336c25">&#9670;&#160;</a></span>playWalkSound()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AudioPlayer::playWalkSound </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="AudioPlayer_8h.html#aa4689ee7c9a692044aebd36cb0915e61">SoundID</a>&#160;</td>
+          <td class="paramname"><em>id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Play sound of party walking. Semantics generally is the same as for exclusive sounds.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>ID of sound. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
