@@ -4,7 +4,7 @@ var searchData=
   ['testconfig_2eh_1',['TestConfig.h',['../TestConfig_8h.html',1,'']]],
   ['testcontroller_2ecpp_2',['TestController.cpp',['../TestController_8cpp.html',1,'']]],
   ['testcontroller_2eh_3',['TestController.h',['../TestController_8h.html',1,'']]],
-  ['testpartycreationmenu_2ecpp_4',['TestPartyCreationMenu.cpp',['../TestPartyCreationMenu_8cpp.html',1,'']]],
+  ['testissues_2ecpp_4',['TestIssues.cpp',['../TestIssues_8cpp.html',1,'']]],
   ['texture_2eh_5',['Texture.h',['../Texture_8h.html',1,'']]],
   ['textureopengl_2ecpp_6',['TextureOpenGL.cpp',['../TextureOpenGL_8cpp.html',1,'']]],
   ['textureopengl_2eh_7',['TextureOpenGL.h',['../TextureOpenGL_8h.html',1,'']]],
