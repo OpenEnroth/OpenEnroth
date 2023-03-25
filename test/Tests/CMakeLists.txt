@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 if(ENABLE_TESTS)
-    set(TESTS_SOURCES TestPartyCreationMenu.cpp)
+    set(TESTS_SOURCES TestIssues.cpp)
 
     add_library(tests OBJECT ${TESTS_SOURCES})
     target_link_libraries(tests utility)
