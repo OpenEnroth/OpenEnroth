@@ -823,7 +823,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
                      GetConditionDrawColor(player->GetMajorConditionIdx()),
                      localization->GetCharacterConditionName(player->GetMajorConditionIdx()));
 
-    if (player->uQuickSpell)
+    if (player->uQuickSpell != SPELL_NONE)
         v29 = pSpellStats->pInfos[player->uQuickSpell].pShortName;
     else
         v29 = localization->GetString(LSTR_NONE);

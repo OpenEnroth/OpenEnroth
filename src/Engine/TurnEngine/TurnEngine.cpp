@@ -746,14 +746,14 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
                         }
                         break;
                     case ABILITY_SPELL1:
-                        if (pActors[actor_id].pMonsterInfo.uSpell1ID) {
+                        if (pActors[actor_id].pMonsterInfo.uSpell1ID != SPELL_NONE) {
                             Actor::AI_SpellAttack1(actor_id, v22, &v18);
                             pQueue[queue_index].AI_action_type =
                                 TE_AI_RANGED_ATTACK;
                         }
                         break;
                     case ABILITY_SPELL2:
-                        if (pActors[actor_id].pMonsterInfo.uSpell2ID) {
+                        if (pActors[actor_id].pMonsterInfo.uSpell2ID != SPELL_NONE) {
                             Actor::AI_SpellAttack2(actor_id, v22, &v18);
                             pQueue[queue_index].AI_action_type =
                                 TE_AI_RANGED_ATTACK;

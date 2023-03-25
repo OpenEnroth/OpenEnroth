@@ -6809,7 +6809,7 @@ bool IsDwarfPresentInParty(bool a1) {
 void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i* pPos, signed int targetchar) {
     // target player? if any
 
-    int spellId;                  // eax@38
+    SPELL_TYPE spellId;
     signed int recvdMagicDmg;     // eax@139
     int v72[4] {};                   // [sp+30h] [bp-24h]@164
     int healthBeforeRecvdDamage;  // [sp+48h] [bp-Ch]@3

@@ -266,12 +266,10 @@ void GUIWindow_Spellbook::Release() {
 
 void LoadSpellbook(unsigned int spell_school) {
     byte_506550 = 0;
-    if (pPlayers[pParty->_activeCharacter]->uQuickSpell &&
-        (uint8_t)pPlayers[pParty->_activeCharacter]->uQuickSpell / 11 ==
-            spell_school)
+    if (pPlayers[pParty->_activeCharacter]->uQuickSpell != SPELL_NONE &&
+        (uint8_t)pPlayers[pParty->_activeCharacter]->uQuickSpell / 11 == spell_school)
         quick_spell_at_page =
-            (uint8_t)pPlayers[pParty->_activeCharacter]->uQuickSpell -
-            11 * spell_school;
+            (uint8_t)pPlayers[pParty->_activeCharacter]->uQuickSpell - 11 * spell_school;
     else
         quick_spell_at_page = 0;
 

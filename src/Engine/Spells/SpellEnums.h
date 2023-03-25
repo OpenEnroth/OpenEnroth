@@ -2,6 +2,8 @@
 
 #include "Engine/Objects/PlayerEnums.h"
 
+#include "Utility/Segment.h"
+
 /*  360 */
 enum SPELL_TYPE : uint8_t {
     SPELL_NONE = 0,
@@ -117,7 +119,6 @@ enum SPELL_TYPE : uint8_t {
     // TODO(captainurist): use IndexedArray where this one is referenced
     SPELL_REGULAR_FIRST = SPELL_FIRE_TORCH_LIGHT,
     SPELL_REGULAR_LAST = SPELL_DARK_SOULDRINKER,
-    SPELL_REGULAR_COUNT = SPELL_REGULAR_LAST + 1,
 
     SPELL_BOW_ARROW = 100,
     SPELL_101 = 101,
@@ -131,6 +132,14 @@ enum SPELL_TYPE : uint8_t {
     SPELL_152 = 152,
     SPELL_DISEASE = 153
 };
+
+// TODO(captainurist): rename other similar functions using the same convention
+/**
+ * @return                              All regular spell types.
+ */
+inline Segment<SPELL_TYPE> allRegularSpells() {
+    return {SPELL_REGULAR_FIRST, SPELL_REGULAR_LAST};
+}
 
 /**
  * Is spell target is item in inventory?
@@ -185,6 +194,7 @@ inline PLAYER_SKILL_TYPE getSkillTypeForSpell(SPELL_TYPE uSpellID) {
     return PLAYER_SKILL_INVALID;
 }
 
+// TODO(captainurist): this is the same enum as DAMAGE_TYPE in ItemEnums.h
 enum SPELL_SCHOOL : int {
     SPELL_SCHOOL_FIRE = 0,
     SPELL_SCHOOL_AIR = 1,

@@ -9,6 +9,7 @@
 #include "Utility/Streams/FileInputStream.h"
 #include "Media/Media.h"
 #include "Engine/MM7.h"
+#include "Engine/Spells/SpellEnums.h"
 
 enum SoundID {
     SOUND_Invalid = 0,
@@ -167,12 +168,12 @@ class AudioPlayer {
     /**
      * Play sound of spell casting or spell sprite impact.
      *
-     * @param spell                     Spell ID of spell. Indexes into SpellSoundIds.
+     * @param spell                     Spell ID of spell. Indexes into `SpellSoundIds`.
      * @param pid                       PID of sound originator. See PlaySound description.
      * @param is_impact                 Indicates sound of spell impact, if true sound ID
      *                                  will be SpellSoundIds[spell] + 1.
      */
-    void playSpellSound(unsigned int spell, unsigned int pid, bool is_impact = false);
+    void playSpellSound(SPELL_TYPE spell, unsigned int pid, bool is_impact = false);
 
     /**
      * Play generic UI sound.
@@ -226,8 +227,6 @@ class SoundList {
     void Initialize();
     void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
 };
-
-struct SoundData;
 
 extern int sLastTrackLengthMS;
 extern AudioPlayer *pAudioPlayer;

@@ -537,7 +537,8 @@ Blob AudioPlayer::LoadSound(const std::string &pSoundName) {
     }
 }
 
-void AudioPlayer::playSpellSound(unsigned int spell, unsigned int pid, bool is_impact) {
-    PlaySound(static_cast<SoundID>(SpellSoundIds[spell] + is_impact), pid, 0, -1, 0, 0);
+void AudioPlayer::playSpellSound(SPELL_TYPE spell, unsigned int pid, bool is_impact) {
+    if (spell != SPELL_NONE)
+        PlaySound(static_cast<SoundID>(SpellSoundIds[spell] + is_impact), pid, 0, -1, 0, 0);
 }
 

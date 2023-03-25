@@ -1754,16 +1754,13 @@ void Game::EventLoop() {
                     if (quick_spell_at_page && byte_506550) {
                         GameUI_StatusBar_Set(localization->FormatString(
                             LSTR_FMT_SET_S_AS_READY_SPELL,
-                            pSpellStats->pInfos[quick_spell_at_page +
-                                         11 * pPlayers[pParty->_activeCharacter]
-                                                  ->lastOpenedSpellbookPage].pName));
+                            pSpellStats->pInfos[static_cast<SPELL_TYPE>(quick_spell_at_page +
+                                         11 * pPlayers[pParty->_activeCharacter]->lastOpenedSpellbookPage)].pName));
                     } else {
-                        if (pPlayers[pParty->_activeCharacter]->uQuickSpell)
-                            GameUI_StatusBar_Set(
-                                localization->GetString(LSTR_CLICK_TO_REMOVE_QUICKSPELL));
+                        if (pPlayers[pParty->_activeCharacter]->uQuickSpell != SPELL_NONE)
+                            GameUI_StatusBar_Set(localization->GetString(LSTR_CLICK_TO_REMOVE_QUICKSPELL));
                         else
-                            GameUI_StatusBar_Set(
-                                localization->GetString(LSTR_CLICK_TO_SET_QUICKSPELL));
+                            GameUI_StatusBar_Set(localization->GetString(LSTR_CLICK_TO_SET_QUICKSPELL));
                     }
                     continue;
                 }
@@ -1784,11 +1781,11 @@ void Game::EventLoop() {
                     if (quick_spell_at_page - 1 == uMessageParam) {
                         GameUI_StatusBar_Set(localization->FormatString(
                             LSTR_CAST_S,
-                            pSpellStats->pInfos[uMessageParam + 11 * v98 + 1].pName));
+                            pSpellStats->pInfos[static_cast<SPELL_TYPE>(uMessageParam + 11 * v98 + 1)].pName));
                     } else {
                         GameUI_StatusBar_Set(localization->FormatString(
                             LSTR_SELECT_S,
-                            pSpellStats->pInfos[uMessageParam + 11 * v98 + 1].pName));
+                            pSpellStats->pInfos[static_cast<SPELL_TYPE>(uMessageParam + 11 * v98 + 1)].pName));
                     }
                     continue;
                 }

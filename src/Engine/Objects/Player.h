@@ -219,6 +219,9 @@ struct Player {
     void Heal(int amount);
     int ReceiveDamage(signed int amount, DAMAGE_TYPE dmg_type);
     int ReceiveSpecialAttackEffect(int attType, Actor* pActor);
+
+    // TODO(captainurist): actually returns DAMAGE_TYPE / SPELL_SCHOOL
+    // TODO(captainurist): move to SpellEnums.h
     unsigned int GetSpellSchool(SPELL_TYPE uSpellID);
     int GetAttackRecoveryTime(bool bRangedAttack);
 
