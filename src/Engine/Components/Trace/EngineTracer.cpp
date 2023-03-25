@@ -4,21 +4,21 @@
 #include <utility>
 #include <filesystem>
 
-#include "Utility/ScopeGuard.h"
-#include "Utility/Exception.h"
+#include "Application/GameKeyboardController.h" // TODO(captainurist): Engine -> Application dependency
+
+#include "Engine/Engine.h"
+#include "Engine/Components/Control/EngineController.h"
+#include "Engine/Components/Control/EngineControlComponent.h"
+#include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 
 #include "Library/Trace/PaintEvent.h"
 #include "Library/Application/PlatformApplication.h"
 #include "Library/Random/Random.h"
 
-#include "Engine/Engine.h"
+#include "Utility/ScopeGuard.h"
+#include "Utility/Exception.h"
 
-#include "Application/GameKeyboardController.h" // TODO(captainurist): Engine -> Application dependency
-
-#include "EngineController.h"
-#include "EngineControlComponent.h"
 #include "EngineTraceComponent.h"
-#include "EngineDeterministicComponent.h"
 
 EngineTracer::EngineTracer(Options options): _options(options) {}
 

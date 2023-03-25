@@ -4,8 +4,6 @@
 
 #include "Platform/PlatformEventHandler.h"
 
-#include "Engine/EngineGlobals.h"
-
 #include "EngineController.h"
 
 static void controlThread(EngineControlState *unsafeState) {

@@ -4,9 +4,9 @@
 
 #include "Library/Application/PlatformApplication.h"
 
-#include "Engine/Components/EngineTracer.h"
-#include "Engine/Components/EngineController.h"
-#include "Engine/Components/EngineDeterministicComponent.h"
+#include "Engine/Components/Trace/EngineTracer.h"
+#include "Engine/Components/Control/EngineController.h"
+#include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Engine.h"
 
