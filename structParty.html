@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;40c3f69</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a647a4e</span>
    </div>
   </td>
  </tr>
@@ -190,8 +190,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a8f3311862dec8b45bfd0d5dcd0ae90e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acfeb20c648fa1f44d2f68119f4d6790b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#acfeb20c648fa1f44d2f68119f4d6790b">WearsItemAnywhere</a> (<a class="el" href="ItemEnums_8h.html#a3423a9b7221dd99ce926bcad62ae96a5">ITEM_TYPE</a> item_id) const</td></tr>
 <tr class="separator:acfeb20c648fa1f44d2f68119f4d6790b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af3e884746d6329bda2b0ee5ce68f157c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#af3e884746d6329bda2b0ee5ce68f157c">getRandomActiveCharacterId</a> () const</td></tr>
-<tr class="separator:af3e884746d6329bda2b0ee5ce68f157c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6e29cac4f0ca5c7066438aa5498c68d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#ab6e29cac4f0ca5c7066438aa5498c68d">getRandomActiveCharacterId</a> (<a class="el" href="classRandomEngine.html">RandomEngine</a> *rng) const</td></tr>
+<tr class="separator:ab6e29cac4f0ca5c7066438aa5498c68d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af09ae6f942702c32ee43bfb478713449"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#af09ae6f942702c32ee43bfb478713449">getCharacterIdInParty</a> (<a class="el" href="structPlayer.html">Player</a> *player)</td></tr>
+<tr class="separator:af09ae6f942702c32ee43bfb478713449"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3b0a12cfdb91764789ff432acdd062c0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structGameTime.html">GameTime</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#a3b0a12cfdb91764789ff432acdd062c0">GetPlayingTime</a> ()</td></tr>
 <tr class="separator:a3b0a12cfdb91764789ff432acdd062c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a476ed4592bd47bac04fd270bad96d5d1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#a476ed4592bd47bac04fd270bad96d5d1">IsPartyEvil</a> ()</td></tr>
@@ -613,6 +615,40 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="af09ae6f942702c32ee43bfb478713449" name="af09ae6f942702c32ee43bfb478713449"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af09ae6f942702c32ee43bfb478713449">&#9670;&#160;</a></span>getCharacterIdInParty()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Party::getCharacterIdInParty </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPlayer.html">Player</a> *&#160;</td>
+          <td class="paramname"><em>player</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Return id of character that is represented by given pointer.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">player</td><td>Pointer to player class. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>ID of character. </dd></dl>
+
+</div>
+</div>
 <a id="a1232b036fb4152149d8a85a99131260e" name="a1232b036fb4152149d8a85a99131260e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1232b036fb4152149d8a85a99131260e">&#9670;&#160;</a></span>GetFine()</h2>
 
@@ -757,8 +793,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="af3e884746d6329bda2b0ee5ce68f157c" name="af3e884746d6329bda2b0ee5ce68f157c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af3e884746d6329bda2b0ee5ce68f157c">&#9670;&#160;</a></span>getRandomActiveCharacterId()</h2>
+<a id="ab6e29cac4f0ca5c7066438aa5498c68d" name="ab6e29cac4f0ca5c7066438aa5498c68d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6e29cac4f0ca5c7066438aa5498c68d">&#9670;&#160;</a></span>getRandomActiveCharacterId()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -769,7 +805,8 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">int Party::getRandomActiveCharacterId </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype"><a class="el" href="classRandomEngine.html">RandomEngine</a> *&#160;</td>
+          <td class="paramname"><em>rng</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -780,6 +817,12 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p >Return id of random character that can still act.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">rng</td><td>Random generator used. </td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section return"><dt>Returns</dt><dd>ID of character or -1 if none of the character cat act. </dd></dl>
 
 </div>
