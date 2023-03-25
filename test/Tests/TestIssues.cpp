@@ -11,6 +11,21 @@
 #include "Utility/DataPath.h"
 #include "Utility/ScopeGuard.h"
 
+static int totalPartyHealth() {
+    int result = 0;
+    for (const Player &player : pParty->pPlayers)
+        result += player.sHealth;
+    return result;
+}
+
+static int partyItemCount() {
+    int result = 0;
+    for (const Player &player : pParty->pPlayers)
+        for (const ItemGen& item : player.pOwnItems)
+            result += item.uItemID != ITEM_NULL;
+    return result;
+}
+
 GAME_TEST(Items, GenerateItem) {
     // Calling GenerateItem 100 times shouldn't assert.
     ItemGen item;
@@ -20,27 +35,20 @@ GAME_TEST(Items, GenerateItem) {
 
 // 100
 
-GAME_TEST(Issue, Issue123) {
+GAME_TEST(Issues, Issue123) {
     // Party falls when flying
     test->playTraceFromTestData("issue_123.mm7", "issue_123.json");
     // check party is still in the air
     EXPECT_GT(pParty->vPosition.z, 512);
 }
 
-static uint64_t GetPartyHealth() {
-    uint64_t result = 0;
-    for (const Player &player : pParty->pPlayers)
-        result += player.sHealth;
-    return result;
-}
-
 GAME_TEST(Issues, Issue125) {
     // check that fireballs hurt party
     engine->config->debug.AllMagic.Set(true);
 
-    uint64_t oldHealth = 0;
-    test->playTraceFromTestData("issue_125.mm7", "issue_125.json", [&] { oldHealth = GetPartyHealth(); });
-    uint64_t newHealth = GetPartyHealth();
+    int oldHealth = 0;
+    test->playTraceFromTestData("issue_125.mm7", "issue_125.json", [&] { oldHealth = totalPartyHealth(); });
+    int newHealth = totalPartyHealth();
     EXPECT_LT(newHealth, oldHealth);
 }
 
@@ -118,30 +126,25 @@ GAME_TEST(Issues, Issue198) {
 
 // 200
 
-GAME_TEST(Issue, Issue201) {
+GAME_TEST(Issues, Issue201) {
     // Unhandled EVENT_ShowMovie in Event Processor
-    uint64_t oldHealth = 0;
-    uint64_t oldgametime{};
-    test->playTraceFromTestData("issue_201.mm7", "issue_201.json", [&] { oldHealth = GetPartyHealth(); oldgametime = pParty->GetPlayingTime().GetDays(); });
+    int oldHealth = 0;
+    uint64_t oldTime = 0;
+    test->playTraceFromTestData("issue_201.mm7", "issue_201.json", [&] { oldHealth = totalPartyHealth(); oldTime = pParty->GetPlayingTime().GetDays(); });
 
-    // party should heal
-    uint64_t newHealth = GetPartyHealth();
-    EXPECT_GT(newHealth, oldHealth);
-    // we should be teleported to harmondale
-    EXPECT_EQ(pCurrentMapName, "Out02.odm");
-    // time should advance by a week
-    uint64_t newtime = pParty->GetPlayingTime().GetDays();
-    EXPECT_EQ((oldgametime + GameTime(0, 0, 0, 0, 1).GetDays()), newtime);
+    int newHealth = totalPartyHealth();
+    uint64_t newTime = pParty->GetPlayingTime().GetDays();
+    EXPECT_GT(newHealth, oldHealth); // party should heal
+    EXPECT_EQ(pCurrentMapName, "Out02.odm"); // we should be teleported to harmondale
+    EXPECT_EQ((oldTime + GameTime(0, 0, 0, 0, 1).GetDays()), newTime); // time should advance by a week
 }
 
-GAME_TEST(Issue, Issue202) {
+GAME_TEST(Issues, Issue202) {
     //Judge doesn't move to house and stays with the party
     int oldhirecount{};
     test->playTraceFromTestData("issue_202.mm7", "issue_202.json", [&]() {oldhirecount = pParty->CountHirelings(); });
-    // judge shouldnt be with party anymore
-    EXPECT_EQ(oldhirecount - 1, pParty->CountHirelings());
-    // party align evil
-    EXPECT_EQ(pParty->alignment, PartyAlignment_Evil);
+    EXPECT_EQ(oldhirecount - 1, pParty->CountHirelings()); // judge shouldn't be with party anymore
+    EXPECT_EQ(pParty->alignment, PartyAlignment_Evil); // party align evil
 }
 
 GAME_TEST(Issues, Issue203) {
@@ -149,26 +152,26 @@ GAME_TEST(Issues, Issue203) {
     test->playTraceFromTestData("issue_203.mm7", "issue_203.json");
 }
 
-GAME_TEST(Issue, Issue211) {
+GAME_TEST(Issues, Issue211) {
     // Crash during accidental ok double click
     test->playTraceFromTestData("issue_211.mm7", "issue_211.json");
 }
 
-static void check223res(CHARACTER_ATTRIBUTE_TYPE res, std::initializer_list<std::pair<int, int>> playerrespairs) {
-    for (auto pair : playerrespairs) {
-        EXPECT_EQ(pParty->pPlayers[pair.first].GetActualResistance(res), pair.second);
-    }
-}
-
-GAME_TEST(Issue, Issue223) {
+GAME_TEST(Issues, Issue223) {
     // Fire and air resistance not resetting between games
+    auto checkResistances = [](CHARACTER_ATTRIBUTE_TYPE resistance, std::initializer_list<std::pair<int, int>> resistancePairs) {
+        for (auto pair : resistancePairs) {
+            EXPECT_EQ(pParty->pPlayers[pair.first].GetActualResistance(resistance), pair.second);
+        }
+    };
+
     test->playTraceFromTestData("issue_223.mm7", "issue_223.json");
     // expect normal resistances 55-00-00-00
-    check223res(CHARACTER_ATTRIBUTE_RESIST_FIRE, { {0, 5}, {1, 0}, {2, 0}, {3, 0} });
-    check223res(CHARACTER_ATTRIBUTE_RESIST_AIR, { {0, 5}, {1, 0}, {2, 0}, {3, 0} });
+    checkResistances(CHARACTER_ATTRIBUTE_RESIST_FIRE, { {0, 5}, {1, 0}, {2, 0}, {3, 0} });
+    checkResistances(CHARACTER_ATTRIBUTE_RESIST_AIR, { {0, 5}, {1, 0}, {2, 0}, {3, 0} });
 }
 
-GAME_TEST(Issue, Issue248) {
+GAME_TEST(Issues, Issue248) {
     // Crash in NPC dialog
     test->playTraceFromTestData("issue_248.mm7", "issue_248.json");
 }
@@ -179,17 +182,9 @@ GAME_TEST(Issues, Issue268) {
 }
 
 GAME_TEST(Issues, Issue271) {
-    // Party shouldnt yell when landing from flight
+    // Party shouldn't yell when landing from flight
     test->playTraceFromTestData("issue_271.mm7", "issue_271.json");
     EXPECT_NE(pParty->pPlayers[1].expression, CHARACTER_EXPRESSION_FEAR);
-}
-
-static int partyItemCount() {
-    int result = 0;
-    for (int i = 0; i < 4; i++)
-        for (const ItemGen& item : pParty->pPlayers[i].pOwnItems)
-            result += item.uItemID != ITEM_NULL;
-    return result;
 }
 
 GAME_TEST(Issues, Issue293a) {
@@ -298,7 +293,7 @@ GAME_TEST(Issues, Issue315) {
     game->skipLoadingScreen(); // This shouldn't crash.
 }
 
-GAME_TEST(Issue, Issue331) {
+GAME_TEST(Issues, Issue331) {
     // Assert when traveling by horse caused by out of bound access to pObjectList->pObjects
     test->playTraceFromTestData("issue_331.mm7", "issue_331.json");
 }
@@ -324,16 +319,16 @@ GAME_TEST(Issues, Issue388) {
     pArcomageGame->_targetFPS = oldfpslimit;
 }
 
-static void check395exp(std::initializer_list<std::pair<int, int>> playerexppairs) {
-    for (auto pair : playerexppairs) {
-        EXPECT_EQ(pParty->pPlayers[pair.first].uExperience, pair.second);
-    }
-}
-
-GAME_TEST(Issue, Issue395) {
+GAME_TEST(Issues, Issue395) {
     // Check that learning skill works as intended
-    test->playTraceFromTestData("issue_395.mm7", "issue_395.json", []() { check395exp({ {0, 100}, {1, 100}, {2, 100}, {3, 100} }); });
-    check395exp({ {0, 214}, {1, 228}, {2, 237}, {3, 258} });
+    auto checkExperience = [](std::initializer_list<std::pair<int, int>> experiencePairs) {
+        for (auto pair : experiencePairs) {
+            EXPECT_EQ(pParty->pPlayers[pair.first].uExperience, pair.second);
+        }
+    };
+
+    test->playTraceFromTestData("issue_395.mm7", "issue_395.json", [&] { checkExperience({ {0, 100}, {1, 100}, {2, 100}, {3, 100} }); });
+    checkExperience({ {0, 214}, {1, 228}, {2, 237}, {3, 258} });
 }
 
 // 400
@@ -414,7 +409,7 @@ GAME_TEST(Issues, Issue427) {
     check427Buffs("b", { 0, 1, 2, 3 }, true);
 }
 
-GAME_TEST(Issue, Issue442) {
+GAME_TEST(Issues, Issue442) {
     // Test that regular UI is blocked on spell cast
     test->playTraceFromTestData("issue_442.mm7", "issue_442.json");
     EXPECT_EQ(pParty->pPlayers[1].pPlayerBuffs[PLAYER_BUFF_BLESS].Active(), true);
@@ -437,18 +432,18 @@ GAME_TEST(Issues, Issue489) {
     EXPECT_TRUE(pActors[24].pActorBuffs[ACTOR_BUFF_SHRINK].Active());
 }
 
-GAME_TEST(Issue, Issue490) {
+GAME_TEST(Issues, Issue490) {
     // Check that Poison Spray sprites are moving and doing damage
     test->playTraceFromTestData("issue_490.mm7", "issue_490.json", []() { EXPECT_EQ(pParty->pPlayers[0].uExperience, 279); });
     EXPECT_EQ(pParty->pPlayers[0].uExperience, 285);
 }
 
-GAME_TEST(Issue, Issue491) {
+GAME_TEST(Issues, Issue491) {
     // Check that opening and closing Lloyd book does not cause Segmentation Fault
     test->playTraceFromTestData("issue_491.mm7", "issue_491.json");
 }
 
-GAME_TEST(Issue, Issue492) {
+GAME_TEST(Issues, Issue492) {
     // Check that spells that target all visible actors work
     test->playTraceFromTestData("issue_492.mm7", "issue_492.json", []() { EXPECT_EQ(pParty->pPlayers[0].uExperience, 279); });
     EXPECT_EQ(pParty->pPlayers[0].uExperience, 287);
@@ -456,7 +451,7 @@ GAME_TEST(Issue, Issue492) {
 
 // 500
 
-GAME_TEST(Issue, Issue502) {
+GAME_TEST(Issues, Issue502) {
     // Check that script face animation and voice indexes right characters
     test->playTraceFromTestData("issue_502.mm7", "issue_502.json");
 }
@@ -467,19 +462,19 @@ static void check503health(std::initializer_list<std::pair<int, int>> playerheal
     }
 }
 
-GAME_TEST(Issue, Issue503) {
+GAME_TEST(Issues, Issue503) {
     // Check that town portal book actually pauses game
     test->playTraceFromTestData("issue_503.mm7", "issue_503.json", []() { check503health({ {0, 1147}, {1, 699}, {2, 350}, {3, 242} }); });
     check503health({ {0, 1147}, {1, 699}, {2, 350}, {3, 242} });
 }
 
-GAME_TEST(Issue, Issue504) {
+GAME_TEST(Issues, Issue504) {
     // Going to prison doesn't recharge hirelings
     test->playTraceFromTestData("issue_504.mm7", "issue_504.json");
     EXPECT_TRUE(pParty->pPartyBuffs[PARTY_BUFF_HEROISM].Active());
 }
 
-GAME_TEST(Issue, Issue506) {
+GAME_TEST(Issues, Issue506) {
     // Check that scroll use does not assert
     test->playTraceFromTestData("issue_506.mm7", "issue_506.json");
 }
@@ -487,8 +482,8 @@ GAME_TEST(Issue, Issue506) {
 GAME_TEST(Issues, Issue520) {
     // Party should take fall damage
     uint64_t oldHealth = 0;
-    test->playTraceFromTestData("issue_520.mm7", "issue_520.json", [&] { oldHealth = GetPartyHealth(); });
-    EXPECT_LT(GetPartyHealth(), oldHealth);
+    test->playTraceFromTestData("issue_520.mm7", "issue_520.json", [&] { oldHealth = totalPartyHealth(); });
+    EXPECT_LT(totalPartyHealth(), oldHealth);
 }
 
 GAME_TEST(Issues, Issue521) {
@@ -498,20 +493,20 @@ GAME_TEST(Issues, Issue521) {
     EXPECT_EQ(oldActive, pParty->_activeCharacter);
 }
 
-GAME_TEST(Issue, Issue527) {
+GAME_TEST(Issues, Issue527) {
     // Check Cure Disease spell works
     test->playTraceFromTestData("issue_527.mm7", "issue_527.json", []() { EXPECT_TRUE(pParty->pPlayers[0].conditions.Has(Condition_Disease_Weak)); });
     EXPECT_FALSE(pParty->pPlayers[0].conditions.Has(Condition_Disease_Weak));
 }
 
-GAME_TEST(Issue, Issue528) {
+GAME_TEST(Issues, Issue528) {
     // Check that spells target single player or entire party depending on mastery drain mana
     // Use test for issue 427 which test the same spells
     test->playTraceFromTestData("issue_427b.mm7", "issue_427b.json", []() { EXPECT_EQ(pParty->pPlayers[2].sMana, 100); });
     EXPECT_EQ(pParty->pPlayers[2].sMana, 40);
 }
 
-GAME_TEST(Issue, Issue540) {
+GAME_TEST(Issues, Issue540) {
     // Check that Mass Distortion and Charm without target does not assert
     test->playTraceFromTestData("issue_540.mm7", "issue_540.json");
 }
