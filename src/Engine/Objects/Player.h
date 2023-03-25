@@ -399,6 +399,8 @@ struct Player {
     const ItemGen* GetNthEquippedIndexItem(ITEM_SLOT index) const;
     ItemGen *GetNthEquippedIndexItem(ITEM_SLOT index);
     ItemGen* GetItem(unsigned int PlayerEquipment::*itemPos);
+
+    // TODO(Nik-RE-dev): use getCharacterIdInParty directly where this function is called.
     int GetPlayerIndex();
 
     static void _42ECB5_PlayerAttacksActor();

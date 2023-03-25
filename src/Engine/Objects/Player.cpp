@@ -6993,7 +6993,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             if (targetchar != -1) {
                 playerPtr = &pParty->pPlayers[targetchar];
             } else {
-                int id = pParty->getRandomActiveCharacterId(true);
+                int id = pParty->getRandomActiveCharacterId(grng.get());
 
                 if (id != -1) {
                     playerPtr = &pParty->pPlayers[id];
@@ -7459,21 +7459,8 @@ ItemGen* Player::GetItem(unsigned int PlayerEquipment::*itemPos) {
     return &this->pInventoryItemList[this->pEquipment.*itemPos - 1];
 }
 
-int Player::GetPlayerIndex() {  // PS - RETURN PLAYER INDEX
-    int uPlayerIdx = 0;
-
-    if (this == pPlayers[1])
-        uPlayerIdx = 0;
-    else if (this == pPlayers[2])
-        uPlayerIdx = 1;
-    else if (this == pPlayers[3])
-        uPlayerIdx = 2;
-    else if (this == pPlayers[4])
-        uPlayerIdx = 3;
-    else
-        Error("Unexpected player pointer");
-
-    return uPlayerIdx;
+int Player::GetPlayerIndex() {
+    return pParty->getCharacterIdInParty(this);
 }
 
 //----- (004272F5) --------------------------------------------------------

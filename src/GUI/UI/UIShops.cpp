@@ -1569,7 +1569,7 @@ void GetHouseGoodbyeSpeech() {
             PlayHouseSound(window_SpeakInHouse->wData.val,
                            (HouseSoundID)(dword_F8B1E4 + 3));
             if (!dword_F8B1E4 && !_A750D8_player_speech_timer) {
-                int id = pParty->getRandomActiveCharacterId(false);
+                int id = pParty->getRandomActiveCharacterId(vrng.get());
 
                 if (id != -1) {
                     _A750D8_player_speech_timer = 256;
@@ -1580,7 +1580,7 @@ void GetHouseGoodbyeSpeech() {
             }
         } else {  // caught stealing
             if (!_A750D8_player_speech_timer) {
-                int id = pParty->getRandomActiveCharacterId(false);
+                int id = pParty->getRandomActiveCharacterId(vrng.get());
 
                 if (id != -1) {
                     _A750D8_player_speech_timer = 256;

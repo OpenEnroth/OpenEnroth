@@ -33,7 +33,21 @@
 using EngineIoc = Engine_::IocContainer;
 
 void CharacterUI_LoadPaperdollTextures();
+
+/**
+ * Prepare textures of character doll with wetsuit on.
+ *
+ * @param uPlayerID     ID of player, 1-based.
+ * @offset 0x43EF2B
+ */
 void WetsuitOn(unsigned int uPlayerID);
+
+/**
+ * Prepare textures of character doll with wetsuit off.
+ *
+ * @param uPlayerID     ID of player, 1-based.
+ * @offset 0x43F0BD
+ */
 void WetsuitOff(unsigned int uPlayerID);
 
 int bRingsShownInCharScreen;  // 5118E0
@@ -1737,7 +1751,6 @@ void FillAwardsData() {
     }*/
 }
 
-//----- (0043EF2B) --------------------------------------------------------
 void WetsuitOn(unsigned int uPlayerID) {
     if (uPlayerID > 0) {
         int playerId0 = uPlayerID - 1;
@@ -1763,7 +1776,6 @@ void WetsuitOn(unsigned int uPlayerID) {
     }
 }
 
-//----- (0043F0BD) --------------------------------------------------------
 void WetsuitOff(unsigned int uPlayerID) {
     if (uPlayerID > 0) {
         int playerId0 = uPlayerID - 1;

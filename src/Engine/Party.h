@@ -286,10 +286,10 @@ struct Party {
     /**
      * Return id of random character that can still act.
      *
-     * @param isGameRng   Use 'grng' if true, 'vrng' otherwise.
+     * @param rng         Random generator used.
      * @return            ID of character or -1 if none of the character cat act.
      */
-    int getRandomActiveCharacterId(bool isGameRng) const {
+    int getRandomActiveCharacterId(RandomEngine *rng) const {
         std::vector<int> activeCharacters = {};
         for (int i = 0; i < pPlayers.size(); i++) {
             if (pPlayers[i].CanAct()) {
@@ -297,7 +297,7 @@ struct Party {
             }
         }
         if (!activeCharacters.empty()) {
-            return activeCharacters[(isGameRng ? grng : vrng)->Random(activeCharacters.size())];
+            return activeCharacters[rng->Random(activeCharacters.size())];
         }
         return -1;
     }
