@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5215d65</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;52343f3</span>
    </div>
   </td>
  </tr>
@@ -130,8 +130,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a404da987053467a8a59a72dd66874199"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d67b37579b1bf98c9c413633e9e9816"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a7d67b37579b1bf98c9c413633e9e9816">LoadSound</a> (int uSoundID)</td></tr>
 <tr class="separator:a7d67b37579b1bf98c9c413633e9e9816"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a1a8aa216900138f3e65cbb773eed48"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a8a1a8aa216900138f3e65cbb773eed48">playSpellSound</a> (unsigned int spell, unsigned int pid, bool is_impact=false)</td></tr>
-<tr class="separator:a8a1a8aa216900138f3e65cbb773eed48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c565d69f76d1db70ddedb3ce8f9c549"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a9c565d69f76d1db70ddedb3ce8f9c549">playSpellSound</a> (<a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a> spell, unsigned int pid, bool is_impact=false)</td></tr>
+<tr class="separator:a9c565d69f76d1db70ddedb3ce8f9c549"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3d54489da8e26ec85979ff1c348c66d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#ad3d54489da8e26ec85979ff1c348c66d">playUISound</a> (<a class="el" href="AudioPlayer_8h.html#aa4689ee7c9a692044aebd36cb0915e61">SoundID</a> id)</td></tr>
 <tr class="separator:ad3d54489da8e26ec85979ff1c348c66d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a70be9431da1db6b9221ebccf9cd44b3a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a70be9431da1db6b9221ebccf9cd44b3a">playExclusiveSound</a> (<a class="el" href="AudioPlayer_8h.html#aa4689ee7c9a692044aebd36cb0915e61">SoundID</a> id)</td></tr>
@@ -552,8 +552,8 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a8a1a8aa216900138f3e65cbb773eed48" name="a8a1a8aa216900138f3e65cbb773eed48"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8a1a8aa216900138f3e65cbb773eed48">&#9670;&#160;</a></span>playSpellSound()</h2>
+<a id="a9c565d69f76d1db70ddedb3ce8f9c549" name="a9c565d69f76d1db70ddedb3ce8f9c549"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c565d69f76d1db70ddedb3ce8f9c549">&#9670;&#160;</a></span>playSpellSound()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -561,7 +561,7 @@ Protected Attributes</h2></td></tr>
         <tr>
           <td class="memname">void AudioPlayer::playSpellSound </td>
           <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramtype"><a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a>&#160;</td>
           <td class="paramname"><em>spell</em>, </td>
         </tr>
         <tr>
@@ -586,7 +586,7 @@ Protected Attributes</h2></td></tr>
 <p >Play sound of spell casting or spell sprite impact.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">spell</td><td>Spell ID of spell. Indexes into SpellSoundIds. </td></tr>
+    <tr><td class="paramname">spell</td><td>Spell ID of spell. Indexes into <code>SpellSoundIds</code>. </td></tr>
     <tr><td class="paramname">pid</td><td>PID of sound originator. See PlaySound description. </td></tr>
     <tr><td class="paramname">is_impact</td><td>Indicates sound of spell impact, if true sound ID will be SpellSoundIds[spell] + 1. </td></tr>
   </table>

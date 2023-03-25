@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5215d65</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;52343f3</span>
    </div>
   </td>
  </tr>
@@ -80,6 +80,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="PlayerEnums_8h.html">Engine/Objects/PlayerEnums.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Segment_8h.html">Utility/Segment.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -211,16 +212,15 @@ Enumerations</h2></td></tr>
 , <br />
 &#160;&#160;<a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088a642e8ad03a2166680d48f800ea6ee8dc">SPELL_REGULAR_FIRST</a> = SPELL_FIRE_TORCH_LIGHT
 , <a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088a95131531aef836f609546044925d1fac">SPELL_REGULAR_LAST</a> = SPELL_DARK_SOULDRINKER
-, <a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088a6b50cdc54807cffe44ecad994aa5ec5d">SPELL_REGULAR_COUNT</a> = SPELL_REGULAR_LAST + 1
 , <a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088a400cc1e55b6efcaa60ac05f76e39d07f">SPELL_BOW_ARROW</a> = 100
+, <a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088a83c99595dff0f9cc23cb703addb0e1fe">SPELL_101</a> = 101
 , <br />
-&#160;&#160;<a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088a83c99595dff0f9cc23cb703addb0e1fe">SPELL_101</a> = 101
-, <a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088a1b7400558b7c3385b0f9a935a86f5324">SPELL_LASER_PROJECTILE</a> = 102
+&#160;&#160;<a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088a1b7400558b7c3385b0f9a935a86f5324">SPELL_LASER_PROJECTILE</a> = 102
 , <a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088ac52188ee424bed5fdfbaeeabf220ace2">SPELL_ANY_WITH_SPRITE_FIRST</a> = SPELL_FIRE_TORCH_LIGHT
 , <a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088a600ae265962ffa592271d4341e6b77dd">SPELL_ANY_WITH_SPRITE_LAST</a> = SPELL_LASER_PROJECTILE
+, <a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088a7b26614b5cae72d067d6b2a2857d8348">BECOME_MAGIC_GUILD_MEMBER</a> = 150
 , <br />
-&#160;&#160;<a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088a7b26614b5cae72d067d6b2a2857d8348">BECOME_MAGIC_GUILD_MEMBER</a> = 150
-, <a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088aeae8a7669ebbca6c977e267f1895c8a5">SPELL_QUEST_COMPLETED</a> = 151
+&#160;&#160;<a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088aeae8a7669ebbca6c977e267f1895c8a5">SPELL_QUEST_COMPLETED</a> = 151
 , <a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088a686da9f8c3e21a22a559382bdf1cb130">SPELL_152</a> = 152
 , <a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088a027cab74031a5fca82ab37bbbb9b6ce8">SPELL_DISEASE</a> = 153
 <br />
@@ -246,6 +246,8 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:aa80377511e30947565daad75f9527836"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SpellEnums_8h.html#aa80377511e30947565daad75f9527836">allRegularSpells</a> ()</td></tr>
+<tr class="separator:aa80377511e30947565daad75f9527836"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a19c19168adcb03098d2473f5c36c0710"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SpellEnums_8h.html#a19c19168adcb03098d2473f5c36c0710">isSpellTargetsItem</a> (<a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a> uSpellID)</td></tr>
 <tr class="separator:a19c19168adcb03098d2473f5c36c0710"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00bdafa63929effe57f06bd632051bd4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SpellEnums_8h.html#a00bdafa63929effe57f06bd632051bd4">isRegularSpell</a> (<a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a> uSpellID)</td></tr>
@@ -395,7 +397,6 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a id="a6ac7ece38acd196bf750bc353e00d088a9985ef2c06b77a198b56463aceffd24f" name="a6ac7ece38acd196bf750bc353e00d088a9985ef2c06b77a198b56463aceffd24f"></a>SPELL_DARK_SOULDRINKER&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a6ac7ece38acd196bf750bc353e00d088a642e8ad03a2166680d48f800ea6ee8dc" name="a6ac7ece38acd196bf750bc353e00d088a642e8ad03a2166680d48f800ea6ee8dc"></a>SPELL_REGULAR_FIRST&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a6ac7ece38acd196bf750bc353e00d088a95131531aef836f609546044925d1fac" name="a6ac7ece38acd196bf750bc353e00d088a95131531aef836f609546044925d1fac"></a>SPELL_REGULAR_LAST&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a6ac7ece38acd196bf750bc353e00d088a6b50cdc54807cffe44ecad994aa5ec5d" name="a6ac7ece38acd196bf750bc353e00d088a6b50cdc54807cffe44ecad994aa5ec5d"></a>SPELL_REGULAR_COUNT&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a6ac7ece38acd196bf750bc353e00d088a400cc1e55b6efcaa60ac05f76e39d07f" name="a6ac7ece38acd196bf750bc353e00d088a400cc1e55b6efcaa60ac05f76e39d07f"></a>SPELL_BOW_ARROW&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a6ac7ece38acd196bf750bc353e00d088a83c99595dff0f9cc23cb703addb0e1fe" name="a6ac7ece38acd196bf750bc353e00d088a83c99595dff0f9cc23cb703addb0e1fe"></a>SPELL_101&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a6ac7ece38acd196bf750bc353e00d088a1b7400558b7c3385b0f9a935a86f5324" name="a6ac7ece38acd196bf750bc353e00d088a1b7400558b7c3385b0f9a935a86f5324"></a>SPELL_LASER_PROJECTILE&#160;</td><td class="fielddoc"></td></tr>
@@ -410,6 +411,32 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="aa80377511e30947565daad75f9527836" name="aa80377511e30947565daad75f9527836"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa80377511e30947565daad75f9527836">&#9670;&#160;</a></span>allRegularSpells()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a> &gt; allRegularSpells </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>All regular spell types. </dd></dl>
+
+</div>
+</div>
 <a id="a17e1578ee96ade5ae84271cb81002f9b" name="a17e1578ee96ade5ae84271cb81002f9b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a17e1578ee96ade5ae84271cb81002f9b">&#9670;&#160;</a></span>getSkillTypeForSpell()</h2>
 

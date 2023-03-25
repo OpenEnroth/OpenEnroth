@@ -74,7 +74,7 @@ var searchData=
   ['playsound_71',['PlaySound',['../classAudioPlayer.html#afa0c135f321bd87b4d4ad2dcad3833e3',1,'AudioPlayer']]],
   ['playsound_72',['playSound',['../structArcomageGame.html#a1da4d359c6a7fed55136383876da370a',1,'ArcomageGame']]],
   ['playsound_73',['PlaySound',['../classActor.html#a6645c1dfb2912ca41e535d36e811f17c',1,'Actor']]],
-  ['playspellsound_74',['playSpellSound',['../classAudioPlayer.html#a8a1a8aa216900138f3e65cbb773eed48',1,'AudioPlayer']]],
+  ['playspellsound_74',['playSpellSound',['../classAudioPlayer.html#a9c565d69f76d1db70ddedb3ce8f9c549',1,'AudioPlayer']]],
   ['playtrace_75',['playTrace',['../classEngineTracer.html#a2e7e14a8229441f6d32d8423e55c4c10',1,'EngineTracer']]],
   ['playtracefromtestdata_76',['playTraceFromTestData',['../classTestController.html#aa95b8bebe6e4b34a470d20c3ef0688bb',1,'TestController::playTraceFromTestData(const std::string &amp;saveName, const std::string &amp;traceName, std::function&lt; void()&gt; postLoadCallback={})'],['../classTestController.html#af773311013a777785c7935fad91f4bdf',1,'TestController::playTraceFromTestData(const std::string &amp;saveName, const std::string &amp;traceName, EngineTracePlaybackFlags flags, std::function&lt; void()&gt; postLoadCallback={})']]],
   ['playtrack16_77',['PlayTrack16',['../classOpenALSoundProvider.html#af4c6cd587fca7a1022757e1c79ceec4f',1,'OpenALSoundProvider']]],
