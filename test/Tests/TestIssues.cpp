@@ -20,8 +20,8 @@ static int totalPartyHealth() {
 
 static int partyItemCount() {
     int result = 0;
-    for (int i = 0; i < 4; i++)
-        for (const ItemGen& item : pParty->pPlayers[i].pOwnItems)
+    for (const Player &player : pParty->pPlayers)
+        for (const ItemGen& item : player.pOwnItems)
             result += item.uItemID != ITEM_NULL;
     return result;
 }
