@@ -33,7 +33,21 @@
 using EngineIoc = Engine_::IocContainer;
 
 void CharacterUI_LoadPaperdollTextures();
+
+/**
+ * Prepare textures of character doll with wetsuit on.
+ *
+ * @param uPlayerID     ID of player, 1-based.
+ * @offset 0x43EF2B
+ */
 void WetsuitOn(unsigned int uPlayerID);
+
+/**
+ * Prepare textures of character doll with wetsuit off.
+ *
+ * @param uPlayerID     ID of player, 1-based.
+ * @offset 0x43F0BD
+ */
 void WetsuitOff(unsigned int uPlayerID);
 
 int bRingsShownInCharScreen;  // 5118E0
@@ -979,17 +993,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         pBodyComplection = player->GetSexByVoice() == SEX_MALE ? 0 : 1;
     }
 
-    int uPlayerID = 0;
-    for (uint i = 1; i <= 4; i++) {
-        if (pPlayers[i] == player) {
-            uPlayerID = i;
-            break;
-        }
-    }
-
-    // player not found in the party
-    if (!uPlayerID)
-        __debugbreak();
+    int uPlayerID = pParty->getCharacterIdInParty(player);
 
     render->ResetUIClipRect();
     render->DrawTextureNew(467 / 640.0f, 0, ui_character_inventory_paperdoll_background);
@@ -999,17 +1003,17 @@ void CharacterUI_DrawPaperdoll(Player *player) {
     bool bTwoHandedGrip = itemMainHand && (itemMainHand->GetItemEquipType() == EQUIP_TWO_HANDED || itemMainHand->GetPlayerSkillType() == PLAYER_SKILL_SPEAR && !itemOffHand);
 
     // Aqua-Lung
-    if (IsPlayerWearingWatersuit[uPlayerID]) {
-        render->DrawTextureNew(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID - 1]);
+    if (player->HasUnderwaterSuitEquipped()) {
+        render->DrawTextureNew(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID]);
         if (!bRingsShownInCharScreen)
-            render->ZDrawTextureAlpha(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID - 1], player->pEquipment.uArmor);
+            render->ZDrawTextureAlpha(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID], player->pEquipment.uArmor);
 
         // hands aren't in two handed grip pose
         if (!bTwoHandedGrip) {
             item_X = pPaperdoll_BodyX + pPaperdoll_LeftHand[pBodyComplection][0];
             item_Y = pPaperdoll_BodyY + pPaperdoll_LeftHand[pBodyComplection][1];
 
-            render->DrawTextureNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlads[uPlayerID - 1]);
+            render->DrawTextureNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlads[uPlayerID]);
         }
 
         // main hand's item
@@ -1048,7 +1052,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         }
 
         // paperdoll
-        render->DrawTextureNew(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID - 1]);
+        render->DrawTextureNew(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID]);
 
         // armor
         item = player->GetArmorItem();
@@ -1086,11 +1090,11 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         if (!bTwoHandedGrip) {
             item_X = pPaperdoll_BodyX + pPaperdoll_LeftHand[pBodyComplection][0];
             item_Y = pPaperdoll_BodyY + pPaperdoll_LeftHand[pBodyComplection][1];
-            render->DrawTextureNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlads[uPlayerID - 1]);
+            render->DrawTextureNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlads[uPlayerID]);
         } else {
             item_X = pPaperdoll_BodyX + pPaperdoll_SecondLeftHand[pBodyComplection][0];
             item_Y = pPaperdoll_BodyY + pPaperdoll_SecondLeftHand[pBodyComplection][1];
-            render->DrawTextureNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlaus[uPlayerID - 1]);
+            render->DrawTextureNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlaus[uPlayerID]);
         }
 
         // belt
@@ -1231,7 +1235,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         item_X = pPaperdoll_BodyX + pPaperdoll_RightHand[pBodyComplection][0];
         item_Y = pPaperdoll_BodyY + pPaperdoll_RightHand[pBodyComplection][1];
 
-        render->DrawTextureNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_drhs[uPlayerID - 1]);
+        render->DrawTextureNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_drhs[uPlayerID]);
     }
 
     // offhand's wrist
@@ -1239,11 +1243,11 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         item_X = pPaperdoll_BodyX + pPaperdoll_SecondLeftHand[pBodyComplection][0];
         item_Y = pPaperdoll_BodyY + pPaperdoll_SecondLeftHand[pBodyComplection][1];
 
-        render->DrawTextureNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlhus[uPlayerID - 1]);
+        render->DrawTextureNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlhus[uPlayerID]);
     } else if (!itemOffHand || itemOffHand && !itemOffHand->isShield()) {
         item_X = pPaperdoll_BodyX + pPaperdollLeftEmptyHand[pBodyComplection][0];
         item_Y = pPaperdoll_BodyY + pPaperdollLeftEmptyHand[pBodyComplection][1];
-        render->DrawTextureNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlhs[uPlayerID - 1]);
+        render->DrawTextureNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlhs[uPlayerID]);
     }
 
     // magnifying glass
@@ -1366,70 +1370,20 @@ void CharacterUI_LoadPaperdollTextures() {
     signed int v38;        // [sp+14h] [bp-24h]@79
 
     if (!ui_character_inventory_magnification_glass)
-        ui_character_inventory_magnification_glass =
-            assets->GetImage_Alpha("MAGNIF-B");
+        ui_character_inventory_magnification_glass = assets->GetImage_Alpha("MAGNIF-B");
 
-    // if ( !pParty->uAlignment || pParty->uAlignment == 1 || pParty->uAlignment
-    // == 2 )
+    // if ( !pParty->uAlignment || pParty->uAlignment == 1 || pParty->uAlignment == 2 )
     if (!ui_character_inventory_paperdoll_background)
-        ui_character_inventory_paperdoll_background =
-            assets->GetImage_ColorKey("BACKDOLL");
+        ui_character_inventory_paperdoll_background = assets->GetImage_ColorKey("BACKDOLL");
 
-    ui_character_inventory_paperdoll_rings_background =
-        assets->GetImage_Alpha("BACKHAND");
+    ui_character_inventory_paperdoll_rings_background = assets->GetImage_Alpha("BACKHAND");
 
-    ui_character_inventory_paperdoll_rings_close =
-        ui_exit_cancel_button_background;
-    for (uint i = 0; i < 4; ++i) {
-        if (pPlayers[i + 1]->HasUnderwaterSuitEquipped()) {
-            if (pPlayers[i + 1]->GetRace() == CHARACTER_RACE_DWARF)
-                v3 = (pPlayers[i + 1]->GetSexByVoice() != 0) + 3;
-            else
-                v3 = (pPlayers[i + 1]->GetSexByVoice() != 0) + 1;
-            paperdoll_dbods[i] =
-                assets->GetImage_Alpha(fmt::format("pc23v{}Bod", v3));  // Body texture
-            paperdoll_dlads[i] =
-                assets->GetImage_Alpha(fmt::format("pc23v{}lad", v3));  // Left Hand
-            paperdoll_dlaus[i] =
-                assets->GetImage_Alpha(fmt::format("pc23v{}lau", v3));  // Left Hand2
-            paperdoll_drhs[i] =
-                assets->GetImage_Alpha(fmt::format("pc23v{}rh", v3));  // Right Hand
-            paperdoll_dlhs[i] =
-                assets->GetImage_Alpha(fmt::format("pc23v{}lh", v3));  // Left Palm
-            paperdoll_dlhus[i] =
-                assets->GetImage_Alpha(fmt::format("pc23v{}lhu", v3));  // Left Fist
-            pPlayer = pPlayers[i + 1];
-
-            if (pPlayer->uCurrentFace == 12 || pPlayer->uCurrentFace == 13)
-                paperdoll_dbrds[(char)pPlayer->uCurrentFace] = nullptr;
-            paperdoll_flying_feet[pPlayer->uCurrentFace] = nullptr;
-
-            IsPlayerWearingWatersuit[i + 1] = true;
+    ui_character_inventory_paperdoll_rings_close = ui_exit_cancel_button_background;
+    for (int i = 0; i < pParty->pPlayers.size(); ++i) {
+        if (pParty->pPlayers[i].HasUnderwaterSuitEquipped()) {
+            WetsuitOn(i + 1);
         } else {
-            paperdoll_dbods[i] = assets->GetImage_Alpha(
-                dbod_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
-            paperdoll_dlads[i] = assets->GetImage_Alpha(
-                dlad_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
-            paperdoll_dlaus[i] = assets->GetImage_Alpha(
-                dlau_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
-            paperdoll_drhs[i] = assets->GetImage_Alpha(
-                drh_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
-            paperdoll_dlhs[i] = assets->GetImage_Alpha(
-                dlh_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
-            paperdoll_dlhus[i] = assets->GetImage_Alpha(
-                dlhu_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
-
-            if (pPlayers[i + 1]->uCurrentFace == 12 ||
-                pPlayers[i + 1]->uCurrentFace == 13) {
-                paperdoll_dbrds[pPlayers[i + 1]->uCurrentFace] =
-                    assets->GetImage_Alpha(fmt::format(
-                        "pc{:02}brd", pPlayers[i + 1]->uCurrentFace + 1));
-            }
-
-            paperdoll_flying_feet[pPlayers[i + 1]->uCurrentFace] =
-                assets->GetImage_Alpha(fmt::format(
-                    "item281pc{:02}", pPlayers[i + 1]->uCurrentFace + 1));
-            IsPlayerWearingWatersuit[i + 1] = 0;
+            WetsuitOff(i + 1);
         }
     }
 
@@ -1797,70 +1751,48 @@ void FillAwardsData() {
     }*/
 }
 
-//----- (0043EF2B) --------------------------------------------------------
 void WetsuitOn(unsigned int uPlayerID) {
-    CHARACTER_RACE player_race;  // edi@2
-    signed int player_sex;       // eax@2
-    int texture_num;             // ecx@5
-    char pContainer[20];         // [sp+4h] [bp-1Ch]@7
-
     if (uPlayerID > 0) {
-        player_race = pPlayers[uPlayerID]->GetRace();
-        player_sex = pPlayers[uPlayerID]->GetSexByVoice();
-        if (player_race == CHARACTER_RACE_DWARF)
-            texture_num = (player_sex != 0) + 3;
-        else
-            texture_num = (player_sex != 0) + 1;
+        int playerId0 = uPlayerID - 1;
+        Player *player = &pParty->pPlayers[playerId0];
+        int texture_num;
 
-        sprintf(pContainer, "pc23v%dBod", texture_num);
-        paperdoll_dbods[uPlayerID - 1] = assets->GetImage_Alpha(pContainer);
-        sprintf(pContainer, "pc23v%dlad", texture_num);
-        paperdoll_dlads[uPlayerID - 1] = assets->GetImage_Alpha(pContainer);
-        sprintf(pContainer, "pc23v%dlau", texture_num);
-        paperdoll_dlaus[uPlayerID - 1] = assets->GetImage_Alpha(pContainer);
-        sprintf(pContainer, "pc23v%drh", texture_num);
-        paperdoll_drhs[uPlayerID - 1] = assets->GetImage_Alpha(pContainer);
-        sprintf(pContainer, "pc23v%dlh", texture_num);
-        paperdoll_dlhs[uPlayerID - 1] = assets->GetImage_Alpha(pContainer);
-        sprintf(pContainer, "pc23v%dlhu", texture_num);
-        paperdoll_dlhus[uPlayerID - 1] = assets->GetImage_Alpha(pContainer);
+        if (player->GetRace() == CHARACTER_RACE_DWARF) {
+            texture_num = (player->GetSexByVoice() != 0) + 3;
+        } else {
+            texture_num = (player->GetSexByVoice() != 0) + 1;
+        }
+        paperdoll_dbods[playerId0] = assets->GetImage_Alpha(fmt::format("pc23v{}Bod", texture_num));  // Body texture
+        paperdoll_dlads[playerId0] = assets->GetImage_Alpha(fmt::format("pc23v{}lad", texture_num));  // Left Hand
+        paperdoll_dlaus[playerId0] = assets->GetImage_Alpha(fmt::format("pc23v{}lau", texture_num));  // Left Hand2
+        paperdoll_drhs[playerId0] = assets->GetImage_Alpha(fmt::format("pc23v{}rh", texture_num));  // Right Hand
+        paperdoll_dlhs[playerId0] = assets->GetImage_Alpha(fmt::format("pc23v{}lh", texture_num));  // Left Palm
+        paperdoll_dlhus[playerId0] = assets->GetImage_Alpha(fmt::format("pc23v{}lhu", texture_num));  // Left Fist
 
-        if (pPlayers[uPlayerID]->uCurrentFace == 12 ||
-            pPlayers[uPlayerID]->uCurrentFace == 13)
-            paperdoll_dbrds[pPlayers[uPlayerID]->uCurrentFace] = nullptr;
-        paperdoll_flying_feet[pPlayers[uPlayerID]->uCurrentFace] = nullptr;
-
-        IsPlayerWearingWatersuit[uPlayerID] = true;
+        if (player->uCurrentFace == 12 || player->uCurrentFace == 13) {
+            paperdoll_dbrds[player->uCurrentFace] = nullptr;
+        }
+        paperdoll_flying_feet[player->uCurrentFace] = nullptr;
     }
 }
 
-//----- (0043F0BD) --------------------------------------------------------
 void WetsuitOff(unsigned int uPlayerID) {
     if (uPlayerID > 0) {
-        paperdoll_dbods[uPlayerID - 1] = assets->GetImage_Alpha(
-            dbod_texnames_by_face[pPlayers[uPlayerID]->uCurrentFace]);
-        paperdoll_dlads[uPlayerID - 1] = assets->GetImage_Alpha(
-            dlad_texnames_by_face[pPlayers[uPlayerID]->uCurrentFace]);
-        paperdoll_dlaus[uPlayerID - 1] = assets->GetImage_Alpha(
-            dlau_texnames_by_face[pPlayers[uPlayerID]->uCurrentFace]);
-        paperdoll_drhs[uPlayerID - 1] = assets->GetImage_Alpha(
-            drh_texnames_by_face[pPlayers[uPlayerID]->uCurrentFace]);
-        paperdoll_dlhs[uPlayerID - 1] = assets->GetImage_Alpha(
-            dlh_texnames_by_face[pPlayers[uPlayerID]->uCurrentFace]);
-        paperdoll_dlhus[uPlayerID - 1] = assets->GetImage_Alpha(
-            dlhu_texnames_by_face[pPlayers[uPlayerID]->uCurrentFace]);
+        int playerId0 = uPlayerID - 1;
+        Player *player = &pParty->pPlayers[playerId0];
 
-        // wchar_t name[1024];
-        if (pPlayers[uPlayerID]->uCurrentFace == 12 ||
-            pPlayers[uPlayerID]->uCurrentFace == 13) {
-            paperdoll_dbrds[pPlayers[uPlayerID]->uCurrentFace] =
-                assets->GetImage_Alpha(fmt::format("pc{:02}brd", pPlayers[uPlayerID]->uCurrentFace + 1));
+        paperdoll_dbods[playerId0] = assets->GetImage_Alpha(dbod_texnames_by_face[player->uCurrentFace]);
+        paperdoll_dlads[playerId0] = assets->GetImage_Alpha(dlad_texnames_by_face[player->uCurrentFace]);
+        paperdoll_dlaus[playerId0] = assets->GetImage_Alpha(dlau_texnames_by_face[player->uCurrentFace]);
+        paperdoll_drhs[playerId0] = assets->GetImage_Alpha(drh_texnames_by_face[player->uCurrentFace]);
+        paperdoll_dlhs[playerId0] = assets->GetImage_Alpha(dlh_texnames_by_face[player->uCurrentFace]);
+        paperdoll_dlhus[playerId0] = assets->GetImage_Alpha(dlhu_texnames_by_face[player->uCurrentFace]);
+
+        if (player->uCurrentFace == 12 || player->uCurrentFace == 13) {
+            paperdoll_dbrds[player->uCurrentFace] = assets->GetImage_Alpha(fmt::format("pc{:02}brd", player->uCurrentFace + 1));
         }
 
-        paperdoll_flying_feet[pPlayers[uPlayerID]->uCurrentFace] =
-            assets->GetImage_Alpha(fmt::format("item281pc{:02}", pPlayers[uPlayerID]->uCurrentFace + 1));
-
-        IsPlayerWearingWatersuit[uPlayerID] = false;
+        paperdoll_flying_feet[player->uCurrentFace] = assets->GetImage_Alpha(fmt::format("item281pc{:02}", player->uCurrentFace + 1));
     }
 }
 
@@ -1984,9 +1916,8 @@ void OnPaperdollLeftClick() {
                 // колец)----------------------------------
             case EQUIP_RING:
 
-                if (pPlayers[pParty->_activeCharacter]
-                        ->HasUnderwaterSuitEquipped()) {  // cant put anything
-                                                          // on wearing wetsuit
+                if (pPlayers[pParty->_activeCharacter]->HasUnderwaterSuitEquipped()) {  // cant put anything
+                                                                                        // on wearing wetsuit
                     pAudioPlayer->playUISound(SOUND_error);
                     return;
                 }
@@ -2101,8 +2032,7 @@ void OnPaperdollLeftClick() {
                 // ------------------dress shield(одеть
                 // щит)------------------------------------------------------
             case EQUIP_SHIELD:  //Щит
-                if (pPlayers[pParty->_activeCharacter]
-                        ->HasUnderwaterSuitEquipped()) {  // в акваланге
+                if (pPlayers[pParty->_activeCharacter]->HasUnderwaterSuitEquipped()) {  // в акваланге
                     pAudioPlayer->playUISound(SOUND_error);
                     return;
                 }

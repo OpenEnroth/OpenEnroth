@@ -286,9 +286,10 @@ struct Party {
     /**
      * Return id of random character that can still act.
      *
-     * @return        ID of character or -1 if none of the character cat act.
+     * @param rng         Random generator used.
+     * @return            ID of character or -1 if none of the character cat act.
      */
-    int getRandomActiveCharacterId() const {
+    int getRandomActiveCharacterId(RandomEngine *rng) const {
         std::vector<int> activeCharacters = {};
         for (int i = 0; i < pPlayers.size(); i++) {
             if (pPlayers[i].CanAct()) {
@@ -296,8 +297,24 @@ struct Party {
             }
         }
         if (!activeCharacters.empty()) {
-            return activeCharacters[vrng->Random(activeCharacters.size())];
+            return activeCharacters[rng->Random(activeCharacters.size())];
         }
+        return -1;
+    }
+
+    /**
+     * Return id of character that is represented by given pointer.
+     *
+     * @param player      Pointer to player class.
+     * @return            ID of character.
+     */
+    int getCharacterIdInParty(Player *player) {
+        for (int i = 0; i < pPlayers.size(); i++) {
+            if (&pPlayers[i] == player) {
+                return i;
+            }
+        }
+        assert(false && "Character not found.");
         return -1;
     }
 
