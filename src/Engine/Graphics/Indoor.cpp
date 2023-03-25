@@ -2275,22 +2275,22 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         if (party_running_flag && (!hovering || not_high_fall)) {  // Бег и (не прыжок или не высокое падение )
             if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) >= 16) {
                 if (on_water)
-                    pAudioPlayer->PlaySound(SOUND_RunWaterIndoor, 804, 1, -1, 0, 0);
+                    pAudioPlayer->playWalkSound(SOUND_RunWaterIndoor);
                 else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_CARPET)  //по ковру
-                    pAudioPlayer->PlaySound(SOUND_RunCarpet, PID_INVALID /*804*/, 1, -1, 0, 0);
+                    pAudioPlayer->playWalkSound(SOUND_RunCarpet);
                 else
-                    pAudioPlayer->PlaySound(SOUND_RunWood, PID_INVALID /*804*/, 1, -1, 0, 0);
+                    pAudioPlayer->playWalkSound(SOUND_RunWood);
                 pParty->walk_sound_timer = 96;  // 64
             }
         } else if (party_walking_flag && (!hovering || not_high_fall)) {  // Ходьба и (не прыжок или не
                                                     // высокое падение)
             if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) >= 8) {
                 if (on_water)
-                    pAudioPlayer->PlaySound(SOUND_WalkWaterIndoor, 804, 1, -1, 0, 0);
+                    pAudioPlayer->playWalkSound(SOUND_WalkWaterIndoor);
                 else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_CARPET)  //по ковру
-                    pAudioPlayer->PlaySound(SOUND_WalkCarpet, PID_INVALID /*804*/, 1, -1, 0, 0);
+                    pAudioPlayer->playWalkSound(SOUND_WalkCarpet);
                 else
-                    pAudioPlayer->PlaySound(SOUND_WalkWood, PID_INVALID /*804*/, 1, -1, 0, 0);
+                    pAudioPlayer->playWalkSound(SOUND_WalkWood);
                 pParty->walk_sound_timer = 144;  // 64
             }
         }

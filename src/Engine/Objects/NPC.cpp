@@ -1259,7 +1259,7 @@ int UseNPCSkill(NPCProf profession) {
         case WindMaster: {
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
                 GameUI_SetStatusBar(LSTR_CANT_FLY_INDOORS);
-                pAudioPlayer->PlaySound(SOUND_fizzle, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_fizzle);
             } else {
                 int v19 = pOtherOverlayList->_4418B1(10008, 203, 0, 65536);
                 // Spell power was changed to 0 because it does not have meaning for this buff
@@ -1267,7 +1267,7 @@ int UseNPCSkill(NPCProf profession) {
                     .Apply(pParty->GetPlayingTime() + GameTime::FromHours(2), PLAYER_SKILL_MASTERY_MASTER, 0, v19, 0);
                 // Mark buff as GM because NPC buff does not drain mana
                 pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff = true;
-                pAudioPlayer->PlaySound(SOUND_21fly03, 0, 0, -1, 0, 0);
+                pAudioPlayer->playSpellSound(SPELL_AIR_FLY, 0, false);
             }
         } break;
 
@@ -1277,7 +1277,7 @@ int UseNPCSkill(NPCProf profession) {
                 .Apply(pParty->GetPlayingTime() + GameTime::FromHours(3), PLAYER_SKILL_MASTERY_MASTER, 0, v20, 0);
             // Mark buff as GM because NPC buff does not drain mana
             pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGMBuff = true;
-            pAudioPlayer->PlaySound(SOUND_WaterWalk, 0, 0, -1, 0, 0);
+            pAudioPlayer->playSpellSound(SPELL_WATER_WATER_WALK, 0, false);
         } break;
 
         case GateMaster: {

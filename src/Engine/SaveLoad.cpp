@@ -44,7 +44,7 @@ std::array<SavegameHeader, MAX_SAVE_SLOTS> pSavegameHeader;
 void LoadGame(unsigned int uSlot) {
     MapsLongTimers_count = 0;
     if (!pSavegameUsedSlots[uSlot]) {
-        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_error);
         logger->Warning("LoadGame: slot {} is empty", uSlot);
         return;
     }

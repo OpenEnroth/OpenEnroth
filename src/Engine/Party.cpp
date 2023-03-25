@@ -311,7 +311,7 @@ bool Party::HasItem(ITEM_TYPE uItemID) {
 void ui_play_gold_anim() {
     pUIAnim_Gold->uAnimTime = 0;
     pUIAnim_Gold->uAnimLength = pUIAnim_Gold->icon->GetAnimLength();
-    pAudioPlayer->PlaySound(SOUND_gold01, 0, 0, -1, 0, 0);
+    pAudioPlayer->playUISound(SOUND_gold01);
 }
 
 void ui_play_food_anim() {
@@ -1212,7 +1212,7 @@ bool Party::AddItemToParty(ItemGen *pItem) {
             if (v10) {
                 memcpy(&player->pInventoryItemList[v10 - 1], pItem, 0x24u);
                 pItem->Reset();
-                pAudioPlayer->PlaySound(SOUND_gold01, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_gold01);
                 player->playReaction(SPEECH_FoundItem);
 
                 if (texture) {

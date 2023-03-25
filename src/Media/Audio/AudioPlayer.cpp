@@ -10,7 +10,6 @@
 
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Level/Decoration.h"
-#include "Engine/MM7.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Party.h"
@@ -304,6 +303,7 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
             case OBJECT_Player: {
                 si.sample->SetVolume(uVoiceVolume);
                 if (object_id == 5) {
+                    // TODO(Nik-RE-dev): this is special hack for voice volume control
                     si.sample->Stop();
                 }
                 si.sample->Play();

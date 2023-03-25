@@ -49,7 +49,7 @@ void Game_StartNewGameWhilePlaying(bool force_start) {
         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
     } else {
         GameUI_SetStatusBar(LSTR_START_NEW_GAME_PROMPT);
-        pAudioPlayer->PlaySound(SOUND_quest, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_quest);
         dword_6BE138 = 124;
     }
 }
@@ -59,11 +59,11 @@ void Game_QuitGameWhilePlaying(bool force_quit) {
         pCurrentFrameMessageQueue->Flush();
         // pGUIWindow_CurrentMenu->Release();
         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-        pAudioPlayer->PlaySound(SOUND_WoodDoorClosing, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_WoodDoorClosing);
         uGameState = GAME_STATE_GAME_QUITTING_TO_MAIN_MENU;
     } else {
         GameUI_SetStatusBar(LSTR_EXIT_GAME_PROMPT);
-        pAudioPlayer->PlaySound(SOUND_quest, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_quest);
         dword_6BE138 = 132;
     }
 }
@@ -197,7 +197,7 @@ void Menu::EventLoop() {
 
             case UIMSG_ChangeKeyButton: {
                 if (currently_selected_action_for_binding != InputAction::Invalid) {
-                    pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_error);
                 } else {
                     currently_selected_action_for_binding = (InputAction)param;
                     if (KeyboardPageNum != 1)
@@ -216,7 +216,7 @@ void Menu::EventLoop() {
                     keyboardActionMapping->MapKey(action, newKey, GetToggleType(action));
                 }
                 keyboardActionMapping->StoreMappings();
-                pAudioPlayer->PlaySound(SOUND_chimes, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_chimes);
                 continue;
             }
 
@@ -251,7 +251,7 @@ void Menu::EventLoop() {
                 }
 
                 engine->config->graphics.Gamma.Set(gammalevel);
-                pAudioPlayer->PlaySound(SOUND_ClickMovingSelector, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_ClickMovingSelector);
 
                 if (gamma_preview_image) {
                     gamma_preview_image->Release();
@@ -289,8 +289,9 @@ void Menu::EventLoop() {
 
                 engine->config->settings.MusicLevel.Set(new_level);
                 pAudioPlayer->SetMusicVolume(engine->config->settings.MusicLevel.Get());
+                // TODO(Nik-RE-dev): return sound playing but with music volume level
                 // if (engine->config->music_level > 0)
-                //    pAudioPlayer->PlaySound(SOUND_hurp, PID_INVALID, 0, -1, 0, 0);
+                //    pAudioPlayer->playExclusiveSound(SOUND_hurp);
                 continue;
             }
 
@@ -310,7 +311,7 @@ void Menu::EventLoop() {
                 engine->config->settings.SoundLevel.Set(new_level);
 
                 pAudioPlayer->SetMasterVolume(engine->config->settings.SoundLevel.Get());
-                pAudioPlayer->PlaySound(SOUND_church, PID_INVALID, 0, -1, 0, 0);
+                pAudioPlayer->playExclusiveSound(SOUND_church);
                 continue;
             }
             case UIMSG_ToggleFlipOnExit:
@@ -340,8 +341,9 @@ void Menu::EventLoop() {
 
                 engine->config->settings.VoiceLevel.Set(new_level);
                 pAudioPlayer->SetVoiceVolume(engine->config->settings.VoiceLevel.Get());
-                if (engine->config->settings.VoiceLevel.Get() > 0)
-                    pAudioPlayer->PlaySound(SOUND_hf445a, 44, 0, -1, 0, 0);
+                if (engine->config->settings.VoiceLevel.Get() > 0) {
+                    pAudioPlayer->PlaySound(SOUND_hf445a, PID(OBJECT_Player, 5), 0, -1, 0, 0);
+                }
                 continue;
             }
             case UIMSG_SetTurnSpeed:
@@ -399,7 +401,7 @@ void Menu::EventLoop() {
                         }
                     }
                     if (anyBindingErrors) {
-                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+                        pAudioPlayer->playUISound(SOUND_error);
                         break; // deny to exit options until all key conflicts are solved
                     } else {
                         for (uint i = 0; i < 5; i++) {
