@@ -1,10 +1,12 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
-set(TRACE_SOURCES EventTrace.cpp)
+set(LIBRARY_TRACE_SOURCES
+        EventTrace.cpp)
 
-set(TRACE_HEADERS EventTrace.h
-                  PaintEvent.h)
+set(LIBRARY_TRACE_HEADERS
+        EventTrace.h
+        PaintEvent.h)
 
-add_library(trace STATIC ${TRACE_SOURCES} ${TRACE_HEADERS})
-target_link_libraries(trace serialization platform json random)
-target_check_style(trace)
+add_library(library_trace STATIC ${LIBRARY_TRACE_SOURCES} ${LIBRARY_TRACE_HEADERS})
+target_link_libraries(library_trace library_serialization platform library_json)
+target_check_style(library_trace)

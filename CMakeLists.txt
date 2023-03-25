@@ -9,9 +9,9 @@ include(Detection)
 set(ENABLE_TESTS OFF CACHE BOOL "Enable tests")
 #TODO: prebuilts should be available for all platforms and not just MSVC compiler
 if(BUILD_COMPILER STREQUAL "msvc")
-  set(PREBUILT_DEPENDENCIES ON CACHE BOOL "Use prebuilt dependencies")
+    set(PREBUILT_DEPENDENCIES ON CACHE BOOL "Use prebuilt dependencies")
 else()
-  set(PREBUILT_DEPENDENCIES OFF CACHE BOOL "Use prebuilt dependencies")
+    set(PREBUILT_DEPENDENCIES OFF CACHE BOOL "Use prebuilt dependencies")
 endif()
 
 include(AppleLibcxxAssertions)
@@ -25,19 +25,19 @@ if(ENABLE_TESTS)
 endif()
 
 if(BUILD_COMPILER STREQUAL "gcc")
-  add_compile_definitions($<$<CONFIG:Debug>:_GLIBCXX_ASSERTIONS>)
-  set(CMAKE_EXE_LINKER_FLAGS "-fuse-ld=gold -pthread")
+    add_compile_definitions($<$<CONFIG:Debug>:_GLIBCXX_ASSERTIONS>)
+    set(CMAKE_EXE_LINKER_FLAGS "-fuse-ld=gold -pthread")
 elseif(BUILD_COMPILER STREQUAL "msvc")
-  add_compile_definitions(NOMINMAX) # please don't pull in these macros from <Windows.h>
-  add_compile_definitions(_CRT_SECURE_NO_WARNINGS) # STL security warnings are just noise
-  add_compile_definitions(_CRT_NONSTDC_NO_DEPRECATE) # POSIX deprecation warnings are also just noise
-  add_compile_definitions(_USE_MATH_DEFINES) # Pull in M_PI and other <cmath> defines
-  add_compile_definitions(FMT_CONSTEVAL=) # MSVC chokes on fmt consteval formatting, so we define FMT_CONSTEVAL=<empty>
-  add_compile_options(/Zc:preprocessor) # Use standard compliant preprocessor
-  set(CMAKE_CXX_FLAGS "/MP ${CMAKE_CXX_FLAGS}")
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
+    add_compile_definitions(NOMINMAX) # please don't pull in these macros from <Windows.h>
+    add_compile_definitions(_CRT_SECURE_NO_WARNINGS) # STL security warnings are just noise
+    add_compile_definitions(_CRT_NONSTDC_NO_DEPRECATE) # POSIX deprecation warnings are also just noise
+    add_compile_definitions(_USE_MATH_DEFINES) # Pull in M_PI and other <cmath> defines
+    add_compile_definitions(FMT_CONSTEVAL=) # MSVC chokes on fmt consteval formatting, so we define FMT_CONSTEVAL=<empty>
+    add_compile_options(/Zc:preprocessor) # Use standard compliant preprocessor
+    set(CMAKE_CXX_FLAGS "/MP ${CMAKE_CXX_FLAGS}")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
 elseif(BUILD_PLATFORM STREQUAL "darwin")
-  enable_libcxx_assertions(FALSE)
+    enable_libcxx_assertions(FALSE)
 endif()
 
 if(UNIX)
@@ -60,17 +60,15 @@ if(BUILD_PLATFORM STREQUAL "android")
     add_library(main SHARED)
     target_sources(main PUBLIC src/Application/main.cpp src/Platform/Sdl/SdlMain.cpp)
     target_check_style(main)
-    target_link_libraries(main game)
+    target_link_libraries(main application)
 else()
     add_executable(OpenEnroth MACOSX_BUNDLE WIN32 src/Application/main.cpp)
     target_check_style(OpenEnroth)
     target_fix_libcxx_assertions(OpenEnroth)
 
-    target_link_libraries(OpenEnroth game)
+    target_link_libraries(OpenEnroth application)
 
-    set_property(
-        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenEnroth
-    )
+    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenEnroth)
 
     PREBUILT_DEPENDENCIES_RESOLVE(OpenEnroth)
 endif()
