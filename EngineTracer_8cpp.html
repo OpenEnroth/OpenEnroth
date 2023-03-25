@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/Engine/Components/EngineTracer.cpp File Reference</title>
+<title>OpenEnroth: src/Engine/Components/Trace/EngineTracer.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5aae899</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;40c3f69</span>
    </div>
   </td>
  </tr>
@@ -69,7 +69,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_3072bc1f55ed1280fe4fbe6b21c78379.html">Engine</a></li><li class="navelem"><a class="el" href="dir_d61b2222c5a327709a6efbaf33ca5bc9.html">Components</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_3072bc1f55ed1280fe4fbe6b21c78379.html">Engine</a></li><li class="navelem"><a class="el" href="dir_d61b2222c5a327709a6efbaf33ca5bc9.html">Components</a></li><li class="navelem"><a class="el" href="dir_4d6c63fbd4fed3e42d5c61af537b28ef.html">Trace</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -80,17 +80,17 @@ $(function() {
 <code>#include &lt;cassert&gt;</code><br />
 <code>#include &lt;utility&gt;</code><br />
 <code>#include &lt;filesystem&gt;</code><br />
-<code>#include &quot;<a class="el" href="ScopeGuard_8h.html">Utility/ScopeGuard.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Exception_8h.html">Utility/Exception.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GameKeyboardController_8h.html">Application/GameKeyboardController.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="EngineController_8h.html">Engine/Components/Control/EngineController.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="EngineControlComponent_8h.html">Engine/Components/Control/EngineControlComponent.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="EngineDeterministicComponent_8h.html">Engine/Components/Deterministic/EngineDeterministicComponent.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="PaintEvent_8h.html">Library/Trace/PaintEvent.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="PlatformApplication_8h.html">Library/Application/PlatformApplication.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Random_8h.html">Library/Random/Random.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="GameKeyboardController_8h.html">Application/GameKeyboardController.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="EngineController_8h.html">EngineController.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="EngineControlComponent_8h.html">EngineControlComponent.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ScopeGuard_8h.html">Utility/ScopeGuard.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Exception_8h.html">Utility/Exception.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EngineTraceComponent_8h.html">EngineTraceComponent.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="EngineDeterministicComponent_8h.html">EngineDeterministicComponent.h</a>&quot;</code><br />
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
