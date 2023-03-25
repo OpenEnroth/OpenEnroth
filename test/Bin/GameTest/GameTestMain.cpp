@@ -3,9 +3,9 @@
 #include "Application/Game.h"
 #include "Application/GameFactory.h"
 
-#include "Engine/Components/EngineControlComponent.h"
-#include "Engine/Components/EngineController.h"
-#include "Engine/Components/EngineDeterministicComponent.h"
+#include "Engine/Components/Control/EngineControlComponent.h"
+#include "Engine/Components/Control/EngineController.h"
+#include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 
 #include "Testing/Game/GameTest.h"
 #include "Testing/Game/TestConfig.h"

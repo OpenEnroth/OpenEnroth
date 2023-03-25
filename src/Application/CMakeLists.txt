@@ -32,7 +32,9 @@ target_check_style(application)
 target_link_libraries(application
         CLI11::CLI11
         engine
-        engine_components
+        engine_components_control
+        engine_components_deterministic
+        engine_components_trace
         engine_graphics
         gui
         io
