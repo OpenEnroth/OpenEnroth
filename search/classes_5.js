@@ -12,13 +12,14 @@ var searchData=
   ['enginedeterministiccomponent_9',['EngineDeterministicComponent',['../classEngineDeterministicComponent.html',1,'']]],
   ['enginefactory_10',['EngineFactory',['../classEngine___1_1EngineFactory.html',1,'Engine_']]],
   ['enginetracecomponent_11',['EngineTraceComponent',['../classEngineTraceComponent.html',1,'']]],
-  ['enginetracer_12',['EngineTracer',['../classEngineTracer.html',1,'']]],
-  ['enumserializationtable_13',['EnumSerializationTable',['../classdetail_1_1EnumSerializationTable.html',1,'detail']]],
-  ['enumserializer_14',['EnumSerializer',['../classdetail_1_1EnumSerializer.html',1,'detail']]],
-  ['equipemntpair_15',['EquipemntPair',['../classEquipemntPair.html',1,'']]],
-  ['eventindex_16',['EventIndex',['../structEventIndex.html',1,'']]],
-  ['eventtrace_17',['EventTrace',['../structEventTrace.html',1,'']]],
-  ['eventtraceheader_18',['EventTraceHeader',['../structEventTraceHeader.html',1,'']]],
-  ['exception_19',['Exception',['../classException.html',1,'']]],
-  ['explosion_5feffect_5fstruct_20',['explosion_effect_struct',['../structexplosion__effect__struct.html',1,'']]]
+  ['enginetraceplayer_12',['EngineTracePlayer',['../classEngineTracePlayer.html',1,'']]],
+  ['enginetracerecorder_13',['EngineTraceRecorder',['../classEngineTraceRecorder.html',1,'']]],
+  ['enumserializationtable_14',['EnumSerializationTable',['../classdetail_1_1EnumSerializationTable.html',1,'detail']]],
+  ['enumserializer_15',['EnumSerializer',['../classdetail_1_1EnumSerializer.html',1,'detail']]],
+  ['equipemntpair_16',['EquipemntPair',['../classEquipemntPair.html',1,'']]],
+  ['eventindex_17',['EventIndex',['../structEventIndex.html',1,'']]],
+  ['eventtrace_18',['EventTrace',['../structEventTrace.html',1,'']]],
+  ['eventtraceheader_19',['EventTraceHeader',['../structEventTraceHeader.html',1,'']]],
+  ['exception_20',['Exception',['../classException.html',1,'']]],
+  ['explosion_5feffect_5fstruct_21',['explosion_effect_struct',['../structexplosion__effect__struct.html',1,'']]]
 ];
