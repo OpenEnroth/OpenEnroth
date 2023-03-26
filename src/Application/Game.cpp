@@ -33,7 +33,8 @@
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
-#include "Engine/Components/Trace/EngineTracer.h"
+#include "Engine/Components/Trace/EngineTracePlayer.h"
+#include "Engine/Components/Trace/EngineTraceRecorder.h"
 #include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 #include "Engine/Components/Trace/EngineTraceComponent.h"
@@ -161,8 +162,9 @@ Game::Game(PlatformApplication *app) {
     app->install(std::make_unique<EngineControlComponent>());
     app->install(std::make_unique<EngineTraceComponent>());
     app->install(std::make_unique<EngineDeterministicComponent>());
-    app->install(std::make_unique<EngineTracer>(EngineTracer::ENABLE_RECORDING | EngineTracer::ENABLE_PLAYBACK)); // TODO(captainurist): make configurable
-    app->install(std::make_unique<GameTraceHandler>(app->get<EngineTracer>())); // TODO(captainurist): get() call not needed.
+    app->install(std::make_unique<EngineTracePlayer>());
+    app->install(std::make_unique<EngineTraceRecorder>());
+    app->install(std::make_unique<GameTraceHandler>(app->get<EngineTraceRecorder>())); // TODO(captainurist): get() call not needed.
 }
 
 Game::~Game() {
