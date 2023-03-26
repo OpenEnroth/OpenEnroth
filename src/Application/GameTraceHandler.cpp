@@ -3,11 +3,11 @@
 #include <cassert>
 
 #include "Engine/IocContainer.h"
-#include "Engine/Components/Trace/EngineTracer.h"
+#include "Engine/Components/Trace/EngineTraceRecorder.h"
 
 #include "Library/Logger/Logger.h"
 
-GameTraceHandler::GameTraceHandler(EngineTracer *tracer) : PlatformEventFilter({EVENT_KEY_PRESS, EVENT_KEY_RELEASE}), _tracer(tracer) {
+GameTraceHandler::GameTraceHandler(EngineTraceRecorder *tracer) : PlatformEventFilter({EVENT_KEY_PRESS, EVENT_KEY_RELEASE}), _tracer(tracer) {
     assert(tracer);
 }
 
@@ -23,11 +23,10 @@ bool GameTraceHandler::keyPressEvent(const PlatformKeyEvent *event) {
     if (isTriggerKeySequence(event)) {
         _waitingForKeyRelease = true;
 
-        if (_tracer->state() == EngineTracer::CHILLING) {
-            _tracer->startTraceRecording("trace.mm7", "trace.json");
+        if (_tracer->isRecording()) {
+            _tracer->finishRecording();
         } else {
-            assert(_tracer->state() == EngineTracer::RECORDING);
-            _tracer->finishTraceRecording();
+            _tracer->startRecording("trace.mm7", "trace.json");
         }
         return true;
     }

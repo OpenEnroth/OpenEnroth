@@ -4,7 +4,7 @@
 
 #include "Library/Application/PlatformApplication.h"
 
-#include "Engine/Components/Trace/EngineTracer.h"
+#include "Engine/Components/Trace/EngineTracePlayer.h"
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 #include "Engine/EngineGlobals.h"
@@ -30,7 +30,7 @@ void TestController::playTraceFromTestData(const std::string &saveName, const st
                                            EngineTracePlaybackFlags flags, std::function<void()> postLoadCallback) {
     // TODO(captainurist): we need to overhaul our usage of path::string, path::u8string, path::generic_string,
     // pick one, and spell it out explicitly in HACKING
-    ::application->get<EngineTracer>()->playTrace(
+    ::application->get<EngineTracePlayer>()->playTrace(
         _controller,
         (_testDataPath / saveName).string(),
         (_testDataPath / traceName).string(),
