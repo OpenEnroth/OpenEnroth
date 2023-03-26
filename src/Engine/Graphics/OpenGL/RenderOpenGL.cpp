@@ -2065,7 +2065,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
     for (int i = 0; i < 1; ++i) {
         if (pMobileLightsStack->uNumLightsActive < 1) continue;
 
-        auto test = pMobileLightsStack->pLights[i];
+        MobileLight &test = pMobileLightsStack->pLights[i];
         std::string slotnum = std::to_string(num_lights);
 
         float x = pMobileLightsStack->pLights[i].vPosition.x;
@@ -2092,7 +2092,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
         if (num_lights >= 20) break;
 
         std::string slotnum = std::to_string(num_lights);
-        auto test = pStationaryLightsStack->pLights[i];
+        StationaryLight &test = pStationaryLightsStack->pLights[i];
 
         float x = test.vPosition.x;
         float y = test.vPosition.y;
@@ -2121,7 +2121,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
         if (num_lights >= 20) break;
 
         std::string slotnum = std::to_string(num_lights);
-        auto test = pMobileLightsStack->pLights[i];
+        MobileLight &test = pMobileLightsStack->pLights[i];
 
         float x = pMobileLightsStack->pLights[i].vPosition.x;
         float y = pMobileLightsStack->pLights[i].vPosition.y;
@@ -4040,7 +4040,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
     for (int i = 0; i < 1; ++i) {
         if (pMobileLightsStack->uNumLightsActive < 1) continue;
 
-        auto test = pMobileLightsStack->pLights[i];
+        MobileLight &test = pMobileLightsStack->pLights[i];
         std::string slotnum = std::to_string(num_lights);
 
         float x = pMobileLightsStack->pLights[i].vPosition.x;
@@ -4067,7 +4067,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
         if (num_lights >= 20) break;
 
         std::string slotnum = std::to_string(num_lights);
-        auto test = pStationaryLightsStack->pLights[i];
+        StationaryLight &test = pStationaryLightsStack->pLights[i];
 
         float x = test.vPosition.x;
         float y = test.vPosition.y;
@@ -4096,7 +4096,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
         if (num_lights >= 20) break;
 
         std::string slotnum = std::to_string(num_lights);
-        auto test = pMobileLightsStack->pLights[i];
+        MobileLight &test = pMobileLightsStack->pLights[i];
 
         float x = pMobileLightsStack->pLights[i].vPosition.x;
         float y = pMobileLightsStack->pLights[i].vPosition.y;
@@ -4262,7 +4262,7 @@ void RenderOpenGL::DrawIndoorFaces() {
             int cntnosect = 0;
 
             for (int lightscnt = 0; lightscnt < pStationaryLightsStack->uNumLightsActive; ++lightscnt) {
-                auto test = pStationaryLightsStack->pLights[lightscnt];
+                StationaryLight &test = pStationaryLightsStack->pLights[lightscnt];
 
 
                 // kludge for getting lights in  visible sectors
@@ -4723,7 +4723,7 @@ void RenderOpenGL::DrawIndoorFaces() {
         for (int i = 0; i < 1; ++i) {
             if (pMobileLightsStack->uNumLightsActive < 1) continue;
 
-            auto test = pMobileLightsStack->pLights[i];
+            MobileLight &test = pMobileLightsStack->pLights[i];
             std::string slotnum = std::to_string(num_lights);
 
             float x = pMobileLightsStack->pLights[i].vPosition.x;
@@ -4748,7 +4748,7 @@ void RenderOpenGL::DrawIndoorFaces() {
         for (int i = 0; i < pStationaryLightsStack->uNumLightsActive; ++i) {
             if (num_lights >= 40) break;
 
-            auto test = pStationaryLightsStack->pLights[i];
+            StationaryLight &test = pStationaryLightsStack->pLights[i];
 
             // is this on the sector list
             bool onlist = false;
@@ -4809,7 +4809,7 @@ void RenderOpenGL::DrawIndoorFaces() {
             if (num_lights >= 40) break;
 
             // TODO(pskelton): nearest lights should be prioritsed
-            auto test = pMobileLightsStack->pLights[i];
+            MobileLight &test = pMobileLightsStack->pLights[i];
             if (!IsSphereInFrustum(test.vPosition, test.uRadius)) continue;
 
             std::string slotnum = std::to_string(num_lights);

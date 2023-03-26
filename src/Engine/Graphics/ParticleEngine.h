@@ -25,23 +25,22 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(ParticleFlags)
 /*  305 */
 #pragma pack(push, 1)
 struct Particle_sw {
-    ParticleFlags type;
-    float x;
-    float y;
-    float z;
-    float r;
-    float g;
-    float b;
-    unsigned int uDiffuse;
-    int timeToLive;
-    Texture *texture;  // unsigned int resource_id;// bitmap IDirect3DTexture
-                       // idx or sprite idx depending on type
-    int paletteID = 0;
-    float particle_size;  // flt_28
-    int field_2C;
-    int field_30;
-    int field_34;
-    int field_38[12];
+    ParticleFlags type{ ParticleType_Invalid };
+    float x{};
+    float y{};
+    float z{};
+    float r{};
+    float g{};
+    float b{};
+    unsigned int uDiffuse{};
+    int timeToLive{};
+    Texture *texture{ nullptr };
+    int paletteID{ 0 };
+    float particle_size{};
+    int field_2C{};
+    int field_30{};
+    int field_34{};
+    int field_38[12]{};
 };
 #pragma pack(pop)
 
