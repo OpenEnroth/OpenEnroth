@@ -322,9 +322,9 @@ void Mouse::UI_OnMouseLeftClick() {
     Vis_PIDAndDepth picked_object = EngineIoc::ResolveVis()->get_picked_object_zbuf_val();
 
     ObjectType type = PID_TYPE(picked_object.object_pid);
-    if (type == OBJECT_Actor && pParty->_activeCharacter && picked_object.depth < 0x200 &&
-        pPlayers[pParty->_activeCharacter]->CanAct() &&
-        pPlayers[pParty->_activeCharacter]->CanSteal()) {
+    if (type == OBJECT_Actor && pParty->hasActiveCharacter() && picked_object.depth < 0x200 &&
+        pPlayers[pParty->getActiveCharacter()]->CanAct() &&
+        pPlayers[pParty->getActiveCharacter()]->CanSteal()) {
         pCurrentFrameMessageQueue->AddGUIMessage(
             UIMSG_STEALFROMACTOR,
             PID_ID(picked_object.object_pid),
@@ -350,7 +350,7 @@ bool UI_OnKeyDown(PlatformKey key) {
             if (win->pCurrentPosActiveItem - win->pStartingPosActiveItem - v12 >= 0) {
                 win->pCurrentPosActiveItem -= v12;
                 if (current_screen_type == CURRENT_SCREEN::SCREEN_PARTY_CREATION) {
-                    pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
                 }
             }
             if (win->field_30 != 0) {
@@ -364,7 +364,7 @@ bool UI_OnKeyDown(PlatformKey key) {
             if (v7 < win->pNumPresenceButton + win->pStartingPosActiveItem) {
                 win->pCurrentPosActiveItem = v7;
                 if (current_screen_type == CURRENT_SCREEN::SCREEN_PARTY_CREATION) {
-                    pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
                 }
             }
             if (win->field_30 != 0) {

@@ -190,31 +190,31 @@ int PlayerCreation_GetUnspentAttributePointCount() {
     int PenaltyMult;
     int BonusMult;
 
-    for (int playerNum = 0; playerNum < 4; playerNum++) {
-        raceId = pParty->pPlayers[playerNum].GetRace();
+    for (Player &player : pParty->pPlayers) {
+        raceId = player.GetRace();
 
         for (int statNum = 0; statNum <= 6; statNum++) {
             switch (statNum) {
                 case 0:
-                    CurrentStatValue = pParty->pPlayers[playerNum].uMight;
+                    CurrentStatValue = player.uMight;
                     break;
                 case 1:
-                    CurrentStatValue = pParty->pPlayers[playerNum].uIntelligence;
+                    CurrentStatValue = player.uIntelligence;
                     break;
                 case 2:
-                    CurrentStatValue = pParty->pPlayers[playerNum].uWillpower;
+                    CurrentStatValue = player.uWillpower;
                     break;
                 case 3:
-                    CurrentStatValue = pParty->pPlayers[playerNum].uEndurance;
+                    CurrentStatValue = player.uEndurance;
                     break;
                 case 4:
-                    CurrentStatValue = pParty->pPlayers[playerNum].uAccuracy;
+                    CurrentStatValue = player.uAccuracy;
                     break;
                 case 5:
-                    CurrentStatValue = pParty->pPlayers[playerNum].uSpeed;
+                    CurrentStatValue = player.uSpeed;
                     break;
                 case 6:
-                    CurrentStatValue = pParty->pPlayers[playerNum].uLuck;
+                    CurrentStatValue = player.uLuck;
                     break;
             }
 
@@ -749,8 +749,8 @@ int Player::CreateItemInInventory(unsigned int uSlot, ITEM_TYPE uItemID) {
     signed int freeSlot = FindFreeInventoryListSlot();
 
     if (freeSlot == -1) {  // no room
-        if (pParty->_activeCharacter) {
-            pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_NoRoom);
+        if (pParty->hasActiveCharacter()) {
+            pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_NoRoom);
         }
 
         return 0;
@@ -801,12 +801,12 @@ int Player::AddItem(int index, ITEM_TYPE uItemID) {
             }
         }
 
-        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_error);
         return 0;  // no space cant add item
     }
 
     if (!CanFitItem(index, uItemID)) {
-        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_error);
         return 0;  // cant fit item
     }
 
@@ -1955,14 +1955,11 @@ int Player::ReceiveSpecialAttackEffect(
     }
 
     signed int savecheck = GetParameterBonus(luckstat) + statcheckbonus + 30;
-    signed int whichplayer;
 
     if (grng->Random(savecheck) >= 30) {  // saving throw if attacke is avoided
         return 0;
     } else {
-        for (whichplayer = 0; whichplayer < 4; whichplayer++) {
-            if (this == pPlayers[whichplayer + 1]) break;
-        }
+        int whichplayer = pParty->getCharacterIdInParty(this);
 
         // pass this to new fucntion??
         // atttypecast - whichplayer - itemtobreak - itemtostealinvindex
@@ -1970,112 +1967,112 @@ int Player::ReceiveSpecialAttackEffect(
         switch (attTypeCast) {
             case SPECIAL_ATTACK_CURSE:
                 SetCondition(Condition_Cursed, 1);
-                pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star1);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_WEAK:
                 SetCondition(Condition_Weak, 1);
-                pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star1);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_SLEEP:
                 SetCondition(Condition_Sleep, 1);
-                pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star1);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_DRUNK:
                 SetCondition(Condition_Drunk, 1);
-                pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star1);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_INSANE:
                 SetCondition(Condition_Insane, 1);
-                pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star4);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_POISON_WEAK:
                 SetCondition(Condition_Poison_Weak, 1);
-                pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star2);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_POISON_MEDIUM:
                 SetCondition(Condition_Poison_Medium, 1);
-                pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star2);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_POISON_SEVERE:
                 SetCondition(Condition_Poison_Severe, 1);
-                pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star2);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_DISEASE_WEAK:
                 SetCondition(Condition_Disease_Weak, 1);
-                pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star2);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_DISEASE_MEDIUM:
                 SetCondition(Condition_Disease_Medium, 1);
-                pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star2);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_DISEASE_SEVERE:
                 SetCondition(Condition_Disease_Severe, 1);
-                pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star2);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_PARALYZED:
                 SetCondition(Condition_Paralyzed, 1);
-                pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star4);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_UNCONSCIOUS:
                 SetCondition(Condition_Unconscious, 1);
-                pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star4);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_DEAD:
                 SetCondition(Condition_Dead, 1);
-                pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_eradicate);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_PETRIFIED:
                 SetCondition(Condition_Petrified, 1);
-                pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_eradicate);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_ERADICATED:
                 SetCondition(Condition_Eradicated, 1);
-                pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_eradicate);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
@@ -2086,7 +2083,7 @@ int Player::ReceiveSpecialAttackEffect(
                 if (!(itemtobreak->uAttributes & ITEM_HARDENED)) {
                     playReaction(SPEECH_ItemBroken);
                     itemtobreak->SetBroken();
-                    pAudioPlayer->PlaySound(SOUND_metal_vs_metal03h, 0, 0, -1, 0, 0);
+                    pAudioPlayer->playUISound(SOUND_metal_vs_metal03h);
                 }
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
@@ -2107,7 +2104,7 @@ int Player::ReceiveSpecialAttackEffect(
                        &this->pInventoryItemList[this->pInventoryMatrix[itemtostealinvindex] - 1],
                        0x24u);
                 RemoveItemAtInventoryIndex(itemtostealinvindex);
-                pAudioPlayer->PlaySound(SOUND_metal_vs_metal03h, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_metal_vs_metal03h);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
@@ -2116,7 +2113,7 @@ int Player::ReceiveSpecialAttackEffect(
             case SPECIAL_ATTACK_AGING:
                 playReaction(SPEECH_Aging);
                 ++this->sAgeModifier;
-                pAudioPlayer->PlaySound(SOUND_eleccircle, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_eleccircle);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
@@ -2124,14 +2121,14 @@ int Player::ReceiveSpecialAttackEffect(
             case SPECIAL_ATTACK_MANA_DRAIN:
                 playReaction(SPEECH_SPDrained);
                 this->sMana = 0;
-                pAudioPlayer->PlaySound(SOUND_eleccircle, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_eleccircle);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_FEAR:
                 SetCondition(Condition_Fear, 1);
-                pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_star1);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
                 break;
@@ -2519,8 +2516,8 @@ bool Player::Recover(GameTime dt) {
     } else {
         uTimeToRecovery = 0;  // recovered
 
-        if (!pParty->_activeCharacter)  // set recoverd char as active
-            pParty->_activeCharacter = pParty->GetNextActiveCharacter();
+        if (!pParty->hasActiveCharacter())  // set recoverd char as active
+            pParty->switchToNextActiveCharacter();
 
         return false;
     }
@@ -2533,9 +2530,9 @@ void Player::SetRecoveryTime(signed int rec) {
 
     if (rec > uTimeToRecovery) uTimeToRecovery = rec;
 
-    if (pParty->_activeCharacter != 0 && pPlayers[pParty->_activeCharacter] == this &&
-        !some_active_character)
-        pParty->_activeCharacter = pParty->GetNextActiveCharacter();
+    if (pParty->hasActiveCharacter() && pPlayers[pParty->getActiveCharacter()] == this &&
+        !enchantingActiveCharacter)
+        pParty->switchToNextActiveCharacter();
 }
 
 //----- (0048E9B7) --------------------------------------------------------
@@ -3773,10 +3770,10 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             playerAffected->playReaction(SPEECH_DrinkPotion);
         } else {
             GameUI_SetStatusBar(LSTR_FMT_S_CANT_BE_USED_THIS_WAY, pParty->pPickedItem.GetDisplayName().c_str());
-            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_error);
             return;
         }
-        pAudioPlayer->PlaySound(SOUND_eat, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_eat);
 
         if (pGUIWindow_CurrentMenu &&
             pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {
@@ -4193,10 +4190,10 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     pParty->pPickedItem.GetDisplayName().c_str()
                 );
 
-                pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_error);
                 return;
         }
-        pAudioPlayer->PlaySound(SOUND_drink, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_drink);
         if (pGUIWindow_CurrentMenu &&
             pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {
             //         if ( !v73 ) v73 is always 1 at this point
@@ -4229,12 +4226,12 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 )
             );
 
-            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_error);
             return;
         }
         if (engine->IsUnderwater()) {
             GameUI_SetStatusBar(LSTR_CANT_DO_UNDERWATER);
-            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_error);
             return;
         }
 
@@ -4268,7 +4265,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 pParty->pPickedItem.GetDisplayName().c_str()
             );
 
-            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_error);
             return;
         }
         if (!playerAffected->CanAct()) {
@@ -4279,7 +4276,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 )
             );
 
-            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_error);
             return;
         }
         // TODO: get rid of this messy cast
@@ -4359,7 +4356,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             )
         );
 
-        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_error);
         return;
     } else {
         if (pParty->pPickedItem.uItemID == ITEM_GENIE_LAMP) {
@@ -4487,37 +4484,38 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             mouse->RemoveHoldingItem();
             spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, player_num - 1);
             playerAffected->playReaction(SPEECH_QuestGot);
-            pAudioPlayer->PlaySound(SOUND_chimes, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_chimes);
             if (pParty->uCurrentDayOfMonth == 6 ||
                 pParty->uCurrentDayOfMonth == 20) {
                 playerAffected->SetCondition(Condition_Eradicated, 0);
-                pAudioPlayer->PlaySound(SOUND_gong, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_gong);
             } else if (pParty->uCurrentDayOfMonth == 12 ||
                        pParty->uCurrentDayOfMonth == 26) {
                 playerAffected->SetCondition(Condition_Dead, 0);
-                pAudioPlayer->PlaySound(SOUND_gong, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_gong);
             } else if (pParty->uCurrentDayOfMonth == 4 ||
                        pParty->uCurrentDayOfMonth == 25) {
                 playerAffected->SetCondition(Condition_Petrified, 0);
-                pAudioPlayer->PlaySound(SOUND_gong, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_gong);
             }
             return;
         } else if (pParty->pPickedItem.uItemID == ITEM_RED_APPLE) {
             pParty->GiveFood(1);
-            pAudioPlayer->PlaySound(SOUND_eat, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_eat);
         } else if (pParty->pPickedItem.uItemID == ITEM_QUEST_LUTE) {
-            pAudioPlayer->PlaySound(SOUND_luteguitar, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_luteguitar);
             return;
         } else if (pParty->pPickedItem.uItemID == ITEM_QUEST_FAERIE_PIPES) {
-            pAudioPlayer->PlaySound(SOUND_panflute, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_panflute);
             return;
         } else if (pParty->pPickedItem.uItemID == ITEM_QUEST_GRYPHONHEARTS_TRUMPET) {
-            pAudioPlayer->PlaySound(SOUND_trumpet, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_trumpet);
             return;
         } else if (pParty->pPickedItem.uItemID == ITEM_HORSESHOE) {
             spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, player_num - 1);
-            v5 = PID(OBJECT_Player, player_num + 49);
-            pAudioPlayer->PlaySound(SOUND_quest, v5, 0, -1, 0, 0);
+            //v5 = PID(OBJECT_Player, player_num + 49);
+            //pAudioPlayer->PlaySound(SOUND_quest, v5, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_quest);
             playerAffected->AddVariable(VAR_NumSkillPoints, 2);
         } else if (pParty->pPickedItem.uItemID == ITEM_TEMPLE_IN_A_BOTTLE) {
             TeleportToNWCDungeon();
@@ -4528,7 +4526,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 pParty->pPickedItem.GetDisplayName().c_str()
             );
 
-            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_error);
             return;
         }
 
@@ -4872,14 +4870,14 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_CircusPrises:  // isn't used in MM6 since 0x1D6u is a book of
                                 // regeneration
             v4 = 0;
-            for (int playerNum = 0; playerNum < 4; playerNum++) {
+            for (Player &player : pParty->pPlayers) {
                 for (int invPos = 0; invPos < TOTAL_ITEM_SLOT_COUNT; invPos++) {
                     ITEM_TYPE itemId;
 
                     if (invPos < INVENTORY_SLOT_COUNT) {
-                        itemId = pParty->pPlayers[playerNum].pInventoryItemList[invPos].uItemID;
+                        itemId = player.pInventoryItemList[invPos].uItemID;
                     } else {
-                        itemId = pParty->pPlayers[playerNum].pEquippedItems[invPos - INVENTORY_SLOT_COUNT].uItemID;
+                        itemId = player.pEquippedItems[invPos - INVENTORY_SLOT_COUNT].uItemID;
                     }
                     switch (itemId) {
                         case ITEM_SPELLBOOK_REGENERATION:
@@ -4966,8 +4964,7 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
 
 //----- (0044A5CB) --------------------------------------------------------
 void Player::SetVariable(VariableType var_type, signed int var_value) {
-    int gold;
-    int food;
+    int gold{}, food{};
     DDM_DLV_Header* ddm;
     ItemGen item;
 
@@ -5518,9 +5515,10 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
 
 //----- (new function) --------------------------------------------------------
 void Player::PlayAwardSound() {
-    int playerIndex = GetPlayerIndex();
-    int v25 = PID(OBJECT_Player, playerIndex + 48);
-    pAudioPlayer->PlaySound(SOUND_quest, v25, 0, -1, 0, 0);
+    //int playerIndex = GetPlayerIndex();
+    //int v25 = PID(OBJECT_Player, playerIndex + 48);
+    //pAudioPlayer->PlaySound(SOUND_quest, v25, 0, -1, 0, 0);
+    pAudioPlayer->playUISound(SOUND_quest);
 }
 
 //----- (new function) --------------------------------------------------------
@@ -5552,8 +5550,7 @@ void Player::SetSkillByEvent(uint16_t Player::*skillToSet,
 
 //----- (0044AFFB) --------------------------------------------------------
 void Player::AddVariable(VariableType var_type, signed int val) {
-    int gold;
-    int food;
+    int food{};
     DDM_DLV_Header* ddm;
     ItemGen item;
 
@@ -6672,28 +6669,28 @@ void Player::EquipBody(ITEM_EQUIP_TYPE uEquipType) {
     tempPickedItem.Reset();
     itemAnchor = pEquipTypeToBodyAnchor[uEquipType];
     itemInvLocation =
-        pPlayers[pParty->_activeCharacter]->pEquipment.pIndices[itemAnchor];
+        pPlayers[pParty->getActiveCharacter()]->pEquipment.pIndices[itemAnchor];
     if (itemInvLocation) {  //переодеться в другую вещь
         memcpy(&tempPickedItem, &pParty->pPickedItem, sizeof(tempPickedItem));
-        pPlayers[pParty->_activeCharacter]
+        pPlayers[pParty->getActiveCharacter()]
             ->pInventoryItemList[itemInvLocation - 1]
             .uBodyAnchor = ITEM_SLOT_INVALID;
         pParty->pPickedItem.Reset();
-        pParty->SetHoldingItem(&pPlayers[pParty->_activeCharacter]
+        pParty->SetHoldingItem(&pPlayers[pParty->getActiveCharacter()]
                                     ->pInventoryItemList[itemInvLocation - 1]);
         tempPickedItem.uBodyAnchor = itemAnchor;
-        memcpy(&pPlayers[pParty->_activeCharacter]
+        memcpy(&pPlayers[pParty->getActiveCharacter()]
                     ->pInventoryItemList[itemInvLocation - 1],
                &tempPickedItem, sizeof(ItemGen));
-        pPlayers[pParty->_activeCharacter]->pEquipment.pIndices[itemAnchor] =
+        pPlayers[pParty->getActiveCharacter()]->pEquipment.pIndices[itemAnchor] =
             itemInvLocation;
     } else {  // одеть вещь
-        freeSlot = pPlayers[pParty->_activeCharacter]->FindFreeInventoryListSlot();
+        freeSlot = pPlayers[pParty->getActiveCharacter()]->FindFreeInventoryListSlot();
         if (freeSlot >= 0) {
             pParty->pPickedItem.uBodyAnchor = itemAnchor;
-            memcpy(&pPlayers[pParty->_activeCharacter]->pInventoryItemList[freeSlot],
+            memcpy(&pPlayers[pParty->getActiveCharacter()]->pInventoryItemList[freeSlot],
                    &pParty->pPickedItem, sizeof(ItemGen));
-            pPlayers[pParty->_activeCharacter]->pEquipment.pIndices[itemAnchor] =
+            pPlayers[pParty->getActiveCharacter()]->pEquipment.pIndices[itemAnchor] =
                 freeSlot + 1;
             mouse->RemoveHoldingItem();
         }
@@ -6708,12 +6705,12 @@ int CycleCharacter(bool backwards) {
 
     for (int i = 0; i < (PARTYSIZE - 1); i++) {
         int currCharId =
-            ((pParty->_activeCharacter + mult * i + valToAdd) % PARTYSIZE) + 1;
+            ((pParty->getActiveCharacter() + mult * i + valToAdd) % PARTYSIZE) + 1;
         if (pPlayers[currCharId]->uTimeToRecovery == 0) {
             return currCharId;
         }
     }
-    return pParty->_activeCharacter;
+    return pParty->getActiveCharacter();
 }
 
 //----- (0043EE77) --------------------------------------------------------
@@ -6759,9 +6756,9 @@ bool ShouldLoadTexturesForRaceAndGender(unsigned int _this) {
     CHARACTER_RACE race;  // edi@2
     PLAYER_SEX sex;       // eax@2
 
-    for (int i = 1; i <= 4; i++) {
-        race = pPlayers[i]->GetRace();
-        sex = pPlayers[i]->GetSexByVoice();
+    for (Player &player : pParty->pPlayers) {
+        race = player.GetRace();
+        sex = player.GetSexByVoice();
         switch (_this) {
             case 0:
                 if ((race == CHARACTER_RACE_HUMAN ||
@@ -6792,8 +6789,8 @@ bool ShouldLoadTexturesForRaceAndGender(unsigned int _this) {
 
 //----- (0043ED6F) --------------------------------------------------------
 bool IsDwarfPresentInParty(bool a1) {
-    for (uint i = 0; i < 4; ++i) {
-        CHARACTER_RACE race = pParty->pPlayers[i].GetRace();
+    for (Player &player : pParty->pPlayers) {
+        CHARACTER_RACE race = player.GetRace();
 
         if (race == CHARACTER_RACE_DWARF && a1)
             return true;
@@ -6807,9 +6804,8 @@ bool IsDwarfPresentInParty(bool a1) {
 void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i* pPos, signed int targetchar) {
     // target player? if any
 
-    int spellId;                  // eax@38
+    SPELL_TYPE spellId;
     signed int recvdMagicDmg;     // eax@139
-    int v72[4] {};                   // [sp+30h] [bp-24h]@164
     int healthBeforeRecvdDamage;  // [sp+48h] [bp-Ch]@3
 
     ObjectType pidtype = PID_TYPE(uObjID);
@@ -6997,15 +6993,10 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             if (targetchar != -1) {
                 playerPtr = &pParty->pPlayers[targetchar];
             } else {
-                int activePlayerCounter = 0;
-                for (int i = 1; i <= 4; i++) {
-                    if (pPlayers[i]->CanAct()) {
-                        v72[activePlayerCounter] = i;
-                        activePlayerCounter++;
-                    }
-                }
-                if (activePlayerCounter) {
-                    playerPtr = &pParty->pPlayers[v72[grng->Random(activePlayerCounter)] - 1];
+                int id = pParty->getRandomActiveCharacterId(grng.get());
+
+                if (id != -1) {
+                    playerPtr = &pParty->pPlayers[id];
                 } else {
                     // for rare instances where party is "dead" at this point but still being damaged
                     playerPtr = &pParty->pPlayers[grng->Random(3)];
@@ -7210,14 +7201,14 @@ void Player::OnInventoryLeftClick() {
                     /* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &=
                      *0x7Fu;
                      *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 2) =
-                     *pParty->_activeCharacter - 1;
+                     *pParty->getActiveCharacter() - 1;
                      *((int *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
                      *enchantedItemPos - 1;
                      *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
                      *invMatrixIndex;*/
                     pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
                     pSpellInfo->uFlags &= ~ON_CAST_TargetedEnchantment;
-                    pSpellInfo->uPlayerID_2 = pParty->_activeCharacter - 1;
+                    pSpellInfo->uPlayerID_2 = pParty->getActiveCharacter() - 1;
                     pSpellInfo->spell_target_pid = enchantedItemPos - 1;
                     pSpellInfo->field_6 = this->GetItemMainInventoryIndex(invMatrixIndex);
                     ptr_50C9A4_ItemToEnchant = &this->pInventoryItemList[enchantedItemPos - 1];
@@ -7468,21 +7459,8 @@ ItemGen* Player::GetItem(unsigned int PlayerEquipment::*itemPos) {
     return &this->pInventoryItemList[this->pEquipment.*itemPos - 1];
 }
 
-int Player::GetPlayerIndex() {  // PS - RETURN PLAYER INDEX
-    int uPlayerIdx = 0;
-
-    if (this == pPlayers[1])
-        uPlayerIdx = 0;
-    else if (this == pPlayers[2])
-        uPlayerIdx = 1;
-    else if (this == pPlayers[3])
-        uPlayerIdx = 2;
-    else if (this == pPlayers[4])
-        uPlayerIdx = 3;
-    else
-        Error("Unexpected player pointer");
-
-    return uPlayerIdx;
+int Player::GetPlayerIndex() {
+    return pParty->getCharacterIdInParty(this);
 }
 
 //----- (004272F5) --------------------------------------------------------
@@ -7534,8 +7512,8 @@ void Player::_42ECB5_PlayerAttacksActor() {
     //  unsigned int v12; // eax@47
     //  SoundID v24; // [sp-4h] [bp-40h]@58
 
-    // result = pParty->pPlayers[pParty->_activeCharacter-1].CanAct();
-    Player* player = &pParty->pPlayers[pParty->_activeCharacter - 1];
+    // result = pParty->pPlayers[pParty->getActiveCharacter()-1].CanAct();
+    Player* player = &pParty->pPlayers[pParty->getActiveCharacter() - 1];
     if (!player->CanAct()) return;
 
     CastSpellInfoHelpers::cancelSpellCastInProgress();
@@ -7610,14 +7588,14 @@ void Player::_42ECB5_PlayerAttacksActor() {
     if (laser_weapon_item_id != ITEM_NULL) {
         shotting_laser = true;
         pushSpellOrRangedAttack(SPELL_LASER_PROJECTILE,
-                                pParty->_activeCharacter - 1, 0, 0,
-                                pParty->_activeCharacter + 8);
+                                pParty->getActiveCharacter() - 1, 0, 0,
+                                pParty->getActiveCharacter() + 8);
     } else if (wand_item_id != ITEM_NULL) {
         shooting_wand = true;
 
         int main_hand_idx = player->pEquipment.uMainHand;
         pushSpellOrRangedAttack(WandSpellIds[player->pInventoryItemList[main_hand_idx - 1].uItemID],
-                                pParty->_activeCharacter - 1, 8, 0, pParty->_activeCharacter + 8);
+                                pParty->getActiveCharacter() - 1, 8, 0, pParty->getActiveCharacter() + 8);
 
         if (!--player->pInventoryItemList[main_hand_idx - 1].uNumCharges)
             player->pEquipment.uMainHand = 0;
@@ -7627,17 +7605,17 @@ void Player::_42ECB5_PlayerAttacksActor() {
         Vec3i a3 = actor->vPosition - pParty->vPosition;
         normalize_to_fixpoint(&a3.x, &a3.y, &a3.z);
 
-        Actor::DamageMonsterFromParty(PID(OBJECT_Player, pParty->_activeCharacter - 1),
+        Actor::DamageMonsterFromParty(PID(OBJECT_Player, pParty->getActiveCharacter() - 1),
                                       target_id, &a3);
         if (player->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_MAIN_HAND) ||
             player->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_OFF_HAND))
             _42FA66_do_explosive_impact(
                 actor->vPosition.x, actor->vPosition.y,
                 actor->vPosition.z + actor->uActorHeight / 2, 0, 512,
-                pParty->_activeCharacter);
+                pParty->getActiveCharacter());
     } else if (bow_idx) {
         shooting_bow = true;
-        pushSpellOrRangedAttack(SPELL_BOW_ARROW, pParty->_activeCharacter - 1, 0, 0, 0);
+        pushSpellOrRangedAttack(SPELL_BOW_ARROW, pParty->getActiveCharacter() - 1, 0, 0, 0);
     } else {
         melee_attack = true;
         // ; // actor out of range or no actor; no ranged weapon so melee
@@ -7668,28 +7646,28 @@ void Player::_42ECB5_PlayerAttacksActor() {
 
     switch (skill) {
         case PLAYER_SKILL_STAFF:
-            pAudioPlayer->PlaySound(SOUND_swing_with_blunt_weapon01, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_swing_with_blunt_weapon01);
             break;
         case PLAYER_SKILL_SWORD:
-            pAudioPlayer->PlaySound(SOUND_swing_with_sword01, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_swing_with_sword01);
             break;
         case PLAYER_SKILL_DAGGER:
-            pAudioPlayer->PlaySound(SOUND_swing_with_sword02, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_swing_with_sword02);
             break;
         case PLAYER_SKILL_AXE:
-            pAudioPlayer->PlaySound(SOUND_swing_with_axe01, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_swing_with_axe01);
             break;
         case PLAYER_SKILL_SPEAR:
-            pAudioPlayer->PlaySound(SOUND_swing_with_axe03, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_swing_with_axe03);
             break;
         case PLAYER_SKILL_BOW:
-            pAudioPlayer->PlaySound(SOUND_shoot_bow01, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_shoot_bow01);
             break;
         case PLAYER_SKILL_MACE:
-            pAudioPlayer->PlaySound(SOUND_swing_with_blunt_weapon03, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_swing_with_blunt_weapon03);
             break;
         case PLAYER_SKILL_BLASTER:
-            pAudioPlayer->PlaySound(SOUND_shoot_blaster01, 0, 0, -1, 0, 0);
+            pAudioPlayer->playUISound(SOUND_shoot_blaster01);
             break;
         default:
             break;
@@ -7765,7 +7743,7 @@ void Player::playReaction(PlayerSpeech speech, int a3) {
             int numberOfSubvariants = byte_4ECF08[pickedVariant - 1][uVoiceID];
             if (numberOfSubvariants > 0) {
                 pickedSoundID = vrng->Random(numberOfSubvariants) + 2 * (pickedVariant + 50 * uVoiceID) + 4998;
-                pAudioPlayer->PlaySound((SoundID)pickedSoundID, PID(OBJECT_Player, pParty->_activeCharacter + 39), 0, -1, 0, 0);
+                pAudioPlayer->PlaySound((SoundID)pickedSoundID, PID(OBJECT_Player, pParty->getActiveCharacter() + 39), 0, -1, 0, 0);
             }
         }
     }

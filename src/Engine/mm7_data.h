@@ -158,7 +158,7 @@ extern struct stru367 PortalFace;
 extern std::array<int, 100> dword_50BC10;
 extern std::array<int, 100> dword_50BDA0;
 extern char TownPortalCasterId;
-extern int some_active_character;
+extern int enchantingActiveCharacter;
 extern std::array<unsigned int, 5> pIconIDs_Turn;
 extern unsigned int uIconID_TurnStop;
 extern unsigned int uIconID_TurnHour;
@@ -178,7 +178,6 @@ extern struct NPCData *GateMasterNPCData; // 50C9E0 NPC Data used as parameter f
 // extern int dword_50C9EC[]; // 50C9EC
 extern int dword_50CDC8;
 extern char pStartingMapName[32];  // idb
-extern std::array<uint8_t, 5> IsPlayerWearingWatersuit;
 extern std::array<char, 54> party_has_equipment;
 
 extern unsigned int uNumBlueFacesInBLVMinimap;

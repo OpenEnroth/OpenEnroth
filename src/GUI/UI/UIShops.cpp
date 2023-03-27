@@ -86,7 +86,7 @@ void ShopDialogMain(GUIWindow dialogwin) {
 void ShopDialogDisplayEquip(GUIWindow dialogwin,
                             BuildingType building = BuildingType_WeaponShop) {
     draw_leather();
-    CharacterUI_InventoryTab_Draw(pPlayers[pParty->_activeCharacter], true);
+    CharacterUI_InventoryTab_Draw(pPlayers[pParty->getActiveCharacter()], true);
 
     pShopOptions[0] = localization->GetString(LSTR_SELL);
     pShopOptions[1] = localization->GetString(LSTR_IDENTIFY);
@@ -136,7 +136,7 @@ void ShopDialogDisplayEquip(GUIWindow dialogwin,
 
 void ShopDialogSellEquip(GUIWindow dialogwin, BuildingType building) {
     draw_leather();
-    CharacterUI_InventoryTab_Draw(pPlayers[pParty->_activeCharacter], true);
+    CharacterUI_InventoryTab_Draw(pPlayers[pParty->getActiveCharacter()], true);
 
     if (HouseUI_CheckIfPlayerCanInteract()) {
         GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_SELL), 0);
@@ -147,15 +147,15 @@ void ShopDialogSellEquip(GUIWindow dialogwin, BuildingType building) {
         if (pt.x <= 13 || pt.x >= 462)
             return;
 
-        int pItemID = pPlayers[pParty->_activeCharacter]->GetItemListAtInventoryIndex(invindex);
+        int pItemID = pPlayers[pParty->getActiveCharacter()]->GetItemListAtInventoryIndex(invindex);
         if (pItemID) {
             ItemGen *item =
-                &pPlayers[pParty->_activeCharacter]->pInventoryItemList[pItemID - 1];
+                &pPlayers[pParty->getActiveCharacter()]->pInventoryItemList[pItemID - 1];
             MERCHANT_PHRASE phrases_id =
-                pPlayers[pParty->_activeCharacter]->SelectPhrasesTransaction(
+                pPlayers[pParty->getActiveCharacter()]->SelectPhrasesTransaction(
                     item, building, window_SpeakInHouse->wData.val, 3);
             auto str = BuildDialogueString(
-                pMerchantsSellPhrases[phrases_id], pParty->_activeCharacter - 1, item,
+                pMerchantsSellPhrases[phrases_id], pParty->getActiveCharacter() - 1, item,
                 window_SpeakInHouse->wData.val, 3);
             dialogwin.DrawTitleText(pFontArrus, 0,
                                     (174 - pFontArrus->CalcTextHeight(
@@ -168,7 +168,7 @@ void ShopDialogSellEquip(GUIWindow dialogwin, BuildingType building) {
 
 void ShopDialogIdentify(GUIWindow dialogwin, BuildingType building) {
     draw_leather();
-    CharacterUI_InventoryTab_Draw(pPlayers[pParty->_activeCharacter], true);
+    CharacterUI_InventoryTab_Draw(pPlayers[pParty->getActiveCharacter()], true);
 
     if (HouseUI_CheckIfPlayerCanInteract()) {
         GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_IDENTIFY), 0);
@@ -178,20 +178,20 @@ void ShopDialogIdentify(GUIWindow dialogwin, BuildingType building) {
         int invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
         if (pt.x <= 13 || pt.x >= 462) return;
 
-        int pItemID = pPlayers[pParty->_activeCharacter]->GetItemListAtInventoryIndex(invindex);
+        int pItemID = pPlayers[pParty->getActiveCharacter()]->GetItemListAtInventoryIndex(invindex);
 
         if (pItemID) {
-            ItemGen *item = &pPlayers[pParty->_activeCharacter]->pInventoryItemList[pItemID - 1];
+            ItemGen *item = &pPlayers[pParty->getActiveCharacter()]->pInventoryItemList[pItemID - 1];
 
             std::string str;
             if (!item->IsIdentified()) {
-                MERCHANT_PHRASE phrases_id = pPlayers[pParty->_activeCharacter]->SelectPhrasesTransaction(
+                MERCHANT_PHRASE phrases_id = pPlayers[pParty->getActiveCharacter()]->SelectPhrasesTransaction(
                     item, building, window_SpeakInHouse->wData.val, 4);
                 str = BuildDialogueString(
-                    pMerchantsIdentifyPhrases[phrases_id], pParty->_activeCharacter - 1,
+                    pMerchantsIdentifyPhrases[phrases_id], pParty->getActiveCharacter() - 1,
                     item, window_SpeakInHouse->wData.val, 4);
             } else {
-                str = BuildDialogueString("%24", pParty->_activeCharacter - 1, item,
+                str = BuildDialogueString("%24", pParty->getActiveCharacter() - 1, item,
                     window_SpeakInHouse->wData.val, 4);
             }
 
@@ -203,7 +203,7 @@ void ShopDialogIdentify(GUIWindow dialogwin, BuildingType building) {
 
 void ShopDialogRepair(GUIWindow dialogwin, BuildingType building) {
     draw_leather();
-    CharacterUI_InventoryTab_Draw(pPlayers[pParty->_activeCharacter], true);
+    CharacterUI_InventoryTab_Draw(pPlayers[pParty->getActiveCharacter()], true);
 
     if (HouseUI_CheckIfPlayerCanInteract()) {
         GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_REPAIR), 0);
@@ -214,17 +214,17 @@ void ShopDialogRepair(GUIWindow dialogwin, BuildingType building) {
         if (pt.x <= 13 || pt.x >= 462)
             return;
 
-        int pItemID = pPlayers[pParty->_activeCharacter]->GetItemListAtInventoryIndex(invindex);
+        int pItemID = pPlayers[pParty->getActiveCharacter()]->GetItemListAtInventoryIndex(invindex);
         if (pItemID == 0)
             return;
 
-        if ((pPlayers[pParty->_activeCharacter]->pOwnItems[pItemID - 1].uAttributes &
+        if ((pPlayers[pParty->getActiveCharacter()]->pOwnItems[pItemID - 1].uAttributes &
              ITEM_BROKEN)) {
-            ItemGen *item = &pPlayers[pParty->_activeCharacter]->pInventoryItemList[pItemID - 1];
-            MERCHANT_PHRASE phrases_id = pPlayers[pParty->_activeCharacter]->SelectPhrasesTransaction(
+            ItemGen *item = &pPlayers[pParty->getActiveCharacter()]->pInventoryItemList[pItemID - 1];
+            MERCHANT_PHRASE phrases_id = pPlayers[pParty->getActiveCharacter()]->SelectPhrasesTransaction(
                 item, building, window_SpeakInHouse->wData.val, 5);
             std::string str = BuildDialogueString(
-                pMerchantsRepairPhrases[phrases_id], pParty->_activeCharacter - 1, item,
+                pMerchantsRepairPhrases[phrases_id], pParty->getActiveCharacter() - 1, item,
                 window_SpeakInHouse->wData.val, 5);
             dialogwin.DrawTitleText(pFontArrus, 0,
                 (174 - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + 138, colorTable.White.c16(), str, 3);
@@ -239,7 +239,7 @@ void ShopDialogLearn(GUIWindow dialogwin) {
     int all_text_height = 0;
 
     int baseprice = (int64_t)(p2DEvents[window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
-    int pPrice = baseprice * (100 - pPlayers[pParty->_activeCharacter]->GetMerchant()) / 100;
+    int pPrice = baseprice * (100 - pPlayers[pParty->getActiveCharacter()]->GetMerchant()) / 100;
     if (pPrice < baseprice / 3)
         pPrice = baseprice / 3;
 
@@ -250,8 +250,8 @@ void ShopDialogLearn(GUIWindow dialogwin) {
         auto skill = GetLearningDialogueSkill(
             (DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param
         );
-        if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[pParty->_activeCharacter]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
-            && !pPlayers[pParty->_activeCharacter]->pActiveSkills[skill]) {
+        if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[pParty->getActiveCharacter()]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
+            && !pPlayers[pParty->getActiveCharacter()]->pActiveSkills[skill]) {
             all_text_height += pFontArrus->CalcTextHeight(
                 localization->GetSkillName(skill),
                 dialogwin.uFrameWidth, 0);
@@ -301,7 +301,7 @@ void WeaponShopWares(GUIWindow dialogwin, bool special) {
             }
         }
 
-        if (StealingMode(pParty->_activeCharacter))
+        if (StealingMode(pParty->getActiveCharacter()))
             GameUI_StatusBar_DrawImmediate(
                 localization->GetString(LSTR_STEAL_ITEM), 0);
         else
@@ -332,17 +332,17 @@ void WeaponShopWares(GUIWindow dialogwin, bool special) {
                         if (pt.y >= weapons_Ypos[testx] + 30 &&
                             pt.y < (weapons_Ypos[testx] + 30 + shop_ui_items_in_store[testx]->GetHeight())) {
                             std::string str;
-                            if (!StealingMode(pParty->_activeCharacter)) {
+                            if (!StealingMode(pParty->getActiveCharacter())) {
                                 str = BuildDialogueString(
-                                    pMerchantsBuyPhrases[pPlayers[pParty->_activeCharacter]->SelectPhrasesTransaction(
+                                    pMerchantsBuyPhrases[pPlayers[pParty->getActiveCharacter()]->SelectPhrasesTransaction(
                                                  item, BuildingType_WeaponShop,
                                                  window_SpeakInHouse->wData.val, 2)],
-                                    pParty->_activeCharacter - 1, item,
+                                    pParty->getActiveCharacter() - 1, item,
                                     window_SpeakInHouse->wData.val, 2);
                             } else {
                                 str = BuildDialogueString(
                                     localization->GetString(LSTR_STEAL_ITEM_FMT),
-                                    pParty->_activeCharacter - 1, item,
+                                    pParty->getActiveCharacter() - 1, item,
                                     window_SpeakInHouse->wData.val, 2);
                             }
                             dialogwin.DrawTitleText(
@@ -451,7 +451,7 @@ void ArmorShopWares(GUIWindow dialogwin, bool special) {
                 ++pItemCount;
         }
 
-        if (!StealingMode(pParty->_activeCharacter)) {
+        if (!StealingMode(pParty->getActiveCharacter())) {
             GameUI_StatusBar_DrawImmediate(
                 localization->GetString(LSTR_SELECT_ITEM_TO_BUY), 0);
         } else {
@@ -497,17 +497,17 @@ void ArmorShopWares(GUIWindow dialogwin, bool special) {
                             // y is 126 to 126 + height low or 98-height to 98
 
                             std::string str;
-                            if (!StealingMode(pParty->_activeCharacter)) {
+                            if (!StealingMode(pParty->getActiveCharacter())) {
                                 str = BuildDialogueString(
                                     pMerchantsBuyPhrases
-                                        [pPlayers[pParty->_activeCharacter]->SelectPhrasesTransaction(
+                                        [pPlayers[pParty->getActiveCharacter()]->SelectPhrasesTransaction(
                                                  item, BuildingType_ArmorShop, window_SpeakInHouse->wData.val, 2)],
-                                    pParty->_activeCharacter - 1, item,
+                                    pParty->getActiveCharacter() - 1, item,
                                     window_SpeakInHouse->wData.val, 2);
                             } else {
                                 str = BuildDialogueString(
                                     localization->GetString(LSTR_STEAL_ITEM_FMT),
-                                    pParty->_activeCharacter - 1, item,
+                                    pParty->getActiveCharacter() - 1, item,
                                     window_SpeakInHouse->wData.val, 2);
                             }
                             dialogwin.DrawTitleText(
@@ -627,7 +627,7 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
                 ++item_num;
         }
 
-        if (StealingMode(pParty->_activeCharacter)) {
+        if (StealingMode(pParty->getActiveCharacter())) {
             GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_STEAL_ITEM), 0);
         } else {
             GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), 0);
@@ -667,17 +667,17 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
                             // y is 152-h to 152 or 308-height to 308
 
                             std::string str;
-                            if (!StealingMode(pParty->_activeCharacter)) {
+                            if (!StealingMode(pParty->getActiveCharacter())) {
                                 str = BuildDialogueString(
                                     pMerchantsBuyPhrases
-                                        [pPlayers[pParty->_activeCharacter]
+                                        [pPlayers[pParty->getActiveCharacter()]
                                              ->SelectPhrasesTransaction(item, building, window_SpeakInHouse->wData.val, 2)],
-                                    pParty->_activeCharacter - 1, item,
+                                    pParty->getActiveCharacter() - 1, item,
                                     window_SpeakInHouse->wData.val, 2);
                             } else {
                                 str = BuildDialogueString(
                                     localization->GetString(LSTR_STEAL_ITEM_FMT),
-                                    pParty->_activeCharacter - 1, item,
+                                    pParty->getActiveCharacter() - 1, item,
                                     window_SpeakInHouse->wData.val, 2);
                             }
                             dialogwin.DrawTitleText(
@@ -809,7 +809,7 @@ void UIShop_Buy_Identify_Repair() {
     int uPriceItemService;     // [sp+ACh] [bp-8h]@12
 
     if (current_screen_type == CURRENT_SCREEN::SCREEN_E) {
-        pPlayers[pParty->_activeCharacter]->OnInventoryLeftClick();
+        pPlayers[pParty->getActiveCharacter()]->OnInventoryLeftClick();
         return;
     }
 
@@ -823,7 +823,7 @@ void UIShop_Buy_Identify_Repair() {
     switch (dialog_menu_id) {
         case DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
             current_character_screen_window = WINDOW_CharacterWindow_Inventory;
-            pPlayers[pParty->_activeCharacter]->OnInventoryLeftClick();
+            pPlayers[pParty->getActiveCharacter()]->OnInventoryLeftClick();
             break;
         }
 
@@ -847,7 +847,7 @@ void UIShop_Buy_Identify_Repair() {
                         if ((pt.y >= 90 && pt.y <= (90 + shop_ui_items_in_store[testx]->GetHeight())) ||
                             (pt.y >= 250 && pt.y <= (250 + shop_ui_items_in_store[testx]->GetHeight()))) {
                             pPriceMultiplier = p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
-                            uPriceItemService = pPlayers[pParty->_activeCharacter]->GetBuyingPrice(bought_item->GetValue(), pPriceMultiplier);
+                            uPriceItemService = pPlayers[pParty->getActiveCharacter()]->GetBuyingPrice(bought_item->GetValue(), pPriceMultiplier);
 
                             if (pParty->GetGold() < uPriceItemService) {
                                 PlayHouseSound(window_SpeakInHouse->wData.val, (HouseSoundID)2);
@@ -855,21 +855,21 @@ void UIShop_Buy_Identify_Repair() {
                                 return;
                             }
 
-                            taken_item = pPlayers[pParty->_activeCharacter]->AddItem(-1, bought_item->uItemID);
+                            taken_item = pPlayers[pParty->getActiveCharacter()]->AddItem(-1, bought_item->uItemID);
                             if (taken_item) {
                                 bought_item->SetIdentified();
                                 memcpy(
-                                    &pPlayers[pParty->_activeCharacter]->pInventoryItemList[taken_item - 1],
+                                    &pPlayers[pParty->getActiveCharacter()]->pInventoryItemList[taken_item - 1],
                                     bought_item, 0x24u);
                                 dword_F8B1E4 = 1;
                                 pParty->TakeGold(uPriceItemService);
                                 bought_item->Reset();
                                 render->ClearZBuffer();
-                                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_ItemBuy);
+                                pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_ItemBuy);
                                 return;
                             }
 
-                            pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_NoRoom);
+                            pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_NoRoom);
                             GameUI_SetStatusBar(LSTR_INVENTORY_IS_FULL);
                             break;
                         }
@@ -884,22 +884,22 @@ void UIShop_Buy_Identify_Repair() {
         case DIALOGUE_SHOP_SELL: {
             invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
             if (pt.x <= 13 || pt.x >= 462 ||
-                (pItemID = pPlayers[pParty->_activeCharacter]->GetItemListAtInventoryIndex(invindex),
+                (pItemID = pPlayers[pParty->getActiveCharacter()]->GetItemListAtInventoryIndex(invindex),
                  !pItemID))
                 return;
 
-            if (pPlayers[pParty->_activeCharacter]
+            if (pPlayers[pParty->getActiveCharacter()]
                     ->pInventoryItemList[pItemID - 1]
                     .MerchandiseTest(window_SpeakInHouse->wData.val)) {
                 dword_F8B1E4 = 1;
-                pPlayers[pParty->_activeCharacter]->SalesProcess(
+                pPlayers[pParty->getActiveCharacter()]->SalesProcess(
                     invindex, pItemID - 1, window_SpeakInHouse->wData.val);
                 render->ClearZBuffer();
-                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_ItemSold);
+                pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_ItemSold);
                 return;
             }
 
-            pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_WrongShop);
+            pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_WrongShop);
             pAudioPlayer->playUISound(SOUND_error);
             break;
         }
@@ -907,14 +907,14 @@ void UIShop_Buy_Identify_Repair() {
         case DIALOGUE_SHOP_IDENTIFY: {
             invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
             if (pt.x <= 13 || pt.x >= 462 ||
-                (pItemID = pPlayers[pParty->_activeCharacter]->GetItemListAtInventoryIndex(invindex),
+                (pItemID = pPlayers[pParty->getActiveCharacter()]->GetItemListAtInventoryIndex(invindex),
                  !pItemID))
                 return;
 
             uPriceItemService =
-                pPlayers[pParty->_activeCharacter]->GetPriceIdentification(
+                pPlayers[pParty->getActiveCharacter()]->GetPriceIdentification(
                     p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
-            item = &pPlayers[pParty->_activeCharacter]->pInventoryItemList[pItemID - 1];
+            item = &pPlayers[pParty->getActiveCharacter()]->pInventoryItemList[pItemID - 1];
 
             if (!(item->uAttributes & ITEM_IDENTIFIED)) {
                 if (item->MerchandiseTest(window_SpeakInHouse->wData.val)) {
@@ -922,7 +922,7 @@ void UIShop_Buy_Identify_Repair() {
                         dword_F8B1E4 = 1;
                         pParty->TakeGold(uPriceItemService);
                         item->uAttributes |= ITEM_IDENTIFIED;
-                        pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_ShopIdentify);
+                        pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_ShopIdentify);
                         GameUI_SetStatusBar(LSTR_DONE);
                         return;
                     }
@@ -933,27 +933,27 @@ void UIShop_Buy_Identify_Repair() {
                 }
 
                 pAudioPlayer->playUISound(SOUND_error);
-                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_WrongShop);
+                pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_WrongShop);
                 return;
             }
 
-            pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_AlreadyIdentified);
+            pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_AlreadyIdentified);
             break;
         }
 
         case DIALOGUE_SHOP_REPAIR: {
             invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
             if (pt.x <= 13 || pt.x >= 462 ||
-                (pItemID = pPlayers[pParty->_activeCharacter]->GetItemListAtInventoryIndex(
+                (pItemID = pPlayers[pParty->getActiveCharacter()]->GetItemListAtInventoryIndex(
                          invindex),
                  !pItemID))
                 return;
 
-            item = &pPlayers[pParty->_activeCharacter]->pInventoryItemList[pItemID - 1];
+            item = &pPlayers[pParty->getActiveCharacter()]->pInventoryItemList[pItemID - 1];
             pPriceMultiplier =
                 p2DEvents[window_SpeakInHouse->wData.val - 1]
                     .fPriceMultiplier;
-            uPriceItemService = pPlayers[pParty->_activeCharacter]->GetPriceRepair(
+            uPriceItemService = pPlayers[pParty->getActiveCharacter()]->GetPriceRepair(
                 item->GetValue(), pPriceMultiplier);
 
             if (item->uAttributes & ITEM_BROKEN) {
@@ -963,7 +963,7 @@ void UIShop_Buy_Identify_Repair() {
                         pParty->TakeGold(uPriceItemService);
                         item->uAttributes =
                             (item->uAttributes & ~ITEM_BROKEN) | ITEM_IDENTIFIED;
-                        pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_ShopRepair);
+                        pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_ShopRepair);
                         GameUI_SetStatusBar(LSTR_GOOD_AS_NEW);
                         return;
                     }
@@ -974,11 +974,11 @@ void UIShop_Buy_Identify_Repair() {
                 }
 
                 pAudioPlayer->playUISound(SOUND_error);
-                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_WrongShop);
+                pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_WrongShop);
                 return;
             }
 
-            pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_AlreadyIdentified);
+            pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_AlreadyIdentified);
             break;
         }
 
@@ -1145,7 +1145,7 @@ void UIShop_Buy_Identify_Repair() {
                     return;
             }
 
-            uPriceItemService = pPlayers[pParty->_activeCharacter]->GetBuyingPrice(
+            uPriceItemService = pPlayers[pParty->getActiveCharacter()]->GetBuyingPrice(
                 bought_item->GetValue(),
                 p2DEvents[window_SpeakInHouse->wData.val - 1]
                     .fPriceMultiplier);
@@ -1155,8 +1155,8 @@ void UIShop_Buy_Identify_Repair() {
                 a3 = pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)]
                          ._steal_perm;
             party_reputation = pParty->GetPartyReputation();
-            if (StealingMode(pParty->_activeCharacter)) {
-                uNumSeconds = pPlayers[pParty->_activeCharacter]->StealFromShop(
+            if (StealingMode(pParty->getActiveCharacter())) {
+                uNumSeconds = pPlayers[pParty->getActiveCharacter()]->StealFromShop(
                     bought_item, a3, party_reputation, 0, &a6);
                 if (!uNumSeconds) {
                     // caught stealing no item
@@ -1169,13 +1169,13 @@ void UIShop_Buy_Identify_Repair() {
                 return;
             }
 
-            v39 = pPlayers[pParty->_activeCharacter]->AddItem(-1, bought_item->uItemID);
+            v39 = pPlayers[pParty->getActiveCharacter()]->AddItem(-1, bought_item->uItemID);
             if (v39) {
                 bought_item->SetIdentified();
-                memcpy(&pPlayers[pParty->_activeCharacter]->pInventoryItemList[v39 - 1],
+                memcpy(&pPlayers[pParty->getActiveCharacter()]->pInventoryItemList[v39 - 1],
                        bought_item, sizeof(ItemGen));
                 if (uNumSeconds != 0) {  // stolen
-                    pPlayers[pParty->_activeCharacter]
+                    pPlayers[pParty->getActiveCharacter()]
                         ->pInventoryItemList[v39 - 1]
                         .SetStolen();
                     sub_4B1447_party_fine(window_SpeakInHouse->wData.val,
@@ -1186,10 +1186,10 @@ void UIShop_Buy_Identify_Repair() {
                 }
                 bought_item->Reset();
                 render->ClearZBuffer();
-                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_ItemBuy);
+                pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_ItemBuy);
                 return;
             } else {
-                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_NoRoom);
+                pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_NoRoom);
                 GameUI_SetStatusBar(LSTR_INVENTORY_IS_FULL);
                 return;
             }
@@ -1202,10 +1202,10 @@ void UIShop_Buy_Identify_Repair() {
                 v43 = (int64_t)(p2DEvents[
                     window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
                 uPriceItemService = v43 *
-                    (100 - pPlayers[pParty->_activeCharacter]->GetMerchant()) / 100;
+                    (100 - pPlayers[pParty->getActiveCharacter()]->GetMerchant()) / 100;
                 if (uPriceItemService < v43 / 3) uPriceItemService = v43 / 3;
-                if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[pParty->_activeCharacter]->classType][skill] != PLAYER_SKILL_MASTERY_NONE) {
-                    pSkill = &pPlayers[pParty->_activeCharacter]->pActiveSkills[skill];
+                if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[pParty->getActiveCharacter()]->classType][skill] != PLAYER_SKILL_MASTERY_NONE) {
+                    pSkill = &pPlayers[pParty->getActiveCharacter()]->pActiveSkills[skill];
                     if (!*pSkill) {
                         if (pParty->GetGold() < uPriceItemService) {
                             GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
@@ -1221,7 +1221,7 @@ void UIShop_Buy_Identify_Repair() {
                         pParty->TakeGold(uPriceItemService);
                         dword_F8B1E4 = 1;
                         *pSkill = 1;
-                        pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_SkillLearned);
+                        pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_SkillLearned);
                         return;
                     }
                 }
@@ -1242,10 +1242,10 @@ void ShowPopupShopSkills() {
             if (pX >= pButton->uX && pX < pButton->uZ && pY >= pButton->uY && pY < pButton->uW) {
                 if (IsSkillLearningDialogue((DIALOGUE_TYPE)pButton->msg_param)) {
                     auto skill_id = GetLearningDialogueSkill((DIALOGUE_TYPE)pButton->msg_param);
-                    if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[pParty->_activeCharacter]->classType][skill_id] != PLAYER_SKILL_MASTERY_NONE
-                        && !pPlayers[pParty->_activeCharacter]->pActiveSkills[skill_id]) {
+                    if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[pParty->getActiveCharacter()]->classType][skill_id] != PLAYER_SKILL_MASTERY_NONE
+                        && !pPlayers[pParty->getActiveCharacter()]->pActiveSkills[skill_id]) {
                         // is this skill visible
-                        std::string pSkillDescText = CharacterUI_GetSkillDescText(pParty->_activeCharacter - 1, skill_id);
+                        std::string pSkillDescText = CharacterUI_GetSkillDescText(pParty->getActiveCharacter() - 1, skill_id);
                         CharacterUI_DrawTooltip(localization->GetSkillName(skill_id), pSkillDescText);
                     }
                 }
@@ -1438,12 +1438,12 @@ void ShowPopupShopItem() {
             dialog_menu_id == DIALOGUE_SHOP_DISPLAY_EQUIPMENT) {
             invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
             if (pt.x <= 13 || pt.x >= 462 ||
-                !pPlayers[pParty->_activeCharacter]->GetItemListAtInventoryIndex(
+                !pPlayers[pParty->getActiveCharacter()]->GetItemListAtInventoryIndex(
                     invindex))
                 return;
 
             GameUI_DrawItemInfo(
-                pPlayers[pParty->_activeCharacter]->GetItemAtInventoryIndex(invindex));
+                pPlayers[pParty->getActiveCharacter()]->GetItemAtInventoryIndex(invindex));
             return;
         }
     }
@@ -1569,7 +1569,7 @@ void GetHouseGoodbyeSpeech() {
             PlayHouseSound(window_SpeakInHouse->wData.val,
                            (HouseSoundID)(dword_F8B1E4 + 3));
             if (!dword_F8B1E4 && !_A750D8_player_speech_timer) {
-                int id = pParty->getRandomActiveCharacterId();
+                int id = pParty->getRandomActiveCharacterId(vrng.get());
 
                 if (id != -1) {
                     _A750D8_player_speech_timer = 256;
@@ -1580,7 +1580,7 @@ void GetHouseGoodbyeSpeech() {
             }
         } else {  // caught stealing
             if (!_A750D8_player_speech_timer) {
-                int id = pParty->getRandomActiveCharacterId();
+                int id = pParty->getRandomActiveCharacterId(vrng.get());
 
                 if (id != -1) {
                     _A750D8_player_speech_timer = 256;

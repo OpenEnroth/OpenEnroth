@@ -61,10 +61,10 @@ struct Chest {  // 0x14cc
     static void OnChestLeftClick();
     static void GrabItem(bool all = false);
 
-    uint16_t uChestBitmapID;        // 0
+    uint16_t uChestBitmapID{};        // 0
     CHEST_FLAGS uFlags;                // 2
     struct ItemGen igChestItems[140];       // 4
-    int16_t pInventoryIndices[140];  // 0x13b4 why is this a short?
+    int16_t pInventoryIndices[140]{};  // 0x13b4 why is this a short?
 };
 #pragma pack(pop)
 

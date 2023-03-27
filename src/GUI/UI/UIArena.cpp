@@ -59,7 +59,7 @@ void Arena_SelectionFightLevel() {
                         VAR_Award,
                         (uint8_t)pParty->field_7B5_in_arena_quest + 3);
                 pParty->PartyFindsGold(gold_transaction_amount, 0);
-                pAudioPlayer->PlaySound(SOUND_51heroism03, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_51heroism03);
                 pParty->field_7B5_in_arena_quest = -1;
             } else {
                 uDialogueType = DIALOGUE_ARENA_WELCOME;
@@ -70,7 +70,7 @@ void Arena_SelectionFightLevel() {
                 pParty->_viewYaw = 512;
                 pParty->_viewPitch = 0;
                 pParty->uFallSpeed = 0;
-                pAudioPlayer->PlaySound(SOUND_51heroism03, 0, 0, -1, 0, 0);
+                pAudioPlayer->playUISound(SOUND_51heroism03);
             }
         }
     } else {
@@ -249,5 +249,5 @@ void ArenaFight() {
         Actor::Arena_summon_actor(monster_ids[grng->Random(num_monsters)],
                                   pMonsterArenaPlacements[i].x,
                                   pMonsterArenaPlacements[i].y, 1);
-    pAudioPlayer->PlaySound(SOUND_51heroism03, 0, 0, -1, 0, 0);
+    pAudioPlayer->playUISound(SOUND_51heroism03);
 }

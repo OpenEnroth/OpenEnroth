@@ -122,9 +122,9 @@ enum class ArcomageMessageType {
 using enum ArcomageMessageType;
 
 struct ArcomageGame_InputMSG {
-    ArcomageMessageType am_input_type;
-    int field_4;
-    int am_input_key;  // waht other key
+    ArcomageMessageType am_input_type{ ARCO_MSG_NULL };
+    int field_4{};
+    int am_input_key{};  // waht other key
 };
 
 class GUIFont;
@@ -135,7 +135,7 @@ struct ArcomageGame {
     // static bool LoadBackground();
     static bool LoadSprites();
     static bool MsgLoop(int a1, ArcomageGame_InputMSG *a2);
-    static void PlaySound(unsigned int event_id);
+    static void playSound(unsigned int event_id);
     static void onKeyPress(PlatformKey key);
     static void OnMouseClick(char right_left, bool bDown);
     static void OnMouseMove(int x, int y);
@@ -242,9 +242,9 @@ struct explosion_effect_struct {
 #define DECK_SIZE 108
 
 struct ArcomageDeck {
-    std::string name;
-    char cardsInUse[DECK_SIZE];
-    int cards_IDs[DECK_SIZE];
+    std::string name{};
+    char cardsInUse[DECK_SIZE]{};
+    int cards_IDs[DECK_SIZE]{};
 };
 
 struct am_effects_struct {

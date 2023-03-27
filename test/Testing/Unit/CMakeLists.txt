@@ -1,12 +1,14 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 if(ENABLE_TESTS)
-    set(UNIT_TEST_SOURCES UnitTest.cpp)
-    set(UNIT_TEST_HEADERS UnitTest.h)
+    set(TESTING_UNIT_SOURCES
+            UnitTest.cpp)
+    set(TESTING_UNIT_HEADERS
+            UnitTest.h)
 
-    add_library(unit_test ${UNIT_TEST_SOURCES} ${UNIT_TEST_HEADERS})
-    target_link_libraries(unit_test GTest::gtest)
-    target_compile_definitions(unit_test PRIVATE TEST_GROUP=None)
+    add_library(testing_unit ${TESTING_UNIT_SOURCES} ${TESTING_UNIT_HEADERS})
+    target_link_libraries(testing_unit GTest::gtest)
+    target_compile_definitions(testing_unit PRIVATE TEST_GROUP=None)
 
-    target_check_style(unit_test)
+    target_check_style(testing_unit)
 endif()

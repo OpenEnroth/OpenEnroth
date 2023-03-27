@@ -1,32 +1,45 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
-set(GAME_SOURCES
-    Game.cpp
-    GameConfig.cpp
-    GameFactory.cpp
-    GameKeyboardController.cpp
-    GameMenu.cpp
-    GameOptions.cpp
-    GameOver.cpp
-    GamePathResolver.cpp
-    GameTraceHandler.cpp
-    GameWindowHandler.cpp
-    IocContainer.cpp)
+set(APPLICATION_SOURCES
+        Game.cpp
+        GameConfig.cpp
+        GameFactory.cpp
+        GameKeyboardController.cpp
+        GameMenu.cpp
+        GameOptions.cpp
+        GameOver.cpp
+        GamePathResolver.cpp
+        GameTraceHandler.cpp
+        GameWindowHandler.cpp
+        IocContainer.cpp)
 
-set(GAME_HEADERS
-    Game.h
-    GameConfig.h
-    GameFactory.h
-    GameKeyboardController.h
-    GameMenu.h
-    GameOver.h
-    GamePathResolver.h
-    GameOptions.h
-    GameTraceHandler.h
-    GameWindowHandler.h
-    IocContainer.h)
+set(APPLICATION_HEADERS
+        Game.h
+        GameConfig.h
+        GameFactory.h
+        GameKeyboardController.h
+        GameMenu.h
+        GameOptions.h
+        GameOver.h
+        GamePathResolver.h
+        GameTraceHandler.h
+        GameWindowHandler.h
+        IocContainer.h)
 
-add_library(game STATIC ${GAME_SOURCES} ${GAME_HEADERS})
-target_check_style(game)
+add_library(application STATIC ${APPLICATION_SOURCES} ${APPLICATION_HEADERS})
+target_check_style(application)
 
-target_link_libraries(game io gui engine platform graphics media lod utility config trace application components CLI11::CLI11)
+target_link_libraries(application
+        CLI11::CLI11
+        engine
+        engine_components_control
+        engine_components_deterministic
+        engine_components_trace
+        engine_graphics
+        gui
+        io
+        library_config
+        library_lod
+        media
+        platform
+        utility)

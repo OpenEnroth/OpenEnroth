@@ -85,10 +85,10 @@ void stru262_TurnBased::SortTurnQueue() {
     }
     uActorQueueSize = active_actors;
     if (PID_TYPE(pQueue[0].uPackedID) == OBJECT_Player) {  // we have player at queue top
-        pParty->_activeCharacter = PID_ID(pQueue[0].uPackedID) + 1;
+        pParty->setActiveCharacter(PID_ID(pQueue[0].uPackedID) + 1);
         flags |= TE_PLAYER_TURN;
     } else {
-        pParty->_activeCharacter = 0;
+        pParty->setActiveCharacter(0);
         flags &= ~TE_PLAYER_TURN;
     }
     for (i = 0; i < uActorQueueSize; ++i) {
@@ -121,7 +121,7 @@ void stru262_TurnBased::Start() {
     pTurnEngine->flags &= ~TE_HAVE_PENDING_ACTIONS;
     pEventTimer->TrackGameTime();
     pAudioPlayer->PauseSounds(-1);
-    pAudioPlayer->PlaySound(SOUND_batllest, 0, 0, -1, 0, 0);
+    pAudioPlayer->playUISound(SOUND_batllest);
     // pPlayer = pParty->pPlayers.data();
     dword_50C998_turnbased_icon_1A =
         pIconsFrameTable->GetIcon(uIconID_TurnStart)->GetAnimLength();
@@ -249,7 +249,7 @@ void stru262_TurnBased::End(bool bPlaySound) {
     }
     pAudioPlayer->PauseSounds(-1);
     if (bPlaySound != 0)
-        pAudioPlayer->PlaySound(SOUND_batlleen, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_batlleen);
     pTurnEngine->flags &= ~TE_HAVE_PENDING_ACTIONS;
     pEventTimer->StopGameTime();
     dword_50C994 = 0;
@@ -398,9 +398,9 @@ void stru262_TurnBased::NextTurn() {
 
     SortTurnQueue();
     if (PID_TYPE(pQueue[0].uPackedID) == OBJECT_Player)
-        pParty->_activeCharacter = PID_ID(pQueue[0].uPackedID) + 1;
+        pParty->setActiveCharacter(PID_ID(pQueue[0].uPackedID) + 1);
     else
-        pParty->_activeCharacter = 0;
+        pParty->setActiveCharacter(0);
 
     if (pending_actions) {
         pTurnEngine->flags |= TE_HAVE_PENDING_ACTIONS;
@@ -532,9 +532,9 @@ void stru262_TurnBased::_406457(int a2) {
     pQueue[a2].actor_initiative = v6;
     SortTurnQueue();
     if (PID_TYPE(pQueue[0].uPackedID) == OBJECT_Player)
-        pParty->_activeCharacter = PID_ID(pQueue[0].uPackedID) + 1;
+        pParty->setActiveCharacter(PID_ID(pQueue[0].uPackedID) + 1);
     else
-        pParty->_activeCharacter = 0;
+        pParty->setActiveCharacter(0);
     while ((pQueue[0].actor_initiative > 0) && (turn_initiative > 0)) {
         for (i = 0; i < uActorQueueSize; ++i) {
             --pQueue[i].actor_initiative;
@@ -584,9 +584,9 @@ void stru262_TurnBased::_4065B0() {
     } else {
         StepTurnQueue();
         if (PID_TYPE(pQueue[0].uPackedID) == OBJECT_Player)
-            pParty->_activeCharacter = PID_ID(pQueue[0].uPackedID) + 1;
+            pParty->setActiveCharacter(PID_ID(pQueue[0].uPackedID) + 1);
         else
-            pParty->_activeCharacter = 0;
+            pParty->setActiveCharacter(0);
     }
     for (i = 0; i < uActorQueueSize; ++i) AIAttacks(i);
 }
@@ -746,14 +746,14 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
                         }
                         break;
                     case ABILITY_SPELL1:
-                        if (pActors[actor_id].pMonsterInfo.uSpell1ID) {
+                        if (pActors[actor_id].pMonsterInfo.uSpell1ID != SPELL_NONE) {
                             Actor::AI_SpellAttack1(actor_id, v22, &v18);
                             pQueue[queue_index].AI_action_type =
                                 TE_AI_RANGED_ATTACK;
                         }
                         break;
                     case ABILITY_SPELL2:
-                        if (pActors[actor_id].pMonsterInfo.uSpell2ID) {
+                        if (pActors[actor_id].pMonsterInfo.uSpell2ID != SPELL_NONE) {
                             Actor::AI_SpellAttack2(actor_id, v22, &v18);
                             pQueue[queue_index].AI_action_type =
                                 TE_AI_RANGED_ATTACK;
@@ -795,7 +795,7 @@ void stru262_TurnBased::ActorAISetMovementDecision() {
 
     this->ai_turn_timer = 64;
     dword_50C994 = 0;
-    pParty->_activeCharacter = 0;
+    pParty->setActiveCharacter(0);
     for (i = 0; i < uActorQueueSize; ++i) {
         if (PID_TYPE(pQueue[i].uPackedID) == OBJECT_Actor) {
             target_pid =

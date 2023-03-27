@@ -54,7 +54,7 @@ std::array<uint, 5> _4DF380_hostilityRanges = {0, 1024, 2560, 5120, 10240};
 
 //----- (0042FB5C) --------------------------------------------------------
 // True if monster should play attack animation when casting this spell.
-bool ShouldMonsterPlayAttackAnim(signed int spell_id) {
+bool ShouldMonsterPlayAttackAnim(SPELL_TYPE spell_id) {
     switch (spell_id) {
         case SPELL_FIRE_HASTE:
         case SPELL_AIR_SHIELD:
@@ -1374,7 +1374,7 @@ void Actor::StealFrom(unsigned int uActorID) {
     DDM_DLV_Header *v6;  // esi@4
     int v8;              // [sp+8h] [bp-4h]@6
 
-    pPlayer = &pParty->pPlayers[pParty->_activeCharacter - 1];
+    pPlayer = &pParty->pPlayers[pParty->getActiveCharacter() - 1];
     if (pPlayer->CanAct()) {
         CastSpellInfoHelpers::cancelSpellCastInProgress();
         v4 = 0;
@@ -1476,7 +1476,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid,
     Vec3i v7;        // ST04_12@6
     AIDirection *v9;     // eax@8
     int16_t v13;         // ax@10
-    signed int v16;      // ecx@17
+    SPELL_TYPE v16;      // ecx@17
     AIDirection a3;      // [sp+Ch] [bp-48h]@9
     AIDirection v18;     // [sp+28h] [bp-2Ch]@9
     int v19;             // [sp+44h] [bp-10h]@6
@@ -2449,7 +2449,7 @@ void Actor::ActorDamageFromMonster(signed int attacker_id,
                                    ABILITY_INDEX a4) {
     int v4;            // ebx@1
     int dmgToRecv;     // qax@8
-    signed int v12;    // ecx@20
+    int v12;    // ecx@20
     int finalDmg;      // edi@30
     int pushDistance;  // [sp+20h] [bp+Ch]@34
 
@@ -2643,7 +2643,7 @@ void Actor::UpdateActorAI() {
     uint8_t v46;     // cl@197
     signed int v47;          // st7@206
     uint v58;                // st7@246
-    unsigned int v65;        // [sp-10h] [bp-C0h]@144
+    unsigned int v65{};        // [sp-10h] [bp-C0h]@144
     int v70;                 // [sp-10h] [bp-C0h]@213
     AIDirection v72;         // [sp+0h] [bp-B0h]@246
     ObjectType target_pid_type;     // [sp+70h] [bp-40h]@83
@@ -3134,8 +3134,8 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     SpriteObject *projectileSprite;  // ebx@1
     Actor *pMonster;                 // esi@7
     int extraRecoveryTime;           // qax@125
-    uint16_t v43;            // ax@132
-    uint16_t v45;            // ax@132
+    uint16_t v43{};            // ax@132
+    uint16_t v45{};            // ax@132
     // uint64_t v46; // [sp+Ch] [bp-60h]@6
     PLAYER_SKILL_LEVEL skillLevel = 0;                    // [sp+44h] [bp-28h]@1
     bool IsAdditionalDamagePossible;  // [sp+50h] [bp-1Ch]@1
@@ -4578,14 +4578,11 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
 
 //----- (00450B0A) --------------------------------------------------------
 bool SpawnActor(unsigned int uMonsterID) {
-    unsigned int v1;  // ebx@1
-    unsigned int v6;  // ecx@5
-
     Actor *actor = AllocateActor(true);
     if (!actor)
         return false;
 
-    v1 = uMonsterID;
+    unsigned int v1 = uMonsterID;
     if (uMonsterID >= pMonsterList->pMonsters.size())
         v1 = 0;
 

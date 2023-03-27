@@ -174,8 +174,16 @@ struct Party {
     void ResetPosMiscAndSpellBuffs();
     bool HasItem(ITEM_TYPE uItemID);
     void SetHoldingItem(ItemGen *pItem);
-    int GetFirstCanAct();  // added to fix some nzi access problems
-    int GetNextActiveCharacter();
+
+    /**
+    * Sets _activeCharacter to the first character that can act
+    * Added to fix some nzi access problems
+    */
+    void setActiveToFirstCanAct();
+    /**
+    * Sets _activeCharacter to the first active (recoverd) character
+    */
+    void switchToNextActiveCharacter();
     bool _497FC5_check_party_perception_against_level();
     bool AddItemToParty(ItemGen *pItem);
     void Yell();
@@ -260,7 +268,7 @@ struct Party {
     }
     inline void SetYellowAlert() { uFlags |= PARTY_FLAGS_1_ALERT_YELLOW; }
 
-    inline bool GetRedOrYellowAlert() {
+    inline bool GetRedOrYellowAlert() const {
         return (uFlags & PARTY_FLAGS_1_ALERT_RED_OR_YELLOW) != 0;
     }
 
@@ -292,9 +300,10 @@ struct Party {
     /**
      * Return id of random character that can still act.
      *
-     * @return        ID of character or -1 if none of the character cat act.
+     * @param rng         Random generator used.
+     * @return            ID of character or -1 if none of the character cat act.
      */
-    int getRandomActiveCharacterId() const {
+    int getRandomActiveCharacterId(RandomEngine *rng) const {
         std::vector<int> activeCharacters = {};
         for (int i = 0; i < pPlayers.size(); i++) {
             if (pPlayers[i].CanAct()) {
@@ -302,8 +311,24 @@ struct Party {
             }
         }
         if (!activeCharacters.empty()) {
-            return activeCharacters[vrng->Random(activeCharacters.size())];
+            return activeCharacters[rng->Random(activeCharacters.size())];
         }
+        return -1;
+    }
+
+    /**
+     * Return id of character that is represented by given pointer.
+     *
+     * @param player      Pointer to player class.
+     * @return            ID of character.
+     */
+    int getCharacterIdInParty(Player *player) {
+        for (int i = 0; i < pPlayers.size(); i++) {
+            if (&pPlayers[i] == player) {
+                return i;
+            }
+        }
+        assert(false && "Character not found.");
         return -1;
     }
 
@@ -406,7 +431,23 @@ struct Party {
     uint _roundingDt{ 0 };  // keeps track of rounding remainder for recovery
     int _movementTally{ 0 };  // keeps track of party movement for footsteps
 
-    unsigned int _activeCharacter;  // move to party to begin containment - 1 based
+    inline uint getActiveCharacter() const {
+        assert(hasActiveCharacter());
+        return _activeCharacter;
+    }
+    inline void setActiveCharacter(uint id) {
+        assert(id >= 0 && id <= pPlayers.size());
+        _activeCharacter = id;
+    }
+    inline bool hasActiveCharacter() const {
+        return _activeCharacter > 0;
+    }
+    // TODO(pskelton): function for returning ref pPlayers[pParty->getActiveCharacter()]
+
+ private:
+     // TODO(pskelton): rename activePlayer
+     // TODO(pskelton): change to signed int - make 0 based with -1 for none??
+     unsigned int _activeCharacter;  // which character is active - 1 based; 0 for none
 };
 
 extern Party *pParty;  // idb

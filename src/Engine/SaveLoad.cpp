@@ -44,7 +44,7 @@ std::array<SavegameHeader, MAX_SAVE_SLOTS> pSavegameHeader;
 void LoadGame(unsigned int uSlot) {
     MapsLongTimers_count = 0;
     if (!pSavegameUsedSlots[uSlot]) {
-        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+        pAudioPlayer->playUISound(SOUND_error);
         logger->Warning("LoadGame: slot {} is empty", uSlot);
         return;
     }
@@ -142,13 +142,9 @@ void LoadGame(unsigned int uSlot) {
         }
     }
 
-    pParty->_activeCharacter = 0;
-    for (uint i = 0; i < 4; ++i) {
-        if (pParty->pPlayers[i].CanAct()) {
-            pParty->_activeCharacter = i + 1;
-            break;
-        }
-    }
+    pParty->setActiveCharacter(0);
+    pParty->setActiveToFirstCanAct();
+
 /*
     for (uint i = 0; i < 4; ++i) {
         if (pParty->pPlayers[i].uQuickSpell) {

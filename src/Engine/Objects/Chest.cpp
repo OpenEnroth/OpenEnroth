@@ -59,11 +59,11 @@ bool Chest::Open(int uChestID) {
     if (!chest->Initialized() || engine->config->gameplay.ChestTryPlaceItems.Get() == 1)
         Chest::PlaceItems(uChestID);
 
-    if (!pParty->_activeCharacter) return false;
+    if (!pParty->hasActiveCharacter()) return false;
     flag_shout = false;
     unsigned int pMapID = pMapStats->GetMapInfo(pCurrentMapName);
     if (chest->Trapped() && pMapID) {
-        if (pPlayers[pParty->_activeCharacter]->GetDisarmTrap() <
+        if (pPlayers[pParty->getActiveCharacter()]->GetDisarmTrap() <
             2 * pMapStats->pInfos[pMapID].LockX5) {
             pSpriteID[0] = SPRITE_TRAP_FIRE;
             pSpriteID[1] = SPRITE_TRAP_LIGHTNING;
@@ -142,11 +142,11 @@ bool Chest::Open(int uChestID) {
             pAudioPlayer->PlaySound(SOUND_fireBall, 0, 0, -1, 0, 0);
             pSpellObject.ExplosionTraps();
             chest->uFlags &= ~CHEST_TRAPPED;
-            if (pParty->_activeCharacter && !_A750D8_player_speech_timer &&
+            if (pParty->getActiveCharacter() && !_A750D8_player_speech_timer &&
                 !OpenedTelekinesis) {
                 _A750D8_player_speech_timer = 256;
                 PlayerSpeechID = SPEECH_TrapExploded;
-                uSpeakingCharacter = pParty->_activeCharacter - 1;
+                uSpeakingCharacter = pParty->getActiveCharacter() - 1;
             }
             OpenedTelekinesis = false;
             return false;
@@ -158,7 +158,7 @@ bool Chest::Open(int uChestID) {
     pAudioPlayer->PlaySound(SOUND_openchest0101, 0, 0, -1, 0, 0);
     if (flag_shout == true) {
         if (!OpenedTelekinesis) {
-            pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_TrapDisarmed);
+            pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_TrapDisarmed);
         }
     }
     OpenedTelekinesis = false;
@@ -327,8 +327,8 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
         }
 
         if (test_pos == max_size) {  // limits check no room
-            if (pParty->_activeCharacter) {
-                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_NoRoom);
+            if (pParty->hasActiveCharacter()) {
+                pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_NoRoom);
             }
             return 0;
         }
@@ -562,7 +562,7 @@ void Chest::OnChestLeftClick() {
 }
 
 void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using spacebar
-    if (pParty->pPickedItem.uItemID != ITEM_NULL || !pParty->_activeCharacter) {
+    if (pParty->pPickedItem.uItemID != ITEM_NULL || !pParty->hasActiveCharacter()) {
         return;
     }
 
@@ -585,8 +585,8 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
             goldamount += chestitem.special_enchantment;
             goldcount++;
         } else {  // this should add item to invetory of active char - if that fails set as holding item and break
-            if (pParty->_activeCharacter && (InventSlot = pPlayers[pParty->_activeCharacter]->AddItem(-1, chestitem.uItemID)) != 0) {  // can place
-                memcpy(&pPlayers[pParty->_activeCharacter]->pInventoryItemList[InventSlot - 1], &chestitem, 0x24u);
+            if (pParty->hasActiveCharacter() && (InventSlot = pPlayers[pParty->getActiveCharacter()]->AddItem(-1, chestitem.uItemID)) != 0) {  // can place
+                memcpy(&pPlayers[pParty->getActiveCharacter()]->pInventoryItemList[InventSlot - 1], &chestitem, 0x24u);
                 grabcount++;
                 GameUI_SetStatusBar(
                     LSTR_FMT_YOU_FOUND_ITEM,
@@ -595,7 +595,7 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
             } else {  // no room so set as holding item
                 pParty->SetHoldingItem(&chestitem);
                 RemoveItemAtChestIndex(loop);
-                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_NoRoom);
+                pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_NoRoom);
                 break;
             }
         }

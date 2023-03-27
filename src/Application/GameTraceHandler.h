@@ -2,7 +2,7 @@
 
 #include "Platform/Filters/PlatformEventFilter.h"
 
-class EngineTracer;
+class EngineTraceRecorder;
 
 // TODO(captainurist): tbh we just need a hotkey system instead of this monstrosity.
 /**
@@ -14,7 +14,7 @@ class EngineTracer;
  */
 class GameTraceHandler : public PlatformEventFilter {
  public:
-    explicit GameTraceHandler(EngineTracer *tracer);
+    explicit GameTraceHandler(EngineTraceRecorder *tracer);
     virtual ~GameTraceHandler() = default;
 
     virtual bool keyPressEvent(const PlatformKeyEvent *event) override;
@@ -25,6 +25,6 @@ class GameTraceHandler : public PlatformEventFilter {
     bool isTriggerKeySequence(const PlatformKeyEvent *event) const;
 
  private:
-    EngineTracer *_tracer = nullptr;
+    EngineTraceRecorder *_tracer = nullptr;
     bool _waitingForKeyRelease = false;
 };

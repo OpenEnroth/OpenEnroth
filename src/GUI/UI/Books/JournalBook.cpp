@@ -70,7 +70,7 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() : GUIWindow_Book() {
                 if (pStorylineText->StoreLine[i + 1].pText) {
                     auto str = BuildDialogueString(
                         pStorylineText->StoreLine[i + 1].pText,
-                        pParty->_activeCharacter - 1, 0, 0, 0,
+                        pParty->getActiveCharacter() - 1, 0, 0, 0,
                         &pParty->PartyTimes.HistoryEventTimes[i]);
                     pTextHeight = pAutonoteFont->CalcTextHeight(
                         str, journal_window.uFrameWidth, 1);
@@ -182,7 +182,7 @@ void GUIWindow_JournalBook::Update() {
             pStorylineText
                 ->StoreLine[achieved_awards[books_primary_item_per_page]]
                 .pText,
-            pParty->_activeCharacter - 1, 0, 0, 0,
+            pParty->getActiveCharacter() - 1, 0, 0, 0,
             &pParty->PartyTimes.HistoryEventTimes[index]);
         std::string pStringOnPage = pAutonoteFont->GetPageTop(
             str.c_str(), &journal_window, 1,

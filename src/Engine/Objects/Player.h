@@ -219,6 +219,9 @@ struct Player {
     void Heal(int amount);
     int ReceiveDamage(signed int amount, DAMAGE_TYPE dmg_type);
     int ReceiveSpecialAttackEffect(int attType, Actor* pActor);
+
+    // TODO(captainurist): actually returns DAMAGE_TYPE / SPELL_SCHOOL
+    // TODO(captainurist): move to SpellEnums.h
     unsigned int GetSpellSchool(SPELL_TYPE uSpellID);
     int GetAttackRecoveryTime(bool bRangedAttack);
 
@@ -399,6 +402,8 @@ struct Player {
     const ItemGen* GetNthEquippedIndexItem(ITEM_SLOT index) const;
     ItemGen *GetNthEquippedIndexItem(ITEM_SLOT index);
     ItemGen* GetItem(unsigned int PlayerEquipment::*itemPos);
+
+    // TODO(Nik-RE-dev): use getCharacterIdInParty directly where this function is called.
     int GetPlayerIndex();
 
     static void _42ECB5_PlayerAttacksActor();
@@ -582,6 +587,9 @@ bool IsDwarfPresentInParty(bool b);
 bool ShouldLoadTexturesForRaceAndGender(unsigned int _this);
 int PlayerCreation_GetUnspentAttributePointCount();
 int CycleCharacter(bool backwards);
+
+// Players indexed array
+// TODO(pskelton): drop this
 extern IndexedArray<Player *, 1, 4> pPlayers;
 
 extern enum PlayerSpeech PlayerSpeechID;

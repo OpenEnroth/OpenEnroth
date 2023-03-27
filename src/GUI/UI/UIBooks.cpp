@@ -54,7 +54,7 @@ void GUIWindow_Book::Release() {
         ui_book_map_frame = nullptr;
     }
 
-    pAudioPlayer->PlaySound(SOUND_closebook, 0, 0, -1, 0, 0);
+    pAudioPlayer->playUISound(SOUND_closebook);
     MapBookOpen = 0;
 
     if (pChildBooksOverlay)
@@ -81,7 +81,7 @@ void GUIWindow_Book::BasicBookInitialization() {
 //----- (00411AAA) --------------------------------------------------------
 void GUIWindow_Book::InitializeFonts() {
     pAudioPlayer->PauseSounds(-1);
-    pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0);
+    pAudioPlayer->playUISound(SOUND_openbook);
 
     ui_book_map_frame = assets->GetImage_Alpha("mapbordr");
 

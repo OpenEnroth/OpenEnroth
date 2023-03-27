@@ -10,7 +10,6 @@
 
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Level/Decoration.h"
-#include "Engine/MM7.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Party.h"
@@ -304,6 +303,7 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
             case OBJECT_Player: {
                 si.sample->SetVolume(uVoiceVolume);
                 if (object_id == 5) {
+                    // TODO(Nik-RE-dev): this is special hack for voice volume control
                     si.sample->Stop();
                 }
                 si.sample->Play();
@@ -537,7 +537,8 @@ Blob AudioPlayer::LoadSound(const std::string &pSoundName) {
     }
 }
 
-void AudioPlayer::playSpellSound(unsigned int spell, unsigned int pid, bool is_impact) {
-    PlaySound(static_cast<SoundID>(SpellSoundIds[spell] + is_impact), pid, 0, -1, 0, 0);
+void AudioPlayer::playSpellSound(SPELL_TYPE spell, unsigned int pid, bool is_impact) {
+    if (spell != SPELL_NONE)
+        PlaySound(static_cast<SoundID>(SpellSoundIds[spell] + is_impact), pid, 0, -1, 0, 0);
 }
 

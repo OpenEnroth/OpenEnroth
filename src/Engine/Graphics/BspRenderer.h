@@ -13,8 +13,8 @@ struct BspRenderer_ViewportNode {
     ~BspRenderer_ViewportNode() {}
 
     uint16_t uSectorID = 0;  // sector that this node shows
-    uint16_t uFaceID;
-    unsigned int viewing_portal_id;  // portal/ node through which we're seeing this node
+    uint16_t uFaceID = 0;
+    unsigned int viewing_portal_id = 0;  // portal/ node through which we're seeing this node
     IndoorCameraD3D_Vec4 ViewportNodeFrustum[4];  // frustum planes of portal
     RenderVertexSoft pPortalBounding[4];  // extents of portal
 };
