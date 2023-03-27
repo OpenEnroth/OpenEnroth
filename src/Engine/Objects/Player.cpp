@@ -4073,7 +4073,7 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
 
     if (pParty->pPickedItem.isBook()) {
         SPELL_TYPE bookSpellId = bookSpellIds[pParty->pPickedItem.uItemID];
-        if (playerAffected->spellbook.bHaveSpell[bookSpellId]) {
+        if (playerAffected->spellbook.bHaveSpell[bookSpellId - SPELL_REGULAR_FIRST]) {
             GameUI_SetStatusBar(LSTR_FMT_YOU_ALREADY_KNOW_S_SPELL, pParty->pPickedItem.GetDisplayName().c_str());
             pAudioPlayer->playUISound(SOUND_error);
             return;
@@ -4094,7 +4094,7 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
             playerAffected->playReaction(SPEECH_CantLearnSpell);
             return;
         }
-        playerAffected->spellbook.bHaveSpell[bookSpellId] = 1;
+        playerAffected->spellbook.bHaveSpell[bookSpellId - SPELL_REGULAR_FIRST] = 1;
         playerAffected->playReaction(SPEECH_LearnSpell);
 
         // if (pGUIWindow_CurrentMenu && pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {
