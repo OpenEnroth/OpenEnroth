@@ -2643,7 +2643,7 @@ void Actor::UpdateActorAI() {
     uint8_t v46;     // cl@197
     signed int v47;          // st7@206
     uint v58;                // st7@246
-    unsigned int v65;        // [sp-10h] [bp-C0h]@144
+    unsigned int v65{};        // [sp-10h] [bp-C0h]@144
     int v70;                 // [sp-10h] [bp-C0h]@213
     AIDirection v72;         // [sp+0h] [bp-B0h]@246
     ObjectType target_pid_type;     // [sp+70h] [bp-40h]@83
@@ -3134,8 +3134,8 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     SpriteObject *projectileSprite;  // ebx@1
     Actor *pMonster;                 // esi@7
     int extraRecoveryTime;           // qax@125
-    uint16_t v43;            // ax@132
-    uint16_t v45;            // ax@132
+    uint16_t v43{};            // ax@132
+    uint16_t v45{};            // ax@132
     // uint64_t v46; // [sp+Ch] [bp-60h]@6
     PLAYER_SKILL_LEVEL skillLevel = 0;                    // [sp+44h] [bp-28h]@1
     bool IsAdditionalDamagePossible;  // [sp+50h] [bp-1Ch]@1
@@ -4578,14 +4578,11 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
 
 //----- (00450B0A) --------------------------------------------------------
 bool SpawnActor(unsigned int uMonsterID) {
-    unsigned int v1;  // ebx@1
-    unsigned int v6;  // ecx@5
-
     Actor *actor = AllocateActor(true);
     if (!actor)
         return false;
 
-    v1 = uMonsterID;
+    unsigned int v1 = uMonsterID;
     if (uMonsterID >= pMonsterList->pMonsters.size())
         v1 = 0;
 

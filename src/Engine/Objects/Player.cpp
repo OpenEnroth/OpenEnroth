@@ -4964,8 +4964,7 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
 
 //----- (0044A5CB) --------------------------------------------------------
 void Player::SetVariable(VariableType var_type, signed int var_value) {
-    int gold;
-    int food;
+    int gold{}, food{};
     DDM_DLV_Header* ddm;
     ItemGen item;
 
@@ -5551,8 +5550,7 @@ void Player::SetSkillByEvent(uint16_t Player::*skillToSet,
 
 //----- (0044AFFB) --------------------------------------------------------
 void Player::AddVariable(VariableType var_type, signed int val) {
-    int gold;
-    int food;
+    int food{};
     DDM_DLV_Header* ddm;
     ItemGen item;
 

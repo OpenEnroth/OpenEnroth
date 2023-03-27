@@ -336,7 +336,6 @@ MapStartPoint foot_travel_arrival_points[15][4] = {
 bool OutdoorLocation::GetTravelDestination(signed int sPartyX,
                                            signed int sPartyZ, char *pOut,
                                            signed int a5) {
-    char *mapNumberAsStr;       // eax@3
     signed int direction;       // esi@7
     signed int destinationMap;  // eax@23
 
@@ -1655,9 +1654,9 @@ void OutdoorLocation::PrepareActorsDrawList() {
 
 int ODM_GetFloorLevel(const Vec3i &pos, int unused, bool *pIsOnWater,
                       int *bmodel_pid, int bWaterWalk) {
-    std::array<int, 20> current_Face_id;                   // dword_721110
-    std::array<int, 20> current_BModel_id;                 // dword_721160
-    std::array<int, 20> odm_floor_level;                   // idb
+    std::array<int, 20> current_Face_id{};                   // dword_721110
+    std::array<int, 20> current_BModel_id{};                 // dword_721160
+    std::array<int, 20> odm_floor_level{};                   // idb
     current_BModel_id[0] = -1;
     current_Face_id[0] = -1;
     odm_floor_level[0] = GetTerrainHeightsAroundParty2(pos.x, pos.y, pIsOnWater, bWaterWalk);
@@ -2623,9 +2622,9 @@ void ODM_ProcessPartyActions() {
 }
 
 int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pFaceID) {
-    std::array<int, 20> face_indices;
-    std::array<int, 20> model_indices;
-    std::array<int, 20> ceiling_height_level;
+    std::array<int, 20> face_indices{};
+    std::array<int, 20> model_indices{};
+    std::array<int, 20> ceiling_height_level{};
     model_indices[0] = -1;
     face_indices[0] = -1;
     ceiling_height_level[0] = 10000;  // no ceiling
@@ -3116,9 +3115,8 @@ unsigned int GetLevelFogColor() {
         } else {
             int64_t v1 = (int64_t)((1.0 - pOutdoor->fFogDensity) * 200.0 +
                                    pOutdoor->fFogDensity * 31.0);
-            return v1 |
-                   (((unsigned int)v1 | (((unsigned int)v1 | 0xFFFFFF00) << 8))
-                    << 8);
+            int out = v1 & 0xFF;
+            return 0xFF << 24 | out << 16 | out << 8 | out;
         }
     }
 

@@ -64,8 +64,8 @@ struct NPCProfession {
 /*  139 */
 #pragma pack(push, 1)
 struct NPCProfessionChance {
-    unsigned int uTotalprofChance;     // summ
-    char professionChancePerArea[60];  // prof position
+    unsigned int uTotalprofChance{};     // summ
+    char professionChancePerArea[60]{};  // prof position
 };
 #pragma pack(pop)
 
@@ -104,19 +104,19 @@ struct NPCStats {
     char *pNPCNames[540][2];
     IndexedArray<NPCProfession, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST> pProfessions = {{}};  // count from 1
     std::array<NPCData, 100> pAdditionalNPC;
-    char *pCatchPhrases[52];   // 15CA4h
-    char *pNPCUnicNames[500];  // from first batch
+    char *pCatchPhrases[52]{};   // 15CA4h
+    char *pNPCUnicNames[500]{};  // from first batch
     NPCProfessionChance pProfessionChance[77];  // 16544h profession chance in each area
     int field_17884 = 0;
     int field_17888 = 0;
     NPCGreeting pNPCGreetings[206];
-    uint16_t pGroups[51];
-    uint16_t pGroups_copy[51];
-    unsigned int uNewlNPCBufPos;
-    unsigned int uNumNewNPCs;
+    uint16_t pGroups[51]{};
+    uint16_t pGroups_copy[51]{};
+    unsigned int uNewlNPCBufPos{};
+    unsigned int uNumNewNPCs{};
     int field_17FC8 = 0;
-    unsigned int uNumNPCProfessions;
-    unsigned int uNumNPCNames[2];  // 0 male 1 female
+    unsigned int uNumNPCProfessions{};
+    unsigned int uNumNPCNames[2]{};  // 0 male 1 female
     std::string pNPCDataTXT_Raw;
     std::string pNPCNamesTXT_Raw;
     std::string pNPCProfTXT_Raw;

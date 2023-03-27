@@ -419,15 +419,15 @@ struct BLVFace {  // 60h
     int16_t *pVertexUIDs = nullptr;
     int16_t *pVertexVIDs = nullptr;
     uint16_t uFaceExtraID;
-    void *resource;  // uint16_t  uBitmapID;
+    void *resource{nullptr};  // uint16_t  uBitmapID;
     int texunit = -1;
     int texlayer = -1;
 
-    uint16_t uSectorID;
-    int16_t uBackSectorID;
+    uint16_t uSectorID{};
+    int16_t uBackSectorID{};
     // TODO(pskelton): Geometry should be float
     BBoxs pBounding;
-    PolygonType uPolygonType;
+    PolygonType uPolygonType{ POLYGON_Invalid };
     uint8_t uNumVertices;
     char field_5E = 0;
     char field_5F = 0;

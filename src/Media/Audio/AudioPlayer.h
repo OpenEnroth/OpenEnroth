@@ -123,7 +123,7 @@ class AudioPlayer {
     } SoundHeader;
 
  public:
-    AudioPlayer() : bPlayerReady(false), currentMusicTrack(0), uMasterVolume(0) {}
+    AudioPlayer() : bPlayerReady(false), currentMusicTrack(0), uMasterVolume(0), uVoiceVolume(0) {}
     virtual ~AudioPlayer() {}
 
     void Initialize();
