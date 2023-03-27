@@ -2258,8 +2258,7 @@ void OnPaperdollLeftClick() {
                 return;
                 //-------------------------------------------------------------------------------
             default:
-                pPlayers[pParty->getActiveCharacter()]->UseItem_DrinkPotion_etc(
-                    pParty->getActiveCharacter(), 0);  //выпить напиток и др.
+                pPlayers[pParty->getActiveCharacter()]->useItem(pParty->getActiveCharacter() - 1, false);
                 return;
         }
         return;

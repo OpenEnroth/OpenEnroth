@@ -1372,13 +1372,13 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
             return;
         }
     }
-    if (pParty->pPickedItem.uItemID != ITEM_NULL) {  // нажатие на портрет перса правой кнопкой
-                                        // мыши с раствором
-        for (uint i = 0; i < 4; ++i) {
+    if (pParty->pPickedItem.uItemID != ITEM_NULL) {
+        // Use item on character portrait
+        for (int i = 0; i < pParty->pPlayers.size(); ++i) {
             if ((signed int)pX > RightClickPortraitXmin[i] &&
                 (signed int)pX < RightClickPortraitXmax[i] &&
                 (signed int)pY > 375 && (signed int)pY < 466) {
-                pPlayers[pParty->getActiveCharacter()]->UseItem_DrinkPotion_etc(i + 1, 1);
+                pPlayers[pParty->getActiveCharacter()]->useItem(i, true);
                 return;
             }
         }
