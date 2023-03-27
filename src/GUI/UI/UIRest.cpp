@@ -27,6 +27,8 @@ Image *rest_ui_sky_frame_current = nullptr;
 Image *rest_ui_hourglass_frame_current = nullptr;
 
 int foodRequiredToRest;
+GameTime remainingRestTime;
+REST_TYPE currentRestType;
 
 #if 0
 void GUIWindow_RestWindow::Update() {
@@ -48,7 +50,7 @@ void GUIWindow_RestWindow::Update() {
 #endif
 
 static void prepareToLoadRestUI() {
-    if (!_506F14_resting_stage) {
+    if (currentRestType == REST_NONE) {
         pAudioPlayer->PauseSounds(-1);
     }
     if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) {
@@ -58,11 +60,11 @@ static void prepareToLoadRestUI() {
         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
     }
     pEventTimer->Pause();
-    if (_506F14_resting_stage != 2) {
+    if (currentRestType != REST_HEAL) {
         new OnButtonClick2({518, 450}, {0, 0}, pBtn_Rest);
     }
-    _506F18_num_minutes_to_sleep = 0;
-    _506F14_resting_stage = 0;
+    remainingRestTime = GameTime();
+    currentRestType = REST_NONE;
 }
 
 static void calculateRequiredFood() {
@@ -199,8 +201,8 @@ void GUIWindow_Rest::Update() {
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {350, 222}, colorTable.Diesel.c16(), str4, 0, 0, colorTable.StarkWhite.c16());
         std::string str5 = fmt::format("{}\r190{}", localization->GetString(LSTR_YEAR), pParty->uCurrentYear);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {350, 254}, colorTable.Diesel.c16(), str5, 0, 0, colorTable.StarkWhite.c16());
-        if (_506F14_resting_stage) {
-            Party::Sleep8Hours();
+        if (currentRestType != REST_NONE) {
+            Party::RestOneFrame();
         }
     } else {
         new OnCancel({pButton_RestUI_Exit->uX, pButton_RestUI_Exit->uY}, {0, 0}, pButton_RestUI_Exit, localization->GetString(LSTR_EXIT_REST));

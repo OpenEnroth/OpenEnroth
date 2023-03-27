@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GUI/GUIWindow.h"
+#include "Engine/Time.h"
 
 class GUIWindow_Rest : public GUIWindow {
  public:
@@ -31,7 +32,15 @@ class GUIWindow_RestWindow : public GUIWindow {
 };
 #endif
 
+enum REST_TYPE {
+    REST_NONE = 0,
+    REST_WAIT = 1,
+    REST_HEAL = 2
+};
+
 extern class Image *rest_ui_sky_frame_current;
 extern class Image *rest_ui_hourglass_frame_current;
 
 extern int foodRequiredToRest;
+extern GameTime remainingRestTime;
+extern REST_TYPE currentRestType;
