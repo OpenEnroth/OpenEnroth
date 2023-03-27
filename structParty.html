@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5c629f3</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;90609f8</span>
    </div>
   </td>
  </tr>
@@ -73,6 +73,7 @@ $(function() {
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="structParty-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">Party Struct Reference</div></div>
 </div><!--header-->
@@ -102,10 +103,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a65c08325bb473c1c727b30def6b6c876"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a88da8d8d7640e1a24c482a7dd548f6f3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#a88da8d8d7640e1a24c482a7dd548f6f3">SetHoldingItem</a> (<a class="el" href="structItemGen.html">ItemGen</a> *pItem)</td></tr>
 <tr class="separator:a88da8d8d7640e1a24c482a7dd548f6f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab12dc32d73ddaf11d93860fbf190b603"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#ab12dc32d73ddaf11d93860fbf190b603">GetFirstCanAct</a> ()</td></tr>
-<tr class="separator:ab12dc32d73ddaf11d93860fbf190b603"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a47ff91c6c78be96285be388f2cd4e3c6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#a47ff91c6c78be96285be388f2cd4e3c6">GetNextActiveCharacter</a> ()</td></tr>
-<tr class="separator:a47ff91c6c78be96285be388f2cd4e3c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42b2eeb5187025ef0d282260852bf127"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#a42b2eeb5187025ef0d282260852bf127">setActiveToFirstCanAct</a> ()</td></tr>
+<tr class="separator:a42b2eeb5187025ef0d282260852bf127"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07573c536b608417ee120fe8470e47a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#a07573c536b608417ee120fe8470e47a4">switchToNextActiveCharacter</a> ()</td></tr>
+<tr class="separator:a07573c536b608417ee120fe8470e47a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9d40cc9a2eccc4dec2b9e772af5249de"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#a9d40cc9a2eccc4dec2b9e772af5249de">_497FC5_check_party_perception_against_level</a> ()</td></tr>
 <tr class="separator:a9d40cc9a2eccc4dec2b9e772af5249de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15aa57610c7dbb86e541329683ab9334"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#a15aa57610c7dbb86e541329683ab9334">AddItemToParty</a> (<a class="el" href="structItemGen.html">ItemGen</a> *pItem)</td></tr>
@@ -182,8 +183,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aebbd5c5be4efd047f9bfc47cd377058e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c2653cde43be97fd2c92ae5bc44cea7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#a8c2653cde43be97fd2c92ae5bc44cea7">SetYellowAlert</a> ()</td></tr>
 <tr class="separator:a8c2653cde43be97fd2c92ae5bc44cea7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2a4ad35ad77bbc54bc735e43e18a6d9a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#a2a4ad35ad77bbc54bc735e43e18a6d9a">GetRedOrYellowAlert</a> ()</td></tr>
-<tr class="separator:a2a4ad35ad77bbc54bc735e43e18a6d9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9ed8cbd8285382fb3124c05dfce35f1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#aa9ed8cbd8285382fb3124c05dfce35f1">GetRedOrYellowAlert</a> () const</td></tr>
+<tr class="separator:aa9ed8cbd8285382fb3124c05dfce35f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b79447cd38a1e2de1d579fa181b8005"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#a5b79447cd38a1e2de1d579fa181b8005">IsAirborne</a> () const</td></tr>
 <tr class="separator:a5b79447cd38a1e2de1d579fa181b8005"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f3311862dec8b45bfd0d5dcd0ae90e6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#a8f3311862dec8b45bfd0d5dcd0ae90e6">SetAirborne</a> (bool new_state)</td></tr>
@@ -202,6 +203,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ade5bcd0d435dc1261e2950597eef163e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e976a9626d2530228c48ca575dbc1d3"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#a2e976a9626d2530228c48ca575dbc1d3">ImmolationAffectedActors</a> (int *affected, size_t affectedArrSize, size_t effectRange)</td></tr>
 <tr class="separator:a2e976a9626d2530228c48ca575dbc1d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aefc9d53c6de87979c47017099a6bc8f8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#aefc9d53c6de87979c47017099a6bc8f8">getActiveCharacter</a> () const</td></tr>
+<tr class="separator:aefc9d53c6de87979c47017099a6bc8f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8d1749b022be9cdc4a3e547d15a602e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#ab8d1749b022be9cdc4a3e547d15a602e">setActiveCharacter</a> (<a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a> id)</td></tr>
+<tr class="separator:ab8d1749b022be9cdc4a3e547d15a602e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a4da48f7351874326b968334d5c8668"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#a2a4da48f7351874326b968334d5c8668">hasActiveCharacter</a> () const</td></tr>
+<tr class="separator:a2a4da48f7351874326b968334d5c8668"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -394,6 +401,9 @@ Public Attributes</h2></td></tr>
 <tr class="separator:aac52ea92d59248e53f47dee91e769068"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac59fa2c88f425a2b4757c920b09e44d8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#ac59fa2c88f425a2b4757c920b09e44d8">_movementTally</a> { 0 }</td></tr>
 <tr class="separator:ac59fa2c88f425a2b4757c920b09e44d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
 <tr class="memitem:a78fea2b48de462e2bccea3d33e5ebf78"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParty.html#a78fea2b48de462e2bccea3d33e5ebf78">_activeCharacter</a></td></tr>
 <tr class="separator:a78fea2b48de462e2bccea3d33e5ebf78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -598,6 +608,31 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="aefc9d53c6de87979c47017099a6bc8f8" name="aefc9d53c6de87979c47017099a6bc8f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aefc9d53c6de87979c47017099a6bc8f8">&#9670;&#160;</a></span>getActiveCharacter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a> Party::getActiveCharacter </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ae65cfaf97ead88c5f4c2b4cba5aca6ce" name="ae65cfaf97ead88c5f4c2b4cba5aca6ce"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae65cfaf97ead88c5f4c2b4cba5aca6ce">&#9670;&#160;</a></span>GetBankGold()</h2>
 
@@ -666,23 +701,6 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ab12dc32d73ddaf11d93860fbf190b603" name="ab12dc32d73ddaf11d93860fbf190b603"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab12dc32d73ddaf11d93860fbf190b603">&#9670;&#160;</a></span>GetFirstCanAct()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int Party::GetFirstCanAct </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a26c584785345a133e9e695e48ff31f4e" name="a26c584785345a133e9e695e48ff31f4e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a26c584785345a133e9e695e48ff31f4e">&#9670;&#160;</a></span>GetFood()</h2>
 
@@ -711,23 +729,6 @@ Public Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a47ff91c6c78be96285be388f2cd4e3c6" name="a47ff91c6c78be96285be388f2cd4e3c6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a47ff91c6c78be96285be388f2cd4e3c6">&#9670;&#160;</a></span>GetNextActiveCharacter()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int Party::GetNextActiveCharacter </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -852,8 +853,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a2a4ad35ad77bbc54bc735e43e18a6d9a" name="a2a4ad35ad77bbc54bc735e43e18a6d9a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2a4ad35ad77bbc54bc735e43e18a6d9a">&#9670;&#160;</a></span>GetRedOrYellowAlert()</h2>
+<a id="aa9ed8cbd8285382fb3124c05dfce35f1" name="aa9ed8cbd8285382fb3124c05dfce35f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9ed8cbd8285382fb3124c05dfce35f1">&#9670;&#160;</a></span>GetRedOrYellowAlert()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -865,7 +866,7 @@ Public Attributes</h2></td></tr>
           <td class="memname">bool Party::GetRedOrYellowAlert </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
   </td>
@@ -958,6 +959,31 @@ Public Attributes</h2></td></tr>
           <td></td>
         </tr>
       </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2a4da48f7351874326b968334d5c8668" name="a2a4da48f7351874326b968334d5c8668"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a4da48f7351874326b968334d5c8668">&#9670;&#160;</a></span>hasActiveCharacter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Party::hasActiveCharacter </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
@@ -1244,6 +1270,50 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="ab8d1749b022be9cdc4a3e547d15a602e" name="ab8d1749b022be9cdc4a3e547d15a602e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab8d1749b022be9cdc4a3e547d15a602e">&#9670;&#160;</a></span>setActiveCharacter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Party::setActiveCharacter </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a>&#160;</td>
+          <td class="paramname"><em>id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a42b2eeb5187025ef0d282260852bf127" name="a42b2eeb5187025ef0d282260852bf127"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a42b2eeb5187025ef0d282260852bf127">&#9670;&#160;</a></span>setActiveToFirstCanAct()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Party::setActiveToFirstCanAct </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Sets _activeCharacter to the first character that can act Added to fix some nzi access problems </p>
+
+</div>
+</div>
 <a id="a8f3311862dec8b45bfd0d5dcd0ae90e6" name="a8f3311862dec8b45bfd0d5dcd0ae90e6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8f3311862dec8b45bfd0d5dcd0ae90e6">&#9670;&#160;</a></span>SetAirborne()</h2>
 
@@ -1432,6 +1502,24 @@ Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a07573c536b608417ee120fe8470e47a4" name="a07573c536b608417ee120fe8470e47a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07573c536b608417ee120fe8470e47a4">&#9670;&#160;</a></span>switchToNextActiveCharacter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Party::switchToNextActiveCharacter </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Sets _activeCharacter to the first active (recoverd) character </p>
 
 </div>
 </div>
@@ -1711,11 +1799,19 @@ Public Attributes</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">unsigned int Party::_activeCharacter</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
