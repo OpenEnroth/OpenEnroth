@@ -161,7 +161,7 @@ extern struct stru367 PortalFace;
 extern std::array<int, 100> dword_50BC10;
 extern std::array<int, 100> dword_50BDA0;
 extern char TownPortalCasterId;
-extern int some_active_character;
+extern int enchantingActiveCharacter;
 extern std::array<unsigned int, 5> pIconIDs_Turn;
 extern unsigned int uIconID_TurnStop;
 extern unsigned int uIconID_TurnHour;

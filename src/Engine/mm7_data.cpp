@@ -2564,7 +2564,7 @@ stru367 PortalFace;
 std::array<int, 100> dword_50BC10;
 std::array<int, 100> dword_50BDA0;
 char TownPortalCasterId;
-int some_active_character;
+int enchantingActiveCharacter;
 std::array<unsigned int, 5> pIconIDs_Turn;
 unsigned int uIconID_TurnStop;
 unsigned int uIconID_TurnHour;

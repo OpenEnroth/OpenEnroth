@@ -243,28 +243,28 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         GoldAmount = inspect_item->special_enchantment;
     }
 
-    if (pParty->_activeCharacter) {
+    if (pParty->hasActiveCharacter()) {
         // try to identify
         if (!inspect_item->IsIdentified()) {
-            if (pPlayers[pParty->_activeCharacter]->CanIdentify(inspect_item) == 1)
+            if (pPlayers[pParty->getActiveCharacter()]->CanIdentify(inspect_item) == 1)
                 inspect_item->SetIdentified();
             PlayerSpeech speech = SPEECH_IndentifyItemFail;
             if (!inspect_item->IsIdentified()) {
                 GameUI_SetStatusBar(LSTR_IDENTIFY_FAILED);
             } else {
                 speech = SPEECH_IndentifyItemStrong;
-                if (inspect_item->GetValue() < 100 * (pPlayers[pParty->_activeCharacter]->uLevel + 5)) {
+                if (inspect_item->GetValue() < 100 * (pPlayers[pParty->getActiveCharacter()]->uLevel + 5)) {
                     speech = SPEECH_IndentifyItemWeak;
                 }
             }
             if (dword_4E455C) {
-                pPlayers[pParty->_activeCharacter]->playReaction(speech);
+                pPlayers[pParty->getActiveCharacter()]->playReaction(speech);
                 dword_4E455C = 0;
             }
         }
         inspect_item->UpdateTempBonus(pParty->GetPlayingTime());
         if (inspect_item->IsBroken()) {
-            if (pPlayers[pParty->_activeCharacter]->CanRepair(inspect_item) == 1)
+            if (pPlayers[pParty->getActiveCharacter()]->CanRepair(inspect_item) == 1)
                 inspect_item->uAttributes =
                     inspect_item->uAttributes & ~ITEM_BROKEN | ITEM_IDENTIFIED;
             PlayerSpeech speech = SPEECH_RepairFail;
@@ -273,7 +273,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             else
                 GameUI_SetStatusBar(LSTR_REPAIR_FAILED);
             if (dword_4E455C) {
-                pPlayers[pParty->_activeCharacter]->playReaction(speech);
+                pPlayers[pParty->getActiveCharacter()]->playReaction(speech);
                 dword_4E455C = 0;
             }
         }
@@ -570,8 +570,9 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
 void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     bool monster_full_informations = false;
     static Actor pMonsterInfoUI_Doll;
-    if (!pParty->_activeCharacter) {
-        pParty->_activeCharacter = 1;
+    // TODO(pskelton): check this behaviour
+    if (!pParty->hasActiveCharacter()) {
+        pParty->setActiveToFirstCanAct();
     }
 
     int Popup_Y_Offset =
@@ -662,10 +663,10 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     PLAYER_SKILL_MASTERY skill_mastery = PLAYER_SKILL_MASTERY_NONE;
 
     pMonsterInfoUI_Doll.uCurrentActionTime += pMiscTimer->uTimeElapsed;
-    if (pPlayers[pParty->_activeCharacter]->GetActualSkillLevel(
+    if (pPlayers[pParty->getActiveCharacter()]->GetActualSkillLevel(
             PLAYER_SKILL_MONSTER_ID)) {
-        skill_points = pPlayers[pParty->_activeCharacter]->GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID);
-        skill_mastery = pPlayers[pParty->_activeCharacter]->GetActualSkillMastery(PLAYER_SKILL_MONSTER_ID);
+        skill_points = pPlayers[pParty->getActiveCharacter()]->GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID);
+        skill_mastery = pPlayers[pParty->getActiveCharacter()]->GetActualSkillMastery(PLAYER_SKILL_MONSTER_ID);
         if (skill_mastery == PLAYER_SKILL_MASTERY_NOVICE) {
             if (skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel)
                 normal_level = 1;
@@ -694,21 +695,21 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     if (pActors[uActorID].uAIState != Dead &&
         pActors[uActorID].uAIState != Dying &&
         !dword_507BF0_is_there_popup_onscreen &&
-        pPlayers[pParty->_activeCharacter]->GetActualSkillLevel(
+        pPlayers[pParty->getActiveCharacter()]->GetActualSkillLevel(
             PLAYER_SKILL_MONSTER_ID)) {
         if (normal_level || expert_level || master_level || grandmaster_level) {
             if (pActors[uActorID].pMonsterInfo.uLevel >=
-                pPlayers[pParty->_activeCharacter]->uLevel - 5)
+                pPlayers[pParty->getActiveCharacter()]->uLevel - 5)
                 speech = SPEECH_IDMonsterStrong;
             else
                 speech = SPEECH_IDMonsterWeak;
         } else {
             speech = SPEECH_IDMonsterFail;
         }
-        pPlayers[pParty->_activeCharacter]->playReaction(speech);
+        pPlayers[pParty->getActiveCharacter()]->playReaction(speech);
     }
 
-    if ((signed int)(pParty->pPlayers[pParty->_activeCharacter - 1]
+    if ((signed int)(pParty->pPlayers[pParty->getActiveCharacter() - 1]
                          .GetActualSkillMastery(PLAYER_SKILL_MONSTER_ID)) >= 3)
         for_effects = 1;
 
@@ -1056,7 +1057,7 @@ void CharacterUI_SkillsTab_ShowHint() {
             if (pButton->msg == UIMSG_SkillUp && pX >= pButton->uX &&
                 pX < pButton->uZ && pY >= pButton->uY && pY < pButton->uW) {
                 PLAYER_SKILL_TYPE skill = static_cast<PLAYER_SKILL_TYPE>(pButton->msg_param);
-                std::string pSkillDescText = CharacterUI_GetSkillDescText(pParty->_activeCharacter - 1, skill);
+                std::string pSkillDescText = CharacterUI_GetSkillDescText(pParty->getActiveCharacter() - 1, skill);
                 CharacterUI_DrawTooltip(localization->GetSkillName(skill), pSkillDescText);
             }
         }
@@ -1122,10 +1123,10 @@ void CharacterUI_StatsTab_ShowHint() {
             auto str = std::string(pPlayerConditionAttributeDescription) + "\n";
 
             for (Condition condition : conditionImportancyTable()) {
-                if (pPlayers[pParty->_activeCharacter]->conditions.Has(condition)) {
+                if (pPlayers[pParty->getActiveCharacter()]->conditions.Has(condition)) {
                     str += " \n";
                     GameTime condition_time =
-                        pParty->GetPlayingTime() - pPlayers[pParty->_activeCharacter]->conditions.Get(condition);
+                        pParty->GetPlayingTime() - pPlayers[pParty->getActiveCharacter()]->conditions.Get(condition);
                     pHour = condition_time.GetHoursOfDay();
                     pDay = condition_time.GetDays();
                     pTextColor = GetConditionDrawColor(condition);
@@ -1168,21 +1169,21 @@ void CharacterUI_StatsTab_ShowHint() {
 
         case 14:  // Experience
         {
-            v15 = pPlayers[pParty->_activeCharacter]->uLevel;
+            v15 = pPlayers[pParty->getActiveCharacter()]->uLevel;
             do {
-                if (pPlayers[pParty->_activeCharacter]->uExperience < GetExperienceRequiredForLevel(v15))
+                if (pPlayers[pParty->getActiveCharacter()]->uExperience < GetExperienceRequiredForLevel(v15))
                     break;
                 ++v15;
             } while (v15 <= 10000);
 
             std::string str1;
             std::string str2;
-            if (v15 > pPlayers[pParty->_activeCharacter]->uLevel)
+            if (v15 > pPlayers[pParty->getActiveCharacter()]->uLevel)
                 str1 = localization->FormatString(
                     LSTR_ELIGIBLE_TO_LEVELUP, v15);
             str2 = localization->FormatString(
                 LSTR_XP_UNTIL_NEXT_LEVEL,
-                (int)(GetExperienceRequiredForLevel(v15) - pPlayers[pParty->_activeCharacter]->uExperience),
+                (int)(GetExperienceRequiredForLevel(v15) - pPlayers[pParty->getActiveCharacter()]->uExperience),
                 v15 + 1);
             str1 += "\n" + str2;
 
@@ -1194,7 +1195,7 @@ void CharacterUI_StatsTab_ShowHint() {
 
         case 15:  // Attack Bonus
             if (pAttackBonusAttributeDescription) {
-                int meleerecov = pPlayers[pParty->_activeCharacter]->GetAttackRecoveryTime(false);
+                int meleerecov = pPlayers[pParty->getActiveCharacter()]->GetAttackRecoveryTime(false);
                 // TODO(captainurist): fmt can throw
                 std::string description = fmt::sprintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), meleerecov);
                 description = fmt::format("{}\n\n{}", pAttackBonusAttributeDescription, description.c_str());
@@ -1212,7 +1213,7 @@ void CharacterUI_StatsTab_ShowHint() {
 
         case 17:  // Missle Bonus
             if (pMissleBonusAttributeDescription) {
-                int missrecov = pPlayers[pParty->_activeCharacter]->GetAttackRecoveryTime(true);
+                int missrecov = pPlayers[pParty->getActiveCharacter()]->GetAttackRecoveryTime(true);
                 // TODO(captainurist): fmt can throw
                 std::string description = fmt::sprintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), missrecov);
                 description = fmt::format("{}\n\n{}", pAttackBonusAttributeDescription, description);
@@ -1271,9 +1272,9 @@ void CharacterUI_StatsTab_ShowHint() {
         case 26:  // Class description
         {
             CharacterUI_DrawTooltip(localization->GetClassName(
-                                        pPlayers[pParty->_activeCharacter]->classType),
+                                        pPlayers[pParty->getActiveCharacter()]->classType),
                                     localization->GetClassDescription(
-                                        pPlayers[pParty->_activeCharacter]->classType));
+                                        pPlayers[pParty->getActiveCharacter()]->classType));
         } break;
 
         default:
@@ -1288,7 +1289,7 @@ void DrawSpellDescriptionPopup(int spell_index_in_book) {
     GUIWindow spell_info_window;  // [sp+Ch] [bp-68h]@4
 
     Pointi pt = mouse->GetCursorPos();
-    SPELL_TYPE spell_id = static_cast<SPELL_TYPE>(spell_index_in_book + 11 * pPlayers[pParty->_activeCharacter]->lastOpenedSpellbookPage + 1);
+    SPELL_TYPE spell_id = static_cast<SPELL_TYPE>(spell_index_in_book + 11 * pPlayers[pParty->getActiveCharacter()]->lastOpenedSpellbookPage + 1);
 
     spell = &pSpellStats->pInfos[spell_id];
     if (pt.y <= 250)
@@ -1334,8 +1335,8 @@ void DrawSpellDescriptionPopup(int spell_index_in_book) {
     spell_info_window.DrawText(pFontSmallnum, {120, 44}, 0, str, 0, 0, 0);
     spell_info_window.uFrameWidth = 108;
     spell_info_window.uFrameZ = spell_info_window.uFrameX + 107;
-    PLAYER_SKILL_TYPE skill = static_cast<PLAYER_SKILL_TYPE>(pPlayers[pParty->_activeCharacter]->lastOpenedSpellbookPage + 12);
-    PLAYER_SKILL_MASTERY skill_mastery = pPlayers[pParty->_activeCharacter]->GetSkillMastery(skill);
+    PLAYER_SKILL_TYPE skill = static_cast<PLAYER_SKILL_TYPE>(pPlayers[pParty->getActiveCharacter()]->lastOpenedSpellbookPage + 12);
+    PLAYER_SKILL_MASTERY skill_mastery = pPlayers[pParty->getActiveCharacter()]->GetSkillMastery(skill);
     spell_info_window.DrawTitleText(pFontComic, 12, 75, 0, localization->GetSkillName(skill), 3);
 
     auto str2 = fmt::format(
@@ -1377,7 +1378,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
             if ((signed int)pX > RightClickPortraitXmin[i] &&
                 (signed int)pX < RightClickPortraitXmax[i] &&
                 (signed int)pY > 375 && (signed int)pY < 466) {
-                pPlayers[pParty->_activeCharacter]->UseItem_DrinkPotion_etc(i + 1, 1);
+                pPlayers[pParty->getActiveCharacter()]->UseItem_DrinkPotion_etc(i + 1, 1);
                 return;
             }
         }
@@ -1390,11 +1391,11 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
             break;
         }
         case CURRENT_SCREEN::SCREEN_CHEST: {
-            if (!pPlayers[pParty->_activeCharacter]->CanAct()) {
+            if (!pPlayers[pParty->getActiveCharacter()]->CanAct()) {
                 static std::string hint_reference;
                 hint_reference = localization->FormatString(
                     LSTR_FMT_S_IS_IN_NO_CODITION_TO_S,
-                    pPlayers[pParty->_activeCharacter]->pName.c_str(),
+                    pPlayers[pParty->getActiveCharacter()]->pName.c_str(),
                     localization->GetString(LSTR_IDENTIFY_ITEMS)
                 );
 
@@ -1745,7 +1746,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
 
             if (item_pid == -1) return;
 
-            item = &pPlayers[pParty->_activeCharacter]->pInventoryItemList[item_pid];
+            item = &pPlayers[pParty->getActiveCharacter()]->pInventoryItemList[item_pid];
             GameUI_DrawItemInfo(item);
             return;
         } else {  // rings displayed
@@ -1756,14 +1757,14 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             if (mousex >= amuletx && mousex <= (amuletx + slot) &&
                 mousey >= amulety && mousey <= (amulety + 2 * slot)) {
                 // amulet
-                // pitem = pPlayers[pParty->_activeCharacter]->GetAmuletItem(); //9
+                // pitem = pPlayers[pParty->getActiveCharacter()]->GetAmuletItem(); //9
                 pos = ITEM_SLOT_AMULET;
             }
 
             if (mousex >= glovex && mousex <= (glovex + slot) &&
                 mousey >= glovey && mousey <= (glovey + 2 * slot)) {
                 // glove
-                // pitem = pPlayers[pParty->_activeCharacter]->GetGloveItem(); //7
+                // pitem = pPlayers[pParty->getActiveCharacter()]->GetGloveItem(); //7
                 pos = ITEM_SLOT_GAUTNLETS;
             }
 
@@ -1771,14 +1772,14 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 if (mousex >= RingsX[i] && mousex <= (RingsX[i] + slot) &&
                     mousey >= RingsY[i] && mousey <= (RingsY[i] + slot)) {
                     // ring
-                    // pitem = pPlayers[pParty->_activeCharacter]->GetNthRingItem(i);
+                    // pitem = pPlayers[pParty->getActiveCharacter()]->GetNthRingItem(i);
                     // //10+i
                     pos = RingSlot(i);
                 }
             }
 
             if (pos != ITEM_SLOT_INVALID)
-                item = pPlayers[pParty->_activeCharacter]->GetNthEquippedIndexItem(pos);
+                item = pPlayers[pParty->getActiveCharacter()]->GetNthEquippedIndexItem(pos);
 
             if (!item) return;
 
@@ -1792,7 +1793,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
     // if (inventoryYCoord >= 0 && inventoryYCoord < INVETORYSLOTSHEIGHT &&
     // inventoryXCoord >= 0 && inventoryXCoord < INVETORYSLOTSWIDTH) {
 
-    item = pPlayers[pParty->_activeCharacter]->GetItemAtInventoryIndex(invMatrixIndex);
+    item = pPlayers[pParty->getActiveCharacter()]->GetItemAtInventoryIndex(invMatrixIndex);
 
     if (!item) {  // no item
         return;
@@ -1802,11 +1803,11 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
     //    return;
 
     // check character condition(проверка состояния персонажа)
-    if (!pPlayers[pParty->_activeCharacter]->CanAct()) {
+    if (!pPlayers[pParty->getActiveCharacter()]->CanAct()) {
         static std::string hint_reference;
         hint_reference = localization->FormatString(
             LSTR_FMT_S_IS_IN_NO_CODITION_TO_S,
-            pPlayers[pParty->_activeCharacter]->pName.c_str(),
+            pPlayers[pParty->getActiveCharacter()]->pName.c_str(),
             localization->GetString(LSTR_IDENTIFY_ITEMS)
         );
 
@@ -1822,8 +1823,8 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         return;
     }
 
-    PLAYER_SKILL_LEVEL alchemy_skill_points = pPlayers[pParty->_activeCharacter]->GetActualSkillLevel(PLAYER_SKILL_ALCHEMY);
-    PLAYER_SKILL_MASTERY alchemy_skill_level = pPlayers[pParty->_activeCharacter]->GetActualSkillMastery(PLAYER_SKILL_ALCHEMY);
+    PLAYER_SKILL_LEVEL alchemy_skill_points = pPlayers[pParty->getActiveCharacter()]->GetActualSkillLevel(PLAYER_SKILL_ALCHEMY);
+    PLAYER_SKILL_MASTERY alchemy_skill_level = pPlayers[pParty->getActiveCharacter()]->GetActualSkillMastery(PLAYER_SKILL_ALCHEMY);
 
     if (pParty->pPickedItem.uItemID == ITEM_POTION_BOTTLE) {
         GameUI_DrawItemInfo(item);
@@ -1961,7 +1962,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         mouse->RemoveHoldingItem();
         no_rightlick_in_inventory = 1;
         if (dword_4E455C) {
-            pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_PotionSuccess);
+            pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_PotionSuccess);
             dword_4E455C = 0;
         }
         return;
@@ -2009,12 +2010,12 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 damage_level = 4;
         }
 
-        int item_pid = pPlayers[pParty->_activeCharacter]->GetItemListAtInventoryIndex(
+        int item_pid = pPlayers[pParty->getActiveCharacter()]->GetItemListAtInventoryIndex(
             invMatrixIndex);
         // int pOut_x = item_pid + 1;
         // for (uint i = 0; i < 126; ++i)
         //{
-        //  if (pPlayers[pParty->_activeCharacter]->pInventoryMatrix[i] == pOut_x)
+        //  if (pPlayers[pParty->getActiveCharacter()]->pInventoryMatrix[i] == pOut_x)
         // {
         //    pOut_y = i;
         //   break;
@@ -2026,20 +2027,20 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         }
 
         if (damage_level > 0) {
-            pPlayers[pParty->_activeCharacter]->RemoveItemAtInventoryIndex(
+            pPlayers[pParty->getActiveCharacter()]->RemoveItemAtInventoryIndex(
                 invMatrixIndex);  // pOut_y); ?? quickfix needs checking
 
             if (damage_level == 1) {
-                pPlayers[pParty->_activeCharacter]->ReceiveDamage(grng->Random(11) + 10, DMGT_FIRE);
+                pPlayers[pParty->getActiveCharacter()]->ReceiveDamage(grng->Random(11) + 10, DMGT_FIRE);
             } else if (damage_level == 2) {
-                pPlayers[pParty->_activeCharacter]->ReceiveDamage(grng->Random(71) + 30, DMGT_FIRE);
-                pPlayers[pParty->_activeCharacter]->ItemsPotionDmgBreak(1);  // break 1
+                pPlayers[pParty->getActiveCharacter()]->ReceiveDamage(grng->Random(71) + 30, DMGT_FIRE);
+                pPlayers[pParty->getActiveCharacter()]->ItemsPotionDmgBreak(1);  // break 1
             } else if (damage_level == 3) {
-                pPlayers[pParty->_activeCharacter]->ReceiveDamage(grng->Random(201) + 50, DMGT_FIRE);
-                pPlayers[pParty->_activeCharacter]->ItemsPotionDmgBreak(5);  // break 5
+                pPlayers[pParty->getActiveCharacter()]->ReceiveDamage(grng->Random(201) + 50, DMGT_FIRE);
+                pPlayers[pParty->getActiveCharacter()]->ItemsPotionDmgBreak(5);  // break 5
             } else if (damage_level >= 4) {
-                pPlayers[pParty->_activeCharacter]->SetCondition(Condition_Eradicated, 0);
-                pPlayers[pParty->_activeCharacter]->ItemsPotionDmgBreak(
+                pPlayers[pParty->getActiveCharacter()]->SetCondition(Condition_Eradicated, 0);
+                pPlayers[pParty->getActiveCharacter()]->ItemsPotionDmgBreak(
                     0);  // break everything
             }
 
@@ -2053,8 +2054,8 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             Vec3i::rotate(64, pParty->_viewYaw, pParty->_viewPitch, v39, &_viewPitch, &_viewYaw, &rot_z);
             SpriteObject::dropItemAt(SPRITE_SPELL_FIRE_FIREBALL_IMPACT, {_viewPitch, _viewYaw, rot_z}, 0);
             if (dword_4E455C) {
-                if (pPlayers[pParty->_activeCharacter]->CanAct())
-                    pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_PotionExplode);
+                if (pPlayers[pParty->getActiveCharacter()]->CanAct())
+                    pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_PotionExplode);
                 GameUI_SetStatusBar(LSTR_OOPS);
                 dword_4E455C = 0;
             }
@@ -2076,14 +2077,14 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                         (pParty->pPickedItem.uEnchantmentType +
                          item->uEnchantmentType) /
                         2;
-                    pPlayers[pParty->_activeCharacter]->SetVariable(
+                    pPlayers[pParty->getActiveCharacter()]->SetVariable(
                         VAR_AutoNotes,
                         pItemTable->potion_note[potion1_id][potion2_id]);
                 }
                 int bottle =
-                    pPlayers[pParty->_activeCharacter]->AddItem(-1, ITEM_POTION_BOTTLE);
+                    pPlayers[pParty->getActiveCharacter()]->AddItem(-1, ITEM_POTION_BOTTLE);
                 if (bottle)
-                    pPlayers[pParty->_activeCharacter]
+                    pPlayers[pParty->getActiveCharacter()]
                         ->pOwnItems[bottle - 1]
                         .uAttributes = ITEM_IDENTIFIED;
                 if (!(pItemTable->pItems[item->uItemID].uItemID_Rep_St))
@@ -2093,7 +2094,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                     no_rightlick_in_inventory = 1;
                     return;
                 }
-                pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_PotionSuccess);
+                pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_PotionSuccess);
                 dword_4E455C = 0;
                 mouse->RemoveHoldingItem();
                 no_rightlick_in_inventory = 1;

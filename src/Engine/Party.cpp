@@ -240,32 +240,31 @@ void Party::SetHoldingItem(ItemGen *pItem) {
     mouse->SetCursorBitmapFromItemID(pPickedItem.uItemID);
 }
 
-int Party::GetFirstCanAct() {  // added to fix some nzi problems entering shops
+void Party::setActiveToFirstCanAct() {  // added to fix some nzi problems entering shops
     for (int i = 0; i < this->pPlayers.size(); ++i) {
-        if (this->pPlayers[i].CanAct()) return i + 1;
+        if (this->pPlayers[i].CanAct()) {
+            _activeCharacter = i + 1;
+            return;
+        }
     }
 
-    __debugbreak();  // should not get here
-    return 1;
+    assert(false);  // should not get here
 }
 
 //----- (0049370F) --------------------------------------------------------
-int Party::GetNextActiveCharacter() {
-    int v2;         // eax@4
-    signed int v8 {};  // esi@23
-    int v12;        // [sp+Ch] [bp-4h]@1
+void Party::switchToNextActiveCharacter() {
+    // avoid switching away from char that can act
+    if (hasActiveCharacter() && this->pPlayers[_activeCharacter - 1].CanAct() &&
+        this->pPlayers[_activeCharacter - 1].uTimeToRecovery < 1)
+        return;
 
-    if (pParty->_activeCharacter > 0 && this->pPlayers[pParty->_activeCharacter - 1].CanAct() &&
-        this->pPlayers[pParty->_activeCharacter - 1].uTimeToRecovery < 1)  // avoid switching away from char that can act
-        return pParty->_activeCharacter;
-
-    v12 = 0;
     if (pParty->bTurnBasedModeOn) {
         if (pTurnEngine->turn_stage != TE_ATTACK || PID_TYPE(pTurnEngine->pQueue[0].uPackedID) != OBJECT_Player) {
-            return 0;
+            _activeCharacter = 0;
+        } else {
+            _activeCharacter = PID_ID(pTurnEngine->pQueue[0].uPackedID) + 1;
         }
-        v2 = PID_ID(pTurnEngine->pQueue[0].uPackedID);
-        return v2 + 1;
+        return;
     }
 
     if (playerAlreadyPicked[0] && playerAlreadyPicked[1] &&
@@ -278,13 +277,17 @@ int Party::GetNextActiveCharacter() {
             playerAlreadyPicked[i] = true;
         } else if (!playerAlreadyPicked[i]) {
             playerAlreadyPicked[i] = true;
-            if (i > 0)  // TODO(_) check if this condition really should be here. it is
-                        // equal to the original source but still seems kind of weird
-                return i + 1;
+            if (i > 0) { // TODO(_) check if this condition really should be here. it is
+                // equal to the original source but still seems kind of weird
+                _activeCharacter = i + 1;
+                return;
+            }
             break;
         }
     }
 
+    int v12{};
+    uint v8{};
     for (int i = 0; i < this->pPlayers.size(); i++) {
         if (this->pPlayers[i].CanAct() &&
             this->pPlayers[i].uTimeToRecovery == 0) {
@@ -294,7 +297,8 @@ int Party::GetNextActiveCharacter() {
             }
         }
     }
-    return v12;
+    _activeCharacter = v12;
+    return;
 }
 
 //----- (00493244) --------------------------------------------------------

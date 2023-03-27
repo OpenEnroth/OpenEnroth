@@ -1699,10 +1699,10 @@ void _494035_timed_effects__water_walking_damage__etc() {
         }
     }
 
-    if (pParty->_activeCharacter) {
+    if (pParty->hasActiveCharacter()) {
         if (current_screen_type != CURRENT_SCREEN::SCREEN_REST) {
-            if (!pPlayers[pParty->_activeCharacter]->CanAct()) {
-                pParty->_activeCharacter = pParty->GetNextActiveCharacter();
+            if (!pPlayers[pParty->getActiveCharacter()]->CanAct()) {
+                pParty->switchToNextActiveCharacter();
             }
         }
     }

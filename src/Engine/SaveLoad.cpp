@@ -142,13 +142,9 @@ void LoadGame(unsigned int uSlot) {
         }
     }
 
-    pParty->_activeCharacter = 0;
-    for (uint i = 0; i < 4; ++i) {
-        if (pParty->pPlayers[i].CanAct()) {
-            pParty->_activeCharacter = i + 1;
-            break;
-        }
-    }
+    pParty->setActiveCharacter(0);
+    pParty->setActiveToFirstCanAct();
+
 /*
     for (uint i = 0; i < 4; ++i) {
         if (pParty->pPlayers[i].uQuickSpell) {

@@ -2070,18 +2070,16 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 vertical_angle += engine->config->settings.VerticalTurnSpeed.Get();
                 if (vertical_angle > 128)
                     vertical_angle = 128;
-                if (pParty->_activeCharacter) {
-                    pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_LookUp);
-                }
+                if (pParty->hasActiveCharacter())
+                    pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_LookUp);
                 break;
 
             case PARTY_LookDown:
                 vertical_angle -= engine->config->settings.VerticalTurnSpeed.Get();
                 if (vertical_angle < -128)
                     vertical_angle = -128;
-                if (pParty->_activeCharacter) {
-                    pPlayers[pParty->_activeCharacter]->playReaction(SPEECH_LookDown);
-                }
+                if (pParty->hasActiveCharacter())
+                    pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_LookDown);
                 break;
 
             case PARTY_CenterView:
