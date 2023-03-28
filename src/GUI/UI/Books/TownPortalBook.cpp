@@ -8,6 +8,8 @@
 #include "GUI/GUIFont.h"
 #include "GUI/UI/Books/TownPortalBook.h"
 
+#include "Media/Audio/AudioPlayer.h"
+
 #include "Io/Mouse.h"
 
 static int pTownPortalBook_xs[6] = {260, 324, 147, 385, 390, 19};
@@ -21,11 +23,16 @@ static std::array<Image *, 6>
 
 Image *ui_book_townportal_background = nullptr;
 
+int townPortalCasterId;
+
 GUIWindow_TownPortalBook::GUIWindow_TownPortalBook()  // const char *a1)
     : GUIWindow_Book() {
     // this->sHint = a1;  // inherited from GUIWindow::GUIWindow
     this->wData.val = WINDOW_TownPortal;  // inherited from GUIWindow::GUIWindow
     BasicBookInitialization();
+
+    pEventTimer->Pause();
+    pAudioPlayer->PauseSounds(-1);
 
     // ----------------------------------------------
     // 00411BFC GUIWindow::InitializeBookView -- part

@@ -434,8 +434,6 @@ void Game::OnEscape() {
     current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
 }
 
-extern bool _506360_installing_beacon;
-
 bool IsWindowSwitchable() {
     if (current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE || current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE
         || current_screen_type == CURRENT_SCREEN::SCREEN_INPUT_BLV || current_screen_type == CURRENT_SCREEN::SCREEN_CHANGE_LOCATION) {
@@ -1175,12 +1173,10 @@ void Game::EventLoop() {
                     continue;
 
                 case UIMSG_OnCastTownPortal:
-                    pAudioPlayer->PauseSounds(-1);
                     pGUIWindow_CurrentMenu = new GUIWindow_TownPortalBook();  // (char *)uMessageParam);
                     continue;
 
                 case UIMSG_OnCastLloydsBeacon:
-                    pAudioPlayer->PauseSounds(-1);
                     pGUIWindow_CurrentMenu = new GUIWindow_LloydsBook();
                     continue;
 
@@ -1192,7 +1188,7 @@ void Game::EventLoop() {
                     if (!pGUIWindow_CurrentMenu) {
                         continue;
                     }
-                    Player &player = pParty->pPlayers[CurrentLloydPlayerID];
+                    Player &player = pParty->pPlayers[lloydsBeaconCasterId];
                     if (uMessageParam >= player.vBeacons.size()) {
                         continue;
                     }
@@ -1223,12 +1219,12 @@ void Game::EventLoop() {
                     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
                     continue;
                 case UIMSG_InstallBeacon: {
-                    Player &player = pParty->pPlayers[CurrentLloydPlayerID];
+                    Player &player = pParty->pPlayers[lloydsBeaconCasterId];
                     if ((player.vBeacons.size() <= uMessageParam) && bRecallingBeacon) {
                         continue;
                     }
 
-                    _506360_installing_beacon = true;
+                    isLloydsBeaconBeingInstalled = true;
 
                     assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelMana == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uExpertLevelMana);
                     assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelMana == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uMasterLevelMana);
@@ -1240,7 +1236,7 @@ void Game::EventLoop() {
                     assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uMagisterLevelRecovery);
                     signed int sRecoveryTime = pSpellDatas[SPELL_WATER_LLOYDS_BEACON].uNormalLevelRecovery;
                     if (pParty->bTurnBasedModeOn) {
-                        pParty->pTurnBasedPlayerRecoveryTimes[CurrentLloydPlayerID] = sRecoveryTime;
+                        pParty->pTurnBasedPlayerRecoveryTimes[lloydsBeaconCasterId] = sRecoveryTime;
                         player.SetRecoveryTime(sRecoveryTime);
                         pTurnEngine->ApplyPlayerAction();
                     } else {
@@ -1272,7 +1268,7 @@ void Game::EventLoop() {
                         pGUIWindow_CurrentMenu->Release();
                         pGUIWindow_CurrentMenu = 0;
                     } else {
-                        player.SetBeacon(uMessageParam, LloydsBeaconSpellDuration);
+                        player.SetBeacon(uMessageParam, lloydsBeaconSpellDuration);
                     }
                     continue;
                 }
@@ -1336,18 +1332,18 @@ void Game::EventLoop() {
                     assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uExpertLevelMana);
                     assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMasterLevelMana);
                     assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMagisterLevelMana);
-                    pParty->pPlayers[TownPortalCasterId].SpendMana(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana);
+                    pParty->pPlayers[townPortalCasterId].SpendMana(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana);
 
                     assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uExpertLevelRecovery);
                     assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMasterLevelRecovery);
                     assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMagisterLevelRecovery);
                     signed int sRecoveryTime = pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery;
                     if (pParty->bTurnBasedModeOn) {
-                        pParty->pTurnBasedPlayerRecoveryTimes[TownPortalCasterId] = sRecoveryTime;
-                        pParty->pPlayers[TownPortalCasterId].SetRecoveryTime(sRecoveryTime);
+                        pParty->pTurnBasedPlayerRecoveryTimes[townPortalCasterId] = sRecoveryTime;
+                        pParty->pPlayers[townPortalCasterId].SetRecoveryTime(sRecoveryTime);
                         pTurnEngine->ApplyPlayerAction();
                     } else {
-                        pParty->pPlayers[TownPortalCasterId].SetRecoveryTime(debug_non_combat_recovery_mul * sRecoveryTime * flt_debugrecmod3);
+                        pParty->pPlayers[townPortalCasterId].SetRecoveryTime(debug_non_combat_recovery_mul * sRecoveryTime * flt_debugrecmod3);
                     }
 
                     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);

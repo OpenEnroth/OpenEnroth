@@ -30,6 +30,8 @@
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UISpell.h"
+#include "GUI/UI/Books/LloydsBook.h"
+#include "GUI/UI/Books/TownPortalBook.h"
 
 #include "Io/Mouse.h"
 
@@ -302,18 +304,16 @@ void CastSpellInfoHelpers::castSpell() {
                     castSuccessful = false;
                 }
             }
-            pEventTimer->Pause();
-            TownPortalCasterId = pCastSpell->uPlayerID;
+            townPortalCasterId = pCastSpell->uPlayerID;
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_OnCastTownPortal, 0, 0);
             pAudioPlayer->playSpellSound(pCastSpell->uSpellID, PID_INVALID);
         } else if (pCastSpell->uSpellID == SPELL_WATER_LLOYDS_BEACON) {
             if (pCurrentMapName == "d05.blv") {  // Arena
                 spellFailed(pCastSpell, LSTR_SPELL_FAILED);
             } else {
-                pEventTimer->Pause();
                 pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_OnCastLloydsBeacon, 0, 0);
-                CurrentLloydPlayerID = pCastSpell->uPlayerID;
-                LloydsBeaconSpellDuration = GameTime::FromDays(7 * spell_level).GetSeconds();
+                lloydsBeaconCasterId = pCastSpell->uPlayerID;
+                lloydsBeaconSpellDuration = GameTime::FromDays(7 * spell_level).GetSeconds();
                 pCastSpell->uFlags |= ON_CAST_NoRecoverySpell;
             }
         } else {
