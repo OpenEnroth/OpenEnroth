@@ -39,6 +39,6 @@ var searchData=
   ['updateuserinput_5fand_5fmapspecificstuff_36',['UpdateUserInput_and_MapSpecificStuff',['../Engine_8cpp.html#a73fe5e8d7dc6ec78e5cc180d1915341b',1,'UpdateUserInput_and_MapSpecificStuff():&#160;Engine.cpp'],['../Engine_8h.html#a73fe5e8d7dc6ec78e5cc180d1915341b',1,'UpdateUserInput_and_MapSpecificStuff():&#160;Engine.cpp']]],
   ['updatewindowfromconfig_37',['UpdateWindowFromConfig',['../classApplication_1_1GameWindowHandler.html#ab477fb7c84910c2c3b4fda658dc0c9ac',1,'Application::GameWindowHandler']]],
   ['use_38',['use',['../classGLShader.html#af765a2607d1d4cc056aabd9295702e09',1,'GLShader']]],
-  ['useitem_5fdrinkpotion_5fetc_39',['UseItem_DrinkPotion_etc',['../structPlayer.html#a3de138c2c484a5eced6fade1b560fd87',1,'Player']]],
+  ['useitem_39',['useItem',['../structPlayer.html#a054773c9d6b7d5e64e221df0e20a1b92',1,'Player']]],
   ['usenpcskill_40',['UseNPCSkill',['../NPC_8cpp.html#acfce0b79ca64a3c666c5bc7781622842',1,'UseNPCSkill(NPCProf profession):&#160;NPC.cpp'],['../NPC_8h.html#acfce0b79ca64a3c666c5bc7781622842',1,'UseNPCSkill(NPCProf profession):&#160;NPC.cpp']]]
 ];

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;230f0d8</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6eba874</span>
    </div>
   </td>
  </tr>
@@ -93,8 +93,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a0c6b48064406d1b110768097dc549fc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca795ab716757738416f73dc44e4c8c1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPlayer.html#aca795ab716757738416f73dc44e4c8c1">CompareVariable</a> (<a class="el" href="Events_8h.html#ac62972ff1b21a037e56530cde67309ab">VariableType</a> VarNum, signed int pValue)</td></tr>
 <tr class="separator:aca795ab716757738416f73dc44e4c8c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3de138c2c484a5eced6fade1b560fd87"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPlayer.html#a3de138c2c484a5eced6fade1b560fd87">UseItem_DrinkPotion_etc</a> (signed int a2, int a3)</td></tr>
-<tr class="separator:a3de138c2c484a5eced6fade1b560fd87"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a054773c9d6b7d5e64e221df0e20a1b92"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPlayer.html#a054773c9d6b7d5e64e221df0e20a1b92">useItem</a> (int targetCharacter, bool isPortraitClick)</td></tr>
+<tr class="separator:a054773c9d6b7d5e64e221df0e20a1b92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a23213493f5372b675ec5fc5ceec8a8ed"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPlayer.html#a23213493f5372b675ec5fc5ceec8a8ed">AddItem</a> (<a class="el" href="structItemGen.html">ItemGen</a> *pItem)</td></tr>
 <tr class="separator:a23213493f5372b675ec5fc5ceec8a8ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7f05873ce6a88d583450a7b342daa28d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPlayer.html#a7f05873ce6a88d583450a7b342daa28d">GetActualAttribute</a> (<a class="el" href="PlayerEnums_8h.html#af7a3ec7aad73ec22b61f03b17390d80a">CHARACTER_ATTRIBUTE_TYPE</a> attrId, unsigned short Player::*attrValue, unsigned short Player::*attrBonus)</td></tr>
@@ -5021,23 +5021,23 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a3de138c2c484a5eced6fade1b560fd87" name="a3de138c2c484a5eced6fade1b560fd87"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3de138c2c484a5eced6fade1b560fd87">&#9670;&#160;</a></span>UseItem_DrinkPotion_etc()</h2>
+<a id="a054773c9d6b7d5e64e221df0e20a1b92" name="a054773c9d6b7d5e64e221df0e20a1b92"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a054773c9d6b7d5e64e221df0e20a1b92">&#9670;&#160;</a></span>useItem()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void Player::UseItem_DrinkPotion_etc </td>
+          <td class="memname">void Player::useItem </td>
           <td>(</td>
-          <td class="paramtype">signed int&#160;</td>
-          <td class="paramname"><em>a2</em>, </td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>targetCharacter</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>a3</em>&#160;</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>isPortraitClick</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -5046,6 +5046,15 @@ Static Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >Use item on character. This includes potion drinking, spell scroll/books usages and so on.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">targetCharacter</td><td>Character that uses the item. </td></tr>
+    <tr><td class="paramname">isPortraitClick</td><td>true if item used on character portrait, false if on character doll in inventory screen. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x4680ED </dd></dl>
 
 </div>
 </div>
