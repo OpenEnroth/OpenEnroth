@@ -3546,11 +3546,8 @@ int stru319::which_player_to_attack(Actor *pActor) {
                         flag = true;
                     }
                     if (flag == true) {
-                        if (!(pParty->pPlayers[j].conditions.Has(Condition_Paralyzed) ||
-                              pParty->pPlayers[j].conditions.Has(Condition_Unconscious) ||
-                              pParty->pPlayers[j].conditions.Has(Condition_Dead) ||
-                              pParty->pPlayers[j].conditions.Has(Condition_Petrified) ||
-                              pParty->pPlayers[j].conditions.Has(Condition_Eradicated))) {
+                        if (pParty->pPlayers[j].conditions.HasNone({Condition_Paralyzed, Condition_Unconscious, Condition_Dead,
+                                                                    Condition_Petrified, Condition_Eradicated})) {
                             Victims_list[v2++] = j;
                         }
                     }
@@ -3560,11 +3557,8 @@ int stru319::which_player_to_attack(Actor *pActor) {
         if (v2) return Victims_list[grng->Random(v2)];
     }
     for (int i = 0; i < pParty->pPlayers.size(); ++i) {
-        if (!(pParty->pPlayers[i].conditions.Has(Condition_Paralyzed) ||
-              pParty->pPlayers[i].conditions.Has(Condition_Unconscious) ||
-              pParty->pPlayers[i].conditions.Has(Condition_Dead) ||
-              pParty->pPlayers[i].conditions.Has(Condition_Petrified) ||
-              pParty->pPlayers[i].conditions.Has(Condition_Eradicated)))
+        if (pParty->pPlayers[i].conditions.HasNone({Condition_Paralyzed, Condition_Unconscious, Condition_Dead,
+                                                    Condition_Petrified, Condition_Eradicated}))
             Victims_list[v2++] = i;
     }
     if (v2)
