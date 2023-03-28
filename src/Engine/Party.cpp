@@ -21,6 +21,7 @@
 
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIStatusBar.h"
+#include "GUI/UI/UIRest.h"
 
 #include "Io/Mouse.h"
 
@@ -929,9 +930,7 @@ void Party::RestAndHeal() {
         for (uint i = 0; i < 20; ++i) pPlayer->pPlayerBuffs[i].Reset();
 
         pPlayer->Zero();
-        if (pPlayer->conditions.Has(Condition_Dead) ||
-            pPlayer->conditions.Has(Condition_Petrified) ||
-            pPlayer->conditions.Has(Condition_Eradicated)) {
+        if (pPlayer->conditions.HasAny({Condition_Dead, Condition_Petrified, Condition_Eradicated})) {
             continue;
         }
 
@@ -959,16 +958,13 @@ void Party::RestAndHeal() {
         if (pPlayer->conditions.Has(Condition_Zombie)) {
             pPlayer->sMana = 0;
             pPlayer->sHealth /= 2;
-        } else if (pPlayer->conditions.Has(Condition_Poison_Severe) ||
-                   pPlayer->conditions.Has(Condition_Disease_Severe)) {
+        } else if (pPlayer->conditions.HasAny({Condition_Poison_Severe, Condition_Disease_Severe})) {
             pPlayer->sHealth /= 4;
             pPlayer->sMana /= 4;
-        } else if (pPlayer->conditions.Has(Condition_Poison_Medium) ||
-                   pPlayer->conditions.Has(Condition_Disease_Medium)) {
+        } else if (pPlayer->conditions.HasAny({Condition_Poison_Medium, Condition_Disease_Medium})) {
             pPlayer->sHealth /= 3;
             pPlayer->sMana /= 3;
-        } else if (pPlayer->conditions.Has(Condition_Poison_Weak) ||
-                   pPlayer->conditions.Has(Condition_Disease_Weak)) {
+        } else if (pPlayer->conditions.HasAny({Condition_Poison_Weak, Condition_Disease_Weak})) {
             pPlayer->sHealth /= 2;
             pPlayer->sMana /= 2;
         }
@@ -979,16 +975,15 @@ void Party::RestAndHeal() {
     pParty->days_played_without_rest = 0;
 }
 
-//----- (004938D1) --------------------------------------------------------
-void Rest(unsigned int uMinsToRest) {  // this is passed mins not hours
-    auto rest_time = GameTime(0, uMinsToRest);
+void Rest(GameTime restTime) {
+    if (restTime > GameTime::FromHours(4)) {
+        Actor::InitializeActors();
+    }
 
-    if (uMinsToRest > 240) Actor::InitializeActors();
-
-    pParty->GetPlayingTime() += rest_time;
+    pParty->GetPlayingTime() += restTime;
 
     for (Player &player : pParty->pPlayers) {
-        player.Recover(rest_time);  // ??
+        player.Recover(restTime);  // ??
     }
 
     _494035_timed_effects__water_walking_damage__etc();
@@ -1020,21 +1015,30 @@ void RestAndHeal(int minutes) {
 
     pParty->UpdatePlayersAndHirelingsEmotions();
 }
-//----- (0041F5BE) --------------------------------------------------------
-void Party::Sleep8Hours() {
-    if (_506F18_num_minutes_to_sleep < 6) {
-        if (_506F18_num_minutes_to_sleep) {
-            Rest(_506F18_num_minutes_to_sleep);
-            _506F18_num_minutes_to_sleep = 0;
-            OutdoorLocation::LoadActualSkyFrame();
-        }
-        if (_506F14_resting_stage == 2) {
-            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
-        }
-    } else {
-        Rest(6u);
-        _506F18_num_minutes_to_sleep -= 6;
+void Party::RestOneFrame() {
+    // TODO(Nik-RE-dev): rest speed depends on FPS in this case.
+    //                   Is there need to scale rest time per frame?
+    GameTime restTick = GameTime::FromMinutes(6);
+
+    if (remainingRestTime < restTick) {
+        restTick = remainingRestTime;
+    }
+
+    if (restTick.Valid()) {
+        Rest(restTick);
+        remainingRestTime -= restTick;
         OutdoorLocation::LoadActualSkyFrame();
+    }
+
+    if (!remainingRestTime.Valid()) {
+        if (currentRestType == REST_HEAL) {
+            // Close rest screen when healing is done.
+            // Resting type is reset on Escape processing
+            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
+        } else if (currentRestType == REST_WAIT) {
+            // Reset resting type after waiting is done.
+            currentRestType = REST_NONE;
+        }
     }
 }
 

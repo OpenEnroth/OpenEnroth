@@ -2074,9 +2074,7 @@ void TempleDialog() {
             // =
             // LODWORD(pPlayers[pParty->getActiveCharacter()]->pConditions[Condition_Zombie]);
         } else {
-            if (!pPlayers[pParty->getActiveCharacter()]->conditions.Has(Condition_Eradicated) &&
-                !pPlayers[pParty->getActiveCharacter()]->conditions.Has(Condition_Petrified) &&
-                !pPlayers[pParty->getActiveCharacter()]->conditions.Has(Condition_Dead)) {
+            if (pPlayers[pParty->getActiveCharacter()]->conditions.HasNone({Condition_Eradicated, Condition_Petrified, Condition_Dead})) {
                 pAudioPlayer->playExclusiveSound(SOUND_heal);;
                 pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_TempleHeal);
                 pOtherOverlayList->_4418B1(20, pParty->getActiveCharacter() + 99, 0, 65536);

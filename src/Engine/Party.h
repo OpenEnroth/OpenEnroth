@@ -152,7 +152,7 @@ using enum PartyAlignment;
 
 /*  208 */
 struct PartyTimeStruct {
-    IndexedArray<GameTime, HOUSE_TOWNHALL_FIRST, HOUSE_TOWNHALL_LAST> bountyHunting_next_generation_time; // Size was 10 originally.
+    IndexedArray<GameTime, HOUSE_FIRST_TOWNHALL, HOUSE_LAST_TOWNHALL> bountyHunting_next_generation_time; // Size was 10 originally.
     std::array<GameTime, 85> Shops_next_generation_time;  // field_50
     std::array<GameTime, 53> _shop_ban_times;
     std::array<GameTime, 10> CounterEventValues;  // (0xACD314h in Silvo's binary)
@@ -217,7 +217,13 @@ struct Party {
     void AddFine(int amount);
     void TakeFine(int amount);
 
-    static void Sleep8Hours();
+    /**
+     * Perform resting activity within current frame.
+     * Used to simulate party resting through time.
+     *
+     * @offset 0x41F5BE
+     */
+    static void RestOneFrame();
 
     /**
      * New function - applies fall damage with modifiers to all party members 
@@ -383,8 +389,8 @@ struct Party {
     int uNumPrisonTerms;
     unsigned int uNumBountiesCollected;
     int field_74C_set0_unused;
-    IndexedArray<int16_t, HOUSE_TOWNHALL_FIRST, HOUSE_TOWNHALL_LAST> monster_id_for_hunting;
-    IndexedArray<int16_t, HOUSE_TOWNHALL_FIRST, HOUSE_TOWNHALL_LAST> monster_for_hunting_killed; // TODO(captainurist): bool
+    IndexedArray<int16_t, HOUSE_FIRST_TOWNHALL, HOUSE_LAST_TOWNHALL> monster_id_for_hunting;
+    IndexedArray<int16_t, HOUSE_FIRST_TOWNHALL, HOUSE_LAST_TOWNHALL> monster_for_hunting_killed; // TODO(captainurist): bool
     unsigned char days_played_without_rest;
     uint8_t _quest_bits[64];
     std::array<uint8_t, 16> pArcomageWins;
@@ -449,7 +455,14 @@ extern Party *pParty;  // idb
 extern struct ActionQueue *pPartyActionQueue;
 
 bool TestPartyQuestBit(PARTY_QUEST_BITS bit);
-void Rest(unsigned int uHoursToSleep);
+
+/**
+ * Perform resting without healing.
+ *
+ * @param restTime      Resting time.
+ * @offset 0x4938D1
+ */
+void Rest(GameTime restTime);
 void RestAndHeal(int uNumMinutes);  // idb
 int GetTravelTime();
 

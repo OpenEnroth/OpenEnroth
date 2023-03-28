@@ -113,7 +113,7 @@ IndexedArray<int, PLAYER_SKILL_MASTERY_FIRST, PLAYER_SKILL_MASTERY_LAST> Stealin
 };  // dword_4EDEC4      //the zeroth element isn't accessed, it just
           // helps avoid -1 indexing, originally 4 element array off by one
 
-IndexedArray<ITEM_SLOT, EQUIP_TYPE_COUNT> pEquipTypeToBodyAnchor = {  // 4E8398
+IndexedArray<ITEM_SLOT, EQUIP_FIRST, EQUIP_LAST> pEquipTypeToBodyAnchor = {  // 4E8398
     {EQUIP_SINGLE_HANDED,  ITEM_SLOT_MAIN_HAND},
     {EQUIP_TWO_HANDED,     ITEM_SLOT_MAIN_HAND},
     {EQUIP_BOW,            ITEM_SLOT_BOW},
@@ -4074,7 +4074,7 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
 
     if (pParty->pPickedItem.isBook()) {
         SPELL_TYPE bookSpellId = bookSpellIds[pParty->pPickedItem.uItemID];
-        if (playerAffected->spellbook.bHaveSpell[bookSpellId - SPELL_REGULAR_FIRST]) {
+        if (playerAffected->spellbook.bHaveSpell[bookSpellId - SPELL_FIRST_REGULAR]) {
             GameUI_SetStatusBar(LSTR_FMT_YOU_ALREADY_KNOW_S_SPELL, pParty->pPickedItem.GetDisplayName().c_str());
             pAudioPlayer->playUISound(SOUND_error);
             return;
@@ -4095,7 +4095,7 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
             playerAffected->playReaction(SPEECH_CantLearnSpell);
             return;
         }
-        playerAffected->spellbook.bHaveSpell[bookSpellId - SPELL_REGULAR_FIRST] = 1;
+        playerAffected->spellbook.bHaveSpell[bookSpellId - SPELL_FIRST_REGULAR] = 1;
         playerAffected->playReaction(SPEECH_LearnSpell);
 
         // if (pGUIWindow_CurrentMenu && pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {

@@ -1869,9 +1869,7 @@ void RegeneratePartyHealthMana() {
                         }
                     }
 
-                    if (recovery_HP &&
-                        !pParty->pPlayers[playerID].conditions.Has(Condition_Dead) &&
-                        !pParty->pPlayers[playerID].conditions.Has(Condition_Eradicated)) {
+                    if (recovery_HP && pParty->pPlayers[playerID].conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
                         if (pParty->pPlayers[playerID].sHealth <
                             pParty->pPlayers[playerID].GetMaxHealth()) {
                             ++pParty->pPlayers[playerID].sHealth;
@@ -1882,17 +1880,13 @@ void RegeneratePartyHealthMana() {
                         }
                     }
 
-                    if (recovery_SP &&
-                        !pParty->pPlayers[playerID].conditions.Has(Condition_Dead) &&
-                        !pParty->pPlayers[playerID].conditions.Has(Condition_Eradicated)) {
+                    if (recovery_SP && pParty->pPlayers[playerID].conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
                         if (pParty->pPlayers[playerID].sMana <
                             pParty->pPlayers[playerID].GetMaxMana())
                             ++pParty->pPlayers[playerID].sMana;
                     }
 
-                    if (decrease_HP &&
-                        !pParty->pPlayers[playerID].conditions.Has(Condition_Dead) &&
-                        !pParty->pPlayers[playerID].conditions.Has(Condition_Eradicated)) {
+                    if (decrease_HP && pParty->pPlayers[playerID].conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
                         --pParty->pPlayers[playerID].sHealth;
                         if (!(pParty->pPlayers[playerID].conditions.Has(Condition_Unconscious)) &&
                             pParty->pPlayers[playerID].sHealth < 0) {
@@ -1914,8 +1908,7 @@ void RegeneratePartyHealthMana() {
 
             // regeneration buff
             if (pParty->pPlayers[playerID].pPlayerBuffs[PLAYER_BUFF_REGENERATION].expire_time &&
-                !pParty->pPlayers[playerID].conditions.Has(Condition_Dead) &&
-                !pParty->pPlayers[playerID].conditions.Has(Condition_Eradicated)) {
+                pParty->pPlayers[playerID].conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
                 pParty->pPlayers[playerID].sHealth += 5 * pParty->pPlayers[playerID].pPlayerBuffs[PLAYER_BUFF_REGENERATION].uPower;
                 if (pParty->pPlayers[playerID].sHealth >
                     pParty->pPlayers[playerID].GetMaxHealth()) {
@@ -1944,8 +1937,7 @@ void RegeneratePartyHealthMana() {
                         lich_has_jar = true;
                 }
 
-                if (!pParty->pPlayers[playerID].conditions.Has(Condition_Dead) &&
-                    !pParty->pPlayers[playerID].conditions.Has(Condition_Eradicated)) {
+                if (pParty->pPlayers[playerID].conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
                     if (pParty->pPlayers[playerID].sHealth >
                         pParty->pPlayers[playerID].GetMaxHealth() / 2) {
                         pParty->pPlayers[playerID].sHealth = pParty->pPlayers[playerID].sHealth - 2;
@@ -1965,8 +1957,7 @@ void RegeneratePartyHealthMana() {
 
             // for zombie
             if (pParty->pPlayers[playerID].conditions.Has(Condition_Zombie) &&
-                !pParty->pPlayers[playerID].conditions.Has(Condition_Dead) &&
-                !pParty->pPlayers[playerID].conditions.Has(Condition_Eradicated)) {
+                pParty->pPlayers[playerID].conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
                 if (pParty->pPlayers[playerID].sHealth >
                     pParty->pPlayers[playerID].GetMaxHealth() / 2) {
                     pParty->pPlayers[playerID].sHealth =

@@ -515,3 +515,9 @@ GAME_TEST(Issues, Issue563) {
     // Check that drinking some buff potions does not cause assert
     test->playTraceFromTestData("issue_563.mm7", "issue_563.json");
 }
+
+GAME_TEST(Issues, Issue578) {
+    // Check that rest & heal work after waiting
+    test->playTraceFromTestData("issue_578.mm7", "issue_578.json", []() { EXPECT_EQ(pParty->pPlayers[0].sHealth, 66); });
+    EXPECT_EQ(pParty->pPlayers[0].sHealth, 108);
+}

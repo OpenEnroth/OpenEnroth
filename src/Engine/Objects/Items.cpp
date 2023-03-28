@@ -796,8 +796,8 @@ Segment<ITEM_TREASURE_LEVEL> RemapTreasureLevel(ITEM_TREASURE_LEVEL itemTreasure
     }};
 
     // TODO(captainurist) : type-safe enum diff!
-    int itemIdx = std::to_underlying(itemTreasureLevel) - std::to_underlying(ITEM_FIRST_VALID_TREASURE_LEVEL);
-    int mapIdx = std::to_underlying(mapTreasureLevel) - std::to_underlying(MAP_FIRST_TREASURE_LEVEL);
+    int itemIdx = std::to_underlying(itemTreasureLevel) - std::to_underlying(ITEM_TREASURE_LEVEL_FIRST_VALID);
+    int mapIdx = std::to_underlying(mapTreasureLevel) - std::to_underlying(MAP_TREASURE_LEVEL_FIRST);
     Segment<int> result = mapping[itemIdx][mapIdx];
     return {ITEM_TREASURE_LEVEL(result.front()), ITEM_TREASURE_LEVEL(result.back())};
 }
