@@ -139,6 +139,7 @@ bool Chest::Open(int uChestID) {
             pSpellObject.spell_target_pid = 0;
             pSpellObject.uFacing = 0;
             pSpellObject.Create(0, 0, 0, 0);
+            // TODO(Nik-RE-dev): chest is originator in this case
             pAudioPlayer->PlaySound(SOUND_fireBall, 0, 0, -1, 0, 0);
             pSpellObject.ExplosionTraps();
             chest->uFlags &= ~CHEST_TRAPPED;
@@ -155,7 +156,7 @@ bool Chest::Open(int uChestID) {
         flag_shout = true;
     }
     pAudioPlayer->PauseSounds(-1);
-    pAudioPlayer->PlaySound(SOUND_openchest0101, 0, 0, -1, 0, 0);
+    pAudioPlayer->playUISound(SOUND_openchest0101);
     if (flag_shout == true) {
         if (!OpenedTelekinesis) {
             pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_TrapDisarmed);

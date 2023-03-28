@@ -209,6 +209,9 @@ struct Engine {
 
 extern std::shared_ptr<Engine> engine;
 
+/**
+ * @offset 0x42FC15
+ */
 void PlayButtonClickSound();
 void back_to_game();
 

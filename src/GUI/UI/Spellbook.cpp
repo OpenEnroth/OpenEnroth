@@ -61,7 +61,8 @@ GUIWindow_Spellbook::GUIWindow_Spellbook()
     InitializeSpellBookTextures();
     OpenSpellbook();
 
-    pAudioPlayer->PlaySound(SOUND_48, 0, 0, -1, 0, 0);
+    // Sound 48 is absent in MM7
+    pAudioPlayer->playUISound(SOUND_48);
 }
 
 void GUIWindow_Spellbook::OpenSpellbookPage(int page) {

@@ -6588,16 +6588,16 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             int randVal = vrng->Random(4);
             switch (randVal) {
                 case 0:
-                    soundToPlay = (SoundID)108;
+                    soundToPlay = SOUND_dull_armor_strike1;
                     break;
                 case 1:
-                    soundToPlay = (SoundID)109;
+                    soundToPlay = SOUND_dull_armor_strike2;
                     break;
                 case 2:
-                    soundToPlay = (SoundID)110;
+                    soundToPlay = SOUND_dull_armor_strike3;
                     break;
                 case 3:
-                    soundToPlay = (SoundID)44;
+                    soundToPlay = SOUND_dull_strike;
                     break;
                 default:
                     Error("Unexpected sound value");
@@ -6606,22 +6606,23 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             int randVal = vrng->Random(4);
             switch (randVal) {
                 case 0:
-                    soundToPlay = (SoundID)105;
+                    soundToPlay = SOUND_metal_armor_strike1;
                     break;
                 case 1:
-                    soundToPlay = (SoundID)106;
+                    soundToPlay = SOUND_metal_armor_strike2;
                     break;
                 case 2:
-                    soundToPlay = (SoundID)107;
+                    soundToPlay = SOUND_metal_armor_strike3;
                     break;
                 case 3:
-                    soundToPlay = (SoundID)45;
+                    soundToPlay = SOUND_metal_vs_metal01h;
                     break;
                 default:
                     Error("Unexpected sound value");
             }
         }
-        pAudioPlayer->PlaySound(soundToPlay, PID(OBJECT_Player, targetchar + 80), 0, -1, 0, 0);
+        // TODO(Nik-RE-dev): is it correct to use voice volume for strike sounds?
+        pAudioPlayer->PlaySound(soundToPlay, PID(OBJECT_Player, targetchar), 0, -1, 0, 0);
 
         // calc damage
         int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
@@ -7475,7 +7476,7 @@ void Player::playReaction(PlayerSpeech speech, int a3) {
             int numberOfSubvariants = byte_4ECF08[pickedVariant - 1][uVoiceID];
             if (numberOfSubvariants > 0) {
                 pickedSoundID = vrng->Random(numberOfSubvariants) + 2 * (pickedVariant + 50 * uVoiceID) + 4998;
-                pAudioPlayer->PlaySound((SoundID)pickedSoundID, PID(OBJECT_Player, pParty->getActiveCharacter() + 39), 0, -1, 0, 0);
+                pAudioPlayer->PlaySound((SoundID)pickedSoundID, PID(OBJECT_Player, GetPlayerIndex()), 0, -1, 0, 0);
             }
         }
     }
