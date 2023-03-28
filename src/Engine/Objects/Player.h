@@ -177,7 +177,7 @@ struct Player {
      * Use item on character.
      * This includes potion drinking, spell scroll/books usages and so on.
      *
-     * @param targetCharacter     Character that uses scroll.
+     * @param targetCharacter     Character that uses the item.
      * @param isPortraitClick     true if item used on character portrait, false if on character doll in inventory screen.
      * @offset 0x4680ED
      */

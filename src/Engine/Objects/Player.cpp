@@ -3896,13 +3896,14 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
 
             case ITEM_POTION_DIVINE_RESTORATION:
             {
-                bool isDead = playerAffected->conditions.Get(Condition_Dead).value;
-                bool isPetrified = playerAffected->conditions.Get(Condition_Petrified).value;
-                bool isEradicated = playerAffected->conditions.Get(Condition_Eradicated).value;
+                GameTime deadTime = playerAffected->conditions.Get(Condition_Dead);
+                GameTime petrifedTime = playerAffected->conditions.Get(Condition_Petrified);
+                GameTime eradicatedTime = playerAffected->conditions.Get(Condition_Eradicated);
+                // TODO(Nik-RE-dev): why not playerAffected?
                 conditions.ResetAll();
-                playerAffected->conditions.Set(Condition_Dead, GameTime(isDead ? 1 : 0));
-                playerAffected->conditions.Set(Condition_Petrified, GameTime(isPetrified ? 1 : 0));
-                playerAffected->conditions.Set(Condition_Eradicated, GameTime(isEradicated ? 1 : 0));
+                playerAffected->conditions.Set(Condition_Dead, deadTime);
+                playerAffected->conditions.Set(Condition_Petrified, petrifedTime);
+                playerAffected->conditions.Set(Condition_Eradicated, eradicatedTime);
                 break;
             }
 
