@@ -11,7 +11,6 @@
 
 using Application::GameConfig;
 
-// TODO(captainurist): this begs a PR to CLI11
 template<class T>
 bool lexical_cast(const std::string &input, ConfigValue<T> &configValue) {
     T value;
@@ -22,23 +21,11 @@ bool lexical_cast(const std::string &input, ConfigValue<T> &configValue) {
     return true;
 }
 
+// TODO(captainurist): we shouldn't need to overload lexical_assign, this begs a PR to CLI11
 template<class A, class B, class T>
 bool lexical_assign(const std::string &input, ConfigValue<T> &configValue) {
     return lexical_cast(input, configValue);
 }
-
-#define MM_DEFINE_CLI_LEXICAL_CAST_FOR_CONFIG_TYPE(TYPE)                                                                \
-namespace CLI::detail {                                                                                                 \
-    template<>                                                                                                          \
-    bool lexical_cast<ConfigValue<TYPE>>(const std::string &input, ConfigValue<TYPE> &configValue) {                    \
-        return lexical_cast(input, configValue);                                                                        \
-    }                                                                                                                   \
-} // namespace CLI::detail
-
-MM_DEFINE_CLI_LEXICAL_CAST_FOR_CONFIG_TYPE(bool)
-MM_DEFINE_CLI_LEXICAL_CAST_FOR_CONFIG_TYPE(int)
-MM_DEFINE_CLI_LEXICAL_CAST_FOR_CONFIG_TYPE(float)
-MM_DEFINE_CLI_LEXICAL_CAST_FOR_CONFIG_TYPE(std::string)
 
 bool Application::ParseGameOptions(int argc, char **argv, GameConfig *config) {
     std::unique_ptr<CLI::App> app = std::make_unique<CLI::App>();
