@@ -792,10 +792,9 @@ void Game::EventLoop() {
                                     case CURRENT_SCREEN::SCREEN_REST:  // close rest screen
                                         if (currentRestType != REST_NONE) {
                                             Rest(remainingRestTime);
-                                            pParty->pPlayers[3].SetAsleep(GameTime(0));
-                                            pParty->pPlayers[2].SetAsleep(GameTime(0));
-                                            pParty->pPlayers[1].SetAsleep(GameTime(0));
-                                            pParty->pPlayers[0].SetAsleep(GameTime(0));
+                                            for (Player &player : pParty->pPlayers) {
+                                                player.SetAsleep(GameTime(0));
+                                            }
                                         }
                                         if (rest_ui_sky_frame_current) {
                                             rest_ui_sky_frame_current->Release();
@@ -1601,10 +1600,9 @@ void Game::EventLoop() {
                     currentRestType = REST_HEAL;
                     pParty->RestAndHeal();
                     pParty->days_played_without_rest = 0;
-                    pParty->pPlayers[3].SetAsleep(GameTime(1));
-                    pParty->pPlayers[2].SetAsleep(GameTime(1));
-                    pParty->pPlayers[1].SetAsleep(GameTime(1));
-                    pParty->pPlayers[0].SetAsleep(GameTime(1));
+                    for (Player &player : pParty->pPlayers) {
+                        player.SetAsleep(GameTime(1));
+                    }
                     continue;
                 case UIMSG_RestWindow:
                     pCurrentFrameMessageQueue->Flush();
@@ -1674,10 +1672,9 @@ void Game::EventLoop() {
                             pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_NotEnoughFood);
                         }
                     } else {
-                        pParty->pPlayers[3].conditions.Set(Condition_Sleep, pParty->GetPlayingTime());
-                        pParty->pPlayers[2].conditions.Set(Condition_Sleep, pParty->GetPlayingTime());
-                        pParty->pPlayers[1].conditions.Set(Condition_Sleep, pParty->GetPlayingTime());
-                        pParty->pPlayers[0].conditions.Set(Condition_Sleep, pParty->GetPlayingTime());
+                        for (Player &player : pParty->pPlayers) {
+                            player.SetAsleep(pParty->GetPlayingTime());
+                        }
                         v90 = pMapStats->GetMapInfo(pCurrentMapName);
                         if (!v90)
                             v90 = grng->Random(pMapStats->uNumMaps + 1);
@@ -1713,10 +1710,9 @@ void Game::EventLoop() {
                         currentRestType = REST_HEAL;
                         pParty->RestAndHeal();
                         pParty->days_played_without_rest = 0;
-                        pParty->pPlayers[3].SetAsleep(GameTime(1));
-                        pParty->pPlayers[2].SetAsleep(GameTime(1));
-                        pParty->pPlayers[1].SetAsleep(GameTime(1));
-                        pParty->pPlayers[0].SetAsleep(GameTime(1));
+                        for (Player &player : pParty->pPlayers) {
+                            player.SetAsleep(GameTime(1));
+                        }
                     }
                     continue;
                 case UIMSG_WaitTillDawn:

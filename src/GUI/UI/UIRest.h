@@ -20,6 +20,7 @@ class GUIWindow_Rest : public GUIWindow {
     int hourglassLoopTimer;
 };
 
+// This window is unused.
 #if 0
 class GUIWindow_RestWindow : public GUIWindow {
  public:

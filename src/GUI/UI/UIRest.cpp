@@ -30,6 +30,7 @@ int foodRequiredToRest;
 GameTime remainingRestTime;
 REST_TYPE currentRestType;
 
+// GUIWindow_RestWindow is unused
 #if 0
 void GUIWindow_RestWindow::Update() {
     __debugbreak();  // doesnt seems to get here, check stack trace & conditions
