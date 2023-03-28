@@ -116,16 +116,15 @@ enum SPELL_TYPE : uint8_t {
     SPELL_DARK_ARMAGEDDON = 98,
     SPELL_DARK_SOULDRINKER = 99,
 
-    // TODO(captainurist): use IndexedArray where this one is referenced
-    SPELL_REGULAR_FIRST = SPELL_FIRE_TORCH_LIGHT,
-    SPELL_REGULAR_LAST = SPELL_DARK_SOULDRINKER,
-
     SPELL_BOW_ARROW = 100,
     SPELL_101 = 101,
     SPELL_LASER_PROJECTILE = 102,
 
-    SPELL_ANY_WITH_SPRITE_FIRST = SPELL_FIRE_TORCH_LIGHT,
-    SPELL_ANY_WITH_SPRITE_LAST = SPELL_LASER_PROJECTILE,
+    SPELL_FIRST_REGULAR = SPELL_FIRE_TORCH_LIGHT,
+    SPELL_LAST_REGULAR = SPELL_DARK_SOULDRINKER,
+
+    SPELL_FIRST_WITH_SPRITE = SPELL_FIRE_TORCH_LIGHT,
+    SPELL_LAST_WITH_SPRITE = SPELL_LASER_PROJECTILE,
 
     BECOME_MAGIC_GUILD_MEMBER = 150,
     SPELL_QUEST_COMPLETED = 151,
@@ -138,7 +137,7 @@ enum SPELL_TYPE : uint8_t {
  * @return                              All regular spell types.
  */
 inline Segment<SPELL_TYPE> allRegularSpells() {
-    return {SPELL_REGULAR_FIRST, SPELL_REGULAR_LAST};
+    return {SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR};
 }
 
 /**
@@ -155,7 +154,7 @@ inline bool isSpellTargetsItem(SPELL_TYPE uSpellID) {
  * Is spell ID references any regular spell?
  */
 inline bool isRegularSpell(SPELL_TYPE uSpellID) {
-    return uSpellID >= SPELL_REGULAR_FIRST && uSpellID <= SPELL_REGULAR_LAST;
+    return uSpellID >= SPELL_FIRST_REGULAR && uSpellID <= SPELL_LAST_REGULAR;
 }
 
 /**

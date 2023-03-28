@@ -261,7 +261,7 @@ void Serialize(const Party &src, Party_MM7 *dst) {
     // MM7 uses an array of size 10 here, but we only store 5 elements. So zero it first.
     dst->PartyTimes.bountyHunting_next_generation_time.fill(0);
     for (HOUSE_ID i : src.PartyTimes.bountyHunting_next_generation_time.indices())
-        dst->PartyTimes.bountyHunting_next_generation_time[std::to_underlying(i) - std::to_underlying(HOUSE_TOWNHALL_FIRST)] =
+        dst->PartyTimes.bountyHunting_next_generation_time[std::to_underlying(i) - std::to_underlying(HOUSE_FIRST_TOWNHALL)] =
             src.PartyTimes.bountyHunting_next_generation_time[i].value;
 
     for (unsigned int i = 0; i < 85; ++i)
@@ -324,9 +324,9 @@ void Serialize(const Party &src, Party_MM7 *dst) {
 
     // TODO(captainurist): just hide these behind Serialize/Deserialize calls properly.
     for (HOUSE_ID i : src.monster_id_for_hunting.indices())
-        dst->monster_id_for_hunting[std::to_underlying(i) - std::to_underlying(HOUSE_TOWNHALL_FIRST)] = src.monster_id_for_hunting[i];
+        dst->monster_id_for_hunting[std::to_underlying(i) - std::to_underlying(HOUSE_FIRST_TOWNHALL)] = src.monster_id_for_hunting[i];
     for (HOUSE_ID i : src.monster_for_hunting_killed.indices())
-        dst->monster_for_hunting_killed[std::to_underlying(i) - std::to_underlying(HOUSE_TOWNHALL_FIRST)] = src.monster_for_hunting_killed[i];
+        dst->monster_for_hunting_killed[std::to_underlying(i) - std::to_underlying(HOUSE_FIRST_TOWNHALL)] = src.monster_for_hunting_killed[i];
 
     dst->days_played_without_rest = src.days_played_without_rest;
 
@@ -422,7 +422,7 @@ void Deserialize(const Party_MM7 &src, Party *dst) {
 
     for (HOUSE_ID i : dst->PartyTimes.bountyHunting_next_generation_time.indices())
         dst->PartyTimes.bountyHunting_next_generation_time[i] =
-            GameTime(src.PartyTimes.bountyHunting_next_generation_time[std::to_underlying(i) - std::to_underlying(HOUSE_TOWNHALL_FIRST)]);
+            GameTime(src.PartyTimes.bountyHunting_next_generation_time[std::to_underlying(i) - std::to_underlying(HOUSE_FIRST_TOWNHALL)]);
     for (unsigned int i = 0; i < 85; ++i)
         dst->PartyTimes.Shops_next_generation_time[i] =
         GameTime(src.PartyTimes.Shops_next_generation_time[i]);
@@ -482,9 +482,9 @@ void Deserialize(const Party_MM7 &src, Party *dst) {
     dst->field_74C_set0_unused = src.field_74C;
 
     for (HOUSE_ID i : dst->monster_id_for_hunting.indices())
-        dst->monster_id_for_hunting[i] = src.monster_id_for_hunting[std::to_underlying(i) - std::to_underlying(HOUSE_TOWNHALL_FIRST)];
+        dst->monster_id_for_hunting[i] = src.monster_id_for_hunting[std::to_underlying(i) - std::to_underlying(HOUSE_FIRST_TOWNHALL)];
     for (HOUSE_ID i : dst->monster_for_hunting_killed.indices())
-        dst->monster_for_hunting_killed[i] = src.monster_for_hunting_killed[std::to_underlying(i) - std::to_underlying(HOUSE_TOWNHALL_FIRST)];
+        dst->monster_for_hunting_killed[i] = src.monster_for_hunting_killed[std::to_underlying(i) - std::to_underlying(HOUSE_FIRST_TOWNHALL)];
 
     dst->days_played_without_rest = src.days_played_without_rest;
 

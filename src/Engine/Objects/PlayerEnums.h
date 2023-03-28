@@ -34,8 +34,7 @@ enum PLAYER_BUFFS {
 
 /*  301 */
 enum PlayerSpeech {
-    SPEECH_FIRST = 0,
-    SPEECH_None = SPEECH_FIRST,
+    SPEECH_None = 0,
     SPEECH_KillWeakEnemy = 1,
     SPEECH_KillStrongEnemy = 2,
     SPEECH_StoreClosed = 3,
@@ -146,6 +145,8 @@ enum PlayerSpeech {
     SPEECH_NotEnoughFood = 108,
     SPEECH_DeathBlow = 109,
     SPEECH_110 = 110,  // unknown
+
+    SPEECH_FIRST = SPEECH_None,
     SPEECH_LAST = SPEECH_110
 };
 
@@ -293,7 +294,6 @@ enum class PLAYER_SKILL_TYPE : int8_t {
     PLAYER_SKILL_LEARNING = 36,
     PLAYER_SKILL_CLUB = 37, // In vanilla clubs are using separate hidden & non-upgradable skill.
     PLAYER_SKILL_MISC = 38, // Hidden skill that's always 1. Used for wetsuits, for example.
-    PLAYER_SKILL_COUNT = 39,
 
     PLAYER_SKILL_FIRST_VISIBLE = PLAYER_SKILL_STAFF,
     PLAYER_SKILL_LAST_VISIBLE = PLAYER_SKILL_LEARNING,

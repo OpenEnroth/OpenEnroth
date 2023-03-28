@@ -36,7 +36,7 @@ struct SpellStats *pSpellStats = nullptr;
 /**
  * @offset 0x4E3ACC
  */
-IndexedArray<SPRITE_OBJECT_TYPE, SPELL_ANY_WITH_SPRITE_FIRST, SPELL_ANY_WITH_SPRITE_LAST> SpellSpriteMapping = {
+IndexedArray<SPRITE_OBJECT_TYPE, SPELL_FIRST_WITH_SPRITE, SPELL_LAST_WITH_SPRITE> SpellSpriteMapping = {
     {SPELL_FIRE_TORCH_LIGHT, SPRITE_SPELL_FIRE_TORCH_LIGHT},
     {SPELL_FIRE_FIRE_BOLT, SPRITE_SPELL_FIRE_FIRE_BOLT},
     {SPELL_FIRE_PROTECTION_FROM_FIRE, SPRITE_SPELL_FIRE_PROTECTION_FROM_FIRE},
@@ -189,7 +189,7 @@ SpellData::SpellData(int16_t inNormalMana,
  *                                                 |   |   |   |     |     |     |     |   |   |  |
  *                                                 |   |   |   |     |     |     |     |   |   |  |
  */
-IndexedArray<SpellData, SPELL_REGULAR_FIRST, SPELL_REGULAR_LAST> pSpellDatas = {
+IndexedArray<SpellData, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> pSpellDatas = {
     {SPELL_FIRE_TORCH_LIGHT,            SpellData( 1,  1,  1,  1,   60,   60,   60,   40,  0,  0, 0)},
     {SPELL_FIRE_FIRE_BOLT,              SpellData( 2,  2,  2,  2,  110,  110,  100,   90,  0,  3, 0)},
     {SPELL_FIRE_PROTECTION_FROM_FIRE,   SpellData( 3,  3,  3,  3,  120,  120,  120,  120,  0,  0, 0)},
@@ -372,7 +372,7 @@ std::array<std::array<struct SpellBookIconPos, 12>, 9> pIconPos = {{
 
 // TODO: use SoundID not uint16_t
 // TODO(captainurist): Originally the array was two elements shorter, last two zeros are my addition. Can we drop elements for non-regular spells?
-IndexedArray<uint16_t, SPELL_ANY_WITH_SPRITE_FIRST, SPELL_ANY_WITH_SPRITE_LAST> SpellSoundIds = {{
+IndexedArray<uint16_t, SPELL_FIRST_WITH_SPRITE, SPELL_LAST_WITH_SPRITE> SpellSoundIds = {{
     {SPELL_FIRE_TORCH_LIGHT, 10000},
     {SPELL_FIRE_FIRE_BOLT, 10010},
     {SPELL_FIRE_PROTECTION_FROM_FIRE, 10020},
