@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c8cb966</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;230f0d8</span>
    </div>
   </td>
  </tr>
@@ -100,6 +100,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="TurnEngine_8h.html">Engine/TurnEngine/TurnEngine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIWindow_8h.html">GUI/GUIWindow.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIStatusBar_8h.html">GUI/UI/UIStatusBar.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="UIRest_8h.html">GUI/UI/UIRest.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Mouse_8h.html">Io/Mouse.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AudioPlayer_8h.html">Media/Audio/AudioPlayer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Random_8h.html">Library/Random/Random.h</a>&quot;</code><br />
@@ -115,8 +116,8 @@ Functions</h2></td></tr>
 <tr class="separator:ab6af3751607396afcd1745c1a536ae1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a25dbc18fe908ae3947a833127f1cf9e2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Party_8cpp.html#a25dbc18fe908ae3947a833127f1cf9e2">ui_play_food_anim</a> ()</td></tr>
 <tr class="separator:a25dbc18fe908ae3947a833127f1cf9e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a717b7f1fb1f8ca29c15744772604573e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Party_8cpp.html#a717b7f1fb1f8ca29c15744772604573e">Rest</a> (unsigned int uMinsToRest)</td></tr>
-<tr class="separator:a717b7f1fb1f8ca29c15744772604573e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9c14df23e30ae62c7e581335f3d9a79"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Party_8cpp.html#ae9c14df23e30ae62c7e581335f3d9a79">Rest</a> (<a class="el" href="structGameTime.html">GameTime</a> restTime)</td></tr>
+<tr class="separator:ae9c14df23e30ae62c7e581335f3d9a79"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaa69c30f86f25894111de80131dcd5f5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Party_8cpp.html#aaa69c30f86f25894111de80131dcd5f5">RestAndHeal</a> (int minutes)</td></tr>
 <tr class="separator:aaa69c30f86f25894111de80131dcd5f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e3b1773dfc5d7a21fe51039de25d2f9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Party_8cpp.html#a4e3b1773dfc5d7a21fe51039de25d2f9">TestPartyQuestBit</a> (<a class="el" href="Party_8h.html#a90eae1c60a6a092f2d2ea08550f6cdb2">PARTY_QUEST_BITS</a> bit)</td></tr>
@@ -259,8 +260,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a717b7f1fb1f8ca29c15744772604573e" name="a717b7f1fb1f8ca29c15744772604573e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a717b7f1fb1f8ca29c15744772604573e">&#9670;&#160;</a></span>Rest()</h2>
+<a id="ae9c14df23e30ae62c7e581335f3d9a79" name="ae9c14df23e30ae62c7e581335f3d9a79"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9c14df23e30ae62c7e581335f3d9a79">&#9670;&#160;</a></span>Rest()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -268,12 +269,20 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">void Rest </td>
           <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>uMinsToRest</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structGameTime.html">GameTime</a>&#160;</td>
+          <td class="paramname"><em>restTime</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >Perform resting without healing.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">restTime</td><td>Resting time. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x4938D1 </dd></dl>
 
 </div>
 </div>

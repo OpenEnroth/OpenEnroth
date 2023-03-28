@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c8cb966</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;230f0d8</span>
    </div>
   </td>
  </tr>
@@ -96,8 +96,10 @@ $(function() {
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ae7487b5a014b96fdda8d72c6703ffa32"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIRest_8cpp.html#ae7487b5a014b96fdda8d72c6703ffa32">PrepareToLoadRestUI</a> ()</td></tr>
-<tr class="separator:ae7487b5a014b96fdda8d72c6703ffa32"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb0d6f6e9bcb52f833a798f66bc6abf9"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIRest_8cpp.html#afb0d6f6e9bcb52f833a798f66bc6abf9">prepareToLoadRestUI</a> ()</td></tr>
+<tr class="separator:afb0d6f6e9bcb52f833a798f66bc6abf9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a0d5ee2c9be74af3b59fc951afcc1b9"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIRest_8cpp.html#a3a0d5ee2c9be74af3b59fc951afcc1b9">calculateRequiredFood</a> ()</td></tr>
+<tr class="separator:a3a0d5ee2c9be74af3b59fc951afcc1b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -117,26 +119,107 @@ Variables</h2></td></tr>
 <tr class="separator:a9500e27ed48226c2682b5e72e86b33fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a63b0a108e3ccfd0f5876ed8d596b3a99"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classImage.html">Image</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIRest_8cpp.html#a63b0a108e3ccfd0f5876ed8d596b3a99">rest_ui_hourglass_frame_current</a> = nullptr</td></tr>
 <tr class="separator:a63b0a108e3ccfd0f5876ed8d596b3a99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab20a6782fe60f25eb2e1a0f0850375a2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIRest_8cpp.html#ab20a6782fe60f25eb2e1a0f0850375a2">foodRequiredToRest</a></td></tr>
+<tr class="separator:ab20a6782fe60f25eb2e1a0f0850375a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa84d4b1450f4ed811984e662fca790de"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structGameTime.html">GameTime</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIRest_8cpp.html#aa84d4b1450f4ed811984e662fca790de">remainingRestTime</a></td></tr>
+<tr class="separator:aa84d4b1450f4ed811984e662fca790de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a474d1be8724add7ced625ae4cd8a580d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="UIRest_8h.html#ac4a11b1693fcdbf6e36e04d3e0b08666">REST_TYPE</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIRest_8cpp.html#a474d1be8724add7ced625ae4cd8a580d">currentRestType</a></td></tr>
+<tr class="separator:a474d1be8724add7ced625ae4cd8a580d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ae7487b5a014b96fdda8d72c6703ffa32" name="ae7487b5a014b96fdda8d72c6703ffa32"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae7487b5a014b96fdda8d72c6703ffa32">&#9670;&#160;</a></span>PrepareToLoadRestUI()</h2>
+<a id="a3a0d5ee2c9be74af3b59fc951afcc1b9" name="a3a0d5ee2c9be74af3b59fc951afcc1b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a0d5ee2c9be74af3b59fc951afcc1b9">&#9670;&#160;</a></span>calculateRequiredFood()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void calculateRequiredFood </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afb0d6f6e9bcb52f833a798f66bc6abf9" name="afb0d6f6e9bcb52f833a798f66bc6abf9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb0d6f6e9bcb52f833a798f66bc6abf9">&#9670;&#160;</a></span>prepareToLoadRestUI()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void prepareToLoadRestUI </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="a474d1be8724add7ced625ae4cd8a580d" name="a474d1be8724add7ced625ae4cd8a580d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a474d1be8724add7ced625ae4cd8a580d">&#9670;&#160;</a></span>currentRestType</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void PrepareToLoadRestUI </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td class="memname"><a class="el" href="UIRest_8h.html#ac4a11b1693fcdbf6e36e04d3e0b08666">REST_TYPE</a> currentRestType</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<h2 class="groupheader">Variable Documentation</h2>
+<a id="ab20a6782fe60f25eb2e1a0f0850375a2" name="ab20a6782fe60f25eb2e1a0f0850375a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab20a6782fe60f25eb2e1a0f0850375a2">&#9670;&#160;</a></span>foodRequiredToRest</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int foodRequiredToRest</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa84d4b1450f4ed811984e662fca790de" name="aa84d4b1450f4ed811984e662fca790de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa84d4b1450f4ed811984e662fca790de">&#9670;&#160;</a></span>remainingRestTime</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structGameTime.html">GameTime</a> remainingRestTime</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a72eecdef46b8c6f0d091374ca755d9a3" name="a72eecdef46b8c6f0d091374ca755d9a3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a72eecdef46b8c6f0d091374ca755d9a3">&#9670;&#160;</a></span>rest_ui_btn_1</h2>
 
