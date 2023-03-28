@@ -929,9 +929,7 @@ void Party::RestAndHeal() {
         for (uint i = 0; i < 20; ++i) pPlayer->pPlayerBuffs[i].Reset();
 
         pPlayer->Zero();
-        if (pPlayer->conditions.Has(Condition_Dead) ||
-            pPlayer->conditions.Has(Condition_Petrified) ||
-            pPlayer->conditions.Has(Condition_Eradicated)) {
+        if (pPlayer->conditions.HasAny({Condition_Dead, Condition_Petrified, Condition_Eradicated})) {
             continue;
         }
 
@@ -959,16 +957,13 @@ void Party::RestAndHeal() {
         if (pPlayer->conditions.Has(Condition_Zombie)) {
             pPlayer->sMana = 0;
             pPlayer->sHealth /= 2;
-        } else if (pPlayer->conditions.Has(Condition_Poison_Severe) ||
-                   pPlayer->conditions.Has(Condition_Disease_Severe)) {
+        } else if (pPlayer->conditions.HasAny({Condition_Poison_Severe, Condition_Disease_Severe})) {
             pPlayer->sHealth /= 4;
             pPlayer->sMana /= 4;
-        } else if (pPlayer->conditions.Has(Condition_Poison_Medium) ||
-                   pPlayer->conditions.Has(Condition_Disease_Medium)) {
+        } else if (pPlayer->conditions.HasAny({Condition_Poison_Medium, Condition_Disease_Medium})) {
             pPlayer->sHealth /= 3;
             pPlayer->sMana /= 3;
-        } else if (pPlayer->conditions.Has(Condition_Poison_Weak) ||
-                   pPlayer->conditions.Has(Condition_Disease_Weak)) {
+        } else if (pPlayer->conditions.HasAny({Condition_Poison_Weak, Condition_Disease_Weak})) {
             pPlayer->sHealth /= 2;
             pPlayer->sMana /= 2;
         }
