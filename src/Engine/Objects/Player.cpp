@@ -2161,7 +2161,7 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) {
     } else if (HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
         weapon = GetMainHandItem();
         if (weapon->isWand()) {
-            weapon_recovery = pSpellDatas[WandSpellIds[weapon->uItemID]].uExpertLevelRecovery;
+            weapon_recovery = pSpellDatas[wandSpellIds[weapon->uItemID]].uExpertLevelRecovery;
         } else {
             weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
         }
@@ -3724,45 +3724,20 @@ bool Player::DiscardConditionIfLastsLongerThan(Condition uCondition,
     }
 }
 
-//----- (004680ED) --------------------------------------------------------
-void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
-    Player* playerAffected;  // esi@1
-    signed int v5;           // eax@17
-    int v8;                  // edx@39
-    // const char *v13; // eax@45
-    signed int v15;        // edi@68
-    int v16;               // edx@73
-    int v25;               // eax@109
-    int v26;               // eax@113
-    int new_mana_val;      // edi@114
-    int64_t v30;           // edi@137
-    int64_t v32;           // ST3C_4@137
-    int64_t v34;           // ST34_4@137
-    uint16_t v50;  // [sp-Ch] [bp-38h]@120
-    signed int v67;        // [sp-4h] [bp-30h]@77
-    char v72;              // [sp+20h] [bp-Ch]@68
-    signed int v73;        // [sp+24h] [bp-8h]@1
-    const char* v74;       // [sp+24h] [bp-8h]@23
-    // Player *thisb; // [sp+28h] [bp-4h]@1
-    unsigned int thisa;  // [sp+28h] [bp-4h]@22
-
-    // thisb = this;
-    playerAffected = &pParty->pPlayers[player_num - 1];
-    v73 = 1;
-    if (pParty->bTurnBasedModeOn &&
-        (pTurnEngine->turn_stage == TE_WAIT ||
-         pTurnEngine->turn_stage == TE_MOVEMENT))
+void Player::useItem(int targetCharacter, bool isPortraitClick) {
+    Player *playerAffected = &pParty->pPlayers[targetCharacter];
+    if (pParty->bTurnBasedModeOn && (pTurnEngine->turn_stage == TE_WAIT || pTurnEngine->turn_stage == TE_MOVEMENT)) {
         return;
+    }
     if (pParty->pPickedItem.isReagent()) {
         // TODO(Nik-RE-dev): this looks like some artifact from MM6 (where you can eat reagents)
         // In MM7 these item IDs are invalid (plus index 161 used twice which is wrong)
         if (pParty->pPickedItem.uItemID == ITEM_161) {
             playerAffected->SetCondition(Condition_Poison_Weak, 1);
         } else if (pParty->pPickedItem.uItemID == ITEM_161) {
-            new_mana_val = playerAffected->sMana;
-            new_mana_val += 2;
-            if (new_mana_val > playerAffected->GetMaxMana()) {
-                new_mana_val = playerAffected->GetMaxMana();
+            playerAffected->sMana += 2;
+            if (playerAffected->sMana > playerAffected->GetMaxMana()) {
+                playerAffected->sMana = playerAffected->GetMaxMana();
             }
             playerAffected->playReaction(SPEECH_DrinkPotion);
         } else if (pParty->pPickedItem.uItemID == ITEM_162) {
@@ -3779,348 +3754,213 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
         }
-        if (v73) {
+        //if (v73) {
             if (pParty->bTurnBasedModeOn) {
-                pParty->pTurnBasedPlayerRecoveryTimes[player_num - 1] = 100;
+                pParty->pTurnBasedPlayerRecoveryTimes[targetCharacter] = 100;
                 this->SetRecoveryTime(100);
                 pTurnEngine->ApplyPlayerAction();
             } else {
                 this->SetRecoveryTime((int)(debug_non_combat_recovery_mul * flt_debugrecmod3 * 100.0));
             }
-        }
+        //}
         mouse->RemoveHoldingItem();
         return;
     }
 
     if (pParty->pPickedItem.isPotion()) {
+        // TODO(Nik-RE-dev): no CanAct check?
+        int potionStrength = pParty->pPickedItem.uEnchantmentType;
+        GameTime buffDuration = GameTime::FromMinutes(30 * potionStrength); // all buffs have same duration based on potion strength
         switch (pParty->pPickedItem.uItemID) {
             case ITEM_POTION_CATALYST:
                 playerAffected->SetCondition(Condition_Poison_Weak, 1);
                 break;
 
             case ITEM_POTION_CURE_WOUNDS:
-                v25 = pParty->pPickedItem.uEnchantmentType + 10;
-                playerAffected->Heal(v25);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
+                playerAffected->Heal(potionStrength + 10);
                 break;
 
             case ITEM_POTION_MAGIC:
-                v26 = pParty->pPickedItem.uEnchantmentType + 10;
-                new_mana_val = playerAffected->sMana;
-                new_mana_val += v26;
-                if (new_mana_val > playerAffected->GetMaxMana())
-                    new_mana_val = playerAffected->GetMaxMana();
-                playerAffected->playReaction(SPEECH_DrinkPotion);
-                playerAffected->sMana = new_mana_val;
+                playerAffected->sMana += potionStrength + 10;
+                if (playerAffected->sMana > playerAffected->GetMaxMana()) {
+                    playerAffected->sMana = playerAffected->GetMaxMana();
+                }
                 break;
 
             case ITEM_POTION_CURE_WEAKNESS:
                 playerAffected->conditions.Reset(Condition_Weak);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_CURE_DISEASE:
                 playerAffected->conditions.Reset(Condition_Disease_Severe);
                 playerAffected->conditions.Reset(Condition_Disease_Medium);
                 playerAffected->conditions.Reset(Condition_Disease_Weak);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_CURE_POISON:
                 playerAffected->conditions.Reset(Condition_Poison_Severe);
                 playerAffected->conditions.Reset(Condition_Poison_Medium);
                 playerAffected->conditions.Reset(Condition_Poison_Weak);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_AWAKEN:
                 playerAffected->conditions.Reset(Condition_Sleep);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_HASTE:
                 if (!playerAffected->conditions.Has(Condition_Weak)) {
-                    auto duration =
-                        GameTime(0, TIME_SECONDS_PER_QUANT *
-                                        pParty->pPickedItem.uEnchantmentType);
-                    playerAffected->pPlayerBuffs[PLAYER_BUFF_HASTE].Apply(
-                        pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
-                    playerAffected->playReaction(SPEECH_DrinkPotion);
+                    playerAffected->pPlayerBuffs[PLAYER_BUFF_HASTE].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
                 }
                 break;
 
             case ITEM_POTION_HEROISM:
-            {
-                auto duration =
-                    GameTime(0, TIME_SECONDS_PER_QUANT *
-                                    pParty->pPickedItem.uEnchantmentType);
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_HEROISM].Apply(
-                    pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
+                playerAffected->pPlayerBuffs[PLAYER_BUFF_HASTE].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
                 break;
-            }
 
             case ITEM_POTION_BLESS:
-            {
-                auto duration =
-                    GameTime(0, TIME_SECONDS_PER_QUANT *
-                                    pParty->pPickedItem.uEnchantmentType);
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_BLESS].Apply(
-                    pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
+                playerAffected->pPlayerBuffs[PLAYER_BUFF_BLESS].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
                 break;
-            }
 
             case ITEM_POTION_PRESERVATION:
-            {
-                v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-                auto duration =
-                    GameTime(0, TIME_SECONDS_PER_QUANT *
-                                    pParty->pPickedItem.uEnchantmentType);
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Apply(
-                    pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
+                // mastery was NONE
+                playerAffected->pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                        potionStrength * 3, 0, 0);
                 break;
-            }
 
             case ITEM_POTION_SHIELD:
-            {
-                v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-                auto duration =
-                    GameTime(0, TIME_SECONDS_PER_QUANT *
-                                    pParty->pPickedItem.uEnchantmentType);
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_SHIELD].Apply(
-                    pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
+                // mastery was NONE
+                playerAffected->pPlayerBuffs[PLAYER_BUFF_SHIELD].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                        potionStrength * 3, 0, 0);
                 break;
-            }
 
             case ITEM_POTION_STONESKIN:
-            {
-                auto duration =
-                    GameTime(0, TIME_SECONDS_PER_QUANT *
-                                    pParty->pPickedItem.uEnchantmentType);
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_STONESKIN].Apply(
-                    pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
+                playerAffected->pPlayerBuffs[PLAYER_BUFF_STONESKIN].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
                 break;
-            }
 
             case ITEM_POTION_WATER_BREATHING:
-            {
-                auto duration =
-                    GameTime(0, TIME_SECONDS_PER_QUANT *
-                                    pParty->pPickedItem.uEnchantmentType);
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_WATER_WALK].Apply(
-                    pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pPlayerBuffs[PLAYER_BUFF_WATER_WALK].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER, 5, 0, 0);
+                // Drink potion reaction was missing
                 break;
-            }
 
             case ITEM_POTION_REMOVE_FEAR:
                 playerAffected->conditions.Reset(Condition_Fear);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_REMOVE_CURSE:
                 playerAffected->conditions.Reset(Condition_Cursed);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_CURE_INSANITY:
                 playerAffected->conditions.Reset(Condition_Insane);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_MIGHT_BOOST:
-            {
-                v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-                auto duration =
-                    GameTime(0, TIME_SECONDS_PER_QUANT *
-                                    pParty->pPickedItem.uEnchantmentType);
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_STRENGTH].Apply(
-                    pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
+                // mastery was NONE
+                playerAffected->pPlayerBuffs[PLAYER_BUFF_STRENGTH].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                        potionStrength * 3, 0, 0);
                 break;
-            }
 
             case ITEM_POTION_INTELLECT_BOOST:
-            {
-                auto duration =
-                    GameTime(0, TIME_SECONDS_PER_QUANT *
-                                    pParty->pPickedItem.uEnchantmentType);
-                v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_INTELLIGENCE].Apply(
-                    pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
+                // mastery was NONE
+                playerAffected->pPlayerBuffs[PLAYER_BUFF_INTELLIGENCE].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                        potionStrength * 3, 0, 0);
                 break;
-            }
 
             case ITEM_POTION_PERSONALITY_BOOST:
-            {
-                auto duration =
-                    GameTime(0, TIME_SECONDS_PER_QUANT *
-                                    pParty->pPickedItem.uEnchantmentType);
-                v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_WILLPOWER].Apply(
-                    pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
+                // mastery was NONE
+                playerAffected->pPlayerBuffs[PLAYER_BUFF_WILLPOWER].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                        potionStrength * 3, 0, 0);
                 break;
-            }
 
             case ITEM_POTION_ENDURANCE_BOOST:
-            {
-                auto duration =
-                    GameTime(0, TIME_SECONDS_PER_QUANT *
-                                    pParty->pPickedItem.uEnchantmentType);
-                v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_ENDURANCE].Apply(
-                    pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
+                // mastery was NONE
+                playerAffected->pPlayerBuffs[PLAYER_BUFF_ENDURANCE].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                        potionStrength * 3, 0, 0);
                 break;
-            }
 
             case ITEM_POTION_SPEED_BOOST:
-            {
-                auto duration =
-                    GameTime(0, TIME_SECONDS_PER_QUANT *
-                                    pParty->pPickedItem.uEnchantmentType);
-                v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_SPEED].Apply(
-                    pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
+                // mastery was NONE
+                playerAffected->pPlayerBuffs[PLAYER_BUFF_SPEED].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                        potionStrength * 3, 0, 0);
                 break;
-            }
 
             case ITEM_POTION_ACCURACY_BOOST:
-            {
-                auto duration =
-                    GameTime(0, TIME_SECONDS_PER_QUANT *
-                                    pParty->pPickedItem.uEnchantmentType);
-                v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_ACCURACY].Apply(
-                    pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
+                // mastery was NONE
+                playerAffected->pPlayerBuffs[PLAYER_BUFF_ACCURACY].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                        potionStrength * 3, 0, 0);
                 break;
-            }
 
             case ITEM_POTION_CURE_PARALYSIS:
                 playerAffected->conditions.Reset(Condition_Paralyzed);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_DIVINE_RESTORATION:
-                v30 = playerAffected->conditions.Get(Condition_Dead).value;
-                v32 = playerAffected->conditions.Get(Condition_Petrified).value;
-                v34 = playerAffected->conditions.Get(Condition_Eradicated).value;
+            {
+                GameTime deadTime = playerAffected->conditions.Get(Condition_Dead);
+                GameTime petrifedTime = playerAffected->conditions.Get(Condition_Petrified);
+                GameTime eradicatedTime = playerAffected->conditions.Get(Condition_Eradicated);
+                // TODO(Nik-RE-dev): why not playerAffected?
                 conditions.ResetAll();
-                playerAffected->conditions.Set(Condition_Dead, GameTime(v30));
-                playerAffected->conditions.Set(Condition_Petrified, GameTime(v32));
-                playerAffected->conditions.Set(Condition_Eradicated, GameTime(v34));
-                playerAffected->playReaction(SPEECH_DrinkPotion);
+                playerAffected->conditions.Set(Condition_Dead, deadTime);
+                playerAffected->conditions.Set(Condition_Petrified, petrifedTime);
+                playerAffected->conditions.Set(Condition_Eradicated, eradicatedTime);
                 break;
+            }
 
             case ITEM_POTION_DIVINE_CURE:
-                v25 = 5 * pParty->pPickedItem.uEnchantmentType;
-                playerAffected->Heal(v25);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
+                playerAffected->Heal(5 * potionStrength);
                 break;
 
             case ITEM_POTION_DIVINE_POWER:
-                v26 = 5 * pParty->pPickedItem.uEnchantmentType;
-                new_mana_val = playerAffected->sMana;
-                new_mana_val += v26;
-                if (new_mana_val > playerAffected->GetMaxMana())
-                    new_mana_val = playerAffected->GetMaxMana();
-                playerAffected->playReaction(SPEECH_DrinkPotion);
+                playerAffected->sMana += 5 * potionStrength;
+                if (playerAffected->sMana > playerAffected->GetMaxMana())
+                    playerAffected->sMana = playerAffected->GetMaxMana();
                 break;
 
             case ITEM_POTION_LUCK_BOOST:
-            {
-                auto duration =
-                    GameTime(0, TIME_SECONDS_PER_QUANT *
-                                    pParty->pPickedItem.uEnchantmentType);
-                v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_LUCK].Apply(
-                    pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
+                // mastery was NONE
+                playerAffected->pPlayerBuffs[PLAYER_BUFF_LUCK].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                        potionStrength * 3, 0, 0);
                 break;
-            }
 
             case ITEM_POTION_FIRE_RESISTANCE:
-            {
-                auto duration =
-                    GameTime(0, TIME_SECONDS_PER_QUANT *
-                                    pParty->pPickedItem.uEnchantmentType);
-                v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_FIRE].Apply(
-                    pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
+                // mastery was NONE
+                playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_FIRE].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                        potionStrength * 3, 0, 0);
                 break;
-            }
 
             case ITEM_POTION_AIR_RESISTANCE:
-            {
-                auto duration =
-                    GameTime(0, TIME_SECONDS_PER_QUANT *
-                                    pParty->pPickedItem.uEnchantmentType);
-                v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_AIR].Apply(
-                    pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
+                // mastery was NONE
+                playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_AIR].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                        potionStrength * 3, 0, 0);
                 break;
-            }
 
             case ITEM_POTION_WATER_RESISTANCE:
-            {
-                auto duration =
-                    GameTime(0, TIME_SECONDS_PER_QUANT *
-                                    pParty->pPickedItem.uEnchantmentType);
-                v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_WATER].Apply(
-                    pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
+                // mastery was NONE
+                playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_WATER].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                        potionStrength * 3, 0, 0);
                 break;
-            }
 
             case ITEM_POTION_EARTH_RESISTANCE:
-            {
-                auto duration =
-                    GameTime(0, TIME_SECONDS_PER_QUANT *
-                                    pParty->pPickedItem.uEnchantmentType);
-                v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_EARTH].Apply(
-                    pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
+                // mastery was NONE
+                playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_EARTH].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                        potionStrength * 3, 0, 0);
                 break;
-            }
 
             case ITEM_POTION_MIND_RESISTANCE:
-            {
-                auto duration =
-                    GameTime(0, TIME_SECONDS_PER_QUANT *
-                                    pParty->pPickedItem.uEnchantmentType);
-                v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_MIND].Apply(
-                    pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
+                // mastery was NONE
+                playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_MIND].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                        potionStrength * 3, 0, 0);
                 break;
-            }
 
             case ITEM_POTION_BODY_RESISTANCE:
-            {
-                auto duration =
-                    GameTime(0, TIME_SECONDS_PER_QUANT *
-                                    pParty->pPickedItem.uEnchantmentType);
-                v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_BODY].Apply(
-                    pParty->GetPlayingTime() + duration, PLAYER_SKILL_MASTERY_NONE, v50, 0, 0);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
+                // mastery was NONE
+                playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_BODY].Apply(pParty->GetPlayingTime() + buffDuration, PLAYER_SKILL_MASTERY_MASTER,
+                        potionStrength * 3, 0, 0);
                 break;
-            }
 
             case ITEM_POTION_STONE_TO_FLESH:
                 playerAffected->conditions.Reset(Condition_Petrified);
-                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_PURE_LUCK:
@@ -4128,7 +3968,6 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     playerAffected->uLuck += 50;
                     playerAffected->pure_luck_used = 1;
                 }
-                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_PURE_SPEED:
@@ -4136,7 +3975,6 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     playerAffected->uSpeed += 50;
                     playerAffected->pure_speed_used = 1;
                 }
-                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_PURE_INTELLECT:
@@ -4144,7 +3982,6 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     playerAffected->uIntelligence += 50;
                     playerAffected->pure_intellect_used = 1;
                 }
-                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_PURE_ENDURANCE:
@@ -4152,7 +3989,6 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     playerAffected->uEndurance += 50;
                     playerAffected->pure_endurance_used = 1;
                 }
-                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_PURE_PERSONALITY:
@@ -4160,7 +3996,6 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     playerAffected->uWillpower += 50;
                     playerAffected->pure_willpower_used = 1;
                 }
-                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_PURE_ACCURACY:
@@ -4168,7 +4003,6 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     playerAffected->uAccuracy += 50;
                     playerAffected->pure_accuracy_used = 1;
                 }
-                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_PURE_MIGHT:
@@ -4176,56 +4010,41 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     playerAffected->uMight += 50;
                     playerAffected->pure_might_used = 1;
                 }
-                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             case ITEM_POTION_REJUVENATION:
                 playerAffected->sAgeModifier = 0;
-                playerAffected->playReaction(SPEECH_DrinkPotion);
                 break;
 
             default:
-                GameUI_SetStatusBar(
-                    LSTR_FMT_S_CANT_BE_USED_THIS_WAY,
-                    pParty->pPickedItem.GetDisplayName().c_str()
-                );
-
+                GameUI_SetStatusBar(LSTR_FMT_S_CANT_BE_USED_THIS_WAY, pParty->pPickedItem.GetDisplayName().c_str());
                 pAudioPlayer->playUISound(SOUND_error);
                 return;
         }
+        if (pParty->pPickedItem.uItemID != ITEM_POTION_CATALYST) {
+            playerAffected->playReaction(SPEECH_DrinkPotion);
+        }
         pAudioPlayer->playUISound(SOUND_drink);
-        if (pGUIWindow_CurrentMenu &&
-            pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {
-            //         if ( !v73 ) v73 is always 1 at this point
-            //         {
-            //           pMouse->RemoveHoldingItem();
-            //           return;
-            //         }
+        if (pGUIWindow_CurrentMenu && pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
         }
-        if (v73) {
-            if (pParty->bTurnBasedModeOn) {
-                pParty->pTurnBasedPlayerRecoveryTimes[player_num - 1] = 100;
-                this->SetRecoveryTime(100);
-                pTurnEngine->ApplyPlayerAction();
-            } else {
-                this->SetRecoveryTime((int)(debug_non_combat_recovery_mul * flt_debugrecmod3 * 100.0));
-            }
+        if (pParty->bTurnBasedModeOn) {
+            pParty->pTurnBasedPlayerRecoveryTimes[targetCharacter] = 100;
+            this->SetRecoveryTime(100);
+            pTurnEngine->ApplyPlayerAction();
+        } else {
+            this->SetRecoveryTime(debug_non_combat_recovery_mul * flt_debugrecmod3 * 100.0);
         }
         mouse->RemoveHoldingItem();
         return;
     }
 
     if (pParty->pPickedItem.isSpellScroll()) {
-        if (current_screen_type == CURRENT_SCREEN::SCREEN_CASTING) return;
+        if (current_screen_type == CURRENT_SCREEN::SCREEN_CASTING) {
+            return;
+        }
         if (!playerAffected->CanAct()) {
-            GameUI_SetStatusBar(
-                LSTR_FMT_THAT_PLAYER_IS_S,
-                localization->GetCharacterConditionName(
-                    playerAffected->GetMajorConditionIdx()
-                )
-            );
-
+            GameUI_SetStatusBar(LSTR_FMT_THAT_PLAYER_IS_S, localization->GetCharacterConditionName(playerAffected->GetMajorConditionIdx()));
             pAudioPlayer->playUISound(SOUND_error);
             return;
         }
@@ -4235,20 +4054,18 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             return;
         }
 
-        // TODO(captainurist): deal away with casts.
-        SPELL_TYPE scroll_id = (SPELL_TYPE)(std::to_underlying(pParty->pPickedItem.uItemID) - 299);
-        if (isSpellTargetsItem(scroll_id)) {
+        // TODO(Nik-RE-dev): spell scroll is removed before actual casting and will be consumed even if casting is canceled.
+        SPELL_TYPE scrollSpellId = scrollSpellIds[pParty->pPickedItem.uItemID];
+        if (isSpellTargetsItem(scrollSpellId)) {
             mouse->RemoveHoldingItem();
             pGUIWindow_CurrentMenu->Release();
             current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-            pushScrollSpell(scroll_id, player_num - 1);
+            pushScrollSpell(scrollSpellId, targetCharacter);
         } else {
             mouse->RemoveHoldingItem();
             // Process spell on next frame after game exits inventory window.
-            pNextFrameMessageQueue->AddGUIMessage(UIMSG_SpellScrollUse, scroll_id, player_num - 1);
-            if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME &&
-                pGUIWindow_CurrentMenu &&
-                (pGUIWindow_CurrentMenu->eWindowType != WINDOW_null)) {
+            pNextFrameMessageQueue->AddGUIMessage(UIMSG_SpellScrollUse, scrollSpellId, targetCharacter);
+            if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME && pGUIWindow_CurrentMenu && (pGUIWindow_CurrentMenu->eWindowType != WINDOW_null)) {
                 pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
             }
         }
@@ -4256,76 +4073,39 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
     }
 
     if (pParty->pPickedItem.isBook()) {
-        // TODO(captainurist): another terrible mess, get rid of these casts.
-        v15 = std::to_underlying(pParty->pPickedItem.uItemID) - 400;
-        v72 = playerAffected->spellbook.bHaveSpell[std::to_underlying(pParty->pPickedItem.uItemID) - 400];
-        if (v72) {
-            GameUI_SetStatusBar(
-                LSTR_FMT_YOU_ALREADY_KNOW_S_SPELL,
-                pParty->pPickedItem.GetDisplayName().c_str()
-            );
-
+        SPELL_TYPE bookSpellId = bookSpellIds[pParty->pPickedItem.uItemID];
+        if (playerAffected->spellbook.bHaveSpell[bookSpellId - SPELL_FIRST_REGULAR]) {
+            GameUI_SetStatusBar(LSTR_FMT_YOU_ALREADY_KNOW_S_SPELL, pParty->pPickedItem.GetDisplayName().c_str());
             pAudioPlayer->playUISound(SOUND_error);
             return;
         }
         if (!playerAffected->CanAct()) {
-            GameUI_SetStatusBar(
-                LSTR_FMT_THAT_PLAYER_IS_S,
-                localization->GetCharacterConditionName(
-                    playerAffected->GetMajorConditionIdx()
-                )
-            );
-
+            GameUI_SetStatusBar(LSTR_FMT_THAT_PLAYER_IS_S, localization->GetCharacterConditionName(playerAffected->GetMajorConditionIdx()));
             pAudioPlayer->playUISound(SOUND_error);
             return;
         }
-        // TODO: get rid of this messy cast
-        v16 = v15 % 11 + 1;
-        PLAYER_SKILL_TYPE skill = static_cast<PLAYER_SKILL_TYPE>(v15 / 11 + 12);
+
+        PLAYER_SKILL_MASTERY requiredMastery = pSpellDatas[bookSpellId].skillMastery;
+        PLAYER_SKILL_TYPE skill = getSkillTypeForSpell(bookSpellId);
         PLAYER_SKILL_LEVEL level = playerAffected->GetSkillLevel(skill);
         PLAYER_SKILL_MASTERY mastery = playerAffected->GetSkillMastery(skill);
-        switch (mastery) {
-            case PLAYER_SKILL_MASTERY_NOVICE:
-                v67 = 4;
-                break;
-            case PLAYER_SKILL_MASTERY_EXPERT:
-                v67 = 7;
-                break;
-            case PLAYER_SKILL_MASTERY_MASTER:
-                v67 = 10;
-                break;
-            case PLAYER_SKILL_MASTERY_GRANDMASTER:
-                v67 = 11;
-                break;
-            default:
-                assert(false);
-                v67 = player_num; // wut?
-        }
 
-        if (v16 > v67 || level == 0) {
-            GameUI_SetStatusBar(
-                LSTR_FMT_DONT_HAVE_SKILL_TO_LEAN_S,
-                pParty->pPickedItem.GetDisplayName().c_str()
-            );
-
+        if (requiredMastery > mastery || level == 0) {
+            GameUI_SetStatusBar(LSTR_FMT_DONT_HAVE_SKILL_TO_LEAN_S, pParty->pPickedItem.GetDisplayName().c_str());
             playerAffected->playReaction(SPEECH_CantLearnSpell);
             return;
         }
-        // TODO(captainurist): and here too
-        playerAffected->spellbook.bHaveSpell[std::to_underlying(pParty->pPickedItem.uItemID) - 400] = 1;
+        playerAffected->spellbook.bHaveSpell[bookSpellId - SPELL_FIRST_REGULAR] = 1;
         playerAffected->playReaction(SPEECH_LearnSpell);
-        v73 = 0;
 
-        if (pGUIWindow_CurrentMenu &&
-            pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {
-            if (!v73) {
-                mouse->RemoveHoldingItem();
-                return;
-            }
-            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
-        }
-        //       if ( v73 )                                                v73
-        //       is always 0 at this point
+        // if (pGUIWindow_CurrentMenu && pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {
+        //     if (!v73) { // v73 is always 0 at this point
+        //         mouse->RemoveHoldingItem();
+        //         return;
+        //     }
+        //     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
+        // }
+        //       if ( v73 ) // v73 is always 0 at this point
         //       {
         //         if ( pParty->bTurnBasedModeOn )
         //         {
@@ -4349,156 +4129,112 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             return;
         }
 
-        GameUI_SetStatusBar(
-            LSTR_FMT_THAT_PLAYER_IS_S,
-            localization->GetCharacterConditionName(
-                playerAffected->GetMajorConditionIdx()
-            )
-        );
-
+        GameUI_SetStatusBar(LSTR_FMT_THAT_PLAYER_IS_S, localization->GetCharacterConditionName(playerAffected->GetMajorConditionIdx()));
         pAudioPlayer->playUISound(SOUND_error);
         return;
-    } else {
+    }
+
+    // Everything else
+    {
         if (pParty->pPickedItem.uItemID == ITEM_GENIE_LAMP) {
-            thisa = pParty->uCurrentMonthWeek + 1;
-            if (pParty->uCurrentMonth >= 7)
-                v74 = nullptr;
-            else
-                v74 = localization->GetAttirubteName(pParty->uCurrentMonth);
+            int value = pParty->uCurrentMonthWeek + 1;
 
             std::string status;
             switch (pParty->uCurrentMonth) {
-                case 0:
-                    playerAffected->uMight += thisa;
-                    status = fmt::format(
-                        "+{} {} {}", thisa, v74,
-                        localization->GetString(LSTR_PERMANENT)
-                    );
+                case 0: // Jan
+                    playerAffected->uMight += value;
+                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(0), localization->GetString(LSTR_PERMANENT));
                     break;
-                case 1:
-                    playerAffected->uIntelligence += thisa;
-                    status = fmt::format(
-                        "+{} {} {}", thisa, v74,
-                        localization->GetString(LSTR_PERMANENT)
-                    );
+                case 1: // Feb
+                    playerAffected->uIntelligence += value;
+                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(1), localization->GetString(LSTR_PERMANENT));
                     break;
-                case 2:
-                    playerAffected->uWillpower += thisa;
-                    status = fmt::format(
-                        "+{} {} {}", thisa, v74,
-                        localization->GetString(LSTR_PERMANENT)
-                    );
+                case 2: // Mar
+                    playerAffected->uWillpower += value;
+                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(2), localization->GetString(LSTR_PERMANENT));
                     break;
-                case 3:
-                    playerAffected->uEndurance += thisa;
-                    status = fmt::format(
-                        "+{} {} {}", thisa, v74,
-                        localization->GetString(LSTR_PERMANENT)
-                    );
+                case 3: // Apr
+                    playerAffected->uEndurance += value;
+                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(3), localization->GetString(LSTR_PERMANENT));
                     break;
-                case 4:
-                    playerAffected->uAccuracy += thisa;
-                    status = fmt::format(
-                        "+{} {} {}", thisa, v74,
-                        localization->GetString(LSTR_PERMANENT)
-                    );
+                case 4: // May
+                    playerAffected->uAccuracy += value;
+                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(4), localization->GetString(LSTR_PERMANENT));
                     break;
-                case 5:
-                    playerAffected->uSpeed += thisa;
-                    status = fmt::format(
-                        "+{} {} {}", thisa, v74,
-                        localization->GetString(LSTR_PERMANENT)
-                    );
+                case 5: // Jun
+                    playerAffected->uSpeed += value;
+                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(5), localization->GetString(LSTR_PERMANENT));
                     break;
-                case 6:
-                    playerAffected->uLuck += thisa;
-                    status = fmt::format(
-                        "+{} {} {}", thisa, v74,
-                        localization->GetString(LSTR_PERMANENT)
-                    );
+                case 6: // Jul
+                    playerAffected->uLuck += value;
+                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(6), localization->GetString(LSTR_PERMANENT));
                     break;
-                case 7:
-                    pParty->PartyFindsGold(1000 * thisa, 0);
-                    status = fmt::format(
-                        "+{} {}", 1000 * thisa, localization->GetString(LSTR_GOLD)
-                    );
+                case 7: // Aug
+                    pParty->PartyFindsGold(1000 * value, 0);
+                    status = fmt::format("+{} {}", 1000 * value, localization->GetString(LSTR_GOLD));
                     break;
-                case 8:
-                    pParty->GiveFood(5 * thisa);
-                    status = fmt::format(
-                        "+{} {}", 5 * thisa, localization->GetString(LSTR_FOOD)
-                    );
+                case 8: // Sep
+                    pParty->GiveFood(5 * value);
+                    status = fmt::format("+{} {}", 5 * value, localization->GetString(LSTR_FOOD));
                     break;
-                case 9u:
-                    playerAffected->uSkillPoints += 2 * thisa;
-                    status = fmt::format(
-                        "+{} {}", 2 * thisa,
-                        localization->GetString(LSTR_SKILL_POINTS)
-                    );
+                case 9: // Oct
+                    playerAffected->uSkillPoints += 2 * value;
+                    status = fmt::format("+{} {}", 2 * value, localization->GetString(LSTR_SKILL_POINTS));
                     break;
-                case 10:
-                    playerAffected->uExperience += 2500ll * thisa;
-                    status = fmt::format(
-                        "+{} {}", 2500 * thisa,
-                        localization->GetString(LSTR_EXPERIENCE)
-                    );
+                case 10: // Nov
+                    playerAffected->uExperience += 2500ll * value;
+                    status = fmt::format("+{} {}", 2500ll * value, localization->GetString(LSTR_EXPERIENCE));
                     break;
-                case 11: {
-                    v8 = grng->Random(6);
+                case 11: { // Dec
+                    int res = grng->Random(6);
 
-                    auto spell_school_name =
-                        localization->GetSpellSchoolName(v8 == 5 ? v8 + 1 : v8);
+                    // No spirit res
+                    res = (res == 5 ? res + 1 : res);
 
-                    switch (v8) {
+                    const char *spell_school_name = localization->GetSpellSchoolName(res);
+
+                    switch (res) {
                         case 0:  // Fire
-                            playerAffected->sResFireBase += thisa;
+                            playerAffected->sResFireBase += value;
                             break;
                         case 1:  // Air
-                            playerAffected->sResAirBase += thisa;
+                            playerAffected->sResAirBase += value;
                             break;
                         case 2:  // Water
-                            playerAffected->sResWaterBase += thisa;
+                            playerAffected->sResWaterBase += value;
                             break;
                         case 3:  // Earth
-                            playerAffected->sResEarthBase += thisa;
+                            playerAffected->sResEarthBase += value;
                             break;
                         case 4:  // Mind
-                            playerAffected->sResMindBase += thisa;
+                            playerAffected->sResMindBase += value;
                             break;
-                        case 5:  // Body
-                            playerAffected->sResBodyBase += thisa;
+                        case 6:  // Body
+                            playerAffected->sResBodyBase += value;
                             break;
                         default:
                             // ("Unexpected attribute");
                             return;
                     }
-                    status = fmt::format(
-                        "+{} {} {}", thisa, spell_school_name,
-                        localization->GetString(LSTR_PERMANENT)
-                    );
+                    status = fmt::format("+{} {} {}", value, spell_school_name, localization->GetString(LSTR_PERMANENT));
                     break;
                 }
             }
             GameUI_SetStatusBar(status);
 
-            mouse->RemoveHoldingItem();
-            spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, player_num - 1);
+            spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, targetCharacter);
             playerAffected->playReaction(SPEECH_QuestGot);
             pAudioPlayer->playUISound(SOUND_chimes);
-            if (pParty->uCurrentDayOfMonth == 6 ||
-                pParty->uCurrentDayOfMonth == 20) {
+            if (pParty->uCurrentDayOfMonth == 6 || pParty->uCurrentDayOfMonth == 20) {
                 playerAffected->SetCondition(Condition_Eradicated, 0);
                 pAudioPlayer->playUISound(SOUND_gong);
-            } else if (pParty->uCurrentDayOfMonth == 12 ||
-                       pParty->uCurrentDayOfMonth == 26) {
+            } else if (pParty->uCurrentDayOfMonth == 12 || pParty->uCurrentDayOfMonth == 26) {
                 playerAffected->SetCondition(Condition_Dead, 0);
                 pAudioPlayer->playUISound(SOUND_gong);
-            } else if (pParty->uCurrentDayOfMonth == 4 ||
-                       pParty->uCurrentDayOfMonth == 25) {
+            } else if (pParty->uCurrentDayOfMonth == 4 || pParty->uCurrentDayOfMonth == 25) {
                 playerAffected->SetCondition(Condition_Petrified, 0);
                 pAudioPlayer->playUISound(SOUND_gong);
             }
-            return;
         } else if (pParty->pPickedItem.uItemID == ITEM_RED_APPLE) {
             pParty->GiveFood(1);
             pAudioPlayer->playUISound(SOUND_eat);
@@ -4512,7 +4248,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             pAudioPlayer->playUISound(SOUND_trumpet);
             return;
         } else if (pParty->pPickedItem.uItemID == ITEM_HORSESHOE) {
-            spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, player_num - 1);
+            spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, targetCharacter);
             //v5 = PID(OBJECT_Player, player_num + 49);
             //pAudioPlayer->PlaySound(SOUND_quest, v5, 0, -1, 0, 0);
             pAudioPlayer->playUISound(SOUND_quest);
@@ -4521,11 +4257,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             TeleportToNWCDungeon();
             return;
         } else {
-            GameUI_SetStatusBar(
-                LSTR_FMT_S_CANT_BE_USED_THIS_WAY,
-                pParty->pPickedItem.GetDisplayName().c_str()
-            );
-
+            GameUI_SetStatusBar(LSTR_FMT_S_CANT_BE_USED_THIS_WAY, pParty->pPickedItem.GetDisplayName().c_str());
             pAudioPlayer->playUISound(SOUND_error);
             return;
         }
@@ -7594,7 +7326,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
         shooting_wand = true;
 
         int main_hand_idx = player->pEquipment.uMainHand;
-        pushSpellOrRangedAttack(WandSpellIds[player->pInventoryItemList[main_hand_idx - 1].uItemID],
+        pushSpellOrRangedAttack(wandSpellIds[player->pInventoryItemList[main_hand_idx - 1].uItemID],
                                 pParty->getActiveCharacter() - 1, 8, 0, pParty->getActiveCharacter() + 8);
 
         if (!--player->pInventoryItemList[main_hand_idx - 1].uNumCharges)

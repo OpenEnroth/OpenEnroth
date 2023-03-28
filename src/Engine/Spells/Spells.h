@@ -74,12 +74,13 @@ struct SpellStats {
 #pragma pack(push, 1)
 class SpellData {
  public:
-    SpellData():SpellData(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) {}
+    SpellData():SpellData(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, PLAYER_SKILL_MASTERY_NONE) {}
     SpellData(int16_t inNormalMana, int16_t inExpertLevelMana,
               int16_t inMasterLevelMana, int16_t inMagisterLevelMana,
               int16_t inNormalLevelRecovery, int16_t inExpertLevelRecovery,
               int16_t inMasterLevelRecovery, int16_t inMagisterLevelRecovery,
-              int8_t inBaseDamage, int8_t inBonusSkillDamage, int16_t inStats);
+              int8_t inBaseDamage, int8_t inBonusSkillDamage, int16_t inStats,
+              PLAYER_SKILL_MASTERY inSkillMastery);
     union {
         uint16_t mana_per_skill[4];
         struct {
@@ -101,6 +102,7 @@ class SpellData {
     int8_t baseDamage;
     int8_t bonusSkillDamage;
     int16_t stats;
+    PLAYER_SKILL_MASTERY skillMastery;
     // char field_12;
     // char field_13;
     // int16_t field_14;
@@ -133,7 +135,9 @@ extern std::array<std::array<struct SpellBookIconPos, 12>, 9> pIconPos;
 
 extern IndexedArray<SPRITE_OBJECT_TYPE, SPELL_FIRST_WITH_SPRITE, SPELL_LAST_WITH_SPRITE> SpellSpriteMapping;  // 4E3ACC
 extern IndexedArray<SpellData, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> pSpellDatas;
-extern IndexedArray<SPELL_TYPE, ITEM_FIRST_WAND, ITEM_LAST_WAND> WandSpellIds;
+extern IndexedArray<SPELL_TYPE, ITEM_FIRST_WAND, ITEM_LAST_WAND> wandSpellIds;
+extern IndexedArray<SPELL_TYPE, ITEM_FIRST_SPELL_SCROLL, ITEM_LAST_SPELL_SCROLL> scrollSpellIds;
+extern IndexedArray<SPELL_TYPE, ITEM_FIRST_SPELL_BOOK, ITEM_LAST_SPELL_BOOK> bookSpellIds;
 extern IndexedArray<uint16_t, SPELL_FIRST_WITH_SPRITE, SPELL_LAST_WITH_SPRITE> SpellSoundIds;
 
 /**
