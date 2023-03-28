@@ -217,7 +217,13 @@ struct Party {
     void AddFine(int amount);
     void TakeFine(int amount);
 
-    static void Sleep8Hours();
+    /**
+     * Perform resting activity within current frame.
+     * Used to simulate party resting through time.
+     *
+     * @offset 0x41F5BE
+     */
+    static void RestOneFrame();
 
     /**
      * New function - applies fall damage with modifiers to all party members 
@@ -449,7 +455,14 @@ extern Party *pParty;  // idb
 extern struct ActionQueue *pPartyActionQueue;
 
 bool TestPartyQuestBit(PARTY_QUEST_BITS bit);
-void Rest(unsigned int uHoursToSleep);
+
+/**
+ * Perform resting without healing.
+ *
+ * @param restTime      Resting time.
+ * @offset 0x4938D1
+ */
+void Rest(GameTime restTime);
 void RestAndHeal(int uNumMinutes);  // idb
 int GetTravelTime();
 

@@ -467,7 +467,6 @@ void Game::EventLoop() {
     int v66;                    // eax@488
     Player *pPlayer2;           // ecx@549
     GUIButton *pButton;         // eax@578
-    unsigned int v86;           // eax@583
     const char *v87;            // ecx@595
     unsigned int v90;           // eax@602
     int v91;                    // edx@605
@@ -475,7 +474,6 @@ void Game::EventLoop() {
     int v93;                    // edx@605
     int pPlayerNum;             // edx@611
     int v95;                    // eax@611
-    unsigned int v97;           // eax@624
     int v98;                    // eax@636
     int v103;                   // eax@671
     Player *pPlayer4;           // ecx@718
@@ -756,9 +754,9 @@ void Game::EventLoop() {
                                             pParty->setActiveCharacter(enchantingActiveCharacter);
                                             pParty->switchToNextActiveCharacter();
                                             enchantingActiveCharacter = 0;
-                                            if (pParty->bTurnBasedModeOn)
-                                                pTurnEngine
-                                                    ->ApplyPlayerAction();
+                                            if (pParty->bTurnBasedModeOn) {
+                                                pTurnEngine->ApplyPlayerAction();
+                                            }
                                             AfterEnchClickEventId = UIMSG_0;
                                             AfterEnchClickEventSecondParam = 0;
                                             AfterEnchClickEventTimeout = 0;
@@ -792,37 +790,28 @@ void Game::EventLoop() {
                                         pEventTimer->Resume();
                                         continue;
                                     case CURRENT_SCREEN::SCREEN_REST:  // close rest screen
-                                        if (_506F14_resting_stage) {
-                                            Rest(_506F18_num_minutes_to_sleep);
-                                            pParty->pPlayers[3].SetAsleep(
-                                                GameTime(0));
-                                            pParty->pPlayers[2].SetAsleep(
-                                                GameTime(0));
-                                            pParty->pPlayers[1].SetAsleep(
-                                                GameTime(0));
-                                            pParty->pPlayers[0].SetAsleep(
-                                                GameTime(0));
+                                        if (currentRestType != REST_NONE) {
+                                            Rest(remainingRestTime);
+                                            for (Player &player : pParty->pPlayers) {
+                                                player.SetAsleep(GameTime(0));
+                                            }
                                         }
                                         if (rest_ui_sky_frame_current) {
-                                            rest_ui_sky_frame_current
-                                                ->Release();
+                                            rest_ui_sky_frame_current->Release();
                                             rest_ui_sky_frame_current = nullptr;
                                         }
 
                                         if (rest_ui_hourglass_frame_current) {
-                                            rest_ui_hourglass_frame_current
-                                                ->Release();
-                                            rest_ui_hourglass_frame_current =
-                                                nullptr;
+                                            rest_ui_hourglass_frame_current->Release();
+                                            rest_ui_hourglass_frame_current = nullptr;
                                         }
 
-                                        if (uCurrentlyLoadedLevelType ==
-                                            LEVEL_Outdoor) {
+                                        if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
                                             pOutdoor->UpdateSunlightVectors();
                                             pOutdoor->UpdateFog();
                                         }
-                                        _506F18_num_minutes_to_sleep = 0;
-                                        _506F14_resting_stage = 0;
+                                        remainingRestTime = GameTime();
+                                        currentRestType = REST_NONE;
                                         OnEscape();
                                         continue;
                                     case CURRENT_SCREEN::SCREEN_E:
@@ -1580,46 +1569,40 @@ void Game::EventLoop() {
                     new OnCancel({pButton_RestUI_Exit->uX, pButton_RestUI_Exit->uY}, {0, 0}, pButton_RestUI_Exit, localization->GetString(LSTR_EXIT_REST));
                     continue;
                 case UIMSG_Wait5Minutes:
-                    if (_506F14_resting_stage == 2) {
+                    if (currentRestType == REST_HEAL) {
                         GameUI_SetStatusBar(LSTR_ALREADY_RESTING);
                         pAudioPlayer->playUISound(SOUND_error);
                         continue;
                     }
                     new OnButtonClick2({pButton_RestUI_Wait5Minutes->uX, pButton_RestUI_Wait5Minutes->uY}, {0, 0}, pButton_RestUI_Wait5Minutes,
                         localization->GetString(LSTR_WAIT_5_MINUTES));
-                    _506F14_resting_stage = 1;
-                    _506F18_num_minutes_to_sleep = 5;
+                    currentRestType = REST_WAIT;
+                    remainingRestTime = GameTime::FromMinutes(5);
                     continue;
                 case UIMSG_Wait1Hour:
-                    if (_506F14_resting_stage == 2) {
+                    if (currentRestType == REST_HEAL) {
                         GameUI_SetStatusBar(LSTR_ALREADY_RESTING);
                         pAudioPlayer->playUISound(SOUND_error);
                         continue;
                     }
                     new OnButtonClick2({pButton_RestUI_Wait1Hour->uX, pButton_RestUI_Wait1Hour->uY}, {0, 0}, pButton_RestUI_Wait1Hour,
                         localization->GetString(LSTR_WAIT_1_HOUR));
-                    _506F14_resting_stage = 1;
-                    _506F18_num_minutes_to_sleep = 60;
+                    currentRestType = REST_WAIT;
+                    remainingRestTime = GameTime::FromHours(1);
                     continue;
                 case UIMSG_RentRoom:
-                    _506F14_resting_stage = 2;
-
                     pGUIWindow_CurrentMenu = new GUIWindow_Rest();
 
-                    v86 =
-                        60 * (_494820_training_time(pParty->uCurrentHour) + 1) -
-                        pParty->uCurrentMinute;
-                    _506F18_num_minutes_to_sleep = v86;
-                    if (uMessageParam == 111 || uMessageParam == 114 ||
-                        uMessageParam == 116)  // 107 = Emerald Isle tavern
-                        _506F18_num_minutes_to_sleep = v86 + 12 * 60;
-                    _506F14_resting_stage = 2;
+                    remainingRestTime = GameTime::FromHours(_494820_training_time(pParty->uCurrentHour) + 1) - GameTime::FromMinutes(pParty->uCurrentMinute);
+                    if (uMessageParam == 111 || uMessageParam == 114 || uMessageParam == 116) { // 107 = Emerald Isle tavern
+                        remainingRestTime = remainingRestTime + GameTime::FromHours(12);
+                    }
+                    currentRestType = REST_HEAL;
                     pParty->RestAndHeal();
                     pParty->days_played_without_rest = 0;
-                    pParty->pPlayers[3].SetAsleep(GameTime(1));
-                    pParty->pPlayers[2].SetAsleep(GameTime(1));
-                    pParty->pPlayers[1].SetAsleep(GameTime(1));
-                    pParty->pPlayers[0].SetAsleep(GameTime(1));
+                    for (Player &player : pParty->pPlayers) {
+                        player.SetAsleep(GameTime(1));
+                    }
                     continue;
                 case UIMSG_RestWindow:
                     pCurrentFrameMessageQueue->Flush();
@@ -1678,21 +1661,20 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_Rest8Hour:
                     pCurrentFrameMessageQueue->Clear(); // TODO: sometimes it is called twice, prevent that for now and investigate why later
-                    if (_506F14_resting_stage != 0) {
+                    if (currentRestType != REST_NONE) {
                         GameUI_SetStatusBar(LSTR_ALREADY_RESTING);
                         pAudioPlayer->playUISound(SOUND_error);
                         continue;
                     }
-                    if (pParty->GetFood() < uRestUI_FoodRequiredToRest) {
+                    if (pParty->GetFood() < foodRequiredToRest) {
                         GameUI_SetStatusBar(LSTR_NOT_ENOUGH_FOOD);
                         if (pParty->hasActiveCharacter() && pPlayers[pParty->getActiveCharacter()]->CanAct()) {
                             pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_NotEnoughFood);
                         }
                     } else {
-                        pParty->pPlayers[3].conditions.Set(Condition_Sleep, pParty->GetPlayingTime());
-                        pParty->pPlayers[2].conditions.Set(Condition_Sleep, pParty->GetPlayingTime());
-                        pParty->pPlayers[1].conditions.Set(Condition_Sleep, pParty->GetPlayingTime());
-                        pParty->pPlayers[0].conditions.Set(Condition_Sleep, pParty->GetPlayingTime());
+                        for (Player &player : pParty->pPlayers) {
+                            player.SetAsleep(pParty->GetPlayingTime());
+                        }
                         v90 = pMapStats->GetMapInfo(pCurrentMapName);
                         if (!v90)
                             v90 = grng->Random(pMapStats->uNumMaps + 1);
@@ -1713,9 +1695,9 @@ void Game::EventLoop() {
                             if (encounter_index) {
                                 pPlayerNum = grng->Random(4);
                                 pParty->pPlayers[pPlayerNum].conditions.Reset(Condition_Sleep);
-                                Rest(grng->Random(6) + 60);
-                                _506F18_num_minutes_to_sleep = 0;
-                                _506F14_resting_stage = 0;
+                                Rest(GameTime::FromHours(1).AddMinutes(grng->Random(6)));
+                                remainingRestTime = GameTime();
+                                currentRestType = REST_NONE;
 
                                 pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
                                 GameUI_SetStatusBar(LSTR_ENCOUNTER);
@@ -1723,29 +1705,26 @@ void Game::EventLoop() {
                                 continue;
                             }
                         }
-                        pParty->TakeFood(uRestUI_FoodRequiredToRest);
-                        _506F18_num_minutes_to_sleep = 480;
-                        _506F14_resting_stage = 2;
+                        pParty->TakeFood(foodRequiredToRest);
+                        remainingRestTime = GameTime::FromHours(8);
+                        currentRestType = REST_HEAL;
                         pParty->RestAndHeal();
                         pParty->days_played_without_rest = 0;
-                        pParty->pPlayers[3].SetAsleep(GameTime(1));
-                        pParty->pPlayers[2].SetAsleep(GameTime(1));
-                        pParty->pPlayers[1].SetAsleep(GameTime(1));
-                        pParty->pPlayers[0].SetAsleep(GameTime(1));
+                        for (Player &player : pParty->pPlayers) {
+                            player.SetAsleep(GameTime(1));
+                        }
                     }
                     continue;
                 case UIMSG_WaitTillDawn:
-                    if (_506F14_resting_stage == 2) {
+                    if (currentRestType == REST_HEAL) {
                         GameUI_SetStatusBar(LSTR_ALREADY_RESTING);
                         pAudioPlayer->playUISound(SOUND_error);
                         continue;
                     }
                     new OnButtonClick2({pButton_RestUI_WaitUntilDawn->uX, pButton_RestUI_WaitUntilDawn->uY}, {0, 0}, pButton_RestUI_WaitUntilDawn,
-                        localization->GetString(LSTR_WAIT_UNTIL_DAWN));
-                    v97 = _494820_training_time(pParty->uCurrentHour);
-                    _506F14_resting_stage = 1;
-                    _506F18_num_minutes_to_sleep =
-                        60 * v97 - pParty->uCurrentMinute;
+                                       localization->GetString(LSTR_WAIT_UNTIL_DAWN));
+                    currentRestType = REST_WAIT;
+                    remainingRestTime = GameTime::FromHours(_494820_training_time(pParty->uCurrentHour)) - GameTime::FromMinutes(pParty->uCurrentMinute);
                     continue;
 
                 case UIMSG_HintSelectRemoveQuickSpellBtn: {

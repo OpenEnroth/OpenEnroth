@@ -16,8 +16,6 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-
-
 Image *rest_ui_btn_4 = nullptr;
 Image *rest_ui_btn_exit = nullptr;
 Image *rest_ui_btn_3 = nullptr;
@@ -28,6 +26,12 @@ Image *rest_ui_restmain = nullptr;
 Image *rest_ui_sky_frame_current = nullptr;
 Image *rest_ui_hourglass_frame_current = nullptr;
 
+int foodRequiredToRest;
+GameTime remainingRestTime;
+REST_TYPE currentRestType;
+
+// GUIWindow_RestWindow is unused
+#if 0
 void GUIWindow_RestWindow::Update() {
     __debugbreak();  // doesnt seems to get here, check stack trace & conditions
     GUIButton GUIButton2;  // [sp+28h] [bp-E0h]@133
@@ -39,16 +43,17 @@ void GUIWindow_RestWindow::Update() {
     GUIButton2.uHeight = 37;
     GUIButton2.pParent = pButton_RestUI_WaitUntilDawn->pParent;
     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-    render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f,
-                                *(static_cast<Image **>(wData.ptr) + 15));
-    GUIButton2.DrawLabel(
-        localization->GetString(LSTR_REST_AND_HEAL_8_HOURS), pFontCreate, 0, 0);
+    render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, *(static_cast<Image **>(wData.ptr) + 15));
+    GUIButton2.DrawLabel(localization->GetString(LSTR_REST_AND_HEAL_8_HOURS), pFontCreate, 0, 0);
     GUIButton2.pParent = 0;
     Release();
 }
+#endif
 
-void PrepareToLoadRestUI() {
-    if (!_506F14_resting_stage) pAudioPlayer->PauseSounds(-1);
+static void prepareToLoadRestUI() {
+    if (currentRestType == REST_NONE) {
+        pAudioPlayer->PauseSounds(-1);
+    }
     if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) {
         if (pGUIWindow_CurrentMenu) {
             pGUIWindow_CurrentMenu->Release();
@@ -56,36 +61,52 @@ void PrepareToLoadRestUI() {
         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
     }
     pEventTimer->Pause();
-    if (_506F14_resting_stage != 2)
+    if (currentRestType != REST_HEAL) {
         new OnButtonClick2({518, 450}, {0, 0}, pBtn_Rest);
-    _506F18_num_minutes_to_sleep = 0;
-    _506F14_resting_stage = 0;
-    uRestUI_FoodRequiredToRest = 2;
-    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
-        uRestUI_FoodRequiredToRest =
-            pOutdoor->GetNumFoodRequiredToRestInCurrentPos(pParty->vPosition);
-    if (PartyHasDragon()) {
-        for (uint i = 0; i < 4; ++i) {
-            if (pParty->pPlayers[i].classType == PLAYER_CLASS_WARLOCK)
-                ++uRestUI_FoodRequiredToRest;
-        }
     }
-    if (CheckHiredNPCSpeciality(Porter)) --uRestUI_FoodRequiredToRest;
-    if (CheckHiredNPCSpeciality(QuarterMaster)) uRestUI_FoodRequiredToRest -= 2;
-    if (CheckHiredNPCSpeciality(Gypsy)) --uRestUI_FoodRequiredToRest;
-    if (uRestUI_FoodRequiredToRest < 1) uRestUI_FoodRequiredToRest = 1;
-    if (pCurrentMapName == "d29.blv"
-        && _449B57_test_bit(pParty->_quest_bits, QBIT_HARMONDALE_REBUILT))
-        uRestUI_FoodRequiredToRest = 0;
+    remainingRestTime = GameTime();
+    currentRestType = REST_NONE;
 }
 
-//----- (0041F6C1) --------------------------------------------------------
+static void calculateRequiredFood() {
+    foodRequiredToRest = 2;
+
+    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+        foodRequiredToRest = pOutdoor->GetNumFoodRequiredToRestInCurrentPos(pParty->vPosition);
+    }
+    if (PartyHasDragon()) {
+        for (Player &player : pParty->pPlayers) {
+            if (player.classType == PLAYER_CLASS_WARLOCK) {
+                ++foodRequiredToRest;
+            }
+        }
+    }
+
+    if (CheckHiredNPCSpeciality(Porter)) {
+        --foodRequiredToRest;
+    }
+    if (CheckHiredNPCSpeciality(QuarterMaster)) {
+        foodRequiredToRest -= 2;
+    }
+    if (CheckHiredNPCSpeciality(Gypsy)) {
+        --foodRequiredToRest;
+    }
+    if (foodRequiredToRest < 1) {
+        foodRequiredToRest = 1;
+    }
+    if (pCurrentMapName == "d29.blv" && _449B57_test_bit(pParty->_quest_bits, QBIT_HARMONDALE_REBUILT)) {
+        foodRequiredToRest = 0;
+    }
+}
+
 GUIWindow_Rest::GUIWindow_Rest()
     : GUIWindow(WINDOW_Rest, {0, 0}, render->GetRenderDimensions(), 0) {
-    PrepareToLoadRestUI();
+    prepareToLoadRestUI();
+    calculateRequiredFood();
+
     current_screen_type = CURRENT_SCREEN::SCREEN_REST;
 
-    _507CD4_RestUI_hourglass_anim_controller = 0;
+    hourglassLoopTimer = 0;
     rest_ui_restmain = assets->GetImage_Alpha("restmain");
     rest_ui_btn_1 = assets->GetImage_Alpha("restb1");
     rest_ui_btn_2 = assets->GetImage_Alpha("restb2");
@@ -104,52 +125,45 @@ GUIWindow_Rest::GUIWindow_Rest()
     pButton_RestUI_Wait5Minutes = CreateButton({61, 296}, {154, 33}, 1, 0, UIMSG_Wait5Minutes, 0, InputAction::Wait5Minutes, "", {rest_ui_btn_3});
 }
 
-//----- (0041FA01) --------------------------------------------------------
 void GUIWindow_Rest::Update() {
-    int live_characters;       // esi@1
-    unsigned int v3;           // eax@15
-    GUIButton tmp_button;      // [sp+8h] [bp-DCh]@19
-    unsigned int am_pm_hours;  // [sp+D8h] [bp-Ch]@9
+    GUIButton tmp_button;
 
-    live_characters = 0;
+    int liveCharacters = 0;
     for (Player &player : pParty->pPlayers) {
         if (!player.IsDead() && !player.IsEradicated() && player.sHealth > 0) {
-            ++live_characters;
+            ++liveCharacters;
         }
     }
 
-    if (live_characters) {
+    if (liveCharacters) {
         render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, rest_ui_restmain);
-        am_pm_hours = pParty->uCurrentHour;
-        dword_506F1C = pGUIWindow_CurrentMenu->pCurrentPosActiveItem;
-        if ((signed int)pParty->uCurrentHour <= 12) {
-            if (!am_pm_hours) am_pm_hours = 12;
+        int am_pm_hours = pParty->uCurrentHour;
+        //dword_506F1C = pGUIWindow_CurrentMenu->pCurrentPosActiveItem;
+        if (pParty->uCurrentHour <= 12) {
+            if (!am_pm_hours) {
+                am_pm_hours = 12;
+            }
         } else {
             am_pm_hours -= 12;
         }
-        render->DrawTextureNew(16 / 640.0f, 26 / 480.0f,
-                                    rest_ui_sky_frame_current);
+        render->DrawTextureNew(16 / 640.0f, 26 / 480.0f, rest_ui_sky_frame_current);
         if (rest_ui_hourglass_frame_current) {
             rest_ui_hourglass_frame_current->Release();
             rest_ui_hourglass_frame_current = nullptr;
         }
-        v3 = pEventTimer->uTimeElapsed +
-             _507CD4_RestUI_hourglass_anim_controller;
-        _507CD4_RestUI_hourglass_anim_controller += pEventTimer->uTimeElapsed;
-        if ((unsigned int)_507CD4_RestUI_hourglass_anim_controller >= 512) {
-            v3 = 0;
-            _507CD4_RestUI_hourglass_anim_controller = 0;
-        }
-        hourglass_icon_idx =
-            (int)floorf(((double)v3 / 512.0 * 120.0) + 0.5f) % 256 + 1;
-        if (hourglass_icon_idx >= 120) hourglass_icon_idx = 1;
 
-        {
-            rest_ui_hourglass_frame_current = assets->GetImage_ColorKey(
-                fmt::format("hglas{:03}", hourglass_icon_idx));
-            render->DrawTextureNew(267 / 640.0f, 159 / 480.0f,
-                                        rest_ui_hourglass_frame_current);
+        hourglassLoopTimer += pEventTimer->uTimeElapsed;
+        if (hourglassLoopTimer >= (Timer::Second * 4)) {
+            hourglassLoopTimer = 0;
         }
+
+        int hourglass_icon_idx = (int)floorf(((double)hourglassLoopTimer / 512.0 * 120.0) + 0.5f) % 256 + 1;
+        if (hourglass_icon_idx >= 120) {
+            hourglass_icon_idx = 1;
+        }
+
+        rest_ui_hourglass_frame_current = assets->GetImage_ColorKey(fmt::format("hglas{:03}", hourglass_icon_idx));
+        render->DrawTextureNew(267 / 640.0f, 159 / 480.0f, rest_ui_hourglass_frame_current);
 
         tmp_button.uX = 24;
         tmp_button.uY = 154;
@@ -161,7 +175,7 @@ void GUIWindow_Rest::Update() {
         tmp_button.DrawLabel(localization->GetString(LSTR_REST_AND_HEAL_8_HOURS), pFontCreate, colorTable.Diesel.c16(), colorTable.StarkWhite.c16());
         tmp_button.pParent = 0;
 
-        auto str1 = fmt::format("\r408{}", uRestUI_FoodRequiredToRest);
+        auto str1 = fmt::format("\r408{}", foodRequiredToRest);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {0, 164}, colorTable.Diesel.c16(), str1, 0, 0, colorTable.StarkWhite.c16());
 
         pButton_RestUI_WaitUntilDawn->DrawLabel(localization->GetString(LSTR_WAIT_UNTIL_DAWN), pFontCreate, colorTable.Diesel.c16(), colorTable.StarkWhite.c16());
@@ -178,8 +192,7 @@ void GUIWindow_Rest::Update() {
         tmp_button.uHeight = 30;
 
         tmp_button.pParent = pButton_RestUI_WaitUntilDawn->pParent;
-        tmp_button.DrawLabel(
-            localization->GetString(LSTR_WAIT_WITHOUT_HEALING), pFontCreate, colorTable.Diesel.c16(), colorTable.StarkWhite.c16());
+        tmp_button.DrawLabel(localization->GetString(LSTR_WAIT_WITHOUT_HEALING), pFontCreate, colorTable.Diesel.c16(), colorTable.StarkWhite.c16());
         tmp_button.pParent = 0;
         std::string str2 = fmt::format("{}:{:02} {}", am_pm_hours, pParty->uCurrentMinute, localization->GetAmPm((pParty->uCurrentHour >= 12 && pParty->uCurrentHour < 24) ? 1 : 0));
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {368, 168}, colorTable.Diesel.c16(), str2, 0, 0, colorTable.StarkWhite.c16());
@@ -189,7 +202,9 @@ void GUIWindow_Rest::Update() {
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {350, 222}, colorTable.Diesel.c16(), str4, 0, 0, colorTable.StarkWhite.c16());
         std::string str5 = fmt::format("{}\r190{}", localization->GetString(LSTR_YEAR), pParty->uCurrentYear);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {350, 254}, colorTable.Diesel.c16(), str5, 0, 0, colorTable.StarkWhite.c16());
-        if (_506F14_resting_stage) Party::Sleep8Hours();
+        if (currentRestType != REST_NONE) {
+            Party::RestOneFrame();
+        }
     } else {
         new OnCancel({pButton_RestUI_Exit->uX, pButton_RestUI_Exit->uY}, {0, 0}, pButton_RestUI_Exit, localization->GetString(LSTR_EXIT_REST));
     }

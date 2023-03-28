@@ -510,3 +510,9 @@ GAME_TEST(Issues, Issue540) {
     // Check that Mass Distortion and Charm without target does not assert
     test->playTraceFromTestData("issue_540.mm7", "issue_540.json");
 }
+
+GAME_TEST(Issues, Issue578) {
+    // Check that rest & heal work after waiting
+    test->playTraceFromTestData("issue_578.mm7", "issue_578.json", []() { EXPECT_EQ(pParty->pPlayers[0].sHealth, 66); });
+    EXPECT_EQ(pParty->pPlayers[0].sHealth, 108);
+}

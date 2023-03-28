@@ -985,7 +985,7 @@ LABEL_47:
                         pParty->alignment = PartyAlignment::PartyAlignment_Evil;
                         SetUserInterface(pParty->alignment, true);
                     } else if (!movieName.compare("pcout01")) { // moving to harmondale from emerald isle
-                        Rest(0x2760u); // 7 days
+                        Rest(GameTime::FromDays(7));
                         pParty->RestAndHeal();
                         pParty->days_played_without_rest = 0;
                     }
