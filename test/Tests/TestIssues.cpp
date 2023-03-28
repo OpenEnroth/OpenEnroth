@@ -510,3 +510,8 @@ GAME_TEST(Issues, Issue540) {
     // Check that Mass Distortion and Charm without target does not assert
     test->playTraceFromTestData("issue_540.mm7", "issue_540.json");
 }
+
+GAME_TEST(Issues, Issue563) {
+    // Check that drinking some buff potions does not cause assert
+    test->playTraceFromTestData("issue_563.mm7", "issue_563.json");
+}
