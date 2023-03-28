@@ -145,7 +145,7 @@ struct ItemDesc {  // 30h
     char field_25 = 0;                // 25  29
     char field_26 = 0;                // 26   2A
     char field_27 = 0;                // 27   2b
-    IndexedArray<uint8_t, ITEM_FIRST_RANDOM_TREASURE_LEVEL, ITEM_LAST_RANDOM_TREASURE_LEVEL> uChanceByTreasureLvl = {{}};
+    IndexedArray<uint8_t, ITEM_TREASURE_LEVEL_FIRST_RANDOM, ITEM_TREASURE_LEVEL_LAST_RANDOM> uChanceByTreasureLvl = {{}};
     unsigned char uItemID_Rep_St = 0;  // 2e 32
     char field_2f = 0;
 };

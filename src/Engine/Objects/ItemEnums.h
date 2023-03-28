@@ -45,7 +45,6 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(ITEM_FLAGS)
 enum ITEM_ENCHANTMENT : unsigned int {
     ITEM_ENCHANTMENT_NULL = 0,
 
-    ITEM_ENCHANTMENT_FIRST_VALID = 1,
     ITEM_ENCHANTMENT_OF_PROTECTION = 1,    // Adds +10 to all Resistances
     ITEM_ENCHANTMENT_OF_GODS = 2,          // Adds +10 to all Seven Statistics
     ITEM_ENCHANTMENT_OF_CARNAGE = 3,       // Projectile explodes like fireball
@@ -118,6 +117,8 @@ enum ITEM_ENCHANTMENT : unsigned int {
     ITEM_ENCHANTMENT_OF_OCEAN = 70,        // +10 Water Resistance and +2 Alchemy skill
     ITEM_ENCHANTMENT_OF_WATER_WALKING = 71, // Prevents damage from drowning
     ITEM_ENCHANTMENT_OF_FEATHER_FALLING = 72, // Prevents damage from falling
+
+    ITEM_ENCHANTMENT_FIRST_VALID = 1,
     ITEM_ENCHANTMENT_LAST_VALID = 72
 };
 
@@ -143,16 +144,16 @@ enum class ITEM_TREASURE_LEVEL : int8_t {
                                                  // an item (or nothing), so this value provides a way to override
                                                  // this behavior and always spawn an artifact.
 
-    ITEM_FIRST_VALID_TREASURE_LEVEL = ITEM_TREASURE_LEVEL_1,
-    ITEM_LAST_VALID_TREASURE_LEVEL = ITEM_TREASURE_LEVEL_GUARANTEED_ARTIFACT,
+    ITEM_TREASURE_LEVEL_FIRST_VALID = ITEM_TREASURE_LEVEL_1,
+    ITEM_TREASURE_LEVEL_LAST_VALID = ITEM_TREASURE_LEVEL_GUARANTEED_ARTIFACT,
 
-    ITEM_FIRST_RANDOM_TREASURE_LEVEL = ITEM_TREASURE_LEVEL_1,
-    ITEM_LAST_RANDOM_TREASURE_LEVEL = ITEM_TREASURE_LEVEL_6,
+    ITEM_TREASURE_LEVEL_FIRST_RANDOM = ITEM_TREASURE_LEVEL_1,
+    ITEM_TREASURE_LEVEL_LAST_RANDOM = ITEM_TREASURE_LEVEL_6,
 };
 using enum ITEM_TREASURE_LEVEL;
 
 inline bool IsRandomTreasureLevel(ITEM_TREASURE_LEVEL level) {
-    return level >= ITEM_FIRST_RANDOM_TREASURE_LEVEL && level <= ITEM_LAST_RANDOM_TREASURE_LEVEL;
+    return level >= ITEM_TREASURE_LEVEL_FIRST_RANDOM && level <= ITEM_TREASURE_LEVEL_LAST_RANDOM;
 }
 
 /**
@@ -1105,7 +1106,9 @@ enum class ITEM_EQUIP_TYPE : uint8_t {
     EQUIP_GOLD = 18,
     EQUIP_GEM = 19,
     EQUIP_NONE = 20, // Ores, quest items.
-    EQUIP_TYPE_COUNT,
+
+    EQUIP_FIRST = EQUIP_SINGLE_HANDED,
+    EQUIP_LAST = EQUIP_NONE,
 
     EQUIP_FIRST_SPECIAL_ENCHANTABLE = EQUIP_SINGLE_HANDED,
     EQUIP_LAST_SPECIAL_ENCHANTABLE = EQUIP_AMULET,
