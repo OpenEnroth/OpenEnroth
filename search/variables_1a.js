@@ -11,6 +11,6 @@ var searchData=
   ['zcalc3_8',['zCalc3',['../structBLVFace__MM7.html#a6ac1bfd43fff69c1071f83429ef7c065',1,'BLVFace_MM7::zCalc3()'],['../structODMFace__MM7.html#af250cf1ff2441eac0c9be96bd2775571',1,'ODMFace_MM7::zCalc3()']]],
   ['zoo_5fbonus_9',['zoo_bonus',['../Arcomage_8cpp.html#af82c72b01e668ec6665cda79a2b609e7',1,'Arcomage.cpp']]],
   ['zoo_5flevel_10',['zoo_level',['../structArcomageStartConditions.html#a276ca7723adcfc39f4b3834ac1d95efa',1,'ArcomageStartConditions::zoo_level()'],['../structArcomagePlayer.html#ae638f2de1a835dbc11bd8e606b0b9dde',1,'ArcomagePlayer::zoo_level()']]],
-  ['zoomin_11',['ZoomIn',['../classApplication_1_1GameConfig_1_1Gamepad.html#adedf96a949b0b50bdbb1fa66b3179a70',1,'Application::GameConfig::Gamepad::ZoomIn()'],['../classApplication_1_1GameConfig_1_1Keybindings.html#ae24b57966c23511edc75c2ecec947390',1,'Application::GameConfig::Keybindings::ZoomIn()']]],
-  ['zoomout_12',['ZoomOut',['../classApplication_1_1GameConfig_1_1Gamepad.html#a769db15099a1efca4fee0af5e901daa5',1,'Application::GameConfig::Gamepad::ZoomOut()'],['../classApplication_1_1GameConfig_1_1Keybindings.html#ae6a19e88ce1501c7e95438876614fad2',1,'Application::GameConfig::Keybindings::ZoomOut()']]]
+  ['zoomin_11',['ZoomIn',['../classGameConfig_1_1Gamepad.html#a5739977fd3149a4f1339234c6de4a511',1,'GameConfig::Gamepad::ZoomIn()'],['../classGameConfig_1_1Keybindings.html#aca8ca33e67ded8fdb4191dc12a200e7f',1,'GameConfig::Keybindings::ZoomIn()']]],
+  ['zoomout_12',['ZoomOut',['../classGameConfig_1_1Gamepad.html#adb29fa3a2ba8c89ec5dc6d27dc472d8b',1,'GameConfig::Gamepad::ZoomOut()'],['../classGameConfig_1_1Keybindings.html#a77eaaf4cdc3b5662b1700236a22fd1fe',1,'GameConfig::Keybindings::ZoomOut()']]]
 ];

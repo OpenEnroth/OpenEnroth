@@ -17,7 +17,7 @@ var searchData=
   ['opengles_14',['OpenGLES',['../RenderOpenGL_8cpp.html#ad12c1f606bb601dcbeb8617f088772ef',1,'RenderOpenGL.cpp']]],
   ['opponent_5fmastery_15',['opponent_mastery',['../Arcomage_8cpp.html#a99f9dd8e7c666013c89a5dfc2adc6db0',1,'Arcomage.cpp']]],
   ['opponents_5fturn_16',['opponents_turn',['../Arcomage_8cpp.html#a0baedb8d9f104c2b021dfea21fc2ee8e',1,'Arcomage.cpp']]],
-  ['options_17',['Options',['../classApplication_1_1GameConfig_1_1Keybindings.html#a0855b308496a50f026c886198399089c',1,'Application::GameConfig::Keybindings::Options()'],['../classApplication_1_1GameConfig_1_1Gamepad.html#a2947f352fdf9750c6f3a92ff665cc0f5',1,'Application::GameConfig::Gamepad::Options()']]],
+  ['options_17',['Options',['../classGameConfig_1_1Keybindings.html#a99c8c0f2bcd3fa18732ddc4e3c264761',1,'GameConfig::Keybindings::Options()'],['../classGameConfig_1_1Gamepad.html#a2b168dd69901fbac93342c5eb53bccbe',1,'GameConfig::Gamepad::Options()']]],
   ['options_5fmenu_5fskin_18',['options_menu_skin',['../UIGame_8cpp.html#aad8fee78c22b710592f9800e5126ede8',1,'options_menu_skin():&#160;UIGame.cpp'],['../Image_8h.html#aad8fee78c22b710592f9800e5126ede8',1,'options_menu_skin():&#160;UIGame.cpp']]],
   ['orangeyred_19',['OrangeyRed',['../classColorTable.html#ac38b9acb9f35ffdf4d94d5dc899c4d2e',1,'ColorTable']]],
   ['outbuildshader_20',['outbuildshader',['../classRenderOpenGL.html#a34f0647b67bd25cdcf85b4434cbbc72d',1,'RenderOpenGL']]],

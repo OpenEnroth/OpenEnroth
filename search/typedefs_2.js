@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['controlroutine_0',['ControlRoutine',['../classEngineControlComponent.html#af16ded1a0b755f630a6b1a3bb711bdc9',1,'EngineControlComponent::ControlRoutine()'],['../classEngineControlState.html#a55f9d31b6163a6e4f50db23daf3b1568',1,'EngineControlState::ControlRoutine()']]]
+  ['difference_5ftype_0',['difference_type',['../classdetail_1_1RangeIterator.html#a0159d1dcd83448df3f7cd70c64a00e86',1,'detail::RangeIterator::difference_type()'],['../classSegment.html#abab6d526af76a6cd693f00ec0ec0eff9',1,'Segment::difference_type()']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['application_0',['Application',['../namespaceApplication.html',1,'']]]
+  ['castspellinfohelpers_0',['CastSpellInfoHelpers',['../namespaceCastSpellInfoHelpers.html',1,'']]]
 ];

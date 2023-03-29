@@ -7,7 +7,7 @@ var searchData=
   ['medialogger_4',['MediaLogger',['../classMediaLogger.html',1,'']]],
   ['memoryinputstream_5',['MemoryInputStream',['../classMemoryInputStream.html',1,'']]],
   ['memorymapblobhandler_6',['MemoryMapBlobHandler',['../classMemoryMapBlobHandler.html',1,'']]],
-  ['menu_7',['Menu',['../classApplication_1_1Menu.html',1,'Application']]],
+  ['menu_7',['Menu',['../classMenu.html',1,'']]],
   ['mersennetwisterrandomengine_8',['MersenneTwisterRandomEngine',['../classMersenneTwisterRandomEngine.html',1,'']]],
   ['mobilelight_9',['MobileLight',['../structMobileLight.html',1,'']]],
   ['monsterdesc_10',['MonsterDesc',['../structMonsterDesc.html',1,'']]],

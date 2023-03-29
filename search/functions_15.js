@@ -23,7 +23,7 @@ var searchData=
   ['updateactors_5fblv_20',['UpdateActors_BLV',['../Indoor_8h.html#a91180cf18d91c79b7bc41c630c261cbd',1,'UpdateActors_BLV():&#160;Indoor.cpp'],['../Indoor_8cpp.html#a91180cf18d91c79b7bc41c630c261cbd',1,'UpdateActors_BLV():&#160;Indoor.cpp']]],
   ['updateactors_5fodm_21',['UpdateActors_ODM',['../Outdoor_8h.html#ab3cc30c01fb2e9afa8ec291e6043bf99',1,'UpdateActors_ODM():&#160;Outdoor.cpp'],['../Outdoor_8cpp.html#ab3cc30c01fb2e9afa8ec291e6043bf99',1,'UpdateActors_ODM():&#160;Outdoor.cpp']]],
   ['updateanimation_22',['UpdateAnimation',['../classActor.html#a170108c8e9216a25fe72026bd0ad55b8',1,'Actor']]],
-  ['updateconfigfromwindow_23',['UpdateConfigFromWindow',['../classApplication_1_1GameWindowHandler.html#afa76bd0215459d21a137e0da355630af',1,'Application::GameWindowHandler']]],
+  ['updateconfigfromwindow_23',['UpdateConfigFromWindow',['../classGameWindowHandler.html#afa76bd0215459d21a137e0da355630af',1,'GameWindowHandler']]],
   ['updatediscoveredarea_24',['UpdateDiscoveredArea',['../structOutdoorLocation.html#a282d75e700f03ca87e719cd74c8a0ebf',1,'OutdoorLocation']]],
   ['updateeffect_25',['UpdateEffect',['../structexplosion__effect__struct.html#a436b1857a90644e9fe7e388415492944',1,'explosion_effect_struct']]],
   ['updatefog_26',['UpdateFog',['../structOutdoorLocation.html#a0a6da39ca4fa6c668663e87a51d706a2',1,'OutdoorLocation']]],
@@ -37,7 +37,7 @@ var searchData=
   ['updatesunlightvectors_34',['UpdateSunlightVectors',['../structOutdoorLocation.html#ad1464d7a2aad592f0aff9786e636496e',1,'OutdoorLocation']]],
   ['updatetempbonus_35',['UpdateTempBonus',['../structItemGen.html#aefa35d382ba0ce6367cff85f7a81c8c8',1,'ItemGen']]],
   ['updateuserinput_5fand_5fmapspecificstuff_36',['UpdateUserInput_and_MapSpecificStuff',['../Engine_8cpp.html#a73fe5e8d7dc6ec78e5cc180d1915341b',1,'UpdateUserInput_and_MapSpecificStuff():&#160;Engine.cpp'],['../Engine_8h.html#a73fe5e8d7dc6ec78e5cc180d1915341b',1,'UpdateUserInput_and_MapSpecificStuff():&#160;Engine.cpp']]],
-  ['updatewindowfromconfig_37',['UpdateWindowFromConfig',['../classApplication_1_1GameWindowHandler.html#ab477fb7c84910c2c3b4fda658dc0c9ac',1,'Application::GameWindowHandler']]],
+  ['updatewindowfromconfig_37',['UpdateWindowFromConfig',['../classGameWindowHandler.html#ab477fb7c84910c2c3b4fda658dc0c9ac',1,'GameWindowHandler']]],
   ['use_38',['use',['../classGLShader.html#af765a2607d1d4cc056aabd9295702e09',1,'GLShader']]],
   ['useitem_39',['useItem',['../structPlayer.html#a054773c9d6b7d5e64e221df0e20a1b92',1,'Player']]],
   ['usenpcskill_40',['UseNPCSkill',['../NPC_8cpp.html#acfce0b79ca64a3c666c5bc7781622842',1,'UseNPCSkill(NPCProf profession):&#160;NPC.cpp'],['../NPC_8h.html#acfce0b79ca64a3c666c5bc7781622842',1,'UseNPCSkill(NPCProf profession):&#160;NPC.cpp']]]

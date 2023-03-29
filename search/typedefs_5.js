@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['fake_5fbool_0',['fake_bool',['../classFlags.html#aae336b35b020818c8bc38c60f837079e',1,'Flags']]],
-  ['float_1',['Float',['../classApplication_1_1GameConfig.html#a2cee89f0634730f6c5e57505d04043f8',1,'Application::GameConfig']]]
+  ['gameroutine_0',['GameRoutine',['../classEngineController.html#a93612c873a40fda4a58a735758a533c0',1,'EngineController::GameRoutine()'],['../classEngineControlState.html#a61b2362c403ad9ba7b67d280ef90582f',1,'EngineControlState::GameRoutine()']]]
 ];

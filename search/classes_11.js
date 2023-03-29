@@ -13,7 +13,7 @@ var searchData=
   ['sdlwindow_10',['SdlWindow',['../classSdlWindow.html',1,'']]],
   ['segment_11',['Segment',['../classSegment.html',1,'']]],
   ['serializer_12',['Serializer',['../classSerializer.html',1,'']]],
-  ['settings_13',['Settings',['../classApplication_1_1GameConfig_1_1Settings.html',1,'Application::GameConfig']]],
+  ['settings_13',['Settings',['../classGameConfig_1_1Settings.html',1,'GameConfig']]],
   ['shareddata_14',['SharedData',['../structEngineControlStateHandle_1_1SharedData.html',1,'EngineControlStateHandle']]],
   ['size_15',['Size',['../structSize.html',1,'']]],
   ['size_3c_20int_20_3e_16',['Size&lt; int &gt;',['../structSize.html',1,'']]],

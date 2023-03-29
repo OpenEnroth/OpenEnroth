@@ -1,6 +1,8 @@
 var searchData=
 [
-  ['recti_0',['Recti',['../Rect_8h.html#a32073cc1967b01302be5d39e09079649',1,'Rect.h']]],
-  ['reference_1',['reference',['../classdetail_1_1RangeIterator.html#ae8c8fbfa4ba36b2ce4382fa136b792db',1,'detail::RangeIterator::reference()'],['../classSegment.html#af0ff246cdf8ecd8984307446636ea09c',1,'Segment::reference()']]],
-  ['rgbcolor_2',['RGBColor',['../GUIWindow_8cpp.html#acbc9da7672f18f747dcc88210702a6e9',1,'GUIWindow.cpp']]]
+  ['sizef_0',['Sizef',['../Size_8h.html#a762e169fec3b7c10f6d45b7b2866db16',1,'Size.h']]],
+  ['sizei_1',['Sizei',['../Size_8h.html#a075755610ebd937662bd46b0703fbabf',1,'Size.h']]],
+  ['soundheader_2',['SoundHeader',['../classAudioPlayer.html#a6037ab7f3102356afacb75dfe9102a2d',1,'AudioPlayer']]],
+  ['streambase_3',['StreamBase',['../classBlobDeserializer.html#a1939bb0160bb469eb4c676173907aee4',1,'BlobDeserializer::StreamBase()'],['../classFileSerializer.html#ad7aa6ba9313e657db374969dff78fad6',1,'FileSerializer::StreamBase()']]],
+  ['string_4',['String',['../classGameConfig.html#ac2f2f7b019af1a01f22aee2b21493ac2',1,'GameConfig']]]
 ];

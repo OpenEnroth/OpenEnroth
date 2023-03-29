@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3289aa9</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;271df47</span>
    </div>
   </td>
  </tr>
@@ -74,7 +74,6 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">Spells.cpp File Reference</div></div>
@@ -97,11 +96,6 @@ $(function() {
 <code>#include &quot;<a class="el" href="TrigLut_8h.html">Utility/Math/TrigLut.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Random_8h.html">Library/Random/Random.h</a>&quot;</code><br />
 </div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
-Typedefs</h2></td></tr>
-<tr class="memitem:a8df51996eaa93ee226542e4ebb9d6f14"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Spells_8cpp.html#a8df51996eaa93ee226542e4ebb9d6f14">EngineIoc</a> = <a class="el" href="classEngine___1_1IocContainer.html">Engine_::IocContainer</a></td></tr>
-<tr class="separator:a8df51996eaa93ee226542e4ebb9d6f14"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a7ff0c184ac7ad40ebd1b7760eefa41d4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Spells_8cpp.html#a7ff0c184ac7ad40ebd1b7760eefa41d4">EventCastSpell</a> (<a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088">SPELL_TYPE</a> uSpellID, <a class="el" href="PlayerEnums_8h.html#ae7fdd356d1b4ddbdd59bcba036e6f942">PLAYER_SKILL_MASTERY</a> skillMastery, <a class="el" href="PlayerEnums_8h.html#adb9cb0391b2119e3d28341d2f340964e">PLAYER_SKILL_LEVEL</a> skillLevel, int fromx, int fromy, int fromz, int tox, int toy, int toz)</td></tr>
@@ -115,7 +109,7 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:ad751f48ec25997384265298b15224f31"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSpellFxRenderer.html">SpellFxRenderer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Spells_8cpp.html#ad751f48ec25997384265298b15224f31">spell_fx_renderer</a> = EngineIoc::ResolveSpellFxRenderer()</td></tr>
+<tr class="memitem:ad751f48ec25997384265298b15224f31"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSpellFxRenderer.html">SpellFxRenderer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Spells_8cpp.html#ad751f48ec25997384265298b15224f31">spell_fx_renderer</a> = <a class="el" href="classEngineIocContainer.html#a691e969b21ea43ae5a5f013015507bf2">EngineIocContainer::ResolveSpellFxRenderer</a>()</td></tr>
 <tr class="separator:ad751f48ec25997384265298b15224f31"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4581c53add732726da636f8e2208de31"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structTownPortalData.html">TownPortalData</a>, 6 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Spells_8cpp.html#a4581c53add732726da636f8e2208de31">TownPortalList</a></td></tr>
 <tr class="separator:a4581c53add732726da636f8e2208de31"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -136,21 +130,6 @@ Variables</h2></td></tr>
 <tr class="memitem:a76bac515813362052d5339c46bf10b46"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; uint16_t, <a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088a598bc4637e7b4dcf06fbde4b23063484">SPELL_FIRST_WITH_SPRITE</a>, <a class="el" href="SpellEnums_8h.html#a6ac7ece38acd196bf750bc353e00d088abf5444a33b006b4bd7eb70aedb070aea">SPELL_LAST_WITH_SPRITE</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Spells_8cpp.html#a76bac515813362052d5339c46bf10b46">SpellSoundIds</a></td></tr>
 <tr class="separator:a76bac515813362052d5339c46bf10b46"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Typedef Documentation</h2>
-<a id="a8df51996eaa93ee226542e4ebb9d6f14" name="a8df51996eaa93ee226542e4ebb9d6f14"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8df51996eaa93ee226542e4ebb9d6f14">&#9670;&#160;</a></span>EngineIoc</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="Game_8h.html#a8df51996eaa93ee226542e4ebb9d6f14">EngineIoc</a> =  <a class="el" href="classEngine___1_1IocContainer.html">Engine_::IocContainer</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a62540915ac345d20b7cab6c85713f3c6" name="a62540915ac345d20b7cab6c85713f3c6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a62540915ac345d20b7cab6c85713f3c6">&#9670;&#160;</a></span>armageddonProgress()</h2>
@@ -419,7 +398,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structSpellFxRenderer.html">SpellFxRenderer</a>* spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer()</td>
+          <td class="memname"><a class="el" href="structSpellFxRenderer.html">SpellFxRenderer</a>* spell_fx_renderer = <a class="el" href="classEngineIocContainer.html#a691e969b21ea43ae5a5f013015507bf2">EngineIocContainer::ResolveSpellFxRenderer</a>()</td>
         </tr>
       </table>
 </div><div class="memdoc">
