@@ -1382,7 +1382,7 @@ void Actor::StealFrom(unsigned int uActorID) {
         if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) v6 = &pIndoor->dlv;
         pPlayer->StealFromActor(uActorID, v4, v6->uReputation++);
         v8 = pPlayer->GetAttackRecoveryTime(false);
-        if (v8 < engine->config->gameplay.MinRecoveryMelee.Get()) v8 = engine->config->gameplay.MinRecoveryMelee.Get();
+        if (v8 < engine->config->gameplay.MinRecoveryMelee.value()) v8 = engine->config->gameplay.MinRecoveryMelee.value();
         if (!pParty->bTurnBasedModeOn)
             pPlayer->SetRecoveryTime(
                 (int)(debug_non_combat_recovery_mul * v8 * flt_debugrecmod3));
@@ -3342,7 +3342,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     if (pMonster->sCurrentHP > 0) {
         Actor::AI_Stun(uActorID_Monster, a1, 0);
         Actor::AggroSurroundingPeasants(uActorID_Monster, 1);
-        if (engine->config->settings.ShowHits.Get()) {
+        if (engine->config->settings.ShowHits.value()) {
             if (projectileSprite)
                 GameUI_SetStatusBar(
                     LSTR_FMT_S_SHOOTS_S_FOR_U,
@@ -3370,7 +3370,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
             speech = pMonster->pMonsterInfo.uHP >= 100 ? SPEECH_KillStrongEnemy : SPEECH_KillWeakEnemy;
         }
         player->playReaction(speech);
-        if (engine->config->settings.ShowHits.Get()) {
+        if (engine->config->settings.ShowHits.value()) {
             GameUI_SetStatusBar(
                 LSTR_FMT_S_INFLICTS_U_KILLING_S,
                 player->pName.c_str(),
@@ -3390,7 +3390,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         if (!pParty->bTurnBasedModeOn)
             extraRecoveryTime = (int)(debug_combat_recovery_mul * flt_debugrecmod3 * 20.0);
         pMonster->pMonsterInfo.uRecoveryTime += extraRecoveryTime;
-        if (engine->config->settings.ShowHits.Get()) {
+        if (engine->config->settings.ShowHits.value()) {
             GameUI_SetStatusBar(
                 LSTR_FMT_S_STUNS_S,
                 player->pName.c_str(),
@@ -3404,7 +3404,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         PLAYER_SKILL_MASTERY skillMastery = player->GetActualSkillMastery(PLAYER_SKILL_MACE);
         GameTime v46 = GameTime(0, skillLevel);  // ??
         pMonster->pActorBuffs[ACTOR_BUFF_PARALYZED].Apply((pParty->GetPlayingTime() + v46), skillMastery, 0, 0, 0);
-        if (engine->config->settings.ShowHits.Get()) {
+        if (engine->config->settings.ShowHits.value()) {
             GameUI_SetStatusBar(
                 LSTR_FMT_S_PARALYZES_S,
                 player->pName.c_str(),

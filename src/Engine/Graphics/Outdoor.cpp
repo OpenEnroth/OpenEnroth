@@ -1184,7 +1184,7 @@ TileDesc *OutdoorLocation::GetTileDescByGrid(int sX, int sY) {
       v3 = v3 + this->pTileTypes[3].uTileID - 198;
     }
 
-    if (engine->config->graphics.SeasonsChange.Get()) {
+    if (engine->config->graphics.SeasonsChange.value()) {
         switch (pParty->uCurrentMonth) {
             case 11:
             case 0:
@@ -1681,7 +1681,7 @@ int ODM_GetFloorLevel(const Vec3i &pos, int unused, bool *pIsOnWater,
             if (!face.pBoundingBox.containsXY(pos.x, pos.y))
                 continue;
 
-            int slack = engine->config->gameplay.FloorChecksEps.Get();
+            int slack = engine->config->gameplay.FloorChecksEps.value();
             if (!face.Contains(pos, model.index, slack, FACE_XY_PLANE))
                 continue;
 
@@ -1940,14 +1940,13 @@ void ODM_ProcessPartyActions() {
                 pParty->bFlying = false;
                 if (engine->IsUnderwater() ||
                     pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff ||
-                    (pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1].sMana > 0 ||
-                    engine->config->debug.AllMagic.Get())) {
-                    if (pParty->sPartySavedFlightZ < engine->config->gameplay.MaxFlightHeight.Get() || partyNotTouchingFloor) {
+                    (pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1].sMana > 0 || engine->config->debug.AllMagic.value())) {
+                    if (pParty->sPartySavedFlightZ < engine->config->gameplay.MaxFlightHeight.value() || partyNotTouchingFloor) {
                         pParty->bFlying = true;
                         pParty->uFallSpeed = 0;
                         noFlightBob = true;
                         pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
-                        if (pParty->sPartySavedFlightZ < engine->config->gameplay.MaxFlightHeight.Get()) {
+                        if (pParty->sPartySavedFlightZ < engine->config->gameplay.MaxFlightHeight.value()) {
                             partyInputZSpeed = pParty->uWalkSpeed * 4;
                             partyOldFlightZ = pParty->vPosition.z;
                         }
@@ -1960,8 +1959,7 @@ void ODM_ProcessPartyActions() {
                     pParty->bFlying = false;
                     if (engine->IsUnderwater() ||
                         pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff ||
-                        (pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1].sMana > 0 ||
-                        engine->config->debug.AllMagic.Get())) {
+                        (pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1].sMana > 0 || engine->config->debug.AllMagic.value())) {
                         partyOldFlightZ = pParty->vPosition.z;
                         pParty->uFallSpeed = 0;
                         partyInputZSpeed = -pParty->uWalkSpeed * 4;
@@ -1973,8 +1971,8 @@ void ODM_ProcessPartyActions() {
                 break;
 
             case PARTY_TurnLeft:
-                if (engine->config->settings.TurnSpeed.Get() > 0)
-                    partyViewNewYaw += engine->config->settings.TurnSpeed.Get();  // discrete turn
+                if (engine->config->settings.TurnSpeed.value() > 0)
+                    partyViewNewYaw += engine->config->settings.TurnSpeed.value();  // discrete turn
                 else
                     partyViewNewYaw += dturn * fTurnSpeedMultiplier;  // time-based smooth turn
 
@@ -1982,8 +1980,8 @@ void ODM_ProcessPartyActions() {
                 break;
 
             case PARTY_TurnRight:
-                if (engine->config->settings.TurnSpeed.Get() > 0)
-                    partyViewNewYaw -= engine->config->settings.TurnSpeed.Get();
+                if (engine->config->settings.TurnSpeed.value() > 0)
+                    partyViewNewYaw -= engine->config->settings.TurnSpeed.value();
                 else
                     partyViewNewYaw -= dturn * fTurnSpeedMultiplier;
 
@@ -1991,8 +1989,8 @@ void ODM_ProcessPartyActions() {
                 break;
 
             case PARTY_FastTurnLeft:
-                if (engine->config->settings.TurnSpeed.Get() > 0)
-                    partyViewNewYaw += engine->config->settings.TurnSpeed.Get();
+                if (engine->config->settings.TurnSpeed.value() > 0)
+                    partyViewNewYaw += engine->config->settings.TurnSpeed.value();
                 else
                     partyViewNewYaw += 2.0f * fTurnSpeedMultiplier * dturn;
 
@@ -2000,8 +1998,8 @@ void ODM_ProcessPartyActions() {
                 break;
 
             case PARTY_FastTurnRight:
-                if (engine->config->settings.TurnSpeed.Get() > 0)
-                    partyViewNewYaw -= engine->config->settings.TurnSpeed.Get();
+                if (engine->config->settings.TurnSpeed.value() > 0)
+                    partyViewNewYaw -= engine->config->settings.TurnSpeed.value();
                 else
                     partyViewNewYaw -= 2.0f * fTurnSpeedMultiplier * dturn;
 
@@ -2042,7 +2040,7 @@ void ODM_ProcessPartyActions() {
                 int dx = cos_y * pParty->uWalkSpeed * fWalkSpeedMultiplier;
                 int dy = sin_y * pParty->uWalkSpeed * fWalkSpeedMultiplier;
 
-                if (engine->config->debug.TurboSpeed.Get()) {
+                if (engine->config->debug.TurboSpeed.value()) {
                     partyInputXSpeed += dx * 12;
                     partyInputYSpeed += dy * 12;
                 } else {
@@ -2062,7 +2060,7 @@ void ODM_ProcessPartyActions() {
                 int dy = sin_y * pParty->uWalkSpeed * fWalkSpeedMultiplier;
 
                 if (pParty->bFlying) {
-                    if (engine->config->debug.TurboSpeed.Get()) {
+                    if (engine->config->debug.TurboSpeed.value()) {
                         partyInputXSpeed += dx * 24;
                         partyInputYSpeed += dy * 24;
                     } else {
@@ -2074,7 +2072,7 @@ void ODM_ProcessPartyActions() {
                     partyInputYSpeed += dy;
                     partyIsWalking = true;
                 } else {
-                    if (engine->config->debug.TurboSpeed.Get()) {
+                    if (engine->config->debug.TurboSpeed.value()) {
                         partyInputXSpeed += dx * 12;
                         partyInputYSpeed += dy * 12;
                     } else {
@@ -2121,7 +2119,7 @@ void ODM_ProcessPartyActions() {
                 break;
 
             case PARTY_LookUp:
-                partyViewNewPitch += engine->config->settings.VerticalTurnSpeed.Get();
+                partyViewNewPitch += engine->config->settings.VerticalTurnSpeed.value();
                 if (partyViewNewPitch > 128) partyViewNewPitch = 128;
                 if (pParty->hasActiveCharacter()) {
                     pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_LookUp);
@@ -2129,7 +2127,7 @@ void ODM_ProcessPartyActions() {
                 break;
 
             case PARTY_LookDown:
-                partyViewNewPitch -= engine->config->settings.VerticalTurnSpeed.Get();
+                partyViewNewPitch -= engine->config->settings.VerticalTurnSpeed.value();
                 if (partyViewNewPitch < -128) partyViewNewPitch = -128;
                 if (pParty->hasActiveCharacter()) {
                     pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_LookDown);
@@ -2435,7 +2433,7 @@ void ODM_ProcessPartyActions() {
     }
 
     // walking / running sounds ------------------------
-    if (engine->config->settings.WalkSound.Get() && pParty->walk_sound_timer) {
+    if (engine->config->settings.WalkSound.value() && pParty->walk_sound_timer) {
         if (pParty->walk_sound_timer >= pEventTimer->uTimeElapsed)
             pParty->walk_sound_timer -= pEventTimer->uTimeElapsed;
         else
@@ -2448,7 +2446,7 @@ void ODM_ProcessPartyActions() {
     int pZ_ = pParty->vPosition.z - partyNewZ;
     pParty->_movementTally += integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_);
 
-    if (engine->config->settings.WalkSound.Get() && pParty->walk_sound_timer <= 0) {
+    if (engine->config->settings.WalkSound.value() && pParty->walk_sound_timer <= 0) {
         pAudioPlayer->StopAll(804);  // stop sound
         if (partyIsRunning && (!partyNotTouchingFloor || partyCloseToGround)) {
             if (pParty->_movementTally >= 16) {
@@ -2558,7 +2556,7 @@ void ODM_ProcessPartyActions() {
                     }
                 }
             }
-        } else if (engine->config->settings.WalkSound.Get() && pParty->walk_sound_timer <= 0) {
+        } else if (engine->config->settings.WalkSound.value() && pParty->walk_sound_timer <= 0) {
             pAudioPlayer->StopAll(804);
             pParty->walk_sound_timer = 64;
         }
@@ -2643,7 +2641,7 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pF
             if (!face.pBoundingBox.containsXY(Party_X, Party_Y))
                 continue;
 
-            int slack = engine->config->gameplay.FloorChecksEps.Get();
+            int slack = engine->config->gameplay.FloorChecksEps.value();
             if (!face.Contains(Vec3i(Party_X, Party_Y, 0), model.index, slack, FACE_XY_PLANE))
                 continue;
 
@@ -2706,7 +2704,7 @@ void sub_487DA9() {
 
 //----- (004706C6) --------------------------------------------------------
 void UpdateActors_ODM() {
-    if (engine->config->debug.NoActors.Get())
+    if (engine->config->debug.NoActors.value())
         return;  // uNumActors = 0;
 
     for (unsigned int Actor_ITR = 0; Actor_ITR < pActors.size(); ++Actor_ITR) {
@@ -2735,8 +2733,8 @@ void UpdateActors_ODM() {
             if (pActors[Actor_ITR].uAIState == Dead || pActors[Actor_ITR].uAIState == Dying) {
                 if (pActors[Actor_ITR].vPosition.z < Floor_Level + 30) { // 30 to provide small error / rounding factor
                     if (pMonsterStats->pInfos[pActors[Actor_ITR].pMonsterInfo.uID].bBloodSplatOnDeath) {
-                        if (engine->config->graphics.BloodSplats.Get()) {
-                            float splatRadius = pActors[Actor_ITR].uActorRadius * engine->config->graphics.BloodSplatsMultiplier.Get();
+                        if (engine->config->graphics.BloodSplats.value()) {
+                            float splatRadius = pActors[Actor_ITR].uActorRadius * engine->config->graphics.BloodSplatsMultiplier.value();
                             decal_builder->AddBloodsplat(pActors[Actor_ITR].vPosition.x, pActors[Actor_ITR].vPosition.y, Floor_Level + 30, 1.0, 0.0, 0.0, splatRadius);
                         }
                         pActors[Actor_ITR].donebloodsplat = true;

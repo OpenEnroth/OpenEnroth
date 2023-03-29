@@ -161,7 +161,7 @@ void CastSpellInfoHelpers::castSpell() {
                 target_undead = false;
             }
 
-            spell_targeted_at = stru_50C198.FindClosestActor(engine->config->gameplay.RangedAttackDepth.Get(), 1, target_undead);
+            spell_targeted_at = stru_50C198.FindClosestActor(engine->config->gameplay.RangedAttackDepth.value(), 1, target_undead);
         }
 
         pSpellSprite.uType = SpellSpriteMapping[pCastSpell->uSpellID];
@@ -188,14 +188,14 @@ void CastSpellInfoHelpers::castSpell() {
             spell_level = pPlayer->GetActualSkillLevel(which_skill);
             spell_mastery = pPlayer->GetActualSkillMastery(which_skill);
 
-            if (engine->config->debug.AllMagic.Get()) {
+            if (engine->config->debug.AllMagic.value()) {
                 spell_level = 10;
                 spell_mastery = PLAYER_SKILL_MASTERY_GRANDMASTER;
             }
         }
 
         if (isRegularSpell(pCastSpell->uSpellID)) {
-            if (pCastSpell->forced_spell_skill_level || engine->config->debug.AllMagic.Get()) {
+            if (pCastSpell->forced_spell_skill_level || engine->config->debug.AllMagic.value()) {
                 uRequiredMana = 0;
             } else {
                 uRequiredMana = pSpellDatas[pCastSpell->uSpellID].mana_per_skill[std::to_underlying(spell_mastery) - 1];
@@ -205,7 +205,7 @@ void CastSpellInfoHelpers::castSpell() {
         }
 
         // Recovery time for spell failure if it cannot be cast at all in current context
-        failureRecoveryTime = recoveryTime * engine->config->gameplay.SpellFailureRecoveryMod.Get();
+        failureRecoveryTime = recoveryTime * engine->config->gameplay.SpellFailureRecoveryMod.value();
 
         if (!pCastSpell->forced_spell_skill_level) {
             if (which_skill == PLAYER_SKILL_DARK && pParty->uCurrentHour == 0 && pParty->uCurrentMinute == 0 ||
@@ -1165,7 +1165,7 @@ void CastSpellInfoHelpers::castSpell() {
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
-                    if (!pParty->pPlayers[pCastSpell->uPlayerID].GetMaxMana() && !engine->config->debug.AllMagic.Get()) {
+                    if (!pParty->pPlayers[pCastSpell->uPlayerID].GetMaxMana() && !engine->config->debug.AllMagic.value()) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
@@ -1317,7 +1317,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_WATER_WATER_WALK:
                 {
-                    if (!pParty->pPlayers[pCastSpell->uPlayerID].GetMaxMana() && !engine->config->debug.AllMagic.Get()) {
+                    if (!pParty->pPlayers[pCastSpell->uPlayerID].GetMaxMana() && !engine->config->debug.AllMagic.value()) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
@@ -3080,7 +3080,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
                 if (!checkSkill) {
                     checkSkill = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
                 }
-                if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_EXPERT && !engine->config->debug.AllMagic.Get()) {
+                if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_EXPERT && !engine->config->debug.AllMagic.value()) {
                     flags |= ON_CAST_TargetedCharacter;
                 }
                 break;
@@ -3089,7 +3089,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
                 if (!checkSkill) {
                     checkSkill = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
                 }
-                if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.Get()) {
+                if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.value()) {
                     flags |= ON_CAST_TargetedCharacter;
                 }
                 break;
@@ -3098,7 +3098,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
                 if (!checkSkill) {
                     checkSkill = player->pActiveSkills[PLAYER_SKILL_DARK];
                 }
-                if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.Get()) {
+                if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.value()) {
                     flags |= ON_CAST_TargetedCharacter;
                 }
                 break;
@@ -3107,7 +3107,7 @@ void pushSpellOrRangedAttack(SPELL_TYPE spell,
                 if (!checkSkill) {
                     checkSkill = player->pActiveSkills[PLAYER_SKILL_BODY];
                 }
-                if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_GRANDMASTER && !engine->config->debug.AllMagic.Get()) {
+                if (GetSkillMastery(checkSkill) < PLAYER_SKILL_MASTERY_GRANDMASTER && !engine->config->debug.AllMagic.value()) {
                     flags |= ON_CAST_TargetedCharacter;
                 }
                 break;

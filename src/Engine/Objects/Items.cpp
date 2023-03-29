@@ -698,7 +698,7 @@ ITEM_EQUIP_TYPE ItemGen::GetItemEquipType() {
 
 PLAYER_SKILL_TYPE ItemGen::GetPlayerSkillType() {
     PLAYER_SKILL_TYPE skl = pItemTable->pItems[this->uItemID].uSkillType;
-    if (skl == PLAYER_SKILL_CLUB && engine->config->gameplay.TreatClubAsMace.Get()) {
+    if (skl == PLAYER_SKILL_CLUB && engine->config->gameplay.TreatClubAsMace.value()) {
         // club skill not used but some items load it
         skl = PLAYER_SKILL_MACE;
     }

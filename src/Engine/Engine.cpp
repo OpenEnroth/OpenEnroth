@@ -245,7 +245,7 @@ void Engine::DrawGUI() {
 
     ++frames_this_second;
 
-    if (engine->config->debug.ShowFPS.Get()) {
+    if (engine->config->debug.ShowFPS.value()) {
         if (render_framerate) {
             pPrimaryWindow->DrawText(pFontArrus, {494, 0}, colorTable.White.c16(), fmt::format("FPS: {: .4f}", framerate), 0, 0, 0);
         }
@@ -310,7 +310,7 @@ void Engine::PushStationaryLights(int a2) {
 }
 
 void Engine::StackPartyTorchLight() {
-    int TorchLightDistance = engine->config->graphics.TorchlightDistance.Get();
+    int TorchLightDistance = engine->config->graphics.TorchlightDistance.value();
     // TODO(pskelton): set this on level load
     if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) TorchLightDistance = 1024;
     if (TorchLightDistance > 0) {  // lightspot around party
@@ -320,7 +320,7 @@ void Engine::StackPartyTorchLight() {
             int MinTorch = TorchLightDistance;
             int MaxTorch = TorchLightDistance * pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
 
-            int torchLightFlicker = engine->config->graphics.TorchlightFlicker.Get();
+            int torchLightFlicker = engine->config->graphics.TorchlightFlicker.value();
             if (torchLightFlicker > 0) {
                 // torchlight flickering effect
                 // TorchLightPower *= pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;  // 2,3,4
@@ -352,7 +352,7 @@ void Engine::StackPartyTorchLight() {
             pParty->flt_TorchlightColorG = 96;
             pParty->flt_TorchlightColorB = 96;
 
-            if (engine->config->debug.VerboseLogging.Get())
+            if (engine->config->debug.VerboseLogging.value())
                 logger->Warning("Torchlight doesn't have color");
         }
 
@@ -392,7 +392,7 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
             face_filter = &vis_face_filter;
             sprite_filter = &vis_sprite_filter_4;
         }
-        depth = config->gameplay.RangedAttackDepth.Get();
+        depth = config->gameplay.RangedAttackDepth.value();
     }
     // depth = v2;
 
@@ -464,7 +464,7 @@ void Engine::Deinitialize() {
 
 //----- (0044EE7C) --------------------------------------------------------
 bool Engine::draw_debug_outlines() {
-    if (/*uFlags & 0x04*/ engine->config->debug.LightmapDecals.Get()) {
+    if (/*uFlags & 0x04*/ engine->config->debug.LightmapDecals.value()) {
         DrawLightsDebugOutlines(-1);
         decal_builder->DrawDecalDebugOutlines();
     }
@@ -877,9 +877,9 @@ bool Engine::MM7_Initialize() {
     pParty = new Party();
 
     pParty->pHirelings.fill(NPCData());
-    pParty->uDefaultEyelevel = pParty->sEyelevel = engine->config->gameplay.PartyEyeLevel.Get();
-    pParty->uDefaultPartyHeight = pParty->uPartyHeight = engine->config->gameplay.PartyHeight.Get();
-    pParty->uWalkSpeed = engine->config->gameplay.PartyWalkSpeed.Get();
+    pParty->uDefaultEyelevel = pParty->sEyelevel = engine->config->gameplay.PartyEyeLevel.value();
+    pParty->uDefaultPartyHeight = pParty->uPartyHeight = engine->config->gameplay.PartyHeight.value();
+    pParty->uWalkSpeed = engine->config->gameplay.PartyWalkSpeed.value();
 
     MM6_Initialize();
 
@@ -959,7 +959,7 @@ bool Engine::MM7_Initialize() {
         pSoundList->FromFile(sounds_mm6, sounds_mm7, sounds_mm8);
     }
 
-    if (!config->debug.NoSound.Get())
+    if (!config->debug.NoSound.value())
         pAudioPlayer->Initialize();
 
     pMediaPlayer = new MPlayer();
@@ -994,7 +994,7 @@ void Engine::SecondaryInitialization() {
     pObjectList->InitializeSprites();
     pOverlayList->InitializeSprites();
 
-    if (!engine->config->debug.NoSound.Get())
+    if (!engine->config->debug.NoSound.value())
         pSoundList->Initialize();
 
     for (uint i = 0; i < 4; ++i) {
@@ -1059,10 +1059,10 @@ void MM6_Initialize() {
 
     viewparams = new ViewingParams;
     Sizei wsize = window->size();
-    game_viewport_x = viewparams->uScreen_topL_X = engine->config->graphics.ViewPortX1.Get(); //8
-    game_viewport_y = viewparams->uScreen_topL_Y = engine->config->graphics.ViewPortY1.Get(); //8
-    game_viewport_z = viewparams->uScreen_BttmR_X = wsize.w - engine->config->graphics.ViewPortX2.Get(); //468;
-    game_viewport_w = viewparams->uScreen_BttmR_Y = wsize.h - engine->config->graphics.ViewPortY2.Get(); //352;
+    game_viewport_x = viewparams->uScreen_topL_X = engine->config->graphics.ViewPortX1.value(); //8
+    game_viewport_y = viewparams->uScreen_topL_Y = engine->config->graphics.ViewPortY1.value(); //8
+    game_viewport_z = viewparams->uScreen_BttmR_X = wsize.w - engine->config->graphics.ViewPortX2.value(); //468;
+    game_viewport_w = viewparams->uScreen_BttmR_Y = wsize.h - engine->config->graphics.ViewPortY2.value(); //352;
 
     game_viewport_width = game_viewport_z - game_viewport_x;
     game_viewport_height = game_viewport_w - game_viewport_y;
@@ -1202,7 +1202,7 @@ void Engine::_461103_load_level_sub() {
     int v20;  // [sp+18h] [bp-44h]@14
     int v21[16] {};     // [sp+1Ch] [bp-40h]@17
 
-    if (engine->config->debug.NoActors.Get())
+    if (engine->config->debug.NoActors.value())
         pActors.clear();
 
     GenerateItemsInChest();
@@ -1280,9 +1280,9 @@ void Engine::_461103_load_level_sub() {
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    if (engine->config->debug.NoActors.Get())
+    if (engine->config->debug.NoActors.value())
         pActors.clear();
-    if (engine->config->debug.NoDecorations.Get())
+    if (engine->config->debug.NoDecorations.value())
         pLevelDecorations.clear();
     init_event_triggers();
 
@@ -1322,7 +1322,7 @@ void InitializeTurnBasedAnimations(void *_this) {
 
 //----- (0046BDA8) --------------------------------------------------------
 unsigned int GetGravityStrength() {
-    return engine->config->gameplay.Gravity.Get();
+    return engine->config->gameplay.Gravity.value();
 }
 
 //----- (00448B45) --------------------------------------------------------
@@ -1769,7 +1769,7 @@ void RegeneratePartyHealthMana() {
             if (pParty->bFlying) {
                 int caster = pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1;
                 assert(caster >= 0);
-                if (pParty->pPlayers[caster].sMana > 0 && !engine->config->debug.AllMagic.Get()) {
+                if (pParty->pPlayers[caster].sMana > 0 && !engine->config->debug.AllMagic.value()) {
                     pParty->pPlayers[caster].sMana -= 1;
                 }
             }
@@ -1783,10 +1783,10 @@ void RegeneratePartyHealthMana() {
                 int mana_drain = 1;
                 assert(caster >= 0);
                 // Vanilla bug: Water Walk drains mana with the same speed as Fly
-                if (engine->config->gameplay.FixWaterWalkManaDrain.Get() && ((cur_minutes % 20) != 0)) {
+                if (engine->config->gameplay.FixWaterWalkManaDrain.value() && ((cur_minutes % 20) != 0)) {
                     mana_drain = 0;
                 }
-                if (pParty->pPlayers[caster].sMana > 0 && !engine->config->debug.AllMagic.Get()) {
+                if (pParty->pPlayers[caster].sMana > 0 && !engine->config->debug.AllMagic.value()) {
                     pParty->pPlayers[caster].sMana -= mana_drain;
                 }
             }

@@ -32,7 +32,7 @@
 
 
 bool RenderBase::Initialize() {
-    window->resize({config->window.Width.Get(), config->window.Height.Get()});
+    window->resize({config->window.Width.value(), config->window.Height.value()});
 
     if (!pD3DBitmaps.Open(MakeDataPath("data", "d3dbitmap.hwl"))) {
         return false;
@@ -148,7 +148,7 @@ void RenderBase::DrawSpriteObjects() {
                 (object->uType < SPRITE_TRAP_FIRE || object->uType > SPRITE_TRAP_BODY))) {
             SpriteFrame *frame = object->GetSpriteFrame();
             if (frame->icon_name == "null" || frame->texture_name == "null") {
-                if (engine->config->debug.VerboseLogging.Get())
+                if (engine->config->debug.VerboseLogging.value())
                     logger->Warning("Trying to draw sprite with null frame");
                 continue;
             }
@@ -160,7 +160,7 @@ void RenderBase::DrawSpriteObjects() {
             pBillboardRenderList[::uNumBillboardsToDraw].hwsprite = frame->hw_sprites[octant];
             // error catching
             if (frame->hw_sprites[octant]->texture->GetHeight() == 0 || frame->hw_sprites[octant]->texture->GetWidth() == 0) {
-                if (engine->config->debug.VerboseLogging.Get())
+                if (engine->config->debug.VerboseLogging.value())
                     logger->Warning("Trying to draw sprite with empty octant texture");
                 continue;
             }
@@ -275,7 +275,7 @@ void RenderBase::PrepareDecorationsRenderList_ODM() {
                     frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID,
                         v6 + v7);
 
-                    if (engine->config->graphics.SeasonsChange.Get()) {
+                    if (engine->config->graphics.SeasonsChange.value()) {
                         frame = LevelDecorationChangeSeason(decor_desc, v6 + v7, pParty->uCurrentMonth);
                     }
 
@@ -307,7 +307,7 @@ void RenderBase::PrepareDecorationsRenderList_ODM() {
                         r = 255;
                         g = 255;
                         b_ = 255;
-                        if (render->config->graphics.ColoredLights.Get()) {
+                        if (render->config->graphics.ColoredLights.value()) {
                             r = decor_desc->uColoredLightRed;
                             g = decor_desc->uColoredLightGreen;
                             b_ = decor_desc->uColoredLightBlue;
@@ -423,7 +423,7 @@ void RenderBase::TransformBillboardsAndSetPalettesODM() {
 
             TransformBillboard(&billboard, p);
         } else {
-            if (engine->config->debug.VerboseLogging.Get())
+            if (engine->config->debug.VerboseLogging.value())
                 logger->Warning("Billboard with no sprite!");
         }
     }
@@ -459,7 +459,7 @@ void RenderBase::TransformBillboard(SoftwareBillboard *pSoftBillboard, RenderBil
         opaquetest = dimming_level & 0xFF000000;
     }
 
-    if (config->graphics.Tinting.Get() && pSoftBillboard->sTintColor & 0x00FFFFFF) {
+    if (config->graphics.Tinting.value() && pSoftBillboard->sTintColor & 0x00FFFFFF) {
         diffuse = BlendColors(pSoftBillboard->sTintColor, diffuse);
         if (opaquetest)
             diffuse = 0x007F7F7F & ((unsigned int)diffuse >> 1);
@@ -616,7 +616,7 @@ void RenderBase::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
 float RenderBase::GetGamma() {
     const float base = 0.60f;
     const float mult = 0.1f;
-    int level = engine->config->graphics.Gamma.Get();
+    int level = engine->config->graphics.Gamma.value();
     return base + mult * level;
 }
 
@@ -630,7 +630,7 @@ HWLTexture *RenderBase::LoadHwlSprite(const std::string &name) {
 
 void RenderBase::SavePCXScreenshot() {
     size_t zeros_number = 5;
-    std::string screenshot_number = std::to_string(engine->config->settings.ScreenshotNumber.Increment());
+    std::string screenshot_number = std::to_string(engine->config->settings.ScreenshotNumber.increment());
     std::string file_name = "screenshot_" + std::string(zeros_number - std::min(zeros_number, screenshot_number.length()), '0') + screenshot_number + ".pcx";
 
     SaveWinnersCertificate(file_name.c_str());

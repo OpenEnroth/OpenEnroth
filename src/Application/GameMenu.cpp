@@ -234,7 +234,7 @@ void Menu::EventLoop() {
             }
 
             case UIMSG_ChangeGammaLevel: {
-                int gammalevel = engine->config->graphics.Gamma.Get();
+                int gammalevel = engine->config->graphics.Gamma.value();
                 if (param == 4) {
                     gammalevel--;
                     new OnButtonClick2({21, 161}, {0, 0}, pBtn_SliderLeft, std::string(), false);
@@ -246,7 +246,7 @@ void Menu::EventLoop() {
                     gammalevel = (pt.x - 42) / 17;
                 }
 
-                engine->config->graphics.Gamma.Set(gammalevel);
+                engine->config->graphics.Gamma.setValue(gammalevel);
                 pAudioPlayer->playUISound(SOUND_ClickMovingSelector);
 
                 if (gamma_preview_image) {
@@ -261,17 +261,17 @@ void Menu::EventLoop() {
                 continue;
                 }
             case UIMSG_ToggleBloodsplats:
-                engine->config->graphics.BloodSplats.Toggle();
+                engine->config->graphics.BloodSplats.toggle();
                 continue;
             case UIMSG_ToggleColoredLights:
-                engine->config->graphics.ColoredLights.Toggle();
+                engine->config->graphics.ColoredLights.toggle();
                 continue;
             case UIMSG_ToggleTint:
-                engine->config->graphics.Tinting.Toggle();
+                engine->config->graphics.Tinting.toggle();
                 continue;
 
             case UIMSG_ChangeMusicVolume: {
-                int new_level = engine->config->settings.MusicLevel.Get();
+                int new_level = engine->config->settings.MusicLevel.value();
                 if (param == 4) {
                     new_level -= 1;
                     new OnButtonClick2({243, 216}, {0, 0}, pBtn_SliderLeft, std::string(), false);
@@ -283,8 +283,8 @@ void Menu::EventLoop() {
                     new_level = (pt.x - 263) / 17;  // for mouse
                 }
 
-                engine->config->settings.MusicLevel.Set(new_level);
-                pAudioPlayer->SetMusicVolume(engine->config->settings.MusicLevel.Get());
+                engine->config->settings.MusicLevel.setValue(new_level);
+                pAudioPlayer->SetMusicVolume(engine->config->settings.MusicLevel.value());
                 // TODO(Nik-RE-dev): return sound playing but with music volume level
                 // if (engine->config->music_level > 0)
                 //    pAudioPlayer->playExclusiveSound(SOUND_hurp);
@@ -292,7 +292,7 @@ void Menu::EventLoop() {
             }
 
             case UIMSG_ChangeSoundVolume: {
-                int new_level = engine->config->settings.SoundLevel.Get();
+                int new_level = engine->config->settings.SoundLevel.value();
                 if (param == 4) {
                     new_level -= 1;
                     new OnButtonClick2({243, 162}, {0, 0}, pBtn_SliderLeft, std::string(), false);
@@ -304,26 +304,26 @@ void Menu::EventLoop() {
                     new_level = (pt.x - 263) / 17;
                 }
 
-                engine->config->settings.SoundLevel.Set(new_level);
+                engine->config->settings.SoundLevel.setValue(new_level);
 
-                pAudioPlayer->SetMasterVolume(engine->config->settings.SoundLevel.Get());
+                pAudioPlayer->SetMasterVolume(engine->config->settings.SoundLevel.value());
                 pAudioPlayer->playExclusiveSound(SOUND_church);
                 continue;
             }
             case UIMSG_ToggleFlipOnExit:
-                engine->config->settings.FlipOnExit.Toggle();
+                engine->config->settings.FlipOnExit.toggle();
                 continue;
             case UIMSG_ToggleAlwaysRun:
-                engine->config->settings.AlwaysRun.Toggle();
+                engine->config->settings.AlwaysRun.toggle();
                 continue;
             case UIMSG_ToggleWalkSound:
-                engine->config->settings.WalkSound.Toggle();
+                engine->config->settings.WalkSound.toggle();
                 continue;
             case UIMSG_ToggleShowDamage:
-                engine->config->settings.ShowHits.Toggle();
+                engine->config->settings.ShowHits.toggle();
                 continue;
             case UIMSG_ChangeVoiceVolume: {
-                int new_level = engine->config->settings.VoiceLevel.Get();
+                int new_level = engine->config->settings.VoiceLevel.value();
                 if (param == 4) {
                     new_level -= 1;
                     new OnButtonClick2({243, 270}, {0, 0}, pBtn_SliderLeft, std::string(), false);
@@ -335,9 +335,9 @@ void Menu::EventLoop() {
                     new_level = (pt.x - 263) / 17;
                 }
 
-                engine->config->settings.VoiceLevel.Set(new_level);
-                pAudioPlayer->SetVoiceVolume(engine->config->settings.VoiceLevel.Get());
-                if (engine->config->settings.VoiceLevel.Get() > 0) {
+                engine->config->settings.VoiceLevel.setValue(new_level);
+                pAudioPlayer->SetVoiceVolume(engine->config->settings.VoiceLevel.value());
+                if (engine->config->settings.VoiceLevel.value() > 0) {
                     pAudioPlayer->PlaySound(SOUND_hf445a, PID(OBJECT_Player, 5), 0, -1, 0, 0);
                 }
                 continue;
@@ -345,7 +345,7 @@ void Menu::EventLoop() {
             case UIMSG_SetTurnSpeed:
                 if (param)
                     pParty->_viewYaw = param * pParty->_viewYaw / param;
-                engine->config->settings.TurnSpeed.Set(param);
+                engine->config->settings.TurnSpeed.setValue(param);
                 continue;
 
             case UIMSG_SetGraphicsMode:

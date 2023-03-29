@@ -74,11 +74,11 @@ int Party::CountHirelings() {  // non hired followers
 //----- (mm6c::004858D0) --------------------------------------------------
 void Party::Zero() {
     field_0_set25_unused = 25;
-    uPartyHeight = uDefaultPartyHeight = engine->config->gameplay.PartyHeight.Get();
-    sEyelevel = uDefaultEyelevel = engine->config->gameplay.PartyEyeLevel.Get();
+    uPartyHeight = uDefaultPartyHeight = engine->config->gameplay.PartyHeight.value();
+    sEyelevel = uDefaultEyelevel = engine->config->gameplay.PartyEyeLevel.value();
     radius = 37;
     _yawGranularity = 25;
-    uWalkSpeed = engine->config->gameplay.PartyWalkSpeed.Get();
+    uWalkSpeed = engine->config->gameplay.PartyWalkSpeed.value();
     _yawRotationSpeed = 90;
     jump_strength = 5;
     field_28_set0_unused = 0;
@@ -347,7 +347,7 @@ void Party::GiveFood(int amount) {
 }
 
 int Party::GetFood() const {
-    if (engine->config->debug.InfiniteFood.Get()) {
+    if (engine->config->debug.InfiniteFood.value()) {
         return 99999;
     }
 
@@ -355,7 +355,7 @@ int Party::GetFood() const {
 }
 
 int Party::GetGold() const {
-    if (engine->config->debug.InfiniteGold.Get()) {
+    if (engine->config->debug.InfiniteGold.value()) {
         return 99999;
     }
 
@@ -638,9 +638,9 @@ void Party::Reset() {
     Zero();
 
     field_708_set15_unused = 15;
-    sEyelevel = engine->config->gameplay.PartyEyeLevel.Get();
-    uNumGold = engine->config->gameplay.NewGameGold.Get();
-    uNumFoodRations = engine->config->gameplay.NewGameFood.Get();
+    sEyelevel = engine->config->gameplay.PartyEyeLevel.value();
+    uNumGold = engine->config->gameplay.NewGameGold.value();
+    uNumFoodRations = engine->config->gameplay.NewGameFood.value();
 
     alignment = PartyAlignment::PartyAlignment_Neutral;
     SetUserInterface(alignment, true);
@@ -761,10 +761,10 @@ void Party::ResetPosMiscAndSpellBuffs() {
     this->_viewPitch = 0;
     this->uFallSpeed = 0;
     this->field_28_set0_unused = 0;
-    this->uDefaultPartyHeight = engine->config->gameplay.PartyHeight.Get(); // was 120?
+    this->uDefaultPartyHeight = engine->config->gameplay.PartyHeight.value(); // was 120?
     this->radius = 37;
     this->_yawGranularity = 25;
-    this->uWalkSpeed = engine->config->gameplay.PartyWalkSpeed.Get();
+    this->uWalkSpeed = engine->config->gameplay.PartyWalkSpeed.value();
     this->_yawRotationSpeed = 90;
     this->jump_strength = 5;
     this->_6FC_water_lava_timer = 0;

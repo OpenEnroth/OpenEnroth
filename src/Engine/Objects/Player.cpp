@@ -237,7 +237,7 @@ int PlayerCreation_GetUnspentAttributePointCount() {
 
 //----- (00427730) --------------------------------------------------------
 bool Player::CanCastSpell(unsigned int uRequiredMana) {
-    if (engine->config->debug.AllMagic.Get()) {
+    if (engine->config->debug.AllMagic.value()) {
         return true;
     }
     if (sMana >= uRequiredMana) {  // enough mana
@@ -249,7 +249,7 @@ bool Player::CanCastSpell(unsigned int uRequiredMana) {
 }
 
 void Player::SpendMana(unsigned int uRequiredMana) {
-    if (engine->config->debug.AllMagic.Get()) {
+    if (engine->config->debug.AllMagic.value()) {
         return;
     }
     assert(sMana >= uRequiredMana);
@@ -1762,7 +1762,7 @@ int Player::ReceiveDamage(signed int amount, DAMAGE_TYPE dmg_type) {
     SetAsleep(GameTime(0));  // wake up if asleep
     signed int recieved_dmg = CalculateIncommingDamage(dmg_type, amount);  // get damage
     // for no damage cheat - moved from elsewhere
-    if (!engine->config->debug.NoDamage.Get()) {
+    if (!engine->config->debug.NoDamage.value()) {
         sHealth -= recieved_dmg;     // reduce health
     }
 
@@ -2247,11 +2247,11 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) {
 
     uint minRecovery;
     if (shooting_laser) {
-        minRecovery = engine->config->gameplay.MinRecoveryBlasters.Get();
+        minRecovery = engine->config->gameplay.MinRecoveryBlasters.value();
     } else if (bRangedAttack) {
-        minRecovery = engine->config->gameplay.MinRecoveryRanged.Get();
+        minRecovery = engine->config->gameplay.MinRecoveryRanged.value();
     } else {
-        minRecovery = engine->config->gameplay.MinRecoveryMelee.Get();
+        minRecovery = engine->config->gameplay.MinRecoveryMelee.value();
     }
 
     if (recovery < minRecovery)
@@ -3070,7 +3070,7 @@ PLAYER_SKILL_LEVEL Player::GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType) {
             break;
     }
 
-    if (uSkillType == PLAYER_SKILL_CLUB && engine->config->gameplay.TreatClubAsMace.Get()) {
+    if (uSkillType == PLAYER_SKILL_CLUB && engine->config->gameplay.TreatClubAsMace.value()) {
         // some items loaded in as clubs
         uSkillType = PLAYER_SKILL_MACE;
     }
@@ -6689,7 +6689,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
         }
 
         // special attack trigger
-        if (!engine->config->debug.NoDamage.Get() && actorPtr->pMonsterInfo.uSpecialAttackType &&
+        if (!engine->config->debug.NoDamage.value() && actorPtr->pMonsterInfo.uSpecialAttackType &&
             grng->Random(100) < actorPtr->pMonsterInfo.uLevel *
                                 actorPtr->pMonsterInfo.uSpecialAttackLevel) {
             playerPtr->ReceiveSpecialAttackEffect(actorPtr->pMonsterInfo.uSpecialAttackType, actorPtr);
@@ -6861,7 +6861,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             }
 
             // special attack trigger
-            if (dmgSource == ABILITY_ATTACK1 && !engine->config->debug.NoDamage.Get() &&
+            if (dmgSource == ABILITY_ATTACK1 && !engine->config->debug.NoDamage.value() &&
                 actorPtr->pMonsterInfo.uSpecialAttackType &&
                 grng->Random(100) < actorPtr->pMonsterInfo.uLevel *
                                    actorPtr->pMonsterInfo.uSpecialAttackLevel) {
@@ -7463,7 +7463,7 @@ void Player::playReaction(PlayerSpeech speech, int a3) {
     int expressionCount = 0;
     int pickedSoundID = 0;
 
-    if (engine->config->settings.VoiceLevel.Get() > 0) {
+    if (engine->config->settings.VoiceLevel.value() > 0) {
         for (int i = 0; i < speechVariants[speech].size(); i++) {
             if (speechVariants[speech][i]) {
                 speechCount++;

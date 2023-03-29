@@ -280,11 +280,11 @@ bool Game::Loop() {
 
             pParty->pPickedItem.uItemID = ITEM_NULL;
 
-            pCurrentMapName = config->gameplay.StartingMap.Get();
+            pCurrentMapName = config->gameplay.StartingMap.value();
             bFlashQuestBook = true;
             pMediaPlayer->PlayFullscreenMovie("Intro Post");
             SaveNewGame();
-            if (engine->config->debug.NoMargaret.Get()) {
+            if (engine->config->debug.NoMargaret.value()) {
                 _449B7E_toggle_bit(pParty->_quest_bits, QBIT_EMERALD_ISLAND_MARGARETH_OFF, 1);
             }
 
@@ -351,13 +351,13 @@ void ShowMM7IntroVideo_and_LoadingScreen() {
     bGameoverLoop = true;
 
     render->PresentBlackScreen();
-    if (!engine->config->debug.NoVideo.Get()) {
-        if (!engine->config->debug.NoLogo.Get()) {
+    if (!engine->config->debug.NoVideo.value()) {
+        if (!engine->config->debug.NoLogo.value()) {
             pMediaPlayer->PlayFullscreenMovie("3dologo");
             pMediaPlayer->PlayFullscreenMovie("new world logo");
             pMediaPlayer->PlayFullscreenMovie("jvc");
         }
-        if (!engine->config->debug.NoIntro.Get()) {
+        if (!engine->config->debug.NoIntro.value()) {
             pMediaPlayer->PlayFullscreenMovie("Intro");
         }
     }
@@ -1295,7 +1295,7 @@ void Game::EventLoop() {
                     }
 
                     // check if tp location is unlocked
-                    if (!_449B57_test_bit(pParty->_quest_bits, fountainBit) && !engine->config->debug.TownPortal.Get())
+                    if (!_449B57_test_bit(pParty->_quest_bits, fountainBit) && !engine->config->debug.TownPortal.value())
                         continue;
 
                     // begin TP
@@ -1370,7 +1370,7 @@ void Game::EventLoop() {
                             break;
                     }
 
-                    if (!_449B57_test_bit(pParty->_quest_bits, fountainBit) && !engine->config->debug.TownPortal.Get()) {
+                    if (!_449B57_test_bit(pParty->_quest_bits, fountainBit) && !engine->config->debug.TownPortal.value()) {
                         render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
                         continue;
                     }
@@ -1508,7 +1508,7 @@ void Game::EventLoop() {
                 case UIMSG_CastSpell_TargetActor: {
                     int pid = vis->get_picked_object_zbuf_val().object_pid;
                     int depth = vis->get_picked_object_zbuf_val().depth;
-                    if (PID_TYPE(pid) == OBJECT_Actor && depth < engine->config->gameplay.RangedAttackDepth.Get()) {
+                    if (PID_TYPE(pid) == OBJECT_Actor && depth < engine->config->gameplay.RangedAttackDepth.value()) {
                         spellTargetPicked(pid, -1);
                         CloseTargetedSpellWindow();
                     }
@@ -1629,7 +1629,7 @@ void Game::EventLoop() {
                         pGUIWindow_CurrentMenu = new GUIWindow_Rest();
                         continue;
                     } else {
-                        if (engine->config->debug.VerboseLogging.Get()) {
+                        if (engine->config->debug.VerboseLogging.value()) {
                             if (pParty->uFlags & PARTY_FLAGS_1_AIRBORNE)
                                 logger->Info("Party is airborne");
                             if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER)
@@ -1786,7 +1786,7 @@ void Game::EventLoop() {
                     uAction = 0;
                     int page = 0;
                     for (PLAYER_SKILL_TYPE i : MagicSkills()) {
-                        if (pPlayers[pParty->getActiveCharacter()]->pActiveSkills[i] || engine->config->debug.AllMagic.Get()) {
+                        if (pPlayers[pParty->getActiveCharacter()]->pActiveSkills[i] || engine->config->debug.AllMagic.value()) {
                             if (pPlayers[pParty->getActiveCharacter()]->lastOpenedSpellbookPage == page)
                                 uAction = skill_count;
                             spellbookPages[skill_count++] = page;
@@ -1825,7 +1825,7 @@ void Game::EventLoop() {
                     //  uNumSeconds = (unsigned int)pPlayers[pParty->getActiveCharacter()];
                     Player *player = pPlayers[pParty->getActiveCharacter()];
                     if (player->spellbook.pChapters[player->lastOpenedSpellbookPage].bIsSpellAvailable[uMessageParam]
-                        || engine->config->debug.AllMagic.Get()) {
+                        || engine->config->debug.AllMagic.value()) {
                         if (quick_spell_at_page - 1 == uMessageParam) {
                             pGUIWindow_CurrentMenu->Release();  // spellbook close
                             pEventTimer->Resume();
@@ -2283,63 +2283,63 @@ void Game::EventLoop() {
                     pParty->AddGold(10000);
                     continue;
                 case UIMSG_DebugTownPortal:
-                    engine->config->debug.TownPortal.Toggle();
+                    engine->config->debug.TownPortal.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugWizardEye:
-                    engine->config->debug.WizardEye.Toggle();
+                    engine->config->debug.WizardEye.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugAllMagic:
-                    engine->config->debug.AllMagic.Toggle();
+                    engine->config->debug.AllMagic.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugTerrain:
-                    engine->config->debug.Terrain.Toggle();
+                    engine->config->debug.Terrain.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugLightmap:
-                    engine->config->debug.LightmapDecals.Toggle();
+                    engine->config->debug.LightmapDecals.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugTurboSpeed:
-                    engine->config->debug.TurboSpeed.Toggle();
+                    engine->config->debug.TurboSpeed.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugNoActors:
-                    engine->config->debug.NoActors.Toggle();
+                    engine->config->debug.NoActors.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugFog:
-                    engine->config->graphics.Fog.Toggle();
+                    engine->config->graphics.Fog.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugSnow:
-                    engine->config->graphics.Snow.Toggle();
+                    engine->config->graphics.Snow.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugNoDamage:
-                    engine->config->debug.NoDamage.Toggle();
+                    engine->config->debug.NoDamage.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugPortalLines:
-                    engine->config->debug.PortalOutlines.Toggle();
+                    engine->config->debug.PortalOutlines.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugPickedFace:
-                    engine->config->debug.ShowPickedFace.Toggle();
+                    engine->config->debug.ShowPickedFace.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugShowFPS:
-                    engine->config->debug.ShowFPS.Toggle();
+                    engine->config->debug.ShowFPS.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugSeasonsChange:
-                    engine->config->graphics.SeasonsChange.Toggle();
+                    engine->config->graphics.SeasonsChange.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugVerboseLogging:
-                    engine->config->debug.VerboseLogging.Toggle();
+                    engine->config->debug.VerboseLogging.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugReloadShader:
@@ -2374,7 +2374,7 @@ void Game::EventLoop() {
 
 //----- (0046A14B) --------------------------------------------------------
 void Game::OnPressSpace() {
-    engine->PickKeyboard(engine->config->gameplay.KeyboardInteractionDepth.Get(),
+    engine->PickKeyboard(engine->config->gameplay.KeyboardInteractionDepth.value(),
                          keyboardInputHandler->IsKeyboardPickingOutlineToggled(),
                          &vis_sprite_filter_3, &vis_door_filter);
 
@@ -2552,7 +2552,7 @@ void Game::GameLoop() {
                     pParty->vPosition.y = 1816;
                     pParty->vPosition.z = 193;
                     pParty->_viewYaw = 512;
-                    pLocationName = config->gameplay.StartingMap.Get().c_str();
+                    pLocationName = config->gameplay.StartingMap.value().c_str();
                 }
                 strcpy(Source, pLocationName);
                 pParty->uFallStartZ = pParty->vPosition.z;
