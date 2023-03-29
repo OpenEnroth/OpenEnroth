@@ -2260,19 +2260,21 @@ void Game::EventLoop() {
                     pParty->SetGold(0);
                     continue;
                 case UIMSG_DebugLearnSkills:
-                    for (uint i = 0; i < 4; ++i) {            // loop over players
+                    for (Player &player : pParty->pPlayers) { // loop over players
                         for (PLAYER_SKILL_TYPE ski : AllSkills()) {  // loop over skills
                             // if class can learn this skill
-                            if (byte_4ED970_skill_learn_ability_by_class_table[pParty->pPlayers[i].classType][ski] > PLAYER_SKILL_MASTERY_NONE) {
-                                if (pParty->pPlayers[i].GetSkillLevel(ski) == 0)
-                                    pParty->pPlayers[i].SetSkillLevel(ski, 1);
+                            if (byte_4ED970_skill_learn_ability_by_class_table[player.classType][ski] > PLAYER_SKILL_MASTERY_NONE) {
+                                if (player.GetSkillLevel(ski) == 0) {
+                                    player.SetSkillLevel(ski, 1);
+                                }
                             }
                         }
                     }
                     continue;
                 case UIMSG_DebugGiveSkillP:
-                    for (uint i = 0; i < 4; ++i)
-                        pParty->pPlayers[i].uSkillPoints += 50;
+                    for (Player &player : pParty->pPlayers) {
+                        player.uSkillPoints += 50;
+                    }
                     pPlayers[std::max(pParty->getActiveCharacter(), 1u)]->PlayAwardSound_Anim();
                     continue;
                 case UIMSG_DebugGiveEXP:
@@ -2516,8 +2518,9 @@ void Game::GameLoop() {
                 if (pMovie_Track) pMediaPlayer->Unload();
                 SaveGame(0, 0);
                 ++pParty->uNumDeaths;
-                for (uint i = 0; i < 4; ++i)
-                    pParty->pPlayers[i].SetVariable(VAR_Award, Award_Deaths);
+                for (Player &player : pParty->pPlayers) {
+                    player.SetVariable(VAR_Award, Award_Deaths);
+                }
                 pParty->days_played_without_rest = 0;
                 pParty->GetPlayingTime().AddDays(7);  // += 2580480
                 HEXRAYS_LOWORD(pParty->uFlags) &= ~0x204;
@@ -2573,16 +2576,10 @@ void Game::GameLoop() {
                 }
                 Actor::InitializeActors();
 
-                int num_conscious_players = 0;
-                int conscious_players_ids[4] = {-1, -1, -1, -1};
-                for (int i = 0; i < 4; ++i) {
-                    if (pParty->pPlayers[i].CanAct())
-                        conscious_players_ids[num_conscious_players++] = i;
-                }
-                if (num_conscious_players) {
-                    int idx = conscious_players_ids[vrng->Random(num_conscious_players)];
-                    Assert(idx >= 0);
-                    pParty->pPlayers[idx].playReaction(SPEECH_CheatedDeath);
+                int playerId = pParty->getRandomActiveCharacterId(vrng.get());
+
+                if (playerId != -1) {
+                    pParty->pPlayers[playerId].playReaction(SPEECH_CheatedDeath);
                 }
 
                 GameUI_SetStatusBar(LSTR_CHEATED_THE_DEATH);

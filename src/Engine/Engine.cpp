@@ -1827,38 +1827,43 @@ void RegeneratePartyHealthMana() {
         }
 
         // HP/SP regeneration and HP deterioration
-        for (int playerID = 0; playerID < 4; playerID++) {
+        for (Player &player : pParty->pPlayers) {
             bool recovery_HP = false;
             bool decrease_HP = false;
             bool recovery_SP = false;
 
             for (ITEM_SLOT idx : AllItemSlots()) {
-                if (pParty->pPlayers[playerID].HasItemEquipped(idx)) {
-                    uint _idx = pParty->pPlayers[playerID].pEquipment.pIndices[idx];
-                    ItemGen equppedItem = pParty->pPlayers[playerID].pInventoryItemList[_idx - 1];
+                if (player.HasItemEquipped(idx)) {
+                    uint _idx = player.pEquipment.pIndices[idx];
+                    ItemGen equppedItem = player.pInventoryItemList[_idx - 1];
                     if (!IsRegular(equppedItem.uItemID)) {
-                        if (equppedItem.uItemID == ITEM_RELIC_ETHRICS_STAFF)
+                        if (equppedItem.uItemID == ITEM_RELIC_ETHRICS_STAFF) {
                             decrease_HP = true;
+                        }
                         if (equppedItem.uItemID == ITEM_ARTIFACT_HERMES_SANDALS) {
                             recovery_HP = true;
                             recovery_SP = true;
                         }
-                        if (equppedItem.uItemID == ITEM_ARTIFACT_MINDS_EYE)
+                        if (equppedItem.uItemID == ITEM_ARTIFACT_MINDS_EYE) {
                             recovery_SP = true;
-                        if (equppedItem.uItemID == ITEM_ARTIFACT_HEROS_BELT)
+                        }
+                        if (equppedItem.uItemID == ITEM_ARTIFACT_HEROS_BELT) {
                             recovery_HP = true;
+                        }
                     } else {
                         ITEM_ENCHANTMENT special_enchantment = equppedItem.special_enchantment;
                         if (special_enchantment == ITEM_ENCHANTMENT_OF_REGENERATION
                             || special_enchantment == ITEM_ENCHANTMENT_OF_LIFE
                             || special_enchantment == ITEM_ENCHANTMENT_OF_PHOENIX
-                            || special_enchantment == ITEM_ENCHANTMENT_OF_TROLL)
+                            || special_enchantment == ITEM_ENCHANTMENT_OF_TROLL) {
                             recovery_HP = true;
+                        }
 
                         if (special_enchantment == ITEM_ENCHANTMENT_OF_MANA
                             || special_enchantment == ITEM_ENCHANTMENT_OF_ECLIPSE
-                            || special_enchantment == ITEM_ENCHANTMENT_OF_UNICORN)
+                            || special_enchantment == ITEM_ENCHANTMENT_OF_UNICORN) {
                             recovery_SP = true;
+                        }
 
                         if (special_enchantment == ITEM_ENCHANTMENT_OF_PLENTY) {
                             recovery_HP = true;
@@ -1866,37 +1871,32 @@ void RegeneratePartyHealthMana() {
                         }
                     }
 
-                    if (recovery_HP && pParty->pPlayers[playerID].conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
-                        if (pParty->pPlayers[playerID].sHealth <
-                            pParty->pPlayers[playerID].GetMaxHealth()) {
-                            ++pParty->pPlayers[playerID].sHealth;
+                    if (recovery_HP && player.conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
+                        if (player.sHealth < player.GetMaxHealth()) {
+                            player.sHealth++;
                         }
-                        if (pParty->pPlayers[playerID].conditions.Has(Condition_Unconscious) &&
-                            pParty->pPlayers[playerID].sHealth > 0) {
-                            pParty->pPlayers[playerID].conditions.Reset(Condition_Unconscious);
+                        if (player.conditions.Has(Condition_Unconscious) && player.sHealth > 0) {
+                            player.conditions.Reset(Condition_Unconscious);
                         }
                     }
 
-                    if (recovery_SP && pParty->pPlayers[playerID].conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
-                        if (pParty->pPlayers[playerID].sMana <
-                            pParty->pPlayers[playerID].GetMaxMana())
-                            ++pParty->pPlayers[playerID].sMana;
+                    if (recovery_SP && player.conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
+                        if (player.sMana < player.GetMaxMana()) {
+                            player.sMana++;
+                        }
                     }
 
-                    if (decrease_HP && pParty->pPlayers[playerID].conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
-                        --pParty->pPlayers[playerID].sHealth;
-                        if (!(pParty->pPlayers[playerID].conditions.Has(Condition_Unconscious)) &&
-                            pParty->pPlayers[playerID].sHealth < 0) {
-                            pParty->pPlayers[playerID].conditions.Set(Condition_Unconscious, pParty->GetPlayingTime());
+                    if (decrease_HP && player.conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
+                        player.sHealth--;
+                        if (!(player.conditions.Has(Condition_Unconscious)) && player.sHealth < 0) {
+                            player.conditions.Set(Condition_Unconscious, pParty->GetPlayingTime());
                         }
-                        if (pParty->pPlayers[playerID].sHealth < 1) {
-                            if (pParty->pPlayers[playerID].sHealth +
-                                pParty->pPlayers[playerID].uEndurance +
-                                pParty->pPlayers[playerID].GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) >= 1 ||
-                                pParty->pPlayers[playerID].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].expire_time) {
-                                pParty->pPlayers[playerID].conditions.Set(Condition_Unconscious, pParty->GetPlayingTime());
-                            } else if (!pParty->pPlayers[playerID].conditions.Has(Condition_Dead)) {
-                                pParty->pPlayers[playerID].conditions.Set(Condition_Dead, pParty->GetPlayingTime());
+                        if (player.sHealth < 1) {
+                            int enduranceCheck = player.sHealth + player.uEndurance + player.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE);
+                            if (enduranceCheck >= 1 || player.pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active()) {
+                                player.conditions.Set(Condition_Unconscious, pParty->GetPlayingTime());
+                            } else if (!player.conditions.Has(Condition_Dead)) {
+                                player.conditions.Set(Condition_Dead, pParty->GetPlayingTime());
                             }
                         }
                     }
@@ -1904,64 +1904,55 @@ void RegeneratePartyHealthMana() {
             }
 
             // regeneration buff
-            if (pParty->pPlayers[playerID].pPlayerBuffs[PLAYER_BUFF_REGENERATION].expire_time &&
-                pParty->pPlayers[playerID].conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
-                pParty->pPlayers[playerID].sHealth += 5 * pParty->pPlayers[playerID].pPlayerBuffs[PLAYER_BUFF_REGENERATION].uPower;
-                if (pParty->pPlayers[playerID].sHealth >
-                    pParty->pPlayers[playerID].GetMaxHealth()) {
-                    pParty->pPlayers[playerID].sHealth = pParty->pPlayers[playerID].GetMaxHealth();
+            if (player.pPlayerBuffs[PLAYER_BUFF_REGENERATION].Active() && player.conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
+                player.sHealth += 5 * player.pPlayerBuffs[PLAYER_BUFF_REGENERATION].uPower;
+                if (player.sHealth > player.GetMaxHealth()) {
+                    player.sHealth = player.GetMaxHealth();
                 }
-                if (pParty->pPlayers[playerID].conditions.Has(Condition_Unconscious) &&
-                    pParty->pPlayers[playerID].sHealth > 0) {
-                    pParty->pPlayers[playerID].conditions.Reset(Condition_Unconscious);
+                if (player.conditions.Has(Condition_Unconscious) && player.sHealth > 0) {
+                    player.conditions.Reset(Condition_Unconscious);
                 }
             }
 
             // for warlock
-            if (PartyHasDragon() &&
-                pParty->pPlayers[playerID].classType == PLAYER_CLASS_WARLOCK) {
-                if (pParty->pPlayers[playerID].sMana <
-                    pParty->pPlayers[playerID].GetMaxMana()) {
-                    ++pParty->pPlayers[playerID].sMana;
+            if (PartyHasDragon() && player.classType == PLAYER_CLASS_WARLOCK) {
+                if (player.sMana < player.GetMaxMana()) {
+                    player.sMana++;
                 }
             }
 
             // for lich
-            if (pParty->pPlayers[playerID].classType == PLAYER_CLASS_LICH) {
+            if (player.classType == PLAYER_CLASS_LICH) {
                 bool lich_has_jar = false;
-                for (int idx = 0; idx < 126; ++idx) {
-                    if (pParty->pPlayers[playerID].pInventoryItemList[idx].uItemID == ITEM_QUEST_LICH_JAR_FULL)
+                for (int idx = 0; idx < Player::INVENTORY_SLOT_COUNT; ++idx) {
+                    if (player.pInventoryItemList[idx].uItemID == ITEM_QUEST_LICH_JAR_FULL)
                         lich_has_jar = true;
                 }
 
-                if (pParty->pPlayers[playerID].conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
-                    if (pParty->pPlayers[playerID].sHealth >
-                        pParty->pPlayers[playerID].GetMaxHealth() / 2) {
-                        pParty->pPlayers[playerID].sHealth = pParty->pPlayers[playerID].sHealth - 2;
+                if (player.conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
+                    if (player.sHealth > (player.GetMaxHealth() / 2)) {
+                        player.sHealth = player.sHealth - 2;
                     }
-                    if (pParty->pPlayers[playerID].sMana >
-                        pParty->pPlayers[playerID].GetMaxMana() / 2) {
-                        pParty->pPlayers[playerID].sMana = pParty->pPlayers[playerID].sMana - 2;
+                    if (player.sMana > (player.GetMaxMana() / 2)) {
+                        player.sMana = player.sMana - 2;
                     }
                 }
 
                 if (lich_has_jar) {
-                    if (pParty->pPlayers[playerID].sMana < pParty->pPlayers[playerID].GetMaxMana()) {
-                        ++pParty->pPlayers[playerID].sMana;
+                    if (player.sMana < player.GetMaxMana()) {
+                        player.sMana++;
                     }
                 }
             }
 
             // for zombie
-            if (pParty->pPlayers[playerID].conditions.Has(Condition_Zombie) &&
-                pParty->pPlayers[playerID].conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
-                if (pParty->pPlayers[playerID].sHealth >
-                    pParty->pPlayers[playerID].GetMaxHealth() / 2) {
-                    pParty->pPlayers[playerID].sHealth =
-                        pParty->pPlayers[playerID].sHealth - 1;
+            if (player.conditions.Has(Condition_Zombie) &&
+                player.conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
+                if (player.sHealth > (player.GetMaxHealth() / 2)) {
+                    player.sHealth = player.sHealth--;
                 }
-                if (pParty->pPlayers[playerID].sMana > 0) {
-                    pParty->pPlayers[playerID].sMana = pParty->pPlayers[playerID].sMana - 1;
+                if (player.sMana > 0) {
+                    player.sMana = player.sMana--;
                 }
             }
         }
