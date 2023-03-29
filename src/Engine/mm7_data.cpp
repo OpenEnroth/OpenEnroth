@@ -2515,8 +2515,6 @@ char byte_4FAA24;  // turn over break??
 
 // std::array<unsigned int, 480> pSRZBufferLineOffsets;
 std::array<char, 777> books_num_items_per_page;
-int CurrentLloydPlayerID;
-int LloydsBeaconSpellDuration;  // 604800 * spell level
 int MapBookOpen;
 int books_page_number;
 int books_primary_item_per_page;
@@ -2557,7 +2555,6 @@ std::array<int, 50> dword_50B638;
 stru367 PortalFace;
 std::array<int, 100> dword_50BC10;
 std::array<int, 100> dword_50BDA0;
-char TownPortalCasterId;
 int enchantingActiveCharacter;
 std::array<unsigned int, 5> pIconIDs_Turn;
 unsigned int uIconID_TurnStop;

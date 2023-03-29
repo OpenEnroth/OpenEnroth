@@ -7,3 +7,5 @@ struct GUIWindow_TownPortalBook : public GUIWindow_Book {
 
     virtual void Update();
 };
+
+extern int townPortalCasterId;

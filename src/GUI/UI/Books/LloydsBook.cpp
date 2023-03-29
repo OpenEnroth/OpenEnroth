@@ -11,13 +11,17 @@
 #include "GUI/GUIFont.h"
 #include "GUI/UI/Books/LloydsBook.h"
 
+#include "Media/Audio/AudioPlayer.h"
+
 std::array<int, 5> pLloydsBeaconsPreviewXs = {
     {61, 281, 61, 281, 171}};  // 004E249C
 std::array<int, 5> pLloydsBeaconsPreviewYs = {{84, 84, 228, 228, 155}};
 std::array<int, 5> pLloydsBeacons_SomeXs = {{59, 279, 59, 279, 169}};
 std::array<int, 5> pLloydsBeacons_SomeYs = {{82, 82, 226, 226, 153}};
 
-bool _506360_installing_beacon;  // 506360
+bool isLloydsBeaconBeingInstalled;
+int lloydsBeaconCasterId;
+int lloydsBeaconSpellDuration;
 
 Image *ui_book_lloyds_border = nullptr;
 std::array<Image *, 2> ui_book_lloyds_backgrounds;
@@ -26,7 +30,10 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() : GUIWindow_Book() {
     this->wData.val = WINDOW_LloydsBeacon;  // inherited from GUIWindow::GUIWindow
     BasicBookInitialization();
 
-    _506360_installing_beacon = false;
+    pEventTimer->Pause();
+    pAudioPlayer->PauseSounds(-1);
+
+    isLloydsBeaconBeingInstalled = false;
     if (!ui_book_lloyds_border) {
         ui_book_lloyds_border = assets->GetImage_ColorKey("lb_bordr");
     }
@@ -40,7 +47,7 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() : GUIWindow_Book() {
     pBtn_Book_2 = CreateButton({415, 48}, {39, 36}, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 1, InputAction::Invalid, localization->GetString(LSTR_RECALL_BEACON));
 
     int max_beacons = 1;
-    PLAYER_SKILL_MASTERY water_mastery = pParty->pPlayers[CurrentLloydPlayerID].GetActualSkillMastery(PLAYER_SKILL_WATER);
+    PLAYER_SKILL_MASTERY water_mastery = pParty->pPlayers[lloydsBeaconCasterId].GetActualSkillMastery(PLAYER_SKILL_WATER);
 
     if (water_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER || water_mastery == PLAYER_SKILL_MASTERY_MASTER) {
         max_beacons = 5;
@@ -57,14 +64,14 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() : GUIWindow_Book() {
     }
 
     // purges expired beacons
-    pParty->pPlayers[CurrentLloydPlayerID].CleanupBeacons();
+    pParty->pPlayers[lloydsBeaconCasterId].CleanupBeacons();
 }
 
 void GUIWindow_LloydsBook::Update() {
     render->DrawTextureNew(
         471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
 
-    Player *pPlayer = &pParty->pPlayers[CurrentLloydPlayerID];
+    Player *pPlayer = &pParty->pPlayers[lloydsBeaconCasterId];
     render->DrawTextureNew(
         8 / 640.0f, 8 / 480.0f, ui_book_lloyds_backgrounds[bRecallingBeacon ? 1 : 0]);
     std::string pText = localization->GetString(LSTR_RECALL_BEACON);
@@ -160,7 +167,7 @@ void GUIWindow_LloydsBook::Update() {
         }
     }
 
-    if (_506360_installing_beacon) {
+    if (isLloydsBeaconBeingInstalled) {
         pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_CloseAfterInstallBeacon, 0, 0);
     }
 }

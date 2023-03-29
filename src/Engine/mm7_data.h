@@ -109,8 +109,6 @@ extern int dword_4FA9B4[];
 
 // extern std::array<unsigned int, 480> pSRZBufferLineOffsets;
 extern std::array<char, 777> books_num_items_per_page;
-extern int CurrentLloydPlayerID;
-extern int LloydsBeaconSpellDuration;
 extern int MapBookOpen;
 // extern Texture_MM7 *dword_50640C[];
 extern int
@@ -155,7 +153,6 @@ extern std::array<int, 50> dword_50B638;
 extern struct stru367 PortalFace;
 extern std::array<int, 100> dword_50BC10;
 extern std::array<int, 100> dword_50BDA0;
-extern char TownPortalCasterId;
 extern int enchantingActiveCharacter;
 extern std::array<unsigned int, 5> pIconIDs_Turn;
 extern unsigned int uIconID_TurnStop;
