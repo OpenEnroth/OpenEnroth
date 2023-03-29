@@ -38,6 +38,10 @@ enum SOUND_FLAG {
     SOUND_FLAG_3D = 0x2,
 };
 
+// Max value used for volume control
+// TODO(Nik-RE-dev): originally it was 2.0f, but OpenAL support gains from [0.0f, 1.0f] only
+static const float maxVolumeGain = 1.0f;
+
 class SoundInfo {
  public:
     bool Is3D() { return ((uFlags & SOUND_FLAG_3D) == SOUND_FLAG_3D); }
@@ -129,8 +133,7 @@ void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
         pCurrentMusicTrack = CreateAudioTrack(file_path);
         if (pCurrentMusicTrack) {
             currentMusicTrack = eTrack;
-            pCurrentMusicTrack->SetVolume(
-                pSoundVolumeLevels[engine->config->settings.MusicLevel.Get()]);
+            pCurrentMusicTrack->SetVolume(pSoundVolumeLevels[engine->config->settings.MusicLevel.Get()] * maxVolumeGain);
             pCurrentMusicTrack->Play();
         }
     }
@@ -177,7 +180,7 @@ void AudioPlayer::SetMusicVolume(int vol) {
 
     vol = std::max(0, vol);
     vol = std::min(9, vol);
-    pCurrentMusicTrack->SetVolume(pSoundVolumeLevels[vol] * 2.f);
+    pCurrentMusicTrack->SetVolume(pSoundVolumeLevels[vol] * maxVolumeGain);
 }
 
 float AudioPlayer::MusicGetVolume() {
@@ -191,7 +194,7 @@ float AudioPlayer::MusicGetVolume() {
 void AudioPlayer::SetMasterVolume(int level) {
     level = std::max(0, level);
     level = std::min(9, level);
-    uMasterVolume = (2.f * pSoundVolumeLevels[level]);
+    uMasterVolume = (maxVolumeGain * pSoundVolumeLevels[level]);
 
     auto iter = mapSounds.begin();
     while (iter != mapSounds.end()) {
@@ -208,7 +211,7 @@ void AudioPlayer::SetMasterVolume(int level) {
 void AudioPlayer::SetVoiceVolume(int level) {
     level = std::max(0, level);
     level = std::min(9, level);
-    uVoiceVolume = (2.f * pSoundVolumeLevels[level]);
+    uVoiceVolume = (maxVolumeGain * pSoundVolumeLevels[level]);
 
     auto iter = mapSounds.begin();
     while (iter != mapSounds.end()) {
@@ -300,6 +303,7 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
 
                 break;
             }
+
             case OBJECT_Player: {
                 si.sample->SetVolume(uVoiceVolume);
                 if (object_id == 5) {
