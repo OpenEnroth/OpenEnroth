@@ -4,12 +4,15 @@
 #include <string>
 #include <memory>
 
+#include "Utility/Workaround/ToUnderlying.h"
+
 #include "Utility/String.h"
 #include "Utility/Memory/Blob.h"
 #include "Utility/Streams/FileInputStream.h"
 #include "Media/Media.h"
 #include "Engine/MM7.h"
 #include "Engine/Spells/SpellEnums.h"
+#include "Engine/Objects/ActorEnums.h"
 
 enum SoundID {
     SOUND_Invalid = 0,
@@ -135,6 +138,12 @@ class AudioPlayer {
     AudioPlayer() : bPlayerReady(false), currentMusicTrack(0), uMasterVolume(0), uVoiceVolume(0) {}
     virtual ~AudioPlayer() {}
 
+    // Special PID values for additional sound playing semantics
+    static const int SOUND_PID_PLAYER_RESETABLE = PID(OBJECT_Player, 5);
+    static const int SOUND_PID_EXCLUSIVE = PID_INVALID;
+    static const int SOUND_PID_NON_RESETABLE = -2;
+    static const int SOUND_PID_WALKING = -3;
+
     void Initialize();
 
     void SetMasterVolume(int level);
@@ -148,7 +157,8 @@ class AudioPlayer {
     void SetMusicVolume(int music_level);
     float MusicGetVolume();
 
-    void StopAll(int sample_id);
+    void stopSounds();
+    void stopWalkingSounds();
 
     /**
      * Play sound.
@@ -161,11 +171,11 @@ class AudioPlayer {
      *                                  * other < 0 for non resetable sounds (will not restart if played again whilst already playing)
      *                                  NB: system use of exclusive sounds is inconsistent.
      * @param uNumRepeats               unused but presumably must be number of repeats before stopping
-     * @param x                         ???, unused
-     * @param y                         ???, unused
-     * @param a7                        ???, unused
+     * @param x                         unused but presumably must be x coord of sound, additionally -1 seems to indicate need to ignore these coords
+     * @param y                         unused but presumably must be y coord of sound
+     * @param sound_data_id             ???, unused
      */
-    void PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats, int x, int y, int a7);
+    void playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats = 0, int x = -1, int y = 0, int sound_data_id = 0);
     void UpdateSounds();
     void PauseSounds(int uType);
     void LoadAudioSnd();
@@ -178,7 +188,7 @@ class AudioPlayer {
      * Play sound of spell casting or spell sprite impact.
      *
      * @param spell                     Spell ID of spell. Indexes into `SpellSoundIds`.
-     * @param pid                       PID of sound originator. See PlaySound description.
+     * @param pid                       PID of sound originator. See playSound description.
      * @param is_impact                 Indicates sound of spell impact, if true sound ID
      *                                  will be SpellSoundIds[spell] + 1.
      */
@@ -192,7 +202,7 @@ class AudioPlayer {
      * @param id                        ID of sound.
      */
     void playUISound(SoundID id) {
-        PlaySound(id, 0, 0, -1, 0, 0);
+        playSound(id, 0);
     }
 
     /**
@@ -203,7 +213,7 @@ class AudioPlayer {
      * @param id                        ID of sound.
      */
     void playExclusiveSound(SoundID id) {
-        PlaySound(id, PID_INVALID, 0, -1, 0, 0);
+        playSound(id, SOUND_PID_EXCLUSIVE);
     }
 
     /**
@@ -214,18 +224,19 @@ class AudioPlayer {
      * @param id                        ID of sound.
      */
     void playNonResetableSound(SoundID id) {
-        PlaySound(id, -2, 0, -1, 0, 0);
+        playSound(id, SOUND_PID_NON_RESETABLE);
     }
 
     /**
      * Play sound of party walking.
-     * Semantics generally is the same as for exclusive sounds.
+     * Semantics generally is the same as for exclusive sounds but with additional
+     * tracking to stop walking sound when needed.
      *
      * @param id                        ID of sound.
      */
     void playWalkSound(SoundID id) {
-        // All walk sounds originally used PID 804 which is PID(Object_Player, 100)
-        PlaySound(id, PID_INVALID, 1, -1, 0, 0);
+        // All walk sounds originally used PID 804 which is PID(OBJECT_Player, 100)
+        playSound(id, SOUND_PID_WALKING);
     }
 
  protected:

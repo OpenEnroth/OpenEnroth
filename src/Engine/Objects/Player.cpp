@@ -4250,7 +4250,7 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
         } else if (pParty->pPickedItem.uItemID == ITEM_HORSESHOE) {
             spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, targetCharacter);
             //v5 = PID(OBJECT_Player, player_num + 49);
-            //pAudioPlayer->PlaySound(SOUND_quest, v5, 0, -1, 0, 0);
+            //pAudioPlayer->playSound(SOUND_quest, v5);
             pAudioPlayer->playUISound(SOUND_quest);
             playerAffected->AddVariable(VAR_NumSkillPoints, 2);
         } else if (pParty->pPickedItem.uItemID == ITEM_TEMPLE_IN_A_BOTTLE) {
@@ -5249,7 +5249,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
 void Player::PlayAwardSound() {
     //int playerIndex = GetPlayerIndex();
     //int v25 = PID(OBJECT_Player, playerIndex + 48);
-    //pAudioPlayer->PlaySound(SOUND_quest, v25, 0, -1, 0, 0);
+    //pAudioPlayer->playSound(SOUND_quest, v25);
     pAudioPlayer->playUISound(SOUND_quest);
 }
 
@@ -6622,7 +6622,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             }
         }
         // TODO(Nik-RE-dev): is it correct to use voice volume for strike sounds?
-        pAudioPlayer->PlaySound(soundToPlay, PID(OBJECT_Player, targetchar), 0, -1, 0, 0);
+        pAudioPlayer->playSound(soundToPlay, PID(OBJECT_Player, targetchar));
 
         // calc damage
         int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
@@ -7476,7 +7476,7 @@ void Player::playReaction(PlayerSpeech speech, int a3) {
             int numberOfSubvariants = byte_4ECF08[pickedVariant - 1][uVoiceID];
             if (numberOfSubvariants > 0) {
                 pickedSoundID = vrng->Random(numberOfSubvariants) + 2 * (pickedVariant + 50 * uVoiceID) + 4998;
-                pAudioPlayer->PlaySound((SoundID)pickedSoundID, PID(OBJECT_Player, GetPlayerIndex()), 0, -1, 0, 0);
+                pAudioPlayer->playSound((SoundID)pickedSoundID, PID(OBJECT_Player, GetPlayerIndex()));
             }
         }
     }

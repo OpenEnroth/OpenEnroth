@@ -140,7 +140,7 @@ bool Chest::Open(int uChestID) {
             pSpellObject.uFacing = 0;
             pSpellObject.Create(0, 0, 0, 0);
             // TODO(Nik-RE-dev): chest is originator in this case
-            pAudioPlayer->PlaySound(SOUND_fireBall, 0, 0, -1, 0, 0);
+            pAudioPlayer->playSound(SOUND_fireBall, 0);
             pSpellObject.ExplosionTraps();
             chest->uFlags &= ~CHEST_TRAPPED;
             if (pParty->getActiveCharacter() && !_A750D8_player_speech_timer &&

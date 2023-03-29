@@ -2445,19 +2445,16 @@ void ODM_ProcessPartyActions() {
     }
 
     // save up distance deltas so walks sounds play at high fps with small delta
-    int pX_ = pParty->vPosition.x - partyNewX;
-    int pY_ = pParty->vPosition.y - partyNewY;
-    int pZ_ = pParty->vPosition.z - partyNewZ;
-    pParty->_movementTally += integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_);
+    Vec3i partyDelta = pParty->vPosition - Vec3i(partyNewX, partyNewY, partyNewZ);
+    pParty->_movementTally += integer_sqrt(partyDelta.lengthSqr());
 
     if (engine->config->settings.WalkSound.Get() && pParty->walk_sound_timer <= 0) {
-        pAudioPlayer->StopAll(804);  // stop sound
+        pAudioPlayer->stopWalkingSounds();
         if (partyIsRunning && (!partyNotTouchingFloor || partyCloseToGround)) {
             if (pParty->_movementTally >= 16) {
                 pParty->_movementTally = 0;
                 if (!partyNotOnModel &&
-                    pOutdoor->pBModels[pParty->floor_face_pid >> 9]
-                    .pFaces[(pParty->floor_face_pid >> 3) & 0x3F].Visible()) {
+                    pOutdoor->pBModels[pParty->floor_face_pid >> 9].pFaces[(pParty->floor_face_pid >> 3) & 0x3F].Visible()) {
                     pAudioPlayer->playWalkSound(SOUND_RunWood);  // бег на 3D Modelи
                 } else {
                     int v87 = pOutdoor->GetSoundIdByPosition(WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellY(pParty->vPosition.y), 1);
@@ -2469,8 +2466,7 @@ void ODM_ProcessPartyActions() {
             if (pParty->_movementTally >= 8) {
                 pParty->_movementTally = 0;
                 if (!partyNotOnModel &&
-                    pOutdoor->pBModels[pParty->floor_face_pid >> 9]
-                    .pFaces[(pParty->floor_face_pid >> 3) & 0x3F].Visible()) {
+                    pOutdoor->pBModels[pParty->floor_face_pid >> 9].pFaces[(pParty->floor_face_pid >> 3) & 0x3F].Visible()) {
                     pAudioPlayer->playWalkSound(SOUND_WalkWood);  // хождение на 3D Modelи
                 } else {
                     int v87 = pOutdoor->GetSoundIdByPosition(WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellY(pParty->vPosition.y), 0);
@@ -2481,10 +2477,10 @@ void ODM_ProcessPartyActions() {
         }
     }
 
-    // TODO(pskelton): this will trigger during accumulation - and StopAll doesnt work
     // mute the walking sound when stopping
-    if (pParty->_movementTally < 8)
-        pAudioPlayer->StopAll(804);
+    if (pParty->_movementTally < 8) {
+        pAudioPlayer->stopWalkingSounds();
+    }
     //------------------------------------------------------------------------
 
     if (!partyNotTouchingFloor || partyCloseToGround)
@@ -2561,7 +2557,7 @@ void ODM_ProcessPartyActions() {
                 }
             }
         } else if (engine->config->settings.WalkSound.Get() && pParty->walk_sound_timer <= 0) {
-            pAudioPlayer->StopAll(804);
+            pAudioPlayer->stopWalkingSounds();
             pParty->walk_sound_timer = 64;
         }
 

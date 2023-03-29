@@ -964,10 +964,10 @@ void BLV_UpdateDoors() {
                 open_distance = door->uMoveLength;
                 door->uState = BLVDoor::Open;
                 if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0)
-                    pAudioPlayer->PlaySound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_Door, i), 0, -1, 0, 0);
+                    pAudioPlayer->playSound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_Door, i));
                 // goto LABEL_18;
             } else if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0) {
-                pAudioPlayer->PlaySound(eDoorSoundID, PID(OBJECT_Door, i), 1, -1, 0, 0);
+                pAudioPlayer->playSound(eDoorSoundID, PID(OBJECT_Door, i), 1);
             }
         } else {  // door closing
             signed int v5 = (signed int)(door->uTimeSinceTriggered * door->uOpenSpeed) / 128;
@@ -975,12 +975,12 @@ void BLV_UpdateDoors() {
                 open_distance = 0;
                 door->uState = BLVDoor::Closed;
                 if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0)
-                    pAudioPlayer->PlaySound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_Door, i), 0, -1, 0, 0);
+                    pAudioPlayer->playSound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_Door, i));
                 // goto LABEL_18;
             } else {
                 open_distance = door->uMoveLength - v5;
                 if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0)
-                    pAudioPlayer->PlaySound(eDoorSoundID, PID(OBJECT_Door, i), 1, -1, 0, 0);
+                    pAudioPlayer->playSound(eDoorSoundID, PID(OBJECT_Door, i), 1);
             }
         }
 
@@ -2265,13 +2265,11 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     }
 
     //  //Воспроизведение звуков ходьбы/бега-------------------------
-    uint pX_ = abs(pParty->vPosition.x - new_party_x);
-    uint pY_ = abs(pParty->vPosition.y - new_party_y);
-    uint pZ_ = abs(pParty->vPosition.z - new_party_z);
+    Vec3i partyDelta = pParty->vPosition - Vec3i(new_party_x, new_party_y, new_party_z);
     if (engine->config->settings.WalkSound.Get() && pParty->walk_sound_timer <= 0) {
-        pAudioPlayer->StopAll(804);  // stop sound
+        pAudioPlayer->stopWalkingSounds();
         if (party_running_flag && (!hovering || not_high_fall)) {  // Бег и (не прыжок или не высокое падение )
-            if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) >= 16) {
+            if (integer_sqrt(partyDelta.lengthSqr()) >= 16) {
                 if (on_water)
                     pAudioPlayer->playWalkSound(SOUND_RunWaterIndoor);
                 else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_CARPET)  //по ковру
@@ -2282,7 +2280,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             }
         } else if (party_walking_flag && (!hovering || not_high_fall)) {  // Ходьба и (не прыжок или не
                                                     // высокое падение)
-            if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) >= 8) {
+            if (integer_sqrt(partyDelta.lengthSqr()) >= 8) {
                 if (on_water)
                     pAudioPlayer->playWalkSound(SOUND_WalkWaterIndoor);
                 else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_CARPET)  //по ковру
@@ -2293,8 +2291,8 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             }
         }
     }
-    if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) < 8)  //отключить  звук ходьбы при остановке
-        pAudioPlayer->StopAll(804);
+    if (integer_sqrt(partyDelta.lengthSqr()) < 8)  //отключить  звук ходьбы при остановке
+        pAudioPlayer->stopWalkingSounds();
     //-------------------------------------------------------------
 
     if (!hovering || not_high_fall)

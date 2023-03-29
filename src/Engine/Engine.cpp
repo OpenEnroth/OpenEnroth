@@ -1162,7 +1162,7 @@ void PrepareToLoadODM(bool bLoading, ODMRenderParams *a2) {
             int ind = _6807B8_level_decorations_ids[i];
             LevelDecoration dec = pLevelDecorations[ind];
             const DecorationDesc* decoration = pDecorationList->GetDecoration(dec.uDecorationDescID);
-            pAudioPlayer->PlaySound(SoundID(decoration->uSoundID), PID(OBJECT_Decoration, ind), 0, 0, 0, 0);
+            pAudioPlayer->playSound(SoundID(decoration->uSoundID), PID(OBJECT_Decoration, ind), 0, 0, 0);
         }
     }
 }
