@@ -5,15 +5,13 @@
 #include <vector>
 
 #include "Engine/mm7_data.h"
-#include "Engine/IocContainer.h"
+#include "Engine/EngineIocContainer.h"
 #include "Engine/SpawnPoint.h"
 
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Graphics/IRender.h"
 
 struct IndoorLocation;
-
-using EngineIoc = Engine_::IocContainer;
 
 /*  358 */
 #pragma pack(push, 1)
@@ -512,10 +510,10 @@ struct BLVSector {  // 0x74
 struct IndoorLocation {
     //----- (00462592) --------------------------------------------------------
     inline IndoorLocation() {
-        this->log = EngineIoc::ResolveLogger();
-        this->decal_builder = EngineIoc::ResolveDecalBuilder();
-        this->spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
-        this->particle_engine = EngineIoc::ResolveParticleEngine();
+        this->log = EngineIocContainer::ResolveLogger();
+        this->decal_builder = EngineIocContainer::ResolveDecalBuilder();
+        this->spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
+        this->particle_engine = EngineIocContainer::ResolveParticleEngine();
     }
 
     /**

@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-#include "Engine/IocContainer.h"
+#include "Engine/EngineIocContainer.h"
 #include "Engine/Components/Trace/EngineTraceRecorder.h"
 
 #include "Library/Logger/Logger.h"

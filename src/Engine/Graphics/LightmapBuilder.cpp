@@ -13,8 +13,6 @@
 #include "Engine/Graphics/ClippingFunctions.h"
 #include "Engine/Graphics/Weather.h"
 
-using EngineIoc = Engine_::IocContainer;
-
 LightsStack_StationaryLight_ *pStationaryLightsStack = new LightsStack_StationaryLight_;
 // StationaryLight pStationaryLights[400];
 // int uNumStationaryLightsApplied;

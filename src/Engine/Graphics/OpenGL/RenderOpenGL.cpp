@@ -184,7 +184,7 @@ void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y
 }
 
 RenderOpenGL::RenderOpenGL(
-    std::shared_ptr<Application::GameConfig> config,
+    std::shared_ptr<GameConfig> config,
     DecalBuilder* decal_builder,
     SpellFxRenderer* spellfx,
     std::shared_ptr<ParticleEngine> particle_engine,

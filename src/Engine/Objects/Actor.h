@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 
-#include "Engine/IocContainer.h"
+#include "Engine/EngineIocContainer.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/Monsters.h"
@@ -12,7 +12,6 @@
 
 #include "ActorEnums.h"
 
-using EngineIoc = Engine_::IocContainer;
 class Actor;
 struct SpawnPoint;
 
@@ -20,7 +19,7 @@ struct SpawnPoint;
 #pragma pack(push, 1)
 struct stru319 {
     inline stru319() {
-        this->vis = EngineIoc::ResolveVis();
+        this->vis = EngineIocContainer::ResolveVis();
     }
 
     int which_player_to_attack(Actor *pActor);

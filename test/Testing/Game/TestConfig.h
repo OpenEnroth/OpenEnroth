@@ -1,7 +1,5 @@
 #pragma once
 
-namespace Application {
 class GameConfig;
-} // namespace Application
 
-void ResetTestConfig(Application::GameConfig *config);
+void ResetTestConfig(GameConfig *config);

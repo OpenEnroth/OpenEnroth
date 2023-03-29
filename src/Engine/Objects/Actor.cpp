@@ -40,11 +40,9 @@
 #include "Utility/Math/TrigLut.h"
 #include "Library/Random/Random.h"
 
-using EngineIoc = Engine_::IocContainer;
-
 // should be injected into Actor but struct size cant be changed
-static DecalBuilder *decal_builder = EngineIoc::ResolveDecalBuilder();
-static SpellFxRenderer *spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
+static DecalBuilder *decal_builder = EngineIocContainer::ResolveDecalBuilder();
+static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
 
 std::vector<Actor> pActors;
 

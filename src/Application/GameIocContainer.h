@@ -2,12 +2,10 @@
 
 #include <memory>
 
-namespace Application {
-
 class Menu;
 class GameWindowHandler;
 
-class IocContainer {
+class GameIocContainer {
  public:
      static Menu *ResolveGameMenu();
      static GameWindowHandler *ResolveGameWindowHandler();
@@ -16,5 +14,3 @@ class IocContainer {
      static Menu *menu;
      static GameWindowHandler *gameWindowHandler;
 };
-
-}  // namespace Application

@@ -1,12 +1,10 @@
 #pragma once
 
-#include "Engine/IocContainer.h"
+#include "Engine/EngineIocContainer.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/BSPModel.h"
 
 #include "Utility/Flags.h"
-
-using EngineIoc = Engine_::IocContainer;
 
 enum class DecalFlag : int {
     DecalFlagsNone = 0x0,
@@ -81,8 +79,8 @@ struct Decal {
 // contains all of above
 struct DecalBuilder {
     DecalBuilder() {
-        this->log = EngineIoc::ResolveLogger();
-        this->bloodsplat_container = EngineIoc::ResolveBloodsplatContainer();
+        this->log = EngineIocContainer::ResolveLogger();
+        this->bloodsplat_container = EngineIocContainer::ResolveBloodsplatContainer();
         this->DecalsCount = 0;
     }
 

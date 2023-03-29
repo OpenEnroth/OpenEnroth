@@ -11,7 +11,7 @@
 #include "Library/Logger/Logger.h"
 #include "Engine/MM7.h"
 #include "Engine/MapInfo.h"
-#include "Engine/IocContainer.h"
+#include "Engine/EngineIocContainer.h"
 #include "Engine/mm7_data.h"
 
 #include "Engine/Graphics/Polygon.h"
@@ -92,9 +92,9 @@ struct stru10;
 
 /*  104 */
 #pragma pack(push, 1)
-struct Engine {
+class Engine {
  public:
-    explicit Engine(std::shared_ptr<Application::GameConfig> config);
+    explicit Engine(std::shared_ptr<GameConfig> config);
     virtual ~Engine();
 
     static void LogEngineBuildInfo();
@@ -150,7 +150,7 @@ struct Engine {
     }
 
 
-    std::shared_ptr<Application::GameConfig> config;
+    std::shared_ptr<GameConfig> config;
     Game__StationaryLight pStationaryLights[25];
     char field_2C0[1092];
     unsigned int uNumStationaryLights;

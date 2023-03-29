@@ -21,24 +21,24 @@ class GameThread {
         _logger = PlatformLogger::createStandardLogger(WIN_ENSURE_CONSOLE_OPTION);
         _logger->setLogLevel(APPLICATION_LOG, LOG_INFO);
         _logger->setLogLevel(PLATFORM_LOG, LOG_ERROR);
-        EngineIoc::ResolveLogger()->SetBaseLogger(_logger.get());
+        EngineIocContainer::ResolveLogger()->SetBaseLogger(_logger.get());
         Engine::LogEngineBuildInfo();
 
         _application = std::make_unique<PlatformApplication>(_logger.get());
 
         if (options.gameDataDir.empty()) {
-            Application::AutoInitDataPath(_application->platform());
+            AutoInitDataPath(_application->platform());
         } else {
             setDataPath(options.gameDataDir);
         }
 
-        _config = std::make_shared<Application::GameConfig>();
+        _config = std::make_shared<GameConfig>();
         ResetTestConfig(_config.get());
-        _game = Application::GameFactory().CreateGame(_application.get(), _config);
+        _game = GameFactory().CreateGame(_application.get(), _config);
     }
 
     ~GameThread() {
-        EngineIoc::ResolveLogger()->SetBaseLogger(nullptr);
+        EngineIocContainer::ResolveLogger()->SetBaseLogger(nullptr);
     }
 
     PlatformApplication *app() const {
@@ -52,8 +52,8 @@ class GameThread {
  private:
     std::unique_ptr<PlatformLogger> _logger;
     std::unique_ptr<PlatformApplication> _application;
-    std::shared_ptr<Application::GameConfig> _config;
-    std::shared_ptr<Application::Game> _game;
+    std::shared_ptr<GameConfig> _config;
+    std::shared_ptr<Game> _game;
 };
 
 void printGoogleTestHelp(char *app) {

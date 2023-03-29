@@ -96,14 +96,10 @@
 void ShowMM7IntroVideo_and_LoadingScreen();
 void IntegrityTest();
 
-using Application::Game;
-using Application::GameConfig;
-using Application::GameFactory;
-using Engine_::EngineFactory;
 using Graphics::IRenderFactory;
 
 
-void Application::AutoInitDataPath(Platform *platform) {
+void AutoInitDataPath(Platform *platform) {
     // TODO (captainurist): we should consider reading Unicode (utf8) strings from win32 registry, as it might contain paths
     // curretnly we convert all strings out of registry into CP_ACP (default windows ansi)
     // it is later on passed to std::filesystem that should be ascii on windows as well
@@ -125,7 +121,7 @@ void Application::AutoInitDataPath(Platform *platform) {
             std::filesystem::create_directory(savesPath);
         }
 
-        EngineIoc::ResolveLogger()->Info("Using MM7 directory: {}", mm7dir);
+        EngineIocContainer::ResolveLogger()->Info("Using MM7 directory: {}", mm7dir);
     } else {
         std::string message = fmt::format(
             "Required resources aren't found!\n"
@@ -134,17 +130,17 @@ void Application::AutoInitDataPath(Platform *platform) {
             "resources directory from our repository there as well!",
             !mm7dir.empty() ? mm7dir : "current directory"
         );
-        EngineIoc::ResolveLogger()->Warning("{}", message);
+        EngineIocContainer::ResolveLogger()->Warning("{}", message);
         platform->showMessageBox("CRITICAL ERROR: missing resources", message);
     }
 }
 
 Game::Game(PlatformApplication *app) {
     this->app = app;
-    this->log = EngineIoc::ResolveLogger();
-    this->decal_builder = EngineIoc::ResolveDecalBuilder();
-    this->vis = EngineIoc::ResolveVis();
-    this->menu = GameIoc::ResolveGameMenu();
+    this->log = EngineIocContainer::ResolveLogger();
+    this->decal_builder = EngineIocContainer::ResolveDecalBuilder();
+    this->vis = EngineIocContainer::ResolveVis();
+    this->menu = GameIocContainer::ResolveGameMenu();
 
     ::application = app;
     ::platform = app->platform();
@@ -156,7 +152,7 @@ Game::Game(PlatformApplication *app) {
     // It doesn't matter where to put control component as it's running the control routine after a call to `SwapBuffers`.
     // But the trace component should go after the deterministic component - deterministic component updates tick count,
     // and then trace component stores the updated value in a recorded `PaintEvent`.
-    windowHandler.reset(Application::IocContainer::ResolveGameWindowHandler());
+    windowHandler.reset(GameIocContainer::ResolveGameWindowHandler());
     app->install(windowHandler.get()); // TODO(captainurist): actually move ownership into PlatformApplication?
     app->install(windowHandler->KeyboardController()); // TODO(captainurist): do this properly
     app->install(std::make_unique<EngineControlComponent>());
@@ -208,7 +204,7 @@ int Game::Run() {
         keyboardActionMapping
     );
 
-    mouse = EngineIoc::ResolveMouse();
+    mouse = EngineIocContainer::ResolveMouse();
     ::mouse = mouse;
 
     EngineFactory engineFactory;
@@ -339,8 +335,7 @@ bool Game::Loop() {
             uGameState = GAME_STATE_PLAYING;
             continue;
         }
-        if (uGameState ==
-            GAME_STATE_GAME_QUITTING_TO_MAIN_MENU) {  // from the loaded game
+        if (uGameState == GAME_STATE_GAME_QUITTING_TO_MAIN_MENU) {  // from the loaded game
             pAudioPlayer->PauseSounds(-1);
             uGameState = GAME_STATE_PLAYING;
             break;

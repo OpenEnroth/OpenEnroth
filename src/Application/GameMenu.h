@@ -1,19 +1,17 @@
 #pragma once
+
 #include <memory>
 
-#include "Engine/IocContainer.h"
+#include "Engine/EngineIocContainer.h"
 
 #include "Io/Mouse.h"
 
-using EngineIoc = Engine_::IocContainer;
 using Io::Mouse;
-
-namespace Application {
 
 class Menu {
  public:
     inline Menu() {
-        this->mouse = EngineIoc::ResolveMouse();
+        this->mouse = EngineIocContainer::ResolveMouse();
     }
 
     void MenuLoop();
@@ -23,5 +21,3 @@ class Menu {
 
      void EventLoop();
 };
-
-}  // namespace Application

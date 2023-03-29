@@ -1,7 +1,5 @@
 #include "Engine/Objects/Chest.h"
 
-#include <stdlib.h>
-
 #include "Engine/Engine.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Level/Decoration.h"
@@ -27,8 +25,6 @@
 
 #include "Library/Random/Random.h"
 #include "Utility/Math/TrigLut.h"
-
-using EngineIoc = Engine_::IocContainer;
 
 ChestList *pChestList;
 std::vector<Chest> vChests;

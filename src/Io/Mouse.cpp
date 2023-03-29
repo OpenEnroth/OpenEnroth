@@ -18,12 +18,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-
-
-using EngineIoc = Engine_::IocContainer;
-
 std::shared_ptr<Mouse> mouse = nullptr;
-
 
 void Mouse::GetClickPos(int *pX, int *pY) {
     *pX = uMouseX;
@@ -319,7 +314,7 @@ void Mouse::UI_OnMouseLeftClick() {
         return;
     }
 
-    Vis_PIDAndDepth picked_object = EngineIoc::ResolveVis()->get_picked_object_zbuf_val();
+    Vis_PIDAndDepth picked_object = EngineIocContainer::ResolveVis()->get_picked_object_zbuf_val();
 
     ObjectType type = PID_TYPE(picked_object.object_pid);
     if (type == OBJECT_Actor && pParty->hasActiveCharacter() && picked_object.depth < 0x200 &&
@@ -387,7 +382,7 @@ bool UI_OnKeyDown(PlatformKey key) {
         } else if (key == PlatformKey::Select) {
             int uClickX;
             int uClickY;
-            EngineIoc::ResolveMouse()->GetClickPos(&uClickX, &uClickY);
+            EngineIocContainer::ResolveMouse()->GetClickPos(&uClickX, &uClickY);
             int v4 = win->pStartingPosActiveItem;
             int v28 = v4 + win->pNumPresenceButton;
             if (v4 < v4 + win->pNumPresenceButton) {
@@ -431,7 +426,7 @@ bool UI_OnKeyDown(PlatformKey key) {
             if (win->field_30 != 0) {
                 int uClickX;
                 int uClickY;
-                EngineIoc::ResolveMouse()->GetClickPos(&uClickX, &uClickY);
+                EngineIocContainer::ResolveMouse()->GetClickPos(&uClickX, &uClickY);
                 int v29 = win->pStartingPosActiveItem + win->pNumPresenceButton;
                 for (int v4 = win->pStartingPosActiveItem; v4 < v29; ++v4) {
                     GUIButton *pButton = win->GetControl(v4);

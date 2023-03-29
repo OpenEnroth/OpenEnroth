@@ -1,7 +1,5 @@
 #pragma once
 
-namespace Application {
-    class GameConfig;
+class GameConfig;
 
-    bool ParseGameOptions(int argc, char **argv, GameConfig *config);
-}
+bool ParseGameOptions(int argc, char **argv, GameConfig *config);

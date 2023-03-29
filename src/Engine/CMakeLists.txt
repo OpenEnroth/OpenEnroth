@@ -9,7 +9,7 @@ set(ENGINE_SOURCES
         EngineGlobals.cpp
         ErrorHandling.cpp
         Events.cpp
-        IocContainer.cpp
+        EngineIocContainer.cpp
         LOD.cpp
         Localization.cpp
         MapInfo.cpp
@@ -33,7 +33,7 @@ set(ENGINE_HEADERS
         ErrorHandling.h
         Events.h
         Events2D.h
-        IocContainer.h
+        EngineIocContainer.h
         LOD.h
         Localization.h
         MM7.h

@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "Engine/Engine.h"
-#include "Engine/IocContainer.h"
+#include "Engine/EngineIocContainer.h"
 #include "Engine/LOD.h"
 #include "Engine/OurMath.h"
 
@@ -17,8 +17,6 @@
 #include "Engine/Objects/Actor.h"
 
 #include "Utility/Math/TrigLut.h"
-
-using EngineIoc = Engine_::IocContainer;
 
 static Vis_SelectionList Vis_static_sub_4C1944_stru_F8BDE8;
 
@@ -823,7 +821,7 @@ void Vis::SortByScreenSpaceY(RenderVertexSoft *pArray, int start, int end) {
 
 //----- (004C04AF) --------------------------------------------------------
 Vis::Vis() {
-    this->log = EngineIoc::ResolveLogger();
+    this->log = EngineIocContainer::ResolveLogger();
 
 
     RenderVertexSoft v3;  // [sp+Ch] [bp-60h]@1

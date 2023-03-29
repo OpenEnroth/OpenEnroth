@@ -19,9 +19,7 @@
 #include "Utility/Math/TrigLut.h"
 #include "Library/Random/Random.h"
 
-using EngineIoc = Engine_::IocContainer;
-
-SpellFxRenderer *spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
+SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
 
 std::array<TownPortalData, 6> TownPortalList =  // 4ECBB8
     {{{Vec3i(-5121, 2107, 1), 1536, 0, 21, 0}, // harmondale

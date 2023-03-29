@@ -9,8 +9,6 @@
 #include "Application/GameConfig.h"
 #include "Utility/Format.h"
 
-using Application::GameConfig;
-
 template<class T>
 bool lexical_cast(const std::string &input, ConfigValue<T> &configValue) {
     T value;
@@ -27,7 +25,7 @@ bool lexical_assign(const std::string &input, ConfigValue<T> &configValue) {
     return lexical_cast(input, configValue);
 }
 
-bool Application::ParseGameOptions(int argc, char **argv, GameConfig *config) {
+bool ParseGameOptions(int argc, char **argv, GameConfig *config) {
     std::unique_ptr<CLI::App> app = std::make_unique<CLI::App>();
 
     auto enableDebug = [&] {

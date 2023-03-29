@@ -29,13 +29,9 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-
-
-using Application::Menu;
 using Io::TextInputType;
 using Io::KeyToggleType;
 using Io::InputAction;
-
 
 InputAction currently_selected_action_for_binding = InputAction::Invalid;  // 506E68
 std::map<InputAction, bool> key_map_conflicted;  // 506E6C
