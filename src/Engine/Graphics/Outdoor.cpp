@@ -2437,49 +2437,49 @@ void ODM_ProcessPartyActions() {
     }
 
     // walking / running sounds ------------------------
-    if (engine->config->settings.WalkSound.Get() && pParty->walk_sound_timer) {
-        if (pParty->walk_sound_timer >= pEventTimer->uTimeElapsed)
-            pParty->walk_sound_timer -= pEventTimer->uTimeElapsed;
-        else
-            pParty->walk_sound_timer = 0;
-    }
+    if (engine->config->settings.WalkSound.Get()) {
+        pParty->walk_sound_timer -= pEventTimer->uTimeElapsed;
 
-    // save up distance deltas so walks sounds play at high fps with small delta
-    Vec3i partyDelta = pParty->vPosition - Vec3i(partyNewX, partyNewY, partyNewZ);
-    pParty->_movementTally += integer_sqrt(partyDelta.lengthSqr());
+        if (pParty->walk_sound_timer <= 0) {
+            pAudioPlayer->stopWalkingSounds();
+        }
 
-    if (engine->config->settings.WalkSound.Get() && pParty->walk_sound_timer <= 0) {
-        pAudioPlayer->stopWalkingSounds();
-        if (partyIsRunning && (!partyNotTouchingFloor || partyCloseToGround)) {
-            if (pParty->_movementTally >= 16) {
-                pParty->_movementTally = 0;
-                if (!partyNotOnModel &&
-                    pOutdoor->pBModels[pParty->floor_face_pid >> 9].pFaces[(pParty->floor_face_pid >> 3) & 0x3F].Visible()) {
-                    pAudioPlayer->playWalkSound(SOUND_RunWood);  // бег на 3D Modelи
-                } else {
-                    int v87 = pOutdoor->GetSoundIdByPosition(WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellY(pParty->vPosition.y), 1);
-                    pAudioPlayer->playWalkSound((SoundID)v87);  // бег по земле 56
+        // Start sound processing only when actual movement is performed to avoid
+        // stopping sounds on high FPS
+        if (pEventTimer->uTimeElapsed) {
+            int walkDelta = integer_sqrt((pParty->vPosition - Vec3i(partyNewX, partyNewY, partyNewZ)).lengthSqr());
+
+            if (engine->config->settings.WalkSound.Get() && pParty->walk_sound_timer <= 0) {
+                if (partyIsRunning && (!partyNotTouchingFloor || partyCloseToGround)) {
+                    if (walkDelta >= 4) {
+                        if (!partyNotOnModel &&
+                                pOutdoor->pBModels[pParty->floor_face_pid >> 9].pFaces[(pParty->floor_face_pid >> 3) & 0x3F].Visible()) {
+                            pAudioPlayer->playWalkSound(SOUND_RunWood);  // бег на 3D Modelи
+                        } else {
+                            int v87 = pOutdoor->GetSoundIdByPosition(WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellY(pParty->vPosition.y), 1);
+                            pAudioPlayer->playWalkSound((SoundID)v87);  // бег по земле 56
+                        }
+                        pParty->walk_sound_timer = 96;  // таймер для бега
+                    }
+                } else if (partyIsWalking && (!partyNotTouchingFloor || partyCloseToGround)) {
+                    if (walkDelta >= 2) {
+                        if (!partyNotOnModel &&
+                                pOutdoor->pBModels[pParty->floor_face_pid >> 9].pFaces[(pParty->floor_face_pid >> 3) & 0x3F].Visible()) {
+                            pAudioPlayer->playWalkSound(SOUND_WalkWood);  // хождение на 3D Modelи
+                        } else {
+                            int v87 = pOutdoor->GetSoundIdByPosition(WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellY(pParty->vPosition.y), 0);
+                            pAudioPlayer->playWalkSound((SoundID)v87);  // хождение по земле
+                        }
+                        pParty->walk_sound_timer = 144;  // таймер для ходьбы
+                    }
                 }
-                pParty->walk_sound_timer = 96;  // таймер для бега
             }
-        } else if (partyIsWalking && (!partyNotTouchingFloor || partyCloseToGround)) {
-            if (pParty->_movementTally >= 8) {
-                pParty->_movementTally = 0;
-                if (!partyNotOnModel &&
-                    pOutdoor->pBModels[pParty->floor_face_pid >> 9].pFaces[(pParty->floor_face_pid >> 3) & 0x3F].Visible()) {
-                    pAudioPlayer->playWalkSound(SOUND_WalkWood);  // хождение на 3D Modelи
-                } else {
-                    int v87 = pOutdoor->GetSoundIdByPosition(WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellY(pParty->vPosition.y), 0);
-                    pAudioPlayer->playWalkSound((SoundID)v87);  // хождение по земле
-                }
-                pParty->walk_sound_timer = 144;  // таймер для ходьбы
+
+            // mute the walking sound when stopping
+            if (walkDelta < 2) {
+                pAudioPlayer->stopWalkingSounds();
             }
         }
-    }
-
-    // mute the walking sound when stopping
-    if (pParty->_movementTally < 8) {
-        pAudioPlayer->stopWalkingSounds();
     }
     //------------------------------------------------------------------------
 

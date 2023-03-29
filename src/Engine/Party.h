@@ -429,7 +429,6 @@ struct Party {
     float TorchLightLastIntensity;
 
     uint _roundingDt{ 0 };  // keeps track of rounding remainder for recovery
-    int _movementTally{ 0 };  // keeps track of party movement for footsteps
 
     inline uint getActiveCharacter() const {
         assert(hasActiveCharacter());
