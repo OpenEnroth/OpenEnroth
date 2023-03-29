@@ -290,7 +290,7 @@ linesverts lineshaderstore[2000] = {};
 int linevertscnt = 0;
 
 void RenderOpenGL::BeginLines2D() {
-    if (linevertscnt && engine->config->debug.VerboseLogging.Get())
+    if (linevertscnt && engine->config->debug.VerboseLogging.value())
         logger->Warning("BeginLines with points still stored in buffer");
 
     DrawTwodVerts();
@@ -719,7 +719,7 @@ void RenderOpenGL::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
 
 void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid, uint32_t uColor32) {
     if (!img) {
-        if (engine->config->debug.VerboseLogging.Get())
+        if (engine->config->debug.VerboseLogging.value())
             logger->Warning("Null img passed to DrawImage");
         return;
     }
@@ -1430,7 +1430,7 @@ void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, in
     TextureOpenGL *texture = (TextureOpenGL*)pArcomageGame->pSprites;
 
     if (!texture) {
-        if (engine->config->debug.VerboseLogging.Get())
+        if (engine->config->debug.VerboseLogging.value())
             logger->Warning("Missing Arcomage Sprite Sheet");
         return;
     }
@@ -1597,13 +1597,13 @@ Texture *RenderOpenGL::CreateTexture_Blank(unsigned int width, unsigned int heig
 }
 
 Texture *RenderOpenGL::CreateTexture(const std::string &name) {
-    return TextureOpenGL::Create(new Bitmaps_LOD_Loader(pBitmaps_LOD, name, engine->config->graphics.HWLBitmaps.Get()));
+    return TextureOpenGL::Create(new Bitmaps_LOD_Loader(pBitmaps_LOD, name, engine->config->graphics.HWLBitmaps.value()));
 }
 
 Texture *RenderOpenGL::CreateSprite(const std::string &name, unsigned int palette_id,
                                     /*refactor*/ unsigned int lod_sprite_id) {
     return TextureOpenGL::Create(
-        new Sprites_LOD_Loader(pSprites_LOD, palette_id, name, lod_sprite_id, engine->config->graphics.HWLSprites.Get()));
+        new Sprites_LOD_Loader(pSprites_LOD, palette_id, name, lod_sprite_id, engine->config->graphics.HWLSprites.value()));
 }
 
 void RenderOpenGL::Update_Texture(Texture *texture) {
@@ -1640,7 +1640,7 @@ bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
         pixels = (uint8_t *)t->GetPixels(IMAGE_FORMAT_A8B8G8R8);
         gl_format = GL_RGBA;
     } else {
-        if (engine->config->debug.VerboseLogging.Get())
+        if (engine->config->debug.VerboseLogging.value())
             log->Warning("Image {} not loaded!", *t->GetName());
     }
 
@@ -1989,7 +1989,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
     // actual drawing
 
     // terrain debug
-    if (engine->config->debug.Terrain.Get())
+    if (engine->config->debug.Terrain.value())
         // TODO: OpenGL ES doesn't provide wireframe functionality so enable it only for classic OpenGL for now
         if (!OpenGLES)
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -2166,7 +2166,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
     glBindTexture(GL_TEXTURE_2D, 0);
 
     //end terrain debug
-    if (engine->config->debug.Terrain.Get())
+    if (engine->config->debug.Terrain.value())
         // TODO: OpenGL ES doesn't provide wireframe functionality so enable it only for classic OpenGL for now
         if (!OpenGLES)
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -2384,26 +2384,26 @@ void RenderOpenGL::DrawOutdoorSky() {
             VertexRenderList[i]._rhw = (double)(worldviewdepth);
         }
 
-        if (engine->config->graphics.Fog.Get()) {
+        if (engine->config->graphics.Fog.value()) {
             // fade sky
             VertexRenderList[4].vWorldViewProjX = (double)pViewport->uViewportTL_X;
             VertexRenderList[4].vWorldViewProjY = (double)pViewport->uViewportTL_Y;
             VertexRenderList[5].vWorldViewProjX = (double)pViewport->uViewportTL_X;
-            VertexRenderList[5].vWorldViewProjY = (double)bot_y_proj - engine->config->graphics.FogHorizon.Get();
+            VertexRenderList[5].vWorldViewProjY = (double)bot_y_proj - engine->config->graphics.FogHorizon.value();
             VertexRenderList[6].vWorldViewProjX = (double)pViewport->uViewportBR_X;
-            VertexRenderList[6].vWorldViewProjY = (double)bot_y_proj - engine->config->graphics.FogHorizon.Get();
+            VertexRenderList[6].vWorldViewProjY = (double)bot_y_proj - engine->config->graphics.FogHorizon.value();
             VertexRenderList[7].vWorldViewProjX = (double)pViewport->uViewportBR_X;
             VertexRenderList[7].vWorldViewProjY = (double)pViewport->uViewportTL_Y;
 
             // sub sky
             VertexRenderList[8].vWorldViewProjX = (double)pViewport->uViewportTL_X;
-            VertexRenderList[8].vWorldViewProjY = (double)bot_y_proj - engine->config->graphics.FogHorizon.Get();
+            VertexRenderList[8].vWorldViewProjY = (double)bot_y_proj - engine->config->graphics.FogHorizon.value();
             VertexRenderList[9].vWorldViewProjX = (double)pViewport->uViewportTL_X;
             VertexRenderList[9].vWorldViewProjY = (double)pViewport->uViewportBR_Y + 1;
             VertexRenderList[10].vWorldViewProjX = (double)pViewport->uViewportBR_X;
             VertexRenderList[10].vWorldViewProjY = (double)pViewport->uViewportBR_Y + 1;
             VertexRenderList[11].vWorldViewProjX = (double)pViewport->uViewportBR_X;
-            VertexRenderList[11].vWorldViewProjY = (double)bot_y_proj - engine->config->graphics.FogHorizon.Get();
+            VertexRenderList[11].vWorldViewProjY = (double)bot_y_proj - engine->config->graphics.FogHorizon.value();
         }
 
         _set_ortho_projection(1);
@@ -2476,7 +2476,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
         assert(forceperstorecnt <= MAX_FORCEPERSTORECNT);
     }
 
-    if (engine->config->graphics.Fog.Get()) {
+    if (engine->config->graphics.Fog.value()) {
         // draw blend sky
         // load up poly
         for (int z = 4; z < 6; z++) {
@@ -2626,7 +2626,7 @@ void RenderOpenGL::DrawForcePerVerts() {
     int fpfogmiddle{};
     uint fpfogcol{ GetLevelFogColor() };
 
-    if (engine->config->graphics.Fog.Get() && uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+    if (engine->config->graphics.Fog.value() && uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
         if (fpfogcol) {
             fpfogstart = day_fogrange_1;
             fpfogmiddle = day_fogrange_2;
@@ -2689,7 +2689,7 @@ void RenderOpenGL::DrawForcePerVerts() {
 void RenderOpenGL::SetFogParametersGL() {
     uint fogcol{ GetLevelFogColor() };
 
-    if (engine->config->graphics.Fog.Get() && uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+    if (engine->config->graphics.Fog.value() && uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
         if (fogcol) {
             fogstart = day_fogrange_1;
             fogmiddle = day_fogrange_2;
@@ -2698,7 +2698,7 @@ void RenderOpenGL::SetFogParametersGL() {
         } else {
             fogend = pCamera3D->GetFarClip();
             fogmiddle = 0.0f;
-            fogstart = fogend * engine->config->graphics.FogDepthRatio.Get();
+            fogstart = fogend * engine->config->graphics.FogDepthRatio.value();
 
             // grabs sky back fog colour
             uint uTint = GetActorTintColor(31, 0, fogend, 1, 0);
@@ -2741,7 +2741,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
     _set_ortho_projection(1);
     _set_ortho_modelview();
 
-    if (billbstorecnt && engine->config->debug.VerboseLogging.Get())
+    if (billbstorecnt && engine->config->debug.VerboseLogging.value())
         logger->Warning("Billboard shader store isnt empty!");
 
     // track loaded tex
@@ -2763,7 +2763,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         //int palette{ pBillboardRenderListD3D[i].PaletteID};
         int paletteindex{ pBillboardRenderListD3D[i].PaletteIndex };
 
-        if (engine->config->graphics.HWLSprites.Get())
+        if (engine->config->graphics.HWLSprites.value())
             paletteindex = 0;
 
         if (pBillboardRenderListD3D[i].texture) {
@@ -2975,7 +2975,7 @@ void RenderOpenGL::DrawBillboards() {
     glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
     glActiveTexture(GL_TEXTURE0);
 
-    GLboolean repaint = !engine->config->graphics.HWLSprites.Get();
+    GLboolean repaint = !engine->config->graphics.HWLSprites.value();
     glUniform1i(glGetUniformLocation(billbshader.ID, "repaint"), repaint);
 
 
@@ -3091,7 +3091,7 @@ void RenderOpenGL::BeginScene2D() {
 void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourmask) {
     TextureOpenGL *texture = dynamic_cast<TextureOpenGL *>(tex);
     if (!texture) {
-        if (engine->config->debug.VerboseLogging.Get())
+        if (engine->config->debug.VerboseLogging.value())
             logger->Info("Null texture passed to DrawTextureNew");
         return;
     }
@@ -3220,7 +3220,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
 void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, int custom_height) {
     TextureOpenGL* texture = dynamic_cast<TextureOpenGL*>(img);
     if (!texture) {
-        if (engine->config->debug.VerboseLogging.Get())
+        if (engine->config->debug.VerboseLogging.value())
             logger->Info("Null texture passed to DrawTextureCustomHeight");
         return;
     }
@@ -3606,7 +3606,7 @@ void RenderOpenGL::Present() {
         rect.w = w;
         rect.h = h;
 
-        GLenum filter = config->graphics.RenderFilter.Get() == 1 ? GL_LINEAR : GL_NEAREST;
+        GLenum filter = config->graphics.RenderFilter.value() == 1 ? GL_LINEAR : GL_NEAREST;
         glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
         glBlitFramebuffer(0, 0, outputRender.w, outputRender.h, rect.x, rect.y, rect.w + rect.x, rect.h + rect.y, GL_COLOR_BUFFER_BIT, filter);
         glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
@@ -3622,8 +3622,8 @@ void RenderOpenGL::Present() {
     }
     openGLContext->swapBuffers();
 
-    if (engine->config->graphics.FPSLimit.Get() > 0)
-        _frameLimiter.tick(engine->config->graphics.FPSLimit.Get());
+    if (engine->config->graphics.FPSLimit.value() > 0)
+        _frameLimiter.tick(engine->config->graphics.FPSLimit.value());
 }
 
 GLshaderverts *outbuildshaderstore[16] = { nullptr };
@@ -3982,7 +3982,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // terrain debug
-    if (engine->config->debug.Terrain.Get())
+    if (engine->config->debug.Terrain.value())
         // TODO: OpenGL ES doesn't provide wireframe functionality so enable it only for classic OpenGL for now
         if (!OpenGLES)
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -4158,7 +4158,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
     glBindTexture(GL_TEXTURE_2D, 0);
 
     //end terrain debug
-    if (engine->config->debug.Terrain.Get())
+    if (engine->config->debug.Terrain.value())
         // TODO: OpenGL ES doesn't provide wireframe functionality so enable it only for classic OpenGL for now
         if (!OpenGLES)
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -4643,7 +4643,7 @@ void RenderOpenGL::DrawIndoorFaces() {
             glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         // terrain debug
-        if (engine->config->debug.Terrain.Get())
+        if (engine->config->debug.Terrain.value())
             // TODO: OpenGL ES doesn't provide wireframe functionality so enable it only for classic OpenGL for now
             if (!OpenGLES)
                 glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -4893,7 +4893,7 @@ void RenderOpenGL::DrawIndoorFaces() {
 
 
         //end terrain debug
-        if (engine->config->debug.Terrain.Get())
+        if (engine->config->debug.Terrain.value())
             // TODO: OpenGL ES doesn't provide wireframe functionality so enable it only for classic OpenGL for now
             if (!OpenGLES)
                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -4976,7 +4976,7 @@ bool RenderOpenGL::Initialize() {
         PlatformOpenGLOptions opts;
 
         // Set it only on startup as currently we don't support multiple contexts to be able to switch OpenGL<->OpenGLES in the middle of runtime.
-        OpenGLES = config->graphics.Renderer.Get() == RendererType::OpenGLES;
+        OpenGLES = config->graphics.Renderer.value() == RendererType::OpenGLES;
 
         if (!OpenGLES) {
             //  Use OpenGL 4.1 core
@@ -4995,7 +4995,7 @@ bool RenderOpenGL::Initialize() {
         opts.depthBits = 24;
         opts.stencilBits = 8;
 
-        opts.vsyncMode = config->graphics.VSync.Get() ? GL_VSYNC_ADAPTIVE : GL_VSYNC_NONE;
+        opts.vsyncMode = config->graphics.VSync.value() ? GL_VSYNC_ADAPTIVE : GL_VSYNC_NONE;
 
         application->initializeOpenGLContext(opts);
 
@@ -5232,16 +5232,16 @@ Sizei RenderOpenGL::GetPresentDimensions() {
 
 bool RenderOpenGL::Reinitialize(bool firstInit) {
     outputPresent = window->size();
-    if (config->graphics.RenderFilter.Get() != 0)
-        outputRender = {config->graphics.RenderWidth.Get(), config->graphics.RenderHeight.Get()};
+    if (config->graphics.RenderFilter.value() != 0)
+        outputRender = {config->graphics.RenderWidth.value(), config->graphics.RenderHeight.value()};
     else
         outputRender = outputPresent;
 
     if (!firstInit) {
-        game_viewport_x = viewparams->uScreen_topL_X = engine->config->graphics.ViewPortX1.Get(); //8
-        game_viewport_y = viewparams->uScreen_topL_Y = engine->config->graphics.ViewPortY1.Get(); //8
-        game_viewport_z = viewparams->uScreen_BttmR_X = outputRender.w - engine->config->graphics.ViewPortX2.Get(); //468;
-        game_viewport_w = viewparams->uScreen_BttmR_Y = outputRender.h - engine->config->graphics.ViewPortY2.Get(); //352;
+        game_viewport_x = viewparams->uScreen_topL_X = engine->config->graphics.ViewPortX1.value(); //8
+        game_viewport_y = viewparams->uScreen_topL_Y = engine->config->graphics.ViewPortY1.value(); //8
+        game_viewport_z = viewparams->uScreen_BttmR_X = outputRender.w - engine->config->graphics.ViewPortX2.value(); //468;
+        game_viewport_w = viewparams->uScreen_BttmR_Y = outputRender.h - engine->config->graphics.ViewPortY2.value(); //352;
 
         game_viewport_width = game_viewport_z - game_viewport_x;
         game_viewport_height = game_viewport_w - game_viewport_y;
@@ -5325,7 +5325,7 @@ bool RenderOpenGL::Reinitialize(bool firstInit) {
         }
     } // else {
 
-    if (config->window.ReloadTex.Get()) {
+    if (config->window.ReloadTex.value()) {
         // Added config option for this - may not always be required - #199 no longer replicates on windows??
         // TODO: invalidate all previously loaded textures and then load them again as they can be no longer alive on GPU (issue #199).
         // TODO(pskelton): Needs testings on other platforms
@@ -5578,7 +5578,7 @@ void RenderOpenGL::DrawTwodVerts() {
     glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
     glActiveTexture(GL_TEXTURE0);
 
-    GLboolean repaint = !engine->config->graphics.HWLSprites.Get();
+    GLboolean repaint = !engine->config->graphics.HWLSprites.value();
     glUniform1i(glGetUniformLocation(twodshader.ID, "repaint"), repaint);
 
     // glEnable(GL_TEXTURE_2D);

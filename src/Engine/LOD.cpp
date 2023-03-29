@@ -183,7 +183,7 @@ int LODFile_Sprites::LoadSprite(const char *pContainerName, unsigned int uPalett
     pHardwareSprites[uNumLoadedSprites].texture = assets->GetSprite(pContainerName, uPaletteID, uNumLoadedSprites);
     pHardwareSprites[uNumLoadedSprites].sprite_header = header;
 
-    if (engine->config->graphics.HWLSprites.Get()) {
+    if (engine->config->graphics.HWLSprites.value()) {
         HWLTexture *hwl = render->LoadHwlSprite(pContainerName);
         if (hwl) {
             pHardwareSprites[uNumLoadedSprites].uBufferWidth = hwl->uBufferWidth;

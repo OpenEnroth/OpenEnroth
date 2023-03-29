@@ -52,7 +52,7 @@ bool Chest::Open(int uChestID) {
     if ((uChestID < 0) && (uChestID >= 20)) return false;
     Chest *chest = &vChests[uChestID];
 
-    if (!chest->Initialized() || engine->config->gameplay.ChestTryPlaceItems.Get() == 1)
+    if (!chest->Initialized() || engine->config->gameplay.ChestTryPlaceItems.value() == 1)
         Chest::PlaceItems(uChestID);
 
     if (!pParty->hasActiveCharacter()) return false;
@@ -414,7 +414,7 @@ void Chest::PlaceItems(int uChestID) {  // only sued for setup
                 if (vChests[uChestID].uFlags & CHEST_OPENED) {
                     vChests[uChestID].igChestItems[items_counter].SetIdentified();
                 }
-            } else if (engine->config->debug.VerboseLogging.Get()) {
+            } else if (engine->config->debug.VerboseLogging.value()) {
                 logger->Warning("Cannot place item with id {} in the chest!", std::to_underlying(chest_item_id));
             }
         }
@@ -551,7 +551,7 @@ void Chest::OnChestLeftClick() {
                 }
 
                 RemoveItemAtChestIndex(invMatrixIndex);
-                if (engine->config->gameplay.ChestTryPlaceItems.Get() == 2)
+                if (engine->config->gameplay.ChestTryPlaceItems.value() == 2)
                     Chest::PlaceItems(uChestID);
             }
         }

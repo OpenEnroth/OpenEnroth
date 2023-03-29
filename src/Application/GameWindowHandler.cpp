@@ -56,12 +56,12 @@ GameWindowHandler::~GameWindowHandler() {}
 std::tuple<int, Pointi, Sizei> GameWindowHandler::GetWindowConfigPosition(const GameConfig *config) {
     std::vector<Recti> displays = platform->displayGeometries();
 
-    Pointi pos = {config->window.PositionX.Get(), config->window.PositionY.Get()};
-    Sizei size = {config->window.Width.Get(), config->window.Height.Get()};
-    PlatformWindowMode mode = config->window.Mode.Get();
+    Pointi pos = {config->window.PositionX.value(), config->window.PositionY.value()};
+    Sizei size = {config->window.Width.value(), config->window.Height.value()};
+    PlatformWindowMode mode = config->window.Mode.value();
 
     Recti displayRect;
-    int display = config->window.Display.Get();
+    int display = config->window.Display.value();
     if (display > 0 && display < displays.size()) {
         displayRect = displays[display];
     } else if (!displays.empty()) {
@@ -109,16 +109,16 @@ std::tuple<int, Pointi, Sizei> GameWindowHandler::GetWindowRelativePosition(Poin
 void GameWindowHandler::UpdateWindowFromConfig(const GameConfig *config) {
     assert(config);
 
-    Sizei size = {config->window.Width.Get(), config->window.Height.Get()};
+    Sizei size = {config->window.Width.value(), config->window.Height.value()};
     Pointi pos = std::get<1>(GetWindowConfigPosition(config));
-    PlatformWindowMode mode = config->window.Mode.Get();
+    PlatformWindowMode mode = config->window.Mode.value();
 
     window->setPosition(pos);
     window->resize(size);
-    window->setTitle(config->window.Title.Get());
-    window->setGrabsMouse(config->window.MouseGrab.Get());
+    window->setTitle(config->window.Title.value());
+    window->setGrabsMouse(config->window.MouseGrab.value());
     window->setWindowMode(mode);
-    window->setResizable(config->window.Resizable.Get());
+    window->setResizable(config->window.Resizable.value());
     window->setVisible(true);
 }
 
@@ -130,18 +130,18 @@ void GameWindowHandler::UpdateConfigFromWindow(GameConfig *config) {
     // Skip updating window position in fullscreen where window always forcefully moved to {0,0} position.
     PlatformWindowMode mode = window->windowMode();
     if (mode == WINDOW_MODE_WINDOWED || mode == WINDOW_MODE_BORDERLESS) {
-        config->window.PositionX.Set(relativePos.x);
-        config->window.PositionY.Set(relativePos.y);
-        config->window.Display.Set(display);
+        config->window.PositionX.setValue(relativePos.x);
+        config->window.PositionY.setValue(relativePos.y);
+        config->window.Display.setValue(display);
     }
     // Skip updating window dimensions in borderless fullscreen as window always resized to monitor's resolution.
     if (mode != WINDOW_MODE_FULLSCREEN_BORDERLESS) {
-        config->window.Width.Set(wsize.w);
-        config->window.Height.Set(wsize.h);
+        config->window.Width.setValue(wsize.w);
+        config->window.Height.setValue(wsize.h);
     }
-    config->window.Mode.Set(mode);
-    config->window.MouseGrab.Set(window->grabsMouse());
-    config->window.Resizable.Set(window->isResizable());
+    config->window.Mode.setValue(mode);
+    config->window.MouseGrab.setValue(window->grabsMouse());
+    config->window.Resizable.setValue(window->isResizable());
 }
 
 void GameWindowHandler::OnScreenshot() {
@@ -202,7 +202,7 @@ void GameWindowHandler::OnMouseLeftClick(Pointi position) {
         }
 
         if (engine) {
-            engine->PickMouse(engine->config->gameplay.MouseInteractionDepth.Get(), position.x, position.y, false,
+            engine->PickMouse(engine->config->gameplay.MouseInteractionDepth.value(), position.x, position.y, false,
                               &vis_sprite_filter_3, &vis_door_filter);
         }
 
@@ -450,25 +450,25 @@ void GameWindowHandler::OnToggleFullscreen() {
     }
 
     window->setWindowMode(mode);
-    engine->config->window.Mode.Set(mode);
+    engine->config->window.Mode.setValue(mode);
     if (mode == WINDOW_MODE_WINDOWED || mode == WINDOW_MODE_BORDERLESS) {
-        window->resize({engine->config->window.Width.Get(), engine->config->window.Height.Get()});
+        window->resize({engine->config->window.Width.value(), engine->config->window.Height.value()});
         window->setPosition(std::get<1>(GetWindowConfigPosition(engine->config.get())));
     }
     render->Reinitialize();
 }
 
 void GameWindowHandler::OnToggleResizable() {
-    window->setResizable(engine->config->window.Resizable.Toggle());
+    window->setResizable(engine->config->window.Resizable.toggle());
 }
 
 void GameWindowHandler::OnCycleFilter() {
-    engine->config->graphics.RenderFilter.CycleIncrement();
+    engine->config->graphics.RenderFilter.cycleIncrement();
     render->Reinitialize();
 }
 
 void GameWindowHandler::OnMouseGrabToggle() {
-    window->setGrabsMouse(engine->config->window.MouseGrab.Toggle());
+    window->setGrabsMouse(engine->config->window.MouseGrab.toggle());
 }
 
 void GameWindowHandler::handleKeyPress(PlatformKey key, PlatformModifiers mods, bool isAutoRepeat) {
@@ -542,9 +542,9 @@ bool GameWindowHandler::moveEvent(const PlatformMoveEvent *event) {
         Pointi pos = event->pos;
         auto [display, relativePos, wsize] = GetWindowRelativePosition(&pos);
 
-        engine->config->window.PositionX.Set(relativePos.x);
-        engine->config->window.PositionY.Set(relativePos.y);
-        engine->config->window.Display.Set(display);
+        engine->config->window.PositionX.setValue(relativePos.x);
+        engine->config->window.PositionY.setValue(relativePos.y);
+        engine->config->window.Display.setValue(display);
     }
     return false;
 }

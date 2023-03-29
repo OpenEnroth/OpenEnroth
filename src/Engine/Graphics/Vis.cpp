@@ -600,7 +600,7 @@ bool Vis::CheckIntersectBModel(BLVFace *pFace, Vec3s IntersectPoint, signed int 
     if (!pFace->Contains(IntersectPoint, sModelID))
         return false;
 
-    if (engine->config->debug.ShowPickedFace.Get()) {
+    if (engine->config->debug.ShowPickedFace.value()) {
         pFace->uAttributes |= FACE_IsPicked;
 
         // save debug pick line for later

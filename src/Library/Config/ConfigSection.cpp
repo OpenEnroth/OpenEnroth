@@ -6,27 +6,27 @@
 
 #include "Config.h"
 
-ConfigSection::ConfigSection(::Config *config, const std::string &name): config_(config), name_(name) {
+ConfigSection::ConfigSection(Config *config, const std::string &name): _config(config), _name(name) {
     assert(config);
     assert(!name.empty());
 
-    config->RegisterSection(this);
+    config->registerSection(this);
 }
 
-void ConfigSection::RegisterValue(AbstractConfigValue *value) {
+void ConfigSection::registerValue(AbstractConfigValue *value) {
     assert(value);
-    assert(!valueByName_.contains(value->Name()));
+    assert(!_valueByName.contains(value->name()));
 
-    valueByName_.emplace(value->Name(), value);
+    _valueByName.emplace(value->name(), value);
 }
 
-AbstractConfigValue *ConfigSection::Value(const std::string &name) const {
-    return valueOr(valueByName_, name, nullptr);
+AbstractConfigValue *ConfigSection::value(const std::string &name) const {
+    return valueOr(_valueByName, name, nullptr);
 }
 
-std::vector<AbstractConfigValue *> ConfigSection::Values() const {
+std::vector<AbstractConfigValue *> ConfigSection::values() const {
     std::vector<AbstractConfigValue *> result;
-    for(const auto &[_, value] : valueByName_)
+    for(const auto &[_, value] : _valueByName)
         result.push_back(value);
     return result;
 }

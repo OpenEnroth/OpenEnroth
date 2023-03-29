@@ -102,7 +102,7 @@ bool ConditionProcessor::IsPlayerAffected(Player* inPlayer, Condition condToChec
 }
 
 const std::array<Condition, 18> &conditionImportancyTable() {
-    if (engine->config->gameplay.AlternativeConditionPriorities.Get())
+    if (engine->config->gameplay.AlternativeConditionPriorities.value())
         return conditionImportancyTableAlternative;
     else
         return conditionImportancyTableDefault;

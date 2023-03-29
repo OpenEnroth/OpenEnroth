@@ -3416,7 +3416,7 @@ void GUIWindow_House::Release() {
     }
 
     dword_5C35D4 = 0;
-    if (engine->config->settings.FlipOnExit.Get()) {
+    if (engine->config->settings.FlipOnExit.value()) {
         pParty->_viewYaw = (TrigLUT.uIntegerDoublePi - 1) & (TrigLUT.uIntegerPi + pParty->_viewYaw);
         pCamera3D->_viewYaw = pParty->_viewYaw;
     }

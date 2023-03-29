@@ -236,7 +236,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
             SPELL_TYPE quickSpellNumber = pPlayers[pParty->getActiveCharacter()]->uQuickSpell;
 
             int uRequiredMana = 0;
-            if (quickSpellNumber != SPELL_NONE && !engine->config->debug.AllMagic.Get()) {
+            if (quickSpellNumber != SPELL_NONE && !engine->config->debug.AllMagic.value()) {
                 PLAYER_SKILL_MASTERY skill_mastery = pPlayers[pParty->getActiveCharacter()]->GetActualSkillMastery(getSkillTypeForSpell(quickSpellNumber));
 
                 uRequiredMana = pSpellDatas[quickSpellNumber].mana_per_skill[std::to_underlying(skill_mastery) - 1];
@@ -325,7 +325,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
             break;
 
         case InputAction::AlwaysRun:
-            engine->config->settings.AlwaysRun.Toggle();
+            engine->config->settings.AlwaysRun.toggle();
             break;
 
         case InputAction::Escape:
@@ -347,7 +347,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
 
 //----- (0042FC4E) --------------------------------------------------------
 void KeyboardInputHandler::GenerateInputActions() {
-    if (!engine->config->settings.AlwaysRun.Get()) {
+    if (!engine->config->settings.AlwaysRun.value()) {
         if (IsRunKeyToggled()) {
             pParty->uFlags2 |= PARTY_FLAGS_2_RUNNING;
         } else {

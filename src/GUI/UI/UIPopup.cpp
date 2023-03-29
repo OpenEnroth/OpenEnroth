@@ -995,7 +995,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     }
 
     // ps - test to track ai states
-    if (engine->config->debug.VerboseLogging.Get()) {
+    if (engine->config->debug.VerboseLogging.value()) {
         std::string str = fmt::format("AI State: {}", std::to_underlying(pActors[uActorID].uAIState));
         pFontSmallnum->GetLineWidth(str);
         pWindow->DrawTitleText(pFontSmallnum, 0, pWindow->uFrameHeight - pFontSmallnum->GetHeight() - 12, 0, str, 3);

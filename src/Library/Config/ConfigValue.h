@@ -17,94 +17,94 @@ class ConfigValue : public AbstractConfigValue {
     ConfigValue(ConfigValue&& other) = delete; // non-movable
 
     ConfigValue(ConfigSection *section, const std::string &name, T defaultValue, validator_type validator, const std::string &description) :
-        AbstractConfigValue(section, name, description), defaultValue_(defaultValue), value_(defaultValue), validator_(validator) {}
+        AbstractConfigValue(section, name, description), _defaultValue(defaultValue), _value(defaultValue), _validator(validator) {}
 
     ConfigValue(ConfigSection *section, const std::string &name, T defaultValue, const std::string &description) :
         ConfigValue(section, name, defaultValue, nullptr, description) {}
 
-    const T &Default() const {
-        return defaultValue_;
+    const T &defaultValue() const {
+        return _defaultValue;
     }
 
-    const T &Get() const {
-        return value_;
+    const T &value() const {
+        return _value;
     }
 
-    T Set(const T &val) {
-        if (validator_)
-            value_ = validator_(val);
+    T setValue(const T &val) {
+        if (_validator)
+            _value = _validator(val);
         else
-            value_ = val;
+            _value = val;
 
-        return value_;
+        return _value;
     }
 
-    virtual std::string GetString() const override {
-        return toString(value_);
+    virtual std::string toString() const override {
+        return ::toString(_value);
     }
 
-    virtual std::string DefaultString() const override {
-        return toString(defaultValue_);
+    virtual std::string defaultString() const override {
+        return ::toString(_defaultValue);
     }
 
-    virtual void SetString(const std::string &value) override {
-        value_ = fromString<T>(value);
+    virtual void setString(const std::string &value) override {
+        _value = fromString<T>(value);
     }
 
-    virtual void Reset() override {
-        value_ = defaultValue_;
+    virtual void reset() override {
+        _value = _defaultValue;
     }
 
-    T Toggle() requires std::is_same_v<T, bool> {
-        value_ = !value_;
+    T toggle() requires std::is_same_v<T, bool> {
+        _value = !_value;
 
-        return value_;
+        return _value;
     }
 
-    T Increment() requires std::is_same_v<T, int> {
-        if (validator_)
-            value_ = validator_(value_ + 1);
+    T increment() requires std::is_same_v<T, int> {
+        if (_validator)
+            _value = _validator(_value + 1);
         else
-            value_++;
+            _value++;
 
-        return value_;
+        return _value;
     }
 
-    T Decrement() requires std::is_same_v<T, int> {
-        if (validator_)
-            value_ = validator_(value_ - 1);
+    T decrement() requires std::is_same_v<T, int> {
+        if (_validator)
+            _value = _validator(_value - 1);
         else
-            value_--;
+            _value--;
 
-        return value_;
+        return _value;
     }
 
-    T CycleIncrement() requires std::is_same_v<T, int> {
+    T cycleIncrement() requires std::is_same_v<T, int> {
         // we rely on validator with std::clamp-like behaviour.
-        assert(validator_);
+        assert(_validator);
 
-        int old = value_;
-        value_ = validator_(value_ + 1);
-        if (value_ == old)
-            value_ = validator_(INT_MIN);
+        int old = _value;
+        _value = _validator(_value + 1);
+        if (_value == old)
+            _value = _validator(INT_MIN);
 
-        return value_;
+        return _value;
     }
 
-    T CycleDecrement() requires std::is_same_v<T, int> {
+    T cycleDecrement() requires std::is_same_v<T, int> {
         // we rely on validator with std::clamp-like behaviour.
-        assert(validator_);
+        assert(_validator);
 
-        int old = value_;
-        value_ = validator_(value_ - 1);
-        if (value_ == old)
-            value_ = validator_(INT_MAX);
+        int old = _value;
+        _value = _validator(_value - 1);
+        if (_value == old)
+            _value = _validator(INT_MAX);
 
-        return value_;
+        return _value;
     }
 
  private:
-    T value_;
-    T defaultValue_;
-    validator_type validator_;
+    T _value;
+    T _defaultValue;
+    validator_type _validator;
 };

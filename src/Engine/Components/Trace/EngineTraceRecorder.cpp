@@ -30,8 +30,8 @@ void EngineTraceRecorder::startRecording(const std::string &savePath, const std:
         game->resizeWindow(640, 480);
         game->tick();
 
-        _oldFpsLimit = engine->config->graphics.FPSLimit.Get();
-        engine->config->graphics.FPSLimit.Set(1000); // Load game real quick!
+        _oldFpsLimit = engine->config->graphics.FPSLimit.value();
+        engine->config->graphics.FPSLimit.setValue(1000); // Load game real quick!
         game->saveGame(savePath);
         _deterministicComponent->enterDeterministicMode();
         game->loadGame(savePath);
@@ -39,7 +39,7 @@ void EngineTraceRecorder::startRecording(const std::string &savePath, const std:
         _keyboardController->reset(); // Reset all pressed buttons.
 
         _traceComponent->start();
-        engine->config->graphics.FPSLimit.Set(EngineDeterministicComponent::TARGET_FPS); // But don't turn the party into a wall-running doomguy.
+        engine->config->graphics.FPSLimit.setValue(EngineDeterministicComponent::TARGET_FPS); // But don't turn the party into a wall-running doomguy.
 
         logger->Info("Tracing started.");
     });
@@ -52,7 +52,7 @@ void EngineTraceRecorder::finishRecording() {
     // is finished, and it could take a while for it to finish.
     _controlComponent->runControlRoutine([this, tracePath = _traceFilePath, savePath = _saveFilePath] (EngineController *game) {
         _deterministicComponent->leaveDeterministicMode();
-        engine->config->graphics.FPSLimit.Set(_oldFpsLimit);
+        engine->config->graphics.FPSLimit.setValue(_oldFpsLimit);
 
         EventTrace trace = _traceComponent->finish();
         trace.header.saveFileSize = std::filesystem::file_size(savePath); // This function can throw.

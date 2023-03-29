@@ -6,7 +6,7 @@
 using Graphics::IRenderFactory;
 
 std::shared_ptr<IRender> IRenderFactory::Create(std::shared_ptr<GameConfig> config) {
-    RendererType rendererType = config->graphics.Renderer.Get();
+    RendererType rendererType = config->graphics.Renderer.value();
 
     switch (rendererType) {
         case RendererType::OpenGL:
