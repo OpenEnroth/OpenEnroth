@@ -719,7 +719,7 @@ void SpriteObject::createSplashObject(Vec3i pos) {
     sprite.uSectorID = pIndoor->GetSector(pos);
     int objID = sprite.Create(0, 0, 0, 0);
     if (objID != -1) {
-        pAudioPlayer->PlaySound((SoundID)SOUND_splash, PID(OBJECT_Item, objID), 0, 0, 0, 0);
+        pAudioPlayer->PlaySound(SOUND_splash, PID(OBJECT_Item, objID), 0, 0, 0, 0);
     }
 }
 

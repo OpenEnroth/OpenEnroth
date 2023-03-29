@@ -22,8 +22,10 @@ enum SoundID {
     SOUND_ClickPlus = 23,
     SOUND_ClickSkill = 24,
     SOUND_error = 27,
+    SOUND_dull_strike = 44,
+    SOUND_metal_vs_metal01h = 45,
     SOUND_metal_vs_metal03h = 47,
-    SOUND_48 = 0x30,
+    SOUND_48 = 48,
     SOUND_RunBadlands = 49,
     SOUND_RunCarpet = 50,
     SOUND_RunCooledLava = 51,
@@ -58,19 +60,25 @@ enum SoundID {
     SOUND_WalkWater = 101,
     SOUND_WalkWaterIndoor = 102,
     SOUND_WalkWood = 103,
+    SOUND_metal_armor_strike1 = 105,
+    SOUND_metal_armor_strike2 = 106,
+    SOUND_metal_armor_strike3 = 107,
+    SOUND_dull_armor_strike1 = 108,
+    SOUND_dull_armor_strike2 = 109,
+    SOUND_dull_armor_strike3 = 110,
     SOUND_bricks_down = 120,
     SOUND_bricks_up = 121,
-    SOUND_damage = 0x7A,
-    SOUND_deal = 0x7B,
-    SOUND_defeat = 0x7C,
-    SOUND_querry_up = 0x7D,
-    SOUND_querry_down = 0x7E,
-    SOUND_shuffle = 0x7F,
-    SOUND_title = 0x80,
-    SOUND_tower_up = 0x81,
-    SOUND_typing = 0x82,
-    SOUND_victory = 0x83,
-    SOUND_wall_up = 0x84,
+    SOUND_damage = 122,
+    SOUND_deal = 123,
+    SOUND_defeat = 124,
+    SOUND_querry_up = 125,
+    SOUND_querry_down = 126,
+    SOUND_shuffle = 127,
+    SOUND_title = 128,
+    SOUND_tower_up = 129,
+    SOUND_typing = 130,
+    SOUND_victory = 131,
+    SOUND_wall_up = 132,
     SOUND_luteguitar = 133,
     SOUND_panflute = 134,
     SOUND_trumpet = 135,
@@ -82,22 +90,23 @@ enum SoundID {
     SOUND_batlleen = 206,
     SOUND_batllest = 207,
     SOUND_openchest0101 = 208,
-    SOUND_spellfail0201 = 0xD1,
-    SOUND_drink = 0xD2,
+    SOUND_spellfail0201 = 209,
+    SOUND_drink = 210,
     SOUND_eat = 211,
-    SOUND_gong = 0xD7,
-    SOUND_hurp = 0xD9,
+    SOUND_gong = 215,
+    SOUND_hurp = 217,
     SOUND_church = 218,
-    SOUND_chimes = 0xDB,
+    SOUND_chimes = 219,
     SOUND_splash = 220,
-    SOUND_star1 = 0xDD,
-    SOUND_star2 = 0xDE,
-    SOUND_star4 = 0xE0,
-    SOUND_eradicate = 0xE1,
-    SOUND_eleccircle = 0xE2,
-    SOUND_encounter = 0xE3,
+    SOUND_star1 = 221,
+    SOUND_star2 = 222,
+    SOUND_star4 = 224,
+    SOUND_eradicate = 225,
+    SOUND_eleccircle = 226,
+    SOUND_encounter = 227,
     SOUND_openbook = 230,
     SOUND_closebook = 231,
+    SOUND_teleport = 232,
     SOUND_hf445a = 5788,
     SOUND_Haste = 10040,
     SOUND_21fly03 = 11090,
@@ -145,11 +154,11 @@ class AudioPlayer {
      * Play sound.
      *
      * @param eSoundID                  ID of sound.
-     * @param pid                       PID of sound originator or, 0 for generic ui sound, -1(PID_INVALID)
-     *                                  for resetable (playing this sound again whilst its playing will stop
-     *                                  it and start from beginning) exclusive (sound should not be stopped
-     *                                  by system on ui events) sound and other < 0 for non resetable sounds
-     *                                  (will not restart if played again whilst already playing).
+     * @param pid                       PID of sound originator or:
+     *                                  * 0 for generic ui sound
+     *                                  * -1(PID_INVALID) for resetable (playing this sound again whilst its playing will stop
+     *                                    it and start from beginning) exclusive (sound should not be stopped by system on ui events) sound
+     *                                  * other < 0 for non resetable sounds (will not restart if played again whilst already playing)
      *                                  NB: system use of exclusive sounds is inconsistent.
      * @param uNumRepeats               unused but presumably must be number of repeats before stopping
      * @param x                         ???, unused
@@ -178,7 +187,7 @@ class AudioPlayer {
     /**
      * Play generic UI sound.
      * Generic sounds are played in non-exclusive mode - it meand that each call to this function
-     * will play sound even if sound with the same ID has not funished playing.
+     * will play sound even if sound with the same ID has not finished playing.
      *
      * @param id                        ID of sound.
      */
@@ -195,6 +204,17 @@ class AudioPlayer {
      */
     void playExclusiveSound(SoundID id) {
         PlaySound(id, PID_INVALID, 0, -1, 0, 0);
+    }
+
+    /**
+     * Play sound in non-resetable mode.
+     * It means that if sound with the same ID has not finished playing, this call is effectively ignored.
+     * New playing of such sound can only start when previous one has finished playing.
+     *
+     * @param id                        ID of sound.
+     */
+    void playNonResetableSound(SoundID id) {
+        PlaySound(id, -2, 0, -1, 0, 0);
     }
 
     /**

@@ -896,8 +896,7 @@ LABEL_47:
                             Party_Teleport_Z_Pos = 0;
                             Party_Teleport_Y_Pos = 0;
                             Party_Teleport_X_Pos = 0;
-                            v106 = 232;
-                            pAudioPlayer->PlaySound((SoundID)v106, 0, 0, -1, 0, 0);
+                            pAudioPlayer->playUISound(SOUND_teleport);
                         }
                     } else {
                         pGameLoadingUI_ProgressBar->Initialize((GUIProgressBar::Type)((activeLevelDecoration == NULL) + 1));

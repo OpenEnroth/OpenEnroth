@@ -731,9 +731,8 @@ void Engine::OutlineSelection() {
 
 
 
-//----- (0042FC15) --------------------------------------------------------
 void PlayButtonClickSound() {
-    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, -2, 0, -1, 0, 0);
+    pAudioPlayer->playNonResetableSound(SOUND_StartMainChoice02);
 }
 
 //----- (0046BDC0) --------------------------------------------------------

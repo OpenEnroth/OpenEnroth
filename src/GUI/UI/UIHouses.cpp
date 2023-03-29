@@ -968,7 +968,8 @@ void PlayHouseSound(unsigned int uHouseID, HouseSoundID sound) {
     if (uHouseID > 0) {
         if (pAnimatedRooms[p2DEvents[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uAnimationID].uRoomSoundId) {
             int roomSoundId = pAnimatedRooms[p2DEvents[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uAnimationID].uRoomSoundId;
-            pAudioPlayer->PlaySound((SoundID)(sound + 100 * (roomSoundId + 300)), 806, 0, -1, 0, 0);
+            // PID 806 was used which is PID(OBJECT_Face, 100)
+            pAudioPlayer->playUISound((SoundID)(sound + 100 * (roomSoundId + 300)));
         }
     }
 }
@@ -2075,7 +2076,7 @@ void TempleDialog() {
             // LODWORD(pPlayers[pParty->getActiveCharacter()]->pConditions[Condition_Zombie]);
         } else {
             if (pPlayers[pParty->getActiveCharacter()]->conditions.HasNone({Condition_Eradicated, Condition_Petrified, Condition_Dead})) {
-                pAudioPlayer->playExclusiveSound(SOUND_heal);;
+                pAudioPlayer->playExclusiveSound(SOUND_heal);
                 pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_TempleHeal);
                 pOtherOverlayList->_4418B1(20, pParty->getActiveCharacter() + 99, 0, 65536);
                 pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
