@@ -29,11 +29,9 @@
 #include "Utility/Math/TrigLut.h"
 #include "Library/Random/Random.h"
 
-using EngineIoc = Engine_::IocContainer;
-
 // should be injected in SpriteObject but struct size cant be changed
-static SpellFxRenderer *spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
-static std::shared_ptr<ParticleEngine> particle_engine = EngineIoc::ResolveParticleEngine();
+static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
+static std::shared_ptr<ParticleEngine> particle_engine = EngineIocContainer::ResolveParticleEngine();
 
 std::vector<SpriteObject> pSpriteObjects;
 

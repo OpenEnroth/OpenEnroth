@@ -29,7 +29,6 @@
 
 #include "Library/Random/Random.h"
 
-using EngineIoc = Engine_::IocContainer;
 using Io::Mouse;
 
 Party *pParty = nullptr;

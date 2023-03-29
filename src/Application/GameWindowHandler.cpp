@@ -13,7 +13,7 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/NuklearEventHandler.h"
-#include "Engine/IocContainer.h"
+#include "Engine/EngineIocContainer.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
 
@@ -26,12 +26,9 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-#include "IocContainer.h"
+#include "GameIocContainer.h"
 
 
-using EngineIoc = Engine_::IocContainer;
-using ApplicationIoc = Application::IocContainer;
-using Application::GameWindowHandler;
 using Io::InputAction;
 
 static char PlatformKeyToChar(PlatformKey key, PlatformModifiers mods) {
@@ -50,7 +47,7 @@ static char PlatformKeyToChar(PlatformKey key, PlatformModifiers mods) {
 
 
 GameWindowHandler::GameWindowHandler() : PlatformEventFilter(EVENTS_ALL) {
-    this->mouse = EngineIoc::ResolveMouse();
+    this->mouse = EngineIocContainer::ResolveMouse();
     this->keyboardController_ = std::make_unique<GameKeyboardController>();
 }
 

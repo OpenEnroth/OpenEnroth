@@ -13,7 +13,7 @@ GUIWindow_GameOver::GUIWindow_GameOver(UIMessageType on_release_event)
     prev_screen_type = current_screen_type;
     current_screen_type = CURRENT_SCREEN::SCREEN_GAMEOVER_WINDOW;
     _tickcount = platform->tickCount() + 5000;
-    Application::GameOver_Loop(0);
+    GameOver_Loop(0);
     this->sHint = fmt::format(
         "{}\n \n{}\n \n{}",
         localization->GetString(LSTR_CONGRATULATIONS_ADVENTURER),

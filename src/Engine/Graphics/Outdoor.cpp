@@ -46,10 +46,8 @@
 #include "Utility/Math/TrigLut.h"
 #include "Library/Random/Random.h"
 
-using EngineIoc = Engine_::IocContainer;
-
 // TODO(pskelton): make this neater
-static DecalBuilder* decal_builder = EngineIoc::ResolveDecalBuilder();
+static DecalBuilder* decal_builder = EngineIocContainer::ResolveDecalBuilder();
 
 MapStartPoint uLevel_StartingPointType;
 
@@ -1827,9 +1825,9 @@ void OutdoorLocation::LoadActualSkyFrame() {
 }
 
 OutdoorLocation::OutdoorLocation() {
-    this->log = EngineIoc::ResolveLogger();
-    this->decal_builder = EngineIoc::ResolveDecalBuilder();
-    this->spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
+    this->log = EngineIocContainer::ResolveLogger();
+    this->decal_builder = EngineIocContainer::ResolveDecalBuilder();
+    this->spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
 
     this->sky_texture = nullptr;
 

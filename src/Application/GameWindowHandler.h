@@ -14,7 +14,6 @@
 
 using Io::Mouse;
 
-namespace Application {
 class GameConfig;
 
 class GameWindowHandler : public PlatformEventFilter {
@@ -77,5 +76,3 @@ class GameWindowHandler : public PlatformEventFilter {
     std::shared_ptr<Mouse> mouse = nullptr;
     std::unique_ptr<GameKeyboardController> keyboardController_;
 };
-
-}  // namespace Application

@@ -2,7 +2,7 @@
 
 #include "Application/GameConfig.h"
 
-void ResetTestConfig(Application::GameConfig *config) {
+void ResetTestConfig(GameConfig *config) {
     config->Reset();
 
     config->debug.NoVideo.Set(true);

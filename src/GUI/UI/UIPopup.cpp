@@ -34,8 +34,6 @@
 
 #include "Library/Random/Random.h"
 
-using EngineIoc = Engine_::IocContainer;
-
 Texture *parchment = nullptr;
 Image *messagebox_corner_x = nullptr;       // 5076AC
 Image *messagebox_corner_y = nullptr;       // 5076B4
@@ -1493,7 +1491,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                 popup_window.uFrameY = 40;
                 // if ( render->pRenderD3D )
 
-                auto vis = EngineIoc::ResolveVis();
+                auto vis = EngineIocContainer::ResolveVis();
                 v5 = vis->get_picked_object_zbuf_val().object_pid;
                 /*else
                 v5 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];*/

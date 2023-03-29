@@ -14,9 +14,7 @@ class ParticleEngine;
 struct SpellFxRenderer;
 class Vis;
 
-namespace Engine_ {
-
-class IocContainer {
+class EngineIocContainer {
  public:
     static Logger *ResolveLogger();
     static DecalBuilder *ResolveDecalBuilder();
@@ -37,8 +35,6 @@ class IocContainer {
      static std::shared_ptr<ParticleEngine> particle_engine;
      static Vis *vis;
 };
-
-}  // namespace Engine_
 
 
 extern Logger *logger;

@@ -51,8 +51,6 @@
 
 #include "Library/Random/Random.h"
 
-using EngineIoc = Engine_::IocContainer;
-
 using Graphics::IRenderFactory;
 
 /*
@@ -575,16 +573,16 @@ int Engine::_44ED0A_saturate_face_blv(BLVFace *a2, int *a3, signed int a4) {
 }
 
 //----- (0044E4B7) --------------------------------------------------------
-Engine::Engine(std::shared_ptr<Application::GameConfig> config) {
+Engine::Engine(std::shared_ptr<GameConfig> config) {
     this->config = config;
-    this->log = EngineIoc::ResolveLogger();
-    this->bloodsplat_container = EngineIoc::ResolveBloodsplatContainer();
-    this->decal_builder = EngineIoc::ResolveDecalBuilder();
-    this->spell_fx_renedrer = EngineIoc::ResolveSpellFxRenderer();
-    this->mouse = EngineIoc::ResolveMouse();
-    this->nuklear = EngineIoc::ResolveNuklear();
-    this->particle_engine = EngineIoc::ResolveParticleEngine();
-    this->vis = EngineIoc::ResolveVis();
+    this->log = EngineIocContainer::ResolveLogger();
+    this->bloodsplat_container = EngineIocContainer::ResolveBloodsplatContainer();
+    this->decal_builder = EngineIocContainer::ResolveDecalBuilder();
+    this->spell_fx_renedrer = EngineIocContainer::ResolveSpellFxRenderer();
+    this->mouse = EngineIocContainer::ResolveMouse();
+    this->nuklear = EngineIocContainer::ResolveNuklear();
+    this->particle_engine = EngineIocContainer::ResolveParticleEngine();
+    this->vis = EngineIocContainer::ResolveVis();
 
     uNumStationaryLights = 0;
     uNumStationaryLights_in_pStationaryLightsStack = 0;
@@ -752,7 +750,7 @@ void UpdateUserInput_and_MapSpecificStuff() {
 
 //----- (004646F0) --------------------------------------------------------
 void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
-    Vis *vis = EngineIoc::ResolveVis();
+    Vis *vis = EngineIocContainer::ResolveVis();
     vis->_4C1A02();
 
     pEventTimer->Pause();

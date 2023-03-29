@@ -4,7 +4,7 @@
 #include <cstring>
 #include <vector>
 
-#include "Engine/IocContainer.h"
+#include "Engine/EngineIocContainer.h"
 #include "Library/Compression/Compression.h"
 #include "Library/Logger/Logger.h"
 #include "Utility/String.h"
@@ -17,7 +17,7 @@ struct HWLHeader {
 #pragma pack(pop)
 
 HWLContainer::HWLContainer() {
-    log = Engine_::IocContainer::ResolveLogger();
+    log = EngineIocContainer::ResolveLogger();
 }
 
 HWLContainer::~HWLContainer() {

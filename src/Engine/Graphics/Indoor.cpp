@@ -48,7 +48,7 @@
 #include "Library/Random/Random.h"
 
 // TODO(pskelton): make this neater
-static DecalBuilder* decal_builder = EngineIoc::ResolveDecalBuilder();
+static DecalBuilder* decal_builder = EngineIocContainer::ResolveDecalBuilder();
 
 IndoorLocation *pIndoor = new IndoorLocation;
 BLVRenderParams *pBLVRenderParams = new BLVRenderParams;

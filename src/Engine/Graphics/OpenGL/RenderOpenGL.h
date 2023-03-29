@@ -17,7 +17,7 @@ class PlatformOpenGLContext;
 class RenderOpenGL : public RenderBase {
  public:
     RenderOpenGL(
-        std::shared_ptr<Application::GameConfig> config,
+        std::shared_ptr<GameConfig> config,
         DecalBuilder* decal_builder,
         SpellFxRenderer* spellfx,
         std::shared_ptr<ParticleEngine> particle_engine,

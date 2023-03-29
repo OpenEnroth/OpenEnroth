@@ -27,8 +27,6 @@
 #include "Media/MediaPlayer.h"
 
 
-namespace Application {
-
 //----- (004BF91E) --------------------------------------------------------
 void GameOver_Loop(int v15) {
     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_4000;
@@ -128,5 +126,3 @@ void CreateWinnerCertificate() {
     background = nullptr;
     tempwindow_SpeakInHouse->Release();
 }
-
-} // namespace Application

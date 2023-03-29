@@ -49,8 +49,6 @@
 
 #include "Utility/Math/TrigLut.h"
 
-
-using EngineIoc = Engine_::IocContainer;
 using Io::InputAction;
 
 Image *game_ui_statusbar = nullptr;
@@ -998,7 +996,7 @@ void GameUI_WritePointedObjectStatusString() {
                 return;
             }
 
-            auto vis = EngineIoc::ResolveVis();
+            auto vis = EngineIocContainer::ResolveVis();
 
             // get_picked_object_zbuf_val contains both the pid and the depth
             pickedObject = vis->get_picked_object_zbuf_val();

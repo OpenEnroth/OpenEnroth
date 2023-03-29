@@ -162,7 +162,7 @@ bool KeyboardActionMapping::IsKeyMatchAction(InputAction action, PlatformKey key
 }
 
 //----- (00459C8D) --------------------------------------------------------
-KeyboardActionMapping::KeyboardActionMapping(std::shared_ptr<Application::GameConfig> config) {
+KeyboardActionMapping::KeyboardActionMapping(std::shared_ptr<GameConfig> config) {
     this->config = config;
 
     SetDefaultMapping();

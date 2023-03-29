@@ -2,11 +2,9 @@
 
 #include <array>
 
-#include "Engine/IocContainer.h"
+#include "Engine/EngineIocContainer.h"
 
 #include "Utility/Geometry/Vec.h"
-
-using EngineIoc = Engine_::IocContainer;
 
 /*  257 */
 #pragma pack(push, 1)
@@ -50,7 +48,7 @@ struct LightStack<T>
 struct LightsStack_StationaryLight_ {
     //----- (004AD385) --------------------------------------------------------
     LightsStack_StationaryLight_() {
-        this->log = EngineIoc::ResolveLogger();
+        this->log = EngineIocContainer::ResolveLogger();
         this->uNumLightsActive = 0;
     }
 
@@ -76,7 +74,7 @@ struct LightsStack_StationaryLight_ {
 struct LightsStack_MobileLight_ {
     //----- (00467D45) --------------------------------------------------------
     inline LightsStack_MobileLight_() {
-        this->log = EngineIoc::ResolveLogger();
+        this->log = EngineIocContainer::ResolveLogger();
         this->uNumLightsActive = 0;
     }
     //----- (00467D55) --------------------------------------------------------

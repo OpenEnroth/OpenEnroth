@@ -8,11 +8,7 @@
 
 class PlatformApplication;
 
-namespace Application {
-
 class GameFactory {
  public:
      std::shared_ptr<Game> CreateGame(PlatformApplication *app, const std::shared_ptr<GameConfig> &config);
 };
-
-}  // namespace Application

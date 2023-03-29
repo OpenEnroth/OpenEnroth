@@ -1,19 +1,18 @@
 #pragma once
+
 #include <memory>
 
 #include "GameConfig.h"
 #include "GameMenu.h"
-#include "IocContainer.h"
+#include "GameIocContainer.h"
 
 #include "Engine/Engine.h"
-#include "Engine/IocContainer.h"
+#include "Engine/EngineIocContainer.h"
 
 #include "Io/KeyboardInputHandler.h"
 #include "Io/Mouse.h"
 
 
-using EngineIoc = Engine_::IocContainer;
-using GameIoc = Application::IocContainer;
 using Io::Mouse;
 
 class IRender;
@@ -22,8 +21,6 @@ class PlatformApplication;
 class EngineTracer;
 class GameTraceHandler;
 class NuklearEventHandler;
-
-namespace Application {
 
 class Game {
  public:
@@ -60,7 +57,5 @@ class Game {
 };
 
 void AutoInitDataPath(Platform *platform);
-
-}  // namespace Application
 
 extern class Image *gamma_preview_image;  // 506E40

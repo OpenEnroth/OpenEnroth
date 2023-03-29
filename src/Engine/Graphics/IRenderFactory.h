@@ -12,6 +12,6 @@ class OSWindow;
 namespace Graphics {
     class IRenderFactory {
      public:
-        std::shared_ptr<IRender> Create(std::shared_ptr<Application::GameConfig> config);
+        std::shared_ptr<IRender> Create(std::shared_ptr<GameConfig> config);
     };
 }  // namespace Graphics

@@ -30,8 +30,6 @@
 #include "Utility/MapAccess.h"
 #include "Library/Random/Random.h"
 
-using EngineIoc = Engine_::IocContainer;
-
 void CharacterUI_LoadPaperdollTextures();
 
 /**

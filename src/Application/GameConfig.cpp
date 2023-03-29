@@ -2,7 +2,7 @@
 
 #include <filesystem>
 
-#include "Engine/IocContainer.h"
+#include "Engine/EngineIocContainer.h"
 
 #include "Library/Logger/Logger.h"
 #include "Library/Serialization/EnumSerialization.h"
@@ -28,9 +28,6 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformWindowMode, CASE_INSENSITIVE, {
     {WINDOW_MODE_FULLSCREEN_BORDERLESS, "3"}
 })
 
-using EngineIoc = Engine_::IocContainer;
-using Application::GameConfig;
-
 void GameConfig::LoadConfiguration() {
     std::string path = MakeDataPath(config_file);
 
@@ -51,7 +48,7 @@ void GameConfig::SaveConfiguration() {
 }
 
 GameConfig::GameConfig() {
-    this->logger = EngineIoc::ResolveLogger();
+    this->logger = EngineIocContainer::ResolveLogger();
 }
 
 GameConfig::~GameConfig() {}

@@ -9,8 +9,6 @@
 
 #include "Application/GameConfig.h"
 
-using Application::GameConfig;
-
 namespace Io {
     enum class KeyToggleType {
         TOGGLE_Continuously = 0,
@@ -55,7 +53,7 @@ namespace Io {
         std::map<InputAction, PlatformKey> actionKeyMap;
         std::map<InputAction, PlatformKey> gamepadKeyMap;
         std::map<InputAction, KeyToggleType> keyToggleMap;
-        std::shared_ptr<Application::GameConfig> config = nullptr;
+        std::shared_ptr<GameConfig> config = nullptr;
     };
 }  // namespace Io
 
