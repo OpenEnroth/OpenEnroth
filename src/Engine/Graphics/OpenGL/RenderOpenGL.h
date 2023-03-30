@@ -56,7 +56,7 @@ class RenderOpenGL : public RenderBase {
         /*refactor*/ unsigned int lod_sprite_id) override;
 
     virtual uint8_t *ReadScreenPixels();
-    virtual void SaveWinnersCertificate(const char *a1) override;
+    virtual void SaveWinnersCertificate(const std::string &filePath) override;
     virtual void ClearTarget(unsigned int uColor) override;
     virtual void Present() override;
 

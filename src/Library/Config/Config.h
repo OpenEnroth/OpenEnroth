@@ -6,7 +6,7 @@
 
 #include "ConfigFwd.h"
 #include "ConfigSection.h"
-#include "ConfigValue.h"
+#include "ConfigEntry.h"
 
 class Config {
  public:

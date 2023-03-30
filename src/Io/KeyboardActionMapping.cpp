@@ -320,17 +320,17 @@ GameConfig::Key *KeyboardActionMapping::InputActionToConfigKey(InputAction actio
 }
 
 PlatformKey KeyboardActionMapping::ConfigDefaultKey(InputAction action) {
-    ConfigValue<PlatformKey> *val = InputActionToConfigKey(action);
+    ConfigEntry<PlatformKey> *val = InputActionToConfigKey(action);
     return val ? val->defaultValue() : PlatformKey::None;
 }
 
 PlatformKey KeyboardActionMapping::ConfigGetKey(InputAction action) {
-    ConfigValue<PlatformKey> *val = InputActionToConfigKey(action);
+    ConfigEntry<PlatformKey> *val = InputActionToConfigKey(action);
     return val ? val->value() : PlatformKey::None;
 }
 
 void KeyboardActionMapping::ConfigSetKey(InputAction action, PlatformKey key) {
-    if (ConfigValue<PlatformKey> *val = InputActionToConfigKey(action))
+    if (ConfigEntry<PlatformKey> *val = InputActionToConfigKey(action))
         val->setValue(key);
 }
 

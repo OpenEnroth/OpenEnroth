@@ -459,7 +459,8 @@ void GameWindowHandler::OnToggleFullscreen() {
 }
 
 void GameWindowHandler::OnToggleResizable() {
-    window->setResizable(engine->config->window.Resizable.toggle());
+    engine->config->window.Resizable.toggle();
+    window->setResizable(engine->config->window.Resizable.value());
 }
 
 void GameWindowHandler::OnCycleFilter() {
@@ -468,7 +469,8 @@ void GameWindowHandler::OnCycleFilter() {
 }
 
 void GameWindowHandler::OnMouseGrabToggle() {
-    window->setGrabsMouse(engine->config->window.MouseGrab.toggle());
+    engine->config->window.MouseGrab.toggle();
+    window->setGrabsMouse(engine->config->window.MouseGrab.value());
 }
 
 void GameWindowHandler::handleKeyPress(PlatformKey key, PlatformModifiers mods, bool isAutoRepeat) {

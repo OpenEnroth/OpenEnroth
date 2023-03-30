@@ -21,9 +21,9 @@ void Config::load(const std::string &path) {
 
     for (const auto &[sectionName, iniSection] : ini)
         if (ConfigSection *section = this->section(sectionName))
-            for (const auto &[valueName, valueString] : iniSection)
-                if (AbstractConfigValue *value = section->value(valueName))
-                    value->setString(valueString);
+            for (const auto &[entryName, iniValue] : iniSection)
+                if (AnyConfigEntry *entry = section->entry(entryName))
+                    entry->setString(iniValue);
 }
 
 void Config::save(const std::string &path) const {
@@ -31,8 +31,8 @@ void Config::save(const std::string &path) const {
     mINI::INIStructure ini;
 
     for (ConfigSection *section : sections())
-        for (AbstractConfigValue *value : section->values())
-            ini[section->name()][value->name()] = value->toString();
+        for (AnyConfigEntry *entry : section->entries())
+            ini[section->name()][entry->name()] = entry->string();
 
     if (!file.write(ini, true))
         throw Exception("Couldn't save config file '{}'", path);
@@ -40,8 +40,8 @@ void Config::save(const std::string &path) const {
 
 void Config::reset() {
     for (ConfigSection *section : sections())
-        for (AbstractConfigValue *value : section->values())
-            value->reset();
+        for (AnyConfigEntry *entry : section->entries())
+            entry->reset();
 }
 
 void Config::registerSection(ConfigSection *section) {
@@ -60,14 +60,4 @@ std::vector<ConfigSection *> Config::sections() const {
     for (const auto &[_, section] : _sectionByName)
         result.push_back(section);
     return result;
-}
-
-AbstractConfigValue::AbstractConfigValue(ConfigSection *section, const std::string &name, const std::string &description):
-    _section(section),
-    _name(name),
-    _description(description) {
-    assert(section);
-    assert(!name.empty());
-
-    section->registerValue(this);
 }

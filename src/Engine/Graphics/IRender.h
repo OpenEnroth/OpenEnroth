@@ -243,7 +243,7 @@ class IRender {
     virtual void PresentBlackScreen() = 0;
 
     virtual uint8_t *ReadScreenPixels() = 0;
-    virtual void SaveWinnersCertificate(const char *a1) = 0;
+    virtual void SaveWinnersCertificate(const std::string &filePath) = 0;
     virtual void ClearTarget(unsigned int uColor) = 0;
     virtual void Present() = 0;
 

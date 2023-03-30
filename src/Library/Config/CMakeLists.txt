@@ -1,15 +1,17 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 set(LIBRARY_CONFIG_SOURCES
+        AnyConfigEntry.cpp
         Config.cpp
         ConfigSection.cpp)
 
 set(LIBRARY_CONFIG_HEADERS
-        AbstractConfigValue.h
+        AnyConfigEntry.h
+        AnySerializer.h
         Config.h
         ConfigFwd.h
         ConfigSection.h
-        ConfigValue.h)
+        ConfigEntry.h)
 
 add_library(library_config STATIC ${LIBRARY_CONFIG_SOURCES} ${LIBRARY_CONFIG_HEADERS})
 target_link_libraries(library_config utility library_serialization)
