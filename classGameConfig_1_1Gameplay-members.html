@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6f856d1</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;035c4b0</span>
    </div>
   </td>
  </tr>
@@ -80,8 +80,8 @@ $(function() {
 <p>This is the complete list of members for <a class="el" href="classGameConfig_1_1Gameplay.html">GameConfig::Gameplay</a>, including all inherited members.</p>
 <table class="directory">
   <tr class="even"><td class="entry"><a class="el" href="classConfigSection.html#a86dac97f5475e92d18488b12608341a1">_config</a></td><td class="entry"><a class="el" href="classConfigSection.html">ConfigSection</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classConfigSection.html#a44a7a2cbb4ce9cb962f11e792c70000f">_name</a></td><td class="entry"><a class="el" href="classConfigSection.html">ConfigSection</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classConfigSection.html#a7e2256ebdfbf52048191ca52006e1026">_valueByName</a></td><td class="entry"><a class="el" href="classConfigSection.html">ConfigSection</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classConfigSection.html#acfb3a2257861da79a3078feadd57965b">_entryByName</a></td><td class="entry"><a class="el" href="classConfigSection.html">ConfigSection</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classConfigSection.html#a44a7a2cbb4ce9cb962f11e792c70000f">_name</a></td><td class="entry"><a class="el" href="classConfigSection.html">ConfigSection</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html#a5749525be4764f4a0091acfa9fb01e98">AlternativeConditionPriorities</a></td><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html">GameConfig::Gameplay</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html#a0dae0b882a95dcadf7c60decbed2d9d3">AoeDamageDistance</a></td><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html">GameConfig::Gameplay</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html#a402efe5bbd11c69751741d0d55b40b93">ArtifactLimit</a></td><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html">GameConfig::Gameplay</a></td><td class="entry"></td></tr>
@@ -90,6 +90,8 @@ $(function() {
   <tr class="even"><td class="entry"><a class="el" href="classConfigSection.html#a9886d8e744d80461db2c508f629565b6">ConfigSection</a>(Config *config, const std::string &amp;name)</td><td class="entry"><a class="el" href="classConfigSection.html">ConfigSection</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classConfigSection.html#a7ee8ca0858f086fb81bf0fcf0d74ee06">ConfigSection</a>(const ConfigSection &amp;other)=delete</td><td class="entry"><a class="el" href="classConfigSection.html">ConfigSection</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classConfigSection.html#aea13087e4e7a2fb40fd0e566fcf4ce5e">ConfigSection</a>(ConfigSection &amp;&amp;other)=delete</td><td class="entry"><a class="el" href="classConfigSection.html">ConfigSection</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classConfigSection.html#adc121fe273afa1b37703b6ae14b88961">entries</a>() const</td><td class="entry"><a class="el" href="classConfigSection.html">ConfigSection</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classConfigSection.html#a54ac5f8b17444f4b9ee7044855bd221b">entry</a>(const std::string &amp;name) const</td><td class="entry"><a class="el" href="classConfigSection.html">ConfigSection</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html#a36b0b2f7db23174825678d09625bd1fe">FixWaterWalkManaDrain</a></td><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html">GameConfig::Gameplay</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html#a0a1f63fc22cac5475e7c8a6d5db12e14">FloorChecksEps</a></td><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html">GameConfig::Gameplay</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html#a0a9ae24d708e060c8d5578000692d56a">Gameplay</a>(GameConfig *config)</td><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html">GameConfig::Gameplay</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">explicit</span></td></tr>
@@ -109,7 +111,7 @@ $(function() {
   <tr class="odd"><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html#a13eb0fb5a1a0970930ee5e84941e7058">PartyHeight</a></td><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html">GameConfig::Gameplay</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html#a895e0159fbd7072f7c4a7935b0e54e0d">PartyWalkSpeed</a></td><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html">GameConfig::Gameplay</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html#ac926cf728f08b0c1b707f7545761399c">RangedAttackDepth</a></td><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html">GameConfig::Gameplay</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classConfigSection.html#a4c9bae226243898fe0137f0311c81c01">registerValue</a>(AbstractConfigValue *value)</td><td class="entry"><a class="el" href="classConfigSection.html">ConfigSection</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classConfigSection.html#af370d1e34cda31437b2e89b344eaf490">registerEntry</a>(AnyConfigEntry *entry)</td><td class="entry"><a class="el" href="classConfigSection.html">ConfigSection</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html#af83a86b0d5111981e76a2bfe5aad4110">ShowUndentifiedItem</a></td><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html">GameConfig::Gameplay</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html#a664a56ea11f1e1213da671b54a21daeb">ShrinkRayAoeDistance</a></td><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html">GameConfig::Gameplay</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html#a772135d093576e53485ca3d8bc0a9297">SpellFailureRecoveryMod</a></td><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html">GameConfig::Gameplay</a></td><td class="entry"></td></tr>
@@ -123,8 +125,6 @@ $(function() {
   <tr class="odd"><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html#a7c123e4f1c23a8ef3add8b28b48ff9f7">ValidateRangedAttackDepth</a>(float depth)</td><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html">GameConfig::Gameplay</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html#a18fccc6bc89f3377149e1271512832e0">ValidateRecovery</a>(int recovery)</td><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html">GameConfig::Gameplay</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html#aae8c6f832203bcb2b5d4450609a581c3">ValidateSpellFailureRecoveryMod</a>(float mod)</td><td class="entry"><a class="el" href="classGameConfig_1_1Gameplay.html">GameConfig::Gameplay</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classConfigSection.html#aab74131d251894e1f76791ecd8e85b96">value</a>(const std::string &amp;name) const</td><td class="entry"><a class="el" href="classConfigSection.html">ConfigSection</a></td><td class="entry"></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classConfigSection.html#a80ba9082c79fb9ef2e233f6fae35501c">values</a>() const</td><td class="entry"><a class="el" href="classConfigSection.html">ConfigSection</a></td><td class="entry"></td></tr>
 </table></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

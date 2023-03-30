@@ -25,7 +25,7 @@ var searchData=
   ['imovie_22',['IMovie',['../classIMovie.html#acc542dfca4bfb27e229f13268a8abb84',1,'IMovie']]],
   ['increaseattribute_23',['IncreaseAttribute',['../structPlayer.html#ac92bd968c301885eeb9168a9a3fa03f0',1,'Player']]],
   ['increaseresourcesinturn_24',['IncreaseResourcesInTurn',['../Arcomage_8cpp.html#a9a8e9a24f637c48e2152b3adc13a44df',1,'Arcomage.cpp']]],
-  ['increment_25',['increment',['../classConfigValue.html#aa8918635fe636f5634b58a8aedc12457',1,'ConfigValue']]],
+  ['increment_25',['increment',['../classConfigEntry.html#a2aef3a88617f0f809898d9ae22bf476d',1,'ConfigEntry']]],
   ['indexedarray_26',['IndexedArray',['../classIndexedArray.html#a526f72f9208d80e349ad2563c0b39a7b',1,'IndexedArray::IndexedArray()'],['../classIndexedArray.html#adfd586182289b06806f5b15a23d86e64',1,'IndexedArray::IndexedArray(std::initializer_list&lt; std::pair&lt; key_type, value_type &gt; &gt; init)']]],
   ['indices_27',['indices',['../classIndexedArray.html#a297952753885a02c895ab6154dbbe8f8',1,'IndexedArray']]],
   ['indoor_5fsky_28',['Indoor_sky',['../structODMFace.html#a669cb4d18631313735a7628e1ef01100',1,'ODMFace::Indoor_sky()'],['../structBLVFace.html#a5a9b0d3013fea0ada511a94da4db9438',1,'BLVFace::Indoor_sky()']]],

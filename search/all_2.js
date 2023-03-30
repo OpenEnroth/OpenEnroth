@@ -138,7 +138,7 @@ var searchData=
   ['books_5fprimary_5fitem_5fper_5fpage_135',['books_primary_item_per_page',['../mm7__data_8cpp.html#a0797b1a913cec530e0bb7218fe5ec846',1,'books_primary_item_per_page():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a0797b1a913cec530e0bb7218fe5ec846',1,'books_primary_item_per_page():&#160;mm7_data.cpp']]],
   ['bookspellids_136',['bookSpellIds',['../Spells_8cpp.html#a7a364aed9e470cef8b857b5106ef55d7',1,'bookSpellIds():&#160;Spells.cpp'],['../Spells_8h.html#a7a364aed9e470cef8b857b5106ef55d7',1,'bookSpellIds():&#160;Spells.cpp']]],
   ['bookui_5fspellbook_5fdrawcurrentschoolbackground_137',['BookUI_Spellbook_DrawCurrentSchoolBackground',['../Spellbook_8cpp.html#ae852e53996098821077c2d9722b1f471',1,'Spellbook.cpp']]],
-  ['bool_138',['Bool',['../classGameConfig.html#aea4c300962294f184c59fd78a583f2f1',1,'GameConfig']]],
+  ['bool_138',['Bool',['../classGameConfig.html#a7be40f32922e33b7ecfd85e54cbc8b5b',1,'GameConfig']]],
   ['bopened_139',['bOpened',['../classAudioBaseDataSource.html#aa6300c7739d5d86ebb0867df5dd7d840',1,'AudioBaseDataSource']]],
   ['bottom_140',['bottom',['../structMargins.html#a46534118e9dca596379eb16a2a42c8f9',1,'Margins']]],
   ['bottomright_141',['bottomRight',['../structRect.html#ad2524c389fb660c3a21541171bfa8cea',1,'Rect']]],
