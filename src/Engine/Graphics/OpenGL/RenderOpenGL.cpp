@@ -214,7 +214,7 @@ uint8_t *RenderOpenGL::ReadScreenPixels() {
     return sPixels;
 }
 
-void RenderOpenGL::SaveWinnersCertificate(const char *a1) {
+void RenderOpenGL::SaveWinnersCertificate(const std::string &filePath) {
     GLubyte *sPixels = ReadScreenPixels();
 
     // reverse input and save to texture for later
@@ -229,7 +229,7 @@ void RenderOpenGL::SaveWinnersCertificate(const char *a1) {
     assets->WinnerCert = CreateTexture_Blank(outputRender.w, outputRender.h, IMAGE_FORMAT::IMAGE_FORMAT_A8B8G8R8, rev);
 
     // save to disk
-    SavePCXImage32(a1, (uint32_t *)rev, outputRender.w, outputRender.h);
+    SavePCXImage32(filePath, (uint32_t *)rev, outputRender.w, outputRender.h);
 
     delete[] rev;
     delete[] sPixels;

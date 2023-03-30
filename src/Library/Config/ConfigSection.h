@@ -21,15 +21,14 @@ class ConfigSection {
         return _name;
     }
 
-    void registerValue(AbstractConfigValue *value);
+    void registerEntry(AnyConfigEntry *entry);
 
-    // TODO(captainurist): AbstractConfigEntry / entry() / entries()
-    AbstractConfigValue *value(const std::string &name) const;
+    AnyConfigEntry *entry(const std::string &name) const;
 
-    std::vector<AbstractConfigValue *> values() const;
+    std::vector<AnyConfigEntry *> entries() const;
 
  private:
     Config *_config = nullptr;
     std::string _name;
-    std::map<std::string, AbstractConfigValue *> _valueByName;
+    std::map<std::string, AnyConfigEntry *> _entryByName;
 };

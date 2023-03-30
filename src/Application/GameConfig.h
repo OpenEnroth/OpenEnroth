@@ -29,11 +29,11 @@ class GameConfig : public Config {
     void LoadConfiguration();
     void SaveConfiguration();
 
-    using Bool = ConfigValue<bool>;
-    using Int = ConfigValue<int>;
-    using Float = ConfigValue<float>;
-    using String = ConfigValue<std::string>;
-    using Key = ConfigValue<PlatformKey>;
+    using Bool = ConfigEntry<bool>;
+    using Int = ConfigEntry<int>;
+    using Float = ConfigEntry<float>;
+    using String = ConfigEntry<std::string>;
+    using Key = ConfigEntry<PlatformKey>;
 
     class Debug : public ConfigSection {
      public:
@@ -297,7 +297,7 @@ class GameConfig : public Config {
      public:
         explicit Graphics(GameConfig *config): ConfigSection(config, "graphics") {}
 
-        ConfigValue<RendererType> Renderer = {this, "renderer", ConfigRenderer, "Renderer to use, 'OpenGL' or 'OpenGLES'."};
+        ConfigEntry<RendererType> Renderer = {this, "renderer", ConfigRenderer, "Renderer to use, 'OpenGL' or 'OpenGLES'."};
 
         Bool BloodSplats = {this, "bloodsplats", true, "Enable bloodsplats under corpses."};
 
@@ -530,7 +530,7 @@ class GameConfig : public Config {
                        "Display number as exposed by SDL. "
                        "Order is platform-specific, e.g. on windows 0 is main display"};
 
-        ConfigValue<PlatformWindowMode> Mode = {this, "mode", ConfigWindowMode,
+        ConfigEntry<PlatformWindowMode> Mode = {this, "mode", ConfigWindowMode,
                                                 "Window mode, one of 'windowed', 'borderless', 'fullscreen' or 'fullscreen_borderless'."};
 
         Int PositionX = {this, "position_x", -1, &ValidatePosition,

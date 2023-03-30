@@ -13,20 +13,20 @@ ConfigSection::ConfigSection(Config *config, const std::string &name): _config(c
     config->registerSection(this);
 }
 
-void ConfigSection::registerValue(AbstractConfigValue *value) {
-    assert(value);
-    assert(!_valueByName.contains(value->name()));
+void ConfigSection::registerEntry(AnyConfigEntry *entry) {
+    assert(entry);
+    assert(!_entryByName.contains(entry->name()));
 
-    _valueByName.emplace(value->name(), value);
+    _entryByName.emplace(entry->name(), entry);
 }
 
-AbstractConfigValue *ConfigSection::value(const std::string &name) const {
-    return valueOr(_valueByName, name, nullptr);
+AnyConfigEntry *ConfigSection::entry(const std::string &name) const {
+    return valueOr(_entryByName, name, nullptr);
 }
 
-std::vector<AbstractConfigValue *> ConfigSection::values() const {
-    std::vector<AbstractConfigValue *> result;
-    for(const auto &[_, value] : _valueByName)
-        result.push_back(value);
+std::vector<AnyConfigEntry *> ConfigSection::entries() const {
+    std::vector<AnyConfigEntry *> result;
+    for(const auto &[_, entry] : _entryByName)
+        result.push_back(entry);
     return result;
 }

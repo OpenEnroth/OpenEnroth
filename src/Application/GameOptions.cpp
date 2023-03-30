@@ -10,7 +10,7 @@
 #include "Utility/Format.h"
 
 template<class T>
-bool lexical_cast(const std::string &input, ConfigValue<T> &configValue) {
+bool lexical_cast(const std::string &input, ConfigEntry<T> &configValue) {
     T value;
     if (!CLI::detail::lexical_cast(input, value))
         return false;
@@ -21,7 +21,7 @@ bool lexical_cast(const std::string &input, ConfigValue<T> &configValue) {
 
 // TODO(captainurist): we shouldn't need to overload lexical_assign, this begs a PR to CLI11
 template<class A, class B, class T>
-bool lexical_assign(const std::string &input, ConfigValue<T> &configValue) {
+bool lexical_assign(const std::string &input, ConfigEntry<T> &configValue) {
     return lexical_cast(input, configValue);
 }
 
@@ -36,7 +36,7 @@ bool ParseGameOptions(int argc, char **argv, GameConfig *config) {
         config->debug.InfiniteGold.setValue(true);
     };
 
-    auto unset = [] (ConfigValue<bool>& value) {
+    auto unset = [] (ConfigEntry<bool>& value) {
         return [&] {
             value.setValue(false);
         };
@@ -56,7 +56,7 @@ bool ParseGameOptions(int argc, char **argv, GameConfig *config) {
         if (!section)
             throw CLI::ParseError(fmt::format("Section '{}' doesn't exist"_cf, sectionName), CLI::ExitCodes::BaseClass);
 
-        AbstractConfigValue *value = section->value(valueName);
+        AnyConfigEntry *value = section->entry(valueName);
         if (!value)
             throw CLI::ParseError(fmt::format("Value '{}' doesn't exist in section '{}'"_cf, valueName, sectionName), CLI::ExitCodes::BaseClass);
 

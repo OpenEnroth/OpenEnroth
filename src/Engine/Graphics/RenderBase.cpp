@@ -629,11 +629,8 @@ HWLTexture *RenderBase::LoadHwlSprite(const std::string &name) {
 }
 
 void RenderBase::SavePCXScreenshot() {
-    size_t zeros_number = 5;
-    std::string screenshot_number = std::to_string(engine->config->settings.ScreenshotNumber.increment());
-    std::string file_name = "screenshot_" + std::string(zeros_number - std::min(zeros_number, screenshot_number.length()), '0') + screenshot_number + ".pcx";
-
-    SaveWinnersCertificate(file_name.c_str());
+    engine->config->settings.ScreenshotNumber.increment();
+    SaveWinnersCertificate(fmt::format("screenshot_{:05}.pcx", engine->config->settings.ScreenshotNumber.value()));
 }
 
 void RenderBase::SavePCXImage32(const std::string& filename, const uint32_t* picture_data, const int width, const int height) {

@@ -5,5 +5,6 @@
 class Config;
 class ConfigSection;
 template<class T>
-class ConfigValue;
-class AbstractConfigValue;
+class ConfigEntry;
+class AnyConfigEntry;
+class AnySerializer;
