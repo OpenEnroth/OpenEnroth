@@ -432,7 +432,6 @@ unsigned int Party::GetPartyFame() {
 
 //----- (0049137D) --------------------------------------------------------
 void Party::CreateDefaultParty(bool bDebugGiveItems) {
-    Player *pCharacter;      // esi@3
     signed int uNumPlayers;  // [sp+18h] [bp-28h]@1
     ItemGen Dst;             // [sp+1Ch] [bp-24h]@10
 
@@ -509,91 +508,84 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[3].pActiveSkills[PLAYER_SKILL_FIRE] = 1;
     this->pPlayers[3].pActiveSkills[PLAYER_SKILL_STAFF] = 1;
 
-    for (uNumPlayers = 0; uNumPlayers < 4; uNumPlayers++) {
-        pCharacter = &pParty->pPlayers[uNumPlayers];
+    for (Player &pCharacter : pPlayers) {
+        if (pCharacter.classType == PLAYER_CLASS_KNIGHT)
+            pCharacter.sResMagicBase = 10;
 
-        if (pCharacter->classType == PLAYER_CLASS_KNIGHT)
-            pCharacter->sResMagicBase = 10;
-
-        pCharacter->lastOpenedSpellbookPage = 0;
+        pCharacter.lastOpenedSpellbookPage = 0;
         int count = 0;
         for (PLAYER_SKILL_TYPE skill : MagicSkills()) {  // for Magic Book
-            if (pPlayers[uNumPlayers].pActiveSkills[skill]) {
-                pCharacter->lastOpenedSpellbookPage = count;
+            if (pCharacter.pActiveSkills[skill]) {
+                pCharacter.lastOpenedSpellbookPage = count;
                 break;
             }
 
             count++;
         }
 
-        pCharacter->uExpressionTimePassed = 0;
+        pCharacter.uExpressionTimePassed = 0;
 
         if (bDebugGiveItems) {
             Dst.Reset();
             pItemTable->GenerateItem(ITEM_TREASURE_LEVEL_2, 40, &Dst);  // ring
-            pCharacter->AddItem2(-1, &Dst);
+            pCharacter.AddItem2(-1, &Dst);
             for (int uSkillIdx = 0; uSkillIdx < 36; uSkillIdx++) {
                 PLAYER_SKILL_TYPE skill = (PLAYER_SKILL_TYPE)uSkillIdx;
-                if (pCharacter->pActiveSkills[skill]) {
+                if (pCharacter.pActiveSkills[skill]) {
                     switch (skill) {
                         case PLAYER_SKILL_STAFF:
-                            pCharacter->WearItem(ITEM_STAFF);
+                            pCharacter.WearItem(ITEM_STAFF);
                             break;
                         case PLAYER_SKILL_SWORD:
-                            pCharacter->WearItem(ITEM_CRUDE_LONGSWORD);
+                            pCharacter.WearItem(ITEM_CRUDE_LONGSWORD);
                             break;
                         case PLAYER_SKILL_DAGGER:
-                            pCharacter->WearItem(ITEM_DAGGER);
+                            pCharacter.WearItem(ITEM_DAGGER);
                             break;
                         case PLAYER_SKILL_AXE:
-                            pCharacter->WearItem(ITEM_CRUDE_AXE);
+                            pCharacter.WearItem(ITEM_CRUDE_AXE);
                             break;
                         case PLAYER_SKILL_SPEAR:
-                            pCharacter->WearItem(ITEM_CRUDE_SPEAR);
+                            pCharacter.WearItem(ITEM_CRUDE_SPEAR);
                             break;
                         case PLAYER_SKILL_BOW:
-                            pCharacter->WearItem(ITEM_CROSSBOW);
+                            pCharacter.WearItem(ITEM_CROSSBOW);
                             break;
                         case PLAYER_SKILL_MACE:
-                            pCharacter->WearItem(ITEM_MACE);
+                            pCharacter.WearItem(ITEM_MACE);
                             break;
                         case PLAYER_SKILL_SHIELD:
-                            pCharacter->WearItem(ITEM_WOODEN_BUCKLER);
+                            pCharacter.WearItem(ITEM_WOODEN_BUCKLER);
                             break;
                         case PLAYER_SKILL_LEATHER:
-                            pCharacter->WearItem(ITEM_LEATHER_ARMOR);
+                            pCharacter.WearItem(ITEM_LEATHER_ARMOR);
                             break;
                         case PLAYER_SKILL_CHAIN:
-                            pCharacter->WearItem(ITEM_CHAIN_MAIL);
+                            pCharacter.WearItem(ITEM_CHAIN_MAIL);
                             break;
                         case PLAYER_SKILL_PLATE:
-                            pCharacter->WearItem(ITEM_PLATE_ARMOR);
+                            pCharacter.WearItem(ITEM_PLATE_ARMOR);
                             break;
                         case PLAYER_SKILL_FIRE:
-                            pCharacter->AddItem(-1, ITEM_SPELLBOOK_FIRE_BOLT);
+                            pCharacter.AddItem(-1, ITEM_SPELLBOOK_FIRE_BOLT);
                             break;
                         case PLAYER_SKILL_AIR:
-                            pCharacter->AddItem(
-                                -1, ITEM_SPELLBOOK_FEATHER_FALL);
+                            pCharacter.AddItem(-1, ITEM_SPELLBOOK_FEATHER_FALL);
                             break;
                         case PLAYER_SKILL_WATER:
-                            pCharacter->AddItem(
-                                -1, ITEM_SPELLBOOK_POISON_SPRAY);
+                            pCharacter.AddItem(-1, ITEM_SPELLBOOK_POISON_SPRAY);
                             break;
                         case PLAYER_SKILL_EARTH:
-                            pCharacter->AddItem(-1, ITEM_SPELLBOOK_SLOW);
+                            pCharacter.AddItem(-1, ITEM_SPELLBOOK_SLOW);
                             break;
                         case PLAYER_SKILL_SPIRIT:
-                            pCharacter->AddItem(-1,
-                                                ITEM_SPELLBOOK_BLESS);
+                            pCharacter.AddItem(-1, ITEM_SPELLBOOK_BLESS);
                             break;
                         case PLAYER_SKILL_MIND:
-                            pCharacter->AddItem(-1,
-                                                ITEM_SPELLBOOK_MIND_BLAST);
+                            pCharacter.AddItem(-1, ITEM_SPELLBOOK_MIND_BLAST);
                             break;
                         case PLAYER_SKILL_BODY:
-                            pCharacter->AddItem(-1,
-                                                ITEM_SPELLBOOK_HEAL);
+                            pCharacter.AddItem(-1, ITEM_SPELLBOOK_HEAL);
                             break;
                         case PLAYER_SKILL_ITEM_ID:
                         case PLAYER_SKILL_REPAIR:
@@ -602,14 +594,14 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
                         case PLAYER_SKILL_DIPLOMACY:
                         case PLAYER_SKILL_TRAP_DISARM:
                         case PLAYER_SKILL_LEARNING:
-                            pCharacter->AddItem(-1, ITEM_POTION_BOTTLE);
-                            pCharacter->AddItem(-1, grng->RandomSample(Level1Reagents())); // Add simple reagent.
+                            pCharacter.AddItem(-1, ITEM_POTION_BOTTLE);
+                            pCharacter.AddItem(-1, grng->RandomSample(Level1Reagents())); // Add simple reagent.
                             break;
                         case PLAYER_SKILL_DODGE:
-                            pCharacter->AddItem(-1, ITEM_LEATHER_BOOTS);
+                            pCharacter.AddItem(-1, ITEM_LEATHER_BOOTS);
                             break;
                         case PLAYER_SKILL_UNARMED:
-                            pCharacter->AddItem(-1, ITEM_GAUNTLETS);
+                            pCharacter.AddItem(-1, ITEM_GAUNTLETS);
                             break;
                         default:
                             break;
@@ -617,19 +609,19 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
                 }
             }
             for (int i = 0; i < Player::INVENTORY_SLOT_COUNT; i++) {
-                if (pCharacter->pInventoryItemList[i].uItemID != ITEM_NULL) {
-                    pCharacter->pInventoryItemList[i].SetIdentified();
+                if (pCharacter.pInventoryItemList[i].uItemID != ITEM_NULL) {
+                    pCharacter.pInventoryItemList[i].SetIdentified();
                 }
             }
             for (int i = 0; i < Player::ADDITIONAL_SLOT_COUNT; i++) {
-                if (pCharacter->pEquippedItems[i].uItemID != ITEM_NULL) {
-                    pCharacter->pEquippedItems[i].SetIdentified();
+                if (pCharacter.pEquippedItems[i].uItemID != ITEM_NULL) {
+                    pCharacter.pEquippedItems[i].SetIdentified();
                 }
             }
         }
 
-        pCharacter->sHealth = pCharacter->GetMaxHealth();
-        pCharacter->sMana = pCharacter->GetMaxMana();
+        pCharacter.sHealth = pCharacter.GetMaxHealth();
+        pCharacter.sMana = pCharacter.GetMaxMana();
     }
 }
 
@@ -653,8 +645,9 @@ void Party::Reset() {
     bTurnBasedModeOn = false;
 
     pParty->_activeCharacter = 1;
-    for (uint i = 0; i < 4; ++i)
+    for (int i = 0; i < pPlayers.size(); ++i) {
         ::pPlayers[i + 1] = &pPlayers[i];
+    }
 
     pPlayers[0].Reset(PLAYER_CLASS_KNIGHT);
     pPlayers[0].uCurrentFace = 17;
@@ -1147,39 +1140,37 @@ void Party::PickedItem_PlaceInInventory_or_Drop() {
     auto texture = assets->GetImage_ColorKey(pParty->pPickedItem.GetIconName());
 
     // check if active player has room in inventory
-    int InventIndex = ::pPlayers[pParty->_activeCharacter]->AddItem(-1, pParty->pPickedItem.uItemID);
-    if (pParty->_activeCharacter && InventIndex != 0) {
-        memcpy(&::pPlayers[pParty->_activeCharacter]->pInventoryItemList[InventIndex - 1], &pParty->pPickedItem, 0x24u);
+    int inventIndex = ::pPlayers[pParty->_activeCharacter]->AddItem(-1, pParty->pPickedItem.uItemID);
+    if (pParty->_activeCharacter && inventIndex != 0) {
+        ::pPlayers[pParty->_activeCharacter]->pInventoryItemList[inventIndex - 1] = pParty->pPickedItem;
         mouse->RemoveHoldingItem();
     } else {
         // see if any other char has room
-        int CharIndex = 0;
-        for (CharIndex = 0; CharIndex < 4; CharIndex++) {
-            int InventIndex = pParty->pPlayers[CharIndex].AddItem(-1, pParty->pPickedItem.uItemID);
-            if (InventIndex) {
+        bool dropItem = true;
+        for (Player &player : pParty->pPlayers) {
+            inventIndex = player.AddItem(-1, pParty->pPickedItem.uItemID);
+            if (inventIndex) {
                 // found room so give char item
-                memcpy(&pParty->pPlayers[CharIndex].pInventoryItemList[InventIndex - 1], &pParty->pPickedItem, sizeof(ItemGen));
+                player.pInventoryItemList[inventIndex - 1] = pParty->pPickedItem;
                 mouse->RemoveHoldingItem();
+                dropItem = false;
                 break;
             }
         }
 
         // no chars have room so drop
-        if (CharIndex == 4) {
+        if (dropItem) {
             SpriteObject object;
             object.uType = (SPRITE_OBJECT_TYPE)pItemTable->pItems[pParty->pPickedItem.uItemID].uSpriteID;
             object.spell_caster_pid = PID(OBJECT_Player, 0);
             object.uObjectDescID = pObjectList->ObjectIDByItemID(object.uType);
-            object.vPosition.y = pParty->vPosition.y;
-            object.vPosition.x = pParty->vPosition.x;
-            object.vPosition.z = pParty->sEyelevel + pParty->vPosition.z;
+            object.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->sEyelevel);
             object.uSoundID = 0;
             object.uFacing = 0;
             object.uAttributes = SPRITE_DROPPED_BY_PLAYER;
             object.uSpriteFrameID = 0;
-            object.uSectorID = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y,
-                                                  pParty->sEyelevel + pParty->vPosition.z);
-            memcpy(&object.containing_item, &pParty->pPickedItem, sizeof(object.containing_item));
+            object.uSectorID = pIndoor->GetSector(object.vPosition);
+            object.containing_item = pParty->pPickedItem;
             object.Create(pParty->_viewYaw, 184, 200, 0);
             mouse->RemoveHoldingItem();
         }
@@ -1193,34 +1184,28 @@ void Party::PickedItem_PlaceInInventory_or_Drop() {
 
 //----- (0048C6F6) --------------------------------------------------------
 bool Party::AddItemToParty(ItemGen *pItem) {
-    char *v5;         // eax@8
-    // Texture_MM7 *v7; // ebx@10
-    signed int v8;  // esi@10
     int v10;        // eax@11
-    // int v21; // [sp+24h] [bp-4h]@10
 
     assert(pParty->_activeCharacter > 0); // code in this function couldn't handle pParty->_activeCharacter = 0 and crash
 
-    ITEM_TYPE v2 = pItem->uItemID;
-    if (!pItemTable->pItems[v2].uItemID_Rep_St) {
+    if (!pItemTable->pItems[pItem->uItemID].uItemID_Rep_St) {
         pItem->SetIdentified();
     }
 
-    v5 = pItemTable->pItems[v2].pIconName;
-    if (v5) {
-        auto texture = assets->GetImage_ColorKey(v5);
-        v8 = 0;
-        uint current_player = std::max(1u, pParty->_activeCharacter);
-        for (int i = 0; i < 4; i++) {
-            current_player = current_player + i;
-            if (current_player > 4) current_player = current_player - 4;
-            Player *player = ::pPlayers[current_player];
-            v10 = player->AddItem(-1, pItem->uItemID);
-            if (v10) {
-                memcpy(&player->pInventoryItemList[v10 - 1], pItem, 0x24u);
+    char *iconName = pItemTable->pItems[pItem->uItemID].pIconName;
+    if (iconName) {
+        auto texture = assets->GetImage_ColorKey(iconName);
+        int current_player = pParty->_activeCharacter - 1;
+        for (int i = 0; i < pPlayers.size(); i++, current_player++) {
+            if (current_player >= pPlayers.size()) {
+                current_player = 0;
+            }
+            int itemIndex = pPlayers[current_player].AddItem(-1, pItem->uItemID);
+            if (itemIndex) {
+                pPlayers[current_player].pInventoryItemList[itemIndex - 1] = *pItem;
                 pItem->Reset();
                 pAudioPlayer->playUISound(SOUND_gold01);
-                player->playReaction(SPEECH_FoundItem);
+                pPlayers[current_player].playReaction(SPEECH_FoundItem);
 
                 if (texture) {
                     texture->Release();
