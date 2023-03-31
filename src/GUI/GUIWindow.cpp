@@ -1291,7 +1291,6 @@ unsigned int GetSkillColor(PLAYER_CLASS_TYPE uPlayerClass, PLAYER_SKILL_TYPE uPl
         default:
             Error("Tier calculate error for class %d.", uPlayerClass);
             break;
-
     }
 }
 
