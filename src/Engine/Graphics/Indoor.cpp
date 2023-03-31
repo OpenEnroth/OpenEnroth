@@ -48,7 +48,7 @@
 #include "Library/Random/Random.h"
 
 // TODO(pskelton): make this neater
-static DecalBuilder* decal_builder = EngineIoc::ResolveDecalBuilder();
+static DecalBuilder* decal_builder = EngineIocContainer::ResolveDecalBuilder();
 
 IndoorLocation *pIndoor = new IndoorLocation;
 BLVRenderParams *pBLVRenderParams = new BLVRenderParams;
@@ -665,7 +665,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
                 continue;
 
             // add found faces into store
-            if (pFace->Contains(Vec3i(sX, sY, 0), MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.Get(), FACE_XY_PLANE))
+            if (pFace->Contains(Vec3i(sX, sY, 0), MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.value(), FACE_XY_PLANE))
                 FoundFaceStore[NumFoundFaceStore++] = uFaceID;
             if (NumFoundFaceStore >= 5)
                 break; // TODO(captainurist): we do get here sometimes (e.g. in dragon cave), increase limit?
@@ -1113,7 +1113,7 @@ void BLV_UpdateDoors() {
 
 //----- (0046F90C) --------------------------------------------------------
 void UpdateActors_BLV() {
-    if (engine->config->debug.NoActors.Get())
+    if (engine->config->debug.NoActors.value())
         return;
 
     for (Actor &actor : pActors) {
@@ -1141,8 +1141,8 @@ void UpdateActors_BLV() {
             if (actor.uAIState == Dead || actor.uAIState == Dying) {
                 if (actor.vPosition.z < floorZ + 30) { // 30 to provide small error / rounding factor
                     if (pMonsterStats->pInfos[actor.pMonsterInfo.uID].bBloodSplatOnDeath) {
-                        if (engine->config->graphics.BloodSplats.Get()) {
-                            float splatRadius = actor.uActorRadius * engine->config->graphics.BloodSplatsMultiplier.Get();
+                        if (engine->config->graphics.BloodSplats.value()) {
+                            float splatRadius = actor.uActorRadius * engine->config->graphics.BloodSplatsMultiplier.value();
                             decal_builder->AddBloodsplat((float)actor.vPosition.x, (float)actor.vPosition.y, (float)(floorZ + 30), 1.0, 0.0, 0.0, splatRadius);
                         }
                         actor.donebloodsplat = true;
@@ -1318,8 +1318,7 @@ void PrepareToLoadBLV(bool bLoading) {
             if (!decoration->DontDraw()) {
                 if (decoration->uLightRadius) {
                     unsigned char r = 255, g = 255, b = 255;
-                    if (/*render->pRenderD3D*/ true &&
-                        render->config->graphics.ColoredLights.Get()) {
+                    if (/*render->pRenderD3D*/ true && render->config->graphics.ColoredLights.value()) {
                         r = decoration->uColoredLightRed;
                         g = decoration->uColoredLightGreen;
                         b = decoration->uColoredLightBlue;
@@ -1438,7 +1437,7 @@ int BLV_GetFloorLevel(const Vec3i &pos, unsigned int uSectorID, unsigned int *pF
         if (pFloor->Ethereal())
             continue;
 
-        if (!pFloor->Contains(pos, MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.Get(), FACE_XY_PLANE))
+        if (!pFloor->Contains(pos, MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.value(), FACE_XY_PLANE))
             continue;
 
         // TODO: Does POLYGON_Ceiling really belong here?
@@ -1469,7 +1468,7 @@ int BLV_GetFloorLevel(const Vec3i &pos, unsigned int uSectorID, unsigned int *pF
             if (portal->uPolygonType != POLYGON_Floor)
                 continue;
 
-            if(!portal->Contains(pos, MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.Get(), FACE_XY_PLANE))
+            if(!portal->Contains(pos, MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.value(), FACE_XY_PLANE))
                 continue;
 
             blv_floor_z[FacesFound] = -29000;
@@ -1487,7 +1486,7 @@ int BLV_GetFloorLevel(const Vec3i &pos, unsigned int uSectorID, unsigned int *pF
 
     // no face found - probably wrong sector supplied
     if (!FacesFound) {
-        if (engine->config->debug.VerboseLogging.Get())
+        if (engine->config->debug.VerboseLogging.value())
             logger->Warning("Floorlvl fail: {} {} {}", pos.x, pos.y, pos.z);
 
         *pFaceID = -1;
@@ -2000,28 +1999,28 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     while (pPartyActionQueue->uNumActions) {
         switch (pPartyActionQueue->Next()) {
             case PARTY_TurnLeft:
-                if (engine->config->settings.TurnSpeed.Get() > 0)
-                    angle = TrigLUT.uDoublePiMask & (angle + (int)engine->config->settings.TurnSpeed.Get());
+                if (engine->config->settings.TurnSpeed.value() > 0)
+                    angle = TrigLUT.uDoublePiMask & (angle + (int) engine->config->settings.TurnSpeed.value());
                 else
                     angle = TrigLUT.uDoublePiMask & (angle + static_cast<int>(rotation * fTurnSpeedMultiplier));
                 break;
             case PARTY_TurnRight:
-                if (engine->config->settings.TurnSpeed.Get() > 0)
-                    angle = TrigLUT.uDoublePiMask & (angle - (int)engine->config->settings.TurnSpeed.Get());
+                if (engine->config->settings.TurnSpeed.value() > 0)
+                    angle = TrigLUT.uDoublePiMask & (angle - (int) engine->config->settings.TurnSpeed.value());
                 else
                     angle = TrigLUT.uDoublePiMask & (angle - static_cast<int>(rotation * fTurnSpeedMultiplier));
                 break;
 
             case PARTY_FastTurnLeft:
-                if (engine->config->settings.TurnSpeed.Get() > 0)
-                    angle = TrigLUT.uDoublePiMask & (angle + (int)engine->config->settings.TurnSpeed.Get());
+                if (engine->config->settings.TurnSpeed.value() > 0)
+                    angle = TrigLUT.uDoublePiMask & (angle + (int) engine->config->settings.TurnSpeed.value());
                 else
                     angle = TrigLUT.uDoublePiMask & (angle + static_cast<int>(2.0f * rotation * fTurnSpeedMultiplier));
                 break;
 
             case PARTY_FastTurnRight:
-                if (engine->config->settings.TurnSpeed.Get() > 0)
-                    angle = TrigLUT.uDoublePiMask & (angle - (int)engine->config->settings.TurnSpeed.Get());
+                if (engine->config->settings.TurnSpeed.value() > 0)
+                    angle = TrigLUT.uDoublePiMask & (angle - (int) engine->config->settings.TurnSpeed.value());
                 else
                     angle = TrigLUT.uDoublePiMask & (angle - static_cast<int>(2.0f * rotation * fTurnSpeedMultiplier));
                 break;
@@ -2063,7 +2062,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 break;
 
             case PARTY_LookUp:
-                vertical_angle += engine->config->settings.VerticalTurnSpeed.Get();
+                vertical_angle += engine->config->settings.VerticalTurnSpeed.value();
                 if (vertical_angle > 128)
                     vertical_angle = 128;
                 if (pParty->hasActiveCharacter())
@@ -2071,7 +2070,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 break;
 
             case PARTY_LookDown:
-                vertical_angle -= engine->config->settings.VerticalTurnSpeed.Get();
+                vertical_angle -= engine->config->settings.VerticalTurnSpeed.value();
                 if (vertical_angle < -128)
                     vertical_angle = -128;
                 if (pParty->hasActiveCharacter())
@@ -2261,7 +2260,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     }
 
     // walking / running sounds ------------------------
-    if (engine->config->settings.WalkSound.Get()) {
+    if (engine->config->settings.WalkSound.value()) {
         pParty->walk_sound_timer -= pEventTimer->uTimeElapsed;
 
         if (pParty->walk_sound_timer <= 0) {

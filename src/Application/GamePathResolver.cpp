@@ -2,18 +2,13 @@
 
 #include "Application/GamePathResolver.h"
 
-#include "Engine/IocContainer.h"
+#include "Engine/EngineIocContainer.h"
 #include "Library/Logger/Logger.h"
 #include "Platform/Platform.h"
 
-
-using EngineIoc = Engine_::IocContainer;
-
-
 static std::string _resolvePath(Platform *platform, const char *envVarOverride, const std::vector<const wchar_t *> &registryKeys);
 
-
-std::string Application::resolveMm6Path(Platform *platform) {
+std::string resolveMm6Path(Platform *platform) {
     return _resolvePath(
         platform,
         mm6PathOverrideKey,
@@ -26,7 +21,7 @@ std::string Application::resolveMm6Path(Platform *platform) {
 }
 
 
-std::string Application::resolveMm7Path(Platform *platform) {
+std::string resolveMm7Path(Platform *platform) {
     return _resolvePath(
         platform,
         mm7PathOverrideKey,
@@ -39,7 +34,7 @@ std::string Application::resolveMm7Path(Platform *platform) {
 }
 
 
-std::string Application::resolveMm8Path(Platform *platform) {
+std::string resolveMm8Path(Platform *platform) {
     return _resolvePath(
         platform,
         mm8PathOverrideKey,
@@ -73,7 +68,7 @@ static std::string _resolvePath(
     }
 
     if (!envPath.empty()) {
-        EngineIoc::ResolveLogger()->Info("Path override provided: {}={}", envVarOverride, envPathStr);
+        EngineIocContainer::ResolveLogger()->Info("Path override provided: {}={}", envVarOverride, envPathStr);
         return envPath;
     }
 

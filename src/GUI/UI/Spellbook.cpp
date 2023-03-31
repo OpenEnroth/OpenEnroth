@@ -89,7 +89,7 @@ void GUIWindow_Spellbook::OpenSpellbook() {
 
     PlayerSpellbookChapter *chapter = &pPlayer->spellbook.pChapters[pPlayer->lastOpenedSpellbookPage];
     for (uint i = 0; i < 11; ++i) {
-        if (!chapter->bIsSpellAvailable[i] && !engine->config->debug.AllMagic.Get())
+        if (!chapter->bIsSpellAvailable[i] && !engine->config->debug.AllMagic.value())
             continue;
 
         v4 = pPlayer->lastOpenedSpellbookPage;
@@ -107,23 +107,23 @@ void GUIWindow_Spellbook::OpenSpellbook() {
     CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_SpellBook_PressTab, 0, InputAction::CharCycle);
     if (a2) _41D08F_set_keyboard_control_group(a2, 0, 0, 0);
 
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_FIRE] || engine->config->debug.AllMagic.Get())
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_FIRE] || engine->config->debug.AllMagic.value())
         CreateButton({399, 10}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 0, InputAction::Invalid, localization->GetSpellSchoolName(0));
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_AIR] || engine->config->debug.AllMagic.Get())
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_AIR] || engine->config->debug.AllMagic.value())
         CreateButton({399, 46}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 1, InputAction::Invalid, localization->GetSpellSchoolName(1));
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_WATER] || engine->config->debug.AllMagic.Get())
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_WATER] || engine->config->debug.AllMagic.value())
         CreateButton({399, 83}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 2, InputAction::Invalid, localization->GetSpellSchoolName(2));
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_EARTH] || engine->config->debug.AllMagic.Get())
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_EARTH] || engine->config->debug.AllMagic.value())
         CreateButton({399, 121}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 3, InputAction::Invalid, localization->GetSpellSchoolName(3));
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_SPIRIT] || engine->config->debug.AllMagic.Get())
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_SPIRIT] || engine->config->debug.AllMagic.value())
         CreateButton({399, 158}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 4, InputAction::Invalid, localization->GetSpellSchoolName(5));
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_MIND] || engine->config->debug.AllMagic.Get())
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_MIND] || engine->config->debug.AllMagic.value())
         CreateButton({400, 196}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 5, InputAction::Invalid, localization->GetSpellSchoolName(4));
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_BODY] || engine->config->debug.AllMagic.Get())
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_BODY] || engine->config->debug.AllMagic.value())
         CreateButton({400, 234}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 6, InputAction::Invalid, localization->GetSpellSchoolName(6));
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_LIGHT] || engine->config->debug.AllMagic.Get())
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_LIGHT] || engine->config->debug.AllMagic.value())
         CreateButton({400, 271}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 7, InputAction::Invalid, localization->GetSpellSchoolName(7));
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_DARK] || engine->config->debug.AllMagic.Get())
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_DARK] || engine->config->debug.AllMagic.value())
         CreateButton({400, 307}, {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, 8, InputAction::Invalid, localization->GetSpellSchoolName(8));
 
     CreateButton({476, 450}, {ui_spellbook_btn_quckspell->GetWidth(), ui_spellbook_btn_quckspell->GetHeight()}, 1, 78,
@@ -158,7 +158,7 @@ void GUIWindow_Spellbook::Update() {
 
     int page = 0;
     for (PLAYER_SKILL_TYPE i : MagicSkills()) {
-        if (player->pActiveSkills[i] || engine->config->debug.AllMagic.Get()) {
+        if (player->pActiveSkills[i] || engine->config->debug.AllMagic.value()) {
             auto pPageTexture = ui_spellbook_school_tabs[page][0];
             if (player->lastOpenedSpellbookPage == page) {
                 pPageTexture = ui_spellbook_school_tabs[page][1];
@@ -175,7 +175,7 @@ void GUIWindow_Spellbook::Update() {
             PlayerSpellbookChapter *chapter =
                 &player->spellbook.pChapters[player->lastOpenedSpellbookPage];
             for (unsigned int i = 0; i < 11; ++i) {
-                if (chapter->bIsSpellAvailable[i] || engine->config->debug.AllMagic.Get()) {
+                if (chapter->bIsSpellAvailable[i] || engine->config->debug.AllMagic.value()) {
                         // this should check if oplayer knows spell
                     if (SBPageSSpellsTextureList[i+1]) {
                         if (quick_spell_at_page == i+1)
@@ -277,8 +277,7 @@ void LoadSpellbook(unsigned int spell_school) {
         quick_spell_at_page = 0;
 
     for (unsigned int i = 1; i <= 11; ++i) {
-        if (pPlayers[pParty->getActiveCharacter()]->spellbook.pChapters[spell_school].bIsSpellAvailable[i - 1] ||
-            engine->config->debug.AllMagic.Get()) {
+        if (pPlayers[pParty->getActiveCharacter()]->spellbook.pChapters[spell_school].bIsSpellAvailable[i - 1] || engine->config->debug.AllMagic.value()) {
             char pContainer[20];
             sprintf(pContainer, "SB%sS%02d",
                     spellbook_texture_filename_suffices[spell_school],

@@ -1110,11 +1110,8 @@ int NPCDialogueEventProcessor(int npc_event_id, int entry_line) {
 
                 case EVENT_OnCanShowDialogItemCmp:
                     ready_to_exit = true;
-                    for (int i = 0; i < 4; ++i) {
-                        if (pParty->pPlayers[i].CompareVariable(
-                                (enum VariableType)EVT_WORD(_evt->v5), EVT_DWORD(_evt->v7)
-                            )
-                        ) {
+                    for (Player &player : pParty->pPlayers) {
+                        if (player.CompareVariable((enum VariableType)EVT_WORD(_evt->v5), EVT_DWORD(_evt->v7))) {
                             event_index = -1;
                             evt_seq_num = EVT_BYTE(_evt->v11) - 1;
                             break;
@@ -1194,9 +1191,9 @@ const char *GetProfessionActionText(NPCProf prof) {
 int UseNPCSkill(NPCProf profession) {
     switch (profession) {
         case Healer: {
-            for (int i = 0; i < 4; ++i)
-                pParty->pPlayers[i].sHealth =
-                    pParty->pPlayers[i].GetMaxHealth();
+            for (Player &player : pParty->pPlayers) {
+                player.sHealth = player.GetMaxHealth();
+            }
         } break;
 
         case ExpertHealer: {
@@ -1218,11 +1215,12 @@ int UseNPCSkill(NPCProf profession) {
                 Condition_Good
             }};
 
-            for (int i = 0; i < 4; ++i) {
-                pParty->pPlayers[i].sHealth = pParty->pPlayers[i].GetMaxHealth();
+            for (Player &player : pParty->pPlayers) {
+                player.sHealth = player.GetMaxHealth();
 
-                for (Condition condition : conditionsToHeal)
-                    pParty->pPlayers[i].conditions.Reset(condition);
+                for (Condition condition : conditionsToHeal) {
+                    player.conditions.Reset(condition);
+                }
             }
         } break;
 

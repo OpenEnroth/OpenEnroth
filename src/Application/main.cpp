@@ -13,27 +13,22 @@
 
 #include "Utility/ScopeGuard.h"
 
-// TODO(captainurist): we don't need these namespaces
-using Application::Game;
-using Application::GameConfig;
-using Application::GameFactory;
-
 int MM_Main(int argc, char **argv) {
     try {
         std::unique_ptr<PlatformLogger> logger = PlatformLogger::createStandardLogger(WIN_ENSURE_CONSOLE_OPTION);
         logger->setLogLevel(APPLICATION_LOG, LOG_INFO);
         logger->setLogLevel(PLATFORM_LOG, LOG_ERROR);
-        EngineIoc::ResolveLogger()->SetBaseLogger(logger.get());
-        MM_AT_SCOPE_EXIT(EngineIoc::ResolveLogger()->SetBaseLogger(nullptr));
+        EngineIocContainer::ResolveLogger()->SetBaseLogger(logger.get());
+        MM_AT_SCOPE_EXIT(EngineIocContainer::ResolveLogger()->SetBaseLogger(nullptr));
         Engine::LogEngineBuildInfo();
 
         std::unique_ptr<PlatformApplication> app = std::make_unique<PlatformApplication>(logger.get());
 
-        Application::AutoInitDataPath(app->platform());
+        AutoInitDataPath(app->platform());
 
         std::shared_ptr<GameConfig> gameConfig = std::make_shared<GameConfig>();
         gameConfig->LoadConfiguration();
-        if (!Application::ParseGameOptions(argc, argv, &*gameConfig))
+        if (!ParseGameOptions(argc, argv, &*gameConfig))
             return 1;
 
         std::shared_ptr<Game> game = GameFactory().CreateGame(app.get(), gameConfig);

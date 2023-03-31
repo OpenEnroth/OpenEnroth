@@ -130,7 +130,7 @@ void BspRenderer::MakeVisibleSectorList() {
             pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[uNumVisibleNotEmptySectors++] = nodes[i].uSectorID;
 
         // drop all sectors beyond config limit
-        if (uNumVisibleNotEmptySectors >= engine->config->graphics.MaxVisibleSectors.Get()) {
+        if (uNumVisibleNotEmptySectors >= engine->config->graphics.MaxVisibleSectors.value()) {
             break;
         }
     }

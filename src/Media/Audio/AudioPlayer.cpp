@@ -121,7 +121,7 @@ void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
         return;
     }
 
-    if (!engine->config->debug.NoSound.Get() && bPlayerReady && engine->config->settings.MusicLevel.Get() > 0) {
+    if (!engine->config->debug.NoSound.value() && bPlayerReady && engine->config->settings.MusicLevel.value() > 0) {
         if (pCurrentMusicTrack) {
             pCurrentMusicTrack->Stop();
         }
@@ -137,7 +137,7 @@ void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
         pCurrentMusicTrack = CreateAudioTrack(file_path);
         if (pCurrentMusicTrack) {
             currentMusicTrack = eTrack;
-            pCurrentMusicTrack->SetVolume(pSoundVolumeLevels[engine->config->settings.MusicLevel.Get()] * maxVolumeGain);
+            pCurrentMusicTrack->SetVolume(pSoundVolumeLevels[engine->config->settings.MusicLevel.value()] * maxVolumeGain);
             pCurrentMusicTrack->Play();
         }
     }
@@ -238,7 +238,7 @@ void AudioPlayer::stopSounds() {
     while (iter != mapSounds.end()) {
         SoundInfo &si = iter->second;
         if (si.sample) {
-            if (si.sample->Stop() && engine->config->debug.VerboseLogging.Get()) {
+            if (si.sample->Stop() && engine->config->debug.VerboseLogging.value()) {
                 logger->Info("sound stopped: {}", si.sName);
             }
         }
@@ -265,7 +265,7 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
 
     //logger->Info("AudioPlayer: trying to load sound id {}", eSoundID);
 
-    if (engine->config->settings.SoundLevel.Get() < 1 || (eSoundID == SOUND_Invalid)) {
+    if (engine->config->settings.SoundLevel.value() < 1 || (eSoundID == SOUND_Invalid)) {
         return;
     }
 
@@ -385,7 +385,7 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
             default: {
                 // TODO(pskelton): temp fix to reduce instances of sounds not playing
                 si.sample->Play();
-                if (engine->config->debug.VerboseLogging.Get())
+                if (engine->config->debug.VerboseLogging.value())
                     logger->Warning("Unexpected object type from PID in playSound");
                 break;
             }
@@ -394,7 +394,7 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
 
     si.last_pid = pid;
 
-    if (engine->config->debug.VerboseLogging.Get()) {
+    if (engine->config->debug.VerboseLogging.value()) {
         if (si.sName == "")
             logger->Info("AudioPlayer: playing sound {}", eSoundID);
         else
@@ -409,7 +409,7 @@ void AudioPlayer::ResumeSounds() {
     while (iter != mapSounds.end()) {
         SoundInfo &si = iter->second;
         if (si.sample) {
-            if (si.sample->Resume() && engine->config->debug.VerboseLogging.Get())
+            if (si.sample->Resume() && engine->config->debug.VerboseLogging.value())
                 logger->Info("sound resumed: {}", si.sName);
         }
         ++iter;
@@ -432,7 +432,7 @@ void AudioPlayer::PauseSounds(int uType) {
         while (iter != mapSounds.end()) {
             SoundInfo &si = iter->second;
             if (si.sample) {
-                if (si.sample->Pause() && engine->config->debug.VerboseLogging.Get())
+                if (si.sample->Pause() && engine->config->debug.VerboseLogging.value())
                     logger->Info("sound paused: {}", si.sName);
             }
             ++iter;
@@ -445,7 +445,7 @@ void AudioPlayer::PauseSounds(int uType) {
             if (si.sample) {
                 if (si.last_pid != PID_INVALID &&
                         si.last_pid != SOUND_PID_NON_RESETABLE) {
-                    if (si.sample->Pause() && engine->config->debug.VerboseLogging.Get())
+                    if (si.sample->Pause() && engine->config->debug.VerboseLogging.value())
                         logger->Info("sound paused: {}", si.sName);
                 }
             }
@@ -486,10 +486,10 @@ void AudioPlayer::Initialize() {
     currentMusicTrack = 0;
     uMasterVolume = 127;
 
-    pAudioPlayer->SetMasterVolume(engine->config->settings.SoundLevel.Get());
-    pAudioPlayer->SetVoiceVolume(engine->config->settings.VoiceLevel.Get());
+    pAudioPlayer->SetMasterVolume(engine->config->settings.SoundLevel.value());
+    pAudioPlayer->SetVoiceVolume(engine->config->settings.VoiceLevel.value());
     if (bPlayerReady) {
-        SetMusicVolume(engine->config->settings.MusicLevel.Get());
+        SetMusicVolume(engine->config->settings.MusicLevel.value());
     }
     LoadAudioSnd();
 

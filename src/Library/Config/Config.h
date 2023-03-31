@@ -6,7 +6,7 @@
 
 #include "ConfigFwd.h"
 #include "ConfigSection.h"
-#include "ConfigValue.h"
+#include "ConfigEntry.h"
 
 class Config {
  public:
@@ -14,16 +14,16 @@ class Config {
     Config(const Config &other) = delete; // non-copyable
     Config(Config&& other) = delete; // non-movable
 
-    void Load(const std::string &path);
-    void Save(const std::string &path) const;
-    void Reset();
+    void load(const std::string &path);
+    void save(const std::string &path) const;
+    void reset();
 
-    void RegisterSection(ConfigSection *section);
+    void registerSection(ConfigSection *section);
 
-    ConfigSection *Section(const std::string &name) const;
+    ConfigSection *section(const std::string &name) const;
 
-    std::vector<ConfigSection *> Sections() const;
+    std::vector<ConfigSection *> sections() const;
 
  private:
-    std::map<std::string, ConfigSection *> sectionByName_;
+    std::map<std::string, ConfigSection *> _sectionByName;
 };

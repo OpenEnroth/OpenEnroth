@@ -429,7 +429,7 @@ SpriteFrame *LevelDecorationChangeSeason(const DecorationDesc *desc, int t, int 
 }
 
 int SpriteFrame::GetPaletteIndex() {
-    if (!engine->config->graphics.HWLSprites.Get()) {
+    if (!engine->config->graphics.HWLSprites.value()) {
         if (this->uPaletteIndex == 0)
             this->uPaletteIndex = pPaletteManager->LoadPalette(this->uPaletteID);
         return this->uPaletteIndex;

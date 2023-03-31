@@ -10,9 +10,9 @@
 #include "Utility/MapAccess.h"
 #include "Utility/Exception.h"
 
-void Config::Load(const std::string &path) {
+void Config::load(const std::string &path) {
     if (!std::filesystem::exists(path))
-        throw Exception("Config file '{}' doesn't exist", path);
+        throw Exception("config file '{}' doesn't exist", path);
 
     mINI::INIFile file(path);
     mINI::INIStructure ini;
@@ -20,54 +20,44 @@ void Config::Load(const std::string &path) {
         throw Exception("Couldn't read config file '{}'", path);
 
     for (const auto &[sectionName, iniSection] : ini)
-        if (ConfigSection *section = Section(sectionName))
-            for (const auto &[valueName, valueString] : iniSection)
-                if (AbstractConfigValue *value = section->Value(valueName))
-                    value->SetString(valueString);
+        if (ConfigSection *section = this->section(sectionName))
+            for (const auto &[entryName, iniValue] : iniSection)
+                if (AnyConfigEntry *entry = section->entry(entryName))
+                    entry->setString(iniValue);
 }
 
-void Config::Save(const std::string &path) const {
+void Config::save(const std::string &path) const {
     mINI::INIFile file(path);
     mINI::INIStructure ini;
 
-    for (ConfigSection *section : Sections())
-        for (AbstractConfigValue *value : section->Values())
-            ini[section->Name()][value->Name()] = value->GetString();
+    for (ConfigSection *section : sections())
+        for (AnyConfigEntry *entry : section->entries())
+            ini[section->name()][entry->name()] = entry->string();
 
     if (!file.write(ini, true))
         throw Exception("Couldn't save config file '{}'", path);
 }
 
-void Config::Reset() {
-    for (ConfigSection *section : Sections())
-        for (AbstractConfigValue *value : section->Values())
-            value->Reset();
+void Config::reset() {
+    for (ConfigSection *section : sections())
+        for (AnyConfigEntry *entry : section->entries())
+            entry->reset();
 }
 
-void Config::RegisterSection(ConfigSection *section) {
+void Config::registerSection(ConfigSection *section) {
     assert(section);
-    assert(!sectionByName_.contains(section->Name()));
+    assert(!_sectionByName.contains(section->name()));
 
-    sectionByName_.emplace(section->Name(), section);
+    _sectionByName.emplace(section->name(), section);
 }
 
-ConfigSection *Config::Section(const std::string &name) const {
-    return valueOr(sectionByName_, name, nullptr);
+ConfigSection *Config::section(const std::string &name) const {
+    return valueOr(_sectionByName, name, nullptr);
 }
 
-std::vector<ConfigSection *> Config::Sections() const {
+std::vector<ConfigSection *> Config::sections() const {
     std::vector<ConfigSection *> result;
-    for (const auto &[_, section] : sectionByName_)
+    for (const auto &[_, section] : _sectionByName)
         result.push_back(section);
     return result;
-}
-
-AbstractConfigValue::AbstractConfigValue(ConfigSection *section, const std::string &name, const std::string &description):
-    section_(section),
-    name_(name),
-    description_(description) {
-    assert(section);
-    assert(!name.empty());
-
-    section->RegisterValue(this);
 }

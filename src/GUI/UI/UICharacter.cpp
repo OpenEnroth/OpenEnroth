@@ -30,8 +30,6 @@
 #include "Utility/MapAccess.h"
 #include "Library/Random/Random.h"
 
-using EngineIoc = Engine_::IocContainer;
-
 void CharacterUI_LoadPaperdollTextures();
 
 /**
@@ -1320,7 +1318,7 @@ static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, Texture *i
         render->BlendTextures(x, y, item_texture, enchantment_texture, platform->tickCount() / 10, 0, 255);
     } else if (item->IsBroken()) {
         render->DrawTransparentRedShade(x / 640.0f, y / 480.0f, item_texture);
-    } else if (!item->IsIdentified() && (engine->config->gameplay.ShowUndentifiedItem.Get() || id)) {
+    } else if (!item->IsIdentified() && (engine->config->gameplay.ShowUndentifiedItem.value() || id)) {
         render->DrawTransparentGreenShade(x / 640.0f, y / 480.0f, item_texture);
     } else {
         render->DrawTextureNew(x / 640.0f, y / 480.0f, item_texture);

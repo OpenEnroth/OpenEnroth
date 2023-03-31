@@ -11,7 +11,7 @@ set(APPLICATION_SOURCES
         GamePathResolver.cpp
         GameTraceHandler.cpp
         GameWindowHandler.cpp
-        IocContainer.cpp)
+        GameIocContainer.cpp)
 
 set(APPLICATION_HEADERS
         Game.h
@@ -24,7 +24,7 @@ set(APPLICATION_HEADERS
         GamePathResolver.h
         GameTraceHandler.h
         GameWindowHandler.h
-        IocContainer.h)
+        GameIocContainer.h)
 
 add_library(application STATIC ${APPLICATION_SOURCES} ${APPLICATION_HEADERS})
 target_check_style(application)

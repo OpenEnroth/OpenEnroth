@@ -8,27 +8,27 @@
 
 class ConfigSection {
  public:
-    ConfigSection(::Config *config, const std::string &name); // Defined in Config.cpp
+    ConfigSection(Config *config, const std::string &name); // Defined in Config.cpp
 
     ConfigSection(const ConfigSection &other) = delete; // non-copyable
     ConfigSection(ConfigSection&& other) = delete; // non-movable
 
-    ::Config *Config() const {
-        return config_;
+    Config *config() const {
+        return _config;
     }
 
-    const std::string &Name() const {
-        return name_;
+    const std::string &name() const {
+        return _name;
     }
 
-    void RegisterValue(AbstractConfigValue *value);
+    void registerEntry(AnyConfigEntry *entry);
 
-    AbstractConfigValue *Value(const std::string &name) const;
+    AnyConfigEntry *entry(const std::string &name) const;
 
-    std::vector<AbstractConfigValue *> Values() const;
+    std::vector<AnyConfigEntry *> entries() const;
 
  private:
-    ::Config *config_ = nullptr;
-    std::string name_;
-    std::map<std::string, AbstractConfigValue *> valueByName_;
+    Config *_config = nullptr;
+    std::string _name;
+    std::map<std::string, AnyConfigEntry *> _entryByName;
 };

@@ -162,7 +162,7 @@ bool KeyboardActionMapping::IsKeyMatchAction(InputAction action, PlatformKey key
 }
 
 //----- (00459C8D) --------------------------------------------------------
-KeyboardActionMapping::KeyboardActionMapping(std::shared_ptr<Application::GameConfig> config) {
+KeyboardActionMapping::KeyboardActionMapping(std::shared_ptr<GameConfig> config) {
     this->config = config;
 
     SetDefaultMapping();
@@ -320,23 +320,23 @@ GameConfig::Key *KeyboardActionMapping::InputActionToConfigKey(InputAction actio
 }
 
 PlatformKey KeyboardActionMapping::ConfigDefaultKey(InputAction action) {
-    ConfigValue<PlatformKey> *val = InputActionToConfigKey(action);
-    return val ? val->Default() : PlatformKey::None;
+    ConfigEntry<PlatformKey> *val = InputActionToConfigKey(action);
+    return val ? val->defaultValue() : PlatformKey::None;
 }
 
 PlatformKey KeyboardActionMapping::ConfigGetKey(InputAction action) {
-    ConfigValue<PlatformKey> *val = InputActionToConfigKey(action);
-    return val ? val->Get() : PlatformKey::None;
+    ConfigEntry<PlatformKey> *val = InputActionToConfigKey(action);
+    return val ? val->value() : PlatformKey::None;
 }
 
 void KeyboardActionMapping::ConfigSetKey(InputAction action, PlatformKey key) {
-    if (ConfigValue<PlatformKey> *val = InputActionToConfigKey(action))
-        val->Set(key);
+    if (ConfigEntry<PlatformKey> *val = InputActionToConfigKey(action))
+        val->setValue(key);
 }
 
 PlatformKey KeyboardActionMapping::ConfigDefaultGamepadKey(InputAction action) {
     GameConfig::Key *val = InputActionToConfigGamepadKey(action);
-    return val ? val->Default() : PlatformKey::None;
+    return val ? val->defaultValue() : PlatformKey::None;
 }
 
 GameConfig::Key *KeyboardActionMapping::InputActionToConfigGamepadKey(InputAction action) {
@@ -424,10 +424,10 @@ GameConfig::Key *KeyboardActionMapping::InputActionToConfigGamepadKey(InputActio
 
 PlatformKey KeyboardActionMapping::ConfigGetGamepadKey(InputAction action) {
     GameConfig::Key *val = InputActionToConfigGamepadKey(action);
-    return val ? val->Get() : PlatformKey::None;
+    return val ? val->value() : PlatformKey::None;
 }
 
 void KeyboardActionMapping::ConfigSetGamepadKey(InputAction action, PlatformKey key) {
     if (GameConfig::Key *val = InputActionToConfigGamepadKey(action))
-        val->Set(key);
+        val->setValue(key);
 }

@@ -25,7 +25,7 @@ MediaLogger::MediaLogger(Logger *logger): logger_(logger) {
 }
 
 void MediaLogger::Log(void *ptr, int logLevel, const char *format, va_list args) {
-    if (!engine->config->debug.VerboseLogging.Get()) // TODO(captainurist): just handle log levels & log categories properly
+    if (!engine->config->debug.VerboseLogging.value()) // TODO(captainurist): just handle log levels & log categories properly
         return;
 
     LogState& state = stateByThreadId_[std::this_thread::get_id()];

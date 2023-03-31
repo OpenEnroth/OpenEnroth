@@ -3,16 +3,14 @@
 #include <string>
 
 #include "Engine/LOD.h"
-#include "Engine/IocContainer.h"
+#include "Engine/EngineIocContainer.h"
 
 #include "Engine/Graphics/Image.h"
-
-using EngineIoc = Engine_::IocContainer;
 
 class ImageLoader {
  public:
     inline ImageLoader() {
-         this->log = EngineIoc::ResolveLogger();
+         this->log = EngineIocContainer::ResolveLogger();
     }
     virtual ~ImageLoader() {}
     virtual std::string GetResourceName() const { return this->resource_name; }

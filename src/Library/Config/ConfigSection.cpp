@@ -6,27 +6,27 @@
 
 #include "Config.h"
 
-ConfigSection::ConfigSection(::Config *config, const std::string &name): config_(config), name_(name) {
+ConfigSection::ConfigSection(Config *config, const std::string &name): _config(config), _name(name) {
     assert(config);
     assert(!name.empty());
 
-    config->RegisterSection(this);
+    config->registerSection(this);
 }
 
-void ConfigSection::RegisterValue(AbstractConfigValue *value) {
-    assert(value);
-    assert(!valueByName_.contains(value->Name()));
+void ConfigSection::registerEntry(AnyConfigEntry *entry) {
+    assert(entry);
+    assert(!_entryByName.contains(entry->name()));
 
-    valueByName_.emplace(value->Name(), value);
+    _entryByName.emplace(entry->name(), entry);
 }
 
-AbstractConfigValue *ConfigSection::Value(const std::string &name) const {
-    return valueOr(valueByName_, name, nullptr);
+AnyConfigEntry *ConfigSection::entry(const std::string &name) const {
+    return valueOr(_entryByName, name, nullptr);
 }
 
-std::vector<AbstractConfigValue *> ConfigSection::Values() const {
-    std::vector<AbstractConfigValue *> result;
-    for(const auto &[_, value] : valueByName_)
-        result.push_back(value);
+std::vector<AnyConfigEntry *> ConfigSection::entries() const {
+    std::vector<AnyConfigEntry *> result;
+    for(const auto &[_, entry] : _entryByName)
+        result.push_back(entry);
     return result;
 }

@@ -49,8 +49,6 @@
 
 #include "Utility/Math/TrigLut.h"
 
-
-using EngineIoc = Engine_::IocContainer;
 using Io::InputAction;
 
 Image *game_ui_statusbar = nullptr;
@@ -375,7 +373,7 @@ void GUIWindow_GameVideoOptions::Update() {
     // 004156F0 GUI_UpdateWindows --- part
     GUIWindow msg_window;  // [sp+8h] [bp-54h]@3
 
-    int gammalevel = engine->config->graphics.Gamma.Get();
+    int gammalevel = engine->config->graphics.Gamma.value();
 
     render->DrawTextureNew(
         8 / 640.0f, 8 / 480.0f,
@@ -401,11 +399,11 @@ void GUIWindow_GameVideoOptions::Update() {
         );
     }
 
-    if (engine->config->graphics.BloodSplats.Get())
+    if (engine->config->graphics.BloodSplats.value())
         render->DrawTextureNew(20 / 640.0f, 281 / 480.0f, game_ui_menu_options_video_bloodsplats);
-    if (engine->config->graphics.ColoredLights.Get())
+    if (engine->config->graphics.ColoredLights.value())
         render->DrawTextureNew(20 / 640.0f, 303 / 480.0f, game_ui_menu_options_video_coloredlights);
-    if (engine->config->graphics.Tinting.Get())
+    if (engine->config->graphics.Tinting.value())
         render->DrawTextureNew(20 / 640.0f, 325 / 480.0f, game_ui_menu_options_video_tinting);
 }
 
@@ -516,7 +514,7 @@ void GUIWindow_GameOptions::Update() {
     render->DrawTextureNew(8 / 640.0f, 132 / 480.0f,
                                 options_menu_skin.uTextureID_Background);
 
-    switch ((int)engine->config->settings.TurnSpeed.Get()) {
+    switch ((int) engine->config->settings.TurnSpeed.value()) {
         case 64:
             render->DrawTextureNew(
                 BtnTurnCoord[1] / 640.0f, 270 / 480.0f,
@@ -534,36 +532,36 @@ void GUIWindow_GameOptions::Update() {
             break;
     }
 
-    if (engine->config->settings.WalkSound.Get()) {
+    if (engine->config->settings.WalkSound.value()) {
         render->DrawTextureNew(
             20 / 640.0f, 303 / 480.0f,
             options_menu_skin.uTextureID_WalkSound);
     }
-    if (engine->config->settings.ShowHits.Get()) {
+    if (engine->config->settings.ShowHits.value()) {
         render->DrawTextureNew(
             128 / 640.0f, 303 / 480.0f,
             options_menu_skin.uTextureID_ShowDamage);
     }
-    if (engine->config->settings.FlipOnExit.Get()) {
+    if (engine->config->settings.FlipOnExit.value()) {
         render->DrawTextureNew(
             128 / 640.0f, 325 / 480.0f,
             options_menu_skin.uTextureID_FlipOnExit);
     }
-    if (engine->config->settings.AlwaysRun.Get()) {
+    if (engine->config->settings.AlwaysRun.value()) {
         render->DrawTextureNew(
             20 / 640.0f, 325 / 480.0f,
             options_menu_skin.uTextureID_AlwaysRun);
     }
 
     render->DrawTextureNew(
-        (265 + 17 * engine->config->settings.SoundLevel.Get()) / 640.0f, 162 / 480.0f,
-        options_menu_skin.uTextureID_SoundLevels[engine->config->settings.SoundLevel.Get()]);
+        (265 + 17 * engine->config->settings.SoundLevel.value()) / 640.0f, 162 / 480.0f,
+        options_menu_skin.uTextureID_SoundLevels[engine->config->settings.SoundLevel.value()]);
     render->DrawTextureNew(
-        (265 + 17 * engine->config->settings.MusicLevel.Get()) / 640.0f, 216 / 480.0f,
-        options_menu_skin.uTextureID_SoundLevels[engine->config->settings.MusicLevel.Get()]);
+        (265 + 17 * engine->config->settings.MusicLevel.value()) / 640.0f, 216 / 480.0f,
+        options_menu_skin.uTextureID_SoundLevels[engine->config->settings.MusicLevel.value()]);
     render->DrawTextureNew(
-        (265 + 17 * engine->config->settings.VoiceLevel.Get()) / 640.0f, 270 / 480.0f,
-        options_menu_skin.uTextureID_SoundLevels[engine->config->settings.VoiceLevel.Get()]);
+        (265 + 17 * engine->config->settings.VoiceLevel.value()) / 640.0f, 270 / 480.0f,
+        options_menu_skin.uTextureID_SoundLevels[engine->config->settings.VoiceLevel.value()]);
 }
 
 void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
@@ -998,7 +996,7 @@ void GameUI_WritePointedObjectStatusString() {
                 return;
             }
 
-            auto vis = EngineIoc::ResolveVis();
+            auto vis = EngineIocContainer::ResolveVis();
 
             // get_picked_object_zbuf_val contains both the pid and the depth
             pickedObject = vis->get_picked_object_zbuf_val();
@@ -1621,7 +1619,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
         uWizardEyeSkillLevel = uWizardEyeSkillLevel > PLAYER_SKILL_MASTERY_EXPERT ? uWizardEyeSkillLevel : PLAYER_SKILL_MASTERY_EXPERT;
     }
 
-    if (engine->config->debug.WizardEye.Get()) {
+    if (engine->config->debug.WizardEye.value()) {
         bWizardEyeActive = true;
         uWizardEyeSkillLevel = PLAYER_SKILL_MASTERY_MASTER;
     }
@@ -2168,7 +2166,7 @@ void GUIWindow_DebugMenu::Update() {
 
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {0, 10}, 0, "Debug Menu", 0, 0, 0);
 
-    buttonbox(13, 140, "Town Portal", engine->config->debug.TownPortal.Get());
+    buttonbox(13, 140, "Town Portal", engine->config->debug.TownPortal.value());
     buttonbox(127, 140, "Give Gold", 2);
     buttonbox(241, 140, "Give EXP", 2);
     buttonbox(354, 140, "Give Skill", 2);
@@ -2183,22 +2181,22 @@ void GUIWindow_DebugMenu::Update() {
     if (pParty->alignment == PartyAlignment::PartyAlignment_Good) col = 1;
     if (pParty->alignment == PartyAlignment::PartyAlignment_Neutral) col = 2;
     buttonbox(13, 194, "Alignment", col);
-    buttonbox(127, 194, "WizardEye", engine->config->debug.WizardEye.Get());
-    buttonbox(241, 194, "All Magic", engine->config->debug.AllMagic.Get());
-    buttonbox(354, 194, "Terrain", engine->config->debug.Terrain.Get());
+    buttonbox(127, 194, "WizardEye", engine->config->debug.WizardEye.value());
+    buttonbox(241, 194, "All Magic", engine->config->debug.AllMagic.value());
+    buttonbox(354, 194, "Terrain", engine->config->debug.Terrain.value());
 
-    buttonbox(13, 221, "Lightmap", engine->config->debug.LightmapDecals.Get());
-    buttonbox(127, 221, "Turbo", engine->config->debug.TurboSpeed.Get());
-    buttonbox(241, 221, "No Actors", engine->config->debug.NoActors.Get());
-    buttonbox(354, 221, "Fog", engine->config->graphics.Fog.Get());
+    buttonbox(13, 221, "Lightmap", engine->config->debug.LightmapDecals.value());
+    buttonbox(127, 221, "Turbo", engine->config->debug.TurboSpeed.value());
+    buttonbox(241, 221, "No Actors", engine->config->debug.NoActors.value());
+    buttonbox(354, 221, "Fog", engine->config->graphics.Fog.value());
 
-    buttonbox(13, 248, "Snow", engine->config->graphics.Snow.Get());
-    buttonbox(127, 248, "Portal Lines", engine->config->debug.PortalOutlines.Get());
-    buttonbox(241, 248, "Picked Face", engine->config->debug.ShowPickedFace.Get());
-    buttonbox(354, 248, "Show FPS", engine->config->debug.ShowFPS.Get());
+    buttonbox(13, 248, "Snow", engine->config->graphics.Snow.value());
+    buttonbox(127, 248, "Portal Lines", engine->config->debug.PortalOutlines.value());
+    buttonbox(241, 248, "Picked Face", engine->config->debug.ShowPickedFace.value());
+    buttonbox(354, 248, "Show FPS", engine->config->debug.ShowFPS.value());
 
-    buttonbox(13, 275, "Seasons", engine->config->graphics.SeasonsChange.Get());
-    buttonbox(127, 275, "Verbose Log", engine->config->debug.VerboseLogging.Get());
+    buttonbox(13, 275, "Seasons", engine->config->graphics.SeasonsChange.value());
+    buttonbox(127, 275, "Verbose Log", engine->config->debug.VerboseLogging.value());
     buttonbox(241, 275, "Gen Item", 2);
     buttonbox(354, 275, "Special Item", 2);
 
@@ -2212,7 +2210,7 @@ void GUIWindow_DebugMenu::Update() {
 
     buttonbox(13, 329, "Dead", 2);
     buttonbox(127, 329, "Eradicate", 2);
-    buttonbox(241, 329, "No Damage", engine->config->debug.NoDamage.Get());
+    buttonbox(241, 329, "No Damage", engine->config->debug.NoDamage.value());
     buttonbox(354, 329, "Full Heal", 2);
 
     //render->DrawTwodVerts();

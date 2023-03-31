@@ -113,6 +113,7 @@ Language features:
 * It's OK to use plain `enum`s if you really need to have implicit casts to integer types, but this is a very rare use case. If you're using `enum` values to index into some array, consider using `enum class` coupled with `IndexedArray`.
 * Make your code speak for itself when it comes to ownership. If a function takes ownership of one of its parameters, it should take `std::unique_ptr` by value. If it allocates its result and passes ownership to the caller, then it should return `std::unique_ptr`.
 * Use an `int` unless you need something else. Don’t try to avoid negative values by using `unsigned`, this implies many changes to the usual behavior of integers and can be a source of bugs. See a section in [core guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#arithmetic) for more info. However, don't overdo it, use `size_t` for indexing into STL containers.
+* Don't use namespaces when breaking up your code into libraries. OpenEnroth is a relatively small codebase and doesn't need the measures advocated by the Google style guide to prevent name clashes. Exception to this rule is `namespace detail` that you're encouraged to use to hide implementation details and prevent cluttering of the global namespace.
 
 There is a lot of code in the project that doesn't follow these conventions. Please feel free to fix it, preferably not mixing up style and logical changes in the same PR.
 

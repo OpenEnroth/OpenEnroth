@@ -51,8 +51,6 @@
 
 #include "Library/Random/Random.h"
 
-using EngineIoc = Engine_::IocContainer;
-
 using Graphics::IRenderFactory;
 
 /*
@@ -247,7 +245,7 @@ void Engine::DrawGUI() {
 
     ++frames_this_second;
 
-    if (engine->config->debug.ShowFPS.Get()) {
+    if (engine->config->debug.ShowFPS.value()) {
         if (render_framerate) {
             pPrimaryWindow->DrawText(pFontArrus, {494, 0}, colorTable.White.c16(), fmt::format("FPS: {: .4f}", framerate), 0, 0, 0);
         }
@@ -312,7 +310,7 @@ void Engine::PushStationaryLights(int a2) {
 }
 
 void Engine::StackPartyTorchLight() {
-    int TorchLightDistance = engine->config->graphics.TorchlightDistance.Get();
+    int TorchLightDistance = engine->config->graphics.TorchlightDistance.value();
     // TODO(pskelton): set this on level load
     if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) TorchLightDistance = 1024;
     if (TorchLightDistance > 0) {  // lightspot around party
@@ -322,7 +320,7 @@ void Engine::StackPartyTorchLight() {
             int MinTorch = TorchLightDistance;
             int MaxTorch = TorchLightDistance * pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
 
-            int torchLightFlicker = engine->config->graphics.TorchlightFlicker.Get();
+            int torchLightFlicker = engine->config->graphics.TorchlightFlicker.value();
             if (torchLightFlicker > 0) {
                 // torchlight flickering effect
                 // TorchLightPower *= pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;  // 2,3,4
@@ -354,7 +352,7 @@ void Engine::StackPartyTorchLight() {
             pParty->flt_TorchlightColorG = 96;
             pParty->flt_TorchlightColorB = 96;
 
-            if (engine->config->debug.VerboseLogging.Get())
+            if (engine->config->debug.VerboseLogging.value())
                 logger->Warning("Torchlight doesn't have color");
         }
 
@@ -394,7 +392,7 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
             face_filter = &vis_face_filter;
             sprite_filter = &vis_sprite_filter_4;
         }
-        depth = config->gameplay.RangedAttackDepth.Get();
+        depth = config->gameplay.RangedAttackDepth.value();
     }
     // depth = v2;
 
@@ -466,7 +464,7 @@ void Engine::Deinitialize() {
 
 //----- (0044EE7C) --------------------------------------------------------
 bool Engine::draw_debug_outlines() {
-    if (/*uFlags & 0x04*/ engine->config->debug.LightmapDecals.Get()) {
+    if (/*uFlags & 0x04*/ engine->config->debug.LightmapDecals.value()) {
         DrawLightsDebugOutlines(-1);
         decal_builder->DrawDecalDebugOutlines();
     }
@@ -575,16 +573,16 @@ int Engine::_44ED0A_saturate_face_blv(BLVFace *a2, int *a3, signed int a4) {
 }
 
 //----- (0044E4B7) --------------------------------------------------------
-Engine::Engine(std::shared_ptr<Application::GameConfig> config) {
+Engine::Engine(std::shared_ptr<GameConfig> config) {
     this->config = config;
-    this->log = EngineIoc::ResolveLogger();
-    this->bloodsplat_container = EngineIoc::ResolveBloodsplatContainer();
-    this->decal_builder = EngineIoc::ResolveDecalBuilder();
-    this->spell_fx_renedrer = EngineIoc::ResolveSpellFxRenderer();
-    this->mouse = EngineIoc::ResolveMouse();
-    this->nuklear = EngineIoc::ResolveNuklear();
-    this->particle_engine = EngineIoc::ResolveParticleEngine();
-    this->vis = EngineIoc::ResolveVis();
+    this->log = EngineIocContainer::ResolveLogger();
+    this->bloodsplat_container = EngineIocContainer::ResolveBloodsplatContainer();
+    this->decal_builder = EngineIocContainer::ResolveDecalBuilder();
+    this->spell_fx_renedrer = EngineIocContainer::ResolveSpellFxRenderer();
+    this->mouse = EngineIocContainer::ResolveMouse();
+    this->nuklear = EngineIocContainer::ResolveNuklear();
+    this->particle_engine = EngineIocContainer::ResolveParticleEngine();
+    this->vis = EngineIocContainer::ResolveVis();
 
     uNumStationaryLights = 0;
     uNumStationaryLights_in_pStationaryLightsStack = 0;
@@ -752,7 +750,7 @@ void UpdateUserInput_and_MapSpecificStuff() {
 
 //----- (004646F0) --------------------------------------------------------
 void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
-    Vis *vis = EngineIoc::ResolveVis();
+    Vis *vis = EngineIocContainer::ResolveVis();
     vis->_4C1A02();
 
     pEventTimer->Pause();
@@ -879,9 +877,9 @@ bool Engine::MM7_Initialize() {
     pParty = new Party();
 
     pParty->pHirelings.fill(NPCData());
-    pParty->uDefaultEyelevel = pParty->sEyelevel = engine->config->gameplay.PartyEyeLevel.Get();
-    pParty->uDefaultPartyHeight = pParty->uPartyHeight = engine->config->gameplay.PartyHeight.Get();
-    pParty->uWalkSpeed = engine->config->gameplay.PartyWalkSpeed.Get();
+    pParty->uDefaultEyelevel = pParty->sEyelevel = engine->config->gameplay.PartyEyeLevel.value();
+    pParty->uDefaultPartyHeight = pParty->uPartyHeight = engine->config->gameplay.PartyHeight.value();
+    pParty->uWalkSpeed = engine->config->gameplay.PartyWalkSpeed.value();
 
     MM6_Initialize();
 
@@ -961,7 +959,7 @@ bool Engine::MM7_Initialize() {
         pSoundList->FromFile(sounds_mm6, sounds_mm7, sounds_mm8);
     }
 
-    if (!config->debug.NoSound.Get())
+    if (!config->debug.NoSound.value())
         pAudioPlayer->Initialize();
 
     pMediaPlayer = new MPlayer();
@@ -996,7 +994,7 @@ void Engine::SecondaryInitialization() {
     pObjectList->InitializeSprites();
     pOverlayList->InitializeSprites();
 
-    if (!engine->config->debug.NoSound.Get())
+    if (!engine->config->debug.NoSound.value())
         pSoundList->Initialize();
 
     for (uint i = 0; i < 4; ++i) {
@@ -1061,10 +1059,10 @@ void MM6_Initialize() {
 
     viewparams = new ViewingParams;
     Sizei wsize = window->size();
-    game_viewport_x = viewparams->uScreen_topL_X = engine->config->graphics.ViewPortX1.Get(); //8
-    game_viewport_y = viewparams->uScreen_topL_Y = engine->config->graphics.ViewPortY1.Get(); //8
-    game_viewport_z = viewparams->uScreen_BttmR_X = wsize.w - engine->config->graphics.ViewPortX2.Get(); //468;
-    game_viewport_w = viewparams->uScreen_BttmR_Y = wsize.h - engine->config->graphics.ViewPortY2.Get(); //352;
+    game_viewport_x = viewparams->uScreen_topL_X = engine->config->graphics.ViewPortX1.value(); //8
+    game_viewport_y = viewparams->uScreen_topL_Y = engine->config->graphics.ViewPortY1.value(); //8
+    game_viewport_z = viewparams->uScreen_BttmR_X = wsize.w - engine->config->graphics.ViewPortX2.value(); //468;
+    game_viewport_w = viewparams->uScreen_BttmR_Y = wsize.h - engine->config->graphics.ViewPortY2.value(); //352;
 
     game_viewport_width = game_viewport_z - game_viewport_x;
     game_viewport_height = game_viewport_w - game_viewport_y;
@@ -1204,7 +1202,7 @@ void Engine::_461103_load_level_sub() {
     int v20;  // [sp+18h] [bp-44h]@14
     int v21[16] {};     // [sp+1Ch] [bp-40h]@17
 
-    if (engine->config->debug.NoActors.Get())
+    if (engine->config->debug.NoActors.value())
         pActors.clear();
 
     GenerateItemsInChest();
@@ -1282,9 +1280,9 @@ void Engine::_461103_load_level_sub() {
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    if (engine->config->debug.NoActors.Get())
+    if (engine->config->debug.NoActors.value())
         pActors.clear();
-    if (engine->config->debug.NoDecorations.Get())
+    if (engine->config->debug.NoDecorations.value())
         pLevelDecorations.clear();
     init_event_triggers();
 
@@ -1324,7 +1322,7 @@ void InitializeTurnBasedAnimations(void *_this) {
 
 //----- (0046BDA8) --------------------------------------------------------
 unsigned int GetGravityStrength() {
-    return engine->config->gameplay.Gravity.Get();
+    return engine->config->gameplay.Gravity.value();
 }
 
 //----- (00448B45) --------------------------------------------------------
@@ -1771,7 +1769,7 @@ void RegeneratePartyHealthMana() {
             if (pParty->bFlying) {
                 int caster = pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1;
                 assert(caster >= 0);
-                if (pParty->pPlayers[caster].sMana > 0 && !engine->config->debug.AllMagic.Get()) {
+                if (pParty->pPlayers[caster].sMana > 0 && !engine->config->debug.AllMagic.value()) {
                     pParty->pPlayers[caster].sMana -= 1;
                 }
             }
@@ -1785,10 +1783,10 @@ void RegeneratePartyHealthMana() {
                 int mana_drain = 1;
                 assert(caster >= 0);
                 // Vanilla bug: Water Walk drains mana with the same speed as Fly
-                if (engine->config->gameplay.FixWaterWalkManaDrain.Get() && ((cur_minutes % 20) != 0)) {
+                if (engine->config->gameplay.FixWaterWalkManaDrain.value() && ((cur_minutes % 20) != 0)) {
                     mana_drain = 0;
                 }
-                if (pParty->pPlayers[caster].sMana > 0 && !engine->config->debug.AllMagic.Get()) {
+                if (pParty->pPlayers[caster].sMana > 0 && !engine->config->debug.AllMagic.value()) {
                     pParty->pPlayers[caster].sMana -= mana_drain;
                 }
             }
@@ -1829,38 +1827,43 @@ void RegeneratePartyHealthMana() {
         }
 
         // HP/SP regeneration and HP deterioration
-        for (int playerID = 0; playerID < 4; playerID++) {
+        for (Player &player : pParty->pPlayers) {
             bool recovery_HP = false;
             bool decrease_HP = false;
             bool recovery_SP = false;
 
             for (ITEM_SLOT idx : AllItemSlots()) {
-                if (pParty->pPlayers[playerID].HasItemEquipped(idx)) {
-                    uint _idx = pParty->pPlayers[playerID].pEquipment.pIndices[idx];
-                    ItemGen equppedItem = pParty->pPlayers[playerID].pInventoryItemList[_idx - 1];
+                if (player.HasItemEquipped(idx)) {
+                    uint _idx = player.pEquipment.pIndices[idx];
+                    ItemGen equppedItem = player.pInventoryItemList[_idx - 1];
                     if (!IsRegular(equppedItem.uItemID)) {
-                        if (equppedItem.uItemID == ITEM_RELIC_ETHRICS_STAFF)
+                        if (equppedItem.uItemID == ITEM_RELIC_ETHRICS_STAFF) {
                             decrease_HP = true;
+                        }
                         if (equppedItem.uItemID == ITEM_ARTIFACT_HERMES_SANDALS) {
                             recovery_HP = true;
                             recovery_SP = true;
                         }
-                        if (equppedItem.uItemID == ITEM_ARTIFACT_MINDS_EYE)
+                        if (equppedItem.uItemID == ITEM_ARTIFACT_MINDS_EYE) {
                             recovery_SP = true;
-                        if (equppedItem.uItemID == ITEM_ARTIFACT_HEROS_BELT)
+                        }
+                        if (equppedItem.uItemID == ITEM_ARTIFACT_HEROS_BELT) {
                             recovery_HP = true;
+                        }
                     } else {
                         ITEM_ENCHANTMENT special_enchantment = equppedItem.special_enchantment;
                         if (special_enchantment == ITEM_ENCHANTMENT_OF_REGENERATION
                             || special_enchantment == ITEM_ENCHANTMENT_OF_LIFE
                             || special_enchantment == ITEM_ENCHANTMENT_OF_PHOENIX
-                            || special_enchantment == ITEM_ENCHANTMENT_OF_TROLL)
+                            || special_enchantment == ITEM_ENCHANTMENT_OF_TROLL) {
                             recovery_HP = true;
+                        }
 
                         if (special_enchantment == ITEM_ENCHANTMENT_OF_MANA
                             || special_enchantment == ITEM_ENCHANTMENT_OF_ECLIPSE
-                            || special_enchantment == ITEM_ENCHANTMENT_OF_UNICORN)
+                            || special_enchantment == ITEM_ENCHANTMENT_OF_UNICORN) {
                             recovery_SP = true;
+                        }
 
                         if (special_enchantment == ITEM_ENCHANTMENT_OF_PLENTY) {
                             recovery_HP = true;
@@ -1868,37 +1871,32 @@ void RegeneratePartyHealthMana() {
                         }
                     }
 
-                    if (recovery_HP && pParty->pPlayers[playerID].conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
-                        if (pParty->pPlayers[playerID].sHealth <
-                            pParty->pPlayers[playerID].GetMaxHealth()) {
-                            ++pParty->pPlayers[playerID].sHealth;
+                    if (recovery_HP && player.conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
+                        if (player.sHealth < player.GetMaxHealth()) {
+                            player.sHealth++;
                         }
-                        if (pParty->pPlayers[playerID].conditions.Has(Condition_Unconscious) &&
-                            pParty->pPlayers[playerID].sHealth > 0) {
-                            pParty->pPlayers[playerID].conditions.Reset(Condition_Unconscious);
+                        if (player.conditions.Has(Condition_Unconscious) && player.sHealth > 0) {
+                            player.conditions.Reset(Condition_Unconscious);
                         }
                     }
 
-                    if (recovery_SP && pParty->pPlayers[playerID].conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
-                        if (pParty->pPlayers[playerID].sMana <
-                            pParty->pPlayers[playerID].GetMaxMana())
-                            ++pParty->pPlayers[playerID].sMana;
+                    if (recovery_SP && player.conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
+                        if (player.sMana < player.GetMaxMana()) {
+                            player.sMana++;
+                        }
                     }
 
-                    if (decrease_HP && pParty->pPlayers[playerID].conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
-                        --pParty->pPlayers[playerID].sHealth;
-                        if (!(pParty->pPlayers[playerID].conditions.Has(Condition_Unconscious)) &&
-                            pParty->pPlayers[playerID].sHealth < 0) {
-                            pParty->pPlayers[playerID].conditions.Set(Condition_Unconscious, pParty->GetPlayingTime());
+                    if (decrease_HP && player.conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
+                        player.sHealth--;
+                        if (!(player.conditions.Has(Condition_Unconscious)) && player.sHealth < 0) {
+                            player.conditions.Set(Condition_Unconscious, pParty->GetPlayingTime());
                         }
-                        if (pParty->pPlayers[playerID].sHealth < 1) {
-                            if (pParty->pPlayers[playerID].sHealth +
-                                pParty->pPlayers[playerID].uEndurance +
-                                pParty->pPlayers[playerID].GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) >= 1 ||
-                                pParty->pPlayers[playerID].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].expire_time) {
-                                pParty->pPlayers[playerID].conditions.Set(Condition_Unconscious, pParty->GetPlayingTime());
-                            } else if (!pParty->pPlayers[playerID].conditions.Has(Condition_Dead)) {
-                                pParty->pPlayers[playerID].conditions.Set(Condition_Dead, pParty->GetPlayingTime());
+                        if (player.sHealth < 1) {
+                            int enduranceCheck = player.sHealth + player.uEndurance + player.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE);
+                            if (enduranceCheck >= 1 || player.pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active()) {
+                                player.conditions.Set(Condition_Unconscious, pParty->GetPlayingTime());
+                            } else if (!player.conditions.Has(Condition_Dead)) {
+                                player.conditions.Set(Condition_Dead, pParty->GetPlayingTime());
                             }
                         }
                     }
@@ -1906,64 +1904,55 @@ void RegeneratePartyHealthMana() {
             }
 
             // regeneration buff
-            if (pParty->pPlayers[playerID].pPlayerBuffs[PLAYER_BUFF_REGENERATION].expire_time &&
-                pParty->pPlayers[playerID].conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
-                pParty->pPlayers[playerID].sHealth += 5 * pParty->pPlayers[playerID].pPlayerBuffs[PLAYER_BUFF_REGENERATION].uPower;
-                if (pParty->pPlayers[playerID].sHealth >
-                    pParty->pPlayers[playerID].GetMaxHealth()) {
-                    pParty->pPlayers[playerID].sHealth = pParty->pPlayers[playerID].GetMaxHealth();
+            if (player.pPlayerBuffs[PLAYER_BUFF_REGENERATION].Active() && player.conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
+                player.sHealth += 5 * player.pPlayerBuffs[PLAYER_BUFF_REGENERATION].uPower;
+                if (player.sHealth > player.GetMaxHealth()) {
+                    player.sHealth = player.GetMaxHealth();
                 }
-                if (pParty->pPlayers[playerID].conditions.Has(Condition_Unconscious) &&
-                    pParty->pPlayers[playerID].sHealth > 0) {
-                    pParty->pPlayers[playerID].conditions.Reset(Condition_Unconscious);
+                if (player.conditions.Has(Condition_Unconscious) && player.sHealth > 0) {
+                    player.conditions.Reset(Condition_Unconscious);
                 }
             }
 
             // for warlock
-            if (PartyHasDragon() &&
-                pParty->pPlayers[playerID].classType == PLAYER_CLASS_WARLOCK) {
-                if (pParty->pPlayers[playerID].sMana <
-                    pParty->pPlayers[playerID].GetMaxMana()) {
-                    ++pParty->pPlayers[playerID].sMana;
+            if (PartyHasDragon() && player.classType == PLAYER_CLASS_WARLOCK) {
+                if (player.sMana < player.GetMaxMana()) {
+                    player.sMana++;
                 }
             }
 
             // for lich
-            if (pParty->pPlayers[playerID].classType == PLAYER_CLASS_LICH) {
+            if (player.classType == PLAYER_CLASS_LICH) {
                 bool lich_has_jar = false;
-                for (int idx = 0; idx < 126; ++idx) {
-                    if (pParty->pPlayers[playerID].pInventoryItemList[idx].uItemID == ITEM_QUEST_LICH_JAR_FULL)
+                for (int idx = 0; idx < Player::INVENTORY_SLOT_COUNT; ++idx) {
+                    if (player.pInventoryItemList[idx].uItemID == ITEM_QUEST_LICH_JAR_FULL)
                         lich_has_jar = true;
                 }
 
-                if (pParty->pPlayers[playerID].conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
-                    if (pParty->pPlayers[playerID].sHealth >
-                        pParty->pPlayers[playerID].GetMaxHealth() / 2) {
-                        pParty->pPlayers[playerID].sHealth = pParty->pPlayers[playerID].sHealth - 2;
+                if (player.conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
+                    if (player.sHealth > (player.GetMaxHealth() / 2)) {
+                        player.sHealth = player.sHealth - 2;
                     }
-                    if (pParty->pPlayers[playerID].sMana >
-                        pParty->pPlayers[playerID].GetMaxMana() / 2) {
-                        pParty->pPlayers[playerID].sMana = pParty->pPlayers[playerID].sMana - 2;
+                    if (player.sMana > (player.GetMaxMana() / 2)) {
+                        player.sMana = player.sMana - 2;
                     }
                 }
 
                 if (lich_has_jar) {
-                    if (pParty->pPlayers[playerID].sMana < pParty->pPlayers[playerID].GetMaxMana()) {
-                        ++pParty->pPlayers[playerID].sMana;
+                    if (player.sMana < player.GetMaxMana()) {
+                        player.sMana++;
                     }
                 }
             }
 
             // for zombie
-            if (pParty->pPlayers[playerID].conditions.Has(Condition_Zombie) &&
-                pParty->pPlayers[playerID].conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
-                if (pParty->pPlayers[playerID].sHealth >
-                    pParty->pPlayers[playerID].GetMaxHealth() / 2) {
-                    pParty->pPlayers[playerID].sHealth =
-                        pParty->pPlayers[playerID].sHealth - 1;
+            if (player.conditions.Has(Condition_Zombie) &&
+                player.conditions.HasNone({Condition_Dead, Condition_Eradicated})) {
+                if (player.sHealth > (player.GetMaxHealth() / 2)) {
+                    player.sHealth = player.sHealth--;
                 }
-                if (pParty->pPlayers[playerID].sMana > 0) {
-                    pParty->pPlayers[playerID].sMana = pParty->pPlayers[playerID].sMana - 1;
+                if (player.sMana > 0) {
+                    player.sMana = player.sMana--;
                 }
             }
         }

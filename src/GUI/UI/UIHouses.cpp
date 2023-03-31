@@ -52,7 +52,6 @@
 using namespace std::chrono_literals; // NOLINT
 
 using Io::TextInputType;
-using EngineIoc = Engine_::IocContainer;
 
 int uHouse_ExitPic;
 int _F8B1DC_currentShopOption;  // F8B1DC
@@ -3035,7 +3034,7 @@ int HouseDialogPressCloseBtn() {
 }
 
 void BackToHouseMenu() {
-    auto pMouse = EngineIoc::ResolveMouse();
+    auto pMouse = EngineIocContainer::ResolveMouse();
     pMouse->ClearPickedItem();
     if (window_SpeakInHouse && window_SpeakInHouse->wData.val == 165 &&
         !pMovie_Track) {
@@ -3417,7 +3416,7 @@ void GUIWindow_House::Release() {
     }
 
     dword_5C35D4 = 0;
-    if (engine->config->settings.FlipOnExit.Get()) {
+    if (engine->config->settings.FlipOnExit.value()) {
         pParty->_viewYaw = (TrigLUT.uIntegerDoublePi - 1) & (TrigLUT.uIntegerPi + pParty->_viewYaw);
         pCamera3D->_viewYaw = pParty->_viewYaw;
     }

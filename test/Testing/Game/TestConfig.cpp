@@ -2,10 +2,10 @@
 
 #include "Application/GameConfig.h"
 
-void ResetTestConfig(Application::GameConfig *config) {
-    config->Reset();
+void ResetTestConfig(GameConfig *config) {
+    config->reset();
 
-    config->debug.NoVideo.Set(true);
-    config->window.MouseGrab.Set(false);
-    config->graphics.FPSLimit.Set(0); // Unlimited
+    config->debug.NoVideo.setValue(true);
+    config->window.MouseGrab.setValue(false);
+    config->graphics.FPSLimit.setValue(0); // Unlimited
 }

@@ -25,8 +25,6 @@
 
 #include "Library/Random/Random.h"
 
-using EngineIoc = Engine_::IocContainer;
-
 void GuildDialog() {
     int pTextHeight;              // eax@55
     int dialogopts;               // [sp+2E0h] [bp-Ch]@35
@@ -109,7 +107,7 @@ void GuildDialog() {
                 return;
             }
 
-            Pointi pt = EngineIoc::ResolveMouse()->GetCursorPos();
+            Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
             int testx = (pt.x - 32) / 70;
             if (testx >= 0 && testx < 6) {
                 if (pt.y >= 250) {

@@ -185,7 +185,7 @@ class HWLTexture;
 class IRender {
  public:
     inline IRender(
-        std::shared_ptr<Application::GameConfig> config,
+        std::shared_ptr<GameConfig> config,
         DecalBuilder *decal_builder,
         LightmapBuilder *lightmap_builder,
         SpellFxRenderer *spellfx,
@@ -243,7 +243,7 @@ class IRender {
     virtual void PresentBlackScreen() = 0;
 
     virtual uint8_t *ReadScreenPixels() = 0;
-    virtual void SaveWinnersCertificate(const char *a1) = 0;
+    virtual void SaveWinnersCertificate(const std::string &filePath) = 0;
     virtual void ClearTarget(unsigned int uColor) = 0;
     virtual void Present() = 0;
 
@@ -372,7 +372,7 @@ class IRender {
     virtual void ReloadShaders() = 0;
     virtual void DoRenderBillboards_D3D() = 0;
 
-    std::shared_ptr<Application::GameConfig> config = nullptr;
+    std::shared_ptr<GameConfig> config = nullptr;
     int *pActiveZBuffer;
     uint32_t uFogColor;
     unsigned int pHDWaterBitmapIDs[7];

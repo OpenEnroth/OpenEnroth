@@ -44,7 +44,7 @@ GAME_TEST(Issues, Issue123) {
 
 GAME_TEST(Issues, Issue125) {
     // check that fireballs hurt party
-    engine->config->debug.AllMagic.Set(true);
+    engine->config->debug.AllMagic.setValue(true);
 
     int oldHealth = 0;
     test->playTraceFromTestData("issue_125.mm7", "issue_125.json", [&] { oldHealth = totalPartyHealth(); });
@@ -254,8 +254,8 @@ GAME_TEST(Issues, Issue294) {
     };
 
     // Testing that party auto-casting shrapnel successfully targets rats & kills them, gaining experience.
-    engine->config->debug.AllMagic.Set(true);
-    engine->config->debug.NoDamage.Set(true);
+    engine->config->debug.AllMagic.setValue(true);
+    engine->config->debug.NoDamage.setValue(true);
 
     uint64_t oldExperience = 0;
     test->playTraceFromTestData("issue_294.mm7", "issue_294.json", [&] { oldExperience = partyExperience(); });

@@ -22,7 +22,7 @@
 #include "Engine/Objects/PlayerEnums.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
-#include "Engine/IocContainer.h"
+#include "Engine/EngineIocContainer.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/StorylineTextTable.h"
 #include "Engine/Time.h"
@@ -49,7 +49,6 @@
 
 #include "GUIBountyHunting.h"
 
-using EngineIoc = Engine_::IocContainer;
 using Io::InputAction;
 
 GUIWindow *pPrimaryWindow;
@@ -732,15 +731,13 @@ void GUIWindow::DrawFlashingInputCursor(int uX, int uY, GUIFont *a2) {
 }
 
 GUIWindow::GUIWindow() : eWindowType(WINDOW_null) {
-    this->mouse = EngineIoc::ResolveMouse();
-    this->log = EngineIoc::ResolveLogger();
+    this->mouse = EngineIocContainer::ResolveMouse();
+    this->log = EngineIocContainer::ResolveLogger();
 }
 
-GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, WindowData wData, const std::string &hint
-)
-    : eWindowType(windowType) {
-    this->mouse = EngineIoc::ResolveMouse();
-    this->log = EngineIoc::ResolveLogger();
+GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, WindowData wData, const std::string &hint): eWindowType(windowType) {
+    this->mouse = EngineIocContainer::ResolveMouse();
+    this->log = EngineIocContainer::ResolveLogger();
 
     log->Info("New window: {}", toString(windowType));
     lWindowList.push_front(this);
@@ -926,7 +923,7 @@ void GUI_UpdateWindows() {
     }
 
     if (sub_4637E0_is_there_popup_onscreen()) {
-        std::shared_ptr<Mouse> mouse = EngineIoc::ResolveMouse();
+        std::shared_ptr<Mouse> mouse = EngineIocContainer::ResolveMouse();
         UI_OnMouseRightClick(mouse->GetCursorPos().x, mouse->GetCursorPos().y);
     }
 }

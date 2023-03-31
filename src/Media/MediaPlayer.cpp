@@ -698,7 +698,7 @@ class VideoList {
     void Initialize(const std::string &file_path) {
         static_assert(sizeof(MovieHeader) == 44, "Wrong type size");
 
-        if (engine->config->debug.NoVideo.Get()) {
+        if (engine->config->debug.NoVideo.value()) {
             return;
         }
 
@@ -796,7 +796,7 @@ void MPlayer::OpenHouseMovie(const std::string &pMovieName, bool bLoop) {
 }
 
 void MPlayer::HouseMovieLoop() {
-    if (!pMovie_Track || engine->config->debug.NoVideo.Get()) {
+    if (!pMovie_Track || engine->config->debug.NoVideo.value()) {
         return;
     }
 
@@ -815,10 +815,10 @@ void MPlayer::HouseMovieLoop() {
     if (buffer) {
         Recti rect;
         Sizei wsize = render->GetRenderDimensions();
-        rect.x = render->config->graphics.HouseMovieX1.Get();
-        rect.y = render->config->graphics.HouseMovieY1.Get();
-        rect.w = wsize.w - render->config->graphics.HouseMovieX2.Get();
-        rect.h = wsize.h - render->config->graphics.HouseMovieY2.Get();
+        rect.x = render->config->graphics.HouseMovieX1.value();
+        rect.y = render->config->graphics.HouseMovieY1.value();
+        rect.w = wsize.w - render->config->graphics.HouseMovieX2.value();
+        rect.h = wsize.h - render->config->graphics.HouseMovieY2.value();
 
         // update pixels from buffer
         uint32_t *pix = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_A8B8G8R8);
@@ -847,7 +847,7 @@ void MPlayer::HouseMovieLoop() {
 }
 
 void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
-    if (engine->config->debug.NoVideo.Get()) {
+    if (engine->config->debug.NoVideo.value()) {
         return;
     }
 

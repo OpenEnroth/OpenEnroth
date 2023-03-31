@@ -9,38 +9,36 @@
 #include "Application/GameConfig.h"
 #include "Utility/Format.h"
 
-using Application::GameConfig;
-
 template<class T>
-bool lexical_cast(const std::string &input, ConfigValue<T> &configValue) {
+bool lexical_cast(const std::string &input, ConfigEntry<T> &configValue) {
     T value;
     if (!CLI::detail::lexical_cast(input, value))
         return false;
 
-    configValue.Set(value);
+    configValue.setValue(value);
     return true;
 }
 
 // TODO(captainurist): we shouldn't need to overload lexical_assign, this begs a PR to CLI11
 template<class A, class B, class T>
-bool lexical_assign(const std::string &input, ConfigValue<T> &configValue) {
+bool lexical_assign(const std::string &input, ConfigEntry<T> &configValue) {
     return lexical_cast(input, configValue);
 }
 
-bool Application::ParseGameOptions(int argc, char **argv, GameConfig *config) {
+bool ParseGameOptions(int argc, char **argv, GameConfig *config) {
     std::unique_ptr<CLI::App> app = std::make_unique<CLI::App>();
 
     auto enableDebug = [&] {
-        config->debug.ShowFPS.Set(true);
-        config->debug.ShowPickedFace.Set(true);
-        config->debug.TownPortal.Set(true);
-        config->debug.InfiniteFood.Set(true);
-        config->debug.InfiniteGold.Set(true);
+        config->debug.ShowFPS.setValue(true);
+        config->debug.ShowPickedFace.setValue(true);
+        config->debug.TownPortal.setValue(true);
+        config->debug.InfiniteFood.setValue(true);
+        config->debug.InfiniteGold.setValue(true);
     };
 
-    auto unset = [] (ConfigValue<bool>& value) {
+    auto unset = [] (ConfigEntry<bool>& value) {
         return [&] {
-            value.Set(false);
+            value.setValue(false);
         };
     };
 
@@ -54,16 +52,16 @@ bool Application::ParseGameOptions(int argc, char **argv, GameConfig *config) {
         std::string valueName = string.substr(dotPos + 1, equalsPos - dotPos - 1);
         std::string valueString = string.substr(equalsPos + 1);
 
-        ConfigSection *section = config->Section(sectionName);
+        ConfigSection *section = config->section(sectionName);
         if (!section)
             throw CLI::ParseError(fmt::format("Section '{}' doesn't exist"_cf, sectionName), CLI::ExitCodes::BaseClass);
 
-        AbstractConfigValue *value = section->Value(valueName);
+        AnyConfigEntry *value = section->entry(valueName);
         if (!value)
             throw CLI::ParseError(fmt::format("Value '{}' doesn't exist in section '{}'"_cf, valueName, sectionName), CLI::ExitCodes::BaseClass);
 
         try {
-            value->SetString(valueString);
+            value->setString(valueString);
         } catch (const std::exception &e) {
             throw CLI::ParseError(e.what(), CLI::ExitCodes::BaseClass);
         }

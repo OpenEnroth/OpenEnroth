@@ -96,14 +96,10 @@
 void ShowMM7IntroVideo_and_LoadingScreen();
 void IntegrityTest();
 
-using Application::Game;
-using Application::GameConfig;
-using Application::GameFactory;
-using Engine_::EngineFactory;
 using Graphics::IRenderFactory;
 
 
-void Application::AutoInitDataPath(Platform *platform) {
+void AutoInitDataPath(Platform *platform) {
     // TODO (captainurist): we should consider reading Unicode (utf8) strings from win32 registry, as it might contain paths
     // curretnly we convert all strings out of registry into CP_ACP (default windows ansi)
     // it is later on passed to std::filesystem that should be ascii on windows as well
@@ -125,7 +121,7 @@ void Application::AutoInitDataPath(Platform *platform) {
             std::filesystem::create_directory(savesPath);
         }
 
-        EngineIoc::ResolveLogger()->Info("Using MM7 directory: {}", mm7dir);
+        EngineIocContainer::ResolveLogger()->Info("Using MM7 directory: {}", mm7dir);
     } else {
         std::string message = fmt::format(
             "Required resources aren't found!\n"
@@ -134,17 +130,17 @@ void Application::AutoInitDataPath(Platform *platform) {
             "resources directory from our repository there as well!",
             !mm7dir.empty() ? mm7dir : "current directory"
         );
-        EngineIoc::ResolveLogger()->Warning("{}", message);
+        EngineIocContainer::ResolveLogger()->Warning("{}", message);
         platform->showMessageBox("CRITICAL ERROR: missing resources", message);
     }
 }
 
 Game::Game(PlatformApplication *app) {
     this->app = app;
-    this->log = EngineIoc::ResolveLogger();
-    this->decal_builder = EngineIoc::ResolveDecalBuilder();
-    this->vis = EngineIoc::ResolveVis();
-    this->menu = GameIoc::ResolveGameMenu();
+    this->log = EngineIocContainer::ResolveLogger();
+    this->decal_builder = EngineIocContainer::ResolveDecalBuilder();
+    this->vis = EngineIocContainer::ResolveVis();
+    this->menu = GameIocContainer::ResolveGameMenu();
 
     ::application = app;
     ::platform = app->platform();
@@ -156,7 +152,7 @@ Game::Game(PlatformApplication *app) {
     // It doesn't matter where to put control component as it's running the control routine after a call to `SwapBuffers`.
     // But the trace component should go after the deterministic component - deterministic component updates tick count,
     // and then trace component stores the updated value in a recorded `PaintEvent`.
-    windowHandler.reset(Application::IocContainer::ResolveGameWindowHandler());
+    windowHandler.reset(GameIocContainer::ResolveGameWindowHandler());
     app->install(windowHandler.get()); // TODO(captainurist): actually move ownership into PlatformApplication?
     app->install(windowHandler->KeyboardController()); // TODO(captainurist): do this properly
     app->install(std::make_unique<EngineControlComponent>());
@@ -208,7 +204,7 @@ int Game::Run() {
         keyboardActionMapping
     );
 
-    mouse = EngineIoc::ResolveMouse();
+    mouse = EngineIocContainer::ResolveMouse();
     ::mouse = mouse;
 
     EngineFactory engineFactory;
@@ -284,11 +280,11 @@ bool Game::Loop() {
 
             pParty->pPickedItem.uItemID = ITEM_NULL;
 
-            pCurrentMapName = config->gameplay.StartingMap.Get();
+            pCurrentMapName = config->gameplay.StartingMap.value();
             bFlashQuestBook = true;
             pMediaPlayer->PlayFullscreenMovie("Intro Post");
             SaveNewGame();
-            if (engine->config->debug.NoMargaret.Get()) {
+            if (engine->config->debug.NoMargaret.value()) {
                 _449B7E_toggle_bit(pParty->_quest_bits, QBIT_EMERALD_ISLAND_MARGARETH_OFF, 1);
             }
 
@@ -339,8 +335,7 @@ bool Game::Loop() {
             uGameState = GAME_STATE_PLAYING;
             continue;
         }
-        if (uGameState ==
-            GAME_STATE_GAME_QUITTING_TO_MAIN_MENU) {  // from the loaded game
+        if (uGameState == GAME_STATE_GAME_QUITTING_TO_MAIN_MENU) {  // from the loaded game
             pAudioPlayer->PauseSounds(-1);
             uGameState = GAME_STATE_PLAYING;
             break;
@@ -356,13 +351,13 @@ void ShowMM7IntroVideo_and_LoadingScreen() {
     bGameoverLoop = true;
 
     render->PresentBlackScreen();
-    if (!engine->config->debug.NoVideo.Get()) {
-        if (!engine->config->debug.NoLogo.Get()) {
+    if (!engine->config->debug.NoVideo.value()) {
+        if (!engine->config->debug.NoLogo.value()) {
             pMediaPlayer->PlayFullscreenMovie("3dologo");
             pMediaPlayer->PlayFullscreenMovie("new world logo");
             pMediaPlayer->PlayFullscreenMovie("jvc");
         }
-        if (!engine->config->debug.NoIntro.Get()) {
+        if (!engine->config->debug.NoIntro.value()) {
             pMediaPlayer->PlayFullscreenMovie("Intro");
         }
     }
@@ -1300,7 +1295,7 @@ void Game::EventLoop() {
                     }
 
                     // check if tp location is unlocked
-                    if (!_449B57_test_bit(pParty->_quest_bits, fountainBit) && !engine->config->debug.TownPortal.Get())
+                    if (!_449B57_test_bit(pParty->_quest_bits, fountainBit) && !engine->config->debug.TownPortal.value())
                         continue;
 
                     // begin TP
@@ -1375,7 +1370,7 @@ void Game::EventLoop() {
                             break;
                     }
 
-                    if (!_449B57_test_bit(pParty->_quest_bits, fountainBit) && !engine->config->debug.TownPortal.Get()) {
+                    if (!_449B57_test_bit(pParty->_quest_bits, fountainBit) && !engine->config->debug.TownPortal.value()) {
                         render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
                         continue;
                     }
@@ -1513,7 +1508,7 @@ void Game::EventLoop() {
                 case UIMSG_CastSpell_TargetActor: {
                     int pid = vis->get_picked_object_zbuf_val().object_pid;
                     int depth = vis->get_picked_object_zbuf_val().depth;
-                    if (PID_TYPE(pid) == OBJECT_Actor && depth < engine->config->gameplay.RangedAttackDepth.Get()) {
+                    if (PID_TYPE(pid) == OBJECT_Actor && depth < engine->config->gameplay.RangedAttackDepth.value()) {
                         spellTargetPicked(pid, -1);
                         CloseTargetedSpellWindow();
                     }
@@ -1634,7 +1629,7 @@ void Game::EventLoop() {
                         pGUIWindow_CurrentMenu = new GUIWindow_Rest();
                         continue;
                     } else {
-                        if (engine->config->debug.VerboseLogging.Get()) {
+                        if (engine->config->debug.VerboseLogging.value()) {
                             if (pParty->uFlags & PARTY_FLAGS_1_AIRBORNE)
                                 logger->Info("Party is airborne");
                             if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER)
@@ -1791,7 +1786,7 @@ void Game::EventLoop() {
                     uAction = 0;
                     int page = 0;
                     for (PLAYER_SKILL_TYPE i : MagicSkills()) {
-                        if (pPlayers[pParty->getActiveCharacter()]->pActiveSkills[i] || engine->config->debug.AllMagic.Get()) {
+                        if (pPlayers[pParty->getActiveCharacter()]->pActiveSkills[i] || engine->config->debug.AllMagic.value()) {
                             if (pPlayers[pParty->getActiveCharacter()]->lastOpenedSpellbookPage == page)
                                 uAction = skill_count;
                             spellbookPages[skill_count++] = page;
@@ -1830,7 +1825,7 @@ void Game::EventLoop() {
                     //  uNumSeconds = (unsigned int)pPlayers[pParty->getActiveCharacter()];
                     Player *player = pPlayers[pParty->getActiveCharacter()];
                     if (player->spellbook.pChapters[player->lastOpenedSpellbookPage].bIsSpellAvailable[uMessageParam]
-                        || engine->config->debug.AllMagic.Get()) {
+                        || engine->config->debug.AllMagic.value()) {
                         if (quick_spell_at_page - 1 == uMessageParam) {
                             pGUIWindow_CurrentMenu->Release();  // spellbook close
                             pEventTimer->Resume();
@@ -2265,19 +2260,21 @@ void Game::EventLoop() {
                     pParty->SetGold(0);
                     continue;
                 case UIMSG_DebugLearnSkills:
-                    for (uint i = 0; i < 4; ++i) {            // loop over players
+                    for (Player &player : pParty->pPlayers) { // loop over players
                         for (PLAYER_SKILL_TYPE ski : AllSkills()) {  // loop over skills
                             // if class can learn this skill
-                            if (byte_4ED970_skill_learn_ability_by_class_table[pParty->pPlayers[i].classType][ski] > PLAYER_SKILL_MASTERY_NONE) {
-                                if (pParty->pPlayers[i].GetSkillLevel(ski) == 0)
-                                    pParty->pPlayers[i].SetSkillLevel(ski, 1);
+                            if (byte_4ED970_skill_learn_ability_by_class_table[player.classType][ski] > PLAYER_SKILL_MASTERY_NONE) {
+                                if (player.GetSkillLevel(ski) == 0) {
+                                    player.SetSkillLevel(ski, 1);
+                                }
                             }
                         }
                     }
                     continue;
                 case UIMSG_DebugGiveSkillP:
-                    for (uint i = 0; i < 4; ++i)
-                        pParty->pPlayers[i].uSkillPoints += 50;
+                    for (Player &player : pParty->pPlayers) {
+                        player.uSkillPoints += 50;
+                    }
                     pPlayers[std::max(pParty->getActiveCharacter(), 1u)]->PlayAwardSound_Anim();
                     continue;
                 case UIMSG_DebugGiveEXP:
@@ -2288,63 +2285,63 @@ void Game::EventLoop() {
                     pParty->AddGold(10000);
                     continue;
                 case UIMSG_DebugTownPortal:
-                    engine->config->debug.TownPortal.Toggle();
+                    engine->config->debug.TownPortal.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugWizardEye:
-                    engine->config->debug.WizardEye.Toggle();
+                    engine->config->debug.WizardEye.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugAllMagic:
-                    engine->config->debug.AllMagic.Toggle();
+                    engine->config->debug.AllMagic.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugTerrain:
-                    engine->config->debug.Terrain.Toggle();
+                    engine->config->debug.Terrain.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugLightmap:
-                    engine->config->debug.LightmapDecals.Toggle();
+                    engine->config->debug.LightmapDecals.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugTurboSpeed:
-                    engine->config->debug.TurboSpeed.Toggle();
+                    engine->config->debug.TurboSpeed.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugNoActors:
-                    engine->config->debug.NoActors.Toggle();
+                    engine->config->debug.NoActors.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugFog:
-                    engine->config->graphics.Fog.Toggle();
+                    engine->config->graphics.Fog.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugSnow:
-                    engine->config->graphics.Snow.Toggle();
+                    engine->config->graphics.Snow.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugNoDamage:
-                    engine->config->debug.NoDamage.Toggle();
+                    engine->config->debug.NoDamage.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugPortalLines:
-                    engine->config->debug.PortalOutlines.Toggle();
+                    engine->config->debug.PortalOutlines.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugPickedFace:
-                    engine->config->debug.ShowPickedFace.Toggle();
+                    engine->config->debug.ShowPickedFace.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugShowFPS:
-                    engine->config->debug.ShowFPS.Toggle();
+                    engine->config->debug.ShowFPS.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugSeasonsChange:
-                    engine->config->graphics.SeasonsChange.Toggle();
+                    engine->config->graphics.SeasonsChange.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugVerboseLogging:
-                    engine->config->debug.VerboseLogging.Toggle();
+                    engine->config->debug.VerboseLogging.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugReloadShader:
@@ -2379,7 +2376,7 @@ void Game::EventLoop() {
 
 //----- (0046A14B) --------------------------------------------------------
 void Game::OnPressSpace() {
-    engine->PickKeyboard(engine->config->gameplay.KeyboardInteractionDepth.Get(),
+    engine->PickKeyboard(engine->config->gameplay.KeyboardInteractionDepth.value(),
                          keyboardInputHandler->IsKeyboardPickingOutlineToggled(),
                          &vis_sprite_filter_3, &vis_door_filter);
 
@@ -2521,8 +2518,9 @@ void Game::GameLoop() {
                 if (pMovie_Track) pMediaPlayer->Unload();
                 SaveGame(0, 0);
                 ++pParty->uNumDeaths;
-                for (uint i = 0; i < 4; ++i)
-                    pParty->pPlayers[i].SetVariable(VAR_Award, Award_Deaths);
+                for (Player &player : pParty->pPlayers) {
+                    player.SetVariable(VAR_Award, Award_Deaths);
+                }
                 pParty->days_played_without_rest = 0;
                 pParty->GetPlayingTime().AddDays(7);  // += 2580480
                 HEXRAYS_LOWORD(pParty->uFlags) &= ~0x204;
@@ -2557,7 +2555,7 @@ void Game::GameLoop() {
                     pParty->vPosition.y = 1816;
                     pParty->vPosition.z = 193;
                     pParty->_viewYaw = 512;
-                    pLocationName = config->gameplay.StartingMap.Get().c_str();
+                    pLocationName = config->gameplay.StartingMap.value().c_str();
                 }
                 strcpy(Source, pLocationName);
                 pParty->uFallStartZ = pParty->vPosition.z;
@@ -2578,16 +2576,10 @@ void Game::GameLoop() {
                 }
                 Actor::InitializeActors();
 
-                int num_conscious_players = 0;
-                int conscious_players_ids[4] = {-1, -1, -1, -1};
-                for (int i = 0; i < 4; ++i) {
-                    if (pParty->pPlayers[i].CanAct())
-                        conscious_players_ids[num_conscious_players++] = i;
-                }
-                if (num_conscious_players) {
-                    int idx = conscious_players_ids[vrng->Random(num_conscious_players)];
-                    Assert(idx >= 0);
-                    pParty->pPlayers[idx].playReaction(SPEECH_CheatedDeath);
+                int playerId = pParty->getRandomActiveCharacterId(vrng.get());
+
+                if (playerId != -1) {
+                    pParty->pPlayers[playerId].playReaction(SPEECH_CheatedDeath);
                 }
 
                 GameUI_SetStatusBar(LSTR_CHEATED_THE_DEATH);

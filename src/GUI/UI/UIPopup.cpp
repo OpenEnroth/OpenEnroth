@@ -34,8 +34,6 @@
 
 #include "Library/Random/Random.h"
 
-using EngineIoc = Engine_::IocContainer;
-
 Texture *parchment = nullptr;
 Image *messagebox_corner_x = nullptr;       // 5076AC
 Image *messagebox_corner_y = nullptr;       // 5076B4
@@ -997,7 +995,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     }
 
     // ps - test to track ai states
-    if (engine->config->debug.VerboseLogging.Get()) {
+    if (engine->config->debug.VerboseLogging.value()) {
         std::string str = fmt::format("AI State: {}", std::to_underlying(pActors[uActorID].uAIState));
         pFontSmallnum->GetLineWidth(str);
         pWindow->DrawTitleText(pFontSmallnum, 0, pWindow->uFrameHeight - pFontSmallnum->GetHeight() - 12, 0, str, 3);
@@ -1493,7 +1491,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                 popup_window.uFrameY = 40;
                 // if ( render->pRenderD3D )
 
-                auto vis = EngineIoc::ResolveVis();
+                auto vis = EngineIocContainer::ResolveVis();
                 v5 = vis->get_picked_object_zbuf_val().object_pid;
                 /*else
                 v5 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];*/

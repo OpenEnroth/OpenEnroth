@@ -8,7 +8,7 @@
 class RenderBase : public IRender {
  public:
     inline RenderBase(
-        std::shared_ptr<Application::GameConfig> config,
+        std::shared_ptr<GameConfig> config,
         DecalBuilder* decal_builder,
         LightmapBuilder* lightmap_builder,
         SpellFxRenderer* spellfx,
