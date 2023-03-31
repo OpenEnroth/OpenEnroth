@@ -334,7 +334,10 @@ void CharacterUI_DrawPaperdoll(Player *player);
 void CharacterUI_DrawPaperdollWithRingOverlay(Player *player);
 void CharacterUI_ReleaseButtons();
 
-unsigned int GetSkillColor(unsigned int uPlayerClass, PLAYER_SKILL_TYPE uPlayerSkillType, PLAYER_SKILL_MASTERY skill_mastery);
+/**
+ * @offset 0x417AD4
+ */
+unsigned int GetSkillColor(PLAYER_CLASS_TYPE uPlayerClass, PLAYER_SKILL_TYPE uPlayerSkillType, PLAYER_SKILL_MASTERY skill_mastery);
 
 void DrawSpellDescriptionPopup(int spell_index_in_book);
 

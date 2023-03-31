@@ -412,8 +412,44 @@ enum PLAYER_CLASS_TYPE : uint8_t {
     PLAYER_CLASS_SORCERER = 32,
     PLAYER_CLASS_WIZARD = 33,
     PLAYER_CLASS_ARCHMAGE = 34,
-    PLAYER_CLASS_LICH = 35
+    PLAYER_CLASS_LICH = 35,
+
+    PLAYER_CLASS_FIRST = PLAYER_CLASS_KNIGHT,
+    PLAYER_CLASS_LAST = PLAYER_CLASS_LICH
 };
+
+/**
+ * Get tier of character class.
+ * Base class is of tier 1.
+ * After initial promotion class becomes tier 2.
+ * Tier 2 class is promoted through light or dark patch to tier 3 class.
+ *
+ * @param classType     Character class.
+ */
+inline int getClassTier(PLAYER_CLASS_TYPE classType) {
+    int tier = classType % 4;
+    return ((tier == 3) ? (tier - 1) : tier) + 1;
+}
+
+inline PLAYER_CLASS_TYPE getTier1Class(PLAYER_CLASS_TYPE classType) {
+    int tier = classType % 4;
+    return (PLAYER_CLASS_TYPE)(classType - tier);
+}
+
+inline PLAYER_CLASS_TYPE getTier2Class(PLAYER_CLASS_TYPE classType) {
+    int tier = classType % 4;
+    return (PLAYER_CLASS_TYPE)(classType - tier + 1);
+}
+
+inline PLAYER_CLASS_TYPE getTier3LightClass(PLAYER_CLASS_TYPE classType) {
+    int tier = classType % 4;
+    return (PLAYER_CLASS_TYPE)(classType - tier + 2);
+}
+
+inline PLAYER_CLASS_TYPE getTier3DarkClass(PLAYER_CLASS_TYPE classType) {
+    int tier = classType % 4;
+    return (PLAYER_CLASS_TYPE)(classType - tier + 3);
+}
 
 // TODO(pskelton): decipher enum
 enum CHARACTER_EXPRESSION_ID : uint16_t {

@@ -248,7 +248,7 @@ void ShopDialogLearn(GUIWindow dialogwin) {
         auto skill = GetLearningDialogueSkill(
             (DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param
         );
-        if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[pParty->getActiveCharacter()]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
+        if (skillMaxMasteryPerClass[pPlayers[pParty->getActiveCharacter()]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
             && !pPlayers[pParty->getActiveCharacter()]->pActiveSkills[skill]) {
             all_text_height += pFontArrus->CalcTextHeight(
                 localization->GetSkillName(skill),
@@ -1202,7 +1202,7 @@ void UIShop_Buy_Identify_Repair() {
                 uPriceItemService = v43 *
                     (100 - pPlayers[pParty->getActiveCharacter()]->GetMerchant()) / 100;
                 if (uPriceItemService < v43 / 3) uPriceItemService = v43 / 3;
-                if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[pParty->getActiveCharacter()]->classType][skill] != PLAYER_SKILL_MASTERY_NONE) {
+                if (skillMaxMasteryPerClass[pPlayers[pParty->getActiveCharacter()]->classType][skill] != PLAYER_SKILL_MASTERY_NONE) {
                     pSkill = &pPlayers[pParty->getActiveCharacter()]->pActiveSkills[skill];
                     if (!*pSkill) {
                         if (pParty->GetGold() < uPriceItemService) {
@@ -1240,7 +1240,7 @@ void ShowPopupShopSkills() {
             if (pX >= pButton->uX && pX < pButton->uZ && pY >= pButton->uY && pY < pButton->uW) {
                 if (IsSkillLearningDialogue((DIALOGUE_TYPE)pButton->msg_param)) {
                     auto skill_id = GetLearningDialogueSkill((DIALOGUE_TYPE)pButton->msg_param);
-                    if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[pParty->getActiveCharacter()]->classType][skill_id] != PLAYER_SKILL_MASTERY_NONE
+                    if (skillMaxMasteryPerClass[pPlayers[pParty->getActiveCharacter()]->classType][skill_id] != PLAYER_SKILL_MASTERY_NONE
                         && !pPlayers[pParty->getActiveCharacter()]->pActiveSkills[skill_id]) {
                         // is this skill visible
                         std::string pSkillDescText = CharacterUI_GetSkillDescText(pParty->getActiveCharacter() - 1, skill_id);

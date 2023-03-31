@@ -756,36 +756,38 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
     int y_offset = y;
     Pointi pt = mouse->GetCursorPos();
 
-    auto str = fmt::format("{}\r{:03}{}", skill_group_name, right_margin,
-                            localization->GetString(LSTR_LEVEL));
+    auto str = fmt::format("{}\r{:03}{}", skill_group_name, right_margin, localization->GetString(LSTR_LEVEL));
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {x, y}, ui_character_header_text_color, str, 0, 0, 0);
 
     int num_skills_drawn = 0;
     for (PLAYER_SKILL_TYPE skill : skill_list) {
         for (size_t j = 0; j < pGUIWindow_CurrentMenu->vButtons.size(); ++j) {
-            GUIButton *v8 = pGUIWindow_CurrentMenu->GetControl(j);
-            int v9 = v8->uData;
-            if ((short)(v8->uData) >= 0)
+            GUIButton *button = pGUIWindow_CurrentMenu->GetControl(j);
+            if ((short)(button->uData) >= 0) {
                 continue;  // skips an of the stats skills innv awards buttons
+            }
 
-            if (static_cast<PLAYER_SKILL_TYPE>(v9 & 0x7FFF) != skill)
+            if (static_cast<PLAYER_SKILL_TYPE>(button->uData & 0x7FFF) != skill) {
                 continue;  // skips buttons that dont match skill
+            }
 
             ++num_skills_drawn;
-            y_offset = v8->uY;
+            y_offset = button->uY;
 
             PLAYER_SKILL_LEVEL skill_level = player->GetSkillLevel(skill);
 
             uint skill_color = 0;
             uint skill_mastery_color = 0;
-            if (player->uSkillPoints > skill_level && skills_max_level[skill] != 1)
+            if (player->uSkillPoints > skill_level && skills_max_level[skill] != 1) {
                 skill_color = ui_character_skill_upgradeable_color;
+            }
 
-            if (pt.x >= v8->uX && pt.x < v8->uZ && pt.y >= v8->uY && pt.y < v8->uW) {
-                if (player->uSkillPoints > skill_level && skills_max_level[skill] > skill_level && skills_max_level[skill] != 1)
+            if (pt.x >= button->uX && pt.x < button->uZ && pt.y >= button->uY && pt.y < button->uW) {
+                if (player->uSkillPoints > skill_level && skills_max_level[skill] > skill_level && skills_max_level[skill] != 1) {
                     skill_mastery_color = ui_character_bonus_text_color;
-                else
+                } else {
                     skill_mastery_color = ui_character_skill_default_color;
+                }
                 skill_color = skill_mastery_color;
             }
 
@@ -797,19 +799,17 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
                 } else {
                     Strsk = fmt::format("{}\r{:03}{}", localization->GetSkillName(skill), right_margin, skill_level);
                 }
-                pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, v8->uY}, skill_color, Strsk, 0, 0, 0);
+                pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, button->uY}, skill_color, Strsk, 0, 0, 0);
             } else {
                 const char *skill_level_str = skill_mastery == PLAYER_SKILL_MASTERY_NOVICE ? "" : localization->MasteryName(skill_mastery);
 
-                if (!skill_mastery_color)
+                if (!skill_mastery_color) {
                     skill_mastery_color = ui_character_header_text_color;
+                }
 
-                auto Strsk = fmt::format(
-                    "{} \f{:05}{}\f{:05}\r{:03}{}",
-                    localization->GetSkillName(skill), skill_mastery_color,
-                    skill_level_str, skill_color, right_margin, skill_level
-                );
-                pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, v8->uY}, skill_color, Strsk, 0, 0, 0);
+                auto Strsk = fmt::format("{} \f{:05}{}\f{:05}\r{:03}{}",
+                        localization->GetSkillName(skill), skill_mastery_color, skill_level_str, skill_color, right_margin, skill_level);
+                pGUIWindow_CurrentMenu->DrawText(pFontLucida, {x, button->uY}, skill_color, Strsk, 0, 0, 0);
             }
         }
     }

@@ -83,7 +83,7 @@ extern std::array<int16_t, 4> pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing
 extern IndexedArray<PLAYER_SKILL_LEVEL, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST> skills_max_level;
 extern IndexedArray<uint, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST> base_recovery_times_per_weapon_type;
 extern std::array<IndexedArray<CLASS_SKILL, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST>, 9> pSkillAvailabilityPerClass;
-extern std::array<IndexedArray<PLAYER_SKILL_MASTERY, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST>, 36> byte_4ED970_skill_learn_ability_by_class_table;
+extern IndexedArray<IndexedArray<PLAYER_SKILL_MASTERY, PLAYER_SKILL_FIRST, PLAYER_SKILL_LAST>, PLAYER_CLASS_FIRST, PLAYER_CLASS_LAST> skillMaxMasteryPerClass;
 extern std::array<unsigned int, 2> pHiredNPCsIconsOffsetsX;
 extern std::array<unsigned int, 2> pHiredNPCsIconsOffsetsY;
 extern std::array<short, 28> word_4EE150;
