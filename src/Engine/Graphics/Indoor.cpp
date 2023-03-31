@@ -2273,6 +2273,10 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         if (pEventTimer->uTimeElapsed) {
             int walkDelta = integer_sqrt((pParty->vPosition - Vec3i(new_party_x, new_party_y, new_party_z)).lengthSqr());
 
+            // Delta limits for running/walking has been changed. Previously:
+            // - for run limit was >= 16
+            // - for walk limit was >= 8
+            // - stop sound if delta < 8
             if (pParty->walk_sound_timer <= 0) {
                 if (!hovering || not_high_fall) {
                     SoundID sound = SOUND_Invalid;

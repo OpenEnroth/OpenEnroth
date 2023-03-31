@@ -2460,6 +2460,10 @@ void ODM_ProcessPartyActions() {
         if (pEventTimer->uTimeElapsed) {
             int walkDelta = integer_sqrt((pParty->vPosition - Vec3i(partyNewX, partyNewY, partyNewZ)).lengthSqr());
 
+            // Delta limits for running/walking has been changed. Previously:
+            // - for run limit was >= 16
+            // - for walk limit was >= 8
+            // - stop sound if delta < 8
             if (pParty->walk_sound_timer <= 0) {
                 if (!partyNotTouchingFloor || partyCloseToGround) {
                     int modelId = pParty->floor_face_pid >> 9;
