@@ -140,12 +140,12 @@ void set_default_ui_skin() {
     ui_character_condition_moderate_color = colorTable.Sunflower.c16();
     ui_character_condition_severe_color = colorTable.Scarlet.c16();
 
-    ui_character_award_color[0] = color16(248, 108, 160);
-    ui_character_award_color[1] = color16(112, 220, 248);
+    ui_character_award_color[0] = colorTable.Magenta.c16();
+    ui_character_award_color[1] = colorTable.Malibu.c16();
     ui_character_award_color[2] = colorTable.MoonRaker.c16();
-    ui_character_award_color[3] = color16(64, 244, 96);
-    ui_character_award_color[4] = color16(232, 244, 96);
-    ui_character_award_color[5] = color16(240, 252, 192);
+    ui_character_award_color[3] = colorTable.ScreaminGreen.c16();
+    ui_character_award_color[4] = colorTable.Canary.c16();
+    ui_character_award_color[5] = colorTable.Mimosa.c16();
 
     ui_game_minimap_outline_color = colorTable.Blue.c16();
     ui_game_minimap_actor_friendly_color = colorTable.Green.c16();
