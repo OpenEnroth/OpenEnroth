@@ -2059,7 +2059,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             case PARTY_RunBackward:
                 party_dx -= TrigLUT.cos(angle) * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
                 party_dy -= TrigLUT.sin(angle) * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
-                party_running_flag = true;
+                party_walking_flag = true;
                 break;
 
             case PARTY_LookUp:
@@ -2261,15 +2261,6 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     }
 
     // walking / running sounds ------------------------
-    if (engine->config->settings.WalkSound.Get() && pParty->walk_sound_timer > 0) {
-        pParty->walk_sound_timer = std::max(0, pParty->walk_sound_timer - static_cast<int>(pEventTimer->uTimeElapsed));
-    }
-
-    if (engine->config->settings.WalkSound.Get() && pParty->walk_sound_timer <= 0) {
-        pAudioPlayer->stopWalkingSounds();
-    }
-
-    // walking / running sounds ------------------------
     if (engine->config->settings.WalkSound.Get()) {
         pParty->walk_sound_timer -= pEventTimer->uTimeElapsed;
 
@@ -2277,33 +2268,46 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             pAudioPlayer->stopWalkingSounds();
         }
 
+        // Start sound processing only when actual movement is performed to avoid
+        // stopping sounds on high FPS
         if (pEventTimer->uTimeElapsed) {
             int walkDelta = integer_sqrt((pParty->vPosition - Vec3i(new_party_x, new_party_y, new_party_z)).lengthSqr());
 
-            if (engine->config->settings.WalkSound.Get() && pParty->walk_sound_timer <= 0) {
-                pAudioPlayer->stopWalkingSounds();
-                if (party_running_flag && (!hovering || not_high_fall)) {  // Run, not jump or high fall
-                    if (walkDelta >= 4) {
-                        if (on_water)
-                            pAudioPlayer->playWalkSound(SOUND_RunWaterIndoor);
-                        else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_CARPET)
-                            pAudioPlayer->playWalkSound(SOUND_RunCarpet);
-                        else
-                            pAudioPlayer->playWalkSound(SOUND_RunWood);
-                        pParty->walk_sound_timer = 96;  // 64
+            if (pParty->walk_sound_timer <= 0) {
+                if (!hovering || not_high_fall) {
+                    SoundID sound = SOUND_Invalid;
+                    if (party_running_flag) {
+                        if (walkDelta >= 4) {
+                            if (on_water) {
+                                sound = SOUND_RunWaterIndoor;
+                            } else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_CARPET) {
+                                sound = SOUND_RunCarpet;
+                            } else {
+                                // TODO(Nik-RE-dev): need to probe surface
+                                sound = SOUND_RunWood;
+                            }
+                            pParty->walk_sound_timer = 96;  // 64
+                        }
+                    } else if (party_walking_flag) {
+                        if (walkDelta >= 2) {
+                            if (on_water) {
+                                sound = SOUND_WalkWaterIndoor;
+                            } else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_CARPET) {
+                                sound = SOUND_WalkCarpet;
+                            } else {
+                                // TODO(Nik-RE-dev): need to probe surface
+                                sound = SOUND_WalkWood;
+                            }
+                            pParty->walk_sound_timer = 144;  // 64
+                        }
                     }
-                } else if (party_walking_flag && (!hovering || not_high_fall)) { // Run, not jump or high fall
-                    if (walkDelta >= 2) {
-                        if (on_water)
-                            pAudioPlayer->playWalkSound(SOUND_WalkWaterIndoor);
-                        else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_CARPET)
-                            pAudioPlayer->playWalkSound(SOUND_WalkCarpet);
-                        else
-                            pAudioPlayer->playWalkSound(SOUND_WalkWood);
-                        pParty->walk_sound_timer = 144;  // 64
+
+                    if (sound != SOUND_Invalid) {
+                        pAudioPlayer->playWalkSound(sound);
                     }
                 }
             }
+
             // mute the walking sound when stopping
             if (walkDelta < 2) {
                 pAudioPlayer->stopWalkingSounds();
