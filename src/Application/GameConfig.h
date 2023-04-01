@@ -541,7 +541,7 @@ class GameConfig : public Config {
         Int Width = {this, "width", 640, &ValidateWidth, "Window width."};
         Int Height = {this, "height", 480, &ValidateHeight, "Window height."};
 
-        Bool MouseGrab = {this, "mouse_grab", true, "Restrict mouse movement to game window when it's in focus."};
+        Bool MouseGrab = {this, "mouse_grab", false, "Restrict mouse movement to game window when it's in focus."};
 
         Bool Resizable = {this, "resizable", true, "Make window resizable by user or not."};
 
