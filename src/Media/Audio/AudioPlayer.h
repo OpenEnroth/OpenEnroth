@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <unordered_set>
 #include <string>
 #include <memory>
 
@@ -257,6 +258,9 @@ class AudioPlayer {
     PAudioTrack pCurrentMusicTrack;
     FileInputStream fAudioSnd;
     std::map<std::string, SoundHeader> mSoundHeaders;
+
+    // Cache to store different types of walking sounds
+    std::unordered_set<SoundID> _walkingSoundIds;
 };
 
 struct SoundDesc;

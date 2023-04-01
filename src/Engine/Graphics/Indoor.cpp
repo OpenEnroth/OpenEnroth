@@ -2267,9 +2267,9 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             pAudioPlayer->stopWalkingSounds();
         }
 
-        // Start sound processing only when actual movement is performed to avoid
-        // stopping sounds on high FPS
+        // Start sound processing only when actual movement is performed to avoid stopping sounds on high FPS
         if (pEventTimer->uTimeElapsed) {
+            // TODO(Nik-RE-dev): use calculated velocity of party and walk/run flags instead of delta
             int walkDelta = integer_sqrt((pParty->vPosition - Vec3i(new_party_x, new_party_y, new_party_z)).lengthSqr());
 
             // Delta limits for running/walking has been changed. Previously:

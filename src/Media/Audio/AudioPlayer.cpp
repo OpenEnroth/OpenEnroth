@@ -3,7 +3,6 @@
 #include <string>
 #include <filesystem>
 #include <utility>
-#include <unordered_set>
 
 #include "Media/Audio/AudioPlayer.h"
 
@@ -75,9 +74,6 @@ struct SoundDesc : public SoundDesc_mm6 {
     uint32_t bDecompressed;
 };
 #pragma pack(pop)
-
-// Cache to store different types of walking sounds
-std::unordered_set<SoundID> walkingSoundIds;
 
 void SoundList::Initialize() {}
 
@@ -200,15 +196,12 @@ void AudioPlayer::SetMasterVolume(int level) {
     level = std::min(9, level);
     uMasterVolume = (maxVolumeGain * pSoundVolumeLevels[level]);
 
-    auto iter = mapSounds.begin();
-    while (iter != mapSounds.end()) {
-        SoundInfo &si = iter->second;
+    for (auto &[_, si] : mapSounds) {
         if (si.sample) {
             // if not voice sample - set volume
             if (PID_TYPE(si.last_pid) != OBJECT_Player)
                 si.sample->SetVolume(uMasterVolume);
         }
-        ++iter;
     }
 }
 
@@ -217,15 +210,12 @@ void AudioPlayer::SetVoiceVolume(int level) {
     level = std::min(9, level);
     uVoiceVolume = (maxVolumeGain * pSoundVolumeLevels[level]);
 
-    auto iter = mapSounds.begin();
-    while (iter != mapSounds.end()) {
-        SoundInfo &si = iter->second;
+    for (auto &[_, si] : mapSounds) {
         if (si.sample) {
             // if voice sample - set volume
             if (PID_TYPE(si.last_pid) == OBJECT_Player)
                 si.sample->SetVolume(uVoiceVolume);
         }
-        ++iter;
     }
 }
 
@@ -234,15 +224,12 @@ void AudioPlayer::stopSounds() {
         return;
     }
 
-    auto iter = mapSounds.begin();
-    while (iter != mapSounds.end()) {
-        SoundInfo &si = iter->second;
+    for (auto &[_, si] : mapSounds) {
         if (si.sample) {
             if (si.sample->Stop() && engine->config->debug.VerboseLogging.value()) {
                 logger->Info("sound stopped: {}", si.sName);
             }
         }
-        ++iter;
     }
 }
 
@@ -251,7 +238,7 @@ void AudioPlayer::stopWalkingSounds() {
         return;
     }
 
-    for (SoundID id : walkingSoundIds) {
+    for (SoundID id : _walkingSoundIds) {
         SoundInfo &si = mapSounds[id];
         assert(si.sample);
         si.sample->Stop();
@@ -315,7 +302,7 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
     } else if (pid == SOUND_PID_WALKING) {
         si.sample->Stop();
         si.sample->Play();
-        walkingSoundIds.insert(eSoundID);
+        _walkingSoundIds.insert(eSoundID);
     } else {
         ObjectType object_type = PID_TYPE(pid);
         unsigned int object_id = PID_ID(pid);
@@ -405,14 +392,11 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
 }
 
 void AudioPlayer::ResumeSounds() {
-    auto iter = mapSounds.begin();
-    while (iter != mapSounds.end()) {
-        SoundInfo &si = iter->second;
+    for (auto &[_, si] : mapSounds) {
         if (si.sample) {
             if (si.sample->Resume() && engine->config->debug.VerboseLogging.value())
                 logger->Info("sound resumed: {}", si.sName);
         }
-        ++iter;
     }
 }
 
@@ -428,20 +412,15 @@ void AudioPlayer::UpdateSounds() {
 void AudioPlayer::PauseSounds(int uType) {
     // pause everything
     if (uType == 2) {
-        auto iter = mapSounds.begin();
-        while (iter != mapSounds.end()) {
-            SoundInfo &si = iter->second;
+        for (auto &[_, si] : mapSounds) {
             if (si.sample) {
                 if (si.sample->Pause() && engine->config->debug.VerboseLogging.value())
                     logger->Info("sound paused: {}", si.sName);
             }
-            ++iter;
         }
     } else {
         // pause non exclusives
-        auto iter = mapSounds.begin();
-        while (iter != mapSounds.end()) {
-            SoundInfo &si = iter->second;
+        for (auto &[_, si] : mapSounds) {
             if (si.sample) {
                 if (si.last_pid != PID_INVALID &&
                         si.last_pid != SOUND_PID_NON_RESETABLE) {
@@ -449,7 +428,6 @@ void AudioPlayer::PauseSounds(int uType) {
                         logger->Info("sound paused: {}", si.sName);
                 }
             }
-            ++iter;
         }
     }
 }
