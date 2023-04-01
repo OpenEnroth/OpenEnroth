@@ -1260,38 +1260,15 @@ char sub_4637E0_is_there_popup_onscreen() {
 }
 
 unsigned int GetSkillColor(PLAYER_CLASS_TYPE uPlayerClass, PLAYER_SKILL_TYPE uPlayerSkillType, PLAYER_SKILL_MASTERY skill_mastery) {
-    switch (getClassTier(uPlayerClass)) {
-        case 1:
-            if (skillMaxMasteryPerClass[uPlayerClass][uPlayerSkillType] >= skill_mastery) {
-                return ui_character_skillinfo_can_learn;
-            }
-            if (skillMaxMasteryPerClass[getTier2Class(uPlayerClass)][uPlayerSkillType] < skill_mastery &&
-                    skillMaxMasteryPerClass[getTier3LightClass(uPlayerClass)][uPlayerSkillType] < skill_mastery &&
-                    skillMaxMasteryPerClass[getTier3DarkClass(uPlayerClass)][uPlayerSkillType] < skill_mastery) {
-                return ui_character_skillinfo_cant_learn;
-            }
-            return ui_character_skillinfo_can_learn_gm;
-
-        case 2:
-            if (skillMaxMasteryPerClass[uPlayerClass][uPlayerSkillType] >= skill_mastery) {
-                return ui_character_skillinfo_can_learn;
-            }
-            if (skillMaxMasteryPerClass[getTier3LightClass(uPlayerClass)][uPlayerSkillType] < skill_mastery &&
-                    skillMaxMasteryPerClass[getTier3DarkClass(uPlayerClass)][uPlayerSkillType] < skill_mastery) {
-                return ui_character_skillinfo_cant_learn;
-            }
-            return ui_character_skillinfo_can_learn_gm;
-
-        case 3:
-            if (skillMaxMasteryPerClass[uPlayerClass][uPlayerSkillType] < skill_mastery) {
-                return ui_character_skillinfo_cant_learn;
-            }
-            return ui_character_skillinfo_can_learn;
-
-        default:
-            Error("Tier calculate error for class %d.", uPlayerClass);
-            break;
+    if (skillMaxMasteryPerClass[uPlayerClass][uPlayerSkillType] < skill_mastery) {
+        return ui_character_skillinfo_cant_learn;
     }
+    for (PLAYER_CLASS_TYPE promotionClass : getClassPromotions(uPlayerClass)) {
+        if (skillMaxMasteryPerClass[promotionClass][uPlayerSkillType] >= skill_mastery) {
+            return ui_character_skillinfo_can_learn_gm;
+        }
+    }
+    return ui_character_skillinfo_can_learn;
 }
 
 void ClickNPCTopic(DIALOGUE_TYPE topic) {

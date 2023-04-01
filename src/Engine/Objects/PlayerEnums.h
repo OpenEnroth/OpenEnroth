@@ -376,6 +376,7 @@ inline std::initializer_list<PLAYER_SKILL_TYPE> MagicSkills() {
 #pragma warning(pop)
 
 /*  329 */
+// TODO(Nik-RE-dev): turn it into enum class
 enum PLAYER_CLASS_TYPE : uint8_t {
     PLAYER_CLASS_KNIGHT = 0,
     PLAYER_CLASS_CHEVALIER = 1,
@@ -418,19 +419,6 @@ enum PLAYER_CLASS_TYPE : uint8_t {
     PLAYER_CLASS_LAST = PLAYER_CLASS_LICH
 };
 
-/**
- * Get tier of character class.
- * Base class is of tier 1.
- * After initial promotion class becomes tier 2.
- * Tier 2 class is promoted through light or dark patch to tier 3 class.
- *
- * @param classType     Character class.
- */
-inline int getClassTier(PLAYER_CLASS_TYPE classType) {
-    int tier = classType % 4;
-    return ((tier == 3) ? (tier - 1) : tier) + 1;
-}
-
 inline PLAYER_CLASS_TYPE getTier1Class(PLAYER_CLASS_TYPE classType) {
     int tier = classType % 4;
     return (PLAYER_CLASS_TYPE)(classType - tier);
@@ -449,6 +437,27 @@ inline PLAYER_CLASS_TYPE getTier3LightClass(PLAYER_CLASS_TYPE classType) {
 inline PLAYER_CLASS_TYPE getTier3DarkClass(PLAYER_CLASS_TYPE classType) {
     int tier = classType % 4;
     return (PLAYER_CLASS_TYPE)(classType - tier + 3);
+}
+
+/**
+ * Get priomotions of higher tier class relative to given one.
+ *
+ * Base class is of tier 1.
+ * After initial promotion class becomes tier 2.
+ * Tier 2 class is promoted through light or dark path to tier 3 class.
+ *
+ * @param classType     Character class.
+ */
+inline Segment<PLAYER_CLASS_TYPE> getClassPromotions(PLAYER_CLASS_TYPE classType) {
+    int tier = classType % 4;
+
+    if (tier == 1) {
+        return {getTier2Class(classType), getTier3DarkClass(classType)};
+    } else if (tier == 2) {
+        return {getTier3LightClass(classType), getTier3DarkClass(classType)};
+    } else {
+        return {}; // tier 3 max
+    }
 }
 
 // TODO(pskelton): decipher enum

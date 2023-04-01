@@ -2086,7 +2086,7 @@ void Game::EventLoop() {
                 case UIMSG_ShowStatus_Player: {
                     pPlayer5 = pPlayers[uMessageParam];
 
-                    auto status = NameAndTitle(pPlayer5->pName, pPlayer5->classType)
+                    auto status = NameAndTitle(pPlayer5->pName, pPlayer5->classType);
                         + ": "
                         + std::string(localization->GetCharacterConditionName(pPlayer5->GetMajorConditionIdx()));
                     GameUI_StatusBar_Set(status);
