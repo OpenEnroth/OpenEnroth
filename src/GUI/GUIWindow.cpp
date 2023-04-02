@@ -1864,7 +1864,6 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
     char v1[256] = "";
     Player *pPlayer;       // ebx@3
     const char *pText;     // esi@7
-    int v17;               // eax@10
     int64_t v18;    // qax@18
     uint8_t *v20;  // ebx@32
     int v21;               // ecx@34
@@ -1890,11 +1889,10 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
         if (c != '%') {
             result += c;  // add char to result string
         } else {
-            v17 = 10 * (int)(str[i + 1] - '0') + str[i + 2] -
-                '0';  // v17 tells what the gap needs filling with
+            int mask = 10 * (int)(str[i + 1] - '0') + str[i + 2] - '0';  // mask tells what the gap needs filling with
             i += 2;
 
-            switch (v17) {
+            switch (mask) {
             case 1:
                 result += npc->pName;
                 break;
@@ -2132,22 +2130,22 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
             case 32:
             case 33:
             case 34:
-                result += pParty->pPlayers[v17 - 31].pName;
+                result += pParty->pPlayers[mask - 31].pName;
                 break;
             default:
-                if (v17 <= 50 || v17 > 70) {
+                if (mask <= 50 || mask > 70) {
                     strncpy(v1, str.c_str() + i + 1, 2);
                     sprintf(v1, "%u", atoi(v1));
                     result += v1;
                     break;
                 }
-                if (v17 - 51 >= 20) {
+                if (mask - 51 >= 20) {
                     // result += eventId;
                     __debugbreak(); // should never get here?
                     break;
                 }
 
-                v56.Initialize(pParty->PartyTimes._s_times[v17 - 51]);
+                v56.Initialize(pParty->PartyTimes._s_times[mask - 51]);
                 result += localization->FormatString(
                     LSTR_FMT_S_D_D,
                     localization->GetMonthName(v56.field_14_exprie_month),
