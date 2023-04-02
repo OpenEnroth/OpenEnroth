@@ -2273,7 +2273,7 @@ void CastSpellInfoHelpers::castSpell() {
                         default:
                             assert(false);
                     }
-                    if (!pCastSpell->spell_target_pid) {
+                    if (pCastSpell->spell_target_pid == PID_INVALID) {
                         pParty->pPlayers[pCastSpell->uPlayerID_2].Heal(heal_amount);
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                     }
@@ -2647,7 +2647,7 @@ void CastSpellInfoHelpers::castSpell() {
                             assert(false);
                     }
                     int zombie_hp_limit = target_monster_level * 10;
-                    if (!pCastSpell->spell_target_pid) {
+                    if (pCastSpell->spell_target_pid == PID_INVALID) {
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                         if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Dead)) {
                             pParty->pPlayers[pCastSpell->uPlayerID_2].SetCondition(Condition_Zombie, 1);
