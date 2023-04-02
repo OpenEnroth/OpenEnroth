@@ -521,3 +521,15 @@ GAME_TEST(Issues, Issue578) {
     test->playTraceFromTestData("issue_578.mm7", "issue_578.json", []() { EXPECT_EQ(pParty->pPlayers[0].sHealth, 66); });
     EXPECT_EQ(pParty->pPlayers[0].sHealth, 108);
 }
+
+// 600
+
+GAME_TEST(Issues, Issue611) {
+    engine->config->debug.AllMagic.setValue(true);
+    test->playTraceFromTestData("issue_611.mm7", "issue_611.json");
+    // expect chars to be healed and zombies
+    EXPECT_EQ(pParty->pPlayers[0].sHealth, 45);
+    EXPECT_EQ(pParty->pPlayers[1].sHealth, 39);
+    EXPECT_EQ(pParty->pPlayers[2].conditions.Has(Condition_Zombie), true);
+    EXPECT_EQ(pParty->pPlayers[3].conditions.Has(Condition_Zombie), true);
+}
