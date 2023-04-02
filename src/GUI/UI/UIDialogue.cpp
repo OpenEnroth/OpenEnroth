@@ -181,7 +181,7 @@ void GUIWindow_Dialogue::Release() {
     }
 
     current_screen_type = prev_screen_type;
-
+    pParty->switchToNextActiveCharacter();
     GUIWindow::Release();
 }
 
@@ -214,27 +214,16 @@ void GUIWindow_Dialogue::Update() {
     std::string dialogue_string;
     switch (uDialogueType) {
         case DIALOGUE_13_hiring_related:
-            dialogue_string = BuildDialogueString(
-                pNPCStats->pProfessions[pNPC->profession].pJoinText,
-                pParty->getActiveCharacter() - 1, 0, 0, 0);
+            dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->profession].pJoinText, 0, 0, 0, 0);
             break;
 
         case DIALOGUE_PROFESSION_DETAILS: {
             if (dialogue_show_profession_details) {
-                dialogue_string = BuildDialogueString(
-                    pNPCStats->pProfessions[pNPC->profession].pBenefits,
-                    pParty->getActiveCharacter() - 1, 0, 0, 0
-                );
+                dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->profession].pBenefits, 0, 0, 0, 0);
             } else if (pNPC->Hired()) {
-                dialogue_string = BuildDialogueString(
-                    pNPCStats->pProfessions[pNPC->profession].pDismissText,
-                    pParty->getActiveCharacter() - 1, 0, 0, 0
-                );
+                dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->profession].pDismissText, 0, 0, 0, 0);
             } else {
-                dialogue_string = BuildDialogueString(
-                    pNPCStats->pProfessions[pNPC->profession].pJoinText,
-                    pParty->getActiveCharacter() - 1, 0, 0, 0
-                );
+                dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->profession].pJoinText, 0, 0, 0, 0);
             }
             break;
         }
@@ -273,11 +262,9 @@ void GUIWindow_Dialogue::Update() {
                 NPCProfession *prof = &pNPCStats->pProfessions[pNPC->profession];
 
                 if (pNPC->Hired())
-                    dialogue_string = BuildDialogueString(
-                        prof->pDismissText, pParty->getActiveCharacter() - 1, 0, 0, 0);
+                    dialogue_string = BuildDialogueString(prof->pDismissText, 0, 0, 0, 0);
                 else
-                    dialogue_string = BuildDialogueString(
-                        prof->pJoinText, pParty->getActiveCharacter() - 1, 0, 0, 0);
+                    dialogue_string = BuildDialogueString(prof->pJoinText, 0, 0, 0, 0);
             }
             break;
     }
