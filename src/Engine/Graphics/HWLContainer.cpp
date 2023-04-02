@@ -31,7 +31,7 @@ bool HWLContainer::Open(const std::string &pFilename) {
 
     pFile = fopen(pFilename.c_str(), "rb");
     if (!pFile) {
-        log->Warning("Failed to open file: {}", pFilename);
+        log->warning("Failed to open file: {}", pFilename);
         return false;
     }
 
@@ -40,7 +40,7 @@ bool HWLContainer::Open(const std::string &pFilename) {
         return false;
 
     if (memcmp(&header.uSignature, "D3DT", 4) != 0) {
-        log->Warning("Invalid format: {}", pFilename);
+        log->warning("Invalid format: {}", pFilename);
         return false;
     }
     fseek(pFile, header.uDataOffset, SEEK_SET);

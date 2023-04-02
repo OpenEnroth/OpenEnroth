@@ -68,7 +68,7 @@ static std::string _resolvePath(
     }
 
     if (!envPath.empty()) {
-        EngineIocContainer::ResolveLogger()->Info("Path override provided: {}={}", envVarOverride, envPathStr);
+        EngineIocContainer::ResolveLogger()->info("Path override provided: {}={}", envVarOverride, envPathStr);
         return envPath;
     }
 

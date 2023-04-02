@@ -274,7 +274,7 @@ bool PCX_LOD_Raw_Loader::Load(unsigned int *width, unsigned int *height,
 
     Blob data = lod->LoadRaw(resource_name);
     if (!data) {
-        log->Warning("Unable to load {}", this->resource_name);
+        log->warning("Unable to load {}", this->resource_name);
         return false;
     }
 
@@ -291,7 +291,7 @@ bool PCX_LOD_Compressed_Loader::Load(unsigned int *width, unsigned int *height,
 
     Blob pcx_data = lod->LoadCompressedTexture(resource_name);
     if (!pcx_data) {
-        log->Warning("Unable to load {}", resource_name);
+        log->warning("Unable to load {}", resource_name);
         return false;
     }
 

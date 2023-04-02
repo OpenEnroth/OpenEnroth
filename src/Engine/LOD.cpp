@@ -208,7 +208,7 @@ Sprite* LODFile_Sprites::GetSprite(std::string_view pContainerName) {
             return &pHardwareSprites[i];
         }
     }
-    logger->Warning("Sprite not found!");
+    logger->warning("Sprite not found!");
     return nullptr;
 }
 
@@ -724,13 +724,13 @@ bool LOD::WriteableFile::LoadFile(const std::string &filePath, bool bWriting) {
 void LOD::WriteableFile::AllocSubIndicesAndIO(unsigned int uNumSubIndices,
                                      unsigned int uBufferSize) {
     if (pSubIndices) {
-        logger->Warning("Attempt to reset a LOD subindex!");
+        logger->warning("Attempt to reset a LOD subindex!");
         free(pSubIndices);
         pSubIndices = nullptr;
     }
     pSubIndices = (LOD::Directory *)malloc(sizeof(LOD::Directory) * uNumSubIndices);
     if (pIOBuffer) {
-        logger->Warning("Attempt to reset a LOD IObuffer!");
+        logger->warning("Attempt to reset a LOD IObuffer!");
         free(pIOBuffer);
         pIOBuffer = nullptr;
         uIOBufferSize = 0;

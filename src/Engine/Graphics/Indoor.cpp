@@ -271,7 +271,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     _6807E0_num_decorations_with_sounds_6807B8 = 0;
 
     if (bLoaded) {
-        log->Warning("BLV is already loaded");
+        log->warning("BLV is already loaded");
         return true;
     }
 
@@ -679,10 +679,10 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
     // No face found - outside of level
     if (!NumFoundFaceStore) {
         if (!backupboundingsector) {
-            logger->Warning("GetSector fail: {}, {}, {}", sX, sY, sZ);
+            logger->warning("GetSector fail: {}, {}, {}", sX, sY, sZ);
             return 0;
         } else {
-            logger->Warning("GetSector: Returning backup sector bounding!");
+            logger->warning("GetSector: Returning backup sector bounding!");
             return backupboundingsector;
         }
     }
@@ -1487,7 +1487,7 @@ int BLV_GetFloorLevel(const Vec3i &pos, unsigned int uSectorID, unsigned int *pF
     // no face found - probably wrong sector supplied
     if (!FacesFound) {
         if (engine->config->debug.VerboseLogging.value())
-            logger->Warning("Floorlvl fail: {} {} {}", pos.x, pos.y, pos.z);
+            logger->warning("Floorlvl fail: {} {} {}", pos.x, pos.y, pos.z);
 
         *pFaceID = -1;
         return -30000;
@@ -1861,7 +1861,7 @@ char DoInteractionWithTopmostZObject(int pid) {
             break;
 
         default:
-            logger->Warning("Warning: Invalid ID reached!");
+            logger->warning("Warning: Invalid ID reached!");
             return 1;
 
         case OBJECT_Face:

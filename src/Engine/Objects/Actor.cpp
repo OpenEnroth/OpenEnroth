@@ -3100,7 +3100,7 @@ void Actor::InitializeActors() {
     if (pParty->IsPartyGood()) good = true;
     if (pParty->IsPartyEvil()) evil = true;
 
-    logger->Warning("{} {} {}", __FILE__, __FUNCTION__, __LINE__);  // ai_near_actors_targets_pid[i] for AI_Stand seems always
+    logger->warning("{} {} {}", __FILE__, __FUNCTION__, __LINE__);  // ai_near_actors_targets_pid[i] for AI_Stand seems always
                                                                     // 0;  original code behaviour is identical
 
     ai_near_actors_targets_pid.fill(0);
@@ -4876,7 +4876,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
         v50 = pMonsterList->GetMonsterIDByName(Str2.c_str());
         pTexture = Str2;
         if ((int16_t)v50 == -1) {
-            logger->Warning("Can't create random monster: '{}'! See MapStats.txt and Monsters.txt!", pTexture);
+            logger->warning("Can't create random monster: '{}'! See MapStats.txt and Monsters.txt!", pTexture);
             Engine_DeinitializeAndTerminate(0);
         }
 

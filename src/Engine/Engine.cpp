@@ -353,7 +353,7 @@ void Engine::StackPartyTorchLight() {
             pParty->flt_TorchlightColorB = 96;
 
             if (engine->config->debug.VerboseLogging.value())
-                logger->Warning("Torchlight doesn't have color");
+                logger->warning("Torchlight doesn't have color");
         }
 
         // TODO: either add conversion functions, or keep only glm / only Vec3_* classes.
@@ -626,8 +626,8 @@ Engine::~Engine() {
 }
 
 void Engine::LogEngineBuildInfo() {
-    logger->Info("OpenEnroth, compiled: {} {}", __DATE__, __TIME__);
-    logger->Info("Extra build information: {}/{}/{} {}", BUILD_PLATFORM, BUILD_TYPE, BUILD_COMPILER, PROJECT_VERSION);
+    logger->info("OpenEnroth, compiled: {} {}", __DATE__, __TIME__);
+    logger->info("Extra build information: {}/{}/{} {}", BUILD_PLATFORM, BUILD_TYPE, BUILD_COMPILER, PROJECT_VERSION);
 }
 
 //----- (0044EA5E) --------------------------------------------------------
@@ -695,7 +695,7 @@ void Engine::OutlineSelection() {
     if (object_info) {
         switch (object_info->object_type) {
             case VisObjectType_Sprite: {
-                log->Warning("Sprite outline currently unsupported");
+                log->warning("Sprite outline currently unsupported");
                 return;
             }
 
@@ -1038,7 +1038,7 @@ void Engine::SecondaryInitialization() {
 
 void Engine::Initialize() {
     if (!MM7_Initialize()) {
-        log->Warning("MM7_Initialize: failed");
+        log->warning("MM7_Initialize: failed");
 
         if (engine != nullptr) {
             engine->Deinitialize();
@@ -1979,7 +1979,7 @@ void LoadLevel_InitializeLevelStr() {
     int prev_string_offset;
 
     if (sizeof(pLevelStrOffsets) != 2000)
-        logger->Warning("pLevelStrOffsets: deserialization warning");
+        logger->warning("pLevelStrOffsets: deserialization warning");
     memset(pLevelStrOffsets.data(), 0, 2000);
 
     max_string_length = 0;

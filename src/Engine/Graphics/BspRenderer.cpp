@@ -21,7 +21,7 @@ void BspRenderer::AddFaceToRenderList_d3d(unsigned int node_id, unsigned int uFa
             faces[num_faces].uFaceID = uFaceID;
             faces[num_faces++].uNodeID = node_id;
         } else {
-            logger->Info("Too many faces in BLV render");
+            logger->info("Too many faces in BLV render");
         }
         return;
     }

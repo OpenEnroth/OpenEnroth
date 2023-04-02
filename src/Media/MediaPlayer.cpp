@@ -74,7 +74,7 @@ class AVStreamWrapper {
         if (dec_ctx != nullptr) {
             // Close the codec
             avcodec_close(dec_ctx);
-            logger->Warning("ffmpeg: close decoder context file");
+            logger->warning("ffmpeg: close decoder context file");
             dec_ctx = nullptr;
         }
     }
@@ -85,7 +85,7 @@ class AVStreamWrapper {
         stream_idx = av_find_best_stream(format_ctx, type_, -1, -1, &dec, 0);
         if (stream_idx < 0) {
             close();
-            logger->Warning("ffmpeg: unable to find audio stream");
+            logger->warning("ffmpeg: unable to find audio stream");
             return false;
         }
 
@@ -134,7 +134,7 @@ class AVAudioStream : public AVStreamWrapper {
             dec_ctx->sample_rate, dec_ctx->channel_layout, dec_ctx->sample_fmt,
             dec_ctx->sample_rate, 0, nullptr);
         if (swr_init(converter) < 0) {
-            logger->Warning("ffmpeg: swr_init failed");
+            logger->warning("ffmpeg: swr_init failed");
             swr_free(&converter);
             converter = nullptr;
             return false;
@@ -337,7 +337,7 @@ class Movie : public IMovie {
         if (format_ctx) {
             // Close the video file
             avformat_close_input(&format_ctx);
-            logger->Warning("close video format context file\n");
+            logger->warning("close video format context file\n");
             format_ctx = nullptr;
         }
         if (avioContext) {
@@ -353,14 +353,14 @@ class Movie : public IMovie {
     bool Load(const char *filename) {  // Загрузка
         // Open video file
         if (avformat_open_input(&format_ctx, filename, nullptr, nullptr) < 0) {
-            logger->Warning("ffmpeg: Unable to open input file");
+            logger->warning("ffmpeg: Unable to open input file");
             Close();
             return false;
         }
 
         // Retrieve stream information
         if (avformat_find_stream_info(format_ctx, nullptr) < 0) {
-            logger->Warning("ffmpeg: Unable to find stream info");
+            logger->warning("ffmpeg: Unable to find stream info");
             Close();
             return false;
         }
@@ -497,18 +497,18 @@ class Movie : public IMovie {
                 if (buffer) buffq.push(buffer);
             }
         }
-        logger->Info("Audio Packets Queued");
+        logger->info("Audio Packets Queued");
 
         // reset video to start
         int err = avformat_seek_file(format_ctx, -1, 0, 0, 0, AVSEEK_FLAG_BACKWARD);
         //int err = av_seek_frame(format_ctx, -1, 0, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY);
         if (err < 0) {
-            logger->Info("Seek to start failed! - Exit Movie");
+            logger->info("Seek to start failed! - Exit Movie");
             tex->Release();
             return;
         }
         start_time = std::chrono::system_clock::now();
-        logger->Info("Video stream reset");
+        logger->info("Video stream reset");
 
         int lastvideopts = -1;
         int desired_frame_number;
@@ -704,7 +704,7 @@ class VideoList {
 
         file = fopen(file_path.c_str(), "rb");
         if (file == nullptr) {
-            logger->Warning("Can't open video file: {}", file_path);
+            logger->warning("Can't open video file: {}", file_path);
             return;
         }
         fseek(file, 0, SEEK_END);
@@ -713,7 +713,7 @@ class VideoList {
 
         uint32_t uNumVideoHeaders = 0;
         if (fread(&uNumVideoHeaders, 4, 1, file) != 1) {
-            logger->Warning("Invalid video file format: {}", file_path);
+            logger->warning("Invalid video file format: {}", file_path);
             return;
         }
 
@@ -878,7 +878,7 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
     Texture *tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(), IMAGE_FORMAT_A8B8G8R8);
 
     if (pMovie->GetFormat() == "bink") {
-        logger->Info("bink file");
+        logger->info("bink file");
         pMovie->PlayBink();
     } else {
         while (true) {
@@ -1059,7 +1059,7 @@ bool AudioBaseDataSource::Open() {
     // Retrieve stream information
     if (avformat_find_stream_info(pFormatContext, nullptr) < 0) {
         Close();
-        logger->Warning("ffmpeg: Unable to find stream info");
+        logger->warning("ffmpeg: Unable to find stream info");
         return false;
     }
 
@@ -1072,7 +1072,7 @@ bool AudioBaseDataSource::Open() {
                                        -1, &codec, 0);
     if (iStreamIndex < 0) {
         Close();
-        logger->Warning("ffmpeg: Unable to find audio stream");
+        logger->warning("ffmpeg: Unable to find audio stream");
         return false;
     }
 
@@ -1114,7 +1114,7 @@ bool AudioBaseDataSource::Open() {
         pCodecContext->sample_fmt, pCodecContext->sample_rate, 0, nullptr);
     if (swr_init(pConverter) < 0) {
         Close();
-        logger->Warning("ffmpeg: Failed to create converter");
+        logger->warning("ffmpeg: Failed to create converter");
         return false;
     }
 
@@ -1234,7 +1234,7 @@ bool AudioFileDataSource::Open() {
     // Open audio file
     if (avformat_open_input(&pFormatContext, sFileName.c_str(), nullptr,
                             nullptr) < 0) {
-        logger->Warning("ffmpeg: Unable to open input file");
+        logger->warning("ffmpeg: Unable to open input file");
         return false;
     }
 
@@ -1306,7 +1306,7 @@ bool AudioBufferDataSource::Open() {
 
     // Open audio file
     if (avformat_open_input(&pFormatContext, nullptr, nullptr, nullptr) < 0) {
-        logger->Warning("ffmpeg: Unable to open input buffer");
+        logger->warning("ffmpeg: Unable to open input buffer");
         return false;
     }
 

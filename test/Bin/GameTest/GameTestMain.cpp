@@ -21,7 +21,7 @@ class GameThread {
         _logger = PlatformLogger::createStandardLogger(WIN_ENSURE_CONSOLE_OPTION);
         _logger->setLogLevel(APPLICATION_LOG, LOG_INFO);
         _logger->setLogLevel(PLATFORM_LOG, LOG_ERROR);
-        EngineIocContainer::ResolveLogger()->SetBaseLogger(_logger.get());
+        EngineIocContainer::ResolveLogger()->setBaseLogger(_logger.get());
         Engine::LogEngineBuildInfo();
 
         _application = std::make_unique<PlatformApplication>(_logger.get());
@@ -38,7 +38,7 @@ class GameThread {
     }
 
     ~GameThread() {
-        EngineIocContainer::ResolveLogger()->SetBaseLogger(nullptr);
+        EngineIocContainer::ResolveLogger()->setBaseLogger(nullptr);
     }
 
     PlatformApplication *app() const {

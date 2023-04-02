@@ -18,8 +18,8 @@ int MM_Main(int argc, char **argv) {
         std::unique_ptr<PlatformLogger> logger = PlatformLogger::createStandardLogger(WIN_ENSURE_CONSOLE_OPTION);
         logger->setLogLevel(APPLICATION_LOG, LOG_INFO);
         logger->setLogLevel(PLATFORM_LOG, LOG_ERROR);
-        EngineIocContainer::ResolveLogger()->SetBaseLogger(logger.get());
-        MM_AT_SCOPE_EXIT(EngineIocContainer::ResolveLogger()->SetBaseLogger(nullptr));
+        EngineIocContainer::ResolveLogger()->setBaseLogger(logger.get());
+        MM_AT_SCOPE_EXIT(EngineIocContainer::ResolveLogger()->setBaseLogger(nullptr));
         Engine::LogEngineBuildInfo();
 
         std::unique_ptr<PlatformApplication> app = std::make_unique<PlatformApplication>(logger.get());

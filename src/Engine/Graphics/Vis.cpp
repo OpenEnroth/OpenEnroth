@@ -517,8 +517,7 @@ Vis_PIDAndDepth Vis::get_object_zbuf_val(Vis_ObjectInfo *info) {
         }
 
         default:
-            log->Warning(
-                "Undefined type requested for: CVis::get_object_zbuf_val()");
+            log->warning("Undefined type requested for: CVis::get_object_zbuf_val()");
             return InvalidPIDAndDepth();
     }
 }
@@ -775,7 +774,7 @@ void Vis_SelectionList::create_object_pointers(PointerCreationType type) {
         } break;
 
         default:
-            logger->Warning("Unknown pointer creation flag passed to ::create_object_pointers()");
+            logger->warning("Unknown pointer creation flag passed to ::create_object_pointers()");
     }
 }
 
@@ -893,8 +892,7 @@ bool Vis::PickMouse(float fDepth, float fMouseX, float fMouseY,
         PickOutdoorFaces_Mouse(fDepth, pMouseRay, &default_list, face_filter,
             false);
     } else {
-        log->Warning(
-            "Picking mouse in undefined level");  // picking in main menu is
+        log->warning("Picking mouse in undefined level");  // picking in main menu is
                                                   // default (buggy) game
                                                   // behaviour. should've
                                                   // returned false in
@@ -949,9 +947,7 @@ bool Vis::is_part_of_selection(const Vis_Object &what, Vis_SelectionFilter *filt
             if (filter->select_flags & ExclusionIfNoEvent) {
                 if (object_type != filter->object_type) return true;
                 if (filter->object_type != OBJECT_Decoration) {
-                    log->Warning(
-                        "Unsupported \"exclusion if no event\" type in "
-                        "CVis::is_part_of_selection");
+                    log->warning("Unsupported \"exclusion if no event\" type in CVis::is_part_of_selection");
                     return true;
                 }
                 if (pLevelDecorations[object_idx].uCog ||
@@ -961,7 +957,7 @@ bool Vis::is_part_of_selection(const Vis_Object &what, Vis_SelectionFilter *filt
             }
             if (object_type == filter->object_type) {
                 if (object_type != OBJECT_Actor) {
-                    log->Warning("Default case reached in VIS");
+                    log->warning("Default case reached in VIS");
                     return true;
                 }
 

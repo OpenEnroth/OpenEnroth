@@ -70,7 +70,7 @@ class GLShader {
             return tempID;
         }
 
-        logger->Warning("shader compilation failure: {}", filename);
+        logger->warning("shader compilation failure: {}", filename);
         return 0;
     }
 
@@ -83,7 +83,7 @@ class GLShader {
             return true;
         }
 
-        logger->Info("shader reload failed, reverting...");
+        logger->info("shader reload failed, reverting...");
         return false;
     }
 
@@ -104,16 +104,16 @@ class GLShader {
             glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
             if (!success) {
                 glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-                logger->Warning("{} {} shader compilation error:", name, type);
-                logger->Warning("{}", infoLog);
+                logger->warning("{} {} shader compilation error:", name, type);
+                logger->warning("{}", infoLog);
                 return false;
             }
         } else {
             glGetProgramiv(shader, GL_LINK_STATUS, &success);
             if (!success) {
                 glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-                logger->Warning("{} {} linking error:", name, type);
-                logger->Warning("{}", infoLog);
+                logger->warning("{} {} linking error:", name, type);
+                logger->warning("{}", infoLog);
                 return false;
             }
         }
@@ -129,7 +129,7 @@ class GLShader {
             // open files
             if (!std::filesystem::exists(path)) {
                 if (!nonFatal)
-                    logger->Warning("cannot find {} {} shader file at path {}", name, typeName, path);
+                    logger->warning("cannot find {} {} shader file at path {}", name, typeName, path);
 
                 return 0;
             }
@@ -161,7 +161,7 @@ class GLShader {
             return shaderHandler;
         }
         catch (std::ifstream::failure &e) {
-            logger->Warning("error occured during reading {} {} shader file at path {}: {}", name, typeName, path, e.what());
+            logger->warning("error occured during reading {} {} shader file at path {}: {}", name, typeName, path, e.what());
             return 0;
         }
     }

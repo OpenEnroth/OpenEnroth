@@ -126,7 +126,7 @@ void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
         std::string file_path = fmt::format("{}.mp3", eTrack);
         file_path = MakeDataPath("music", file_path);
         if (!std::filesystem::exists(file_path)) {
-            logger->Warning("AudioPlayer: {} not found", file_path);
+            logger->warning("AudioPlayer: {} not found", file_path);
             return;
         }
 
@@ -227,7 +227,7 @@ void AudioPlayer::stopSounds() {
     for (auto &[_, si] : mapSounds) {
         if (si.sample) {
             if (si.sample->Stop() && engine->config->debug.VerboseLogging.value()) {
-                logger->Info("sound stopped: {}", si.sName);
+                logger->info("sound stopped: {}", si.sName);
             }
         }
     }
@@ -257,7 +257,7 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
     }
 
     if (mapSounds.find(eSoundID) == mapSounds.end()) {
-        logger->Warning("AudioPlayer: sound id {} not found", eSoundID);
+        logger->warning("AudioPlayer: sound id {} not found", eSoundID);
         return;
     }
 
@@ -275,13 +275,13 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
         }
 
         if (!buffer) {
-            logger->Warning("AudioPlayer: failed to load sound {} ({})", eSoundID, si.sName);
+            logger->warning("AudioPlayer: failed to load sound {} ({})", eSoundID, si.sName);
             return;
         }
 
         si.sample = CreateAudioSample(std::move(buffer));
         if (!si.sample) {
-            logger->Warning("AudioPlayer: failed to sample sound {} ({})", eSoundID, si.sName);
+            logger->warning("AudioPlayer: failed to sample sound {} ({})", eSoundID, si.sName);
             return;
         }
     }
@@ -373,7 +373,7 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
                 // TODO(pskelton): temp fix to reduce instances of sounds not playing
                 si.sample->Play();
                 if (engine->config->debug.VerboseLogging.value())
-                    logger->Warning("Unexpected object type from PID in playSound");
+                    logger->warning("Unexpected object type from PID in playSound");
                 break;
             }
         }
@@ -383,9 +383,9 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
 
     if (engine->config->debug.VerboseLogging.value()) {
         if (si.sName == "")
-            logger->Info("AudioPlayer: playing sound {}", eSoundID);
+            logger->info("AudioPlayer: playing sound {}", eSoundID);
         else
-            logger->Info("AudioPlayer: playing sound {} with name '{}'", eSoundID, si.sName);
+            logger->info("AudioPlayer: playing sound {} with name '{}'", eSoundID, si.sName);
     }
 
     return;
@@ -395,7 +395,7 @@ void AudioPlayer::ResumeSounds() {
     for (auto &[_, si] : mapSounds) {
         if (si.sample) {
             if (si.sample->Resume() && engine->config->debug.VerboseLogging.value())
-                logger->Info("sound resumed: {}", si.sName);
+                logger->info("sound resumed: {}", si.sName);
         }
     }
 }
@@ -415,7 +415,7 @@ void AudioPlayer::PauseSounds(int uType) {
         for (auto &[_, si] : mapSounds) {
             if (si.sample) {
                 if (si.sample->Pause() && engine->config->debug.VerboseLogging.value())
-                    logger->Info("sound paused: {}", si.sName);
+                    logger->info("sound paused: {}", si.sName);
             }
         }
     } else {
@@ -425,7 +425,7 @@ void AudioPlayer::PauseSounds(int uType) {
                 if (si.last_pid != PID_INVALID &&
                         si.last_pid != SOUND_PID_NON_RESETABLE) {
                     if (si.sample->Pause() && engine->config->debug.VerboseLogging.value())
-                        logger->Info("sound paused: {}", si.sName);
+                        logger->info("sound paused: {}", si.sName);
                 }
             }
         }
@@ -519,7 +519,7 @@ Blob AudioPlayer::LoadSound(int uSoundID) {  // bit of a kludge (load sound by I
         if (header.uDecompressedSize) {
             return Blob::read(fAudioSnd, header.uDecompressedSize);
         } else {
-            logger->Warning("Can't load sound file!");
+            logger->warning("Can't load sound file!");
             return Blob();
         }
     } else {
@@ -531,7 +531,7 @@ Blob AudioPlayer::LoadSound(int uSoundID) {  // bit of a kludge (load sound by I
 Blob AudioPlayer::LoadSound(const std::string &pSoundName) {
     SoundHeader header = { 0 };
     if (!FindSound(pSoundName, &header)) {
-        logger->Warning("AudioPlayer: {} can't load sound header!", pSoundName);
+        logger->warning("AudioPlayer: {} can't load sound header!", pSoundName);
         return Blob();
     }
 
@@ -541,7 +541,7 @@ Blob AudioPlayer::LoadSound(const std::string &pSoundName) {
         if (header.uDecompressedSize) {
             return Blob::read(fAudioSnd, header.uDecompressedSize);
         } else {
-            logger->Warning("AudioPlayer: {} can't load sound file!", pSoundName);
+            logger->warning("AudioPlayer: {} can't load sound file!", pSoundName);
             return Blob();
         }
     } else {
