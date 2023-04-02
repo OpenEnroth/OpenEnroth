@@ -1,12 +1,9 @@
-#ifdef _WINDOWS
-    #pragma comment(lib, "opengl32.lib")
-#endif
+#include "RenderOpenGL.h"
 
 #include <algorithm>
 #include <memory>
 #include <utility>
 #include <map>
-#include <filesystem>
 #include <chrono>
 
 #include "glad/gl.h"
@@ -21,16 +18,12 @@
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Level/Decoration.h"
-#include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/Nuklear.h"
-#include "Engine/Graphics/OpenGL/RenderOpenGL.h"
 #include "Engine/Graphics/OpenGL/TextureOpenGL.h"
 #include "Engine/Graphics/OpenGL/GLShaderLoader.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/ParticleEngine.h"
-#include "Engine/Graphics/PCX.h"
-#include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
@@ -51,7 +44,6 @@
 #include "Utility/Format.h"
 #include "Utility/Memory/MemSet.h"
 #include "Utility/Math/TrigLut.h"
-#include "Library/Random/Random.h"
 
 #ifndef LOWORD
     #define LOWORD(l) ((unsigned short)(((std::uintptr_t)(l)) & 0xFFFF))
