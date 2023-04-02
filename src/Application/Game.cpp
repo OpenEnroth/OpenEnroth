@@ -2200,7 +2200,9 @@ void Game::EventLoop() {
                     for(size_t attempt = 0; attempt < 500; attempt++) {
                         ITEM_TYPE pItemID = grng->RandomSample(SpawnableItems());
                         if (pItemTable->pItems[pItemID].uItemID_Rep_St > 6) {
-                            pPlayers[pParty->getActiveCharacter()]->AddItem(-1, pItemID);
+                            if (!pPlayers[pParty->getActiveCharacter()]->AddItem(-1, pItemID)) {
+                                pAudioPlayer->playUISound(SOUND_error);
+                            }
                             break;
                         }
                     }
@@ -2216,7 +2218,9 @@ void Game::EventLoop() {
                         ITEM_TYPE pItemID = grng->RandomSample(SpawnableItems());
                         // if (pItemTable->pItems[pItemID].uItemID_Rep_St ==
                         //   (item_id - 40015 + 1)) {
-                        pPlayers[pParty->getActiveCharacter()]->AddItem(-1, pItemID);
+                        if (!pPlayers[pParty->getActiveCharacter()]->AddItem(-1, pItemID)) {
+                            pAudioPlayer->playUISound(SOUND_error);
+                        }
                         break;
                         //}
                     }
