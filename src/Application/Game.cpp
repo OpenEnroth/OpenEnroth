@@ -2357,18 +2357,13 @@ void Game::EventLoop() {
     std::swap(pCurrentFrameMessageQueue, pNextFrameMessageQueue);
     assert(pNextFrameMessageQueue->Empty());
 
-    if (GateMasterEventId != UIMSG_0) {
-        pCurrentFrameMessageQueue->AddGUIMessage(GateMasterEventId, (int64_t)GateMasterNPCData, 0);
-        GateMasterEventId = UIMSG_0;
-    } else {
-        if (AfterEnchClickEventId != UIMSG_0) {
-            AfterEnchClickEventTimeout -= pEventTimer->uTimeElapsed;
-            if (AfterEnchClickEventTimeout <= 0) {
-                pCurrentFrameMessageQueue->AddGUIMessage(AfterEnchClickEventId, AfterEnchClickEventSecondParam, 0);
-                AfterEnchClickEventId = UIMSG_0;
-                AfterEnchClickEventSecondParam = 0;
-                AfterEnchClickEventTimeout = 0;
-            }
+    if (AfterEnchClickEventId != UIMSG_0) {
+        AfterEnchClickEventTimeout -= pEventTimer->uTimeElapsed;
+        if (AfterEnchClickEventTimeout <= 0) {
+            pCurrentFrameMessageQueue->AddGUIMessage(AfterEnchClickEventId, AfterEnchClickEventSecondParam, 0);
+            AfterEnchClickEventId = UIMSG_0;
+            AfterEnchClickEventSecondParam = 0;
+            AfterEnchClickEventTimeout = 0;
         }
     }
     CastSpellInfoHelpers::castSpell();

@@ -1197,61 +1197,48 @@ int UseNPCSkill(NPCProf profession) {
         } break;
 
         case ExpertHealer: {
-            std::array<Condition, 15> conditionsToHeal = {{
-                Condition_Cursed,
-                Condition_Weak,
-                Condition_Sleep,
-                Condition_Fear,
-                Condition_Drunk,
-                Condition_Insane,
-                Condition_Poison_Weak,
-                Condition_Disease_Weak,
-                Condition_Poison_Medium,
-                Condition_Disease_Medium,
-                Condition_Poison_Severe,
-                Condition_Disease_Severe,
-                Condition_Paralyzed,
-                Condition_Unconscious,
-                Condition_Good
-            }};
-
             for (Player &player : pParty->pPlayers) {
                 player.sHealth = player.GetMaxHealth();
 
-                for (Condition condition : conditionsToHeal) {
+                for (Condition condition : standardConditionsExcludeDead) {
                     player.conditions.Reset(condition);
                 }
             }
         } break;
 
         case MasterHealer: {
-            for (int i = 0; i < 4; ++i) {
-                __debugbreak();  // Ritor1:needed cleaned(Необходимо почистить)
-                Player *player = &pParty->pPlayers[i];
-                pParty->pPlayers[i].sHealth = pParty->pPlayers[i].GetMaxHealth();
+            for (Player &player : pParty->pPlayers) {
+                player.sHealth = player.GetMaxHealth();
 
-                //int v5 = HEXRAYS_LODWORD(player->conditions_times[19]);  // *((int *)v4 - 32);
-                //int v6 = HEXRAYS_HIDWORD(player->conditions_times[19]);  // *((int *)v4 - 31);
-                pParty->pPlayers[i].conditions.ResetAll();
-
-                //*(int *)&player->pActiveSkills[PLAYER_SKILL_SHIELD] = v5;
-                //*(int *)&player->pActiveSkills[PLAYER_SKILL_CHAIN] = v6;
+                for (Condition condition : standardConditionsIncludeDead) {
+                    // Master healer heals all except Eradicated and zombie
+                    if (condition != Condition_Eradicated) {
+                        player.conditions.Reset(condition);
+                    }
+                }
             }
         } break;
 
         case Cook: {
-            if (pParty->GetFood() >= 13) return 1;
+            // Was 13
+            if (pParty->GetFood() >= 14) {
+                return 1;
+            }
 
             pParty->GiveFood(1);
         } break;
 
         case Chef: {
-            if (pParty->GetFood() >= 13) return 1;
+            // Was 13
+            if (pParty->GetFood() >= 14) {
+                return 1;
+            }
 
-            if (pParty->GetFood() == 13)
+            if (pParty->GetFood() == 13) {
                 pParty->GiveFood(1);
-            else
+            } else {
                 pParty->GiveFood(2);
+            }
         } break;
 
         case WindMaster: {
@@ -1280,8 +1267,7 @@ int UseNPCSkill(NPCProf profession) {
 
         case GateMaster: {
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
-            GateMasterEventId = UIMSG_OnCastTownPortal;
-            GateMasterNPCData = GetNPCData(sDialogue_SpeakingActorNPC_ID);
+            pNextFrameMessageQueue->AddGUIMessage(UIMSG_OnCastTownPortal, (int64_t)GetNPCData(sDialogue_SpeakingActorNPC_ID), 0);
         } break;
 
         case Acolyte:

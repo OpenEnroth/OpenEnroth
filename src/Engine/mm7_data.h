@@ -167,8 +167,6 @@ extern int ItemEnchantmentTimer; // 50C9A8 Timer for enchanting animation for it
 extern UIMessageType AfterEnchClickEventId; // 50C9D0 Event id that is pushed in queue after enchant item has been clicked
 extern int AfterEnchClickEventSecondParam; // 50C9D4 Parameter passed for event "AfterEnchClickEventId"
 extern int AfterEnchClickEventTimeout; // 50C9D8 Timer before event "AfterEnchClickEventId" is pushed in queue
-extern UIMessageType GateMasterEventId; // 50C9D8 Event id that is pushed in queue after Gate Master NPC skill is used
-extern struct NPCData *GateMasterNPCData; // 50C9E0 NPC Data used as parameter for event "GateMasterEventId"
 // extern int dword_50C9E8; // idb
 // extern int dword_50C9EC[]; // 50C9EC
 extern int dword_50CDC8;

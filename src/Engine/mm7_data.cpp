@@ -2569,8 +2569,6 @@ int ItemEnchantmentTimer;
 UIMessageType AfterEnchClickEventId;
 int AfterEnchClickEventSecondParam;
 int AfterEnchClickEventTimeout;
-UIMessageType GateMasterEventId;
-struct NPCData *GateMasterNPCData;
 // int dword_50C9E8; // idb
 // int dword_50C9EC[120];
 int dword_50CDC8;
