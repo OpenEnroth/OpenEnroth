@@ -525,6 +525,7 @@ GAME_TEST(Issues, Issue578) {
 // 600
 
 GAME_TEST(Issues, Issue611) {
+    // Heal and reanimate dont work
     engine->config->debug.AllMagic.setValue(true);
     test->playTraceFromTestData("issue_611.mm7", "issue_611.json");
     // expect chars to be healed and zombies
@@ -532,4 +533,9 @@ GAME_TEST(Issues, Issue611) {
     EXPECT_EQ(pParty->pPlayers[1].sHealth, 39);
     EXPECT_EQ(pParty->pPlayers[2].conditions.Has(Condition_Zombie), true);
     EXPECT_EQ(pParty->pPlayers[3].conditions.Has(Condition_Zombie), true);
+}
+
+GAME_TEST(Issues, Issue615) {
+    // Assert when clicking on character portrait when no active character is present
+    test->playTraceFromTestData("issue_615.mm7", "issue_615.json");
 }
