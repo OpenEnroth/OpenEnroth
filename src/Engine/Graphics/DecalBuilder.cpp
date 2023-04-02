@@ -71,7 +71,7 @@ char DecalBuilder::BuildAndApplyDecals(int light_level, LocationFlags locationFl
     if (!pCamera3D->GetFacetOrientation(
         FacePlane->polygonType, &static_FacePlane.Normal, &static_FacePlane.field_10,
         &static_FacePlane.field_1C)) {
-        log->Warning("Error: Failed to get the facet orientation");
+        log->warning("Error: Failed to get the facet orientation");
         return 0;
     }
 
@@ -93,7 +93,7 @@ char DecalBuilder::BuildAndApplyDecals(int light_level, LocationFlags locationFl
                 ColourMult,
                 buildsplat->dot_dist,
                 &static_FacePlane, NumFaceVerts, FaceVerts, ClipFlags))
-                log->Warning("Error: Failed to build decal geometry");
+                log->warning("Error: Failed to build decal geometry");
         }
     }
     return 1;

@@ -256,7 +256,7 @@ bool OutdoorLocation::Initialize(const std::string &filename, int days_played,
         // pSpriteFrameTable->ResetLoadedFlags();
 
         if (!this->Load(filename, days_played, respawn_interval_days, outdoors_was_respawned)) {
-            logger->Warning("Couldn't Load Map!");
+            logger->warning("Couldn't Load Map!");
             CreateDebugLocation();
         }
 
@@ -3121,7 +3121,7 @@ unsigned int GetLevelFogColor() {
     if (day_attrib & DAY_ATTRIB_FOG) {
         if (pWeather->bNight) {  // night-time fog
             if (false) {
-                logger->Warning("decompilation can be inaccurate, please send savegame to Nomad");
+                logger->warning("decompilation can be inaccurate, please send savegame to Nomad");
                 __debugbreak();
             }
             int v2 = -(pWeather->bNight != 1);

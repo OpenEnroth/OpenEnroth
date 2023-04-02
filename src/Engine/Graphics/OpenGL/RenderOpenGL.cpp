@@ -93,7 +93,7 @@ void GL_Check_Errors(void *ret, const char *name, GLADapiproc apiproc, int len_a
         if (!detail_gl_error::trySerialize(err, &error))
             error = "Unknown Error";
 
-        logger->Warning("OpenGL error ({}): {} from function {}", err, error, name);
+        logger->warning("OpenGL error ({}): {} from function {}", err, error, name);
 
         err = glad_glGetError();
     }
@@ -117,7 +117,7 @@ void GL_Check_Framebuffer(const char *name) {
     if (!detail_fb_error::trySerialize(status, &error))
         return;
 
-    logger->Warning("OpenGL Framebuffer error ({}): {} from function {}", status, error, name);
+    logger->warning("OpenGL Framebuffer error ({}): {} from function {}", status, error, name);
 }
 
 // sky billboard stuff
@@ -197,9 +197,9 @@ RenderOpenGL::RenderOpenGL(
     clip_z = 0;
 }
 
-RenderOpenGL::~RenderOpenGL() { logger->Info("RenderGl - Destructor"); }
+RenderOpenGL::~RenderOpenGL() { logger->info("RenderGl - Destructor"); }
 
-void RenderOpenGL::Release() { logger->Info("RenderGL - Release"); }
+void RenderOpenGL::Release() { logger->info("RenderGL - Release"); }
 
 uint8_t *RenderOpenGL::ReadScreenPixels() {
     GLubyte *sPixels = new GLubyte[4 * outputRender.w * outputRender.h];
@@ -243,11 +243,11 @@ bool RenderOpenGL::InitializeFullscreen() {
 }
 
 // when losing and regaining window focus - not required for OGL??
-void RenderOpenGL::RestoreFrontBuffer() { logger->Info("RenderGl - RestoreFrontBuffer"); }
-void RenderOpenGL::RestoreBackBuffer() { logger->Info("RenderGl - RestoreBackBuffer"); }
+void RenderOpenGL::RestoreFrontBuffer() { logger->info("RenderGl - RestoreFrontBuffer"); }
+void RenderOpenGL::RestoreBackBuffer() { logger->info("RenderGl - RestoreBackBuffer"); }
 
 void RenderOpenGL::BltBackToFontFast(int a2, int a3, Recti *a4) {
-    logger->Info("RenderGl - BltBackToFontFast");
+    logger->info("RenderGl - BltBackToFontFast");
     // never called anywhere
 }
 
@@ -291,7 +291,7 @@ int linevertscnt = 0;
 
 void RenderOpenGL::BeginLines2D() {
     if (linevertscnt && engine->config->debug.VerboseLogging.value())
-        logger->Warning("BeginLines with points still stored in buffer");
+        logger->warning("BeginLines with points still stored in buffer");
 
     DrawTwodVerts();
 
@@ -720,7 +720,7 @@ void RenderOpenGL::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
 void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid, uint32_t uColor32) {
     if (!img) {
         if (engine->config->debug.VerboseLogging.value())
-            logger->Warning("Null img passed to DrawImage");
+            logger->warning("Null img passed to DrawImage");
         return;
     }
 
@@ -1149,7 +1149,7 @@ void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon 
 }
 
 bool RenderOpenGL::AreRenderSurfacesOk() {
-    logger->Info("RenderGl - AreRenderSurfacesOk");
+    logger->info("RenderGl - AreRenderSurfacesOk");
     return true;
 }
 
@@ -1360,7 +1360,7 @@ void RenderOpenGL::EndDecals() {
 
 void RenderOpenGL::DrawDecal(struct Decal *pDecal, float z_bias) {
     if (pDecal->uNumVertices < 3) {
-        log->Warning("Decal has < 3 vertices");
+        log->warning("Decal has < 3 vertices");
         return;
     }
 
@@ -1431,7 +1431,7 @@ void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, in
 
     if (!texture) {
         if (engine->config->debug.VerboseLogging.value())
-            logger->Warning("Missing Arcomage Sprite Sheet");
+            logger->warning("Missing Arcomage Sprite Sheet");
         return;
     }
 
@@ -1625,7 +1625,7 @@ void RenderOpenGL::DeleteTexture(Texture *texture) {
 }
 
 void RenderOpenGL::RemoveTextureFromDevice(Texture* texture) {
-    logger->Info("RenderGL - RemoveTextureFromDevice");
+    logger->info("RenderGL - RemoveTextureFromDevice");
 }
 
 bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
@@ -1641,7 +1641,7 @@ bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
         gl_format = GL_RGBA;
     } else {
         if (engine->config->debug.VerboseLogging.value())
-            log->Warning("Image {} not loaded!", *t->GetName());
+            log->warning("Image {} not loaded!", *t->GetName());
     }
 
     if (pixels) {
@@ -1801,7 +1801,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
                     }
 
                     if (i == 8) {
-                        logger->Warning("Texture unit full - draw terrain!");
+                        logger->warning("Texture unit full - draw terrain!");
                         tileunit = 0;
                         tilelayer = 0;
                     } else {
@@ -1817,7 +1817,7 @@ void RenderOpenGL::DrawOutdoorTerrain() {
                             terraintexmap.insert(std::make_pair(tile->name, encode));
                             numterraintexloaded[i]++;
                         } else {
-                            logger->Warning("Texture layer full - draw terrain!");
+                            logger->warning("Texture layer full - draw terrain!");
                             tileunit = 0;
                             tilelayer = 0;
                         }
@@ -2742,7 +2742,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
     _set_ortho_modelview();
 
     if (billbstorecnt && engine->config->debug.VerboseLogging.value())
-        logger->Warning("Billboard shader store isnt empty!");
+        logger->warning("Billboard shader store isnt empty!");
 
     // track loaded tex
     float gltexid{ 0 };
@@ -3092,7 +3092,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
     TextureOpenGL *texture = dynamic_cast<TextureOpenGL *>(tex);
     if (!texture) {
         if (engine->config->debug.VerboseLogging.value())
-            logger->Info("Null texture passed to DrawTextureNew");
+            logger->info("Null texture passed to DrawTextureNew");
         return;
     }
 
@@ -3221,7 +3221,7 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, i
     TextureOpenGL* texture = dynamic_cast<TextureOpenGL*>(img);
     if (!texture) {
         if (engine->config->debug.VerboseLogging.value())
-            logger->Info("Null texture passed to DrawTextureCustomHeight");
+            logger->info("Null texture passed to DrawTextureCustomHeight");
         return;
     }
 
@@ -3748,7 +3748,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
                             }
 
                             if (i == 16) {
-                                logger->Warning("Texture unit full - draw building!");
+                                logger->warning("Texture unit full - draw building!");
                                 texunit = 0;
                                 texlayer = 0;
                             } else {
@@ -3768,7 +3768,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
                                     outbuildtexmap.insert(std::make_pair(*texname, encode));
                                     numoutbuildtexloaded[i]++;
                                 } else {
-                                    logger->Warning("Texture layer full - draw building!");
+                                    logger->warning("Texture layer full - draw building!");
                                     texunit = 0;
                                     texlayer = 0;
                                 }
@@ -3899,7 +3899,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
                                         face.texlayer = texlayer = unitlayer & 0xFF;
                                         face.texunit = texunit = (unitlayer & 0xFF00) >> 8;
                                     } else {
-                                        logger->Warning("Texture not found in map!");
+                                        logger->warning("Texture not found in map!");
                                         // TODO(pskelton): set to water for now - fountains in walls of mist
                                         texunit = face.texlayer = 0;
                                         texlayer = face.texunit = 0;
@@ -4271,7 +4271,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                 if (pStationaryLightsStack->pLights[lightscnt].uSectorID == 0) cntnosect++;
             }
             if (cntnosect)
-                logger->Warning("{} lights - sector not found", cntnosect);
+                logger->warning("{} lights - sector not found", cntnosect);
 
             for (int i = 0; i < 16; i++) {
                 numBSPverts[i] = 0;
@@ -4350,7 +4350,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                     }
 
                     if (i == 16) {
-                        logger->Warning("Texture unit full - draw Indoor faces!");
+                        logger->warning("Texture unit full - draw Indoor faces!");
                         texunit = 0;
                         texlayer = 0;
                     } else {
@@ -4370,7 +4370,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                             bsptexmap.insert(std::make_pair(*texname, encode));
                             bsptexloaded[i]++;
                         } else {
-                            logger->Warning("Texture layer full - draw indoor faces!");
+                            logger->warning("Texture layer full - draw indoor faces!");
                             texunit = 0;
                             texlayer = 0;
                         }
@@ -4570,7 +4570,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                                     face->texlayer = texlayer = unitlayer & 0xFF;
                                     face->texunit = texunit = (unitlayer & 0xFF00) >> 8;
                                 } else {
-                                    logger->Warning("Texture not found in map!");
+                                    logger->warning("Texture not found in map!");
                                     // TODO(pskelton): set to water for now - fountains in walls of mist
                                     texlayer = face->texlayer = 0;
                                     texunit = face->texunit = 0;
@@ -5010,11 +5010,11 @@ bool RenderOpenGL::Initialize() {
             version = gladLoadGLUserPtr(gladLoadFunc, openGLContext);
 
         if (!version)
-            log->Warning("GLAD: Failed to initialize the OpenGL loader");
+            log->warning("GLAD: Failed to initialize the OpenGL loader");
 
-        log->Info("SDL2: supported OpenGL: {}", reinterpret_cast<const char *>(glGetString(GL_VERSION)));
-        log->Info("SDL2: supported GLSL: {}", reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION)));
-        log->Info("SDL2: OpenGL version: {}.{}", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
+        log->info("SDL2: supported OpenGL: {}", reinterpret_cast<const char *>(glGetString(GL_VERSION)));
+        log->info("SDL2: supported GLSL: {}", reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION)));
+        log->info("SDL2: OpenGL version: {}.{}", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
 
         gladSetGLPostCallback(GL_Check_Errors);
 
@@ -5144,7 +5144,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY, unsigned int u
 
 // gl shaders
 bool RenderOpenGL::InitShaders() {
-    logger->Info("initialising OpenGL shaders...");
+    logger->info("initialising OpenGL shaders...");
 
     std::string title = "CRITICAL ERROR: shader compilation failure";
     std::string name = "Terrain";
@@ -5218,7 +5218,7 @@ bool RenderOpenGL::InitShaders() {
     }
     forceperVAO = 0;
 
-    logger->Info("shaders have been compiled successfully!");
+    logger->info("shaders have been compiled successfully!");
     return true;
 }
 
@@ -5320,7 +5320,7 @@ bool RenderOpenGL::Reinitialize(bool firstInit) {
     if (firstInit) {
         // initiate shaders
         if (!InitShaders()) {
-            logger->Warning("shader initialisation has failed!");
+            logger->warning("shader initialisation has failed!");
             return false;
         }
     } // else {
@@ -5341,7 +5341,7 @@ bool RenderOpenGL::Reinitialize(bool firstInit) {
 }
 
 void RenderOpenGL::ReloadShaders() {
-    logger->Info("reloading Shaders...");
+    logger->info("reloading Shaders...");
     glUseProgram(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -5349,20 +5349,20 @@ void RenderOpenGL::ReloadShaders() {
     std::string name = "Terrain";
     std::string message = "shader failed to reload!\nPlease consult the log and issue a bug report!";
     if (!terrainshader.reload(name, OpenGLES))
-        logger->Warning("{} {}", name, message);
+        logger->warning("{} {}", name, message);
     name = "Outdoor buildings";
     if (!outbuildshader.reload(name, OpenGLES))
-        logger->Warning("{} {}", name, message);
+        logger->warning("{} {}", name, message);
     ReleaseTerrain();
 
     name = "Indoor BSP";
     if (!bspshader.reload(name, OpenGLES))
-        logger->Warning("{} {}", name, message);
+        logger->warning("{} {}", name, message);
     ReleaseBSP();
 
     name = "Text";
     if (!textshader.reload(name, OpenGLES))
-        logger->Warning("{} {}", name, message);
+        logger->warning("{} {}", name, message);
     glDeleteVertexArrays(1, &textVAO);
     glDeleteBuffers(1, &textVBO);
     textVAO = textVBO = 0;
@@ -5370,7 +5370,7 @@ void RenderOpenGL::ReloadShaders() {
 
     name = "Lines";
     if (!lineshader.reload(name, OpenGLES))
-        logger->Warning("{} {}", name, message);
+        logger->warning("{} {}", name, message);
     glDeleteVertexArrays(1, &lineVAO);
     glDeleteBuffers(1, &lineVBO);
     lineVAO = lineVBO = 0;
@@ -5378,7 +5378,7 @@ void RenderOpenGL::ReloadShaders() {
 
     name = "2D";
     if (!twodshader.reload(name, OpenGLES))
-        logger->Warning("{} {}", name, message);
+        logger->warning("{} {}", name, message);
     glDeleteVertexArrays(1, &twodVAO);
     glDeleteBuffers(1, &twodVBO);
     twodVAO = twodVBO = 0;
@@ -5386,7 +5386,7 @@ void RenderOpenGL::ReloadShaders() {
 
     name = "Billboards";
     if (!billbshader.reload(name, OpenGLES))
-        logger->Warning("{} {}", name, message);
+        logger->warning("{} {}", name, message);
     glDeleteVertexArrays(1, &billbVAO);
     glDeleteBuffers(1, &billbVBO);
     billbVAO = billbVBO = 0;
@@ -5397,7 +5397,7 @@ void RenderOpenGL::ReloadShaders() {
 
     name = "Decals";
     if (!decalshader.reload(name, OpenGLES))
-        logger->Warning("{} {}", name, message);
+        logger->warning("{} {}", name, message);
     glDeleteVertexArrays(1, &decalVAO);
     glDeleteBuffers(1, &decalVBO);
     decalVAO = decalVBO = 0;
@@ -5405,7 +5405,7 @@ void RenderOpenGL::ReloadShaders() {
 
     name = "Forced perspective";
     if (!forcepershader.reload(name, OpenGLES))
-        logger->Warning("{} {}", name, message);
+        logger->warning("{} {}", name, message);
     glDeleteVertexArrays(1, &forceperVAO);
     glDeleteBuffers(1, &forceperVBO);
     forceperVAO = forceperVBO = 0;
@@ -5414,7 +5414,7 @@ void RenderOpenGL::ReloadShaders() {
     if (nuklearshader.ID != 0) {
         name = "Nuklear";
         if (!nuklearshader.reload(name, OpenGLES)) {
-            logger->Warning("{} {}", name, message);
+            logger->warning("{} {}", name, message);
         } else {
             nk_dev.uniform_tex = glGetUniformLocation(nuklearshader.ID, "Texture");
             nk_dev.uniform_proj = glGetUniformLocation(nuklearshader.ID, "ProjMtx");
@@ -5641,12 +5641,12 @@ void RenderOpenGL::DrawTwodVerts() {
 bool RenderOpenGL::NuklearInitialize(struct nk_tex_font *tfont) {
     struct nk_context* nk_ctx = nuklear->ctx;
     if (!nk_ctx) {
-        log->Warning("Nuklear context is not available");
+        log->warning("Nuklear context is not available");
         return false;
     }
 
     if (!NuklearCreateDevice()) {
-        log->Warning("Nuklear device creation failed");
+        log->warning("Nuklear device creation failed");
         NuklearRelease();
         return false;
     }
@@ -5655,7 +5655,7 @@ bool RenderOpenGL::NuklearInitialize(struct nk_tex_font *tfont) {
     struct nk_tex_font *font = NuklearFontLoad(NULL, 13);
     nk_dev.atlas.default_font = font->font;
     if (!nk_dev.atlas.default_font) {
-        log->Warning("Nuklear default font loading failed");
+        log->warning("Nuklear default font loading failed");
         NuklearRelease();
         return false;
     }
@@ -5663,7 +5663,7 @@ bool RenderOpenGL::NuklearInitialize(struct nk_tex_font *tfont) {
     memcpy(tfont, font, sizeof(struct nk_tex_font));
 
     if (!nk_init_default(nk_ctx, &nk_dev.atlas.default_font->handle)) {
-        log->Warning("Nuklear initialization failed");
+        log->warning("Nuklear initialization failed");
         NuklearRelease();
         return false;
     }
@@ -5676,7 +5676,7 @@ bool RenderOpenGL::NuklearInitialize(struct nk_tex_font *tfont) {
 bool RenderOpenGL::NuklearCreateDevice() {
     nuklearshader.build("nuklear", "glnuklear", OpenGLES);
     if (nuklearshader.ID == 0) {
-        logger->Warning("Nuklear shader failed to compile!");
+        logger->warning("Nuklear shader failed to compile!");
         return false;
     }
 

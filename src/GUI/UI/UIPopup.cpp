@@ -2123,7 +2123,7 @@ unsigned int GetSpellColor(signed int a1) {
     else
         __debugbreak();
 
-    logger->Warning("No color returned - GetSpellColor!");
+    logger->warning("No color returned - GetSpellColor!");
     return 0;
 }
 

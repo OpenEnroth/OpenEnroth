@@ -121,7 +121,7 @@ void AutoInitDataPath(Platform *platform) {
             std::filesystem::create_directory(savesPath);
         }
 
-        EngineIocContainer::ResolveLogger()->Info("Using MM7 directory: {}", mm7dir);
+        EngineIocContainer::ResolveLogger()->info("Using MM7 directory: {}", mm7dir);
     } else {
         std::string message = fmt::format(
             "Required resources aren't found!\n"
@@ -130,7 +130,7 @@ void AutoInitDataPath(Platform *platform) {
             "resources directory from our repository there as well!",
             !mm7dir.empty() ? mm7dir : "current directory"
         );
-        EngineIocContainer::ResolveLogger()->Warning("{}", message);
+        EngineIocContainer::ResolveLogger()->warning("{}", message);
         platform->showMessageBox("CRITICAL ERROR: missing resources", message);
     }
 }
@@ -177,18 +177,18 @@ int Game::Run() {
     ::render = render;
 
     if (!render) {
-        log->Warning("Render creation failed");
+        log->warning("Render creation failed");
         return -1;
     }
 
     if (!render->Initialize()) {
-        log->Warning("Render failed to initialize");
+        log->warning("Render failed to initialize");
         return -1;
     }
 
     nuklear = Nuklear::Initialize();
     if (!nuklear) {
-        log->Warning("Nuklear failed to initialize");
+        log->warning("Nuklear failed to initialize");
     }
     ::nuklear = nuklear;
     if (nuklear) {
@@ -212,7 +212,7 @@ int Game::Run() {
     ::engine = engine;
 
     if (!engine) {
-        log->Warning("Engine creation failed");
+        log->warning("Engine creation failed");
         return -1;
     }
 
@@ -1631,9 +1631,9 @@ void Game::EventLoop() {
                     } else {
                         if (engine->config->debug.VerboseLogging.value()) {
                             if (pParty->uFlags & PARTY_FLAGS_1_AIRBORNE)
-                                logger->Info("Party is airborne");
+                                logger->info("Party is airborne");
                             if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER)
-                                logger->Info("Party on water");
+                                logger->info("Party on water");
                         }
                     }
 

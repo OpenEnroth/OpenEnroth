@@ -53,7 +53,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                         auto v8 = pSprites_LOD->LoadSprite(pSpriteSFrames[iter_uSpriteID].texture_name.c_str(), pSpriteSFrames[iter_uSpriteID].uPaletteID);
 
                         if (v8 == -1) {
-                            logger->Warning("Sprite {} not loaded!", pSpriteSFrames[iter_uSpriteID].texture_name);
+                            logger->warning("Sprite {} not loaded!", pSpriteSFrames[iter_uSpriteID].texture_name);
                             for (uint i = 0; i < 8; ++i) {
                                 pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = nullptr;
                             }
@@ -424,7 +424,7 @@ SpriteFrame *LevelDecorationChangeSeason(const DecorationDesc *desc, int t, int 
         default:
             assert(/*pParty->uCurrentMonth*/month >= 0 && /*pParty->uCurrentMonth*/month < 12);
     }
-    logger->Warning("No sprite returned - LevelDecorationChangeSeason!");
+    logger->warning("No sprite returned - LevelDecorationChangeSeason!");
     return nullptr;
 }
 

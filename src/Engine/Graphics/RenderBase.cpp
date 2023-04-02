@@ -111,7 +111,7 @@ void RenderBase::DrawSpriteObjects() {
     for (unsigned int i = 0; i < pSpriteObjects.size(); ++i) {
         // exit if we are at max sprites
         if (::uNumBillboardsToDraw >= 500) {
-            logger->Warning("Billboards Full");
+            logger->warning("Billboards Full");
             break;
         }
 
@@ -149,7 +149,7 @@ void RenderBase::DrawSpriteObjects() {
             SpriteFrame *frame = object->GetSpriteFrame();
             if (frame->icon_name == "null" || frame->texture_name == "null") {
                 if (engine->config->debug.VerboseLogging.value())
-                    logger->Warning("Trying to draw sprite with null frame");
+                    logger->warning("Trying to draw sprite with null frame");
                 continue;
             }
 
@@ -161,7 +161,7 @@ void RenderBase::DrawSpriteObjects() {
             // error catching
             if (frame->hw_sprites[octant]->texture->GetHeight() == 0 || frame->hw_sprites[octant]->texture->GetWidth() == 0) {
                 if (engine->config->debug.VerboseLogging.value())
-                    logger->Warning("Trying to draw sprite with empty octant texture");
+                    logger->warning("Trying to draw sprite with empty octant texture");
                 continue;
             }
 
@@ -254,7 +254,7 @@ void RenderBase::PrepareDecorationsRenderList_ODM() {
 
     for (unsigned int i = 0; i < pLevelDecorations.size(); ++i) {
         if (::uNumBillboardsToDraw >= 500) {
-            logger->Warning("Billboards Full");
+            logger->warning("Billboards Full");
             return;
         }
 
@@ -424,7 +424,7 @@ void RenderBase::TransformBillboardsAndSetPalettesODM() {
             TransformBillboard(&billboard, p);
         } else {
             if (engine->config->debug.VerboseLogging.value())
-                logger->Warning("Billboard with no sprite!");
+                logger->warning("Billboard with no sprite!");
         }
     }
 }

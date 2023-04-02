@@ -41,7 +41,7 @@ void EngineTraceRecorder::startRecording(const std::string &savePath, const std:
         _traceComponent->start();
         engine->config->graphics.FPSLimit.setValue(EngineDeterministicComponent::TARGET_FPS); // But don't turn the party into a wall-running doomguy.
 
-        logger->Info("Tracing started.");
+        logger->info("Tracing started.");
     });
 }
 
@@ -58,7 +58,7 @@ void EngineTraceRecorder::finishRecording() {
         trace.header.saveFileSize = std::filesystem::file_size(savePath); // This function can throw.
         EventTrace::saveToFile(tracePath, trace);
 
-        logger->Info("Trace saved to {} and {}",
+        logger->info("Trace saved to {} and {}",
                      absolute(std::filesystem::path(tracePath)).generic_string(),
                      absolute(std::filesystem::path(savePath)).generic_string());
     });

@@ -115,7 +115,7 @@ PLAYER_SKILL_TYPE dword_F8B1AC_skill_being_taught; // Address the same as above 
 
 void SetCurrentMenuID(MENU_STATE uMenu) {
     sCurrentMenuID = uMenu;
-    logger->Warning("CurrentMenu = {} \n", toString(uMenu));
+    logger->warning("CurrentMenu = {} \n", toString(uMenu));
 }
 
 MENU_STATE GetCurrentMenuID() {
@@ -273,7 +273,7 @@ void GUIWindow::Release() {
     if (this->eWindowType == WINDOW_GameUI)
         nuklear->Release(WINDOW_GameUI);
 
-    log->Info("Release window: {}", toString(eWindowType));
+    log->info("Release window: {}", toString(eWindowType));
     pAudioPlayer->ResumeSounds();
 }
 
@@ -739,7 +739,7 @@ GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, W
     this->mouse = EngineIocContainer::ResolveMouse();
     this->log = EngineIocContainer::ResolveLogger();
 
-    log->Info("New window: {}", toString(windowType));
+    log->info("New window: {}", toString(windowType));
     lWindowList.push_front(this);
     this->uFrameWidth = dimensions.w;
     this->uFrameHeight = dimensions.h;

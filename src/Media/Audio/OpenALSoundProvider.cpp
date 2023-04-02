@@ -35,7 +35,7 @@ bool CheckError() {
     }
 
     const char *message = alGetString(code1);
-    logger->Warning("OpenAL: error #{} \"{}\"", code1, message);
+    logger->warning("OpenAL: error #{} \"{}\"", code1, message);
 
     return true;
 }
@@ -56,7 +56,7 @@ bool OpenALSoundProvider::Initialize() {
     if (device_names) {
         for (const char *device_name = device_names; device_name[0];
              device_name += strlen(device_name) + 1) {
-            logger->Info("OpenAL: device found \"{}\"", device_name);
+            logger->info("OpenAL: device found \"{}\"", device_name);
         }
     }
 
@@ -65,7 +65,7 @@ bool OpenALSoundProvider::Initialize() {
     device = alcOpenDevice(defname);
     if (device == nullptr) {
         CheckError();
-        logger->Warning("OpenAL: Default sound device not present");
+        logger->warning("OpenAL: Default sound device not present");
         return false;
     }
 
@@ -117,19 +117,19 @@ void OpenALSoundProvider::DeleteBuffers(StreamingTrackBuffer *track, int type) {
     int count = 0;
     alGetSourcei(track->source_id, type, &count);
     if (CheckError()) {
-        logger->Warning("OpenAL: Fail to get buffers count.");
+        logger->warning("OpenAL: Fail to get buffers count.");
         assert(false);
     }
     if (count > 0) {
         unsigned int *buffer_ids = new unsigned int[count];
         alSourceUnqueueBuffers(track->source_id, count, buffer_ids);
         if (CheckError()) {
-            logger->Warning("OpenAL: Fail to unqueue buffers.");
+            logger->warning("OpenAL: Fail to unqueue buffers.");
             assert(false);
         } else {
             alDeleteBuffers(count, buffer_ids);
             if (CheckError()) {
-                logger->Warning("OpenAL: Fail to delete buffers.");
+                logger->warning("OpenAL: Fail to delete buffers.");
                 assert(false);
             }
         }
@@ -153,7 +153,7 @@ void OpenALSoundProvider::DeleteStreamingTrack(StreamingTrackBuffer **buffer) {
     }
     alSourcei(track->source_id, AL_LOOPING, AL_FALSE);
     if (CheckError()) {
-        logger->Warning("OpenAL: Fail to disable looping.");
+        logger->warning("OpenAL: Fail to disable looping.");
         assert(false);
     }
 
@@ -381,7 +381,7 @@ void OpenALSoundProvider::PlayTrack16(TrackBuffer *buffer, bool loop,
         do {
             float track_offset = 0;
             alGetSourcef(buffer->source_id, AL_SEC_OFFSET, &track_offset);
-            logger->Info("OpenAL: playing {:.4f}/{:.4f}\n", track_offset, track_length);
+            logger->info("OpenAL: playing {:.4f}/{:.4f}\n", track_offset, track_length);
 
             alGetSourcei(buffer->source_id, AL_SOURCE_STATE, (int *)&status);
         } while (status == AL_PLAYING);
@@ -610,20 +610,20 @@ void AudioTrackS16::DrainBuffers() {
 
     ALuint *processed_buffer_ids = new ALuint[num_processed_buffers];
     if (CheckError()) {
-        logger->Warning("OpenAL: Failed to get played buffers");
+        logger->warning("OpenAL: Failed to get played buffers");
     } else {
         for (ALint i = 0; i < num_processed_buffers; i++) {
             ALuint buffer = processed_buffer_ids[i];
             alSourceUnqueueBuffers(al_source, 1, &buffer);
             if (CheckError()) {
-                logger->Warning("OpenAL: Failed to unqueue played buffer");
+                logger->warning("OpenAL: Failed to unqueue played buffer");
             } else {
                 ALint size = 0;
                 alGetBufferi(buffer, AL_SIZE, &size);
                 uiReservedData -= size;
                 alDeleteBuffers(1, &buffer);
                 if (CheckError()) {
-                    logger->Warning("OpenAL: Failed to delete played buffer");
+                    logger->warning("OpenAL: Failed to delete played buffer");
                 }
             }
         }

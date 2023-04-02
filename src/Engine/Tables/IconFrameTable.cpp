@@ -93,7 +93,7 @@ void IconFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, const 
     IconFrame_MM7 *pIcons =
         (IconFrame_MM7 *)malloc(uNumIcons * sizeof(IconFrame_MM7));
     if (pIcons == nullptr) {
-        logger->Warning("Malloc error");
+        logger->warning("Malloc error");
         Error("Malloc");  // is this recoverable
     }
 

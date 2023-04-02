@@ -10,7 +10,7 @@ std::shared_ptr<IRender> IRenderFactory::Create(std::shared_ptr<GameConfig> conf
 
     switch (rendererType) {
         case RendererType::OpenGL:
-            logger->Info("Initializing OpenGL renderer...");
+            logger->info("Initializing OpenGL renderer...");
             return std::make_shared<RenderOpenGL>(
                 config,
                 EngineIocContainer::ResolveDecalBuilder(),
@@ -21,7 +21,7 @@ std::shared_ptr<IRender> IRenderFactory::Create(std::shared_ptr<GameConfig> conf
             );
 
         case RendererType::OpenGLES:
-            logger->Info("Initializing OpenGL ES renderer...");
+            logger->info("Initializing OpenGL ES renderer...");
             return std::make_shared<RenderOpenGL>(
                 config,
                 EngineIocContainer::ResolveDecalBuilder(),

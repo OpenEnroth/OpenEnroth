@@ -33,10 +33,10 @@ void GameConfig::LoadConfiguration() {
 
     if (std::filesystem::exists(path)) {
         Config::load(path);
-        logger->Info("Configuration file '{}' loaded!", path);
+        logger->info("Configuration file '{}' loaded!", path);
     } else {
         Config::reset();
-        logger->Warning("Cound not read configuration file '{}'! Loaded default configuration instead!", path);
+        logger->warning("Cound not read configuration file '{}'! Loaded default configuration instead!", path);
     }
 }
 
@@ -44,7 +44,7 @@ void GameConfig::SaveConfiguration() {
     std::string path = MakeDataPath(config_file);
 
     Config::save(path);
-    logger->Info("Configuration file '{}' saved!", path);
+    logger->info("Configuration file '{}' saved!", path);
 }
 
 GameConfig::GameConfig() {

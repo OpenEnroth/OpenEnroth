@@ -345,13 +345,13 @@ void ItemTable::LoadPotions() {
         test_string = strtok(NULL, "\r") + 1;
     }
     if (!test_string) {
-        logger->Warning("Error Pre-Parsing Potion Table");
+        logger->warning("Error Pre-Parsing Potion Table");
         return;
     }
 
     for (uRow = 0; uRow < 50; ++uRow) {
         if (tokens.size() < 50) {
-            logger->Warning("Error Parsing Potion Table at Row: {} Column: {}", uRow, tokens.size());
+            logger->warning("Error Parsing Potion Table at Row: {} Column: {}", uRow, tokens.size());
             return;
         }
         for (uColumn = 0; uColumn < 50; ++uColumn) {
@@ -365,7 +365,7 @@ void ItemTable::LoadPotions() {
 
         test_string = strtok(NULL, "\r") + 1;
         if (!test_string) {
-            logger->Warning("Error Parsing Potion Table at Row: {} Column: {}", uRow, 0);
+            logger->warning("Error Parsing Potion Table at Row: {} Column: {}", uRow, 0);
             return;
         }
         tokens = tokenize(test_string, '\t');
@@ -390,13 +390,13 @@ void ItemTable::LoadPotionNotes() {
         test_string = strtok(NULL, "\r") + 1;
     }
     if (!test_string) {
-        logger->Warning("Error Pre-Parsing Potion Table");
+        logger->warning("Error Pre-Parsing Potion Table");
         return;
     }
 
     for (uRow = 0; uRow < 50; ++uRow) {
         if (tokens.size() < 50) {
-            logger->Warning("Error Parsing Potion Table at Row: {} Column: {}", uRow, tokens.size());
+            logger->warning("Error Parsing Potion Table at Row: {} Column: {}", uRow, tokens.size());
             return;
         }
         for (uColumn = 0; uColumn < 50; ++uColumn) {
@@ -410,7 +410,7 @@ void ItemTable::LoadPotionNotes() {
 
         test_string = strtok(NULL, "\r") + 1;
         if (!test_string) {
-            logger->Warning("Error Parsing Potion Table at Row: {} Column: {}", uRow, 0);
+            logger->warning("Error Parsing Potion Table at Row: {} Column: {}", uRow, 0);
             return;
         }
         tokens = tokenize(test_string, '\t');

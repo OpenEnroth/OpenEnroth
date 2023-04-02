@@ -28,7 +28,7 @@ bool stru9::ClipVertsToPortal(struct RenderVertexSoft *pPortalBounding,  // test
     // return true;  // testing bypass
 
     if (pPortalBounding->vWorldPosition.x == 0 && pPortalBounding->vWorldPosition.y == 0 && pPortalBounding->vWorldPosition.z == 0) {
-        logger->Info("no portal bounding");
+        logger->info("no portal bounding");
         return true;
     }
 
