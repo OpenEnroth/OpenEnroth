@@ -1870,25 +1870,27 @@ void Game::EventLoop() {
                         pAudioPlayer->playUISound(SOUND_error);
                     } else {
                         pCurrentFrameMessageQueue->Flush();
-                        if (pParty->getActiveCharacter() && !pPlayers[pParty->getActiveCharacter()]->uTimeToRecovery) {
-                            // toggle
-                            if (current_screen_type == CURRENT_SCREEN::SCREEN_SPELL_BOOK) {
-                                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
+                        if (pParty->hasActiveCharacter()) {
+                            if (!pPlayers[pParty->getActiveCharacter()]->uTimeToRecovery) {
+                                // toggle
+                                if (current_screen_type == CURRENT_SCREEN::SCREEN_SPELL_BOOK) {
+                                    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
+                                    continue;
+                                }
+                                // cant open screen - talking or in shop or map transition
+                                if (!IsWindowSwitchable()) {
+                                    continue;
+                                } else {
+                                    // close out current window
+                                    back_to_game();
+                                    OnEscape();
+                                    GameUI_StatusBar_Clear();
+                                }
+                                // open window
+                                new OnButtonClick2({ 476, 450 }, { 0, 0 }, pBtn_CastSpell);
+                                pGUIWindow_CurrentMenu = new GUIWindow_Spellbook();
                                 continue;
                             }
-                            // cant open screen - talking or in shop or map transition
-                            if (!IsWindowSwitchable()) {
-                                continue;
-                            } else {
-                                // close out current window
-                                back_to_game();
-                                OnEscape();
-                                GameUI_StatusBar_Clear();
-                            }
-                            // open window
-                            new OnButtonClick2({476, 450}, {0, 0}, pBtn_CastSpell);
-                            pGUIWindow_CurrentMenu = new GUIWindow_Spellbook();
-                            continue;
                         }
                     }
                     continue;
