@@ -1,18 +1,14 @@
 #include "FileSystem.h"
 
 #include "String.h"
+#include "System.h"
 
 static std::string homePath() {
-    const char *result = getenv("HOME");
-    if (result)
+    std::string result = env("HOME");
+    if (!result.empty())
         return result;
 
-    // TODO(captainurist): this will break with unicode usernames on Windows
-    result = getenv("USERPROFILE");
-    if (result)
-        return result;
-
-    return std::string();
+    return env("USERPROFILE"); // This one is set on Windows
 }
 
 std::filesystem::path expandUserPath(std::string path) {

@@ -29,3 +29,6 @@
 [submodule "thirdparty/mio"]
 	path = thirdparty/mio
 	url = https://github.com/mandreyel/mio
+[submodule "thirdparty/utfcpp"]
+	path = thirdparty/utfcpp
+	url = https://github.com/nemtrif/utfcpp.git

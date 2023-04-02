@@ -6,6 +6,8 @@
 #include "Library/Logger/Logger.h"
 #include "Platform/Platform.h"
 
+#include "Utility/System.h"
+
 static std::string _resolvePath(Platform *platform, const char *envVarOverride, const std::vector<const wchar_t *> &registryKeys);
 
 std::string resolveMm6Path(Platform *platform) {
@@ -60,22 +62,17 @@ static std::string _resolvePath(
 
     return result;
 #else
-    const char *envPathStr = std::getenv(envVarOverride);
+    std::string result = env(envVarOverride);
 
-    std::string envPath{};
-    if (envPathStr) {
-        envPath = envPathStr;
-    }
-
-    if (!envPath.empty()) {
-        EngineIocContainer::ResolveLogger()->info("Path override provided: {}={}", envVarOverride, envPathStr);
-        return envPath;
+    if (!result.empty()) {
+        EngineIocContainer::ResolveLogger()->info("Path override provided: {}={}", envVarOverride, result);
+        return result;
     }
 
     for (auto key : registryKeys) {
-        envPath = platform->winQueryRegistry(key);
-        if (!envPath.empty()) {
-            return envPath;
+        result = platform->winQueryRegistry(key);
+        if (!result.empty()) {
+            return result;
         }
     }
 
