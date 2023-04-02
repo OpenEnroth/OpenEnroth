@@ -64,8 +64,8 @@ var searchData=
   ['reloadshaders_61',['ReloadShaders',['../classIRender.html#a64b75ae58f37d81aa4b1fce9d03c3da4',1,'IRender::ReloadShaders()'],['../classRenderOpenGL.html#a278be3592b53f85bca6ab1195536c335',1,'RenderOpenGL::ReloadShaders()']]],
   ['reloadtexture_62',['ReloadTexture',['../classLODFile__IconsBitmaps.html#a6b3b32cb642d04cc1571ad603cfa9405',1,'LODFile_IconsBitmaps']]],
   ['remaptreasurelevel_63',['RemapTreasureLevel',['../Items_8cpp.html#af1eed85d5a079febb247d7399bfd86b3',1,'RemapTreasureLevel(ITEM_TREASURE_LEVEL itemTreasureLevel, MAP_TREASURE_LEVEL mapTreasureLevel):&#160;Items.cpp'],['../Items_8h.html#af1eed85d5a079febb247d7399bfd86b3',1,'RemapTreasureLevel(ITEM_TREASURE_LEVEL itemTreasureLevel, MAP_TREASURE_LEVEL mapTreasureLevel):&#160;Items.cpp']]],
-  ['remove_64',['remove',['../classPlatformApplication.html#ad4ad6a90ebb4c2e23469f8f8e02f3ad8',1,'PlatformApplication']]],
-  ['remove_65',['Remove',['../classActor.html#af61de845c8e9aad5dc4d90217eb11094',1,'Actor']]],
+  ['remove_64',['Remove',['../classActor.html#af61de845c8e9aad5dc4d90217eb11094',1,'Actor']]],
+  ['remove_65',['remove',['../classPlatformApplication.html#ad4ad6a90ebb4c2e23469f8f8e02f3ad8',1,'PlatformApplication']]],
   ['removeeventfilter_66',['removeEventFilter',['../classFilteringEventHandler.html#a54b87cbed1c0912224ffbeeffb8b01b6',1,'FilteringEventHandler']]],
   ['removeholdingitem_67',['RemoveHoldingItem',['../classIo_1_1Mouse.html#a3e7df01835f0ec8a3459dcd2f9a4dfa3',1,'Io::Mouse']]],
   ['removeinternal_68',['removeInternal',['../classPlatformApplication.html#ae7ce0603862d6a6e482accb55a5ce6ee',1,'PlatformApplication::removeInternal(ProxyWindow *window)'],['../classPlatformApplication.html#a00e8f74fd9491806c40db1b625a7ce24',1,'PlatformApplication::removeInternal(std::type_index componentType, void *component)'],['../classPlatformApplication.html#a9165c469e564a795057784ab5b82f11f',1,'PlatformApplication::removeInternal(ProxyPlatform *platform)'],['../classPlatformApplication.html#aa44115a8058581f86f8e134b5cc8ef74',1,'PlatformApplication::removeInternal(ProxyEventLoop *eventLoop)'],['../classPlatformApplication.html#a698d23f12ab3144bffffc8afbd2b20a3',1,'PlatformApplication::removeInternal(ProxyOpenGLContext *openGLContext)'],['../classPlatformApplication.html#aaecadc5c29c49cffc3ca924268ae724d',1,'PlatformApplication::removeInternal(PlatformEventFilter *eventFilter)'],['../classPlatformApplication.html#ac2b5a620a80f40908d1cb003d6868e47',1,'PlatformApplication::removeInternal(PlatformApplicationAware *aware)']]],
@@ -144,8 +144,8 @@ var searchData=
   ['ringslots_141',['RingSlots',['../ItemEnums_8h.html#a5d59af3eaebaba842ba302895beb7868',1,'ItemEnums.h']]],
   ['rotate_142',['rotate',['../structVec3.html#abcc21cd759cf22ac25d7bf10b69800e2',1,'Vec3']]],
   ['round_5fto_5fint_143',['round_to_int',['../OurMath_8h.html#a50ee4d4946888926bdf5a920129a322a',1,'OurMath.h']]],
-  ['run_144',['run',['../classGameThread.html#a5d4531cb04b18f0f50a7ec71c05a41cd',1,'GameThread']]],
-  ['run_145',['Run',['../classGame.html#a1880d9816a978b82bb91e4679743173d',1,'Game']]],
+  ['run_144',['Run',['../classGame.html#a1880d9816a978b82bb91e4679743173d',1,'Game']]],
+  ['run_145',['run',['../classGameThread.html#a5d4531cb04b18f0f50a7ec71c05a41cd',1,'GameThread']]],
   ['runcontrolroutine_146',['runControlRoutine',['../classEngineControlComponent.html#a98a51aa38c317d187c476d1dd4e59b8a',1,'EngineControlComponent']]],
   ['rungameroutine_147',['runGameRoutine',['../classEngineController.html#a6c5f0921fa661e54726b268508a3271b',1,'EngineController']]]
 ];
