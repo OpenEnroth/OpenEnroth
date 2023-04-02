@@ -1030,7 +1030,7 @@ std::string CharacterUI_GetSkillDescText(unsigned int uPlayerID, PLAYER_SKILL_TY
         for (PLAYER_SKILL_MASTERY mastery : SkillMasteries()) {
             Description += fmt::format(
                 "\f{:05}{}\t{:03}:\t{:03}{}\t000\n",
-                GetSkillColor(pParty->pPlayers[uPlayerID].classType, uPlayerSkillType, PLAYER_SKILL_MASTERY_NOVICE),
+                GetSkillColor(pParty->pPlayers[uPlayerID].classType, uPlayerSkillType, mastery),
                 localization->MasteryName(mastery),
                 line_width + 3,
                 line_width + 10,

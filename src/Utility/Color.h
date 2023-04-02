@@ -91,6 +91,11 @@ class ColorTable {
     Color Cioccolato = Color(92, 49, 14);         // #5C310E
     Color JazzberryJam = Color(168, 19, 118);     // #A81376
     Color RioGrande = Color(200, 200, 5);         // #C8C805
+    Color Magenta = Color(248, 108, 160);         // #F86CA0
+    Color Malibu = Color(112, 220, 248);          // #70DCF8
+    Color ScreaminGreen = Color(64, 244, 96);     // #40F460
+    Color Canary = Color(232, 244, 96);           // #E8F460
+    Color Mimosa = Color(240, 252, 192);          // #F0FCC0
 };
 
 extern ColorTable colorTable;

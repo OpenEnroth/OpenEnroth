@@ -1259,49 +1259,16 @@ char sub_4637E0_is_there_popup_onscreen() {
     return dword_507BF0_is_there_popup_onscreen == 1;
 }
 
-//----- (00417AD4) --------------------------------------------------------
-unsigned int GetSkillColor(unsigned int uPlayerClass, PLAYER_SKILL_TYPE uPlayerSkillType, PLAYER_SKILL_MASTERY skill_mastery) {
-    switch (uPlayerClass % 4) {
-    case 0:
-    {
-        if (byte_4ED970_skill_learn_ability_by_class_table
-            [uPlayerClass][uPlayerSkillType] >= skill_mastery)
-            return ui_character_skillinfo_can_learn;
-        if (byte_4ED970_skill_learn_ability_by_class_table
-            [uPlayerClass + 1][uPlayerSkillType] < skill_mastery &&
-            byte_4ED970_skill_learn_ability_by_class_table
-            [uPlayerClass + 2][uPlayerSkillType] < skill_mastery) {
-            if (byte_4ED970_skill_learn_ability_by_class_table
-                [uPlayerClass + 3][uPlayerSkillType] < skill_mastery)
-                return ui_character_skillinfo_cant_learn;
-        }
-        return ui_character_skillinfo_can_learn_gm;
-    } break;
-
-    case 1:
-    {
-        if (byte_4ED970_skill_learn_ability_by_class_table
-            [uPlayerClass][uPlayerSkillType] >= skill_mastery)
-            return ui_character_skillinfo_can_learn;
-        if (byte_4ED970_skill_learn_ability_by_class_table
-            [uPlayerClass + 1][uPlayerSkillType] < skill_mastery) {
-            if (byte_4ED970_skill_learn_ability_by_class_table
-                [uPlayerClass + 2][uPlayerSkillType] < skill_mastery)
-                return ui_character_skillinfo_cant_learn;
-        }
-        return ui_character_skillinfo_can_learn_gm;
-    } break;
-
-    case 2:
-    case 3:
-    {
-        if (byte_4ED970_skill_learn_ability_by_class_table
-            [uPlayerClass][uPlayerSkillType] < skill_mastery)
-            return ui_character_skillinfo_cant_learn;
+unsigned int GetSkillColor(PLAYER_CLASS_TYPE uPlayerClass, PLAYER_SKILL_TYPE uPlayerSkillType, PLAYER_SKILL_MASTERY skill_mastery) {
+    if (skillMaxMasteryPerClass[uPlayerClass][uPlayerSkillType] >= skill_mastery) {
         return ui_character_skillinfo_can_learn;
-    } break;
     }
-    Error("Invalid player class: %u", uPlayerClass);
+    for (PLAYER_CLASS_TYPE promotionClass : getClassPromotions(uPlayerClass)) {
+        if (skillMaxMasteryPerClass[promotionClass][uPlayerSkillType] >= skill_mastery) {
+            return ui_character_skillinfo_can_learn_gm;
+        }
+    }
+    return ui_character_skillinfo_cant_learn;
 }
 
 void ClickNPCTopic(DIALOGUE_TYPE topic) {
@@ -1591,24 +1558,23 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
     uint8_t teacherLevel = (trainerInfo - 200) % 3;
     PLAYER_SKILL_TYPE skillBeingTaught = static_cast<PLAYER_SKILL_TYPE>((trainerInfo - 200) / 3);
     Player *activePlayer = pPlayers[pParty->getActiveCharacter()];
-    int pClassType = activePlayer->classType;
-    PLAYER_SKILL_MASTERY currClassMaxMastery = byte_4ED970_skill_learn_ability_by_class_table[pClassType][skillBeingTaught];
+    PLAYER_CLASS_TYPE pClassType = activePlayer->classType;
+    PLAYER_SKILL_MASTERY currClassMaxMastery = skillMaxMasteryPerClass[pClassType][skillBeingTaught];
     PLAYER_SKILL_MASTERY masteryLevelBeingTaught = dword_F8B1B0_MasteryBeingTaught = static_cast<PLAYER_SKILL_MASTERY>(teacherLevel + 2);
     guild_membership_approved = false;
 
     if (currClassMaxMastery < masteryLevelBeingTaught) {
-        int classBaseId = pClassType - pClassType % 4;
-
-        if (byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 1][skillBeingTaught] >= masteryLevelBeingTaught) {
-            return localization->FormatString(LSTR_FMT_HAVE_TO_BE_PROMOTED, localization->GetClassName(classBaseId + 1));
-        } else if (byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 2][skillBeingTaught] >= masteryLevelBeingTaught &&
-            byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 3][skillBeingTaught] >= masteryLevelBeingTaught) {
-            return localization->FormatString(LSTR_FMT_HAVE_TO_BE_PROMOTED_2, localization->GetClassName(classBaseId + 2),
-                localization->GetClassName(classBaseId + 3));
-        } else if (byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 2][skillBeingTaught] >= masteryLevelBeingTaught) {
-            return localization->FormatString(LSTR_FMT_HAVE_TO_BE_PROMOTED, localization->GetClassName(classBaseId + 2));
-        } else if (byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 3][skillBeingTaught] >= masteryLevelBeingTaught) {
-            return localization->FormatString(LSTR_FMT_HAVE_TO_BE_PROMOTED, localization->GetClassName(classBaseId + 3));
+        if (skillMaxMasteryPerClass[getTier2Class(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught) {
+            return localization->FormatString(LSTR_FMT_HAVE_TO_BE_PROMOTED, localization->GetClassName(getTier2Class(pClassType)));
+        } else if (skillMaxMasteryPerClass[getTier3LightClass(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught &&
+                skillMaxMasteryPerClass[getTier3DarkClass(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught) {
+            return localization->FormatString(LSTR_FMT_HAVE_TO_BE_PROMOTED_2,
+                    localization->GetClassName(getTier3LightClass(pClassType)),
+                    localization->GetClassName(getTier3DarkClass(pClassType)));
+        } else if (skillMaxMasteryPerClass[getTier3LightClass(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught) {
+            return localization->FormatString(LSTR_FMT_HAVE_TO_BE_PROMOTED, localization->GetClassName(getTier3LightClass(pClassType)));
+        } else if (skillMaxMasteryPerClass[getTier3DarkClass(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught) {
+            return localization->FormatString(LSTR_FMT_HAVE_TO_BE_PROMOTED, localization->GetClassName(getTier3DarkClass(pClassType)));
         } else {
             return localization->FormatString(LSTR_FMT_SKILL_CANT_BE_LEARNED, localization->GetClassName(pClassType));
         }
@@ -2483,7 +2449,7 @@ void SkillTrainingDialogue(
                 (DIALOGUE_TYPE)pButton->msg_param
             );
 
-            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[pParty->getActiveCharacter()]->classType][skill_id] == PLAYER_SKILL_MASTERY_NONE
+            if (skillMaxMasteryPerClass[pPlayers[pParty->getActiveCharacter()]->classType][skill_id] == PLAYER_SKILL_MASTERY_NONE
                 || pPlayers[pParty->getActiveCharacter()]->pActiveSkills[skill_id]) {
                 pButton->uW = 0;
                 pButton->uHeight = 0;

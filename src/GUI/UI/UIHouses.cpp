@@ -1214,7 +1214,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
             pPrice = v36 * (100 - pPlayers[pParty->getActiveCharacter()]->GetMerchant()) / 100;
             if (pPrice < v36 / 3) pPrice = v36 / 3;
             auto skill = GetLearningDialogueSkill(option);
-            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[pParty->getActiveCharacter()]->classType][skill] != PLAYER_SKILL_MASTERY_NONE) {
+            if (skillMaxMasteryPerClass[pPlayers[pParty->getActiveCharacter()]->classType][skill] != PLAYER_SKILL_MASTERY_NONE) {
                 if (!pPlayers[pParty->getActiveCharacter()]->pActiveSkills[skill]) {
                     if (pParty->GetGold() < pPrice) {
                         GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
@@ -1867,7 +1867,7 @@ void TavernDialog() {
             auto skill = GetLearningDialogueSkill(
                 (DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param
             );
-            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[pParty->getActiveCharacter()]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
+            if (skillMaxMasteryPerClass[pPlayers[pParty->getActiveCharacter()]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
                 && !pPlayers[pParty->getActiveCharacter()]->pActiveSkills[skill]) {
                 all_text_height = pFontArrus->CalcTextHeight(
                     localization->GetSkillName(skill),
@@ -2172,7 +2172,7 @@ void TempleDialog() {
                 auto skill = GetLearningDialogueSkill(
                     (DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param
                 );
-                if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[pParty->getActiveCharacter()]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
+                if (skillMaxMasteryPerClass[pPlayers[pParty->getActiveCharacter()]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
                     && !pPlayers[pParty->getActiveCharacter()]->pActiveSkills[skill]) {
                     all_text_height += pFontArrus->CalcTextHeight(
                         localization->GetSkillName(skill),
@@ -2418,7 +2418,7 @@ void TrainingDialog(const char *s) {
                 auto skill = GetLearningDialogueSkill(
                     (DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param
                 );
-                if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[pParty->getActiveCharacter()]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
+                if (skillMaxMasteryPerClass[pPlayers[pParty->getActiveCharacter()]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
                     && !pPlayers[pParty->getActiveCharacter()]->pActiveSkills[skill]) {
                     all_text_height += pFontArrus->CalcTextHeight(
                         localization->GetSkillName(skill),
@@ -2454,10 +2454,8 @@ void MercenaryGuildDialog() {
     dialog_window.uFrameWidth = 143;
     dialog_window.uFrameZ = 334;
 
-    v32 = (uint8_t)
-            (((p2DEvents[window_SpeakInHouse->wData.val - 1].uType != BuildingType_MercenaryGuild) - 1) & 0x96) + 100;
-    v3 = (int64_t)((double)v32 *
-        p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
+    v32 = (uint8_t)(((p2DEvents[window_SpeakInHouse->wData.val - 1].uType != BuildingType_MercenaryGuild) - 1) & 0x96) + 100;
+    v3 = (int64_t)((double)v32 * p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
     pPrice = v3 * (100 - pPlayers[pParty->getActiveCharacter()]->GetMerchant()) / 100;
     if (pPrice < v3 / 3) pPrice = v3 / 3;
     if (dialog_menu_id == DIALOGUE_MAIN) {
@@ -2471,18 +2469,12 @@ void MercenaryGuildDialog() {
         if (!HouseUI_CheckIfPlayerCanInteract()) return;
         all_text_height = 0;
         index = 0;
-        for (int i = pDialogueWindow->pStartingPosActiveItem;
-            i < pDialogueWindow->pNumPresenceButton +
-            pDialogueWindow->pStartingPosActiveItem;
-            ++i) {
-            auto skill = GetLearningDialogueSkill(
-                (DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param
-            );
-            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[pParty->getActiveCharacter()]->classType / 3][skill] != PLAYER_SKILL_MASTERY_NONE
+        for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i) {
+            auto skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
+            // Was class type / 3
+            if (skillMaxMasteryPerClass[pPlayers[pParty->getActiveCharacter()]->classType][skill] != PLAYER_SKILL_MASTERY_NONE
                 && !pPlayers[pParty->getActiveCharacter()]->pActiveSkills[skill]) {
-                all_text_height += pFontArrus->CalcTextHeight(
-                    localization->GetSkillName(skill),
-                    dialog_window.uFrameWidth, 0);
+                all_text_height += pFontArrus->CalcTextHeight(localization->GetSkillName(skill), dialog_window.uFrameWidth, 0);
                 ++index;
             }
         }
@@ -2497,9 +2489,9 @@ void MercenaryGuildDialog() {
         __debugbreak();  // what type of house that even is?
         // pSkillAvailabilityPerClass[8 + v58->uClass][4 + v23]
         // or
-        // byte_4ED970_skill_learn_ability_by_class_table[v58->uClass][v23 - 36]
+        // skillMaxMasteryPerClass[v58->uClass][v23 - 36]
         // or
-        // byte_4ED970_skill_learn_ability_by_class_table[v58->uClass - 1][v23 +
+        // skillMaxMasteryPerClass[v58->uClass - 1][v23 +
         // 1]
         __debugbreak();  // whacky condition - fix
         if (false
