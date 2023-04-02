@@ -8,7 +8,7 @@ var searchData=
   ['bankersrounding_3c_20double_20_3e_5',['bankersRounding&lt; double &gt;',['../OurMath_8h.html#ae05bc48f61f3b3f873e62918eb7ba6ca',1,'OurMath.h']]],
   ['bankersrounding_3c_20float_20_3e_6',['bankersRounding&lt; float &gt;',['../OurMath_8h.html#a4df6b7b16fb58429d0153a520ad42153',1,'OurMath.h']]],
   ['base_7',['base',['../classProxyBase.html#a597c0e1dff33350cfff9b02a61ee9b63',1,'ProxyBase']]],
-  ['baselogger_8',['BaseLogger',['../classLogger.html#a1f01c55d35325261dfb4c8749bf77d3a',1,'Logger']]],
+  ['baselogger_8',['baseLogger',['../classLogger.html#a21f6ea6302cd78f6369383e000323d90',1,'Logger']]],
   ['basicbookinitialization_9',['BasicBookInitialization',['../classGUIWindow__Book.html#ab1adfe3c80158dbd7a31930707d7cf95',1,'GUIWindow_Book']]],
   ['begin_10',['begin',['../classSegment.html#a96e43a6a97ceca45d4cb966c7fea4681',1,'Segment::begin()'],['../classdetail_1_1ReversedRange.html#a074bf4ee0b1227dcfd57ecc21533cca4',1,'detail::ReversedRange::begin()'],['../classdetail_1_1ReversedRange.html#a4b808ceca5d03da12e3dbf11a6f5e924',1,'detail::ReversedRange::begin() const']]],
   ['begindecals_11',['BeginDecals',['../classIRender.html#a63dbf0239b229598573bc843fb15d0d1',1,'IRender::BeginDecals()'],['../classRenderOpenGL.html#a31db5fd8df0c374e38daa1ca92976545',1,'RenderOpenGL::BeginDecals()']]],
