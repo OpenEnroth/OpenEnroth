@@ -1260,15 +1260,15 @@ char sub_4637E0_is_there_popup_onscreen() {
 }
 
 unsigned int GetSkillColor(PLAYER_CLASS_TYPE uPlayerClass, PLAYER_SKILL_TYPE uPlayerSkillType, PLAYER_SKILL_MASTERY skill_mastery) {
-    if (skillMaxMasteryPerClass[uPlayerClass][uPlayerSkillType] < skill_mastery) {
-        return ui_character_skillinfo_cant_learn;
+    if (skillMaxMasteryPerClass[uPlayerClass][uPlayerSkillType] >= skill_mastery) {
+        return ui_character_skillinfo_can_learn;
     }
     for (PLAYER_CLASS_TYPE promotionClass : getClassPromotions(uPlayerClass)) {
         if (skillMaxMasteryPerClass[promotionClass][uPlayerSkillType] >= skill_mastery) {
             return ui_character_skillinfo_can_learn_gm;
         }
     }
-    return ui_character_skillinfo_can_learn;
+    return ui_character_skillinfo_cant_learn;
 }
 
 void ClickNPCTopic(DIALOGUE_TYPE topic) {

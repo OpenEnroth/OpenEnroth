@@ -451,9 +451,9 @@ inline PLAYER_CLASS_TYPE getTier3DarkClass(PLAYER_CLASS_TYPE classType) {
 inline Segment<PLAYER_CLASS_TYPE> getClassPromotions(PLAYER_CLASS_TYPE classType) {
     int tier = classType % 4;
 
-    if (tier == 1) {
+    if (tier == 0) {
         return {getTier2Class(classType), getTier3DarkClass(classType)};
-    } else if (tier == 2) {
+    } else if (tier == 1) {
         return {getTier3LightClass(classType), getTier3DarkClass(classType)};
     } else {
         return {}; // tier 3 max
