@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['b_0',['b',['../structGame__Bloodsplat.html#a150c404c40cba7084350b0eb030ac670',1,'Game_Bloodsplat']]],
+  ['b_0',['b',['../structBloodsplat.html#a24ec35724d73bf7376874d1fb41e4273',1,'Bloodsplat::b()'],['../structGame__Bloodsplat.html#a150c404c40cba7084350b0eb030ac670',1,'Game_Bloodsplat::b()']]],
   ['b_1',['B',['../struct__RGBColor.html#a61c36a4c8c26fb02dec6723b3f647b42',1,'_RGBColor']]],
-  ['b_2',['b',['../structPlaneZCalcll.html#a5219a3cc6fd0b88efdcbaad4ddc56489',1,'PlaneZCalcll::b()'],['../classColorTable_1_1Color.html#a90516d250e84d92b5fecbd35190d3e31',1,'ColorTable::Color::b()'],['../structTestPair.html#a29b703b6f9257651a0aac1647ec5a7d9',1,'TestPair::b()'],['../structFormat.html#a916d6797dc1b96f8764091f830949b47',1,'Format::b()'],['../structParticle.html#a51cfab8e12d3ee7f3569e390f5b9c7de',1,'Particle::b()'],['../structbillbverts.html#ac9693477cc983e98f64ebfe563011eb9',1,'billbverts::b()'],['../structtwodverts.html#abd16609113d1c5c1ce9f589bde2147ca',1,'twodverts::b()'],['../structforcepersverts.html#ae5ec624da708a98003eb2a4391c2bcb7',1,'forcepersverts::b()'],['../structlinesverts.html#ade249d9b3e97f734f0347d35d4cfaba5',1,'linesverts::b()'],['../structBloodsplat.html#a24ec35724d73bf7376874d1fb41e4273',1,'Bloodsplat::b()'],['../structParticle__sw.html#aa3e18dc9778ddc2f4888d93d8a1e1c8a',1,'Particle_sw::b()']]],
+  ['b_2',['b',['../structPlaneZCalcll.html#a5219a3cc6fd0b88efdcbaad4ddc56489',1,'PlaneZCalcll::b()'],['../classColorTable_1_1Color.html#a90516d250e84d92b5fecbd35190d3e31',1,'ColorTable::Color::b()'],['../structTestPair.html#a29b703b6f9257651a0aac1647ec5a7d9',1,'TestPair::b()'],['../structFormat.html#a916d6797dc1b96f8764091f830949b47',1,'Format::b()'],['../structParticle__sw.html#aa3e18dc9778ddc2f4888d93d8a1e1c8a',1,'Particle_sw::b()'],['../structbillbverts.html#ac9693477cc983e98f64ebfe563011eb9',1,'billbverts::b()'],['../structtwodverts.html#abd16609113d1c5c1ce9f589bde2147ca',1,'twodverts::b()'],['../structforcepersverts.html#ae5ec624da708a98003eb2a4391c2bcb7',1,'forcepersverts::b()'],['../structlinesverts.html#ade249d9b3e97f734f0347d35d4cfaba5',1,'linesverts::b()'],['../structParticle.html#a51cfab8e12d3ee7f3569e390f5b9c7de',1,'Particle::b()']]],
   ['b1_3',['b1',['../Serialization__ut_8cpp.html#a25c5f1363dc910523e52c6a75cdc3622',1,'Serialization_ut.cpp']]],
   ['b2_4',['b2',['../Serialization__ut_8cpp.html#a38d9188c556da9e87e3e1089352d6787',1,'Serialization_ut.cpp']]],
   ['backward_5',['Backward',['../classGameConfig_1_1Gamepad.html#aa2d0abf232213ea4f898086c8eac8095',1,'GameConfig::Gamepad::Backward()'],['../classGameConfig_1_1Keybindings.html#aa038beb5da59cbf22fd2555762e9099e',1,'GameConfig::Keybindings::Backward()']]],
@@ -50,8 +50,8 @@ var searchData=
   ['bloodsplats_47',['BloodSplats',['../classGameConfig_1_1Graphics.html#ad6049b997c6e381ba9fba7deb1f06d74',1,'GameConfig::Graphics']]],
   ['bloodsplatsfade_48',['BloodSplatsFade',['../classGameConfig_1_1Graphics.html#ae3d440cabbb5e593bf6b0aa171d5d5e9',1,'GameConfig::Graphics']]],
   ['bloodsplatsmultiplier_49',['BloodSplatsMultiplier',['../classGameConfig_1_1Graphics.html#a3e8dabc2a2623b04fce2eba19ebb1ef3',1,'GameConfig::Graphics']]],
-  ['blue_50',['blue',['../structGLdecalverts.html#a8da6f871b306f3e41b9719e749ebcb9a',1,'GLdecalverts']]],
-  ['blue_51',['Blue',['../classColorTable.html#ab96c1eca259bec2076d25ab83cb1a9c9',1,'ColorTable']]],
+  ['blue_50',['Blue',['../classColorTable.html#ab96c1eca259bec2076d25ab83cb1a9c9',1,'ColorTable']]],
+  ['blue_51',['blue',['../structGLdecalverts.html#a8da6f871b306f3e41b9719e749ebcb9a',1,'GLdecalverts']]],
   ['blv_52',['blv',['../structIndoorLocation.html#a64be8f484f885b0e0ddbb774cd9ab3b1',1,'IndoorLocation']]],
   ['blv_5ffov_5fdeg_53',['blv_fov_deg',['../structCamera3D.html#a57e7849c374219e4955b362616bac748',1,'Camera3D']]],
   ['blv_5ffov_5frad_54',['blv_fov_rad',['../structCamera3D.html#a3c012ad7bcda3d3ed3cb58a290e7a0a9',1,'Camera3D']]],

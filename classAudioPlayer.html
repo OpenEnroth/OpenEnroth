@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6b76c9b</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e771837</span>
    </div>
   </td>
  </tr>
@@ -72,6 +72,7 @@ $(function() {
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="#pro-types">Protected Types</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classAudioPlayer-members.html">List of all members</a>  </div>
@@ -112,10 +113,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a46e9038c208f7910e8f649f9726db63d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee52c7fcbee921cd73e9288a6df42ef4"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#aee52c7fcbee921cd73e9288a6df42ef4">MusicGetVolume</a> ()</td></tr>
 <tr class="separator:aee52c7fcbee921cd73e9288a6df42ef4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae95df72f465aeb066285583cb54519bd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#ae95df72f465aeb066285583cb54519bd">StopAll</a> (int sample_id)</td></tr>
-<tr class="separator:ae95df72f465aeb066285583cb54519bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa0c135f321bd87b4d4ad2dcad3833e3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#afa0c135f321bd87b4d4ad2dcad3833e3">PlaySound</a> (<a class="el" href="AudioPlayer_8h.html#aa4689ee7c9a692044aebd36cb0915e61">SoundID</a> eSoundID, int pid, unsigned int uNumRepeats, int x, int y, int a7)</td></tr>
-<tr class="separator:afa0c135f321bd87b4d4ad2dcad3833e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ad68af55e575b991c99e250df1148e5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a3ad68af55e575b991c99e250df1148e5">stopSounds</a> ()</td></tr>
+<tr class="separator:a3ad68af55e575b991c99e250df1148e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0ff35fc600de50b717482376420cc76"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#ab0ff35fc600de50b717482376420cc76">stopWalkingSounds</a> ()</td></tr>
+<tr class="separator:ab0ff35fc600de50b717482376420cc76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56efb0cc9e24aca326c07d0beb8f0f80"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a56efb0cc9e24aca326c07d0beb8f0f80">playSound</a> (<a class="el" href="AudioPlayer_8h.html#aa4689ee7c9a692044aebd36cb0915e61">SoundID</a> eSoundID, int pid, unsigned int uNumRepeats=0, int x=-1, int y=0, int sound_data_id=0)</td></tr>
+<tr class="separator:a56efb0cc9e24aca326c07d0beb8f0f80"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad7f77ef8ad0ba30e82dc34dc88156cb5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#ad7f77ef8ad0ba30e82dc34dc88156cb5">UpdateSounds</a> ()</td></tr>
 <tr class="separator:ad7f77ef8ad0ba30e82dc34dc88156cb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6dfd93190338f5cbb635b5c313cfe063"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a6dfd93190338f5cbb635b5c313cfe063">PauseSounds</a> (int uType)</td></tr>
@@ -141,6 +144,17 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a481ff77c7cce2855f3f16bf8a5336c25"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a481ff77c7cce2855f3f16bf8a5336c25">playWalkSound</a> (<a class="el" href="AudioPlayer_8h.html#aa4689ee7c9a692044aebd36cb0915e61">SoundID</a> id)</td></tr>
 <tr class="separator:a481ff77c7cce2855f3f16bf8a5336c25"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:ad9f5ebb8a9309c2f04ae2cf6b93ae0a2"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#ad9f5ebb8a9309c2f04ae2cf6b93ae0a2">SOUND_PID_PLAYER_RESETABLE</a> = <a class="el" href="MM7_8h.html#a6fa21b10ef8fe82bdc1df5e108443326">PID</a>(<a class="el" href="ActorEnums_8h.html#a842c5e2e69277690b064bf363c017980ae2b1e182a57c6ab27af33c89adc002f4">OBJECT_Player</a>, 5)</td></tr>
+<tr class="separator:ad9f5ebb8a9309c2f04ae2cf6b93ae0a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa70c282cb016aac08a1554547e91570b"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#aa70c282cb016aac08a1554547e91570b">SOUND_PID_EXCLUSIVE</a> = <a class="el" href="MM7_8h.html#a51fcc1ce2e7a0c1f057fc1e2d54b5e2d">PID_INVALID</a></td></tr>
+<tr class="separator:aa70c282cb016aac08a1554547e91570b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acab3774466e4def6ca2b47a202628e25"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#acab3774466e4def6ca2b47a202628e25">SOUND_PID_NON_RESETABLE</a> = -2</td></tr>
+<tr class="separator:acab3774466e4def6ca2b47a202628e25"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abcd09bd27047a69ee72599159674fff0"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#abcd09bd27047a69ee72599159674fff0">SOUND_PID_WALKING</a> = -3</td></tr>
+<tr class="separator:abcd09bd27047a69ee72599159674fff0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-types" name="pro-types"></a>
 Protected Types</h2></td></tr>
 <tr class="memitem:a6037ab7f3102356afacb75dfe9102a2d"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structAudioPlayer_1_1SoundHeader.html">AudioPlayer::SoundHeader</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a6037ab7f3102356afacb75dfe9102a2d">SoundHeader</a></td></tr>
@@ -162,6 +176,8 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a0c9487c0e03fadeec3f03c509ba4b207"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac2df45f5a55f2e59727e75ee26a89e9"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::string, <a class="el" href="structAudioPlayer_1_1SoundHeader.html">SoundHeader</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#aac2df45f5a55f2e59727e75ee26a89e9">mSoundHeaders</a></td></tr>
 <tr class="separator:aac2df45f5a55f2e59727e75ee26a89e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47b2d93a4c0224fb010abe6c4ea89dd5"><td class="memItemLeft" align="right" valign="top">std::unordered_set&lt; <a class="el" href="AudioPlayer_8h.html#aa4689ee7c9a692044aebd36cb0915e61">SoundID</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAudioPlayer.html#a47b2d93a4c0224fb010abe6c4ea89dd5">_walkingSoundIds</a></td></tr>
+<tr class="separator:a47b2d93a4c0224fb010abe6c4ea89dd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a6037ab7f3102356afacb75dfe9102a2d" name="a6037ab7f3102356afacb75dfe9102a2d"></a>
@@ -523,14 +539,14 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="afa0c135f321bd87b4d4ad2dcad3833e3" name="afa0c135f321bd87b4d4ad2dcad3833e3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afa0c135f321bd87b4d4ad2dcad3833e3">&#9670;&#160;</a></span>PlaySound()</h2>
+<a id="a56efb0cc9e24aca326c07d0beb8f0f80" name="a56efb0cc9e24aca326c07d0beb8f0f80"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a56efb0cc9e24aca326c07d0beb8f0f80">&#9670;&#160;</a></span>playSound()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void AudioPlayer::PlaySound </td>
+          <td class="memname">void AudioPlayer::playSound </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="AudioPlayer_8h.html#aa4689ee7c9a692044aebd36cb0915e61">SoundID</a>&#160;</td>
           <td class="paramname"><em>eSoundID</em>, </td>
@@ -545,25 +561,25 @@ Protected Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>uNumRepeats</em>, </td>
+          <td class="paramname"><em>uNumRepeats</em> = <code>0</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>x</em>, </td>
+          <td class="paramname"><em>x</em> = <code>-1</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>y</em>, </td>
+          <td class="paramname"><em>y</em> = <code>0</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>a7</em>&#160;</td>
+          <td class="paramname"><em>sound_data_id</em> = <code>0</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -583,9 +599,9 @@ Protected Attributes</h2></td></tr>
 </ul>
 </td></tr>
     <tr><td class="paramname">uNumRepeats</td><td>unused but presumably must be number of repeats before stopping </td></tr>
-    <tr><td class="paramname">x</td><td>???, unused </td></tr>
-    <tr><td class="paramname">y</td><td>???, unused </td></tr>
-    <tr><td class="paramname">a7</td><td>???, unused </td></tr>
+    <tr><td class="paramname">x</td><td>unused but presumably must be x coord of sound, additionally -1 seems to indicate need to ignore these coords </td></tr>
+    <tr><td class="paramname">y</td><td>unused but presumably must be y coord of sound </td></tr>
+    <tr><td class="paramname">sound_data_id</td><td>???, unused </td></tr>
   </table>
   </dd>
 </dl>
@@ -627,7 +643,7 @@ Protected Attributes</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">spell</td><td>Spell ID of spell. Indexes into <code>SpellSoundIds</code>. </td></tr>
-    <tr><td class="paramname">pid</td><td>PID of sound originator. See PlaySound description. </td></tr>
+    <tr><td class="paramname">pid</td><td>PID of sound originator. See playSound description. </td></tr>
     <tr><td class="paramname">is_impact</td><td>Indicates sound of spell impact, if true sound ID will be SpellSoundIds[spell] + 1. </td></tr>
   </table>
   </dd>
@@ -691,7 +707,7 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Play sound of party walking. Semantics generally is the same as for exclusive sounds.</p>
+<p >Play sound of party walking. Semantics generally is the same as for exclusive sounds but with additional tracking to stop walking sound when needed.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">id</td><td>ID of sound. </td></tr>
@@ -772,17 +788,33 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ae95df72f465aeb066285583cb54519bd" name="ae95df72f465aeb066285583cb54519bd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae95df72f465aeb066285583cb54519bd">&#9670;&#160;</a></span>StopAll()</h2>
+<a id="a3ad68af55e575b991c99e250df1148e5" name="a3ad68af55e575b991c99e250df1148e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ad68af55e575b991c99e250df1148e5">&#9670;&#160;</a></span>stopSounds()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void AudioPlayer::StopAll </td>
+          <td class="memname">void AudioPlayer::stopSounds </td>
           <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>sample_id</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab0ff35fc600de50b717482376420cc76" name="ab0ff35fc600de50b717482376420cc76"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0ff35fc600de50b717482376420cc76">&#9670;&#160;</a></span>stopWalkingSounds()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AudioPlayer::stopWalkingSounds </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -808,6 +840,28 @@ Protected Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a47b2d93a4c0224fb010abe6c4ea89dd5" name="a47b2d93a4c0224fb010abe6c4ea89dd5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a47b2d93a4c0224fb010abe6c4ea89dd5">&#9670;&#160;</a></span>_walkingSoundIds</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unordered_set&lt;<a class="el" href="AudioPlayer_8h.html#aa4689ee7c9a692044aebd36cb0915e61">SoundID</a>&gt; AudioPlayer::_walkingSoundIds</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ab0be1af9cd27870bfa07e06b157013f3" name="ab0be1af9cd27870bfa07e06b157013f3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab0be1af9cd27870bfa07e06b157013f3">&#9670;&#160;</a></span>bPlayerReady</h2>
 
@@ -912,6 +966,94 @@ Protected Attributes</h2></td></tr>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa70c282cb016aac08a1554547e91570b" name="aa70c282cb016aac08a1554547e91570b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa70c282cb016aac08a1554547e91570b">&#9670;&#160;</a></span>SOUND_PID_EXCLUSIVE</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int AudioPlayer::SOUND_PID_EXCLUSIVE = <a class="el" href="MM7_8h.html#a51fcc1ce2e7a0c1f057fc1e2d54b5e2d">PID_INVALID</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acab3774466e4def6ca2b47a202628e25" name="acab3774466e4def6ca2b47a202628e25"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acab3774466e4def6ca2b47a202628e25">&#9670;&#160;</a></span>SOUND_PID_NON_RESETABLE</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int AudioPlayer::SOUND_PID_NON_RESETABLE = -2</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad9f5ebb8a9309c2f04ae2cf6b93ae0a2" name="ad9f5ebb8a9309c2f04ae2cf6b93ae0a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad9f5ebb8a9309c2f04ae2cf6b93ae0a2">&#9670;&#160;</a></span>SOUND_PID_PLAYER_RESETABLE</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int AudioPlayer::SOUND_PID_PLAYER_RESETABLE = <a class="el" href="MM7_8h.html#a6fa21b10ef8fe82bdc1df5e108443326">PID</a>(<a class="el" href="ActorEnums_8h.html#a842c5e2e69277690b064bf363c017980ae2b1e182a57c6ab27af33c89adc002f4">OBJECT_Player</a>, 5)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abcd09bd27047a69ee72599159674fff0" name="abcd09bd27047a69ee72599159674fff0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abcd09bd27047a69ee72599159674fff0">&#9670;&#160;</a></span>SOUND_PID_WALKING</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int AudioPlayer::SOUND_PID_WALKING = -3</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
