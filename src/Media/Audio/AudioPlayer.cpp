@@ -1,10 +1,10 @@
-#include "Media/Audio/AudioPlayer.h"
-
 #include <algorithm>
 #include <map>
 #include <string>
 #include <filesystem>
 #include <utility>
+
+#include "Media/Audio/AudioPlayer.h"
 
 #include "Library/Compression/Compression.h"
 
@@ -196,15 +196,12 @@ void AudioPlayer::SetMasterVolume(int level) {
     level = std::min(9, level);
     uMasterVolume = (maxVolumeGain * pSoundVolumeLevels[level]);
 
-    auto iter = mapSounds.begin();
-    while (iter != mapSounds.end()) {
-        SoundInfo &si = iter->second;
+    for (auto &[_, si] : mapSounds) {
         if (si.sample) {
             // if not voice sample - set volume
             if (PID_TYPE(si.last_pid) != OBJECT_Player)
                 si.sample->SetVolume(uMasterVolume);
         }
-        ++iter;
     }
 }
 
@@ -213,27 +210,43 @@ void AudioPlayer::SetVoiceVolume(int level) {
     level = std::min(9, level);
     uVoiceVolume = (maxVolumeGain * pSoundVolumeLevels[level]);
 
-    auto iter = mapSounds.begin();
-    while (iter != mapSounds.end()) {
-        SoundInfo &si = iter->second;
+    for (auto &[_, si] : mapSounds) {
         if (si.sample) {
             // if voice sample - set volume
             if (PID_TYPE(si.last_pid) == OBJECT_Player)
                 si.sample->SetVolume(uVoiceVolume);
         }
-        ++iter;
     }
 }
 
-void AudioPlayer::StopAll(int sample_id) { // sample id is pid of origin
+void AudioPlayer::stopSounds() {
     if (!bPlayerReady) {
         return;
     }
-    // TODO(pskelton): fix this
-    // looks like this was just meant to stop party walking sounds overrunning
+
+    for (auto &[_, si] : mapSounds) {
+        if (si.sample) {
+            if (si.sample->Stop() && engine->config->debug.VerboseLogging.value()) {
+                logger->Info("sound stopped: {}", si.sName);
+            }
+        }
+    }
 }
 
-void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats, int source_x, int source_y, int sound_data_id) {
+void AudioPlayer::stopWalkingSounds() {
+    if (!bPlayerReady) {
+        return;
+    }
+
+    for (SoundID id : _walkingSoundIds) {
+        SoundInfo &si = mapSounds[id];
+        assert(si.sample);
+        si.sample->Stop();
+    }
+}
+
+
+void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats, int source_x, int source_y, int sound_data_id) {
     if (!bPlayerReady)
         return;
 
@@ -275,18 +288,21 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
 
     si.sample->SetVolume(uMasterVolume);
 
-    // TODO(Nik-RE-dev): all non-object PIDs must be named constants that convey semantics of sound played.
     if (pid == 0) {  // generic sound like from UI
         si.sample->Play();
     } else if (pid == PID_INVALID) { // exclusive sounds - can override
         si.sample->Stop();
         si.sample->Play();
     } else if (pid == -1) { // all instances must be changed to PID_INVALID
-        assert(false && "AudioPlayer::PlaySound - pid == -1 is encountered.");
+        assert(false && "AudioPlayer::playSound - pid == -1 is encountered.");
         si.sample->Stop();
         si.sample->Play();
-    } else if (pid < 0) {  // exclusive sounds - no override (close chest)
+    } else if (pid == SOUND_PID_NON_RESETABLE) {  // exclusive sounds - no override (close chest)
         si.sample->Play();
+    } else if (pid == SOUND_PID_WALKING) {
+        si.sample->Stop();
+        si.sample->Play();
+        _walkingSoundIds.insert(eSoundID);
     } else {
         ObjectType object_type = PID_TYPE(pid);
         unsigned int object_id = PID_ID(pid);
@@ -306,8 +322,8 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
 
             case OBJECT_Player: {
                 si.sample->SetVolume(uVoiceVolume);
-                if (object_id == 5) {
-                    // TODO(Nik-RE-dev): this is special hack for voice volume control
+                if (pid == SOUND_PID_PLAYER_RESETABLE) {
+                    // This is special hack for voice volume control
                     si.sample->Stop();
                 }
                 si.sample->Play();
@@ -357,7 +373,7 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
                 // TODO(pskelton): temp fix to reduce instances of sounds not playing
                 si.sample->Play();
                 if (engine->config->debug.VerboseLogging.value())
-                    logger->Warning("Unexpected object type from PID in PlaySound");
+                    logger->Warning("Unexpected object type from PID in playSound");
                 break;
             }
         }
@@ -376,14 +392,11 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
 }
 
 void AudioPlayer::ResumeSounds() {
-    auto iter = mapSounds.begin();
-    while (iter != mapSounds.end()) {
-        SoundInfo &si = iter->second;
+    for (auto &[_, si] : mapSounds) {
         if (si.sample) {
             if (si.sample->Resume() && engine->config->debug.VerboseLogging.value())
                 logger->Info("sound resumed: {}", si.sName);
         }
-        ++iter;
     }
 }
 
@@ -399,27 +412,22 @@ void AudioPlayer::UpdateSounds() {
 void AudioPlayer::PauseSounds(int uType) {
     // pause everything
     if (uType == 2) {
-        auto iter = mapSounds.begin();
-        while (iter != mapSounds.end()) {
-            SoundInfo &si = iter->second;
+        for (auto &[_, si] : mapSounds) {
             if (si.sample) {
                 if (si.sample->Pause() && engine->config->debug.VerboseLogging.value())
                     logger->Info("sound paused: {}", si.sName);
             }
-            ++iter;
         }
     } else {
         // pause non exclusives
-        auto iter = mapSounds.begin();
-        while (iter != mapSounds.end()) {
-            SoundInfo &si = iter->second;
+        for (auto &[_, si] : mapSounds) {
             if (si.sample) {
-                if (si.last_pid <= 0) {
+                if (si.last_pid != PID_INVALID &&
+                        si.last_pid != SOUND_PID_NON_RESETABLE) {
                     if (si.sample->Pause() && engine->config->debug.VerboseLogging.value())
                         logger->Info("sound paused: {}", si.sName);
                 }
             }
-            ++iter;
         }
     }
 }
@@ -543,6 +551,6 @@ Blob AudioPlayer::LoadSound(const std::string &pSoundName) {
 
 void AudioPlayer::playSpellSound(SPELL_TYPE spell, unsigned int pid, bool is_impact) {
     if (spell != SPELL_NONE)
-        PlaySound(static_cast<SoundID>(SpellSoundIds[spell] + is_impact), pid, 0, -1, 0, 0);
+        playSound(static_cast<SoundID>(SpellSoundIds[spell] + is_impact), pid, 0, -1, 0, 0);
 }
 

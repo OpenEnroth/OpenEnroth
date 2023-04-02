@@ -930,7 +930,8 @@ LABEL_47:
                     v110 = EVT_DWORD(_evt->v13);
                     v109 = EVT_DWORD(_evt->v9);
                     v106 = EVT_DWORD(_evt->v5);
-                    pAudioPlayer->PlaySound((SoundID)v106, 0, 0, v109, v110, 0);
+                    // TODO(Nik-RE-dev): need to check purpose of v109/v110, they seems to be x/y coords of sound.
+                    pAudioPlayer->playSound((SoundID)v106, 0, 0, v109, v110, 0);
                     ++curr_seq_num;
                     break;
                 case EVENT_GiveItem: {
@@ -944,7 +945,7 @@ LABEL_47:
                 }
                 case EVENT_SpeakInHouse:
                     if (EnterHouse((enum HOUSE_ID)EVT_DWORD(_evt->v5))) {
-                        //pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0);
+                        //pAudioPlayer->playSound(SOUND_Invalid);
                         // PID 814 was used which is PID(OBJECT_Face, 101)
                         pAudioPlayer->playUISound(SOUND_enter);
                         HOUSE_ID houseId = HOUSE_JAIL;

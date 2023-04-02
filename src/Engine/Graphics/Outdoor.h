@@ -10,6 +10,7 @@
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/SpawnPoint.h"
+#include "Media/Audio/AudioPlayer.h"
 
 #define DAY_ATTRIB_FOG 1
 
@@ -79,7 +80,11 @@ struct OutdoorLocation {
     int _47ED83(int gridX, int gridY);
     int GetTileAttribByGrid(int gridX, int gridY);
     int DoGetHeightOnTerrain(signed int sX, signed int sZ);
-    int GetSoundIdByPosition(signed int X_pos, signed int Y_pos, int a4);
+
+    /**
+     * @offset 0x47EE49
+     */
+    SoundID getSoundIdByPosition(int X_pos, int Y_pos, bool isRunning);
     int UpdateDiscoveredArea(int a2, int a3, int unused);
     bool IsMapCellFullyRevealed(signed int a2, signed int a3);
     bool IsMapCellPartiallyRevealed(signed int a2, signed int a3);

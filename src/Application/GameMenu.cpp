@@ -338,7 +338,7 @@ void Menu::EventLoop() {
                 engine->config->settings.VoiceLevel.setValue(new_level);
                 pAudioPlayer->SetVoiceVolume(engine->config->settings.VoiceLevel.value());
                 if (engine->config->settings.VoiceLevel.value() > 0) {
-                    pAudioPlayer->PlaySound(SOUND_hf445a, PID(OBJECT_Player, 5), 0, -1, 0, 0);
+                    pAudioPlayer->playSound(SOUND_hf445a, AudioPlayer::SOUND_PID_PLAYER_RESETABLE);
                 }
                 continue;
             }

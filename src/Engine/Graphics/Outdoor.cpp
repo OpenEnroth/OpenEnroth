@@ -40,8 +40,6 @@
 #include "GUI/UI/UIRest.h"
 #include "GUI/UI/UITransition.h"
 
-#include "Media/Audio/AudioPlayer.h"
-
 #include "Utility/Memory/FreeDeleter.h"
 #include "Utility/Math/TrigLut.h"
 #include "Library/Random/Random.h"
@@ -1256,48 +1254,61 @@ int OutdoorLocation::DoGetHeightOnTerrain(signed int sX, signed int sZ) {
     return 32 * pTerrain.pHeightmap[sZ * 128 + sX];
 }
 
-//----- (0047EE49) --------------------------------------------------------
-int OutdoorLocation::GetSoundIdByPosition(signed int X_pos, signed int Y_pos,
-                                          int running) {
-    signed int v4;  // eax@5
-    signed int v5;  // eax@7
-                    //  int v6; // eax@8
-    signed int v8;  // eax@9
-    int modif = 0;
+SoundID OutdoorLocation::getSoundIdByPosition(int X_pos, int Y_pos, bool isRunning) {
+    int tileMapId = 0;
 
-    if (X_pos < 0 || X_pos > 127 || Y_pos < 0 || Y_pos > 127)
-        v4 = 0;
-    else
-        v4 = this->pTerrain.pTilemap[128 * Y_pos + X_pos];
-    v5 = GetTileIdByTileMapId(v4);
-    if (running) modif = -39;
-    if (!v5) return 92 + modif;
+    if (X_pos >= 0 && X_pos <= 127 && Y_pos >= 0 && Y_pos <= 127) {
+        tileMapId = this->pTerrain.pTilemap[128 * Y_pos + X_pos];
+    }
 
-    switch (pTileTable->pTiles[v5].tileset) {
-        case 0:
-            return 93 + modif;
-        case 1:
-            return 97 + modif;
-        case 2:
-            return 91 + modif;
-        case 3:
-            return 90 + modif;
-        case 4:
-            return 101 + modif;
-        case 5:
-            return 95 + modif;
-        case 6:
-            return 88 + modif;
-        case 7:
-            return 100 + modif;
-        case 8:
-            return 93 + modif;
+    int tileId = GetTileIdByTileMapId(tileMapId);
+
+    if (!tileId) {
+        return isRunning ? SOUND_RunDirt : SOUND_WalkDirt;
+    }
+
+    switch (pTileTable->pTiles[tileId].tileset) {
+        case Tileset_Grass:
+            return isRunning ? SOUND_RunGrass : SOUND_WalkGrass;
+        case Tileset_Snow:
+            return isRunning ? SOUND_RunSnow : SOUND_WalkSnow;
+        case Tileset_Desert:
+            return isRunning ? SOUND_RunDesert : SOUND_WalkDesert;
+        case Tileset_CooledLava:
+            return isRunning ? SOUND_RunCooledLava : SOUND_WalkCooledLava;
+        case Tileset_Dirt:
+            // Water sounds were used
+            return isRunning ? SOUND_RunDirt : SOUND_WalkDirt;
+        case Tileset_Water:
+            // Dirt sounds were used
+            return isRunning ? SOUND_RunWater : SOUND_WalkWater;
+        case Tileset_Badlands:
+            return isRunning ? SOUND_RunBadlands : SOUND_WalkBadlands;
+        case Tileset_Swamp:
+            return isRunning ? SOUND_RunSwamp : SOUND_WalkSwamp;
+        case Tileset_Tropical:
+            // TODO(Nik-RE-dev): is that correct?
+            return isRunning ? SOUND_RunGrass : SOUND_WalkGrass;
+        case Tileset_RoadGrassCobble:
+        case Tileset_RoadGrassDirt:
+        case Tileset_RoadSnowCobble:
+        case Tileset_RoadSnowDirt:
+        case Tileset_RoadSandCobble:
+        case Tileset_RoadSandDirt:
+        case Tileset_RoadVolcanoCobble:
+        case Tileset_RoadVolcanoDirt:
+        case Tileset_RoadCrackedCobble:
+        case Tileset_RoadCrackedDirt:
+        case Tileset_RoadSwampCobble:
+        case Tileset_RoadSwampDir:
+        case Tileset_RoadTropicalCobble:
+        case Tileset_RoadTropicalDirt:
+            return isRunning ? SOUND_RunRoad : SOUND_WalkRoad;
+        case Tileset_City:
+        case Tileset_RoadCityStone:
+            // TODO(Nik-RE-dev): is that correct?
         default:
-            v8 = pTileTable->pTiles[v5].tileset;
-            if ((v8 > 9 && v8 <= 17) || (v8 > 21 && v8 <= 27))
-                return 96 + modif;
-            else
-                return 95 + modif;
+            return isRunning ? SOUND_RunGround : SOUND_WalkGround;
     }
 }
 
@@ -2433,54 +2444,61 @@ void ODM_ProcessPartyActions() {
     }
 
     // walking / running sounds ------------------------
-    if (engine->config->settings.WalkSound.value() && pParty->walk_sound_timer) {
-        if (pParty->walk_sound_timer >= pEventTimer->uTimeElapsed)
-            pParty->walk_sound_timer -= pEventTimer->uTimeElapsed;
-        else
-            pParty->walk_sound_timer = 0;
-    }
+    if (engine->config->settings.WalkSound.value()) {
+        pParty->walk_sound_timer -= pEventTimer->uTimeElapsed;
 
-    // save up distance deltas so walks sounds play at high fps with small delta
-    int pX_ = pParty->vPosition.x - partyNewX;
-    int pY_ = pParty->vPosition.y - partyNewY;
-    int pZ_ = pParty->vPosition.z - partyNewZ;
-    pParty->_movementTally += integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_);
+        if (pParty->walk_sound_timer <= 0) {
+            pAudioPlayer->stopWalkingSounds();
+        }
 
-    if (engine->config->settings.WalkSound.value() && pParty->walk_sound_timer <= 0) {
-        pAudioPlayer->StopAll(804);  // stop sound
-        if (partyIsRunning && (!partyNotTouchingFloor || partyCloseToGround)) {
-            if (pParty->_movementTally >= 16) {
-                pParty->_movementTally = 0;
-                if (!partyNotOnModel &&
-                    pOutdoor->pBModels[pParty->floor_face_pid >> 9]
-                    .pFaces[(pParty->floor_face_pid >> 3) & 0x3F].Visible()) {
-                    pAudioPlayer->playWalkSound(SOUND_RunWood);  // бег на 3D Modelи
-                } else {
-                    int v87 = pOutdoor->GetSoundIdByPosition(WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellY(pParty->vPosition.y), 1);
-                    pAudioPlayer->playWalkSound((SoundID)v87);  // бег по земле 56
+        // Start sound processing only when actual movement is performed to avoid stopping sounds on high FPS
+        if (pEventTimer->uTimeElapsed) {
+            // TODO(Nik-RE-dev): use calculated velocity of party and walk/run flags instead of delta
+            int walkDelta = integer_sqrt((pParty->vPosition - Vec3i(partyNewX, partyNewY, partyNewZ)).lengthSqr());
+
+            // Delta limits for running/walking has been changed. Previously:
+            // - for run limit was >= 16
+            // - for walk limit was >= 8
+            // - stop sound if delta < 8
+            if (pParty->walk_sound_timer <= 0) {
+                if (!partyNotTouchingFloor || partyCloseToGround) {
+                    int modelId = pParty->floor_face_pid >> 9;
+                    int faceId = (pParty->floor_face_pid >> 3) & 0x3F;
+                    bool isModelWalk = !partyNotOnModel && pOutdoor->pBModels[modelId].pFaces[faceId].Visible();
+                    SoundID sound = SOUND_Invalid;
+                    if (partyIsRunning) {
+                        if (walkDelta >= 4 ) {
+                            if (isModelWalk) {
+                                sound = SOUND_RunWood;
+                            } else {
+                                // Old comment: 56 is ground run
+                                sound = pOutdoor->getSoundIdByPosition(WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellY(pParty->vPosition.y), true);
+                            }
+                            pParty->walk_sound_timer = 96;  // 64
+                        }
+                    } else if (partyIsWalking) {
+                        if (walkDelta >= 2) {
+                            if (isModelWalk) {
+                                sound = SOUND_RunWood;
+                            } else {
+                                sound = pOutdoor->getSoundIdByPosition(WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellY(pParty->vPosition.y), false);
+                            }
+                            pParty->walk_sound_timer = 114;  // 64
+                        }
+                    }
+
+                    if (sound != SOUND_Invalid) {
+                        pAudioPlayer->playWalkSound(sound);
+                    }
                 }
-                pParty->walk_sound_timer = 96;  // таймер для бега
             }
-        } else if (partyIsWalking && (!partyNotTouchingFloor || partyCloseToGround)) {
-            if (pParty->_movementTally >= 8) {
-                pParty->_movementTally = 0;
-                if (!partyNotOnModel &&
-                    pOutdoor->pBModels[pParty->floor_face_pid >> 9]
-                    .pFaces[(pParty->floor_face_pid >> 3) & 0x3F].Visible()) {
-                    pAudioPlayer->playWalkSound(SOUND_WalkWood);  // хождение на 3D Modelи
-                } else {
-                    int v87 = pOutdoor->GetSoundIdByPosition(WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellY(pParty->vPosition.y), 0);
-                    pAudioPlayer->playWalkSound((SoundID)v87);  // хождение по земле
-                }
-                pParty->walk_sound_timer = 144;  // таймер для ходьбы
+
+            // mute the walking sound when stopping
+            if (walkDelta < 2) {
+                pAudioPlayer->stopWalkingSounds();
             }
         }
     }
-
-    // TODO(pskelton): this will trigger during accumulation - and StopAll doesnt work
-    // mute the walking sound when stopping
-    if (pParty->_movementTally < 8)
-        pAudioPlayer->StopAll(804);
     //------------------------------------------------------------------------
 
     if (!partyNotTouchingFloor || partyCloseToGround)
@@ -2557,7 +2575,7 @@ void ODM_ProcessPartyActions() {
                 }
             }
         } else if (engine->config->settings.WalkSound.value() && pParty->walk_sound_timer <= 0) {
-            pAudioPlayer->StopAll(804);
+            pAudioPlayer->stopWalkingSounds();
             pParty->walk_sound_timer = 64;
         }
 

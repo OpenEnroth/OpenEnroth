@@ -105,7 +105,7 @@ void GUICredits::ExecuteCredits() {
     }
 
     pAudioPlayer->MusicStop();
-    pAudioPlayer->StopAll(1);
+    pAudioPlayer->stopSounds();
 
     pWindow_Credits->Release();
     delete pWindow_Credits;

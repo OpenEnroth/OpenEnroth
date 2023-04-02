@@ -522,7 +522,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             actorPtr->pActorBuffs[ACTOR_BUFF_PAIN_HAMMERHANDS]
                 .Apply(pParty->GetPlayingTime() + GameTime::FromHours(realPoints), masteryLevel, realPoints, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.JazzberryJam.c32());
-            pAudioPlayer->PlaySound(SOUND_51heroism03, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0);
+            pAudioPlayer->playSound(SOUND_51heroism03, PID(OBJECT_Actor, uActorID));
             break;
 
         case SPELL_BODY_POWER_CURE:
@@ -531,7 +531,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 actorPtr->sCurrentHP = actorPtr->pMonsterInfo.uHP;
             }
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.JazzberryJam.c32());
-            pAudioPlayer->PlaySound(SOUND_Fate, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0);
+            pAudioPlayer->playSound(SOUND_Fate, PID(OBJECT_Actor, uActorID));
             break;
 
         case SPELL_LIGHT_DISPEL_MAGIC:
@@ -601,7 +601,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
             actorPtr->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, realPoints + 5, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.White.c32());
-            pAudioPlayer->PlaySound(SOUND_9armageddon01, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0);
+            pAudioPlayer->playSound(SOUND_9armageddon01, PID(OBJECT_Actor, uActorID));
             break;
 
         case SPELL_DARK_SHARPMETAL:
@@ -673,7 +673,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             }
             actorPtr->pActorBuffs[ACTOR_BUFF_PAIN_REFLECTION].Apply(pParty->GetPlayingTime() + spellLength, masteryLevel, 0, 0, 0);
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.MediumGrey.c32());
-            pAudioPlayer->PlaySound(SOUND_Sacrifice2, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0);
+            pAudioPlayer->playSound(SOUND_Sacrifice2, PID(OBJECT_Actor, uActorID));
             break;
     }
 }
@@ -1961,21 +1961,21 @@ void Actor::playSound(unsigned int uActorID, unsigned int uSoundID) {
         (SoundID)pActors[uActorID].pSoundSampleIDs[uSoundID];
     if (sound_sample_id) {
         if (!pActors[uActorID].pActorBuffs[ACTOR_BUFF_SHRINK].Active()) {
-            pAudioPlayer->PlaySound(sound_sample_id, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0);
+            pAudioPlayer->playSound(sound_sample_id, PID(OBJECT_Actor, uActorID));
         } else {
             switch (pActors[uActorID].pActorBuffs[ACTOR_BUFF_SHRINK].uPower) {
                 case 1:
-                    pAudioPlayer->PlaySound(sound_sample_id, PID(OBJECT_Actor, uActorID), 0, 0, 0, 0);
+                    pAudioPlayer->playSound(sound_sample_id, PID(OBJECT_Actor, uActorID), 0, 0, 0);
                     break;
                 case 2:
-                    pAudioPlayer->PlaySound(sound_sample_id, PID(OBJECT_Actor, uActorID), 0, 0, 0, 0);
+                    pAudioPlayer->playSound(sound_sample_id, PID(OBJECT_Actor, uActorID), 0, 0, 0);
                     break;
                 case 3:
                 case 4:
-                    pAudioPlayer->PlaySound(sound_sample_id, PID(OBJECT_Actor, uActorID), 0, 0, 0, 0);
+                    pAudioPlayer->playSound(sound_sample_id, PID(OBJECT_Actor, uActorID), 0, 0, 0);
                     break;
                 default:
-                    pAudioPlayer->PlaySound(sound_sample_id, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0);
+                    pAudioPlayer->playSound(sound_sample_id, PID(OBJECT_Actor, uActorID));
                     break;
             }
         }
