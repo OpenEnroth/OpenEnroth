@@ -58,6 +58,9 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     // set initial position
     initialPosition = vPosition;
 
+    // set start timer for particle emmission
+    _lastParticleTime = pEventTimer->uTotalGameTimeElapsed;
+
     // move sprite so it looks like it originates from char portrait
     switch (which_char) {
         case 0:

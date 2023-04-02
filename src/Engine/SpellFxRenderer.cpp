@@ -252,9 +252,15 @@ void SpellFxRenderer::DrawProjectiles() {
 }
 
 //----- (004A73AA) --------------------------------------------------------
-void SpellFxRenderer::
-    _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
+void SpellFxRenderer::_4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
         SpriteObject *a2, unsigned int uDiffuse, Texture *texture) {
+    // check if enough time has passed to add particle into the trail
+    if (a2->_lastParticleTime + a2->_ticksPerParticle < pEventTimer->uTotalGameTimeElapsed) {
+        a2->_lastParticleTime += a2->_ticksPerParticle;
+    } else {
+        return;
+    }
+
     SpellFxRenderer *thisspellfxrend;  // edi@1
     SpriteObject *v5;     // esi@1
     int v6;               // eax@1
