@@ -806,7 +806,7 @@ void UIShop_Buy_Identify_Repair() {
     unsigned int invindex;     // [sp+A8h] [bp-Ch]@9
     int uPriceItemService;     // [sp+ACh] [bp-8h]@12
 
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_E) {
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
         pPlayers[pParty->getActiveCharacter()]->OnInventoryLeftClick();
         return;
     }

@@ -522,6 +522,11 @@ GAME_TEST(Issues, Issue578) {
     EXPECT_EQ(pParty->pPlayers[0].sHealth, 108);
 }
 
+GAME_TEST(Issues, Issue598) {
+    // Assert when accessing character inventory from the shop screen
+    test->playTraceFromTestData("issue_598.mm7", "issue_598.json");
+}
+
 // 600
 
 GAME_TEST(Issues, Issue611) {

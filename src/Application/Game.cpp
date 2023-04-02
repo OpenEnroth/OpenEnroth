@@ -672,8 +672,7 @@ void Game::EventLoop() {
                     back_to_game();
                     pCurrentFrameMessageQueue->Flush();
                     switch (current_screen_type) {
-                        case CURRENT_SCREEN::SCREEN_E:
-                            __debugbreak();
+                        case CURRENT_SCREEN::SCREEN_SHOP_INVENTORY:
                         case CURRENT_SCREEN::SCREEN_NPC_DIALOGUE:
                         case CURRENT_SCREEN::SCREEN_CHEST:
                         case CURRENT_SCREEN::SCREEN_CHEST_INVENTORY:
@@ -807,8 +806,7 @@ void Game::EventLoop() {
                                         currentRestType = REST_NONE;
                                         OnEscape();
                                         continue;
-                                    case CURRENT_SCREEN::SCREEN_E:
-                                        __debugbreak();
+                                    case CURRENT_SCREEN::SCREEN_SHOP_INVENTORY:
                                         pGUIWindow_CurrentMenu->Release();
                                         current_screen_type = CURRENT_SCREEN::SCREEN_HOUSE;
                                         continue;

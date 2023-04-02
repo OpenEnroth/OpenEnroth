@@ -379,16 +379,20 @@ void GUIWindow::HouseDialogManager() {
     pWindow.uFrameZ -= 18;
     render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
     render->DrawTextureNew(468 / 640.0f, 0, game_ui_right_panel_frame);
+
     if (pDialogueNPCCount != uNumDialogueNPCPortraits || !uHouse_ExitPic) {
         const char *pHouseName = p2DEvents[window_SpeakInHouse->wData.val - 1].pName;
         if (pHouseName) {
-            int v3 = 2 * pFontCreate->GetHeight() - 6 -
-                pFontCreate->CalcTextHeight(pHouseName, 130, 0);
-            if (v3 < 0) v3 = 0;
-            pWindow.DrawTitleText(pFontCreate, 0x1EAu, v3 / 2 + 4, colorTable.White.c16(),
-                                  p2DEvents[window_SpeakInHouse->wData.val - 1].pName, 3);
+            if (current_screen_type != CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
+                int v3 = 2 * pFontCreate->GetHeight() - 6 -
+                    pFontCreate->CalcTextHeight(pHouseName, 130, 0);
+                if (v3 < 0) v3 = 0;
+                pWindow.DrawTitleText(pFontCreate, 0x1EAu, v3 / 2 + 4, colorTable.White.c16(),
+                    p2DEvents[window_SpeakInHouse->wData.val - 1].pName, 3);
+            }
         }
     }
+
     pWindow.uFrameWidth += 8;
     pWindow.uFrameZ += 8;
     if (!pDialogueNPCCount) {
@@ -484,7 +488,7 @@ void GUIWindow::HouseDialogManager() {
     render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f,
         pNPCPortraits_y[0][0] / 480.0f,
         pDialogueNPCPortraits[v4]);
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_E) {
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
         CharacterUI_InventoryTab_Draw(pPlayers[pParty->getActiveCharacter()], true);
         if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
             render->DrawTextureNew(556 / 640.0f, 451 / 480.0f,

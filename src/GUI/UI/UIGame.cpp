@@ -615,7 +615,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
         return;
     }
     if (current_screen_type != CURRENT_SCREEN::SCREEN_HOUSE) {
-        if (current_screen_type == CURRENT_SCREEN::SCREEN_E) {
+        if (current_screen_type == CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
             pParty->setActiveCharacter(uPlayerID);
             return;
         }
@@ -648,12 +648,10 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
         return;
     }
 
-    if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD ||
-        dialog_menu_id == DIALOGUE_SHOP_6) {
-        __debugbreak();  // fix indexing
+    if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD || dialog_menu_id == DIALOGUE_SHOP_BUY_SPECIAL) {
         current_character_screen_window = WINDOW_CharacterWindow_Inventory;
         pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(
-            pParty->getActiveCharacter(), CURRENT_SCREEN::SCREEN_E);  // CharacterUI_Initialize(SCREEN_E);
+            pParty->getActiveCharacter(), CURRENT_SCREEN::SCREEN_SHOP_INVENTORY);  // CharacterUI_Initialize(SCREEN_SHOP_INVENTORY);
         return;
     }
 }
