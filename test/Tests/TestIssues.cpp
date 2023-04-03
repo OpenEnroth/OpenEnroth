@@ -542,6 +542,10 @@ GAME_TEST(Issues, Issue611) {
 }
 
 GAME_TEST(Issues, Issue615) {
+    // test 1 - ensure that clicking between active portraits changes active character.
+    test->playTraceFromTestData("issue_615a.mm7", "issue_615a.json", []() { EXPECT_EQ(pParty->getActiveCharacter(), 1); });
+    EXPECT_EQ(pParty->getActiveCharacter(), 3);
     // Assert when clicking on character portrait when no active character is present
-    test->playTraceFromTestData("issue_615.mm7", "issue_615.json");
+    test->playTraceFromTestData("issue_615b.mm7", "issue_615b.json", []() { EXPECT_EQ(pParty->getActiveCharacter(), 1); });
+    EXPECT_EQ(pParty->getActiveCharacter(), 4);
 }
