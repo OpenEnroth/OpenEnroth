@@ -194,6 +194,16 @@ GAME_TEST(Issues, Issue271) {
     EXPECT_NE(pParty->pPlayers[1].expression, CHARACTER_EXPRESSION_FEAR);
 }
 
+GAME_TEST(Issues, Issue272) {
+    // Controls menu bugs
+    // Check default resets keys
+    test->playTraceFromTestData("issue_272a.mm7", "issue_272a.json");
+    EXPECT_EQ(engine->config->keybindings.Right.value(), engine->config->keybindings.Right.defaultValue());
+    // Check you cant leave menu with conflicting keys
+    test->playTraceFromTestData("issue_272b.mm7", "issue_272b.json");
+    EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_KEYBOARD_OPTIONS);
+}
+
 GAME_TEST(Issues, Issue293a) {
     // Test that barrels in castle Harmondale work and can be triggered only once, and that trash piles work,
     // give an item once, but give disease indefinitely.

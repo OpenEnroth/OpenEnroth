@@ -233,7 +233,7 @@ GUIWindow_GameKeyBindings::GUIWindow_GameKeyBindings()
 
     CreateButton({19, 302}, {108, 20}, 1, 0, UIMSG_SelectKeyPage1, 0);
     CreateButton({127, 302}, {108, 20}, 1, 0, UIMSG_SelectKeyPage2, 0);
-    CreateButton({127, 324}, {108, 20}, 1, 0, UIMSG_ResetKeyMapping, 0);
+    CreateButton("KeyBinding_Default", {127, 324}, {108, 20}, 1, 0, UIMSG_ResetKeyMapping, 0);
     CreateButton({19, 324}, {108, 20}, 1, 0, UIMSG_Game_OpenOptionsDialog, 0);
 
     CreateButton({129, 148}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 0);
