@@ -636,7 +636,14 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
         ArenaFight();
         return;
     } else if (option == DIALOGUE_USE_HIRED_NPC_ABILITY) {
-        if (UseNPCSkill(speakingNPC->profession) == 0) {
+        int hirelingId;
+        for (hirelingId = 0; hirelingId < pParty->pHirelings.size(); hirelingId++) {
+            if (iequals(pParty->pHirelings[hirelingId].pName, speakingNPC->pName)) {
+                break;
+            }
+        }
+        assert(hirelingId < pParty->pHirelings.size());
+        if (UseNPCSkill(speakingNPC->profession, hirelingId) == 0) {
             if (speakingNPC->profession != GateMaster) {
                 speakingNPC->bHasUsedTheAbility = 1;
             }

@@ -140,7 +140,7 @@ extern struct NPCStats *pNPCStats;
 bool PartyHasDragon();
 bool CheckHiredNPCSpeciality(NPCProf prof);
 
-int UseNPCSkill(NPCProf profession);
+int UseNPCSkill(NPCProf profession, int id);
 void NPCHireableDialogPrepare();
 void _4B4224_UpdateNPCTopics(int _this);
 const char *GetProfessionActionText(NPCProf prof);

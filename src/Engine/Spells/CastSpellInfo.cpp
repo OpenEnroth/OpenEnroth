@@ -302,8 +302,7 @@ void CastSpellInfoHelpers::castSpell() {
                     castSuccessful = false;
                 }
             }
-            townPortalCasterId = pCastSpell->uPlayerID;
-            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_OnCastTownPortal, 0, 0);
+            pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_OnCastTownPortal, PID(OBJECT_Player, pCastSpell->uPlayerID), 0);
             pAudioPlayer->playSpellSound(pCastSpell->uSpellID, PID_INVALID);
         } else if (pCastSpell->uSpellID == SPELL_WATER_LLOYDS_BEACON) {
             if (pCurrentMapName == "d05.blv") {  // Arena
@@ -2809,15 +2808,16 @@ void CastSpellInfoHelpers::castSpell() {
                         npc_id++;
                     }
 
-                    if (pCastSpell->uPlayerID_2 != 4 && pCastSpell->uPlayerID_2 != 5 ||
-                            achieved_awards[pCastSpell->uPlayerID_2 - 4] <= 0 ||
-                            achieved_awards[pCastSpell->uPlayerID_2 - 4] >= 3) {
+                    int pickedHirelingId = pCastSpell->uPlayerID_2;
+                    if (pickedHirelingId != pParty->pPlayers.size() && pickedHirelingId != (pParty->pPlayers.size() + 1) ||
+                            achieved_awards[pCastSpell->uPlayerID_2 - pParty->pPlayers.size()] <= 0 ||
+                            achieved_awards[pCastSpell->uPlayerID_2 - pParty->pPlayers.size()] >= 3) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         setSpellRecovery(pCastSpell, recoveryTime);
                         continue;
                     }
-                    int hireling_idx = achieved_awards[pCastSpell->uPlayerID_2 - 4] - 1;
+                    int hireling_idx = achieved_awards[pCastSpell->uPlayerID_2 - pParty->pPlayers.size()] - 1;
                     pParty->pHirelings[hireling_idx].dialogue_1_evt_id = 1;
                     pParty->pHirelings[hireling_idx].dialogue_2_evt_id = 0;
                     pParty->pHirelings[hireling_idx].dialogue_3_evt_id = pIconsFrameTable->GetIcon("spell96")->GetAnimLength();

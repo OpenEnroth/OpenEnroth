@@ -1188,7 +1188,7 @@ const char *GetProfessionActionText(NPCProf prof) {
 }
 
 //----- (004BB756) --------------------------------------------------------
-int UseNPCSkill(NPCProf profession) {
+int UseNPCSkill(NPCProf profession, int id) {
     switch (profession) {
         case Healer: {
             for (Player &player : pParty->pPlayers) {
@@ -1267,7 +1267,7 @@ int UseNPCSkill(NPCProf profession) {
 
         case GateMaster: {
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
-            pNextFrameMessageQueue->AddGUIMessage(UIMSG_OnCastTownPortal, (int64_t)GetNPCData(sDialogue_SpeakingActorNPC_ID), 0);
+            pNextFrameMessageQueue->AddGUIMessage(UIMSG_OnCastTownPortal, PID(OBJECT_Player, pParty->pPlayers.size() + id), 0);
         } break;
 
         case Acolyte:
