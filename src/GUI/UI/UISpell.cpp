@@ -7,7 +7,6 @@
 
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Localization.h"
-#include "Engine/Party.h"
 
 TargetedSpellUI::TargetedSpellUI(Pointi position, Sizei dimensions, WindowData data, const std::string &hint)
     : GUIWindow(WINDOW_CastSpell, position, dimensions, data, hint) {

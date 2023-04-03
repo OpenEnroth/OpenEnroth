@@ -2,7 +2,7 @@
 #include "GUI/UI/UIBooks.h"
 
 struct GUIWindow_TownPortalBook : public GUIWindow_Book {
-    GUIWindow_TownPortalBook(int casterPid);  // const char *a1);
+    explicit GUIWindow_TownPortalBook(int casterPid);  // const char *a1);
     virtual ~GUIWindow_TownPortalBook() {}
 
     virtual void Update();
