@@ -99,36 +99,23 @@ void IntegrityTest();
 using Graphics::IRenderFactory;
 
 
-void AutoInitDataPath(Platform *platform) {
-    // TODO (captainurist): we should consider reading Unicode (utf8) strings from win32 registry, as it might contain paths
-    // curretnly we convert all strings out of registry into CP_ACP (default windows ansi)
-    // it is later on passed to std::filesystem that should be ascii on windows as well
-    // this means we will can't handle win32 unicode paths at the time
-    std::string mm7dir = resolveMm7Path(platform);
-
-#ifdef __ANDROID__
-    if (mm7dir.empty()) {
-        platform->ShowMessageBox("Device currently unsupported", "Your device doesn't have any storage so it is unsupported!");
-        return;
-    }
-#endif
-
-    if (validateDataPath(mm7dir)) {
-        setDataPath(mm7dir);
+void initDataPath(const std::string &dataPath) {
+    if (validateDataPath(dataPath)) {
+        setDataPath(dataPath);
 
         std::string savesPath = MakeDataPath("saves");
         if (!std::filesystem::exists(savesPath)) {
             std::filesystem::create_directory(savesPath);
         }
 
-        EngineIocContainer::ResolveLogger()->info("Using MM7 directory: {}", mm7dir);
+        EngineIocContainer::ResolveLogger()->info("Using MM7 directory: {}", dataPath);
     } else {
         std::string message = fmt::format(
             "Required resources aren't found!\n"
             "You should acquire licensed copy of M&M VII and copy its resources to \n{}\n\n"
             "Additionally you should also copy the content from\n"
             "resources directory from our repository there as well!",
-            !mm7dir.empty() ? mm7dir : "current directory"
+            !dataPath.empty() ? dataPath : "current directory"
         );
         EngineIocContainer::ResolveLogger()->warning("{}", message);
         platform->showMessageBox("CRITICAL ERROR: missing resources", message);
@@ -1627,12 +1614,10 @@ void Game::EventLoop() {
                         pGUIWindow_CurrentMenu = new GUIWindow_Rest();
                         continue;
                     } else {
-                        if (engine->config->debug.VerboseLogging.value()) {
-                            if (pParty->uFlags & PARTY_FLAGS_1_AIRBORNE)
-                                logger->info("Party is airborne");
-                            if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER)
-                                logger->info("Party on water");
-                        }
+                        if (pParty->uFlags & PARTY_FLAGS_1_AIRBORNE)
+                            logger->verbose("Party is airborne");
+                        if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER)
+                            logger->verbose("Party on water");
                     }
 
                     if (pParty->bTurnBasedModeOn) {
@@ -2346,6 +2331,18 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_DebugVerboseLogging:
                     engine->config->debug.VerboseLogging.toggle();
+
+                    // TODO(captainurist): move to ConfigValue::subscribe
+                    if (logger->baseLogger()) {
+                        if (engine->config->debug.VerboseLogging.value()) {
+                            logger->baseLogger()->setLogLevel(APPLICATION_LOG, LOG_VERBOSE);
+                            logger->baseLogger()->setLogLevel(PLATFORM_LOG, LOG_VERBOSE);
+                        } else {
+                            logger->baseLogger()->setLogLevel(APPLICATION_LOG, LOG_INFO);
+                            logger->baseLogger()->setLogLevel(PLATFORM_LOG, LOG_ERROR);
+                        }
+                    }
+
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugReloadShader:

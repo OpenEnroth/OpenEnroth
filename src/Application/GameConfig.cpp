@@ -7,8 +7,6 @@
 #include "Library/Logger/Logger.h"
 #include "Library/Serialization/EnumSerialization.h"
 
-#include "Utility/DataPath.h"
-
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(RendererType, CASE_INSENSITIVE, {
     {RendererType::OpenGL, "OpenGL"},
     {RendererType::OpenGLES, "OpenGLES"}
@@ -29,26 +27,22 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformWindowMode, CASE_INSENSITIVE, {
 })
 
 void GameConfig::LoadConfiguration() {
-    std::string path = MakeDataPath(config_file);
-
-    if (std::filesystem::exists(path)) {
-        Config::load(path);
-        logger->info("Configuration file '{}' loaded!", path);
+    if (std::filesystem::exists(_path)) {
+        Config::load(_path);
+        _logger->info("Configuration file '{}' loaded!", _path);
     } else {
         Config::reset();
-        logger->warning("Cound not read configuration file '{}'! Loaded default configuration instead!", path);
+        _logger->warning("Could not read configuration file '{}'! Loaded default configuration instead!", _path);
     }
 }
 
 void GameConfig::SaveConfiguration() {
-    std::string path = MakeDataPath(config_file);
-
-    Config::save(path);
-    logger->info("Configuration file '{}' saved!", path);
+    Config::save(_path);
+    _logger->info("Configuration file '{}' saved!", _path);
 }
 
-GameConfig::GameConfig() {
-    this->logger = EngineIocContainer::ResolveLogger();
+GameConfig::GameConfig(const std::string &path) : _path(path) {
+    _logger = EngineIocContainer::ResolveLogger();
 }
 
 GameConfig::~GameConfig() {}

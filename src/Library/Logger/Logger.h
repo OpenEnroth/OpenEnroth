@@ -13,9 +13,14 @@ class Logger {
     PlatformLogger *baseLogger() const;
     void setBaseLogger(PlatformLogger *baseLogger);
 
+    bool shouldLog(PlatformLogLevel logLevel) const {
+        return _baseLogger == nullptr || _baseLogger->logLevel(APPLICATION_LOG) <= logLevel;
+    }
+
     template<class... Args>
     void log(PlatformLogLevel logLevel, fmt::format_string<Args...> fmt, Args&&... args) {
-        logV(logLevel, fmt, fmt::make_format_args(std::forward<Args>(args)...));
+        if (shouldLog(logLevel))
+            logV(logLevel, fmt, fmt::make_format_args(std::forward<Args>(args)...));
     }
 
     template<class... Args>

@@ -25,7 +25,7 @@ MediaLogger::MediaLogger(Logger *logger): logger_(logger) {
 }
 
 void MediaLogger::Log(void *ptr, int logLevel, const char *format, va_list args) {
-    if (!engine->config->debug.VerboseLogging.value()) // TODO(captainurist): just handle log levels & log categories properly
+    if (!logger->shouldLog(LOG_VERBOSE))
         return;
 
     LogState& state = stateByThreadId_[std::this_thread::get_id()];
@@ -33,11 +33,11 @@ void MediaLogger::Log(void *ptr, int logLevel, const char *format, va_list args)
     char buffer[2048];
     int status = av_log_format_line2(ptr, logLevel, format, args, buffer, sizeof(buffer), &state.prefixFlag);
     if (status < 0) {
-        logger_->info("av_log_format_line2 failed with error code {}", status);
+        logger_->verbose("av_log_format_line2 failed with error code {}", status);
     } else {
         state.message += buffer;
         if (state.message.ends_with('\n')) {
-            logger_->info("{}", state.message.c_str());
+            logger_->verbose("{}", state.message.c_str());
             state.message.clear();
         }
     }

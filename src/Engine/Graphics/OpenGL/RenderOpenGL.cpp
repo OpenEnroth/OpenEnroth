@@ -282,8 +282,8 @@ linesverts lineshaderstore[2000] = {};
 int linevertscnt = 0;
 
 void RenderOpenGL::BeginLines2D() {
-    if (linevertscnt && engine->config->debug.VerboseLogging.value())
-        logger->warning("BeginLines with points still stored in buffer");
+    if (linevertscnt)
+        logger->verbose("BeginLines with points still stored in buffer");
 
     DrawTwodVerts();
 
@@ -711,8 +711,7 @@ void RenderOpenGL::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
 
 void RenderOpenGL::DrawImage(Image *img, const Recti &rect, uint paletteid, uint32_t uColor32) {
     if (!img) {
-        if (engine->config->debug.VerboseLogging.value())
-            logger->warning("Null img passed to DrawImage");
+        logger->verbose("Null img passed to DrawImage");
         return;
     }
 
@@ -1422,8 +1421,7 @@ void RenderOpenGL::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, in
     TextureOpenGL *texture = (TextureOpenGL*)pArcomageGame->pSprites;
 
     if (!texture) {
-        if (engine->config->debug.VerboseLogging.value())
-            logger->warning("Missing Arcomage Sprite Sheet");
+        logger->verbose("Missing Arcomage Sprite Sheet");
         return;
     }
 
@@ -1632,8 +1630,7 @@ bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
         pixels = (uint8_t *)t->GetPixels(IMAGE_FORMAT_A8B8G8R8);
         gl_format = GL_RGBA;
     } else {
-        if (engine->config->debug.VerboseLogging.value())
-            log->warning("Image {} not loaded!", *t->GetName());
+        log->verbose("Image {} not loaded!", *t->GetName());
     }
 
     if (pixels) {
@@ -2733,8 +2730,8 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
     _set_ortho_projection(1);
     _set_ortho_modelview();
 
-    if (billbstorecnt && engine->config->debug.VerboseLogging.value())
-        logger->warning("Billboard shader store isnt empty!");
+    if (billbstorecnt)
+        logger->verbose("Billboard shader store isnt empty!");
 
     // track loaded tex
     float gltexid{ 0 };
@@ -3083,8 +3080,7 @@ void RenderOpenGL::BeginScene2D() {
 void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourmask) {
     TextureOpenGL *texture = dynamic_cast<TextureOpenGL *>(tex);
     if (!texture) {
-        if (engine->config->debug.VerboseLogging.value())
-            logger->info("Null texture passed to DrawTextureNew");
+        logger->verbose("Null texture passed to DrawTextureNew");
         return;
     }
 
@@ -3212,8 +3208,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
 void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, int custom_height) {
     TextureOpenGL* texture = dynamic_cast<TextureOpenGL*>(img);
     if (!texture) {
-        if (engine->config->debug.VerboseLogging.value())
-            logger->info("Null texture passed to DrawTextureCustomHeight");
+        logger->verbose("Null texture passed to DrawTextureCustomHeight");
         return;
     }
 
