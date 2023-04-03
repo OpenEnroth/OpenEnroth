@@ -687,6 +687,7 @@ class AudioSample16 : public IAudioSample {
 
     virtual bool Open(PAudioDataSource data_source);
     virtual bool IsValid();
+    virtual bool IsStopped();
 
     virtual bool Play(bool loop = false, bool positioned = false);
     virtual bool Stop();
@@ -699,27 +700,20 @@ class AudioSample16 : public IAudioSample {
     void Close();
 
     PAudioDataSource pDataSource;
-    CallBackTimer updater;
     ALenum al_format;
     ALuint al_source;
     ALsizei al_sample_rate;
-
-    bool loop;
-    bool positioned;
 };
 
 AudioSample16::AudioSample16() {
     al_format = AL_FORMAT_STEREO16;
     al_source = -1;
     al_sample_rate = 0;
-    loop = false;
-    positioned = true;
 }
 
 AudioSample16::~AudioSample16() { Close(); }
 
 void AudioSample16::Close() {
-    updater.Stop();
     if (pDataSource) {
         pDataSource->Close();
     }
@@ -831,15 +825,21 @@ bool AudioSample16::SetPosition(float x, float y, float z, float max_dist) {
     return true;
 }
 
-bool AudioSample16::IsValid() { return (alIsSource(al_source) != 0); }
+bool AudioSample16::IsValid() {
+    return (alIsSource(al_source) != 0);
+}
 
-bool AudioSample16::Play(bool loop_, bool positioned_) {
+bool AudioSample16::IsStopped() {
+    ALint status;
+
+    alGetSourcei(al_source, AL_SOURCE_STATE, &status);
+    return status == AL_STOPPED;
+}
+
+bool AudioSample16::Play(bool loop, bool positioned) {
     if (!IsValid()) {
         return false;
     }
-
-    loop = loop_;
-    positioned = positioned_;
 
     alSourcei(al_source, AL_SOURCE_RELATIVE, positioned ? AL_FALSE : AL_TRUE);
     if (!positioned) {
@@ -892,8 +892,6 @@ bool AudioSample16::Pause() {
         return false;
     }
 
-    updater.Stop();
-
     return true;
 }
 
@@ -929,11 +927,10 @@ bool AudioSample16::SetVolume(float volume) {
     return true;
 }
 
-PAudioSample CreateAudioSample(Blob buffer) {
+PAudioSample CreateAudioSample(PAudioDataSource dataSource) {
     std::shared_ptr<AudioSample16> sample = std::make_shared<AudioSample16>();
 
-    PAudioDataSource source = CreateAudioBufferDataSource(std::move(buffer));
-    if (!sample->Open(source)) {
+    if (!sample->Open(dataSource)) {
         sample = nullptr;
     }
 

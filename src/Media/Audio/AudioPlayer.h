@@ -4,6 +4,7 @@
 #include <unordered_set>
 #include <string>
 #include <memory>
+#include <list>
 
 #include "Utility/Workaround/ToUnderlying.h"
 
@@ -145,6 +146,24 @@ class AudioPlayer {
         size_t uDecompressedSize;
     } SoundHeader;
 
+    struct AudioSamplePoolEntry {
+        PAudioSample samplePtr;
+        SoundID id;
+    };
+
+    class AudioSamplePool {
+        public:
+            void playNew(PAudioSample sample, bool loop = false, bool positional = false);
+            void playUnique(PAudioSample sample, SoundID id, bool loop = false, bool positional = false);
+            void pause();
+            void resume();
+            void stop(SoundID soundId = SOUND_Invalid);
+            void update();
+        private:
+            bool isPaused = false;
+            std::list<AudioSamplePoolEntry> samplePool;
+    };
+
  public:
     AudioPlayer() : bPlayerReady(false), currentMusicTrack(0), uMasterVolume(0), uVoiceVolume(0) {}
     virtual ~AudioPlayer() {}
@@ -260,7 +279,9 @@ class AudioPlayer {
     std::map<std::string, SoundHeader> mSoundHeaders;
 
     // Cache to store different types of walking sounds
-    std::unordered_set<SoundID> _walkingSoundIds;
+    AudioSamplePool _exclusiveSoundPool;
+    AudioSamplePool _nonExclusiveSoundPool;
+    PAudioSample _currentWalkingSample;
 };
 
 struct SoundDesc;
