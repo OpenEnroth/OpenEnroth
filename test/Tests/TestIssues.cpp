@@ -525,6 +525,7 @@ GAME_TEST(Issues, Issue578) {
 GAME_TEST(Issues, Issue598) {
     // Assert when accessing character inventory from the shop screen
     test->playTraceFromTestData("issue_598.mm7", "issue_598.json");
+    EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_SHOP_INVENTORY);
 }
 
 // 600
@@ -541,6 +542,10 @@ GAME_TEST(Issues, Issue611) {
 }
 
 GAME_TEST(Issues, Issue615) {
+    // test 1 - ensure that clicking between active portraits changes active character.
+    test->playTraceFromTestData("issue_615a.mm7", "issue_615a.json", []() { EXPECT_EQ(pParty->getActiveCharacter(), 1); });
+    EXPECT_EQ(pParty->getActiveCharacter(), 3);
     // Assert when clicking on character portrait when no active character is present
-    test->playTraceFromTestData("issue_615.mm7", "issue_615.json");
+    test->playTraceFromTestData("issue_615b.mm7", "issue_615b.json", []() { EXPECT_EQ(pParty->getActiveCharacter(), 1); });
+    EXPECT_EQ(pParty->getActiveCharacter(), 4);
 }
