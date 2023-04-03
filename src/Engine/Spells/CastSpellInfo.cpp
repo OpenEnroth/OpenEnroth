@@ -2800,27 +2800,29 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_DARK_SACRIFICE:
                 {
-                    memset(&achieved_awards, 0, 4000);
-                    for (int npc_id = 0, hired_npc = 0; NPCData &HiredNPC : pParty->pHirelings) {
-                        if (!HiredNPC.pName.empty()) {
-                            achieved_awards[hired_npc++] = (AwardType)(npc_id + 1);
-                        }
-                        npc_id++;
-                    }
-
-                    int pickedHirelingId = pCastSpell->uPlayerID_2;
-                    if (pickedHirelingId != pParty->pPlayers.size() && pickedHirelingId != (pParty->pPlayers.size() + 1) ||
-                            achieved_awards[pCastSpell->uPlayerID_2 - pParty->pPlayers.size()] <= 0 ||
-                            achieved_awards[pCastSpell->uPlayerID_2 - pParty->pPlayers.size()] >= 3) {
+                    if (bNoNPCHiring) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         setSpellRecovery(pCastSpell, recoveryTime);
                         continue;
                     }
-                    int hireling_idx = achieved_awards[pCastSpell->uPlayerID_2 - pParty->pPlayers.size()] - 1;
-                    pParty->pHirelings[hireling_idx].dialogue_1_evt_id = 1;
-                    pParty->pHirelings[hireling_idx].dialogue_2_evt_id = 0;
-                    pParty->pHirelings[hireling_idx].dialogue_3_evt_id = pIconsFrameTable->GetIcon("spell96")->GetAnimLength();
+
+                    FlatHirelings buf;
+                    buf.Prepare();
+
+                    int flatHirelingId = pParty->hirelingScrollPosition + pCastSpell->uPlayerID_2;
+
+                    if (buf.IsFollower(flatHirelingId)) {
+                        spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
+                        setSpellRecovery(pCastSpell, recoveryTime);
+                        continue;
+                    }
+
+                    NPCData *npcData = buf.Get(flatHirelingId);
+                    npcData->dialogue_1_evt_id = 1;
+                    npcData->dialogue_2_evt_id = 0;
+                    npcData->dialogue_3_evt_id = pIconsFrameTable->GetIcon("spell96")->GetAnimLength();
                     for (Player &player : pParty->pPlayers) {
                         player.sHealth = player.GetMaxHealth();
                         player.sMana = player.GetMaxMana();
