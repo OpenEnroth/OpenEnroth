@@ -58,7 +58,7 @@ namespace Io {
         void EndTextInput();
 
         std::string GetTextInput() const;
-        void SetTextInput(const std::string& text);
+        void SetTextInput(const std::string &text);
         void SetTextInput(const char* text);
 
      private:

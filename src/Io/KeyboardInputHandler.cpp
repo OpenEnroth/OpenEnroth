@@ -441,7 +441,7 @@ std::string KeyboardInputHandler::GetTextInput() const {
     return std::string(pPressedKeysBuffer);
 }
 
-void KeyboardInputHandler::SetTextInput(const std::string& text) {
+void KeyboardInputHandler::SetTextInput(const std::string &text) {
     SetTextInput(text.c_str());
 }
 

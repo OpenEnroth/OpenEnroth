@@ -1466,7 +1466,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
         ++pParty->days_played_without_rest;
         if (pParty->days_played_without_rest > 1) {
-            for (Player& player : pParty->pPlayers)
+            for (Player &player : pParty->pPlayers)
                 player.SetCondWeakWithBlockCheck(0);
 
             // starving
@@ -2134,7 +2134,7 @@ void OnMapLoad() {
     }
 }
 
-void Level_LoadEvtAndStr(const std::string& pLevelName) {
+void Level_LoadEvtAndStr(const std::string &pLevelName) {
     uLevelEVT_Size = LoadEventsToBuffer(pLevelName + ".evt", pLevelEVT.data(), 9216);
     uLevelStrFileSize = LoadEventsToBuffer(pLevelName + ".str", pLevelStr.data(), 9216);
     if (uLevelStrFileSize) LoadLevel_InitializeLevelStr();

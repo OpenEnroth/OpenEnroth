@@ -248,7 +248,7 @@ unsigned int _494820_training_time(unsigned int a1);
 void LoadLevel_InitializeLevelStr();
 void OnMapLeave();
 void OnMapLoad();
-void Level_LoadEvtAndStr(const std::string& pLevelName);
+void Level_LoadEvtAndStr(const std::string &pLevelName);
 void ReleaseBranchlessDialogue();
 bool _44100D_should_alter_right_panel();
 void Transition_StopSound_Autosave(const char *pMapName,

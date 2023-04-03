@@ -3639,12 +3639,12 @@ void RenderOpenGL::DrawOutdoorBuildings() {
         for (int i = 0; i < 16; i++) {
             numoutbuildverts[i] = 0;
 
-            //for (BSPModel& model : pOutdoor->pBModels) {
+            //for (BSPModel &model : pOutdoor->pBModels) {
             //    //int reachable;
             //    //if (IsBModelVisible(&model, &reachable)) {
             //    //model.field_40 |= 1;
             //    if (!model.pFaces.empty()) {
-            //        for (ODMFace& face : model.pFaces) {
+            //        for (ODMFace &face : model.pFaces) {
             //            if (!face.Invisible()) {
             //                numoutbuildverts += 3 * (face.uNumVertices - 2);
             //            }

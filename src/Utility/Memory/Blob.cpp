@@ -75,7 +75,7 @@ Blob Blob::read(FILE* file, size_t size) {
     return Blob(memory.release(), size, &staticFreeBlobHandler);
 }
 
-Blob Blob::read(FileInputStream& file, size_t size) {
+Blob Blob::read(FileInputStream &file, size_t size) {
     if (size == 0)
         return Blob();
 

@@ -58,7 +58,7 @@ std::array<EventIndex, 4400> pLevelEVT_Index;
 
 _2devent p2DEvents[525];
 
-unsigned int LoadEventsToBuffer(const std::string& pContainerName, char *pBuffer,
+unsigned int LoadEventsToBuffer(const std::string &pContainerName, char *pBuffer,
                                 unsigned int uBufferSize) {
     Blob blob = pEvents_LOD->LoadCompressedTexture(pContainerName);
     if (!blob || (blob.size() > uBufferSize)) {

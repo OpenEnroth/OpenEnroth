@@ -630,7 +630,7 @@ void RenderBase::SavePCXScreenshot() {
     SaveWinnersCertificate(fmt::format("screenshot_{:05}.pcx", engine->config->settings.ScreenshotNumber.value()));
 }
 
-void RenderBase::SavePCXImage32(const std::string& filename, const uint32_t* picture_data, const int width, const int height) {
+void RenderBase::SavePCXImage32(const std::string &filename, const uint32_t* picture_data, const int width, const int height) {
     // TODO(pskelton): add "Screenshots" folder?
     std::string thispath = MakeDataPath(filename);
     FILE* result = fopen(thispath.c_str(), "wb");
@@ -643,7 +643,7 @@ void RenderBase::SavePCXImage32(const std::string& filename, const uint32_t* pic
     fclose(result);
 }
 
-void RenderBase::SaveScreenshot(const std::string& filename, const unsigned int width, const unsigned int height) {
+void RenderBase::SaveScreenshot(const std::string &filename, const unsigned int width, const unsigned int height) {
     auto pixels = render->MakeScreenshot32(width, height);
     SavePCXImage32(filename, pixels, width, height);
     free(pixels);

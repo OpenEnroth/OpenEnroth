@@ -4,7 +4,7 @@ static bool globalThrowListenerInstalled = false;
 static bool globalThrowListenerEnabled = false;
 
 class ThrowListener : public testing::EmptyTestEventListener {
-    void OnTestPartResult(const testing::TestPartResult& result) override {
+    void OnTestPartResult(const testing::TestPartResult &result) override {
         if (!globalThrowListenerEnabled)
             return;
 

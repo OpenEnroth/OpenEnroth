@@ -57,7 +57,7 @@ void deserialize(std::string_view src, bool *dst) {
 
 // std::string
 
-bool trySerialize(const std::string& src, std::string* dst) {
+bool trySerialize(const std::string &src, std::string* dst) {
     *dst = src;
     return true;
 }
@@ -67,7 +67,7 @@ bool tryDeserialize(std::string_view src, std::string* dst) {
     return true;
 }
 
-void serialize(const std::string& src, std::string* dst) {
+void serialize(const std::string &src, std::string* dst) {
     (void) trySerialize(src, dst);
 }
 
@@ -79,7 +79,7 @@ void deserialize(std::string_view src, std::string* dst) {
 
 namespace detail_float {
 template<class T>
-inline bool trySerialize(const T& src, std::string *dst) {
+inline bool trySerialize(const T &src, std::string *dst) {
     *dst = fmt::format("{}"_cf, src);
     return true;
 }
@@ -92,7 +92,7 @@ inline bool tryDeserialize(std::string_view src, T *dst) {
 }
 
 template<class T>
-inline void serialize(const T& src, std::string *dst) {
+inline void serialize(const T &src, std::string *dst) {
     (void) trySerialize(src, dst);
 }
 
@@ -113,7 +113,7 @@ inline void deserialize(std::string_view src, T *dst) {
 
 namespace detail_integral {
 template<class T>
-inline bool trySerialize(const T& src, std::string *dst) {
+inline bool trySerialize(const T &src, std::string *dst) {
     dst->resize(20);
     std::to_chars_result result = std::to_chars(dst->data(), dst->data() + dst->size(), src);
     assert(result.ec == std::errc()); // Should never fail.
@@ -129,7 +129,7 @@ inline bool tryDeserialize(std::string_view src, T *dst) {
 }
 
 template<class T>
-inline void serialize(const T& src, std::string *dst) {
+inline void serialize(const T &src, std::string *dst) {
     (void) trySerialize(src, dst);
 }
 

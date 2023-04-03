@@ -1747,7 +1747,7 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
     return false;
 }
 
-bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i& target, const Vec3i& from) {  // true is obscurred
+bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from) {  // true is obscurred
     int dist_x = from.x - target.x;
     int dist_y = from.y - target.y;
     int dist_z = from.z - target.z;
@@ -1770,9 +1770,9 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i& target, const Vec3i& from
     int max_z = std::max(from.z, target.z);
     int min_z = std::min(from.z, target.z);
 
-    for (BSPModel& model : pOutdoor->pBModels) {
+    for (BSPModel &model : pOutdoor->pBModels) {
         if (CalcDistPointToLine(target.x, target.y, from.x, from.y, model.vPosition.x, model.vPosition.y) <= model.sBoundingRadius + 128) {
-            for (ODMFace& face : model.pFaces) {
+            for (ODMFace &face : model.pFaces) {
                 // dot product
                 int x_dot = fixpoint_mul(fp_dist_x_normed, face.pFacePlaneOLD.vNormal.x);
                 int y_dot = fixpoint_mul(fp_dist_z_normed, face.pFacePlaneOLD.vNormal.y);

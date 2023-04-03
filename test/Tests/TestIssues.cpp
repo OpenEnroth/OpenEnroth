@@ -21,7 +21,7 @@ static int totalPartyHealth() {
 static int partyItemCount() {
     int result = 0;
     for (const Player &player : pParty->pPlayers)
-        for (const ItemGen& item : player.pOwnItems)
+        for (const ItemGen &item : player.pOwnItems)
             result += item.uItemID != ITEM_NULL;
     return result;
 }

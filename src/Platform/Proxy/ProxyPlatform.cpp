@@ -31,7 +31,7 @@ std::vector<Recti> ProxyPlatform::displayGeometries() const {
     return nonNullBase()->displayGeometries();
 }
 
-void ProxyPlatform::showMessageBox(const std::string& title, const std::string &message) const {
+void ProxyPlatform::showMessageBox(const std::string &title, const std::string &message) const {
     nonNullBase()->showMessageBox(title, message);
 }
 
