@@ -525,6 +525,7 @@ GAME_TEST(Issues, Issue578) {
 GAME_TEST(Issues, Issue598) {
     // Assert when accessing character inventory from the shop screen
     test->playTraceFromTestData("issue_598.mm7", "issue_598.json");
+    EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_SHOP_INVENTORY);
 }
 
 // 600
