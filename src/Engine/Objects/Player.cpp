@@ -799,7 +799,6 @@ int Player::AddItem(int index, ITEM_TYPE uItemID) {
             }
         }
 
-        pAudioPlayer->playUISound(SOUND_error);
         return 0;  // no space cant add item
     }
 

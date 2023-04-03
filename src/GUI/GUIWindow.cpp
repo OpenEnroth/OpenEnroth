@@ -379,16 +379,20 @@ void GUIWindow::HouseDialogManager() {
     pWindow.uFrameZ -= 18;
     render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
     render->DrawTextureNew(468 / 640.0f, 0, game_ui_right_panel_frame);
+
     if (pDialogueNPCCount != uNumDialogueNPCPortraits || !uHouse_ExitPic) {
         const char *pHouseName = p2DEvents[window_SpeakInHouse->wData.val - 1].pName;
         if (pHouseName) {
-            int v3 = 2 * pFontCreate->GetHeight() - 6 -
-                pFontCreate->CalcTextHeight(pHouseName, 130, 0);
-            if (v3 < 0) v3 = 0;
-            pWindow.DrawTitleText(pFontCreate, 0x1EAu, v3 / 2 + 4, colorTable.White.c16(),
-                                  p2DEvents[window_SpeakInHouse->wData.val - 1].pName, 3);
+            if (current_screen_type != CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
+                int v3 = 2 * pFontCreate->GetHeight() - 6 -
+                    pFontCreate->CalcTextHeight(pHouseName, 130, 0);
+                if (v3 < 0) v3 = 0;
+                pWindow.DrawTitleText(pFontCreate, 0x1EAu, v3 / 2 + 4, colorTable.White.c16(),
+                    p2DEvents[window_SpeakInHouse->wData.val - 1].pName, 3);
+            }
         }
     }
+
     pWindow.uFrameWidth += 8;
     pWindow.uFrameZ += 8;
     if (!pDialogueNPCCount) {
@@ -484,7 +488,7 @@ void GUIWindow::HouseDialogManager() {
     render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f,
         pNPCPortraits_y[0][0] / 480.0f,
         pDialogueNPCPortraits[v4]);
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_E) {
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
         CharacterUI_InventoryTab_Draw(pPlayers[pParty->getActiveCharacter()], true);
         if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
             render->DrawTextureNew(556 / 640.0f, 451 / 480.0f,
@@ -1860,7 +1864,6 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
     char v1[256] = "";
     Player *pPlayer;       // ebx@3
     const char *pText;     // esi@7
-    int v17;               // eax@10
     int64_t v18;    // qax@18
     uint8_t *v20;  // ebx@32
     int v21;               // ecx@34
@@ -1886,11 +1889,10 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
         if (c != '%') {
             result += c;  // add char to result string
         } else {
-            v17 = 10 * (int)(str[i + 1] - '0') + str[i + 2] -
-                '0';  // v17 tells what the gap needs filling with
+            int mask = 10 * (int)(str[i + 1] - '0') + str[i + 2] - '0';  // mask tells what the gap needs filling with
             i += 2;
 
-            switch (v17) {
+            switch (mask) {
             case 1:
                 result += npc->pName;
                 break;
@@ -2128,22 +2130,22 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
             case 32:
             case 33:
             case 34:
-                result += pParty->pPlayers[v17 - 31].pName;
+                result += pParty->pPlayers[mask - 31].pName;
                 break;
             default:
-                if (v17 <= 50 || v17 > 70) {
+                if (mask <= 50 || mask > 70) {
                     strncpy(v1, str.c_str() + i + 1, 2);
                     sprintf(v1, "%u", atoi(v1));
                     result += v1;
                     break;
                 }
-                if (v17 - 51 >= 20) {
+                if (mask - 51 >= 20) {
                     // result += eventId;
                     __debugbreak(); // should never get here?
                     break;
                 }
 
-                v56.Initialize(pParty->PartyTimes._s_times[v17 - 51]);
+                v56.Initialize(pParty->PartyTimes._s_times[mask - 51]);
                 result += localization->FormatString(
                     LSTR_FMT_S_D_D,
                     localization->GetMonthName(v56.field_14_exprie_month),

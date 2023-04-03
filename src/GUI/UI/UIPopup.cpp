@@ -1526,9 +1526,9 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
             break;
         }
         case CURRENT_SCREEN::SCREEN_CHARACTERS:
-        case CURRENT_SCREEN::SCREEN_E:
+        case CURRENT_SCREEN::SCREEN_SHOP_INVENTORY:
         case CURRENT_SCREEN::SCREEN_CHEST_INVENTORY: {
-            if ((signed int)pX > 467 && current_screen_type != CURRENT_SCREEN::SCREEN_E)
+            if ((signed int)pX > 467 && current_screen_type != CURRENT_SCREEN::SCREEN_SHOP_INVENTORY)
                 Inventory_ItemPopupAndAlchemy();
             else if ((signed int)pY >= 345)
                 break;

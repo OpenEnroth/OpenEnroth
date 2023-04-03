@@ -2154,7 +2154,7 @@ bool _44100D_should_alter_right_panel() {
     return current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE ||
            current_screen_type == CURRENT_SCREEN::SCREEN_CHARACTERS ||
            current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE ||
-           current_screen_type == CURRENT_SCREEN::SCREEN_E ||
+           current_screen_type == CURRENT_SCREEN::SCREEN_SHOP_INVENTORY ||
            current_screen_type == CURRENT_SCREEN::SCREEN_CHANGE_LOCATION ||
            current_screen_type == CURRENT_SCREEN::SCREEN_INPUT_BLV ||
            current_screen_type == CURRENT_SCREEN::SCREEN_CASTING;

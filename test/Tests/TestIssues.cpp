@@ -521,3 +521,26 @@ GAME_TEST(Issues, Issue578) {
     test->playTraceFromTestData("issue_578.mm7", "issue_578.json", []() { EXPECT_EQ(pParty->pPlayers[0].sHealth, 66); });
     EXPECT_EQ(pParty->pPlayers[0].sHealth, 108);
 }
+
+GAME_TEST(Issues, Issue598) {
+    // Assert when accessing character inventory from the shop screen
+    test->playTraceFromTestData("issue_598.mm7", "issue_598.json");
+}
+
+// 600
+
+GAME_TEST(Issues, Issue611) {
+    // Heal and reanimate dont work
+    engine->config->debug.AllMagic.setValue(true);
+    test->playTraceFromTestData("issue_611.mm7", "issue_611.json");
+    // expect chars to be healed and zombies
+    EXPECT_EQ(pParty->pPlayers[0].sHealth, 45);
+    EXPECT_EQ(pParty->pPlayers[1].sHealth, 39);
+    EXPECT_EQ(pParty->pPlayers[2].conditions.Has(Condition_Zombie), true);
+    EXPECT_EQ(pParty->pPlayers[3].conditions.Has(Condition_Zombie), true);
+}
+
+GAME_TEST(Issues, Issue615) {
+    // Assert when clicking on character portrait when no active character is present
+    test->playTraceFromTestData("issue_615.mm7", "issue_615.json");
+}
