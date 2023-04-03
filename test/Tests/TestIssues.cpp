@@ -171,6 +171,13 @@ GAME_TEST(Issues, Issue223) {
     checkResistances(CHARACTER_ATTRIBUTE_RESIST_AIR, { {0, 5}, {1, 0}, {2, 0}, {3, 0} });
 }
 
+GAME_TEST(Issues, Issue238) {
+    // Party vertical flight speed doesnt use frame pacing
+    engine->config->debug.AllMagic.setValue(true);
+    test->playTraceFromTestData("issue_238.mm7", "issue_238.json");
+    EXPECT_LT(pParty->vPosition.z, 2500);
+}
+
 GAME_TEST(Issues, Issue248) {
     // Crash in NPC dialog
     test->playTraceFromTestData("issue_248.mm7", "issue_248.json");
