@@ -40,5 +40,5 @@ var searchData=
   ['updatewindowfromconfig_37',['UpdateWindowFromConfig',['../classGameWindowHandler.html#ab477fb7c84910c2c3b4fda658dc0c9ac',1,'GameWindowHandler']]],
   ['use_38',['use',['../classGLShader.html#af765a2607d1d4cc056aabd9295702e09',1,'GLShader']]],
   ['useitem_39',['useItem',['../structPlayer.html#a054773c9d6b7d5e64e221df0e20a1b92',1,'Player']]],
-  ['usenpcskill_40',['UseNPCSkill',['../NPC_8cpp.html#acfce0b79ca64a3c666c5bc7781622842',1,'UseNPCSkill(NPCProf profession):&#160;NPC.cpp'],['../NPC_8h.html#acfce0b79ca64a3c666c5bc7781622842',1,'UseNPCSkill(NPCProf profession):&#160;NPC.cpp']]]
+  ['usenpcskill_40',['UseNPCSkill',['../NPC_8cpp.html#a57fa6cc058304f87cdb110cb5c342d8d',1,'UseNPCSkill(NPCProf profession, int id):&#160;NPC.cpp'],['../NPC_8h.html#a57fa6cc058304f87cdb110cb5c342d8d',1,'UseNPCSkill(NPCProf profession, int id):&#160;NPC.cpp']]]
 ];
