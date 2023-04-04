@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fd5ded6</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;1203589</span>
    </div>
   </td>
  </tr>
@@ -71,6 +71,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="structGameTestOptions-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">GameTestOptions Struct Reference</div></div>
@@ -81,27 +82,35 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ad19c61ed5c66381435b60c360bf85241"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGameTestOptions.html#ad19c61ed5c66381435b60c360bf85241">Parse</a> (int argc, char **argv)</td></tr>
-<tr class="separator:ad19c61ed5c66381435b60c360bf85241"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16fe1c83a7ebe2075dac315061d17cb9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGameTestOptions.html#a16fe1c83a7ebe2075dac315061d17cb9">ResolveDefaults</a> (<a class="el" href="classPlatform.html">Platform</a> *<a class="el" href="EngineGlobals_8cpp.html#a75b48f1787959a4617f2a599d7c09aab">platform</a>)</td></tr>
+<tr class="separator:a16fe1c83a7ebe2075dac315061d17cb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:adf5d6a164626ba3e824f1708657a2fda"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structGameTestOptions.html">GameTestOptions</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGameTestOptions.html#adf5d6a164626ba3e824f1708657a2fda">Parse</a> (int argc, char **argv)</td></tr>
+<tr class="separator:adf5d6a164626ba3e824f1708657a2fda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a9aa70f753b44f786898e5cbce1b6f6ab"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGameTestOptions.html#a9aa70f753b44f786898e5cbce1b6f6ab">testDataDir</a></td></tr>
-<tr class="separator:a9aa70f753b44f786898e5cbce1b6f6ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4510cba13fdf66833f01db1445910aa1"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGameTestOptions.html#a4510cba13fdf66833f01db1445910aa1">gameDataDir</a></td></tr>
-<tr class="separator:a4510cba13fdf66833f01db1445910aa1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33ac23ffdda63f5a5ec8db22d5af79af"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGameTestOptions.html#a33ac23ffdda63f5a5ec8db22d5af79af">helpRequested</a> = false</td></tr>
-<tr class="separator:a33ac23ffdda63f5a5ec8db22d5af79af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0461048914836534896a9dc574bc0aac"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGameTestOptions.html#a0461048914836534896a9dc574bc0aac">testPath</a></td></tr>
+<tr class="separator:a0461048914836534896a9dc574bc0aac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a58aa47ab9af74a215e13f7d6c3d34f65"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGameTestOptions.html#a58aa47ab9af74a215e13f7d6c3d34f65">dataPath</a></td></tr>
+<tr class="separator:a58aa47ab9af74a215e13f7d6c3d34f65"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5a81fa1631239b76a6a3a688936dc4d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGameTestOptions.html#ad5a81fa1631239b76a6a3a688936dc4d">helpPrinted</a> = false</td></tr>
+<tr class="separator:ad5a81fa1631239b76a6a3a688936dc4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ad19c61ed5c66381435b60c360bf85241" name="ad19c61ed5c66381435b60c360bf85241"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad19c61ed5c66381435b60c360bf85241">&#9670;&#160;</a></span>Parse()</h2>
+<a id="adf5d6a164626ba3e824f1708657a2fda" name="adf5d6a164626ba3e824f1708657a2fda"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf5d6a164626ba3e824f1708657a2fda">&#9670;&#160;</a></span>Parse()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool GameTestOptions::Parse </td>
+          <td class="memname"><a class="el" href="structGameTestOptions.html">GameTestOptions</a> GameTestOptions::Parse </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>argc</em>, </td>
@@ -118,47 +127,70 @@ Public Attributes</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a16fe1c83a7ebe2075dac315061d17cb9" name="a16fe1c83a7ebe2075dac315061d17cb9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16fe1c83a7ebe2075dac315061d17cb9">&#9670;&#160;</a></span>ResolveDefaults()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GameTestOptions::ResolveDefaults </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classPlatform.html">Platform</a> *&#160;</td>
+          <td class="paramname"><em>platform</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
 </div><div class="memdoc">
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a4510cba13fdf66833f01db1445910aa1" name="a4510cba13fdf66833f01db1445910aa1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4510cba13fdf66833f01db1445910aa1">&#9670;&#160;</a></span>gameDataDir</h2>
+<a id="a58aa47ab9af74a215e13f7d6c3d34f65" name="a58aa47ab9af74a215e13f7d6c3d34f65"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a58aa47ab9af74a215e13f7d6c3d34f65">&#9670;&#160;</a></span>dataPath</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::string GameTestOptions::gameDataDir</td>
+          <td class="memname">std::string GameTestOptions::dataPath</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a33ac23ffdda63f5a5ec8db22d5af79af" name="a33ac23ffdda63f5a5ec8db22d5af79af"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a33ac23ffdda63f5a5ec8db22d5af79af">&#9670;&#160;</a></span>helpRequested</h2>
+<a id="ad5a81fa1631239b76a6a3a688936dc4d" name="ad5a81fa1631239b76a6a3a688936dc4d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad5a81fa1631239b76a6a3a688936dc4d">&#9670;&#160;</a></span>helpPrinted</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool GameTestOptions::helpRequested = false</td>
+          <td class="memname">bool GameTestOptions::helpPrinted = false</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a9aa70f753b44f786898e5cbce1b6f6ab" name="a9aa70f753b44f786898e5cbce1b6f6ab"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9aa70f753b44f786898e5cbce1b6f6ab">&#9670;&#160;</a></span>testDataDir</h2>
+<a id="a0461048914836534896a9dc574bc0aac" name="a0461048914836534896a9dc574bc0aac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0461048914836534896a9dc574bc0aac">&#9670;&#160;</a></span>testPath</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::string GameTestOptions::testDataDir</td>
+          <td class="memname">std::string GameTestOptions::testPath</td>
         </tr>
       </table>
 </div><div class="memdoc">

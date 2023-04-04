@@ -25,7 +25,7 @@ var searchData=
   ['terrainvbo_22',['terrainVBO',['../classRenderOpenGL.html#ac16a9755a9aba0ba4602ee1ded1f041f',1,'RenderOpenGL']]],
   ['terrshaderstore_23',['terrshaderstore',['../RenderOpenGL_8cpp.html#a8e4fb426705d1947716d29fcf07931ce',1,'RenderOpenGL.cpp']]],
   ['test_24',['test',['../classGameTest.html#a04d693c5fc0e17608bf9855f980f2ef0',1,'GameTest']]],
-  ['testdatadir_25',['testDataDir',['../structGameTestOptions.html#a9aa70f753b44f786898e5cbce1b6f6ab',1,'GameTestOptions']]],
+  ['testpath_25',['testPath',['../structGameTestOptions.html#a0461048914836534896a9dc574bc0aac',1,'GameTestOptions']]],
   ['tex_26',['tex',['../classTextureFrame.html#a4bf23928b270b6515503e390809cb209',1,'TextureFrame']]],
   ['texcoord_27',['texcoord',['../structRenderVertexD3D3.html#a08bc114466baabaf511747a099634963',1,'RenderVertexD3D3']]],
   ['texid_28',['texid',['../structtwodverts.html#a85617cb5f7be0f3676a0a98f2437da67',1,'twodverts::texid()'],['../structbillbverts.html#a6821000c4ca0f35f5f03b7ef9833afff',1,'billbverts::texid()'],['../structforcepersverts.html#ae9dc0a2d6ad7f2015534559559420852',1,'forcepersverts::texid()'],['../structnk__tex__font.html#a1e79ed16e8d09509bba765e2a717be64',1,'nk_tex_font::texid()']]],

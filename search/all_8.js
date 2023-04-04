@@ -29,7 +29,7 @@ var searchData=
   ['height_26',['height',['../classGUICredits.html#a8c9036afc9308fb56ab897f8363f63d2',1,'GUICredits']]],
   ['height_27',['Height',['../classGameConfig_1_1Window.html#a6f5107f88378e1164debda4dbf075780',1,'GameConfig::Window']]],
   ['height_28',['height',['../classMovie.html#aef7596d03b6eb49289603c6c65db8ac1',1,'Movie::height()'],['../classAVVideoStream.html#ac3a0bc76b91fefd43f84f6f67b12fa6f',1,'AVVideoStream::height()'],['../structstat__coord.html#ab2d9bd94223a82072ff9b95c679bd871',1,'stat_coord::height()'],['../classImage.html#a9f4e463326771ddb955ee17032a78d77',1,'Image::height()']]],
-  ['helprequested_29',['helpRequested',['../structGameTestOptions.html#a33ac23ffdda63f5a5ec8db22d5af79af',1,'GameTestOptions']]],
+  ['helpprinted_29',['helpPrinted',['../structGameTestOptions.html#ad5a81fa1631239b76a6a3a688936dc4d',1,'GameTestOptions::helpPrinted()'],['../structGameOptions.html#a5c481745e318ed4933ba90873f6011c0',1,'GameOptions::helpPrinted()']]],
   ['herbalist_30',['Herbalist',['../NPCEnums_8h.html#ae6501f571f97d74c2c78fddcb371bad4a1cfb520fe919b15767ffb5193527fa61',1,'NPCEnums.h']]],
   ['heterogeneousstringhash_31',['HeterogeneousStringHash',['../structdetail_1_1EnumSerializationTable_1_1HeterogeneousStringHash.html',1,'detail::EnumSerializationTable']]],
   ['hexrays_5fhibyte_32',['HEXRAYS_HIBYTE',['../MM7_8h.html#ae7e2c5e83ca3caa0c9d118c8f2d647ef',1,'MM7.h']]],

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fd5ded6</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;1203589</span>
    </div>
   </td>
  </tr>
@@ -73,126 +73,16 @@ $(function() {
 </div>
 </div><!-- top -->
 <div class="header">
-  <div class="summary">
-<a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">GameOptions.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="GameOptions_8h.html">GameOptions.h</a>&quot;</code><br />
 <code>#include &lt;memory&gt;</code><br />
-<code>#include &lt;string&gt;</code><br />
-<code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;CLI/CLI.hpp&gt;</code><br />
-<code>#include &quot;<a class="el" href="GameConfig_8h.html">Application/GameConfig.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Format_8h.html">Utility/Format.h</a>&quot;</code><br />
-</div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:a8ea7f82488f1dfb5260338ae17e2652b"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a8ea7f82488f1dfb5260338ae17e2652b"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="GameOptions_8cpp.html#a8ea7f82488f1dfb5260338ae17e2652b">lexical_cast</a> (const std::string &amp;input, <a class="el" href="classConfigEntry.html">ConfigEntry</a>&lt; T &gt; &amp;configValue)</td></tr>
-<tr class="separator:a8ea7f82488f1dfb5260338ae17e2652b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa47f52125b53660fd8c7defe5a89a2d4"><td class="memTemplParams" colspan="2">template&lt;class <a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca7fc56270e7a70fa81a5935b72eacbe29">A</a> , class <a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca9d5ed678fe57bcca610140957afab571">B</a> , class T &gt; </td></tr>
-<tr class="memitem:aa47f52125b53660fd8c7defe5a89a2d4"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="GameOptions_8cpp.html#aa47f52125b53660fd8c7defe5a89a2d4">lexical_assign</a> (const std::string &amp;input, <a class="el" href="classConfigEntry.html">ConfigEntry</a>&lt; T &gt; &amp;configValue)</td></tr>
-<tr class="separator:aa47f52125b53660fd8c7defe5a89a2d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f574aa40b61c3cf30595d0604b254b8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameOptions_8cpp.html#a8f574aa40b61c3cf30595d0604b254b8">ParseGameOptions</a> (int argc, char **argv, <a class="el" href="classGameConfig.html">GameConfig</a> *config)</td></tr>
-<tr class="separator:a8f574aa40b61c3cf30595d0604b254b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table>
-<h2 class="groupheader">Function Documentation</h2>
-<a id="aa47f52125b53660fd8c7defe5a89a2d4" name="aa47f52125b53660fd8c7defe5a89a2d4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa47f52125b53660fd8c7defe5a89a2d4">&#9670;&#160;</a></span>lexical_assign()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class <a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca7fc56270e7a70fa81a5935b72eacbe29">A</a> , class <a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca9d5ed678fe57bcca610140957afab571">B</a> , class T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">bool lexical_assign </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>input</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classConfigEntry.html">ConfigEntry</a>&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>configValue</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a8ea7f82488f1dfb5260338ae17e2652b" name="a8ea7f82488f1dfb5260338ae17e2652b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8ea7f82488f1dfb5260338ae17e2652b">&#9670;&#160;</a></span>lexical_cast()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">bool lexical_cast </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>input</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classConfigEntry.html">ConfigEntry</a>&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>configValue</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a8f574aa40b61c3cf30595d0604b254b8" name="a8f574aa40b61c3cf30595d0604b254b8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8f574aa40b61c3cf30595d0604b254b8">&#9670;&#160;</a></span>ParseGameOptions()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool ParseGameOptions </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>argc</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char **&#160;</td>
-          <td class="paramname"><em>argv</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classGameConfig.html">GameConfig</a> *&#160;</td>
-          <td class="paramname"><em>config</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-</div><!-- contents -->
+<code>#include &quot;<a class="el" href="GamePathResolver_8h.html">GamePathResolver.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GameConfig_8h.html">GameConfig.h</a>&quot;</code><br />
+</div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.5
