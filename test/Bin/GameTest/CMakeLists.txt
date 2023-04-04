@@ -29,7 +29,7 @@ if(ENABLE_TESTS)
 
     # GameTest
     add_custom_target(GameTest
-            OpenEnroth_GameTest --test-data ${CMAKE_CURRENT_BINARY_DIR}/test_data/data
+            OpenEnroth_GameTest --test-path ${CMAKE_CURRENT_BINARY_DIR}/test_data/data
             DEPENDS OpenEnroth_GameTest OpenEnroth_TestData
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 endif()

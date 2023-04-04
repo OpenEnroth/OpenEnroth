@@ -352,8 +352,7 @@ void Engine::StackPartyTorchLight() {
             pParty->flt_TorchlightColorG = 96;
             pParty->flt_TorchlightColorB = 96;
 
-            if (engine->config->debug.VerboseLogging.value())
-                logger->warning("Torchlight doesn't have color");
+            logger->verbose("Torchlight doesn't have color");
         }
 
         // TODO: either add conversion functions, or keep only glm / only Vec3_* classes.

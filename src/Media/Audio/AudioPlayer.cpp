@@ -226,8 +226,8 @@ void AudioPlayer::stopSounds() {
 
     for (auto &[_, si] : mapSounds) {
         if (si.sample) {
-            if (si.sample->Stop() && engine->config->debug.VerboseLogging.value()) {
-                logger->info("sound stopped: {}", si.sName);
+            if (si.sample->Stop()) {
+                logger->verbose("sound stopped: {}", si.sName);
             }
         }
     }
@@ -372,8 +372,7 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
             default: {
                 // TODO(pskelton): temp fix to reduce instances of sounds not playing
                 si.sample->Play();
-                if (engine->config->debug.VerboseLogging.value())
-                    logger->warning("Unexpected object type from PID in playSound");
+                logger->verbose("Unexpected object type from PID in playSound");
                 break;
             }
         }
@@ -381,21 +380,17 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
 
     si.last_pid = pid;
 
-    if (engine->config->debug.VerboseLogging.value()) {
-        if (si.sName == "")
-            logger->info("AudioPlayer: playing sound {}", eSoundID);
-        else
-            logger->info("AudioPlayer: playing sound {} with name '{}'", eSoundID, si.sName);
-    }
-
-    return;
+    if (si.sName.empty())
+        logger->verbose("AudioPlayer: playing sound {}", eSoundID);
+    else
+        logger->verbose("AudioPlayer: playing sound {} with name '{}'", eSoundID, si.sName);
 }
 
 void AudioPlayer::ResumeSounds() {
     for (auto &[_, si] : mapSounds) {
         if (si.sample) {
-            if (si.sample->Resume() && engine->config->debug.VerboseLogging.value())
-                logger->info("sound resumed: {}", si.sName);
+            if (si.sample->Resume())
+                logger->verbose("sound resumed: {}", si.sName);
         }
     }
 }
@@ -414,8 +409,8 @@ void AudioPlayer::PauseSounds(int uType) {
     if (uType == 2) {
         for (auto &[_, si] : mapSounds) {
             if (si.sample) {
-                if (si.sample->Pause() && engine->config->debug.VerboseLogging.value())
-                    logger->info("sound paused: {}", si.sName);
+                if (si.sample->Pause())
+                    logger->verbose("sound paused: {}", si.sName);
             }
         }
     } else {
@@ -424,8 +419,8 @@ void AudioPlayer::PauseSounds(int uType) {
             if (si.sample) {
                 if (si.last_pid != PID_INVALID &&
                         si.last_pid != SOUND_PID_NON_RESETABLE) {
-                    if (si.sample->Pause() && engine->config->debug.VerboseLogging.value())
-                        logger->info("sound paused: {}", si.sName);
+                    if (si.sample->Pause())
+                        logger->verbose("sound paused: {}", si.sName);
                 }
             }
         }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 
 #include "GameConfig.h"
 #include "GameMenu.h"
@@ -56,6 +57,6 @@ class Game {
     std::shared_ptr<Nuklear> nuklear = nullptr;
 };
 
-void AutoInitDataPath(Platform *platform);
+void initDataPath(const std::string &dataPath);
 
 extern class Image *gamma_preview_image;  // 506E40
