@@ -203,7 +203,7 @@ void GUIWindow_Rest::Update() {
         std::string str5 = fmt::format("{}\r190{}", localization->GetString(LSTR_YEAR), pParty->uCurrentYear);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, {350, 254}, colorTable.Diesel.c16(), str5, 0, 0, colorTable.StarkWhite.c16());
         if (currentRestType != REST_NONE) {
-            Party::RestOneFrame();
+            Party::restOneFrame();
         }
     } else {
         new OnCancel({pButton_RestUI_Exit->uX, pButton_RestUI_Exit->uY}, {0, 0}, pButton_RestUI_Exit, localization->GetString(LSTR_EXIT_REST));

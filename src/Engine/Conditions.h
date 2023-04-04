@@ -31,12 +31,6 @@ enum class Condition : uint32_t {
 };
 using enum Condition;
 
-// All conditions for alive character excluding zombie
-static const Segment<Condition> standardConditionsExcludeDead = {Condition_Cursed, Condition_Unconscious};
-
-// All conditions including dead character ones, but still excluding zombie
-static const Segment<Condition> standardConditionsIncludeDead = {Condition_Cursed, Condition_Eradicated};
-
 class ConditionProcessor {
  public:
     bool m_IsBlockedByProtFromMagic = false;

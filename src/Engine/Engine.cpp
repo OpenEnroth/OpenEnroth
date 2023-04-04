@@ -1508,7 +1508,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
                 player.pPlayerBuffs[PLAYER_BUFF_WATER_WALK].expire_time) {
                 player.playEmotion(CHARACTER_EXPRESSION_SMILE, 0);
             } else {
-                if (!player.HasUnderwaterSuitEquipped()) {
+                if (!player.hasUnderwaterSuitEquipped()) {
                     player.ReceiveDamage((int64_t)player.GetMaxHealth() * 0.1, DMGT_FIRE);
                     if (pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE) {
                         GameUI_SetStatusBarShortNotification(localization->GetString(LSTR_YOURE_DROWNING));
@@ -1814,7 +1814,7 @@ void RegeneratePartyHealthMana() {
             spellSprite.uSoundID = 0;
 
             int actorsAffectedByImmolation[100];
-            size_t numberOfActorsAffected = pParty->ImmolationAffectedActors(actorsAffectedByImmolation, 100, 307);
+            size_t numberOfActorsAffected = pParty->immolationAffectedActors(actorsAffectedByImmolation, 100, 307);
             for (size_t idx = 0; idx < numberOfActorsAffected; ++idx) {
                 int actorID = actorsAffectedByImmolation[idx];
                 spellSprite.vPosition.x = pActors[actorID].vPosition.x;

@@ -266,8 +266,7 @@ struct Player {
     void IncreaseAttribute(int eAttribute);
     void Zero();
     unsigned int GetStatColor(int uStat);
-    bool DiscardConditionIfLastsLongerThan(Condition uCondition,
-                                           GameTime time);
+    bool DiscardConditionIfLastsLongerThan(Condition uCondition, GameTime time);
     MERCHANT_PHRASE SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, int BuildID_2Events, int ShopMenuType);
     int GetBodybuilding();
     int GetMeditation();
@@ -282,9 +281,17 @@ struct Player {
      *
      * @offset 0x491317
      */
-    char GetLearningPercent();
-    bool CanFitItem(unsigned int uSlot, ITEM_TYPE uItemID);
-    int FindFreeInventoryListSlot();
+    char getLearningPercent();
+
+    /**
+     * @offset 0x492528
+     */
+    bool canFitItem(unsigned int uSlot, ITEM_TYPE uItemID);
+
+    /**
+     * @offset 0x4925E6
+     */
+    int findFreeInventoryListSlot();
     int CreateItemInInventory(unsigned int uSlot, ITEM_TYPE uItemID);
     int HasSkill(PLAYER_SKILL_TYPE uSkillType);
     void WearItem(ITEM_TYPE uItemID);
@@ -297,7 +304,11 @@ struct Player {
     bool CanSteal();
     bool CanEquip_RaceAndAlignmentCheck(ITEM_TYPE uItemID);
     void SetCondition(Condition uConditionIdx, int blockable);
-    bool IsClass(PLAYER_CLASS_TYPE class_type, bool check_honorary = true);
+
+    /**
+     * @offset 0x49327B
+     */
+    bool isClass(PLAYER_CLASS_TYPE class_type, bool check_honorary = true);
 
     /**
      * @offset 0x4948B1
@@ -324,15 +335,22 @@ struct Player {
     int GetTempleHealCostModifier(float price_multi);
     int GetConditionDaysPassed(Condition uCondition);
     bool NothingOrJustBlastersEquipped();
-    void SalesProcess(unsigned int inventory_idnx, int item_index,
-                      int _2devent_idx);  // 0x4BE2DD
+    void SalesProcess(unsigned int inventory_idnx, int item_index, int _2devent_idx);  // 0x4BE2DD
     bool Recover(GameTime dt);
     bool CanCastSpell(unsigned int uRequiredMana);
     void SpendMana(unsigned int uRequiredMana);
     void PlayAwardSound();
     void EquipBody(ITEM_EQUIP_TYPE uEquipType);
-    bool HasUnderwaterSuitEquipped();
-    bool HasItem(ITEM_TYPE uItemID, bool checkHeldItem);
+
+    /**
+     * @offset 0x43EE77
+     */
+    bool hasUnderwaterSuitEquipped();
+
+    /**
+     * @offset 0x43EE15
+     */
+    bool hasItem(ITEM_TYPE uItemID, bool checkHeldItem);
     void OnInventoryLeftClick();
 
     bool PlayerHitOrMiss(Actor *pActor, int distancemod, PLAYER_SKILL_LEVEL skillmod);
@@ -341,7 +359,7 @@ struct Player {
     int CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
                                            unsigned int uTargetActorID,
                                            bool addOneDice);
-    bool WearsItemAnywhere(ITEM_TYPE item_id) const;
+    bool wearsItemAnywhere(ITEM_TYPE item_id) const;
     float GetArmorRecoveryMultiplierFromSkillLevel(PLAYER_SKILL_TYPE armour_skill_type, float param2, float param3, float param4, float param5);
     void SetSkillByEvent(uint16_t Player::*skillToSet,
                          uint16_t skillValue);

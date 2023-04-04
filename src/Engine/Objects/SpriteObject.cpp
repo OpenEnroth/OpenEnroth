@@ -528,7 +528,7 @@ LABEL_25:
     }
 }
 
-void SpriteObject::ExplosionTraps() {
+void SpriteObject::explosionTraps() {
     MapInfo *pMapInfo = &pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)];
     int dir_x = abs(pParty->vPosition.x - this->vPosition.x);
     int dir_y = abs(pParty->vPosition.y - this->vPosition.y);
@@ -1300,7 +1300,7 @@ void UpdateObjects() {
             pSpriteObjects[i].uAttributes &= ~SPRITE_SKIP_A_FRAME;
         } else {
             ObjectDesc *object = &pObjectList->pObjects[pSpriteObjects[i].uObjectDescID];
-            if (pSpriteObjects[i].AttachedToActor()) {
+            if (pSpriteObjects[i].attachedToActor()) {
                 int actorId = PID_ID(pSpriteObjects[i].spell_target_pid);
                 if (actorId > pActors.size()) {
                     continue;

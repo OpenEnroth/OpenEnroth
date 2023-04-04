@@ -41,19 +41,22 @@ void InitializeAutonotes();
 void InitializeQuests();
 bool CheckPortretAgainstSex(int portret_num, int sex);
 
+// All conditions for alive character excluding zombie
+static const Segment<Condition> standardConditionsExcludeDead = {Condition_Cursed, Condition_Unconscious};
+
+// All conditions including dead character ones, but still excluding zombie
+static const Segment<Condition> standardConditionsIncludeDead = {Condition_Cursed, Condition_Eradicated};
+
 //----- (004459F9) --------------------------------------------------------
 NPCData *GetNPCData(signed int npcid) {
-    unsigned int v1;  // esi@1
-    NPCData *result;  // eax@5
-    int v3;           // esi@9
+    NPCData *result;
 
-    v1 = npcid;
     if (npcid >= 0) {
         if (npcid < 5000) {
             if (npcid >= 501) {
                 logger->warning("NPC id exceeds MAX_DATA!");
             }
-            return &pNPCStats->pNewNPCData[v1];  // - 1];
+            return &pNPCStats->pNewNPCData[npcid];  // - 1];
         }
         return &pNPCStats->pAdditionalNPC[npcid - 5000];
     }
@@ -62,29 +65,24 @@ NPCData *GetNPCData(signed int npcid) {
     if (sDialogue_SpeakingActorNPC_ID >= 0) {
         result = 0;
     } else {
-        v3 = abs(sDialogue_SpeakingActorNPC_ID) - 1;
-
         FlatHirelings buf;
         buf.Prepare();
 
-        result = buf.Get(v3);
+        result = buf.Get(abs(sDialogue_SpeakingActorNPC_ID) - 1);
     }
     return result;
 }
 
 //----- (00445B2C) --------------------------------------------------------
 struct NPCData *GetNewNPCData(signed int npcid, int *npc_indx) {
-    int *v3;          // edi@1
-    NPCData *result;  // eax@5
-    int v5;           // esi@9
+    NPCData *result;
 
-    v3 = npc_indx;
     if (npcid >= 0) {
         if (npcid < 5000) {
             if (npcid >= 501) {
                 logger->warning("NPC id exceeds MAX_DATA!");
             }
-            *v3 = npcid;
+            *npc_indx = npcid;
             return &pNPCStats->pNewNPCData[npcid];
         }
         *npc_indx = npcid - 5000;
@@ -98,12 +96,10 @@ struct NPCData *GetNewNPCData(signed int npcid, int *npc_indx) {
         *npc_indx = 0;
         result = nullptr;
     } else {
-        v5 = abs(sDialogue_SpeakingActorNPC_ID) - 1;
-
         FlatHirelings buf;
         buf.Prepare();
 
-        result = buf.Get(v5);
+        result = buf.Get(abs(sDialogue_SpeakingActorNPC_ID) - 1);
     }
     return result;
 }
@@ -995,8 +991,7 @@ void NPCHireableDialogPrepare() {
         v0 = 1;
     }
     pDialogueWindow->CreateButton({480, 30 * v0 + 160}, {140, 30}, 1, 0,
-        UIMSG_ClickNPCTopic, DIALOGUE_HIRE_FIRE, InputAction::Invalid, localization->GetString(LSTR_HIRE)
-    );
+        UIMSG_ClickNPCTopic, DIALOGUE_HIRE_FIRE, InputAction::Invalid, localization->GetString(LSTR_HIRE));
     pDialogueWindow->_41D08F_set_keyboard_control_group(v0 + 1, 1, 0, 2);
     dialog_menu_id = DIALOGUE_OTHER;
 }

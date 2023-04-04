@@ -543,12 +543,12 @@ bool Player::CanEquip_RaceAndAlignmentCheck(ITEM_TYPE uItemID) {
         case ITEM_RELIC_ETHRICS_STAFF:
         case ITEM_RELIC_OLD_NICK:
         case ITEM_RELIC_TWILIGHT:
-            return pParty->IsPartyEvil();
+            return pParty->isPartyEvil();
             break;
 
         case ITEM_RELIC_TALEDONS_HELM:
         case ITEM_RELIC_JUSTICE:
-            return pParty->IsPartyGood();
+            return pParty->isPartyGood();
             break;
 
         case ITEM_ARTIFACT_ELFBANE:
@@ -709,8 +709,7 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
     return;
 }
 
-//----- (00492528) --------------------------------------------------------
-bool Player::CanFitItem(unsigned int uSlot, ITEM_TYPE uItemID) {
+bool Player::canFitItem(unsigned int uSlot, ITEM_TYPE uItemID) {
     auto img = assets->GetImage_ColorKey(pItemTable->pItems[uItemID].pIconName);
     unsigned int slotWidth = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slotHeight = GetSizeInInventorySlots(img->GetHeight());
@@ -731,8 +730,7 @@ bool Player::CanFitItem(unsigned int uSlot, ITEM_TYPE uItemID) {
     return false;
 }
 
-//----- (004925E6) --------------------------------------------------------
-int Player::FindFreeInventoryListSlot() {
+int Player::findFreeInventoryListSlot() {
     for (int i = 0; i < INVENTORY_SLOT_COUNT; i++) {
         if (pInventoryItemList[i].uItemID == ITEM_NULL) {
             return i;  // space at i
@@ -744,7 +742,7 @@ int Player::FindFreeInventoryListSlot() {
 
 //----- (00492600) --------------------------------------------------------
 int Player::CreateItemInInventory(unsigned int uSlot, ITEM_TYPE uItemID) {
-    signed int freeSlot = FindFreeInventoryListSlot();
+    signed int freeSlot = findFreeInventoryListSlot();
 
     if (freeSlot == -1) {  // no room
         if (pParty->hasActiveCharacter()) {
@@ -775,7 +773,7 @@ int Player::HasSkill(PLAYER_SKILL_TYPE uSkillType) {
 
 //----- (00492745) --------------------------------------------------------
 void Player::WearItem(ITEM_TYPE uItemID) {
-    int item_indx = FindFreeInventoryListSlot();
+    int item_indx = findFreeInventoryListSlot();
 
     if (item_indx != -1) {
         pInventoryItemList[item_indx].uItemID = uItemID;
@@ -791,7 +789,7 @@ int Player::AddItem(int index, ITEM_TYPE uItemID) {
     if (index == -1) {  // no location specified - search for space
         for (int xcoord = 0; xcoord < INVENTORY_SLOTS_WIDTH; xcoord++) {
             for (int ycoord = 0; ycoord < INVENTORY_SLOTS_HEIGHT; ycoord++) {
-                if (CanFitItem(ycoord * INVENTORY_SLOTS_WIDTH + xcoord,
+                if (canFitItem(ycoord * INVENTORY_SLOTS_WIDTH + xcoord,
                                uItemID)) {  // found space
                     return CreateItemInInventory(
                         ycoord * INVENTORY_SLOTS_WIDTH + xcoord, uItemID);
@@ -802,7 +800,7 @@ int Player::AddItem(int index, ITEM_TYPE uItemID) {
         return 0;  // no space cant add item
     }
 
-    if (!CanFitItem(index, uItemID)) {
+    if (!canFitItem(index, uItemID)) {
         pAudioPlayer->playUISound(SOUND_error);
         return 0;  // cant fit item
     }
@@ -817,7 +815,7 @@ int Player::AddItem2(int index, ItemGen *Src) {  // are both required - check
     if (index == -1) {  // no loaction specified
         for (int xcoord = 0; xcoord < INVENTORY_SLOTS_WIDTH; xcoord++) {
             for (int ycoord = 0; ycoord < INVENTORY_SLOTS_HEIGHT; ycoord++) {
-                if (CanFitItem(ycoord * INVENTORY_SLOTS_WIDTH + xcoord,
+                if (canFitItem(ycoord * INVENTORY_SLOTS_WIDTH + xcoord,
                                Src->uItemID)) {  // found space
                     return CreateItemInInventory2(
                         ycoord * INVENTORY_SLOTS_WIDTH + xcoord, Src);
@@ -828,7 +826,7 @@ int Player::AddItem2(int index, ItemGen *Src) {  // are both required - check
         return 0;
     }
 
-    if (!CanFitItem(index, Src->uItemID)) return 0;
+    if (!canFitItem(index, Src->uItemID)) return 0;
 
     return CreateItemInInventory2(index, Src);
 }
@@ -836,7 +834,7 @@ int Player::AddItem2(int index, ItemGen *Src) {  // are both required - check
 //----- (0049289C) --------------------------------------------------------
 int Player::CreateItemInInventory2(unsigned int index,
                                    ItemGen *Src) {  // are both required - check
-    signed int freeSlot = FindFreeInventoryListSlot();
+    signed int freeSlot = findFreeInventoryListSlot();
     int result;
 
     if (freeSlot == -1) {  // no room
@@ -1002,7 +1000,7 @@ int Player::GetDisarmTrap() {
     return multiplier * skill;
 }
 
-char Player::GetLearningPercent() {
+char Player::getLearningPercent() {
     PLAYER_SKILL_LEVEL skill = GetActualSkillLevel(PLAYER_SKILL_LEARNING);
 
     if (skill) {
@@ -1575,7 +1573,7 @@ bool Player::WearsItem(ITEM_TYPE item_id, ITEM_SLOT equip_type) const {
     return (HasItemEquipped(equip_type) && GetNthEquippedIndexItem(equip_type)->uItemID == item_id);
 }
 
-bool Player::WearsItemAnywhere(ITEM_TYPE item_id) const {
+bool Player::wearsItemAnywhere(ITEM_TYPE item_id) const {
     for (ITEM_SLOT i : AllItemSlots())
         if (WearsItem(item_id, i))
             return true;
@@ -6414,7 +6412,7 @@ void Player::EquipBody(ITEM_EQUIP_TYPE uEquipType) {
         pPlayers[pParty->getActiveCharacter()]->pEquipment.pIndices[itemAnchor] =
             itemInvLocation;
     } else {  // одеть вещь
-        freeSlot = pPlayers[pParty->getActiveCharacter()]->FindFreeInventoryListSlot();
+        freeSlot = pPlayers[pParty->getActiveCharacter()]->findFreeInventoryListSlot();
         if (freeSlot >= 0) {
             pParty->pPickedItem.uBodyAnchor = itemAnchor;
             memcpy(&pPlayers[pParty->getActiveCharacter()]->pInventoryItemList[freeSlot],
@@ -6442,8 +6440,7 @@ int CycleCharacter(bool backwards) {
     return pParty->getActiveCharacter();
 }
 
-//----- (0043EE77) --------------------------------------------------------
-bool Player::HasUnderwaterSuitEquipped() {
+bool Player::hasUnderwaterSuitEquipped() {
     // the original function took the
     // player number as a parameter. if it
     // was 0, the whole party was checked.
@@ -6456,8 +6453,7 @@ bool Player::HasUnderwaterSuitEquipped() {
     return true;
 }
 
-//----- (0043EE15) --------------------------------------------------------
-bool Player::HasItem(ITEM_TYPE uItemID, bool checkHeldItem) {
+bool Player::hasItem(ITEM_TYPE uItemID, bool checkHeldItem) {
     if (!checkHeldItem || pParty->pPickedItem.uItemID != uItemID) {
         for (uint i = 0; i < INVENTORY_SLOT_COUNT; ++i) {
             if (this->pInventoryMatrix[i] > 0) {
@@ -7530,8 +7526,7 @@ void Player::playEmotion(CHARACTER_EXPRESSION_ID new_expression, int duration) {
     expression = new_expression;
 }
 
-//----- (0049327B) --------------------------------------------------------
-bool Player::IsClass(PLAYER_CLASS_TYPE class_type, bool check_honorary) {
+bool Player::isClass(PLAYER_CLASS_TYPE class_type, bool check_honorary) {
     if (classType == class_type) {
         return true;
     }

@@ -1934,7 +1934,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     blv_prev_party_pos = pParty->vPosition;
 
     int fall_start;
-    if (pParty->FeatherFallActive() || pParty->WearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT)) {
+    if (pParty->FeatherFallActive() || pParty->wearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT)) {
         fall_start = floor_z;
         bFeatherFall = true;
         pParty->uFallStartZ = floor_z;
@@ -1948,7 +1948,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             __debugbreak(); // why land in indoor?
             pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
         } else {
-            pParty->GiveFallDamage(pParty->uFallStartZ - party_z);
+            pParty->giveFallDamage(pParty->uFallStartZ - party_z);
         }
     }
 
@@ -2319,9 +2319,9 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     //-------------------------------------------------------------
 
     if (!hovering || not_high_fall)
-        pParty->SetAirborne(false);
+        pParty->setAirborne(false);
     else
-        pParty->SetAirborne(true);
+        pParty->setAirborne(true);
 
     pParty->uFlags &= ~(PARTY_FLAGS_1_BURNING | PARTY_FLAGS_1_WATER_DAMAGE);
     pParty->vPosition.x = new_party_x;

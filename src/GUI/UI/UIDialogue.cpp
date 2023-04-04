@@ -57,7 +57,7 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
     int pNumberContacts = 0;
     int v9 = 0;
     if (!pNPCInfo->Hired() && pNPCInfo->Location2D >= 0) {
-        if ((signed int)pParty->GetPartyFame() <= pNPCInfo->fame ||
+        if ((signed int)pParty->getPartyFame() <= pNPCInfo->fame ||
             (pNumberContacts = pNPCInfo->uFlags & 0xFFFFFF7F,
              (pNumberContacts & 0x80000000u) != 0)) {
             v9 = 1;
@@ -209,7 +209,7 @@ void GUIWindow_Dialogue::Update() {
         pFontArrus, 483, 112, ui_game_dialogue_npc_name_color, NameAndTitle(pNPC), 3
     );
 
-    pParty->GetPartyFame();
+    pParty->getPartyFame();
 
     std::string dialogue_string;
     switch (uDialogueType) {

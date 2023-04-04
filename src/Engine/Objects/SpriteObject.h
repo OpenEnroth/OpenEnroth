@@ -11,7 +11,7 @@ class SpriteFrame;
 /*   72 */
 #pragma pack(push, 1)
 struct SpriteObject {
-    inline bool AttachedToActor() const {
+    inline bool attachedToActor() const {
         return uAttributes & SPRITE_ATTACHED_TO_HEAD;
     }
 
@@ -21,7 +21,7 @@ struct SpriteObject {
      * @offset 0x46BEF1
      */
     bool applyShrinkRayAoe();
-    void ExplosionTraps();
+    void explosionTraps();
     unsigned int GetLifetime();
     SpriteFrame *GetSpriteFrame();
     bool IsUnpickable();

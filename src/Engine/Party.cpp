@@ -300,8 +300,7 @@ void Party::switchToNextActiveCharacter() {
     return;
 }
 
-//----- (00493244) --------------------------------------------------------
-bool Party::HasItem(ITEM_TYPE uItemID) {
+bool Party::hasItem(ITEM_TYPE uItemID) {
     for (Player &player : this->pPlayers) {
         for (ItemGen &item : player.pOwnItems) {
             if (item.uItemID == uItemID)
@@ -419,7 +418,7 @@ void Party::TakeFine(int amount) {
 }
 
 //----- (0049135E) --------------------------------------------------------
-unsigned int Party::GetPartyFame() {
+unsigned int Party::getPartyFame() {
     uint64_t total_exp = 0;
     for (Player &player : this->pPlayers) {
         total_exp += player.uExperience;
@@ -429,8 +428,7 @@ unsigned int Party::GetPartyFame() {
         UINT_MAX);  // min wasn't present, but could be incorrect without it
 }
 
-//----- (0049137D) --------------------------------------------------------
-void Party::CreateDefaultParty(bool bDebugGiveItems) {
+void Party::createDefaultParty(bool bDebugGiveItems) {
     signed int uNumPlayers;  // [sp+18h] [bp-28h]@1
     ItemGen Dst;             // [sp+1Ch] [bp-24h]@10
 
@@ -714,30 +712,20 @@ void Party::Reset() {
     this->pPickedItem.uItemID = ITEM_NULL;
 }
 
-//----- (0043AD34) --------------------------------------------------------
-void Party::Yell() {
-    Actor *v0;  // esi@5
-    int v1;     // edi@9
-    int v2;     // ebx@9
-    int v3;     // eax@9
-
+void Party::yell() {
     if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active()) {
         pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
     }
 
     if (!pParty->bTurnBasedModeOn) {
-        for (unsigned int i = 0; i < pActors.size(); i++) {
-            v0 = &pActors[i];
-            if (v0->Actor::CanAct() &&
-                v0->pMonsterInfo.uHostilityType !=
-                    MonsterInfo::Hostility_Long &&
-                v0->pMonsterInfo.uMovementType !=
-                    MONSTER_MOVEMENT_TYPE_STAIONARY) {
-                v1 = abs(v0->vPosition.x - pParty->vPosition.x);
-                v2 = abs(v0->vPosition.y - pParty->vPosition.y);
-                v3 = abs(v0->vPosition.z - pParty->vPosition.z);
-                if (int_get_vector_length(v1, v2, v3) < 512)
+        for (int i = 0; i < pActors.size(); i++) {
+            Actor &actor = pActors[i];
+            if (actor.CanAct() &&
+                actor.pMonsterInfo.uHostilityType != MonsterInfo::Hostility_Long &&
+                actor.pMonsterInfo.uMovementType != MONSTER_MOVEMENT_TYPE_STATIONARY) {
+                if ((actor.vPosition - pParty->vPosition).length() < 512) {
                     Actor::AI_Flee(i, 4, 0, 0);
+                }
             }
         }
     }
@@ -1006,7 +994,7 @@ void RestAndHeal(int minutes) {
 
     pParty->UpdatePlayersAndHirelingsEmotions();
 }
-void Party::RestOneFrame() {
+void Party::restOneFrame() {
     // TODO(Nik-RE-dev): rest speed depends on FPS in this case.
     //                   Is there need to scale rest time per frame?
     GameTime restTick = GameTime::FromMinutes(6);
@@ -1039,18 +1027,16 @@ bool TestPartyQuestBit(PARTY_QUEST_BITS bit) {
 
 //----- (0047752B) --------------------------------------------------------
 int Party::GetPartyReputation() {
-    DDM_DLV_Header *v0;  // ebx@1
-    signed int v1;       // esi@3
+    DDM_DLV_Header *ddm_dlv = &pOutdoor->ddm;
+    if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) ddm_dlv = &pIndoor->dlv;
 
-    v0 = &pOutdoor->ddm;
-    if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) v0 = &pIndoor->dlv;
-    v1 = 0;
-    if (CheckHiredNPCSpeciality(Pirate)) v1 += 5;
-    if (CheckHiredNPCSpeciality(Burglar)) v1 += 5;
-    if (CheckHiredNPCSpeciality(Gypsy)) v1 += 5;
-    if (CheckHiredNPCSpeciality(Duper)) v1 += 5;
-    if (CheckHiredNPCSpeciality(FallenWizard)) v1 += 5;
-    return v1 + v0->uReputation;
+    int npcRep = 0;
+    if (CheckHiredNPCSpeciality(Pirate)) npcRep += 5;
+    if (CheckHiredNPCSpeciality(Burglar)) npcRep += 5;
+    if (CheckHiredNPCSpeciality(Gypsy)) npcRep += 5;
+    if (CheckHiredNPCSpeciality(Duper)) npcRep += 5;
+    if (CheckHiredNPCSpeciality(FallenWizard)) npcRep += 5;
+    return npcRep + ddm_dlv->uReputation;
 }
 
 //----- (004269A2) --------------------------------------------------------
@@ -1070,7 +1056,7 @@ void Party::GivePartyExp(unsigned int pEXPNum) {
             pEXPNum = pEXPNum / pActivePlayerCount;
             for (Player &player : this->pPlayers) {
                 if (player.conditions.HasNone({Condition_Unconscious, Condition_Dead, Condition_Petrified, Condition_Eradicated})) {
-                    pLearningPercent = player.GetLearningPercent();
+                    pLearningPercent = player.getLearningPercent();
                     playermodexp = pEXPNum + pEXPNum * pLearningPercent / 100;
                     player.uExperience += playermodexp;
                     if (player.uExperience > 4000000000) {
@@ -1221,12 +1207,11 @@ bool Party::AddItemToParty(ItemGen *pItem) {
     return false;
 }
 
-bool Party::IsPartyEvil() { return _449B57_test_bit(_quest_bits, QBIT_DARK_PATH); }
+bool Party::isPartyEvil() { return _449B57_test_bit(_quest_bits, QBIT_DARK_PATH); }
 
-bool Party::IsPartyGood() { return _449B57_test_bit(_quest_bits, QBIT_LIGHT_PATH); }
+bool Party::isPartyGood() { return _449B57_test_bit(_quest_bits, QBIT_LIGHT_PATH); }
 
-//----- (0046A89E) --------------------------------------------------------
-size_t Party::ImmolationAffectedActors(int *affected, size_t affectedArrSize, size_t effectRange) {
+size_t Party::immolationAffectedActors(int *affected, size_t affectedArrSize, size_t effectRange) {
     int x, y, z;
     int affectedCount = 0;
 
@@ -1251,8 +1236,7 @@ size_t Party::ImmolationAffectedActors(int *affected, size_t affectedArrSize, si
     return affectedCount;
 }
 
-//----- (00444D80) --------------------------------------------------------
-int GetTravelTime() {
+int getTravelTime() {
     signed int new_travel_time;  // esi@1
 
     new_travel_time = uDefaultTravelTime_ByFoot;
@@ -1296,7 +1280,7 @@ PartyAction ActionQueue::Next() {
     return result;
 }
 
-void Party::GiveFallDamage(int distance) {
+void Party::giveFallDamage(int distance) {
     for (Player &player : pParty->pPlayers) {  // receive falling damage
         if (!player.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
             !player.WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS)) {

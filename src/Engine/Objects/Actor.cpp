@@ -1140,8 +1140,7 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, signed int sTargetPid,
 
     assert(uActorID < pActors.size());
 
-    if (pActors[uActorID].pMonsterInfo.uMovementType ==
-            MONSTER_MOVEMENT_TYPE_STAIONARY &&
+    if (pActors[uActorID].pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY &&
         pActors[uActorID].pMonsterInfo.uAIType == 1) {
         Actor::AI_Stand(uActorID, sTargetPid, 0, arg0);
         return;
@@ -1205,11 +1204,11 @@ void Actor::ApplyFineForKillingPeasant(unsigned int uActorID) {
     if (uLevelMapStatsID == 0 || !pActors[uActorID].IsPeasant()) return;
 
     if ((uLevelMapStatsID == 6 || uLevelMapStatsID == 7) &&
-        pParty->IsPartyEvil())  // celeste and bracada
+        pParty->isPartyEvil())  // celeste and bracada
         return;
 
     if ((uLevelMapStatsID == 5 || uLevelMapStatsID == 8) &&
-        pParty->IsPartyGood())  // the pit and deyja
+        pParty->isPartyGood())  // the pit and deyja
         return;
 
     pParty->uFine += 100 * (pMapStats->pInfos[uLevelMapStatsID]._steal_perm +
@@ -1785,7 +1784,7 @@ char Actor::_4031C1_update_job_never_gets_called(
         v10 = v5->vPos.z;
         v4->vInitialPosition.z = v10;
         LOBYTE(v5) = v5->uAction;
-        v4->pMonsterInfo.uMovementType = MONSTER_MOVEMENT_TYPE_STAIONARY;
+        v4->pMonsterInfo.uMovementType = MONSTER_MOVEMENT_TYPE_STATIONARY;
         if ( a3 == 1 )
         {
           v4->vPosition.x = v4->vInitialPosition.x;
@@ -2848,7 +2847,7 @@ void Actor::UpdateActorAI() {
         if (pActor->pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Long &&
             target_pid) {
             if (pActor->pMonsterInfo.uAIType == 1) {
-                if (pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY) {
+                if (pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                     Actor::AI_Stand(actor_id, target_pid, (pActor->pMonsterInfo.uRecoveryTime * flt_debugrecmod3), pDir);
                 } else {
                     Actor::AI_Flee(actor_id, target_pid, 0, pDir);
@@ -2882,7 +2881,7 @@ void Actor::UpdateActorAI() {
                     if (pActor->pMonsterInfo.uMissleAttack1Type) {
                         if (pActor->pMonsterInfo.uRecoveryTime <= 0) {
                             Actor::AI_MissileAttack1(actor_id, target_pid, pDir);
-                        } else if (pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY) {
+                        } else if (pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                             Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                         } else {
                             if (radiusMultiplier * 307.2 > v81)
@@ -2892,7 +2891,7 @@ void Actor::UpdateActorAI() {
                         }
                     } else {
                         if (v81 >= radiusMultiplier * 307.2) {
-                            if (pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY) {
+                            if (pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                                 Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                             } else if (v81 >= 1024) {  // monsters
                                 Actor::AI_Pursue3(actor_id, target_pid, 0, pDir);
@@ -2922,7 +2921,7 @@ void Actor::UpdateActorAI() {
                                 Actor::AI_SpellAttack1(actor_id, target_pid, pDir);
                             else
                                 Actor::AI_SpellAttack2(actor_id, target_pid, pDir);
-                        } else if (radiusMultiplier * 307.2 > v81 || pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY) {
+                        } else if (radiusMultiplier * 307.2 > v81 || pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                             Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                         } else {
                             Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47, pDir);
@@ -2930,7 +2929,7 @@ void Actor::UpdateActorAI() {
                     } else {
                         // v45 == ABILITY_ATTACK2
                         if (v81 >= radiusMultiplier * 307.2) {
-                            if (pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY) {
+                            if (pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                                 Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                             } else if (v81 >= 1024) {
                                 Actor::AI_Pursue3(actor_id, target_pid, 256, pDir);
@@ -2959,14 +2958,14 @@ void Actor::UpdateActorAI() {
                 Actor::AI_RandomMove(actor_id, 4, 5120, 0);
             } else if (pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_FREE) {
                 Actor::AI_RandomMove(actor_id, 4, 10240, 0);
-            } else if (pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY) {
+            } else if (pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                 Actor::GetDirectionInfo(actorPid, 4, &v72, 0);
                 v58 = (pActor->pMonsterInfo.uRecoveryTime * flt_debugrecmod3);
                 Actor::AI_Stand(actor_id, 4, v58, &v72);
             }
         } else if (!pActor->pMonsterInfo.uMissleAttack2Type) {
             if (v81 >= radiusMultiplier * 307.2) {
-                if (pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY) {
+                if (pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                     Actor::AI_Stand(actor_id, target_pid, v47, pDir);
                 } else if (v81 >= 1024) {
                     Actor::AI_Pursue3(actor_id, target_pid, 256, pDir);
@@ -2980,7 +2979,7 @@ void Actor::UpdateActorAI() {
                 Actor::AI_MeleeAttack(actor_id, target_pid, pDir);
             }
         } else if (pActor->pMonsterInfo.uRecoveryTime > 0) {
-            if (radiusMultiplier * 307.2 > v81 || pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY)
+            if (radiusMultiplier * 307.2 > v81 || pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY)
                 Actor::AI_Stand(actor_id, target_pid, v47, pDir);
             else
                 Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47, pDir);
@@ -3097,8 +3096,8 @@ void Actor::InitializeActors() {
     if (pCurrentMapName == "d26.blv") {  // the Pit
         bPit = true;
     }
-    if (pParty->IsPartyGood()) good = true;
-    if (pParty->IsPartyEvil()) evil = true;
+    if (pParty->isPartyGood()) good = true;
+    if (pParty->isPartyEvil()) evil = true;
 
     logger->warning("{} {} {}", __FILE__, __FUNCTION__, __LINE__);  // ai_near_actors_targets_pid[i] for AI_Stand seems always
                                                                     // 0;  original code behaviour is identical

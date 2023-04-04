@@ -176,6 +176,6 @@ void GUIWindow_QuickReference::Update() {
         GetReputationString(pParty->GetPartyReputation())
     );
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {22, 323}, 0, rep, 0, 0, 0);
-    auto fame = fmt::format("\r261{}: {}", localization->GetString(LSTR_FAME), pParty->GetPartyFame());
+    auto fame = fmt::format("\r261{}: {}", localization->GetString(LSTR_FAME), pParty->getPartyFame());
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, {0, 323}, 0, fame, 0, 0, 0);
 }

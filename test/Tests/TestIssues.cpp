@@ -216,7 +216,7 @@ GAME_TEST(Issues, Issue293a) {
         EXPECT_EQ(pParty->pPlayers[0].uAccuracy, 13);
         EXPECT_EQ(pParty->pPlayers[0].uLuck, 7);
         EXPECT_EQ(partyItemCount(), 18);
-        EXPECT_FALSE(pParty->pPlayers[0].HasItem(ITEM_LEATHER_ARMOR, false));
+        EXPECT_FALSE(pParty->pPlayers[0].hasItem(ITEM_LEATHER_ARMOR, false));
         for (int i = 0; i < 4; i++)
             EXPECT_EQ(pParty->pPlayers[i].GetMajorConditionIdx(), Condition_Good);
     });
@@ -229,7 +229,7 @@ GAME_TEST(Issues, Issue293a) {
     EXPECT_EQ(pParty->pPlayers[0].uAccuracy, 15); // +2
     EXPECT_EQ(pParty->pPlayers[0].uLuck, 7);
     EXPECT_EQ(partyItemCount(), 19); // +1
-    EXPECT_TRUE(pParty->pPlayers[0].HasItem(ITEM_LEATHER_ARMOR, false)); // That's the item from the trash pile.
+    EXPECT_TRUE(pParty->pPlayers[0].hasItem(ITEM_LEATHER_ARMOR, false)); // That's the item from the trash pile.
     for (int i = 0; i < 4; i++)
         EXPECT_EQ(pParty->pPlayers[i].GetMajorConditionIdx(), Condition_Disease_Weak);
 }
@@ -239,12 +239,12 @@ GAME_TEST(Issues, Issue293b) {
     test->playTraceFromTestData("issue_293b.mm7", "issue_293b.json", [] {
         EXPECT_EQ(pParty->uNumFoodRations, 7);
         EXPECT_EQ(partyItemCount(), 18);
-        EXPECT_FALSE(pParty->HasItem(ITEM_RED_APPLE));
+        EXPECT_FALSE(pParty->hasItem(ITEM_RED_APPLE));
     });
 
     EXPECT_EQ(pParty->uNumFoodRations, 7); // No change.
     EXPECT_EQ(partyItemCount(), 19); // +1
-    EXPECT_TRUE(pParty->HasItem(ITEM_RED_APPLE)); // That's the table food item.
+    EXPECT_TRUE(pParty->hasItem(ITEM_RED_APPLE)); // That's the table food item.
 }
 
 GAME_TEST(Issues, Issue293c) {

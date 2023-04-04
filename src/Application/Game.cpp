@@ -295,7 +295,7 @@ bool Game::Loop() {
         } else if (GetCurrentMenuID() == MENU_DebugBLVLevel) {
             mouse->ChangeActivation(0);
             pParty->Reset();
-            pParty->CreateDefaultParty(true);
+            pParty->createDefaultParty(true);
 
             __debugbreak();
             /*extern void CreateDefaultBLVLevel();
@@ -425,14 +425,9 @@ bool IsWindowSwitchable() {
 }
 
 void Game::EventLoop() {
-    unsigned int v2 {};            // edx@7
     GUIWindow *pWindow2;        // ecx@248
     int v37;                    // eax@341
     int v38;                    // eax@358
-    signed int v44;             // eax@398
-    signed int v46;             // ecx@398
-    char v47;                   // zf@399
-    char v48;                   // zf@405
     ODMFace *pODMFace;          // ecx@412
     CastSpellInfo *pSpellInfo;  // ecx@415
     int16_t v53;                // ax@431
@@ -441,39 +436,21 @@ void Game::EventLoop() {
     int v56;                    // edx@432
     int v57;                    // eax@432
     unsigned int pMapNum;       // eax@445
-    int16_t v63;                // dx@479
-    unsigned int v64;           // eax@486
-    int v66;                    // eax@488
     Player *pPlayer2;           // ecx@549
     GUIButton *pButton;         // eax@578
-    const char *v87;            // ecx@595
-    unsigned int v90;           // eax@602
     int v91;                    // edx@605
     int v92;                    // eax@605
     int v93;                    // edx@605
     int pPlayerNum;             // edx@611
-    int v95;                    // eax@611
-    int v98;                    // eax@636
     int v103;                   // eax@671
-    Player *pPlayer4;           // ecx@718
-    short *v105;                   // eax@718
-    Player *pPlayer5;           // ST78_4@758
-    MapInfo *pMapInfo;            // [sp+14h] [bp-5E8h]@604
-    Player *pPlayer10;            // [sp+14h] [bp-5E8h]@641
     int uMessageParam;            // [sp+18h] [bp-5E4h]@7
-    int uAction;                  // [sp+1Ch] [bp-5E0h]@18
     int encounter_index;           // [sp+20h] [bp-5DCh]@23
     unsigned int uNumSeconds;     // [sp+24h] [bp-5D8h]@18
     UIMessageType uMessage;  // [sp+2Ch] [bp-5D0h]@7
     int uMessageParam2;            // [sp+30h] [bp-5CCh]@7
-    char *v200 = nullptr;                   // [sp+34h] [bp-5C8h]@518
     char pOut[32];                // [sp+BCh] [bp-540h]@370
     int spellbookPages[9] {};                  // [sp+158h] [bp-4A4h]@652
-    Actor actor;                  // [sp+2B8h] [bp-344h]@4
     int currHour;
-    PLAYER_SKILL_TYPE skill;
-    PLAYER_SKILL_LEVEL skill_level;
-
 
     dword_50CDC8 = 0;
     if (!pEventTimer->bPaused) {
@@ -482,7 +459,7 @@ void Game::EventLoop() {
     }
     if (bDialogueUI_InitializeActor_NPC_ID) {
         // Actor::Actor(&actor);
-        actor = Actor();
+        Actor actor = Actor();
         dword_5B65D0_dialogue_actor_npc_id = bDialogueUI_InitializeActor_NPC_ID;
         actor.sNPC_ID = bDialogueUI_InitializeActor_NPC_ID;
         GameUI_InitializeDialogue(&actor, false);
@@ -992,7 +969,7 @@ void Game::EventLoop() {
                     dword_50CDC8 = 1;
 
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-                    // encounter_index = (NPCData *)GetTravelTime();
+                    // encounter_index = (NPCData *)getTravelTime();
                     pOutdoor->level_filename = pCurrentMapName;
                     if (!engine->IsUnderwater() && pParty->bFlying ||
                         pOutdoor->GetTravelDestination(pParty->vPosition.x,
@@ -1019,15 +996,15 @@ void Game::EventLoop() {
                         pGameLoadingUI_ProgressBar->Progress();
                         SaveGame(1, 0);
                         pGameLoadingUI_ProgressBar->Progress();
-                        RestAndHeal(24 * 60 * GetTravelTime());
+                        RestAndHeal(24 * 60 * getTravelTime());
                         if (pParty->GetFood() > 0) {
                             pParty->RestAndHeal();
-                            if (pParty->GetFood() < GetTravelTime()) {
+                            if (pParty->GetFood() < getTravelTime()) {
                                 for(Player &player : pParty->pPlayers)
                                     player.SetCondition(Condition_Weak, 0);
                                 ++pParty->days_played_without_rest;
                             }
-                            pParty->TakeFood(GetTravelTime());
+                            pParty->TakeFood(getTravelTime());
                         } else {
                             for (Player &player : pParty->pPlayers)
                                 player.SetCondition(Condition_Weak, 0);
@@ -1604,10 +1581,11 @@ void Game::EventLoop() {
                         for (Player &player : pParty->pPlayers) {
                             player.SetAsleep(pParty->GetPlayingTime());
                         }
-                        v90 = pMapStats->GetMapInfo(pCurrentMapName);
-                        if (!v90)
-                            v90 = grng->Random(pMapStats->uNumMaps + 1);
-                        pMapInfo = &pMapStats->pInfos[v90];
+                        MAP_TYPE mapIdx = pMapStats->GetMapInfo(pCurrentMapName);
+                        if (mapIdx == MAP_INVALID) {
+                            mapIdx = static_cast<MAP_TYPE>(grng->Random(pMapStats->uNumMaps + 1));
+                        }
+                        MapInfo *pMapInfo = &pMapStats->pInfos[mapIdx];
 
                         if (grng->Random(100) + 1 <= pMapInfo->Encounter_percent) {
                             v91 = grng->Random(100);
@@ -1681,17 +1659,14 @@ void Game::EventLoop() {
                                    // activated - no longer rquired here ??
 
                     if (sub_4637E0_is_there_popup_onscreen())
-                        dword_507B00_spell_info_to_draw_in_popup =
-                            uMessageParam + 1;
-                    v98 = pPlayers[pParty->getActiveCharacter()]->lastOpenedSpellbookPage;
+                        dword_507B00_spell_info_to_draw_in_popup = uMessageParam + 1;
+                    int lastOpened = pPlayers[pParty->getActiveCharacter()]->lastOpenedSpellbookPage;
                     if (quick_spell_at_page - 1 == uMessageParam) {
-                        GameUI_StatusBar_Set(localization->FormatString(
-                            LSTR_CAST_S,
-                            pSpellStats->pInfos[static_cast<SPELL_TYPE>(uMessageParam + 11 * v98 + 1)].pName));
+                        GameUI_StatusBar_Set(localization->FormatString(LSTR_CAST_S,
+                                    pSpellStats->pInfos[static_cast<SPELL_TYPE>(uMessageParam + 11 * lastOpened + 1)].pName));
                     } else {
-                        GameUI_StatusBar_Set(localization->FormatString(
-                            LSTR_SELECT_S,
-                            pSpellStats->pInfos[static_cast<SPELL_TYPE>(uMessageParam + 11 * v98 + 1)].pName));
+                        GameUI_StatusBar_Set(localization->FormatString(LSTR_SELECT_S,
+                                    pSpellStats->pInfos[static_cast<SPELL_TYPE>(uMessageParam + 11 * lastOpened + 1)].pName));
                     }
                     continue;
                 }
@@ -1699,9 +1674,9 @@ void Game::EventLoop() {
                 case UIMSG_ClickInstallRemoveQuickSpellBtn: {
                     new OnButtonClick2({pBtn_InstallRemoveSpell->uX, pBtn_InstallRemoveSpell->uY}, {0, 0}, pBtn_InstallRemoveSpell);
                     if (!pParty->getActiveCharacter()) continue;
-                    pPlayer10 = pPlayers[pParty->getActiveCharacter()];
+                    Player *player = pPlayers[pParty->getActiveCharacter()];
                     if (!byte_506550 || !quick_spell_at_page) {
-                        pPlayer10->uQuickSpell = SPELL_NONE;
+                        player->uQuickSpell = SPELL_NONE;
                         quick_spell_at_page = 0;
                         pAudioPlayer->playUISound(SOUND_fizzle);
                         continue;
@@ -1710,7 +1685,7 @@ void Game::EventLoop() {
                     pPlayers[pParty->getActiveCharacter()]->uQuickSpell = static_cast<SPELL_TYPE>(
                         quick_spell_at_page + 11 * pPlayers[pParty->getActiveCharacter()]->lastOpenedSpellbookPage);
                     if (pParty->hasActiveCharacter()) {
-                        pPlayer10->playReaction(SPEECH_SetQuickSpell);
+                        player->playReaction(SPEECH_SetQuickSpell);
                     }
                     byte_506550 = 0;
                     continue;
@@ -1721,7 +1696,7 @@ void Game::EventLoop() {
                 {
                     if (!pParty->getActiveCharacter()) continue;
                     int skill_count = 0;
-                    uAction = 0;
+                    int uAction = 0;
                     int page = 0;
                     for (PLAYER_SKILL_TYPE i : MagicSkills()) {
                         if (pPlayers[pParty->getActiveCharacter()]->pActiveSkills[i] || engine->config->debug.AllMagic.value()) {
@@ -1908,23 +1883,26 @@ void Game::EventLoop() {
                     OnPaperdollLeftClick();
                     continue;
                 case UIMSG_SkillUp:
-                    skill = static_cast<PLAYER_SKILL_TYPE>(uMessageParam);
-                    pPlayer4 = pPlayers[pParty->getActiveCharacter()];
-                    skill_level = pPlayer4->GetSkillLevel(skill);
-                    if (pPlayer4->uSkillPoints < skill_level + 1) {
-                        v87 = localization->GetString(LSTR_NOT_ENOUGH_SKILL_POINTS);
+                {
+                    PLAYER_SKILL_TYPE skill = static_cast<PLAYER_SKILL_TYPE>(uMessageParam);
+                    Player *player = pPlayers[pParty->getActiveCharacter()];
+                    PLAYER_SKILL_LEVEL skill_level = player->GetSkillLevel(skill);
+                    const char *statusString;
+                    if (player->uSkillPoints < skill_level + 1) {
+                        statusString = localization->GetString(LSTR_NOT_ENOUGH_SKILL_POINTS);
                     } else {
                         if (skill_level < skills_max_level[skill]) {
-                            pPlayer4->SetSkillLevel(skill, skill_level + 1);
-                            pPlayer4->uSkillPoints -= skill_level + 1;
-                            pPlayer4->playReaction(SPEECH_SkillIncrease);
+                            player->SetSkillLevel(skill, skill_level + 1);
+                            player->uSkillPoints -= skill_level + 1;
+                            player->playReaction(SPEECH_SkillIncrease);
                             pAudioPlayer->playUISound(SOUND_quest);
                             continue;
                         }
-                        v87 = localization->GetString(LSTR_SKILL_ALREADY_MASTERED);
+                        statusString = localization->GetString(LSTR_SKILL_ALREADY_MASTERED);
                     }
-                    GameUI_SetStatusBar(v87);
+                    GameUI_SetStatusBar(statusString);
                     continue;
+                }
                 case UIMSG_ClickStatsBtn:
                     ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->ShowStatsTab();
                     continue;
@@ -2031,11 +2009,11 @@ void Game::EventLoop() {
                 }
 
                 case UIMSG_ShowStatus_Player: {
-                    pPlayer5 = pPlayers[uMessageParam];
+                    Player *player = pPlayers[uMessageParam];
 
-                    auto status = NameAndTitle(pPlayer5->pName, pPlayer5->classType)
+                    auto status = NameAndTitle(player->pName, player->classType)
                         + ": "
-                        + std::string(localization->GetCharacterConditionName(pPlayer5->GetMajorConditionIdx()));
+                        + std::string(localization->GetCharacterConditionName(player->GetMajorConditionIdx()));
                     GameUI_StatusBar_Set(status);
 
                     mouse->uPointingObjectID =
