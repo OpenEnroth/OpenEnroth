@@ -242,7 +242,7 @@ void RenderBase::DrawSpriteObjects() {
 void RenderBase::PrepareDecorationsRenderList_ODM() {
     unsigned int v6;        // edi@9
     int v7;                 // eax@9
-    SpriteFrame* frame;     // eax@9
+    SpriteFrame *frame;     // eax@9
     int v13;                // ecx@9
     int r;                 // ecx@20
     int g;                 // dl@20
@@ -259,11 +259,11 @@ void RenderBase::PrepareDecorationsRenderList_ODM() {
         // view cull
         if (!IsCylinderInFrustum(pLevelDecorations[i].vPosition.toFloat(), 512.0f)) continue;
 
-        // LevelDecoration* decor = &pLevelDecorations[i];
+        // LevelDecoration *decor = &pLevelDecorations[i];
         if ((!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_OBELISK_CHEST) ||
             pLevelDecorations[i].IsObeliskChestActive()) &&
             !(pLevelDecorations[i].uFlags & LEVEL_DECORATION_INVISIBLE)) {
-            const DecorationDesc* decor_desc = pDecorationList->GetDecoration(pLevelDecorations[i].uDecorationDescID);
+            const DecorationDesc *decor_desc = pDecorationList->GetDecoration(pLevelDecorations[i].uDecorationDescID);
             if (!(decor_desc->uFlags & DECORATION_DESC_EMITS_FIRE)) {
                 if (!(decor_desc->uFlags & (DECORATION_DESC_MARKER | DECORATION_DESC_DONT_DRAW))) {
                     v6 = pMiscTimer->uTotalGameTimeElapsed;
@@ -630,10 +630,10 @@ void RenderBase::SavePCXScreenshot() {
     SaveWinnersCertificate(fmt::format("screenshot_{:05}.pcx", engine->config->settings.ScreenshotNumber.value()));
 }
 
-void RenderBase::SavePCXImage32(const std::string &filename, const uint32_t* picture_data, const int width, const int height) {
+void RenderBase::SavePCXImage32(const std::string &filename, const uint32_t *picture_data, const int width, const int height) {
     // TODO(pskelton): add "Screenshots" folder?
     std::string thispath = MakeDataPath(filename);
-    FILE* result = fopen(thispath.c_str(), "wb");
+    FILE *result = fopen(thispath.c_str(), "wb");
     if (result == nullptr) {
         return;
     }
@@ -656,26 +656,26 @@ Blob RenderBase::PackScreenshot(const unsigned int width, const unsigned int hei
     return packedPCX;
 }
 
-Image* RenderBase::TakeScreenshot(const unsigned int width, const unsigned int height) {
+Image *RenderBase::TakeScreenshot(const unsigned int width, const unsigned int height) {
     auto pixels = MakeScreenshot32(width, height);
-    Image* image = Image::Create(width, height, IMAGE_FORMAT_A8B8G8R8, pixels);
+    Image *image = Image::Create(width, height, IMAGE_FORMAT_A8B8G8R8, pixels);
     free(pixels);
     return image;
 }
 
-void RenderBase::DrawTextureGrayShade(float a2, float a3, Image* a4) {
+void RenderBase::DrawTextureGrayShade(float a2, float a3, Image *a4) {
     DrawMasked(a2, a3, a4, 1, colorTable.MediumGrey.c32());
 }
 
-void RenderBase::DrawTransparentRedShade(float u, float v, Image* a4) {
+void RenderBase::DrawTransparentRedShade(float u, float v, Image *a4) {
     DrawMasked(u, v, a4, 0, colorTable.Red.c32());
 }
 
-void RenderBase::DrawTransparentGreenShade(float u, float v, Image* pTexture) {
+void RenderBase::DrawTransparentGreenShade(float u, float v, Image *pTexture) {
     DrawMasked(u, v, pTexture, 0, colorTable.Green.c32());
 }
 
-void RenderBase::DrawMasked(float u, float v, Image* pTexture, unsigned int color_dimming_level, uint32_t mask) {
+void RenderBase::DrawMasked(float u, float v, Image *pTexture, unsigned int color_dimming_level, uint32_t mask) {
     int b = ((mask >> 16) & 0xFF) & (0xFF >> color_dimming_level);
     int g = ((mask >> 8) & 0xFF) & (0xFF >> color_dimming_level);
     int r = ((mask) & 0xFF) & (0xFF >> color_dimming_level);
@@ -691,7 +691,7 @@ void RenderBase::ClearBlack() {  // used only at start and in game over win
 }
 
 //----- (004A4CC9) ---------------------------------------
-void RenderBase::BillboardSphereSpellFX(struct SpellFX_Billboard* a1, int diffuse) {
+void RenderBase::BillboardSphereSpellFX(struct SpellFX_Billboard *a1, int diffuse) {
     // fireball / implosion sphere
     // TODO(pskelton): could draw in 3d rather than convert to billboard for ogl
 
@@ -746,7 +746,7 @@ void RenderBase::BillboardSphereSpellFX(struct SpellFX_Billboard* a1, int diffus
     }
 }
 
-void RenderBase::DrawMonsterPortrait(Recti rc, SpriteFrame* Portrait, int Y_Offset) {
+void RenderBase::DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait, int Y_Offset) {
     Recti rct;
     rct.x = rc.x + 64 + Portrait->hw_sprites[0]->uAreaX - Portrait->hw_sprites[0]->uBufferWidth / 2;
     rct.y = rc.y + Y_Offset + Portrait->hw_sprites[0]->uAreaY;
@@ -758,7 +758,7 @@ void RenderBase::DrawMonsterPortrait(Recti rc, SpriteFrame* Portrait, int Y_Offs
     render->ResetUIClipRect();
 }
 
-void RenderBase::DrawSpecialEffectsQuad(Texture* texture, int palette) {
+void RenderBase::DrawSpecialEffectsQuad(Texture *texture, int palette) {
     Recti targetrect{};
     targetrect.x = pViewport->uViewportTL_X;
     targetrect.y = pViewport->uViewportTL_Y;

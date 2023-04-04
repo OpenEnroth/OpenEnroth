@@ -170,19 +170,19 @@ bool stru9::ClipVertsToPortal(struct RenderVertexSoft *pPortalBounding,  // test
     return true;
 }
 
-bool stru9::ClipVertsToFrustumPlane(RenderVertexSoft* pInVertices, signed int pInNumVertices,
-                                    RenderVertexSoft* pOutVertices,
-                                    unsigned int* pOutNumVertices,
-                                    Vec3f* CamFrustumNormal, float CamDotDistance, char* VertsAdjusted,
+bool stru9::ClipVertsToFrustumPlane(RenderVertexSoft *pInVertices, signed int pInNumVertices,
+                                    RenderVertexSoft *pOutVertices,
+                                    unsigned int *pOutNumVertices,
+                                    Vec3f *CamFrustumNormal, float CamDotDistance, char *VertsAdjusted,
                                     int unused) {
     // this cycles through adjust vertice posisiton to supplied frustum plane
     // points are inside frstum plane when point dot product is greater than camera dot distance
 
-    RenderVertexSoft* pLineEnd;  // ecx@9
+    RenderVertexSoft *pLineEnd;  // ecx@9
     double pLinelength2;         // st7@9
     double t;                    // st6@12
 
-    RenderVertexSoft* pLineStart = &pInVertices[0];
+    RenderVertexSoft *pLineStart = &pInVertices[0];
     // pVertices = a3;
     double pLinelength1 = CamFrustumNormal->x * pInVertices[0].vWorldPosition.x +
         pInVertices[0].vWorldPosition.y * CamFrustumNormal->y +

@@ -48,7 +48,7 @@
 #include "Library/Random/Random.h"
 
 // TODO(pskelton): make this neater
-static DecalBuilder* decal_builder = EngineIocContainer::ResolveDecalBuilder();
+static DecalBuilder *decal_builder = EngineIocContainer::ResolveDecalBuilder();
 
 IndoorLocation *pIndoor = new IndoorLocation;
 BLVRenderParams *pBLVRenderParams = new BLVRenderParams;
@@ -1701,7 +1701,7 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
 
         // loop over sectargetr faces
         for (int FaceLoop = 0; FaceLoop < pIndoor->pSectors[SectargetrID].uNumFaces; ++FaceLoop) {
-            BLVFace* face = &pIndoor->pFaces[pIndoor->pSectors[SectargetrID].pFaceIDs[FaceLoop]];
+            BLVFace *face = &pIndoor->pFaces[pIndoor->pSectors[SectargetrID].pFaceIDs[FaceLoop]];
 
             // dot product
             int x_dot = fixpoint_mul(fp_dist_x_normed, face->pFacePlane_old.vNormal.x);

@@ -7,11 +7,11 @@
 //----- (004547E4) --------------------------------------------------------
 void FactionTable::Initialize() {
     int i;
-    char* test_string;
+    char *test_string;
     unsigned char c;
     bool break_loop;
     unsigned int temp_str_len;
-    char* tmp_pos;
+    char *tmp_pos;
     int decode_step;
     //  int item_counter;
 

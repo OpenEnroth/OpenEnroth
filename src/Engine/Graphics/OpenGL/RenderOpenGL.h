@@ -18,11 +18,11 @@ class RenderOpenGL : public RenderBase {
  public:
     RenderOpenGL(
         std::shared_ptr<GameConfig> config,
-        DecalBuilder* decal_builder,
-        SpellFxRenderer* spellfx,
+        DecalBuilder *decal_builder,
+        SpellFxRenderer *spellfx,
         std::shared_ptr<ParticleEngine> particle_engine,
-        Vis* vis,
-        Logger* logger
+        Vis *vis,
+        Logger *logger
     );
     virtual ~RenderOpenGL();
 
@@ -71,7 +71,7 @@ class RenderOpenGL : public RenderBase {
     virtual void EndLines2D() override;
     virtual void RasterLine2D(signed int uX, signed int uY, signed int uZ,
                               signed int uW, uint32_t uColor32) override;
-    virtual void DrawLines(const RenderVertexD3D3* vertices,
+    virtual void DrawLines(const RenderVertexD3D3 *vertices,
         unsigned int num_vertices) override;
 
     virtual void ClearZBuffer() override;
@@ -87,7 +87,7 @@ class RenderOpenGL : public RenderBase {
                                 float dstX, float dstY, float a7, float a8,
                                 Texture *texture) override;
 
-    virtual void RemoveTextureFromDevice(Texture* texture) override;
+    virtual void RemoveTextureFromDevice(Texture *texture) override;
     virtual bool MoveTextureToDevice(Texture *texture) override;
 
     virtual void Update_Texture(Texture *texture) override;

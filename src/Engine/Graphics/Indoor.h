@@ -686,4 +686,4 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from);
  */
 bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from);
 
-extern struct BspRenderer* pBspRenderer;
+extern struct BspRenderer *pBspRenderer;

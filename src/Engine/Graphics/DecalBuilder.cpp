@@ -59,8 +59,8 @@ void DecalBuilder::Reset(bool bPreserveBloodsplats) {
 }
 
 //----- (0049B540) --------------------------------------------------------
-char DecalBuilder::BuildAndApplyDecals(int light_level, LocationFlags locationFlags, stru154* FacePlane, int NumFaceVerts,
-                                       RenderVertexSoft* FaceVerts, char ClipFlags, unsigned int uSectorID) {
+char DecalBuilder::BuildAndApplyDecals(int light_level, LocationFlags locationFlags, stru154 *FacePlane, int NumFaceVerts,
+                                       RenderVertexSoft *FaceVerts, char ClipFlags, unsigned int uSectorID) {
     if (!NumFaceVerts) return 0;
 
     static stru314 static_FacePlane;
@@ -78,7 +78,7 @@ char DecalBuilder::BuildAndApplyDecals(int light_level, LocationFlags locationFl
     if (this->uNumSplatsThisFace > 0) {
         for (int i = 0; i < this->uNumSplatsThisFace; ++i) {
             int thissplat = this->WhichSplatsOnThisFace[i];
-            Bloodsplat* buildsplat = &bloodsplat_container->pBloodsplats_to_apply[thissplat];
+            Bloodsplat *buildsplat = &bloodsplat_container->pBloodsplats_to_apply[thissplat];
             int point_light_level = GetLightLevelAtPoint(
                     light_level, uSectorID,
                     buildsplat->pos.x, buildsplat->pos.y, buildsplat->pos.z);
@@ -101,12 +101,12 @@ char DecalBuilder::BuildAndApplyDecals(int light_level, LocationFlags locationFl
 
 //----- (0049B790) --------------------------------------------------------
 bool DecalBuilder::Build_Decal_Geometry(
-    int LightLevel, LocationFlags locationFlags, Bloodsplat* blood, float DecalRadius,
-    unsigned int uColorMultiplier, float DecalDotDist, stru314* FacetNormals, signed int numfaceverts,
-    RenderVertexSoft* faceverts, char uClipFlags) {
+    int LightLevel, LocationFlags locationFlags, Bloodsplat *blood, float DecalRadius,
+    unsigned int uColorMultiplier, float DecalDotDist, stru314 *FacetNormals, signed int numfaceverts,
+    RenderVertexSoft *faceverts, char uClipFlags) {
 
     if (DecalRadius == 0.0f) return 1;
-    Decal* decal = &this->Decals[this->DecalsCount];
+    Decal *decal = &this->Decals[this->DecalsCount];
     decal->fadetime = blood->fade_timer;
     decal->decal_flags = blood->blood_flags;
 
@@ -195,11 +195,11 @@ bool DecalBuilder::Build_Decal_Geometry(
 bool DecalBuilder::ApplyBloodsplatDecals_IndoorFace(unsigned int uFaceID) {
     // reset splat count
     uNumSplatsThisFace = 0;
-    BLVFace* pFace = &pIndoor->pFaces[uFaceID];
+    BLVFace *pFace = &pIndoor->pFaces[uFaceID];
 
     if (pFace->Indoor_sky() || pFace->Fluid()) return true;
     for (uint i = 0; i < bloodsplat_container->uNumBloodsplats; ++i) {
-        Bloodsplat* pBloodsplat = &bloodsplat_container->pBloodsplats_to_apply[i];
+        Bloodsplat *pBloodsplat = &bloodsplat_container->pBloodsplats_to_apply[i];
         if (pFace->pBounding.intersectsCube(pBloodsplat->pos.toShort(), pBloodsplat->radius)) {
             double dotdist = dot(pFace->pFacePlane.vNormal, pBloodsplat->pos) + pFace->pFacePlane.dist;
             if (dotdist <= pBloodsplat->radius) {
@@ -214,14 +214,14 @@ bool DecalBuilder::ApplyBloodsplatDecals_IndoorFace(unsigned int uFaceID) {
 }
 
 //----- (0049BCEB) --------------------------------------------------------
-bool DecalBuilder::ApplyBloodSplat_OutdoorFace(ODMFace* pFace) {
+bool DecalBuilder::ApplyBloodSplat_OutdoorFace(ODMFace *pFace) {
     // reset splat count
     this->uNumSplatsThisFace = 0;
 
     // loop through and check
     if (!pFace->Indoor_sky() && !pFace->Fluid()) {
         for (int i = 0; i < bloodsplat_container->uNumBloodsplats; i++) {
-            Bloodsplat* pBloodsplat = &bloodsplat_container->pBloodsplats_to_apply[i];
+            Bloodsplat *pBloodsplat = &bloodsplat_container->pBloodsplats_to_apply[i];
             if (pFace->pBoundingBox.intersectsCube(pBloodsplat->pos.toShort(), pBloodsplat->radius)) {
                 double dotdist = pFace->pFacePlaneOLD.signedDistanceTo(round_to_int(pBloodsplat->pos.x), round_to_int(pBloodsplat->pos.y),
                                                                        round_to_int(pBloodsplat->pos.z));

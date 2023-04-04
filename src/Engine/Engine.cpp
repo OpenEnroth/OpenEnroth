@@ -1158,7 +1158,7 @@ void PrepareToLoadODM(bool bLoading, ODMRenderParams *a2) {
         for (int i = 0; i < _6807E0_num_decorations_with_sounds_6807B8; i++) {
             int ind = _6807B8_level_decorations_ids[i];
             LevelDecoration dec = pLevelDecorations[ind];
-            const DecorationDesc* decoration = pDecorationList->GetDecoration(dec.uDecorationDescID);
+            const DecorationDesc *decoration = pDecorationList->GetDecoration(dec.uDecorationDescID);
             pAudioPlayer->playSound(SoundID(decoration->uSoundID), PID(OBJECT_Decoration, ind), 0, 0, 0);
         }
     }
@@ -1213,7 +1213,7 @@ void Engine::_461103_load_level_sub() {
 
     // v15 = 0;
     for (uint i = 0; i < pActors.size(); ++i) {
-        // Actor* pActor = &pActors[i];
+        // Actor *pActor = &pActors[i];
         // v2 = (char *)&pActors[0].uNPC_ID;
         // do
         //{

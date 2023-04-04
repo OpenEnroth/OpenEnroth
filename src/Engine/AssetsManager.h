@@ -35,7 +35,7 @@ class AssetsManager {
 
     // TODO(pskelton): Contain better
     // TODO(pskelton): Manager should have a ref to all loose textures created throuh CreateTexture_Blank also
-    Texture* WinnerCert{ nullptr };
+    Texture *WinnerCert{ nullptr };
 
  protected:
     std::map<std::string, Texture *> bitmaps;

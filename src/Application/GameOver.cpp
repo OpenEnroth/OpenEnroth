@@ -45,7 +45,7 @@ void GameOver_Loop(int v15) {
 void CreateWinnerCertificate() {
     render->Present();
     render->BeginScene2D();
-    Image* background = assets->GetImage_PCXFromIconsLOD("winbg.pcx");
+    Image *background = assets->GetImage_PCXFromIconsLOD("winbg.pcx");
     render->DrawTextureNew(0, 0, background);
 
     GUIWindow *tempwindow_SpeakInHouse = new GUIWindow(WINDOW_Unknown, { 0, 0 }, render->GetRenderDimensions(), 0);
@@ -56,9 +56,9 @@ void CreateWinnerCertificate() {
     pWindow.uFrameHeight = 338;
     pWindow.uFrameZ = 543;
     pWindow.uFrameW = 397;
-    GUIFont* pFont = GUIFont::LoadFont("endgame.fnt", "FONTPAL");
+    GUIFont *pFont = GUIFont::LoadFont("endgame.fnt", "FONTPAL");
 
-    const char* pInString = nullptr;
+    const char *pInString = nullptr;
     if (pParty->IsPartyGood())
         pInString = localization->GetString(LSTR_GOOD_ENDING);
     else if (pParty->IsPartyEvil())
@@ -98,13 +98,13 @@ void CreateWinnerCertificate() {
     std::string v6 = pFont->FitTextInAWindow(pInString, pWindow.uFrameWidth, 12);
     pWindow.DrawTitleText(pFont, 1, 5 * (pFont->GetHeight() + 11), 1, v6, 0);
 
-    const char* v7 = localization->GetString(LSTR_DAY_CAPITALIZED);
+    const char *v7 = localization->GetString(LSTR_DAY_CAPITALIZED);
     if (v17 != 1) v7 = localization->GetString(LSTR_DAYS);
 
-    const char* v8 = localization->GetString(LSTR_MONTH);
+    const char *v8 = localization->GetString(LSTR_MONTH);
     if (v18 != 1) v8 = localization->GetString(LSTR_MONTHS);
 
-    const char* v9 = localization->GetString(LSTR_YEAR);
+    const char *v9 = localization->GetString(LSTR_YEAR);
     if (v14 != 1) v9 = localization->GetString(LSTR_YEARS);
 
     pWindow.DrawTitleText(

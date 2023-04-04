@@ -359,7 +359,7 @@ class GUIButton *GUI_HandleHotkey(PlatformKey hotkey);
 void GUI_ReplaceHotkey(PlatformKey oldKey, PlatformKey newKey, char bFirstCall);
 void DrawBuff_remaining_time_string(int uY, GUIWindow *window,
                                     GameTime remaining_time, GUIFont *Font);
-void GameUI_DrawItemInfo(struct ItemGen* inspect_item);   // idb
+void GameUI_DrawItemInfo(struct ItemGen *inspect_item);   // idb
 void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *window);
 void SetUserInterface(PartyAlignment alignment, bool bReplace);
 void CreateMsgScrollWindow(ITEM_TYPE mscroll_id);
@@ -367,7 +367,7 @@ void free_book_subwindow();
 void CreateScrollWindow();
 void OnPaperdollLeftClick();
 void DrawJoinGuildWindow(GUILD_ID guild_id);
-const char* GetJoinGuildDialogueOption(GUILD_ID guild_id);
+const char *GetJoinGuildDialogueOption(GUILD_ID guild_id);
 void DialogueEnding();
 char sub_4637E0_is_there_popup_onscreen();
 void ClickNPCTopic(DIALOGUE_TYPE topic);
@@ -388,10 +388,10 @@ std::string NameAndTitle(const std::string &name, PLAYER_CLASS_TYPE class_type);
 std::string NameAndTitle(const std::string &name, NPCProf profession);
 std::string NameAndTitle(NPCData *npc);
 
-std::string GetDisplayName(Actor* actor);
+std::string GetDisplayName(Actor *actor);
 
-void SeekKnowledgeElswhereDialogueOption(GUIWindow *dialogue, Player* player);
-void SkillTrainingDialogue(GUIWindow* dialogue, int num_skills_avaiable, int all_text_height, int skill_price);
+void SeekKnowledgeElswhereDialogueOption(GUIWindow *dialogue, Player *player);
+void SkillTrainingDialogue(GUIWindow *dialogue, int num_skills_avaiable, int all_text_height, int skill_price);
 
 extern GUIWindow *pPrimaryWindow;
 //extern GUIWindow *pChestWindow;

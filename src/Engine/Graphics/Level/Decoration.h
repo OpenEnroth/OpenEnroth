@@ -42,5 +42,5 @@ struct LevelDecoration {
 };
 
 extern std::vector<LevelDecoration> pLevelDecorations;
-extern LevelDecoration* activeLevelDecoration;  // 5C3420
+extern LevelDecoration *activeLevelDecoration;  // 5C3420
 #pragma pack(pop)

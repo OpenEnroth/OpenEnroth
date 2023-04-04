@@ -57,21 +57,21 @@ void deserialize(std::string_view src, bool *dst) {
 
 // std::string
 
-bool trySerialize(const std::string &src, std::string* dst) {
+bool trySerialize(const std::string &src, std::string *dst) {
     *dst = src;
     return true;
 }
 
-bool tryDeserialize(std::string_view src, std::string* dst) {
+bool tryDeserialize(std::string_view src, std::string *dst) {
     *dst = std::string(src);
     return true;
 }
 
-void serialize(const std::string &src, std::string* dst) {
+void serialize(const std::string &src, std::string *dst) {
     (void) trySerialize(src, dst);
 }
 
-void deserialize(std::string_view src, std::string* dst) {
+void deserialize(std::string_view src, std::string *dst) {
     (void) tryDeserialize(src, dst);
 }
 
@@ -86,7 +86,7 @@ inline bool trySerialize(const T &src, std::string *dst) {
 
 template<class T>
 inline bool tryDeserialize(std::string_view src, T *dst) {
-    const char* end = src.data() + src.size();
+    const char *end = src.data() + src.size();
     fast_float::from_chars_result result = fast_float::from_chars(src.data(), end, *dst);
     return result.ec == std::errc() && result.ptr == end;
 }
@@ -98,7 +98,7 @@ inline void serialize(const T &src, std::string *dst) {
 
 template<class T>
 inline void deserialize(std::string_view src, T *dst) {
-    const char* end = src.data() + src.size();
+    const char *end = src.data() + src.size();
     fast_float::from_chars_result result = fast_float::from_chars(src.data(), end, *dst);
 
     if (result.ec != std::errc())
@@ -123,7 +123,7 @@ inline bool trySerialize(const T &src, std::string *dst) {
 
 template<class T>
 inline bool tryDeserialize(std::string_view src, T *dst) {
-    const char* end = src.data() + src.size();
+    const char *end = src.data() + src.size();
     std::from_chars_result result = std::from_chars(src.data(), end, *dst);
     return result.ec == std::errc() && result.ptr == end;
 }
@@ -135,7 +135,7 @@ inline void serialize(const T &src, std::string *dst) {
 
 template<class T>
 inline void deserialize(std::string_view src, T *dst) {
-    const char* end = src.data() + src.size();
+    const char *end = src.data() + src.size();
     std::from_chars_result result = std::from_chars(src.data(), end, *dst);
 
     if (result.ec != std::errc())

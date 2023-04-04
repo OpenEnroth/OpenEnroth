@@ -298,8 +298,8 @@ bool PCX_LOD_Compressed_Loader::Load(unsigned int *width, unsigned int *height,
     return InternalLoad(pcx_data.data(), pcx_data.size(), width, height, pixels, format);
 }
 
-static void ProcessTransparentPixel(uint8_t* pixels, uint8_t* palette,
-                                    size_t x, size_t y, size_t w, size_t h, uint8_t* rgba) {
+static void ProcessTransparentPixel(uint8_t *pixels, uint8_t *palette,
+                                    size_t x, size_t y, size_t w, size_t h, uint8_t *rgba) {
     size_t count = 0;
     size_t r = 0, g = 0, b = 0;
 
@@ -356,7 +356,7 @@ bool Bitmaps_LOD_Loader::Load(unsigned int *width, unsigned int *height,
         Assert(tex->paletted_pixels);
         Assert(tex->pPalette24);
 
-        uint8_t* pixels = new uint8_t[num_pixels * 4];
+        uint8_t *pixels = new uint8_t[num_pixels * 4];
         size_t w = tex->header.uTextureWidth;
         size_t h = tex->header.uTextureHeight;
 
@@ -385,9 +385,9 @@ bool Bitmaps_LOD_Loader::Load(unsigned int *width, unsigned int *height,
         *out_palette = tex->pPalette24;
         return true;
     } else {
-        uint16_t* pixels = new uint16_t[num_pixels];
+        uint16_t *pixels = new uint16_t[num_pixels];
 
-        HWLTexture* hwl = render->LoadHwlBitmap(this->resource_name);
+        HWLTexture *hwl = render->LoadHwlBitmap(this->resource_name);
         if (hwl) {
             // linear scaling
             for (int s = 0; s < tex->header.uTextureHeight; ++s) {

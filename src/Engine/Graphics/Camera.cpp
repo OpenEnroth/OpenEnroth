@@ -176,7 +176,7 @@ bool Camera3D::is_face_faced_to_cameraBLV(BLVFace *pFace) {
     return false;
 }
 
-bool Camera3D::is_face_faced_to_cameraODM(ODMFace* pFace, RenderVertexSoft* a2) {
+bool Camera3D::is_face_faced_to_cameraODM(ODMFace *pFace, RenderVertexSoft *a2) {
     // if (pFace->Portal()) return false;
 
     if ((a2->vWorldPosition.z - pCamera3D->vCameraPos.z) * pFace->pFacePlane.vNormal.z +
@@ -461,8 +461,8 @@ bool Camera3D::CullFaceToCameraFrustum(RenderVertexSoft *pInVertices,
 // used for culling to supplied portal frustums
 // very sloppy check when using early break - different points could be passing plane checks
 // NB only reliable where size of face is small in relation to size frustum
-bool Camera3D::CullFaceToFrustum(struct RenderVertexSoft* a1, unsigned int* pOutNumVertices,
-                    struct RenderVertexSoft* pVertices, struct IndoorCameraD3D_Vec4* frustum,
+bool Camera3D::CullFaceToFrustum(struct RenderVertexSoft *a1, unsigned int *pOutNumVertices,
+                    struct RenderVertexSoft *pVertices, struct IndoorCameraD3D_Vec4 *frustum,
                     signed int NumFrustumPlanes) {
     if (NumFrustumPlanes <= 0) return false;
     if (*pOutNumVertices <= 0) return false;
@@ -499,17 +499,17 @@ bool Camera3D::CullFaceToFrustum(struct RenderVertexSoft* a1, unsigned int* pOut
     return false;
 }
 
-bool Camera3D::ClipFaceToFrustum(RenderVertexSoft* pInVertices,
-    unsigned int* pOutNumVertices,
-    RenderVertexSoft* pVertices,
-    IndoorCameraD3D_Vec4* CameraFrustrum,
+bool Camera3D::ClipFaceToFrustum(RenderVertexSoft *pInVertices,
+    unsigned int *pOutNumVertices,
+    RenderVertexSoft *pVertices,
+    IndoorCameraD3D_Vec4 *CameraFrustrum,
     signed int NumFrustumPlanes, char DebugLines,
     int _unused) {
     // NumFrustumPlanes usually 4 - top, bottom, left, right - near and far done elsewhere
     // DebugLines 0 or 1 - 1 when debug lines
 
-    RenderVertexSoft* v14;  // eax@8
-    RenderVertexSoft* v15;  // edx@8
+    RenderVertexSoft *v14;  // eax@8
+    RenderVertexSoft *v15;  // edx@8
     Vec3f FrustumPlaneVec {};         // [sp+18h] [bp-3Ch]@12
     // float v17; // [sp+44h] [bp-10h]@1
     // int v18; // [sp+48h] [bp-Ch]@5
@@ -661,7 +661,7 @@ float Camera3D::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int uStripT
 }
 
 //----- (00436A40) --------------------------------------------------------
-float Camera3D::GetPolygonMaxZ(RenderVertexSoft* pVertex, unsigned int uStripType) {
+float Camera3D::GetPolygonMaxZ(RenderVertexSoft *pVertex, unsigned int uStripType) {
     float result = FLT_MIN;
     for (uint i = 0; i < uStripType; i++) {
         if (pVertex[i].vWorldPosition.z > result)
@@ -670,7 +670,7 @@ float Camera3D::GetPolygonMaxZ(RenderVertexSoft* pVertex, unsigned int uStripTyp
     return result;
 }
 
-void Camera3D::CullByNearClip(RenderVertexSoft* pverts, uint* unumverts) {
+void Camera3D::CullByNearClip(RenderVertexSoft *pverts, uint *unumverts) {
     float near = GetNearClip();
 
     if (!unumverts) return;
@@ -684,7 +684,7 @@ void Camera3D::CullByNearClip(RenderVertexSoft* pverts, uint* unumverts) {
     return;
 }
 
-void Camera3D::CullByFarClip(RenderVertexSoft* pverts, uint* unumverts) {
+void Camera3D::CullByFarClip(RenderVertexSoft *pverts, uint *unumverts) {
     float far = GetFarClip();
 
     if (!unumverts) return;

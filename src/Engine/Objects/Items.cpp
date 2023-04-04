@@ -19,9 +19,9 @@
 #include "Utility/MapAccess.h"
 #include "Library/Random/Random.h"
 
-ItemGen* ptr_50C9A4_ItemToEnchant;
+ItemGen *ptr_50C9A4_ItemToEnchant;
 
-struct ItemTable* pItemTable;  // 005D29E0
+struct ItemTable *pItemTable;  // 005D29E0
 
 static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment>> regularBonusMap;
 static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment>> specialBonusMap;
@@ -48,8 +48,8 @@ static std::unordered_map<ITEM_TYPE, ITEM_TYPE> itemTextureIdByItemId = {
 };
 
 //----- (00439DF3) --------------------------------------------------------
-int ItemGen::_439DF3_get_additional_damage(DAMAGE_TYPE* damage_type,
-                                           bool* draintargetHP) {
+int ItemGen::_439DF3_get_additional_damage(DAMAGE_TYPE *damage_type,
+                                           bool *draintargetHP) {
     *draintargetHP = false;
     *damage_type = DMGT_FIRE;
     if (uItemID == ITEM_NULL) return 0;
@@ -635,10 +635,10 @@ void ItemGen::PopulateArtifactBonusMap() {
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_LADYS_ESCORT, CHARACTER_ATTRIBUTE_RESIST_BODY, 10);
 }
 
-void ItemGen::GetItemBonusSpecialEnchantment(Player* owner,
+void ItemGen::GetItemBonusSpecialEnchantment(Player *owner,
                                              CHARACTER_ATTRIBUTE_TYPE attrToGet,
-                                             int* additiveBonus,
-                                             int* halfSkillBonus) {
+                                             int *additiveBonus,
+                                             int *halfSkillBonus) {
     auto pos = specialBonusMap.find(this->special_enchantment);
     if (pos == specialBonusMap.end())
         return;
@@ -661,9 +661,9 @@ void ItemGen::GetItemBonusSpecialEnchantment(Player* owner,
     }
 }
 
-void ItemGen::GetItemBonusArtifact(Player* owner,
+void ItemGen::GetItemBonusArtifact(Player *owner,
                                    CHARACTER_ATTRIBUTE_TYPE attrToGet,
-                                   int* bonusSum) {
+                                   int *bonusSum) {
     auto pos = artifactBonusMap.find(this->uItemID);
     if (pos == artifactBonusMap.end())
         return;
@@ -705,7 +705,7 @@ PLAYER_SKILL_TYPE ItemGen::GetPlayerSkillType() {
     return skl;
 }
 
-char* ItemGen::GetIconName() {
+char *ItemGen::GetIconName() {
     return pItemTable->pItems[this->uItemID].pIconName;
 }
 

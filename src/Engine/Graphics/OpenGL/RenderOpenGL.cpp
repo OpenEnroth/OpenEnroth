@@ -177,11 +177,11 @@ void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y
 
 RenderOpenGL::RenderOpenGL(
     std::shared_ptr<GameConfig> config,
-    DecalBuilder* decal_builder,
-    SpellFxRenderer* spellfx,
+    DecalBuilder *decal_builder,
+    SpellFxRenderer *spellfx,
     std::shared_ptr<ParticleEngine> particle_engine,
-    Vis* vis,
-    Logger* logger
+    Vis *vis,
+    Logger *logger
 ) : RenderBase(config, decal_builder, lightmap_builder, spellfx, particle_engine, vis, logger) {
     clip_w = 0;
     clip_x = 0;
@@ -211,8 +211,8 @@ void RenderOpenGL::SaveWinnersCertificate(const std::string &filePath) {
 
     // reverse input and save to texture for later
     int pixsize{ 4 * outputRender.w * outputRender.h };
-    uint8_t* rev = new uint8_t[pixsize];
-    uint8_t* pq = sPixels;
+    uint8_t *rev = new uint8_t[pixsize];
+    uint8_t *pq = sPixels;
     for (uint y = 0; y < (unsigned int)outputRender.h; ++y) {
         int index = 4 * y * outputRender.w;
         int revindex = 4 * (outputRender.h - y - 1) * outputRender.w;
@@ -365,7 +365,7 @@ void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ,
 }
 
 // used for debug protal lines
-void RenderOpenGL::DrawLines(const RenderVertexD3D3* vertices, unsigned int num_vertices) {
+void RenderOpenGL::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices) {
     BeginLines2D();
     for (uint i = 0; i < num_vertices - 1; ++i) {
         uint uColor32 = vertices[i].diffuse;
@@ -859,14 +859,14 @@ void RenderOpenGL::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
 
 // TODO(pskelton): sort this - forcing the draw is slow
 // TODO(pskelton): stencil masking with opacity would be a better way to do this
-void RenderOpenGL::BlendTextures(int x, int y, Image* imgin, Image* imgblend, int time, int start_opacity,
+void RenderOpenGL::BlendTextures(int x, int y, Image *imgin, Image *imgblend, int time, int start_opacity,
     int end_opacity) {
     // thrown together as a crude estimate of the enchaintg effects
     // leaves gap where it shouldnt on dark pixels currently
     // doesnt use opacity params
 
-    const uint32_t* pixelpoint;
-    const uint32_t* pixelpointblend;
+    const uint32_t *pixelpoint;
+    const uint32_t *pixelpointblend;
 
     if (imgin && imgblend) {  // 2 images to blend
         pixelpoint = (const uint32_t*)imgin->GetPixels(IMAGE_FORMAT_A8B8G8R8);
@@ -876,8 +876,8 @@ void RenderOpenGL::BlendTextures(int x, int y, Image* imgin, Image* imgblend, in
         int Width = imgin->GetWidth();
         int Height = imgin->GetHeight();
         Texture *temp = render->CreateTexture_Blank(Width, Height, IMAGE_FORMAT_A8B8G8R8);
-        //Image* temp = Image::Create(Width, Height, IMAGE_FORMAT_A8R8G8B8);
-        uint32_t* temppix = (uint32_t*)temp->GetPixels(IMAGE_FORMAT_A8B8G8R8);
+        //Image *temp = Image::Create(Width, Height, IMAGE_FORMAT_A8R8G8B8);
+        uint32_t *temppix = (uint32_t*)temp->GetPixels(IMAGE_FORMAT_A8B8G8R8);
 
         uint32_t c = *(pixelpointblend + 2700);  // guess at brightest pixel
         unsigned int rmax = (c & 0xFF);
@@ -1094,7 +1094,7 @@ void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon 
     // load up poly
     for (int z = 0; z < (pSkyPolygon->uNumVertices - 2); z++) {
         // 123, 134, 145, 156..
-        forcepersverts* thisvert = &forceperstore[forceperstorecnt];
+        forcepersverts *thisvert = &forceperstore[forceperstorecnt];
         float oneoz = 1.0f / VertexRenderList[0].vWorldViewPosition.x;
         float thisdepth = (oneoz - oneon) / (oneof - oneon);
         // copy first
@@ -1614,7 +1614,7 @@ void RenderOpenGL::DeleteTexture(Texture *texture) {
     }
 }
 
-void RenderOpenGL::RemoveTextureFromDevice(Texture* texture) {
+void RenderOpenGL::RemoveTextureFromDevice(Texture *texture) {
     logger->info("RenderGL - RemoveTextureFromDevice");
 }
 
@@ -2408,7 +2408,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
     auto texture = (TextureOpenGL *)pSkyPolygon->texture;
     auto texid = texture->GetOpenGlTexture();
 
-    static Texture* effpar03 = assets->GetBitmap("effpar03");
+    static Texture *effpar03 = assets->GetBitmap("effpar03");
     auto texturesolid = (TextureOpenGL*)effpar03;
     float texidsolid = static_cast<float>(texturesolid->GetOpenGlTexture());
 
@@ -3206,7 +3206,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
 
 // TODO(pskelton): add optional colour32
 void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, int custom_height) {
-    TextureOpenGL* texture = dynamic_cast<TextureOpenGL*>(img);
+    TextureOpenGL *texture = dynamic_cast<TextureOpenGL*>(img);
     if (!texture) {
         logger->verbose("Null texture passed to DrawTextureCustomHeight");
         return;
@@ -3688,7 +3688,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
 
                         //poly->flags = 0;
                         //poly->field_32 = 0;
-                        TextureOpenGL* tex = (TextureOpenGL*)face.GetTexture();
+                        TextureOpenGL *tex = (TextureOpenGL*)face.GetTexture();
 
                         std::string *texname = tex->GetName();
                         // gather up all texture and shaderverts data
@@ -3914,7 +3914,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
                                 // load up verts here
                                 for (int z = 0; z < (face.uNumVertices - 2); z++) {
                                     // 123, 134, 145, 156..
-                                    GLshaderverts* thisvert = &outbuildshaderstore[texunit][numoutbuildverts[texunit]];
+                                    GLshaderverts *thisvert = &outbuildshaderstore[texunit][numoutbuildverts[texunit]];
 
                                     // copy first
                                     thisvert->x = model.pVertices[face.pVertexIDs[0]].x;
@@ -4162,7 +4162,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
         // check for any splat in this models box - if not continue
         bool found{ false };
         for (int splat = 0; splat < decal_builder->bloodsplat_container->uNumBloodsplats; ++splat) {
-            Bloodsplat* thissplat = &decal_builder->bloodsplat_container->pBloodsplats_to_apply[splat];
+            Bloodsplat *thissplat = &decal_builder->bloodsplat_container->pBloodsplats_to_apply[splat];
             if (model.pBoundingBox.intersectsCube(thissplat->pos.toInt(), thissplat->radius)) {
                 found = true;
                 break;
@@ -4223,7 +4223,7 @@ void RenderOpenGL::DrawOutdoorBuildings() {
     ///////////////// shader end
 }
 
-GLshaderverts* BSPshaderstore[16] = { nullptr };
+GLshaderverts *BSPshaderstore[16] = { nullptr };
 int numBSPverts[16] = { 0 };
 
 void RenderOpenGL::DrawIndoorFaces() {
@@ -4285,14 +4285,14 @@ void RenderOpenGL::DrawIndoorFaces() {
 
 
             for (int test = 0; test < pIndoor->pFaces.size(); test++) {
-                BLVFace* face = &pIndoor->pFaces[test];
+                BLVFace *face = &pIndoor->pFaces[test];
 
                 if (face->Portal()) continue;
                 if (!face->GetTexture()) continue;
                 //if (face->uAttributes & FACE_IS_DOOR) continue;
 
-                TextureOpenGL* tex = (TextureOpenGL*)face->GetTexture();
-                std::string* texname = tex->GetName();
+                TextureOpenGL *tex = (TextureOpenGL*)face->GetTexture();
+                std::string *texname = tex->GetName();
 
                 int texunit = 0;
                 int texlayer = 0;
@@ -4460,7 +4460,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                 unsigned int uFaceID = pBspRenderer->faces[i].uFaceID;
                 if (uFaceID >= pIndoor->pFaces.size())
                     continue;
-                BLVFace* face = &pIndoor->pFaces[uFaceID];
+                BLVFace *face = &pIndoor->pFaces[uFaceID];
 
                 if (face->Portal()) {
                     continue;
@@ -4476,9 +4476,9 @@ void RenderOpenGL::DrawIndoorFaces() {
                     continue;
                 }
 
-                IndoorCameraD3D_Vec4* portalfrustumnorm = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum;
+                IndoorCameraD3D_Vec4 *portalfrustumnorm = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum;
                 unsigned int uNumFrustums = 4;
-                RenderVertexSoft* pPortalBounding = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding;
+                RenderVertexSoft *pPortalBounding = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding;
 
                 // uint ColourMask;  // ebx@25
                 unsigned int uNumVerticesa;  // [sp+24h] [bp-4h]@17
@@ -4893,7 +4893,7 @@ void RenderOpenGL::DrawIndoorFaces() {
 
         // loop over faces
         for (int test = 0; test < pIndoor->pFaces.size(); test++) {
-            BLVFace* pface = &pIndoor->pFaces[test];
+            BLVFace *pface = &pIndoor->pFaces[test];
 
             if (pface->Portal()) continue;
             if (!pface->GetTexture()) continue;
@@ -5029,7 +5029,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY, unsigned int u
     // check for overlap
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
-    static Texture* effpar03 = assets->GetBitmap("effpar03");
+    static Texture *effpar03 = assets->GetBitmap("effpar03");
     auto texture = (TextureOpenGL*)effpar03;
     float gltexid = static_cast<float>(texture->GetOpenGlTexture());
 
@@ -5626,7 +5626,7 @@ void RenderOpenGL::DrawTwodVerts() {
 
 
 bool RenderOpenGL::NuklearInitialize(struct nk_tex_font *tfont) {
-    struct nk_context* nk_ctx = nuklear->ctx;
+    struct nk_context *nk_ctx = nuklear->ctx;
     if (!nk_ctx) {
         log->warning("Nuklear context is not available");
         return false;
@@ -5838,7 +5838,7 @@ void RenderOpenGL::NuklearRelease() {
     memset(&nk_dev, 0, sizeof(nk_dev));
 }
 
-struct nk_tex_font *RenderOpenGL::NuklearFontLoad(const char* font_path, size_t font_size) {
+struct nk_tex_font *RenderOpenGL::NuklearFontLoad(const char *font_path, size_t font_size) {
     const void *image;
     int w, h;
     GLuint texid;
