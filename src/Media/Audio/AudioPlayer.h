@@ -147,20 +147,22 @@ class AudioPlayer {
     } SoundHeader;
 
     struct AudioSamplePoolEntry {
+        AudioSamplePoolEntry(PAudioSample samplePtr_, SoundID id_):samplePtr(samplePtr_), id(id_) {}
+
         PAudioSample samplePtr;
         SoundID id;
     };
 
     class AudioSamplePool {
-        public:
-            void playNew(PAudioSample sample, bool loop = false, bool positional = false);
-            void playUnique(PAudioSample sample, SoundID id, bool loop = false, bool positional = false);
-            void pause();
-            void resume();
-            void stop(SoundID soundId = SOUND_Invalid);
-            void update();
-        private:
-            std::list<AudioSamplePoolEntry> samplePool;
+     public:
+        void playNew(PAudioSample sample, bool loop = false, bool positional = false);
+        void playUnique(PAudioSample sample, SoundID id, bool loop = false, bool positional = false);
+        void pause();
+        void resume();
+        void stop(SoundID soundId = SOUND_Invalid);
+        void update();
+     private:
+        std::list<AudioSamplePoolEntry> samplePool;
     };
 
  public:

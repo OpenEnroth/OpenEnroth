@@ -411,7 +411,7 @@ void AudioPlayer::AudioSamplePool::playUnique(PAudioSample sample, SoundID id, b
     samplePool.push_back(AudioPlayer::AudioSamplePoolEntry(sample, id));
 }
 
-void AudioPlayer::AudioPlayer::AudioSamplePool::pause() {
+void AudioPlayer::AudioSamplePool::pause() {
     update();
     for (AudioPlayer::AudioSamplePoolEntry &entry : samplePool) {
         entry.samplePtr->Pause();
