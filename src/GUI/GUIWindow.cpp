@@ -2360,7 +2360,7 @@ std::string NameAndTitle(const std::string &name, NPCProf profession) {
 }
 
 
-std::string NameAndTitle(NPCData* npc) {
+std::string NameAndTitle(NPCData *npc) {
     if (!npc->pName.empty()) {
         if (npc->profession != NoProfession)
             return NameAndTitle(npc->pName, npc->profession);
@@ -2372,7 +2372,7 @@ std::string NameAndTitle(NPCData* npc) {
 }
 
 
-std::string GetDisplayName(Actor* actor) {
+std::string GetDisplayName(Actor *actor) {
     if (actor->dword_000334_unique_name)
         return pMonsterStats->pPlaceStrings[actor->dword_000334_unique_name];
     else
@@ -2390,7 +2390,7 @@ static std::string SeekKnowledgeElswhereString(Player *player) {
     + localization->GetString(LSTR_NO_FURTHER_OFFERS);
 }
 
-void SeekKnowledgeElswhereDialogueOption(GUIWindow* dialogue, Player* player) {
+void SeekKnowledgeElswhereDialogueOption(GUIWindow *dialogue, Player *player) {
     std::string str = SeekKnowledgeElswhereString(pPlayers[pParty->getActiveCharacter()]);
     int text_height = pFontArrus->CalcTextHeight(str, dialogue->uFrameWidth, 0);
 
@@ -2482,7 +2482,7 @@ void SkillTrainingDialogue(
 
 
 //----- (004B29F2) --------------------------------------------------------
-const char* GetJoinGuildDialogueOption(GUILD_ID guild_id) {
+const char *GetJoinGuildDialogueOption(GUILD_ID guild_id) {
     static const int dialogue_base = 110;
     guild_membership_approved = false;
     dword_F8B1AC_award_bit_number = static_cast<AwardType>(Award_Membership_ElementalGuilds + std::to_underlying(guild_id));

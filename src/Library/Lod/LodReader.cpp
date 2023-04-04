@@ -209,7 +209,7 @@ Blob LodReader::read(const std::string &filename) {
 }
 
 
-bool LodReader::_isFileCompressed(const LodFile& file) {
+bool LodReader::_isFileCompressed(const LodFile &file) {
     if (file.dataSize <= sizeof(LodFileCompressionHeader_Mm6)) {
         return false;
     }

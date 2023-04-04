@@ -1098,7 +1098,7 @@ int NPCDialogueEventProcessor(int npc_event_id, int entry_line) {
     int npc_activity = 1;
     bool ready_to_exit = false;
     do {
-        auto& evt = pSomeOtherEVT_Events[event_index];
+        auto &evt = pSomeOtherEVT_Events[event_index];
         if (evt.event_id == npc_event_id && evt.event_step == evt_seq_num) {
             _evt_raw *_evt = (_evt_raw *)&pSomeOtherEVT[evt.uEventOffsetInEVT];
             switch (_evt->_e_type) {

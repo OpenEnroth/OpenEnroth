@@ -5,7 +5,7 @@ void GameUI_LoadPlayerPortraintsAndVoices();
 void GameUI_ReloadPlayerPortraits(int player_id, int face_id);
 void GameUI_WritePointedObjectStatusString();
 void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID);  // idb
-void buttonbox(int x, int y, const char* text, int col);
+void buttonbox(int x, int y, const char *text, int col);
 
 int16_t _441A4E_overlay_on_portrait(int a1);
 

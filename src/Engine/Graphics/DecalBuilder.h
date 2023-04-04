@@ -88,14 +88,14 @@ struct DecalBuilder {
 
     void AddBloodsplat(float x, float y, float z, float r, float g, float b, float radius);
     void Reset(bool bPreserveBloodsplats);
-    char BuildAndApplyDecals(int light_level, LocationFlags locationFlags, struct stru154* FacePlane, int NumFaceVerts,
-                             RenderVertexSoft* FaceVerts, char ClipFlags, unsigned int uSectorID);
+    char BuildAndApplyDecals(int light_level, LocationFlags locationFlags, struct stru154 *FacePlane, int NumFaceVerts,
+                             RenderVertexSoft *FaceVerts, char ClipFlags, unsigned int uSectorID);
     bool Build_Decal_Geometry(
-        int LightLevel, LocationFlags locationFlags, Bloodsplat* blood, float DecalRadius,
-        unsigned int uColorMultiplier, float DecalDotDist, struct stru314* FacetNormals, signed int numfaceverts,
-        RenderVertexSoft* faceverts, char uClipFlags);
+        int LightLevel, LocationFlags locationFlags, Bloodsplat *blood, float DecalRadius,
+        unsigned int uColorMultiplier, float DecalDotDist, struct stru314 *FacetNormals, signed int numfaceverts,
+        RenderVertexSoft *faceverts, char uClipFlags);
     bool ApplyBloodsplatDecals_IndoorFace(unsigned int uFaceID);
-    bool ApplyBloodSplat_OutdoorFace(ODMFace* pFace);
+    bool ApplyBloodSplat_OutdoorFace(ODMFace *pFace);
 
     /**
      * @offset 0x0049BE8A
@@ -135,6 +135,6 @@ struct DecalBuilder {
     float flt_30C030 = 0;
     float field_30C034 = 0;
 
-    Logger* log;
-    BloodsplatContainer* bloodsplat_container;
+    Logger *log;
+    BloodsplatContainer *bloodsplat_container;
 };

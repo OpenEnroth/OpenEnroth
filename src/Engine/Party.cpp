@@ -1297,7 +1297,7 @@ PartyAction ActionQueue::Next() {
 }
 
 void Party::GiveFallDamage(int distance) {
-    for (Player& player : pParty->pPlayers) {  // receive falling damage
+    for (Player &player : pParty->pPlayers) {  // receive falling damage
         if (!player.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
             !player.WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS)) {
             player.ReceiveDamage((int)((distance) *

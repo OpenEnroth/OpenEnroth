@@ -6,8 +6,8 @@
 #include "Utility/Streams/FileInputStream.h"
 
 UNIT_TEST(FileOutputStream, Write) {
-    const char* tmpfile = "tmp_test.txt";
-    const char* tmpfilecontent = "1234\n";
+    const char *tmpfile = "tmp_test.txt";
+    const char *tmpfilecontent = "1234\n";
     size_t tmpfilesize = strlen(tmpfilecontent);
 
     FileOutputStream out(tmpfile);
@@ -29,7 +29,7 @@ UNIT_TEST(FileOutputStream, Write) {
 }
 
 UNIT_TEST(FileInputStream, Skip) {
-    const char* tmpfile = "tmp_test.txt";
+    const char *tmpfile = "tmp_test.txt";
     std::string data(3000, 'a');
 
     FileOutputStream out(tmpfile);

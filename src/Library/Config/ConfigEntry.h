@@ -15,7 +15,7 @@ template <class T>
 class ConfigEntry : public AnyConfigEntry {
  public:
     ConfigEntry(const ConfigEntry &other) = delete; // non-copyable
-    ConfigEntry(ConfigEntry&& other) = delete; // non-movable
+    ConfigEntry(ConfigEntry &&other) = delete; // non-movable
 
     template<class TypedValidator>
     ConfigEntry(ConfigSection *section, const std::string &name, T defaultValue, TypedValidator validator, const std::string &description) :

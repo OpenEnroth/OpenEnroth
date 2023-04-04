@@ -28,7 +28,7 @@ void MediaLogger::Log(void *ptr, int logLevel, const char *format, va_list args)
     if (!logger->shouldLog(LOG_VERBOSE))
         return;
 
-    LogState& state = stateByThreadId_[std::this_thread::get_id()];
+    LogState &state = stateByThreadId_[std::this_thread::get_id()];
 
     char buffer[2048];
     int status = av_log_format_line2(ptr, logLevel, format, args, buffer, sizeof(buffer), &state.prefixFlag);

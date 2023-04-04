@@ -23,7 +23,7 @@ struct FontData {
     uint16_t uFontHeight = 0;  // 5-6
     uint8_t field_7 = 0;
     uint32_t palletes_count = 0;
-    uint8_t* pFontPalettes[5]{};
+    uint8_t *pFontPalettes[5]{};
     GUICharMetric pMetrics[256]{};
     uint32_t font_pixels_offset[256]{};
     std::vector<uint8_t> pFontData;  // array of font pixels

@@ -364,7 +364,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
             // memcpy(data_write_pos, &pActors, uNumActors * sizeof(Actor));
             // data_write_pos += uNumActors * sizeof(Actor);
-            Actor_MM7* tmp_actor = (Actor_MM7*)malloc(sizeof(Actor_MM7));
+            Actor_MM7 *tmp_actor = (Actor_MM7*)malloc(sizeof(Actor_MM7));
 
             for (int i = 0; i < uNumActors; ++i) {
                 Serialize(pActors[i], tmp_actor);
@@ -391,7 +391,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
             // memcpy(data_write_pos, pIndoor->pDoors, sizeof(BLVDoor) * 200);
             // data_write_pos += 16000;
-            BLVDoor_MM7* tmp_door = (BLVDoor_MM7*)malloc(sizeof(BLVDoor_MM7));
+            BLVDoor_MM7 *tmp_door = (BLVDoor_MM7*)malloc(sizeof(BLVDoor_MM7));
             for (int i = 0; i < pIndoor->pDoors.size(); ++i) {
                 Serialize(pIndoor->pDoors[i], tmp_door);
                 memcpy(data_write_pos + i * sizeof(BLVDoor_MM7), tmp_door, sizeof(BLVDoor_MM7));
@@ -547,7 +547,7 @@ void SavegameList::Initialize() {
     std::string saves_dir = MakeDataPath("saves");
 
     if (std::filesystem::exists(saves_dir)) {
-        for (const auto& entry : std::filesystem::directory_iterator(saves_dir)) {
+        for (const auto &entry : std::filesystem::directory_iterator(saves_dir)) {
             if (entry.path().extension() == ".mm7") {
                 pSavegameList->pFileList[uNumSavegameFiles++] = entry.path().filename().string();
                 if (uNumSavegameFiles == MAX_SAVE_SLOTS) break;

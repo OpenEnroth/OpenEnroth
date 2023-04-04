@@ -52,9 +52,9 @@ struct Polygon {
     char terrain_grid_x = 0;
     uint8_t uBModelID = 0;
     uint8_t uBModelFaceID = 0;
-    Edge* pEdgeList1[20] {};
+    Edge *pEdgeList1[20] {};
     unsigned int uEdgeList1Size = 0;
-    Edge* pEdgeList2[20] {};
+    Edge *pEdgeList2[20] {};
     unsigned int uEdgeList2Size = 0;
     char field_108 = 0;
     char field_109 = 0;

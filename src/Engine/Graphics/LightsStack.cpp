@@ -34,7 +34,7 @@ bool LightsStack_StationaryLight_::AddLight(const Vec3f &pos,
         return false;
     }
 
-    StationaryLight* pLight = &pLights[uNumLightsActive++];
+    StationaryLight *pLight = &pLights[uNumLightsActive++];
     pLight->vPosition = pos;
     pLight->uRadius = a5;
     pLight->uLightColorR = r;

@@ -17,7 +17,7 @@
 
 class GameThread {
  public:
-    explicit GameThread(GameTestOptions& options) {
+    explicit GameThread(GameTestOptions &options) {
         _logger = PlatformLogger::createStandardLogger(WIN_ENSURE_CONSOLE_OPTION);
         _logger->setLogLevel(APPLICATION_LOG, LOG_VERBOSE);
         _logger->setLogLevel(PLATFORM_LOG, LOG_VERBOSE);

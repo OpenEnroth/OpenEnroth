@@ -18,7 +18,7 @@ class AssetsManager {
     bool ReleaseAllSprites();
 
     bool ReleaseImage(const std::string &name);
-    bool ReleaseSprite(const std::string& name);
+    bool ReleaseSprite(const std::string &name);
 
     Texture *GetImage_ColorKey(const std::string &name, uint16_t colorkey = colorTable.TealMask.c16());
     Texture *GetImage_Paletted(const std::string &name);
@@ -35,7 +35,7 @@ class AssetsManager {
 
     // TODO(pskelton): Contain better
     // TODO(pskelton): Manager should have a ref to all loose textures created throuh CreateTexture_Blank also
-    Texture* WinnerCert{ nullptr };
+    Texture *WinnerCert{ nullptr };
 
  protected:
     std::map<std::string, Texture *> bitmaps;

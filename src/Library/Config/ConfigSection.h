@@ -11,7 +11,7 @@ class ConfigSection {
     ConfigSection(Config *config, const std::string &name); // Defined in Config.cpp
 
     ConfigSection(const ConfigSection &other) = delete; // non-copyable
-    ConfigSection(ConfigSection&& other) = delete; // non-movable
+    ConfigSection(ConfigSection &&other) = delete; // non-movable
 
     Config *config() const {
         return _config;

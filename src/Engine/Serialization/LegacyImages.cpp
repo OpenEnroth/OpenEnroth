@@ -739,7 +739,7 @@ void Serialize(const Player &src, Player_MM7 *dst) {
     dst->field_1B3B = src.field_1B3B_set0_unused;
 }
 
-void Deserialize(const Player_MM7 &src, Player* dst) {
+void Deserialize(const Player_MM7 &src, Player *dst) {
     for (unsigned int i = 0; i < 20; ++i)
         dst->conditions.Set(static_cast<Condition>(i), GameTime(src.pConditions[i]));
 

@@ -9,7 +9,7 @@
 #include "Library/Random/Random.h"
 
 std::vector<LevelDecoration> pLevelDecorations;
-LevelDecoration* activeLevelDecoration;
+LevelDecoration *activeLevelDecoration;
 
 //----- (004583B0) --------------------------------------------------------
 LevelDecoration::LevelDecoration() { memset(this, 0, sizeof(*this)); }

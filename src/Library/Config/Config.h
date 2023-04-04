@@ -12,7 +12,7 @@ class Config {
  public:
     Config() = default;
     Config(const Config &other) = delete; // non-copyable
-    Config(Config&& other) = delete; // non-movable
+    Config(Config &&other) = delete; // non-movable
 
     void load(const std::string &path);
     void save(const std::string &path) const;

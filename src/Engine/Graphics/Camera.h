@@ -62,9 +62,9 @@ struct Camera3D {
     void Project(struct RenderVertexSoft *pVertices, unsigned int uNumVertices,
                  bool fit_into_viewport = false);
 
-    bool CullFaceToCameraFrustum(RenderVertexSoft* pInVertices,
-        unsigned int* pOutNumVertices,
-        RenderVertexSoft* pVertices,
+    bool CullFaceToCameraFrustum(RenderVertexSoft *pInVertices,
+        unsigned int *pOutNumVertices,
+        RenderVertexSoft *pVertices,
         signed int NumFrustumPlanes);
 
     float GetPolygonMaxZ(struct RenderVertexSoft *pVertex,
@@ -88,14 +88,14 @@ struct Camera3D {
                          unsigned int *pOutNumVertices,
                          struct RenderVertexSoft *pVertices, signed int uNumVertices);
 
-    bool CullFaceToFrustum(struct RenderVertexSoft* inVerts,
-        unsigned int* pOutNumVertices,
-        struct RenderVertexSoft* pOutVertices, struct IndoorCameraD3D_Vec4* frustum, signed int uNumPlanes);
+    bool CullFaceToFrustum(struct RenderVertexSoft *inVerts,
+        unsigned int *pOutNumVertices,
+        struct RenderVertexSoft *pOutVertices, struct IndoorCameraD3D_Vec4 *frustum, signed int uNumPlanes);
 
-    bool ClipFaceToFrustum(RenderVertexSoft* pInVertices,
-        unsigned int* pOutNumVertices,
-        RenderVertexSoft* pVertices,
-        IndoorCameraD3D_Vec4* CameraFrustrum,
+    bool ClipFaceToFrustum(RenderVertexSoft *pInVertices,
+        unsigned int *pOutNumVertices,
+        RenderVertexSoft *pVertices,
+        IndoorCameraD3D_Vec4 *CameraFrustrum,
         signed int NumFrustumPlanes, char DebugLines,
         int _unused);
 
@@ -114,7 +114,7 @@ struct Camera3D {
                                signed int sEndDiffuse32,
                                unsigned int uOutNumVertices, float z_stuff);
     bool is_face_faced_to_cameraBLV(struct BLVFace *pFace);
-    bool is_face_faced_to_cameraODM(struct ODMFace* pFace, struct RenderVertexSoft* a2);
+    bool is_face_faced_to_cameraODM(struct ODMFace *pFace, struct RenderVertexSoft *a2);
     bool GetFacetOrientation(PolygonType polyType, Vec3f *a2,
                              Vec3f *a3, Vec3f *a4);
     void ViewTransfrom_OffsetUV(struct RenderVertexSoft *pVertices,
@@ -122,8 +122,8 @@ struct Camera3D {
                                 struct RenderVertexSoft *pOutVertices,
                                 struct LightsData *a5);
 
-    void CullByNearClip(struct RenderVertexSoft* pverts, uint* unumverts);
-    void CullByFarClip(struct RenderVertexSoft* pverts, uint* unumverts);
+    void CullByNearClip(struct RenderVertexSoft *pverts, uint *unumverts);
+    void CullByFarClip(struct RenderVertexSoft *pverts, uint *unumverts);
 
     float GetMouseInfoDepth();
 

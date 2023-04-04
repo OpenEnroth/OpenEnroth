@@ -456,7 +456,7 @@ bool Player::IsPlayerHealableByTemple() {
     }
 }
 
-ItemGen* Player::GetItemAtInventoryIndex(int inout_item_cell) {
+ItemGen *Player::GetItemAtInventoryIndex(int inout_item_cell) {
     int inventory_index = this->GetItemListAtInventoryIndex(inout_item_cell);
 
     if (!inventory_index) {
@@ -811,7 +811,7 @@ int Player::AddItem(int index, ITEM_TYPE uItemID) {
 }
 
 //----- (00492826) --------------------------------------------------------
-int Player::AddItem2(int index, ItemGen* Src) {  // are both required - check
+int Player::AddItem2(int index, ItemGen *Src) {  // are both required - check
     pItemTable->SetSpecialBonus(Src);
 
     if (index == -1) {  // no loaction specified
@@ -835,7 +835,7 @@ int Player::AddItem2(int index, ItemGen* Src) {  // are both required - check
 
 //----- (0049289C) --------------------------------------------------------
 int Player::CreateItemInInventory2(unsigned int index,
-                                   ItemGen* Src) {  // are both required - check
+                                   ItemGen *Src) {  // are both required - check
     signed int freeSlot = FindFreeInventoryListSlot();
     int result;
 
@@ -853,14 +853,14 @@ int Player::CreateItemInInventory2(unsigned int index,
 //----- (0049298B) --------------------------------------------------------
 void Player::PutItemArInventoryIndex(
     ITEM_TYPE uItemID, int itemListPos,
-    int index) {  // originally accepted ItemGen* but needed only its uItemID
+    int index) {  // originally accepted ItemGen *but needed only its uItemID
 
     auto img = assets->GetImage_ColorKey(pItemTable->pItems[uItemID].pIconName);
     unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
 
     if (slot_width > 0) {
-        int* pInvPos = &pInventoryMatrix[index];
+        int *pInvPos = &pInventoryMatrix[index];
         for (unsigned int i = 0; i < slot_height; i++) {
             memset32(pInvPos, -1 - index,
                      slot_width);  // TODO(_): try to come up with a better
@@ -875,7 +875,7 @@ void Player::PutItemArInventoryIndex(
 
 //----- (00492A36) --------------------------------------------------------
 void Player::RemoveItemAtInventoryIndex(unsigned int index) {
-    ItemGen* item_in_slot = this->GetItemAtInventoryIndex(index);
+    ItemGen *item_in_slot = this->GetItemAtInventoryIndex(index);
 
     auto img = assets->GetImage_ColorKey(item_in_slot->GetIconName());
     unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
@@ -889,7 +889,7 @@ void Player::RemoveItemAtInventoryIndex(unsigned int index) {
     }
 
     if (slot_width > 0) {
-        int* pInvPos = &pInventoryMatrix[index];
+        int *pInvPos = &pInventoryMatrix[index];
         for (unsigned int i = 0; i < slot_height; i++) {
             memset32(pInvPos, 0, slot_width);
             pInvPos += INVENTORY_SLOTS_WIDTH;
@@ -916,7 +916,7 @@ int Player::GetMeditation() {
 }
 
 //----- (004910D3) --------------------------------------------------------
-bool Player::CanIdentify(ItemGen* pItem) {
+bool Player::CanIdentify(ItemGen *pItem) {
     PLAYER_SKILL_LEVEL skill = GetActualSkillLevel(PLAYER_SKILL_ITEM_ID);
     PLAYER_SKILL_MASTERY skillmaster = GetActualSkillMastery(PLAYER_SKILL_ITEM_ID);
     int multiplier =
@@ -933,7 +933,7 @@ bool Player::CanIdentify(ItemGen* pItem) {
 }
 
 //----- (00491151) --------------------------------------------------------
-bool Player::CanRepair(ItemGen* pItem) {
+bool Player::CanRepair(ItemGen *pItem) {
     PLAYER_SKILL_LEVEL skill = GetActualSkillLevel(PLAYER_SKILL_REPAIR);
     PLAYER_SKILL_MASTERY skillmaster = GetActualSkillMastery(PLAYER_SKILL_REPAIR);
     int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_REPAIR, 1, 2, 3, 5);
@@ -1194,7 +1194,7 @@ int Player::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
         mainWpnDmg = grng->Random(3) + 1;
     } else {
         if (HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-            ItemGen* mainHandItemGen = this->GetMainHandItem();
+            ItemGen *mainHandItemGen = this->GetMainHandItem();
             ITEM_TYPE itemId = mainHandItemGen->uItemID;
             bool addOneDice = false;
             if (pItemTable->pItems[itemId].uSkillType == PLAYER_SKILL_SPEAR &&
@@ -1209,7 +1209,7 @@ int Player::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
         if (!ignoreOffhand) {
             if (this->HasItemEquipped(ITEM_SLOT_OFF_HAND)) {  // has second hand got a weapon
                                                               // that not a shield
-                ItemGen* offHandItemGen =
+                ItemGen *offHandItemGen =
                     (ItemGen*)&this
                         ->pInventoryItemList[this->pEquipment.uOffHand - 1];
 
@@ -1237,7 +1237,7 @@ int Player::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
     return dmgSum;
 }
 
-int Player::CalculateMeleeDmgToEnemyWithWeapon(ItemGen* weapon,
+int Player::CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
                                                unsigned int uTargetActorID,
                                                bool addOneDice) {
     ITEM_TYPE itemId = weapon->uItemID;
@@ -1293,7 +1293,7 @@ int Player::GetRangedAttack() {
     int weapbonus;
     int skillbonus;
 
-    ItemGen* mainHandItem = GetMainHandItem();
+    ItemGen *mainHandItem = GetMainHandItem();
 
     if (mainHandItem != nullptr &&
         (mainHandItem->uItemID < ITEM_BLASTER ||
@@ -1346,7 +1346,7 @@ int Player::CalculateRangedDamageTo(int uMonsterInfoID) {
     if (!HasItemEquipped(ITEM_SLOT_BOW))  // no bow
         return 0;
 
-    ItemGen* bow =
+    ItemGen *bow =
         (ItemGen*)&this->pInventoryItemList[this->pEquipment.uBow - 1];
     ITEM_ENCHANTMENT itemenchant = bow->special_enchantment;
 
@@ -1391,7 +1391,7 @@ std::string Player::GetMeleeDamageString() {
     int min_damage;
     int max_damage;
 
-    ItemGen* mainHandItem = GetMainHandItem();
+    ItemGen *mainHandItem = GetMainHandItem();
 
     if (mainHandItem != nullptr && (mainHandItem->uItemID >= ITEM_WAND_OF_FIRE) &&
         (mainHandItem->uItemID <= ITEM_MYSTIC_WAND_OF_INCINERATION)) {
@@ -1418,7 +1418,7 @@ std::string Player::GetRangedDamageString() {
     int min_damage;
     int max_damage;
 
-    ItemGen* mainHandItem = GetMainHandItem();
+    ItemGen *mainHandItem = GetMainHandItem();
 
     if (mainHandItem != nullptr && IsWand(mainHandItem->uItemID)) {
         return std::string(localization->GetString(LSTR_WAND));
@@ -1509,7 +1509,7 @@ int Player::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
         }
     }
 
-    ItemGen* equippedArmor = GetArmorItem();
+    ItemGen *equippedArmor = GetArmorItem();
     if ((dmg_type == DMGT_PHISYCAL) &&
         (equippedArmor != nullptr)) {      // physical damage and wearing armour
         if (!equippedArmor->IsBroken()) {  // armour isnt broken
@@ -1584,9 +1584,9 @@ bool Player::WearsItemAnywhere(ITEM_TYPE item_id) const {
 
 //----- (0048D76C) --------------------------------------------------------
 int Player::StealFromShop(
-    ItemGen* itemToSteal, int extraStealDifficulty, int reputation,
+    ItemGen *itemToSteal, int extraStealDifficulty, int reputation,
     int extraStealFine,
-    int* fineIfFailed) {  // returns an int, but is the return value is compared
+    int *fineIfFailed) {  // returns an int, but is the return value is compared
                           // to zero, so might change to bool
 
     // fineiffailed is changed!
@@ -1629,7 +1629,7 @@ int Player::StealFromActor(
     unsigned int uActorID, int _steal_perm,
     int reputation) {  // returns not used - should luck attribute affect
 
-    Actor* actroPtr;
+    Actor *actroPtr;
     actroPtr = &pActors[uActorID];
 
     if (!actroPtr || !CanAct()) {  // no actor to steal from or player cant act
@@ -1667,7 +1667,7 @@ int Player::StealFromActor(
 
             unsigned int enchBonusSum = grng->RandomDice(stealskill, StealingEnchantmentBonusForSkill[stealingMastery]);
 
-            int* enchTypePtr = (int*)&actroPtr->ActorHasItems[3].special_enchantment;  // actor has this amount of gold
+            int *enchTypePtr = (int*)&actroPtr->ActorHasItems[3].special_enchantment;  // actor has this amount of gold
 
             if ((int)enchBonusSum >= *enchTypePtr) {  // steal all the gold
                 enchBonusSum = *enchTypePtr;
@@ -1710,7 +1710,7 @@ int Player::StealFromActor(
                         tempItem.uEnchantmentType = 2 * grng->Random(4) + 2;
                     }
                 } else {
-                    ItemGen* itemToSteal = &actroPtr->ActorHasItems[randslot];
+                    ItemGen *itemToSteal = &actroPtr->ActorHasItems[randslot];
                     memcpy(&tempItem, itemToSteal, sizeof(tempItem));
                     itemToSteal->Reset();
                     carriedItemId = tempItem.uItemID;
@@ -1776,7 +1776,7 @@ int Player::ReceiveDamage(signed int amount, DAMAGE_TYPE dmg_type) {
         }
 
         if (sHealth <= -10) {  // break armor if health has dropped below -10
-            ItemGen* equippedArmor = GetArmorItem();
+            ItemGen *equippedArmor = GetArmorItem();
             if (equippedArmor != nullptr) {  // check there is some armor
                 if (!(equippedArmor->uAttributes &
                       ITEM_HARDENED)) {          // if its not hardened
@@ -1796,7 +1796,7 @@ int Player::ReceiveDamage(signed int amount, DAMAGE_TYPE dmg_type) {
 //----- (0048DCF6) --------------------------------------------------------
 int Player::ReceiveSpecialAttackEffect(
     int attType,
-    Actor* pActor) {  // long function - consider breaking into two??
+    Actor *pActor) {  // long function - consider breaking into two??
 
     SPECIAL_ATTACK_TYPE attTypeCast = (SPECIAL_ATTACK_TYPE)attType;
 
@@ -1805,8 +1805,8 @@ int Player::ReceiveSpecialAttackEffect(
     int luckstat = GetActualLuck();
     signed int itemstobreakcounter = 0;
     char itemstobreaklist[140] {};
-    ItemGen* itemtocheck = nullptr;
-    ItemGen* itemtobreak = nullptr;
+    ItemGen *itemtocheck = nullptr;
+    ItemGen *itemtobreak = nullptr;
     unsigned int itemtostealinvindex = 0;
 
     switch (attTypeCast) {
@@ -2412,7 +2412,7 @@ unsigned int Player::GetActualAge() {
 int Player::GetBaseResistance(CHARACTER_ATTRIBUTE_TYPE a2) {
     int v7;  // esi@20
     int racialBonus = 0;
-    int16_t* resStat;
+    int16_t *resStat;
     int result;
 
     switch (a2) {
@@ -2455,7 +2455,7 @@ int Player::GetBaseResistance(CHARACTER_ATTRIBUTE_TYPE a2) {
 //----- (0048E7D0) --------------------------------------------------------
 int Player::GetActualResistance(CHARACTER_ATTRIBUTE_TYPE a2) {
     signed int v10 = 0;  // [sp+14h] [bp-4h]@1
-    int16_t* resStat;
+    int16_t *resStat;
     int result;
     int baseRes;
 
@@ -2590,7 +2590,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
     PLAYER_SKILL_TYPE v58;             // [sp-4h] [bp-20h]@10
     int v61;                    // [sp+10h] [bp-Ch]@1
     int v62;                    // [sp+14h] [bp-8h]@1
-    ItemGen* currEquippedItem;  // [sp+20h] [bp+4h]@101
+    ItemGen *currEquippedItem;  // [sp+20h] [bp+4h]@101
     bool no_skills;
 
     v5 = 0;
@@ -2700,7 +2700,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
             } else {
                 if (this->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
                     if (IsWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
-                        ItemGen* mainHandItem = GetMainHandItem();
+                        ItemGen *mainHandItem = GetMainHandItem();
                         v26 = mainHandItem->GetDamageRoll();
                         if (GetOffHandItem() != nullptr ||
                             mainHandItem->GetPlayerSkillType() != PLAYER_SKILL_SPEAR) {
@@ -2716,7 +2716,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
                     !IsWeapon(GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
                     return v5;
                 } else {
-                    ItemGen* offHandItem = GetOffHandItem();
+                    ItemGen *offHandItem = GetOffHandItem();
                     v15 = offHandItem->GetDamageMod();
                     v14 = offHandItem->GetDamageDice() *
                           offHandItem->GetDamageRoll();
@@ -2751,7 +2751,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
             }
             if (this->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
                 if (IsWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
-                    ItemGen* mainHandItem = GetMainHandItem();
+                    ItemGen *mainHandItem = GetMainHandItem();
                     v5 = mainHandItem->GetDamageDice() +
                          mainHandItem->GetDamageMod();
                     if (GetOffHandItem() == nullptr &&
@@ -2766,7 +2766,7 @@ int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg
                 !IsWeapon(GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
                 return v5;
             } else {
-                ItemGen* offHandItem = GetOffHandItem();
+                ItemGen *offHandItem = GetOffHandItem();
                 v14 = offHandItem->GetDamageMod();
                 v15 = offHandItem->GetDamageDice();
                 return v5 + v15 + v14;
@@ -3136,7 +3136,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) {
             unsigned int ACSum = 0;
 
             for (ITEM_SLOT j : AllItemSlots()) {
-                ItemGen* currItem = GetNthEquippedIndexItem(j);
+                ItemGen *currItem = GetNthEquippedIndexItem(j);
                 if (currItem != nullptr && (!currItem->IsBroken())) {
                     PLAYER_SKILL_TYPE itemSkillType =
                         (PLAYER_SKILL_TYPE)currItem->GetPlayerSkillType();
@@ -3213,7 +3213,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) {
             }
             for (ITEM_SLOT i : AllItemSlots()) {  // ?? what eh check behaviour
                 if (this->HasItemEquipped(i)) {
-                    ItemGen* currItem = GetNthEquippedIndexItem(i);
+                    ItemGen *currItem = GetNthEquippedIndexItem(i);
                     if (currItem->isMeleeWeapon()) {
                         PLAYER_SKILL_TYPE currItemSkillType = currItem->GetPlayerSkillType();
                         int currentItemSkillLevel = this->GetActualSkillLevel(currItemSkillType);
@@ -3236,7 +3236,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) {
         case CHARACTER_ATTRIBUTE_RANGED_ATTACK:
             for (ITEM_SLOT i : AllItemSlots()) {
                 if (this->HasItemEquipped(i)) {
-                    ItemGen* currItemPtr = GetNthEquippedIndexItem(i);
+                    ItemGen *currItemPtr = GetNthEquippedIndexItem(i);
                     // TODO(Nik-RE-dev): melee?
                     if (currItemPtr->isMeleeWeapon()) {
                         PLAYER_SKILL_TYPE currentItemSkillType = GetNthEquippedIndexItem(i)->GetPlayerSkillType();
@@ -3265,7 +3265,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) {
             }
             for (ITEM_SLOT i : AllItemSlots()) {
                 if (this->HasItemEquipped(i)) {
-                    ItemGen* currItemPtr = GetNthEquippedIndexItem(i);
+                    ItemGen *currItemPtr = GetNthEquippedIndexItem(i);
                     if (currItemPtr->isMeleeWeapon()) {
                         PLAYER_SKILL_TYPE currItemSkillType = currItemPtr->GetPlayerSkillType();
                         PLAYER_SKILL_LEVEL currItemSkillLevel = this->GetActualSkillLevel(currItemSkillType);
@@ -3541,7 +3541,7 @@ void Player::DecreaseAttribute(int eAttribute) {
     pDroppedStep = StatTable[raceId][eAttribute].uDroppedStep;
     uMinValue = pBaseValue - 2;
     pStep = StatTable[raceId][eAttribute].uBaseStep;
-    unsigned short* AttrToChange = nullptr;
+    unsigned short *AttrToChange = nullptr;
     switch (eAttribute) {
         case CHARACTER_ATTRIBUTE_STRENGTH:
             AttrToChange = &this->uMight;
@@ -3579,7 +3579,7 @@ void Player::IncreaseAttribute(int eAttribute) {
     signed int result;       // eax@18
     int baseValue;           // [sp+Ch] [bp-8h]@1
     signed int droppedStep;  // [sp+10h] [bp-4h]@1
-    unsigned short* statToChange;
+    unsigned short *statToChange;
 
     raceId = GetRace();
     maxValue = StatTable[raceId][eAttribute].uMaxValue;
@@ -4283,8 +4283,8 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
     signed int v4;                         // edi@1
     uint8_t test_bit_value;        // eax@25
     uint8_t byteWithRequestedBit;  // cl@25
-    DDM_DLV_Header* v19;                   // eax@122
-    DDM_DLV_Header* v21;                   // eax@126
+    DDM_DLV_Header *v19;                   // eax@122
+    DDM_DLV_Header *v21;                   // eax@126
     int actStat;                           // ebx@161
     int baseStat;                          // eax@161
 
@@ -4694,7 +4694,7 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
 //----- (0044A5CB) --------------------------------------------------------
 void Player::SetVariable(VariableType var_type, signed int var_value) {
     int gold{}, food{};
-    DDM_DLV_Header* ddm;
+    DDM_DLV_Header *ddm;
     ItemGen item;
 
     if (var_type >= VAR_History_0 && var_type <= VAR_History_28) {
@@ -5280,7 +5280,7 @@ void Player::SetSkillByEvent(uint16_t Player::*skillToSet,
 //----- (0044AFFB) --------------------------------------------------------
 void Player::AddVariable(VariableType var_type, signed int val) {
     int food{};
-    DDM_DLV_Header* ddm;
+    DDM_DLV_Header *ddm;
     ItemGen item;
 
     if (var_type >= VAR_Counter1 && var_type <= VAR_Counter10) {
@@ -5830,7 +5830,7 @@ void Player::AddSkillByEvent(uint16_t Player::*skillToSet,
 
 //----- (0044B9C4) --------------------------------------------------------
 void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
-    DDM_DLV_Header* locationHeader;  // eax@90
+    DDM_DLV_Header *locationHeader;  // eax@90
     int randGold;
     int randFood;
     int npcIndex;
@@ -6530,7 +6530,7 @@ bool IsDwarfPresentInParty(bool a1) {
 }
 
 //----- (00439FCB) --------------------------------------------------------
-void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i* pPos, signed int targetchar) {
+void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos, signed int targetchar) {
     // target player? if any
 
     SPELL_TYPE spellId;
@@ -6577,7 +6577,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
         }
 
         // play hit sound
-        ItemGen* equippedArmor = playerPtr->GetArmorItem();
+        ItemGen *equippedArmor = playerPtr->GetArmorItem();
         SoundID soundToPlay;
         if (!equippedArmor || equippedArmor->IsBroken() ||
             (equippedArmor->GetPlayerSkillType() != PLAYER_SKILL_CHAIN &&
@@ -6712,12 +6712,12 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
         return;
     } else {  // is an item
         int spriteId = PID_ID(uObjID);
-        SpriteObject* spritefrom = &pSpriteObjects[spriteId];
+        SpriteObject *spritefrom = &pSpriteObjects[spriteId];
         ObjectType uActorType = PID_TYPE(spritefrom->spell_caster_pid);
         int uActorID = PID_ID(spritefrom->spell_caster_pid);
 
         if (uActorType == OBJECT_Item) {
-            Player* playerPtr;  // eax@81
+            Player *playerPtr;  // eax@81
 
             // select char target or pick random
             if (targetchar != -1) {
@@ -6753,9 +6753,9 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             }
             return;
         } else if (uActorType == OBJECT_Actor) {  // missile fired by actor
-            Actor* actorPtr = &pActors[uActorID];
+            Actor *actorPtr = &pActors[uActorID];
             if (targetchar == -1) targetchar = stru_50C198.which_player_to_attack(actorPtr);
-            Player* playerPtr = &pParty->pPlayers[targetchar];
+            Player *playerPtr = &pParty->pPlayers[targetchar];
             int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
             uint16_t spriteType = spritefrom->uType;
 
@@ -6786,14 +6786,14 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                     playerPtr->GetArmorItem()->uItemID == ITEM_ARTIFACT_GOVERNORS_ARMOR)
                     dmgToReceive >>= 1;
                 if (playerPtr->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-                    ItemGen* mainHandItem = playerPtr->GetMainHandItem();
+                    ItemGen *mainHandItem = playerPtr->GetMainHandItem();
                     if (mainHandItem->uItemID == ITEM_RELIC_KELEBRIM ||
                         mainHandItem->uItemID == ITEM_ARTIFACT_ELFBANE ||
                         (mainHandItem->isShield() && playerPtr->GetActualSkillMastery(PLAYER_SKILL_SHIELD) == PLAYER_SKILL_MASTERY_GRANDMASTER))
                         dmgToReceive >>= 1;
                 }
                 if (playerPtr->HasItemEquipped(ITEM_SLOT_OFF_HAND)) {
-                    ItemGen* offHandItem = playerPtr->GetOffHandItem();
+                    ItemGen *offHandItem = playerPtr->GetOffHandItem();
                     if (offHandItem->uItemID == ITEM_RELIC_KELEBRIM ||
                         offHandItem->uItemID == ITEM_ARTIFACT_ELFBANE ||
                         (offHandItem->isShield() && playerPtr->GetActualSkillMastery(PLAYER_SKILL_SHIELD) == PLAYER_SKILL_MASTERY_GRANDMASTER))
@@ -6878,7 +6878,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             return;
         } else {
             // party hits self
-            Player* playerPtr = &pParty->pPlayers[targetchar];
+            Player *playerPtr = &pParty->pPlayers[targetchar];
             int damage;
             int damagetype;
             if (uActorType != OBJECT_Player ||
@@ -6911,7 +6911,7 @@ void Player::OnInventoryLeftClick() {
     unsigned int itemPos;       // eax@18
     ItemGen tmpItem;            // [sp+Ch] [bp-3Ch]@1
 
-    CastSpellInfo* pSpellInfo;
+    CastSpellInfo *pSpellInfo;
 
     if (current_character_screen_window == WINDOW_CharacterWindow_Inventory) {
         int pY;
@@ -6973,7 +6973,7 @@ void Player::OnInventoryLeftClick() {
                 }
             } else {  // hold item
                 if (invItemIndex) {
-                    ItemGen* invItemPtr = &this->pInventoryItemList[invItemIndex - 1];
+                    ItemGen *invItemPtr = &this->pInventoryItemList[invItemIndex - 1];
                     memcpy(&tmpItem, invItemPtr, sizeof(tmpItem));
                     int oldinvMatrixIndex = invMatrixIndex;
                     invMatrixIndex = GetItemMainInventoryIndex(invMatrixIndex);
@@ -7143,33 +7143,33 @@ void Player::SetCondUnconsciousWithBlockCheck(int blockable) {
     SetCondition(Condition_Dead, blockable);
 }
 
-ItemGen* Player::GetOffHandItem() { return GetItem(&PlayerEquipment::uOffHand); }
+ItemGen *Player::GetOffHandItem() { return GetItem(&PlayerEquipment::uOffHand); }
 
-ItemGen* Player::GetMainHandItem() {
+ItemGen *Player::GetMainHandItem() {
     return GetItem(&PlayerEquipment::uMainHand);
 }
 
-ItemGen* Player::GetBowItem() { return GetItem(&PlayerEquipment::uBow); }
+ItemGen *Player::GetBowItem() { return GetItem(&PlayerEquipment::uBow); }
 
-ItemGen* Player::GetArmorItem() { return GetItem(&PlayerEquipment::uArmor); }
+ItemGen *Player::GetArmorItem() { return GetItem(&PlayerEquipment::uArmor); }
 
-ItemGen* Player::GetHelmItem() { return GetItem(&PlayerEquipment::uHelm); }
+ItemGen *Player::GetHelmItem() { return GetItem(&PlayerEquipment::uHelm); }
 
-ItemGen* Player::GetBeltItem() { return GetItem(&PlayerEquipment::uBelt); }
+ItemGen *Player::GetBeltItem() { return GetItem(&PlayerEquipment::uBelt); }
 
-ItemGen* Player::GetCloakItem() { return GetItem(&PlayerEquipment::uCloak); }
+ItemGen *Player::GetCloakItem() { return GetItem(&PlayerEquipment::uCloak); }
 
-ItemGen* Player::GetGloveItem() { return GetItem(&PlayerEquipment::uGlove); }
+ItemGen *Player::GetGloveItem() { return GetItem(&PlayerEquipment::uGlove); }
 
-ItemGen* Player::GetBootItem() { return GetItem(&PlayerEquipment::uBoot); }
+ItemGen *Player::GetBootItem() { return GetItem(&PlayerEquipment::uBoot); }
 
-ItemGen* Player::GetAmuletItem() { return GetItem(&PlayerEquipment::uAmulet); }
+ItemGen *Player::GetAmuletItem() { return GetItem(&PlayerEquipment::uAmulet); }
 
-ItemGen* Player::GetNthRingItem(int ringNum) {
+ItemGen *Player::GetNthRingItem(int ringNum) {
     return GetNthEquippedIndexItem(RingSlot(ringNum));
 }
 
-ItemGen* Player::GetNthEquippedIndexItem(ITEM_SLOT index) {
+ItemGen *Player::GetNthEquippedIndexItem(ITEM_SLOT index) {
     if (this->pEquipment.pIndices[index] == 0) {
         return nullptr;
     }
@@ -7181,7 +7181,7 @@ const ItemGen *Player::GetNthEquippedIndexItem(ITEM_SLOT index) const {
     return const_cast<Player *>(this)->GetNthEquippedIndexItem(index);
 }
 
-ItemGen* Player::GetItem(unsigned int PlayerEquipment::*itemPos) {
+ItemGen *Player::GetItem(unsigned int PlayerEquipment::*itemPos) {
     if (this->pEquipment.*itemPos == 0) {
         return nullptr;
     }
@@ -7194,7 +7194,7 @@ int Player::GetPlayerIndex() {
 }
 
 //----- (004272F5) --------------------------------------------------------
-bool Player::PlayerHitOrMiss(Actor* pActor, int distancemod, PLAYER_SKILL_LEVEL skillmod) {  // PS - RETURN IF ATTACK WILL HIT
+bool Player::PlayerHitOrMiss(Actor *pActor, int distancemod, PLAYER_SKILL_LEVEL skillmod) {  // PS - RETURN IF ATTACK WILL HIT
     int naturalArmor = pActor->pMonsterInfo.uAC;  // actor usual armour
     int armorBuff = 0;
 
@@ -7243,7 +7243,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
     //  SoundID v24; // [sp-4h] [bp-40h]@58
 
     // result = pParty->pPlayers[pParty->getActiveCharacter()-1].CanAct();
-    Player* player = &pParty->pPlayers[pParty->getActiveCharacter() - 1];
+    Player *player = &pParty->pPlayers[pParty->getActiveCharacter() - 1];
     if (!player->CanAct()) return;
 
     CastSpellInfoHelpers::cancelSpellCastInProgress();
@@ -7264,7 +7264,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
 
     int main_hand_idx = player->pEquipment.uMainHand;
     if (main_hand_idx) {
-        ItemGen* item = &player->pInventoryItemList[main_hand_idx - 1];
+        ItemGen *item = &player->pInventoryItemList[main_hand_idx - 1];
         // v5 = (char *)v1 + 36 * v4;
         if (!item->IsBroken()) {
             // v28b = &v1->pInventoryItems[v4].uItemID;
@@ -7296,7 +7296,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
         target_id = PID_ID(target_pid);
     }
 
-    Actor* actor = nullptr;
+    Actor *actor = nullptr;
     if (target_id < 500) {
         actor = &pActors[target_id];  // prevent crash
     }
@@ -7570,7 +7570,7 @@ bool Player::IsClass(PLAYER_CLASS_TYPE class_type, bool check_honorary) {
 }
 
 //----- (00490EEE) --------------------------------------------------------
-MERCHANT_PHRASE Player::SelectPhrasesTransaction(ItemGen* pItem, BuildingType building_type, int BuildID_2Events, int ShopMenuType) {
+MERCHANT_PHRASE Player::SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, int BuildID_2Events, int ShopMenuType) {
     // TODO(_): probably move this somewhere else, not really Player:: stuff
     ITEM_TYPE idemId;   // edx@1
     ITEM_EQUIP_TYPE equipType;  // esi@1
