@@ -397,11 +397,13 @@ void AudioPlayer::UpdateSounds() {
 }
 
 void AudioPlayer::AudioSamplePool::playNew(PAudioSample sample, bool loop, bool positional) {
+    update();
     sample->Play(loop, positional);
     samplePool.push_back(AudioPlayer::AudioSamplePoolEntry(sample, SOUND_Invalid));
 }
 
 void AudioPlayer::AudioSamplePool::playUnique(PAudioSample sample, SoundID id, bool loop, bool positional) {
+    update();
     for (AudioPlayer::AudioSamplePoolEntry &entry : samplePool) {
         if (entry.id == id) {
             return;
@@ -412,23 +414,17 @@ void AudioPlayer::AudioSamplePool::playUnique(PAudioSample sample, SoundID id, b
 }
 
 void AudioPlayer::AudioPlayer::AudioSamplePool::pause() {
-    assert(!isPaused);
-
+    update();
     for (AudioPlayer::AudioSamplePoolEntry &entry : samplePool) {
         entry.samplePtr->Pause();
     }
-
-    isPaused = true;
 }
 
 void AudioPlayer::AudioSamplePool::resume() {
-    assert(isPaused);
-
+    update();
     for (AudioPlayer::AudioSamplePoolEntry &entry : samplePool) {
         entry.samplePtr->Resume();
     }
-
-    isPaused = false;
 }
 
 void AudioPlayer::AudioSamplePool::stop(SoundID soundId) {
@@ -451,10 +447,6 @@ void AudioPlayer::AudioSamplePool::stop(SoundID soundId) {
 }
 
 void AudioPlayer::AudioSamplePool::update() {
-    if (isPaused) {
-        return;
-    }
-
     auto it = samplePool.begin();
     while (it != samplePool.end()) {
         if ((*it).samplePtr->IsStopped()) {

@@ -160,7 +160,6 @@ class AudioPlayer {
             void stop(SoundID soundId = SOUND_Invalid);
             void update();
         private:
-            bool isPaused = false;
             std::list<AudioSamplePoolEntry> samplePool;
     };
 

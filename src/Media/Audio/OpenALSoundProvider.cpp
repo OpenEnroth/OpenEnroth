@@ -714,9 +714,7 @@ AudioSample16::AudioSample16() {
 AudioSample16::~AudioSample16() { Close(); }
 
 void AudioSample16::Close() {
-    if (pDataSource) {
-        pDataSource->Close();
-    }
+    pDataSource = nullptr;
 
     if (alIsSource(al_source) != 0) {
         alSourceStop(al_source);
@@ -807,6 +805,8 @@ bool AudioSample16::Open(PAudioDataSource data_source) {
             break;
         }
     }
+
+    pDataSource->Close();
 
     return true;
 }
