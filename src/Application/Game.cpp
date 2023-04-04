@@ -443,7 +443,6 @@ void Game::EventLoop() {
     unsigned int pMapNum;       // eax@445
     int16_t v63;                // dx@479
     unsigned int v64;           // eax@486
-    int v65;                    // ecx@486
     int v66;                    // eax@488
     Player *pPlayer2;           // ecx@549
     GUIButton *pButton;         // eax@578
@@ -466,7 +465,7 @@ void Game::EventLoop() {
     int encounter_index;           // [sp+20h] [bp-5DCh]@23
     unsigned int uNumSeconds;     // [sp+24h] [bp-5D8h]@18
     UIMessageType uMessage;  // [sp+2Ch] [bp-5D0h]@7
-    unsigned int v199 {};            // [sp+30h] [bp-5CCh]@7
+    int uMessageParam2;            // [sp+30h] [bp-5CCh]@7
     char *v200 = nullptr;                   // [sp+34h] [bp-5C8h]@518
     char pOut[32];                // [sp+BCh] [bp-540h]@370
     int spellbookPages[9] {};                  // [sp+158h] [bp-4A4h]@652
@@ -496,8 +495,7 @@ void Game::EventLoop() {
                 break;
             }
 
-            pCurrentFrameMessageQueue->PopMessage(&uMessage, &uMessageParam,
-                                             (int *)&v199);
+            pCurrentFrameMessageQueue->PopMessage(&uMessage, &uMessageParam, &uMessageParam2);
             switch (uMessage) {
                 case UIMSG_ChangeGameState:
                     uGameState = GAME_FINISHED;
@@ -1153,7 +1151,7 @@ void Game::EventLoop() {
                     continue;
 
                 case UIMSG_OnCastTownPortal:
-                    pGUIWindow_CurrentMenu = new GUIWindow_TownPortalBook();  // (char *)uMessageParam);
+                    pGUIWindow_CurrentMenu = new GUIWindow_TownPortalBook(uMessageParam);  // (char *)uMessageParam);
                     continue;
 
                 case UIMSG_OnCastLloydsBeacon:
@@ -1254,47 +1252,20 @@ void Game::EventLoop() {
                 }
                 case UIMSG_ClickTownInTP: {
                     //if (uGameState == GAME_STATE_CHANGE_LOCATION) continue;
-                    int16_t fountainBit;
-                    switch (uMessageParam) {
-                        case 0:
-                            fountainBit = QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED;
-                            break;
-                        case 1:
-                            fountainBit = QBIT_FOUNTAIN_IN_PIERPONT_ACTIVATED;
-                            break;
-                        case 2:
-                            fountainBit = QBIT_FOUNTAIN_IN_MOUNT_NIGHON_ACTIVATED;
-                            break;
-                        case 3:
-                            fountainBit = QBIT_FOUNTAIN_IN_EVENMORN_ISLE_ACTIVATED;
-                            break;
-                        case 4:
-                            fountainBit = QBIT_FOUNTAIN_IN_CELESTIA_ACTIVATED;
-                            break;
-                        case 5:
-                            fountainBit = QBIT_FOUNTAIN_IN_THE_PIT_ACTIVATED;
-                            break;
-                        default:
-                            Assert(false && "Bad TP param");
-                            break;
-                    }
 
                     // check if tp location is unlocked
-                    if (!_449B57_test_bit(pParty->_quest_bits, fountainBit) && !engine->config->debug.TownPortal.value())
+                    if (!_449B57_test_bit(pParty->_quest_bits, townPortalQuestBits[uMessageParam]) && !engine->config->debug.TownPortal.value()) {
                         continue;
+                    }
 
                     // begin TP
                     SaveGame(1, 0);
-                    v64 = pMapStats->GetMapInfo(pCurrentMapName);
-                    v65 = uMessageParam;
                     // if in current map
-                    if (v64 == TownPortalList[uMessageParam].uMapInfoID) {
-                        pParty->vPosition.x = TownPortalList[v65].pos.x;
-                        pParty->vPosition.y = TownPortalList[v65].pos.y;
-                        pParty->vPosition.z = TownPortalList[v65].pos.z;
+                    if (pMapStats->GetMapInfo(pCurrentMapName) == TownPortalList[uMessageParam].uMapInfoID) {
+                        pParty->vPosition = TownPortalList[uMessageParam].pos;
                         pParty->uFallStartZ = pParty->vPosition.z;
-                        pParty->_viewYaw = TownPortalList[v65]._viewYaw;
-                        pParty->_viewPitch = TownPortalList[v65]._viewPitch;
+                        pParty->_viewYaw = TownPortalList[uMessageParam]._viewYaw;
+                        pParty->_viewPitch = TownPortalList[uMessageParam]._viewPitch;
                     } else {  // if change map
                         OnMapLeave();
                         dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
@@ -1309,53 +1280,37 @@ void Game::EventLoop() {
                         Actor::InitializeActors();
                     }
 
-                    assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uExpertLevelMana);
-                    assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMasterLevelMana);
-                    assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMagisterLevelMana);
-                    pParty->pPlayers[townPortalCasterId].SpendMana(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana);
+                    assert(PID_TYPE(townPortalCasterPid) == OBJECT_Player);
 
-                    assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uExpertLevelRecovery);
-                    assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMasterLevelRecovery);
-                    assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMagisterLevelRecovery);
-                    signed int sRecoveryTime = pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery;
-                    if (pParty->bTurnBasedModeOn) {
-                        pParty->pTurnBasedPlayerRecoveryTimes[townPortalCasterId] = sRecoveryTime;
-                        pParty->pPlayers[townPortalCasterId].SetRecoveryTime(sRecoveryTime);
-                        pTurnEngine->ApplyPlayerAction();
+                    int casterId = PID_ID(townPortalCasterPid);
+                    if (casterId < pParty->pPlayers.size()) {
+                        // Town portal casted by player
+                        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uExpertLevelMana);
+                        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMasterLevelMana);
+                        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMagisterLevelMana);
+                        pParty->pPlayers[casterId].SpendMana(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelMana);
+
+                        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uExpertLevelRecovery);
+                        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMasterLevelRecovery);
+                        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery == pSpellDatas[SPELL_WATER_TOWN_PORTAL].uMagisterLevelRecovery);
+                        signed int sRecoveryTime = pSpellDatas[SPELL_WATER_TOWN_PORTAL].uNormalLevelRecovery;
+                        if (pParty->bTurnBasedModeOn) {
+                            pParty->pTurnBasedPlayerRecoveryTimes[casterId] = sRecoveryTime;
+                            pParty->pPlayers[casterId].SetRecoveryTime(sRecoveryTime);
+                            pTurnEngine->ApplyPlayerAction();
+                        } else {
+                            pParty->pPlayers[casterId].SetRecoveryTime(debug_non_combat_recovery_mul * sRecoveryTime * flt_debugrecmod3);
+                        }
                     } else {
-                        pParty->pPlayers[townPortalCasterId].SetRecoveryTime(debug_non_combat_recovery_mul * sRecoveryTime * flt_debugrecmod3);
+                        // Town portal casted by hireling
+                        pParty->pHirelings[casterId - pParty->pPlayers.size()].bHasUsedTheAbility = 1;
                     }
 
                     pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 1, 0);
                     continue;
                 }
                 case UIMSG_HintTownPortal: {
-                    int16_t fountainBit;
-                    switch (uMessageParam) {
-                        case 0:
-                            fountainBit = QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED;
-                            break;
-                        case 1:
-                            fountainBit = QBIT_FOUNTAIN_IN_PIERPONT_ACTIVATED;
-                            break;
-                        case 2:
-                            fountainBit = QBIT_FOUNTAIN_IN_MOUNT_NIGHON_ACTIVATED;
-                            break;
-                        case 3:
-                            fountainBit = QBIT_FOUNTAIN_IN_EVENMORN_ISLE_ACTIVATED;
-                            break;
-                        case 4:
-                            fountainBit = QBIT_FOUNTAIN_IN_CELESTIA_ACTIVATED;
-                            break;
-                        case 5:
-                            fountainBit = QBIT_FOUNTAIN_IN_THE_PIT_ACTIVATED;
-                            break;
-                        default:
-                            Assert(false && "Bad TP param");
-                            break;
-                    }
-
-                    if (!_449B57_test_bit(pParty->_quest_bits, fountainBit) && !engine->config->debug.TownPortal.value()) {
+                    if (!_449B57_test_bit(pParty->_quest_bits, townPortalQuestBits[uMessageParam]) && !engine->config->debug.TownPortal.value()) {
                         render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
                         continue;
                     }
@@ -1796,14 +1751,18 @@ void Game::EventLoop() {
                 case UIMSG_OpenSpellbookPage:
                     if (pTurnEngine->turn_stage == TE_MOVEMENT ||
                         !pParty->getActiveCharacter() ||
-                        uMessageParam ==
-                            pPlayers[pParty->getActiveCharacter()]->lastOpenedSpellbookPage)
+                        uMessageParam == pPlayers[pParty->getActiveCharacter()]->lastOpenedSpellbookPage) {
                         continue;
+                    }
                     ((GUIWindow_Spellbook *)pGUIWindow_CurrentMenu)->OpenSpellbookPage(uMessageParam);
                     continue;
                 case UIMSG_SelectSpell: {
-                    if (pTurnEngine->turn_stage == TE_MOVEMENT) continue;
-                    if (!pParty->getActiveCharacter()) continue;
+                    if (pTurnEngine->turn_stage == TE_MOVEMENT) {
+                        continue;
+                    }
+                    if (!pParty->getActiveCharacter()) {
+                        continue;
+                    }
 
                     //  uNumSeconds = (unsigned int)pPlayers[pParty->getActiveCharacter()];
                     Player *player = pPlayers[pParty->getActiveCharacter()];
@@ -1837,17 +1796,20 @@ void Game::EventLoop() {
 
                 case UIMSG_CastSpellFromBook:
                     if (pTurnEngine->turn_stage != TE_MOVEMENT) {
-                        pushSpellOrRangedAttack(static_cast<SPELL_TYPE>(uMessageParam), v199, 0, 0, 0);
+                        pushSpellOrRangedAttack(static_cast<SPELL_TYPE>(uMessageParam), uMessageParam2, 0, 0, 0);
                     }
                     continue;
 
                 case UIMSG_SpellScrollUse:
                     if (pTurnEngine->turn_stage != TE_MOVEMENT) {
-                        pushScrollSpell(static_cast<SPELL_TYPE>(uMessageParam), v199);
+                        pushScrollSpell(static_cast<SPELL_TYPE>(uMessageParam), uMessageParam2);
                     }
                     continue;
+
                 case UIMSG_SpellBookWindow:
-                    if (pTurnEngine->turn_stage == TE_MOVEMENT) continue;
+                    if (pTurnEngine->turn_stage == TE_MOVEMENT) {
+                        continue;
+                    }
                     if (engine->IsUnderwater()) {
                         GameUI_SetStatusBar(LSTR_CANT_DO_UNDERWATER);
                         pAudioPlayer->playUISound(SOUND_error);
@@ -2358,18 +2320,13 @@ void Game::EventLoop() {
     std::swap(pCurrentFrameMessageQueue, pNextFrameMessageQueue);
     assert(pNextFrameMessageQueue->Empty());
 
-    if (GateMasterEventId != UIMSG_0) {
-        pCurrentFrameMessageQueue->AddGUIMessage(GateMasterEventId, (int64_t)GateMasterNPCData, 0);
-        GateMasterEventId = UIMSG_0;
-    } else {
-        if (AfterEnchClickEventId != UIMSG_0) {
-            AfterEnchClickEventTimeout -= pEventTimer->uTimeElapsed;
-            if (AfterEnchClickEventTimeout <= 0) {
-                pCurrentFrameMessageQueue->AddGUIMessage(AfterEnchClickEventId, AfterEnchClickEventSecondParam, 0);
-                AfterEnchClickEventId = UIMSG_0;
-                AfterEnchClickEventSecondParam = 0;
-                AfterEnchClickEventTimeout = 0;
-            }
+    if (AfterEnchClickEventId != UIMSG_0) {
+        AfterEnchClickEventTimeout -= pEventTimer->uTimeElapsed;
+        if (AfterEnchClickEventTimeout <= 0) {
+            pCurrentFrameMessageQueue->AddGUIMessage(AfterEnchClickEventId, AfterEnchClickEventSecondParam, 0);
+            AfterEnchClickEventId = UIMSG_0;
+            AfterEnchClickEventSecondParam = 0;
+            AfterEnchClickEventTimeout = 0;
         }
     }
     CastSpellInfoHelpers::castSpell();

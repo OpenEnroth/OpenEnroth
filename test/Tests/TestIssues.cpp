@@ -547,6 +547,25 @@ GAME_TEST(Issues, Issue598) {
 
 // 600
 
+static void check601Conds(std::array<Condition, 4> conds, std::array<int, 4> health) {
+    for (int i = 0; i < conds.size(); i++) {
+        EXPECT_EQ(pParty->pPlayers[i].GetMajorConditionIdx(), conds[i]);
+        EXPECT_EQ(pParty->pPlayers[i].sHealth, health[i]);
+    }
+}
+
+GAME_TEST(Issues, Issue601) {
+    // Check that Master Healer NPC skill work and does not assert
+    test->playTraceFromTestData("issue_601.mm7", "issue_601.json", []() { check601Conds({Condition_Sleep, Condition_Cursed, Condition_Fear, Condition_Dead}, {66, 128, 86, 70}); });
+    check601Conds({Condition_Good, Condition_Good, Condition_Good, Condition_Good}, {126, 190, 96, 80});
+}
+
+GAME_TEST(Issues, Issue608) {
+    // Check that using Gate Master ability does not deplete mana of character
+    test->playTraceFromTestData("issue_608.mm7", "issue_608.json", []() { EXPECT_EQ(pParty->pPlayers[0].sMana, 35); });
+    EXPECT_EQ(pParty->pPlayers[0].sMana, 35);
+}
+
 GAME_TEST(Issues, Issue611) {
     // Heal and reanimate dont work
     engine->config->debug.AllMagic.setValue(true);
@@ -556,6 +575,14 @@ GAME_TEST(Issues, Issue611) {
     EXPECT_EQ(pParty->pPlayers[1].sHealth, 39);
     EXPECT_EQ(pParty->pPlayers[2].conditions.Has(Condition_Zombie), true);
     EXPECT_EQ(pParty->pPlayers[3].conditions.Has(Condition_Zombie), true);
+}
+
+GAME_TEST(Issues, Issue613) {
+    // Check that maximum food cooked by NPC is 14
+    test->playTraceFromTestData("issue_613a.mm7", "issue_613a.json", []() { EXPECT_EQ(pParty->GetFood(), 13); });
+    EXPECT_EQ(pParty->GetFood(), 14);
+    test->playTraceFromTestData("issue_613b.mm7", "issue_613b.json", []() { EXPECT_EQ(pParty->GetFood(), 13); });
+    EXPECT_EQ(pParty->GetFood(), 14);
 }
 
 GAME_TEST(Issues, Issue615) {

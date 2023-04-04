@@ -2,10 +2,13 @@
 #include "GUI/UI/UIBooks.h"
 
 struct GUIWindow_TownPortalBook : public GUIWindow_Book {
-    GUIWindow_TownPortalBook();  // const char *a1);
+    explicit GUIWindow_TownPortalBook(int casterPid);  // const char *a1);
     virtual ~GUIWindow_TownPortalBook() {}
 
     virtual void Update();
 };
 
-extern int townPortalCasterId;
+static const int TOWN_PORTAL_DESTINATION_COUNT = 6;
+
+extern std::array<int, TOWN_PORTAL_DESTINATION_COUNT> townPortalQuestBits;
+extern int townPortalCasterPid;

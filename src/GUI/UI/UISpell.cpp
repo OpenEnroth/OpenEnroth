@@ -18,12 +18,10 @@ TargetedSpellUI::TargetedSpellUI(Pointi position, Sizei dimensions, WindowData d
 
 TargetedSpellUI_Hirelings::TargetedSpellUI_Hirelings(Pointi position, Sizei dimensions, WindowData data, const std::string &hint)
     : TargetedSpellUI(position, dimensions, data, hint) {
-    pBtn_NPCLeft = CreateButton({469, 178}, {ui_btn_npc_left->GetWidth(), ui_btn_npc_left->GetHeight()},
-            1, 0, UIMSG_ScrollNPCPanel, 0, InputAction::Invalid, "", {ui_btn_npc_left});
-    pBtn_NPCRight = CreateButton({626, 178}, {ui_btn_npc_right->GetWidth(), ui_btn_npc_right->GetHeight()},
-            1, 0, UIMSG_ScrollNPCPanel, 1, InputAction::Invalid, "", {ui_btn_npc_right});
-    CreateButton({491, 149}, {64, 74}, 1, 0, UIMSG_CastSpell_Hireling, 4, InputAction::SelectNPC1);
-    CreateButton({561, 149}, {64, 74}, 1, 0, UIMSG_CastSpell_Hireling, 5, InputAction::SelectNPC2);
+    CreateButton({469, 178}, {ui_btn_npc_left->GetWidth(), ui_btn_npc_left->GetHeight()}, 1, 0, UIMSG_ScrollNPCPanel, 0, InputAction::Invalid, "", {ui_btn_npc_left});
+    CreateButton({626, 178}, {ui_btn_npc_right->GetWidth(), ui_btn_npc_right->GetHeight()}, 1, 0, UIMSG_ScrollNPCPanel, 1, InputAction::Invalid, "", {ui_btn_npc_right});
+    CreateButton({491, 149}, {64, 74}, 1, 0, UIMSG_CastSpell_Hireling, 0, InputAction::SelectNPC1);
+    CreateButton({561, 149}, {64, 74}, 1, 0, UIMSG_CastSpell_Hireling, 1, InputAction::SelectNPC2);
 }
 
 TargetedSpellUI_Character::TargetedSpellUI_Character(Pointi position, Sizei dimensions, WindowData data, const std::string &hint)
