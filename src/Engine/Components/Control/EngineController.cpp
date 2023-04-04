@@ -119,6 +119,22 @@ void EngineController::goToMainMenu() {
         tick(1);
     }
 
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
+        for (int i = 0; i < 3; i++) {
+            pressAndReleaseKey(PlatformKey::Escape);
+            tick(1);
+        }
+    }
+
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_KEYBOARD_OPTIONS) {
+        pressGuiButton("KeyBinding_Default");
+        tick(1);
+        for (int i = 0; i < 3; i++) {
+            pressAndReleaseKey(PlatformKey::Escape);
+            tick(1);
+        }
+    }
+
     if (GetCurrentMenuID() == MENU_MAIN)
         return;
 

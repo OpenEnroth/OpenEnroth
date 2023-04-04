@@ -1090,7 +1090,7 @@ void Actor::AI_StandOrBored(unsigned int uActorID, signed int uObjID,
 void Actor::AI_Stand(unsigned int uActorID, unsigned int object_to_face_pid,
                      unsigned int uActionLength, AIDirection *a4) {
     assert(uActorID < pActors.size());
-    // Actor* actor = &pActors[uActorID];
+    // Actor *actor = &pActors[uActorID];
 
     AIDirection a3;
     if (!a4) {
@@ -4482,8 +4482,8 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
     int sectors_visited = 0;
     int current_sector = obj1_sector;
     int next_sector = 0;
-    BLVFace* portalface;
-    Vec3s* portalverts;
+    BLVFace *portalface;
+    Vec3s *portalverts;
 
     // loop through portals
     for (int current_portal = 0; current_portal < pIndoor->pSectors[current_sector].uNumPortals; current_portal++) {

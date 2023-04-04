@@ -219,7 +219,7 @@ class IRender {
     virtual void NuklearRelease() = 0;
     virtual struct nk_tex_font *NuklearFontLoad(const char *font_path, size_t font_size) = 0;
     virtual void NuklearFontFree(struct nk_tex_font *tfont) = 0;
-    virtual struct nk_image NuklearImageLoad(Image* img) = 0;
+    virtual struct nk_image NuklearImageLoad(Image *img) = 0;
     virtual void NuklearImageFree(Image *img) = 0;
 
     virtual Texture *CreateTexture_Paletted(const std::string &name) = 0;
@@ -257,7 +257,7 @@ class IRender {
     virtual void BeginLines2D() = 0;
     virtual void EndLines2D() = 0;
     virtual void RasterLine2D(int uX, int uY, int uZ, int uW, uint32_t uColor32) = 0;
-    virtual void DrawLines(const RenderVertexD3D3* vertices, unsigned int num_vertices) = 0;
+    virtual void DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices) = 0;
 
     virtual void ClearZBuffer() = 0;
     virtual void RestoreFrontBuffer() = 0;
@@ -281,7 +281,7 @@ class IRender {
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
                                 float dstX, float dstY, float a7, float a8,
                                 Texture *texture) = 0;
-    virtual void RemoveTextureFromDevice(Texture* texture) = 0;
+    virtual void RemoveTextureFromDevice(Texture *texture) = 0;
     virtual bool MoveTextureToDevice(Texture *texture) = 0;
 
     virtual void Update_Texture(Texture *texture) = 0;

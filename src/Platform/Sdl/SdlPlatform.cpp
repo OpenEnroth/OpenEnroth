@@ -115,7 +115,7 @@ std::vector<Recti> SdlPlatform::displayGeometries() const {
     return result;
 }
 
-void SdlPlatform::showMessageBox(const std::string& title, const std::string &message) const {
+void SdlPlatform::showMessageBox(const std::string &title, const std::string &message) const {
     SDL_ShowSimpleMessageBox(0, title.c_str(), message.c_str(), nullptr);
 }
 

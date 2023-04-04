@@ -193,7 +193,7 @@ Texture *AssetsManager::GetSprite(const std::string &name, unsigned int palette_
     return i->second;
 }
 
-bool AssetsManager::ReleaseSprite(const std::string& name) {
+bool AssetsManager::ReleaseSprite(const std::string &name) {
     auto filename = name;
     std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 

@@ -233,7 +233,7 @@ GUIWindow_GameKeyBindings::GUIWindow_GameKeyBindings()
 
     CreateButton({19, 302}, {108, 20}, 1, 0, UIMSG_SelectKeyPage1, 0);
     CreateButton({127, 302}, {108, 20}, 1, 0, UIMSG_SelectKeyPage2, 0);
-    CreateButton({127, 324}, {108, 20}, 1, 0, UIMSG_ResetKeyMapping, 0);
+    CreateButton("KeyBinding_Default", {127, 324}, {108, 20}, 1, 0, UIMSG_ResetKeyMapping, 0);
     CreateButton({19, 324}, {108, 20}, 1, 0, UIMSG_Game_OpenOptionsDialog, 0);
 
     CreateButton({129, 148}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 0);
@@ -583,19 +583,23 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
     }
 
     if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
-        if (pParty->getActiveCharacter() != uPlayerID) {
-            if (pPlayers[uPlayerID]->uTimeToRecovery || !pPlayers[uPlayerID]->CanAct()) {
+        if (pParty->hasActiveCharacter()) {
+            if (pParty->getActiveCharacter() != uPlayerID) {
+                if (pPlayers[uPlayerID]->uTimeToRecovery || !pPlayers[uPlayerID]->CanAct()) {
+                    return;
+                }
+
+                pParty->setActiveCharacter(uPlayerID);
                 return;
             }
-
-            pParty->setActiveCharacter(uPlayerID);
+            pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(
+                pParty->getActiveCharacter(),
+                CURRENT_SCREEN::SCREEN_CHARACTERS);  // CharacterUI_Initialize(SCREEN_CHARACTERS);
             return;
         }
-        pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(
-            pParty->getActiveCharacter(),
-            CURRENT_SCREEN::SCREEN_CHARACTERS);  // CharacterUI_Initialize(SCREEN_CHARACTERS);
         return;
     }
+
     if (current_screen_type == CURRENT_SCREEN::SCREEN_SPELL_BOOK) return;
     if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST) {
         if (pParty->getActiveCharacter() == uPlayerID) {
@@ -611,7 +615,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
         return;
     }
     if (current_screen_type != CURRENT_SCREEN::SCREEN_HOUSE) {
-        if (current_screen_type == CURRENT_SCREEN::SCREEN_E) {
+        if (current_screen_type == CURRENT_SCREEN::SCREEN_SHOP_INVENTORY) {
             pParty->setActiveCharacter(uPlayerID);
             return;
         }
@@ -638,16 +642,16 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
     if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
         return;
     }
+
     if (pParty->getActiveCharacter() != uPlayerID) {
         pParty->setActiveCharacter(uPlayerID);
         return;
     }
-    if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD ||
-        dialog_menu_id == DIALOGUE_SHOP_6) {
-        __debugbreak();  // fix indexing
+
+    if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD || dialog_menu_id == DIALOGUE_SHOP_BUY_SPECIAL) {
         current_character_screen_window = WINDOW_CharacterWindow_Inventory;
         pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(
-            pParty->getActiveCharacter(), CURRENT_SCREEN::SCREEN_E);  // CharacterUI_Initialize(SCREEN_E);
+            pParty->getActiveCharacter(), CURRENT_SCREEN::SCREEN_SHOP_INVENTORY);  // CharacterUI_Initialize(SCREEN_SHOP_INVENTORY);
         return;
     }
 }
@@ -1022,7 +1026,7 @@ void GameUI_WritePointedObjectStatusString() {
                 }  // intentional fallthrough
             } else if (PID_TYPE(pickedObject.object_pid) == OBJECT_Decoration) {
                 if (!pLevelDecorations[pickedObjectID].uEventID) {
-                    const char* pText;                 // ecx@79
+                    const char *pText;                 // ecx@79
                     if (pLevelDecorations[pickedObjectID].IsInteractive())
                         pText = pNPCTopics[stru_5E4C90_MapPersistVars._decor_events
                                            [pLevelDecorations[pickedObjectID]._idx_in_stru123 -
@@ -1625,7 +1629,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     }
 
     if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-        static Texture* minimaptemp;
+        static Texture *minimaptemp;
         if (!minimaptemp) {
             minimaptemp = render->CreateTexture_Blank(uWidth, uHeight, IMAGE_FORMAT_A8B8G8R8);
         }
@@ -2217,7 +2221,7 @@ void GUIWindow_DebugMenu::Update() {
     //render->EndLines2D();
 }
 
-void buttonbox(int x, int y, const char* text, int col) {
+void buttonbox(int x, int y, const char *text, int col) {
     int width = 108;
     int height = 20;
     render->FillRectFast(x, y, width+1, height+1, color32(50, 50, 50));

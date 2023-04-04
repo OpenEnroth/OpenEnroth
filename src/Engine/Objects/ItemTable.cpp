@@ -83,7 +83,7 @@ void ItemTable::Initialize() {
     materialMap["relic"] = MATERIAL_RELIC;
     materialMap["special"] = MATERIAL_SPECIAL;
 
-    char* test_string;
+    char *test_string;
 
     pMapStats = new MapStats;
     pMapStats->Initialize();
@@ -306,7 +306,7 @@ void ItemTable::Initialize() {
 }
 
 //----- (00456D17) --------------------------------------------------------
-void ItemTable::SetSpecialBonus(ItemGen* pItem) {
+void ItemTable::SetSpecialBonus(ItemGen *pItem) {
     if (pItems[pItem->uItemID].uMaterial == MATERIAL_SPECIAL) {
         pItem->uEnchantmentType = pItems[pItem->uItemID]._bonus_type;
         pItem->special_enchantment =
@@ -316,12 +316,12 @@ void ItemTable::SetSpecialBonus(ItemGen* pItem) {
 }
 
 //----- (00456D43) --------------------------------------------------------
-bool ItemTable::IsMaterialSpecial(ItemGen* pItem) {
+bool ItemTable::IsMaterialSpecial(ItemGen *pItem) {
     return this->pItems[pItem->uItemID].uMaterial == MATERIAL_SPECIAL;
 }
 
 //----- (00456D5E) --------------------------------------------------------
-bool ItemTable::IsMaterialNonCommon(ItemGen* pItem) {
+bool ItemTable::IsMaterialNonCommon(ItemGen *pItem) {
     return pItems[pItem->uItemID].uMaterial == MATERIAL_SPECIAL ||
            pItems[pItem->uItemID].uMaterial == MATERIAL_RELIC ||
            pItems[pItem->uItemID].uMaterial == MATERIAL_ARTIFACT;
@@ -330,7 +330,7 @@ bool ItemTable::IsMaterialNonCommon(ItemGen* pItem) {
 //----- (00453B3C) --------------------------------------------------------
 void ItemTable::LoadPotions() {
     //    char Text[90];
-    char* test_string;
+    char *test_string;
     unsigned int uRow;
     unsigned int uColumn;
     uint8_t potion_value;
@@ -355,7 +355,7 @@ void ItemTable::LoadPotions() {
             return;
         }
         for (uColumn = 0; uColumn < 50; ++uColumn) {
-            char* currValue = tokens[uColumn + 7];
+            char *currValue = tokens[uColumn + 7];
             potion_value = atoi(currValue);
             if (!potion_value && tolower(currValue[0]) == 'e') {
                 potion_value = atoi(currValue + 1);
@@ -375,7 +375,7 @@ void ItemTable::LoadPotions() {
 //----- (00453CE5) --------------------------------------------------------
 void ItemTable::LoadPotionNotes() {
     //  char Text[90];
-    char* test_string;
+    char *test_string;
     unsigned int uRow;
     unsigned int uColumn;
     uint8_t potion_note;
@@ -400,7 +400,7 @@ void ItemTable::LoadPotionNotes() {
             return;
         }
         for (uColumn = 0; uColumn < 50; ++uColumn) {
-            char* currValue = tokens[uColumn + 7];
+            char *currValue = tokens[uColumn + 7];
             potion_note = atoi(currValue);
             if (!potion_note && tolower(currValue[0]) == 'e') {
                 potion_note = atoi(currValue + 1);
@@ -418,7 +418,7 @@ void ItemTable::LoadPotionNotes() {
 }
 
 //----- (00456620) --------------------------------------------------------
-void ItemTable::GenerateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uTreasureType, ItemGen* out_item) {
+void ItemTable::GenerateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uTreasureType, ItemGen *out_item) {
     Assert(IsRandomTreasureLevel(treasure_level));
 
     int current_chance;           // ebx@43

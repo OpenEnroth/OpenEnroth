@@ -58,7 +58,7 @@ std::array<EventIndex, 4400> pLevelEVT_Index;
 
 _2devent p2DEvents[525];
 
-unsigned int LoadEventsToBuffer(const std::string& pContainerName, char *pBuffer,
+unsigned int LoadEventsToBuffer(const std::string &pContainerName, char *pBuffer,
                                 unsigned int uBufferSize) {
     Blob blob = pEvents_LOD->LoadCompressedTexture(pContainerName);
     if (!blob || (blob.size() > uBufferSize)) {
@@ -317,8 +317,7 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
     v133 = 0;
     EvtTargetObj = targetObj;
     dword_5B65C4_cancelEventProcessing = 0;
-    if (engine->config->debug.VerboseLogging.value())
-        logger->info("Processing EventID: {}", uEventID);
+    logger->verbose("Processing EventID: {}", uEventID);
 
     if (!uEventID) {
         if (!game_ui_status_bar_event_string_time_left)

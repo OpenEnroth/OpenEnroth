@@ -14,7 +14,7 @@ class ImageLoader {
     }
     virtual ~ImageLoader() {}
     virtual std::string GetResourceName() const { return this->resource_name; }
-    virtual std::string* GetResourceNamePtr() { return &this->resource_name; }
+    virtual std::string *GetResourceNamePtr() { return &this->resource_name; }
 
     virtual bool Load(unsigned int *width, unsigned int *height, void **pixels,
                       IMAGE_FORMAT *format, void **out_palette, void **out_pallettepixels = nullptr) = 0;

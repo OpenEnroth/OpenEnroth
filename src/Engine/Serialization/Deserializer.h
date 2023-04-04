@@ -31,7 +31,7 @@ class Deserializer {
         inputStream_ = inputStream;
     }
 
-    void ReadBytes(void* dst, size_t size) {
+    void ReadBytes(void *dst, size_t size) {
         size_t bytesRead = inputStream_->read(dst, size);
         if (bytesRead < size)
             throw Exception("Deserialization failed, no more data in stream.");

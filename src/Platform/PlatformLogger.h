@@ -29,8 +29,8 @@ class PlatformLogger {
      * for the provided category. It is advised to also do the log level check at the call site to avoid message
      * formatting overhead:
      * \code
-     * if (logger->logLevel(ApplicationLog) <= LogDebug)
-     *     logger->log(ApplicationLog, LogDebug, FormatMessage("blablabla %s %s", s1, s2).c_str());
+     * if (logger->logLevel(APPLICATION_LOG) <= LOG_DEBUG)
+     *     logger->log(APPLICATION_LOG, LOG_DEBUG, fmt::format("blablabla {}", s1).c_str());
      * \endcode
      *
      * This function is thread-safe.

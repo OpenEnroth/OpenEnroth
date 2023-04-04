@@ -163,7 +163,7 @@ int hide_card_anim_count;
 
 struct arcomage_mouse {
     bool Update();
-    bool Inside(Recti* pRect);
+    bool Inside(Recti *pRect);
 
     int x = 0;
     int y = 0;
@@ -316,7 +316,7 @@ int explosion_effect_struct::UpdateEffect() {
     // if sparks left to initiate or effect is still active
     if (total_to_init >= 1 || this->effect_active) {
         bool active_check = 0;
-        spark_point_struct* spark_ptr = this->spark_array_ptr;
+        spark_point_struct *spark_ptr = this->spark_array_ptr;
 
         // cycle through array
         for (int v21 = this->spark_array_size; v21; v21--) {
@@ -374,7 +374,7 @@ int explosion_effect_struct::IsEffectActive() {
     return 3;
 }
 
-int new_explosion_effect(Pointi* startXY, int effect_value) {
+int new_explosion_effect(Pointi *startXY, int effect_value) {
     // find first empty effect slot
     signed int arr_slot = 0;
     for (arr_slot = 0; arr_slot < 10; arr_slot++) {
@@ -416,7 +416,7 @@ int new_explosion_effect(Pointi* startXY, int effect_value) {
     am_effects_array[arr_slot].eff_params.sparks_array = &am_effects_array[arr_slot].effect_sparks[0];
 
     // fill explosion struct
-    explosion_effect_struct* explos = am_effects_array[arr_slot].explosion_eff;
+    explosion_effect_struct *explos = am_effects_array[arr_slot].explosion_eff;
     if ((explos->StartFill(&am_effects_array[arr_slot].eff_params)) == 2) return 2;
     if (!explos->params_filled) return 3;
     if (10 * effect_value > 150) effect_value = 15;
@@ -824,8 +824,8 @@ bool OpponentsAITurn(int player_num) {
 
     } else if ((opponent_mastery == 1) || (opponent_mastery == 2)) {
         // apply some cunning
-        ArcomagePlayer* player = &am_Players[player_num];
-        ArcomagePlayer* enemy = &am_Players[(player_num + 1) % 2];
+        ArcomagePlayer *player = &am_Players[player_num];
+        ArcomagePlayer *enemy = &am_Players[(player_num + 1) % 2];
 
         // wipe cards power array - set negative for unfilled card slots
         for (int i = 0; i < 10; ++i) {
@@ -840,7 +840,7 @@ bool OpponentsAITurn(int player_num) {
 
         // calculate how effective each card would be
         for (int i = 0; i < ai_player_cards_count; ++i) {
-            ArcomageCard* calc_card = &pCards[am_Players[player_num].cards_at_hand[cards_power[i].slot_index]];
+            ArcomageCard *calc_card = &pCards[am_Players[player_num].cards_at_hand[cards_power[i].slot_index]];
             cards_power[i].card_power =
                 CalculateCardPower(player, enemy, calc_card, opponent_mastery - 1);
         }
@@ -2131,7 +2131,7 @@ bool PlayCard(int player_num, int card_slot_num) {
         anim_card_spd_playdiscard.y = -30;  // (-150 / 5)
 
         // play sound and take resource cost
-        ArcomageCard* pCard = &pCards[am_Players[player_num].cards_at_hand[card_slot_num]];
+        ArcomageCard *pCard = &pCards[am_Players[player_num].cards_at_hand[card_slot_num]];
         ArcomageGame::playSound(23);
         am_Players[player_num].resource_bricks -= pCard->needed_bricks;
         am_Players[player_num].resource_beasts -= pCard->needed_beasts;
@@ -2150,7 +2150,7 @@ bool PlayCard(int player_num, int card_slot_num) {
 
 bool CanCardBePlayed(int player_num, int hand_card_indx) {
     bool result = true;
-    ArcomagePlayer* pPlayer = &am_Players[player_num];
+    ArcomagePlayer *pPlayer = &am_Players[player_num];
     ArcomageCard *test_card = &pCards[pPlayer->cards_at_hand[hand_card_indx]];
 
     // test card conditions
@@ -2211,7 +2211,7 @@ void ApplyCardToPlayer(int player_num, unsigned int uCardID) {
     ArcomagePlayer *player = &am_Players[player_num];
     int enemy_num = ((player_num + 1) % 2);
     ArcomagePlayer *enemy = &am_Players[enemy_num];
-    ArcomageCard* pCard = &pCards[uCardID];
+    ArcomageCard *pCard = &pCards[uCardID];
 
     int buildings_e = 0;
     int buildings_p = 0;

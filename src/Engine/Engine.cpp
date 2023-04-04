@@ -352,8 +352,7 @@ void Engine::StackPartyTorchLight() {
             pParty->flt_TorchlightColorG = 96;
             pParty->flt_TorchlightColorB = 96;
 
-            if (engine->config->debug.VerboseLogging.value())
-                logger->warning("Torchlight doesn't have color");
+            logger->verbose("Torchlight doesn't have color");
         }
 
         // TODO: either add conversion functions, or keep only glm / only Vec3_* classes.
@@ -1159,7 +1158,7 @@ void PrepareToLoadODM(bool bLoading, ODMRenderParams *a2) {
         for (int i = 0; i < _6807E0_num_decorations_with_sounds_6807B8; i++) {
             int ind = _6807B8_level_decorations_ids[i];
             LevelDecoration dec = pLevelDecorations[ind];
-            const DecorationDesc* decoration = pDecorationList->GetDecoration(dec.uDecorationDescID);
+            const DecorationDesc *decoration = pDecorationList->GetDecoration(dec.uDecorationDescID);
             pAudioPlayer->playSound(SoundID(decoration->uSoundID), PID(OBJECT_Decoration, ind), 0, 0, 0);
         }
     }
@@ -1214,7 +1213,7 @@ void Engine::_461103_load_level_sub() {
 
     // v15 = 0;
     for (uint i = 0; i < pActors.size(); ++i) {
-        // Actor* pActor = &pActors[i];
+        // Actor *pActor = &pActors[i];
         // v2 = (char *)&pActors[0].uNPC_ID;
         // do
         //{
@@ -1467,7 +1466,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
         ++pParty->days_played_without_rest;
         if (pParty->days_played_without_rest > 1) {
-            for (Player& player : pParty->pPlayers)
+            for (Player &player : pParty->pPlayers)
                 player.SetCondWeakWithBlockCheck(0);
 
             // starving
@@ -2135,7 +2134,7 @@ void OnMapLoad() {
     }
 }
 
-void Level_LoadEvtAndStr(const std::string& pLevelName) {
+void Level_LoadEvtAndStr(const std::string &pLevelName) {
     uLevelEVT_Size = LoadEventsToBuffer(pLevelName + ".evt", pLevelEVT.data(), 9216);
     uLevelStrFileSize = LoadEventsToBuffer(pLevelName + ".str", pLevelStr.data(), 9216);
     if (uLevelStrFileSize) LoadLevel_InitializeLevelStr();
@@ -2154,7 +2153,7 @@ bool _44100D_should_alter_right_panel() {
     return current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE ||
            current_screen_type == CURRENT_SCREEN::SCREEN_CHARACTERS ||
            current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE ||
-           current_screen_type == CURRENT_SCREEN::SCREEN_E ||
+           current_screen_type == CURRENT_SCREEN::SCREEN_SHOP_INVENTORY ||
            current_screen_type == CURRENT_SCREEN::SCREEN_CHANGE_LOCATION ||
            current_screen_type == CURRENT_SCREEN::SCREEN_INPUT_BLV ||
            current_screen_type == CURRENT_SCREEN::SCREEN_CASTING;

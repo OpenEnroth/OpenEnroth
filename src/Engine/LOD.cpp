@@ -34,7 +34,7 @@ int _6A0CA4_lod_binary_search;
 int _6A0CA8_lod_unused;
 
 struct FileCloser {
-    void operator()(FILE* file) {
+    void operator()(FILE *file) {
         if (file)
             fclose(file);
     }
@@ -202,7 +202,7 @@ int LODFile_Sprites::LoadSprite(const char *pContainerName, unsigned int uPalett
     return uNumLoadedSprites - 1;
 }
 
-Sprite* LODFile_Sprites::GetSprite(std::string_view pContainerName) {
+Sprite *LODFile_Sprites::GetSprite(std::string_view pContainerName) {
     for (int i = 0; i < uNumLoadedSprites; ++i) {
         if (pHardwareSprites[i].pName == pContainerName) {
             return &pHardwareSprites[i];

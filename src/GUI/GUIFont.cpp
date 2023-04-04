@@ -88,15 +88,15 @@ void GUIFont::CreateFontTex() {
     // create blank textures
     this->fonttex = render->CreateTexture_Blank(512, 512, IMAGE_FORMAT_A8B8G8R8);
     this->fontshadow = render->CreateTexture_Blank(512, 512, IMAGE_FORMAT_A8B8G8R8);
-    uint32_t* pPixelsfont = (uint32_t*)this->fonttex->GetPixels(IMAGE_FORMAT_A8B8G8R8);
-    uint32_t* pPixelsshadow = (uint32_t*)this->fontshadow->GetPixels(IMAGE_FORMAT_A8B8G8R8);
+    uint32_t *pPixelsfont = (uint32_t*)this->fonttex->GetPixels(IMAGE_FORMAT_A8B8G8R8);
+    uint32_t *pPixelsshadow = (uint32_t*)this->fontshadow->GetPixels(IMAGE_FORMAT_A8B8G8R8);
 
     // load in char pixels into squares within texture
     for (int l = 0; l < 256; l++) {
         int xsq = l % 16;
         int ysq = l / 16;
         int offset = 32 * xsq + 32 * ysq * 512;
-        uint8_t* pCharPixels = &this->pData->pFontData[this->pData->font_pixels_offset[l]];
+        uint8_t *pCharPixels = &this->pData->pFontData[this->pData->font_pixels_offset[l]];
 
         for (uint y = 0; y < this->pData->uFontHeight; ++y) {
             for (uint x = 0; x < this->pData->pMetrics[l].uWidth; ++x) {
@@ -781,7 +781,7 @@ void GUIFont::DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY, u
     }
 }
 
-std::string GUIFont::FitTwoFontStringINWindow(const std::string &pString, GUIFont *pFontSecond, GUIWindow* pWindow, int startPixlOff, int a6) {
+std::string GUIFont::FitTwoFontStringINWindow(const std::string &pString, GUIFont *pFontSecond, GUIWindow *pWindow, int startPixlOff, int a6) {
     if (pString.empty()) {
         return std::string();
     }
@@ -871,7 +871,7 @@ std::string GUIFont::FitTwoFontStringINWindow(const std::string &pString, GUIFon
     return std::string(pTmpBuf3.data());
 }
 
-int GUIFont::GetStringHeight2(GUIFont *secondFont, const std::string &text_str, GUIWindow* pWindow, int startX, int a6) {
+int GUIFont::GetStringHeight2(GUIFont *secondFont, const std::string &text_str, GUIWindow *pWindow, int startX, int a6) {
     if (text_str.empty()) {
         return 0;
     }

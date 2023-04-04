@@ -23,7 +23,7 @@ MM_DECLARE_SERIALIZATION_FUNCTIONS(PlatformWindowMode)
 
 class GameConfig : public Config {
  public:
-    GameConfig();
+    explicit GameConfig(const std::string &path);
     ~GameConfig();
 
     void LoadConfiguration();
@@ -577,7 +577,7 @@ class GameConfig : public Config {
     Window window{ this };
 
  private:
-    const std::string config_file = "openenroth.ini";
-    Logger *logger = nullptr;
+    std::string _path;
+    Logger *_logger = nullptr;
 };
 

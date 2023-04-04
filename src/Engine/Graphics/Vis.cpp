@@ -352,7 +352,7 @@ bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
 }
 
 // TODO(pskelton): consider use of vec4f or glm::vec4 instead of IndoorCameraD3D_Vec4s
-bool IsSphereInFrustum(Vec3f center, float radius, IndoorCameraD3D_Vec4* frustum) {
+bool IsSphereInFrustum(Vec3f center, float radius, IndoorCameraD3D_Vec4 *frustum) {
     // center must be within all four of the camera frustum planes to be visible
     Vec3f planenormal{};
     float planedist{};
@@ -1179,10 +1179,10 @@ bool Vis::DoesRayIntersectBillboard(float fDepth,
 void Vis::PickIndoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list, Vis_SelectionFilter *filter) {
     for (int i = 0; i < pBspRenderer->num_faces; ++i) {
         int16_t pFaceID = pBspRenderer->faces[i].uFaceID;
-        BLVFace* pFace = &pIndoor->pFaces[pFaceID];
+        BLVFace *pFace = &pIndoor->pFaces[pFaceID];
         if (pCamera3D->is_face_faced_to_cameraBLV(pFace)) {
             if (is_part_of_selection(pFace, filter)) {
-                Vis_ObjectInfo* v8 = DetermineFacetIntersection(pFace, PID(OBJECT_Face, pFaceID), pick_depth);
+                Vis_ObjectInfo *v8 = DetermineFacetIntersection(pFace, PID(OBJECT_Face, pFaceID), pick_depth);
                 if (v8)
                     list->AddObject(v8->object, v8->object_type, v8->depth, v8->object_pid);
             }

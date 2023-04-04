@@ -20,10 +20,10 @@ struct ItemTable {
     void LoadPotions();
     void LoadPotionNotes();
     void GenerateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uTreasureType,
-        ItemGen* pItem);
-    void SetSpecialBonus(ItemGen* pItem);
-    bool IsMaterialSpecial(ItemGen* pItem);
-    bool IsMaterialNonCommon(ItemGen* pItem);
+        ItemGen *pItem);
+    void SetSpecialBonus(ItemGen *pItem);
+    bool IsMaterialSpecial(ItemGen *pItem);
+    bool IsMaterialNonCommon(ItemGen *pItem);
     void Release();
     void PrintItemTypesEnum();
 
@@ -55,4 +55,4 @@ struct ItemTable {
 };
 #pragma pack(pop)
 
-extern struct ItemTable* pItemTable;
+extern struct ItemTable *pItemTable;

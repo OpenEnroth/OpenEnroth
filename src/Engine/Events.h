@@ -332,7 +332,7 @@ extern std::array<char, 9216> pLevelStr;
 extern std::array<char, 9216> pLevelEVT;
 extern std::array<EventIndex, 4400> pLevelEVT_Index;
 
-unsigned int LoadEventsToBuffer(const std::string& pContainerName, char *pBuffer,
+unsigned int LoadEventsToBuffer(const std::string &pContainerName, char *pBuffer,
                                 unsigned int uBufferSize);
 void Initialize_GlobalEVT();
 void LoadLevel_InitializeLevelEvt();

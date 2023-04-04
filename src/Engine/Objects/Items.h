@@ -21,8 +21,8 @@ struct ItemGen {  // 0x24
     static void PopulateArtifactBonusMap();
     static void ClearItemBonusMaps();
 
-    void GetItemBonusArtifact(Player* owner, CHARACTER_ATTRIBUTE_TYPE attrToGet, int* bonusSum);
-    void GetItemBonusSpecialEnchantment(Player* owner, CHARACTER_ATTRIBUTE_TYPE attrToGet, int* additiveBonus, int* halfSkillBonus);
+    void GetItemBonusArtifact(Player *owner, CHARACTER_ATTRIBUTE_TYPE attrToGet, int *bonusSum);
+    void GetItemBonusSpecialEnchantment(Player *owner, CHARACTER_ATTRIBUTE_TYPE attrToGet, int *additiveBonus, int *halfSkillBonus);
 
     inline void ResetEnchantAnimation() { uAttributes &= ~ITEM_ENCHANT_ANIMATION_MASK; }
     inline bool ItemEnchanted() const {
@@ -191,4 +191,4 @@ std::string GetItemTextureFilename(ITEM_TYPE item_id, int index, int shoulder);
 
 Segment<ITEM_TREASURE_LEVEL> RemapTreasureLevel(ITEM_TREASURE_LEVEL itemTreasureLevel, MAP_TREASURE_LEVEL mapTreasureLevel);
 
-extern ItemGen* ptr_50C9A4_ItemToEnchant;
+extern ItemGen *ptr_50C9A4_ItemToEnchant;

@@ -99,36 +99,23 @@ void IntegrityTest();
 using Graphics::IRenderFactory;
 
 
-void AutoInitDataPath(Platform *platform) {
-    // TODO (captainurist): we should consider reading Unicode (utf8) strings from win32 registry, as it might contain paths
-    // curretnly we convert all strings out of registry into CP_ACP (default windows ansi)
-    // it is later on passed to std::filesystem that should be ascii on windows as well
-    // this means we will can't handle win32 unicode paths at the time
-    std::string mm7dir = resolveMm7Path(platform);
-
-#ifdef __ANDROID__
-    if (mm7dir.empty()) {
-        platform->ShowMessageBox("Device currently unsupported", "Your device doesn't have any storage so it is unsupported!");
-        return;
-    }
-#endif
-
-    if (validateDataPath(mm7dir)) {
-        setDataPath(mm7dir);
+void initDataPath(const std::string &dataPath) {
+    if (validateDataPath(dataPath)) {
+        setDataPath(dataPath);
 
         std::string savesPath = MakeDataPath("saves");
         if (!std::filesystem::exists(savesPath)) {
             std::filesystem::create_directory(savesPath);
         }
 
-        EngineIocContainer::ResolveLogger()->info("Using MM7 directory: {}", mm7dir);
+        EngineIocContainer::ResolveLogger()->info("Using MM7 directory: {}", dataPath);
     } else {
         std::string message = fmt::format(
             "Required resources aren't found!\n"
             "You should acquire licensed copy of M&M VII and copy its resources to \n{}\n\n"
             "Additionally you should also copy the content from\n"
             "resources directory from our repository there as well!",
-            !mm7dir.empty() ? mm7dir : "current directory"
+            !dataPath.empty() ? dataPath : "current directory"
         );
         EngineIocContainer::ResolveLogger()->warning("{}", message);
         platform->showMessageBox("CRITICAL ERROR: missing resources", message);
@@ -670,8 +657,7 @@ void Game::EventLoop() {
                     back_to_game();
                     pCurrentFrameMessageQueue->Flush();
                     switch (current_screen_type) {
-                        case CURRENT_SCREEN::SCREEN_E:
-                            __debugbreak();
+                        case CURRENT_SCREEN::SCREEN_SHOP_INVENTORY:
                         case CURRENT_SCREEN::SCREEN_NPC_DIALOGUE:
                         case CURRENT_SCREEN::SCREEN_CHEST:
                         case CURRENT_SCREEN::SCREEN_CHEST_INVENTORY:
@@ -805,8 +791,7 @@ void Game::EventLoop() {
                                         currentRestType = REST_NONE;
                                         OnEscape();
                                         continue;
-                                    case CURRENT_SCREEN::SCREEN_E:
-                                        __debugbreak();
+                                    case CURRENT_SCREEN::SCREEN_SHOP_INVENTORY:
                                         pGUIWindow_CurrentMenu->Release();
                                         current_screen_type = CURRENT_SCREEN::SCREEN_HOUSE;
                                         continue;
@@ -1584,12 +1569,10 @@ void Game::EventLoop() {
                         pGUIWindow_CurrentMenu = new GUIWindow_Rest();
                         continue;
                     } else {
-                        if (engine->config->debug.VerboseLogging.value()) {
-                            if (pParty->uFlags & PARTY_FLAGS_1_AIRBORNE)
-                                logger->info("Party is airborne");
-                            if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER)
-                                logger->info("Party on water");
-                        }
+                        if (pParty->uFlags & PARTY_FLAGS_1_AIRBORNE)
+                            logger->verbose("Party is airborne");
+                        if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER)
+                            logger->verbose("Party on water");
                     }
 
                     if (pParty->bTurnBasedModeOn) {
@@ -1832,25 +1815,27 @@ void Game::EventLoop() {
                         pAudioPlayer->playUISound(SOUND_error);
                     } else {
                         pCurrentFrameMessageQueue->Flush();
-                        if (pParty->getActiveCharacter() && !pPlayers[pParty->getActiveCharacter()]->uTimeToRecovery) {
-                            // toggle
-                            if (current_screen_type == CURRENT_SCREEN::SCREEN_SPELL_BOOK) {
-                                pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
+                        if (pParty->hasActiveCharacter()) {
+                            if (!pPlayers[pParty->getActiveCharacter()]->uTimeToRecovery) {
+                                // toggle
+                                if (current_screen_type == CURRENT_SCREEN::SCREEN_SPELL_BOOK) {
+                                    pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
+                                    continue;
+                                }
+                                // cant open screen - talking or in shop or map transition
+                                if (!IsWindowSwitchable()) {
+                                    continue;
+                                } else {
+                                    // close out current window
+                                    back_to_game();
+                                    OnEscape();
+                                    GameUI_StatusBar_Clear();
+                                }
+                                // open window
+                                new OnButtonClick2({ 476, 450 }, { 0, 0 }, pBtn_CastSpell);
+                                pGUIWindow_CurrentMenu = new GUIWindow_Spellbook();
                                 continue;
                             }
-                            // cant open screen - talking or in shop or map transition
-                            if (!IsWindowSwitchable()) {
-                                continue;
-                            } else {
-                                // close out current window
-                                back_to_game();
-                                OnEscape();
-                                GameUI_StatusBar_Clear();
-                            }
-                            // open window
-                            new OnButtonClick2({476, 450}, {0, 0}, pBtn_CastSpell);
-                            pGUIWindow_CurrentMenu = new GUIWindow_Spellbook();
-                            continue;
                         }
                     }
                     continue;
@@ -2162,7 +2147,9 @@ void Game::EventLoop() {
                     for(size_t attempt = 0; attempt < 500; attempt++) {
                         ITEM_TYPE pItemID = grng->RandomSample(SpawnableItems());
                         if (pItemTable->pItems[pItemID].uItemID_Rep_St > 6) {
-                            pPlayers[pParty->getActiveCharacter()]->AddItem(-1, pItemID);
+                            if (!pPlayers[pParty->getActiveCharacter()]->AddItem(-1, pItemID)) {
+                                pAudioPlayer->playUISound(SOUND_error);
+                            }
                             break;
                         }
                     }
@@ -2178,7 +2165,9 @@ void Game::EventLoop() {
                         ITEM_TYPE pItemID = grng->RandomSample(SpawnableItems());
                         // if (pItemTable->pItems[pItemID].uItemID_Rep_St ==
                         //   (item_id - 40015 + 1)) {
-                        pPlayers[pParty->getActiveCharacter()]->AddItem(-1, pItemID);
+                        if (!pPlayers[pParty->getActiveCharacter()]->AddItem(-1, pItemID)) {
+                            pAudioPlayer->playUISound(SOUND_error);
+                        }
                         break;
                         //}
                     }
@@ -2304,6 +2293,18 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_DebugVerboseLogging:
                     engine->config->debug.VerboseLogging.toggle();
+
+                    // TODO(captainurist): move to ConfigValue::subscribe
+                    if (logger->baseLogger()) {
+                        if (engine->config->debug.VerboseLogging.value()) {
+                            logger->baseLogger()->setLogLevel(APPLICATION_LOG, LOG_VERBOSE);
+                            logger->baseLogger()->setLogLevel(PLATFORM_LOG, LOG_VERBOSE);
+                        } else {
+                            logger->baseLogger()->setLogLevel(APPLICATION_LOG, LOG_INFO);
+                            logger->baseLogger()->setLogLevel(PLATFORM_LOG, LOG_ERROR);
+                        }
+                    }
+
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugReloadShader:

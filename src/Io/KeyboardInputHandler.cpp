@@ -369,7 +369,7 @@ void KeyboardInputHandler::GenerateInputActions() {
 }
 
 //----- (00459E5A) --------------------------------------------------------
-void KeyboardInputHandler::StartTextInput(TextInputType type, int max_string_len, GUIWindow* window) {
+void KeyboardInputHandler::StartTextInput(TextInputType type, int max_string_len, GUIWindow *window) {
     memset(pPressedKeysBuffer, 0, 0x101u);
     uNumKeysPressed = 0;
     inputType = type;
@@ -441,11 +441,11 @@ std::string KeyboardInputHandler::GetTextInput() const {
     return std::string(pPressedKeysBuffer);
 }
 
-void KeyboardInputHandler::SetTextInput(const std::string& text) {
+void KeyboardInputHandler::SetTextInput(const std::string &text) {
     SetTextInput(text.c_str());
 }
 
-void KeyboardInputHandler::SetTextInput(const char* text) {
+void KeyboardInputHandler::SetTextInput(const char *text) {
     strcpy(pPressedKeysBuffer, text);
     uNumKeysPressed = strlen(pPressedKeysBuffer);
 }

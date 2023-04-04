@@ -70,9 +70,9 @@ std::array<Condition, 18> conditionImportancyTableAlternative = {{
     Condition_Zombie
 }};
 
-bool ConditionProcessor::IsPlayerAffected(Player* inPlayer, Condition condToCheck, int blockable) {
+bool ConditionProcessor::IsPlayerAffected(Player *inPlayer, Condition condToCheck, int blockable) {
     if (!blockable) return true;
-    ConditionProcessor* thisProc = &conditionArray[condToCheck];
+    ConditionProcessor *thisProc = &conditionArray[condToCheck];
     if (thisProc->m_IsBlockedByProtFromMagic &&
         pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].expire_time) {
         if (!(thisProc->m_DoesNeedGmProtFromMagic &&

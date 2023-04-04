@@ -1018,7 +1018,7 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    for (Actor* actor : render->getActorsInViewport(4096)) {
+                    for (Actor *actor : render->getActorsInViewport(4096)) {
                         Vec3i spell_velocity = Vec3i(0, 0, 0);
                         pSpellSprite.vPosition = actor->vPosition - Vec3i(0, 0, actor->uActorHeight * -0.8);
                         pSpellSprite.spell_target_pid = PID(OBJECT_Actor, actor->id);
@@ -1442,7 +1442,7 @@ void CastSpellInfoHelpers::castSpell() {
                                     // finds how many possible enchaments and adds up to item apply values
                                     // if (pItemTable->pEnchantments_count > 0) {
                                     for (int norm_ench_loop = 0; norm_ench_loop < 24; ++norm_ench_loop) {
-                                        char* this_bon_state = pItemTable->pEnchantments[norm_ench_loop].pBonusStat;
+                                        char *this_bon_state = pItemTable->pEnchantments[norm_ench_loop].pBonusStat;
                                         if (this_bon_state != NULL && (this_bon_state[0] != '\0')) {
                                             int this_to_apply = pItemTable->pEnchantments[norm_ench_loop].to_item[this_equip_type];
                                             to_item_apply_sum += this_to_apply;
@@ -1763,7 +1763,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // ++pSpellSprite.uType;
                     pSpellSprite.uType = SPRITE_SPELL_SPIRIT_TURN_UNDEAD_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    for (Actor* actor : render->getActorsInViewport(4096)) {
+                    for (Actor *actor : render->getActorsInViewport(4096)) {
                         if (MonsterStats::BelongsToSupertype(actor->pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
                             pSpellSprite.vPosition = actor->vPosition - Vec3i(0, 0, actor->uActorHeight * -0.8);
                             pSpellSprite.spell_target_pid = PID(OBJECT_Actor, actor->id);
@@ -2118,7 +2118,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // ++pSpellSprite.uType;
                     pSpellSprite.uType = SPRITE_SPELL_MIND_MASS_FEAR_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    for (Actor* actor : render->getActorsInViewport(4096)) {
+                    for (Actor *actor : render->getActorsInViewport(4096)) {
                         // Change: do not exit loop when first undead monster is found
                         if (!MonsterStats::BelongsToSupertype(actor->pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
                             pSpellSprite.vPosition = actor->vPosition - Vec3i(0, 0, actor->uActorHeight * -0.8);

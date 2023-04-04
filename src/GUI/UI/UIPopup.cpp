@@ -994,7 +994,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         pWindow->DrawTitleText(pFontSmallnum, 0, pWindow->uFrameHeight - pFontSmallnum->GetHeight() - 12, 0, str, 3);
     }
 
-    // ps - test to track ai states
+    // TODO(captainurist): this isn't about verbose logging and should depend on some other parameter
     if (engine->config->debug.VerboseLogging.value()) {
         std::string str = fmt::format("AI State: {}", std::to_underlying(pActors[uActorID].uAIState));
         pFontSmallnum->GetLineWidth(str);
@@ -1526,9 +1526,9 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
             break;
         }
         case CURRENT_SCREEN::SCREEN_CHARACTERS:
-        case CURRENT_SCREEN::SCREEN_E:
+        case CURRENT_SCREEN::SCREEN_SHOP_INVENTORY:
         case CURRENT_SCREEN::SCREEN_CHEST_INVENTORY: {
-            if ((signed int)pX > 467 && current_screen_type != CURRENT_SCREEN::SCREEN_E)
+            if ((signed int)pX > 467 && current_screen_type != CURRENT_SCREEN::SCREEN_SHOP_INVENTORY)
                 Inventory_ItemPopupAndAlchemy();
             else if ((signed int)pY >= 345)
                 break;

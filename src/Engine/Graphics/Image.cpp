@@ -380,7 +380,7 @@ const void *Image::GetPalettePixels() {
     return nullptr;
 }
 
-std::string* Image::GetName() {
+std::string *Image::GetName() {
     if (!loader) __debugbreak();
     return loader->GetResourceNamePtr();
 }

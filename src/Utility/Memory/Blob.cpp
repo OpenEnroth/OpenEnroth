@@ -45,7 +45,7 @@ Blob Blob::fromMalloc(const void *data, size_t size) {
 Blob Blob::fromFile(std::string_view path) {
     std::string cpath(path);
     mio::mmap_source mmap(cpath); // Throws std::system_error.
-    const void* data = mmap.data();
+    const void *data = mmap.data();
     size_t size = mmap.size();
     return Blob(data, size, new MemoryMapBlobHandler(std::move(mmap)));
 }
@@ -62,7 +62,7 @@ Blob Blob::view(const void *data, size_t size) {
     return Blob(data, size, &staticNonOwningBlobHandler);
 }
 
-Blob Blob::read(FILE* file, size_t size) {
+Blob Blob::read(FILE *file, size_t size) {
     if (size == 0)
         return Blob();
 
@@ -75,7 +75,7 @@ Blob Blob::read(FILE* file, size_t size) {
     return Blob(memory.release(), size, &staticFreeBlobHandler);
 }
 
-Blob Blob::read(FileInputStream& file, size_t size) {
+Blob Blob::read(FileInputStream &file, size_t size) {
     if (size == 0)
         return Blob();
 

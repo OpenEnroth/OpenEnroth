@@ -1541,7 +1541,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
 
     // Left column
     auto formatLeftCol = [] (int lstr, int current, int max) {
-        const char* str = localization->GetString(lstr);
+        const char *str = localization->GetString(lstr);
         int color16 = UI_GetHealthManaAndOtherQualitiesStringColor(current, max);
         if (max < 1000) {
             return fmt::format("{}\f{:05}\r424{}\f00000 /\t185{}\n", str, color16, current, max);
@@ -1601,7 +1601,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
     pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, {26, pY}, 0, str12, 226, 0);
 
     pY += pFontArrus->GetHeight() + -1;
-    const char* spellName = localization->GetString(LSTR_NONE);
+    const char *spellName = localization->GetString(LSTR_NONE);
     if (player->uQuickSpell != SPELL_NONE)
         spellName = pSpellStats->pInfos[player->uQuickSpell].pShortName;
     auto str13 = fmt::format("{}: {}", localization->GetString(LSTR_QUICK_SPELL), spellName);
@@ -1609,7 +1609,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
 
     // Right column
     auto formatRightCol = [] (int lstr, int current, int max, bool immune = false) {
-        const char* str = localization->GetString(lstr);
+        const char *str = localization->GetString(lstr);
         int color16 = UI_GetHealthManaAndOtherQualitiesStringColor(current, max);
         if (immune) {
             return fmt::format("{}\f{:05}\r180{}\n", str, color16, localization->GetString(LSTR_IMMUNE));

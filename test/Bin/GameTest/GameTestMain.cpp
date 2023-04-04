@@ -17,22 +17,19 @@
 
 class GameThread {
  public:
-    explicit GameThread(const GameTestOptions& options) {
+    explicit GameThread(GameTestOptions &options) {
         _logger = PlatformLogger::createStandardLogger(WIN_ENSURE_CONSOLE_OPTION);
-        _logger->setLogLevel(APPLICATION_LOG, LOG_INFO);
-        _logger->setLogLevel(PLATFORM_LOG, LOG_ERROR);
+        _logger->setLogLevel(APPLICATION_LOG, LOG_VERBOSE);
+        _logger->setLogLevel(PLATFORM_LOG, LOG_VERBOSE);
         EngineIocContainer::ResolveLogger()->setBaseLogger(_logger.get());
         Engine::LogEngineBuildInfo();
 
         _application = std::make_unique<PlatformApplication>(_logger.get());
+        options.ResolveDefaults(_application->platform());
 
-        if (options.gameDataDir.empty()) {
-            AutoInitDataPath(_application->platform());
-        } else {
-            setDataPath(options.gameDataDir);
-        }
+        initDataPath(options.dataPath);
 
-        _config = std::make_shared<GameConfig>();
+        _config = std::make_shared<GameConfig>("openenroth.ini");
         ResetTestConfig(_config.get());
         _game = GameFactory().CreateGame(_application.get(), _config);
     }
@@ -63,41 +60,37 @@ void printGoogleTestHelp(char *app) {
     testing::InitGoogleTest(&argc, argv);
 }
 
-int parseOptions(int argc, char **argv, GameTestOptions *opts) {
-    int exitCode = opts->Parse(argc, argv) ? 0 : 1;
-
-    if (opts->helpRequested) {
-        std::cout << std::endl;
-        printGoogleTestHelp(argv[0]);
-    } else {
-        testing::InitGoogleTest(&argc, argv);
-    }
-
-    return exitCode;
-}
-
 int platformMain(int argc, char **argv) {
-    GameTestOptions opts;
-    int exitCode = parseOptions(argc, argv, &opts);
-    if (exitCode != 0)
+    try {
+        GameTestOptions opts = GameTestOptions::Parse(argc, argv);
+        if (opts.helpPrinted) {
+            fmt::print(stdout, "\n");
+            printGoogleTestHelp(argv[0]);
+            return 1;
+        }
+
+        testing::InitGoogleTest(&argc, argv);
+
+        GameThread gameThread(opts);
+
+        int exitCode = 0;
+        gameThread.app()->get<EngineControlComponent>()->runControlRoutine([&] (EngineController *game) {
+            TestController test(game, opts.testPath);
+
+            GameTest::init(game, &test);
+            gameThread.app()->get<EngineDeterministicComponent>()->enterDeterministicMode(); // And never leave it.
+            game->tick(10); // Let the game thread initialize everything.
+
+            exitCode = RUN_ALL_TESTS();
+
+            game->goToMainMenu();
+            game->pressGuiButton("MainMenu_ExitGame");
+        });
+        gameThread.run();
+
         return exitCode;
-
-    GameThread gameThread(opts);
-
-    gameThread.app()->get<EngineControlComponent>()->runControlRoutine([&] (EngineController *game) {
-        TestController test(game, opts.testDataDir);
-
-        GameTest::init(game, &test);
-        gameThread.app()->get<EngineDeterministicComponent>()->enterDeterministicMode(); // And never leave it.
-        game->tick(10); // Let the game thread initialize everything.
-
-        exitCode = RUN_ALL_TESTS();
-
-        game->goToMainMenu();
-        game->pressGuiButton("MainMenu_ExitGame");
-    });
-
-    gameThread.run();
-
-    return exitCode;
+    } catch (const std::exception &e) {
+        fmt::print(stderr, "{}\n", e.what());
+        return 1;
+    }
 }

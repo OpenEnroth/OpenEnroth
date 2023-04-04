@@ -1185,7 +1185,7 @@ void Party::PickedItem_PlaceInInventory_or_Drop() {
 bool Party::AddItemToParty(ItemGen *pItem) {
     int v10;        // eax@11
 
-    assert(pParty->_activeCharacter > 0); // code in this function couldn't handle pParty->_activeCharacter = 0 and crash
+    assert(pParty->hasActiveCharacter()); // code in this function couldn't handle pParty->_activeCharacter = 0 and crash
 
     if (!pItemTable->pItems[pItem->uItemID].uItemID_Rep_St) {
         pItem->SetIdentified();
@@ -1297,7 +1297,7 @@ PartyAction ActionQueue::Next() {
 }
 
 void Party::GiveFallDamage(int distance) {
-    for (Player& player : pParty->pPlayers) {  // receive falling damage
+    for (Player &player : pParty->pPlayers) {  // receive falling damage
         if (!player.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
             !player.WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS)) {
             player.ReceiveDamage((int)((distance) *

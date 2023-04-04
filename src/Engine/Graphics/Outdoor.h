@@ -112,8 +112,8 @@ struct OutdoorLocation {
     void SetFog();
     void Draw();
 
-    double GetPolygonMaxZ(struct RenderVertexSoft* pVertex, unsigned int unumverts);
-    double GetPolygonMinZ(struct RenderVertexSoft* pVertices, unsigned int unumverts);
+    double GetPolygonMaxZ(struct RenderVertexSoft *pVertex, unsigned int unumverts);
+    double GetPolygonMinZ(struct RenderVertexSoft *pVertices, unsigned int unumverts);
 
     static void LoadActualSkyFrame();
 

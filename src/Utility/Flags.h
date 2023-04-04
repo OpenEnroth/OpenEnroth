@@ -82,22 +82,22 @@ class Flags {
         return static_cast<underlying_type>(l) == r._value;
     }
 
-    constexpr Flags& operator&=(Flags mask) {
+    constexpr Flags &operator&=(Flags mask) {
         *this = *this & mask;
         return *this;
     }
 
-    constexpr Flags& operator&=(enumeration_type mask) {
+    constexpr Flags &operator&=(enumeration_type mask) {
         *this = *this & mask;
         return *this;
     }
 
-    constexpr Flags& operator|=(Flags flags) {
+    constexpr Flags &operator|=(Flags flags) {
         *this = *this | flags;
         return *this;
     }
 
-    constexpr Flags& operator|=(enumeration_type flags) {
+    constexpr Flags &operator|=(enumeration_type flags) {
         *this = *this | flags;
         return *this;
     }

@@ -5,7 +5,7 @@
 
 #include "Utility/String.h"
 
-bool detail::EnumSerializationTable::trySerialize(uint64_t src, std::string* dst) const {
+bool detail::EnumSerializationTable::trySerialize(uint64_t src, std::string *dst) const {
     auto pos = _stringByEnum.find(src);
     if (pos == _stringByEnum.end())
         return false;
@@ -13,8 +13,8 @@ bool detail::EnumSerializationTable::trySerialize(uint64_t src, std::string* dst
     return true;
 }
 
-bool detail::EnumSerializationTable::tryDeserialize(std::string_view src, uint64_t* dst) const {
-    auto DoTryDeserialize = [this] (std::string_view src, uint64_t* dst) {
+bool detail::EnumSerializationTable::tryDeserialize(std::string_view src, uint64_t *dst) const {
+    auto DoTryDeserialize = [this] (std::string_view src, uint64_t *dst) {
         auto pos = _enumByString.find(src);
         if (pos == _enumByString.end())
             return false;

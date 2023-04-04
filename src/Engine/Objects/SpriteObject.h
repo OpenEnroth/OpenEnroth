@@ -85,6 +85,8 @@ struct SpriteObject {
     ABILITY_INDEX field_61 = ABILITY_ATTACK1;
     char field_62[2] = {};
     Vec3i initialPosition;
+    int _lastParticleTime{};
+    int _ticksPerParticle{ 2 }; // how many 1/128ths between particles
 };
 #pragma pack(pop)
 

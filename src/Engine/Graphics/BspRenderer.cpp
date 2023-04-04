@@ -13,7 +13,7 @@ void BspRenderer::AddFaceToRenderList_d3d(unsigned int node_id, unsigned int uFa
     nodes[num_nodes].viewing_portal_id = -1;
 
     if (uFaceID >= pIndoor->pFaces.size()) return;
-    BLVFace* pFace = &pIndoor->pFaces[uFaceID];
+    BLVFace *pFace = &pIndoor->pFaces[uFaceID];
 
     if (!pFace->Portal()) {
         if (num_faces < 1500) {
@@ -166,7 +166,7 @@ void PrepareBspRenderList_BLV() {
 
 //----- (00440639) --------------------------------------------------------
 void AddBspNodeToRenderList(unsigned int node_id) {
-    BLVSector* pSector = &pIndoor->pSectors[pBspRenderer->nodes[node_id].uSectorID];
+    BLVSector *pSector = &pIndoor->pSectors[pBspRenderer->nodes[node_id].uSectorID];
 
     for (uint i = 0; i < pSector->uNumNonBSPFaces; ++i)
         pBspRenderer->AddFaceToRenderList_d3d(node_id, pSector->pFaceIDs[i]);  // рекурсия\recursion
@@ -179,16 +179,16 @@ void AddBspNodeToRenderList(unsigned int node_id) {
 
 //----- (004406BC) --------------------------------------------------------
 void AddNodeBSPFaces(unsigned int node_id, unsigned int uFirstNode) {
-    BLVSector* pSector;       // esi@2
-    BSPNode* pNode;           // edi@2
-    BLVFace* pFace;           // eax@2
+    BLVSector *pSector;       // esi@2
+    BSPNode *pNode;           // edi@2
+    BLVFace *pFace;           // eax@2
     int v5;                   // ecx@2
     int16_t v6;               // ax@6
     int v7;                   // ebp@10
     int v8;                   // ebx@10
     int16_t v9;               // di@18
 
-    BspRenderer_ViewportNode* node = &pBspRenderer->nodes[node_id];
+    BspRenderer_ViewportNode *node = &pBspRenderer->nodes[node_id];
 
     while (1) {
         pSector = &pIndoor->pSectors[node->uSectorID];

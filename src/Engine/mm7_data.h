@@ -204,7 +204,7 @@ extern std::string branchless_dialogue_str;
 extern int EvtTargetObj;
 extern int _unused_5B5924_is_travel_ui_drawn;  // 005B5924
 
-extern char* Party_Teleport_Map_Name;
+extern char *Party_Teleport_Map_Name;
 extern int Party_Teleport_X_Pos;
 extern int Party_Teleport_Y_Pos;
 extern int Party_Teleport_Z_Pos;
