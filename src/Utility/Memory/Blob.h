@@ -94,7 +94,7 @@ class Blob final {
      * @return                          Blob that owns the data that was read from the provided file.
      * @throws Exception                If the provided number of bytes couldn't be read.
      */
-    static Blob read(FileInputStream& file, size_t size);
+    static Blob read(FileInputStream &file, size_t size);
 
     /**
      * @param l                         First blob.

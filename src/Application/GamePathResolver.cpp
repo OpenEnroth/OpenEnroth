@@ -54,12 +54,16 @@ static std::string _resolvePath(
 #ifdef __ANDROID__
     // TODO: find a better way to deal with paths and remove this android specific block.
     std::string result = platform->StoragePath(ANDROID_STORAGE_EXTERNAL);
-    if (result.empty()) {
+    if (result.empty())
         result = platform->StoragePath(ANDROID_STORAGE_INTERNAL);
-    }
-
+    if (result.empty())
+        platform->ShowMessageBox("Device currently unsupported", "Your device doesn't have any storage so it is unsupported!");
     return result;
 #else
+    // TODO (captainurist): we should consider reading Unicode (utf8) strings from win32 registry, as it might contain paths
+    // curretnly we convert all strings out of registry into CP_ACP (default windows ansi)
+    // it is later on passed to std::filesystem that should be ascii on windows as well
+    // this means we will can't handle win32 unicode paths at the time
     const char *envPathStr = std::getenv(envVarOverride);
 
     std::string envPath{};

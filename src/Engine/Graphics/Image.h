@@ -37,7 +37,7 @@ class Image {
     const void *GetPalettePixels();
     IMAGE_FORMAT GetFormat() const { return native_format; }
 
-    std::string* GetName();
+    std::string *GetName();
 
     bool Release();
 
@@ -50,8 +50,8 @@ class Image {
     unsigned int height = 0;
     IMAGE_FORMAT native_format = IMAGE_INVALID_FORMAT;
     IndexedArray<void *, IMAGE_NUM_FORMATS> pixels = {{}};
-    void* palette24 = nullptr;
-    void* palettepixels = nullptr;
+    void *palette24 = nullptr;
+    void *palettepixels = nullptr;
 
     virtual bool LoadImageData();
 };

@@ -53,13 +53,13 @@ namespace Io {
         }
         void ResetKeys();
 
-        void StartTextInput(TextInputType type, int max_string_len, GUIWindow* pWindow);
+        void StartTextInput(TextInputType type, int max_string_len, GUIWindow *pWindow);
         bool ProcessTextInput(PlatformKey key, int c);
         void EndTextInput();
 
         std::string GetTextInput() const;
-        void SetTextInput(const std::string& text);
-        void SetTextInput(const char* text);
+        void SetTextInput(const std::string &text);
+        void SetTextInput(const char *text);
 
      private:
         void GeneratePausedActions();

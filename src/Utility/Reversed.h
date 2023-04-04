@@ -42,6 +42,6 @@ class ReversedRange {
  * @return                              Reversed view.
  */
 template <class Range>
-constexpr auto reversed(Range&& range) {
+constexpr auto reversed(Range &&range) {
     return detail::ReversedRange(std::forward<Range>(range));
 }

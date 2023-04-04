@@ -45,7 +45,7 @@
 #include "Library/Random/Random.h"
 
 // TODO(pskelton): make this neater
-static DecalBuilder* decal_builder = EngineIocContainer::ResolveDecalBuilder();
+static DecalBuilder *decal_builder = EngineIocContainer::ResolveDecalBuilder();
 
 MapStartPoint uLevel_StartingPointType;
 
@@ -3361,7 +3361,7 @@ int GetTerrainHeightsAroundParty2(int x, int y, bool *pIsOnWater, int bFloatAbov
 }
 
 //----- (00436A6D) --------------------------------------------------------
-double OutdoorLocation::GetPolygonMinZ(RenderVertexSoft* pVertices, unsigned int unumverts) {
+double OutdoorLocation::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int unumverts) {
     double result = FLT_MAX;
     for (uint i = 0; i < unumverts; i++) {
         if (pVertices[i].vWorldPosition.z < result) {
@@ -3372,7 +3372,7 @@ double OutdoorLocation::GetPolygonMinZ(RenderVertexSoft* pVertices, unsigned int
 }
 
 //----- (00436A40) --------------------------------------------------------
-double OutdoorLocation::GetPolygonMaxZ(RenderVertexSoft* pVertex, unsigned int unumverts) {
+double OutdoorLocation::GetPolygonMaxZ(RenderVertexSoft *pVertex, unsigned int unumverts) {
     double result = FLT_MIN;
     for (uint i = 0; i < unumverts; i++) {
         if (pVertex[i].vWorldPosition.z > result)

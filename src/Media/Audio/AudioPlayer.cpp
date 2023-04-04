@@ -363,18 +363,16 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
             default: {
                 // TODO(pskelton): temp fix to reduce instances of sounds not playing
                 _nonExclusiveSoundPool.playNew(sample);
-                if (engine->config->debug.VerboseLogging.value())
-                    logger->warning("Unexpected object type from PID in playSound");
+                logger->verbose("Unexpected object type from PID in playSound");
                 break;
             }
         }
     }
 
-    if (engine->config->debug.VerboseLogging.value()) {
-        if (si.sName == "")
-            logger->info("AudioPlayer: playing sound {}", eSoundID);
-        else
-            logger->info("AudioPlayer: playing sound {} with name '{}'", eSoundID, si.sName);
+    if (si.sName.empty()) {
+        logger->verbose("AudioPlayer: playing sound {}", eSoundID);
+    } else {
+        logger->verbose("AudioPlayer: playing sound {} with name '{}'", eSoundID, si.sName);
     }
 
     return;

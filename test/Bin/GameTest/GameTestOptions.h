@@ -2,10 +2,14 @@
 
 #include <string>
 
-struct GameTestOptions {
-    std::string testDataDir;
-    std::string gameDataDir;
-    bool helpRequested = false;
+class Platform;
 
-    bool Parse(int argc, char **argv);
+struct GameTestOptions {
+    std::string testPath;
+    std::string dataPath;
+    bool helpPrinted = false;
+
+    static GameTestOptions Parse(int argc, char **argv);
+
+    void ResolveDefaults(Platform *platform);
 };

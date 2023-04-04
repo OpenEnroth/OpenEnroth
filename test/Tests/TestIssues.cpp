@@ -21,7 +21,7 @@ static int totalPartyHealth() {
 static int partyItemCount() {
     int result = 0;
     for (const Player &player : pParty->pPlayers)
-        for (const ItemGen& item : player.pOwnItems)
+        for (const ItemGen &item : player.pOwnItems)
             result += item.uItemID != ITEM_NULL;
     return result;
 }
@@ -171,6 +171,13 @@ GAME_TEST(Issues, Issue223) {
     checkResistances(CHARACTER_ATTRIBUTE_RESIST_AIR, { {0, 5}, {1, 0}, {2, 0}, {3, 0} });
 }
 
+GAME_TEST(Issues, Issue238) {
+    // Party vertical flight speed doesnt use frame pacing
+    engine->config->debug.AllMagic.setValue(true);
+    test->playTraceFromTestData("issue_238.mm7", "issue_238.json");
+    EXPECT_LT(pParty->vPosition.z, 2500);
+}
+
 GAME_TEST(Issues, Issue248) {
     // Crash in NPC dialog
     test->playTraceFromTestData("issue_248.mm7", "issue_248.json");
@@ -185,6 +192,16 @@ GAME_TEST(Issues, Issue271) {
     // Party shouldn't yell when landing from flight
     test->playTraceFromTestData("issue_271.mm7", "issue_271.json");
     EXPECT_NE(pParty->pPlayers[1].expression, CHARACTER_EXPRESSION_FEAR);
+}
+
+GAME_TEST(Issues, Issue272) {
+    // Controls menu bugs
+    // Check default resets keys
+    test->playTraceFromTestData("issue_272a.mm7", "issue_272a.json");
+    EXPECT_EQ(engine->config->keybindings.Right.value(), engine->config->keybindings.Right.defaultValue());
+    // Check you cant leave menu with conflicting keys
+    test->playTraceFromTestData("issue_272b.mm7", "issue_272b.json");
+    EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_KEYBOARD_OPTIONS);
 }
 
 GAME_TEST(Issues, Issue293a) {
@@ -525,6 +542,7 @@ GAME_TEST(Issues, Issue578) {
 GAME_TEST(Issues, Issue598) {
     // Assert when accessing character inventory from the shop screen
     test->playTraceFromTestData("issue_598.mm7", "issue_598.json");
+    EXPECT_EQ(current_screen_type, CURRENT_SCREEN::SCREEN_SHOP_INVENTORY);
 }
 
 // 600
@@ -541,6 +559,10 @@ GAME_TEST(Issues, Issue611) {
 }
 
 GAME_TEST(Issues, Issue615) {
+    // test 1 - ensure that clicking between active portraits changes active character.
+    test->playTraceFromTestData("issue_615a.mm7", "issue_615a.json", []() { EXPECT_EQ(pParty->getActiveCharacter(), 1); });
+    EXPECT_EQ(pParty->getActiveCharacter(), 3);
     // Assert when clicking on character portrait when no active character is present
-    test->playTraceFromTestData("issue_615.mm7", "issue_615.json");
+    test->playTraceFromTestData("issue_615b.mm7", "issue_615b.json", []() { EXPECT_EQ(pParty->getActiveCharacter(), 1); });
+    EXPECT_EQ(pParty->getActiveCharacter(), 4);
 }

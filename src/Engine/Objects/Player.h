@@ -182,7 +182,7 @@ struct Player {
      * @offset 0x4680ED
      */
     void useItem(int targetCharacter, bool isPortraitClick);
-    bool AddItem(ItemGen* pItem);
+    bool AddItem(ItemGen *pItem);
     int GetActualAttribute(CHARACTER_ATTRIBUTE_TYPE attrId,
                            unsigned short Player::*attrValue,
                            unsigned short Player::*attrBonus);
@@ -222,12 +222,12 @@ struct Player {
     bool HasItemEquipped(ITEM_SLOT uEquipIndex) const;
     bool HasEnchantedItemEquipped(int uEnchantment);
     bool WearsItem(ITEM_TYPE item_id, ITEM_SLOT equip_type) const;
-    int StealFromShop(ItemGen* itemToSteal, int extraStealDifficulty,
-                      int reputation, int extraStealFine, int* fineIfFailed);
+    int StealFromShop(ItemGen *itemToSteal, int extraStealDifficulty,
+                      int reputation, int extraStealFine, int *fineIfFailed);
     int StealFromActor(unsigned int uActorID, int _steal_perm, int reputation);
     void Heal(int amount);
     int ReceiveDamage(signed int amount, DAMAGE_TYPE dmg_type);
-    int ReceiveSpecialAttackEffect(int attType, Actor* pActor);
+    int ReceiveSpecialAttackEffect(int attType, Actor *pActor);
 
     // TODO(captainurist): actually returns DAMAGE_TYPE / SPELL_SCHOOL
     // TODO(captainurist): move to SpellEnums.h
@@ -268,11 +268,11 @@ struct Player {
     unsigned int GetStatColor(int uStat);
     bool DiscardConditionIfLastsLongerThan(Condition uCondition,
                                            GameTime time);
-    MERCHANT_PHRASE SelectPhrasesTransaction(ItemGen* pItem, BuildingType building_type, int BuildID_2Events, int ShopMenuType);
+    MERCHANT_PHRASE SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, int BuildID_2Events, int ShopMenuType);
     int GetBodybuilding();
     int GetMeditation();
-    bool CanIdentify(ItemGen* pItem);
-    bool CanRepair(ItemGen* pItem);
+    bool CanIdentify(ItemGen *pItem);
+    bool CanRepair(ItemGen *pItem);
     int GetMerchant();
     int GetPerception();
     int GetDisarmTrap();
@@ -289,8 +289,8 @@ struct Player {
     int HasSkill(PLAYER_SKILL_TYPE uSkillType);
     void WearItem(ITEM_TYPE uItemID);
     int AddItem(int uSlot, ITEM_TYPE uItemID);
-    int AddItem2(int uSlot, ItemGen* Src);
-    int CreateItemInInventory2(unsigned int index, ItemGen* Src);
+    int AddItem2(int uSlot, ItemGen *Src);
+    int CreateItemInInventory2(unsigned int index, ItemGen *Src);
     void PutItemArInventoryIndex(ITEM_TYPE uItemID, int itemListPos, int uSlot);
     void RemoveItemAtInventoryIndex(unsigned int uSlot);
     bool CanAct() const;
@@ -311,7 +311,7 @@ struct Player {
     void ItemsPotionDmgBreak(int enchant_count);
     unsigned int GetItemListAtInventoryIndex(int inout_item_cell);
     unsigned int GetItemMainInventoryIndex(int inout_item_cell);
-    struct ItemGen* GetItemAtInventoryIndex(int inout_item_cell);
+    struct ItemGen *GetItemAtInventoryIndex(int inout_item_cell);
     bool IsPlayerHealableByTemple();
     int GetBaseIdentifyPrice(float price_multiplier);
     int GetBaseRepairPrice(int uRealValue, float price_multiplier);
@@ -335,10 +335,10 @@ struct Player {
     bool HasItem(ITEM_TYPE uItemID, bool checkHeldItem);
     void OnInventoryLeftClick();
 
-    bool PlayerHitOrMiss(Actor* pActor, int distancemod, PLAYER_SKILL_LEVEL skillmod);
+    bool PlayerHitOrMiss(Actor *pActor, int distancemod, PLAYER_SKILL_LEVEL skillmod);
 
     unsigned int GetMultiplierForSkillLevel(PLAYER_SKILL_TYPE uSkillType, int mult1, int mult2, int mult3, int mult4);
-    int CalculateMeleeDmgToEnemyWithWeapon(ItemGen* weapon,
+    int CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
                                            unsigned int uTargetActorID,
                                            bool addOneDice);
     bool WearsItemAnywhere(ITEM_TYPE item_id) const;
@@ -397,20 +397,20 @@ struct Player {
     inline bool IsMale() { return GetSexByVoice() == SEX_MALE; }
     inline bool IsFemale() { return !IsMale(); }
 
-    ItemGen* GetMainHandItem();
-    ItemGen* GetOffHandItem();
-    ItemGen* GetBowItem();
-    ItemGen* GetArmorItem();
-    ItemGen* GetHelmItem();
-    ItemGen* GetBeltItem();
-    ItemGen* GetCloakItem();
-    ItemGen* GetGloveItem();
-    ItemGen* GetBootItem();
-    ItemGen* GetAmuletItem();
-    ItemGen* GetNthRingItem(int ringNum);
-    const ItemGen* GetNthEquippedIndexItem(ITEM_SLOT index) const;
+    ItemGen *GetMainHandItem();
+    ItemGen *GetOffHandItem();
+    ItemGen *GetBowItem();
+    ItemGen *GetArmorItem();
+    ItemGen *GetHelmItem();
+    ItemGen *GetBeltItem();
+    ItemGen *GetCloakItem();
+    ItemGen *GetGloveItem();
+    ItemGen *GetBootItem();
+    ItemGen *GetAmuletItem();
+    ItemGen *GetNthRingItem(int ringNum);
+    const ItemGen *GetNthEquippedIndexItem(ITEM_SLOT index) const;
     ItemGen *GetNthEquippedIndexItem(ITEM_SLOT index);
-    ItemGen* GetItem(unsigned int PlayerEquipment::*itemPos);
+    ItemGen *GetItem(unsigned int PlayerEquipment::*itemPos);
 
     // TODO(Nik-RE-dev): use getCharacterIdInParty directly where this function is called.
     int GetPlayerIndex();
@@ -591,7 +591,7 @@ struct Player {
     char field_1B3B_set0_unused;
 };
 
-void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i* pPos, signed int a4);
+void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i *pPos, signed int a4);
 bool IsDwarfPresentInParty(bool b);
 bool ShouldLoadTexturesForRaceAndGender(unsigned int _this);
 int PlayerCreation_GetUnspentAttributePointCount();

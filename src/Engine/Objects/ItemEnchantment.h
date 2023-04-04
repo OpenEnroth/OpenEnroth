@@ -19,8 +19,8 @@ struct CEnchantment {
 #pragma pack(push, 1)
 struct ItemEnchantment {  // Bonus|Sta|Of
                           // Name|Arm|Shld|Helm|Belt|Cape|Gaunt|Boot|Ring|Amul
-    char* pBonusStat;
-    char* pOfName;
+    char *pBonusStat;
+    char *pOfName;
     /*	union{
                     struct {
                             unsigned char to_arm;
@@ -45,8 +45,8 @@ struct ItemSpecialEnchantment {  // 1Ch
     // Add|W1|W2|Miss|Arm|Shld|Helm|Belt|Cape|Gaunt|Boot|Ring|Amul|Value|Lvl|Description
     // fo special Bonuses and values
 
-    char* pBonusStatement;   // 0
-    char* pNameAdd;          // 4
+    char *pBonusStatement;   // 0
+    char *pNameAdd;          // 4
     IndexedArray<char, EQUIP_FIRST_SPECIAL_ENCHANTABLE, EQUIP_LAST_SPECIAL_ENCHANTABLE> to_item_apply;  // 8
     int iValue;              // 14
     int iTreasureLevel;      // 18
