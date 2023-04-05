@@ -38,7 +38,7 @@ class GameThread {
 
     ~GameThread() {
         EngineIocContainer::ResolveLogger()->setBaseLogger(nullptr);
-        std::filesystem::remove(MakeDataPath("openenroth_test.ini"));
+        std::filesystem::remove("openenroth_test.ini");
     }
 
     PlatformApplication *app() const {
