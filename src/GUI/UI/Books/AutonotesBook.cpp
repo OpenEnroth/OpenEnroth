@@ -129,8 +129,7 @@ void GUIWindow_AutonotesBook::Update() {
                                     ui_book_button2_on);
 
     if (Book_PageBtn3_flag) {  // Potions_page_flag
-        if (_506568_autonote_type ==
-            AUTONOTE_POTION_RECEPIE) {  // press again(повторное нажатие)
+        if (_506568_autonote_type == AUTONOTE_POTION_RECEPIE) {  // press again(повторное нажатие)
             render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 398) / 640.0f,
                 (pViewport->uViewportTL_Y + 113) / 480.0f, ui_book_button3_on);
@@ -143,8 +142,7 @@ void GUIWindow_AutonotesBook::Update() {
                 (pViewport->uViewportTL_Y + 113) / 480.0f, ui_book_button3_on);
         }
     } else {
-        if (_506568_autonote_type ==
-            AUTONOTE_POTION_RECEPIE)  // default(по умолчанию при запуске окна)
+        if (_506568_autonote_type == AUTONOTE_POTION_RECEPIE)  // default(по умолчанию при запуске окна)
             render->DrawTextureNew(
                 (pViewport->uViewportTL_X + 398) / 640.0f,
                 (pViewport->uViewportTL_Y + 113) / 480.0f, ui_book_button3_on);

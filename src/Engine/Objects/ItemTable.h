@@ -35,8 +35,10 @@ struct ItemTable {
     char field_C6D0[5000];
     char field_DA58[5000];
     char field_EDE0[384];
-    uint16_t potion_data[50][50];  // 77B2h*2=EF64h  -102ECh
-    uint16_t potion_note[50][50];  // 8176h*2=102ECh -11674h
+    // 77B2h*2=EF64h  -102ECh
+    IndexedArray<IndexedArray<ITEM_TYPE, ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION>, ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION> potionCombination;
+    // 8176h*2=102ECh -11674
+    IndexedArray<IndexedArray<uint16_t, ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION>, ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION> potionNotes;
     std::string pItemsTXT_Raw;              // 11674h
     std::string pRndItemsTXT_Raw;
     std::string pStdItemsTXT_Raw;           // 1167Ch

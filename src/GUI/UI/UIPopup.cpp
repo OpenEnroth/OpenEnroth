@@ -1693,12 +1693,8 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
 int no_rightlick_in_inventory = false;  // 0050CDCC
 //----- (00416196) --------------------------------------------------------
 void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
-    int potion1_id;             // edx@25
-    unsigned int potion2_id;    // edi@25
     ITEM_TYPE potionID;        // edx@27
     // unsigned int pOut_y;        // edx@57
-    double v31;                 // st7@112
-    Vec3i v39;              // [sp-18h] [bp-A8h]@83
     GUIWindow message_window;   // [sp+Ch] [bp-84h]@137
     unsigned int damage_level;  // [sp+8Ch] [bp-4h]@23
 
@@ -1838,12 +1834,12 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 return;
             }
 
-            v31 = (70.0 - (double)pParty->pPickedItem.uEnchantmentType) * 0.01;
-            if (v31 < 0.0) v31 = 0.0;
-            item->uMaxCharges = (int64_t)((double)item->uMaxCharges -
-                                 v31 * (double)item->uMaxCharges);
-            item->uNumCharges = (int64_t)((double)item->uMaxCharges -
-                                 v31 * (double)item->uMaxCharges);
+            int maxChargesDecreasePercent = 70 - pParty->pPickedItem.uEnchantmentType;
+            if (maxChargesDecreasePercent < 0) {
+                maxChargesDecreasePercent = 0;
+            }
+            float invMaxChargesDecrease = (100 - maxChargesDecreasePercent) * 0.01;
+            item->uMaxCharges = item->uNumCharges = item->uMaxCharges * invMaxChargesDecrease;
 
             mouse->RemoveHoldingItem();
             no_rightlick_in_inventory = 1;
@@ -1888,10 +1884,10 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 return;
             }
 
+            GameTime effectTime = GameTime::FromMinutes(30 * pParty->pPickedItem.uEnchantmentType);
             item->UpdateTempBonus(pParty->GetPlayingTime());
             if (pParty->pPickedItem.uItemID == ITEM_POTION_SLAYING) {
                 item->special_enchantment = ITEM_ENCHANTMENT_DRAGON_SLAYING;
-                v31 = (double)(1800 * pParty->pPickedItem.uEnchantmentType);
             } else {
                 static constinit IndexedArray<ITEM_ENCHANTMENT, ITEM_FIRST_ENCHANTING_POTION, ITEM_LAST_ENCHANTING_POTION> _4E2904_enchantment_by_potion_lut = {
                     {ITEM_POTION_FLAMING, ITEM_ENCHANTMENT_OF_FLAME},
@@ -1901,10 +1897,9 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                     {ITEM_POTION_SWIFT, ITEM_ENCHANTMENT_SWIFT}
                 };
                 item->special_enchantment = _4E2904_enchantment_by_potion_lut[pParty->pPickedItem.uItemID];
-                v31 = (double)(1800 * pParty->pPickedItem.uEnchantmentType);
             }
 
-            item->uExpireTime = GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(v31));
+            item->uExpireTime = GameTime(pParty->GetPlayingTime() + effectTime);
             item->uAttributes |= ITEM_TEMP_BONUS | ITEM_AURA_EFFECT_RED;
 
             ItemEnchantmentTimer = Timer::Second * 2;
@@ -1968,48 +1963,57 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
 
     // potions mixing(смешивание двух зелий)
     if (IsPotion(pParty->pPickedItem.uItemID) && IsPotion(item->uItemID)) {
-        // TODO(captainurist): get rid of casts in a nice way.
-        potion1_id = std::to_underlying(item->uItemID) - std::to_underlying(ITEM_POTION_CURE_WOUNDS);
-        potion2_id = std::to_underlying(pParty->pPickedItem.uItemID) - std::to_underlying(ITEM_POTION_CURE_WOUNDS);
+        ITEM_TYPE potionSrc1 = item->uItemID;
+        ITEM_TYPE potionSrc2 = pParty->pPickedItem.uItemID;
 
-        if (pParty->pPickedItem.uItemID == ITEM_POTION_CATALYST ||
-            item->uItemID == ITEM_POTION_CATALYST)
-            potionID = ITEM_DUELIST_BLADE; // TODO(captainurist): eeeh? // was 5
-        else
-            potionID = ITEM_TYPE(pItemTable->potion_data[potion2_id][potion1_id]);
+        ITEM_TYPE potionID;
+        if (pParty->pPickedItem.uItemID == ITEM_POTION_CATALYST || item->uItemID == ITEM_POTION_CATALYST) {
+            potionID = ITEM_POTION_CATALYST;
+        } else {
+            potionID = pItemTable->potionCombination[potionSrc2][potionSrc1];
+        }
+
+        if (potionID == ITEM_NULL) {
+            // Combining same potions
+            GameUI_DrawItemInfo(item);
+            return;
+        }
 
         damage_level = 0;
         if (alchemy_skill_points) {
-            if (potionID < ITEM_POTION_CURE_DISEASE ||
-                potionID > ITEM_POTION_AWAKEN) {  // < 225 >227
+            if (!IsPotion(potionID)) {
+                // In this case potionID represent damage level
+                damage_level = std::to_underlying(potionID);
+            } else {
+                // potionID >= ITEM_POTION_CURE_WOUNDS && potionID <= ITEM_POTION_CURE_WEAKNESS does not require skill
+                // potionID >= ITEM_POTION_CURE_DISEASE && potionID <= ITEM_POTION_AWAKEN require just NOVICE
                 if (potionID >= ITEM_POTION_HASTE &&
                     potionID <= ITEM_POTION_CURE_INSANITY &&
-                    alchemy_skill_level == PLAYER_SKILL_MASTERY_NOVICE)  // 228 >= potionID <= 239
+                    alchemy_skill_level == PLAYER_SKILL_MASTERY_NOVICE) {
                     damage_level = 2;
+                }
                 if (potionID >= ITEM_POTION_MIGHT_BOOST &&
                     potionID <= ITEM_POTION_BODY_RESISTANCE &&
-                    alchemy_skill_level <= PLAYER_SKILL_MASTERY_EXPERT)  // 240 >= potionID <= 261
+                    alchemy_skill_level <= PLAYER_SKILL_MASTERY_EXPERT) {
                     damage_level = 3;
+                }
                 if (potionID >= ITEM_POTION_STONE_TO_FLESH &&
-                    alchemy_skill_level <= PLAYER_SKILL_MASTERY_MASTER)  // 262 < potionID
+                    alchemy_skill_level <= PLAYER_SKILL_MASTERY_MASTER) {
                     damage_level = 4;
+                }
             }
         } else {  // no skill(нет навыка)
-            if (potionID >= ITEM_POTION_CURE_DISEASE &&
-                potionID <= ITEM_POTION_AWAKEN)  // 225 <= v16 <= 227
+            if (potionID >= ITEM_POTION_CURE_DISEASE && potionID <= ITEM_POTION_AWAKEN)
                 damage_level = 1;
-            if (potionID >= ITEM_POTION_HASTE &&
-                potionID <= ITEM_POTION_CURE_INSANITY)  // 228 <= v16 <= 239
+            if (potionID >= ITEM_POTION_HASTE && potionID <= ITEM_POTION_CURE_INSANITY)
                 damage_level = 2;
-            if (potionID >= ITEM_POTION_MIGHT_BOOST &&
-                potionID <= ITEM_POTION_BODY_RESISTANCE)  // 240 <= v16 <= 261
+            if (potionID >= ITEM_POTION_MIGHT_BOOST && potionID <= ITEM_POTION_BODY_RESISTANCE)
                 damage_level = 3;
-            if (potionID >= ITEM_POTION_STONE_TO_FLESH)  // 262 <= v16
+            if (potionID >= ITEM_POTION_STONE_TO_FLESH)
                 damage_level = 4;
         }
 
-        int item_pid = pPlayers[pParty->getActiveCharacter()]->GetItemListAtInventoryIndex(
-            invMatrixIndex);
+        int item_pid = pPlayers[pParty->getActiveCharacter()]->GetItemListAtInventoryIndex(invMatrixIndex);
         // int pOut_x = item_pid + 1;
         // for (uint i = 0; i < 126; ++i)
         //{
@@ -2019,14 +2023,9 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         //   break;
         //}
         //}
-        if (potionID == ITEM_NULL) {
-            GameUI_DrawItemInfo(item);
-            return;
-        }
 
         if (damage_level > 0) {
-            pPlayers[pParty->getActiveCharacter()]->RemoveItemAtInventoryIndex(
-                invMatrixIndex);  // pOut_y); ?? quickfix needs checking
+            pPlayers[pParty->getActiveCharacter()]->RemoveItemAtInventoryIndex(invMatrixIndex);  // pOut_y); ?? quickfix needs checking
 
             if (damage_level == 1) {
                 pPlayers[pParty->getActiveCharacter()]->ReceiveDamage(grng->Random(11) + 10, DMGT_FIRE);
@@ -2038,22 +2037,19 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 pPlayers[pParty->getActiveCharacter()]->ItemsPotionDmgBreak(5);  // break 5
             } else if (damage_level >= 4) {
                 pPlayers[pParty->getActiveCharacter()]->SetCondition(Condition_Eradicated, 0);
-                pPlayers[pParty->getActiveCharacter()]->ItemsPotionDmgBreak(
-                    0);  // break everything
+                pPlayers[pParty->getActiveCharacter()]->ItemsPotionDmgBreak(0);  // break everything
             }
 
             pAudioPlayer->playUISound(SOUND_fireBall);
             pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
-            v39.z = pParty->vPosition.z + pParty->sEyelevel;
-            v39.x = pParty->vPosition.x;
-            v39.y = pParty->vPosition.y;
 
             int _viewPitch, _viewYaw, rot_z;
-            Vec3i::rotate(64, pParty->_viewYaw, pParty->_viewPitch, v39, &_viewPitch, &_viewYaw, &rot_z);
+            Vec3i::rotate(64, pParty->_viewYaw, pParty->_viewPitch, pParty->vPosition + Vec3i(0, 0, pParty->sEyelevel), &_viewPitch, &_viewYaw, &rot_z);
             SpriteObject::dropItemAt(SPRITE_SPELL_FIRE_FIREBALL_IMPACT, {_viewPitch, _viewYaw, rot_z}, 0);
             if (dword_4E455C) {
-                if (pPlayers[pParty->getActiveCharacter()]->CanAct())
+                if (pPlayers[pParty->getActiveCharacter()]->CanAct()) {
                     pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_PotionExplode);
+                }
                 GameUI_SetStatusBar(LSTR_OOPS);
                 dword_4E455C = 0;
             }
@@ -2062,29 +2058,25 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             return;
         } else {  // if ( damage_level == 0 )
             if (alchemy_skill_points) {
-                if (item->uItemID == ITEM_POTION_CATALYST ||
-                    pParty->pPickedItem.uItemID == ITEM_POTION_CATALYST) {
-                    if (item->uItemID == ITEM_POTION_CATALYST)
+                if (item->uItemID == ITEM_POTION_CATALYST || pParty->pPickedItem.uItemID == ITEM_POTION_CATALYST) {
+                    if (item->uItemID == ITEM_POTION_CATALYST) {
                         item->uItemID = pParty->pPickedItem.uItemID;
-                    if (pParty->pPickedItem.uItemID == ITEM_POTION_CATALYST)
-                        item->uEnchantmentType =
-                            pParty->pPickedItem.uEnchantmentType;
+                    }
+                    if (pParty->pPickedItem.uItemID == ITEM_POTION_CATALYST) {
+                        item->uEnchantmentType = pParty->pPickedItem.uEnchantmentType;
+                    }
                 } else {
                     item->uItemID = potionID;
-                    item->uEnchantmentType =
-                        (pParty->pPickedItem.uEnchantmentType +
-                         item->uEnchantmentType) /
-                        2;
-                    pPlayers[pParty->getActiveCharacter()]->SetVariable(
-                        VAR_AutoNotes,
-                        pItemTable->potion_note[potion1_id][potion2_id]);
+                    item->uEnchantmentType = (pParty->pPickedItem.uEnchantmentType + item->uEnchantmentType) / 2;
+                    // Can be zero even for valid potion combination when resulting potion is of lower grade than it's components
+                    // Example: "Cure Paralysis(white) + Cure Wounds(red) = Cure Wounds(red)"
+                    if (pItemTable->potionNotes[potionSrc1][potionSrc2] != 0) {
+                        pPlayers[pParty->getActiveCharacter()]->SetVariable(VAR_AutoNotes, pItemTable->potionNotes[potionSrc1][potionSrc2]);
+                    }
                 }
-                int bottle =
-                    pPlayers[pParty->getActiveCharacter()]->AddItem(-1, ITEM_POTION_BOTTLE);
+                int bottle = pPlayers[pParty->getActiveCharacter()]->AddItem(-1, ITEM_POTION_BOTTLE);
                 if (bottle)
-                    pPlayers[pParty->getActiveCharacter()]
-                        ->pOwnItems[bottle - 1]
-                        .uAttributes = ITEM_IDENTIFIED;
+                    pPlayers[pParty->getActiveCharacter()]->pOwnItems[bottle - 1].uAttributes = ITEM_IDENTIFIED;
                 if (!(pItemTable->pItems[item->uItemID].uItemID_Rep_St))
                     item->uAttributes |= ITEM_IDENTIFIED;
                 if (!dword_4E455C) {

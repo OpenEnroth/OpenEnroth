@@ -331,8 +331,6 @@ bool ItemTable::IsMaterialNonCommon(ItemGen *pItem) {
 void ItemTable::LoadPotions() {
     //    char Text[90];
     char *test_string;
-    unsigned int uRow;
-    unsigned int uColumn;
     uint8_t potion_value;
 
     free(pPotionNotesTXT_Raw);
@@ -349,23 +347,25 @@ void ItemTable::LoadPotions() {
         return;
     }
 
-    for (uRow = 0; uRow < 50; ++uRow) {
+    for (ITEM_TYPE row : Segment<ITEM_TYPE>(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
         if (tokens.size() < 50) {
-            logger->warning("Error Parsing Potion Table at Row: {} Column: {}", uRow, tokens.size());
+            logger->warning("Error Parsing Potion Table at Row: {} Column: {}", std::to_underlying(row) - std::to_underlying(ITEM_FIRST_REAL_POTION), tokens.size());
             return;
         }
-        for (uColumn = 0; uColumn < 50; ++uColumn) {
-            char *currValue = tokens[uColumn + 7];
+        for (ITEM_TYPE column : Segment<ITEM_TYPE>(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
+            int flatPotionId = std::to_underlying(column) - std::to_underlying(ITEM_FIRST_REAL_POTION);
+            char *currValue = tokens[flatPotionId + 7];
             potion_value = atoi(currValue);
-            if (!potion_value && tolower(currValue[0]) == 'e') {
+            if (!potion_value && currValue[0] == 'E') {
+                // values like "E{x}" represent damage level {x} when using invalid potion combination
                 potion_value = atoi(currValue + 1);
             }
-            this->potion_data[uRow][uColumn] = potion_value;
+            this->potionCombination[row][column] = (ITEM_TYPE)potion_value;
         }
 
         test_string = strtok(NULL, "\r") + 1;
         if (!test_string) {
-            logger->warning("Error Parsing Potion Table at Row: {} Column: {}", uRow, 0);
+            logger->warning("Error Parsing Potion Table at Row: {} Column: {}", std::to_underlying(row), 0);
             return;
         }
         tokens = tokenize(test_string, '\t');
@@ -376,8 +376,6 @@ void ItemTable::LoadPotions() {
 void ItemTable::LoadPotionNotes() {
     //  char Text[90];
     char *test_string;
-    unsigned int uRow;
-    unsigned int uColumn;
     uint8_t potion_note;
 
     free(pPotionNotesTXT_Raw);
@@ -394,23 +392,20 @@ void ItemTable::LoadPotionNotes() {
         return;
     }
 
-    for (uRow = 0; uRow < 50; ++uRow) {
+    for (ITEM_TYPE row : Segment<ITEM_TYPE>(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
         if (tokens.size() < 50) {
-            logger->warning("Error Parsing Potion Table at Row: {} Column: {}", uRow, tokens.size());
+            logger->warning("Error Parsing Potion Table at Row: {} Column: {}", std::to_underlying(row), tokens.size());
             return;
         }
-        for (uColumn = 0; uColumn < 50; ++uColumn) {
-            char *currValue = tokens[uColumn + 7];
-            potion_note = atoi(currValue);
-            if (!potion_note && tolower(currValue[0]) == 'e') {
-                potion_note = atoi(currValue + 1);
-            }
-            this->potion_note[uRow][uColumn] = potion_note;
+        for (ITEM_TYPE column : Segment<ITEM_TYPE>(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
+            int flatPotionId = std::to_underlying(column) - std::to_underlying(ITEM_FIRST_REAL_POTION);
+            char *currValue = tokens[flatPotionId + 7];
+            this->potionNotes[row][column] = atoi(currValue);
         }
 
         test_string = strtok(NULL, "\r") + 1;
         if (!test_string) {
-            logger->warning("Error Parsing Potion Table at Row: {} Column: {}", uRow, 0);
+            logger->warning("Error Parsing Potion Table at Row: {} Column: {}", std::to_underlying(row) - std::to_underlying(ITEM_FIRST_REAL_POTION), 0);
             return;
         }
         tokens = tokenize(test_string, '\t');
