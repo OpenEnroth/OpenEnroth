@@ -22,28 +22,26 @@ int MM_Main(int argc, char **argv) {
             return 1;
 
         std::unique_ptr<PlatformLogger> logger = PlatformLogger::createStandardLogger(WIN_ENSURE_CONSOLE_OPTION);
-        logger->setLogLevel(APPLICATION_LOG, options.verbose ? LOG_VERBOSE : LOG_INFO);
-        logger->setLogLevel(PLATFORM_LOG, options.verbose ? LOG_VERBOSE : LOG_ERROR);
+        auto setVerboseLogging = [logger = logger.get()](bool verbose) {
+            logger->setLogLevel(APPLICATION_LOG, verbose ? LOG_VERBOSE : LOG_INFO);
+            logger->setLogLevel(PLATFORM_LOG, verbose ? LOG_VERBOSE : LOG_ERROR);
+        };
+        setVerboseLogging(options.verbose);
         EngineIocContainer::ResolveLogger()->setBaseLogger(logger.get());
         MM_AT_SCOPE_EXIT(EngineIocContainer::ResolveLogger()->setBaseLogger(nullptr));
         Engine::LogEngineBuildInfo();
 
         std::unique_ptr<PlatformApplication> app = std::make_unique<PlatformApplication>(logger.get());
         options.ResolveDefaults(app->platform());
-
         initDataPath(options.dataPath);
 
         std::shared_ptr<GameConfig> gameConfig = std::make_shared<GameConfig>(options.configPath);
+        gameConfig->debug.VerboseLogging.subscribe([&](bool value) {
+            setVerboseLogging(value || options.verbose);
+        });
         gameConfig->LoadConfiguration();
 
-        // TODO(captainurist): move into ConfigValue::subscribe.
-        if (gameConfig->debug.VerboseLogging.value()) {
-            logger->setLogLevel(APPLICATION_LOG, LOG_VERBOSE);
-            logger->setLogLevel(PLATFORM_LOG, LOG_VERBOSE);
-        }
-
         std::shared_ptr<Game> game = GameFactory().CreateGame(app.get(), gameConfig);
-
         return game->Run();
     } catch (const std::exception &e) {
         fmt::print(stderr, "{}\n", e.what());

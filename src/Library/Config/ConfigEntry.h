@@ -9,7 +9,7 @@
 
 #include "ConfigFwd.h"
 #include "AnyConfigEntry.h"
-#include "AnySerializer.h"
+#include "AnyHandler.h"
 
 template <class T>
 class ConfigEntry : public AnyConfigEntry {
@@ -19,10 +19,10 @@ class ConfigEntry : public AnyConfigEntry {
 
     template<class TypedValidator>
     ConfigEntry(ConfigSection *section, const std::string &name, T defaultValue, TypedValidator validator, const std::string &description) :
-        AnyConfigEntry(section, name, defaultValue, wrapValidator(std::move(validator)), AnySerializer::forType<T>(), description) {}
+        AnyConfigEntry(section, name, description, AnyHandler::forType<T>(), defaultValue, wrapValidator(std::move(validator))) {}
 
     ConfigEntry(ConfigSection *section, const std::string &name, T defaultValue, const std::string &description) :
-        AnyConfigEntry(section, name, defaultValue, nullptr, AnySerializer::forType<T>(), description) {}
+        AnyConfigEntry(section, name, description, AnyHandler::forType<T>(), defaultValue, nullptr) {}
 
     const T &defaultValue() const {
         return std::any_cast<const T &>(AnyConfigEntry::defaultValue());
@@ -34,6 +34,11 @@ class ConfigEntry : public AnyConfigEntry {
 
     void setValue(T value) {
         AnyConfigEntry::setValue(std::move(value));
+    }
+
+    template<class TypedListener>
+    void subscribe(TypedListener listener) {
+        AnyConfigEntry::subscribe(wrapListener(std::move(listener)));
     }
 
     void toggle() requires std::is_same_v<T, bool> {
@@ -71,6 +76,13 @@ class ConfigEntry : public AnyConfigEntry {
     static Validator wrapValidator(TypedValidator validator) {
         return [validator = std::move(validator)] (std::any value) {
             return std::any(std::in_place_type<T>, validator(std::any_cast<T &&>(std::move(value))));
+        };
+    }
+
+    template<class TypedListener>
+    static Listener wrapListener(TypedListener listener) {
+        return [listener = std::move(listener)] (const std::any &value) {
+            listener(std::any_cast<const T &>(value));
         };
     }
 };

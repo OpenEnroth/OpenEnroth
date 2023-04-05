@@ -3,15 +3,17 @@
 #include <string>
 #include <functional>
 #include <any>
+#include <vector>
 
 #include "ConfigFwd.h"
 
 class AnyConfigEntry {
  public:
     using Validator = std::function<std::any(std::any)>;
+    using Listener = std::function<void(const std::any &)>;
 
-    AnyConfigEntry(ConfigSection *section, const std::string &name, std::any defaultValue, Validator validator,
-                   AnySerializer *serializer, const std::string &description);
+    AnyConfigEntry(ConfigSection *section, const std::string &name, const std::string &description, AnyHandler *handler,
+                   std::any defaultValue, Validator validator);
     virtual ~AnyConfigEntry() = default;
 
     const std::type_info &type() const {
@@ -27,6 +29,8 @@ class AnyConfigEntry {
     }
 
     void setValue(std::any value);
+
+    void subscribe(Listener listener);
 
     void reset() {
         _value = _defaultValue;
@@ -59,8 +63,9 @@ class AnyConfigEntry {
     ConfigSection *_section = nullptr;
     std::string _name;
     std::string _description;
-    Validator _validator = nullptr;
-    AnySerializer *_serializer = nullptr;
-    std::any _value;
+    AnyHandler *_handler = nullptr;
     std::any _defaultValue;
+    std::any _value;
+    Validator _validator = nullptr;
+    std::vector<Listener> _listeners;
 };
