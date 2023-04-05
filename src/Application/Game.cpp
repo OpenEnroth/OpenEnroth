@@ -2271,18 +2271,6 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_DebugVerboseLogging:
                     engine->config->debug.VerboseLogging.toggle();
-
-                    // TODO(captainurist): move to ConfigValue::subscribe
-                    if (logger->baseLogger()) {
-                        if (engine->config->debug.VerboseLogging.value()) {
-                            logger->baseLogger()->setLogLevel(APPLICATION_LOG, LOG_VERBOSE);
-                            logger->baseLogger()->setLogLevel(PLATFORM_LOG, LOG_VERBOSE);
-                        } else {
-                            logger->baseLogger()->setLogLevel(APPLICATION_LOG, LOG_INFO);
-                            logger->baseLogger()->setLogLevel(PLATFORM_LOG, LOG_ERROR);
-                        }
-                    }
-
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugReloadShader:

@@ -7,6 +7,7 @@ void ResetTestConfig(GameConfig *config) {
 
     config->debug.NoSound.setValue(true);
     config->debug.NoVideo.setValue(true);
+    config->debug.VerboseLogging.setValue(true);
     config->window.MouseGrab.setValue(false);
     config->graphics.FPSLimit.setValue(0); // Unlimited
 }

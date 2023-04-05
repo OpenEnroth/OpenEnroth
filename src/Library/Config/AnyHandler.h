@@ -6,19 +6,20 @@
 
 #include "Library/Serialization/Serialization.h"
 
-class AnySerializer {
+class AnyHandler {
  public:
     virtual std::string serialize(const std::any &value) const = 0;
     virtual std::any deserialize(std::string_view value) const = 0;
+    virtual bool equals(const std::any &l, const std::any &r) const = 0;
     virtual const std::type_info &type() const = 0;
 
     template<class T>
-    static AnySerializer *forType();
+    static AnyHandler *forType();
 };
 
 namespace detail {
 template<class T>
-class TypedSerializer : public AnySerializer {
+class TypedHandler : public AnyHandler {
  public:
     virtual std::string serialize(const std::any &value) const override {
         return toString(std::any_cast<const T &>(value));
@@ -28,16 +29,20 @@ class TypedSerializer : public AnySerializer {
         return fromString<T>(value);
     }
 
+    virtual bool equals(const std::any &l, const std::any &r) const override {
+        return std::any_cast<const T &>(l) == std::any_cast<const T &>(r);
+    }
+
     virtual const std::type_info &type() const override {
         return typeid(T);
     }
 };
 
 template<class T>
-constinit TypedSerializer<T> globalTypedSerializer;
+constinit TypedHandler<T> globalTypedSerializer;
 } // namespace detail
 
 template<class T>
-AnySerializer *AnySerializer::forType() {
+AnyHandler *AnyHandler::forType() {
     return &detail::globalTypedSerializer<T>;
 }

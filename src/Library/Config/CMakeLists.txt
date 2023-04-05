@@ -7,7 +7,7 @@ set(LIBRARY_CONFIG_SOURCES
 
 set(LIBRARY_CONFIG_HEADERS
         AnyConfigEntry.h
-        AnySerializer.h
+        AnyHandler.h
         Config.h
         ConfigFwd.h
         ConfigSection.h
