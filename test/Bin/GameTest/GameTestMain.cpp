@@ -31,11 +31,6 @@ class GameThread {
 
         initDataPath(options.dataPath);
 
-        // stop tests overwriting gameplay config
-        if (std::filesystem::exists(MakeDataPath("openenroth.ini"))) {
-            std::filesystem::copy(MakeDataPath("openenroth.ini"), MakeDataPath("openenroth_test.ini"));
-        }
-
         _config = std::make_shared<GameConfig>("openenroth_test.ini");
         ResetTestConfig(_config.get());
         _game = GameFactory().CreateGame(_application.get(), _config);
@@ -43,9 +38,7 @@ class GameThread {
 
     ~GameThread() {
         EngineIocContainer::ResolveLogger()->setBaseLogger(nullptr);
-        if (std::filesystem::exists(MakeDataPath("openenroth_test.ini"))) {
-            std::filesystem::remove(MakeDataPath("openenroth_test.ini"));
-        }
+        std::filesystem::remove(MakeDataPath("openenroth_test.ini"));
     }
 
     PlatformApplication *app() const {
