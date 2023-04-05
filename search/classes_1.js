@@ -10,7 +10,7 @@ var searchData=
   ['am_5fai_5fcardpowerstruct_7',['am_ai_cardpowerstruct',['../structam__ai__cardpowerstruct.html',1,'']]],
   ['am_5feffects_5fstruct_8',['am_effects_struct',['../structam__effects__struct.html',1,'']]],
   ['anyconfigentry_9',['AnyConfigEntry',['../classAnyConfigEntry.html',1,'']]],
-  ['anyserializer_10',['AnySerializer',['../classAnySerializer.html',1,'']]],
+  ['anyhandler_10',['AnyHandler',['../classAnyHandler.html',1,'']]],
   ['applicationproxy_11',['ApplicationProxy',['../classApplicationProxy.html',1,'']]],
   ['arcomage_5fmouse_12',['arcomage_mouse',['../structarcomage__mouse.html',1,'']]],
   ['arcomagecard_13',['ArcomageCard',['../structArcomageCard.html',1,'']]],

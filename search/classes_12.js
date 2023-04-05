@@ -30,5 +30,5 @@ var searchData=
   ['trigtablelookup_27',['TrigTableLookup',['../classTrigTableLookup.html',1,'']]],
   ['turnbased_5fqueueelem_28',['TurnBased_QueueElem',['../structTurnBased__QueueElem.html',1,'']]],
   ['twodverts_29',['twodverts',['../structtwodverts.html',1,'']]],
-  ['typedserializer_30',['TypedSerializer',['../classdetail_1_1TypedSerializer.html',1,'detail']]]
+  ['typedhandler_30',['TypedHandler',['../classdetail_1_1TypedHandler.html',1,'detail']]]
 ];

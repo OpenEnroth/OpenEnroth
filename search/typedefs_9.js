@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['marginsi_0',['Marginsi',['../Margins_8h.html#af54b4ff4492cf2e8fcef8f00c26bb08e',1,'Margins.h']]]
+  ['listener_0',['Listener',['../classAnyConfigEntry.html#abb534c887a15869640534a4b7b78d24d',1,'AnyConfigEntry']]]
 ];

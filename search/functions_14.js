@@ -92,6 +92,6 @@ var searchData=
   ['turnbased_5fqueueelem_89',['TurnBased_QueueElem',['../structTurnBased__QueueElem.html#aedf01d101ed374334c676830163d75c1',1,'TurnBased_QueueElem']]],
   ['turnchange_90',['TurnChange',['../Arcomage_8cpp.html#a6f49937b945bf1f2ad47df3ca1cda84f',1,'Arcomage.cpp']]],
   ['txt_5ffile_5fframetable_5fparser_91',['txt_file_frametable_parser',['../FrameTableInc_8cpp.html#a68ac929c18f6338aba8ad246660a454f',1,'txt_file_frametable_parser(const char *str_to_parse, FrameTableTxtLine *tokens_table):&#160;FrameTableInc.cpp'],['../FrameTableInc_8h.html#a68ac929c18f6338aba8ad246660a454f',1,'txt_file_frametable_parser(const char *str_to_parse, FrameTableTxtLine *tokens_table):&#160;FrameTableInc.cpp']]],
-  ['type_92',['type',['../classdetail_1_1TypedSerializer.html#a34c330c03ff4e98c67392552602e5543',1,'detail::TypedSerializer::type()'],['../classAnySerializer.html#ad0deb0ff422a0b314c69eda8a9db2c2f',1,'AnySerializer::type()'],['../classAnyConfigEntry.html#aedbdf7585bf29e8af297bcc7fc4cf998',1,'AnyConfigEntry::type()']]],
+  ['type_92',['type',['../classdetail_1_1TypedHandler.html#aec04cb5f130d9314e4615795fbd859bd',1,'detail::TypedHandler::type()'],['../classAnyHandler.html#ad84ba8a302c46c534df7666e4e6ca794',1,'AnyHandler::type()'],['../classAnyConfigEntry.html#aedbdf7585bf29e8af297bcc7fc4cf998',1,'AnyConfigEntry::type()']]],
   ['typename_93',['typeName',['../namespacedetail.html#abc7d0567dd4f86b4f4589749e91bd294',1,'detail']]]
 ];
