@@ -1114,7 +1114,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_AIR_JUMP:
                 {
-                    if (pParty->IsAirborne()) {
+                    if (pParty->isAirborne()) {
                         spellFailed(pCastSpell, LSTR_CANT_JUMP_AIRBORNE);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;

@@ -1001,7 +1001,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
     bool bTwoHandedGrip = itemMainHand && (itemMainHand->GetItemEquipType() == EQUIP_TWO_HANDED || itemMainHand->GetPlayerSkillType() == PLAYER_SKILL_SPEAR && !itemOffHand);
 
     // Aqua-Lung
-    if (player->HasUnderwaterSuitEquipped()) {
+    if (player->hasUnderwaterSuitEquipped()) {
         render->DrawTextureNew(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID]);
         if (!bRingsShownInCharScreen)
             render->ZDrawTextureAlpha(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID], player->pEquipment.uArmor);
@@ -1378,7 +1378,7 @@ void CharacterUI_LoadPaperdollTextures() {
 
     ui_character_inventory_paperdoll_rings_close = ui_exit_cancel_button_background;
     for (int i = 0; i < pParty->pPlayers.size(); ++i) {
-        if (pParty->pPlayers[i].HasUnderwaterSuitEquipped()) {
+        if (pParty->pPlayers[i].hasUnderwaterSuitEquipped()) {
             WetsuitOn(i + 1);
         } else {
             WetsuitOff(i + 1);
@@ -1402,7 +1402,7 @@ void CharacterUI_LoadPaperdollTextures() {
         party_has_equipment[i] = 0;
         if (pParty->pPickedItem.uItemID != i + 66) {
             for (uint j = 0; j < 4; ++j) {
-                if (pParty->pPlayers[j].HasItem(i + 66, 0))
+                if (pParty->pPlayers[j].hasItem(i + 66, 0))
                     party_has_equipment[i] = 1;
             }
         }
@@ -1895,7 +1895,7 @@ void OnPaperdollLeftClick() {
                     return;
                 }
 
-                if (pPlayers[pParty->getActiveCharacter()]->HasUnderwaterSuitEquipped() &&
+                if (pPlayers[pParty->getActiveCharacter()]->hasUnderwaterSuitEquipped() &&
                     (pEquipType != EQUIP_ARMOUR || engine->IsUnderwater())) {  // cant put anything on wearing wetsuit
                     pAudioPlayer->playUISound(SOUND_error);
                     return;
@@ -1913,8 +1913,7 @@ void OnPaperdollLeftClick() {
                 // ------------------------dress rings(одевание
                 // колец)----------------------------------
             case EQUIP_RING:
-
-                if (pPlayers[pParty->getActiveCharacter()]->HasUnderwaterSuitEquipped()) {  // cant put anything
+                if (pPlayers[pParty->getActiveCharacter()]->hasUnderwaterSuitEquipped()) {  // cant put anything
                                                                                         // on wearing wetsuit
                     pAudioPlayer->playUISound(SOUND_error);
                     return;
@@ -1926,7 +1925,7 @@ void OnPaperdollLeftClick() {
 
                     for (ITEM_SLOT equippos : RingSlots()) {
                         if (!pPlayers[pParty->getActiveCharacter()]->pEquipment.pIndices[equippos]) {
-                            freeslot = pPlayers[pParty->getActiveCharacter()]->FindFreeInventoryListSlot();
+                            freeslot = pPlayers[pParty->getActiveCharacter()]->findFreeInventoryListSlot();
                             if (freeslot >= 0) {  // drop ring into free space
                                 pParty->pPickedItem.uBodyAnchor = equippos;
                                 memcpy(
@@ -1982,8 +1981,7 @@ void OnPaperdollLeftClick() {
                         pitem =
                             pPlayers[pParty->getActiveCharacter()]->GetNthEquippedIndexItem(pos);
                         if (!pitem) {  // no item in slot so just drop
-                            freeslot = pPlayers[pParty->getActiveCharacter()]
-                                           ->FindFreeInventoryListSlot();
+                            freeslot = pPlayers[pParty->getActiveCharacter()]->findFreeInventoryListSlot();
                             if (freeslot >= 0) {  // drop ring into free space
                                 pParty->pPickedItem.uBodyAnchor = pos;
                                 memcpy(
@@ -2030,7 +2028,7 @@ void OnPaperdollLeftClick() {
                 // ------------------dress shield(одеть
                 // щит)------------------------------------------------------
             case EQUIP_SHIELD:  //Щит
-                if (pPlayers[pParty->getActiveCharacter()]->HasUnderwaterSuitEquipped()) {  // в акваланге
+                if (pPlayers[pParty->getActiveCharacter()]->hasUnderwaterSuitEquipped()) {  // в акваланге
                     pAudioPlayer->playUISound(SOUND_error);
                     return;
                 }
@@ -2056,8 +2054,7 @@ void OnPaperdollLeftClick() {
                         shieldequip + 1;
                     if (twohandedequip == 0) return;
                 } else {
-                    freeslot =
-                        pPlayers[pParty->getActiveCharacter()]->FindFreeInventoryListSlot();
+                    freeslot = pPlayers[pParty->getActiveCharacter()]->findFreeInventoryListSlot();
                     if (freeslot < 0) return;
                     if (!twohandedequip) {  // обычная установка щита на пустую
                                             // руку
@@ -2096,7 +2093,7 @@ void OnPaperdollLeftClick() {
                 // руку)-------------------------------------------
             case EQUIP_SINGLE_HANDED:
             case EQUIP_WAND:
-                if (pPlayers[pParty->getActiveCharacter()]->HasUnderwaterSuitEquipped() &&
+                if (pPlayers[pParty->getActiveCharacter()]->hasUnderwaterSuitEquipped() &&
                     pParty->pPickedItem.uItemID != ITEM_BLASTER &&
                     pParty->pPickedItem.uItemID != ITEM_BLASTER_RIFLE) {
                     pAudioPlayer->playUISound(SOUND_error);
@@ -2133,8 +2130,7 @@ void OnPaperdollLeftClick() {
                                 v50 = _this.uItemID;
                                 break;
                             }
-                            v23 = pPlayers[pParty->getActiveCharacter()]
-                                      ->FindFreeInventoryListSlot();
+                            v23 = pPlayers[pParty->getActiveCharacter()]->findFreeInventoryListSlot();
                             if (v23 < 0) return;
                             pParty->pPickedItem.uBodyAnchor = ITEM_SLOT_OFF_HAND;
                             memcpy(&pPlayers[pParty->getActiveCharacter()]
@@ -2152,8 +2148,7 @@ void OnPaperdollLeftClick() {
                     }
                 }
                 if (!mainhandequip) {
-                    v26 =
-                        pPlayers[pParty->getActiveCharacter()]->FindFreeInventoryListSlot();
+                    v26 = pPlayers[pParty->getActiveCharacter()]->findFreeInventoryListSlot();
                     if (v26 < 0) return;
                     pParty->pPickedItem.uBodyAnchor = ITEM_SLOT_MAIN_HAND;
                     memcpy(&pPlayers[pParty->getActiveCharacter()]->pInventoryItemList[v26],
@@ -2187,7 +2182,7 @@ void OnPaperdollLeftClick() {
                 // ---------------------------take two hands(взять двумя
                 // руками)---------------------------------
             case EQUIP_TWO_HANDED:
-                if (pPlayers[pParty->getActiveCharacter()]->HasUnderwaterSuitEquipped()) {
+                if (pPlayers[pParty->getActiveCharacter()]->hasUnderwaterSuitEquipped()) {
                     pAudioPlayer->playUISound(SOUND_error);
                     return;
                 }
@@ -2217,8 +2212,7 @@ void OnPaperdollLeftClick() {
                     pPlayers[pParty->getActiveCharacter()]->pEquipment.uMainHand =
                         mainhandequip + 1;
                 } else {
-                    freeslot =
-                        pPlayers[pParty->getActiveCharacter()]->FindFreeInventoryListSlot();
+                    freeslot = pPlayers[pParty->getActiveCharacter()]->findFreeInventoryListSlot();
                     if (freeslot >= 0) {
                         if (shieldequip) {  // взять двуручный меч когда есть
                                             // щит(замещение щитом)

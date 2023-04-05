@@ -940,35 +940,24 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
         if (!(pActors[uActorID].uAttributes & ACTOR_FLEEING) ||
             pActors[uActorID].pMonsterInfo.uAIType == 1) {
             if (pActors[uActorID].pMonsterInfo.uAIType == 1) {
-                if (pActors[uActorID].pMonsterInfo.uMovementType ==
-                    MONSTER_MOVEMENT_TYPE_STAIONARY)
-                    Actor::AI_Stand(
-                        uActorID, ai_near_actors_targets_pid[uActorID], 32, 0);
+                if (pActors[uActorID].pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY)
+                    Actor::AI_Stand(uActorID, ai_near_actors_targets_pid[uActorID], 32, 0);
                 else
-                    Actor::AI_Flee(uActorID,
-                                   ai_near_actors_targets_pid[uActorID], 32, 0);
+                    Actor::AI_Flee(uActorID, ai_near_actors_targets_pid[uActorID], 32, 0);
                 pTurnEngine->pQueue[queue_position].AI_action_type = TE_AI_FLEE;
-                pTurnEngine->pQueue[queue_position].uActionLength =
-                    pActors[uActorID].uCurrentActionLength;
+                pTurnEngine->pQueue[queue_position].uActionLength = pActors[uActorID].uCurrentActionLength;
                 return true;
             }
             if (pActors[uActorID].pMonsterInfo.uAIType == 2) {
                 if (((double)pActors[uActorID].pMonsterInfo.uHP * 0.2) >
                         (double)pActors[uActorID].sCurrentHP &&
                     (v11 < 10240)) {
-                    if (pActors[uActorID].pMonsterInfo.uMovementType ==
-                        MONSTER_MOVEMENT_TYPE_STAIONARY)
-                        Actor::AI_Stand(uActorID,
-                                        ai_near_actors_targets_pid[uActorID],
-                                        32, 0);
+                    if (pActors[uActorID].pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY)
+                        Actor::AI_Stand(uActorID, ai_near_actors_targets_pid[uActorID], 32, 0);
                     else
-                        Actor::AI_Flee(uActorID,
-                                       ai_near_actors_targets_pid[uActorID], 32,
-                                       0);
-                    pTurnEngine->pQueue[queue_position].AI_action_type =
-                        TE_AI_FLEE;
-                    pTurnEngine->pQueue[queue_position].uActionLength =
-                        pActors[uActorID].uCurrentActionLength;
+                        Actor::AI_Flee(uActorID, ai_near_actors_targets_pid[uActorID], 32, 0);
+                    pTurnEngine->pQueue[queue_position].AI_action_type = TE_AI_FLEE;
+                    pTurnEngine->pQueue[queue_position].uActionLength = pActors[uActorID].uCurrentActionLength;
                     return true;
                 }
             }
@@ -976,19 +965,12 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
                 if (((double)pActors[uActorID].pMonsterInfo.uHP * 0.1) >
                         (double)pActors[uActorID].sCurrentHP &&
                     (v11 < 10240)) {
-                    if (pActors[uActorID].pMonsterInfo.uMovementType ==
-                        MONSTER_MOVEMENT_TYPE_STAIONARY)
-                        Actor::AI_Stand(uActorID,
-                                        ai_near_actors_targets_pid[uActorID],
-                                        32, 0);
+                    if (pActors[uActorID].pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STATIONARY)
+                        Actor::AI_Stand(uActorID, ai_near_actors_targets_pid[uActorID], 32, 0);
                     else
-                        Actor::AI_Flee(uActorID,
-                                       ai_near_actors_targets_pid[uActorID], 32,
-                                       0);
-                    pTurnEngine->pQueue[queue_position].AI_action_type =
-                        TE_AI_FLEE;
-                    pTurnEngine->pQueue[queue_position].uActionLength =
-                        pActors[uActorID].uCurrentActionLength;
+                        Actor::AI_Flee(uActorID, ai_near_actors_targets_pid[uActorID], 32, 0);
+                    pTurnEngine->pQueue[queue_position].AI_action_type = TE_AI_FLEE;
+                    pTurnEngine->pQueue[queue_position].uActionLength = pActors[uActorID].uCurrentActionLength;
                     return true;
                 }
             }
@@ -997,46 +979,35 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
         if ((signed int)v11 < 5120) {
             if (pActors[uActorID].pMonsterInfo.uMissleAttack1Type &&
                 (signed int)v11 < 1024)
-                Actor::AI_Pursue1(uActorID,
-                                  ai_near_actors_targets_pid[uActorID],
-                                  uActorID, 32, &pDir);
+                Actor::AI_Pursue1(uActorID, ai_near_actors_targets_pid[uActorID], uActorID, 32, &pDir);
             else
-                Actor::AI_Pursue2(uActorID,
-                                  ai_near_actors_targets_pid[uActorID], 32,
-                                  &pDir, 307);
+                Actor::AI_Pursue2(uActorID, ai_near_actors_targets_pid[uActorID], 32, &pDir, 307);
             pTurnEngine->pQueue[queue_position].AI_action_type = TE_AI_PURSUE;
-            pTurnEngine->pQueue[queue_position].uActionLength =
-                pActors[uActorID].uCurrentActionLength;
+            pTurnEngine->pQueue[queue_position].uActionLength = pActors[uActorID].uCurrentActionLength;
             return true;
         }
     }
     switch (pActors[uActorID].pMonsterInfo.uMovementType) {
         case MONSTER_MOVEMENT_TYPE_SHORT:
-            Actor::AI_RandomMove(uActorID, ai_near_actors_targets_pid[uActorID],
-                                 1024, 32);
+            Actor::AI_RandomMove(uActorID, ai_near_actors_targets_pid[uActorID], 1024, 32);
             break;
         case MONSTER_MOVEMENT_TYPE_MEDIUM:
-            Actor::AI_RandomMove(uActorID, ai_near_actors_targets_pid[uActorID],
-                                 2560, 32);
+            Actor::AI_RandomMove(uActorID, ai_near_actors_targets_pid[uActorID], 2560, 32);
             break;
         case MONSTER_MOVEMENT_TYPE_LONG:
-            Actor::AI_RandomMove(uActorID, ai_near_actors_targets_pid[uActorID],
-                                 5120, 32);
+            Actor::AI_RandomMove(uActorID, ai_near_actors_targets_pid[uActorID], 5120, 32);
             break;
         case MONSTER_MOVEMENT_TYPE_FREE:
-            Actor::AI_RandomMove(uActorID, ai_near_actors_targets_pid[uActorID],
-                                 10240, 32);
+            Actor::AI_RandomMove(uActorID, ai_near_actors_targets_pid[uActorID], 10240, 32);
             break;
-        case MONSTER_MOVEMENT_TYPE_STAIONARY:
-            Actor::AI_Stand(uActorID, ai_near_actors_targets_pid[uActorID], 32,
-                            0);
+        case MONSTER_MOVEMENT_TYPE_STATIONARY:
+            Actor::AI_Stand(uActorID, ai_near_actors_targets_pid[uActorID], 32, 0);
             break;
         default:
             return true;
     }
     pTurnEngine->pQueue[queue_position].AI_action_type = TE_AI_PURSUE;
-    pTurnEngine->pQueue[queue_position].uActionLength =
-        pActors[uActorID].uCurrentActionLength;
+    pTurnEngine->pQueue[queue_position].uActionLength = pActors[uActorID].uCurrentActionLength;
     return true;
 }
 

@@ -59,9 +59,9 @@ void CreateWinnerCertificate() {
     GUIFont *pFont = GUIFont::LoadFont("endgame.fnt", "FONTPAL");
 
     const char *pInString = nullptr;
-    if (pParty->IsPartyGood())
+    if (pParty->isPartyGood())
         pInString = localization->GetString(LSTR_GOOD_ENDING);
-    else if (pParty->IsPartyEvil())
+    else if (pParty->isPartyEvil())
         pInString = localization->GetString(LSTR_EVIL_ENDING);
     else
         assert(false);

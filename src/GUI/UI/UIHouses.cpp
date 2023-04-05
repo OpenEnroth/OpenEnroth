@@ -540,7 +540,7 @@ void InitializaDialogueOptions_Tavern(BuildingType type) {
         num_buttons = 2;
         CreateShopDialogueButtonAtRow(0, DIALOGUE_TAVERN_ARCOMAGE_RULES);
         CreateShopDialogueButtonAtRow(1, DIALOGUE_TAVERN_ARCOMAGE_VICTORY_CONDITIONS);
-        if (pParty->HasItem(ITEM_QUEST_ARCOMAGE_DECK)) {
+        if (pParty->hasItem(ITEM_QUEST_ARCOMAGE_DECK)) {
             num_buttons = 3;
             CreateShopDialogueButtonAtRow(2, DIALOGUE_TAVERN_ARCOMAGE_RESULT);
         }
@@ -1908,7 +1908,7 @@ void TavernDialog() {
             pOptionsCount = 2;
             pShopOptions[0] = localization->GetString(LSTR_RULES);
             pShopOptions[1] = localization->GetString(LSTR_VICTORY_CONDITIONS);
-            if (pParty->HasItem(ITEM_QUEST_ARCOMAGE_DECK)) {
+            if (pParty->hasItem(ITEM_QUEST_ARCOMAGE_DECK)) {
                 pShopOptions[2] = localization->GetString(LSTR_PLAY);
                 pOptionsCount = 3;
             }

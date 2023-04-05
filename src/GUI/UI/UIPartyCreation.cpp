@@ -254,7 +254,7 @@ bool PartyCreationUI_Loop() {
     pAudioPlayer->MusicStop();
 
     pParty->Reset();
-    pParty->CreateDefaultParty();
+    pParty->createDefaultParty();
 
     _449B7E_toggle_bit(pParty->_quest_bits, QBIT_EMERALD_ISLAND_RED_POTION_ACTIVE, 1);
     _449B7E_toggle_bit(pParty->_quest_bits, QBIT_EMERALD_ISLAND_SEASHELL_ACTIVE, 1);

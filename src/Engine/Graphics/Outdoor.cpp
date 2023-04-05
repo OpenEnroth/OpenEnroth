@@ -354,10 +354,15 @@ bool OutdoorLocation::GetTravelDestination(signed int sPartyX,
         return false;
 
     if (mapNumberAsInt == MAP_AVLEE && direction == 4) {  // to Shoals
-        if (pPlayers[1]->HasUnderwaterSuitEquipped() &&
-            pPlayers[2]->HasUnderwaterSuitEquipped() &&
-            pPlayers[3]->HasUnderwaterSuitEquipped() &&
-            pPlayers[4]->HasUnderwaterSuitEquipped()) {
+        bool wholePartyUnderwaterSuitEquipped = true;
+        for (Player &player : pParty->pPlayers) {
+            if (!player.hasUnderwaterSuitEquipped()) {
+                wholePartyUnderwaterSuitEquipped = false;
+                break;
+            }
+        }
+
+        if (wholePartyUnderwaterSuitEquipped) {
             uDefaultTravelTime_ByFoot = 1;
             strcpy(pOut, "out15.odm");  // Shoals
             uLevel_StartingPointType = MapStartPoint_East;
@@ -452,7 +457,7 @@ int OutdoorLocation::GetNumFoodRequiredToRestInCurrentPos(const Vec3i &pos) {
     bool is_on_water = false;
     int bmodel_standing_on_pid = 0;
     ODM_GetFloorLevel(pos, pParty->uDefaultPartyHeight, &is_on_water, &bmodel_standing_on_pid, 0);
-    if (pParty->IsAirborne() || bmodel_standing_on_pid || is_on_water)
+    if (pParty->isAirborne() || bmodel_standing_on_pid || is_on_water)
         return 2;
 
     // TODO: we're passing in pos and then using pParty->vPosition, why?
@@ -1805,7 +1810,7 @@ void ODM_UpdateUserInputAndOther() {
         pOutdoor->level_filename = pCurrentMapName;
         v0 = pOutdoor->GetTravelDestination(pParty->vPosition.x,
                                             pParty->vPosition.y, pOut, 32);
-        if (!engine->IsUnderwater() && (pParty->IsAirborne() || (pParty->uFlags & (PARTY_FLAGS_1_STANDING_ON_WATER | PARTY_FLAGS_1_WATER_DAMAGE)) ||
+        if (!engine->IsUnderwater() && (pParty->isAirborne() || (pParty->uFlags & (PARTY_FLAGS_1_STANDING_ON_WATER | PARTY_FLAGS_1_WATER_DAMAGE)) ||
                              pParty->uFlags & PARTY_FLAGS_1_BURNING || pParty->bFlying) ||
             !v0) {
             if (pParty->vPosition.x < -22528) pParty->vPosition.x = -22528;
@@ -1877,7 +1882,7 @@ void ODM_ProcessPartyActions() {
     int partyNotOnModel = modelStandingOnPID == 0;
     int currentGroundLevel = currentFloorLevel + 1;
 
-    bool partyHasFeatherFall = pParty->FeatherFallActive() || pParty->WearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT);
+    bool partyHasFeatherFall = pParty->FeatherFallActive() || pParty->wearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT);
     if (partyHasFeatherFall)
         pParty->uFallStartZ = currentFloorLevel;
     else
@@ -2502,9 +2507,9 @@ void ODM_ProcessPartyActions() {
     //------------------------------------------------------------------------
 
     if (!partyNotTouchingFloor || partyCloseToGround)
-        pParty->SetAirborne(false);
+        pParty->setAirborne(false);
     else
-        pParty->SetAirborne(true);
+        pParty->setAirborne(true);
 
     int partyCurrentXGrid = WorldPosToGridCellX(pParty->vPosition.x);
     int partyCurrentYGrid = WorldPosToGridCellY(pParty->vPosition.y);
@@ -2620,7 +2625,7 @@ void ODM_ProcessPartyActions() {
                 if (pParty->uFlags & PARTY_FLAGS_1_LANDING) {
                     pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
                 } else {
-                    pParty->GiveFallDamage(pParty->uFallStartZ - pParty->vPosition.z);
+                    pParty->giveFallDamage(pParty->uFallStartZ - pParty->vPosition.z);
                 }
             }
             pParty->uFallStartZ = partyNewZ;

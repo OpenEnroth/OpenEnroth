@@ -192,7 +192,7 @@ void GUIWindow_Travel::Update() {
         travel_window.uFrameZ = 334;
 
         std::string str;
-        if (GetTravelTime() == 1) {
+        if (getTravelTime() == 1) {
             str = localization->FormatString(
                 LSTR_FMT_IT_TAKES_D_DAY_TO_S,
                 1,
@@ -200,7 +200,7 @@ void GUIWindow_Travel::Update() {
         } else {
             str = localization->FormatString(
                 LSTR_FMT_IT_TAKES_D_DAYS_TO_S,
-                GetTravelTime(),
+                getTravelTime(),
                 pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].pName.c_str());
         }
         str += "\n \n";

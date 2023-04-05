@@ -1616,8 +1616,8 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     int uHeight = uW - uY;
     signed int uWidth = uZ - uX;
 
-    bool bWizardEyeActive = pParty->WizardEyeActive();
-    PLAYER_SKILL_MASTERY uWizardEyeSkillLevel = pParty->WizardEyeSkillLevel();
+    bool bWizardEyeActive = pParty->wizardEyeActive();
+    PLAYER_SKILL_MASTERY uWizardEyeSkillLevel = pParty->wizardEyeSkillLevel();
     if (CheckHiredNPCSpeciality(Cartographer)) {
         bWizardEyeActive = true;
         uWizardEyeSkillLevel = uWizardEyeSkillLevel > PLAYER_SKILL_MASTERY_EXPERT ? uWizardEyeSkillLevel : PLAYER_SKILL_MASTERY_EXPERT;
@@ -1912,7 +1912,7 @@ void GameUI_DrawTorchlightAndWizardEye() {
                                pEventTimer->Time())
                     ->GetTexture());
         }
-        if (pParty->WizardEyeActive()) {
+        if (pParty->wizardEyeActive()) {
             render->DrawTextureNew(
                 pUIAnim_WizardEye->x / 640.0f, pUIAnim_WizardEye->y / 480.0f,
                 pIconsFrameTable

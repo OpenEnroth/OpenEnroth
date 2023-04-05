@@ -1514,7 +1514,7 @@ void OracleDialogue() {
         int quest_id = pair.first;
         if (_449B57_test_bit(pParty->_quest_bits, quest_id)) {
             ITEM_TYPE search_item_id = pair.second;
-            if (!pParty->HasItem(search_item_id) && pParty->pPickedItem.uItemID != search_item_id) {
+            if (!pParty->hasItem(search_item_id) && pParty->pPickedItem.uItemID != search_item_id) {
                 item_id = search_item_id;
                 break;
             }
@@ -1693,8 +1693,7 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
             gold_transaction_amount = 5000;
             break;
         case PLAYER_SKILL_MASTERY_GRANDMASTER:
-            if (!activePlayer->IsClass(PLAYER_CLASS_ARCHMAGE) ||
-                !activePlayer->IsClass(PLAYER_CLASS_PRIEST_OF_SUN))
+            if (!activePlayer->isClass(PLAYER_CLASS_ARCHMAGE) || !activePlayer->isClass(PLAYER_CLASS_PRIEST_OF_SUN))
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 8000;
             break;
@@ -1713,8 +1712,7 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
             gold_transaction_amount = 5000;
             break;
         case PLAYER_SKILL_MASTERY_GRANDMASTER:
-            if (!activePlayer->IsClass(PLAYER_CLASS_LICH) ||
-                !activePlayer->IsClass(PLAYER_CLASS_PRIEST_OF_MOON))
+            if (!activePlayer->isClass(PLAYER_CLASS_LICH) || !activePlayer->isClass(PLAYER_CLASS_PRIEST_OF_MOON))
                 return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 8000;
             break;

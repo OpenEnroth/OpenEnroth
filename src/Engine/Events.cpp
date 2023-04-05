@@ -633,7 +633,7 @@ LABEL_47:
                     } else if (player_choose == 5) {  // all
                         if (EVT_WORD(_evt->v5) == VAR_PlayerItemInHands) {
                             for (Player &player : pParty->pPlayers) {
-                                if (player.HasItem(ITEM_TYPE(pValue), 1)) {
+                                if (player.hasItem(ITEM_TYPE(pValue), 1)) {
                                     player.SubtractVariable((enum VariableType)EVT_WORD(_evt->v5), pValue);
                                     break;  // only take one item
                                 }

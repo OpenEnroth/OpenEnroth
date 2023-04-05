@@ -168,11 +168,23 @@ struct Party {
     void Zero();
     void UpdatePlayersAndHirelingsEmotions();
     void RestAndHeal();
-    unsigned int GetPartyFame();
-    void CreateDefaultParty(bool bDebugGiveItems = false);
+
+    /**
+     * @offset 0x49135E
+     */
+    unsigned int getPartyFame();
+
+    /**
+     * @offset 0x49137D
+     */
+    void createDefaultParty(bool bDebugGiveItems = false);
     void Reset();
     void ResetPosMiscAndSpellBuffs();
-    bool HasItem(ITEM_TYPE uItemID);
+
+    /**
+     * @offset 0x493244
+     */
+    bool hasItem(ITEM_TYPE uItemID);
     void SetHoldingItem(ItemGen *pItem);
 
     /**
@@ -186,7 +198,11 @@ struct Party {
     void switchToNextActiveCharacter();
     bool _497FC5_check_party_perception_against_level();
     bool AddItemToParty(ItemGen *pItem);
-    void Yell();
+
+    /**
+     * @offset 0x43AD34
+     */
+    void yell();
     int CountHirelings();
 
     void GivePartyExp(unsigned int pEXPNum);
@@ -223,18 +239,18 @@ struct Party {
      *
      * @offset 0x41F5BE
      */
-    static void RestOneFrame();
+    static void restOneFrame();
 
     /**
      * New function - applies fall damage with modifiers to all party members 
      * @param distance                    Fall distance
      */
-    void GiveFallDamage(int distance);
+    void giveFallDamage(int distance);
 
-    inline bool WizardEyeActive() const {
+    inline bool wizardEyeActive() const {
         return pPartyBuffs[PARTY_BUFF_WIZARD_EYE].expire_time.value > 0;
     }
-    inline PLAYER_SKILL_MASTERY WizardEyeSkillLevel() const {
+    inline PLAYER_SKILL_MASTERY wizardEyeSkillLevel() const {
         return pPartyBuffs[PARTY_BUFF_WIZARD_EYE].uSkillMastery;
     }
     inline bool TorchlightActive() const {
@@ -272,11 +288,11 @@ struct Party {
         return (uFlags & PARTY_FLAGS_1_ALERT_RED_OR_YELLOW) != 0;
     }
 
-    inline bool IsAirborne() const {
+    inline bool isAirborne() const {
         return uFlags & PARTY_FLAGS_1_AIRBORNE;
     }
 
-    inline void SetAirborne(bool new_state) {
+    inline void setAirborne(bool new_state) {
         if (new_state) {
             uFlags |= PARTY_FLAGS_1_AIRBORNE;
         } else {
@@ -288,9 +304,9 @@ struct Party {
      * @param item_id                   Item type to check, e.g. `ITEM_ARTIFACT_LADYS_ESCORT`.
      * @return                          Whether the provided item is worn by at least one member of the party.
      */
-    bool WearsItemAnywhere(ITEM_TYPE item_id) const {
+    bool wearsItemAnywhere(ITEM_TYPE item_id) const {
         for (const Player &player : pPlayers) {
-            if (player.WearsItemAnywhere(item_id)) {
+            if (player.wearsItemAnywhere(item_id)) {
                 return true;
             }
         }
@@ -334,9 +350,14 @@ struct Party {
 
     GameTime &GetPlayingTime() { return this->playing_time; }
 
-    bool IsPartyEvil();
-    bool IsPartyGood();
-    size_t ImmolationAffectedActors(int *affected, size_t affectedArrSize, size_t effectRange);
+    bool isPartyEvil();
+    bool isPartyGood();
+
+    /**
+     * @offset 0x46A89E
+     */
+    size_t immolationAffectedActors(int *affected, size_t affectedArrSize, size_t effectRange);
+
     int field_0_set25_unused;
     int uPartyHeight;
     int uDefaultPartyHeight;
@@ -463,7 +484,11 @@ bool TestPartyQuestBit(PARTY_QUEST_BITS bit);
  */
 void Rest(GameTime restTime);
 void RestAndHeal(int uNumMinutes);  // idb
-int GetTravelTime();
+
+/**
+ * @offset 0x444D80
+ */
+int getTravelTime();
 
 bool _449B57_test_bit(uint8_t *a1, int16_t a2);
 void _449B7E_toggle_bit(unsigned char *pArray, int16_t a2, uint16_t bToggle);  // idb
