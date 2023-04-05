@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#include <filesystem>
+
 #include "Application/Game.h"
 #include "Application/GameFactory.h"
 
@@ -29,13 +31,14 @@ class GameThread {
 
         initDataPath(options.dataPath);
 
-        _config = std::make_shared<GameConfig>("openenroth.ini");
+        _config = std::make_shared<GameConfig>("openenroth_test.ini");
         ResetTestConfig(_config.get());
         _game = GameFactory().CreateGame(_application.get(), _config);
     }
 
     ~GameThread() {
         EngineIocContainer::ResolveLogger()->setBaseLogger(nullptr);
+        std::filesystem::remove("openenroth_test.ini");
     }
 
     PlatformApplication *app() const {
