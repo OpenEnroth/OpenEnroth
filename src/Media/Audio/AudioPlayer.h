@@ -147,22 +147,27 @@ class AudioPlayer {
     } SoundHeader;
 
     struct AudioSamplePoolEntry {
-        AudioSamplePoolEntry(PAudioSample samplePtr_, SoundID id_):samplePtr(samplePtr_), id(id_) {}
+        AudioSamplePoolEntry(PAudioSample samplePtr_, SoundID id_, int pid_):samplePtr(samplePtr_), id(id_), pid(pid_) {}
 
         PAudioSample samplePtr;
         SoundID id;
+        int pid;
     };
 
     class AudioSamplePool {
      public:
         void playNew(PAudioSample sample, bool loop = false, bool positional = false);
-        void playUnique(PAudioSample sample, SoundID id, bool loop = false, bool positional = false);
+        void playUniqueSoundId(PAudioSample sample, SoundID id, bool loop = false, bool positional = false);
+        void playUniquePid(PAudioSample sample, int pid, bool loop = false, bool positional = false);
         void pause();
         void resume();
-        void stop(SoundID soundId = SOUND_Invalid);
+        void stop();
+        void stopSoundId(SoundID soundId);
+        void stopPid(int pid);
         void update();
+        void setVolume(float value);
      private:
-        std::list<AudioSamplePoolEntry> samplePool;
+        std::list<AudioSamplePoolEntry> _samplePool;
     };
 
  public:
@@ -279,7 +284,7 @@ class AudioPlayer {
     FileInputStream fAudioSnd;
     std::map<std::string, SoundHeader> mSoundHeaders;
 
-    // Cache to store different types of walking sounds
+    AudioSamplePool _voiceSoundPool;
     AudioSamplePool _exclusiveSoundPool;
     AudioSamplePool _nonExclusiveSoundPool;
     PAudioSample _currentWalkingSample;
