@@ -1985,8 +1985,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         }
 
         // TODO(Nik-RE-dev): need to allow GetSkillMastery return PLAYER_SKILL_MASTERY_NONE
-        if (!alchemy_skill_points)
-        {
+        if (!alchemy_skill_points) {
             alchemy_skill_level = PLAYER_SKILL_MASTERY_NONE;
         }
 
