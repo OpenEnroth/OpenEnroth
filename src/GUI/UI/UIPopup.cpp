@@ -1825,7 +1825,6 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         return;
     }
 
-    // for recharge potion(зелье перезарядка)
     if (pParty->pPickedItem.uItemID == ITEM_POTION_RECHARGE_ITEM) {
         if (item->uItemID < ITEM_POTION_BOTTLE ||
             item->uItemID > ITEM_POTION_REJUVENATION) {  // all potions
@@ -1841,6 +1840,10 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             float invMaxChargesDecrease = (100 - maxChargesDecreasePercent) * 0.01;
             item->uMaxCharges = item->uNumCharges = item->uMaxCharges * invMaxChargesDecrease;
 
+            // Effect and sound was not present previously
+            item->uAttributes |= ITEM_AURA_EFFECT_GREEN;
+            ItemEnchantmentTimer = Timer::Second * 2;
+            pAudioPlayer->playSpellSound(SPELL_WATER_RECHARGE_ITEM, 0, false);
             mouse->RemoveHoldingItem();
             no_rightlick_in_inventory = 1;
             return;
@@ -1848,7 +1851,6 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         GameUI_DrawItemInfo(item);
         return;
     } else if (pParty->pPickedItem.uItemID == ITEM_POTION_HARDEN_ITEM) {
-      // for harden potion(зелье закалка)
       if (item->uItemID < ITEM_POTION_BOTTLE ||
             item->uItemID > ITEM_POTION_REJUVENATION) {  // bottle and all potions
             if (item->IsBroken() ||  // cant harden broken items
@@ -1860,6 +1862,8 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             }
 
             item->uAttributes |= ITEM_AURA_EFFECT_RED | ITEM_HARDENED;
+            // Sound was missing previously
+            pAudioPlayer->playSpellSound(SPELL_WATER_ENCHANT_ITEM, 0, false);
 
             ItemEnchantmentTimer = Timer::Second * 2;
             mouse->RemoveHoldingItem();
@@ -1868,10 +1872,9 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         }
         GameUI_DrawItemInfo(item);
         return;
-    } else if (pParty->pPickedItem.uItemID >= ITEM_POTION_FLAMING &&
-      // several potions(несколько зелий)
-      pParty->pPickedItem.uItemID <= ITEM_POTION_SWIFT ||
+    } else if (pParty->pPickedItem.uItemID >= ITEM_POTION_FLAMING && pParty->pPickedItem.uItemID <= ITEM_POTION_SWIFT ||
              pParty->pPickedItem.uItemID == ITEM_POTION_SLAYING) {
+        // different enchanting potions
         if (item->uItemID < ITEM_POTION_BOTTLE ||
             item->uItemID > ITEM_POTION_REJUVENATION) {  // all potions
             if (item->uItemID >= ITEM_BLASTER &&
@@ -1900,7 +1903,9 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             }
 
             item->uExpireTime = GameTime(pParty->GetPlayingTime() + effectTime);
+            // Sound was missing previously
             item->uAttributes |= ITEM_TEMP_BONUS | ITEM_AURA_EFFECT_RED;
+            pAudioPlayer->playSpellSound(SPELL_WATER_ENCHANT_ITEM, 0, false);
 
             ItemEnchantmentTimer = Timer::Second * 2;
             mouse->RemoveHoldingItem();
