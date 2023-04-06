@@ -150,6 +150,16 @@ enum class PartyAlignment: int32_t {
 };
 using enum PartyAlignment;
 
+/**
+ * Controls gold receiving mechanics.
+ */
+enum class GoldReceivePolicy {
+    GOLD_RECEIVE_SHARE,          // default behaviour: receive gold and share it with hirelings
+    GOLD_RECEIVE_NOSHARE_MSG,    // receive gold without sharing, displays status message
+    GOLD_RECEIVE_NOSHARE_SILENT  // receive gold without sharing and status message
+};
+using enum GoldReceivePolicy;
+
 /*  208 */
 struct PartyTimeStruct {
     IndexedArray<GameTime, HOUSE_FIRST_TOWNHALL, HOUSE_LAST_TOWNHALL> bountyHunting_next_generation_time; // Size was 10 originally.
@@ -208,9 +218,10 @@ struct Party {
     void GivePartyExp(unsigned int pEXPNum);
     int GetPartyReputation();
 
-    void PartyFindsGold(
-        unsigned int uNumGold,
-        int _1_dont_share_with_followers___2_the_same_but_without_a_message__else_normal);
+    /**
+     * @offset 0x420C05
+     */
+    void partyFindsGold(int amount, GoldReceivePolicy policy);
     void PickedItem_PlaceInInventory_or_Drop();
 
     int GetGold() const;

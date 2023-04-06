@@ -3802,14 +3802,14 @@ void Actor::LootActor() {
     if (!ActorHasItem()) {
         v14 = grng->RandomDice(this->pMonsterInfo.uTreasureDiceRolls, this->pMonsterInfo.uTreasureDiceSides);
         if (v14) {
-            pParty->PartyFindsGold(v14, 0);
+            pParty->partyFindsGold(v14, GOLD_RECEIVE_SHARE);
         }
     } else {
         if (this->ActorHasItems[3].isGold()) {
             v14 = this->ActorHasItems[3].special_enchantment;
             this->ActorHasItems[3].Reset();
             if (v14) {
-                pParty->PartyFindsGold(v14, 0);
+                pParty->partyFindsGold(v14, GOLD_RECEIVE_SHARE);
             }
         }
     }
