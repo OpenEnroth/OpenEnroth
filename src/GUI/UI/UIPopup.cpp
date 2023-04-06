@@ -1985,27 +1985,25 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         }
 
         damage_level = 0;
-        if (alchemy_skill_points) {
-            if (!IsPotion(potionID)) {
-                // In this case potionID represent damage level
-                damage_level = std::to_underlying(potionID);
-            } else {
-                // potionID >= ITEM_POTION_CURE_WOUNDS && potionID <= ITEM_POTION_CURE_WEAKNESS does not require skill
-                // potionID >= ITEM_POTION_CURE_DISEASE && potionID <= ITEM_POTION_AWAKEN require just NOVICE
-                if (potionID >= ITEM_POTION_HASTE &&
+        if (!IsPotion(potionID)) {
+            // In this case potionID represent damage level
+            damage_level = std::to_underlying(potionID);
+        } else if (alchemy_skill_points) {
+            // potionID >= ITEM_POTION_CURE_WOUNDS && potionID <= ITEM_POTION_CURE_WEAKNESS does not require skill
+            // potionID >= ITEM_POTION_CURE_DISEASE && potionID <= ITEM_POTION_AWAKEN require just NOVICE
+            if (potionID >= ITEM_POTION_HASTE &&
                     potionID <= ITEM_POTION_CURE_INSANITY &&
                     alchemy_skill_level == PLAYER_SKILL_MASTERY_NOVICE) {
-                    damage_level = 2;
-                }
-                if (potionID >= ITEM_POTION_MIGHT_BOOST &&
+                damage_level = 2;
+            }
+            if (potionID >= ITEM_POTION_MIGHT_BOOST &&
                     potionID <= ITEM_POTION_BODY_RESISTANCE &&
                     alchemy_skill_level <= PLAYER_SKILL_MASTERY_EXPERT) {
-                    damage_level = 3;
-                }
-                if (potionID >= ITEM_POTION_STONE_TO_FLESH &&
+                damage_level = 3;
+            }
+            if (potionID >= ITEM_POTION_STONE_TO_FLESH &&
                     alchemy_skill_level <= PLAYER_SKILL_MASTERY_MASTER) {
-                    damage_level = 4;
-                }
+                damage_level = 4;
             }
         } else {  // no skill(нет навыка)
             if (potionID >= ITEM_POTION_CURE_DISEASE && potionID <= ITEM_POTION_AWAKEN)
