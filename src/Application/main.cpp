@@ -42,7 +42,7 @@ int MM_Main(int argc, char **argv) {
         gameConfig->LoadConfiguration();
 
         std::shared_ptr<Game> game = GameFactory().CreateGame(app.get(), gameConfig);
-        return game->Run();
+        return game->run();
     } catch (const std::exception &e) {
         fmt::print(stderr, "{}\n", e.what());
         return 1;

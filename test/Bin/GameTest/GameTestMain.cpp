@@ -46,7 +46,7 @@ class GameThread {
     }
 
     void run() {
-        _game->Run();
+        _game->run();
     }
 
  private:

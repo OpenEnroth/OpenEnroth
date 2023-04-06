@@ -123,11 +123,11 @@ void initDataPath(const std::string &dataPath) {
 }
 
 Game::Game(PlatformApplication *app) {
-    this->app = app;
-    this->log = EngineIocContainer::ResolveLogger();
-    this->decal_builder = EngineIocContainer::ResolveDecalBuilder();
-    this->vis = EngineIocContainer::ResolveVis();
-    this->menu = GameIocContainer::ResolveGameMenu();
+    _application = app;
+    _log = EngineIocContainer::ResolveLogger();
+    _decalBuilder = EngineIocContainer::ResolveDecalBuilder();
+    _vis = EngineIocContainer::ResolveVis();
+    _menu = GameIocContainer::ResolveGameMenu();
 
     ::application = app;
     ::platform = app->platform();
@@ -139,9 +139,9 @@ Game::Game(PlatformApplication *app) {
     // It doesn't matter where to put control component as it's running the control routine after a call to `SwapBuffers`.
     // But the trace component should go after the deterministic component - deterministic component updates tick count,
     // and then trace component stores the updated value in a recorded `PaintEvent`.
-    windowHandler.reset(GameIocContainer::ResolveGameWindowHandler());
-    app->install(windowHandler.get()); // TODO(captainurist): actually move ownership into PlatformApplication?
-    app->install(windowHandler->KeyboardController()); // TODO(captainurist): do this properly
+    _windowHandler.reset(GameIocContainer::ResolveGameWindowHandler());
+    app->install(_windowHandler.get()); // TODO(captainurist): actually move ownership into PlatformApplication?
+    app->install(_windowHandler->KeyboardController()); // TODO(captainurist): do this properly
     app->install(std::make_unique<EngineControlComponent>());
     app->install(std::make_unique<EngineTraceComponent>());
     app->install(std::make_unique<EngineDeterministicComponent>());
@@ -151,68 +151,68 @@ Game::Game(PlatformApplication *app) {
 }
 
 Game::~Game() {
-    app->remove(windowHandler->KeyboardController()); // TODO(captainurist): do this properly
-    app->remove(windowHandler.get());
-    if (nuklearHandler)
-        app->remove(nuklearHandler.get());
+    _application->remove(_windowHandler->KeyboardController()); // TODO(captainurist): do this properly
+    _application->remove(_windowHandler.get());
+    if (_nuklearHandler)
+        _application->remove(_nuklearHandler.get());
 }
 
-int Game::Run() {
+int Game::run() {
     IntegrityTest();
 
-    render = IRenderFactory().Create(config);
-    ::render = render;
+    _render = IRenderFactory().Create(_config);
+    ::render = _render;
 
-    if (!render) {
-        log->warning("Render creation failed");
+    if (!_render) {
+        _log->warning("Render creation failed");
         return -1;
     }
 
-    if (!render->Initialize()) {
-        log->warning("Render failed to initialize");
+    if (!_render->Initialize()) {
+        _log->warning("Render failed to initialize");
         return -1;
     }
 
-    nuklear = Nuklear::Initialize();
-    if (!nuklear) {
-        log->warning("Nuklear failed to initialize");
+    _nuklear = Nuklear::Initialize();
+    if (!_nuklear) {
+        _log->warning("Nuklear failed to initialize");
     }
-    ::nuklear = nuklear;
-    if (nuklear) {
-        nuklearHandler = std::make_unique<NuklearEventHandler>();
-        app->install(nuklearHandler.get());
+    ::nuklear = _nuklear;
+    if (_nuklear) {
+        _nuklearHandler = std::make_unique<NuklearEventHandler>();
+        _application->install(_nuklearHandler.get());
     }
 
-    keyboardActionMapping = std::make_shared<KeyboardActionMapping>(config);
+    keyboardActionMapping = std::make_shared<KeyboardActionMapping>(_config);
     ::keyboardActionMapping = keyboardActionMapping;
 
     keyboardInputHandler = std::make_shared<KeyboardInputHandler>(
-        windowHandler->KeyboardController(),
+        _windowHandler->KeyboardController(),
         keyboardActionMapping
     );
 
-    mouse = EngineIocContainer::ResolveMouse();
-    ::mouse = mouse;
+    _mouse = EngineIocContainer::ResolveMouse();
+    ::mouse = _mouse;
 
     EngineFactory engineFactory;
-    engine = engineFactory.CreateEngine(config);
-    ::engine = engine;
+    _engine = engineFactory.CreateEngine(_config);
+    ::engine = _engine;
 
-    if (!engine) {
-        log->warning("Engine creation failed");
+    if (!_engine) {
+        _log->warning("Engine creation failed");
         return -1;
     }
 
-    engine->Initialize();
+    _engine->Initialize();
     /* TODO: We should setup window before render as it is requesting window size upon initialization to setup clipping dimensions, zbuffer, etc.
      * Otherwise starting borderless fullscreen will start with renderer in 640x480 and so be broken.
      * For some reason windows not liking that and hang in SDL_GL_SwapWindow if it was called after changing window position out of primary monitor.
      * And if we try to exclude changing position and set it after render initialization then when game started in fullscreen request will be ignored.
      * Hack below with render reinitialization is a temporary workaround. */
-    windowHandler->UpdateWindowFromConfig(config.get());
-    render->Reinitialize();
+    _windowHandler->UpdateWindowFromConfig(_config.get());
+    _render->Reinitialize();
     window->activate();
-    eventLoop->processMessages(eventHandler);
+    ::eventLoop->processMessages(eventHandler);
 
     ShowMM7IntroVideo_and_LoadingScreen();
 
@@ -223,32 +223,32 @@ int Game::Run() {
         GUIWindow_MainMenu::Loop();
         uGameState = GAME_STATE_PLAYING;
 
-        if (!Loop()) {
+        if (!loop()) {
             break;
         }
     }
 
     if (window) {
-        windowHandler->UpdateConfigFromWindow(config.get());
-        config->SaveConfiguration();
+        _windowHandler->UpdateConfigFromWindow(_config.get());
+        _config->SaveConfiguration();
     }
 
-    if (engine) {
-        engine->Deinitialize();
-        engine = nullptr;
+    if (_engine) {
+        _engine->Deinitialize();
+        _engine = nullptr;
         ::engine = nullptr;
     }
 
-    if (render) {
-        render->Release();
-        render = nullptr;
+    if (_render) {
+        _render->Release();
+        _render = nullptr;
     }
 
     return 0;
 }
 
-bool Game::Loop() {
-    while (1) {
+bool Game::loop() {
+    while (true) {
         if (uGameState == GAME_FINISHED ||
             GetCurrentMenuID() == MENU_EXIT_GAME) {
             return false;
@@ -256,7 +256,7 @@ bool Game::Loop() {
             MainMenuLoad_Loop();
             if (GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
                 uGameState = GAME_STATE_PLAYING;
-                GameLoop();
+                gameLoop();
             }
             break;
         } else if (GetCurrentMenuID() == MENU_NEWGAME) {
@@ -267,15 +267,15 @@ bool Game::Loop() {
 
             pParty->pPickedItem.uItemID = ITEM_NULL;
 
-            pCurrentMapName = config->gameplay.StartingMap.value();
+            pCurrentMapName = _config->gameplay.StartingMap.value();
             bFlashQuestBook = true;
             pMediaPlayer->PlayFullscreenMovie("Intro Post");
             SaveNewGame();
-            if (engine->config->debug.NoMargaret.value()) {
+            if (_engine->config->debug.NoMargaret.value()) {
                 _449B7E_toggle_bit(pParty->_quest_bits, QBIT_EMERALD_ISLAND_MARGARETH_OFF, 1);
             }
 
-            GameLoop();
+            gameLoop();
             if (uGameState == GAME_STATE_NEWGAME_OUT_GAMEMENU) {
                 SetCurrentMenuID(MENU_NEWGAME);
                 uGameState = GAME_STATE_PLAYING;
@@ -288,12 +288,11 @@ bool Game::Loop() {
             pAudioPlayer->MusicStop();
             GUICredits::ExecuteCredits();
             break;
-        } else if (GetCurrentMenuID() == MENU_5 ||
-            GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
+        } else if (GetCurrentMenuID() == MENU_5 || GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
             uGameState = GAME_STATE_PLAYING;
-            GameLoop();
+            gameLoop();
         } else if (GetCurrentMenuID() == MENU_DebugBLVLevel) {
-            mouse->ChangeActivation(0);
+            _mouse->ChangeActivation(0);
             pParty->Reset();
             pParty->createDefaultParty(true);
 
@@ -309,8 +308,8 @@ bool Game::Loop() {
             }
             _chdir("..\\");
             strcpy(pCurrentMapName, ofn.lpstrFileTitle);*/
-            mouse->ChangeActivation(1);
-            GameLoop();
+            _mouse->ChangeActivation(1);
+            gameLoop();
         }
         if (uGameState == GAME_STATE_LOADING_GAME) {
             SetCurrentMenuID(MENU_5);
@@ -381,14 +380,14 @@ void Game_StartHirelingDialogue(unsigned int hireling_id) {
     }
 }
 
-void Game::CloseTargetedSpellWindow() {
+void Game::closeTargetedSpellWindow() {
     if (pGUIWindow_CastTargetedSpell) {
         if (current_screen_type == CURRENT_SCREEN::SCREEN_CHARACTERS) {
-            mouse->SetCursorImage("MICON2");
+            _mouse->SetCursorImage("MICON2");
         } else {
             pGUIWindow_CastTargetedSpell->Release();  // test to fix enchanting issue
             pGUIWindow_CastTargetedSpell = nullptr;  // test to fix enchanting issue
-            mouse->SetCursorImage("MICON1");
+            _mouse->SetCursorImage("MICON1");
             game_ui_status_bar_event_string_time_left = 0;
             IsEnchantingInProgress = false;
             back_to_game();
@@ -396,8 +395,8 @@ void Game::CloseTargetedSpellWindow() {
     }
 }
 
-void Game::OnEscape() {
-    CloseTargetedSpellWindow();
+void Game::onEscape() {
+    closeTargetedSpellWindow();
 
     // if ((signed int)pParty->getActiveCharacter() < 1 || (signed int)pParty->getActiveCharacter() > 4)
 
@@ -424,7 +423,7 @@ bool IsWindowSwitchable() {
     return true;
 }
 
-void Game::EventLoop() {
+void Game::processQueuedMessages() {
     GUIWindow *pWindow2;        // ecx@248
     int v37;                    // eax@341
     int v38;                    // eax@358
@@ -466,8 +465,7 @@ void Game::EventLoop() {
         bDialogueUI_InitializeActor_NPC_ID = 0;
     }
     if (!pCurrentFrameMessageQueue->Empty()) {
-        // v1 = "";
-        while (2) {
+        while (true) {
             if (pCurrentFrameMessageQueue->Empty()) {
                 break;
             }
@@ -535,7 +533,7 @@ void Game::EventLoop() {
                     } else {
                         // close out current window
                         back_to_game();
-                        OnEscape();
+                        onEscape();
                         GameUI_StatusBar_Clear();
                     }
                     // open window
@@ -554,7 +552,7 @@ void Game::EventLoop() {
                     } else {
                         // close out current window
                         back_to_game();
-                        OnEscape();
+                        onEscape();
                         GameUI_StatusBar_Clear();
                     }
                     // open window
@@ -573,7 +571,7 @@ void Game::EventLoop() {
                     } else {
                         // close out current window
                         back_to_game();
-                        OnEscape();
+                        onEscape();
                         GameUI_StatusBar_Clear();
                     }
                     // open window;
@@ -592,7 +590,7 @@ void Game::EventLoop() {
                     } else {
                         // close out current window
                         back_to_game();
-                        OnEscape();
+                        onEscape();
                         GameUI_StatusBar_Clear();
                     }
                     // open window
@@ -611,7 +609,7 @@ void Game::EventLoop() {
                     } else {
                         // close out current window
                         back_to_game();
-                        OnEscape();
+                        onEscape();
                         GameUI_StatusBar_Clear();
                     }
                     // open window
@@ -621,7 +619,7 @@ void Game::EventLoop() {
                     pCurrentFrameMessageQueue->Flush();
                     if (current_screen_type == CURRENT_SCREEN::SCREEN_DEBUG) {
                         back_to_game();
-                        OnEscape();
+                        onEscape();
                         GameUI_StatusBar_Clear();
                         break;
                     }
@@ -665,18 +663,18 @@ void Game::EventLoop() {
                             continue;
                         }
                     }
-                    render->ClearZBuffer();
+                    _render->ClearZBuffer();
                     if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
                         if (!pGUIWindow_CastTargetedSpell) {  // Draw Menu
                             dword_6BE138 = -1;
                             new OnButtonClick2({602, 450}, {0, 0}, pBtn_GameSettings, std::string(), false);
 
                             pCurrentFrameMessageQueue->Flush();
-                            menu->MenuLoop();
+                            _menu->MenuLoop();
                         } else {
                             pGUIWindow_CastTargetedSpell->Release();
                             pGUIWindow_CastTargetedSpell = 0;
-                            mouse->SetCursorImage("MICON1");
+                            _mouse->SetCursorImage("MICON1");
                             game_ui_status_bar_event_string_time_left = 0;
                             IsEnchantingInProgress = false;
                             back_to_game();
@@ -697,7 +695,7 @@ void Game::EventLoop() {
                     } else {
                         if (current_screen_type > CURRENT_SCREEN::SCREEN_67) {
                             if (current_screen_type == CURRENT_SCREEN::SCREEN_QUICK_REFERENCE) {
-                                OnEscape();
+                                onEscape();
                                 continue;
                             }
                         } else {
@@ -721,11 +719,11 @@ void Game::EventLoop() {
                                             ItemEnchantmentTimer = 0;
                                             ptr_50C9A4_ItemToEnchant = nullptr;
                                         }
-                                        OnEscape();
+                                        onEscape();
                                         continue;
                                     case CURRENT_SCREEN::SCREEN_BOOKS:
                                         pEventTimer->Resume();
-                                        OnEscape();
+                                        onEscape();
                                         continue;
                                     case CURRENT_SCREEN::SCREEN_CHEST_INVENTORY:
                                         current_screen_type = CURRENT_SCREEN::SCREEN_CHEST;
@@ -766,7 +764,7 @@ void Game::EventLoop() {
                                         }
                                         remainingRestTime = GameTime();
                                         currentRestType = REST_NONE;
-                                        OnEscape();
+                                        onEscape();
                                         continue;
                                     case CURRENT_SCREEN::SCREEN_SHOP_INVENTORY:
                                         pGUIWindow_CurrentMenu->Release();
@@ -788,7 +786,7 @@ void Game::EventLoop() {
                                         pMediaPlayer->Unload();
                                         pGUIWindow_CurrentMenu = window_SpeakInHouse;
 
-                                        OnEscape();
+                                        onEscape();
                                         continue;
                                     case CURRENT_SCREEN::SCREEN_INPUT_BLV:  // click escape
                                         if (uCurrentHouse_Animation == 153)
@@ -846,20 +844,20 @@ void Game::EventLoop() {
                                     case CURRENT_SCREEN::SCREEN_CHARACTERS:
                                         CharacterUI_ReleaseButtons();
                                         ReleaseAwardsScrollBar();
-                                        OnEscape();
+                                        onEscape();
                                         continue;
                                     case CURRENT_SCREEN::SCREEN_SPELL_BOOK:
-                                        OnEscape();
+                                        onEscape();
                                         continue;
 
                                     default:
                                         __debugbreak();  // which GAME_MENU is
                                                          // this?
-                                        OnEscape();
+                                        onEscape();
                                         continue;
                                 }
                                 __debugbreak();  // which GAME_MENU is this?
-                                OnEscape();
+                                onEscape();
                                 continue;
                             }
                             __debugbreak();  // which GAME_MENU is this?
@@ -867,7 +865,7 @@ void Game::EventLoop() {
                             ReleaseAwardsScrollBar();
                         }
                         // __debugbreak();  // which GAME_MENU is this? debug / fallback
-                        OnEscape();
+                        onEscape();
                         continue;
                     }
                     continue;
@@ -952,14 +950,14 @@ void Game::EventLoop() {
                     PlayButtonClickSound();
                     DialogueEnding();
                     back_to_game();
-                    OnEscape();
+                    onEscape();
                     continue;
                 case UIMSG_TransitionWindowCloseBtn:
                     PlayButtonClickSound();
                     pMediaPlayer->Unload();
                     DialogueEnding();
                     back_to_game();
-                    OnEscape();
+                    onEscape();
                     continue;
                 case UIMSG_CycleCharacters:
                     pParty->setActiveCharacter(CycleCharacter(keyboardInputHandler->IsAdventurerBackcycleToggled()));
@@ -971,7 +969,7 @@ void Game::EventLoop() {
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     // encounter_index = (NPCData *)getTravelTime();
                     pOutdoor->level_filename = pCurrentMapName;
-                    if (!engine->IsUnderwater() && pParty->bFlying ||
+                    if (!_engine->IsUnderwater() && pParty->bFlying ||
                         pOutdoor->GetTravelDestination(pParty->vPosition.x,
                                                        pParty->vPosition.y,
                                                        pOut, 20) != 1) {
@@ -1014,13 +1012,13 @@ void Game::EventLoop() {
                         pSpriteFrameTable->ResetLoadedFlags();
                         pCurrentMapName = pOut;
                         Level_LoadEvtAndStr(pCurrentMapName.substr(0, pCurrentMapName.rfind('.')));
-                        decal_builder->Reset(0);
+                        _decalBuilder->Reset(0);
                         LoadLevel_InitializeLevelEvt();
                         uLevelMapStatsID = pMapStats->GetMapInfo(pCurrentMapName);
 
                         bNoNPCHiring = 0;
 
-                        engine->SetUnderwater(
+                        _engine->SetUnderwater(
                             Is_out15odm_underwater());
 
                         if (Is_out15odm_underwater() || (pCurrentMapName == "d47.blv"))
@@ -1034,7 +1032,7 @@ void Game::EventLoop() {
                         pParty->vPosition.z = GetTerrainHeightsAroundParty2(
                             pParty->vPosition.x, pParty->vPosition.y, &bOnWater, 0);
                         pParty->uFallStartZ = pParty->vPosition.z;
-                        engine->_461103_load_level_sub();
+                        _engine->_461103_load_level_sub();
                         pEventTimer->Resume();
                         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                         pGameLoadingUI_ProgressBar->Release();
@@ -1054,7 +1052,7 @@ void Game::EventLoop() {
                     current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                     continue;
                 case UIMSG_CastSpell_Telekinesis: {
-                    int pid = vis->get_picked_object_zbuf_val().object_pid;
+                    int pid = _vis->get_picked_object_zbuf_val().object_pid;
                     ObjectType type = PID_TYPE(pid);
                     int id = PID_ID(pid);
                     bool interactionPossible = false;
@@ -1081,7 +1079,7 @@ void Game::EventLoop() {
                     }
                     if (interactionPossible) {
                         spellTargetPicked(pid, -1);
-                        CloseTargetedSpellWindow();
+                        closeTargetedSpellWindow();
                     }
                     continue;
                 }
@@ -1094,7 +1092,7 @@ void Game::EventLoop() {
                         pParty->setActiveCharacter(uMessageParam);
                     } else {
                         spellTargetPicked(PID_INVALID, uMessageParam);
-                        CloseTargetedSpellWindow();
+                        closeTargetedSpellWindow();
                     }
                     continue;
 
@@ -1231,7 +1229,7 @@ void Game::EventLoop() {
                     //if (uGameState == GAME_STATE_CHANGE_LOCATION) continue;
 
                     // check if tp location is unlocked
-                    if (!_449B57_test_bit(pParty->_quest_bits, townPortalQuestBits[uMessageParam]) && !engine->config->debug.TownPortal.value()) {
+                    if (!_449B57_test_bit(pParty->_quest_bits, townPortalQuestBits[uMessageParam]) && !_engine->config->debug.TownPortal.value()) {
                         continue;
                     }
 
@@ -1287,8 +1285,8 @@ void Game::EventLoop() {
                     continue;
                 }
                 case UIMSG_HintTownPortal: {
-                    if (!_449B57_test_bit(pParty->_quest_bits, townPortalQuestBits[uMessageParam]) && !engine->config->debug.TownPortal.value()) {
-                        render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
+                    if (!_449B57_test_bit(pParty->_quest_bits, townPortalQuestBits[uMessageParam]) && !_engine->config->debug.TownPortal.value()) {
+                        _render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
                         continue;
                     }
                     // LABEL_506:
@@ -1407,7 +1405,7 @@ void Game::EventLoop() {
                     continue;
                 }
                 case UIMSG_CastQuickSpell: {
-                    if (engine->IsUnderwater()) {
+                    if (_engine->IsUnderwater()) {
                         GameUI_SetStatusBar(LSTR_CANT_DO_UNDERWATER);
                         pAudioPlayer->playUISound(SOUND_error);
                         continue;
@@ -1423,11 +1421,11 @@ void Game::EventLoop() {
 
                 case UIMSG_CastSpell_TargetActorBuff:
                 case UIMSG_CastSpell_TargetActor: {
-                    int pid = vis->get_picked_object_zbuf_val().object_pid;
-                    int depth = vis->get_picked_object_zbuf_val().depth;
-                    if (PID_TYPE(pid) == OBJECT_Actor && depth < engine->config->gameplay.RangedAttackDepth.value()) {
+                    int pid = _vis->get_picked_object_zbuf_val().object_pid;
+                    int depth = _vis->get_picked_object_zbuf_val().depth;
+                    if (PID_TYPE(pid) == OBJECT_Actor && depth < _engine->config->gameplay.RangedAttackDepth.value()) {
                         spellTargetPicked(pid, -1);
-                        CloseTargetedSpellWindow();
+                        closeTargetedSpellWindow();
                     }
                     continue;
                 }
@@ -1520,7 +1518,7 @@ void Game::EventLoop() {
                     //    continue;
                     //}
                     if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) continue;
-                    CloseTargetedSpellWindow();
+                    closeTargetedSpellWindow();
 
                     if (CheckActors_proximity()) {
                         if (pParty->bTurnBasedModeOn) {
@@ -1699,7 +1697,7 @@ void Game::EventLoop() {
                     int uAction = 0;
                     int page = 0;
                     for (PLAYER_SKILL_TYPE i : MagicSkills()) {
-                        if (pPlayers[pParty->getActiveCharacter()]->pActiveSkills[i] || engine->config->debug.AllMagic.value()) {
+                        if (pPlayers[pParty->getActiveCharacter()]->pActiveSkills[i] || _engine->config->debug.AllMagic.value()) {
                             if (pPlayers[pParty->getActiveCharacter()]->lastOpenedSpellbookPage == page)
                                 uAction = skill_count;
                             spellbookPages[skill_count++] = page;
@@ -1742,7 +1740,7 @@ void Game::EventLoop() {
                     //  uNumSeconds = (unsigned int)pPlayers[pParty->getActiveCharacter()];
                     Player *player = pPlayers[pParty->getActiveCharacter()];
                     if (player->spellbook.pChapters[player->lastOpenedSpellbookPage].bIsSpellAvailable[uMessageParam]
-                        || engine->config->debug.AllMagic.value()) {
+                        || _engine->config->debug.AllMagic.value()) {
                         if (quick_spell_at_page - 1 == uMessageParam) {
                             pGUIWindow_CurrentMenu->Release();  // spellbook close
                             pEventTimer->Resume();
@@ -1785,7 +1783,7 @@ void Game::EventLoop() {
                     if (pTurnEngine->turn_stage == TE_MOVEMENT) {
                         continue;
                     }
-                    if (engine->IsUnderwater()) {
+                    if (_engine->IsUnderwater()) {
                         GameUI_SetStatusBar(LSTR_CANT_DO_UNDERWATER);
                         pAudioPlayer->playUISound(SOUND_error);
                     } else {
@@ -1803,7 +1801,7 @@ void Game::EventLoop() {
                                 } else {
                                     // close out current window
                                     back_to_game();
-                                    OnEscape();
+                                    onEscape();
                                     GameUI_StatusBar_Clear();
                                 }
                                 // open window
@@ -1827,7 +1825,7 @@ void Game::EventLoop() {
                     } else {
                         // close out current window
                         back_to_game();
-                        OnEscape();
+                        onEscape();
                         GameUI_StatusBar_Clear();
                     }
                     // open window
@@ -1845,7 +1843,7 @@ void Game::EventLoop() {
                         gamma_preview_image->Release();
                         gamma_preview_image = nullptr;
                     }
-                    render->SaveScreenshot("gamma.pcx", 155, 117);
+                    _render->SaveScreenshot("gamma.pcx", 155, 117);
                     gamma_preview_image = assets->GetImage_PCXFromFile("gamma.pcx");
 
                     new OnButtonClick({602, 450}, {0, 0}, pBtn_GameSettings);
@@ -1864,7 +1862,7 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_ClickAwardScrollBar: {
                     books_page_number = 1;
-                    Pointi pt = mouse->GetCursorPos();
+                    Pointi pt = _mouse->GetCursorPos();
                     if (pt.y > 178) books_page_number = -1;
                     continue;
                 }
@@ -2016,7 +2014,7 @@ void Game::EventLoop() {
                         + std::string(localization->GetCharacterConditionName(player->GetMajorConditionIdx()));
                     GameUI_StatusBar_Set(status);
 
-                    mouse->uPointingObjectID =
+                    _mouse->uPointingObjectID =
                         PID(OBJECT_Player,
                             (unsigned char)(8 * uMessageParam - 8) | 4);
                     continue;
@@ -2053,7 +2051,7 @@ void Game::EventLoop() {
                                                     // правую кнопку мыши после
                                                     // UIMSG_MouseLeftClickInGame
                     pCurrentFrameMessageQueue->Flush();
-                    engine->OnGameViewportClick();
+                    _engine->OnGameViewportClick();
                     continue;
                 case UIMSG_F:  // what event?
                     __debugbreak();
@@ -2071,7 +2069,7 @@ void Game::EventLoop() {
                     if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST) {
                         Chest::GrabItem(keyboardInputHandler->IsTakeAllToggled());
                     } else {
-                        OnPressSpace();
+                        onPressSpace();
                     }
                     continue;
                 case UIMSG_ClickZoomInBtn:
@@ -2214,67 +2212,67 @@ void Game::EventLoop() {
                     pParty->AddGold(10000);
                     continue;
                 case UIMSG_DebugTownPortal:
-                    engine->config->debug.TownPortal.toggle();
+                    _engine->config->debug.TownPortal.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugWizardEye:
-                    engine->config->debug.WizardEye.toggle();
+                    _engine->config->debug.WizardEye.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugAllMagic:
-                    engine->config->debug.AllMagic.toggle();
+                    _engine->config->debug.AllMagic.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugTerrain:
-                    engine->config->debug.Terrain.toggle();
+                    _engine->config->debug.Terrain.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugLightmap:
-                    engine->config->debug.LightmapDecals.toggle();
+                    _engine->config->debug.LightmapDecals.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugTurboSpeed:
-                    engine->config->debug.TurboSpeed.toggle();
+                    _engine->config->debug.TurboSpeed.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugNoActors:
-                    engine->config->debug.NoActors.toggle();
+                    _engine->config->debug.NoActors.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugFog:
-                    engine->config->graphics.Fog.toggle();
+                    _engine->config->graphics.Fog.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugSnow:
-                    engine->config->graphics.Snow.toggle();
+                    _engine->config->graphics.Snow.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugNoDamage:
-                    engine->config->debug.NoDamage.toggle();
+                    _engine->config->debug.NoDamage.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugPortalLines:
-                    engine->config->debug.PortalOutlines.toggle();
+                    _engine->config->debug.PortalOutlines.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugPickedFace:
-                    engine->config->debug.ShowPickedFace.toggle();
+                    _engine->config->debug.ShowPickedFace.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugShowFPS:
-                    engine->config->debug.ShowFPS.toggle();
+                    _engine->config->debug.ShowFPS.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugSeasonsChange:
-                    engine->config->graphics.SeasonsChange.toggle();
+                    _engine->config->graphics.SeasonsChange.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugVerboseLogging:
-                    engine->config->debug.VerboseLogging.toggle();
+                    _engine->config->debug.VerboseLogging.toggle();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 case UIMSG_DebugReloadShader:
-                    render->ReloadShaders();
+                    _render->ReloadShaders();
                     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                     continue;
                 default:
@@ -2299,12 +2297,12 @@ void Game::EventLoop() {
 }
 
 //----- (0046A14B) --------------------------------------------------------
-void Game::OnPressSpace() {
-    engine->PickKeyboard(engine->config->gameplay.KeyboardInteractionDepth.value(),
-                         keyboardInputHandler->IsKeyboardPickingOutlineToggled(),
-                         &vis_sprite_filter_3, &vis_door_filter);
+void Game::onPressSpace() {
+    _engine->PickKeyboard(_engine->config->gameplay.KeyboardInteractionDepth.value(),
+                          keyboardInputHandler->IsKeyboardPickingOutlineToggled(),
+                          &vis_sprite_filter_3, &vis_door_filter);
 
-    uint16_t pid = vis->get_picked_object_zbuf_val().object_pid;
+    uint16_t pid = _vis->get_picked_object_zbuf_val().object_pid;
     if (pid != PID_INVALID) {
         // wasn't there, but we decided to deny interactions where there are no active character
         if (!pParty->hasActiveCharacter()) {
@@ -2315,7 +2313,7 @@ void Game::OnPressSpace() {
     }
 }
 
-void Game::GameLoop() {
+void Game::gameLoop() {
     const char *pLocationName;  // [sp-4h] [bp-68h]@74
     bool bLoading;              // [sp+10h] [bp-54h]@1
     char Source[64];            // [sp+44h] [bp-20h]@76
@@ -2332,7 +2330,7 @@ void Game::GameLoop() {
     pIcons_LOD->_inlined_sub1();
     // pAudioPlayer->SetMusicVolume(engine->config->music_level);
 
-    while (2) {
+    while (true) {
         pCurrentFrameMessageQueue->Flush();
 
         pPartyActionQueue->uNumActions = 0;
@@ -2349,20 +2347,20 @@ void Game::GameLoop() {
         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
 
         // if ( render->pRenderD3D )
-        vis->_4C1A02();
-        engine->Draw();
+        _vis->_4C1A02();
+        _engine->Draw();
 
         bool game_finished = false;
         do {
             MessageLoopWithWait();
 
-            engine->_44EEA7();  // pop up . mouse picking
+            _engine->_44EEA7();  // pop up . mouse picking
             GameUI_WritePointedObjectStatusString();
             keyboardInputHandler->GenerateInputActions();
-            EventLoop();
+            processQueuedMessages();
             if (pArcomageGame->bGameInProgress) {
                 ArcomageGame::Loop();
-                render->Present();
+                _render->Present();
                 continue;
             }
 
@@ -2394,7 +2392,7 @@ void Game::GameLoop() {
                  GameUI_StatusBar_Clear();
             }
             if (uGameState == GAME_STATE_PLAYING) {
-                engine->Draw();
+                _engine->Draw();
                 continue;
             }
             if (uGameState == GAME_FINISHED) {
@@ -2421,13 +2419,13 @@ void Game::GameLoop() {
                 continue;
             }
             if (uGameState == GAME_STATE_FINAL_WINDOW) {
-                render->BeginScene2D();
+                _render->BeginScene2D();
                 GUI_UpdateWindows();
-                render->Present();
+                _render->Present();
                 continue;
             }
             if (uGameState != GAME_STATE_PARTY_DIED) {
-                engine->Draw();
+                _engine->Draw();
                 continue;
             }
             if (uGameState == GAME_STATE_PARTY_DIED) {
@@ -2479,7 +2477,7 @@ void Game::GameLoop() {
                     pParty->vPosition.y = 1816;
                     pParty->vPosition.z = 193;
                     pParty->_viewYaw = 512;
-                    pLocationName = config->gameplay.StartingMap.value().c_str();
+                    pLocationName = _config->gameplay.StartingMap.value().c_str();
                 }
                 strcpy(Source, pLocationName);
                 pParty->uFallStartZ = pParty->vPosition.z;
@@ -2514,7 +2512,7 @@ void Game::GameLoop() {
         } while (!game_finished);
 
         pEventTimer->Pause();
-        engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
+        _engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
         if (uGameState == GAME_STATE_LOADING_GAME) {
             GameUI_LoadPlayerPortraintsAndVoices();
             uGameState = GAME_STATE_PLAYING;
