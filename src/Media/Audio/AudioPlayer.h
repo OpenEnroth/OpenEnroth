@@ -4,6 +4,7 @@
 #include <unordered_set>
 #include <string>
 #include <memory>
+#include <list>
 
 #include "Utility/Workaround/ToUnderlying.h"
 
@@ -137,6 +138,31 @@ enum SoundID {
 
 enum MusicID { MUSIC_MainMenu = 14, MUSIC_Credits = 15 };
 
+struct AudioSamplePoolEntry {
+    AudioSamplePoolEntry(PAudioSample samplePtr_, SoundID id_, int pid_):samplePtr(samplePtr_), id(id_), pid(pid_) {}
+
+    PAudioSample samplePtr;
+    SoundID id;
+    int pid;
+};
+
+class AudioSamplePool {
+ public:
+    void playNew(PAudioSample sample, bool loop = false, bool positional = false);
+    void playUniqueSoundId(PAudioSample sample, SoundID id, bool loop = false, bool positional = false);
+    void playUniquePid(PAudioSample sample, int pid, bool loop = false, bool positional = false);
+    void pause();
+    void resume();
+    void stop();
+    void stopSoundId(SoundID soundId);
+    void stopPid(int pid);
+    void update();
+    void setVolume(float value);
+ private:
+    std::list<AudioSamplePoolEntry> _samplePool;
+};
+
+
 class AudioPlayer {
  protected:
     typedef struct SoundHeader {
@@ -259,8 +285,10 @@ class AudioPlayer {
     FileInputStream fAudioSnd;
     std::map<std::string, SoundHeader> mSoundHeaders;
 
-    // Cache to store different types of walking sounds
-    std::unordered_set<SoundID> _walkingSoundIds;
+    AudioSamplePool _voiceSoundPool;
+    AudioSamplePool _exclusiveSoundPool;
+    AudioSamplePool _nonExclusiveSoundPool;
+    PAudioSample _currentWalkingSample;
 };
 
 struct SoundDesc;
