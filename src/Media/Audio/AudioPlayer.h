@@ -136,7 +136,11 @@ enum SoundID {
     SOUND_quest = 20001,
 };
 
-enum MusicID { MUSIC_MainMenu = 14, MUSIC_Credits = 15 };
+enum MusicID {
+    MUSIC_Invalid = 0,
+    MUSIC_MainMenu = 14,
+    MUSIC_Credits = 15
+};
 
 struct AudioSamplePoolEntry {
     AudioSamplePoolEntry(PAudioSample samplePtr_, SoundID id_, int pid_):samplePtr(samplePtr_), id(id_), pid(pid_) {}
@@ -172,7 +176,7 @@ class AudioPlayer {
     } SoundHeader;
 
  public:
-    AudioPlayer() : bPlayerReady(false), currentMusicTrack(0), uMasterVolume(0), uVoiceVolume(0) {}
+    AudioPlayer() : bPlayerReady(false), currentMusicTrack(MUSIC_Invalid), uMasterVolume(0), uVoiceVolume(0) {}
     virtual ~AudioPlayer() {}
 
     // Special PID values for additional sound playing semantics
@@ -180,6 +184,7 @@ class AudioPlayer {
     static const int SOUND_PID_EXCLUSIVE = PID_INVALID;
     static const int SOUND_PID_NON_RESETABLE = -2;
     static const int SOUND_PID_WALKING = -3;
+    static const int SOUND_PID_MUSIC_VOLUME = -4;
 
     void Initialize();
 
@@ -220,6 +225,15 @@ class AudioPlayer {
     bool FindSound(const std::string &pName, struct AudioPlayer::SoundHeader *header);
     Blob LoadSound(const std::string &pSoundName);
     Blob LoadSound(int uSoundID);
+
+    /**
+     * Special function that plays sound using music volume level.
+     *
+     * @param id                        ID of sound.
+     */
+    void playMusicSound(SoundID id) {
+        playSound(id, SOUND_PID_MUSIC_VOLUME);
+    }
 
     /**
      * Play sound of spell casting or spell sprite impact.
@@ -278,7 +292,7 @@ class AudioPlayer {
 
  protected:
     bool bPlayerReady;
-    int currentMusicTrack;
+    MusicID currentMusicTrack;
     float uMasterVolume;
     float uVoiceVolume;
     PAudioTrack pCurrentMusicTrack;

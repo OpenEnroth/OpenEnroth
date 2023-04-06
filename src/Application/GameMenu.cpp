@@ -285,9 +285,7 @@ void Menu::EventLoop() {
 
                 engine->config->settings.MusicLevel.setValue(new_level);
                 pAudioPlayer->SetMusicVolume(engine->config->settings.MusicLevel.value());
-                // TODO(Nik-RE-dev): return sound playing but with music volume level
-                // if (engine->config->music_level > 0)
-                //    pAudioPlayer->playExclusiveSound(SOUND_hurp);
+                pAudioPlayer->playMusicSound(SOUND_hurp);
                 continue;
             }
 
