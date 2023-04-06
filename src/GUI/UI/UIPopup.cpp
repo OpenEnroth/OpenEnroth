@@ -1961,7 +1961,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         return;
     }
 
-    // potions mixing(смешивание двух зелий)
+    // potions mixing
     if (IsPotion(pParty->pPickedItem.uItemID) && IsPotion(item->uItemID)) {
         ITEM_TYPE potionSrc1 = item->uItemID;
         ITEM_TYPE potionSrc2 = pParty->pPickedItem.uItemID;
@@ -2057,40 +2057,41 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             no_rightlick_in_inventory = 1;
             return;
         } else {  // if ( damage_level == 0 )
-            if (alchemy_skill_points) {
-                if (item->uItemID == ITEM_POTION_CATALYST || pParty->pPickedItem.uItemID == ITEM_POTION_CATALYST) {
-                    if (item->uItemID == ITEM_POTION_CATALYST) {
-                        item->uItemID = pParty->pPickedItem.uItemID;
-                    }
-                    if (pParty->pPickedItem.uItemID == ITEM_POTION_CATALYST) {
-                        item->uEnchantmentType = pParty->pPickedItem.uEnchantmentType;
-                    }
+            if (item->uItemID == ITEM_POTION_CATALYST && pParty->pPickedItem.uItemID == ITEM_POTION_CATALYST) {
+                // Both potions are catalyst: power is maximum of two
+                item->uEnchantmentType = std::max(item->uEnchantmentType, pParty->pPickedItem.uEnchantmentType);
+            } else if (item->uItemID == ITEM_POTION_CATALYST || pParty->pPickedItem.uItemID == ITEM_POTION_CATALYST) {
+                // One of the potion is catalyst: power of potion is replaced by power of catalyst
+                if (item->uItemID == ITEM_POTION_CATALYST) {
+                    item->uItemID = pParty->pPickedItem.uItemID;
                 } else {
-                    item->uItemID = potionID;
-                    item->uEnchantmentType = (pParty->pPickedItem.uEnchantmentType + item->uEnchantmentType) / 2;
-                    // Can be zero even for valid potion combination when resulting potion is of lower grade than it's components
-                    // Example: "Cure Paralysis(white) + Cure Wounds(red) = Cure Wounds(red)"
-                    if (pItemTable->potionNotes[potionSrc1][potionSrc2] != 0) {
-                        pPlayers[pParty->getActiveCharacter()]->SetVariable(VAR_AutoNotes, pItemTable->potionNotes[potionSrc1][potionSrc2]);
-                    }
+                    item->uEnchantmentType = pParty->pPickedItem.uEnchantmentType;
                 }
-                int bottle = pPlayers[pParty->getActiveCharacter()]->AddItem(-1, ITEM_POTION_BOTTLE);
-                if (bottle)
-                    pPlayers[pParty->getActiveCharacter()]->pOwnItems[bottle - 1].uAttributes = ITEM_IDENTIFIED;
-                if (!(pItemTable->pItems[item->uItemID].uItemID_Rep_St))
-                    item->uAttributes |= ITEM_IDENTIFIED;
-                if (!dword_4E455C) {
-                    mouse->RemoveHoldingItem();
-                    no_rightlick_in_inventory = 1;
-                    return;
+            } else {
+                item->uItemID = potionID;
+                item->uEnchantmentType = (pParty->pPickedItem.uEnchantmentType + item->uEnchantmentType) / 2;
+                // Can be zero even for valid potion combination when resulting potion is of lower grade than it's components
+                // Example: "Cure Paralysis(white) + Cure Wounds(red) = Cure Wounds(red)"
+                if (pItemTable->potionNotes[potionSrc1][potionSrc2] != 0) {
+                    pPlayers[pParty->getActiveCharacter()]->SetVariable(VAR_AutoNotes, pItemTable->potionNotes[potionSrc1][potionSrc2]);
                 }
-                pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_PotionSuccess);
-                dword_4E455C = 0;
+            }
+            int bottle = pPlayers[pParty->getActiveCharacter()]->AddItem(-1, ITEM_POTION_BOTTLE);
+            if (bottle) {
+                pPlayers[pParty->getActiveCharacter()]->pOwnItems[bottle - 1].uAttributes = ITEM_IDENTIFIED;
+            }
+            if (!(pItemTable->pItems[item->uItemID].uItemID_Rep_St)) {
+                item->uAttributes |= ITEM_IDENTIFIED;
+            }
+            if (!dword_4E455C) {
                 mouse->RemoveHoldingItem();
                 no_rightlick_in_inventory = 1;
                 return;
             }
-            GameUI_DrawItemInfo(item);
+            pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_PotionSuccess);
+            dword_4E455C = 0;
+            mouse->RemoveHoldingItem();
+            no_rightlick_in_inventory = 1;
             return;
         }
     }
