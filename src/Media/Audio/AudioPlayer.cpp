@@ -389,8 +389,6 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
     } else {
         logger->verbose("AudioPlayer: playing sound {} with name '{}'", eSoundID, si.sName);
     }
-
-    return;
 }
 
 void AudioPlayer::UpdateSounds() {
@@ -405,63 +403,73 @@ void AudioPlayer::UpdateSounds() {
     _voiceSoundPool.update();
     _exclusiveSoundPool.update();
     _nonExclusiveSoundPool.update();
-    if (_currentWalkingSample) {
-        if (_currentWalkingSample->IsStopped()) {
-            _currentWalkingSample = nullptr;
-        }
+    if (_currentWalkingSample && _currentWalkingSample->IsStopped()) {
+        _currentWalkingSample = nullptr;
     }
 }
 
-void AudioPlayer::AudioSamplePool::playNew(PAudioSample sample, bool loop, bool positional) {
-    update();
-    sample->Play(loop, positional);
-    _samplePool.push_back(AudioPlayer::AudioSamplePoolEntry(sample, SOUND_Invalid, PID_INVALID));
+void AudioPlayer::PauseSounds(int uType) {
+    // pause everything
+    if (uType == 2) {
+        _exclusiveSoundPool.pause();
+    }
+    _voiceSoundPool.pause();
+    _nonExclusiveSoundPool.pause();
+    if (_currentWalkingSample) {
+        _currentWalkingSample->Pause();
+    }
 }
 
-void AudioPlayer::AudioSamplePool::playUniqueSoundId(PAudioSample sample, SoundID id, bool loop, bool positional) {
+void AudioSamplePool::playNew(PAudioSample sample, bool loop, bool positional) {
     update();
-    for (AudioPlayer::AudioSamplePoolEntry &entry : _samplePool) {
+    sample->Play(loop, positional);
+    _samplePool.push_back(AudioSamplePoolEntry(sample, SOUND_Invalid, PID_INVALID));
+}
+
+void AudioSamplePool::playUniqueSoundId(PAudioSample sample, SoundID id, bool loop, bool positional) {
+    update();
+    for (AudioSamplePoolEntry &entry : _samplePool) {
         if (entry.id == id) {
             return;
         }
     }
     sample->Play(loop, positional);
-    _samplePool.push_back(AudioPlayer::AudioSamplePoolEntry(sample, id, PID_INVALID));
+    _samplePool.push_back(AudioSamplePoolEntry(sample, id, PID_INVALID));
 }
 
-void AudioPlayer::AudioSamplePool::playUniquePid(PAudioSample sample, int pid, bool loop, bool positional) {
+void AudioSamplePool::playUniquePid(PAudioSample sample, int pid, bool loop, bool positional) {
     update();
-    for (AudioPlayer::AudioSamplePoolEntry &entry : _samplePool) {
+    for (AudioSamplePoolEntry &entry : _samplePool) {
         if (entry.pid == pid) {
             return;
         }
     }
     sample->Play(loop, positional);
-    _samplePool.push_back(AudioPlayer::AudioSamplePoolEntry(sample, SOUND_Invalid, pid));
+    _samplePool.push_back(AudioSamplePoolEntry(sample, SOUND_Invalid, pid));
 }
 
-void AudioPlayer::AudioSamplePool::pause() {
+void AudioSamplePool::pause() {
     update();
-    for (AudioPlayer::AudioSamplePoolEntry &entry : _samplePool) {
+    for (AudioSamplePoolEntry &entry : _samplePool) {
         entry.samplePtr->Pause();
     }
 }
 
-void AudioPlayer::AudioSamplePool::resume() {
+void AudioSamplePool::resume() {
     update();
-    for (AudioPlayer::AudioSamplePoolEntry &entry : _samplePool) {
+    for (AudioSamplePoolEntry &entry : _samplePool) {
         entry.samplePtr->Resume();
     }
 }
 
-void AudioPlayer::AudioSamplePool::stop() {
-    for (AudioPlayer::AudioSamplePoolEntry &entry : _samplePool) {
+void AudioSamplePool::stop() {
+    for (AudioSamplePoolEntry &entry : _samplePool) {
         entry.samplePtr->Stop();
     }
     _samplePool.clear();
 }
 
-void AudioPlayer::AudioSamplePool::stopSoundId(SoundID soundId) {
+void AudioSamplePool::stopSoundId(SoundID soundId) {
     assert(soundId != SOUND_Invalid);
 
     auto it = _samplePool.begin();
@@ -475,7 +483,7 @@ void AudioPlayer::AudioSamplePool::stopSoundId(SoundID soundId) {
     }
 }
 
-void AudioPlayer::AudioSamplePool::stopPid(int pid) {
+void AudioSamplePool::stopPid(int pid) {
     assert(pid != PID_INVALID);
 
     auto it = _samplePool.begin();
@@ -489,32 +497,14 @@ void AudioPlayer::AudioSamplePool::stopPid(int pid) {
     }
 }
 
-void AudioPlayer::AudioSamplePool::update() {
+void AudioSamplePool::update() {
     auto it = _samplePool.begin();
-    while (it != _samplePool.end()) {
-        if ((*it).samplePtr->IsStopped()) {
-            it = _samplePool.erase(it);
-        } else {
-            it++;
-        }
-    }
+    std::erase_if(_samplePool, [](const AudioSamplePoolEntry& entry){ return entry.samplePtr->IsStopped(); });
 }
 
-void AudioPlayer::AudioSamplePool::setVolume(float value) {
-    for (AudioPlayer::AudioSamplePoolEntry &entry : _samplePool) {
+void AudioSamplePool::setVolume(float value) {
+    for (AudioSamplePoolEntry &entry : _samplePool) {
         entry.samplePtr->SetVolume(value);
-    }
-}
-
-void AudioPlayer::PauseSounds(int uType) {
-    // pause everything
-    if (uType == 2) {
-        _exclusiveSoundPool.pause();
-    }
-    _voiceSoundPool.pause();
-    _nonExclusiveSoundPool.pause();
-    if (_currentWalkingSample) {
-        _currentWalkingSample->Pause();
     }
 }
 
