@@ -1984,16 +1984,26 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             return;
         }
 
+        // TODO(Nik-RE-dev): need to allow GetSkillMastery return PLAYER_SKILL_MASTERY_NONE
+        if (!alchemy_skill_points)
+        {
+            alchemy_skill_level = PLAYER_SKILL_MASTERY_NONE;
+        }
+
         damage_level = 0;
         if (!IsPotion(potionID)) {
             // In this case potionID represent damage level
             damage_level = std::to_underlying(potionID);
-        } else if (alchemy_skill_points) {
+        } else {
             // potionID >= ITEM_POTION_CURE_WOUNDS && potionID <= ITEM_POTION_CURE_WEAKNESS does not require skill
-            // potionID >= ITEM_POTION_CURE_DISEASE && potionID <= ITEM_POTION_AWAKEN require just NOVICE
+            if (potionID >= ITEM_POTION_CURE_DISEASE &&
+                    potionID <= ITEM_POTION_AWAKEN &&
+                    alchemy_skill_level == PLAYER_SKILL_MASTERY_NONE) {
+                damage_level = 1;
+            }
             if (potionID >= ITEM_POTION_HASTE &&
                     potionID <= ITEM_POTION_CURE_INSANITY &&
-                    alchemy_skill_level == PLAYER_SKILL_MASTERY_NOVICE) {
+                    alchemy_skill_level <= PLAYER_SKILL_MASTERY_NOVICE) {
                 damage_level = 2;
             }
             if (potionID >= ITEM_POTION_MIGHT_BOOST &&
@@ -2005,15 +2015,6 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                     alchemy_skill_level <= PLAYER_SKILL_MASTERY_MASTER) {
                 damage_level = 4;
             }
-        } else {  // no skill(нет навыка)
-            if (potionID >= ITEM_POTION_CURE_DISEASE && potionID <= ITEM_POTION_AWAKEN)
-                damage_level = 1;
-            if (potionID >= ITEM_POTION_HASTE && potionID <= ITEM_POTION_CURE_INSANITY)
-                damage_level = 2;
-            if (potionID >= ITEM_POTION_MIGHT_BOOST && potionID <= ITEM_POTION_BODY_RESISTANCE)
-                damage_level = 3;
-            if (potionID >= ITEM_POTION_STONE_TO_FLESH)
-                damage_level = 4;
         }
 
         int item_pid = pPlayers[pParty->getActiveCharacter()]->GetItemListAtInventoryIndex(invMatrixIndex);
