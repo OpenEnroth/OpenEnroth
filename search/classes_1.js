@@ -26,10 +26,12 @@ var searchData=
   ['audiofiledatasource_23',['AudioFileDataSource',['../classAudioFileDataSource.html',1,'']]],
   ['audioplayer_24',['AudioPlayer',['../classAudioPlayer.html',1,'']]],
   ['audiosample16_25',['AudioSample16',['../classAudioSample16.html',1,'']]],
-  ['audiotracks16_26',['AudioTrackS16',['../classAudioTrackS16.html',1,'']]],
-  ['autonote_27',['Autonote',['../structAutonote.html',1,'']]],
-  ['avaudiostream_28',['AVAudioStream',['../classAVAudioStream.html',1,'']]],
-  ['avstreamwrapper_29',['AVStreamWrapper',['../classAVStreamWrapper.html',1,'']]],
-  ['avvideostream_30',['AVVideoStream',['../classAVVideoStream.html',1,'']]],
-  ['award_31',['Award',['../structAward.html',1,'']]]
+  ['audiosamplepool_26',['AudioSamplePool',['../classAudioSamplePool.html',1,'']]],
+  ['audiosamplepoolentry_27',['AudioSamplePoolEntry',['../structAudioSamplePoolEntry.html',1,'']]],
+  ['audiotracks16_28',['AudioTrackS16',['../classAudioTrackS16.html',1,'']]],
+  ['autonote_29',['Autonote',['../structAutonote.html',1,'']]],
+  ['avaudiostream_30',['AVAudioStream',['../classAVAudioStream.html',1,'']]],
+  ['avstreamwrapper_31',['AVStreamWrapper',['../classAVStreamWrapper.html',1,'']]],
+  ['avvideostream_32',['AVVideoStream',['../classAVVideoStream.html',1,'']]],
+  ['award_33',['Award',['../structAward.html',1,'']]]
 ];

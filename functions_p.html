@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;003598f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5b9305f</span>
    </div>
   </td>
  </tr>
@@ -128,7 +128,9 @@ $(function() {
 <li>PartyWalkSpeed&#160;:&#160;<a class="el" href="classGameConfig_1_1Gameplay.html#a895e0159fbd7072f7c4a7935b0e54e0d">GameConfig::Gameplay</a></li>
 <li>Pass&#160;:&#160;<a class="el" href="classGameConfig_1_1Gamepad.html#ac4fc1aae5e247bf9c91199b73a6a2355">GameConfig::Gamepad</a>, <a class="el" href="classGameConfig_1_1Keybindings.html#a3ca8182d77871efc73d99711df0d13e3">GameConfig::Keybindings</a></li>
 <li>pAttributemap&#160;:&#160;<a class="el" href="structOutdoorLocationTerrain.html#a153a72d7b5605af648c78e9c487819b4">OutdoorLocationTerrain</a></li>
-<li>Pause()&#160;:&#160;<a class="el" href="classAudioSample16.html#abad25ade3625d145465e827e21740991">AudioSample16</a>, <a class="el" href="classAudioTrackS16.html#a466df58ce29374be477df7264f8fa82e">AudioTrackS16</a>, <a class="el" href="classIAudioSample.html#abb78c09291464d6b42b9e63ece1011a7">IAudioSample</a>, <a class="el" href="classIAudioTrack.html#af3754a574a3819b9136cdeff60ce7e95">IAudioTrack</a>, <a class="el" href="structTimer.html#a9b8c57bf9675da635a82d68d9b4d05e5">Timer</a></li>
+<li>Pause()&#160;:&#160;<a class="el" href="classAudioSample16.html#abad25ade3625d145465e827e21740991">AudioSample16</a></li>
+<li>pause()&#160;:&#160;<a class="el" href="classAudioSamplePool.html#a1a3508f12752bf32ab5e32677dd6f75a">AudioSamplePool</a></li>
+<li>Pause()&#160;:&#160;<a class="el" href="classAudioTrackS16.html#a466df58ce29374be477df7264f8fa82e">AudioTrackS16</a>, <a class="el" href="classIAudioSample.html#abb78c09291464d6b42b9e63ece1011a7">IAudioSample</a>, <a class="el" href="classIAudioTrack.html#af3754a574a3819b9136cdeff60ce7e95">IAudioTrack</a>, <a class="el" href="structTimer.html#a9b8c57bf9675da635a82d68d9b4d05e5">Timer</a></li>
 <li>PauseSounds()&#160;:&#160;<a class="el" href="classAudioPlayer.html#a6dfd93190338f5cbb635b5c313cfe063">AudioPlayer</a></li>
 <li>pBaseColors&#160;:&#160;<a class="el" href="structPaletteManager.html#ab1d4c048d338026e9e3e4515a9265eb0">PaletteManager</a></li>
 <li>pBasicSkillDesc&#160;:&#160;<a class="el" href="structSpellInfo.html#ab2ddcf26c11ab14b3b2f8e769c0533bd">SpellInfo</a></li>
@@ -251,7 +253,7 @@ $(function() {
 <li>PickOutdoorFaces_Mouse()&#160;:&#160;<a class="el" href="classVis.html#af1001095fa5d94588bc7b32a31587751">Vis</a></li>
 <li>pIconName&#160;:&#160;<a class="el" href="structItemDesc.html#a7953e4b82f36b5ff74b39a610c6e57d7">ItemDesc</a>, <a class="el" href="structSpriteFrame__MM6.html#a007761acd31b59d4ba6bf3eb59d45172">SpriteFrame_MM6</a></li>
 <li>pIcons&#160;:&#160;<a class="el" href="structIconFrameTable.html#ac01203bfb6c2148aea7f98136c7ba894">IconFrameTable</a></li>
-<li>pid&#160;:&#160;<a class="el" href="structAttackDescription.html#a86f46b2c4307ba657127848643b1ffd7">AttackDescription</a>, <a class="el" href="structCollisionState.html#a34728a14708ff469f747b24564cc92b7">CollisionState</a>, <a class="el" href="structPolygon.html#adddfc6669c6f1ec9d8b99850595dcbc2">Polygon</a></li>
+<li>pid&#160;:&#160;<a class="el" href="structAttackDescription.html#a86f46b2c4307ba657127848643b1ffd7">AttackDescription</a>, <a class="el" href="structAudioSamplePoolEntry.html#ae86e578a21b75e413c8c76a055e33942">AudioSamplePoolEntry</a>, <a class="el" href="structCollisionState.html#a34728a14708ff469f747b24564cc92b7">CollisionState</a>, <a class="el" href="structPolygon.html#adddfc6669c6f1ec9d8b99850595dcbc2">Polygon</a></li>
 <li>pIndices&#160;:&#160;<a class="el" href="unionPlayerEquipment.html#ab7ebf1ab53b61e2e8c100cb6b9fc9be1">PlayerEquipment</a>, <a class="el" href="unionPlayerEquipment__MM7.html#aead1b556536ccc2ff3aa3875eaae5b4d">PlayerEquipment_MM7</a></li>
 <li>pInfos&#160;:&#160;<a class="el" href="structMapStats.html#a85e3c91a79bfc115b6303212366163e3">MapStats</a>, <a class="el" href="structMonsterStats.html#a9e0187329671e8b3147185dcaa0827be">MonsterStats</a>, <a class="el" href="structSpellStats.html#a1e896175c8d80e381295a53742930b89">SpellStats</a></li>
 <li>pInstalledBeacons&#160;:&#160;<a class="el" href="structPlayer__MM7.html#ae994cf60b034f83691fbf5c34886bfd6">Player_MM7</a></li>
@@ -292,6 +294,7 @@ $(function() {
 <li>PlayFullscreenMovie()&#160;:&#160;<a class="el" href="classMPlayer.html#a75a0afd464002129f6917027248b6f1f">MPlayer</a></li>
 <li>playing&#160;:&#160;<a class="el" href="classMovie.html#acb198cbb087c22dd7fad72c5955f712d">Movie</a></li>
 <li>playing_time&#160;:&#160;<a class="el" href="structParty.html#af1fe10bc16a9b7247f177ce1fb94c049">Party</a>, <a class="el" href="structSavegameHeader.html#afc751539e34adab1584014bf58642f18">SavegameHeader</a></li>
+<li>playNew()&#160;:&#160;<a class="el" href="classAudioSamplePool.html#afc03a7a43a191fb2ed4ec7e71be1c4cf">AudioSamplePool</a></li>
 <li>playNonResetableSound()&#160;:&#160;<a class="el" href="classAudioPlayer.html#aa131ae857491aa58725acef883913cba">AudioPlayer</a></li>
 <li>playReaction()&#160;:&#160;<a class="el" href="structPlayer.html#a69db45bf8dce5ca2dd352244fe2bbc5b">Player</a></li>
 <li>playSound()&#160;:&#160;<a class="el" href="classActor.html#ad4903e2b7b23dbea0258024b8a4f124e">Actor</a>, <a class="el" href="structArcomageGame.html#a1da4d359c6a7fed55136383876da370a">ArcomageGame</a>, <a class="el" href="classAudioPlayer.html#a56efb0cc9e24aca326c07d0beb8f0f80">AudioPlayer</a></li>
@@ -300,6 +303,8 @@ $(function() {
 <li>playTraceFromTestData()&#160;:&#160;<a class="el" href="classTestController.html#aa95b8bebe6e4b34a470d20c3ef0688bb">TestController</a></li>
 <li>PlayTrack16()&#160;:&#160;<a class="el" href="classOpenALSoundProvider.html#af4c6cd587fca7a1022757e1c79ceec4f">OpenALSoundProvider</a></li>
 <li>playUISound()&#160;:&#160;<a class="el" href="classAudioPlayer.html#ad3d54489da8e26ec85979ff1c348c66d">AudioPlayer</a></li>
+<li>playUniquePid()&#160;:&#160;<a class="el" href="classAudioSamplePool.html#a5b0a00411657514900a8736c18a5590f">AudioSamplePool</a></li>
+<li>playUniqueSoundId()&#160;:&#160;<a class="el" href="classAudioSamplePool.html#a0ef6e03b7de192c163932e722a7aac25">AudioSamplePool</a></li>
 <li>playWalkSound()&#160;:&#160;<a class="el" href="classAudioPlayer.html#a481ff77c7cce2855f3f16bf8a5336c25">AudioPlayer</a></li>
 <li>pLevelOfDetail1&#160;:&#160;<a class="el" href="structTexture__MM7.html#aa3133e9a39876463761b0639a53ac017">Texture_MM7</a></li>
 <li>pLFaces&#160;:&#160;<a class="el" href="structIndoorLocation.html#a025e20b4441b5e856b4a9e477f85154d">IndoorLocation</a></li>
@@ -359,7 +364,6 @@ $(function() {
 <li>position()&#160;:&#160;<a class="el" href="classPlatformWindow.html#afdfed30e9a46dbc72ae02811f45b1553">PlatformWindow</a>, <a class="el" href="classProxyWindow.html#a5b85d1b345111ea86038e21bf8afdd6f">ProxyWindow</a>, <a class="el" href="structRenderOpenGL_1_1nk__vertex.html#a0af777bd73241b418e1b90348f54baf4">RenderOpenGL::nk_vertex</a>, <a class="el" href="classSdlWindow.html#aabdc36d38e780ed8128e9004579d3694">SdlWindow</a></li>
 <li>position_hi&#160;:&#160;<a class="el" href="structCollisionState.html#ad57e27591202ba8282c2f085d3ccdc0d">CollisionState</a></li>
 <li>position_lo&#160;:&#160;<a class="el" href="structCollisionState.html#ab865353cc6adbeeba12d63039ef7f098">CollisionState</a></li>
-<li>positioned&#160;:&#160;<a class="el" href="classAudioSample16.html#a88ac1a33ace3fed4e6a47e4c4f5e56dd">AudioSample16</a></li>
 <li>PositionX&#160;:&#160;<a class="el" href="classGameConfig_1_1Window.html#abe889d54084f42de30044ef7c49d2e0e">GameConfig::Window</a></li>
 <li>PositionY&#160;:&#160;<a class="el" href="classGameConfig_1_1Window.html#abc754a53eb5e0b100cb42fd7e7a98b62">GameConfig::Window</a></li>
 <li>postedEvents&#160;:&#160;<a class="el" href="classEngineControlState.html#ae24673bb4499efb0b1ba1885e9e488e4">EngineControlState</a></li>
