@@ -156,9 +156,10 @@ void bountyHuntingDialogueOptionClicked() {
         if (pParty->monster_id_for_hunting[house]) {
             int bounty = 100 * pMonsterStats->pInfos[pParty->monster_id_for_hunting[house]].uLevel;
 
-            pParty->PartyFindsGold(bounty, 0);
-            for (uint i = 0; i < 4; ++i)
-                pParty->pPlayers[i].SetVariable(VAR_Award, Award_BountiesCollected);
+            pParty->partyFindsGold(bounty, GOLD_RECEIVE_SHARE);
+            for (Player &player : pParty->pPlayers) {
+                player.SetVariable(VAR_Award, Award_BountiesCollected);
+            }
             pParty->uNumBountiesCollected += bounty;
             pParty->monster_id_for_hunting[house] = 0;
             pParty->monster_for_hunting_killed[house] = false;

@@ -54,11 +54,10 @@ void Arena_SelectionFightLevel() {
             if (v0 >= (signed int)pActors.size() || (signed int)pActors.size() <= 0) {
                 uDialogueType = DIALOGUE_ARENA_REWARD;
                 pParty->uNumArenaWins[pParty->field_7B5_in_arena_quest - DIALOGUE_ARENA_SELECT_PAGE]++;
-                for (uint i = 0; i < 4; i++)
-                    pParty->pPlayers[i].SetVariable(
-                        VAR_Award,
-                        (uint8_t)pParty->field_7B5_in_arena_quest + 3);
-                pParty->PartyFindsGold(gold_transaction_amount, 0);
+                for (Player &player : pParty->pPlayers) {
+                    player.SetVariable(VAR_Award, (uint8_t)pParty->field_7B5_in_arena_quest + 3);
+                }
+                pParty->partyFindsGold(gold_transaction_amount, GOLD_RECEIVE_SHARE);
                 pAudioPlayer->playUISound(SOUND_51heroism03);
                 pParty->field_7B5_in_arena_quest = -1;
             } else {

@@ -27,7 +27,7 @@ struct NPCData {  // 4Ch
     int fame = 0;                  // c
     int rep = 0;                   // 10
     unsigned int Location2D = 0;   // 14  house_id
-    NPCProf profession = NPCProf(0);  // 18 // TODO: separate enum value for 0.
+    NPCProf profession = NoProfession;  // 18
     int greet = 0;                 // 1c
     int is_joinable = 0;           // 20
     int field_24 = 0;

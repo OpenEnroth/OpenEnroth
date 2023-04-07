@@ -2183,7 +2183,7 @@ void CastSpellInfoHelpers::castSpell() {
                     int obj_id = PID_ID(spell_targeted_at);
                     if (PID_TYPE(spell_targeted_at) == OBJECT_Item) {
                         if (pItemTable->pItems[pSpriteObjects[obj_id].containing_item.uItemID].uEquipType == EQUIP_GOLD) {
-                            pParty->PartyFindsGold(pSpriteObjects[obj_id].containing_item.special_enchantment, 0);
+                            pParty->partyFindsGold(pSpriteObjects[obj_id].containing_item.special_enchantment, GOLD_RECEIVE_SHARE);
                         } else {
                             GameUI_SetStatusBar(LSTR_FMT_YOU_FOUND_ITEM,
                                     pItemTable->pItems[pSpriteObjects[obj_id].containing_item.uItemID].pUnidentifiedName);

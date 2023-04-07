@@ -995,9 +995,10 @@ void RestAndHeal(int minutes) {
     pParty->UpdatePlayersAndHirelingsEmotions();
 }
 void Party::restOneFrame() {
-    // TODO(Nik-RE-dev): rest speed depends on FPS in this case.
-    //                   Is there need to scale rest time per frame?
-    GameTime restTick = GameTime::FromMinutes(6);
+    // Before each frame party rested for 6 minutes but that caused
+    // resting to be too fast on high FPS
+    // Now resting speed is roughly 6 game hours per second
+    GameTime restTick = GameTime::FromMinutes(3 * pEventTimer->uTimeElapsed);
 
     if (remainingRestTime < restTick) {
         restTick = remainingRestTime;
@@ -1068,53 +1069,47 @@ void Party::GivePartyExp(unsigned int pEXPNum) {
     }
 }
 
-//----- (00420C05) --------------------------------------------------------
-void Party::PartyFindsGold(
-    unsigned int amount,
-    int _1_dont_share_with_followers___2_the_same_but_without_a_message__else_normal) {
-    NPCData *v12;              // ecx@21
-    NPCProf v13;          // ecx@23
-    int hirelingCount;  // [sp+Ch] [bp-4h]@6
-
+void Party::partyFindsGold(int amount, GoldReceivePolicy policy) {
     int hirelingSalaries = 0;
     unsigned int goldToGain = amount;
 
     std::string status;
-    if (_1_dont_share_with_followers___2_the_same_but_without_a_message__else_normal == 2) {
-    } else if (
-        _1_dont_share_with_followers___2_the_same_but_without_a_message__else_normal == 1) {
-        status = localization->FormatString(
-            LSTR_FMT_YOU_FOUND_D_GOLD, amount);
+    if (policy == GOLD_RECEIVE_NOSHARE_SILENT) {
+    } else if (policy == GOLD_RECEIVE_NOSHARE_MSG) {
+        status = localization->FormatString(LSTR_FMT_YOU_FOUND_D_GOLD, amount);
     } else {
         FlatHirelings buf;
         buf.Prepare();
 
         for (int i = 0; i < buf.Size(); i++) {
-            v12 = buf.Get(i);
-            v13 = v12->profession;
-            if (v13 != NoProfession)
-                hirelingSalaries += pNPCStats->pProfessions[v13].uHirePrice;
+            NPCProf prof = buf.Get(i)->profession;
+            if (prof != NoProfession) {
+                hirelingSalaries += pNPCStats->pProfessions[prof].uHirePrice;
+            }
         }
-        if (CheckHiredNPCSpeciality(Factor))
+        if (CheckHiredNPCSpeciality(Factor)) {
             goldToGain += (signed int)(10 * goldToGain) / 100;
-        if (CheckHiredNPCSpeciality(Banker))
+        }
+        if (CheckHiredNPCSpeciality(Banker)) {
             goldToGain += (signed int)(20 * goldToGain) / 100;
-        if (CheckHiredNPCSpeciality(Pirate))
+        }
+        if (CheckHiredNPCSpeciality(Pirate)) {
             goldToGain += (signed int)(10 * goldToGain) / 100;
+        }
         if (hirelingSalaries) {
-            hirelingSalaries =
-                (signed int)(goldToGain * hirelingSalaries / 100) / 100;
-            if (hirelingSalaries < 1) hirelingSalaries = 1;
-            status = localization->FormatString(
-                LSTR_FMT_YOU_FOUND_D_GOLD_FOLLOWERS, goldToGain,
-                hirelingSalaries);
+            hirelingSalaries = (signed int)(goldToGain * hirelingSalaries / 100) / 100;
+            if (hirelingSalaries < 1) {
+                hirelingSalaries = 1;
+            }
+            status = localization->FormatString(LSTR_FMT_YOU_FOUND_D_GOLD_FOLLOWERS, goldToGain, hirelingSalaries);
         } else {
-            status = localization->FormatString(
-                LSTR_FMT_YOU_FOUND_D_GOLD, amount);
+            status = localization->FormatString(LSTR_FMT_YOU_FOUND_D_GOLD, amount);
         }
     }
     AddGold(goldToGain - hirelingSalaries);
-    if (status.length() > 0) GameUI_SetStatusBar(status);
+    if (status.length() > 0) {
+        GameUI_SetStatusBar(status);
+    }
 }
 
 void Party::PickedItem_PlaceInInventory_or_Drop() {

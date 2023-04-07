@@ -545,7 +545,7 @@ void Chest::OnChestLeftClick() {
                 int itemindex = chestindex - 1;
 
                 if (chest->igChestItems[itemindex].isGold()) {
-                    pParty->PartyFindsGold(chest->igChestItems[itemindex].special_enchantment, 0);
+                    pParty->partyFindsGold(chest->igChestItems[itemindex].special_enchantment, GOLD_RECEIVE_SHARE);
                 } else {
                     pParty->SetHoldingItem(&chest->igChestItems[itemindex]);
                 }
@@ -578,7 +578,7 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
         int itemindex = chestindex - 1;
         ItemGen chestitem = chest->igChestItems[itemindex];
         if (chestitem.isGold()) {
-            pParty->PartyFindsGold(chestitem.special_enchantment, 0);
+            pParty->partyFindsGold(chestitem.special_enchantment, GOLD_RECEIVE_SHARE);
             goldamount += chestitem.special_enchantment;
             goldcount++;
         } else {  // this should add item to invetory of active char - if that fails set as holding item and break

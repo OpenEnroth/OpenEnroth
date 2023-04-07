@@ -1676,11 +1676,8 @@ int Player::StealFromActor(
             }
 
             if (enchBonusSum) {
-                pParty->PartyFindsGold(enchBonusSum, 2);
-                GameUI_SetStatusBar(
-                    LSTR_FMT_S_STOLE_D_GOLD,
-                    this->pName.c_str(), enchBonusSum
-                );
+                pParty->partyFindsGold(enchBonusSum, GOLD_RECEIVE_NOSHARE_SILENT);
+                GameUI_SetStatusBar(LSTR_FMT_S_STOLE_D_GOLD, this->pName.c_str(), enchBonusSum);
             } else {
                 GameUI_SetStatusBar(
                     LSTR_FMT_S_FAILED_TO_STEAL,
@@ -4165,7 +4162,7 @@ void Player::useItem(int targetCharacter, bool isPortraitClick) {
                     status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(6), localization->GetString(LSTR_PERMANENT));
                     break;
                 case 7: // Aug
-                    pParty->PartyFindsGold(1000 * value, 0);
+                    pParty->partyFindsGold(1000 * value, GOLD_RECEIVE_SHARE);
                     status = fmt::format("+{} {}", 1000 * value, localization->GetString(LSTR_GOLD));
                     break;
                 case 8: // Sep
@@ -5322,7 +5319,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
     switch (var_type) {
         case VAR_RandomGold:
             if (val == 0) val = 1;
-            pParty->PartyFindsGold(grng->Random(val) + 1, 1);
+            pParty->partyFindsGold(grng->Random(val) + 1, GOLD_RECEIVE_NOSHARE_MSG);
             GameUI_DrawFoodAndGold();
             return;
         case VAR_RandomFood:
@@ -5405,7 +5402,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             pParty->SetHoldingItem(&item);
             return;
         case VAR_FixedGold:
-            pParty->PartyFindsGold(val, 1);
+            pParty->partyFindsGold(val, GOLD_RECEIVE_NOSHARE_MSG);
             return;
         case VAR_BaseMight:
             this->uMight = std::min(this->uMight + val, 255);

@@ -2859,8 +2859,7 @@ void GameResultsApply() {
         if ((houseId >= 108) && (houseId <= 120)) {
             if (!pParty->pArcomageWins[houseId - 108]) {
                 pParty->pArcomageWins[houseId - 108] = 1;
-                pParty->PartyFindsGold(
-                    static_cast<unsigned int>(p2DEvents[houseId - 1].fPriceMultiplier * 100), 0);
+                pParty->partyFindsGold(p2DEvents[houseId - 1].fPriceMultiplier * 100, GOLD_RECEIVE_SHARE);
             }
         }
 
