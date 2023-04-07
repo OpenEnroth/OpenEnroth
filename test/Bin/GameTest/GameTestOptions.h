@@ -2,14 +2,13 @@
 
 #include <string>
 
+#include "Application/GameStarterOptions.h"
+
 class Platform;
 
-struct GameTestOptions {
+struct GameTestOptions : public GameStarterOptions {
     std::string testPath;
-    std::string dataPath;
     bool helpPrinted = false;
 
     static GameTestOptions Parse(int argc, char **argv);
-
-    void ResolveDefaults(Platform *platform);
 };

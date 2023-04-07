@@ -8,7 +8,6 @@
 
 #include "Arcomage/Arcomage.h"
 
-#include "GameFactory.h"
 #include "GameMenu.h"
 
 #include "Application/GameWindowHandler.h"
@@ -122,32 +121,33 @@ void initDataPath(const std::string &dataPath) {
     }
 }
 
-Game::Game(PlatformApplication *app) {
-    _application = app;
+Game::Game(PlatformApplication *application, std::shared_ptr<GameConfig> config) {
+    _application = application;
+    _config = config;
     _log = EngineIocContainer::ResolveLogger();
     _decalBuilder = EngineIocContainer::ResolveDecalBuilder();
     _vis = EngineIocContainer::ResolveVis();
     _menu = GameIocContainer::ResolveGameMenu();
 
-    ::application = app;
-    ::platform = app->platform();
-    ::eventLoop = app->eventLoop();
-    ::window = app->window();
-    ::eventHandler = app->eventHandler();
-    ::openGLContext = app->openGLContext(); // OK to store into a global even if not yet initialized
+    ::application = application;
+    ::platform = application->platform();
+    ::eventLoop = application->eventLoop();
+    ::window = application->window();
+    ::eventHandler = application->eventHandler();
+    ::openGLContext = application->openGLContext(); // OK to store into a global even if not yet initialized
 
     // It doesn't matter where to put control component as it's running the control routine after a call to `SwapBuffers`.
     // But the trace component should go after the deterministic component - deterministic component updates tick count,
     // and then trace component stores the updated value in a recorded `PaintEvent`.
     _windowHandler.reset(GameIocContainer::ResolveGameWindowHandler());
-    app->install(_windowHandler.get()); // TODO(captainurist): actually move ownership into PlatformApplication?
-    app->install(_windowHandler->KeyboardController()); // TODO(captainurist): do this properly
-    app->install(std::make_unique<EngineControlComponent>());
-    app->install(std::make_unique<EngineTraceComponent>());
-    app->install(std::make_unique<EngineDeterministicComponent>());
-    app->install(std::make_unique<EngineTracePlayer>());
-    app->install(std::make_unique<EngineTraceRecorder>());
-    app->install(std::make_unique<GameTraceHandler>(app->get<EngineTraceRecorder>())); // TODO(captainurist): get() call not needed.
+    application->install(_windowHandler.get()); // TODO(captainurist): actually move ownership into PlatformApplication?
+    application->install(_windowHandler->KeyboardController()); // TODO(captainurist): do this properly
+    application->install(std::make_unique<EngineControlComponent>());
+    application->install(std::make_unique<EngineTraceComponent>());
+    application->install(std::make_unique<EngineDeterministicComponent>());
+    application->install(std::make_unique<EngineTracePlayer>());
+    application->install(std::make_unique<EngineTraceRecorder>());
+    application->install(std::make_unique<GameTraceHandler>(application->get<EngineTraceRecorder>())); // TODO(captainurist): get() call not needed.
 }
 
 Game::~Game() {

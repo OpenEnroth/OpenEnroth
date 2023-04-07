@@ -2,13 +2,12 @@
 
 #include <string>
 
+#include "GameStarterOptions.h"
+
 class GameConfig;
 class Platform;
 
-struct GameOptions {
-    std::string configPath;
-    std::string dataPath;
-    bool verbose = false;
+struct GameOptions : public GameStarterOptions {
     bool helpPrinted = false; // True means that help message was already printed.
 
     /**
@@ -19,11 +18,4 @@ struct GameOptions {
      * @throw std::exception            On errors.
      */
     static GameOptions Parse(int argc, char **argv);
-
-    /**
-     * Resolves default values after `Platform` was constructed.
-     *
-     * @param platform                  Platform object.
-     */
-    void ResolveDefaults(Platform *platform);
 };
