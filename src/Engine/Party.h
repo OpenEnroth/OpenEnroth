@@ -225,9 +225,9 @@ struct Party {
     void PickedItem_PlaceInInventory_or_Drop();
 
     int GetGold() const;
-    void SetGold(int amount);
+    void SetGold(int amount, bool silent = false);
     void AddGold(int amount);
-    void TakeGold(int amount);
+    void TakeGold(int amount, bool silent = false);
 
     int GetFood() const;
     void SetFood(int amount);

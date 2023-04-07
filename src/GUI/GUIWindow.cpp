@@ -1375,7 +1375,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
             } else {
                 if (topic == DIALOGUE_82_join_guild && guild_membership_approved) {
                     // join guild
-                    pParty->TakeGold(gold_transaction_amount);
+                    pParty->TakeGold(gold_transaction_amount, true);
                     for (Player &player : pParty->pPlayers)
                         player.SetVariable(VAR_Award, dword_F8B1AC_award_bit_number);
 

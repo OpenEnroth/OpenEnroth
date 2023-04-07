@@ -1230,7 +1230,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                         pParty->TakeGold(pPrice);
                         dword_F8B1E4 = 1;
                         pPlayers[pParty->getActiveCharacter()]->pActiveSkills[skill] = 1;
-                        pPlayers[pParty->getActiveCharacter()]->PlayAwardSound_Anim97_Face(SPEECH_SkillLearned);
+                        pPlayers[pParty->getActiveCharacter()]->playReaction(SPEECH_SkillLearned);
                     }
                 }
             }
