@@ -3,12 +3,12 @@ cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 set(APPLICATION_SOURCES
         Game.cpp
         GameConfig.cpp
-        GameFactory.cpp
         GameKeyboardController.cpp
         GameMenu.cpp
         GameOptions.cpp
         GameOver.cpp
         GamePathResolver.cpp
+        GameStarter.cpp
         GameTraceHandler.cpp
         GameWindowHandler.cpp
         GameIocContainer.cpp)
@@ -16,12 +16,13 @@ set(APPLICATION_SOURCES
 set(APPLICATION_HEADERS
         Game.h
         GameConfig.h
-        GameFactory.h
         GameKeyboardController.h
         GameMenu.h
         GameOptions.h
         GameOver.h
         GamePathResolver.h
+        GameStarter.h
+        GameStarterOptions.h
         GameTraceHandler.h
         GameWindowHandler.h
         GameIocContainer.h)

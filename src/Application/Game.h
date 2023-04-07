@@ -25,13 +25,8 @@ class NuklearEventHandler;
 
 class Game {
  public:
-    explicit Game(PlatformApplication *app);
+    Game(PlatformApplication *application, std::shared_ptr<GameConfig> config);
     ~Game();
-
-    bool configure(std::shared_ptr<GameConfig> config) {
-        this->_config = config;
-        return true;
-    }
 
     int run();
 

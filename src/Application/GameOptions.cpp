@@ -7,7 +7,6 @@
 #include "Utility/Format.h"
 
 #include "GamePathResolver.h"
-#include "GameConfig.h"
 
 GameOptions GameOptions::Parse(int argc, char **argv) {
     GameOptions result;
@@ -36,15 +35,4 @@ GameOptions GameOptions::Parse(int argc, char **argv) {
     }
 
     return result;
-}
-
-void GameOptions::ResolveDefaults(Platform *platform) {
-    if (dataPath.empty())
-        dataPath = resolveMm7Path(platform);
-
-    if (configPath.empty()) {
-        configPath = "openenroth.ini";
-        if (!dataPath.empty())
-            configPath = dataPath + "/" + configPath;
-    }
 }
