@@ -9,8 +9,6 @@
 
 #include "Platform/PlatformLogger.h"
 
-#include "Utility/ScopeGuard.h"
-
 #include "GamePathResolver.h"
 #include "GameConfig.h"
 #include "Game.h"
@@ -23,7 +21,6 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     };
     setVerboseLogging(_options.verbose);
     EngineIocContainer::ResolveLogger()->setBaseLogger(_logger.get());
-    MM_AT_SCOPE_EXIT(EngineIocContainer::ResolveLogger()->setBaseLogger(nullptr));
     Engine::LogEngineBuildInfo();
 
     _application = std::make_unique<PlatformApplication>(_logger.get());
@@ -43,7 +40,9 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     _game = std::make_unique<Game>(_application.get(), _config);
 }
 
-GameStarter::~GameStarter() {}
+GameStarter::~GameStarter() {
+    EngineIocContainer::ResolveLogger()->setBaseLogger(nullptr);
+}
 
 void GameStarter::resolveDefaults(Platform *platform, GameStarterOptions* options) {
     if (options->dataPath.empty())
