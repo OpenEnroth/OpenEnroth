@@ -52,7 +52,7 @@ var searchData=
   ['vec_5f8c_49',['vec_8C',['../structLightsData.html#a85506d41d61d95ac2ecb3c0b8dd37ab0',1,'LightsData']]],
   ['vec_5f9c_50',['vec_9C',['../structLightsData.html#a6643b23e57bcca38e9eb89ae73f19071',1,'LightsData']]],
   ['velocity_51',['velocity',['../structCollisionState.html#a6c7ec4f205247ecc336287536f088dcb',1,'CollisionState']]],
-  ['verbose_52',['verbose',['../structGameOptions.html#ae26e9399901c93c3761b0841f9fba03c',1,'GameOptions']]],
+  ['verbose_52',['verbose',['../structGameStarterOptions.html#a76df384707fe67d447a76f41fb65ebf6',1,'GameStarterOptions']]],
   ['verboselogging_53',['VerboseLogging',['../classGameConfig_1_1Debug.html#a5519c0c48161f3c42cc7bbcda7793339',1,'GameConfig::Debug']]],
   ['version_54',['version',['../structLodHeader__Mm6.html#aa0937ddcee2cd39f604bff941e7b537c',1,'LodHeader_Mm6::version()'],['../structLodFileCompressionHeader__Mm6.html#aba1fef3b750dc6800820bb12b76e7503',1,'LodFileCompressionHeader_Mm6::version()'],['../structPCXHeader.html#afb26fe6c46d4a206a1894149b01345de',1,'PCXHeader::version()']]],
   ['versionmajor_55',['versionMajor',['../structPlatformOpenGLOptions.html#acf90b169e548baf91baf73b4a19affde',1,'PlatformOpenGLOptions']]],

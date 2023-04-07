@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['game_0',['Game',['../classGame.html#a273b70277d3f7d66a5d5c260ba676627',1,'Game']]],
+  ['game_0',['Game',['../classGame.html#a6ddbd2ed21007367a31d8e90ff79a1bd',1,'Game']]],
   ['game_5fopenloadgamedialog_1',['Game_OpenLoadGameDialog',['../GameMenu_8cpp.html#adf75b93038e15fb8ceb20326c44ca990',1,'GameMenu.cpp']]],
   ['game_5fquitgamewhileplaying_2',['Game_QuitGameWhilePlaying',['../GameMenu_8cpp.html#a274ebed9c2ffa97425e94092eafb729f',1,'GameMenu.cpp']]],
   ['game_5fstartdialogue_3',['Game_StartDialogue',['../Game_8cpp.html#a480ccd388ff39633114ddbce6135b37b',1,'Game.cpp']]],
@@ -12,8 +12,8 @@ var searchData=
   ['gameloop_9',['gameLoop',['../classGame.html#aede5f46c8c7bbbaf8459eeec397a11e7',1,'Game']]],
   ['gamemenuui_5fgetkeybindingcolor_10',['GameMenuUI_GetKeyBindingColor',['../UIGame_8cpp.html#ad00492eedb99ec77c9869ba8974bb61a',1,'UIGame.cpp']]],
   ['gameover_5floop_11',['GameOver_Loop',['../GameOver_8h.html#a7c0ba3dc6307b98f70f46146e6ddd4da',1,'GameOver_Loop(int):&#160;GameOver.cpp'],['../GameOver_8cpp.html#a3b85068c9cdda92cf87aef83cb37a4d0',1,'GameOver_Loop(int v15):&#160;GameOver.cpp']]],
-  ['gamepad_12',['gamepad',['../classSdlPlatformSharedState.html#a234aa6635652bdd42a76e4be5eec90c8',1,'SdlPlatformSharedState']]],
-  ['gamepad_13',['Gamepad',['../classGameConfig_1_1Gamepad.html#a2a28033928c5bf320b9f3cd14ed60949',1,'GameConfig::Gamepad']]],
+  ['gamepad_12',['Gamepad',['../classGameConfig_1_1Gamepad.html#a2a28033928c5bf320b9f3cd14ed60949',1,'GameConfig::Gamepad']]],
+  ['gamepad_13',['gamepad',['../classSdlPlatformSharedState.html#a234aa6635652bdd42a76e4be5eec90c8',1,'SdlPlatformSharedState']]],
   ['gamepadaxisevent_14',['gamepadAxisEvent',['../classPlatformEventHandler.html#a4f878333c0086028117c519bc6245103',1,'PlatformEventHandler::gamepadAxisEvent()'],['../classPlatformEventFilter.html#a582bc6c932d6854290a45cdf64413829',1,'PlatformEventFilter::gamepadAxisEvent()'],['../classGameWindowHandler.html#a34d2372a265d92b1eccf1b0dd6ddfcbd',1,'GameWindowHandler::gamepadAxisEvent()']]],
   ['gamepadconnectionevent_15',['gamepadConnectionEvent',['../classPlatformEventHandler.html#a1db897a9735e850b39402acabdfb8fdb',1,'PlatformEventHandler::gamepadConnectionEvent()'],['../classPlatformEventFilter.html#a66efd82a0db88bd8006e9899abe98af1',1,'PlatformEventFilter::gamepadConnectionEvent()'],['../classGameWindowHandler.html#a1026374953d240ad7ef7b5e9f2449e14',1,'GameWindowHandler::gamepadConnectionEvent()']]],
   ['gamepadkeypressevent_16',['gamepadKeyPressEvent',['../classPlatformEventHandler.html#a257be4e729e9c66ea5ea2058edeff557',1,'PlatformEventHandler::gamepadKeyPressEvent()'],['../classPlatformEventFilter.html#a25c5e50c8c754c90a35ecfd36390ccf6',1,'PlatformEventFilter::gamepadKeyPressEvent()'],['../classGameWindowHandler.html#a5088c7cb2bf3928569ffa14e998a1e23',1,'GameWindowHandler::gamepadKeyPressEvent()']]],
@@ -21,7 +21,7 @@ var searchData=
   ['gamepads_18',['gamepads',['../classProxyPlatform.html#ae4eafd0db04b5c888fb743827761c84e',1,'ProxyPlatform::gamepads()'],['../classPlatform.html#a749df0cb020b736db9054ace3bda0220',1,'Platform::gamepads()'],['../classSdlPlatform.html#a9ec234a11f0de33a9cb432f6c4a3211b',1,'SdlPlatform::gamepads()']]],
   ['gameplay_19',['Gameplay',['../classGameConfig_1_1Gameplay.html#a0a9ae24d708e060c8d5578000692d56a',1,'GameConfig::Gameplay']]],
   ['gameresultsapply_20',['GameResultsApply',['../Arcomage_8cpp.html#a2d1b32dd8b02b183f7e49d5e19061e11',1,'Arcomage.cpp']]],
-  ['gamethread_21',['GameThread',['../classGameThread.html#a7252dfb50c69a292f176408e174dd767',1,'GameThread']]],
+  ['gamestarter_21',['GameStarter',['../classGameStarter.html#aa7bfc51d29bc4424d7738f31268e02cf',1,'GameStarter']]],
   ['gametime_22',['GameTime',['../structGameTime.html#ab3b7fbfbc2a94e223d349b3dd48f76d3',1,'GameTime::GameTime()'],['../structGameTime.html#a7e117c4d6f5835fb2f4a7b7f0eea59a1',1,'GameTime::GameTime(uint64_t val)'],['../structGameTime.html#a7f1d46eb3500683b62ee347a40b41fa7',1,'GameTime::GameTime(int seconds, int minutes, int hours=0, int days=0, int weeks=0, int months=0, int years=0)']]],
   ['gametracehandler_23',['GameTraceHandler',['../classGameTraceHandler.html#a6a34c25a31fc28cccbae386c5f3cff4f',1,'GameTraceHandler']]],
   ['gameui_5fcharacterquickrecord_5fdraw_24',['GameUI_CharacterQuickRecord_Draw',['../UIGame_8cpp.html#a83da9a8aa6b14560e6a2132ef3d0c3f4',1,'GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player):&#160;UIGame.cpp'],['../GUIWindow_8h.html#a83da9a8aa6b14560e6a2132ef3d0c3f4',1,'GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player):&#160;UIGame.cpp']]],

@@ -67,7 +67,7 @@ var searchData=
   ['conditionimportancytabledefault_64',['conditionImportancyTableDefault',['../Conditions_8cpp.html#a95a80fa1c08c92f9a83f2068c224ec81',1,'Conditions.cpp']]],
   ['conditions_65',['conditions',['../structPlayer.html#a3582d52b3edf93d5f3cbd854f3ee0d20',1,'Player']]],
   ['config_66',['config',['../classEngine.html#a7b428aaf0224a0da982a56ea059e4695',1,'Engine::config()'],['../classIRender.html#a2df8e263baf96dcfc36e899fcfd8718d',1,'IRender::config()'],['../structIo_1_1KeyboardActionMapping.html#a2ab99e7a854b9647caddacc07fab1f60',1,'Io::KeyboardActionMapping::config()']]],
-  ['configpath_67',['configPath',['../structGameOptions.html#aeba95185228e9e96e2e016c522519ba8',1,'GameOptions']]],
+  ['configpath_67',['configPath',['../structGameStarterOptions.html#a65ce1dba55d4654e06b7c79ae0df44b8',1,'GameStarterOptions']]],
   ['console_68',['Console',['../classGameConfig_1_1Gamepad.html#a36d6054f68df6cde4511aff2f3a20a1a',1,'GameConfig::Gamepad::Console()'],['../classGameConfig_1_1Keybindings.html#a17df45eae9450462586175a5dafcf694',1,'GameConfig::Keybindings::Console()']]],
   ['containing_5fitem_69',['containing_item',['../structSpriteObject.html#a844bc20d22ab2eb31b0639b88569e8c8',1,'SpriteObject::containing_item()'],['../structSpriteObject__MM7.html#a2ec23b98c8a88015152bf63cb2363df2',1,'SpriteObject_MM7::containing_item()']]],
   ['contains_70',['contains',['../ItemTable_8cpp.html#ad64a953a5e556a34dd4549240982473e',1,'ItemTable.cpp']]],

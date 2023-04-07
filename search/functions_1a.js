@@ -28,7 +28,7 @@ var searchData=
   ['_7efileoutputstream_25',['~FileOutputStream',['../classFileOutputStream.html#aa0423041bf20194144689440ed94ade3',1,'FileOutputStream']]],
   ['_7egame_26',['~Game',['../classGame.html#ae3d112ca6e0e55150d2fdbc704474530',1,'Game']]],
   ['_7egameconfig_27',['~GameConfig',['../classGameConfig.html#a4a816177ab7c271d934c9c57acacb39a',1,'GameConfig']]],
-  ['_7egamethread_28',['~GameThread',['../classGameThread.html#a44094484faa49fd8906e848a688996e8',1,'GameThread']]],
+  ['_7egamestarter_28',['~GameStarter',['../classGameStarter.html#a4c2ad2b166e05e7c0014be4bce469221',1,'GameStarter']]],
   ['_7egametracehandler_29',['~GameTraceHandler',['../classGameTraceHandler.html#a6c5f5ea7e850c9e583200cd1aa20d872',1,'GameTraceHandler']]],
   ['_7egamewindowhandler_30',['~GameWindowHandler',['../classGameWindowHandler.html#aa01245fd540673a96a10c307ccba473a',1,'GameWindowHandler']]],
   ['_7eguicredits_31',['~GUICredits',['../classGUICredits.html#aa0c66234bc9cfc5d27fed0bb9187076c',1,'GUICredits']]],

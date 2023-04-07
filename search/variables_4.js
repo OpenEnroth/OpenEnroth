@@ -4,7 +4,7 @@ var searchData=
   ['d3d_5fvertex_5fbuffer_1',['d3d_vertex_buffer',['../IRender_8h.html#aff3f9230007a6151608f5bc0e1a40b4a',1,'d3d_vertex_buffer():&#160;RenderOpenGL.cpp'],['../RenderOpenGL_8cpp.html#aff3f9230007a6151608f5bc0e1a40b4a',1,'d3d_vertex_buffer():&#160;RenderOpenGL.cpp']]],
   ['darkorange_2',['DarkOrange',['../classColorTable.html#acecf9d4d2b7c83ea36dcc75397f9425c',1,'ColorTable']]],
   ['dataoffset_3',['dataOffset',['../structLodFile.html#a1a328f0c93cd8747772aee52328b7579',1,'LodFile::dataOffset()'],['../structLodFileHeader__Mm6.html#a8b246b970aa5dac71702b9d97ccaa77f',1,'LodFileHeader_Mm6::dataOffset()'],['../structLodDirectoryHeader__Mm6.html#a7065e071d612ae67df0c41fd15044c98',1,'LodDirectoryHeader_Mm6::dataOffset()'],['../structLodFileHeader__Mm8.html#a8179cb30d6bcc7ad72dddf5b706e0a5b',1,'LodFileHeader_Mm8::dataOffset()']]],
-  ['datapath_4',['dataPath',['../structGameOptions.html#a274ce336698543107b86e8e360b15138',1,'GameOptions::dataPath()'],['../structGameTestOptions.html#a58aa47ab9af74a215e13f7d6c3d34f65',1,'GameTestOptions::dataPath()']]],
+  ['datapath_4',['dataPath',['../structGameStarterOptions.html#a064bd98845a858ba53f098c04f57c1cd',1,'GameStarterOptions']]],
   ['datasize_5',['dataSize',['../structLodDirectoryHeader__Mm6.html#a7a518084cbb8a90739633c2bee835502',1,'LodDirectoryHeader_Mm6::dataSize()'],['../structLodFile.html#a9719a3d117c18117e74f41f88b53d6b4',1,'LodFile::dataSize()'],['../structLodFileHeader__Mm8.html#a03a1adc6ce45af31b8c33160829d4f96',1,'LodFileHeader_Mm8::dataSize()']]],
   ['datasource_6',['dataSource',['../classSoundInfo.html#a44c18e59363aee5e15692c8a1c48fd1e',1,'SoundInfo']]],
   ['day_7',['Day',['../structTimer.html#aa7128a0af817ac53c9394f4078520426',1,'Timer']]],
