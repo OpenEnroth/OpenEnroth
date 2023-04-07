@@ -790,19 +790,19 @@ bool AudioSample16::Open(PAudioDataSource data_source) {
         alGenBuffers(1, &al_buffer);
         if (CheckError()) {
             Close();
-            break;
+            return false;
         }
 
         alBufferData(al_buffer, al_format, buffer->data(), buffer->size(), al_sample_rate);
         if (CheckError()) {
             Close();
-            break;
+            return false;
         }
 
         alSourceQueueBuffers(al_source, 1, &al_buffer);
         if (CheckError()) {
             Close();
-            break;
+            return false;
         }
     }
 

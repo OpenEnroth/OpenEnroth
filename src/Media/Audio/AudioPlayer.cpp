@@ -297,6 +297,11 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
 
     PAudioSample sample = CreateAudioSample(si.dataSource);
 
+    if (!sample) {
+        logger->warning("AudioPlayer: failed to create audio sample {} ({})", eSoundID, si.sName);
+        return;
+    }
+
     sample->SetVolume(uMasterVolume);
 
     if (pid == 0) {  // generic sound like from UI
