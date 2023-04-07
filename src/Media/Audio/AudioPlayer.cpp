@@ -119,11 +119,11 @@ void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
         return;
     }
 
-    if (!engine->config->debug.NoSound.value() && bPlayerReady && engine->config->settings.MusicLevel.value() > 0) {
+    if (!engine->config->debug.NoSound.value() && bPlayerReady) {
         if (pCurrentMusicTrack) {
             pCurrentMusicTrack->Stop();
         }
-        currentMusicTrack = -1;
+        currentMusicTrack = MUSIC_Invalid;
 
         std::string file_path = fmt::format("{}.mp3", eTrack);
         file_path = MakeDataPath("music", file_path);
@@ -137,6 +137,9 @@ void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
             currentMusicTrack = eTrack;
             pCurrentMusicTrack->SetVolume(pSoundVolumeLevels[engine->config->settings.MusicLevel.value()] * maxVolumeGain);
             pCurrentMusicTrack->Play();
+            if (!engine->config->settings.MusicLevel.value()) {
+                pCurrentMusicTrack->Pause();
+            }
         }
     }
 }
@@ -150,7 +153,7 @@ void AudioPlayer::MusicStop() {
 
     pCurrentMusicTrack->Stop();
     pCurrentMusicTrack = nullptr;
-    currentMusicTrack = -1;
+    currentMusicTrack = MUSIC_Invalid;
 }
 
 void AudioPlayer::MusicPause() {
@@ -168,7 +171,7 @@ void AudioPlayer::MusicResume() {
 
     if (!pCurrentMusicTrack->Resume()) {
         int playedMusicTrack = currentMusicTrack;
-        if (currentMusicTrack > 0) {
+        if (currentMusicTrack != MUSIC_Invalid) {
             MusicStop();
             MusicPlayTrack((MusicID)playedMusicTrack);
         }
@@ -183,6 +186,11 @@ void AudioPlayer::SetMusicVolume(int vol) {
     vol = std::max(0, vol);
     vol = std::min(9, vol);
     pCurrentMusicTrack->SetVolume(pSoundVolumeLevels[vol] * maxVolumeGain);
+    if (vol == 0) {
+        MusicPause();
+    } else {
+        MusicResume();
+    }
 }
 
 float AudioPlayer::MusicGetVolume() {
@@ -308,6 +316,10 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
         }
         _currentWalkingSample = sample;
         _currentWalkingSample->Play();
+    } else if (pid == SOUND_PID_MUSIC_VOLUME) {
+        sample->SetVolume(pSoundVolumeLevels[engine->config->settings.MusicLevel.value()] * maxVolumeGain);
+        _exclusiveSoundPool.stopSoundId(eSoundID);
+        _exclusiveSoundPool.playUniqueSoundId(sample, eSoundID);
     } else {
         ObjectType object_type = PID_TYPE(pid);
         unsigned int object_id = PID_ID(pid);
@@ -537,7 +549,7 @@ void AudioPlayer::LoadAudioSnd() {
 }
 
 void AudioPlayer::Initialize() {
-    currentMusicTrack = 0;
+    currentMusicTrack = MUSIC_Invalid;
     uMasterVolume = 127;
 
     pAudioPlayer->SetMasterVolume(engine->config->settings.SoundLevel.value());
