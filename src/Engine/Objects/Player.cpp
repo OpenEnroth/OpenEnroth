@@ -5054,8 +5054,8 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             PlayAwardSound_Anim();
             return;
         case VAR_AutoNotes:
-            if (!_449B57_test_bit(pParty->_autonote_bits, var_value) &&
-                pAutonoteTxt[var_value - 1].pText) {
+            assert(var_value > 0);
+            if (!_449B57_test_bit(pParty->_autonote_bits, var_value) && pAutonoteTxt[var_value - 1].pText) {
                 spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, GetPlayerIndex());
                 this->playReaction(SPEECH_AwardGot);
                 bFlashAutonotesBook = 1;
