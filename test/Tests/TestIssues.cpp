@@ -528,9 +528,21 @@ GAME_TEST(Issues, Issue540) {
     test->playTraceFromTestData("issue_540.mm7", "issue_540.json");
 }
 
+GAME_TEST(Issues, Issue558) {
+    // Check that performing alchemy does not cause out of bound access
+    test->playTraceFromTestData("issue_558.mm7", "issue_558.json");
+    EXPECT_EQ(pParty->pPickedItem.uItemID, ITEM_POTION_CURE_WOUNDS);
+}
+
 GAME_TEST(Issues, Issue563) {
     // Check that drinking some buff potions does not cause assert
     test->playTraceFromTestData("issue_563.mm7", "issue_563.json");
+}
+
+GAME_TEST(Issues, Issue574) {
+    // Check that applying recharge item potion produces correct number of charges
+    test->playTraceFromTestData("issue_574.mm7", "issue_574.json");
+    EXPECT_EQ(pParty->pPickedItem.uMaxCharges, pParty->pPickedItem.uNumCharges);
 }
 
 GAME_TEST(Issues, Issue578) {
