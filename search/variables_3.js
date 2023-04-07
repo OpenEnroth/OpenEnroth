@@ -92,7 +92,7 @@ var searchData=
   ['current_5fplayer_5fnum_89',['current_player_num',['../Arcomage_8cpp.html#a91a04d66a6e321da73340f46a8bc83ca',1,'Arcomage.cpp']]],
   ['current_5fscreen_5ftype_90',['current_screen_type',['../GUIWindow_8cpp.html#a9cf585dbf96fdd1acbe15981837ebdb2',1,'current_screen_type():&#160;GUIWindow.cpp'],['../GUIWindow_8h.html#a9cf585dbf96fdd1acbe15981837ebdb2',1,'current_screen_type():&#160;GUIWindow.cpp']]],
   ['currently_5fselected_5faction_5ffor_5fbinding_91',['currently_selected_action_for_binding',['../GameMenu_8cpp.html#a6f70373e8d65f7f76d15ae2ff1511076',1,'currently_selected_action_for_binding():&#160;GameMenu.cpp'],['../GameWindowHandler_8cpp.html#a6f70373e8d65f7f76d15ae2ff1511076',1,'currently_selected_action_for_binding():&#160;GameMenu.cpp'],['../UIGame_8cpp.html#a6f70373e8d65f7f76d15ae2ff1511076',1,'currently_selected_action_for_binding():&#160;GameMenu.cpp'],['../KeyboardInputHandler_8cpp.html#a6f70373e8d65f7f76d15ae2ff1511076',1,'currently_selected_action_for_binding():&#160;GameMenu.cpp']]],
-  ['currentmusictrack_92',['currentMusicTrack',['../classAudioPlayer.html#ae347939241164a90402a5a593192a5bd',1,'AudioPlayer']]],
+  ['currentmusictrack_92',['currentMusicTrack',['../classAudioPlayer.html#aa328abd6a98d1b36e89e4cd4be469e8b',1,'AudioPlayer']]],
   ['currentresttype_93',['currentRestType',['../UIRest_8cpp.html#a474d1be8724add7ced625ae4cd8a580d',1,'currentRestType():&#160;UIRest.cpp'],['../UIRest_8h.html#a474d1be8724add7ced625ae4cd8a580d',1,'currentRestType():&#160;UIRest.cpp']]],
   ['currentside_94',['currentSide',['../classEngineControlState.html#a67212b422b997707f0ad0a3c8e502bd4',1,'EngineControlState']]],
   ['cursor_5fimg_95',['cursor_img',['../classIo_1_1Mouse.html#a0d6622acd1d7962b030f194849cb2f30',1,'Io::Mouse']]],
