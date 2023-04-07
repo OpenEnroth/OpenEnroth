@@ -998,7 +998,7 @@ void Party::restOneFrame() {
     // Before each frame party rested for 6 minutes but that caused
     // resting to be too fast on high FPS
     // Now resting speed is roughly 6 game hours per second
-    GameTime restTick = GameTime::FromMinutes(3*pEventTimer->uTimeElapsed);
+    GameTime restTick = GameTime::FromMinutes(3 * pEventTimer->uTimeElapsed);
 
     if (remainingRestTime < restTick) {
         restTick = remainingRestTime;
