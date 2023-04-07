@@ -15,7 +15,7 @@ var searchData=
   ['partycreationui_5floop_12',['PartyCreationUI_Loop',['../UIPartyCreation_8h.html#ae6fe5aec2826f251f3950e95fd588d79',1,'PartyCreationUI_Loop():&#160;UIPartyCreation.cpp'],['../UIPartyCreation_8cpp.html#ae6fe5aec2826f251f3950e95fd588d79',1,'PartyCreationUI_Loop():&#160;UIPartyCreation.cpp']]],
   ['partycreationui_5floopinternal_13',['PartyCreationUI_LoopInternal',['../UIPartyCreation_8cpp.html#a3989bc11e4d285e802baa8b00e9663ad',1,'UIPartyCreation.cpp']]],
   ['partydoturnbasedawareaction_14',['PartyDoTurnBasedAwareAction',['../KeyboardInputHandler_8cpp.html#a8244d18064b68f8705eef5c81210a8c7',1,'KeyboardInputHandler.cpp']]],
-  ['partyfindsgold_15',['PartyFindsGold',['../structParty.html#a6ffe5822dbcc7089a716e75bc4b381f9',1,'Party']]],
+  ['partyfindsgold_15',['partyFindsGold',['../structParty.html#a5d0c9c5356ad372353dd8b06d8081960',1,'Party']]],
   ['partyhasdragon_16',['PartyHasDragon',['../NPC_8cpp.html#ab0b7197f3a0cdc35557d678ccaacdd7f',1,'PartyHasDragon():&#160;NPC.cpp'],['../NPC_8h.html#ab0b7197f3a0cdc35557d678ccaacdd7f',1,'PartyHasDragon():&#160;NPC.cpp']]],
   ['partyitemcount_17',['partyItemCount',['../TestIssues_8cpp.html#a3bb3b4d38f77f7d53d65dcbbaee25cdb',1,'TestIssues.cpp']]],
   ['partymove_18',['PartyMove',['../KeyboardInputHandler_8cpp.html#aa24fd81b1bc2d4192ded23ec6409eab8',1,'KeyboardInputHandler.cpp']]],

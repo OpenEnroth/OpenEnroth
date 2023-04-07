@@ -196,7 +196,7 @@ var searchData=
   ['partycreationui_5floopinternal_193',['PartyCreationUI_LoopInternal',['../UIPartyCreation_8cpp.html#a3989bc11e4d285e802baa8b00e9663ad',1,'UIPartyCreation.cpp']]],
   ['partydoturnbasedawareaction_194',['PartyDoTurnBasedAwareAction',['../KeyboardInputHandler_8cpp.html#a8244d18064b68f8705eef5c81210a8c7',1,'KeyboardInputHandler.cpp']]],
   ['partyeyelevel_195',['PartyEyeLevel',['../classGameConfig_1_1Gameplay.html#a75507033eee9fd428e38aeb73d4eea2d',1,'GameConfig::Gameplay']]],
-  ['partyfindsgold_196',['PartyFindsGold',['../structParty.html#a6ffe5822dbcc7089a716e75bc4b381f9',1,'Party']]],
+  ['partyfindsgold_196',['partyFindsGold',['../structParty.html#a5d0c9c5356ad372353dd8b06d8081960',1,'Party']]],
   ['partyhasdragon_197',['PartyHasDragon',['../NPC_8h.html#ab0b7197f3a0cdc35557d678ccaacdd7f',1,'PartyHasDragon():&#160;NPC.cpp'],['../NPC_8cpp.html#ab0b7197f3a0cdc35557d678ccaacdd7f',1,'PartyHasDragon():&#160;NPC.cpp']]],
   ['partyheight_198',['PartyHeight',['../classGameConfig_1_1Gameplay.html#a13eb0fb5a1a0970930ee5e84941e7058',1,'GameConfig::Gameplay']]],
   ['partyitemcount_199',['partyItemCount',['../TestIssues_8cpp.html#a3bb3b4d38f77f7d53d65dcbbaee25cdb',1,'TestIssues.cpp']]],
