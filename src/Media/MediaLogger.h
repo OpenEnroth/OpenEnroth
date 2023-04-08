@@ -8,14 +8,15 @@
 
 #include "Library/Logger/Logger.h"
 
+// TODO(captainurist): rework when I get to logging, this should just be a way to hook into av_log, an API taking std::function.
 class MediaLogger {
  public:
     explicit MediaLogger(Logger *logger);
 
-    void Log(void *ptr, int logLevel, const char *format, va_list args);
+    void log(void *ptr, int logLevel, const char *format, va_list args);
 
-    static void SetGlobalMediaLogger(MediaLogger *logger);
-    static MediaLogger *GlobalMediaLogger();
+    static void setGlobalMediaLogger(MediaLogger *logger);
+    static MediaLogger *globalMediaLogger();
 
  private:
     struct LogState {
@@ -24,6 +25,6 @@ class MediaLogger {
     };
 
  private:
-    Logger *logger_ = nullptr;
-    std::unordered_map<std::thread::id, LogState> stateByThreadId_;
+    Logger *_logger = nullptr;
+    std::unordered_map<std::thread::id, LogState> _stateByThreadId;
 };
