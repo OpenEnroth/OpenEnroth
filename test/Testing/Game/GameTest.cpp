@@ -19,7 +19,6 @@ void GameTest::SetUp() {
     const_cast<EngineController *&>(game) = globalEngineController;
     const_cast<TestController *&>(test) = globalTestController;
 
-    game->goToMainMenu();
     test->prepareForNextTest();
 }
 

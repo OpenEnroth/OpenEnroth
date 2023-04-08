@@ -40,6 +40,7 @@ void TestController::playTraceFromTestData(const std::string &saveName, const st
 }
 
 void TestController::prepareForNextTest() {
+    _controller->goToMainMenu();
     ::application->get<EngineDeterministicComponent>()->resetDeterministicState();
     ::application->get<GameKeyboardController>()->reset();
 
