@@ -15,6 +15,7 @@
 #include <thread>
 #include <functional>
 #include <utility>
+#include <list>
 
 #include <cassert>
 #include <cmath>
@@ -700,8 +701,9 @@ class AudioSample16 : public IAudioSample {
     void Close();
 
     PAudioDataSource pDataSource;
-    ALenum al_format;
     ALuint al_source;
+    std::list<ALuint> al_buffer_list;
+    ALenum al_format;
     ALsizei al_sample_rate;
 };
 
@@ -719,6 +721,12 @@ void AudioSample16::Close() {
     if (alIsSource(al_source) != 0) {
         alSourceStop(al_source);
         CheckError();
+        alSourcei(al_source, AL_BUFFER, 0);
+        CheckError();
+        for (ALuint buffer : al_buffer_list) {
+            alDeleteBuffers(1, &buffer);
+            CheckError();
+        }
         alDeleteSources(1, &al_source);
         CheckError();
     }
@@ -792,6 +800,8 @@ bool AudioSample16::Open(PAudioDataSource data_source) {
             Close();
             return false;
         }
+
+        al_buffer_list.push_back(al_buffer);
 
         alBufferData(al_buffer, al_format, buffer->data(), buffer->size(), al_sample_rate);
         if (CheckError()) {
