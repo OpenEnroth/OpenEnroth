@@ -110,21 +110,21 @@ static void createSpriteTrailParticle(Vec3i pos, OBJECT_DESC_FLAGS flags) {
     if (flags & OBJECT_DESC_TRIAL_FIRE) {
         particle.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
         particle.uDiffuse = colorTable.OrangeyRed.c32();
-        particle.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
+        particle.timeToLive = vrng->random(0x80) + 128; // was rand() & 0x80
         particle.texture = spell_fx_renderer->effpar01;
         particle.particle_size = 1.0f;
         particle_engine->AddParticle(&particle);
     } else if (flags & OBJECT_DESC_TRIAL_LINE) {
         particle.type = ParticleType_Line;
-        particle.uDiffuse = vrng->Random(RAND_MAX); // TODO(captainurist): TBH this makes no sense, investigate
+        particle.uDiffuse = vrng->random(RAND_MAX); // TODO(captainurist): TBH this makes no sense, investigate
         particle.timeToLive = 64;
         particle.texture = nullptr;
         particle.particle_size = 1.0f;
         particle_engine->AddParticle(&particle);
     } else if (flags & OBJECT_DESC_TRIAL_PARTICLE) {
         particle.type = ParticleType_Bitmap | ParticleType_Ascending;
-        particle.uDiffuse = vrng->Random(RAND_MAX);
-        particle.timeToLive = vrng->Random(0x80) + 128; // was rand() & 0x80
+        particle.uDiffuse = vrng->random(RAND_MAX);
+        particle.timeToLive = vrng->random(0x80) + 128; // was rand() & 0x80
         particle.texture = spell_fx_renderer->effpar03;
         particle.particle_size = 1.0f;
         particle_engine->AddParticle(&particle);
@@ -546,7 +546,7 @@ void SpriteObject::explosionTraps() {
     if (v10 <= 768) {
         int trapDamage = 5;
         if (pMapInfo->Trap_D20) {
-            trapDamage += grng->RandomDice(pMapInfo->Trap_D20, 20);
+            trapDamage += grng->randomDice(pMapInfo->Trap_D20, 20);
         }
         DAMAGE_TYPE pDamageType;
         switch (this->uType) {
@@ -567,7 +567,7 @@ void SpriteObject::explosionTraps() {
         }
         for (Player &player : pParty->pPlayers) {
             int perceptionCheckValue = player.GetPerception() + 20;
-            if (player.CanAct() && (grng->Random(perceptionCheckValue) > 20)) {
+            if (player.CanAct() && (grng->random(perceptionCheckValue) > 20)) {
                 player.playReaction(SPEECH_AvoidDamage);
             } else {
                 player.ReceiveDamage(trapDamage, pDamageType);
@@ -697,8 +697,8 @@ bool SpriteObject::dropItemAt(SPRITE_OBJECT_TYPE sprite, Vec3i pos, int speed, i
     if (randomRotate) {
         for (int i = 0; i < count; i++) {
             // Not sure if using grng is right here, but would rather err on the side of safety.
-            pSpellObject.uFacing = grng->Random(TrigLUT.uIntegerDoublePi);
-            int pitch = TrigLUT.uIntegerQuarterPi + grng->Random(TrigLUT.uIntegerQuarterPi);
+            pSpellObject.uFacing = grng->random(TrigLUT.uIntegerDoublePi);
+            int pitch = TrigLUT.uIntegerQuarterPi + grng->random(TrigLUT.uIntegerQuarterPi);
             pSpellObject.Create(pSpellObject.uFacing, pitch, speed, 0);
         }
     } else {
@@ -1000,8 +1000,8 @@ bool processSpellImpact(unsigned int uLayingItemID, int pid) {
             object->vVelocity = Vec3s(0.0, 0.0, 0.0);
             int yaw = object->uFacing - TrigLUT.uIntegerDoublePi;
             for (int i = 0; i < 8; i++) {
-                int yawRandomDelta = grng->RandomInSegment(-128, 128);
-                int randomSpeed = grng->RandomInSegment(5, 500);
+                int yawRandomDelta = grng->randomInSegment(-128, 128);
+                int randomSpeed = grng->randomInSegment(5, 500);
                 yaw += TrigLUT.uIntegerQuarterPi;
                 object->Create(yaw + yawRandomDelta, 0, randomSpeed, 0);
             }

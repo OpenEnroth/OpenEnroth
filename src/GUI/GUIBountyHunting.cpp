@@ -16,7 +16,7 @@ static int16_t bountyHunting_monsterId = 0;
 
 static int RandomMonsterForHunting(HOUSE_ID townhall) {
     while (true) {
-        int result = grng->Random(258) + 1;
+        int result = grng->random(258) + 1;
         switch (townhall) {
         case HOUSE_TOWNHALL_HARMONDALE:
             if ((result < 115 || result > 132) &&

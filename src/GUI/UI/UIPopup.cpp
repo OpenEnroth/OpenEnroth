@@ -586,7 +586,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         pMonsterInfoUI_Doll = pActors[uActorID];
         pMonsterInfoUI_Doll.uCurrentActionAnimation = ANIM_Bored;
         pMonsterInfoUI_Doll.uCurrentActionTime = 0;
-        v9 = vrng->Random(256) + 128;
+        v9 = vrng->random(256) + 128;
         pMonsterInfoUI_Doll.uCurrentActionLength = v9;
     }
 
@@ -595,15 +595,14 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         if (pMonsterInfoUI_Doll.uCurrentActionAnimation == ANIM_Bored ||
             pMonsterInfoUI_Doll.uCurrentActionAnimation == ANIM_AtkMelee) {
             pMonsterInfoUI_Doll.uCurrentActionAnimation = ANIM_Standing;
-            pMonsterInfoUI_Doll.uCurrentActionLength = vrng->Random(128) + 128;
+            pMonsterInfoUI_Doll.uCurrentActionLength = vrng->random(128) + 128;
         } else {
             // rand();
             pMonsterInfoUI_Doll.uCurrentActionAnimation = ANIM_Bored;
             if ((pMonsterInfoUI_Doll.pMonsterInfo.uID < 115 ||
                  pMonsterInfoUI_Doll.pMonsterInfo.uID > 186) &&
                 (pMonsterInfoUI_Doll.pMonsterInfo.uID < 232 ||
-                 pMonsterInfoUI_Doll.pMonsterInfo.uID > 249) &&
-                vrng->Random(30) < 100)
+                 pMonsterInfoUI_Doll.pMonsterInfo.uID > 249) && vrng->random(30) < 100)
                 pMonsterInfoUI_Doll.uCurrentActionAnimation = ANIM_AtkMelee;
             pMonsterInfoUI_Doll.uCurrentActionLength =
                 8 *
@@ -2031,12 +2030,12 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             pPlayers[pParty->getActiveCharacter()]->RemoveItemAtInventoryIndex(invMatrixIndex);  // pOut_y); ?? quickfix needs checking
 
             if (damage_level == 1) {
-                pPlayers[pParty->getActiveCharacter()]->ReceiveDamage(grng->Random(11) + 10, DMGT_FIRE);
+                pPlayers[pParty->getActiveCharacter()]->ReceiveDamage(grng->random(11) + 10, DMGT_FIRE);
             } else if (damage_level == 2) {
-                pPlayers[pParty->getActiveCharacter()]->ReceiveDamage(grng->Random(71) + 30, DMGT_FIRE);
+                pPlayers[pParty->getActiveCharacter()]->ReceiveDamage(grng->random(71) + 30, DMGT_FIRE);
                 pPlayers[pParty->getActiveCharacter()]->ItemsPotionDmgBreak(1);  // break 1
             } else if (damage_level == 3) {
-                pPlayers[pParty->getActiveCharacter()]->ReceiveDamage(grng->Random(201) + 50, DMGT_FIRE);
+                pPlayers[pParty->getActiveCharacter()]->ReceiveDamage(grng->random(201) + 50, DMGT_FIRE);
                 pPlayers[pParty->getActiveCharacter()]->ItemsPotionDmgBreak(5);  // break 5
             } else if (damage_level >= 4) {
                 pPlayers[pParty->getActiveCharacter()]->SetCondition(Condition_Eradicated, 0);

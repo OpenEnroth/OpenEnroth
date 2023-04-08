@@ -78,7 +78,7 @@ void EngineTracePlayer::playTrace(EngineController *game, const std::string &sav
                                 tracePath, paintEvent->tickCount, tickCount);
             }
 
-            int randomState = grng->Random(1024);
+            int randomState = grng->random(1024);
             if (!(flags & TRACE_PLAYBACK_SKIP_RANDOM_CHECKS) && randomState != paintEvent->randomState) {
                 throw Exception("Random state desynchronized when playing back trace '{}' at {}ms: expected {}, got {}",
                                 tracePath, tickCount, paintEvent->randomState, randomState);

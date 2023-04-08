@@ -42,7 +42,7 @@ int LevelDecoration::GetGlobalEvent() {
         case 5:
             return 32;  // dec02 "Campfire"
         case 6:
-            return 12 + grng->Random(4);  // dec03 "Cauldron"
+            return 12 + grng->random(4);  // dec03 "Cauldron"
         case 7:
         case 8:
         case 9:
@@ -83,7 +83,7 @@ int LevelDecoration::GetGlobalEvent() {
             return 0;
 
         case 34:
-            return 4 + grng->Random(6);  // dec32 "Barrel"
+            return 4 + grng->random(6);  // dec32 "Barrel"
         case 35:
         case 36:
         case 37:
@@ -264,13 +264,13 @@ int LevelDecoration::GetGlobalEvent() {
             return 0;
 
         case 206:
-            return 162 + grng->Random(7);  // dec60
+            return 162 + grng->random(7);  // dec60
         case 207:
-            return 169 + grng->Random(7);  // dec61
+            return 169 + grng->random(7);  // dec61
         case 208:
-            return 176 + grng->Random(7);  // dec62
+            return 176 + grng->random(7);  // dec62
         case 209:
-            return 183 + grng->Random(7);  // dec63
+            return 183 + grng->random(7);  // dec63
         case 210:
             return 150;  // dec64 "Magic pedestal"
         case 211:

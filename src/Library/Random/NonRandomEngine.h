@@ -6,20 +6,20 @@
 
 class NonRandomEngine : public RandomEngine {
  public:
-    virtual float RandomFloat() override {
-        return Random(256) / 256.0f;
+    virtual float randomFloat() override {
+        return random(256) / 256.0f;
     }
 
-    virtual int Random(int hi) override {
+    virtual int random(int hi) override {
         assert(hi > 0);
 
-        return ++state_ % hi;
+        return ++_state % hi;
     }
 
-    virtual void Seed(int seed) override {
-        state_ = seed;
+    virtual void seed(int seed) override {
+        _state = seed;
     }
 
  private:
-    unsigned state_ = 0; // Using unsigned here so that it wraps around safely.
+    unsigned _state = 0; // Using unsigned here so that it wraps around safely.
 };

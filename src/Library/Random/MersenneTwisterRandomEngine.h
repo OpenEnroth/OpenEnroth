@@ -7,20 +7,20 @@
 
 class MersenneTwisterRandomEngine: public RandomEngine {
  public:
-    virtual float RandomFloat() override {
-        return std::uniform_real_distribution<float>(0.0f, 1.0f)(base_);
+    virtual float randomFloat() override {
+        return std::uniform_real_distribution<float>(0.0f, 1.0f)(_base);
     }
 
-    virtual int Random(int hi) override {
+    virtual int random(int hi) override {
         assert(hi > 0);
 
-        return static_cast<int>((static_cast<uint64_t>(base_()) * static_cast<uint64_t>(hi)) >> 32);
+        return static_cast<int>((static_cast<uint64_t>(_base()) * static_cast<uint64_t>(hi)) >> 32);
     }
 
-    virtual void Seed(int seed) override {
-        base_.seed(seed);
+    virtual void seed(int seed) override {
+        _base.seed(seed);
     }
 
  private:
-    std::mt19937 base_;
+    std::mt19937 _base;
 };

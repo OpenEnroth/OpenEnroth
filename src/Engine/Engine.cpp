@@ -324,7 +324,7 @@ void Engine::StackPartyTorchLight() {
             if (torchLightFlicker > 0) {
                 // torchlight flickering effect
                 // TorchLightPower *= pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;  // 2,3,4
-                int ran = vrng->Random(RAND_MAX);
+                int ran = vrng->random(RAND_MAX);
                 int mod = ((ran - (RAND_MAX * .4)) / torchLightFlicker); // TODO(captainurist): this math makes no sense
                 TorchLightDistance = (pParty->TorchLightLastIntensity + mod);
 
@@ -867,8 +867,8 @@ bool MM7_LoadLods() {
 
 //----- (004651F4) --------------------------------------------------------
 bool Engine::MM7_Initialize() {
-    grng->Seed(platform->tickCount());
-    vrng->Seed(platform->tickCount());
+    grng->seed(platform->tickCount());
+    vrng->seed(platform->tickCount());
 
     pEventTimer = Timer::Create();
     pEventTimer->Initialize();
@@ -1484,9 +1484,9 @@ void _494035_timed_effects__water_walking_damage__etc() {
                     // TODO(pskelton): rename Zero to ResetBonuses
                     player.Zero();
                     if (!player.IsPertified() && !player.IsEradicated() && !player.IsDead()) {
-                        if (grng->Random(100) < 5 * pParty->days_played_without_rest)
+                        if (grng->random(100) < 5 * pParty->days_played_without_rest)
                             player.SetCondDeadWithBlockCheck(0);
-                        if (grng->Random(100) < 10 * pParty->days_played_without_rest)
+                        if (grng->random(100) < 10 * pParty->days_played_without_rest)
                             player.SetCondInsaneWithBlockCheck(0);
                     }
                 }

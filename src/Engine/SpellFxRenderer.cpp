@@ -288,7 +288,7 @@ void SpellFxRenderer::_4A73AA_hanging_trace_particles___like_fire_strike_ice_bla
         local_0.r = 0.0;
         local_0.g = 0.0;
         local_0.b = 0.0;
-        local_0.timeToLive = vrng->Random(0x40) + 96; // was rand() & 0x40
+        local_0.timeToLive = vrng->random(0x40) + 96; // was rand() & 0x40
         local_0.texture = texture;
         local_0.particle_size = 1.0f;
         particle_engine->AddParticle(&local_0);
@@ -318,7 +318,7 @@ void SpellFxRenderer::_4A73AA_hanging_trace_particles___like_fire_strike_ice_bla
         local_0.g = 0.0f;
         local_0.b = 0.0f;
         local_0.particle_size = 1.0f;
-        local_0.timeToLive = vrng->Random(0x80) + 128;
+        local_0.timeToLive = vrng->random(0x80) + 128;
         local_0.texture = texture;
         particle_engine->AddParticle(&local_0);
         local_0.x = (float)a2->vPosition.x - 4.0f;
@@ -341,13 +341,13 @@ void SpellFxRenderer::_4A75CC_single_spell_collision_particle(
     local_0.uDiffuse = uDiffuse;
     local_0.z = v4;
     v5 = 10;
-    local_0.timeToLive = vrng->Random(0x80) + 128;
+    local_0.timeToLive = vrng->random(0x80) + 128;
     local_0.texture = texture;
     local_0.particle_size = 1.0f;
     do {
-        local_0.r = (float) vrng->Random(0x200) - 255.0f;
-        local_0.g = (float) vrng->Random(0x200) - 255.0f;
-        local_0.b = (float) vrng->Random(0x200) - 255.0f;
+        local_0.r = (float) vrng->random(0x200) - 255.0f;
+        local_0.g = (float) vrng->random(0x200) - 255.0f;
+        local_0.b = (float) vrng->random(0x200) - 255.0f;
         particle_engine->AddParticle(&local_0);
         --v5;
     } while (v5);
@@ -367,15 +367,15 @@ void SpellFxRenderer::_4A7688_fireball_collision_particle(SpriteObject *a2) {
     local_0.x = (float)a2->vPosition.x;
     local_0.y = (float)a2->vPosition.y;
     local_0.z = (float)a2->vPosition.z;
-    local_0.timeToLive = vrng->Random(0x80) + 128;
+    local_0.timeToLive = vrng->random(0x80) + 128;
     local_0.texture = this->effpar01;
     local_0.particle_size = 1.0;
 
     // 10 fireball sparks
     for (unsigned int i = 0; i < 10; ++i) {
-        local_0.r = vrng->Random(0x200) - 255;
-        local_0.g = vrng->Random(0x200) - 255;
-        local_0.b = vrng->Random(0x200) - 255;
+        local_0.r = vrng->random(0x200) - 255;
+        local_0.g = vrng->random(0x200) - 255;
+        local_0.b = vrng->random(0x200) - 255;
         particle_engine->AddParticle(&local_0);
     }
 
@@ -412,11 +412,11 @@ void SpellFxRenderer::_4A7948_mind_blast_after_effect(SpriteObject *a1) {
     Dst.z = (float)a1->vPosition.z;
     Dst.texture = a1->GetSpriteFrame()->hw_sprites[0]->texture;
     Dst.particle_size = 1.0;
-    Dst.timeToLive = vrng->Random(0x80) + 128;
+    Dst.timeToLive = vrng->random(0x80) + 128;
     for (int i = 0; i < 10; i++) {
-        Dst.r = (float) vrng->Random(0x200) - 255.0f;
-        Dst.g = (float) vrng->Random(0x200) - 255.0f;
-        Dst.b = (float) vrng->Random(0x200) - 255.0f;
+        Dst.r = (float) vrng->random(0x200) - 255.0f;
+        Dst.g = (float) vrng->random(0x200) - 255.0f;
+        Dst.b = (float) vrng->random(0x200) - 255.0f;
         particle_engine->AddParticle(&Dst);
     }
 }
@@ -453,7 +453,7 @@ void SpellFxRenderer::
     local_0.z = (float)(v5 + 32);
     local_0.particle_size = 1.0;
     v7 = 0.0 * a4;
-    local_0.timeToLive = vrng->Random(0x80) + 128;
+    local_0.timeToLive = vrng->random(0x80) + 128;
     local_0.texture = texture;
     a1a = v7;
     local_0.r = v7;
@@ -511,7 +511,7 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
         local_0.b = 0.0f;
 
         local_0.particle_size = 3.0;
-        local_0.timeToLive = vrng->Random(0x40) + 64;
+        local_0.timeToLive = vrng->random(0x40) + 64;
         local_0.texture = a2->GetSpriteFrame()->hw_sprites[0]->texture;
         local_0.paletteID = a2->GetSpriteFrame()->uPaletteID;
         particle_engine->AddParticle(&local_0);
@@ -519,7 +519,7 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
         local_0.x = (float)a2->vPosition.x;
         local_0.y = (float)a2->vPosition.y;
         local_0.z = (float)a2->vPosition.z;
-        local_0.timeToLive = vrng->Random(0x40) + 64;
+        local_0.timeToLive = vrng->random(0x40) + 64;
         particle_engine->AddParticle(&local_0);
         v6->flt_0_x = (float)a2->vPosition.x;
         v6->flt_4_y = (float)a2->vPosition.y;
@@ -538,7 +538,7 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
         local_0.r = 0.0f;
         local_0.g = 0.0f;
         local_0.b = 0.0f;
-        local_0.timeToLive = vrng->Random(0x40) + 64;
+        local_0.timeToLive = vrng->random(0x40) + 64;
         local_0.texture = a2->GetSpriteFrame()->hw_sprites[0]->texture;
         local_0.paletteID = a2->GetSpriteFrame()->uPaletteID;
         particle_engine->AddParticle(&local_0);
@@ -566,19 +566,19 @@ void SpellFxRenderer::sparklesOnActorAfterItCastsBuff(Actor *pActor, uint32_t uD
 
     memset(&particle, 0, sizeof(Particle_sw));
     particle.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
-    particle.timeToLive = vrng->Random(128) + 128;
+    particle.timeToLive = vrng->random(128) + 128;
     particle.texture = this->effpar02;
     particle.particle_size = 1.0;
 
     for (int i = 0; i < 50; i++) {
-        particle.x = vrng->Random(256) + pActor->vPosition.x - 127;
-        particle.y = vrng->Random(256) + pActor->vPosition.y - 127;
-        particle.z = vrng->Random(256) + pActor->vPosition.z;
+        particle.x = vrng->random(256) + pActor->vPosition.x - 127;
+        particle.y = vrng->random(256) + pActor->vPosition.y - 127;
+        particle.z = vrng->random(256) + pActor->vPosition.z;
         if (uDiffuse) {
             particle.uDiffuse = uDiffuse;
         } else {
             // TODO(Nik-RE-dev): check colour format
-            particle.uDiffuse = vrng->Random(0x10000) | (vrng->Random(0x10000) << 16);
+            particle.uDiffuse = vrng->random(0x10000) | (vrng->random(0x10000) << 16);
         }
         particle_engine->AddParticle(&particle);
     }
@@ -597,19 +597,19 @@ void SpellFxRenderer::_4A7F74(int x, int y, int z) {
     local_0.uDiffuse = colorTable.MediumGrey.c32();
     local_0.particle_size = 1.0;
     v6 = 8;
-    local_0.timeToLive = vrng->Random(0x80) + 128;
+    local_0.timeToLive = vrng->random(0x80) + 128;
 
     v12 = (float)x;
     local_0.texture = this->effpar01;
     v11 = (float)y;
     do {
-        local_0.x = vrng->RandomFloat() * 40.0f - 20.0f + v12;
+        local_0.x = vrng->randomFloat() * 40.0f - 20.0f + v12;
         z1 = (float)z;
         local_0.z = z1;
-        local_0.y = vrng->RandomFloat() * 40.0f - 20.0f + v11;
-        local_0.r = vrng->RandomFloat() * 400.0f - 200.0f;
-        local_0.g = vrng->RandomFloat() * 400.0f - 200.0f;
-        local_0.b = vrng->RandomFloat() * 150.0f + 50.0f;
+        local_0.y = vrng->randomFloat() * 40.0f - 20.0f + v11;
+        local_0.r = vrng->randomFloat() * 400.0f - 200.0f;
+        local_0.g = vrng->randomFloat() * 400.0f - 200.0f;
+        local_0.b = vrng->randomFloat() * 150.0f + 50.0f;
         particle_engine->AddParticle(&local_0);
         --v6;
     } while (v6);
@@ -889,7 +889,7 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             // if ( !render->pRenderD3D )
             //  return true;
             memcpy(pContainer, "sp18h1", 7);
-            pContainer[5] = vrng->RandomInSegment(1, 6) + '0';
+            pContainer[5] = vrng->randomInSegment(1, 6) + '0';
             AddProjectile(a2, 100, assets->GetBitmap(pContainer));
             return false;
         case SPRITE_SPELL_AIR_LIGHTNING_BOLT_IMPACT:

@@ -25,7 +25,7 @@ void EngineDeterministicComponent::resetDeterministicState() {
     assert(_deterministicCounter > 0);
 
     _tickCount = 0;
-    grng->Seed(0); // Equivalent to just recreating a NonRandomEngine.
+    grng->seed(0); // Equivalent to just recreating a NonRandomEngine.
 }
 
 void EngineDeterministicComponent::leaveDeterministicMode() {

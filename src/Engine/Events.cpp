@@ -392,7 +392,7 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
                             }
 LABEL_47:
                             // v10 = (ByteArray *)&v5[v9];
-                            v24 = pParty->pPlayers[grng->Random(4)].pActiveSkills[static_cast<PLAYER_SKILL_TYPE>(_evt->v5)];
+                            v24 = pParty->pPlayers[grng->random(4)].pActiveSkills[static_cast<PLAYER_SKILL_TYPE>(_evt->v5)];
                         }
                     }
                     v136 = 1;
@@ -552,7 +552,7 @@ LABEL_47:
                             player.playEmotion((CHARACTER_EXPRESSION_ID)_evt->v6, 0);
                         }
                     } else {  // random player
-                        pParty->pPlayers[vrng->Random(4)].playEmotion((CHARACTER_EXPRESSION_ID)_evt->v6, 0);
+                        pParty->pPlayers[vrng->random(4)].playEmotion((CHARACTER_EXPRESSION_ID)_evt->v6, 0);
                     }
                     ++curr_seq_num;
                     break;
@@ -566,7 +566,7 @@ LABEL_47:
                             player.playReaction((PlayerSpeech)_evt->v6);
                         }
                     } else {  // random
-                        pParty->pPlayers[vrng->Random(4)].playReaction((PlayerSpeech)_evt->v6);
+                        pParty->pPlayers[vrng->random(4)].playReaction((PlayerSpeech)_evt->v6);
                     }
                     ++curr_seq_num;
                     break;
@@ -605,7 +605,7 @@ LABEL_47:
                             ++v130;
                         }
                     } else if (player_choose == 6) {  // random
-                        if (pParty->pPlayers[grng->Random(4)].CompareVariable((enum VariableType)EVT_WORD(_evt->v5), pValue)) {
+                        if (pParty->pPlayers[grng->random(4)].CompareVariable((enum VariableType)EVT_WORD(_evt->v5), pValue)) {
                             // v124 = -1;
                             curr_seq_num = _evt->v11 - 1;
                         }
@@ -644,7 +644,7 @@ LABEL_47:
                             }
                         }
                     } else if (player_choose == 6) {  // random
-                        pParty->pPlayers[grng->Random(4)].SubtractVariable((enum VariableType)EVT_WORD(_evt->v5), pValue);
+                        pParty->pPlayers[grng->random(4)].SubtractVariable((enum VariableType)EVT_WORD(_evt->v5), pValue);
                     }
                     ++curr_seq_num;
                     break;
@@ -662,7 +662,7 @@ LABEL_47:
                             player.SetVariable((enum VariableType)EVT_WORD(_evt->v5), pValue);
                         }
                     } else if (player_choose == 6) {  // random
-                        pParty->pPlayers[grng->Random(4)].SetVariable((enum VariableType)EVT_WORD(_evt->v5), pValue);
+                        pParty->pPlayers[grng->random(4)].SetVariable((enum VariableType)EVT_WORD(_evt->v5), pValue);
                     }
                     ++curr_seq_num;
                     break;
@@ -680,7 +680,7 @@ LABEL_47:
                             player.AddVariable((enum VariableType)EVT_WORD(_evt->v5), pValue);
                         }
                     } else if (player_choose == 6) {  // random
-                        pParty->pPlayers[grng->Random(4)].AddVariable((enum VariableType)EVT_WORD(_evt->v5), pValue);
+                        pParty->pPlayers[grng->random(4)].AddVariable((enum VariableType)EVT_WORD(_evt->v5), pValue);
                     }
                     v83 = EVT_WORD(_evt->v5);
                     if (v83 == 21 ||  // gold well on emerald isle
@@ -714,10 +714,7 @@ LABEL_47:
                 case EVENT_RandomGoTo:
                     // v124 = -1;
                     v11 = (uint8_t)*(
-                        &_evt->v5 +
-                            grng->Random((_evt->v5 != 0) + (_evt->v6 != 0) +
-                                         (_evt->v7 != 0) + (_evt->v8 != 0) +
-                                         (_evt->v9 != 0) + (_evt->v10 != 0)));
+                        &_evt->v5 + grng->random((_evt->v5 != 0) + (_evt->v6 != 0) + (_evt->v7 != 0) + (_evt->v8 != 0) + (_evt->v9 != 0) + (_evt->v10 != 0)));
                     curr_seq_num = v11 - 1;
                     ++curr_seq_num;
                     v4 = -1;
@@ -738,7 +735,7 @@ LABEL_47:
                         break;
                     }
                     if (_evt->v5 != 5) {
-                        pParty->pPlayers[grng->Random(4)].ReceiveDamage(EVT_DWORD(_evt->v7), (DAMAGE_TYPE)_evt->v6);
+                        pParty->pPlayers[grng->random(4)].ReceiveDamage(EVT_DWORD(_evt->v7), (DAMAGE_TYPE)_evt->v6);
                         ++curr_seq_num;
                         break;
                     }

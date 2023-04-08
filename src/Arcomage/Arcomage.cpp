@@ -339,12 +339,12 @@ int explosion_effect_struct::UpdateEffect() {
             } else {
                 if (total_to_init >= 1.0) {
                     // spark dead - initialze new spark
-                    spark_ptr->spark_remaining_life = vrng->RandomInSegment(this->min_lifespan, this->max_lifespan);
-                    spark_ptr->spark_x_speed = static_cast<float> (vrng->Random(17) - 8);
-                    spark_ptr->spark_y_speed = static_cast<float> (vrng->Random(17) - 8);
-                    spark_ptr->spark_x_pos = static_cast<float> (vrng->RandomInSegment(this->start_x_min, (this->start_x_max - 1)));
+                    spark_ptr->spark_remaining_life = vrng->randomInSegment(this->min_lifespan, this->max_lifespan);
+                    spark_ptr->spark_x_speed = static_cast<float> (vrng->random(17) - 8);
+                    spark_ptr->spark_y_speed = static_cast<float> (vrng->random(17) - 8);
+                    spark_ptr->spark_x_pos = static_cast<float> (vrng->randomInSegment(this->start_x_min, (this->start_x_max - 1)));
                     spark_ptr->spark_position.x = static_cast<int> (spark_ptr->spark_x_pos);
-                    spark_ptr->spark_y_pos = static_cast<float> (vrng->RandomInSegment((this->start_y_min - 1), this->start_y_max));
+                    spark_ptr->spark_y_pos = static_cast<float> (vrng->randomInSegment((this->start_y_min - 1), this->start_y_max));
                     spark_ptr->spark_position.y = static_cast<int> (spark_ptr->spark_y_pos);
                     --this->remaining_sparks_to_init;
                     --total_to_init;
@@ -812,14 +812,14 @@ bool OpponentsAITurn(int player_num) {
         int random_card_slot;
         if (need_to_discard_card == 0) {
             for (int i = 0; i < 10; ++i) {
-                random_card_slot = grng->RandomInSegment(0, ai_player_cards_count - 1);
+                random_card_slot = grng->randomInSegment(0, ai_player_cards_count - 1);
                 if (CanCardBePlayed(player_num, random_card_slot))
                     return PlayCard(player_num, random_card_slot);
             }
         }
 
         // if that fails discard card at random
-        random_card_slot = grng->RandomInSegment(0, ai_player_cards_count - 1);
+        random_card_slot = grng->randomInSegment(0, ai_player_cards_count - 1);
         return DiscardCard(player_num, random_card_slot);
 
     } else if ((opponent_mastery == 1) || (opponent_mastery == 2)) {
@@ -975,15 +975,15 @@ void ArcomageGame::Loop() {
 
             // draw you lost/ you won + fireworks
 
-            int rand = vrng->RandomInSegment(0, 38);
+            int rand = vrng->randomInSegment(0, 38);
             if (rand == 38) {
                 if (pArcomageGame->uGameWinner == 1) {
-                    explos_coords.x = vrng->RandomInSegment(75, 175);
-                    explos_coords.y = vrng->RandomInSegment(50, 150);
+                    explos_coords.x = vrng->randomInSegment(75, 175);
+                    explos_coords.y = vrng->randomInSegment(50, 150);
                     new_explosion_effect(&explos_coords, 5);
                 } else {
-                    explos_coords.x = vrng->RandomInSegment(465, 565);
-                    explos_coords.y = vrng->RandomInSegment(50, 150);
+                    explos_coords.x = vrng->randomInSegment(465, 565);
+                    explos_coords.y = vrng->randomInSegment(50, 150);
                     new_explosion_effect(&explos_coords, 5);
                 }
             }
@@ -1107,7 +1107,7 @@ void FillPlayerDeck() {
 
     for (i = 0; i < DECK_SIZE; ++i) {
         do {
-            rand_deck_pos = grng->Random(DECK_SIZE);
+            rand_deck_pos = grng->random(DECK_SIZE);
         } while (card_taken_flags[rand_deck_pos] == 1);
 
         card_taken_flags[rand_deck_pos] = 1;
@@ -1153,8 +1153,8 @@ void GetNextCardFromDeck(int player_num) {
         drawn_card_slot_index = card_slot_indx;
         am_Players[player_num].cards_at_hand[card_slot_indx] = new_card_id;
         // Note that we're using grng here for a reason - we want recorded mouse clicks to work.
-        am_Players[player_num].card_shift[card_slot_indx].x = grng->RandomInSegment(-4, 4);
-        am_Players[player_num].card_shift[card_slot_indx].y = grng->RandomInSegment(-4, 4);
+        am_Players[player_num].card_shift[card_slot_indx].x = grng->randomInSegment(-4, 4);
+        am_Players[player_num].card_shift[card_slot_indx].y = grng->randomInSegment(-4, 4);
         drawn_card_anim_start = 1;
     }
 }

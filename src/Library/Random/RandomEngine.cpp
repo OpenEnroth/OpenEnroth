@@ -2,13 +2,13 @@
 
 #include <cassert>
 
-int RandomEngine::RandomInSegment(int min, int max) {
+int RandomEngine::randomInSegment(int min, int max) {
     assert(max >= min);
 
-    return min + Random(max - min + 1);
+    return min + random(max - min + 1);
 }
 
-int RandomEngine::RandomDice(int count, int faces) {
+int RandomEngine::randomDice(int count, int faces) {
     assert(count >= 0 && faces >= 0);
 
     if (count == 0 || faces == 0)
@@ -16,6 +16,6 @@ int RandomEngine::RandomDice(int count, int faces) {
 
     int result = 0;
     for (int i = 0; i < count; i++)
-        result += 1 + Random(faces);
+        result += 1 + random(faces);
     return result;
 }

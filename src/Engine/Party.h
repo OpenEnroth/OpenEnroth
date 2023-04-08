@@ -338,7 +338,7 @@ struct Party {
             }
         }
         if (!activeCharacters.empty()) {
-            return activeCharacters[rng->Random(activeCharacters.size())];
+            return activeCharacters[rng->random(activeCharacters.size())];
         }
         return -1;
     }

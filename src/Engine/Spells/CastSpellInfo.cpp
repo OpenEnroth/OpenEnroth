@@ -223,7 +223,7 @@ void CastSpellInfoHelpers::castSpell() {
                                                   // TODO(Nik-RE-dev): does scrolls must fail?
                 && pPlayer->IsCursed()
                 && isRegularSpell(pCastSpell->uSpellID)
-                && grng->Random(100) < 50) {  // player is cursed and have a chance to fail spell casting
+                && grng->random(100) < 50) {  // player is cursed and have a chance to fail spell casting
             setSpellRecovery(pCastSpell, SPELL_FAILURE_RECOVERY_TIME_ON_CURSE);
             spellFailed(pCastSpell, LSTR_SPELL_FAILED);
             pPlayer->SpendMana(uRequiredMana);
@@ -295,7 +295,7 @@ void CastSpellInfoHelpers::castSpell() {
                 if (pParty->GetRedOrYellowAlert()) {
                     spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                     castSuccessful = false;
-                } else if (grng->Random(100) >= success_chance_percent) {
+                } else if (grng->random(100) >= success_chance_percent) {
                     spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                     // Mana was not spend before on failure.
                     pPlayer->SpendMana(uRequiredMana);
@@ -982,7 +982,7 @@ void CastSpellInfoHelpers::castSpell() {
                     int yaw, pitch;
                     int meteor_num = (spell_mastery == PLAYER_SKILL_MASTERY_GRANDMASTER) ? 20 : 16;
                     for (; meteor_num; meteor_num--) {
-                        int originHeight = grng->Random(1000);
+                        int originHeight = grng->random(1000);
                         // TODO(Nik-RE-dev): condition is always false
                         if (Vec3s(j, k, originHeight - 2500).length() <= 1.0) {
                             pitch = 0;
@@ -1004,8 +1004,8 @@ void CastSpellInfoHelpers::castSpell() {
                                 pParty->bTurnBasedModeOn) {
                             ++pTurnEngine->pending_actions;
                         }
-                        j = grng->Random(1024) - 512;
-                        k = grng->Random(1024) - 512;
+                        j = grng->random(1024) - 512;
+                        k = grng->random(1024) - 512;
                     }
                     break;
                 }
@@ -1099,7 +1099,7 @@ void CastSpellInfoHelpers::castSpell() {
                     int spell_spray_angle_start = ONE_THIRD_PI / -2;
                     int spell_spray_angle_end = ONE_THIRD_PI / 2;
                     while (spell_spray_angle_start <= spell_spray_angle_end) {
-                        pSpellSprite.uSpriteFrameID = grng->Random(64); // TODO(captainurist): this doesn't look like a frame id initialization
+                        pSpellSprite.uSpriteFrameID = grng->random(64); // TODO(captainurist): this doesn't look like a frame id initialization
                         pSpellSprite.uFacing = spell_spray_angle_start + (short)target_direction.uYawAngle;
                         int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                         int yaw = spell_spray_angle_start + target_direction.uYawAngle;
@@ -1199,7 +1199,7 @@ void CastSpellInfoHelpers::castSpell() {
                     int j = 0, k = 0;
                     int yaw, pitch;
                     for (int star_num = 20; star_num; star_num--) {
-                        int originHeight = grng->Random(1000);
+                        int originHeight = grng->random(1000);
                         // TODO(Nik-RE-dev): condition is always false
                         if (Vec3s(j, k, originHeight - 2500).length() <= 1.0) {
                             pitch = 0;
@@ -1221,8 +1221,8 @@ void CastSpellInfoHelpers::castSpell() {
                                 pParty->bTurnBasedModeOn) {
                             ++pTurnEngine->pending_actions;
                         }
-                        j = grng->Random(1024) - 512;
-                        k = grng->Random(1024) - 512;
+                        j = grng->random(1024) - 512;
+                        k = grng->random(1024) - 512;
                     }
                     break;
                 }
@@ -1399,7 +1399,7 @@ void CastSpellInfoHelpers::castSpell() {
                     int success_chance_percent = 10 * spell_level; // 10% chance of success per spell level
                     bool item_not_broken = true;
                     bool spell_failed = true;
-                    int rnd = grng->Random(100);
+                    int rnd = grng->random(100);
                     pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID_2];
                     ItemGen *spell_item_to_enchant = &pPlayer->pInventoryItemList[pCastSpell->spell_target_pid];
                     ITEM_EQUIP_TYPE this_equip_type = pItemTable->pItems[spell_item_to_enchant->uItemID].uEquipType;
@@ -1455,7 +1455,7 @@ void CastSpellInfoHelpers::castSpell() {
                                     // }
 
                                     // pick a random ench
-                                    int item_apply_rand = grng->Random(to_item_apply_sum);
+                                    int item_apply_rand = grng->random(to_item_apply_sum);
                                     int target_item_apply_rand = item_apply_rand + 1;
                                     int current_item_apply_sum = 0;
                                     int step = 0;
@@ -1473,9 +1473,9 @@ void CastSpellInfoHelpers::castSpell() {
 
                                     int ench_power = 0;
                                     // master 3-8  - guess work needs checking
-                                    if (spell_mastery == PLAYER_SKILL_MASTERY_MASTER) ench_power = grng->Random(6) + 3;
+                                    if (spell_mastery == PLAYER_SKILL_MASTERY_MASTER) ench_power = grng->random(6) + 3;
                                     // gm 6-12   - guess work needs checking
-                                    if (spell_mastery== PLAYER_SKILL_MASTERY_GRANDMASTER) ench_power = grng->Random(7) + 6;
+                                    if (spell_mastery== PLAYER_SKILL_MASTERY_GRANDMASTER) ench_power = grng->random(7) + 6;
 
                                     spell_item_to_enchant->m_enchantmentStrength = ench_power;
                                     spell_item_to_enchant->uAttributes |= ITEM_AURA_EFFECT_BLUE;
@@ -1508,7 +1508,7 @@ void CastSpellInfoHelpers::castSpell() {
                                     }
 
                                     // pick a random ench
-                                    int item_apply_rand = grng->Random(to_item_apply_sum);
+                                    int item_apply_rand = grng->random(to_item_apply_sum);
                                     int target_item_apply_rand = item_apply_rand + 1;
                                     int current_item_apply_sum = 0;
                                     int step = 0;
@@ -2924,13 +2924,12 @@ void CastSpellInfoHelpers::castSpell() {
                         ++pTurnEngine->pending_actions;
                     }
                     for (uint i = 0; i < 50; i++) {
-                        int rand_x = grng->Random(4096) - 2048;
-                        int rand_y = grng->Random(4096) - 2048;
+                        int rand_x = grng->random(4096) - 2048;
+                        int rand_y = grng->random(4096) - 2048;
                         bool bOnWater = false;
                         int terr_height = GetTerrainHeightsAroundParty2(rand_x + pParty->vPosition.x, rand_y + pParty->vPosition.y, &bOnWater, 0);
                         SpriteObject::dropItemAt(SPRITE_SPELL_EARTH_ROCK_BLAST,
-                                                 {rand_x + pParty->vPosition.x, rand_y + pParty->vPosition.y, terr_height + 16},
-                                                 grng->Random(500) + 500);
+                                                 {rand_x + pParty->vPosition.x, rand_y + pParty->vPosition.y, terr_height + 16}, grng->random(500) + 500);
                     }
                     break;
                 }
