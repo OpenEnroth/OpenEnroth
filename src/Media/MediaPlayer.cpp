@@ -985,7 +985,7 @@ MPlayer::MPlayer() {
     static int libavcodec_initialized = false;
 
     mediaLogger = std::make_unique<MediaLogger>(logger);
-    MediaLogger::SetGlobalMediaLogger(mediaLogger.get());
+    MediaLogger::setGlobalMediaLogger(mediaLogger.get());
 
     if (!libavcodec_initialized) {
         // av_log_set_level(AV_LOG_TRACE);
@@ -1021,7 +1021,7 @@ MPlayer::~MPlayer() {
 
     delete provider;
 
-    MediaLogger::SetGlobalMediaLogger(nullptr);
+    MediaLogger::setGlobalMediaLogger(nullptr);
 }
 
 // AudioBaseDataSource
