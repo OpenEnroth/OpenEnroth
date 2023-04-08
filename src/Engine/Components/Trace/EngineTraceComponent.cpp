@@ -7,6 +7,7 @@
 #include "Library/Application/PlatformApplication.h"
 #include "Library/Random/Random.h"
 #include "Library/Trace/PaintEvent.h"
+#include "Library/Trace/EventTrace.h"
 
 EngineTraceComponent::EngineTraceComponent(): PlatformEventFilter(EVENTS_ALL) {}
 EngineTraceComponent::~EngineTraceComponent() = default;
@@ -16,7 +17,7 @@ void EngineTraceComponent::start() {
     _tracing = true;
 }
 
-EventTrace EngineTraceComponent::finish() {
+std::vector<std::unique_ptr<PlatformEvent>> EngineTraceComponent::finish() {
     assert(_tracing);
     _tracing = false;
     return std::move(_trace);
@@ -28,7 +29,7 @@ void EngineTraceComponent::swapBuffers() {
         e->type = EVENT_PAINT;
         e->tickCount = application()->platform()->tickCount();
         e->randomState = grng->Random(1024);
-        _trace.events.push_back(std::move(e));
+        _trace.push_back(std::move(e));
     }
 
     // Tail calling is good practice - this way users can reason about the order of proxy execution.
@@ -37,6 +38,6 @@ void EngineTraceComponent::swapBuffers() {
 
 bool EngineTraceComponent::event(const PlatformEvent *event) {
     if (_tracing && EventTrace::isTraceable(event))
-        _trace.events.push_back(EventTrace::cloneEvent(event));
+        _trace.push_back(EventTrace::cloneEvent(event));
     return false;
 }

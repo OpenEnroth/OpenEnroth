@@ -44,8 +44,6 @@ GAME_TEST(Issues, Issue123) {
 
 GAME_TEST(Issues, Issue125) {
     // check that fireballs hurt party
-    engine->config->debug.AllMagic.setValue(true);
-
     int oldHealth = 0;
     test->playTraceFromTestData("issue_125.mm7", "issue_125.json", [&] { oldHealth = totalPartyHealth(); });
     int newHealth = totalPartyHealth();
@@ -173,7 +171,6 @@ GAME_TEST(Issues, Issue223) {
 
 GAME_TEST(Issues, Issue238) {
     // Party vertical flight speed doesnt use frame pacing
-    engine->config->debug.AllMagic.setValue(true);
     test->playTraceFromTestData("issue_238.mm7", "issue_238.json");
     EXPECT_LT(pParty->vPosition.z, 2500);
 }
@@ -271,9 +268,6 @@ GAME_TEST(Issues, Issue294) {
     };
 
     // Testing that party auto-casting shrapnel successfully targets rats & kills them, gaining experience.
-    engine->config->debug.AllMagic.setValue(true);
-    engine->config->debug.NoDamage.setValue(true);
-
     uint64_t oldExperience = 0;
     test->playTraceFromTestData("issue_294.mm7", "issue_294.json", [&] { oldExperience = partyExperience(); });
     uint64_t newExperience = partyExperience();
@@ -364,13 +358,11 @@ GAME_TEST(Issues, Issue403) {
 //GAME_TEST(Issues, Issue405) {
 //    // FPS affects effective recovery time
 //    // play trace at 60fps
-//    engine->config->debug.AllMagic.Set(true);
 //    engine->config->graphics.FPSLimit.Set(63);
 //    test->playTraceFromTestData("issue_405.mm7", "issue_405.json");
 //    int remainingtime60{ pPlayers[1]->uTimeToRecovery };
 //
 //    // play trace at max fps
-//    engine->config->debug.AllMagic.Set(true);
 //    engine->config->graphics.FPSLimit.Set(0);
 //    test->playTraceFromTestData("issue_405.mm7", "issue_405.json");
 //    int remainingtimemax{ pPlayers[1]->uTimeToRecovery };
@@ -580,7 +572,6 @@ GAME_TEST(Issues, Issue608) {
 
 GAME_TEST(Issues, Issue611) {
     // Heal and reanimate dont work
-    engine->config->debug.AllMagic.setValue(true);
     test->playTraceFromTestData("issue_611.mm7", "issue_611.json");
     // expect chars to be healed and zombies
     EXPECT_EQ(pParty->pPlayers[0].sHealth, 45);

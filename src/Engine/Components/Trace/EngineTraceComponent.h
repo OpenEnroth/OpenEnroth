@@ -1,10 +1,12 @@
 #pragma once
 
+#include <vector>
+#include <memory>
+
 #include "Platform/Proxy/ProxyOpenGLContext.h"
 #include "Platform/Filters/PlatformEventFilter.h"
 
 #include "Library/Application/PlatformApplicationAware.h"
-#include "Library/Trace/EventTrace.h"
 
 /**
  * Component that can be used to record events.
@@ -18,7 +20,7 @@ class EngineTraceComponent : private ProxyOpenGLContext, private PlatformEventFi
     virtual ~EngineTraceComponent();
 
     void start();
-    EventTrace finish();
+    std::vector<std::unique_ptr<PlatformEvent>> finish();
 
     bool isTracing() const {
         return _tracing;
@@ -32,5 +34,5 @@ class EngineTraceComponent : private ProxyOpenGLContext, private PlatformEventFi
 
  private:
     bool _tracing = false;
-    EventTrace _trace;
+    std::vector<std::unique_ptr<PlatformEvent>> _trace;
 };
