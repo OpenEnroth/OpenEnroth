@@ -825,9 +825,8 @@ void OnButtonClick2::Update() {
 }
 
 void OnButtonClick3::Update() {
-    if (!sHint.empty()) {
-        pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-    }
+    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
+
     GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
     if (!sHint.empty()) {
