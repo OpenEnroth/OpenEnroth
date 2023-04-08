@@ -161,8 +161,15 @@ static void from_json(const Json &json, std::unique_ptr<PlatformEvent> &value) {
     });
 }
 
+MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(EventTraceConfigLine, (
+    (section, "section"),
+    (key, "key"),
+    (value, "value")
+))
+
 MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(EventTraceHeader, (
-    (saveFileSize, "saveFileSize")
+    (saveFileSize, "saveFileSize"),
+    (config, "config")
 ))
 
 MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(EventTrace, (

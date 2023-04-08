@@ -1,8 +1,10 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "Library/Application/PlatformApplicationAware.h"
+#include "Library/Trace/EventTrace.h"
 
 class EngineTraceComponent;
 class EngineDeterministicComponent;
@@ -49,11 +51,14 @@ class EngineTraceRecorder : private PlatformApplicationAware {
  private:
     friend class PlatformIntrospection;
 
+    static std::vector<EventTraceConfigLine> traceConfig();
+
     virtual void installNotify() override;
     virtual void removeNotify() override;
 
  private:
     bool _isRecording = false;
+    EventTrace _trace;
     std::string _saveFilePath;
     std::string _traceFilePath;
     int _oldFpsLimit = 0;

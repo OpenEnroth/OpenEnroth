@@ -9,8 +9,10 @@
 
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
+#include "Engine/Engine.h"
 
 #include "Library/Trace/PaintEvent.h"
+#include "Library/Trace/EventTrace.h"
 #include "Library/Application/PlatformApplication.h"
 #include "Library/Random/Random.h"
 
@@ -40,6 +42,19 @@ void EngineTracePlayer::playTrace(EngineController *game, const std::string &sav
 
     game->resizeWindow(640, 480);
     game->tick();
+
+    // TODO(captainurist): Right now setting keybindings here doesn't work
+    for (const EventTraceConfigLine &configLine : trace.header.config) {
+        ConfigSection *section = engine->config->section(configLine.section);
+        if (!section)
+            throw Exception("Couldn't initialize trace '{}' because config section '{}' doesn't exist", tracePath, configLine.section);
+
+        AnyConfigEntry *entry = section->entry(configLine.key);
+        if (!entry)
+            throw Exception("Couldn't initialize trace '{}' because config entry '{}.{}' doesn't exist", tracePath, configLine.section, configLine.key);
+
+        entry->setString(configLine.value);
+    }
 
     _deterministicComponent->enterDeterministicMode();
     MM_AT_SCOPE_EXIT(_deterministicComponent->leaveDeterministicMode());
