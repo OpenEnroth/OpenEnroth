@@ -2493,11 +2493,11 @@ void Actor::ActorDamageFromMonster(signed int attacker_id,
                         dmgToRecv = dmgToRecv / 2;
                 } else if (a4 == ABILITY_SPELL1) {
                     v12 = pSpellStats
-                        ->pInfos[pActors[actor_id].pMonsterInfo.uSpell1ID]
+                        ->pInfos[pActors[PID_ID(attacker_id)].pMonsterInfo.uSpell1ID]
                         .uSchool;
                 } else if (a4 == ABILITY_SPELL2) {
                     v12 = pSpellStats
-                        ->pInfos[pActors[actor_id].pMonsterInfo.uSpell2ID]
+                        ->pInfos[pActors[PID_ID(attacker_id)].pMonsterInfo.uSpell2ID]
                         .uSchool;
                 } else if (a4 == ABILITY_SPECIAL) {
                     v12 = pActors[PID_ID(attacker_id)]
