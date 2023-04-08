@@ -1074,11 +1074,11 @@ int CalcSpellDamage(SPELL_TYPE uSpellID, PLAYER_SKILL_LEVEL spellLevel, PLAYER_S
             default:
                 return 0;
         }
-        result = grng->RandomDice(spellLevel, diceSides);
+        result = grng->randomDice(spellLevel, diceSides);
     } else if (uSpellID == SPELL_EARTH_MASS_DISTORTION) {
         result = currentHp * (pSpellDatas[SPELL_EARTH_MASS_DISTORTION].baseDamage + 2 * spellLevel) / 100;
     } else {
-        result = pSpellDatas[uSpellID].baseDamage + grng->RandomDice(spellLevel, pSpellDatas[uSpellID].bonusSkillDamage);
+        result = pSpellDatas[uSpellID].baseDamage + grng->randomDice(spellLevel, pSpellDatas[uSpellID].bonusSkillDamage);
     }
 
     return result;
@@ -1096,8 +1096,8 @@ void armageddonProgress() {
         --pTurnEngine->pending_actions;
     }
 
-    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw + grng->RandomInSegment(-8, 8)); // Was RandomInSegment(-8, 7)
-    pParty->_viewPitch = std::clamp(pParty->_viewPitch + grng->RandomInSegment(-8, 8), -128, 128); // Was RandomInSegment(-8, 7)
+    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw + grng->randomInSegment(-8, 8)); // Was RandomInSegment(-8, 7)
+    pParty->_viewPitch = std::clamp(pParty->_viewPitch + grng->randomInSegment(-8, 8), -128, 128); // Was RandomInSegment(-8, 7)
     pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
     pParty->armageddon_timer -= pEventTimer->uTimeElapsed; // Was pMiscTimer
 

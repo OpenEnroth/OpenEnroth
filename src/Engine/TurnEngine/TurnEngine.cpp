@@ -181,7 +181,7 @@ void stru262_TurnBased::Start() {
                 ++a_players_count;
             }
         } else if (PID_TYPE(this->pQueue[k].uPackedID) == OBJECT_Actor) {
-            v17 = grng->Random(99);
+            v17 = grng->random(99);
             if (v17 < 33)
                 this->pQueue[k].actor_initiative = 1;
             else
@@ -653,7 +653,7 @@ void stru262_TurnBased::AIAttacks(unsigned int queue_index) {
                         Actor::AI_Stand(actor_id, ai_near_actors_targets_pid[actor_id], 0, &a4);
                         break;
                     default:
-                        if (!grng->Random(2))
+                        if (!grng->random(2))
                             Actor::AI_Bored(actor_id, ai_near_actors_targets_pid[actor_id], &a4);
                         else
                             Actor::AI_Stand( actor_id, ai_near_actors_targets_pid[actor_id], 64, &a4);
@@ -1045,7 +1045,7 @@ void stru262_TurnBased::ActorAIChooseNewTargets() {
                         curr_acror->UpdateAnimation();
                         break;
                     }
-                    if (grng->Random(2))
+                    if (grng->random(2))
                         Actor::AI_Stand(uActorID, target_pid, 64, &a4);
                     else
                         Actor::AI_Bored(uActorID, target_pid, &a4);

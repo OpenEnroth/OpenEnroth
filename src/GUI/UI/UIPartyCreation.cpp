@@ -790,7 +790,7 @@ bool PartyCreationUI_LoopInternal() {
     memset(v20, 0, 32);
     for (int i = 0; i < 32; i++) {
         for (v8 = 0; v8 < 10; ++v8) {
-            v9 = grng->Random(32);
+            v9 = grng->random(32);
             if (!v20[v9]) break;
         }
         if (v8 == 10) {
@@ -915,7 +915,7 @@ bool PartyCreationUI_LoopInternal() {
             case PLAYER_SKILL_TRAP_DISARM:
             case PLAYER_SKILL_LEARNING:
                 pParty->pPlayers[i].AddItem(-1, ITEM_POTION_BOTTLE);
-                pParty->pPlayers[i].AddItem(-1, grng->RandomSample(Level1Reagents()));
+                pParty->pPlayers[i].AddItem(-1, grng->randomSample(Level1Reagents()));
                 break;
             case PLAYER_SKILL_DODGE:
                 pParty->pPlayers[i].AddItem(-1, ITEM_LEATHER_BOOTS);

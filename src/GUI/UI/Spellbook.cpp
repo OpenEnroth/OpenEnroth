@@ -69,7 +69,7 @@ void GUIWindow_Spellbook::OpenSpellbookPage(int page) {
     OnCloseSpellBookPage();
     pPlayers[pParty->getActiveCharacter()]->lastOpenedSpellbookPage = page;
     OpenSpellbook();
-    pAudioPlayer->playUISound(vrng->RandomBool() ? SOUND_TurnPage2 : SOUND_TurnPage1);
+    pAudioPlayer->playUISound(vrng->randomBool() ? SOUND_TurnPage2 : SOUND_TurnPage1);
 }
 
 void GUIWindow_Spellbook::OpenSpellbook() {

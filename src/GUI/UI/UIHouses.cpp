@@ -1154,7 +1154,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                             [window_SpeakInHouse->wData.val][i]
                             .uItemID != ITEM_NULL) {
                             // Note that we're using grng here for a reason - we want recorded mouse clicks to work.
-                            weapons_Ypos[i] = grng->Random(300 - shop_ui_items_in_store[i]->GetHeight());
+                            weapons_Ypos[i] = grng->random(300 - shop_ui_items_in_store[i]->GetHeight());
                         }
                     }
                 }
@@ -1176,7 +1176,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                         if (pParty->SpecialItemsInShops[
                             window_SpeakInHouse->wData.val][i].uItemID != ITEM_NULL) {
                             // Note that we're using grng here for a reason - we want recorded mouse clicks to work.
-                            weapons_Ypos[i] = grng->Random(300 - shop_ui_items_in_store[i]->GetHeight());
+                            weapons_Ypos[i] = grng->random(300 - shop_ui_items_in_store[i]->GetHeight());
                         }
                     }
                 }
@@ -3264,7 +3264,7 @@ void GenerateSpecialShopItems() {
                 treasure_lvl =
                     shopWeap_variation_spc[shop_index].treasure_level;
                 item_class =
-                    shopWeap_variation_spc[shop_index].item_class[grng->Random(4)];
+                    shopWeap_variation_spc[shop_index].item_class[grng->random(4)];
             } else if (shop_index <= 28) {  // armor shop
                 mdf = 0;
                 if (item_count > 3) ++mdf;
@@ -3272,7 +3272,7 @@ void GenerateSpecialShopItems() {
                     shopArmr_variation_spc[2 * (shop_index - 15) + mdf]
                     .treasure_level;
                 item_class = shopArmr_variation_spc[2 * (shop_index - 15) + mdf]
-                    .item_class[grng->Random(4)];
+                    .item_class[grng->random(4)];
             } else if (shop_index <= 41) {  // magic shop
                 treasure_lvl = shopMagicSpc_treasure_lvl[shop_index - 28];
                 item_class = 22;          // misc
@@ -3280,7 +3280,7 @@ void GenerateSpecialShopItems() {
                 if (item_count < 6) {
                     pParty->SpecialItemsInShops[shop_index][item_count].Reset();
                     pParty->SpecialItemsInShops[shop_index][item_count]
-                        .uItemID = grng->RandomSample(RecipeScrolls());  // mscrool
+                        .uItemID = grng->randomSample(RecipeScrolls());  // mscrool
                     continue;
                 } else {
                     treasure_lvl = shopAlchSpc_treasure_lvl[shop_index - 41];
@@ -3312,7 +3312,7 @@ void GenerateStandartShopItems() {
                 treasure_lvl =
                     shopWeap_variation_ord[shop_index].treasure_level;
                 item_class =
-                    shopWeap_variation_ord[shop_index].item_class[grng->Random(4)];
+                    shopWeap_variation_ord[shop_index].item_class[grng->random(4)];
             } else if (shop_index <= 28) {  // armor shop
                 mdf = 0;
                 if (item_count > 3) ++mdf;  // rechek offsets
@@ -3320,7 +3320,7 @@ void GenerateStandartShopItems() {
                     shopArmr_variation_ord[2 * (shop_index - 15) + mdf]
                     .treasure_level;
                 item_class = shopArmr_variation_ord[2 * (shop_index - 15) + mdf]
-                    .item_class[grng->Random(4)];
+                    .item_class[grng->random(4)];
             } else if (shop_index <= 41) {  // magic shop
                 treasure_lvl = shopMagic_treasure_lvl[shop_index - 28];
                 item_class = 22;          // misc

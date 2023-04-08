@@ -554,7 +554,7 @@ void ItemTable::GenerateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
 
         current_chance = 0;
         if (total_chance) {
-            current_chance = grng->Random(total_chance) + 1;
+            current_chance = grng->random(total_chance) + 1;
             tmp_chance = 0;
             j = 0;
             while (tmp_chance < current_chance) {
@@ -570,8 +570,8 @@ void ItemTable::GenerateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
         if (treasure_level == ITEM_TREASURE_LEVEL_6) {
             for (ITEM_TYPE i : SpawnableArtifacts())
                 artifact_found += pParty->pIsArtifactFound[i];
-            artifact_random_id = grng->RandomSample(SpawnableArtifacts());
-            if ((grng->Random(100) < 5) && !pParty->pIsArtifactFound[artifact_random_id] &&
+            artifact_random_id = grng->randomSample(SpawnableArtifacts());
+            if ((grng->random(100) < 5) && !pParty->pIsArtifactFound[artifact_random_id] &&
                 (engine->config->gameplay.ArtifactLimit.value() == 0 || artifact_found < engine->config->gameplay.ArtifactLimit.value())) {
                 pParty->pIsArtifactFound[artifact_random_id] = 1;
                 out_item->uAttributes = 0;
@@ -582,7 +582,7 @@ void ItemTable::GenerateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
         }
 
         v57 = 0;
-        v18 = grng->Random(this->uChanceByTreasureLvlSumm[treasure_level]) + 1;
+        v18 = grng->random(this->uChanceByTreasureLvlSumm[treasure_level]) + 1;
         while (v57 < v18) {
             // TODO(captainurist): what's going on here? Get rid of casts.
             out_item->uItemID = ITEM_TYPE(std::to_underlying(out_item->uItemID) + 1);
@@ -592,7 +592,7 @@ void ItemTable::GenerateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
     if (out_item->isPotion() && out_item->uItemID != ITEM_POTION_BOTTLE) {  // if it potion set potion spec
         out_item->uEnchantmentType = 0;
         for (int i = 0; i < 2; ++i) {
-            out_item->uEnchantmentType += grng->Random(4) + 1;
+            out_item->uEnchantmentType += grng->random(4) + 1;
         }
         out_item->uEnchantmentType = out_item->uEnchantmentType * std::to_underlying(treasure_level);
     }
@@ -615,7 +615,7 @@ void ItemTable::GenerateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
         case EQUIP_TWO_HANDED:
         case EQUIP_BOW:
             if (!uBonusChanceWpSpecial[treasure_level]) return;
-            if (grng->Random(100) >= uBonusChanceWpSpecial[treasure_level])
+            if (grng->random(100) >= uBonusChanceWpSpecial[treasure_level])
                 return;
             break;
         case EQUIP_ARMOUR:
@@ -628,17 +628,16 @@ void ItemTable::GenerateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
         case EQUIP_RING:
 
             if (!uBonusChanceStandart[treasure_level]) return;
-            special_chance = grng->Random(100);
+            special_chance = grng->random(100);
             if (special_chance < uBonusChanceStandart[treasure_level]) {
-                v26 = grng->Random(pEnchantmentsSumm[out_item->GetItemEquipType()]) + 1;
+                v26 = grng->random(pEnchantmentsSumm[out_item->GetItemEquipType()]) + 1;
                 v27 = 0;
                 while (v27 < v26) {
                     ++out_item->uEnchantmentType;
                     v27 += pEnchantments[out_item->uEnchantmentType].to_item[out_item->GetItemEquipType()];
                 }
 
-                v33 = grng->Random(bonus_ranges[treasure_level].maxR -
-                                bonus_ranges[treasure_level].minR + 1);
+                v33 = grng->random(bonus_ranges[treasure_level].maxR - bonus_ranges[treasure_level].minR + 1);
                 out_item->m_enchantmentStrength =
                         v33 + bonus_ranges[treasure_level].minR;
                 v32 = out_item->uEnchantmentType - 1;
@@ -657,7 +656,7 @@ void ItemTable::GenerateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
             }
             break;
         case EQUIP_WAND:
-            out_item->uNumCharges = grng->Random(6) + out_item->GetDamageMod() + 1;
+            out_item->uNumCharges = grng->random(6) + out_item->GetDamageMod() + 1;
             out_item->uMaxCharges = out_item->uNumCharges;
             return;
         default:
@@ -688,7 +687,7 @@ void ItemTable::GenerateItem(ITEM_TREASURE_LEVEL treasure_level, unsigned int uT
         }
     }
 
-    int target = grng->Random(spc_sum);
+    int target = grng->random(spc_sum);
     for (int currentSum = 0, k = 0; k < j; k++) {
         currentSum += pSpecialEnchantments[val_list2[k]].to_item_apply[out_item->GetItemEquipType()];
         if (currentSum > target) {

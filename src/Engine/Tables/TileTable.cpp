@@ -44,7 +44,7 @@ int TileTable::GetTileForTerrainType(signed int terrain_type, bool not_random) {
     if (not_random || terrain_type > 8) {
         return GetTileId(terrain_type, 0);
     }
-    v5 = vrng->Random(50);
+    v5 = vrng->random(50);
     if (v5 < 20) {
         return GetTileId(terrain_type, 0);
     } else if (v5 < 30) {
@@ -54,7 +54,7 @@ int TileTable::GetTileForTerrainType(signed int terrain_type, bool not_random) {
     } else if (v5 < 48) {
         return GetTileId(terrain_type, 3);
     }
-    v6 = vrng->Random(8);
+    v6 = vrng->random(8);
     return GetTileId(terrain_type, v6 + 4);
 }
 

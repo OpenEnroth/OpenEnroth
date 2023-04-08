@@ -1581,12 +1581,12 @@ void Game::processQueuedMessages() {
                         }
                         MAP_TYPE mapIdx = pMapStats->GetMapInfo(pCurrentMapName);
                         if (mapIdx == MAP_INVALID) {
-                            mapIdx = static_cast<MAP_TYPE>(grng->Random(pMapStats->uNumMaps + 1));
+                            mapIdx = static_cast<MAP_TYPE>(grng->random(pMapStats->uNumMaps + 1));
                         }
                         MapInfo *pMapInfo = &pMapStats->pInfos[mapIdx];
 
-                        if (grng->Random(100) + 1 <= pMapInfo->Encounter_percent) {
-                            v91 = grng->Random(100);
+                        if (grng->random(100) + 1 <= pMapInfo->Encounter_percent) {
+                            v91 = grng->random(100);
                             v92 = pMapInfo->EncM1percent;
                             v93 = v91 + 1;
                             if (v93 > v92)
@@ -1598,9 +1598,9 @@ void Game::processQueuedMessages() {
                                 encounter_index = 0;
 
                             if (encounter_index) {
-                                pPlayerNum = grng->Random(4);
+                                pPlayerNum = grng->random(4);
                                 pParty->pPlayers[pPlayerNum].conditions.Reset(Condition_Sleep);
-                                Rest(GameTime::FromHours(1).AddMinutes(grng->Random(6)));
+                                Rest(GameTime::FromHours(1).AddMinutes(grng->random(6)));
                                 remainingRestTime = GameTime();
                                 currentRestType = REST_NONE;
 
@@ -1706,7 +1706,7 @@ void Game::processQueuedMessages() {
                         page++;
                     }
                     if (!skill_count) {  //нет скиллов
-                        pAudioPlayer->playUISound(vrng->RandomBool() ? SOUND_TurnPage2 : SOUND_TurnPage1);
+                        pAudioPlayer->playUISound(vrng->randomBool() ? SOUND_TurnPage2 : SOUND_TurnPage1);
                     } else {
                         if (keyboardInputHandler->IsSpellBackcycleToggled()) {
                             --uAction;
@@ -2121,7 +2121,7 @@ void Game::processQueuedMessages() {
                         continue;
 
                     for(size_t attempt = 0; attempt < 500; attempt++) {
-                        ITEM_TYPE pItemID = grng->RandomSample(SpawnableItems());
+                        ITEM_TYPE pItemID = grng->randomSample(SpawnableItems());
                         if (pItemTable->pItems[pItemID].uItemID_Rep_St > 6) {
                             if (!pPlayers[pParty->getActiveCharacter()]->AddItem(-1, pItemID)) {
                                 pAudioPlayer->playUISound(SOUND_error);
@@ -2138,7 +2138,7 @@ void Game::processQueuedMessages() {
                         continue;
 
                     for (size_t attempt = 0; attempt < 500; attempt++) {
-                        ITEM_TYPE pItemID = grng->RandomSample(SpawnableItems());
+                        ITEM_TYPE pItemID = grng->randomSample(SpawnableItems());
                         // if (pItemTable->pItems[pItemID].uItemID_Rep_St ==
                         //   (item_id - 40015 + 1)) {
                         if (!pPlayers[pParty->getActiveCharacter()]->AddItem(-1, pItemID)) {

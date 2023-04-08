@@ -1942,7 +1942,7 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                     }
                 }
                 if (v63) {
-                    if (dword_A74CDC == -1) dword_A74CDC = vrng->Random(v63);
+                    if (dword_A74CDC == -1) dword_A74CDC = vrng->random(v63);
                     pText =
                         pAwards[v55[dword_A74CDC]]
                         .pText;  // (char *)dword_723E80_award_related[2

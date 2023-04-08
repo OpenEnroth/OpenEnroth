@@ -592,7 +592,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
                         case PLAYER_SKILL_TRAP_DISARM:
                         case PLAYER_SKILL_LEARNING:
                             pCharacter.AddItem(-1, ITEM_POTION_BOTTLE);
-                            pCharacter.AddItem(-1, grng->RandomSample(Level1Reagents())); // Add simple reagent.
+                            pCharacter.AddItem(-1, grng->randomSample(Level1Reagents())); // Add simple reagent.
                             break;
                         case PLAYER_SKILL_DODGE:
                             pCharacter.AddItem(-1, ITEM_LEATHER_BOOTS);
@@ -688,7 +688,7 @@ void Party::Reset() {
 
         player.expression = CHARACTER_EXPRESSION_1;
         player.uExpressionTimePassed = 0;
-        player.uExpressionTimeLength = vrng->Random(256) + 128;
+        player.uExpressionTimeLength = vrng->random(256) + 128;
     }
 
     for (SpellBuff &buff : this->pPartyBuffs) {
@@ -778,11 +778,11 @@ void Party::UpdatePlayersAndHirelingsEmotions() {
                 continue;
 
             player.uExpressionTimePassed = 0;
-            if (player.expression != 1 || vrng->Random(5)) {
+            if (player.expression != 1 || vrng->random(5)) {
                 player.expression = CHARACTER_EXPRESSION_1;
-                player.uExpressionTimeLength = vrng->Random(256) + 32;
+                player.uExpressionTimeLength = vrng->random(256) + 32;
             } else {
-                v4 = vrng->Random(100);
+                v4 = vrng->random(100);
                 if (v4 < 25)
                     player.expression = CHARACTER_EXPRESSION_BLINK;
                 else if (v4 < 31)

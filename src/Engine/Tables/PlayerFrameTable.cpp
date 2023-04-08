@@ -52,7 +52,7 @@ PlayerFrame *PlayerFrameTable::GetFrameBy_y(int *pFramesetID, int *pAnimTime,
     if (v5 < 8 * this->pFrames[*pFramesetID].uAnimTime) {
         *pAnimTime = v5;
     } else {
-        v6 = vrng->Random(4) + 21;
+        v6 = vrng->random(4) + 21;
         *pFramesetID = v6;
         *pAnimTime = 8 * v5 % this->pFrames[v6].uAnimTime;
     }

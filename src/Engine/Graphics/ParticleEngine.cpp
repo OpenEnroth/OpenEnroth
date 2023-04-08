@@ -18,7 +18,7 @@ void TrailParticleGenerator::AddParticle(int x, int y, int z, int bgr16) {
     particles[num_particles].x = x;
     particles[num_particles].y = y;
     particles[num_particles].z = z;
-    particles[num_particles].time_to_live = vrng->Random(64) + 256;
+    particles[num_particles].time_to_live = vrng->random(64) + 256;
     particles[num_particles].time_left = particles[num_particles].time_to_live;
     particles[num_particles].bgr16 = bgr16;
 
@@ -29,17 +29,17 @@ void TrailParticleGenerator::AddParticle(int x, int y, int z, int bgr16) {
 //----- (00440E91) --------------------------------------------------------
 void TrailParticleGenerator::GenerateTrailParticles(int x, int y, int z,
                                                     int bgr16) {
-    for (int i = 0, count = 5 + vrng->Random(6); i < count; ++i)
-        AddParticle(vrng->Random(33) + x - 16, vrng->Random(33) + y - 16, vrng->Random(33) + z, bgr16);
+    for (int i = 0, count = 5 + vrng->random(6); i < count; ++i)
+        AddParticle(vrng->random(33) + x - 16, vrng->random(33) + y - 16, vrng->random(33) + z, bgr16);
 }
 
 //----- (00440F07) --------------------------------------------------------
 void TrailParticleGenerator::UpdateParticles() {
     for (uint i = 0; i < 100; ++i) {
         if (particles[i].time_left > 0) {
-            particles[i].x += vrng->Random(5) + 4;
-            particles[i].y += vrng->Random(5) - 2;
-            particles[i].z += vrng->Random(5) - 2;
+            particles[i].x += vrng->random(5) + 4;
+            particles[i].y += vrng->random(5) - 2;
+            particles[i].z += vrng->random(5) - 2;
             particles[i].time_left -= pEventTimer->uTimeElapsed;
         }
     }
@@ -92,8 +92,8 @@ void ParticleEngine::AddParticle(Particle_sw *particle) {
             freeParticle->paletteID = particle->paletteID;
             freeParticle->particle_size = particle->particle_size;
             if (freeParticle->type & ParticleType_Rotating) {
-                freeParticle->rotation_speed = vrng->Random(256) - 128;
-                freeParticle->angle = vrng->Random(TrigLUT.uIntegerDoublePi);
+                freeParticle->rotation_speed = vrng->random(256) - 128;
+                freeParticle->angle = vrng->random(TrigLUT.uIntegerDoublePi);
             } else {
                 freeParticle->rotation_speed = 0;
                 freeParticle->angle = 0;
@@ -150,9 +150,9 @@ void ParticleEngine::UpdateParticles() {
 
         // Ascending particles slowly float upward
         if (p->type & ParticleType_Ascending) {
-            p->x += (vrng->Random(5) - 2) * time / 16.0;
-            p->y += (vrng->Random(5) - 2) * time / 16.0;
-            p->z += (vrng->Random(5) + 4) * time / 16.0;
+            p->x += (vrng->random(5) - 2) * time / 16.0;
+            p->y += (vrng->random(5) - 2) * time / 16.0;
+            p->z += (vrng->random(5) + 4) * time / 16.0;
         }
 
         // v9 = (signed int)(time * p->rotation_speed) / 16;
