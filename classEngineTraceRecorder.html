@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9f80609</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fa222af</span>
    </div>
   </td>
  </tr>
@@ -72,6 +72,7 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-static-methods">Static Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="#friends">Friends</a> &#124;
 <a href="classEngineTraceRecorder-members.html">List of all members</a>  </div>
@@ -117,10 +118,17 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:a37fc00d6c4be85dadf00248ff2b620be inherit pub_methods_classPlatformApplicationAware"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformApplicationAware.html#a37fc00d6c4be85dadf00248ff2b620be">removeNotify</a> ()</td></tr>
 <tr class="separator:a37fc00d6c4be85dadf00248ff2b620be inherit pub_methods_classPlatformApplicationAware"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-static-methods" name="pri-static-methods"></a>
+Static Private Member Functions</h2></td></tr>
+<tr class="memitem:ab3bbdd83372e17b8f9877d969cb82fd2"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; <a class="el" href="structEventTraceConfigLine.html">EventTraceConfigLine</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#ab3bbdd83372e17b8f9877d969cb82fd2">traceConfig</a> ()</td></tr>
+<tr class="separator:ab3bbdd83372e17b8f9877d969cb82fd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a4fc416727a9f5c0e52de784bff4edc55"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a4fc416727a9f5c0e52de784bff4edc55">_isRecording</a> = false</td></tr>
 <tr class="separator:a4fc416727a9f5c0e52de784bff4edc55"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4aff2b3a7d370b1a29be01f527f9c7fc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structEventTrace.html">EventTrace</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a4aff2b3a7d370b1a29be01f527f9c7fc">_trace</a></td></tr>
+<tr class="separator:a4aff2b3a7d370b1a29be01f527f9c7fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9b52436af26477a9ee4a2164612c38a3"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a9b52436af26477a9ee4a2164612c38a3">_saveFilePath</a></td></tr>
 <tr class="separator:a9b52436af26477a9ee4a2164612c38a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa22ad3fafdad2d4f97e36d27f9af6f1f"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#aa22ad3fafdad2d4f97e36d27f9af6f1f">_traceFilePath</a></td></tr>
@@ -304,6 +312,31 @@ Friends</h2></td></tr>
 
 </div>
 </div>
+<a id="ab3bbdd83372e17b8f9877d969cb82fd2" name="ab3bbdd83372e17b8f9877d969cb82fd2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab3bbdd83372e17b8f9877d969cb82fd2">&#9670;&#160;</a></span>traceConfig()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; <a class="el" href="structEventTraceConfigLine.html">EventTraceConfigLine</a> &gt; EngineTraceRecorder::traceConfig </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Friends And Related Function Documentation</h2>
 <a id="ab885b56275df91cf58aedeb374cdea9c" name="ab885b56275df91cf58aedeb374cdea9c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab885b56275df91cf58aedeb374cdea9c">&#9670;&#160;</a></span>PlatformIntrospection</h2>
@@ -449,6 +482,28 @@ Friends</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::string EngineTraceRecorder::_saveFilePath</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4aff2b3a7d370b1a29be01f527f9c7fc" name="a4aff2b3a7d370b1a29be01f527f9c7fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4aff2b3a7d370b1a29be01f527f9c7fc">&#9670;&#160;</a></span>_trace</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structEventTrace.html">EventTrace</a> EngineTraceRecorder::_trace</td>
         </tr>
       </table>
   </td>

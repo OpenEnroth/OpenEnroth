@@ -20,7 +20,8 @@ var searchData=
   ['equipemntpair_17',['EquipemntPair',['../classEquipemntPair.html',1,'']]],
   ['eventindex_18',['EventIndex',['../structEventIndex.html',1,'']]],
   ['eventtrace_19',['EventTrace',['../structEventTrace.html',1,'']]],
-  ['eventtraceheader_20',['EventTraceHeader',['../structEventTraceHeader.html',1,'']]],
-  ['exception_21',['Exception',['../classException.html',1,'']]],
-  ['explosion_5feffect_5fstruct_22',['explosion_effect_struct',['../structexplosion__effect__struct.html',1,'']]]
+  ['eventtraceconfigline_20',['EventTraceConfigLine',['../structEventTraceConfigLine.html',1,'']]],
+  ['eventtraceheader_21',['EventTraceHeader',['../structEventTraceHeader.html',1,'']]],
+  ['exception_22',['Exception',['../classException.html',1,'']]],
+  ['explosion_5feffect_5fstruct_23',['explosion_effect_struct',['../structexplosion__effect__struct.html',1,'']]]
 ];
