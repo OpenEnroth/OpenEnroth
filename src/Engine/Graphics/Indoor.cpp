@@ -586,13 +586,13 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
         pDoor->pDeltaVs = (int16_t *)(&ptr_0002B4_doors_ddata[j]);
         j += pDoor->uNumFaces;
 
-        pDoor->pXOffsets = &ptr_0002B4_doors_ddata[j];
+        pDoor->pXOffsets = (int16_t *)(&ptr_0002B4_doors_ddata[j]);
         j += pDoor->uNumOffsets;
 
-        pDoor->pYOffsets = &ptr_0002B4_doors_ddata[j];
+        pDoor->pYOffsets = (int16_t *)(&ptr_0002B4_doors_ddata[j]);
         j += pDoor->uNumOffsets;
 
-        pDoor->pZOffsets = &ptr_0002B4_doors_ddata[j];
+        pDoor->pZOffsets = (int16_t *)(&ptr_0002B4_doors_ddata[j]);
         j += pDoor->uNumOffsets;
     }
     // v190 = 0;
@@ -965,7 +965,6 @@ void BLV_UpdateDoors() {
                 door->uState = BLVDoor::Open;
                 if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0)
                     pAudioPlayer->playSound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_Door, i));
-                // goto LABEL_18;
             } else if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0) {
                 pAudioPlayer->playSound(eDoorSoundID, PID(OBJECT_Door, i), 1);
             }
@@ -976,7 +975,6 @@ void BLV_UpdateDoors() {
                 door->uState = BLVDoor::Closed;
                 if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0)
                     pAudioPlayer->playSound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_Door, i));
-                // goto LABEL_18;
             } else {
                 open_distance = door->uMoveLength - v5;
                 if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0)

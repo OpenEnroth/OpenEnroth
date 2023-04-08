@@ -303,9 +303,9 @@ struct BLVDoor {  // 50h
     uint16_t *pSectorIDs;
     int16_t *pDeltaUs;
     int16_t *pDeltaVs;
-    uint16_t *pXOffsets;
-    uint16_t *pYOffsets;
-    uint16_t *pZOffsets;
+    int16_t *pXOffsets;
+    int16_t *pYOffsets;
+    int16_t *pZOffsets;
     uint16_t uNumVertices;
     uint16_t uNumFaces;
     uint16_t uNumSectors;
