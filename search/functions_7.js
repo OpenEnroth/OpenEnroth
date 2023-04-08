@@ -374,7 +374,7 @@ var searchData=
   ['givepartyexp_371',['GivePartyExp',['../structParty.html#af90af968b8fd1d3eb232a7c3108c31ed',1,'Party']]],
   ['gl_5fcheck_5ferrors_372',['GL_Check_Errors',['../RenderOpenGL_8cpp.html#a1acc1a9ced112b44e0f5cfac1576936a',1,'RenderOpenGL.cpp']]],
   ['gl_5fcheck_5fframebuffer_373',['GL_Check_Framebuffer',['../RenderOpenGL_8cpp.html#aa284b830da798136799f8f96ebea0214',1,'RenderOpenGL.cpp']]],
-  ['globalmedialogger_374',['globalMediaLogger',['../classMediaLogger.html#a6ee04e5a525eaa47ea33247d66a849ab',1,'MediaLogger']]],
+  ['globalmedialogger_374',['GlobalMediaLogger',['../classMediaLogger.html#aeb6e9cb7ce555e2bda999c264091066a',1,'MediaLogger']]],
   ['globalmedialoggercallback_375',['GlobalMediaLoggerCallback',['../MediaLogger_8cpp.html#a62f394e9cdcbd010d641249986eee1ba',1,'MediaLogger.cpp']]],
   ['globalprocessmessages_376',['globalProcessMessages',['../namespacedetail.html#a7268102572d1b3c5e091ea5b0ade1182',1,'detail']]],
   ['globalwaitformessages_377',['globalWaitForMessages',['../namespacedetail.html#ab1892a4a5733ec83f0734ad3b41ad4f6',1,'detail']]],
