@@ -717,15 +717,11 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         }
 
         if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
-            actor.vPosition.x = collision_state.new_position_lo.x;
-            actor.vPosition.y = collision_state.new_position_lo.y;
-            actor.vPosition.z = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
+            actor.vPosition = (collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo + 1)).toShort();
             break;
         }
 
-        actor.vPosition.x += collision_state.adjusted_move_distance * collision_state.direction.x;
-        actor.vPosition.y += collision_state.adjusted_move_distance * collision_state.direction.y;
-        actor.vPosition.z += collision_state.adjusted_move_distance * collision_state.direction.z;
+        actor.vPosition += (collision_state.adjusted_move_distance * collision_state.direction).toShort();
         collision_state.total_move_distance += collision_state.adjusted_move_distance;
 
         unsigned int v39 = PID_ID(collision_state.pid);
@@ -784,22 +780,15 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
                         actor.vVelocity.x = 0;
                     }
                 } else {
-                    int v72b = abs(face->pFacePlaneOLD.vNormal.y * actor.vVelocity.y +
-                                   face->pFacePlaneOLD.vNormal.z * actor.vVelocity.z +
-                                   face->pFacePlaneOLD.vNormal.x * actor.vVelocity.x) >> 16;
+                    float v72b = dot(face->pFacePlane.vNormal, actor.vVelocity.toFloat());
                     if ((collision_state.speed / 8) > v72b)
                         v72b = collision_state.speed / 8;
 
-                    actor.vVelocity.x += fixpoint_mul(v72b, face->pFacePlaneOLD.vNormal.x);
-                    actor.vVelocity.y += fixpoint_mul(v72b, face->pFacePlaneOLD.vNormal.y);
-                    actor.vVelocity.z += fixpoint_mul(v72b, face->pFacePlaneOLD.vNormal.z);
+                    actor.vVelocity += (v72b * face->pFacePlane.vNormal).toShort();
                     if (face->uPolygonType != POLYGON_InBetweenFloorAndWall) {
-                        int v46 = collision_state.radius_lo - face->pFacePlaneOLD.signedDistanceTo(actor.vPosition);
-                        if (v46 > 0) {
-                            actor.vPosition.x += fixpoint_mul(v46, face->pFacePlaneOLD.vNormal.x);
-                            actor.vPosition.y += fixpoint_mul(v46, face->pFacePlaneOLD.vNormal.y);
-                            actor.vPosition.z += fixpoint_mul(v46, face->pFacePlaneOLD.vNormal.z);
-                        }
+                        float v46 = collision_state.radius_lo - face->pFacePlane.signedDistanceTo(actor.vPosition.toFloat());
+                        if (v46 > 0)
+                            actor.vPosition += (v46 * face->pFacePlane.vNormal).toShort();
                         actor.uYawAngle = TrigLUT.atan2(actor.vVelocity.x, actor.vVelocity.y);
                     }
                 }
