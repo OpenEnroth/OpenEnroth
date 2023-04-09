@@ -337,7 +337,9 @@ void AudioPlayer::playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
                                     pIndoor->pDoors[object_id].pYOffsets[0] / positionScaling,
                                     pIndoor->pDoors[object_id].pZOffsets[0] / positionScaling, 500.f);
 
-                _nonExclusiveSoundPool.playNew(sample, false, true);
+                // Door sounds are "looped" for the duration of moving animation by calling sound play each frame
+                // so need to actually start new playing after previous sound finished playing.
+                _nonExclusiveSoundPool.playUniquePid(sample, pid, false, true);
 
                 break;
             }
