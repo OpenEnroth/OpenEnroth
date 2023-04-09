@@ -26,6 +26,12 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformWindowMode, CASE_INSENSITIVE, {
     {WINDOW_MODE_FULLSCREEN_BORDERLESS, "3"}
 })
 
+GameConfig::GameConfig(const std::string &path) : _path(path) {
+    _logger = EngineIocContainer::ResolveLogger();
+}
+
+GameConfig::~GameConfig() {}
+
 void GameConfig::LoadConfiguration() {
     if (std::filesystem::exists(_path)) {
         Config::load(_path);
@@ -41,8 +47,12 @@ void GameConfig::SaveConfiguration() {
     _logger->info("Configuration file '{}' saved!", _path);
 }
 
-GameConfig::GameConfig(const std::string &path) : _path(path) {
-    _logger = EngineIocContainer::ResolveLogger();
-}
+void GameConfig::resetForTest() {
+    reset();
 
-GameConfig::~GameConfig() {}
+    debug.NoSound.setValue(true);
+    debug.NoVideo.setValue(true);
+    debug.VerboseLogging.setValue(true);
+    window.MouseGrab.setValue(false);
+    graphics.FPSLimit.setValue(0); // Unlimited
+}

@@ -1,13 +1,13 @@
 #include <gtest/gtest.h>
 
 #include "Application/GameStarter.h"
+#include "Application/GameConfig.h"
 
 #include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 
 #include "Testing/Game/GameTest.h"
-#include "Testing/Game/TestConfig.h"
 #include "Testing/Game/TestController.h"
 
 #include "Library/Application/PlatformApplication.h"
@@ -35,7 +35,7 @@ int platformMain(int argc, char **argv) {
         testing::InitGoogleTest(&argc, argv);
 
         GameStarter starter(opts);
-        ResetTestConfig(starter.config());
+        starter.config()->resetForTest();
 
         int exitCode = 0;
         starter.application()->get<EngineControlComponent>()->runControlRoutine([&] (EngineController *game) {

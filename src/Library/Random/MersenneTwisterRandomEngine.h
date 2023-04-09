@@ -17,6 +17,13 @@ class MersenneTwisterRandomEngine: public RandomEngine {
         return static_cast<int>((static_cast<uint64_t>(_base()) * static_cast<uint64_t>(hi)) >> 32);
     }
 
+    virtual int peek(int hi) const override {
+        assert(hi > 0);
+
+        std::mt19937 copy = _base;
+        return static_cast<int>((static_cast<uint64_t>(copy()) * static_cast<uint64_t>(hi)) >> 32);
+    }
+
     virtual void seed(int seed) override {
         _base.seed(seed);
     }

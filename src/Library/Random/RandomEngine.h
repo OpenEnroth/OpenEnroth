@@ -26,6 +26,14 @@ class RandomEngine {
     virtual int random(int hi) = 0;
 
     /**
+     * Note that this method is mainly for debugging, implementation is not required to be efficient.
+     *
+     * @param hi                        Upper bound for the result. Must be greater than zero.
+     * @return                          Random number that the next call to `random(hi)` will return.
+     */
+    virtual int peek(int hi) const = 0;
+
+    /**
      * Reinitializes this random engine with the provided seed value.
      *
      * @param seed                      Random seed.

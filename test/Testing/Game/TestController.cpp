@@ -12,8 +12,6 @@
 
 #include "Application/GameKeyboardController.h"
 
-#include "TestConfig.h"
-
 TestController::TestController(EngineController *controller, const std::string &testDataPath):
     _controller(controller),
     _testDataPath(testDataPath) {}
@@ -44,5 +42,5 @@ void TestController::prepareForNextTest() {
     ::application->get<EngineDeterministicComponent>()->resetDeterministicState();
     ::application->get<GameKeyboardController>()->reset();
 
-    ResetTestConfig(engine->config.get());
+    engine->config->resetForTest();
 }

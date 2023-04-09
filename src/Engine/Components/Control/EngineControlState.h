@@ -5,6 +5,7 @@
 #include <queue>
 #include <functional>
 #include <memory>
+#include <exception>
 
 #include "Utility/IndexedArray.h"
 
@@ -46,6 +47,9 @@ class EngineControlState {
      * frame, and then switch right back into the control thread. It is set in control thread and cleared in the
      * main thread. */
     GameRoutine gameRoutine;
+
+    /** If control thread ends with an exception, this is where it's stored. */
+    std::exception_ptr controlException;
 
     // Synchronization primitives.
 
