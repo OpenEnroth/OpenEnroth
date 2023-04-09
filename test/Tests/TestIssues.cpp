@@ -609,6 +609,12 @@ GAME_TEST(Issues, Issue625) {
     EXPECT_FALSE(pParty->hasItem(ITEM_CLUB));
 }
 
+GAME_TEST(Issues, Issue626) {
+    // Last loaded save is not remembered
+    test->playTraceFromTestData("issue_626.mm7", "issue_626.json");
+    EXPECT_EQ(uLoadGameUI_SelectedSlot, 5);
+}
+
 GAME_TEST(Issue, Issue645) {
     // Characters does not enter unconscious state
     test->playTraceFromTestData("issue_645.mm7", "issue_645.json");
