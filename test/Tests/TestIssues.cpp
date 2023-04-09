@@ -596,3 +596,24 @@ GAME_TEST(Issues, Issue615) {
     test->playTraceFromTestData("issue_615b.mm7", "issue_615b.json", []() { EXPECT_EQ(pParty->getActiveCharacter(), 1); });
     EXPECT_EQ(pParty->getActiveCharacter(), 4);
 }
+
+GAME_TEST(Issues, Issue625) {
+    // Every character getting club at the start of the game
+    test->loadGameFromTestData("issue_315.mm7");
+    game->goToMainMenu();
+    game->pressGuiButton("MainMenu_NewGame");
+    game->tick(2);
+    game->pressGuiButton("PartyCreation_OK");
+    game->skipLoadingScreen();
+    game->tick(2);
+    EXPECT_FALSE(pParty->hasItem(ITEM_CLUB));
+}
+
+GAME_TEST(Issue, Issue645) {
+    // Characters does not enter unconscious state
+    test->playTraceFromTestData("issue_645.mm7", "issue_645.json");
+    EXPECT_EQ(pParty->pPlayers[0].conditions.Has(Condition_Unconscious), true);
+    EXPECT_EQ(pParty->pPlayers[1].conditions.Has(Condition_Unconscious), false);
+    EXPECT_EQ(pParty->pPlayers[2].conditions.Has(Condition_Unconscious), true);
+    EXPECT_EQ(pParty->pPlayers[3].conditions.Has(Condition_Unconscious), true);
+}
