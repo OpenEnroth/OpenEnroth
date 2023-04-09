@@ -678,24 +678,20 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
     collision_state.radius_lo = actorRadius;
 
     for (int attempt = 0; attempt < 100; ++attempt) {
-        collision_state.position_hi.x = actor.vPosition.x;
-        collision_state.position_lo.x = collision_state.position_hi.x;
-        collision_state.position_hi.y = actor.vPosition.y;
-        collision_state.position_lo.y = collision_state.position_hi.y;
-        int Act_Z_Pos = actor.vPosition.z;
-        collision_state.position_lo.z = Act_Z_Pos + actorRadius + 1;
-        collision_state.position_hi.z = Act_Z_Pos - actorRadius + actor.uActorHeight - 1;
-        if (collision_state.position_hi.z < collision_state.position_lo.z)
-            collision_state.position_hi.z = Act_Z_Pos + actorRadius + 1;
-        collision_state.velocity.x = actor.vVelocity.x;
+        collision_state.position_hi = actor.vPosition.toFloat() + Vec3f(0, 0, actor.uActorHeight - actorRadius - 1);
+        collision_state.position_lo = actor.vPosition.toFloat() + Vec3f(0, 0, actorRadius + 1);
+        collision_state.position_hi.z = std::max(collision_state.position_hi.z, collision_state.position_lo.z);
+        collision_state.velocity = actor.vVelocity.toFloat();
         collision_state.uSectorID = 0;
-        collision_state.velocity.y = actor.vVelocity.y;
-        collision_state.velocity.z = actor.vVelocity.z;
-        if (collision_state.PrepareAndCheckIfStationary(0)) break;
+
+        if (collision_state.PrepareAndCheckIfStationary(0))
+            break;
+
         CollideOutdoorWithModels(true);
         CollideOutdoorWithDecorations(WorldPosToGridCellX(actor.vPosition.x), WorldPosToGridCellY(actor.vPosition.y));
         CollideWithParty(false);
         _46ED8A_collide_against_sprite_objects(PID(OBJECT_Actor, actor.id));
+
         int v31 = 0;
         signed int i;
         for (i = 0; v31 < ai_arrays_size; ++v31) {
@@ -703,6 +699,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
             if (v33 != actor.id && CollideWithActor(v33, 40))
                 ++i;
         }
+
         int v71 = i > 1;
         //if (collision_state.adjusted_move_distance < collision_state.move_distance)
             //Slope_High = collision_state.adjusted_move_distance * collision_state.direction.z;
