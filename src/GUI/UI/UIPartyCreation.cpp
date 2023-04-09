@@ -924,7 +924,7 @@ bool PartyCreationUI_LoopInternal() {
                 pParty->pPlayers[i].AddItem(-1, ITEM_GAUNTLETS);
                 break;
             case PLAYER_SKILL_CLUB:
-                pParty->pPlayers[i].AddItem(-1, ITEM_CLUB);
+                // pParty->pPlayers[i].AddItem(-1, ITEM_CLUB);
                 break;
             default:
                 break;

@@ -1761,9 +1761,7 @@ int Player::ReceiveDamage(signed int amount, DAMAGE_TYPE dmg_type) {
     }
 
     if (sHealth < 1) {  // player unconscious or if too hurt - dead
-        if ((sHealth + uEndurance +
-                 GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) >=
-             1) ||
+        if ((sHealth + uEndurance + GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) >= 1) ||
             pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active()) {
             SetCondUnconsciousWithBlockCheck(false);
         } else {
@@ -7131,7 +7129,7 @@ void Player::SetCondDeadWithBlockCheck(int blockable) {
 }
 
 void Player::SetCondUnconsciousWithBlockCheck(int blockable) {
-    SetCondition(Condition_Dead, blockable);
+    SetCondition(Condition_Unconscious, blockable);
 }
 
 ItemGen *Player::GetOffHandItem() { return GetItem(&PlayerEquipment::uOffHand); }

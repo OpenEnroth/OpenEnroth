@@ -2672,8 +2672,11 @@ size_t num_event_triggers;             // 6836C8
 std::array<int, 64> dword_69B010;
 float flt_69B138_dist;
 char byte_69BD41_unused;
-int pSaveListPosition;
-unsigned int uLoadGameUI_SelectedSlot;
+
+// TODO(pskelton): move to save game list
+int pSaveListPosition = 0;
+unsigned int uLoadGameUI_SelectedSlot = 0;
+
 char cMM7GameCDDriveLetter;  // idb
 int uDefaultTravelTime_ByFoot;
 int day_attrib;

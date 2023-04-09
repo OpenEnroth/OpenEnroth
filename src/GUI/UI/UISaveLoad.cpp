@@ -42,9 +42,6 @@ GUIWindow_Save::GUIWindow_Save() :
 
     pSavegameList->Initialize();
 
-    pSaveListPosition = 0;
-    uLoadGameUI_SelectedSlot = 0;
-
     LOD::File pLODFile;
     for (uint i = 0; i < MAX_SAVE_SLOTS; ++i) {
         // std::string file_name = pSavegameList->pFileList[i];
@@ -155,10 +152,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     render->Present();
 
     pSavegameList->Initialize();
-    // if (pSaveListPosition > (int)uNumSavegameFiles) {
-        pSaveListPosition = 0;
-        uLoadGameUI_SelectedSlot = 0;
-    //}
+
     LOD::File pLODFile;
     Assert(sizeof(SavegameHeader) == 100);
     for (uint i = 0; i < uNumSavegameFiles; ++i) {
@@ -380,8 +374,6 @@ void MainMenuLoad_EventLoop() {
             ++pSaveListPosition;
             if (pSaveListPosition > (param - 7))
                 pSaveListPosition = (param - 7);
-            // if (pSaveListPosition < 1)
-             //   pSaveListPosition = 0;
             new OnButtonClick2({pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 323}, {0, 0}, pBtnDownArrow);
             break;
         }

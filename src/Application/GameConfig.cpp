@@ -50,7 +50,9 @@ void GameConfig::SaveConfiguration() {
 void GameConfig::resetForTest() {
     reset();
 
-    debug.NoSound.setValue(true);
+    settings.MusicLevel.setValue(1);
+    settings.VoiceLevel.setValue(1);
+    settings.SoundLevel.setValue(1);
     debug.NoVideo.setValue(true);
     debug.VerboseLogging.setValue(true);
     window.MouseGrab.setValue(false);

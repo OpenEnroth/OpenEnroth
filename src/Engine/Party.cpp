@@ -361,13 +361,13 @@ int Party::GetGold() const {
 }
 
 //----- (00492B70) --------------------------------------------------------
-void Party::SetGold(int amount) {
+void Party::SetGold(int amount, bool silent) {
     if (amount < 0)
         amount = 0;
 
     uNumGold = amount;
 
-    ui_play_gold_anim();
+    if (!silent) ui_play_gold_anim();
 }
 
 void Party::AddGold(int amount) {
@@ -375,8 +375,8 @@ void Party::AddGold(int amount) {
 }
 
 //----- (00492BB6) --------------------------------------------------------
-void Party::TakeGold(int amount) {
-    SetGold(GetGold() - amount);
+void Party::TakeGold(int amount, bool silent) {
+    SetGold(GetGold() - amount, silent);
 }
 
 int Party::GetBankGold() const {

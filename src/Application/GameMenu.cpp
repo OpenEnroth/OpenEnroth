@@ -138,6 +138,7 @@ void Menu::EventLoop() {
                 }
                 continue;
             case UIMSG_SaveGame:
+                pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 if (pGUIWindow_CurrentMenu->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
                     keyboardInputHandler->SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_NONE);
                     strcpy(pSavegameHeader[uLoadGameUI_SelectedSlot].pName, keyboardInputHandler->GetTextInput().c_str());

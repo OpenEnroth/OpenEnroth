@@ -48,6 +48,7 @@ void LoadGame(unsigned int uSlot) {
         logger->warning("LoadGame: slot {} is empty", uSlot);
         return;
     }
+    uLoadGameUI_SelectedSlot = uSlot;
 
     pParty->Reset();
 
@@ -520,6 +521,8 @@ void DoSavegame(unsigned int uSlot) {
         if (!std::filesystem::copy_file(src, dst, std::filesystem::copy_options::overwrite_existing, ec))
             Error("Failed to copy: %s", src.c_str());
     }
+    uLoadGameUI_SelectedSlot = uSlot;
+
     GUI_UpdateWindows();
     pGUIWindow_CurrentMenu->Release();
     current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
