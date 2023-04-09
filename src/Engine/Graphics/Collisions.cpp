@@ -701,23 +701,17 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         //if (collision_state.adjusted_move_distance < collision_state.move_distance)
         //    Slope_High = collision_state.adjusted_move_distance * collision_state.direction.z;
 
-        int v35 = actor.vPosition.z;
-        bool bOnWater = false;
-        int Splash_Model_On;
-        int Splash_Floor = ODM_GetFloorLevel(
-            collision_state.new_position_lo.toInt() - Vec3i(0, 0, collision_state.radius_lo + 1),
-            actor.uActorHeight, &bOnWater, &Splash_Model_On, 0);
-        if (bOnWater) {
-            if (v35 < Splash_Floor + 60) {
+        bool isOnWater = false;
+        int modelPid = 0;
+        int floorZ = ODM_GetFloorLevel(collision_state.new_position_lo.toInt() - Vec3i(0, 0, collision_state.radius_lo + 1),
+                                       actor.uActorHeight, &isOnWater, &modelPid, 0);
+        if (isOnWater) {
+            if (actor.vPosition.z < floorZ + 60) {
                 if (actor.uAIState == Dead || actor.uAIState == Dying ||
                     actor.uAIState == Removed || actor.uAIState == Disabled) {
-                    int Splash_Z = Splash_Floor + 60;
-                    if (Splash_Model_On)
-                        Splash_Z = Splash_Floor + 30;
-
-                    SpriteObject::createSplashObject(Vec3i(actor.vPosition.x, actor.vPosition.y, Splash_Z));
+                    SpriteObject::createSplashObject(Vec3i(actor.vPosition.x, actor.vPosition.y, modelPid ? floorZ + 30 : floorZ + 60));
                     actor.uAIState = Removed;
-                    return;
+                    break;
                 }
             }
         }
@@ -733,6 +727,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         actor.vPosition.y += collision_state.adjusted_move_distance * collision_state.direction.y;
         actor.vPosition.z += collision_state.adjusted_move_distance * collision_state.direction.z;
         collision_state.total_move_distance += collision_state.adjusted_move_distance;
+
         unsigned int v39 = PID_ID(collision_state.pid);
         int Angle_To_Decor;
         signed int Coll_Speed;
