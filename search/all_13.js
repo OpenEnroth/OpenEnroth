@@ -245,7 +245,7 @@ var searchData=
   ['setfood_242',['SetFood',['../structParty.html#aaca153a4201f9c2474f8c1e2d50ac254',1,'Party']]],
   ['setforceredraw_243',['SetForceRedraw',['../classEngine.html#a0f07ea07ba36f5ef63b52964babaed14',1,'Engine']]],
   ['setglobalmedialogger_244',['setGlobalMediaLogger',['../classMediaLogger.html#a78ee56281ddec80c957b06dc3b3aed13',1,'MediaLogger']]],
-  ['setgold_245',['SetGold',['../structParty.html#a658f2515f5cd833f4c8427b72fdbde93',1,'Party']]],
+  ['setgold_245',['SetGold',['../structParty.html#ab5178a4318b20fc60d8a6b67b08ffaec',1,'Party']]],
   ['setgrabsmouse_246',['setGrabsMouse',['../classSdlWindow.html#abac08b30397fdafb69838ed748813478',1,'SdlWindow::setGrabsMouse()'],['../classProxyWindow.html#a5ad1c1ca3a1dad15aa14b8567a165512',1,'ProxyWindow::setGrabsMouse()'],['../classPlatformWindow.html#a4ff8b36e32513a88db79209e26a97054',1,'PlatformWindow::setGrabsMouse()']]],
   ['setholdingitem_247',['SetHoldingItem',['../structParty.html#a88da8d8d7640e1a24c482a7dd548f6f3',1,'Party']]],
   ['setidentified_248',['SetIdentified',['../structItemGen.html#a0e697b187362d4ed817edc25be9518c8',1,'ItemGen']]],
