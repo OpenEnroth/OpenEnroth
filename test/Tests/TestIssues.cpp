@@ -599,8 +599,6 @@ GAME_TEST(Issues, Issue615) {
 
 GAME_TEST(Issues, Issue625) {
     // Every character getting club at the start of the game
-    test->loadGameFromTestData("issue_315.mm7");
-    game->goToMainMenu();
     game->pressGuiButton("MainMenu_NewGame");
     game->tick(2);
     game->pressGuiButton("PartyCreation_OK");
