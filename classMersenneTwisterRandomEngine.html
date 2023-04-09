@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e6e5f08</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;adc8e45</span>
    </div>
   </td>
  </tr>
@@ -94,6 +94,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a9fd6428f5d5911423a4c3c6212ddf677"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7da79864e8540dfe737f6d51e285fa38"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMersenneTwisterRandomEngine.html#a7da79864e8540dfe737f6d51e285fa38">random</a> (int hi) override</td></tr>
 <tr class="separator:a7da79864e8540dfe737f6d51e285fa38"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a17b4f21486d3814bf16f97f4319644df"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMersenneTwisterRandomEngine.html#a17b4f21486d3814bf16f97f4319644df">peek</a> (int hi) const override</td></tr>
+<tr class="separator:a17b4f21486d3814bf16f97f4319644df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a652eb0b97faec2c4d976d1b159567bb8"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMersenneTwisterRandomEngine.html#a652eb0b97faec2c4d976d1b159567bb8">seed</a> (int seed) override</td></tr>
 <tr class="separator:a652eb0b97faec2c4d976d1b159567bb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classRandomEngine"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classRandomEngine')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classRandomEngine.html">RandomEngine</a></td></tr>
@@ -103,6 +105,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a7af43e5f4ba8d23071672004084491df inherit pub_methods_classRandomEngine"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a90f4ddcf5e8efb5c1b8d833cd7aa6067 inherit pub_methods_classRandomEngine"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRandomEngine.html#a90f4ddcf5e8efb5c1b8d833cd7aa6067">random</a> (int hi)=0</td></tr>
 <tr class="separator:a90f4ddcf5e8efb5c1b8d833cd7aa6067 inherit pub_methods_classRandomEngine"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afabb574e571a0078bff4744677dff55d inherit pub_methods_classRandomEngine"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRandomEngine.html#afabb574e571a0078bff4744677dff55d">peek</a> (int hi) const =0</td></tr>
+<tr class="separator:afabb574e571a0078bff4744677dff55d inherit pub_methods_classRandomEngine"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e0e20ed7fab2988e7ece98aeb2fcadf inherit pub_methods_classRandomEngine"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRandomEngine.html#a6e0e20ed7fab2988e7ece98aeb2fcadf">seed</a> (int seed)=0</td></tr>
 <tr class="separator:a6e0e20ed7fab2988e7ece98aeb2fcadf inherit pub_methods_classRandomEngine"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1f55fe0e2b786c5b3f6278a479d7bac9 inherit pub_methods_classRandomEngine"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRandomEngine.html#a1f55fe0e2b786c5b3f6278a479d7bac9">randomInSegment</a> (int min, int max)</td></tr>
@@ -124,6 +128,42 @@ Private Attributes</h2></td></tr>
 <tr class="separator:a6ae0200d1c7910b3203081135c461ac2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a17b4f21486d3814bf16f97f4319644df" name="a17b4f21486d3814bf16f97f4319644df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a17b4f21486d3814bf16f97f4319644df">&#9670;&#160;</a></span>peek()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual int MersenneTwisterRandomEngine::peek </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>hi</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Note that this method is mainly for debugging, implementation is not required to be efficient.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">hi</td><td>Upper bound for the result. Must be greater than zero. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Random number that the next call to <code>random(hi)</code> will return. </dd></dl>
+
+<p>Implements <a class="el" href="classRandomEngine.html#afabb574e571a0078bff4744677dff55d">RandomEngine</a>.</p>
+
+</div>
+</div>
 <a id="a7da79864e8540dfe737f6d51e285fa38" name="a7da79864e8540dfe737f6d51e285fa38"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7da79864e8540dfe737f6d51e285fa38">&#9670;&#160;</a></span>random()</h2>
 

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e6e5f08</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;adc8e45</span>
    </div>
   </td>
  </tr>
@@ -102,6 +102,8 @@ Public Attributes</h2></td></tr>
 <tr class="separator:ae24673bb4499efb0b1ba1885e9e488e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a992b1a686ba49610613a0a3665f008b2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEngineControlState.html#a61b2362c403ad9ba7b67d280ef90582f">GameRoutine</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlState.html#a992b1a686ba49610613a0a3665f008b2">gameRoutine</a></td></tr>
 <tr class="separator:a992b1a686ba49610613a0a3665f008b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87eb5bab04dce3504c979655d119eebf"><td class="memItemLeft" align="right" valign="top">std::exception_ptr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlState.html#a87eb5bab04dce3504c979655d119eebf">controlException</a></td></tr>
+<tr class="separator:a87eb5bab04dce3504c979655d119eebf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a67212b422b997707f0ad0a3c8e502bd4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="EngineControlState_8h.html#a244c41d3a64ac6f3ceb24e6b484cbfd8">EngineControlSide</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlState.html#a67212b422b997707f0ad0a3c8e502bd4">currentSide</a> = <a class="el" href="EngineControlState_8h.html#a244c41d3a64ac6f3ceb24e6b484cbfd8a30ad8354db1edfacfeea7440d6dabcdf">SIDE_GAME</a></td></tr>
 <tr class="separator:a67212b422b997707f0ad0a3c8e502bd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71f8881fad2014687721484b7e6a425c"><td class="memItemLeft" align="right" valign="top">std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineControlState.html#a71f8881fad2014687721484b7e6a425c">mutex</a></td></tr>
@@ -139,6 +141,21 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a87eb5bab04dce3504c979655d119eebf" name="a87eb5bab04dce3504c979655d119eebf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87eb5bab04dce3504c979655d119eebf">&#9670;&#160;</a></span>controlException</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::exception_ptr EngineControlState::controlException</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >If control thread ends with an exception, this is where it's stored. </p>
+
+</div>
+</div>
 <a id="a6eddaddb45f881ad671018f47ee8c960" name="a6eddaddb45f881ad671018f47ee8c960"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6eddaddb45f881ad671018f47ee8c960">&#9670;&#160;</a></span>controlRoutineQueue</h2>
 

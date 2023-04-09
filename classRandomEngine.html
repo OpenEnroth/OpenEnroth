@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e6e5f08</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;adc8e45</span>
    </div>
   </td>
  </tr>
@@ -96,6 +96,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a7af43e5f4ba8d23071672004084491df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a90f4ddcf5e8efb5c1b8d833cd7aa6067"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRandomEngine.html#a90f4ddcf5e8efb5c1b8d833cd7aa6067">random</a> (int hi)=0</td></tr>
 <tr class="separator:a90f4ddcf5e8efb5c1b8d833cd7aa6067"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afabb574e571a0078bff4744677dff55d"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRandomEngine.html#afabb574e571a0078bff4744677dff55d">peek</a> (int hi) const =0</td></tr>
+<tr class="separator:afabb574e571a0078bff4744677dff55d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e0e20ed7fab2988e7ece98aeb2fcadf"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRandomEngine.html#a6e0e20ed7fab2988e7ece98aeb2fcadf">seed</a> (int seed)=0</td></tr>
 <tr class="separator:a6e0e20ed7fab2988e7ece98aeb2fcadf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1f55fe0e2b786c5b3f6278a479d7bac9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRandomEngine.html#a1f55fe0e2b786c5b3f6278a479d7bac9">randomInSegment</a> (int min, int max)</td></tr>
@@ -141,6 +143,42 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="afabb574e571a0078bff4744677dff55d" name="afabb574e571a0078bff4744677dff55d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afabb574e571a0078bff4744677dff55d">&#9670;&#160;</a></span>peek()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual int RandomEngine::peek </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>hi</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Note that this method is mainly for debugging, implementation is not required to be efficient.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">hi</td><td>Upper bound for the result. Must be greater than zero. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Random number that the next call to <code>random(hi)</code> will return. </dd></dl>
+
+<p>Implemented in <a class="el" href="classMersenneTwisterRandomEngine.html#a17b4f21486d3814bf16f97f4319644df">MersenneTwisterRandomEngine</a>, and <a class="el" href="classNonRandomEngine.html#a5db7749bba16e948c4e56da8638f5d08">NonRandomEngine</a>.</p>
+
+</div>
+</div>
 <a id="a90f4ddcf5e8efb5c1b8d833cd7aa6067" name="a90f4ddcf5e8efb5c1b8d833cd7aa6067"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a90f4ddcf5e8efb5c1b8d833cd7aa6067">&#9670;&#160;</a></span>random()</h2>
 

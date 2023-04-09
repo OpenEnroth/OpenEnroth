@@ -679,6 +679,8 @@ var searchData=
   ['strafeleft_676',['StrafeLeft',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca619850cebb4607f51de326bd78c27429',1,'Io']]],
   ['straferight_677',['StrafeRight',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca9b4d85f3d87b8e67d74e087541ed3743',1,'Io']]],
   ['stunned_678',['Stunned',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395fedaeb8ab7d98634514cc61c2b0a0c8d93a2',1,'ActorEnums.h']]],
-  ['subtract_679',['Subtract',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca1d9baf077ee87921f57a8fe42d510b65',1,'PlatformEnums.h']]],
-  ['summoned_680',['Summoned',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395feda046bfcaf387649f3c78b193d321d4dd6',1,'ActorEnums.h']]]
+  ['subcommand_5fgame_679',['SUBCOMMAND_GAME',['../structGameOptions.html#a1d654bf52496d8445e32d0fd3cb3647eadfa64152c822d782307622bce9795853',1,'GameOptions']]],
+  ['subcommand_5fretrace_680',['SUBCOMMAND_RETRACE',['../structGameOptions.html#a1d654bf52496d8445e32d0fd3cb3647eaf67b035a3a3941ba21dbe7245a72cb32',1,'GameOptions']]],
+  ['subtract_681',['Subtract',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca1d9baf077ee87921f57a8fe42d510b65',1,'PlatformEnums.h']]],
+  ['summoned_682',['Summoned',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395feda046bfcaf387649f3c78b193d321d4dd6',1,'ActorEnums.h']]]
 ];
