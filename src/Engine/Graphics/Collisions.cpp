@@ -692,19 +692,16 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         CollideWithParty(false);
         _46ED8A_collide_against_sprite_objects(PID(OBJECT_Actor, actor.id));
 
-        int v31 = 0;
-        signed int i;
-        for (i = 0; v31 < ai_arrays_size; ++v31) {
-            unsigned int v33 = ai_near_actors_ids[v31];
-            if (v33 != actor.id && CollideWithActor(v33, 40))
-                ++i;
-        }
+        int actorCollisions = 0;
+        for (int i = 0; i < ai_arrays_size; i++)
+            if (ai_near_actors_ids[i] != actor.id && CollideWithActor(ai_near_actors_ids[i], 40))
+                actorCollisions++;
+        int isInCrowd = actorCollisions > 1;
 
-        int v71 = i > 1;
         //if (collision_state.adjusted_move_distance < collision_state.move_distance)
-            //Slope_High = collision_state.adjusted_move_distance * collision_state.direction.z;
-        // v34 = 0;
-        int v35 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
+        //    Slope_High = collision_state.adjusted_move_distance * collision_state.direction.z;
+
+        int v35 = actor.vPosition.z;
         bool bOnWater = false;
         int Splash_Model_On;
         int Splash_Floor = ODM_GetFloorLevel(
@@ -745,11 +742,11 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
                 // if(pParty->bTurnBasedModeOn)
                 // v34 = 0;
                 if (actor.pMonsterInfo.uHostilityType) {
-                    if (v71 == 0)
+                    if (isInCrowd == 0)
                         Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
                     else
                         Actor::AI_StandOrBored(actor.id, 4, 0, nullptr);
-                } else if (v71) {
+                } else if (isInCrowd) {
                     Actor::AI_StandOrBored(actor.id, 4, 0, nullptr);
                 } else if (pActors[v39].pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly) {
                     Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
