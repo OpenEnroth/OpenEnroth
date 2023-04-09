@@ -114,6 +114,7 @@ struct Vec3 {
         return Vec3<int>(std::round(x), std::round(y), std::round(z));
     }
 
+    // TODO(captainurist): we introduced this one because we couldn't easily retrace old traces, but now we can. Drop!
     [[nodiscard]] Vec3<int> toIntTrunc() const requires std::is_floating_point_v<T> {
         return Vec3<int>(std::trunc(x), std::trunc(y), std::trunc(z));
     }
