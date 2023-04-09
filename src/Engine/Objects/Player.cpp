@@ -46,18 +46,16 @@ IndexedArray<Player *, 1, 4> pPlayers;
 
 PlayerSpeech PlayerSpeechID;
 
-static const std::initializer_list<DIALOGUE_TYPE> noSharedMerchantDialogueIds = {
-    DIALOGUE_LEARN_SKILLS, DIALOGUE_TRAINING_HALL_TRAIN, DIALOGUE_TEMPLE_HEAL};
-
-// get highest skill mastery among all conscious PCs for some skills if config
+// get highest skill value (level and mastery) among all conscious PCs for some skills if config
 // option is enabled
 static inline bool shouldSkillBeShared(PLAYER_SKILL_TYPE skillType) {
     return engine->config->gameplay.SharedMiscSkills.value() &&
          (skillType == PLAYER_SKILL_TYPE::PLAYER_SKILL_ITEM_ID ||
          skillType == PLAYER_SKILL_TYPE::PLAYER_SKILL_REPAIR ||
           (skillType == PLAYER_SKILL_TYPE::PLAYER_SKILL_MERCHANT &&
-           std::ranges::find(noSharedMerchantDialogueIds, dialog_menu_id) ==
-               noSharedMerchantDialogueIds.end()));
+           dialog_menu_id != DIALOGUE_LEARN_SKILLS
+              && in_current_building_type != BuildingType::BuildingType_Training
+              && in_current_building_type != BuildingType::BuildingType_Temple));
 }
 
 // Race Stat Points Bonus/ Penalty
