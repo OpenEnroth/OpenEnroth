@@ -46,6 +46,20 @@ IndexedArray<Player *, 1, 4> pPlayers;
 
 PlayerSpeech PlayerSpeechID;
 
+static const std::initializer_list<DIALOGUE_TYPE> noSharedMerchantDialogueIds = {
+    DIALOGUE_LEARN_SKILLS, DIALOGUE_TRAINING_HALL_TRAIN, DIALOGUE_TEMPLE_HEAL};
+
+// get highest skill mastery among all conscious PCs for some skills if config
+// option is enabled
+static inline bool shouldSkillBeShared(PLAYER_SKILL_TYPE skillType) {
+    return engine->config->gameplay.SharedMiscSkills.value() &&
+         (skillType == PLAYER_SKILL_TYPE::PLAYER_SKILL_ITEM_ID ||
+         skillType == PLAYER_SKILL_TYPE::PLAYER_SKILL_REPAIR ||
+          (skillType == PLAYER_SKILL_TYPE::PLAYER_SKILL_MERCHANT &&
+           std::ranges::find(noSharedMerchantDialogueIds, dialog_menu_id) ==
+               noSharedMerchantDialogueIds.end()));
+}
+
 // Race Stat Points Bonus/ Penalty
 struct PlayerCreation_AttributeProps {
     unsigned char uBaseValue;
@@ -2930,7 +2944,6 @@ PLAYER_SKILL_LEVEL Player::GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType) {
     PLAYER_SKILL_LEVEL bonus_value = 0;
     PLAYER_SKILL_LEVEL result;
 
-    bonus_value = 0;
     switch (uSkillType) {
         case PLAYER_SKILL_MONSTER_ID: {
             if (CheckHiredNPCSpeciality(Hunter)) bonus_value = 6;
@@ -3072,6 +3085,16 @@ PLAYER_SKILL_LEVEL Player::GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType) {
     // Vanilla returned 0 for PLAYER_SKILL_MISC here, we return 1.
     PLAYER_SKILL_LEVEL skill_value = GetSkillLevel(uSkillType);
 
+    if (shouldSkillBeShared(uSkillType)) {
+        for (Player &player : pParty->pPlayers) {
+            if (&player != this && player.CanAct()) {
+                PLAYER_SKILL_LEVEL otherPlayerSkillValue =
+                    player.GetSkillLevel(uSkillType);
+                skill_value = std::max(skill_value, otherPlayerSkillValue);
+            }
+        }
+    }
+
     result = bonus_value + skill_value;
 
     // cap skill and bonus at 60
@@ -3082,18 +3105,30 @@ PLAYER_SKILL_LEVEL Player::GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType) {
 }
 
 PLAYER_SKILL_MASTERY Player::GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType) {
-    return GetSkillMastery(uSkillType);
+    PLAYER_SKILL_MASTERY value = GetSkillMastery(uSkillType);
+
+    if (shouldSkillBeShared(uSkillType)) {
+        for (Player& player : pParty->pPlayers) {
+            if (&player != this && player.CanAct()) {
+                PLAYER_SKILL_MASTERY otherPlayerResult = player.GetSkillMastery(uSkillType);
+                value = std::max(value, otherPlayerResult);
+            }
+        }
+    }
+    return value;
 }
 
-//----- (0048FC00) --------------------------------------------------------
+/**
+ * @offset 0x48FC00
+ */
 int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) {
                     // TODO(_): move the individual implementations to attribute
                     // classes once possible ?? check
     int armsMasterBonus;
 
     armsMasterBonus = 0;
-    int armmaster_skill = GetActualSkillLevel(PLAYER_SKILL_ARMSMASTER);
-    if (armmaster_skill > 0) {
+    int armsmasterSkill = GetActualSkillLevel(PLAYER_SKILL_ARMSMASTER);
+    if (armsmasterSkill > 0) {
         int multiplier = 0;
         if (inSkill == CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS) {
             multiplier =
@@ -3102,7 +3137,7 @@ int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) {
             multiplier =
                 GetMultiplierForSkillLevel(PLAYER_SKILL_ARMSMASTER, 0, 1, 1, 2);
         }
-        armsMasterBonus = multiplier * (armmaster_skill);  //& 0x3F);
+        armsMasterBonus = multiplier * (armsmasterSkill);  //& 0x3F);
     }
 
     switch (inSkill) {
