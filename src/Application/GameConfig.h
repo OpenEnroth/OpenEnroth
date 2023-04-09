@@ -175,8 +175,9 @@ class GameConfig : public Config {
                                          "Recovery time modifier when spell casting ended in failure for the reason where spell cannot be cast at all in current context. "
                                          "Context include situation where outdoor spell is casted indoor or targeted spell is casted with no characters on screen."};
 
-        Bool SharedMiscSkills = {this, "shared_misc_skills", true, "Some misc skills (identify item, repair item, merchant) will be shared when it makes sense. "
-                                         "That is, any player will use the highest skill of any currently conscious player"};
+        Bool SharedMiscSkills = {this, "shared_misc_skills", true,
+                                 "Some misc skills (identify item, repair item, merchant) will be shared when it makes sense. "
+                                 "That is, any player will use the highest skill of any currently conscious player"};
 
      private:
         static int ValidateMaxFlightHeight(int max_flight_height) {

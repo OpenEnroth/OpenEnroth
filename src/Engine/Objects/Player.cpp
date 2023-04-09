@@ -3108,7 +3108,7 @@ PLAYER_SKILL_MASTERY Player::GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType)
     PLAYER_SKILL_MASTERY value = GetSkillMastery(uSkillType);
 
     if (shouldSkillBeShared(uSkillType)) {
-        for (Player& player : pParty->pPlayers) {
+        for (Player &player : pParty->pPlayers) {
             if (&player != this && player.CanAct()) {
                 PLAYER_SKILL_MASTERY otherPlayerResult = player.GetSkillMastery(uSkillType);
                 value = std::max(value, otherPlayerResult);
