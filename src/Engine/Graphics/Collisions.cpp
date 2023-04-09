@@ -480,6 +480,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
     collision_state.check_hi = true;
     collision_state.radius_hi = actor.uActorRadius;
     collision_state.radius_lo = actor.uActorRadius;
+
     for (int attempt = 0; attempt < 100; attempt++) {
         collision_state.position_lo = actor.vPosition.toFloat() + Vec3f(0, 0, actor.uActorRadius + 1);
         collision_state.position_hi = actor.vPosition.toFloat() + Vec3f(0, 0, actor.uActorHeight - actor.uActorRadius - 1);
@@ -502,7 +503,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                 if (actor2_id == actor.id)
                     continue;
 
-                // TODO: why we're checking that distance is greater that r1+r2? Shouldn't we check that it's less?
+                // TODO(captainurist): why we're checking that distance is greater that r1+r2? Shouldn't we check that it's less?
                 // Investigate, white a comment here.
                 Actor &actor2 = pActors[actor2_id];
                 if ((actor2.vPosition - actor.vPosition).length() >= actor.uActorRadius + actor2.uActorRadius &&
@@ -667,16 +668,14 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
     }
 }
 
-void ProcessActorCollisionsODM(Actor &actor, int floorLevel, bool isOnWater, bool isFlying) {
-    signed int Act_Radius = actor.uActorRadius;
-    if (!isFlying)
-        Act_Radius = 40;
+void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
+    int actorRadius = !isFlying ? 40 : actor.uActorRadius;
 
-    collision_state.check_hi = true;
     collision_state.ignored_face_id = -1;
-    collision_state.radius_hi = Act_Radius;
-    collision_state.radius_lo = Act_Radius;
     collision_state.total_move_distance = 0;
+    collision_state.check_hi = true;
+    collision_state.radius_hi = actorRadius;
+    collision_state.radius_lo = actorRadius;
 
     for (int attempt = 0; attempt < 100; ++attempt) {
         collision_state.position_hi.x = actor.vPosition.x;
@@ -684,10 +683,10 @@ void ProcessActorCollisionsODM(Actor &actor, int floorLevel, bool isOnWater, boo
         collision_state.position_hi.y = actor.vPosition.y;
         collision_state.position_lo.y = collision_state.position_hi.y;
         int Act_Z_Pos = actor.vPosition.z;
-        collision_state.position_lo.z = Act_Z_Pos + Act_Radius + 1;
-        collision_state.position_hi.z = Act_Z_Pos - Act_Radius + actor.uActorHeight - 1;
+        collision_state.position_lo.z = Act_Z_Pos + actorRadius + 1;
+        collision_state.position_hi.z = Act_Z_Pos - actorRadius + actor.uActorHeight - 1;
         if (collision_state.position_hi.z < collision_state.position_lo.z)
-            collision_state.position_hi.z = Act_Z_Pos + Act_Radius + 1;
+            collision_state.position_hi.z = Act_Z_Pos + actorRadius + 1;
         collision_state.velocity.x = actor.vVelocity.x;
         collision_state.uSectorID = 0;
         collision_state.velocity.y = actor.vVelocity.y;
@@ -714,11 +713,11 @@ void ProcessActorCollisionsODM(Actor &actor, int floorLevel, bool isOnWater, boo
         int Splash_Floor = ODM_GetFloorLevel(
             collision_state.new_position_lo.toInt() - Vec3i(0, 0, collision_state.radius_lo + 1),
             actor.uActorHeight, &bOnWater, &Splash_Model_On, 0);
-        if (isOnWater) {
+        if (bOnWater) {
             if (v35 < Splash_Floor + 60) {
                 if (actor.uAIState == Dead || actor.uAIState == Dying ||
                     actor.uAIState == Removed || actor.uAIState == Disabled) {
-                    int Splash_Z = floorLevel + 60;
+                    int Splash_Z = Splash_Floor + 60;
                     if (Splash_Model_On)
                         Splash_Z = Splash_Floor + 30;
 
@@ -826,6 +825,6 @@ void ProcessActorCollisionsODM(Actor &actor, int floorLevel, bool isOnWater, boo
         actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
         actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
 
-        Act_Radius = collision_state.radius_lo;
+        actorRadius = collision_state.radius_lo;
     }
 }
