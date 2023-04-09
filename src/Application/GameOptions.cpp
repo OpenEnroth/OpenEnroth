@@ -23,10 +23,18 @@ GameOptions GameOptions::Parse(int argc, char **argv) {
                   "Enable verbose logging.");
     app->set_help_flag("-h,--help", "Print help and exit.");
 
+    CLI::App *retrace = app->add_subcommand("retrace", "Retrace traces and exit.")->fallthrough();
+    retrace->add_option("TRACE", result.retrace.traces,
+                        "Path to trace file(s) to retrace.")->check(CLI::ExistingFile)->required()->option_text("...");
+    retrace->callback([&] {
+        result.subcommand = SUBCOMMAND_RETRACE;
+        result.configPath = "openenroth_retrace.ini"; // TODO(captainurist): we should just skip saving/loading the config.
+    });
+
     try {
         app->parse(argc, argv);
     } catch (const CLI::ParseError &e) {
-        if (app->get_help_ptr()->as<bool>()) {
+        if (app->get_help_ptr()->as<bool>() || retrace->get_help_ptr()->as<bool>()) {
             app->exit(e);
             result.helpPrinted = true;
         } else {

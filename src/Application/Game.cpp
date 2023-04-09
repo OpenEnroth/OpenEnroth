@@ -147,7 +147,7 @@ Game::Game(PlatformApplication *application, std::shared_ptr<GameConfig> config)
     application->install(std::make_unique<EngineDeterministicComponent>());
     application->install(std::make_unique<EngineTracePlayer>());
     application->install(std::make_unique<EngineTraceRecorder>());
-    application->install(std::make_unique<GameTraceHandler>(application->get<EngineTraceRecorder>())); // TODO(captainurist): get() call not needed.
+    application->install(std::make_unique<GameTraceHandler>());
 }
 
 Game::~Game() {

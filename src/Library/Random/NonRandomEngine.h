@@ -16,6 +16,12 @@ class NonRandomEngine : public RandomEngine {
         return ++_state % hi;
     }
 
+    virtual int peek(int hi) const override {
+        assert(hi > 0);
+
+        return (_state + 1) % hi;
+    }
+
     virtual void seed(int seed) override {
         _state = seed;
     }

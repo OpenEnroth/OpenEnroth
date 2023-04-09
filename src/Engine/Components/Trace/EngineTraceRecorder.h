@@ -1,14 +1,14 @@
 #pragma once
 
 #include <string>
-#include <vector>
+#include <memory>
 
 #include "Library/Application/PlatformApplicationAware.h"
-#include "Library/Trace/EventTrace.h"
 
+class EventTrace;
+class EngineController;
 class EngineTraceComponent;
 class EngineDeterministicComponent;
-class EngineControlComponent;
 class GameKeyboardController;
 
 /**
@@ -33,36 +33,39 @@ class GameKeyboardController;
  */
 class EngineTraceRecorder : private PlatformApplicationAware {
  public:
+    EngineTraceRecorder();
     ~EngineTraceRecorder();
 
     /**
      * Starts trace recording.
      *
+     * @param game                      Engine controller.
      * @param savePath                  Path to save file.
      * @param tracePath                 Path to trace file.
      */
-    void startRecording(const std::string &savePath, const std::string &tracePath);
-    void finishRecording();
+    void startRecording(EngineController *game, const std::string &savePath, const std::string &tracePath);
+    void finishRecording(EngineController *game);
 
+    /**
+     * @return                          Whether recording is in progress. Make sure to call this method only from the
+     *                                  control thread, otherwise you basically can't reason about the current recording
+     *                                  state.
+     */
     [[nodiscard]] bool isRecording() const {
-        return _isRecording;
+        return _trace != nullptr;
     }
 
  private:
     friend class PlatformIntrospection;
 
-    static std::vector<EventTraceConfigLine> traceConfig();
-
     virtual void installNotify() override;
     virtual void removeNotify() override;
 
  private:
-    bool _isRecording = false;
-    EventTrace _trace;
+    std::unique_ptr<EventTrace> _trace;
     std::string _saveFilePath;
     std::string _traceFilePath;
     int _oldFpsLimit = 0;
-    EngineControlComponent *_controlComponent = nullptr;
     EngineDeterministicComponent *_deterministicComponent = nullptr;
     EngineTraceComponent *_traceComponent = nullptr;
     GameKeyboardController *_keyboardController = nullptr;

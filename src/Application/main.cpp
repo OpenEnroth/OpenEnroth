@@ -1,9 +1,53 @@
 #include <cstdio>
+#include <utility>
+
+#include "Engine/Components/Control/EngineControlComponent.h"
+#include "Engine/Components/Control/EngineController.h"
+#include "Engine/Components/Trace/EngineTracePlayer.h"
+#include "Engine/Components/Trace/EngineTraceComponent.h"
+
+#include "Library/Application/PlatformApplication.h"
+#include "Library/Trace/EventTrace.h"
 
 #include "Utility/Format.h"
 
 #include "GameStarter.h"
 #include "GameOptions.h"
+#include "GameConfig.h"
+
+
+int runRetrace(GameOptions options) {
+    GameStarter starter(options);
+    starter.config()->resetForTest();
+
+    starter.application()->get<EngineControlComponent>()->runControlRoutine([application = starter.application(), tracePaths = options.retrace.traces] (EngineController *game) {
+        game->tick(10); // Let the game thread initialize everything.
+
+        for (const std::string &tracePath : tracePaths) {
+            std::string savePath = tracePath.substr(0, tracePath.length() - 5) + ".mm7";
+
+            game->goToMainMenu();
+
+            EventTrace trace = EventTrace::loadFromFile(tracePath, application->window());
+            application->get<EngineTracePlayer>()->prepareTrace(game, savePath, tracePath);
+            application->get<EngineTraceComponent>()->start();
+            application->get<EngineTracePlayer>()->playPreparedTrace(game, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_DONT_ADVANCE_RANDOM_STATE);
+            trace.events = application->get<EngineTraceComponent>()->finish();
+            EventTrace::saveToFile(tracePath, trace);
+        }
+
+        game->goToMainMenu();
+        game->pressGuiButton("MainMenu_ExitGame");
+    });
+    starter.run();
+
+    return 0;
+}
+
+int runOpenEnroth(GameOptions options) {
+    GameStarter(options).run();
+    return 0;
+}
 
 int openEnrothMain(int argc, char **argv) {
     try {
@@ -11,9 +55,13 @@ int openEnrothMain(int argc, char **argv) {
         if (options.helpPrinted)
             return 1;
 
-        GameStarter starter(options);
-        starter.run();
-        return 0;
+        switch (options.subcommand) {
+        case GameOptions::SUBCOMMAND_GAME: return runOpenEnroth(std::move(options));
+        case GameOptions::SUBCOMMAND_RETRACE: return runRetrace(std::move(options));
+        default:
+            assert(false);
+            return 1;
+        }
     } catch (const std::exception &e) {
         fmt::print(stderr, "{}\n", e.what());
         return 1;

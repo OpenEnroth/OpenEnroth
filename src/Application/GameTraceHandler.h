@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Platform/Filters/PlatformEventFilter.h"
-
-class EngineTraceRecorder;
+#include "Library/Application/PlatformApplicationAware.h"
 
 // TODO(captainurist): tbh we just need a hotkey system instead of this monstrosity.
 /**
@@ -12,19 +11,20 @@ class EngineTraceRecorder;
  * keystrokes don't end up being recorded. Technically there's nothing wrong with recording them, but there's little
  * point in doing so.
  */
-class GameTraceHandler : public PlatformEventFilter {
+class GameTraceHandler : private PlatformEventFilter, private PlatformApplicationAware {
  public:
-    explicit GameTraceHandler(EngineTraceRecorder *tracer);
+    GameTraceHandler();
     virtual ~GameTraceHandler() = default;
 
     virtual bool keyPressEvent(const PlatformKeyEvent *event) override;
     virtual bool keyReleaseEvent(const PlatformKeyEvent *event) override;
 
  private:
+    friend class PlatformIntrospection;
+
     bool isTriggerKey(const PlatformKeyEvent *event) const;
     bool isTriggerKeySequence(const PlatformKeyEvent *event) const;
 
  private:
-    EngineTraceRecorder *_tracer = nullptr;
     bool _waitingForKeyRelease = false;
 };

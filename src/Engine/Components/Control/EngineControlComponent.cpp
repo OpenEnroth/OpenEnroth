@@ -29,9 +29,10 @@ static void controlThread(EngineControlState *unsafeState) {
             assert(state->postedEvents.empty()); // We assume that the main thread processes all events each tick.
         } catch (EngineControlState::TerminationException) {
             return;
+        } catch (...) {
+            state->controlException = std::current_exception();
+            return;
         }
-        // TODO(captainurist): we need to handle all other exceptions here. EngineController reports errors with
-        // exceptions, and if it throws one we'll be running right into std::terminate.
 
         state->controlRoutineQueue.pop();
     }
@@ -43,8 +44,10 @@ EngineControlComponent::EngineControlComponent(): _unsafeState(std::make_unique<
 }
 
 EngineControlComponent::~EngineControlComponent() {
-    _state->terminating = true;
-    _state.yieldExecution();
+    if (!_state->controlException) {
+        _state->terminating = true;
+        _state.yieldExecution();
+    }
     _controlThread.join();
 }
 
@@ -103,8 +106,13 @@ void EngineControlComponent::swapBuffers() {
     if (hasControlRoutine()) {
         while (true) {
             _state.yieldExecution();
+
+            if (_state->controlException)
+                std::rethrow_exception(_state->controlException);
+
             if (!_state->gameRoutine)
                 break;
+
             _state->gameRoutine();
             _state->gameRoutine = EngineControlState::GameRoutine();
         }
