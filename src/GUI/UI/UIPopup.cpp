@@ -244,7 +244,9 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     if (pParty->hasActiveCharacter()) {
         // try to identify
         if (!inspect_item->IsIdentified()) {
-            if (pPlayers[pParty->getActiveCharacter()]->CanIdentify(inspect_item) == 1)
+            if (pParty->getOptionallySharedSkillStrongestEffect(
+                    PLAYER_SKILL_TYPE::PLAYER_SKILL_ITEM_ID,
+                    pParty->getActiveCharacter(), inspect_item) == 1)
                 inspect_item->SetIdentified();
             PlayerSpeech speech = SPEECH_IndentifyItemFail;
             if (!inspect_item->IsIdentified()) {
@@ -262,7 +264,9 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         }
         inspect_item->UpdateTempBonus(pParty->GetPlayingTime());
         if (inspect_item->IsBroken()) {
-            if (pPlayers[pParty->getActiveCharacter()]->CanRepair(inspect_item) == 1)
+            if (pParty->getOptionallySharedSkillStrongestEffect(
+                    PLAYER_SKILL_TYPE::PLAYER_SKILL_REPAIR,
+                    pParty->getActiveCharacter(), inspect_item) == 1)
                 inspect_item->uAttributes =
                     inspect_item->uAttributes & ~ITEM_BROKEN | ITEM_IDENTIFIED;
             PlayerSpeech speech = SPEECH_RepairFail;

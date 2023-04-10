@@ -1231,6 +1231,52 @@ size_t Party::immolationAffectedActors(int *affected, size_t affectedArrSize, si
     return affectedCount;
 }
 
+int Party::getSharedSkillStrongestEffect(PLAYER_SKILL_TYPE skillType, std::any param) {
+    int result = 0;
+    for (Player &player : pParty->pPlayers) {
+        if (!player.CanAct()) continue;
+        switch (skillType) {
+        case PLAYER_SKILL_TYPE::PLAYER_SKILL_MERCHANT:
+                result = std::max(result, player.GetMerchant());
+                break;
+        case PLAYER_SKILL_TYPE::PLAYER_SKILL_ITEM_ID:
+                result = result ? true :
+                         player.CanIdentify(std::any_cast<ItemGen *>(param));
+                break;
+        case PLAYER_SKILL_TYPE::PLAYER_SKILL_REPAIR:
+                result = result ? true :
+                         player.CanRepair(std::any_cast<ItemGen *>(param));
+                break;
+        default:
+                Error("Unknown skill type %d", skillType);
+        }
+    }
+    return result;
+}
+
+int Party::getOptionallySharedSkillStrongestEffect(PLAYER_SKILL_TYPE skillType,
+                                                   int playerIndex,
+                                                   std::any param) {
+    if (engine->config->gameplay.SharedMiscSkills.value()) {
+        return getSharedSkillStrongestEffect(skillType, param);
+    } else {
+        if (playerIndex == -1) {
+            assert(hasActiveCharacter());
+            playerIndex = getActiveCharacter();
+        }
+        Player &player = pParty->pPlayers[playerIndex];
+        switch (skillType) {
+        case PLAYER_SKILL_TYPE::PLAYER_SKILL_MERCHANT:
+                return player.GetMerchant();
+        case PLAYER_SKILL_TYPE::PLAYER_SKILL_ITEM_ID:
+                return player.CanIdentify(std::any_cast<ItemGen *>(param));
+        case PLAYER_SKILL_TYPE::PLAYER_SKILL_REPAIR:
+                return player.CanRepair(std::any_cast<ItemGen *>(param));
+        default:
+                Error("Unknown skill type %d", skillType);
+        }
+    }
+}
 int getTravelTime() {
     signed int new_travel_time;  // esi@1
 

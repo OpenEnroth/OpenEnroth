@@ -369,6 +369,25 @@ struct Party {
      */
     size_t immolationAffectedActors(int *affected, size_t affectedArrSize, size_t effectRange);
 
+    /**
+     * @brief Returns strongest effect of given skill among all conscious players.
+     * @param skillType Skill type. Can be only ID item/repair item/merchant currently.
+     * @param param Parameter passed to player method.
+     *
+     * \todo Return also which player contributed strongest skill
+    */
+    int getSharedSkillStrongestEffect(PLAYER_SKILL_TYPE skillType, std::any param = std::any());
+    /**
+     * @brief If config option is enabled, returns highest skill effect among all conscious players. Otherwise returns effect of player with given index.
+     * @param skill Skill type. Can be only ID item/repair item/merchant currently.
+     * @param playerIndex Index of player whose skill would be tested normally. Can be -1 to get currently active character.
+     * @param param Parameter passed to player method.
+     * 
+     * \todo Return also which player contributed strongest skill
+     */
+    int getOptionallySharedSkillStrongestEffect(PLAYER_SKILL_TYPE skillType,
+                                           int playerIndex = -1, std::any param = std::any());
+
     int field_0_set25_unused;
     int uPartyHeight;
     int uDefaultPartyHeight;

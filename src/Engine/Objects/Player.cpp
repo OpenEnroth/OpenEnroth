@@ -46,18 +46,6 @@ IndexedArray<Player *, 1, 4> pPlayers;
 
 PlayerSpeech PlayerSpeechID;
 
-// get highest skill value (level and mastery) among all conscious PCs for some skills if config
-// option is enabled
-static inline bool shouldSkillBeShared(PLAYER_SKILL_TYPE skillType) {
-    return engine->config->gameplay.SharedMiscSkills.value() &&
-         (skillType == PLAYER_SKILL_TYPE::PLAYER_SKILL_ITEM_ID ||
-         skillType == PLAYER_SKILL_TYPE::PLAYER_SKILL_REPAIR ||
-          (skillType == PLAYER_SKILL_TYPE::PLAYER_SKILL_MERCHANT &&
-           dialog_menu_id != DIALOGUE_LEARN_SKILLS
-              && in_current_building_type != BuildingType::BuildingType_Training
-              && in_current_building_type != BuildingType::BuildingType_Temple));
-}
-
 // Race Stat Points Bonus/ Penalty
 struct PlayerCreation_AttributeProps {
     unsigned char uBaseValue;
@@ -3083,16 +3071,6 @@ PLAYER_SKILL_LEVEL Player::GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType) {
     // Vanilla returned 0 for PLAYER_SKILL_MISC here, we return 1.
     PLAYER_SKILL_LEVEL skill_value = GetSkillLevel(uSkillType);
 
-    if (shouldSkillBeShared(uSkillType)) {
-        for (Player &player : pParty->pPlayers) {
-            if (&player != this && player.CanAct()) {
-                PLAYER_SKILL_LEVEL otherPlayerSkillValue =
-                    player.GetSkillLevel(uSkillType);
-                skill_value = std::max(skill_value, otherPlayerSkillValue);
-            }
-        }
-    }
-
     result = bonus_value + skill_value;
 
     // cap skill and bonus at 60
@@ -3104,15 +3082,6 @@ PLAYER_SKILL_LEVEL Player::GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType) {
 
 PLAYER_SKILL_MASTERY Player::GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType) {
     PLAYER_SKILL_MASTERY value = GetSkillMastery(uSkillType);
-
-    if (shouldSkillBeShared(uSkillType)) {
-        for (Player &player : pParty->pPlayers) {
-            if (&player != this && player.CanAct()) {
-                PLAYER_SKILL_MASTERY otherPlayerResult = player.GetSkillMastery(uSkillType);
-                value = std::max(value, otherPlayerResult);
-            }
-        }
-    }
     return value;
 }
 
@@ -7164,7 +7133,7 @@ void Player::SetCondDeadWithBlockCheck(int blockable) {
 }
 
 void Player::SetCondUnconsciousWithBlockCheck(int blockable) {
-    SetCondition(Condition_Dead, blockable);
+    SetCondition(Condition_Unconscious, blockable);
 }
 
 ItemGen *Player::GetOffHandItem() { return GetItem(&PlayerEquipment::uOffHand); }

@@ -1264,7 +1264,7 @@ void TravelByTransport() {
 
     int base_price = p2DEvents[window_SpeakInHouse->wData.val - 1].uType == BuildingType_Stables ? 25 : 50;
     base_price *= p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
-    int pPrice = base_price * (100 - pPlayers[pParty->getActiveCharacter()]->GetMerchant()) / 100;
+    int pPrice = base_price * (100 - pParty->getOptionallySharedSkillStrongestEffect(PLAYER_SKILL_TYPE::PLAYER_SKILL_MERCHANT)) / 100;
     if (pPrice < base_price / 3) pPrice = base_price / 3;
     int route_id = window_SpeakInHouse->wData.val - HOUSE_STABLES_HARMONDALE;
 
@@ -1673,13 +1673,16 @@ void TavernDialog() {
         pParty->setActiveToFirstCanAct();
 
     pPriceRoom = ((v2 * v2) / 10) *
-        (100 - pPlayers[pParty->getActiveCharacter()]->GetMerchant()) /
+                 (100 - pParty->getOptionallySharedSkillStrongestEffect(
+                            PLAYER_SKILL_TYPE::PLAYER_SKILL_MERCHANT)) /
         100;  // nzi
     if (pPriceRoom < ((v2 * v2) / 10) / 3) pPriceRoom = ((v2 * v2) / 10) / 3;
     if (pPriceRoom <= 0) pPriceRoom = 1;
 
     pPriceFood = ((v2 * v2) * v2 / 100) *
-        (100 - pPlayers[pParty->getActiveCharacter()]->GetMerchant()) / 100;
+                 (100 - pParty->getOptionallySharedSkillStrongestEffect(
+                            PLAYER_SKILL_TYPE::PLAYER_SKILL_MERCHANT)) /
+                 100;
     if (pPriceFood < ((v2 * v2) * v2 / 100) / 3)
         pPriceFood = ((v2 * v2) * v2 / 100) / 3;
     if (pPriceFood <= 0) pPriceFood = 1;
