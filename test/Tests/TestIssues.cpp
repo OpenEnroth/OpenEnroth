@@ -226,9 +226,11 @@ GAME_TEST(Issues, Issue293a) {
     EXPECT_EQ(pParty->pPlayers[0].uAccuracy, 15); // +2
     EXPECT_EQ(pParty->pPlayers[0].uLuck, 7);
     EXPECT_EQ(partyItemCount(), 19); // +1
-    EXPECT_TRUE(pParty->pPlayers[0].hasItem(ITEM_LEATHER_ARMOR, false)); // That's the item from the trash pile.
-    for (int i = 0; i < 4; i++)
-        EXPECT_EQ(pParty->pPlayers[i].GetMajorConditionIdx(), Condition_Disease_Weak);
+    EXPECT_TRUE(pParty->pPlayers[0].hasItem(ITEM_CHAIN_MAIL, false)); // That's the item from the trash pile.
+    EXPECT_EQ(pParty->pPlayers[0].GetMajorConditionIdx(), Condition_Disease_Weak);
+    EXPECT_EQ(pParty->pPlayers[1].GetMajorConditionIdx(), Condition_Good); // Good roll here, didn't get sick.
+    EXPECT_EQ(pParty->pPlayers[2].GetMajorConditionIdx(), Condition_Disease_Weak);
+    EXPECT_EQ(pParty->pPlayers[3].GetMajorConditionIdx(), Condition_Disease_Weak);
 }
 
 GAME_TEST(Issues, Issue293b) {
@@ -437,8 +439,14 @@ GAME_TEST(Issues, Issue488) {
 
 GAME_TEST(Issues, Issue489) {
     // Test that AOE version of Shrinking Ray spell works
-    test->playTraceFromTestData("issue_489.mm7", "issue_489.json", [] { EXPECT_FALSE(pActors[24].pActorBuffs[ACTOR_BUFF_SHRINK].Active()); });
-    EXPECT_TRUE(pActors[24].pActorBuffs[ACTOR_BUFF_SHRINK].Active());
+    auto countChibis = [] {
+        return std::count_if(pActors.begin(), pActors.end(), [] (const Actor &actor) {
+            return actor.pActorBuffs[ACTOR_BUFF_SHRINK].Active();
+        });
+    };
+
+    test->playTraceFromTestData("issue_489.mm7", "issue_489.json", [&] { EXPECT_EQ(countChibis(), 0); });
+    EXPECT_EQ(countChibis(), 21);
 }
 
 GAME_TEST(Issues, Issue490) {
