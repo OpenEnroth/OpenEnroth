@@ -1827,11 +1827,10 @@ void RegeneratePartyHealthMana() {
 
         // HP/SP regeneration and HP deterioration
         for (Player &player : pParty->pPlayers) {
-            bool recovery_HP = false;
-            bool decrease_HP = false;
-            bool recovery_SP = false;
-
             for (ITEM_SLOT idx : AllItemSlots()) {
+                bool recovery_HP = false;
+                bool decrease_HP = false;
+                bool recovery_SP = false;
                 if (player.HasItemEquipped(idx)) {
                     uint _idx = player.pEquipment.pIndices[idx];
                     ItemGen equppedItem = player.pInventoryItemList[_idx - 1];
