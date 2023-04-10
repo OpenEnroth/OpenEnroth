@@ -15,6 +15,7 @@
 #include <thread>
 #include <functional>
 #include <utility>
+#include <vector>
 
 #include <cassert>
 #include <cmath>
@@ -680,79 +681,44 @@ PAudioTrack CreateAudioTrack(const std::string &file_path) {
     return std::dynamic_pointer_cast<IAudioTrack, AudioTrackS16>(track);
 }
 
-class AudioSample16 : public IAudioSample {
+class OpenALAudioDataSource : public IAudioDataSource {
  public:
-    AudioSample16();
-    virtual ~AudioSample16();
+    OpenALAudioDataSource(PAudioDataSource baseDataSource):_baseDataSource(baseDataSource) {}
+    virtual ~OpenALAudioDataSource();
 
-    virtual bool Open(PAudioDataSource data_source);
-    virtual bool IsValid();
-    virtual bool IsStopped();
+    virtual bool Open();
+    virtual void Close();
 
-    virtual bool Play(bool loop = false, bool positioned = false);
-    virtual bool Stop();
-    virtual bool Pause();
-    virtual bool Resume();
-    virtual bool SetVolume(float volume);
-    virtual bool SetPosition(float x, float y, float z, float max_dist);
+    virtual size_t GetSampleRate() { return _baseDataSource->GetSampleRate(); }
+    virtual size_t GetChannelCount() { return _baseDataSource->GetChannelCount(); }
+    virtual std::shared_ptr<Blob> GetNextBuffer() { return _baseDataSource->GetNextBuffer(); }
+
+    bool linkSource(ALuint al_source);
 
  protected:
-    void Close();
-
-    PAudioDataSource pDataSource;
-    ALenum al_format;
-    ALuint al_source;
-    ALsizei al_sample_rate;
+    PAudioDataSource _baseDataSource;
+    std::vector<ALuint> _buffers;
 };
 
-AudioSample16::AudioSample16() {
-    al_format = AL_FORMAT_STEREO16;
-    al_source = -1;
-    al_sample_rate = 0;
+OpenALAudioDataSource::~OpenALAudioDataSource() {
+    _baseDataSource->Close();
+    if (_buffers.size()) {
+        alDeleteBuffers(_buffers.size(), &_buffers.front());
+    }
 }
 
-AudioSample16::~AudioSample16() { Close(); }
-
-void AudioSample16::Close() {
-    pDataSource = nullptr;
-
-    if (alIsSource(al_source) != 0) {
-        alSourceStop(al_source);
-        CheckError();
-        alDeleteSources(1, &al_source);
-        CheckError();
+bool OpenALAudioDataSource::Open() {
+    if (_buffers.size()) {
+        return true;
     }
 
-    al_source = -1;
-    al_sample_rate = 0;
-}
+    _baseDataSource->Open();
 
-bool AudioSample16::Open(PAudioDataSource data_source) {
-    pDataSource = data_source;
-    if (!pDataSource) {
-        return false;
-    }
+    bool result = true;
+    ALsizei al_sample_rate = GetSampleRate();
+    ALenum al_format = AL_FORMAT_STEREO16;
+    unsigned int num_channels = GetChannelCount();
 
-    if (!pDataSource->Open()) {
-        return false;
-    }
-
-    alGenSources((ALuint)1, &al_source);
-    if (CheckError()) {
-        return false;
-    }
-
-    alSourcei(al_source, AL_LOOPING, AL_FALSE);
-    alSourcef(al_source, AL_PITCH, 1.f);
-    alSourcef(al_source, AL_GAIN, 1.f);
-    alSourcef(al_source, AL_REFERENCE_DISTANCE, 6.5f);  // 300 / 50
-    alSourcef(al_source, AL_MAX_DISTANCE, 2000.f);
-    alSource3f(al_source, AL_POSITION, 0.f, 0.f, 0.f);
-    alSource3f(al_source, AL_VELOCITY, 0.f, 0.f, 0.f);
-
-    al_sample_rate = pDataSource->GetSampleRate();
-
-    unsigned int num_channels = data_source->GetChannelCount();
     switch (num_channels) {
         case 1:
             al_format = AL_FORMAT_MONO16;
@@ -781,7 +747,7 @@ bool AudioSample16::Open(PAudioDataSource data_source) {
     }
 
     while (true) {
-        std::shared_ptr<Blob> buffer = pDataSource->GetNextBuffer();
+        std::shared_ptr<Blob> buffer = _baseDataSource->GetNextBuffer();
         if (!buffer) {
             break;
         }
@@ -789,24 +755,115 @@ bool AudioSample16::Open(PAudioDataSource data_source) {
         ALuint al_buffer = -1;
         alGenBuffers(1, &al_buffer);
         if (CheckError()) {
-            Close();
-            return false;
+            result = false;
+            break;
         }
 
         alBufferData(al_buffer, al_format, buffer->data(), buffer->size(), al_sample_rate);
         if (CheckError()) {
-            Close();
-            return false;
+            result = false;
+            break;
         }
 
-        alSourceQueueBuffers(al_source, 1, &al_buffer);
-        if (CheckError()) {
-            Close();
-            return false;
-        }
+        _buffers.push_back(al_buffer);
     }
 
-    pDataSource->Close();
+    _baseDataSource->Close();
+
+    return result;
+}
+
+void OpenALAudioDataSource::Close() {
+    _baseDataSource->Close();
+}
+
+bool OpenALAudioDataSource::linkSource(ALuint al_source) {
+    alSourceQueueBuffers(al_source, _buffers.size(), &_buffers.front());
+    if (CheckError()) {
+        return false;
+    }
+    return true;
+}
+
+PAudioDataSource PlatformDataSourceInitialize(PAudioDataSource baseDataSource) {
+    std::shared_ptr<OpenALAudioDataSource> source = std::make_shared<OpenALAudioDataSource>(baseDataSource);
+
+    return std::dynamic_pointer_cast<IAudioDataSource, OpenALAudioDataSource>(source);
+}
+
+class AudioSample16 : public IAudioSample {
+ public:
+    AudioSample16();
+    virtual ~AudioSample16();
+
+    virtual bool Open(PAudioDataSource data_source);
+    virtual bool IsValid();
+    virtual bool IsStopped();
+
+    virtual bool Play(bool loop = false, bool positioned = false);
+    virtual bool Stop();
+    virtual bool Pause();
+    virtual bool Resume();
+    virtual bool SetVolume(float volume);
+    virtual bool SetPosition(float x, float y, float z, float max_dist);
+
+ protected:
+    void Close();
+
+    PAudioDataSource pDataSource;
+    ALuint al_source;
+};
+
+AudioSample16::AudioSample16() {
+    al_source = -1;
+}
+
+AudioSample16::~AudioSample16() { Close(); }
+
+void AudioSample16::Close() {
+    pDataSource = nullptr;
+
+    if (alIsSource(al_source) != 0) {
+        alSourceStop(al_source);
+        CheckError();
+        alSourcei(al_source, AL_BUFFER, 0);
+        CheckError();
+        alDeleteSources(1, &al_source);
+        CheckError();
+    }
+
+    al_source = -1;
+}
+
+bool AudioSample16::Open(PAudioDataSource data_source) {
+    pDataSource = data_source;
+    if (!pDataSource) {
+        return false;
+    }
+
+    std::shared_ptr<OpenALAudioDataSource> openalDataSource = std::dynamic_pointer_cast<OpenALAudioDataSource, IAudioDataSource>(pDataSource);
+
+    if (!openalDataSource->Open()) {
+        return false;
+    }
+
+    alGenSources((ALuint)1, &al_source);
+    if (CheckError()) {
+        return false;
+    }
+
+    alSourcei(al_source, AL_LOOPING, AL_FALSE);
+    alSourcef(al_source, AL_PITCH, 1.f);
+    alSourcef(al_source, AL_GAIN, 1.f);
+    alSourcef(al_source, AL_REFERENCE_DISTANCE, 6.5f);  // 300 / 50
+    alSourcef(al_source, AL_MAX_DISTANCE, 2000.f);
+    alSource3f(al_source, AL_POSITION, 0.f, 0.f, 0.f);
+    alSource3f(al_source, AL_VELOCITY, 0.f, 0.f, 0.f);
+
+    if (!openalDataSource->linkSource(al_source)) {
+        Close();
+        return false;
+    }
 
     return true;
 }
