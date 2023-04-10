@@ -31,7 +31,7 @@ int runRetrace(GameOptions options) {
             EventTrace trace = EventTrace::loadFromFile(tracePath, application->window());
             application->get<EngineTracePlayer>()->prepareTrace(game, savePath, tracePath);
             application->get<EngineTraceComponent>()->start();
-            application->get<EngineTracePlayer>()->playPreparedTrace(game, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_DONT_ADVANCE_RANDOM_STATE);
+            application->get<EngineTracePlayer>()->playPreparedTrace(game, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS);
             trace.events = application->get<EngineTraceComponent>()->finish();
             EventTrace::saveToFile(tracePath, trace);
         }

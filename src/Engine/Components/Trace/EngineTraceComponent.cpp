@@ -28,7 +28,7 @@ void EngineTraceComponent::swapBuffers() {
         std::unique_ptr<PaintEvent> e = std::make_unique<PaintEvent>();
         e->type = EVENT_PAINT;
         e->tickCount = application()->platform()->tickCount();
-        e->randomState = grng->random(1024);
+        e->randomState = grng->peek(1024);
         _trace.push_back(std::move(e));
     }
 
