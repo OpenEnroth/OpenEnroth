@@ -322,7 +322,6 @@ bool Game::loop() {
             continue;
         }
         if (uGameState == GAME_STATE_GAME_QUITTING_TO_MAIN_MENU) {  // from the loaded game
-            pAudioPlayer->PauseSounds(-1);
             uGameState = GAME_STATE_PLAYING;
             break;
         }
@@ -1323,7 +1322,7 @@ void Game::processQueuedMessages() {
                     continue;
                 }
                 case UIMSG_OnGameOverWindowClose:
-                    pAudioPlayer->PauseSounds(-1);
+                    pAudioPlayer->stopSounds();
                     SaveGame(1, 0);
 
                     pParty->vPosition.x = -17331;  // respawn point in Harmondale
@@ -2402,7 +2401,7 @@ void Game::gameLoop() {
 
 
             if (uGameState == GAME_STATE_CHANGE_LOCATION) {  // смена локации
-                pAudioPlayer->PauseSounds(-1);
+                pAudioPlayer->stopSounds();
                 PrepareWorld(0);
                 uGameState = GAME_STATE_PLAYING;
                 continue;
@@ -2429,7 +2428,7 @@ void Game::gameLoop() {
                 continue;
             }
             if (uGameState == GAME_STATE_PARTY_DIED) {
-                pAudioPlayer->PauseSounds(-1);
+                pAudioPlayer->stopSounds();
                 pParty->pHirelings[0] = NPCData();
                 pParty->pHirelings[1] = NPCData();
                 for (int i = 0; i < (signed int)pNPCStats->uNumNewNPCs; ++i) {

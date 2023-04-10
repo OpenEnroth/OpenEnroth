@@ -1233,7 +1233,6 @@ char PlayerTurn(int player_num) {
         switch (get_message.am_input_type) {
             case ARCO_MSG_FORCEQUIT:
                 if (get_message.field_4 == 129 && get_message.am_input_key == 1) {
-                    pAudioPlayer->PauseSounds(-1);
                     num_actions_left = 0;
                     break_loop = true;
                     pArcomageGame->force_am_exit = 1;
@@ -1243,7 +1242,6 @@ char PlayerTurn(int player_num) {
                 break;
             case ARCO_MSG_ESCAPE:
                 if (pArcomageGame->check_exit == 1) {
-                    pAudioPlayer->PauseSounds(-1);
                     pArcomageGame->GameOver = 1;
                     pArcomageGame->uGameWinner = 2;
                     pArcomageGame->Victory_type = -2;
@@ -2892,7 +2890,6 @@ void GameResultsApply() {
 
 void ArcomageGame::PrepareArcomage() {
     // stop all audio and set player names
-    pAudioPlayer->PauseSounds(-1);
     pArcomageGame->pPlayer1Name = Player1Name;
     pArcomageGame->pPlayer2Name = Player2Name;
 

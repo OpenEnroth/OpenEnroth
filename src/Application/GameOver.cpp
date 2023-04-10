@@ -31,7 +31,7 @@
 void GameOver_Loop(int v15) {
     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_4000;
     bGameoverLoop = true;
-    pAudioPlayer->PauseSounds(-1);
+    pAudioPlayer->stopSounds();
 
     CreateWinnerCertificate();
 

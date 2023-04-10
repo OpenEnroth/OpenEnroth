@@ -781,6 +781,7 @@ void MPlayer::OpenHouseMovie(const std::string &pMovieName, bool bLoop) {
     }
 
     pEventTimer->Pause();
+    pAudioPlayer->pauseLooping();
     pAudioPlayer->MusicPause();
     size_t size = 0;
     size_t offset = 0;
@@ -865,6 +866,7 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
     pMovie_Track = std::dynamic_pointer_cast<IMovie>(pMovie);
 
     pEventTimer->Pause();
+    pAudioPlayer->pauseLooping();
     pAudioPlayer->MusicPause();
     platform->setCursorShown(false);
     current_screen_type = CURRENT_SCREEN::SCREEN_VIDEO;
@@ -975,6 +977,7 @@ void MPlayer::Unload() {
     pMovie_Track = nullptr;
     if (!bGameoverLoop) {
         pAudioPlayer->MusicResume();
+        pAudioPlayer->resumeSounds();
     }
     pEventTimer->Resume();
 }

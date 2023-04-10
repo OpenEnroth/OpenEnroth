@@ -567,7 +567,6 @@ GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(
     unsigned int uActiveCharacter, CURRENT_SCREEN screen)
     : GUIWindow(WINDOW_CharacterRecord, {0, 0}, render->GetRenderDimensions(), uActiveCharacter) {
     pEventTimer->Pause();
-    pAudioPlayer->PauseSounds(-1);
     bRingsShownInCharScreen = false;
     CharacterUI_LoadPaperdollTextures();
     current_screen_type = screen;
@@ -731,7 +730,6 @@ void GUIWindow_CharacterRecord::ToggleRingsOverlay() {
 
 GUIWindow *CastSpellInfo::GetCastSpellInInventoryWindow() {
     pEventTimer->Pause();
-    pAudioPlayer->PauseSounds(-1);
     bRingsShownInCharScreen = 0;
     CharacterUI_LoadPaperdollTextures();
     current_screen_type = CURRENT_SCREEN::SCREEN_CASTING;

@@ -29,7 +29,6 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() : GUIWindow_Book() {
     BasicBookInitialization();
 
     pEventTimer->Pause();
-    pAudioPlayer->PauseSounds(-1);
     pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({600, 361}, {0, 0}, pBtn_History);
     bFlashHistoryBook = 0;
 

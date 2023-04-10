@@ -79,7 +79,6 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
     Party_Teleport_Map_Name = (char *)pLocationName;
     uCurrentHouse_Animation = anim_id;
     pEventTimer->Pause();
-    pAudioPlayer->PauseSounds(-1);
     current_screen_type = CURRENT_SCREEN::SCREEN_CHANGE_LOCATION;
 
     mapid = pMapStats->GetMapInfo(pCurrentMapName);

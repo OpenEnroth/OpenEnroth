@@ -24,7 +24,6 @@ GUIWindow_QuickReference::GUIWindow_QuickReference()
     : GUIWindow(WINDOW_QuickReference, {0, 0}, render->GetRenderDimensions(), 5) {
     // 004304E7 Game_EventLoop --- part
     pEventTimer->Pause();
-    pAudioPlayer->PauseSounds(-1);
     current_screen_type = CURRENT_SCREEN::SCREEN_QUICK_REFERENCE;
 
     // paperdoll_dbrds[2] = assets->GetImage_16BitAlpha(L"BUTTEXI1");

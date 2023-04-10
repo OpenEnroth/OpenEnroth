@@ -38,7 +38,6 @@ GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(int casterPid)  // const char
     BasicBookInitialization();
 
     pEventTimer->Pause();
-    pAudioPlayer->PauseSounds(-1);
     townPortalCasterPid = casterPid;
 
     // ----------------------------------------------

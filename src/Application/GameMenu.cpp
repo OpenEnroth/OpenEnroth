@@ -55,6 +55,7 @@ void Game_QuitGameWhilePlaying(bool force_quit) {
         pCurrentFrameMessageQueue->Flush();
         // pGUIWindow_CurrentMenu->Release();
         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+        pAudioPlayer->stopSounds();
         pAudioPlayer->playUISound(SOUND_WoodDoorClosing);
         uGameState = GAME_STATE_GAME_QUITTING_TO_MAIN_MENU;
     } else {
@@ -426,7 +427,6 @@ void Menu::EventLoop() {
 
 void Menu::MenuLoop() {
     pEventTimer->Pause();
-    pAudioPlayer->PauseSounds(-1);
     current_screen_type = CURRENT_SCREEN::SCREEN_MENU;
 
     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
@@ -465,6 +465,4 @@ void Menu::MenuLoop() {
         gamma_preview_image->Release();
         gamma_preview_image = nullptr;
     }
-
-    pAudioPlayer->ResumeSounds();
 }

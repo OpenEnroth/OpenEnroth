@@ -51,9 +51,6 @@ void GUIWindow_RestWindow::Update() {
 #endif
 
 static void prepareToLoadRestUI() {
-    if (currentRestType == REST_NONE) {
-        pAudioPlayer->PauseSounds(-1);
-    }
     if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) {
         if (pGUIWindow_CurrentMenu) {
             pGUIWindow_CurrentMenu->Release();

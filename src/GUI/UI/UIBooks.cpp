@@ -68,7 +68,6 @@ GUIWindow_Book::GUIWindow_Book()
     : GUIWindow(WINDOW_Book, {0, 0}, render->GetRenderDimensions(), 0) {}
 
 void GUIWindow_Book::BasicBookInitialization() {
-    pAudioPlayer->PauseSounds(-1);
     InitializeFonts();
     CreateButton({475, 445}, {158, 34}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_DIALOGUE_EXIT));
     current_screen_type = CURRENT_SCREEN::SCREEN_BOOKS;
@@ -80,7 +79,6 @@ void GUIWindow_Book::BasicBookInitialization() {
 
 //----- (00411AAA) --------------------------------------------------------
 void GUIWindow_Book::InitializeFonts() {
-    pAudioPlayer->PauseSounds(-1);
     pAudioPlayer->playUISound(SOUND_openbook);
 
     ui_book_map_frame = assets->GetImage_Alpha("mapbordr");
