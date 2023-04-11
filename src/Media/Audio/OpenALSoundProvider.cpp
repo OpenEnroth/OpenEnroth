@@ -683,7 +683,7 @@ PAudioTrack CreateAudioTrack(const std::string &file_path) {
 
 class OpenALAudioDataSource : public IAudioDataSource {
  public:
-    OpenALAudioDataSource(PAudioDataSource baseDataSource):_baseDataSource(baseDataSource) {}
+    explicit OpenALAudioDataSource(PAudioDataSource baseDataSource):_baseDataSource(baseDataSource) {}
     virtual ~OpenALAudioDataSource();
 
     virtual bool Open();
