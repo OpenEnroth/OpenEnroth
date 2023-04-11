@@ -208,20 +208,18 @@ double OutdoorLocation::GetFogDensityByTime() {
     }
 }
 
-//----- (00488EB1) --------------------------------------------------------
-int OutdoorLocation::GetTileAttribByPos(int sX, int sY) {
+int OutdoorLocation::getTileAttribByPos(int sX, int sY) {
     int gridY = WorldPosToGridCellY(sY);
     int gridX = WorldPosToGridCellX(sX);
 
-    return GetTileAttribByGrid(gridX, gridY);
+    return getTileAttribByGrid(gridX, gridY);
 }
 
-//----- (00488EEF) --------------------------------------------------------
-TileDesc *OutdoorLocation::GetTileDescByPos(int sX, int sY) {
+TileDesc *OutdoorLocation::getTileDescByPos(int sX, int sY) {
     int gridY = WorldPosToGridCellY(sY);
     int gridX = WorldPosToGridCellX(sX);
 
-    return this->GetTileDescByGrid(gridX, gridY);
+    return this->getTileDescByGrid(gridX, gridY);
 }
 
 //----- (00488F2E) --------------------------------------------------------
@@ -453,28 +451,26 @@ void OutdoorLocation::UpdateFog() {
     fFogDensity = GetFogDensityByTime();
 }
 
-int OutdoorLocation::GetNumFoodRequiredToRestInCurrentPos(const Vec3i &pos) {
+int OutdoorLocation::getNumFoodRequiredToRestInCurrentPos(const Vec3i &pos) {
     bool is_on_water = false;
     int bmodel_standing_on_pid = 0;
     ODM_GetFloorLevel(pos, pParty->uDefaultPartyHeight, &is_on_water, &bmodel_standing_on_pid, 0);
-    if (pParty->isAirborne() || bmodel_standing_on_pid || is_on_water)
+    if (pParty->isAirborne() || bmodel_standing_on_pid || is_on_water) {
         return 2;
+    }
 
-    // TODO: we're passing in pos and then using pParty->vPosition, why?
-    int v7 = _47ED83(WorldPosToGridCellX(pParty->vPosition.x),
-                     WorldPosToGridCellY(pParty->vPosition.y));
-    switch (pTileTable->pTiles[GetTileIdByTileMapId(v7)].tileset) {
-        case Tileset_Grass:  // на траве
+    switch (getTileDescByPos(pos.x, pos.y)->tileset) {
+        case Tileset_Grass:
             return 1;
-        case Tileset_Snow:  // на снегу
+        case Tileset_Snow:
             return 3;
-        case Tileset_Desert:  // на песке
+        case Tileset_Desert:
             return 5;
         case Tileset_CooledLava:
-        case Tileset_Dirt:  // на грязи
+        case Tileset_Dirt:
             return 4;
-        case Tileset_Water:  // on water (на воде)
-            return 3;        // еденицы еды
+        case Tileset_Water:
+            return 3;
         default:
             return 2;
     }
@@ -1100,67 +1096,21 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     this->sky_texture = assets->GetBitmap(loc_time.sky_texture_name);
 
     //pPaletteManager->RecalculateAll();
-    //    pSoundList->LoadSound(SOUND_RunDirt, 0);  //For Dirt
-    //    tyle(для звука хождения по грязи)
-    //    pSoundList->LoadSound(SOUND_WalkDirt, 0);  //для
-    //    бега
-    //    pSoundList->LoadSound(SOUND_RunRoad, 0);  //для звука
-    //    хождения по дороге pSoundList->LoadSound(SOUND_WalkRoad, 0);
-    //    pSoundList->LoadSound(SOUND_RunWood, 0);  //для звука
-    //    хождения по дереву pSoundList->LoadSound(SOUND_WalkWood, 0);
-    for (int i = 0; i < 3; ++i) {
-        switch (pTileTypes[i].tileset) {
-            case Tileset_Grass:
-                //            pSoundList->LoadSound(SOUND_RunGrass, 0);  //для
-                //            звука хождения по траве
-                //            pSoundList->LoadSound(SOUND_WalkGrass, 0);
-                break;
-            case Tileset_Snow:
-                //            pSoundList->LoadSound(SOUND_RunSnow, 0);  //по
-                //            снегу pSoundList->LoadSound(SOUND_WalkSnow, 0);
-                break;
-            case Tileset_Desert:
-                //            pSoundList->LoadSound(SOUND_RunDesert, 0);  //по
-                //            пустыне pSoundList->LoadSound(SOUND_WalkDesert,
-                //            0);
-                break;
-            case Tileset_CooledLava:
-                //            pSoundList->LoadSound(SOUND_RunCooledLava, 0);//по
-                //            лаве pSoundList->LoadSound(SOUND_WalkCooledLava,
-                //            0);
-                break;
-            case Tileset_Water:
-                //            pSoundList->LoadSound(SOUND_RunWater, 0);  //по
-                //            воде pSoundList->LoadSound(SOUND_WalkWater, 0);
-                break;
-            case Tileset_Badlands:
-                //            pSoundList->LoadSound(SOUND_RunBadlands, 0);
-                //            //для звука ходьбы по бесплодным землям
-                //            pSoundList->LoadSound(SOUND_WalkBadlands, 0);
-                break;
-            case Tileset_Swamp:
-                //            pSoundList->LoadSound(SOUND_RunSwamp, 0);  //по
-                //            болоту pSoundList->LoadSound(SOUND_WalkSwamp, 0);
-                break;
-            default:
-                break;
-        }
-    }
 
     return true;
 }
 
-int OutdoorLocation::GetTileIdByTileMapId(signed int a2) {
+int OutdoorLocation::getTileIdByTileMapId(int mapId) {
     int result;  // eax@2
     int v3;             // eax@3
 
-    if (a2 >= 90) {
-        v3 = (a2 - 90) / 36;
+    if (mapId >= 90) {
+        v3 = (mapId - 90) / 36;
         if (v3 && v3 != 1 && v3 != 2) {
             if (v3 == Tileset_CooledLava)
                 result = this->pTileTypes[3].uTileID;
             else
-                result = a2;
+                result = mapId;
         } else {
             result = this->pTileTypes[v3].uTileID;
         }
@@ -1170,8 +1120,7 @@ int OutdoorLocation::GetTileIdByTileMapId(signed int a2) {
     return result;
 }
 
-//----- (0047ED08) --------------------------------------------------------
-TileDesc *OutdoorLocation::GetTileDescByGrid(int sX, int sY) {
+TileDesc *OutdoorLocation::getTileDescByGrid(int sX, int sY) {
     int v3;  // esi@5
              //  unsigned int result; // eax@9
 
@@ -1232,16 +1181,14 @@ TileDesc *OutdoorLocation::GetTileDescByGrid(int sX, int sY) {
     return &pTileTable->pTiles[v3];
 }
 
-//----- (0047ED83) --------------------------------------------------------
-int OutdoorLocation::_47ED83(signed int gridX, signed int gridY) {
+int OutdoorLocation::getTileMapIdByGrid(signed int gridX, signed int gridY) {
     if (gridX < 0 || gridX > 127 || gridY < 0 || gridY > 127)
         return 0;
 
     return this->pTerrain.pTilemap[128 * gridY + gridX];
 }
 
-//----- (0047EDB3) --------------------------------------------------------
-int OutdoorLocation::GetTileAttribByGrid(int gridX, int gridY) {
+int OutdoorLocation::getTileAttribByGrid(int gridX, int gridY) {
     if (gridX < 0 || gridX > 127 || gridY < 0 || gridY > 127)
         return 0;
 
@@ -1259,20 +1206,12 @@ int OutdoorLocation::DoGetHeightOnTerrain(signed int sX, signed int sZ) {
     return 32 * pTerrain.pHeightmap[sZ * 128 + sX];
 }
 
-SoundID OutdoorLocation::getSoundIdByPosition(int X_pos, int Y_pos, bool isRunning) {
-    int tileMapId = 0;
-
-    if (X_pos >= 0 && X_pos <= 127 && Y_pos >= 0 && Y_pos <= 127) {
-        tileMapId = this->pTerrain.pTilemap[128 * Y_pos + X_pos];
-    }
-
-    int tileId = GetTileIdByTileMapId(tileMapId);
-
-    if (!tileId) {
+SoundID OutdoorLocation::getSoundIdByGrid(int X_pos, int Y_pos, bool isRunning) {
+    if (!getTileIdByTileMapId(getTileMapIdByGrid(X_pos, Y_pos))) {
         return isRunning ? SOUND_RunDirt : SOUND_WalkDirt;
     }
 
-    switch (pTileTable->pTiles[tileId].tileset) {
+    switch (getTileDescByGrid(X_pos, Y_pos)->tileset) {
         case Tileset_Grass:
             return isRunning ? SOUND_RunGrass : SOUND_WalkGrass;
         case Tileset_Snow:
@@ -2476,7 +2415,7 @@ void ODM_ProcessPartyActions() {
                                 sound = SOUND_RunWood;
                             } else {
                                 // Old comment: 56 is ground run
-                                sound = pOutdoor->getSoundIdByPosition(WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellY(pParty->vPosition.y), true);
+                                sound = pOutdoor->getSoundIdByGrid(WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellY(pParty->vPosition.y), true);
                             }
                             pParty->walk_sound_timer = 96;  // 64
                         }
@@ -2485,7 +2424,7 @@ void ODM_ProcessPartyActions() {
                             if (isModelWalk) {
                                 sound = SOUND_RunWood;
                             } else {
-                                sound = pOutdoor->getSoundIdByPosition(WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellY(pParty->vPosition.y), false);
+                                sound = pOutdoor->getSoundIdByGrid(WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellY(pParty->vPosition.y), false);
                             }
                             pParty->walk_sound_timer = 114;  // 64
                         }
@@ -2516,13 +2455,14 @@ void ODM_ProcessPartyActions() {
     int partyNewYGrid = WorldPosToGridCellY(partyNewY);
 
     // this gets if tile is not water
-    unsigned int partyCurrentOnLand = (~(unsigned int) pOutdoor->GetTileAttribByGrid(partyCurrentXGrid, partyCurrentYGrid) / 2) & 1;
-    int partyNewXOnLand = (~(unsigned int) pOutdoor->GetTileAttribByGrid(partyNewXGrid, partyCurrentYGrid) / 2) & 1;
-    int partyNewYOnLand = (~(unsigned int) pOutdoor->GetTileAttribByGrid(partyCurrentXGrid, partyNewYGrid) / 2) & 1;
+    bool partyCurrentOnLand = !(pOutdoor->getTileAttribByGrid(partyCurrentXGrid, partyCurrentYGrid) & TILE_DESC_WATER);
+    bool partyNewXOnLand = !(pOutdoor->getTileAttribByGrid(partyNewXGrid, partyCurrentYGrid) & TILE_DESC_WATER);
+    bool partyNewYOnLand = !(pOutdoor->getTileAttribByGrid(partyCurrentXGrid, partyNewYGrid) & TILE_DESC_WATER);
 
     // -(update party co-ords)---------------------------------------
     bool notWater{ false };
-    if (partyNewXGrid == partyCurrentXGrid && partyNewYGrid == partyCurrentYGrid && partyCurrentOnLand/*partyNewXOnLand && partyNewYOnLand*/) notWater = true;
+    if (partyNewXGrid == partyCurrentXGrid && partyNewYGrid == partyCurrentYGrid && partyCurrentOnLand/*partyNewXOnLand && partyNewYOnLand*/)
+        notWater = true;
 
     if (!partyNotOnModel)
         notWater = true;
@@ -2833,8 +2773,7 @@ void UpdateActors_ODM() {
         }
 
         // MOVING TOO SLOW
-        if (pActors[Actor_ITR].vVelocity.x * pActors[Actor_ITR].vVelocity.x +
-                pActors[Actor_ITR].vVelocity.y * pActors[Actor_ITR].vVelocity.y < 400 && Slope_High == 0) {
+        if (pActors[Actor_ITR].vVelocity.getXY().lengthSqr() < 400 && Slope_High == 0) {
             pActors[Actor_ITR].vVelocity.y = 0;
             pActors[Actor_ITR].vVelocity.x = 0;
         }
@@ -2845,16 +2784,11 @@ void UpdateActors_ODM() {
         // WATER TILE CHECKING
         if (!Water_Walk) {
             // tile on (1) tile heading (2)
-            unsigned int Tile_1_Land = ((unsigned int)~pOutdoor->GetTileAttribByGrid(
-                    WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x),
-                    WorldPosToGridCellY(pActors[Actor_ITR].vPosition.y)) >>
-                1) & 1;
-            unsigned int Tile_2_Land = ((unsigned int)~pOutdoor->GetTileAttribByGrid(
-                    WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x + pActors[Actor_ITR].vVelocity.x),
-                    WorldPosToGridCellY(pActors[Actor_ITR].vPosition.y + pActors[Actor_ITR].vVelocity.y)) >>
-                1) & 1;
-
-            if (!uIsFlying && Tile_1_Land && !Tile_2_Land) {
+            bool tile1IsLand, tile2IsLand;
+            tile1IsLand = !(pOutdoor->getTileAttribByPos(pActors[Actor_ITR].vPosition.x, pActors[Actor_ITR].vPosition.y) & TILE_DESC_WATER);
+            tile2IsLand = !(pOutdoor->getTileAttribByPos(pActors[Actor_ITR].vPosition.x + pActors[Actor_ITR].vVelocity.x,
+                                                         pActors[Actor_ITR].vPosition.y + pActors[Actor_ITR].vVelocity.y) & TILE_DESC_WATER);
+            if (!uIsFlying && tile1IsLand && !tile2IsLand) {
                 // approaching water - turn away
                 if (pActors[Actor_ITR].CanAct()) {
                     pActors[Actor_ITR].uYawAngle -= 32;
@@ -2863,16 +2797,16 @@ void UpdateActors_ODM() {
                     pActors[Actor_ITR].uAIState = Fleeing;
                 }
             }
-            if (!uIsFlying && Tile_1_Land == 0 && !uIsAboveFloor && Actor_On_Terrain) {
+            if (!uIsFlying && !tile1IsLand && !uIsAboveFloor && Actor_On_Terrain) {
                 // on water and shouldnt be
-                unsigned int Tile_Test_Land = 0;  // reset land found
+                bool tileTestLand = false;  // reset land found
                 int Grid_X = WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x);
                 int Grid_Z = WorldPosToGridCellY(pActors[Actor_ITR].vPosition.y);
                 for (int i = Grid_X - 1; i <= Grid_X + 1; i++) {
                     // scan surrounding cells for land
                     for (int j = Grid_Z - 1; j <= Grid_Z + 1; j++) {
-                        Tile_Test_Land = ((unsigned int)~pOutdoor->GetTileAttribByGrid(i, j) >> 1) & 1;
-                        if (Tile_Test_Land) {  // found land
+                        tileTestLand = !(pOutdoor->getTileAttribByGrid(i, j) & TILE_DESC_WATER);
+                        if (tileTestLand) {  // found land
                             int target_x = GridCellToWorldPosX(i);
                             int target_y = GridCellToWorldPosY(j);
                             if (pActors[Actor_ITR].CanAct()) {  // head to land
@@ -2885,11 +2819,11 @@ void UpdateActors_ODM() {
                             }
                         }
                     }
-                    if (Tile_Test_Land) {  // break out nested loop
+                    if (tileTestLand) {  // break out nested loop
                         break;
                     }
                 }
-                if (!Tile_Test_Land) {
+                if (!tileTestLand) {
                     // no land found so drowning damage
                     // pActors[Actor_ITR].sCurrentHP -= 1;
                     // logger->Warning("DROWNING");
@@ -3181,8 +3115,9 @@ int GetTerrainHeightsAroundParty2(int x, int y, bool *pIsOnWater, int bFloatAbov
     // dword_76D524_terrain_cell_world_pos_around_party_y =
     // pOutdoor->DoGetHeightOnTerrain(v4, v5 + 1);
     *pIsOnWater = false;
-    if (pOutdoor->GetTileAttribByGrid(grid_x, grid_y) & 2)
+    if (pOutdoor->getTileAttribByGrid(grid_x, grid_y) & TILE_DESC_WATER) {
         *pIsOnWater = true;
+    }
     v14 = 0;
     if (!bFloatAboveWater && *pIsOnWater) v14 = -60;
     if (y_x1z1 != y_x2z1 || y_x2z1 != y_x2z2 || y_x2z2 != y_x1z2) {
