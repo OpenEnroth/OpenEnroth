@@ -485,19 +485,17 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
         collision_state.position_lo = actor.vPosition.toFloat() + Vec3f(0, 0, actor.uActorRadius + 1);
         collision_state.position_hi = actor.vPosition.toFloat() + Vec3f(0, 0, actor.uActorHeight - actor.uActorRadius - 1);
         collision_state.position_hi.z = std::max(collision_state.position_hi.z, collision_state.position_lo.z);
-
         collision_state.velocity = actor.vVelocity.toFloat();
         collision_state.uSectorID = actor.uSectorID;
         if (collision_state.PrepareAndCheckIfStationary(0))
             break;
 
-        int collisionsWithOtherActors = 0;
-        unsigned int pid = PID(OBJECT_Actor, actor.id);
+        int actorCollisions = 0;
         for (int i = 0; i < 100; ++i) {
             CollideIndoorWithGeometry(true);
             CollideIndoorWithDecorations();
             CollideWithParty(false);
-            _46ED8A_collide_against_sprite_objects(pid);
+            _46ED8A_collide_against_sprite_objects(PID(OBJECT_Actor, actor.id));
             for (uint j = 0; j < ai_arrays_size; j++) {
                 int actor2_id = ai_near_actors_ids[j];
                 if (actor2_id == actor.id)
@@ -508,12 +506,12 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                 Actor &actor2 = pActors[actor2_id];
                 if ((actor2.vPosition - actor.vPosition).length() >= actor.uActorRadius + actor2.uActorRadius &&
                     CollideWithActor(actor2_id, 40))
-                    ++collisionsWithOtherActors;
+                    ++actorCollisions;
             }
             if (CollideIndoorWithPortals())
                 break;
         }
-        bool isInCrowd = collisionsWithOtherActors > 1;
+        bool isInCrowd = actorCollisions > 1;
 
         Vec3f newPos = actor.vPosition.toFloat() + collision_state.adjusted_move_distance * collision_state.direction;
         unsigned int newFaceID;
@@ -678,12 +676,11 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
     collision_state.radius_lo = actorRadius;
 
     for (int attempt = 0; attempt < 100; ++attempt) {
-        collision_state.position_hi = actor.vPosition.toFloat() + Vec3f(0, 0, actor.uActorHeight - actorRadius - 1);
         collision_state.position_lo = actor.vPosition.toFloat() + Vec3f(0, 0, actorRadius + 1);
+        collision_state.position_hi = actor.vPosition.toFloat() + Vec3f(0, 0, actor.uActorHeight - actorRadius - 1);
         collision_state.position_hi.z = std::max(collision_state.position_hi.z, collision_state.position_lo.z);
         collision_state.velocity = actor.vVelocity.toFloat();
         collision_state.uSectorID = 0;
-
         if (collision_state.PrepareAndCheckIfStationary(0))
             break;
 
