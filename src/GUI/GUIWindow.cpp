@@ -2097,12 +2097,11 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                     result += v1;
                     break;
                 }
-                sprintf(
-                    v1, "%u",
+                sprintf(v1, "%u",
                         pParty->getItemTreatmentOptionallyStrongestEffect(
                             ITEM_TREATMENT_IDENTIFY,
-                            p2DEvents[eventId - 1].fPriceMultiplier),
-                        std::any(), uPlayerID);
+                            p2DEvents[eventId - 1].fPriceMultiplier, std::any(),
+                            uPlayerID));
                 result += v1;
                 break;
 
@@ -2111,12 +2110,11 @@ std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3
                 break;
 
             case 29:  // identify cost
-                sprintf(
-                    v1, "%u",
+                sprintf(v1, "%u",
                         pParty->getItemTreatmentOptionallyStrongestEffect(
                             ITEM_TREATMENT_IDENTIFY,
-                            p2DEvents[eventId - 1].fPriceMultiplier),
-                        std::any(), uPlayerID);
+                            p2DEvents[eventId - 1].fPriceMultiplier, std::any(),
+                            uPlayerID));
                 result += v1;
                 break;
             case 30:
