@@ -170,6 +170,14 @@ struct PartyTimeStruct {
     std::array<GameTime, 20> _s_times;  // 5d8 440h+8*51     //(0xACD44Ch in Silvo's binary)
 };
 
+enum class ShopItemTreatment {
+    ITEM_TREATMENT_IDENTIFY,
+    ITEM_TREATMENT_REPAIR,
+    ITEM_TREATMENT_SELL,
+    ITEM_TREATMENT_BUY
+};
+using enum ShopItemTreatment;
+
 struct Party {
     Party() : playing_time(), last_regenerated() {
         Zero();
@@ -374,7 +382,7 @@ struct Party {
      * @param skillType Skill type. Can be only ID item/repair item/merchant currently.
      * @param param Parameter passed to player method.
      *
-     * \todo Return also which player contributed strongest skill
+     * \todo Return also which player contributed strongest skill effect
     */
     int getSharedSkillStrongestEffect(PLAYER_SKILL_TYPE skillType, std::any param = std::any());
     /**
@@ -383,10 +391,37 @@ struct Party {
      * @param playerIndex Index of player whose skill would be tested normally. Can be -1 to get currently active character.
      * @param param Parameter passed to player method.
      * 
-     * \todo Return also which player contributed strongest skill
+     * \todo Return also which player contributed strongest skill effect
      */
     int getOptionallySharedSkillStrongestEffect(PLAYER_SKILL_TYPE skillType,
                                            int playerIndex = -1, std::any param = std::any());
+
+    /**
+     * @brief Returns best item action price among all conscious players.
+     * @param itemTreatment Type of item action.
+     * @param param1 Parameter 1 passed to player method.
+     * @param param2 Parameter 2 passed to player method.
+     *
+     * \todo Return also which player contributed strongest effect
+     */
+    int getItemTreatmentStrongestEffect(ShopItemTreatment itemTreatment,
+                                      std::any param1,
+                                      std::any param2 = std::any());
+    /**
+     * @brief If config option is enabled, returns best item action price among
+     * all conscious players. Otherwise returns effect of player with given index.
+     * @param itemTreatment Type of item action.
+     * @param param1 Parameter 1 passed to player method.
+     * @param param2 Parameter 2 passed to player method.
+     * @param playerIndex Index of player whose skill would be tested normally. Can be -1 to get currently active character.
+     *
+     * \todo Return also which player contributed strongest effect
+     */
+    int getItemTreatmentOptionallyStrongestEffect(
+                                                ShopItemTreatment itemTreatment,
+                                                std::any param1,
+                                                std::any param2 = std::any(),
+                                                int playerIndex = -1);
 
     int field_0_set25_unused;
     int uPartyHeight;

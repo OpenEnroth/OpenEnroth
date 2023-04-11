@@ -792,7 +792,7 @@ void UIShop_Buy_Identify_Repair() {
     ItemGen *item;         // esi@21
 
     // int v18;                   // ecx@37
-    float pPriceMultiplier;    // ST1C_4@38
+    float fPriceMultiplier;    // ST1C_4@38
     int taken_item;            // eax@40
     ItemGen *bought_item = nullptr;      // esi@51
     int party_reputation;      // eax@55
@@ -844,8 +844,13 @@ void UIShop_Buy_Identify_Repair() {
                     if (pt.x >= testpos && pt.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
                         if ((pt.y >= 90 && pt.y <= (90 + shop_ui_items_in_store[testx]->GetHeight())) ||
                             (pt.y >= 250 && pt.y <= (250 + shop_ui_items_in_store[testx]->GetHeight()))) {
-                            pPriceMultiplier = p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
-                            uPriceItemService = pPlayers[pParty->getActiveCharacter()]->GetBuyingPrice(bought_item->GetValue(), pPriceMultiplier);
+                            fPriceMultiplier = p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
+                            uPriceItemService =
+                                pParty
+                                    ->getItemTreatmentOptionallyStrongestEffect(
+                                        ITEM_TREATMENT_BUY,
+                                        bought_item->GetValue(),
+                                        fPriceMultiplier);
 
                             if (pParty->GetGold() < uPriceItemService) {
                                 PlayHouseSound(window_SpeakInHouse->wData.val, (HouseSoundID)2);
@@ -910,7 +915,8 @@ void UIShop_Buy_Identify_Repair() {
                 return;
 
             uPriceItemService =
-                pPlayers[pParty->getActiveCharacter()]->GetPriceIdentification(
+                pParty->getItemTreatmentOptionallyStrongestEffect(
+                    ITEM_TREATMENT_IDENTIFY,
                     p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
             item = &pPlayers[pParty->getActiveCharacter()]->pInventoryItemList[pItemID - 1];
 
@@ -948,12 +954,12 @@ void UIShop_Buy_Identify_Repair() {
                 return;
 
             item = &pPlayers[pParty->getActiveCharacter()]->pInventoryItemList[pItemID - 1];
-            pPriceMultiplier =
+            fPriceMultiplier =
                 p2DEvents[window_SpeakInHouse->wData.val - 1]
                     .fPriceMultiplier;
-            uPriceItemService = pPlayers[pParty->getActiveCharacter()]->GetPriceRepair(
-                item->GetValue(), pPriceMultiplier);
-
+            uPriceItemService =
+                pParty->getItemTreatmentOptionallyStrongestEffect(
+                    ITEM_TREATMENT_REPAIR, item->GetValue());
             if (item->uAttributes & ITEM_BROKEN) {
                 if (item->MerchandiseTest(window_SpeakInHouse->wData.val)) {
                     if (pParty->GetGold() >= uPriceItemService) {
@@ -1142,11 +1148,11 @@ void UIShop_Buy_Identify_Repair() {
                 default:
                     return;
             }
-
-            uPriceItemService = pPlayers[pParty->getActiveCharacter()]->GetBuyingPrice(
-                bought_item->GetValue(),
-                p2DEvents[window_SpeakInHouse->wData.val - 1]
-                    .fPriceMultiplier);
+            uPriceItemService =
+                pParty->getItemTreatmentOptionallyStrongestEffect(
+                    ITEM_TREATMENT_BUY, bought_item->GetValue(),
+                    p2DEvents[window_SpeakInHouse->wData.val - 1]
+                        .fPriceMultiplier);
             uNumSeconds = 0;
             a3 = 0;
             if (pMapStats->GetMapInfo(pCurrentMapName))

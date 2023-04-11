@@ -258,12 +258,12 @@ void Player::SpendMana(unsigned int uRequiredMana) {
 
 //----- (004BE2DD) --------------------------------------------------------
 void Player::SalesProcess(unsigned int inventory_idnx, int item_index, int _2devent_idx) {
-    float shop_mult = p2DEvents[_2devent_idx - 1].fPriceMultiplier;
-    int sell_price = GetPriceSell(pOwnItems[item_index], shop_mult);
+    float shopMult = p2DEvents[_2devent_idx - 1].fPriceMultiplier;
+    int sellPrice = pParty->getItemTreatmentOptionallyStrongestEffect(ITEM_TREATMENT_SELL, pOwnItems[item_index], shopMult);
 
     // remove item and add gold
     RemoveItemAtInventoryIndex(inventory_idnx);
-    pParty->AddGold(sell_price);
+    pParty->AddGold(sellPrice);
 }
 
 //----- (0043EEF3) --------------------------------------------------------
@@ -343,7 +343,9 @@ int Player::GetTempleHealCostModifier(float price_multi) {
     return result;
 }
 
-//----- (004B8102) --------------------------------------------------------
+/**
+ * @offset 0x4B8102
+ */
 int Player::GetPriceSell(ItemGen itemx, float price_multiplier) {
     int uRealValue = itemx.GetValue();
     int result = static_cast<int>((uRealValue / (price_multiplier + 2.0)) +
@@ -358,7 +360,9 @@ int Player::GetPriceSell(ItemGen itemx, float price_multiplier) {
     return result;
 }
 
-//----- (004B8142) --------------------------------------------------------
+/**
+ * @offset 0x4B8142
+ */
 int Player::GetBuyingPrice(unsigned int uRealValue, float price_multiplier) {
     uint price =
         (uint)(((100 - GetMerchant()) * (uRealValue * price_multiplier)) / 100);
@@ -369,7 +373,9 @@ int Player::GetBuyingPrice(unsigned int uRealValue, float price_multiplier) {
     return price;
 }
 
-//----- (004B8179) --------------------------------------------------------
+/**
+ * @offset 0x4B8179
+ */
 int Player::GetPriceIdentification(float price_multiplier) {
     int basecost = (int)(price_multiplier * 50.0f);
     int actcost = basecost * (100 - GetMerchant()) / 100;
@@ -383,7 +389,9 @@ int Player::GetPriceIdentification(float price_multiplier) {
         return 1;
 }
 
-//----- (004B81C3) --------------------------------------------------------
+/**
+ * @offset 0x4B81C3
+ */
 int Player::GetPriceRepair(int uRealValue, float price_multiplier) {
     int basecost = (int)(uRealValue / (6.0f - price_multiplier));
     int actcost = basecost * (100 - GetMerchant()) / 100;
@@ -7569,7 +7577,7 @@ MERCHANT_PHRASE Player::SelectPhrasesTransaction(ItemGen *pItem, BuildingType bu
     float multiplier;      // ST04_4@26
     int price;             // edi@26
     int merchantLevel;     // [sp+10h] [bp-8h]@1
-    int itemValue;
+    unsigned int itemValue;
 
     merchantLevel = GetActualSkillLevel(PLAYER_SKILL_MERCHANT);
     idemId = pItem->uItemID;
@@ -7611,20 +7619,24 @@ MERCHANT_PHRASE Player::SelectPhrasesTransaction(ItemGen *pItem, BuildingType bu
     multiplier = p2DEvents[BuildID_2Events - 1].fPriceMultiplier;
     switch (ShopMenuType) {
         case 2:
-            price = GetBuyingPrice(itemValue, multiplier);
+            price = pParty->getItemTreatmentOptionallyStrongestEffect(
+                ITEM_TREATMENT_BUY, itemValue, multiplier);
             break;
         case 3:
             // if (pItem->IsBroken())
             // price = 1;
             // else
-            price = this->GetPriceSell(*pItem,
-                                       multiplier);  // itemValue, multiplier);
+            price = pParty->getItemTreatmentOptionallyStrongestEffect(
+                ITEM_TREATMENT_SELL, *pItem,
+                multiplier);  // itemValue, multiplier);
             break;
         case 4:
-            price = this->GetPriceIdentification(multiplier);
+            price = pParty->getItemTreatmentOptionallyStrongestEffect(
+                ITEM_TREATMENT_IDENTIFY, multiplier);
             break;
         case 5:
-            price = this->GetPriceRepair(itemValue, multiplier);
+            price = pParty->getItemTreatmentOptionallyStrongestEffect(
+                ITEM_TREATMENT_REPAIR, itemValue, multiplier);
             break;
         default:
             Error("(%u)", ShopMenuType);

@@ -4,6 +4,7 @@
 #include <climits>
 #include <algorithm>
 #include <string>
+#include <limits>
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -1274,6 +1275,74 @@ int Party::getOptionallySharedSkillStrongestEffect(PLAYER_SKILL_TYPE skillType,
                 return player.CanRepair(std::any_cast<ItemGen *>(param));
         default:
                 Error("Unknown skill type %d", skillType);
+        }
+    }
+}
+int Party::getItemTreatmentStrongestEffect(ShopItemTreatment itemTreatment,
+                                           std::any param1,
+                                           std::any param2 /*= std::any()*/) {
+    int result = (itemTreatment == ShopItemTreatment::ITEM_TREATMENT_SELL
+                      ? 0
+                      : std::numeric_limits<int>::max());
+    for (Player &player : pPlayers) {
+        if (!player.CanAct()) continue;
+        switch (itemTreatment) {
+        case ShopItemTreatment::ITEM_TREATMENT_BUY:
+                result = std::min(
+                    result,
+                    player.GetBuyingPrice(std::any_cast<unsigned int>(param1),
+                                          std::any_cast<float>(param2)));
+                break;
+        case ShopItemTreatment::ITEM_TREATMENT_SELL:
+                result = std::max(
+                    result,
+                    player.GetPriceSell(std::any_cast<ItemGen>(param1),
+                                          std::any_cast<float>(param2)));
+                break;
+        case ShopItemTreatment::ITEM_TREATMENT_IDENTIFY:
+                result = std::min(result, player.GetPriceIdentification(
+                                              std::any_cast<float>(param1)));
+                break;
+        case ShopItemTreatment::ITEM_TREATMENT_REPAIR:
+                result = std::min(
+                    result, player.GetPriceRepair(std::any_cast<int>(param1),
+                                                  std::any_cast<float>(param2)));
+                break;
+        default:
+                Error("Unknown item treatment type %d", static_cast<int>(itemTreatment));
+        }
+    }
+    return result;
+}
+
+int Party::getItemTreatmentOptionallyStrongestEffect(
+    ShopItemTreatment itemTreatment, std::any param1,
+    std::any param2 /*= std::any()*/, int playerIndex /*= -1*/) {
+    if (engine->config->gameplay.SharedMiscSkills.value()) {
+        return getItemTreatmentStrongestEffect(itemTreatment, param1, param2);
+    } else {
+        if (playerIndex == -1) {
+            assert(hasActiveCharacter());
+            playerIndex = getActiveCharacter();
+        }
+        Player &player = pPlayers[playerIndex];
+        switch (itemTreatment) {
+            case ShopItemTreatment::ITEM_TREATMENT_BUY:
+                return player.GetBuyingPrice(
+                    std::any_cast<unsigned int>(param1),
+                    std::any_cast<float>(param2));
+            case ShopItemTreatment::ITEM_TREATMENT_SELL:
+                return player.GetPriceSell(std::any_cast<ItemGen>(param1),
+                                           std::any_cast<float>(param2));
+            case ShopItemTreatment::ITEM_TREATMENT_IDENTIFY:
+                return player.GetPriceIdentification(
+                    std::any_cast<float>(param1));
+            case ShopItemTreatment::ITEM_TREATMENT_REPAIR:
+                return player.GetPriceRepair(std::any_cast<int>(param1),
+                                             std::any_cast<float>(param2));
+            default:
+                Error("Unknown item treatment type %d",
+                      static_cast<int>(itemTreatment));
         }
     }
 }
