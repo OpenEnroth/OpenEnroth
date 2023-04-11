@@ -496,18 +496,9 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
             CollideIndoorWithDecorations();
             CollideWithParty(false);
             _46ED8A_collide_against_sprite_objects(PID(OBJECT_Actor, actor.id));
-            for (uint j = 0; j < ai_arrays_size; j++) {
-                int actor2_id = ai_near_actors_ids[j];
-                if (actor2_id == actor.id)
-                    continue;
-
-                // TODO(captainurist): why we're checking that distance is greater that r1+r2? Shouldn't we check that it's less?
-                // Investigate, white a comment here.
-                Actor &actor2 = pActors[actor2_id];
-                if ((actor2.vPosition - actor.vPosition).length() >= actor.uActorRadius + actor2.uActorRadius &&
-                    CollideWithActor(actor2_id, 40))
-                    ++actorCollisions;
-            }
+            for (int j = 0; j < ai_arrays_size; j++)
+                if (ai_near_actors_ids[j] != actor.id && CollideWithActor(ai_near_actors_ids[j], 40))
+                    actorCollisions++;
             if (CollideIndoorWithPortals())
                 break;
         }
