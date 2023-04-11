@@ -684,14 +684,14 @@ PAudioTrack CreateAudioTrack(const std::string &file_path) {
 class OpenALAudioDataSource : public IAudioDataSource {
  public:
     explicit OpenALAudioDataSource(PAudioDataSource baseDataSource):_baseDataSource(baseDataSource) {}
-    virtual ~OpenALAudioDataSource();
+    virtual ~OpenALAudioDataSource() override;
 
-    virtual bool Open();
-    virtual void Close();
+    virtual bool Open() override;
+    virtual void Close() override;
 
-    virtual size_t GetSampleRate() { return _baseDataSource->GetSampleRate(); }
-    virtual size_t GetChannelCount() { return _baseDataSource->GetChannelCount(); }
-    virtual std::shared_ptr<Blob> GetNextBuffer() { return _baseDataSource->GetNextBuffer(); }
+    virtual size_t GetSampleRate() override { return _baseDataSource->GetSampleRate(); }
+    virtual size_t GetChannelCount() override { return _baseDataSource->GetChannelCount(); }
+    virtual std::shared_ptr<Blob> GetNextBuffer() override { return _baseDataSource->GetNextBuffer(); }
 
     bool linkSource(ALuint al_source);
 
@@ -786,26 +786,24 @@ bool OpenALAudioDataSource::linkSource(ALuint al_source) {
 }
 
 PAudioDataSource PlatformDataSourceInitialize(PAudioDataSource baseDataSource) {
-    std::shared_ptr<OpenALAudioDataSource> source = std::make_shared<OpenALAudioDataSource>(baseDataSource);
-
-    return std::dynamic_pointer_cast<IAudioDataSource, OpenALAudioDataSource>(source);
+    return std::make_shared<OpenALAudioDataSource>(baseDataSource);
 }
 
 class AudioSample16 : public IAudioSample {
  public:
-    AudioSample16();
-    virtual ~AudioSample16();
+    AudioSample16():al_source(-1) {}
+    virtual ~AudioSample16() override;
 
-    virtual bool Open(PAudioDataSource data_source);
-    virtual bool IsValid();
-    virtual bool IsStopped();
+    virtual bool Open(PAudioDataSource data_source) override;
+    virtual bool IsValid() override;
+    virtual bool IsStopped() override;
 
-    virtual bool Play(bool loop = false, bool positioned = false);
-    virtual bool Stop();
-    virtual bool Pause();
-    virtual bool Resume();
-    virtual bool SetVolume(float volume);
-    virtual bool SetPosition(float x, float y, float z, float max_dist);
+    virtual bool Play(bool loop = false, bool positioned = false) override;
+    virtual bool Stop() override;
+    virtual bool Pause() override;
+    virtual bool Resume() override;
+    virtual bool SetVolume(float volume) override;
+    virtual bool SetPosition(float x, float y, float z, float max_dist) override;
 
  protected:
     void Close();
@@ -813,10 +811,6 @@ class AudioSample16 : public IAudioSample {
     PAudioDataSource pDataSource;
     ALuint al_source;
 };
-
-AudioSample16::AudioSample16() {
-    al_source = -1;
-}
 
 AudioSample16::~AudioSample16() { Close(); }
 
@@ -991,5 +985,5 @@ PAudioSample CreateAudioSample(PAudioDataSource dataSource) {
         sample = nullptr;
     }
 
-    return std::dynamic_pointer_cast<IAudioSample, AudioSample16>(sample);
+    return sample;
 }
