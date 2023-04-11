@@ -937,6 +937,6 @@ bool PartyCreationUI_LoopInternal() {
         }
     }
 
-    // pAudioPlayer->PauseSounds(-1);
+    pAudioPlayer->stopSounds();
     return party_not_creation_flag;
 }

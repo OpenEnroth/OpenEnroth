@@ -274,7 +274,6 @@ void GUIWindow::Release() {
         nuklear->Release(WINDOW_GameUI);
 
     log->info("Release window: {}", toString(eWindowType));
-    pAudioPlayer->ResumeSounds();
 }
 
 void GUIWindow::DeleteButtons() {

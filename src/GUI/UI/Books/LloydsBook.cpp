@@ -31,7 +31,6 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() : GUIWindow_Book() {
     BasicBookInitialization();
 
     pEventTimer->Pause();
-    pAudioPlayer->PauseSounds(-1);
 
     isLloydsBeaconBeingInstalled = false;
     if (!ui_book_lloyds_border) {

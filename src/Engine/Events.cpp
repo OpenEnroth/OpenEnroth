@@ -455,7 +455,6 @@ LABEL_47:
                             window_SpeakInHouse->Release();
                             pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
                             if (EnterHouse(HOUSE_DARK_GUILD_PIT)) {
-                                pAudioPlayer->PauseSounds(-1);
                                 window_SpeakInHouse = new GUIWindow_House({0, 0}, render->GetRenderDimensions(), HOUSE_DARK_GUILD_PIT, "");
                                 window_SpeakInHouse->CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, InputAction::SelectChar1, "");
                                 window_SpeakInHouse->CreateButton({177, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 2, InputAction::SelectChar2, "");
@@ -900,7 +899,6 @@ LABEL_47:
                         v133 = 1;
                         if (current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE) {
                             if (uGameState == GAME_STATE_CHANGE_LOCATION) {
-                                pAudioPlayer->PauseSounds(-1);
                                 dialog_menu_id = DIALOGUE_NULL;
                                 while (HouseDialogPressCloseBtn()) {}
                                 pMediaPlayer->Unload();

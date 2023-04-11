@@ -1,7 +1,6 @@
 #include "UIHouses.h"
 
 #include <cstdlib>
-#include <thread>
 
 #include "Application/GameOver.h"
 
@@ -48,8 +47,6 @@
 #include "Utility/String.h"
 #include "Library/Random/Random.h"
 #include "Utility/Math/TrigLut.h"
-
-using namespace std::chrono_literals; // NOLINT
 
 using Io::TextInputType;
 
@@ -855,7 +852,6 @@ bool EnterHouse(HOUSE_ID uHouseID) {
                 return 0;
             }
         }
-        // pAudioPlayer->PauseSounds(-1);
 
         uCurrentHouse_Animation = p2DEvents[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uAnimationID;
         in_current_building_type = pAnimatedRooms[uCurrentHouse_Animation].uBuildingType;
@@ -1336,7 +1332,6 @@ void TravelByTransport() {
             } else {
                 travel_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), travel_window.uFrameWidth, 0)) / 2 + 138,
                                             colorTable.White.c16(), localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), 3);
-                pAudioPlayer->PauseSounds(-1);
             }
         }
     } else {  //после нажатия топика - travel option selected
@@ -1385,21 +1380,15 @@ void TravelByTransport() {
                 int traveltimedays = GetTravelTimeTransportDays(transport_routes[route_id][choice_id]);
 
                 PlayerSpeech pSpeech;
-                int speechlength = 0;
                 if (route_id >= HOUSE_BOATS_EMERALD_ISLE - HOUSE_STABLES_HARMONDALE) {
                     pSpeech = SPEECH_TravelBoat;
-                    speechlength = 2500;
                 } else {
                     pSpeech = SPEECH_TravelHorse;
-                    speechlength = 1500;
                 }
 
                 RestAndHeal(24 * 60 * traveltimedays);
                 pPlayers[pParty->getActiveCharacter()]->playReaction(pSpeech);
-                auto timeLimit = std::chrono::system_clock::now() + std::chrono::milliseconds(speechlength);
-                while (std::chrono::system_clock::now() < timeLimit) {
-                    std::this_thread::sleep_for(1ms);
-                }
+                pAudioPlayer->soundDrain();
                 while (HouseDialogPressCloseBtn()) {}
                 pCurrentFrameMessageQueue->AddGUIMessage(UIMSG_Escape, 0, 0);
             } else {
@@ -3349,7 +3338,6 @@ void GenerateStandartShopItems() {
 GUIWindow_House::GUIWindow_House(Pointi position, Sizei dimensions, HOUSE_ID houseId, const std::string &hint) :
     GUIWindow(WINDOW_HouseInterior, position, dimensions, houseId, hint) {
     pEventTimer->Pause();  // pause timer so not attacked
-    // pAudioPlayer->PauseSounds(-1);
 
     current_screen_type = CURRENT_SCREEN::SCREEN_HOUSE;
     pBtn_ExitCancel = CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, InputAction::Invalid, localization->GetString(LSTR_EXIT_BUILDING),

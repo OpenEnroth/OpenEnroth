@@ -373,7 +373,7 @@ void GameWindowHandler::OnActivated() {
             }
         }
 
-        pAudioPlayer->ResumeSounds();
+        pAudioPlayer->resumeSounds();
         if (!bGameoverLoop && !pMovie_Track) {  // continue an audio track
             pAudioPlayer->MusicResume();
         }
@@ -400,7 +400,7 @@ void GameWindowHandler::OnDeactivated() {
         }
 
         if (pAudioPlayer != nullptr) {
-            pAudioPlayer->PauseSounds(2);
+            pAudioPlayer->pauseAllSounds();
             pAudioPlayer->MusicPause();
         }
     }

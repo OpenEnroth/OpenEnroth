@@ -152,9 +152,11 @@ struct AudioSamplePoolEntry {
 
 class AudioSamplePool {
  public:
-    void playNew(PAudioSample sample, bool loop = false, bool positional = false);
-    void playUniqueSoundId(PAudioSample sample, SoundID id, bool loop = false, bool positional = false);
-    void playUniquePid(PAudioSample sample, int pid, bool loop = false, bool positional = false);
+    explicit AudioSamplePool(bool looping):_looping(looping) {}
+
+    void playNew(PAudioSample sample, bool positional = false);
+    void playUniqueSoundId(PAudioSample sample, SoundID id, bool positional = false);
+    void playUniquePid(PAudioSample sample, int pid, bool positional = false);
     void pause();
     void resume();
     void stop();
@@ -162,8 +164,10 @@ class AudioSamplePool {
     void stopPid(int pid);
     void update();
     void setVolume(float value);
+    bool hasPlaying();
  private:
     std::list<AudioSamplePoolEntry> _samplePool;
+    bool _looping;
 };
 
 
@@ -176,7 +180,8 @@ class AudioPlayer {
     } SoundHeader;
 
  public:
-    AudioPlayer() : bPlayerReady(false), currentMusicTrack(MUSIC_Invalid), uMasterVolume(0), uVoiceVolume(0) {}
+    AudioPlayer() : bPlayerReady(false), currentMusicTrack(MUSIC_Invalid), uMasterVolume(0), uVoiceVolume(0),
+                    _voiceSoundPool(false), _regularSoundPool(false), _loopingSoundPool(true) {}
     virtual ~AudioPlayer() {}
 
     // Special PID values for additional sound playing semantics
@@ -187,6 +192,11 @@ class AudioPlayer {
     static const int SOUND_PID_MUSIC_VOLUME = -4;
 
     void Initialize();
+
+    void LoadAudioSnd();
+    bool FindSound(const std::string &pName, struct AudioPlayer::SoundHeader *header);
+    Blob LoadSound(const std::string &pSoundName);
+    Blob LoadSound(int uSoundID);
 
     void SetMasterVolume(int level);
     void SetVoiceVolume(int level);
@@ -199,8 +209,13 @@ class AudioPlayer {
     void SetMusicVolume(int music_level);
     float MusicGetVolume();
 
+    void UpdateSounds();
+    void pauseAllSounds();
+    void pauseLooping();
+    void resumeSounds();
     void stopSounds();
     void stopWalkingSounds();
+    void soundDrain();
 
     /**
      * Play sound.
@@ -218,13 +233,6 @@ class AudioPlayer {
      * @param sound_data_id             ???, unused
      */
     void playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats = 0, int x = -1, int y = 0, int sound_data_id = 0);
-    void UpdateSounds();
-    void PauseSounds(int uType);
-    void LoadAudioSnd();
-    void ResumeSounds();
-    bool FindSound(const std::string &pName, struct AudioPlayer::SoundHeader *header);
-    Blob LoadSound(const std::string &pSoundName);
-    Blob LoadSound(int uSoundID);
 
     /**
      * Special function that plays sound using music volume level.
@@ -300,8 +308,8 @@ class AudioPlayer {
     std::map<std::string, SoundHeader> mSoundHeaders;
 
     AudioSamplePool _voiceSoundPool;
-    AudioSamplePool _exclusiveSoundPool;
-    AudioSamplePool _nonExclusiveSoundPool;
+    AudioSamplePool _regularSoundPool;
+    AudioSamplePool _loopingSoundPool;
     PAudioSample _currentWalkingSample;
 };
 

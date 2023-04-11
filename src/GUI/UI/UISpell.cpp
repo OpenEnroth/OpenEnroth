@@ -11,7 +11,6 @@
 TargetedSpellUI::TargetedSpellUI(Pointi position, Sizei dimensions, WindowData data, const std::string &hint)
     : GUIWindow(WINDOW_CastSpell, position, dimensions, data, hint) {
     pEventTimer->Pause();
-    pAudioPlayer->PauseSounds(-1);
     mouse->SetCursorImage("MICON2");
     GameUI_SetStatusBar(LSTR_CHOOSE_TARGET);
 }

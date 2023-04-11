@@ -36,7 +36,6 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
     pNPCStats->dword_AE336C_LastMispronouncedNameFirstLetter = -1;
     pEventTimer->Pause();
     pMiscTimer->Pause();
-    pAudioPlayer->PauseSounds(-1);
     uDialogueType = DIALOGUE_NULL;
     sDialogue_SpeakingActorNPC_ID = actor->sNPC_ID;
     pDialogue_SpeakingActor = actor;
@@ -521,7 +520,6 @@ void StartBranchlessDialogue(int eventid, int entryline, int button) {
         if (pParty->uFlags & PARTY_FLAGS_1_ForceRedraw) {
             engine->Draw();
         }
-        pAudioPlayer->PauseSounds(-1);
         pMiscTimer->Pause();
         pEventTimer->Pause();
         dword_5C3418 = eventid;
