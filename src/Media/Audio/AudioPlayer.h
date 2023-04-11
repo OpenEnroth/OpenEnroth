@@ -154,9 +154,9 @@ class AudioSamplePool {
  public:
     explicit AudioSamplePool(bool looping):_looping(looping) {}
 
-    void playNew(PAudioSample sample, bool positional = false);
-    void playUniqueSoundId(PAudioSample sample, SoundID id, bool positional = false);
-    void playUniquePid(PAudioSample sample, int pid, bool positional = false);
+    bool playNew(PAudioSample sample, bool positional = false);
+    bool playUniqueSoundId(PAudioSample sample, SoundID id, bool positional = false);
+    bool playUniquePid(PAudioSample sample, int pid, bool positional = false);
     void pause();
     void resume();
     void stop();
@@ -185,11 +185,11 @@ class AudioPlayer {
     virtual ~AudioPlayer() {}
 
     // Special PID values for additional sound playing semantics
-    static const int SOUND_PID_PLAYER_RESETABLE = PID(OBJECT_Player, 5);
     static const int SOUND_PID_EXCLUSIVE = PID_INVALID;
     static const int SOUND_PID_NON_RESETABLE = -2;
     static const int SOUND_PID_WALKING = -3;
     static const int SOUND_PID_MUSIC_VOLUME = -4;
+    static const int SOUND_PID_VOICE_VOLUME = -5;
 
     void Initialize();
 
@@ -200,20 +200,20 @@ class AudioPlayer {
 
     void SetMasterVolume(int level);
     void SetVoiceVolume(int level);
+    void SetMusicVolume(int level);
 
     void MusicPlayTrack(MusicID eTrack);
     void MusicStart();
     void MusicStop();
     void MusicPause();
     void MusicResume();
-    void SetMusicVolume(int music_level);
-    float MusicGetVolume();
 
     void UpdateSounds();
     void pauseAllSounds();
     void pauseLooping();
     void resumeSounds();
     void stopSounds();
+    void stopVoiceSounds();
     void stopWalkingSounds();
     void soundDrain();
 
@@ -222,26 +222,18 @@ class AudioPlayer {
      *
      * @param eSoundID                  ID of sound.
      * @param pid                       PID of sound originator or:
-     *                                  * 0 for generic ui sound
-     *                                  * -1(PID_INVALID) for resetable (playing this sound again whilst its playing will stop
-     *                                    it and start from beginning) exclusive (sound should not be stopped by system on ui events) sound
-     *                                  * other < 0 for non resetable sounds (will not restart if played again whilst already playing)
-     *                                  NB: system use of exclusive sounds is inconsistent.
+     *                                  * 0 for generic ui sound, plays independently of others
+     *                                  * PID_INVALID for exclusive sound - sound with the same ID will be stopped and played from start
+     *                                  * SOUND_PID_NON_RESETABLE for non resetable sound - if sound still played, this call to playSound shall be ignored
+     *                                  * SOUND_PID_WALKING for walking sounds, previous one will be stopped and new one started
+     *                                  * SOUND_PID_MUSIC_VOLUME same as for PID_INVALID, but sound played with music volume level
+     *                                  * SOUND_PID_VOICE_VOLUME same as for PID_INVALID, but sound played with voice volume level
      * @param uNumRepeats               unused but presumably must be number of repeats before stopping
-     * @param x                         unused but presumably must be x coord of sound, additionally -1 seems to indicate need to ignore these coords
+     * @param x                         unused but presumably must be x coord of sound, additionally -1 seems to indicate that these coords must be ignored
      * @param y                         unused but presumably must be y coord of sound
      * @param sound_data_id             ???, unused
      */
     void playSound(SoundID eSoundID, int pid, unsigned int uNumRepeats = 0, int x = -1, int y = 0, int sound_data_id = 0);
-
-    /**
-     * Special function that plays sound using music volume level.
-     *
-     * @param id                        ID of sound.
-     */
-    void playMusicSound(SoundID id) {
-        playSound(id, SOUND_PID_MUSIC_VOLUME);
-    }
 
     /**
      * Play sound of spell casting or spell sprite impact.
@@ -302,6 +294,7 @@ class AudioPlayer {
     bool bPlayerReady;
     MusicID currentMusicTrack;
     float uMasterVolume;
+    float uMusicVolume;
     float uVoiceVolume;
     PAudioTrack pCurrentMusicTrack;
     FileInputStream fAudioSnd;
