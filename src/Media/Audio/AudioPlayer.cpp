@@ -17,8 +17,6 @@
 
 #include "Media/Audio/OpenALSoundProvider.h"
 
-using namespace std::chrono_literals;
-
 int sLastTrackLengthMS;
 AudioPlayer *pAudioPlayer;
 SoundList *pSoundList;
@@ -444,11 +442,11 @@ void AudioPlayer::pauseLooping() {
 
 void AudioPlayer::soundDrain() {
     while (_voiceSoundPool.hasPlaying()) {
-        std::this_thread::sleep_for(1ms);
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
         _voiceSoundPool.update();
     }
     while (_regularSoundPool.hasPlaying()) {
-        std::this_thread::sleep_for(1ms);
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
         _regularSoundPool.update();
     }
 }
